@@ -1,0 +1,13 @@
+name: on-pr
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+
+jobs:
+  pr-edit:
+    uses: swissgeo/.github/.github/workflows/pr-auto-semver.yml@main
