@@ -1,0 +1,11 @@
+{
+    "menuTitles": {
+        "knowledge": "Wissen",
+        "about": "Über Swissgeo"
+    },
+    "welcomeOverlay": {
+        "moreInfos": "Mehr Infos",
+        "startPrototype": "Prototyp starten",
+        "dontShowAgain": "Nicht mehr anzeigen"
+    }
+}

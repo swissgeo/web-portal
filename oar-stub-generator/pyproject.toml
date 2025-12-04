@@ -1,0 +1,14 @@
+[project]
+name = "oar-stub-generator"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "certifi==2025.10.5",
+    "charset-normalizer==3.4.4",
+    "idna==3.11",
+    "requests==2.32.5",
+    "tinydb==4.8.2",
+    "urllib3==2.5.0",
+]

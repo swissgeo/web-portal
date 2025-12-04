@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86.25 57.5">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ccc;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #999;
+      }
+
+      .cls-4 {
+        fill: #4d4d4d;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect class="cls-3" x="28.75" y="9.58" width="9.58" height="9.58"/>
+    <rect class="cls-3" x="9.58" y="28.75" width="9.58" height="9.58"/>
+    <polygon class="cls-3" points="28.75 38.33 19.17 38.33 19.17 47.92 28.75 47.92 38.33 47.92 38.33 38.33 38.33 28.75 28.75 28.75 28.75 38.33"/>
+    <rect class="cls-3" x="76.67" y="28.75" width="9.58" height="9.58"/>
+  </g>
+  <g>
+    <rect x="57.5" y="9.58" width="9.58" height="9.58"/>
+    <rect x="38.33" y="28.75" width="9.58" height="9.58"/>
+    <rect x="57.5" y="28.75" width="9.58" height="9.58"/>
+    <rect x="38.33" y="9.58" width="9.58" height="9.58"/>
+  </g>
+  <g>
+    <rect class="cls-1" x="67.08" y="19.17" width="9.58" height="9.58"/>
+    <polygon class="cls-1" points="19.17 28.75 19.17 38.33 28.75 38.33 28.75 28.75 28.75 19.17 19.17 19.17 19.17 28.75"/>
+  </g>
+  <polygon class="cls-2" points="57.5 19.17 57.5 9.58 47.92 9.58 47.92 19.17 38.33 19.17 38.33 28.75 47.92 28.75 47.92 38.33 57.5 38.33 57.5 28.75 67.08 28.75 67.08 19.17 57.5 19.17"/>
+  <g>
+    <rect class="cls-4" x="28.75" y="19.17" width="9.58" height="9.58"/>
+    <rect class="cls-4" x="47.92" width="9.58" height="9.58"/>
+    <rect class="cls-4" x="19.17" y="9.58" width="9.58" height="9.58"/>
+    <rect class="cls-4" x="67.08" y="28.75" width="9.58" height="9.58"/>
+    <rect class="cls-4" x="0" y="38.33" width="9.58" height="9.58"/>
+    <polygon class="cls-4" points="47.92 38.33 47.92 47.92 47.92 57.5 57.5 57.5 57.5 47.92 67.08 47.92 67.08 38.33 57.5 38.33 47.92 38.33"/>
+  </g>
+</svg>

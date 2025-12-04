@@ -1,0 +1,43 @@
+{
+    "name": "@swissgeo/map",
+    "version": "1.0.0",
+    "description": "",
+    "keywords": [],
+    "license": "ISC",
+    "author": "",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.es.js"
+        },
+        "./tailwindcss": [
+            "./dist/tooltip.css"
+        ]
+    },
+    "main": "index.ts",
+    "scripts": {
+        "build": "vite build",
+        "build-watch": "vite build --watch",
+        "build-watch-dev": "vite build --watch --mode development"
+    },
+    "dependencies": {
+        "@microsoft/api-extractor": "catalog:",
+        "ol": "catalog:",
+        "pinia": "catalog:",
+        "typescript": "catalog:",
+        "unplugin-auto-import": "catalog:",
+        "unplugin-dts": "catalog:",
+        "unplugin-vue-components": "catalog:",
+        "vite": "catalog:",
+        "vite-tsconfig-paths": "catalog:"
+    },
+    "devDependencies": {
+        "@dxup/unimport": "catalog:",
+        "@vitejs/plugin-vue": "catalog:"
+    },
+    "peerDependencies": {
+        "vue": "catalog:"
+    },
+    "packageManager": "pnpm@10.14.0"
+}
