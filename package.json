@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
       "build": "pnpm run --recursive --if-present build",
+      "build-watch-dev": "pnpm run --recursive --if-present build-watch-dev",
       "dev": "pnpm --filter=main run dev ",
       "lint": "pnpm run --recursive --parallel --no-bail --if-present lint"
   },

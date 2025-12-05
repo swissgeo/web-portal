@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 // don't know why the explicit import is needed here
-import { SideBar } from '#components'
+import { SideBar } from '@swissgeo/skeleton'
 
 const route = useRoute()
 

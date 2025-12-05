@@ -1,18 +1,25 @@
-import type { App } from 'vue'
-
 import LucideIcon from '@/components/LucideIcon.vue'
 import SearchButton from '@/components/sidebar/SearchButton.vue'
 
-import SidebarContentButton from './components/sidebar/ContentButton.vue'
+import ContentButton from './components/sidebar/ContentButton.vue'
 
-export default {
-    install(app: App) {
-        // TODO probably some namespacing would be good here
-        app.component('LucideIcon', LucideIcon)
+import SideBar from "./components/sidebar/SideBar.vue"
 
-        app.component('SearchPanelButton', SearchButton)
-        app.component('SidebarContentButton', SidebarContentButton)
-    },
+// export default {
+//     install(app: App) {
+//         // TODO probably some namespacing would be good here
+//         app.component('LucideIcon', LucideIcon)
+
+//         app.component('SearchPanelButton', SearchButton)
+//         app.component('SidebarContentButton', SidebarContentButton)
+//     },
+// }
+
+export { SidebarType, useUiStore } from '@/stores/ui'
+
+export {
+    SideBar,
+    SearchButton,
+    LucideIcon,
+    ContentButton
 }
-
-export { useUiStore } from '@/stores/ui'

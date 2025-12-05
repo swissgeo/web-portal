@@ -467,9 +467,6 @@ importers:
       lucide-vue-next:
         specifier: 'catalog:'
         version: 0.542.0(vue@3.5.22(typescript@5.9.3))
-      pinia:
-        specifier: 'catalog:'
-        version: 3.0.3(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
       vue:
         specifier: 'catalog:'
         version: 3.5.22(typescript@5.9.3)

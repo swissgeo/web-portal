@@ -1,5 +1,6 @@
-import ui from '@swissgeo/skeleton'
+// import {useUiStore} from '@swissgeo/skeleton'
 
 export default defineNuxtPlugin((nuxtApp) => {
-    nuxtApp.vueApp.use(ui)
+  // useUiStore()
+    // nuxtApp.vueApp.use(ui)
 })

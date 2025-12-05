@@ -1,4 +1,4 @@
-import type { LanguageReference, Page } from '~~/shared/types/api/Page'
+import type { LanguageReference, Page } from '@swissgeo/shared/api'
 import type { RouteRecordRaw } from 'vue-router'
 
 export const SUPPORTED_LANG = ['de', 'fr']

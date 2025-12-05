@@ -13,6 +13,8 @@
         "esModuleInterop": true,
         "lib": ["DOM", "ESNext.Array", "ESNext", "webworker"],
 
+        "sourceMap": true,
+
         "jsx": "preserve",
         "jsxImportSource": "vue",
 

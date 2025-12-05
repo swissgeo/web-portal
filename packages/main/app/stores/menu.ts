@@ -1,4 +1,4 @@
-import type { MenuTree } from '~~/shared/types/api/Menu'
+import type { MenuTree } from '@swissgeo/shared/api'
 
 export type MenuIds = {
     readonly About: number
