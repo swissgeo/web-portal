@@ -2,6 +2,9 @@
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css';
 
+@source "../../../../skeleton/";
+@source "../../../../content/";
+
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
 
 h1 {
