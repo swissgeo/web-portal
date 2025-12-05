@@ -1,0 +1,31 @@
+{
+    "include": [
+        "types/**/*.ts",
+        "types/**/*.d.ts",
+        "types/**/*.vue",
+        "./.nuxt/auto-imports.d.ts",
+        "./.nuxt/auto-components.d.ts",
+        "types/livingdocs/index"
+    ],
+    "exclude": ["node_modules", "dist"],
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "nodenext",
+        "lib": ["ESNext", "DOM"],
+        "esModuleInterop": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "sourceMap": false,
+        "outDir": "dist",
+        "declaration": true,
+        "jsx": "preserve",
+        "allowSyntheticDefaultImports": true,
+        "types": ["vue"],
+        "allowImportingTsExtensions": true,
+        "paths": {
+            "@/*": ["./src/*"]
+        },
+        "plugins": [{ "name": "@dxup/unimport" }]
+    }
+}

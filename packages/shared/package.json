@@ -1,5 +1,5 @@
 {
-    "name": "@swissgeo/skeleton",
+    "name": "@swissgeo/shared",
     "version": "1.0.0",
     "description": "",
     "keywords": [],
@@ -8,12 +8,21 @@
     "type": "module",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js"
+            "import": "./dist/shared.js",
+            "types": "./dist/Language.d.ts"
         },
-        "./tailwindcss": [
-            "./dist/tooltip.css"
-        ]
+        "./api": {
+            "types": "./dist/api/index.d.ts"
+        },
+        "./livingdocs": {
+            "types": "./dist/livingdocs/index.d.ts"
+        },
+        "./ogc": {
+            "types": "./dist/ogc/index.d.ts"
+        },
+        "./language": {
+            "types": "./dist/Language.d.ts"
+        }
     },
     "main": "index.js",
     "scripts": {
@@ -23,8 +32,6 @@
     },
     "dependencies": {
         "@microsoft/api-extractor": "catalog:",
-        "@swissgeo/content": "workspace:*",
-        "@swissgeo/shared": "workspace:*",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
@@ -37,8 +44,7 @@
         "@vitejs/plugin-vue": "catalog:"
     },
     "peerDependencies": {
-        "vue": "catalog:",
-        "vue-i18n": "catalog:"
+        "vue": "catalog:"
     },
     "packageManager": "pnpm@10.14.0"
 }

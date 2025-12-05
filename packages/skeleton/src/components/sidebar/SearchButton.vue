@@ -1,24 +1,27 @@
 <script setup lang="ts">
-const router = useRouter()
+import { useUiStore, SidebarType } from "@/stores/ui";
+const router = useRouter();
 
-const interfaceStore = useInterfaceStore()
+const { t: $t } = useI18n();
+
+const uiStore = useUiStore();
 
 const toggleSearch = () => {
-    console.log('Toggling search')
-    interfaceStore.setSidebar(SidebarType.SEARCH)
-    router.push('/search')
-}
+  console.log("Toggling search");
+  uiStore.setSidebar(SidebarType.SEARCH);
+  router.push("/search");
+};
 </script>
 
 <template>
-    <div class="relative inline-block">
-        <!-- :is-active="uiStore.isSearchVisible" -->
-        <SidebarButton
-            :is-active="interfaceStore.currentSidebar == 'search'"
-            data-cy="button-search-panel"
-            :title="$t('menu.search')"
-            icon="Search"
-            @click="toggleSearch"
-        />
-    </div>
+  <div class="relative inline-block">
+    <!-- :is-active="uiStore.isSearchVisible" -->
+    <SidebarButton
+      :is-active="uiStore.currentSidebar == 'search'"
+      data-cy="button-search-panel"
+      :title="$t('menu.search')"
+      icon="Search"
+      @click="toggleSearch"
+    />
+  </div>
 </template>

@@ -16,9 +16,9 @@ const config = defineConfig(({ mode }) => {
             lib: {
                 // entry: {
                 entry: resolve(__dirname, 'src/index.ts'),
-                fileName: (format) => `index.js`,
+                fileName: (format) => `index.${format}.js`,
                 formats: ['es'],
-                name: '@swissgeo/skeleton',
+                name: '@swissgeo/content',
             },
             rollupOptions: {
                 external: ['vue'],

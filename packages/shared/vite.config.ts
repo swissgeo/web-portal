@@ -4,21 +4,24 @@ import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'unplugin-dts/vite'
 import AutoImportComponents from 'unplugin-vue-components/vite'
 import { fileURLToPath, URL } from 'url'
-import { defineConfig, type UserConfig } from 'vite'
+import { defineConfig, UserConfigFnObject, type UserConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-const config = defineConfig(({ mode }) => {
+const config: UserConfigFnObject = defineConfig(({ mode }) => {
     return {
         build: {
             // don't minify in dev build. This helps with debugging
             // maybe this could be solved in a better way with sourcemap?
             minify: mode === 'development' ? false : true,
             lib: {
+                entry: resolve(__dirname, 'src/'),
                 // entry: {
-                entry: resolve(__dirname, 'src/index.ts'),
-                fileName: (format) => `index.js`,
+                //     api: resolve(__dirname, 'types/api/index.ts'),
+                //     livingdocs: resolve(__dirname, 'types/livingdocs/index.ts'),
+                // },
+                // fileName: (format) => `index.${format}.js`,
                 formats: ['es'],
-                name: '@swissgeo/skeleton',
+                name: '@swissgeo/shared',
             },
             rollupOptions: {
                 external: ['vue'],
@@ -57,8 +60,13 @@ const config = defineConfig(({ mode }) => {
                 dirs: ['./src/**'],
             }),
             dts({
-                bundleTypes: true,
-                processor: 'vue',
+                // entryRoot: 'src',
+                // outDirs: 'dist',
+                // rollupTypes: true,
+                // insertTypesEntry: true, // adds dist/index.d.ts main entry
+                entryRoot: 'types',
+                insertTypesEntry: true,
+                copyDtsFiles: true,
             }),
             tsconfigPaths(),
             vue(),

@@ -1,0 +1,30 @@
+{
+    "include": [
+        "types/**/*.ts",
+        "types/**/*.d.ts",
+        "types/**/*.vue",
+        // "./.nuxt/auto-imports.d.ts",
+        // "./.nuxt/auto-components.d.ts",
+    ],
+    "exclude": ["node_modules", "dist"],
+    "compilerOptions": {
+        // see https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html#im-using-a-bundler
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "esModuleInterop": true,
+        "lib": ["DOM", "ESNext.Array", "ESNext", "webworker"],
+
+        "jsx": "preserve",
+        "jsxImportSource": "vue",
+
+        // see https://vite.dev/guide/features.html#typescript-compiler-options
+        "isolatedModules": true,
+        "useDefineForClassFields": true,
+
+        "baseUrl": "${configDir}",
+        "outDir": "${configDir}/dist",
+        "paths": {
+            "@/*": ["${configDir}/src/*"]
+        }
+    }
+}

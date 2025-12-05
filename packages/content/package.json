@@ -1,5 +1,5 @@
 {
-    "name": "@swissgeo/skeleton",
+    "name": "@swissgeo/content",
     "version": "1.0.0",
     "description": "",
     "keywords": [],
@@ -8,12 +8,8 @@
     "type": "module",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js"
-        },
-        "./tailwindcss": [
-            "./dist/tooltip.css"
-        ]
+            "import": "./dist/content.js"
+        }
     },
     "main": "index.js",
     "scripts": {
@@ -23,8 +19,6 @@
     },
     "dependencies": {
         "@microsoft/api-extractor": "catalog:",
-        "@swissgeo/content": "workspace:*",
-        "@swissgeo/shared": "workspace:*",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
@@ -37,8 +31,7 @@
         "@vitejs/plugin-vue": "catalog:"
     },
     "peerDependencies": {
-        "vue": "catalog:",
-        "vue-i18n": "catalog:"
+        "vue": "catalog:"
     },
     "packageManager": "pnpm@10.14.0"
 }

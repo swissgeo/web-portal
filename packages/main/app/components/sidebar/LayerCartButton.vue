@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const router = useRouter()
 
-const uiStore = useuiStore()
+const interfaceStore = useUiStore()
 
 const toggleSearch = () => {
-    uiStore.setSidebar(SidebarType.LAYER_CART)
+    interfaceStore.setSidebar(SidebarType.LAYER_CART)
     router.push('/layerTree')
 }
 </script>
@@ -13,7 +13,7 @@ const toggleSearch = () => {
     <div class="relative inline-block">
         <!-- :is-active="uiStore.isSearchVisible" -->
         <SidebarButton
-            :is-active="uiStore.currentSidebar == 'layerCart'"
+            :is-active="interfaceStore.currentSidebar == 'layerCart'"
             data-cy="button-search-panel"
             :title="$t('menu.search')"
             icon="Map"
