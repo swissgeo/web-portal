@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import type * as OGC from '../../../shared/types/ogc/records'
-const { layerConfig } = defineProps<{ layerConfig: OGC.Feature }>()
+import type { Feature as OGCFeature } from "@swissgeo/shared/ogc";
+const { layerConfig } = defineProps<{ layerConfig: OGCFeature }>();
 
-const zIndex = computed(() => 1)
+const zIndex = computed(() => 1);
 </script>
 
 <template>
-    <OpenLayersWMTSLayer
-        :layer-config="layerConfig"
-        :z-index="zIndex"
-    />
+  <OpenLayersWMTSLayer :layer="layerConfig" :z-index="zIndex" :opacity="1" />
 </template>

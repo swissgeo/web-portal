@@ -1,68 +1,67 @@
 <script lang="ts" setup>
-import type { Map as OlMapType } from 'ol'
+import type { Map as OlMapType } from "ol";
+import { registerProj4 } from "@swissgeo/coordinates";
+import { register } from "ol/proj/proj4";
+import proj4 from "proj4";
 
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
-import { View } from 'ol'
-import Map from 'ol/Map'
+import Map from "ol/Map";
 
-// TODO
-import type * as OGC from '../../../shared/types/ogc/records'
+import type { Feature as OGCFeature } from "@swissgeo/shared/ogc";
+import useViewBasedOnProjection from "@/composables/useViewBasedOnProjection.composable";
 
-const { layers } = defineProps<{ layers: OGC.Feature[] }>()
+const { layers } = defineProps<{ layers: OGCFeature[] }>();
 
-const mapElement = useTemplateRef('mapElement')
-const olMap = ref<OlMapType>()
+const mapElement = useTemplateRef("mapElement");
+const olMap = ref<OlMapType>();
+
+function registerCustomProjection() {
+  registerProj4(proj4);
+  register(proj4);
+}
 
 function createOlMap() {
-    const map = new Map({ controls: [] })
-    olMap.value = map
+  const map = new Map({ controls: [] });
+  olMap.value = map;
 
-    const view = new View({
-        zoom: 1,
-        minResolution: 0.1,
-        rotation: 0,
-        projection: 'epsg:2056',
-    })
-    map.setView(view)
+  useViewBasedOnProjection(olMap.value);
 }
 
 function mountOlMap() {
-    if (olMap.value && mapElement.value) {
-        olMap.value.setTarget(mapElement.value)
-    }
+  if (olMap.value && mapElement.value) {
+    olMap.value.setTarget(mapElement.value);
+  }
 }
 
-provide<Ref<OlMapType | undefined>>('olMap', olMap)
+provide<Ref<OlMapType | undefined>>("olMap", olMap);
 
 onMounted(() => {
-    mountOlMap()
-    // make it available for debugging
-    window.map = olMap.value
-})
+  mountOlMap();
+  // make it available for debugging
+  window.map = olMap.value;
+});
 
-createOlMap()
+registerCustomProjection();
+createOlMap();
 </script>
 
 <template>
-    <div
-        ref="mapElement"
-        class="ol-map h-full w-full"
-        data-cy="ol-map"
-        @contextmenu.prevent
-    >
-        <!-- TODO probably somewhere here there would be the loop?-->
-        <OpenLayersBackgroundLayer
-            v-if="layers.length"
-            :layer-config="layers[0]"
-        />
-        <!-- <OpenLayersVisibleLayers />
+  <div
+    ref="mapElement"
+    class="ol-map h-full w-full"
+    data-cy="ol-map"
+    @contextmenu.prevent
+  >
+    <!-- TODO probably somewhere here there would be the loop?-->
+    <OpenLayersBackgroundLayer v-if="layers.length" :layer-config="layers[0]" />
+    <!-- <OpenLayersVisibleLayers />
         <OpenLayersPinnedLocation />
         <OpenLayersCrossHair />
         <OpenLayersHighlightedFeature />
         <OpenLayersGeolocationFeedback v-if="geolocationActive && geoPosition" />
         <OpenLayersRectangleSelectionFeedback /> -->
-        <!-- Debug tooling -->
-        <!-- <OpenLayersTileDebugInfo
+    <!-- Debug tooling -->
+    <!-- <OpenLayersTileDebugInfo
             v-if="showTileDebugInfo"
             :z-index="zIndexTileInfo"
         />
@@ -74,7 +73,7 @@ createOlMap()
             v-if="showSelectionRectangle"
             :z-index="zIndexSelectionRectangle"
         /> -->
-    </div>
-    <!-- So that external modules can have access to the map instance through the provided 'olMap' -->
-    <slot />
+  </div>
+  <!-- So that external modules can have access to the map instance through the provided 'olMap' -->
+  <slot />
 </template>

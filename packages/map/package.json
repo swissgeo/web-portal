@@ -22,14 +22,20 @@
         "build-watch-dev": "vite build --watch --mode development"
     },
     "dependencies": {
+        "@swissgeo/coordinates": "catalog:",
+        "@swissgeo/log": "catalog:",
+        "@swissgeo/numbers": "catalog:",
+        "@swissgeo/shared": "workspace:*",
+        "lodash-es": "catalog:",
         "ol": "catalog:",
-        "pinia": "catalog:"
+        "proj4": "catalog:"
     },
     "devDependencies": {
         "@swissgeo/config-eslint": "catalog:",
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
-        "@dxup/unimport": "catalog:",
+        "@types/lodash-es": "catalog:",
+        "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",

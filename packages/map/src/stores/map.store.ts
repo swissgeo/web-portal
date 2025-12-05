@@ -1,6 +1,5 @@
-const useMapStore = defineStore("map", {
+const useMapStore = defineStore('map', {
   state: () => ({
-    printMode: false,
-  }),
-  // TODO do this here!
-});
+    printMode: false
+  })
+})
