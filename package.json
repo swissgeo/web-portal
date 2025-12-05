@@ -1,0 +1,16 @@
+{
+  "name": "web-poc-portal",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+      "build": "pnpm run --recursive --if-present build",
+      "dev": "pnpm --filter=main run dev ",
+      "lint": "pnpm run --recursive --parallel --no-bail --if-present lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swissgeo/web-poc-portal.git"
+  }
+}
