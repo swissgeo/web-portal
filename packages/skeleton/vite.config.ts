@@ -33,12 +33,6 @@ const config = defineConfig(({ mode }) => {
             },
         },
         plugins: [
-            dts({
-                bundleTypes: true,
-                processor: 'vue',
-            }),
-            tsconfigPaths(),
-            vue(),
             AutoImport({
                 dirs: ['./src/**'],
                 imports: [
@@ -58,7 +52,12 @@ const config = defineConfig(({ mode }) => {
                 dts: './.nuxt/auto-components.d.ts',
                 dirs: ['./src/**'],
             }),
-
+            dts({
+                bundleTypes: true,
+                processor: 'vue',
+            }),
+            tsconfigPaths(),
+            vue(),
         ],
     }
 })

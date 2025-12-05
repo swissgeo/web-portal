@@ -1,5 +1,5 @@
 import type { MenuTree } from '@swissgeo/shared/api'
-import type { Lang} from "@swissgeo/shared/language"
+import type { Lang} from "@swissgeo/shared"
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
