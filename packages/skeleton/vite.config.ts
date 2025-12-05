@@ -14,10 +14,7 @@ const config = defineConfig(({ mode }) => {
             // maybe this could be solved in a better way with sourcemap?
             minify: mode === 'development' ? false : true,
             lib: {
-                // entry: {
-                entry: resolve(__dirname, 'src/index.ts'),
-                fileName: (format) => `index.js`,
-                formats: ['es'],
+                entry: [resolve(__dirname, 'src/index.ts')],
                 name: '@swissgeo/skeleton',
             },
             rollupOptions: {

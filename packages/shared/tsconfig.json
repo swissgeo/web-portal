@@ -1,5 +1,6 @@
 {
     "include": [
+        "src/**/*.ts",
         "types/**/*.ts",
         "types/**/*.d.ts",
         "types/**/*.vue",
@@ -11,7 +12,7 @@
     "compilerOptions": {
         "target": "ESNext",
         "module": "ESNext",
-        "moduleResolution": "nodenext",
+        "moduleResolution": "bundler",
         "lib": ["ESNext", "DOM"],
         "esModuleInterop": true,
         "strict": true,
@@ -24,7 +25,8 @@
         "types": ["vue"],
         "allowImportingTsExtensions": true,
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+            "~/*": ["./types/*"]
         },
         "plugins": [{ "name": "@dxup/unimport" }]
     }

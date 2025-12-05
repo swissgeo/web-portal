@@ -14,3 +14,5 @@ export default {
         app.component('SidebarContentButton', SidebarContentButton)
     },
 }
+
+export { useUiStore } from '@/stores/ui'

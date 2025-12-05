@@ -1,4 +1,4 @@
-import type { Lang } from '../Language'
+import type { Lang } from '~/Language'
 
 export type Slug = string
 

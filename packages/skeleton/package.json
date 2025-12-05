@@ -9,22 +9,29 @@
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "import": "./dist/index.js"
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
         },
         "./tailwindcss": [
             "./dist/tooltip.css"
         ]
     },
-    "main": "index.js",
+    "main": "./dist/index.umd.cjs",
+    "module": "./dist/index.js",
     "scripts": {
         "build": "vite build",
         "build-watch": "vite build --watch",
         "build-watch-dev": "vite build --watch --mode development"
     },
     "dependencies": {
-        "@microsoft/api-extractor": "catalog:",
         "@swissgeo/content": "workspace:*",
         "@swissgeo/shared": "workspace:*",
+        "lucide-vue-next": "catalog:"
+    },
+    "devDependencies": {
+        "@dxup/unimport": "catalog:",
+        "@microsoft/api-extractor": "catalog:",
+        "@vitejs/plugin-vue": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
@@ -32,13 +39,12 @@
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:"
     },
-    "devDependencies": {
-        "@dxup/unimport": "catalog:",
-        "@vitejs/plugin-vue": "catalog:"
-    },
     "peerDependencies": {
+        "@vueuse/core": "catalog:",
+        "pinia": "catalog:",
         "vue": "catalog:",
-        "vue-i18n": "catalog:"
+        "vue-i18n": "catalog:",
+        "vue-router": "catalog:"
     },
     "packageManager": "pnpm@10.14.0"
 }

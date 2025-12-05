@@ -14,10 +14,8 @@ export default defineConfig(({ mode }): UserConfig => {
             // maybe this could be solved in a better way with sourcemap?
             minify: mode === 'development' ? false : true,
             lib: {
-                // entry: {
                 entry: resolve(__dirname, 'src/index.ts'),
                 fileName: (format) => `index.${format}.js`,
-                formats: ['es'],
                 //     index: resolve(__dirname, 'src/index.ts'),
                 //     // api: resolve(__dirname, 'src/api/index.ts'),
                 //     // parsers: resolve(__dirname, 'src/parsers/index.ts'),

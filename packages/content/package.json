@@ -8,17 +8,25 @@
     "type": "module",
     "exports": {
         ".": {
-            "import": "./dist/content.js"
+            "types": "./dist/index.d.ts",
+            "import": "./dist/content.js",
+            "require": "./dist/index.cjs"
         }
     },
-    "main": "index.js",
+    "main": "./dist/index.umd.cjs",
+    "module": "./dist/index.js",
     "scripts": {
         "build": "vite build",
         "build-watch": "vite build --watch",
         "build-watch-dev": "vite build --watch --mode development"
     },
     "dependencies": {
+        "@swissgeo/shared": "workspace:*"
+    },
+    "devDependencies": {
+        "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
+        "@vitejs/plugin-vue": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
@@ -26,11 +34,8 @@
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:"
     },
-    "devDependencies": {
-        "@dxup/unimport": "catalog:",
-        "@vitejs/plugin-vue": "catalog:"
-    },
     "peerDependencies": {
+        "pinia": "catalog:",
         "vue": "catalog:"
     },
     "packageManager": "pnpm@10.14.0"

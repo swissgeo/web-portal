@@ -1,8 +1,7 @@
 {
     "include": [
-        "types/**/*.ts",
-        "types/**/*.d.ts",
-        "types/**/*.vue",
+        "src/**/*.ts",
+        "src/**/*.vue",
         // "./.nuxt/auto-imports.d.ts",
         // "./.nuxt/auto-components.d.ts",
     ],

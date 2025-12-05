@@ -1,2 +1,2 @@
-export * from "./Menu.ts"
-export * from "./Page.ts"
+export * from "~/api/Menu.ts"
+export * from "~/api/Page.ts"

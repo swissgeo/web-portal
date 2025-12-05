@@ -14,13 +14,7 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
             // maybe this could be solved in a better way with sourcemap?
             minify: mode === 'development' ? false : true,
             lib: {
-                entry: resolve(__dirname, 'src/'),
-                // entry: {
-                //     api: resolve(__dirname, 'types/api/index.ts'),
-                //     livingdocs: resolve(__dirname, 'types/livingdocs/index.ts'),
-                // },
-                // fileName: (format) => `index.${format}.js`,
-                formats: ['es'],
+                entry: resolve(__dirname, 'src/index.ts'),
                 name: '@swissgeo/shared',
             },
             rollupOptions: {
@@ -36,6 +30,7 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
         resolve: {
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url)),
+                '~': fileURLToPath(new URL('./types', import.meta.url)),
             },
         },
         plugins: [

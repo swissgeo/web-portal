@@ -168,11 +168,29 @@ catalogs:
 
 importers:
 
+  .: {}
+
   packages/content:
     dependencies:
+      '@swissgeo/shared':
+        specifier: workspace:*
+        version: link:../shared
+      pinia:
+        specifier: 'catalog:'
+        version: 3.0.3(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.22(typescript@5.9.3)
+    devDependencies:
+      '@dxup/unimport':
+        specifier: 'catalog:'
+        version: 0.1.2
       '@microsoft/api-extractor':
         specifier: 'catalog:'
         version: 7.55.1
+      '@vitejs/plugin-vue':
+        specifier: 'catalog:'
+        version: 6.0.1(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -191,16 +209,6 @@ importers:
       vite-tsconfig-paths:
         specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))
-      vue:
-        specifier: 'catalog:'
-        version: 3.5.22(typescript@5.9.3)
-    devDependencies:
-      '@dxup/unimport':
-        specifier: 'catalog:'
-        version: 0.1.2
-      '@vitejs/plugin-vue':
-        specifier: 'catalog:'
-        version: 6.0.1(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
 
   packages/main:
     dependencies:
@@ -367,15 +375,28 @@ importers:
 
   packages/map:
     dependencies:
-      '@microsoft/api-extractor':
+      '@vueuse/core':
         specifier: 'catalog:'
-        version: 7.55.1
+        version: 13.9.0(vue@3.5.22(typescript@5.9.3))
       ol:
         specifier: 'catalog:'
         version: 10.6.1
       pinia:
         specifier: 'catalog:'
         version: 3.0.3(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.22(typescript@5.9.3)
+    devDependencies:
+      '@dxup/unimport':
+        specifier: 'catalog:'
+        version: 0.1.2
+      '@microsoft/api-extractor':
+        specifier: 'catalog:'
+        version: 7.55.1
+      '@vitejs/plugin-vue':
+        specifier: 'catalog:'
+        version: 6.0.1(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -394,22 +415,25 @@ importers:
       vite-tsconfig-paths:
         specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))
-      vue:
-        specifier: 'catalog:'
-        version: 3.5.22(typescript@5.9.3)
-    devDependencies:
-      '@dxup/unimport':
-        specifier: 'catalog:'
-        version: 0.1.2
-      '@vitejs/plugin-vue':
-        specifier: 'catalog:'
-        version: 6.0.1(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
 
   packages/shared:
     dependencies:
+      '@vueuse/core':
+        specifier: 'catalog:'
+        version: 13.9.0(vue@3.5.22(typescript@5.9.3))
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.22(typescript@5.9.3)
+    devDependencies:
+      '@dxup/unimport':
+        specifier: 'catalog:'
+        version: 0.1.2
       '@microsoft/api-extractor':
         specifier: 'catalog:'
         version: 7.55.1
+      '@vitejs/plugin-vue':
+        specifier: 'catalog:'
+        version: 6.0.1(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -428,28 +452,43 @@ importers:
       vite-tsconfig-paths:
         specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))
-      vue:
-        specifier: 'catalog:'
-        version: 3.5.22(typescript@5.9.3)
-    devDependencies:
-      '@dxup/unimport':
-        specifier: 'catalog:'
-        version: 0.1.2
-      '@vitejs/plugin-vue':
-        specifier: 'catalog:'
-        version: 6.0.1(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
 
   packages/skeleton:
     dependencies:
-      '@microsoft/api-extractor':
-        specifier: 'catalog:'
-        version: 7.55.1
       '@swissgeo/content':
         specifier: workspace:*
         version: link:../content
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared
+      '@vueuse/core':
+        specifier: 'catalog:'
+        version: 13.9.0(vue@3.5.22(typescript@5.9.3))
+      lucide-vue-next:
+        specifier: 'catalog:'
+        version: 0.542.0(vue@3.5.22(typescript@5.9.3))
+      pinia:
+        specifier: 'catalog:'
+        version: 3.0.3(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.22(typescript@5.9.3)
+      vue-i18n:
+        specifier: 'catalog:'
+        version: 11.2.2(vue@3.5.22(typescript@5.9.3))
+      vue-router:
+        specifier: 'catalog:'
+        version: 4.6.3(vue@3.5.22(typescript@5.9.3))
+    devDependencies:
+      '@dxup/unimport':
+        specifier: 'catalog:'
+        version: 0.1.2
+      '@microsoft/api-extractor':
+        specifier: 'catalog:'
+        version: 7.55.1
+      '@vitejs/plugin-vue':
+        specifier: 'catalog:'
+        version: 6.0.1(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -468,19 +507,6 @@ importers:
       vite-tsconfig-paths:
         specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))
-      vue:
-        specifier: 'catalog:'
-        version: 3.5.22(typescript@5.9.3)
-      vue-i18n:
-        specifier: 'catalog:'
-        version: 11.2.2(vue@3.5.22(typescript@5.9.3))
-    devDependencies:
-      '@dxup/unimport':
-        specifier: 'catalog:'
-        version: 0.1.2
-      '@vitejs/plugin-vue':
-        specifier: 'catalog:'
-        version: 6.0.1(vite@7.1.12(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
 
 packages:
 
