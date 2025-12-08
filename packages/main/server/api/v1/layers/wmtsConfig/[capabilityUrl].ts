@@ -1,7 +1,6 @@
 import jsdom from 'jsdom'
 
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
-import { optionsFromCapabilities } from 'ol/source/WMTS'
 import { registerProj4 } from '@swissgeo/coordinates'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
@@ -18,22 +17,22 @@ register(proj4)
 
 // TODO maybe this should also go into a package!
 export default defineEventHandler(async (event) => {
-    const data = JSON.parse(await readBody(event))
-
-    let url
-    if ('href' in data) {
-        url = data.href
-    } else if ('uriTemplate' in data) {
-        // TODO deal with uriTemplates
-        url = data.uriTemplate
+    const param = getRouterParam(event, 'capabilityUrl')
+    if (!param) {
+        throw createError({
+            status: 400,
+            statusMessage: 'Bad Request',
+            message: 'Capability URL cannot be determined',
+        })
     }
+    const capabilityUrl = decodeURIComponent(param)
 
-    const capabilitiesDocument = await $fetch(url)
+    const capabilitiesDocument = await $fetch(capabilityUrl)
 
     const parser = new WMTSCapabilities()
     const capabilities = parser.read(capabilitiesDocument)
-    console.log(typeof capabilities)
 
     appendResponseHeader(event, 'Content-Type', 'application/json')
+    appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)
     return capabilities
 })

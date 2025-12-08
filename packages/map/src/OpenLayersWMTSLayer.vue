@@ -50,10 +50,7 @@ const options = computed(async (): Promise<WMTSOptions> => {
   const { url, data: body } = capabilitiesRef.value;
 
   // TODO ok here we have a bit of a tight coupling with the main package
-  const { data } = await useFetch<string>(`/api/v1/layers/wmtsConfig/${url}`, {
-    method: "post",
-    body: JSON.stringify(body),
-  });
+  const { data } = await useFetch<string>(`/api/v1/layers/wmtsConfig/${url}`);
 
   if (!data.value) {
     log.error(`Unable to fetch capabilities for ${url}`);
