@@ -26,6 +26,8 @@
         "pinia": "catalog:"
     },
     "devDependencies": {
+        "@swissgeo/config-eslint": "catalog:",
+        "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@dxup/unimport": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
