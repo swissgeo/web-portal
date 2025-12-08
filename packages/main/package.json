@@ -27,6 +27,7 @@
         "@primeuix/themes": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/coordinates": "catalog:",
+        "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
         "@swissgeo/map": "workspace:*",
         "@swissgeo/shared": "workspace:*",

@@ -4,29 +4,34 @@ import type {
   Feature as OGCFeature,
 } from "@swissgeo/shared/ogc";
 
-const { layers } = defineProps<{ layers: OGCFeature[] }>();
+import { makeLayer, LayerType, useLayerStore } from "@swissgeo/layers";
 
-const layersToDisplay = computed(() => {
-  if (!layers) {
-    return [];
-  }
+const layerStore = useLayerStore();
 
-  const wmtsLayers = layers.filter((layer: OGCFeature) => {
-    const wmts = layer.links.filter(
-      (link: OGCLink) => link.protocol === "OGC:WMTS",
-    );
+// const { layers } = defineProps<{ layers: OGCFeature[] }>();
 
-    return wmts.length > 0;
-  });
+// const layersToDisplay = computed(() => {
+//   if (!layers) {
+//     return [];
+//   }
 
-  return [wmtsLayers[0]];
-});
+//   const wmtsLayers = layers.filter((layer: OGCFeature) => {
+//     const wmts = layer.links.filter(
+//       (link: OGCLink) => link.protocol === "OGC:WMTS"
+//     );
+
+//     return wmts.length > 0;
+//   });
+
+//   return [makeLayer(wmtsLayers[0], LayerType.WMTS)];
+// });
 </script>
 
 <template>
   <div>
+    <div></div>
     <!-- here's the switch between openlayers and cesium -->
-    <OpenLayersMap :layers="layersToDisplay">
+    <OpenLayersMap>
       <slot />
     </OpenLayersMap>
   </div>

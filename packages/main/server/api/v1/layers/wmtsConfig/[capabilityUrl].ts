@@ -22,18 +22,18 @@ export default defineEventHandler(async (event) => {
 
     let url
     if ('href' in data) {
-        // TODO deal with uriTemplates
         url = data.href
+    } else if ('uriTemplate' in data) {
+        // TODO deal with uriTemplates
+        url = data.uriTemplate
     }
 
     const capabilitiesDocument = await $fetch(url)
 
     const parser = new WMTSCapabilities()
     const capabilities = parser.read(capabilitiesDocument)
-    // const options = optionsFromCapabilities(capabilities, {
-    //     layer: data.layerId,
-    // })
-    // console.log(options)
+    console.log(typeof capabilities)
+
     appendResponseHeader(event, 'Content-Type', 'application/json')
     return capabilities
 })

@@ -15,7 +15,7 @@ watch(route, (value) => {
         class="font-sans"
     >
         <div class="relative h-screen">
-            <SideBar />
+            <SideBar class="z-2" />
 
             <div class="h-full w-full pl-20">
                 <slot />

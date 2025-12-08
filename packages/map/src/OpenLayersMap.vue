@@ -7,10 +7,12 @@ import proj4 from "proj4";
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import Map from "ol/Map";
 
-import type { Feature as OGCFeature } from "@swissgeo/shared/ogc";
 import useViewBasedOnProjection from "@/composables/useViewBasedOnProjection.composable";
+import { useLayerStore } from "@swissgeo/layers";
 
-const { layers } = defineProps<{ layers: OGCFeature[] }>();
+const layersStore = useLayerStore();
+
+const layers = computed(() => layersStore.layers);
 
 const mapElement = useTemplateRef("mapElement");
 const olMap = ref<OlMapType>();
@@ -53,7 +55,7 @@ createOlMap();
     @contextmenu.prevent
   >
     <!-- TODO probably somewhere here there would be the loop?-->
-    <OpenLayersBackgroundLayer v-if="layers.length" :layer-config="layers[0]" />
+    <OpenLayersBackgroundLayer :layer="layer" v-for="layer in layers" />
     <!-- <OpenLayersVisibleLayers />
         <OpenLayersPinnedLocation />
         <OpenLayersCrossHair />

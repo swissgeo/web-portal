@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useUiStore } from "@/stores/ui";
 import LogoPic from "@/components/LogoPic.vue";
+import LayerCart from "./LayerCart.vue";
 // import SidebarIcons from "@/components/sidebar/SidebarIcons.vue";
 
 const uiStore = useUiStore();
@@ -8,7 +9,7 @@ const uiStore = useUiStore();
 function resetApp() {}
 
 // used for the dragging thing
-const sidebarSecondColumnWidth = 200;
+const sidebarSecondColumnWidth = 400;
 </script>
 
 <template>
@@ -37,7 +38,11 @@ const sidebarSecondColumnWidth = 200;
           v-show="uiStore.isSidebarOpen"
           :style="{ width: sidebarSecondColumnWidth + 'px' }"
           class="relative flex h-full bg-white transition-[width] duration-75 ease-out"
-        ></div>
+        >
+          <LayerCart
+            v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
+          ></LayerCart>
+        </div>
       </div>
     </div>
   </div>

@@ -4,10 +4,12 @@ import { computed, onMounted } from "vue";
 import useOlWmtsLayer from "./composables/olWmtsLayer.composable";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 import { optionsFromCapabilities } from "ol/source/WMTS";
+import { Feature as OGCFeature } from "@swissgeo/shared/ogc";
 
 import { getLinksByProtocol } from "@/utils/recordUtils";
 
 import log, { LogLevel } from "@swissgeo/log";
+import { Layer } from "@swissgeo/layers";
 
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [
@@ -20,17 +22,18 @@ log.wantedLevels = [
 const {
   layer,
   parentLayerOpacity,
-  zIndex = -1,
-  opacity = 1,
+  zIndex = 1,
 } = defineProps<{
-  layer: Record<string, any>; // TODO
+  layer: Layer;
+  zIndex: number;
   parentLayerOpacity?: number;
-  zIndex?: number;
-  opacity?: number;
 }>();
 
+/**
+ * Extract the capabilities URL from the OGC Record
+ */
 const capabilitiesRef = computed(() => {
-  const links = layer.links;
+  const links = layer.record.links;
 
   const link = getLinksByProtocol(links, "OGC:WMTS")[0];
   return {
@@ -58,7 +61,7 @@ const options = computed(async (): Promise<WMTSOptions> => {
   }
 
   const options = optionsFromCapabilities(JSON.parse(data.value), {
-    layer: layer.id,
+    layer: layer.record.id,
   });
 
   if (!options) {
@@ -68,13 +71,20 @@ const options = computed(async (): Promise<WMTSOptions> => {
   return options;
 });
 
-const { setSourceForProjection } = useOlWmtsLayer(
-  layer.id,
-  layer.uuid,
+const { setSourceForProjection, layer: olLayer } = useOlWmtsLayer(
+  layer.record.id,
+  layer.record.geocatId,
   await options.value,
-  opacity,
+  layer.opacity,
   zIndex,
   parentLayerOpacity
+);
+
+watch(
+  () => layer.isVisible,
+  (newValue: boolean) => {
+    olLayer.setVisible(newValue);
+  }
 );
 
 onMounted(() => {

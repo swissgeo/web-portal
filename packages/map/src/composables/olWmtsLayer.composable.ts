@@ -108,5 +108,5 @@ export default function useOlWmtsLayer(
   // watch(_opacity, (newOpacity) => layer.setOpacity(newOpacity));
   // watch(() => positionStore.projection, setSourceForProjection);
 
-  return { setSourceForProjection };
+  return { setSourceForProjection, layer };
 }

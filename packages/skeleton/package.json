@@ -25,8 +25,10 @@
     },
     "dependencies": {
         "@swissgeo/content": "workspace:*",
+        "@swissgeo/layers": "workspace:*",
         "@swissgeo/shared": "workspace:*",
-        "lucide-vue-next": "catalog:"
+        "lucide-vue-next": "catalog:",
+        "primevue": "catalog:"
     },
     "devDependencies": {
         "@dxup/unimport": "catalog:",
