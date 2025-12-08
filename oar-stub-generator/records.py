@@ -211,13 +211,7 @@ def _get_wmts_url_template() -> str:
     # <Scheme>://<ServerName>/<ProtocoleVersion>/<LayerName>/<Stylename>/<Time>/<TileMatrixSet>/<TileSetId>/<TileRow>/<TileCol>.<FormatExtension>
     return "{BASE_URL}/\
 {ProtocoleVersion}/\
-{LayerName}/\
-{Stylename}/\
-{Time}/\
-{TileMatrixSet}/\
-{TileSetId}/\
-{TileRow}/\
-{TileCol}.{FormatExtension}"
+WMTSCapabilities.xml?lang=de"
 
 
 def _get_geoadmin_wmts_link(
@@ -236,11 +230,11 @@ def _get_geoadmin_wmts_link(
         wmts_base_url = wmts_base_url[:-1]
     wmts_url_dict['BASE_URL'] = wmts_base_url
     wmts_url_dict['ProtocoleVersion'] = "1.0.0"
-    wmts_url_dict['LayerName'] = layer
-    wmts_url_dict['Stylename'] = "default"
-    wmts_url_dict['Time'] = "current"
-    wmts_url_dict['TileMatrixSet'] = "2056"
-    wmts_url_dict['FormatExtension'] = image_type
+    # wmts_url_dict['LayerName'] = layer
+    # wmts_url_dict['Stylename'] = "default"
+    # wmts_url_dict['Time'] = "current"
+    # wmts_url_dict['TileMatrixSet'] = "2056"
+    # wmts_url_dict['FormatExtension'] = image_type
 
     link = {
         'type': 'application/vnd.ogc.wmts_xml',
@@ -249,27 +243,7 @@ def _get_geoadmin_wmts_link(
         "title": "OGC Web Map Tile Service (WMTS)",
         "uriTemplate": _get_wmts_url_template().format(**wmts_url_dict),
         "templated": True,
-        "variables": {
-            "TileSetId": {
-                "description": "Tile Set Identifier",
-                "type": "number",
-                "format": "integer",
-                "minimum": 0,
-                "maximum": 28
-            },
-            "TileRow": {
-                "description": "Tile Row",
-                "type": "number",
-                "format": "integer",
-                "minimum": 0
-            },
-            "TileCol": {
-                "description": "Tile Column",
-                "type": "number",
-                "format": "integer",
-                "minimum": 0
-            }
-        }
+        "variables": {}
     }
     return link
 
