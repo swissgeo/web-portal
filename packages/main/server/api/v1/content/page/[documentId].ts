@@ -1,9 +1,5 @@
-import type { Page } from '~~/shared/types/api/Page'
-import type {
-    Publication,
-    ContentPageMetadata,
-    Systemdata,
-} from '~~/shared/types/livingdocs/Publication'
+import type { Page } from '@swissgeo/shared/api'
+import type { Publication, ContentPageMetadata, Systemdata } from '@swissgeo/shared/livingdocs'
 
 import useLdFetch from '~~/server/utils/ldFetch'
 import { joinURL } from 'ufo'
@@ -12,7 +8,7 @@ export default defineEventHandler(async (event): Promise<Page> => {
     const runtimeConfig = useRuntimeConfig()
     const apiEndpoint = runtimeConfig.apiEndpoint
 
-    const documentId = event.path.split('/').pop() || ''
+    const documentId = getRouterParam(event, 'documentId')
 
     const { ldFetch } = useLdFetch()
 
