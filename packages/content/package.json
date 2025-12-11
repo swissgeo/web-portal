@@ -26,7 +26,11 @@
     "devDependencies": {
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/config-eslint": "catalog:",
+        "@swissgeo/config-prettier": "catalog:",
+        "@swissgeo/config-typescript": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
+        "prettier": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",

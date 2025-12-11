@@ -15,7 +15,7 @@ import useLayersStore from "@/store/modules/layers";
 export function reprojectLayersFeatures(
   projection: CoordinateSystem,
   oldProjection: CoordinateSystem,
-  dispatcher: ActionDispatcher
+  dispatcher: ActionDispatcher,
 ): void {
   log.debug({
     title: "Position store / reproject",
@@ -41,7 +41,7 @@ export function reprojectLayersFeatures(
 function reprojectActiveLayersExtent(
   oldProjection: CoordinateSystem,
   newProjection: CoordinateSystem,
-  dispatcher: ActionDispatcher
+  dispatcher: ActionDispatcher,
 ): void {
   const layersStore = useLayersStore();
   const updatedLayers: Layer[] = layersStore.activeLayers
@@ -51,7 +51,7 @@ function reprojectActiveLayersExtent(
       updatedLayer.extent = extentUtils.projExtent(
         oldProjection,
         newProjection,
-        updatedLayer.extent!
+        updatedLayer.extent!,
       );
       return updatedLayer;
     });
@@ -63,7 +63,7 @@ function reprojectActiveLayersExtent(
 function reprojectSelectedFeatures(
   oldProjection: CoordinateSystem,
   newProjection: CoordinateSystem,
-  dispatcher: ActionDispatcher
+  dispatcher: ActionDispatcher,
 ): void {
   const featureStore = useFeaturesStore();
 
@@ -75,20 +75,20 @@ function reprojectSelectedFeatures(
         layerFeature.coordinates = coordinatesUtils.reprojectAndRound(
           oldProjection,
           newProjection,
-          selectedFeature.coordinates
+          selectedFeature.coordinates,
         );
         if (layerFeature.extent) {
           layerFeature.extent = extentUtils.projExtent(
             oldProjection,
             newProjection,
-            layerFeature.extent
+            layerFeature.extent,
           );
         }
         if (layerFeature.geometry) {
           layerFeature.geometry = reproject(
             layerFeature.geometry,
             oldProjection.epsg,
-            newProjection.epsg
+            newProjection.epsg,
           );
         }
         reprojectedSelectedFeatures.push(layerFeature);
@@ -97,7 +97,7 @@ function reprojectSelectedFeatures(
         editableFeature.coordinates = coordinatesUtils.reprojectAndRound(
           oldProjection,
           newProjection,
-          selectedFeature.coordinates
+          selectedFeature.coordinates,
         );
         reprojectedSelectedFeatures.push(editableFeature);
       } else {
@@ -110,7 +110,7 @@ function reprojectSelectedFeatures(
           ],
         });
       }
-    }
+    },
   );
   if (reprojectedSelectedFeatures.length > 0) {
     featureStore.setSelectedFeatures(reprojectedSelectedFeatures, dispatcher);

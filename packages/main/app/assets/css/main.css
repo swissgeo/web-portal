@@ -1,6 +1,6 @@
-@import 'tailwindcss';
-@import 'tailwindcss-primeui';
-@import 'primeicons/primeicons.css';
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+@import "primeicons/primeicons.css";
 
 @source "../../../../skeleton/";
 @source "../../../../content/";
@@ -8,62 +8,62 @@
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
 
 h1 {
-    @apply text-4xl;
-    @apply pb-8;
-    @apply text-primary;
+  @apply text-4xl;
+  @apply pb-8;
+  @apply text-primary;
 }
 
 h2 {
-    @apply text-2xl;
-    @apply pt-12 pb-8 first-of-type:pt-2;
+  @apply text-2xl;
+  @apply pt-12 pb-8 first-of-type:pt-2;
 }
 
 body {
-    /* We have to reset these variables here again. I don't quite know why
+  /* We have to reset these variables here again. I don't quite know why
     but it seems that tailwind removes them if they're not referenced anywhere.
     They're probably only used to create the variants, then dropped.
     But for our in-JS desktop/mobile switch we need access to those, hence
     the explicit resetting here */
-    --breakpoint-sm: var(--breakpoint-sm);
-    --breakpoint-md: var(--breakpoint-md);
-    --breakpoint-lg: var(--breakpoint-lg);
-    --breakpoint-xl: var(--breakpoint-xl);
-    --breakpoint-2xl: var(--breakpoint-2xl);
+  --breakpoint-sm: var(--breakpoint-sm);
+  --breakpoint-md: var(--breakpoint-md);
+  --breakpoint-lg: var(--breakpoint-lg);
+  --breakpoint-xl: var(--breakpoint-xl);
+  --breakpoint-2xl: var(--breakpoint-2xl);
 }
 
 @layer custom {
-    :root {
-        --p-content-border-radius: 8px;
-        --p-panel-content-padding: 0px;
-        --p-iconfield-icon-color: var(--color-black);
-        --p-form-field-icon-color: var(--color-black);
-        --p-button-secondary-color: var(--color-black);
-        --p-button-text-secondary-color: var(--color-black);
-        --p-panel-header-color: var(--color-black);
-        --p-button-outlined-secondary-color: var(--color-black);
-        --p-button-text-secondary-color: var(--color-cyan-800);
+  :root {
+    --p-content-border-radius: 8px;
+    --p-panel-content-padding: 0px;
+    --p-iconfield-icon-color: var(--color-black);
+    --p-form-field-icon-color: var(--color-black);
+    --p-button-secondary-color: var(--color-black);
+    --p-button-text-secondary-color: var(--color-black);
+    --p-panel-header-color: var(--color-black);
+    --p-button-outlined-secondary-color: var(--color-black);
+    --p-button-text-secondary-color: var(--color-cyan-800);
 
-        --font-sans: 'Inter';
-    }
+    --font-sans: "Inter";
+  }
 
-    .p-panel {
-        @apply shadow;
-    }
+  .p-panel {
+    @apply shadow;
+  }
 
-    .p-panel-header {
-        border-bottom-width: 1px;
-        @apply h-16 px-6;
-    }
+  .p-panel-header {
+    border-bottom-width: 1px;
+    @apply h-16 px-6;
+  }
 
-    .p-panel-content {
-        @apply px-6 py-4;
-    }
+  .p-panel-content {
+    @apply px-6 py-4;
+  }
 }
 
 a:not(.p-menu-item-link):not([data-menu]) {
-    @apply text-blue-700;
+  @apply text-blue-700;
 }
 
 a:hover:not(.p-menu-item-link):not([data-menu]) {
-    @apply text-blue-500;
+  @apply text-blue-500;
 }

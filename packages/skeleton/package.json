@@ -24,10 +24,12 @@
         "build-watch-dev": "vite build --watch --mode development"
     },
     "dependencies": {
+        "@swissgeo/config-prettier": "catalog:",
         "@swissgeo/content": "workspace:*",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "lucide-vue-next": "catalog:",
+        "prettier": "catalog:",
         "primevue": "catalog:"
     },
     "devDependencies": {

@@ -19,7 +19,7 @@ export default function useOlWmtsLayer(
   options: WMTSOptions,
   opacity: number,
   zIndex: number,
-  parentLayerOpacity?: number
+  parentLayerOpacity?: number,
 ) {
   // const positionStore = usePositionStore();
 
@@ -59,7 +59,7 @@ export default function useOlWmtsLayer(
 
   // Use "current" as the default timestamp if not defined in the layer config (or no preview year)
   const timestamp = computed(
-    () => "current"
+    () => "current",
     //   timeConfigUtils.getTimestampFromConfig(externalWmtsLayerConfig),
   );
 
@@ -78,12 +78,12 @@ export default function useOlWmtsLayer(
     // if (options && options.tileGrid) {
     log.debug(
       `Set WMTS source for layer ${layerId} with options ${JSON.stringify(
-        options
-      )}`
+        options,
+      )}`,
     );
 
     layer.setSource(
-      new WMTS({ ...options /*, dimensions: dimensions.value*/ })
+      new WMTS({ ...options /*, dimensions: dimensions.value*/ }),
     );
     // } else {
     //   log.debug(`No WMTS options for layer ${layerId} available yet`);

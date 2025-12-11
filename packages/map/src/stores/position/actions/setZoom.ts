@@ -11,7 +11,7 @@ import type { ActionDispatcher } from "@/stores/types";
 export default function setZoom(
   this: PositionStore,
   zoom: number,
-  dispatcher: ActionDispatcher
+  dispatcher: ActionDispatcher,
 ): void {
   if (!isNumber(zoom) || zoom < 0) {
     log.error({

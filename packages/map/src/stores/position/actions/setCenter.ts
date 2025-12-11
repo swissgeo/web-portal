@@ -13,7 +13,7 @@ import type { ActionDispatcher } from "@/stores/types";
 export default function setCenter(
   this: PositionStore,
   center: SingleCoordinate,
-  dispatcher: ActionDispatcher
+  dispatcher: ActionDispatcher,
 ): void {
   if (!center || (Array.isArray(center) && center.length !== 2)) {
     log.error({

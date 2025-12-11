@@ -20,7 +20,7 @@ import VectorSource from "ol/source/Vector";
 export default function useAddLayerToMap(
   layer: MaybeRef<Layer>,
   map: MaybeRef<OlMapType | undefined>,
-  zIndex: MaybeRef<number> = -1
+  zIndex: MaybeRef<number> = -1,
 ) {
   const internalZIndex = ref(toValue(zIndex));
 

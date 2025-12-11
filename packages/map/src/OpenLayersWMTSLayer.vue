@@ -74,14 +74,14 @@ const { setSourceForProjection, layer: olLayer } = useOlWmtsLayer(
   await options.value,
   layer.opacity,
   zIndex,
-  parentLayerOpacity
+  parentLayerOpacity,
 );
 
 watch(
   () => layer.isVisible,
   (newValue: boolean) => {
     olLayer.setVisible(newValue);
-  }
+  },
 );
 
 onMounted(() => {

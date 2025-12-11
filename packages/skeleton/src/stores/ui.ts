@@ -17,15 +17,15 @@ export const useUiStore = defineStore("uiStore", () => {
   const isSidebarOpen = computed(() => currentSidebar.value !== null);
 
   const isSearchVisible = computed(
-    () => currentSidebar.value === SidebarType.SEARCH
+    () => currentSidebar.value === SidebarType.SEARCH,
   );
 
   const isContentSidebarVisible = computed(
-    () => currentSidebar.value === SidebarType.CONTENT
+    () => currentSidebar.value === SidebarType.CONTENT,
   );
 
   const isLayerCartVisible = computed(
-    () => currentSidebar.value === SidebarType.LAYER_CART
+    () => currentSidebar.value === SidebarType.LAYER_CART,
   );
 
   // #endregion

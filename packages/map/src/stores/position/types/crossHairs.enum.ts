@@ -1,7 +1,7 @@
 export enum CrossHairs {
-    Cross = 'cross',
-    Circle = 'circle',
-    Bowl = 'bowl',
-    Point = 'point',
-    Marker = 'marker',
+  Cross = "cross",
+  Circle = "circle",
+  Bowl = "bowl",
+  Point = "point",
+  Marker = "marker",
 }

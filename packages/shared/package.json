@@ -32,12 +32,12 @@
         "build-watch": "vite build --watch",
         "build-watch-dev": "vite build --watch --mode development"
     },
-    "dependencies": {
-    },
     "devDependencies": {
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/config-prettier": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
+        "prettier": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",

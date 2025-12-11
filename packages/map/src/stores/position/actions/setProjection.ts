@@ -16,7 +16,7 @@ import type { ActionDispatcher } from "@/stores/types";
 export default function setProjection(
   this: PositionStore,
   projection: CoordinateSystem | number | string,
-  dispatcher: ActionDispatcher
+  dispatcher: ActionDispatcher,
 ): void {
   const oldProjection: CoordinateSystem = this.projection;
   let matchingProjection: CoordinateSystem | undefined;
@@ -24,13 +24,13 @@ export default function setProjection(
     matchingProjection = projection;
   } else if (typeof projection === "number" || isNumber(projection)) {
     matchingProjection = allCoordinateSystems.find(
-      (coordinateSystem) => coordinateSystem.epsgNumber === projection
+      (coordinateSystem) => coordinateSystem.epsgNumber === projection,
     );
   } else {
     matchingProjection = allCoordinateSystems.find(
       (coordinateSystem) =>
         coordinateSystem.epsg === projection ||
-        coordinateSystem.epsgNumber === parseInt(projection)
+        coordinateSystem.epsgNumber === parseInt(projection),
     );
   }
   if (matchingProjection) {
@@ -51,7 +51,7 @@ export default function setProjection(
     this.center = proj4(
       oldProjection.epsg,
       matchingProjection.epsg,
-      this.center
+      this.center,
     );
     // adapting the zoom level (if needed)
     if (
@@ -59,7 +59,7 @@ export default function setProjection(
       matchingProjection instanceof CustomCoordinateSystem
     ) {
       this.zoom = matchingProjection.transformStandardZoomLevelToCustom(
-        this.zoom
+        this.zoom,
       );
     } else if (
       oldProjection instanceof CustomCoordinateSystem &&
@@ -74,7 +74,7 @@ export default function setProjection(
     ) {
       // we have to revert the old projection zoom level to standard, and then transform it to the new projection custom zoom level
       this.zoom = oldProjection.transformCustomZoomLevelToStandard(
-        matchingProjection.transformStandardZoomLevelToCustom(this.zoom)
+        matchingProjection.transformStandardZoomLevelToCustom(this.zoom),
       );
     }
 
@@ -82,7 +82,7 @@ export default function setProjection(
       this.crossHairPosition = proj4(
         oldProjection.epsg,
         matchingProjection.epsg,
-        this.crossHairPosition
+        this.crossHairPosition,
       );
     }
 

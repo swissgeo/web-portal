@@ -5,7 +5,7 @@ import type { Link as OGCLink } from "@swissgeo/shared/ogc";
 
 export const getLinksByProtocol = (
   links: OGCLink[],
-  protocol: string
+  protocol: string,
 ): OGCLink[] => {
   return links.filter((link: OGCLink) => link.protocol === protocol);
 };

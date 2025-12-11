@@ -66,7 +66,7 @@ export default function useViewBasedOnProjection(map: MaybeRef<Map>): void {
   const roundedDoubleClickZoom = new DoubleClickZoom();
 
   roundedDoubleClickZoom.handleEvent = function (
-    event: MapBrowserEvent<PointerEvent>
+    event: MapBrowserEvent<PointerEvent>,
   ): boolean {
     if (event.type === "dblclick") {
       event.preventDefault();

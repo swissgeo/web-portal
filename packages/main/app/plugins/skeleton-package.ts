@@ -2,5 +2,5 @@
 
 export default defineNuxtPlugin((nuxtApp) => {
   // useUiStore()
-    // nuxtApp.vueApp.use(ui)
-})
+  // nuxtApp.vueApp.use(ui)
+});

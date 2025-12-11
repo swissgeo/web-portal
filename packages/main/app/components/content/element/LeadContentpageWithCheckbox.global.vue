@@ -1,19 +1,19 @@
 <script setup lang="ts">
 /* Passing data through */
-import type { LeadContentPageWithCheckbox } from '~~/shared/types/livingdocs/Page'
+import type { LeadContentPageWithCheckbox } from "~~/shared/types/livingdocs/Page";
 
 const { data } = defineProps<{
-    data: Record<string, LeadContentPageWithCheckbox>
-}>()
+  data: Record<string, LeadContentPageWithCheckbox>;
+}>();
 
 const containers = computed(() => {
-    if (!data.containers) {
-        return []
-    }
-    return data.containers['lead-contentpage-with-checkbox']
-})
+  if (!data.containers) {
+    return [];
+  }
+  return data.containers["lead-contentpage-with-checkbox"];
+});
 </script>
 
 <template>
-    <ContentRenderer :containers="containers" />
+  <ContentRenderer :containers="containers" />
 </template>

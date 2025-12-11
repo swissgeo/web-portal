@@ -25,7 +25,6 @@
         "@nuxtjs/i18n": "catalog:",
         "@pinia/nuxt": "catalog:",
         "@primeuix/themes": "catalog:",
-        "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/coordinates": "catalog:",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
@@ -62,12 +61,13 @@
     "devDependencies": {
         "@eslint/markdown": "catalog:",
         "@primevue/nuxt-module": "catalog:",
+        "@swissgeo/config-eslint": "catalog:",
+        "@swissgeo/config-prettier": "catalog:",
         "eslint-plugin-perfectionist": "catalog:",
         "fs-extra": "^11.3.2",
         "prettier": "catalog:",
         "prettier-plugin-packagejson": "catalog:",
         "prettier-plugin-tailwindcss": "catalog:",
-        "rxjs": "catalog:",
         "typescript": "catalog:",
         "vite-plugin-vue-devtools": "catalog:",
         "vue-tsc": "catalog:"
