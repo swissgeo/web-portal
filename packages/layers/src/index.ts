@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export enum LayerType {
   WMTS = "wmts",
+  WMS = "wms"
 }
 
 export interface Layer {
@@ -16,7 +17,7 @@ export interface Layer {
 export const makeLayer = (
   record: OGCFeature,
   type: LayerType,
-  options: Partial<Layer>,
+  options?: Partial<Layer>,
 ): Layer => {
   return {
     uuid: uuidv4(),

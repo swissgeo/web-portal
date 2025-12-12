@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Layer, useLayerStore } from "@swissgeo/layers";
+import { Layer, LayerType, useLayerStore } from "@swissgeo/layers";
 
 const layerStore = useLayerStore();
 
@@ -10,7 +10,7 @@ function toggleVisibility(layer: Layer) {
 
 <template>
     <ul class="mt-8">
-        <li v-for="layer in layerStore.layers" class="flex gap-2 items-center">
+        <li v-for="layer in layerStore.layers" class="flex gap-2 items-center" :key="layer.uuid">
             <div>
                 <IconButton
                     :icon="layer.isVisible ? 'Eye' : 'EyeOff'"
@@ -23,7 +23,7 @@ function toggleVisibility(layer: Layer) {
                 :title="layer.record.id"
                 :class="{ 'text-gray-300': !layer.isVisible }"
             >
-                {{ layer.record.id }}
+                {{ layer.record.id }} <span :class="{'bg-amber-200': layer.type === LayerType.WMS, 'bg-fuchsia-200': layer.type === LayerType.WMTS}"> ({{  layer.type }})</span>
             </div>
         </li>
     </ul>

@@ -9,40 +9,67 @@ import { MapModule } from "@swissgeo/map";
 
 const layersStore = useLayerStore();
 
-const layers = await $fetch("/api/v1/layers/records");
+const { features: availableLayers } = await $fetch("/api/v1/layers/records");
 
-const availableLayers = ref<OGCFeature[]>([]);
+// const availableLayers = ref<OGCFeature[]>([]);
 
-onMounted(async () => {
-  availableLayers.value.push(
-    ...layers.features.filter((layer: OGCFeature) => {
-      const wmts = layer.links.filter(
-        (link: OGCLink) => link.protocol === "OGC:WMTS",
-      );
+/**
+ * Extract the layer type from the links
+ *
+ * Whatever is found first (WMTS or WMS) defines the layer type!
+ * @param layer
+ */
+function getLayerTypeFromFirstServiceLink(layer: OGCFeature) {
+  for (const link of layer.links) {
+    if (link.protocol === "OGC:WMS") {
+      return LayerType.WMS;
+    }
 
-      return wmts.length > 0;
-    }),
-  );
-});
+    if (link.protocol === "OGC:WMTS") {
+      return LayerType.WMTS;
+    }
+  }
+  return null;
+}
 
 function addLayerToMap(layer: OGCFeature) {
-  layersStore.addLayer(makeLayer(layer));
+  const type = getLayerTypeFromFirstServiceLink(layer);
+  if (!type) {
+    throw Error("Neither OGC:WMS nor OGC:WMTS found in the definition");
+  }
+  layersStore.addLayer(makeLayer(layer, type));
 }
 </script>
 
 <template>
-    <ClientOnly>
-        <MapModule class="h-screen w-full" />
-        <div
-            class="fixed right-0 bottom-0 z-3 h-[300px] w-[800px] overflow-scroll bg-white shadow"
+  <ClientOnly>
+    <MapModule class="h-screen w-full" />
+    <div
+      class="fixed right-0 bottom-0 z-3 h-[300px] w-[800px] overflow-scroll bg-white shadow"
+    >
+      <table>
+        <tr
+          v-for="layer in availableLayers"
+          class="hover:bg-cyan-300"
+          :key="layer.geocatId"
         >
-            <ul>
-                <li v-for="layer in availableLayers" class="hover:bg-amber-300">
-                    <button class="cursor-pointer" @click="addLayerToMap(layer)">
-                        {{ layer.id }} (WMTS)
-                    </button>
-                </li>
-            </ul>
-        </div>
-    </ClientOnly>
+          <td>
+            <button class="cursor-pointer" @click="addLayerToMap(layer)">
+              {{ layer.id }}
+            </button>
+          </td>
+          <td>
+            <em
+              :class="
+                getLayerTypeFromFirstServiceLink(layer) == 'wms'
+                  ? 'bg-amber-200'
+                  : 'bg-fuchsia-200'
+              "
+              >{{ getLayerTypeFromFirstServiceLink(layer) }}</em
+            >
+          </td>
+        </tr>
+      </table>
+    </div>
+  </ClientOnly>
 </template>

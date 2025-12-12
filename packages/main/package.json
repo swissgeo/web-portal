@@ -65,6 +65,7 @@
         "@primevue/nuxt-module": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-prettier": "catalog:",
+        "@types/jsdom": "catalog:",
         "eslint-plugin-perfectionist": "catalog:",
         "fs-extra": "^11.3.2",
         "prettier": "catalog:",

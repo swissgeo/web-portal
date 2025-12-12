@@ -48,14 +48,14 @@ createOlMap();
 </script>
 
 <template>
-    <div
-        ref="mapElement"
-        class="ol-map h-full w-full"
-        data-cy="ol-map"
-        @contextmenu.prevent
-    >
-        <!-- TODO probably somewhere here there would be the loop?-->
-        <OpenLayersBackgroundLayer :layer="layer" v-for="layer in layers" />
+  <div
+    ref="mapElement"
+    class="ol-map h-full w-full"
+    data-cy="ol-map"
+    @contextmenu.prevent
+  >
+    <!-- TODO probably somewhere here there would be the loop?-->
+    <OpenLayersVisibleLayer :layer="layer" v-for="layer in layers" />
     <!-- <OpenLayersVisibleLayers />
         <OpenLayersPinnedLocation />
         <OpenLayersCrossHair />
@@ -75,7 +75,7 @@ createOlMap();
             v-if="showSelectionRectangle"
             :z-index="zIndexSelectionRectangle"
         /> -->
-    </div>
-    <!-- So that external modules can have access to the map instance through the provided 'olMap' -->
-    <slot />
+  </div>
+  <!-- So that external modules can have access to the map instance through the provided 'olMap' -->
+  <slot />
 </template>

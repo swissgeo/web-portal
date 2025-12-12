@@ -19,41 +19,40 @@ log.wantedLevels = [
   LogLevel.Error,
 ];
 
-const {
-  layer,
-  parentLayerOpacity,
-  zIndex = 1,
-} = defineProps<{
+const { layer, zIndex = 1 } = defineProps<{
   layer: Layer;
   zIndex: number;
-  parentLayerOpacity?: number;
 }>();
 
 /**
  * Extract the capabilities URL from the OGC Record
  */
-const capabilitiesRef = computed(() => {
+const capabilityUrl = computed(() => {
   const links = layer.record.links;
 
   const link = getLinksByProtocol(links, "OGC:WMTS")[0];
-  return {
-    url: encodeURIComponent(link.href || link.uriTemplate),
-    data: link,
-  };
+  const href = link.href || link.uriTemplate;
+
+  if (!href) {
+    throw new Error(
+      `Faulty wmts record, neither href nor uriTemplate found: ${JSON.stringify(link)}`,
+    );
+  }
+  return encodeURIComponent(href);
 });
+
+// TODO ok here we have a bit of a tight coupling with the main package
+const { data } = await useFetch<string>(
+  `/api/v1/layers/wmtsConfig/${capabilityUrl.value}`,
+);
 
 /**
  * Retrieve the capabilities and then turn them into
  * a options objects to be used by WMTS
  */
-const options = computed(async (): Promise<WMTSOptions> => {
-  const { url, data: body } = capabilitiesRef.value;
-
-  // TODO ok here we have a bit of a tight coupling with the main package
-  const { data } = await useFetch<string>(`/api/v1/layers/wmtsConfig/${url}`);
-
+const options = computed((): WMTSOptions => {
   if (!data.value) {
-    log.error(`Unable to fetch capabilities for ${url}`);
+    log.error(`Unable to fetch capabilities for ${url.value}`);
     throw new Error();
   }
 
@@ -71,10 +70,9 @@ const options = computed(async (): Promise<WMTSOptions> => {
 const { setSourceForProjection, layer: olLayer } = useOlWmtsLayer(
   layer.record.id,
   layer.record.geocatId,
-  await options.value,
+  options.value,
   layer.opacity,
   zIndex,
-  parentLayerOpacity,
 );
 
 watch(
@@ -90,5 +88,5 @@ onMounted(() => {
 </script>
 
 <template>
-    <slot />
+  <slot />
 </template>

@@ -5,10 +5,10 @@ import type { Options as WMTSOptions } from "ol/source/WMTS";
 import log from "@swissgeo/log";
 import { Tile as TileLayer } from "ol/layer";
 import WMTS from "ol/source/WMTS";
-import { computed, inject, watch, Ref } from "vue";
+import { computed, inject } from "vue";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
-import usePositionStore from "@/stores/position";
+// import usePositionStore from "@/stores/position";
 
 // import { timeConfigUtils } from "@swissgeo/layers/utils";
 
@@ -18,12 +18,8 @@ export default function useOlWmtsLayer(
   options: WMTSOptions,
   opacity: number,
   zIndex: number,
-  parentLayerOpacity?: number,
 ) {
   // const positionStore = usePositionStore();
-
-  // extracting useful info from what we've linked so far
-  const _opacity = computed(() => parentLayerOpacity ?? opacity.value);
 
   const olMap = inject<Map>("olMap");
   if (!olMap) {
@@ -36,7 +32,7 @@ export default function useOlWmtsLayer(
       id: layerId,
       uuid,
     },
-    opacity: _opacity.value,
+    opacity
   });
 
   // const dimensions = computed(() => {

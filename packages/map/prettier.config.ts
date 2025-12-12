@@ -1,4 +1,3 @@
-import * as config from '@swissgeo/config-prettier'
+//export * from '@swissgeo/config-prettier'
 
-export default config.default
-
+export {}
