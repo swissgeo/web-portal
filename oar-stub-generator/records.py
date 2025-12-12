@@ -127,14 +127,7 @@ def _get_wms_url_template() -> str:
 SERVICE={SERVICE}\
 &REQUEST={REQUEST}\
 &VERSION={VERSION}\
-&LAYERS={LAYERS}\
-&STYLES={STYLES}\
-&FORMAT={FORMAT}\
-&CRS={CRS}\
-&BBOX={BBOX}\
-&WIDTH={WIDTH}\
-&HEIGHT={HEIGHT}\
-&TRANSPARENT={TRANSPARENT}"
+&FORMAT={FORMAT}"
 
 
 def _get_geoadmin_wms_link(
@@ -146,11 +139,11 @@ def _get_geoadmin_wms_link(
         wms_base_url += '/'
     wms_url_dict['BASE_URL'] = wms_base_url
     wms_url_dict['SERVICE'] = "WMS"
-    wms_url_dict['REQUEST'] = "GetMap"
-    wms_url_dict['FORMAT'] = f"image/{image_type}"
+    wms_url_dict['REQUEST'] = "GetCapabilities"
+    wms_url_dict['FORMAT'] = "text/xml"
     wms_url_dict['VERSION'] = "1.3.0"
-    wms_url_dict['TRANSPARENT'] = 'true' if image_type == 'png' else 'false'
-    wms_url_dict['LAYERS'] = layer
+    # wms_url_dict['TRANSPARENT'] = 'true' if image_type == 'png' else 'false'
+    # wms_url_dict['LAYERS'] = layer
 
     return {
         'type': f'image/{image_type}',
@@ -158,37 +151,6 @@ def _get_geoadmin_wms_link(
         "templated": True,
         "protocol": "OGC:WMS",
         "uriTemplate": _get_wms_url_template().format(**wms_url_dict),
-        "variables": {
-            "crs": {
-                "description": "Coordinate Reference System",
-                "type": "string",
-                "enum": ["EPSG:2056", "EPSG:21781", "EPSG:4326"]
-            },
-            "bbox": {
-                "description": "Bounding Box (minx,miny,maxx,maxy)",
-                "type": "array",
-                "items": {
-                    "type": "number",
-                    "format": "double"
-                },
-                "minItems": 4,
-                "maxItems": 4
-            },
-            "width": {
-                "description": "Image width in pixels",
-                "type": "number",
-                "format": "integer",
-                "minimum": 1,
-                "maximum": 4096
-            },
-            "height": {
-                "description": "Image height in pixels",
-                "type": "number",
-                "format": "integer",
-                "minimum": 1,
-                "maximum": 4096
-            }
-        }
     }
 
 
