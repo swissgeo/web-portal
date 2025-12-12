@@ -46,14 +46,14 @@ catalogs:
       specifier: ^4.3.8
       version: 4.5.3
     '@swissgeo/config-eslint':
-      specifier: next
-      version: 1.0.0-beta.2
+      specifier: 1.0.0-beta.4
+      version: 1.0.0-beta.4
     '@swissgeo/config-prettier':
       specifier: 1.0.0-beta.5
       version: 1.0.0-beta.5
     '@swissgeo/config-typescript':
       specifier: next
-      version: 1.0.0-beta.2
+      version: 1.0.0-beta.3
     '@swissgeo/coordinates':
       specifier: next
       version: 1.0.0-beta.2
@@ -97,7 +97,7 @@ catalogs:
       specifier: ^1.39.10
       version: 1.42.0
     eslint:
-      specifier: ^9.34.0
+      specifier: 9.39.1
       version: 9.39.1
     eslint-plugin-perfectionist:
       specifier: ^4.15.1
@@ -180,9 +180,6 @@ catalogs:
     vue:
       specifier: 3.5.22
       version: 3.5.25
-    vue-i18n:
-      specifier: ^11.2.2
-      version: 11.2.2
     vue-router:
       specifier: ^4.5.1
       version: 4.6.3
@@ -214,16 +211,19 @@ importers:
         version: 7.55.1(@types/node@24.10.3)
       '@swissgeo/config-eslint':
         specifier: 'catalog:'
-        version: 1.0.0-beta.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
+        version: 1.0.0-beta.4(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
       '@swissgeo/config-prettier':
         specifier: 'catalog:'
         version: 1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2)
       '@swissgeo/config-typescript':
         specifier: 'catalog:'
-        version: 1.0.0-beta.2(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
+        version: 1.0.0-beta.3(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.1(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.25(typescript@5.9.3))
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.1(jiti@2.6.1)
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
@@ -281,7 +281,7 @@ importers:
         version: 7.55.1(@types/node@24.10.3)
       '@swissgeo/config-eslint':
         specifier: 'catalog:'
-        version: 1.0.0-beta.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
+        version: 1.0.0-beta.4(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
       '@swissgeo/config-prettier':
         specifier: 'catalog:'
         version: 1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2)
@@ -294,6 +294,9 @@ importers:
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.1(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.25(typescript@5.9.3))
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.1(jiti@2.6.1)
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
@@ -465,7 +468,7 @@ importers:
         version: 4.5.3(@babel/parser@7.28.5)(magicast@0.5.1)(vue@3.5.25(typescript@5.9.3))
       '@swissgeo/config-eslint':
         specifier: 'catalog:'
-        version: 1.0.0-beta.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.46.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
+        version: 1.0.0-beta.4(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.46.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
       '@swissgeo/config-prettier':
         specifier: 'catalog:'
         version: 1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2)
@@ -535,7 +538,7 @@ importers:
         version: 7.55.1(@types/node@24.10.3)
       '@swissgeo/config-eslint':
         specifier: 'catalog:'
-        version: 1.0.0-beta.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
+        version: 1.0.0-beta.4(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
       '@swissgeo/config-prettier':
         specifier: 'catalog:'
         version: 1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2)
@@ -548,6 +551,9 @@ importers:
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.1(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.25(typescript@5.9.3))
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.1(jiti@2.6.1)
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
@@ -585,12 +591,18 @@ importers:
       '@microsoft/api-extractor':
         specifier: 'catalog:'
         version: 7.55.1(@types/node@24.10.3)
+      '@swissgeo/config-eslint':
+        specifier: 'catalog:'
+        version: 1.0.0-beta.4(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
       '@swissgeo/config-prettier':
         specifier: 'catalog:'
         version: 1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2)
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.1(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.25(typescript@5.9.3))
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.1(jiti@2.6.1)
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
@@ -655,9 +667,15 @@ importers:
       '@microsoft/api-extractor':
         specifier: 'catalog:'
         version: 7.55.1(@types/node@24.10.3)
+      '@swissgeo/config-eslint':
+        specifier: 'catalog:'
+        version: 1.0.0-beta.4(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.1(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.25(typescript@5.9.3))
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.1(jiti@2.6.1)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -1465,10 +1483,6 @@ packages:
 
   '@eslint/eslintrc@3.3.3':
     resolution: {integrity: sha512-Kr+LPIUVKz2qkx1HAMH8q1q6azbqBAsXJUxBl/ODDuVPX45Z9DfwB8tPjTi6nNZ8BuM3nbJxC5zCAg5elnBUTQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@eslint/js@9.38.0':
-    resolution: {integrity: sha512-UZ1VpFvXf9J06YG9xQBdnzU+kthors6KjhMAl6f4gH4usHyh31rUf2DLGInT8RFYIReYXNSydgPY0V2LuWgl7A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/js@9.39.1':
@@ -2837,11 +2851,11 @@ packages:
     peerDependencies:
       eslint: '>=9.0.0'
 
-  '@swissgeo/config-eslint@1.0.0-beta.2':
-    resolution: {integrity: sha512-fkOkq1g/1Y9Dnw+3sfYfEpJ0pQt+Q48lUuQ+1JypZBy64XtNB36HoQVE18QPHboE/KcC7gszsEYW0fklSXuocg==}
+  '@swissgeo/config-eslint@1.0.0-beta.4':
+    resolution: {integrity: sha512-m6AyBwvBV0NXChm+xDqiuYfJC+rWRVU/8op84fHfQnj1HcSuuEZ+rD587AfVKDp87IYM6WYOtTxSfGpD+29YYg==}
     peerDependencies:
-      '@swissgeo/config-prettier': 1.0.0-beta.2
-      '@swissgeo/config-stylelint': 1.0.0-beta.2
+      '@swissgeo/config-prettier': 1.0.0-beta.6
+      '@swissgeo/config-stylelint': 1.0.0-beta.3
       eslint: ^9.39.1
 
   '@swissgeo/config-prettier@1.0.0-beta.5':
@@ -2859,8 +2873,8 @@ packages:
       postcss-html: ^1.8.0
       stylelint: ^16.25.0
 
-  '@swissgeo/config-typescript@1.0.0-beta.2':
-    resolution: {integrity: sha512-8cUhCRo85aH/QG0uLdF5v7EQZImBtkSjgtVOqSRdr9bmGMA9++oc7QjJ7eN6walihUqbrlOuZ3Ze+Kjo+59ZTA==}
+  '@swissgeo/config-typescript@1.0.0-beta.3':
+    resolution: {integrity: sha512-bkMFdnw/2XsRtabjFP5kx/GmIwCf8i+ibf5b7T3cyd0uIg8MW7Nqp3J4RbkwJQwFvZ/q25A9JW+QJiYtXfQ+fA==}
     peerDependencies:
       typescript: ^5.9.3
 
@@ -8492,8 +8506,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@eslint/js@9.38.0': {}
-
   '@eslint/js@9.39.1': {}
 
   '@eslint/markdown@7.5.1':
@@ -8902,7 +8914,7 @@ snapshots:
     dependencies:
       '@antfu/install-pkg': 1.1.0
       '@clack/prompts': 0.11.0
-      '@eslint/js': 9.38.0
+      '@eslint/js': 9.39.1
       '@nuxt/eslint-plugin': 1.9.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       '@stylistic/eslint-plugin': 5.5.0(eslint@9.39.1(jiti@2.6.1))
       '@typescript-eslint/eslint-plugin': 8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
@@ -10023,13 +10035,13 @@ snapshots:
       estraverse: 5.3.0
       picomatch: 4.0.3
 
-  '@swissgeo/config-eslint@1.0.0-beta.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.46.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))':
+  '@swissgeo/config-eslint@1.0.0-beta.4(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.46.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))':
     dependencies:
       '@eslint/js': 9.39.1
       '@eslint/markdown': 7.5.1
       '@swissgeo/config-prettier': 1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2)
       '@swissgeo/config-stylelint': 1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3))
-      '@typescript-eslint/utils': 8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.49.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       '@vue/eslint-config-prettier': 10.2.0(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)
       '@vue/eslint-config-typescript': 14.6.0(eslint-plugin-vue@10.5.1(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@typescript-eslint/parser@8.46.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1))))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.1(jiti@2.6.1)
@@ -10050,13 +10062,13 @@ snapshots:
       - typescript
       - vue-eslint-parser
 
-  '@swissgeo/config-eslint@1.0.0-beta.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))':
+  '@swissgeo/config-eslint@1.0.0-beta.4(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-prettier@1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))':
     dependencies:
       '@eslint/js': 9.39.1
       '@eslint/markdown': 7.5.1
       '@swissgeo/config-prettier': 1.0.0-beta.5(@prettier/plugin-xml@3.4.2(prettier@3.6.2))(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier-plugin-packagejson@2.5.19(prettier@3.6.2))(prettier-plugin-tailwindcss@0.7.2(prettier-plugin-jsdoc@1.8.0(prettier@3.6.2))(prettier@3.6.2))(prettier@3.6.2)
       '@swissgeo/config-stylelint': 1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3))
-      '@typescript-eslint/utils': 8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.49.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       '@vue/eslint-config-prettier': 10.2.0(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)
       '@vue/eslint-config-typescript': 14.6.0(eslint-plugin-vue@10.5.1(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1))))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.1(jiti@2.6.1)
@@ -10096,7 +10108,7 @@ snapshots:
     transitivePeerDependencies:
       - postcss
 
-  '@swissgeo/config-typescript@1.0.0-beta.2(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))':
+  '@swissgeo/config-typescript@1.0.0-beta.3(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))':
     dependencies:
       '@vue/tsconfig': 0.8.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
       typescript: 5.9.3
@@ -10344,8 +10356,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.46.2(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.46.2(typescript@5.9.3)
-      '@typescript-eslint/types': 8.46.2
+      '@typescript-eslint/tsconfig-utils': 8.49.0(typescript@5.9.3)
+      '@typescript-eslint/types': 8.49.0
       debug: 4.4.3
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -10353,8 +10365,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.48.1(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.48.1(typescript@5.9.3)
-      '@typescript-eslint/types': 8.48.1
+      '@typescript-eslint/tsconfig-utils': 8.49.0(typescript@5.9.3)
+      '@typescript-eslint/types': 8.49.0
       debug: 4.4.3
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -10807,7 +10819,7 @@ snapshots:
 
   '@vue/eslint-config-typescript@14.6.0(eslint-plugin-vue@10.5.1(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@typescript-eslint/parser@8.46.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1))))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/utils': 8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.49.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.1(jiti@2.6.1)
       eslint-plugin-vue: 10.5.1(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@typescript-eslint/parser@8.46.2(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
       fast-glob: 3.3.3
@@ -10820,7 +10832,7 @@ snapshots:
 
   '@vue/eslint-config-typescript@14.6.0(eslint-plugin-vue@10.5.1(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1))))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/utils': 8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.49.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.1(jiti@2.6.1)
       eslint-plugin-vue: 10.5.1(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
       fast-glob: 3.3.3

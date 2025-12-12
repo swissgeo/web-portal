@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import type { Map as OlMapType } from "ol";
+
 import { registerProj4 } from "@swissgeo/coordinates";
+import { useLayerStore } from "@swissgeo/layers";
+// import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
+import Map from "ol/Map";
 import { register } from "ol/proj/proj4";
 import proj4 from "proj4";
 
-// import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
-import Map from "ol/Map";
-
 import useViewBasedOnProjection from "@/composables/useViewBasedOnProjection.composable";
-import { useLayerStore } from "@swissgeo/layers";
 
 const layersStore = useLayerStore();
 
@@ -48,14 +48,14 @@ createOlMap();
 </script>
 
 <template>
-  <div
-    ref="mapElement"
-    class="ol-map h-full w-full"
-    data-cy="ol-map"
-    @contextmenu.prevent
-  >
-    <!-- TODO probably somewhere here there would be the loop?-->
-    <OpenLayersBackgroundLayer :layer="layer" v-for="layer in layers" />
+    <div
+        ref="mapElement"
+        class="ol-map h-full w-full"
+        data-cy="ol-map"
+        @contextmenu.prevent
+    >
+        <!-- TODO probably somewhere here there would be the loop?-->
+        <OpenLayersBackgroundLayer :layer="layer" v-for="layer in layers" />
     <!-- <OpenLayersVisibleLayers />
         <OpenLayersPinnedLocation />
         <OpenLayersCrossHair />
@@ -75,7 +75,7 @@ createOlMap();
             v-if="showSelectionRectangle"
             :z-index="zIndexSelectionRectangle"
         /> -->
-  </div>
-  <!-- So that external modules can have access to the map instance through the provided 'olMap' -->
-  <slot />
+    </div>
+    <!-- So that external modules can have access to the map instance through the provided 'olMap' -->
+    <slot />
 </template>

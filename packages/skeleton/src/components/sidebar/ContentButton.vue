@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useMenuStore } from "@swissgeo/content";
-import { useUiStore, SidebarType } from "@/stores/ui";
 import { MenuMetaData } from "@swissgeo/content";
+
+import { useUiStore, SidebarType } from "@/stores/ui";
 
 const { t: $t } = useI18n();
 
@@ -50,10 +51,10 @@ const open = () => {
 </script>
 
 <template>
-  <SidebarButton
-    :is-active="isActive"
-    :title="$t('menu.projectInfo')"
-    :icon="icon"
-    @click="open"
-  />
+    <SidebarButton
+        :is-active="isActive"
+        :title="$t('menu.projectInfo')"
+        :icon="icon"
+        @click="open"
+    />
 </template>

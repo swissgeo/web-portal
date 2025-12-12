@@ -52,6 +52,10 @@ export default defineConfig(({ mode }): UserConfig => {
           "@vueuse/core",
           "vee-validate",
         ],
+        eslintrc: {
+            enabled: true,
+            filepath: '.output/eslintrc-auto-import.json'
+        },
         // Automatically generate types
         dts: "./.nuxt/auto-imports.d.ts",
         // Auto import inside Vue template

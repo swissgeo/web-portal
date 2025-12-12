@@ -6,8 +6,8 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { cloneDeep } from "lodash-es";
 import { reproject } from "reproject";
 
-import type { SelectableFeature } from "@/api/features.api";
-import type { ActionDispatcher } from "@/store/types";
+// import type { SelectableFeature } from "@/api/features.api";
+import type { ActionDispatcher } from "@/stores/types";
 
 import useFeaturesStore from "@/store/modules/features";
 import useLayersStore from "@/store/modules/layers";
@@ -51,7 +51,7 @@ function reprojectActiveLayersExtent(
       updatedLayer.extent = extentUtils.projExtent(
         oldProjection,
         newProjection,
-        updatedLayer.extent!,
+        updatedLayer.extent,
       );
       return updatedLayer;
     });

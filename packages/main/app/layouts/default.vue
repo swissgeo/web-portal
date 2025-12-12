@@ -1,3 +1,4 @@
+<!-- eslint multi-word: off-->
 <script lang="ts" setup>
 // don't know why the explicit import is needed here
 import { SideBar } from "@swissgeo/skeleton";

@@ -7,12 +7,12 @@ import Button from "primevue/button";
 </script>
 
 <template>
-  <Button v-bind="$attrs">
-    <template #icon>
-      <LucideIcon
-        :class="$attrs['icon-class']"
-        :name="($attrs.icon as string) ?? ''"
-      />
-    </template>
-  </Button>
+    <Button v-bind="$attrs">
+        <template #icon>
+            <LucideIcon
+                :class="$attrs['icon-class']"
+                :name="($attrs.icon as string) ?? ''"
+            />
+        </template>
+    </Button>
 </template>

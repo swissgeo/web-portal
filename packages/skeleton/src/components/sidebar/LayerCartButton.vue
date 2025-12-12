@@ -17,14 +17,14 @@ const toggle = () => {
 </script>
 
 <template>
-  <div class="relative inline-block">
-    <!-- :is-active="uiStore.isSearchVisible" -->
-    <SidebarButton
-      :is-active="uiStore.currentSidebar == 'layerCart'"
-      data-cy="button-search-panel"
-      :title="$t('menu.search')"
-      icon="Map"
-      @click="toggle"
-    />
-  </div>
+    <div class="relative inline-block">
+        <!-- :is-active="uiStore.isSearchVisible" -->
+        <SidebarButton
+            :is-active="uiStore.currentSidebar == 'layerCart'"
+            data-cy="button-search-panel"
+            :title="$t('menu.search')"
+            icon="Map"
+            @click="toggle"
+        />
+    </div>
 </template>

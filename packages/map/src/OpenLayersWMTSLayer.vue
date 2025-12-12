@@ -1,15 +1,15 @@
 <script lang="ts" setup>
+import type { Options as WMTSOptions } from "ol/source/WMTS";
+
+import { Layer } from "@swissgeo/layers";
+import log, { LogLevel } from "@swissgeo/log";
+import { optionsFromCapabilities } from "ol/source/WMTS";
 /** Renders a WMTS layer on the map by configuring it through a getCapabilities XML file */
 import { computed, onMounted } from "vue";
-import useOlWmtsLayer from "./composables/olWmtsLayer.composable";
-import type { Options as WMTSOptions } from "ol/source/WMTS";
-import { optionsFromCapabilities } from "ol/source/WMTS";
-import { Feature as OGCFeature } from "@swissgeo/shared/ogc";
 
 import { getLinksByProtocol } from "@/utils/recordUtils";
 
-import log, { LogLevel } from "@swissgeo/log";
-import { Layer } from "@swissgeo/layers";
+import useOlWmtsLayer from "./composables/olWmtsLayer.composable";
 
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [
@@ -90,5 +90,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <slot />
+    <slot />
 </template>

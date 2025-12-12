@@ -58,5 +58,5 @@ watch(
 </script>
 
 <template>
-  <div class="block">Home. <NuxtLink to="map">Go to map</NuxtLink></div>
+    <div class="block">Home. <NuxtLink to="map">Go to map</NuxtLink></div>
 </template>

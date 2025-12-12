@@ -1,3 +1,3 @@
-export * from "./Paragraph.ts"
-export * from "./Publication.ts"
-export * from "./Title.ts"
+export type * from "./Paragraph.ts"
+export type * from "./Publication.ts"
+export type * from "./Title.ts"

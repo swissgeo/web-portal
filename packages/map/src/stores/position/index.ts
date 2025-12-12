@@ -1,29 +1,29 @@
+import { CoordinateSystem, LV95 } from "@swissgeo/coordinates";
+
 import type {
   PositionStoreGetters,
   PositionStoreState,
 } from "@/stores/position/types/position";
 
-import { CoordinateSystem, LV95 } from "@swissgeo/coordinates";
-
 /** Default projection to be used throughout the application */
 export const DEFAULT_PROJECTION: CoordinateSystem = LV95;
 
-import decreaseZoom from "@/stores/position/actions/decreaseZoom";
-import increaseZoom from "@/stores/position/actions/increaseZoom";
-import setAutoRotation from "@/stores/position/actions/setAutoRotation";
-import setCameraPosition from "@/stores/position/actions/setCameraPosition";
+// import decreaseZoom from "@/stores/position/actions/decreaseZoom";
+// import increaseZoom from "@/stores/position/actions/increaseZoom";
+// import setAutoRotation from "@/stores/position/actions/setAutoRotation";
+// import setCameraPosition from "@/stores/position/actions/setCameraPosition";
 import setCenter from "@/stores/position/actions/setCenter";
-import setCrossHair from "@/stores/position/actions/setCrossHair";
-import setDisplayedFormat from "@/stores/position/actions/setDisplayedFormat";
-import setHasOrientation from "@/stores/position/actions/setHasOrientation";
+// import setCrossHair from "@/stores/position/actions/setCrossHair";
+// import setDisplayedFormat from "@/stores/position/actions/setDisplayedFormat";
+// import setHasOrientation from "@/stores/position/actions/setHasOrientation";
 import setProjection from "@/stores/position/actions/setProjection";
-import setRotation from "@/stores/position/actions/setRotation";
+// import setRotation from "@/stores/position/actions/setRotation";
 import setZoom from "@/stores/position/actions/setZoom";
-import zoomToExtent from "@/stores/position/actions/zoomToExtent";
-import centerEpsg4326 from "@/stores/position/getters/centerEpsg4326";
-import extent from "@/stores/position/getters/extent";
-import isExtentOnlyWithinLV95Bounds from "@/stores/position/getters/isExtentOnlyWithinLV95Bounds";
-import resolution from "@/stores/position/getters/resolution";
+// import zoomToExtent from "@/stores/position/actions/zoomToExtent";
+// import centerEpsg4326 from "@/stores/position/getters/centerEpsg4326";
+// import extent from "@/stores/position/getters/extent";
+// import isExtentOnlyWithinLV95Bounds from "@/stores/position/getters/isExtentOnlyWithinLV95Bounds";
+// import resolution from "@/stores/position/getters/resolution";
 // import { LV95Format } from '@/utils/coordinates/coordinateFormat'
 
 const state = (): PositionStoreState => ({

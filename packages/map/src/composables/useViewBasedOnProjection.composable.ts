@@ -1,14 +1,14 @@
 import type { Map } from "ol";
 import type MapBrowserEvent from "ol/MapBrowserEvent";
-
-import usePositionStore from "@/stores/position/";
+import type { MaybeRef } from "vue";
 
 import { constants, LV95, WEBMERCATOR } from "@swissgeo/coordinates";
 import log from "@swissgeo/log";
 import { round } from "@swissgeo/numbers";
 import { View } from "ol";
 import { DoubleClickZoom } from "ol/interaction";
-import type { MaybeRef } from "vue";
+
+import type { ActionDispatcher } from "@/stores/types";
 // import {
 //   computed,
 //   type MaybeRef,
@@ -18,7 +18,7 @@ import type { MaybeRef } from "vue";
 //   watch,
 // } from "vue";
 
-import type { ActionDispatcher } from "@/stores/types";
+import usePositionStore from "@/stores/position/";
 
 // import { VIEW_MIN_RESOLUTION } from "@/config/map.config";
 /**

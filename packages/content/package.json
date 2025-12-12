@@ -18,7 +18,9 @@
     "scripts": {
         "build": "vite build",
         "build-watch": "vite build --watch",
-        "build-watch-dev": "vite build --watch --mode development"
+        "build-watch-dev": "vite build --watch --mode development",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
     },
     "dependencies": {
         "@swissgeo/shared": "workspace:*"
@@ -26,6 +28,7 @@
     "devDependencies": {
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
+        "eslint": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-prettier": "catalog:",
         "@swissgeo/config-typescript": "catalog:",

@@ -4,13 +4,13 @@ import type { Map } from "ol";
 import { LV95 } from "@swissgeo/coordinates";
 import log from "@swissgeo/log";
 import ScaleLine from "ol/control/ScaleLine";
-
 import {
   computed,
   inject,
   onBeforeUnmount,
   onMounted,
   useTemplateRef,
+  Ref
 } from "vue";
 
 import usePositionStore from "@/stores/position";
@@ -58,14 +58,14 @@ onBeforeUnmount(() => olMap.value.removeControl(scaleLine));
 </script>
 
 <template>
-  <!-- The initialization will fail with `v-if` if initial zoom is too low. -->
-  <div
-    v-show="showScaleLine"
-    ref="scaleLineElement"
-    class="scale-line-container"
-    :class="withRelativeSize"
-    data-cy="scaleline"
-  />
+    <!-- The initialization will fail with `v-if` if initial zoom is too low. -->
+    <div
+        v-show="showScaleLine"
+        ref="scaleLineElement"
+        class="scale-line-container"
+        :class="withRelativeSize"
+        data-cy="scaleline"
+    />
 </template>
 
 <style>

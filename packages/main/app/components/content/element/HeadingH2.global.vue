@@ -7,5 +7,5 @@ const { data } = defineProps<{
 </script>
 
 <template>
-  <h2>{{ data.content.title }}</h2>
+    <h2>{{ data.content.title }}</h2>
 </template>

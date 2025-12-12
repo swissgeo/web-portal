@@ -30,13 +30,17 @@
     "scripts": {
         "build": "vite build",
         "build-watch": "vite build --watch",
-        "build-watch-dev": "vite build --watch --mode development"
+        "build-watch-dev": "vite build --watch --mode development",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
     },
     "devDependencies": {
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-prettier": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
+        "eslint": "catalog:",
         "prettier": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",

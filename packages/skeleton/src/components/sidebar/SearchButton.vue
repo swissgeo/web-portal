@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUiStore, SidebarType } from "@/stores/ui";
+
 import SidebarButton from "./SidebarButton.vue";
 
 const router = useRouter();
@@ -15,14 +16,14 @@ const toggleSearch = () => {
 </script>
 
 <template>
-  <div class="relative inline-block">
-    <!-- :is-active="uiStore.isSearchVisible" -->
-    <SidebarButton
-      :is-active="uiStore.currentSidebar == 'search'"
-      data-cy="button-search-panel"
-      :title="$t('menu.search')"
-      icon="Search"
-      @click="toggleSearch"
-    />
-  </div>
+    <div class="relative inline-block">
+        <!-- :is-active="uiStore.isSearchVisible" -->
+        <SidebarButton
+            :is-active="uiStore.currentSidebar == 'search'"
+            data-cy="button-search-panel"
+            :title="$t('menu.search')"
+            icon="Search"
+            @click="toggleSearch"
+        />
+    </div>
 </template>

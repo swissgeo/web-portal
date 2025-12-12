@@ -1,13 +1,12 @@
+import type { Lang } from "@swissgeo/shared";
 import type {
   MenuTree,
   MenuEntry,
   MenuEntryLangaugeItem,
 } from "@swissgeo/shared/api";
-import type { Lang } from "@swissgeo/shared";
-import { ALLOWED_LANGUAGES } from "@swissgeo/shared";
-
 import type { RouteRecordRaw } from "vue-router";
 
+import { ALLOWED_LANGUAGES } from "@swissgeo/shared";
 import page from "~/pages/page.vue";
 import slugify from "slugify";
 import { joinURL } from "ufo";

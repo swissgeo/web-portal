@@ -13,10 +13,10 @@ const caption = computed(() => {
 </script>
 
 <template>
-  <figure>
-    <picture>
-      <img :src="image.url" class="max-w-[756px]" />
-    </picture>
-    <figcaption>{{ caption }}</figcaption>
-  </figure>
+    <figure>
+        <picture>
+            <img :src="image.url" class="max-w-[756px]" />
+        </picture>
+        <figcaption>{{ caption }}</figcaption>
+    </figure>
 </template>

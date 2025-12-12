@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import type { MenuTree } from "~~/shared/types/api/Menu";
-import type { Page } from "~~/shared/types/livingdocs/Page";
+import type { MenuTree } from "@swissgeo/shared/api";
+import type { Page } from "@swissgeo/shared/livingdocs";
 import type { RouteLocationNormalizedLoadedGeneric } from "vue-router";
+
+import { SidebarType, useUiStore } from "@swissgeo/skeleton";
+import type { Lang } from "@swissgeo/shared";
 
 const route = useRoute();
 
@@ -12,8 +15,8 @@ const menuStore = useMenuStore();
 
 const livingDocsPageData = useLivingdocsPageData();
 
-const documentId = computed(() => {
-  return route.meta.documentId;
+const documentId = computed<string>(() => {
+  return route.meta.documentId as string;
 });
 
 const { data } = await useFetch<Page>(

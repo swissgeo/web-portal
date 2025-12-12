@@ -1,7 +1,7 @@
 import type { Map as OlMapType } from "ol";
-import Layer from "ol/layer/Layer";
 import type { MaybeRef, Ref } from "vue";
 
+import Layer from "ol/layer/Layer";
 import VectorSource from "ol/source/Vector";
 
 /**

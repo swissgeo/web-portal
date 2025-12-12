@@ -15,5 +15,5 @@ const containers = computed(() => {
 </script>
 
 <template>
-  <ContentRenderer :containers="containers" />
+    <ContentRenderer :containers="containers" />
 </template>

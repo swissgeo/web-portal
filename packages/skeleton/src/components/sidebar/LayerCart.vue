@@ -9,22 +9,22 @@ function toggleVisibility(layer: Layer) {
 </script>
 
 <template>
-  <ul class="mt-8">
-    <li v-for="layer in layerStore.layers" class="flex gap-2 items-center">
-      <div>
-        <IconButton
-          :icon="layer.isVisible ? 'Eye' : 'EyeOff'"
-          @click="toggleVisibility(layer)"
-          severity="secondary"
-        />
-      </div>
-      <div
-        class="overflow-x-hidden text-nowrap"
-        :title="layer.record.id"
-        :class="{ 'text-gray-300': !layer.isVisible }"
-      >
-        {{ layer.record.id }}
-      </div>
-    </li>
-  </ul>
+    <ul class="mt-8">
+        <li v-for="layer in layerStore.layers" class="flex gap-2 items-center">
+            <div>
+                <IconButton
+                    :icon="layer.isVisible ? 'Eye' : 'EyeOff'"
+                    @click="toggleVisibility(layer)"
+                    severity="secondary"
+                />
+            </div>
+            <div
+                class="overflow-x-hidden text-nowrap"
+                :title="layer.record.id"
+                :class="{ 'text-gray-300': !layer.isVisible }"
+            >
+                {{ layer.record.id }}
+            </div>
+        </li>
+    </ul>
 </template>

@@ -1,10 +1,8 @@
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
-import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'unplugin-dts/vite'
-import AutoImportComponents from 'unplugin-vue-components/vite'
 import { fileURLToPath, URL } from 'url'
-import { defineConfig, type UserConfig } from 'vite'
+import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 const config = defineConfig(({ mode }) => {
@@ -37,26 +35,6 @@ const config = defineConfig(({ mode }) => {
             },
         },
         plugins: [
-            AutoImport({
-                dirs: ['./src/**'],
-                imports: [
-                    // Presets
-                    'vue',
-                    'vue-router',
-                    'vue-i18n',
-                    'pinia',
-                    '@vueuse/core',
-                    'vee-validate',
-                ],
-                // Automatically generate types
-                dts: '.nuxt/auto-imports.d.ts',
-                // Auto import inside Vue template
-                vueTemplate: true,
-            }),
-            AutoImportComponents({
-                dts: './.nuxt/auto-components.d.ts',
-                dirs: ['./src/**'],
-            }),
             dts({
                 bundleTypes: true,
                 processor: 'vue',

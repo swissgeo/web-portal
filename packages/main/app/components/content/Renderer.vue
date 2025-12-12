@@ -53,9 +53,9 @@ const components = computed(() => {
 </script>
 
 <template>
-  <div>
-    <div v-for="component in components" :key="component.identifier">
-      <component :is="component.componentName" :data="component" />
+    <div>
+        <div v-for="component in components" :key="component.identifier">
+            <component :is="component.componentName" :data="component" />
+        </div>
     </div>
-  </div>
 </template>

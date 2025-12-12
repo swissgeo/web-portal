@@ -1,7 +1,6 @@
-import jsdom from 'jsdom'
-
-import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import { registerProj4 } from '@swissgeo/coordinates'
+import jsdom from 'jsdom'
+import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 

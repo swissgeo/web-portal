@@ -8,7 +8,9 @@
         "generate": "nuxt generate",
         "postinstall": "nuxt prepare",
         "preview": "nuxt preview",
-        "type-check": "vue-tsc --build"
+        "type-check": "vue-tsc --build",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
     },
     "dependencies": {
         "@floating-ui/vue": "catalog:",

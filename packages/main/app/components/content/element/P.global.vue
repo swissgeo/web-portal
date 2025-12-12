@@ -5,7 +5,7 @@ const { data } = defineProps<{ data: ContentItem }>();
 </script>
 
 <template>
-  <p class="mb-4">
-    {{ data.content?.text }}
-  </p>
+    <p class="mb-4">
+        {{ data.content?.text }}
+    </p>
 </template>

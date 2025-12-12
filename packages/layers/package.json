@@ -19,7 +19,9 @@
     "scripts": {
         "build": "vite build",
         "build-watch": "vite build --watch",
-        "build-watch-dev": "vite build --watch --mode development"
+        "build-watch-dev": "vite build --watch --mode development",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
     },
     "dependencies": {
         "@swissgeo/coordinates": "catalog:",
@@ -37,6 +39,7 @@
         "@types/lodash-es": "catalog:",
         "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
+        "eslint": "catalog:",
         "prettier": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",

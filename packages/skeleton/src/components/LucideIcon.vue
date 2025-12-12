@@ -10,5 +10,5 @@ const component = computed(() => (lucideIcons as Record<string, object>)[name]);
 </script>
 
 <template>
-  <component :is="component" class="shrink-0 grow-0"></component>
+    <component :is="component" class="shrink-0 grow-0"></component>
 </template>

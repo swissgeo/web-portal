@@ -17,7 +17,7 @@ export default defineEventHandler(async () => {
     // } else {
     console.log(`Fetching menus from ${target}`)
     try {
-        let data = await $fetch(target, {
+        const data = await $fetch(target, {
             headers: {
                 Authorization: `Bearer ${authToken}`,
             },

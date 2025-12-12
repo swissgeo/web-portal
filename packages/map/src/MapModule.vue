@@ -3,15 +3,15 @@ import OpenLayersScale from "./OpenLayersScale.vue";
 </script>
 
 <template>
-  <div class=".full-screen-map">
-    <div></div>
-    <!-- here's the switch between openlayers and cesium -->
-    <OpenLayersMap>
-      <OpenLayersScale />
+    <div class=".full-screen-map">
+        <div></div>
+        <!-- here's the switch between openlayers and cesium -->
+        <OpenLayersMap>
+            <OpenLayersScale />
 
-      <slot />
-    </OpenLayersMap>
-  </div>
+            <slot />
+        </OpenLayersMap>
+    </div>
 </template>
 
 <style scoped>

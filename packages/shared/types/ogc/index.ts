@@ -1,1 +1,1 @@
-export * from "./Records.ts"
+export type * from "./Records.ts"

@@ -2,7 +2,6 @@ import LucideIcon from "@/components/LucideIcon.vue";
 import SearchButton from "@/components/sidebar/SearchButton.vue";
 
 import ContentButton from "./components/sidebar/ContentButton.vue";
-
 import SideBar from "./components/sidebar/SideBar.vue";
 
 // export default {

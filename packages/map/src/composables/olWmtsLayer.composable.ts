@@ -1,11 +1,10 @@
 import type { Map } from "ol";
 // import type { ExternalWMTSLayer } from "@swissgeo/layers";
+import type { Options as WMTSOptions } from "ol/source/WMTS";
 
 import log from "@swissgeo/log";
 import { Tile as TileLayer } from "ol/layer";
-import type { Options as WMTSOptions } from "ol/source/WMTS";
 import WMTS from "ol/source/WMTS";
-
 import { computed, inject, watch, Ref } from "vue";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";

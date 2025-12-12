@@ -14,7 +14,7 @@ const containers = computed(() => {
 </script>
 
 <template>
-  <section class="mb-4">
-    <ContentRenderer :containers />
-  </section>
+    <section class="mb-4">
+        <ContentRenderer :containers />
+    </section>
 </template>

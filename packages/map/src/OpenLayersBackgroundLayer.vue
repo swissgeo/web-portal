@@ -6,5 +6,5 @@ const zIndex = computed(() => 1);
 </script>
 
 <template>
-  <OpenLayersWMTSLayer :layer="layer" :z-index="1" />
+    <OpenLayersWMTSLayer :layer="layer" :z-index="zIndex" />
 </template>
