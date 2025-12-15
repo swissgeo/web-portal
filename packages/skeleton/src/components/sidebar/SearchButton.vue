@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { useUiStore, SidebarType } from "@/stores/ui";
+import { useUiStore, SidebarType } from '@/stores/ui'
 
-import SidebarButton from "./SidebarButton.vue";
+import SidebarButton from './SidebarButton.vue'
 
-const router = useRouter();
+const router = useRouter()
 
-const { t: $t } = useI18n();
+const { t: $t } = useI18n()
 
-const uiStore = useUiStore();
+const uiStore = useUiStore()
 
 const toggleSearch = () => {
-  uiStore.setSidebar(SidebarType.SEARCH);
-  router.push("/search");
-};
+    uiStore.setSidebar(SidebarType.SEARCH)
+    router.push('/search')
+}
 </script>
 
 <template>

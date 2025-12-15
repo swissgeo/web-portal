@@ -1,8 +1,8 @@
-import LucideIcon from "@/components/LucideIcon.vue";
-import SearchButton from "@/components/sidebar/SearchButton.vue";
+import LucideIcon from '@/components/LucideIcon.vue'
+import SearchButton from '@/components/sidebar/SearchButton.vue'
 
-import ContentButton from "./components/sidebar/ContentButton.vue";
-import SideBar from "./components/sidebar/SideBar.vue";
+import ContentButton from './components/sidebar/ContentButton.vue'
+import SideBar from './components/sidebar/SideBar.vue'
 
 // export default {
 //     install(app: App) {
@@ -14,6 +14,6 @@ import SideBar from "./components/sidebar/SideBar.vue";
 //     },
 // }
 
-export { SidebarType, useUiStore } from "@/stores/ui";
+export { SidebarType, useUiStore } from '@/stores/ui'
 
-export { SideBar, SearchButton, LucideIcon, ContentButton };
+export { SideBar, SearchButton, LucideIcon, ContentButton }

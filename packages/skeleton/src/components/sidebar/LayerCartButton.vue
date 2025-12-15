@@ -1,19 +1,16 @@
 <script setup lang="ts">
 // const router = useRouter();
 
-const uiStore = useUiStore();
+const uiStore = useUiStore()
 
 const toggle = () => {
-  if (
-    uiStore.isSidebarOpen &&
-    uiStore.currentSidebar === SidebarType.LAYER_CART
-  ) {
-    uiStore.closeSidebar();
-  } else {
-    uiStore.setSidebar(SidebarType.LAYER_CART);
-  }
-  //   router.push("/layerTree");
-};
+    if (uiStore.isSidebarOpen && uiStore.currentSidebar === SidebarType.LAYER_CART) {
+        uiStore.closeSidebar()
+    } else {
+        uiStore.setSidebar(SidebarType.LAYER_CART)
+    }
+    //   router.push("/layerTree");
+}
 </script>
 
 <template>

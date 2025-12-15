@@ -47,7 +47,7 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
                 ],
                 eslintrc: {
                     enabled: true,
-                    filepath: '.output/eslintrc-auto-import.json'
+                    filepath: '.output/eslintrc-auto-import.json',
                 },
                 // Automatically generate types
                 dts: '.nuxt/auto-imports.d.ts',

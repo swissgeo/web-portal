@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import SearchButton from "@/components/sidebar/SearchButton.vue";
+import SearchButton from '@/components/sidebar/SearchButton.vue'
 
-import LayerCartButton from "./LayerCartButton.vue";
+import LayerCartButton from './LayerCartButton.vue'
 </script>
 
 <template>

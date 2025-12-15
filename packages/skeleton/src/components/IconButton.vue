@@ -1,9 +1,6 @@
 <script lang="ts" setup>
-/**
- * Button component which is basically a wrapper so we can
- * use LucideIcons instead of prime icons
- */
-import Button from "primevue/button";
+/** Button component which is basically a wrapper so we can use LucideIcons instead of prime icons */
+import Button from 'primevue/button'
 </script>
 
 <template>

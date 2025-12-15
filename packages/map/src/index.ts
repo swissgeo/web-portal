@@ -1,3 +1,3 @@
-import MapModule from "@/MapModule.vue";
+import MapModule from '@/MapModule.vue'
 
-export { MapModule };
+export { MapModule }

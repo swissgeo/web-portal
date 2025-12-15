@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import * as lucideIcons from "lucide-vue-next";
-import { computed } from "vue";
+import * as lucideIcons from 'lucide-vue-next'
+import { computed } from 'vue'
 
 const { name } = defineProps<{
-  name: string;
-}>();
+    name: string
+}>()
 
-const component = computed(() => (lucideIcons as Record<string, object>)[name]);
+const component = computed(() => (lucideIcons as Record<string, object>)[name])
 </script>
 
 <template>
-    <component :is="component" class="shrink-0 grow-0"></component>
+    <component
+        :is="component"
+        class="shrink-0 grow-0"
+    ></component>
 </template>

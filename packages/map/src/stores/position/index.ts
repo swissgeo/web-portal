@@ -1,24 +1,21 @@
-import { CoordinateSystem, LV95 } from "@swissgeo/coordinates";
+import { CoordinateSystem, LV95 } from '@swissgeo/coordinates'
 
-import type {
-  PositionStoreGetters,
-  PositionStoreState,
-} from "@/stores/position/types/position";
+import type { PositionStoreGetters, PositionStoreState } from '@/stores/position/types/position'
 
 /** Default projection to be used throughout the application */
-export const DEFAULT_PROJECTION: CoordinateSystem = LV95;
+export const DEFAULT_PROJECTION: CoordinateSystem = LV95
 
 // import decreaseZoom from "@/stores/position/actions/decreaseZoom";
 // import increaseZoom from "@/stores/position/actions/increaseZoom";
 // import setAutoRotation from "@/stores/position/actions/setAutoRotation";
 // import setCameraPosition from "@/stores/position/actions/setCameraPosition";
-import setCenter from "@/stores/position/actions/setCenter";
+import setCenter from '@/stores/position/actions/setCenter'
 // import setCrossHair from "@/stores/position/actions/setCrossHair";
 // import setDisplayedFormat from "@/stores/position/actions/setDisplayedFormat";
 // import setHasOrientation from "@/stores/position/actions/setHasOrientation";
-import setProjection from "@/stores/position/actions/setProjection";
+import setProjection from '@/stores/position/actions/setProjection'
 // import setRotation from "@/stores/position/actions/setRotation";
-import setZoom from "@/stores/position/actions/setZoom";
+import setZoom from '@/stores/position/actions/setZoom'
 // import zoomToExtent from "@/stores/position/actions/zoomToExtent";
 // import centerEpsg4326 from "@/stores/position/getters/centerEpsg4326";
 // import extent from "@/stores/position/getters/extent";
@@ -27,48 +24,48 @@ import setZoom from "@/stores/position/actions/setZoom";
 // import { LV95Format } from '@/utils/coordinates/coordinateFormat'
 
 const state = (): PositionStoreState => ({
-  // displayFormat: LV95Format,
-  // // some unit tests fail because DEFAULT_PROJECTION is somehow not yet defined when they are run
-  // // hence the `?.` operator
-  zoom: DEFAULT_PROJECTION.getDefaultZoom(),
-  rotation: 0,
-  autoRotation: false,
-  // hasOrientation: false,
-  // // some unit tests fail because DEFAULT_PROJECTION is somehow not yet defined when they are run
-  // // hence the `?.` operator
-  center: DEFAULT_PROJECTION.bounds!.center,
-  projection: DEFAULT_PROJECTION,
-  // crossHair: undefined,
-  // crossHairPosition: undefined,
-  // camera: undefined,
-});
+    // displayFormat: LV95Format,
+    // // some unit tests fail because DEFAULT_PROJECTION is somehow not yet defined when they are run
+    // // hence the `?.` operator
+    zoom: DEFAULT_PROJECTION.getDefaultZoom(),
+    rotation: 0,
+    autoRotation: false,
+    // hasOrientation: false,
+    // // some unit tests fail because DEFAULT_PROJECTION is somehow not yet defined when they are run
+    // // hence the `?.` operator
+    center: DEFAULT_PROJECTION.bounds!.center,
+    projection: DEFAULT_PROJECTION,
+    // crossHair: undefined,
+    // crossHairPosition: undefined,
+    // camera: undefined,
+})
 
 const getters: PositionStoreGetters = {
-  // centerEpsg4326,
-  // resolution,
-  // extent,
-  // isExtentOnlyWithinLV95Bounds,
-};
+    // centerEpsg4326,
+    // resolution,
+    // extent,
+    // isExtentOnlyWithinLV95Bounds,
+}
 
 const actions = {
-  // setDisplayedFormat,
-  setZoom,
-  // increaseZoom,
-  // decreaseZoom,
-  // zoomToExtent,
-  // setRotation,
-  // setAutoRotation,
-  // setHasOrientation,
-  setCenter,
-  // setCrossHair,
-  // setCameraPosition,
-  setProjection,
-};
+    // setDisplayedFormat,
+    setZoom,
+    // increaseZoom,
+    // decreaseZoom,
+    // zoomToExtent,
+    // setRotation,
+    // setAutoRotation,
+    // setHasOrientation,
+    setCenter,
+    // setCrossHair,
+    // setCameraPosition,
+    setProjection,
+}
 
-const usePositionStore = defineStore("position", {
-  state,
-  getters: { ...getters },
-  actions,
-});
+const usePositionStore = defineStore('position', {
+    state,
+    getters: { ...getters },
+    actions,
+})
 
-export default usePositionStore;
+export default usePositionStore

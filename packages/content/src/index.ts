@@ -1,2 +1,1 @@
-export { useMenuStore } from "./stores/menu";
-export type * from "./stores/menu";
+export { useMenuStore } from './stores/menu'

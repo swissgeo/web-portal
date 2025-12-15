@@ -40,9 +40,9 @@ export default defineEventHandler(async (event) => {
     }
 
     /**
-     * For all the translation that the document at given menu entry has,
-     * we go and fetch the document data so that we also know additional info
-     * like the slug
+     * For all the translation that the document at given menu entry has, we go and fetch the
+     * document data so that we also know additional info like the slug
+     *
      * @param tree
      * @returns {'lang': { slug, documentId, label}}
      */

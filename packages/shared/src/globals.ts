@@ -1,3 +1,3 @@
-import type { Lang } from "~/Language";
+import type { Lang } from '~/Language'
 
-export const ALLOWED_LANGUAGES: Lang[] = ["de", "fr"];
+export const ALLOWED_LANGUAGES: Lang[] = ['de', 'fr']

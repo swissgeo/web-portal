@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import OpenLayersScale from "./OpenLayersScale.vue";
+import OpenLayersScale from './OpenLayersScale.vue'
 </script>
 
 <template>

@@ -4,9 +4,10 @@ patches/
 
 node_modules/
 **/node_modules
+**/dist
+**/.nuxt
+**/.output
 packages/**/node_modules/
 packages/**/dist/
-
-packages/viewer/index.html
-packages/viewer/public/icon.svg
-packages/viewer/src/assets/svg/swiss-flag.svg
+packages/**/.nuxt
+packages/**/.output

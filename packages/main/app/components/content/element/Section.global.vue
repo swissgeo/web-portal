@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import type { LeadContentPageWithCheckbox } from "~/types/livingdocs/Page";
+import type { LeadContentPageWithCheckbox } from '~/types/livingdocs/Page'
 
 const { data } = defineProps<{
-  data: Record<string, LeadContentPageWithCheckbox>;
-}>();
+    data: Record<string, LeadContentPageWithCheckbox>
+}>()
 
 const containers = computed(() => {
-  if (!data.containers) {
-    return [];
-  }
-  return data.containers.section;
-});
+    if (!data.containers) {
+        return []
+    }
+    return data.containers.section
+})
 </script>
 
 <template>

@@ -5,12 +5,14 @@
     "scripts": {
         "build": "nuxt build",
         "dev": "nuxt dev",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
         "generate": "nuxt generate",
         "postinstall": "nuxt prepare",
-        "preview": "nuxt preview",
-        "type-check": "vue-tsc --build",
         "lint": "eslint --fix",
-        "lint:no-fix": "eslint"
+        "lint:no-fix": "eslint",
+        "preview": "nuxt preview",
+        "type-check": "vue-tsc --build"
     },
     "dependencies": {
         "@floating-ui/vue": "catalog:",
@@ -64,13 +66,9 @@
         "@eslint/markdown": "catalog:",
         "@primevue/nuxt-module": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
-        "@swissgeo/config-prettier": "catalog:",
         "@types/jsdom": "catalog:",
         "eslint-plugin-perfectionist": "catalog:",
         "fs-extra": "^11.3.2",
-        "prettier": "catalog:",
-        "prettier-plugin-packagejson": "catalog:",
-        "prettier-plugin-tailwindcss": "catalog:",
         "typescript": "catalog:",
         "vite-plugin-vue-devtools": "catalog:",
         "vue-tsc": "catalog:"

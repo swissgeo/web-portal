@@ -6,13 +6,21 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-      "build": "pnpm run --recursive --if-present build",
-      "build-watch-dev": "pnpm run --recursive --if-present build-watch-dev",
-      "dev": "pnpm --filter=main run dev ",
-      "lint": "pnpm run --recursive --parallel --no-bail --if-present lint"
+    "build": "pnpm run --recursive --if-present build",
+    "build-watch-dev": "pnpm run --recursive --if-present build-watch-dev",
+    "dev": "pnpm --filter=main run dev ",
+    "lint": "pnpm run --recursive --parallel --no-bail --if-present lint"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/swissgeo/web-poc-portal.git"
+  },
+  "devDependencies": {
+    "@prettier/plugin-xml": "catalog:",
+    "@swissgeo/config-prettier": "catalog:",
+    "prettier": "catalog:",
+    "prettier-plugin-jsdoc": "catalog:",
+    "prettier-plugin-packagejson": "catalog:",
+    "prettier-plugin-tailwindcss": "catalog:"
   }
 }

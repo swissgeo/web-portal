@@ -1,5 +1,6 @@
 /**
  * Wrapper around fetch in order to add the necessary auth headers for livingdocs
+ *
  * @param url URL to fetch
  * @param options Dict of options to pass to fetch
  * @returns Promise with a response of T

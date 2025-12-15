@@ -33,7 +33,6 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
             },
         },
         plugins: [
-
             // AutoImport({
             //     dirs: ['./src/**'],
             //     imports: [
@@ -57,7 +56,7 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
             vue(),
             dts({
                 bundleTypes: true,
-                processor: "vue"
+                processor: 'vue',
             }),
             tsconfigPaths(),
         ],

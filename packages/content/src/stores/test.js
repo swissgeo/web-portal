@@ -1,5 +1,5 @@
-const foo = 3;
+const foo = 3
 
 if (foo == 3) {
-  console.log("bar");
+    console.log('bar')
 }

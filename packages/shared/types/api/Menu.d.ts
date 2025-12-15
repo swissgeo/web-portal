@@ -10,10 +10,7 @@ export type MenuEntryLangaugeItem = {
     label: string
 }
 
-/**
- * The entry has language strings for keys ('de', 'fr') alongside
- * an optional property 'children'
- */
+/** The entry has language strings for keys ('de', 'fr') alongside an optional property 'children' */
 export type MenuEntry = {
     [key in Lang]?: MenuEntryLangaugeItem
 } & {

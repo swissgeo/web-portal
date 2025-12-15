@@ -1,10 +1,11 @@
 import path from 'node:path'
 
 /**
- * Get the stylePreset, extract our primitive colors and turn them into
- * lines of @theme variables to be injected into main.css
+ * Get the stylePreset, extract our primitive colors and turn them into lines of @theme variables to
+ * be injected into main.css
+ *
  * @param presetPath The path to the primevue preset file
- * @returns string
+ * @returns String
  */
 async function createColorCss(presetPath: string) {
     const presetFile = path.resolve(process.cwd(), presetPath)

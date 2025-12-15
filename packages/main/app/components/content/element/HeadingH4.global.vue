@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { ContentItem } from "~~/shared/types/livingdocs/Page";
+import type { ContentItem } from '~~/shared/types/livingdocs/Page'
 
 const { data } = defineProps<{
-  data: ContentItem;
-}>();
+    data: ContentItem
+}>()
 </script>
 
 <template>

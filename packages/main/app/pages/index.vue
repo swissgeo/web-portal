@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-const route = useRoute();
+const route = useRoute()
 
 // const mainStore = useMainStore()
 
 const openSidebar = () => {
-  switch (route.path.split("/")[0]) {
-    case "search":
-      // uiStore.setSidebar(SidebarType.SEARCH)
-      break;
-    case "layerTree":
-      // uiStore.setSidebar(SidebarType.LAYER_CART)
-      break;
-    case "/catalogue":
-      // uiStore.setSidebar(SidebarType.GEOCATALOG_TREE)
-      break;
-    // case '/content':
-    //     openContentSidebar()
-    //     break
-  }
-};
+    switch (route.path.split('/')[0]) {
+        case 'search':
+            // uiStore.setSidebar(SidebarType.SEARCH)
+            break
+        case 'layerTree':
+            // uiStore.setSidebar(SidebarType.LAYER_CART)
+            break
+        case '/catalogue':
+            // uiStore.setSidebar(SidebarType.GEOCATALOG_TREE)
+            break
+        // case '/content':
+        //     openContentSidebar()
+        //     break
+    }
+}
 
 // const openLayerInfo = () => {
 //     if (route.path.startsWith('/info')) {
@@ -38,23 +38,23 @@ const openSidebar = () => {
 // }
 
 const openWelcomeOverlay = () => {
-  if (route.path === "/") {
-    // uiStore.showWelcomeOverlay()
-  }
-};
+    if (route.path === '/') {
+        // uiStore.showWelcomeOverlay()
+    }
+}
 
 onMounted(() => {
-  openSidebar();
-  // openLayerInfo()
-  openWelcomeOverlay();
-});
+    openSidebar()
+    // openLayerInfo()
+    openWelcomeOverlay()
+})
 
 watch(
-  () => route,
-  () => {
-    openSidebar();
-  },
-);
+    () => route,
+    () => {
+        openSidebar()
+    }
+)
 </script>
 
 <template>

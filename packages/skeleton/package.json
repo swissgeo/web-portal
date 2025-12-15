@@ -22,16 +22,16 @@
         "build": "vite build",
         "build-watch": "vite build --watch",
         "build-watch-dev": "vite build --watch --mode development",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
         "lint": "eslint --fix",
         "lint:no-fix": "eslint"
     },
     "dependencies": {
-        "@swissgeo/config-prettier": "catalog:",
         "@swissgeo/content": "workspace:*",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "lucide-vue-next": "catalog:",
-        "prettier": "catalog:",
         "primevue": "catalog:"
     },
     "devDependencies": {

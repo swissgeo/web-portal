@@ -19,6 +19,8 @@
         "build": "vite build",
         "build-watch": "vite build --watch",
         "build-watch-dev": "vite build --watch --mode development",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
         "lint": "eslint --fix",
         "lint:no-fix": "eslint"
     },
@@ -28,12 +30,10 @@
     "devDependencies": {
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
-        "eslint": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
-        "@swissgeo/config-prettier": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
-        "prettier": "catalog:",
+        "eslint": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",

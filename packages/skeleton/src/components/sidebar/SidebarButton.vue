@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-const emit = defineEmits(["click"]);
+const emit = defineEmits(['click'])
 
 const { title } = defineProps<{
-  title: string;
-  isActive: boolean;
-  icon: string;
-}>();
+    title: string
+    isActive: boolean
+    icon: string
+}>()
 </script>
 
 <template>
