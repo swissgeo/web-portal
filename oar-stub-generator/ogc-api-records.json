@@ -11881,6 +11881,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.swisstopo.meldungen-karten_geodaten/ch.swisstopo.meldungen-karten_geodaten_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -23809,6 +23816,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-webcams/ch.meteoschweiz.messnetz-webcams_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -23858,6 +23872,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-pollen/ch.meteoschweiz.messnetz-pollen_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -23911,6 +23932,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-phaenologie/ch.meteoschweiz.messnetz-phaenologie_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -23960,6 +23988,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-partner/ch.meteoschweiz.messnetz-partner_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -24073,6 +24108,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-manuell/ch.meteoschweiz.messnetz-manuell_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -24122,6 +24164,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-klima/ch.meteoschweiz.messnetz-klima_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -24229,6 +24278,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-flugwetter/ch.meteoschweiz.messnetz-flugwetter_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -24342,6 +24398,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-beobachtungen/ch.meteoschweiz.messnetz-beobachtungen_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -24393,6 +24456,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-automatisch/ch.meteoschweiz.messnetz-automatisch_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -24442,6 +24512,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-atmosphaere/ch.meteoschweiz.messnetz-atmosphaere_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -31453,6 +31530,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-lufttemperatur-24h-max-1h/ch.meteoschweiz.messwerte-lufttemperatur-24h-max-1h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -35718,6 +35802,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-lufttemperatur-10min/ch.meteoschweiz.messwerte-lufttemperatur-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -36017,6 +36108,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-luftfeuchtigkeit-10min/ch.meteoschweiz.messwerte-luftfeuchtigkeit-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -36225,6 +36323,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.bafu.hydroweb-messstationen_grundwasser/ch.bafu.hydroweb-messstationen_grundwasser_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -36976,6 +37081,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-luftdruck-qnh-10min/ch.meteoschweiz.messwerte-luftdruck-qnh-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -37185,6 +37297,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.swisstopo.treasurehunt/json/2056/ch.swisstopo.treasurehunt.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -37420,6 +37539,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-luftdruck-qff-10min/ch.meteoschweiz.messwerte-luftdruck-qff-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -37666,6 +37792,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-luftdruck-qfe-10min/ch.meteoschweiz.messwerte-luftdruck-qfe-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -39231,6 +39364,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-luftdruck-differenz-3h/ch.meteoschweiz.messwerte-luftdruck-differenz-3h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -39280,6 +39420,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.bafu.hydroweb-warnkarte_national/ch.bafu.hydroweb-warnkarte_national_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -39680,6 +39827,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min/ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -39911,6 +40065,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-luftdruck-700hpa-flaeche-10min/ch.meteoschweiz.messwerte-luftdruck-700hpa-flaeche-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -40644,6 +40805,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-globalstrahlung-1d/ch.meteoschweiz.messwerte-globalstrahlung-1d_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -40751,6 +40919,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-globalstrahlung-10min/ch.meteoschweiz.messwerte-globalstrahlung-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -40972,6 +41147,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-gesamtschnee-1d/ch.meteoschweiz.messwerte-gesamtschnee-1d_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -41283,6 +41465,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-foehn-10min/ch.meteoschweiz.messwerte-foehn-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -42260,6 +42449,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.bfe.ladestellen-elektromobilitaet/data/ch.bfe.ladestellen-elektromobilitaet_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -42612,6 +42808,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-lufttemperatur-24h-min-1h/ch.meteoschweiz.messwerte-lufttemperatur-24h-min-1h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -42960,6 +43163,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.bafu.hydroweb-messstationen_vorhersage/ch.bafu.hydroweb-messstationen_vorhersage_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -43730,6 +43940,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.bafu.hydroweb-messstationen_temperatur/ch.bafu.hydroweb-messstationen_temperatur_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -43779,6 +43996,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.bafu.hydroweb-messstationen_grundwasserzustand/ch.bafu.hydroweb-messstationen_grundwasserzustand_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -43897,6 +44121,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.bafu.hydroweb-messstationen_grundwassertemperatur/ch.bafu.hydroweb-messstationen_grundwassertemperatur_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -43948,6 +44179,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.bafu.hydroweb-messstationen_gefahren/ch.bafu.hydroweb-messstationen_gefahren_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -43997,6 +44235,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.bafu.hydroweb-messstationen_zustand/ch.bafu.hydroweb-messstationen_zustand_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -44171,6 +44416,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-pollen-graeser-1h/ch.meteoschweiz.messwerte-pollen-graeser-1h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -44387,6 +44639,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-neuschnee-1d/ch.meteoschweiz.messwerte-neuschnee-1d_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -44496,6 +44755,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-neuschnee-2d/ch.meteoschweiz.messwerte-neuschnee-2d_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -44538,6 +44804,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-neuschnee-3d/ch.meteoschweiz.messwerte-neuschnee-3d_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -44589,6 +44862,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-niederschlag-10min/ch.meteoschweiz.messwerte-niederschlag-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -44693,6 +44973,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-pollen-hasel-1h/ch.meteoschweiz.messwerte-pollen-hasel-1h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -44859,6 +45146,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-niederschlag-1d/ch.meteoschweiz.messwerte-niederschlag-1d_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -44968,6 +45262,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-niederschlag-1h/ch.meteoschweiz.messwerte-niederschlag-1h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -45072,6 +45373,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-niederschlag-24h/ch.meteoschweiz.messwerte-niederschlag-24h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -45116,6 +45424,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-niederschlag-48h/ch.meteoschweiz.messwerte-niederschlag-48h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -45158,6 +45473,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-niederschlag-72h/ch.meteoschweiz.messwerte-niederschlag-72h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -45821,6 +46143,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-pollen-birke-1h/ch.meteoschweiz.messwerte-pollen-birke-1h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -45907,6 +46236,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-pollen-buche-1h/ch.meteoschweiz.messwerte-pollen-buche-1h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -46064,6 +46400,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-pollen-eiche-1h/ch.meteoschweiz.messwerte-pollen-eiche-1h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -46106,6 +46449,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-pollen-erle-1h/ch.meteoschweiz.messwerte-pollen-erle-1h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -46203,6 +46553,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-pollen-esche-1h/ch.meteoschweiz.messwerte-pollen-esche-1h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -46430,6 +46787,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-schneehoehe-automatisch-10min/ch.meteoschweiz.messwerte-schneehoehe-automatisch-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -47298,6 +47662,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-sonnenscheindauer-10min/ch.meteoschweiz.messwerte-sonnenscheindauer-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -47340,6 +47711,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-sonnenscheindauer-kumuliert-10min/ch.meteoschweiz.messwerte-sonnenscheindauer-kumuliert-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -47889,6 +48267,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-sonnenscheindauer-relativ-1d/ch.meteoschweiz.messwerte-sonnenscheindauer-relativ-1d_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -48003,6 +48388,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-taupunkt-10min/ch.meteoschweiz.messwerte-taupunkt-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -48381,6 +48773,13 @@
           "type": "text/html"
         },
         {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-wind-boeenspitze-kmh-10min/ch.meteoschweiz.messwerte-wind-boeenspitze-kmh-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
+        },
+        {
           "protocol": "OGC:WMS",
           "templated": true,
           "title": "OGC Web Map Service (WMS)",
@@ -48423,6 +48822,13 @@
           "rel": "describedby",
           "title": "Details",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-wind-boeenspitze-kmh-6h/ch.meteoschweiz.messwerte-wind-boeenspitze-kmh-6h_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",
@@ -48539,6 +48945,13 @@
           "rel": "item",
           "title": "Download",
           "type": "text/html"
+        },
+        {
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-windgeschwindigkeit-kmh-10min/ch.meteoschweiz.messwerte-windgeschwindigkeit-kmh-10min_en.json",
+          "protocol": "OGC:GEOJSON",
+          "rel": "item",
+          "title": "Data",
+          "type": "application/json"
         },
         {
           "protocol": "OGC:WMS",

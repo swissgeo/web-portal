@@ -374,6 +374,15 @@ def do_merge(args) -> int:
                 'protocol': 'OGC:STAC'
             })
 
+        if 'geojsonUrl' in layersconfig_entry:
+            links.append({
+                'type': 'application/json',
+                'title': 'Data',
+                'href': layersconfig_entry['geojsonUrl'],
+                'rel': 'item',
+                'protocol': 'OGC:GEOJSON'
+            })
+
         if layersconfig_entry['type'].lower() == 'wmts':
             links.append(
                 _get_geoadmin_wmts_link(
