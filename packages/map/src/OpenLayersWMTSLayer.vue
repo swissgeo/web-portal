@@ -2,14 +2,14 @@
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
 import { Layer } from '@swissgeo/layers'
-import log, { LogLevel } from '@swissgeo/log'
+import log from '@swissgeo/log'
 import { optionsFromCapabilities } from 'ol/source/WMTS'
 /** Renders a WMTS layer on the map by configuring it through a getCapabilities XML file */
 import { computed, onMounted } from 'vue'
 
 import { getLinksByProtocol } from '@/utils/recordUtils'
 
-import useOlWmtsLayer from './composables/olWmtsLayer.composable'
+import useOlWmtsLayer from './composables/olWMTSLayer.composable'
 
 const { layer } = defineProps<{
     layer: Layer
@@ -36,7 +36,7 @@ const { data } = await useFetch<string>(`/api/v1/layers/wmtsConfig/${capabilityU
 /** Retrieve the capabilities and then turn them into a options objects to be used by WMTS */
 const options = computed((): WMTSOptions => {
     if (!data.value) {
-        log.error(`Unable to fetch capabilities for ${url.value}`)
+        log.error(`Unable to fetch capabilities for ${capabilityUrl.value}`)
         throw new Error()
     }
 

@@ -5,7 +5,7 @@ import type { Options as WMTSOptions } from 'ol/source/WMTS'
 import log from '@swissgeo/log'
 import { Tile as TileLayer } from 'ol/layer'
 import WMTS from 'ol/source/WMTS'
-import { computed, inject } from 'vue'
+import { computed } from 'vue'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 // import usePositionStore from "@/stores/position";
@@ -20,12 +20,6 @@ export default function useOlWmtsLayer(
     zIndex: number
 ) {
     // const positionStore = usePositionStore();
-
-    const olMap = inject<Map>('olMap')
-    if (!olMap) {
-        log.error('OpenLayersMap is not available')
-        throw new Error('OpenLayersMap is not available')
-    }
 
     const layer = new TileLayer({
         properties: {
@@ -92,7 +86,7 @@ export default function useOlWmtsLayer(
 
     // watch(options, setSourceForProjection);
 
-    const { setVisibility, setZIndex } = useAddLayerToMap(layer, olMap, zIndex)
+    const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 
     // watch(_opacity, (newOpacity) => layer.setOpacity(newOpacity));
     // watch(() => positionStore.projection, setSourceForProjection);

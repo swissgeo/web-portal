@@ -31,6 +31,7 @@
         "@swissgeo/content": "workspace:*",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/shared": "workspace:*",
+        "lodash-es": "catalog:",
         "lucide-vue-next": "catalog:",
         "primevue": "catalog:"
     },

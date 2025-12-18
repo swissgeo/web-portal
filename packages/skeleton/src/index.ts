@@ -18,3 +18,5 @@ import SideBar from './components/sidebar/SideBar.vue'
 export { SidebarType, useUiStore } from '@/stores/ui'
 
 export { SideBar, SearchButton, LucideIcon, ContentButton, IconButton }
+
+export * from 'primevue'

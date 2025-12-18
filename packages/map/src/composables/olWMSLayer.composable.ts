@@ -1,5 +1,3 @@
-import type { Map } from 'ol'
-
 import log from '@swissgeo/log'
 import ImageLayer from 'ol/layer/Image'
 import TileLayer from 'ol/layer/Tile'
@@ -28,8 +26,6 @@ export default function useOlWmsLayer(
     zIndex: number
 ) {
     const positionStore = usePositionStore()
-
-    const olMap = inject<Map>('olMap')
 
     const format = computed(() => 'png') // format seems hardcoded in mapviewer, even though we
     // parse the capabilities to see if it's supported
@@ -67,8 +63,6 @@ export default function useOlWmsLayer(
         // }
         return params
     })
-
-    console.log({ wmsUrlParams })
 
     function createImageWMSSource(): ImageWMS {
         const config = {

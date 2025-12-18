@@ -115,7 +115,7 @@ catalogs:
       specifier: ^0.5.0
       version: 0.5.0
     lodash-es:
-      specifier: ^4.17.21
+      specifier: 4.17.21
       version: 4.17.21
     lucide-vue-next:
       specifier: ^0.542.0
@@ -126,6 +126,9 @@ catalogs:
     ol:
       specifier: ^10.6.1
       version: 10.7.0
+    ol-mapbox-style:
+      specifier: ^13.1.1
+      version: 13.1.1
     pinia:
       specifier: ^3.0.3
       version: 3.0.3
@@ -533,6 +536,9 @@ importers:
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared
+      '@swissgeo/skeleton':
+        specifier: workspace:*
+        version: link:../skeleton
       '@turf/turf':
         specifier: 'catalog:'
         version: 7.3.1
@@ -548,12 +554,18 @@ importers:
       ol:
         specifier: 'catalog:'
         version: 10.7.0
+      ol-mapbox-style:
+        specifier: 'catalog:'
+        version: 13.1.1(ol@10.7.0)
       proj4:
         specifier: 'catalog:'
         version: 2.20.2
       reproject:
         specifier: 'catalog:'
         version: 1.2.7
+      skeleton:workspace:*:
+        specifier: link:@swissgeo/skeleton:workspace:*
+        version: link:@swissgeo/skeleton:workspace:*
       vue:
         specifier: 'catalog:'
         version: 3.5.25(typescript@5.9.3)
@@ -658,6 +670,9 @@ importers:
       '@vueuse/core':
         specifier: 'catalog:'
         version: 13.9.0(vue@3.5.22(typescript@5.9.3))
+      lodash-es:
+        specifier: 'catalog:'
+        version: 4.17.21
       lucide-vue-next:
         specifier: 'catalog:'
         version: 0.542.0(vue@3.5.22(typescript@5.9.3))
@@ -1688,9 +1703,20 @@ packages:
   '@kwsites/promise-deferred@1.1.1':
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
 
+  '@mapbox/jsonlint-lines-primitives@2.0.2':
+    resolution: {integrity: sha512-rY0o9A5ECsTQRVhv7tL/OyDpGAoUB4tTvLiW1DSzQGq4bvTPhNw1VpSNjDJc5GFZ2XuyOtSWSVN05qOtcD71qQ==}
+    engines: {node: '>= 0.6'}
+
   '@mapbox/node-pre-gyp@2.0.3':
     resolution: {integrity: sha512-uwPAhccfFJlsfCxMYTwOdVfOz3xqyj8xYL3zJj8f0pb30tLohnnFPhLuqp4/qoEz8sNxe4SESZedcBojRefIzg==}
     engines: {node: '>=18'}
+    hasBin: true
+
+  '@mapbox/unitbezier@0.0.1':
+    resolution: {integrity: sha512-nMkuDXFv60aBr9soUG5q+GvZYL+2KZHVvsqFCzqnkGEf46U2fvmytHaEVc1/YZbiLn8X+eR3QzX1+dwDO1lxlw==}
+
+  '@maplibre/maplibre-gl-style-spec@23.3.0':
+    resolution: {integrity: sha512-IGJtuBbaGzOUgODdBRg66p8stnwj9iDXkgbYKoYcNiiQmaez5WVRfXm4b03MCDwmZyX93csbfHFWEJJYHnn5oA==}
     hasBin: true
 
   '@microsoft/api-extractor-model@7.32.1':
@@ -5837,6 +5863,9 @@ packages:
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
 
+  json-stringify-pretty-compact@4.0.0:
+    resolution: {integrity: sha512-3CNZ2DnrpByG9Nqj6Xo8vqbjT4F6N+tb4Gb28ESAZjYZ5yqvmc56J+/kuIwkaAMOyblTQhUW7PxMkUb8Q36N3Q==}
+
   json5@1.0.2:
     resolution: {integrity: sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA==}
     hasBin: true
@@ -6067,6 +6096,9 @@ packages:
 
   map-stream@0.0.7:
     resolution: {integrity: sha512-C0X0KQmGm3N2ftbTGBhSyuydQ+vV1LC3f3zPvT3RXHXNZrvfPZcoXp/N5DOa8vedX/rTMm2CjTtivFg2STJMRQ==}
+
+  mapbox-to-css-font@3.2.0:
+    resolution: {integrity: sha512-kvsEfzvLik34BiFj+S19bv5d70l9qSdkUzrq99dvZ9d5POaLyB4vJMQmq3BoJ5D6lFG1GYnMM7o7cm5Jh8YEEg==}
 
   markdown-table@3.0.4:
     resolution: {integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==}
@@ -6490,6 +6522,11 @@ packages:
 
   ohash@2.0.11:
     resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
+
+  ol-mapbox-style@13.1.1:
+    resolution: {integrity: sha512-pzBybVmZgkL2GWHf/khxuzvUJU4v65csDrtHoh1SChe0u3AqFiEh8ssz1t92y+POszWtSPsjNIevxyg4JOQzMw==}
+    peerDependencies:
+      ol: '*'
 
   ol@10.7.0:
     resolution: {integrity: sha512-122U5gamPqNgLpLOkogFJhgpywvd/5en2kETIDW+Ubfi9lPnZ0G9HWRdG+CX0oP8od2d6u6ky3eewIYYlrVczw==}
@@ -7280,6 +7317,9 @@ packages:
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
+  rw@1.3.3:
+    resolution: {integrity: sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ==}
+
   safe-array-concat@1.1.3:
     resolution: {integrity: sha512-AURm5f0jYEOydBj7VQlVvDrjeFgthDdEF5H1dP+6mNpoXOMo1quQqJ4wvJDyRZ9+pO3kGWoOdmV08cSv2aJV6Q==}
     engines: {node: '>=0.4'}
@@ -7769,6 +7809,9 @@ packages:
 
   tinyqueue@2.0.3:
     resolution: {integrity: sha512-ppJZNDuKGgxzkHihX8v9v9G5f+18gzaTfrukGrq6ueg0lmH4nqVnA2IPG0AEH3jKEk2GRJCUhDoqpoiw3PHLBA==}
+
+  tinyqueue@3.0.0:
+    resolution: {integrity: sha512-gRa9gwYU3ECmQYv3lslts5hxuIa90veaEcxDYuu3QGOIAEM2mOZkVHp48ANJuu1CURtRdHKUBY5Lm1tHV+sD4g==}
 
   tldts-core@7.0.19:
     resolution: {integrity: sha512-lJX2dEWx0SGH4O6p+7FPwYmJ/bu1JbcGJ8RLaG9b7liIgZ85itUVEPbMtWRVrde/0fnDPEPHW10ZsKW3kVsE9A==}
@@ -9488,6 +9531,8 @@ snapshots:
 
   '@kwsites/promise-deferred@1.1.1': {}
 
+  '@mapbox/jsonlint-lines-primitives@2.0.2': {}
+
   '@mapbox/node-pre-gyp@2.0.3':
     dependencies:
       consola: 3.4.2
@@ -9500,6 +9545,18 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  '@mapbox/unitbezier@0.0.1': {}
+
+  '@maplibre/maplibre-gl-style-spec@23.3.0':
+    dependencies:
+      '@mapbox/jsonlint-lines-primitives': 2.0.2
+      '@mapbox/unitbezier': 0.0.1
+      json-stringify-pretty-compact: 4.0.0
+      minimist: 1.2.8
+      quickselect: 3.0.0
+      rw: 1.3.3
+      tinyqueue: 3.0.0
 
   '@microsoft/api-extractor-model@7.32.1(@types/node@24.10.3)':
     dependencies:
@@ -10013,7 +10070,7 @@ snapshots:
       ufo: 1.6.1
       unplugin: 2.3.10
       vitest-environment-nuxt: 1.0.1(jsdom@27.2.0(postcss@8.5.6))(magicast@0.5.1)(typescript@5.9.3)
-      vue: 3.5.22(typescript@5.9.3)
+      vue: 3.5.25(typescript@5.9.3)
     optionalDependencies:
       jsdom: 27.2.0(postcss@8.5.6)
     transitivePeerDependencies:
@@ -15239,6 +15296,8 @@ snapshots:
 
   json-stable-stringify-without-jsonify@1.0.1: {}
 
+  json-stringify-pretty-compact@4.0.0: {}
+
   json5@1.0.2:
     dependencies:
       minimist: 1.2.8
@@ -15451,6 +15510,8 @@ snapshots:
       source-map-js: 1.2.1
 
   map-stream@0.0.7: {}
+
+  mapbox-to-css-font@3.2.0: {}
 
   markdown-table@3.0.4: {}
 
@@ -16251,6 +16312,12 @@ snapshots:
       ufo: 1.6.1
 
   ohash@2.0.11: {}
+
+  ol-mapbox-style@13.1.1(ol@10.7.0):
+    dependencies:
+      '@maplibre/maplibre-gl-style-spec': 23.3.0
+      mapbox-to-css-font: 3.2.0
+      ol: 10.7.0
 
   ol@10.7.0:
     dependencies:
@@ -17124,6 +17191,8 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
+  rw@1.3.3: {}
+
   safe-array-concat@1.1.3:
     dependencies:
       call-bind: 1.0.8
@@ -17750,6 +17819,8 @@ snapshots:
       picomatch: 4.0.3
 
   tinyqueue@2.0.3: {}
+
+  tinyqueue@3.0.0: {}
 
   tldts-core@7.0.19: {}
 
