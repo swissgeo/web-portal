@@ -63,8 +63,18 @@ export default function useAddLayerToMap(
         }
     }
 
+    function setVisibility(isVisible: boolean) {
+        toValue(layer).setVisible(isVisible)
+    }
+
+    function setZIndex(zIndex: number) {
+        toValue(layer).setZIndex(zIndex)
+    }
+
     return {
         addLayerToMap,
         removeLayerFromMap,
+        setVisibility,
+        setZIndex,
     }
 }

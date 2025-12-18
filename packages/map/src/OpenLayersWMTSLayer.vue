@@ -11,12 +11,8 @@ import { getLinksByProtocol } from '@/utils/recordUtils'
 
 import useOlWmtsLayer from './composables/olWmtsLayer.composable'
 
-// TODO somehow the statement in main/app.vue doesn't do it
-log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
-
-const { layer, zIndex = 1 } = defineProps<{
+const { layer } = defineProps<{
     layer: Layer
-    zIndex: number
 }>()
 
 /** Extract the capabilities URL from the OGC Record */
@@ -55,23 +51,30 @@ const options = computed((): WMTSOptions => {
     return options
 })
 
-const { setSourceForProjection, layer: olLayer } = useOlWmtsLayer(
+const { initialize, setVisibility, setZIndex } = useOlWmtsLayer(
     layer.record.id,
     layer.record.geocatId,
     options.value,
     layer.opacity,
-    zIndex
+    layer.zIndex
 )
 
 watch(
     () => layer.isVisible,
     (newValue: boolean) => {
-        olLayer.setVisible(newValue)
+        setVisibility(newValue)
+    }
+)
+
+watch(
+    () => layer.zIndex,
+    (newZIndex: number) => {
+        setZIndex(newZIndex)
     }
 )
 
 onMounted(() => {
-    setSourceForProjection()
+    initialize()
 })
 </script>
 

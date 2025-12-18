@@ -69,7 +69,7 @@ export default function useOlWmtsLayer(
     //   return clonedOptions;
     // });
 
-    function setSourceForProjection(): void {
+    function initialize(): void {
         // if (options && options.tileGrid) {
         log.debug(`Set WMTS source for layer ${layerId} with options ${JSON.stringify(options)}`)
 
@@ -92,10 +92,10 @@ export default function useOlWmtsLayer(
 
     // watch(options, setSourceForProjection);
 
-    useAddLayerToMap(layer, olMap, zIndex)
+    const { setVisibility, setZIndex } = useAddLayerToMap(layer, olMap, zIndex)
 
     // watch(_opacity, (newOpacity) => layer.setOpacity(newOpacity));
     // watch(() => positionStore.projection, setSourceForProjection);
 
-    return { setSourceForProjection, layer }
+    return { initialize, setVisibility, setZIndex }
 }

@@ -6,9 +6,8 @@ import useOlWmsLayer from './composables/olWMSLayer.composable'
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
 
-const { layer, zIndex = 1 } = defineProps<{
+const { layer } = defineProps<{
     layer: Layer
-    zIndex: number
 }>()
 
 const gutter = computed(() => {
@@ -41,20 +40,28 @@ const version = computed(() => capabilityData.value.version)
 
 const url = computed(() => capabilityData.value.Service.OnlineResource)
 
-const { layer: olLayer } = useOlWmsLayer(
+const { setVisibility, setZIndex } = useOlWmsLayer(
     layer.record.id,
     layer.record.geocatId,
     gutter.value,
     layer.opacity,
     url.value,
     version.value,
-    zIndex
+    layer.zIndex
 )
 
 watch(
     () => layer.isVisible,
     (newValue: boolean) => {
-        olLayer.setVisible(newValue)
+        console.log('toggling visibility')
+        setVisibility(newValue)
+    }
+)
+
+watch(
+    () => layer.zIndex,
+    (newZIndex: number) => {
+        setZIndex(newZIndex)
     }
 )
 </script>
