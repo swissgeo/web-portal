@@ -31,14 +31,18 @@
         "@swissgeo/log": "catalog:",
         "@swissgeo/numbers": "catalog:",
         "@swissgeo/shared": "workspace:*",
+        "@turf/turf": "catalog:",
+        "geojson": "catalog:",
         "lodash-es": "catalog:",
         "ol": "catalog:",
-        "proj4": "catalog:"
+        "proj4": "catalog:",
+        "reproject": "catalog:"
     },
     "devDependencies": {
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
+        "@types/geojson": "catalog:",
         "@types/lodash-es": "catalog:",
         "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",

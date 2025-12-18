@@ -137,7 +137,7 @@ export default function useOlWmsLayer(
 
     const layer = createLayer()
 
-    const { setVisibility, setZIndex } = useAddLayerToMap(layer, olMap, zIndex)
+    const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 
     return {
         setVisibility,

@@ -1,5 +1,10 @@
 <script lang="ts" setup>
+import log, { LogLevel } from '@swissgeo/log'
+
 import OpenLayersScale from './OpenLayersScale.vue'
+
+// TODO somehow the statement in main/app.vue doesn't do it
+log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 </script>
 
 <template>

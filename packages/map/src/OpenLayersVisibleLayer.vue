@@ -12,4 +12,8 @@ const { layer } = defineProps<{ layer: Layer }>()
         :layer="layer"
         v-if="layer.type === LayerType.WMS"
     />
+    <OpenLayersGeoJSONLayer
+        :layer="layer"
+        v-if="layer.type === LayerType.GEOJSON"
+    />
 </template>

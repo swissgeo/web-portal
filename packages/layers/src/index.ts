@@ -1,4 +1,5 @@
-import { Feature as OGCFeature } from '@swissgeo/shared/ogc'
+import type { Feature as OGCFeature } from '@swissgeo/shared/ogc'
+
 import { v4 as uuidv4 } from 'uuid'
 
 import { useLayerStore } from '@/stores/layer'
@@ -6,6 +7,7 @@ import { useLayerStore } from '@/stores/layer'
 export enum LayerType {
     WMTS = 'wmts',
     WMS = 'wms',
+    GEOJSON = 'geojson',
 }
 
 export interface Layer {
@@ -34,3 +36,5 @@ export const makeLayer = (record: OGCFeature, type: LayerType, options?: Partial
 }
 
 export { useLayerStore } from '@/stores/layer'
+
+export * from './geoJsonStyle'
