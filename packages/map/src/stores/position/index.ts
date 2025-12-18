@@ -1,4 +1,6 @@
-import { CoordinateSystem, LV95 } from '@swissgeo/coordinates'
+import type { CoordinateSystem } from '@swissgeo/coordinates'
+
+import { LV95 } from '@swissgeo/coordinates'
 
 import type { PositionStoreGetters, PositionStoreState } from '@/stores/position/types/position'
 

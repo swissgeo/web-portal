@@ -31,10 +31,12 @@
         "@swissgeo/log": "catalog:",
         "@swissgeo/numbers": "catalog:",
         "@swissgeo/shared": "workspace:*",
+        "@swissgeo/skeleton": "workspace:*",
         "@turf/turf": "catalog:",
         "geojson": "catalog:",
         "lodash-es": "catalog:",
         "ol": "catalog:",
+        "ol-mapbox-style": "catalog:",
         "proj4": "catalog:",
         "reproject": "catalog:"
     },

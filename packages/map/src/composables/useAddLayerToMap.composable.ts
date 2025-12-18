@@ -1,6 +1,9 @@
-import type { Map as OlMapType } from 'ol'
-import type { MaybeRef, Ref } from 'vue'
+import type { Map } from 'ol'
+// import LayerGroup from 'ol/layer/Group'
+import type BaseLayer from 'ol/layer/Base'
 
+import log from '@swissgeo/log'
+import LayerGroup from 'ol/layer/Group'
 import Layer from 'ol/layer/Layer'
 import VectorSource from 'ol/source/Vector'
 
@@ -17,58 +20,60 @@ import VectorSource from 'ol/source/Vector'
  * It is also possible to set a prop called zIndex, which will be used (if defined) to place the
  * layer accordingly in the layer stack of OpenLayers.
  */
-export default function useAddLayerToMap(
-    layer: MaybeRef<Layer>,
-    map: MaybeRef<OlMapType | undefined>,
-    zIndex: MaybeRef<number> = -1
-) {
-    const internalZIndex = ref(toValue(zIndex))
-
-    watch(toRef(zIndex), (newValue) => {
-        internalZIndex.value = newValue
-        if (newValue >= 0) {
-            toValue(layer).setZIndex(newValue)
-        }
-    })
+export default function useAddLayerToMap(olLayer: BaseLayer, zIndex: number) {
+    const olMap = toValue(inject<Map>('olMap'))
+    if (!olMap) {
+        log.error('OpenLayersMap is not available')
+        throw new Error('OpenLayersMap is not available')
+    }
 
     onMounted(() => {
         addLayerToMap()
     })
 
     onBeforeUnmount(() => {
-        // if the source of this layer can be cleared (if it's a vector layer),
-        // we clear it before removing it from the map, ensuring that all features are unloaded
-        if (toValue(layer).getSource() instanceof VectorSource) {
-            ;(toValue(layer).getSource() as VectorSource).clear()
-        }
-        toValue(layer).setSource(null)
-        // removeLayerFromMap()
+        clearSources()
+        removeLayerFromMap()
     })
 
-    function addLayerToMap(): void {
-        if (internalZIndex.value !== -1) {
-            toValue(layer).setZIndex(internalZIndex.value)
-        }
-        const _map = toValue(map)
-        if (_map) {
-            console.log(layer)
-            _map.addLayer(toValue(layer))
+    function clearSources() {
+        if (olLayer instanceof Layer) {
+            // if the source of this layer can be cleared (if it's a vector layer),
+            // we clear it before removing it from the map, ensuring that all features are unloaded
+            if ('getSource' in olLayer && olLayer.getSource() instanceof VectorSource) {
+                ;(olLayer.getSource() as VectorSource).clear()
+            }
+            if ('setSource' in olLayer) {
+                olLayer.setSource(null)
+            }
         }
     }
 
+    function addLayerToMap(): void {
+        if (olMap) {
+            olMap.addLayer(olLayer)
+        }
+        setZIndex(zIndex)
+    }
+
     function removeLayerFromMap(): void {
-        const _map = toValue(map)
-        if (_map) {
-            _map.removeLayer(toValue(layer))
+        if (olMap) {
+            log.debug(`Removing layer ${olLayer.ol_uid} from map`, olLayer)
+            olMap.removeLayer(olLayer)
+
+            // TODO maybe there's more elegant version
+            if (olLayer instanceof LayerGroup) {
+                olLayer.getLayers().clear()
+            }
         }
     }
 
     function setVisibility(isVisible: boolean) {
-        toValue(layer).setVisible(isVisible)
+        olLayer.setVisible(isVisible)
     }
 
     function setZIndex(zIndex: number) {
-        toValue(layer).setZIndex(zIndex)
+        olLayer.setZIndex(zIndex)
     }
 
     return {
