@@ -124,7 +124,7 @@ catalogs:
       specifier: ^4.0.3
       version: 4.2.2
     ol:
-      specifier: ^10.7.0
+      specifier: 10.7.0
       version: 10.7.0
     ol-mapbox-style:
       specifier: ^13.1.1
@@ -544,7 +544,7 @@ importers:
         version: 7.3.1
       '@vueuse/core':
         specifier: 'catalog:'
-        version: 13.9.0(vue@3.5.25(typescript@5.9.3))
+        version: 13.9.0(vue@3.5.22(typescript@5.9.3))
       geojson:
         specifier: 'catalog:'
         version: 0.5.0
@@ -565,58 +565,6 @@ importers:
         version: 1.2.7
       vue:
         specifier: 'catalog:'
-        version: 3.5.25(typescript@5.9.3)
-    devDependencies:
-      '@dxup/unimport':
-        specifier: 'catalog:'
-        version: 0.1.2
-      '@microsoft/api-extractor':
-        specifier: 'catalog:'
-        version: 7.55.1(@types/node@24.10.3)
-      '@swissgeo/config-eslint':
-        specifier: 'catalog:'
-        version: 1.0.0-rc.1(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.49.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
-      '@swissgeo/config-typescript':
-        specifier: 'catalog:'
-        version: 1.0.0-rc.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
-      '@types/geojson':
-        specifier: 'catalog:'
-        version: 7946.0.16
-      '@types/lodash-es':
-        specifier: 'catalog:'
-        version: 4.17.12
-      '@types/openlayers':
-        specifier: 'catalog:'
-        version: 4.6.23
-      '@vitejs/plugin-vue':
-        specifier: 'catalog:'
-        version: 6.0.1(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.25(typescript@5.9.3))
-      eslint:
-        specifier: 'catalog:'
-        version: 9.39.1(jiti@2.6.1)
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-      unplugin-auto-import:
-        specifier: 'catalog:'
-        version: 20.2.0(@nuxt/kit@4.2.2(magicast@0.5.1))(@vueuse/core@13.9.0(vue@3.5.25(typescript@5.9.3)))
-      unplugin-dts:
-        specifier: 'catalog:'
-        version: 1.0.0-beta.6(@microsoft/api-extractor@7.55.1(@types/node@24.10.3))(esbuild@0.27.1)(rollup@4.53.3)(typescript@5.9.3)(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))
-      vite:
-        specifier: 'catalog:'
-        version: 7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2)
-      vite-tsconfig-paths:
-        specifier: 'catalog:'
-        version: 5.1.4(typescript@5.9.3)(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))
-
-  packages/shared:
-    dependencies:
-      '@vueuse/core':
-        specifier: 'catalog:'
-        version: 13.9.0(vue@3.5.22(typescript@5.9.3))
-      vue:
-        specifier: 'catalog:'
         version: 3.5.22(typescript@5.9.3)
     devDependencies:
       '@dxup/unimport':
@@ -631,6 +579,15 @@ importers:
       '@swissgeo/config-typescript':
         specifier: 'catalog:'
         version: 1.0.0-rc.1(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
+      '@types/geojson':
+        specifier: 'catalog:'
+        version: 7946.0.16
+      '@types/lodash-es':
+        specifier: 'catalog:'
+        version: 4.17.12
+      '@types/openlayers':
+        specifier: 'catalog:'
+        version: 4.6.23
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.1(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.22(typescript@5.9.3))
@@ -643,6 +600,55 @@ importers:
       unplugin-auto-import:
         specifier: 'catalog:'
         version: 20.2.0(@nuxt/kit@4.2.2(magicast@0.5.1))(@vueuse/core@13.9.0(vue@3.5.22(typescript@5.9.3)))
+      unplugin-dts:
+        specifier: 'catalog:'
+        version: 1.0.0-beta.6(@microsoft/api-extractor@7.55.1(@types/node@24.10.3))(esbuild@0.27.1)(rollup@4.53.3)(typescript@5.9.3)(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))
+      vite:
+        specifier: 'catalog:'
+        version: 7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2)
+      vite-tsconfig-paths:
+        specifier: 'catalog:'
+        version: 5.1.4(typescript@5.9.3)(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))
+
+  packages/shared:
+    dependencies:
+      '@vueuse/core':
+        specifier: 'catalog:'
+        version: 13.9.0(vue@3.5.25(typescript@5.9.3))
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.25(typescript@5.9.3)
+    devDependencies:
+      '@dxup/unimport':
+        specifier: 'catalog:'
+        version: 0.1.2
+      '@microsoft/api-extractor':
+        specifier: 'catalog:'
+        version: 7.55.1(@types/node@24.10.3)
+      '@swissgeo/config-eslint':
+        specifier: 'catalog:'
+        version: 1.0.0-rc.1(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.49.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
+      '@swissgeo/config-typescript':
+        specifier: 'catalog:'
+        version: 1.0.0-rc.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
+      '@types/openlayers':
+        specifier: 'catalog:'
+        version: 4.6.23
+      '@vitejs/plugin-vue':
+        specifier: 'catalog:'
+        version: 6.0.1(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.25(typescript@5.9.3))
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.1(jiti@2.6.1)
+      ol:
+        specifier: 'catalog:'
+        version: 10.7.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      unplugin-auto-import:
+        specifier: 'catalog:'
+        version: 20.2.0(@nuxt/kit@4.2.2(magicast@0.5.1))(@vueuse/core@13.9.0(vue@3.5.25(typescript@5.9.3)))
       unplugin-dts:
         specifier: 'catalog:'
         version: 1.0.0-beta.6(@microsoft/api-extractor@7.55.1(@types/node@24.10.3))(esbuild@0.27.1)(rollup@4.53.3)(typescript@5.9.3)(vite@7.1.12(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))
@@ -5149,9 +5155,6 @@ packages:
     resolution: {integrity: sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==}
     engines: {node: '>=6'}
 
-  exsolve@1.0.7:
-    resolution: {integrity: sha512-VO5fQUzZtI6C+vx4w/4BWJpg3s/5l+6pRQEHzFRM8WFi4XffSP1Z+4qi7GbjWbvRQEbdIco5mIMq+zX4rPuLrw==}
-
   exsolve@1.0.8:
     resolution: {integrity: sha512-LmDxfWXwcTArk8fUEnOfSZpHOJ6zOMUJKOtFLFqJLoKJetuQG874Uc7/Kki7zFLzYybmZhp1M7+98pfMqeX8yA==}
 
@@ -6613,9 +6616,6 @@ packages:
 
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
-
-  package-manager-detector@1.5.0:
-    resolution: {integrity: sha512-uBj69dVlYe/+wxj8JOpr97XfsxH/eumMt6HqjNTmJDf/6NO9s+0uxeOneIz3AsPt2m6y9PqzDzd3ATcU17MNfw==}
 
   package-manager-detector@1.6.0:
     resolution: {integrity: sha512-61A5ThoTiDG/C8s8UMZwSorAGwMJ0ERVGj2OjoW5pAalsNOg15+iQiPzrLJ4jhZ1HJzmC2PIHT2oEiH3R5fzNA==}
@@ -8671,8 +8671,8 @@ snapshots:
 
   '@antfu/install-pkg@1.1.0':
     dependencies:
-      package-manager-detector: 1.5.0
-      tinyexec: 1.0.1
+      package-manager-detector: 1.6.0
+      tinyexec: 1.0.2
 
   '@apidevtools/json-schema-ref-parser@14.2.1(@types/json-schema@7.0.15)':
     dependencies:
@@ -9664,7 +9664,7 @@ snapshots:
 
   '@nuxt/devtools-kit@2.6.5(vite@7.2.7(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))':
     dependencies:
-      '@nuxt/kit': 3.19.3
+      '@nuxt/kit': 3.20.2(magicast@0.5.1)
       execa: 8.0.1
       vite: 7.2.7(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2)
     transitivePeerDependencies:
@@ -9888,16 +9888,16 @@ snapshots:
 
   '@nuxt/kit@3.19.3':
     dependencies:
-      c12: 3.3.1
+      c12: 3.3.2(magicast@0.5.1)
       consola: 3.4.2
       defu: 6.1.4
       destr: 2.0.5
       errx: 0.1.0
-      exsolve: 1.0.7
+      exsolve: 1.0.8
       ignore: 7.0.5
       jiti: 2.6.1
       klona: 2.0.6
-      knitwork: 1.2.0
+      knitwork: 1.3.0
       mlly: 1.8.0
       ohash: 2.0.11
       pathe: 2.0.3
@@ -9942,12 +9942,12 @@ snapshots:
 
   '@nuxt/kit@4.1.3':
     dependencies:
-      c12: 3.3.1
+      c12: 3.3.2(magicast@0.5.1)
       consola: 3.4.2
       defu: 6.1.4
       destr: 2.0.5
       errx: 0.1.0
-      exsolve: 1.0.7
+      exsolve: 1.0.8
       ignore: 7.0.5
       jiti: 2.6.1
       klona: 2.0.6
@@ -13506,7 +13506,7 @@ snapshots:
       confbox: 0.2.2
       defu: 6.1.4
       dotenv: 17.2.3
-      exsolve: 1.0.7
+      exsolve: 1.0.8
       giget: 2.0.0
       jiti: 2.6.1
       ohash: 2.0.11
@@ -14709,8 +14709,6 @@ snapshots:
   expand-template@2.0.3:
     optional: true
 
-  exsolve@1.0.7: {}
-
   exsolve@1.0.8: {}
 
   fake-indexeddb@6.2.4: {}
@@ -15192,7 +15190,7 @@ snapshots:
       h3: 1.15.4
       image-meta: 0.2.2
       listhen: 1.9.0
-      ofetch: 1.4.1
+      ofetch: 1.5.1
       pathe: 1.1.2
       sharp: 0.32.6
       svgo: 3.3.2
@@ -16807,8 +16805,6 @@ snapshots:
       p-limit: 4.0.0
 
   package-json-from-dist@1.0.1: {}
-
-  package-manager-detector@1.5.0: {}
 
   package-manager-detector@1.6.0: {}
 

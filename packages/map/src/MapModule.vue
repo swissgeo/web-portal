@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import log, { LogLevel } from '@swissgeo/log'
 
-import OpenLayersMap from './OpenLayersMap.vue'
+import OpenLayersMap from './openlayers/OpenLayersMap.vue'
 // import OpenLayersScale from './OpenLayersScale.vue'
 
 // TODO somehow the statement in main/app.vue doesn't do it

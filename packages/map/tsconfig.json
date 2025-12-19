@@ -1,6 +1,6 @@
 {
     "extends": "@swissgeo/config-typescript/tsconfig.base.json",
-    "include": ["src/**/*.ts", "src/**/*.vue"],
+    "include": ["src/**/*.ts", "src/**/*.vue", "../layers/src/utils/wmtsUtils.ts"],
     "compilerOptions": {
         "types": ["vue", "pinia", "./.output/auto-imports.d.ts"],
         "plugins": [{ "name": "@dxup/unimport" }]

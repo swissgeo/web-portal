@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Feature as OGCFeature } from '@swissgeo/shared/ogc'
 
-import { makeLayer, useLayerStore, LayerType } from '@swissgeo/layers'
+import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 const isLayersPanelOpen = ref(true)
@@ -43,7 +43,7 @@ const availableLayers = computed(() => {
  */
 function getLayerTypeFromFirstServiceLink(layer: OGCFeature) {
     if (!layer.links) {
-        throw new Error(`${layer} has no links`)
+        throw new Error(`${JSON.stringify(layer)} has no links`)
     }
     for (const link of layer.links) {
         if (link.protocol === 'OGC:WMS') {
@@ -70,7 +70,7 @@ function addLayerToMap(layer: OGCFeature) {
     if (!type) {
         throw Error('Neither OGC:WMS nor OGC:WMTS found in the definition')
     }
-    layersStore.addLayer(makeLayer(layer, type))
+    layersStore.addLayer(makeServerLayer(type, layer))
 }
 
 const filteredAvailableLayers = computed(() => {

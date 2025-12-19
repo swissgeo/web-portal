@@ -1,5 +1,3 @@
-import type { Map } from 'ol'
-// import type { ExternalWMTSLayer } from "@swissgeo/layers";
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
 import log from '@swissgeo/log'
@@ -65,7 +63,7 @@ export default function useOlWmtsLayer(
 
     function initialize(): void {
         // if (options && options.tileGrid) {
-        log.debug(`Set WMTS source for layer ${layerId} with options ${JSON.stringify(options)}`)
+        log.debug(`Set WMTS source for layer ${layerId} with options`, { messages: [options] })
 
         layer.setSource(new WMTS({ ...options /*, dimensions: dimensions.value*/ }))
         // } else {

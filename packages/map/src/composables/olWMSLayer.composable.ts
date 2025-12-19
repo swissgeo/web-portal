@@ -76,9 +76,9 @@ export default function useOlWmsLayer(
             ratio: 1,
         }
 
-        log.debug(
-            `Set WMS Source "ImageWMS" for layer ${layerId} with config ${JSON.stringify(config)}`
-        )
+        log.debug(`Set WMS Source "ImageWMS" for layer ${layerId} with config`, {
+            messages: [config],
+        })
 
         return new ImageWMS()
     }
@@ -100,7 +100,7 @@ export default function useOlWmsLayer(
                   })
                 : undefined,
         }
-        log.debug(`Set WMS source "TileWMS" for ${layerId} with config ${JSON.stringify(config)}`)
+        log.debug(`Set WMS source "TileWMS" for ${layerId} with config`, { messages: [config] })
 
         return new TileWMS(config)
     }

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ServerLayer } from '@swissgeo/layers'
 
-import useOlGeoJSONLayer from './composables/olGeoJSONLayer.composable'
-import { getLinksByProtocol } from './utils/recordUtils'
+import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
+import { getLinksByProtocol } from '../utils/recordUtils'
 
 const { layer } = defineProps<{
     layer: ServerLayer

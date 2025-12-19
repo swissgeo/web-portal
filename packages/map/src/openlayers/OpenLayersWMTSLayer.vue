@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import type { ServerLayer } from '@swissgeo/layers'
+import { useLayerStore, type ServerLayer } from '@swissgeo/layers'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
+import { getLayerInfoFromWMTSCapabilities } from '@swissgeo/layers'
 
 import log from '@swissgeo/log'
 import { optionsFromCapabilities } from 'ol/source/WMTS'
@@ -8,7 +9,10 @@ import { optionsFromCapabilities } from 'ol/source/WMTS'
 
 import { getLinksByProtocol } from '@/utils/recordUtils'
 
-import useOlWmtsLayer from './composables/olWMTSLayer.composable'
+import useOlWmtsLayer from '../composables/olWMTSLayer.composable'
+import type { WMTSCapabilities } from '@swissgeo/shared/ogc'
+
+const layerStore = useLayerStore()
 
 const { layer } = defineProps<{
     layer: ServerLayer
@@ -30,16 +34,18 @@ const capabilityUrl = computed(() => {
 })
 
 // TODO ok here we have a bit of a tight coupling with the main package
-const { data } = await useFetch<string>(`/api/v1/layers/wmtsConfig/${capabilityUrl.value}`)
+const { data: capabilityData } = await useFetch<WMTSCapabilities>(
+    `/api/v1/layers/wmtsConfig/${capabilityUrl.value}`
+)
 
 /** Retrieve the capabilities and then turn them into a options objects to be used by WMTS */
 const options = computed((): WMTSOptions => {
-    if (!data.value) {
+    if (!capabilityData.value) {
         log.error(`Unable to fetch capabilities for ${capabilityUrl.value}`)
         throw new Error()
     }
 
-    const options = optionsFromCapabilities(data.value, {
+    const options = optionsFromCapabilities(capabilityData.value, {
         layer: layer.record.id,
     })
 
@@ -74,7 +80,13 @@ watch(
 
 onMounted(() => {
     initialize()
+    updateLayerInfo()
 })
+
+function updateLayerInfo() {
+    const info = getLayerInfoFromWMTSCapabilities(capabilityData.value, layer.record.id)
+    layerStore.setLayerInfo(layer.uuid, info)
+}
 </script>
 
 <template>

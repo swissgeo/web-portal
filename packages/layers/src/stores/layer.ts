@@ -1,6 +1,6 @@
 import log from '@swissgeo/log'
 
-import type { Layer } from '@/index'
+import type { Layer, LayerInfo } from '@/index'
 
 export const useLayerStore = defineStore('layers', () => {
     const layers = ref<Layer[]>([])
@@ -49,6 +49,14 @@ export const useLayerStore = defineStore('layers', () => {
         layer.isVisible = !layer.isVisible
     }
 
+    function setLayerInfo(layerUuid: string, info: LayerInfo): void {
+        const layer = layers.value.find((layer: Layer) => layer.uuid === layerUuid)
+        if (!layer) {
+            return
+        }
+        layer.info = info
+    }
+
     return {
         layers,
         // getters
@@ -57,5 +65,6 @@ export const useLayerStore = defineStore('layers', () => {
         addLayer,
         toggleVisibility,
         setLayerZIndex,
+        setLayerInfo,
     }
 })

@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import type { ServerLayer } from '@swissgeo/layers'
+import { useLayerStore, type ServerLayer } from '@swissgeo/layers'
 
 import log from '@swissgeo/log'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
+import { getLayerInfoFromWMSCapabilities } from '@swissgeo/layers'
 
-import useOlWmsLayer from './composables/olWMSLayer.composable'
+import useOlWmsLayer from '../composables/olWMSLayer.composable'
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
+
+const layerStore = useLayerStore()
 
 const { layer } = defineProps<{
     layer: ServerLayer
@@ -69,6 +72,15 @@ watch(
         setZIndex(newZIndex)
     }
 )
+
+onMounted(() => {
+    updateLayerInfo()
+})
+
+function updateLayerInfo() {
+    const info = getLayerInfoFromWMSCapabilities(capabilityData.value, layer.record.id)
+    layerStore.setLayerInfo(layer.uuid, info)
+}
 </script>
 
 <template>
