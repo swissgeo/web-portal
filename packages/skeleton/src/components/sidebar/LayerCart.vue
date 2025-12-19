@@ -1,16 +1,12 @@
 <script lang="ts" setup>
 import { useLayerStore } from '@swissgeo/layers'
-import { cloneDeep } from 'lodash-es'
 
 import LayerCartEntry from './LayerCartEntry.vue'
 
 const layerStore = useLayerStore()
 
 const sortedLayers = computed(() => {
-    // sort is in-place, this would trigger a reactivity loop of death
-    return cloneDeep(layerStore.layers)
-        .sort((a, b) => a.zIndex - b.zIndex)
-        .reverse()
+    return layerStore.sortedLayers.reverse()
 })
 </script>
 

@@ -31,7 +31,7 @@ function moveDown() {
 }
 
 function removeLayer() {
-    layerStore.removeLayer()
+    layerStore.removeLayer(layer.uuid)
 }
 </script>
 
@@ -78,7 +78,7 @@ function removeLayer() {
         <div>
             <IconButton
                 icon="Trash"
-                :click="removeLayer"
+                @click="removeLayer"
             />
         </div>
     </li>
