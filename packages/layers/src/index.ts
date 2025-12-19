@@ -8,17 +8,23 @@ export enum LayerType {
     WMTS = 'wmts',
     WMS = 'wms',
     GEOJSON = 'geojson',
+    VECTOR = 'vector',
 }
 
 export interface Layer {
     uuid: string
-    record: OGCFeature
     isVisible: boolean
     type: LayerType
     opacity: number
     isLoading: boolean
     zIndex: number
 }
+
+export interface ServerLayer extends Layer {
+    record: OGCFeature
+}
+
+export interface FileLayer extends Layer {}
 
 export const makeLayer = (record: OGCFeature, type: LayerType, options?: Partial<Layer>): Layer => {
     const layerStore = useLayerStore()

@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { Map as OlMapType } from 'ol'
 
-import { Button } from '@swissgeo/skeleton'
-
 import { registerProj4 } from '@swissgeo/coordinates'
 import { useLayerStore } from '@swissgeo/layers'
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
@@ -16,7 +14,6 @@ import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.com
 const layersStore = useLayerStore()
 
 const layers = computed(() => layersStore.layers)
-const isVectorLayerActive = ref(false)
 
 const mapElement = useTemplateRef('mapElement')
 const olMap = ref<OlMapType>()
@@ -49,10 +46,6 @@ onMounted(() => {
 
 registerCustomProjection()
 createOlMap()
-
-function toggleVectorLayer() {
-    isVectorLayerActive.value = !isVectorLayerActive.value
-}
 </script>
 
 <template>
@@ -68,7 +61,6 @@ function toggleVectorLayer() {
             :key="layer.uuid"
             v-for="layer in layers"
         />
-        <OpenLayersVectorLayer v-if="isVectorLayerActive" />
         <!-- <OpenLayersVisibleLayers />
         <OpenLayersPinnedLocation />
         <OpenLayersCrossHair />
@@ -88,13 +80,6 @@ function toggleVectorLayer() {
             v-if="showSelectionRectangle"
             :z-index="zIndexSelectionRectangle"
         /> -->
-    </div>
-    <div class="fixed bottom-0 left-0">
-        <Button
-            @click="toggleVectorLayer"
-            :severity="isVectorLayerActive ? 'primary' : 'secondary'"
-            >Vector Layer</Button
-        >
     </div>
     <!-- So that external modules can have access to the map instance through the provided 'olMap' -->
     <slot />

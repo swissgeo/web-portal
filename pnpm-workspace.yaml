@@ -67,7 +67,7 @@ catalog:
     lodash-es: 4.17.21
     lucide-vue-next: ^0.542.0
     nuxt: ^4.0.3
-    ol: ^10.6.1
+    ol: ^10.7.0
     pinia: ^3.0.3
     postcss-html: ^1.8.0
     prettier: 3.6.2

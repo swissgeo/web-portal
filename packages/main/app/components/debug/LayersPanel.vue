@@ -1,14 +1,38 @@
 <script lang="ts" setup>
+import type { Feature as OGCFeature } from '@swissgeo/shared/ogc'
+
+import { makeLayer, useLayerStore, LayerType } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
-import type { Feature as OGCFeature, Link as OGCLink } from '@swissgeo/shared/ogc'
-import { makeLayer, useLayerStore, LayerType, type Layer } from '@swissgeo/layers'
 
 const isLayersPanelOpen = ref(true)
 const filterTerm = ref<string>('')
 
 const layersStore = useLayerStore()
 
-const { features: availableLayers } = await $fetch('/api/v1/layers/records')
+const { features: recordLayers } = await $fetch('/api/v1/layers/records')
+
+const availableLayers = computed(() => {
+    const vtLayer: OGCFeature = {
+        geocatId: '',
+        id: 'ch.swisstopo.leichte-basiskarte.vt',
+        language: {
+            code: 'en',
+            dir: 'ltr',
+            name: 'English',
+        },
+        links: [
+            {
+                protocol: 'OGC:VECTORTILE',
+                title: '',
+                type: '',
+            },
+        ],
+        // @ts-expect-error Not gonna specify those here ATM
+        properties: {},
+    }
+    recordLayers.unshift(vtLayer)
+    return recordLayers
+})
 
 /**
  * Extract the layer type from the links
@@ -18,6 +42,9 @@ const { features: availableLayers } = await $fetch('/api/v1/layers/records')
  * @param layer
  */
 function getLayerTypeFromFirstServiceLink(layer: OGCFeature) {
+    if (!layer.links) {
+        throw new Error(`${layer} has no links`)
+    }
     for (const link of layer.links) {
         if (link.protocol === 'OGC:WMS') {
             return LayerType.WMS
@@ -29,6 +56,10 @@ function getLayerTypeFromFirstServiceLink(layer: OGCFeature) {
 
         if (link.protocol === 'OGC:GEOJSON') {
             return LayerType.GEOJSON
+        }
+
+        if (link.protocol === 'OGC:VECTORTILE') {
+            return LayerType.VECTOR
         }
     }
     return null
@@ -43,20 +74,22 @@ function addLayerToMap(layer: OGCFeature) {
 }
 
 const filteredAvailableLayers = computed(() => {
-    if (filterTerm.value == '') {
-        return availableLayers
+    if (filterTerm.value === '') {
+        return availableLayers.value
     }
-    return availableLayers.filter((layer) => layer.id.includes(filterTerm.value))
+    return availableLayers.value.filter((layer) => layer.id.includes(filterTerm.value))
 })
 
 const layerBg = (layer: OGCFeature) => {
     switch (getLayerTypeFromFirstServiceLink(layer)) {
-        case 'wms':
+        case LayerType.WMS:
             return 'bg-amber-200'
-        case 'wmts':
+        case LayerType.WMTS:
             return 'bg-fuchsia-200'
-        case 'geojson':
+        case LayerType.GEOJSON:
             return 'bg-rose-200'
+        case LayerType.VECTOR:
+            return 'bg-slate-200'
     }
 }
 

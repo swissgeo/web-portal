@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Layer } from '@swissgeo/layers'
+import { ServerLayer } from '@swissgeo/layers'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from './composables/olWMSLayer.composable'
@@ -7,7 +7,7 @@ import useOlWmsLayer from './composables/olWMSLayer.composable'
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
 
 const { layer } = defineProps<{
-    layer: Layer
+    layer: ServerLayer
 }>()
 
 const gutter = computed(() => {

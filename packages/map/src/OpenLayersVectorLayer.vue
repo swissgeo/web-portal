@@ -1,25 +1,36 @@
 <script lang="ts" setup>
+import { ServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 
 import useOlVectorLayer from './composables/olVectorLayer.composable'
 
-const layerId = 'ch.swisstopo.base.vt'
+const { layer } = defineProps<{
+    layer: ServerLayer
+}>()
 
-const url = computed(
-    () => `https://vectortiles.geo.admin.ch/styles/ch.swisstopo.leichte-basiskarte.vt/style.json`
-)
+const url = computed(() => `https://vectortiles.geo.admin.ch/styles/${layer.record.id}/style.json`)
 
 const { data } = await useFetch<string>(url)
 
 const style = computed(() => {
     if (!data.value) {
-        log.error(`Unable to load the Vector Style from ${url}`)
+        log.error(`Unable to load the Vector Style from ${url.value}`)
         return
     }
     return JSON.parse(data.value)
 })
 
-const { setVisibility, setZIndex } = useOlVectorLayer(layerId, 1, style.value)
+const { setVisibility, setZIndex } = useOlVectorLayer(layer.record.id, 1, style.value)
+
+watch(
+    () => layer.isVisible,
+    (newVisibility) => setVisibility(newVisibility)
+)
+
+watch(
+    () => layer.zIndex,
+    (newZIndex) => setZIndex(newZIndex)
+)
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
-import { Layer } from '@swissgeo/layers'
+import { ServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import { optionsFromCapabilities } from 'ol/source/WMTS'
 /** Renders a WMTS layer on the map by configuring it through a getCapabilities XML file */
@@ -12,7 +12,7 @@ import { getLinksByProtocol } from '@/utils/recordUtils'
 import useOlWmtsLayer from './composables/olWMTSLayer.composable'
 
 const { layer } = defineProps<{
-    layer: Layer
+    layer: ServerLayer
 }>()
 
 /** Extract the capabilities URL from the OGC Record */

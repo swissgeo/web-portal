@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { Layer } from '@swissgeo/layers'
+import { ServerLayer } from '@swissgeo/layers'
 
 import useOlGeoJSONLayer from './composables/olGeoJSONLayer.composable'
 
 const { layer } = defineProps<{
-    layer: Layer
+    layer: ServerLayer
 }>()
 
 const geoJsonUrl = computed(() => {

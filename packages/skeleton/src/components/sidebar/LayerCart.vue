@@ -69,6 +69,9 @@ function moveDown(layer: Layer) {
                     ({{ layer.type }})</span
                 >
             </div>
+            <div>
+                <IconButton icon="Trash" />
+            </div>
         </li>
     </ul>
 </template>

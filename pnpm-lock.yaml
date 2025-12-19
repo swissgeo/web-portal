@@ -124,7 +124,7 @@ catalogs:
       specifier: ^4.0.3
       version: 4.2.2
     ol:
-      specifier: ^10.6.1
+      specifier: ^10.7.0
       version: 10.7.0
     ol-mapbox-style:
       specifier: ^13.1.1
@@ -563,9 +563,6 @@ importers:
       reproject:
         specifier: 'catalog:'
         version: 1.2.7
-      skeleton:workspace:*:
-        specifier: link:@swissgeo/skeleton:workspace:*
-        version: link:@swissgeo/skeleton:workspace:*
       vue:
         specifier: 'catalog:'
         version: 3.5.25(typescript@5.9.3)
