@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { ServerLayer } from '@swissgeo/layers'
+
+import log from '@swissgeo/log'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from './composables/olWMSLayer.composable'
@@ -21,9 +23,9 @@ const capabilityUrl = computed(() => {
     const link = getLinksByProtocol(links, 'OGC:WMS')[0]
     const href = link.href || link.uriTemplate
     if (!href) {
-        throw new Error(
-            `Faulty wms record, neither href nor uriTemplate found: ${JSON.stringify(link)}`
-        )
+        const err = `Faulty wms record, neither href nor uriTemplate found: ${JSON.stringify(link)}`
+        log.error(err)
+        throw new Error(err)
     }
 
     return encodeURIComponent(href)
@@ -33,7 +35,10 @@ const capabilityUrl = computed(() => {
 const { data } = await useFetch<string>(`/api/v1/layers/wmsConfig/${capabilityUrl.value}`)
 
 const capabilityData = computed((): WMSCapabilityType => {
-    return JSON.parse(data.value)
+    if (!data.value) {
+        throw new Error('Unable to read WMS capabilities')
+    }
+    return data.value
 })
 
 const version = computed(() => capabilityData.value.version)

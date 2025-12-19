@@ -39,7 +39,7 @@ const options = computed((): WMTSOptions => {
         throw new Error()
     }
 
-    const options = optionsFromCapabilities(JSON.parse(data.value), {
+    const options = optionsFromCapabilities(data.value, {
         layer: layer.record.id,
     })
 
