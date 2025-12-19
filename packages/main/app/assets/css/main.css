@@ -4,6 +4,7 @@
 
 @source '../../../../skeleton/';
 @source '../../../../content/';
+@source '../../../../map/';
 
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
 

@@ -4,10 +4,10 @@ import type { Feature as OGCFeature } from '@swissgeo/shared/ogc'
 import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
-const isLayersPanelOpen = ref(true)
+const isLayersPanelOpen = ref(false)
 const filterTerm = ref<string>('')
 
-const layersStore = useLayerStore()
+const layerStore = useLayerStore()
 
 const { features: recordLayers } = await $fetch('/api/v1/layers/records')
 
@@ -32,6 +32,41 @@ const availableLayers = computed(() => {
     }
     recordLayers.unshift(vtLayer)
     return recordLayers
+})
+
+const filteredAvailableLayers = computed(() => {
+    if (filterTerm.value === '') {
+        return availableLayers.value
+    }
+    return availableLayers.value.filter((layer) => layer.id.includes(filterTerm.value))
+})
+
+onMounted(() => {
+    const layer: OGCFeature = {
+        geocatId: '',
+        id: 'ch.swisstopo.pixelkarte-farbe',
+        language: {
+            code: 'en',
+            dir: 'ltr',
+            name: 'English',
+        },
+        links: [
+            {
+                protocol: 'OGC:WMTS',
+                href: 'https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=de',
+                title: 'WMTS',
+                type: 'image/png',
+            },
+        ],
+        properties: {
+            attribution: '',
+            contacts: [],
+            description: '',
+            title: '',
+            type: '',
+        },
+    }
+    layerStore.setBackground(makeServerLayer(LayerType.WMTS, layer, { zIndex: 0 }))
 })
 
 /**
@@ -70,15 +105,8 @@ function addLayerToMap(layer: OGCFeature) {
     if (!type) {
         throw Error('Neither OGC:WMS nor OGC:WMTS found in the definition')
     }
-    layersStore.addLayer(makeServerLayer(type, layer))
+    layerStore.addLayer(makeServerLayer(type, layer))
 }
-
-const filteredAvailableLayers = computed(() => {
-    if (filterTerm.value === '') {
-        return availableLayers.value
-    }
-    return availableLayers.value.filter((layer) => layer.id.includes(filterTerm.value))
-})
 
 const layerBg = (layer: OGCFeature) => {
     switch (getLayerTypeFromFirstServiceLink(layer)) {
@@ -139,7 +167,7 @@ function toggleLayersPanel() {
             </table>
         </div>
         <div
-            class="fixed right-0 bottom-0"
+            class=""
             v-if="!isLayersPanelOpen"
         >
             <Button

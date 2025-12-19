@@ -58,7 +58,8 @@
     },
     "peerDependencies": {
         "@vueuse/core": "catalog:",
-        "vue": "catalog:"
+        "vue": "catalog:",
+        "vue-i18n": "catalog:"
     },
     "packageManager": "pnpm@10.14.0"
 }

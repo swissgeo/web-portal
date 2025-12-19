@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import log from '@swissgeo/log'
 import type { Map as OlMapType } from 'ol'
 
 import { registerProj4 } from '@swissgeo/coordinates'
-import { useLayerStore } from '@swissgeo/layers'
+import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import Map from 'ol/Map'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
@@ -12,12 +13,20 @@ import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.com
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
-const layersStore = useLayerStore()
+const layerStore = useLayerStore()
 
-const layers = computed(() => layersStore.layers)
+const layers = computed(() => layerStore.layers)
 
 const mapElement = useTemplateRef('mapElement')
 const olMap = ref<OlMapType>()
+
+provide<Ref<OlMapType | undefined>>('olMap', olMap)
+
+onMounted(() => {
+    mountOlMap()
+    // make it available for debugging
+    window.map = olMap.value
+})
 
 function registerCustomProjection() {
     registerProj4(proj4)
@@ -37,14 +46,6 @@ function mountOlMap() {
     }
 }
 
-provide<Ref<OlMapType | undefined>>('olMap', olMap)
-
-onMounted(() => {
-    mountOlMap()
-    // make it available for debugging
-    window.map = olMap.value
-})
-
 registerCustomProjection()
 createOlMap()
 </script>
@@ -56,6 +57,11 @@ createOlMap()
         data-cy="ol-map"
         @contextmenu.prevent
     >
+        <OpenLayersVisibleLayer
+            :layer="layerStore.backgroundLayer"
+            v-if="layerStore.backgroundLayer"
+            :key="layerStore.backgroundLayer.uuid"
+        />
         <!-- TODO probably somewhere here there would be the loop?-->
         <OpenLayersVisibleLayer
             :layer="layer"

@@ -1,10 +1,16 @@
+import type { Feature as OGCFEature } from '@swissgeo/shared/ogc'
+
 import log from '@swissgeo/log'
 import { cloneDeep } from 'lodash-es'
 
 import type { Layer, LayerInfo } from '@/index'
 
 export const useLayerStore = defineStore('layers', () => {
+    /** List of layers added to the map */
     const layers = ref<Layer[]>([])
+
+    /** Layer that's shown as background layer */
+    const backgroundLayer = ref<ServerLayer | null>()
 
     const greatestZIndex = computed(() => {
         return layers.value.length
@@ -46,6 +52,10 @@ export const useLayerStore = defineStore('layers', () => {
                 }
             }
         }
+    }
+
+    function setBackground(layer: ServerLayer) {
+        backgroundLayer.value = layer
     }
 
     function getLayerByUuid(layerUuid: string) {
@@ -94,6 +104,7 @@ export const useLayerStore = defineStore('layers', () => {
 
     return {
         layers,
+        backgroundLayer,
         // getters
         greatestZIndex,
         sortedLayers,
@@ -102,6 +113,7 @@ export const useLayerStore = defineStore('layers', () => {
         toggleVisibility,
         setLayerZIndex,
         setLayerInfo,
+        setBackground,
         removeLayer,
     }
 })

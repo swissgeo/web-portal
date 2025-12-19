@@ -5,6 +5,6 @@ import { MapModule } from '@swissgeo/map'
 <template>
     <ClientOnly>
         <MapModule class="h-screen w-full" />
-        <DebugLayersPanel class="fixed right-0 bottom-0 z-3"></DebugLayersPanel>
+        <DebugLayersPanel class="fixed right-[50%] bottom-0 z-3"></DebugLayersPanel>
     </ClientOnly>
 </template>

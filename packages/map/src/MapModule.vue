@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import log, { LogLevel } from '@swissgeo/log'
 
+import BackgroundSelector from './BackgroundSelector.vue'
 import OpenLayersMap from './openlayers/OpenLayersMap.vue'
 // import OpenLayersScale from './OpenLayersScale.vue'
 
@@ -17,6 +18,7 @@ log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error
 
             <slot />
         </OpenLayersMap>
+        <BackgroundSelector />
     </div>
 </template>
 

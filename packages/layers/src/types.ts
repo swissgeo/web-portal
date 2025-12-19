@@ -25,6 +25,7 @@ export interface LayerInfo {
 
 export interface Layer {
     uuid: string
+    humanId: string // something human readable. usually the layer ID. Not unique!
     isVisible: boolean
     type: LayerType
     opacity: number
@@ -48,6 +49,7 @@ export const makeServerLayer = (
 
     return {
         uuid: uuidv4(),
+        humanId: record.id,
         opacity: 1,
         record,
         isVisible: true,

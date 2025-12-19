@@ -1,0 +1,162 @@
+<script setup lang="ts">
+import type { ServerLayer } from '@swissgeo/layers'
+
+import { LucideIcon } from '@swissgeo/skeleton'
+
+import useBackgroundSelector, { type VoidLayer } from '@/composables/useBackgroundSelector'
+
+import BackgroundSelectorEntry from './BackgroundSelectorEntry.vue'
+
+const { t: $t } = useI18n()
+
+const { backgroundLayers, currentBackgroundLayer } = defineProps<{
+    backgroundLayers: ServerLayer[]
+    currentBackgroundLayer: ServerLayer
+}>()
+
+const emit = defineEmits<{
+    selectBackground: [backgroundLayer: ServerLayer | VoidLayer]
+}>()
+
+function selectBackgroundCallback(backgroundLayer: ServerLayer | VoidLayer): void {
+    if (backgroundLayer?.uuid === currentBackgroundLayer?.uuid) {
+        // don't update if it's the same already, otherwise the user has a little
+        // flicker and unnecessary computation power is used
+        return
+    }
+    emit('selectBackground', backgroundLayer)
+}
+
+const { selectorOpen, animate, toggleShowSelector, onSelectBackground } =
+    useBackgroundSelector(selectBackgroundCallback)
+</script>
+
+<template>
+    <div class="bg-selector fixed right-4 bottom-4 flex gap-2 transition-all">
+        <div
+            :class="{ hidden: !selectorOpen, animate }"
+            class="flex gap-2"
+        >
+            <BackgroundSelectorEntry
+                v-for="(backgroundLayer, index) in backgroundLayers"
+                :key="index"
+                :background-layer="backgroundLayer"
+                :is-current="backgroundLayer.uuid === currentBackgroundLayer?.uuid"
+                @click="onSelectBackground(backgroundLayer)"
+            />
+        </div>
+        <BackgroundSelectorEntry
+            v-if="currentBackgroundLayer"
+            :background-layer="currentBackgroundLayer"
+            :folded="selectorOpen"
+            :is-current="false"
+            @click="toggleShowSelector"
+        >
+            <template v-slot="slotProps">
+                <div
+                    :class="{ animate, hidden: !slotProps.folded }"
+                    class="absolute inset-0 flex items-center justify-center bg-[#343a40] text-white opacity-75"
+                >
+                    <LucideIcon
+                        name="CircleChevronRight"
+                        class="block"
+                    />
+                </div>
+            </template>
+        </BackgroundSelectorEntry>
+    </div>
+</template>
+
+<!--
+<style lang="scss" scoped>
+@use 'sass:math';
+
+@import './bg-selector';
+
+$main-element: '.bg-selector-squared';
+$square-button-width: 98px;
+$square-button-radius: 8px;
+
+// assets have been sized to have a 4:3 ratio, so we can adapt "squared" button to have this exact ratio
+@include setup-background-buttons($main-element, $square-button-width, math.div(3, 4));
+@include spread-wheel-buttons($main-element, $square-button-width, right);
+
+#{$main-element} {
+    &-wheel-button {
+        $opened-width: calc($square-button-width / 2.5);
+        $cropper-opened-width: calc($opened-width - 2 * $bg-selector-button-border);
+        border-radius: $square-button-radius;
+        transition: width $bg-selector-transition-duration;
+        $inner-radius: calc($square-button-radius - $bg-selector-button-border);
+        &.opened {
+            width: $opened-width;
+        }
+        &.opened &-image-cropper {
+            width: $cropper-opened-width;
+        }
+        &:not(.show).animate {
+            // keeping the cropper at the shorten width in order to trigger the grow animation
+            &-image-cropper {
+                width: $cropper-opened-width;
+            }
+        }
+        &-image-cropper {
+            border-radius: $inner-radius;
+            transition: all $bg-selector-transition-duration;
+            img {
+                // arbitrary scale/translate so that something "nice" is shown in the cropper
+                transform: scale(0.8) translate(-22%, -50%);
+            }
+        }
+        &-close {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity $bg-selector-transition-duration;
+            &.show {
+                opacity: 1;
+            }
+        }
+        &-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.75rem;
+            opacity: 1;
+            transition:
+                opacity $bg-selector-transition-duration,
+                height $bg-selector-transition-duration;
+            // we only wants the bottom to have a rounded border to match the container
+            // somehow it was necessary to reduce the radius of the label of 1px (average) to make
+            // it cover fully the rounded spot
+            $label-radius: calc($inner-radius - 1px);
+            border-radius: 0 0 $label-radius $label-radius;
+
+            &-inner {
+                transition: opacity $bg-selector-transition-duration;
+                opacity: 0;
+                &.show {
+                    opacity: 1;
+                }
+            }
+            &.spread.animate {
+                // fixing the height at animation start, so that it can then spread to 100%
+                // (otherwise it jumps straight to 100% without animating)
+                height: 1.1rem;
+            }
+            &.spread {
+                height: 100%;
+                // when spread, the top part of the label will touch the top of the container
+                // so we also round the top part of the label
+                border-radius: $label-radius;
+            }
+        }
+    }
+}
+</style>
+-->
