@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import type { MenuMetaData } from '@swissgeo/content'
+
 import { useMenuStore } from '@swissgeo/content'
-import { MenuMetaData } from '@swissgeo/content'
 
 import { useUiStore, SidebarType } from '@/stores/ui'
+
+import SidebarButton from './SidebarButton.vue'
 
 const { t: $t } = useI18n()
 
@@ -38,7 +41,7 @@ const open = () => {
         menuStore.setCurrentMenuTree(menuMetaData)
 
         if (!route.path.startsWith('/content')) {
-            router.push('/content')
+            // router.push('/content')
         }
     }
 }

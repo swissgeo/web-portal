@@ -2,7 +2,6 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'unplugin-dts/vite'
-import AutoImportComponents from 'unplugin-vue-components/vite'
 import { fileURLToPath, URL } from 'url'
 import { defineConfig, UserConfigFnObject, type UserConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -18,7 +17,7 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
                 name: '@swissgeo/content',
             },
             rollupOptions: {
-                external: ['vue'],
+                external: ['vue', 'pinia', 'nuxt'],
                 output: {
                     exports: 'named',
                     globals: {
@@ -33,26 +32,20 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
             },
         },
         plugins: [
-            // AutoImport({
-            //     dirs: ['./src/**'],
-            //     imports: [
-            //         // Presets
-            //         'vue',
-            //         'vue-router',
-            //         'vue-i18n',
-            //         'pinia',
-            //         '@vueuse/core',
-            //         'vee-validate',
-            //     ],
-            //     // Automatically generate types
-            //     dts: '.nuxt/auto-imports.d.ts',
-            //     // Auto import inside Vue template
-            //     vueTemplate: true,
-            // }),
-            // AutoImportComponents({
-            //     dts: './.nuxt/auto-components.d.ts',
-            //     dirs: ['./src/**'],
-            // }),
+            AutoImport({
+                dirs: ['./src/**'],
+                imports: [
+                    // Presets
+                    'vue',
+                    'pinia',
+                    'vue-router',
+                    'vue-i18n',
+                ],
+                // Automatically generate types
+                dts: '.output/auto-imports.d.ts',
+                // Auto import inside Vue template
+                vueTemplate: true,
+            }),
             vue(),
             dts({
                 bundleTypes: true,

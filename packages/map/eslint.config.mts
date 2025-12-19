@@ -1,11 +1,12 @@
 import defaultConfig from '@swissgeo/config-eslint'
-import autoGlobals from './.output/eslintrc-auto-import.json'
+
+import { globalIgnores } from 'eslint/config'
 
 export default [
     ...defaultConfig,
+    globalIgnores(['.nuxt', '.output']),
     {
         languageOptions: {
-            ...autoGlobals,
             parserOptions: {
                 tsconfigRootDir: import.meta.dirname,
             },

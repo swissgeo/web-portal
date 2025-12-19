@@ -2,7 +2,6 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'unplugin-dts/vite'
-import AutoImportComponents from 'unplugin-vue-components/vite'
 import { fileURLToPath, URL } from 'url'
 import { defineConfig, type UserConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -26,7 +25,7 @@ export default defineConfig(({ mode }): UserConfig => {
                 name: '@swissgeo/layers',
             },
             rollupOptions: {
-                external: ['vue'],
+                external: ['vue', 'pinia'],
                 output: {
                     exports: 'named',
                     globals: {
@@ -49,17 +48,12 @@ export default defineConfig(({ mode }): UserConfig => {
                     'vue',
                     'vue-router',
                     'vue-i18n',
-                    '@vueuse/core',
-                    'vee-validate',
+                    'pinia',
                 ],
                 // Automatically generate types
-                dts: './.nuxt/auto-imports.d.ts',
+                dts: './.output/auto-imports.d.ts',
                 // Auto import inside Vue template
                 vueTemplate: true,
-            }),
-            AutoImportComponents({
-                dts: './.nuxt/auto-components.d.ts',
-                dirs: ['./src/**'],
             }),
             dts({
                 bundleTypes: true,

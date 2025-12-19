@@ -3,7 +3,7 @@ import { useUiStore, SidebarType } from '@/stores/ui'
 
 import SidebarButton from './SidebarButton.vue'
 
-const router = useRouter()
+// const router = useRouter()
 
 const { t: $t } = useI18n()
 
@@ -11,7 +11,7 @@ const uiStore = useUiStore()
 
 const toggleSearch = () => {
     uiStore.setSidebar(SidebarType.SEARCH)
-    router.push('/search')
+    // router.push('/search')
 }
 </script>
 

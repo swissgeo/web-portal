@@ -3,13 +3,14 @@ import type { Map as OlMapType } from 'ol'
 
 import { registerProj4 } from '@swissgeo/coordinates'
 import { useLayerStore } from '@swissgeo/layers'
-// import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import Map from 'ol/Map'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
-import { ref } from 'vue'
 
 import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.composable'
+
+// import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
+import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
 const layersStore = useLayerStore()
 

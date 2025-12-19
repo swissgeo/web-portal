@@ -1,27 +1,8 @@
 {
-    "include": [
-        "./src/**/*.ts",
-        "./src/**/*.d.ts",
-        "./src/**/*.vue",
-        "./.nuxt/auto-imports.d.ts",
-        "./.nuxt/auto-components.d.ts"
-    ],
-    "exclude": ["node_modules", "dist"],
+    "extends": "@swissgeo/config-typescript/tsconfig.base.json",
+    "include": ["src/**/*.ts", "src/**/*.vue"],
     "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "bundler",
-        "esModuleInterop": true,
-        "lib": ["DOM", "ESNext.Array", "ESNext", "webworker"],
-
-        "jsx": "preserve",
-        "jsxImportSource": "vue",
-
-        // see https://vite.dev/guide/features.html#typescript-compiler-options
-        "isolatedModules": true,
-        "useDefineForClassFields": true,
-        "paths": {
-            "@/*": ["./src/*"]
-        },
+        "types": ["vue", "pinia", "./.output/auto-imports.d.ts"],
         "plugins": [{ "name": "@dxup/unimport" }]
     }
 }

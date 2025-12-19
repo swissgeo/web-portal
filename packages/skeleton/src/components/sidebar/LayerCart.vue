@@ -1,6 +1,10 @@
 <script lang="ts" setup>
+import type { Layer } from '@swissgeo/layers'
+
+import { LayerType, useLayerStore } from '@swissgeo/layers'
 import { cloneDeep } from 'lodash-es'
-import { Layer, LayerType, useLayerStore } from '@swissgeo/layers'
+
+import IconButton from '@/components/IconButton.vue'
 
 const layerStore = useLayerStore()
 

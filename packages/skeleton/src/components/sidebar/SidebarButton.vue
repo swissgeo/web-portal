@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import IconButton from '@/components/IconButton.vue'
+
 const emit = defineEmits(['click'])
 
 const { title } = defineProps<{

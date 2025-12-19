@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ServerLayer } from '@swissgeo/layers'
+import type { ServerLayer } from '@swissgeo/layers'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from './composables/olWMSLayer.composable'

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ServerLayer } from '@swissgeo/layers'
+import type { ServerLayer } from '@swissgeo/layers'
+
 import log from '@swissgeo/log'
 
 import useOlVectorLayer from './composables/olVectorLayer.composable'

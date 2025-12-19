@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import log, { LogLevel } from '@swissgeo/log'
 
-import OpenLayersScale from './OpenLayersScale.vue'
+import OpenLayersMap from './OpenLayersMap.vue'
+// import OpenLayersScale from './OpenLayersScale.vue'
 
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
@@ -12,7 +13,7 @@ log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error
         <div></div>
         <!-- here's the switch between openlayers and cesium -->
         <OpenLayersMap>
-            <OpenLayersScale />
+            <!-- <OpenLayersScale /> -->
 
             <slot />
         </OpenLayersMap>

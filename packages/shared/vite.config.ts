@@ -2,7 +2,6 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'unplugin-dts/vite'
-import AutoImportComponents from 'unplugin-vue-components/vite'
 import { fileURLToPath, URL } from 'url'
 import { defineConfig, UserConfigFnObject, type UserConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -42,21 +41,15 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
                     'vue-router',
                     'vue-i18n',
                     'pinia',
-                    '@vueuse/core',
-                    'vee-validate',
                 ],
                 eslintrc: {
                     enabled: true,
                     filepath: '.output/eslintrc-auto-import.json',
                 },
                 // Automatically generate types
-                dts: '.nuxt/auto-imports.d.ts',
+                dts: '.output/auto-imports.d.ts',
                 // Auto import inside Vue template
                 vueTemplate: true,
-            }),
-            AutoImportComponents({
-                dts: './.nuxt/auto-components.d.ts',
-                dirs: ['./src/**'],
             }),
             dts({
                 // entryRoot: 'src',

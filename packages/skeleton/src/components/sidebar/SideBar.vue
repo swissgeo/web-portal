@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import LogoPic from '@/components/LogoPic.vue'
-import { useUiStore } from '@/stores/ui'
+import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
+import { useUiStore, SidebarType } from '@/stores/ui'
 
 import LayerCart from './LayerCart.vue'
-// import SidebarIcons from "@/components/sidebar/SidebarIcons.vue";
 
 const uiStore = useUiStore()
 

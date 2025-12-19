@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ServerLayer } from '@swissgeo/layers'
+import type { ServerLayer } from '@swissgeo/layers'
 
 import useOlGeoJSONLayer from './composables/olGeoJSONLayer.composable'
 import { getLinksByProtocol } from './utils/recordUtils'

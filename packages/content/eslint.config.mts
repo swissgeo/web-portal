@@ -4,7 +4,7 @@ import { globalIgnores } from 'eslint/config'
 
 export default [
     ...defaultConfig,
-    globalIgnores(['.nuxt']),
+    globalIgnores(['.nuxt', '.output']),
     {
         languageOptions: {
             parserOptions: {

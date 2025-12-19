@@ -37,11 +37,11 @@
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
-        "unplugin-vue-components": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:"
     },
     "peerDependencies": {
+        "nuxt": "catalog:",
         "pinia": "catalog:",
         "vue": "catalog:"
     },

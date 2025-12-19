@@ -44,6 +44,7 @@
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
+        "@swissgeo/config-typescript": "catalog:",
         "@types/geojson": "catalog:",
         "@types/lodash-es": "catalog:",
         "@types/openlayers": "catalog:",

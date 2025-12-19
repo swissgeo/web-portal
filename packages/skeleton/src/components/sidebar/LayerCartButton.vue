@@ -1,7 +1,11 @@
 <script setup lang="ts">
 // const router = useRouter();
+import SidebarButton from '@/components/sidebar/SidebarButton.vue'
+import { useUiStore, SidebarType } from '@/stores/ui'
 
 const uiStore = useUiStore()
+
+const { t: $t } = useI18n()
 
 const toggle = () => {
     if (uiStore.isSidebarOpen && uiStore.currentSidebar === SidebarType.LAYER_CART) {
@@ -19,7 +23,7 @@ const toggle = () => {
         <SidebarButton
             :is-active="uiStore.currentSidebar == 'layerCart'"
             data-cy="button-search-panel"
-            :title="$t('menu.search')"
+            :title="$t('menu.layerCart')"
             icon="Map"
             @click="toggle"
         />

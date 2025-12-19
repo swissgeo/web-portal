@@ -1,11 +1,10 @@
 <script lang="ts" setup>
+import type { ServerLayer } from '@swissgeo/layers'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
-import { ServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import { optionsFromCapabilities } from 'ol/source/WMTS'
 /** Renders a WMTS layer on the map by configuring it through a getCapabilities XML file */
-import { computed, onMounted } from 'vue'
 
 import { getLinksByProtocol } from '@/utils/recordUtils'
 

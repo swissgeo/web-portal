@@ -37,19 +37,21 @@
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
+        "@swissgeo/config-typescript": "catalog:",
         "@types/lodash-es": "catalog:",
         "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
+        "pinia": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
-        "unplugin-vue-components": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:"
     },
     "peerDependencies": {
         "@vueuse/core": "catalog:",
+        "pinia": "catalog:",
         "vue": "catalog:"
     },
     "packageManager": "pnpm@10.14.0"

@@ -1,1 +1,1 @@
-export { useMenuStore } from './stores/menu'
+export { useMenuStore, type MenuMetaData } from './stores/menu'

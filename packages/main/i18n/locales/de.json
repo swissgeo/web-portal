@@ -7,5 +7,9 @@
         "moreInfos": "Mehr Infos",
         "startPrototype": "Prototyp starten",
         "dontShowAgain": "Nicht mehr anzeigen"
+    },
+    "menu": {
+        "search": "Search",
+        "layerCart": "Active layers"
     }
 }
