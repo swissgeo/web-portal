@@ -2,6 +2,7 @@
 import { ServerLayer } from '@swissgeo/layers'
 
 import useOlGeoJSONLayer from './composables/olGeoJSONLayer.composable'
+import { getLinksByProtocol } from './utils/recordUtils'
 
 const { layer } = defineProps<{
     layer: ServerLayer

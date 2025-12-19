@@ -4,8 +4,7 @@
         "./src/**/*.d.ts",
         "./src/**/*.vue",
         "./env.d.ts",
-        "./.nuxt/auto-imports.d.ts",
-        "./.nuxt/auto-components.d.ts"
+        "./.nuxt/auto-imports.d.ts"
     ],
     "exclude": ["node_modules", "dist"],
     "compilerOptions": {

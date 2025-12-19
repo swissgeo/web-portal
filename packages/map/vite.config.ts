@@ -50,7 +50,6 @@ export default defineConfig(({ mode }): UserConfig => {
                     'vue-router',
                     'vue-i18n',
                     '@vueuse/core',
-                    'vee-validate',
                 ],
                 eslintrc: {
                     enabled: true,
@@ -60,10 +59,6 @@ export default defineConfig(({ mode }): UserConfig => {
                 dts: './.nuxt/auto-imports.d.ts',
                 // Auto import inside Vue template
                 vueTemplate: true,
-            }),
-            AutoImportComponents({
-                dts: './.nuxt/auto-components.d.ts',
-                dirs: ['./src/**'],
             }),
             dts({
                 bundleTypes: true,
