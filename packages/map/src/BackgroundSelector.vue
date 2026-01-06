@@ -26,78 +26,90 @@ function generateBackgroundCategories(bg: Layer) {
 /** Sorted backgrounds so that they are ordered such as [ void, grau, farbe, aerial ] */
 const sortedBackgroundLayersWithVoid = computed<(ServerLayer | VoidLayer)[]>(() => [
     'void',
-    makeServerLayer(LayerType.WMTS, {
-        geocatId: '',
-        id: 'ch.swisstopo.pixelkarte-farbe',
-        language: {
-            code: 'en',
-            dir: 'ltr',
-            name: 'English',
-        },
-        links: [
-            {
-                protocol: 'OGC:WMTS',
-                href: 'https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=de',
-                title: 'WMTS',
-                type: 'image/png',
+    makeServerLayer(
+        LayerType.WMTS,
+        {
+            geocatId: '',
+            id: 'ch.swisstopo.pixelkarte-farbe',
+            language: {
+                code: 'en',
+                dir: 'ltr',
+                name: 'English',
             },
-        ],
-        properties: {
-            attribution: '',
-            contacts: [],
-            description: '',
-            title: '',
-            type: '',
-        },
-    }),
-    makeServerLayer(LayerType.WMTS, {
-        geocatId: '',
-        id: 'ch.swisstopo.pixelkarte-grau',
-        language: {
-            code: 'en',
-            dir: 'ltr',
-            name: 'English',
-        },
-        links: [
-            {
-                protocol: 'OGC:WMTS',
-                href: 'https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=de',
-                title: 'WMTS',
-                type: 'image/png',
+            links: [
+                {
+                    protocol: 'OGC:WMTS',
+                    href: 'https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=de',
+                    title: 'WMTS',
+                    type: 'image/png',
+                },
+            ],
+            properties: {
+                attribution: '',
+                contacts: [],
+                description: '',
+                title: '',
+                type: '',
             },
-        ],
-        properties: {
-            attribution: '',
-            contacts: [],
-            description: '',
-            title: '',
-            type: '',
         },
-    }),
-    makeServerLayer(LayerType.WMTS, {
-        geocatId: '',
-        id: 'ch.swisstopo.swissimage',
-        language: {
-            code: 'en',
-            dir: 'ltr',
-            name: 'English',
-        },
-        links: [
-            {
-                protocol: 'OGC:WMTS',
-                href: 'https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=de',
-                title: 'WMTS',
-                type: 'image/png',
+        { zIndex: 0 }
+    ),
+    makeServerLayer(
+        LayerType.WMTS,
+        {
+            geocatId: '',
+            id: 'ch.swisstopo.pixelkarte-grau',
+            language: {
+                code: 'en',
+                dir: 'ltr',
+                name: 'English',
             },
-        ],
-        properties: {
-            attribution: '',
-            contacts: [],
-            description: '',
-            title: '',
-            type: '',
+            links: [
+                {
+                    protocol: 'OGC:WMTS',
+                    href: 'https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=de',
+                    title: 'WMTS',
+                    type: 'image/png',
+                },
+            ],
+            properties: {
+                attribution: '',
+                contacts: [],
+                description: '',
+                title: '',
+                type: '',
+            },
         },
-    }),
+        { zIndex: 0 }
+    ),
+    makeServerLayer(
+        LayerType.WMTS,
+        {
+            geocatId: '',
+            id: 'ch.swisstopo.swissimage',
+            language: {
+                code: 'en',
+                dir: 'ltr',
+                name: 'English',
+            },
+            links: [
+                {
+                    protocol: 'OGC:WMTS',
+                    href: 'https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=de',
+                    title: 'WMTS',
+                    type: 'image/png',
+                },
+            ],
+            properties: {
+                attribution: '',
+                contacts: [],
+                description: '',
+                title: '',
+                type: '',
+            },
+        },
+        { zIndex: 0 }
+    ),
 ])
 
 function selectBackground(backgroundLayer: ServerLayer | VoidLayer) {

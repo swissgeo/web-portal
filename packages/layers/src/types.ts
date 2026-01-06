@@ -56,8 +56,8 @@ export const makeServerLayer = (
         type,
         isLoading: false,
         zIndex: layerStore.greatestZIndex + 1,
-        ...options,
         info: null, // to be set later
+        ...options,
     }
 }
 
