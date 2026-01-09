@@ -23,6 +23,7 @@ export function getLayerInfoFromWMSCapabilities(
         }
     }
 
-    throw new Error(`Unable to find ${layerId} in wms capabilities which should be impossible`)
-    // or else why would we even get here?
+    throw new Error(`Unable to find ${layerId} in wms capabilities`)
+    // somehow there are layers available that point to the capabilities,
+    // but then they're not in there! See ch.bfe.komo-projekte
 }

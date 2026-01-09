@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import type { Feature as OGCFeature, OGCRecords, Service } from '@swissgeo/shared/ogc'
+import type { ServerLayer } from '@swissgeo/layers'
 import type { WMTSCapabilities } from '@swissgeo/shared/ogc'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
-import { useLayerStore, type ServerLayer } from '@swissgeo/layers'
-import { getLayerInfoFromWMTSCapabilities } from '@swissgeo/layers'
+import { useLayerStore, getLayerInfoFromWMTSCapabilities } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 /** Renders a WMTS layer on the map by configuring it through a getCapabilities XML file */
 import { optionsFromCapabilities } from 'ol/source/WMTS'
@@ -18,7 +17,7 @@ const { layer } = defineProps<{
     layer: ServerLayer
 }>()
 
-const { capabilityUrl, serviceUrl } = await useRecordsData(layer)
+const { capabilityUrl, serviceUrl } = await useRecordsData(layer, 'OGC:WMTS')
 
 const { data: capabilityData } = await useFetch<WMTSCapabilities>(
     `/api/v1/layers/wmtsConfig/${capabilityUrl.value}`

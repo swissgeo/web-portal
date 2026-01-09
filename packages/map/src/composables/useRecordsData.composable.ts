@@ -1,12 +1,24 @@
-import type { Feature as OGCFeature, OGCRecords, Service } from '@swissgeo/shared/ogc'
-
-import { useLayerStore, type ServerLayer } from '@swissgeo/layers'
+import type { ServerLayer } from '@swissgeo/layers'
+import type { Feature as OGCFeature, OGCRecords, Service, Protocol } from '@swissgeo/shared/ogc'
 
 import { getDataServiceLinks } from '@/utils/recordUtils'
 
-export default async function useRecordsData(layer: ServerLayer) {
+/**
+ * Go through the tree of the OGC records and extract the necessary information to request a
+ * capability
+ *
+ * Following the links of a OGC feature, we extract the entry called 'distributions'. This will lead
+ * us to the specification of the layer, which contains the links to the service. The service itself
+ * contains the URL to the capabilities, which we return for the concrete implementations to be
+ * used
+ *
+ * Since these operations are a cascade of server requests, the ORDER OF THE ELEMENTS IN HERE
+ * MATTERS
+ */
+export default async function useRecordsData(layer: ServerLayer, protocol: Protocol) {
     const layerId = computed(() => layer.record.id)
 
+    // Get the distribution
     const distributionLink = computed(() => {
         const links = layer.record.links
         for (const link of links) {
@@ -20,7 +32,8 @@ export default async function useRecordsData(layer: ServerLayer) {
         `/api/v1/layers/${distributionLink.value}`
     )
 
-    const wmtsFeature = computed((): OGCFeature => {
+    // Extract the feature for the service
+    const feature = computed((): OGCFeature => {
         if (!distributionData.value) {
             throw new Error('Unable to load distribution data')
         }
@@ -31,7 +44,8 @@ export default async function useRecordsData(layer: ServerLayer) {
             if (!feature.properties) {
                 break // go to exception below
             }
-            if (feature.properties.protocol === 'OGC:WMTS') {
+            if (feature.properties.protocol === protocol) {
+                // we found the feature with the protocol that's requested, carry on
                 return feature
             }
         }
@@ -44,7 +58,7 @@ export default async function useRecordsData(layer: ServerLayer) {
 
     /** Extract the capabilities URL from the OGC Record */
     const serviceUrl = computed(() => {
-        const links = wmtsFeature.value.links
+        const links = feature.value.links
 
         const link = getDataServiceLinks(links)[0]
         if (!link) {
@@ -60,21 +74,42 @@ export default async function useRecordsData(layer: ServerLayer) {
         return href
     })
 
-    // TODO ok here we have a bit of a tight coupling with the main package
+    // get the Service
     const { data: serviceData } = await useFetch<Service>(
         `/api/v1/layers/service/${serviceUrl.value}`
     )
 
     const capabilityUrl = computed(() => {
-        const link = serviceData.value.linkTemplates[0]
-
-        if (!link) {
-            throw new Error('Unable to extract link to capabilities for the service')
+        if (!serviceData.value) {
+            throw new Error(`Unable to load service data for ${serviceUrl.value}`)
         }
 
-        // TODO make it work with more flexible versions for the link
-        const uri = link.uriTemplate.replace('{EPSG}', '2056')
-        return encodeURIComponent(uri)
+        if ('links' in serviceData.value) {
+            const link = serviceData.value.links[0]
+
+            if (!link) {
+                throw new Error(
+                    `Unable to extract link to capabilities for the service ${serviceUrl.value}`
+                )
+            }
+
+            const uri = link.href
+            return encodeURIComponent(uri)
+        } else if ('linkTemplates' in serviceData.value) {
+            // if there are links and linkTemplates, we want links to take precedence
+            // it's the simpler version
+            const link = serviceData.value.linkTemplates[0]
+
+            if (!link) {
+                throw new Error(
+                    `Unable to extract link to capabilities for the service ${serviceUrl.value}`
+                )
+            }
+
+            const uri = link.uriTemplate.replace('{EPSG}', '2056')
+            return encodeURIComponent(uri)
+        }
+        throw new Error(`Unable to find links for ${serviceUrl.value}`)
     })
 
     return {

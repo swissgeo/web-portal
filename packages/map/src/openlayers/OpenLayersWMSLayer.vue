@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { useLayerStore, type ServerLayer } from '@swissgeo/layers'
+import type { ServerLayer } from '@swissgeo/layers'
 
+import { useLayerStore, getLayerInfoFromWMSCapabilities } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
-import { getLayerInfoFromWMSCapabilities } from '@swissgeo/layers'
 
 import useOlWmsLayer from '../composables/olWMSLayer.composable'
+import useRecordsData from '../composables/useRecordsData.composable'
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
 
@@ -19,20 +20,7 @@ const gutter = computed(() => {
     return 0
 })
 
-/** Extract the capabilities URL from the OGC Record */
-const capabilityUrl = computed(() => {
-    const links = layer.record.links
-
-    const link = getLinksByProtocol(links, 'OGC:WMS')[0]
-    const href = link.href || link.uriTemplate
-    if (!href) {
-        const err = `Faulty wms record, neither href nor uriTemplate found: ${JSON.stringify(link)}`
-        log.error(err)
-        throw new Error(err)
-    }
-
-    return encodeURIComponent(href)
-})
+const { capabilityUrl } = await useRecordsData(layer, 'OGC:WMS')
 
 // TODO here we have a bit of a tight coupling with the main package
 const { data } = await useFetch<string>(`/api/v1/layers/wmsConfig/${capabilityUrl.value}`)
@@ -50,7 +38,7 @@ const url = computed(() => capabilityData.value.Service.OnlineResource)
 
 const { setVisibility, setZIndex } = useOlWmsLayer(
     layer.record.id,
-    layer.record.geocatId,
+    layer.uuid,
     gutter.value,
     layer.opacity,
     url.value,
@@ -61,7 +49,6 @@ const { setVisibility, setZIndex } = useOlWmsLayer(
 watch(
     () => layer.isVisible,
     (newValue: boolean) => {
-        console.log('toggling visibility')
         setVisibility(newValue)
     }
 )
@@ -78,8 +65,15 @@ onMounted(() => {
 })
 
 function updateLayerInfo() {
-    const info = getLayerInfoFromWMSCapabilities(capabilityData.value, layer.record.id)
-    layerStore.setLayerInfo(layer.uuid, info)
+    try {
+        const info = getLayerInfoFromWMSCapabilities(capabilityData.value, layer.record.id)
+        layerStore.setLayerInfo(layer.uuid, info)
+    } catch (error) {
+        log.warn(
+            `Unable to find layer ${layer.record.id} in wms capabilities of ${capabilityUrl.value}`,
+            { messages: [error] }
+        )
+    }
 }
 </script>
 

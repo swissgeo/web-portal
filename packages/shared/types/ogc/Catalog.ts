@@ -19,15 +19,27 @@ export interface Link {
     href?: string
     rel?: string
     type: string
-    //templated?: boolean
-    //uriTemplate?: string
-    //variables?: LinkVariable
+    title: string
+}
+
+export interface LinkVariable {
+    description: string
+    format: string
+    type: string
+    enum?: (string | number)[]
+}
+
+export interface TemplateLink {
+    uriTemplate: string
+    type: string
+    variables: Record<string, LinkVariable>
+    title: string
 }
 
 export interface Property {
     attribution?: string
     externalIds?: string[]
-    protocol?: string
+    protocol?: Protocol
     contacts?: Contact[]
     language?: Language
     description?: string
@@ -43,6 +55,9 @@ export interface Contact {
 
 export interface Service {
     id: string
-    linkTemplates: Link[]
+    linkTemplates?: TemplateLink[]
+    links: Link[]
     properties?: Property
 }
+
+export type Protocol = 'OGC:WMTS' | 'OGC:WMS'

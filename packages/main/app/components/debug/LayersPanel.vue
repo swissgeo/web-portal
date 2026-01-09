@@ -48,7 +48,7 @@ function toggleLayersPanel() {
     <div>
         <div
             class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
-            v-if="isLayersPanelOpen"
+            v-show="isLayersPanelOpen"
         >
             <div class="absolute flex items-center gap-4">
                 <input

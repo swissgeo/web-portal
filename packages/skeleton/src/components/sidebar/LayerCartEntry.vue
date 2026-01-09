@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Layer } from '@swissgeo/layers'
+import type { Layer, ServerLayer } from '@swissgeo/layers'
 
 import IconButton from '@/components/IconButton.vue'
 import { LayerType, useLayerStore } from '@swissgeo/layers'
@@ -14,7 +14,7 @@ const displayName = computed(() => {
     if (layer.info && layer.info.displayName) {
         return layer.info.displayName
     } else {
-        return layer.record.id
+        return layer.humanId
     }
 })
 
