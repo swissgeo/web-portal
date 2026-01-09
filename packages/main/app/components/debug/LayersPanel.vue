@@ -30,15 +30,6 @@ const filteredAvailableLayers = computed((): OGCFeature[] => {
     return availableLayers.value.features.filter((layer) => layer.id.includes(filterTerm.value))
 })
 
-// const setDefaultBackground = () => {
-//     const layer =
-//     layerStore.setBackground(makeServerLayer(LayerType.WMTS, layer, { zIndex: 0 }))
-// }
-
-onMounted(() => {
-    //setDefaultBackground()
-})
-
 function toggleLayersPanel() {
     isLayersPanelOpen.value = !isLayersPanelOpen.value
 }
@@ -48,7 +39,7 @@ function toggleLayersPanel() {
     <div>
         <div
             class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
-            v-show="isLayersPanelOpen"
+            v-if="isLayersPanelOpen"
         >
             <div class="absolute flex items-center gap-4">
                 <input

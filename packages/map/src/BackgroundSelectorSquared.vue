@@ -3,7 +3,9 @@ import type { ServerLayer } from '@swissgeo/layers'
 
 import { LucideIcon } from '@swissgeo/skeleton'
 
-import useBackgroundSelector, { type VoidLayer } from '@/composables/useBackgroundSelector'
+import type { VoidLayer } from '@/composables/useBackgroundSelector'
+
+import useBackgroundSelector from '@/composables/useBackgroundSelector'
 
 import BackgroundSelectorEntry from './BackgroundSelectorEntry.vue'
 

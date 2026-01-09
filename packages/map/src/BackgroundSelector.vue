@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { type ServerLayer, LayerType, makeServerLayer } from '@swissgeo/layers'
+import type { ServerLayer } from '@swissgeo/layers'
+import type { Feature } from '@swissgeo/shared/ogc'
+
+import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
 //import type { ActionDispatcher } from '@/store/types'
 //import BackgroundSelectorWheelRounded from '@/modules/map/components/footer/backgroundSelector/BackgroundSelectorWheelRounded.vue'
-import { useLayerStore } from '@swissgeo/layers'
+import { computedAsync } from '@vueuse/core'
 
 import type { VoidLayer } from '@/composables/useBackgroundSelector'
 
@@ -11,106 +14,47 @@ import type { VoidLayer } from '@/composables/useBackgroundSelector'
 import BackgroundSelectorSquared from '@/BackgroundSelectorSquared.vue'
 
 const layerStore = useLayerStore()
-// const uiStore = useUIStore()
 
-function generateBackgroundCategories(bg: Layer) {
-    return {
-        farbe: bg.id.indexOf('farbe') !== -1,
-        grau: bg.id.indexOf('grau') !== -1,
-        get aerial() {
-            return !this.farbe && !this.grau
-        },
+const AVAILABLE_BACKGROUNDS = [
+    // order matters!
+    'ch.swisstopo.pixelkarte-grau',
+    'ch.swisstopo.pixelkarte-farbe',
+    'ch.swisstopo.swissimage',
+]
+
+const backgroundRecords = computed(async () => {
+    const promises: Promise[] = []
+    for (const backgroundId of AVAILABLE_BACKGROUNDS) {
+        promises.push($fetch(`/api/v1/layers/collections/swissgeo.catalog/items/${backgroundId}`))
     }
-}
 
-/** Sorted backgrounds so that they are ordered such as [ void, grau, farbe, aerial ] */
-const sortedBackgroundLayersWithVoid = computed<(ServerLayer | VoidLayer)[]>(() => [
-    'void',
-    makeServerLayer(
-        LayerType.WMTS,
-        {
-            geocatId: '',
-            id: 'ch.swisstopo.pixelkarte-farbe',
-            language: {
-                code: 'en',
-                dir: 'ltr',
-                name: 'English',
-            },
-            links: [
-                {
-                    protocol: 'OGC:WMTS',
-                    href: 'https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=de',
-                    title: 'WMTS',
-                    type: 'image/png',
-                },
-            ],
-            properties: {
-                attribution: '',
-                contacts: [],
-                description: '',
-                title: '',
-                type: '',
-            },
-        },
-        { zIndex: 0 }
-    ),
-    makeServerLayer(
-        LayerType.WMTS,
-        {
-            geocatId: '',
-            id: 'ch.swisstopo.pixelkarte-grau',
-            language: {
-                code: 'en',
-                dir: 'ltr',
-                name: 'English',
-            },
-            links: [
-                {
-                    protocol: 'OGC:WMTS',
-                    href: 'https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=de',
-                    title: 'WMTS',
-                    type: 'image/png',
-                },
-            ],
-            properties: {
-                attribution: '',
-                contacts: [],
-                description: '',
-                title: '',
-                type: '',
-            },
-        },
-        { zIndex: 0 }
-    ),
-    makeServerLayer(
-        LayerType.WMTS,
-        {
-            geocatId: '',
-            id: 'ch.swisstopo.swissimage',
-            language: {
-                code: 'en',
-                dir: 'ltr',
-                name: 'English',
-            },
-            links: [
-                {
-                    protocol: 'OGC:WMTS',
-                    href: 'https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=de',
-                    title: 'WMTS',
-                    type: 'image/png',
-                },
-            ],
-            properties: {
-                attribution: '',
-                contacts: [],
-                description: '',
-                title: '',
-                type: '',
-            },
-        },
-        { zIndex: 0 }
-    ),
-])
+    const values = await Promise.all(promises)
+
+    return values.map((record: Feature) => {
+        return makeServerLayer(LayerType.WMTS, record, {
+            zIndex: 0,
+        })
+    })
+})
+
+const sortedBackgroundLayersWithVoid = computedAsync<(ServerLayer | VoidLayer)[]>(
+    async () => ['void', ...(await backgroundRecords.value)],
+    ['void']
+)
+
+onMounted(() => {
+    layerStore.setBackground('void')
+})
+
+watch(
+    sortedBackgroundLayersWithVoid,
+    (backgrounds) => {
+        // as soon as the layer data is ready for the backgrounds, select
+        // pixelkarte-farbe
+        layerStore.setBackground(backgrounds[2])
+    },
+    { once: true }
+)
 
 function selectBackground(backgroundLayer: ServerLayer | VoidLayer) {
     // TODO HAAAAACK
