@@ -35,7 +35,9 @@ export interface Layer {
 }
 
 export interface ServerLayer extends Layer {
-    record: OGCFeature
+    record: OGCFeature // TODO maybe it doesn't make sense to keep the entire
+    // record here... we only really need the layerId so far, with that we'll
+    // call the nuxt API which will give us the needed information (e.g. capability url, style..)
 }
 
 export interface FileLayer extends Layer {}

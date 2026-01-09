@@ -16,8 +16,8 @@ export interface Language {
 }
 
 export interface Link {
-    href?: string
-    rel?: string
+    href: string
+    rel: string
     type: string
     title: string
 }

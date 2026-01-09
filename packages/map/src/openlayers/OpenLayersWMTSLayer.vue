@@ -5,11 +5,10 @@ import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
 import { useLayerStore, getLayerInfoFromWMTSCapabilities } from '@swissgeo/layers'
 import log from '@swissgeo/log'
-/** Renders a WMTS layer on the map by configuring it through a getCapabilities XML file */
 import { optionsFromCapabilities } from 'ol/source/WMTS'
 
-import useOlWmtsLayer from '../composables/olWMTSLayer.composable'
-import useRecordsData from '../composables/useRecordsData.composable'
+import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
+import useLayerData from '@/composables/useLayerData.composable'
 
 const layerStore = useLayerStore()
 
@@ -17,7 +16,7 @@ const { layer } = defineProps<{
     layer: ServerLayer
 }>()
 
-const { capabilityUrl, serviceUrl } = await useRecordsData(layer, 'OGC:WMTS')
+const { capabilityUrl } = await useLayerData(layer.record.id, 'OGC:WMTS')
 
 const { data: capabilityData } = await useFetch<WMTSCapabilities>(
     `/api/v1/layers/wmtsConfig/${capabilityUrl.value}`
@@ -26,7 +25,7 @@ const { data: capabilityData } = await useFetch<WMTSCapabilities>(
 /** Retrieve the capabilities and then turn them into a options objects to be used by WMTS */
 const options = computed((): WMTSOptions => {
     if (!capabilityData.value) {
-        log.error(`Unable to fetch capabilities for ${serviceUrl.value}`)
+        log.error(`Unable to fetch capabilities for ${capabilityUrl.value}`)
         throw new Error()
     }
 

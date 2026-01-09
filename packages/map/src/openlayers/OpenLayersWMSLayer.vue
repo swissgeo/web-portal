@@ -5,8 +5,8 @@ import { useLayerStore, getLayerInfoFromWMSCapabilities } from '@swissgeo/layers
 import log from '@swissgeo/log'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
 
-import useOlWmsLayer from '../composables/olWMSLayer.composable'
-import useRecordsData from '../composables/useRecordsData.composable'
+import useOlWmsLayer from '@/composables/olWMSLayer.composable'
+import useLayerData from '@/composables/useLayerData.composable'
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
 
@@ -20,9 +20,8 @@ const gutter = computed(() => {
     return 0
 })
 
-const { capabilityUrl } = await useRecordsData(layer, 'OGC:WMS')
+const { capabilityUrl } = await useLayerData(layer.record.id, 'OGC:WMS')
 
-// TODO here we have a bit of a tight coupling with the main package
 const { data } = await useFetch<string>(`/api/v1/layers/wmsConfig/${capabilityUrl.value}`)
 
 const capabilityData = computed((): WMSCapabilityType => {

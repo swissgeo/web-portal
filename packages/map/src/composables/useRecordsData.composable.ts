@@ -16,6 +16,7 @@ import { getDataServiceLinks } from '@/utils/recordUtils'
  * MATTERS
  */
 export default async function useRecordsData(layer: ServerLayer, protocol: Protocol) {
+    throw new Error('DEPRECATED') // Using the process on the server now!
     const layerId = computed(() => layer.record.id)
 
     // Get the distribution
@@ -50,10 +51,7 @@ export default async function useRecordsData(layer: ServerLayer, protocol: Proto
             }
         }
 
-        throw new Error(
-            `Unable to find WMTS feature in distribution for ${layerId.value}. ` +
-                `This layer probably shouldn't be treated as a WMTS layer`
-        )
+        throw new Error(`Unable to find ${protocol} feature in distribution for ${layerId.value}. `)
     })
 
     /** Extract the capabilities URL from the OGC Record */
