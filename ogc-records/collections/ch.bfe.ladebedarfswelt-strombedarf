@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bfe.ladebedarfswelt-strombedarf:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bfe.ladebedarfswelt-strombedarf/items/ch.bfe.ladebedarfswelt-strombedarf:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfe.ladebedarfswelt-strombedarf",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bfe.ladebedarfswelt-strombedarf:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfe.ladebedarfswelt-strombedarf"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bfe.ladebedarfswelt-strombedarf:wms",
+      "links": [
+        {
+          "href": "collections/ch.bfe.ladebedarfswelt-strombedarf/items/ch.bfe.ladebedarfswelt-strombedarf:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfe.ladebedarfswelt-strombedarf",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfe.ladebedarfswelt-strombedarf"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bfe.ladebedarfswelt-strombedarf:stac",
+      "links": [
+        {
+          "href": "collections/ch.bfe.ladebedarfswelt-strombedarf/items/ch.bfe.ladebedarfswelt-strombedarf:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfe.ladebedarfswelt-strombedarf",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfe.ladebedarfswelt-strombedarf"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

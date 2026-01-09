@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.astra.strassenverkehrszaehlung-uebergeordnet:wmts",
+      "links": [
+        {
+          "href": "collections/ch.astra.strassenverkehrszaehlung-uebergeordnet/items/ch.astra.strassenverkehrszaehlung-uebergeordnet:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.astra.strassenverkehrszaehlung-uebergeordnet",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.astra.strassenverkehrszaehlung-uebergeordnet"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.astra.strassenverkehrszaehlung-uebergeordnet:wms",
+      "links": [
+        {
+          "href": "collections/ch.astra.strassenverkehrszaehlung-uebergeordnet/items/ch.astra.strassenverkehrszaehlung-uebergeordnet:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.astra.strassenverkehrszaehlung-uebergeordnet",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.astra.strassenverkehrszaehlung-uebergeordnet"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.astra.strassenverkehrszaehlung-uebergeordnet:stac",
+      "links": [
+        {
+          "href": "collections/ch.astra.strassenverkehrszaehlung-uebergeordnet/items/ch.astra.strassenverkehrszaehlung-uebergeordnet:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.astra.strassenverkehrszaehlung-uebergeordnet",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.astra.strassenverkehrszaehlung-uebergeordnet"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

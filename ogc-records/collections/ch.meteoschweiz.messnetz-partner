@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.meteoschweiz.messnetz-partner:wms",
+      "links": [
+        {
+          "href": "collections/ch.meteoschweiz.messnetz-partner/items/ch.meteoschweiz.messnetz-partner:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.messnetz-partner",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.meteoschweiz.messnetz-partner"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.meteoschweiz.messnetz-partner:stac",
+      "links": [
+        {
+          "href": "collections/ch.meteoschweiz.messnetz-partner/items/ch.meteoschweiz.messnetz-partner:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.messnetz-partner",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.meteoschweiz.messnetz-partner"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

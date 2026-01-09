@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.flussordnungszahlen-strahler:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.flussordnungszahlen-strahler/items/ch.bafu.flussordnungszahlen-strahler:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.flussordnungszahlen-strahler",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.flussordnungszahlen-strahler:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.flussordnungszahlen-strahler"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.flussordnungszahlen-strahler:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.flussordnungszahlen-strahler/items/ch.bafu.flussordnungszahlen-strahler:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.flussordnungszahlen-strahler",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.flussordnungszahlen-strahler"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.flussordnungszahlen-strahler:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.flussordnungszahlen-strahler/items/ch.bafu.flussordnungszahlen-strahler:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.flussordnungszahlen-strahler",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.flussordnungszahlen-strahler"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

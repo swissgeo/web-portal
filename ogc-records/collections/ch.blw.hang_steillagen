@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.blw.hang_steillagen:wmts",
+      "links": [
+        {
+          "href": "collections/ch.blw.hang_steillagen/items/ch.blw.hang_steillagen:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.hang_steillagen",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.blw.hang_steillagen:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.hang_steillagen"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.hang_steillagen:wms",
+      "links": [
+        {
+          "href": "collections/ch.blw.hang_steillagen/items/ch.blw.hang_steillagen:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.hang_steillagen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.hang_steillagen"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.hang_steillagen:stac",
+      "links": [
+        {
+          "href": "collections/ch.blw.hang_steillagen/items/ch.blw.hang_steillagen:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.hang_steillagen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.hang_steillagen"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

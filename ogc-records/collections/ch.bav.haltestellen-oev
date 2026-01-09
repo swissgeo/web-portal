@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bav.haltestellen-oev:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bav.haltestellen-oev/items/ch.bav.haltestellen-oev:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bav.haltestellen-oev",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bav.haltestellen-oev"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bav.haltestellen-oev:wms",
+      "links": [
+        {
+          "href": "collections/ch.bav.haltestellen-oev/items/ch.bav.haltestellen-oev:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bav.haltestellen-oev",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bav.haltestellen-oev"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bav.haltestellen-oev:stac",
+      "links": [
+        {
+          "href": "collections/ch.bav.haltestellen-oev/items/ch.bav.haltestellen-oev:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bav.haltestellen-oev",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bav.haltestellen-oev"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

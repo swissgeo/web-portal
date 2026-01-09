@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bazl.luftfahrtkarten-icao:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bazl.luftfahrtkarten-icao/items/ch.bazl.luftfahrtkarten-icao:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.luftfahrtkarten-icao",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.luftfahrtkarten-icao"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bazl.luftfahrtkarten-icao:wms",
+      "links": [
+        {
+          "href": "collections/ch.bazl.luftfahrtkarten-icao/items/ch.bazl.luftfahrtkarten-icao:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.luftfahrtkarten-icao",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.luftfahrtkarten-icao"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bazl.luftfahrtkarten-icao:stac",
+      "links": [
+        {
+          "href": "collections/ch.bazl.luftfahrtkarten-icao/items/ch.bazl.luftfahrtkarten-icao:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.luftfahrtkarten-icao",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.luftfahrtkarten-icao"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

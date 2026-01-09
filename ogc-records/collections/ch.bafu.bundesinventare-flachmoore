@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.bundesinventare-flachmoore:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-flachmoore/items/ch.bafu.bundesinventare-flachmoore:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-flachmoore",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.bundesinventare-flachmoore:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-flachmoore"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.bundesinventare-flachmoore:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-flachmoore/items/ch.bafu.bundesinventare-flachmoore:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-flachmoore",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-flachmoore"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.bundesinventare-flachmoore:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-flachmoore/items/ch.bafu.bundesinventare-flachmoore:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-flachmoore",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-flachmoore"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

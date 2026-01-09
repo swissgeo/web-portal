@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill:wmts",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/items/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/items/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

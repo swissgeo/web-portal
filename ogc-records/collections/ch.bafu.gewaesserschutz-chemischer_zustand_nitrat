@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.gewaesserschutz-chemischer_zustand_nitrat:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.gewaesserschutz-chemischer_zustand_nitrat/items/ch.bafu.gewaesserschutz-chemischer_zustand_nitrat:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.gewaesserschutz-chemischer_zustand_nitrat",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.gewaesserschutz-chemischer_zustand_nitrat"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.gewaesserschutz-chemischer_zustand_nitrat:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.gewaesserschutz-chemischer_zustand_nitrat/items/ch.bafu.gewaesserschutz-chemischer_zustand_nitrat:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.gewaesserschutz-chemischer_zustand_nitrat",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.gewaesserschutz-chemischer_zustand_nitrat"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen/items/ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen:wms",
+      "links": [
+        {
+          "href": "collections/ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen/items/ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen:stac",
+      "links": [
+        {
+          "href": "collections/ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen/items/ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfs.volkszaehlung-gebaeudestatistik_wohnungen"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

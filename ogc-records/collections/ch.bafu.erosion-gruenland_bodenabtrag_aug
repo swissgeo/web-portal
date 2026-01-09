@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.erosion-gruenland_bodenabtrag_aug:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.erosion-gruenland_bodenabtrag_aug/items/ch.bafu.erosion-gruenland_bodenabtrag_aug:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.erosion-gruenland_bodenabtrag_aug",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.erosion-gruenland_bodenabtrag_aug:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.erosion-gruenland_bodenabtrag_aug"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.erosion-gruenland_bodenabtrag_aug:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.erosion-gruenland_bodenabtrag_aug/items/ch.bafu.erosion-gruenland_bodenabtrag_aug:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.erosion-gruenland_bodenabtrag_aug",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.erosion-gruenland_bodenabtrag_aug"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.erosion-gruenland_bodenabtrag_aug:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.erosion-gruenland_bodenabtrag_aug/items/ch.bafu.erosion-gruenland_bodenabtrag_aug:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.erosion-gruenland_bodenabtrag_aug",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.erosion-gruenland_bodenabtrag_aug"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

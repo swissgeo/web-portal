@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung:wmts",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung/items/ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung/items/ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.digitales-hoehenmodell_25_reliefschattierung"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

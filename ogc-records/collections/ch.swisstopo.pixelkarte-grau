@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.pixelkarte-grau:wmts",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.pixelkarte-grau/items/ch.swisstopo.pixelkarte-grau:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-grau",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.pixelkarte-grau"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.pixelkarte-grau:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.pixelkarte-grau/items/ch.swisstopo.pixelkarte-grau:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-grau",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.pixelkarte-grau"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

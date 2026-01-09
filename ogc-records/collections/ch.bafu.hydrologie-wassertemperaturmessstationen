@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.hydrologie-wassertemperaturmessstationen:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.hydrologie-wassertemperaturmessstationen/items/ch.bafu.hydrologie-wassertemperaturmessstationen:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.hydrologie-wassertemperaturmessstationen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.hydrologie-wassertemperaturmessstationen"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.hydrologie-wassertemperaturmessstationen:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.hydrologie-wassertemperaturmessstationen/items/ch.bafu.hydrologie-wassertemperaturmessstationen:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.hydrologie-wassertemperaturmessstationen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.hydrologie-wassertemperaturmessstationen"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.hydrologie-wassertemperaturmessstationen:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.hydrologie-wassertemperaturmessstationen/items/ch.bafu.hydrologie-wassertemperaturmessstationen:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.hydrologie-wassertemperaturmessstationen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.hydrologie-wassertemperaturmessstationen"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

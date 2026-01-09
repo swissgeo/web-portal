@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.neophyten-chinesische_samtpappel:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-chinesische_samtpappel/items/ch.bafu.neophyten-chinesische_samtpappel:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-chinesische_samtpappel",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.neophyten-chinesische_samtpappel:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-chinesische_samtpappel"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.neophyten-chinesische_samtpappel:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-chinesische_samtpappel/items/ch.bafu.neophyten-chinesische_samtpappel:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-chinesische_samtpappel",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-chinesische_samtpappel"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.neophyten-chinesische_samtpappel:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-chinesische_samtpappel/items/ch.bafu.neophyten-chinesische_samtpappel:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-chinesische_samtpappel",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-chinesische_samtpappel"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

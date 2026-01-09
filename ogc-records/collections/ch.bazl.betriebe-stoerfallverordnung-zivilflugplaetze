@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze/items/ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze:wms",
+      "links": [
+        {
+          "href": "collections/ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze/items/ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze:stac",
+      "links": [
+        {
+          "href": "collections/ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze/items/ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

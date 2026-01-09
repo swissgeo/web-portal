@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.bundesinventare-vogelreservate:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-vogelreservate/items/ch.bafu.bundesinventare-vogelreservate:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-vogelreservate",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.bundesinventare-vogelreservate:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-vogelreservate"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.bundesinventare-vogelreservate:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-vogelreservate/items/ch.bafu.bundesinventare-vogelreservate:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-vogelreservate",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-vogelreservate"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.bundesinventare-vogelreservate:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-vogelreservate/items/ch.bafu.bundesinventare-vogelreservate:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-vogelreservate",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-vogelreservate"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

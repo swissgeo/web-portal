@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min:wms",
+      "links": [
+        {
+          "href": "collections/ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min/items/ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min:stac",
+      "links": [
+        {
+          "href": "collections/ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min/items/ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.meteoschweiz.messwerte-luftdruck-850hpa-flaeche-10min"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

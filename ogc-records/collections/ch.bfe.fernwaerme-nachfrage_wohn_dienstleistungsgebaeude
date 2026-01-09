@@ -1,0 +1,63 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude/items/ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude:wms",
+      "links": [
+        {
+          "href": "collections/ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude/items/ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfe.fernwaerme-nachfrage_wohn_dienstleistungsgebaeude"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

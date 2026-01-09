@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.karst-einzugsgebietseinheiten:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.karst-einzugsgebietseinheiten/items/ch.bafu.karst-einzugsgebietseinheiten:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.karst-einzugsgebietseinheiten",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.karst-einzugsgebietseinheiten:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.karst-einzugsgebietseinheiten"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.karst-einzugsgebietseinheiten:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.karst-einzugsgebietseinheiten/items/ch.bafu.karst-einzugsgebietseinheiten:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.karst-einzugsgebietseinheiten",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.karst-einzugsgebietseinheiten"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.karst-einzugsgebietseinheiten:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.karst-einzugsgebietseinheiten/items/ch.bafu.karst-einzugsgebietseinheiten:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.karst-einzugsgebietseinheiten",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.karst-einzugsgebietseinheiten"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

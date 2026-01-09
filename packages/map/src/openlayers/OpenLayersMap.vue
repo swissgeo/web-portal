@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import log from '@swissgeo/log'
 import type { Map as OlMapType } from 'ol'
 
 import { registerProj4 } from '@swissgeo/coordinates'
-import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
+import { useLayerStore } from '@swissgeo/layers'
 import Map from 'ol/Map'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'

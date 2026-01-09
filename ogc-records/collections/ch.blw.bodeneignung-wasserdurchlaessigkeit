@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.blw.bodeneignung-wasserdurchlaessigkeit:wmts",
+      "links": [
+        {
+          "href": "collections/ch.blw.bodeneignung-wasserdurchlaessigkeit/items/ch.blw.bodeneignung-wasserdurchlaessigkeit:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.bodeneignung-wasserdurchlaessigkeit",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.blw.bodeneignung-wasserdurchlaessigkeit:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.bodeneignung-wasserdurchlaessigkeit"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.bodeneignung-wasserdurchlaessigkeit:wms",
+      "links": [
+        {
+          "href": "collections/ch.blw.bodeneignung-wasserdurchlaessigkeit/items/ch.blw.bodeneignung-wasserdurchlaessigkeit:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.bodeneignung-wasserdurchlaessigkeit",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.bodeneignung-wasserdurchlaessigkeit"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.bodeneignung-wasserdurchlaessigkeit:stac",
+      "links": [
+        {
+          "href": "collections/ch.blw.bodeneignung-wasserdurchlaessigkeit/items/ch.blw.bodeneignung-wasserdurchlaessigkeit:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.bodeneignung-wasserdurchlaessigkeit",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.bodeneignung-wasserdurchlaessigkeit"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

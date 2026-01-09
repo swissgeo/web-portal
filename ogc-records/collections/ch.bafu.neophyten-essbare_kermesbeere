@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.neophyten-essbare_kermesbeere:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-essbare_kermesbeere/items/ch.bafu.neophyten-essbare_kermesbeere:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-essbare_kermesbeere",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.neophyten-essbare_kermesbeere:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-essbare_kermesbeere"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.neophyten-essbare_kermesbeere:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-essbare_kermesbeere/items/ch.bafu.neophyten-essbare_kermesbeere:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-essbare_kermesbeere",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-essbare_kermesbeere"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.neophyten-essbare_kermesbeere:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-essbare_kermesbeere/items/ch.bafu.neophyten-essbare_kermesbeere:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-essbare_kermesbeere",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-essbare_kermesbeere"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

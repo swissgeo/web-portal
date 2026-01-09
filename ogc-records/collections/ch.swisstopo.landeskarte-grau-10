@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.landeskarte-grau-10:wmts",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.landeskarte-grau-10/items/ch.swisstopo.landeskarte-grau-10:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.landeskarte-grau-10",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.landeskarte-grau-10"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.landeskarte-grau-10:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.landeskarte-grau-10/items/ch.swisstopo.landeskarte-grau-10:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.landeskarte-grau-10",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.landeskarte-grau-10"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

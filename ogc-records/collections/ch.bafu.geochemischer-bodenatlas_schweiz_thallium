@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.geochemischer-bodenatlas_schweiz_thallium:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.geochemischer-bodenatlas_schweiz_thallium/items/ch.bafu.geochemischer-bodenatlas_schweiz_thallium:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.geochemischer-bodenatlas_schweiz_thallium",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.geochemischer-bodenatlas_schweiz_thallium"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.geochemischer-bodenatlas_schweiz_thallium:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.geochemischer-bodenatlas_schweiz_thallium/items/ch.bafu.geochemischer-bodenatlas_schweiz_thallium:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.geochemischer-bodenatlas_schweiz_thallium",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.geochemischer-bodenatlas_schweiz_thallium"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.geochemischer-bodenatlas_schweiz_thallium:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.geochemischer-bodenatlas_schweiz_thallium/items/ch.bafu.geochemischer-bodenatlas_schweiz_thallium:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.geochemischer-bodenatlas_schweiz_thallium",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.geochemischer-bodenatlas_schweiz_thallium"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

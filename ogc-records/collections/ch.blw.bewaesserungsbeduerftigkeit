@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.blw.bewaesserungsbeduerftigkeit:wmts",
+      "links": [
+        {
+          "href": "collections/ch.blw.bewaesserungsbeduerftigkeit/items/ch.blw.bewaesserungsbeduerftigkeit:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.bewaesserungsbeduerftigkeit",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.blw.bewaesserungsbeduerftigkeit:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.bewaesserungsbeduerftigkeit"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.bewaesserungsbeduerftigkeit:wms",
+      "links": [
+        {
+          "href": "collections/ch.blw.bewaesserungsbeduerftigkeit/items/ch.blw.bewaesserungsbeduerftigkeit:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.bewaesserungsbeduerftigkeit",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.bewaesserungsbeduerftigkeit"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.bewaesserungsbeduerftigkeit:stac",
+      "links": [
+        {
+          "href": "collections/ch.blw.bewaesserungsbeduerftigkeit/items/ch.blw.bewaesserungsbeduerftigkeit:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.bewaesserungsbeduerftigkeit",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.bewaesserungsbeduerftigkeit"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

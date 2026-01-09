@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.are.belastung-personenverkehr-bahn_zukunft:wmts",
+      "links": [
+        {
+          "href": "collections/ch.are.belastung-personenverkehr-bahn_zukunft/items/ch.are.belastung-personenverkehr-bahn_zukunft:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.are.belastung-personenverkehr-bahn_zukunft",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.are.belastung-personenverkehr-bahn_zukunft"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.are.belastung-personenverkehr-bahn_zukunft:wms",
+      "links": [
+        {
+          "href": "collections/ch.are.belastung-personenverkehr-bahn_zukunft/items/ch.are.belastung-personenverkehr-bahn_zukunft:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.are.belastung-personenverkehr-bahn_zukunft",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.are.belastung-personenverkehr-bahn_zukunft"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.are.belastung-personenverkehr-bahn_zukunft:stac",
+      "links": [
+        {
+          "href": "collections/ch.are.belastung-personenverkehr-bahn_zukunft/items/ch.are.belastung-personenverkehr-bahn_zukunft:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.are.belastung-personenverkehr-bahn_zukunft",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.are.belastung-personenverkehr-bahn_zukunft"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

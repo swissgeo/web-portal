@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.bundesinventare-auen_vegetation_alpin:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-auen_vegetation_alpin/items/ch.bafu.bundesinventare-auen_vegetation_alpin:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-auen_vegetation_alpin",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-auen_vegetation_alpin"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.bundesinventare-auen_vegetation_alpin:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-auen_vegetation_alpin/items/ch.bafu.bundesinventare-auen_vegetation_alpin:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-auen_vegetation_alpin",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-auen_vegetation_alpin"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

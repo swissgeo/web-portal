@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.landesforstinventar-vegetationshoehenmodell_relief:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.landesforstinventar-vegetationshoehenmodell_relief/items/ch.bafu.landesforstinventar-vegetationshoehenmodell_relief:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.landesforstinventar-vegetationshoehenmodell_relief",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.landesforstinventar-vegetationshoehenmodell_relief"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.landesforstinventar-vegetationshoehenmodell_relief:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.landesforstinventar-vegetationshoehenmodell_relief/items/ch.bafu.landesforstinventar-vegetationshoehenmodell_relief:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.landesforstinventar-vegetationshoehenmodell_relief",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.landesforstinventar-vegetationshoehenmodell_relief"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.landesforstinventar-vegetationshoehenmodell_relief:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.landesforstinventar-vegetationshoehenmodell_relief/items/ch.bafu.landesforstinventar-vegetationshoehenmodell_relief:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.landesforstinventar-vegetationshoehenmodell_relief",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.landesforstinventar-vegetationshoehenmodell_relief"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

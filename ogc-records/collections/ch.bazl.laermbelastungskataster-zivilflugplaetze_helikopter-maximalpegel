@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel:wms",
+      "links": [
+        {
+          "href": "collections/ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel/items/ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel:stac",
+      "links": [
+        {
+          "href": "collections/ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel/items/ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

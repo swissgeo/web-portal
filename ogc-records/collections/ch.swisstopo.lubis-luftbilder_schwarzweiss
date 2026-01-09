@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.lubis-luftbilder_schwarzweiss:wmts",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.lubis-luftbilder_schwarzweiss/items/ch.swisstopo.lubis-luftbilder_schwarzweiss:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.lubis-luftbilder_schwarzweiss",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.lubis-luftbilder_schwarzweiss"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.lubis-luftbilder_schwarzweiss:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.lubis-luftbilder_schwarzweiss/items/ch.swisstopo.lubis-luftbilder_schwarzweiss:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.lubis-luftbilder_schwarzweiss",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.lubis-luftbilder_schwarzweiss"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.lubis-luftbilder_schwarzweiss:stac",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.lubis-luftbilder_schwarzweiss/items/ch.swisstopo.lubis-luftbilder_schwarzweiss:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.lubis-luftbilder_schwarzweiss",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.lubis-luftbilder_schwarzweiss"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.agroscope.feuchtflaechenpotential-kulturlandschaft:wmts",
+      "links": [
+        {
+          "href": "collections/ch.agroscope.feuchtflaechenpotential-kulturlandschaft/items/ch.agroscope.feuchtflaechenpotential-kulturlandschaft:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.agroscope.feuchtflaechenpotential-kulturlandschaft",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.agroscope.feuchtflaechenpotential-kulturlandschaft"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.agroscope.feuchtflaechenpotential-kulturlandschaft:wms",
+      "links": [
+        {
+          "href": "collections/ch.agroscope.feuchtflaechenpotential-kulturlandschaft/items/ch.agroscope.feuchtflaechenpotential-kulturlandschaft:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.agroscope.feuchtflaechenpotential-kulturlandschaft",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.agroscope.feuchtflaechenpotential-kulturlandschaft"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

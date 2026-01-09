@@ -1,0 +1,63 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bfe.biomasse-nicht-verholzt:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bfe.biomasse-nicht-verholzt/items/ch.bfe.biomasse-nicht-verholzt:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfe.biomasse-nicht-verholzt",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bfe.biomasse-nicht-verholzt:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfe.biomasse-nicht-verholzt"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bfe.biomasse-nicht-verholzt:wms",
+      "links": [
+        {
+          "href": "collections/ch.bfe.biomasse-nicht-verholzt/items/ch.bfe.biomasse-nicht-verholzt:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfe.biomasse-nicht-verholzt",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfe.biomasse-nicht-verholzt"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

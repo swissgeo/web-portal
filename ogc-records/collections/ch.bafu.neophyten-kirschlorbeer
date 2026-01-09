@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.neophyten-kirschlorbeer:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-kirschlorbeer/items/ch.bafu.neophyten-kirschlorbeer:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-kirschlorbeer",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.neophyten-kirschlorbeer:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-kirschlorbeer"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.neophyten-kirschlorbeer:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-kirschlorbeer/items/ch.bafu.neophyten-kirschlorbeer:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-kirschlorbeer",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-kirschlorbeer"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.neophyten-kirschlorbeer:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-kirschlorbeer/items/ch.bafu.neophyten-kirschlorbeer:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-kirschlorbeer",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-kirschlorbeer"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

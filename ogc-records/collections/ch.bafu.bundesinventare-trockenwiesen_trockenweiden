@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-trockenwiesen_trockenweiden/items/ch.bafu.bundesinventare-trockenwiesen_trockenweiden:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-trockenwiesen_trockenweiden",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.bundesinventare-trockenwiesen_trockenweiden:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-trockenwiesen_trockenweiden/items/ch.bafu.bundesinventare-trockenwiesen_trockenweiden:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-trockenwiesen_trockenweiden",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.bundesinventare-trockenwiesen_trockenweiden/items/ch.bafu.bundesinventare-trockenwiesen_trockenweiden:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.bundesinventare-trockenwiesen_trockenweiden",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

@@ -566,6 +566,9 @@ importers:
       vue:
         specifier: 'catalog:'
         version: 3.5.22(typescript@5.9.3)
+      vue-i18n:
+        specifier: 'catalog:'
+        version: 11.2.2(vue@3.5.22(typescript@5.9.3))
     devDependencies:
       '@dxup/unimport':
         specifier: 'catalog:'

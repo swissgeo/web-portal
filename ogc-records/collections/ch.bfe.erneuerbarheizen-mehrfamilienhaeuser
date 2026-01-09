@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bfe.erneuerbarheizen-mehrfamilienhaeuser:wms",
+      "links": [
+        {
+          "href": "collections/ch.bfe.erneuerbarheizen-mehrfamilienhaeuser/items/ch.bfe.erneuerbarheizen-mehrfamilienhaeuser:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bfe.erneuerbarheizen-mehrfamilienhaeuser",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bfe.erneuerbarheizen-mehrfamilienhaeuser"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.vbs.sachplan-infrastruktur-militaer_kraft:wms",
+      "links": [
+        {
+          "href": "collections/ch.vbs.sachplan-infrastruktur-militaer_kraft/items/ch.vbs.sachplan-infrastruktur-militaer_kraft:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.vbs.sachplan-infrastruktur-militaer_kraft",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.vbs.sachplan-infrastruktur-militaer_kraft"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.vbs.sachplan-infrastruktur-militaer_kraft:stac",
+      "links": [
+        {
+          "href": "collections/ch.vbs.sachplan-infrastruktur-militaer_kraft/items/ch.vbs.sachplan-infrastruktur-militaer_kraft:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.vbs.sachplan-infrastruktur-militaer_kraft",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.vbs.sachplan-infrastruktur-militaer_kraft"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

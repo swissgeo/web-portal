@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita:wmts",
+      "links": [
+        {
+          "href": "collections/ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita/items/ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita:wms",
+      "links": [
+        {
+          "href": "collections/ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita/items/ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita:stac",
+      "links": [
+        {
+          "href": "collections/ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita/items/ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.agroscope.amphibien-ausbreitungskarten_epidalea_calamita"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

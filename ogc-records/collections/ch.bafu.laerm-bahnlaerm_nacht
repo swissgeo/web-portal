@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.laerm-bahnlaerm_nacht:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.laerm-bahnlaerm_nacht/items/ch.bafu.laerm-bahnlaerm_nacht:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.laerm-bahnlaerm_nacht",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.laerm-bahnlaerm_nacht:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.laerm-bahnlaerm_nacht"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.laerm-bahnlaerm_nacht:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.laerm-bahnlaerm_nacht/items/ch.bafu.laerm-bahnlaerm_nacht:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.laerm-bahnlaerm_nacht",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.laerm-bahnlaerm_nacht"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.laerm-bahnlaerm_nacht:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.laerm-bahnlaerm_nacht/items/ch.bafu.laerm-bahnlaerm_nacht:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.laerm-bahnlaerm_nacht",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.laerm-bahnlaerm_nacht"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

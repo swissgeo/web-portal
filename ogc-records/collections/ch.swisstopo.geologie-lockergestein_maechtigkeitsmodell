@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell:wmts",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell/items/ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell/items/ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell:stac",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell/items/ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.geologie-lockergestein_maechtigkeitsmodell"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}
