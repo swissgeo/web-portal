@@ -1,5 +1,3 @@
-import type { Feature as OGCFEature } from '@swissgeo/shared/ogc'
-
 import log from '@swissgeo/log'
 import { cloneDeep } from 'lodash-es'
 

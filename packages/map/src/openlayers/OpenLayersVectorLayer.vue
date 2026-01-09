@@ -9,7 +9,7 @@ const { layer } = defineProps<{
     layer: ServerLayer
 }>()
 
-const url = computed(() => `https://vectortiles.geo.admin.ch/styles/${layer.record.id}/style.json`)
+const url = computed(() => `/api/v1/layers/vectorTest`)
 
 const { data } = await useFetch<string>(url)
 
@@ -18,7 +18,7 @@ const style = computed(() => {
         log.error(`Unable to load the Vector Style from ${url.value}`)
         return
     }
-    return JSON.parse(data.value)
+    return data.value
 })
 
 const { setVisibility, setZIndex } = useOlVectorLayer(layer.record.id, 1, style.value)

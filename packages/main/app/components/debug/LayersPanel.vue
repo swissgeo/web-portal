@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Feature as OGCFeature, OGCRecords } from '@swissgeo/shared/ogc'
 
+import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 import LayersPanelEntry from './LayersPanelEntry.vue'
@@ -10,12 +11,14 @@ const filterTerm = ref<string>('')
 
 const { data: recordLayers } = await useFetch<OGCRecords>('/api/v1/layers/catalog')
 
+const layerStore = useLayerStore()
+
 const availableLayers = computed(() => {
-    const vtLayer: OGCFeature = {
-        id: 'ch.swisstopo.leichte-basiskarte.vt',
-        links: [],
-    }
-    recordLayers.value!.features.unshift(vtLayer)
+    // const vtLayer: OGCFeature = {
+    //     id: 'VECTOR TEST',
+    //     links: [],
+    // }
+    // recordLayers.value!.features.unshift(vtLayer)
     return recordLayers.value
 })
 
@@ -32,6 +35,15 @@ const filteredAvailableLayers = computed((): OGCFeature[] => {
 
 function toggleLayersPanel() {
     isLayersPanelOpen.value = !isLayersPanelOpen.value
+}
+
+function toggleVectorLayer() {
+    layerStore.addLayer(
+        makeServerLayer(LayerType.VECTOR, {
+            id: 'ch.swisstopouseLayerStore.vector',
+            links: [],
+        })
+    )
 }
 </script>
 
