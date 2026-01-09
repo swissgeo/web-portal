@@ -2,12 +2,24 @@
 import type { Feature as OGCFeature, OGCRecords } from '@swissgeo/shared/ogc'
 
 import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
+import { useStorage } from '@vueuse/core'
 
 const layerStore = useLayerStore()
 
 const { layer } = defineProps<{
     layer: OGCFeature
 }>()
+
+/**
+ * Since we're making 900+ requests to the server to populate this list we store the values in
+ * localStorage. In order to update them from time to time, we update the entry when the value is
+ * hovered
+ */
+const state = useStorage(layer.id, {
+    collectionData: null,
+} as {
+    collectionData: OGCRecords | null
+})
 
 const distributionLink = computed(() => {
     if (!layer.links) {
@@ -20,10 +32,6 @@ const distributionLink = computed(() => {
     }
     throw new Error(`Unable to find distribution link for ${layer.id}`)
 })
-
-const { data: collectionData } = await useFetch<OGCRecords>(
-    `/api/v1/layers/${distributionLink.value.href}`
-)
 
 const layerBg = computed(() => {
     switch (type.value) {
@@ -46,11 +54,11 @@ const layerBg = computed(() => {
  * @param layer
  */
 const type = computed((): LayerType | 'UNKNOWN' => {
-    if (!collectionData.value?.features) {
-        throw new Error("Unable to find the collection data's features")
+    if (!state.value?.collectionData?.features) {
+        return 'UNKNOWN'
     }
 
-    for (const feature of collectionData.value.features) {
+    for (const feature of state.value.collectionData.features) {
         const protocol = feature.properties?.protocol
         // loop through features and the first element found that
         // maches either protocol will determine the layer type
@@ -65,6 +73,23 @@ const type = computed((): LayerType | 'UNKNOWN' => {
     return 'UNKNOWN'
 })
 
+onMounted(() => {
+    if (state.value.collectionData === null) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        updateCollectionData()
+    }
+})
+
+async function updateCollectionData() {
+    const collectionDataUpdated = await $fetch<OGCRecords>(
+        `/api/v1/layers/${distributionLink.value.href}`
+    )
+
+    if (collectionDataUpdated) {
+        state.value.collectionData = collectionDataUpdated
+    }
+}
+
 function addLayerToMap(layer: OGCFeature) {
     if (!type.value) {
         throw Error('Neither OGC:WMS nor OGC:WMTS found in the definition')
@@ -76,7 +101,10 @@ function addLayerToMap(layer: OGCFeature) {
 </script>
 
 <template>
-    <tr class="hover:bg-cyan-300">
+    <tr
+        class="hover:bg-cyan-300"
+        @mouseover="updateCollectionData"
+    >
         <td class="border-b pb-2">
             <button
                 class="cursor-pointer"

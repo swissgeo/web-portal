@@ -53,8 +53,15 @@ function toggleLayersPanel() {
                 >
                 </IconButton>
             </div>
-            <div class="mt-12 h-[300px] overflow-scroll">
+            <div class="mt-12 h-[300px] overflow-scroll pb-18">
                 <table class="">
+                    <!-- we're not getting this via API yet-->
+                    <tr class="border-b">
+                        <td class="pb-2">
+                            <button @click="toggleVectorLayer">VECTOR TEST</button>
+                        </td>
+                        <td class="bg-slate-200 pb-2">vector</td>
+                    </tr>
                     <LayersPanelEntry
                         :layer="layer"
                         v-for="layer in filteredAvailableLayers"
