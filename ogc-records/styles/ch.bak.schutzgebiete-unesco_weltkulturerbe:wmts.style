@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bak.schutzgebiete-unesco_weltkulturerbe:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bak.schutzgebiete-unesco_weltkulturerbe",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.erosion-gruenland_bodenabtrag_mai:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.erosion-gruenland_bodenabtrag_mai",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

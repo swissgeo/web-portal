@@ -67,6 +67,7 @@
         "@primevue/nuxt-module": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@types/jsdom": "catalog:",
+        "@types/mapbox-gl": "catalog:",
         "eslint-plugin-perfectionist": "catalog:",
         "fs-extra": "^11.3.2",
         "typescript": "catalog:",

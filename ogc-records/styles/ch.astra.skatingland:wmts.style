@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.astra.skatingland:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.astra.skatingland",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

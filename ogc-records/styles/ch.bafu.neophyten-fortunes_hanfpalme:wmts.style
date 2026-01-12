@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.neophyten-fortunes_hanfpalme:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.neophyten-fortunes_hanfpalme",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

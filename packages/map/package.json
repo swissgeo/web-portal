@@ -33,6 +33,7 @@
         "@swissgeo/shared": "workspace:*",
         "@swissgeo/skeleton": "workspace:*",
         "@turf/turf": "catalog:",
+        "@types/mapbox-gl": "catalog:",
         "geojson": "catalog:",
         "lodash-es": "catalog:",
         "ol": "catalog:",

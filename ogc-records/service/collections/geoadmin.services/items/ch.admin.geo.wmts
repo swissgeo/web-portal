@@ -9,6 +9,7 @@
           "description": "EPSG",
           "format": "integer",
           "type": "number",
+          "default": 2056,
           "enum": [
             2056,
             21781,
@@ -16,7 +17,7 @@
           ]
         }
       },
-     "rel": "about",
+      "rel": "about",
       "title": "WMTS Capabilities File"
     }
   ],

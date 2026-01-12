@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.vbs.armeelogistikcenter:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.vbs.armeelogistikcenter",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import type { LayerData } from '@swissgeo/shared/api'
 import type { Protocol } from '@swissgeo/shared/ogc'
+import type mapboxgl from 'mapbox-gl'
 
 export default async function useLayerData(layerId: string, protocol: Protocol) {
     const { data: layerData } = await useFetch<LayerData>(
@@ -22,5 +23,35 @@ export default async function useLayerData(layerId: string, protocol: Protocol) 
         throw new Error(`Unable to read link from ${JSON.stringify(layerData.value)}`)
     })
 
-    return { capabilityUrl }
+    const styleData = computed(() => {
+        if (!layerData.value?.styleData) {
+            return null
+        }
+
+        const data = layerData.value.styleData
+        return data
+    })
+
+    const defaultOpacityFromStyle = computed(() => {
+        const isRasterLayer = (layer: mapboxgl.AnyLayer): layer is mapboxgl.RasterLayer =>
+            layer.type === 'raster'
+
+        if (styleData.value && styleData.value.layers && styleData.value?.layers?.length) {
+            // so far, we assume that the first and only entry is the correct one
+            const layer = styleData.value.layers[0]
+
+            if (!layer || !isRasterLayer(layer)) {
+                return 1
+            }
+
+            const paint = layer.paint
+            const rasterOpacity = paint?.['raster-opacity']
+            if (rasterOpacity) {
+                return rasterOpacity
+            }
+        }
+        return 1
+    })
+
+    return { capabilityUrl, defaultOpacityFromStyle }
 }

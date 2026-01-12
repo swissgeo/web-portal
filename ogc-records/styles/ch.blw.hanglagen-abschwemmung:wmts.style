@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.blw.hanglagen-abschwemmung:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.blw.hanglagen-abschwemmung",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

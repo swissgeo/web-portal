@@ -16,7 +16,7 @@ const { layer } = defineProps<{
     layer: ServerLayer
 }>()
 
-const { capabilityUrl } = await useLayerData(layer.record.id, 'OGC:WMTS')
+const { capabilityUrl, defaultOpacityFromStyle } = await useLayerData(layer.record.id, 'OGC:WMTS')
 
 const { data: capabilityData } = await useFetch<WMTSCapabilities>(
     `/api/v1/layers/wmtsConfig/${capabilityUrl.value}`
@@ -44,7 +44,7 @@ const { initialize, setVisibility, setZIndex } = useOlWmtsLayer(
     layer.record.id,
     layer.uuid,
     options.value,
-    layer.opacity,
+    defaultOpacityFromStyle.value,
     layer.zIndex
 )
 

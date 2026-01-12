@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.luftreinhaltung-ozon:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.luftreinhaltung-ozon",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

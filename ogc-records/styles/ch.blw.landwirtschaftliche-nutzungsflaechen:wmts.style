@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.blw.landwirtschaftliche-nutzungsflaechen:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.blw.landwirtschaftliche-nutzungsflaechen",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

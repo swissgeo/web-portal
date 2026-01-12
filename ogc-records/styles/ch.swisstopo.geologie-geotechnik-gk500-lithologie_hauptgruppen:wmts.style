@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

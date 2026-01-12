@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bazl.luftraeume-fluginformationsgebiet:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bazl.luftraeume-fluginformationsgebiet",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

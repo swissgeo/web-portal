@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.neophyten-vielaehriger_knoeterich:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.neophyten-vielaehriger_knoeterich",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

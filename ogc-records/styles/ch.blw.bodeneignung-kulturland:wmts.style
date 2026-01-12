@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.blw.bodeneignung-kulturland:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.blw.bodeneignung-kulturland",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

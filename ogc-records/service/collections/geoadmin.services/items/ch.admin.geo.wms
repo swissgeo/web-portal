@@ -1,11 +1,24 @@
 {
   "id": "wms.geo.admin.ch",
-  "links": [
+  "linkTemplates": [
     {
-      "href": "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&FORMAT=text/xml",
+      "uriTemplate": "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&FORMAT=text/xml&lang={lang}",
       "rel": "about",
       "type": "application/xml",
-      "title": "WMS Capabilities File"
+      "title": "WMS Capabilities File",
+      "variables": {
+        "lang": {
+          "description": "Language",
+          "type": "string",
+          "default": "de",
+          "enum": [
+            "de",
+            "fr",
+            "en",
+            "it"
+          ]
+        }
+      }
     }
   ],
   "properties": {

@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.sturm-boeenspitzen_50:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.sturm-boeenspitzen_50",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

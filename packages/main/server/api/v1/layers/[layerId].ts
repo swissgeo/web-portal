@@ -6,6 +6,7 @@ import type {
     Feature,
     Service,
 } from '@swissgeo/shared/ogc'
+import type { Style } from '@types/mapbox-gl'
 
 import fs from 'node:fs/promises'
 
@@ -19,6 +20,10 @@ export const getLinksByRel = (links: Link[], rel: string): Link[] => {
 
 export const getDataServiceLinks = (links: Link[]): Link[] => {
     return getLinksByRel(links, 'dataservice')
+}
+
+export const getStyleLinks = (links: Link[]): Link[] => {
+    return getLinksByRel(links, 'styledby')
 }
 
 const readCatalog = async () => {
@@ -43,21 +48,23 @@ const getFeatureFromCatalog = async (layerId: string) => {
     throw new Error(`Unable to find feature for ${layerId} in the catalog`)
 }
 
-const getDistributionLink = (record: Feature) => {
-    const links = record.links
+const getDistributionData = async (record: Feature) => {
+    const getDistributionLink = () => {
+        const links = record.links
 
-    for (const link of links) {
-        if (link.rel?.toLowerCase() === 'distributions') {
-            if (link.href) {
-                return link.href
+        for (const link of links) {
+            if (link.rel?.toLowerCase() === 'distributions') {
+                if (link.href) {
+                    return link.href
+                }
             }
         }
+
+        throw new Error('Unable to find distribution link')
     }
 
-    throw new Error('Unable to find distribution link')
-}
+    const distributionLink = getDistributionLink()
 
-const getDistributionData = async (distributionLink: string) => {
     const distributionData = await $fetch<OGCRecords>(`/api/v1/layers/${distributionLink}`)
     return distributionData
 }
@@ -80,25 +87,59 @@ const extractFeature = (distributionData: OGCRecords, protocol: Protocol) => {
     )
 }
 
-const getServiceUrl = (feature: Feature) => {
-    const links = feature.links
+const getServiceData = async (feature: Feature) => {
+    const getServiceUrl = () => {
+        const links = feature.links
 
-    const link = getDataServiceLinks(links)[0]
-    if (!link) {
-        throw new Error("Unable to find link for rel type 'dataservice'")
-    }
-    const href = link.href
+        const link = getDataServiceLinks(links)[0]
+        if (!link) {
+            throw new Error("Unable to find link for rel type 'dataservice'")
+        }
+        const href = link.href
 
-    if (!href) {
-        throw new Error(
-            `Faulty wmts record, neither href nor uriTemplate found: ${JSON.stringify(link)}`
-        )
+        if (!href) {
+            throw new Error(
+                `Faulty wmts record, neither href nor uriTemplate found: ${JSON.stringify(link)}`
+            )
+        }
+        return href
     }
-    return href
+
+    const serviceUrl = getServiceUrl()
+    return await $fetch<Service>(`/api/v1/layers/service/${serviceUrl}`)
 }
 
-const getServiceData = async (serviceUrl: string) => {
-    return await $fetch<Service>(`/api/v1/layers/service/${serviceUrl}`)
+/**
+ * Retrieve the style file if there is one references
+ *
+ * @param feature
+ * @returns
+ */
+const getStyleData = async (feature: Feature): Promise<Style | null> => {
+    const getStyleUrl = () => {
+        const links = feature.links
+
+        const link = getStyleLinks(links)[0]
+        if (!link) {
+            return null
+        }
+
+        const href = link.href
+
+        if (!href) {
+            throw new Error(`Faulty styledby record`)
+        }
+        return href
+    }
+
+    const styleUrl = getStyleUrl()
+
+    if (styleUrl) {
+        // return style or return the URL?
+        return await $fetch(`/api/v1/layers/${styleUrl}`)
+    } else {
+        return null
+    }
 }
 
 const getCapabilityLink = (serviceData: Service): Link | TemplateLink => {
@@ -139,16 +180,17 @@ const getCapabilityLink = (serviceData: Service): Link | TemplateLink => {
  */
 const getLayerData = async (layerId: string, protocol: Protocol) => {
     const feature = await getFeatureFromCatalog(layerId)
-    const distributionLink = getDistributionLink(feature)
-    const distributionData = await getDistributionData(distributionLink)
+    const distributionData = await getDistributionData(feature)
+
     const distributionFeature = extractFeature(distributionData, protocol)
-    const serviceUrl = getServiceUrl(distributionFeature)
-    const serviceData = await getServiceData(serviceUrl)
+    const serviceData = await getServiceData(distributionFeature)
+    const styleData = (await getStyleData(distributionFeature)) || {}
 
     const capabilityLink = getCapabilityLink(serviceData)
 
     return {
         capabilityLink,
+        styleData,
     }
 }
 

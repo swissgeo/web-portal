@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.astra.schneeschuhwanderwege:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.astra.schneeschuhwanderwege",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}
