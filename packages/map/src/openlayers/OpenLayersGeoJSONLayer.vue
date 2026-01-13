@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import type { ServerLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 
 import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
 import { getLinksByProtocol } from '../utils/recordUtils'
 
 const { layer } = defineProps<{
-    layer: ServerLayer
+    layer: Layer
 }>()
 
 const geoJsonUrl = computed(() => {
-    const links = layer.record.links
+    const links = layer.dataset.links
 
     const link = getLinksByProtocol(links, 'OGC:GEOJSON')[0]
     const href = link.href
@@ -24,7 +24,7 @@ const geoJsonUrl = computed(() => {
 const { data } = await useFetch<string>(`/api/v1/layers/geoJson/${geoJsonUrl.value}`)
 
 const { data: style } = await useFetch<string>(
-    `https://api3.geo.admin.ch/static/vectorStyles/${layer.record.id}.json`
+    `https://api3.geo.admin.ch/static/vectorStyles/${layer.dataset.id}.json`
 )
 
 const geoJsonData = computed(() => {
@@ -226,7 +226,7 @@ const geoJsonStyle = computed(() => {
 })
 
 const { initialize, setZIndex, setVisibility } = useOlGeoJSONLayer(
-    layer.record.id,
+    layer.dataset.id,
     layer.uuid,
     layer.opacity,
     layer.isLoading,

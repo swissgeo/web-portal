@@ -9,6 +9,10 @@ export interface Feature {
     properties?: Property
 }
 
+// Maybe some more concrete types would be useful for code readability?
+export type Dataset = Feature
+export type Distribution = Feature
+
 export interface Language {
     code: string
     dir: string

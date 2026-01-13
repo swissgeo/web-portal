@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { ServerLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 
 const {
     backgroundLayer,
     isCurrent = false,
     folded = false,
 } = defineProps<{
-    backgroundLayer: ServerLayer
+    backgroundLayer: Layer
     isCurrent: boolean
     folded?: boolean
 }>()
@@ -41,7 +41,7 @@ const emit = defineEmits(['click'])
             :class="{ hidden: folded }"
         >
             <span class="block text-xs text-white">
-                {{ $t(backgroundLayer?.record?.id || 'void_layer') }}
+                {{ $t(backgroundLayer?.dataset?.id || 'void_layer') }}
             </span>
         </span>
     </button>

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { ServerLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 
 import log from '@swissgeo/log'
 
 import useOlVectorLayer from '../composables/olVectorLayer.composable'
 
 const { layer } = defineProps<{
-    layer: ServerLayer
+    layer: Layer
 }>()
 
 const url = computed(() => `/api/v1/layers/vectorTest`)
@@ -21,7 +21,7 @@ const style = computed(() => {
     return data.value
 })
 
-const { setVisibility, setZIndex } = useOlVectorLayer(layer.record.id, 1, style.value)
+const { setVisibility, setZIndex } = useOlVectorLayer(layer.dataset.id, 1, style.value)
 
 watch(
     () => layer.isVisible,

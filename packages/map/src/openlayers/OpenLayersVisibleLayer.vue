@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Layer, ServerLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 
 import { LayerType } from '@swissgeo/layers'
 
@@ -13,19 +13,19 @@ const { layer } = defineProps<{ layer: Layer }>()
 
 <template>
     <OpenLayersWMTSLayer
-        :layer="layer as ServerLayer"
+        :layer="layer as Layer"
         v-if="layer.type === LayerType.WMTS"
     />
     <OpenLayersWMSLayer
-        :layer="layer as ServerLayer"
+        :layer="layer as Layer"
         v-if="layer.type === LayerType.WMS"
     />
     <OpenLayersGeoJSONLayer
-        :layer="layer as ServerLayer"
+        :layer="layer as Layer"
         v-if="layer.type === LayerType.GEOJSON"
     />
     <OpenLayersVectorLayer
-        :layer="layer as ServerLayer"
+        :layer="layer as Layer"
         v-if="layer.type === LayerType.VECTOR"
     />
 </template>

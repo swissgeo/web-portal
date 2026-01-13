@@ -1,4 +1,4 @@
-import type { ServerLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 
 import pixelkarteFarbeUrl from '@/assets/ch.swisstopo.pixelkarte-farbe.png'
 import pixelkarteGrauUrl from '@/assets/ch.swisstopo.pixelkarte-grau.png'
@@ -12,17 +12,17 @@ export type VoidLayer = 'void'
  * background selector with the same Vue code basis.
  */
 export default function useBackgroundSelector(
-    selectBackgroundCallback: (backgroundLayer: ServerLayer | VoidLayer) => void
+    selectBackgroundCallback: (backgroundLayer: Layer | VoidLayer) => void
 ) {
     const selectorOpen = ref<boolean>(false)
     const animate = ref<boolean>(false)
 
-    function getImageForBackgroundLayer(backgroundLayer?: ServerLayer | VoidLayer) {
+    function getImageForBackgroundLayer(backgroundLayer?: Layer | VoidLayer) {
         let backgroundId
         if (backgroundLayer === 'void') {
             backgroundId = 'void'
         }
-        backgroundId = backgroundLayer?.record?.id || 'void'
+        backgroundId = backgroundLayer?.dataset?.id || 'void'
         switch (backgroundId) {
             case 'ch.swisstopo.pixelkarte-farbe':
                 return pixelkarteFarbeUrl
@@ -36,7 +36,7 @@ export default function useBackgroundSelector(
         }
     }
 
-    function onSelectBackground(backgroundLayer: ServerLayer | VoidLayer) {
+    function onSelectBackground(backgroundLayer: Layer | VoidLayer) {
         selectBackgroundCallback(backgroundLayer)
         toggleShowSelector()
     }

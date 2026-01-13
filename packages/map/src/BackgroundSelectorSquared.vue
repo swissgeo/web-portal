@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ServerLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 
 import { LucideIcon } from '@swissgeo/skeleton'
 
@@ -12,15 +12,15 @@ import BackgroundSelectorEntry from './BackgroundSelectorEntry.vue'
 const { t: $t } = useI18n()
 
 const { backgroundLayers, currentBackgroundLayer } = defineProps<{
-    backgroundLayers: ServerLayer[]
-    currentBackgroundLayer: ServerLayer
+    backgroundLayers: Layer[]
+    currentBackgroundLayer: Layer
 }>()
 
 const emit = defineEmits<{
-    selectBackground: [backgroundLayer: ServerLayer | VoidLayer]
+    selectBackground: [backgroundLayer: Layer | VoidLayer]
 }>()
 
-function selectBackgroundCallback(backgroundLayer: ServerLayer | VoidLayer): void {
+function selectBackgroundCallback(backgroundLayer: Layer | VoidLayer): void {
     if (backgroundLayer?.uuid === currentBackgroundLayer?.uuid) {
         // don't update if it's the same already, otherwise the user has a little
         // flicker and unnecessary computation power is used

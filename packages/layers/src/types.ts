@@ -1,4 +1,4 @@
-import type { Feature as OGCFeature } from '@swissgeo/shared/ogc'
+import type { Dataset } from '@swissgeo/shared/ogc'
 
 import { v4 as uuidv4 } from 'uuid'
 
@@ -32,28 +32,25 @@ export interface Layer {
     isLoading: boolean
     zIndex: number
     info?: LayerInfo | null
+    dataset?: Dataset
 }
 
-export interface ServerLayer extends Layer {
-    record: OGCFeature // TODO maybe it doesn't make sense to keep the entire
-    // record here... we only really need the layerId so far, with that we'll
-    // call the nuxt API which will give us the needed information (e.g. capability url, style..)
-}
-
+// File layer fills properties for file location or so
 export interface FileLayer extends Layer {}
 
+// Server layer fills properties like the Dataset
 export const makeServerLayer = (
     type: LayerType,
-    record: OGCFeature,
+    dataset: Dataset,
     options?: Partial<Layer>
-): ServerLayer => {
+): Layer => {
     const layerStore = useLayerStore()
 
     return {
         uuid: uuidv4(),
-        humanId: record.id,
+        humanId: dataset.id,
         opacity: 1,
-        record,
+        dataset,
         isVisible: true,
         type,
         isLoading: false,

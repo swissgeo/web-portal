@@ -1,4 +1,4 @@
-import type { ServerLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 import type { Feature as OGCFeature, OGCRecords, Service, Protocol } from '@swissgeo/shared/ogc'
 
 import { getDataServiceLinks } from '@/utils/recordUtils'
@@ -15,13 +15,13 @@ import { getDataServiceLinks } from '@/utils/recordUtils'
  * Since these operations are a cascade of server requests, the ORDER OF THE ELEMENTS IN HERE
  * MATTERS
  */
-export default async function useRecordsData(layer: ServerLayer, protocol: Protocol) {
+export default async function useRecordsData(layer: Layer, protocol: Protocol) {
     throw new Error('DEPRECATED') // Using the process on the server now!
-    const layerId = computed(() => layer.record.id)
+    const layerId = computed(() => layer.dataset.id)
 
     // Get the distribution
     const distributionLink = computed(() => {
-        const links = layer.record.links
+        const links = layer.dataset.links
         for (const link of links) {
             if (link.rel?.toLowerCase() === 'distributions') {
                 return link.href

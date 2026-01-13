@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Layer, ServerLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 
 import IconButton from '@/components/IconButton.vue'
 import { LayerType, useLayerStore } from '@swissgeo/layers'
@@ -62,7 +62,7 @@ function removeLayer() {
         </div>
         <div
             class="overflow-x-hidden text-nowrap"
-            :title="layer.record.id"
+            :title="layer.dataset.id"
             :class="{ 'text-gray-300': !layer.isVisible }"
         >
             {{ displayName }}

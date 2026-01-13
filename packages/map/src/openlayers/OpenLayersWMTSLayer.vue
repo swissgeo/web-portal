@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ServerLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 import type { WMTSCapabilities } from '@swissgeo/shared/ogc'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
@@ -13,10 +13,10 @@ import useLayerData from '@/composables/useLayerData.composable'
 const layerStore = useLayerStore()
 
 const { layer } = defineProps<{
-    layer: ServerLayer
+    layer: Layer
 }>()
 
-const { capabilityUrl, defaultOpacityFromStyle } = await useLayerData(layer.record.id, 'OGC:WMTS')
+const { capabilityUrl, defaultOpacityFromStyle } = await useLayerData(layer.dataset.id, 'OGC:WMTS')
 
 const { data: capabilityData } = await useFetch<WMTSCapabilities>(
     `/api/v1/layers/wmtsConfig/${capabilityUrl.value}`
@@ -30,7 +30,7 @@ const options = computed((): WMTSOptions => {
     }
 
     const options = optionsFromCapabilities(capabilityData.value, {
-        layer: layer.record.id,
+        layer: layer.dataset.id,
     })
 
     if (!options) {
@@ -41,7 +41,7 @@ const options = computed((): WMTSOptions => {
 })
 
 const { initialize, setVisibility, setZIndex } = useOlWmtsLayer(
-    layer.record.id,
+    layer.dataset.id,
     layer.uuid,
     options.value,
     defaultOpacityFromStyle.value,
@@ -68,7 +68,7 @@ onMounted(() => {
 })
 
 function updateLayerInfo() {
-    const info = getLayerInfoFromWMTSCapabilities(capabilityData.value, layer.record.id)
+    const info = getLayerInfoFromWMTSCapabilities(capabilityData.value, layer.dataset.id)
     layerStore.setLayerInfo(layer.uuid, info)
 }
 </script>
