@@ -11,7 +11,8 @@ export default defineConfig(({ mode }): UserConfig => {
         build: {
             // don't minify in dev build. This helps with debugging
             // maybe this could be solved in a better way with sourcemap?
-            minify: mode === 'development' ? false : true,
+            // minify: mode === 'development' ? false : true,
+            minify: false, // minifying makes problems in the skeleton/package build
             lib: {
                 entry: resolve(__dirname, 'src/index.ts'),
                 fileName: (format) => `index.${format}.js`,

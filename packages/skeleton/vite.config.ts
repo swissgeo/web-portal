@@ -11,9 +11,11 @@ const config = defineConfig(({ mode }) => {
         build: {
             // don't minify in dev build. This helps with debugging
             // maybe this could be solved in a better way with sourcemap?
-            minify: mode === 'development' ? false : true,
+            // minify: mode === 'development' ? false : true,
+            minify: false,
             lib: {
                 entry: [resolve(__dirname, 'src/index.ts')],
+                fileName: (format) => `index.${format}.js`,
                 name: '@swissgeo/skeleton',
             },
             rollupOptions: {
@@ -25,6 +27,7 @@ const config = defineConfig(({ mode }) => {
                     },
                 },
             },
+            sourcemap: true,
         },
         resolve: {
             alias: {
@@ -32,6 +35,8 @@ const config = defineConfig(({ mode }) => {
             },
         },
         plugins: [
+            tsconfigPaths(),
+            vue(),
             AutoImport({
                 dirs: ['./src/**'],
                 imports: [
@@ -41,6 +46,10 @@ const config = defineConfig(({ mode }) => {
                     'pinia',
                     'vue-i18n',
                 ],
+                eslintrc: {
+                    enabled: true,
+                    filepath: '.output/eslintrc-auto-import.json',
+                },
                 // Automatically generate types
                 dts: './.output/auto-imports.d.ts',
                 // Auto import inside Vue template
@@ -50,8 +59,6 @@ const config = defineConfig(({ mode }) => {
                 bundleTypes: true,
                 processor: 'vue',
             }),
-            tsconfigPaths(),
-            vue(),
         ],
     }
 })

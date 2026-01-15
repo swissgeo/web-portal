@@ -15,13 +15,6 @@ export default defineConfig(({ mode }): UserConfig => {
             lib: {
                 entry: resolve(__dirname, 'src/index.ts'),
                 fileName: (format) => `index.${format}.js`,
-                //     index: resolve(__dirname, 'src/index.ts'),
-                //     // api: resolve(__dirname, 'src/api/index.ts'),
-                //     // parsers: resolve(__dirname, 'src/parsers/index.ts'),
-                //     // utils: resolve(__dirname, 'src/utils/index.ts'),
-                //     // validation: resolve(__dirname, 'src/validation/index.ts'),
-                //     // vue: resolve(__dirname, 'src/vue/index.ts'),
-                // },
                 name: '@swissgeo/map',
             },
             rollupOptions: {
