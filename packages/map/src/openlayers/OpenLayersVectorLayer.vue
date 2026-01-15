@@ -9,7 +9,7 @@ const { layer } = defineProps<{
     layer: Layer
 }>()
 
-const url = computed(() => `/api/v1/layers/vectorTest`)
+const url = computed(() => `/api/v1/layers/swissgeo/vectorTest`)
 
 const { data } = await useFetch<string>(url)
 

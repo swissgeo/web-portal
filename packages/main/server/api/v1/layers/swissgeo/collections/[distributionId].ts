@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 
 export default defineEventHandler(async (event) => {
-    const param = getRouterParam(event, 'layerId')
+    const param = getRouterParam(event, 'distributionId')
 
     if (!param) {
         throw createError({
@@ -11,10 +11,10 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    const layerId = decodeURIComponent(param)
+    const distributionId = decodeURIComponent(param)
 
     // path is relative to the package
-    const path = `../../ogc-records/collections/${layerId}`
+    const path = `../../ogc-records/collections/${distributionId}`
     const data = await fs.readFile(path)
 
     appendResponseHeader(event, 'Content-Type', 'application/json')

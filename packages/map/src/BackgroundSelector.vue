@@ -25,7 +25,9 @@ const AVAILABLE_BACKGROUNDS = [
 const backgroundRecords = computed(async () => {
     const promises: Promise[] = []
     for (const backgroundId of AVAILABLE_BACKGROUNDS) {
-        promises.push($fetch(`/api/v1/layers/collections/swissgeo.catalog/items/${backgroundId}`))
+        promises.push(
+            $fetch(`/api/v1/layers/swissgeo/collections/swissgeo.catalog/items/${backgroundId}`)
+        )
     }
 
     const values = await Promise.all(promises)

@@ -21,7 +21,7 @@ const geoJsonUrl = computed(() => {
     return encodeURIComponent(href)
 })
 
-const { data } = await useFetch<string>(`/api/v1/layers/geoJson/${geoJsonUrl.value}`)
+const { data } = await useFetch<string>(`/api/v1/layers/swissgeo/geoJson/${geoJsonUrl.value}`)
 
 const { data: style } = await useFetch<string>(
     `https://api3.geo.admin.ch/static/vectorStyles/${layer.dataset.id}.json`

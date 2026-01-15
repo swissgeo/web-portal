@@ -65,7 +65,7 @@ const getDistributionData = async (record: Feature) => {
 
     const distributionLink = getDistributionLink()
 
-    const distributionData = await $fetch<OGCRecords>(`/api/v1/layers/${distributionLink}`)
+    const distributionData = await $fetch<OGCRecords>(`/api/v1/layers/swissgeo/${distributionLink}`)
     return distributionData
 }
 
@@ -106,7 +106,7 @@ const getServiceData = async (feature: Feature) => {
     }
 
     const serviceUrl = getServiceUrl()
-    return await $fetch<Service>(`/api/v1/layers/service/${serviceUrl}`)
+    return await $fetch<Service>(`/api/v1/layers/swissgeo/service/${serviceUrl}`)
 }
 
 /**
@@ -136,7 +136,7 @@ const getStyleData = async (feature: Feature): Promise<Style | null> => {
 
     if (styleUrl) {
         // return style or return the URL?
-        return await $fetch(`/api/v1/layers/${styleUrl}`)
+        return await $fetch(`/api/v1/layers/swissgeo/${styleUrl}`)
     } else {
         return null
     }

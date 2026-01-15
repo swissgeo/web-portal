@@ -4,7 +4,7 @@ import type mapboxgl from 'mapbox-gl'
 
 export default async function useLayerData(layerId: string, protocol: Protocol) {
     const { data: layerData } = await useFetch<LayerData>(
-        `/api/v1/layers/${layerId}?protocol=${protocol}`
+        `/api/v1/layers/swissgeo/distributionData/${layerId}?protocol=${protocol}`
     )
 
     const capabilityUrl = computed(() => {

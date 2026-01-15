@@ -9,7 +9,7 @@ import LayersPanelEntry from './LayersPanelEntry.vue'
 const isLayersPanelOpen = ref(false)
 const filterTerm = ref<string>('')
 
-const { data: recordLayers } = await useFetch<OGCRecords>('/api/v1/layers/catalog')
+const { data: recordLayers } = await useFetch<OGCRecords>('/api/v1/layers/swissgeo/catalog')
 
 const layerStore = useLayerStore()
 

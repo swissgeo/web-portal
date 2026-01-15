@@ -30,7 +30,7 @@ export default async function useRecordsData(layer: Layer, protocol: Protocol) {
     })
 
     const { data: distributionData } = await useFetch<OGCRecords>(
-        `/api/v1/layers/${distributionLink.value}`
+        `/api/v1/layers/swissgeo/${distributionLink.value}`
     )
 
     // Extract the feature for the service
@@ -74,7 +74,7 @@ export default async function useRecordsData(layer: Layer, protocol: Protocol) {
 
     // get the Service
     const { data: serviceData } = await useFetch<Service>(
-        `/api/v1/layers/service/${serviceUrl.value}`
+        `/api/v1/layers/service/swissgeo/${serviceUrl.value}`
     )
 
     const capabilityUrl = computed(() => {

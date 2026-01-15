@@ -82,7 +82,7 @@ onMounted(() => {
 
 async function updateCollectionData() {
     const collectionDataUpdated = await $fetch<OGCRecords>(
-        `/api/v1/layers/${distributionLink.value.href}`
+        `/api/v1/layers/swissgeo/${distributionLink.value.href}`
     )
 
     if (collectionDataUpdated) {
