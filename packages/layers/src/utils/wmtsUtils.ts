@@ -2,6 +2,7 @@ import type { WMTSCapabilities } from '@swissgeo/shared/ogc'
 
 import type { LayerInfo } from '@/types'
 
+/** TODO maybe we don't need this, or at least not the way it's implemented now */
 export function getLayerInfoFromWMTSCapabilities(
     capabilities: WMTSCapabilities,
     layerId: string

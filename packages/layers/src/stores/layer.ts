@@ -36,7 +36,7 @@ export const useLayerStore = defineStore('layers', () => {
                 if (updatingLayer.zIndex >= newIndex && updatingLayer.zIndex < currentIndex) {
                     // increase all the layers between the newIndex and the currentIndex
                     log.debug(
-                        `Updating ${layer.dataset.id} from ${layer.zIndex} to ${layer.zIndex + 1}`
+                        `Updating ${layer.humanId} from ${layer.zIndex} to ${layer.zIndex + 1}`
                     )
                     updatingLayer.zIndex += 1
                 }
@@ -44,7 +44,7 @@ export const useLayerStore = defineStore('layers', () => {
                 if (updatingLayer.zIndex <= newIndex && updatingLayer.zIndex > currentIndex) {
                     // decrease all the layers between the currentIndex and the newIndex
                     log.debug(
-                        `Updating ${layer.dataset.id} from ${layer.zIndex} to ${layer.zIndex - 1}`
+                        `Updating ${layer.humanId} from ${layer.zIndex} to ${layer.zIndex - 1}`
                     )
                     updatingLayer.zIndex -= 1
                 }
@@ -52,7 +52,7 @@ export const useLayerStore = defineStore('layers', () => {
         }
     }
 
-    function setBackground(layer: Layer) {
+    function setBackground(layer: DatasetLayer) {
         backgroundLayer.value = layer
     }
 

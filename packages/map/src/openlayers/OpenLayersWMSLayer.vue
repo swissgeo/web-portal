@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { Layer } from '@swissgeo/layers'
+import type { DatasetLayer } from '@swissgeo/layers'
 
-import { useLayerStore, getLayerInfoFromWMSCapabilities } from '@swissgeo/layers'
-import log from '@swissgeo/log'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from '@/composables/olWMSLayer.composable'
@@ -10,10 +8,8 @@ import useLayerData from '@/composables/useLayerData.composable'
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
 
-const layerStore = useLayerStore()
-
 const { layer } = defineProps<{
-    layer: Layer
+    layer: DatasetLayer
 }>()
 
 const gutter = computed(() => {
@@ -58,22 +54,6 @@ watch(
         setZIndex(newZIndex)
     }
 )
-
-onMounted(() => {
-    updateLayerInfo()
-})
-
-function updateLayerInfo() {
-    try {
-        const info = getLayerInfoFromWMSCapabilities(capabilityData.value, layer.dataset.id)
-        layerStore.setLayerInfo(layer.uuid, info)
-    } catch (error) {
-        log.warn(
-            `Unable to find layer ${layer.dataset.id} in wms capabilities of ${capabilityUrl.value}`,
-            { messages: [error] }
-        )
-    }
-}
 </script>
 
 <template>

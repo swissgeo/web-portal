@@ -1,19 +1,16 @@
 <script lang="ts" setup>
-import type { Layer } from '@swissgeo/layers'
+import type { DatasetLayer } from '@swissgeo/layers'
 import type { WMTSCapabilities } from '@swissgeo/shared/ogc'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
-import { useLayerStore, getLayerInfoFromWMTSCapabilities } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import { optionsFromCapabilities } from 'ol/source/WMTS'
 
 import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
 import useLayerData from '@/composables/useLayerData.composable'
 
-const layerStore = useLayerStore()
-
 const { layer } = defineProps<{
-    layer: Layer
+    layer: DatasetLayer
 }>()
 
 const { capabilityUrl, defaultOpacityFromStyle } = await useLayerData(layer.dataset.id, 'OGC:WMTS')
@@ -32,6 +29,8 @@ const options = computed((): WMTSOptions => {
     const options = optionsFromCapabilities(capabilityData.value, {
         layer: layer.dataset.id,
     })
+
+    log.debug(`Successfully derived options for ${layer.dataset.id}`)
 
     if (!options) {
         throw new Error('Unable to get options from capabilities')
@@ -64,13 +63,7 @@ watch(
 
 onMounted(() => {
     initialize()
-    updateLayerInfo()
 })
-
-function updateLayerInfo() {
-    const info = getLayerInfoFromWMTSCapabilities(capabilityData.value, layer.dataset.id)
-    layerStore.setLayerInfo(layer.uuid, info)
-}
 </script>
 
 <template>

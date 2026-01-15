@@ -10,12 +10,8 @@
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.es.js"
-        },
-        "./tailwindcss": [
-            "./dist/tooltip.css"
-        ]
+        }
     },
-    "main": "index.ts",
     "scripts": {
         "build": "vite build",
         "build-watch": "vite build --watch",

@@ -46,7 +46,7 @@ export default async function useLayerData(layerId: string, protocol: Protocol) 
 
             const paint = layer.paint
             const rasterOpacity = paint?.['raster-opacity']
-            if (rasterOpacity) {
+            if (rasterOpacity && typeof rasterOpacity === 'number') {
                 return rasterOpacity
             }
         }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Layer } from '@swissgeo/layers'
+import type { DatasetLayer } from '@swissgeo/layers'
 import type { Feature } from '@swissgeo/shared/ogc'
 
 import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
@@ -37,7 +37,7 @@ const backgroundRecords = computed(async () => {
     })
 })
 
-const sortedBackgroundLayersWithVoid = computedAsync<(Layer | VoidLayer)[]>(
+const sortedBackgroundLayersWithVoid = computedAsync<(DatasetLayer | VoidLayer)[]>(
     async () => ['void', ...(await backgroundRecords.value)],
     ['void']
 )
@@ -56,7 +56,7 @@ watch(
     { once: true }
 )
 
-function selectBackground(backgroundLayer: Layer | VoidLayer) {
+function selectBackground(backgroundLayer: DatasetLayer | VoidLayer) {
     // TODO HAAAAACK
     if (backgroundLayer === 'void') {
         layerStore.setBackground(null)
