@@ -25,7 +25,9 @@ Also see `useLayerData.composable.ts` in the map packages.
 ## Proxy Endpoints
 
 These endpoints serve as a mean to deliver the data from the ogc records, which are currently files in the repo,
-to a http client.
+to a http client. They mostly just pass through the data.
+
+These endpoints replace the href of `links` so that they will point back to this API.
 
 ### `collections/[distributionId].ts`
 

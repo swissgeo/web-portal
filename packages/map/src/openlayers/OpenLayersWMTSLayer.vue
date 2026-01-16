@@ -13,7 +13,7 @@ const { layer } = defineProps<{
     layer: DatasetLayer
 }>()
 
-const { capabilityUrl, defaultOpacityFromStyle } = await useLayerData(layer.dataset.id, 'OGC:WMTS')
+const { capabilityUrl, defaultOpacityFromStyle } = await useLayerData(layer.dataset, 'OGC:WMTS')
 
 const { data: capabilityData } = await useFetch<WMTSCapabilities>(
     `/api/v1/layers/wmtsConfig/${capabilityUrl.value}`

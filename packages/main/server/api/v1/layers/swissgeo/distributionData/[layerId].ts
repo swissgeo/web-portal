@@ -7,8 +7,7 @@ import type {
     Service,
 } from '@swissgeo/shared/ogc'
 import type { Style } from '@types/mapbox-gl'
-
-import fs from 'node:fs/promises'
+import type { H3Event } from 'h3'
 
 let catalog: OGCRecords | undefined
 
@@ -24,28 +23,6 @@ export const getDataServiceLinks = (links: Link[]): Link[] => {
 
 export const getStyleLinks = (links: Link[]): Link[] => {
     return getLinksByRel(links, 'styledby')
-}
-
-const readCatalog = async () => {
-    // path is relative to the package
-    const path = `../../ogc-records/swissgeo.catalog`
-    const data = await fs.readFile(path)
-
-    return JSON.parse(data.toString())
-}
-
-const getFeatureFromCatalog = async (layerId: string) => {
-    if (!catalog) {
-        catalog = await readCatalog()
-    }
-
-    for (const feature of catalog!.features) {
-        if (feature.id === layerId) {
-            return feature
-        }
-    }
-
-    throw new Error(`Unable to find feature for ${layerId} in the catalog`)
 }
 
 const getDistributionData = async (record: Feature) => {
@@ -65,7 +42,7 @@ const getDistributionData = async (record: Feature) => {
 
     const distributionLink = getDistributionLink()
 
-    const distributionData = await $fetch<OGCRecords>(`/api/v1/layers/swissgeo/${distributionLink}`)
+    const distributionData = await $fetch<OGCRecords>(distributionLink)
     return distributionData
 }
 
@@ -106,7 +83,7 @@ const getServiceData = async (feature: Feature) => {
     }
 
     const serviceUrl = getServiceUrl()
-    return await $fetch<Service>(`/api/v1/layers/swissgeo/service/${serviceUrl}`)
+    return await $fetch<Service>(serviceUrl)
 }
 
 /**
@@ -136,7 +113,7 @@ const getStyleData = async (feature: Feature): Promise<Style | null> => {
 
     if (styleUrl) {
         // return style or return the URL?
-        return await $fetch(`/api/v1/layers/swissgeo/${styleUrl}`)
+        return await $fetch(styleUrl)
     } else {
         return null
     }
@@ -178,9 +155,9 @@ const getCapabilityLink = (serviceData: Service): Link | TemplateLink => {
  * contains the URL to the capabilities, which we return for the concrete implementations to be
  * used
  */
-const getLayerData = async (layerId: string, protocol: Protocol) => {
-    const feature = await getFeatureFromCatalog(layerId)
-    const distributionData = await getDistributionData(feature)
+const getLayerData = async (event: H3Event, layerId: string, protocol: Protocol) => {
+    const dataset = await readBody(event)
+    const distributionData = await getDistributionData(dataset)
 
     const distributionFeature = extractFeature(distributionData, protocol)
     const serviceData = await getServiceData(distributionFeature)
@@ -218,7 +195,7 @@ export default defineEventHandler(async (event) => {
     const layerId = decodeURIComponent(param)
 
     try {
-        const layerData = await getLayerData(layerId, protocol)
+        const layerData = await getLayerData(event, layerId, protocol)
 
         appendResponseHeader(event, 'Content-Type', 'application/json')
         appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)

@@ -1,18 +1,23 @@
 import type { LayerData } from '@swissgeo/shared/api'
-import type { Protocol } from '@swissgeo/shared/ogc'
+import type { Dataset, Protocol } from '@swissgeo/shared/ogc'
 import type mapboxgl from 'mapbox-gl'
 
-export default async function useLayerData(layerId: string, protocol: Protocol) {
-    const { data: layerData } = await useFetch<LayerData>(
-        `/api/v1/layers/swissgeo/distributionData/${layerId}?protocol=${protocol}`
+export default async function useLayerData(dataset: Dataset, protocol: Protocol) {
+    const layerId = dataset.id
+    const layerData = await $fetch<LayerData>(
+        `/api/v1/layers/swissgeo/distributionData/${layerId}?protocol=${protocol}`,
+        {
+            method: 'POST',
+            body: dataset,
+        }
     )
 
     const capabilityUrl = computed(() => {
-        if (!layerData.value?.capabilityLink) {
+        if (!layerData.capabilityLink) {
             throw new Error('Unable to find CapabilityLink in layerData')
         }
 
-        const link = layerData.value?.capabilityLink
+        const link = layerData.capabilityLink
 
         if ('href' in link) {
             return encodeURIComponent(link.href)

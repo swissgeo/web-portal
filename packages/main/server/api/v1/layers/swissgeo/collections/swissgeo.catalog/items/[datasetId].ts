@@ -1,6 +1,7 @@
 import type { OGCRecords } from '@swissgeo/shared/ogc'
 
 import fs from 'node:fs/promises'
+import { prependLinks } from '../../../../_utils'
 
 export default defineEventHandler(async (event) => {
     const param = getRouterParam(event, 'datasetId')
@@ -9,7 +10,7 @@ export default defineEventHandler(async (event) => {
         throw createError({
             status: 404,
             statusMessage: 'Not Found',
-            message: 'Layer with this ID not Found',
+            message: 'Dataset with this ID not Found',
         })
     }
 
@@ -26,7 +27,15 @@ export default defineEventHandler(async (event) => {
 
     const feature = features.find((feature) => feature.id === datasetId)
 
+    if (!feature) {
+        throw createError({
+            status: 404,
+            statusMessage: 'Not Found',
+            message: 'Dataset with this ID not Found in records',
+        })
+    }
+
     appendResponseHeader(event, 'Content-Type', 'application/json')
     appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)
-    return feature
+    return prependLinks([feature])[0]
 })
