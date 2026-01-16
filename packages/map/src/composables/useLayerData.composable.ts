@@ -2,10 +2,15 @@ import type { LayerData } from '@swissgeo/shared/api'
 import type { Dataset, Protocol } from '@swissgeo/shared/ogc'
 import type mapboxgl from 'mapbox-gl'
 
+// TODO maybe don't only use layerId as param, otherwise we could have interfering
+// names!!!!
+// e.g. if two different dataset/distribution/service Sets contain a layer
+// with the same name, then this here would be a problem when the request
+// is cached
 export default async function useLayerData(dataset: Dataset, protocol: Protocol) {
     const layerId = dataset.id
     const layerData = await $fetch<LayerData>(
-        `/api/v1/layers/swissgeo/distributionData/${layerId}?protocol=${protocol}`,
+        `/api/v1/layers/distributionData/${layerId}?protocol=${protocol}`,
         {
             method: 'POST',
             body: dataset,

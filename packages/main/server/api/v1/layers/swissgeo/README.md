@@ -29,17 +29,17 @@ to a http client. They mostly just pass through the data.
 
 These endpoints replace the href of `links` so that they will point back to this API.
 
-### `collections/[distributionId].ts`
+### `swissgeo/collections/[distributionId].ts`
 
 Return the **distribution** collection of one datset. The data will be taken from the single
 files in the folder structure.
 
-### `collections/swissgeo.catalog/items/[datasetId].ts`
+### `swissgeo/collections/swissgeo.catalog/items/[datasetId].ts`
 
 Return the collection of one specific **dataset**. This will grab the data from the catalog.
 The path is structured in the same way as it is encoded in the links section of a dataset
 
-### `service/collections/geoadmin.services/items/[serviceId].ts`
+### `swissgeo/collections/geoadmin.services/items/[serviceId].ts`
 
 Proxies the delivery of a **service** record. The path is structued in the same way as the
 link with `rel` = `styledBy` of a distribution.
@@ -48,6 +48,13 @@ link with `rel` = `styledBy` of a distribution.
 
 Proxies the delivery of a style record. The path is structued in the same way as the
 link with `rel` = `styledBy` of a distribution.
+
+## External layer endpoints
+
+This might seem a little peculiar, but we provide some endpoints that mock the behaviour we have implemented
+for the records, but for external data.
+If a user provides a URL to a WMTS for example, we can use the exact same workflow in the frontend to retrieve
+the data and display the layers as we do for the ones based on records.
 
 ### `geojson/`
 
