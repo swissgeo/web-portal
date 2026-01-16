@@ -68,6 +68,8 @@ const type = computed((): LayerType | 'UNKNOWN' => {
                 return LayerType.WMTS
             } else if (protocol === 'OGC:WMS') {
                 return LayerType.WMS
+            } else if (protocol === 'OGC:GeoJSON') {
+                return LayerType.GEOJSON
             }
         }
     }

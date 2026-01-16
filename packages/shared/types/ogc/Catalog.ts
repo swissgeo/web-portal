@@ -70,4 +70,4 @@ export interface Service {
     properties?: Property
 }
 
-export type Protocol = 'OGC:WMTS' | 'OGC:WMS'
+export type Protocol = 'OGC:WMTS' | 'OGC:WMS' | 'OGC:GeoJSON'
