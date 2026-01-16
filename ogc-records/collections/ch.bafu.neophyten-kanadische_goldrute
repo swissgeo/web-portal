@@ -11,7 +11,7 @@
         },
         {
           "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
-          "rel": "dataservice"
+          "rel": "service"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-kanadische_goldrute",
@@ -43,7 +43,7 @@
         },
         {
           "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "dataservice"
+          "rel": "service"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-kanadische_goldrute",
@@ -69,7 +69,7 @@
         },
         {
           "href": "collections/geoadmin.services/items/ch.admin.geo.data",
-          "rel": "dataservice"
+          "rel": "service"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-kanadische_goldrute",

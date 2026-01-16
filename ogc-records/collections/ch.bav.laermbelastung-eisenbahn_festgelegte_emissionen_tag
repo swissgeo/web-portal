@@ -11,7 +11,7 @@
         },
         {
           "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
-          "rel": "dataservice"
+          "rel": "service"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bav.laermbelastung-eisenbahn_festgelegte_emissionen_tag",
@@ -37,7 +37,7 @@
         },
         {
           "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "dataservice"
+          "rel": "service"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bav.laermbelastung-eisenbahn_festgelegte_emissionen_tag",
@@ -63,7 +63,7 @@
         },
         {
           "href": "collections/geoadmin.services/items/ch.admin.geo.data",
-          "rel": "dataservice"
+          "rel": "service"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bav.laermbelastung-eisenbahn_festgelegte_emissionen_tag",

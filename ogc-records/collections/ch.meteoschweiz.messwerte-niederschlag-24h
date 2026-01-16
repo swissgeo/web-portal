@@ -2,28 +2,35 @@
   "type": "FeatureCollection",
   "features": [
     {
-      "id": "ch.meteoschweiz.messwerte-niederschlag-24h:wms",
+      "id": "ch.meteoschweiz.messwerte-niederschlag-24h:geojson",
       "links": [
         {
-          "href": "collections/ch.meteoschweiz.messwerte-niederschlag-24h/items/ch.meteoschweiz.messwerte-niederschlag-24h:wms",
+          "href": "collections/ch.meteoschweiz.messwerte-niederschlag-24h/items/ch.meteoschweiz.messwerte-niederschlag-24h:geojson",
           "rel": "self",
           "type": "application/json"
         },
         {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "dataservice"
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messwerte-niederschlag-24h/ch.meteoschweiz.messwerte-niederschlag-24h_en.json",
+          "rel": "data",
+          "type": "application/geo+json"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.messwerte-niederschlag-24h",
           "rel": "dataset"
+        },
+        {
+          "href": "https://api3.geo.admin.ch/static/vectorStyles/ch.meteoschweiz.messwerte-niederschlag-24h.json",
+          "rel": "styledby",
+          "title": "GeoJSON Style Definition",
+          "type": "application/json"
         }
       ],
       "properties": {
         "externalIds": [
           "ch.meteoschweiz.messwerte-niederschlag-24h"
         ],
-        "protocol": "OGC:WMS",
-        "title": "OGC Web Map Service (WMS)",
+        "protocol": "OGC:GeoJSON",
+        "title": "GeoJSON Feature Service",
         "type": "Distribution"
       }
     }

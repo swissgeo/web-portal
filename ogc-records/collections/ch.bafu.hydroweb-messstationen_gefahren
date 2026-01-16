@@ -2,28 +2,35 @@
   "type": "FeatureCollection",
   "features": [
     {
-      "id": "ch.bafu.hydroweb-messstationen_gefahren:wms",
+      "id": "ch.bafu.hydroweb-messstationen_gefahren:geojson",
       "links": [
         {
-          "href": "collections/ch.bafu.hydroweb-messstationen_gefahren/items/ch.bafu.hydroweb-messstationen_gefahren:wms",
+          "href": "collections/ch.bafu.hydroweb-messstationen_gefahren/items/ch.bafu.hydroweb-messstationen_gefahren:geojson",
           "rel": "self",
           "type": "application/json"
         },
         {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "dataservice"
+          "href": "https://data.geo.admin.ch/ch.bafu.hydroweb-messstationen_gefahren/ch.bafu.hydroweb-messstationen_gefahren_en.json",
+          "rel": "data",
+          "type": "application/geo+json"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bafu.hydroweb-messstationen_gefahren",
           "rel": "dataset"
+        },
+        {
+          "href": "https://api3.geo.admin.ch/static/vectorStyles/ch.bafu.hydroweb-messstationen_gefahren.json",
+          "rel": "styledby",
+          "title": "GeoJSON Style Definition",
+          "type": "application/json"
         }
       ],
       "properties": {
         "externalIds": [
           "ch.bafu.hydroweb-messstationen_gefahren"
         ],
-        "protocol": "OGC:WMS",
-        "title": "OGC Web Map Service (WMS)",
+        "protocol": "OGC:GeoJSON",
+        "title": "GeoJSON Feature Service",
         "type": "Distribution"
       }
     },
@@ -37,7 +44,7 @@
         },
         {
           "href": "collections/geoadmin.services/items/ch.admin.geo.data",
-          "rel": "dataservice"
+          "rel": "service"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bafu.hydroweb-messstationen_gefahren",

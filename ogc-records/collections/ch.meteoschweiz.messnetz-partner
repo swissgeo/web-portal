@@ -2,28 +2,35 @@
   "type": "FeatureCollection",
   "features": [
     {
-      "id": "ch.meteoschweiz.messnetz-partner:wms",
+      "id": "ch.meteoschweiz.messnetz-partner:geojson",
       "links": [
         {
-          "href": "collections/ch.meteoschweiz.messnetz-partner/items/ch.meteoschweiz.messnetz-partner:wms",
+          "href": "collections/ch.meteoschweiz.messnetz-partner/items/ch.meteoschweiz.messnetz-partner:geojson",
           "rel": "self",
           "type": "application/json"
         },
         {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "dataservice"
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-partner/ch.meteoschweiz.messnetz-partner_en.json",
+          "rel": "data",
+          "type": "application/geo+json"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.messnetz-partner",
           "rel": "dataset"
+        },
+        {
+          "href": "https://api3.geo.admin.ch/static/vectorStyles/ch.meteoschweiz.messnetz-partner.json",
+          "rel": "styledby",
+          "title": "GeoJSON Style Definition",
+          "type": "application/json"
         }
       ],
       "properties": {
         "externalIds": [
           "ch.meteoschweiz.messnetz-partner"
         ],
-        "protocol": "OGC:WMS",
-        "title": "OGC Web Map Service (WMS)",
+        "protocol": "OGC:GeoJSON",
+        "title": "GeoJSON Feature Service",
         "type": "Distribution"
       }
     },
@@ -37,7 +44,7 @@
         },
         {
           "href": "collections/geoadmin.services/items/ch.admin.geo.data",
-          "rel": "dataservice"
+          "rel": "service"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.messnetz-partner",

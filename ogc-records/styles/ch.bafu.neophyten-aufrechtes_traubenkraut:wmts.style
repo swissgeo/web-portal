@@ -6,7 +6,7 @@
       "source-layer": "ch.bafu.neophyten-aufrechtes_traubenkraut",
       "type": "raster",
       "paint": {
-        "raster-opacity": "0.75"
+        "raster-opacity": 0.75
       }
     }
   ]

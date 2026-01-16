@@ -2,28 +2,35 @@
   "type": "FeatureCollection",
   "features": [
     {
-      "id": "ch.swisstopo.meldungen-karten_geodaten:wms",
+      "id": "ch.swisstopo.meldungen-karten_geodaten:geojson",
       "links": [
         {
-          "href": "collections/ch.swisstopo.meldungen-karten_geodaten/items/ch.swisstopo.meldungen-karten_geodaten:wms",
+          "href": "collections/ch.swisstopo.meldungen-karten_geodaten/items/ch.swisstopo.meldungen-karten_geodaten:geojson",
           "rel": "self",
           "type": "application/json"
         },
         {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "dataservice"
+          "href": "https://data.geo.admin.ch/ch.swisstopo.meldungen-karten_geodaten/ch.swisstopo.meldungen-karten_geodaten_en.json",
+          "rel": "data",
+          "type": "application/geo+json"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.swisstopo.meldungen-karten_geodaten",
           "rel": "dataset"
+        },
+        {
+          "href": "https://api3.geo.admin.ch/static/vectorStyles/ch.swisstopo.meldungen-karten_geodaten.json",
+          "rel": "styledby",
+          "title": "GeoJSON Style Definition",
+          "type": "application/json"
         }
       ],
       "properties": {
         "externalIds": [
           "ch.swisstopo.meldungen-karten_geodaten"
         ],
-        "protocol": "OGC:WMS",
-        "title": "OGC Web Map Service (WMS)",
+        "protocol": "OGC:GeoJSON",
+        "title": "GeoJSON Feature Service",
         "type": "Distribution"
       }
     }

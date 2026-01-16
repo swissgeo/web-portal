@@ -2,28 +2,35 @@
   "type": "FeatureCollection",
   "features": [
     {
-      "id": "ch.bfe.shared-mobility:wms",
+      "id": "ch.bfe.shared-mobility:geojson",
       "links": [
         {
-          "href": "collections/ch.bfe.shared-mobility/items/ch.bfe.shared-mobility:wms",
+          "href": "collections/ch.bfe.shared-mobility/items/ch.bfe.shared-mobility:geojson",
           "rel": "self",
           "type": "application/json"
         },
         {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "dataservice"
+          "href": "https://data.geo.admin.ch/ch.bfe.shared-mobility/ch.bfe.shared-mobility_en.json",
+          "rel": "data",
+          "type": "application/geo+json"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bfe.shared-mobility",
           "rel": "dataset"
+        },
+        {
+          "href": "https://api3.geo.admin.ch/static/vectorStyles/ch.bfe.shared-mobility.json",
+          "rel": "styledby",
+          "title": "GeoJSON Style Definition",
+          "type": "application/json"
         }
       ],
       "properties": {
         "externalIds": [
           "ch.bfe.shared-mobility"
         ],
-        "protocol": "OGC:WMS",
-        "title": "OGC Web Map Service (WMS)",
+        "protocol": "OGC:GeoJSON",
+        "title": "GeoJSON Feature Service",
         "type": "Distribution"
       }
     }

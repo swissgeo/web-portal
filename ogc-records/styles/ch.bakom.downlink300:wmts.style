@@ -6,7 +6,7 @@
       "source-layer": "ch.bakom.downlink300",
       "type": "raster",
       "paint": {
-        "raster-opacity": "0.75"
+        "raster-opacity": 0.75
       }
     }
   ]

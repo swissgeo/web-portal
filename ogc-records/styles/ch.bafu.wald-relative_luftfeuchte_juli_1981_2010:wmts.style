@@ -6,7 +6,7 @@
       "source-layer": "ch.bafu.wald-relative_luftfeuchte_juli_1981_2010",
       "type": "raster",
       "paint": {
-        "raster-opacity": "0.75"
+        "raster-opacity": 0.75
       }
     }
   ]

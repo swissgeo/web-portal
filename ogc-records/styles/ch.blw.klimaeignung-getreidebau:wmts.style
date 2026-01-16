@@ -6,7 +6,7 @@
       "source-layer": "ch.blw.klimaeignung-getreidebau",
       "type": "raster",
       "paint": {
-        "raster-opacity": "0.75"
+        "raster-opacity": 0.75
       }
     }
   ]
