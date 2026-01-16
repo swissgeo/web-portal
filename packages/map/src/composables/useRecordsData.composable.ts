@@ -60,7 +60,7 @@ export default async function useRecordsData(layer: Layer, protocol: Protocol) {
 
         const link = getDataServiceLinks(links)[0]
         if (!link) {
-            throw new Error("Unable to find link for rel type 'dataservice'")
+            throw new Error("Unable to find link for rel type 'service'")
         }
         const href = link.href
 

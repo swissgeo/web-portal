@@ -18,7 +18,7 @@ export const getLinksByRel = (links: Link[], rel: string): Link[] => {
 }
 
 export const getDataServiceLinks = (links: Link[]): Link[] => {
-    return getLinksByRel(links, 'dataservice')
+    return getLinksByRel(links, 'service')
 }
 
 export const getStyleLinks = (links: Link[]): Link[] => {
@@ -70,7 +70,7 @@ const getServiceData = async (feature: Feature) => {
 
         const link = getDataServiceLinks(links)[0]
         if (!link) {
-            throw new Error("Unable to find link for rel type 'dataservice'")
+            throw new Error("Unable to find link for rel type 'service'")
         }
         const href = link.href
 
