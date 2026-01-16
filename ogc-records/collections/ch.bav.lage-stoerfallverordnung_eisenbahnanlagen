@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bav.lage-stoerfallverordnung_eisenbahnanlagen:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bav.lage-stoerfallverordnung_eisenbahnanlagen/items/ch.bav.lage-stoerfallverordnung_eisenbahnanlagen:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bav.lage-stoerfallverordnung_eisenbahnanlagen",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bav.lage-stoerfallverordnung_eisenbahnanlagen:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bav.lage-stoerfallverordnung_eisenbahnanlagen"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bav.lage-stoerfallverordnung_eisenbahnanlagen:wms",
+      "links": [
+        {
+          "href": "collections/ch.bav.lage-stoerfallverordnung_eisenbahnanlagen/items/ch.bav.lage-stoerfallverordnung_eisenbahnanlagen:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bav.lage-stoerfallverordnung_eisenbahnanlagen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bav.lage-stoerfallverordnung_eisenbahnanlagen"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bav.lage-stoerfallverordnung_eisenbahnanlagen:stac",
+      "links": [
+        {
+          "href": "collections/ch.bav.lage-stoerfallverordnung_eisenbahnanlagen/items/ch.bav.lage-stoerfallverordnung_eisenbahnanlagen:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bav.lage-stoerfallverordnung_eisenbahnanlagen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bav.lage-stoerfallverordnung_eisenbahnanlagen"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

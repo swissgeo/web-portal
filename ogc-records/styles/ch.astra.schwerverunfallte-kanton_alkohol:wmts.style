@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.astra.schwerverunfallte-kanton_alkohol:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.astra.schwerverunfallte-kanton_alkohol",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

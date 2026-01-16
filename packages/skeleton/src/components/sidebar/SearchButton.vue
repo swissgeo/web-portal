@@ -1,12 +1,17 @@
 <script setup lang="ts">
-const router = useRouter()
+import { useUiStore, SidebarType } from '@/stores/ui'
 
-const interfaceStore = useInterfaceStore()
+import SidebarButton from './SidebarButton.vue'
+
+// const router = useRouter()
+
+const { t: $t } = useI18n()
+
+const uiStore = useUiStore()
 
 const toggleSearch = () => {
-    console.log('Toggling search')
-    interfaceStore.setSidebar(SidebarType.SEARCH)
-    router.push('/search')
+    uiStore.setSidebar(SidebarType.SEARCH)
+    // router.push('/search')
 }
 </script>
 
@@ -14,7 +19,7 @@ const toggleSearch = () => {
     <div class="relative inline-block">
         <!-- :is-active="uiStore.isSearchVisible" -->
         <SidebarButton
-            :is-active="interfaceStore.currentSidebar == 'search'"
+            :is-active="uiStore.currentSidebar == 'search'"
             data-cy="button-search-panel"
             :title="$t('menu.search')"
             icon="Search"

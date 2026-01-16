@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.swisstlm3d-karte-grau.3d:wmts",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.swisstlm3d-karte-grau.3d/items/ch.swisstopo.swisstlm3d-karte-grau.3d:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.swisstlm3d-karte-grau.3d",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.swisstlm3d-karte-grau.3d"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.swisstlm3d-karte-grau.3d:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.swisstlm3d-karte-grau.3d/items/ch.swisstopo.swisstlm3d-karte-grau.3d:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.swisstlm3d-karte-grau.3d",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.swisstlm3d-karte-grau.3d"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

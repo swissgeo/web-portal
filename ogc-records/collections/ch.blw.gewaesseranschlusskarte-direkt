@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.blw.gewaesseranschlusskarte-direkt:wmts",
+      "links": [
+        {
+          "href": "collections/ch.blw.gewaesseranschlusskarte-direkt/items/ch.blw.gewaesseranschlusskarte-direkt:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.gewaesseranschlusskarte-direkt",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.blw.gewaesseranschlusskarte-direkt:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.gewaesseranschlusskarte-direkt"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.gewaesseranschlusskarte-direkt:wms",
+      "links": [
+        {
+          "href": "collections/ch.blw.gewaesseranschlusskarte-direkt/items/ch.blw.gewaesseranschlusskarte-direkt:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.gewaesseranschlusskarte-direkt",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.gewaesseranschlusskarte-direkt"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.gewaesseranschlusskarte-direkt:stac",
+      "links": [
+        {
+          "href": "collections/ch.blw.gewaesseranschlusskarte-direkt/items/ch.blw.gewaesseranschlusskarte-direkt:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.gewaesseranschlusskarte-direkt",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.gewaesseranschlusskarte-direkt"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

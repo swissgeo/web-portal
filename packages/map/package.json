@@ -19,25 +19,48 @@
     "scripts": {
         "build": "vite build",
         "build-watch": "vite build --watch",
-        "build-watch-dev": "vite build --watch --mode development"
+        "build-watch-dev": "vite build --watch --mode development",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
     },
     "dependencies": {
-        "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/coordinates": "catalog:",
+        "@swissgeo/layers": "workspace:*",
+        "@swissgeo/log": "catalog:",
+        "@swissgeo/numbers": "catalog:",
+        "@swissgeo/shared": "workspace:*",
+        "@swissgeo/skeleton": "workspace:*",
+        "@turf/turf": "catalog:",
+        "@types/mapbox-gl": "catalog:",
+        "geojson": "catalog:",
+        "lodash-es": "catalog:",
         "ol": "catalog:",
-        "pinia": "catalog:",
-        "typescript": "catalog:",
-        "unplugin-auto-import": "catalog:",
-        "unplugin-dts": "catalog:",
-        "unplugin-vue-components": "catalog:",
-        "vite": "catalog:",
-        "vite-tsconfig-paths": "catalog:"
+        "ol-mapbox-style": "catalog:",
+        "proj4": "catalog:",
+        "reproject": "catalog:"
     },
     "devDependencies": {
         "@dxup/unimport": "catalog:",
-        "@vitejs/plugin-vue": "catalog:"
+        "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/config-eslint": "catalog:",
+        "@swissgeo/config-typescript": "catalog:",
+        "@types/geojson": "catalog:",
+        "@types/lodash-es": "catalog:",
+        "@types/openlayers": "catalog:",
+        "@vitejs/plugin-vue": "catalog:",
+        "eslint": "catalog:",
+        "typescript": "catalog:",
+        "unplugin-auto-import": "catalog:",
+        "unplugin-dts": "catalog:",
+        "vite": "catalog:",
+        "vite-tsconfig-paths": "catalog:"
     },
     "peerDependencies": {
-        "vue": "catalog:"
+        "@vueuse/core": "catalog:",
+        "vue": "catalog:",
+        "vue-i18n": "catalog:"
     },
     "packageManager": "pnpm@10.14.0"
 }

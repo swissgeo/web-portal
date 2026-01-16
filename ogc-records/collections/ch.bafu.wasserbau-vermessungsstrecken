@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.wasserbau-vermessungsstrecken:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.wasserbau-vermessungsstrecken/items/ch.bafu.wasserbau-vermessungsstrecken:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.wasserbau-vermessungsstrecken",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.wasserbau-vermessungsstrecken"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.wasserbau-vermessungsstrecken:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.wasserbau-vermessungsstrecken/items/ch.bafu.wasserbau-vermessungsstrecken:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.wasserbau-vermessungsstrecken",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.wasserbau-vermessungsstrecken"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.wasserbau-vermessungsstrecken:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.wasserbau-vermessungsstrecken/items/ch.bafu.wasserbau-vermessungsstrecken:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.wasserbau-vermessungsstrecken",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.wasserbau-vermessungsstrecken"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

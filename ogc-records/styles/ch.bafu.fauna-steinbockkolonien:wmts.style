@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.fauna-steinbockkolonien:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.fauna-steinbockkolonien",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

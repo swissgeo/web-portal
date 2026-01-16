@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.neophyten-brasilianisches_tausendblatt:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.neophyten-brasilianisches_tausendblatt",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

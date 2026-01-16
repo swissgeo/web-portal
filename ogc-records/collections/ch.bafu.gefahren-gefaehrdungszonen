@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.gefahren-gefaehrdungszonen:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.gefahren-gefaehrdungszonen/items/ch.bafu.gefahren-gefaehrdungszonen:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.gefahren-gefaehrdungszonen",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.gefahren-gefaehrdungszonen:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.gefahren-gefaehrdungszonen"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.gefahren-gefaehrdungszonen:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.gefahren-gefaehrdungszonen/items/ch.bafu.gefahren-gefaehrdungszonen:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.gefahren-gefaehrdungszonen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.gefahren-gefaehrdungszonen"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.gefahren-gefaehrdungszonen:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.gefahren-gefaehrdungszonen/items/ch.bafu.gefahren-gefaehrdungszonen:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.gefahren-gefaehrdungszonen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.gefahren-gefaehrdungszonen"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

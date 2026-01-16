@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.amphibienwanderung-verkehrskonflikte:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.amphibienwanderung-verkehrskonflikte/items/ch.bafu.amphibienwanderung-verkehrskonflikte:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.amphibienwanderung-verkehrskonflikte",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.amphibienwanderung-verkehrskonflikte"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.amphibienwanderung-verkehrskonflikte:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.amphibienwanderung-verkehrskonflikte/items/ch.bafu.amphibienwanderung-verkehrskonflikte:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.amphibienwanderung-verkehrskonflikte",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.amphibienwanderung-verkehrskonflikte"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.amphibienwanderung-verkehrskonflikte:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.amphibienwanderung-verkehrskonflikte/items/ch.bafu.amphibienwanderung-verkehrskonflikte:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.amphibienwanderung-verkehrskonflikte",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.amphibienwanderung-verkehrskonflikte"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.wald-lufttemperatur_juli_2085_gering:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.wald-lufttemperatur_juli_2085_gering/items/ch.bafu.wald-lufttemperatur_juli_2085_gering:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.wald-lufttemperatur_juli_2085_gering",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.wald-lufttemperatur_juli_2085_gering:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.wald-lufttemperatur_juli_2085_gering"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.wald-lufttemperatur_juli_2085_gering:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.wald-lufttemperatur_juli_2085_gering/items/ch.bafu.wald-lufttemperatur_juli_2085_gering:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.wald-lufttemperatur_juli_2085_gering",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.wald-lufttemperatur_juli_2085_gering"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.wald-lufttemperatur_juli_2085_gering:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.wald-lufttemperatur_juli_2085_gering/items/ch.bafu.wald-lufttemperatur_juli_2085_gering:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.wald-lufttemperatur_juli_2085_gering",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.wald-lufttemperatur_juli_2085_gering"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

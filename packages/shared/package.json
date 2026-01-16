@@ -1,0 +1,60 @@
+{
+    "name": "@swissgeo/shared",
+    "version": "1.0.0",
+    "description": "",
+    "keywords": [],
+    "license": "ISC",
+    "author": "",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./dist/shared.js",
+            "types": "./dist/Language.d.ts",
+            "require": "./dist/index.cjs"
+        },
+        "./api": {
+            "types": "./dist/api/index.d.ts"
+        },
+        "./livingdocs": {
+            "types": "./dist/livingdocs/index.d.ts"
+        },
+        "./ogc": {
+            "types": "./dist/ogc/index.d.ts"
+        },
+        "./language": {
+            "types": "./dist/Language.d.ts"
+        }
+    },
+    "main": "./dist/index.umd.cjs",
+    "module": "./dist/index.js",
+    "scripts": {
+        "build": "vite build",
+        "build-watch": "vite build --watch",
+        "build-watch-dev": "vite build --watch --mode development",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
+    },
+    "devDependencies": {
+        "@dxup/unimport": "catalog:",
+        "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/config-eslint": "catalog:",
+        "@swissgeo/config-typescript": "catalog:",
+        "@types/mapbox-gl": "catalog:",
+        "@types/openlayers": "catalog:",
+        "@vitejs/plugin-vue": "catalog:",
+        "eslint": "catalog:",
+        "ol": "catalog:",
+        "typescript": "catalog:",
+        "unplugin-auto-import": "catalog:",
+        "unplugin-dts": "catalog:",
+        "vite": "catalog:",
+        "vite-tsconfig-paths": "catalog:"
+    },
+    "peerDependencies": {
+        "@vueuse/core": "catalog:",
+        "vue": "catalog:"
+    },
+    "packageManager": "pnpm@10.14.0"
+}

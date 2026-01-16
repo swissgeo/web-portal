@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.meteoschweiz.klimaszenarien-raumklima:wmts",
+      "links": [
+        {
+          "href": "collections/ch.meteoschweiz.klimaszenarien-raumklima/items/ch.meteoschweiz.klimaszenarien-raumklima:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.klimaszenarien-raumklima",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.meteoschweiz.klimaszenarien-raumklima"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.meteoschweiz.klimaszenarien-raumklima:wms",
+      "links": [
+        {
+          "href": "collections/ch.meteoschweiz.klimaszenarien-raumklima/items/ch.meteoschweiz.klimaszenarien-raumklima:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.klimaszenarien-raumklima",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.meteoschweiz.klimaszenarien-raumklima"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.meteoschweiz.klimaszenarien-raumklima:stac",
+      "links": [
+        {
+          "href": "collections/ch.meteoschweiz.klimaszenarien-raumklima/items/ch.meteoschweiz.klimaszenarien-raumklima:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.klimaszenarien-raumklima",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.meteoschweiz.klimaszenarien-raumklima"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

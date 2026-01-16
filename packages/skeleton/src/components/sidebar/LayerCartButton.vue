@@ -1,11 +1,19 @@
 <script setup lang="ts">
-const router = useRouter()
+// const router = useRouter();
+import SidebarButton from '@/components/sidebar/SidebarButton.vue'
+import { useUiStore, SidebarType } from '@/stores/ui'
 
-const interfaceStore = useInterfaceStore()
+const uiStore = useUiStore()
 
-const toggleSearch = () => {
-    interfaceStore.setSidebar(SidebarType.LAYER_CART)
-    router.push('/layerTree')
+const { t: $t } = useI18n()
+
+const toggle = () => {
+    if (uiStore.isSidebarOpen && uiStore.currentSidebar === SidebarType.LAYER_CART) {
+        uiStore.closeSidebar()
+    } else {
+        uiStore.setSidebar(SidebarType.LAYER_CART)
+    }
+    //   router.push("/layerTree");
 }
 </script>
 
@@ -13,11 +21,11 @@ const toggleSearch = () => {
     <div class="relative inline-block">
         <!-- :is-active="uiStore.isSearchVisible" -->
         <SidebarButton
-            :is-active="interfaceStore.currentSidebar == 'layerCart'"
+            :is-active="uiStore.currentSidebar == 'layerCart'"
             data-cy="button-search-panel"
-            :title="$t('menu.search')"
+            :title="$t('menu.layerCart')"
             icon="Map"
-            @click="toggleSearch"
+            @click="toggle"
         />
     </div>
 </template>

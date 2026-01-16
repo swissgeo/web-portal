@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bakom.versorgungsgebiet-tv:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bakom.versorgungsgebiet-tv/items/ch.bakom.versorgungsgebiet-tv:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bakom.versorgungsgebiet-tv",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bakom.versorgungsgebiet-tv:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bakom.versorgungsgebiet-tv"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bakom.versorgungsgebiet-tv:wms",
+      "links": [
+        {
+          "href": "collections/ch.bakom.versorgungsgebiet-tv/items/ch.bakom.versorgungsgebiet-tv:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bakom.versorgungsgebiet-tv",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bakom.versorgungsgebiet-tv"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bakom.versorgungsgebiet-tv:stac",
+      "links": [
+        {
+          "href": "collections/ch.bakom.versorgungsgebiet-tv/items/ch.bakom.versorgungsgebiet-tv:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bakom.versorgungsgebiet-tv",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bakom.versorgungsgebiet-tv"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

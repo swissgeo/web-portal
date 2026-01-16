@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo-karto.schneeschuhrouten:wmts",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo-karto.schneeschuhrouten/items/ch.swisstopo-karto.schneeschuhrouten:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo-karto.schneeschuhrouten",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.swisstopo-karto.schneeschuhrouten:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo-karto.schneeschuhrouten"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo-karto.schneeschuhrouten:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo-karto.schneeschuhrouten/items/ch.swisstopo-karto.schneeschuhrouten:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo-karto.schneeschuhrouten",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo-karto.schneeschuhrouten"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo-karto.schneeschuhrouten:stac",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo-karto.schneeschuhrouten/items/ch.swisstopo-karto.schneeschuhrouten:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo-karto.schneeschuhrouten",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo-karto.schneeschuhrouten"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

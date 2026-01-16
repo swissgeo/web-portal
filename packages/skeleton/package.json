@@ -15,26 +15,44 @@
             "./dist/tooltip.css"
         ]
     },
-    "main": "index.js",
+    "main": "./dist/index.umd.cjs",
+    "module": "./dist/index.js",
     "scripts": {
         "build": "vite build",
-        "build-watch": "vite build --watch"
+        "build-watch": "vite build --watch",
+        "build-watch-dev": "vite build --watch --mode development",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
     },
     "dependencies": {
-        "@microsoft/api-extractor": "catalog:",
-        "typescript": "catalog:",
-        "unplugin-auto-import": "catalog:",
-        "unplugin-dts": "catalog:",
-        "unplugin-vue-components": "catalog:",
-        "vite": "catalog:",
-        "vite-tsconfig-paths": "catalog:"
+        "@swissgeo/content": "workspace:*",
+        "@swissgeo/layers": "workspace:*",
+        "@swissgeo/shared": "workspace:*",
+        "lodash-es": "catalog:",
+        "lucide-vue-next": "catalog:",
+        "primevue": "catalog:"
     },
     "devDependencies": {
         "@dxup/unimport": "catalog:",
-        "@vitejs/plugin-vue": "catalog:"
+        "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/config-eslint": "catalog:",
+        "@swissgeo/config-typescript": "catalog:",
+        "@types/lodash-es": "catalog:",
+        "@vitejs/plugin-vue": "catalog:",
+        "eslint": "catalog:",
+        "typescript": "catalog:",
+        "unplugin-auto-import": "catalog:",
+        "unplugin-dts": "catalog:",
+        "vite": "catalog:",
+        "vite-tsconfig-paths": "catalog:"
     },
     "peerDependencies": {
-        "vue": "catalog:"
+        "@vueuse/core": "catalog:",
+        "vue": "catalog:",
+        "vue-i18n": "catalog:",
+        "vue-router": "catalog:"
     },
     "packageManager": "pnpm@10.14.0"
 }

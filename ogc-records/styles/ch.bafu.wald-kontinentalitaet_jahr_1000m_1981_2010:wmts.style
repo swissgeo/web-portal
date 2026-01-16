@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.wald-kontinentalitaet_jahr_1000m_1981_2010:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.wald-kontinentalitaet_jahr_1000m_1981_2010",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

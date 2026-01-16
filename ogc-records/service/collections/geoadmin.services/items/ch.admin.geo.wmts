@@ -1,0 +1,28 @@
+{
+  "id": "wmts.geo.admin.ch",
+  "linkTemplates": [
+    {
+      "uriTemplate": "https://wmts.geo.admin.ch/EPSG/{EPSG}/1.0.0/WMTSCapabilities.xml",
+      "type": "application/vnd.ogc.wmts_xml",
+      "variables": {
+        "EPSG": {
+          "description": "EPSG",
+          "format": "integer",
+          "type": "number",
+          "default": 2056,
+          "enum": [
+            2056,
+            21781,
+            4326
+          ]
+        }
+      },
+      "rel": "about",
+      "title": "WMTS Capabilities File"
+    }
+  ],
+  "properties": {
+    "title": "WMTS geo.admin.ch",
+    "type": "ogc:wmts"
+  }
+}

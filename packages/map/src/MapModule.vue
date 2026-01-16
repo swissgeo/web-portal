@@ -1,28 +1,35 @@
 <script lang="ts" setup>
-import type * as OGC from '~~/shared/types/ogc/records.d.ts'
+import log, { LogLevel } from '@swissgeo/log'
 
-const { layers } = defineProps<{ layers: OGC.Feature[] }>()
+import BackgroundSelector from './BackgroundSelector.vue'
+import OpenLayersMap from './openlayers/OpenLayersMap.vue'
+// import OpenLayersScale from './OpenLayersScale.vue'
 
-const layersToDisplay = computed(() => {
-    if (!layers) {
-        return []
-    }
-
-    const wmtsLayers = layers.filter((layer: OGC.Feature) => {
-        const wmts = layer.links.filter((link: OGC.Link) => link.protocol === 'OGC:WMTS')
-
-        return wmts.length > 0
-    })
-
-    return [wmtsLayers[0]]
-})
+// TODO somehow the statement in main/app.vue doesn't do it
+log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 </script>
 
 <template>
-    <div>
+    <div class=".full-screen-map">
+        <div></div>
         <!-- here's the switch between openlayers and cesium -->
-        <OpenLayersMap :layers="layersToDisplay">
+        <OpenLayersMap>
+            <!-- <OpenLayersScale /> -->
+
             <slot />
         </OpenLayersMap>
+        <BackgroundSelector />
     </div>
 </template>
+
+<style scoped>
+/* .full-screen-map {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: white url("../../assets/grid.png");
+} */
+</style>

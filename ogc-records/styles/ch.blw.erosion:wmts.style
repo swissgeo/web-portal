@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.blw.erosion:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.blw.erosion",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+    /* Example style for swissgeo WMTS layers.
+
+    This is a stub WMTS style for swissgeo datasets.
+    It is incomplete, but serves as a starting point.
+    */
+
+    "layers": [
+        {
+            "id": "ch.swisstopo.pixelkarte-farbe:wmts:style",
+            // unsure what to do with `source`, it's required...
+            // one such style per WMTS capabilities File? E.g. a `swissgeo-wmts` style
+            // that contains all swissgeo WMTS layers in the `layers` list?
+            "source": "wmts.geo.admin.ch",
+            "source-layer": "ch.swisstopo.pixelkarte-farbe",
+            "type": "raster",
+            // we could add here other stuff such as `minzoom`, `maxzoom`, etc.
+            // could be useful for aggregated layers with different zoom ranges
+            "paint": {
+                "raster-opacity": "0.75"
+            }
+        }
+    ]
+}

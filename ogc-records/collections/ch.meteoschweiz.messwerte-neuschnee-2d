@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.meteoschweiz.messwerte-neuschnee-2d:wms",
+      "links": [
+        {
+          "href": "collections/ch.meteoschweiz.messwerte-neuschnee-2d/items/ch.meteoschweiz.messwerte-neuschnee-2d:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.messwerte-neuschnee-2d",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.meteoschweiz.messwerte-neuschnee-2d"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

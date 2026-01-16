@@ -1,4 +1,14 @@
 <script setup lang="ts">
+import type { MenuMetaData } from '@swissgeo/content'
+
+import { useMenuStore } from '@swissgeo/content'
+
+import { useUiStore, SidebarType } from '@/stores/ui'
+
+import SidebarButton from './SidebarButton.vue'
+
+const { t: $t } = useI18n()
+
 const router = useRouter()
 const route = useRoute()
 
@@ -7,7 +17,7 @@ const { icon, menuMetaData } = defineProps<{
     menuMetaData: MenuMetaData
 }>()
 
-const interfaceStore = useInterfaceStore()
+const uiStore = useUiStore()
 const menuStore = useMenuStore()
 
 const isCurrentMenuActive = computed(() => menuStore.currentMenuTree?.id === menuMetaData.id)
@@ -16,26 +26,22 @@ const isActive = computed(
     () =>
         route.path.startsWith('/content') &&
         isCurrentMenuActive.value &&
-        interfaceStore.currentSidebar === SidebarType.CONTENT
+        uiStore.currentSidebar === SidebarType.CONTENT
 )
 
 const open = () => {
-    if (
-        isActive.value &&
-        interfaceStore.currentSidebar === SidebarType.CONTENT &&
-        isCurrentMenuActive
-    ) {
+    if (isActive.value && uiStore.currentSidebar === SidebarType.CONTENT && isCurrentMenuActive) {
         // closing it
-        interfaceStore.closeSidebar()
+        uiStore.closeSidebar()
     } else if (isActive.value) {
-        interfaceStore.setSidebar(SidebarType.CONTENT)
+        uiStore.setSidebar(SidebarType.CONTENT)
         menuStore.setCurrentMenuTree(menuMetaData)
     } else {
-        interfaceStore.setSidebar(SidebarType.CONTENT)
+        uiStore.setSidebar(SidebarType.CONTENT)
         menuStore.setCurrentMenuTree(menuMetaData)
 
         if (!route.path.startsWith('/content')) {
-            router.push('/content')
+            // router.push('/content')
         }
     }
 }

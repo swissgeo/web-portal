@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.nagra.aeromagnetische-karte_1100:wmts",
+      "links": [
+        {
+          "href": "collections/ch.nagra.aeromagnetische-karte_1100/items/ch.nagra.aeromagnetische-karte_1100:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.nagra.aeromagnetische-karte_1100",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.nagra.aeromagnetische-karte_1100"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.nagra.aeromagnetische-karte_1100:wms",
+      "links": [
+        {
+          "href": "collections/ch.nagra.aeromagnetische-karte_1100/items/ch.nagra.aeromagnetische-karte_1100:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.nagra.aeromagnetische-karte_1100",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.nagra.aeromagnetische-karte_1100"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

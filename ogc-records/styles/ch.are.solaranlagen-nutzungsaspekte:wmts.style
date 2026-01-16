@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.are.solaranlagen-nutzungsaspekte:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.are.solaranlagen-nutzungsaspekte",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

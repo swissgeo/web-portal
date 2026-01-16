@@ -1,0 +1,63 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.strukturguete-hochrhein_rechtesumfeld:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.strukturguete-hochrhein_rechtesumfeld/items/ch.bafu.strukturguete-hochrhein_rechtesumfeld:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.strukturguete-hochrhein_rechtesumfeld",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.strukturguete-hochrhein_rechtesumfeld:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.strukturguete-hochrhein_rechtesumfeld"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.strukturguete-hochrhein_rechtesumfeld:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.strukturguete-hochrhein_rechtesumfeld/items/ch.bafu.strukturguete-hochrhein_rechtesumfeld:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.strukturguete-hochrhein_rechtesumfeld",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.strukturguete-hochrhein_rechtesumfeld"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.blw.steil_terrassenlagen_rebbau:wmts",
+      "links": [
+        {
+          "href": "collections/ch.blw.steil_terrassenlagen_rebbau/items/ch.blw.steil_terrassenlagen_rebbau:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.steil_terrassenlagen_rebbau",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.blw.steil_terrassenlagen_rebbau:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.steil_terrassenlagen_rebbau"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.steil_terrassenlagen_rebbau:wms",
+      "links": [
+        {
+          "href": "collections/ch.blw.steil_terrassenlagen_rebbau/items/ch.blw.steil_terrassenlagen_rebbau:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.steil_terrassenlagen_rebbau",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.steil_terrassenlagen_rebbau"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.steil_terrassenlagen_rebbau:stac",
+      "links": [
+        {
+          "href": "collections/ch.blw.steil_terrassenlagen_rebbau/items/ch.blw.steil_terrassenlagen_rebbau:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.steil_terrassenlagen_rebbau",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.steil_terrassenlagen_rebbau"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

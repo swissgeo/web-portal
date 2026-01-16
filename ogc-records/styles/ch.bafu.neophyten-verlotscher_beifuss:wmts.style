@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.neophyten-verlotscher_beifuss:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.neophyten-verlotscher_beifuss",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

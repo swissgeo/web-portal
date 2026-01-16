@@ -1,0 +1,49 @@
+{
+    "name": "@swissgeo/content",
+    "version": "1.0.0",
+    "description": "",
+    "keywords": [],
+    "license": "ISC",
+    "author": "",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/content.js",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "main": "./dist/index.umd.cjs",
+    "module": "./dist/index.js",
+    "scripts": {
+        "build": "vite build",
+        "build-watch": "vite build --watch",
+        "build-watch-dev": "vite build --watch --mode development",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
+    },
+    "dependencies": {
+        "@swissgeo/shared": "workspace:*"
+    },
+    "devDependencies": {
+        "@dxup/unimport": "catalog:",
+        "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/config-eslint": "catalog:",
+        "@swissgeo/config-typescript": "catalog:",
+        "@vitejs/plugin-vue": "catalog:",
+        "eslint": "catalog:",
+        "typescript": "catalog:",
+        "unplugin-auto-import": "catalog:",
+        "unplugin-dts": "catalog:",
+        "vite": "catalog:",
+        "vite-tsconfig-paths": "catalog:"
+    },
+    "peerDependencies": {
+        "nuxt": "catalog:",
+        "pinia": "catalog:",
+        "vue": "catalog:"
+    },
+    "packageManager": "pnpm@10.14.0"
+}

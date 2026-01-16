@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.swisstopo.geologie-geocover:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.swisstopo.geologie-geocover",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

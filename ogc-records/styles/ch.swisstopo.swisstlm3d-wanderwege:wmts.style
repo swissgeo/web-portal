@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.swisstopo.swisstlm3d-wanderwege:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.swisstopo.swisstlm3d-wanderwege",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.neophyten-kanadische_wasserpest:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-kanadische_wasserpest/items/ch.bafu.neophyten-kanadische_wasserpest:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-kanadische_wasserpest",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.neophyten-kanadische_wasserpest:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-kanadische_wasserpest"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.neophyten-kanadische_wasserpest:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-kanadische_wasserpest/items/ch.bafu.neophyten-kanadische_wasserpest:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-kanadische_wasserpest",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-kanadische_wasserpest"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.neophyten-kanadische_wasserpest:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.neophyten-kanadische_wasserpest/items/ch.bafu.neophyten-kanadische_wasserpest:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.neophyten-kanadische_wasserpest",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.neophyten-kanadische_wasserpest"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

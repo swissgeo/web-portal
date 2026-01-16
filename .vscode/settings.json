@@ -1,0 +1,6 @@
+{
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "eslint.workingDirectories": [{ "pattern": "./packages/*/" }],
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

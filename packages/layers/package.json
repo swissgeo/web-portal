@@ -1,0 +1,54 @@
+{
+    "name": "@swissgeo/layers",
+    "version": "1.0.0",
+    "description": "",
+    "keywords": [],
+    "license": "ISC",
+    "author": "",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.es.js"
+        }
+    },
+    "scripts": {
+        "build": "vite build",
+        "build-watch": "vite build --watch",
+        "build-watch-dev": "vite build --watch --mode development",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
+    },
+    "dependencies": {
+        "@swissgeo/coordinates": "catalog:",
+        "@swissgeo/log": "catalog:",
+        "@swissgeo/numbers": "catalog:",
+        "@swissgeo/shared": "workspace:*",
+        "lodash-es": "catalog:",
+        "uuid": "^13.0.0"
+    },
+    "devDependencies": {
+        "@dxup/unimport": "catalog:",
+        "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/config-eslint": "catalog:",
+        "@swissgeo/config-typescript": "catalog:",
+        "@types/lodash-es": "catalog:",
+        "@types/openlayers": "catalog:",
+        "@vitejs/plugin-vue": "catalog:",
+        "eslint": "catalog:",
+        "pinia": "catalog:",
+        "typescript": "catalog:",
+        "unplugin-auto-import": "catalog:",
+        "unplugin-dts": "catalog:",
+        "vite": "catalog:",
+        "vite-tsconfig-paths": "catalog:"
+    },
+    "peerDependencies": {
+        "@vueuse/core": "catalog:",
+        "pinia": "catalog:",
+        "vue": "catalog:"
+    },
+    "packageManager": "pnpm@10.14.0"
+}

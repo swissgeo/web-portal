@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bav.laermbelastung-eisenbahn_laermschutzwaende:wms",
+      "links": [
+        {
+          "href": "collections/ch.bav.laermbelastung-eisenbahn_laermschutzwaende/items/ch.bav.laermbelastung-eisenbahn_laermschutzwaende:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bav.laermbelastung-eisenbahn_laermschutzwaende",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bav.laermbelastung-eisenbahn_laermschutzwaende"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bav.laermbelastung-eisenbahn_laermschutzwaende:stac",
+      "links": [
+        {
+          "href": "collections/ch.bav.laermbelastung-eisenbahn_laermschutzwaende/items/ch.bav.laermbelastung-eisenbahn_laermschutzwaende:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bav.laermbelastung-eisenbahn_laermschutzwaende",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bav.laermbelastung-eisenbahn_laermschutzwaende"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

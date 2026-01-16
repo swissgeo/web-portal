@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.baspo.nationales-sportanlagenkonzept:wmts",
+      "links": [
+        {
+          "href": "collections/ch.baspo.nationales-sportanlagenkonzept/items/ch.baspo.nationales-sportanlagenkonzept:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.baspo.nationales-sportanlagenkonzept",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.baspo.nationales-sportanlagenkonzept"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.baspo.nationales-sportanlagenkonzept:wms",
+      "links": [
+        {
+          "href": "collections/ch.baspo.nationales-sportanlagenkonzept/items/ch.baspo.nationales-sportanlagenkonzept:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.baspo.nationales-sportanlagenkonzept",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.baspo.nationales-sportanlagenkonzept"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.baspo.nationales-sportanlagenkonzept:stac",
+      "links": [
+        {
+          "href": "collections/ch.baspo.nationales-sportanlagenkonzept/items/ch.baspo.nationales-sportanlagenkonzept:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.baspo.nationales-sportanlagenkonzept",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.baspo.nationales-sportanlagenkonzept"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

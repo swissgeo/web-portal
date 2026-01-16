@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.are.reisezeit-agglomerationen-miv:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.are.reisezeit-agglomerationen-miv",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

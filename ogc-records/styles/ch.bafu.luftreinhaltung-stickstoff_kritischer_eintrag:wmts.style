@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.luftreinhaltung-stickstoff_kritischer_eintrag:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.luftreinhaltung-stickstoff_kritischer_eintrag",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

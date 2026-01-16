@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bakom.versorgungsgebiet-ukw:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bakom.versorgungsgebiet-ukw/items/ch.bakom.versorgungsgebiet-ukw:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bakom.versorgungsgebiet-ukw",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bakom.versorgungsgebiet-ukw:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bakom.versorgungsgebiet-ukw"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bakom.versorgungsgebiet-ukw:wms",
+      "links": [
+        {
+          "href": "collections/ch.bakom.versorgungsgebiet-ukw/items/ch.bakom.versorgungsgebiet-ukw:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bakom.versorgungsgebiet-ukw",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bakom.versorgungsgebiet-ukw"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bakom.versorgungsgebiet-ukw:stac",
+      "links": [
+        {
+          "href": "collections/ch.bakom.versorgungsgebiet-ukw/items/ch.bakom.versorgungsgebiet-ukw:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bakom.versorgungsgebiet-ukw",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bakom.versorgungsgebiet-ukw"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

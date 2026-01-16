@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.swissaltiregio-reliefschattierung_monodirektional:wmts",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.swissaltiregio-reliefschattierung_monodirektional/items/ch.swisstopo.swissaltiregio-reliefschattierung_monodirektional:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.swissaltiregio-reliefschattierung_monodirektional",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.swissaltiregio-reliefschattierung_monodirektional"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.swissaltiregio-reliefschattierung_monodirektional:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.swissaltiregio-reliefschattierung_monodirektional/items/ch.swisstopo.swissaltiregio-reliefschattierung_monodirektional:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.swissaltiregio-reliefschattierung_monodirektional",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.swissaltiregio-reliefschattierung_monodirektional"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

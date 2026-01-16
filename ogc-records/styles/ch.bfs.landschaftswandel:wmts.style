@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bfs.landschaftswandel:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bfs.landschaftswandel",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

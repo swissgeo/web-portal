@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen:wmts",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen/items/ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen/items/ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen:stac",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen/items/ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

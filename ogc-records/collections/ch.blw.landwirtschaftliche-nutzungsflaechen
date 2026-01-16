@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.blw.landwirtschaftliche-nutzungsflaechen:wmts",
+      "links": [
+        {
+          "href": "collections/ch.blw.landwirtschaftliche-nutzungsflaechen/items/ch.blw.landwirtschaftliche-nutzungsflaechen:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.landwirtschaftliche-nutzungsflaechen",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.blw.landwirtschaftliche-nutzungsflaechen:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.landwirtschaftliche-nutzungsflaechen"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.landwirtschaftliche-nutzungsflaechen:wms",
+      "links": [
+        {
+          "href": "collections/ch.blw.landwirtschaftliche-nutzungsflaechen/items/ch.blw.landwirtschaftliche-nutzungsflaechen:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.landwirtschaftliche-nutzungsflaechen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.landwirtschaftliche-nutzungsflaechen"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.blw.landwirtschaftliche-nutzungsflaechen:stac",
+      "links": [
+        {
+          "href": "collections/ch.blw.landwirtschaftliche-nutzungsflaechen/items/ch.blw.landwirtschaftliche-nutzungsflaechen:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.blw.landwirtschaftliche-nutzungsflaechen",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.blw.landwirtschaftliche-nutzungsflaechen"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

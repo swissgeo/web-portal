@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bazl.bebaute-gebiete_luftfahrtrecht:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bazl.bebaute-gebiete_luftfahrtrecht",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

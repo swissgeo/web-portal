@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung_perimeter:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung_perimeter",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze:wms",
+      "links": [
+        {
+          "href": "collections/ch.bazl.kataster-belasteter-standorte-zivilflugplaetze/items/ch.bazl.kataster-belasteter-standorte-zivilflugplaetze:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.kataster-belasteter-standorte-zivilflugplaetze",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze:stac",
+      "links": [
+        {
+          "href": "collections/ch.bazl.kataster-belasteter-standorte-zivilflugplaetze/items/ch.bazl.kataster-belasteter-standorte-zivilflugplaetze:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.kataster-belasteter-standorte-zivilflugplaetze",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

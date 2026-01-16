@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bfe.ladebedarfswelt-ladepunkte_flexibel:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bfe.ladebedarfswelt-ladepunkte_flexibel",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

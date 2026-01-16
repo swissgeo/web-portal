@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.geochemischer-bodenatlas_schweiz_mangan:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.geochemischer-bodenatlas_schweiz_mangan/items/ch.bafu.geochemischer-bodenatlas_schweiz_mangan:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.geochemischer-bodenatlas_schweiz_mangan",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.geochemischer-bodenatlas_schweiz_mangan"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.geochemischer-bodenatlas_schweiz_mangan:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.geochemischer-bodenatlas_schweiz_mangan/items/ch.bafu.geochemischer-bodenatlas_schweiz_mangan:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.geochemischer-bodenatlas_schweiz_mangan",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.geochemischer-bodenatlas_schweiz_mangan"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.geochemischer-bodenatlas_schweiz_mangan:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.geochemischer-bodenatlas_schweiz_mangan/items/ch.bafu.geochemischer-bodenatlas_schweiz_mangan:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.geochemischer-bodenatlas_schweiz_mangan",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.geochemischer-bodenatlas_schweiz_mangan"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

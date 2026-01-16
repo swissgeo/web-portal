@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.geologie-geomol-temperatur_top_omm:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.geologie-geomol-temperatur_top_omm/items/ch.swisstopo.geologie-geomol-temperatur_top_omm:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.geologie-geomol-temperatur_top_omm",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.geologie-geomol-temperatur_top_omm"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

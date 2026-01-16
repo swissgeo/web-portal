@@ -1,0 +1,63 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bazl.schutzgebiete-aulav_liechtenstein:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bazl.schutzgebiete-aulav_liechtenstein/items/ch.bazl.schutzgebiete-aulav_liechtenstein:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.schutzgebiete-aulav_liechtenstein",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bazl.schutzgebiete-aulav_liechtenstein:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.schutzgebiete-aulav_liechtenstein"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bazl.schutzgebiete-aulav_liechtenstein:wms",
+      "links": [
+        {
+          "href": "collections/ch.bazl.schutzgebiete-aulav_liechtenstein/items/ch.bazl.schutzgebiete-aulav_liechtenstein:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.schutzgebiete-aulav_liechtenstein",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.schutzgebiete-aulav_liechtenstein"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

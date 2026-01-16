@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft:wms",
+      "links": [
+        {
+          "href": "collections/ch.bazl.sachplan-infrastruktur-luftfahrt_kraft/items/ch.bazl.sachplan-infrastruktur-luftfahrt_kraft:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.sachplan-infrastruktur-luftfahrt_kraft",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft:stac",
+      "links": [
+        {
+          "href": "collections/ch.bazl.sachplan-infrastruktur-luftfahrt_kraft/items/ch.bazl.sachplan-infrastruktur-luftfahrt_kraft:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.sachplan-infrastruktur-luftfahrt_kraft",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

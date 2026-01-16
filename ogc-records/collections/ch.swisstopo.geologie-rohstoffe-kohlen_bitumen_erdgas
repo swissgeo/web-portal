@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas/items/ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas:stac",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas/items/ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

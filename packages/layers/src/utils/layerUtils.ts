@@ -1,0 +1,62 @@
+import type { Dataset } from '@swissgeo/shared/ogc'
+
+import log, { LogLevel } from '@swissgeo/log'
+import { v4 as uuidv4 } from 'uuid'
+
+import { useLayerStore } from '@/stores/layer'
+
+// can't be inherited from the main package apparently
+log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
+
+const getInfoFromDataset = (dataset: Dataset): LayerInfo => {
+    const properties = dataset.properties
+    const displayName = properties?.title
+
+    if (!properties || !displayName) {
+        return {
+            displayName: dataset.id,
+        }
+    }
+
+    const attributionName = properties.attribution
+
+    let attribution
+    if (attributionName) {
+        attribution = {
+            title: attributionName,
+        }
+    }
+
+    const abstract = properties.description
+
+    return {
+        // only add those if they're not undefined
+        ...{ displayName },
+        ...{ attribution },
+        abstract,
+        // TODO also do contacts
+    }
+}
+
+// Server layer fills properties like the Dataset
+export const makeServerLayer = (
+    type: LayerType,
+    dataset: Dataset,
+    options?: Partial<Layer>
+): Layer => {
+    const layerStore = useLayerStore()
+    log.debug(`Creating store layer from ${JSON.stringify(dataset)}`)
+
+    return {
+        uuid: uuidv4(),
+        humanId: dataset.id,
+        opacity: 1,
+        dataset,
+        isVisible: true,
+        type,
+        isLoading: false,
+        zIndex: layerStore.greatestZIndex + 1,
+        info: getInfoFromDataset(dataset),
+        ...options,
+    }
+}

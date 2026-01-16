@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.gefaehrdungskarte-oberflaechenabfluss:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.gefaehrdungskarte-oberflaechenabfluss/items/ch.bafu.gefaehrdungskarte-oberflaechenabfluss:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.gefaehrdungskarte-oberflaechenabfluss",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.gefaehrdungskarte-oberflaechenabfluss"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.gefaehrdungskarte-oberflaechenabfluss:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.gefaehrdungskarte-oberflaechenabfluss/items/ch.bafu.gefaehrdungskarte-oberflaechenabfluss:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.gefaehrdungskarte-oberflaechenabfluss",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.gefaehrdungskarte-oberflaechenabfluss"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.gefaehrdungskarte-oberflaechenabfluss:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.gefaehrdungskarte-oberflaechenabfluss/items/ch.bafu.gefaehrdungskarte-oberflaechenabfluss:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.gefaehrdungskarte-oberflaechenabfluss",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.gefaehrdungskarte-oberflaechenabfluss"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

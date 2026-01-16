@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bav.kataster-belasteter-standorte-oev:wms",
+      "links": [
+        {
+          "href": "collections/ch.bav.kataster-belasteter-standorte-oev/items/ch.bav.kataster-belasteter-standorte-oev:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bav.kataster-belasteter-standorte-oev",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bav.kataster-belasteter-standorte-oev"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bav.kataster-belasteter-standorte-oev:stac",
+      "links": [
+        {
+          "href": "collections/ch.bav.kataster-belasteter-standorte-oev/items/ch.bav.kataster-belasteter-standorte-oev:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bav.kataster-belasteter-standorte-oev",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bav.kataster-belasteter-standorte-oev"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

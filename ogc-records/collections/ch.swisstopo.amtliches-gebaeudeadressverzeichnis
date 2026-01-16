@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.swisstopo.amtliches-gebaeudeadressverzeichnis:wms",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.amtliches-gebaeudeadressverzeichnis/items/ch.swisstopo.amtliches-gebaeudeadressverzeichnis:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.amtliches-gebaeudeadressverzeichnis",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.amtliches-gebaeudeadressverzeichnis"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.swisstopo.amtliches-gebaeudeadressverzeichnis:stac",
+      "links": [
+        {
+          "href": "collections/ch.swisstopo.amtliches-gebaeudeadressverzeichnis/items/ch.swisstopo.amtliches-gebaeudeadressverzeichnis:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.swisstopo.amtliches-gebaeudeadressverzeichnis",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.swisstopo.amtliches-gebaeudeadressverzeichnis"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

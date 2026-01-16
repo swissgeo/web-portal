@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bazl.intrinsisches-bodenrisiko_sora_200:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bazl.intrinsisches-bodenrisiko_sora_200",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.wald-niederschlag_april_august_2085_stark:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.wald-niederschlag_april_august_2085_stark",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

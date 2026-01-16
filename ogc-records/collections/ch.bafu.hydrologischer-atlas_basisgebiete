@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.hydrologischer-atlas_basisgebiete:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.hydrologischer-atlas_basisgebiete/items/ch.bafu.hydrologischer-atlas_basisgebiete:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.hydrologischer-atlas_basisgebiete",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.hydrologischer-atlas_basisgebiete:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.hydrologischer-atlas_basisgebiete"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.hydrologischer-atlas_basisgebiete:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.hydrologischer-atlas_basisgebiete/items/ch.bafu.hydrologischer-atlas_basisgebiete:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.hydrologischer-atlas_basisgebiete",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.hydrologischer-atlas_basisgebiete"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.hydrologischer-atlas_basisgebiete:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.hydrologischer-atlas_basisgebiete/items/ch.bafu.hydrologischer-atlas_basisgebiete:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.hydrologischer-atlas_basisgebiete",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.hydrologischer-atlas_basisgebiete"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

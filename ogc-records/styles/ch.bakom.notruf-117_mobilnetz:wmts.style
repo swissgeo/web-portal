@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bakom.notruf-117_mobilnetz:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bakom.notruf-117_mobilnetz",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

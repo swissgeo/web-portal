@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.meteoschweiz.hagelgefaehrdung-korngroesse_50_jahre:wms",
+      "links": [
+        {
+          "href": "collections/ch.meteoschweiz.hagelgefaehrdung-korngroesse_50_jahre/items/ch.meteoschweiz.hagelgefaehrdung-korngroesse_50_jahre:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.hagelgefaehrdung-korngroesse_50_jahre",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.meteoschweiz.hagelgefaehrdung-korngroesse_50_jahre"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.meteoschweiz.hagelgefaehrdung-korngroesse_50_jahre:stac",
+      "links": [
+        {
+          "href": "collections/ch.meteoschweiz.hagelgefaehrdung-korngroesse_50_jahre/items/ch.meteoschweiz.hagelgefaehrdung-korngroesse_50_jahre:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.hagelgefaehrdung-korngroesse_50_jahre",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.meteoschweiz.hagelgefaehrdung-korngroesse_50_jahre"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.wald-wasserverfuegbarkeit_pflanzen:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.wald-wasserverfuegbarkeit_pflanzen",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

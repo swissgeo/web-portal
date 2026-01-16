@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.bafu.wald-lufttemperatur_juli_2085_gering:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.bafu.wald-lufttemperatur_juli_2085_gering",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

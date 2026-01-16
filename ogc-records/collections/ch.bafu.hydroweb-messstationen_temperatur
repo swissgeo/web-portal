@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.hydroweb-messstationen_temperatur:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.hydroweb-messstationen_temperatur/items/ch.bafu.hydroweb-messstationen_temperatur:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.hydroweb-messstationen_temperatur",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.hydroweb-messstationen_temperatur"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.hydroweb-messstationen_temperatur:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.hydroweb-messstationen_temperatur/items/ch.bafu.hydroweb-messstationen_temperatur:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.hydroweb-messstationen_temperatur",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.hydroweb-messstationen_temperatur"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

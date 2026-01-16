@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.astra.ivs-gelaendekarte:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.astra.ivs-gelaendekarte",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

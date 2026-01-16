@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.astra.unfaelle-personenschaeden_getoetete:wmts",
+      "links": [
+        {
+          "href": "collections/ch.astra.unfaelle-personenschaeden_getoetete/items/ch.astra.unfaelle-personenschaeden_getoetete:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.astra.unfaelle-personenschaeden_getoetete",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.astra.unfaelle-personenschaeden_getoetete"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.astra.unfaelle-personenschaeden_getoetete:wms",
+      "links": [
+        {
+          "href": "collections/ch.astra.unfaelle-personenschaeden_getoetete/items/ch.astra.unfaelle-personenschaeden_getoetete:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.astra.unfaelle-personenschaeden_getoetete",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.astra.unfaelle-personenschaeden_getoetete"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.astra.unfaelle-personenschaeden_getoetete:stac",
+      "links": [
+        {
+          "href": "collections/ch.astra.unfaelle-personenschaeden_getoetete/items/ch.astra.unfaelle-personenschaeden_getoetete:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.astra.unfaelle-personenschaeden_getoetete",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.astra.unfaelle-personenschaeden_getoetete"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

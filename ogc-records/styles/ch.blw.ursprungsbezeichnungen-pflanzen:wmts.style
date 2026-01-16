@@ -1,0 +1,13 @@
+{
+  "layers": [
+    {
+      "id": "ch.blw.ursprungsbezeichnungen-pflanzen:wmts.style",
+      "source": "wmts.geo.admin.ch",
+      "source-layer": "ch.blw.ursprungsbezeichnungen-pflanzen",
+      "type": "raster",
+      "paint": {
+        "raster-opacity": "0.75"
+      }
+    }
+  ]
+}

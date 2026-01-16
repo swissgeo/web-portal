@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.luftreinhaltung-ammoniakkonzentration:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bafu.luftreinhaltung-ammoniakkonzentration/items/ch.bafu.luftreinhaltung-ammoniakkonzentration:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.luftreinhaltung-ammoniakkonzentration",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bafu.luftreinhaltung-ammoniakkonzentration:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.luftreinhaltung-ammoniakkonzentration"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.luftreinhaltung-ammoniakkonzentration:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.luftreinhaltung-ammoniakkonzentration/items/ch.bafu.luftreinhaltung-ammoniakkonzentration:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.luftreinhaltung-ammoniakkonzentration",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.luftreinhaltung-ammoniakkonzentration"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.luftreinhaltung-ammoniakkonzentration:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.luftreinhaltung-ammoniakkonzentration/items/ch.bafu.luftreinhaltung-ammoniakkonzentration:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.luftreinhaltung-ammoniakkonzentration",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.luftreinhaltung-ammoniakkonzentration"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bafu.gewaesserschutz-biologischer_zustand_fische:wms",
+      "links": [
+        {
+          "href": "collections/ch.bafu.gewaesserschutz-biologischer_zustand_fische/items/ch.bafu.gewaesserschutz-biologischer_zustand_fische:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.gewaesserschutz-biologischer_zustand_fische",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.gewaesserschutz-biologischer_zustand_fische"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bafu.gewaesserschutz-biologischer_zustand_fische:stac",
+      "links": [
+        {
+          "href": "collections/ch.bafu.gewaesserschutz-biologischer_zustand_fische/items/ch.bafu.gewaesserschutz-biologischer_zustand_fische:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bafu.gewaesserschutz-biologischer_zustand_fische",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bafu.gewaesserschutz-biologischer_zustand_fische"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}

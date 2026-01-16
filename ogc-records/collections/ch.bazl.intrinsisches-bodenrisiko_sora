@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.bazl.intrinsisches-bodenrisiko_sora:wmts",
+      "links": [
+        {
+          "href": "collections/ch.bazl.intrinsisches-bodenrisiko_sora/items/ch.bazl.intrinsisches-bodenrisiko_sora:wmts",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.intrinsisches-bodenrisiko_sora",
+          "rel": "dataset"
+        },
+        {
+          "href": "styles/ch.bazl.intrinsisches-bodenrisiko_sora:wmts.style",
+          "rel": "styledby",
+          "title": "Style Hints for Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.intrinsisches-bodenrisiko_sora"
+        ],
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bazl.intrinsisches-bodenrisiko_sora:wms",
+      "links": [
+        {
+          "href": "collections/ch.bazl.intrinsisches-bodenrisiko_sora/items/ch.bazl.intrinsisches-bodenrisiko_sora:wms",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.intrinsisches-bodenrisiko_sora",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.intrinsisches-bodenrisiko_sora"
+        ],
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      }
+    },
+    {
+      "id": "ch.bazl.intrinsisches-bodenrisiko_sora:stac",
+      "links": [
+        {
+          "href": "collections/ch.bazl.intrinsisches-bodenrisiko_sora/items/ch.bazl.intrinsisches-bodenrisiko_sora:stac",
+          "rel": "self",
+          "type": "application/json"
+        },
+        {
+          "href": "collections/geoadmin.services/items/ch.admin.geo.data",
+          "rel": "dataservice"
+        },
+        {
+          "href": "collections/swissgeo.catalog/items/ch.bazl.intrinsisches-bodenrisiko_sora",
+          "rel": "dataset"
+        }
+      ],
+      "properties": {
+        "externalIds": [
+          "ch.bazl.intrinsisches-bodenrisiko_sora"
+        ],
+        "protocol": "OGC:STAC",
+        "title": "STAC Download Service",
+        "type": "Distribution"
+      }
+    }
+  ]
+}
