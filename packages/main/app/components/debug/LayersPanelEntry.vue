@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
+import type { Distribution, OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
 
 import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
 import { useStorage } from '@vueuse/core'
@@ -54,19 +54,21 @@ const layerBg = computed(() => {
  * @param layer
  */
 const type = computed((): LayerType | 'UNKNOWN' => {
-    if (!state.value?.collectionData?.records) {
+    if (!state.value.collectionData?.portal?.preferredDistributionId) {
         return 'UNKNOWN'
     }
 
-    for (const feature of state.value.collectionData.records) {
-        const protocol = feature.properties?.protocol
-        // loop through records and the first element found that
-        // maches either protocol will determine the layer type
+    const preferredDistributionId = state.value.collectionData.portal.preferredDistributionId
 
-        if (protocol === 'OGC:WMTS') {
-            return LayerType.WMTS
-        } else if (protocol === 'OGC:WMS') {
-            return LayerType.WMS
+    for (const record of state.value.collectionData.records) {
+        if (record.id === preferredDistributionId) {
+            const protocol = record.properties?.protocol
+
+            if (protocol === 'OGC:WMTS') {
+                return LayerType.WMTS
+            } else if (protocol === 'OGC:WMS') {
+                return LayerType.WMS
+            }
         }
     }
 
@@ -99,10 +101,7 @@ function addLayerToMap(layer: OGCRecord) {
 </script>
 
 <template>
-    <tr
-        class="hover:bg-cyan-300"
-        @mouseover="updateCollectionData"
-    >
+    <tr class="hover:bg-cyan-300">
         <td class="border-b pb-2">
             <button
                 class="cursor-pointer"

@@ -1,6 +1,12 @@
-export interface OGCRecords {
+export interface OGCRecords<T extends OGCRecord = OGCRecord> {
+    id: string
     type: string
-    records: OGCRecord[]
+    records: T[]
+    itemType: string
+    title: string
+    portal?: {
+        preferredDistributionId: string
+    }
 }
 
 export interface OGCRecord {
