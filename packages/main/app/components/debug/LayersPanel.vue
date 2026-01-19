@@ -4,9 +4,6 @@ import type { Feature as OGCFeature, OGCRecords } from '@swissgeo/shared/ogc'
 import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
-import LayersPanelEntry from './LayersPanelEntry.vue'
-
-const isLayersPanelOpen = ref(false)
 const filterTerm = ref<string>('')
 
 const { data: recordLayers } = await useFetch<OGCRecords>('/api/v1/layers/swissgeo/catalog')
@@ -33,10 +30,6 @@ const filteredAvailableLayers = computed((): OGCFeature[] => {
     return availableLayers.value.features.filter((layer) => layer.id.includes(filterTerm.value))
 })
 
-function toggleLayersPanel() {
-    isLayersPanelOpen.value = !isLayersPanelOpen.value
-}
-
 function toggleVectorLayer() {
     layerStore.addLayer(
         makeServerLayer(LayerType.VECTOR, {
@@ -49,49 +42,33 @@ function toggleVectorLayer() {
 
 <template>
     <div>
-        <div
-            class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
-            v-if="isLayersPanelOpen"
-        >
-            <div class="absolute flex items-center gap-4">
-                <input
-                    v-model="filterTerm"
-                    class="w-full border border-gray-200 px-2 py-1"
-                    placeholder="Filter"
-                />
-                <IconButton
-                    @click="toggleLayersPanel"
-                    icon="X"
-                >
-                </IconButton>
-            </div>
-            <div class="mt-12 h-[300px] overflow-scroll pb-18">
-                <table class="">
-                    <tr class="border-b">
-                        <!-- we're not getting this via API yet-->
-                        <td class="pb-2">
-                            <button @click="toggleVectorLayer">VECTOR TEST</button>
-                        </td>
-                        <td class="bg-slate-200 pb-2">vector</td>
-                    </tr>
-                    <LayersPanelEntry
-                        :layer="layer"
-                        v-for="layer in filteredAvailableLayers"
-                        :key="layer.id"
-                    />
-                </table>
-            </div>
-        </div>
-        <div
-            class=""
-            v-if="!isLayersPanelOpen"
-        >
-            <Button
-                @click="toggleLayersPanel"
-                class="cursor-pointer"
+        <div class="absolute flex w-full items-center justify-between gap-4 px-2">
+            <input
+                v-model="filterTerm"
+                class="w-full border border-gray-200 px-2 py-1"
+                placeholder="Filter"
+            />
+            <IconButton
+                @click="$emit('close')"
+                icon="X"
             >
-                Open Layers Panel
-            </Button>
+            </IconButton>
+        </div>
+        <div class="mt-12 h-[300px] overflow-scroll pb-18">
+            <table class="">
+                <tr class="border-b">
+                    <!-- we're not getting this via API yet-->
+                    <td class="pb-2">
+                        <button @click="toggleVectorLayer">VECTOR TEST</button>
+                    </td>
+                    <td class="bg-slate-200 pb-2">vector</td>
+                </tr>
+                <DebugLayersPanelEntry
+                    :layer="layer"
+                    v-for="layer in filteredAvailableLayers"
+                    :key="layer.id"
+                />
+            </table>
         </div>
     </div>
 </template>

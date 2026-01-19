@@ -81,9 +81,7 @@ onMounted(() => {
 })
 
 async function updateCollectionData() {
-    const collectionDataUpdated = await $fetch<OGCRecords>(
-        `/api/v1/layers/swissgeo/${distributionLink.value.href}`
-    )
+    const collectionDataUpdated = await $fetch<OGCRecords>(distributionLink.value.href)
 
     if (collectionDataUpdated) {
         state.value.collectionData = collectionDataUpdated
