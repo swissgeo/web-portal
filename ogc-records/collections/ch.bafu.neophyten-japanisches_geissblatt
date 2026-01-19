@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-japanisches_geissblatt",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-japanisches_geissblatt:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-japanisches_geissblatt:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-japanisches_geissblatt",
+  "type": "Collection"
 }

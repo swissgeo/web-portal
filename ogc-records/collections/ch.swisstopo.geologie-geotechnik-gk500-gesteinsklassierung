@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung",
+  "type": "Collection"
 }

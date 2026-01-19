@@ -1,4 +1,5 @@
-import { Feature, Link, OGCRecords } from '@swissgeo/shared/ogc'
+import type { OGCRecords } from '@swissgeo/shared/ogc'
+
 import fs from 'node:fs/promises'
 
 import { prependLinks } from '../_utils'
@@ -9,9 +10,9 @@ export default defineEventHandler(async (event) => {
     const data = await fs.readFile(path)
     const jsonData = JSON.parse(data.toString()) as OGCRecords
 
-    const features = jsonData.features
+    const records = jsonData.records
 
-    jsonData.features = prependLinks(features)
+    jsonData.records = prependLinks(records)
 
     appendResponseHeader(event, 'Content-Type', 'application/json')
     appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)

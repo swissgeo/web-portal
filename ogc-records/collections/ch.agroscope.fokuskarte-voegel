@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.agroscope.fokuskarte-voegel",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.agroscope.fokuskarte-voegel:wmts"
+  },
+  "records": [
     {
       "id": "ch.agroscope.fokuskarte-voegel:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.agroscope.fokuskarte-voegel",
+  "type": "Collection"
 }

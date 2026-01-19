@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.nationalstrassenachsen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.nationalstrassenachsen:wms"
+  },
+  "records": [
     {
       "id": "ch.astra.nationalstrassenachsen:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.nationalstrassenachsen",
+  "type": "Collection"
 }

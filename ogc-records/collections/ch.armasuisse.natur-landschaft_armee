@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.armasuisse.natur-landschaft_armee",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.armasuisse.natur-landschaft_armee:wmts"
+  },
+  "records": [
     {
       "id": "ch.armasuisse.natur-landschaft_armee:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.armasuisse.natur-landschaft_armee",
+  "type": "Collection"
 }

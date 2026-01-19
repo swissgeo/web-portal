@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-kletternder_giftsumach",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-kletternder_giftsumach:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-kletternder_giftsumach:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-kletternder_giftsumach",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.meteoschweiz.klimanormwerte-niederschlag_1961_1990",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.meteoschweiz.klimanormwerte-niederschlag_1961_1990:wmts"
+  },
+  "records": [
     {
       "id": "ch.meteoschweiz.klimanormwerte-niederschlag_1961_1990:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.meteoschweiz.klimanormwerte-niederschlag_1961_1990",
+  "type": "Collection"
 }

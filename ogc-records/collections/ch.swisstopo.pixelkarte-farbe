@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.pixelkarte-farbe",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.pixelkarte-farbe:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.pixelkarte-farbe:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.pixelkarte-farbe",
+  "type": "Collection"
 }

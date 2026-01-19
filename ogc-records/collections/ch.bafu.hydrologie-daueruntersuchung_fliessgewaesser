@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.hydrologie-daueruntersuchung_fliessgewaesser",
+  "type": "Collection"
 }

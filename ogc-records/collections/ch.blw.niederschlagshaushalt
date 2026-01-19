@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.niederschlagshaushalt",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.niederschlagshaushalt:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.niederschlagshaushalt:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.niederschlagshaushalt",
+  "type": "Collection"
 }

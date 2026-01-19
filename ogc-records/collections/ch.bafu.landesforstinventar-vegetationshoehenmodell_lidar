@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.landesforstinventar-vegetationshoehenmodell_lidar",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.landesforstinventar-vegetationshoehenmodell_lidar:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.landesforstinventar-vegetationshoehenmodell_lidar:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.landesforstinventar-vegetationshoehenmodell_lidar",
+  "type": "Collection"
 }

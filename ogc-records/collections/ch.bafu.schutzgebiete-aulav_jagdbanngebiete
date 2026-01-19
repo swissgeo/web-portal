@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.schutzgebiete-aulav_jagdbanngebiete",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.schutzgebiete-aulav_jagdbanngebiete:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.schutzgebiete-aulav_jagdbanngebiete:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.schutzgebiete-aulav_jagdbanngebiete",
+  "type": "Collection"
 }

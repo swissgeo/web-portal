@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.aquaprotect_100",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.aquaprotect_100:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.aquaprotect_100:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.aquaprotect_100",
+  "type": "Collection"
 }

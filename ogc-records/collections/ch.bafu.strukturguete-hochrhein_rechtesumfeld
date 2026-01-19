@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.strukturguete-hochrhein_rechtesumfeld",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.strukturguete-hochrhein_rechtesumfeld:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.strukturguete-hochrhein_rechtesumfeld:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.strukturguete-hochrhein_rechtesumfeld",
+  "type": "Collection"
 }

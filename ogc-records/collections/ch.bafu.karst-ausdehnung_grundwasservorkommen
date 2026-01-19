@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.karst-ausdehnung_grundwasservorkommen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.karst-ausdehnung_grundwasservorkommen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.karst-ausdehnung_grundwasservorkommen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.karst-ausdehnung_grundwasservorkommen",
+  "type": "Collection"
 }

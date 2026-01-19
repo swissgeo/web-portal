@@ -1,6 +1,7 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.meteoschweiz.messwerte-luftdruck-differenz-3h",
+  "itemType": "record",
+  "records": [
     {
       "id": "ch.meteoschweiz.messwerte-luftdruck-differenz-3h:geojson",
       "links": [
@@ -34,5 +35,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.meteoschweiz.messwerte-luftdruck-differenz-3h",
+  "type": "Collection"
 }

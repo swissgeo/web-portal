@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-kanadische_goldrute",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-kanadische_goldrute:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-kanadische_goldrute:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-kanadische_goldrute",
+  "type": "Collection"
 }

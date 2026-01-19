@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.gefaehrdungskarte-oberflaechenabfluss",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.gefaehrdungskarte-oberflaechenabfluss:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.gefaehrdungskarte-oberflaechenabfluss:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.gefaehrdungskarte-oberflaechenabfluss",
+  "type": "Collection"
 }

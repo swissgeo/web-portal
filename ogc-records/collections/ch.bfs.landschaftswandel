@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfs.landschaftswandel",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfs.landschaftswandel:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfs.landschaftswandel:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfs.landschaftswandel",
+  "type": "Collection"
 }

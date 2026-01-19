@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.betriebe-stoerfallverordnung-zivilflugplaetze",
+  "type": "Collection"
 }

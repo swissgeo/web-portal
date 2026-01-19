@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-runzelblaettriger_schneeball",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-runzelblaettriger_schneeball:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-runzelblaettriger_schneeball:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-runzelblaettriger_schneeball",
+  "type": "Collection"
 }

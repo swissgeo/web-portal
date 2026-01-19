@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.mobilnetz-3g",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.mobilnetz-3g:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.mobilnetz-3g:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.mobilnetz-3g",
+  "type": "Collection"
 }

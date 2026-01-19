@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.wanderland",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.wanderland:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.wanderland:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.wanderland",
+  "type": "Collection"
 }

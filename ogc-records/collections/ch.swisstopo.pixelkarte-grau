@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.pixelkarte-grau",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.pixelkarte-grau:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.pixelkarte-grau:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.pixelkarte-grau",
+  "type": "Collection"
 }

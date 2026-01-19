@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.vec200-adminboundaries-protectedarea",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.vec200-adminboundaries-protectedarea:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.vec200-adminboundaries-protectedarea:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.vec200-adminboundaries-protectedarea",
+  "type": "Collection"
 }

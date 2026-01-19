@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.naqua-grundwasser_nitrat",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.naqua-grundwasser_nitrat:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.naqua-grundwasser_nitrat:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.naqua-grundwasser_nitrat",
+  "type": "Collection"
 }

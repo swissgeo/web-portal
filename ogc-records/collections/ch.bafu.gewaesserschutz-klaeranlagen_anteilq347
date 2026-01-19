@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.gewaesserschutz-klaeranlagen_anteilq347",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.gewaesserschutz-klaeranlagen_anteilq347:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.gewaesserschutz-klaeranlagen_anteilq347:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.gewaesserschutz-klaeranlagen_anteilq347",
+  "type": "Collection"
 }

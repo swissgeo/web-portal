@@ -1,11 +1,11 @@
 // TODO maybe this file shouldn't be here
 
-import { Feature, Link } from '@swissgeo/shared/ogc'
+import type { OGCRecord, Link } from '@swissgeo/shared/ogc'
 
 const basePath = 'http://localhost:3000/api/v1/layers/swissgeo'
 
-export const prependLinks = (features: Feature[]) => {
-    const newFeatures = features.map((feature: Feature) => {
+export const prependLinks = (records: OGCRecord[]) => {
+    const newRecords = records.map((feature: OGCRecord) => {
         const newLinks = feature.links.map((link: Link) => {
             let href = link.href
 
@@ -26,5 +26,5 @@ export const prependLinks = (features: Feature[]) => {
             links: newLinks,
         }
     })
-    return newFeatures
+    return newRecords
 }

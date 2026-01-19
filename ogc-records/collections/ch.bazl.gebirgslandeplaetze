@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.gebirgslandeplaetze",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.gebirgslandeplaetze:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.gebirgslandeplaetze:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.gebirgslandeplaetze",
+  "type": "Collection"
 }

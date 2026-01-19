@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bak.schutzgebiete-unesco_weltkulturerbe",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bak.schutzgebiete-unesco_weltkulturerbe:wmts"
+  },
+  "records": [
     {
       "id": "ch.bak.schutzgebiete-unesco_weltkulturerbe:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bak.schutzgebiete-unesco_weltkulturerbe",
+  "type": "Collection"
 }

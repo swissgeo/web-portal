@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bag.zeckenstichmodell",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bag.zeckenstichmodell:wmts"
+  },
+  "records": [
     {
       "id": "ch.bag.zeckenstichmodell:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bag.zeckenstichmodell",
+  "type": "Collection"
 }

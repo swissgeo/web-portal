@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.agroscope.amphibien-ausbreitungskarten_triturus_cristatus",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.agroscope.amphibien-ausbreitungskarten_triturus_cristatus:wmts"
+  },
+  "records": [
     {
       "id": "ch.agroscope.amphibien-ausbreitungskarten_triturus_cristatus:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.agroscope.amphibien-ausbreitungskarten_triturus_cristatus",
+  "type": "Collection"
 }

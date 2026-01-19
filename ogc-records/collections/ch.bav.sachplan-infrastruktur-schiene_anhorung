@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bav.sachplan-infrastruktur-schiene_anhorung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bav.sachplan-infrastruktur-schiene_anhorung:wms"
+  },
+  "records": [
     {
       "id": "ch.bav.sachplan-infrastruktur-schiene_anhorung:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bav.sachplan-infrastruktur-schiene_anhorung",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.ren-extensive_landwirtschaftsgebiete",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.ren-extensive_landwirtschaftsgebiete:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.ren-extensive_landwirtschaftsgebiete:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.ren-extensive_landwirtschaftsgebiete",
+  "type": "Collection"
 }

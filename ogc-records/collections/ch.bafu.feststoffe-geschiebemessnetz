@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.feststoffe-geschiebemessnetz",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.feststoffe-geschiebemessnetz:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.feststoffe-geschiebemessnetz:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.feststoffe-geschiebemessnetz",
+  "type": "Collection"
 }

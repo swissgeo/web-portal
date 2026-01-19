@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.niederschlagserosivitaet-okt",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.niederschlagserosivitaet-okt:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.niederschlagserosivitaet-okt:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.niederschlagserosivitaet-okt",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.richtfunkverbindungen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.richtfunkverbindungen:wms"
+  },
+  "records": [
     {
       "id": "ch.bakom.richtfunkverbindungen:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.richtfunkverbindungen",
+  "type": "Collection"
 }

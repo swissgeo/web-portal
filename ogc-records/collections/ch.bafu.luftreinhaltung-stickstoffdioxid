@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.luftreinhaltung-stickstoffdioxid",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.luftreinhaltung-stickstoffdioxid:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.luftreinhaltung-stickstoffdioxid:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.luftreinhaltung-stickstoffdioxid",
+  "type": "Collection"
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Feature as OGCFeature, OGCRecords } from '@swissgeo/shared/ogc'
+import type { Distribution, OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
 
 import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
 import { useStorage } from '@vueuse/core'
@@ -7,7 +7,7 @@ import { useStorage } from '@vueuse/core'
 const layerStore = useLayerStore()
 
 const { layer } = defineProps<{
-    layer: OGCFeature
+    layer: OGCRecord
 }>()
 
 /**
@@ -54,19 +54,21 @@ const layerBg = computed(() => {
  * @param layer
  */
 const type = computed((): LayerType | 'UNKNOWN' => {
-    if (!state.value?.collectionData?.features) {
+    if (!state.value.collectionData?.portal?.preferredDistributionId) {
         return 'UNKNOWN'
     }
 
-    for (const feature of state.value.collectionData.features) {
-        const protocol = feature.properties?.protocol
-        // loop through features and the first element found that
-        // maches either protocol will determine the layer type
+    const preferredDistributionId = state.value.collectionData.portal.preferredDistributionId
 
-        if (protocol === 'OGC:WMTS') {
-            return LayerType.WMTS
-        } else if (protocol === 'OGC:WMS') {
-            return LayerType.WMS
+    for (const record of state.value.collectionData.records) {
+        if (record.id === preferredDistributionId) {
+            const protocol = record.properties?.protocol
+
+            if (protocol === 'OGC:WMTS') {
+                return LayerType.WMTS
+            } else if (protocol === 'OGC:WMS') {
+                return LayerType.WMS
+            }
         }
     }
 
@@ -88,7 +90,7 @@ async function updateCollectionData() {
     }
 }
 
-function addLayerToMap(layer: OGCFeature) {
+function addLayerToMap(layer: OGCRecord) {
     if (!type.value) {
         throw Error('Neither OGC:WMS nor OGC:WMTS found in the definition')
     }
@@ -99,10 +101,7 @@ function addLayerToMap(layer: OGCFeature) {
 </script>
 
 <template>
-    <tr
-        class="hover:bg-cyan-300"
-        @mouseover="updateCollectionData"
-    >
+    <tr class="hover:bg-cyan-300">
         <td class="border-b pb-2">
             <button
                 class="cursor-pointer"

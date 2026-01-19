@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfs.arealstatistik",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfs.arealstatistik:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfs.arealstatistik:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfs.arealstatistik",
+  "type": "Collection"
 }

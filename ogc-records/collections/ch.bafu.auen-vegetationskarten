@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.auen-vegetationskarten",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.auen-vegetationskarten:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.auen-vegetationskarten:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.auen-vegetationskarten",
+  "type": "Collection"
 }

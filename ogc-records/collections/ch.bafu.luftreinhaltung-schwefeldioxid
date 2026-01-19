@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.luftreinhaltung-schwefeldioxid",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.luftreinhaltung-schwefeldioxid:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.luftreinhaltung-schwefeldioxid:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.luftreinhaltung-schwefeldioxid",
+  "type": "Collection"
 }

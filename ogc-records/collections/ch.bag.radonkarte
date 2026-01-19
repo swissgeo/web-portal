@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bag.radonkarte",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bag.radonkarte:wmts"
+  },
+  "records": [
     {
       "id": "ch.bag.radonkarte:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bag.radonkarte",
+  "type": "Collection"
 }

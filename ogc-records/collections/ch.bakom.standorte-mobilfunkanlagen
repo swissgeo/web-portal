@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.standorte-mobilfunkanlagen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.standorte-mobilfunkanlagen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.standorte-mobilfunkanlagen:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.standorte-mobilfunkanlagen",
+  "type": "Collection"
 }

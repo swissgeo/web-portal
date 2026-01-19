@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bav.kataster-belasteter-standorte-oev",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bav.kataster-belasteter-standorte-oev:wms"
+  },
+  "records": [
     {
       "id": "ch.bav.kataster-belasteter-standorte-oev:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bav.kataster-belasteter-standorte-oev",
+  "type": "Collection"
 }

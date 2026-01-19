@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.gefahren-waldbrand_warnung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.gefahren-waldbrand_warnung:wms"
+  },
+  "records": [
     {
       "id": "ch.bafu.gefahren-waldbrand_warnung:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.gefahren-waldbrand_warnung",
+  "type": "Collection"
 }

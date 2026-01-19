@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.gewaesserschutz-badewasserqualitaet",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.gewaesserschutz-badewasserqualitaet:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.gewaesserschutz-badewasserqualitaet:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.gewaesserschutz-badewasserqualitaet",
+  "type": "Collection"
 }

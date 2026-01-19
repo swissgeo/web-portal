@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bav.seilbahnen-bundeskonzession",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bav.seilbahnen-bundeskonzession:wms"
+  },
+  "records": [
     {
       "id": "ch.bav.seilbahnen-bundeskonzession:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bav.seilbahnen-bundeskonzession",
+  "type": "Collection"
 }

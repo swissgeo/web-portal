@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.gewaesseranschlusskarte-direkt",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.gewaesseranschlusskarte-direkt:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.gewaesseranschlusskarte-direkt:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.gewaesseranschlusskarte-direkt",
+  "type": "Collection"
 }

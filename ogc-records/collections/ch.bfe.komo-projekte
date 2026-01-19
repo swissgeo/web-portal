@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.komo-projekte",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.komo-projekte:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.komo-projekte:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.komo-projekte",
+  "type": "Collection"
 }

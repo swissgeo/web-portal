@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.notruf-143_zentral",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.notruf-143_zentral:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.notruf-143_zentral:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.notruf-143_zentral",
+  "type": "Collection"
 }

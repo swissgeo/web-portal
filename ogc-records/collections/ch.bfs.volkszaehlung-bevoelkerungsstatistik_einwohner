@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfs.volkszaehlung-bevoelkerungsstatistik_einwohner",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfs.volkszaehlung-bevoelkerungsstatistik_einwohner:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfs.volkszaehlung-bevoelkerungsstatistik_einwohner:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfs.volkszaehlung-bevoelkerungsstatistik_einwohner",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.pixelkarte-pk50.metadata",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.pixelkarte-pk50.metadata:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.pixelkarte-pk50.metadata:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.pixelkarte-pk50.metadata",
+  "type": "Collection"
 }

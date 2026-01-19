@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.biomasse-nicht-verholzt",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.biomasse-nicht-verholzt:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.biomasse-nicht-verholzt:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.biomasse-nicht-verholzt",
+  "type": "Collection"
 }

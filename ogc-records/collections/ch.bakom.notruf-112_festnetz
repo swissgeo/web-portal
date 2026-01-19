@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.notruf-112_festnetz",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.notruf-112_festnetz:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.notruf-112_festnetz:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.notruf-112_festnetz",
+  "type": "Collection"
 }

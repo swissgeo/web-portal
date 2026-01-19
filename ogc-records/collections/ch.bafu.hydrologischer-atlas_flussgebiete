@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.hydrologischer-atlas_flussgebiete",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.hydrologischer-atlas_flussgebiete:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.hydrologischer-atlas_flussgebiete:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.hydrologischer-atlas_flussgebiete",
+  "type": "Collection"
 }

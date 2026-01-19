@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.dreiecksvermaschung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.dreiecksvermaschung:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.dreiecksvermaschung:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.dreiecksvermaschung",
+  "type": "Collection"
 }

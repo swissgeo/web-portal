@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung:wms"
+  },
+  "records": [
     {
       "id": "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung",
+  "type": "Collection"
 }

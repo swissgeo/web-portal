@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.fischerei-aeschen_verbreitungsgebiet",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.fischerei-aeschen_verbreitungsgebiet:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.fischerei-aeschen_verbreitungsgebiet:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.fischerei-aeschen_verbreitungsgebiet",
+  "type": "Collection"
 }

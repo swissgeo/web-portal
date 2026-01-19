@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.are.windenergie-bundesinteressen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.are.windenergie-bundesinteressen:wms"
+  },
+  "records": [
     {
       "id": "ch.are.windenergie-bundesinteressen:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.are.windenergie-bundesinteressen",
+  "type": "Collection"
 }

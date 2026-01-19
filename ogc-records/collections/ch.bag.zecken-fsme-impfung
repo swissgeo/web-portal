@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bag.zecken-fsme-impfung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bag.zecken-fsme-impfung:wmts"
+  },
+  "records": [
     {
       "id": "ch.bag.zecken-fsme-impfung:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bag.zecken-fsme-impfung",
+  "type": "Collection"
 }

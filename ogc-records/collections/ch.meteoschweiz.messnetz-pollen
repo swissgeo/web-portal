@@ -1,6 +1,7 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.meteoschweiz.messnetz-pollen",
+  "itemType": "record",
+  "records": [
     {
       "id": "ch.meteoschweiz.messnetz-pollen:geojson",
       "links": [
@@ -60,5 +61,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.meteoschweiz.messnetz-pollen",
+  "type": "Collection"
 }

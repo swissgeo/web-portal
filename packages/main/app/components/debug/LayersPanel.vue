@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Feature as OGCFeature, OGCRecords } from '@swissgeo/shared/ogc'
+import type { OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
 
 import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
@@ -19,15 +19,15 @@ const availableLayers = computed(() => {
     return recordLayers.value
 })
 
-const filteredAvailableLayers = computed((): OGCFeature[] => {
+const filteredAvailableLayers = computed((): OGCRecord[] => {
     if (!availableLayers.value) {
         return []
     }
 
     if (filterTerm.value === '') {
-        return availableLayers.value.features
+        return availableLayers.value.records
     }
-    return availableLayers.value.features.filter((layer) => layer.id.includes(filterTerm.value))
+    return availableLayers.value.records.filter((layer) => layer.id.includes(filterTerm.value))
 })
 
 function toggleVectorLayer() {

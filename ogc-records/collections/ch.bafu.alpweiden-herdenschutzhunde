@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.alpweiden-herdenschutzhunde",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.alpweiden-herdenschutzhunde:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.alpweiden-herdenschutzhunde:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.alpweiden-herdenschutzhunde",
+  "type": "Collection"
 }

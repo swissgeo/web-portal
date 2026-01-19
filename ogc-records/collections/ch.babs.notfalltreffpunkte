@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.babs.notfalltreffpunkte",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.babs.notfalltreffpunkte:wms"
+  },
+  "records": [
     {
       "id": "ch.babs.notfalltreffpunkte:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.babs.notfalltreffpunkte",
+  "type": "Collection"
 }

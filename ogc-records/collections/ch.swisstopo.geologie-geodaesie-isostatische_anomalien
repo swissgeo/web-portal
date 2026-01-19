@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geodaesie-isostatische_anomalien",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geodaesie-isostatische_anomalien:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geodaesie-isostatische_anomalien:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geodaesie-isostatische_anomalien",
+  "type": "Collection"
 }

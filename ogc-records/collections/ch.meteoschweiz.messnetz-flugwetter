@@ -1,6 +1,7 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.meteoschweiz.messnetz-flugwetter",
+  "itemType": "record",
+  "records": [
     {
       "id": "ch.meteoschweiz.messnetz-flugwetter:geojson",
       "links": [
@@ -60,5 +61,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.meteoschweiz.messnetz-flugwetter",
+  "type": "Collection"
 }

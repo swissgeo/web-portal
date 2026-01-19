@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas",
+  "type": "Collection"
 }

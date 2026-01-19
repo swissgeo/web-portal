@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.vbs.retablierungsstellen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.vbs.retablierungsstellen:wmts"
+  },
+  "records": [
     {
       "id": "ch.vbs.retablierungsstellen:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.vbs.retablierungsstellen",
+  "type": "Collection"
 }

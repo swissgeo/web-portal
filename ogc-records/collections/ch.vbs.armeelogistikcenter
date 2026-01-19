@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.vbs.armeelogistikcenter",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.vbs.armeelogistikcenter:wmts"
+  },
+  "records": [
     {
       "id": "ch.vbs.armeelogistikcenter:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.vbs.armeelogistikcenter",
+  "type": "Collection"
 }

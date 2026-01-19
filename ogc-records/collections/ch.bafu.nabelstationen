@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.nabelstationen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.nabelstationen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.nabelstationen:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.nabelstationen",
+  "type": "Collection"
 }

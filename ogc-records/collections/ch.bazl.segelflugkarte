@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.segelflugkarte",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.segelflugkarte:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.segelflugkarte:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.segelflugkarte",
+  "type": "Collection"
 }

@@ -1,6 +1,7 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.meteoschweiz.messwerte-wind-boeenspitze-kmh-6h",
+  "itemType": "record",
+  "records": [
     {
       "id": "ch.meteoschweiz.messwerte-wind-boeenspitze-kmh-6h:geojson",
       "links": [
@@ -34,5 +35,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.meteoschweiz.messwerte-wind-boeenspitze-kmh-6h",
+  "type": "Collection"
 }

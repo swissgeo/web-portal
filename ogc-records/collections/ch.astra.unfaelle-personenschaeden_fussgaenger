@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.unfaelle-personenschaeden_fussgaenger",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.unfaelle-personenschaeden_fussgaenger:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.unfaelle-personenschaeden_fussgaenger:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.unfaelle-personenschaeden_fussgaenger",
+  "type": "Collection"
 }

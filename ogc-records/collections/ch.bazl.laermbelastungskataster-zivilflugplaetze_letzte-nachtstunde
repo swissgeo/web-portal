@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde:wms"
+  },
+  "records": [
     {
       "id": "ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde",
+  "type": "Collection"
 }

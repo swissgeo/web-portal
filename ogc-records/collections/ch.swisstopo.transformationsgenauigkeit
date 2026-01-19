@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.transformationsgenauigkeit",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.transformationsgenauigkeit:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.transformationsgenauigkeit:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.transformationsgenauigkeit",
+  "type": "Collection"
 }

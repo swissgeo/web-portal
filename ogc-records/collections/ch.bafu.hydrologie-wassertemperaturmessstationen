@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.hydrologie-wassertemperaturmessstationen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.hydrologie-wassertemperaturmessstationen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.hydrologie-wassertemperaturmessstationen:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.hydrologie-wassertemperaturmessstationen",
+  "type": "Collection"
 }

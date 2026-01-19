@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.are.belastung-personenverkehr-strasse_zukunft",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.are.belastung-personenverkehr-strasse_zukunft:wmts"
+  },
+  "records": [
     {
       "id": "ch.are.belastung-personenverkehr-strasse_zukunft:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.are.belastung-personenverkehr-strasse_zukunft",
+  "type": "Collection"
 }

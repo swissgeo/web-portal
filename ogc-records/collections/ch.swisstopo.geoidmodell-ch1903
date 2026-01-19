@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geoidmodell-ch1903",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geoidmodell-ch1903:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geoidmodell-ch1903:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geoidmodell-ch1903",
+  "type": "Collection"
 }

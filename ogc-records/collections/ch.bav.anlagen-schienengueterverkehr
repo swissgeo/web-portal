@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bav.anlagen-schienengueterverkehr",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bav.anlagen-schienengueterverkehr:wms"
+  },
+  "records": [
     {
       "id": "ch.bav.anlagen-schienengueterverkehr:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bav.anlagen-schienengueterverkehr",
+  "type": "Collection"
 }

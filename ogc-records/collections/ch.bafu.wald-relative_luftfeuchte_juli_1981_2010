@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wald-relative_luftfeuchte_juli_1981_2010",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wald-relative_luftfeuchte_juli_1981_2010:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wald-relative_luftfeuchte_juli_1981_2010:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wald-relative_luftfeuchte_juli_1981_2010",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bav.laermbelastung-eisenbahn_festgelegte_emissionen_tag",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bav.laermbelastung-eisenbahn_festgelegte_emissionen_tag:wmts"
+  },
+  "records": [
     {
       "id": "ch.bav.laermbelastung-eisenbahn_festgelegte_emissionen_tag:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bav.laermbelastung-eisenbahn_festgelegte_emissionen_tag",
+  "type": "Collection"
 }

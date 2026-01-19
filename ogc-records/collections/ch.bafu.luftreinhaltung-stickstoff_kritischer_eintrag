@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.luftreinhaltung-stickstoff_kritischer_eintrag",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.luftreinhaltung-stickstoff_kritischer_eintrag:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.luftreinhaltung-stickstoff_kritischer_eintrag:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.luftreinhaltung-stickstoff_kritischer_eintrag",
+  "type": "Collection"
 }

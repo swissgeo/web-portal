@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-spezialkarten_schweiz_vector.metadata",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-spezialkarten_schweiz_vector.metadata:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-spezialkarten_schweiz_vector.metadata:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-spezialkarten_schweiz_vector.metadata",
+  "type": "Collection"
 }

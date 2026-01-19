@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wald-niederschlag_april_august_2085_stark",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wald-niederschlag_april_august_2085_stark:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wald-niederschlag_april_august_2085_stark:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wald-niederschlag_april_august_2085_stark",
+  "type": "Collection"
 }

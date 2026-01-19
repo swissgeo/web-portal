@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.waldreservate",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.waldreservate:wms"
+  },
+  "records": [
     {
       "id": "ch.bafu.waldreservate:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.waldreservate",
+  "type": "Collection"
 }

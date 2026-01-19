@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.vbs.patrouilledesglaciers-z_rennen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.vbs.patrouilledesglaciers-z_rennen:wmts"
+  },
+  "records": [
     {
       "id": "ch.vbs.patrouilledesglaciers-z_rennen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.vbs.patrouilledesglaciers-z_rennen",
+  "type": "Collection"
 }

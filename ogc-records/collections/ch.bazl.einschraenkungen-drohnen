@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.einschraenkungen-drohnen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.einschraenkungen-drohnen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.einschraenkungen-drohnen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.einschraenkungen-drohnen",
+  "type": "Collection"
 }

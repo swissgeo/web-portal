@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-schmetterlingsstrauch",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-schmetterlingsstrauch:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-schmetterlingsstrauch:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-schmetterlingsstrauch",
+  "type": "Collection"
 }

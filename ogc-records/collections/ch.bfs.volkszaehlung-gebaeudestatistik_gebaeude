@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfs.volkszaehlung-gebaeudestatistik_gebaeude",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfs.volkszaehlung-gebaeudestatistik_gebaeude:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfs.volkszaehlung-gebaeudestatistik_gebaeude:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfs.volkszaehlung-gebaeudestatistik_gebaeude",
+  "type": "Collection"
 }

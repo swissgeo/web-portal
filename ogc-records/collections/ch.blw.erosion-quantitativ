@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.erosion-quantitativ",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.erosion-quantitativ:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.erosion-quantitativ:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.erosion-quantitativ",
+  "type": "Collection"
 }

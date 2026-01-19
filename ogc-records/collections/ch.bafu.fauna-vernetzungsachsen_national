@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.fauna-vernetzungsachsen_national",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.fauna-vernetzungsachsen_national:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.fauna-vernetzungsachsen_national:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.fauna-vernetzungsachsen_national",
+  "type": "Collection"
 }

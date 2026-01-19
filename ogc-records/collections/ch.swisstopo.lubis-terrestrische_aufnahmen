@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.lubis-terrestrische_aufnahmen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.lubis-terrestrische_aufnahmen:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.lubis-terrestrische_aufnahmen:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.lubis-terrestrische_aufnahmen",
+  "type": "Collection"
 }

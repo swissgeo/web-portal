@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.vec25-gewaessernetz_referenz",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.vec25-gewaessernetz_referenz:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.vec25-gewaessernetz_referenz:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.vec25-gewaessernetz_referenz",
+  "type": "Collection"
 }

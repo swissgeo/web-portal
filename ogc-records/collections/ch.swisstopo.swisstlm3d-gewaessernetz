@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.swisstlm3d-gewaessernetz",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.swisstlm3d-gewaessernetz:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.swisstlm3d-gewaessernetz:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.swisstlm3d-gewaessernetz",
+  "type": "Collection"
 }

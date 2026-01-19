@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wald-vegetationshoehenstufen_1975",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wald-vegetationshoehenstufen_1975:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wald-vegetationshoehenstufen_1975:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wald-vegetationshoehenstufen_1975",
+  "type": "Collection"
 }

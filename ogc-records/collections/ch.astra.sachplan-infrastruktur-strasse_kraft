@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.sachplan-infrastruktur-strasse_kraft",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.sachplan-infrastruktur-strasse_kraft:wms"
+  },
+  "records": [
     {
       "id": "ch.astra.sachplan-infrastruktur-strasse_kraft:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.sachplan-infrastruktur-strasse_kraft",
+  "type": "Collection"
 }

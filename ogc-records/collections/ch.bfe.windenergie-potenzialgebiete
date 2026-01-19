@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.windenergie-potenzialgebiete",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.windenergie-potenzialgebiete:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.windenergie-potenzialgebiete:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.windenergie-potenzialgebiete",
+  "type": "Collection"
 }

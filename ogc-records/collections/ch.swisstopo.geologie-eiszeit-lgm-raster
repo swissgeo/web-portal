@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-eiszeit-lgm-raster",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-eiszeit-lgm-raster:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-eiszeit-lgm-raster:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-eiszeit-lgm-raster",
+  "type": "Collection"
 }

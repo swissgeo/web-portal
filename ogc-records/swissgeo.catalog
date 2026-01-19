@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "swissgeo.catalog",
+  "title": "Swissgeo Catalog",
+  "type": "Collection",
+  "itemType": "record",
+  "recordsArrayName": "records",
+  "records": [
     {
       "id": "ch.agroscope.feuchtflaechenpotential-kulturlandschaft",
       "links": [

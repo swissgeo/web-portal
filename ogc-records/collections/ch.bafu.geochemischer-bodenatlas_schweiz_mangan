@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.geochemischer-bodenatlas_schweiz_mangan",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.geochemischer-bodenatlas_schweiz_mangan:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.geochemischer-bodenatlas_schweiz_mangan:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.geochemischer-bodenatlas_schweiz_mangan",
+  "type": "Collection"
 }

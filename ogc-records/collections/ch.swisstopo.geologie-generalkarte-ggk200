@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-generalkarte-ggk200",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-generalkarte-ggk200:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-generalkarte-ggk200:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-generalkarte-ggk200",
+  "type": "Collection"
 }

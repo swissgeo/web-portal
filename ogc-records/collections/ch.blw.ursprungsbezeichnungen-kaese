@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.ursprungsbezeichnungen-kaese",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.ursprungsbezeichnungen-kaese:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.ursprungsbezeichnungen-kaese:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.ursprungsbezeichnungen-kaese",
+  "type": "Collection"
 }

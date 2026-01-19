@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.silvaprotect-hangmuren",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.silvaprotect-hangmuren:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.silvaprotect-hangmuren:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.silvaprotect-hangmuren",
+  "type": "Collection"
 }

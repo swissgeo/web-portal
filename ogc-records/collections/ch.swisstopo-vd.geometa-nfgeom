@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo-vd.geometa-nfgeom",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo-vd.geometa-nfgeom:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo-vd.geometa-nfgeom:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo-vd.geometa-nfgeom",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.ensi.zonenplan-notfallschutz-kernanlagen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.ensi.zonenplan-notfallschutz-kernanlagen:wmts"
+  },
+  "records": [
     {
       "id": "ch.ensi.zonenplan-notfallschutz-kernanlagen:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.ensi.zonenplan-notfallschutz-kernanlagen",
+  "type": "Collection"
 }

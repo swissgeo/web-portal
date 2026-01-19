@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.vec25-gewaessernetz_2000",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.vec25-gewaessernetz_2000:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.vec25-gewaessernetz_2000:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.vec25-gewaessernetz_2000",
+  "type": "Collection"
 }

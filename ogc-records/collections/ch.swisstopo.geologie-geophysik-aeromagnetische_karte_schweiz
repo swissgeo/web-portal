@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz",
+  "type": "Collection"
 }

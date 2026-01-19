@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.koordinatenaenderung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.koordinatenaenderung:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.koordinatenaenderung:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.koordinatenaenderung",
+  "type": "Collection"
 }

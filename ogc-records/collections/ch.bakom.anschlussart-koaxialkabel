@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.anschlussart-koaxialkabel",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.anschlussart-koaxialkabel:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.anschlussart-koaxialkabel:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.anschlussart-koaxialkabel",
+  "type": "Collection"
 }

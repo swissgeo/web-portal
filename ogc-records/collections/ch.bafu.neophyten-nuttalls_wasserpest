@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-nuttalls_wasserpest",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-nuttalls_wasserpest:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-nuttalls_wasserpest:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-nuttalls_wasserpest",
+  "type": "Collection"
 }

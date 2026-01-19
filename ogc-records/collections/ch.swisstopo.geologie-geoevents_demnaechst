@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geoevents_demnaechst",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geoevents_demnaechst:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geoevents_demnaechst:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geoevents_demnaechst",
+  "type": "Collection"
 }

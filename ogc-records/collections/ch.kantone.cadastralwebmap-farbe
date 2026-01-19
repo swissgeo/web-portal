@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.kantone.cadastralwebmap-farbe",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.kantone.cadastralwebmap-farbe:wms"
+  },
+  "records": [
     {
       "id": "ch.kantone.cadastralwebmap-farbe:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.kantone.cadastralwebmap-farbe",
+  "type": "Collection"
 }

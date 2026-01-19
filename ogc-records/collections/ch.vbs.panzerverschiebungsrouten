@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.vbs.panzerverschiebungsrouten",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.vbs.panzerverschiebungsrouten:wmts"
+  },
+  "records": [
     {
       "id": "ch.vbs.panzerverschiebungsrouten:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.vbs.panzerverschiebungsrouten",
+  "type": "Collection"
 }

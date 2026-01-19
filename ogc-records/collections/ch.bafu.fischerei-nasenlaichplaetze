@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.fischerei-nasenlaichplaetze",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.fischerei-nasenlaichplaetze:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.fischerei-nasenlaichplaetze:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.fischerei-nasenlaichplaetze",
+  "type": "Collection"
 }

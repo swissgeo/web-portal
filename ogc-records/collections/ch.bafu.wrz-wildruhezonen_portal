@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wrz-wildruhezonen_portal",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wrz-wildruhezonen_portal:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wrz-wildruhezonen_portal:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wrz-wildruhezonen_portal",
+  "type": "Collection"
 }

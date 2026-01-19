@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.are.landschaftstypen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.are.landschaftstypen:wmts"
+  },
+  "records": [
     {
       "id": "ch.are.landschaftstypen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.are.landschaftstypen",
+  "type": "Collection"
 }

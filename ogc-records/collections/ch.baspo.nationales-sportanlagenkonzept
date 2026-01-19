@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.baspo.nationales-sportanlagenkonzept",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.baspo.nationales-sportanlagenkonzept:wmts"
+  },
+  "records": [
     {
       "id": "ch.baspo.nationales-sportanlagenkonzept:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.baspo.nationales-sportanlagenkonzept",
+  "type": "Collection"
 }

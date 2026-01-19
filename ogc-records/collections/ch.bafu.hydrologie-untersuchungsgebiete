@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.hydrologie-untersuchungsgebiete",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.hydrologie-untersuchungsgebiete:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.hydrologie-untersuchungsgebiete:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.hydrologie-untersuchungsgebiete",
+  "type": "Collection"
 }

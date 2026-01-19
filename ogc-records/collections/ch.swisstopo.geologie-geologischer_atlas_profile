@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geologischer_atlas_profile",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geologischer_atlas_profile:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geologischer_atlas_profile:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geologischer_atlas_profile",
+  "type": "Collection"
 }

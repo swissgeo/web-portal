@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bav.laermbelastung-eisenbahn_laermschutzwaende",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bav.laermbelastung-eisenbahn_laermschutzwaende:wms"
+  },
+  "records": [
     {
       "id": "ch.bav.laermbelastung-eisenbahn_laermschutzwaende:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bav.laermbelastung-eisenbahn_laermschutzwaende",
+  "type": "Collection"
 }

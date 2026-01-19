@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.intrinsisches-bodenrisiko_sora",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.intrinsisches-bodenrisiko_sora:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.intrinsisches-bodenrisiko_sora:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.intrinsisches-bodenrisiko_sora",
+  "type": "Collection"
 }

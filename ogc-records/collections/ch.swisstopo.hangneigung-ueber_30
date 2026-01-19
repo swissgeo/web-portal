@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.hangneigung-ueber_30",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.hangneigung-ueber_30:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.hangneigung-ueber_30:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.hangneigung-ueber_30",
+  "type": "Collection"
 }

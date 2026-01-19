@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.hiks-siegfried",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.hiks-siegfried:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.hiks-siegfried:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.hiks-siegfried",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.alpprodukte",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.alpprodukte:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.alpprodukte:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.alpprodukte",
+  "type": "Collection"
 }

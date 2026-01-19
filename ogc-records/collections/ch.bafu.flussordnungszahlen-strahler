@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.flussordnungszahlen-strahler",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.flussordnungszahlen-strahler:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.flussordnungszahlen-strahler:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.flussordnungszahlen-strahler",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfs.erreichbarkeit-restaurants",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfs.erreichbarkeit-restaurants:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfs.erreichbarkeit-restaurants:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfs.erreichbarkeit-restaurants",
+  "type": "Collection"
 }

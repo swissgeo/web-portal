@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.swissimage-product.metadata",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.swissimage-product.metadata:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.swissimage-product.metadata:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.swissimage-product.metadata",
+  "type": "Collection"
 }

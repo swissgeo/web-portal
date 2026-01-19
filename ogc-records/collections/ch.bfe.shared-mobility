@@ -1,6 +1,7 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.shared-mobility",
+  "itemType": "record",
+  "records": [
     {
       "id": "ch.bfe.shared-mobility:geojson",
       "links": [
@@ -34,5 +35,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.shared-mobility",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-aufrechtes_traubenkraut",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-aufrechtes_traubenkraut:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-aufrechtes_traubenkraut:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-aufrechtes_traubenkraut",
+  "type": "Collection"
 }

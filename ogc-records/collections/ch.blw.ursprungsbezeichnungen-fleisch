@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.ursprungsbezeichnungen-fleisch",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.ursprungsbezeichnungen-fleisch:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.ursprungsbezeichnungen-fleisch:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.ursprungsbezeichnungen-fleisch",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.biogasanlagen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.biogasanlagen:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.biogasanlagen:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.biogasanlagen",
+  "type": "Collection"
 }

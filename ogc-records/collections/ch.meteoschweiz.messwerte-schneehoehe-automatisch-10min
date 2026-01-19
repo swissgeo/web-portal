@@ -1,6 +1,7 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.meteoschweiz.messwerte-schneehoehe-automatisch-10min",
+  "itemType": "record",
+  "records": [
     {
       "id": "ch.meteoschweiz.messwerte-schneehoehe-automatisch-10min:geojson",
       "links": [
@@ -34,5 +35,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.meteoschweiz.messwerte-schneehoehe-automatisch-10min",
+  "type": "Collection"
 }

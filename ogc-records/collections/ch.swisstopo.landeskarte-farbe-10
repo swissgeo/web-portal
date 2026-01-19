@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.landeskarte-farbe-10",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.landeskarte-farbe-10:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.landeskarte-farbe-10:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.landeskarte-farbe-10",
+  "type": "Collection"
 }

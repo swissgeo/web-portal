@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.konsultationsbereiche-nationalstrassen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.konsultationsbereiche-nationalstrassen:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.konsultationsbereiche-nationalstrassen:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.konsultationsbereiche-nationalstrassen",
+  "type": "Collection"
 }

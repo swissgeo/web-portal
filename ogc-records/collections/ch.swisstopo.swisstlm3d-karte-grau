@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.swisstlm3d-karte-grau",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.swisstlm3d-karte-grau:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.swisstlm3d-karte-grau:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.swisstlm3d-karte-grau",
+  "type": "Collection"
 }

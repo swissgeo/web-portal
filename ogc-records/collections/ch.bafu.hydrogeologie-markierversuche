@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.hydrogeologie-markierversuche",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.hydrogeologie-markierversuche:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.hydrogeologie-markierversuche:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.hydrogeologie-markierversuche",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo-karto.hangneigung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo-karto.hangneigung:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo-karto.hangneigung:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo-karto.hangneigung",
+  "type": "Collection"
 }

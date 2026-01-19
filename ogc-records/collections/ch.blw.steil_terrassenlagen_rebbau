@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.steil_terrassenlagen_rebbau",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.steil_terrassenlagen_rebbau:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.steil_terrassenlagen_rebbau:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.steil_terrassenlagen_rebbau",
+  "type": "Collection"
 }

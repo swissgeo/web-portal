@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-chinesische_samtpappel",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-chinesische_samtpappel:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-chinesische_samtpappel:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-chinesische_samtpappel",
+  "type": "Collection"
 }

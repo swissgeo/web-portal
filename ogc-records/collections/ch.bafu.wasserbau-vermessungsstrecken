@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wasserbau-vermessungsstrecken",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wasserbau-vermessungsstrecken:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wasserbau-vermessungsstrecken:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wasserbau-vermessungsstrecken",
+  "type": "Collection"
 }

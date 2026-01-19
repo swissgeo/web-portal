@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { DatasetLayer } from '@swissgeo/layers'
-import type { Feature } from '@swissgeo/shared/ogc'
+import type { OGCRecord } from '@swissgeo/shared/ogc'
 
 import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
 //import type { ActionDispatcher } from '@/store/types'
@@ -32,7 +32,7 @@ const backgroundRecords = computed(async () => {
 
     const values = await Promise.all(promises)
 
-    return values.map((record: Feature) => {
+    return values.map((record: OGCRecord) => {
         return makeServerLayer(LayerType.WMTS, record, {
             zIndex: 0,
         })

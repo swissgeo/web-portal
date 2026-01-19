@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.biomasse-verholzt",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.biomasse-verholzt:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.biomasse-verholzt:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.biomasse-verholzt",
+  "type": "Collection"
 }

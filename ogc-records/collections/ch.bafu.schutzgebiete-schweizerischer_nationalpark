@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.schutzgebiete-schweizerischer_nationalpark",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.schutzgebiete-schweizerischer_nationalpark:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.schutzgebiete-schweizerischer_nationalpark:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.schutzgebiete-schweizerischer_nationalpark",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.sachplan-geologie-tiefenlager",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.sachplan-geologie-tiefenlager:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.sachplan-geologie-tiefenlager:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.sachplan-geologie-tiefenlager",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.hydrogeologische-karte_100",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.hydrogeologische-karte_100:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.hydrogeologische-karte_100:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.hydrogeologische-karte_100",
+  "type": "Collection"
 }
