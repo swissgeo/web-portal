@@ -2,28 +2,35 @@
   "type": "FeatureCollection",
   "features": [
     {
-      "id": "ch.meteoschweiz.messnetz-atmosphaere:wms",
+      "id": "ch.meteoschweiz.messnetz-atmosphaere:geojson",
       "links": [
         {
-          "href": "collections/ch.meteoschweiz.messnetz-atmosphaere/items/ch.meteoschweiz.messnetz-atmosphaere:wms",
+          "href": "collections/ch.meteoschweiz.messnetz-atmosphaere/items/ch.meteoschweiz.messnetz-atmosphaere:geojson",
           "rel": "self",
           "type": "application/json"
         },
         {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "dataservice"
+          "href": "https://data.geo.admin.ch/ch.meteoschweiz.messnetz-atmosphaere/ch.meteoschweiz.messnetz-atmosphaere_en.json",
+          "rel": "data",
+          "type": "application/geo+json"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.messnetz-atmosphaere",
           "rel": "dataset"
+        },
+        {
+          "href": "https://api3.geo.admin.ch/static/vectorStyles/ch.meteoschweiz.messnetz-atmosphaere.json",
+          "rel": "styledby",
+          "title": "GeoJSON Style Definition",
+          "type": "application/json"
         }
       ],
       "properties": {
         "externalIds": [
           "ch.meteoschweiz.messnetz-atmosphaere"
         ],
-        "protocol": "OGC:WMS",
-        "title": "OGC Web Map Service (WMS)",
+        "protocol": "OGC:GeoJSON",
+        "title": "GeoJSON Feature Service",
         "type": "Distribution"
       }
     },
@@ -37,7 +44,7 @@
         },
         {
           "href": "collections/geoadmin.services/items/ch.admin.geo.data",
-          "rel": "dataservice"
+          "rel": "service"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.meteoschweiz.messnetz-atmosphaere",

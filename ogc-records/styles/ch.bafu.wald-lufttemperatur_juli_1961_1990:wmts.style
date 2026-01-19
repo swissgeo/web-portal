@@ -6,7 +6,7 @@
       "source-layer": "ch.bafu.wald-lufttemperatur_juli_1961_1990",
       "type": "raster",
       "paint": {
-        "raster-opacity": "0.75"
+        "raster-opacity": 0.75
       }
     }
   ]

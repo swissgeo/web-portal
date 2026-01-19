@@ -2,28 +2,35 @@
   "type": "FeatureCollection",
   "features": [
     {
-      "id": "ch.bfe.ladestellen-elektromobilitaet:wms",
+      "id": "ch.bfe.ladestellen-elektromobilitaet:geojson",
       "links": [
         {
-          "href": "collections/ch.bfe.ladestellen-elektromobilitaet/items/ch.bfe.ladestellen-elektromobilitaet:wms",
+          "href": "collections/ch.bfe.ladestellen-elektromobilitaet/items/ch.bfe.ladestellen-elektromobilitaet:geojson",
           "rel": "self",
           "type": "application/json"
         },
         {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "dataservice"
+          "href": "https://data.geo.admin.ch/ch.bfe.ladestellen-elektromobilitaet/data/ch.bfe.ladestellen-elektromobilitaet_en.json",
+          "rel": "data",
+          "type": "application/geo+json"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bfe.ladestellen-elektromobilitaet",
           "rel": "dataset"
+        },
+        {
+          "href": "https://api3.geo.admin.ch/static/vectorStyles/ch.bfe.ladestellen-elektromobilitaet.json",
+          "rel": "styledby",
+          "title": "GeoJSON Style Definition",
+          "type": "application/json"
         }
       ],
       "properties": {
         "externalIds": [
           "ch.bfe.ladestellen-elektromobilitaet"
         ],
-        "protocol": "OGC:WMS",
-        "title": "OGC Web Map Service (WMS)",
+        "protocol": "OGC:GeoJSON",
+        "title": "GeoJSON Feature Service",
         "type": "Distribution"
       }
     },
@@ -37,7 +44,7 @@
         },
         {
           "href": "collections/geoadmin.services/items/ch.admin.geo.data",
-          "rel": "dataservice"
+          "rel": "service"
         },
         {
           "href": "collections/swissgeo.catalog/items/ch.bfe.ladestellen-elektromobilitaet",

@@ -13,5 +13,5 @@ export const getLinksByRel = (links: OGCLink[], rel: string): OGCLink[] => {
 }
 
 export const getDataServiceLinks = (links: OGCLink[]): OGCLink[] => {
-    return getLinksByRel(links, 'dataservice')
+    return getLinksByRel(links, 'service')
 }

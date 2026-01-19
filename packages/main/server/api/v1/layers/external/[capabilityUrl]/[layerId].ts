@@ -15,7 +15,7 @@ export default defineEventHandler((event) => {
                 links: [
                     {
                         href: serviceUrl,
-                        rel: 'dataservice',
+                        rel: 'service',
                     },
                 ],
                 properties: {

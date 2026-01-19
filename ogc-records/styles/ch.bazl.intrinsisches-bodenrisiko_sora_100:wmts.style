@@ -6,7 +6,7 @@
       "source-layer": "ch.bazl.intrinsisches-bodenrisiko_sora_100",
       "type": "raster",
       "paint": {
-        "raster-opacity": "0.75"
+        "raster-opacity": 0.6
       }
     }
   ]

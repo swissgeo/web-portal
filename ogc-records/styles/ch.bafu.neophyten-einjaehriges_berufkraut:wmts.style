@@ -6,7 +6,7 @@
       "source-layer": "ch.bafu.neophyten-einjaehriges_berufkraut",
       "type": "raster",
       "paint": {
-        "raster-opacity": "0.75"
+        "raster-opacity": 0.75
       }
     }
   ]
