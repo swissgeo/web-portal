@@ -3,13 +3,11 @@ import type {
     Protocol,
     TemplateLink,
     Link,
-    Feature,
+    OGCRecord,
     Service,
 } from '@swissgeo/shared/ogc'
 import type { Style } from '@types/mapbox-gl'
 import type { H3Event } from 'h3'
-
-let catalog: OGCRecords | undefined
 
 // TODO taken from map utils.. maybe they should be shared or something
 // maybe there should be a OGC package?!
@@ -25,7 +23,7 @@ export const getStyleLinks = (links: Link[]): Link[] => {
     return getLinksByRel(links, 'styledby')
 }
 
-const getDistributionData = async (record: Feature) => {
+const getDistributionData = async (record: OGCRecord) => {
     const getDistributionLink = () => {
         const links = record.links
 
@@ -46,10 +44,10 @@ const getDistributionData = async (record: Feature) => {
     return distributionData
 }
 
-const extractFeature = (distributionData: OGCRecords, protocol: Protocol) => {
-    const features = distributionData.features
+const extractRecord = (distributionData: OGCRecords, protocol: Protocol) => {
+    const records = distributionData.records
 
-    for (const feature of features) {
+    for (const feature of records) {
         if (!feature.properties) {
             break // go to exception below
         }
@@ -64,7 +62,7 @@ const extractFeature = (distributionData: OGCRecords, protocol: Protocol) => {
     )
 }
 
-const getServiceData = async (feature: Feature) => {
+const getServiceData = async (feature: OGCRecord) => {
     const getServiceUrl = () => {
         const links = feature.links
 
@@ -92,7 +90,7 @@ const getServiceData = async (feature: Feature) => {
  * @param feature
  * @returns
  */
-const getStyleData = async (feature: Feature): Promise<Style | null> => {
+const getStyleData = async (feature: OGCRecord): Promise<Style | null> => {
     const getStyleUrl = () => {
         const links = feature.links
 
@@ -159,9 +157,9 @@ const getLayerData = async (event: H3Event, layerId: string, protocol: Protocol)
     const dataset = await readBody(event)
     const distributionData = await getDistributionData(dataset)
 
-    const distributionFeature = extractFeature(distributionData, protocol)
-    const serviceData = await getServiceData(distributionFeature)
-    const styleData = (await getStyleData(distributionFeature)) || {}
+    const distributionRecord = extractRecord(distributionData, protocol)
+    const serviceData = await getServiceData(distributionRecord)
+    const styleData = (await getStyleData(distributionRecord)) || {}
 
     const capabilityLink = getCapabilityLink(serviceData)
 

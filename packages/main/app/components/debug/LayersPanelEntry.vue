@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Feature as OGCFeature, OGCRecords } from '@swissgeo/shared/ogc'
+import type { OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
 
 import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
 import { useStorage } from '@vueuse/core'
@@ -7,7 +7,7 @@ import { useStorage } from '@vueuse/core'
 const layerStore = useLayerStore()
 
 const { layer } = defineProps<{
-    layer: OGCFeature
+    layer: OGCRecord
 }>()
 
 /**
@@ -54,13 +54,13 @@ const layerBg = computed(() => {
  * @param layer
  */
 const type = computed((): LayerType | 'UNKNOWN' => {
-    if (!state.value?.collectionData?.features) {
+    if (!state.value?.collectionData?.records) {
         return 'UNKNOWN'
     }
 
-    for (const feature of state.value.collectionData.features) {
+    for (const feature of state.value.collectionData.records) {
         const protocol = feature.properties?.protocol
-        // loop through features and the first element found that
+        // loop through records and the first element found that
         // maches either protocol will determine the layer type
 
         if (protocol === 'OGC:WMTS') {
@@ -88,7 +88,7 @@ async function updateCollectionData() {
     }
 }
 
-function addLayerToMap(layer: OGCFeature) {
+function addLayerToMap(layer: OGCRecord) {
     if (!type.value) {
         throw Error('Neither OGC:WMS nor OGC:WMTS found in the definition')
     }

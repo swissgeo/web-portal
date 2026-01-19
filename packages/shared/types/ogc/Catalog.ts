@@ -1,17 +1,17 @@
 export interface OGCRecords {
     type: string
-    features: Feature[]
+    records: OGCRecord[]
 }
 
-export interface Feature {
+export interface OGCRecord {
     id: string
     links: Link[]
     properties?: Property
 }
 
 // Maybe some more concrete types would be useful for code readability?
-export type Dataset = Feature
-export type Distribution = Feature
+export type Dataset = OGCRecord
+export type Distribution = OGCRecord
 
 export interface Language {
     code: string

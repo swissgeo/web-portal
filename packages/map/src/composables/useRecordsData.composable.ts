@@ -1,5 +1,5 @@
 import type { Layer } from '@swissgeo/layers'
-import type { Feature as OGCFeature, OGCRecords, Service, Protocol } from '@swissgeo/shared/ogc'
+import type { OGCRecord, OGCRecords, Service, Protocol } from '@swissgeo/shared/ogc'
 
 import { getDataServiceLinks } from '@/utils/recordUtils'
 
@@ -34,14 +34,14 @@ export default async function useRecordsData(layer: Layer, protocol: Protocol) {
     )
 
     // Extract the feature for the service
-    const feature = computed((): OGCFeature => {
+    const feature = computed((): OGCRecord => {
         if (!distributionData.value) {
             throw new Error('Unable to load distribution data')
         }
 
-        const features = distributionData.value.features
+        const records = distributionData.value.records
 
-        for (const feature of features) {
+        for (const feature of records) {
             if (!feature.properties) {
                 break // go to exception below
             }

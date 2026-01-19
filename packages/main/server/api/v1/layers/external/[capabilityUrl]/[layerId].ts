@@ -9,7 +9,7 @@ export default defineEventHandler((event) => {
     appendResponseHeader(event, 'Content-Type', 'application/json')
     appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)
     return {
-        features: [
+        records: [
             {
                 id: `${layerId}`,
                 links: [

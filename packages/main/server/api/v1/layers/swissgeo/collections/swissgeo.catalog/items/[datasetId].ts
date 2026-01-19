@@ -23,9 +23,9 @@ export default defineEventHandler(async (event) => {
     // getting the entire catalog. Now we can extract the particular layerId and return *that*
 
     const jsonData = JSON.parse(data.toString()) as OGCRecords
-    const features = jsonData.features
+    const records = jsonData.records
 
-    const feature = features.find((feature) => feature.id === datasetId)
+    const feature = records.find((record) => record.id === datasetId)
 
     if (!feature) {
         throw createError({

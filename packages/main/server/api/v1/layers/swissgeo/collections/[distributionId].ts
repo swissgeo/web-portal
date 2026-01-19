@@ -20,8 +20,8 @@ export default defineEventHandler(async (event) => {
     const data = await fs.readFile(path)
     const jsonData = JSON.parse(data.toString()) as OGCRecords
 
-    const features = jsonData.features
-    jsonData.features = prependLinks(features)
+    const records = jsonData.records
+    jsonData.records = prependLinks(records)
 
     appendResponseHeader(event, 'Content-Type', 'application/json')
     appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)
