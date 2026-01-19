@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.agroscope.korridore-feuchtgebietsarten_bereiche",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.agroscope.korridore-feuchtgebietsarten_bereiche:wmts"
+  },
+  "records": [
     {
       "id": "ch.agroscope.korridore-feuchtgebietsarten_bereiche:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.agroscope.korridore-feuchtgebietsarten_bereiche",
+  "type": "Collection"
 }

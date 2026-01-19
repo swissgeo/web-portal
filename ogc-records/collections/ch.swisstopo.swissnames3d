@@ -1,32 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "id": "ch.swisstopo.swissnames3d:wms",
-      "links": [
-        {
-          "href": "collections/ch.swisstopo.swissnames3d/items/ch.swisstopo.swissnames3d:wms",
-          "rel": "self",
-          "type": "application/json"
-        },
-        {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "service"
-        },
-        {
-          "href": "collections/swissgeo.catalog/items/ch.swisstopo.swissnames3d",
-          "rel": "dataset"
-        }
-      ],
-      "properties": {
-        "externalIds": [
-          "ch.swisstopo.swissnames3d"
-        ],
-        "protocol": "OGC:WMS",
-        "title": "OGC Web Map Service (WMS)",
-        "type": "Distribution"
-      }
-    },
+  "id": "ch.swisstopo.swissnames3d",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.swissnames3d:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.swissnames3d:stac",
       "links": [
@@ -52,32 +30,9 @@
         "title": "STAC Download Service",
         "type": "Distribution"
       }
-    },
-    {
-      "id": "ch.swisstopo.swissnames3d:wmts",
-      "links": [
-        {
-          "href": "collections/ch.swisstopo.swissnames3d/items/ch.swisstopo.swissnames3d:wmts",
-          "rel": "self",
-          "type": "application/json"
-        },
-        {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
-          "rel": "service"
-        },
-        {
-          "href": "collections/swissgeo.catalog/items/ch.swisstopo.swissnames3d",
-          "rel": "dataset"
-        }
-      ],
-      "properties": {
-        "externalIds": [
-          "ch.swisstopo.swissnames3d"
-        ],
-        "protocol": "OGC:WMTS",
-        "title": "OGC Web Map Tile Service (WMTS)",
-        "type": "Distribution"
-      }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.swissnames3d",
+  "type": "Collection"
 }

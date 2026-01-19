@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.fixpunkte-agnes",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.fixpunkte-agnes:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.fixpunkte-agnes:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.fixpunkte-agnes",
+  "type": "Collection"
 }

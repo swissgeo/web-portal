@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.sicherheitszonenplan",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.sicherheitszonenplan:wms"
+  },
+  "records": [
     {
       "id": "ch.bazl.sicherheitszonenplan:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.sicherheitszonenplan",
+  "type": "Collection"
 }

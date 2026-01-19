@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.skatingland",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.skatingland:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.skatingland:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.skatingland",
+  "type": "Collection"
 }

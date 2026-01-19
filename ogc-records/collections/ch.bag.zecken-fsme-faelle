@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bag.zecken-fsme-faelle",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bag.zecken-fsme-faelle:wmts"
+  },
+  "records": [
     {
       "id": "ch.bag.zecken-fsme-faelle:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bag.zecken-fsme-faelle",
+  "type": "Collection"
 }

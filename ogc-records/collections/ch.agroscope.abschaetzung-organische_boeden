@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.agroscope.abschaetzung-organische_boeden",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.agroscope.abschaetzung-organische_boeden:wms"
+  },
+  "records": [
     {
       "id": "ch.agroscope.abschaetzung-organische_boeden:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.agroscope.abschaetzung-organische_boeden",
+  "type": "Collection"
 }

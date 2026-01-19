@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.are.solaranlagen-schutzinteressen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.are.solaranlagen-schutzinteressen:wmts"
+  },
+  "records": [
     {
       "id": "ch.are.solaranlagen-schutzinteressen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.are.solaranlagen-schutzinteressen",
+  "type": "Collection"
 }

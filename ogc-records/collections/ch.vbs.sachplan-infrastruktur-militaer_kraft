@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.vbs.sachplan-infrastruktur-militaer_kraft",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.vbs.sachplan-infrastruktur-militaer_kraft:wms"
+  },
+  "records": [
     {
       "id": "ch.vbs.sachplan-infrastruktur-militaer_kraft:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.vbs.sachplan-infrastruktur-militaer_kraft",
+  "type": "Collection"
 }

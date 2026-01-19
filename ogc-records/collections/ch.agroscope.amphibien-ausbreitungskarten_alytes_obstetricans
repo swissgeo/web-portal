@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.agroscope.amphibien-ausbreitungskarten_alytes_obstetricans",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.agroscope.amphibien-ausbreitungskarten_alytes_obstetricans:wmts"
+  },
+  "records": [
     {
       "id": "ch.agroscope.amphibien-ausbreitungskarten_alytes_obstetricans:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.agroscope.amphibien-ausbreitungskarten_alytes_obstetricans",
+  "type": "Collection"
 }

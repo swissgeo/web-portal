@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.flora-verbreitungskarten",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.flora-verbreitungskarten:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.flora-verbreitungskarten:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.flora-verbreitungskarten",
+  "type": "Collection"
 }

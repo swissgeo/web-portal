@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.klimaeignung-kulturland",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.klimaeignung-kulturland:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.klimaeignung-kulturland:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.klimaeignung-kulturland",
+  "type": "Collection"
 }

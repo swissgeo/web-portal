@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.schutzgebiete-luftfahrt",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.schutzgebiete-luftfahrt:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.schutzgebiete-luftfahrt:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.schutzgebiete-luftfahrt",
+  "type": "Collection"
 }

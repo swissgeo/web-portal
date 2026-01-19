@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.swisseo_ndvi_z_v100",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.swisseo_ndvi_z_v100:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.swisseo_ndvi_z_v100:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.swisseo_ndvi_z_v100",
+  "type": "Collection"
 }

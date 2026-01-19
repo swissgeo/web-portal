@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bav.haltestellen-oev",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bav.haltestellen-oev:wmts"
+  },
+  "records": [
     {
       "id": "ch.bav.haltestellen-oev:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bav.haltestellen-oev",
+  "type": "Collection"
 }

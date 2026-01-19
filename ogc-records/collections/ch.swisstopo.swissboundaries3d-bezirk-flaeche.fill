@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill",
+  "type": "Collection"
 }

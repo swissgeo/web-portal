@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo-vd.stand-oerebkataster",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo-vd.stand-oerebkataster:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo-vd.stand-oerebkataster:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo-vd.stand-oerebkataster",
+  "type": "Collection"
 }

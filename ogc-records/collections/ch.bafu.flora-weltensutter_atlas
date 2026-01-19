@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.flora-weltensutter_atlas",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.flora-weltensutter_atlas:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.flora-weltensutter_atlas:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.flora-weltensutter_atlas",
+  "type": "Collection"
 }

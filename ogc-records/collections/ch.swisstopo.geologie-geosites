@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geosites",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geosites:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geosites:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geosites",
+  "type": "Collection"
 }

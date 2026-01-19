@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.swisstne-base",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.swisstne-base:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.swisstne-base:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.swisstne-base",
+  "type": "Collection"
 }

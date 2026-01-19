@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.nagra.aeromagnetische-karte_1100",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.nagra.aeromagnetische-karte_1100:wmts"
+  },
+  "records": [
     {
       "id": "ch.nagra.aeromagnetische-karte_1100:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.nagra.aeromagnetische-karte_1100",
+  "type": "Collection"
 }

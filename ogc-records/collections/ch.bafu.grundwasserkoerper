@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.grundwasserkoerper",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.grundwasserkoerper:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.grundwasserkoerper:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.grundwasserkoerper",
+  "type": "Collection"
 }

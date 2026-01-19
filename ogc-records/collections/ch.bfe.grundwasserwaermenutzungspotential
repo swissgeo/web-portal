@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.grundwasserwaermenutzungspotential",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.grundwasserwaermenutzungspotential:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.grundwasserwaermenutzungspotential:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.grundwasserwaermenutzungspotential",
+  "type": "Collection"
 }

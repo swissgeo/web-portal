@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-bodenunruhe",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-bodenunruhe:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-bodenunruhe:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-bodenunruhe",
+  "type": "Collection"
 }

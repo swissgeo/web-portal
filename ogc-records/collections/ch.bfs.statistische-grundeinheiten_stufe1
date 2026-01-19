@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfs.statistische-grundeinheiten_stufe1",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfs.statistische-grundeinheiten_stufe1:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfs.statistische-grundeinheiten_stufe1:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfs.statistische-grundeinheiten_stufe1",
+  "type": "Collection"
 }

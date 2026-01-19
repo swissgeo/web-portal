@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.ladebedarfswelt-strombedarf",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.ladebedarfswelt-strombedarf:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.ladebedarfswelt-strombedarf:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.ladebedarfswelt-strombedarf",
+  "type": "Collection"
 }

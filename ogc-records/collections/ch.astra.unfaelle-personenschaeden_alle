@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.unfaelle-personenschaeden_alle",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.unfaelle-personenschaeden_alle:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.unfaelle-personenschaeden_alle:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.unfaelle-personenschaeden_alle",
+  "type": "Collection"
 }

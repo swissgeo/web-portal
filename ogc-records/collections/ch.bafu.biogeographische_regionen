@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.biogeographische_regionen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.biogeographische_regionen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.biogeographische_regionen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.biogeographische_regionen",
+  "type": "Collection"
 }

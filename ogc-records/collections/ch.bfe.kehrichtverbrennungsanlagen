@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.kehrichtverbrennungsanlagen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.kehrichtverbrennungsanlagen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.kehrichtverbrennungsanlagen:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.kehrichtverbrennungsanlagen",
+  "type": "Collection"
 }

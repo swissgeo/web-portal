@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.hauptstrassennetz",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.hauptstrassennetz:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.hauptstrassennetz:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.hauptstrassennetz",
+  "type": "Collection"
 }

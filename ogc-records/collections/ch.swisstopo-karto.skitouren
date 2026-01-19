@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo-karto.skitouren",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo-karto.skitouren:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo-karto.skitouren:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo-karto.skitouren",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-gewoehnliche_jungfernrebe",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-gewoehnliche_jungfernrebe:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-gewoehnliche_jungfernrebe:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-gewoehnliche_jungfernrebe",
+  "type": "Collection"
 }

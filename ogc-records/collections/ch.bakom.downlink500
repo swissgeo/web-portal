@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.downlink500",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.downlink500:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.downlink500:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.downlink500",
+  "type": "Collection"
 }

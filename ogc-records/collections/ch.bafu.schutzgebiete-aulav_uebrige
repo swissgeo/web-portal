@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.schutzgebiete-aulav_uebrige",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.schutzgebiete-aulav_uebrige:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.schutzgebiete-aulav_uebrige:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.schutzgebiete-aulav_uebrige",
+  "type": "Collection"
 }

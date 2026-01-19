@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.landesforstinventar-vegetationshoehenmodell_sentinel",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.landesforstinventar-vegetationshoehenmodell_sentinel:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.landesforstinventar-vegetationshoehenmodell_sentinel:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.landesforstinventar-vegetationshoehenmodell_sentinel",
+  "type": "Collection"
 }

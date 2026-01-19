@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.are.reisezeit-agglomerationen-miv",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.are.reisezeit-agglomerationen-miv:wmts"
+  },
+  "records": [
     {
       "id": "ch.are.reisezeit-agglomerationen-miv:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.are.reisezeit-agglomerationen-miv",
+  "type": "Collection"
 }

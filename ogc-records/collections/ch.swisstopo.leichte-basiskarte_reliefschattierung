@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.leichte-basiskarte_reliefschattierung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.leichte-basiskarte_reliefschattierung:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.leichte-basiskarte_reliefschattierung:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.leichte-basiskarte_reliefschattierung",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen",
+  "type": "Collection"
 }

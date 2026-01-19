@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geomol-temperaturmodell_eingangsdaten",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geomol-temperaturmodell_eingangsdaten:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geomol-temperaturmodell_eingangsdaten:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geomol-temperaturmodell_eingangsdaten",
+  "type": "Collection"
 }

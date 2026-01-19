@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.flora-schwingrasen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.flora-schwingrasen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.flora-schwingrasen:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.flora-schwingrasen",
+  "type": "Collection"
 }

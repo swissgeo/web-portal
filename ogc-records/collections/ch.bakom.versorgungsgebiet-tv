@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.versorgungsgebiet-tv",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.versorgungsgebiet-tv:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.versorgungsgebiet-tv:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.versorgungsgebiet-tv",
+  "type": "Collection"
 }

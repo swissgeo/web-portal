@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-mahonie",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-mahonie:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-mahonie:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-mahonie",
+  "type": "Collection"
 }

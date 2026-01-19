@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.ivs-reg_loc",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.ivs-reg_loc:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.ivs-reg_loc:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.ivs-reg_loc",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.strukturguete-hochrhein_linkesufer",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.strukturguete-hochrhein_linkesufer:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.strukturguete-hochrhein_linkesufer:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.strukturguete-hochrhein_linkesufer",
+  "type": "Collection"
 }

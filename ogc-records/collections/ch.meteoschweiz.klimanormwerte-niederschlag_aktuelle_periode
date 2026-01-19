@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.meteoschweiz.klimanormwerte-niederschlag_aktuelle_periode",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.meteoschweiz.klimanormwerte-niederschlag_aktuelle_periode:wmts"
+  },
+  "records": [
     {
       "id": "ch.meteoschweiz.klimanormwerte-niederschlag_aktuelle_periode:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.meteoschweiz.klimanormwerte-niederschlag_aktuelle_periode",
+  "type": "Collection"
 }

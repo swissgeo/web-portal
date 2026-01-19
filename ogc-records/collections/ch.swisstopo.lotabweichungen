@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.lotabweichungen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.lotabweichungen:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.lotabweichungen:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.lotabweichungen",
+  "type": "Collection"
 }

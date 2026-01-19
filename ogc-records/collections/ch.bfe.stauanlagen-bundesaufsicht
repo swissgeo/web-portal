@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.stauanlagen-bundesaufsicht",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.stauanlagen-bundesaufsicht:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.stauanlagen-bundesaufsicht:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.stauanlagen-bundesaufsicht",
+  "type": "Collection"
 }

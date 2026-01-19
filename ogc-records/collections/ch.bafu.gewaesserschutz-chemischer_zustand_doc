@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.gewaesserschutz-chemischer_zustand_doc",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.gewaesserschutz-chemischer_zustand_doc:wms"
+  },
+  "records": [
     {
       "id": "ch.bafu.gewaesserschutz-chemischer_zustand_doc:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.gewaesserschutz-chemischer_zustand_doc",
+  "type": "Collection"
 }

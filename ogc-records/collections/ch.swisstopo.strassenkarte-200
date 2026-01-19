@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.strassenkarte-200",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.strassenkarte-200:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.strassenkarte-200:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.strassenkarte-200",
+  "type": "Collection"
 }

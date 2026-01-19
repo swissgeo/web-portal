@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.bodeneignung-gruendigkeit",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.bodeneignung-gruendigkeit:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.bodeneignung-gruendigkeit:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.bodeneignung-gruendigkeit",
+  "type": "Collection"
 }

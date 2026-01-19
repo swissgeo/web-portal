@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.hiks-dufour.metadata",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.hiks-dufour.metadata:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.hiks-dufour.metadata:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.hiks-dufour.metadata",
+  "type": "Collection"
 }

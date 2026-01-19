@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.hydrologie-hochwasserstatistik",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.hydrologie-hochwasserstatistik:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.hydrologie-hochwasserstatistik:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.hydrologie-hochwasserstatistik",
+  "type": "Collection"
 }

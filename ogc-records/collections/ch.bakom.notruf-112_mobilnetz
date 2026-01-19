@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.notruf-112_mobilnetz",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.notruf-112_mobilnetz:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.notruf-112_mobilnetz:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.notruf-112_mobilnetz",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.schutzgebiete-aulav_auen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.schutzgebiete-aulav_auen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.schutzgebiete-aulav_auen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.schutzgebiete-aulav_auen",
+  "type": "Collection"
 }

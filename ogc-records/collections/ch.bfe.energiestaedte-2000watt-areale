@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.energiestaedte-2000watt-areale",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.energiestaedte-2000watt-areale:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.energiestaedte-2000watt-areale:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.energiestaedte-2000watt-areale",
+  "type": "Collection"
 }

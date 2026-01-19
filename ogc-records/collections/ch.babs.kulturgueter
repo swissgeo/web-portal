@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.babs.kulturgueter",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.babs.kulturgueter:wmts"
+  },
+  "records": [
     {
       "id": "ch.babs.kulturgueter:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.babs.kulturgueter",
+  "type": "Collection"
 }

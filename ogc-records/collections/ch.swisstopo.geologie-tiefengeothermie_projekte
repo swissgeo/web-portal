@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-tiefengeothermie_projekte",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-tiefengeothermie_projekte:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-tiefengeothermie_projekte:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-tiefengeothermie_projekte",
+  "type": "Collection"
 }

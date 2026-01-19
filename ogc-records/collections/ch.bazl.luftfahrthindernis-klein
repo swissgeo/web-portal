@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.luftfahrthindernis-klein",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.luftfahrthindernis-klein:wms"
+  },
+  "records": [
     {
       "id": "ch.bazl.luftfahrthindernis-klein:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.luftfahrthindernis-klein",
+  "type": "Collection"
 }

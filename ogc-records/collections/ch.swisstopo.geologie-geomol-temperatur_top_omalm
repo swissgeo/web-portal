@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geomol-temperatur_top_omalm",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geomol-temperatur_top_omalm:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geomol-temperatur_top_omalm:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geomol-temperatur_top_omalm",
+  "type": "Collection"
 }

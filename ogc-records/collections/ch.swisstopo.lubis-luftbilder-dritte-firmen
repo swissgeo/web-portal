@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.lubis-luftbilder-dritte-firmen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.lubis-luftbilder-dritte-firmen:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.lubis-luftbilder-dritte-firmen:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.lubis-luftbilder-dritte-firmen",
+  "type": "Collection"
 }

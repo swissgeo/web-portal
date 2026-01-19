@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.waermepotential-gewaesser",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.waermepotential-gewaesser:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.waermepotential-gewaesser:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.waermepotential-gewaesser",
+  "type": "Collection"
 }

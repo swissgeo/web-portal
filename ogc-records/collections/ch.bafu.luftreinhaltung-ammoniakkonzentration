@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.luftreinhaltung-ammoniakkonzentration",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.luftreinhaltung-ammoniakkonzentration:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.luftreinhaltung-ammoniakkonzentration:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.luftreinhaltung-ammoniakkonzentration",
+  "type": "Collection"
 }

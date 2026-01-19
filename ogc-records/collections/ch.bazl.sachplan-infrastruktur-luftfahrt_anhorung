@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung:wms"
+  },
+  "records": [
     {
       "id": "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung",
+  "type": "Collection"
 }

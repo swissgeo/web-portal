@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geotope_kantone_stand",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geotope_kantone_stand:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geotope_kantone_stand:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geotope_kantone_stand",
+  "type": "Collection"
 }

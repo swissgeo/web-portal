@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.fischerei-krebspest",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.fischerei-krebspest:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.fischerei-krebspest:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.fischerei-krebspest",
+  "type": "Collection"
 }

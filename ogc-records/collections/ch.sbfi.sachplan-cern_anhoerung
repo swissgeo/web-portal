@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.sbfi.sachplan-cern_anhoerung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.sbfi.sachplan-cern_anhoerung:wms"
+  },
+  "records": [
     {
       "id": "ch.sbfi.sachplan-cern_anhoerung:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.sbfi.sachplan-cern_anhoerung",
+  "type": "Collection"
 }

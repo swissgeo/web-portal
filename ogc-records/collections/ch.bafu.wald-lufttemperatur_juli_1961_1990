@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wald-lufttemperatur_juli_1961_1990",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wald-lufttemperatur_juli_1961_1990:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wald-lufttemperatur_juli_1961_1990:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wald-lufttemperatur_juli_1961_1990",
+  "type": "Collection"
 }

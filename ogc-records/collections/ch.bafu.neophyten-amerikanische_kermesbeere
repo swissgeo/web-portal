@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-amerikanische_kermesbeere",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-amerikanische_kermesbeere:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-amerikanische_kermesbeere:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-amerikanische_kermesbeere",
+  "type": "Collection"
 }

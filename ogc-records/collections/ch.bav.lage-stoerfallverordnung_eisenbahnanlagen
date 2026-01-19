@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bav.lage-stoerfallverordnung_eisenbahnanlagen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bav.lage-stoerfallverordnung_eisenbahnanlagen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bav.lage-stoerfallverordnung_eisenbahnanlagen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bav.lage-stoerfallverordnung_eisenbahnanlagen",
+  "type": "Collection"
 }

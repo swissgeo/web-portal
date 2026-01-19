@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.erneuerbarheizen-mehrfamilienhaeuser",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.erneuerbarheizen-mehrfamilienhaeuser:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.erneuerbarheizen-mehrfamilienhaeuser:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.erneuerbarheizen-mehrfamilienhaeuser",
+  "type": "Collection"
 }

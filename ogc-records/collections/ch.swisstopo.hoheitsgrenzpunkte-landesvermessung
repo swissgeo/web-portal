@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.hoheitsgrenzpunkte-landesvermessung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.hoheitsgrenzpunkte-landesvermessung:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.hoheitsgrenzpunkte-landesvermessung:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.hoheitsgrenzpunkte-landesvermessung",
+  "type": "Collection"
 }

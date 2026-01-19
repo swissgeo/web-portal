@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.unfaelle-personenschaeden_fahrraeder",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.unfaelle-personenschaeden_fahrraeder:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.unfaelle-personenschaeden_fahrraeder:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.unfaelle-personenschaeden_fahrraeder",
+  "type": "Collection"
 }

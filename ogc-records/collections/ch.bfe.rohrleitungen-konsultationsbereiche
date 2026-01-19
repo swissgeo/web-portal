@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.rohrleitungen-konsultationsbereiche",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.rohrleitungen-konsultationsbereiche:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.rohrleitungen-konsultationsbereiche:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.rohrleitungen-konsultationsbereiche",
+  "type": "Collection"
 }

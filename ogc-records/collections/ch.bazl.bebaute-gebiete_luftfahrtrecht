@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.bebaute-gebiete_luftfahrtrecht",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.bebaute-gebiete_luftfahrtrecht:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.bebaute-gebiete_luftfahrtrecht:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.bebaute-gebiete_luftfahrtrecht",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.schutzgebiete-smaragd",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.schutzgebiete-smaragd:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.schutzgebiete-smaragd:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.schutzgebiete-smaragd",
+  "type": "Collection"
 }

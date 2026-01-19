@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.hydrologie-hydromessstationen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.hydrologie-hydromessstationen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.hydrologie-hydromessstationen:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.hydrologie-hydromessstationen",
+  "type": "Collection"
 }

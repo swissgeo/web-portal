@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wasser-teileinzugsgebiete_2",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wasser-teileinzugsgebiete_2:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wasser-teileinzugsgebiete_2:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wasser-teileinzugsgebiete_2",
+  "type": "Collection"
 }

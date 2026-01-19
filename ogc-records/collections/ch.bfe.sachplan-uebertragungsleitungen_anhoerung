@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.sachplan-uebertragungsleitungen_anhoerung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.sachplan-uebertragungsleitungen_anhoerung:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.sachplan-uebertragungsleitungen_anhoerung:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.sachplan-uebertragungsleitungen_anhoerung",
+  "type": "Collection"
 }

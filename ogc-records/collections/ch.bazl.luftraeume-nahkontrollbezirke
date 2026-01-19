@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.luftraeume-nahkontrollbezirke",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.luftraeume-nahkontrollbezirke:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.luftraeume-nahkontrollbezirke:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.luftraeume-nahkontrollbezirke",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.gefahren-baugrundklassen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.gefahren-baugrundklassen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.gefahren-baugrundklassen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.gefahren-baugrundklassen",
+  "type": "Collection"
 }

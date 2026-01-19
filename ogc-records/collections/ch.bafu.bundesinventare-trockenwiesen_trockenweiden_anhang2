@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2",
+  "type": "Collection"
 }

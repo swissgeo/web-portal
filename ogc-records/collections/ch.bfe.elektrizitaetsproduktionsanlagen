@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.elektrizitaetsproduktionsanlagen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.elektrizitaetsproduktionsanlagen:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.elektrizitaetsproduktionsanlagen:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.elektrizitaetsproduktionsanlagen",
+  "type": "Collection"
 }

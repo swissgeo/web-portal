@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.karst-unterirdische_fliesswege",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.karst-unterirdische_fliesswege:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.karst-unterirdische_fliesswege:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.karst-unterirdische_fliesswege",
+  "type": "Collection"
 }

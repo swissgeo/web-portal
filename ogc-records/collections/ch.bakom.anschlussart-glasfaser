@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.anschlussart-glasfaser",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.anschlussart-glasfaser:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.anschlussart-glasfaser:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.anschlussart-glasfaser",
+  "type": "Collection"
 }

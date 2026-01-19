@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.windenergie-geschwindigkeit_h50",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.windenergie-geschwindigkeit_h50:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.windenergie-geschwindigkeit_h50:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.windenergie-geschwindigkeit_h50",
+  "type": "Collection"
 }

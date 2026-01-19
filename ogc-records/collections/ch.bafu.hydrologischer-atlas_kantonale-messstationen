@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.hydrologischer-atlas_kantonale-messstationen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.hydrologischer-atlas_kantonale-messstationen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.hydrologischer-atlas_kantonale-messstationen:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.hydrologischer-atlas_kantonale-messstationen",
+  "type": "Collection"
 }

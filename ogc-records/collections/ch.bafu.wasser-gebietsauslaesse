@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wasser-gebietsauslaesse",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wasser-gebietsauslaesse:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wasser-gebietsauslaesse:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wasser-gebietsauslaesse",
+  "type": "Collection"
 }

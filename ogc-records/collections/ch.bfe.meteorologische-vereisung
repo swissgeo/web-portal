@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.meteorologische-vereisung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.meteorologische-vereisung:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.meteorologische-vereisung:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.meteorologische-vereisung",
+  "type": "Collection"
 }

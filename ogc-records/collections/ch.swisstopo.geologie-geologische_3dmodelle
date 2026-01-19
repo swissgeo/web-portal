@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geologische_3dmodelle",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geologische_3dmodelle:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geologische_3dmodelle:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geologische_3dmodelle",
+  "type": "Collection"
 }

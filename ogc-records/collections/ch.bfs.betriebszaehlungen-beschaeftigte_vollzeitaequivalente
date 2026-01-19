@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfs.betriebszaehlungen-beschaeftigte_vollzeitaequivalente",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfs.betriebszaehlungen-beschaeftigte_vollzeitaequivalente:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfs.betriebszaehlungen-beschaeftigte_vollzeitaequivalente:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfs.betriebszaehlungen-beschaeftigte_vollzeitaequivalente",
+  "type": "Collection"
 }

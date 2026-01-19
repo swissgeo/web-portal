@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.waldschadenflaechen-vivian",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.waldschadenflaechen-vivian:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.waldschadenflaechen-vivian:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.waldschadenflaechen-vivian",
+  "type": "Collection"
 }

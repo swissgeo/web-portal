@@ -1,6 +1,7 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.hydroweb-messstationen_grundwasser",
+  "itemType": "record",
+  "records": [
     {
       "id": "ch.bafu.hydroweb-messstationen_grundwasser:geojson",
       "links": [
@@ -60,5 +61,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.hydroweb-messstationen_grundwasser",
+  "type": "Collection"
 }

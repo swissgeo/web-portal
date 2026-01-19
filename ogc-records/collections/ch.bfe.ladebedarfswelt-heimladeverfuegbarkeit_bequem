@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.ladebedarfswelt-heimladeverfuegbarkeit_bequem",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.ladebedarfswelt-heimladeverfuegbarkeit_bequem:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.ladebedarfswelt-heimladeverfuegbarkeit_bequem:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.ladebedarfswelt-heimladeverfuegbarkeit_bequem",
+  "type": "Collection"
 }

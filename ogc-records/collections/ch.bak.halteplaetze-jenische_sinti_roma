@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bak.halteplaetze-jenische_sinti_roma",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bak.halteplaetze-jenische_sinti_roma:wmts"
+  },
+  "records": [
     {
       "id": "ch.bak.halteplaetze-jenische_sinti_roma:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bak.halteplaetze-jenische_sinti_roma",
+  "type": "Collection"
 }

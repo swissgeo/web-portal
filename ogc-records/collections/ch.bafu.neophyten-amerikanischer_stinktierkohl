@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-amerikanischer_stinktierkohl",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-amerikanischer_stinktierkohl:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-amerikanischer_stinktierkohl:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-amerikanischer_stinktierkohl",
+  "type": "Collection"
 }

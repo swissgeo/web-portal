@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.auen-ausserhalb_bundesinventar_alpin",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.auen-ausserhalb_bundesinventar_alpin:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.auen-ausserhalb_bundesinventar_alpin:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.auen-ausserhalb_bundesinventar_alpin",
+  "type": "Collection"
 }

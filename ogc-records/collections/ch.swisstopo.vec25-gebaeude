@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.vec25-gebaeude",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.vec25-gebaeude:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.vec25-gebaeude:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.vec25-gebaeude",
+  "type": "Collection"
 }

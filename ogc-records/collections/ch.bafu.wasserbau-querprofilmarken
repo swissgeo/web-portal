@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wasserbau-querprofilmarken",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wasserbau-querprofilmarken:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wasserbau-querprofilmarken:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wasserbau-querprofilmarken",
+  "type": "Collection"
 }

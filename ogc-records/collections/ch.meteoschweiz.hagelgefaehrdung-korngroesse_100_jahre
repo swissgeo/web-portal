@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.meteoschweiz.hagelgefaehrdung-korngroesse_100_jahre",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.meteoschweiz.hagelgefaehrdung-korngroesse_100_jahre:wms"
+  },
+  "records": [
     {
       "id": "ch.meteoschweiz.hagelgefaehrdung-korngroesse_100_jahre:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.meteoschweiz.hagelgefaehrdung-korngroesse_100_jahre",
+  "type": "Collection"
 }

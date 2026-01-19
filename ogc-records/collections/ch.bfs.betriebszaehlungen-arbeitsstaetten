@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfs.betriebszaehlungen-arbeitsstaetten",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfs.betriebszaehlungen-arbeitsstaetten:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfs.betriebszaehlungen-arbeitsstaetten:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfs.betriebszaehlungen-arbeitsstaetten",
+  "type": "Collection"
 }

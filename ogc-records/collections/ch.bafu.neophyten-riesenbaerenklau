@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-riesenbaerenklau",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-riesenbaerenklau:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-riesenbaerenklau:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-riesenbaerenklau",
+  "type": "Collection"
 }

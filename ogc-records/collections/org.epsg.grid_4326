@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "org.epsg.grid_4326",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "org.epsg.grid_4326:wms"
+  },
+  "records": [
     {
       "id": "org.epsg.grid_4326:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for org.epsg.grid_4326",
+  "type": "Collection"
 }

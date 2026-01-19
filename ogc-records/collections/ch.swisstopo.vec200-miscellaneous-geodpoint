@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.vec200-miscellaneous-geodpoint",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.vec200-miscellaneous-geodpoint:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.vec200-miscellaneous-geodpoint:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.vec200-miscellaneous-geodpoint",
+  "type": "Collection"
 }

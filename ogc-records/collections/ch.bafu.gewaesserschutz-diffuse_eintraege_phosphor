@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.gewaesserschutz-diffuse_eintraege_phosphor",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.gewaesserschutz-diffuse_eintraege_phosphor:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.gewaesserschutz-diffuse_eintraege_phosphor:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.gewaesserschutz-diffuse_eintraege_phosphor",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.lubis-luftbilder_farbe",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.lubis-luftbilder_farbe:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.lubis-luftbilder_farbe:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.lubis-luftbilder_farbe",
+  "type": "Collection"
 }

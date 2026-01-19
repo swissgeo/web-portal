@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.winterwanderwege",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.winterwanderwege:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.winterwanderwege:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.winterwanderwege",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.are.reisezeit-oev",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.are.reisezeit-oev:wmts"
+  },
+  "records": [
     {
       "id": "ch.are.reisezeit-oev:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.are.reisezeit-oev",
+  "type": "Collection"
 }

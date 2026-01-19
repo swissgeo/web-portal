@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.landesschwerenetz",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.landesschwerenetz:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.landesschwerenetz:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.landesschwerenetz",
+  "type": "Collection"
 }

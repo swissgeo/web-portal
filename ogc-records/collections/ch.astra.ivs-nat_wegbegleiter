@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.ivs-nat_wegbegleiter",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.ivs-nat_wegbegleiter:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.ivs-nat_wegbegleiter:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.ivs-nat_wegbegleiter",
+  "type": "Collection"
 }

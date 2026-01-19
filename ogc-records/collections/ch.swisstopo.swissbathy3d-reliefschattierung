@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.swissbathy3d-reliefschattierung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.swissbathy3d-reliefschattierung:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.swissbathy3d-reliefschattierung:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.swissbathy3d-reliefschattierung",
+  "type": "Collection"
 }

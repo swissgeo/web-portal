@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.fernwaerme-angebot",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.fernwaerme-angebot:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.fernwaerme-angebot:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.fernwaerme-angebot",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.verschiebungsvektoren-tsp1",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.verschiebungsvektoren-tsp1:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.verschiebungsvektoren-tsp1:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.verschiebungsvektoren-tsp1",
+  "type": "Collection"
 }

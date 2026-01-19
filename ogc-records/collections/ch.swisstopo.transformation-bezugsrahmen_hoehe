@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.transformation-bezugsrahmen_hoehe",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.transformation-bezugsrahmen_hoehe:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.transformation-bezugsrahmen_hoehe:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.transformation-bezugsrahmen_hoehe",
+  "type": "Collection"
 }

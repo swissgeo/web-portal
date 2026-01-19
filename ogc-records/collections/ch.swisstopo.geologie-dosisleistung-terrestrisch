@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-dosisleistung-terrestrisch",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-dosisleistung-terrestrisch:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-dosisleistung-terrestrisch:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-dosisleistung-terrestrisch",
+  "type": "Collection"
 }

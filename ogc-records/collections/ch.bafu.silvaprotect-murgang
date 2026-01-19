@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.silvaprotect-murgang",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.silvaprotect-murgang:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.silvaprotect-murgang:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.silvaprotect-murgang",
+  "type": "Collection"
 }

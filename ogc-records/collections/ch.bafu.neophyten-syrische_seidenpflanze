@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-syrische_seidenpflanze",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-syrische_seidenpflanze:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-syrische_seidenpflanze:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-syrische_seidenpflanze",
+  "type": "Collection"
 }

@@ -1,6 +1,7 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.meteoschweiz.messwerte-neuschnee-3d",
+  "itemType": "record",
+  "records": [
     {
       "id": "ch.meteoschweiz.messwerte-neuschnee-3d:geojson",
       "links": [
@@ -34,5 +35,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.meteoschweiz.messwerte-neuschnee-3d",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.ursprungsbezeichnungen-spirituosen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.ursprungsbezeichnungen-spirituosen:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.ursprungsbezeichnungen-spirituosen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.ursprungsbezeichnungen-spirituosen",
+  "type": "Collection"
 }

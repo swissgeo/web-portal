@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.anbieter-eigenes_festnetz",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.anbieter-eigenes_festnetz:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.anbieter-eigenes_festnetz:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.anbieter-eigenes_festnetz",
+  "type": "Collection"
 }

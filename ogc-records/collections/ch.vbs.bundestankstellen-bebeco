@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.vbs.bundestankstellen-bebeco",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.vbs.bundestankstellen-bebeco:wms"
+  },
+  "records": [
     {
       "id": "ch.vbs.bundestankstellen-bebeco:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.vbs.bundestankstellen-bebeco",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-glattes_zackenschoetchen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-glattes_zackenschoetchen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-glattes_zackenschoetchen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-glattes_zackenschoetchen",
+  "type": "Collection"
 }

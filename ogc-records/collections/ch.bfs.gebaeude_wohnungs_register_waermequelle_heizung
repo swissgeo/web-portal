@@ -1,58 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "id": "ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung:wmts",
-      "links": [
-        {
-          "href": "collections/ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung/items/ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung:wmts",
-          "rel": "self",
-          "type": "application/json"
-        },
-        {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wmts",
-          "rel": "service"
-        },
-        {
-          "href": "collections/swissgeo.catalog/items/ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung",
-          "rel": "dataset"
-        }
-      ],
-      "properties": {
-        "externalIds": [
-          "ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung"
-        ],
-        "protocol": "OGC:WMTS",
-        "title": "OGC Web Map Tile Service (WMTS)",
-        "type": "Distribution"
-      }
-    },
-    {
-      "id": "ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung:wms",
-      "links": [
-        {
-          "href": "collections/ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung/items/ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung:wms",
-          "rel": "self",
-          "type": "application/json"
-        },
-        {
-          "href": "collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "service"
-        },
-        {
-          "href": "collections/swissgeo.catalog/items/ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung",
-          "rel": "dataset"
-        }
-      ],
-      "properties": {
-        "externalIds": [
-          "ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung"
-        ],
-        "protocol": "OGC:WMS",
-        "title": "OGC Web Map Service (WMS)",
-        "type": "Distribution"
-      }
-    },
+  "id": "ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung:wms"
+  },
+  "records": [
     {
       "id": "ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung:stac",
       "links": [
@@ -79,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfs.gebaeude_wohnungs_register_waermequelle_heizung",
+  "type": "Collection"
 }

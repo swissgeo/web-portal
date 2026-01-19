@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.unfaelle-personenschaeden_getoetete",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.unfaelle-personenschaeden_getoetete:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.unfaelle-personenschaeden_getoetete:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.unfaelle-personenschaeden_getoetete",
+  "type": "Collection"
 }

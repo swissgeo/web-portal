@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.pixelkarte-farbe-pk1000.noscale",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.pixelkarte-farbe-pk1000.noscale:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.pixelkarte-farbe-pk1000.noscale:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.pixelkarte-farbe-pk1000.noscale",
+  "type": "Collection"
 }

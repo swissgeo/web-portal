@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.luftfahrthindernis-aenderungen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.luftfahrthindernis-aenderungen:wms"
+  },
+  "records": [
     {
       "id": "ch.bazl.luftfahrthindernis-aenderungen:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.luftfahrthindernis-aenderungen",
+  "type": "Collection"
 }

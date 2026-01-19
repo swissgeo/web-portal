@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bakom.uplink1",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bakom.uplink1:wmts"
+  },
+  "records": [
     {
       "id": "ch.bakom.uplink1:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bakom.uplink1",
+  "type": "Collection"
 }

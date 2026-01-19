@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.erosion",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.erosion:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.erosion:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.erosion",
+  "type": "Collection"
 }

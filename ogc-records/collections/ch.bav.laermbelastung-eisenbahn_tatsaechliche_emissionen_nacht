@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bav.laermbelastung-eisenbahn_tatsaechliche_emissionen_nacht",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bav.laermbelastung-eisenbahn_tatsaechliche_emissionen_nacht:wmts"
+  },
+  "records": [
     {
       "id": "ch.bav.laermbelastung-eisenbahn_tatsaechliche_emissionen_nacht:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bav.laermbelastung-eisenbahn_tatsaechliche_emissionen_nacht",
+  "type": "Collection"
 }

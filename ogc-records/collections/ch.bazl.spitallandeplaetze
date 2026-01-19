@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.spitallandeplaetze",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.spitallandeplaetze:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.spitallandeplaetze:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.spitallandeplaetze",
+  "type": "Collection"
 }

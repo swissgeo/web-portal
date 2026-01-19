@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.blw.bodeneignung-skelettgehalt",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.blw.bodeneignung-skelettgehalt:wmts"
+  },
+  "records": [
     {
       "id": "ch.blw.bodeneignung-skelettgehalt:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.blw.bodeneignung-skelettgehalt",
+  "type": "Collection"
 }

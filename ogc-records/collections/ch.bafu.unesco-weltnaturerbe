@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.unesco-weltnaturerbe",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.unesco-weltnaturerbe:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.unesco-weltnaturerbe:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.unesco-weltnaturerbe",
+  "type": "Collection"
 }

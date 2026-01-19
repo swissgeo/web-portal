@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.laerm-strassenlaerm_nacht",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.laerm-strassenlaerm_nacht:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.laerm-strassenlaerm_nacht:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.laerm-strassenlaerm_nacht",
+  "type": "Collection"
 }

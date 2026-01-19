@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.luftraeume-kontrollbezirke",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.luftraeume-kontrollbezirke:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.luftraeume-kontrollbezirke:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.luftraeume-kontrollbezirke",
+  "type": "Collection"
 }

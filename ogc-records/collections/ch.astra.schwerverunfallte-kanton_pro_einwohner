@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.schwerverunfallte-kanton_pro_einwohner",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.schwerverunfallte-kanton_pro_einwohner:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.schwerverunfallte-kanton_pro_einwohner:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.schwerverunfallte-kanton_pro_einwohner",
+  "type": "Collection"
 }

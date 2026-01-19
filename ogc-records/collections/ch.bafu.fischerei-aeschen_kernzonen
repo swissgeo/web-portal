@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.fischerei-aeschen_kernzonen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.fischerei-aeschen_kernzonen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.fischerei-aeschen_kernzonen:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.fischerei-aeschen_kernzonen",
+  "type": "Collection"
 }

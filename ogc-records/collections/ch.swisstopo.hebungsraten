@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.hebungsraten",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.hebungsraten:wms"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.hebungsraten:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.hebungsraten",
+  "type": "Collection"
 }

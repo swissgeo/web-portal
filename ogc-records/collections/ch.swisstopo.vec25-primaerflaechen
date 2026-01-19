@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.vec25-primaerflaechen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.vec25-primaerflaechen:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.vec25-primaerflaechen:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.vec25-primaerflaechen",
+  "type": "Collection"
 }

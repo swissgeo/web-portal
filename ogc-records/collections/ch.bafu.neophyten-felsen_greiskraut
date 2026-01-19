@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-felsen_greiskraut",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-felsen_greiskraut:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-felsen_greiskraut:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-felsen_greiskraut",
+  "type": "Collection"
 }

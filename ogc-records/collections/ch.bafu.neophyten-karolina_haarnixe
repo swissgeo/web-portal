@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.neophyten-karolina_haarnixe",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.neophyten-karolina_haarnixe:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.neophyten-karolina_haarnixe:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.neophyten-karolina_haarnixe",
+  "type": "Collection"
 }

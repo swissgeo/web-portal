@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.gefahren-aktuelle_erdbeben",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.gefahren-aktuelle_erdbeben:wms"
+  },
+  "records": [
     {
       "id": "ch.bafu.gefahren-aktuelle_erdbeben:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.gefahren-aktuelle_erdbeben",
+  "type": "Collection"
 }

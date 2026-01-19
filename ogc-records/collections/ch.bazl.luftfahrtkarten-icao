@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.luftfahrtkarten-icao",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.luftfahrtkarten-icao:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.luftfahrtkarten-icao:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.luftfahrtkarten-icao",
+  "type": "Collection"
 }

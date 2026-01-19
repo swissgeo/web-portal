@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.erosion-gruenland_bodenabtrag_apr",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.erosion-gruenland_bodenabtrag_apr:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.erosion-gruenland_bodenabtrag_apr:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.erosion-gruenland_bodenabtrag_apr",
+  "type": "Collection"
 }

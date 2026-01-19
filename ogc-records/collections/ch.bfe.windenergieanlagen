@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.windenergieanlagen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.windenergieanlagen:wms"
+  },
+  "records": [
     {
       "id": "ch.bfe.windenergieanlagen:wms",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.windenergieanlagen",
+  "type": "Collection"
 }

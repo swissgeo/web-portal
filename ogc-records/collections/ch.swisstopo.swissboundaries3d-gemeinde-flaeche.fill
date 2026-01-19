@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill",
+  "type": "Collection"
 }

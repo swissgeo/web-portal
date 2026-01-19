@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.are.bauzonen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.are.bauzonen:wmts"
+  },
+  "records": [
     {
       "id": "ch.are.bauzonen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.are.bauzonen",
+  "type": "Collection"
 }

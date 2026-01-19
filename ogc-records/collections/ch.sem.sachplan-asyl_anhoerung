@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.sem.sachplan-asyl_anhoerung",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.sem.sachplan-asyl_anhoerung:wms"
+  },
+  "records": [
     {
       "id": "ch.sem.sachplan-asyl_anhoerung:wms",
       "links": [
@@ -27,5 +31,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.sem.sachplan-asyl_anhoerung",
+  "type": "Collection"
 }

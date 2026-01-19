@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bak.bundesinventar-schuetzenswerte-ortsbilder",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bak.bundesinventar-schuetzenswerte-ortsbilder:wmts"
+  },
+  "records": [
     {
       "id": "ch.bak.bundesinventar-schuetzenswerte-ortsbilder:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bak.bundesinventar-schuetzenswerte-ortsbilder",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.gefahren-basiskarte",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.gefahren-basiskarte:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.gefahren-basiskarte:wmts",
       "links": [
@@ -59,5 +63,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.gefahren-basiskarte",
+  "type": "Collection"
 }

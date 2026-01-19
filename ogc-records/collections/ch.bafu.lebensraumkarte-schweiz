@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.lebensraumkarte-schweiz",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.lebensraumkarte-schweiz:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.lebensraumkarte-schweiz:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.lebensraumkarte-schweiz",
+  "type": "Collection"
 }

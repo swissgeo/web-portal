@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.astra.mountainbikeland",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.astra.mountainbikeland:wmts"
+  },
+  "records": [
     {
       "id": "ch.astra.mountainbikeland:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.astra.mountainbikeland",
+  "type": "Collection"
 }

@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bazl.reflektierende-flaechen_flugplaetze",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bazl.reflektierende-flaechen_flugplaetze:wmts"
+  },
+  "records": [
     {
       "id": "ch.bazl.reflektierende-flaechen_flugplaetze:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bazl.reflektierende-flaechen_flugplaetze",
+  "type": "Collection"
 }

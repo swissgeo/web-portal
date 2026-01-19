@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.vec200-transportation-oeffentliche-verkehr",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.vec200-transportation-oeffentliche-verkehr:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.vec200-transportation-oeffentliche-verkehr:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.vec200-transportation-oeffentliche-verkehr",
+  "type": "Collection"
 }

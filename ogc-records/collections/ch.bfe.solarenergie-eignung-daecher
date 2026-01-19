@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.solarenergie-eignung-daecher",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.solarenergie-eignung-daecher:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.solarenergie-eignung-daecher:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.solarenergie-eignung-daecher",
+  "type": "Collection"
 }

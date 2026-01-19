@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.luftreinhaltung-feinstaub_pm2_5",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.luftreinhaltung-feinstaub_pm2_5:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.luftreinhaltung-feinstaub_pm2_5:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.luftreinhaltung-feinstaub_pm2_5",
+  "type": "Collection"
 }

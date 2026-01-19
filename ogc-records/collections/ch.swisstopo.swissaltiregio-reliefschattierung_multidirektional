@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.swissaltiregio-reliefschattierung_multidirektional",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.swissaltiregio-reliefschattierung_multidirektional:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.swissaltiregio-reliefschattierung_multidirektional:wmts",
       "links": [
@@ -53,5 +57,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.swissaltiregio-reliefschattierung_multidirektional",
+  "type": "Collection"
 }

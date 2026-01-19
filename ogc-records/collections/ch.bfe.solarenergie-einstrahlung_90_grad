@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bfe.solarenergie-einstrahlung_90_grad",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bfe.solarenergie-einstrahlung_90_grad:wmts"
+  },
+  "records": [
     {
       "id": "ch.bfe.solarenergie-einstrahlung_90_grad:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bfe.solarenergie-einstrahlung_90_grad",
+  "type": "Collection"
 }

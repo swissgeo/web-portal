@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.gefahren-historische_erdbeben",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.gefahren-historische_erdbeben:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.gefahren-historische_erdbeben:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.gefahren-historische_erdbeben",
+  "type": "Collection"
 }

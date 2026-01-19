@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.swisstopo.geologie-geophysik-totalintensitaet",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.swisstopo.geologie-geophysik-totalintensitaet:wmts"
+  },
+  "records": [
     {
       "id": "ch.swisstopo.geologie-geophysik-totalintensitaet:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.geologie-geophysik-totalintensitaet",
+  "type": "Collection"
 }

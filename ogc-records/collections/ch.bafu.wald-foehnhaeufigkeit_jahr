@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wald-foehnhaeufigkeit_jahr",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wald-foehnhaeufigkeit_jahr:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wald-foehnhaeufigkeit_jahr:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wald-foehnhaeufigkeit_jahr",
+  "type": "Collection"
 }

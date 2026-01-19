@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.geochemischer-bodenatlas_schweiz_magnesium",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.geochemischer-bodenatlas_schweiz_magnesium:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.geochemischer-bodenatlas_schweiz_magnesium:wmts",
       "links": [
@@ -79,5 +83,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.geochemischer-bodenatlas_schweiz_magnesium",
+  "type": "Collection"
 }

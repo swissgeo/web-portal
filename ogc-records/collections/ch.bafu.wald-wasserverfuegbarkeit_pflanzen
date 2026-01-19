@@ -1,6 +1,10 @@
 {
-  "type": "FeatureCollection",
-  "features": [
+  "id": "ch.bafu.wald-wasserverfuegbarkeit_pflanzen",
+  "itemType": "record",
+  "portal": {
+    "preferredDistributionId": "ch.bafu.wald-wasserverfuegbarkeit_pflanzen:wmts"
+  },
+  "records": [
     {
       "id": "ch.bafu.wald-wasserverfuegbarkeit_pflanzen:wmts",
       "links": [
@@ -85,5 +89,8 @@
         "type": "Distribution"
       }
     }
-  ]
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.bafu.wald-wasserverfuegbarkeit_pflanzen",
+  "type": "Collection"
 }
