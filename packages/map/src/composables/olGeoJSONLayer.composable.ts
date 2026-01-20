@@ -62,7 +62,6 @@ export default function useOlGeoJSONLayer(
         layer.setSource(
             new VectorSource({
                 features: new GeoJSON().readFeatures(
-                    // TODO let's see
                     geoJsonUtils.reprojectGeoJsonData(geoJsonData, projection.value)
                 ),
             })
