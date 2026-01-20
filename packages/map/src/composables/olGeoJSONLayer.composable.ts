@@ -1,8 +1,5 @@
 import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/layers'
-import type { GeoJsonObject } from 'geojson'
-import type { Map } from 'ol'
 import type { FeatureLike } from 'ol/Feature'
-import type { MaybeRef } from 'vue'
 
 import log from '@swissgeo/log'
 import { Feature } from 'ol'
@@ -12,7 +9,7 @@ import VectorSource from 'ol/source/Vector'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
-import { reprojectGeoJsonGeometry } from '@/utils/geoJsonUtils'
+import * as geoJsonUtils from '@/utils/geoJsonUtils'
 
 import OlStyleForPropertyValue from '../utils/geoJsonStyleFromLiterals'
 
@@ -21,11 +18,13 @@ export default function useOlGeoJSONLayer(
     uuid: string,
     opacity: number,
     isLoading: boolean,
-    geoJsonData: MaybeRef<GeoJsonObject>,
+    geoJsonData: geoJsonUtils.FeatureCollectionWithCRS,
     geoJsonStyle: GeoAdminGeoJSONStyleDefinition,
     zIndex: number
 ) {
     const positionStore = usePositionStore()
+
+    const projection = computed(() => positionStore.projection)
 
     const layer = new VectorLayer({
         properties: {
@@ -63,9 +62,8 @@ export default function useOlGeoJSONLayer(
         layer.setSource(
             new VectorSource({
                 features: new GeoJSON().readFeatures(
-                    // TODO why toValue
-                    // toValue(geoJsonData)
-                    reprojectGeoJsonData(toValue(geoJsonData), positionStore.projection)
+                    // TODO let's see
+                    geoJsonUtils.reprojectGeoJsonData(geoJsonData, projection.value)
                 ),
             })
         )

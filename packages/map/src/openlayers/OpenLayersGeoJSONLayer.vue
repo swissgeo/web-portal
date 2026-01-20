@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { DatasetLayer } from '@swissgeo/layers'
 
+import useLayerData from '@/composables/useLayerData.composable'
+
 import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
 
 const { layer } = defineProps<{

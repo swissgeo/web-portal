@@ -1,4 +1,8 @@
-import type { NormalizedExtent, CoordinateSystem } from '@swissgeo/coordinates'
+import {
+    allCoordinateSystems,
+    type NormalizedExtent,
+    type CoordinateSystem,
+} from '@swissgeo/coordinates'
 import type { Feature, FeatureCollection, Geometry } from 'geojson'
 
 import { extentUtils, WGS84 } from '@swissgeo/coordinates'
@@ -14,6 +18,25 @@ import {
     polygon,
 } from '@turf/turf'
 import { reproject } from 'reproject'
+
+/**
+ * The `crs` property in geoJSON is obsolete and all geoJSONs shoud be in WGS84,
+ *
+ * In our backend, we still have geoJSON layers which are in LV95 and that have a
+ *
+ * `crs` property to tell the frontend the base projection.
+ */
+
+export interface FeatureCollectionWithCRS extends FeatureCollection {
+    crs?: {
+        type: 'name'
+
+        properties: {
+            name: string
+        }
+    }
+}
+
 /**
  * Re-projecting the GeoJSON data (FeatureCollection) if not in the wanted projection
  *
@@ -30,7 +53,7 @@ import { reproject } from 'reproject'
  *   none were set in the GeoJSON data, meaning it is described with WGS84)
  */
 export function reprojectGeoJsonData(
-    geoJsonData: FeatureCollection,
+    geoJsonData: FeatureCollectionWithCRS,
     toProjection: CoordinateSystem,
     fromProjection?: CoordinateSystem
 ): FeatureCollection | undefined {
@@ -38,6 +61,13 @@ export function reprojectGeoJsonData(
         return undefined
     }
     const matchingProjection: CoordinateSystem =
+        // if the GeoJSON describes a CRS (projection) we grab it so that we can reproject on the fly if needed
+
+        allCoordinateSystems.find(
+            (coordinateSystem: CoordinateSystem) =>
+                coordinateSystem.epsg === geoJsonData.crs?.properties?.name
+        ) ??
+        // if no projection is given by the GeoJSON we use the one given as param
         // GeoJSONs don't give CRS anymore, since some later revision (see https://datatracker.ietf.org/doc/html/rfc7946#appendix-B.1)
         fromProjection ??
         // if nothing is found in the GeoJSON or the param value, we default to WGS84
