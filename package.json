@@ -9,6 +9,7 @@
         "build-libs": "pnpm --filter=!main run --recursive --if-present build",
         "build:dev:watch": "pnpm --filter=!main --recursive --parallel --if-present run build:dev:watch",
         "dev": "pnpm --filter=main run dev",
+        "test": "vitest run",
         "lint": "pnpm run --recursive --parallel --no-bail --if-present lint"
     },
     "devDependencies": {

@@ -17,7 +17,7 @@ export const useLayerStore = defineStore('layers', () => {
     /** Sort and return layers by zIndex */
     const sortedLayers = computed(() => {
         // sort is in-place, this would trigger a reactivity loop of death
-        return cloneDeep(layers.value).sort((a, b) => a.zIndex - b.zIndex)
+        return cloneDeep(layers.value).sort((a: Layer, b: Layer) => a.zIndex - b.zIndex)
     })
 
     function addLayer(layer: Layer) {

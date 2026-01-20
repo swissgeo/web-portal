@@ -3,12 +3,22 @@ import type { DatasetLayer, Layer } from '@swissgeo/layers'
 
 import { LayerType } from '@swissgeo/layers'
 
+import OpenLayersFileLayer from './OpenLayersFileLayer.vue'
 import OpenLayersGeoJSONLayer from './OpenLayersGeoJSONLayer.vue'
+import OpenLayersGPXLayer from './OpenLayersGPXLayer.vue'
+import OpenLayersKMLLayer from './OpenLayersKMLLayer.vue'
+import OpenLayersKMZLayer from './OpenLayersKMZLayer.vue'
 import OpenLayersVectorLayer from './OpenLayersVectorLayer.vue'
 import OpenLayersWMSLayer from './OpenLayersWMSLayer.vue'
 import OpenLayersWMTSLayer from './OpenLayersWMTSLayer.vue'
 
 const { layer } = defineProps<{ layer: Layer }>()
+
+// Check if this is a legacy file layer (imported before KML/KMZ/GPX separation)
+const isLegacyFileLayer = computed(() => {
+    return layer.type === LayerType.GEOJSON && !layer.dataset
+})
+
 </script>
 
 <template>
@@ -19,6 +29,22 @@ const { layer } = defineProps<{ layer: Layer }>()
     <OpenLayersWMSLayer
         :layer="layer as DatasetLayer"
         v-if="layer.type === LayerType.WMS"
+    />
+    <OpenLayersKMLLayer
+        :layer="layer as Layer"
+        v-if="layer.type === LayerType.KML"
+    />
+    <OpenLayersKMZLayer
+        :layer="layer as Layer"
+        v-if="layer.type === LayerType.KMZ"
+    />
+    <OpenLayersGPXLayer
+        :layer="layer as Layer"
+        v-if="layer.type === LayerType.GPX"
+    />
+    <OpenLayersFileLayer
+        :layer="layer as Layer"
+        v-if="isLegacyFileLayer"
     />
     <OpenLayersGeoJSONLayer
         :layer="layer as DatasetLayer"

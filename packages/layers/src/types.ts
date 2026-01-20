@@ -5,6 +5,9 @@ export enum LayerType {
     WMS = 'wms',
     GEOJSON = 'geojson',
     VECTOR = 'vector',
+    KML = 'kml',
+    KMZ = 'kmz',
+    GPX = 'gpx',
 }
 
 export interface LayerAttribution {
@@ -36,8 +39,10 @@ export interface DatasetLayer extends Layer {
 }
 
 // File layer fills properties for file location or so
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface FileLayer extends Layer {}
+export interface FileLayer extends Layer {
+    fileData?: string // Raw file content for KML/KMZ/GPX files
+    geoJsonData?: any // Parsed GeoJSON data (for backward compatibility)
+}
 
 export { useLayerStore } from '@/stores/layer'
 

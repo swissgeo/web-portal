@@ -35,6 +35,7 @@
         "@swissgeo/config-typescript": "catalog:",
         "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
+        "@types/lodash": "catalog:",
         "eslint": "catalog:",
         "pinia": "catalog:",
         "typescript": "catalog:",

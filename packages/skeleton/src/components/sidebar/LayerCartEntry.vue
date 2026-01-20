@@ -73,6 +73,8 @@ function removeLayer() {
                 :class="{
                     'bg-amber-200': layer.type === LayerType.WMS,
                     'bg-fuchsia-200': layer.type === LayerType.WMTS,
+                    'bg-emerald-200': layer.type === LayerType.KML,
+                    'bg-sky-200': layer.type === LayerType.KMZ,
                 }"
             >
                 ({{ layer.type }})</span

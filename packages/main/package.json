@@ -43,6 +43,7 @@
         "es-toolkit": "catalog:",
         "eslint": "catalog:",
         "jsdom": "catalog:",
+        "fflate": "catalog:",
         "lucide-vue-next": "catalog:",
         "nuxt": "catalog:",
         "ol": "catalog:",
