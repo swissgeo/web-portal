@@ -33,6 +33,7 @@
         "@swissgeo/skeleton": "workspace:*",
         "@turf/turf": "catalog:",
         "@types/mapbox-gl": "catalog:",
+        "fflate": "catalog:",
         "geojson": "catalog:",
         "ol": "catalog:",
         "ol-mapbox-style": "catalog:",
