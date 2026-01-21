@@ -2,7 +2,6 @@
 import type { FileLayer } from '@swissgeo/layers'
 
 import useOlKMLLayer from '../composables/olKMLLayer.composable'
-import proj4 from 'proj4';
 
 const { layer } = defineProps<{
     layer: FileLayer
@@ -35,7 +34,6 @@ watch(
 )
 
 onMounted(() => {
-    console.log('Initializing KML layer', layer.humanId, proj4.defs)
     initialize()
 })
 </script>

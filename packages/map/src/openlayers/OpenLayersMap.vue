@@ -30,7 +30,6 @@ onMounted(() => {
 function registerCustomProjection() {
     registerProj4(proj4)
     register(proj4)
-    console.log('Registered custom projections with OpenLayers', proj4.defs)
 }
 
 function createOlMap() {

@@ -1,0 +1,1 @@
+export const EPSG_4326_WGS84 = 'EPSG:4326'

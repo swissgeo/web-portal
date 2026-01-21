@@ -1,9 +1,13 @@
 import log from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'
+import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
+import proj4 from 'proj4'
 
+import { EPSG_4326_WGS84 } from '@/composables/types'
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
+import usePositionStore from '@/stores/position'
 
 export default function useOlKMZLayer(
     layerId: string,
@@ -22,6 +26,7 @@ export default function useOlKMZLayer(
 
     async function initialize(): Promise<void> {
         log.debug(`Initializing KMZ layer ${layerId}`)
+        const positionStore = usePositionStore()
 
         try {
             // Decode base64 to binary
@@ -62,11 +67,13 @@ export default function useOlKMZLayer(
             // Parse KML content
             const format = new KML({
                 extractStyles: true,
-                showPointNames: false,
+                // showPointNames: false,
             })
+            register(proj4)
 
             const features = format.readFeatures(kmlContent, {
-                featureProjection: 'EPSG:3857', // Web Mercator
+                featureProjection: positionStore.projection.epsg, // CH1903+ / LV95 / EPSG:2056
+                dataProjection: EPSG_4326_WGS84, // WGS84
             })
 
             const source = new VectorSource({
