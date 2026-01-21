@@ -5,6 +5,7 @@ import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
 import proj4 from 'proj4'
 
+import { EPSG_4326_WGS84 } from '@/composables/types'
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
 
@@ -29,13 +30,13 @@ export default function useOlKMLLayer(
 
         const format = new KML({
             extractStyles: true, // Extract styles from KML
-            // showPointNames: false,
         })
         register(proj4)
         const features = format.readFeatures(kmlData, {
             featureProjection: positionStore.projection.epsg, // CH1903+ / LV95 / EPSG:2056
-            dataProjection: 'EPSG:4326', // WGS84
+            dataProjection: EPSG_4326_WGS84, // WGS84
         })
+
         const source = new VectorSource({
             features,
         })
