@@ -50,6 +50,7 @@ function toggleVectorLayer() {
                 v-model="filterTerm"
                 class="w-full border border-gray-200 px-2 py-1"
                 placeholder="Filter"
+                autofocus
             />
             <IconButton
                 @click="$emit('close')"

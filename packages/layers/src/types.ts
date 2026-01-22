@@ -32,6 +32,9 @@ export interface Layer {
     zIndex: number
     info?: LayerInfo | null
     dataset?: Dataset
+    // unsure here. This couples it tightly to layers on wmts or wms I think
+    currentTime: string | null
+    availableTimes?: string[]
 }
 
 export interface DatasetLayer extends Layer {

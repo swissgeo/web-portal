@@ -30,6 +30,7 @@
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
         "@swissgeo/map": "workspace:*",
+        "@swissgeo/numbers": "catalog:",
         "@swissgeo/search": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "lucide-vue-next": "catalog:",

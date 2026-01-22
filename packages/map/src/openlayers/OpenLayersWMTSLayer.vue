@@ -2,12 +2,17 @@
 import type { DatasetLayer } from '@swissgeo/layers'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
+import { useLayerStore } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import { useRecordsData } from '@swissgeo/ogc'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import { optionsFromCapabilities } from 'ol/source/WMTS'
 
 import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
+
+import { getTimeInfoFromWMTSCapabilities } from '../utils/timeUtils'
+
+const layerStore = useLayerStore()
 
 const { layer } = defineProps<{
     layer: DatasetLayer
@@ -40,12 +45,50 @@ const options = computed((): WMTSOptions => {
     return options
 })
 
-const { initialize, setVisibility, setZIndex } = useOlWmtsLayer(
+const dimensions = computed(() => {
+    if (!capabilityData.value) {
+        // error will already be thrown in the other computed
+        return null
+    }
+
+    const capabilityOfLayer = capabilityData.value.Contents.Layer.find(
+        // TODO maybe we would need to know the distribution id here
+        (layerEntry) => layerEntry.Identifier === layer.dataset.id
+    )
+
+    if (!layer) {
+        return null
+    }
+
+    return capabilityOfLayer.Dimension
+})
+
+const timeInfo = computed(() => {
+    const { defaultTime, availableTimes } = getTimeInfoFromWMTSCapabilities(dimensions.value)
+    return { defaultTime, availableTimes }
+})
+
+const initialTimestamp = computed(() => {
+    return timeInfo.value.defaultTime
+})
+
+const { initialize, setVisibility, setZIndex, updateTimeDimension } = useOlWmtsLayer(
     layer.dataset.id,
     layer.uuid,
     options.value,
     defaultOpacityFromStyle.value,
-    layer.zIndex
+    layer.zIndex,
+    initialTimestamp.value
+)
+
+watch(
+    () => timeInfo.value,
+    ({ defaultTime, availableTimes }) => {
+        // once we have the info from the capabilities, we push them to the store
+        layerStore.setAvailableTimes(layer.uuid, availableTimes)
+        layerStore.setCurrentTime(layer.uuid, defaultTime)
+    },
+    { immediate: true }
 )
 
 watch(
@@ -59,6 +102,15 @@ watch(
     () => layer.zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
+    }
+)
+
+watch(
+    () => layer.currentTime,
+    () => {
+        if (layer.currentTime) {
+            updateTimeDimension(layer.currentTime)
+        }
     }
 )
 

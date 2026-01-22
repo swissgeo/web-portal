@@ -3,6 +3,7 @@ import type { Layer } from '@swissgeo/layers'
 
 import { useDrawingStore } from '@swissgeo/drawing'
 import { LayerType, useLayerStore } from '@swissgeo/layers'
+import { getDisplayNameFromTimestamp } from '../../utils/timeUtils'
 
 import IconButton from '@/components/IconButton.vue'
 
@@ -22,6 +23,19 @@ const displayName = computed(() => {
         return layer.humanId
     }
 })
+
+const currentTime = computed({
+    get() {
+        return layer.currentTime
+    },
+    set(value) {
+        layerStore.setCurrentTime(layer.uuid, value)
+    },
+})
+
+const getTimestampName = (time: string) => {
+    return getDisplayNameFromTimestamp(time)
+}
 
 function toggleVisibility() {
     layerStore.toggleVisibility(layer.uuid)
@@ -86,7 +100,22 @@ function removeLayer() {
                 ({{ layer.type }})</span
             >
         </div>
-        <div>
+        <div class="flex items-center">
+            <div>
+                <select
+                    v-if="(layer.availableTimes?.length || 0) > 1"
+                    v-model="currentTime"
+                    class="bg-zinc-300"
+                >
+                    <option
+                        v-for="time in layer.availableTimes"
+                        :value="time"
+                        :key="time"
+                    >
+                        {{ getTimestampName(time) }}
+                    </option>
+                </select>
+            </div>
             <IconButton
                 icon="Trash"
                 @click="removeLayer"
