@@ -10,17 +10,104 @@ import TileGrid from 'ol/tilegrid/TileGrid'
 import useAddLayerToMap from './useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position/'
 
-// MapTiler LV95 tile grid configuration from tiles.json
-// These resolutions match the MapTiler tile pyramid for LV95
-const MAPTILER_LV95_TILE_RESOLUTIONS = [
-    1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.0625,
-]
-const MAPTILER_LV95_ORIGIN: [number, number] = [2420000, 1350000]
-const MAPTILER_LV95_EXTENT: [number, number, number, number] = [2420000, 825712, 2944288, 1350000]
-const MAPTILER_TILE_SIZE = 512
+interface TileMatrixItem {
+    zoom_level: number
+    pixel_x_size: number
+    origin: [number, number]
+    tile_width: number
+    tile_height: number
+}
 
-export default function useOlVectorLayer(layerId: string, zIndex: number, style: string) {
-    console.log('New instance B')
+interface TileMatrixSet {
+    items: TileMatrixItem[]
+    min_x: number
+    min_y: number
+    max_x: number
+    max_y: number
+}
+
+interface TileJson {
+    tiles: string[]
+    tile_matrix_set?: TileMatrixSet
+    minzoom?: number
+    maxzoom?: number
+}
+
+interface MapboxStyle {
+    sources: Record<string, { url?: string; type: string }>
+}
+
+/**
+ * Fetches the style and TileJSON to extract tile grid configuration dynamically
+ */
+async function fetchTileGridConfig(styleUrl: string): Promise<{
+    tileUrls: string[]
+    resolutions: number[]
+    origin: [number, number]
+    extent: [number, number, number, number]
+    tileSize: number
+} | null> {
+    try {
+        // Fetch the Mapbox style
+        const styleResponse = await fetch(styleUrl)
+        const styleJson: MapboxStyle = await styleResponse.json()
+
+        // Get the first vector source URL
+        const sourceEntry = Object.values(styleJson.sources).find((s) => s.type === 'vector')
+        if (!sourceEntry?.url) {
+            log.error('No vector source URL found in style')
+            return null
+        }
+
+        // Fetch the TileJSON
+        const tileJsonResponse = await fetch(sourceEntry.url)
+        const tileJson: TileJson = await tileJsonResponse.json()
+
+        // Extract tile grid config from tile_matrix_set
+        const tileMatrixSet = tileJson.tile_matrix_set
+        if (!tileMatrixSet?.items?.length) {
+            log.error('No tile_matrix_set found in TileJSON')
+            return null
+        }
+
+        // Sort by zoom level and extract resolutions
+        const sortedItems = [...tileMatrixSet.items].sort((a, b) => a.zoom_level - b.zoom_level)
+        const resolutions = sortedItems.map((item) => item.pixel_x_size)
+
+        // Extend resolutions if maxzoom is higher than what's defined in tile_matrix_set
+        // (resolutions halve at each zoom level)
+        const maxDefinedZoom = sortedItems[sortedItems.length - 1].zoom_level
+        const maxZoom = tileJson.maxzoom ?? maxDefinedZoom
+        let lastResolution = resolutions[resolutions.length - 1]
+        for (let z = maxDefinedZoom + 1; z <= maxZoom; z++) {
+            lastResolution = lastResolution / 2
+            resolutions.push(lastResolution)
+        }
+
+        const firstItem = sortedItems[0]
+        const origin: [number, number] = firstItem.origin
+        const extent: [number, number, number, number] = [
+            tileMatrixSet.min_x,
+            tileMatrixSet.min_y,
+            tileMatrixSet.max_x,
+            tileMatrixSet.max_y,
+        ]
+        const tileSize = firstItem.tile_width
+
+        return {
+            tileUrls: tileJson.tiles,
+            resolutions,
+            origin,
+            extent,
+            tileSize,
+        }
+    } catch (error) {
+        log.error('Failed to fetch tile grid configuration', { messages: [error] })
+        return null
+    }
+}
+
+export default function useOlVectorLayer(layerId: string, zIndex: number, styleUrl: string) {
     const olMap = toValue(inject<Map>('olMap'))
     const positionStore = usePositionStore()
 
@@ -29,24 +116,8 @@ export default function useOlVectorLayer(layerId: string, zIndex: number, style:
         throw new Error('OpenLayersMap is not available')
     }
 
-    // Create tile grid matching the MapTiler LV95 tile pyramid
-    const tileGrid = new TileGrid({
-        origin: MAPTILER_LV95_ORIGIN,
-        extent: MAPTILER_LV95_EXTENT,
-        resolutions: MAPTILER_LV95_TILE_RESOLUTIONS,
-        tileSize: MAPTILER_TILE_SIZE,
-    })
-
-    // Create vector tile source with the correct tile grid
-    const source = new VectorTileSource({
-        format: new MVT(),
-        tileGrid: tileGrid,
-        projection: positionStore.projection.epsg,
-    })
-
-    // Create the vector tile layer
+    // Create the vector tile layer (source will be set after fetching config)
     const layer = new VectorTileLayer({
-        source: source,
         declutter: true,
         properties: {
             id: layerId,
@@ -58,13 +129,39 @@ export default function useOlVectorLayer(layerId: string, zIndex: number, style:
         .getResolutionSteps()
         .map((step) => step.resolution)
 
-    // Apply the Mapbox style to the layer
-    // The resolutions option maps view resolution to style zoom levels
-    applyStyle(layer, style, {
-        resolutions: viewResolutions,
-    })
+    // Fetch tile grid config and set up the layer
+    fetchTileGridConfig(styleUrl)
+        .then((config) => {
+            if (!config) {
+                throw new Error('Failed to get tile grid configuration')
+            }
+
+            // Create tile grid from the fetched configuration
+            const tileGrid = new TileGrid({
+                origin: config.origin,
+                extent: config.extent,
+                resolutions: config.resolutions,
+                tileSize: config.tileSize,
+            })
+
+            // Create and set the vector tile source
+            const source = new VectorTileSource({
+                format: new MVT(),
+                tileGrid: tileGrid,
+                projection: positionStore.projection.epsg,
+                url: config.tileUrls[0],
+            })
+
+            layer.setSource(source)
+
+            // Apply the Mapbox style to the layer
+            return applyStyle(layer, styleUrl, {
+                resolutions: viewResolutions,
+            })
+        })
         .then(() => {
             layer.setZIndex(zIndex)
+            log.debug(`Vector layer ${layerId} initialized successfully`)
         })
         .catch((error) => {
             log.error(`Unable to load and attach the style for ${layerId}`, { messages: [error] })
