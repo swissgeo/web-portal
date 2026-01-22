@@ -17,32 +17,43 @@ export default async function useLayerData(dataset: Dataset, protocol: Protocol)
         }
     )
 
-    const capabilityUrl = computed(() => {
-        if (!layerData.capabilityLink) {
-            throw new Error('Unable to find CapabilityLink in layerData')
+    const link = computed(() => {
+        if (protocol === Protocol.geojson) {
+            return layerData.geoJsonDataLink
+        } else {
+            return layerData.capabilityLink
+        }
+    })
+
+    /**
+     * URL could mean different things depending on the protocol I don't know yet if I like this
+     * idea
+     */
+    const url = computed(() => {
+        if (!link.value) {
+            throw new Error('Unable to find the needed link in layerData')
         }
 
-        const link = layerData.capabilityLink
-
-        if ('href' in link) {
-            return encodeURIComponent(link.href)
-        } else if ('uriTemplate' in link) {
-            return encodeURIComponent(link.uriTemplate.replace('{EPSG}', '2056'))
+        if ('href' in link.value) {
+            return encodeURIComponent(link.value.href)
+        } else if ('uriTemplate' in link.value) {
+            return encodeURIComponent(link.value.uriTemplate.replace('{EPSG}', '2056'))
         }
 
-        throw new Error(`Unable to read link from ${JSON.stringify(layerData.value)}`)
+        throw new Error(`Unable to read link from ${JSON.stringify(layerData)}`)
     })
 
     const styleData = computed(() => {
-        if (!layerData.value?.styleData) {
+        if (!layerData.styleData) {
             return null
         }
 
-        const data = layerData.value.styleData
+        const data = layerData.styleData
         return data
     })
 
     const defaultOpacityFromStyle = computed(() => {
+        // maybe do something here like a check for the geojson layers?
         const isRasterLayer = (layer: mapboxgl.AnyLayer): layer is mapboxgl.RasterLayer =>
             layer.type === 'raster'
 
@@ -63,5 +74,5 @@ export default async function useLayerData(dataset: Dataset, protocol: Protocol)
         return 1
     })
 
-    return { capabilityUrl, defaultOpacityFromStyle }
+    return { url, styleData, defaultOpacityFromStyle }
 }

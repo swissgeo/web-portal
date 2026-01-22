@@ -139,14 +139,18 @@ function getOlBasicStyles(vectorOptions: GeoAdminGeoJSONVectorOptions): OLBasicS
  * Example of our JSON can be accessed here
  * https://sys-api3.dev.bgdi.ch/static/vectorStyles/ch.bafu.hydroweb-messstationen_grundwasser.json
  */
-function getOlStyleFromLiterals(rangeDefinition: GeoAdminGeoJSONRangeDefinition): Style {
-    const olStyles: OLBasicStyles = {}
+function getOlStyleFromLiterals(
+    geoadminStyleJson: GeoAdminGeoJSONRangeDefinition | GeoAdminGeoJSONStyleSingle
+): Style {
+    const { vectorOptions, geomType } = geoadminStyleJson
 
-    if (!rangeDefinition.vectorOptions) {
-        return new Style(olStyles)
+    const olStyles: OLBasicStyles = vectorOptions ? getOlBasicStyles(vectorOptions) : {}
+
+    if (vectorOptions && geomType === 'point') {
+        olStyles.image = getOlImageStyleForShape(vectorOptions)
     }
 
-    return new Style(getOlBasicStyles(rangeDefinition.vectorOptions))
+    return new Style(olStyles)
 }
 
 function getGeomTypeFromGeometry(olGeometry: SimpleGeometry): string | undefined {
@@ -157,12 +161,6 @@ function getGeomTypeFromGeometry(olGeometry: SimpleGeometry): string | undefined
     } else if (olGeometry instanceof Polygon || olGeometry instanceof MultiPolygon) {
         return 'polygon'
     }
-}
-
-function getLabelProperty(_value: GeoAdminGeoJSONVectorOptions['label']): string | undefined {
-    // This function was looking for a 'property' field, but the label interface doesn't have one
-    // Based on the interface, labels use the template field instead
-    return undefined
 }
 
 function getLabelTemplate(value: GeoAdminGeoJSONVectorOptions['label']): string | undefined {
@@ -178,7 +176,6 @@ function getStyleSpec(value: GeoAdminGeoJSONRangeDefinition): StyleSpec {
         olStyle: getOlStyleFromLiterals(value),
         minResolution: getMinResolution(value),
         maxResolution: getMaxResolution(value),
-        labelProperty: getLabelProperty(value.vectorOptions?.label),
         labelTemplate: getLabelTemplate(value.vectorOptions?.label),
         imageRotationProperty: rotation,
     }
@@ -246,10 +243,7 @@ class OlStyleForPropertyValue {
             this.singleStyle = {
                 type: geoadminStyleJson.type,
                 property: geoadminStyleJson.property,
-                olStyle: getOlStyleFromLiterals(
-                    geoadminStyleJson as unknown as GeoAdminGeoJSONRangeDefinition
-                ),
-                labelProperty: getLabelProperty(geoadminStyleJson.vectorOptions?.label),
+                olStyle: getOlStyleFromLiterals(geoadminStyleJson),
                 labelTemplate: getLabelTemplate(geoadminStyleJson.vectorOptions?.label),
                 imageRotationProperty:
                     'rotation' in geoadminStyleJson
@@ -400,7 +394,7 @@ class OlStyleForPropertyValue {
         if (styleSpec && styleSpec.olStyle) {
             const olStyle = this.setOlText_(
                 styleSpec.olStyle,
-                styleSpec.labelProperty,
+                undefined,
                 styleSpec.labelTemplate,
                 properties
             )
@@ -428,7 +422,7 @@ class OlStyleForPropertyValue {
             }
             const olStyle = this.setOlText_(
                 this.singleStyle.olStyle,
-                this.singleStyle.labelProperty,
+                undefined,
                 this.singleStyle.labelTemplate,
                 properties
             )

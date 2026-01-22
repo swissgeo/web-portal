@@ -1,26 +1,27 @@
-import type {
-    OGCRecords,
-    Protocol,
-    TemplateLink,
-    Link,
-    OGCRecord,
-    Service,
-} from '@swissgeo/shared/ogc'
+import type { OGCRecords, TemplateLink, Link, OGCRecord, Service } from '@swissgeo/shared/ogc'
+import { Protocol } from '@swissgeo/shared/ogc'
+
 import type { Style } from '@types/mapbox-gl'
 import type { H3Event } from 'h3'
 
 // TODO taken from map utils.. maybe they should be shared or something
 // maybe there should be a OGC package?!
-export const getLinksByRel = (links: Link[], rel: string): Link[] => {
+const getLinksByRel = (links: Link[], rel: string): Link[] => {
     return links.filter((link: Link) => link.rel?.toLowerCase() === rel.toLowerCase())
 }
 
-export const getDataServiceLinks = (links: Link[]): Link[] => {
+const getDataServiceLinks = (links: Link[]): Link[] => {
     return getLinksByRel(links, 'service')
 }
 
-export const getStyleLinks = (links: Link[]): Link[] => {
+const getStyleLinks = (links: Link[]): Link[] => {
     return getLinksByRel(links, 'styledby')
+}
+
+export const getGeoJsonDataLinks = (links: Link[]): Link[] => {
+    return getLinksByRel(links, 'data').filter((link: Link) => {
+        return link.type === 'application/geo+json'
+    })
 }
 
 const getDistributionData = async (record: OGCRecord) => {
@@ -144,6 +145,12 @@ const getCapabilityLink = (serviceData: Service): Link | TemplateLink => {
     throw new Error(`Unable to find links for ${JSON.stringify(serviceData)}`)
 }
 
+const getGeoJsonDataUrl = (feature: Feature) => {
+    const link = getGeoJsonDataLinks(feature.links)[0]
+
+    return link
+}
+
 /**
  * Go through the tree of the OGC records and extract the necessary information to request a
  * capability
@@ -158,14 +165,28 @@ const getLayerData = async (event: H3Event, layerId: string, protocol: Protocol)
     const distributionData = await getDistributionData(dataset)
 
     const distributionRecord = extractRecord(distributionData, protocol)
-    const serviceData = await getServiceData(distributionRecord)
-    const styleData = (await getStyleData(distributionRecord)) || {}
 
-    const capabilityLink = getCapabilityLink(serviceData)
+    if (protocol === Protocol.wms || protocol === Protocol.wmts) {
+        const serviceData = await getServiceData(distributionRecord)
+        const styleData = (await getStyleData(distributionRecord)) || {}
 
-    return {
-        capabilityLink,
-        styleData,
+        const capabilityLink = getCapabilityLink(serviceData)
+
+        return {
+            capabilityLink,
+            styleData,
+        }
+    }
+
+    if (protocol === Protocol.geojson) {
+        const geoJsonDataLink = getGeoJsonDataUrl(distributionRecord)
+
+        const styleData = (await getStyleData(distributionRecord)) || {}
+
+        return {
+            geoJsonDataLink,
+            styleData,
+        }
     }
 }
 

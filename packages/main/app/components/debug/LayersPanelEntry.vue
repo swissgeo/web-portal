@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Distribution, OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
+import { Protocol, type OGCRecord, type OGCRecords } from '@swissgeo/shared/ogc'
 
 import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
 import { useStorage } from '@vueuse/core'
@@ -54,20 +54,26 @@ const layerBg = computed(() => {
  * @param layer
  */
 const type = computed((): LayerType | 'UNKNOWN' => {
-    if (!state.value.collectionData?.portal?.preferredDistributionId) {
+    if (!state.value.collectionData) {
         return 'UNKNOWN'
     }
 
-    const preferredDistributionId = state.value.collectionData.portal.preferredDistributionId
+    let selectFirst = false
+    const preferredDistributionId =
+        state.value.collectionData.portal?.preferredDistributionId || null
 
     for (const record of state.value.collectionData.records) {
-        if (record.id === preferredDistributionId) {
+        // if there's no preferredDistributionId, I want this to be true
+        // so that it will just select the first one it finds
+        if (preferredDistributionId === null || record.id === preferredDistributionId) {
             const protocol = record.properties?.protocol
 
-            if (protocol === 'OGC:WMTS') {
+            if (protocol === Protocol.wmts) {
                 return LayerType.WMTS
-            } else if (protocol === 'OGC:WMS') {
+            } else if (protocol === Protocol.wmts) {
                 return LayerType.WMS
+            } else if (protocol === Protocol.wmts) {
+                return LayerType.GEOJSON
             }
         }
     }

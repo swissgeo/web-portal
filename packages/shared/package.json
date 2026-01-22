@@ -19,6 +19,7 @@
             "types": "./dist/livingdocs/index.d.ts"
         },
         "./ogc": {
+            "index": "./dist/ogc/index.ts",
             "types": "./dist/ogc/index.d.ts"
         },
         "./language": {

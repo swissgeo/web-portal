@@ -16,7 +16,7 @@ const gutter = computed(() => {
     return 0
 })
 
-const { capabilityUrl } = await useLayerData(layer.dataset, 'OGC:WMS')
+const { url: capabilityUrl } = await useLayerData(layer.dataset, 'OGC:WMS')
 
 const { data } = await useFetch<string>(`/api/v1/layers/wmsConfig/${capabilityUrl.value}`)
 
