@@ -57,6 +57,10 @@ export const useLayerStore = defineStore('layers', () => {
     }
 
     function getLayerByUuid(layerUuid: string) {
+        if (backgroundLayer.value?.uuid === layerUuid) {
+            return backgroundLayer.value
+        }
+
         const layer = layers.value.find((layer: Layer) => layer.uuid === layerUuid)
         return layer
     }
@@ -69,6 +73,30 @@ export const useLayerStore = defineStore('layers', () => {
         layer.isVisible = !layer.isVisible
     }
 
+    /** Provide the available timestamps from capabilities */
+    function setAvailableTimes(layerUuid: string, times: string[]) {
+        const layer = getLayerByUuid(layerUuid)
+        if (!layer) {
+            log.error('Unable to find layer for setting available times', {
+                messages: [layerUuid],
+            })
+        } else {
+            layer.availableTimes = times
+        }
+    }
+
+    function setCurrentTime(layerUuid: string, time: string) {
+        const layer = getLayerByUuid(layerUuid)
+        if (!layer) {
+            log.error('Unable to find layer for setting available times', {
+                messages: [layerUuid],
+            })
+        } else {
+            layer.currentTime = time
+        }
+    }
+
+    // TODO this one is currently un-used. consider removing it
     function setLayerInfo(layerUuid: string, info: LayerInfo): void {
         const layer = getLayerByUuid(layerUuid)
         if (!layer) {
@@ -116,6 +144,8 @@ export const useLayerStore = defineStore('layers', () => {
         toggleVisibility,
         setLayerZIndex,
         setLayerInfo,
+        setAvailableTimes,
+        setCurrentTime,
         setBackground,
         removeLayer,
     }
