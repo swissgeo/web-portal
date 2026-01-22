@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Distribution, OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
+import { Protocol, type OGCRecord, type OGCRecords } from '@swissgeo/shared/ogc'
 
 import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
 import { useStorage } from '@vueuse/core'
@@ -68,11 +68,11 @@ const type = computed((): LayerType | 'UNKNOWN' => {
         if (preferredDistributionId === null || record.id === preferredDistributionId) {
             const protocol = record.properties?.protocol
 
-            if (protocol === 'OGC:WMTS') {
+            if (protocol === Protocol.wmts) {
                 return LayerType.WMTS
-            } else if (protocol === 'OGC:WMS') {
+            } else if (protocol === Protocol.wmts) {
                 return LayerType.WMS
-            } else if (protocol === 'OGC:GeoJSON') {
+            } else if (protocol === Protocol.wmts) {
                 return LayerType.GEOJSON
             }
         }
