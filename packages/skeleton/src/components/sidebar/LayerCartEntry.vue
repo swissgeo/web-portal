@@ -10,6 +10,11 @@ const { layer } = defineProps<{
 
 const layerStore = useLayerStore()
 
+// @ts-expect-error 2339 Type checker thinks it's a ref but
+// I think this a mistake because outside of the store
+// this shouldn't be a ref anymore
+const layersLength = computed(() => layerStore.layers.length)
+
 const displayName = computed(() => {
     if (layer.info && layer.info.displayName) {
         return layer.info.displayName
@@ -45,7 +50,7 @@ function removeLayer() {
             />
             <div class="flex flex-col justify-between">
                 <IconButton
-                    :disabled="layer.zIndex === layerStore.layers.length"
+                    :disabled="layer.zIndex === layersLength"
                     icon="ChevronUp"
                     severity="secondary"
                     class="h-0.5"
@@ -62,7 +67,7 @@ function removeLayer() {
         </div>
         <div
             class="overflow-x-hidden text-nowrap"
-            :title="layer.dataset.id"
+            :title="layer.humanId"
             :class="{ 'text-gray-300': !layer.isVisible }"
         >
             {{ displayName }}

@@ -1,5 +1,5 @@
-import type { Lang } from '@swissgeo/shared'
 import type { MenuTree } from '@swissgeo/shared/api'
+import type { Lang } from '@swissgeo/shared/language'
 
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -20,7 +20,7 @@ export const useMenuStore = defineStore('menuStore', () => {
     // const menuIds = ref<MenuIds>()
     const menuMetaData = ref<MenuMetaData[]>()
 
-    const currentMenuTreeId = ref<MenuMetaData>()
+    const currentMenuTree = ref<MenuMetaData>()
 
     // #region: actions
     function setMenuData(ids: number[], menus: MenuTree[]) {
@@ -31,7 +31,7 @@ export const useMenuStore = defineStore('menuStore', () => {
     }
 
     function setCurrentMenuTree(menuData: MenuMetaData) {
-        currentMenuTreeId.value = menuData
+        currentMenuTree.value = menuData
     }
 
     function getMenuMetaDataById(menuId: number) {
@@ -122,7 +122,7 @@ export const useMenuStore = defineStore('menuStore', () => {
     _initMenuIds()
 
     return {
-        currentMenuTree: currentMenuTreeId,
+        currentMenuTree,
         menuData,
         setMenuData,
         setCurrentMenuTree,

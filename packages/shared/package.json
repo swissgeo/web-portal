@@ -8,7 +8,7 @@
     "type": "module",
     "exports": {
         ".": {
-            "import": "./dist/shared.es.js",
+            "import": "./dist/index.es.js",
             "types": "./dist/shared.d.ts"
         },
         "./ambient": {
@@ -21,15 +21,12 @@
             "types": "./dist/livingdocs/index.d.ts"
         },
         "./ogc": {
-            "index": "./dist/ogc/index.ts",
             "types": "./dist/ogc/index.d.ts"
         },
         "./language": {
             "types": "./dist/Language.d.ts"
         }
     },
-    "main": "./dist/index.umd.cjs",
-    "module": "./dist/index.js",
     "scripts": {
         "build": "vite build",
         "build:dev:watch": "vite build --watch --mode development",

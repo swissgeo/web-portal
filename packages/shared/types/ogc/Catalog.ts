@@ -1,5 +1,3 @@
-import type { Protocol } from '.'
-
 export interface OGCRecords<T extends OGCRecord = OGCRecord> {
     id: string
     type: string
@@ -71,3 +69,5 @@ export interface Service {
     links: Link[]
     properties?: Property
 }
+
+export type Protocol = 'OGC:WMTS' | 'OGC:WMS' | 'OGC:GeoJSON'

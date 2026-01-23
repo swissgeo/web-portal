@@ -20,7 +20,8 @@ const { icon, menuMetaData } = defineProps<{
 const uiStore = useUiStore()
 const menuStore = useMenuStore()
 
-const isCurrentMenuActive = computed(() => menuStore.currentMenuTree?.id === menuMetaData.id)
+// @ts-expect-error The store's typing isn't picked up properly here
+const isCurrentMenuActive = computed(() => menuStore.currentMenuTree.id === menuMetaData.id)
 
 const isActive = computed(
     () =>

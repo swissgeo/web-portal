@@ -1,5 +1,5 @@
 import type { OGCRecords, TemplateLink, Link, OGCRecord, Service } from '@swissgeo/shared/ogc'
-import { Protocol } from '@swissgeo/shared/ogc'
+import type { Protocol } from '@swissgeo/shared/ogc'
 
 import type { Style } from '@types/mapbox-gl'
 import type { H3Event } from 'h3'
@@ -166,7 +166,7 @@ const getLayerData = async (event: H3Event, layerId: string, protocol: Protocol)
 
     const distributionRecord = extractRecord(distributionData, protocol)
 
-    if (protocol === Protocol.wms || protocol === Protocol.wmts) {
+    if (protocol === 'OGC:WMS' || protocol === 'OGC:WMTS') {
         const serviceData = await getServiceData(distributionRecord)
         const styleData = (await getStyleData(distributionRecord)) || {}
 
@@ -178,7 +178,7 @@ const getLayerData = async (event: H3Event, layerId: string, protocol: Protocol)
         }
     }
 
-    if (protocol === Protocol.geojson) {
+    if (protocol === 'OGC:GeoJSON') {
         const geoJsonDataLink = getGeoJsonDataUrl(distributionRecord)
 
         const styleData = (await getStyleData(distributionRecord)) || {}

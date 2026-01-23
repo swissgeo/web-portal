@@ -85,8 +85,13 @@ export const useLayerStore = defineStore('layers', () => {
         let index = 1
         for (const layer of sortedLayers.value) {
             const realLayer = getLayerByUuid(layer.uuid)
-            realLayer.zIndex = index
-            index++
+            if (!realLayer) {
+                log.error(`Unable to find layer with uuid ${layer.uuid}`)
+                // rather unlikely
+            } else {
+                realLayer.zIndex = index
+                index++
+            }
         }
     }
 

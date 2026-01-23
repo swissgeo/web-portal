@@ -1,4 +1,4 @@
-import { Protocol } from '@swissgeo/shared/ogc'
+import type { Protocol } from '@swissgeo/shared/ogc'
 
 const basePath = 'http://localhost:3000/api/v1/layers/external/'
 
@@ -21,7 +21,7 @@ export default defineEventHandler((event) => {
                     },
                 ],
                 properties: {
-                    protocol: Protocol.wmts,
+                    protocol: 'OGC:WMTS',
                     externalIds: [layerId],
                     type: 'Distribution',
                 },
