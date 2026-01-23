@@ -5,7 +5,12 @@ const ALL_YEARS_TIMESTAMP: string = 'all'
 export function getDisplayNameFromTimestamp(timestamp: string) {
     if (timestamp === 'current') {
         return 'current'
-    } else if (timestamp.startsWith('9999')) {
+    } else if (timestamp.startsWith('9999') || timestamp === ALL_YEARS_TIMESTAMP) {
+        // there's a difference between WMS and WMTS:
+        // WMS will store 'all' as timestamp. If 'all' is set, then it won't give the
+        // server a time
+        // However on wmts we'll specifically select the timestamp that represents
+        // all in the requests
         return ALL_YEARS_TIMESTAMP
     } else {
         let parsedYear: string | undefined
@@ -27,8 +32,7 @@ export function getDisplayNameFromTimestamp(timestamp: string) {
             // if (!isNaN(date.getDate())) {
             //     day = date.getDate().toString().padStart(2, '0')
         }
-        // TODO with the current implementation I don't see how interval is\
-        // really used...
+        // TODO with the current implementation I don't see how interval is really used...
         // if (parsedYear !== undefined && month !== undefined && day !== undefined) {
         //     interval = Interval.fromISO(`${parsedYear}-${month}-${day}/P1D`)
         // } else if (parsedYear !== undefined && month !== undefined) {
@@ -41,6 +45,5 @@ export function getDisplayNameFromTimestamp(timestamp: string) {
         }
     }
 
-    // TODO don't know yet
     return 'unknown'
 }
