@@ -25,7 +25,8 @@ export default function useOlWmsLayer(
     opacity: number,
     url: string,
     version: string,
-    zIndex: number
+    zIndex: number,
+    initialTimestamp: string | null
 ) {
     const positionStore = usePositionStore()
 
@@ -43,8 +44,8 @@ export default function useOlWmsLayer(
      * option), most of our wanted params will be doubled, resulting in longer and more difficult to
      * read URLs
      */
-    const wmsUrlParams = computed(() => {
-        const params = {
+    const createUrlParams = (timestamp: string | null) => {
+        const params: Record<string, string | boolean | number | undefined> = {
             // SERVICE: "WMS",
             // REQUEST: "GetMap",
             TRANSPARENT: format.value === 'png',
@@ -53,24 +54,25 @@ export default function useOlWmsLayer(
             LANG: lang,
             VERSION: version,
             CRS: positionStore.projection.epsg,
-            // TIME: timestamp.value,
         }
-        // if (timestamp.value === ALL_YEARS_TIMESTAMP) {
-        //   // To request all timestamp we need to set the TIME to undefined which will force openlayer
-        //   // to send a request without TIME param, otherwise openlayer takes the previous TIME param.
-        //   params.TIME = undefined;
-        // }
+        if (timestamp === ALL_YEARS_TIMESTAMP) {
+            // To request all timestamp we need to set the TIME to undefined which will force openlayer
+            // to send a request without TIME param, otherwise openlayer takes the previous TIME param.
+            params.TIME = undefined
+        } else if (timestamp !== null) {
+            params.TIME = timestamp
+        }
         // if (urlParams.value) {
         //   params = { ...params, ...urlParams.value };
         // }
         return params
-    })
+    }
 
     function createImageWMSSource(): ImageWMS {
         const config = {
             url: url,
             projection: positionStore.projection.epsg,
-            params: wmsUrlParams.value,
+            params: createUrlParams(initialTimestamp),
             // Limiting image request to exactly the size of the map viewport.
             // We have a couple layers that state when they have lastly been updated at the bottom
             // of the WMS image, and without this ratio prop this label is out of the map viewport.
@@ -90,7 +92,7 @@ export default function useOlWmsLayer(
             projection: positionStore.projection.epsg,
             url: url,
             gutter: gutter,
-            params: wmsUrlParams.value,
+            params: createUrlParams(initialTimestamp),
             tileGrid: !positionStore.projection.usesMercatorPyramid
                 ? new TileGrid({
                       resolutions: positionStore.projection
@@ -133,10 +135,17 @@ export default function useOlWmsLayer(
 
     const layer = createLayer()
 
+    function updateTimeDimension(newTimestamp: string) {
+        log.debug(`Updating the time for ${layerId} to ${newTimestamp}`)
+        const source = layer.getSource()
+        source?.updateParams(createUrlParams(newTimestamp))
+    }
+
     const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 
     return {
         setVisibility,
         setZIndex,
+        updateTimeDimension,
     }
 }
