@@ -8,8 +8,10 @@ export const ALL_YEARS_TIMESTAMP: string = 'all'
 export const CURRENT_YEAR_TIMESTAMP: string = 'current'
 // TODO move this to shared?
 
+type TimeInfo = { availableTimes: string[] | null; defaultTime: string | null }
+
 // eslint-disable-next-line
-export const getTimeInfoFromWMTSCapabilities = (dimensions: any) => {
+export const getTimeInfoFromWMTSCapabilities = (dimensions: any): TimeInfo => {
     // TODO only take it if it's time
     // TODO handle 9999
     const timeDimension = dimensions[0]
@@ -23,8 +25,9 @@ export const getTimeInfoFromWMTSCapabilities = (dimensions: any) => {
     }
 }
 
+/** @param dimensions Dimensions of the WMS capabilities */
 // eslint-disable-next-line
-export const getTimeInfoFromWMSCapabilities = (dimensions: any) => {
+export const getTimeInfoFromWMSCapabilities = (dimensions: any): TimeInfo => {
     const getTimeDimension = () => {
         if (!dimensions) {
             return null
@@ -37,7 +40,7 @@ export const getTimeInfoFromWMSCapabilities = (dimensions: any) => {
     }
     const timeDimension = getTimeDimension()
     if (!timeDimension) {
-        return {}
+        return { availableTimes: null, defaultTime: null }
     }
 
     const values = timeDimension.values
