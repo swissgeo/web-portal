@@ -21,8 +21,9 @@ export default function useBackgroundSelector(
         let backgroundId
         if (backgroundLayer === 'void') {
             backgroundId = 'void'
+        } else {
+            backgroundId = backgroundLayer?.dataset?.id || 'void'
         }
-        backgroundId = backgroundLayer?.dataset?.id || 'void'
         switch (backgroundId) {
             case 'ch.swisstopo.pixelkarte-farbe':
                 return pixelkarteFarbeUrl

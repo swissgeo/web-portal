@@ -1,6 +1,4 @@
-import type { OGCRecords, TemplateLink, Link, OGCRecord, Service } from '@swissgeo/shared/ogc'
-import type { Protocol } from '@swissgeo/shared/ogc'
-
+import type { OGCRecords, TemplateLink, Link, OGCRecord, Service , Protocol } from '@swissgeo/shared/ogc'
 import type { Style } from '@types/mapbox-gl'
 import type { H3Event } from 'h3'
 

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { Layer } from '@swissgeo/layers'
 
-import IconButton from '@/components/IconButton.vue'
 import { LayerType, useLayerStore } from '@swissgeo/layers'
+
+import IconButton from '@/components/IconButton.vue'
 
 const { layer } = defineProps<{
     layer: Layer
@@ -10,9 +11,6 @@ const { layer } = defineProps<{
 
 const layerStore = useLayerStore()
 
-// @ts-expect-error 2339 Type checker thinks it's a ref but
-// I think this a mistake because outside of the store
-// this shouldn't be a ref anymore
 const layersLength = computed(() => layerStore.layers.length)
 
 const displayName = computed(() => {

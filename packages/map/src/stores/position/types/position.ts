@@ -63,9 +63,9 @@ export interface PositionStoreState {
 }
 
 export interface PositionStoreGetters {
-    // /** The center of the map reprojected in EPSG:4326 */ centerEpsg4326(): SingleCoordinate
-    // /** Resolution of the view expressed in meter per pixel */
-    // resolution(): number
+    /** The center of the map reprojected in EPSG:4326 */ centerEpsg4326(): SingleCoordinate
+    /** Resolution of the view expressed in meter per pixel */
+    resolution(): number
     // /** The extent of the view, expressed with two coordinates numbers (`[ bottomLeft, topRight ]`) */
     // extent(): NormalizedExtent
     // /**
@@ -75,4 +75,5 @@ export interface PositionStoreGetters {
     // isExtentOnlyWithinLV95Bounds(): boolean
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 export type PositionStore = ReturnType<typeof import('@/stores/position').default>

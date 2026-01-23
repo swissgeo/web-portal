@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { LeadContentPageWithCheckbox } from '~/types/livingdocs/Page'
+import type { LeadContentPageWithCheckbox } from '@swissgeo/shared/livingdocs'
 
 const { data } = defineProps<{
     data: Record<string, LeadContentPageWithCheckbox>

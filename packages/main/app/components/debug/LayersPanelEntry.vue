@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Protocol, OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
+import type { OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
 
 import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
 import { useStorage } from '@vueuse/core'

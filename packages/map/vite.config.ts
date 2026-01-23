@@ -1,9 +1,11 @@
+import type {UserConfig} from 'vite';
+
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'unplugin-dts/vite'
 import { fileURLToPath, URL } from 'url'
-import { defineConfig, type UserConfig } from 'vite'
+import { defineConfig  } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(({ mode }): UserConfig => {

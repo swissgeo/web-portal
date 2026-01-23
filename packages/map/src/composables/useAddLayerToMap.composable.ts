@@ -58,6 +58,7 @@ export default function useAddLayerToMap(olLayer: BaseLayer, zIndex: number) {
 
     function removeLayerFromMap(): void {
         if (olMap) {
+            // @ts-expect-error This ol layer should have the prop
             log.debug(`Removing layer ${olLayer.ol_uid} from map`, olLayer)
             olMap.removeLayer(olLayer)
 

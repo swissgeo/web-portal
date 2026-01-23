@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DatasetLayer } from '@swissgeo/layers'
+import type { DatasetLayer, Layer } from '@swissgeo/layers'
 import type { OGCRecord } from '@swissgeo/shared/ogc'
 
 import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
@@ -23,7 +23,7 @@ const AVAILABLE_BACKGROUNDS = [
 ]
 
 const backgroundRecords = computed(async () => {
-    const promises: Promise[] = []
+    const promises: Promise<OGCRecord>[] = []
     for (const backgroundId of AVAILABLE_BACKGROUNDS) {
         promises.push(
             $fetch(`/api/v1/layers/swissgeo/collections/swissgeo.catalog/items/${backgroundId}`)
@@ -58,8 +58,7 @@ watch(
     { once: true }
 )
 
-function selectBackground(backgroundLayer: DatasetLayer | VoidLayer) {
-    // TODO HAAAAACK
+function selectBackground(backgroundLayer: Layer | VoidLayer) {
     if (backgroundLayer === 'void') {
         layerStore.setBackground(null)
     }
@@ -70,7 +69,7 @@ function selectBackground(backgroundLayer: DatasetLayer | VoidLayer) {
 <template>
     <BackgroundSelectorSquared
         :background-layers="sortedBackgroundLayersWithVoid"
-        :current-background-layer="layerStore.backgroundLayer"
+        :current-background-layer="layerStore.backgroundLayer ?? 'void'"
         @select-background="selectBackground"
     />
     <!-- <BackgroundSelectorWheelRounded

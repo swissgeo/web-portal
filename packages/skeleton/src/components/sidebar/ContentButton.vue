@@ -9,7 +9,6 @@ import SidebarButton from './SidebarButton.vue'
 
 const { t: $t } = useI18n()
 
-const router = useRouter()
 const route = useRoute()
 
 const { icon, menuMetaData } = defineProps<{

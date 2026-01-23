@@ -1,5 +1,5 @@
-import type { Paragraph } from '~/types/livingdocs/Paragraph'
-import type { TitleComponent } from '~/types/livingdocs/Title'
+import type { Paragraph } from './Paragraph'
+import type { TitleComponent } from './Title'
 
 export interface Publication {
     systemdata: Systemdata
@@ -57,7 +57,20 @@ export interface MenuMetadata {
     tree: TreeItem[]
 }
 
-export type ContentItem = LeadContentPageWithCheckbox | Paragraph
+export interface Image {
+    content: {
+        image: string
+        caption: string
+    }
+}
+
+export interface Section {
+    content: {
+        section: ContentItem[]
+    }
+}
+
+export type ContentItem = LeadContentPageWithCheckbox | Paragraph | Image
 
 export interface LeadContentPageWithCheckbox {
     component: 'lead-contentpage-with-checkbox'

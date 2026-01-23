@@ -1,3 +1,5 @@
+import type { ResolutionStep } from '@swissgeo/coordinates'
+
 import log from '@swissgeo/log'
 import ImageLayer from 'ol/layer/Image'
 import TileLayer from 'ol/layer/Tile'
@@ -93,7 +95,7 @@ export default function useOlWmsLayer(
                 ? new TileGrid({
                       resolutions: positionStore.projection
                           .getResolutionSteps()
-                          .map((step) => step.resolution),
+                          .map((step: ResolutionStep) => step.resolution),
                       extent: positionStore.projection.bounds?.flatten,
                       origin: positionStore.projection.getTileOrigin(),
                       tileSize: WMS_TILE_SIZE,

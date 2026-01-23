@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { Layer } from '@swissgeo/layers'
+import type { DatasetLayer } from '@swissgeo/layers'
 
 import log from '@swissgeo/log'
 
 import useOlVectorLayer from '../composables/olVectorLayer.composable'
 
 const { layer } = defineProps<{
-    layer: Layer
+    layer: DatasetLayer
 }>()
 
 const url = computed(() => `/api/v1/layers/swissgeo/vectorTest`)

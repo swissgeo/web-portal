@@ -36,6 +36,7 @@ export interface DatasetLayer extends Layer {
 }
 
 // File layer fills properties for file location or so
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface FileLayer extends Layer {}
 
 export { useLayerStore } from '@/stores/layer'

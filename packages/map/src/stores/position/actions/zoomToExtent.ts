@@ -1,14 +1,19 @@
-import type { FlatExtent, NormalizedExtent, SingleCoordinate } from '@swissgeo/coordinates'
+import type {
+    FlatExtent,
+    NormalizedExtent,
+    SingleCoordinate,
+    CoordinateSystem,
+} from '@swissgeo/coordinates'
 
-import { CoordinateSystem, extentUtils } from '@swissgeo/coordinates'
-import { Math as CesiumMath } from 'cesium'
+import { extentUtils } from '@swissgeo/coordinates'
+// import { Math as CesiumMath } from 'cesium'
 
-import type { PositionStore } from '@/store/modules/position/types/position'
-import type { ActionDispatcher } from '@/store/types'
+import type { PositionStore } from '@/stores/position/types/position'
+import type { ActionDispatcher } from '@/stores/types'
 
-import { calculateHeight } from '@/modules/map/components/cesium/utils/cameraUtils'
-import useCesiumStore from '@/store/modules/cesium'
-import useUIStore from '@/store/modules/ui'
+// import { calculateHeight } from '@/modules/map/components/cesium/utils/cameraUtils'
+// import useCesiumStore from '@/store/modules/cesium'
+// import useUIStore from '@/store/modules/ui'
 
 interface ZoomToExtentOptions {
     extentProjection?: CoordinateSystem
@@ -33,7 +38,7 @@ export default function zoomToExtent(
     dispatcherOrNothing?: ActionDispatcher
 ): void {
     const options = dispatcherOrNothing ? (optionsOrDispatcher as ZoomToExtentOptions) : {}
-    const dispatcher = dispatcherOrNothing ?? (optionsOrDispatcher as ActionDispatcher)
+    // const dispatcher = dispatcherOrNothing ?? (optionsOrDispatcher as ActionDispatcher)
 
     const { extentProjection, maxZoom } = options
 
@@ -51,19 +56,19 @@ export default function zoomToExtent(
             this.center = centerOfExtent
         }
         // Calculate extent size in the current projection
-        const extentSize = {
-            width: normalizedExtent[1][0] - normalizedExtent[0][0],
-            height: normalizedExtent[1][1] - normalizedExtent[0][1],
-        }
+        // const extentSize = {
+        //     width: normalizedExtent[1][0] - normalizedExtent[0][0],
+        //     height: normalizedExtent[1][1] - normalizedExtent[0][1],
+        // }
 
-        const uiStore = useUIStore()
+        // const uiStore = useUIStore()
         let targetResolution
-        // if the extent's height is greater than width, we base our resolution calculation on that
-        if (extentSize.height > extentSize.width) {
-            targetResolution = extentSize.height / (uiStore.height - uiStore.headerHeight)
-        } else {
-            targetResolution = extentSize.width / uiStore.width
-        }
+        // // if the extent's height is greater than width, we base our resolution calculation on that
+        // if (extentSize.height > extentSize.width) {
+        //     targetResolution = extentSize.height / (uiStore.height - uiStore.headerHeight)
+        // } else {
+        //     targetResolution = extentSize.width / uiStore.width
+        // }
 
         const zoomForResolution = this.projection.getZoomForResolutionAndCenter(
             targetResolution,
@@ -79,20 +84,20 @@ export default function zoomToExtent(
         // We also cannot zoom further than the maxZoom specified if it is specified
         this.zoom = Math.min(Math.max(zoomForResolution - 1, 0), computedMaxZoom)
 
-        const cesiumStore = useCesiumStore()
-        if (cesiumStore.active && this.camera) {
-            const newHeight = calculateHeight(this.resolution, uiStore.width)
-            this.setCameraPosition(
-                {
-                    x: this.centerEpsg4326[0],
-                    y: this.centerEpsg4326[1],
-                    z: newHeight,
-                    heading: 0,
-                    pitch: CesiumMath.toDegrees(-CesiumMath.PI_OVER_TWO),
-                    roll: 0,
-                },
-                dispatcher
-            )
-        }
+        // const cesiumStore = useCesiumStore()
+        // if (cesiumStore.active && this.camera) {
+        //     const newHeight = calculateHeight(this.resolution, uiStore.width)
+        //     this.setCameraPosition(
+        //         {
+        //             x: this.centerEpsg4326[0],
+        //             y: this.centerEpsg4326[1],
+        //             z: newHeight,
+        //             heading: 0,
+        //             pitch: CesiumMath.toDegrees(-CesiumMath.PI_OVER_TWO),
+        //             roll: 0,
+        //         },
+        //         dispatcher
+        //     )
+        // }
     }
 }
