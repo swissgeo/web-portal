@@ -8,9 +8,8 @@
     "type": "module",
     "exports": {
         ".": {
-            "import": "./dist/shared.js",
-            "types": "./dist/Language.d.ts",
-            "require": "./dist/index.cjs"
+            "import": "./dist/shared.es.js",
+            "types": "./dist/shared.d.ts"
         },
         "./api": {
             "types": "./dist/api/index.d.ts"
@@ -30,8 +29,7 @@
     "module": "./dist/index.js",
     "scripts": {
         "build": "vite build",
-        "build-watch": "vite build --watch",
-        "build-watch-dev": "vite build --watch --mode development",
+        "build:dev:watch": "vite build --watch --mode development",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "lint": "eslint --fix",

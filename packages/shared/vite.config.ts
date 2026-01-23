@@ -14,6 +14,8 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
             minify: mode === 'development' ? false : true,
             lib: {
                 entry: resolve(__dirname, 'src/index.ts'),
+                fileName: (format) => `index.${format}.js`,
+                formats: ['es'],
                 name: '@swissgeo/shared',
             },
             rollupOptions: {
@@ -59,6 +61,10 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
                 entryRoot: 'types',
                 insertTypesEntry: true,
                 copyDtsFiles: true,
+            }),
+            dts({
+                bundleTypes: true,
+                processor: 'vue',
             }),
             tsconfigPaths(),
             vue(),
