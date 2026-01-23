@@ -11,6 +11,9 @@
             "import": "./dist/shared.es.js",
             "types": "./dist/shared.d.ts"
         },
+        "./ambient": {
+            "types": "./dist/ambient/index.d.ts"
+        },
         "./api": {
             "types": "./dist/api/index.d.ts"
         },

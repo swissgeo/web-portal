@@ -67,7 +67,7 @@ catalog:
     lodash: ^4.17.21
     lodash-es: 4.17.21
     lucide-vue-next: ^0.542.0
-    nuxt: ^4.0.3
+    nuxt: ^4.2.2
     ol: 10.7.0
     ol-mapbox-style: ^13.1.1
     pinia: 3.0.3
