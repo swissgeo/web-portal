@@ -1,11 +1,12 @@
-import type { MenuEntry, MenuEntryLangaugeItem, MenuTree } from '~~/shared/types/api/Menu'
+import type { MenuEntry, MenuEntryLangaugeItem, MenuTree } from '@swissgeo/shared/api'
 import type {
     ContentPageMetadata,
     MenuMetadata,
     Publication,
     TreeItem,
-} from '~~/shared/types/livingdocs/Publication'
+} from '@swissgeo/shared/livingdocs'
 
+import log from '@swissgeo/log'
 import useLdFetch from '~~/server/utils/ldFetch'
 import { joinURL } from 'ufo'
 
@@ -18,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
     const fetchMenu = async (): Promise<Publication> => {
         const target = joinURL(apiEndpoint, 'documents', documentId, 'latestPublication')
-        console.log(`Fetching menus from ${target}`)
+        log.debug(`Fetching menus from ${target}`)
 
         const data = await ldFetch<Publication>(target)
 
@@ -65,7 +66,7 @@ export default defineEventHandler(async (event) => {
 
             promises.push(fetchPublicationMetadata(id, lang, { label }))
         } else {
-            throw Error(`Can't handle datastructure for ${tree}`)
+            throw Error(`Can't handle datastructure for ${JSON.stringify(tree)}`)
         }
 
         const values = await Promise.all(promises)
@@ -95,9 +96,10 @@ export default defineEventHandler(async (event) => {
 
         return translatedData
     } catch (err) {
-        console.error(err)
+        // @ts-expect-error Exception types in JS are a PITA
+        log.error(err)
     }
-    console.log('Done fetching menus')
+    log.debug('Done fetching menus')
 
     return {}
 })

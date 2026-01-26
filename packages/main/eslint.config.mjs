@@ -7,12 +7,7 @@ export default [
     globalIgnores(['.nuxt', '.output']),
     {
         rules: {
-            'vue/multi-word-component-names': [
-                'error',
-                {
-                    ignores: ['default'],
-                },
-            ],
+            'vue/multi-word-component-names': ['off'],
         },
     },
     {

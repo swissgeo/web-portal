@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ContentItem } from '~~/shared/types/livingdocs/Publication'
+import type { ContentItem } from '@swissgeo/shared/livingdocs'
 
 import { pascalCase } from 'es-toolkit/string'
 

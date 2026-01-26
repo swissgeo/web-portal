@@ -22,7 +22,7 @@ catalog:
     '@nuxtjs/i18n': ^10.0.6
     '@pinia/nuxt': ^0.11.2
     '@prettier/plugin-xml': ^3.4.2
-    '@primeuix/themes': ^1.2.3
+    '@primeuix/themes': 1.2.5
     '@primevue/nuxt-module': ^4.3.8
     '@swissgeo/config-eslint': ^1.0.0-rc.1
     '@swissgeo/config-prettier': 1.0.0-rc.1

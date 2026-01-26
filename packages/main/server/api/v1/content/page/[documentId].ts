@@ -1,6 +1,7 @@
 import type { Page } from '@swissgeo/shared/api'
 import type { Publication, ContentPageMetadata, Systemdata } from '@swissgeo/shared/livingdocs'
 
+import log from '@swissgeo/log'
 import useLdFetch from '~~/server/utils/ldFetch'
 import { joinURL } from 'ufo'
 
@@ -14,11 +15,11 @@ export default defineEventHandler(async (event): Promise<Page> => {
 
     const fetchPageData = async (documentId: string): Promise<Publication> => {
         const documentTarget = joinURL(apiEndpoint, 'documents', documentId, 'latestPublication')
-        console.log(`Fetching publication data from ${documentTarget}`)
+        log.debug(`Fetching publication data from ${documentTarget}`)
 
         const pageData = await ldFetch<Publication>(documentTarget)
 
-        console.log('Done fetching publication data')
+        log.debug('Done fetching publication data')
 
         return pageData
     }
@@ -27,7 +28,7 @@ export default defineEventHandler(async (event): Promise<Page> => {
     const fetchLanguageData = async (
         groupId: string
     ): Promise<{ metadata: ContentPageMetadata; systemdata: Systemdata }[]> => {
-        console.log(
+        log.debug(
             `Searching API for other languages from publication ${documentId} with groupId ${groupId}`
         )
 
@@ -36,7 +37,7 @@ export default defineEventHandler(async (event): Promise<Page> => {
             `?languageGroupId=${groupId}&fields=systemdata,metadata`
         const searchData = await ldFetch<Page[]>(searchTarget)
 
-        console.log('Done searching other language data')
+        log.debug('Done searching other language data')
         return searchData
     }
 
@@ -51,7 +52,7 @@ export default defineEventHandler(async (event): Promise<Page> => {
 
         return { ...pageData, languageReferences: searchDataFiltered }
     } catch (error) {
-        console.error(`Unable to fetch data for ${documentId}`, error)
+        log.error(`Unable to fetch data for ${documentId}`, error)
     }
     return {}
 })

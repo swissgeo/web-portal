@@ -43,7 +43,7 @@ catalogs:
       specifier: ^3.4.2
       version: 3.4.2
     '@primeuix/themes':
-      specifier: ^1.2.3
+      specifier: 1.2.5
       version: 1.2.5
     '@primevue/nuxt-module':
       specifier: ^4.3.8
@@ -299,7 +299,7 @@ importers:
         version: link:../shared
       '@vueuse/core':
         specifier: 'catalog:'
-        version: 13.9.0(vue@3.5.25(typescript@5.9.3))
+        version: 13.9.0(vue@3.5.22(typescript@5.9.3))
       lodash:
         specifier: 'catalog:'
         version: 4.17.21
@@ -308,7 +308,7 @@ importers:
         version: 13.0.0
       vue:
         specifier: 'catalog:'
-        version: 3.5.25(typescript@5.9.3)
+        version: 3.5.22(typescript@5.9.3)
     devDependencies:
       '@dxup/unimport':
         specifier: 'catalog:'
@@ -321,25 +321,25 @@ importers:
         version: 1.0.0-rc.1(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1(jiti@2.6.1)))(@swissgeo/config-stylelint@1.0.0-beta.2(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.26.1(typescript@5.9.3)))(@typescript-eslint/parser@8.49.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.39.1(jiti@2.6.1)))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vue-eslint-parser@10.2.0(eslint@9.39.1(jiti@2.6.1)))
       '@swissgeo/config-typescript':
         specifier: 'catalog:'
-        version: 1.0.0-rc.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
+        version: 1.0.0-rc.1(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
       '@types/openlayers':
         specifier: 'catalog:'
         version: 4.6.23
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
-        version: 6.0.2(vite@7.2.7(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.25(typescript@5.9.3))
+        version: 6.0.2(vite@7.2.7(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))(vue@3.5.22(typescript@5.9.3))
       eslint:
         specifier: 'catalog:'
         version: 9.39.1(jiti@2.6.1)
       pinia:
         specifier: 'catalog:'
-        version: 3.0.3(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
+        version: 3.0.3(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
       unplugin-auto-import:
         specifier: 'catalog:'
-        version: 20.2.0(@nuxt/kit@4.2.2(magicast@0.5.1))(@vueuse/core@13.9.0(vue@3.5.25(typescript@5.9.3)))
+        version: 20.2.0(@nuxt/kit@4.2.2(magicast@0.5.1))(@vueuse/core@13.9.0(vue@3.5.22(typescript@5.9.3)))
       unplugin-dts:
         specifier: 'catalog:'
         version: 1.0.0-beta.6(@microsoft/api-extractor@7.55.1(@types/node@24.10.3))(esbuild@0.27.1)(rollup@4.53.3)(typescript@5.9.3)(vite@7.2.7(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2))
@@ -10853,23 +10853,6 @@ snapshots:
     transitivePeerDependencies:
       - vue
 
-  '@swissgeo/config-typescript@1.0.0-rc.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))':
-    dependencies:
-      '@vue/tsconfig': 0.8.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
-      typescript: 5.9.3
-    optionalDependencies:
-      '@types/bootstrap': 5.2.10
-      '@types/chai': 5.2.3
-      '@types/geojson': 7946.0.16
-      '@types/jsdom': 27.0.0
-      '@types/lodash': 4.17.21
-      '@types/luxon': 3.7.1
-      '@types/node': 24.10.3
-      '@types/openlayers': 4.6.23
-      '@types/pako': 2.0.4
-    transitivePeerDependencies:
-      - vue
-
   '@swissgeo/coordinates@1.0.0-rc.1(ol@10.7.0)(proj4@2.20.2)':
     dependencies:
       '@swissgeo/log': 1.0.0-rc.1(proj4@2.20.2)
@@ -12752,11 +12735,6 @@ snapshots:
       typescript: 5.9.3
       vue: 3.5.22(typescript@5.9.3)
 
-  '@vue/tsconfig@0.8.1(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))':
-    optionalDependencies:
-      typescript: 5.9.3
-      vue: 3.5.25(typescript@5.9.3)
-
   '@vueuse/core@13.9.0(vue@3.5.22(typescript@5.9.3))':
     dependencies:
       '@types/web-bluetooth': 0.0.21
@@ -12764,22 +12742,11 @@ snapshots:
       '@vueuse/shared': 13.9.0(vue@3.5.22(typescript@5.9.3))
       vue: 3.5.22(typescript@5.9.3)
 
-  '@vueuse/core@13.9.0(vue@3.5.25(typescript@5.9.3))':
-    dependencies:
-      '@types/web-bluetooth': 0.0.21
-      '@vueuse/metadata': 13.9.0
-      '@vueuse/shared': 13.9.0(vue@3.5.25(typescript@5.9.3))
-      vue: 3.5.25(typescript@5.9.3)
-
   '@vueuse/metadata@13.9.0': {}
 
   '@vueuse/shared@13.9.0(vue@3.5.22(typescript@5.9.3))':
     dependencies:
       vue: 3.5.22(typescript@5.9.3)
-
-  '@vueuse/shared@13.9.0(vue@3.5.25(typescript@5.9.3))':
-    dependencies:
-      vue: 3.5.25(typescript@5.9.3)
 
   '@xml-tools/parser@1.0.11':
     dependencies:
@@ -16609,13 +16576,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  pinia@3.0.3(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3)):
-    dependencies:
-      '@vue/devtools-api': 7.7.9
-      vue: 3.5.25(typescript@5.9.3)
-    optionalDependencies:
-      typescript: 5.9.3
-
   pkg-dir@5.0.0:
     dependencies:
       find-up: 5.0.0
@@ -18001,18 +17961,6 @@ snapshots:
     optionalDependencies:
       '@nuxt/kit': 4.2.2(magicast@0.5.1)
       '@vueuse/core': 13.9.0(vue@3.5.22(typescript@5.9.3))
-
-  unplugin-auto-import@20.2.0(@nuxt/kit@4.2.2(magicast@0.5.1))(@vueuse/core@13.9.0(vue@3.5.25(typescript@5.9.3))):
-    dependencies:
-      local-pkg: 1.1.2
-      magic-string: 0.30.21
-      picomatch: 4.0.3
-      unimport: 5.5.0
-      unplugin: 2.3.11
-      unplugin-utils: 0.3.1
-    optionalDependencies:
-      '@nuxt/kit': 4.2.2(magicast@0.5.1)
-      '@vueuse/core': 13.9.0(vue@3.5.25(typescript@5.9.3))
 
   unplugin-dts@1.0.0-beta.6(@microsoft/api-extractor@7.55.1(@types/node@24.10.3))(esbuild@0.27.1)(rollup@4.53.3)(typescript@5.9.3)(vite@7.2.7(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(yaml@2.8.2)):
     dependencies:

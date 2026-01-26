@@ -1,5 +1,3 @@
-import type { Protocol } from '@swissgeo/shared/ogc'
-
 const basePath = 'http://localhost:3000/api/v1/layers/external/'
 
 export default defineEventHandler((event) => {
