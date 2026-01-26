@@ -6,5 +6,6 @@ import '../env.d.ts' // for reproject
 
 import useOlDrawing from '@/composables/olDrawing.composable'
 import MapModule from '@/MapModule.vue'
+import useDrawingStore, { DrawingMode } from '@/stores/drawing'
 
-export { MapModule, useOlDrawing }
+export { MapModule, useOlDrawing, useDrawingStore, DrawingMode }

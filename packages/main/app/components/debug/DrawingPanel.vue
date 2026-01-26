@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { LayerType, useLayerStore } from '@swissgeo/layers'
+import type { Map } from 'ol';
+
+import { useDrawingStore, DrawingMode } from '@swissgeo/map'
+// import { LayerType, useLayerStore } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 import { useDrawingManager } from '../../composables/useDrawingManager'
@@ -8,11 +11,9 @@ const emit = defineEmits<{
     close: []
 }>()
 
-const layerStore = useLayerStore()
+// const layerStore = useLayerStore()
+const drawingStore = useDrawingStore()
 const {
-    drawingMode,
-    isDrawing,
-    featureCount,
     startDrawing,
     stopDrawing,
     exportToKML,
@@ -21,30 +22,30 @@ const {
     clearDrawing,
 } = useDrawingManager()
 
-const activeMode = ref<'point' | 'linestring' | 'polygon' | null>(null)
+// const activeMode = ref<'point' | 'linestring' | 'polygon' | null>(null)
 
-function selectDrawingType(type: 'point' | 'linestring' | 'polygon') {
-    console.log('selectDrawingType called with:', type, 'current activeMode:', activeMode.value)
+function selectDrawingType(type: DrawingMode) {
     
-    if (activeMode.value === type) {
+    if (drawingStore.drawingMode === type) {
         // If clicking the same button, toggle off
         console.log('Toggling off drawing mode')
-        stopDrawing()
-        activeMode.value = null
+        // stopDrawing()
+        drawingStore.setDrawingMode(DrawingMode.None)
     } else {
         // Start drawing with the selected type
         console.log('Starting new drawing mode:', type)
-        startDrawing(type)
-        activeMode.value = type
+        // startDrawing()
+        drawingStore.setDrawingMode(type)
+
     }
 }
 
 function handleClose() {
     // Stop drawing and deactivate mode
-    if (isDrawing.value) {
+    if (drawingStore.isDrawing) {
         stopDrawing()
     }
-    activeMode.value = null
+    drawingStore.setDrawingMode(DrawingMode.None)
     emit('close')
 }
 
@@ -85,9 +86,15 @@ async function handleExport(format: 'kml' | 'kmz' | 'gpx') {
 function handleClear() {
     if (confirm('Are you sure you want to clear all drawings?')) {
         clearDrawing()
-        activeMode.value = null
+        drawingStore.setDrawingMode(DrawingMode.None)
     }
 }
+
+onMounted(() => {
+    console.log('DrawingPanel mounted')
+    startDrawing()
+
+})
 </script>
 
 <template>
@@ -108,7 +115,7 @@ function handleClear() {
                     @click="selectDrawingType('point')"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        activeMode === 'point'
+                        drawingStore.drawingMode === 'point'
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -119,7 +126,7 @@ function handleClear() {
                     @click="selectDrawingType('linestring')"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        activeMode === 'linestring'
+                        drawingStore.drawingMode === 'linestring'
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -130,7 +137,7 @@ function handleClear() {
                     @click="selectDrawingType('polygon')"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        activeMode === 'polygon'
+                        drawingStore.drawingMode === 'polygon'
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -139,16 +146,16 @@ function handleClear() {
                 </button>
             </div>
             <p
-                v-if="isDrawing"
+                v-if="drawingStore.isDrawing"
                 class="mt-2 text-sm text-blue-600"
             >
-                {{ drawingMode === 'point' ? 'Click on the map to add a point' : 'Click to start drawing, double-click to finish' }}
+                {{ drawingStore.drawingMode === 'point' ? 'Click on the map to add a point' : 'Click to start drawing, double-click to finish' }}
             </p>
         </div>
 
         <div class="mb-4 rounded border border-gray-300 bg-gray-50 p-3">
             <p class="text-sm font-medium text-gray-700">
-                Features drawn: <span class="font-bold">{{ featureCount }}</span>
+                Features drawn: <span class="font-bold">{{ drawingStore.featureCount }}</span>
             </p>
         </div>
 
@@ -157,21 +164,21 @@ function handleClear() {
             <div class="flex gap-2">
                 <button
                     @click="handleExport('kml')"
-                    :disabled="featureCount === 0"
+                    :disabled="drawingStore.featureCount === 0"
                     class="rounded bg-green-500 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-300"
                 >
                     Export KML
                 </button>
                 <button
                     @click="handleExport('kmz')"
-                    :disabled="featureCount === 0"
+                    :disabled="drawingStore.featureCount === 0"
                     class="rounded bg-green-500 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-300"
                 >
                     Export KMZ
                 </button>
                 <button
                     @click="handleExport('gpx')"
-                    :disabled="featureCount === 0"
+                    :disabled="drawingStore.featureCount === 0"
                     class="rounded bg-green-500 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-300"
                 >
                     Export GPX
@@ -182,7 +189,7 @@ function handleClear() {
         <div class="mt-auto">
             <button
                 @click="handleClear"
-                :disabled="featureCount === 0"
+                :disabled="drawingStore.featureCount === 0"
                 class="w-full rounded bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:bg-gray-300"
             >
                 Clear All Drawings
