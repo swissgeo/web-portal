@@ -3,6 +3,7 @@ import type { DatasetLayer, Layer } from '@swissgeo/layers'
 
 import { LayerType } from '@swissgeo/layers'
 
+import OpenLayersDrawingLayer from './OpenLayersDrawingLayer.vue'
 import OpenLayersFileLayer from './OpenLayersFileLayer.vue'
 import OpenLayersGeoJSONLayer from './OpenLayersGeoJSONLayer.vue'
 import OpenLayersGPXLayer from './OpenLayersGPXLayer.vue'
@@ -19,6 +20,15 @@ const isLegacyFileLayer = computed(() => {
     return layer.type === LayerType.GEOJSON && !layer.dataset
 })
 
+// Check if this is the drawing layer
+const isDrawingLayer = computed(() => {
+    const result = layer.humanId === 'user-drawing-layer'
+    if (result) {
+        console.log('Drawing layer detected in OpenLayersVisibleLayer:', layer)
+    }
+    return result
+})
+console.log('layer', layer)
 </script>
 
 <template>
@@ -30,9 +40,13 @@ const isLegacyFileLayer = computed(() => {
         :layer="layer as DatasetLayer"
         v-if="layer.type === LayerType.WMS"
     />
+    <OpenLayersDrawingLayer
+        :layer="layer as Layer"
+        v-if="isDrawingLayer && layer.type === LayerType.KML"
+    />
     <OpenLayersKMLLayer
         :layer="layer as Layer"
-        v-if="layer.type === LayerType.KML"
+        v-if="!isDrawingLayer && layer.type === LayerType.KML"
     />
     <OpenLayersKMZLayer
         :layer="layer as Layer"

@@ -2,5 +2,8 @@
     "typescript.preferences.importModuleSpecifier": "relative",
     "eslint.workingDirectories": [{ "pattern": "./packages/*/" }],
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[xml]": {
+        "editor.defaultFormatter": "mikeburgh.xml-format"
+    }
 }

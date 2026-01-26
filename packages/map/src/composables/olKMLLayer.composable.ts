@@ -5,7 +5,7 @@ import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
 import proj4 from 'proj4'
 
-import { EPSG_4326_WGS84 } from '@/composables/types'
+import { EPSG_4326_WGS84 } from '@/composables/types.d'
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
 
