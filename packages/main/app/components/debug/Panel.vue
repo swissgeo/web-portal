@@ -2,7 +2,7 @@
 const isLayersPanelOpen = ref(false)
 const isImportPanelOpen = ref(false)
 const isImportLocalPanelOpen = ref(false)
-
+const isDrawingOpen = ref(false)
 function toggleLayersPanel() {
     isLayersPanelOpen.value = !isLayersPanelOpen.value
 }
@@ -12,6 +12,9 @@ function toggleImportPanel() {
 }
 function toggleLocalImportPanel() {
     isImportLocalPanelOpen.value = !isImportLocalPanelOpen.value
+}
+function toggleDrawing() {
+    isDrawingOpen.value = !isDrawingOpen.value
 }
 </script>
 
@@ -34,9 +37,15 @@ function toggleLocalImportPanel() {
             @close="toggleLocalImportPanel"
         >
         </DebugImportLocalLayersPanel>
+        <DebugDrawingPanel
+            class="relative h-[400px] w-[350px] overflow-hidden bg-white shadow"
+            v-if="isDrawingOpen"
+            @close="toggleDrawing"
+        >
+        </DebugDrawingPanel>
         <div
             class="flex gap-2"
-            v-if="!isLayersPanelOpen && !isImportPanelOpen"
+            v-if="!isLayersPanelOpen && !isImportPanelOpen && !isImportLocalPanelOpen && !isDrawingOpen"
         >
             <Button
                 @click="toggleLayersPanel"
@@ -55,6 +64,9 @@ function toggleLocalImportPanel() {
                 class="cursor-pointer"
             >
                 Open Import Local Layers Panel
+            </Button>
+            <Button @click="toggleDrawing">
+                Open Drawing Panel
             </Button>
         </div>
     </div>

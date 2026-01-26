@@ -14,7 +14,11 @@ import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
 const layerStore = useLayerStore()
 
-const layers = computed(() => layerStore.layers)
+const layers = computed(() => {
+    const allLayers = layerStore.layers
+    console.log('OpenLayersMap layers:', allLayers.map(l => ({ id: l.humanId, type: l.type, visible: l.isVisible })))
+    return allLayers
+})
 
 const mapElement = useTemplateRef('mapElement')
 const olMap = ref<OlMapType>()
