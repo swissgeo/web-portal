@@ -22,6 +22,7 @@ export const useDrawingStore = defineStore('drawingStore', () => {
 
     const isDrawing = ref(false)
     const drawingLayerUuid = ref<string | undefined>(undefined)
+    const drawingKMLLayerUuid = ref<string | undefined>(undefined)
     const drawingFeatures = ref<Feature<Geometry>[]>([])
     const featureCount = computed(() => drawingFeatures.value.length)
     // Use shallowRef to prevent Vue from deeply observing OpenLayers objects
@@ -32,7 +33,7 @@ export const useDrawingStore = defineStore('drawingStore', () => {
 
     function clearDrawingMode() {
         drawingMode.value = DrawingMode.None
-        drawingLayerUuid.value = undefined
+        // drawingLayerUuid.value = undefined
     }
 
     function toggleDrawing() {
@@ -45,6 +46,9 @@ export const useDrawingStore = defineStore('drawingStore', () => {
 
     function setDrawingLayerUuid(uuid: string) {
         drawingLayerUuid.value = uuid
+    }
+    function setDrawingKMLLayerUuid(uuid: string) {
+        drawingKMLLayerUuid.value = uuid
     }
 
     function clearDrawingFeatures() {
@@ -115,6 +119,7 @@ export const useDrawingStore = defineStore('drawingStore', () => {
         olLayer,
         featureCount,
         drawingLayerUuid,
+        drawingKMLLayerUuid,
         drawingFeatures,
         isDrawing,
         drawingMode,
@@ -127,7 +132,8 @@ export const useDrawingStore = defineStore('drawingStore', () => {
         setOlLayer,
         updateDrawingLayer,
         generateEmptyKML,
-        featuresToKML
+        featuresToKML,
+        setDrawingKMLLayerUuid
     }
 })
 

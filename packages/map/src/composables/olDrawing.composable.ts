@@ -2,10 +2,13 @@ import type { Feature, Map } from 'ol'
 import type { Geometry } from 'ol/geom'
 
 import log from '@swissgeo/log'
+import GeoJSON from 'ol/format/GeoJSON'
 import Draw from 'ol/interaction/Draw'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
+
+import * as geoJsonUtils from '@/utils/geoJsonUtils'
 
 /**
  * Composable for handling OpenLayers drawing interactions
@@ -18,7 +21,10 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
         throw new Error('OpenLayersMap is not available')
     }
 
-    const source = new VectorSource({ wrapX: false })
+    const source = new VectorSource({
+        wrapX: false
+        // wrapX: false, features: drawingStore.drawingFeatures as Feature<Geometry>[]
+    })
 
     // Create reusable style to avoid recreation on every render
     const drawingStyle = new Style({
@@ -38,6 +44,7 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
     })
 
     function createOlLayer(layerId: string, uuid: string): VectorLayer {
+
         const olLayer = new VectorLayer({
             properties: {
                 id: layerId,
@@ -47,6 +54,13 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
             source,
             style: drawingStyle,
         })
+        // layer.setSource(
+        //     new VectorSource({
+        //         features: new GeoJSON().readFeatures(
+        //             geoJsonUtils.reprojectGeoJsonData(geoJsonData, projection.value)
+        //         ),
+        //     })
+        // )
         // Use markRaw to prevent Vue from making this reactive (huge performance improvement)
         drawingStore.setOlLayer(markRaw(olLayer))
         return olLayer
@@ -98,7 +112,7 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
      * Start drawing with the specified geometry type
      */
     function startDrawing(type: 'Point' | 'LineString' | 'Polygon', onFeatureAdded?: () => void) {
-        console.log('olDrawing startDrawing called with type:', type)
+        console.log('olDrawing startDrawing called with type:', type, source.getFeatures().length)
         // Stop any existing draw interaction first
         stopDrawing()
 
@@ -156,6 +170,11 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
      * Clear all features from the drawing
      */
     function clearFeatures() {
+        // if (currentDraw) {
+        //     currentDraw.setActive(false) // Deactivate first
+        //     olMap.removeInteraction(currentDraw)
+        // }
+        // currentDraw = null
         source.clear()
         log.debug('Cleared all features')
     }
