@@ -2,13 +2,14 @@ import type { Map } from 'ol'
 
 import log from '@swissgeo/log'
 import { applyStyle } from 'ol-mapbox-style'
+import MVT from 'ol/format/MVT'
 import VectorTileLayer from 'ol/layer/VectorTile'
 import VectorTileSource from 'ol/source/VectorTile'
-import MVT from 'ol/format/MVT'
 import TileGrid from 'ol/tilegrid/TileGrid'
 
-import useAddLayerToMap from './useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position/'
+
+import useAddLayerToMap from './useAddLayerToMap.composable'
 
 interface TileMatrixItem {
     zoom_level: number
@@ -37,9 +38,7 @@ interface MapboxStyle {
     sources: Record<string, { url?: string; type: string }>
 }
 
-/**
- * Fetches the style and TileJSON to extract tile grid configuration dynamically
- */
+/** Fetches the style and TileJSON to extract tile grid configuration dynamically */
 async function fetchTileGridConfig(styleUrl: string): Promise<{
     tileUrls: string[]
     resolutions: number[]
@@ -76,15 +75,28 @@ async function fetchTileGridConfig(styleUrl: string): Promise<{
 
         // Extend resolutions if maxzoom is higher than what's defined in tile_matrix_set
         // (resolutions halve at each zoom level)
-        const maxDefinedZoom = sortedItems[sortedItems.length - 1].zoom_level
+        const lastItem = sortedItems[sortedItems.length - 1]
+        if (!lastItem) {
+            log.error('No items in sorted tile matrix set')
+            return null
+        }
+        const maxDefinedZoom = lastItem.zoom_level
         const maxZoom = tileJson.maxzoom ?? maxDefinedZoom
         let lastResolution = resolutions[resolutions.length - 1]
+        if (lastResolution === undefined) {
+            log.error('No resolutions found in tile matrix set')
+            return null
+        }
         for (let z = maxDefinedZoom + 1; z <= maxZoom; z++) {
             lastResolution = lastResolution / 2
             resolutions.push(lastResolution)
         }
 
         const firstItem = sortedItems[0]
+        if (!firstItem) {
+            log.error('No first item in sorted tile matrix set')
+            return null
+        }
         const origin: [number, number] = firstItem.origin
         const extent: [number, number, number, number] = [
             tileMatrixSet.min_x,
@@ -127,7 +139,7 @@ export default function useOlVectorLayer(layerId: string, zIndex: number, styleU
     // Get view resolutions for style zoom level mapping
     const viewResolutions = positionStore.projection
         .getResolutionSteps()
-        .map((step) => step.resolution)
+        .map((step: { resolution: number }) => step.resolution)
 
     // Fetch tile grid config and set up the layer
     fetchTileGridConfig(styleUrl)
