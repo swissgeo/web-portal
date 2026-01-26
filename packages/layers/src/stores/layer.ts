@@ -1,5 +1,5 @@
 import log from '@swissgeo/log'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep } from 'lodash'
 
 import type { Layer, LayerInfo } from '@/index'
 

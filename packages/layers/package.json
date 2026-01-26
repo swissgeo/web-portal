@@ -25,15 +25,14 @@
         "@swissgeo/log": "catalog:",
         "@swissgeo/numbers": "catalog:",
         "@swissgeo/shared": "workspace:*",
-        "lodash-es": "catalog:",
-        "uuid": "^13.0.0"
+        "lodash": "catalog:",
+        "uuid": "catalog:"
     },
     "devDependencies": {
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
-        "@types/lodash-es": "catalog:",
         "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",

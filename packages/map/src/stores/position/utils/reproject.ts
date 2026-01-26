@@ -3,7 +3,7 @@ import type { Layer } from '@swissgeo/layers'
 
 import { coordinatesUtils, extentUtils } from '@swissgeo/coordinates'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep } from 'lodash'
 import { reproject } from 'reproject'
 
 // import type { SelectableFeature } from "@/api/features.api";

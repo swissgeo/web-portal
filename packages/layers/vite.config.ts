@@ -14,17 +14,9 @@ export default defineConfig(({ mode }): UserConfig => {
             // don't minify in dev build. This helps with debugging
             // maybe this could be solved in a better way with sourcemap?
             minify: mode === 'development' ? false : true,
-            // minify: false, // minifying makes problems in the skeleton/package build
             lib: {
                 entry: resolve(__dirname, 'src/index.ts'),
                 fileName: (format) => `index.${format}.js`,
-                //     index: resolve(__dirname, 'src/index.ts'),
-                //     // api: resolve(__dirname, 'src/api/index.ts'),
-                //     // parsers: resolve(__dirname, 'src/parsers/index.ts'),
-                //     // utils: resolve(__dirname, 'src/utils/index.ts'),
-                //     // validation: resolve(__dirname, 'src/validation/index.ts'),
-                //     // vue: resolve(__dirname, 'src/vue/index.ts'),
-                // },
                 name: '@swissgeo/layers',
             },
             rollupOptions: {
