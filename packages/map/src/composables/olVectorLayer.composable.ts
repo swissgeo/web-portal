@@ -124,6 +124,47 @@ async function fetchTileGridConfig(styleUrl: string): Promise<{
     }
 }
 
+/** Initializes the vector tile layer with source and style */
+async function initializeVectorLayer(
+    layer: VectorTileLayer,
+    styleUrl: string,
+    viewResolutions: number[],
+    projection: string,
+    layerId: string,
+    zIndex: number
+): Promise<void> {
+    const config = await fetchTileGridConfig(styleUrl)
+    if (!config) {
+        throw new Error('Failed to get tile grid configuration')
+    }
+
+    // Create tile grid from the fetched configuration
+    const tileGrid = new TileGrid({
+        origin: config.origin,
+        extent: config.extent,
+        resolutions: config.resolutions,
+        tileSize: config.tileSize,
+    })
+
+    // Create and set the vector tile source
+    const source = new VectorTileSource({
+        format: new MVT(),
+        tileGrid: tileGrid,
+        projection: projection,
+        url: config.tileUrls[0],
+    })
+
+    layer.setSource(source)
+
+    // Apply the Mapbox style to the layer
+    await applyStyle(layer, styleUrl, {
+        resolutions: viewResolutions,
+    })
+
+    layer.setZIndex(zIndex)
+    log.debug(`Vector layer ${layerId} initialized successfully`)
+}
+
 export default function useOlVectorLayer(layerId: string, zIndex: number, styleUrl: string) {
     const olMap = toValue(inject<Map>('olMap'))
     const positionStore = usePositionStore()
@@ -146,43 +187,17 @@ export default function useOlVectorLayer(layerId: string, zIndex: number, styleU
         .getResolutionSteps()
         .map((step: { resolution: number }) => step.resolution)
 
-    // Fetch tile grid config and set up the layer
-    fetchTileGridConfig(styleUrl)
-        .then((config) => {
-            if (!config) {
-                throw new Error('Failed to get tile grid configuration')
-            }
-
-            // Create tile grid from the fetched configuration
-            const tileGrid = new TileGrid({
-                origin: config.origin,
-                extent: config.extent,
-                resolutions: config.resolutions,
-                tileSize: config.tileSize,
-            })
-
-            // Create and set the vector tile source
-            const source = new VectorTileSource({
-                format: new MVT(),
-                tileGrid: tileGrid,
-                projection: positionStore.projection.epsg,
-                url: config.tileUrls[0],
-            })
-
-            layer.setSource(source)
-
-            // Apply the Mapbox style to the layer
-            return applyStyle(layer, styleUrl, {
-                resolutions: viewResolutions,
-            })
-        })
-        .then(() => {
-            layer.setZIndex(zIndex)
-            log.debug(`Vector layer ${layerId} initialized successfully`)
-        })
-        .catch((error) => {
-            log.error(`Unable to load and attach the style for ${layerId}`, { messages: [error] })
-        })
+    // Initialize the layer asynchronously
+    initializeVectorLayer(
+        layer,
+        styleUrl,
+        viewResolutions,
+        positionStore.projection.epsg,
+        layerId,
+        zIndex
+    ).catch((error) => {
+        log.error(`Unable to load and attach the style for ${layerId}`, { messages: [error] })
+    })
 
     const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 
