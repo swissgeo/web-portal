@@ -42,7 +42,6 @@ export function useDrawingManager() {
         const existingLayer = layerStore.layers.find(
             (layer) => layer.humanId === DRAWING_LAYER_ID
         )
-
         if (existingLayer) {
             drawingStore.setDrawingLayerUuid(existingLayer.uuid)
             return existingLayer

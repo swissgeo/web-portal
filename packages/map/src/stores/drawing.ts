@@ -6,6 +6,7 @@ import { useLayerStore } from "@swissgeo/layers"
 import log from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import { register } from "ol/proj/proj4"
+import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
 import proj4 from 'proj4'
 export enum DrawingMode {
     None = 'none',
@@ -94,12 +95,30 @@ export const useDrawingStore = defineStore('drawingStore', () => {
 
         register(proj4)
         const format = new KML({
-            extractStyles: false, // Disable style extraction for better performance
+            extractStyles: true, // Enable style extraction to embed styles in KML
         })
 
-        // Clone features and transform to WGS84
+        // Create the same style used during drawing
+        const drawingStyle = new Style({
+            fill: new Fill({
+                color: 'rgba(255, 0, 0, 0.2)',
+            }),
+            stroke: new Stroke({
+                color: '#ff0000',
+                width: 2,
+            }),
+            // image: new CircleStyle({
+            //     radius: 7,
+            //     fill: new Fill({
+            //         color: '#ff0000',
+            //     }),
+            // }),
+        })
+
+        // Clone features, apply style, and transform to WGS84
         const clonedFeatures = features.map(feature => {
             const clone = feature.clone()
+            clone.setStyle(drawingStyle)
             const geom = clone.getGeometry()
             if (geom) {
                 geom.transform('EPSG:2056', 'EPSG:4326')
