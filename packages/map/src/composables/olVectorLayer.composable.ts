@@ -38,86 +38,109 @@ interface MapboxStyle {
     sources: Record<string, { url?: string; type: string }>
 }
 
-/** Sorts tile matrix items by zoom level in ascending order */
-function sortByZoomLevel(items: TileMatrixItem[]): TileMatrixItem[] {
-    return [...items].sort((a, b) => a.zoom_level - b.zoom_level)
-}
-
-/** Fetches the style and TileJSON to extract tile grid configuration dynamically */
-async function fetchTileGridConfig(styleUrl: string): Promise<{
+interface TileGridConfig {
     tileUrls: string[]
     resolutions: number[]
     origin: [number, number]
     extent: [number, number, number, number]
     tileSize: number
-} | null> {
-    try {
-        // Fetch the Mapbox style
-        const styleResponse = await fetch(styleUrl)
-        const styleJson: MapboxStyle = await styleResponse.json()
+}
 
-        // Get the first vector source URL
-        const sourceEntry = Object.values(styleJson.sources).find((s) => s.type === 'vector')
-        if (!sourceEntry?.url) {
-            log.error('No vector source URL found in style')
+/** Sorts tile matrix items by zoom level in ascending order */
+function sortByZoomLevel(items: TileMatrixItem[]): TileMatrixItem[] {
+    return [...items].sort((a, b) => a.zoom_level - b.zoom_level)
+}
+
+/** Fetches the Mapbox style and extracts the vector source URL */
+async function fetchVectorSourceUrl(styleUrl: string): Promise<string | null> {
+    const styleResponse = await fetch(styleUrl)
+    const styleJson: MapboxStyle = await styleResponse.json()
+
+    const sourceEntry = Object.values(styleJson.sources).find((s) => s.type === 'vector')
+    if (!sourceEntry?.url) {
+        log.error('No vector source URL found in style')
+        return null
+    }
+    return sourceEntry.url
+}
+
+/** Builds resolutions array from tile matrix items, extending to maxZoom if needed */
+function buildResolutions(sortedItems: TileMatrixItem[], maxZoom: number): number[] | null {
+    const resolutions = sortedItems.map((item) => item.pixel_x_size)
+
+    const lastItem = sortedItems[sortedItems.length - 1]
+    if (!lastItem) {
+        log.error('No items in sorted tile matrix set')
+        return null
+    }
+
+    const maxDefinedZoom = lastItem.zoom_level
+    let lastResolution = resolutions[resolutions.length - 1]
+    if (lastResolution === undefined) {
+        log.error('No resolutions found in tile matrix set')
+        return null
+    }
+
+    // Extend resolutions if maxzoom is higher than what's defined
+    // (resolutions halve at each zoom level)
+    for (let z = maxDefinedZoom + 1; z <= maxZoom; z++) {
+        lastResolution = lastResolution / 2
+        resolutions.push(lastResolution)
+    }
+
+    return resolutions
+}
+
+/** Extracts tile grid configuration from tile matrix set */
+function buildTileGridConfig(
+    tileMatrixSet: TileMatrixSet,
+    tileJson: TileJson
+): TileGridConfig | null {
+    const sortedItems = sortByZoomLevel(tileMatrixSet.items)
+    const firstItem = sortedItems[0]
+    if (!firstItem) {
+        log.error('No first item in sorted tile matrix set')
+        return null
+    }
+
+    const maxZoom = tileJson.maxzoom ?? sortedItems[sortedItems.length - 1]?.zoom_level ?? 0
+    const resolutions = buildResolutions(sortedItems, maxZoom)
+    if (!resolutions) {
+        return null
+    }
+
+    return {
+        tileUrls: tileJson.tiles,
+        resolutions,
+        origin: firstItem.origin,
+        extent: [
+            tileMatrixSet.min_x,
+            tileMatrixSet.min_y,
+            tileMatrixSet.max_x,
+            tileMatrixSet.max_y,
+        ],
+        tileSize: firstItem.tile_width,
+    }
+}
+
+/** Fetches the style and TileJSON to extract tile grid configuration dynamically */
+async function fetchTileGridConfig(styleUrl: string): Promise<TileGridConfig | null> {
+    try {
+        const vectorSourceUrl = await fetchVectorSourceUrl(styleUrl)
+        if (!vectorSourceUrl) {
             return null
         }
 
-        // Fetch the TileJSON
-        const tileJsonResponse = await fetch(sourceEntry.url)
+        const tileJsonResponse = await fetch(vectorSourceUrl)
         const tileJson: TileJson = await tileJsonResponse.json()
 
-        // Extract tile grid config from tile_matrix_set
         const tileMatrixSet = tileJson.tile_matrix_set
         if (!tileMatrixSet?.items?.length) {
             log.error('No tile_matrix_set found in TileJSON')
             return null
         }
 
-        // Sort by zoom level and extract resolutions
-        const sortedItems = sortByZoomLevel(tileMatrixSet.items)
-        const resolutions = sortedItems.map((item) => item.pixel_x_size)
-
-        // Extend resolutions if maxzoom is higher than what's defined in tile_matrix_set
-        // (resolutions halve at each zoom level)
-        const lastItem = sortedItems[sortedItems.length - 1]
-        if (!lastItem) {
-            log.error('No items in sorted tile matrix set')
-            return null
-        }
-        const maxDefinedZoom = lastItem.zoom_level
-        const maxZoom = tileJson.maxzoom ?? maxDefinedZoom
-        let lastResolution = resolutions[resolutions.length - 1]
-        if (lastResolution === undefined) {
-            log.error('No resolutions found in tile matrix set')
-            return null
-        }
-        for (let z = maxDefinedZoom + 1; z <= maxZoom; z++) {
-            lastResolution = lastResolution / 2
-            resolutions.push(lastResolution)
-        }
-
-        const firstItem = sortedItems[0]
-        if (!firstItem) {
-            log.error('No first item in sorted tile matrix set')
-            return null
-        }
-        const origin: [number, number] = firstItem.origin
-        const extent: [number, number, number, number] = [
-            tileMatrixSet.min_x,
-            tileMatrixSet.min_y,
-            tileMatrixSet.max_x,
-            tileMatrixSet.max_y,
-        ]
-        const tileSize = firstItem.tile_width
-
-        return {
-            tileUrls: tileJson.tiles,
-            resolutions,
-            origin,
-            extent,
-            tileSize,
-        }
+        return buildTileGridConfig(tileMatrixSet, tileJson)
     } catch (error) {
         log.error('Failed to fetch tile grid configuration', { messages: [error] })
         return null
