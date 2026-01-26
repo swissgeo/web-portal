@@ -5,7 +5,8 @@ import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 
-import useOlDrawing from '../composables/olDrawing.composable'
+import useOlDrawing from '@/composables/olDrawing.composable'
+import { DrawingMode } from '@/stores/drawing'
 
 const { layer } = defineProps<{
     layer: FileLayer
@@ -65,15 +66,22 @@ const updateFeatures = () => {
 // Watch for drawing mode changes from the manager
 watch(
     () => drawingStore?.drawingMode,
-    async (newMode, oldMode) => {
+    async (newMode: DrawingMode, oldMode: DrawingMode) => {
         console.log('🎨 Drawing mode watch triggered - from:', oldMode, 'to:', newMode)
         
-        if (newMode === null || newMode === undefined) {
-            console.log('🛑 Stopping drawing - mode is null/undefined')
+        // if (newMode === null || newMode === undefined) {
+        //     console.log('🛑 Stopping drawing - mode is null/undefined')
+        //     // Explicitly stop the drawing interaction
+        //     stopOlDrawing()
+        //     // Update features when drawing stops
+        //     updateFeatures()
+        //     return
+        // }
+
+        if(newMode === DrawingMode.None) {
+            console.log('🛑 Stopping drawing - mode is None')
             // Explicitly stop the drawing interaction
-            stopOlDrawing()
-            // Update features when drawing stops
-            updateFeatures()
+            clearDrawingFeatures()
             return
         }
 
@@ -82,12 +90,12 @@ watch(
         
         // Map the mode to OpenLayers geometry types
         const geometryType =
-            newMode === 'point' ? 'Point' : newMode === 'linestring' ? 'LineString' : 'Polygon'
+            newMode === DrawingMode.Point ? 'Point' : newMode === DrawingMode.LineString ? 'LineString' : 'Polygon'
         
         console.log('✏️ Starting drawing with geometry type:', geometryType)
         // Start drawing with callback to update features immediately
         startOlDrawing(geometryType, updateFeatures)
-    }
+    },
 )
 
 // Watch for visibility changes
@@ -108,19 +116,23 @@ watch(
 
 // Watch for clear action
 watch(
-    () => drawingStore?.featureCount?.value,
+    () => drawingStore?.featureCount,
     (newCount, oldCount) => {
         // If count went to 0 from a higher number, clear the features
         if (newCount === 0 && oldCount > 0) {
-            clearFeatures()
+            clearDrawingFeatures()
         }
     }
 )
 
+function clearDrawingFeatures() {
+    clearFeatures()
+    stopOlDrawing()
+}
+
 // On mount, restore any existing features
 onMounted(() => {
-    console.log('OpenLayersDrawingLayer mounted')
-    console.log('OpenLayersDrawingLayer mounted2', drawingStore.drawingFeatures.length)
+    console.log('OpenLayersDrawingLayer mounted', drawingStore.drawingFeatures.length)
     if (!hasInitialized.value) {
         // First check if we have features in the drawing manager
         if (drawingStore.drawingFeatures.length > 0) {

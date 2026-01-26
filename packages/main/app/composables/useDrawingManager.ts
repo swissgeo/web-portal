@@ -14,7 +14,9 @@ import proj4 from 'proj4'
 
 
 const DRAWING_LAYER_ID = 'user-drawing-layer'
+const DRAWING_KML_LAYER_ID = 'user-drawing-layer-kml'
 const DRAWING_LAYER_NAME = 'My Drawings'
+const DRAWING_KML_LAYER_NAME = 'My Drawings KML'
 
 // Singleton state
 // const drawingLayerUuid = ref<string | null>(null)
@@ -143,6 +145,8 @@ export function useDrawingManager() {
      * Start drawing with specified type
      */
     function startDrawing() {
+        layerStore.removeLayer(drawingStore.drawingKMLLayerUuid)
+
         getOrCreateDrawingLayer()
         // olMap.value.addLayer(drawingStore.olLayer)
         if (!drawingStore.isDrawing) {
@@ -156,16 +160,20 @@ export function useDrawingManager() {
      * Stop drawing
      */
     function stopDrawing() {
+        console.log('Stopping drawing mode', drawingStore.drawingFeatures.length, drawingStore.isDrawing)
         if (drawingStore.isDrawing) {
             drawingStore.toggleDrawing()
         }
         drawingStore.updateDrawingLayer(drawingStore.drawingFeatures as Feature<Geometry>[])
-        console.log('Removing drawing layer', drawingStore.drawingFeatures)
-        layerStore.addLayer(createKMLLayerFromDrawingFeatures())
+        if (drawingStore.drawingFeatures.length) {
+            const kmlLayerFromDrawing = createKMLLayerFromDrawingFeatures()
+            drawingStore.setDrawingKMLLayerUuid(kmlLayerFromDrawing.uuid)
+            layerStore.addLayer(kmlLayerFromDrawing)
+        }
         layerStore.removeLayer(drawingStore.drawingLayerUuid)
         // olMap.value.removeLayer(drawingStore.olLayer)
+        console.log('Stopping drawing mode end', layerStore.layers, drawingStore.drawingLayerUuid)
 
-        console.log('Drawing mode stopped', drawingStore.drawingLayerUuid, layerStore.layers)
         log.debug('Stopped drawing mode')
         drawingStore.clearDrawingMode()
 
@@ -174,14 +182,14 @@ export function useDrawingManager() {
     function createKMLLayerFromDrawingFeatures() {
         const config = {
             uuid: crypto.randomUUID(),
-            humanId: DRAWING_LAYER_ID + 'kml',
+            humanId: DRAWING_KML_LAYER_ID,
             opacity: 1,
             isVisible: true,
             type: LayerType.KML,
             isLoading: false,
             zIndex: layerStore.greatestZIndex + 1,
             info: {
-                displayName: DRAWING_LAYER_NAME,
+                displayName: DRAWING_KML_LAYER_NAME,
                 abstract: 'User-created drawings on the map',
             },
             fileData: drawingStore.featuresToKML(drawingStore.drawingFeatures as Feature<Geometry>[]),
@@ -197,6 +205,7 @@ export function useDrawingManager() {
         drawingStore.clearDrawingFeatures()
         drawingStore.updateDrawingLayer([])
         log.debug('Cleared all drawings')
+        console.log('Cleared all drawings', drawingStore.featureCount)
     }
 
     /**
