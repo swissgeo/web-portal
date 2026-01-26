@@ -4,12 +4,14 @@ import type { Layer } from '@swissgeo/layers'
 import { LayerType, useLayerStore } from '@swissgeo/layers'
 
 import IconButton from '@/components/IconButton.vue'
+import { useDrawingStore } from '@swissgeo/map'
 
 const { layer } = defineProps<{
     layer: Layer
 }>()
 
 const layerStore = useLayerStore()
+const drawingStore = useDrawingStore()
 
 const layersLength = computed(() => layerStore.layers.length)
 
@@ -35,6 +37,10 @@ function moveDown() {
 
 function removeLayer() {
     layerStore.removeLayer(layer.uuid)
+    if(layer.uuid === drawingStore.drawingKMLLayerUuid) {
+        drawingStore.setDrawingLayerUuid(null)
+        drawingStore.clearDrawingFeatures()
+    }
 }
 </script>
 

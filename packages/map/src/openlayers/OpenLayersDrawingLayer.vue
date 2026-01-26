@@ -168,7 +168,8 @@ onMounted(() => {
 onUnmounted(() => {
     console.log('OpenLayersDrawingLayer unmounted')
     // Clean up drawing interactions
-    // stopOlDrawing()
+    clearDrawingFeatures()
+
 })
 </script>
 
