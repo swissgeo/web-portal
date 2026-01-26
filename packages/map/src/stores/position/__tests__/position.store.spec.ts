@@ -5,8 +5,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import type { ActionDispatcher } from '@/store/types'
 
-import usePositionStore from '@/store/modules/position'
-import useUIStore from '@/store/modules/ui'
+import usePositionStore from '@/stores/position'
+import useUIStore from '@/stores/ui'
 
 const dispatcher: ActionDispatcher = {
     name: 'position-store-unit-test',

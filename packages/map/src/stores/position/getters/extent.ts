@@ -1,8 +1,8 @@
 import type { NormalizedExtent, SingleCoordinate } from '@swissgeo/coordinates'
 
-import type { PositionStore } from '@/store/modules/position/types/position'
+import type { PositionStore } from '@/stores/position/types/position'
 
-import useUIStore from '@/store/modules/ui'
+import useUIStore from '@/stores/ui'
 
 export default function extent(this: PositionStore): NormalizedExtent {
     const uiStore = useUIStore()
