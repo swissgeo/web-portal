@@ -4,13 +4,13 @@ import { WGS84 } from '@swissgeo/coordinates'
 import { wrapDegrees } from '@swissgeo/numbers'
 import proj4 from 'proj4'
 
-import type { CameraPosition, PositionStore } from '@/store/modules/position/types/position'
-import type { ActionDispatcher } from '@/store/types'
+import type { CameraPosition, PositionStore } from '@/stores/position/types/position'
+import type { ActionDispatcher } from '@/stores/types'
 
-import { calculateResolution } from '@/modules/map/components/cesium/utils/cameraUtils'
-import useCesiumStore from '@/store/modules/cesium'
-import { normalizeAngle } from '@/store/modules/position/utils/normalizeAngle'
-import useUIStore from '@/store/modules/ui'
+// import { calculateResolution } from '@/modules/map/components/cesium/utils/cameraUtils'
+// import useCesiumStore from '@/stores/cesium'
+import { normalizeAngle } from '@/stores/position/utils/normalizeAngle'
+// import useUIStore from '@/stores/ui'
 
 export default function setCameraPosition(
     this: PositionStore,
@@ -31,7 +31,7 @@ export default function setCameraPosition(
         : undefined
     if (this.camera) {
         // updating the 2D position with the new camera values
-        const uiStore = useUIStore()
+        // const uiStore = useUIStore()
 
         const centerWGS84: SingleCoordinate = [this.camera.x, this.camera.y]
 
@@ -41,17 +41,17 @@ export default function setCameraPosition(
             centerWGS84
         )
 
-        const resolution = calculateResolution(this.camera.z, uiStore.width)
+        // const resolution = calculateResolution(this.camera.z, uiStore.width)
         const zoom = this.projection.getZoomForResolutionAndCenter(
             resolution,
             centerExpressedInWantedProjection
         )
 
         // Prevent recursion: don't call setCenter and setZoom which would call back setCameraPosition
-        const cesiumStore = useCesiumStore()
-        if (cesiumStore.active) {
-            return
-        }
+        // const cesiumStore = useCesiumStore()
+        // if (cesiumStore.active) {
+        //     return
+        // }
         this.setCenter(centerExpressedInWantedProjection, dispatcher)
         this.setZoom(zoom, dispatcher)
         this.setRotation(normalizeAngle((this.camera.heading * Math.PI) / 180), dispatcher)

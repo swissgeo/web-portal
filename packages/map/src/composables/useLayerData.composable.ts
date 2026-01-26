@@ -18,7 +18,7 @@ export default async function useLayerData(dataset: Dataset, protocol: Protocol)
     )
 
     const link = computed(() => {
-        if (protocol === Protocol.geojson) {
+        if (protocol === 'OGC:GeoJSON') {
             return layerData.geoJsonDataLink
         } else {
             return layerData.capabilityLink

@@ -1,3 +1,4 @@
+import log from '@swissgeo/log'
 import { joinURL } from 'ufo'
 
 export default defineEventHandler(async () => {
@@ -10,12 +11,6 @@ export default defineEventHandler(async () => {
 
     const target = joinURL(proxyUrl, 'menus')
 
-    // let data = await storage.getItem(key)
-
-    // if (data) {
-    //     console.log('Delivering menues from cache')
-    // } else {
-    console.log(`Fetching menus from ${target}`)
     try {
         const data = await $fetch(target, {
             headers: {
@@ -25,11 +20,8 @@ export default defineEventHandler(async () => {
 
         return data
     } catch (err) {
-        console.error(err)
+        log.error({ messages: [err] })
     }
-    console.log('Done fetching menus')
 
-    // await storage.setItem(key, data, { ttl: 60 })
-    // }
     return {}
 })

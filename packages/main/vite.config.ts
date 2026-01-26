@@ -13,11 +13,10 @@ const config = defineConfig(({ mode }) => {
             minify: mode === 'development' ? false : true,
             sourcemap: true,
             lib: {
-                // entry: {
                 entry: resolve(__dirname, 'src/index.ts'),
                 fileName: (format) => `index.${format}.js`,
                 formats: ['es'],
-                name: '@swissgeo/content',
+                name: '@swissgeo/main',
             },
             rollupOptions: {
                 external: ['vue'],

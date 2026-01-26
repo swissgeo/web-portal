@@ -1,12 +1,13 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
+import log from '@swissgeo/log'
 // don't know why the explicit import is needed here
 import { SideBar } from '@swissgeo/skeleton'
 
 const route = useRoute()
 
 watch(route, (value) => {
-    console.log('route changed', value.fullPath)
+    log.debug('route changed', value.fullPath)
 })
 </script>
 

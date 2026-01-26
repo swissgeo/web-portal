@@ -3,7 +3,6 @@ import type { Options as WMTSOptions } from 'ol/source/WMTS'
 import log from '@swissgeo/log'
 import { Tile as TileLayer } from 'ol/layer'
 import WMTS from 'ol/source/WMTS'
-import { computed } from 'vue'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 // import usePositionStore from "@/stores/position";
@@ -43,12 +42,6 @@ export default function useOlWmtsLayer(
     //   }
     //   return dimensions;
     // });
-
-    // Use "current" as the default timestamp if not defined in the layer config (or no preview year)
-    const timestamp = computed(
-        () => 'current'
-        //   timeConfigUtils.getTimestampFromConfig(externalWmtsLayerConfig),
-    )
 
     // const options = computed<WMTSOptions | undefined>(() => {
     //   if (!_layerConfig.options) {

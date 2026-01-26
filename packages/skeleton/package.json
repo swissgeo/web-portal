@@ -19,8 +19,7 @@
     "module": "./dist/index.js",
     "scripts": {
         "build": "vite build",
-        "build-watch": "vite build --watch",
-        "build-watch-dev": "vite build --watch --mode development",
+        "build:dev:watch": "vite build --watch --mode development",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "lint": "eslint --fix",
@@ -30,7 +29,6 @@
         "@swissgeo/content": "workspace:*",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/shared": "workspace:*",
-        "lodash-es": "catalog:",
         "lucide-vue-next": "catalog:",
         "primevue": "catalog:"
     },
@@ -39,7 +37,6 @@
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
-        "@types/lodash-es": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
         "typescript": "catalog:",

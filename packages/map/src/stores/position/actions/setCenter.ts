@@ -1,8 +1,8 @@
 import type { SingleCoordinate } from '@swissgeo/coordinates'
 
-import { WGS84 } from '@swissgeo/coordinates'
+// import { WGS84 } from '@swissgeo/coordinates'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import proj4 from 'proj4'
+// import proj4 from 'proj4'
 
 import type { PositionStore } from '@/stores/position/types/position'
 import type { ActionDispatcher } from '@/stores/types'

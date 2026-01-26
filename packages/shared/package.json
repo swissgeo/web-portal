@@ -8,9 +8,11 @@
     "type": "module",
     "exports": {
         ".": {
-            "import": "./dist/shared.js",
-            "types": "./dist/Language.d.ts",
-            "require": "./dist/index.cjs"
+            "import": "./dist/index.es.js",
+            "types": "./dist/shared.d.ts"
+        },
+        "./ambient": {
+            "types": "./dist/ambient/index.d.ts"
         },
         "./api": {
             "types": "./dist/api/index.d.ts"
@@ -19,19 +21,15 @@
             "types": "./dist/livingdocs/index.d.ts"
         },
         "./ogc": {
-            "index": "./dist/ogc/index.ts",
             "types": "./dist/ogc/index.d.ts"
         },
         "./language": {
             "types": "./dist/Language.d.ts"
         }
     },
-    "main": "./dist/index.umd.cjs",
-    "module": "./dist/index.js",
     "scripts": {
         "build": "vite build",
-        "build-watch": "vite build --watch",
-        "build-watch-dev": "vite build --watch --mode development",
+        "build:dev:watch": "vite build --watch --mode development",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "lint": "eslint --fix",
@@ -57,5 +55,8 @@
         "@vueuse/core": "catalog:",
         "vue": "catalog:"
     },
-    "packageManager": "pnpm@10.14.0"
+    "packageManager": "pnpm@10.14.0",
+    "dependencies": {
+        "nuxt": "catalog:"
+    }
 }

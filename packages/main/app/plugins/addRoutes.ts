@@ -2,6 +2,7 @@ import type { Lang } from '@swissgeo/shared'
 import type { MenuTree, MenuEntry, MenuEntryLangaugeItem } from '@swissgeo/shared/api'
 import type { RouteRecordRaw } from 'vue-router'
 
+import log from '@swissgeo/log'
 import { ALLOWED_LANGUAGES } from '@swissgeo/shared'
 import page from '~/pages/page.vue'
 import slugify from 'slugify'
@@ -12,13 +13,13 @@ const getMenu = async (id: number) => {
         const { data } = await useFetch<MenuTree>(`/api/v1/content/menu/${id}`)
 
         if (!data.value?.length) {
-            console.warn('No data received from menus')
+            log.warn('No data received from menus')
             return []
         }
 
         return data.value
     } catch (exception) {
-        console.error(exception)
+        log.error(exception)
         return []
     }
 }
@@ -100,7 +101,7 @@ export default defineNuxtPlugin({
             const entries: MenuTree[] = await Promise.all(menus)
 
             if (entries.length === 0) {
-                console.warn('No menu entries found!')
+                log.warn('No menu entries found!')
             }
 
             // this will serve as a flat list of all the possible

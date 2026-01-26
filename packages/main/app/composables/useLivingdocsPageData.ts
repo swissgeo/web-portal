@@ -1,5 +1,5 @@
-import type { Page } from '~~/shared/types/api/Page'
-import type { ContentPageMetadata } from '~~/shared/types/livingdocs/Publication'
+import type { Page } from '@swissgeo/shared/api'
+import type { ContentPageMetadata } from '@swissgeo/shared/livingdocs'
 
 export const useLivingdocsPageData = () => {
     const getContainers = (data: Page) => {

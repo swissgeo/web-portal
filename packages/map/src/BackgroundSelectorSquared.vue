@@ -9,22 +9,32 @@ import useBackgroundSelector from '@/composables/useBackgroundSelector'
 
 import BackgroundSelectorEntry from './BackgroundSelectorEntry.vue'
 
-const { t: $t } = useI18n()
+// const { t: $t } = useI18n()
 
 const { backgroundLayers, currentBackgroundLayer } = defineProps<{
-    backgroundLayers: Layer[]
-    currentBackgroundLayer: Layer
+    backgroundLayers: (Layer | VoidLayer)[]
+    currentBackgroundLayer: Layer | VoidLayer
 }>()
 
 const emit = defineEmits<{
     selectBackground: [backgroundLayer: Layer | VoidLayer]
 }>()
 
+function isCurrent(backgroundLayer: Layer | VoidLayer) {
+    if (backgroundLayer === 'void' || currentBackgroundLayer === 'void') {
+        return backgroundLayer === currentBackgroundLayer
+    } else {
+        return backgroundLayer?.uuid === currentBackgroundLayer?.uuid
+    }
+}
+
 function selectBackgroundCallback(backgroundLayer: Layer | VoidLayer): void {
-    if (backgroundLayer?.uuid === currentBackgroundLayer?.uuid) {
-        // don't update if it's the same already, otherwise the user has a little
-        // flicker and unnecessary computation power is used
-        return
+    if (backgroundLayer !== 'void') {
+        if (isCurrent(backgroundLayer)) {
+            // don't update if it's the same already, otherwise the user has a little
+            // flicker and unnecessary computation power is used
+            return
+        }
     }
     emit('selectBackground', backgroundLayer)
 }
@@ -43,7 +53,7 @@ const { selectorOpen, animate, toggleShowSelector, onSelectBackground } =
                 v-for="(backgroundLayer, index) in backgroundLayers"
                 :key="index"
                 :background-layer="backgroundLayer"
-                :is-current="backgroundLayer.uuid === currentBackgroundLayer?.uuid"
+                :is-current="isCurrent(backgroundLayer)"
                 @click="onSelectBackground(backgroundLayer)"
             />
         </div>

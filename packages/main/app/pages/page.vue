@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import type { Lang } from '@swissgeo/shared'
 import type { MenuTree } from '@swissgeo/shared/api'
 import type { Page } from '@swissgeo/shared/livingdocs'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 
 import { SidebarType, useUiStore } from '@swissgeo/skeleton'
-import type { Lang } from '@swissgeo/shared'
 
 const route = useRoute()
 

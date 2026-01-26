@@ -42,7 +42,6 @@ onMounted(() => {
     if (scaleLineElement.value) {
         scaleLine.setTarget(scaleLineElement.value)
     }
-    console.log(olMap)
     olMap.value.addControl(scaleLine)
 })
 

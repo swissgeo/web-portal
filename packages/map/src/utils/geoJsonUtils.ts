@@ -1,11 +1,7 @@
-import {
-    allCoordinateSystems,
-    type NormalizedExtent,
-    type CoordinateSystem,
-} from '@swissgeo/coordinates'
+import type { NormalizedExtent, CoordinateSystem } from '@swissgeo/coordinates'
 import type { Feature, FeatureCollection, Geometry } from 'geojson'
 
-import { extentUtils, WGS84 } from '@swissgeo/coordinates'
+import { allCoordinateSystems, extentUtils, WGS84 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
 import {
     bbox,
@@ -74,7 +70,7 @@ export function reprojectGeoJsonData(
         // according to the IETF reference, if nothing is said about the projection used, it should be WGS84
         WGS84
     if (matchingProjection.epsg !== toProjection.epsg) {
-        console.log('Reprojecting JSON data', geoJsonData)
+        log.debug('Reprojecting JSON data', geoJsonData)
         return reproject(geoJsonData, matchingProjection.epsg, toProjection.epsg)
     }
     // it's already in the correct projection, we don't re-project
@@ -109,7 +105,7 @@ export function reprojectGeoJsonGeometry(
         WGS84
 
     if (matchingProjection.epsg !== toProjection.epsg) {
-        console.log('Reprojecting JSON geometry', geometry)
+        log.debug('Reprojecting JSON geometry', geometry)
         return reproject(geometry, matchingProjection.epsg, toProjection.epsg)
     }
     // it's already in the correct projection, we don't re-project

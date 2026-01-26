@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 import type { Layer } from '@swissgeo/layers'
 
-import IconButton from '@/components/IconButton.vue'
 import { LayerType, useLayerStore } from '@swissgeo/layers'
+
+import IconButton from '@/components/IconButton.vue'
 
 const { layer } = defineProps<{
     layer: Layer
 }>()
 
 const layerStore = useLayerStore()
+
+const layersLength = computed(() => layerStore.layers.length)
 
 const displayName = computed(() => {
     if (layer.info && layer.info.displayName) {
@@ -45,7 +48,7 @@ function removeLayer() {
             />
             <div class="flex flex-col justify-between">
                 <IconButton
-                    :disabled="layer.zIndex === layerStore.layers.length"
+                    :disabled="layer.zIndex === layersLength"
                     icon="ChevronUp"
                     severity="secondary"
                     class="h-0.5"
@@ -62,7 +65,7 @@ function removeLayer() {
         </div>
         <div
             class="overflow-x-hidden text-nowrap"
-            :title="layer.dataset.id"
+            :title="layer.humanId"
             :class="{ 'text-gray-300': !layer.isVisible }"
         >
             {{ displayName }}

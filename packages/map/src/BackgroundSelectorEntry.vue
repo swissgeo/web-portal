@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import type { Layer } from '@swissgeo/layers'
 
+import type { VoidLayer } from './composables/useBackgroundSelector'
+
 const {
     backgroundLayer,
     isCurrent = false,
     folded = false,
 } = defineProps<{
-    backgroundLayer: Layer
+    backgroundLayer: Layer | VoidLayer
     isCurrent: boolean
     folded?: boolean
 }>()
@@ -14,6 +16,10 @@ const {
 const { getImageForBackgroundLayer } = useBackgroundSelector(() => {})
 
 const emit = defineEmits(['click'])
+const cyId = computed(() => (backgroundLayer === 'void' ? 'void' : backgroundLayer.uuid))
+const layerTranslationKey = computed(() =>
+    backgroundLayer === 'void' ? 'void_layer' : backgroundLayer?.dataset?.id
+)
 </script>
 
 <template>
@@ -21,7 +27,7 @@ const emit = defineEmits(['click'])
         class="relative cursor-pointer rounded-lg border-4 border-solid border-[#343a40]"
         :class="{ active: isCurrent, 'w-[98px]': !folded, 'w-[39px]': folded }"
         type="button"
-        :data-cy="`background-selector-${backgroundLayer?.uuid || 'void'}`"
+        :data-cy="cyId"
         @click="emit('click')"
     >
         <span
@@ -41,7 +47,7 @@ const emit = defineEmits(['click'])
             :class="{ hidden: folded }"
         >
             <span class="block text-xs text-white">
-                {{ $t(backgroundLayer?.dataset?.id || 'void_layer') }}
+                {{ layerTranslationKey }}
             </span>
         </span>
     </button>
