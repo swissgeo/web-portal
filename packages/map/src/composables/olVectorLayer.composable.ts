@@ -38,6 +38,11 @@ interface MapboxStyle {
     sources: Record<string, { url?: string; type: string }>
 }
 
+/** Sorts tile matrix items by zoom level in ascending order */
+function sortByZoomLevel(items: TileMatrixItem[]): TileMatrixItem[] {
+    return [...items].sort((a, b) => a.zoom_level - b.zoom_level)
+}
+
 /** Fetches the style and TileJSON to extract tile grid configuration dynamically */
 async function fetchTileGridConfig(styleUrl: string): Promise<{
     tileUrls: string[]
@@ -70,7 +75,7 @@ async function fetchTileGridConfig(styleUrl: string): Promise<{
         }
 
         // Sort by zoom level and extract resolutions
-        const sortedItems = [...tileMatrixSet.items].sort((a, b) => a.zoom_level - b.zoom_level)
+        const sortedItems = sortByZoomLevel(tileMatrixSet.items)
         const resolutions = sortedItems.map((item) => item.pixel_x_size)
 
         // Extend resolutions if maxzoom is higher than what's defined in tile_matrix_set
