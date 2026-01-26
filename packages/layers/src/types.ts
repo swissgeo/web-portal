@@ -22,6 +22,18 @@ export interface LayerInfo {
     attribution?: LayerAttribution
 }
 
+export interface Dimension {
+    currentValue: string | null
+    availableValues: string[]
+}
+
+/**
+ * Keeping the time as a general Dimension. This should make future dimension implementation
+ * possible. Still using the identifier 'time' somewhat hardcoded. This would of course mean we can
+ * only have one time dimension, but this probably makes sense
+ */
+export type DimensionId = 'time'
+
 export interface Layer {
     uuid: string
     humanId: string // something human readable. usually the layer ID. Not unique!
@@ -32,9 +44,7 @@ export interface Layer {
     zIndex: number
     info?: LayerInfo | null
     dataset?: Dataset
-    // unsure here. This couples it tightly to layers on wmts or wms I think
-    currentTime: string | null
-    availableTimes?: string[]
+    dimensions?: Partial<Record<DimensionId, Dimension>>
 }
 
 export interface DatasetLayer extends Layer {

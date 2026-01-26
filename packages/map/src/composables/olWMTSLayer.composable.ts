@@ -13,7 +13,7 @@ export default function useOlWmtsLayer(
     options: WMTSOptions,
     opacity: number,
     zIndex: number,
-    initialTimestamp: string
+    initialTimestamp: string | null
 ) {
     const layer = new TileLayer({
         properties: {
@@ -25,8 +25,8 @@ export default function useOlWmtsLayer(
 
     let source: WMTS
 
-    function getTimeConfig(timestamp: string) {
-        return { dimensions: { Time: timestamp } }
+    function getTimeConfig(timestamp: string | null) {
+        return { dimensions: { Time: timestamp ?? 'current' } }
     }
 
     const wmtsTimeConfig = computed(() => {

@@ -10,6 +10,7 @@ import { optionsFromCapabilities } from 'ol/source/WMTS'
 import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
 
 import { getTimeInfoFromWMTSCapabilities } from '../utils/timeUtils'
+import type { Dimension } from '@swissgeo/layers'
 
 
 const { layer } = defineProps<{
@@ -50,8 +51,8 @@ const dimensions = computed(() => {
     }
 
     const capabilityOfLayer = capabilityData.value.Contents.Layer.find(
-        // TODO maybe we would need to know the distribution id here
-        (layerEntry) => layerEntry.Identifier === layer.dataset.id
+        (layerEntry: WMTSCapabilities['Contents']['Layer']) =>
+            layerEntry.Identifier === layer.dataset.id
     )
 
     if (!layer) {
@@ -83,8 +84,15 @@ watch(
     () => timeInfo.value,
     ({ defaultTime, availableTimes }) => {
         // once we have the info from the capabilities, we push them to the store
-        layerStore.setAvailableTimes(layer.uuid, availableTimes)
-        layerStore.setCurrentTime(layer.uuid, defaultTime)
+        const dimension: Partial<Dimension> = {}
+
+        if (defaultTime) {
+            dimension.currentValue = defaultTime
+        }
+        if (availableTimes) {
+            dimension.availableValues = availableTimes
+        }
+        layerStore.setDimension('time', layer.uuid, dimension)
     },
     { immediate: true }
 )
@@ -104,12 +112,13 @@ watch(
 )
 
 watch(
-    () => layer.currentTime,
+    () => layer.dimensions,
     () => {
-        if (layer.currentTime) {
-            updateTimeDimension(layer.currentTime)
+        if ('time' in layer.dimensions) {
+            updateTimeDimension(layer.dimensions.time.currentValue)
         }
-    }
+    },
+    { deep: true }
 )
 
 onMounted(() => {

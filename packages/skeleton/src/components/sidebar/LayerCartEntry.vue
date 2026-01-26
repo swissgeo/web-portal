@@ -26,11 +26,22 @@ const displayName = computed(() => {
 
 const currentTime = computed({
     get() {
-        return layer.currentTime
+        if (layer.dimensions && 'time' in layer.dimensions) {
+            return layer.dimensions.time.currentValue
+        } else {
+            return null
+        }
     },
     set(value) {
-        layerStore.setCurrentTime(layer.uuid, value)
+        layerStore.setDimension('time', layer.uuid, { currentValue: value })
     },
+})
+
+const availableTimes = computed(() => {
+    if (layer.dimensions && 'time' in layer.dimensions) {
+        return layer.dimensions.time.availableValues
+    }
+    return []
 })
 
 const getTimestampName = (time: string) => {
@@ -103,12 +114,12 @@ function removeLayer() {
         <div class="flex items-center">
             <div>
                 <select
-                    v-if="(layer.availableTimes?.length || 0) > 1"
+                    v-if="(availableTimes?.length || 0) > 1"
                     v-model="currentTime"
                     class="bg-zinc-300"
                 >
                     <option
-                        v-for="time in layer.availableTimes"
+                        v-for="time in availableTimes"
                         :value="time"
                         :key="time"
                     >
