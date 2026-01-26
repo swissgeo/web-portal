@@ -1,4 +1,5 @@
 import { isTimestampYYYYMMDD } from '@swissgeo/numbers'
+
 // TODO move to shared
 const ALL_YEARS_TIMESTAMP: string = 'all'
 

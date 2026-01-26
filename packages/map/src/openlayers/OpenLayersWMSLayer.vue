@@ -6,6 +6,7 @@ import { useRecordsData } from '@swissgeo/ogc'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from '@/composables/olWMSLayer.composable'
+import type { Dimension } from '@swissgeo/layers'
 
 const layerStore = useLayerStore()
 
@@ -42,7 +43,10 @@ const url = computed(() => capabilityData.value.Service.OnlineResource)
 
 const dimensions = computed(() => {
     const layerData = capabilityData.value.Capability.Layer.Layer
-    const thisLayer = layerData.find((_layer) => _layer.Name === layer.dataset.id)
+    const thisLayer = layerData.find(
+        (_layer: WMSCapabilities['Capability']['Layer']['Layer']) =>
+            _layer.Name === layer.dataset.id
+    )
     if ('Dimension' in thisLayer) {
         return thisLayer.Dimension
     }
@@ -87,23 +91,27 @@ watch(
     () => timeInfo.value,
     ({ defaultTime, availableTimes }) => {
         // once we have the info from the capabilities, we push them to the store
+        const dimension: Partial<Dimension> = {}
+
         if (defaultTime) {
-            layerStore.setCurrentTime(layer.uuid, defaultTime)
+            dimension.currentValue = defaultTime
         }
         if (availableTimes) {
-            layerStore.setAvailableTimes(layer.uuid, availableTimes)
+            dimension.availableValues = availableTimes
         }
+        layerStore.setDimension('time', layer.uuid, dimension)
     },
     { immediate: true }
 )
 
 watch(
-    () => layer.currentTime,
+    () => layer.dimensions,
     () => {
-        if (layer.currentTime) {
-            updateTimeDimension(layer.currentTime)
+        if ('time' in layer.dimensions) {
+            updateTimeDimension(layer.dimensions.time.currentValue)
         }
-    }
+    },
+    { deep: true }
 )
 </script>
 

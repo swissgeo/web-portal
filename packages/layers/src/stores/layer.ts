@@ -73,26 +73,24 @@ export const useLayerStore = defineStore('layers', () => {
         layer.isVisible = !layer.isVisible
     }
 
-    /** Provide the available timestamps from capabilities */
-    function setAvailableTimes(layerUuid: string, times: string[]) {
+    function setDimension(id: DimensionId, layerUuid: string, dimension: Partial<Dimension>) {
         const layer = getLayerByUuid(layerUuid)
         if (!layer) {
             log.error('Unable to find layer for setting available times', {
                 messages: [layerUuid],
             })
         } else {
-            layer.availableTimes = times
-        }
-    }
+            if (!layer.dimensions) {
+                layer.dimensions = {}
+            }
 
-    function setCurrentTime(layerUuid: string, time: string) {
-        const layer = getLayerByUuid(layerUuid)
-        if (!layer) {
-            log.error('Unable to find layer for setting available times', {
-                messages: [layerUuid],
-            })
-        } else {
-            layer.currentTime = time
+            log.debug(`Updating ${layer.humanId} with dimension ${JSON.stringify(dimension)}`)
+
+            layer.dimensions.time = {
+                availableValues: layer.dimensions.time?.availableValues ?? [],
+                currentValue: layer.dimensions.time?.currentValue ?? null,
+                ...dimension,
+            }
         }
     }
 
@@ -144,8 +142,7 @@ export const useLayerStore = defineStore('layers', () => {
         toggleVisibility,
         setLayerZIndex,
         setLayerInfo,
-        setAvailableTimes,
-        setCurrentTime,
+        setDimension,
         setBackground,
         removeLayer,
     }
