@@ -12,46 +12,85 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
  */
 export default function useOlDrawing(layerId: string, uuid: string, opacity: number) {
     const olMap = toValue(inject<Map>('olMap'))
+    const drawingStore = useDrawingStore()
     if (!olMap) {
         log.error('OpenLayersMap is not available')
         throw new Error('OpenLayersMap is not available')
     }
 
-    // Create a vector source and layer for drawing
-    const source = new VectorSource()
-    const layer = new VectorLayer({
-        properties: {
-            id: layerId,
-            uuid,
-        },
-        opacity,
-        source,
-        style: new Style({
+    const source = new VectorSource({ wrapX: false })
+
+    // Create reusable style to avoid recreation on every render
+    const drawingStyle = new Style({
+        fill: new Fill({
+            color: 'rgba(255, 0, 0, 0.2)',
+        }),
+        stroke: new Stroke({
+            color: '#ff0000',
+            width: 2,
+        }),
+        image: new CircleStyle({
+            radius: 7,
             fill: new Fill({
-                color: 'rgba(255, 0, 0, 0.2)',
-            }),
-            stroke: new Stroke({
                 color: '#ff0000',
-                width: 2,
-            }),
-            image: new CircleStyle({
-                radius: 7,
-                fill: new Fill({
-                    color: '#ff0000',
-                }),
             }),
         }),
     })
 
-    let currentDraw: Draw | null = null
+    function createOlLayer(layerId: string, uuid: string): VectorLayer {
+        const olLayer = new VectorLayer({
+            properties: {
+                id: layerId,
+                uuid,
+            },
+            opacity,
+            source,
+            style: drawingStyle,
+        })
+        // Use markRaw to prevent Vue from making this reactive (huge performance improvement)
+        drawingStore.setOlLayer(markRaw(olLayer))
+        return olLayer
+    }
 
+    // Create a vector source and layer for drawing
+    // const source = new VectorSource()
+    // const layer = new VectorLayer({
+    //     properties: {
+    //         id: layerId,
+    //         uuid,
+    //     },
+    //     opacity,
+    //     source,
+    //     style: new Style({
+    //         fill: new Fill({
+    //             color: 'rgba(255, 0, 0, 0.2)',
+    //         }),
+    //         stroke: new Stroke({
+    //             color: '#ff0000',
+    //             width: 2,
+    //         }),
+    //         image: new CircleStyle({
+    //             radius: 7,
+    //             fill: new Fill({
+    //                 color: '#ff0000',
+    //             }),
+    //         }),
+    //     }),
+    // })
+
+    let currentDraw: Draw | null = null
+    // let updateTimeout: ReturnType<typeof setTimeout> | null = null
+    const layer = createOlLayer(layerId, uuid)
     // Add layer to map immediately
     olMap.addLayer(layer)
     log.debug(`Added drawing layer ${layerId} to map`)
 
     onBeforeUnmount(() => {
         stopDrawing()
-        source.clear()
+        // if (updateTimeout) {
+        //     clearTimeout(updateTimeout)
+        //     updateTimeout = null
+        // }
         olMap.removeLayer(layer)
     })
 
@@ -60,13 +99,16 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
      */
     function startDrawing(type: 'Point' | 'LineString' | 'Polygon', onFeatureAdded?: () => void) {
         console.log('olDrawing startDrawing called with type:', type)
-        // Stop any existing draw interaction
-        if (currentDraw) {
-            console.log('Stopping existing draw interaction')
-            olMap.removeInteraction(currentDraw)
-            currentDraw = null
-        }
+        // Stop any existing draw interaction first
+        stopDrawing()
 
+        addDrawingInteraction(type, onFeatureAdded)
+
+        console.log('Draw interaction added to map', currentDraw)
+        log.debug(`Started drawing ${type}, interaction added to map`)
+    }
+
+    function addDrawingInteraction(type: 'Point' | 'LineString' | 'Polygon', onFeatureAdded?: () => void) {
         currentDraw = new Draw({
             source,
             type,
@@ -74,16 +116,16 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
 
         currentDraw.on('drawend', (event) => {
             log.debug(`Feature drawn: ${type}`, event.feature)
-            console.log('Feature drawn, calling onFeatureAdded')
-            // Notify that a feature was added
+            console.log('Feature drawn, updating feature count')
+
+            // Notify that a feature was added (for UI updates like feature count)
+            // No expensive KML conversion here - that happens only when closing the panel
             if (onFeatureAdded) {
                 onFeatureAdded()
             }
         })
 
         olMap.addInteraction(currentDraw)
-        console.log('Draw interaction added to map')
-        log.debug(`Started drawing ${type}, interaction added to map`)
     }
 
     /**
@@ -93,6 +135,7 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
         console.log('stopDrawing called, currentDraw exists:', !!currentDraw, currentDraw)
         if (currentDraw) {
             console.log('Removing draw interaction from map')
+            currentDraw.setActive(false) // Deactivate first
             olMap.removeInteraction(currentDraw)
             currentDraw = null
             log.debug('Stopped drawing and removed interaction from map')

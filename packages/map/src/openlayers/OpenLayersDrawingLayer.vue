@@ -11,21 +11,21 @@ const { layer } = defineProps<{
     layer: FileLayer
 }>()
 
+const drawingStore = useDrawingStore()
 // Get the drawing manager from provided context (injected from main app)
-interface DrawingManager {
-    drawingMode: { value: 'point' | 'linestring' | 'polygon' | null }
-    isDrawing: { value: boolean }
-    featureCount: { value: number }
-    drawingFeatures: { value: any[] }
-    updateDrawingLayer: (features: any[]) => void
-}
+// interface DrawingManager {
+//     drawingMode: { value: 'point' | 'linestring' | 'polygon' | null }
+//     isDrawing: { value: boolean }
+//     featureCount: { value: number }
+//     drawingFeatures: { value: any[] }
+//     updateDrawingLayer: (features: any[]) => void
+// }
 
-const drawingManager = inject<DrawingManager>('drawingManager')
+// const drawingManager = inject<DrawingManager>('drawingManager')
 
-if (!drawingManager) {
+if (!drawingStore) {
     console.error('Drawing manager not provided - drawing functionality will not work')
 }
-
 const {
     startDrawing: startOlDrawing,
     stopDrawing: stopOlDrawing,
@@ -38,19 +38,33 @@ const {
 
 // Track if we've initialized features
 const hasInitialized = ref(false)
+let updateFeatureTimeout: ReturnType<typeof setTimeout> | null = null
 
-// Function to update features
+// Function to update features - only updates the feature array for UI display
+// KML conversion/save happens only when closing the drawing panel
 const updateFeatures = () => {
-    if (drawingManager) {
-        const features = getFeatures()
-        drawingManager.drawingFeatures.value = features
-        drawingManager.updateDrawingLayer(features)
+    if (drawingStore) {
+        // Clear any pending update
+        if (updateFeatureTimeout) {
+            clearTimeout(updateFeatureTimeout)
+        }
+        
+        // Debounce updates to reduce reactive overhead
+        updateFeatureTimeout = setTimeout(() => {
+            const features = getFeatures()
+            // Only update the feature array in store for UI display (feature count)
+            // Don't trigger KML conversion until drawing panel is closed
+            if (features.length !== drawingStore.drawingFeatures.length) {
+                drawingStore.drawingFeatures = features
+            }
+            updateFeatureTimeout = null
+        }, 150)
     }
 }
 
 // Watch for drawing mode changes from the manager
 watch(
-    () => drawingManager?.drawingMode?.value,
+    () => drawingStore?.drawingMode,
     async (newMode, oldMode) => {
         console.log('🎨 Drawing mode watch triggered - from:', oldMode, 'to:', newMode)
         
@@ -94,7 +108,7 @@ watch(
 
 // Watch for clear action
 watch(
-    () => drawingManager?.featureCount?.value,
+    () => drawingStore?.featureCount?.value,
     (newCount, oldCount) => {
         // If count went to 0 from a higher number, clear the features
         if (newCount === 0 && oldCount > 0) {
@@ -106,10 +120,11 @@ watch(
 // On mount, restore any existing features
 onMounted(() => {
     console.log('OpenLayersDrawingLayer mounted')
-    if (!hasInitialized.value && drawingManager) {
+    console.log('OpenLayersDrawingLayer mounted2', drawingStore.drawingFeatures.length)
+    if (!hasInitialized.value) {
         // First check if we have features in the drawing manager
-        if (drawingManager.drawingFeatures.value.length > 0) {
-            addFeatures(drawingManager.drawingFeatures.value)
+        if (drawingStore.drawingFeatures.length > 0) {
+            addFeatures(drawingStore.drawingFeatures)
             hasInitialized.value = true
             return
         }
@@ -127,8 +142,8 @@ onMounted(() => {
                 })
                 if (features.length > 0) {
                     addFeatures(features)
-                    drawingManager.drawingFeatures.value = features
-                    drawingManager.updateDrawingLayer(features)
+                    drawingStore.drawingFeatures = features
+                    drawingStore.updateDrawingLayer(features)
                 }
             } catch (error) {
                 console.error('Failed to parse existing KML data:', error)
@@ -136,6 +151,12 @@ onMounted(() => {
         }
         hasInitialized.value = true
     }
+})
+
+onUnmounted(() => {
+    console.log('OpenLayersDrawingLayer unmounted')
+    // Clean up drawing interactions
+    // stopOlDrawing()
 })
 </script>
 
