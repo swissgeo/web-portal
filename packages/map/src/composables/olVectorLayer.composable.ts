@@ -151,7 +151,6 @@ async function fetchTileGridConfig(styleUrl: string): Promise<TileGridConfig | n
 async function initializeVectorLayer(
     layer: VectorTileLayer,
     styleUrl: string,
-    viewResolutions: number[],
     projection: string,
     layerId: string,
     zIndex: number
@@ -180,8 +179,9 @@ async function initializeVectorLayer(
     layer.setSource(source)
 
     // Apply the Mapbox style to the layer
+    // Use tile grid resolutions (not view resolutions) for correct style zoom level mapping
     await applyStyle(layer, styleUrl, {
-        resolutions: viewResolutions,
+        resolutions: config.resolutions,
     })
 
     layer.setZIndex(zIndex)
@@ -205,16 +205,10 @@ export default function useOlVectorLayer(layerId: string, zIndex: number, styleU
         },
     })
 
-    // Get view resolutions for style zoom level mapping
-    const viewResolutions = positionStore.projection
-        .getResolutionSteps()
-        .map((step: { resolution: number }) => step.resolution)
-
     // Initialize the layer asynchronously
     initializeVectorLayer(
         layer,
         styleUrl,
-        viewResolutions,
         positionStore.projection.epsg,
         layerId,
         zIndex
