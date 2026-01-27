@@ -1,8 +1,8 @@
-import type { Lang } from '@swissgeo/shared'
+import type { Lang } from '@swissgeo/shared/language'
 import type { MenuTree, MenuEntry, MenuEntryLangaugeItem } from '@swissgeo/shared/api'
 import type { RouteRecordRaw } from 'vue-router'
 
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { ALLOWED_LANGUAGES } from '@swissgeo/shared'
 import page from '~/pages/page.vue'
 import slugify from 'slugify'
@@ -91,6 +91,16 @@ export default defineNuxtPlugin({
 
             const runtimeConfig = useRuntimeConfig()
             const menuStore = useMenuStore()
+
+            if (!runtimeConfig.public.aboutMenu.id || !runtimeConfig.public.knowledgeMenu.id) {
+                // missing config, stop trying to fetch menus for now
+                log.warn({
+                    title: 'Add Routes',
+                    titleColor: LogPreDefinedColor.Cyan,
+                    messages: ['Menu id or Knowledge id are not set, quitting getting the routes'],
+                })
+                return
+            }
 
             const menuIds = [
                 runtimeConfig.public.aboutMenu.id,
