@@ -1,10 +1,10 @@
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { isNumber } from '@swissgeo/numbers'
 
-import type { PositionStore } from '@/store/modules/position/types/position'
-import type { ActionDispatcher } from '@/store/types'
+import type { PositionStore } from '@/stores/position/types/position'
+import type { ActionDispatcher } from '@/stores/types'
 
-import { normalizeAngle } from '@/store/modules/position/utils/normalizeAngle'
+import { normalizeAngle } from '@/stores/position/utils/normalizeAngle'
 
 export default function setRotation(
     this: PositionStore,

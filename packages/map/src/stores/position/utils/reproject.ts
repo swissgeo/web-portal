@@ -9,8 +9,8 @@ import { reproject } from 'reproject'
 // import type { SelectableFeature } from "@/api/features.api";
 import type { ActionDispatcher } from '@/stores/types'
 
-import useFeaturesStore from '@/store/modules/features'
-import useLayersStore from '@/store/modules/layers'
+import useFeaturesStore from '@/stores/features'
+import useLayersStore from '@/stores/layers'
 
 export function reprojectLayersFeatures(
     projection: CoordinateSystem,

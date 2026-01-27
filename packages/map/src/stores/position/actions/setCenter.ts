@@ -7,8 +7,8 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 import type { PositionStore } from '@/stores/position/types/position'
 import type { ActionDispatcher } from '@/stores/types'
 
-// import useCesiumStore from '@/store/modules/cesium'
-// import useGeolocationStore from '@/store/modules/geolocation'
+// import useCesiumStore from '@/stores/cesium'
+// import useGeolocationStore from '@/stores/geolocation'
 
 export default function setCenter(
     this: PositionStore,
