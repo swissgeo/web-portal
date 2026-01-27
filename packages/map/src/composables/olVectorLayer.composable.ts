@@ -218,8 +218,13 @@ export default function useOlVectorLayer(layerId: string, zIndex: number, styleU
 
     const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 
+    function setOpacity(opacity: number) {
+        layer.setOpacity(opacity)
+    }
+
     return {
         setVisibility,
         setZIndex,
+        setOpacity,
     }
 }

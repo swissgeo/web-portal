@@ -76,7 +76,7 @@ const initialTimestamp = computed(() => {
     return timeInfo.value.defaultTime
 })
 
-const { initialize, setVisibility, setZIndex, updateTimeDimension } = useOlWmtsLayer(
+const { initialize, setVisibility, setZIndex, updateTimeDimension, setOpacity } = useOlWmtsLayer(
     layer.dataset.id,
     layer.uuid,
     options.value,
@@ -129,6 +129,13 @@ watch(
         }
     },
     { deep: true }
+)
+
+watch(
+    () => layer.opacity,
+    (newOpacity: number) => {
+        setOpacity(newOpacity)
+    }
 )
 
 onMounted(() => {

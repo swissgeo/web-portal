@@ -36,7 +36,7 @@ const geoJsonStyle = computed(() => {
     return styleData
 })
 
-const { initialize, setZIndex, setVisibility } = useOlGeoJSONLayer(
+const { initialize, setZIndex, setVisibility, setOpacity } = useOlGeoJSONLayer(
     layer.dataset.id,
     layer.uuid,
     layer.opacity,
@@ -57,6 +57,13 @@ watch(
     () => layer.zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
+    }
+)
+
+watch(
+    () => layer.opacity,
+    (newOpacity: number) => {
+        setOpacity(newOpacity)
     }
 )
 
