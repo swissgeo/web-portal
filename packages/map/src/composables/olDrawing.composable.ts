@@ -6,7 +6,7 @@ import GeoJSON from 'ol/format/GeoJSON'
 import Draw from 'ol/interaction/Draw'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
-import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
+import { Circle as CircleStyle, Fill, Stroke, Style, Text as TextStyle } from 'ol/style'
 
 import * as geoJsonUtils from '@/utils/geoJsonUtils'
 
@@ -26,22 +26,50 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
         // wrapX: false, features: drawingStore.drawingFeatures as Feature<Geometry>[]
     })
 
-    // Create reusable style to avoid recreation on every render
-    const drawingStyle = new Style({
-        fill: new Fill({
-            color: 'rgba(255, 0, 0, 0.2)',
-        }),
-        stroke: new Stroke({
-            color: '#ff0000',
-            width: 2,
-        }),
-        image: new CircleStyle({
-            radius: 7,
+    // Style function that handles both regular features and text features
+    const styleFunction = (feature: Feature<Geometry>) => {
+        const textContent = feature.get('text')
+        if (textContent) {
+            // Text feature styling
+            return new Style({
+                image: new CircleStyle({
+                    radius: 0, // Invisible point
+                    fill: new Fill({
+                        color: 'rgba(0, 0, 0, 0)',
+                    }),
+                }),
+                text: new TextStyle({
+                    text: textContent,
+                    font: '16px sans-serif',
+                    fill: new Fill({
+                        color: '#000',
+                    }),
+                    stroke: new Stroke({
+                        color: '#fff',
+                        width: 3,
+                    }),
+                    offsetY: 0,
+                }),
+            })
+        }
+
+        // Regular feature styling
+        return new Style({
             fill: new Fill({
-                color: '#ff0000',
+                color: 'rgba(255, 0, 0, 0.2)',
             }),
-        }),
-    })
+            stroke: new Stroke({
+                color: '#ff0000',
+                width: 2,
+            }),
+            image: new CircleStyle({
+                radius: 7,
+                fill: new Fill({
+                    color: '#ff0000',
+                }),
+            }),
+        })
+    }
 
     function createOlLayer(layerId: string, uuid: string): VectorLayer {
 
@@ -52,7 +80,7 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
             },
             opacity,
             source,
-            style: drawingStyle,
+            style: styleFunction,
         })
         // layer.setSource(
         //     new VectorSource({
@@ -111,7 +139,7 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
     /**
      * Start drawing with the specified geometry type
      */
-    function startDrawing(type: 'Point' | 'LineString' | 'Polygon', onFeatureAdded?: () => void) {
+    function startDrawing(type: 'Point' | 'LineString' | 'Polygon' | 'Text', onFeatureAdded?: (feature: Feature<Geometry>) => void) {
         console.log('olDrawing startDrawing called with type:', type, source.getFeatures().length)
         // Stop any existing draw interaction first
         stopDrawing()
@@ -122,20 +150,30 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
         log.debug(`Started drawing ${type}, interaction added to map`)
     }
 
-    function addDrawingInteraction(type: 'Point' | 'LineString' | 'Polygon', onFeatureAdded?: () => void) {
+    function addDrawingInteraction(type: 'Point' | 'LineString' | 'Polygon' | 'Text', onFeatureAdded?: (feature: Feature<Geometry>) => void) {
+        // For text, we use Point geometry
+        const geometryType = type === 'Text' ? 'Point' : type
+
         currentDraw = new Draw({
             source,
-            type,
+            type: geometryType,
         })
 
         currentDraw.on('drawend', (event) => {
             log.debug(`Feature drawn: ${type}`, event.feature)
             console.log('Feature drawn, updating feature count')
 
+            // If this is a text feature, set default text
+            if (type === 'Text') {
+                event.feature.set('text', 'New Text')
+                // Force style update
+                event.feature.changed()
+            }
+
             // Notify that a feature was added (for UI updates like feature count)
             // No expensive KML conversion here - that happens only when closing the panel
             if (onFeatureAdded) {
-                onFeatureAdded()
+                onFeatureAdded(event.feature)
             }
         })
 
@@ -201,6 +239,15 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
         layer.setZIndex(zIndex)
     }
 
+    /**
+     * Update the text of a feature
+     */
+    function updateFeatureText(feature: Feature<Geometry>, text: string) {
+        feature.set('text', text)
+        feature.changed()
+        log.debug('Updated feature text:', text)
+    }
+
     return {
         layer,
         source,
@@ -211,5 +258,6 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
         addFeatures,
         setVisibility,
         setZIndex,
+        updateFeatureText,
     }
 }

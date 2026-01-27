@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { FileLayer } from '@swissgeo/layers'
+import type { Feature } from 'ol'
+import type { Geometry } from 'ol/geom'
 
 import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
@@ -35,19 +37,32 @@ const {
     addFeatures,
     setVisibility,
     setZIndex,
+    updateFeatureText,
 } = useOlDrawing(layer.humanId, layer.uuid, layer.opacity)
 
 // Track if we've initialized features
 const hasInitialized = ref(false)
 let updateFeatureTimeout: ReturnType<typeof setTimeout> | null = null
 
+// Text editing state
+const editingTextFeature = ref<Feature<Geometry> | undefined>(undefined)
+const editingText = ref('')
+const showTextPopup = ref(false)
+
 // Function to update features - only updates the feature array for UI display
 // KML conversion/save happens only when closing the drawing panel
-const updateFeatures = () => {
+const updateFeatures = (feature?: Feature<Geometry>) => {
     if (drawingStore) {
         // Clear any pending update
         if (updateFeatureTimeout) {
             clearTimeout(updateFeatureTimeout)
+        }
+        
+        // If this is a text feature, show the popup for editing
+        if (feature && feature.get('text')) {
+            editingTextFeature.value = feature
+            editingText.value = feature.get('text') || 'New Text'
+            showTextPopup.value = true
         }
         
         // Debounce updates to reduce reactive overhead
@@ -61,6 +76,23 @@ const updateFeatures = () => {
             updateFeatureTimeout = null
         }, 150)
     }
+}
+
+// Function to save the edited text
+const saveText = () => {
+    if (editingTextFeature.value && editingText.value) {
+        updateFeatureText(editingTextFeature.value, editingText.value)
+        updateFeatures()
+    }
+    showTextPopup.value = false
+    editingTextFeature.value = undefined
+    editingText.value = ''
+}
+
+const cancelTextEdit = () => {
+    showTextPopup.value = false
+    editingTextFeature.value = undefined
+    editingText.value = ''
 }
 
 // Watch for drawing mode changes from the manager
@@ -90,9 +122,11 @@ watch(
         
         // Map the mode to OpenLayers geometry types
         const geometryType =
-            newMode === DrawingMode.Point ? 'Point' : newMode === DrawingMode.LineString ? 'LineString' : 'Polygon'
+            newMode === DrawingMode.Point ? 'Point' : 
+            newMode === DrawingMode.LineString ? 'LineString' : 
+            newMode === DrawingMode.Text ? 'Text' :
+            'Polygon'
         
-        console.log('✏️ Starting drawing with geometry type:', geometryType)
         // Start drawing with callback to update features immediately
         startOlDrawing(geometryType, updateFeatures)
     },
@@ -153,6 +187,16 @@ onMounted(() => {
                     dataProjection: 'EPSG:4326',
                 })
                 if (features.length > 0) {
+                    // Restore text property from name for text features
+                    features.forEach(feature => {
+                        const name = feature.get('name')
+                        const text = feature.get('text')
+                        // If we have a name but no text, and it's a Point, treat it as text
+                        if (name && !text && feature.getGeometry()?.getType() === 'Point') {
+                            feature.set('text', name)
+                        }
+                    })
+                    
                     addFeatures(features)
                     drawingStore.drawingFeatures = features
                     drawingStore.updateDrawingLayer(features)
@@ -175,4 +219,35 @@ onUnmounted(() => {
 
 <template>
     <slot />
+    
+    <!-- Text editing popup -->
+    <div
+        v-if="showTextPopup"
+        class="fixed left-1/2 top-20 z-50 w-80 -translate-x-1/2 rounded-lg border border-gray-300 bg-white p-4 shadow-2xl"
+    >
+        <h3 class="mb-3 text-base font-semibold">Edit Text</h3>
+        <input
+            v-model="editingText"
+            type="text"
+            class="mb-3 w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
+            placeholder="Enter text..."
+            @keyup.enter="saveText"
+            @keyup.esc="cancelTextEdit"
+            autofocus
+        />
+        <div class="flex justify-end gap-2">
+            <button
+                @click="cancelTextEdit"
+                class="rounded bg-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-300"
+            >
+                Cancel
+            </button>
+            <button
+                @click="saveText"
+                class="rounded bg-blue-500 px-3 py-1.5 text-sm text-white hover:bg-blue-600"
+            >
+                Save
+            </button>
+        </div>
+    </div>
 </template>
