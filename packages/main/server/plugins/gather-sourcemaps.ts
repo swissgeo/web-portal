@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import { fileURLToPath } from 'node:url'
-import path from 'pathe'
+import path from 'path'
 
 export default defineNitroPlugin((nitro) => {
     nitro.hooks.hook('nitro:build:public-assets', async () => {
