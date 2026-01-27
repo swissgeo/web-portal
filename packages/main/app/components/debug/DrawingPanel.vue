@@ -144,12 +144,23 @@ onMounted(() => {
                 >
                     ⬡ Polygon
                 </button>
+                <button
+                    @click="selectDrawingType('text')"
+                    :class="[
+                        'rounded px-4 py-2 font-medium transition-colors',
+                        drawingStore.drawingMode === 'text'
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
+                    ]"
+                >
+                    📝 Text
+                </button>
             </div>
             <p
                 v-if="drawingStore.isDrawing"
                 class="mt-2 text-sm text-blue-600"
             >
-                {{ drawingStore.drawingMode === 'point' ? 'Click on the map to add a point' : 'Click to start drawing, double-click to finish' }}
+                {{ drawingStore.drawingMode === 'point' ? 'Click on the map to add a point' : drawingStore.drawingMode === 'text' ? 'Click on the map to add text' : 'Click to start drawing, double-click to finish' }}
             </p>
         </div>
 

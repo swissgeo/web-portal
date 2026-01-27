@@ -12,7 +12,8 @@ export enum DrawingMode {
     None = 'none',
     Point = 'point',
     LineString = 'linestring',
-    Polygon = 'polygon'
+    Polygon = 'polygon',
+    Text = 'text'
 }
 
 const DRAWING_LAYER_ID = 'user-drawing-layer'
@@ -118,6 +119,16 @@ export const useDrawingStore = defineStore('drawingStore', () => {
         // Clone features, apply style, and transform to WGS84
         const clonedFeatures = features.map(feature => {
             const clone = feature.clone()
+
+            // Check if this is a text feature
+            const textContent = feature.get('text')
+            if (textContent) {
+                // Set the name property for KML (this will show in Google Earth etc.)
+                clone.set('name', textContent)
+                // Keep the text property for reimporting
+                clone.set('text', textContent)
+            }
+
             clone.setStyle(drawingStyle)
             const geom = clone.getGeometry()
             if (geom) {
