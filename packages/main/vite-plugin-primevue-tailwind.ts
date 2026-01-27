@@ -45,7 +45,10 @@ export default function primevueTailwindColors({ presetPath }: { presetPath: str
 
                 return `${code}\n @layer test{}\n${injectedCss}`
             }
-            return code
+            return {
+                code,
+                map: null,
+            }
         },
     }
 }
