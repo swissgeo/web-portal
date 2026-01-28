@@ -6,8 +6,10 @@ import { useLayerStore } from "@swissgeo/layers"
 import log from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import { register } from "ol/proj/proj4"
-import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
+import { Circle as CircleStyle, Fill, Icon, Stroke, Style } from 'ol/style'
 import proj4 from 'proj4'
+
+import { DEFAULT_MARKER_ICON, getMarkerIconById } from '@/utils/markerIcons'
 export enum DrawingMode {
     None = 'none',
     Point = 'point',
@@ -27,6 +29,7 @@ export const useDrawingStore = defineStore('drawingStore', () => {
     const drawingKMLLayerUuid = ref<string | undefined>(undefined)
     const drawingFeatures = ref<Feature<Geometry>[]>([])
     const featureCount = computed(() => drawingFeatures.value.length)
+    const selectedIconId = ref<string>(DEFAULT_MARKER_ICON.id)
     // Use shallowRef to prevent Vue from deeply observing OpenLayers objects
     const olLayer = shallowRef<VectorLayer | undefined>(undefined)
     function setDrawingMode(mode: DrawingMode) {
@@ -59,6 +62,10 @@ export const useDrawingStore = defineStore('drawingStore', () => {
 
     function setOlLayer(layer: any) {
         olLayer.value = layer
+    }
+
+    function setSelectedIconId(iconId: string) {
+        selectedIconId.value = iconId
     }
 
     function generateEmptyKML(): string {
@@ -99,23 +106,6 @@ export const useDrawingStore = defineStore('drawingStore', () => {
             extractStyles: true, // Enable style extraction to embed styles in KML
         })
 
-        // Create the same style used during drawing
-        const drawingStyle = new Style({
-            fill: new Fill({
-                color: 'rgba(255, 0, 0, 0.2)',
-            }),
-            stroke: new Stroke({
-                color: '#ff0000',
-                width: 2,
-            }),
-            // image: new CircleStyle({
-            //     radius: 7,
-            //     fill: new Fill({
-            //         color: '#ff0000',
-            //     }),
-            // }),
-        })
-
         // Clone features, apply style, and transform to WGS84
         const clonedFeatures = features.map(feature => {
             const clone = feature.clone()
@@ -129,7 +119,42 @@ export const useDrawingStore = defineStore('drawingStore', () => {
                 clone.set('text', textContent)
             }
 
-            clone.setStyle(drawingStyle)
+            // Check if this is a point with an icon
+            const iconId = feature.get('iconId')
+            const geomType = feature.getGeometry()?.getType()
+
+            if (geomType === 'Point' && iconId) {
+                const icon = getMarkerIconById(iconId)
+                if (icon) {
+                    // Create icon style
+                    const iconStyle = new Style({
+                        image: new Icon({
+                            src: icon.dataUrl,
+                            scale: 1,
+                            anchor: [0.5, 1],
+                            anchorXUnits: 'fraction',
+                            anchorYUnits: 'fraction',
+                        }),
+                    })
+                    clone.setStyle(iconStyle)
+
+                    // Store icon ID for reimport
+                    clone.set('iconId', iconId)
+                }
+            } else {
+                // Regular feature styling for lines and polygons
+                const drawingStyle = new Style({
+                    fill: new Fill({
+                        color: 'rgba(255, 0, 0, 0.2)',
+                    }),
+                    stroke: new Stroke({
+                        color: '#ff0000',
+                        width: 2,
+                    }),
+                })
+                clone.setStyle(drawingStyle)
+            }
+
             const geom = clone.getGeometry()
             if (geom) {
                 geom.transform('EPSG:2056', 'EPSG:4326')
@@ -153,6 +178,7 @@ export const useDrawingStore = defineStore('drawingStore', () => {
         drawingFeatures,
         isDrawing,
         drawingMode,
+        selectedIconId,
         addDrawingFeature,
         setDrawingMode,
         clearDrawingMode,
@@ -163,7 +189,8 @@ export const useDrawingStore = defineStore('drawingStore', () => {
         updateDrawingLayer,
         generateEmptyKML,
         featuresToKML,
-        setDrawingKMLLayerUuid
+        setDrawingKMLLayerUuid,
+        setSelectedIconId,
     }
 })
 

@@ -49,19 +49,40 @@ export default function useOlKMZLayer(
                 })
             })
 
-            // Find the first .kml file in the archive
+            // Find the first .kml file in the archive and extract icons
             const decoder = new TextDecoder('utf-8')
             let kmlContent = ''
+            const iconFiles: Record<string, Blob> = {}
+
+            console.log('KMZ archive contents:', Object.keys(unzipped))
 
             for (const [filename, content] of Object.entries(unzipped)) {
                 if (filename.toLowerCase().endsWith('.kml')) {
                     kmlContent = decoder.decode(content)
-                    break
+                    console.log('Found KML file:', filename)
+                } else if (filename.startsWith('icons/')) {
+                    // Store icon files as blobs for use in styles
+                    const blob = new Blob([content], {
+                        type: filename.endsWith('.svg') ? 'image/svg+xml' : 'image/png'
+                    })
+                    iconFiles[filename] = blob
+                    console.log('Found icon file:', filename, 'size:', content.length)
                 }
             }
 
             if (!kmlContent) {
                 throw new Error('No KML file found in KMZ archive')
+            }
+
+            console.log('Found', Object.keys(iconFiles).length, 'icon files')
+
+            // Replace local icon references with blob URLs in KML content
+            let modifiedKML = kmlContent
+            for (const [filename, blob] of Object.entries(iconFiles)) {
+                const blobUrl = URL.createObjectURL(blob)
+                console.log('Replacing', filename, 'with blob URL:', blobUrl)
+                // Replace references to the icon file with the blob URL
+                modifiedKML = modifiedKML.split(filename).join(blobUrl)
             }
 
             // Parse KML content
@@ -71,7 +92,7 @@ export default function useOlKMZLayer(
             })
             register(proj4)
 
-            const features = format.readFeatures(kmlContent, {
+            const features = format.readFeatures(modifiedKML, {
                 featureProjection: positionStore.projection.epsg, // CH1903+ / LV95 / EPSG:2056
                 dataProjection: EPSG_4326_WGS84, // WGS84
             })
