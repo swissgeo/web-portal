@@ -174,6 +174,9 @@ async function initializeVectorLayer(
         tileGrid: tileGrid,
         projection: projection,
         url: config.tileUrls[0],
+        // Performance optimizations
+        cacheSize: 512, // Increase tile cache (default is 128)
+        transition: 250, // Smooth tile fade-in (ms)
     })
 
     layer.setSource(source)
@@ -203,6 +206,11 @@ export default function useOlVectorLayer(layerId: string, zIndex: number, styleU
         properties: {
             id: layerId,
         },
+        // Performance optimizations
+        renderMode: 'hybrid', // Better performance than 'vector'
+        updateWhileAnimating: true, // Smooth panning
+        updateWhileInteracting: true, // Smooth zooming
+        preload: 1, // Preload 1 zoom level ahead
     })
 
     // Initialize the layer asynchronously
