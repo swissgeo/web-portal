@@ -4,7 +4,9 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import { Circle, Fill, Stroke, Style } from 'ol/style'
 
+import { EPSG_4326_WGS84 } from '@/composables/types.d'
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
+import usePositionStore from '@/stores/position'
 
 export default function useOlGPXLayer(
     layerId: string,
@@ -13,6 +15,8 @@ export default function useOlGPXLayer(
     opacity: number,
     zIndex: number
 ) {
+    const positionStore = usePositionStore()
+
     const layer = new VectorLayer({
         properties: {
             id: layerId,
@@ -27,7 +31,8 @@ export default function useOlGPXLayer(
         const format = new GPX()
 
         const features = format.readFeatures(gpxData, {
-            featureProjection: 'EPSG:3857', // Web Mercator
+            featureProjection: positionStore.projection.epsg, // CH1903+ / LV95 / EPSG:2056
+            dataProjection: EPSG_4326_WGS84, // WGS84
         })
 
         const source = new VectorSource({

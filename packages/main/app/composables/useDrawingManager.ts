@@ -311,22 +311,37 @@ export function useDrawingManager() {
         const features = drawingStore.drawingFeatures as Feature<Geometry>[]
 
         // GPX only supports certain geometry types (Point, LineString)
-        // Filter out polygons or convert them if needed
+        // Filter out polygons and text features
         const validFeatures = features.filter(f => {
             const geomType = f.getGeometry()?.getType()
-            return geomType === 'Point' || geomType === 'LineString' || geomType === 'MultiLineString'
+            const isText = f.get('text')
+            return !isText && (geomType === 'Point' || geomType === 'LineString' || geomType === 'MultiLineString')
         })
 
         if (validFeatures.length === 0) {
-            console.warn('No valid features for GPX export (only Point and LineString supported)')
+            // Return a minimal valid GPX file when there are no valid features
+            const emptyGPX = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="SwissGeo Portal" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+</gpx>`
+            return Promise.resolve(new Blob([emptyGPX], { type: 'application/gpx+xml' }))
         }
 
         register(proj4)
         const format = new GPX()
 
-        const gpxString = format.writeFeatures(validFeatures, {
-            featureProjection: 'EPSG:2056', // CH1903+ / LV95
-            dataProjection: 'EPSG:4326', // WGS84
+        // Clone features and transform to WGS84 (similar to KML export)
+        const clonedFeatures = validFeatures.map(feature => {
+            const clone = feature.clone()
+            const geom = clone.getGeometry()
+            if (geom) {
+                geom.transform('EPSG:2056', 'EPSG:4326') // Transform from CH1903+ to WGS84
+            }
+            return clone
+        })
+
+        const gpxString = format.writeFeatures(clonedFeatures, {
+            featureProjection: 'EPSG:4326', // Already transformed to WGS84
+            dataProjection: 'EPSG:4326', // WGS84 (required for GPX)
         })
 
         return Promise.resolve(new Blob([gpxString], { type: 'application/gpx+xml' }))
