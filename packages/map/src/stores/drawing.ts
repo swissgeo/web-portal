@@ -6,19 +6,18 @@ import { useLayerStore } from "@swissgeo/layers"
 import log from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import { register } from "ol/proj/proj4"
-import { Circle as CircleStyle, Fill, Icon, Stroke, Style } from 'ol/style'
+import { Fill, Icon, Stroke, Style } from 'ol/style'
 import proj4 from 'proj4'
 
 import { DEFAULT_MARKER_ICON, getMarkerIconById } from '@/utils/markerIcons'
 export enum DrawingMode {
-    None = 'none',
-    Point = 'point',
-    LineString = 'linestring',
-    Polygon = 'polygon',
-    Text = 'text'
+    None = 'None',
+    Point = 'Point',
+    LineString = 'LineString',
+    Polygon = 'Polygon',
+    Text = 'Text'
 }
 
-const DRAWING_LAYER_ID = 'user-drawing-layer'
 const DRAWING_LAYER_NAME = 'My Drawings'
 export const useDrawingStore = defineStore('drawingStore', () => {
     const drawingMode = ref<DrawingMode>(DrawingMode.None)
@@ -29,7 +28,7 @@ export const useDrawingStore = defineStore('drawingStore', () => {
     const drawingKMLLayerUuid = ref<string | undefined>(undefined)
     const drawingFeatures = ref<Feature<Geometry>[]>([])
     const featureCount = computed(() => drawingFeatures.value.length)
-    const selectedIconId = ref<string>(DEFAULT_MARKER_ICON.id)
+    const selectedIconId = ref<string>(DEFAULT_MARKER_ICON!.id)
     // Use shallowRef to prevent Vue from deeply observing OpenLayers objects
     const olLayer = shallowRef<VectorLayer | undefined>(undefined)
     function setDrawingMode(mode: DrawingMode) {
@@ -38,7 +37,6 @@ export const useDrawingStore = defineStore('drawingStore', () => {
 
     function clearDrawingMode() {
         drawingMode.value = DrawingMode.None
-        // drawingLayerUuid.value = undefined
     }
 
     function toggleDrawing() {
@@ -60,7 +58,7 @@ export const useDrawingStore = defineStore('drawingStore', () => {
         drawingFeatures.value = []
     }
 
-    function setOlLayer(layer: any) {
+    function setOlLayer(layer: VectorLayer) {
         olLayer.value = layer
     }
 
@@ -79,7 +77,6 @@ export const useDrawingStore = defineStore('drawingStore', () => {
     }
 
     function updateDrawingLayer(features: Feature<Geometry>[]) {
-        console.log('Updating drawing layer with features:', features)
         const layer = layerStore.layers.find((l) => l.uuid === drawingLayerUuid.value)
         if (!layer) {
             return

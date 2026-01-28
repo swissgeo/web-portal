@@ -1,3 +1,5 @@
+import type { FeatureLike } from 'ol/Feature'
+
 import log from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'
@@ -20,12 +22,12 @@ export default function useOlKMLLayer(
     const positionStore = usePositionStore()
 
     // Style function that handles text features
-    const styleFunction = (feature: any) => {
+    const styleFunction = (feature: FeatureLike) => {
         // Check if this is a text feature
         const textContent = feature.get('text') || feature.get('name')
         const geometry = feature.getGeometry()
 
-        if (textContent && geometry?.getType() === 'Point') {
+        if (textContent && geometry?.getType() === DrawingMode.Point) {
             // Text feature styling
             return new Style({
                 image: new CircleStyle({
@@ -59,7 +61,7 @@ export default function useOlKMLLayer(
             uuid,
         },
         opacity,
-        style: (feature, resolution) => {
+        style: (feature) => {
             const customStyle = styleFunction(feature)
             if (customStyle) {
                 return customStyle
@@ -87,7 +89,7 @@ export default function useOlKMLLayer(
             const text = feature.get('text')
             const geometry = feature.getGeometry()
             // If we have a name but no text, and it's a Point, treat it as text
-            if (name && !text && geometry?.getType() === 'Point') {
+            if (name && !text && geometry?.getType() === DrawingMode.Point) {
                 feature.set('text', name)
             }
         })

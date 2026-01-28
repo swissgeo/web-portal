@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Map } from 'ol';
 
 import { useDrawingStore, DrawingMode, markerIcons } from '@swissgeo/map'
 // import { LayerType, useLayerStore } from '@swissgeo/layers'
@@ -24,10 +23,8 @@ const {
     clearDrawing,
 } = useDrawingManager()
 
-// const activeMode = ref<'point' | 'linestring' | 'polygon' | null>(null)
-
 function selectDrawingType(type: DrawingMode) {
-    
+    console.log('selectDrawingType called with type:', type)
     if (drawingStore.drawingMode === type) {
         // If clicking the same button, toggle off
         console.log('Toggling off drawing mode')
@@ -118,10 +115,10 @@ onMounted(() => {
             <p class="mb-2 text-sm text-gray-600">Select a drawing tool:</p>
             <div class="flex gap-2">
                 <button
-                    @click="selectDrawingType('point')"
+                    @click="selectDrawingType(DrawingMode.Point)"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        drawingStore.drawingMode === 'point'
+                        drawingStore.drawingMode === DrawingMode.Point
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -129,10 +126,10 @@ onMounted(() => {
                     📍 Point
                 </button>
                 <button
-                    @click="selectDrawingType('linestring')"
+                    @click="selectDrawingType(DrawingMode.LineString)"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        drawingStore.drawingMode === 'linestring'
+                        drawingStore.drawingMode === DrawingMode.LineString
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -140,10 +137,10 @@ onMounted(() => {
                     📏 Line
                 </button>
                 <button
-                    @click="selectDrawingType('polygon')"
+                    @click="selectDrawingType(DrawingMode.Polygon)"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        drawingStore.drawingMode === 'polygon'
+                        drawingStore.drawingMode === DrawingMode.Polygon
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -151,10 +148,10 @@ onMounted(() => {
                     ⬡ Polygon
                 </button>
                 <button
-                    @click="selectDrawingType('text')"
+                    @click="selectDrawingType(DrawingMode.Text)"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        drawingStore.drawingMode === 'text'
+                        drawingStore.drawingMode === DrawingMode.Text
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -166,13 +163,13 @@ onMounted(() => {
                 v-if="drawingStore.isDrawing"
                 class="mt-2 text-sm text-blue-600"
             >
-                {{ drawingStore.drawingMode === 'point' ? 'Click on the map to add a point' : drawingStore.drawingMode === 'text' ? 'Click on the map to add text' : 'Click to start drawing, double-click to finish' }}
+                {{ drawingStore.drawingMode === DrawingMode.Point ? 'Click on the map to add a point' : drawingStore.drawingMode === DrawingMode.Text ? 'Click on the map to add text' : 'Click to start drawing, double-click to finish' }}
             </p>
         </div>
 
         <!-- Icon Selection (only visible when Point mode is active) -->
         <div
-            v-if="drawingStore.drawingMode === 'point'"
+            v-if="drawingStore.drawingMode === DrawingMode.Point"
             class="mb-4"
         >
             <p class="mb-2 text-sm font-medium text-gray-700">Select marker icon:</p>
