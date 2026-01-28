@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { Map } from 'ol';
 
-import { useDrawingStore, DrawingMode } from '@swissgeo/map'
+import { useDrawingStore, DrawingMode, markerIcons } from '@swissgeo/map'
 // import { LayerType, useLayerStore } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 import { useDrawingManager } from '../../composables/useDrawingManager'
+
+const { MARKER_ICONS } = markerIcons
 
 const emit = defineEmits<{
     close: []
@@ -90,6 +92,10 @@ function handleClear() {
     }
 }
 
+function selectIcon(iconId: string) {
+    drawingStore.setSelectedIconId(iconId)
+}
+
 onMounted(() => {
     console.log('DrawingPanel mounted')
     startDrawing()
@@ -162,6 +168,35 @@ onMounted(() => {
             >
                 {{ drawingStore.drawingMode === 'point' ? 'Click on the map to add a point' : drawingStore.drawingMode === 'text' ? 'Click on the map to add text' : 'Click to start drawing, double-click to finish' }}
             </p>
+        </div>
+
+        <!-- Icon Selection (only visible when Point mode is active) -->
+        <div
+            v-if="drawingStore.drawingMode === 'point'"
+            class="mb-4"
+        >
+            <p class="mb-2 text-sm font-medium text-gray-700">Select marker icon:</p>
+            <div class="grid grid-cols-3 gap-2">
+                <button
+                    v-for="icon in MARKER_ICONS"
+                    :key="icon.id"
+                    @click="selectIcon(icon.id)"
+                    :class="[
+                        'flex flex-col items-center justify-center rounded border-2 p-2 transition-all hover:bg-gray-50',
+                        drawingStore.selectedIconId === icon.id
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-300',
+                    ]"
+                    :title="icon.name"
+                >
+                    <img
+                        :src="icon.dataUrl"
+                        :alt="icon.name"
+                        class="h-8 w-8"
+                    />
+                    <span class="mt-1 text-xs">{{ icon.name }}</span>
+                </button>
+            </div>
         </div>
 
         <div class="mb-4 rounded border border-gray-300 bg-gray-50 p-3">

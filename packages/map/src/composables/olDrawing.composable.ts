@@ -6,9 +6,12 @@ import GeoJSON from 'ol/format/GeoJSON'
 import Draw from 'ol/interaction/Draw'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
-import { Circle as CircleStyle, Fill, Stroke, Style, Text as TextStyle } from 'ol/style'
+import { Circle as CircleStyle, Fill, Icon, Stroke, Style, Text as TextStyle } from 'ol/style'
+
+import type { MarkerIcon } from '@/utils/markerIcons';
 
 import * as geoJsonUtils from '@/utils/geoJsonUtils'
+import { DEFAULT_MARKER_ICON, getMarkerIconById } from '@/utils/markerIcons'
 
 /**
  * Composable for handling OpenLayers drawing interactions
@@ -16,6 +19,10 @@ import * as geoJsonUtils from '@/utils/geoJsonUtils'
 export default function useOlDrawing(layerId: string, uuid: string, opacity: number) {
     const olMap = toValue(inject<Map>('olMap'))
     const drawingStore = useDrawingStore()
+
+    // Track the currently selected icon for new point features
+    const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON)
+
     if (!olMap) {
         log.error('OpenLayersMap is not available')
         throw new Error('OpenLayersMap is not available')
@@ -53,7 +60,26 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
             })
         }
 
-        // Regular feature styling
+        // Check if this is a Point geometry with an icon
+        const geomType = feature.getGeometry()?.getType()
+        if (geomType === 'Point') {
+            const iconId = feature.get('iconId')
+            const icon = iconId ? getMarkerIconById(iconId) : selectedIcon.value
+
+            if (icon) {
+                return new Style({
+                    image: new Icon({
+                        src: icon.dataUrl,
+                        scale: 1,
+                        anchor: [0.5, 1], // Bottom center of the icon
+                        anchorXUnits: 'fraction',
+                        anchorYUnits: 'fraction',
+                    }),
+                })
+            }
+        }
+
+        // Regular feature styling (lines, polygons)
         return new Style({
             fill: new Fill({
                 color: 'rgba(255, 0, 0, 0.2)',
@@ -170,6 +196,12 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
                 event.feature.changed()
             }
 
+            // If this is a point feature, store the icon ID
+            if (type === 'Point') {
+                event.feature.set('iconId', selectedIcon.value.id)
+                event.feature.changed()
+            }
+
             // Notify that a feature was added (for UI updates like feature count)
             // No expensive KML conversion here - that happens only when closing the panel
             if (onFeatureAdded) {
@@ -248,6 +280,14 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
         log.debug('Updated feature text:', text)
     }
 
+    /**
+     * Set the icon to use for new point features
+     */
+    function setSelectedIcon(icon: MarkerIcon) {
+        selectedIcon.value = icon
+        log.debug('Selected icon:', icon.id)
+    }
+
     return {
         layer,
         source,
@@ -259,5 +299,7 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
         setVisibility,
         setZIndex,
         updateFeatureText,
+        setSelectedIcon,
+        selectedIcon: readonly(selectedIcon),
     }
 }

@@ -9,6 +9,7 @@ import proj4 from 'proj4'
 
 import useOlDrawing from '@/composables/olDrawing.composable'
 import { DrawingMode } from '@/stores/drawing'
+import { getMarkerIconById } from '@/utils/markerIcons'
 
 const { layer } = defineProps<{
     layer: FileLayer
@@ -38,6 +39,8 @@ const {
     setVisibility,
     setZIndex,
     updateFeatureText,
+    setSelectedIcon,
+    selectedIcon,
 } = useOlDrawing(layer.humanId, layer.uuid, layer.opacity)
 
 // Track if we've initialized features
@@ -159,6 +162,19 @@ watch(
     }
 )
 
+// Watch for icon selection changes
+watch(
+    () => drawingStore?.selectedIconId,
+    (newIconId) => {
+        if (newIconId) {
+            const icon = getMarkerIconById(newIconId)
+            if (icon) {
+                setSelectedIcon(icon)
+            }
+        }
+    }
+)
+
 function clearDrawingFeatures() {
     clearFeatures()
     stopOlDrawing()
@@ -188,12 +204,20 @@ onMounted(() => {
                 })
                 if (features.length > 0) {
                     // Restore text property from name for text features
+                    // Also preserve iconId if it exists
                     features.forEach(feature => {
                         const name = feature.get('name')
                         const text = feature.get('text')
+                        const iconId = feature.get('iconId')
+                        
                         // If we have a name but no text, and it's a Point, treat it as text
                         if (name && !text && feature.getGeometry()?.getType() === 'Point') {
                             feature.set('text', name)
+                        }
+                        
+                        // Preserve iconId if present
+                        if (iconId) {
+                            feature.set('iconId', iconId)
                         }
                     })
                     

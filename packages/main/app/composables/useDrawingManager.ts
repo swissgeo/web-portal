@@ -5,12 +5,14 @@ import type VectorSource from 'ol/source/Vector'
 
 import { LayerType, useLayerStore } from '@swissgeo/layers'
 import log from '@swissgeo/log'
-import { useDrawingStore } from '@swissgeo/map'
+import { useDrawingStore, markerIcons } from '@swissgeo/map'
 import GPX from 'ol/format/GPX'
 import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
 import proj4 from 'proj4'
+
+const { dataUrlToUint8Array, MARKER_ICONS } = markerIcons
 
 
 const DRAWING_LAYER_ID = 'user-drawing-layer'
@@ -217,17 +219,80 @@ export function useDrawingManager() {
     }
 
     /**
-     * Export drawings to KMZ format (zipped KML)
+     * Export drawings to KMZ format (zipped KML with embedded icons)
      */
     async function exportToKMZ(): Promise<Blob> {
         const features = drawingStore.drawingFeatures as Feature<Geometry>[]
         const kmlString = drawingStore.featuresToKML(features)
+
+        // Collect unique icon IDs used in features
+        const usedIconIds = new Set<string>()
+        features.forEach(feature => {
+            const iconId = feature.get('iconId')
+            if (iconId) {
+                usedIconIds.add(iconId)
+            }
+        })
+
+        // If no icons are used, just export basic KMZ
+        if (usedIconIds.size === 0) {
+            const { zip } = await import('fflate')
+            const kmlData = new TextEncoder().encode(kmlString)
+            return new Promise((resolve, reject) => {
+                zip({ 'doc.kml': kmlData }, { level: 6 }, (err, data) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(new Blob([new Uint8Array(data)], { type: 'application/vnd.google-earth.kmz' }))
+                    }
+                })
+            })
+        }
+
+        // Replace data URLs with local file references in KML
+        // We need to be more careful with the replacement to handle KML format
+        let modifiedKML = kmlString
+        const replacements: Array<{ from: string; to: string }> = []
+
+        MARKER_ICONS.forEach(icon => {
+            if (usedIconIds.has(icon.id)) {
+                replacements.push({
+                    from: icon.dataUrl,
+                    to: `icons/${icon.id}.svg`
+                })
+            }
+        })
+
+        // Perform replacements
+        replacements.forEach(({ from, to }) => {
+            modifiedKML = modifiedKML.split(from).join(to)
+        })
+
         const { zip } = await import('fflate')
 
-        const kmlData = new TextEncoder().encode(kmlString)
+        const kmlData = new TextEncoder().encode(modifiedKML)
+
+        // Create files object for ZIP
+        const files: Record<string, Uint8Array> = {
+            'doc.kml': kmlData
+        }
+
+        // Add icon files to ZIP (only those that are used)
+        for (const iconId of usedIconIds) {
+            const icon = MARKER_ICONS.find(i => i.id === iconId)
+            if (icon) {
+                try {
+                    // Extract SVG data from data URL
+                    const iconData = await dataUrlToUint8Array(icon.dataUrl)
+                    files[`icons/${icon.id}.svg`] = iconData
+                } catch (error) {
+                    console.error(`Failed to add icon ${icon.id} to KMZ:`, error)
+                }
+            }
+        }
 
         return new Promise((resolve, reject) => {
-            zip({ 'doc.kml': kmlData }, { level: 6 }, (err, data) => {
+            zip(files, { level: 6 }, (err, data) => {
                 if (err) {
                     reject(err)
                 } else {
