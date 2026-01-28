@@ -1,8 +1,9 @@
 import type { Feature, Map } from 'ol'
 import type { Geometry } from 'ol/geom'
+import type { Type } from 'ol/geom/Geometry'
+import type { StyleFunction, StyleLike } from 'ol/style/Style'
 
-import log from '@swissgeo/log'
-import GeoJSON from 'ol/format/GeoJSON'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import Draw from 'ol/interaction/Draw'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
@@ -10,7 +11,7 @@ import { Circle as CircleStyle, Fill, Icon, Stroke, Style, Text as TextStyle } f
 
 import type { MarkerIcon } from '@/utils/markerIcons';
 
-import * as geoJsonUtils from '@/utils/geoJsonUtils'
+import { DrawingMode } from '@/stores/drawing'
 import { DEFAULT_MARKER_ICON, getMarkerIconById } from '@/utils/markerIcons'
 
 /**
@@ -21,7 +22,7 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
     const drawingStore = useDrawingStore()
 
     // Track the currently selected icon for new point features
-    const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON)
+    const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON!)
 
     if (!olMap) {
         log.error('OpenLayersMap is not available')
@@ -30,11 +31,10 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
 
     const source = new VectorSource({
         wrapX: false
-        // wrapX: false, features: drawingStore.drawingFeatures as Feature<Geometry>[]
     })
 
     // Style function that handles both regular features and text features
-    const styleFunction = (feature: Feature<Geometry>) => {
+    const styleFunction = (feature: Feature<Geometry>): StyleLike => {
         const textContent = feature.get('text')
         if (textContent) {
             // Text feature styling
@@ -62,7 +62,8 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
 
         // Check if this is a Point geometry with an icon
         const geomType = feature.getGeometry()?.getType()
-        if (geomType === 'Point') {
+        console.log('Feature geometry type:', geomType)
+        if (geomType === DrawingMode.Point) {
             const iconId = feature.get('iconId')
             const icon = iconId ? getMarkerIconById(iconId) : selectedIcon.value
 
@@ -106,48 +107,14 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
             },
             opacity,
             source,
-            style: styleFunction,
+            style: styleFunction as StyleFunction,
         })
-        // layer.setSource(
-        //     new VectorSource({
-        //         features: new GeoJSON().readFeatures(
-        //             geoJsonUtils.reprojectGeoJsonData(geoJsonData, projection.value)
-        //         ),
-        //     })
-        // )
         // Use markRaw to prevent Vue from making this reactive (huge performance improvement)
         drawingStore.setOlLayer(markRaw(olLayer))
         return olLayer
     }
 
-    // Create a vector source and layer for drawing
-    // const source = new VectorSource()
-    // const layer = new VectorLayer({
-    //     properties: {
-    //         id: layerId,
-    //         uuid,
-    //     },
-    //     opacity,
-    //     source,
-    //     style: new Style({
-    //         fill: new Fill({
-    //             color: 'rgba(255, 0, 0, 0.2)',
-    //         }),
-    //         stroke: new Stroke({
-    //             color: '#ff0000',
-    //             width: 2,
-    //         }),
-    //         image: new CircleStyle({
-    //             radius: 7,
-    //             fill: new Fill({
-    //                 color: '#ff0000',
-    //             }),
-    //         }),
-    //     }),
-    // })
-
     let currentDraw: Draw | null = null
-    // let updateTimeout: ReturnType<typeof setTimeout> | null = null
     const layer = createOlLayer(layerId, uuid)
     // Add layer to map immediately
     olMap.addLayer(layer)
@@ -155,49 +122,42 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
 
     onBeforeUnmount(() => {
         stopDrawing()
-        // if (updateTimeout) {
-        //     clearTimeout(updateTimeout)
-        //     updateTimeout = null
-        // }
         olMap.removeLayer(layer)
     })
 
     /**
      * Start drawing with the specified geometry type
      */
-    function startDrawing(type: 'Point' | 'LineString' | 'Polygon' | 'Text', onFeatureAdded?: (feature: Feature<Geometry>) => void) {
-        console.log('olDrawing startDrawing called with type:', type, source.getFeatures().length)
+    function startDrawing(type: DrawingMode, onFeatureAdded?: (feature: Feature<Geometry>) => void) {
         // Stop any existing draw interaction first
         stopDrawing()
 
         addDrawingInteraction(type, onFeatureAdded)
 
-        console.log('Draw interaction added to map', currentDraw)
         log.debug(`Started drawing ${type}, interaction added to map`)
     }
 
-    function addDrawingInteraction(type: 'Point' | 'LineString' | 'Polygon' | 'Text', onFeatureAdded?: (feature: Feature<Geometry>) => void) {
+    function addDrawingInteraction(type: DrawingMode, onFeatureAdded?: (feature: Feature<Geometry>) => void) {
         // For text, we use Point geometry
-        const geometryType = type === 'Text' ? 'Point' : type
+        const geometryType = type === DrawingMode.Text ? DrawingMode.Point : type
 
         currentDraw = new Draw({
             source,
-            type: geometryType,
+            type: geometryType as Type,
         })
-
+        console.log('Created Draw interaction with type:', geometryType, type)
         currentDraw.on('drawend', (event) => {
             log.debug(`Feature drawn: ${type}`, event.feature)
-            console.log('Feature drawn, updating feature count')
 
             // If this is a text feature, set default text
-            if (type === 'Text') {
+            if (type === DrawingMode.Text) {
                 event.feature.set('text', 'New Text')
                 // Force style update
                 event.feature.changed()
             }
 
             // If this is a point feature, store the icon ID
-            if (type === 'Point') {
+            if (type === DrawingMode.Point) {
                 event.feature.set('iconId', selectedIcon.value.id)
                 event.feature.changed()
             }
@@ -209,23 +169,26 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
             }
         })
 
-        olMap.addInteraction(currentDraw)
+        olMap!.addInteraction(currentDraw)
     }
 
     /**
      * Stop the current drawing interaction
      */
     function stopDrawing() {
-        console.log('stopDrawing called, currentDraw exists:', !!currentDraw, currentDraw)
         if (currentDraw) {
-            console.log('Removing draw interaction from map')
             currentDraw.setActive(false) // Deactivate first
-            olMap.removeInteraction(currentDraw)
+            olMap!.removeInteraction(currentDraw)
             currentDraw = null
             log.debug('Stopped drawing and removed interaction from map')
-            console.log('Draw interaction removed successfully')
         } else {
-            console.log('No draw interaction to remove')
+            log.info({
+                title: 'olDrawing Composable / stopDrawing',
+                titleColor: LogPreDefinedColor.Yellow,
+                messages: [
+                    `No draw interaction to remove`,
+                ],
+            })
         }
     }
 
@@ -240,11 +203,6 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
      * Clear all features from the drawing
      */
     function clearFeatures() {
-        // if (currentDraw) {
-        //     currentDraw.setActive(false) // Deactivate first
-        //     olMap.removeInteraction(currentDraw)
-        // }
-        // currentDraw = null
         source.clear()
         log.debug('Cleared all features')
     }

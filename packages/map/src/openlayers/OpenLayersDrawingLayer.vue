@@ -3,6 +3,7 @@ import type { FileLayer } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
@@ -16,20 +17,7 @@ const { layer } = defineProps<{
 }>()
 
 const drawingStore = useDrawingStore()
-// Get the drawing manager from provided context (injected from main app)
-// interface DrawingManager {
-//     drawingMode: { value: 'point' | 'linestring' | 'polygon' | null }
-//     isDrawing: { value: boolean }
-//     featureCount: { value: number }
-//     drawingFeatures: { value: any[] }
-//     updateDrawingLayer: (features: any[]) => void
-// }
 
-// const drawingManager = inject<DrawingManager>('drawingManager')
-
-if (!drawingStore) {
-    console.error('Drawing manager not provided - drawing functionality will not work')
-}
 const {
     startDrawing: startOlDrawing,
     stopDrawing: stopOlDrawing,
@@ -40,7 +28,6 @@ const {
     setZIndex,
     updateFeatureText,
     setSelectedIcon,
-    selectedIcon,
 } = useOlDrawing(layer.humanId, layer.uuid, layer.opacity)
 
 // Track if we've initialized features
@@ -84,7 +71,7 @@ const updateFeatures = (feature?: Feature<Geometry>) => {
 // Function to save the edited text
 const saveText = () => {
     if (editingTextFeature.value && editingText.value) {
-        updateFeatureText(editingTextFeature.value, editingText.value)
+        updateFeatureText(editingTextFeature.value as Feature<Geometry>, editingText.value)
         updateFeatures()
     }
     showTextPopup.value = false
@@ -98,23 +85,17 @@ const cancelTextEdit = () => {
     editingText.value = ''
 }
 
+const clearDrawingFeatures = () => {
+    clearFeatures()
+    stopOlDrawing()
+}
+
 // Watch for drawing mode changes from the manager
 watch(
     () => drawingStore?.drawingMode,
-    async (newMode: DrawingMode, oldMode: DrawingMode) => {
-        console.log('🎨 Drawing mode watch triggered - from:', oldMode, 'to:', newMode)
-        
-        // if (newMode === null || newMode === undefined) {
-        //     console.log('🛑 Stopping drawing - mode is null/undefined')
-        //     // Explicitly stop the drawing interaction
-        //     stopOlDrawing()
-        //     // Update features when drawing stops
-        //     updateFeatures()
-        //     return
-        // }
+    async (newMode: DrawingMode) => {
 
         if(newMode === DrawingMode.None) {
-            console.log('🛑 Stopping drawing - mode is None')
             // Explicitly stop the drawing interaction
             clearDrawingFeatures()
             return
@@ -123,15 +104,8 @@ watch(
         // Wait for next tick to ensure layer is fully initialized
         await nextTick()
         
-        // Map the mode to OpenLayers geometry types
-        const geometryType =
-            newMode === DrawingMode.Point ? 'Point' : 
-            newMode === DrawingMode.LineString ? 'LineString' : 
-            newMode === DrawingMode.Text ? 'Text' :
-            'Polygon'
-        
         // Start drawing with callback to update features immediately
-        startOlDrawing(geometryType, updateFeatures)
+        startOlDrawing(newMode, updateFeatures)
     },
 )
 
@@ -175,14 +149,8 @@ watch(
     }
 )
 
-function clearDrawingFeatures() {
-    clearFeatures()
-    stopOlDrawing()
-}
-
 // On mount, restore any existing features
 onMounted(() => {
-    console.log('OpenLayersDrawingLayer mounted', drawingStore.drawingFeatures.length)
     if (!hasInitialized.value) {
         // First check if we have features in the drawing manager
         if (drawingStore.drawingFeatures.length > 0) {
@@ -211,7 +179,7 @@ onMounted(() => {
                         const iconId = feature.get('iconId')
                         
                         // If we have a name but no text, and it's a Point, treat it as text
-                        if (name && !text && feature.getGeometry()?.getType() === 'Point') {
+                        if (name && !text && feature.getGeometry()?.getType() === DrawingMode.Point) {
                             feature.set('text', name)
                         }
                         
@@ -226,7 +194,11 @@ onMounted(() => {
                     drawingStore.updateDrawingLayer(features)
                 }
             } catch (error) {
-                console.error('Failed to parse existing KML data:', error)
+                log.error({
+                    title: 'OpenLayersDrawingLayer',
+                    titleColor: LogPreDefinedColor.Red,
+                    messages: ['Failed to parse existing KML data', error],
+                })
             }
         }
         hasInitialized.value = true
@@ -234,10 +206,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-    console.log('OpenLayersDrawingLayer unmounted')
     // Clean up drawing interactions
     clearDrawingFeatures()
-
 })
 </script>
 
