@@ -27,12 +27,20 @@ const locationResults = computed(() =>
 
 const layerResults = computed(() => props.results.filter((result) => result.resultType === 'LAYER'))
 
+const featureResults = computed(() =>
+    props.results.filter((result) => result.resultType === 'FEATURE')
+)
+
 // Create categories array (from mapviewer lines 49-64)
 const categories = computed(() => {
     return [
         {
             id: 'locations',
             results: locationResults.value,
+        },
+        {
+            id: 'features',
+            results: featureResults.value,
         },
         {
             id: 'layers',

@@ -2,7 +2,7 @@
 // Adapted from web-mapviewer
 // Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/api/src/types/search.ts
 
-export type SearchResultTypes = 'LAYER' | 'LOCATION'
+export type SearchResultTypes = 'LAYER' | 'LOCATION' | 'FEATURE'
 
 /**
  * Base interface for all search results
@@ -42,6 +42,24 @@ export interface LocationSearchResult extends SearchResult {
     /**
      * The zoom level at which the map should be zoomed when showing the location
      */
+    zoom: number
+}
+
+/**
+ * Search result for features within layers
+ * Combines layer information with location data
+ */
+export interface FeatureSearchResult extends SearchResult {
+    resultType: 'FEATURE'
+    /** ID of this feature given by the backend */
+    featureId: string
+    /** ID of the layer this feature belongs to */
+    layerId: string
+    /** Name of the layer this feature belongs to */
+    layerName: string
+    /** Coordinate in LV95 projection [x, y] */
+    coordinate?: [number, number]
+    /** The zoom level at which the map should be zoomed when showing the feature */
     zoom: number
 }
 
