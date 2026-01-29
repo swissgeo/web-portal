@@ -4,8 +4,7 @@ import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
 import { useUiStore, SidebarType } from '@/stores/ui'
 
 import LayerCart from './LayerCart.vue'
-// TEMPORARY: For testing SearchResults
-import SearchResultsTest from './search/SearchResultsTest.vue'
+import SearchPanel from './search/SearchPanel.vue'
 
 const uiStore = useUiStore()
 
@@ -39,10 +38,7 @@ const sidebarSecondColumnWidth = 400
                     class="relative flex h-full bg-white transition-[width] duration-75 ease-out"
                 >
                     <LayerCart v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"></LayerCart>
-                    <!-- TEMPORARY: Test SearchResults -->
-                    <SearchResultsTest
-                        v-if="uiStore.currentSidebar === SidebarType.SEARCH"
-                    ></SearchResultsTest>
+                    <SearchPanel v-if="uiStore.currentSidebar === SidebarType.SEARCH"></SearchPanel>
                 </div>
             </div>
         </div>
