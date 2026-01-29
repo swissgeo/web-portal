@@ -80,14 +80,21 @@ export const useSearchStore = defineStore('search', () => {
     }
 
     function selectResult(result: SearchResult) {
-        console.log('Selected result:', result)
-
-        // TODO: Later phases will implement:
-        // - For locations: center map and add pin
+        // Store the selected result for handling at app level
+        // The app component will listen to result changes and handle:
+        // - For locations: center map and zoom
         // - For layers: add layer to map
+
+        // Note: Actual handling is done in the app component where
+        // both position and layer stores are accessible
+
+        console.log('Selected result:', result)
 
         // Clear search after selection
         clearSearch()
+
+        // Return the result for external handling
+        return result
     }
 
     function clearSearch() {
