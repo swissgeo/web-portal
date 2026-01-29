@@ -13,6 +13,8 @@
         "layerCart": "Active layers"
     },
     "search": {
-        "placeholder": "Ort, Layer oder Koordinaten suchen..."
+        "placeholder": "Ort, Layer oder Koordinaten suchen...",
+        "locations_results_header": "Orte",
+        "layers_results_header": "Layer"
     }
 }
