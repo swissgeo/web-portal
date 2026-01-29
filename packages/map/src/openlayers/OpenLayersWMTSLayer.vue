@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { DatasetLayer } from '@swissgeo/layers'
+import type { Dimension } from '@swissgeo/layers'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
 import log from '@swissgeo/log'
@@ -10,7 +11,6 @@ import { optionsFromCapabilities } from 'ol/source/WMTS'
 import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
 
 import { getTimeInfoFromWMTSCapabilities } from '../utils/timeUtils'
-import type { Dimension } from '@swissgeo/layers'
 
 
 const { layer } = defineProps<{

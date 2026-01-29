@@ -31,11 +31,11 @@ const isDrawingLayer = computed(() => {
 <template>
     <OpenLayersWMTSLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === LayerType.WMTS"
+        v-if="layer.type === 'wmts'"
     />
     <OpenLayersWMSLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === LayerType.WMS"
+        v-if="layer.type === 'wms'"
     />
     <OpenLayersDrawingLayer
         :layer="layer as Layer"
@@ -63,6 +63,6 @@ const isDrawingLayer = computed(() => {
     />
     <OpenLayersVectorLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === LayerType.VECTOR"
+        v-if="layer.type === 'vector'"
     />
 </template>
