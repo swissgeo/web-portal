@@ -11,7 +11,6 @@ import proj4 from 'proj4'
 import useOlDrawing from '@/composables/olDrawing.composable'
 import { DrawingMode } from '@/stores/drawing'
 import { getMarkerIconById } from '@/utils/markerIcons'
-
 const { layer } = defineProps<{
     layer: FileLayer
 }>()
@@ -167,8 +166,8 @@ onMounted(() => {
                     extractStyles: true,
                 })
                 const features = format.readFeatures(layer.fileData, {
-                    featureProjection: 'EPSG:2056',
-                    dataProjection: 'EPSG:4326',
+                    featureProjection: PROJECTION_EPSG.EPSG_2056_CH1903,
+                    dataProjection: PROJECTION_EPSG.EPSG_4326_WGS84,
                 })
                 if (features.length > 0) {
                     // Restore text property from name for text features

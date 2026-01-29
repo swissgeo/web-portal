@@ -68,12 +68,12 @@ export const useDrawingStore = defineStore('drawingStore', () => {
 
     function generateEmptyKML(): string {
         return `<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-  <Document>
-    <name>${DRAWING_LAYER_NAME}</name>
-    <description>User drawings</description>
-  </Document>
-</kml>`
+                <kml xmlns="http://www.opengis.net/kml/2.2">
+                <Document>
+                    <name>${DRAWING_LAYER_NAME}</name>
+                    <description>User drawings</description>
+                </Document>
+                </kml>`
     }
 
     function updateDrawingLayer(features: Feature<Geometry>[]) {
@@ -154,14 +154,14 @@ export const useDrawingStore = defineStore('drawingStore', () => {
 
             const geom = clone.getGeometry()
             if (geom) {
-                geom.transform('EPSG:2056', 'EPSG:4326')
+                geom.transform(PROJECTION_EPSG.EPSG_2056_CH1903, PROJECTION_EPSG.EPSG_4326_WGS84)
             }
             return clone
         })
 
         const kmlString = format.writeFeatures(clonedFeatures, {
-            featureProjection: 'EPSG:4326', // Already transformed to WGS84
-            dataProjection: 'EPSG:4326', // WGS84
+            featureProjection: PROJECTION_EPSG.EPSG_4326_WGS84, // Already transformed to WGS84
+            dataProjection: PROJECTION_EPSG.EPSG_4326_WGS84, // WGS84
         })
 
         return kmlString
