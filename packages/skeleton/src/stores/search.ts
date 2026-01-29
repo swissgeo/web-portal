@@ -3,9 +3,10 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { searchLayers, searchLocation } from '@swissgeo/search'
+import { searchLayers, searchLocation, searchLayerFeatures } from '@swissgeo/search'
 import type { SearchResult } from '@swissgeo/search'
 import type { OGCRecords } from '@swissgeo/shared/ogc'
+import { useLayerStore } from '@swissgeo/layers'
 
 export const useSearchStore = defineStore('search', () => {
     // State
@@ -36,6 +37,8 @@ export const useSearchStore = defineStore('search', () => {
 
     const layerResults = computed(() => results.value.filter((r) => r.resultType === 'LAYER'))
 
+    const featureResults = computed(() => results.value.filter((r) => r.resultType === 'FEATURE'))
+
     // Actions
     async function setSearchQuery(newQuery: string, lang: string = 'de') {
         query.value = newQuery
@@ -58,14 +61,35 @@ export const useSearchStore = defineStore('search', () => {
             // Load catalog if not already loaded
             await loadCatalog()
 
-            // Search both locations and layers in parallel
-            const [locations, layers] = await Promise.all([
+            // Get searchable layers from layer store
+            // For now, enable feature search for ALL visible layers
+            const layerStore = useLayerStore()
+            const searchableLayers = layerStore.layers.filter((layer) => layer.isVisible)
+
+            // Build search promises array
+            const searchPromises: Promise<SearchResult[]>[] = [
                 searchLocation(newQuery, lang, abortController.signal),
                 searchLayers(newQuery, lang, catalog.value?.records || []),
-            ])
+            ]
 
-            // Combine results (locations first)
-            results.value = [...locations, ...layers]
+            // Add feature search for each searchable layer
+            for (const layer of searchableLayers) {
+                searchPromises.push(
+                    searchLayerFeatures(
+                        newQuery,
+                        lang,
+                        layer.humanId,
+                        layer.info?.displayName || layer.humanId,
+                        abortController.signal
+                    )
+                )
+            }
+
+            // Execute all searches in parallel
+            const allResults = await Promise.all(searchPromises)
+
+            // Flatten and combine results (locations, layers, then features)
+            results.value = allResults.flat()
         } catch (error) {
             // Don't show error for aborted requests
             if (error instanceof Error && error.name === 'AbortError') {
@@ -111,6 +135,7 @@ export const useSearchStore = defineStore('search', () => {
         hasResults,
         locationResults,
         layerResults,
+        featureResults,
         // Actions
         setSearchQuery,
         selectResult,

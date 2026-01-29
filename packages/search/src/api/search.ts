@@ -3,6 +3,7 @@
 // Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/api/src/search.ts
 
 import type {
+    FeatureSearchResult,
     LayerSearchResult,
     LocationSearchResult,
     SearchResponse,
@@ -171,6 +172,78 @@ export async function searchLayers(
         return matches
     } catch (error) {
         console.error('Failed to search layers:', error)
+        return []
+    }
+}
+
+/**
+ * Search for features within a specific layer using the geo.admin.ch API
+ * Adapted from mapviewer searchLayerFeatures (lines 228-273)
+ *
+ * @param queryString - Search query text
+ * @param lang - Language code (de, fr, etc.)
+ * @param layerId - ID of the layer to search within
+ * @param layerName - Name of the layer for display
+ * @param abortSignal - Optional abort signal for cancellation
+ * @param limit - Maximum number of results (default: 10)
+ * @returns Promise with feature search results
+ */
+export async function searchLayerFeatures(
+    queryString: string,
+    lang: string,
+    layerId: string,
+    layerName: string,
+    abortSignal?: AbortSignal,
+    limit: number = 10
+): Promise<FeatureSearchResult[]> {
+    const trimmedQuery = queryString.trim()
+    if (trimmedQuery.length < 2) {
+        return []
+    }
+
+    // Use map.geo.admin.ch featuresearch API
+    const url = new URL('https://api3.geo.admin.ch/rest/services/ech/SearchServer')
+    url.searchParams.set('sr', '2056') // LV95 EPSG code
+    url.searchParams.set('searchText', trimmedQuery)
+    url.searchParams.set('lang', lang)
+    url.searchParams.set('type', 'featuresearch')
+    url.searchParams.set('features', layerId)
+    url.searchParams.set('limit', String(limit))
+
+    try {
+        const response = await fetch(url.toString(), { signal: abortSignal })
+
+        if (!response.ok) {
+            throw new Error(`Feature search API error: ${response.status}`)
+        }
+
+        const data: SearchResponse = await response.json()
+
+        // Filter results with attrs
+        const resultWithAttrs = data.results?.filter((result) => !!result.attrs) || []
+
+        return resultWithAttrs.map((result) => {
+            const locationData = parseLocationResult(result)
+            return {
+                resultType: 'FEATURE' as const,
+                id: result.attrs.featureId || result.attrs.label,
+                featureId: result.attrs.featureId || result.attrs.label,
+                layerId,
+                layerName,
+                // Format title to show layer name in bold
+                title: `<strong>${layerName}</strong><br/>${result.attrs.label}`,
+                sanitizedTitle: `${layerName} - ${sanitizeTitle(result.attrs.label)}`,
+                description: result.attrs.detail || '',
+                coordinate: locationData.coordinate,
+                zoom: locationData.zoom,
+            }
+        })
+    } catch (error) {
+        // Re-throw abort errors so they can be handled separately
+        if (error instanceof Error && error.name === 'AbortError') {
+            throw error
+        }
+        console.error('Failed to search layer features:', error)
         return []
     }
 }

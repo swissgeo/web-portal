@@ -1,7 +1,12 @@
 // Composable to handle search result selection
 // Connects search results to map actions (center, zoom, add layers)
 
-import type { SearchResult, LocationSearchResult, LayerSearchResult } from '@swissgeo/search'
+import type {
+    SearchResult,
+    LocationSearchResult,
+    LayerSearchResult,
+    FeatureSearchResult,
+} from '@swissgeo/search'
 import type { OGCRecords } from '@swissgeo/shared/ogc'
 import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
 import { usePositionStore } from '@swissgeo/map'
@@ -19,6 +24,17 @@ export function useSearchSelection() {
                 const positionStore = usePositionStore()
                 positionStore.setCenter(locationResult.coordinate, { name: 'search-result-selection' })
                 positionStore.setZoom(locationResult.zoom, { name: 'search-result-selection' })
+            }
+        } else if (result.resultType === 'FEATURE') {
+            // Center map on feature (same as location)
+            const featureResult = result as FeatureSearchResult
+
+            if (featureResult.coordinate) {
+                const positionStore = usePositionStore()
+                positionStore.setCenter(featureResult.coordinate, {
+                    name: 'search-feature-selection',
+                })
+                positionStore.setZoom(featureResult.zoom, { name: 'search-feature-selection' })
             }
         } else if (result.resultType === 'LAYER') {
             const layerStore = useLayerStore()
