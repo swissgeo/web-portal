@@ -3,15 +3,17 @@
 // Now using Pinia store for state management
 
 import { useDebounceFn } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 import SearchBar from './SearchBar.vue'
 import SearchResults from './SearchResults.vue'
 import { useSearchStore } from '@/stores/search'
 
 const searchStore = useSearchStore()
+const { locale } = useI18n()
 
 // Debounced search (100ms delay)
 const debouncedSearch = useDebounceFn((query: string) => {
-    searchStore.setSearchQuery(query)
+    searchStore.setSearchQuery(query, locale.value)
 }, 100)
 
 function handleInput(value: string) {

@@ -4,15 +4,15 @@
 
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import type { SearchResult } from '@swissgeo/search'
 import SearchCategory from './SearchCategory.vue'
-import type { SearchResultMock } from './SearchResultEntry.vue'
 
 const props = defineProps<{
-    results: SearchResultMock[]
+    results: SearchResult[]
 }>()
 
 const emit = defineEmits<{
-    select: [result: SearchResultMock]
+    select: [result: SearchResult]
     close: []
 }>()
 
@@ -71,7 +71,7 @@ function onLastEntryReached(index: number) {
 }
 
 // Handle result selection (from mapviewer line 183)
-function onEntrySelected(result: SearchResultMock) {
+function onEntrySelected(result: SearchResult) {
     emit('select', result)
     emit('close')
 }

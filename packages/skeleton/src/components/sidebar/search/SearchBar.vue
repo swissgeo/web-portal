@@ -16,7 +16,7 @@ const emit = defineEmits<{
     clear: []
 }>()
 
-const searchInput = ref<HTMLInputElement>()
+const searchInput = ref<InstanceType<typeof InputText>>()
 
 // Focus input on mount (from mapviewer lines 53-58)
 onMounted(() => {

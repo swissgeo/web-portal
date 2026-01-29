@@ -4,18 +4,11 @@
 
 import { MapPin, Layers } from 'lucide-vue-next'
 import { ref } from 'vue'
-
-// Mock type for now (will use real SearchResult type later)
-export interface SearchResultMock {
-    id: string
-    title: string
-    description?: string
-    resultType: 'LOCATION' | 'LAYER'
-}
+import type { SearchResult } from '@swissgeo/search'
 
 const props = defineProps<{
     index: number
-    entry: SearchResultMock
+    entry: SearchResult
 }>()
 
 const emit = defineEmits<{
