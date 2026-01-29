@@ -21,15 +21,37 @@ export function sanitizeTitle(title: string = ''): string {
 
 /**
  * Parse location result from backend API response (adapted from mapviewer lines 76-149)
- * Simplified: No coordinate transformation, use LV95 directly
+ * Use LV95 coordinates (x, y) directly from the API response
+ *
+ * NOTE: The geo.admin.ch API returns coordinates where:
+ * - attrs.x = northing (Y in EPSG:2056, ~1'030'000 to 1'350'000 for Switzerland)
+ * - attrs.y = easting (X in EPSG:2056, ~2'420'000 to 2'900'000 for Switzerland)
+ *
+ * We need to swap them to match the standard [X, Y] = [easting, northing] convention
+ * used by OpenLayers and our coordinate system.
  */
 function parseLocationResult(result: SearchResponseResult): LocationSearchResult {
     if (!result.attrs) {
         throw new Error('Invalid location result, cannot be parsed')
     }
 
-    const { label, detail, featureId, lat, lon, zoomlevel } = result.attrs
+    const { label, detail, featureId, x, y, zoomlevel } = result.attrs
 
+    // Parse zoom level safely - API may return undefined or invalid values
+    // The API sometimes returns 4294967295 (max uint32, essentially -1) as a sentinel for "no zoom"
+    // Default to 6 for a wider city/region overview
+    let zoom = 6
+    if (
+        zoomlevel !== undefined &&
+        zoomlevel !== null &&
+        typeof zoomlevel === 'number' &&
+        zoomlevel >= 0 &&
+        zoomlevel < 30 // Reasonable max zoom to filter out invalid values like 4294967295
+    ) {
+        zoom = zoomlevel
+    }
+
+    // Swap API's [x, y] = [northing, easting] to standard [easting, northing]
     return {
         resultType: 'LOCATION',
         id: featureId || label,
@@ -37,8 +59,8 @@ function parseLocationResult(result: SearchResponseResult): LocationSearchResult
         title: label,
         sanitizedTitle: sanitizeTitle(label),
         description: detail || '',
-        coordinate: lon && lat ? [lon, lat] : undefined,
-        zoom: zoomlevel || 8,
+        coordinate: x && y ? [y, x] : undefined, // [easting, northing] = [api.y, api.x]
+        zoom,
     }
 }
 

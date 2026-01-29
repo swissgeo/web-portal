@@ -24,8 +24,15 @@ function handleClear() {
     searchStore.clearSearch()
 }
 
+const emit = defineEmits<{
+    'result-selected': [result: any]
+}>()
+
 function handleSelect(result: any) {
-    searchStore.selectResult(result)
+    console.log('=== SearchPanel handleSelect ===', result)
+    emit('result-selected', result)
+    console.log('=== Emitted result-selected event ===')
+    searchStore.clearSearch()
 }
 </script>
 
