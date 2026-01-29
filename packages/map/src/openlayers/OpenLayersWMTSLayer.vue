@@ -52,7 +52,11 @@ const dimensions = computed(() => {
         return null
     }
 
-    const capabilityOfLayer = capabilityData.value.Contents.Layer.find(
+    // TODO let's not do this twice!
+    const wmtsParser = new WMTSCapabilities()
+    const capabilities = wmtsParser.read(capabilityData.value)
+
+    const capabilityOfLayer = capabilities.Contents.Layer.find(
         (layerEntry: WMTSCapabilities['Contents']['Layer']) =>
             layerEntry.Identifier === layer.dataset.id
     )

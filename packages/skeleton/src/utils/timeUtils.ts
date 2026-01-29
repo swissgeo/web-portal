@@ -4,7 +4,9 @@ import { isTimestampYYYYMMDD } from '@swissgeo/numbers'
 const ALL_YEARS_TIMESTAMP: string = 'all'
 
 export function getDisplayNameFromTimestamp(timestamp: string) {
-    if (timestamp === 'current') {
+    if (timestamp === null) {
+        return '-'
+    } else if (timestamp === 'current') {
         return 'current'
     } else if (timestamp.startsWith('9999') || timestamp === ALL_YEARS_TIMESTAMP) {
         // there's a difference between WMS and WMTS:
