@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Dataset, Distribution } from '@swissgeo/ogc'
+import type { LayerType } from '@swissgeo/layers'
 
-import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
+import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { useStorage } from '@vueuse/core'
 
@@ -36,13 +37,13 @@ const distributionLink = computed(() => {
 
 const layerBg = computed(() => {
     switch (type.value) {
-        case LayerType.WMS:
+        case 'wms':
             return 'bg-amber-200'
-        case LayerType.WMTS:
+        case 'wmts':
             return 'bg-fuchsia-200'
-        case LayerType.GEOJSON:
+        case 'geojson':
             return 'bg-rose-200'
-        case LayerType.VECTOR:
+        case 'vector':
             return 'bg-slate-200'
     }
 })
@@ -80,11 +81,11 @@ const type = computed((): LayerType | 'UNKNOWN' => {
             const protocol = record.properties?.protocol
 
             if (protocol === 'OGC:WMTS') {
-                return LayerType.WMTS
+                return 'wmts'
             } else if (protocol === 'OGC:WMS') {
-                return LayerType.WMS
+                return 'wms'
             } else if (protocol === 'OGC:GeoJSON') {
-                return LayerType.GEOJSON
+                return 'geojson'
             }
         }
     }
@@ -100,14 +101,14 @@ onMounted(() => {
 })
 
 async function updateDistributionData() {
-    const distributionDataUpdate = await $fetch<OGCRecord>(distributionLink.value.href)
+    const distributionDataUpdate = await $fetch<Distribution>(distributionLink.value.href)
 
     if (distributionDataUpdate) {
         state.value.distributionData = distributionDataUpdate
     }
 }
 
-function addLayerToMap(layer: OGCRecord) {
+function addLayerToMap(layer: Dataset) {
     if (!type.value) {
         throw Error('Neither OGC:WMS nor OGC:WMTS found in the definition')
     }
