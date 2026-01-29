@@ -29,9 +29,7 @@ const emit = defineEmits<{
 }>()
 
 function handleSelect(result: any) {
-    console.log('=== SearchPanel handleSelect ===', result)
     emit('result-selected', result)
-    console.log('=== Emitted result-selected event ===')
     searchStore.clearSearch()
 }
 </script>

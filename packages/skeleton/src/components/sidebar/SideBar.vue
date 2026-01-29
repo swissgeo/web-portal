@@ -15,9 +15,7 @@ const emit = defineEmits<{
 function resetApp() {}
 
 function handleSearchResultSelected(result: any) {
-    console.log('=== SideBar handleSearchResultSelected ===', result)
     emit('search-result-selected', result)
-    console.log('=== SideBar emitted search-result-selected ===')
 }
 
 // used for the dragging thing
