@@ -3,16 +3,16 @@
 // Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/viewer/src/modules/menu/components/search/SearchResultCategory.vue
 
 import { ref } from 'vue'
+import type { SearchResult } from '@swissgeo/search'
 import SearchResultEntry from './SearchResultEntry.vue'
-import type { SearchResultMock } from './SearchResultEntry.vue'
 
 defineProps<{
     title: string
-    results: SearchResultMock[]
+    results: SearchResult[]
 }>()
 
 const emit = defineEmits<{
-    select: [result: SearchResultMock]
+    select: [result: SearchResult]
     firstEntryReached: []
     lastEntryReached: []
 }>()

@@ -3,47 +3,29 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { SearchResultMock } from '@/components/sidebar/search/SearchResultEntry.vue'
-
-// Mock data (will be replaced with real API calls later)
-const mockAllResults: SearchResultMock[] = [
-    {
-        id: 'loc-1',
-        title: 'Zurich, Switzerland',
-        description: 'City in Canton Zurich',
-        resultType: 'LOCATION',
-    },
-    {
-        id: 'loc-2',
-        title: 'Bern',
-        description: 'Capital of Switzerland',
-        resultType: 'LOCATION',
-    },
-    {
-        id: 'layer-1',
-        title: 'Geological Map',
-        description: 'Geological layers',
-        resultType: 'LAYER',
-    },
-    {
-        id: 'loc-3',
-        title: 'Geneva',
-        description: 'International city',
-        resultType: 'LOCATION',
-    },
-    {
-        id: 'layer-2',
-        title: 'Topographic Map',
-        description: 'Topographic features',
-        resultType: 'LAYER',
-    },
-]
+import { searchLayers, searchLocation } from '@swissgeo/search'
+import type { SearchResult } from '@swissgeo/search'
+import type { OGCRecords } from '@swissgeo/shared/ogc'
 
 export const useSearchStore = defineStore('search', () => {
     // State
     const query = ref('')
-    const results = ref<SearchResultMock[]>([])
+    const results = ref<SearchResult[]>([])
     const isSearching = ref(false)
+    const catalog = ref<OGCRecords | null>(null)
+
+    let abortController: AbortController | null = null
+
+    // Load catalog data on store initialization
+    const loadCatalog = async () => {
+        if (catalog.value) return
+        try {
+            const response = await fetch('/api/v1/layers/swissgeo/catalog')
+            catalog.value = await response.json()
+        } catch (error) {
+            console.error('Failed to load catalog:', error)
+        }
+    }
 
     // Getters
     const hasResults = computed(() => results.value.length > 0)
@@ -55,7 +37,7 @@ export const useSearchStore = defineStore('search', () => {
     const layerResults = computed(() => results.value.filter((r) => r.resultType === 'LAYER'))
 
     // Actions
-    async function setSearchQuery(newQuery: string) {
+    async function setSearchQuery(newQuery: string, lang: string = 'de') {
         query.value = newQuery
 
         // Clear results if query too short
@@ -64,28 +46,40 @@ export const useSearchStore = defineStore('search', () => {
             return
         }
 
+        // Cancel previous request
+        if (abortController) {
+            abortController.abort()
+        }
+        abortController = new AbortController()
+
         isSearching.value = true
 
-        // Simulate async search with timeout (will be replaced with real API)
-        await new Promise((resolve) => setTimeout(resolve, 300))
-
         try {
-            // Filter mock results
-            const searchTerm = newQuery.toLowerCase()
-            results.value = mockAllResults.filter(
-                (r) =>
-                    r.title.toLowerCase().includes(searchTerm) ||
-                    r.description?.toLowerCase().includes(searchTerm)
-            )
+            // Load catalog if not already loaded
+            await loadCatalog()
+
+            // Search both locations and layers in parallel
+            const [locations, layers] = await Promise.all([
+                searchLocation(newQuery, lang, abortController.signal),
+                searchLayers(newQuery, lang, catalog.value?.records || []),
+            ])
+
+            // Combine results (locations first)
+            results.value = [...locations, ...layers]
         } catch (error) {
+            // Don't show error for aborted requests
+            if (error instanceof Error && error.name === 'AbortError') {
+                return
+            }
             console.error('Search error:', error)
             results.value = []
         } finally {
             isSearching.value = false
+            abortController = null
         }
     }
 
-    function selectResult(result: SearchResultMock) {
+    function selectResult(result: SearchResult) {
         console.log('Selected result:', result)
 
         // TODO: Later phases will implement:
