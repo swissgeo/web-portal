@@ -11,5 +11,8 @@
     "menu": {
         "search": "Search",
         "layerCart": "Active layers"
+    },
+    "search": {
+        "placeholder": "Ort, Layer oder Koordinaten suchen..."
     }
 }
