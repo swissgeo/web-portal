@@ -1,31 +1,20 @@
-import type { Feature, Map } from 'ol'
+import type { MarkerIcon } from '@swissgeo/map'
+import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
-import type VectorLayer from 'ol/layer/Vector'
-import type VectorSource from 'ol/source/Vector'
 
 import { LayerType, useLayerStore } from '@swissgeo/layers'
-import log from '@swissgeo/log'
-import { useDrawingStore, markerIcons } from '@swissgeo/map'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
+import { useDrawingStore, markerIcons, PROJECTION_EPSG } from '@swissgeo/map'
+import { zip } from 'fflate'
 import GPX from 'ol/format/GPX'
-import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
-import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
 import proj4 from 'proj4'
-
 const { dataUrlToUint8Array, MARKER_ICONS } = markerIcons
-
 
 const DRAWING_LAYER_ID = 'user-drawing-layer'
 const DRAWING_KML_LAYER_ID = 'user-drawing-layer-kml'
 const DRAWING_LAYER_NAME = 'My Drawings'
 const DRAWING_KML_LAYER_NAME = 'My Drawings KML'
-
-// Singleton state
-// const drawingLayerUuid = ref<string | null>(null)
-// const isDrawing = ref(false)
-// const drawingMode = ref<'point' | 'linestring' | 'polygon' | null>(null)
-// const featureCount = ref(0)
-// const drawingFeatures = ref<Feature<Geometry>[]>([])
 
 /**
  * Composable for managing drawing functionality and layer persistence
@@ -40,10 +29,10 @@ export function useDrawingManager() {
      */
     function getOrCreateDrawingLayer() {
         // Check if drawing layer already exists
-        // TODO change to use drawingLayerUuid and dont reset it when layer is removed
         const existingLayer = layerStore.layers.find(
-            (layer) => layer.humanId === DRAWING_LAYER_ID
+            (layer) => layer.uuid === drawingStore.drawingLayerUuid
         )
+
         if (existingLayer) {
             drawingStore.setDrawingLayerUuid(existingLayer.uuid)
             return existingLayer
@@ -65,82 +54,12 @@ export function useDrawingManager() {
             },
             fileData: drawingStore.generateEmptyKML(),
         }
-        // const olLayer = createOlLayer(DRAWING_LAYER_ID, uuid)
-        // const drawingLayer = {
-        //     config,
-        //     olLayer
-        // }
+
         layerStore.addLayer(config)
-        // drawingStore.setOlLayer(olLayer)
         drawingStore.setDrawingLayerUuid(uuid)
         log.debug('Created new drawing layer')
-        console.log('Created new drawing layer:', config)
         return config
     }
-
-
-
-    /**
-     * Generate empty KML document
-     */
-    //     function generateEmptyKML(): string {
-    //         return `<?xml version="1.0" encoding="UTF-8"?>
-    // <kml xmlns="http://www.opengis.net/kml/2.2">
-    //   <Document>
-    //     <name>${DRAWING_LAYER_NAME}</name>
-    //     <description>User drawings</description>
-    //   </Document>
-    // </kml>`
-    //     }
-
-    /**
-     * Convert features to KML string
-     */
-    // function featuresToKML(features: Feature<Geometry>[]): string {
-    //     if (features.length === 0) {
-    //         return generateEmptyKML()
-    //     }
-
-    //     register(proj4)
-    //     const format = new KML({
-    //         extractStyles: true,
-    //     })
-
-    //     // Clone features and transform to WGS84
-    //     const clonedFeatures = features.map(feature => {
-    //         const clone = feature.clone()
-    //         const geom = clone.getGeometry()
-    //         if (geom) {
-    //             geom.transform('EPSG:2056', 'EPSG:4326')
-    //         }
-    //         return clone
-    //     })
-
-    //     const kmlString = format.writeFeatures(clonedFeatures, {
-    //         featureProjection: 'EPSG:4326', // Already transformed to WGS84
-    //         dataProjection: 'EPSG:4326', // WGS84
-    //     })
-
-    //     return kmlString
-    // }
-
-    /**
-     * Update the drawing layer with current features
-     */
-    // function updateDrawingLayer(features: Feature<Geometry>[]) {
-    //     const layer = layerStore.layers.find((l) => l.uuid === drawingStore.drawingLayerUuid)
-    //     if (!layer) {
-    //         return
-    //     }
-
-    //     const kmlData = featuresToKML(features)
-    //     // Update the layer's file data
-    //     // @ts-expect-error - we know this is a FileLayer
-    //     layer.fileData = kmlData
-    //     // drawingStore.featureCount = features.length
-
-    //     log.debug(`Updated drawing layer with ${features.length} features`)
-    // }
 
     /**
      * Start drawing with specified type
@@ -149,19 +68,16 @@ export function useDrawingManager() {
         layerStore.removeLayer(drawingStore.drawingKMLLayerUuid)
 
         getOrCreateDrawingLayer()
-        // olMap.value.addLayer(drawingStore.olLayer)
         if (!drawingStore.isDrawing) {
             drawingStore.toggleDrawing()
         }
         log.debug(`Started drawing`)
-        console.log('Drawing mode started', layerStore.layers.length)
     }
 
     /**
      * Stop drawing
      */
     function stopDrawing() {
-        console.log('Stopping drawing mode', drawingStore.drawingFeatures.length, drawingStore.isDrawing)
         if (drawingStore.isDrawing) {
             drawingStore.toggleDrawing()
         }
@@ -172,8 +88,6 @@ export function useDrawingManager() {
             layerStore.addLayer(kmlLayerFromDrawing)
         }
         layerStore.removeLayer(drawingStore.drawingLayerUuid)
-        // olMap.value.removeLayer(drawingStore.olLayer)
-        console.log('Stopping drawing mode end', layerStore.layers, drawingStore.drawingLayerUuid)
 
         log.debug('Stopped drawing mode')
         drawingStore.clearDrawingMode()
@@ -206,7 +120,6 @@ export function useDrawingManager() {
         drawingStore.clearDrawingFeatures()
         drawingStore.updateDrawingLayer([])
         log.debug('Cleared all drawings')
-        console.log('Cleared all drawings', drawingStore.featureCount)
     }
 
     /**
@@ -236,7 +149,6 @@ export function useDrawingManager() {
 
         // If no icons are used, just export basic KMZ
         if (usedIconIds.size === 0) {
-            const { zip } = await import('fflate')
             const kmlData = new TextEncoder().encode(kmlString)
             return new Promise((resolve, reject) => {
                 zip({ 'doc.kml': kmlData }, { level: 6 }, (err, data) => {
@@ -254,7 +166,7 @@ export function useDrawingManager() {
         let modifiedKML = kmlString
         const replacements: Array<{ from: string; to: string }> = []
 
-        MARKER_ICONS.forEach(icon => {
+        MARKER_ICONS.forEach((icon: MarkerIcon) => {
             if (usedIconIds.has(icon.id)) {
                 replacements.push({
                     from: icon.dataUrl,
@@ -268,8 +180,6 @@ export function useDrawingManager() {
             modifiedKML = modifiedKML.split(from).join(to)
         })
 
-        const { zip } = await import('fflate')
-
         const kmlData = new TextEncoder().encode(modifiedKML)
 
         // Create files object for ZIP
@@ -279,14 +189,18 @@ export function useDrawingManager() {
 
         // Add icon files to ZIP (only those that are used)
         for (const iconId of usedIconIds) {
-            const icon = MARKER_ICONS.find(i => i.id === iconId)
+            const icon = MARKER_ICONS.find((icon: MarkerIcon) => icon.id === iconId)
             if (icon) {
                 try {
                     // Extract SVG data from data URL
                     const iconData = await dataUrlToUint8Array(icon.dataUrl)
                     files[`icons/${icon.id}.svg`] = iconData
                 } catch (error) {
-                    console.error(`Failed to add icon ${icon.id} to KMZ:`, error)
+                    log.error({
+                        title: 'useDrawingManager / exportToKMZ',
+                        titleColor: LogPreDefinedColor.Red,
+                        messages: [`Failed to add icon ${icon.id} to KMZ:`, error],
+                    })
                 }
             }
         }
@@ -334,14 +248,14 @@ export function useDrawingManager() {
             const clone = feature.clone()
             const geom = clone.getGeometry()
             if (geom) {
-                geom.transform('EPSG:2056', 'EPSG:4326') // Transform from CH1903+ to WGS84
+                geom.transform(PROJECTION_EPSG.EPSG_2056_CH1903, PROJECTION_EPSG.EPSG_4326_WGS84) // Transform from CH1903+ to WGS84
             }
             return clone
         })
 
         const gpxString = format.writeFeatures(clonedFeatures, {
-            featureProjection: 'EPSG:4326', // Already transformed to WGS84
-            dataProjection: 'EPSG:4326', // WGS84 (required for GPX)
+            featureProjection: PROJECTION_EPSG.EPSG_4326_WGS84, // Already transformed to WGS84
+            dataProjection: PROJECTION_EPSG.EPSG_4326_WGS84, // WGS84 (required for GPX)
         })
 
         return Promise.resolve(new Blob([gpxString], { type: 'application/gpx+xml' }))

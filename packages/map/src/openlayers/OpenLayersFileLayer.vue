@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/layers'
+import type { FileLayer, GeoAdminGeoJSONStyleDefinition } from '@swissgeo/layers'
 
-import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
+import useOlGeoJSONLayer from '@/composables/olGeoJSONLayer.composable'
 
 const { layer } = defineProps<{
-    layer: any
+    layer: FileLayer
 }>()
 
 // Use the GeoJSON data directly from the layer (stored during import)
@@ -33,7 +33,7 @@ const { initialize, setVisibility, setZIndex } = useOlGeoJSONLayer(
     layer.uuid,
     layer.opacity,
     layer.isLoading,
-    geoJsonData,
+    geoJsonData.value,
     defaultStyle,
     layer.zIndex
 )

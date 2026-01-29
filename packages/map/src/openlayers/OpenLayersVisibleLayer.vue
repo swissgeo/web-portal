@@ -23,12 +23,8 @@ const isLegacyFileLayer = computed(() => {
 // Check if this is the drawing layer
 const isDrawingLayer = computed(() => {
     const result = layer.humanId === 'user-drawing-layer'
-    if (result) {
-        console.log('Drawing layer detected in OpenLayersVisibleLayer:', layer)
-    }
     return result
 })
-console.log('layer', layer)
 </script>
 
 <template>

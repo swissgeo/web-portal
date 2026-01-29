@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
+import log, { LogPreDefinedColor } from '@swissgeo/log';
 import { useDrawingStore, DrawingMode, markerIcons } from '@swissgeo/map'
-// import { LayerType, useLayerStore } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 import { useDrawingManager } from '../../composables/useDrawingManager'
@@ -12,7 +12,6 @@ const emit = defineEmits<{
     close: []
 }>()
 
-// const layerStore = useLayerStore()
 const drawingStore = useDrawingStore()
 const {
     startDrawing,
@@ -24,16 +23,11 @@ const {
 } = useDrawingManager()
 
 function selectDrawingType(type: DrawingMode) {
-    console.log('selectDrawingType called with type:', type)
     if (drawingStore.drawingMode === type) {
         // If clicking the same button, toggle off
-        console.log('Toggling off drawing mode')
-        // stopDrawing()
         drawingStore.setDrawingMode(DrawingMode.None)
     } else {
         // Start drawing with the selected type
-        console.log('Starting new drawing mode:', type)
-        // startDrawing()
         drawingStore.setDrawingMode(type)
 
     }
@@ -78,7 +72,11 @@ async function handleExport(format: 'kml' | 'kmz' | 'gpx') {
         document.body.removeChild(a)
         URL.revokeObjectURL(url)
     } catch (error) {
-        console.error(`Failed to export ${format.toUpperCase()}:`, error)
+        log.error({
+            title: 'DrawingPanel/handleExport',
+            titleColor: LogPreDefinedColor.Red,
+            messages: ['Failed to export', format.toUpperCase(), error],
+        })
     }
 }
 
@@ -94,9 +92,7 @@ function selectIcon(iconId: string) {
 }
 
 onMounted(() => {
-    console.log('DrawingPanel mounted')
     startDrawing()
-
 })
 </script>
 
