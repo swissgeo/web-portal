@@ -8,25 +8,17 @@ import { usePositionStore } from '@swissgeo/map'
 
 export function useSearchSelection() {
     async function handleResultSelection(result: SearchResult) {
-        console.log('=== handleResultSelection called ===', result)
-        console.log('process.client:', process.client)
-
         // Only run on client side to avoid SSR serialization issues
         if (!process.client) return
 
         if (result.resultType === 'LOCATION') {
             // Center map on location
             const locationResult = result as LocationSearchResult
-            console.log('Location result:', locationResult)
 
             if (locationResult.coordinate) {
-                console.log('Setting center to:', locationResult.coordinate, 'zoom:', locationResult.zoom)
                 const positionStore = usePositionStore()
-                console.log('Position store:', positionStore)
-                console.log('Current center before:', positionStore.center)
                 positionStore.setCenter(locationResult.coordinate, { name: 'search-result-selection' })
                 positionStore.setZoom(locationResult.zoom, { name: 'search-result-selection' })
-                console.log('Current center after:', positionStore.center)
             }
         } else if (result.resultType === 'LAYER') {
             const layerStore = useLayerStore()

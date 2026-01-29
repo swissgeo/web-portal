@@ -15,7 +15,6 @@ watch(route, (value) => {
 const { handleResultSelection } = useSearchSelection()
 
 async function onSearchResultSelected(result: any) {
-    console.log('=== onSearchResultSelected in layout ===', result)
     await handleResultSelection(result)
 }
 </script>
