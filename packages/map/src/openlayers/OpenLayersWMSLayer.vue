@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import type { DatasetLayer } from '@swissgeo/layers'
+import type { DatasetLayer, Dimension } from '@swissgeo/layers'
 
 import { useLayerStore } from '@swissgeo/layers'
 import { useRecordsData } from '@swissgeo/ogc'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from '@/composables/olWMSLayer.composable'
-import type { Dimension } from '@swissgeo/layers'
 
 const layerStore = useLayerStore()
 

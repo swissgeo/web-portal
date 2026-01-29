@@ -8,6 +8,7 @@ import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 
 import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.composable'
+import TimeSlider from '@/tools/TimeSlider.vue'
 
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
@@ -19,6 +20,7 @@ const { layers } = defineProps<{
 
 const mapElement = useTemplateRef('mapElement')
 const olMap = ref<OlMapType>()
+const isTimesliderActive = ref(false)
 
 provide<Ref<OlMapType | undefined>>('olMap', olMap)
 
@@ -46,6 +48,10 @@ function mountOlMap() {
     }
 }
 
+function toggleTimeSlider() {
+    isTimesliderActive.value = !isTimesliderActive.value
+}
+
 registerCustomProjection()
 createOlMap()
 </script>
@@ -57,12 +63,22 @@ createOlMap()
         data-cy="ol-map"
         @contextmenu.prevent
     >
+        <Button
+            v-if="!isTimesliderActive"
+            @click="toggleTimeSlider"
+            class="fixed top-0 left-16"
+        >
+            Toggle Time Slider</Button
+        >
+        <TimeSlider
+            class="fixed top-0 right-6 left-16 z-30 w-full"
+            v-else
+        ></TimeSlider>
         <OpenLayersVisibleLayer
             :layer="backgroundLayer"
             v-if="backgroundLayer"
             :key="backgroundLayer.uuid"
         />
-        <!-- TODO probably somewhere here there would be the loop?-->
         <OpenLayersVisibleLayer
             :layer="layer"
             :key="layer.uuid"

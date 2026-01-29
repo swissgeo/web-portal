@@ -57,6 +57,5 @@ export const makeServerLayer = (
         zIndex: layerStore.greatestZIndex + 1,
         info: getInfoFromDataset(dataset),
         ...options,
-        currentTime: null,
     }
 }
