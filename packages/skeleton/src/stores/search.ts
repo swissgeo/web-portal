@@ -31,9 +31,7 @@ export const useSearchStore = defineStore('search', () => {
     // Getters
     const hasResults = computed(() => results.value.length > 0)
 
-    const locationResults = computed(() =>
-        results.value.filter((r) => r.resultType === 'LOCATION')
-    )
+    const locationResults = computed(() => results.value.filter((r) => r.resultType === 'LOCATION'))
 
     const layerResults = computed(() => results.value.filter((r) => r.resultType === 'LAYER'))
 
@@ -54,6 +52,7 @@ export const useSearchStore = defineStore('search', () => {
             abortController.abort()
         }
         abortController = new AbortController()
+        const currentController = abortController
 
         isSearching.value = true
 
@@ -88,8 +87,11 @@ export const useSearchStore = defineStore('search', () => {
             // Execute all searches in parallel
             const allResults = await Promise.all(searchPromises)
 
-            // Flatten and combine results (locations, layers, then features)
-            results.value = allResults.flat()
+            // Only update results if this request hasn't been superseded
+            if (currentController === abortController) {
+                // Flatten and combine results (locations, layers, then features)
+                results.value = allResults.flat()
+            }
         } catch (error) {
             // Don't show error for aborted requests
             if (error instanceof Error && error.name === 'AbortError') {
@@ -111,8 +113,6 @@ export const useSearchStore = defineStore('search', () => {
 
         // Note: Actual handling is done in the app component where
         // both position and layer stores are accessible
-
-        console.log('Selected result:', result)
 
         // Clear search after selection
         clearSearch()

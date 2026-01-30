@@ -72,7 +72,7 @@ function onLastEntryReached(index: number) {
     const nextCategoryIndex = categories.value.findIndex(
         (category, i) => i > index && category.results.length > 0
     )
-    if (nextCategoryIndex > 0 && resultCategories.value) {
+    if (nextCategoryIndex >= 0 && resultCategories.value) {
         // Jump to next category's first entry
         resultCategories.value[nextCategoryIndex]?.focusFirstEntry()
     }
@@ -90,7 +90,10 @@ defineExpose({ focusFirstEntry })
 
 <template>
     <!-- Results container (from mapviewer lines 156-191) -->
-    <div class="flex-1 overflow-y-auto" data-cy="search-results">
+    <div
+        class="flex-1 overflow-y-auto"
+        data-cy="search-results"
+    >
         <SearchCategory
             v-for="(category, index) in categories"
             v-show="category.results.length > 0"

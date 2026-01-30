@@ -2,25 +2,36 @@
 // Test component for SearchCategory
 import { ref } from 'vue'
 import SearchCategory from './SearchCategory.vue'
-import type { SearchResultMock } from './SearchResultEntry.vue'
+
+// Define mock type locally for testing
+type SearchResultMock = {
+    id: string
+    title: string
+    sanitizedTitle: string
+    description: string
+    resultType: 'LOCATION' | 'LAYER'
+}
 
 // Mock data separated by category
 const locationResults = ref<SearchResultMock[]>([
     {
         id: 'loc-1',
         title: '<b>Zürich</b>, Switzerland',
+        sanitizedTitle: 'Zürich, Switzerland',
         description: 'City in Canton Zürich',
         resultType: 'LOCATION',
     },
     {
         id: 'loc-2',
         title: 'Bern',
+        sanitizedTitle: 'Bern',
         description: 'Capital of Switzerland',
         resultType: 'LOCATION',
     },
     {
         id: 'loc-3',
         title: 'Geneva',
+        sanitizedTitle: 'Geneva',
         description: 'International city',
         resultType: 'LOCATION',
     },
@@ -30,12 +41,14 @@ const layerResults = ref<SearchResultMock[]>([
     {
         id: 'layer-1',
         title: 'Geological <b>Map</b> of Switzerland',
+        sanitizedTitle: 'Geological Map of Switzerland',
         description: 'Geological layers and formations',
         resultType: 'LAYER',
     },
     {
         id: 'layer-2',
         title: 'Topographic Map',
+        sanitizedTitle: 'Topographic Map',
         description: 'Topographic features',
         resultType: 'LAYER',
     },
