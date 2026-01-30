@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { useDrawingStore, DrawingMode, MARKER_ICONS } from '@swissgeo/drawing'
+import { useDrawingStore, DrawingMode, MARKER_ICONS, useDrawingManager } from '@swissgeo/drawing'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { IconButton } from '@swissgeo/skeleton'
-
-import { useDrawingManager } from '@/composables/useDrawingManager'
-
 
 const emit = defineEmits<{
     close: []

@@ -1,10 +1,5 @@
 <script lang="ts" setup>
 import { MapModule } from '@swissgeo/map'
-// import { useDrawingManager } from '~/composables/useDrawingManager'
-
-// Provide the drawing manager to all child components (including the map)
-const drawingManager = useDrawingManager()
-provide('drawingManager', drawingManager)
 </script>
 
 <template>

@@ -4,7 +4,6 @@ import type { DatasetLayer, Layer } from '@swissgeo/layers'
 import { LayerType } from '@swissgeo/layers'
 
 import OpenLayersDrawingLayer from './OpenLayersDrawingLayer.vue'
-import OpenLayersFileLayer from './OpenLayersFileLayer.vue'
 import OpenLayersGeoJSONLayer from './OpenLayersGeoJSONLayer.vue'
 import OpenLayersGPXLayer from './OpenLayersGPXLayer.vue'
 import OpenLayersKMLLayer from './OpenLayersKMLLayer.vue'
@@ -14,11 +13,6 @@ import OpenLayersWMSLayer from './OpenLayersWMSLayer.vue'
 import OpenLayersWMTSLayer from './OpenLayersWMTSLayer.vue'
 
 const { layer } = defineProps<{ layer: Layer }>()
-
-// Check if this is a legacy file layer (imported before KML/KMZ/GPX separation)
-const isLegacyFileLayer = computed(() => {
-    return layer.type === LayerType.GEOJSON && !layer.dataset
-})
 
 // Check if this is the drawing layer
 const isDrawingLayer = computed(() => {
@@ -51,10 +45,6 @@ const isDrawingLayer = computed(() => {
     <OpenLayersGPXLayer
         :layer="layer as Layer"
         v-if="layer.type === LayerType.GPX"
-    />
-    <OpenLayersFileLayer
-        :layer="layer as Layer"
-        v-if="isLegacyFileLayer"
     />
     <OpenLayersGeoJSONLayer
         :layer="layer as DatasetLayer"

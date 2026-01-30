@@ -3,7 +3,7 @@ import type { FileLayer } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
-import { useOlDrawing, EPSG_2056_CH1903, EPSG_4326_WGS84 , DrawingMode, useDrawingStore, getMarkerIconById } from '@swissgeo/drawing'
+import { useOlDrawing, EPSG_2056_CH1903, EPSG_4326_WGS84, DrawingMode, useDrawingStore, getMarkerIconById } from '@swissgeo/drawing'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'

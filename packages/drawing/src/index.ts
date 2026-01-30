@@ -1,6 +1,3 @@
-// Components
-export { default as DrawingPanel } from '@/components/DrawingPanel.vue'
-
 // Composables
 export { useOlDrawing } from '@/composables/olDrawing.composable'
 export { useDrawingManager } from '@/composables/useDrawingManager'

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { DrawingPanel as DebugDrawingPanel } from '@swissgeo/drawing'
+import DrawingPanel from '~/components/debug/DrawingPanel.vue'
 
 const isLayersPanelOpen = ref(false)
 const isImportPanelOpen = ref(false)
@@ -39,12 +39,12 @@ function toggleDrawing() {
             @close="toggleLocalImportPanel"
         >
         </DebugImportLocalLayersPanel>
-        <DebugDrawingPanel
+        <DrawingPanel
             class="relative h-[400px] w-[350px] overflow-hidden bg-white shadow"
             v-if="isDrawingOpen"
             @close="toggleDrawing"
         >
-        </DebugDrawingPanel>
+        </DrawingPanel>
         <div
             class="flex gap-2"
             v-if="!isLayersPanelOpen && !isImportPanelOpen && !isImportLocalPanelOpen && !isDrawingOpen"

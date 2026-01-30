@@ -107,7 +107,7 @@ export const useDrawingStore = defineStore('drawing', () => {
                 clone.set('text', textContent)
                 clone.set('isTextFeature', true) // Mark as text feature for import
                 // Don't set any style - let the KML layer handle text rendering
-                clone.setStyle(null)
+                clone.setStyle(undefined)
             } else {
                 const iconId = feature.get('iconId')
                 const geomType = feature.getGeometry()?.getType()
