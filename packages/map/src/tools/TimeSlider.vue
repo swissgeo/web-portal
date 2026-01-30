@@ -4,76 +4,29 @@
 import type { Dimension, Layer } from '@swissgeo/layers'
 
 import { useLayerStore } from '@swissgeo/layers'
-// import { timeConfigUtils } from '@swissgeo/layers/utils'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { isNumber, round } from '@swissgeo/numbers'
 import { LucideIcon } from '@swissgeo/skeleton'
-// import { DEFAULT_YOUNGEST_YEAR } from '@swissgeo/staging-config/constants'
-import GeoadminTooltip from '@swissgeo/tooltip'
 import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
-// import type { ActionDispatcher } from '@/store/types'
 import { useI18n } from 'vue-i18n'
 
 // import TimeSliderDropdown from '@/modules/map/components/toolbox/TimeSliderDropdown.vue'
-// import useLayersStore from '@/store/modules/layers'
 // import useUIStore from '@/store/modules/ui'
 import debounce from '@/utils/debounce'
 
+import TimeSliderBar from './TimeSliderBar.vue'
 import { getYearsWithData } from './timeSliderUtils'
 // const dispatcher: ActionDispatcher = { name: 'TimeSlider.vue' }
 
-const { t } = useI18n()
 // const uiStore = useUIStore()
 const layerStore = useLayerStore()
-
-const LABEL_WIDTH = 32
-const MARGIN_BETWEEN_LABELS = 50
-const PLAY_BUTTON_SIZE = 54
-
-// to make it easier instead of having it all in one class string
-const cursorStyle = ref([
-    ...[
-        'z-2',
-        'cursor-grab',
-        'solid',
-        'border-bottom-0',
-        'absolute',
-        'top-[calc(0.75rem+29px)]',
-        'border-b-0',
-        'border-l-[9px]',
-        'border-r-[9px]',
-        'border-t-[9px]',
-        'border-t-gray-300',
-        'border-transparent',
-    ],
-    ...[
-        'after:absolute',
-        'after:left-[calc(50%-8px)]',
-        'after:top-[calc(50%-9px)]',
-        'after:border-b-0',
-        'after:border-l-[8px]',
-        'after:border-r-[8px]',
-        'after:border-t-[8px]',
-        'after:border-t-white',
-        'after:border-transparent',
-        'after:content-[" "]',
-    ],
-])
-
-const sliderWidth = ref(0)
-const currentYear = ref<number>()
-const falseYear = ref<number | string | undefined>(undefined)
 let cursorX = 0
-const playYearsWithData = ref(false)
-let yearCursorIsGrabbed = false
 let playYearInterval: ReturnType<typeof setTimeout> | undefined
 
-const yearCursor = useTemplateRef<HTMLDivElement>('yearCursor')
+const currentYear = ref<number>()
+const playYearsWithData = ref(false)
+const yearCursorIsGrabbed = ref(false)
+
 const sliderContainer = useTemplateRef<HTMLDivElement>('sliderContainer')
-const yearCursorInput = useTemplateRef<HTMLInputElement>('yearCursorInput')
-const outsideRangeTooltip = useTemplateRef<{ openTooltip: () => void; closeTooltip: () => void }>(
-    'outsideRangeTooltip'
-)
 
 const screenWidth = computed(() => /*uiStore.width*/ 1024)
 
@@ -87,24 +40,24 @@ const layersWithTimestamps = computed((): LayerWithTime[] => {
 
 // const activeLayers = computed(() => /*layersStore.activeLayers*/ [])
 
-// Youngest year available in the current layer data
-// previously this was across all the available layers, but we can't do that anymore
-// maybe it could also be possible to define that as a constant in the app
 const youngestYear = computed(() =>
-    Math.max(
-        yearsWithData.value.yearsJoint[yearsWithData.value.yearsJoint.length - 1] ?? 0,
-        yearsWithData.value.yearsSeparate[yearsWithData.value.yearsSeparate.length - 1] ?? 0
-    )
+    // Youngest year available in the current layer data
+    // previously this was across all the available layers, but we can't do that anymore
+    // let's hardcode this for now to the current year
+    new Date().getFullYear()
 )
 
-// Olds year available in the current layer data
-// previously this was across all the available layers, but we can't do that anymore
-// maybe it could also be possible to define that as a constant in the app
-const oldestYear = computed(() =>
-    Math.min(
-        yearsWithData.value.yearsJoint[0] ?? 9999,
-        yearsWithData.value.yearsSeparate[0] ?? 9999
-    )
+const oldestYear = computed(
+    // Oldest year available in the current layer data
+    // previously this was across all the available layers, but we can't do that anymore
+    // maybe let's hardcode this then for now to the start of swiss mapping time or older if
+    // one layer has more
+    () =>
+        Math.min(
+            1848,
+            yearsWithData.value.yearsJoint[0] ?? 9999,
+            yearsWithData.value.yearsSeparate[0] ?? 9999
+        )
 )
 
 const previewYear = ref()
@@ -120,111 +73,46 @@ const allYears = computed(() => {
     return years
 })
 
-const isInputYearValid = ref(true)
-
-const tooltipYearOutsideRangeContent = computed(
-    () =>
-        `${t('outside_valid_year_range')} ${allYears.value[0]}-${allYears.value[allYears.value.length - 1]}`
-)
-
-const inputYear = computed({
-    get() {
-        if (falseYear.value !== undefined) {
-            return falseYear.value
-        }
-        return currentYear.value
-    },
-    set(value: string | number) {
-        const parsedValue = parseInt(value.toString())
-        if (!allYears.value.includes(parsedValue)) {
-            isInputYearValid.value = false
-            // || '' enables the value to be cleared
-            falseYear.value = parsedValue || ''
-        } else {
-            isInputYearValid.value = true
-            currentYear.value = parsedValue
-            falseYear.value = undefined
-        }
-    },
-})
-
-const yearsShownAsLabel = computed(() => {
-    const amountOfLabelsOnScreen = round(sliderWidth.value / (LABEL_WIDTH + MARGIN_BETWEEN_LABELS))
-
-    let yearThreshold = 10
-    if (amountOfLabelsOnScreen < 10) {
-        yearThreshold = 50
-    } else if (amountOfLabelsOnScreen <= 16) {
-        yearThreshold = 25
-    }
-    return allYears.value.filter((year) => year % yearThreshold === 0)
-})
-
-const innerBarStyle = computed(() => ({ width: `${sliderWidth.value}px` }))
-
-const yearPositionOnSlider = computed(
-    () => (1 + allYears.value.indexOf(currentYear.value)) * distanceBetweenLabels.value + 42
-)
-
-const cursorPosition = computed(() => {
-    const yearCursorWidth = yearCursor.value?.clientWidth || 0
-    return `${Math.max(yearPositionOnSlider.value - yearCursorWidth / 2 + 4.5, 0)}px`
-})
-
-const cursorArrowPosition = computed(() => ({ left: `${yearPositionOnSlider.value - 4.5}px` }))
-const distanceBetweenLabels = computed(() => sliderWidth.value / allYears.value.length)
-const innerBarStepStyle = computed(() => ({ width: `${distanceBetweenLabels.value}px` }))
-
 const yearsWithData = computed(() => getYearsWithData(layersWithTimestamps.value))
 
-watch(screenWidth, () => {
-    setSliderWidth()
-})
-
-watch(
-    [oldestYear, youngestYear, yearsWithData, allYears, currentYear],
-    () => {
-        // console.log('oldest', oldestYear.value)
-        // console.log('yougest', youngestYear.value)
-        console.log('data', yearsWithData.value)
-        console.log('allYears', allYears.value)
-        console.log('currentYear', currentYear.value)
-        console.log('previewYear', previewYear.value)
-    },
-    { immediate: true }
-)
-
-/** Initialize the current year to the youngest year if it's not set, e.g. when opening the slider */
-watch(
-    youngestYear,
-    () => {
-        if (!currentYear.value) {
-            log.debug({
-                title: 'TimeSlider.vue',
-                titleColor: LogPreDefinedColor.Blue,
-                messages: [
-                    `Setting default currentYear to youngest year available: ${youngestYear.value}`,
-                ],
-            })
-            currentYear.value = youngestYear.value
-        }
-    },
-    { immediate: true }
-)
-
-watch(isInputYearValid, (newValue) => {
-    if (!newValue) {
-        outsideRangeTooltip.value?.openTooltip()
-    } else {
-        outsideRangeTooltip.value?.closeTooltip()
+const containerWidth = computed(() => {
+    if (!sliderContainer.value || !sliderContainer.value?.clientWidth) {
+        log.error({
+            title: 'TimeSlider.vue',
+            titleColor: LogPreDefinedColor.Red,
+            messages: ['sliderContainer clientWidth is not defined', sliderContainer.value],
+        })
+        return
     }
+    return sliderContainer.value.clientWidth
 })
+
+watch(screenWidth, () => {})
+
+// watch(
+//     [oldestYear, youngestYear, yearsWithData, allYears, currentYear],
+//     () => {
+//         // console.log('oldest', oldestYear.value)
+//         // console.log('yougest', youngestYear.value)
+//         console.log('data', yearsWithData.value)
+//         console.log('allYears', allYears.value)
+//         console.log('currentYear', currentYear.value)
+//         console.log('previewYear', previewYear.value)
+//     },
+//     { immediate: true }
+// )
 
 watch(currentYear, () => {
-    falseYear.value = undefined
-    isInputYearValid.value = true
     dispatchPreviewYearToStoreDebounced()
 })
+
+watch(
+    sliderContainer,
+    () => {
+        console.log('sliderContainer watch', sliderContainer.value)
+    },
+    { immediate: true }
+)
 
 // watch(layersWithTimestamps, () => {
 //     dispatchPreviewYearToStoreDebounced()
@@ -236,31 +124,7 @@ onMounted(() => {
         titleColor: LogPreDefinedColor.Blue,
         messages: [`Activating time slider, previewYear=${previewYear.value}`],
     })
-    setSliderWidth()
-
-    // if (previewYear.value === undefined) {
-    //     if (
-    //         layersWithTimestamps.value.length === 1 &&
-    //         'currentTimeEntry' in layersWithTimestamps.value[0]!.timeConfig &&
-    //         allYears.value.includes(
-    // layersWithTimestamps.value[0]!.timeConfig.currentTimeEntry?.year as number
-    //         )
-    //     ) {
-    //         currentYear.value = layersWithTimestamps.value[0]!.timeConfig.currentTimeEntry
-    //             ?.year as number
-    //     } else if (yearsWithData.value.yearsJoint.length > 0) {
-    //         currentYear.value = yearsWithData.value.yearsJoint[0]!
-    //     } else if (yearsWithData.value.yearsSeparate[0]) {
-    //         currentYear.value = yearsWithData.value.yearsSeparate[0]
-    //     } else {
-    //         return
-    //     }
-
-    //     dispatchPreviewYearToStore()
-    // } else if (previewYear.value !== undefined) {
-    //     currentYear.value = previewYear.value
-    //     setPreviewYearToLayers()
-    // }
+    initializeCurrentYear()
 
     log.debug({
         title: 'TimeSlider.vue',
@@ -273,6 +137,38 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('keydown', handleKeyDownEvent)
 })
+
+function initializeCurrentYear() {
+    if (layersWithTimestamps.value.length > 1) {
+        // more than one layer. We initialize it to the youngest available year
+        const availableYearsWithData = yearsWithData.value.yearsJoint
+        if (availableYearsWithData.length > 0) {
+            currentYear.value = availableYearsWithData[0]
+        } else {
+            // no available years with data? What are we even doing here?
+            currentYear.value = youngestYear.value
+        }
+    } else {
+        // only one layer. We set the time slider to it's current value
+        const onlyLayer = layersWithTimestamps.value[0]
+        const timeConfig = onlyLayer?.dimensions.time
+
+        if (timeConfig?.currentValue) {
+            log.debug({
+                title: 'TimeSlider.vue',
+                messages: [
+                    'Setting initial current year to only time enabled layer value',
+                    timeConfig.currentValue,
+                ],
+            })
+
+            const parsedYear = getYearFromCustomGeoadminValue(timeConfig.currentValue)
+            if (parsedYear) {
+                currentYear.value = parseInt(parsedYear)
+            }
+        }
+    }
+}
 
 // function setPreviewYearToLayers() {
 //     activeLayers.value.forEach((layer, index) => {
@@ -304,78 +200,6 @@ function dispatchCurrentYearToStore() {
 }
 
 const dispatchPreviewYearToStoreDebounced = debounce(dispatchCurrentYearToStore, 100)
-
-function setSliderWidth() {
-    const padding = 112
-    if (!sliderContainer.value || !sliderContainer.value?.clientWidth) {
-        log.error({
-            title: 'TimeSlider.vue',
-            titleColor: LogPreDefinedColor.Red,
-            messages: ['sliderContainer clientWidth is undefined'],
-        })
-        return
-    }
-    sliderWidth.value = sliderContainer.value.clientWidth - padding - PLAY_BUTTON_SIZE || 0
-}
-
-function positionNodeLabel(year: number) {
-    const timestampIndex = allYears.value.indexOf(year) ?? 1
-    const leftPosition = Math.max(
-        LABEL_WIDTH / 2.0,
-        timestampIndex * distanceBetweenLabels.value -
-            yearsShownAsLabel.value.indexOf(year) * LABEL_WIDTH
-    )
-    return {
-        left: `${Math.min(leftPosition, sliderWidth.value - LABEL_WIDTH)}px`,
-    }
-}
-
-function grabCursor(event: MouseEvent | TouchEvent) {
-    yearCursorIsGrabbed = true
-    if ('touches' in event) {
-        cursorX = event.touches[0]!.screenX
-    } else {
-        cursorX = event.screenX
-    }
-    window.addEventListener('mousemove', listenToMouseMove, { passive: true })
-    window.addEventListener('touchmove', listenToMouseMove, { passive: true })
-    window.addEventListener('mouseup', releaseCursor, { passive: true })
-    window.addEventListener('touchend', releaseCursor, { passive: true })
-}
-
-function listenToMouseMove(event: MouseEvent | TouchEvent) {
-    const currentPosition = 'touches' in event ? event.touches[0]!.screenX : event.screenX
-    const deltaX = cursorX - currentPosition
-    if (Math.abs(deltaX) >= distanceBetweenLabels.value) {
-        let futureYearIndex = allYears.value.indexOf(currentYear.value)
-
-        const absoluteDeltaIndex = Math.floor(Math.abs(deltaX) / distanceBetweenLabels.value)
-        if (deltaX < 0) {
-            if (allYears.value.length > futureYearIndex + absoluteDeltaIndex) {
-                futureYearIndex += absoluteDeltaIndex
-            } else if (allYears.value.length > futureYearIndex + 1) {
-                futureYearIndex++
-            }
-        } else if (deltaX > 0) {
-            if (futureYearIndex > absoluteDeltaIndex) {
-                futureYearIndex -= absoluteDeltaIndex
-            } else if (futureYearIndex > 0) {
-                futureYearIndex--
-            }
-        }
-        const futureYear = allYears.value[futureYearIndex]
-        cursorX = currentPosition
-        currentYear.value = futureYear!
-    }
-}
-
-function releaseCursor() {
-    yearCursorIsGrabbed = false
-    window.removeEventListener('mousemove', listenToMouseMove)
-    window.removeEventListener('touchmove', listenToMouseMove)
-    window.removeEventListener('mouseup', releaseCursor)
-    window.removeEventListener('touchend', releaseCursor)
-}
 
 function togglePlayYearsWithData() {
     // playYearsWithData.value = !playYearsWithData.value
@@ -426,41 +250,6 @@ function handleKeyDownEvent(event: KeyboardEvent) {
         }
     }
 }
-
-function stepClasses(year: number) {
-    let classes: string[] = []
-
-    const tickBase = [
-        'before:bg-gray-600',
-        'before:block',
-        'before:content-[""]',
-        'before:w-[1px]',
-        'before:h-[2px]',
-    ]
-
-    if (year % 50 === 0) {
-        // Big Tick
-        classes = [...tickBase, 'before:w-[2px]', 'before:h-[15px]', 'before:-ml-[2px]']
-    } else if (year % 25 === 0) {
-        // medium tick
-        classes = [...tickBase, 'before:h-[10px]', 'before:-ml-[1px]']
-    } else if (year % 5 === 0) {
-        // small tick
-        classes = [...tickBase, 'before:-ml-[0.5px]']
-    } else {
-        classes = tickBase
-    }
-
-    if (yearsWithData.value.yearsJoint.includes(year)) {
-        classes.push('bg-primary-300')
-    } else if (yearsWithData.value.yearsSeparate.includes(year)) {
-        classes.push('bg-primary-50')
-    } else {
-        classes.push('bg-gray-300')
-    }
-
-    return classes
-}
 </script>
 
 <template>
@@ -468,121 +257,19 @@ function stepClasses(year: number) {
         ref="sliderContainer"
         data-cy="time-slider"
         class="w-full"
+        @grabbing="yearCursorIsGrabbed = $event"
         :class="{ grabbed: yearCursorIsGrabbed }"
     >
         <div
             class="flex w-full justify-between"
             data-test="time-slider-container"
         >
-            <div
-                class="hidden w-full bg-white px-5 lg:block"
-                data-cy="time-slider-bar"
-            >
-                <div
-                    ref="yearCursor"
-                    data-cy=""
-                    class="absolute top-2 flex h-[34px] gap-1 rounded border border-gray-200 py-1 select-none"
-                    :style="{ left: cursorPosition }"
-                >
-                    <div
-                        class="border-right flex items-center border-gray-200"
-                        data-cy="time-slider-bar-cursor-grab"
-                        @touchstart.passive="grabCursor"
-                        @mousedown.passive="grabCursor"
-                    >
-                        <LucideIcon
-                            name="GripVertical"
-                            class="h-5"
-                        />
-                    </div>
-                    <GeoadminTooltip
-                        ref="outsideRangeTooltip"
-                        theme="danger"
-                        :tooltip-content="tooltipYearOutsideRangeContent"
-                        open-trigger="manual"
-                        use-default-padding
-                    >
-                        <input
-                            v-model="inputYear"
-                            class="w-11 px-0 py-0 text-center"
-                            :class="{ 'is-invalid': !isInputYearValid }"
-                            data-cy="time-slider-bar-cursor-year outline-none"
-                            maxlength="4"
-                            type="text"
-                            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                            @keypress.enter="yearCursorInput?.blur()"
-                        />
-                    </GeoadminTooltip>
-                    <div
-                        class="border-left flex items-center border-gray-200"
-                        @touchstart.passive="grabCursor"
-                        @mousedown.passive="grabCursor"
-                    >
-                        <LucideIcon
-                            name="GripVertical"
-                            class="h-5"
-                        />
-                    </div>
-                </div>
-                <div
-                    data-cy="time-slider-bar-cursor-arrow"
-                    :class="cursorStyle"
-                    :style="cursorArrowPosition"
-                />
-                <GeoadminTooltip
-                    placement="bottom"
-                    theme="secondary"
-                    use-default-padding
-                >
-                    <div
-                        v-if="allYears"
-                        ref="timeSliderBar"
-                        class="mt-12 flex h-full bg-gray-300"
-                        :style="innerBarStyle"
-                    >
-                        <span
-                            v-for="year in allYears"
-                            :key="year"
-                            :style="innerBarStepStyle"
-                            class="time-slider-bar-inner-step inline-block h-4"
-                            :data-cy="`time-slider-bar-${year}`"
-                            :class="stepClasses(year)"
-                            @click="currentYear = year"
-                        />
-                    </div>
-                    <template #content>
-                        <!-- <div class="time-slider-infobox">
-                            <div class="mb-2">
-                                {{ t('time_slider_legend_tooltip_intro') }}
-                            </div>
-                            <div class="ps-3">
-                                <div class="mb-1">
-                                    <div class="color-tooltip-data-none me-2" />
-                                    <div>{{ t('time_slider_legend_tooltip_no_data') }}</div>
-                                </div>
-                                <div class="mb-1">
-                                    <div class="color-tooltip-data-partial me-2" />
-                                    <div>{{ t('time_slider_legend_tooltip_partial_data') }}</div>
-                                </div>
-                                <div>
-                                    <div class="color-tooltip-data-full me-2" />
-                                    <div>{{ t('time_slider_legend_tooltip_full_data') }}</div>
-                                </div>
-                            </div>
-                        </div> -->
-                    </template>
-                </GeoadminTooltip>
-                <div
-                    v-for="yearAsLabel in yearsShownAsLabel"
-                    :key="yearAsLabel"
-                    class="relative top-0 inline-flex -translate-x-1/2"
-                    :style="positionNodeLabel(yearAsLabel)"
-                >
-                    <small>
-                        {{ yearAsLabel }}
-                    </small>
-                </div>
-            </div>
+            <TimeSliderBar
+                :allYears="allYears"
+                :yearsWithData
+                v-model="currentYear"
+                :containerWidth="containerWidth || 0"
+            />
 
             <!-- <div
                 class="time-slider-dropdown"
@@ -610,3 +297,29 @@ function stepClasses(year: number) {
         <!-- Time slider color tooltip content -->
     </div>
 </template>
+
+<style scoped>
+.arrow {
+    position: absolute;
+    z-index: 2;
+
+    top: calc(0.75rem + 29px);
+
+    cursor: grab;
+
+    border-width: 9px 9px 0 9px;
+    border-style: solid;
+    border-color: var(--color-gray-300) transparent;
+}
+
+.arrow:after {
+    content: '';
+    position: absolute;
+
+    left: calc(50% - 8px);
+    top: -9px;
+
+    border-width: 8px 8px 0 8px;
+    border-color: white transparent;
+}
+</style>
