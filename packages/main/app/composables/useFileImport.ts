@@ -51,7 +51,6 @@ export function useFileImport() {
             // Store the raw file data for KML/KMZ/GPX
             fileData,
         }
-        console.log('Created file layer: ', layer)
         layerStore.addLayer(layer)
         log.info(`Successfully imported file: ${file.name}`)
     }
