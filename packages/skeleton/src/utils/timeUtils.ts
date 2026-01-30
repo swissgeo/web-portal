@@ -1,7 +1,5 @@
 import { isTimestampYYYYMMDD } from '@swissgeo/numbers'
-
-// TODO move to shared
-const ALL_YEARS_TIMESTAMP: string = 'all'
+import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
 
 export function getDisplayNameFromTimestamp(timestamp: string) {
     if (timestamp === null) {

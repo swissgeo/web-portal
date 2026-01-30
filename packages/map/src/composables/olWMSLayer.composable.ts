@@ -135,16 +135,32 @@ export default function useOlWmsLayer(
 
     const layer = createLayer()
 
-    function updateTimeDimension(newTimestamp: string) {
-        log.debug(`Updating the time for ${layerId} to ${newTimestamp}`)
-        const source = layer.getSource()
-        source?.updateParams(createUrlParams(newTimestamp))
+    function updateTimeDimension(newTimestamp: string | null) {
+        if (newTimestamp === null) {
+            // when we set the timestamp to null, we want to disable the layer,
+            // because null happens when the timeslider is moved to a year that is
+            // not available in this dataset here
+            log.debug(`Disabling layer ${layerId} because the timestamp is null`)
+            layer.setProperties({ previousVisibility: layer.isVisible() })
+            layer.setVisible(false)
+        } else {
+            log.debug(`Updating the time for ${layerId} to ${newTimestamp}`)
+            const props = layer.getProperties()
+            if ('previousVisibility' in props) {
+                const previousVisibility = props.previousVisibility
+                layer.setVisible(previousVisibility)
+            }
+
+            const source = layer.getSource()
+            source?.updateParams(createUrlParams(newTimestamp))
+        }
     }
 
     const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 
     return {
         setVisibility,
+
         setZIndex,
         updateTimeDimension,
     }

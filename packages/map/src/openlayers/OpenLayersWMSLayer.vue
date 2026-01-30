@@ -106,7 +106,7 @@ watch(
 watch(
     () => layer.dimensions,
     () => {
-        if ('time' in layer.dimensions) {
+        if (layer.dimensions && 'time' in layer.dimensions && layer.dimensions.time) {
             updateTimeDimension(layer.dimensions.time.currentValue)
         }
     },

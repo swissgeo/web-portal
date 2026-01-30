@@ -2,6 +2,7 @@ import type { Dimension, Layer } from '@swissgeo/layers'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { isTimestampYYYYMMDD } from '@swissgeo/numbers'
+import { ALL_YEARS_TIMESTAMP, CURRENT_YEAR_TIMESTAMP } from '@swissgeo/shared'
 
 export type LayerWithTime = Layer & { dimensions: { time: Dimension } }
 
@@ -25,12 +26,16 @@ export function getYearsWithData(layersWithTimestamps: LayerWithTime[]) {
 
     for (const timeConfig of timeConfigs) {
         for (const timestamp of timeConfig.availableValues) {
-            if (timestamp === ALL_YEARS_TIMESTAMP || timestamp === CURRENT_YEAR_TIMESTAMP) {
+            if (
+                timestamp === ALL_YEARS_TIMESTAMP ||
+                timestamp === CURRENT_YEAR_TIMESTAMP ||
+                timestamp.startsWith('9999')
+            ) {
                 // we don't want these for the timeslider
                 continue
             }
 
-            const year = getYearFromGeoadminWMTSValue(timestamp)
+            const year = getYearFromCustomGeoadminValue(timestamp)
             if (!year) {
                 continue
             }
@@ -63,7 +68,7 @@ export function getYearsWithData(layersWithTimestamps: LayerWithTime[]) {
     }
 }
 
-export function getYearFromGeoadminWMTSValue(timestamp: string): string | undefined {
+export function getYearFromCustomGeoadminValue(timestamp: string): string | undefined {
     if (timestamp.match(/^\d{4}$/)) {
         return timestamp
     }
@@ -99,7 +104,7 @@ export function convertYearToTimestamp(layer: LayerWithTime, year: number) {
     // year back to something that can be used on this layer!
 
     for (const timestamp of availableValues) {
-        const valueInYear = getYearFromGeoadminWMTSValue(timestamp)
+        const valueInYear = getYearFromCustomGeoadminValue(timestamp)
         if (year.toString() === valueInYear) {
             return timestamp
         }
