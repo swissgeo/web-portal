@@ -1,9 +1,10 @@
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
-import { useDrawingStore } from '@swissgeo/drawing'
 import { LayerType, useLayerStore } from '@swissgeo/layers'
 import log from '@swissgeo/log'
+
+import { useDrawingStore } from '@/stores/drawing'
 
 const DRAWING_LAYER_ID = 'user-drawing-layer'
 const DRAWING_KML_LAYER_ID = 'user-drawing-layer-kml'

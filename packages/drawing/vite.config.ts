@@ -11,20 +11,23 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig(({ mode }): UserConfig => {
     return {
         build: {
-            // don't minify in dev build. This helps with debugging
-            // maybe this could be solved in a better way with sourcemap?
             minify: mode === 'development' ? false : true,
             lib: {
                 entry: resolve(__dirname, 'src/index.ts'),
                 fileName: (format) => `index.${format}.js`,
-                name: '@swissgeo/map',
+                name: '@swissgeo/drawing',
             },
             rollupOptions: {
-                external: ['vue', 'pinia', '@swissgeo/drawing', 'lucide-vue-next'],
+                external: ['vue', 'pinia', '@swissgeo/layers', '@swissgeo/log', 'ol', 'lucide-vue-next'],
                 output: {
                     exports: 'named',
                     globals: {
                         vue: 'Vue',
+                        pinia: 'Pinia',
+                        '@swissgeo/layers': 'layers',
+                        '@swissgeo/log': 'log',
+                        ol: 'ol',
+                        'lucide-vue-next': 'lucideVueNext',
                     },
                 },
             },
@@ -41,7 +44,6 @@ export default defineConfig(({ mode }): UserConfig => {
             AutoImport({
                 dirs: ['./src/**'],
                 imports: [
-                    // Presets
                     'vue',
                     'vue-router',
                     'vue-i18n',
@@ -51,9 +53,7 @@ export default defineConfig(({ mode }): UserConfig => {
                     enabled: true,
                     filepath: '.output/eslintrc-auto-import.json',
                 },
-                // Automatically generate types
                 dts: './.output/auto-imports.d.ts',
-                // Auto import inside Vue template
                 vueTemplate: true,
             }),
             dts({

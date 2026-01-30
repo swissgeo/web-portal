@@ -26,11 +26,11 @@
     },
     "dependencies": {
         "@swissgeo/coordinates": "catalog:",
+        "@swissgeo/drawing": "workspace:*",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
         "@swissgeo/numbers": "catalog:",
         "@swissgeo/shared": "workspace:*",
-        "@swissgeo/skeleton": "workspace:*",
         "@turf/turf": "catalog:",
         "@types/mapbox-gl": "catalog:",
         "fflate": "catalog:",
@@ -57,6 +57,7 @@
     },
     "peerDependencies": {
         "@vueuse/core": "catalog:",
+        "lucide-vue-next": "catalog:",
         "vue": "catalog:",
         "vue-i18n": "catalog:"
     },

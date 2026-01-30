@@ -3,14 +3,13 @@ import type { FileLayer } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
+import { useOlDrawing, EPSG_2056_CH1903, EPSG_4326_WGS84 , DrawingMode, useDrawingStore, getMarkerIconById } from '@swissgeo/drawing'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 
-import useOlDrawing from '@/composables/olDrawing.composable'
-import { DrawingMode } from '@/stores/drawing'
-import { getMarkerIconById } from '@/utils/markerIcons'
+
 const { layer } = defineProps<{
     layer: FileLayer
 }>()
@@ -166,8 +165,8 @@ onMounted(() => {
                     extractStyles: true,
                 })
                 const features = format.readFeatures(layer.fileData, {
-                    featureProjection: PROJECTION_EPSG.EPSG_2056_CH1903,
-                    dataProjection: PROJECTION_EPSG.EPSG_4326_WGS84,
+                    featureProjection: EPSG_2056_CH1903,
+                    dataProjection: EPSG_4326_WGS84,
                 })
                 if (features.length > 0) {
                     // Restore text property from name for text features
@@ -190,7 +189,6 @@ onMounted(() => {
                     
                     addFeatures(features)
                     drawingStore.drawingFeatures = features
-                    drawingStore.updateDrawingLayer(features)
                 }
             } catch (error) {
                 log.error({

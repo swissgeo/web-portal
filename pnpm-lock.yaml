@@ -700,9 +700,6 @@ importers:
       '@swissgeo/layers':
         specifier: workspace:*
         version: link:../layers
-      '@swissgeo/map':
-        specifier: workspace:*
-        version: link:../map
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared

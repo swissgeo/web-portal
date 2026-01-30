@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { DrawingPanel as DebugDrawingPanel } from '@swissgeo/drawing'
+
 const isLayersPanelOpen = ref(false)
 const isImportPanelOpen = ref(false)
 const isImportLocalPanelOpen = ref(false)
