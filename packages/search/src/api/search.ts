@@ -223,7 +223,23 @@ export async function searchLayerFeatures(
         const resultWithAttrs = data.results?.filter((result) => !!result.attrs) || []
 
         return resultWithAttrs.map((result) => {
-            const locationData = parseLocationResult(result)
+            // Feature search results don't have x/y, but have geom_st_box2d
+            // Parse coordinates from the bounding box
+            let coordinate: [number, number] | undefined
+
+            if (result.attrs.geom_st_box2d) {
+                // Extract coordinates from BOX(x1 y1, x2 y2) format
+                const boxMatch = result.attrs.geom_st_box2d.match(
+                    /BOX\(([0-9.]+)\s+([0-9.]+),([0-9.]+)\s+([0-9.]+)\)/
+                )
+                if (boxMatch) {
+                    // Use the first point (or center if it's a polygon)
+                    const x = parseFloat(boxMatch[1])
+                    const y = parseFloat(boxMatch[2])
+                    coordinate = [x, y]
+                }
+            }
+
             return {
                 resultType: 'FEATURE' as const,
                 id: result.attrs.featureId || result.attrs.label,
@@ -234,8 +250,8 @@ export async function searchLayerFeatures(
                 title: `<strong>${layerName}</strong><br/>${result.attrs.label}`,
                 sanitizedTitle: `${layerName} - ${sanitizeTitle(result.attrs.label)}`,
                 description: result.attrs.detail || '',
-                coordinate: locationData.coordinate,
-                zoom: locationData.zoom,
+                coordinate,
+                zoom: result.attrs.zoomlevel || 10, // Default to zoom 10 for features
             }
         })
     } catch (error) {

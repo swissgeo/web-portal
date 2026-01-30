@@ -26,7 +26,7 @@ export function useSearchSelection() {
                 positionStore.setZoom(locationResult.zoom, { name: 'search-result-selection' })
             }
         } else if (result.resultType === 'FEATURE') {
-            // Center map on feature (same as location)
+            // Center map on feature and zoom in close to see the feature
             const featureResult = result as FeatureSearchResult
 
             if (featureResult.coordinate) {
@@ -34,7 +34,13 @@ export function useSearchSelection() {
                 positionStore.setCenter(featureResult.coordinate, {
                     name: 'search-feature-selection',
                 })
-                positionStore.setZoom(featureResult.zoom, { name: 'search-feature-selection' })
+                // Use zoom level from API if valid and reasonable, otherwise zoom in to level 10
+                // Features need closer zoom than city-level searches
+                const featureZoom =
+                    featureResult.zoom && featureResult.zoom > 0 && featureResult.zoom < 20
+                        ? featureResult.zoom
+                        : 10
+                positionStore.setZoom(featureZoom, { name: 'search-feature-selection' })
             }
         } else if (result.resultType === 'LAYER') {
             const layerStore = useLayerStore()
