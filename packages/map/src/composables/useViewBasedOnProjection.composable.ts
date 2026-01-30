@@ -86,10 +86,8 @@ export default function useViewBasedOnProjection(map: MaybeRef<Map>): void {
     watch(projection, setViewAccordingToProjection)
 
     watch(center, (newCenter) => {
-        log.debug('Center changed to:', newCenter, 'Projection:', projection.value.epsg)
         const view = viewsForProjection[projection.value.epsg]
         if (view) {
-            log.debug('Animating view to new center')
             view.animate({
                 center: newCenter,
                 duration: animationDuration,
@@ -100,7 +98,6 @@ export default function useViewBasedOnProjection(map: MaybeRef<Map>): void {
     })
 
     watch(zoom, (newZoom) => {
-        log.debug('Zoom changed to:', newZoom)
         const view = viewsForProjection[projection.value.epsg]
         if (view) {
             view.animate({

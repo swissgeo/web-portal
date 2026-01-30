@@ -1,1 +1,21 @@
-{}
+{
+    "menuTitles": {
+        "knowledge": "Knowledge",
+        "about": "About Swissgeo"
+    },
+    "welcomeOverlay": {
+        "moreInfos": "More info",
+        "startPrototype": "Start prototype",
+        "dontShowAgain": "Don't show again"
+    },
+    "menu": {
+        "search": "Search",
+        "layerCart": "Active layers"
+    },
+    "search": {
+        "placeholder": "Search for a place, layer or coordinates...",
+        "locations_results_header": "Places",
+        "layers_results_header": "Layers",
+        "no_results": "No results found"
+    }
+}

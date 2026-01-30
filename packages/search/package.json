@@ -19,6 +19,7 @@
     "build:dev:watch": "vite build --watch --mode development"
   },
   "dependencies": {
+    "@swissgeo/log": "catalog:",
     "@swissgeo/shared": "workspace:*"
   },
   "peerDependencies": {

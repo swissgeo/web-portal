@@ -86,6 +86,14 @@ export function useSearchSelection() {
                 const layerType = getLayerType(collectionData)
 
                 if (layerType && layerType !== 'UNKNOWN') {
+                    // Check if layer already exists in the store
+                    const existingLayer = layerStore.layers.find(
+                        (layer) => layer.humanId === layerResult.layerId
+                    )
+                    if (existingLayer) {
+                        log.info('Layer already exists in map:', layerResult.layerId)
+                        return
+                    }
                     layerStore.addLayer(makeServerLayer(layerType, layerRecord))
                 } else {
                     log.error('Could not determine layer type for:', layerResult.layerId)

@@ -2,6 +2,7 @@
 // const router = useRouter()
 import SidebarButton from '@/components/sidebar/SidebarButton.vue'
 import { useUiStore, SidebarType } from '@/stores/ui'
+import { useI18n } from 'vue-i18n'
 
 const { t: $t } = useI18n()
 
