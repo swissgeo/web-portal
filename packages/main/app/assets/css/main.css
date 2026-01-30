@@ -2,6 +2,8 @@
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css';
 
+@import '@swissgeo/map/stylesheet';
+
 @source '../../../../skeleton/';
 @source '../../../../content/';
 @source '../../../../map/';
