@@ -10,10 +10,7 @@
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.es.js"
-        },
-        "./stylesheet": [
-            "./dist/skeleton.css"
-        ]
+        }
     },
     "main": "./dist/index.umd.cjs",
     "module": "./dist/index.js",
