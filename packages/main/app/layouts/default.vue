@@ -31,7 +31,8 @@ async function onSearchResultSelected(result: SearchResult) {
                 class="z-2"
                 @search-result-selected="onSearchResultSelected"
             />
-            <div class="h-full w-full pl-20">
+
+            <div class="z-1 h-full w-full">
                 <slot />
             </div>
         </div>
