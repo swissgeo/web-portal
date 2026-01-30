@@ -117,7 +117,7 @@ export const useDrawingStore = defineStore('drawing', () => {
                         image: new Icon({
                             src: icon.dataUrl,
                             scale: 1,
-                            anchor: [0.5, 1],
+                            anchor: icon.anchor,
                             anchorXUnits: 'fraction',
                             anchorYUnits: 'fraction',
                         }),

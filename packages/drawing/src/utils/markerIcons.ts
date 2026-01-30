@@ -9,6 +9,7 @@ export interface MarkerIcon {
     dataUrl: string // Data URL of the icon image
     width: number
     height: number
+    anchor: [number, number] // Anchor point [x, y] in fraction (0-1), e.g., [0.5, 1] = bottom center
 }
 
 // SVG marker icons as data URLs
@@ -23,6 +24,7 @@ export const MARKER_ICONS: MarkerIcon[] = [
 </svg>`),
         width: 32,
         height: 48,
+        anchor: [0.5, 1], // Bottom center
     },
     {
         id: 'blue-pin',
@@ -34,6 +36,7 @@ export const MARKER_ICONS: MarkerIcon[] = [
 </svg>`),
         width: 32,
         height: 48,
+        anchor: [0.5, 1], // Bottom center
     },
     {
         id: 'green-pin',
@@ -45,6 +48,7 @@ export const MARKER_ICONS: MarkerIcon[] = [
 </svg>`),
         width: 32,
         height: 48,
+        anchor: [0.5, 1], // Bottom center
     },
     {
         id: 'yellow-star',
@@ -55,6 +59,7 @@ export const MARKER_ICONS: MarkerIcon[] = [
 </svg>`),
         width: 32,
         height: 32,
+        anchor: [0.5, 0.5], // Center
     },
     {
         id: 'orange-circle',
@@ -65,6 +70,7 @@ export const MARKER_ICONS: MarkerIcon[] = [
 </svg>`),
         width: 32,
         height: 32,
+        anchor: [0.5, 0.5], // Center
     },
     {
         id: 'purple-square',
@@ -75,6 +81,7 @@ export const MARKER_ICONS: MarkerIcon[] = [
 </svg>`),
         width: 32,
         height: 32,
+        anchor: [0.5, 0.5], // Center
     },
 ]
 

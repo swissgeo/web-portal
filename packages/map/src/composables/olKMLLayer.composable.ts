@@ -54,7 +54,6 @@ export default function useOlKMLLayer(
         // Use default KML style for other features
         return null
     }
-
     const layer = new VectorLayer({
         properties: {
             id: layerId,

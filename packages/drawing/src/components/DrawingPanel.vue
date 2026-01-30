@@ -164,7 +164,7 @@ onMounted(() => {
                     <img
                         :src="icon.dataUrl"
                         :alt="icon.name"
-                        class="h-8 w-8"
+                        class="h-8 w-6"
                     />
                     <span class="mt-1 text-xs">{{ icon.name }}</span>
                 </button>

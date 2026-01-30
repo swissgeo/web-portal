@@ -73,7 +73,7 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
                     image: new Icon({
                         src: icon.dataUrl,
                         scale: 1,
-                        anchor: [0.5, 1], // Bottom center of the icon
+                        anchor: icon.anchor, // Use icon-specific anchor point
                         anchorXUnits: 'fraction',
                         anchorYUnits: 'fraction',
                     }),
