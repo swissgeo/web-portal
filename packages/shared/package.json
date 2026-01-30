@@ -21,8 +21,7 @@
             "types": "./dist/livingdocs/index.d.ts"
         },
         "./ogc": {
-            "import": "./types/ogc/index.ts",
-            "types": "./types/ogc/index.ts"
+            "types": "./dist/ogc/index.d.ts"
         },
         "./language": {
             "types": "./dist/Language.d.ts"
