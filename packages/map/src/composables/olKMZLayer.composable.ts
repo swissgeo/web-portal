@@ -1,4 +1,5 @@
 import log from '@swissgeo/log'
+import { unzip } from 'fflate'
 import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'
 import { register } from 'ol/proj/proj4'
@@ -35,9 +36,6 @@ export default function useOlKMZLayer(
             for (let i = 0; i < binaryString.length; i++) {
                 uint8Array[i] = binaryString.charCodeAt(i)
             }
-
-            // Extract KML from KMZ
-            const { unzip } = await import('fflate')
 
             const unzipped = await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
                 unzip(uint8Array, (err: Error | null, data: Record<string, Uint8Array>) => {
