@@ -52,7 +52,10 @@ const onKeydown = (event: KeyboardEvent) => {
     <div class="border-b border-surface-200 p-4">
         <div class="relative">
             <!-- Search icon (from mapviewer lines 159-166) -->
-            <Search :size="20" class="absolute left-3 top-1/2 -translate-y-1/2 text-surface-400" />
+            <Search
+                :size="20"
+                class="absolute top-1/2 left-3 -translate-y-1/2 text-surface-400"
+            />
 
             <!-- Input field (from mapviewer lines 167-190) -->
             <InputText
@@ -63,7 +66,7 @@ const onKeydown = (event: KeyboardEvent) => {
                 autocapitalize="off"
                 autocorrect="off"
                 spellcheck="false"
-                class="w-full pl-10 pr-10"
+                class="search-input w-full"
                 data-cy="searchbar"
                 @input="onInput"
                 @keydown="onKeydown"
@@ -72,14 +75,21 @@ const onKeydown = (event: KeyboardEvent) => {
             <!-- Clear button (from mapviewer lines 201-212) -->
             <button
                 v-if="modelValue"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600 transition-colors"
+                class="absolute top-1/2 right-3 -translate-y-1/2 text-surface-400 transition-colors hover:text-surface-600"
                 type="button"
                 data-cy="searchbar-clear"
                 @click="onClear"
             >
                 <!-- Loading spinner when searching, X icon otherwise -->
-                <LoaderCircle v-if="isSearching" :size="20" class="animate-spin" />
-                <X v-else :size="20" />
+                <LoaderCircle
+                    v-if="isSearching"
+                    :size="20"
+                    class="animate-spin"
+                />
+                <X
+                    v-else
+                    :size="20"
+                />
             </button>
         </div>
     </div>
@@ -89,5 +99,11 @@ const onKeydown = (event: KeyboardEvent) => {
 /* Prevent browser's native clear button on search inputs (from mapviewer lines 227-230) */
 input[type='search']::-webkit-search-cancel-button {
     appearance: none;
+}
+
+/* Add padding for search icon and clear button - use :deep() to pierce into PrimeVue component */
+:deep(.search-input) {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
 }
 </style>

@@ -1,1 +1,21 @@
-{}
+{
+    "menuTitles": {
+        "knowledge": "Savoir",
+        "about": "À propos de Swissgeo"
+    },
+    "welcomeOverlay": {
+        "moreInfos": "Plus d'infos",
+        "startPrototype": "Démarrer le prototype",
+        "dontShowAgain": "Ne plus afficher"
+    },
+    "menu": {
+        "search": "Recherche",
+        "layerCart": "Couches actives"
+    },
+    "search": {
+        "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",
+        "locations_results_header": "Lieux",
+        "layers_results_header": "Couches",
+        "no_results": "Aucun résultat trouvé"
+    }
+}

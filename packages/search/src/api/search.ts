@@ -2,6 +2,8 @@
 // Adapted from web-mapviewer
 // Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/api/src/search.ts
 
+import log from '@swissgeo/log'
+
 import type {
     FeatureSearchResult,
     LayerSearchResult,
@@ -25,6 +27,16 @@ interface CatalogRecord {
 
 // Regex to detect and strip HTML tags (from mapviewer line 32)
 const REGEX_DETECT_HTML_TAGS = /<\/?[^>]+(>|$)/g
+
+/** Escape HTML special characters to prevent XSS */
+function escapeHtml(text: string): string {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+}
 
 /** Sanitize title by removing HTML tags (from mapviewer lines 38-40) */
 export function sanitizeTitle(title: string = ''): string {
@@ -124,7 +136,7 @@ export async function searchLocation(
         if (error instanceof Error && error.name === 'AbortError') {
             throw error
         }
-        console.error('Failed to search locations:', error)
+        log.error('Failed to search locations:', error as Error)
         return []
     }
 }
@@ -191,7 +203,7 @@ export async function searchLayers(
 
         return matches
     } catch (error) {
-        console.error('Failed to search layers:', error)
+        log.error('Failed to search layers:', error as Error)
         return []
     }
 }
@@ -266,8 +278,8 @@ export async function searchLayerFeatures(
                 featureId: result.attrs.featureId || result.attrs.label,
                 layerId,
                 layerName,
-                // Format title to show layer name in bold
-                title: `<strong>${layerName}</strong><br/>${result.attrs.label}`,
+                // Format title to show layer name in bold - escape HTML to prevent XSS
+                title: `<strong>${escapeHtml(layerName)}</strong><br/>${escapeHtml(result.attrs.label)}`,
                 sanitizedTitle: `${layerName} - ${sanitizeTitle(result.attrs.label)}`,
                 description: result.attrs.detail || '',
                 coordinate,
@@ -279,7 +291,7 @@ export async function searchLayerFeatures(
         if (error instanceof Error && error.name === 'AbortError') {
             throw error
         }
-        console.error('Failed to search layer features:', error)
+        log.error('Failed to search layer features:', error as Error)
         return []
     }
 }

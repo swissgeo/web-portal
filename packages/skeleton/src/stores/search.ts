@@ -26,6 +26,9 @@ export const useSearchStore = defineStore('search', () => {
         }
         try {
             const response = await fetch('/api/v1/layers/swissgeo/catalog')
+            if (!response.ok) {
+                throw new Error(`Failed to load catalog: ${response.status} ${response.statusText}`)
+            }
             catalog.value = await response.json()
         } catch (error) {
             log.error('Failed to load catalog:', error as Error)
@@ -88,13 +91,25 @@ export const useSearchStore = defineStore('search', () => {
                 )
             }
 
-            // Execute all searches in parallel
-            const allResults = await Promise.all(searchPromises)
+            // Execute all searches in parallel - use allSettled to allow partial results
+            const allResults = await Promise.allSettled(searchPromises)
 
             // Only update results if this request hasn't been superseded
             if (currentController === abortController) {
-                // Flatten and combine results (locations, layers, then features)
-                results.value = allResults.flat()
+                // Extract successful results and log any failures
+                const successfulResults: SearchResult[] = []
+                for (const result of allResults) {
+                    if (result.status === 'fulfilled') {
+                        successfulResults.push(...result.value)
+                    } else {
+                        // Log failed searches but don't block other results
+                        const error = result.reason
+                        if (!(error instanceof Error && error.name === 'AbortError')) {
+                            log.error('Search request failed:', error as Error)
+                        }
+                    }
+                }
+                results.value = successfulResults
             }
         } catch (error) {
             // Don't show error for aborted requests
