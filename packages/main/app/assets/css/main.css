@@ -3,7 +3,6 @@
 @import 'primeicons/primeicons.css';
 
 @import '@swissgeo/map/stylesheet';
-@import '@swissgeo/skeleton/stylesheet';
 
 @source '../../../../skeleton/';
 @source '../../../../content/';
