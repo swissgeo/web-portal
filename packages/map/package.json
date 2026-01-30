@@ -11,8 +11,8 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.es.js"
         },
-        "./tailwindcss": [
-            "./dist/tooltip.css"
+        "./stylesheet": [
+            "./dist/map.css"
         ]
     },
     "main": "index.ts",
