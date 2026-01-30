@@ -1,12 +1,14 @@
 // Search store for web-poc-portal
 // Adapted from web-mapviewer search store
 
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import { searchLayers, searchLocation, searchLayerFeatures } from '@swissgeo/search'
 import type { SearchResult } from '@swissgeo/search'
 import type { OGCRecords } from '@swissgeo/shared/ogc'
+
 import { useLayerStore } from '@swissgeo/layers'
+import log from '@swissgeo/log'
+import { searchLayers, searchLocation, searchLayerFeatures } from '@swissgeo/search'
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
 
 export const useSearchStore = defineStore('search', () => {
     // State
@@ -19,12 +21,14 @@ export const useSearchStore = defineStore('search', () => {
 
     // Load catalog data on store initialization
     const loadCatalog = async () => {
-        if (catalog.value) return
+        if (catalog.value) {
+            return
+        }
         try {
             const response = await fetch('/api/v1/layers/swissgeo/catalog')
             catalog.value = await response.json()
         } catch (error) {
-            console.error('Failed to load catalog:', error)
+            log.error('Failed to load catalog:', error as Error)
         }
     }
 
@@ -97,7 +101,7 @@ export const useSearchStore = defineStore('search', () => {
             if (error instanceof Error && error.name === 'AbortError') {
                 return
             }
-            console.error('Search error:', error)
+            log.error('Search error:', error as Error)
             results.value = []
         } finally {
             isSearching.value = false
@@ -131,6 +135,7 @@ export const useSearchStore = defineStore('search', () => {
         query,
         results,
         isSearching,
+        catalog,
         // Getters
         hasResults,
         locationResults,
@@ -140,5 +145,6 @@ export const useSearchStore = defineStore('search', () => {
         setSearchQuery,
         selectResult,
         clearSearch,
+        loadCatalog,
     }
 })

@@ -10,26 +10,38 @@ import type {
     SearchResponseResult,
 } from '../types/search'
 
+/**
+ * Catalog record structure as used in layer search. This extends the base OGCRecord with the
+ * specific property structure used by the swissgeo catalog.
+ */
+interface CatalogRecord {
+    id: string
+    properties?: {
+        title?: Record<string, string>
+        description?: string
+        keywords?: string[]
+    }
+}
+
 // Regex to detect and strip HTML tags (from mapviewer line 32)
 const REGEX_DETECT_HTML_TAGS = /<\/?[^>]+(>|$)/g
 
-/**
- * Sanitize title by removing HTML tags (from mapviewer lines 38-40)
- */
+/** Sanitize title by removing HTML tags (from mapviewer lines 38-40) */
 export function sanitizeTitle(title: string = ''): string {
     return title.replace(REGEX_DETECT_HTML_TAGS, '')
 }
 
 /**
- * Parse location result from backend API response (adapted from mapviewer lines 76-149)
- * Use LV95 coordinates (x, y) directly from the API response
+ * Parse location result from backend API response (adapted from mapviewer lines 76-149) Use LV95
+ * coordinates (x, y) directly from the API response
  *
  * NOTE: The geo.admin.ch API returns coordinates where:
- * - attrs.x = northing (Y in EPSG:2056, ~1'030'000 to 1'350'000 for Switzerland)
- * - attrs.y = easting (X in EPSG:2056, ~2'420'000 to 2'900'000 for Switzerland)
  *
- * We need to swap them to match the standard [X, Y] = [easting, northing] convention
- * used by OpenLayers and our coordinate system.
+ * - Attrs.x = northing (Y in EPSG:2056, ~1'030'000 to 1'350'000 for Switzerland)
+ * - Attrs.y = easting (X in EPSG:2056, ~2'420'000 to 2'900'000 for Switzerland)
+ *
+ * We need to swap them to match the standard [X, Y] = [easting, northing] convention used by
+ * OpenLayers and our coordinate system.
  */
 function parseLocationResult(result: SearchResponseResult): LocationSearchResult {
     if (!result.attrs) {
@@ -66,8 +78,8 @@ function parseLocationResult(result: SearchResponseResult): LocationSearchResult
 }
 
 /**
- * Search for locations using the map.geo.admin.ch API
- * Adapted from mapviewer searchLocation (lines 187-226)
+ * Search for locations using the map.geo.admin.ch API Adapted from mapviewer searchLocation (lines
+ * 187-226)
  *
  * @param queryString - Search query text
  * @param lang - Language code (de, fr, etc.)
@@ -118,8 +130,8 @@ export async function searchLocation(
 }
 
 /**
- * Search for layers in the local OGC catalog
- * New implementation (not in mapviewer - they search via backend API)
+ * Search for layers in the local OGC catalog New implementation (not in mapviewer - they search via
+ * backend API)
  *
  * @param queryString - Search query text
  * @param lang - Language code (de, fr, etc.)
@@ -130,7 +142,7 @@ export async function searchLocation(
 export async function searchLayers(
     queryString: string,
     lang: string,
-    catalogRecords: any[],
+    catalogRecords: CatalogRecord[],
     limit: number = 10
 ): Promise<LayerSearchResult[]> {
     const query = queryString.toLowerCase().trim()
@@ -141,33 +153,41 @@ export async function searchLayers(
 
     try {
         const matches = catalogRecords
-            .filter((record) => {
-                if (!record.properties) {
-                    return false
+            .filter(
+                (
+                    record
+                ): record is CatalogRecord & {
+                    properties: NonNullable<CatalogRecord['properties']>
+                } => {
+                    if (!record.properties) {
+                        return false
+                    }
+
+                    const title = record.properties.title?.[lang] || ''
+                    const description = record.properties.description || ''
+                    const keywords = record.properties.keywords || []
+
+                    // Search in title, description, and keywords
+                    return (
+                        title.toLowerCase().includes(query) ||
+                        description.toLowerCase().includes(query) ||
+                        keywords.some((k: string) => k.toLowerCase().includes(query))
+                    )
                 }
-
-                const title = record.properties.title?.[lang] || ''
-                const description = record.properties.description || ''
-                const keywords = record.properties.keywords || []
-
-                // Search in title, description, and keywords
-                return (
-                    title.toLowerCase().includes(query) ||
-                    description.toLowerCase().includes(query) ||
-                    keywords.some((k: string) => k.toLowerCase().includes(query))
-                )
-            })
+            )
             .slice(0, limit)
-            .map((record) => ({
-                resultType: 'LAYER' as const,
-                id: record.id,
-                layerId: record.id,
-                title: record.properties.title[lang] || record.properties.title.en || record.id,
-                sanitizedTitle: sanitizeTitle(
-                    record.properties.title[lang] || record.properties.title.en || record.id
-                ),
-                description: record.properties.description || '',
-            }))
+            .map((record) => {
+                const title =
+                    record.properties.title?.[lang] || record.properties.title?.en || record.id
+                return {
+                    resultType: 'LAYER' as const,
+                    id: record.id,
+                    layerId: record.id,
+                    title,
+                    sanitizedTitle: sanitizeTitle(title),
+                    description: record.properties.description || '',
+                }
+            })
 
         return matches
     } catch (error) {
@@ -177,8 +197,8 @@ export async function searchLayers(
 }
 
 /**
- * Search for features within a specific layer using the geo.admin.ch API
- * Adapted from mapviewer searchLayerFeatures (lines 228-273)
+ * Search for features within a specific layer using the geo.admin.ch API Adapted from mapviewer
+ * searchLayerFeatures (lines 228-273)
  *
  * @param queryString - Search query text
  * @param lang - Language code (de, fr, etc.)
@@ -234,8 +254,8 @@ export async function searchLayerFeatures(
                 )
                 if (boxMatch) {
                     // Use the first point (or center if it's a polygon)
-                    const x = parseFloat(boxMatch[1])
-                    const y = parseFloat(boxMatch[2])
+                    const x = parseFloat(boxMatch[1]!)
+                    const y = parseFloat(boxMatch[2]!)
                     coordinate = [x, y]
                 }
             }

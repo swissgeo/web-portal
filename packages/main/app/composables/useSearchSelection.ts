@@ -8,13 +8,18 @@ import type {
     FeatureSearchResult,
 } from '@swissgeo/search'
 import type { OGCRecords, OGCRecord, Link } from '@swissgeo/shared/ogc'
+
 import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
+import log from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
+import { useSearchStore } from '@swissgeo/skeleton'
 
 export function useSearchSelection() {
     async function handleResultSelection(result: SearchResult) {
         // Only run on client side to avoid SSR serialization issues
-        if (!process.client) return
+        if (!process.client) {
+            return
+        }
 
         if (result.resultType === 'LOCATION') {
             // Center map on location
@@ -46,21 +51,22 @@ export function useSearchSelection() {
             }
         } else if (result.resultType === 'LAYER') {
             const layerStore = useLayerStore()
+            const searchStore = useSearchStore()
             // Add layer to map
             const layerResult = result as LayerSearchResult
 
             try {
-                // Fetch the catalog to find the layer record
-                const catalogResponse = await fetch('/api/v1/layers/swissgeo/catalog')
-                const catalog = await catalogResponse.json()
+                // Ensure catalog is loaded (reuses cached catalog from search store)
+                await searchStore.loadCatalog()
+                const catalog = searchStore.catalog
 
                 // Find the layer record in the catalog
-                const layerRecord = catalog.records.find(
+                const layerRecord = catalog?.records.find(
                     (r: OGCRecord) => r.id === layerResult.layerId
                 )
 
                 if (!layerRecord) {
-                    console.error('Layer not found in catalog:', layerResult.layerId)
+                    log.error('Layer not found in catalog:', layerResult.layerId)
                     return
                 }
 
@@ -70,7 +76,7 @@ export function useSearchSelection() {
                 )
 
                 if (!distributionLink) {
-                    console.error('No distribution link found for layer:', layerResult.layerId)
+                    log.error('No distribution link found for layer:', layerResult.layerId)
                     return
                 }
 
@@ -82,10 +88,10 @@ export function useSearchSelection() {
                 if (layerType && layerType !== 'UNKNOWN') {
                     layerStore.addLayer(makeServerLayer(layerType, layerRecord))
                 } else {
-                    console.error('Could not determine layer type for:', layerResult.layerId)
+                    log.error('Could not determine layer type for:', layerResult.layerId)
                 }
             } catch (error) {
-                console.error('Failed to add layer to map:', error)
+                log.error('Failed to add layer to map:', error as Error)
             }
         }
     }
