@@ -9,8 +9,8 @@
         "dontShowAgain": "Nicht mehr anzeigen"
     },
     "menu": {
-        "search": "Search",
-        "layerCart": "Active layers"
+        "search": "Suche",
+        "layerCart": "Aktive Ebenen"
     },
     "search": {
         "placeholder": "Ort, Layer oder Koordinaten suchen...",

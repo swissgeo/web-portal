@@ -6,6 +6,7 @@ import ContentButton from './components/sidebar/ContentButton.vue'
 import SideBar from './components/sidebar/SideBar.vue'
 
 export * from './stores/ui'
+export * from './stores/search'
 
 export { SideBar, SearchButton, LucideIcon, ContentButton, IconButton }
 
