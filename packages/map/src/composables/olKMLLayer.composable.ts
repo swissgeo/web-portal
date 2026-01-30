@@ -23,12 +23,14 @@ export default function useOlKMLLayer(
 
     // Style function that handles text features
     const styleFunction = (feature: FeatureLike) => {
-        // Check if this is a text feature
-        const textContent = feature.get('text') || feature.get('name')
         const geometry = feature.getGeometry()
 
-        if (textContent && geometry?.getType() === DrawingMode.Point) {
-            // Text feature styling
+        // Check if this is explicitly marked as a text feature
+        const isTextFeature = feature.get('isTextFeature') === true
+        const textContent = feature.get('text') || (isTextFeature ? feature.get('name') : null)
+
+        if (isTextFeature || (textContent && geometry?.getType() === DrawingMode.Point && !feature.get('iconId'))) {
+            // Text feature styling - invisible point with text label
             return new Style({
                 image: new CircleStyle({
                     radius: 0, // Invisible point
@@ -37,7 +39,7 @@ export default function useOlKMLLayer(
                     }),
                 }),
                 text: new TextStyle({
-                    text: textContent,
+                    text: textContent || '',
                     font: '16px sans-serif',
                     fill: new Fill({
                         color: '#000',
@@ -46,6 +48,8 @@ export default function useOlKMLLayer(
                         color: '#fff',
                         width: 3,
                     }),
+                    textAlign: 'center',
+                    textBaseline: 'middle',
                     offsetY: 0,
                 }),
             })
@@ -74,7 +78,7 @@ export default function useOlKMLLayer(
         log.debug(`Initializing KML layer ${layerId}`)
 
         const format = new KML({
-            extractStyles: true, // Extract styles from KML
+            extractStyles: true, // Extract styles from KML for non-text features
         })
         register(proj4)
         const features = format.readFeatures(kmlData, {
@@ -82,14 +86,19 @@ export default function useOlKMLLayer(
             dataProjection: EPSG_4326_WGS84, // WGS84
         })
 
-        // Restore text property from name for text features (Point geometry with name)
+        // Restore text properties for text features
         features.forEach(feature => {
             const name = feature.get('name')
             const text = feature.get('text')
+            const isTextFeature = feature.get('isTextFeature')
             const geometry = feature.getGeometry()
-            // If we have a name but no text, and it's a Point, treat it as text
-            if (name && !text && geometry?.getType() === DrawingMode.Point) {
-                feature.set('text', name)
+
+            // If marked as text feature or has text without iconId, treat as text
+            if (isTextFeature || (text && geometry?.getType() === DrawingMode.Point && !feature.get('iconId'))) {
+                feature.set('text', text || name)
+                feature.set('isTextFeature', true)
+                // Clear any style that might have been parsed from KML
+                feature.setStyle(undefined)
             }
         })
 

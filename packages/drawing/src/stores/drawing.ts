@@ -105,37 +105,40 @@ export const useDrawingStore = defineStore('drawing', () => {
             if (textContent) {
                 clone.set('name', textContent)
                 clone.set('text', textContent)
-            }
+                clone.set('isTextFeature', true) // Mark as text feature for import
+                // Don't set any style - let the KML layer handle text rendering
+                clone.setStyle(null)
+            } else {
+                const iconId = feature.get('iconId')
+                const geomType = feature.getGeometry()?.getType()
 
-            const iconId = feature.get('iconId')
-            const geomType = feature.getGeometry()?.getType()
-
-            if (geomType === 'Point' && iconId) {
-                const icon = getMarkerIconById(iconId)
-                if (icon) {
-                    const iconStyle = new Style({
-                        image: new Icon({
-                            src: icon.dataUrl,
-                            scale: 1,
-                            anchor: icon.anchor,
-                            anchorXUnits: 'fraction',
-                            anchorYUnits: 'fraction',
+                if (geomType === 'Point' && iconId) {
+                    const icon = getMarkerIconById(iconId)
+                    if (icon) {
+                        const iconStyle = new Style({
+                            image: new Icon({
+                                src: icon.dataUrl,
+                                scale: 1,
+                                anchor: icon.anchor,
+                                anchorXUnits: 'fraction',
+                                anchorYUnits: 'fraction',
+                            }),
+                        })
+                        clone.setStyle(iconStyle)
+                        clone.set('iconId', iconId)
+                    }
+                } else {
+                    const drawingStyle = new Style({
+                        fill: new Fill({
+                            color: 'rgba(255, 0, 0, 0.2)',
+                        }),
+                        stroke: new Stroke({
+                            color: '#ff0000',
+                            width: 2,
                         }),
                     })
-                    clone.setStyle(iconStyle)
-                    clone.set('iconId', iconId)
+                    clone.setStyle(drawingStyle)
                 }
-            } else {
-                const drawingStyle = new Style({
-                    fill: new Fill({
-                        color: 'rgba(255, 0, 0, 0.2)',
-                    }),
-                    stroke: new Stroke({
-                        color: '#ff0000',
-                        width: 2,
-                    }),
-                })
-                clone.setStyle(drawingStyle)
             }
 
             const geom = clone.getGeometry()

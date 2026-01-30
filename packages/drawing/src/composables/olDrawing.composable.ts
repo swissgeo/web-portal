@@ -57,6 +57,8 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
                         color: '#fff',
                         width: 3,
                     }),
+                    textAlign: 'center',
+                    textBaseline: 'middle',
                     offsetY: 0,
                 }),
             })
