@@ -13,8 +13,6 @@
             "require": "./dist/index.cjs"
         }
     },
-    "main": "./dist/index.umd.cjs",
-    "module": "./dist/index.js",
     "scripts": {
         "build": "vite build",
         "build:dev": "vite build --mode development",
