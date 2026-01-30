@@ -6,3 +6,6 @@
 export interface ActionDispatcher {
     name: string
 }
+
+// Re-export from drawing package
+export { useDrawingStore, DrawingMode } from '@swissgeo/drawing'

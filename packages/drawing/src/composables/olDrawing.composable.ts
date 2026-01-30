@@ -6,21 +6,23 @@ import type { StyleFunction, StyleLike } from 'ol/style/Style'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import Draw from 'ol/interaction/Draw'
 import VectorLayer from 'ol/layer/Vector'
+import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Icon, Stroke, Style, Text as TextStyle } from 'ol/style'
+import proj4 from 'proj4'
 
-import type { MarkerIcon } from '@/utils/markerIcons';
+import type { MarkerIcon } from '@/utils/markerIcons'
 
-import { DrawingMode } from '@/stores/drawing'
+import { DrawingMode, useDrawingStore } from '@/stores/drawing'
 import { DEFAULT_MARKER_ICON, getMarkerIconById } from '@/utils/markerIcons'
 
 /**
  * Composable for handling OpenLayers drawing interactions
  */
-export default function useOlDrawing(layerId: string, uuid: string, opacity: number) {
+export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
     const olMap = toValue(inject<Map>('olMap'))
     const drawingStore = useDrawingStore()
-
+    register(proj4)
     // Track the currently selected icon for new point features
     const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON!)
 
@@ -62,7 +64,6 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
 
         // Check if this is a Point geometry with an icon
         const geomType = feature.getGeometry()?.getType()
-        console.log('Feature geometry type:', geomType)
         if (geomType === DrawingMode.Point) {
             const iconId = feature.get('iconId')
             const icon = iconId ? getMarkerIconById(iconId) : selectedIcon.value
@@ -145,7 +146,6 @@ export default function useOlDrawing(layerId: string, uuid: string, opacity: num
             source,
             type: geometryType as Type,
         })
-        console.log('Created Draw interaction with type:', geometryType, type)
         currentDraw.on('drawend', (event) => {
             log.debug(`Feature drawn: ${type}`, event.feature)
 

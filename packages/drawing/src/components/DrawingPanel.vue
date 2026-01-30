@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useDrawingStore, DrawingMode, MARKER_ICONS } from '@swissgeo/drawing'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { IconButton } from '@swissgeo/skeleton'
+import { X } from 'lucide-vue-next'
 
 import { useDrawingManager } from '@/composables/useDrawingManager'
-
+import { DrawingMode, useDrawingStore } from '@/stores/drawing'
+import { MARKER_ICONS } from '@/utils/markerIcons'
 
 const emit = defineEmits<{
     close: []
@@ -78,11 +78,12 @@ onMounted(() => {
     <div class="relative flex h-full flex-col bg-white p-4 shadow-lg">
         <div class="mb-4 flex items-center justify-between">
             <h3 class="text-lg font-semibold">Drawing Tools</h3>
-            <IconButton
-                icon="X"
+            <button
                 @click="handleClose"
-                severity="secondary"
-            />
+                class="rounded p-1 hover:bg-gray-100"
+            >
+                <X :size="20" />
+            </button>
         </div>
 
         <div class="mb-4">

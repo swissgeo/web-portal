@@ -2,9 +2,9 @@
 import type { Layer } from '@swissgeo/layers'
 
 import { LayerType, useLayerStore } from '@swissgeo/layers'
+import { useDrawingStore } from '@swissgeo/drawing'
 
 import IconButton from '@/components/IconButton.vue'
-import { useDrawingStore } from '@swissgeo/map'
 
 const { layer } = defineProps<{
     layer: Layer
