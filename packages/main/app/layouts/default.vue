@@ -1,6 +1,7 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
 import log from '@swissgeo/log'
+import type { SearchResult } from '@swissgeo/search'
 // don't know why the explicit import is needed here
 import { SideBar } from '@swissgeo/skeleton'
 import { useSearchSelection } from '@/composables/useSearchSelection'
@@ -14,7 +15,7 @@ watch(route, (value) => {
 // Handle search result selection
 const { handleResultSelection } = useSearchSelection()
 
-async function onSearchResultSelected(result: any) {
+async function onSearchResultSelected(result: SearchResult) {
     await handleResultSelection(result)
 }
 </script>

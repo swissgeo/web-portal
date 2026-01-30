@@ -7,7 +7,7 @@ import type {
     LayerSearchResult,
     FeatureSearchResult,
 } from '@swissgeo/search'
-import type { OGCRecords } from '@swissgeo/shared/ogc'
+import type { OGCRecords, OGCRecord, Link } from '@swissgeo/shared/ogc'
 import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
 import { usePositionStore } from '@swissgeo/map'
 
@@ -22,7 +22,9 @@ export function useSearchSelection() {
 
             if (locationResult.coordinate) {
                 const positionStore = usePositionStore()
-                positionStore.setCenter(locationResult.coordinate, { name: 'search-result-selection' })
+                positionStore.setCenter(locationResult.coordinate, {
+                    name: 'search-result-selection',
+                })
                 positionStore.setZoom(locationResult.zoom, { name: 'search-result-selection' })
             }
         } else if (result.resultType === 'FEATURE') {
@@ -53,7 +55,9 @@ export function useSearchSelection() {
                 const catalog = await catalogResponse.json()
 
                 // Find the layer record in the catalog
-                const layerRecord = catalog.records.find((r: any) => r.id === layerResult.layerId)
+                const layerRecord = catalog.records.find(
+                    (r: OGCRecord) => r.id === layerResult.layerId
+                )
 
                 if (!layerRecord) {
                     console.error('Layer not found in catalog:', layerResult.layerId)
@@ -61,7 +65,9 @@ export function useSearchSelection() {
                 }
 
                 // Fetch distribution data to determine layer type
-                const distributionLink = layerRecord.links?.find((link: any) => link.rel === 'distributions')
+                const distributionLink = layerRecord.links?.find(
+                    (link: Link) => link.rel === 'distributions'
+                )
 
                 if (!distributionLink) {
                     console.error('No distribution link found for layer:', layerResult.layerId)

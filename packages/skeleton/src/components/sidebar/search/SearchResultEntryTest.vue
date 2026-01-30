@@ -2,31 +2,43 @@
 // Test component for SearchResultEntry
 import { ref } from 'vue'
 import SearchResultEntry from './SearchResultEntry.vue'
-import type { SearchResultMock } from './SearchResultEntry.vue'
+
+// Define mock type locally for testing
+type SearchResultMock = {
+    id: string
+    title: string
+    sanitizedTitle: string
+    description?: string
+    resultType: 'LOCATION' | 'LAYER'
+}
 
 // Mock data
 const mockResults = ref<SearchResultMock[]>([
     {
         id: '1',
         title: '<b>Zürich</b>, Switzerland',
+        sanitizedTitle: 'Zürich, Switzerland',
         description: 'City in Canton Zürich',
         resultType: 'LOCATION',
     },
     {
         id: '2',
         title: 'Bern',
+        sanitizedTitle: 'Bern',
         description: 'Capital of Switzerland',
         resultType: 'LOCATION',
     },
     {
         id: '3',
         title: 'Geological <b>Map</b> of Switzerland',
+        sanitizedTitle: 'Geological Map of Switzerland',
         description: 'Geological layers and formations',
         resultType: 'LAYER',
     },
     {
         id: '4',
         title: 'Topographic Map',
+        sanitizedTitle: 'Topographic Map',
         resultType: 'LAYER',
     },
 ])

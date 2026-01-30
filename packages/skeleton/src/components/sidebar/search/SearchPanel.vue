@@ -4,6 +4,7 @@
 
 import { useDebounceFn } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+import type { SearchResult } from '@swissgeo/search'
 import SearchBar from './SearchBar.vue'
 import SearchResults from './SearchResults.vue'
 import { useSearchStore } from '@/stores/search'
@@ -25,10 +26,10 @@ function handleClear() {
 }
 
 const emit = defineEmits<{
-    'result-selected': [result: any]
+    'result-selected': [result: SearchResult]
 }>()
 
-function handleSelect(result: any) {
+function handleSelect(result: SearchResult) {
     emit('result-selected', result)
     searchStore.clearSearch()
 }
@@ -60,7 +61,10 @@ function handleSelect(result: any) {
         </div>
 
         <!-- Placeholder message -->
-        <div v-else class="p-4 text-surface-500">
+        <div
+            v-else
+            class="p-4 text-surface-500"
+        >
             {{ $t('search.placeholder') }}
         </div>
     </div>
