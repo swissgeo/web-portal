@@ -1,6 +1,4 @@
 // Search API for web-poc-portal
-// Adapted from web-mapviewer
-// Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/api/src/search.ts
 
 import log from '@swissgeo/log'
 
@@ -25,7 +23,7 @@ interface CatalogRecord {
     }
 }
 
-// Regex to detect and strip HTML tags (from mapviewer line 32)
+// Regex to detect and strip HTML tags
 const REGEX_DETECT_HTML_TAGS = /<\/?[^>]+(>|$)/g
 
 /** Escape HTML special characters to prevent XSS */
@@ -38,14 +36,14 @@ function escapeHtml(text: string): string {
         .replace(/'/g, '&#039;')
 }
 
-/** Sanitize title by removing HTML tags (from mapviewer lines 38-40) */
+/** Sanitize title by removing HTML tags */
 export function sanitizeTitle(title: string = ''): string {
     return title.replace(REGEX_DETECT_HTML_TAGS, '')
 }
 
 /**
- * Parse location result from backend API response (adapted from mapviewer lines 76-149) Use LV95
- * coordinates (x, y) directly from the API response
+ * Parse location result from backend API response
+ * Use LV95 coordinates (x, y) directly from the API response
  *
  * NOTE: The geo.admin.ch API returns coordinates where:
  *
@@ -90,8 +88,7 @@ function parseLocationResult(result: SearchResponseResult): LocationSearchResult
 }
 
 /**
- * Search for locations using the map.geo.admin.ch API Adapted from mapviewer searchLocation (lines
- * 187-226)
+ * Search for locations using the map.geo.admin.ch API
  *
  * @param queryString - Search query text
  * @param lang - Language code (de, fr, etc.)
@@ -110,7 +107,7 @@ export async function searchLocation(
         return []
     }
 
-    // Use map.geo.admin.ch search API (from mapviewer lines 42-59)
+    // Use map.geo.admin.ch search API
     const url = new URL('https://api3.geo.admin.ch/rest/services/ech/SearchServer')
     url.searchParams.set('sr', '2056') // LV95 EPSG code
     url.searchParams.set('searchText', trimmedQuery)
@@ -127,7 +124,7 @@ export async function searchLocation(
 
         const data: SearchResponse = await response.json()
 
-        // Filter results with attrs (from mapviewer lines 210-212)
+        // Filter results with attrs
         const resultWithAttrs = data.results?.filter((result) => !!result.attrs) || []
 
         return resultWithAttrs.map(parseLocationResult)
@@ -142,8 +139,7 @@ export async function searchLocation(
 }
 
 /**
- * Search for layers in the local OGC catalog New implementation (not in mapviewer - they search via
- * backend API)
+ * Search for layers in the local OGC catalog
  *
  * @param queryString - Search query text
  * @param lang - Language code (de, fr, etc.)
@@ -209,8 +205,7 @@ export async function searchLayers(
 }
 
 /**
- * Search for features within a specific layer using the geo.admin.ch API Adapted from mapviewer
- * searchLayerFeatures (lines 228-273)
+ * Search for features within a specific layer using the geo.admin.ch API
  *
  * @param queryString - Search query text
  * @param lang - Language code (de, fr, etc.)

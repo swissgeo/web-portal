@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Adapted from web-mapviewer SearchResultCategory.vue
-// Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/viewer/src/modules/menu/components/search/SearchResultCategory.vue
 
 import { ref } from 'vue'
 import type { SearchResult } from '@swissgeo/search'
@@ -19,7 +18,7 @@ const emit = defineEmits<{
 
 const entries = ref<InstanceType<typeof SearchResultEntry>[]>([])
 
-// Focus management for keyboard navigation (from mapviewer lines 34-44)
+// Focus management for keyboard navigation
 function focusFirstEntry() {
     if (entries.value && entries.value.length > 0) {
         entries.value[0]?.goToFirst()
@@ -32,7 +31,7 @@ function focusLastEntry() {
     }
 }
 
-// Expose methods for parent to call (from mapviewer line 46)
+// Expose methods for parent to call
 defineExpose({
     focusFirstEntry,
     focusLastEntry,
@@ -40,15 +39,18 @@ defineExpose({
 </script>
 
 <template>
-    <!-- Category container (from mapviewer lines 50-73) -->
+    <!-- Category container -->
     <div class="search-category">
-        <!-- Category header (from mapviewer lines 51-53) -->
+        <!-- Category header -->
         <div class="bg-surface-50 px-4 py-2 text-sm font-semibold text-surface-700">
             {{ title }}
         </div>
 
-        <!-- Results list (from mapviewer lines 54-71) -->
-        <ul class="list-none" tabindex="-1">
+        <!-- Results list -->
+        <ul
+            class="list-none"
+            tabindex="-1"
+        >
             <SearchResultEntry
                 v-for="(entry, index) in results"
                 :key="entry.id"
