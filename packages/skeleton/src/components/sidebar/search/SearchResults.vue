@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Adapted from web-mapviewer SearchResultList.vue
-// Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/viewer/src/modules/menu/components/search/SearchResultList.vue
 
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -20,7 +19,7 @@ const { t } = useI18n()
 
 const resultCategories = ref<InstanceType<typeof SearchCategory>[]>([])
 
-// Separate results by type (from mapviewer lines 39-47)
+// Separate results by type
 const locationResults = computed(() =>
     props.results.filter((result) => result.resultType === 'LOCATION')
 )
@@ -31,7 +30,7 @@ const featureResults = computed(() =>
     props.results.filter((result) => result.resultType === 'FEATURE')
 )
 
-// Create categories array (from mapviewer lines 49-64)
+// Create categories array
 const categories = computed(() => {
     return [
         {
@@ -49,7 +48,7 @@ const categories = computed(() => {
     ]
 })
 
-// Focus first entry (from mapviewer lines 66-72)
+// Focus first entry
 function focusFirstEntry() {
     const firstCategory = categories.value.findIndex((category) => category.results.length > 0)
     if (firstCategory >= 0 && resultCategories.value) {
@@ -57,7 +56,7 @@ function focusFirstEntry() {
     }
 }
 
-// Handle navigation between categories (from mapviewer lines 74-97)
+// Handle navigation between categories
 function onFirstEntryReached(index: number) {
     const previousCategoryIndex = categories.value.findLastIndex(
         (category, i) => i < index && category.results.length > 0
@@ -78,18 +77,18 @@ function onLastEntryReached(index: number) {
     }
 }
 
-// Handle result selection (from mapviewer line 183)
+// Handle result selection
 function onEntrySelected(result: SearchResult) {
     emit('select', result)
     emit('close')
 }
 
-// Expose method for parent to call (from mapviewer line 153)
+// Expose method for parent to call
 defineExpose({ focusFirstEntry })
 </script>
 
 <template>
-    <!-- Results container (from mapviewer lines 156-191) -->
+    <!-- Results container -->
     <div
         class="flex-1 overflow-y-auto"
         data-cy="search-results"
