@@ -29,6 +29,7 @@
         "@swissgeo/content": "workspace:*",
         "@swissgeo/drawing": "workspace:*",
         "@swissgeo/layers": "workspace:*",
+        "@swissgeo/log": "catalog:",
         "@swissgeo/map": "workspace:*",
         "@swissgeo/search": "workspace:*",
         "@swissgeo/shared": "workspace:*",

@@ -752,6 +752,9 @@ importers:
 
   packages/search:
     dependencies:
+      '@swissgeo/log':
+        specifier: 'catalog:'
+        version: 1.0.0(proj4@2.20.2)
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared
@@ -841,6 +844,9 @@ importers:
       '@swissgeo/layers':
         specifier: workspace:*
         version: link:../layers
+      '@swissgeo/log':
+        specifier: 'catalog:'
+        version: 1.0.0(proj4@2.20.2)
       '@swissgeo/map':
         specifier: workspace:*
         version: link:../map
