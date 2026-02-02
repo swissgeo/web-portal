@@ -28,7 +28,7 @@ import setRotation from '@/stores/position/actions/setRotation'
 // import { LV95Format } from '@/utils/coordinates/coordinateFormat'
 
 const state = (): PositionStoreState => ({
-    // displayFormat: LV95Format,
+    displayFormat: LV95Format,
     // // some unit tests fail because DEFAULT_PROJECTION is somehow not yet defined when they are run
     // // hence the `?.` operator
     zoom: DEFAULT_PROJECTION.getDefaultZoom(),
@@ -54,7 +54,7 @@ const getters: PositionStoreGetters = {
 }
 
 const actions = {
-    // setDisplayedFormat,
+    setDisplayedFormat,
     setZoom,
     // increaseZoom,
     // decreaseZoom,

@@ -25,7 +25,7 @@ export interface CameraPosition {
 
 export interface PositionStoreState {
     // /** The display format selected for the mouse tracker */
-    // displayFormat: CoordinateFormat
+    displayFormat: CoordinateFormat
     /** The map zoom level, which define the resolution of the view */
     zoom: number
     /** The map rotation expressed so that -Pi < rotation <= Pi */
