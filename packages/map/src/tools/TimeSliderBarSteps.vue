@@ -15,7 +15,7 @@ watch(stepWidth, () => {
 })
 
 function stepClasses(year: number) {
-    const classes: string[] = []
+    const classes: string[] = ['test']
     if (year % 50 === 0) {
         // Big Tick
         classes.push('big-tick')
@@ -52,7 +52,8 @@ function stepClasses(year: number) {
     </div>
 </template>
 
-<style scoped>
+<style>
+/* TDOO make scoped work */
 .step:before {
     background-color: var(--gray-600);
     display: block;

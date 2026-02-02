@@ -298,7 +298,8 @@ function handleKeyDownEvent(event: KeyboardEvent) {
     </div>
 </template>
 
-<style scoped>
+<style>
+/* TDOO make scoped work */
 .arrow {
     position: absolute;
     z-index: 2;
