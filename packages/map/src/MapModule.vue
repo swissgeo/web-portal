@@ -4,6 +4,7 @@ import type { Layer } from '@swissgeo/layers'
 import log, { LogLevel } from '@swissgeo/log'
 
 import OpenLayersMap from './openlayers/OpenLayersMap.vue'
+import OpenLayersMouseTracker from './openlayers/OpenLayersMouseTracker.vue'
 import OpenLayersScale from './openlayers/OpenLayersScale.vue'
 import MapFooterAttributionList from './uiComponents/MapFooterAttributionList.vue'
 
@@ -26,6 +27,7 @@ const { layers, backgroundLayer } = defineProps<{
             <OpenLayersScale />
             <MapFooterAttributionList />
             <BackgroundSelector />
+            <OpenLayersMouseTracker />
         </OpenLayersMap>
     </div>
 </template>
