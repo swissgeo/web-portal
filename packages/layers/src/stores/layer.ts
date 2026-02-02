@@ -20,6 +20,10 @@ export const useLayerStore = defineStore('layers', () => {
         return cloneDeep(layers.value).sort((a: Layer, b: Layer) => a.zIndex - b.zIndex)
     })
 
+    const visibleLayers = computed(() => {
+        return layers.value.filter((layer) => layer.isVisible)
+    })
+
     function addLayer(layer: Layer) {
         layers.value.push(layer)
     }
@@ -139,6 +143,7 @@ export const useLayerStore = defineStore('layers', () => {
         // getters
         greatestZIndex,
         sortedLayers,
+        visibleLayers,
         // action
         addLayer,
         toggleVisibility,

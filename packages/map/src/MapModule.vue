@@ -5,6 +5,7 @@ import log, { LogLevel } from '@swissgeo/log'
 
 import OpenLayersMap from './openlayers/OpenLayersMap.vue'
 import OpenLayersScale from './openlayers/OpenLayersScale.vue'
+import MapFooterAttributionList from './uiComponents/MapFooterAttributionList.vue'
 
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
@@ -23,6 +24,7 @@ const { layers, backgroundLayer } = defineProps<{
             <!-- <OpenLayersScale /> -->
             <slot />
             <OpenLayersScale />
+            <MapFooterAttributionList />
             <BackgroundSelector />
         </OpenLayersMap>
     </div>
