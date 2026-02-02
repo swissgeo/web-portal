@@ -104,6 +104,7 @@ export default defineNuxtConfig({
         apiEndpoint: '',
         authToken: '',
         public: {
+            ogcApiEndpoint: '',
             overlayId: '',
             aboutMenu: { id: 199, translationKey: 'menuTitles.about' },
             knowledgeMenu: { id: 200, translationKey: 'menuTitles.knowledge' },

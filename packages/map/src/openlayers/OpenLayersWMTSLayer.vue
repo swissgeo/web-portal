@@ -7,16 +7,13 @@ import log from '@swissgeo/log'
 import { optionsFromCapabilities } from 'ol/source/WMTS'
 
 import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
-import useLayerData from '@/composables/useLayerData.composable'
+import useRecordsData from '../composables/useRecordsData.composable'
 
 const { layer } = defineProps<{
     layer: DatasetLayer
 }>()
 
-const { url: capabilityUrl, defaultOpacityFromStyle } = await useLayerData(
-    layer.dataset,
-    'OGC:WMTS'
-)
+const { capabilityUrl, defaultOpacityFromStyle } = await useRecordsData(layer.dataset, 'OGC:WMTS')
 
 const { data: capabilityData } = await useFetch<WMTSCapabilities>(
     `/api/v1/layers/wmtsConfig/${capabilityUrl.value}`

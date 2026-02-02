@@ -52,27 +52,5 @@ export default async function useLayerData(dataset: Dataset, protocol: Protocol)
         return data
     })
 
-    const defaultOpacityFromStyle = computed(() => {
-        // maybe do something here like a check for the geojson layers?
-        const isRasterLayer = (layer: mapboxgl.AnyLayer): layer is mapboxgl.RasterLayer =>
-            layer.type === 'raster'
-
-        if (styleData.value && styleData.value.layers && styleData.value?.layers?.length) {
-            // so far, we assume that the first and only entry is the correct one
-            const layer = styleData.value.layers[0]
-
-            if (!layer || !isRasterLayer(layer)) {
-                return 1
-            }
-
-            const paint = layer.paint
-            const rasterOpacity = paint?.['raster-opacity']
-            if (rasterOpacity && typeof rasterOpacity === 'number') {
-                return rasterOpacity
-            }
-        }
-        return 1
-    })
-
     return { url, styleData, defaultOpacityFromStyle }
 }
