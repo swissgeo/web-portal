@@ -3,7 +3,7 @@ import type { CoordinateSystem, SingleCoordinate } from '@swissgeo/coordinates'
 
 // import type { CoordinateFormat } from '@/utils/coordinates/coordinateFormat'
 
-// import { CrossHairs } from '@/store/modules/position/types/crossHairs.enum'
+// import { CrossHairs } from '@/stores/position/types/crossHairs.enum'
 
 export interface CameraPosition {
     /** X position of the camera in the 3D reference system (metric mercator) */

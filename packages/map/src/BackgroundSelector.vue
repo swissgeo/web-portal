@@ -3,13 +3,13 @@ import type { DatasetLayer, Layer } from '@swissgeo/layers'
 import type { OGCRecord } from '@swissgeo/shared/ogc'
 
 import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
-//import type { ActionDispatcher } from '@/store/types'
+//import type { ActionDispatcher } from '@/stores/types'
 //import BackgroundSelectorWheelRounded from '@/modules/map/components/footer/backgroundSelector/BackgroundSelectorWheelRounded.vue'
 import { computedAsync } from '@vueuse/core'
 
 import type { VoidLayer } from '@/composables/useBackgroundSelector'
 
-// import useUIStore from '@/store/modules/ui'
+// import useUIStore from '@/stores/ui'
 // const dispatcher: ActionDispatcher = { name: 'BackgroundSelector.vue' }
 import BackgroundSelectorSquared from '@/BackgroundSelectorSquared.vue'
 

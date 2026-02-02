@@ -12,8 +12,8 @@ import type { PositionStore } from '@/stores/position/types/position'
 import type { ActionDispatcher } from '@/stores/types'
 
 // import { calculateHeight } from '@/modules/map/components/cesium/utils/cameraUtils'
-// import useCesiumStore from '@/store/modules/cesium'
-// import useUIStore from '@/store/modules/ui'
+// import useCesiumStore from '@/stores/cesium'
+// import useUIStore from '@/stores/ui'
 
 interface ZoomToExtentOptions {
     extentProjection?: CoordinateSystem

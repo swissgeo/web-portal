@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { normalizeAngle } from '@/store/modules/position/utils/normalizeAngle'
+import { normalizeAngle } from '@/stores/position/utils/normalizeAngle'
 
 function validateNormalizeAngle(angle: number) {
     expect(angle).to.be.lte(Math.PI)
