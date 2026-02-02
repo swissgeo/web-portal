@@ -27,7 +27,7 @@ export default function useOlKMLLayer(
 
         // Check if this is explicitly marked as a text feature
         const isTextFeature = feature.get('isTextFeature') === true
-        const textContent = feature.get('text') || (isTextFeature ? feature.get('name') : null)
+        const textContent = feature.get('text') || (isTextFeature ? feature.get('name') : undefined)
 
         if (isTextFeature || (textContent && geometry?.getType() === DrawingMode.Point && !feature.get('iconId'))) {
             // Text feature styling - invisible point with text label
@@ -56,7 +56,7 @@ export default function useOlKMLLayer(
         }
 
         // Use default KML style for other features
-        return null
+        return undefined
     }
     const layer = new VectorLayer({
         properties: {

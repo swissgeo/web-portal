@@ -31,8 +31,11 @@ export function useFileImport() {
         } else if (filename.endsWith('.gpx')) {
             layerType = LayerType.GPX
             fileData = await file.text()
-        } else {
+        } else if (filename.endsWith('.geojson') || filename.endsWith('.json')) {
             layerType = LayerType.GEOJSON
+            fileData = await file.text()
+        } else {
+            throw new Error(`Unsupported file type: ${filename}`)
         }
 
         // Create and add the layer

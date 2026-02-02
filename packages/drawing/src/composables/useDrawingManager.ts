@@ -6,7 +6,7 @@ import log from '@swissgeo/log'
 
 import { useDrawingStore } from '@/stores/drawing'
 
-const DRAWING_LAYER_ID = 'user-drawing-layer'
+export const DRAWING_LAYER_ID = 'user-drawing-layer'
 const DRAWING_KML_LAYER_ID = 'user-drawing-layer-kml'
 const DRAWING_LAYER_NAME = 'My Drawings'
 const DRAWING_KML_LAYER_NAME = 'My Drawings KML'

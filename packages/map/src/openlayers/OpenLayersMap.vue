@@ -14,11 +14,6 @@ import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
 const layerStore = useLayerStore()
 
-const layers = computed(() => {
-    const allLayers = layerStore.layers
-    return allLayers
-})
-
 const mapElement = useTemplateRef('mapElement')
 const olMap = ref<OlMapType>()
 
@@ -68,7 +63,7 @@ createOlMap()
         <OpenLayersVisibleLayer
             :layer="layer"
             :key="layer.uuid"
-            v-for="layer in layers"
+            v-for="layer in layerStore.layers"
         />
         <!-- <OpenLayersVisibleLayers />
         <OpenLayersPinnedLocation />

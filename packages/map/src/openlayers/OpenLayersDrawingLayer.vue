@@ -30,7 +30,7 @@ const {
 
 // Track if we've initialized features
 const hasInitialized = ref(false)
-let updateFeatureTimeout: ReturnType<typeof setTimeout> | null = null
+let updateFeatureTimeout: ReturnType<typeof setTimeout> | undefined
 
 // Text editing state
 const editingTextFeature = ref<Feature<Geometry> | undefined>(undefined)
@@ -61,7 +61,7 @@ const updateFeatures = (feature?: Feature<Geometry>) => {
             if (features.length !== drawingStore.drawingFeatures.length) {
                 drawingStore.drawingFeatures = features
             }
-            updateFeatureTimeout = null
+            updateFeatureTimeout = undefined
         }, 150)
     }
 }
