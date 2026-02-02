@@ -3,7 +3,7 @@
 // Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/viewer/src/modules/menu/components/search/SearchBar.vue
 
 import { ref, onMounted } from 'vue'
-import { X, Search, LoaderCircle } from 'lucide-vue-next'
+import { X, LoaderCircle } from 'lucide-vue-next'
 import InputText from 'primevue/inputtext'
 
 const props = defineProps<{
@@ -51,17 +51,11 @@ const onKeydown = (event: KeyboardEvent) => {
 <template>
     <div class="border-b border-surface-200 p-4">
         <div class="relative">
-            <!-- Search icon (from mapviewer lines 159-166) -->
-            <Search
-                :size="20"
-                class="absolute top-1/2 left-3 -translate-y-1/2 text-surface-400"
-            />
-
             <!-- Input field (from mapviewer lines 167-190) -->
             <InputText
                 ref="searchInput"
                 :model-value="modelValue"
-                type="search"
+                type="text"
                 :placeholder="$t('search.placeholder')"
                 autocapitalize="off"
                 autocorrect="off"
@@ -101,9 +95,8 @@ input[type='search']::-webkit-search-cancel-button {
     appearance: none;
 }
 
-/* Add padding for search icon and clear button - use :deep() to pierce into PrimeVue component */
+/* Add padding for clear button - use :deep() to pierce into PrimeVue component */
 :deep(.search-input) {
-    padding-left: 2.5rem;
     padding-right: 2.5rem;
 }
 </style>
