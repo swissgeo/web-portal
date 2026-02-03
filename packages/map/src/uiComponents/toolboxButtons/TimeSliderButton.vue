@@ -47,22 +47,17 @@ function toggleTimeSlider(): void {
         v-if="visibleLayersWithTimeConfig.length > 0"
         id="timeSlider"
     >
-        <GeoadminTooltip
-            placement="left"
-            :tooltip-content="tooltipContent"
+        <button
+            class="toolbox-button d-print-none mb-1 h-[40px] w-[40px] rounded-[20px] bg-gray-500 text-white"
+            data-cy="time-slider-button"
+            :class="{ active: isTimeSliderActive }"
+            @click="toggleTimeSlider()"
         >
-            <button
-                class="toolbox-button d-print-none mb-1"
-                data-cy="time-slider-button"
-                :class="{ active: isTimeSliderActive }"
-                @click="toggleTimeSlider()"
-            >
-                <FontAwesomeIcon
-                    :icon="faClockRotateLeft"
-                    size="lg"
-                />
-            </button>
-        </GeoadminTooltip>
+            <FontAwesomeIcon
+                :icon="faClockRotateLeft"
+                size="lg"
+            />
+        </button>
         <div
             class="time-sliders position-fixed m-1"
             :class="{

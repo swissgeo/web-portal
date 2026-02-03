@@ -66,8 +66,9 @@ function toggleTracking(): void {
 
 <template>
     <button
+        v-if="geolocationStoreMockup.active"
         class="toolbox-button d-print-none"
-        data-cy="recenter-button"
+        data-cy="recenter-button h-[40px] w-[40px] rounded-[20px] bg-black text-white"
         type="button"
         @click="toggleTracking"
     >

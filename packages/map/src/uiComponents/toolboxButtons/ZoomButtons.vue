@@ -69,7 +69,7 @@ function decreaseZoom() {
         <!-- Geoadmin tooltips are wrapping around buttons-->
         <button
             ref="zoomInButton"
-            class="toolbox-button d-print-none"
+            class="toolbox-button d-print-none -500 mb-1 h-[40px] w-[40px] rounded-[20px] bg-black text-white hover:bg-blue-500"
             data-cy="zoom-in"
             @click="increaseZoom"
         >
@@ -81,7 +81,7 @@ function decreaseZoom() {
 
         <button
             ref="zoomOutButton"
-            class="toolbox-button d-print-none"
+            class="toolbox-button d-print-none -500 h-[40px] w-[40px] rounded-[20px] bg-black text-white hover:bg-blue-500"
             data-cy="zoom-out"
             @click="decreaseZoom"
         >

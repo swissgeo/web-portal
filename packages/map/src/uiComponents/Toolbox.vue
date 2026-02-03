@@ -37,7 +37,7 @@ const uiStore = useUiStore()
 
 <template>
     <div
-        class="toolbox-right absolute top-[1rem] right-[1rem]"
+        class="toolbox-right absolute top-[1rem] right-[1rem] w-[40px] space-y-1"
         :class="{
             'dev-disclaimer-present': uiStore.hasDevSiteWarning,
             'fullscreen-mode': uiStore.fullscreenMode || !hasHeader,

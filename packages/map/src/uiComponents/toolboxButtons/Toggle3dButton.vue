@@ -67,7 +67,7 @@ function toggle3d() {
      -->
     <button
         ref="toggle3DButton"
-        class="toolbox-button"
+        class="toolbox-button h-[40px] w-[40px] rounded-[20px] bg-gray-500 text-white"
         type="button"
         :class="{
             /*active: cesiumStore.active,*/

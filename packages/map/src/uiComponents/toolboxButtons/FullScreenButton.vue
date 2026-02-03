@@ -49,7 +49,7 @@ function handleKeydown(event: KeyboardEvent) {
     </div>
     <button
         ref="fullscreenButton"
-        class="toolbox-button d-print-none"
+        class="toolbox-button d-print-none h-[40px] w-[40px] rounded-[20px] bg-gray-500 text-white"
         :class="{ active: uiStore.fullscreenMode }"
         data-cy="toolbox-fullscreen-button"
         @click="toggleFullScreen()"
