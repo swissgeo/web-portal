@@ -7,6 +7,7 @@ import OpenLayersMap from './openlayers/OpenLayersMap.vue'
 import OpenLayersMouseTracker from './openlayers/OpenLayersMouseTracker.vue'
 import OpenLayersScale from './openlayers/OpenLayersScale.vue'
 import MapFooterAttributionList from './uiComponents/MapFooterAttributionList.vue'
+import Toolbox from './uiComponents/Toolbox.vue'
 
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
@@ -28,6 +29,7 @@ const { layers, backgroundLayer } = defineProps<{
             <MapFooterAttributionList />
             <BackgroundSelector />
             <OpenLayersMouseTracker />
+            <Toolbox />
         </OpenLayersMap>
     </div>
 </template>

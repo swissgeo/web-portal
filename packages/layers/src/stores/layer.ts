@@ -10,6 +10,7 @@ export const useLayerStore = defineStore('layers', () => {
     /** Layer that's shown as background layer */
     const backgroundLayer = ref<Layer | null>()
 
+    const previewYear = ref<undefined | number>(undefined)
     const greatestZIndex = computed(() => {
         return layers.value.length
     })
@@ -22,6 +23,13 @@ export const useLayerStore = defineStore('layers', () => {
 
     const visibleLayers = computed(() => {
         return layers.value.filter((layer) => layer.isVisible)
+    })
+
+    const visibleLayersWithTimeConfig = computed(() => {
+        log.debug('visible Layers With Time Config is not yet implemented.')
+        return layers.value.filter(
+            (layer) => layer.isVisible /** && layer.hasTimeConfig <-- we'll see where it is */
+        )
     })
 
     function addLayer(layer: Layer) {
@@ -109,6 +117,9 @@ export const useLayerStore = defineStore('layers', () => {
         layer.info = info
     }
 
+    function setPreviewYear(year: number | undefined) {
+        previewYear.value = year
+    }
     /**
      * I don't think this should be exported... if this is needed outside of this store, then maybe
      * this should trigger a re-thinking of the architecture here
@@ -144,6 +155,7 @@ export const useLayerStore = defineStore('layers', () => {
         greatestZIndex,
         sortedLayers,
         visibleLayers,
+        visibleLayersWithTimeConfig,
         // action
         addLayer,
         toggleVisibility,
@@ -151,6 +163,7 @@ export const useLayerStore = defineStore('layers', () => {
         setLayerInfo,
         setDimension,
         setBackground,
+        setPreviewYear,
         removeLayer,
     }
 })
