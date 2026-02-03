@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-import MapFooterAttributionItem from './MapFooterAttributionItem.vue'
 import { useLayerStore } from '@swissgeo/layers'
+
+import MapFooterAttributionItem from './attributionsDisplay/MapFooterAttributionItem.vue'
 //import ThirdPartyDisclaimer from '@/utils/components/ThirdPartyDisclaimer.vue'
 
 const layersStore = useLayerStore()
@@ -56,7 +54,7 @@ const sources = computed(() => {
         class="map-footer-attribution"
         data-cy="layers-copyrights"
     >
-        <span v-if="sources.length > 0">© Data:</span>
+        <span v-if="sources.length > 0">{{ t('copyright_data') }}</span>
         <span
             v-for="(source, index) in sources"
             :key="source.name"
