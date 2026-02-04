@@ -70,6 +70,7 @@
         "@types/mapbox-gl": "catalog:",
         "eslint-plugin-perfectionist": "catalog:",
         "fs-extra": "catalog:",
+        "stylelint": "catalog:",
         "typescript": "catalog:",
         "vite-plugin-vue-devtools": "catalog:",
         "vue-tsc": "catalog:"

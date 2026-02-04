@@ -37,6 +37,7 @@
         "@types/lodash": "catalog:",
         "eslint": "catalog:",
         "pinia": "catalog:",
+        "stylelint": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
