@@ -1,32 +1,31 @@
 <script setup lang="ts">
 import type { DatasetLayer, Layer } from '@swissgeo/layers'
-import type { OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
+import type { OGCRecord } from '@swissgeo/shared/ogc'
 
 import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
 //import type { ActionDispatcher } from '@/stores/types'
 //import BackgroundSelectorWheelRounded from '@/modules/map/components/footer/backgroundSelector/BackgroundSelectorWheelRounded.vue'
 import { computedAsync } from '@vueuse/core'
 
-import type { VoidLayer } from '@/composables/useBackgroundSelector'
+import type { VoidLayer } from './useBackgroundSelector'
 
 // import useUIStore from '@/stores/ui'
 // const dispatcher: ActionDispatcher = { name: 'BackgroundSelector.vue' }
-import BackgroundSelectorSquared from '@/BackgroundSelectorSquared.vue'
-import { AVAILABLE_BACKGROUNDS } from '@/constants'
+import { AVAILABLE_BACKGROUNDS } from './constants'
 
 const layerStore = useLayerStore()
 const runtimeConfig = useRuntimeConfig()
 
 const backgroundRecords = computed(async () => {
-    const promises: Promise<OGCRecords>[] = []
+    const promises: Promise<OGCRecord>[] = []
     for (const backgroundId of AVAILABLE_BACKGROUNDS) {
         promises.push($fetch(`${runtimeConfig.public.ogcApiEndpoint}/items/${backgroundId}`))
     }
 
     const values = await Promise.all(promises)
 
-    return values.map((record: OGCRecords) => {
-        return makeServerLayer(LayerType.WMTS, record.records[0], {
+    return values.map((record: OGCRecord) => {
+        return makeServerLayer(LayerType.WMTS, record, {
             zIndex: 0,
         })
     })
@@ -60,8 +59,8 @@ function selectBackground(backgroundLayer: Layer | VoidLayer) {
 </script>
 
 <template>
-    <BackgroundSelectorSquared :background-layers="sortedBackgroundLayersWithVoid"
-                               :current-background-layer="layerStore.backgroundLayer ?? 'void'" @select-background="selectBackground" />
+    <MapBackgroundSelectorSquared :background-layers="sortedBackgroundLayersWithVoid"
+        :current-background-layer="layerStore.backgroundLayer ?? 'void'" @select-background="selectBackground" />
     <!-- <BackgroundSelectorWheelRounded
         v-else
         :background-layers="sortedBackgroundLayersWithVoid"

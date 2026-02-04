@@ -3,11 +3,9 @@ import type { Layer } from '@swissgeo/layers'
 
 import { CircleChevronRight } from 'lucide-vue-next'
 
-import type { VoidLayer } from '@/composables/useBackgroundSelector'
+import type { VoidLayer } from './useBackgroundSelector'
 
-import useBackgroundSelector from '@/composables/useBackgroundSelector'
-
-import BackgroundSelectorEntry from './BackgroundSelectorEntry.vue'
+import useBackgroundSelector from './useBackgroundSelector'
 
 // const { t: $t } = useI18n()
 
@@ -49,7 +47,7 @@ const { selectorOpen, animate, toggleShowSelector, onSelectBackground } =
             :class="{ hidden: !selectorOpen, animate }"
             class="flex gap-2"
         >
-            <BackgroundSelectorEntry
+            <MapBackgroundSelectorEntry
                 v-for="(backgroundLayer, index) in backgroundLayers"
                 :key="index"
                 :background-layer="backgroundLayer"
@@ -57,7 +55,7 @@ const { selectorOpen, animate, toggleShowSelector, onSelectBackground } =
                 @click="onSelectBackground(backgroundLayer)"
             />
         </div>
-        <BackgroundSelectorEntry
+        <MapBackgroundSelectorEntry
             v-if="currentBackgroundLayer"
             :background-layer="currentBackgroundLayer"
             :folded="selectorOpen"
@@ -72,7 +70,7 @@ const { selectorOpen, animate, toggleShowSelector, onSelectBackground } =
                     <CircleChevronRight class="block" />
                 </div>
             </template>
-        </BackgroundSelectorEntry>
+        </MapBackgroundSelectorEntry>
     </div>
 </template>
 
