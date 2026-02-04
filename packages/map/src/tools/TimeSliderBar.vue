@@ -171,7 +171,7 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE)
 
 <template>
     <div
-        class="w-full bg-white px-5"
+        class="min-0 flex-1 bg-white px-5"
         data-cy="time-slider-bar"
     >
         <div
