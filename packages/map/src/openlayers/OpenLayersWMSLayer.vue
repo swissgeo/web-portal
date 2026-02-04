@@ -4,7 +4,7 @@ import type { DatasetLayer } from '@swissgeo/layers'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from '@/composables/olWMSLayer.composable'
-import useLayerData from '@/composables/useLayerData.composable'
+import useRecordsData from '../composables/useRecordsData.composable'
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
 
@@ -16,15 +16,19 @@ const gutter = computed(() => {
     return 0
 })
 
-const { url: capabilityUrl } = await useLayerData(layer.dataset, 'OGC:WMS')
+const { capabilityUrl } = await useRecordsData(layer.dataset, 'OGC:WMS')
 
-const { data } = await useFetch<string>(`/api/v1/layers/wmsConfig/${capabilityUrl.value}`)
+const { data } = await useFetch<string>(capabilityUrl.value)
 
 const capabilityData = computed((): WMSCapabilityType => {
     if (!data.value) {
         throw new Error('Unable to read WMS capabilities')
     }
-    return data.value
+
+    const parser = new WMSCapabilities()
+    const capabilities = parser.read(data.value)
+
+    return capabilities
 })
 
 const version = computed(() => capabilityData.value.version)

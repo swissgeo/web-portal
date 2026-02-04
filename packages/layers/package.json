@@ -25,6 +25,7 @@
         "@swissgeo/coordinates": "catalog:",
         "@swissgeo/log": "catalog:",
         "@swissgeo/numbers": "catalog:",
+        "@swissgeo/ogc": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "lodash": "catalog:"
     },
@@ -33,9 +34,9 @@
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
+        "@types/lodash": "catalog:",
         "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
-        "@types/lodash": "catalog:",
         "eslint": "catalog:",
         "pinia": "catalog:",
         "stylelint": "catalog:",

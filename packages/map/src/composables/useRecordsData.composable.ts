@@ -1,3 +1,4 @@
+import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/layers'
 import type { OGCRecord, OGCRecords, Service, Protocol, Link, Dataset } from '@swissgeo/ogc'
 import type { Style } from '@types/mapbox-gl'
 
@@ -11,12 +12,16 @@ const getDataServiceLinks = (links: Link[]): Link[] => {
     return getLinksByRel(links, 'service')
 }
 
+const getDataLinks = (links: Link[]): Link[] => {
+    return getLinksByRel(links, 'data')
+}
+
 const getStyleLinks = (links: Link[]): Link[] => {
     return getLinksByRel(links, 'styledby')
 }
 
 export const getGeoJsonDataLinks = (links: Link[]): Link[] => {
-    return getLinksByRel(links, 'data').filter((link: Link) => {
+    return getDataLinks(links).filter((link: Link) => {
         return link.type === 'application/geo+json'
     })
 }
@@ -46,15 +51,15 @@ export default async function useRecordsData(dataset: Dataset, protocol: Protoco
         }
     })
 
-    const { data: distributionData } = await useFetch<OGCRecords>(distributionLink.value)
+    const distributionData = await $fetch<OGCRecords>(distributionLink.value)
 
     // Extract the feature for the service
     const feature = computed((): OGCRecord => {
-        if (!distributionData.value) {
+        if (!distributionData) {
             throw new Error('Unable to load distribution data')
         }
 
-        const records = distributionData.value.records
+        const records = distributionData.records
 
         for (const feature of records) {
             if (!feature.properties) {
@@ -75,7 +80,8 @@ export default async function useRecordsData(dataset: Dataset, protocol: Protoco
 
         const link = getDataServiceLinks(links)[0]
         if (!link) {
-            throw new Error("Unable to find link for rel type 'service'")
+            return null
+            // throw new Error("Unable to find link for rel type 'service'")
         }
         const href = link.href
 
@@ -88,30 +94,33 @@ export default async function useRecordsData(dataset: Dataset, protocol: Protoco
     })
 
     // get the Service
-    const { data: serviceData } = await useFetch<Service>(serviceUrl.value)
+    let serviceData: Service
+    if (serviceUrl.value) {
+        serviceData  = await $fetch<Service>(serviceUrl.value)
+    }
 
     const capabilityUrl = computed(() => {
         // TODO safeguard for layers that don't support this
-        if (!serviceData.value) {
+        if (!serviceData) {
             throw new Error(`Unable to load service data for ${serviceUrl.value}`)
         }
 
-        if ('links' in serviceData.value && serviceData.value.links.length) {
-            const link = serviceData.value.links[0]
+        if ('links' in serviceData && serviceData.links.length) {
+            const link = serviceData.links[0]
 
             if (link.rel === 'about') {
                 const uri = link.href
                 return encodeURIComponent(uri)
             }
         }
-        if ('linkTemplates' in serviceData.value && serviceData.value.linkTemplates.length) {
+        if ('linkTemplates' in serviceData && serviceData.linkTemplates.length) {
             // if there are links and linkTemplates, we want links to take precedence
             // it's the simpler version
-            const link = serviceData.value.linkTemplates[0]
+            const link = serviceData.linkTemplates[0]
 
             if (link.rel === 'about') {
                 const uri = link.uriTemplate.replace('{EPSG}', '2056')
-                return encodeURIComponent(uri)
+                return uri
             }
         }
         throw new Error(`Unable to find links for ${serviceUrl.value}`)
@@ -123,13 +132,13 @@ export default async function useRecordsData(dataset: Dataset, protocol: Protoco
             throw new Error(`Unable to load distribution data`)
         }
 
-        const links = getGeoJsonDataLinks(distributionData.value)
+        const links = getGeoJsonDataLinks(feature.value.links)
         if (!links || links.length < 1) {
             throw new Error(
-                `Unable to find geoJsonLink for distribution ${JSON.stringify(distributionData.value)}`
+                `Unable to find geoJsonLink for distribution ${JSON.stringify(feature.value.links)}`
             )
         }
-        return links[0]
+        return links[0].href
     })
 
     /**
@@ -154,16 +163,20 @@ export default async function useRecordsData(dataset: Dataset, protocol: Protoco
         return href
     })
 
-    const styleData = await useFetch<Style>(styleDataUrl)
+
+    let styleData: Style | GeoAdminGeoJSONStyleDefinition | null = null
+    if (styleDataUrl.value) {
+       styleData = await $fetch<Style | GeoAdminGeoJSONStyleDefinition>(styleDataUrl.value)
+    }
 
     const defaultOpacityFromStyle = computed(() => {
         // maybe do something here like a check for the geojson layers?
         const isRasterLayer = (layer: mapboxgl.AnyLayer): layer is mapboxgl.RasterLayer =>
             layer.type === 'raster'
 
-        if (styleData.value && styleData.value.layers && styleData.value?.layers?.length) {
+        if (styleData && styleData.layers?.length) {
             // so far, we assume that the first and only entry is the correct one
-            const layer = styleData.value.layers[0]
+            const layer = styleData.layers[0]
 
             if (!layer || !isRasterLayer(layer)) {
                 return 1

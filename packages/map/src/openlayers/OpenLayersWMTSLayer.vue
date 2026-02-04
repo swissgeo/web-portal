@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DatasetLayer } from '@swissgeo/layers'
-import type { WMTSCapabilities } from '@swissgeo/ogc'
+import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
 import log from '@swissgeo/log'
@@ -16,9 +16,7 @@ const { layer } = defineProps<{
 
 const { capabilityUrl, defaultOpacityFromStyle } = await useRecordsData(layer.dataset, 'OGC:WMTS')
 
-const { data: capabilityData } = await useFetch<WMTSCapabilities>(
-    `/api/v1/layers/wmtsConfig/${capabilityUrl.value}`
-)
+const { data: capabilityData } = await useFetch<WMTSCapabilities>(capabilityUrl.value)
 
 /** Retrieve the capabilities and then turn them into a options objects to be used by WMTS */
 const options = computed((): WMTSOptions => {
@@ -27,7 +25,10 @@ const options = computed((): WMTSOptions => {
         throw new Error()
     }
 
-    const options = optionsFromCapabilities(capabilityData.value, {
+    const wmtsParser = new WMTSCapabilities()
+    const capabilities = wmtsParser.read(capabilityData.value)
+
+    const options = optionsFromCapabilities(capabilities, {
         layer: layer.dataset.id,
     })
 

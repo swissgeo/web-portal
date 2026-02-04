@@ -422,6 +422,9 @@ importers:
       '@swissgeo/numbers':
         specifier: 'catalog:'
         version: 1.0.0(proj4@2.20.2)
+      '@swissgeo/ogc':
+        specifier: workspace:*
+        version: link:../ogc
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared

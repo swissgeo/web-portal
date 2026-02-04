@@ -1,17 +1,18 @@
 <script lang="ts" setup>
 import type { DatasetLayer } from '@swissgeo/layers'
 
-import useLayerData from '@/composables/useLayerData.composable'
+import log, { LogPreDefinedColor } from '@swissgeo/log';
 
 import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
+import useRecordsData from '../composables/useRecordsData.composable';
 
 const { layer } = defineProps<{
     layer: DatasetLayer
 }>()
 
-const { url, styleData } = await useLayerData(layer.dataset, 'OGC:GeoJSON')
+const { geoJsonUrl, styleData } = await useRecordsData(layer.dataset, 'OGC:GeoJSON')
 
-const { data } = await useFetch<string>(`/api/v1/layers/swissgeo/geoJson/${url.value}`)
+const { data } = await useFetch<object>(geoJsonUrl.value)
 
 const geoJsonData = computed(() => {
     if (!data.value) {
@@ -21,10 +22,18 @@ const geoJsonData = computed(() => {
 })
 
 const geoJsonStyle = computed(() => {
-    if (!styleData.value) {
+    if (!styleData) {
+        log.error({
+            title: 'OpenLayersGeoJSONLayer.vue',
+            color: LogPreDefinedColor.Yellow,
+            messages:[
+                'Unable to read the geoJSON style',
+                styleData
+            ]
+        })
         throw new Error('Unable to read the geoJSON style')
     }
-    return styleData.value
+    return styleData
 })
 
 const { initialize, setZIndex, setVisibility } = useOlGeoJSONLayer(

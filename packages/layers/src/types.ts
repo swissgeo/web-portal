@@ -1,4 +1,4 @@
-import type { Dataset } from '@swissgeo/shared/ogc'
+import type { Dataset } from '@swissgeo/ogc'
 
 export enum LayerType {
     WMTS = 'wmts',
