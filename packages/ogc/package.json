@@ -1,0 +1,38 @@
+{
+    "name": "@swissgeo/ogc",
+    "version": "0.0.1",
+    "description": "",
+    "keywords": [],
+    "license": "ISC",
+    "author": "",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.es.js"
+        }
+    },
+    "main": "index.ts",
+    "scripts": {
+        "build": "vite build",
+        "build:dev:watch": "vite build --watch --mode development",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
+    },
+    "devDependencies": {
+        "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/config-typescript": "catalog:",
+        "@vitejs/plugin-vue": "catalog:",
+        "unplugin-auto-import": "catalog:",
+        "unplugin-dts": "catalog:",
+        "vite": "catalog:",
+        "vite-tsconfig-paths": "catalog:"
+    },
+    "packageManager": "pnpm@10.14.0",
+    "dependencies": {
+        "@types/openlayers": "catalog:",
+        "ol": "catalog:"
+    }
+}
