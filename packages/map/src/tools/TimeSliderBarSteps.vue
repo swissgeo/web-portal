@@ -10,10 +10,6 @@ const emit = defineEmits(['select'])
 
 const stepWidth = computed(() => `width: ${width}px`)
 
-watch(stepWidth, () => {
-    console.log(stepWidth.value)
-})
-
 function stepClasses(year: number) {
     const classes: string[] = ['test']
     if (year % 50 === 0) {

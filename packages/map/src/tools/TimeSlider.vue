@@ -1,34 +1,30 @@
 <script setup lang="ts">
-// import type { LayerTimeConfig } from '@swissgeo/layers'
-
 import type { Dimension, Layer } from '@swissgeo/layers'
 
 import { useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { LucideIcon } from '@swissgeo/skeleton'
+import { IconButton } from '@swissgeo/skeleton'
+import { useResizeObserver } from '@vueuse/core'
 import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 
-// import TimeSliderDropdown from '@/modules/map/components/toolbox/TimeSliderDropdown.vue'
-// import useUIStore from '@/store/modules/ui'
 import debounce from '@/utils/debounce'
 
 import TimeSliderBar from './TimeSliderBar.vue'
 import { getYearsWithData } from './timeSliderUtils'
-// const dispatcher: ActionDispatcher = { name: 'TimeSlider.vue' }
 
-// const uiStore = useUIStore()
 const layerStore = useLayerStore()
-let cursorX = 0
-let playYearInterval: ReturnType<typeof setTimeout> | undefined
+let playYearInterval: ReturnType<typeof setInterval> | undefined
 
 const currentYear = ref<number>()
 const playYearsWithData = ref(false)
 const yearCursorIsGrabbed = ref(false)
 
 const sliderContainer = useTemplateRef<HTMLDivElement>('sliderContainer')
+const containerWidth = ref(0)
 
-const screenWidth = computed(() => /*uiStore.width*/ 1024)
+useResizeObserver(sliderContainer, (entries) => {
+    containerWidth.value = entries[0]?.contentRect.width ?? 0
+})
 
 const layersWithTimestamps = computed((): LayerWithTime[] => {
     // type of ref isn't picked up correctly here...
@@ -37,8 +33,6 @@ const layersWithTimestamps = computed((): LayerWithTime[] => {
     })
     return layersWithTime
 })
-
-// const activeLayers = computed(() => /*layersStore.activeLayers*/ [])
 
 const youngestYear = computed(() =>
     // Youngest year available in the current layer data
@@ -60,8 +54,6 @@ const oldestYear = computed(
         )
 )
 
-const previewYear = ref()
-
 const allYears = computed(() => {
     const years: number[] = []
     if (oldestYear.value === undefined || youngestYear.value === undefined) {
@@ -75,54 +67,15 @@ const allYears = computed(() => {
 
 const yearsWithData = computed(() => getYearsWithData(layersWithTimestamps.value))
 
-const containerWidth = computed(() => {
-    if (!sliderContainer.value || !sliderContainer.value?.clientWidth) {
-        log.error({
-            title: 'TimeSlider.vue',
-            titleColor: LogPreDefinedColor.Red,
-            messages: ['sliderContainer clientWidth is not defined', sliderContainer.value],
-        })
-        return
-    }
-    return sliderContainer.value.clientWidth
-})
-
-watch(screenWidth, () => {})
-
-// watch(
-//     [oldestYear, youngestYear, yearsWithData, allYears, currentYear],
-//     () => {
-//         // console.log('oldest', oldestYear.value)
-//         // console.log('yougest', youngestYear.value)
-//         console.log('data', yearsWithData.value)
-//         console.log('allYears', allYears.value)
-//         console.log('currentYear', currentYear.value)
-//         console.log('previewYear', previewYear.value)
-//     },
-//     { immediate: true }
-// )
-
 watch(currentYear, () => {
     dispatchPreviewYearToStoreDebounced()
 })
-
-watch(
-    sliderContainer,
-    () => {
-        console.log('sliderContainer watch', sliderContainer.value)
-    },
-    { immediate: true }
-)
-
-// watch(layersWithTimestamps, () => {
-//     dispatchPreviewYearToStoreDebounced()
-// })
 
 onMounted(() => {
     log.debug({
         title: 'TimeSlider.vue',
         titleColor: LogPreDefinedColor.Blue,
-        messages: [`Activating time slider, previewYear=${previewYear.value}`],
+        messages: ['Activating time slider'],
     })
     initializeCurrentYear()
 
@@ -136,6 +89,7 @@ onMounted(() => {
 
 onUnmounted(() => {
     window.removeEventListener('keydown', handleKeyDownEvent)
+    clearInterval(playYearInterval)
 })
 
 function initializeCurrentYear() {
@@ -170,21 +124,6 @@ function initializeCurrentYear() {
     }
 }
 
-// function setPreviewYearToLayers() {
-//     activeLayers.value.forEach((layer, index) => {
-//         const year = previewYear.value
-//         if (
-//             layer.isVisible &&
-//             timeConfigUtils.hasMultipleTimestamps(layer) &&
-//             layer.timeConfig &&
-//             'currentTimeEntry' in layer.timeConfig &&
-//             layer.timeConfig.currentTimeEntry !== year
-//         ) {
-//             // layersStore.setTimedLayerCurrentYear(index, year, dispatcher)
-//         }
-//     })
-// }
-
 function dispatchCurrentYearToStore() {
     if (!currentYear.value) {
         return
@@ -202,36 +141,36 @@ function dispatchCurrentYearToStore() {
 const dispatchPreviewYearToStoreDebounced = debounce(dispatchCurrentYearToStore, 100)
 
 function togglePlayYearsWithData() {
-    // playYearsWithData.value = !playYearsWithData.value
-    // if (playYearsWithData.value) {
-    //     const yearsWithDataForPlayer = allYears.value
-    //         .filter(
-    //             (year) =>
-    //                 yearsWithData.value.yearsJoint.includes(year) ||
-    //                 yearsWithData.value.yearsSeparate.includes(year)
-    //         )
-    //         .sort()
-    //         .reverse()
-    //     if (
-    //         !yearsWithDataForPlayer.includes(currentYear.value) ||
-    //         currentYear.value === yearsWithDataForPlayer[0]
-    //     ) {
-    //         currentYear.value = yearsWithDataForPlayer.slice(-1)[0]!
-    //     }
-    //     playYearInterval = setInterval(() => {
-    //         const currentYearIndex = yearsWithDataForPlayer.indexOf(currentYear.value)
-    //         if (currentYearIndex === 0) {
-    //             clearInterval(playYearInterval)
-    //             playYearInterval = undefined
-    //             playYearsWithData.value = false
-    //         } else {
-    //             currentYear.value = yearsWithDataForPlayer[currentYearIndex - 1]!
-    //         }
-    //     }, 1000)
-    // } else {
-    //     clearInterval(playYearInterval)
-    //     playYearInterval = undefined
-    // }
+    playYearsWithData.value = !playYearsWithData.value
+    if (playYearsWithData.value) {
+        const yearsWithDataForPlayer = allYears.value
+            .filter(
+                (year) =>
+                    yearsWithData.value.yearsJoint.includes(year) ||
+                    yearsWithData.value.yearsSeparate.includes(year)
+            )
+            .sort((a, b) => a - b)
+
+        if (
+            !yearsWithDataForPlayer.includes(currentYear.value!) ||
+            currentYear.value === yearsWithDataForPlayer[yearsWithDataForPlayer.length - 1]
+        ) {
+            currentYear.value = yearsWithDataForPlayer[0]!
+        }
+        playYearInterval = setInterval(() => {
+            const currentYearIndex = yearsWithDataForPlayer.indexOf(currentYear.value!)
+            if (currentYearIndex === yearsWithDataForPlayer.length - 1) {
+                clearInterval(playYearInterval)
+                playYearInterval = undefined
+                playYearsWithData.value = false
+            } else {
+                currentYear.value = yearsWithDataForPlayer[currentYearIndex + 1]!
+            }
+        }, 1000)
+    } else {
+        clearInterval(playYearInterval)
+        playYearInterval = undefined
+    }
 }
 
 function handleKeyDownEvent(event: KeyboardEvent) {
@@ -256,7 +195,6 @@ function handleKeyDownEvent(event: KeyboardEvent) {
     <div
         ref="sliderContainer"
         data-cy="time-slider"
-        class="w-full"
         @grabbing="yearCursorIsGrabbed = $event"
         :class="{ grabbed: yearCursorIsGrabbed }"
     >
@@ -268,31 +206,17 @@ function handleKeyDownEvent(event: KeyboardEvent) {
                 :allYears="allYears"
                 :yearsWithData
                 v-model="currentYear"
-                :containerWidth="containerWidth || 0"
+                :containerWidth="containerWidth"
             />
 
-            <!-- <div
-                class="time-slider-dropdown"
-                data-cy="time-slider-dropdown"
-            >
-                <!-- <TimeSliderDropdown
-                    v-model.number="currentYear"
-                    :entries="allYears"
-                    :is-playing="playYearsWithData"
-                    @play="togglePlayYearsWithData"
-                />
-            </div> -->
-
-            <div class="time-slider-play-button">
-                <button
-                    id="timeSliderPlayButton"
-                    data-test="time-slider-play-button"
-                    class="btn btn-light btn-lg m-1 flex self-center border p-3"
-                    @click="togglePlayYearsWithData"
-                >
-                    <LucideIcon :name="playYearsWithData ? 'Pause' : 'Play'" />
-                </button>
-            </div>
+            <IconButton
+                id="timeSliderPlayButton"
+                data-test="time-slider-play-button"
+                class="flex-shrink-0 self-center"
+                severity="secondary"
+                :icon="playYearsWithData ? 'Pause' : 'Play'"
+                @click="togglePlayYearsWithData"
+            />
         </div>
         <!-- Time slider color tooltip content -->
     </div>
