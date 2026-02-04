@@ -47,7 +47,7 @@ function stepClasses(year: number) {
             :style="stepWidth"
             :data-cy="`time-slider-bar-${year}`"
             :class="stepClasses(year)"
-            @click="emit('select')"
+            @click="emit('select', year)"
         />
     </div>
 </template>
