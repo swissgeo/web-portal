@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { IconButton } from '@swissgeo/skeleton'
 import { useFileImport } from '~/composables/useFileImport'
+import { ref, useTemplateRef } from 'vue'
 
 const { importFile } = useFileImport()
 

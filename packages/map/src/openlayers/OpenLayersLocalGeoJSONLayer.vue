@@ -2,6 +2,7 @@
 import type { FileLayer } from '@swissgeo/layers'
 
 import useOlLocalGeoJSONLayer from '../composables/olLocalGeoJSONLayer.composable'
+import { watch, onMounted } from 'vue'
 
 const { layer } = defineProps<{
     layer: FileLayer

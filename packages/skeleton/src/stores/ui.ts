@@ -1,3 +1,6 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+
 // Sidebar types enum
 export enum SidebarType {
     LAYER_CART = 'layerCart',

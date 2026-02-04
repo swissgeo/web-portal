@@ -10,6 +10,23 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(({ mode }): UserConfig => {
     return {
+        test: {
+            globals: true,
+            environment: 'jsdom',
+            resolve: {
+                alias: {
+                    '@': [
+                        fileURLToPath(new URL('./src', import.meta.url)),
+                        fileURLToPath(new URL('../skeleton/src', import.meta.url)),
+                    ],
+                    '@stores': [
+                        fileURLToPath(new URL('./src/stores', import.meta.url)),
+                        fileURLToPath(new URL('../skeleton/src/stores', import.meta.url)),
+                    ],
+                    '~': fileURLToPath(new URL('../main/app', import.meta.url)),
+                },
+            },
+        },
         build: {
             // don't minify in dev build. This helps with debugging
             // maybe this could be solved in a better way with sourcemap?
@@ -33,6 +50,8 @@ export default defineConfig(({ mode }): UserConfig => {
         resolve: {
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url)),
+                '@stores': fileURLToPath(new URL('./src/stores', import.meta.url)),
+                '~': fileURLToPath(new URL('../main/app', import.meta.url)),
             },
         },
         plugins: [

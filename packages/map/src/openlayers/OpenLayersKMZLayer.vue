@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { FileLayer } from '@swissgeo/layers'
 
-import useOlKMZLayer from '../composables/olKMZLayer.composable'
+import useOlKMZLayer from '@/composables/olKMZLayer.composable'
 
 const { layer } = defineProps<{
     layer: FileLayer

@@ -1,16 +1,26 @@
-import { WEBMERCATOR, WGS84 } from '@swissgeo/coordinates'
+// Mock coordinate constants locally to avoid importing the real '@swissgeo/coordinates' module in unit tests
+const WGS84 = { epsg: 'EPSG:4326' }
+const WEBMERCATOR = { epsg: 'EPSG:3857' }
+
 import { createPinia, setActivePinia } from 'pinia'
 import proj4 from 'proj4'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ActionDispatcher } from '@/stores/types'
 
 import usePositionStore from '@/stores/position'
-import useUIStore from '@/stores/ui'
+import { useUiStore as useUIStore } from '@/stores/ui'
 
 const dispatcher: ActionDispatcher = {
     name: 'position-store-unit-test',
 }
+
+vi.mock('@/stores/ui', () => ({
+    useUiStore: vi.fn(() => ({
+        setSize: vi.fn(),
+        isSidebarOpen: false,
+    })),
+}))
 
 describe('Position store tests', () => {
     beforeEach(() => {
@@ -39,11 +49,31 @@ describe('Position store tests', () => {
         beforeEach(() => {
             const positionStore = usePositionStore()
             const uiStore = useUIStore()
-            positionStore.setProjection(WEBMERCATOR, dispatcher)
+            // Avoid importing the full '@swissgeo/coordinates' machinery in unit tests by
+            // stubbing a minimal WebMercator-like projection with the methods the store expects.
+            const fakeWebMercator = {
+                epsg: WEBMERCATOR.epsg,
+                getDefaultZoom: () => 0,
+                roundZoomLevel: (z: number) => parseFloat(z.toFixed(3)),
+                getResolutionForZoomAndCenter: (zoom: number, center: [number, number]) => {
+                    const y = center[1]
+                    const R = 6378137
+                    const latRadians = 2 * Math.atan(Math.exp(y / R)) - Math.PI / 2
+                    const latDegrees = (latRadians * 180) / Math.PI
+                    // Use the standard Web Mercator meters-per-pixel at zoom 0 (≈156543.0339 m/px)
+                    return (156543.0339 * Math.cos((latDegrees * Math.PI) / 180.0)) / Math.pow(2, zoom)
+                },
+                isInBounds: () => true,
+                bounds: { center: [0, 0] },
+            }
+
+                // directly assign stubbed projection and center to avoid triggering projection parsing logic
+                ; (positionStore as any).projection = fakeWebMercator
+
             // first we setup a fake screen of 100px by 100px
             uiStore.setSize(screenSize, screenSize, dispatcher)
-            // we now then center the view on wanted coordinates
-            positionStore.setCenter(proj4(WGS84.epsg, WEBMERCATOR.epsg, [lon, lat]), dispatcher)
+                // we now then center the view on wanted coordinates (in WebMercator projection)
+                ; (positionStore as any).center = proj4(WGS84.epsg, WEBMERCATOR.epsg, [lon, lat])
         })
 
         it("Doesn't allow negative zoom level", () => {

@@ -43,9 +43,10 @@ catalog:
     '@types/pako': ^2.0.4
     '@types/sanitize-html': ^2.16.0
     '@typescript-eslint/utils': ^8.46.1
-    '@vitejs/plugin-vue': ^6.0.1
+    '@vitejs/plugin-vue': 6.0.2
     '@vue/eslint-config-prettier': ^10.2.0
     '@vue/eslint-config-typescript': ^14.6.0
+    '@vue/test-utils': ^2.4.6
     '@vue/tsconfig': ^0.8.1
     '@vueuse/core': ^13.9.0
     '@xmldom/xmldom': ^0.8.11

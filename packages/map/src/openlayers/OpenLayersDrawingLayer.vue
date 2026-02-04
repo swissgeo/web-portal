@@ -8,6 +8,7 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
+import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue'
 
 
 const { layer } = defineProps<{

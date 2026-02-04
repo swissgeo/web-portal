@@ -2,6 +2,7 @@
 import { useDrawingStore, DrawingMode, MARKER_ICONS, useDrawingManager } from '@swissgeo/drawing'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { IconButton } from '@swissgeo/skeleton'
+import { onMounted } from 'vue'
 
 const emit = defineEmits<{
     close: []

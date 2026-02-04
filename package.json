@@ -9,15 +9,25 @@
         "build-libs": "pnpm --filter=!main run --recursive --if-present build",
         "build:dev:watch": "pnpm --filter=!main --recursive --parallel --if-present run build:dev:watch",
         "dev": "pnpm --filter=main run dev",
+        "lint": "pnpm run --recursive --parallel --no-bail --if-present lint",
         "test": "vitest run",
-        "lint": "pnpm run --recursive --parallel --no-bail --if-present lint"
+        "test:ui": "vitest --ui",
+        "test:coverage": "vitest run --coverage"
     },
     "devDependencies": {
         "@prettier/plugin-xml": "catalog:",
         "@swissgeo/config-prettier": "catalog:",
+        "@vitejs/plugin-vue": "catalog:",
+        "@vue/test-utils": "catalog:",
         "prettier": "catalog:",
         "prettier-plugin-jsdoc": "catalog:",
         "prettier-plugin-packagejson": "catalog:",
-        "prettier-plugin-tailwindcss": "catalog:"
+        "prettier-plugin-tailwindcss": "catalog:",
+        "unplugin-auto-import": "catalog:",
+        "vitest": "catalog:"
+    },
+    "dependencies": {
+        "pinia": "catalog:",
+        "vue": "catalog:"
     }
 }

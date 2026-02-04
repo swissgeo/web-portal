@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { FileLayer } from '@swissgeo/layers'
 
-import useOlGPXLayer from '../composables/olGPXLayer.composable'
+import useOlGPXLayer from '@/composables/olGPXLayer.composable'
 
 const { layer } = defineProps<{
     layer: FileLayer
