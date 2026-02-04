@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
     devtools: { enabled: true },
     build: {
-        transpile: ['@geospatial-sdk/geocoding'],
+        transpile: [],
     },
     modules: [
         '@nuxt/eslint',
