@@ -10,15 +10,8 @@ const emit = defineEmits(['select'])
 
 function stepClasses(year: number) {
     const classes: string[] = ['test']
-    if (year % 50 === 0) {
-        // Big Tick
+    if (year % 10 === 0) {
         classes.push('big-tick')
-    } else if (year % 25 === 0) {
-        // medium tick
-        classes.push('medium-tick')
-    } else if (year % 5 === 0) {
-        // small tick
-        classes.push('small-tick')
     }
     if (yearsJoint.includes(year)) {
         classes.push('bg-primary-300')
@@ -27,17 +20,16 @@ function stepClasses(year: number) {
     } else {
         classes.push('bg-gray-300')
     }
-
     return classes
 }
 </script>
 
 <template>
-    <div class="mt-12 flex h-full bg-gray-300" :style="{ width: sliderWidth + 'px' }">
+    <div class="mt-12 flex bg-gray-300" :style="{ width: sliderWidth + 'px' }">
         <span
             v-for="year in allYears"
             :key="year"
-            class="flex-1 h-4"
+            class="flex-1 h-3"
             :data-cy="`time-slider-bar-${year}`"
             :class="stepClasses(year)"
             @click="emit('select', year)"
@@ -46,27 +38,23 @@ function stepClasses(year: number) {
 </template>
 
 <style>
-/* TDOO make scoped work */
-.step:before {
-    background-color: var(--gray-600);
-    display: block;
-    content: ' ';
+/* TODO make scoped work */
+.test {
+    position: relative;
+    overflow: visible;
+}
+
+.test::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 1px;
-    height: 2px;
+    height: 5px;
+    background-color: #9ca3af;
 }
 
-.big-tick:before {
-    height: 15px;
-    margin-left: -2px;
-    width: 2px;
-}
-
-.medium-tick:before {
-    height: 10px;
-    margin-left: -1px;
-}
-
-.small-tick:before {
-    margin-left: -0.5px;
+.test.big-tick::after {
+    height: 9px;
 }
 </style>
