@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-const { allYears, yearsJoint, yearsSeparate, width } = defineProps<{
+const { allYears, yearsJoint, yearsSeparate, sliderWidth } = defineProps<{
     allYears: number[]
     yearsJoint: number[]
     yearsSeparate: number[]
-    width: number
+    sliderWidth: number
 }>()
 
 const emit = defineEmits(['select'])
-
-const stepWidth = computed(() => `width: ${width}px`)
 
 function stepClasses(year: number) {
     const classes: string[] = ['test']
@@ -35,12 +33,11 @@ function stepClasses(year: number) {
 </script>
 
 <template>
-    <div class="mt-12 flex h-full bg-gray-300">
+    <div class="mt-12 flex h-full bg-gray-300" :style="{ width: sliderWidth + 'px' }">
         <span
             v-for="year in allYears"
             :key="year"
-            class="inline-block h-4"
-            :style="stepWidth"
+            class="flex-1 h-4"
             :data-cy="`time-slider-bar-${year}`"
             :class="stepClasses(year)"
             @click="emit('select', year)"

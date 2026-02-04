@@ -6,6 +6,7 @@ import GeoadminTooltip from '@swissgeo/tooltip'
 
 import TimeSliderBarSteps from './TimeSliderBarSteps.vue'
 const PLAY_BUTTON_SIZE = 54
+const STEP_BAR_LEFT = 20 // matches px-5 on root element
 
 const LABEL_WIDTH = 32
 const MARGIN_BETWEEN_LABELS = 50
@@ -87,8 +88,10 @@ const yearsShownAsLabel = computed(() => {
     return allYears.filter((year) => year % yearThreshold === 0)
 })
 
+// yearPositionOnSlider is 4.5px left of the step center; both cursorArrowPosition
+// and cursorPosition add 4.5 back to derive the final centered position.
 const yearPositionOnSlider = computed(
-    () => (1 + allYears.indexOf(currentYear.value)) * distanceBetweenLabels.value + 42
+    () => STEP_BAR_LEFT + (allYears.indexOf(currentYear.value) + 0.5) * distanceBetweenLabels.value - 4.5
 )
 
 const cursorPosition = computed(() => {
@@ -154,14 +157,14 @@ function releaseCursor() {
 }
 
 function positionNodeLabel(year: number) {
-    const timestampIndex = allYears.indexOf(year) ?? 1
+    const timestampIndex = allYears.indexOf(year)
+    const tickPosition = timestampIndex * distanceBetweenLabels.value
     const leftPosition = Math.max(
-        LABEL_WIDTH / 2.0,
-        timestampIndex * distanceBetweenLabels.value -
-            yearsShownAsLabel.value.indexOf(year) * LABEL_WIDTH
+        LABEL_WIDTH / 2,
+        Math.min(tickPosition, sliderWidth.value - LABEL_WIDTH / 2)
     )
     return {
-        left: `${Math.min(leftPosition, sliderWidth.value - LABEL_WIDTH)}px`,
+        left: `${leftPosition}px`,
     }
 }
 
@@ -236,7 +239,7 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE)
                 :years-separate="yearsWithData.yearsSeparate"
                 ref="timeSliderBar"
                 @select="currentYear = $event"
-                :width="distanceBetweenLabels"
+                :sliderWidth="sliderWidth"
             />
             <template #content>
                 <!-- <div class="time-slider-infobox">
@@ -260,15 +263,17 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE)
                         </div> -->
             </template>
         </GeoadminTooltip>
-        <div
-            v-for="yearAsLabel in yearsShownAsLabel"
-            :key="yearAsLabel"
-            class="relative top-0 inline-flex -translate-x-1/2"
-            :style="positionNodeLabel(yearAsLabel)"
-        >
-            <small>
-                {{ yearAsLabel }}
-            </small>
+        <div class="relative h-5">
+            <div
+                v-for="yearAsLabel in yearsShownAsLabel"
+                :key="yearAsLabel"
+                class="absolute -translate-x-1/2"
+                :style="positionNodeLabel(yearAsLabel)"
+            >
+                <small>
+                    {{ yearAsLabel }}
+                </small>
+            </div>
         </div>
     </div>
 </template>
