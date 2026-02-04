@@ -1,5 +1,4 @@
-import type { DatasetLayer } from '@swissgeo/layers'
-import type { OGCRecord, OGCRecords, Service, Protocol, Link, Dataset } from '@swissgeo/shared/ogc'
+import type { OGCRecord, OGCRecords, Service, Protocol, Link, Dataset } from '@swissgeo/ogc'
 import type { Style } from '@types/mapbox-gl'
 
 // maybe there should be a OGC package?!

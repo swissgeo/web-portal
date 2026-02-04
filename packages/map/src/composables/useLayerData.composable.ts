@@ -1,5 +1,5 @@
+import type { Dataset, Protocol } from '@swissgeo/ogc'
 import type { LayerData } from '@swissgeo/shared/api'
-import type { Dataset, Protocol } from '@swissgeo/shared/ogc'
 import type mapboxgl from 'mapbox-gl'
 
 // TODO maybe don't only use layerId as param, otherwise we could have interfering

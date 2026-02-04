@@ -30,6 +30,7 @@
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
         "@swissgeo/numbers": "catalog:",
+        "@swissgeo/ogc": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "@turf/turf": "catalog:",
         "@types/mapbox-gl": "catalog:",

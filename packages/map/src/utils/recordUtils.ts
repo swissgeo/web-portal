@@ -1,4 +1,4 @@
-import type { Link as OGCLink } from '@swissgeo/shared/ogc'
+import type { Link as OGCLink } from '@swissgeo/ogc'
 
 // maybe this belongs to shared?
 // or to a future layers package?

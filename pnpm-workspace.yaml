@@ -11,7 +11,7 @@ catalog:
     '@fontsource/geologica': ^5.2.6
     '@fontsource/inter': ^5.2.6
     '@fontsource/noto-sans': ^5.2.7
-    '@microsoft/api-extractor': ^7.55.1
+    '@microsoft/api-extractor': 7.55.1
     '@nuxt/eslint': ^1.9.0
     '@nuxt/image': ^1.11.0
     '@nuxt/test-utils': ^3.19.2
@@ -25,7 +25,7 @@ catalog:
     '@primevue/nuxt-module': ^4.3.8
     '@swissgeo/config-eslint': ^1.0.0
     '@swissgeo/config-prettier': ^1.0.0
-    '@swissgeo/config-typescript': ^1.0.0
+    '@swissgeo/config-typescript': 1.0.0
     '@swissgeo/coordinates': ^1.0.4
     '@swissgeo/log': ^1.0.0
     '@swissgeo/numbers': ^1.0.0

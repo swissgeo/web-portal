@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import type { DatasetLayer } from '@swissgeo/layers'
-import type { WMTSCapabilities } from '@swissgeo/shared/ogc'
+import type { WMTSCapabilities } from '@swissgeo/ogc'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
 import log from '@swissgeo/log'
 import { optionsFromCapabilities } from 'ol/source/WMTS'
 
 import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
+
 import useRecordsData from '../composables/useRecordsData.composable'
 
 const { layer } = defineProps<{
