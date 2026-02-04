@@ -19,7 +19,7 @@ const {
 
 function selectDrawingType(type: DrawingMode) {
     if (drawingStore.drawingMode === type) {
-        drawingStore.setDrawingMode(DrawingMode.None)
+        drawingStore.setDrawingMode('None')
     } else {
         drawingStore.setDrawingMode(type)
     }
@@ -29,7 +29,7 @@ function handleClose() {
     if (drawingStore.isDrawing) {
         stopDrawing()
     }
-    drawingStore.setDrawingMode(DrawingMode.None)
+    drawingStore.setDrawingMode('None')
     emit('close')
 }
 
@@ -38,13 +38,13 @@ async function handleExport(format: 'kml' | 'kmz' | 'gpx') {
         switch (format) {
             case 'kml':
                 downloadKML()
-                break
+                return
             case 'kmz':
                 await downloadKMZ()
-                break
+                return
             case 'gpx':
                 downloadGPX()
-                break
+                return
         }
     } catch (error) {
         log.error({
@@ -58,7 +58,7 @@ async function handleExport(format: 'kml' | 'kmz' | 'gpx') {
 function handleClear() {
     if (confirm('Are you sure you want to clear all drawings?')) {
         clearDrawing()
-        drawingStore.setDrawingMode(DrawingMode.None)
+        drawingStore.setDrawingMode('None')
     }
 }
 
@@ -86,10 +86,10 @@ onMounted(() => {
             <p class="mb-2 text-sm text-gray-600">Select a drawing tool:</p>
             <div class="flex gap-2">
                 <button
-                    @click="selectDrawingType(DrawingMode.Point)"
+                    @click="selectDrawingType('Point')"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        drawingStore.drawingMode === DrawingMode.Point
+                        drawingStore.drawingMode === 'Point'
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -97,10 +97,10 @@ onMounted(() => {
                     📍 Point
                 </button>
                 <button
-                    @click="selectDrawingType(DrawingMode.LineString)"
+                    @click="selectDrawingType('LineString')"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        drawingStore.drawingMode === DrawingMode.LineString
+                        drawingStore.drawingMode === 'LineString'
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -108,10 +108,10 @@ onMounted(() => {
                     📏 Line
                 </button>
                 <button
-                    @click="selectDrawingType(DrawingMode.Polygon)"
+                    @click="selectDrawingType('Polygon')"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        drawingStore.drawingMode === DrawingMode.Polygon
+                        drawingStore.drawingMode === 'Polygon'
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -119,10 +119,10 @@ onMounted(() => {
                     ⬡ Polygon
                 </button>
                 <button
-                    @click="selectDrawingType(DrawingMode.Text)"
+                    @click="selectDrawingType('Text')"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
-                        drawingStore.drawingMode === DrawingMode.Text
+                        drawingStore.drawingMode === 'Text'
                             ? 'bg-blue-500 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                     ]"
@@ -134,13 +134,13 @@ onMounted(() => {
                 v-if="drawingStore.isDrawing"
                 class="mt-2 text-sm text-blue-600"
             >
-                {{ drawingStore.drawingMode === DrawingMode.Point ? 'Click on the map to add a point' : drawingStore.drawingMode === DrawingMode.Text ? 'Click on the map to add text' : 'Click to start drawing, double-click to finish' }}
+                {{ drawingStore.drawingMode === 'Point' ? 'Click on the map to add a point' : drawingStore.drawingMode === 'Text' ? 'Click on the map to add text' : 'Click to start drawing, double-click to finish' }}
             </p>
         </div>
 
         <!-- Icon Selection (only visible when Point mode is active) -->
         <div
-            v-if="drawingStore.drawingMode === DrawingMode.Point"
+            v-if="drawingStore.drawingMode === 'Point'"
             class="mb-4"
         >
             <p class="mb-2 text-sm font-medium text-gray-700">Select marker icon:</p>

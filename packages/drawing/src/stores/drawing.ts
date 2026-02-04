@@ -20,18 +20,10 @@ import { DEFAULT_MARKER_ICON, getMarkerIconById, MARKER_ICONS, dataUrlToUint8Arr
 registerProj4(proj4)
 register(proj4)
 
-export enum DrawingMode {
-    None = 'None',
-    Point = 'Point',
-    LineString = 'LineString',
-    Polygon = 'Polygon',
-    Text = 'Text'
-}
-
 const DRAWING_LAYER_NAME = 'My Drawings'
 
 export const useDrawingStore = defineStore('drawing', () => {
-    const drawingMode = ref<DrawingMode>(DrawingMode.None)
+    const drawingMode = ref<DrawingMode>('None')
 
     const isDrawing = ref(false)
     const drawingLayerUuid = ref<string | undefined>(undefined)
@@ -47,7 +39,7 @@ export const useDrawingStore = defineStore('drawing', () => {
     }
 
     function clearDrawingMode() {
-        drawingMode.value = DrawingMode.None
+        drawingMode.value = 'None'
     }
 
     function toggleDrawing() {

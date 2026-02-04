@@ -21,14 +21,6 @@ export default defineConfig(({ mode }): UserConfig => {
                 external: ['vue', 'pinia', '@swissgeo/layers', '@swissgeo/log', 'ol', 'lucide-vue-next'],
                 output: {
                     exports: 'named',
-                    globals: {
-                        vue: 'Vue',
-                        pinia: 'Pinia',
-                        '@swissgeo/layers': 'layers',
-                        '@swissgeo/log': 'log',
-                        ol: 'ol',
-                        'lucide-vue-next': 'lucideVueNext',
-                    },
                 },
             },
             sourcemap: true,

@@ -28,7 +28,7 @@ export default function useOlKMZLayer(
         const isTextFeature = feature.get('isTextFeature') === true
         const textContent = feature.get('text') || (isTextFeature ? feature.get('name') : null)
 
-        if (isTextFeature || (textContent && geometry?.getType() === DrawingMode.Point && !feature.get('iconId'))) {
+        if (isTextFeature || (textContent && geometry?.getType() === 'Point' && !feature.get('iconId'))) {
             // Text feature styling - invisible point with text label
             return new Style({
                 image: new CircleStyle({
@@ -74,90 +74,99 @@ export default function useOlKMZLayer(
         },
     })
 
+    async function unzippKMZ(): Promise<Record<string, Uint8Array<ArrayBufferLike>>> {
+        // Decode base64 to binary
+        const binaryString = atob(kmzDataBase64)
+        const uint8Array = new Uint8Array(binaryString.length)
+        for (let i = 0; i < binaryString.length; i++) {
+            uint8Array[i] = binaryString.charCodeAt(i)
+        }
+
+        return await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
+            unzip(uint8Array, (err: Error | null, data: Record<string, Uint8Array>) => {
+                if (err) {
+                    reject(new Error(err.message))
+                } else {
+                    resolve(data)
+                }
+            })
+        })
+    }
+
+    function extractKMLAndIcons(unzipped: Record<string, Uint8Array>): { kmlContent: string; iconFiles: Record<string, Blob> } {
+        const decoder = new TextDecoder('utf-8')
+        let kmlContent = ''
+        const iconFiles: Record<string, Blob> = {}
+
+        for (const [filename, content] of Object.entries(unzipped)) {
+            if (filename.toLowerCase().endsWith('.kml')) {
+                kmlContent = decoder.decode(content)
+            } else if (filename.startsWith('icons/')) {
+                const blob = new Blob([content], {
+                    type: filename.endsWith('.svg') ? 'image/svg+xml' : 'image/png'
+                })
+                iconFiles[filename] = blob
+            }
+        }
+
+        if (!kmlContent) {
+            throw new Error('No KML file found in KMZ archive')
+        }
+
+        return { kmlContent, iconFiles }
+    }
+
+    function replaceIconReferences(kmlContent: string, iconFiles: Record<string, Blob>): string {
+        let modifiedKML = kmlContent
+        for (const [filename, blob] of Object.entries(iconFiles)) {
+            const blobUrl = URL.createObjectURL(blob)
+            modifiedKML = modifiedKML.split(filename).join(blobUrl)
+        }
+        return modifiedKML
+    }
+
+    function parseKMLFeatures(kmlContent: string, projection: string): FeatureLike[] {
+        const format = new KML({
+            extractStyles: true,
+        })
+        register(proj4)
+
+        return format.readFeatures(kmlContent, {
+            featureProjection: projection,
+            dataProjection: EPSG_4326_WGS84,
+        })
+    }
+
+    function processTextFeatures(features: FeatureLike[]): void {
+        features.forEach(feature => {
+            const name = feature.get('name')
+            const text = feature.get('text')
+            const isTextFeature = feature.get('isTextFeature')
+            const geometry = feature.getGeometry()
+
+            if (isTextFeature || (text && geometry?.getType() === 'Point' && !feature.get('iconId'))) {
+                feature.set('text', text || name)
+                feature.set('isTextFeature', true)
+                feature.setStyle(undefined)
+            }
+        })
+    }
+
     async function initialize(): Promise<void> {
         log.debug(`Initializing KMZ layer ${layerId}`)
         const positionStore = usePositionStore()
 
         try {
-            // Decode base64 to binary
-            const binaryString = atob(kmzDataBase64)
-            const uint8Array = new Uint8Array(binaryString.length)
-            for (let i = 0; i < binaryString.length; i++) {
-                uint8Array[i] = binaryString.charCodeAt(i)
-            }
+            const unzipped = await unzippKMZ()
+            const { kmlContent, iconFiles } = extractKMLAndIcons(unzipped)
+            const modifiedKML = replaceIconReferences(kmlContent, iconFiles)
+            const features = parseKMLFeatures(modifiedKML, positionStore.projection.epsg)
 
-            const unzipped = await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
-                unzip(uint8Array, (err: Error | null, data: Record<string, Uint8Array>) => {
-                    if (err) {
-                        reject(new Error(err.message))
-                    } else {
-                        resolve(data)
-                    }
-                })
-            })
+            processTextFeatures(features)
 
-            // Find the first .kml file in the archive and extract icons
-            const decoder = new TextDecoder('utf-8')
-            let kmlContent = ''
-            const iconFiles: Record<string, Blob> = {}
-
-
-            for (const [filename, content] of Object.entries(unzipped)) {
-                if (filename.toLowerCase().endsWith('.kml')) {
-                    kmlContent = decoder.decode(content)
-                } else if (filename.startsWith('icons/')) {
-                    // Store icon files as blobs for use in styles
-                    const blob = new Blob([content], {
-                        type: filename.endsWith('.svg') ? 'image/svg+xml' : 'image/png'
-                    })
-                    iconFiles[filename] = blob
-                }
-            }
-
-            if (!kmlContent) {
-                throw new Error('No KML file found in KMZ archive')
-            }
-
-            // Replace local icon references with blob URLs in KML content
-            let modifiedKML = kmlContent
-            for (const [filename, blob] of Object.entries(iconFiles)) {
-                const blobUrl = URL.createObjectURL(blob)
-                // Replace references to the icon file with the blob URL
-                modifiedKML = modifiedKML.split(filename).join(blobUrl)
-            }
-
-            // Parse KML content
-            const format = new KML({
-                extractStyles: true, // Extract styles from KML for non-text features
-            })
-            register(proj4)
-
-            const features = format.readFeatures(modifiedKML, {
-                featureProjection: positionStore.projection.epsg, // CH1903+ / LV95 / EPSG:2056
-                dataProjection: EPSG_4326_WGS84, // WGS84
-            })
-
-            // Restore text properties for text features
-            features.forEach(feature => {
-                const name = feature.get('name')
-                const text = feature.get('text')
-                const isTextFeature = feature.get('isTextFeature')
-                const geometry = feature.getGeometry()
-
-                // If marked as text feature or has text without iconId, treat as text
-                if (isTextFeature || (text && geometry?.getType() === DrawingMode.Point && !feature.get('iconId'))) {
-                    feature.set('text', text || name)
-                    feature.set('isTextFeature', true)
-                    // Clear any style that might have been parsed from KML
-                    feature.setStyle(undefined)
-                }
-            })
-
-            const source = new VectorSource({
-                features,
-            })
-
+            const source = new VectorSource({ features })
             layer.setSource(source)
+
             log.debug(`KMZ layer ${layerId} initialized with ${features.length} features`)
         } catch (error) {
             log.error({

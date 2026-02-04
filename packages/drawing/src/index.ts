@@ -3,7 +3,7 @@ export { useOlDrawing } from '@/composables/olDrawing.composable'
 export { useDrawingManager } from '@/composables/useDrawingManager'
 
 // Store
-export { useDrawingStore, DrawingMode } from '@/stores/drawing'
+export { useDrawingStore } from '@/stores/drawing'
 
 // Utils
 export {
@@ -13,6 +13,9 @@ export {
     type MarkerIcon
 } from '@/utils/markerIcons'
 export { DRAWING_LAYER_ID } from '@/composables/useDrawingManager'
+
+// Types
+export type { DrawingMode } from '@/types'
 
 // Constants
 export { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@/constants/projections'

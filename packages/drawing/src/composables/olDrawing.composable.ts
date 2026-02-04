@@ -11,15 +11,16 @@ import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Icon, Stroke, Style, Text as TextStyle } from 'ol/style'
 import proj4 from 'proj4'
 
+import type { DrawingMode } from '@/types'
 import type { MarkerIcon } from '@/utils/markerIcons'
 
-import { DrawingMode, useDrawingStore } from '@/stores/drawing'
+import { useDrawingStore } from '@/stores/drawing'
 import { DEFAULT_MARKER_ICON, getMarkerIconById } from '@/utils/markerIcons'
-
 /**
  * Composable for handling OpenLayers drawing interactions
  */
 export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
+    // TODO: Consider passing the map as a parameter instead of using inject
     const olMap = toValue(inject<Map>('olMap'))
     const drawingStore = useDrawingStore()
     register(proj4)
@@ -66,7 +67,7 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
 
         // Check if this is a Point geometry with an icon
         const geomType = feature.getGeometry()?.getType()
-        if (geomType === DrawingMode.Point) {
+        if (geomType === 'Point') {
             const iconId = feature.get('iconId')
             const icon = iconId ? getMarkerIconById(iconId) : selectedIcon.value
 
@@ -142,7 +143,7 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
 
     function addDrawingInteraction(type: DrawingMode, onFeatureAdded?: (feature: Feature<Geometry>) => void) {
         // For text, we use Point geometry
-        const geometryType = type === DrawingMode.Text ? DrawingMode.Point : type
+        const geometryType = type === 'Text' ? 'Point' : type
 
         currentDraw = new Draw({
             source,
@@ -152,14 +153,14 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
             log.debug(`Feature drawn: ${type}`, event.feature)
 
             // If this is a text feature, set default text
-            if (type === DrawingMode.Text) {
+            if (type === 'Text') {
                 event.feature.set('text', 'New Text')
                 // Force style update
                 event.feature.changed()
             }
 
             // If this is a point feature, store the icon ID
-            if (type === DrawingMode.Point) {
+            if (type === 'Point') {
                 event.feature.set('iconId', selectedIcon.value.id)
                 event.feature.changed()
             }

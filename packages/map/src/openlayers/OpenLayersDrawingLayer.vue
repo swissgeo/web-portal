@@ -93,7 +93,7 @@ watch(
     () => drawingStore?.drawingMode,
     async (newMode: DrawingMode) => {
 
-        if(newMode === DrawingMode.None) {
+        if(newMode === 'None') {
             // Explicitly stop the drawing interaction
             clearDrawingFeatures()
             return
@@ -177,7 +177,7 @@ onMounted(() => {
                         const iconId = feature.get('iconId')
                         
                         // If we have a name but no text, and it's a Point, treat it as text
-                        if (name && !text && feature.getGeometry()?.getType() === DrawingMode.Point) {
+                        if (name && !text && feature.getGeometry()?.getType() === 'Point') {
                             feature.set('text', name)
                         }
                         

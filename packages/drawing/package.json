@@ -1,6 +1,6 @@
 {
     "name": "@swissgeo/drawing",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "description": "Drawing tools and utilities for map interactions",
     "keywords": [],
     "license": "ISC",
@@ -12,7 +12,6 @@
             "import": "./dist/index.es.js"
         }
     },
-    "main": "./dist/index.umd.cjs",
     "module": "./dist/index.js",
     "scripts": {
         "build": "vite build",
