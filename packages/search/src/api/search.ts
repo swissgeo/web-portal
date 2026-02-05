@@ -17,7 +17,7 @@ import type {
 interface CatalogRecord {
     id: string
     properties?: {
-        title?: Record<string, string>
+        title?: string
         description?: string
         keywords?: string[]
     }
@@ -171,12 +171,12 @@ export async function searchLayers(
                         return false
                     }
 
-                    const title = record.properties.title?.[lang] || ''
+                    const title = record.properties.title || ''
                     const description = record.properties.description || ''
                     const keywords = record.properties.keywords || []
 
-                    // Search in title, description, and keywords
                     return (
+                        record.id.toLowerCase().includes(query) ||
                         title.toLowerCase().includes(query) ||
                         description.toLowerCase().includes(query) ||
                         keywords.some((k: string) => k.toLowerCase().includes(query))
@@ -185,8 +185,7 @@ export async function searchLayers(
             )
             .slice(0, limit)
             .map((record) => {
-                const title =
-                    record.properties.title?.[lang] || record.properties.title?.en || record.id
+                const title = record.properties.title || record.id
                 return {
                     resultType: 'LAYER' as const,
                     id: record.id,
