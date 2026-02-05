@@ -33,6 +33,7 @@
         "@swissgeo/config-typescript": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
+        "stylelint": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",

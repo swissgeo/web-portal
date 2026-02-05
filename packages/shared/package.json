@@ -48,6 +48,7 @@
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
         "ol": "catalog:",
+        "stylelint": "catalog:",
         "typescript": "catalog:",
         "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
