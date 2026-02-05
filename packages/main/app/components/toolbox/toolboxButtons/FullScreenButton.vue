@@ -1,37 +1,35 @@
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faExpand } from '@fortawesome/free-solid-svg-icons'
-
-//import GeoadminTooltip from '@swissgeo/tooltip'
-
-import type { ActionDispatcher } from '@/stores/types'
-
+import { LucideIcon } from '@swissgeo/skeleton'
 import { useUiStore } from '@swissgeo/skeleton'
-
-const dispatcher: ActionDispatcher = { name: 'FullScreenButton.vue' }
 
 const { t } = useI18n()
 const uiStore = useUiStore()
 
-const tooltipContent = computed(() => {
-    if (uiStore.fullscreenMode) {
-        return t('full_screen_exit')
-    }
-    return t('full_screen')
-})
-
 function toggleFullScreen() {
-    uiStore.toggleFullscreenMode(dispatcher)
+    throw new Error('Full screen mode toggle not yet implemented')
 }
 const isInWindowFullScreenModeNotChromium = computed(
     () => screen.width === uiStore.width && screen.height === uiStore.height && !window.chrome
 )
+
+function isDisabled(): boolean {
+    return true
+}
+
 onMounted(() => {
-    window.addEventListener('keydown', handleKeydown)
+    bindEscapeKeyToExitFullScreenMode()
 })
 onUnmounted(() => {
-    window.removeEventListener('keydown', handleKeydown)
+    unbindEscapeKey()
 })
+
+function bindEscapeKeyToExitFullScreenMode(): void {
+    window.addEventListener('keydown', handleKeydown)
+}
+
+function unbindEscapeKey(): void {
+    window.removeEventListener('keydown', handleKeydown)
+}
 
 function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape' && uiStore.fullscreenMode) {
@@ -50,11 +48,15 @@ function handleKeydown(event: KeyboardEvent) {
     <button
         ref="fullscreenButton"
         class="toolbox-button d-print-none h-[40px] w-[40px] rounded-[20px] bg-gray-500 text-white"
-        :class="{ active: uiStore.fullscreenMode }"
+        :class="{ active: false }"
+        :disabled="isDisabled()"
         data-cy="toolbox-fullscreen-button"
         @click="toggleFullScreen()"
     >
-        <FontAwesomeIcon :icon="faExpand" />
+        <LucideIcon
+            name="Expand"
+            class="h-[40px] w-[40px]"
+        />
     </button>
 </template>
 

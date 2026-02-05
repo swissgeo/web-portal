@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import type { Map } from 'ol'
 import type MapEvent from 'ol/MapEvent'
 
 const RESET_ANIMATION_DURATION_MS = 300
 
-import log from '@swissgeo/log'
-import { computed, inject, onMounted, onUnmounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import type { ActionDispatcher } from '@swissgeo/map'
 
-import type { ActionDispatcher } from '@/stores/types'
-
-import usePositionStore from '@/stores/position'
+import { usePositionStore } from '@swissgeo/map'
+import { LucideIcon } from '@swissgeo/skeleton'
 
 const dispatcher: ActionDispatcher = { name: 'OpenLayersCompassButton.vue' }
 
@@ -18,30 +14,40 @@ const { hideIfNorth = false } = defineProps<{
     hideIfNorth?: boolean
 }>()
 
-const olMap = inject<Map>('olMap')
+// in the long run, we should have a composable somewhere with the olMap logic, and this button
+// will only send a "reset rotation" signal and show the current rotation of the map.
+/*const olMap = inject<Map>('olMap')
 if (!olMap) {
     log.error('OpenLayersMap is not available')
     throw new Error('OpenLayersMap is not available')
-}
+}*/
 
 const positionStore = usePositionStore()
 const { t } = useI18n()
 
-const rotation = ref(0)
+const rotation = ref(-Math.PI / 4)
 const isResetting = ref(false)
 
-// Show compass when: map is rotated away from north OR hideIfNorth is false (e.g., when auto-rotation is active)
-const showCompass = computed(() => Math.abs(rotation.value) >= 1e-9 || !hideIfNorth)
+function isDisabled() {
+    return true
+}
 
+function addRotationListener() {
+    //olMap.on('postrender', onRotate)
+}
+function removeRotationListener() {
+    //olMap.un('postrender', onRotate)
+}
 onMounted(() => {
-    olMap.on('postrender', onRotate)
+    addRotationListener()
 })
 
 onUnmounted(() => {
-    olMap.un('postrender', onRotate)
+    removeRotationListener
 })
 
 function resetRotation(): void {
+    throw new Error('ROTATION IS NOT IMPLEMENTED YET')
     isResetting.value = true
     positionStore.setAutoRotation(false, dispatcher)
     positionStore.setRotation(0, dispatcher)
@@ -53,6 +59,7 @@ function resetRotation(): void {
 }
 
 function onRotate(mapEvent: MapEvent): void {
+    throw new Error('GEOLOCATION AND ROTATIONS ARE NOT YET IMPLEMENTED')
     // Ignore rotation updates during reset animation to prevent button from reappearing
     if (isResetting.value) {
         return
@@ -69,16 +76,21 @@ function onRotate(mapEvent: MapEvent): void {
     even if the angle is not normalized, it will automatically be set to zero if pointing to the
     north -->
     <button
-        v-if="showCompass"
-        class="toolbox-button d-print-none"
+        class="recenter-button h-[40px] w-[40px] rounded-[20px] bg-black text-white"
+        :disabled="isDisabled()"
         data-cy="compass-button"
         type="button"
         :title="t('rotate_reset')"
         @click="resetRotation"
     >
+        <LucideIcon
+            name="Compass"
+            :size="40"
+            :style="{ transform: `rotate(${rotation}rad)` }"
+        />
         <!-- SVG icon adapted from "https://www.svgrepo.com/svg/883/compass" (and greatly
             simplified the code). Original icon was liscensed under the CCO liscense. -->
-        <svg
+        <!--<svg
             class="compass-button-icon"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="-100 -240 200 480"
@@ -93,22 +105,8 @@ function onRotate(mapEvent: MapEvent): void {
                 points="-100,0 100,0 0,-240"
             />
         </svg>
+        -->
     </button>
 </template>
 
-<style scoped>
-/*
-.compass-button {
-    &-icon {
-        height: $map-button-diameter - 5px;
-        width: $map-button-diameter;
-        .north-arrow {
-            fill: $venetian-red;
-        }
-        .south-arrow {
-            fill: $cerulean;
-        }
-    }
-}
-    */
-</style>
+<style scoped></style>

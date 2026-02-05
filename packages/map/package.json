@@ -27,11 +27,6 @@
         "type-check": "vue-tsc"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-svg-core": "catalog:",
-        "@fortawesome/free-brands-svg-icons": "catalog:",
-        "@fortawesome/free-regular-svg-icons": "catalog:",
-        "@fortawesome/free-solid-svg-icons": "catalog:",
-        "@fortawesome/vue-fontawesome": "catalog:",
         "@swissgeo/coordinates": "catalog:",
         "@swissgeo/drawing": "workspace:*",
         "@swissgeo/layers": "workspace:*",
