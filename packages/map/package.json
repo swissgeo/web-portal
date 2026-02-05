@@ -18,6 +18,7 @@
     "main": "index.ts",
     "scripts": {
         "build": "vite build",
+        "build:dev": "vite build --mode development",
         "build:dev:watch": "vite build --watch --mode development",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
@@ -63,5 +64,13 @@
         "vue": "catalog:",
         "vue-i18n": "catalog:"
     },
+<<<<<<< HEAD
     "packageManager": "pnpm@10.29.2"
 }
+||||||| parent of bd2683a (GPS-444 Introduce build dev target in all packages)
+    "packageManager": "pnpm@10.14.0"
+}
+=======
+    "packageManager": "pnpm@10.14.0"
+}
+>>>>>>> bd2683a (GPS-444 Introduce build dev target in all packages)

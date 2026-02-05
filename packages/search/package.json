@@ -1,31 +1,37 @@
 {
-  "name": "@swissgeo/search",
-  "version": "0.0.0",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.es.js"
+    "name": "@swissgeo/search",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.es.js"
+        }
+    },
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "vite build",
+        "build:dev": "vite build --mode development",
+        "build:dev:watch": "vite build --watch --mode development",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
+    },
+    "dependencies": {
+        "@swissgeo/log": "catalog:",
+        "@swissgeo/shared": "workspace:*"
+    },
+    "devDependencies": {
+        "@swissgeo/config-typescript": "catalog:",
+        "typescript": "catalog:",
+        "unplugin-dts": "catalog:",
+        "vite": "catalog:"
+    },
+    "peerDependencies": {
+        "vue": "catalog:"
     }
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "vite build",
-    "build:dev:watch": "vite build --watch --mode development"
-  },
-  "dependencies": {
-    "@swissgeo/log": "catalog:",
-    "@swissgeo/shared": "workspace:*"
-  },
-  "peerDependencies": {
-    "vue": "catalog:"
-  },
-  "devDependencies": {
-    "@swissgeo/config-typescript": "catalog:",
-    "unplugin-dts": "catalog:",
-    "vite": "catalog:",
-    "typescript": "catalog:"
-  }
 }

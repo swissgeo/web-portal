@@ -15,11 +15,16 @@
     "main": "index.ts",
     "scripts": {
         "build": "vite build",
+        "build:dev": "vite build --mode development",
         "build:dev:watch": "vite build --watch --mode development",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "lint": "eslint --fix",
         "lint:no-fix": "eslint"
+    },
+    "dependencies": {
+        "@types/openlayers": "catalog:",
+        "ol": "catalog:"
     },
     "devDependencies": {
         "@microsoft/api-extractor": "catalog:",
@@ -30,9 +35,5 @@
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:"
     },
-    "packageManager": "pnpm@10.14.0",
-    "dependencies": {
-        "@types/openlayers": "catalog:",
-        "ol": "catalog:"
-    }
+    "packageManager": "pnpm@10.14.0"
 }
