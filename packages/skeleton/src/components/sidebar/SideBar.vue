@@ -2,12 +2,22 @@
 import LogoPic from '@/components/LogoPic.vue'
 import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
 import { useUiStore, SidebarType } from '@/stores/ui'
+import type { SearchResult } from '@swissgeo/search'
 
 import LayerCart from './LayerCart.vue'
+import SearchPanel from './search/SearchPanel.vue'
 
 const uiStore = useUiStore()
 
+const emit = defineEmits<{
+    'search-result-selected': [result: SearchResult]
+}>()
+
 function resetApp() {}
+
+function handleSearchResultSelected(result: SearchResult) {
+    emit('search-result-selected', result)
+}
 
 // used for the dragging thing
 const sidebarSecondColumnWidth = 400
@@ -37,6 +47,10 @@ const sidebarSecondColumnWidth = 400
                     class="relative flex h-full bg-white transition-[width] duration-75 ease-out"
                 >
                     <LayerCart v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"></LayerCart>
+                    <SearchPanel
+                        v-if="uiStore.currentSidebar === SidebarType.SEARCH"
+                        @result-selected="handleSearchResultSelected"
+                    ></SearchPanel>
                 </div>
             </div>
         </div>

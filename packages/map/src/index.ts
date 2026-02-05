@@ -6,5 +6,6 @@ import '../env.d.ts' // for reproject
 
 import * as PROJECTION_EPSG from '@/composables/types.d'
 import MapModule from '@/MapModule.vue'
+import usePositionStore from '@/stores/position'
 
-export { MapModule, PROJECTION_EPSG }
+export { MapModule, usePositionStore, PROJECTION_EPSG }

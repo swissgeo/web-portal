@@ -92,6 +92,8 @@ export default function useViewBasedOnProjection(map: MaybeRef<Map>): void {
                 center: newCenter,
                 duration: animationDuration,
             })
+        } else {
+            log.error('No view found for projection:', projection.value.epsg)
         }
     })
 
