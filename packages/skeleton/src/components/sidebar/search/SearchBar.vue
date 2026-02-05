@@ -2,8 +2,9 @@
 // Adapted from web-mapviewer SearchBar.vue
 
 import { ref, onMounted } from 'vue'
-import { X, LoaderCircle } from 'lucide-vue-next'
 import InputText from 'primevue/inputtext'
+
+import LucideIcon from '../../LucideIcon.vue'
 
 const props = defineProps<{
     modelValue: string
@@ -73,15 +74,15 @@ const onKeydown = (event: KeyboardEvent) => {
                 data-cy="searchbar-clear"
                 @click="onClear"
             >
-                <!-- Loading spinner when searching, X icon otherwise -->
-                <LoaderCircle
+                <LucideIcon
                     v-if="isSearching"
-                    :size="20"
-                    class="animate-spin"
+                    name="LoaderCircle"
+                    class="w-5 h-5 animate-spin"
                 />
-                <X
+                <LucideIcon
                     v-else
-                    :size="20"
+                    name="X"
+                    class="w-5 h-5"
                 />
             </button>
         </div>
