@@ -27,19 +27,3 @@ const {
         {{ `${sourceName}${isLast ? '' : ','}` }}
     </component>
 </template>
-<!--
-<style scoped>
-.map-footer-attribution-source {
-    margin-left: 2px;
-    color: black;
-
-    &.is-link {
-        text-decoration: none;
-        &:hover {
-            text-decoration: underline;
-            cursor: pointer;
-        }
-    }
-}
-</style>
--->

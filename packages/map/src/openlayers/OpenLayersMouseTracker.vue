@@ -20,29 +20,43 @@ const positionStore = usePositionStore()
 const projection = computed(() => positionStore.projection)
 
 const olMap = toValue(inject<Map>('olMap'))
-if (!olMap) {
-    log.error('OpenLayersMap is not available')
-    throw new Error('OpenLayersMap is not available')
-}
+checkOlMapInjection()
 
 let mousePositionControl: MousePosition | undefined
 
-onMounted(() => {
+function checkOlMapInjection() {
+    if (!olMap) {
+        log.error('OpenLayersMap is not available')
+        throw new Error('OpenLayersMap is not available')
+    }
+}
+
+function setMouseTracking() {
     mousePositionControl = new MousePosition({
         className: 'mouse-position-inner',
     })
     mousePositionControl.setTarget(mousePosition.value!)
-    olMap.addControl(mousePositionControl)
+    olMap!.addControl(mousePositionControl)
     // we wait for the next cycle to set the projection, otherwise the info can
     // sometimes be lost (and we end up with a different projection in the position display)
     void nextTick(() => {
         setDisplayedFormatWithId()
     })
-})
-onBeforeUnmount(() => {
+}
+
+function removeMouseTracking() {
     if (mousePositionControl) {
-        olMap.removeControl(mousePositionControl)
+        olMap!.removeControl(mousePositionControl)
     }
+}
+
+onMounted(() => {
+    checkOlMapInjection()
+    setMouseTracking()
+})
+
+onBeforeUnmount(() => {
+    removeMouseTracking()
 })
 
 function setDisplayedFormatWithId(): void {
