@@ -2,9 +2,6 @@
   "name": "@swissgeo/search",
   "version": "0.0.0",
   "type": "module",
-  "main": "./dist/index.es.js",
-  "module": "./dist/index.es.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
