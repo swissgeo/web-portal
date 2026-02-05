@@ -35,6 +35,9 @@
         "lint": "eslint --fix",
         "lint:no-fix": "eslint"
     },
+    "dependencies": {
+        "nuxt": "catalog:"
+    },
     "devDependencies": {
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
@@ -55,8 +58,5 @@
         "@vueuse/core": "catalog:",
         "vue": "catalog:"
     },
-    "packageManager": "pnpm@10.14.0",
-    "dependencies": {
-        "nuxt": "catalog:"
-    }
+    "packageManager": "pnpm@10.14.0"
 }

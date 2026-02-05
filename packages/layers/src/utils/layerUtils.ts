@@ -1,7 +1,6 @@
 import type { Dataset } from '@swissgeo/shared/ogc'
 
 import log, { LogLevel } from '@swissgeo/log'
-import { v4 as uuidv4 } from 'uuid'
 
 import { useLayerStore } from '@/stores/layer'
 
@@ -48,7 +47,7 @@ export const makeServerLayer = (
     log.debug(`Creating store layer from ${JSON.stringify(dataset)}`)
 
     return {
-        uuid: uuidv4(),
+        uuid: crypto.randomUUID(),
         humanId: dataset.id,
         opacity: 1,
         dataset,

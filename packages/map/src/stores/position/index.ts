@@ -1,8 +1,11 @@
 import type { CoordinateSystem } from '@swissgeo/coordinates'
 
 import { LV95 } from '@swissgeo/coordinates'
+import { defineStore } from 'pinia'
 
 import type { PositionStoreGetters, PositionStoreState } from '@/stores/position/types/position'
+
+import setZoom from '@/stores/position/actions/setZoom'
 
 /** Default projection to be used throughout the application */
 export const DEFAULT_PROJECTION: CoordinateSystem = LV95
@@ -16,8 +19,7 @@ import setCenter from '@/stores/position/actions/setCenter'
 // import setDisplayedFormat from "@/stores/position/actions/setDisplayedFormat";
 // import setHasOrientation from "@/stores/position/actions/setHasOrientation";
 import setProjection from '@/stores/position/actions/setProjection'
-// import setRotation from "@/stores/position/actions/setRotation";
-import setZoom from '@/stores/position/actions/setZoom'
+import setRotation from '@/stores/position/actions/setRotation'
 // import zoomToExtent from "@/stores/position/actions/zoomToExtent";
 // import centerEpsg4326 from "@/stores/position/getters/centerEpsg4326";
 // import extent from "@/stores/position/getters/extent";
@@ -42,9 +44,11 @@ const state = (): PositionStoreState => ({
     // camera: undefined,
 })
 
+import resolution from '@/stores/position/getters/resolution'
+
 const getters: PositionStoreGetters = {
     // centerEpsg4326,
-    // resolution,
+    resolution,
     // extent,
     // isExtentOnlyWithinLV95Bounds,
 }
@@ -55,7 +59,7 @@ const actions = {
     // increaseZoom,
     // decreaseZoom,
     // zoomToExtent,
-    // setRotation,
+    setRotation,
     // setAutoRotation,
     // setHasOrientation,
     setCenter,

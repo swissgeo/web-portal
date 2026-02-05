@@ -1,0 +1,53 @@
+{
+    "name": "@swissgeo/drawing",
+    "version": "0.0.1",
+    "description": "Drawing tools and utilities for map interactions",
+    "keywords": [],
+    "license": "ISC",
+    "author": "",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.es.js"
+        }
+    },
+    "module": "./dist/index.js",
+    "scripts": {
+        "build": "vite build",
+        "build:dev:watch": "vite build --watch --mode development",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint --fix",
+        "lint:no-fix": "eslint"
+    },
+    "dependencies": {
+        "@swissgeo/coordinates": "catalog:",
+        "@swissgeo/layers": "workspace:*",
+        "@swissgeo/log": "catalog:",
+        "fflate": "catalog:",
+        "ol": "catalog:",
+        "proj4": "catalog:"
+    },
+    "devDependencies": {
+        "@dxup/unimport": "catalog:",
+        "@microsoft/api-extractor": "catalog:",
+        "@swissgeo/config-eslint": "catalog:",
+        "@swissgeo/config-typescript": "catalog:",
+        "@types/openlayers": "catalog:",
+        "@vitejs/plugin-vue": "catalog:",
+        "eslint": "catalog:",
+        "typescript": "catalog:",
+        "unplugin-auto-import": "catalog:",
+        "unplugin-dts": "catalog:",
+        "vite": "catalog:",
+        "vite-tsconfig-paths": "catalog:"
+    },
+    "peerDependencies": {
+        "@vueuse/core": "catalog:",
+        "lucide-vue-next": "catalog:",
+        "vue": "catalog:",
+        "vue-i18n": "catalog:"
+    },
+    "packageManager": "pnpm@10.14.0"
+}

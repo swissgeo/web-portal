@@ -1,5 +1,5 @@
-import type { Lang } from '@swissgeo/shared/language'
 import type { MenuTree, MenuEntry, MenuEntryLangaugeItem } from '@swissgeo/shared/api'
+import type { Lang } from '@swissgeo/shared/language'
 import type { RouteRecordRaw } from 'vue-router'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'

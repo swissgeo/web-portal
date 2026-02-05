@@ -1,13 +1,22 @@
 <script lang="ts" setup>
+import DrawingPanel from '~/components/debug/DrawingPanel.vue'
+
 const isLayersPanelOpen = ref(false)
 const isImportPanelOpen = ref(false)
-
+const isImportLocalPanelOpen = ref(false)
+const isDrawingOpen = ref(false)
 function toggleLayersPanel() {
     isLayersPanelOpen.value = !isLayersPanelOpen.value
 }
 
 function toggleImportPanel() {
     isImportPanelOpen.value = !isImportPanelOpen.value
+}
+function toggleLocalImportPanel() {
+    isImportLocalPanelOpen.value = !isImportLocalPanelOpen.value
+}
+function toggleDrawing() {
+    isDrawingOpen.value = !isDrawingOpen.value
 }
 </script>
 
@@ -24,9 +33,21 @@ function toggleImportPanel() {
             @close="toggleImportPanel"
         >
         </DebugImportLayersPanel>
+        <DebugImportLocalLayersPanel
+            class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
+            v-if="isImportLocalPanelOpen"
+            @close="toggleLocalImportPanel"
+        >
+        </DebugImportLocalLayersPanel>
+        <DrawingPanel
+            class="relative h-[400px] w-[350px] overflow-hidden bg-white shadow"
+            v-if="isDrawingOpen"
+            @close="toggleDrawing"
+        >
+        </DrawingPanel>
         <div
             class="flex gap-2"
-            v-if="!isLayersPanelOpen && !isImportPanelOpen"
+            v-if="!isLayersPanelOpen && !isImportPanelOpen && !isImportLocalPanelOpen && !isDrawingOpen"
         >
             <Button
                 @click="toggleLayersPanel"
@@ -39,6 +60,15 @@ function toggleImportPanel() {
                 class="cursor-pointer"
             >
                 Open Import Layers Panel
+            </Button>
+            <Button
+                @click="toggleLocalImportPanel"
+                class="cursor-pointer"
+            >
+                Open Import Local Layers Panel
+            </Button>
+            <Button @click="toggleDrawing">
+                Open Drawing Panel
             </Button>
         </div>
     </div>

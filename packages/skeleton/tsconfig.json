@@ -4,5 +4,6 @@
     "compilerOptions": {
         "types": ["vue", "./.output/auto-imports.d.ts", "vite/client"],
         "plugins": [{ "name": "@dxup/unimport" }]
-    }
+    },
+    "ignoreDeprecations": "6.0"
 }

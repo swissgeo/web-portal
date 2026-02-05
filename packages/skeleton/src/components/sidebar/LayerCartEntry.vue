@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Layer } from '@swissgeo/layers'
 
+import { useDrawingStore } from '@swissgeo/drawing'
 import { LayerType, useLayerStore } from '@swissgeo/layers'
 
 import IconButton from '@/components/IconButton.vue'
@@ -10,6 +11,7 @@ const { layer } = defineProps<{
 }>()
 
 const layerStore = useLayerStore()
+const drawingStore = useDrawingStore()
 
 const layersLength = computed(() => layerStore.layers.length)
 
@@ -35,6 +37,10 @@ function moveDown() {
 
 function removeLayer() {
     layerStore.removeLayer(layer.uuid)
+    if (layer.uuid === drawingStore.drawingKMLLayerUuid) {
+        drawingStore.setDrawingLayerUuid(undefined)
+        drawingStore.clearDrawingFeatures()
+    }
 }
 </script>
 
@@ -73,6 +79,8 @@ function removeLayer() {
                 :class="{
                     'bg-amber-200': layer.type === LayerType.WMS,
                     'bg-fuchsia-200': layer.type === LayerType.WMTS,
+                    'bg-emerald-200': layer.type === LayerType.KML,
+                    'bg-sky-200': layer.type === LayerType.KMZ,
                 }"
             >
                 ({{ layer.type }})</span

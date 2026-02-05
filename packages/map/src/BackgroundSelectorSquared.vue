@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Layer } from '@swissgeo/layers'
 
-import { LucideIcon } from '@swissgeo/skeleton'
+import { CircleChevronRight } from 'lucide-vue-next'
 
 import type { VoidLayer } from '@/composables/useBackgroundSelector'
 
@@ -69,10 +69,7 @@ const { selectorOpen, animate, toggleShowSelector, onSelectBackground } =
                     :class="{ animate, hidden: !slotProps.folded }"
                     class="absolute inset-0 flex items-center justify-center bg-[#343a40] text-white opacity-75"
                 >
-                    <LucideIcon
-                        name="CircleChevronRight"
-                        class="block"
-                    />
+                    <CircleChevronRight class="block" />
                 </div>
             </template>
         </BackgroundSelectorEntry>

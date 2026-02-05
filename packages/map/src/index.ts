@@ -4,6 +4,7 @@ import type * as Types from '@swissgeo/shared/ambient'
 
 import '../env.d.ts' // for reproject
 
+import * as PROJECTION_EPSG from '@/composables/types.d'
 import MapModule from '@/MapModule.vue'
 
-export { MapModule }
+export { MapModule, PROJECTION_EPSG }
