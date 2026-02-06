@@ -16,13 +16,6 @@ import BackgroundSelectorSquared from '@/BackgroundSelectorSquared.vue'
 
 const layerStore = useLayerStore()
 
-// export const AVAILABLE_BACKGROUNDS = [
-//     // order matters!
-//     'ch.swisstopo.pixelkarte-grau',
-//     'ch.swisstopo.pixelkarte-farbe',
-//     'ch.swisstopo.swissimage',
-// ]
-
 const backgroundRecords = computed(async () => {
     const promises: Promise<OGCRecord>[] = []
     for (const backgroundId of AVAILABLE_BACKGROUNDS) {

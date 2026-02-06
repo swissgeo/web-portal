@@ -31,6 +31,6 @@
         "backgroundMap": "Hintergrundkarte",
         "colorMap": "Karte farbig",
         "greyMap": "Karte SW",
-        "aerialImagery": "Luftbilder"
+        "swissimage": "Luftbilder"
     }
 }
