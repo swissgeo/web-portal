@@ -277,3 +277,15 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE)
         </div>
     </div>
 </template>
+
+<style scoped>
+.is-invalid {
+    border-color: rgb(239 68 68); /* red-500 */
+    outline: none;
+}
+
+.is-invalid:focus {
+    border-color: rgb(239 68 68); /* red-500 */
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+</style>

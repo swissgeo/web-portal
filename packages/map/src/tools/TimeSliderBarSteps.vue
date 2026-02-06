@@ -9,7 +9,7 @@ const { allYears, yearsJoint, yearsSeparate, sliderWidth } = defineProps<{
 const emit = defineEmits(['select'])
 
 function stepClasses(year: number) {
-    const classes: string[] = ['test']
+    const classes: string[] = ['time-step']
     if (year % 10 === 0) {
         classes.push('big-tick')
     }
@@ -37,24 +37,23 @@ function stepClasses(year: number) {
     </div>
 </template>
 
-<style>
-/* TODO make scoped work */
-.test {
+<style scoped>
+.time-step {
     position: relative;
     overflow: visible;
 }
 
-.test::after {
+.time-step::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 1px;
     height: 5px;
-    background-color: #9ca3af;
+    background-color: rgb(156 163 175); /* gray-400 */
 }
 
-.test.big-tick::after {
+.time-step.big-tick::after {
     height: 9px;
 }
 </style>
