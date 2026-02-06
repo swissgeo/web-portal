@@ -222,16 +222,12 @@ function handleKeyDownEvent(event: KeyboardEvent) {
     </div>
 </template>
 
-<style>
-/* TDOO make scoped work */
+<style scoped>
 .arrow {
     position: absolute;
     z-index: 2;
-
     top: calc(0.75rem + 29px);
-
     cursor: grab;
-
     border-width: 9px 9px 0 9px;
     border-style: solid;
     border-color: var(--color-gray-300) transparent;
@@ -240,11 +236,10 @@ function handleKeyDownEvent(event: KeyboardEvent) {
 .arrow:after {
     content: '';
     position: absolute;
-
     left: calc(50% - 8px);
     top: -9px;
-
     border-width: 8px 8px 0 8px;
+    border-style: solid;
     border-color: white transparent;
 }
 </style>
