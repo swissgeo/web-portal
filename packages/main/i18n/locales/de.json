@@ -18,5 +18,9 @@
         "features_results_header": "Features",
         "layers_results_header": "Layer",
         "no_results": "Keine Ergebnisse gefunden"
+    },
+    "debug": {
+        "openImportLocalLayersPanel": "Import Lokale Layer Panel öffnen",
+        "openDrawingPanel": "Zeichenpanel öffnen"
     }
 }

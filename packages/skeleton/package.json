@@ -42,6 +42,7 @@
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
+        "@nuxt/ui": "catalog:",
         "eslint": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",
@@ -52,6 +53,7 @@
     },
     "peerDependencies": {
         "@vueuse/core": "catalog:",
+        "@nuxt/ui": "catalog:",
         "vue": "catalog:",
         "vue-i18n": "catalog:",
         "vue-router": "catalog:"

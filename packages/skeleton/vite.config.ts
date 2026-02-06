@@ -18,7 +18,7 @@ const config = defineConfig(({ mode }) => {
                 name: '@swissgeo/skeleton',
             },
             rollupOptions: {
-                external: ['vue', 'pinia'],
+                external: ['vue', 'pinia', '@nuxt/ui', /#components/],
                 output: {
                     exports: 'named',
                     globals: {
