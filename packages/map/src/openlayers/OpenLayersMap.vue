@@ -71,9 +71,10 @@ createOlMap()
             Toggle Time Slider</Button
         >
         <TimeSlider
-            class="fixed top-0 right-6 left-16 z-30"
+            class="fixed top-4 right-6 left-16 z-30"
             v-else
-        ></TimeSlider>
+            @close="toggleTimeSlider"
+        />
         <OpenLayersVisibleLayer
             :layer="backgroundLayer"
             v-if="backgroundLayer"

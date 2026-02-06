@@ -168,8 +168,10 @@ function positionNodeLabel(year: number) {
     }
 }
 
+const CLOSE_BUTTON_SIZE = 54
+const GAP_SIZE = 4 // gap-1 = 4px
 const padding = 112
-const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE)
+const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE - CLOSE_BUTTON_SIZE - GAP_SIZE * 2)
 </script>
 
 <template>
@@ -287,5 +289,26 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE)
 .is-invalid:focus {
     border-color: rgb(239 68 68); /* red-500 */
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.arrow {
+    position: absolute;
+    z-index: 2;
+    top: calc(0.75rem + 29px);
+    cursor: grab;
+    border-width: 9px 9px 0 9px;
+    border-style: solid;
+    border-color: rgb(59 130 246) transparent; /* primary blue */
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.arrow:after {
+    content: '';
+    position: absolute;
+    left: calc(50% - 8px);
+    top: -9px;
+    border-width: 8px 8px 0 8px;
+    border-style: solid;
+    border-color: white transparent;
 }
 </style>

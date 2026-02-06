@@ -10,6 +10,10 @@ import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vu
 import TimeSliderBar from './TimeSliderBar.vue'
 import { getYearsWithData } from './timeSliderUtils'
 
+const emit = defineEmits<{
+    close: []
+}>()
+
 const layerStore = useLayerStore()
 let playYearInterval: ReturnType<typeof setInterval> | undefined
 
@@ -219,11 +223,12 @@ function handleKeyDownEvent(event: KeyboardEvent) {
     <div
         ref="sliderContainer"
         data-cy="time-slider"
+        class="bg-white rounded-lg shadow-lg border border-gray-200 p-4"
         @grabbing="yearCursorIsGrabbed = $event"
         :class="{ grabbed: yearCursorIsGrabbed }"
     >
         <div
-            class="flex w-full justify-between"
+            class="flex items-center gap-1"
             data-test="time-slider-container"
         >
             <TimeSliderBar
@@ -236,34 +241,23 @@ function handleKeyDownEvent(event: KeyboardEvent) {
             <IconButton
                 id="timeSliderPlayButton"
                 data-test="time-slider-play-button"
-                class="flex-shrink-0 self-center"
-                severity="secondary"
+                class="flex-shrink-0"
+                severity="primary"
                 :icon="playYearsWithData ? 'Pause' : 'Play'"
                 @click="togglePlayYearsWithData"
             />
+
+            <IconButton
+                id="timeSliderCloseButton"
+                data-test="time-slider-close-button"
+                class="flex-shrink-0"
+                severity="secondary"
+                icon="X"
+                @click="emit('close')"
+            />
         </div>
-        <!-- Time slider color tooltip content -->
     </div>
 </template>
 
 <style scoped>
-.arrow {
-    position: absolute;
-    z-index: 2;
-    top: calc(0.75rem + 29px);
-    cursor: grab;
-    border-width: 9px 9px 0 9px;
-    border-style: solid;
-    border-color: var(--color-gray-300) transparent;
-}
-
-.arrow:after {
-    content: '';
-    position: absolute;
-    left: calc(50% - 8px);
-    top: -9px;
-    border-width: 8px 8px 0 8px;
-    border-style: solid;
-    border-color: white transparent;
-}
 </style>
