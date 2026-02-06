@@ -129,10 +129,24 @@ function dispatchCurrentYearToStore() {
 
     for (const layer of layersWithTimestamps.value) {
         const yearValue = convertYearToTimestamp(layer, currentYear.value)
-        const dimension: Partial<Dimension> = {
-            currentValue: yearValue,
+
+        if (yearValue === null) {
+            // Layer doesn't have data for this year - hide it
+            const storeLayer = layerStore.layers.find((l) => l.uuid === layer.uuid)
+            if (storeLayer) {
+                storeLayer.isVisible = false
+            }
+        } else {
+            // Layer has data for this year - show it and set the time dimension
+            const storeLayer = layerStore.layers.find((l) => l.uuid === layer.uuid)
+            if (storeLayer) {
+                storeLayer.isVisible = true
+            }
+            const dimension: Partial<Dimension> = {
+                currentValue: yearValue,
+            }
+            layerStore.setDimension('time', layer.uuid, dimension)
         }
-        layerStore.setDimension('time', layer.uuid, dimension)
     }
 }
 
@@ -149,20 +163,32 @@ function togglePlayYearsWithData() {
             )
             .sort((a, b) => a - b)
 
+        // Guard: if no years with data, can't play
+        if (yearsWithDataForPlayer.length === 0 || currentYear.value === undefined) {
+            playYearsWithData.value = false
+            return
+        }
+
         if (
-            !yearsWithDataForPlayer.includes(currentYear.value!) ||
+            !yearsWithDataForPlayer.includes(currentYear.value) ||
             currentYear.value === yearsWithDataForPlayer[yearsWithDataForPlayer.length - 1]
         ) {
-            currentYear.value = yearsWithDataForPlayer[0]!
+            currentYear.value = yearsWithDataForPlayer[0]
         }
         playYearInterval = setInterval(() => {
-            const currentYearIndex = yearsWithDataForPlayer.indexOf(currentYear.value!)
+            if (currentYear.value === undefined) {
+                clearInterval(playYearInterval)
+                playYearInterval = undefined
+                playYearsWithData.value = false
+                return
+            }
+            const currentYearIndex = yearsWithDataForPlayer.indexOf(currentYear.value)
             if (currentYearIndex === yearsWithDataForPlayer.length - 1) {
                 clearInterval(playYearInterval)
                 playYearInterval = undefined
                 playYearsWithData.value = false
             } else {
-                currentYear.value = yearsWithDataForPlayer[currentYearIndex + 1]!
+                currentYear.value = yearsWithDataForPlayer[currentYearIndex + 1]
             }
         }, 1000)
     } else {
