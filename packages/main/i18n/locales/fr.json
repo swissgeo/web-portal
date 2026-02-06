@@ -21,6 +21,16 @@
     },
     "debug": {
         "openImportLocalLayersPanel": "Ouvrir le panneau d'importation des couches locales",
-        "openDrawingPanel": "Ouvrir le panneau de dessin"
+        "openDrawingPanel": "Ouvrir le panneau de dessin",
+        "openImportLayersPanel": "Ouvrir le panneau d'importation des couches",
+        "openLayersPanel": "Ouvrir le panneau des couches"
+    },
+    "backgroundLayers": {
+        "title": "Cartes affichées",
+        "voidMap": "Carte vide",
+        "backgroundMap": "Carte de fond",
+        "colorMap": "Carte en couleur",
+        "greyMap": "Carte en niveaux de gris",
+        "aerialImagery": "Imagerie aérienne"
     }
 }

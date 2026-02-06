@@ -21,6 +21,16 @@
     },
     "debug": {
         "openImportLocalLayersPanel": "Open Import Local Layers Panel",
-        "openDrawingPanel": "Open Drawing Panel"
+        "openDrawingPanel": "Open Drawing Panel",
+        "openImportLayersPanel": "Open Import Layers Panel",
+        "openLayersPanel": "Open Layers Panel"
+    },
+    "backgroundLayers": {
+        "title": "Displayed maps",
+        "voidMap": "Void map",
+        "backgroundMap": "Background map",
+        "colorMap": "Color map",
+        "greyMap": "Grey map",
+        "swissimage": "Aerial imagery"
     }
 }

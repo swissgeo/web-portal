@@ -36,13 +36,13 @@ function toggleDrawing() {
         <div class="flex gap-2"
             v-if="!isLayersPanelOpen && !isImportPanelOpen && !isImportLocalPanelOpen && !isDrawingOpen">
             <Button @click="toggleLayersPanel" class="cursor-pointer">
-                Open Layers Panel
+                {{ $t('debug.openLayersPanel') }}
             </Button>
             <Button @click="toggleImportPanel" class="cursor-pointer">
-                Open Import Layers Panel
+                {{ $t('debug.openImportLayersPanel') }}
             </Button>
             <Button @click="toggleLocalImportPanel" class="cursor-pointer">
-                Open Import Local Layers Panel
+                {{ $t('debug.openImportLocalLayersPanel') }}
             </Button>
             <Button @click="toggleDrawing">
                 {{ $t('debug.openDrawingPanel') }}

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DatasetLayer, Layer } from '@swissgeo/layers'
 import type { OGCRecord } from '@swissgeo/shared/ogc'
+import { AVAILABLE_BACKGROUNDS } from '@/constants'
 
 import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
 //import type { ActionDispatcher } from '@/stores/types'
@@ -15,12 +16,12 @@ import BackgroundSelectorSquared from '@/BackgroundSelectorSquared.vue'
 
 const layerStore = useLayerStore()
 
-const AVAILABLE_BACKGROUNDS = [
-    // order matters!
-    'ch.swisstopo.pixelkarte-grau',
-    'ch.swisstopo.pixelkarte-farbe',
-    'ch.swisstopo.swissimage',
-]
+// export const AVAILABLE_BACKGROUNDS = [
+//     // order matters!
+//     'ch.swisstopo.pixelkarte-grau',
+//     'ch.swisstopo.pixelkarte-farbe',
+//     'ch.swisstopo.swissimage',
+// ]
 
 const backgroundRecords = computed(async () => {
     const promises: Promise<OGCRecord>[] = []
@@ -67,11 +68,8 @@ function selectBackground(backgroundLayer: Layer | VoidLayer) {
 </script>
 
 <template>
-    <BackgroundSelectorSquared
-        :background-layers="sortedBackgroundLayersWithVoid"
-        :current-background-layer="layerStore.backgroundLayer ?? 'void'"
-        @select-background="selectBackground"
-    />
+    <BackgroundSelectorSquared :background-layers="sortedBackgroundLayersWithVoid"
+        :current-background-layer="layerStore.backgroundLayer ?? 'void'" @select-background="selectBackground" />
     <!-- <BackgroundSelectorWheelRounded
         v-else
         :background-layers="sortedBackgroundLayersWithVoid"
