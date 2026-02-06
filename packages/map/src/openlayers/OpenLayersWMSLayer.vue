@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { DatasetLayer } from '@swissgeo/layers'
 
+import { useRecordsData } from '@swissgeo/ogc'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from '@/composables/olWMSLayer.composable'
-import useRecordsData from '../composables/useRecordsData.composable'
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
 

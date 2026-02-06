@@ -25,6 +25,9 @@
         },
         "./language": {
             "types": "./dist/Language.d.ts"
+        },
+        "./geojson": {
+            "types": "./dist/geojson/index.d.ts"
         }
     },
     "scripts": {

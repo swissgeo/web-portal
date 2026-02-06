@@ -8,7 +8,7 @@ import { optionsFromCapabilities } from 'ol/source/WMTS'
 
 import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
 
-import useRecordsData from '../composables/useRecordsData.composable'
+import { useRecordsData } from '@swissgeo/ogc'
 
 const { layer } = defineProps<{
     layer: DatasetLayer

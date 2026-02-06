@@ -1,30 +1,9 @@
-import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/layers'
-import type { OGCRecord, OGCRecords, Service, Protocol, Link, Dataset } from '@swissgeo/ogc'
+import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/shared/geojson'
+import type { OGCRecord, OGCRecords, Service, Protocol, Dataset } from '@swissgeo/ogc'
 import type { Style } from '@types/mapbox-gl'
 
-// maybe there should be a OGC package?!
-// TODO there should definitely be one
-const getLinksByRel = (links: Link[], rel: string): Link[] => {
-    return links.filter((link: Link) => link.rel?.toLowerCase() === rel.toLowerCase())
-}
+import { getStyleLinks } from "./utils"
 
-const getDataServiceLinks = (links: Link[]): Link[] => {
-    return getLinksByRel(links, 'service')
-}
-
-const getDataLinks = (links: Link[]): Link[] => {
-    return getLinksByRel(links, 'data')
-}
-
-const getStyleLinks = (links: Link[]): Link[] => {
-    return getLinksByRel(links, 'styledby')
-}
-
-export const getGeoJsonDataLinks = (links: Link[]): Link[] => {
-    return getDataLinks(links).filter((link: Link) => {
-        return link.type === 'application/geo+json'
-    })
-}
 
 /**
  * Go through the tree of the OGC records and extract the necessary information to request a
@@ -38,7 +17,7 @@ export const getGeoJsonDataLinks = (links: Link[]): Link[] => {
  * Since these operations are a cascade of server requests, the ORDER OF THE ELEMENTS IN HERE
  * MATTERS
  */
-export default async function useRecordsData(dataset: Dataset, protocol: Protocol) {
+export async function useRecordsData(dataset: Dataset, protocol: Protocol) {
     const layerId = computed(() => dataset.id)
 
     // Get the distribution
