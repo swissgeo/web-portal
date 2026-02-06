@@ -1,6 +1,6 @@
 // Search API for web-poc-portal
 
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 
 import type {
     FeatureSearchResult,
@@ -133,7 +133,11 @@ export async function searchLocation(
         if (error instanceof Error && error.name === 'AbortError') {
             throw error
         }
-        log.error('Failed to search locations:', error as Error)
+        log.error({
+            title: 'searchLocation',
+            titleColor: LogPreDefinedColor.Red,
+            messages: ['Failed to search locations:', error],
+        })
         return []
     }
 }
@@ -198,7 +202,11 @@ export async function searchLayers(
 
         return matches
     } catch (error) {
-        log.error('Failed to search layers:', error as Error)
+        log.error({
+            title: 'searchLayers',
+            titleColor: LogPreDefinedColor.Red,
+            messages: ['Failed to search layers:', error],
+        })
         return []
     }
 }
@@ -285,7 +293,11 @@ export async function searchLayerFeatures(
         if (error instanceof Error && error.name === 'AbortError') {
             throw error
         }
-        log.error('Failed to search layer features:', error as Error)
+        log.error({
+            title: 'searchLayerFeatures',
+            titleColor: LogPreDefinedColor.Red,
+            messages: ['Failed to search layer features:', error],
+        })
         return []
     }
 }

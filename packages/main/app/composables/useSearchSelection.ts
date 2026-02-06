@@ -10,7 +10,7 @@ import type {
 import type { OGCRecords, OGCRecord, Link } from '@swissgeo/shared/ogc'
 
 import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
 import { useSearchStore } from '@swissgeo/skeleton'
 
@@ -71,7 +71,11 @@ export function useSearchSelection() {
             )
 
             if (!layerRecord) {
-                log.error('Layer not found in catalog:', result.layerId)
+                log.error({
+                    title: 'useSearchSelection/handleLayerSelection',
+                    titleColor: LogPreDefinedColor.Red,
+                    messages: ['Layer not found in catalog:', result.layerId],
+                })
                 return
             }
 
@@ -80,7 +84,11 @@ export function useSearchSelection() {
             )
 
             if (!distributionLink) {
-                log.error('No distribution link found for layer:', result.layerId)
+                log.error({
+                    title: 'useSearchSelection/handleLayerSelection',
+                    titleColor: LogPreDefinedColor.Red,
+                    messages: ['No distribution link found for layer:', result.layerId],
+                })
                 return
             }
 
@@ -94,10 +102,18 @@ export function useSearchSelection() {
                 }
                 layerStore.addLayer(makeServerLayer(layerType, layerRecord))
             } else {
-                log.error('Could not determine layer type for:', result.layerId)
+                log.error({
+                    title: 'useSearchSelection/handleLayerSelection',
+                    titleColor: LogPreDefinedColor.Red,
+                    messages: ['Could not determine layer type for:', result.layerId],
+                })
             }
         } catch (error) {
-            log.error('Failed to add layer to map:', error as Error)
+            log.error({
+                title: 'useSearchSelection/handleLayerSelection',
+                titleColor: LogPreDefinedColor.Red,
+                messages: ['Failed to add layer to map:', error],
+            })
         }
     }
 
