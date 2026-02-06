@@ -15,6 +15,7 @@
     "search": {
         "placeholder": "Ort, Layer oder Koordinaten suchen...",
         "locations_results_header": "Orte",
+        "features_results_header": "Features",
         "layers_results_header": "Layer",
         "no_results": "Keine Ergebnisse gefunden"
     }
