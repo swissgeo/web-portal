@@ -4,10 +4,8 @@ import type { Dimension, Layer } from '@swissgeo/layers'
 import { useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { IconButton } from '@swissgeo/skeleton'
-import { useResizeObserver } from '@vueuse/core'
+import { useDebounceFn, useResizeObserver } from '@vueuse/core'
 import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
-
-import debounce from '@/utils/debounce'
 
 import TimeSliderBar from './TimeSliderBar.vue'
 import { getYearsWithData } from './timeSliderUtils'
@@ -138,7 +136,7 @@ function dispatchCurrentYearToStore() {
     }
 }
 
-const dispatchPreviewYearToStoreDebounced = debounce(dispatchCurrentYearToStore, 100)
+const dispatchPreviewYearToStoreDebounced = useDebounceFn(dispatchCurrentYearToStore, 100)
 
 function togglePlayYearsWithData() {
     playYearsWithData.value = !playYearsWithData.value
