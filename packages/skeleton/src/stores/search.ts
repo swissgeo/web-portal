@@ -119,8 +119,10 @@ export const useSearchStore = defineStore('search', () => {
             log.error('Search error:', error as Error)
             results.value = []
         } finally {
-            isSearching.value = false
-            abortController = null
+            if (currentController === abortController) {
+                isSearching.value = false
+                abortController = null
+            }
         }
     }
 
