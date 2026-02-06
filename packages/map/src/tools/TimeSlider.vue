@@ -92,10 +92,10 @@ onUnmounted(() => {
 
 function initializeCurrentYear() {
     if (layersWithTimestamps.value.length > 1) {
-        // more than one layer. We initialize it to the youngest available year
+        // more than one layer. We initialize it to the youngest available year (last in sorted array)
         const availableYearsWithData = yearsWithData.value.yearsJoint
         if (availableYearsWithData.length > 0) {
-            currentYear.value = availableYearsWithData[0]
+            currentYear.value = availableYearsWithData[availableYearsWithData.length - 1]
         } else {
             // no available years with data? What are we even doing here?
             currentYear.value = youngestYear.value
