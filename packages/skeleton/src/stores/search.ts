@@ -1,8 +1,8 @@
 // Search store for web-poc-portal
 // Adapted from web-mapviewer search store
 
+import type { DatasetCollection } from '@swissgeo/ogc'
 import type { SearchResult } from '@swissgeo/search'
-import type { OGCRecords } from '@swissgeo/shared/ogc'
 
 import { useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
@@ -11,11 +11,12 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 export const useSearchStore = defineStore('search', () => {
+    const runtimeConfig = useRuntimeConfig()
     // State
     const query = ref('')
     const results = ref<SearchResult[]>([])
     const isSearching = ref(false)
-    const catalog = ref<OGCRecords | null>(null)
+    const catalog = ref<DatasetCollection>(null)
 
     let abortController: AbortController | undefined
 
@@ -25,7 +26,7 @@ export const useSearchStore = defineStore('search', () => {
             return
         }
         try {
-            const response = await fetch('/api/v1/layers/swissgeo/catalog')
+            const response = await fetch(runtimeConfig.public.ogcApiEndpoint)
             if (!response.ok) {
                 throw new Error(`Failed to load catalog: ${response.status} ${response.statusText}`)
             }
