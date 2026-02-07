@@ -27,7 +27,7 @@ catalog:
     '@swissgeo/config-prettier': ^1.0.0
     '@swissgeo/config-typescript': 1.0.0
     '@swissgeo/coordinates': ^1.0.4
-    '@swissgeo/log': ^1.0.0
+    '@swissgeo/log': 1.0.0
     '@swissgeo/numbers': ^1.0.0
     '@tailwindcss/vite': ^4.1.12
     '@turf/turf': ^7.3.1
@@ -38,7 +38,7 @@ catalog:
     '@types/lodash': ^4.14.192
     '@types/lodash-es': ^4.17.12
     '@types/luxon': ^3.7.1
-    '@types/mapbox-gl': ^3.4.1
+    '@types/mapbox-gl': 3.4.1
     '@types/node': ^24.8.1
     '@types/openlayers': ^4.6.23
     '@types/pako': ^2.0.4

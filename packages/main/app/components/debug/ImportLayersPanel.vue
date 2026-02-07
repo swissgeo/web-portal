@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { WMTSCapabilities } from '@swissgeo/shared/ogc'
+import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 
 import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
@@ -14,7 +14,7 @@ const encodedUrl = computed(() => encodeURIComponent(importUrl.value))
 async function doIt() {
     if (importUrl.value.toLowerCase().includes('wmts')) {
         // do wmts
-        const data = await $fetch(`/api/v1/layers/wmtsConfig/${encodedUrl.value}`)
+        const data = await $fetch(importUrl.value)
         extractWmtsLayers(data)
     } else if (importUrl.value.toLowerCase().includes('wms')) {
         // do wms
@@ -22,7 +22,9 @@ async function doIt() {
 }
 
 function extractWmtsLayers(capaData: WMTSCapabilities) {
-    const layerList = capaData.Contents.Layer
+    const wmtsParser = new WMTSCapabilities()
+    const capabilities = wmtsParser.read(capaData)
+    const layerList = capabilities.Contents.Layer
 
     layers.value = layerList.map((layer) => layer.Identifier)
 }
