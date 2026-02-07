@@ -18,7 +18,7 @@ export default defineConfig(({ mode }): UserConfig => {
                 entry: resolve(__dirname, 'src/index.ts'),
 
                 fileName: (format) => `index.${format}.js`,
-                name: '@swissgeo/map',
+                name: '@swissgeo/ogc',
             },
             rollupOptions: {
                 external: ['vue', 'pinia'],
@@ -41,7 +41,7 @@ export default defineConfig(({ mode }): UserConfig => {
             vue(),
             AutoImport({
                 dirs: ['./src/**'],
-                imports: [],
+                imports: ['vue', 'pinia'],
                 eslintrc: {
                     enabled: true,
                     filepath: '.output/eslintrc-auto-import.json',

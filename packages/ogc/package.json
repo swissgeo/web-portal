@@ -23,6 +23,8 @@
         "lint:no-fix": "eslint"
     },
     "dependencies": {
+        "@swissgeo/log": "catalog:",
+        "@swissgeo/shared": "workspace:*",
         "@types/openlayers": "catalog:",
         "ol": "catalog:"
     },
@@ -31,6 +33,7 @@
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
+        "@types/mapbox-gl": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
         "stylelint": "catalog:",
