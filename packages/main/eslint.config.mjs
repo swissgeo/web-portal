@@ -4,7 +4,7 @@ import { globalIgnores } from 'eslint/config'
 
 export default [
     ...defaultConfig,
-    globalIgnores(['.nuxt', '.output']),
+    globalIgnores(['.nuxt', '.output', 'vite-plugin-primevue-tailwind.ts']),
     {
         rules: {
             'vue/multi-word-component-names': ['off'],
@@ -16,5 +16,12 @@ export default [
                 tsconfigRootDir: import.meta.dirname,
             },
         },
+         settings: {
+        "import/resolver": {
+            typescript: {
+                project: ["./tsconfig.json"]
+            }
+        }
+    },
     },
 ]

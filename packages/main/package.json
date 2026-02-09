@@ -70,6 +70,7 @@
         "@swissgeo/config-eslint": "catalog:",
         "@types/jsdom": "catalog:",
         "@types/mapbox-gl": "catalog:",
+        "eslint-import-resolver-typescript": "^4.4.4",
         "eslint-plugin-perfectionist": "catalog:",
         "fs-extra": "catalog:",
         "stylelint": "catalog:",
