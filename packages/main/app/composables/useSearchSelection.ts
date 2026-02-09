@@ -10,7 +10,7 @@ import type {
 import type { OGCRecords, OGCRecord, Link } from '@swissgeo/shared/ogc'
 
 import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
 import { useSearchStore } from '@swissgeo/skeleton'
 
@@ -22,85 +22,98 @@ export function useSearchSelection() {
         }
 
         if (result.resultType === 'LOCATION') {
-            // Center map on location
-            const locationResult = result as LocationSearchResult
-
-            if (locationResult.coordinate) {
-                const positionStore = usePositionStore()
-                positionStore.setCenter(locationResult.coordinate, {
-                    name: 'search-result-selection',
-                })
-                positionStore.setZoom(locationResult.zoom, { name: 'search-result-selection' })
-            }
+            handleLocationSelection(result as LocationSearchResult)
         } else if (result.resultType === 'FEATURE') {
-            // Center map on feature and zoom in close to see the feature
-            const featureResult = result as FeatureSearchResult
-
-            if (featureResult.coordinate) {
-                const positionStore = usePositionStore()
-                positionStore.setCenter(featureResult.coordinate, {
-                    name: 'search-feature-selection',
-                })
-                // Use zoom level from API if valid and reasonable, otherwise zoom in to level 10
-                // Features need closer zoom than city-level searches
-                const featureZoom =
-                    featureResult.zoom && featureResult.zoom > 0 && featureResult.zoom < 20
-                        ? featureResult.zoom
-                        : 10
-                positionStore.setZoom(featureZoom, { name: 'search-feature-selection' })
-            }
+            handleFeatureSelection(result as FeatureSearchResult)
         } else if (result.resultType === 'LAYER') {
-            const layerStore = useLayerStore()
-            const searchStore = useSearchStore()
-            // Add layer to map
-            const layerResult = result as LayerSearchResult
+            await handleLayerSelection(result as LayerSearchResult)
+        }
+    }
 
-            try {
-                // Ensure catalog is loaded (reuses cached catalog from search store)
-                await searchStore.loadCatalog()
-                const catalog = searchStore.catalog
+    function handleLocationSelection(result: LocationSearchResult) {
+        if (!result.coordinate) {
+            return
+        }
 
-                // Find the layer record in the catalog
-                const layerRecord = catalog?.records.find(
-                    (r: OGCRecord) => r.id === layerResult.layerId
-                )
+        const positionStore = usePositionStore()
+        positionStore.setCenter(result.coordinate, { name: 'search-result-selection' })
+        positionStore.setZoom(result.zoom, { name: 'search-result-selection' })
+    }
 
-                if (!layerRecord) {
-                    log.error('Layer not found in catalog:', layerResult.layerId)
-                    return
-                }
+    function handleFeatureSelection(result: FeatureSearchResult) {
+        if (!result.coordinate) {
+            return
+        }
 
-                // Fetch distribution data to determine layer type
-                const distributionLink = layerRecord.links?.find(
-                    (link: Link) => link.rel === 'distributions'
-                )
+        const positionStore = usePositionStore()
+        positionStore.setCenter(result.coordinate, { name: 'search-feature-selection' })
 
-                if (!distributionLink) {
-                    log.error('No distribution link found for layer:', layerResult.layerId)
-                    return
-                }
+        const featureZoom =
+            result.zoom && result.zoom > 0 && result.zoom < 20 ? result.zoom : 10
+        positionStore.setZoom(featureZoom, { name: 'search-feature-selection' })
+    }
 
-                const collectionData: OGCRecords = await $fetch(distributionLink.href)
+    function isLayerExisting(layerId: string): boolean {
+        const layerStore = useLayerStore()
+        return layerStore.layers.some((layer) => layer.humanId === layerId)
+    }
 
-                // Determine layer type from distributions
-                const layerType = getLayerType(collectionData)
+    async function handleLayerSelection(result: LayerSearchResult) {
+        const layerStore = useLayerStore()
+        const searchStore = useSearchStore()
 
-                if (layerType && layerType !== 'UNKNOWN') {
-                    // Check if layer already exists in the store
-                    const existingLayer = layerStore.layers.find(
-                        (layer) => layer.humanId === layerResult.layerId
-                    )
-                    if (existingLayer) {
-                        log.info('Layer already exists in map:', layerResult.layerId)
-                        return
-                    }
-                    layerStore.addLayer(makeServerLayer(layerType, layerRecord))
-                } else {
-                    log.error('Could not determine layer type for:', layerResult.layerId)
-                }
-            } catch (error) {
-                log.error('Failed to add layer to map:', error as Error)
+        try {
+            await searchStore.loadCatalog()
+            const catalog = searchStore.catalog
+
+            const layerRecord = catalog?.records.find(
+                (r: OGCRecord) => r.id === result.layerId
+            )
+
+            if (!layerRecord) {
+                log.error({
+                    title: 'useSearchSelection/handleLayerSelection',
+                    titleColor: LogPreDefinedColor.Red,
+                    messages: ['Layer not found in catalog:', result.layerId],
+                })
+                return
             }
+
+            const distributionLink = layerRecord.links?.find(
+                (link: Link) => link.rel === 'distributions'
+            )
+
+            if (!distributionLink) {
+                log.error({
+                    title: 'useSearchSelection/handleLayerSelection',
+                    titleColor: LogPreDefinedColor.Red,
+                    messages: ['No distribution link found for layer:', result.layerId],
+                })
+                return
+            }
+
+            const collectionData: OGCRecords = await $fetch(distributionLink.href)
+            const layerType = getLayerType(collectionData)
+
+            if (layerType && layerType !== 'UNKNOWN') {
+                if (isLayerExisting(result.layerId)) {
+                    log.info('Layer already exists in map:', result.layerId)
+                    return
+                }
+                layerStore.addLayer(makeServerLayer(layerType, layerRecord))
+            } else {
+                log.error({
+                    title: 'useSearchSelection/handleLayerSelection',
+                    titleColor: LogPreDefinedColor.Red,
+                    messages: ['Could not determine layer type for:', result.layerId],
+                })
+            }
+        } catch (error) {
+            log.error({
+                title: 'useSearchSelection/handleLayerSelection',
+                titleColor: LogPreDefinedColor.Red,
+                messages: ['Failed to add layer to map:', error],
+            })
         }
     }
 

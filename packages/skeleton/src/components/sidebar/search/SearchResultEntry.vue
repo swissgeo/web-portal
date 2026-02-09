@@ -20,13 +20,17 @@ const item = ref<HTMLLIElement>()
 
 // Keyboard navigation
 function goToFirst() {
-    if (!item.value) return
+    if (!item.value) {
+        return
+    }
     const firstItem = item.value.parentElement?.firstElementChild as HTMLLIElement
     firstItem?.focus()
 }
 
 function goToPrevious() {
-    if (!item.value) return
+    if (!item.value) {
+        return
+    }
     if (item.value.previousElementSibling) {
         ;(item.value.previousElementSibling as HTMLLIElement).focus()
     } else {
@@ -35,7 +39,9 @@ function goToPrevious() {
 }
 
 function goToNext() {
-    if (!item.value) return
+    if (!item.value) {
+        return
+    }
     if (item.value.nextElementSibling) {
         ;(item.value.nextElementSibling as HTMLLIElement).focus()
     } else {
@@ -44,7 +50,9 @@ function goToNext() {
 }
 
 function goToLast() {
-    if (!item.value?.parentElement) return
+    if (!item.value?.parentElement) {
+        return
+    }
     const lastItem = item.value.parentElement.lastElementChild as HTMLLIElement
     lastItem?.focus()
 }

@@ -5,7 +5,7 @@ import type { SearchResult } from '@swissgeo/search'
 import type { OGCRecords } from '@swissgeo/shared/ogc'
 
 import { useLayerStore } from '@swissgeo/layers'
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { searchLayers, searchLocation, searchLayerFeatures } from '@swissgeo/search'
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
@@ -17,7 +17,7 @@ export const useSearchStore = defineStore('search', () => {
     const isSearching = ref(false)
     const catalog = ref<OGCRecords | null>(null)
 
-    let abortController: AbortController | null = null
+    let abortController: AbortController | undefined
 
     // Load catalog data on store initialization
     const loadCatalog = async () => {
@@ -31,7 +31,11 @@ export const useSearchStore = defineStore('search', () => {
             }
             catalog.value = await response.json()
         } catch (error) {
-            log.error('Failed to load catalog:', error as Error)
+            log.error({
+                title: 'SearchStore/loadCatalog',
+                titleColor: LogPreDefinedColor.Red,
+                messages: ['Failed to load catalog:', error],
+            })
         }
     }
 
@@ -105,7 +109,11 @@ export const useSearchStore = defineStore('search', () => {
                         // Log failed searches but don't block other results
                         const error = result.reason
                         if (!(error instanceof Error && error.name === 'AbortError')) {
-                            log.error('Search request failed:', error as Error)
+                            log.error({
+                                title: 'SearchStore/setSearchQuery',
+                                titleColor: LogPreDefinedColor.Red,
+                                messages: ['Search request failed:', error],
+                            })
                         }
                     }
                 }
@@ -116,11 +124,17 @@ export const useSearchStore = defineStore('search', () => {
             if (error instanceof Error && error.name === 'AbortError') {
                 return
             }
-            log.error('Search error:', error as Error)
+            log.error({
+                title: 'SearchStore/setSearchQuery',
+                titleColor: LogPreDefinedColor.Red,
+                messages: ['Search error:', error],
+            })
             results.value = []
         } finally {
-            isSearching.value = false
-            abortController = null
+            if (currentController === abortController) {
+                isSearching.value = false
+                abortController = undefined
+            }
         }
     }
 

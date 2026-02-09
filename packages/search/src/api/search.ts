@@ -1,6 +1,6 @@
 // Search API for web-poc-portal
 
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 
 import type {
     FeatureSearchResult,
@@ -17,7 +17,7 @@ import type {
 interface CatalogRecord {
     id: string
     properties?: {
-        title?: Record<string, string>
+        title?: string
         description?: string
         keywords?: string[]
     }
@@ -133,7 +133,11 @@ export async function searchLocation(
         if (error instanceof Error && error.name === 'AbortError') {
             throw error
         }
-        log.error('Failed to search locations:', error as Error)
+        log.error({
+            title: 'searchLocation',
+            titleColor: LogPreDefinedColor.Red,
+            messages: ['Failed to search locations:', error],
+        })
         return []
     }
 }
@@ -171,12 +175,12 @@ export async function searchLayers(
                         return false
                     }
 
-                    const title = record.properties.title?.[lang] || ''
+                    const title = record.properties.title || ''
                     const description = record.properties.description || ''
                     const keywords = record.properties.keywords || []
 
-                    // Search in title, description, and keywords
                     return (
+                        record.id.toLowerCase().includes(query) ||
                         title.toLowerCase().includes(query) ||
                         description.toLowerCase().includes(query) ||
                         keywords.some((k: string) => k.toLowerCase().includes(query))
@@ -185,8 +189,7 @@ export async function searchLayers(
             )
             .slice(0, limit)
             .map((record) => {
-                const title =
-                    record.properties.title?.[lang] || record.properties.title?.en || record.id
+                const title = record.properties.title || record.id
                 return {
                     resultType: 'LAYER' as const,
                     id: record.id,
@@ -199,7 +202,11 @@ export async function searchLayers(
 
         return matches
     } catch (error) {
-        log.error('Failed to search layers:', error as Error)
+        log.error({
+            title: 'searchLayers',
+            titleColor: LogPreDefinedColor.Red,
+            messages: ['Failed to search layers:', error],
+        })
         return []
     }
 }
@@ -286,7 +293,11 @@ export async function searchLayerFeatures(
         if (error instanceof Error && error.name === 'AbortError') {
             throw error
         }
-        log.error('Failed to search layer features:', error as Error)
+        log.error({
+            title: 'searchLayerFeatures',
+            titleColor: LogPreDefinedColor.Red,
+            messages: ['Failed to search layer features:', error],
+        })
         return []
     }
 }

@@ -15,6 +15,7 @@
     "search": {
         "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",
         "locations_results_header": "Lieux",
+        "features_results_header": "Objets",
         "layers_results_header": "Couches",
         "no_results": "Aucun résultat trouvé"
     }
