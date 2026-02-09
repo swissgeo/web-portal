@@ -62,5 +62,5 @@
         "vue": "catalog:",
         "vue-i18n": "catalog:"
     },
-    "packageManager": "pnpm@10.14.0"
+    "packageManager": "pnpm@10.29.2"
 }
