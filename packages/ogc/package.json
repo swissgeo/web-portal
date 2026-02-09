@@ -1,6 +1,6 @@
 {
-    "name": "@swissgeo/shared",
-    "version": "1.0.0",
+    "name": "@swissgeo/ogc",
+    "version": "0.0.1",
     "description": "",
     "keywords": [],
     "license": "ISC",
@@ -8,28 +8,11 @@
     "type": "module",
     "exports": {
         ".": {
-            "types": "./dist/shared.d.ts",
+            "types": "./dist/index.d.ts",
             "import": "./dist/index.es.js"
-        },
-        "./ambient": {
-            "types": "./dist/ambient/index.d.ts"
-        },
-        "./api": {
-            "types": "./dist/api/index.d.ts"
-        },
-        "./livingdocs": {
-            "types": "./dist/livingdocs/index.d.ts"
-        },
-        "./ogc": {
-            "types": "./dist/ogc/index.d.ts"
-        },
-        "./language": {
-            "types": "./dist/Language.d.ts"
-        },
-        "./geojson": {
-            "types": "./dist/geojson/index.d.ts"
         }
     },
+    "main": "index.ts",
     "scripts": {
         "build": "vite build",
         "build:dev": "vite build --mode development",
@@ -40,7 +23,10 @@
         "lint:no-fix": "eslint"
     },
     "dependencies": {
-        "nuxt": "catalog:"
+        "@swissgeo/log": "catalog:",
+        "@swissgeo/shared": "workspace:*",
+        "@types/openlayers": "catalog:",
+        "ol": "catalog:"
     },
     "devDependencies": {
         "@dxup/unimport": "catalog:",
@@ -57,9 +43,5 @@
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:"
     },
-    "peerDependencies": {
-        "@vueuse/core": "catalog:",
-        "vue": "catalog:"
-    },
-    "packageManager": "pnpm@10.29.2"
+    "packageManager": "pnpm@10.14.0"
 }

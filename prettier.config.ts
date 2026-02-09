@@ -4,7 +4,7 @@ const config =  defineConfig(
   "@prettier/plugin-xml",
   // using an old version here because of this:
   // https://github.com/tailwindlabs/prettier-plugin-tailwindcss/issues/424
-  "prettier-plugin-jsdoc",
+  // "prettier-plugin-jsdoc",
   "prettier-plugin-packagejson",
   "prettier-plugin-tailwindcss",
 );

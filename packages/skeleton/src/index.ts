@@ -1,3 +1,7 @@
+// make the ambient types known to esbuild
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type * as Types from '@swissgeo/shared/ambient'
+
 import LucideIcon from '@/components/LucideIcon.vue'
 import SearchButton from '@/components/sidebar/SearchButton.vue'
 

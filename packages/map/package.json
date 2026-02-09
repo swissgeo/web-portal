@@ -18,6 +18,7 @@
     "main": "index.ts",
     "scripts": {
         "build": "vite build",
+        "build:dev": "vite build --mode development",
         "build:dev:watch": "vite build --watch --mode development",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
@@ -30,6 +31,7 @@
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
         "@swissgeo/numbers": "catalog:",
+        "@swissgeo/ogc": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "@turf/turf": "catalog:",
         "@types/mapbox-gl": "catalog:",

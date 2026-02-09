@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import type { Layer } from '@swissgeo/layers'
 import type { Map as OlMapType } from 'ol'
 
 import { registerProj4 } from '@swissgeo/coordinates'
-import { useLayerStore } from '@swissgeo/layers'
 import Map from 'ol/Map'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
@@ -12,7 +12,10 @@ import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.com
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
-const layerStore = useLayerStore()
+const { layers } = defineProps<{
+    layers: Layer[]
+    backgroundLayer: Layer
+}>()
 
 const mapElement = useTemplateRef('mapElement')
 const olMap = ref<OlMapType>()
@@ -55,15 +58,15 @@ createOlMap()
         @contextmenu.prevent
     >
         <OpenLayersVisibleLayer
-            :layer="layerStore.backgroundLayer"
-            v-if="layerStore.backgroundLayer"
-            :key="layerStore.backgroundLayer.uuid"
+            :layer="backgroundLayer"
+            v-if="backgroundLayer"
+            :key="backgroundLayer.uuid"
         />
         <!-- TODO probably somewhere here there would be the loop?-->
         <OpenLayersVisibleLayer
             :layer="layer"
             :key="layer.uuid"
-            v-for="layer in layerStore.layers"
+            v-for="layer in layers"
         />
         <!-- <OpenLayersVisibleLayers />
         <OpenLayersPinnedLocation />

@@ -4,6 +4,7 @@
     "type": "module",
     "scripts": {
         "build": "nuxt build",
+        "build:dev": "nuxt build --mode development",
         "dev": "nuxt dev",
         "format": "prettier --write .",
         "format:check": "prettier --check .",

@@ -1,4 +1,4 @@
-import type { WMSCapabilities } from '@swissgeo/shared/ogc'
+import type { WMSCapabilities } from '@swissgeo/ogc'
 
 import type { LayerInfo } from '@/types'
 

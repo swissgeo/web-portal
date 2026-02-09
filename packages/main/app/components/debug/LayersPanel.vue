@@ -5,8 +5,9 @@ import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 const filterTerm = ref<string>('')
+const runtimeConfig = useRuntimeConfig()
 
-const { data: recordLayers } = await useFetch<OGCRecords>('/api/v1/layers/swissgeo/catalog')
+const { data: recordLayers } = await useFetch<OGCRecords>(runtimeConfig.public.ogcApiEndpoint)
 
 const layerStore = useLayerStore()
 

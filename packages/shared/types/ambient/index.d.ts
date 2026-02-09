@@ -14,6 +14,7 @@ export interface RuntimeConfig {
             id: number
             translationKey: string
         }
+        ogcApiEndpoint: string
     }
 }
 

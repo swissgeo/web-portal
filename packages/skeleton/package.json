@@ -19,6 +19,7 @@
     "module": "./dist/index.js",
     "scripts": {
         "build": "vite build",
+        "build:dev": "vite build --mode development",
         "build:dev:watch": "vite build --watch --mode development",
         "format": "prettier --write .",
         "format:check": "prettier --check .",

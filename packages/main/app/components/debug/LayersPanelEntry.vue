@@ -2,6 +2,7 @@
 import type { OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
 
 import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { useStorage } from '@vueuse/core'
 
 const layerStore = useLayerStore()
@@ -16,9 +17,9 @@ const { layer } = defineProps<{
  * hovered
  */
 const state = useStorage(layer.id, {
-    collectionData: null,
+    distributionData: null,
 } as {
-    collectionData: OGCRecords | null
+    distributionData: OGCRecord | null
 })
 
 const distributionLink = computed(() => {
@@ -54,14 +55,25 @@ const layerBg = computed(() => {
  * @param layer
  */
 const type = computed((): LayerType | 'UNKNOWN' => {
-    if (!state.value.collectionData) {
+    if (!state.value.distributionData) {
         return 'UNKNOWN'
     }
 
     const preferredDistributionId =
-        state.value.collectionData.portal?.preferredDistributionId || null
+        state.value.distributionData.properties?.preferredDistributionId || null
 
-    for (const record of state.value.collectionData.records) {
+    if (!state.value.distributionData.records) {
+        log.error({
+            title: 'LayersPanelEntry',
+            titleColor: LogPreDefinedColor.Rose,
+            messages: [
+                `dataset ${state.value.distributionData.id} has no records`,
+                state.value.distributionData,
+            ],
+        })
+    }
+
+    for (const record of state.value.distributionData.records) {
         // if there's no preferredDistributionId, I want this to be true
         // so that it will just select the first one it finds
         if (preferredDistributionId === null || record.id === preferredDistributionId) {
@@ -81,17 +93,17 @@ const type = computed((): LayerType | 'UNKNOWN' => {
 })
 
 onMounted(() => {
-    if (state.value.collectionData === null) {
+    if (state.value.distributionData === null) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        updateCollectionData()
+        updateDistributionData()
     }
 })
 
-async function updateCollectionData() {
-    const collectionDataUpdated = await $fetch<OGCRecords>(distributionLink.value.href)
+async function updateDistributionData() {
+    const distributionDataUpdate = await $fetch<OGCRecord>(distributionLink.value.href)
 
-    if (collectionDataUpdated) {
-        state.value.collectionData = collectionDataUpdated
+    if (distributionDataUpdate) {
+        state.value.distributionData = distributionDataUpdate
     }
 }
 

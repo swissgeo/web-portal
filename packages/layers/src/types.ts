@@ -1,4 +1,4 @@
-import type { Dataset } from '@swissgeo/shared/ogc'
+import type { Dataset } from '@swissgeo/ogc'
 
 export enum LayerType {
     WMTS = 'wmts',
@@ -45,7 +45,5 @@ export interface FileLayer extends Layer {
 }
 
 export { useLayerStore } from '@/stores/layer'
-
-export * from './geoJsonStyle'
 
 export * from './utils'
