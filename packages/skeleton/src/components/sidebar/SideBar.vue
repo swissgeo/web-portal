@@ -41,7 +41,9 @@ const sidebarSecondColumnWidth = 400
                     <div class="flex flex-col items-center gap-2">
                         <SidebarIcons></SidebarIcons>
                     </div>
-                    <LanguageSwitcherButton> </LanguageSwitcherButton>
+                    <div class="flex flex-col items-center gap-2">
+                        <LanguageSwitcherButton></LanguageSwitcherButton>
+                    </div>
                 </div>
                 <!-- Second column -->
                 <div

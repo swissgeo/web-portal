@@ -14,5 +14,3 @@ export * from './stores/ui'
 export * from './stores/search'
 
 export { SideBar, SearchButton, LucideIcon, ContentButton, IconButton, LanguageSwitcherButton }
-
-// export * from 'primevue'

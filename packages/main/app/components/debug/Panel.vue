@@ -54,27 +54,27 @@ function toggleDrawing() {
                 !isDrawingOpen
             "
         >
-            <Button
+            <UButton
                 @click="toggleLayersPanel"
                 class="cursor-pointer"
             >
                 {{ $t('debug.openLayersPanel') }}
-            </Button>
-            <Button
+            </UButton>
+            <UButton
                 @click="toggleImportPanel"
                 class="cursor-pointer"
             >
                 {{ $t('debug.openImportLayersPanel') }}
-            </Button>
-            <Button
+            </UButton>
+            <UButton
                 @click="toggleLocalImportPanel"
                 class="cursor-pointer"
             >
                 {{ $t('debug.openImportLocalLayersPanel') }}
-            </Button>
-            <Button @click="toggleDrawing">
+            </UButton>
+            <UButton @click="toggleDrawing">
                 {{ $t('debug.openDrawingPanel') }}
-            </Button>
+            </UButton>
         </div>
     </div>
 </template>

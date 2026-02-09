@@ -44,7 +44,7 @@ defineExpose({
     <!-- Category container -->
     <div class="search-category">
         <!-- Category header -->
-        <div class="bg-surface-50 px-4 py-2 text-sm font-semibold text-surface-700">
+        <div class="bg-surface-50 text-surface-700 px-4 py-2 text-sm font-semibold">
             {{ title }}
         </div>
 
