@@ -19,10 +19,11 @@
         "build": "vite build",
         "build:dev": "vite build --mode development",
         "build:dev:watch": "vite build --watch --mode development",
-        "format": "prettier --write .",
-        "format:check": "prettier --check .",
-        "lint": "eslint --fix",
-        "lint:no-fix": "eslint"
+        "format": "prettier --check .",
+        "format:write": "prettier --write .",
+        "lint": "eslint",
+        "lint:write": "eslint --fix",
+        "type-check": "vue-tsc"
     },
     "dependencies": {
         "@swissgeo/shared": "workspace:*"
