@@ -52,16 +52,38 @@ const onKeydown = (event: KeyboardEvent) => {
     <div class="border-b border-surface-200 p-4">
         <div class="relative">
             <!-- Input field -->
-            <InputText ref="searchInput" :model-value="modelValue" type="text" :placeholder="$t('search.placeholder')"
-                autocapitalize="off" autocorrect="off" spellcheck="false" class="search-input w-full"
-                data-cy="searchbar" @input="onInput" @keydown="onKeydown" />
+            <InputText
+                ref="searchInput"
+                :model-value="modelValue"
+                type="text"
+                :placeholder="$t('search.placeholder')"
+                autocapitalize="off"
+                autocorrect="off"
+                spellcheck="false"
+                class="search-input w-full"
+                data-cy="searchbar"
+                @input="onInput"
+                @keydown="onKeydown"
+            />
 
             <!-- Clear button -->
-            <button v-if="modelValue"
+            <button
+                v-if="modelValue"
                 class="absolute top-1/2 right-3 -translate-y-1/2 text-surface-400 transition-colors hover:text-surface-600"
-                type="button" data-cy="searchbar-clear" @click="onClear">
-                <LucideIcon v-if="isSearching" name="LoaderCircle" class="w-5 h-5 animate-spin" />
-                <LucideIcon v-else name="X" class="w-5 h-5" />
+                type="button"
+                data-cy="searchbar-clear"
+                @click="onClear"
+            >
+                <LucideIcon
+                    v-if="isSearching"
+                    name="LoaderCircle"
+                    class="h-5 w-5 animate-spin"
+                />
+                <LucideIcon
+                    v-else
+                    name="X"
+                    class="h-5 w-5"
+                />
             </button>
         </div>
     </div>

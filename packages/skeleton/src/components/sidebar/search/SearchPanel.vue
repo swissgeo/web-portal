@@ -17,11 +17,11 @@ const { locale } = useI18n()
 
 // Debounced search (100ms delay)
 const debouncedSearch = useDebounceFn((query: string) => {
-    searchStore.setSearchQuery(query, locale.value)
+    void searchStore.setSearchQuery(query, locale.value)
 }, 100)
 
 function handleInput(value: string) {
-    debouncedSearch(value)
+    void debouncedSearch(value)
 }
 
 function handleClear() {
