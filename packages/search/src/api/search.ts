@@ -151,7 +151,7 @@ export async function searchLocation(
  * @param limit - Maximum number of results (default: 10)
  * @returns Promise with layer search results
  */
-export async function searchLayers(
+export function searchLayers(
     queryString: string,
     lang: string,
     catalogRecords: CatalogRecord[],
