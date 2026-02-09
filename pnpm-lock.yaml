@@ -144,6 +144,9 @@ catalogs:
     geojson:
       specifier: ^0.5.0
       version: 0.5.0
+    happy-dom:
+      specifier: ^20.5.3
+      version: 20.5.3
     jsdom:
       specifier: ^26.0.0
       version: 26.1.0
@@ -165,6 +168,9 @@ catalogs:
     pinia:
       specifier: ^3.0.4
       version: 3.0.4
+    playwright-core:
+      specifier: ^1.58.2
+      version: 1.58.2
     prettier:
       specifier: ^3.8.1
       version: 3.8.1
@@ -513,9 +519,6 @@ importers:
       '@nuxt/image':
         specifier: 'catalog:'
         version: 1.11.0(db0@0.3.4)(ioredis@5.9.2)(magicast@0.5.1)
-      '@nuxt/test-utils':
-        specifier: 'catalog:'
-        version: 3.23.0(@vue/test-utils@2.4.6)(happy-dom@20.5.3)(jsdom@26.1.0)(magicast@0.5.1)(playwright-core@1.58.2)(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.5.3)(jiti@2.6.1)(jsdom@26.1.0)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))
       '@nuxt/ui':
         specifier: 'catalog:'
         version: 4.4.0(@tiptap/extensions@3.19.0(@tiptap/core@3.19.0(@tiptap/pm@3.19.0))(@tiptap/pm@3.19.0))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.5)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(change-case@5.4.4)(db0@0.3.4)(embla-carousel@8.6.0)(ioredis@5.9.2)(magicast@0.5.1)(sortablejs@1.15.6)(tailwindcss@4.1.18)(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(vue-router@4.6.4(vue@3.5.27(typescript@5.9.3)))(vue@3.5.27(typescript@5.9.3))(yjs@13.6.29)
@@ -637,6 +640,9 @@ importers:
       '@eslint/markdown':
         specifier: 'catalog:'
         version: 7.5.1
+      '@nuxt/test-utils':
+        specifier: 'catalog:'
+        version: 3.23.0(@vue/test-utils@2.4.6)(happy-dom@20.5.3)(jsdom@26.1.0)(magicast@0.5.1)(playwright-core@1.58.2)(typescript@5.9.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.5.3)(jiti@2.6.1)(jsdom@26.1.0)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))
       '@primevue/nuxt-module':
         specifier: 'catalog:'
         version: 4.5.4(@babel/parser@7.29.0)(magicast@0.5.1)(vue@3.5.27(typescript@5.9.3))
@@ -649,8 +655,11 @@ importers:
       '@types/mapbox-gl':
         specifier: 'catalog:'
         version: 3.4.1
+      '@vue/test-utils':
+        specifier: 'catalog:'
+        version: 2.4.6
       eslint-import-resolver-typescript:
-        specifier: ^4.4.4
+        specifier: 'catalog:'
         version: 4.4.4(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@9.39.2(jiti@2.6.1)))(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-perfectionist:
         specifier: 'catalog:'
@@ -658,6 +667,12 @@ importers:
       fs-extra:
         specifier: 'catalog:'
         version: 11.3.3
+      happy-dom:
+        specifier: 'catalog:'
+        version: 20.5.3
+      playwright-core:
+        specifier: 'catalog:'
+        version: 1.58.2
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -667,6 +682,9 @@ importers:
       vite-plugin-vue-devtools:
         specifier: 'catalog:'
         version: 8.0.6(@nuxt/kit@3.21.0(magicast@0.5.1))(vite@7.3.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.27(typescript@5.9.3))
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.5.3)(jiti@2.6.1)(jsdom@26.1.0)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2)
       vue-tsc:
         specifier: 'catalog:'
         version: 3.2.4(typescript@5.9.3)
@@ -13279,13 +13297,11 @@ snapshots:
 
   '@types/web-bluetooth@0.0.21': {}
 
-  '@types/whatwg-mimetype@3.0.2':
-    optional: true
+  '@types/whatwg-mimetype@3.0.2': {}
 
   '@types/ws@8.18.1':
     dependencies:
       '@types/node': 25.2.2
-    optional: true
 
   '@typescript-eslint/eslint-plugin@8.54.0(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
@@ -15842,7 +15858,6 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
-    optional: true
 
   has-bigints@1.1.0: {}
 
@@ -17724,8 +17739,7 @@ snapshots:
       exsolve: 1.0.8
       pathe: 2.0.3
 
-  playwright-core@1.58.2:
-    optional: true
+  playwright-core@1.58.2: {}
 
   pluralize@8.0.0: {}
 
@@ -19834,8 +19848,7 @@ snapshots:
     dependencies:
       iconv-lite: 0.6.3
 
-  whatwg-mimetype@3.0.0:
-    optional: true
+  whatwg-mimetype@3.0.0: {}
 
   whatwg-mimetype@4.0.0: {}
 
