@@ -1,12 +1,13 @@
 <script lang="ts" setup>
+import type { SearchResult } from '@swissgeo/search'
+
 import LogoPic from '@/components/LogoPic.vue'
 import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
 import { useUiStore, SidebarType } from '@/stores/ui'
-import type { SearchResult } from '@swissgeo/search'
 
+import LanguageSwitcherButton from './LanguageSwitcherButton.vue'
 import LayerCart from './LayerCart.vue'
 import SearchPanel from './search/SearchPanel.vue'
-import LanguageSwitcherButton from './LanguageSwitcherButton.vue'
 
 const uiStore = useUiStore()
 
@@ -41,10 +42,10 @@ const sidebarSecondColumnWidth = 400
                 </div>
                 <!-- Second column -->
                 <div v-show="uiStore.isSidebarOpen" :style="{ width: sidebarSecondColumnWidth + 'px' }"
-                    class="relative flex h-full bg-white transition-[width] duration-75 ease-out">
+                     class="relative flex h-full bg-white transition-[width] duration-75 ease-out">
                     <LayerCart v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"></LayerCart>
                     <SearchPanel v-if="uiStore.currentSidebar === SidebarType.SEARCH"
-                        @result-selected="handleSearchResultSelected"></SearchPanel>
+                                 @result-selected="handleSearchResultSelected"></SearchPanel>
                 </div>
             </div>
         </div>

@@ -1,8 +1,7 @@
 import { useDrawingStore } from '@swissgeo/drawing'
 import { mount } from '@vue/test-utils'
-import { describe, it, expect, vi } from 'vitest'
-
 import DrawingPanel from '~/components/debug/DrawingPanel.vue'
+import { describe, it, expect, vi } from 'vitest'
 
 const setDrawingMode = vi.fn()
 const setSelectedIconId = vi.fn()

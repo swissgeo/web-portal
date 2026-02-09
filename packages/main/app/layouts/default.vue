@@ -1,8 +1,10 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
-import log from '@swissgeo/log'
 import type { SearchResult } from '@swissgeo/search'
+
+import log from '@swissgeo/log'
 import { SideBar } from '@swissgeo/skeleton'
+
 import { useSearchSelection } from '@/composables/useSearchSelection'
 
 const route = useRoute()

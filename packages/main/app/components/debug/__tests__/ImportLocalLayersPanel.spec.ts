@@ -1,8 +1,7 @@
 import { mount } from '@vue/test-utils'
+import ImportLocalLayersPanel from '~/components/debug/ImportLocalLayersPanel.vue'
 import { useFileImport } from '~/composables/useFileImport'
 import { describe, it, expect, vi } from 'vitest'
-
-import ImportLocalLayersPanel from '~/components/debug/ImportLocalLayersPanel.vue'
 
 const importFileSpy = vi.fn()
 vi.mock('~/composables/useFileImport', () => ({

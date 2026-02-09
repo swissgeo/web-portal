@@ -2,12 +2,15 @@
 // Complete search panel combining SearchBar + SearchResults
 // Now using Pinia store for state management
 
+import type { SearchResult } from '@swissgeo/search'
+
 import { useDebounceFn } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
-import type { SearchResult } from '@swissgeo/search'
+
+import { useSearchStore } from '@/stores/search'
+
 import SearchBar from './SearchBar.vue'
 import SearchResults from './SearchResults.vue'
-import { useSearchStore } from '@/stores/search'
 
 const searchStore = useSearchStore()
 const { locale } = useI18n()

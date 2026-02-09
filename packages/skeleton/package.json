@@ -42,7 +42,6 @@
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
-        "@nuxt/ui": "catalog:",
         "eslint": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",

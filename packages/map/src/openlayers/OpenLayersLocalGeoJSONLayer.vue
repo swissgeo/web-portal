@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { FileLayer } from '@swissgeo/layers'
 
-import useOlLocalGeoJSONLayer from '../composables/olLocalGeoJSONLayer.composable'
 import { watch, onMounted } from 'vue'
+
+import useOlLocalGeoJSONLayer from '../composables/olLocalGeoJSONLayer.composable'
 
 const { layer } = defineProps<{
     layer: FileLayer

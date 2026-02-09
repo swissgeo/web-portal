@@ -23,18 +23,18 @@ function toggleDrawing() {
 <template>
     <div>
         <DebugLayersPanel class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow" v-if="isLayersPanelOpen"
-            @close="toggleLayersPanel"></DebugLayersPanel>
+                          @close="toggleLayersPanel"></DebugLayersPanel>
         <DebugImportLayersPanel class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
-            v-if="isImportPanelOpen" @close="toggleImportPanel">
+                                v-if="isImportPanelOpen" @close="toggleImportPanel">
         </DebugImportLayersPanel>
         <DebugImportLocalLayersPanel class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
-            v-if="isImportLocalPanelOpen" @close="toggleLocalImportPanel">
+                                     v-if="isImportLocalPanelOpen" @close="toggleLocalImportPanel">
         </DebugImportLocalLayersPanel>
         <DrawingPanel class="relative h-[400px] w-[350px] overflow-hidden bg-white shadow" v-if="isDrawingOpen"
-            @close="toggleDrawing">
+                      @close="toggleDrawing">
         </DrawingPanel>
         <div class="flex gap-2"
-            v-if="!isLayersPanelOpen && !isImportPanelOpen && !isImportLocalPanelOpen && !isDrawingOpen">
+             v-if="!isLayersPanelOpen && !isImportPanelOpen && !isImportLocalPanelOpen && !isDrawingOpen">
             <Button @click="toggleLayersPanel" class="cursor-pointer">
                 {{ $t('debug.openLayersPanel') }}
             </Button>

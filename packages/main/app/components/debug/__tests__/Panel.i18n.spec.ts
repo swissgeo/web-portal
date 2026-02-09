@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
-import { nextTick, ref } from 'vue'
 import Panel from '~/components/debug/Panel.vue'
+import { nextTick, ref } from 'vue'
 
 const messages = {
   en: {
