@@ -34,6 +34,7 @@ export default defineConfig(({ mode }): UserConfig => {
         resolve: {
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url)),
+                '@types': fileURLToPath(new URL('./types', import.meta.url)),
             },
         },
         plugins: [

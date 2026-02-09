@@ -46,6 +46,4 @@ export interface FileLayer extends Layer {
 
 export { useLayerStore } from '@/stores/layer'
 
-export * from './geoJsonStyle'
-
 export * from './utils'

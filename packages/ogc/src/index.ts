@@ -2,5 +2,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type * as Types from '@swissgeo/shared/ambient'
 
-export type * from './types/index'
+export type * from '@types'
 export * from './useRecordsData.composable'

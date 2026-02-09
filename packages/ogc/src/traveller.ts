@@ -1,6 +1,6 @@
-import log, { LogPreDefinedColor } from '@swissgeo/log'
+import type { Dataset, Distribution, DistributionCollection, ServiceProtocol } from '@types'
 
-import type { Distribution, DistributionCollection, ServiceProtocol } from './types'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 
 import { getStyleLinks } from './utils'
 

@@ -1,10 +1,12 @@
-import type { Service, ServiceProtocol, Dataset } from '@swissgeo/ogc'
 import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/shared/geojson'
+import type { Service, ServiceProtocol, Dataset, Distribution } from '@types'
 import type { Style } from '@types/mapbox-gl'
 
-import type { DistributionCollection } from './types'
+import type { DistributionCollection } from '../types'
 
 import { extractDistribution, grabCapabilityUrl, grabGeoJsonUrl } from './traveller'
+
+const DEFAULT_OPACITY = 1
 
 /**
  * Go through the tree of the OGC records and extract the necessary information to request a
@@ -20,13 +22,13 @@ import { extractDistribution, grabCapabilityUrl, grabGeoJsonUrl } from './travel
  */
 
 /**
- *  TODO not yet happy about this. It's not very robust I think, and it mixes stuff from
- * geojson and WMS/wmts
-
-    Trying to figure out a better way. The cool thing about this is that we can keep the reactivity.
-    So if the dataset changes, this would trigger the re-loading of all the data, which could be nice
-    Gotta test that with the language though. Could also be that it would override stuff that we don't want
-    (e.g. the time dimension)
+ * TODO not yet happy about this. It's not very robust I think, and it mixes stuff from geojson and
+ * WMS/wmts
+ *
+ *     Trying to figure out a better way. The cool thing about this is that we can keep the reactivity.
+ *     So if the dataset changes, this would trigger the re-loading of all the data, which could be nice
+ *     Gotta test that with the language though. Could also be that it would override stuff that we don't want
+ *     (e.g. the time dimension)
  */
 export async function useRecordsData(dataset: Dataset, protocol: ServiceProtocol) {
     // Get the distribution
@@ -74,7 +76,7 @@ export async function useRecordsData(dataset: Dataset, protocol: ServiceProtocol
             const layer = styleData.layers[0]
 
             if (!layer || !isRasterLayer(layer)) {
-                return 1
+                return DEFAULT_OPACITY
             }
 
             const paint = layer.paint
