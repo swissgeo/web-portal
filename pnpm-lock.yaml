@@ -113,7 +113,7 @@ catalogs:
       version: 0.8.1
     '@vueuse/core':
       specifier: ^13.9.0
-      version: 14.2.0
+      version: 13.9.0
     '@xmldom/xmldom':
       specifier: ^0.8.11
       version: 0.8.11
@@ -220,7 +220,7 @@ catalogs:
       specifier: 1.0.0-beta.6
       version: 1.0.0-beta.6
     vite:
-      specifier: 7.3.1
+      specifier: ^7.3.1
       version: 7.3.1
     vite-plugin-node-polyfills:
       specifier: ^0.25.0
@@ -896,9 +896,18 @@ importers:
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.4(vite@7.3.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.27(typescript@5.9.3))
+      '@vue/tsconfig':
+        specifier: 'catalog:'
+        version: 0.8.1(typescript@5.9.3)(vue@3.5.27(typescript@5.9.3))
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.6.1)
+      eslint-import-resolver-typescript:
+        specifier: 'catalog:'
+        version: 4.4.4(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@9.39.2(jiti@2.6.1)))(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@2.6.1))
+      ol:
+        specifier: 'catalog:'
+        version: 10.7.0
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -946,7 +955,7 @@ importers:
         version: link:../shared
       '@vueuse/core':
         specifier: 'catalog:'
-        version: 14.2.0(vue@3.5.27(typescript@5.9.3))
+        version: 13.9.0(vue@3.5.27(typescript@5.9.3))
       lucide-vue-next:
         specifier: 'catalog:'
         version: 0.563.0(vue@3.5.27(typescript@5.9.3))
@@ -989,7 +998,7 @@ importers:
         version: 5.9.3
       unplugin-auto-import:
         specifier: 'catalog:'
-        version: 20.3.0(@nuxt/kit@4.3.0(magicast@0.5.1))(@vueuse/core@14.2.0(vue@3.5.27(typescript@5.9.3)))
+        version: 20.3.0(@nuxt/kit@4.3.0(magicast@0.5.1))(@vueuse/core@13.9.0(vue@3.5.27(typescript@5.9.3)))
       unplugin-dts:
         specifier: 'catalog:'
         version: 1.0.0-beta.6(@microsoft/api-extractor@7.56.0(@types/node@25.2.2))(esbuild@0.27.2)(rollup@4.57.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))
@@ -3821,9 +3830,6 @@ packages:
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
-
-  '@types/node@25.2.0':
-    resolution: {integrity: sha512-DZ8VwRFUNzuqJ5khrvwMXHmvPe+zGayJhr2CDNiKB1WBE1ST8Djl00D0IC4vvNmHMdj6DlbYRIaFE7WHjlDl5w==}
 
   '@types/node@25.2.2':
     resolution: {integrity: sha512-BkmoP5/FhRYek5izySdkOneRyXYN35I860MFAGupTdebyE66uZaR+bXLHq8k4DirE5DwQi3NuhvRU1jqTVwUrQ==}
@@ -13210,7 +13216,7 @@ snapshots:
 
   '@types/jsdom@27.0.0':
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.2.2
       '@types/tough-cookie': 4.0.5
       parse5: 7.3.0
 
@@ -13244,14 +13250,9 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
-  '@types/node@25.2.0':
-    dependencies:
-      undici-types: 7.16.0
-
   '@types/node@25.2.2':
     dependencies:
       undici-types: 7.16.0
-    optional: true
 
   '@types/openlayers@4.6.23': {}
 
