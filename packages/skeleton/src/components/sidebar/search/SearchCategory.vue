@@ -1,8 +1,10 @@
 <script setup lang="ts">
 // Adapted from web-mapviewer SearchResultCategory.vue
 
-import { ref } from 'vue'
 import type { SearchResult } from '@swissgeo/search'
+
+import { ref } from 'vue'
+
 import SearchResultEntry from './SearchResultEntry.vue'
 
 defineProps<{

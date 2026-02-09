@@ -1,6 +1,5 @@
-// import {useUiStore} from '@swissgeo/skeleton'
+import { ULocaleSelect } from '#components'
 
-export default defineNuxtPlugin((/*nuxtApp*/) => {
-    // useUiStore()
-    // nuxtApp.vueApp.use(ui)
+export default defineNuxtPlugin((nuxtApp) => {
+    nuxtApp.vueApp.component('ULocaleSelect', ULocaleSelect)
 })

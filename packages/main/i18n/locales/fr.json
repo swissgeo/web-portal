@@ -18,5 +18,19 @@
         "features_results_header": "Objets",
         "layers_results_header": "Couches",
         "no_results": "Aucun résultat trouvé"
+    },
+    "debug": {
+        "openImportLocalLayersPanel": "Ouvrir le panneau d'importation des couches locales",
+        "openDrawingPanel": "Ouvrir le panneau de dessin",
+        "openImportLayersPanel": "Ouvrir le panneau d'importation des couches",
+        "openLayersPanel": "Ouvrir le panneau des couches"
+    },
+    "backgroundLayers": {
+        "title": "Cartes affichées",
+        "voidMap": "Carte vide",
+        "backgroundMap": "Carte de fond",
+        "colorMap": "Carte en couleur",
+        "greyMap": "Carte en niveaux de gris",
+        "swissimage": "Imagerie aérienne"
     }
 }

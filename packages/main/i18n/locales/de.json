@@ -18,5 +18,19 @@
         "features_results_header": "Features",
         "layers_results_header": "Layer",
         "no_results": "Keine Ergebnisse gefunden"
+    },
+    "debug": {
+        "openImportLocalLayersPanel": "Import Lokale Layer Panel öffnen",
+        "openDrawingPanel": "Zeichenpanel öffnen",
+        "openImportLayersPanel": "Import Layer Panel öffnen",
+        "openLayersPanel": "Layer Panel öffnen"
+    },
+    "backgroundLayers": {
+        "title": "Angezeigte Karten",
+        "voidMap": "Leere Karte",
+        "backgroundMap": "Hintergrundkarte",
+        "colorMap": "Karte farbig",
+        "greyMap": "Karte SW",
+        "swissimage": "Luftbilder"
     }
 }

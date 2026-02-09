@@ -22,6 +22,7 @@ export default defineNuxtConfig({
         '@nuxt/test-utils',
         '@pinia/nuxt',
         '@nuxtjs/i18n',
+        '@nuxt/ui',
         '@primevue/nuxt-module',
         [
             '@nuxtjs/google-fonts',
@@ -71,16 +72,30 @@ export default defineNuxtConfig({
         preserveSymlinks: true, // VERY important in monorepos
     },
     i18n: {
-        // detectBrowserLanguage: {
-        //     useCookie: true,
-        // },
+        detectBrowserLanguage: {
+            useCookie: true,
+            cookieKey: 'selectedLanguage',
+            redirectOn: 'root',  // only redirect on root path
+        },
         strategy: 'no_prefix', // don't do route paths
+        lazy: true,
+        langDir: 'locales',
         locales: [
             {
                 code: 'de',
-                name: 'Deutsch' /*language: 'de-CH',*/,
+                name: 'Deutsch',
+                file: 'de.json',
             },
-            { code: 'fr', name: 'Français' /*language: 'fr-FR',*/, file: 'fr.json' },
+            {
+                code: 'fr',
+                name: 'Français',
+                file: 'fr.json',
+            },
+            {
+                code: 'en',
+                name: 'English',
+                file: 'en.json',
+            },
         ],
         defaultLocale: 'de',
     },

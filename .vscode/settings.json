@@ -5,5 +5,10 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[xml]": {
         "editor.defaultFormatter": "mikeburgh.xml-format"
+    },
+    "stylelint.validate": ["css", "scss", "less", "postcss", "vue"],
+    "[vue]": {
+        "editor.defaultFormatter": "Vue.volar",
+        "editor.formatOnSave": true
     }
 }
