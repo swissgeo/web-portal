@@ -9,14 +9,8 @@ const emit = defineEmits<{
 }>()
 
 const drawingStore = useDrawingStore()
-const {
-    startDrawing,
-    stopDrawing,
-    downloadKML,
-    downloadKMZ,
-    downloadGPX,
-    clearDrawing,
-} = useDrawingManager()
+const { startDrawing, stopDrawing, downloadKML, downloadKMZ, downloadGPX, clearDrawing } =
+    useDrawingManager()
 
 function selectDrawingType(type: DrawingMode) {
     if (drawingStore.drawingMode === type) {
@@ -135,7 +129,13 @@ onMounted(() => {
                 v-if="drawingStore.isDrawing"
                 class="mt-2 text-sm text-blue-600"
             >
-                {{ drawingStore.drawingMode === 'Point' ? 'Click on the map to add a point' : drawingStore.drawingMode === 'Text' ? 'Click on the map to add text' : 'Click to start drawing, double-click to finish' }}
+                {{
+                    drawingStore.drawingMode === 'Point'
+                        ? 'Click on the map to add a point'
+                        : drawingStore.drawingMode === 'Text'
+                          ? 'Click on the map to add text'
+                          : 'Click to start drawing, double-click to finish'
+                }}
             </p>
         </div>
 

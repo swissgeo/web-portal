@@ -48,8 +48,7 @@ export function useSearchSelection() {
         const positionStore = usePositionStore()
         positionStore.setCenter(result.coordinate, { name: 'search-feature-selection' })
 
-        const featureZoom =
-            result.zoom && result.zoom > 0 && result.zoom < 20 ? result.zoom : 10
+        const featureZoom = result.zoom && result.zoom > 0 && result.zoom < 20 ? result.zoom : 10
         positionStore.setZoom(featureZoom, { name: 'search-feature-selection' })
     }
 
@@ -66,9 +65,7 @@ export function useSearchSelection() {
             await searchStore.loadCatalog()
             const catalog = searchStore.catalog
 
-            const layerRecord = catalog?.records.find(
-                (r: OGCRecord) => r.id === result.layerId
-            )
+            const layerRecord = catalog?.records.find((r: OGCRecord) => r.id === result.layerId)
 
             if (!layerRecord) {
                 log.error({

@@ -22,26 +22,54 @@ function toggleDrawing() {
 
 <template>
     <div>
-        <DebugLayersPanel class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow" v-if="isLayersPanelOpen"
-                          @close="toggleLayersPanel"></DebugLayersPanel>
-        <DebugImportLayersPanel class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
-                                v-if="isImportPanelOpen" @close="toggleImportPanel">
+        <DebugLayersPanel
+            class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
+            v-if="isLayersPanelOpen"
+            @close="toggleLayersPanel"
+        ></DebugLayersPanel>
+        <DebugImportLayersPanel
+            class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
+            v-if="isImportPanelOpen"
+            @close="toggleImportPanel"
+        >
         </DebugImportLayersPanel>
-        <DebugImportLocalLayersPanel class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
-                                     v-if="isImportLocalPanelOpen" @close="toggleLocalImportPanel">
+        <DebugImportLocalLayersPanel
+            class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
+            v-if="isImportLocalPanelOpen"
+            @close="toggleLocalImportPanel"
+        >
         </DebugImportLocalLayersPanel>
-        <DrawingPanel class="relative h-[400px] w-[350px] overflow-hidden bg-white shadow" v-if="isDrawingOpen"
-                      @close="toggleDrawing">
+        <DrawingPanel
+            class="relative h-[400px] w-[350px] overflow-hidden bg-white shadow"
+            v-if="isDrawingOpen"
+            @close="toggleDrawing"
+        >
         </DrawingPanel>
-        <div class="flex gap-2"
-             v-if="!isLayersPanelOpen && !isImportPanelOpen && !isImportLocalPanelOpen && !isDrawingOpen">
-            <Button @click="toggleLayersPanel" class="cursor-pointer">
+        <div
+            class="flex gap-2"
+            v-if="
+                !isLayersPanelOpen &&
+                !isImportPanelOpen &&
+                !isImportLocalPanelOpen &&
+                !isDrawingOpen
+            "
+        >
+            <Button
+                @click="toggleLayersPanel"
+                class="cursor-pointer"
+            >
                 {{ $t('debug.openLayersPanel') }}
             </Button>
-            <Button @click="toggleImportPanel" class="cursor-pointer">
+            <Button
+                @click="toggleImportPanel"
+                class="cursor-pointer"
+            >
                 {{ $t('debug.openImportLayersPanel') }}
             </Button>
-            <Button @click="toggleLocalImportPanel" class="cursor-pointer">
+            <Button
+                @click="toggleLocalImportPanel"
+                class="cursor-pointer"
+            >
                 {{ $t('debug.openImportLocalLayersPanel') }}
             </Button>
             <Button @click="toggleDrawing">
