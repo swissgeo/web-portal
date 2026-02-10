@@ -3,6 +3,7 @@ import type { Layer } from '@swissgeo/layers'
 import type { Map as OlMapType } from 'ol'
 
 import { registerProj4 } from '@swissgeo/coordinates'
+import Button from 'primevue/button'
 import Map from 'ol/Map'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
