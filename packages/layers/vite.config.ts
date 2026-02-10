@@ -37,20 +37,23 @@ export default defineConfig(({ mode }): UserConfig => {
             },
         },
         plugins: [
-            AutoImport({
-                dirs: ['./src/**'],
-                imports: [
-                    // Presets
-                    'vue',
-                    'vue-router',
-                    'vue-i18n',
-                    'pinia',
-                ],
-                // Automatically generate types
-                dts: './.output/auto-imports.d.ts',
-                // Auto import inside Vue template
-                vueTemplate: true,
-            }),
+            {
+                ...AutoImport({
+                    dirs: ['./src/**'],
+                    imports: [
+                        // Presets
+                        'vue',
+                        'vue-router',
+                        'vue-i18n',
+                        'pinia',
+                    ],
+                    // Automatically generate types
+                    dts: './.output/auto-imports.d.ts',
+                    // Auto import inside Vue template
+                    vueTemplate: true,
+                }),
+                enforce: 'pre',
+            },
             dts({
                 bundleTypes: true,
                 processor: 'vue',
