@@ -57,10 +57,10 @@ catalog:
     date-fns: ^4.1.0
     es-toolkit: ^1.39.10
     eslint: ^9.39.2
+    eslint-import-resolver-typescript: ^4.4.4
     eslint-plugin-chai-friendly: ^1.1.0
     eslint-plugin-cypress: ^5.2.0
     eslint-plugin-mocha: ^11.2.0
-    eslint-import-resolver-typescript: ^4.4.4
     eslint-plugin-perfectionist: ^4.15.1
     eslint-plugin-prettier: ^5.5.4
     eslint-plugin-vue: ^10.5.1
@@ -111,4 +111,4 @@ catalog:
     vue: ^3.5.22
     vue-i18n: ^11.2.2
     vue-router: ^4.5.1
-    vue-tsc: ^3.1.1
+    vue-tsc: ^3.2.4

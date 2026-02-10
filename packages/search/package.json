@@ -33,7 +33,8 @@
         "eslint-import-resolver-typescript": "catalog:",
         "typescript": "catalog:",
         "unplugin-dts": "catalog:",
-        "vite": "catalog:"
+        "vite": "catalog:",
+        "vue-tsc": "catalog:"
     },
     "peerDependencies": {
         "vue": "catalog:"
