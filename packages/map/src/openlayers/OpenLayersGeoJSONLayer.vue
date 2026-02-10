@@ -14,7 +14,7 @@ const { layer } = defineProps<{
 const { geoJsonUrl, styleData } = await useRecordsData(layer.dataset, 'OGC:GeoJSON')
 
 const { data } = await useFetch<GeoJSON>(geoJsonUrl.value, {
-    responseType: 'json'
+    responseType: 'json',
 })
 
 const geoJsonData = computed(() => {

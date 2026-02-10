@@ -120,11 +120,17 @@ function addLayerToMap(layer: OGCRecord) {
 <template>
     <tr class="hover:bg-cyan-300">
         <td class="border-b pb-2">
-            <button class="cursor-pointer" @click="addLayerToMap(layer)">
+            <button
+                class="cursor-pointer"
+                @click="addLayerToMap(layer)"
+            >
                 {{ layer.id }}
             </button>
         </td>
-        <td class="border-b pb-2 hover:bg-inherit" :class="layerBg">
+        <td
+            class="border-b pb-2 hover:bg-inherit"
+            :class="layerBg"
+        >
             <em>{{ type }}</em>
         </td>
     </tr>

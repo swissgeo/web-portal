@@ -54,16 +54,33 @@ function addLayer(layer: string) {
 <template>
     <div>
         <div class="absolute flex w-full items-center justify-between gap-4 px-2">
-            <input v-model="importUrl" class="w-full border border-gray-200 px-2 py-1" placeholder="Capability URL"
-                @keydown.enter="doIt" />
-            <IconButton @click="doIt" icon="Send"></IconButton>
-            <IconButton @click="$emit('close')" icon="X">
+            <input
+                v-model="importUrl"
+                class="w-full border border-gray-200 px-2 py-1"
+                placeholder="Capability URL"
+                @keydown.enter="doIt"
+            />
+            <IconButton
+                @click="doIt"
+                icon="Send"
+            ></IconButton>
+            <IconButton
+                @click="$emit('close')"
+                icon="X"
+            >
             </IconButton>
         </div>
         <div class="mt-12 h-[300px] overflow-scroll pb-18">
             <ul>
-                <li v-for="layer in layers" :key="layer" class="py-2">
-                    <button class="cursor-pointer hover:bg-cyan-200" @click="addLayer(layer)">
+                <li
+                    v-for="layer in layers"
+                    :key="layer"
+                    class="py-2"
+                >
+                    <button
+                        class="cursor-pointer hover:bg-cyan-200"
+                        @click="addLayer(layer)"
+                    >
                         {{ layer }}
                     </button>
                 </li>

@@ -10,7 +10,7 @@ export {
     MARKER_ICONS,
     DEFAULT_MARKER_ICON,
     getMarkerIconById,
-    type MarkerIcon
+    type MarkerIcon,
 } from '@/utils/markerIcons'
 export { DRAWING_LAYER_ID } from '@/composables/useDrawingManager'
 

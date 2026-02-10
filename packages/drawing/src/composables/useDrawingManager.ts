@@ -60,7 +60,9 @@ export function useDrawingManager() {
                 displayName: DRAWING_KML_LAYER_NAME,
                 abstract: 'User-created drawings on the map',
             },
-            fileData: drawingStore.featuresToKML(drawingStore.drawingFeatures as Feature<Geometry>[]),
+            fileData: drawingStore.featuresToKML(
+                drawingStore.drawingFeatures as Feature<Geometry>[]
+            ),
         }
         return config
     }
