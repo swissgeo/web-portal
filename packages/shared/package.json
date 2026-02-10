@@ -38,7 +38,7 @@
         "format:write": "prettier --write --ignore-path ../../.prettierignore .",
         "lint": "eslint",
         "lint:write": "eslint --fix",
-        "type-check": "vue-tsc"
+        "type-check": "tsc"
     },
     "dependencies": {
         "nuxt": "catalog:"
