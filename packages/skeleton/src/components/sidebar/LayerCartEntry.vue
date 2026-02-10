@@ -3,9 +3,10 @@ import type { Layer } from '@swissgeo/layers'
 
 import { useDrawingStore } from '@swissgeo/drawing'
 import { LayerType, useLayerStore } from '@swissgeo/layers'
-import { getDisplayNameFromTimestamp } from '../../utils/timeUtils'
 
 import IconButton from '@/components/IconButton.vue'
+
+import { getDisplayNameFromTimestamp } from '../../utils/timeUtils'
 
 const { layer } = defineProps<{
     layer: Layer
