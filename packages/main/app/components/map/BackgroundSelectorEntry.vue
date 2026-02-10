@@ -20,19 +20,17 @@ const { getImageForBackgroundLayer } = useBackgroundSelector(() => { })
 
 const emit = defineEmits(['click'])
 const cyId = computed(() => (backgroundLayer === 'void' ? 'void' : backgroundLayer.uuid))
-const layerTranslationKey = computed(() =>
-    mapBackgroundLayerToTranslationKey(backgroundLayer)
-)
+const layerTranslationKey = computed(() => mapBackgroundLayerToTranslationKey(backgroundLayer))
 
 function mapBackgroundLayerToTranslationKey(layer: Layer | VoidLayer): string {
     let translationKey = ''
     if (layer === 'void') {
         translationKey = 'backgroundLayers.voidMap'
-    } else if (layer.dataset.id == AVAILABLE_BACKGROUNDS[0]) {
+    } else if (layer.dataset?.id === AVAILABLE_BACKGROUNDS[0]) {
         translationKey = `backgroundLayers.greyMap`
-    } else if (layer.dataset.id == AVAILABLE_BACKGROUNDS[1]) {
+    } else if (layer.dataset?.id === AVAILABLE_BACKGROUNDS[1]) {
         translationKey = `backgroundLayers.colorMap`
-    } else if (layer.dataset.id == AVAILABLE_BACKGROUNDS[2]) {
+    } else if (layer.dataset?.id === AVAILABLE_BACKGROUNDS[2]) {
         translationKey = `backgroundLayers.swissimage`
     }
     return t(translationKey)

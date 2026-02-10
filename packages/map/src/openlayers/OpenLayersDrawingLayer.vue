@@ -3,13 +3,19 @@ import type { FileLayer } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
-import { useOlDrawing, EPSG_2056_CH1903, EPSG_4326_WGS84, DrawingMode, useDrawingStore, getMarkerIconById } from '@swissgeo/drawing'
+import {
+    useOlDrawing,
+    EPSG_2056_CH1903,
+    EPSG_4326_WGS84,
+    DrawingMode,
+    useDrawingStore,
+    getMarkerIconById,
+} from '@swissgeo/drawing'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue'
-
 
 const { layer } = defineProps<{
     layer: FileLayer
@@ -46,14 +52,14 @@ const updateFeatures = (feature?: Feature<Geometry>) => {
         if (updateFeatureTimeout) {
             clearTimeout(updateFeatureTimeout)
         }
-        
+
         // If this is a text feature, show the popup for editing
         if (feature && feature.get('text')) {
             editingTextFeature.value = feature
             editingText.value = feature.get('text') || 'New Text'
             showTextPopup.value = true
         }
-        
+
         // Debounce updates to reduce reactive overhead
         updateFeatureTimeout = setTimeout(() => {
             const features = getFeatures()
@@ -93,8 +99,7 @@ const clearDrawingFeatures = () => {
 watch(
     () => drawingStore?.drawingMode,
     async (newMode: DrawingMode) => {
-
-        if(newMode === 'None') {
+        if (newMode === 'None') {
             // Explicitly stop the drawing interaction
             clearDrawingFeatures()
             return
@@ -102,10 +107,10 @@ watch(
 
         // Wait for next tick to ensure layer is fully initialized
         await nextTick()
-        
+
         // Start drawing with callback to update features immediately
         startOlDrawing(newMode, updateFeatures)
-    },
+    }
 )
 
 // Watch for visibility changes
@@ -172,22 +177,22 @@ onMounted(() => {
                 if (features.length > 0) {
                     // Restore text property from name for text features
                     // Also preserve iconId if it exists
-                    features.forEach(feature => {
+                    features.forEach((feature) => {
                         const name = feature.get('name')
                         const text = feature.get('text')
                         const iconId = feature.get('iconId')
-                        
+
                         // If we have a name but no text, and it's a Point, treat it as text
                         if (name && !text && feature.getGeometry()?.getType() === 'Point') {
                             feature.set('text', name)
                         }
-                        
+
                         // Preserve iconId if present
                         if (iconId) {
                             feature.set('iconId', iconId)
                         }
                     })
-                    
+
                     addFeatures(features)
                     drawingStore.drawingFeatures = features
                 }
@@ -211,11 +216,11 @@ onUnmounted(() => {
 
 <template>
     <slot />
-    
+
     <!-- Text editing popup -->
     <div
         v-if="showTextPopup"
-        class="fixed left-1/2 top-20 z-50 w-80 -translate-x-1/2 rounded-lg border border-gray-300 bg-white p-4 shadow-2xl"
+        class="fixed top-20 left-1/2 z-50 w-80 -translate-x-1/2 rounded-lg border border-gray-300 bg-white p-4 shadow-2xl"
     >
         <h3 class="mb-3 text-base font-semibold">Edit Text</h3>
         <input

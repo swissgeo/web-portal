@@ -17,7 +17,9 @@ import OpenLayersWMTSLayer from './OpenLayersWMTSLayer.vue'
 const { layer } = defineProps<{ layer: Layer }>()
 
 // Check if layer has a dataset (is DatasetLayer) or is a local file (FileLayer)
-const isLocalFile = computed(() => !layer.dataset && 'fileData' in layer && layer.fileData !== undefined)
+const isLocalFile = computed(
+    () => !layer.dataset && 'fileData' in layer && layer.fileData !== undefined
+)
 
 // Check if this is the drawing layer
 const isDrawingLayer = computed(() => {
