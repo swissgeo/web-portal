@@ -2,11 +2,10 @@
 import type { DatasetLayer } from '@swissgeo/layers'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
+import { useRecordsData } from '@swissgeo/ogc'
+import GeoJSON from 'ol/format/GeoJSON'
 
 import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
-import { useRecordsData } from '@swissgeo/ogc'
-
-import GeoJSON from 'ol/format/GeoJSON'
 
 const { layer } = defineProps<{
     layer: DatasetLayer

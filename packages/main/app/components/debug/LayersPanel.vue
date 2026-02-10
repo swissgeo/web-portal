@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
+import type { DatasetCollection, Dataset } from '@swissgeo/ogc'
 
 import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
@@ -7,7 +7,7 @@ import { IconButton } from '@swissgeo/skeleton'
 const filterTerm = ref<string>('')
 const runtimeConfig = useRuntimeConfig()
 
-const { data: recordLayers } = await useFetch<OGCRecords>(runtimeConfig.public.ogcApiEndpoint)
+const { data: recordLayers } = await useFetch<DatasetCollection>(runtimeConfig.public.ogcApiEndpoint)
 
 const layerStore = useLayerStore()
 
@@ -20,7 +20,7 @@ const availableLayers = computed(() => {
     return recordLayers.value
 })
 
-const filteredAvailableLayers = computed((): OGCRecord[] => {
+const filteredAvailableLayers = computed((): Dataset[] => {
     if (!availableLayers.value) {
         return []
     }
@@ -44,15 +44,8 @@ function toggleVectorLayer() {
 <template>
     <div>
         <div class="absolute flex w-full items-center justify-between gap-4 px-2">
-            <input
-                v-model="filterTerm"
-                class="w-full border border-gray-200 px-2 py-1"
-                placeholder="Filter"
-            />
-            <IconButton
-                @click="$emit('close')"
-                icon="X"
-            >
+            <input v-model="filterTerm" class="w-full border border-gray-200 px-2 py-1" placeholder="Filter" />
+            <IconButton @click="$emit('close')" icon="X">
             </IconButton>
         </div>
         <div class="mt-12 h-[300px] overflow-scroll pb-18">
@@ -64,11 +57,7 @@ function toggleVectorLayer() {
                     </td>
                     <td class="bg-slate-200 pb-2">vector</td>
                 </tr>
-                <DebugLayersPanelEntry
-                    :layer="layer"
-                    v-for="layer in filteredAvailableLayers"
-                    :key="layer.id"
-                />
+                <DebugLayersPanelEntry :layer="layer" v-for="layer in filteredAvailableLayers" :key="layer.id" />
             </table>
         </div>
     </div>

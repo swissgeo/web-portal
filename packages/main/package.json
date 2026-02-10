@@ -33,6 +33,7 @@
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
         "@swissgeo/map": "workspace:*",
+        "@swissgeo/ogc": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "@swissgeo/skeleton": "workspace:*",
         "@tailwindcss/vite": "catalog:",

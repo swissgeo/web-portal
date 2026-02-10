@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import type { Layer } from '@swissgeo/layers'
 
-import { AVAILABLE_BACKGROUNDS } from './constants'
 import type { VoidLayer } from './useBackgroundSelector'
 
+import { AVAILABLE_BACKGROUNDS } from './constants'
 import useBackgroundSelector from './useBackgroundSelector'
+
 
 const {
     backgroundLayer,
