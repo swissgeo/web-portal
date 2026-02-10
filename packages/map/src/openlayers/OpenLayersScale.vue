@@ -52,7 +52,7 @@ onBeforeUnmount(() => olMap.removeControl(scaleLine))
     <div
         v-show="showScaleLine"
         ref="scaleLineElement"
-        class="scale-line-container b-[1rem] l-[5rem] fixed bg-white"
+        class="scale-line-container fixed bottom-[1rem] left-[5rem] bg-white"
         :class="withRelativeSize"
         data-cy="scaleline"
     />

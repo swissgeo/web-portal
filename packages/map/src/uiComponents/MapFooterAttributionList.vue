@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { useLayerStore } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 
 import MapFooterAttributionItem from './attributionsDisplay/MapFooterAttributionItem.vue'
 //import ThirdPartyDisclaimer from '@/utils/components/ThirdPartyDisclaimer.vue'
 
-const layersStore = useLayerStore()
 const { t } = useI18n()
-
-const visibleLayers = computed(() => layersStore.visibleLayers)
-const backgroundLayer = computed(() => layersStore.backgroundLayer)
+const { visibleLayers, backgroundLayer } = defineProps<{
+    visibleLayers: Layer[]
+    backgroundLayer: Layer | null | undefined
+}>()
 
 const layers = computed(() => {
     const layersWithAttributions = []
-    // when the background is void, we receive `undefined` here
-    if (backgroundLayer.value && backgroundLayer.value.info?.attribution) {
-        layersWithAttributions.push(backgroundLayer.value)
+    // when the background is void, we receive `undefined` here.
+    // Correction, this was the behavior in the old viewer. Now we receive the 'void' string
+    if (backgroundLayer && backgroundLayer.info?.attribution) {
+        layersWithAttributions.push(backgroundLayer)
     }
     layersWithAttributions.push(
-        ...visibleLayers.value.filter((layer) => !!layer.info?.attribution?.title)
+        ...visibleLayers.filter((layer) => !!layer.info?.attribution?.title)
     )
     return layersWithAttributions
 })
@@ -26,9 +27,9 @@ const sources = computed(() => {
     return layers.value
         .map((layer) => {
             return {
-                id: layer.info!.attribution!.title.replace(/[._]/g, '-'),
-                name: layer.info!.attribution!.title,
-                url: layer.info!.attribution!.url,
+                id: layer?.info!.attribution!.title.replace(/[._]/g, '-'),
+                name: layer?.info!.attribution!.title,
+                url: layer?.info!.attribution!.url,
                 /*
                 TODO:
                 hasDataDisclaimer: layersStore.hasDataDisclaimer(layer.id, {
@@ -51,7 +52,7 @@ const sources = computed(() => {
 
 <template>
     <div
-        class="map-footer-attribution"
+        class="fixed bottom-[3rem] left-[5rem] max-w-[200px] bg-white text-sm"
         data-cy="layers-copyrights"
     >
         <span v-if="sources.length > 0">{{ t('copyright_data') }}</span>
@@ -88,13 +89,4 @@ const sources = computed(() => {
     </div>
 </template>
 
-<style scoped>
-.map-footer-attribution {
-    position: fixed;
-    bottom: 3rem;
-    left: 5rem;
-    background-color: white;
-    font-size: small;
-    max-width: 200px;
-}
-</style>
+<style scoped></style>
