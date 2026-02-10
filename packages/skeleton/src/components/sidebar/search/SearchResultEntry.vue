@@ -6,7 +6,7 @@ import type { SearchResult } from '@swissgeo/search'
 import { MapPin, Layers } from 'lucide-vue-next'
 import { ref } from 'vue'
 
-const props = defineProps<{
+const { index, entry } = defineProps<{
     index: number
     entry: SearchResult
 }>()
