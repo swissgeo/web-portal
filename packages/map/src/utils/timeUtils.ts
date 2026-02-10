@@ -1,3 +1,5 @@
+import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
+
 type TimeInfo = { availableTimes: string[] | null; defaultTime: string | null }
 
 export const getTimeInfoFromWMTSCapabilities = (dimensions: any): TimeInfo => {

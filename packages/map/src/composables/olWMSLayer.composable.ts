@@ -1,5 +1,6 @@
 import type { ResolutionStep } from '@swissgeo/coordinates'
 
+import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
 import log from '@swissgeo/log'
 import ImageLayer from 'ol/layer/Image'
 import TileLayer from 'ol/layer/Tile'
