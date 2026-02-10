@@ -8,7 +8,7 @@ export type LayerWithTime = Layer & { dimensions: { time: Dimension } }
 /**
  * Create two sets with values that occur in the layers with timestamps
  *
- * `yearsJoint` contains the values that are shared in all the layers `yearsSepearate` contains the
+ * `yearsJoint` contains the values that are shared in all the layers `yearsSeparate` contains the
  * values that are exclusive to some layers
  */
 export function getYearsWithData(layersWithTimestamps: LayerWithTime[]) {

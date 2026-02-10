@@ -210,7 +210,22 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
                     data-cy="time-slider-bar-cursor-year outline-none"
                     maxlength="4"
                     type="text"
-                    onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                    @keydown="
+                        (e) => {
+                            const allowedKeys = [
+                                'Backspace',
+                                'Delete',
+                                'Tab',
+                                'ArrowLeft',
+                                'ArrowRight',
+                                'Home',
+                                'End',
+                            ]
+                            if (e.key.length === 1 && !/[0-9]/.test(e.key)) {
+                                e.preventDefault()
+                            }
+                        }
+                    "
                     @keypress.enter="yearCursorInput?.blur()"
                 />
             </GeoadminTooltip>
