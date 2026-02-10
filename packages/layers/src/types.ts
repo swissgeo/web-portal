@@ -1,14 +1,6 @@
 import type { Dataset, GeoJSON } from '@swissgeo/ogc'
 
-export enum LayerType {
-    WMTS = 'wmts',
-    WMS = 'wms',
-    GEOJSON = 'geojson',
-    VECTOR = 'vector',
-    KML = 'kml',
-    KMZ = 'kmz',
-    GPX = 'gpx',
-}
+export type LayerType = 'wmts' | 'wms' | 'geojson' | 'vector' | 'kml' | 'kmz' | 'gpx'
 
 export interface LayerAttribution {
     title: string

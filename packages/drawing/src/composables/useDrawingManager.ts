@@ -1,7 +1,7 @@
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
-import { LayerType, useLayerStore } from '@swissgeo/layers'
+import { useLayerStore } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 
 import { useDrawingStore } from '@/stores/drawing'
@@ -29,7 +29,7 @@ export function useDrawingManager() {
             humanId: DRAWING_LAYER_ID,
             opacity: 1,
             isVisible: true,
-            type: LayerType.KML,
+            type: 'kml',
             isLoading: false,
             zIndex: layerStore.greatestZIndex + 1,
             info: {
@@ -53,7 +53,7 @@ export function useDrawingManager() {
             humanId: DRAWING_KML_LAYER_ID,
             opacity: 1,
             isVisible: true,
-            type: LayerType.KML,
+            type: 'kml',
             isLoading: false,
             zIndex: layerStore.greatestZIndex + 1,
             info: {

@@ -2,7 +2,6 @@
 import type { DatasetLayer, Layer } from '@swissgeo/layers'
 
 import { DRAWING_LAYER_ID } from '@swissgeo/drawing'
-import { LayerType } from '@swissgeo/layers'
 
 import OpenLayersDrawingLayer from './OpenLayersDrawingLayer.vue'
 import OpenLayersGeoJSONLayer from './OpenLayersGeoJSONLayer.vue'
@@ -31,38 +30,38 @@ const isDrawingLayer = computed(() => {
 <template>
     <OpenLayersWMTSLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === LayerType.WMTS"
+        v-if="layer.type === 'wmts'"
     />
     <OpenLayersWMSLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === LayerType.WMS"
+        v-if="layer.type === 'wms'"
     />
     <OpenLayersDrawingLayer
         :layer="layer as Layer"
-        v-if="isDrawingLayer && layer.type === LayerType.KML"
+        v-if="isDrawingLayer && layer.type === 'kml'"
     />
     <OpenLayersKMLLayer
         :layer="layer as Layer"
-        v-if="!isDrawingLayer && layer.type === LayerType.KML"
+        v-if="!isDrawingLayer && layer.type === 'kml'"
     />
     <OpenLayersKMZLayer
         :layer="layer as Layer"
-        v-if="layer.type === LayerType.KMZ"
+        v-if="layer.type === 'kmz'"
     />
     <OpenLayersGPXLayer
         :layer="layer as Layer"
-        v-if="layer.type === LayerType.GPX"
+        v-if="layer.type === 'gpx'"
     />
     <OpenLayersLocalGeoJSONLayer
         :layer="layer as Layer"
-        v-if="layer.type === LayerType.GEOJSON && isLocalFile"
+        v-if="layer.type === 'geojson' && isLocalFile"
     />
     <OpenLayersGeoJSONLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === LayerType.GEOJSON && !isLocalFile"
+        v-if="layer.type === 'geojson' && !isLocalFile"
     />
     <OpenLayersVectorLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === LayerType.VECTOR"
+        v-if="layer.type === 'vector'"
     />
 </template>

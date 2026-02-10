@@ -2,7 +2,7 @@
 import type { Layer } from '@swissgeo/layers'
 
 import { useDrawingStore } from '@swissgeo/drawing'
-import { LayerType, useLayerStore } from '@swissgeo/layers'
+import { useLayerStore } from '@swissgeo/layers'
 
 import IconButton from '@/components/IconButton.vue'
 
@@ -103,10 +103,10 @@ function removeLayer() {
             {{ displayName }}
             <span
                 :class="{
-                    'bg-amber-200': layer.type === LayerType.WMS,
-                    'bg-fuchsia-200': layer.type === LayerType.WMTS,
-                    'bg-emerald-200': layer.type === LayerType.KML,
-                    'bg-sky-200': layer.type === LayerType.KMZ,
+                    'bg-amber-200': layer.type === 'wms',
+                    'bg-fuchsia-200': layer.type === 'wmts',
+                    'bg-emerald-200': layer.type === 'kml',
+                    'bg-sky-200': layer.type === 'kmz',
                 }"
             >
                 ({{ layer.type }})</span

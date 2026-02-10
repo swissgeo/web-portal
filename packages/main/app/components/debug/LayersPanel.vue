@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { DatasetCollection, Dataset } from '@swissgeo/ogc'
 
-import { LayerType, useLayerStore, makeServerLayer } from '@swissgeo/layers'
+import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 const filterTerm = ref<string>('')
@@ -35,7 +35,7 @@ const filteredAvailableLayers = computed((): Dataset[] => {
 
 function toggleVectorLayer() {
     layerStore.addLayer(
-        makeServerLayer(LayerType.VECTOR, {
+        makeServerLayer('vector', {
             id: 'ch.swisstopouseLayerStore.vector',
             links: [],
         })

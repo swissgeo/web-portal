@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 
+import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 const layerStore = useLayerStore()
