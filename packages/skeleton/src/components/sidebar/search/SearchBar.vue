@@ -2,7 +2,7 @@
 // Adapted from web-mapviewer SearchBar.vue
 
 import InputText from 'primevue/inputtext'
-import { ref, onMounted } from 'vue'
+import { onMounted, useTemplateRef } from 'vue'
 
 import LucideIcon from '../../LucideIcon.vue'
 
@@ -16,11 +16,13 @@ const emit = defineEmits<{
     clear: []
 }>()
 
-const searchInput = ref<InstanceType<typeof InputText>>()
+const searchInput = useTemplateRef<typeof InputText>('searchInput')
 
 // Focus input on mount
 onMounted(() => {
     if (searchInput.value) {
+        // TODO
+        // @ts-expect-error Doesn't make sense to fix now as primevue will go away
         searchInput.value.$el?.focus()
     }
 })
@@ -35,6 +37,8 @@ const onInput = (event: Event) => {
 const onClear = () => {
     emit('clear')
     if (searchInput.value) {
+        // TODO
+        // @ts-expect-error Doesn't make sense to fix now as primevue will go away
         searchInput.value.$el?.focus()
     }
 }

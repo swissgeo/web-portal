@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// TODO
+// @ts-expect-error The usei18n here is typed with vue-i18n but it's actually nuxt-i18n
 const { locale, locales, setLocale } = useI18n()
 
 function handleLocaleChange(newLocale: string) {

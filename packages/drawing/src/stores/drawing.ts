@@ -31,8 +31,8 @@ export const useDrawingStore = defineStore('drawing', () => {
     const drawingMode = ref<DrawingMode>('None')
 
     const isDrawing = ref(false)
-    const drawingLayerUuid = ref<string | undefined>(undefined)
-    const drawingKMLLayerUuid = ref<string | undefined>(undefined)
+    const drawingLayerUuid = ref<string | null>()
+    const drawingKMLLayerUuid = ref<string | null>()
     const drawingFeatures = ref<Feature<Geometry>[]>([])
     const featureCount = computed(() => drawingFeatures.value.length)
     const selectedIconId = ref<string>(DEFAULT_MARKER_ICON!.id)
@@ -57,6 +57,10 @@ export const useDrawingStore = defineStore('drawing', () => {
 
     function setDrawingLayerUuid(uuid: string) {
         drawingLayerUuid.value = uuid
+    }
+
+    function resetDrawingLayerUuid() {
+        drawingLayerUuid.value = null
     }
 
     function setDrawingKMLLayerUuid(uuid: string) {
@@ -286,6 +290,7 @@ export const useDrawingStore = defineStore('drawing', () => {
         clearDrawingMode,
         toggleDrawing,
         setDrawingLayerUuid,
+        resetDrawingLayerUuid,
         clearDrawingFeatures,
         setOlLayer,
         setDrawingKMLLayerUuid,

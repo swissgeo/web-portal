@@ -38,7 +38,7 @@ function moveDown() {
 function removeLayer() {
     layerStore.removeLayer(layer.uuid)
     if (layer.uuid === drawingStore.drawingKMLLayerUuid) {
-        drawingStore.setDrawingLayerUuid(undefined)
+        drawingStore.resetDrawingLayerUuid()
         drawingStore.clearDrawingFeatures()
     }
 }

@@ -16,7 +16,7 @@ export const useSearchStore = defineStore('search', () => {
     const query = ref('')
     const results = ref<SearchResult[]>([])
     const isSearching = ref(false)
-    const catalog = ref<DatasetCollection>(null)
+    const catalog = ref<DatasetCollection>()
 
     let abortController: AbortController | undefined
 
