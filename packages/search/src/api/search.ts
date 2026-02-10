@@ -160,7 +160,7 @@ export function searchLayers(
     const query = queryString.toLowerCase().trim()
 
     if (query.length < 2) {
-        return []
+        return new Promise(() => [])
     }
 
     try {
@@ -200,14 +200,14 @@ export function searchLayers(
                 }
             })
 
-        return matches
+        return new Promise(() => matches)
     } catch (error) {
         log.error({
             title: 'searchLayers',
             titleColor: LogPreDefinedColor.Red,
             messages: ['Failed to search layers:', error],
         })
-        return []
+        return new Promise(() => [])
     }
 }
 
