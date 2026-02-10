@@ -88,10 +88,10 @@ const yearsShownAsLabel = computed(() => {
     return allYears.filter((year) => year % yearThreshold === 0)
 })
 
-// yearPositionOnSlider is 4.5px left of the step center; both cursorArrowPosition
-// and cursorPosition add 4.5 back to derive the final centered position.
+// yearPositionOnSlider is 4.5px left of the tick; both cursorArrowPosition
+// and cursorPosition add 4.5 back to derive the final position aligned with the tick.
 const yearPositionOnSlider = computed(
-    () => STEP_BAR_LEFT + (allYears.indexOf(currentYear.value) + 0.5) * distanceBetweenLabels.value - 4.5
+    () => STEP_BAR_LEFT + allYears.indexOf(currentYear.value) * distanceBetweenLabels.value - 4.5
 )
 
 const cursorPosition = computed(() => {
@@ -176,7 +176,7 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
 
 <template>
     <div
-        class="min-0 flex-1 bg-white px-5"
+        class="relative min-0 flex-1 bg-white px-5"
         data-cy="time-slider-bar"
     >
         <div
