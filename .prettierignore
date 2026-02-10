@@ -2,12 +2,7 @@ pnpm-lock.yaml
 .github/
 patches/
 
-node_modules/
-**/node_modules
-**/dist
-**/.nuxt
-**/.output
-packages/**/node_modules/
-packages/**/dist/
-packages/**/.nuxt
-packages/**/.output
+node_modules
+dist
+.nuxt
+.output
