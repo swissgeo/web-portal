@@ -8,7 +8,7 @@ import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 
 import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.composable'
-import TimeSlider from '@/tools/TimeSlider'
+import TimeSlider from '@/tools/timeslider'
 
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
