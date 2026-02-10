@@ -25,7 +25,7 @@ const backgroundRecords = computed(async () => {
     const values = await Promise.all(promises)
 
     return values.map((record: OGCRecord) => {
-        return makeServerLayer('wmts', record, {
+        return makeServerLayer(LayerType.WMTS, record, {
             zIndex: 0,
         })
     })
