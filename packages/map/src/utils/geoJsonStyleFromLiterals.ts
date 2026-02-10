@@ -4,7 +4,7 @@ import type {
     GeoAdminGeoJSONVectorOptions,
     GeoAdminGeoJSONStyleDefinition,
     GeoAdminGeoJSONStyleSingle,
-} from '@swissgeo/layers'
+} from '@swissgeo/shared/geojson'
 import type { Feature } from 'ol'
 import type { SimpleGeometry } from 'ol/geom'
 import type { Options as RegularShapeOptions } from 'ol/style/RegularShape'
