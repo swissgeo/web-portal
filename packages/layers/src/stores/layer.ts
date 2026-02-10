@@ -1,7 +1,7 @@
 import log from '@swissgeo/log'
 import { cloneDeep } from 'lodash'
 
-import type { Layer, LayerInfo } from '@/index'
+import type { Dimension, DimensionId, Layer, LayerInfo } from '@/index'
 
 export const useLayerStore = defineStore('layers', () => {
     /** List of layers added to the map */

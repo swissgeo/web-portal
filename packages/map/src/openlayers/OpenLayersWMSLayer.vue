@@ -7,6 +7,8 @@ import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from '@/composables/olWMSLayer.composable'
 
+import { getTimeInfoFromWMSCapabilities } from '../utils/timeUtils'
+
 const layerStore = useLayerStore()
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>

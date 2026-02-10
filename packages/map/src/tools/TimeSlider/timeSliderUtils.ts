@@ -3,6 +3,8 @@ import type { Dimension, Layer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { isTimestampYYYYMMDD } from '@swissgeo/numbers'
 
+import { CURRENT_YEAR_TIMESTAMP, ALL_YEARS_TIMESTAMP } from '../../utils/timeUtils'
+
 export type LayerWithTime = Layer & { dimensions: { time: Dimension } }
 
 /**

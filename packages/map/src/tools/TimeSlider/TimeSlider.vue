@@ -8,7 +8,12 @@ import { useDebounceFn, useResizeObserver } from '@vueuse/core'
 import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 
 import TimeSliderBar from './TimeSliderBar.vue'
-import { getYearsWithData } from './timeSliderUtils'
+import {
+    type LayerWithTime,
+    convertYearToTimestamp,
+    getYearFromCustomGeoadminValue,
+    getYearsWithData,
+} from './timeSliderUtils'
 
 const emit = defineEmits<{
     close: []
@@ -224,7 +229,6 @@ function handleKeyDownEvent(event: KeyboardEvent) {
         ref="sliderContainer"
         data-cy="time-slider"
         class="bg-white rounded-lg shadow-lg border border-gray-200 p-4"
-        @grabbing="yearCursorIsGrabbed = $event"
         :class="{ grabbed: yearCursorIsGrabbed }"
     >
         <div
@@ -236,6 +240,7 @@ function handleKeyDownEvent(event: KeyboardEvent) {
                 :yearsWithData
                 v-model="currentYear"
                 :containerWidth="containerWidth"
+                @grabbing="yearCursorIsGrabbed = $event"
             />
 
             <IconButton
