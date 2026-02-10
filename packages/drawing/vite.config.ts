@@ -18,7 +18,14 @@ export default defineConfig(({ mode }): UserConfig => {
                 name: '@swissgeo/drawing',
             },
             rollupOptions: {
-                external: ['vue', 'pinia', '@swissgeo/layers', '@swissgeo/log', 'ol', 'lucide-vue-next'],
+                external: [
+                    'vue',
+                    'pinia',
+                    '@swissgeo/layers',
+                    '@swissgeo/log',
+                    'ol',
+                    'lucide-vue-next',
+                ],
                 output: {
                     exports: 'named',
                 },
@@ -36,12 +43,7 @@ export default defineConfig(({ mode }): UserConfig => {
             vue(),
             AutoImport({
                 dirs: ['./src/**'],
-                imports: [
-                    'vue',
-                    'vue-router',
-                    'vue-i18n',
-                    'pinia',
-                ],
+                imports: ['vue', 'vue-router', 'vue-i18n', 'pinia'],
                 eslintrc: {
                     enabled: true,
                     filepath: '.output/eslintrc-auto-import.json',

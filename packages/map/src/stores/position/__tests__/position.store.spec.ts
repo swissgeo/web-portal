@@ -61,19 +61,23 @@ describe('Position store tests', () => {
                     const latRadians = 2 * Math.atan(Math.exp(y / R)) - Math.PI / 2
                     const latDegrees = (latRadians * 180) / Math.PI
                     // Use the standard Web Mercator meters-per-pixel at zoom 0 (≈156543.0339 m/px)
-                    return (156543.0339 * Math.cos((latDegrees * Math.PI) / 180.0)) / Math.pow(2, zoom)
+                    return (
+                        (156543.0339 * Math.cos((latDegrees * Math.PI) / 180.0)) / Math.pow(2, zoom)
+                    )
                 },
                 isInBounds: () => true,
                 bounds: { center: [0, 0] },
             }
 
-                // directly assign stubbed projection and center to avoid triggering projection parsing logic
-                ; (positionStore as any).projection = fakeWebMercator
+            // directly assign stubbed projection and center to avoid triggering projection parsing logic
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ;(positionStore as any).projection = fakeWebMercator
 
             // first we setup a fake screen of 100px by 100px
             uiStore.setSize(screenSize, screenSize, dispatcher)
-                // we now then center the view on wanted coordinates (in WebMercator projection)
-                ; (positionStore as any).center = proj4(WGS84.epsg, WEBMERCATOR.epsg, [lon, lat])
+            // we now then center the view on wanted coordinates (in WebMercator projection)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ;(positionStore as any).center = proj4(WGS84.epsg, WEBMERCATOR.epsg, [lon, lat])
         })
 
         it("Doesn't allow negative zoom level", () => {

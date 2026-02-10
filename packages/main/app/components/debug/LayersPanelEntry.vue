@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
+import type { Dataset, Distribution } from '@swissgeo/ogc'
 
 import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
@@ -8,7 +8,7 @@ import { useStorage } from '@vueuse/core'
 const layerStore = useLayerStore()
 
 const { layer } = defineProps<{
-    layer: OGCRecord
+    layer: Dataset
 }>()
 
 /**
@@ -19,7 +19,7 @@ const { layer } = defineProps<{
 const state = useStorage(layer.id, {
     distributionData: null,
 } as {
-    distributionData: OGCRecord | null
+    distributionData: Distribution | null
 })
 
 const distributionLink = computed(() => {

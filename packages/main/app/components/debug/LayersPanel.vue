@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { OGCRecord, OGCRecords } from '@swissgeo/shared/ogc'
+import type { DatasetCollection, Dataset } from '@swissgeo/ogc'
 
 import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
@@ -7,7 +7,9 @@ import { IconButton } from '@swissgeo/skeleton'
 const filterTerm = ref<string>('')
 const runtimeConfig = useRuntimeConfig()
 
-const { data: recordLayers } = await useFetch<OGCRecords>(runtimeConfig.public.ogcApiEndpoint)
+const { data: recordLayers } = await useFetch<DatasetCollection>(
+    runtimeConfig.public.ogcApiEndpoint
+)
 
 const layerStore = useLayerStore()
 
@@ -20,7 +22,7 @@ const availableLayers = computed(() => {
     return recordLayers.value
 })
 
-const filteredAvailableLayers = computed((): OGCRecord[] => {
+const filteredAvailableLayers = computed((): Dataset[] => {
     if (!availableLayers.value) {
         return []
     }

@@ -1,4 +1,4 @@
-import type { Dataset } from '@swissgeo/ogc'
+import type { Dataset, GeoJSON } from '@swissgeo/ogc'
 
 export enum LayerType {
     WMTS = 'wmts',
@@ -41,7 +41,7 @@ export interface DatasetLayer extends Layer {
 // File layer fills properties for file location or so
 export interface FileLayer extends Layer {
     fileData?: string // Raw file content for KML/KMZ/GPX files
-    geoJsonData?: any // Parsed GeoJSON data (for backward compatibility)
+    geoJsonData?: GeoJSON // Parsed GeoJSON data (for backward compatibility)
 }
 
 export { useLayerStore } from '@/stores/layer'

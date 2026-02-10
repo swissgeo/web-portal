@@ -1,5 +1,5 @@
-import type { Feature } from "ol"
-import type { Geometry } from "ol/geom"
+import type { Feature } from 'ol'
+import type { Geometry } from 'ol/geom'
 import type VectorLayer from 'ol/layer/Vector'
 
 import { registerProj4 } from '@swissgeo/coordinates'
@@ -7,12 +7,17 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { zip } from 'fflate'
 import GPX from 'ol/format/GPX'
 import KML from 'ol/format/KML'
-import { register } from "ol/proj/proj4"
+import { register } from 'ol/proj/proj4'
 import { Fill, Icon, Stroke, Style } from 'ol/style'
 import proj4 from 'proj4'
 
 import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@/constants/projections'
-import { DEFAULT_MARKER_ICON, getMarkerIconById, MARKER_ICONS, dataUrlToUint8Array } from '@/utils/markerIcons'
+import {
+    DEFAULT_MARKER_ICON,
+    getMarkerIconById,
+    MARKER_ICONS,
+    dataUrlToUint8Array,
+} from '@/utils/markerIcons'
 
 // Register proj4 definitions and with OpenLayers at module load time
 // This defines EPSG:2056 and other Swiss coordinate systems in proj4
@@ -26,8 +31,8 @@ export const useDrawingStore = defineStore('drawing', () => {
     const drawingMode = ref<DrawingMode>('None')
 
     const isDrawing = ref(false)
-    const drawingLayerUuid = ref<string | undefined>(undefined)
-    const drawingKMLLayerUuid = ref<string | undefined>(undefined)
+    const drawingLayerUuid = ref<string | null>()
+    const drawingKMLLayerUuid = ref<string | null>()
     const drawingFeatures = ref<Feature<Geometry>[]>([])
     const featureCount = computed(() => drawingFeatures.value.length)
     const selectedIconId = ref<string>(DEFAULT_MARKER_ICON!.id)
@@ -52,6 +57,10 @@ export const useDrawingStore = defineStore('drawing', () => {
 
     function setDrawingLayerUuid(uuid: string) {
         drawingLayerUuid.value = uuid
+    }
+
+    function resetDrawingLayerUuid() {
+        drawingLayerUuid.value = null
     }
 
     function setDrawingKMLLayerUuid(uuid: string) {
@@ -90,7 +99,7 @@ export const useDrawingStore = defineStore('drawing', () => {
             extractStyles: true,
         })
 
-        const clonedFeatures = features.map(feature => {
+        const clonedFeatures = features.map((feature) => {
             const clone = feature.clone()
 
             const textContent = feature.get('text')
@@ -157,7 +166,7 @@ export const useDrawingStore = defineStore('drawing', () => {
 
         // Collect unique icon IDs
         const usedIconIds = new Set<string>()
-        drawingFeatures.value.forEach(feature => {
+        drawingFeatures.value.forEach((feature) => {
             const iconId = feature.get('iconId')
             if (iconId) {
                 usedIconIds.add(iconId)
@@ -172,7 +181,11 @@ export const useDrawingStore = defineStore('drawing', () => {
                     if (err) {
                         reject(err)
                     } else {
-                        resolve(new Blob([new Uint8Array(data)], { type: 'application/vnd.google-earth.kmz' }))
+                        resolve(
+                            new Blob([new Uint8Array(data)], {
+                                type: 'application/vnd.google-earth.kmz',
+                            })
+                        )
                     }
                 })
             })
@@ -211,7 +224,11 @@ export const useDrawingStore = defineStore('drawing', () => {
                 if (err) {
                     reject(err)
                 } else {
-                    resolve(new Blob([new Uint8Array(data)], { type: 'application/vnd.google-earth.kmz' }))
+                    resolve(
+                        new Blob([new Uint8Array(data)], {
+                            type: 'application/vnd.google-earth.kmz',
+                        })
+                    )
                 }
             })
         })
@@ -219,10 +236,15 @@ export const useDrawingStore = defineStore('drawing', () => {
 
     function exportToGPX(): Blob {
         // Filter valid features for GPX
-        const validFeatures = drawingFeatures.value.filter(f => {
+        const validFeatures = drawingFeatures.value.filter((f) => {
             const geomType = f.getGeometry()?.getType()
             const isText = f.get('text')
-            return !isText && (geomType === 'Point' || geomType === 'LineString' || geomType === 'MultiLineString')
+            return (
+                !isText &&
+                (geomType === 'Point' ||
+                    geomType === 'LineString' ||
+                    geomType === 'MultiLineString')
+            )
         })
 
         if (validFeatures.length === 0) {
@@ -234,7 +256,7 @@ export const useDrawingStore = defineStore('drawing', () => {
 
         const format = new GPX()
 
-        const clonedFeatures = validFeatures.map(feature => {
+        const clonedFeatures = validFeatures.map((feature) => {
             const clone = feature.clone()
             const geom = clone.getGeometry()
             if (geom) {
@@ -268,6 +290,7 @@ export const useDrawingStore = defineStore('drawing', () => {
         clearDrawingMode,
         toggleDrawing,
         setDrawingLayerUuid,
+        resetDrawingLayerUuid,
         clearDrawingFeatures,
         setOlLayer,
         setDrawingKMLLayerUuid,

@@ -151,7 +151,7 @@ export async function searchLocation(
  * @param limit - Maximum number of results (default: 10)
  * @returns Promise with layer search results
  */
-export async function searchLayers(
+export function searchLayers(
     queryString: string,
     lang: string,
     catalogRecords: CatalogRecord[],
@@ -160,7 +160,7 @@ export async function searchLayers(
     const query = queryString.toLowerCase().trim()
 
     if (query.length < 2) {
-        return []
+        return new Promise(() => [])
     }
 
     try {
@@ -200,14 +200,14 @@ export async function searchLayers(
                 }
             })
 
-        return matches
+        return new Promise(() => matches)
     } catch (error) {
         log.error({
             title: 'searchLayers',
             titleColor: LogPreDefinedColor.Red,
             messages: ['Failed to search layers:', error],
         })
-        return []
+        return new Promise(() => [])
     }
 }
 

@@ -28,7 +28,10 @@ export default function useOlKMZLayer(
         const isTextFeature = feature.get('isTextFeature') === true
         const textContent = feature.get('text') || (isTextFeature ? feature.get('name') : null)
 
-        if (isTextFeature || (textContent && geometry?.getType() === 'Point' && !feature.get('iconId'))) {
+        if (
+            isTextFeature ||
+            (textContent && geometry?.getType() === 'Point' && !feature.get('iconId'))
+        ) {
             // Text feature styling - invisible point with text label
             return new Style({
                 image: new CircleStyle({
@@ -93,7 +96,10 @@ export default function useOlKMZLayer(
         })
     }
 
-    function extractKMLAndIcons(unzipped: Record<string, Uint8Array>): { kmlContent: string; iconFiles: Record<string, Blob> } {
+    function extractKMLAndIcons(unzipped: Record<string, Uint8Array>): {
+        kmlContent: string
+        iconFiles: Record<string, Blob>
+    } {
         const decoder = new TextDecoder('utf-8')
         let kmlContent = ''
         const iconFiles: Record<string, Blob> = {}
@@ -103,7 +109,7 @@ export default function useOlKMZLayer(
                 kmlContent = decoder.decode(content)
             } else if (filename.startsWith('icons/')) {
                 const blob = new Blob([content], {
-                    type: filename.endsWith('.svg') ? 'image/svg+xml' : 'image/png'
+                    type: filename.endsWith('.svg') ? 'image/svg+xml' : 'image/png',
                 })
                 iconFiles[filename] = blob
             }
@@ -138,13 +144,16 @@ export default function useOlKMZLayer(
     }
 
     function processTextFeatures(features: FeatureLike[]): void {
-        features.forEach(feature => {
+        features.forEach((feature) => {
             const name = feature.get('name')
             const text = feature.get('text')
             const isTextFeature = feature.get('isTextFeature')
             const geometry = feature.getGeometry()
 
-            if (isTextFeature || (text && geometry?.getType() === 'Point' && !feature.get('iconId'))) {
+            if (
+                isTextFeature ||
+                (text && geometry?.getType() === 'Point' && !feature.get('iconId'))
+            ) {
                 feature.set('text', text || name)
                 feature.set('isTextFeature', true)
                 feature.setStyle(undefined)

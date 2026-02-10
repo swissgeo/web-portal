@@ -33,7 +33,7 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
     }
 
     const source = new VectorSource({
-        wrapX: false
+        wrapX: false,
     })
 
     // Style function that handles both regular features and text features
@@ -103,7 +103,6 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
     }
 
     function createOlLayer(layerId: string, uuid: string): VectorLayer {
-
         const olLayer = new VectorLayer({
             properties: {
                 id: layerId,
@@ -132,7 +131,10 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
     /**
      * Start drawing with the specified geometry type
      */
-    function startDrawing(type: DrawingMode, onFeatureAdded?: (feature: Feature<Geometry>) => void) {
+    function startDrawing(
+        type: DrawingMode,
+        onFeatureAdded?: (feature: Feature<Geometry>) => void
+    ) {
         // Stop any existing draw interaction first
         stopDrawing()
 
@@ -141,7 +143,10 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
         log.debug(`Started drawing ${type}, interaction added to map`)
     }
 
-    function addDrawingInteraction(type: DrawingMode, onFeatureAdded?: (feature: Feature<Geometry>) => void) {
+    function addDrawingInteraction(
+        type: DrawingMode,
+        onFeatureAdded?: (feature: Feature<Geometry>) => void
+    ) {
         // For text, we use Point geometry
         const geometryType = type === 'Text' ? 'Point' : type
 
@@ -188,9 +193,7 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
             log.info({
                 title: 'olDrawing Composable / stopDrawing',
                 titleColor: LogPreDefinedColor.Yellow,
-                messages: [
-                    `No draw interaction to remove`,
-                ],
+                messages: [`No draw interaction to remove`],
             })
         }
     }

@@ -2,11 +2,10 @@
 import type { DatasetLayer } from '@swissgeo/layers'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
+import { useRecordsData } from '@swissgeo/ogc'
+import GeoJSON from 'ol/format/GeoJSON'
 
 import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
-import { useRecordsData } from '@swissgeo/ogc'
-
-import GeoJSON from 'ol/format/GeoJSON'
 
 const { layer } = defineProps<{
     layer: DatasetLayer
@@ -15,7 +14,7 @@ const { layer } = defineProps<{
 const { geoJsonUrl, styleData } = await useRecordsData(layer.dataset, 'OGC:GeoJSON')
 
 const { data } = await useFetch<GeoJSON>(geoJsonUrl.value, {
-    responseType: 'json'
+    responseType: 'json',
 })
 
 const geoJsonData = computed(() => {

@@ -29,7 +29,10 @@ export default function useOlKMLLayer(
         const isTextFeature = feature.get('isTextFeature') === true
         const textContent = feature.get('text') || (isTextFeature ? feature.get('name') : undefined)
 
-        if (isTextFeature || (textContent && geometry?.getType() === 'Point' && !feature.get('iconId'))) {
+        if (
+            isTextFeature ||
+            (textContent && geometry?.getType() === 'Point' && !feature.get('iconId'))
+        ) {
             // Text feature styling - invisible point with text label
             return new Style({
                 image: new CircleStyle({
@@ -87,14 +90,17 @@ export default function useOlKMLLayer(
         })
 
         // Restore text properties for text features
-        features.forEach(feature => {
+        features.forEach((feature) => {
             const name = feature.get('name')
             const text = feature.get('text')
             const isTextFeature = feature.get('isTextFeature')
             const geometry = feature.getGeometry()
 
             // If marked as text feature or has text without iconId, treat as text
-            if (isTextFeature || (text && geometry?.getType() === 'Point' && !feature.get('iconId'))) {
+            if (
+                isTextFeature ||
+                (text && geometry?.getType() === 'Point' && !feature.get('iconId'))
+            ) {
                 feature.set('text', text || name)
                 feature.set('isTextFeature', true)
                 // Clear any style that might have been parsed from KML

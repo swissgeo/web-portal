@@ -8,7 +8,6 @@
             "import": "./dist/index.es.js"
         }
     },
-    "types": "./dist/index.d.ts",
     "files": [
         "dist"
     ],
@@ -16,20 +15,26 @@
         "build": "vite build",
         "build:dev": "vite build --mode development",
         "build:dev:watch": "vite build --watch --mode development",
-        "format": "prettier --write .",
-        "format:check": "prettier --check .",
-        "lint": "eslint --fix",
-        "lint:no-fix": "eslint"
+        "format": "prettier --check --ignore-path ../../.prettierignore .",
+        "format:write": "prettier --write --ignore-path ../../.prettierignore  .",
+        "lint": "eslint",
+        "lint:write": "eslint --fix",
+        "type-check": "vue-tsc"
     },
     "dependencies": {
         "@swissgeo/log": "catalog:",
         "@swissgeo/shared": "workspace:*"
     },
     "devDependencies": {
+        "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
+        "@vue/tsconfig": "catalog:",
+        "eslint": "catalog:",
+        "eslint-import-resolver-typescript": "catalog:",
         "typescript": "catalog:",
         "unplugin-dts": "catalog:",
-        "vite": "catalog:"
+        "vite": "catalog:",
+        "vue-tsc": "catalog:"
     },
     "peerDependencies": {
         "vue": "catalog:"

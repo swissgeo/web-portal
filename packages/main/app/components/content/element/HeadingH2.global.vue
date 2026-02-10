@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ContentItem } from '~~/shared/types/livingdocs/Page'
+import type { ContentItem } from '@swissgeo/shared/livingdocs'
 
 const { data } = defineProps<{
     data: ContentItem

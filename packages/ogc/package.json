@@ -17,10 +17,10 @@
         "build": "vite build",
         "build:dev": "vite build --mode development",
         "build:dev:watch": "vite build --watch --mode development",
-        "format": "prettier --write .",
-        "format:check": "prettier --check .",
-        "lint": "eslint --fix",
-        "lint:no-fix": "eslint"
+        "format": "prettier --write --ignore-path ../../.prettierignore .",
+        "format:write": "prettier --check --ignore-path ../../.prettierignore .",
+        "lint": "eslint ",
+        "lint:write": "eslint --write"
     },
     "dependencies": {
         "@swissgeo/log": "catalog:",

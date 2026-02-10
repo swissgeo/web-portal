@@ -22,9 +22,15 @@ async function onSearchResultSelected(result: SearchResult) {
 </script>
 
 <template>
-    <main ref="main" class="font-sans">
+    <main
+        ref="main"
+        class="font-sans"
+    >
         <div class="relative h-screen">
-            <SideBar class="z-2" @search-result-selected="onSearchResultSelected" />
+            <SideBar
+                class="z-2"
+                @search-result-selected="onSearchResultSelected"
+            />
             <div class="h-full w-full pl-20">
                 <slot />
             </div>

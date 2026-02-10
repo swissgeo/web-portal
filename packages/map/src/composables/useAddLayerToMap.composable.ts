@@ -41,7 +41,7 @@ export default function useAddLayerToMap(olLayer: BaseLayer, zIndex: number) {
             // if the source of this layer can be cleared (if it's a vector layer),
             // we clear it before removing it from the map, ensuring that all features are unloaded
             if ('getSource' in olLayer && olLayer.getSource() instanceof VectorSource) {
-                ; (olLayer.getSource() as VectorSource).clear()
+                ;(olLayer.getSource() as VectorSource).clear()
             }
             if ('setSource' in olLayer) {
                 olLayer.setSource(null)
