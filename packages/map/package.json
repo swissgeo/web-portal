@@ -34,6 +34,8 @@
         "@swissgeo/numbers": "catalog:",
         "@swissgeo/ogc": "workspace:*",
         "@swissgeo/shared": "workspace:*",
+        "@swissgeo/skeleton": "workspace:*",
+        "@swissgeo/tooltip": "^1.0.0",
         "@turf/turf": "catalog:",
         "@types/mapbox-gl": "catalog:",
         "fflate": "catalog:",
