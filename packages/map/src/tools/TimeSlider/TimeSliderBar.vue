@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { round } from '@swissgeo/numbers'
 import { LucideIcon } from '@swissgeo/skeleton'
 import GeoadminTooltip from '@swissgeo/tooltip'
@@ -11,7 +10,6 @@ const STEP_BAR_LEFT = 20 // matches px-5 on root element
 const LABEL_WIDTH = 32
 const MARGIN_BETWEEN_LABELS = 50
 
-let yearCursorIsGrabbed = false
 let cursorX = 0
 
 const { t } = useI18n()
@@ -108,7 +106,6 @@ watch(isInputYearValid, (newValue) => {
 })
 
 function grabCursor(event: MouseEvent | TouchEvent) {
-    yearCursorIsGrabbed = true
     emit('grabbing', true)
     if ('touches' in event) {
         cursorX = event.touches[0]!.screenX
@@ -148,7 +145,6 @@ function listenToMouseMove(event: MouseEvent | TouchEvent) {
 }
 
 function releaseCursor() {
-    yearCursorIsGrabbed = false
     emit('grabbing', false)
     window.removeEventListener('mousemove', listenToMouseMove)
     window.removeEventListener('touchmove', listenToMouseMove)
@@ -205,22 +201,13 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
             >
                 <input
                     v-model="inputYear"
-                    class="w-11 px-0 py-0 text-center"
+                    class="w-11 px-0 py-0 text-center outline-none"
                     :class="{ 'is-invalid': !isInputYearValid }"
-                    data-cy="time-slider-bar-cursor-year outline-none"
+                    data-cy="time-slider-bar-cursor-year"
                     maxlength="4"
                     type="text"
                     @keydown="
                         (e) => {
-                            const allowedKeys = [
-                                'Backspace',
-                                'Delete',
-                                'Tab',
-                                'ArrowLeft',
-                                'ArrowRight',
-                                'Home',
-                                'End',
-                            ]
                             if (e.key.length === 1 && !/[0-9]/.test(e.key)) {
                                 e.preventDefault()
                             }
