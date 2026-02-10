@@ -47,7 +47,7 @@ export const getTimeInfoFromWMSCapabilities = (dimensions: any): TimeInfo => {
         )
     } else if (values.match(/(?:\d+,)+\d+/)) {
         // values are a comma separated list
-        const singleValues = values.split(',').map((val) => parseInt(val))
+        const singleValues = values.split(',').map((val) => parseInt(val).toString())
         availableTimes = singleValues
     }
 

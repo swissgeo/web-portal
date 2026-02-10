@@ -2,7 +2,7 @@
 import type { LayerType } from '@swissgeo/layers'
 import type { Dataset, Distribution } from '@swissgeo/ogc'
 
-import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
+import {  makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { useStorage } from '@vueuse/core'
 
@@ -37,13 +37,13 @@ const distributionLink = computed(() => {
 
 const layerBg = computed(() => {
     switch (type.value) {
-        case 'wms':
+        case LayerType.WMS:
             return 'bg-amber-200'
-        case 'wmts':
+        case LayerType.WMTS:
             return 'bg-fuchsia-200'
-        case 'geojson':
+        case LayerType.GEOJSON:
             return 'bg-rose-200'
-        case 'vector':
+        case LayerType.VECTOR:
             return 'bg-slate-200'
     }
 })
@@ -81,11 +81,11 @@ const type = computed((): LayerType | 'UNKNOWN' => {
             const protocol = record.properties?.protocol
 
             if (protocol === 'OGC:WMTS') {
-                return 'wmts'
+                return LayerType.WMTS
             } else if (protocol === 'OGC:WMS') {
-                return 'wms'
+                return LayerType.WMS
             } else if (protocol === 'OGC:GeoJSON') {
-                return 'geojson'
+                return LayerType.GEOJSON
             }
         }
     }

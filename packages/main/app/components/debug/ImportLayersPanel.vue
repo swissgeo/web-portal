@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
+
+import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 
@@ -47,7 +48,7 @@ function addLayer(layer: string) {
         },
     }
 
-    layerStore.addLayer(makeServerLayer('wmts', fakeDataset))
+    layerStore.addLayer(makeServerLayer(LayerType.WMTS, fakeDataset))
 }
 </script>
 

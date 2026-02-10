@@ -85,7 +85,7 @@ export default function useOlWmsLayer(
             messages: [config],
         })
 
-        return new ImageWMS()
+        return new ImageWMS(config)
     }
 
     function createTileWMSSource(): TileWMS {
