@@ -9,216 +9,42 @@ catalogs:
     '@dxup/unimport':
       specifier: ^0.1.2
       version: 0.1.2
-    '@eslint/markdown':
-      specifier: ^7.4.0
-      version: 7.5.1
-    '@floating-ui/vue':
-      specifier: ^1.1.9
-      version: 1.1.10
-    '@fontsource/dm-sans':
-      specifier: ^5.2.6
-      version: 5.2.8
-    '@fontsource/geologica':
-      specifier: ^5.2.6
-      version: 5.2.8
-    '@fontsource/inter':
-      specifier: ^5.2.6
-      version: 5.2.8
-    '@fontsource/noto-sans':
-      specifier: ^5.2.7
-      version: 5.2.10
     '@microsoft/api-extractor':
       specifier: ^7.55.1
       version: 7.56.0
-    '@nuxt/eslint':
-      specifier: ^1.9.0
-      version: 1.13.0
-    '@nuxt/image':
-      specifier: ^1.11.0
-      version: 1.11.0
-    '@nuxt/test-utils':
-      specifier: ^3.19.2
-      version: 3.23.0
-    '@nuxt/ui':
-      specifier: ^4.4.0
-      version: 4.4.0
-    '@nuxtjs/google-fonts':
-      specifier: ^3.2.0
-      version: 3.2.0
-    '@nuxtjs/i18n':
-      specifier: ^10.0.6
-      version: 10.2.1
-    '@pinia/nuxt':
-      specifier: ^0.11.2
-      version: 0.11.3
-    '@prettier/plugin-xml':
-      specifier: ^3.4.2
-      version: 3.4.2
-    '@primeuix/themes':
-      specifier: ^1.2.5
-      version: 1.2.5
-    '@primevue/nuxt-module':
-      specifier: ^4.3.8
-      version: 4.5.4
     '@swissgeo/config-eslint':
-      specifier: ^1.0.0
-      version: 1.0.0
-    '@swissgeo/config-prettier':
       specifier: ^1.0.0
       version: 1.0.0
     '@swissgeo/config-typescript':
       specifier: ^1.0.0
       version: 1.0.0
-    '@swissgeo/coordinates':
-      specifier: ^1.0.4
-      version: 1.0.4
-    '@swissgeo/log':
-      specifier: ^1.0.0
-      version: 1.0.0
-    '@swissgeo/numbers':
-      specifier: ^1.0.0
-      version: 1.0.0
-    '@tailwindcss/vite':
-      specifier: ^4.1.12
-      version: 4.1.18
-    '@turf/turf':
-      specifier: ^7.3.1
-      version: 7.3.3
-    '@types/geojson':
-      specifier: ^7946.0.16
-      version: 7946.0.16
-    '@types/jsdom':
-      specifier: ^27.0.0
-      version: 27.0.0
-    '@types/lodash':
-      specifier: ^4.14.192
-      version: 4.17.23
     '@types/mapbox-gl':
       specifier: ^3.4.1
       version: 3.4.1
-    '@types/openlayers':
-      specifier: ^4.6.23
-      version: 4.6.23
-    '@types/sanitize-html':
-      specifier: ^2.16.0
-      version: 2.16.0
     '@vitejs/plugin-vue':
       specifier: ^6.0.4
       version: 6.0.4
-    '@vue/test-utils':
-      specifier: ^2.4.6
-      version: 2.4.6
     '@vue/tsconfig':
       specifier: ^0.8.1
       version: 0.8.1
-    '@vueuse/core':
-      specifier: ^13.9.0
-      version: 13.9.0
-    '@xmldom/xmldom':
-      specifier: ^0.8.11
-      version: 0.8.11
-    cheerio:
-      specifier: ^1.1.2
-      version: 1.2.0
-    date-fns:
-      specifier: ^4.1.0
-      version: 4.1.0
-    es-toolkit:
-      specifier: ^1.39.10
-      version: 1.44.0
     eslint:
       specifier: ^9.39.2
       version: 9.39.2
     eslint-import-resolver-typescript:
       specifier: ^4.4.4
       version: 4.4.4
-    eslint-plugin-perfectionist:
-      specifier: ^4.15.1
-      version: 4.15.1
-    fflate:
-      specifier: ^0.8.2
-      version: 0.8.2
-    fs-extra:
-      specifier: ^11.3.2
-      version: 11.3.3
-    geojson:
-      specifier: ^0.5.0
-      version: 0.5.0
-    happy-dom:
-      specifier: ^20.5.3
-      version: 20.5.3
-    jsdom:
-      specifier: ^26.0.0
-      version: 26.1.0
-    lodash:
-      specifier: ^4.17.21
-      version: 4.17.23
-    lucide-vue-next:
-      specifier: ^0.563.0
-      version: 0.563.0
     nuxt:
       specifier: ^4.2.2
       version: 4.3.0
     ol:
       specifier: ^10.7.0
       version: 10.7.0
-    ol-mapbox-style:
-      specifier: ^13.1.1
-      version: 13.2.0
-    pinia:
-      specifier: ^3.0.4
-      version: 3.0.4
-    playwright-core:
-      specifier: ^1.58.2
-      version: 1.58.2
-    prettier:
-      specifier: ^3.8.1
-      version: 3.8.1
-    prettier-plugin-jsdoc:
-      specifier: ^1.8.0
-      version: 1.8.0
-    prettier-plugin-packagejson:
-      specifier: ^3.0.0
-      version: 3.0.0
-    prettier-plugin-tailwindcss:
-      specifier: ^0.7.2
-      version: 0.7.2
-    primeicons:
-      specifier: ^7.0.0
-      version: 7.0.0
-    primevue:
-      specifier: ^4.4.1
-      version: 4.5.4
-    proj4:
-      specifier: ^2.20.2
-      version: 2.20.2
-    reproject:
-      specifier: ^1.2.7
-      version: 1.2.7
-    sanitize-html:
-      specifier: ^2.17.0
-      version: 2.17.0
-    slugify:
-      specifier: ^1.6.6
-      version: 1.6.6
-    sortablejs:
-      specifier: ^1.15.6
-      version: 1.15.6
     stylelint:
       specifier: 16.26.1
       version: 16.26.1
-    tailwindcss:
-      specifier: ^4.1.12
-      version: 4.1.18
-    tailwindcss-primeui:
-      specifier: ^0.6.1
-      version: 0.6.1
     typescript:
       specifier: ^5.9.3
       version: 5.9.3
-    ufo:
-      specifier: ^1.6.1
-      version: 1.6.3
     unplugin-auto-import:
       specifier: ^20.3.0
       version: 20.3.0
@@ -228,30 +54,9 @@ catalogs:
     vite:
       specifier: ^7.3.1
       version: 7.3.1
-    vite-plugin-node-polyfills:
-      specifier: ^0.25.0
-      version: 0.25.0
-    vite-plugin-vue-devtools:
-      specifier: ^8.0.1
-      version: 8.0.6
     vite-tsconfig-paths:
       specifier: 5.1.4
       version: 5.1.4
-    vitest:
-      specifier: ^3.2.4
-      version: 3.2.4
-    vue:
-      specifier: ^3.5.22
-      version: 3.5.27
-    vue-i18n:
-      specifier: ^11.2.2
-      version: 11.2.8
-    vue-router:
-      specifier: ^4.5.1
-      version: 4.6.4
-    vue-tsc:
-      specifier: ^3.2.4
-      version: 3.2.4
 
 overrides:
   stylelint-config-recommended: ^16.0.0
@@ -962,9 +767,6 @@ importers:
       vite-tsconfig-paths:
         specifier: 'catalog:'
         version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))
-      vue-tsc:
-        specifier: 'catalog:'
-        version: 3.2.4(typescript@5.9.3)
 
   packages/skeleton:
     dependencies:
@@ -13341,7 +13143,7 @@ snapshots:
 
   '@types/jsdom@27.0.0':
     dependencies:
-      '@types/node': 25.2.2
+      '@types/node': 25.2.3
       '@types/tough-cookie': 4.0.5
       parse5: 7.3.0
 
@@ -13382,7 +13184,6 @@ snapshots:
   '@types/node@25.2.3':
     dependencies:
       undici-types: 7.16.0
-    optional: true
 
   '@types/openlayers@4.6.23': {}
 
