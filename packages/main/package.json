@@ -13,7 +13,7 @@
         "lint": "eslint",
         "lint:write": "eslint --fix",
         "preview": "nuxt preview",
-        "type-check": "nuxt typecheck || exit 0"
+        "type-check": "nuxt typecheck"
     },
     "dependencies": {
         "@floating-ui/vue": "catalog:",
