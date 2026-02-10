@@ -8,6 +8,7 @@ export default [
     {
         rules: {
             'vue/multi-word-component-names': ['off'],
+            'vue/html-indent': ['off'], // let this be prettier's realm
         },
     },
     {
