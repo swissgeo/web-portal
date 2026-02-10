@@ -47,7 +47,7 @@ const options = computed((): WMTSOptions => {
 const dimensions = computed(() => {
     if (!capabilityData.value) {
         // error will already be thrown in the other computed
-        return null
+        return undefined
     }
 
     const capabilityOfLayer = capabilityData.value.Contents.Layer.find(
@@ -55,8 +55,8 @@ const dimensions = computed(() => {
             layerEntry.Identifier === layer.dataset.id
     )
 
-    if (!layer) {
-        return null
+    if (!capabilityOfLayer) {
+        return undefined
     }
 
     return capabilityOfLayer.Dimension
@@ -114,7 +114,12 @@ watch(
 watch(
     () => layer.dimensions,
     () => {
-        if ('time' in layer.dimensions) {
+        if (
+            layer.dimensions &&
+            'time' in layer.dimensions &&
+            layer.dimensions.time?.currentValue !== undefined &&
+            layer.dimensions.time?.currentValue !== null
+        ) {
             updateTimeDimension(layer.dimensions.time.currentValue)
         }
     },

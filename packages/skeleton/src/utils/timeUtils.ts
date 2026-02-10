@@ -1,8 +1,8 @@
 import { isTimestampYYYYMMDD } from '@swissgeo/numbers'
 import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
 
-export function getDisplayNameFromTimestamp(timestamp: string) {
-    if (timestamp === null) {
+export function getDisplayNameFromTimestamp(timestamp: string | null | undefined) {
+    if (timestamp === null || timestamp === undefined) {
         return '-'
     } else if (timestamp === 'current') {
         return 'current'
