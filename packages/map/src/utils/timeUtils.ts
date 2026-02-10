@@ -12,11 +12,19 @@ type TimeInfo = { availableTimes: string[] | null; defaultTime: string | null }
 
 // eslint-disable-next-line
 export const getTimeInfoFromWMTSCapabilities = (dimensions: any): TimeInfo => {
+    // Guard against missing or invalid dimensions
+    if (!Array.isArray(dimensions) || dimensions.length === 0) {
+        return { availableTimes: null, defaultTime: null }
+    }
+
     // TODO only take it if it's time
     // TODO handle 9999
     const timeDimension = dimensions[0]
-    const availableTimes = timeDimension.Value || ['current']
+    if (!timeDimension) {
+        return { availableTimes: null, defaultTime: null }
+    }
 
+    const availableTimes = timeDimension.Value || ['current']
     const defaultTime = timeDimension.Default
 
     return {

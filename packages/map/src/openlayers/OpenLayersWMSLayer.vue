@@ -46,10 +46,10 @@ const dimensions = computed(() => {
         (_layer: WMSCapabilities['Capability']['Layer']['Layer']) =>
             _layer.Name === layer.dataset.id
     )
-    if ('Dimension' in thisLayer) {
+    if (thisLayer && 'Dimension' in thisLayer) {
         return thisLayer.Dimension
     }
-    return null
+    return undefined
 })
 
 const timeInfo = computed(() => {
