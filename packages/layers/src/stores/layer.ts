@@ -86,9 +86,11 @@ export const useLayerStore = defineStore('layers', () => {
 
             log.debug(`Updating ${layer.humanId} with dimension ${JSON.stringify(dimension)}`)
 
-            layer.dimensions.time = {
-                availableValues: layer.dimensions.time?.availableValues ?? [],
-                currentValue: layer.dimensions.time?.currentValue ?? null,
+            const existingDimension = layer.dimensions[id]
+
+            layer.dimensions[id] = {
+                availableValues: existingDimension?.availableValues ?? [],
+                currentValue: existingDimension?.currentValue ?? null,
                 ...dimension,
             }
         }
