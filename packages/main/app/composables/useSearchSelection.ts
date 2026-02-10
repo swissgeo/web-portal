@@ -9,7 +9,7 @@ import type {
 } from '@swissgeo/search'
 import type { OGCRecords, OGCRecord, Link } from '@swissgeo/shared/ogc'
 
-import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
+import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
 import { useSearchStore } from '@swissgeo/skeleton'
@@ -124,11 +124,11 @@ export function useSearchSelection() {
                 const protocol = record.properties?.protocol
 
                 if (protocol === 'OGC:WMTS') {
-                    return LayerType.WMTS
+                    return 'wmts'
                 } else if (protocol === 'OGC:WMS') {
-                    return LayerType.WMS
+                    return 'wms'
                 } else if (protocol === 'OGC:GeoJSON') {
-                    return LayerType.GEOJSON
+                    return 'geojson'
                 }
             }
         }
