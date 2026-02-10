@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { DatasetLayer } from '@swissgeo/layers'
-import type { Dimension } from '@swissgeo/layers'
+import type { DatasetLayer, Dimension } from '@swissgeo/layers'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
 import log from '@swissgeo/log'
@@ -21,15 +20,19 @@ const { capabilityUrl, defaultOpacityFromStyle } = await useRecordsData(layer.da
 
 const { data: capabilityData } = await useFetch<WMTSCapabilities>(capabilityUrl.value)
 
-/** Retrieve the capabilities and then turn them into a options objects to be used by WMTS */
-const options = computed((): WMTSOptions => {
+const parsedCapabilities = computed(() => {
     if (!capabilityData.value) {
         log.error(`Unable to fetch capabilities for ${capabilityUrl.value}`)
         throw new Error()
     }
 
     const wmtsParser = new WMTSCapabilities()
-    const capabilities = wmtsParser.read(capabilityData.value)
+    return wmtsParser.read(capabilityData.value)
+})
+
+/** Retrieve the capabilities and then turn them into a options objects to be used by WMTS */
+const options = computed((): WMTSOptions => {
+    const capabilities = parsedCapabilities.value
 
     const options = optionsFromCapabilities(capabilities, {
         layer: layer.dataset.id,
@@ -45,12 +48,9 @@ const options = computed((): WMTSOptions => {
 })
 
 const dimensions = computed(() => {
-    if (!capabilityData.value) {
-        // error will already be thrown in the other computed
-        return undefined
-    }
+    const capabilities = parsedCapabilities.value
 
-    const capabilityOfLayer = capabilityData.value.Contents.Layer.find(
+    const capabilityOfLayer = capabilities.Contents.Layer.find(
         (layerEntry: WMTSCapabilities['Contents']['Layer']) =>
             layerEntry.Identifier === layer.dataset.id
     )
