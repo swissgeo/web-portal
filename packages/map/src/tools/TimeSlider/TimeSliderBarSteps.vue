@@ -26,9 +26,10 @@ function stepClasses(year: number) {
 
 <template>
     <div class="mt-12 flex bg-gray-300" :style="{ width: sliderWidth + 'px' }">
-        <span
+        <button
             v-for="year in allYears"
             :key="year"
+            type="button"
             class="flex-1 h-3"
             :data-cy="`time-slider-bar-${year}`"
             :class="stepClasses(year)"
