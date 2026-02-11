@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { DatasetLayer, Dimension } from '@swissgeo/layers'
+import type { WMSCapabilities as WMSCapabilityType } from '@swissgeo/ogc'
 
 import { useLayerStore } from '@swissgeo/layers'
 import { useRecordsData } from '@swissgeo/ogc'
-import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from '@/composables/olWMSLayer.composable'
 
@@ -11,7 +11,6 @@ import { getTimeInfoFromWMSCapabilities } from '../utils/timeUtils'
 
 const layerStore = useLayerStore()
 
-type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
 
 const { layer } = defineProps<{
     layer: DatasetLayer
@@ -23,24 +22,26 @@ const gutter = computed(() => {
 
 const { capabilityUrl } = await useRecordsData(layer.dataset, 'OGC:WMS')
 
-const { data } = await useFetch<string>(capabilityUrl.value)
+// Fetch the already-parsed capabilities from the wmsConfig endpoint
+const { data: capabilityData } = await useFetch<WMSCapabilityType>(capabilityUrl.value)
 
-const capabilityData = computed((): WMSCapabilityType => {
-    if (!data.value) {
-        throw new Error('Unable to read WMS capabilities')
+if (!capabilityData.value) {
+    throw new Error('Unable to read WMS capabilities')
+}
+
+const version = computed(() => {
+    if (!capabilityData.value) {
+        throw new Error('WMS capabilities not loaded')
     }
-
-    const parser = new WMSCapabilities()
-    const capabilities = parser.read(data.value)
-
-    return capabilities
+    return capabilityData.value.version
 })
 
-/* Version to be used in the WMS */
-const version = computed(() => capabilityData.value.version)
-
-/* URL to the WMS */
-const url = computed(() => capabilityData.value.Service.OnlineResource)
+const url = computed(() => {
+    if (!capabilityData.value) {
+        throw new Error('WMS capabilities not loaded')
+    }
+    return capabilityData.value.Service.OnlineResource
+})
 
 const dimensions = computed(() => {
     const layerData = capabilityData.value.Capability.Layer.Layer

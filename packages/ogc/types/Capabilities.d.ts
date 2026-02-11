@@ -10,7 +10,7 @@ export type WMTSCapabilities = ReturnType<
 
 export type WMSCapabilities = ReturnType<
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-    InstanceType<typeof import('ol/format/WMTSCapabilities').default>['read']
+    InstanceType<typeof import('ol/format/WMSCapabilities').default>['read']
 >
 
 export type GeoJSON = ReturnType<

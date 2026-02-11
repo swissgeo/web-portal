@@ -4,7 +4,14 @@ import type { Style } from '@types/mapbox-gl'
 
 import type { DistributionCollection } from '../types'
 
-import { extractDistribution, grabCapabilityUrl, grabGeoJsonUrl } from './traveller'
+import {
+    extractDistribution,
+    grabCapabilityUrl,
+    grabDistributionLink,
+    grabGeoJsonUrl,
+    grabServiceUrl,
+    grabStyleUrl,
+} from './traveller'
 
 const DEFAULT_OPACITY = 1
 
