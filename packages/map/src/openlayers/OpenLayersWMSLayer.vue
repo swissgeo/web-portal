@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import type { DatasetLayer, Dimension } from '@swissgeo/layers'
-import type { WMSCapabilities as WMSCapabilityType } from '@swissgeo/ogc'
 
 import { useLayerStore } from '@swissgeo/layers'
 import { useRecordsData } from '@swissgeo/ogc'
+import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from '@/composables/olWMSLayer.composable'
 
 import { getTimeInfoFromWMSCapabilities } from '../utils/timeUtils'
 
 const layerStore = useLayerStore()
+
+type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
 
 
 const { layer } = defineProps<{
@@ -22,26 +24,25 @@ const gutter = computed(() => {
 
 const { capabilityUrl } = await useRecordsData(layer.dataset, 'OGC:WMS')
 
-// Fetch the already-parsed capabilities from the wmsConfig endpoint
-const { data: capabilityData } = await useFetch<WMSCapabilityType>(capabilityUrl.value)
-
-if (!capabilityData.value) {
-    throw new Error('Unable to read WMS capabilities')
-}
-
-const version = computed(() => {
-    if (!capabilityData.value) {
-        throw new Error('WMS capabilities not loaded')
-    }
-    return capabilityData.value.version
+// Fetch capabilities XML directly from external server as raw text
+const { data } = await useFetch(capabilityUrl.value, {
+    parseResponse: (txt) => txt, // Don't auto-parse, return raw text
 })
 
-const url = computed(() => {
-    if (!capabilityData.value) {
-        throw new Error('WMS capabilities not loaded')
+const capabilityData = computed((): WMSCapabilityType => {
+    if (!data.value) {
+        throw new Error('Unable to read WMS capabilities')
     }
-    return capabilityData.value.Service.OnlineResource
+
+    const parser = new WMSCapabilities()
+    const capabilities = parser.read(data.value)
+
+    return capabilities
 })
+
+const version = computed(() => capabilityData.value.version)
+
+const url = computed(() => capabilityData.value.Service.OnlineResource)
 
 const dimensions = computed(() => {
     const layerData = capabilityData.value.Capability.Layer.Layer
