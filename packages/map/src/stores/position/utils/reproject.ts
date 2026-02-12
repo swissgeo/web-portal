@@ -1,4 +1,4 @@
-import type { CoordinateSystem } from '@swissgeo/coordinates'
+/* import type { CoordinateSystem } from '@swissgeo/coordinates'
 import type { Layer } from '@swissgeo/layers'
 
 import { coordinatesUtils, extentUtils } from '@swissgeo/coordinates'
@@ -111,3 +111,4 @@ function reprojectSelectedFeatures(
         featureStore.setSelectedFeatures(reprojectedSelectedFeatures, dispatcher)
     }
 }
+ */
