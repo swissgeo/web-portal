@@ -11,7 +11,10 @@ function toggleTimeSlider() {
 </script>
 
 <template>
-    <div class="fixed top-4 left-16 z-50" :class="{ 'right-6': isTimeSliderActive }">
+    <div
+        class="fixed top-4 left-16 z-50"
+        :class="{ 'right-6': isTimeSliderActive }"
+    >
         <!-- Toggle button -->
         <IconButton
             v-if="!isTimeSliderActive"

@@ -167,12 +167,14 @@ function positionNodeLabel(year: number) {
 const CLOSE_BUTTON_SIZE = 54
 const GAP_SIZE = 4 // gap-1 = 4px
 const padding = 112
-const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE - CLOSE_BUTTON_SIZE - GAP_SIZE * 2)
+const sliderWidth = computed(
+    () => containerWidth - padding - PLAY_BUTTON_SIZE - CLOSE_BUTTON_SIZE - GAP_SIZE * 2
+)
 </script>
 
 <template>
     <div
-        class="relative min-0 flex-1 bg-white px-5"
+        class="min-0 relative flex-1 bg-white px-5"
         data-cy="time-slider-bar"
     >
         <div

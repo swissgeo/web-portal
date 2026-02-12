@@ -25,12 +25,15 @@ function stepClasses(year: number) {
 </script>
 
 <template>
-    <div class="mt-12 flex bg-gray-300" :style="{ width: sliderWidth + 'px' }">
+    <div
+        class="mt-12 flex bg-gray-300"
+        :style="{ width: sliderWidth + 'px' }"
+    >
         <button
             v-for="year in allYears"
             :key="year"
             type="button"
-            class="flex-1 h-3 min-w-0 cursor-pointer border-0 p-0"
+            class="h-3 min-w-0 flex-1 cursor-pointer border-0 p-0"
             :data-cy="`time-slider-bar-${year}`"
             :class="stepClasses(year)"
             @click="emit('select', year)"

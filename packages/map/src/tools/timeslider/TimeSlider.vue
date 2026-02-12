@@ -229,7 +229,7 @@ function handleKeyDownEvent(event: KeyboardEvent) {
     <div
         ref="sliderContainer"
         data-cy="time-slider"
-        class="bg-white rounded-lg shadow-lg border border-gray-200 p-4"
+        class="rounded-lg border border-gray-200 bg-white p-4 shadow-lg"
         :class="{ grabbed: yearCursorIsGrabbed }"
     >
         <div
@@ -265,5 +265,4 @@ function handleKeyDownEvent(event: KeyboardEvent) {
     </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
