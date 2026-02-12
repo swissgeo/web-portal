@@ -2,5 +2,10 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": ["github>swissgeo/.github:renovate-preset"],
     "reviewers": ["schtibe", "keetraxx"],
-    "baseBranchPatterns": ["develop"]
+    "baseBranchPatterns": ["develop"],
+    "postUpgradeTasks": {
+        "commands": ["pnpm update {{{depName}}}"],
+        "fileFilters": ["pnpm-lock.yaml"],
+        "executionMode": "update"
+    }
 }
