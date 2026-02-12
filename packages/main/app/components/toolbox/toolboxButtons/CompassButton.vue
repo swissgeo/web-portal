@@ -43,7 +43,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-    removeRotationListener
+    removeRotationListener()
 })
 
 function resetRotation(): void {

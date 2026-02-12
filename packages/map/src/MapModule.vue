@@ -22,11 +22,17 @@ const { layers, backgroundLayer, visibleLayers } = defineProps<{
     <div class=".full-screen-map">
         <div></div>
         <!-- here's the switch between openlayers and cesium -->
-        <OpenLayersMap :backgroundLayer="backgroundLayer" :layers="layers">
+        <OpenLayersMap
+            :backgroundLayer="backgroundLayer"
+            :layers="layers"
+        >
             <!-- <OpenLayersScale /> -->
             <slot />
             <OpenLayersScale />
-            <MapFooterAttributionList :background-layer="backgroundLayer" :visible-layers="visibleLayers" />
+            <MapFooterAttributionList
+                :background-layer="backgroundLayer"
+                :visible-layers="visibleLayers"
+            />
             <BackgroundSelector />
             <OpenLayersMouseTracker />
         </OpenLayersMap>
