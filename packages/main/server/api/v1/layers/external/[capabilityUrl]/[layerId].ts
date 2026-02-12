@@ -1,6 +1,6 @@
 const basePath = 'http://localhost:3000/api/v1/layers/external/'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler((event) => {
     const capabilityUrlParam = getRouterParam(event, 'capabilityUrl')
     const layerId = getRouterParam(event, 'layerId')
 
