@@ -1,9 +1,8 @@
 <script setup lang="ts">
+import { usePositionStore } from '@swissgeo/map'
 import { LucideIcon } from '@swissgeo/skeleton'
 
 import type { ActionDispatcher } from '@/stores/types'
-
-import { usePositionStore } from '@swissgeo/map'
 
 const dispatcher: ActionDispatcher = { name: 'ZoomButtons.vue' }
 

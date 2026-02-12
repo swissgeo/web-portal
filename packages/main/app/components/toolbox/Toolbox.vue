@@ -8,10 +8,11 @@
  */
 import FullScreenButton from '@/components/toolbox/toolboxButtons/FullScreenButton.vue'
 import GeolocButton from '@/components/toolbox/toolboxButtons/GeolocButton.vue'
+import RecenterButton from '@/components/toolbox/toolboxButtons/RecenterButton.vue'
+import TimeSliderButton from '@/components/toolbox/toolboxButtons/TimeSliderButton.vue'
 import Toggle3dButton from '@/components/toolbox/toolboxButtons/Toggle3dButton.vue'
 import ZoomButtons from '@/components/toolbox/toolboxButtons/ZoomButtons.vue'
-import TimeSliderButton from '@/components/toolbox/toolboxButtons/TimeSliderButton.vue'
-import RecenterButton from '@/components/toolbox/toolboxButtons/RecenterButton.vue'
+
 import CompassButton from './toolboxButtons/CompassButton.vue'
 
 const showFullScreeButton = ref(true)

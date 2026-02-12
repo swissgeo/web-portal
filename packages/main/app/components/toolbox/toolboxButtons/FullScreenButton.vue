@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { LucideIcon } from '@swissgeo/skeleton'
-import { useUiStore } from '@swissgeo/skeleton'
+import { LucideIcon, useUiStore } from '@swissgeo/skeleton'
 
 const { t } = useI18n()
 const uiStore = useUiStore()

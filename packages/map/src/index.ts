@@ -1,5 +1,5 @@
 // make the ambient types known to esbuild
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 //import * as Types from '@swissgeo/shared/ambient'
 
 import '../env.d.ts' // for reproject

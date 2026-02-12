@@ -10,6 +10,8 @@ import { LucideIcon } from '@swissgeo/skeleton'
 
 const dispatcher: ActionDispatcher = { name: 'OpenLayersCompassButton.vue' }
 
+// FIXME disabled the eslint check here b/c it just isn't implemented yet
+// eslint-disable-next-line
 const { hideIfNorth = false } = defineProps<{
     hideIfNorth?: boolean
 }>()
@@ -58,6 +60,8 @@ function resetRotation(): void {
     }, RESET_ANIMATION_DURATION_MS)
 }
 
+// FIXME
+// eslint-disable-next-line
 function onRotate(mapEvent: MapEvent): void {
     throw new Error('GEOLOCATION AND ROTATIONS ARE NOT YET IMPLEMENTED')
     // Ignore rotation updates during reset animation to prevent button from reappearing
