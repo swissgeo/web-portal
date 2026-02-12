@@ -1,23 +1,18 @@
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /app
 
 RUN corepack enable
 
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
-COPY packages/skeleton/package.json  ./packages/skeleton/
-COPY packages/map/package.json ./package/map/
+COPY --exclude=node_modules . ./
 
-RUN pnpm i
-
-COPY . ./
-
+RUN pnpm install --frozen-lockfile
 RUN pnpm run build
 
-FROM node:22-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 
-COPY --from=build /app/.output/ ./
+COPY --from=build app/packages/main/.output/ ./
 
 ENV PORT=80
 ENV HOST=0.0.0.0
