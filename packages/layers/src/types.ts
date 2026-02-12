@@ -1,14 +1,6 @@
 import type { Dataset, GeoJSON } from '@swissgeo/ogc'
 
-export enum LayerType {
-    WMTS = 'wmts',
-    WMS = 'wms',
-    GEOJSON = 'geojson',
-    VECTOR = 'vector',
-    KML = 'kml',
-    KMZ = 'kmz',
-    GPX = 'gpx',
-}
+export type LayerType = 'wmts' | 'wms' | 'geojson' | 'vector' | 'kml' | 'kmz' | 'gpx'
 
 export interface LayerAttribution {
     title: string
@@ -22,6 +14,18 @@ export interface LayerInfo {
     attribution?: LayerAttribution
 }
 
+export interface Dimension {
+    currentValue: string | null
+    availableValues: string[]
+}
+
+/**
+ * Keeping the time as a general Dimension. This should make future dimension implementation
+ * possible. Still using the identifier 'time' somewhat hardcoded. This would of course mean we can
+ * only have one time dimension, but this probably makes sense
+ */
+export type DimensionId = 'time'
+
 export interface Layer {
     uuid: string
     humanId: string // something human readable. usually the layer ID. Not unique!
@@ -32,6 +36,7 @@ export interface Layer {
     zIndex: number
     info?: LayerInfo | null
     dataset?: Dataset
+    dimensions?: Partial<Record<DimensionId, Dimension>>
 }
 
 export interface DatasetLayer extends Layer {

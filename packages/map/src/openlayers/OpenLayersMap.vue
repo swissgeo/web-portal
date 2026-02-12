@@ -62,7 +62,6 @@ createOlMap()
             v-if="backgroundLayer"
             :key="backgroundLayer.uuid"
         />
-        <!-- TODO probably somewhere here there would be the loop?-->
         <OpenLayersVisibleLayer
             :layer="layer"
             :key="layer.uuid"

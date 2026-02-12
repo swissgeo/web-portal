@@ -4,7 +4,7 @@ import { globalIgnores } from 'eslint/config'
 
 export default [
     ...defaultConfig,
-    globalIgnores(['.nuxt', '.output', 'vite-plugin-primevue-tailwind.ts']),
+    globalIgnores(['.nuxt/*', '.output/*', 'vite-plugin-primevue-tailwind.ts', 'node_modules/*']),
     {
         rules: {
             'vue/multi-word-component-names': ['off'],

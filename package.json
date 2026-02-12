@@ -5,10 +5,11 @@
     "description": "",
     "type": "module",
     "scripts": {
-        "build": "pnpm run --recursive --if-present build",
+        "build": "NODE_OPTIONS='--max-old-space-size=8192' pnpm run --recursive --if-present build",
         "build:dev": "pnpm --parallel --if-present run build:dev",
         "build:dev:watch": "pnpm --filter=!main --recursive --parallel --if-present run build:dev:watch",
         "build-libs": "pnpm --filter=!main run --recursive --if-present build",
+        "clean": "find packages -name 'dist' -type d -exec rm -rf {} + 2>/dev/null || true",
         "dev": "pnpm --filter=main run dev",
         "format": "pnpm run --recursive --parallel --no-bail --if-present format",
         "format:write": "pnpm run --recursive --parallel --no-bail --if-present format:write",

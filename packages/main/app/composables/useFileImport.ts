@@ -1,4 +1,6 @@
-import { LayerType, useLayerStore } from '@swissgeo/layers'
+import type { LayerType } from '@swissgeo/layers'
+
+import { useLayerStore } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 
 /**
@@ -19,20 +21,20 @@ export function useFileImport() {
 
         // Determine layer type based on file extension
         if (filename.endsWith('.kmz')) {
-            layerType = LayerType.KMZ
+            layerType = 'kmz'
             // Store raw file data for KMZ
             const arrayBuffer = await file.arrayBuffer()
             const uint8Array = new Uint8Array(arrayBuffer)
             // Convert to base64 for storage
             fileData = btoa(String.fromCharCode(...uint8Array))
         } else if (filename.endsWith('.kml')) {
-            layerType = LayerType.KML
+            layerType = 'kml'
             fileData = await file.text()
         } else if (filename.endsWith('.gpx')) {
-            layerType = LayerType.GPX
+            layerType = 'gpx'
             fileData = await file.text()
         } else if (filename.endsWith('.geojson') || filename.endsWith('.json')) {
-            layerType = LayerType.GEOJSON
+            layerType = 'geojson'
             fileData = await file.text()
         } else {
             throw new Error(`Unsupported file type: ${filename}`)

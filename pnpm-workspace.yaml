@@ -29,6 +29,7 @@ catalog:
     '@swissgeo/coordinates': ^1.0.4
     '@swissgeo/log': ^1.0.0
     '@swissgeo/numbers': ^1.0.0
+    '@swissgeo/tooltip': ^1.0.0
     '@tailwindcss/vite': ^4.1.12
     '@turf/turf': ^7.3.1
     '@types/bootstrap': ^5.2.10

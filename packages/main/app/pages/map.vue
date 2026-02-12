@@ -15,5 +15,6 @@ const layerStore = useLayerStore()
         <DebugPanel class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"></DebugPanel>
 
         <MapBackgroundSelector />
+        <MapTimeSliderButton />
     </ClientOnly>
 </template>

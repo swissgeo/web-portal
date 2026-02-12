@@ -2,7 +2,7 @@
 import type { DatasetLayer, Layer } from '@swissgeo/layers'
 import type { OGCRecord } from '@swissgeo/shared/ogc'
 
-import { LayerType, makeServerLayer, useLayerStore } from '@swissgeo/layers'
+import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 //import type { ActionDispatcher } from '@/stores/types'
 //import BackgroundSelectorWheelRounded from '@/modules/map/components/footer/backgroundSelector/BackgroundSelectorWheelRounded.vue'
 import { computedAsync } from '@vueuse/core'
@@ -25,7 +25,7 @@ const backgroundRecords = computed(async () => {
     const values = await Promise.all(promises)
 
     return values.map((record: OGCRecord) => {
-        return makeServerLayer(LayerType.WMTS, record, {
+        return makeServerLayer('wmts', record, {
             zIndex: 0,
         })
     })

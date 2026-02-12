@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Dataset, Distribution } from '@swissgeo/ogc'
 
-import { makeServerLayer, useLayerStore, LayerType } from '@swissgeo/layers'
+import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { useStorage } from '@vueuse/core'
 
@@ -34,17 +34,15 @@ const distributionLink = computed(() => {
     throw new Error(`Unable to find distribution link for ${layer.id}`)
 })
 
+const layerBgMap: Record<string, string> = {
+    wms: 'bg-amber-200',
+    wmts: 'bg-fuchsia-200',
+    geojson: 'bg-rose-200',
+    vector: 'bg-slate-200',
+}
+
 const layerBg = computed(() => {
-    switch (type.value) {
-        case LayerType.WMS:
-            return 'bg-amber-200'
-        case LayerType.WMTS:
-            return 'bg-fuchsia-200'
-        case LayerType.GEOJSON:
-            return 'bg-rose-200'
-        case LayerType.VECTOR:
-            return 'bg-slate-200'
-    }
+    return layerBgMap[type.value] ?? ''
 })
 
 /**
@@ -54,7 +52,7 @@ const layerBg = computed(() => {
  *
  * @param layer
  */
-const type = computed((): LayerType | 'UNKNOWN' => {
+const type = computed((): 'wmts' | 'wms' | 'geojson' | 'vector' | 'UNKNOWN' => {
     if (!state.value.distributionData) {
         return 'UNKNOWN'
     }
@@ -80,11 +78,11 @@ const type = computed((): LayerType | 'UNKNOWN' => {
             const protocol = record.properties?.protocol
 
             if (protocol === 'OGC:WMTS') {
-                return LayerType.WMTS
+                return 'wmts'
             } else if (protocol === 'OGC:WMS') {
-                return LayerType.WMS
+                return 'wms'
             } else if (protocol === 'OGC:GeoJSON') {
-                return LayerType.GEOJSON
+                return 'geojson'
             }
         }
     }
@@ -100,14 +98,14 @@ onMounted(() => {
 })
 
 async function updateDistributionData() {
-    const distributionDataUpdate = await $fetch<OGCRecord>(distributionLink.value.href)
+    const distributionDataUpdate = await $fetch<Distribution>(distributionLink.value.href)
 
     if (distributionDataUpdate) {
         state.value.distributionData = distributionDataUpdate
     }
 }
 
-function addLayerToMap(layer: OGCRecord) {
+function addLayerToMap(layer: Dataset) {
     if (!type.value) {
         throw Error('Neither OGC:WMS nor OGC:WMTS found in the definition')
     }

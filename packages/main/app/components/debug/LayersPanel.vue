@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { DatasetCollection, Dataset } from '@swissgeo/ogc'
 
-import { useLayerStore, makeServerLayer, LayerType } from '@swissgeo/layers'
+import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 const filterTerm = ref<string>('')
@@ -35,7 +35,7 @@ const filteredAvailableLayers = computed((): Dataset[] => {
 
 function toggleVectorLayer() {
     layerStore.addLayer(
-        makeServerLayer(LayerType.VECTOR, {
+        makeServerLayer('vector', {
             id: 'ch.swisstopouseLayerStore.vector',
             links: [],
         })
@@ -50,6 +50,7 @@ function toggleVectorLayer() {
                 v-model="filterTerm"
                 class="w-full border border-gray-200 px-2 py-1"
                 placeholder="Filter"
+                autofocus
             />
             <IconButton
                 @click="$emit('close')"
@@ -59,13 +60,15 @@ function toggleVectorLayer() {
         </div>
         <div class="mt-12 h-[300px] overflow-scroll pb-18">
             <table class="">
-                <tr class="border-b">
-                    <!-- we're not getting this via API yet-->
-                    <td class="pb-2">
-                        <button @click="toggleVectorLayer">VECTOR TEST</button>
-                    </td>
-                    <td class="bg-slate-200 pb-2">vector</td>
-                </tr>
+                <thead>
+                    <tr class="border-b">
+                        <!-- we're not getting this via API yet-->
+                        <td class="pb-2">
+                            <button @click="toggleVectorLayer">VECTOR TEST</button>
+                        </td>
+                        <td class="bg-slate-200 pb-2">vector</td>
+                    </tr>
+                </thead>
                 <DebugLayersPanelEntry
                     :layer="layer"
                     v-for="layer in filteredAvailableLayers"

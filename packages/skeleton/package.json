@@ -10,13 +10,10 @@
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.es.js"
-        },
-        "./tailwindcss": [
-            "./dist/tooltip.css"
-        ]
+        }
     },
-    "main": "./dist/index.umd.cjs",
-    "module": "./dist/index.js",
+    "main": "./dist/index.umd.js",
+    "module": "./dist/index.es.js",
     "scripts": {
         "build": "vite build",
         "build:dev": "vite build --mode development",
@@ -32,7 +29,7 @@
         "@swissgeo/drawing": "workspace:*",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
-        "@swissgeo/map": "workspace:*",
+        "@swissgeo/numbers": "catalog:",
         "@swissgeo/search": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "lucide-vue-next": "catalog:",

@@ -1,7 +1,7 @@
 import log from '@swissgeo/log'
 import { cloneDeep } from 'lodash'
 
-import type { Layer, LayerInfo } from '@/index'
+import type { Dimension, DimensionId, Layer, LayerInfo } from '@/index'
 
 export const useLayerStore = defineStore('layers', () => {
     /** List of layers added to the map */
@@ -57,6 +57,10 @@ export const useLayerStore = defineStore('layers', () => {
     }
 
     function getLayerByUuid(layerUuid: string) {
+        if (backgroundLayer.value?.uuid === layerUuid) {
+            return backgroundLayer.value
+        }
+
         const layer = layers.value.find((layer: Layer) => layer.uuid === layerUuid)
         return layer
     }
@@ -69,6 +73,30 @@ export const useLayerStore = defineStore('layers', () => {
         layer.isVisible = !layer.isVisible
     }
 
+    function setDimension(id: DimensionId, layerUuid: string, dimension: Partial<Dimension>) {
+        const layer = getLayerByUuid(layerUuid)
+        if (!layer) {
+            log.error('Unable to find layer for setting available times', {
+                messages: [layerUuid],
+            })
+        } else {
+            if (!layer.dimensions) {
+                layer.dimensions = {}
+            }
+
+            log.debug(`Updating ${layer.humanId} with dimension ${JSON.stringify(dimension)}`)
+
+            const existingDimension = layer.dimensions[id]
+
+            layer.dimensions[id] = {
+                availableValues: existingDimension?.availableValues ?? [],
+                currentValue: existingDimension?.currentValue ?? null,
+                ...dimension,
+            }
+        }
+    }
+
+    // TODO this one is currently un-used. consider removing it
     function setLayerInfo(layerUuid: string, info: LayerInfo): void {
         const layer = getLayerByUuid(layerUuid)
         if (!layer) {
@@ -116,6 +144,7 @@ export const useLayerStore = defineStore('layers', () => {
         toggleVisibility,
         setLayerZIndex,
         setLayerInfo,
+        setDimension,
         setBackground,
         removeLayer,
     }
