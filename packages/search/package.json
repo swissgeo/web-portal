@@ -28,9 +28,7 @@
     "devDependencies": {
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
-        "@vue/tsconfig": "catalog:",
         "eslint": "catalog:",
-        "eslint-import-resolver-typescript": "catalog:",
         "typescript": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:",
