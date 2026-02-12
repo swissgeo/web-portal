@@ -34,17 +34,15 @@ const distributionLink = computed(() => {
     throw new Error(`Unable to find distribution link for ${layer.id}`)
 })
 
+const layerBgMap: Record<string, string> = {
+    wms: 'bg-amber-200',
+    wmts: 'bg-fuchsia-200',
+    geojson: 'bg-rose-200',
+    vector: 'bg-slate-200',
+}
+
 const layerBg = computed(() => {
-    switch (type.value) {
-        case 'wms':
-            return 'bg-amber-200'
-        case 'wmts':
-            return 'bg-fuchsia-200'
-        case 'geojson':
-            return 'bg-rose-200'
-        case 'vector':
-            return 'bg-slate-200'
-    }
+    return layerBgMap[type.value] ?? ''
 })
 
 /**
