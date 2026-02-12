@@ -11,10 +11,9 @@ import MapFooterAttributionList from './uiComponents/MapFooterAttributionList.vu
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 
-const { layers, backgroundLayer, visibleLayers } = defineProps<{
+const { layers, backgroundLayer } = defineProps<{
     layers: Layer[]
     backgroundLayer: Layer
-    visibleLayers: Layer[]
 }>()
 </script>
 
@@ -29,10 +28,7 @@ const { layers, backgroundLayer, visibleLayers } = defineProps<{
             <!-- <OpenLayersScale /> -->
             <slot />
             <OpenLayersScale />
-            <MapFooterAttributionList
-                :background-layer="backgroundLayer"
-                :visible-layers="visibleLayers"
-            />
+            <MapFooterAttributionList :background-layer="backgroundLayer" />
             <BackgroundSelector />
             <OpenLayersMouseTracker />
         </OpenLayersMap>

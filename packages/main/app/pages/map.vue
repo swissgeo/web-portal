@@ -10,7 +10,6 @@ const layerStore = useLayerStore()
         <MapModule
             :layers="layerStore.layers"
             :background-layer="layerStore.backgroundLayer"
-            :visible-layers="layerStore.visibleLayers"
             class="h-screen w-full"
         />
         <Toolbox />

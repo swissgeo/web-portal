@@ -5,12 +5,16 @@ import MapFooterAttributionItem from './attributionsDisplay/MapFooterAttribution
 //import ThirdPartyDisclaimer from '@/utils/components/ThirdPartyDisclaimer.vue'
 
 const { t } = useI18n()
-const { visibleLayers, backgroundLayer } = defineProps<{
-    visibleLayers: Layer[]
+const { layers, backgroundLayer } = defineProps<{
+    layers: Layer[]
     backgroundLayer: Layer | null | undefined
 }>()
 
-const layers = computed(() => {
+const visibleLayers = computed(() => {
+    return layers.filter((layer) => layer.isVisible)
+})
+
+const attributedLayers = computed(() => {
     const layersWithAttributions = []
     // when the background is void, we receive `undefined` here.
     // Correction, this was the behavior in the old viewer. Now we receive the 'void' string
@@ -18,13 +22,13 @@ const layers = computed(() => {
         layersWithAttributions.push(backgroundLayer)
     }
     layersWithAttributions.push(
-        ...visibleLayers.filter((layer) => !!layer.info?.attribution?.title)
+        ...visibleLayers.value.filter((layer) => !!layer.info?.attribution?.title)
     )
     return layersWithAttributions
 })
 
 const sources = computed(() => {
-    return layers.value
+    return attributedLayers.value
         .map((layer) => {
             return {
                 id: layer?.info!.attribution!.title.replace(/[._]/g, '-'),
