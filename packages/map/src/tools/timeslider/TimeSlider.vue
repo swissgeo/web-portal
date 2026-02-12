@@ -7,9 +7,10 @@ import { IconButton } from '@swissgeo/skeleton'
 import { useDebounceFn, useResizeObserver } from '@vueuse/core'
 import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 
+import type { LayerWithTime } from './timeSliderUtils'
+
 import TimeSliderBar from './TimeSliderBar.vue'
 import {
-    type LayerWithTime,
     convertYearToTimestamp,
     getYearFromGeoadminWMTSValue,
     getYearsWithData,
@@ -75,7 +76,7 @@ const allYears = computed(() => {
 const yearsWithData = computed(() => getYearsWithData(layersWithTimestamps.value))
 
 watch(currentYear, () => {
-    dispatchPreviewYearToStoreDebounced()
+    void dispatchPreviewYearToStoreDebounced()
 })
 
 onMounted(() => {

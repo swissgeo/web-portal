@@ -1,6 +1,7 @@
 // Composable to handle search result selection
 // Connects search results to map actions (center, zoom, add layers)
 
+import type { LayerType } from '@swissgeo/layers'
 import type {
     SearchResult,
     LocationSearchResult,

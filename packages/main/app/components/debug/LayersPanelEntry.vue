@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Dataset, Distribution } from '@swissgeo/ogc'
 
-import type { LayerType } from '@swissgeo/layers'
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { useStorage } from '@vueuse/core'
@@ -55,7 +54,7 @@ const layerBg = computed(() => {
  *
  * @param layer
  */
-const type = computed((): LayerType | 'UNKNOWN' => {
+const type = computed((): 'wmts' | 'wms' | 'geojson' | 'vector' | 'UNKNOWN' => {
     if (!state.value.distributionData) {
         return 'UNKNOWN'
     }

@@ -1,4 +1,5 @@
 import type { LayerType } from '@swissgeo/layers'
+
 import { useLayerStore } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 
