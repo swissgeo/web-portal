@@ -5,7 +5,7 @@
     "description": "",
     "type": "module",
     "scripts": {
-        "build": "pnpm run --recursive --if-present build",
+        "build": "NODE_OPTIONS='--max-old-space-size=8192' pnpm run --recursive --if-present build",
         "build:dev": "pnpm --parallel --if-present run build:dev",
         "build:dev:watch": "pnpm --filter=!main --recursive --parallel --if-present run build:dev:watch",
         "build-libs": "pnpm --filter=!main run --recursive --if-present build",
