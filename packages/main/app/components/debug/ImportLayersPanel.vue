@@ -20,12 +20,12 @@ async function doIt() {
         // do wmts
         const data = await $fetch(importUrl.value)
         extractWmtsLayers(data)
-        currentLayerType.value = LayerType.WMTS
+        currentLayerType.value = 'wmts'
     } else if (importUrl.value.toLowerCase().includes('wms')) {
         // do wms
         const data = await $fetch(importUrl.value)
         extractWmsLayers(data)
-        currentLayerType.value = LayerType.WMS
+        currentLayerType.value = 'wms'
     }
 }
 
@@ -64,8 +64,11 @@ function addLayer(layer: string) {
         },
     }
 
-    const layerType = currentLayerType.value || LayerType.WMTS
-    layerStore.addLayer(makeServerLayer(layerType, fakeDataset))
+    if (!currentLayerType.value) {
+        throw new Error('Layer type must be determined before adding a layer')
+    }
+
+    layerStore.addLayer(makeServerLayer(currentLayerType.value, fakeDataset))
 }
 </script>
 
