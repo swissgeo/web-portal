@@ -13,7 +13,6 @@ const layerStore = useLayerStore()
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
 
-
 const { layer } = defineProps<{
     layer: DatasetLayer
 }>()
