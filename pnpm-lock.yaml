@@ -130,8 +130,8 @@ catalogs:
       specifier: ^9.39.2
       version: 9.39.2
     eslint-plugin-perfectionist:
-      specifier: ^4.15.1
-      version: 4.15.1
+      specifier: ^5.0.0
+      version: 5.4.0
     fflate:
       specifier: ^0.8.2
       version: 0.8.2
@@ -669,7 +669,7 @@ importers:
         version: 2.4.6
       eslint-plugin-perfectionist:
         specifier: 'catalog:'
-        version: 4.15.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+        version: 5.4.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       fs-extra:
         specifier: 'catalog:'
         version: 11.3.3
@@ -5712,12 +5712,6 @@ packages:
     resolution: {integrity: sha512-nMdy3tEXZac8AH5Z/9hwUkSfWu8xHf4XqwB5UEQzyTQGKcNlgFeciRAjLjliIKC3dR1Ex/a2/5sqgQzvYRkkkA==}
     peerDependencies:
       eslint: '>=9.0.0'
-
-  eslint-plugin-perfectionist@4.15.1:
-    resolution: {integrity: sha512-MHF0cBoOG0XyBf7G0EAFCuJJu4I18wy0zAoT1OHfx2o6EOx1EFTIzr2HGeuZa1kDcusoX0xJ9V7oZmaeFd773Q==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    peerDependencies:
-      eslint: '>=8.45.0'
 
   eslint-plugin-perfectionist@5.4.0:
     resolution: {integrity: sha512-XxpUMpeVaSJF5rpF6NHmhj3xavHZrflKcRbDssAUWrHUU/+l3l7PPYnVJ6IOpR2KjQ1Blucaeb0cFL3LIBis0A==}
@@ -15391,16 +15385,6 @@ snapshots:
       '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.2(jiti@2.6.1))
       eslint: 9.39.2(jiti@2.6.1)
       globals: 15.15.0
-
-  eslint-plugin-perfectionist@4.15.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3):
-    dependencies:
-      '@typescript-eslint/types': 8.54.0
-      '@typescript-eslint/utils': 8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
-      eslint: 9.39.2(jiti@2.6.1)
-      natural-orderby: 5.0.0
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
 
   eslint-plugin-perfectionist@5.4.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3):
     dependencies:
