@@ -28,7 +28,10 @@ const { layers, backgroundLayer } = defineProps<{
             <!-- <OpenLayersScale /> -->
             <slot />
             <OpenLayersScale />
-            <MapFooterAttributionList :background-layer="backgroundLayer" />
+            <MapFooterAttributionList
+                :layers="layers"
+                :background-layer="backgroundLayer"
+            />
             <BackgroundSelector />
             <OpenLayersMouseTracker />
         </OpenLayersMap>
