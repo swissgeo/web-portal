@@ -6,6 +6,10 @@
 .cache
 dist
 
+!packages/**/.output/
+packages/**/.output/*
+!packages/**/.output/auto-imports.d.ts
+
 # Node dependencies
 node_modules
 
