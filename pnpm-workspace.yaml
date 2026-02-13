@@ -102,7 +102,7 @@ catalog:
     vite: ^7.3.1
     vite-plugin-node-polyfills: ^0.25.0
     vite-plugin-vue-devtools: ^8.0.1
-    vite-tsconfig-paths: 5.1.4
+    vite-tsconfig-paths: 6.1.1
     vitest: ^3.2.4
     vue: ^3.5.28
     vue-i18n: ^11.2.2
