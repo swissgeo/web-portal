@@ -23,7 +23,10 @@ const gutter = computed(() => {
 
 const { capabilityUrl } = await useRecordsData(layer.dataset, 'OGC:WMS')
 
-const { data } = await useFetch<string>(capabilityUrl.value)
+// Fetch capabilities XML directly from external server as raw text
+const { data } = await useFetch(capabilityUrl.value, {
+    parseResponse: (txt) => txt, // Don't auto-parse, return raw text
+})
 
 const capabilityData = computed((): WMSCapabilityType => {
     if (!data.value) {
@@ -36,10 +39,8 @@ const capabilityData = computed((): WMSCapabilityType => {
     return capabilities
 })
 
-/* Version to be used in the WMS */
 const version = computed(() => capabilityData.value.version)
 
-/* URL to the WMS */
 const url = computed(() => capabilityData.value.Service.OnlineResource)
 
 const dimensions = computed(() => {

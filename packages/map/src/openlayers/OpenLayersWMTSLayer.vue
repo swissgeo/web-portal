@@ -20,7 +20,10 @@ const { layer } = defineProps<{
 
 const { capabilityUrl, defaultOpacityFromStyle } = await useRecordsData(layer.dataset, 'OGC:WMTS')
 
-const { data: capabilityData } = await useFetch<WMTSCapabilities>(capabilityUrl.value)
+// Fetch capabilities XML directly from external server as raw text
+const { data: capabilityData } = await useFetch(capabilityUrl.value, {
+    parseResponse: (txt) => txt, // Don't auto-parse, return raw text
+})
 
 const parsedCapabilities = computed(() => {
     if (!capabilityData.value) {

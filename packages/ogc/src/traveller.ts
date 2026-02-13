@@ -2,7 +2,7 @@ import type { Dataset, Distribution, DistributionCollection, ServiceProtocol } f
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 
-import { getStyleLinks } from './utils'
+import { getDataServiceLinks, getGeoJsonDataLinks, getStyleLinks } from './utils'
 
 export function grabDistributionLink(dataset: Dataset): string {
     const links = dataset.links
