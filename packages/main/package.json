@@ -72,7 +72,6 @@
         "@types/jsdom": "catalog:",
         "@types/mapbox-gl": "catalog:",
         "@vue/test-utils": "catalog:",
-        "eslint-import-resolver-typescript": "catalog:",
         "eslint-plugin-perfectionist": "catalog:",
         "fs-extra": "catalog:",
         "happy-dom": "catalog:",
