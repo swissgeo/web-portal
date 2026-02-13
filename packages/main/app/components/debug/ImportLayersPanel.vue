@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { LayerType } from '@swissgeo/layers'
+
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
