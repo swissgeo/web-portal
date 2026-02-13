@@ -1,4 +1,5 @@
 import { definePreset } from '@primeuix/themes'
+// eslint-disable-next-line import/no-unresolved -- Base config disables this but typescript plugin overrides it; .js files need resolver (removed eslint-import-resolver-typescript dependency)
 import Aura from '@primeuix/themes/aura'
 
 export const Swissgeo = definePreset(Aura, {
