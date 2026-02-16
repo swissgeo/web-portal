@@ -7,7 +7,8 @@ import { useLayerStore } from '@/stores/layer'
 // can't be inherited from the main package apparently
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 
-const getInfoFromDataset = (dataset: Dataset): LayerInfo => {
+// only exported for testing purpose.
+export const getInfoFromDataset = (dataset: Dataset): LayerInfo => {
     const properties = dataset.properties
     const displayName = properties?.title
 
@@ -43,6 +44,8 @@ export const makeServerLayer = (
     dataset: Dataset,
     options?: Partial<Layer>
 ): Layer => {
+    // TO DO GPS-500 : remove zIndex and layer Store
+
     const layerStore = useLayerStore()
     log.debug(`Creating store layer from ${JSON.stringify(dataset)}`)
 

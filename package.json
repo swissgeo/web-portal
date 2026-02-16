@@ -19,6 +19,7 @@
         "test": "vitest run",
         "test:coverage": "vitest run --coverage",
         "test:ui": "vitest --ui",
+        "test:unit": "pnpm run --recursive --parallel --no-bail --if-present test:unit",
         "type-check": "pnpm run --recursive --parallel --no-bail --if-present type-check"
     },
     "dependencies": {
@@ -27,6 +28,7 @@
         "vue": "catalog:"
     },
     "devDependencies": {
+        "@pinia/testing": "^1.0.3",
         "@prettier/plugin-xml": "catalog:",
         "@swissgeo/config-prettier": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
