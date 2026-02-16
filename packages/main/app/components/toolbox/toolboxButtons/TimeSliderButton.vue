@@ -11,7 +11,7 @@ function toggleTimeSlider(): void {
 <template>
     <div id="timeslider-button">
         <button
-            class="toolbox-button d-print-none mb-1 h-[40px] w-[40px] rounded-[20px] text-white"
+            class="toolbox-button d-print-none mb-1 h-[40px] w-[40px] cursor-pointer rounded-[20px] text-white"
             :class="uiStore.isTimeSliderVisible ? 'bg-blue-600' : 'bg-black'"
             data-cy="time-slider-button"
             @click="toggleTimeSlider()"

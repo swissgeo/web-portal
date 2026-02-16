@@ -53,7 +53,7 @@ function handleKeydown(event: KeyboardEvent) {
     </div>
     <button
         ref="fullscreenButton"
-        class="toolbox-button d-print-none h-[40px] w-[40px] rounded-[20px] bg-gray-500 text-white"
+        class="toolbox-button d-print-none h-[40px] w-[40px] cursor-pointer rounded-[20px] bg-gray-500 text-white"
         :class="{ active: false }"
         :disabled="isDisabled()"
         data-cy="toolbox-fullscreen-button"
