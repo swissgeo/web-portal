@@ -3,7 +3,7 @@ import type { Dimension, Layer } from '@swissgeo/layers'
 
 import { useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { IconButton } from '@swissgeo/skeleton'
+import { IconButton, useUiStore } from '@swissgeo/skeleton'
 import { useDebounceFn, useResizeObserver } from '@vueuse/core'
 import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 
@@ -17,6 +17,7 @@ import {
 } from './timeSliderUtils'
 
 const layerStore = useLayerStore()
+const uiStore = useUiStore()
 let playYearInterval: ReturnType<typeof setInterval> | undefined
 
 const currentYear = ref<number>()
@@ -75,6 +76,18 @@ const yearsWithData = computed(() => getYearsWithData(layersWithTimestamps.value
 
 watch(currentYear, () => {
     void dispatchPreviewYearToStoreDebounced()
+})
+
+// Close timeslider when all time-enabled layers are removed
+watch(layersWithTimestamps, (newLayers) => {
+    if (newLayers.length === 0) {
+        log.debug({
+            title: 'TimeSlider.vue',
+            titleColor: LogPreDefinedColor.Blue,
+            messages: ['No time-enabled layers remaining, closing time slider'],
+        })
+        uiStore.closeTimeSlider()
+    }
 })
 
 onMounted(() => {
