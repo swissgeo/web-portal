@@ -16,10 +16,6 @@ import {
     getYearsWithData,
 } from './timeSliderUtils'
 
-const emit = defineEmits<{
-    close: []
-}>()
-
 const layerStore = useLayerStore()
 let playYearInterval: ReturnType<typeof setInterval> | undefined
 
@@ -251,15 +247,6 @@ function handleKeyDownEvent(event: KeyboardEvent) {
                 severity="primary"
                 :icon="playYearsWithData ? 'Pause' : 'Play'"
                 @click="togglePlayYearsWithData"
-            />
-
-            <IconButton
-                id="timeSliderCloseButton"
-                data-test="time-slider-close-button"
-                class="flex-shrink-0"
-                severity="secondary"
-                icon="X"
-                @click="emit('close')"
             />
         </div>
     </div>
