@@ -17,20 +17,33 @@ export const useSearchStore = defineStore('search', () => {
     const results = ref<SearchResult[]>([])
     const isSearching = ref(false)
     const catalog = ref<DatasetCollection>()
+    const catalogLanguage = ref<string>()
 
     let abortController: AbortController | undefined
 
-    // Load catalog data on store initialization
-    const loadCatalog = async () => {
-        if (catalog.value) {
+    // Load catalog data with language support
+    const loadCatalog = async (lang?: string) => {
+        // If catalog exists and language hasn't changed, don't reload
+        if (catalog.value && catalogLanguage.value === lang) {
             return
         }
+
         try {
-            const response = await fetch(runtimeConfig.public.ogcApiEndpoint)
+            const baseUrl = runtimeConfig.public.ogcApiEndpoint
+
+            // Build URL with language parameter
+            const url = new URL(baseUrl)
+            if (lang) {
+                url.searchParams.set('language', lang)
+            }
+
+            const response = await fetch(url.toString())
             if (!response.ok) {
                 throw new Error(`Failed to load catalog: ${response.status} ${response.statusText}`)
             }
+
             catalog.value = await response.json()
+            catalogLanguage.value = lang
         } catch (error) {
             log.error({
                 title: 'SearchStore/loadCatalog',
@@ -69,8 +82,8 @@ export const useSearchStore = defineStore('search', () => {
         isSearching.value = true
 
         try {
-            // Load catalog if not already loaded
-            await loadCatalog()
+            // Load catalog with current language
+            await loadCatalog(lang)
 
             // Get searchable layers from layer store
             // For now, enable feature search for ALL visible layers
