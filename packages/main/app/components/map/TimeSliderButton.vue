@@ -8,7 +8,7 @@ const uiStore = useUiStore()
 <template>
     <div
         v-if="uiStore.isTimeSliderVisible"
-        class="fixed top-4 left-[420px] right-24 z-50"
+        class="fixed top-4 right-24 left-[420px] z-50"
     >
         <!-- Time slider bar -->
         <TimeSlider />
