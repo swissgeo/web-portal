@@ -32,7 +32,6 @@ const { layers, backgroundLayer } = defineProps<{
                 :layers="layers"
                 :background-layer="backgroundLayer"
             />
-            <BackgroundSelector />
             <OpenLayersMouseTracker />
         </OpenLayersMap>
     </div>

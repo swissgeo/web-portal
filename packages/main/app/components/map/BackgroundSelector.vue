@@ -59,7 +59,7 @@ function selectBackground(backgroundLayer: Layer | VoidLayer) {
 </script>
 
 <template>
-    <BackgroundSelectorSquared
+    <MapBackgroundSelectorSquared
         :background-layers="sortedBackgroundLayersWithVoid"
         :current-background-layer="layerStore.backgroundLayer ?? 'void'"
         @select-background="selectBackground"
