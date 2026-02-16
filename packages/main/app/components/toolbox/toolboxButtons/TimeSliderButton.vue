@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { LucideIcon } from '@swissgeo/skeleton'
+import { LucideIcon, useUiStore } from '@swissgeo/skeleton'
 
-function isDisabled(): boolean {
-    return true
-}
+const uiStore = useUiStore()
 
 function toggleTimeSlider(): void {
-    throw new Error('TIME SLIDER BUTTON IS NOT YET IMPLEMENTED')
+    uiStore.toggleTimeSlider()
 }
 </script>
 
 <template>
     <div id="timeslider-button">
         <button
-            class="toolbox-button d-print-none mb-1 h-[40px] w-[40px] rounded-[20px] bg-gray-500 text-white"
-            :disabled="isDisabled()"
+            class="toolbox-button d-print-none mb-1 h-[40px] w-[40px] rounded-[20px] text-white"
+            :class="uiStore.isTimeSliderVisible ? 'bg-blue-600' : 'bg-black'"
             data-cy="time-slider-button"
             @click="toggleTimeSlider()"
         >
