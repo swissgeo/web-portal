@@ -50,10 +50,6 @@ export default defineNuxtConfig({
         },
     },
     css: ['~/assets/css/main.css'],
-    sourcemap: {
-        server: true,
-        client: true,
-    },
     vite: {
         plugins: [
             primevueColorVars({
