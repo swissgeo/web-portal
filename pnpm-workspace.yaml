@@ -87,7 +87,7 @@ catalog:
     sanitize-html: ^2.17.0
     slugify: ^1.6.6
     sortablejs: ^1.15.6
-    stylelint: 16.26.1
+    stylelint: 17.3.0
     stylelint-config-recommended-scss: 16.0.2
     stylelint-config-recommended-vue: 1.6.1
     stylelint-order: ^7.0.0
