@@ -20,7 +20,7 @@ function decreaseZoom() {
 <template>
     <button
         ref="zoomInButton"
-        class="toolbox-button d-print-none h-[40px] w-[40px] rounded-[20px] bg-black text-white hover:bg-blue-500"
+        class="toolbox-button d-print-none h-[40px] w-[40px] cursor-pointer rounded-[20px] bg-black text-white hover:bg-blue-500"
         data-cy="zoom-in"
         @click="increaseZoom"
     >
@@ -31,7 +31,7 @@ function decreaseZoom() {
     </button>
     <button
         ref="zoomOutButton"
-        class="toolbox-button d-print-none h-[40px] w-[40px] rounded-[20px] bg-black text-white hover:bg-blue-500"
+        class="toolbox-button d-print-none h-[40px] w-[40px] cursor-pointer rounded-[20px] bg-black text-white hover:bg-blue-500"
         data-cy="zoom-out"
         @click="decreaseZoom"
     >

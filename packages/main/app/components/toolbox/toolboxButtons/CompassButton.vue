@@ -80,7 +80,7 @@ function onRotate(mapEvent: MapEvent): void {
     even if the angle is not normalized, it will automatically be set to zero if pointing to the
     north -->
     <button
-        class="recenter-button h-[40px] w-[40px] rounded-[20px] bg-black text-white"
+        class="recenter-button h-[40px] w-[40px] cursor-pointer rounded-[20px] bg-black text-white"
         :disabled="isDisabled()"
         data-cy="compass-button"
         type="button"
