@@ -1,34 +1,20 @@
 <script setup lang="ts">
 import { TimeSlider } from '@swissgeo/map'
-import { IconButton } from '@swissgeo/skeleton'
-import { ref } from 'vue'
+import { useUiStore } from '@swissgeo/skeleton'
 
-const isTimeSliderActive = ref(false)
+const uiStore = useUiStore()
 
-function toggleTimeSlider() {
-    isTimeSliderActive.value = !isTimeSliderActive.value
+function handleClose() {
+    uiStore.closeTimeSlider()
 }
 </script>
 
 <template>
     <div
-        class="fixed top-4 left-16 z-50"
-        :class="{ 'right-6': isTimeSliderActive }"
+        v-if="uiStore.isTimeSliderVisible"
+        class="fixed top-4 left-16 right-6 z-50"
     >
-        <!-- Toggle button -->
-        <IconButton
-            v-if="!isTimeSliderActive"
-            id="timeSliderButton"
-            data-test="time-slider-toggle-button"
-            severity="primary"
-            icon="Clock"
-            @click="toggleTimeSlider"
-        />
-
         <!-- Time slider bar -->
-        <TimeSlider
-            v-else
-            @close="toggleTimeSlider"
-        />
+        <TimeSlider @close="handleClose" />
     </div>
 </template>
