@@ -35,6 +35,7 @@
     "devDependencies": {
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
+        "@pinia/testing": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
         "@types/lodash": "catalog:",
