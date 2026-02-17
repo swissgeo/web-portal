@@ -16,7 +16,7 @@
         "format:write": "pnpm run --recursive --parallel --no-bail --if-present format:write",
         "lint": "pnpm run --recursive --parallel --no-bail --if-present lint",
         "lint:write": "pnpm run --recursive --parallel --no-bail --if-present lint:write",
-        "test": "vitest run",
+        "test": "pnpm run test:unit",
         "test:coverage": "vitest run --coverage",
         "test:ui": "vitest --ui",
         "test:unit": "pnpm run --recursive --parallel --no-bail --if-present test:unit",
@@ -28,7 +28,6 @@
         "vue": "catalog:"
     },
     "devDependencies": {
-        "@pinia/testing": "^1.0.3",
         "@prettier/plugin-xml": "catalog:",
         "@swissgeo/config-prettier": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
