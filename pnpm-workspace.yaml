@@ -4,7 +4,7 @@ packages:
 
 catalog:
     '@dxup/unimport': ^0.1.2
-    '@eslint/js': ^9.38.0
+    '@eslint/js': ^10.0.0
     '@eslint/markdown': ^7.4.0
     '@floating-ui/vue': ^1.1.9
     '@fontsource/dm-sans': ^5.2.6
@@ -53,7 +53,7 @@ catalog:
     cheerio: ^1.1.2
     date-fns: ^4.1.0
     es-toolkit: ^1.39.10
-    eslint: ^9.39.2
+    eslint: ^10.0.0
     eslint-import-resolver-typescript: ^4.4.4
     eslint-plugin-chai-friendly: ^1.1.0
     eslint-plugin-cypress: ^5.2.0
