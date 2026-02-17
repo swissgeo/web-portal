@@ -41,7 +41,6 @@ const config: UserConfigFnObject = defineConfig(({ mode }) => {
                     // Presets
                     'vue',
                     'pinia',
-                    'vue-router',
                     'vue-i18n',
                 ],
                 // Automatically generate types

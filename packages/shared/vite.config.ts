@@ -40,7 +40,6 @@ const config: UserConfigFnObject = defineConfig(() => {
                 imports: [
                     // Presets
                     'vue',
-                    'vue-router',
                     'vue-i18n',
                     'pinia',
                 ],
