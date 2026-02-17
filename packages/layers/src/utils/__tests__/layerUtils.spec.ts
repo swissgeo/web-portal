@@ -5,6 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import { useLayerStore } from '@/stores/layer'
 import { getInfoFromDataset, makeServerLayer } from '@/utils/layerUtils'
+import type { LayerType } from '../../types'
 
 // we need to mock the layer store so we can check the functions work with various z indexes
 
@@ -15,6 +16,25 @@ setActivePinia(pinia)
 const layerStore = useLayerStore()
 const fake_uuid = 'mock-uuid-with-extra-step'
 
+function createExpectedObject(layerType: LayerType, dataset: Dataset) {
+    return {
+        uuid: fake_uuid,
+        humanId: 'dataset-1',
+        opacity: 1,
+        dataset,
+        isVisible: true,
+        type: layerType,
+        isLoading: false,
+        zIndex: 6,
+        info: {
+            displayName: 'Layer Title',
+            attribution: {
+                title: 'SwissGeo',
+            },
+            abstract: 'Layer description',
+        },
+    }
+}
 /**
  * we create a fake layers array to have the correct z index returned within our mocked store.
  * TO DO GPS-500 : remove zIndex and layer Store
@@ -34,7 +54,7 @@ function setZindex(nb_layer: number) {
         })
     }
     layerStore.layers = layers
-    // the goal is to alter the layers variable in the store to ensure
+    // the goal is to alter the layers variable in the store to change the zIndex.
 }
 
 describe('Testing the information gathering from datasets', () => {
@@ -162,31 +182,27 @@ describe('testing the makeServerLayer function', () => {
         },
     }
 
-    it('creates a server layer with correct defaults', () => {
-        // TO DO GPS-500 : remove zIndex and layer Store
+    // I would've like to add a "non valid type" but the function assume we get
+    // a correct type, and thus has no protection.
+    it.each`
+        layerType    | expectedServerLayerCreated
+        ${'wms'}     | ${createExpectedObject('wms', baseDataset)}
+        ${'wmts'}    | ${createExpectedObject('wmts', baseDataset)}
+        ${'geojson'} | ${createExpectedObject('geojson', baseDataset)}
+        ${'vector'}  | ${createExpectedObject('vector', baseDataset)}
+        ${'kml'}     | ${createExpectedObject('kml', baseDataset)}
+        ${'kmz'}     | ${createExpectedObject('kmz', baseDataset)}
+        ${'gpx'}     | ${createExpectedObject('gpx', baseDataset)}
+    `(
+        'creates a layer with the correct defaults, of the correct type for the layer type : $layerType',
+        ({ layerType, expectedServerLayerCreated }) => {
+            // TO DO GPS-500 : remove zIndex and layer Store
 
-        setZindex(5)
-        const layer = makeServerLayer('wms', baseDataset)
-
-        expect(layer).toMatchObject({
-            uuid: fake_uuid,
-            humanId: 'dataset-1',
-            opacity: 1,
-            dataset: baseDataset,
-            isVisible: true,
-            type: 'wms',
-            isLoading: false,
-            zIndex: 6,
-            info: {
-                displayName: 'Layer Title',
-                attribution: {
-                    title: 'SwissGeo',
-                },
-                abstract: 'Layer description',
-            },
-        })
-    })
-
+            setZindex(5)
+            const layer = makeServerLayer(layerType, baseDataset)
+            expect(layer).toMatchObject(expectedServerLayerCreated)
+        }
+    )
     // TO DO GPS-500 : remove zIndex and layer Store
     it('overrides defaults with options', () => {
         const layer = makeServerLayer('wms', baseDataset, {
