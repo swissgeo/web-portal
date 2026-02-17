@@ -1,16 +1,10 @@
 <script lang="ts" setup>
-import type { DrawingMode } from '@swissgeo/drawing'
 import type { FileLayer } from '@swissgeo/layers'
+import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@swissgeo/shared'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
-import {
-    useOlDrawing,
-    EPSG_2056_CH1903,
-    EPSG_4326_WGS84,
-    useDrawingStore,
-    getMarkerIconById,
-} from '@swissgeo/drawing'
+import { useOlDrawing, DrawingMode, useDrawingStore, getMarkerIconById } from '@swissgeo/drawing'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'

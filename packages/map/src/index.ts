@@ -4,9 +4,8 @@
 
 import '../env.d.ts' // for reproject
 
-import * as PROJECTION_EPSG from '@/composables/types.d'
 import MapModule from '@/MapModule.vue'
 import usePositionStore from '@/stores/position'
 import TimeSlider from '@/tools/timeslider'
 
-export { MapModule, usePositionStore, PROJECTION_EPSG, TimeSlider }
+export { MapModule, usePositionStore, TimeSlider }

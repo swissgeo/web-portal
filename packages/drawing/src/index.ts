@@ -16,6 +16,3 @@ export { DRAWING_LAYER_ID } from '@/composables/useDrawingManager'
 
 // Types
 export type { DrawingMode } from '@/types'
-
-// Constants
-export { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@/constants/projections'

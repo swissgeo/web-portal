@@ -4,6 +4,7 @@ import type VectorLayer from 'ol/layer/Vector'
 
 import { registerProj4 } from '@swissgeo/coordinates'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
+import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@swissgeo/shared'
 import { zip } from 'fflate'
 import GPX from 'ol/format/GPX'
 import KML from 'ol/format/KML'
@@ -11,7 +12,6 @@ import { register } from 'ol/proj/proj4'
 import { Fill, Icon, Stroke, Style } from 'ol/style'
 import proj4 from 'proj4'
 
-import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@/constants/projections'
 import {
     DEFAULT_MARKER_ICON,
     getMarkerIconById,
