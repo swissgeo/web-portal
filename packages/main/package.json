@@ -54,8 +54,7 @@
         "sortablejs": "catalog:",
         "ufo": "catalog:",
         "vite-plugin-node-polyfills": "catalog:",
-        "vue": "catalog:",
-        "vue-router": "catalog:"
+        "vue": "catalog:"
     },
     "devDependencies": {
         "@eslint/markdown": "catalog:",
@@ -72,6 +71,7 @@
         "typescript": "catalog:",
         "vite-plugin-vue-devtools": "catalog:",
         "vitest": "catalog:",
+        "vue-router": "catalog:",
         "vue-tsc": "catalog:"
     },
     "packageManager": "pnpm@10.29.3"

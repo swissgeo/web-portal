@@ -62,7 +62,6 @@ export default defineConfig(({ mode }): UserConfig => {
                 imports: [
                     // Presets
                     'vue',
-                    'vue-router',
                     'vue-i18n',
                     'pinia',
                 ],
