@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useAttrs, computed } from 'vue'
+
 import LucideIcon from './LucideIcon.vue'
 
 const attrs = useAttrs()
@@ -30,7 +32,11 @@ const iconClass = computed(() => attrs['icon-class'] || '')
 
 // Get other attrs excluding the ones we're handling specially
 const buttonAttrs = computed(() => {
-    const { severity, text, icon, 'icon-class': iconClass, ...rest } = attrs
+    const rest = { ...attrs }
+    delete rest.severity
+    delete rest.text
+    delete rest.icon
+    delete rest['icon-class']
     return rest
 })
 </script>
