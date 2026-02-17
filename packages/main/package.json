@@ -80,5 +80,5 @@
         "vitest": "catalog:",
         "vue-tsc": "catalog:"
     },
-    "packageManager": "pnpm@10.29.2"
+    "packageManager": "pnpm@10.29.3"
 }

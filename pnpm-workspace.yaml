@@ -69,7 +69,7 @@ catalog:
     globals: ^17.0.0
     happy-dom: ^20.5.3
     lodash: ^4.17.21
-    lucide-vue-next: ^0.563.0
+    lucide-vue-next: ^0.570.0
     nuxt: ^4.2.2
     ol: ^10.7.0
     ol-mapbox-style: ^13.1.1
