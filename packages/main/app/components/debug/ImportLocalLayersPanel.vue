@@ -69,15 +69,16 @@ function onFileSelected(evt: Event): void {
                 data-cy="file-input"
                 @change="onFileSelected"
             />
-            <Button
-                class="btn btn-outline-group"
+            <UButton
+                color="gray"
+                variant="outline"
                 type="button"
                 data-cy="file-input-browse-button"
                 :disabled="isLoading"
                 @click="inputLocalFile?.click()"
             >
                 Browse...
-            </Button>
+            </UButton>
             <input
                 type="text"
                 class="flex-1 rounded border border-gray-300 px-3 py-2"

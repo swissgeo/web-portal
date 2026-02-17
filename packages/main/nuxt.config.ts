@@ -1,11 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'node:url'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import vueDevTools from 'vite-plugin-vue-devtools'
-
-import { Swissgeo } from './stylePreset.js'
-import primevueColorVars from './vite-plugin-primevue-tailwind.js'
 
 export default defineNuxtConfig({
     typescript: {
@@ -23,47 +19,19 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         '@nuxtjs/i18n',
         '@nuxt/ui',
-        '@primevue/nuxt-module',
-        [
-            '@nuxtjs/google-fonts',
-            {
-                families: {
-                    Inter: {},
-                },
-            },
-        ],
     ],
-    primevue: {
-        options: {
-            theme: {
-                preset: Swissgeo,
-                options: {
-                    // explicitly setting the dark mode toggle class
-                    // so that the browser preference isn't taken into account
-                    darkModeSelector: '.dark-mode',
-                    cssLayer: {
-                        name: 'primevue',
-                        order: 'theme, base, primevue, custom',
-                    },
-                },
-            },
+    css: ['~/assets/css/main.css'],
+    ui: {
+        experimental: {
+            componentDetection: ['LocaleSelect'],
         },
     },
-    css: ['~/assets/css/main.css'],
     sourcemap: {
         server: true,
         client: true,
     },
     vite: {
-        plugins: [
-            primevueColorVars({
-                presetPath: './stylePreset.js',
-            }),
-
-            tailwindcss(),
-            vueDevTools(),
-            nodePolyfills(),
-        ],
+        plugins: [vueDevTools(), nodePolyfills()],
         resolve: {
             alias: {
                 '@geonetwork-ui': fileURLToPath(new URL('./geonetwork-ui', import.meta.url)),

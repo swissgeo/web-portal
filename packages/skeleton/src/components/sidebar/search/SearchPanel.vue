@@ -58,7 +58,7 @@ function handleSelect(result: SearchResult) {
         <!-- No results message -->
         <div
             v-else-if="searchStore.query.length >= 2 && !searchStore.isSearching"
-            class="p-4 text-center text-surface-500"
+            class="text-surface-500 p-4 text-center"
         >
             {{ $t('search.no_results', 'No results found') }}
         </div>
@@ -66,7 +66,7 @@ function handleSelect(result: SearchResult) {
         <!-- Placeholder message -->
         <div
             v-else
-            class="p-4 text-surface-500"
+            class="text-surface-500 p-4"
         >
             {{ $t('search.placeholder') }}
         </div>

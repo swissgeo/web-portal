@@ -32,8 +32,7 @@
         "@swissgeo/numbers": "catalog:",
         "@swissgeo/search": "workspace:*",
         "@swissgeo/shared": "workspace:*",
-        "lucide-vue-next": "catalog:",
-        "primevue": "catalog:"
+        "lucide-vue-next": "catalog:"
     },
     "devDependencies": {
         "@dxup/unimport": "catalog:",

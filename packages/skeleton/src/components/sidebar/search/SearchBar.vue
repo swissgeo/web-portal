@@ -1,8 +1,7 @@
 <script setup lang="ts">
 // Adapted from web-mapviewer SearchBar.vue
 
-import InputText from 'primevue/inputtext'
-import { onMounted, useTemplateRef } from 'vue'
+import { ref } from 'vue'
 
 import LucideIcon from '../../LucideIcon.vue'
 
@@ -16,16 +15,7 @@ const emit = defineEmits<{
     clear: []
 }>()
 
-const searchInput = useTemplateRef<typeof InputText>('searchInput')
-
-// Focus input on mount
-onMounted(() => {
-    if (searchInput.value) {
-        // TODO
-        // @ts-expect-error Doesn't make sense to fix now as primevue will go away
-        searchInput.value.$el?.focus()
-    }
-})
+const searchInput = ref<HTMLInputElement>()
 
 // Handle input changes
 const onInput = (event: Event) => {
@@ -36,11 +26,7 @@ const onInput = (event: Event) => {
 // Clear search
 const onClear = () => {
     emit('clear')
-    if (searchInput.value) {
-        // TODO
-        // @ts-expect-error Doesn't make sense to fix now as primevue will go away
-        searchInput.value.$el?.focus()
-    }
+    searchInput.value?.focus()
 }
 
 // Handle escape key
@@ -53,10 +39,10 @@ const onKeydown = (event: KeyboardEvent) => {
 </script>
 
 <template>
-    <div class="border-b border-surface-200 p-4">
+    <div class="border-b border-gray-200 p-4">
         <div class="relative">
             <!-- Input field -->
-            <InputText
+            <UInput
                 ref="searchInput"
                 :model-value="modelValue"
                 type="text"
@@ -64,31 +50,38 @@ const onKeydown = (event: KeyboardEvent) => {
                 autocapitalize="off"
                 autocorrect="off"
                 spellcheck="false"
-                class="search-input w-full"
+                size="md"
+                color="gray"
+                variant="outline"
+                class="w-full"
+                :ui="{ icon: { trailing: { pointer: '' } } }"
                 data-cy="searchbar"
                 @input="onInput"
                 @keydown="onKeydown"
-            />
-
-            <!-- Clear button -->
-            <button
-                v-if="modelValue"
-                class="absolute top-1/2 right-3 -translate-y-1/2 text-surface-400 transition-colors hover:text-surface-600"
-                type="button"
-                data-cy="searchbar-clear"
-                @click="onClear"
+                autofocus
             >
-                <LucideIcon
-                    v-if="isSearching"
-                    name="LoaderCircle"
-                    class="h-5 w-5 animate-spin"
-                />
-                <LucideIcon
-                    v-else
-                    name="X"
-                    class="h-5 w-5"
-                />
-            </button>
+                <template #trailing>
+                    <!-- Clear/Loading button -->
+                    <button
+                        v-if="modelValue"
+                        class="text-gray-400 transition-colors hover:text-gray-600"
+                        type="button"
+                        data-cy="searchbar-clear"
+                        @click="onClear"
+                    >
+                        <LucideIcon
+                            v-if="isSearching"
+                            name="LoaderCircle"
+                            class="h-5 w-5 animate-spin"
+                        />
+                        <LucideIcon
+                            v-else
+                            name="X"
+                            class="h-5 w-5"
+                        />
+                    </button>
+                </template>
+            </UInput>
         </div>
     </div>
 </template>
@@ -97,10 +90,5 @@ const onKeydown = (event: KeyboardEvent) => {
 /* Prevent browser's native clear button on search inputs */
 input[type='search']::-webkit-search-cancel-button {
     appearance: none;
-}
-
-/* Add padding for clear button - use :deep() to pierce into PrimeVue component */
-:deep(.search-input) {
-    padding-right: 2.5rem;
 }
 </style>

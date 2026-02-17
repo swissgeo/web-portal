@@ -24,7 +24,7 @@ const isDesktop = inject<boolean>('isDesktop', true)
     <!-- the mobile one and when the sidebar is extended -->
     <div
         v-else
-        class="flex h-10 items-center gap-2 rounded-lg border border-neutral-200 bg-white lg:h-14 lg:gap-0 lg:rounded-none lg:border-none"
+        class="flex h-10 items-center gap-2 bg-white"
     >
         <div
             class="ml-3.5 flex translate-x-[0.5px] cursor-pointer items-center justify-center p-2"
