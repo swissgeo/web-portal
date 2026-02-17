@@ -4,9 +4,8 @@
 
 import '../env.d.ts' // for reproject
 
-import * as PROJECTION_EPSG from '@/composables/types.d'
 import MapModule from '@/MapModule.vue'
 import usePositionStore from '@/stores/position'
 
-export { MapModule, usePositionStore, PROJECTION_EPSG }
 export type { MapLayerRenderer } from '@/types'
+export { MapModule, usePositionStore }
