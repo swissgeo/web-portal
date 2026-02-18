@@ -60,5 +60,9 @@ export default function useOlWmtsLayer(
 
     const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 
-    return { initialize, setVisibility, setZIndex, updateTimeDimension }
+    function setOpacity(opacity: number) {
+        layer.setOpacity(opacity)
+    }
+
+    return { initialize, setVisibility, setZIndex, updateTimeDimension, setOpacity }
 }

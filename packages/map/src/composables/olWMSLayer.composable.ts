@@ -146,9 +146,14 @@ export default function useOlWmsLayer(
 
     const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 
+    function setOpacity(opacity: number) {
+        layer.setOpacity(opacity)
+    }
+
     return {
         setVisibility,
         setZIndex,
         updateTimeDimension,
+        setOpacity,
     }
 }

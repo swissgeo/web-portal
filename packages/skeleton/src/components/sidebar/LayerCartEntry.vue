@@ -28,7 +28,7 @@ const displayName = computed(() => {
 const currentTime = computed({
     get() {
         if (layer.dimensions && 'time' in layer.dimensions) {
-            return layer.dimensions.time.currentValue
+            return layer.dimensions.time?.currentValue ?? null
         } else {
             return null
         }
@@ -40,13 +40,25 @@ const currentTime = computed({
 
 const availableTimes = computed(() => {
     if (layer.dimensions && 'time' in layer.dimensions) {
-        return layer.dimensions.time.availableValues
+        return layer.dimensions.time?.availableValues ?? []
     }
     return []
 })
 
 const getTimestampName = (time: string) => {
     return getDisplayNameFromTimestamp(time)
+}
+
+// Opacity as percentage (0-100) for the slider
+const opacityPercent = computed({
+    get: () => Math.round(layer.opacity * 100),
+    set: (value: number) => {
+        layerStore.setOpacity(layer.uuid, value / 100)
+    },
+})
+
+function handleOpacityChange(value: number) {
+    layerStore.setOpacity(layer.uuid, value / 100)
 }
 
 function toggleVisibility() {
@@ -95,22 +107,35 @@ function removeLayer() {
                 ></IconButton>
             </div>
         </div>
-        <div
-            class="overflow-x-hidden text-nowrap"
-            :title="layer.humanId"
-            :class="{ 'text-gray-300': !layer.isVisible }"
-        >
-            {{ displayName }}
-            <span
-                :class="{
-                    'bg-amber-200': layer.type === 'wms',
-                    'bg-fuchsia-200': layer.type === 'wmts',
-                    'bg-emerald-200': layer.type === 'kml',
-                    'bg-sky-200': layer.type === 'kmz',
-                }"
+        <div class="flex-1">
+            <div
+                class="overflow-x-hidden text-nowrap"
+                :title="layer.humanId"
+                :class="{ 'text-gray-300': !layer.isVisible }"
             >
-                ({{ layer.type }})</span
-            >
+                {{ displayName }}
+                <span
+                    :class="{
+                        'bg-amber-200': layer.type === 'wms',
+                        'bg-fuchsia-200': layer.type === 'wmts',
+                        'bg-emerald-200': layer.type === 'kml',
+                        'bg-sky-200': layer.type === 'kmz',
+                    }"
+                >
+                    ({{ layer.type }})</span
+                >
+            </div>
+            <div class="mt-2 flex items-center gap-2">
+                <span class="text-xs text-gray-600">Opacity:</span>
+                <USlider
+                    :model-value="opacityPercent"
+                    @update:model-value="handleOpacityChange"
+                    :min="0"
+                    :max="100"
+                    class="flex-1"
+                />
+                <span class="w-8 text-xs text-gray-600">{{ opacityPercent }}%</span>
+            </div>
         </div>
         <div class="flex items-center">
             <div>

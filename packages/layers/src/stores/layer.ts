@@ -96,7 +96,17 @@ export const useLayerStore = defineStore('layers', () => {
         }
     }
 
-    // TODO this one is currently un-used. consider removing it
+    function setOpacity(layerUuid: string, opacity: number) {
+        const layer = getLayerByUuid(layerUuid)
+        if (!layer) {
+            log.error(`Layer with uuid ${layerUuid} not found`)
+            return null
+        }
+        const clampedOpacity = Math.max(0, Math.min(1, opacity))
+        log.debug(`Setting opacity for ${layer.humanId} to ${clampedOpacity}`)
+        layer.opacity = clampedOpacity
+    }
+
     function setLayerInfo(layerUuid: string, info: LayerInfo): void {
         const layer = getLayerByUuid(layerUuid)
         if (!layer) {
@@ -142,6 +152,7 @@ export const useLayerStore = defineStore('layers', () => {
         // action
         addLayer,
         toggleVisibility,
+        setOpacity,
         setLayerZIndex,
         setLayerInfo,
         setDimension,

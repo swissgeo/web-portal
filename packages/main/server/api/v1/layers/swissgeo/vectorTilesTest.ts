@@ -1,11 +1,12 @@
-import fs from 'node:fs/promises'
-
 export default defineEventHandler(async (event) => {
-    // path is relative to the package
-    const path = `../../ogc-records/tiles.json`
-    const data = await fs.readFile(path)
+    const config = useRuntimeConfig()
+    const data = await $fetch<string>(
+        'https://services.dev.sgdi.tech/api/oar/v0/tiles.json?lang=en',
+        { responseType: 'text' }
+    )
+    const patched = data.replace('<KEY>', config.maptilerApiKey)
 
     appendResponseHeader(event, 'Content-Type', 'application/json')
     appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)
-    return data
+    return patched
 })

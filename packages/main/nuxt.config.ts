@@ -71,6 +71,7 @@ export default defineNuxtConfig({
         // set these via .env file
         apiEndpoint: '',
         authToken: '',
+        maptilerApiKey: '',
         public: {
             ogcApiEndpoint: '',
             overlayId: '',

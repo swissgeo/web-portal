@@ -75,9 +75,14 @@ export default function useOlGeoJSONLayer(
 
     const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 
+    function setOpacity(opacity: number) {
+        layer.setOpacity(opacity)
+    }
+
     return {
         initialize,
         setVisibility,
         setZIndex,
+        setOpacity,
     }
 }

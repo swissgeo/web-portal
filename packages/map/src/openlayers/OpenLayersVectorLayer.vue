@@ -1,27 +1,19 @@
 <script lang="ts" setup>
 import type { DatasetLayer } from '@swissgeo/layers'
 
-import log from '@swissgeo/log'
-
 import useOlVectorLayer from '../composables/olVectorLayer.composable'
 
 const { layer } = defineProps<{
     layer: DatasetLayer
 }>()
 
-const url = computed(() => `/api/v1/layers/swissgeo/vectorTest`)
+const styleUrl = `/api/v1/layers/swissgeo/vectorTest`
 
-const { data } = await useFetch<string>(url)
-
-const style = computed(() => {
-    if (!data.value) {
-        log.error(`Unable to load the Vector Style from ${url.value}`)
-        return
-    }
-    return data.value
-})
-
-const { setVisibility, setZIndex } = useOlVectorLayer(layer.dataset.id, 1, style.value)
+const { setVisibility, setZIndex, setOpacity } = useOlVectorLayer(
+    layer.dataset?.id ?? '',
+    1,
+    styleUrl
+)
 
 watch(
     () => layer.isVisible,
@@ -31,6 +23,11 @@ watch(
 watch(
     () => layer.zIndex,
     (newZIndex) => setZIndex(newZIndex)
+)
+
+watch(
+    () => layer.opacity,
+    (newOpacity) => setOpacity(newOpacity)
 )
 </script>
 
