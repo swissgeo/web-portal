@@ -3,7 +3,7 @@ import type { SearchResult } from '@swissgeo/search'
 
 import LogoPic from '@/components/LogoPic.vue'
 import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
-import { useSidebarStore, SidebarType } from '@/stores/ui'
+import { useSidebarStore, SidebarType, SIDEBAR_CONTENT_WIDTH } from '@/stores/ui'
 
 import LanguageSwitcherButton from './LanguageSwitcherButton.vue'
 import LayerCart from './LayerCart.vue'
@@ -22,7 +22,7 @@ function handleSearchResultSelected(result: SearchResult) {
 }
 
 // used for the dragging thing
-const sidebarSecondColumnWidth = 400
+const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH
 </script>
 
 <template>

@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
+export const SIDEBAR_ICON_WIDTH = 64 // min-w-16 = 4rem = 64px
+export const SIDEBAR_CONTENT_WIDTH = 400
+
 // Sidebar types enum
 export enum SidebarType {
     LAYER_CART = 'layerCart',
@@ -16,6 +19,12 @@ export const useSidebarStore = defineStore('sidebar', () => {
 
     // #region: getters
     const isSidebarOpen = computed(() => currentSidebar.value !== null)
+
+    const sidebarWidth = computed(() =>
+        isSidebarOpen.value
+            ? SIDEBAR_ICON_WIDTH + SIDEBAR_CONTENT_WIDTH
+            : SIDEBAR_ICON_WIDTH
+    )
 
     const isSearchVisible = computed(() => currentSidebar.value === SidebarType.SEARCH)
 
@@ -40,6 +49,7 @@ export const useSidebarStore = defineStore('sidebar', () => {
         // getters
         isWelcomeOverlayVisible,
         isSidebarOpen,
+        sidebarWidth,
         isSearchVisible,
         isLayerCartVisible,
         isContentSidebarVisible,
