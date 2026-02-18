@@ -9,11 +9,10 @@ export enum SidebarType {
     CONTENT = 'content',
 }
 
-export const useUiStore = defineStore('uiStore', () => {
+export const useSidebarStore = defineStore('sidebar', () => {
     const isWelcomeOverlayVisible = ref(false)
     const helpOverlayContentId = ref<number | null>(null)
     const currentSidebar = ref<SidebarType | null>(null)
-    const isTimeSliderVisible = ref(false)
 
     // #region: getters
     const isSidebarOpen = computed(() => currentSidebar.value !== null)
@@ -34,18 +33,9 @@ export const useUiStore = defineStore('uiStore', () => {
         currentSidebar.value = null
     }
 
-    function toggleTimeSlider() {
-        isTimeSliderVisible.value = !isTimeSliderVisible.value
-    }
-
-    function closeTimeSlider() {
-        isTimeSliderVisible.value = false
-    }
-
     return {
         currentSidebar,
         helpOverlayContentId,
-        isTimeSliderVisible,
 
         // getters
         isWelcomeOverlayVisible,
@@ -57,7 +47,5 @@ export const useUiStore = defineStore('uiStore', () => {
         // actions
         setSidebar,
         closeSidebar,
-        toggleTimeSlider,
-        closeTimeSlider,
     }
 })

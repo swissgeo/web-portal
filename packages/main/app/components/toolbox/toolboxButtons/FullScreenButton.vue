@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { LucideIcon, useUiStore } from '@swissgeo/skeleton'
+import { LucideIcon, useSidebarStore } from '@swissgeo/skeleton'
 
 const { t } = useI18n()
-const uiStore = useUiStore()
+const uiStore = useSidebarStore()
 
 function toggleFullScreen() {
     throw new Error('Full screen mode toggle not yet implemented')

@@ -4,11 +4,11 @@ import type { MenuTree } from '@swissgeo/shared/api'
 import type { Page } from '@swissgeo/shared/livingdocs'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 
-import { SidebarType, useUiStore } from '@swissgeo/skeleton'
+import { SidebarType, useSidebarStore } from '@swissgeo/skeleton'
 
 const route = useRoute()
 
-const uiStore = useUiStore()
+const uiStore = useSidebarStore()
 const contentStore = useContentStore()
 const mainStore = useMainStore()
 const menuStore = useMenuStore()
