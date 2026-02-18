@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import type { Dimension, Layer } from '@swissgeo/layers'
+import type { Dimension } from '@swissgeo/layers'
 
-import { useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { IconButton, useUiStore } from '@swissgeo/skeleton'
+import { IconButton } from '@swissgeo/skeleton'
 import { useDebounceFn, useResizeObserver } from '@vueuse/core'
 import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 
@@ -16,8 +15,16 @@ import {
     getYearsWithData,
 } from './timeSliderUtils'
 
-const layerStore = useLayerStore()
-const uiStore = useUiStore()
+const { layers } = defineProps<{
+    layers: LayerWithTime[]
+}>()
+
+const emit = defineEmits<{
+    close: []
+    'update-dimension': [{ uuid: string; key: string; dimension: Partial<Dimension> }]
+    'update-visibility': [{ uuid: string; isVisible: boolean }]
+}>()
+
 let playYearInterval: ReturnType<typeof setInterval> | undefined
 
 const currentYear = ref<number>()
@@ -31,26 +38,11 @@ useResizeObserver(sliderContainer, (entries) => {
     containerWidth.value = entries[0]?.contentRect.width ?? 0
 })
 
-const layersWithTimestamps = computed((): LayerWithTime[] => {
-    // type of ref isn't picked up correctly here...
-    const layersWithTime: LayerWithTime[] = layerStore.layers.filter((layer: Layer) => {
-        return layer.dimensions && 'time' in layer.dimensions
-    })
-    return layersWithTime
-})
+const layersWithTimestamps = computed((): LayerWithTime[] => layers)
 
-const youngestYear = computed(() =>
-    // Youngest year available in the current layer data
-    // previously this was across all the available layers, but we can't do that anymore
-    // let's hardcode this for now to the current year
-    new Date().getFullYear()
-)
+const youngestYear = computed(() => new Date().getFullYear())
 
 const oldestYear = computed(
-    // Oldest year available in the current layer data
-    // previously this was across all the available layers, but we can't do that anymore
-    // maybe let's hardcode this then for now to the start of swiss mapping time or older if
-    // one layer has more
     () =>
         Math.min(
             1848,
@@ -84,7 +76,7 @@ watch(layersWithTimestamps, (newLayers) => {
             titleColor: LogPreDefinedColor.Blue,
             messages: ['No time-enabled layers remaining, closing time slider'],
         })
-        uiStore.closeTimeSlider()
+        emit('close')
     }
 })
 
@@ -111,16 +103,13 @@ onUnmounted(() => {
 
 function initializeCurrentYear() {
     if (layersWithTimestamps.value.length > 1) {
-        // more than one layer. We initialize it to the youngest available year (last in sorted array)
         const availableYearsWithData = yearsWithData.value.yearsJoint
         if (availableYearsWithData.length > 0) {
             currentYear.value = availableYearsWithData[availableYearsWithData.length - 1]
         } else {
-            // no available years with data? What are we even doing here?
             currentYear.value = youngestYear.value
         }
     } else {
-        // only one layer. We set the time slider to it's current value
         const onlyLayer = layersWithTimestamps.value[0]
         const timeConfig = onlyLayer?.dimensions.time
 
@@ -150,21 +139,13 @@ function dispatchCurrentYearToStore() {
         const yearValue = convertYearToTimestamp(layer, currentYear.value)
 
         if (yearValue === null) {
-            // Layer doesn't have data for this year - hide it
-            const storeLayer = layerStore.layers.find((l) => l.uuid === layer.uuid)
-            if (storeLayer) {
-                storeLayer.isVisible = false
-            }
+            emit('update-visibility', { uuid: layer.uuid, isVisible: false })
         } else {
-            // Layer has data for this year - show it and set the time dimension
-            const storeLayer = layerStore.layers.find((l) => l.uuid === layer.uuid)
-            if (storeLayer) {
-                storeLayer.isVisible = true
-            }
+            emit('update-visibility', { uuid: layer.uuid, isVisible: true })
             const dimension: Partial<Dimension> = {
                 currentValue: yearValue,
             }
-            layerStore.setDimension('time', layer.uuid, dimension)
+            emit('update-dimension', { uuid: layer.uuid, key: 'time', dimension })
         }
     }
 }
@@ -182,7 +163,6 @@ function togglePlayYearsWithData() {
             )
             .sort((a, b) => a - b)
 
-        // Guard: if no years with data, can't play
         if (yearsWithDataForPlayer.length === 0 || currentYear.value === undefined) {
             playYearsWithData.value = false
             return
