@@ -3,11 +3,11 @@ import { useI18n } from 'vue-i18n'
 
 // const router = useRouter()
 import SidebarButton from '@/components/sidebar/SidebarButton.vue'
-import { useUiStore, SidebarType } from '@/stores/ui'
+import { useSidebarStore, SidebarType } from '@/stores/ui'
 
 const { t: $t } = useI18n()
 
-const uiStore = useUiStore()
+const uiStore = useSidebarStore()
 
 const toggleSearch = () => {
     if (uiStore.isSidebarOpen && uiStore.currentSidebar === SidebarType.SEARCH) {

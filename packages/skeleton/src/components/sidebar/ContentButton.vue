@@ -3,7 +3,7 @@ import type { MenuMetaData } from '@swissgeo/content'
 
 import { useMenuStore } from '@swissgeo/content'
 
-import { useUiStore, SidebarType } from '@/stores/ui'
+import { useSidebarStore, SidebarType } from '@/stores/ui'
 
 import SidebarButton from './SidebarButton.vue'
 
@@ -16,7 +16,7 @@ const { icon, menuMetaData } = defineProps<{
     menuMetaData: MenuMetaData
 }>()
 
-const uiStore = useUiStore()
+const uiStore = useSidebarStore()
 const menuStore = useMenuStore()
 
 // @ts-expect-error The store's typing isn't picked up properly here

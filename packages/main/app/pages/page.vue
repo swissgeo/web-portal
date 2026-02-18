@@ -3,12 +3,12 @@ import type { MenuTree, Page } from '@swissgeo/shared/api'
 import type { Lang } from '@swissgeo/shared/language'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 
-import { SidebarType, useUiStore } from '@swissgeo/skeleton'
+import { SidebarType, useSidebarStore } from '@swissgeo/skeleton'
 
 const route = useRoute()
 const { locale } = useI18n()
 
-const uiStore = useUiStore()
+const uiStore = useSidebarStore()
 const contentStore = useContentStore()
 const menuStore = useMenuStore()
 

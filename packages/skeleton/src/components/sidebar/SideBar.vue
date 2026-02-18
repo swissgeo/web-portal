@@ -3,13 +3,13 @@ import type { SearchResult } from '@swissgeo/search'
 
 import LogoPic from '@/components/LogoPic.vue'
 import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
-import { useUiStore, SidebarType } from '@/stores/ui'
+import { useSidebarStore, SidebarType } from '@/stores/ui'
 
 import LanguageSwitcherButton from './LanguageSwitcherButton.vue'
 import LayerCart from './LayerCart.vue'
 import SearchPanel from './search/SearchPanel.vue'
 
-const uiStore = useUiStore()
+const uiStore = useSidebarStore()
 
 const emit = defineEmits<{
     'search-result-selected': [result: SearchResult]
