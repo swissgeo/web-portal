@@ -2,8 +2,7 @@
 import type { Layer } from '@swissgeo/layers'
 
 import { useDrawingStore } from '@swissgeo/drawing'
-import { LayerType, useLayerStore } from '@swissgeo/layers'
-import Slider from 'primevue/slider'
+import { useLayerStore } from '@swissgeo/layers'
 
 import IconButton from '@/components/IconButton.vue'
 
@@ -29,7 +28,7 @@ const displayName = computed(() => {
 const currentTime = computed({
     get() {
         if (layer.dimensions && 'time' in layer.dimensions) {
-            return layer.dimensions.time.currentValue
+            return layer.dimensions.time?.currentValue ?? null
         } else {
             return null
         }
@@ -41,7 +40,7 @@ const currentTime = computed({
 
 const availableTimes = computed(() => {
     if (layer.dimensions && 'time' in layer.dimensions) {
-        return layer.dimensions.time.availableValues
+        return layer.dimensions.time?.availableValues ?? []
     }
     return []
 })
@@ -117,8 +116,10 @@ function removeLayer() {
                 {{ displayName }}
                 <span
                     :class="{
-                        'bg-amber-200': layer.type === LayerType.WMS,
-                        'bg-fuchsia-200': layer.type === LayerType.WMTS,
+                        'bg-amber-200': layer.type === 'wms',
+                        'bg-fuchsia-200': layer.type === 'wmts',
+                        'bg-emerald-200': layer.type === 'kml',
+                        'bg-sky-200': layer.type === 'kmz',
                     }"
                 >
                     ({{ layer.type }})</span
@@ -126,7 +127,7 @@ function removeLayer() {
             </div>
             <div class="mt-2 flex items-center gap-2">
                 <span class="text-xs text-gray-600">Opacity:</span>
-                <Slider
+                <USlider
                     :model-value="opacityPercent"
                     @update:model-value="handleOpacityChange"
                     :min="0"
