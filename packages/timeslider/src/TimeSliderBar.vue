@@ -4,6 +4,7 @@ import { LucideIcon } from '@swissgeo/skeleton'
 import GeoadminTooltip from '@swissgeo/tooltip'
 
 import TimeSliderBarSteps from './TimeSliderBarSteps.vue'
+
 const PLAY_BUTTON_SIZE = 54
 const STEP_BAR_LEFT = 48 // matches pl-12 on root element
 
@@ -167,8 +168,8 @@ function positionNodeLabel(year: number) {
     }
 }
 
-const GAP_SIZE = 20 // gap-5 = 20px
-const padding = 60 // pl-14 (56px) + pr-1 (4px)
+const GAP_SIZE = 16 // gap-4 = 16px
+const padding = 52 // pl-12 (48px) + pr-1 (4px)
 const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE - GAP_SIZE)
 </script>
 
@@ -248,25 +249,7 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
                 :sliderWidth="sliderWidth"
             />
             <template #content>
-                <!-- <div class="time-slider-infobox">
-                            <div class="mb-2">
-                                {{ t('time_slider_legend_tooltip_intro') }}
-                            </div>
-                            <div class="ps-3">
-                                <div class="mb-1">
-                                    <div class="color-tooltip-data-none me-2" />
-                                    <div>{{ t('time_slider_legend_tooltip_no_data') }}</div>
-                                </div>
-                                <div class="mb-1">
-                                    <div class="color-tooltip-data-partial me-2" />
-                                    <div>{{ t('time_slider_legend_tooltip_partial_data') }}</div>
-                                </div>
-                                <div>
-                                    <div class="color-tooltip-data-full me-2" />
-                                    <div>{{ t('time_slider_legend_tooltip_full_data') }}</div>
-                                </div>
-                            </div>
-                        </div> -->
+                <!-- tooltip content placeholder -->
             </template>
         </GeoadminTooltip>
         <div class="relative h-5">
