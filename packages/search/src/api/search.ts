@@ -189,7 +189,7 @@ export function searchLayers(
 
             // Add potential language-specific fields (title_en, title_de, title_fr, etc.)
             // and other string properties that might contain searchable content
-            Object.entries(properties).forEach(([key, value]) => {
+            for (const [key, value] of Object.entries(properties)) {
                 if (
                     typeof value === 'string' &&
                     (key.startsWith('title_') ||
@@ -200,7 +200,7 @@ export function searchLayers(
                 ) {
                     searchableFields.push(value)
                 }
-            })
+            }
 
             // Check if query matches any field
             return searchableFields.some((field) => field.toLowerCase().includes(query))
