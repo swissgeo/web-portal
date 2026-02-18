@@ -214,15 +214,11 @@ export default function useOlVectorLayer(layerId: string, zIndex: number, styleU
     })
 
     // Initialize the layer asynchronously
-    initializeVectorLayer(
-        layer,
-        styleUrl,
-        positionStore.projection.epsg,
-        layerId,
-        zIndex
-    ).catch((error) => {
-        log.error(`Unable to load and attach the style for ${layerId}`, { messages: [error] })
-    })
+    initializeVectorLayer(layer, styleUrl, positionStore.projection.epsg, layerId, zIndex).catch(
+        (error) => {
+            log.error(`Unable to load and attach the style for ${layerId}`, { messages: [error] })
+        }
+    )
 
     const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 

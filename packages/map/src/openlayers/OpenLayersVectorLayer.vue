@@ -9,7 +9,11 @@ const { layer } = defineProps<{
 
 const styleUrl = `/api/v1/layers/swissgeo/vectorTest`
 
-const { setVisibility, setZIndex, setOpacity } = useOlVectorLayer(layer.dataset?.id ?? '', 1, styleUrl)
+const { setVisibility, setZIndex, setOpacity } = useOlVectorLayer(
+    layer.dataset?.id ?? '',
+    1,
+    styleUrl
+)
 
 watch(
     () => layer.isVisible,

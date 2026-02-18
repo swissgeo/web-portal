@@ -107,7 +107,6 @@ export const useLayerStore = defineStore('layers', () => {
         layer.opacity = clampedOpacity
     }
 
-
     function setLayerInfo(layerUuid: string, info: LayerInfo): void {
         const layer = getLayerByUuid(layerUuid)
         if (!layer) {
