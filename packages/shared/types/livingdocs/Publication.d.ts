@@ -70,7 +70,7 @@ export interface Section {
     }
 }
 
-export type ContentItem = LeadContentPageWithCheckbox | Paragraph | Image
+export type ContentItem = LeadContentPageWithCheckbox | Paragraph | Image | TitleComponent | Section
 
 export interface LeadContentPageWithCheckbox {
     component: 'lead-contentpage-with-checkbox'
@@ -83,6 +83,7 @@ export interface LeadContentPageWithCheckbox {
     }
     containers: {
         'lead-contentpage-with-checkbox': TitleComponent[]
+        section?: Section
     }
 }
 

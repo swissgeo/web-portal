@@ -37,7 +37,6 @@ export default defineNuxtConfig({
                 '@geonetwork-ui': fileURLToPath(new URL('./geonetwork-ui', import.meta.url)),
             },
         },
-        preserveSymlinks: true, // VERY important in monorepos
     },
     i18n: {
         detectBrowserLanguage: {
@@ -46,7 +45,6 @@ export default defineNuxtConfig({
             redirectOn: 'root', // only redirect on root path
         },
         strategy: 'no_prefix', // don't do route paths
-        lazy: true,
         langDir: 'locales',
         locales: [
             {

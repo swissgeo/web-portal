@@ -5,14 +5,10 @@ import MapFooterAttributionItem from './attributionsDisplay/MapFooterAttribution
 //import ThirdPartyDisclaimer from '@/utils/components/ThirdPartyDisclaimer.vue'
 
 const { t } = useI18n()
-const { layers, backgroundLayer } = defineProps<{
+const { backgroundLayer } = defineProps<{
     layers: Layer[]
     backgroundLayer: Layer | null | undefined
 }>()
-
-const visibleLayers = computed(() => {
-    return layers.filter((layer) => layer.isVisible)
-})
 
 const attributedLayers = computed(() => {
     const layersWithAttributions = []
@@ -21,9 +17,6 @@ const attributedLayers = computed(() => {
     if (backgroundLayer && backgroundLayer.info?.attribution) {
         layersWithAttributions.push(backgroundLayer)
     }
-    layersWithAttributions.push(
-        ...visibleLayers.value.filter((layer) => !!layer.info?.attribution?.title)
-    )
     return layersWithAttributions
 })
 

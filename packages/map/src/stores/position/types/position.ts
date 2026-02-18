@@ -1,7 +1,7 @@
 // import type { NormalizedExtent, SingleCoordinate } from "@swissgeo/coordinates";
 import type { CoordinateSystem, SingleCoordinate } from '@swissgeo/coordinates'
 
-// import type { CoordinateFormat } from '@/utils/coordinates/coordinateFormat'
+import type { CoordinateFormat } from '@/utils/coordinates/coordinateFormat'
 
 // import { CrossHairs } from '@/stores/position/types/crossHairs.enum'
 

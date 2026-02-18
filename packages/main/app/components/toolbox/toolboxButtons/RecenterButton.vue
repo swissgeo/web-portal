@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
+
 import { usePositionStore } from '@swissgeo/map'
 import { LucideIcon } from '@swissgeo/skeleton'
-
-import type { ActionDispatcher } from '@/stores/types'
 
 const dispatcher: ActionDispatcher = { name: 'RecenterButton.vue' }
 

@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-import type { Lang } from '@swissgeo/shared'
-import type { MenuTree } from '@swissgeo/shared/api'
-import type { Page } from '@swissgeo/shared/livingdocs'
+import type { MenuTree, Page } from '@swissgeo/shared/api'
+import type { Lang } from '@swissgeo/shared/language'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 
 import { SidebarType, useUiStore } from '@swissgeo/skeleton'
 
 const route = useRoute()
+const { locale } = useI18n()
 
 const uiStore = useUiStore()
 const contentStore = useContentStore()
-const mainStore = useMainStore()
 const menuStore = useMenuStore()
 
 const livingDocsPageData = useLivingdocsPageData()
@@ -25,7 +24,7 @@ const { data } = await useFetch<Page>(
 )
 
 const containers = computed(() => {
-    return livingDocsPageData.getContainers(data.value)
+    return data.value ? livingDocsPageData.getContainers(data.value) : []
 })
 
 const getMenuForPage = (route: RouteLocationNormalizedLoadedGeneric) => {
@@ -38,7 +37,7 @@ const getMenuForPage = (route: RouteLocationNormalizedLoadedGeneric) => {
 
         const traverseMenu = (menu: MenuTree) => {
             for (const entry of menu) {
-                const entryInLang = entry[mainStore.language as Lang]
+                const entryInLang = entry[locale.value as Lang]
                 if (entryInLang) {
                     if (entryInLang?.documentId === route.meta.documentId) {
                         return true

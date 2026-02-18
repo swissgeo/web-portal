@@ -1,6 +1,10 @@
 import type { LanguageReference, Page } from '@swissgeo/shared/api'
 import type { RouteRecordRaw } from 'vue-router'
 
+import { useRouter } from '#imports'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+
 export const SUPPORTED_LANG = ['de', 'fr']
 
 export type Language = (typeof SUPPORTED_LANG)[number]

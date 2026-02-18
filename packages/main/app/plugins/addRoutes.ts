@@ -19,7 +19,7 @@ const getMenu = async (id: number) => {
 
         return data.value
     } catch (exception) {
-        log.error(exception)
+        log.error(String(exception))
         return []
     }
 }
@@ -81,6 +81,7 @@ const makeRouteEntries = (
 
 export default defineNuxtPlugin({
     name: 'addRoutes',
+    dependsOn: ['pinia'],
 
     hooks: {
         // https://nuxt.com/docs/4.x/api/advanced/hooks#nuxt-hooks-build-time
@@ -90,7 +91,8 @@ export default defineNuxtPlugin({
             const nuxtApp = useNuxtApp()
 
             const runtimeConfig = useRuntimeConfig()
-            const menuStore = useMenuStore()
+            const pinia = nuxtApp.$pinia || usePinia()
+            const menuStore = useMenuStore(pinia)
 
             if (!runtimeConfig.public.aboutMenu.id || !runtimeConfig.public.knowledgeMenu.id) {
                 // missing config, stop trying to fetch menus for now

@@ -5,10 +5,13 @@ import type { Options as WMTSOptions } from 'ol/source/WMTS'
 import { useLayerStore } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import { useRecordsData } from '@swissgeo/ogc'
+import { useFetch } from '@vueuse/core'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import { optionsFromCapabilities } from 'ol/source/WMTS'
 
 import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
+
+import type { WMTSLayer } from './types'
 
 import { getTimeInfoFromWMTSCapabilities } from '../utils/timeUtils'
 
@@ -21,18 +24,16 @@ const { layer } = defineProps<{
 const { capabilityUrl, defaultOpacityFromStyle } = await useRecordsData(layer.dataset, 'OGC:WMTS')
 
 // Fetch capabilities XML directly from external server as raw text
-const { data: capabilityData } = await useFetch(capabilityUrl.value, {
-    parseResponse: (txt) => txt, // Don't auto-parse, return raw text
-})
+const { data } = await useFetch<string>(capabilityUrl.value)
 
 const parsedCapabilities = computed(() => {
-    if (!capabilityData.value) {
+    if (!data.value) {
         log.error(`Unable to fetch capabilities for ${capabilityUrl.value}`)
         throw new Error()
     }
 
     const wmtsParser = new WMTSCapabilities()
-    return wmtsParser.read(capabilityData.value)
+    return wmtsParser.read(data.value)
 })
 
 /** Retrieve the capabilities and then turn them into a options objects to be used by WMTS */
@@ -56,8 +57,7 @@ const dimensions = computed(() => {
     const capabilities = parsedCapabilities.value
 
     const capabilityOfLayer = capabilities.Contents.Layer.find(
-        (layerEntry: WMTSCapabilities['Contents']['Layer']) =>
-            layerEntry.Identifier === layer.dataset.id
+        (layerEntry: WMTSLayer) => layerEntry.Identifier === layer.dataset.id
     )
 
     if (!capabilityOfLayer) {

@@ -38,7 +38,7 @@ const layersWithTimestamps = computed((): LayerWithTime[] => {
     // type of ref isn't picked up correctly here...
     const layersWithTime: LayerWithTime[] = layerStore.layers.filter((layer: Layer) => {
         return layer.dimensions && 'time' in layer.dimensions
-    })
+    }) as LayerWithTime[]
     return layersWithTime
 })
 

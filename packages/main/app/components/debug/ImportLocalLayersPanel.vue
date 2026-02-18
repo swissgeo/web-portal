@@ -70,7 +70,7 @@ function onFileSelected(evt: Event): void {
                 @change="onFileSelected"
             />
             <UButton
-                color="gray"
+                color="neutral"
                 variant="outline"
                 type="button"
                 data-cy="file-input-browse-button"

@@ -1,7 +1,13 @@
+import type { ComponentPublicInstance } from 'vue'
+
 import { mount } from '@vue/test-utils'
 import ImportLocalLayersPanel from '~/components/debug/ImportLocalLayersPanel.vue'
 import { useFileImport } from '~/composables/useFileImport'
 import { describe, it, expect, vi } from 'vitest'
+
+type ImportLocalLayersPanelVm = ComponentPublicInstance & {
+    handleImport: () => Promise<void>
+}
 
 const importFileSpy = vi.fn()
 vi.mock('~/composables/useFileImport', () => ({
@@ -20,8 +26,7 @@ describe('ImportLocalLayersPanel.vue', () => {
         const wrapper = mount(ImportLocalLayersPanel)
 
         // call import handler directly to avoid relying on unresolved Button component
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (wrapper.vm as any).handleImport()
+        await (wrapper.vm as ImportLocalLayersPanelVm).handleImport()
         expect(wrapper.text()).toContain('Please select a file first')
     })
 
@@ -38,8 +43,7 @@ describe('ImportLocalLayersPanel.vue', () => {
         await inputWrapper.trigger('change')
 
         // call import handler directly
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (wrapper.vm as any).handleImport()
+        await (wrapper.vm as ImportLocalLayersPanelVm).handleImport()
 
         const { importFile } = useFileImport()
         expect(importFile).toHaveBeenCalledWith(file)

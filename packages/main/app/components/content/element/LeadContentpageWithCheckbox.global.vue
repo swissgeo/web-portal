@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /* Passing data through */
-import type { LeadContentPageWithCheckbox } from '~~/shared/types/livingdocs/Page'
+import type { LeadContentPageWithCheckbox } from '@swissgeo/shared/livingdocs'
 
 const { data } = defineProps<{
-    data: Record<string, LeadContentPageWithCheckbox>
+    data: LeadContentPageWithCheckbox
 }>()
 
 const containers = computed(() => {

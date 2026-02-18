@@ -1,4 +1,5 @@
 import type { FeatureLike } from 'ol/Feature'
+import type Feature from 'ol/Feature'
 
 import log from '@swissgeo/log'
 import { unzip } from 'fflate'
@@ -6,7 +7,6 @@ import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'
 import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
-import { Circle as CircleStyle, Fill, Stroke, Style, Text as TextStyle } from 'ol/style'
 import proj4 from 'proj4'
 
 import { EPSG_4326_WGS84 } from '@/composables/types.d'
@@ -20,61 +20,12 @@ export default function useOlKMZLayer(
     opacity: number,
     zIndex: number
 ) {
-    // Style function that handles text features
-    const styleFunction = (feature: FeatureLike) => {
-        const geometry = feature.getGeometry()
-
-        // Check if this is explicitly marked as a text feature
-        const isTextFeature = feature.get('isTextFeature') === true
-        const textContent = feature.get('text') || (isTextFeature ? feature.get('name') : null)
-
-        if (
-            isTextFeature ||
-            (textContent && geometry?.getType() === 'Point' && !feature.get('iconId'))
-        ) {
-            // Text feature styling - invisible point with text label
-            return new Style({
-                image: new CircleStyle({
-                    radius: 0, // Invisible point
-                    fill: new Fill({
-                        color: 'rgba(0, 0, 0, 0)',
-                    }),
-                }),
-                text: new TextStyle({
-                    text: textContent || '',
-                    font: '16px sans-serif',
-                    fill: new Fill({
-                        color: '#000',
-                    }),
-                    stroke: new Stroke({
-                        color: '#fff',
-                        width: 3,
-                    }),
-                    textAlign: 'center',
-                    textBaseline: 'middle',
-                    offsetY: 0,
-                }),
-            })
-        }
-
-        // Use default KML style for other features
-        return null
-    }
-
     const layer = new VectorLayer({
         properties: {
             id: layerId,
             uuid,
         },
         opacity,
-        style: (feature) => {
-            const customStyle = styleFunction(feature)
-            if (customStyle) {
-                return customStyle
-            }
-            // Fall back to feature's own style (from KML)
-            return feature.getStyle() || undefined
-        },
     })
 
     async function unzippKMZ(): Promise<Record<string, Uint8Array<ArrayBufferLike>>> {
@@ -108,7 +59,7 @@ export default function useOlKMZLayer(
             if (filename.toLowerCase().endsWith('.kml')) {
                 kmlContent = decoder.decode(content)
             } else if (filename.startsWith('icons/')) {
-                const blob = new Blob([content], {
+                const blob = new Blob([content as BlobPart], {
                     type: filename.endsWith('.svg') ? 'image/svg+xml' : 'image/png',
                 })
                 iconFiles[filename] = blob
@@ -154,9 +105,9 @@ export default function useOlKMZLayer(
                 isTextFeature ||
                 (text && geometry?.getType() === 'Point' && !feature.get('iconId'))
             ) {
-                feature.set('text', text || name)
-                feature.set('isTextFeature', true)
-                feature.setStyle(undefined)
+                ;(feature as Feature).set('text', text || name)
+                ;(feature as Feature).set('isTextFeature', true)
+                ;(feature as Feature).setStyle(undefined)
             }
         })
     }

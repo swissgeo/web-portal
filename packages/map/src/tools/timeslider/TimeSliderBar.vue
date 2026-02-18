@@ -16,7 +16,7 @@ const { t } = useI18n()
 
 const { allYears, modelValue, yearsWithData, containerWidth } = defineProps<{
     allYears: number[]
-    modelValue: number
+    modelValue?: number
     yearsWithData: {
         yearsJoint: number[]
         yearsSeparate: number[]
@@ -88,9 +88,12 @@ const yearsShownAsLabel = computed(() => {
 
 // yearPositionOnSlider is 4.5px left of the tick; both cursorArrowPosition
 // and cursorPosition add 4.5 back to derive the final position aligned with the tick.
-const yearPositionOnSlider = computed(
-    () => STEP_BAR_LEFT + allYears.indexOf(currentYear.value) * distanceBetweenLabels.value - 4.5
-)
+const yearPositionOnSlider = computed(() => {
+    if (!currentYear.value) {
+        return STEP_BAR_LEFT
+    }
+    return STEP_BAR_LEFT + allYears.indexOf(currentYear.value) * distanceBetweenLabels.value - 4.5
+})
 
 const cursorPosition = computed(() => {
     const yearCursorWidth = yearCursor.value?.clientWidth || 0
@@ -121,7 +124,7 @@ function grabCursor(event: MouseEvent | TouchEvent) {
 function listenToMouseMove(event: MouseEvent | TouchEvent) {
     const currentPosition = 'touches' in event ? event.touches[0]!.screenX : event.screenX
     const deltaX = cursorX - currentPosition
-    if (Math.abs(deltaX) >= distanceBetweenLabels.value) {
+    if (Math.abs(deltaX) >= distanceBetweenLabels.value && currentYear.value) {
         let futureYearIndex = allYears.indexOf(currentYear.value)
 
         const absoluteDeltaIndex = Math.floor(Math.abs(deltaX) / distanceBetweenLabels.value)

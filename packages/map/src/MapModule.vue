@@ -13,7 +13,7 @@ log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error
 
 const { layers, backgroundLayer } = defineProps<{
     layers: Layer[]
-    backgroundLayer: Layer
+    backgroundLayer?: Layer | null
 }>()
 </script>
 

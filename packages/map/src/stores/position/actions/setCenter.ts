@@ -1,11 +1,11 @@
 import type { SingleCoordinate } from '@swissgeo/coordinates'
+import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
+// import proj4 from 'proj4'
 
 // import { WGS84 } from '@swissgeo/coordinates'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-// import proj4 from 'proj4'
 
 import type { PositionStore } from '@/stores/position/types/position'
-import type { ActionDispatcher } from '@/stores/types'
 
 // import useCesiumStore from '@/stores/cesium'
 // import useGeolocationStore from '@/stores/geolocation'

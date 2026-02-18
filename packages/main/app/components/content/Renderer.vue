@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import type { ContentItem } from '@swissgeo/shared/livingdocs'
-
 import { pascalCase } from 'es-toolkit/string'
 
-const { containers } = defineProps<{ containers: ContentItem[] }>()
+const { containers } = defineProps<{ containers: unknown[] }>()
 
 // const convertName = (name: string) => {
 //     const parts = name.split('-')
@@ -28,13 +26,37 @@ const components = computed(() => {
 
     // return Object.values(containers)
     return containers
-        .map((value: ContentItem) => {
-            const name = pascalCase(value.component)
+        .map((value: unknown, index: number) => {
+            if (!value || typeof value !== 'object') {
+                return {
+                    componentName: null,
+                    _key: `content-${index}`,
+                }
+            }
+
+            const contentItem = value as Record<string, unknown>
+
+            if (typeof contentItem.component !== 'string') {
+                return {
+                    ...contentItem,
+                    componentName: null,
+                    _key: `content-${index}`,
+                }
+            }
+
+            const name = pascalCase(contentItem.component)
 
             let componentName
 
             if (COMPONENT_EXCLUDES.includes(name)) {
-                return { ...value, componentName: null }
+                return {
+                    ...contentItem,
+                    componentName: null,
+                    _key:
+                        typeof contentItem.identifier === 'string'
+                            ? contentItem.identifier
+                            : `content-${index}`,
+                }
             }
 
             try {
@@ -44,8 +66,12 @@ const components = computed(() => {
             }
 
             return {
-                ...value,
+                ...contentItem,
                 componentName,
+                _key:
+                    typeof contentItem.identifier === 'string'
+                        ? contentItem.identifier
+                        : `content-${index}`,
             }
         })
         .filter((value) => value.componentName)
@@ -56,7 +82,7 @@ const components = computed(() => {
     <div>
         <div
             v-for="component in components"
-            :key="component.identifier"
+            :key="component._key"
         >
             <component
                 :is="component.componentName"

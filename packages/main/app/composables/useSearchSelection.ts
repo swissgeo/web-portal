@@ -2,13 +2,13 @@
 // Connects search results to map actions (center, zoom, add layers)
 
 import type { LayerType } from '@swissgeo/layers'
+import type { Dataset, DistributionCollection, Link } from '@swissgeo/ogc'
 import type {
     SearchResult,
     LocationSearchResult,
     LayerSearchResult,
     FeatureSearchResult,
 } from '@swissgeo/search'
-import type { OGCRecords, OGCRecord, Link } from '@swissgeo/shared/ogc'
 
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
@@ -55,7 +55,7 @@ export function useSearchSelection() {
 
     function isLayerExisting(layerId: string): boolean {
         const layerStore = useLayerStore()
-        return layerStore.layers.some((layer) => layer.humanId === layerId)
+        return layerStore.layers.some((layer: { humanId?: string }) => layer.humanId === layerId)
     }
 
     async function handleLayerSelection(result: LayerSearchResult) {
@@ -66,7 +66,7 @@ export function useSearchSelection() {
             await searchStore.loadCatalog()
             const catalog = searchStore.catalog
 
-            const layerRecord = catalog?.records.find((r: OGCRecord) => r.id === result.layerId)
+            const layerRecord = catalog?.records?.find((r: Dataset) => r.id === result.layerId)
 
             if (!layerRecord) {
                 log.error({
@@ -90,7 +90,7 @@ export function useSearchSelection() {
                 return
             }
 
-            const collectionData: OGCRecords = await $fetch(distributionLink.href)
+            const collectionData: DistributionCollection = await $fetch(distributionLink.href)
             const layerType = getLayerType(collectionData)
 
             if (layerType && layerType !== 'UNKNOWN') {
@@ -116,21 +116,16 @@ export function useSearchSelection() {
     }
 
     // Helper function to determine layer type from distribution data
-    function getLayerType(collectionData: OGCRecords): LayerType | 'UNKNOWN' {
-        const preferredDistributionId = collectionData.portal?.preferredDistributionId || null
-
+    function getLayerType(collectionData: DistributionCollection): LayerType | 'UNKNOWN' {
         for (const record of collectionData.records) {
-            // If there's no preferredDistributionId, select the first one found
-            if (preferredDistributionId === null || record.id === preferredDistributionId) {
-                const protocol = record.properties?.protocol
+            const protocol = record.properties?.protocol
 
-                if (protocol === 'OGC:WMTS') {
-                    return 'wmts'
-                } else if (protocol === 'OGC:WMS') {
-                    return 'wms'
-                } else if (protocol === 'OGC:GeoJSON') {
-                    return 'geojson'
-                }
+            if (protocol === 'OGC:WMTS') {
+                return 'wmts'
+            } else if (protocol === 'OGC:WMS') {
+                return 'wms'
+            } else if (protocol === 'OGC:GeoJSON') {
+                return 'geojson'
             }
         }
 

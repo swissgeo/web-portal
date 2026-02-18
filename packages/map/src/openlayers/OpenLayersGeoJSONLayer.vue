@@ -3,7 +3,9 @@ import type { DatasetLayer } from '@swissgeo/layers'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { useRecordsData } from '@swissgeo/ogc'
-import GeoJSON from 'ol/format/GeoJSON'
+import { useFetch } from '@vueuse/core'
+
+import * as geoJsonUtils from '@/utils/geoJsonUtils'
 
 import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
 
@@ -13,10 +15,7 @@ const { layer } = defineProps<{
 
 const { geoJsonUrl, styleData } = await useRecordsData(layer.dataset, 'OGC:GeoJSON')
 
-const { data } = await useFetch<GeoJSON>(geoJsonUrl.value, {
-    responseType: 'json',
-})
-
+const { data } = await useFetch(geoJsonUrl.value).json<geoJsonUtils.FeatureCollectionWithCRS>()
 const geoJsonData = computed(() => {
     if (!data.value) {
         throw new Error('Unable to read the geoJSON Data')

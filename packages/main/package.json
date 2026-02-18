@@ -33,6 +33,7 @@
         "@swissgeo/log": "catalog:",
         "@swissgeo/map": "workspace:*",
         "@swissgeo/ogc": "workspace:*",
+        "@swissgeo/search": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "@swissgeo/skeleton": "workspace:*",
         "@types/geojson": "catalog:",

@@ -1,11 +1,16 @@
-import type { Page } from '@swissgeo/shared/api'
-import type { Publication, ContentPageMetadata, Systemdata } from '@swissgeo/shared/livingdocs'
+import type { LanguageReference, Page } from '@swissgeo/shared/api'
+import type {
+    Publication,
+    ContentPageMetadata,
+    Systemdata,
+    MenuMetadata,
+} from '@swissgeo/shared/livingdocs'
 
 import log from '@swissgeo/log'
 import useLdFetch from '~~/server/utils/ldFetch'
 import { joinURL } from 'ufo'
 
-export default defineEventHandler(async (event): Promise<Page> => {
+export default defineEventHandler(async (event): Promise<Page | null> => {
     const runtimeConfig = useRuntimeConfig()
     const apiEndpoint = runtimeConfig.apiEndpoint
 
@@ -27,7 +32,7 @@ export default defineEventHandler(async (event): Promise<Page> => {
     // using the search API to find the other language versions of the document
     const fetchLanguageData = async (
         groupId: string
-    ): Promise<{ metadata: ContentPageMetadata; systemdata: Systemdata }[]> => {
+    ): Promise<{ metadata: ContentPageMetadata | MenuMetadata; systemdata: Systemdata }[]> => {
         log.debug(
             `Searching API for other languages from publication ${documentId} with groupId ${groupId}`
         )
@@ -42,17 +47,23 @@ export default defineEventHandler(async (event): Promise<Page> => {
     }
 
     try {
+        if (!documentId) {
+            return null
+        }
+
         const pageData = await fetchPageData(documentId)
         const groupId = (pageData.metadata as ContentPageMetadata).language.groupId
         const searchData = await fetchLanguageData(groupId)
 
         const searchDataFiltered = searchData.filter(
-            (entry) => entry.systemdata.contentType === pageData.systemdata.contentType
+            (entry): entry is LanguageReference =>
+                'language' in entry.metadata &&
+                entry.systemdata.contentType === pageData.systemdata.contentType
         )
 
         return { ...pageData, languageReferences: searchDataFiltered }
     } catch (error) {
-        log.error(`Unable to fetch data for ${documentId}`, error)
+        log.error(`Unable to fetch data for ${documentId}: ${String(error)}`)
     }
-    return {}
+    return null
 })
