@@ -18,6 +18,7 @@ import ZoomButtons from '@/components/toolbox/toolboxButtons/ZoomButtons.vue'
 import CompassButton from './toolboxButtons/CompassButton.vue'
 
 const layerStore = useLayerStore()
+const mapViewStore = useMapViewStore()
 
 const showFullScreeButton = ref(true)
 
@@ -30,6 +31,12 @@ const showZoomButtons = ref(true)
 const show3dButton = ref(true)
 const showTimeSliderButton = computed(() => {
     return layerStore.layers.some((layer) => layer.dimensions && 'time' in layer.dimensions)
+})
+
+watch(showTimeSliderButton, (hasTimeLayers) => {
+    if (!hasTimeLayers) {
+        mapViewStore.closeTimeSlider()
+    }
 })
 </script>
 
