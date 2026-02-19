@@ -132,9 +132,9 @@ function focusInput() {
                 @keydown.up.prevent="
                     ($event.currentTarget as HTMLElement).previousElementSibling
                         ? (
-                              ($event.currentTarget as HTMLElement)
-                                  .previousElementSibling as HTMLElement
-                          ).focus()
+                            ($event.currentTarget as HTMLElement)
+                                .previousElementSibling as HTMLElement
+                        ).focus()
                         : focusInput()
                 "
                 @keydown.down.prevent="
