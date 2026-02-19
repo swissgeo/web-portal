@@ -20,6 +20,29 @@ Run the dev server for coding
 pnpm run dev
 ```
 
+## Environment Variables
+
+Before running the dev server, copy the example file and fill in the values:
+
+```sh
+cp packages/main/.env.example packages/main/.env
+```
+
+The available variables are:
+
+```sh
+NUXT_PUBLIC_OGC_API_ENDPOINT=   # OGC API endpoint (exposed to client)
+NUXT_MAPTILER_API_KEY=          # MapTiler API key (server-only)
+```
+
+Optional server-only variables:
+
+```sh
+NUXT_API_ENDPOINT=              # Backend API endpoint
+NUXT_AUTH_TOKEN=                # Authentication token
+NUXT_PUBLIC_OVERLAY_ID=         # Map overlay identifier
+```
+
 ## Monorepo setup
 
 This project is structed as a monorepo. There are several sub-packages, each with
