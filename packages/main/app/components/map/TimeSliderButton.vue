@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import type { Dimension, Layer } from '@swissgeo/layers'
+import type { LayerWithTime } from '@swissgeo/timeslider'
 
 import { useLayerStore } from '@swissgeo/layers'
 import { useSidebarStore } from '@swissgeo/skeleton'
 import { TimeSlider } from '@swissgeo/timeslider'
-import type { LayerWithTime } from '@swissgeo/timeslider'
 
 const mapViewStore = useMapViewStore()
 const layerStore = useLayerStore()
 const sidebarStore = useSidebarStore()
 
-const timeLayers = computed((): LayerWithTime[] =>
-    layerStore.layers.filter(
-        (layer: Layer) => layer.dimensions && 'time' in layer.dimensions
-    ) as LayerWithTime[]
+const timeLayers = computed(
+    (): LayerWithTime[] =>
+        layerStore.layers.filter(
+            (layer: Layer) => layer.dimensions && 'time' in layer.dimensions
+        ) as LayerWithTime[]
 )
 
 function onClose() {
