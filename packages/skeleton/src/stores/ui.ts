@@ -21,9 +21,7 @@ export const useSidebarStore = defineStore('sidebar', () => {
     const isSidebarOpen = computed(() => currentSidebar.value !== null)
 
     const sidebarWidth = computed(() =>
-        isSidebarOpen.value
-            ? SIDEBAR_ICON_WIDTH + SIDEBAR_CONTENT_WIDTH
-            : SIDEBAR_ICON_WIDTH
+        isSidebarOpen.value ? SIDEBAR_ICON_WIDTH + SIDEBAR_CONTENT_WIDTH : SIDEBAR_ICON_WIDTH
     )
 
     const isSearchVisible = computed(() => currentSidebar.value === SidebarType.SEARCH)

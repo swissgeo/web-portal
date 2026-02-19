@@ -42,13 +42,12 @@ const layersWithTimestamps = computed((): LayerWithTime[] => layers)
 
 const youngestYear = computed(() => new Date().getFullYear())
 
-const oldestYear = computed(
-    () =>
-        Math.min(
-            1848,
-            yearsWithData.value.yearsJoint[0] ?? 9999,
-            yearsWithData.value.yearsSeparate[0] ?? 9999
-        )
+const oldestYear = computed(() =>
+    Math.min(
+        1848,
+        yearsWithData.value.yearsJoint[0] ?? 9999,
+        yearsWithData.value.yearsSeparate[0] ?? 9999
+    )
 )
 
 const allYears = computed(() => {
