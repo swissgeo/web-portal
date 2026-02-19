@@ -9,6 +9,7 @@ import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vu
 import type { LayerWithTime } from './timeSliderUtils'
 
 import TimeSliderBar from './TimeSliderBar.vue'
+import TimeSliderYearSelect from './TimeSliderYearSelect.vue'
 import {
     convertYearToTimestamp,
     getYearFromGeoadminWMTSValue,
@@ -37,6 +38,8 @@ const containerWidth = ref(0)
 useResizeObserver(sliderContainer, (entries) => {
     containerWidth.value = entries[0]?.contentRect.width ?? 0
 })
+
+const isMobile = computed(() => containerWidth.value > 0 && containerWidth.value < 480)
 
 const layersWithTimestamps = computed((): LayerWithTime[] => layers)
 
@@ -220,7 +223,31 @@ function handleKeyDownEvent(event: KeyboardEvent) {
         class="rounded-lg border border-gray-200 bg-white px-2 py-2 shadow-lg"
         :class="{ grabbed: yearCursorIsGrabbed }"
     >
+        <!-- Mobile layout: dropdown + play button -->
         <div
+            v-if="isMobile"
+            class="flex items-center gap-2"
+            data-test="time-slider-container"
+        >
+            <TimeSliderYearSelect
+                :allYears="allYears"
+                v-model="currentYear"
+                data-test="time-slider-year-select"
+            />
+
+            <IconButton
+                id="timeSliderPlayButton"
+                data-test="time-slider-play-button"
+                class="flex-shrink-0"
+                severity="primary"
+                :icon="playYearsWithData ? 'Pause' : 'Play'"
+                @click="togglePlayYearsWithData"
+            />
+        </div>
+
+        <!-- Desktop layout: slider bar + play button -->
+        <div
+            v-else
             class="flex items-center gap-4"
             data-test="time-slider-container"
         >
