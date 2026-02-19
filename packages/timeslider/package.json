@@ -24,6 +24,7 @@
         "format:write": "prettier --write --ignore-path ../../.prettierignore .",
         "lint": "eslint",
         "lint:write": "eslint --fix",
+        "test": "vitest run",
         "type-check": "vue-tsc"
     },
     "dependencies": {
@@ -44,6 +45,7 @@
         "unplugin-dts": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:",
+        "vitest": "catalog:",
         "vue-tsc": "catalog:"
     },
     "peerDependencies": {
