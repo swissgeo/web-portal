@@ -61,7 +61,7 @@ function onInput(e: Event) {
 }
 
 function onEnter() {
-    const year = parseInt(searchText.value)
+    const year = parseInt(searchText.value, 10)
     if (allYears.includes(year)) {
         selectYear(year)
     }
@@ -100,6 +100,8 @@ function focusInput() {
                 type="button"
                 tabindex="-1"
                 class="px-1.5 py-1.5 text-gray-500"
+                :aria-label="isOpen ? 'Close year list' : 'Open year list'"
+                :title="isOpen ? 'Close year list' : 'Open year list'"
                 @click="isOpen ? closeList() : (openList(), focusInput())"
             >
                 <LucideIcon
@@ -132,9 +134,9 @@ function focusInput() {
                 @keydown.up.prevent="
                     ($event.currentTarget as HTMLElement).previousElementSibling
                         ? (
-                            ($event.currentTarget as HTMLElement)
-                                .previousElementSibling as HTMLElement
-                        ).focus()
+                              ($event.currentTarget as HTMLElement)
+                                  .previousElementSibling as HTMLElement
+                          ).focus()
                         : focusInput()
                 "
                 @keydown.down.prevent="

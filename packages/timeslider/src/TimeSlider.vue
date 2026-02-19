@@ -32,14 +32,17 @@ const currentYear = ref<number>()
 const playYearsWithData = ref(false)
 const yearCursorIsGrabbed = ref(false)
 
+const outerContainer = useTemplateRef<HTMLDivElement>('outerContainer')
 const sliderContainer = useTemplateRef<HTMLDivElement>('sliderContainer')
 const containerWidth = ref(0)
 
-useResizeObserver(sliderContainer, (entries) => {
+useResizeObserver(outerContainer, (entries) => {
     containerWidth.value = entries[0]?.contentRect.width ?? 0
 })
 
-const isMobile = computed(() => containerWidth.value > 0 && containerWidth.value < 480)
+const MOBILE_BREAKPOINT = 480
+
+const isMobile = computed(() => containerWidth.value > 0 && containerWidth.value < MOBILE_BREAKPOINT)
 
 const layersWithTimestamps = computed((): LayerWithTime[] => layers)
 
@@ -217,56 +220,58 @@ function handleKeyDownEvent(event: KeyboardEvent) {
 </script>
 
 <template>
-    <div
-        ref="sliderContainer"
-        data-cy="time-slider"
-        class="rounded-lg border border-gray-200 bg-white px-2 py-2 shadow-lg"
-        :class="{ grabbed: yearCursorIsGrabbed, 'w-fit': isMobile }"
-    >
-        <!-- Mobile layout: dropdown + play button -->
+    <div ref="outerContainer">
         <div
-            v-if="isMobile"
-            class="flex items-start gap-2"
-            data-test="time-slider-container"
+            ref="sliderContainer"
+            data-cy="time-slider"
+            class="rounded-lg border border-gray-200 bg-white px-2 py-2 shadow-lg"
+            :class="{ grabbed: yearCursorIsGrabbed, 'w-fit': isMobile }"
         >
-            <TimeSliderYearSelect
-                v-model="currentYear"
-                :allYears="allYears"
-                data-test="time-slider-year-select"
-            />
+            <!-- Mobile layout: dropdown + play button -->
+            <div
+                v-if="isMobile"
+                class="flex items-start gap-2"
+                data-cy="time-slider-container"
+            >
+                <TimeSliderYearSelect
+                    v-model="currentYear"
+                    :allYears="allYears"
+                    data-cy="time-slider-year-select"
+                />
 
-            <IconButton
-                id="timeSliderPlayButton"
-                data-test="time-slider-play-button"
-                class="flex-shrink-0"
-                severity="primary"
-                :icon="playYearsWithData ? 'Pause' : 'Play'"
-                @click="togglePlayYearsWithData"
-            />
-        </div>
+                <IconButton
+                    id="timeSliderPlayButton"
+                    data-cy="time-slider-play-button"
+                    class="flex-shrink-0"
+                    severity="primary"
+                    :icon="playYearsWithData ? 'Pause' : 'Play'"
+                    @click="togglePlayYearsWithData"
+                />
+            </div>
 
-        <!-- Desktop layout: slider bar + play button -->
-        <div
-            v-else
-            class="flex items-center gap-4"
-            data-test="time-slider-container"
-        >
-            <TimeSliderBar
-                :allYears="allYears"
-                :yearsWithData
-                v-model="currentYear"
-                :containerWidth="containerWidth"
-                @grabbing="yearCursorIsGrabbed = $event"
-            />
+            <!-- Desktop layout: slider bar + play button -->
+            <div
+                v-else
+                class="flex items-center gap-4"
+                data-cy="time-slider-container"
+            >
+                <TimeSliderBar
+                    :allYears="allYears"
+                    :yearsWithData
+                    v-model="currentYear"
+                    :containerWidth="containerWidth"
+                    @grabbing="yearCursorIsGrabbed = $event"
+                />
 
-            <IconButton
-                id="timeSliderPlayButton"
-                data-test="time-slider-play-button"
-                class="flex-shrink-0"
-                severity="primary"
-                :icon="playYearsWithData ? 'Pause' : 'Play'"
-                @click="togglePlayYearsWithData"
-            />
+                <IconButton
+                    id="timeSliderPlayButton"
+                    data-cy="time-slider-play-button"
+                    class="flex-shrink-0"
+                    severity="primary"
+                    :icon="playYearsWithData ? 'Pause' : 'Play'"
+                    @click="togglePlayYearsWithData"
+                />
+            </div>
         </div>
     </div>
 </template>
