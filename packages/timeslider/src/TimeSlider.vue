@@ -42,7 +42,9 @@ useResizeObserver(outerContainer, (entries) => {
 
 const MOBILE_BREAKPOINT = 480
 
-const isMobile = computed(() => containerWidth.value > 0 && containerWidth.value < MOBILE_BREAKPOINT)
+const isMobile = computed(
+    () => containerWidth.value > 0 && containerWidth.value < MOBILE_BREAKPOINT
+)
 
 const layersWithTimestamps = computed((): LayerWithTime[] => layers)
 
