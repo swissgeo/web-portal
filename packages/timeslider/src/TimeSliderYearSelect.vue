@@ -75,6 +75,27 @@ function onArrowDown() {
 function focusInput() {
     inputRef.value?.focus()
 }
+
+function onItemEsc() {
+    closeList()
+    focusInput()
+}
+
+function onItemArrowUp(event: KeyboardEvent) {
+    const current = event.currentTarget as HTMLElement
+    const prev = current.previousElementSibling as HTMLElement | null
+    if (prev) {
+        prev.focus()
+    } else {
+        focusInput()
+    }
+}
+
+function onItemArrowDown(event: KeyboardEvent) {
+    const current = event.currentTarget as HTMLElement
+    const next = current.nextElementSibling as HTMLElement | null
+    next?.focus()
+}
 </script>
 
 <template>
@@ -127,23 +148,9 @@ function focusInput() {
                 :class="{ 'bg-primary-50 font-medium': year === modelValue }"
                 @click="selectYear(year)"
                 @keydown.enter.prevent="selectYear(year)"
-                @keydown.esc.prevent="
-                    closeList()
-                    focusInput()
-                "
-                @keydown.up.prevent="
-                    ($event.currentTarget as HTMLElement).previousElementSibling
-                        ? (
-                              ($event.currentTarget as HTMLElement)
-                                  .previousElementSibling as HTMLElement
-                          ).focus()
-                        : focusInput()
-                "
-                @keydown.down.prevent="
-                    (
-                        ($event.currentTarget as HTMLElement).nextElementSibling as HTMLElement
-                    )?.focus()
-                "
+                @keydown.esc.prevent="onItemEsc"
+                @keydown.up.prevent="onItemArrowUp"
+                @keydown.down.prevent="onItemArrowDown"
             >
                 {{ year }}
             </button>

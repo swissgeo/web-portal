@@ -260,8 +260,9 @@ function handleKeyDownEvent(event: KeyboardEvent) {
                 <TimeSliderBar
                     :allYears="allYears"
                     :yearsWithData
-                    v-model="currentYear"
+                    :model-value="currentYear ?? youngestYear"
                     :containerWidth="containerWidth"
+                    @update:model-value="currentYear = $event"
                     @grabbing="yearCursorIsGrabbed = $event"
                 />
 
