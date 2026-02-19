@@ -9,12 +9,12 @@ import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vu
 import type { LayerWithTime } from './timeSliderUtils'
 
 import TimeSliderBar from './TimeSliderBar.vue'
-import TimeSliderYearSelect from './TimeSliderYearSelect.vue'
 import {
     convertYearToTimestamp,
     getYearFromGeoadminWMTSValue,
     getYearsWithData,
 } from './timeSliderUtils'
+import TimeSliderYearSelect from './TimeSliderYearSelect.vue'
 
 const { layers } = defineProps<{
     layers: LayerWithTime[]
@@ -65,7 +65,6 @@ const allYears = computed(() => {
 })
 
 const yearsWithData = computed(() => getYearsWithData(layersWithTimestamps.value))
-
 
 watch(currentYear, () => {
     void dispatchPreviewYearToStoreDebounced()

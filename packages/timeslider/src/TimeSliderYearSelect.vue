@@ -31,9 +31,7 @@ const inputDisplayValue = computed(() =>
     isOpen.value ? searchText.value : (modelValue?.toString() ?? '')
 )
 
-const inputPlaceholder = computed(() =>
-    isOpen.value ? (modelValue?.toString() ?? '') : ''
-)
+const inputPlaceholder = computed(() => (isOpen.value ? (modelValue?.toString() ?? '') : ''))
 
 watch(isOpen, async (newValue) => {
     if (newValue) {
@@ -116,7 +114,7 @@ function focusInput() {
         <div
             v-if="isOpen"
             ref="list"
-            class="absolute top-full left-0 z-50 mt-1 w-full max-h-40 overflow-y-auto rounded border border-gray-200 bg-white shadow-md"
+            class="absolute top-full left-0 z-50 mt-1 max-h-40 w-full overflow-y-auto rounded border border-gray-200 bg-white shadow-md"
         >
             <button
                 v-for="year in filteredYears"
@@ -127,14 +125,22 @@ function focusInput() {
                 :class="{ 'bg-primary-50 font-medium': year === modelValue }"
                 @click="selectYear(year)"
                 @keydown.enter.prevent="selectYear(year)"
-                @keydown.esc.prevent="closeList(); focusInput()"
+                @keydown.esc.prevent="
+                    closeList()
+                    focusInput()
+                "
                 @keydown.up.prevent="
                     ($event.currentTarget as HTMLElement).previousElementSibling
-                        ? (($event.currentTarget as HTMLElement).previousElementSibling as HTMLElement).focus()
+                        ? (
+                              ($event.currentTarget as HTMLElement)
+                                  .previousElementSibling as HTMLElement
+                          ).focus()
                         : focusInput()
                 "
                 @keydown.down.prevent="
-                    (($event.currentTarget as HTMLElement).nextElementSibling as HTMLElement)?.focus()
+                    (
+                        ($event.currentTarget as HTMLElement).nextElementSibling as HTMLElement
+                    )?.focus()
                 "
             >
                 {{ year }}
