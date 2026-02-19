@@ -66,6 +66,7 @@ const allYears = computed(() => {
 
 const yearsWithData = computed(() => getYearsWithData(layersWithTimestamps.value))
 
+
 watch(currentYear, () => {
     void dispatchPreviewYearToStoreDebounced()
 })
@@ -230,8 +231,8 @@ function handleKeyDownEvent(event: KeyboardEvent) {
             data-test="time-slider-container"
         >
             <TimeSliderYearSelect
-                :allYears="allYears"
                 v-model="currentYear"
+                :allYears="allYears"
                 data-test="time-slider-year-select"
             />
 
