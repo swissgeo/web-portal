@@ -1,7 +1,15 @@
 {
     "extends": "@swissgeo/config-typescript/tsconfig.base.json",
-    "include": ["src/**/*.ts", "src/**/*.vue", "src/**/*.spec.ts", "env.d.ts", "vite.config.ts"],
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.vue",
+        "src/**/*.spec.ts",
+        "env.d.ts",
+        "vite.config.ts",
+        "../../base.vite.config.ts"
+    ],
     "compilerOptions": {
+        "rootDir": "../..",
         "types": ["vue", "./.output/auto-imports.d.ts", "vite/client", "vitest"],
         "plugins": [{ "name": "@dxup/unimport" }],
         "paths": {

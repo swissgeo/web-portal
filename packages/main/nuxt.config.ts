@@ -27,8 +27,9 @@ export default defineNuxtConfig({
         },
     },
     sourcemap: {
-        server: true,
-        client: true,
+        // Enable in dev, disable in prod (unless you have a private uploader)
+        server: process.env.NODE_ENV !== 'production',
+        client: process.env.NODE_ENV !== 'production',
     },
     vite: {
         plugins: [vueDevTools(), nodePolyfills()],
@@ -37,6 +38,7 @@ export default defineNuxtConfig({
                 '@geonetwork-ui': fileURLToPath(new URL('./geonetwork-ui', import.meta.url)),
             },
         },
+        minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
     },
     i18n: {
         detectBrowserLanguage: {

@@ -5,15 +5,14 @@ import { resolve } from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'unplugin-dts/vite'
 import { fileURLToPath, URL } from 'url'
+import { getBaseBuildConfig } from '../../base.vite.config'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 const config: UserConfigFnObject = defineConfig(({ mode }) => {
     return {
         build: {
-            // don't minify in dev build. This helps with debugging
-            // maybe this could be solved in a better way with sourcemap?
-            minify: mode === 'development' ? false : true,
+            ...getBaseBuildConfig(mode),
             lib: {
                 entry: resolve(__dirname, 'src/index.ts'),
                 name: '@swissgeo/content',

@@ -5,13 +5,14 @@ import { resolve } from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'unplugin-dts/vite'
 import { fileURLToPath, URL } from 'url'
+import { getBaseBuildConfig } from '../../base.vite.config'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-const config: UserConfigFnObject = defineConfig(() => {
+const config: UserConfigFnObject = defineConfig(({ mode }) => {
     return {
         build: {
-            minify: false,
+            ...getBaseBuildConfig(mode),
             lib: {
                 entry: resolve(__dirname, 'src/index.ts'),
                 fileName: (format) => `index.${format}.js`,
