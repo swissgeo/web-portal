@@ -1,3 +1,5 @@
+import log, { LogPreDefinedColor } from '@swissgeo/log'
+
 import type { WMSDimension, WMTSDimension } from '@/openlayers/types'
 
 /** Timestamp to describe "all data" for time enabled WMS layer */
@@ -66,6 +68,17 @@ export const getTimeInfoFromWMSCapabilities = (dimensions: WMSDimension[]): Time
             availableTimes = Array.from({ length: end - start + 1 }, (v, k) => k + start).map(
                 (time) => time.toString()
             )
+        } else {
+            log.warn({
+                title: 'TimeSlider / getTimeInfoFromWMSCapabilities',
+                titleColor: LogPreDefinedColor.Red,
+                messages: [
+                    'Time dimension values are in an unexpected format, expected "start/end" with end > start, ignoring values',
+                    start,
+                    end,
+                    values,
+                ],
+            })
         }
     } else if (values?.match(/(?:\d+,)+\d+/)) {
         // values are a comma separated list
