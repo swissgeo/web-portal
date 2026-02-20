@@ -7,7 +7,9 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 let gitCommit = 'unknown'
 try {
     gitCommit = execSync('git rev-parse --short HEAD').toString().trim()
-} catch {}
+} catch {
+    // git not available at build time
+}
 
 const buildTime = new Date().toISOString()
 

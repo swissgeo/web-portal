@@ -14,7 +14,9 @@ const popupLeft = ref(0)
 const arrowOffset = ref(12) // px from top of popup to center of arrow
 
 async function showPopup() {
-    if (!iconRef.value) return
+    if (!iconRef.value) {
+        return
+    }
 
     const rect = iconRef.value.getBoundingClientRect()
     popupLeft.value = rect.right + 8
@@ -52,7 +54,7 @@ async function showPopup() {
         <div
             ref="popupRef"
             v-show="isVisible"
-            class="pointer-events-none fixed whitespace-nowrap rounded border border-neutral-200 bg-white px-3 py-2 text-xs leading-relaxed shadow-md"
+            class="pointer-events-none fixed rounded border border-neutral-200 bg-white px-3 py-2 text-xs leading-relaxed whitespace-nowrap shadow-md"
             style="z-index: 999999"
             :style="{ top: `${popupTop}px`, left: `${popupLeft}px` }"
         >
