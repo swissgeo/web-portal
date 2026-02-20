@@ -1008,6 +1008,9 @@ importers:
       '@swissgeo/numbers':
         specifier: 'catalog:'
         version: 1.0.0(proj4@2.20.2)
+      '@swissgeo/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@swissgeo/skeleton':
         specifier: workspace:*
         version: link:../skeleton

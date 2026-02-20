@@ -2,6 +2,7 @@
 import type { Dimension } from '@swissgeo/layers'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
+import { MOBILE_BREAKPOINT } from '@swissgeo/shared'
 import { IconButton } from '@swissgeo/skeleton'
 import { useDebounceFn, useResizeObserver } from '@vueuse/core'
 import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
@@ -39,8 +40,6 @@ const containerWidth = ref(0)
 useResizeObserver(outerContainer, (entries) => {
     containerWidth.value = entries[0]?.contentRect.width ?? 0
 })
-
-const MOBILE_BREAKPOINT = 480
 
 const isMobile = computed(
     () => containerWidth.value > 0 && containerWidth.value < MOBILE_BREAKPOINT
