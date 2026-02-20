@@ -42,7 +42,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgro
         Fixed at bottom-left. The outer flex-col keeps the trigger at the bottom;
         the options container grows upward above it when open.
     -->
-    <div class="fixed left-4 bottom-4 flex flex-col items-start gap-2">
+    <div class="fixed left-4 bottom-4 z-50 flex flex-col items-start gap-2">
         <!--
             Buttons spread upward from the trigger position.
             --reverse-index: 0 = closest to trigger (appears first), higher = further away.
