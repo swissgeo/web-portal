@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import type { ContentItem } from '@swissgeo/shared/livingdocs'
+import type { TitleComponent } from '@swissgeo/shared/livingdocs'
 
-const { data } = defineProps<{
-    data: ContentItem
-}>()
+const { data } = defineProps<{ data: TitleComponent }>()
 </script>
 
 <template>
-    <h2>{{ data.content.title }}</h2>
+    <h2>{{ data.content?.title || '' }}</h2>
 </template>

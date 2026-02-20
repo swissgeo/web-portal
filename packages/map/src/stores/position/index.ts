@@ -15,17 +15,18 @@ import increaseZoom from '@/stores/position/actions/increaseZoom'
 // import setAutoRotation from "@/stores/position/actions/setAutoRotation";
 // import setCameraPosition from "@/stores/position/actions/setCameraPosition";
 import setCenter from '@/stores/position/actions/setCenter'
-// import setCrossHair from "@/stores/position/actions/setCrossHair";
-// import setDisplayedFormat from "@/stores/position/actions/setDisplayedFormat";
-// import setHasOrientation from "@/stores/position/actions/setHasOrientation";
-import setProjection from '@/stores/position/actions/setProjection'
-import setRotation from '@/stores/position/actions/setRotation'
-// import zoomToExtent from "@/stores/position/actions/zoomToExtent";
-// import centerEpsg4326 from "@/stores/position/getters/centerEpsg4326";
 // import extent from "@/stores/position/getters/extent";
 // import isExtentOnlyWithinLV95Bounds from "@/stores/position/getters/isExtentOnlyWithinLV95Bounds";
 // import resolution from "@/stores/position/getters/resolution";
-// import { LV95Format } from '@/utils/coordinates/coordinateFormat'
+import setDisplayedFormat from '@/stores/position/actions/setDisplayedFormat'
+// import setCrossHair from "@/stores/position/actions/setCrossHair";
+// import setDisplayedFormat from "@/stores/position/actions/setDisplayedFormat";
+// import setHasOrientation from "@/stores/position/actions/setHasOrientation";
+// import setProjection from '@/stores/position/actions/setProjection'
+import setRotation from '@/stores/position/actions/setRotation'
+// import zoomToExtent from "@/stores/position/actions/zoomToExtent";
+import centerEpsg4326 from '@/stores/position/getters/centerEpsg4326'
+import { LV95Format } from '@/utils/coordinates/coordinateFormat'
 
 const state = (): PositionStoreState => ({
     displayFormat: LV95Format,
@@ -47,7 +48,7 @@ const state = (): PositionStoreState => ({
 import resolution from '@/stores/position/getters/resolution'
 
 const getters: PositionStoreGetters = {
-    // centerEpsg4326,
+    centerEpsg4326,
     resolution,
     // extent,
     // isExtentOnlyWithinLV95Bounds,
@@ -65,7 +66,7 @@ const actions = {
     setCenter,
     // setCrossHair,
     // setCameraPosition,
-    setProjection,
+    // setProjection,
 }
 
 const usePositionStore = defineStore('position', {

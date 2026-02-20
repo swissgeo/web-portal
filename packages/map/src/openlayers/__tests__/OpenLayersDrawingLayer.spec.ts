@@ -1,3 +1,4 @@
+// FIXME ts ignore
 import { useDrawingStore } from '@swissgeo/drawing'
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi } from 'vitest'
@@ -32,6 +33,7 @@ describe('OpenLayersDrawingLayer.vue', () => {
                     humanId: 'test-layer',
                     uuid: '1234',
                     opacity: 1,
+                    // @ts-expect-error ce not defined in the type, but is used in the component
                     ce: { value: null },
                 },
             },
@@ -46,6 +48,7 @@ describe('OpenLayersDrawingLayer.vue', () => {
                     humanId: 'test-layer',
                     uuid: '1234',
                     opacity: 1,
+                    // @ts-expect-error ce not defined in the type, but is used in the component
                     ce: { value: null },
                 },
             },
@@ -53,7 +56,9 @@ describe('OpenLayersDrawingLayer.vue', () => {
 
         const drawingStore = useDrawingStore()
         // simulate icon selection by calling the store method directly
+        // @ts-expect-error drawingStore not fully typed
         drawingStore.setSelectedIcon('icon-id')
+        // @ts-expect-error drawingStore not fully typed
         expect(drawingStore.setSelectedIcon).toHaveBeenCalledWith('icon-id')
     })
 })

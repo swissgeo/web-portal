@@ -50,11 +50,16 @@ export default defineEventHandler(async (event) => {
     const fetchSlugsForItem = async (tree: TreeItem): Promise<MenuEntry> => {
         const translations = tree.translations
 
-        const promises = []
+        const promises: Promise<[string, MenuEntryLangaugeItem]>[] = []
         if (translations) {
             for (const locale of Object.keys(translations)) {
-                const id = translations[locale].reference.id
-                const label = translations[locale].label
+                const translation = translations[locale]
+                if (!translation) {
+                    continue
+                }
+
+                const id = translation.reference.id
+                const label = translation.label
 
                 promises.push(fetchPublicationMetadata(id, locale, { label }))
             }
@@ -80,9 +85,13 @@ export default defineEventHandler(async (event) => {
                 children = await traverseTree(treeItem.items)
             }
 
-            const data = await fetchSlugsForItem(treeItem)
+            const entry: MenuEntry = await fetchSlugsForItem(treeItem)
 
-            return { ...data, children }
+            if (children) {
+                entry.children = children
+            }
+
+            return entry
         })
 
         return Promise.all(mapped)
@@ -101,5 +110,5 @@ export default defineEventHandler(async (event) => {
     }
     log.debug('Done fetching menus')
 
-    return {}
+    return []
 })

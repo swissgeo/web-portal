@@ -18,13 +18,18 @@
             "types": "./dist/api/index.d.ts"
         },
         "./livingdocs": {
-            "types": "./dist/livingdocs/index.d.ts"
+            "types": "./dist/livingdocs/index.d.ts",
+            "import": "./dist/index.es.js",
+            "default": "./dist/index.es.js"
         },
         "./ogc": {
             "types": "./dist/ogc/index.d.ts"
         },
         "./language": {
             "types": "./dist/Language.d.ts"
+        },
+        "./action-dispatcher": {
+            "types": "./types/ActionDispatcher.d.ts"
         },
         "./geojson": {
             "types": "./dist/geojson/index.d.ts"

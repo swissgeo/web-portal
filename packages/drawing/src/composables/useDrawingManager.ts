@@ -1,3 +1,4 @@
+import type { FileLayer } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
@@ -24,7 +25,7 @@ export function useDrawingManager() {
      */
     function createDrawingLayer() {
         const uuid = crypto.randomUUID()
-        const config = {
+        const config: FileLayer = {
             uuid,
             humanId: DRAWING_LAYER_ID,
             opacity: 1,
@@ -47,8 +48,8 @@ export function useDrawingManager() {
     /**
      * Create the persistent KML layer from drawing features
      */
-    function createKMLLayer() {
-        const config = {
+    function createKMLLayer(): FileLayer {
+        const config: FileLayer = {
             uuid: crypto.randomUUID(),
             humanId: DRAWING_KML_LAYER_ID,
             opacity: 1,
@@ -78,7 +79,7 @@ export function useDrawingManager() {
 
         // Create or reuse drawing layer
         const existingLayer = layerStore.layers.find(
-            (layer) => layer.uuid === drawingStore.drawingLayerUuid
+            (layer: { uuid?: string }) => layer.uuid === drawingStore.drawingLayerUuid
         )
 
         if (!existingLayer) {
@@ -102,7 +103,7 @@ export function useDrawingManager() {
 
         // Create persistent KML layer if we have features
         if (drawingStore.drawingFeatures.length > 0) {
-            const kmlLayer = createKMLLayer()
+            const kmlLayer: FileLayer = createKMLLayer()
             drawingStore.setDrawingKMLLayerUuid(kmlLayer.uuid)
             layerStore.addLayer(kmlLayer)
         }

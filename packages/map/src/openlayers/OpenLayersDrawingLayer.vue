@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { DrawingMode } from '@swissgeo/drawing'
 import type { FileLayer } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
@@ -7,7 +8,6 @@ import {
     useOlDrawing,
     EPSG_2056_CH1903,
     EPSG_4326_WGS84,
-    DrawingMode,
     useDrawingStore,
     getMarkerIconById,
 } from '@swissgeo/drawing'
@@ -158,7 +158,7 @@ onMounted(() => {
     if (!hasInitialized.value) {
         // First check if we have features in the drawing manager
         if (drawingStore.drawingFeatures.length > 0) {
-            addFeatures(drawingStore.drawingFeatures)
+            addFeatures(drawingStore.drawingFeatures as Feature<Geometry>[])
             hasInitialized.value = true
             return
         }

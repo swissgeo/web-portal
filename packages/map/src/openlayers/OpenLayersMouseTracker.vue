@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import type { SingleCoordinate } from '@swissgeo/coordinates'
+import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
 import type { Map } from 'ol'
 
 import log from '@swissgeo/log'
 import MousePosition from 'ol/control/MousePosition'
-
-import type { ActionDispatcher } from '@/stores/types'
 
 import usePositionStore from '@/stores/position'
 import { allFormats, LV95Format } from '@/utils/coordinates/coordinateFormat'

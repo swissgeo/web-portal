@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Dataset, Distribution } from '@swissgeo/ogc'
+import type { Dataset, DistributionCollection } from '@swissgeo/ogc'
 
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
@@ -19,7 +19,7 @@ const { layer } = defineProps<{
 const state = useStorage(layer.id, {
     distributionData: null,
 } as {
-    distributionData: Distribution | null
+    distributionData: DistributionCollection | null
 })
 
 const distributionLink = computed(() => {
@@ -57,9 +57,6 @@ const type = computed((): 'wmts' | 'wms' | 'geojson' | 'vector' | 'UNKNOWN' => {
         return 'UNKNOWN'
     }
 
-    const preferredDistributionId =
-        state.value.distributionData.properties?.preferredDistributionId || null
-
     if (!state.value.distributionData.records) {
         log.error({
             title: 'LayersPanelEntry',
@@ -72,18 +69,14 @@ const type = computed((): 'wmts' | 'wms' | 'geojson' | 'vector' | 'UNKNOWN' => {
     }
 
     for (const record of state.value.distributionData.records) {
-        // if there's no preferredDistributionId, I want this to be true
-        // so that it will just select the first one it finds
-        if (preferredDistributionId === null || record.id === preferredDistributionId) {
-            const protocol = record.properties?.protocol
+        const protocol = record.properties?.protocol
 
-            if (protocol === 'OGC:WMTS') {
-                return 'wmts'
-            } else if (protocol === 'OGC:WMS') {
-                return 'wms'
-            } else if (protocol === 'OGC:GeoJSON') {
-                return 'geojson'
-            }
+        if (protocol === 'OGC:WMTS') {
+            return 'wmts'
+        } else if (protocol === 'OGC:WMS') {
+            return 'wms'
+        } else if (protocol === 'OGC:GeoJSON') {
+            return 'geojson'
         }
     }
 
@@ -98,7 +91,7 @@ onMounted(() => {
 })
 
 async function updateDistributionData() {
-    const distributionDataUpdate = await $fetch<Distribution>(distributionLink.value.href)
+    const distributionDataUpdate = await $fetch<DistributionCollection>(distributionLink.value.href)
 
     if (distributionDataUpdate) {
         state.value.distributionData = distributionDataUpdate

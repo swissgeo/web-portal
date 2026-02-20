@@ -1,3 +1,5 @@
+import { appendResponseHeader, createError, getRouterParam } from 'h3'
+
 const basePath = 'http://localhost:3000/api/v1/layers/external/'
 
 export default defineEventHandler((event) => {

@@ -1,7 +1,8 @@
+import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
+
 import { SwissCoordinateSystem } from '@swissgeo/coordinates'
 
 import type { PositionStore } from '@/stores/position/types/position'
-import type { ActionDispatcher } from '@/stores/types'
 
 export default function increaseZoom(this: PositionStore, dispatcher: ActionDispatcher): void {
     if (this.projection instanceof SwissCoordinateSystem) {

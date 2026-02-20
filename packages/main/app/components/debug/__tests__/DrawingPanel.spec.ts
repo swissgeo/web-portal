@@ -1,7 +1,13 @@
+import type { ComponentPublicInstance } from 'vue'
+
 import { useDrawingStore } from '@swissgeo/drawing'
 import { mount } from '@vue/test-utils'
 import DrawingPanel from '~/components/debug/DrawingPanel.vue'
 import { describe, it, expect, vi } from 'vitest'
+
+type DrawingPanelVm = ComponentPublicInstance & {
+    handleClose: () => void
+}
 
 const setDrawingMode = vi.fn()
 const setSelectedIconId = vi.fn()
@@ -45,8 +51,7 @@ describe('DrawingPanel.vue', () => {
         const drawingStore = useDrawingStore()
 
         // call handleClose directly (private function exposed on instance)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(wrapper.vm as any).handleClose()
+        ;(wrapper.vm as DrawingPanelVm).handleClose()
         expect(drawingStore.setDrawingMode).toHaveBeenCalledWith('None')
         expect(wrapper.emitted('close')).toBeTruthy()
     })

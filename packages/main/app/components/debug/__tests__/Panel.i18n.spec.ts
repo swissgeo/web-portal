@@ -1,5 +1,8 @@
+import type { App, ComponentPublicInstance } from 'vue'
+
 import { mount } from '@vue/test-utils'
 import Panel from '~/components/debug/Panel.vue'
+import { describe, expect, it } from 'vitest'
 import { nextTick, ref } from 'vue'
 
 const messages = {
@@ -21,24 +24,36 @@ const messages = {
     },
 }
 
+type Locale = keyof typeof messages
+
+function resolveMessage(locale: Locale, path: string): string {
+    const parts = path.split('.')
+    let value: unknown = messages[locale]
+
+    for (const part of parts) {
+        if (typeof value !== 'object' || value === null || !(part in value)) {
+            return path
+        }
+        value = (value as Record<string, unknown>)[part]
+    }
+
+    return typeof value === 'string' ? value : path
+}
+
+type PanelTestVm = ComponentPublicInstance & {
+    $setLocale: (_locale: Locale) => void
+}
+
 describe('Panel.vue - i18n integration', () => {
     it('shows English texts initially and updates to French after locale change', async () => {
         // simple inline i18n plugin to avoid external dependency in tests
         const i18nPlugin = {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            install(app: any) {
+            install(app: App) {
                 const locale = ref('en')
-                app.config.globalProperties.$t = (path: string) => {
-                    const parts = path.split('.')
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    let v: any = messages[locale.value]
-                    for (const p of parts) {
-                        v = v?.[p]
-                    }
-                    return v ?? path
-                }
-                app.config.globalProperties.$setLocale = (l: string) => {
-                    locale.value = l
+                app.config.globalProperties.$t = (path: string) =>
+                    resolveMessage(locale.value as Locale, path)
+                app.config.globalProperties.$setLocale = (nextLocale: Locale) => {
+                    locale.value = nextLocale
                 }
             },
         }
@@ -59,8 +74,7 @@ describe('Panel.vue - i18n integration', () => {
         expect(wrapper.text()).toContain('Open Drawing Panel')
 
         // simulate language switch via global helper
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(wrapper.vm as any).$setLocale('fr')
+        ;(wrapper.vm as unknown as PanelTestVm).$setLocale('fr')
         await nextTick()
 
         // texts should update to French

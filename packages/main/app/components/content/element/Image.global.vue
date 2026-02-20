@@ -1,13 +1,21 @@
 <script lang="ts" setup>
 import type { ContentItem } from '@swissgeo/shared/livingdocs'
 
-const { data } = defineProps<{ data: ContentItem }>()
+import { isImage } from '@swissgeo/shared/livingdocs'
 
-const image = computed(() => {
-    return data.content?.image || ''
+const { data } = defineProps<{ data: ContentItem }>()
+const imageUrl = computed(() => {
+    if (!isImage(data)) {
+        return ''
+    }
+    const image = data.content?.image
+    return image
 })
 
 const caption = computed(() => {
+    if (!isImage(data)) {
+        return ''
+    }
     return data.content?.caption || ''
 })
 </script>
@@ -16,7 +24,7 @@ const caption = computed(() => {
     <figure>
         <picture>
             <img
-                :src="image.url"
+                :src="imageUrl"
                 class="max-w-[756px]"
             />
         </picture>

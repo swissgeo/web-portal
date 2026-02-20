@@ -33,6 +33,7 @@ describe('OpenLayersGPXLayer.vue', () => {
                     opacity: 1,
                     zIndex: 1,
                     isVisible: true,
+                    // @ts-expect-error ce not defined in the type, but is used in the component
                     ce: { value: null },
                 },
             },
@@ -50,11 +51,12 @@ describe('OpenLayersGPXLayer.vue', () => {
                     opacity: 1,
                     zIndex: 1,
                     isVisible: true,
+                    // @ts-expect-error ce not defined in the type, but is used in the component
                     ce: { value: null },
                 },
             },
         })
-
+        // @ts-expect-error useOlGPXLayer not fully typed
         const { initialize } = useOlGPXLayer()
         expect(initialize).toHaveBeenCalled()
     })

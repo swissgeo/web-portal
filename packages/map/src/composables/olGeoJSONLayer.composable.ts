@@ -1,4 +1,4 @@
-import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/layers'
+import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/shared/geojson'
 import type { FeatureLike } from 'ol/Feature'
 
 import log from '@swissgeo/log'

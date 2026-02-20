@@ -1,3 +1,7 @@
+import log, { LogPreDefinedColor } from '@swissgeo/log'
+
+import type { WMSDimension, WMTSDimension } from '@/openlayers/types'
+
 /** Timestamp to describe "all data" for time enabled WMS layer */
 export const ALL_YEARS_TIMESTAMP: string = 'all'
 /**
@@ -10,8 +14,7 @@ export const CURRENT_YEAR_TIMESTAMP: string = 'current'
 
 type TimeInfo = { availableTimes: string[] | null; defaultTime: string | null }
 
-// eslint-disable-next-line
-export const getTimeInfoFromWMTSCapabilities = (dimensions: any): TimeInfo => {
+export const getTimeInfoFromWMTSCapabilities = (dimensions: WMTSDimension[]): TimeInfo => {
     // Guard against missing or invalid dimensions
     if (!Array.isArray(dimensions) || dimensions.length === 0) {
         return { availableTimes: null, defaultTime: null }
@@ -34,8 +37,8 @@ export const getTimeInfoFromWMTSCapabilities = (dimensions: any): TimeInfo => {
 }
 
 /** @param dimensions Dimensions of the WMS capabilities */
-// eslint-disable-next-line
-export const getTimeInfoFromWMSCapabilities = (dimensions: any): TimeInfo => {
+
+export const getTimeInfoFromWMSCapabilities = (dimensions: WMSDimension[]): TimeInfo => {
     const getTimeDimension = () => {
         if (!dimensions) {
             return null
@@ -56,17 +59,30 @@ export const getTimeInfoFromWMSCapabilities = (dimensions: any): TimeInfo => {
     let defaultTime = timeDimension.default
     let availableTimes: string[] = []
 
-    if (values.match(/\d+\/\d+/)) {
+    if (values?.match(/\d+\/\d+/)) {
         // the time is of the format 2011/2023
-        const [start, end] = values.split('/').map((val) => parseInt(val))
+        const [start, end] = values.split('/').map((val: string) => parseInt(val))
         // construct an array with the length of the parsed values then map the years
         // inbetween and convert it finally to string
-        availableTimes = Array.from({ length: end - start + 1 }, (v, k) => k + start).map((time) =>
-            time.toString()
-        )
-    } else if (values.match(/(?:\d+,)+\d+/)) {
+        if (start && end && end > start) {
+            availableTimes = Array.from({ length: end - start + 1 }, (v, k) => k + start).map(
+                (time) => time.toString()
+            )
+        } else {
+            log.warn({
+                title: 'TimeSlider / getTimeInfoFromWMSCapabilities',
+                titleColor: LogPreDefinedColor.Red,
+                messages: [
+                    'Time dimension values are in an unexpected format, expected "start/end" with end > start, ignoring values',
+                    start,
+                    end,
+                    values,
+                ],
+            })
+        }
+    } else if (values?.match(/(?:\d+,)+\d+/)) {
         // values are a comma separated list
-        const singleValues = values.split(',').map((val) => parseInt(val).toString())
+        const singleValues = values.split(',').map((val: string) => parseInt(val).toString())
         availableTimes = singleValues
     }
 
@@ -78,5 +94,5 @@ export const getTimeInfoFromWMSCapabilities = (dimensions: any): TimeInfo => {
         // no default time, use the last in the array
         defaultTime = availableTimes[availableTimes.length - 1]
     }
-    return { availableTimes, defaultTime }
+    return { availableTimes, defaultTime: defaultTime || null }
 }

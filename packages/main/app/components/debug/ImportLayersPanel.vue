@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LayerType } from '@swissgeo/layers'
+import type { Dataset } from '@swissgeo/ogc'
 
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
@@ -20,12 +21,12 @@ const encodedUrl = computed(() => encodeURIComponent(importUrl.value))
 async function doIt() {
     if (importUrl.value.toLowerCase().includes('wmts')) {
         // do wmts
-        const data = await $fetch(importUrl.value)
+        const data = await $fetch<string>(importUrl.value)
         extractWmtsLayers(data)
         currentLayerType.value = 'wmts'
     } else if (importUrl.value.toLowerCase().includes('wms')) {
         // do wms
-        const data = await $fetch(importUrl.value)
+        const data = await $fetch<string>(importUrl.value)
         extractWmsLayers(data)
         currentLayerType.value = 'wms'
     }
@@ -36,7 +37,7 @@ function extractWmtsLayers(capaData: string) {
     const capabilities = wmtsParser.read(capaData)
     const layerList = capabilities.Contents.Layer
 
-    layers.value = layerList.map((layer) => layer.Identifier)
+    layers.value = layerList.map((layer: { Identifier: string }) => layer.Identifier)
 }
 
 function extractWmsLayers(capaData: string) {
@@ -44,13 +45,13 @@ function extractWmsLayers(capaData: string) {
     const capabilities = wmsParser.read(capaData)
     const layerList = capabilities.Capability.Layer.Layer
 
-    layers.value = layerList.map((layer) => layer.Name)
+    layers.value = layerList.map((layer: { Name: string }) => layer.Name)
 }
 
 function addLayer(layer: string) {
     const capaUrl = new URL(importUrl.value)
 
-    const fakeDataset = {
+    const fakeDataset: Dataset = {
         id: layer,
         links: [
             {
@@ -62,7 +63,7 @@ function addLayer(layer: string) {
         ],
         properties: {
             title: `${layer} on ${capaUrl.hostname}`,
-            type: 'Dataset',
+            type: 'Dataset' as const,
         },
     }
 

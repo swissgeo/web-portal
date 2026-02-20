@@ -1,3 +1,5 @@
+import type { CoordinateSystem } from '@swissgeo/coordinates'
+
 import log from '@swissgeo/log'
 import { defineStore } from 'pinia'
 import proj4 from 'proj4'
@@ -14,7 +16,7 @@ export const usePositionStore = defineStore('positionStore', () => {
     const resolution = ref(0)
     const latitude = ref(0)
 
-    const setZoom = (level: number, dispatcher) => {
+    const setZoom = (level: number) => {
         if (level < 0) {
             throw new Error('Zoom level cannot be negative')
         }
@@ -33,21 +35,20 @@ export const usePositionStore = defineStore('positionStore', () => {
             (78271.51696 * Math.cos((latitude.value * Math.PI) / 180)) /
             Math.pow(2, zoomLevel.value)
 
-        if (dispatcher) {
-            dispatcher({ zoom: zoomLevel.value, resolution: resolution.value })
-        }
+        // if (dispatcher) {
+        //     dispatcher({ zoom: zoomLevel.value, resolution: resolution.value })
+        // }
     }
 
-    const setRotation = (angle, dispatcher) => {
+    const setRotation = (angle: number) => {
         rotation.value = ((angle + Math.PI) % (2 * Math.PI)) - Math.PI
     }
 
-    // eslint-disable-next-line
-    const setProjection = (projection, dispatcher) => {
+    const setProjection = (_projection: CoordinateSystem) => {
         // Placeholder for projection logic
     }
 
-    const setCenter = (coordinates, dispatcher) => {
+    const setCenter = (coordinates: [number, number]) => {
         if (!Array.isArray(coordinates) || coordinates.length !== 2) {
             throw new Error('Invalid coordinates. Expected an array with two numbers.')
         }
@@ -66,7 +67,11 @@ export const usePositionStore = defineStore('positionStore', () => {
         // Assuming WGS84 and Web Mercator projections are defined elsewhere
         const transformedCoordinates = proj4(WGS84.epsg, WEBMERCATOR.epsg, [x, y])
 
-        if (!isFinite(transformedCoordinates[0]) || !isFinite(transformedCoordinates[1])) {
+        if (
+            transformedCoordinates.length < 2 ||
+            !isFinite(transformedCoordinates[0]!) ||
+            !isFinite(transformedCoordinates[1]!)
+        ) {
             throw new Error('Transformed coordinates must be finite numbers.')
         }
 
@@ -77,15 +82,15 @@ export const usePositionStore = defineStore('positionStore', () => {
         // Transform the y coordinate back to WGS84 to get the latitude in degrees
         const [_, transformedLat] = proj4(WEBMERCATOR.epsg, WGS84.epsg, transformedCoordinates)
 
-        if (!isFinite(transformedLat)) {
+        if (!transformedLat || !isFinite(transformedLat)) {
             throw new Error('Transformed latitude must be a finite number.')
         }
 
         latitude.value = transformedLat
 
-        if (dispatcher) {
-            dispatcher(transformedCoordinates)
-        }
+        // if (dispatcher) {
+        //     dispatcher(transformedCoordinates)
+        // }
     }
 
     return {

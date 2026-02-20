@@ -1,3 +1,5 @@
+import { appendResponseHeader, createError, getRouterParam } from 'h3'
+
 export default defineEventHandler((event) => {
     const capabilityUrlParam = getRouterParam(event, 'capabilityUrl')
 

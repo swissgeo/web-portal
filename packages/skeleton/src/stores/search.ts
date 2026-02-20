@@ -1,6 +1,7 @@
 // Search store for web-poc-portal
 // Adapted from web-mapviewer search store
 
+import type { Layer } from '@swissgeo/layers'
 import type { DatasetCollection } from '@swissgeo/ogc'
 import type { SearchResult } from '@swissgeo/search'
 
@@ -75,7 +76,7 @@ export const useSearchStore = defineStore('search', () => {
             // Get searchable layers from layer store
             // For now, enable feature search for ALL visible layers
             const layerStore = useLayerStore()
-            const searchableLayers = layerStore.layers.filter((layer) => layer.isVisible)
+            const searchableLayers = layerStore.layers.filter((layer: Layer) => layer.isVisible)
 
             // Build search promises array
             const searchPromises: Promise<SearchResult[]>[] = [

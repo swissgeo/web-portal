@@ -1,3 +1,4 @@
+import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
 import type { Map } from 'ol'
 import type MapBrowserEvent from 'ol/MapBrowserEvent'
 import type { MaybeRef } from 'vue'
@@ -7,8 +8,6 @@ import log from '@swissgeo/log'
 import { round } from '@swissgeo/numbers'
 import { View } from 'ol'
 import { DoubleClickZoom } from 'ol/interaction'
-
-import type { ActionDispatcher } from '@/stores/types'
 // import {
 //   computed,
 //   type MaybeRef,

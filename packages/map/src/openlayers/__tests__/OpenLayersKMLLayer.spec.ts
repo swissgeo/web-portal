@@ -33,6 +33,7 @@ describe('OpenLayersKMLLayer.vue', () => {
                     opacity: 1,
                     zIndex: 1,
                     isVisible: true,
+                    // @ts-expect-error ce not defined in the type, but is used in the component
                     ce: { value: null },
                 },
             },
@@ -50,11 +51,12 @@ describe('OpenLayersKMLLayer.vue', () => {
                     opacity: 1,
                     zIndex: 1,
                     isVisible: true,
+                    // @ts-expect-error ce not defined in the type, but is used in the component
                     ce: { value: null },
                 },
             },
         })
-
+        // @ts-expect-error useOlKMLLayer not fully typed
         const { initialize } = useOlKMLLayer()
         expect(initialize).toHaveBeenCalled()
     })

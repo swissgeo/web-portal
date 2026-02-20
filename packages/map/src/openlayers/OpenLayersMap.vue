@@ -14,7 +14,7 @@ import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
 const { layers } = defineProps<{
     layers: Layer[]
-    backgroundLayer: Layer
+    backgroundLayer?: Layer | null
 }>()
 
 const mapElement = useTemplateRef('mapElement')
@@ -25,7 +25,7 @@ provide<Ref<OlMapType | undefined>>('olMap', olMap)
 onMounted(() => {
     mountOlMap()
     // make it available for debugging
-    window.map = olMap.value
+    ;(window as Window & { map?: OlMapType }).map = olMap.value
 })
 
 function registerCustomProjection() {

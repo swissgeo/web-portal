@@ -7,7 +7,7 @@ import { cloneDeep } from 'lodash'
 import { reproject } from 'reproject'
 
 // import type { SelectableFeature } from "@/api/features.api";
-import type { ActionDispatcher } from '@/stores/types'
+import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
 
 import useFeaturesStore from '@/stores/features'
 import useLayersStore from '@/stores/layers'

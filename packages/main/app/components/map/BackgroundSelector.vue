@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { DatasetLayer, Layer } from '@swissgeo/layers'
-import type { OGCRecord } from '@swissgeo/shared/ogc'
+import type { Dataset } from '@swissgeo/ogc'
 
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
-//import type { ActionDispatcher } from '@/stores/types'
+//import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
 //import BackgroundSelectorWheelRounded from '@/modules/map/components/footer/backgroundSelector/BackgroundSelectorWheelRounded.vue'
 import { computedAsync } from '@vueuse/core'
 
@@ -17,14 +17,14 @@ const layerStore = useLayerStore()
 const runtimeConfig = useRuntimeConfig()
 
 const backgroundRecords = computed(async () => {
-    const promises: Promise<OGCRecord>[] = []
+    const promises: Promise<Dataset>[] = []
     for (const backgroundId of AVAILABLE_BACKGROUNDS) {
         promises.push($fetch(`${runtimeConfig.public.ogcApiEndpoint}/items/${backgroundId}`))
     }
 
     const values = await Promise.all(promises)
 
-    return values.map((record: OGCRecord) => {
+    return values.map((record: Dataset) => {
         return makeServerLayer('wmts', record, {
             zIndex: 0,
         })

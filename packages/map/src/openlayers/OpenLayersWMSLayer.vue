@@ -3,16 +3,18 @@ import type { DatasetLayer, Dimension } from '@swissgeo/layers'
 
 import { useLayerStore } from '@swissgeo/layers'
 import { useRecordsData } from '@swissgeo/ogc'
+import { useFetch } from '@vueuse/core'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
 
 import useOlWmsLayer from '@/composables/olWMSLayer.composable'
+
+import type { WMSLayer } from './types'
 
 import { getTimeInfoFromWMSCapabilities } from '../utils/timeUtils'
 
 const layerStore = useLayerStore()
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
-
 const { layer } = defineProps<{
     layer: DatasetLayer
 }>()
@@ -24,9 +26,7 @@ const gutter = computed(() => {
 const { capabilityUrl } = await useRecordsData(layer.dataset, 'OGC:WMS')
 
 // Fetch capabilities XML directly from external server as raw text
-const { data } = await useFetch(capabilityUrl.value, {
-    parseResponse: (txt) => txt, // Don't auto-parse, return raw text
-})
+const { data } = await useFetch<string>(capabilityUrl.value)
 
 const capabilityData = computed((): WMSCapabilityType => {
     if (!data.value) {
@@ -45,10 +45,7 @@ const url = computed(() => capabilityData.value.Service.OnlineResource)
 
 const dimensions = computed(() => {
     const layerData = capabilityData.value.Capability.Layer.Layer
-    const thisLayer = layerData.find(
-        (_layer: WMSCapabilities['Capability']['Layer']['Layer']) =>
-            _layer.Name === layer.dataset.id
-    )
+    const thisLayer = layerData.find((_layer: WMSLayer) => _layer.Name === layer.dataset.id)
     if (thisLayer && 'Dimension' in thisLayer) {
         return thisLayer.Dimension
     }
@@ -109,7 +106,7 @@ watch(
 watch(
     () => layer.dimensions,
     () => {
-        if ('time' in layer.dimensions) {
+        if (layer.dimensions && 'time' in layer.dimensions && layer.dimensions.time?.currentValue) {
             updateTimeDimension(layer.dimensions.time.currentValue)
         }
     },

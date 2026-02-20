@@ -1,14 +1,21 @@
 <script setup lang="ts">
-import { LucideIcon, useUiStore } from '@swissgeo/skeleton'
+import { LucideIcon } from '@swissgeo/skeleton'
 
 const { t } = useI18n()
-const uiStore = useUiStore()
 
 function toggleFullScreen() {
     throw new Error('Full screen mode toggle not yet implemented')
 }
+
+function isChromiumBrowser() {
+    return 'chrome' in window
+}
+
 const isInWindowFullScreenModeNotChromium = computed(
-    () => screen.width === uiStore.width && screen.height === uiStore.height && !window.chrome
+    () =>
+        window.innerWidth === screen.width &&
+        window.innerHeight === screen.height &&
+        !isChromiumBrowser()
 )
 
 function isDisabled(): boolean {
@@ -31,7 +38,7 @@ function unbindEscapeKey(): void {
 }
 
 function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape' && uiStore.fullscreenMode) {
+    if (event.key === 'Escape' && !!document.fullscreenElement) {
         toggleFullScreen()
     }
 }

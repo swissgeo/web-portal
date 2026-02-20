@@ -1,4 +1,9 @@
 import type { MenuTree } from '@swissgeo/shared/api'
+import type { Lang } from '@swissgeo/shared/language'
+
+import { useRuntimeConfig } from '#imports'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
 export type MenuIds = {
     readonly About: number

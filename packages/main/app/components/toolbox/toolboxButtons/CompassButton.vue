@@ -1,9 +1,8 @@
 <script setup lang="ts">
+import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
 import type MapEvent from 'ol/MapEvent'
 
 const RESET_ANIMATION_DURATION_MS = 300
-
-import type { ActionDispatcher } from '@swissgeo/map'
 
 import { usePositionStore } from '@swissgeo/map'
 import { LucideIcon } from '@swissgeo/skeleton'
@@ -68,8 +67,8 @@ function onRotate(mapEvent: MapEvent): void {
     if (isResetting.value) {
         return
     }
-    const newRotation = mapEvent.frameState?.viewState.rotation
-    if (newRotation !== undefined && newRotation !== rotation.value) {
+    const newRotation = mapEvent.frameState?.viewState.rotation ?? rotation.value
+    if (newRotation !== rotation.value) {
         rotation.value = newRotation
     }
 }
