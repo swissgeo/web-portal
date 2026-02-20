@@ -7,8 +7,6 @@ import type { VoidLayer } from './useBackgroundSelector'
 
 import useBackgroundSelector from './useBackgroundSelector'
 
-// const { t: $t } = useI18n()
-
 const { backgroundLayers, currentBackgroundLayer } = defineProps<{
     backgroundLayers: (Layer | VoidLayer)[]
     currentBackgroundLayer: Layer | VoidLayer
@@ -37,24 +35,23 @@ function selectBackgroundCallback(backgroundLayer: Layer | VoidLayer): void {
     emit('selectBackground', backgroundLayer)
 }
 
-const { selectorOpen, animate, toggleShowSelector, onSelectBackground } =
+const { selectorOpen, toggleShowSelector, onSelectBackground } =
     useBackgroundSelector(selectBackgroundCallback)
 </script>
 
 <template>
-    <div class="bg-selector fixed right-4 bottom-4 flex gap-2 transition-all">
-        <div
-            :class="{ hidden: !selectorOpen, animate }"
-            class="flex gap-2"
-        >
-            <MapBackgroundSelectorEntry
-                v-for="(backgroundLayer, index) in backgroundLayers"
-                :key="index"
-                :background-layer="backgroundLayer"
-                :is-current="isCurrent(backgroundLayer)"
-                @click="onSelectBackground(backgroundLayer)"
-            />
-        </div>
+    <div class="bg-selector fixed right-4 bottom-4 flex items-end gap-2">
+        <Transition name="bg-options">
+            <div v-if="selectorOpen" class="flex gap-2">
+                <MapBackgroundSelectorEntry
+                    v-for="(backgroundLayer, index) in backgroundLayers"
+                    :key="index"
+                    :background-layer="backgroundLayer"
+                    :is-current="isCurrent(backgroundLayer)"
+                    @click="onSelectBackground(backgroundLayer)"
+                />
+            </div>
+        </Transition>
         <MapBackgroundSelectorEntry
             v-if="currentBackgroundLayer"
             :background-layer="currentBackgroundLayer"
@@ -63,107 +60,42 @@ const { selectorOpen, animate, toggleShowSelector, onSelectBackground } =
             @click="toggleShowSelector"
         >
             <template v-slot="slotProps">
-                <div
-                    :class="{ animate, hidden: !slotProps.folded }"
-                    class="absolute inset-0 flex items-center justify-center bg-[#343a40] text-white opacity-75"
-                >
-                    <CircleChevronRight class="block" />
-                </div>
+                <Transition name="bg-toggle-icon">
+                    <div
+                        v-if="slotProps.folded"
+                        class="absolute inset-0 flex items-center justify-center rounded bg-[#343a40] text-white opacity-75"
+                    >
+                        <CircleChevronRight />
+                    </div>
+                </Transition>
             </template>
         </MapBackgroundSelectorEntry>
     </div>
 </template>
 
-<!--
-<style lang="scss" scoped>
-@use 'sass:math';
+<style scoped>
+/* Slide-in from the right when the options panel opens */
+.bg-options-enter-active,
+.bg-options-leave-active {
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+}
 
-@import './bg-selector';
+.bg-options-enter-from,
+.bg-options-leave-to {
+    opacity: 0;
+    transform: translateX(20px);
+}
 
-$main-element: '.bg-selector-squared';
-$square-button-width: 98px;
-$square-button-radius: 8px;
+/* Fade the close-chevron overlay on the trigger button */
+.bg-toggle-icon-enter-active,
+.bg-toggle-icon-leave-active {
+    transition: opacity 0.2s ease;
+}
 
-// assets have been sized to have a 4:3 ratio, so we can adapt "squared" button to have this exact ratio
-@include setup-background-buttons($main-element, $square-button-width, math.div(3, 4));
-@include spread-wheel-buttons($main-element, $square-button-width, right);
-
-#{$main-element} {
-    &-wheel-button {
-        $opened-width: calc($square-button-width / 2.5);
-        $cropper-opened-width: calc($opened-width - 2 * $bg-selector-button-border);
-        border-radius: $square-button-radius;
-        transition: width $bg-selector-transition-duration;
-        $inner-radius: calc($square-button-radius - $bg-selector-button-border);
-        &.opened {
-            width: $opened-width;
-        }
-        &.opened &-image-cropper {
-            width: $cropper-opened-width;
-        }
-        &:not(.show).animate {
-            // keeping the cropper at the shorten width in order to trigger the grow animation
-            &-image-cropper {
-                width: $cropper-opened-width;
-            }
-        }
-        &-image-cropper {
-            border-radius: $inner-radius;
-            transition: all $bg-selector-transition-duration;
-            img {
-                // arbitrary scale/translate so that something "nice" is shown in the cropper
-                transform: scale(0.8) translate(-22%, -50%);
-            }
-        }
-        &-close {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            z-index: 1;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: opacity $bg-selector-transition-duration;
-            &.show {
-                opacity: 1;
-            }
-        }
-        &-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 0.75rem;
-            opacity: 1;
-            transition:
-                opacity $bg-selector-transition-duration,
-                height $bg-selector-transition-duration;
-            // we only wants the bottom to have a rounded border to match the container
-            // somehow it was necessary to reduce the radius of the label of 1px (average) to make
-            // it cover fully the rounded spot
-            $label-radius: calc($inner-radius - 1px);
-            border-radius: 0 0 $label-radius $label-radius;
-
-            &-inner {
-                transition: opacity $bg-selector-transition-duration;
-                opacity: 0;
-                &.show {
-                    opacity: 1;
-                }
-            }
-            &.spread.animate {
-                // fixing the height at animation start, so that it can then spread to 100%
-                // (otherwise it jumps straight to 100% without animating)
-                height: 1.1rem;
-            }
-            &.spread {
-                height: 100%;
-                // when spread, the top part of the label will touch the top of the container
-                // so we also round the top part of the label
-                border-radius: $label-radius;
-            }
-        }
-    }
+.bg-toggle-icon-enter-from,
+.bg-toggle-icon-leave-to {
+    opacity: 0;
 }
 </style>
--->

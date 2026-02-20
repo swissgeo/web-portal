@@ -15,7 +15,6 @@ export default function useBackgroundSelector(
     selectBackgroundCallback: (backgroundLayer: Layer | VoidLayer) => void
 ) {
     const selectorOpen = ref<boolean>(false)
-    const animate = ref<boolean>(false)
 
     function getImageForBackgroundLayer(backgroundLayer?: Layer | VoidLayer) {
         let backgroundId
@@ -39,22 +38,15 @@ export default function useBackgroundSelector(
 
     function onSelectBackground(backgroundLayer: Layer | VoidLayer) {
         selectBackgroundCallback(backgroundLayer)
-        toggleShowSelector()
+        selectorOpen.value = false
     }
 
     function toggleShowSelector() {
         selectorOpen.value = !selectorOpen.value
-
-        animate.value = true
-        // waiting a short time, so that the animation can kick in, them remove the flag
-        setTimeout(() => {
-            animate.value = false
-        }, 5000)
     }
 
     return {
         selectorOpen,
-        animate,
         getImageForBackgroundLayer,
         onSelectBackground,
         toggleShowSelector,
