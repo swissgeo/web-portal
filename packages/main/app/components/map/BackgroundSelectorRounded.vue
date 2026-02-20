@@ -24,7 +24,9 @@ function isCurrent(backgroundLayer: Layer | VoidLayer) {
 
 function selectBackgroundCallback(backgroundLayer: Layer | VoidLayer): void {
     if (backgroundLayer !== 'void') {
-        if (isCurrent(backgroundLayer)) return
+        if (isCurrent(backgroundLayer)) {
+            return
+        }
     }
     emit('selectBackground', backgroundLayer)
 }
@@ -42,7 +44,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgro
         Fixed at bottom-left. The outer flex-col keeps the trigger at the bottom;
         the options container grows upward above it when open.
     -->
-    <div class="fixed left-4 bottom-4 z-50 flex flex-col items-start gap-2">
+    <div class="fixed bottom-4 left-4 z-50 flex flex-col items-start gap-2">
         <!--
             Buttons spread upward from the trigger position.
             --reverse-index: 0 = closest to trigger (appears first), higher = further away.
@@ -50,7 +52,11 @@ const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgro
             from the trigger point.
             Button step = 50px height + 8px gap = 58px.
         -->
-        <TransitionGroup name="bg-round-option" tag="div" class="flex flex-col gap-2">
+        <TransitionGroup
+            name="bg-round-option"
+            tag="div"
+            class="flex flex-col gap-2"
+        >
             <button
                 v-for="(backgroundLayer, index) in selectorOpen ? backgroundLayers : []"
                 :key="layerKey(backgroundLayer)"
@@ -100,7 +106,9 @@ const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgro
 /* Trigger gets a thicker border and red highlight when the panel is open */
 .bg-round-trigger {
     border-width: 4px;
-    transition: border-width 0.2s ease, border-color 0.2s ease;
+    transition:
+        border-width 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .bg-round-trigger.open {

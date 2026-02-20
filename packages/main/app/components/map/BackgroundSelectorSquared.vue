@@ -51,7 +51,11 @@ const { selectorOpen, toggleShowSelector, onSelectBackground } =
             The translateX starting value is (reverse-index + 1) * button-step, which puts every
             button on top of the trigger before the transition kicks in.
         -->
-        <TransitionGroup name="bg-option" tag="div" class="flex gap-2">
+        <TransitionGroup
+            name="bg-option"
+            tag="div"
+            class="flex gap-2"
+        >
             <MapBackgroundSelectorEntry
                 v-for="(backgroundLayer, index) in selectorOpen ? backgroundLayers : []"
                 :key="layerKey(backgroundLayer)"

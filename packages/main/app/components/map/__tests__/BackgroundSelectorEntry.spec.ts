@@ -1,12 +1,11 @@
-import { mount } from '@vue/test-utils'
-import { describe, it, expect } from 'vitest'
 import type { Layer } from '@swissgeo/layers'
+import type { VoidLayer } from '~/components/map/useBackgroundSelector'
 
+import { mount } from '@vue/test-utils'
 // vue-i18n is aliased to a stub in vitest.config.ts, so no manual mock needed.
 // useBackgroundSelector's PNG imports resolve correctly via the ~ alias.
-
 import BackgroundSelectorEntry from '~/components/map/BackgroundSelectorEntry.vue'
-import type { VoidLayer } from '~/components/map/useBackgroundSelector'
+import { describe, it, expect } from 'vitest'
 
 const voidLayer: VoidLayer = 'void'
 const mockLayer = {

@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from 'vitest'
 import type { Layer } from '@swissgeo/layers'
+import type { VoidLayer } from '~/components/map/useBackgroundSelector'
 
 import useBackgroundSelector from '~/components/map/useBackgroundSelector'
-import type { VoidLayer } from '~/components/map/useBackgroundSelector'
+import { describe, it, expect, vi } from 'vitest'
 
 describe('useBackgroundSelector', () => {
     describe('selectorOpen', () => {
@@ -35,8 +35,9 @@ describe('useBackgroundSelector', () => {
         })
 
         it('closes the selector after selection', () => {
-            const { selectorOpen, toggleShowSelector, onSelectBackground } =
-                useBackgroundSelector(vi.fn())
+            const { selectorOpen, toggleShowSelector, onSelectBackground } = useBackgroundSelector(
+                vi.fn()
+            )
             toggleShowSelector() // open
             onSelectBackground('void')
             expect(selectorOpen.value).toBe(false)

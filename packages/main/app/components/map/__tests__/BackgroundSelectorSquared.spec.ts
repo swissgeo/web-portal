@@ -1,6 +1,7 @@
+import type { Layer } from '@swissgeo/layers'
+
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { Layer } from '@swissgeo/layers'
 
 // Use vi.hoisted so these refs are available inside the hoisted vi.mock factory.
 const { mockSelectorOpen, mockOnSelectBackground, mockToggleShowSelector } = vi.hoisted(() => {
@@ -21,8 +22,9 @@ vi.mock('~/components/map/useBackgroundSelector', () => ({
     })),
 }))
 
-import BackgroundSelectorSquared from '~/components/map/BackgroundSelectorSquared.vue'
 import type { VoidLayer } from '~/components/map/useBackgroundSelector'
+
+import BackgroundSelectorSquared from '~/components/map/BackgroundSelectorSquared.vue'
 
 // MapBackgroundSelectorEntry is a Nuxt auto-imported component — stub it.
 const stubs = { MapBackgroundSelectorEntry: true }
