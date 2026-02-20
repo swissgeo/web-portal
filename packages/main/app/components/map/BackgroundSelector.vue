@@ -3,14 +3,10 @@ import type { DatasetLayer, Layer } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
 
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
-//import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
-//import BackgroundSelectorWheelRounded from '@/modules/map/components/footer/backgroundSelector/BackgroundSelectorWheelRounded.vue'
 import { computedAsync } from '@vueuse/core'
 
 import type { VoidLayer } from './useBackgroundSelector'
 
-// import useUIStore from '@/stores/ui'
-// const dispatcher: ActionDispatcher = { name: 'BackgroundSelector.vue' }
 import { AVAILABLE_BACKGROUNDS } from './constants'
 
 const layerStore = useLayerStore()
@@ -59,15 +55,18 @@ function selectBackground(backgroundLayer: Layer | VoidLayer) {
 </script>
 
 <template>
+    <!-- Desktop (sm+): rectangular buttons spread to the left, fixed bottom-right -->
     <MapBackgroundSelectorSquared
+        class="max-sm:hidden"
         :background-layers="sortedBackgroundLayersWithVoid"
         :current-background-layer="layerStore.backgroundLayer ?? 'void'"
         @select-background="selectBackground"
     />
-    <!-- <BackgroundSelectorWheelRounded
-        v-else
+    <!-- Mobile (below sm): circular buttons spread upward, fixed bottom-left -->
+    <MapBackgroundSelectorRounded
+        class="sm:hidden"
         :background-layers="sortedBackgroundLayersWithVoid"
-        :current-background-layer="layersStore.currentBackgroundLayer"
+        :current-background-layer="layerStore.backgroundLayer ?? 'void'"
         @select-background="selectBackground"
-    /> -->
+    />
 </template>
