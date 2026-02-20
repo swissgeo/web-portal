@@ -1,9 +1,9 @@
 import type { Layer } from '@swissgeo/layers'
 
-import pixelkarteFarbeUrl from '@/assets/backgroundLayersImages/ch.swisstopo.pixelkarte-farbe.png'
-import pixelkarteGrauUrl from '@/assets/backgroundLayersImages/ch.swisstopo.pixelkarte-grau.png'
-import swissImageUrl from '@/assets/backgroundLayersImages/ch.swisstopo.swissimage.png'
-import voidUrl from '@/assets/backgroundLayersImages/void.png'
+import pixelkarteFarbeUrl from '~/assets/backgroundLayersImages/ch.swisstopo.pixelkarte-farbe.png'
+import pixelkarteGrauUrl from '~/assets/backgroundLayersImages/ch.swisstopo.pixelkarte-grau.png'
+import swissImageUrl from '~/assets/backgroundLayersImages/ch.swisstopo.swissimage.png'
+import voidUrl from '~/assets/backgroundLayersImages/void.png'
 
 export type VoidLayer = 'void'
 
