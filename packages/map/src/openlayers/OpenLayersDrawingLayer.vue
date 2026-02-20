@@ -126,6 +126,9 @@ watch(
     () => layer.zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
+    },
+    {
+        immediate: true,
     }
 )
 

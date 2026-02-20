@@ -84,6 +84,8 @@ export function useDrawingManager() {
 
         if (!existingLayer) {
             createDrawingLayer()
+        } else {
+            layerStore.setLayerZIndex(existingLayer, layerStore.greatestZIndex)
         }
 
         if (!drawingStore.isDrawing) {
