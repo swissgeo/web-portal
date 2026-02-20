@@ -54,7 +54,7 @@ function mapBackgroundLayerToTranslationKey(layer: Layer | VoidLayer): string {
             />
         </span>
         <slot :folded="folded" />
-        <span class="bg-entry-label absolute right-0 bottom-0 left-0 bg-[#343a40] opacity-75">
+        <span class="bg-entry-label absolute right-0 bottom-0 left-0 bg-[rgba(52,58,64,0.75)]">
             <span class="block text-xs text-white">
                 {{ layerTranslationKey }}
             </span>
@@ -75,7 +75,7 @@ function mapBackgroundLayerToTranslationKey(layer: Layer | VoidLayer): string {
 }
 
 .bg-entry.active {
-    border-color: white;
+    border-color: #dc2626;
 }
 
 .bg-entry-image {
