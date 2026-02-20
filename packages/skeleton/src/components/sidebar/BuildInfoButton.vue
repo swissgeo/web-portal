@@ -3,10 +3,10 @@ import LucideIcon from '@/components/LucideIcon.vue'
 
 const config = useRuntimeConfig()
 
-const gitCommit = config.public.gitCommit as string
-const buildTime = config.public.buildTime as string
+const gitCommit = config.public.gitCommit
+const buildTime = config.public.buildTime
 
-const iconRef = ref<HTMLElement | null>(null)
+const iconRef = ref<HTMLButtonElement | null>(null)
 const popupRef = ref<HTMLElement | null>(null)
 const isVisible = ref(false)
 const popupTop = ref(0)
@@ -39,17 +39,21 @@ async function showPopup() {
 </script>
 
 <template>
-    <div
+    <button
         ref="iconRef"
+        aria-label="Build information"
         class="flex h-10 w-10 items-center justify-center"
         @mouseenter="showPopup"
         @mouseleave="isVisible = false"
+        @focus="showPopup"
+        @blur="isVisible = false"
+        @click="isVisible = !isVisible"
     >
         <LucideIcon
             name="Info"
-            class="w-5 cursor-default text-cyan-900 opacity-50"
+            class="w-5 text-cyan-900 opacity-50"
         />
-    </div>
+    </button>
     <Teleport to="body">
         <div
             ref="popupRef"
