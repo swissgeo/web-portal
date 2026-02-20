@@ -1,10 +1,13 @@
-import type { UserConfig } from 'vite'
+type BaseBuildConfig = {
+    minify: boolean
+    sourcemap: boolean
+}
 
-export const getBaseBuildConfig = (mode: string): NonNullable<UserConfig['build']> => {
-  const isDevelopment = mode === 'development'
+export const getBaseBuildConfig = (mode: string): BaseBuildConfig => {
+    const isDevelopment = mode === 'development'
 
-  return {
-    minify: !isDevelopment,
-    sourcemap: isDevelopment,
-  }
+    return {
+        minify: !isDevelopment,
+        sourcemap: isDevelopment,
+    }
 }

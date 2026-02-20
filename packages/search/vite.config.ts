@@ -1,7 +1,8 @@
 import { resolve } from 'node:path'
 import dts from 'unplugin-dts/vite'
-import { getBaseBuildConfig } from '../../base.vite.config'
 import { defineConfig } from 'vite'
+
+import { getBaseBuildConfig } from '../../base.vite.config'
 
 export default defineConfig(({ mode }) => ({
     plugins: [

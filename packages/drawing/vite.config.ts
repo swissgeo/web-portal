@@ -5,9 +5,10 @@ import { resolve } from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'unplugin-dts/vite'
 import { fileURLToPath, URL } from 'url'
-import { getBaseBuildConfig } from '../../base.vite.config'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
+
+import { getBaseBuildConfig } from '../../base.vite.config'
 
 export default defineConfig(({ mode }): UserConfig => {
     return {

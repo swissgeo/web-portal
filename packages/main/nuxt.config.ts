@@ -33,12 +33,14 @@ export default defineNuxtConfig({
     },
     vite: {
         plugins: [vueDevTools(), nodePolyfills()],
+        build: {
+            minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
+        },
         resolve: {
             alias: {
                 '@geonetwork-ui': fileURLToPath(new URL('./geonetwork-ui', import.meta.url)),
             },
         },
-        minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
     },
     i18n: {
         detectBrowserLanguage: {
