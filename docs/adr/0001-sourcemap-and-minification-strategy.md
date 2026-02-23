@@ -1,8 +1,8 @@
 # ADR 0001: Sourcemap and Minification Strategy
 
-- Status: Proposed
-- Date: 2026-02-19
-- Deciders: ?
+- Status: Accepted
+- Date: 2026-02-23
+- Deciders: Stefan Heinemann, Felix Sommer
 
 ## Context
 
