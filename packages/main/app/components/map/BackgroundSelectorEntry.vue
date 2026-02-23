@@ -39,31 +39,78 @@ function mapBackgroundLayerToTranslationKey(layer: Layer | VoidLayer): string {
 
 <template>
     <button
-        class="relative cursor-pointer rounded-lg border-4 border-solid border-[#343a40]"
-        :class="{ active: isCurrent, 'w-[98px]': !folded, 'w-[39px]': folded }"
+        class="bg-entry relative cursor-pointer overflow-hidden rounded-lg border-4 border-solid border-[#343a40]"
+        :class="{ active: isCurrent, folded }"
         type="button"
         :data-cy="cyId"
         @click="emit('click')"
     >
-        <span
-            class="flex h-[65px] items-center justify-center overflow-hidden"
-            :class="{ 'w-[90px]': !folded, 'w-[31px]': folded }"
-        >
+        <span class="bg-entry-image flex h-[65px] items-center justify-center overflow-hidden">
             <img
-                class="h-full w-full"
                 v-if="backgroundLayer"
+                class="h-full w-full object-cover"
                 :src="getImageForBackgroundLayer(backgroundLayer)"
                 alt="background image"
             />
         </span>
         <slot :folded="folded" />
-        <span
-            class="absolute right-0 bottom-0 left-0 w-full bg-[#343a40] opacity-75"
-            :class="{ hidden: folded }"
-        >
+        <span class="bg-entry-label absolute right-0 bottom-0 left-0 bg-[rgba(52,58,64,0.75)]">
             <span class="block text-xs text-white">
                 {{ layerTranslationKey }}
             </span>
         </span>
     </button>
 </template>
+
+<style scoped>
+.bg-entry {
+    width: 98px;
+    transition:
+        width 0.3s ease,
+        border-color 0.2s ease;
+}
+
+.bg-entry.folded {
+    width: 39px;
+}
+
+.bg-entry.active {
+    border-color: #dc2626;
+}
+
+.bg-entry-image {
+    width: 90px;
+    transition: width 0.3s ease;
+}
+
+.bg-entry.folded .bg-entry-image {
+    width: 31px;
+}
+
+.bg-entry-label {
+    transition: opacity 0.2s ease;
+}
+
+.bg-entry.folded .bg-entry-label {
+    opacity: 0;
+    pointer-events: none;
+}
+
+@media (max-width: 480px) {
+    .bg-entry {
+        width: 72px;
+    }
+
+    .bg-entry.folded {
+        width: 32px;
+    }
+
+    .bg-entry-image {
+        width: 64px;
+    }
+
+    .bg-entry.folded .bg-entry-image {
+        width: 24px;
+    }
+}
+</style>

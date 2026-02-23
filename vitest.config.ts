@@ -16,10 +16,13 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, 'packages/map/src'),
       '~': resolve(__dirname, 'packages/main/app'),
+      // vue-i18n is a transitive dep not directly accessible in pnpm;
+      // redirect to a lightweight stub so components using useI18n() compile in tests.
+      'vue-i18n': resolve(__dirname, 'test-utils/vue-i18n-stub.ts'),
     },
   },
   plugins: [
     vue(),
-    AutoImport({ imports: ['vue'], dts: false }),
+    AutoImport({ imports: ['vue', 'vue-i18n'], dts: false }),
   ],
 })
