@@ -1,13 +1,15 @@
 # syntax=docker/dockerfile:1
 FROM node:24-alpine AS build
+ARG TARGET_ENV="prod"
 WORKDIR /app
+RUN echo "Building for '$TARGET_ENV'"
 
 RUN corepack enable
 
 COPY --exclude=node_modules . ./
 
 RUN pnpm install --frozen-lockfile
-RUN pnpm run build
+RUN pnpm run build:${TARGET_ENV}
 
 FROM node:24-alpine
 

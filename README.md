@@ -37,7 +37,6 @@ to fetch the data to create an openlayers map.
 
 Since we still have to share some types and data structures across the packages, there is a package `shared` for that.
 
-The `skeleton` package contains basic UI elements. Everything that isn't specific to a
-certain feature should go here.
+The `skeleton` package contains UI elements and things that are not specific to a specific page/view of the app.
 
 In the future, we'll have `content` from a CMS in this webapp. This package takes care of that.
