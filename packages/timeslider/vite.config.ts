@@ -18,7 +18,7 @@ export default defineConfig(({ mode }): UserConfig => {
                 name: '@swissgeo/timeslider',
             },
             rollupOptions: {
-                external: ['vue', 'pinia', 'lucide-vue-next'],
+                external: ['vue', 'lucide-vue-next'],
                 output: {
                     exports: 'named',
                     globals: {
@@ -38,7 +38,7 @@ export default defineConfig(({ mode }): UserConfig => {
             vue(),
             AutoImport({
                 dirs: ['./src/**'],
-                imports: ['vue', 'vue-i18n', 'pinia'],
+                imports: ['vue', 'vue-i18n'],
                 eslintrc: {
                     enabled: true,
                     filepath: '.output/eslintrc-auto-import.json',

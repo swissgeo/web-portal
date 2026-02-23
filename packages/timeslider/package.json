@@ -10,10 +10,7 @@
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.es.js"
-        },
-        "./stylesheet": [
-            "./dist/timeslider.css"
-        ]
+        }
     },
     "main": "index.ts",
     "scripts": {
