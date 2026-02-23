@@ -58,7 +58,10 @@ const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgro
             <button
                 v-for="(backgroundLayer, index) in selectorOpen ? backgroundLayers : []"
                 :key="layerKey(backgroundLayer)"
-                :style="{ '--reverse-index': backgroundLayers.length - 1 - index, '--max-index': backgroundLayers.length - 1 }"
+                :style="{
+                    '--reverse-index': backgroundLayers.length - 1 - index,
+                    '--max-index': backgroundLayers.length - 1,
+                }"
                 class="bg-round-btn cursor-pointer overflow-hidden rounded-full border-4 border-solid border-[#343a40]"
                 :class="{ active: isCurrent(backgroundLayer) }"
                 type="button"
