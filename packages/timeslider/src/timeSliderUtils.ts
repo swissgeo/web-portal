@@ -8,6 +8,7 @@ const ALL_YEARS_TIMESTAMP = 'all'
 /** Timestamp to describe "current" or latest available data for a time enabled WMTS layer */
 const CURRENT_YEAR_TIMESTAMP = 'current'
 
+// FIXME: This type will move to @swissgeo/shared — see https://github.com/swissgeo/web-portal/pull/62
 export type LayerWithTime = Layer & { dimensions: { time: Dimension } }
 
 /**
