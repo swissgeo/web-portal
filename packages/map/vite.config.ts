@@ -6,6 +6,8 @@ import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
+import { getBaseBuildConfig } from '../../base.vite.config'
+
 export default defineConfig(({ mode }) => {
     return {
         test: {
@@ -26,9 +28,7 @@ export default defineConfig(({ mode }) => {
             },
         },
         build: {
-            // don't minify in dev build. This helps with debugging
-            // maybe this could be solved in a better way with sourcemap?
-            minify: mode === 'development' ? false : true,
+            ...getBaseBuildConfig(mode),
             lib: {
                 entry: resolve(__dirname, 'src/index.ts'),
                 fileName: (format) => `index.${format}.js`,
@@ -43,7 +43,6 @@ export default defineConfig(({ mode }) => {
                     },
                 },
             },
-            sourcemap: true,
         },
         resolve: {
             alias: {

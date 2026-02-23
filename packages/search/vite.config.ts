@@ -2,7 +2,9 @@ import { resolve } from 'node:path'
 import dts from 'unplugin-dts/vite'
 import { defineConfig } from 'vite'
 
-export default defineConfig({
+import { getBaseBuildConfig } from '../../base.vite.config'
+
+export default defineConfig(({ mode }) => ({
     plugins: [
         dts({
             entryRoot: 'src',
@@ -10,7 +12,7 @@ export default defineConfig({
         }),
     ],
     build: {
-        minify: false,
+        ...getBaseBuildConfig(mode),
         lib: {
             entry: resolve(__dirname, 'src/index.ts'),
             formats: ['es'],
@@ -24,4 +26,4 @@ export default defineConfig({
             },
         },
     },
-})
+}))

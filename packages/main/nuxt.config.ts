@@ -27,11 +27,15 @@ export default defineNuxtConfig({
         },
     },
     sourcemap: {
-        server: true,
-        client: true,
+        // Enable in dev, disable in prod (unless you have a private uploader)
+        server: process.env.NODE_ENV !== 'production',
+        client: process.env.NODE_ENV !== 'production',
     },
     vite: {
         plugins: [vueDevTools(), nodePolyfills()],
+        build: {
+            minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
+        },
         resolve: {
             alias: {
                 '@geonetwork-ui': fileURLToPath(new URL('./geonetwork-ui', import.meta.url)),
