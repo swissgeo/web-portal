@@ -3,6 +3,10 @@ import type { Layer } from '@swissgeo/layers'
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+import type { VoidLayer } from '~/components/map/useBackgroundSelector'
+
+type SquaredVM = { selectBackgroundCallback: (layer: Layer | VoidLayer) => void }
+
 // Use vi.hoisted so these refs are available inside the hoisted vi.mock factory.
 const { mockSelectorOpen, mockOnSelectBackground, mockToggleShowSelector } = vi.hoisted(() => {
     const { ref } = require('vue')
@@ -21,8 +25,6 @@ vi.mock('~/components/map/useBackgroundSelector', () => ({
         toggleShowSelector: mockToggleShowSelector,
     })),
 }))
-
-import type { VoidLayer } from '~/components/map/useBackgroundSelector'
 
 import BackgroundSelectorSquared from '~/components/map/BackgroundSelectorSquared.vue'
 
@@ -88,8 +90,7 @@ describe('BackgroundSelectorSquared.vue', () => {
             props: defaultProps,
             global: { stubs },
         })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(wrapper.vm as any).selectBackgroundCallback(farbeLayer)
+        ;(wrapper.vm as unknown as SquaredVM).selectBackgroundCallback(farbeLayer)
         await wrapper.vm.$nextTick()
         expect(wrapper.emitted('selectBackground')).toBeFalsy()
     })
@@ -99,8 +100,7 @@ describe('BackgroundSelectorSquared.vue', () => {
             props: defaultProps,
             global: { stubs },
         })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(wrapper.vm as any).selectBackgroundCallback(grauLayer)
+        ;(wrapper.vm as unknown as SquaredVM).selectBackgroundCallback(grauLayer)
         await wrapper.vm.$nextTick()
         expect(wrapper.emitted('selectBackground')?.[0]).toEqual([grauLayer])
     })

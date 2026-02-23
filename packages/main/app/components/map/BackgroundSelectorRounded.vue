@@ -23,10 +23,8 @@ function isCurrent(backgroundLayer: Layer | VoidLayer) {
 }
 
 function selectBackgroundCallback(backgroundLayer: Layer | VoidLayer): void {
-    if (backgroundLayer !== 'void') {
-        if (isCurrent(backgroundLayer)) {
-            return
-        }
+    if (isCurrent(backgroundLayer)) {
+        return
     }
     emit('selectBackground', backgroundLayer)
 }
@@ -60,7 +58,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgro
             <button
                 v-for="(backgroundLayer, index) in selectorOpen ? backgroundLayers : []"
                 :key="layerKey(backgroundLayer)"
-                :style="{ '--reverse-index': backgroundLayers.length - 1 - index }"
+                :style="{ '--reverse-index': backgroundLayers.length - 1 - index, '--max-index': backgroundLayers.length - 1 }"
                 class="bg-round-btn cursor-pointer overflow-hidden rounded-full border-4 border-solid border-[#343a40]"
                 :class="{ active: isCurrent(backgroundLayer) }"
                 type="button"
@@ -133,7 +131,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgro
         opacity 0.25s ease,
         transform 0.25s ease;
     /* Reverse stagger on close: farthest button collapses first */
-    transition-delay: calc((3 - var(--reverse-index, 0)) * 0.03s);
+    transition-delay: calc((var(--max-index, 3) - var(--reverse-index, 0)) * 0.03s);
 }
 
 .bg-round-option-enter-from {

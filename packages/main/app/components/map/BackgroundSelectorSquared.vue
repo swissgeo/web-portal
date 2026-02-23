@@ -25,12 +25,10 @@ function isCurrent(backgroundLayer: Layer | VoidLayer) {
 }
 
 function selectBackgroundCallback(backgroundLayer: Layer | VoidLayer): void {
-    if (backgroundLayer !== 'void') {
-        if (isCurrent(backgroundLayer)) {
-            // don't update if it's the same already, otherwise the user has a little
-            // flicker and unnecessary computation power is used
-            return
-        }
+    // don't update if it's the same already, otherwise the user has a little
+    // flicker and unnecessary computation power is used
+    if (isCurrent(backgroundLayer)) {
+        return
     }
     emit('selectBackground', backgroundLayer)
 }
@@ -59,7 +57,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground } =
             <MapBackgroundSelectorEntry
                 v-for="(backgroundLayer, index) in selectorOpen ? backgroundLayers : []"
                 :key="layerKey(backgroundLayer)"
-                :style="{ '--reverse-index': backgroundLayers.length - 1 - index }"
+                :style="{ '--reverse-index': backgroundLayers.length - 1 - index, '--max-index': backgroundLayers.length - 1 }"
                 :background-layer="backgroundLayer"
                 :is-current="isCurrent(backgroundLayer)"
                 @click="onSelectBackground(backgroundLayer)"
@@ -107,7 +105,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground } =
         opacity 0.25s ease,
         transform 0.25s ease;
     /* Reverse stagger on close: furthest button collapses first */
-    transition-delay: calc((3 - var(--reverse-index, 0)) * 0.03s);
+    transition-delay: calc((var(--max-index, 3) - var(--reverse-index, 0)) * 0.03s);
 }
 
 .bg-option-enter-from {
