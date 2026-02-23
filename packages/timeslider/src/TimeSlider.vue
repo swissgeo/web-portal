@@ -34,7 +34,6 @@ const playYearsWithData = ref(false)
 const yearCursorIsGrabbed = ref(false)
 
 const outerContainer = useTemplateRef<HTMLDivElement>('outerContainer')
-const sliderContainer = useTemplateRef<HTMLDivElement>('sliderContainer')
 const containerWidth = ref(0)
 
 useResizeObserver(outerContainer, (entries) => {
@@ -223,7 +222,6 @@ function handleKeyDownEvent(event: KeyboardEvent) {
 <template>
     <div ref="outerContainer">
         <div
-            ref="sliderContainer"
             data-cy="time-slider"
             class="rounded-lg border border-gray-200 bg-white px-2 py-2 shadow-lg"
             :class="{ grabbed: yearCursorIsGrabbed, 'w-fit': isMobile }"
