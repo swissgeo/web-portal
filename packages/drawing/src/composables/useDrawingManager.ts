@@ -4,10 +4,10 @@ import type { Geometry } from 'ol/geom'
 
 import { useLayerStore } from '@swissgeo/layers'
 import log from '@swissgeo/log'
+import { DRAWING_LAYER_ID } from '@swissgeo/shared'
 
 import { useDrawingStore } from '@/stores/drawing'
 
-export const DRAWING_LAYER_ID = 'user-drawing-layer'
 const DRAWING_KML_LAYER_ID = 'user-drawing-layer-kml'
 const DRAWING_LAYER_NAME = 'My Drawings'
 const DRAWING_KML_LAYER_NAME = 'My Drawings KML'

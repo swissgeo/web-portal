@@ -11,6 +11,8 @@ import { register } from 'ol/proj/proj4'
 import { Fill, Icon, Stroke, Style } from 'ol/style'
 import proj4 from 'proj4'
 
+import type { DrawingMode } from '@/types'
+
 import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@/constants/projections'
 import {
     DEFAULT_MARKER_ICON,

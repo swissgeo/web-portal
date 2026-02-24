@@ -25,6 +25,7 @@ export default defineConfig(({ mode }): UserConfig => {
                     'pinia',
                     '@swissgeo/layers',
                     '@swissgeo/log',
+                    '@swissgeo/shared',
                     'ol',
                     'lucide-vue-next',
                 ],
@@ -43,7 +44,7 @@ export default defineConfig(({ mode }): UserConfig => {
             tsconfigPaths(),
             vue(),
             AutoImport({
-                dirs: ['./src/**'],
+                dirs: ['./src/composables/**', './src/stores/**'],
                 imports: ['vue', 'vue-router', 'vue-i18n', 'pinia'],
                 eslintrc: {
                     enabled: true,

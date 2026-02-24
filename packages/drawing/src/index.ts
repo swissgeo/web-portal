@@ -12,10 +12,15 @@ export {
     getMarkerIconById,
     type MarkerIcon,
 } from '@/utils/markerIcons'
-export { DRAWING_LAYER_ID } from '@/composables/useDrawingManager'
 
 // Types
 export type { DrawingMode } from '@/types'
 
 // Constants
 export { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@/constants/projections'
+
+// Components
+export { default as OpenLayersDrawingLayer } from '@/components/OpenLayersDrawingLayer.vue'
+
+// Layer matching
+export { isDrawingLayer } from '@/utils/isDrawingLayer'

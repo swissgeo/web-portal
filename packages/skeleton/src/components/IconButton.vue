@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAttrs, computed } from 'vue'
 
-import LucideIcon from './LucideIcon.vue'
+import LucideIcon from '@/components/LucideIcon.vue'
 
 const attrs = useAttrs()
 

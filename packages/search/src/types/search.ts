@@ -90,3 +90,14 @@ export interface SearchResponseResult {
 export interface SearchResponse {
     results: SearchResponseResult[]
 }
+
+export interface CatalogRecord {
+    id: string
+    properties?: {
+        title?: string
+        description?: string
+        keywords?: string[]
+        // Allow for potential language-specific fields
+        [key: string]: unknown
+    }
+}

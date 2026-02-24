@@ -7,6 +7,8 @@ import Map from 'ol/Map'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 
+import type { MapLayerRenderer } from '@/types'
+
 import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.composable'
 
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
@@ -15,6 +17,7 @@ import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 const { layers } = defineProps<{
     layers: Layer[]
     backgroundLayer?: Layer | null
+    customLayerRenderers?: MapLayerRenderer[]
 }>()
 
 const mapElement = useTemplateRef('mapElement')
@@ -59,11 +62,13 @@ createOlMap()
     >
         <OpenLayersVisibleLayer
             :layer="backgroundLayer"
+            :custom-layer-renderers="customLayerRenderers"
             v-if="backgroundLayer"
             :key="backgroundLayer.uuid"
         />
         <OpenLayersVisibleLayer
             :layer="layer"
+            :custom-layer-renderers="customLayerRenderers"
             :key="layer.uuid"
             v-for="layer in layers"
         />
