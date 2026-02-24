@@ -69,35 +69,24 @@ export interface SearchResponseResult {
     id: number
     weight: number
     attrs: {
-        featureId: string
-        detail: string
+        featureId?: string
+        detail?: string
         geom_quadindex?: string
         geom_st_box2d?: string
         label: string
-        lat: number
-        lon: number
+        lat?: number
+        lon?: number
         num?: number
         objectclass?: string
         origin?: string
         rank?: number
-        x: number
-        y: number
-        zoomlevel: number
+        x?: number
+        y?: number
+        zoomlevel?: number | null
         layer?: string
     }
 }
 
 export interface SearchResponse {
     results: SearchResponseResult[]
-}
-
-export interface CatalogRecord {
-    id: string
-    properties?: {
-        title?: string
-        description?: string
-        keywords?: string[]
-        // Allow for potential language-specific fields
-        [key: string]: unknown
-    }
 }
