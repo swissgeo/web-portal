@@ -5,6 +5,7 @@ import { useDrawingStore } from '@swissgeo/drawing'
 import { useLayerStore } from '@swissgeo/layers'
 import { getDisplayNameFromTimestamp } from '@swissgeo/shared'
 import { computed } from 'vue'
+import { getDisplayNameFromTimestamp } from '@swissgeo/shared'
 
 import IconButton from '@/components/IconButton.vue'
 
