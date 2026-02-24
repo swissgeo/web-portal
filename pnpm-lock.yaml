@@ -848,6 +848,9 @@ importers:
       '@swissgeo/config-typescript':
         specifier: 'catalog:'
         version: 1.0.0(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3))
+      '@swissgeo/numbers':
+        specifier: 'catalog:'
+        version: 1.0.0(proj4@2.20.2)
       '@types/mapbox-gl':
         specifier: 'catalog:'
         version: 3.4.1
