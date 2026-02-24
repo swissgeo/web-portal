@@ -8,7 +8,7 @@ import type {
     LocationSearchResult,
     SearchResponse,
     SearchResponseResult,
-} from '../types/search'
+} from '@/types/search'
 
 /**
  * Catalog record structure as used in layer search. This extends the base OGCRecord with the
@@ -25,9 +25,11 @@ interface CatalogRecord {
 
 // Regex to detect and strip HTML tags
 const REGEX_DETECT_HTML_TAGS = /<\/?[^>]+(>|$)/g
-
-/** Escape HTML special characters to prevent XSS */
-function escapeHtml(text: string): string {
+const REGEX_BOUNDING_BOX = /BOX\(([0-9.]+)\s+([0-9.]+),([0-9.]+)\s+([0-9.]+)\)/
+/** Escape HTML special characters to prevent XSS
+ * Only exported for unit tests
+ */
+export function escapeHtml(text: string): string {
     return text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -36,7 +38,9 @@ function escapeHtml(text: string): string {
         .replace(/'/g, '&#039;')
 }
 
-/** Sanitize title by removing HTML tags */
+/** Sanitize title by removing HTML tags
+ * Only exported for unit tests
+ */
 export function sanitizeTitle(title: string = ''): string {
     return title.replace(REGEX_DETECT_HTML_TAGS, '')
 }
@@ -52,8 +56,10 @@ export function sanitizeTitle(title: string = ''): string {
  *
  * We need to swap them to match the standard [X, Y] = [easting, northing] convention used by
  * OpenLayers and our coordinate system.
+ *
+ * Exported for testing purpose
  */
-function parseLocationResult(result: SearchResponseResult): LocationSearchResult {
+export function parseLocationResult(result: SearchResponseResult): LocationSearchResult {
     if (!result.attrs) {
         throw new Error('Invalid location result, cannot be parsed')
     }
@@ -77,11 +83,11 @@ function parseLocationResult(result: SearchResponseResult): LocationSearchResult
     // Swap API's [x, y] = [northing, easting] to standard [easting, northing]
     return {
         resultType: 'LOCATION',
-        id: featureId || label,
-        featureId: featureId || label,
+        id: featureId ?? label,
+        featureId: featureId ?? label,
         title: label,
         sanitizedTitle: sanitizeTitle(label),
-        description: detail || '',
+        description: detail ?? '',
         coordinate: x && y ? [y, x] : undefined, // [easting, northing] = [api.y, api.x]
         zoom,
     }
@@ -149,18 +155,17 @@ export async function searchLocation(
  * @param lang - Language code (de, fr, etc.)
  * @param catalogRecords - Array of OGC catalog records
  * @param limit - Maximum number of results (default: 10)
- * @returns Promise with layer search results
+ * @returns the layer search results
  */
 export function searchLayers(
     queryString: string,
-    lang: string,
     catalogRecords: CatalogRecord[],
     limit: number = 10
-): Promise<LayerSearchResult[]> {
+): LayerSearchResult[] {
     const query = queryString.toLowerCase().trim()
 
     if (query.length < 2) {
-        return new Promise(() => [])
+        return []
     }
 
     try {
@@ -200,14 +205,14 @@ export function searchLayers(
                 }
             })
 
-        return new Promise(() => matches)
+        return matches
     } catch (error) {
         log.error({
             title: 'searchLayers',
             titleColor: LogPreDefinedColor.Red,
             messages: ['Failed to search layers:', error],
         })
-        return new Promise(() => [])
+        return []
     }
 }
 
@@ -250,12 +255,9 @@ export async function searchLayerFeatures(
         if (!response.ok) {
             throw new Error(`Feature search API error: ${response.status}`)
         }
-
-        const data: SearchResponse = await response.json()
-
+        const data: SearchResponse = response.json
         // Filter results with attrs
-        const resultWithAttrs = data.results?.filter((result) => !!result.attrs) || []
-
+        const resultWithAttrs = data.results?.filter((result) => !!result.attrs)
         return resultWithAttrs.map((result) => {
             // Feature search results don't have x/y, but have geom_st_box2d
             // Parse coordinates from the bounding box
@@ -263,9 +265,7 @@ export async function searchLayerFeatures(
 
             if (result.attrs.geom_st_box2d) {
                 // Extract coordinates from BOX(x1 y1, x2 y2) format
-                const boxMatch = result.attrs.geom_st_box2d.match(
-                    /BOX\(([0-9.]+)\s+([0-9.]+),([0-9.]+)\s+([0-9.]+)\)/
-                )
+                const boxMatch = result.attrs.geom_st_box2d.match(REGEX_BOUNDING_BOX)
                 if (boxMatch) {
                     // Use the first point (or center if it's a polygon)
                     const x = parseFloat(boxMatch[1]!)
@@ -276,16 +276,16 @@ export async function searchLayerFeatures(
 
             return {
                 resultType: 'FEATURE' as const,
-                id: result.attrs.featureId || result.attrs.label,
-                featureId: result.attrs.featureId || result.attrs.label,
+                id: result.attrs.featureId ?? result.attrs.label,
+                featureId: result.attrs.featureId ?? result.attrs.label,
                 layerId,
                 layerName,
                 // Format title to show layer name in bold - escape HTML to prevent XSS
                 title: `<strong>${escapeHtml(layerName)}</strong><br/>${escapeHtml(result.attrs.label)}`,
                 sanitizedTitle: `${layerName} - ${sanitizeTitle(result.attrs.label)}`,
-                description: result.attrs.detail || '',
+                description: result.attrs.detail ?? '',
                 coordinate,
-                zoom: result.attrs.zoomlevel || 10, // Default to zoom 10 for features
+                zoom: result.attrs.zoomlevel ?? 10, // Default to zoom 10 for features
             }
         })
     } catch (error) {

@@ -81,7 +81,7 @@ export const useSearchStore = defineStore('search', () => {
             // Build search promises array
             const searchPromises: Promise<SearchResult[]>[] = [
                 searchLocation(newQuery, lang, abortController.signal),
-                searchLayers(newQuery, lang, catalog.value?.records || []),
+                new Promise(() => searchLayers(newQuery, catalog.value?.records || [])),
             ]
 
             // Add feature search for each searchable layer
