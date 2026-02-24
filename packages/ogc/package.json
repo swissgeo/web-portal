@@ -26,6 +26,7 @@
         "@swissgeo/log": "catalog:",
         "@swissgeo/shared": "workspace:*",
         "@types/openlayers": "catalog:",
+        "@vueuse/core": "catalog:",
         "ol": "catalog:"
     },
     "devDependencies": {
@@ -40,6 +41,9 @@
         "unplugin-dts": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:"
+    },
+    "peerDependencies": {
+        "vue": "catalog:"
     },
     "packageManager": "pnpm@10.30.0"
 }

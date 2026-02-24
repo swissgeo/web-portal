@@ -44,9 +44,10 @@ catalog:
     '@vitejs/plugin-vue': ^6.0.4
     '@vue/eslint-config-prettier': ^10.2.0
     '@vue/eslint-config-typescript': ^14.6.0
+    '@vue/reactivity': ^3.5.28
     '@vue/test-utils': ^2.4.6
     '@vue/tsconfig': ^0.8.1
-    '@vueuse/core': ^14.0.0
+    '@vueuse/core': ^14.2.1
     '@xmldom/xmldom': ^0.8.11
     axios: ^1.11.0
     chai: ^6.2.0
@@ -86,6 +87,7 @@ catalog:
     stylelint-config-recommended-vue: 1.6.1
     stylelint-order: ^7.0.0
     tailwindcss: ^4.1.18
+    tailwindcss-primeui: ^0.6.1
     typescript: ^5.9.3
     typescript-eslint: ^8.46.1
     unplugin-dts: 1.0.0-beta.6
