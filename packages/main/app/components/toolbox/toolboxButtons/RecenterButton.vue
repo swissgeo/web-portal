@@ -32,7 +32,7 @@ function toggleTracking(): void {
 
 <template>
     <button
-        class="h-[40px] w-[40px] rounded-[20px] bg-black text-white"
+        class="h-[40px] w-[40px] cursor-pointer rounded-[20px] bg-black text-white"
         data-cy="recenter-button"
         :disabled="isDisabled()"
         type="button"

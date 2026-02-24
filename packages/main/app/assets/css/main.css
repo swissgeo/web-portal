@@ -3,10 +3,12 @@
 @import '@fontsource/inter';
 @import '@fontsource/geologica';
 @import '@fontsource/dm-sans';
+@import '@swissgeo/timeslider/stylesheet';
 
 @source '../../../../skeleton/';
 @source '../../../../content/';
 @source '../../../../map/';
+@source '../../../../timeslider/';
 
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
 @import '@nuxt/ui';

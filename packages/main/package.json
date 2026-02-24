@@ -36,6 +36,8 @@
         "@swissgeo/search": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "@swissgeo/skeleton": "workspace:*",
+        "@swissgeo/timeslider": "workspace:*",
+        "@tailwindcss/vite": "catalog:",
         "@types/geojson": "catalog:",
         "@types/sanitize-html": "catalog:",
         "@vueuse/core": "catalog:",

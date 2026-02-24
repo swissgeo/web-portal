@@ -3,8 +3,12 @@ import type { Dimension, Layer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { isTimestampYYYYMMDD } from '@swissgeo/numbers'
 
-import { CURRENT_YEAR_TIMESTAMP, ALL_YEARS_TIMESTAMP } from '../../utils/timeUtils'
+/** Timestamp to describe "all data" for time enabled WMS layer */
+const ALL_YEARS_TIMESTAMP = 'all'
+/** Timestamp to describe "current" or latest available data for a time enabled WMTS layer */
+const CURRENT_YEAR_TIMESTAMP = 'current'
 
+// FIXME: This type will move to @swissgeo/shared — see https://github.com/swissgeo/web-portal/pull/62
 export type LayerWithTime = Layer & { dimensions: { time: Dimension } }
 
 /**

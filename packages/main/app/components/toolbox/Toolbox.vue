@@ -6,6 +6,8 @@
  * 05.02.2026 ; for now, for each button, this is a "static" ref value, but when we implement the
  * logic behind the available buttons, it should become a computed value instead.
  */
+import { useLayerStore } from '@swissgeo/layers'
+
 import FullScreenButton from '@/components/toolbox/toolboxButtons/FullScreenButton.vue'
 import GeolocButton from '@/components/toolbox/toolboxButtons/GeolocButton.vue'
 import RecenterButton from '@/components/toolbox/toolboxButtons/RecenterButton.vue'
@@ -14,6 +16,9 @@ import Toggle3dButton from '@/components/toolbox/toolboxButtons/Toggle3dButton.v
 import ZoomButtons from '@/components/toolbox/toolboxButtons/ZoomButtons.vue'
 
 import CompassButton from './toolboxButtons/CompassButton.vue'
+
+const layerStore = useLayerStore()
+const mapViewStore = useMapViewStore()
 
 const showFullScreeButton = ref(true)
 
@@ -24,7 +29,15 @@ const showCompassButton = ref(true)
 
 const showZoomButtons = ref(true)
 const show3dButton = ref(true)
-const showTimeSliderButton = ref(true)
+const showTimeSliderButton = computed(() => {
+    return layerStore.layers.some((layer) => layer.dimensions && 'time' in layer.dimensions)
+})
+
+watch(showTimeSliderButton, (hasTimeLayers) => {
+    if (!hasTimeLayers) {
+        mapViewStore.closeTimeSlider()
+    }
+})
 </script>
 
 <template>

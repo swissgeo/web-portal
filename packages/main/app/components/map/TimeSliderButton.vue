@@ -1,34 +1,56 @@
 <script setup lang="ts">
-import { TimeSlider } from '@swissgeo/map'
-import { IconButton } from '@swissgeo/skeleton'
-import { ref } from 'vue'
+import type { Dimension, Layer } from '@swissgeo/layers'
+import type { LayerWithTime } from '@swissgeo/timeslider'
 
-const isTimeSliderActive = ref(false)
+import { useLayerStore } from '@swissgeo/layers'
+import { useSidebarStore } from '@swissgeo/skeleton'
+import { TimeSlider } from '@swissgeo/timeslider'
 
-function toggleTimeSlider() {
-    isTimeSliderActive.value = !isTimeSliderActive.value
+const mapViewStore = useMapViewStore()
+const layerStore = useLayerStore()
+const sidebarStore = useSidebarStore()
+
+const timeLayers = computed((): LayerWithTime[] =>
+    layerStore.layers.filter(
+        (layer: Layer): layer is LayerWithTime => layer.dimensions && 'time' in layer.dimensions
+    )
+)
+
+function onClose() {
+    mapViewStore.closeTimeSlider()
+}
+
+function onUpdateDimension({
+    uuid,
+    key,
+    dimension,
+}: {
+    uuid: string
+    key: string
+    dimension: Partial<Dimension>
+}) {
+    layerStore.setDimension(key, uuid, dimension)
+}
+
+function onUpdateVisibility({ uuid, isVisible }: { uuid: string; isVisible: boolean }) {
+    const layer = layerStore.layers.find((l) => l.uuid === uuid)
+    if (layer) {
+        layer.isVisible = isVisible
+    }
 }
 </script>
 
 <template>
     <div
-        class="fixed top-4 left-16 z-50"
-        :class="{ 'right-6': isTimeSliderActive }"
+        v-if="mapViewStore.isTimeSliderVisible"
+        class="fixed top-4 right-24 z-50"
+        :style="{ left: sidebarStore.sidebarWidth + 8 + 'px' }"
     >
-        <!-- Toggle button -->
-        <IconButton
-            v-if="!isTimeSliderActive"
-            id="timeSliderButton"
-            data-test="time-slider-toggle-button"
-            severity="primary"
-            icon="Clock"
-            @click="toggleTimeSlider"
-        />
-
-        <!-- Time slider bar -->
         <TimeSlider
-            v-else
-            @close="toggleTimeSlider"
+            :layers="timeLayers"
+            @close="onClose"
+            @update-dimension="onUpdateDimension"
+            @update-visibility="onUpdateVisibility"
         />
     </div>
 </template>

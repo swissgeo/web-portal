@@ -1,22 +1,17 @@
 <script setup lang="ts">
 import { LucideIcon } from '@swissgeo/skeleton'
 
-function isDisabled(): boolean {
-    return true
-}
-
-function toggleTimeSlider(): void {
-    throw new Error('TIME SLIDER BUTTON IS NOT YET IMPLEMENTED')
-}
+const mapViewStore = useMapViewStore()
 </script>
 
 <template>
-    <div id="timeslider-button">
+    <div>
         <button
-            class="toolbox-button d-print-none mb-1 h-[40px] w-[40px] rounded-[20px] bg-gray-500 text-white"
-            :disabled="isDisabled()"
+            id="timeSliderButton"
+            class="toolbox-button d-print-none mb-1 h-[40px] w-[40px] cursor-pointer rounded-[20px] text-white"
+            :class="mapViewStore.isTimeSliderVisible ? 'bg-blue-600' : 'bg-black'"
             data-cy="time-slider-button"
-            @click="toggleTimeSlider()"
+            @click="mapViewStore.toggleTimeSlider()"
         >
             <LucideIcon
                 name="TimerReset"

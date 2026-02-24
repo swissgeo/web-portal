@@ -13,6 +13,7 @@ import type {
 /**
  * Catalog record structure as used in layer search. This extends the base OGCRecord with the
  * specific property structure used by the swissgeo catalog.
+ * Uses index signature to allow for potential language-specific fields (title_en, title_de, etc.)
  */
 interface CatalogRecord {
     id: string
@@ -20,6 +21,8 @@ interface CatalogRecord {
         title?: string
         description?: string
         keywords?: string[]
+        // Allow for potential language-specific fields
+        [key: string]: unknown
     }
 }
 
@@ -160,10 +163,49 @@ export function searchLayers(
     const query = queryString.toLowerCase().trim()
 
     if (query.length < 2) {
-        return new Promise(() => [])
+        return Promise.resolve([])
     }
 
     try {
+        /**
+         * Helper function to check if query matches any string value
+         * Searches across default fields and potential language-specific fields
+         */
+        const matchesInProperties = (
+            properties: NonNullable<CatalogRecord['properties']>
+        ): boolean => {
+            const searchableFields: string[] = []
+
+            // Add default fields
+            if (properties.title) {
+                searchableFields.push(properties.title)
+            }
+            if (properties.description) {
+                searchableFields.push(properties.description)
+            }
+            if (properties.keywords) {
+                searchableFields.push(...properties.keywords.map(String))
+            }
+
+            // Add potential language-specific fields (title_en, title_de, title_fr, etc.)
+            // and other string properties that might contain searchable content
+            for (const [key, value] of Object.entries(properties)) {
+                if (
+                    typeof value === 'string' &&
+                    (key.startsWith('title_') ||
+                        key.startsWith('description_') ||
+                        key.startsWith('name_') ||
+                        key === 'label' ||
+                        key === 'name')
+                ) {
+                    searchableFields.push(value)
+                }
+            }
+
+            // Check if query matches any field
+            return searchableFields.some((field) => field.toLowerCase().includes(query))
+        }
+
         const matches = catalogRecords
             .filter(
                 (
@@ -175,21 +217,20 @@ export function searchLayers(
                         return false
                     }
 
-                    const title = record.properties.title || ''
-                    const description = record.properties.description || ''
-                    const keywords = record.properties.keywords || []
-
                     return (
                         record.id.toLowerCase().includes(query) ||
-                        title.toLowerCase().includes(query) ||
-                        description.toLowerCase().includes(query) ||
-                        keywords.some((k: string) => k.toLowerCase().includes(query))
+                        matchesInProperties(record.properties)
                     )
                 }
             )
             .slice(0, limit)
             .map((record) => {
-                const title = record.properties.title || record.id
+                // Prefer language-specific title if available, fall back to default title
+                const langTitle = record.properties[`title_${lang}`]
+                const title =
+                    typeof langTitle === 'string' && langTitle
+                        ? langTitle
+                        : record.properties.title || record.id
                 return {
                     resultType: 'LAYER' as const,
                     id: record.id,
@@ -200,14 +241,14 @@ export function searchLayers(
                 }
             })
 
-        return new Promise(() => matches)
+        return Promise.resolve(matches)
     } catch (error) {
         log.error({
             title: 'searchLayers',
             titleColor: LogPreDefinedColor.Red,
             messages: ['Failed to search layers:', error],
         })
-        return new Promise(() => [])
+        return Promise.resolve([])
     }
 }
 

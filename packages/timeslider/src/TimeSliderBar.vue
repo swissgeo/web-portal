@@ -4,8 +4,9 @@ import { LucideIcon } from '@swissgeo/skeleton'
 import GeoadminTooltip from '@swissgeo/tooltip'
 
 import TimeSliderBarSteps from './TimeSliderBarSteps.vue'
+
 const PLAY_BUTTON_SIZE = 54
-const STEP_BAR_LEFT = 20 // matches px-5 on root element
+const STEP_BAR_LEFT = 48 // matches pl-12 on root element
 
 const LABEL_WIDTH = 32
 const MARGIN_BETWEEN_LABELS = 50
@@ -78,9 +79,9 @@ const yearsShownAsLabel = computed(() => {
     const amountOfLabelsOnScreen = round(sliderWidth.value / (LABEL_WIDTH + MARGIN_BETWEEN_LABELS))
 
     let yearThreshold = 10
-    if (amountOfLabelsOnScreen < 10) {
+    if (amountOfLabelsOnScreen < 5) {
         yearThreshold = 50
-    } else if (amountOfLabelsOnScreen <= 16) {
+    } else if (amountOfLabelsOnScreen < 8) {
         yearThreshold = 25
     }
     return allYears.filter((year) => year % yearThreshold === 0)
@@ -167,17 +168,14 @@ function positionNodeLabel(year: number) {
     }
 }
 
-const CLOSE_BUTTON_SIZE = 54
-const GAP_SIZE = 4 // gap-1 = 4px
-const padding = 112
-const sliderWidth = computed(
-    () => containerWidth - padding - PLAY_BUTTON_SIZE - CLOSE_BUTTON_SIZE - GAP_SIZE * 2
-)
+const GAP_SIZE = 16 // gap-4 = 16px
+const padding = 52 // pl-12 (48px) + pr-1 (4px)
+const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE - GAP_SIZE)
 </script>
 
 <template>
     <div
-        class="min-0 relative flex-1 bg-white px-5"
+        class="min-0 relative flex-1 overflow-visible bg-white pr-1 pl-12"
         data-cy="time-slider-bar"
     >
         <div
@@ -251,25 +249,7 @@ const sliderWidth = computed(
                 :sliderWidth="sliderWidth"
             />
             <template #content>
-                <!-- <div class="time-slider-infobox">
-                            <div class="mb-2">
-                                {{ t('time_slider_legend_tooltip_intro') }}
-                            </div>
-                            <div class="ps-3">
-                                <div class="mb-1">
-                                    <div class="color-tooltip-data-none me-2" />
-                                    <div>{{ t('time_slider_legend_tooltip_no_data') }}</div>
-                                </div>
-                                <div class="mb-1">
-                                    <div class="color-tooltip-data-partial me-2" />
-                                    <div>{{ t('time_slider_legend_tooltip_partial_data') }}</div>
-                                </div>
-                                <div>
-                                    <div class="color-tooltip-data-full me-2" />
-                                    <div>{{ t('time_slider_legend_tooltip_full_data') }}</div>
-                                </div>
-                            </div>
-                        </div> -->
+                <!-- tooltip content placeholder -->
             </template>
         </GeoadminTooltip>
         <div class="relative h-5">
@@ -300,7 +280,7 @@ const sliderWidth = computed(
 
 .arrow {
     position: absolute;
-    z-index: 2;
+    z-index: 10;
     top: calc(0.75rem + 29px);
     cursor: grab;
     border-width: 9px 9px 0 9px;
