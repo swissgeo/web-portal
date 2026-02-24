@@ -63,3 +63,38 @@ Since we still have to share some types and data structures across the packages,
 The `skeleton` package contains UI elements and things that are not specific to a specific page/view of the app.
 
 In the future, we'll have `content` from a CMS in this webapp. This package takes care of that.
+
+## Docker
+
+A `Dockerfile` is provided to build and run the application in a container. It accepts a `TARGET_ENV` build argument (`prod` by default).
+
+**Build the image:**
+
+```sh
+docker build -t swissgeo-app .
+
+# Or explicitly set the target environment
+docker build --build-arg TARGET_ENV=prod -t swissgeo-app .
+```
+
+**Run the container:**
+
+```sh
+docker run -p 8080:80 swissgeo-app
+```
+
+The app will be available at `http://localhost:8080`.
+
+> **Note:** Environment variables (`NUXT_API_ENDPOINT`, `NUXT_AUTH_TOKEN`, `NUXT_MAPTILER_API_KEY`, etc.) must be set at runtime via `-e` flags or an env file — do not bake secrets into the image.
+>
+> ```sh
+> # Pass variables individually
+> docker run -p 8080:80 \
+>   -e NUXT_API_ENDPOINT=https://... \
+>   -e NUXT_AUTH_TOKEN=... \
+>   -e NUXT_MAPTILER_API_KEY=... \
+>   swissgeo-app
+>
+> # Or use a .env file (copy packages/main/.env.example and fill in the values)
+> docker run -p 8080:80 --env-file packages/main/.env swissgeo-app
+> ```
