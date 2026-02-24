@@ -10,8 +10,7 @@ import { computed } from 'vue'
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
 
-/** Timestamp to describe "all data" for time enabled WMS layer */
-export const ALL_YEARS_TIMESTAMP: string = 'all'
+import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
 
 /**
  * Default tile size to use when requesting WMS tiles with our internal WMSs (512px)
