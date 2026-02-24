@@ -3,8 +3,7 @@
     "version": "0.0.1",
     "description": "Drawing tools and utilities for map interactions",
     "keywords": [],
-    "license": "ISC",
-    "author": "",
+    "license": "BSD-3-Clause",
     "type": "module",
     "exports": {
         ".": {
