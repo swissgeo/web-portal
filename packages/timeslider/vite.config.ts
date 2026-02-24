@@ -1,5 +1,3 @@
-import type { UserConfig } from 'vite'
-
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -8,10 +6,12 @@ import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-export default defineConfig(({ mode }): UserConfig => {
+import { getBaseBuildConfig } from '../../base.vite.config'
+
+export default defineConfig(({ mode }) => {
     return {
         build: {
-            minify: mode === 'development' ? false : true,
+            ...getBaseBuildConfig(mode),
             lib: {
                 entry: resolve(__dirname, 'src/index.ts'),
                 fileName: (format) => `index.${format}.js`,
@@ -26,7 +26,6 @@ export default defineConfig(({ mode }): UserConfig => {
                     },
                 },
             },
-            sourcemap: true,
         },
         resolve: {
             alias: {
