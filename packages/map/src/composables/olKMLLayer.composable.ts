@@ -1,11 +1,11 @@
 import log from '@swissgeo/log'
+import { EPSG_4326_WGS84 } from '@swissgeo/shared'
 import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'
 import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
 import proj4 from 'proj4'
 
-import { EPSG_4326_WGS84 } from '@/composables/types.d'
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
 

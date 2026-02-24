@@ -16,9 +16,10 @@
         "format:write": "pnpm run --recursive --parallel --no-bail --if-present format:write",
         "lint": "pnpm run --recursive --parallel --no-bail --if-present lint",
         "lint:write": "pnpm run --recursive --parallel --no-bail --if-present lint:write",
-        "test": "vitest run",
+        "test": "pnpm run test:unit",
         "test:coverage": "vitest run --coverage",
         "test:ui": "vitest --ui",
+        "test:unit": "pnpm run --recursive --parallel --no-bail --if-present test:unit",
         "type-check": "pnpm run --recursive --parallel --no-bail --if-present type-check"
     },
     "dependencies": {

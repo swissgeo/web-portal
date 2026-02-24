@@ -4,6 +4,7 @@ import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
+import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@swissgeo/shared'
 import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
@@ -12,7 +13,6 @@ import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue'
 import type { DrawingMode } from '@/types'
 
 import { useOlDrawing } from '@/composables/olDrawing.composable'
-import { EPSG_2056_CH1903, EPSG_4326_WGS84 } from '@/constants/projections'
 import { useDrawingStore } from '@/stores/drawing'
 import { getMarkerIconById } from '@/utils/markerIcons'
 

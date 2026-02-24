@@ -20,6 +20,7 @@
         "format:write": "prettier --write --ignore-path ../../.prettierignore .",
         "lint": "eslint",
         "lint:write": "eslint --fix",
+        "test:unit": "vitest run",
         "type-check": "vue-tsc"
     },
     "dependencies": {
@@ -33,6 +34,7 @@
     "devDependencies": {
         "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
+        "@pinia/testing": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
         "@types/lodash": "catalog:",
