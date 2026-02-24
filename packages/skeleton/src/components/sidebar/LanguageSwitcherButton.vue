@@ -1,7 +1,15 @@
 <script lang="ts" setup>
-// TODO
-// @ts-expect-error The usei18n here is typed with vue-i18n but it's actually nuxt-i18n
-const { locale, locales, setLocale } = useI18n()
+import { onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { locale, availableLocales } = useI18n()
+
+const locales = availableLocales.map((code) => ({
+    code,
+    name: code,
+    dir: 'ltr' as const,
+    messages: {},
+}))
 
 // local v-model for the UI component so we pass a simple string value
 const selectedLocale = ref(locale.value)
@@ -18,7 +26,7 @@ watch(locale, (v) => {
 // when the UI changes, update global locale
 watch(selectedLocale, (v) => {
     if (v && v !== locale.value) {
-        setLocale(v)
+        locale.value = v
     }
 })
 

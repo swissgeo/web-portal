@@ -15,18 +15,17 @@ import increaseZoom from '@/stores/position/actions/increaseZoom'
 // import setAutoRotation from "@/stores/position/actions/setAutoRotation";
 // import setCameraPosition from "@/stores/position/actions/setCameraPosition";
 import setCenter from '@/stores/position/actions/setCenter'
-// import extent from "@/stores/position/getters/extent";
-// import isExtentOnlyWithinLV95Bounds from "@/stores/position/getters/isExtentOnlyWithinLV95Bounds";
-// import resolution from "@/stores/position/getters/resolution";
-import setDisplayedFormat from '@/stores/position/actions/setDisplayedFormat'
 // import setCrossHair from "@/stores/position/actions/setCrossHair";
-// import setDisplayedFormat from "@/stores/position/actions/setDisplayedFormat";
+import setDisplayedFormat from '@/stores/position/actions/setDisplayedFormat'
 // import setHasOrientation from "@/stores/position/actions/setHasOrientation";
 // import setProjection from '@/stores/position/actions/setProjection'
 import setRotation from '@/stores/position/actions/setRotation'
 // import zoomToExtent from "@/stores/position/actions/zoomToExtent";
 import centerEpsg4326 from '@/stores/position/getters/centerEpsg4326'
 import { LV95Format } from '@/utils/coordinates/coordinateFormat'
+// import extent from "@/stores/position/getters/extent";
+// import isExtentOnlyWithinLV95Bounds from "@/stores/position/getters/isExtentOnlyWithinLV95Bounds";
+// import resolution from "@/stores/position/getters/resolution";
 
 const state = (): PositionStoreState => ({
     displayFormat: LV95Format,

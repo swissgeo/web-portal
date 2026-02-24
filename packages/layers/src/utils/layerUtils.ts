@@ -2,6 +2,8 @@ import type { Dataset } from '@swissgeo/ogc'
 
 import log, { LogLevel } from '@swissgeo/log'
 
+import type { LayerType, Layer, LayerInfo } from '@/index'
+
 import { useLayerStore } from '@/stores/layer'
 
 // can't be inherited from the main package apparently

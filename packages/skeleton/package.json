@@ -35,7 +35,6 @@
         "lucide-vue-next": "catalog:"
     },
     "devDependencies": {
-        "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
@@ -44,7 +43,6 @@
         "eslint": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",
-        "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:",

@@ -36,7 +36,6 @@
         "prettier-plugin-jsdoc": "catalog:",
         "prettier-plugin-packagejson": "catalog:",
         "prettier-plugin-tailwindcss": "catalog:",
-        "unplugin-auto-import": "catalog:",
         "vitest": "catalog:"
     },
     "pnpm": {

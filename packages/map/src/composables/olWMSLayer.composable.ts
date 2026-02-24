@@ -5,6 +5,7 @@ import ImageLayer from 'ol/layer/Image'
 import TileLayer from 'ol/layer/Tile'
 import { ImageWMS, TileWMS } from 'ol/source'
 import { TileGrid } from 'ol/tilegrid'
+import { computed } from 'vue'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'

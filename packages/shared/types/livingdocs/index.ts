@@ -1,4 +1,4 @@
-export type * from './Paragraph.ts'
-export type * from './Publication.ts'
-export type * from './Title.ts'
-export * from './utils.ts'
+export type * from './Paragraph'
+export type * from './Publication'
+export type * from './Title'
+export { isImage, isLeadContentPageWithCheckbox, isParagraph, isTitle } from '../../src/livingdocs'

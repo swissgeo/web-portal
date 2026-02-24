@@ -42,7 +42,6 @@
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
         "typescript": "catalog:",
-        "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:",

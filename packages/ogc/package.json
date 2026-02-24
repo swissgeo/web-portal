@@ -11,6 +11,7 @@
             "import": "./dist/index.es.js"
         }
     },
+    "main": "./dist/index.umd.js",
     "scripts": {
         "build": "vite build",
         "build:dev": "vite build --mode development",
@@ -28,7 +29,6 @@
         "ol": "catalog:"
     },
     "devDependencies": {
-        "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
@@ -37,7 +37,6 @@
         "eslint": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",
-        "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:"

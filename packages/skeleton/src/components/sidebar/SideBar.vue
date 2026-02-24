@@ -16,6 +16,10 @@ const emit = defineEmits<{
     'search-result-selected': [result: SearchResult]
 }>()
 
+defineSlots<{
+    'bottom-controls'?: () => unknown
+}>()
+
 function resetApp() {}
 
 function handleSearchResultSelected(result: SearchResult) {

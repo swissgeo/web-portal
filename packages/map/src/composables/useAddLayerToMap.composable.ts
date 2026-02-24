@@ -6,6 +6,7 @@ import log from '@swissgeo/log'
 import LayerGroup from 'ol/layer/Group'
 import Layer from 'ol/layer/Layer'
 import VectorSource from 'ol/source/Vector'
+import { inject, onBeforeUnmount, onMounted, toValue } from 'vue'
 
 /**
  * Vue composable that will handle the addition or removal of an OpenLayers layer. This is a

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { DatasetLayer } from '@swissgeo/layers'
 
+import { watch } from 'vue'
+
 import useOlVectorLayer from '../composables/olVectorLayer.composable'
 
 const { layer } = defineProps<{

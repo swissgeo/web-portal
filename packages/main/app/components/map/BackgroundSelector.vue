@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { DatasetLayer, Layer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
 
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import { computedAsync } from '@vueuse/core'
-
-import type { VoidLayer } from './useBackgroundSelector'
 
 import { AVAILABLE_BACKGROUNDS } from './constants'
 
@@ -19,7 +17,6 @@ const backgroundRecords = computed(async () => {
     }
 
     const values = await Promise.all(promises)
-
     return values.map((record: Dataset) => {
         return makeServerLayer('wmts', record, {
             zIndex: 0,
@@ -27,29 +24,34 @@ const backgroundRecords = computed(async () => {
     })
 })
 
-const sortedBackgroundLayersWithVoid = computedAsync<(DatasetLayer | VoidLayer)[]>(
-    async () => ['void', ...(await backgroundRecords.value)],
-    ['void']
+const sortedBackgroundLayersWithNull = computedAsync<(Layer | null)[]>(
+    async () => [null, ...(await backgroundRecords.value)],
+    [null]
 )
 
 onMounted(() => {
-    layerStore.setBackground('void')
+    layerStore.setBackground(null)
 })
 
 watch(
-    sortedBackgroundLayersWithVoid,
+    sortedBackgroundLayersWithNull,
     (backgrounds) => {
         // as soon as the layer data is ready for the backgrounds, select
         // pixelkarte-farbe
-        layerStore.setBackground(backgrounds[2])
+        const defaultBackgroundId = AVAILABLE_BACKGROUNDS[1]
+        const defaultBackground = backgrounds.find((background): background is Layer => {
+            return background?.dataset?.id === defaultBackgroundId
+        })
+
+        const fallbackBackground = backgrounds.find((background): background is Layer => {
+            return background !== null
+        })
+        layerStore.setBackground(defaultBackground ?? fallbackBackground ?? null)
     },
     { once: true }
 )
 
-function selectBackground(backgroundLayer: Layer | VoidLayer) {
-    if (backgroundLayer === 'void') {
-        layerStore.setBackground(null)
-    }
+function selectBackground(backgroundLayer: Layer | null) {
     layerStore.setBackground(backgroundLayer /*, dispatcher*/)
 }
 </script>
@@ -58,15 +60,15 @@ function selectBackground(backgroundLayer: Layer | VoidLayer) {
     <!-- Desktop (sm+): rectangular buttons spread to the left, fixed bottom-right -->
     <MapBackgroundSelectorSquared
         class="max-sm:hidden"
-        :background-layers="sortedBackgroundLayersWithVoid"
-        :current-background-layer="layerStore.backgroundLayer ?? 'void'"
+        :background-layers="sortedBackgroundLayersWithNull"
+        :current-background-layer="layerStore.backgroundLayer"
         @select-background="selectBackground"
     />
     <!-- Mobile (below sm): circular buttons spread upward, fixed bottom-left -->
     <MapBackgroundSelectorRounded
         class="sm:hidden"
-        :background-layers="sortedBackgroundLayersWithVoid"
-        :current-background-layer="layerStore.backgroundLayer ?? 'void'"
+        :background-layers="sortedBackgroundLayersWithNull"
+        :current-background-layer="layerStore.backgroundLayer"
         @select-background="selectBackground"
     />
 </template>

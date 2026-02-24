@@ -1,5 +1,4 @@
 import type { Layer } from '@swissgeo/layers'
-import type { VoidLayer } from '~/components/map/useBackgroundSelector'
 
 import useBackgroundSelector from '~/components/map/useBackgroundSelector'
 import { describe, it, expect, vi } from 'vitest'
@@ -29,7 +28,7 @@ describe('useBackgroundSelector', () => {
         it('calls the provided callback with the selected layer', () => {
             const callback = vi.fn()
             const { onSelectBackground } = useBackgroundSelector(callback)
-            const layer: VoidLayer = 'void'
+            const layer = null
             onSelectBackground(layer)
             expect(callback).toHaveBeenCalledWith(layer)
         })
@@ -39,7 +38,7 @@ describe('useBackgroundSelector', () => {
                 vi.fn()
             )
             toggleShowSelector() // open
-            onSelectBackground('void')
+            onSelectBackground(null)
             expect(selectorOpen.value).toBe(false)
         })
     })
@@ -71,9 +70,9 @@ describe('useBackgroundSelector', () => {
             expect(getImageForBackgroundLayer(layer)).toContain('swissimage')
         })
 
-        it('returns a URL for the "void" string', () => {
+        it('returns a URL for null background', () => {
             const { getImageForBackgroundLayer } = useBackgroundSelector(vi.fn())
-            expect(getImageForBackgroundLayer('void')).toContain('void')
+            expect(getImageForBackgroundLayer(null)).toContain('void')
         })
 
         it('falls back to the void image when no layer is provided', () => {
@@ -98,7 +97,7 @@ describe('useBackgroundSelector', () => {
             const aerial = getImageForBackgroundLayer({
                 dataset: { id: 'ch.swisstopo.swissimage' },
             } as unknown as Layer)
-            const voidImg = getImageForBackgroundLayer('void')
+            const voidImg = getImageForBackgroundLayer(null)
 
             expect(new Set([farbe, grau, aerial, voidImg]).size).toBe(4)
         })

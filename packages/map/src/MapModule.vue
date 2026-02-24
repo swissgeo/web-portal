@@ -15,7 +15,7 @@ log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error
 
 const { layers, backgroundLayer } = defineProps<{
     layers: Layer[]
-    backgroundLayer?: Layer | null
+    backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
 }>()
 </script>
@@ -36,6 +36,7 @@ const { layers, backgroundLayer } = defineProps<{
                 :layers="layers"
                 :background-layer="backgroundLayer"
             />
+            <BackgroundSelector />
             <OpenLayersMouseTracker />
         </OpenLayersMap>
     </div>

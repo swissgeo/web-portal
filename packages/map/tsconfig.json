@@ -3,15 +3,13 @@
     "include": [
         "src/**/*.ts",
         "src/**/*.vue",
-        "src/**/*.spec.ts",
         "env.d.ts",
         "vite.config.ts",
+        "types/**/*.d.ts",
         "../../base.vite.config.ts"
     ],
     "compilerOptions": {
-        "rootDir": "../..",
-        "types": ["vue", "./.output/auto-imports.d.ts", "vite/client", "vitest"],
-        "plugins": [{ "name": "@dxup/unimport" }],
+        "types": ["vue", "vite/client"],
         "paths": {
             "@/*": ["./src/*", "../skeleton/src/*"],
             "@stores/*": ["./src/stores/*", "../skeleton/src/stores/*"],

@@ -3,6 +3,7 @@ import type { Layer } from '@swissgeo/layers'
 
 import { useDrawingStore } from '@swissgeo/drawing'
 import { useLayerStore } from '@swissgeo/layers'
+import { computed } from 'vue'
 
 import IconButton from '@/components/IconButton.vue'
 import { getDisplayNameFromTimestamp } from '@/utils/timeUtils'
@@ -26,8 +27,8 @@ const displayName = computed(() => {
 
 const currentTime = computed({
     get() {
-        if (layer.dimensions && 'time' in layer.dimensions) {
-            return layer.dimensions.time?.currentValue ?? null
+        if (layer.dimensions?.time) {
+            return layer.dimensions.time.currentValue
         } else {
             return null
         }
@@ -38,8 +39,8 @@ const currentTime = computed({
 })
 
 const availableTimes = computed(() => {
-    if (layer.dimensions && 'time' in layer.dimensions) {
-        return layer.dimensions.time?.availableValues ?? []
+    if (layer.dimensions?.time) {
+        return layer.dimensions.time.availableValues
     }
     return []
 })

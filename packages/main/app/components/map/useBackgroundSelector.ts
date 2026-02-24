@@ -4,25 +4,19 @@ import pixelkarteFarbeUrl from '~/assets/backgroundLayersImages/ch.swisstopo.pix
 import pixelkarteGrauUrl from '~/assets/backgroundLayersImages/ch.swisstopo.pixelkarte-grau.png'
 import swissImageUrl from '~/assets/backgroundLayersImages/ch.swisstopo.swissimage.png'
 import voidUrl from '~/assets/backgroundLayersImages/void.png'
-
-export type VoidLayer = 'void'
+import { ref } from 'vue'
 
 /**
  * Centralisation of the logic behind the background selector. This helps us define two flavors of
  * background selector with the same Vue code basis.
  */
 export default function useBackgroundSelector(
-    selectBackgroundCallback: (backgroundLayer: Layer | VoidLayer) => void
+    selectBackgroundCallback: (backgroundLayer: Layer | null) => void
 ) {
     const selectorOpen = ref<boolean>(false)
 
-    function getImageForBackgroundLayer(backgroundLayer?: Layer | VoidLayer) {
-        let backgroundId
-        if (backgroundLayer === 'void') {
-            backgroundId = 'void'
-        } else {
-            backgroundId = backgroundLayer?.dataset?.id || 'void'
-        }
+    function getImageForBackgroundLayer(backgroundLayer?: Layer | null) {
+        const backgroundId = backgroundLayer?.dataset?.id ?? 'void'
         switch (backgroundId) {
             case 'ch.swisstopo.pixelkarte-farbe':
                 return pixelkarteFarbeUrl
@@ -36,7 +30,7 @@ export default function useBackgroundSelector(
         }
     }
 
-    function onSelectBackground(backgroundLayer: Layer | VoidLayer) {
+    function onSelectBackground(backgroundLayer: Layer | null) {
         selectBackgroundCallback(backgroundLayer)
         selectorOpen.value = false
     }

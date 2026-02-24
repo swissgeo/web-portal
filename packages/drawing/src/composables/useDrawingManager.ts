@@ -1,4 +1,4 @@
-import type { FileLayer } from '@swissgeo/layers'
+import type { FileLayer, Layer } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
@@ -79,7 +79,7 @@ export function useDrawingManager() {
 
         // Create or reuse drawing layer
         const existingLayer = layerStore.layers.find(
-            (layer: { uuid?: string }) => layer.uuid === drawingStore.drawingLayerUuid
+            (layer: Layer) => layer.uuid === drawingStore.drawingLayerUuid
         )
 
         if (!existingLayer) {

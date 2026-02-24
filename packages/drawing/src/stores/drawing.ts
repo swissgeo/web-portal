@@ -10,7 +10,9 @@ import GPX from 'ol/format/GPX'
 import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
 import { Fill, Icon, Stroke, Style } from 'ol/style'
+import { defineStore } from 'pinia'
 import proj4 from 'proj4'
+import { computed, ref, shallowRef } from 'vue'
 
 import type { DrawingMode } from '@/types'
 

@@ -8,6 +8,8 @@ import log from '@swissgeo/log'
 import { round } from '@swissgeo/numbers'
 import { View } from 'ol'
 import { DoubleClickZoom } from 'ol/interaction'
+import { computed, onBeforeUnmount, onMounted, toValue, watch } from 'vue'
+
 // import {
 //   computed,
 //   type MaybeRef,
@@ -16,7 +18,6 @@ import { DoubleClickZoom } from 'ol/interaction'
 //   toValue,
 //   watch,
 // } from "vue";
-
 import usePositionStore from '@/stores/position/'
 
 // import { VIEW_MIN_RESOLUTION } from "@/config/map.config";

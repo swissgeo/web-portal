@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { Layer } from '@swissgeo/layers'
 
-import type { VoidLayer } from './useBackgroundSelector'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { AVAILABLE_BACKGROUNDS } from './constants'
 import useBackgroundSelector from './useBackgroundSelector'
@@ -11,7 +12,7 @@ const {
     isCurrent = false,
     folded = false,
 } = defineProps<{
-    backgroundLayer: Layer | VoidLayer
+    backgroundLayer: Layer | null
     isCurrent: boolean
     folded?: boolean
 }>()
@@ -19,12 +20,12 @@ const { t } = useI18n()
 const { getImageForBackgroundLayer } = useBackgroundSelector(() => {})
 
 const emit = defineEmits(['click'])
-const cyId = computed(() => (backgroundLayer === 'void' ? 'void' : backgroundLayer.uuid))
+const cyId = computed(() => (backgroundLayer === null ? 'void' : backgroundLayer.uuid))
 const layerTranslationKey = computed(() => mapBackgroundLayerToTranslationKey(backgroundLayer))
 
-function mapBackgroundLayerToTranslationKey(layer: Layer | VoidLayer): string {
+function mapBackgroundLayerToTranslationKey(layer: Layer | null): string {
     let translationKey = ''
-    if (layer === 'void') {
+    if (layer === null) {
         translationKey = 'backgroundLayers.voidMap'
     } else if (layer.dataset?.id === AVAILABLE_BACKGROUNDS[0]) {
         translationKey = `backgroundLayers.greyMap`
@@ -47,7 +48,6 @@ function mapBackgroundLayerToTranslationKey(layer: Layer | VoidLayer): string {
     >
         <span class="bg-entry-image flex h-[65px] items-center justify-center overflow-hidden">
             <img
-                v-if="backgroundLayer"
                 class="h-full w-full object-cover"
                 :src="getImageForBackgroundLayer(backgroundLayer)"
                 alt="background image"

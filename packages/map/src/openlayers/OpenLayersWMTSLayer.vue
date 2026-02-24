@@ -8,6 +8,7 @@ import { useRecordsData } from '@swissgeo/ogc'
 import { useFetch } from '@vueuse/core'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import { optionsFromCapabilities } from 'ol/source/WMTS'
+import { computed, onMounted, watch } from 'vue'
 
 import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
 

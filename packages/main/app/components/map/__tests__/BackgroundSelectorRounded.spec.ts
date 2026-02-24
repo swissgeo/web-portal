@@ -1,10 +1,9 @@
 import type { Layer } from '@swissgeo/layers'
-import type { VoidLayer } from '~/components/map/useBackgroundSelector'
 
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-type RoundedVM = { selectBackgroundCallback: (_layer: Layer | VoidLayer) => void }
+type RoundedVM = { selectBackgroundCallback: (_layer: Layer | null) => void }
 
 // Use vi.hoisted so these refs are available inside the hoisted vi.mock factory.
 const { mockSelectorOpen, mockOnSelectBackground, mockToggleShowSelector } = vi.hoisted(() => {
@@ -28,7 +27,7 @@ vi.mock('~/components/map/useBackgroundSelector', () => ({
 
 import BackgroundSelectorRounded from '~/components/map/BackgroundSelectorRounded.vue'
 
-const voidLayer: VoidLayer = 'void'
+const voidLayer = null
 const grauLayer = {
     uuid: 'uuid-grau',
     dataset: { id: 'ch.swisstopo.pixelkarte-grau' },

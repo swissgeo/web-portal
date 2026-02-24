@@ -7,7 +7,7 @@
     "type": "module",
     "exports": {
         ".": {
-            "types": "./dist/shared.d.ts",
+            "types": "./dist/index.d.ts",
             "import": "./dist/index.es.js"
         },
         "./ambient": {
@@ -25,10 +25,10 @@
             "types": "./dist/ogc/index.d.ts"
         },
         "./language": {
-            "types": "./dist/Language.d.ts"
+            "types": "./dist/language.d.ts"
         },
         "./action-dispatcher": {
-            "types": "./types/ActionDispatcher.d.ts"
+            "types": "./dist/actionDispatcher.d.ts"
         },
         "./geojson": {
             "types": "./dist/geojson/index.d.ts"
@@ -49,7 +49,6 @@
         "nuxt": "catalog:"
     },
     "devDependencies": {
-        "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
@@ -59,7 +58,6 @@
         "ol": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",
-        "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:"

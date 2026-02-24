@@ -31,7 +31,6 @@
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
         "eslint": "catalog:",
-        "typescript": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:",
         "vue-tsc": "catalog:"
