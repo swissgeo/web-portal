@@ -2,12 +2,12 @@
 import type { SearchResult } from '@swissgeo/search'
 
 import LogoPic from '@/components/LogoPic.vue'
+import LayerCart from '@/components/sidebar/LayerCart.vue'
+import SearchPanel from '@/components/sidebar/search/SearchPanel.vue'
 import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
 import { useSidebarStore, SidebarType, SIDEBAR_CONTENT_WIDTH } from '@/stores/ui'
 
 import LanguageSwitcherButton from './LanguageSwitcherButton.vue'
-import LayerCart from './LayerCart.vue'
-import SearchPanel from './search/SearchPanel.vue'
 
 const uiStore = useSidebarStore()
 

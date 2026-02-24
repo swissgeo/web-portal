@@ -10,9 +10,7 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.es.js"
         },
-        "./stylesheet": [
-            "./dist/map.css"
-        ]
+        "./stylesheet": "./src/stylesheet.css"
     },
     "scripts": {
         "build": "vite build",
@@ -27,7 +25,6 @@
     },
     "dependencies": {
         "@swissgeo/coordinates": "catalog:",
-        "@swissgeo/drawing": "workspace:*",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
         "@swissgeo/numbers": "catalog:",

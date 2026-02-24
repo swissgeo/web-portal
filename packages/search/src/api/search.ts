@@ -3,6 +3,7 @@
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 
 import type {
+    CatalogRecord,
     FeatureSearchResult,
     LayerSearchResult,
     LocationSearchResult,
@@ -15,16 +16,6 @@ import type {
  * specific property structure used by the swissgeo catalog.
  * Uses index signature to allow for potential language-specific fields (title_en, title_de, etc.)
  */
-interface CatalogRecord {
-    id: string
-    properties?: {
-        title?: string
-        description?: string
-        keywords?: string[]
-        // Allow for potential language-specific fields
-        [key: string]: unknown
-    }
-}
 
 // Regex to detect and strip HTML tags
 const REGEX_DETECT_HTML_TAGS = /<\/?[^>]+(>|$)/g

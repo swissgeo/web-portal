@@ -12,7 +12,7 @@ const sidebarStore = useSidebarStore()
 
 const timeLayers = computed((): LayerWithTime[] =>
     layerStore.layers.filter(
-        (layer: Layer): layer is LayerWithTime => layer.dimensions && 'time' in layer.dimensions
+        (layer: Layer): layer is LayerWithTime => !!layer.dimensions && 'time' in layer.dimensions
     )
 )
 
@@ -29,7 +29,7 @@ function onUpdateDimension({
     key: string
     dimension: Partial<Dimension>
 }) {
-    layerStore.setDimension(key, uuid, dimension)
+    layerStore.setDimension(key as 'time', uuid, dimension)
 }
 
 function onUpdateVisibility({ uuid, isVisible }: { uuid: string; isVisible: boolean }) {

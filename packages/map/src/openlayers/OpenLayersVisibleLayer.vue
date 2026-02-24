@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import type { DatasetLayer, Layer } from '@swissgeo/layers'
 
-import { DRAWING_LAYER_ID } from '@swissgeo/drawing'
+import type { MapLayerRenderer } from '@/types'
 
-import OpenLayersDrawingLayer from './OpenLayersDrawingLayer.vue'
 import OpenLayersGeoJSONLayer from './OpenLayersGeoJSONLayer.vue'
 import OpenLayersGPXLayer from './OpenLayersGPXLayer.vue'
 import OpenLayersKMLLayer from './OpenLayersKMLLayer.vue'
@@ -13,55 +12,57 @@ import OpenLayersVectorLayer from './OpenLayersVectorLayer.vue'
 import OpenLayersWMSLayer from './OpenLayersWMSLayer.vue'
 import OpenLayersWMTSLayer from './OpenLayersWMTSLayer.vue'
 
-const { layer } = defineProps<{ layer: Layer }>()
+const { layer, customLayerRenderers } = defineProps<{
+    layer: Layer
+    customLayerRenderers?: MapLayerRenderer[]
+}>()
 
 // Check if layer has a dataset (is DatasetLayer) or is a local file (FileLayer)
 const isLocalFile = computed(
     () => !layer.dataset && 'fileData' in layer && layer.fileData !== undefined
 )
 
-// Check if this is the drawing layer
-const isDrawingLayer = computed(() => {
-    const result = layer.humanId === DRAWING_LAYER_ID
-    return result
-})
+const customLayerRenderer = computed(() =>
+    customLayerRenderers?.find((renderer) => renderer.matches(layer))
+)
 </script>
 
 <template>
+    <component
+        :is="customLayerRenderer.component"
+        :layer="layer as Layer"
+        v-if="customLayerRenderer"
+    />
     <OpenLayersWMTSLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === 'wmts'"
+        v-else-if="layer.type === 'wmts'"
     />
     <OpenLayersWMSLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === 'wms'"
-    />
-    <OpenLayersDrawingLayer
-        :layer="layer as Layer"
-        v-if="isDrawingLayer && layer.type === 'kml'"
+        v-else-if="layer.type === 'wms'"
     />
     <OpenLayersKMLLayer
         :layer="layer as Layer"
-        v-if="!isDrawingLayer && layer.type === 'kml'"
+        v-else-if="layer.type === 'kml'"
     />
     <OpenLayersKMZLayer
         :layer="layer as Layer"
-        v-if="layer.type === 'kmz'"
+        v-else-if="layer.type === 'kmz'"
     />
     <OpenLayersGPXLayer
         :layer="layer as Layer"
-        v-if="layer.type === 'gpx'"
+        v-else-if="layer.type === 'gpx'"
     />
     <OpenLayersLocalGeoJSONLayer
         :layer="layer as Layer"
-        v-if="layer.type === 'geojson' && isLocalFile"
+        v-else-if="layer.type === 'geojson' && isLocalFile"
     />
     <OpenLayersGeoJSONLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === 'geojson' && !isLocalFile"
+        v-else-if="layer.type === 'geojson' && !isLocalFile"
     />
     <OpenLayersVectorLayer
         :layer="layer as DatasetLayer"
-        v-if="layer.type === 'vector'"
+        v-else-if="layer.type === 'vector'"
     />
 </template>

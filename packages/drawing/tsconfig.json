@@ -3,6 +3,7 @@
     "include": ["src/**/*.ts", "src/**/*.vue", "vite.config.ts", "../../base.vite.config.ts"],
     "compilerOptions": {
         "types": ["vue", "./.output/auto-imports.d.ts", "vite/client"],
-        "plugins": [{ "name": "@dxup/unimport" }]
+        "plugins": [{ "name": "@dxup/unimport" }],
+        "rootDir": "../.."
     }
 }
