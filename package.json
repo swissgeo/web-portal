@@ -5,10 +5,10 @@
     "description": "",
     "type": "module",
     "scripts": {
-        "build": "NODE_OPTIONS='--max-old-space-size=8192' pnpm run --recursive build",
+        "build": "NODE_OPTIONS='--max-old-space-size=4096' pnpm --recursive --workspace-concurrency=2 run build",
         "build:dev": "pnpm --parallel --if-present run build:dev",
         "build:dev:watch": "pnpm --filter=!main --recursive --parallel --if-present run build:dev:watch",
-        "build:prod": "NODE_OPTIONS='--max-old-space-size=8192' pnpm --parallel run build:prod",
+        "build:prod": "NODE_OPTIONS='--max-old-space-size=4096' pnpm --recursive --if-present --workspace-concurrency=2 run build:prod",
         "build-libs": "pnpm --filter=!main run --recursive --if-present build",
         "clean": "find packages -name 'dist' -type d -exec rm -rf {} + 2>/dev/null || true",
         "dev": "pnpm --filter=main run dev",
