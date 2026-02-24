@@ -3,9 +3,10 @@ import type { Dataset } from '@swissgeo/ogc'
 import { createTestingPinia } from '@pinia/testing'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+import type { LayerType } from '@/types'
+
 import { useLayerStore } from '@/stores/layer'
 import { getInfoFromDataset, makeServerLayer } from '@/utils/layerUtils'
-import type { LayerType } from '../../types'
 
 // we need to mock the layer store so we can check the functions work with various z indexes
 

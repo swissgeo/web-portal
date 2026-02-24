@@ -15,3 +15,9 @@ export {
 
 // Types
 export type { DrawingMode } from '@/types'
+
+// Components
+export { default as OpenLayersDrawingLayer } from '@/components/OpenLayersDrawingLayer.vue'
+
+// Layer matching
+export { isDrawingLayer } from '@/utils/isDrawingLayer'
