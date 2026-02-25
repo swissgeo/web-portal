@@ -219,34 +219,37 @@ onUnmounted(() => {
 <template>
     <slot />
 
-    <!-- Text editing popup -->
-    <div
-        v-if="showTextPopup"
-        class="fixed top-20 left-1/2 z-50 w-80 -translate-x-1/2 rounded-lg border border-gray-300 bg-white p-4 shadow-2xl"
-    >
-        <h3 class="mb-3 text-base font-semibold">Edit Text</h3>
-        <input
-            v-model="editingText"
-            type="text"
-            class="mb-3 w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
-            placeholder="Enter text..."
-            @keyup.enter="saveText"
-            @keyup.esc="cancelTextEdit"
-            autofocus
-        />
-        <div class="flex justify-end gap-2">
-            <button
-                @click="cancelTextEdit"
-                class="rounded bg-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-300"
-            >
-                Cancel
-            </button>
-            <button
-                @click="saveText"
-                class="rounded bg-blue-500 px-3 py-1.5 text-sm text-white hover:bg-blue-600"
-            >
-                Save
-            </button>
+    <!-- Teleport to body so position:fixed works relative to the browser window, not OL's transformed viewport -->
+    <Teleport to="body">
+        <div
+            v-if="showTextPopup"
+            style="position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 9999;"
+            class="w-80 rounded-lg border border-gray-300 bg-white p-4 shadow-2xl"
+        >
+            <h3 class="mb-3 text-base font-semibold">Edit Text</h3>
+            <input
+                v-model="editingText"
+                type="text"
+                class="mb-3 w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
+                placeholder="Enter text..."
+                @keyup.enter="saveText"
+                @keyup.esc="cancelTextEdit"
+                autofocus
+            />
+            <div class="flex justify-end gap-2">
+                <button
+                    @click="cancelTextEdit"
+                    class="rounded bg-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-300"
+                >
+                    Cancel
+                </button>
+                <button
+                    @click="saveText"
+                    class="rounded bg-blue-500 px-3 py-1.5 text-sm text-white hover:bg-blue-600"
+                >
+                    Save
+                </button>
+            </div>
         </div>
-    </div>
+    </Teleport>
 </template>
