@@ -1,9 +1,10 @@
 import type { Dataset } from '@swissgeo/ogc'
 
 import { createTestingPinia } from '@pinia/testing'
+import { setActivePinia } from 'pinia'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import type { LayerType } from '@/types'
+import type { Layer, LayerType } from '@/types'
 
 import { useLayerStore } from '@/stores/layer'
 import { getInfoFromDataset, makeServerLayer } from '@/utils/layerUtils'
