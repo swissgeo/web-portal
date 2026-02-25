@@ -8,6 +8,7 @@ import proj4 from 'proj4'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
+import { createTextFeatureStyle } from '@/utils/textFeatureStyle'
 
 export default function useOlKMLLayer(
     layerId: string,
@@ -49,10 +50,10 @@ export default function useOlKMLLayer(
                 isTextFeature ||
                 (text && geometry?.getType() === 'Point' && !feature.get('iconId'))
             ) {
-                feature.set('text', text || name)
+                const textContent = text || name
+                feature.set('text', textContent)
                 feature.set('isTextFeature', true)
-                // Clear any style that might have been parsed from KML
-                feature.setStyle(undefined)
+                feature.setStyle(createTextFeatureStyle(textContent))
             }
         })
 

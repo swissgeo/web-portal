@@ -12,6 +12,7 @@ import proj4 from 'proj4'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
+import { createTextFeatureStyle } from '@/utils/textFeatureStyle'
 
 export default function useOlKMZLayer(
     layerId: string,
@@ -105,9 +106,10 @@ export default function useOlKMZLayer(
                 isTextFeature ||
                 (text && geometry?.getType() === 'Point' && !feature.get('iconId'))
             ) {
-                ;(feature as Feature).set('text', text || name)
+                const textContent = text || name
+                ;(feature as Feature).set('text', textContent)
                 ;(feature as Feature).set('isTextFeature', true)
-                ;(feature as Feature).setStyle(undefined)
+                ;(feature as Feature).setStyle(createTextFeatureStyle(textContent))
             }
         })
     }
