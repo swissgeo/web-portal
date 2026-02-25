@@ -8,7 +8,10 @@ const buildTime = config.public.buildTime
 </script>
 
 <template>
-    <UPopover mode="hover" :content="{ side: 'right' }">
+    <UPopover
+        mode="hover"
+        :content="{ side: 'right' }"
+    >
         <UButton
             color="neutral"
             variant="ghost"
@@ -16,7 +19,10 @@ const buildTime = config.public.buildTime
             aria-label="Build information"
         >
             <template #leading>
-                <LucideIcon name="Info" class="w-5 text-cyan-900 opacity-50" />
+                <LucideIcon
+                    name="Info"
+                    class="w-5 text-cyan-900 opacity-50"
+                />
             </template>
         </UButton>
 
