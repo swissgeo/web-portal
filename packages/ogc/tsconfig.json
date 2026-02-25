@@ -8,8 +8,10 @@
         "../../base.vite.config.ts"
     ],
     "compilerOptions": {
-        "types": ["vue", "./.output/auto-imports.d.ts", "vite/client"],
-        "plugins": [{ "name": "@dxup/unimport" }],
-        "paths": { "@types/*": ["types/*"] }
+        "types": ["vue", "vite/client"],
+        "paths": {
+            "@types": ["types/index.d.ts"],
+            "@types/*": ["types/*"]
+        }
     }
 }

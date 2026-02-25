@@ -10,6 +10,7 @@ import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Icon, Stroke, Style, Text as TextStyle } from 'ol/style'
 import proj4 from 'proj4'
+import { inject, markRaw, onBeforeUnmount, readonly, ref, toValue } from 'vue'
 
 import type { DrawingMode } from '@/types'
 import type { MarkerIcon } from '@/utils/markerIcons'

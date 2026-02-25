@@ -2,6 +2,8 @@
 import { round } from '@swissgeo/numbers'
 import { LucideIcon } from '@swissgeo/skeleton'
 import GeoadminTooltip from '@swissgeo/tooltip'
+import { computed, ref, useTemplateRef, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import TimeSliderBarSteps from './TimeSliderBarSteps.vue'
 

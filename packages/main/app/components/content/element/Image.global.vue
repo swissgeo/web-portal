@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { ContentItem } from '@swissgeo/shared/livingdocs'
+import type { Image } from '@swissgeo/shared/livingdocs'
 
 import { isImage } from '@swissgeo/shared/livingdocs'
 
-const { data } = defineProps<{ data: ContentItem }>()
+const { data } = defineProps<{ data: Image }>()
 const imageUrl = computed(() => {
     if (!isImage(data)) {
         return ''

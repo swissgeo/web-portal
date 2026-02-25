@@ -6,6 +6,7 @@ import MVT from 'ol/format/MVT'
 import VectorTileLayer from 'ol/layer/VectorTile'
 import VectorTileSource from 'ol/source/VectorTile'
 import TileGrid from 'ol/tilegrid/TileGrid'
+import { inject, toValue } from 'vue'
 
 import usePositionStore from '@/stores/position/'
 

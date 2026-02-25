@@ -4,6 +4,7 @@ import type { DatasetLayer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { useRecordsData } from '@swissgeo/ogc'
 import { useFetch } from '@vueuse/core'
+import { computed, onMounted, watch } from 'vue'
 
 import * as geoJsonUtils from '@/utils/geoJsonUtils'
 
@@ -24,7 +25,7 @@ const geoJsonData = computed(() => {
 })
 
 const geoJsonStyle = computed(() => {
-    if (!styleData) {
+    if (!styleData || 'layers' in styleData) {
         log.error({
             title: 'OpenLayersGeoJSONLayer.vue',
             color: LogPreDefinedColor.Yellow,

@@ -30,7 +30,9 @@ const filteredAvailableLayers = computed((): Dataset[] => {
     if (filterTerm.value === '') {
         return availableLayers.value.records
     }
-    return availableLayers.value.records.filter((layer) => layer.id.includes(filterTerm.value))
+    return availableLayers.value.records.filter((layer: Dataset) =>
+        layer.id.includes(filterTerm.value)
+    )
 })
 
 function toggleVectorLayer() {

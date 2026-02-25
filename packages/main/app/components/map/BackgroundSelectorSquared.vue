@@ -3,28 +3,26 @@ import type { Layer } from '@swissgeo/layers'
 
 import { CircleChevronRight } from 'lucide-vue-next'
 
-import type { VoidLayer } from './useBackgroundSelector'
-
 import useBackgroundSelector from './useBackgroundSelector'
 
 const { backgroundLayers, currentBackgroundLayer } = defineProps<{
-    backgroundLayers: (Layer | VoidLayer)[]
-    currentBackgroundLayer: Layer | VoidLayer
+    backgroundLayers: (Layer | null)[]
+    currentBackgroundLayer: Layer | null
 }>()
 
 const emit = defineEmits<{
-    selectBackground: [backgroundLayer: Layer | VoidLayer]
+    selectBackground: [backgroundLayer: Layer | null]
 }>()
 
-function isCurrent(backgroundLayer: Layer | VoidLayer) {
-    if (backgroundLayer === 'void' || currentBackgroundLayer === 'void') {
+function isCurrent(backgroundLayer: Layer | null) {
+    if (backgroundLayer === null || currentBackgroundLayer === null) {
         return backgroundLayer === currentBackgroundLayer
     } else {
         return backgroundLayer?.uuid === currentBackgroundLayer?.uuid
     }
 }
 
-function selectBackgroundCallback(backgroundLayer: Layer | VoidLayer): void {
+function selectBackgroundCallback(backgroundLayer: Layer | null): void {
     // don't update if it's the same already, otherwise the user has a little
     // flicker and unnecessary computation power is used
     if (isCurrent(backgroundLayer)) {
@@ -33,8 +31,8 @@ function selectBackgroundCallback(backgroundLayer: Layer | VoidLayer): void {
     emit('selectBackground', backgroundLayer)
 }
 
-function layerKey(layer: Layer | VoidLayer): string {
-    return layer === 'void' ? 'void' : layer.uuid
+function layerKey(layer: Layer | null): string {
+    return layer === null ? 'void' : layer.uuid
 }
 
 const { selectorOpen, toggleShowSelector, onSelectBackground } =

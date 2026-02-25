@@ -1,6 +1,4 @@
 import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
-import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'unplugin-dts/vite'
 import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
@@ -13,24 +11,11 @@ export default defineConfig(({ mode }) => {
         test: {
             globals: true,
             environment: 'jsdom',
-            resolve: {
-                alias: {
-                    '@': [
-                        fileURLToPath(new URL('./src', import.meta.url)),
-                        fileURLToPath(new URL('../skeleton/src', import.meta.url)),
-                    ],
-                    '@stores': [
-                        fileURLToPath(new URL('./src/stores', import.meta.url)),
-                        fileURLToPath(new URL('../skeleton/src/stores', import.meta.url)),
-                    ],
-                    '~': fileURLToPath(new URL('../main/app', import.meta.url)),
-                },
-            },
         },
         build: {
             ...getBaseBuildConfig(mode),
             lib: {
-                entry: resolve(__dirname, 'src/index.ts'),
+                entry: [fileURLToPath(new URL('./src/index.ts', import.meta.url))],
                 fileName: (format) => `index.${format}.js`,
                 name: '@swissgeo/map',
             },
@@ -54,26 +39,26 @@ export default defineConfig(({ mode }) => {
         plugins: [
             tsconfigPaths(),
             vue(),
-            AutoImport({
-                dirs: ['./src/**'],
-                imports: [
-                    // Presets
-                    'vue',
-                    'vue-i18n',
-                    'pinia',
-                ],
-                eslintrc: {
-                    enabled: true,
-                    filepath: '.output/eslintrc-auto-import.json',
-                },
-                // Automatically generate types
-                dts: './.output/auto-imports.d.ts',
-                // Auto import inside Vue template
-                vueTemplate: true,
-            }),
             dts({
-                bundleTypes: true,
-                processor: 'vue',
+                beforeWriteFile: (filePath, content) => {
+                    const normalizedPath = filePath.replace(/\\/g, '/')
+                    const rewrittenPath = normalizedPath
+                        .replace('/dist/src/', '/dist/')
+                        .replace('/dist/types/', '/dist/')
+
+                    return {
+                        filePath: rewrittenPath,
+                        content,
+                    }
+                },
+                cleanVueFileName: true,
+                include: [
+                    fileURLToPath(new URL('./src', import.meta.url)),
+                    fileURLToPath(new URL('./types', import.meta.url)),
+                ],
+                insertTypesEntry: true,
+                outDirs: [fileURLToPath(new URL('./dist', import.meta.url))],
+                tsconfigPath: fileURLToPath(new URL('./tsconfig.json', import.meta.url)),
             }),
         ],
     }

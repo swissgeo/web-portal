@@ -5,6 +5,16 @@ import type { Map } from 'ol'
 
 import log from '@swissgeo/log'
 import MousePosition from 'ol/control/MousePosition'
+import {
+    computed,
+    inject,
+    nextTick,
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    toValue,
+    useTemplateRef,
+} from 'vue'
 
 import usePositionStore from '@/stores/position'
 import { allFormats, LV95Format } from '@/utils/coordinates/coordinateFormat'

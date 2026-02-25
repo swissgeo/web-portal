@@ -5,10 +5,14 @@
         "src/**/*.vue",
         "env.d.ts",
         "vite.config.ts",
-        "../../base.vite.config.ts"
+        "../../base.vite.config.ts",
+        ".output/auto-imports.d.ts",
+        "types/**/*.d.ts"
     ],
     "compilerOptions": {
-        "types": ["vue", "pinia", "./.output/auto-imports.d.ts"],
-        "plugins": [{ "name": "@dxup/unimport" }]
+        "types": ["vue", "pinia"],
+        "paths": {
+            "@/*": ["./src/*"]
+        }
     }
 }

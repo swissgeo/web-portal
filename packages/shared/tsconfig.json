@@ -8,7 +8,6 @@
         "../../base.vite.config.ts"
     ],
     "compilerOptions": {
-        "types": ["vue", "./.output/auto-imports.d.ts"],
-        "plugins": [{ "name": "@dxup/unimport" }]
+        "types": ["vue"]
     }
 }

@@ -57,11 +57,17 @@ export const useSearchStore = defineStore('search', () => {
     // Getters
     const hasResults = computed(() => results.value.length > 0)
 
-    const locationResults = computed(() => results.value.filter((r) => r.resultType === 'LOCATION'))
+    const locationResults = computed(() =>
+        results.value.filter((r: SearchResult) => r.resultType === 'LOCATION')
+    )
 
-    const layerResults = computed(() => results.value.filter((r) => r.resultType === 'LAYER'))
+    const layerResults = computed(() =>
+        results.value.filter((r: SearchResult) => r.resultType === 'LAYER')
+    )
 
-    const featureResults = computed(() => results.value.filter((r) => r.resultType === 'FEATURE'))
+    const featureResults = computed(() =>
+        results.value.filter((r: SearchResult) => r.resultType === 'FEATURE')
+    )
 
     // Actions
     async function setSearchQuery(newQuery: string, lang: string = 'de') {

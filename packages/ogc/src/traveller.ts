@@ -1,6 +1,12 @@
-import type { Dataset, Distribution, DistributionCollection, ServiceProtocol } from '@types'
-
 import log, { LogPreDefinedColor } from '@swissgeo/log'
+
+import type {
+    Dataset,
+    Distribution,
+    DistributionCollection,
+    Service,
+    ServiceProtocol,
+} from '../types'
 
 import { getDataServiceLinks, getGeoJsonDataLinks, getStyleLinks } from './utils'
 
@@ -141,7 +147,7 @@ export function grabGeoJsonUrl(distributionData: Distribution): string {
     return links[0]!.href
 }
 
-export function grabStyleUrl(distributionData: Distribution): string {
+export function grabStyleUrl(distributionData: Distribution): string | null {
     const links = distributionData.links
 
     if (!links) {

@@ -42,7 +42,7 @@ export default defineNuxtConfig({
         client: process.env.NODE_ENV !== 'production',
     },
     vite: {
-        plugins: [vueDevTools(), nodePolyfills()],
+        plugins: [vueDevTools() as never, nodePolyfills() as never],
         build: {
             minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
         },

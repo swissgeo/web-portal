@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { DatasetLayer, Layer } from '@swissgeo/layers'
 
+import { computed } from 'vue'
+
 import type { MapLayerRenderer } from '@/types'
 
 import OpenLayersGeoJSONLayer from './OpenLayersGeoJSONLayer.vue'

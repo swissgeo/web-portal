@@ -2,6 +2,9 @@
 import type { MenuMetaData } from '@swissgeo/content'
 
 import { useMenuStore } from '@swissgeo/content'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 import { useSidebarStore, SidebarType } from '@/stores/ui'
 
@@ -19,8 +22,7 @@ const { icon, menuMetaData } = defineProps<{
 const uiStore = useSidebarStore()
 const menuStore = useMenuStore()
 
-// @ts-expect-error The store's typing isn't picked up properly here
-const isCurrentMenuActive = computed(() => menuStore.currentMenuTree.id === menuMetaData.id)
+const isCurrentMenuActive = computed(() => menuStore.currentMenuTree?.id === menuMetaData.id)
 
 const isActive = computed(
     () =>

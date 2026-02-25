@@ -1,5 +1,7 @@
 import log from '@swissgeo/log'
 import { cloneDeep } from 'lodash'
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
 
 import type { Dimension, DimensionId, Layer, LayerInfo } from '@/index'
 
@@ -8,7 +10,7 @@ export const useLayerStore = defineStore('layers', () => {
     const layers = ref<Layer[]>([])
 
     /** Layer that's shown as background layer */
-    const backgroundLayer = ref<Layer | null>()
+    const backgroundLayer = ref<Layer | null>(null)
 
     const greatestZIndex = computed(() => {
         return layers.value.length
@@ -52,7 +54,7 @@ export const useLayerStore = defineStore('layers', () => {
         }
     }
 
-    function setBackground(layer: DatasetLayer) {
+    function setBackground(layer: Layer | null) {
         backgroundLayer.value = layer
     }
 

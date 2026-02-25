@@ -33,7 +33,6 @@
         "proj4": "catalog:"
     },
     "devDependencies": {
-        "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
@@ -41,7 +40,6 @@
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
         "typescript": "catalog:",
-        "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:",

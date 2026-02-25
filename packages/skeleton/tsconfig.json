@@ -5,11 +5,14 @@
         "src/**/*.vue",
         "env.d.ts",
         "vite.config.ts",
+        "types/**/*.d.ts",
         "../../base.vite.config.ts"
     ],
     "compilerOptions": {
-        "types": ["vue", "./.output/auto-imports.d.ts", "vite/client"],
-        "plugins": [{ "name": "@dxup/unimport" }]
+        "types": ["vue", "vite/client"],
+        "paths": {
+            "@/*": ["./src/*"]
+        }
     },
     "ignoreDeprecations": "6.0"
 }

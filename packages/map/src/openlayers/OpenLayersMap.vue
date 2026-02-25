@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import type { Layer } from '@swissgeo/layers'
 import type { Map as OlMapType } from 'ol'
+import type { Ref } from 'vue'
 
 import { registerProj4 } from '@swissgeo/coordinates'
 import Map from 'ol/Map'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
+import { onMounted, provide, ref, useTemplateRef } from 'vue'
 
 import type { MapLayerRenderer } from '@/types'
 
@@ -16,7 +18,7 @@ import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
 const { layers } = defineProps<{
     layers: Layer[]
-    backgroundLayer?: Layer | null
+    backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
 }>()
 

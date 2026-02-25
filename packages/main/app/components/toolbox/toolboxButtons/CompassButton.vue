@@ -50,7 +50,7 @@ onUnmounted(() => {
 function resetRotation(): void {
     throw new Error('ROTATION IS NOT IMPLEMENTED YET')
     isResetting.value = true
-    positionStore.setAutoRotation(false, dispatcher)
+    // positionStore.setAutoRotation(false, dispatcher)
     positionStore.setRotation(0, dispatcher)
     rotation.value = 0
     // Allow rotation updates again after animation completes

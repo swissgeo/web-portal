@@ -5,6 +5,7 @@ import { useLayerStore } from '@swissgeo/layers'
 import { useRecordsData } from '@swissgeo/ogc'
 import { useFetch } from '@vueuse/core'
 import WMSCapabilities from 'ol/format/WMSCapabilities'
+import { computed, watch } from 'vue'
 
 import useOlWmsLayer from '@/composables/olWMSLayer.composable'
 

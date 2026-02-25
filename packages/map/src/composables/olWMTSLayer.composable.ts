@@ -3,6 +3,7 @@ import type { Options as WMTSOptions } from 'ol/source/WMTS'
 import log from '@swissgeo/log'
 import { Tile as TileLayer } from 'ol/layer'
 import WMTS from 'ol/source/WMTS'
+import { computed } from 'vue'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 

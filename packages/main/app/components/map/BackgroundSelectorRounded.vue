@@ -1,36 +1,34 @@
 <script setup lang="ts">
 import type { Layer } from '@swissgeo/layers'
 
-import type { VoidLayer } from './useBackgroundSelector'
-
 import useBackgroundSelector from './useBackgroundSelector'
 
 const { backgroundLayers, currentBackgroundLayer } = defineProps<{
-    backgroundLayers: (Layer | VoidLayer)[]
-    currentBackgroundLayer: Layer | VoidLayer
+    backgroundLayers: (Layer | null)[]
+    currentBackgroundLayer: Layer | null
 }>()
 
 const emit = defineEmits<{
-    selectBackground: [backgroundLayer: Layer | VoidLayer]
+    selectBackground: [backgroundLayer: Layer | null]
 }>()
 
-function isCurrent(backgroundLayer: Layer | VoidLayer) {
-    if (backgroundLayer === 'void' || currentBackgroundLayer === 'void') {
+function isCurrent(backgroundLayer: Layer | null) {
+    if (backgroundLayer === null || currentBackgroundLayer === null) {
         return backgroundLayer === currentBackgroundLayer
     } else {
         return backgroundLayer?.uuid === currentBackgroundLayer?.uuid
     }
 }
 
-function selectBackgroundCallback(backgroundLayer: Layer | VoidLayer): void {
+function selectBackgroundCallback(backgroundLayer: Layer | null): void {
     if (isCurrent(backgroundLayer)) {
         return
     }
     emit('selectBackground', backgroundLayer)
 }
 
-function layerKey(layer: Layer | VoidLayer): string {
-    return layer === 'void' ? 'void' : layer.uuid
+function layerKey(layer: Layer | null): string {
+    return layer === null ? 'void' : layer.uuid
 }
 
 const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgroundLayer } =

@@ -4,6 +4,7 @@ import type { Map } from 'ol'
 import { LV95 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
 import ScaleLine from 'ol/control/ScaleLine'
+import { computed, inject, onBeforeUnmount, onMounted, toValue, useTemplateRef } from 'vue'
 
 import usePositionStore from '@/stores/position'
 

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import type { Layer } from '@swissgeo/layers'
 
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import MapFooterAttributionItem from './attributionsDisplay/MapFooterAttributionItem.vue'
 //import ThirdPartyDisclaimer from '@/utils/components/ThirdPartyDisclaimer.vue'
 
 const { t } = useI18n()
 const { layers, backgroundLayer } = defineProps<{
     layers: Layer[]
-    backgroundLayer: Layer | null | undefined
+    backgroundLayer: Layer | null
 }>()
 
 const visibleLayers = computed(() => {
@@ -16,8 +19,6 @@ const visibleLayers = computed(() => {
 
 const attributedLayers = computed(() => {
     const layersWithAttributions = []
-    // when the background is void, we receive `undefined` here.
-    // Correction, this was the behavior in the old viewer. Now we receive the 'void' string
     if (backgroundLayer && backgroundLayer.info?.attribution) {
         layersWithAttributions.push(backgroundLayer)
     }

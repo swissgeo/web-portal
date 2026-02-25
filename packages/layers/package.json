@@ -32,7 +32,6 @@
         "lodash": "catalog:"
     },
     "devDependencies": {
-        "@dxup/unimport": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@pinia/testing": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
@@ -44,7 +43,6 @@
         "pinia": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",
-        "unplugin-auto-import": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:",
@@ -55,5 +53,5 @@
         "pinia": "catalog:",
         "vue": "catalog:"
     },
-    "packageManager": "pnpm@10.30.0"
+    "packageManager": "pnpm@10.29.2"
 }

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { FileLayer } from '@swissgeo/layers'
 
+import { onMounted, watch } from 'vue'
+
 import useOlKMZLayer from '@/composables/olKMZLayer.composable'
 
 const { layer } = defineProps<{

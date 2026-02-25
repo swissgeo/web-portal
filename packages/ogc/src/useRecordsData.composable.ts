@@ -1,8 +1,15 @@
 import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/shared/geojson'
-import type { Service, ServiceProtocol, Dataset, Distribution } from '@types'
-import type { Style } from '@types/mapbox-gl'
+import type { AnyLayer, RasterLayer, Style } from 'mapbox-gl'
 
-import type { DistributionCollection } from '../types'
+import { computed } from 'vue'
+
+import type {
+    Service,
+    ServiceProtocol,
+    Dataset,
+    Distribution,
+    DistributionCollection,
+} from '../types'
 
 import {
     extractDistribution,
@@ -75,12 +82,11 @@ export async function useRecordsData(dataset: Dataset, protocol: ServiceProtocol
 
     const defaultOpacityFromStyle = computed(() => {
         // maybe do something here like a check for the geojson layers?
-        const isRasterLayer = (layer: mapboxgl.AnyLayer): layer is mapboxgl.RasterLayer =>
-            layer.type === 'raster'
+        const isRasterLayer = (layer: AnyLayer): layer is RasterLayer => layer.type === 'raster'
 
-        if (styleData && styleData.layers?.length) {
+        if (styleData && (styleData as Style).layers?.length) {
             // so far, we assume that the first and only entry is the correct one
-            const layer = styleData.layers[0]
+            const layer = (styleData as Style).layers[0]
 
             if (!layer || !isRasterLayer(layer)) {
                 return DEFAULT_OPACITY
