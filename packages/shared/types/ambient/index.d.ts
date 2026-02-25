@@ -15,6 +15,8 @@ export interface RuntimeConfig {
             translationKey: string
         }
         ogcApiEndpoint: string
+        gitCommit: string
+        buildTime: string
     }
 }
 

@@ -7,6 +7,7 @@ import SearchPanel from '@/components/sidebar/search/SearchPanel.vue'
 import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
 import { useSidebarStore, SidebarType, SIDEBAR_CONTENT_WIDTH } from '@/stores/ui'
 
+import BuildInfoButton from './BuildInfoButton.vue'
 import LanguageSwitcherButton from './LanguageSwitcherButton.vue'
 
 const uiStore = useSidebarStore()
@@ -43,6 +44,7 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH
                     </div>
                     <div class="flex flex-col items-center gap-2">
                         <LanguageSwitcherButton></LanguageSwitcherButton>
+                        <BuildInfoButton></BuildInfoButton>
                     </div>
                 </div>
                 <!-- Second column -->

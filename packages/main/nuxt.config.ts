@@ -1,7 +1,17 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { execSync } from 'node:child_process'
 import { fileURLToPath, URL } from 'node:url'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import vueDevTools from 'vite-plugin-vue-devtools'
+
+let gitCommit = 'unknown'
+try {
+    gitCommit = execSync('git rev-parse --short HEAD').toString().trim()
+} catch {
+    // git not available at build time
+}
+
+const buildTime = new Date().toISOString()
 
 export default defineNuxtConfig({
     typescript: {
@@ -79,6 +89,8 @@ export default defineNuxtConfig({
             overlayId: '',
             aboutMenu: { id: 199, translationKey: 'menuTitles.about' },
             knowledgeMenu: { id: 200, translationKey: 'menuTitles.knowledge' },
+            gitCommit,
+            buildTime,
         },
     },
     hooks: {
