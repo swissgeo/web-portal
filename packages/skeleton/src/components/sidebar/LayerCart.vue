@@ -6,7 +6,7 @@ import LayerCartEntry from './LayerCartEntry.vue'
 
 const layerStore = useLayerStore()
 
-const sortedLayers = computed(() => [...layerStore.sortedLayers].reverse())
+const sortedLayers = computed(() => [...layerStore.layers].reverse())
 </script>
 
 <template>

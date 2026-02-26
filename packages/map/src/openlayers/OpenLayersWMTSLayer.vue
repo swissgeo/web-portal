@@ -18,11 +18,15 @@ import { getTimeInfoFromWMTSCapabilities } from '../utils/timeUtils'
 
 const layerStore = useLayerStore()
 
-const { layer } = defineProps<{
+const props = defineProps<{
     layer: DatasetLayer
+    zIndex: number
 }>()
 
-const { capabilityUrl, defaultOpacityFromStyle } = await useRecordsData(layer.dataset, 'OGC:WMTS')
+const { capabilityUrl, defaultOpacityFromStyle } = await useRecordsData(
+    props.layer.dataset,
+    'OGC:WMTS'
+)
 
 // Fetch capabilities XML directly from external server as raw text
 const { data } = await useFetch<string>(capabilityUrl.value)
@@ -42,10 +46,10 @@ const options = computed((): WMTSOptions => {
     const capabilities = parsedCapabilities.value
 
     const options = optionsFromCapabilities(capabilities, {
-        layer: layer.dataset.id,
+        layer: props.layer.dataset.id,
     })
 
-    log.debug(`Successfully derived options for ${layer.dataset.id}`)
+    log.debug(`Successfully derived options for ${props.layer.dataset.id}`)
 
     if (!options) {
         throw new Error('Unable to get options from capabilities')
@@ -58,7 +62,7 @@ const dimensions = computed(() => {
     const capabilities = parsedCapabilities.value
 
     const capabilityOfLayer = capabilities.Contents.Layer.find(
-        (layerEntry: WMTSLayer) => layerEntry.Identifier === layer.dataset.id
+        (layerEntry: WMTSLayer) => layerEntry.Identifier === props.layer.dataset.id
     )
 
     if (!capabilityOfLayer) {
@@ -78,11 +82,11 @@ const initialTimestamp = computed(() => {
 })
 
 const { initialize, setVisibility, setZIndex, updateTimeDimension, setOpacity } = useOlWmtsLayer(
-    layer.dataset.id,
-    layer.uuid,
+    props.layer.dataset.id,
+    props.layer.uuid,
     options.value,
     defaultOpacityFromStyle.value,
-    layer.zIndex,
+    props.zIndex,
     initialTimestamp.value
 )
 
@@ -98,42 +102,42 @@ watch(
         if (availableTimes) {
             dimension.availableValues = availableTimes
         }
-        layerStore.setDimension('time', layer.uuid, dimension)
+        layerStore.setDimension('time', props.layer.uuid, dimension)
     },
     { immediate: true }
 )
 
 watch(
-    () => layer.isVisible,
+    () => props.layer.isVisible,
     (newValue: boolean) => {
         setVisibility(newValue)
     }
 )
 
 watch(
-    () => layer.zIndex,
+    () => props.zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
     }
 )
 
 watch(
-    () => layer.dimensions,
+    () => props.layer.dimensions,
     () => {
         if (
-            layer.dimensions &&
-            'time' in layer.dimensions &&
-            layer.dimensions.time?.currentValue !== undefined &&
-            layer.dimensions.time?.currentValue !== null
+            props.layer.dimensions &&
+            'time' in props.layer.dimensions &&
+            props.layer.dimensions.time?.currentValue !== undefined &&
+            props.layer.dimensions.time?.currentValue !== null
         ) {
-            updateTimeDimension(layer.dimensions.time.currentValue)
+            updateTimeDimension(props.layer.dimensions.time.currentValue)
         }
     },
     { deep: true }
 )
 
 watch(
-    () => layer.opacity,
+    () => props.layer.opacity,
     (newOpacity: number) => {
         setOpacity(newOpacity)
     }

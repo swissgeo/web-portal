@@ -32,7 +32,6 @@ export function useDrawingManager() {
             isVisible: true,
             type: 'kml',
             isLoading: false,
-            zIndex: layerStore.greatestZIndex + 1,
             info: {
                 displayName: DRAWING_LAYER_NAME,
                 abstract: 'User-created drawings on the map',
@@ -56,7 +55,6 @@ export function useDrawingManager() {
             isVisible: true,
             type: 'kml',
             isLoading: false,
-            zIndex: layerStore.greatestZIndex + 1,
             info: {
                 displayName: DRAWING_KML_LAYER_NAME,
                 abstract: 'User-created drawings on the map',
@@ -85,7 +83,7 @@ export function useDrawingManager() {
         if (!existingLayer) {
             createDrawingLayer()
         } else {
-            layerStore.setLayerZIndex(existingLayer, layerStore.greatestZIndex)
+            layerStore.moveLayerToTop(existingLayer.uuid)
         }
 
         if (!drawingStore.isDrawing) {

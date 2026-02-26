@@ -31,11 +31,11 @@ describe('OpenLayersKMZLayer.vue', () => {
                     uuid: '1234',
                     fileData: 'base64encodeddata',
                     opacity: 1,
-                    zIndex: 1,
                     isVisible: true,
                     // @ts-expect-error ce not defined in the type, but is used in the component
                     ce: { value: null },
                 },
+                zIndex: 0,
             },
         })
         expect(wrapper.exists()).toBe(true)
@@ -49,11 +49,11 @@ describe('OpenLayersKMZLayer.vue', () => {
                     uuid: '1234',
                     fileData: 'base64encodeddata',
                     opacity: 1,
-                    zIndex: 1,
                     isVisible: true,
                     // @ts-expect-error ce not defined in the type, but is used in the component
                     ce: { value: null },
                 },
+                zIndex: 0,
             },
         })
         // @ts-expect-error useOlKMZLayer not fully typed

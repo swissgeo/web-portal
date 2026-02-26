@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { DatasetLayer, Layer } from '@swissgeo/layers'
 
+import { useLayerStore } from '@swissgeo/layers'
 import { computed } from 'vue'
 
 import type { MapLayerRenderer } from '@/types'
@@ -19,6 +20,10 @@ const { layer, customLayerRenderers } = defineProps<{
     customLayerRenderers?: MapLayerRenderer[]
 }>()
 
+const layerStore = useLayerStore()
+
+const zIndex = computed(() => layerStore.getLayerZIndex(layer.uuid))
+
 // Check if layer has a dataset (is DatasetLayer) or is a local file (FileLayer)
 const isLocalFile = computed(
     () => !layer.dataset && 'fileData' in layer && layer.fileData !== undefined
@@ -33,38 +38,47 @@ const customLayerRenderer = computed(() =>
     <component
         :is="customLayerRenderer.component"
         :layer="layer as Layer"
+        :zIndex="zIndex"
         v-if="customLayerRenderer"
     />
     <OpenLayersWMTSLayer
         :layer="layer as DatasetLayer"
+        :zIndex="zIndex"
         v-else-if="layer.type === 'wmts'"
     />
     <OpenLayersWMSLayer
         :layer="layer as DatasetLayer"
+        :zIndex="zIndex"
         v-else-if="layer.type === 'wms'"
     />
     <OpenLayersKMLLayer
         :layer="layer as Layer"
+        :zIndex="zIndex"
         v-else-if="layer.type === 'kml'"
     />
     <OpenLayersKMZLayer
         :layer="layer as Layer"
+        :zIndex="zIndex"
         v-else-if="layer.type === 'kmz'"
     />
     <OpenLayersGPXLayer
         :layer="layer as Layer"
+        :zIndex="zIndex"
         v-else-if="layer.type === 'gpx'"
     />
     <OpenLayersLocalGeoJSONLayer
         :layer="layer as Layer"
+        :zIndex="zIndex"
         v-else-if="layer.type === 'geojson' && isLocalFile"
     />
     <OpenLayersGeoJSONLayer
         :layer="layer as DatasetLayer"
+        :zIndex="zIndex"
         v-else-if="layer.type === 'geojson' && !isLocalFile"
     />
     <OpenLayersVectorLayer
         :layer="layer as DatasetLayer"
+        :zIndex="zIndex"
         v-else-if="layer.type === 'vector'"
     />
 </template>
