@@ -34,8 +34,6 @@
             "types": "./dist/geojson/index.d.ts"
         }
     },
-    "main": "./dist/index.es.js",
-    "module": "./dist/index.es.js",
     "scripts": {
         "build": "vite build",
         "build:dev": "vite build --mode development",
