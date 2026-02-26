@@ -31,7 +31,9 @@ export default defineConfig(({ mode }) => {
         },
         resolve: {
             alias: {
-                '@swissgeo/shared': fileURLToPath(new URL('../shared/src/index.ts', import.meta.url)),
+                '@swissgeo/shared': fileURLToPath(
+                    new URL('../shared/src/index.ts', import.meta.url)
+                ),
                 '@': fileURLToPath(new URL('./src', import.meta.url)),
                 '@stores': fileURLToPath(new URL('./src/stores', import.meta.url)),
                 '~': fileURLToPath(new URL('../main/app', import.meta.url)),
