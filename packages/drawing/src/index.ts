@@ -21,3 +21,6 @@ export { default as OpenLayersDrawingLayer } from '@/components/OpenLayersDrawin
 
 // Layer matching
 export { isDrawingLayer } from '@/utils/isDrawingLayer'
+
+// Text feature styles
+export { createTextFeatureStyle } from '@/utils/textFeatureStyle'

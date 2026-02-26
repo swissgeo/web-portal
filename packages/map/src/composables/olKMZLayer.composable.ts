@@ -12,7 +12,7 @@ import proj4 from 'proj4'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
-import { createTextFeatureStyle } from '@/utils/textFeatureStyle'
+import { createTextFeatureStyle } from '@swissgeo/drawing'
 
 export default function useOlKMZLayer(
     layerId: string,

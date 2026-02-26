@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "@swissgeo/coordinates": "catalog:",
+        "@swissgeo/drawing": "workspace:*",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
         "@swissgeo/numbers": "catalog:",
