@@ -32,6 +32,7 @@
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "catalog:",
         "@swissgeo/numbers": "catalog:",
+        "@swissgeo/shared": "workspace:*",
         "@swissgeo/skeleton": "workspace:*",
         "@swissgeo/tooltip": "catalog:"
     },

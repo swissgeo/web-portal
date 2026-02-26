@@ -1,6 +1,7 @@
 import type { ResolutionStep } from '@swissgeo/coordinates'
 
 import log from '@swissgeo/log'
+import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
 import ImageLayer from 'ol/layer/Image'
 import TileLayer from 'ol/layer/Tile'
 import { ImageWMS, TileWMS } from 'ol/source'
@@ -9,8 +10,6 @@ import { computed } from 'vue'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
-
-import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
 
 /**
  * Default tile size to use when requesting WMS tiles with our internal WMSs (512px)

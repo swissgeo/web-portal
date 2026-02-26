@@ -1,7 +1,7 @@
 import log, { LogPreDefinedColor } from '@swissgeo/log'
+import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
 
 import type { WMSDimension, WMTSDimension } from '@/openlayers/types'
-import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
 
 type TimeInfo = { availableTimes: string[] | null; defaultTime: string | null }
 
