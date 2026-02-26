@@ -221,6 +221,10 @@ onUnmounted(() => {
 
     <!-- Teleport to body so position:fixed works relative to the browser window, not OL's transformed viewport -->
     <Teleport to="body">
+        <!-- Using inline style instead of Tailwind for positioning: Tailwind's transform/translate
+             utilities (e.g. -translate-x-1/2) caused incorrect placement in this context,
+             likely due to Tailwind CSS variable-based transforms conflicting with OpenLayers'
+             own CSS transforms on the map viewport. -->
         <div
             v-if="showTextPopup"
             style="position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 9999;"

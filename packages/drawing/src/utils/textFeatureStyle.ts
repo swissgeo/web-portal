@@ -4,7 +4,7 @@ import { Circle as CircleStyle, Fill, Stroke, Style, Text as TextStyle } from 'o
  * Shared configuration for text feature styles.
  * Keeping these values centralized reduces the risk of style drift
  * between different parts of the application that render text features.
- * NOTE: These constants are mirrored in @swissgeo/drawing — keep them in sync.
+ * NOTE: These constants are mirrored in @swissgeo/map — keep them in sync.
  */
 export const TEXT_FEATURE_FONT = '16px sans-serif'
 export const TEXT_FEATURE_FILL_COLOR = '#000'
