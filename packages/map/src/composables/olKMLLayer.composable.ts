@@ -1,6 +1,5 @@
-import { createTextFeatureStyle } from '@swissgeo/drawing'
 import log from '@swissgeo/log'
-import { EPSG_4326_WGS84 } from '@swissgeo/shared'
+import { createTextFeatureStyle, EPSG_4326_WGS84 } from '@swissgeo/shared'
 import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'
 import { register } from 'ol/proj/proj4'

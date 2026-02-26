@@ -2,7 +2,7 @@ import { Circle as CircleStyle, Fill, Stroke, Style, Text as TextStyle } from 'o
 
 /**
  * Shared configuration for text feature styles.
- * Used by both @swissgeo/drawing and @swissgeo/map (via re-export from this package).
+ * Used by both @swissgeo/drawing and @swissgeo/map.
  */
 export const TEXT_FEATURE_FONT = '16px sans-serif'
 export const TEXT_FEATURE_FILL_COLOR = '#000'

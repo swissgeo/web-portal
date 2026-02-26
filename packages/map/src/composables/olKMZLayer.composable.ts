@@ -1,9 +1,8 @@
 import type { FeatureLike } from 'ol/Feature'
 import type Feature from 'ol/Feature'
 
-import { createTextFeatureStyle } from '@swissgeo/drawing'
 import log from '@swissgeo/log'
-import { EPSG_4326_WGS84 } from '@swissgeo/shared'
+import { createTextFeatureStyle, EPSG_4326_WGS84 } from '@swissgeo/shared'
 import { unzip } from 'fflate'
 import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'

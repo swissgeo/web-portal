@@ -4,6 +4,7 @@ import type { Type } from 'ol/geom/Geometry'
 import type { StyleFunction, StyleLike } from 'ol/style/Style'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
+import { createTextFeatureStyle } from '@swissgeo/shared'
 import Draw from 'ol/interaction/Draw'
 import VectorLayer from 'ol/layer/Vector'
 import { register } from 'ol/proj/proj4'
@@ -17,7 +18,6 @@ import type { MarkerIcon } from '@/utils/markerIcons'
 
 import { useDrawingStore } from '@/stores/drawing'
 import { DEFAULT_MARKER_ICON, getMarkerIconById } from '@/utils/markerIcons'
-import { createTextFeatureStyle } from '@/utils/textFeatureStyle'
 /**
  * Composable for handling OpenLayers drawing interactions
  */

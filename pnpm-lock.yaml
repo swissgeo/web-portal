@@ -646,9 +646,6 @@ importers:
       '@swissgeo/coordinates':
         specifier: 'catalog:'
         version: 1.0.4(proj4@2.20.2)
-      '@swissgeo/drawing':
-        specifier: workspace:*
-        version: link:../drawing
       '@swissgeo/layers':
         specifier: workspace:*
         version: link:../layers
@@ -835,6 +832,9 @@ importers:
       nuxt:
         specifier: 'catalog:'
         version: 4.3.0(@parcel/watcher@2.5.6)(@types/node@25.3.1)(@vue/compiler-sfc@3.5.28)(cac@6.7.14)(db0@0.3.4)(eslint@9.39.2(jiti@2.6.1))(ioredis@5.9.2)(lightningcss@1.30.2)(magicast@0.5.1)(meow@13.2.0)(optionator@0.9.4)(rollup@4.57.1)(stylelint@16.26.1(typescript@5.9.3))(terser@5.46.0)(typescript@5.9.3)(vite@7.3.1(@types/node@25.3.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(yaml@2.8.2)
+      ol:
+        specifier: 'catalog:'
+        version: 10.7.0
       vue:
         specifier: 'catalog:'
         version: 3.5.28(typescript@5.9.3)
@@ -857,9 +857,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.6.1)
-      ol:
-        specifier: 'catalog:'
-        version: 10.7.0
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)

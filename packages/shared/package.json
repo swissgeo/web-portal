@@ -55,7 +55,6 @@
         "@types/mapbox-gl": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
-        "ol": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",
         "unplugin-dts": "catalog:",
@@ -64,6 +63,7 @@
     },
     "peerDependencies": {
         "@vueuse/core": "catalog:",
+        "ol": "catalog:",
         "vue": "catalog:"
     },
     "packageManager": "pnpm@10.30.0"
