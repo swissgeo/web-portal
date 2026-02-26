@@ -5,31 +5,32 @@ import { watch, onMounted } from 'vue'
 
 import useOlLocalGeoJSONLayer from '../composables/olLocalGeoJSONLayer.composable'
 
-const { layer } = defineProps<{
+const props = defineProps<{
     layer: FileLayer
+    zIndex: number
 }>()
 
-if (!layer.fileData) {
+if (!props.layer.fileData) {
     throw new Error('GeoJSON layer has no file data')
 }
 
 const { initialize, setVisibility, setZIndex } = useOlLocalGeoJSONLayer(
-    layer.humanId,
-    layer.uuid,
-    layer.fileData,
-    layer.opacity,
-    layer.zIndex
+    props.layer.humanId,
+    props.layer.uuid,
+    props.layer.fileData,
+    props.layer.opacity,
+    props.zIndex
 )
 
 watch(
-    () => layer.isVisible,
+    () => props.layer.isVisible,
     (newValue: boolean) => {
         setVisibility(newValue)
     }
 )
 
 watch(
-    () => layer.zIndex,
+    () => props.zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
     }

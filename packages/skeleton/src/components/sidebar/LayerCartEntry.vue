@@ -66,11 +66,11 @@ function toggleVisibility() {
 }
 
 function moveUp() {
-    layerStore.setLayerZIndex(layer, layer.zIndex + 1)
+    layerStore.moveLayerUp(layer.uuid)
 }
 
 function moveDown() {
-    layerStore.setLayerZIndex(layer, layer.zIndex - 1)
+    layerStore.moveLayerDown(layer.uuid)
 }
 
 function removeLayer() {
@@ -92,14 +92,14 @@ function removeLayer() {
             />
             <div class="flex flex-col justify-between">
                 <IconButton
-                    :disabled="layer.zIndex === layersLength"
+                    :disabled="layerStore.getLayerZIndex(layer.uuid) === layersLength - 1"
                     icon="ChevronUp"
                     severity="secondary"
                     class="h-0.5"
                     @click="moveUp()"
                 ></IconButton>
                 <IconButton
-                    :disabled="layer.zIndex === 1"
+                    :disabled="layerStore.getLayerZIndex(layer.uuid) === 0"
                     icon="ChevronDown"
                     severity="secondary"
                     class="h-0.5"

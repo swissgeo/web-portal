@@ -33,7 +33,6 @@ export interface Layer {
     type: LayerType
     opacity: number
     isLoading: boolean
-    zIndex: number
     info?: LayerInfo | null
     dataset?: Dataset
     dimensions?: Partial<Record<DimensionId, Dimension>>

@@ -4,8 +4,6 @@ import log, { LogLevel } from '@swissgeo/log'
 
 import type { LayerType, Layer, LayerInfo } from '@/index'
 
-import { useLayerStore } from '@/stores/layer'
-
 // can't be inherited from the main package apparently
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 
@@ -46,9 +44,6 @@ export const makeServerLayer = (
     dataset: Dataset,
     options?: Partial<Layer>
 ): Layer => {
-    // TO DO GPS-500 : remove zIndex and layer Store
-
-    const layerStore = useLayerStore()
     log.debug(`Creating store layer from ${JSON.stringify(dataset)}`)
 
     return {
@@ -59,7 +54,6 @@ export const makeServerLayer = (
         isVisible: true,
         type,
         isLoading: false,
-        zIndex: layerStore.greatestZIndex + 1,
         info: getInfoFromDataset(dataset),
         ...options,
     }
