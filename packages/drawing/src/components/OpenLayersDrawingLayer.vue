@@ -227,7 +227,13 @@ onUnmounted(() => {
              own CSS transforms on the map viewport. -->
         <div
             v-if="showTextPopup"
-            style="position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 9999;"
+            style="
+                position: fixed;
+                top: 16px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 9999;
+            "
             class="w-80 rounded-lg border border-gray-300 bg-white p-4 shadow-2xl"
         >
             <h3 class="mb-3 text-base font-semibold">Edit Text</h3>

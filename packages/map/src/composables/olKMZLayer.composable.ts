@@ -1,6 +1,7 @@
 import type { FeatureLike } from 'ol/Feature'
 import type Feature from 'ol/Feature'
 
+import { createTextFeatureStyle } from '@swissgeo/drawing'
 import log from '@swissgeo/log'
 import { EPSG_4326_WGS84 } from '@swissgeo/shared'
 import { unzip } from 'fflate'
@@ -12,7 +13,6 @@ import proj4 from 'proj4'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
-import { createTextFeatureStyle } from '@swissgeo/drawing'
 
 export default function useOlKMZLayer(
     layerId: string,
