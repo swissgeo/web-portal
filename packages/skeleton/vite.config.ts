@@ -8,6 +8,10 @@ import { getBaseBuildConfig } from '../../base.vite.config'
 
 export default defineConfig(({ mode }) => {
     return {
+        test: {
+            globals: true,
+            environment: 'jsdom',
+        },
         build: {
             ...getBaseBuildConfig(mode),
             lib: {
