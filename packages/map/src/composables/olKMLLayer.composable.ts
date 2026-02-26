@@ -66,5 +66,9 @@ export default function useOlKMLLayer(
 
     const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
 
-    return { initialize, setVisibility, setZIndex }
+    function setOpacity(opacity: number) {
+        layer.setOpacity(opacity)
+    }
+
+    return { initialize, setVisibility, setZIndex, setOpacity }
 }

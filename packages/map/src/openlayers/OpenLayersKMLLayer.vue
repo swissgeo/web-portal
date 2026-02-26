@@ -14,7 +14,7 @@ if (!props.layer.fileData) {
     throw new Error('KML layer has no file data')
 }
 
-const { initialize, setVisibility, setZIndex } = useOlKMLLayer(
+const { initialize, setVisibility, setZIndex, setOpacity } = useOlKMLLayer(
     props.layer.humanId,
     props.layer.uuid,
     props.layer.fileData,
@@ -33,6 +33,13 @@ watch(
     () => props.zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
+    }
+)
+
+watch(
+    () => props.layer.opacity,
+    (newOpacity: number) => {
+        setOpacity(newOpacity)
     }
 )
 

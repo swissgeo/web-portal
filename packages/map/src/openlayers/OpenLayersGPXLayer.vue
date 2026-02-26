@@ -14,7 +14,7 @@ if (!props.layer.fileData) {
     throw new Error('GPX layer has no file data')
 }
 
-const { initialize, setVisibility, setZIndex } = useOlGPXLayer(
+const { initialize, setVisibility, setZIndex, setOpacity } = useOlGPXLayer(
     props.layer.humanId,
     props.layer.uuid,
     props.layer.fileData,
@@ -33,6 +33,13 @@ watch(
     () => props.zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
+    }
+)
+
+watch(
+    () => props.layer.opacity,
+    (newOpacity: number) => {
+        setOpacity(newOpacity)
     }
 )
 
