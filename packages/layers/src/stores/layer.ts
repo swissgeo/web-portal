@@ -28,7 +28,7 @@ export const useLayerStore = defineStore('layers', () => {
     function moveLayerUp(uuid: string): void {
         const index = layers.value.findIndex((l) => l.uuid === uuid)
         if (index !== -1 && index < layers.value.length - 1) {
-            const [layer] = layers.value.splice(index, 1)
+            const [layer] = layers.value.splice(index, 1) as [Layer]
             layers.value.splice(index + 1, 0, layer)
         }
     }
@@ -37,7 +37,7 @@ export const useLayerStore = defineStore('layers', () => {
     function moveLayerDown(uuid: string): void {
         const index = layers.value.findIndex((l) => l.uuid === uuid)
         if (index > 0) {
-            const [layer] = layers.value.splice(index, 1)
+            const [layer] = layers.value.splice(index, 1) as [Layer]
             layers.value.splice(index - 1, 0, layer)
         }
     }
@@ -46,7 +46,7 @@ export const useLayerStore = defineStore('layers', () => {
     function moveLayerToTop(uuid: string): void {
         const index = layers.value.findIndex((l) => l.uuid === uuid)
         if (index !== -1 && index !== layers.value.length - 1) {
-            const [layer] = layers.value.splice(index, 1)
+            const [layer] = layers.value.splice(index, 1) as [Layer]
             layers.value.push(layer)
         }
     }

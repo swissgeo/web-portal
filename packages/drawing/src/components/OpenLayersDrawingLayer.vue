@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { FileLayer } from '@swissgeo/layers'
+
+import { useLayerStore } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
@@ -21,6 +23,7 @@ const { layer } = defineProps<{
 }>()
 
 const drawingStore = useDrawingStore()
+const layerStore = useLayerStore()
 
 const {
     startDrawing: startOlDrawing,
@@ -122,7 +125,7 @@ watch(
 
 // Watch for zIndex changes
 watch(
-    () => layer.zIndex,
+    () => layerStore.getLayerZIndex(layer.uuid),
     (newZIndex: number) => {
         setZIndex(newZIndex)
     },
