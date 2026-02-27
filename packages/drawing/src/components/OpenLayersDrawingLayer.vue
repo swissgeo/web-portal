@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import type { FileLayer } from '@swissgeo/layers'
-
-import { useLayerStore } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
+import { useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@swissgeo/shared'
 import KML from 'ol/format/KML'
