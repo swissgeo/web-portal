@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
                 name: '@swissgeo/shared',
             },
             rollupOptions: {
-                external: ['vue'],
+                external: ['vue', 'ol'],
                 output: {
                     exports: 'named',
                     globals: {

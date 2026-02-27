@@ -1,5 +1,5 @@
 import log from '@swissgeo/log'
-import { EPSG_4326_WGS84 } from '@swissgeo/shared'
+import { createTextFeatureStyle, EPSG_4326_WGS84 } from '@swissgeo/shared'
 import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'
 import { register } from 'ol/proj/proj4'
@@ -49,10 +49,10 @@ export default function useOlKMLLayer(
                 isTextFeature ||
                 (text && geometry?.getType() === 'Point' && !feature.get('iconId'))
             ) {
-                feature.set('text', text || name)
+                const textContent = text || name
+                feature.set('text', textContent)
                 feature.set('isTextFeature', true)
-                // Clear any style that might have been parsed from KML
-                feature.setStyle(undefined)
+                feature.setStyle(createTextFeatureStyle(textContent))
             }
         })
 

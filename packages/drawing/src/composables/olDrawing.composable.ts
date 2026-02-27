@@ -4,11 +4,12 @@ import type { Type } from 'ol/geom/Geometry'
 import type { StyleFunction, StyleLike } from 'ol/style/Style'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
+import { createTextFeatureStyle } from '@swissgeo/shared'
 import Draw from 'ol/interaction/Draw'
 import VectorLayer from 'ol/layer/Vector'
 import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
-import { Circle as CircleStyle, Fill, Icon, Stroke, Style, Text as TextStyle } from 'ol/style'
+import { Circle as CircleStyle, Fill, Icon, Stroke, Style } from 'ol/style'
 import proj4 from 'proj4'
 import { inject, markRaw, onBeforeUnmount, readonly, ref, toValue } from 'vue'
 
@@ -41,29 +42,7 @@ export function useOlDrawing(layerId: string, uuid: string, opacity: number) {
     const styleFunction = (feature: Feature<Geometry>): StyleLike => {
         const textContent = feature.get('text')
         if (textContent) {
-            // Text feature styling
-            return new Style({
-                image: new CircleStyle({
-                    radius: 0, // Invisible point
-                    fill: new Fill({
-                        color: 'rgba(0, 0, 0, 0)',
-                    }),
-                }),
-                text: new TextStyle({
-                    text: textContent,
-                    font: '16px sans-serif',
-                    fill: new Fill({
-                        color: '#000',
-                    }),
-                    stroke: new Stroke({
-                        color: '#fff',
-                        width: 3,
-                    }),
-                    textAlign: 'center',
-                    textBaseline: 'middle',
-                    offsetY: 0,
-                }),
-            })
+            return createTextFeatureStyle(textContent)
         }
 
         // Check if this is a Point geometry with an icon

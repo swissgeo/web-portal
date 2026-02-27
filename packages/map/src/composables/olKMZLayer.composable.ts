@@ -2,7 +2,7 @@ import type { FeatureLike } from 'ol/Feature'
 import type Feature from 'ol/Feature'
 
 import log from '@swissgeo/log'
-import { EPSG_4326_WGS84 } from '@swissgeo/shared'
+import { createTextFeatureStyle, EPSG_4326_WGS84 } from '@swissgeo/shared'
 import { unzip } from 'fflate'
 import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'
@@ -105,9 +105,10 @@ export default function useOlKMZLayer(
                 isTextFeature ||
                 (text && geometry?.getType() === 'Point' && !feature.get('iconId'))
             ) {
-                ;(feature as Feature).set('text', text || name)
+                const textContent = text || name
+                ;(feature as Feature).set('text', textContent)
                 ;(feature as Feature).set('isTextFeature', true)
-                ;(feature as Feature).setStyle(undefined)
+                ;(feature as Feature).setStyle(createTextFeatureStyle(textContent))
             }
         })
     }
