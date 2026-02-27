@@ -646,9 +646,6 @@ importers:
       '@swissgeo/coordinates':
         specifier: 'catalog:'
         version: 1.0.4(proj4@2.20.2)
-      '@swissgeo/layers':
-        specifier: workspace:*
-        version: link:../layers
       '@swissgeo/log':
         specifier: 'catalog:'
         version: 1.0.0(proj4@2.20.2)
