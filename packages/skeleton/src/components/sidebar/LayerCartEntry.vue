@@ -16,6 +16,7 @@ const layerStore = useLayerStore()
 const drawingStore = useDrawingStore()
 
 const layersLength = computed(() => layerStore.layers.length)
+const layerZIndex = computed(() => layerStore.getLayerZIndex(layer.uuid))
 
 const displayName = computed(() => {
     if (layer.info && layer.info.displayName) {
@@ -92,14 +93,14 @@ function removeLayer() {
             />
             <div class="flex flex-col justify-between">
                 <IconButton
-                    :disabled="layerStore.getLayerZIndex(layer.uuid) === layersLength - 1"
+                    :disabled="layerZIndex === layersLength - 1"
                     icon="ChevronUp"
                     severity="secondary"
                     class="h-0.5"
                     @click="moveUp()"
                 ></IconButton>
                 <IconButton
-                    :disabled="layerStore.getLayerZIndex(layer.uuid) === 0"
+                    :disabled="layerZIndex === 0"
                     icon="ChevronDown"
                     severity="secondary"
                     class="h-0.5"
