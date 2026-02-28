@@ -6,6 +6,7 @@ const isLayersPanelOpen = ref(false)
 const isImportPanelOpen = ref(false)
 const isImportLocalPanelOpen = ref(false)
 const isDrawingOpen = ref(false)
+const isStateConfigOpen = ref(false)
 function toggleLayersPanel() {
     isLayersPanelOpen.value = !isLayersPanelOpen.value
 }
@@ -18,6 +19,9 @@ function toggleLocalImportPanel() {
 }
 function toggleDrawing() {
     isDrawingOpen.value = !isDrawingOpen.value
+}
+function toggleStateConfig() {
+    isStateConfigOpen.value = !isStateConfigOpen.value
 }
 </script>
 
@@ -46,13 +50,20 @@ function toggleDrawing() {
             @close="toggleDrawing"
         >
         </DrawingPanel>
+        <DebugStateConfigPanel
+            class="relative h-[350px] w-[600px] overflow-hidden bg-white shadow"
+            v-if="isStateConfigOpen"
+            @close="toggleStateConfig"
+        >
+        </DebugStateConfigPanel>
         <div
             class="flex gap-2"
             v-if="
                 !isLayersPanelOpen &&
                 !isImportPanelOpen &&
                 !isImportLocalPanelOpen &&
-                !isDrawingOpen
+                !isDrawingOpen &&
+                !isStateConfigOpen
             "
         >
             <UButton
@@ -75,6 +86,9 @@ function toggleDrawing() {
             </UButton>
             <UButton @click="toggleDrawing">
                 {{ $t('debug.openDrawingPanel') }}
+            </UButton>
+            <UButton @click="toggleStateConfig">
+                State Config
             </UButton>
         </div>
     </div>
