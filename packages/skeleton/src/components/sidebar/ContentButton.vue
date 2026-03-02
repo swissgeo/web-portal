@@ -14,8 +14,8 @@ const { t: $t } = useI18n()
 
 const route = useRoute()
 
-const { icon, menuMetaData } = defineProps<{
-    icon: string
+const { iconName, menuMetaData } = defineProps<{
+    iconName: string
     menuMetaData: MenuMetaData
 }>()
 
@@ -53,7 +53,7 @@ const open = () => {
     <SidebarButton
         :is-active="isActive"
         :title="$t('menu.projectInfo')"
-        :icon="icon"
+        :iconName="iconName"
         @click="open"
     />
 </template>

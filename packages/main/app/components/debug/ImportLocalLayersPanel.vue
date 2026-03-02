@@ -92,12 +92,12 @@ function onFileSelected(evt: Event): void {
             <IconButton
                 :disabled="!selectedFile || isLoading"
                 @click="handleImport"
-                icon="Upload"
+                iconName="Upload"
                 title="Import file"
             />
             <IconButton
                 @click="$emit('close')"
-                icon="X"
+                iconName="X"
                 title="Close"
             />
         </div>
