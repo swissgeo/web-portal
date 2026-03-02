@@ -62,6 +62,8 @@ const onKeydown = (event: KeyboardEvent) => {
             >
                 <template #trailing>
                     <!-- Clear/Loading button -->
+                    <!-- TODO: IconButtons instead -->
+
                     <button
                         v-if="modelValue"
                         class="text-gray-400 transition-colors hover:text-gray-600"

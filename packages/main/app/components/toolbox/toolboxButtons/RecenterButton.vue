@@ -2,7 +2,7 @@
 // import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
 
 // import { usePositionStore } from '@swissgeo/map'
-import { LucideIcon } from '@swissgeo/skeleton'
+import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
 
 // const dispatcher: ActionDispatcher = { name: 'RecenterButton.vue' }
 
@@ -11,7 +11,6 @@ import { LucideIcon } from '@swissgeo/skeleton'
 function isDisabled(): boolean {
     return true
 }
-
 function toggleTracking(): void {
     throw new Error('GEOLOCATION NOT IMPLEMENTED, SO WE CANNOT RECENTER')
     // Toggle tracking mode
@@ -31,18 +30,13 @@ function toggleTracking(): void {
 </script>
 
 <template>
-    <button
-        class="h-[40px] w-[40px] cursor-pointer rounded-[20px] bg-black text-white"
-        data-cy="recenter-button"
-        :disabled="isDisabled()"
-        type="button"
-        @click="toggleTracking"
-    >
-        <LucideIcon
-            name="Shrink"
-            class="h-[40px] w-[40px]"
-        />
-    </button>
+    <ToolBoxButton
+        title="Recenter button"
+        :is-disabled="isDisabled()"
+        :is-active="false"
+        iconName="Shrink"
+        @click="toggleTracking()"
+    />
 </template>
 
 <style scoped>

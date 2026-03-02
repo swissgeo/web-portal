@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LucideIcon } from '@swissgeo/skeleton'
+import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
 const webGlIsSupported = ref(false)
 
 onMounted(() => {
@@ -16,28 +16,23 @@ function isDisabled(): boolean {
     return webGlIsSupported.value
 }
 
+function isActive(): boolean {
+    return false
+}
+
 function toggle3d() {
     throw new Error('3D BUTTON IS NOT IMPLEMENTED AT THE MOMENT')
 }
 </script>
 
 <template>
-    <button
-        ref="toggle3DButton"
-        class="toolbox-button h-[40px] w-[40px] cursor-pointer rounded-[20px] bg-gray-500 text-white"
-        type="button"
-        :class="{
-            disabled: !webGlIsSupported,
-        }"
-        :disabled="isDisabled()"
-        data-cy="3d-button"
-        @click="toggle3d"
-    >
-        <LucideIcon
-            name="Box"
-            class="h-[40px] w-[40px]"
-        />
-    </button>
+    <ToolBoxButton
+        title="3D toggle button"
+        :is-disabled="isDisabled()"
+        :is-active="isActive()"
+        iconName="Box"
+        @click="toggle3d()"
+    />
 </template>
 
 <style scoped></style>
