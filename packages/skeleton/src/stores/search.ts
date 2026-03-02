@@ -3,7 +3,7 @@
 
 import type { Layer } from '@swissgeo/layers'
 import type { DatasetCollection } from '@swissgeo/ogc'
-import type { SearchResult, CatalogRecord } from '@swissgeo/search'
+import type { SearchResult } from '@swissgeo/search'
 
 import { useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
@@ -100,8 +100,9 @@ export const useSearchStore = defineStore('search', () => {
             // Build search promises array
             const searchPromises: Promise<SearchResult[]>[] = [
                 searchLocation(newQuery, lang, abortController.signal),
-                searchLayers(newQuery, lang, (catalog.value?.records as CatalogRecord[]) || []),
             ]
+            // the layers are searched through a local catalog, it's not an async operation
+            const searchedLayers = searchLayers(newQuery, catalog.value?.records) ?? []
 
             // Add feature search for each searchable layer
             for (const layer of searchableLayers) {
@@ -138,6 +139,7 @@ export const useSearchStore = defineStore('search', () => {
                         }
                     }
                 }
+                searchedLayers.forEach((result) => successfulResults.push(result))
                 results.value = successfulResults
             }
         } catch (error) {
