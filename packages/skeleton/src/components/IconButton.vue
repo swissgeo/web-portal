@@ -4,7 +4,7 @@ import { useAttrs, computed } from 'vue'
 const attrs = useAttrs()
 
 // Map severity to color for NuxtUI --> WE DON'T CARE, WE ONLY GIVE SEVERITY
-const severities = ['primary', 'secondary', 'success', 'info', 'warning', 'danger']
+const severities = ['primary', 'secondary', 'success', 'info', 'warning', 'danger', 'neutral']
 
 // Compute color from severity prop, default to gray
 const color = computed(() => {
@@ -38,6 +38,10 @@ const buttonAttrs = computed(() => {
 <template>
     <UButton
         :color="color"
+        :class="{
+            'text-default': ['secondary', 'success', 'info', 'warning'].includes(color as string),
+            'text-inverted': ['primary', 'danger', 'neutral'].includes(color as string),
+        }"
         :variant="variant"
         v-bind="buttonAttrs"
         :data-testid="(buttonAttrs.icon as string).toLowerCase()"

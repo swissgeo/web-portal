@@ -18,6 +18,9 @@ const buildTime = config.public.buildTime
             square
             aria-label="Build information"
         >
+            <!--
+                    TODO: transform into IconButton
+        -->
             <template #leading>
                 <LucideIcon
                     name="Info"
