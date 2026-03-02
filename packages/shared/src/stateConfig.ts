@@ -10,6 +10,7 @@ export interface LayerStateConfig {
     isVisible: boolean
     opacity: number
     zIndex: number
+    datasetId?: string
     dimensions?: Partial<Record<string, { currentValue: string | null }>>
 }
 

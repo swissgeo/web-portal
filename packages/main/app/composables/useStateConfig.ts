@@ -1,7 +1,8 @@
 import type { AppStateConfig, LayerStateConfig } from '@swissgeo/shared'
 
-import { useLayerStore } from '@swissgeo/layers'
-import type { Layer } from '@swissgeo/layers'
+import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
+import type { Layer, LayerType } from '@swissgeo/layers'
+import type { Dataset } from '@swissgeo/ogc'
 import log from '@swissgeo/log'
 import { parseAppState } from '@swissgeo/shared'
 import { WGS84 } from '@swissgeo/coordinates'
@@ -20,6 +21,10 @@ function layerToStateConfig(layer: Layer): LayerStateConfig {
         zIndex: layer.zIndex,
     }
 
+    if (layer.dataset) {
+        config.datasetId = layer.dataset.id
+    }
+
     if (layer.dimensions) {
         config.dimensions = {}
         for (const [key, dim] of Object.entries(layer.dimensions)) {
@@ -32,7 +37,24 @@ function layerToStateConfig(layer: Layer): LayerStateConfig {
     return config
 }
 
-function stateConfigToLayer(config: LayerStateConfig, zIndexOffset: number): Layer {
+async function stateConfigToLayer(
+    config: LayerStateConfig,
+    zIndexOffset: number,
+    ogcApiEndpoint: string
+): Promise<Layer> {
+    // If the layer has a datasetId, fetch the full dataset from the OGC API
+    // so that the map can render it properly (needs links for WMTS/WMS capabilities)
+    if (config.datasetId) {
+        const dataset = await $fetch<Dataset>(
+            `${ogcApiEndpoint}/items/${config.datasetId}`
+        )
+        return makeServerLayer(config.type as LayerType, dataset, {
+            isVisible: config.isVisible,
+            opacity: config.opacity,
+            zIndex: config.zIndex ?? zIndexOffset,
+        })
+    }
+
     return {
         uuid: crypto.randomUUID(),
         humanId: config.humanId,
@@ -50,6 +72,7 @@ function stateConfigToLayer(config: LayerStateConfig, zIndexOffset: number): Lay
 export function useStateConfig() {
     const positionStore = usePositionStore()
     const layerStore = useLayerStore()
+    const runtimeConfig = useRuntimeConfig()
 
     /**
      * Export the current app state as an AppStateConfig object.
@@ -78,10 +101,12 @@ export function useStateConfig() {
     /**
      * Import app state from a JSON string, applying it to the stores.
      * Center coordinates are expected in WGS84 [lon, lat] and reprojected to the store's projection.
+     * Layers with a datasetId are fetched from the OGC API to get full dataset metadata.
      */
-    function importState(json: string): void {
+    async function importState(json: string): Promise<void> {
         const raw = JSON.parse(json) as unknown
         const config = parseAppState(raw)
+        const ogcApiEndpoint = runtimeConfig.public.ogcApiEndpoint as string
 
         log.info('Importing state config', { messages: [JSON.stringify(config.map)] })
 
@@ -106,12 +131,18 @@ export function useStateConfig() {
 
         for (let i = 0; i < config.layers.length; i++) {
             const layerConfig = config.layers[i]!
-            layerStore.addLayer(stateConfigToLayer(layerConfig, i + 1))
+            const layer = await stateConfigToLayer(layerConfig, i + 1, ogcApiEndpoint)
+            layerStore.addLayer(layer)
         }
 
         // Set background layer
         if (config.backgroundLayer) {
-            layerStore.setBackground(stateConfigToLayer(config.backgroundLayer, 0))
+            const bgLayer = await stateConfigToLayer(
+                config.backgroundLayer,
+                0,
+                ogcApiEndpoint
+            )
+            layerStore.setBackground(bgLayer)
         } else {
             layerStore.setBackground(null)
         }
