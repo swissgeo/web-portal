@@ -1,4 +1,17 @@
-# SWISSGEO WEB-APP
+# SWISSGEO Web Portal
+
+This repository contains the frontend implementation for SWISSGEO, the future central geodata platform for Switzerland.
+
+> [!IMPORTANT]
+This project is currently under active development. Features and documentation are subject to frequent changes.
+
+## Project Context
+
+SWISSGEO is the upcoming unified hub for Swiss geospatial data, merging federal and cantonal services (geo.admin.ch, geodienste.ch, geocat.ch) into a single, modern infrastructure.
+
+### ℹ️ Resources
+
+Project overview:  [Official SWISSGEO Platform info in German](https://www.geoinformation.ch/de/swissgeo-geoplattform) or [French Version here](https://www.geoinformation.ch/fr/swissgeo-geoplateforme) (FR)
 
 ## Quick-Start
 
