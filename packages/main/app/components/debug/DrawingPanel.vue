@@ -73,7 +73,7 @@ onMounted(() => {
         <div class="mb-4 flex items-center justify-between">
             <h3 class="text-lg font-semibold">Drawing Tools</h3>
             <IconButton
-                icon="X"
+                iconName="X"
                 @click="handleClose"
                 severity="secondary"
             />

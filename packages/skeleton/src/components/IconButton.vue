@@ -1,24 +1,17 @@
 <script lang="ts" setup>
 import { useAttrs, computed } from 'vue'
 
-import LucideIcon from '@/components/LucideIcon.vue'
-
 const attrs = useAttrs()
 
-// Map severity to color for NuxtUI
-const severityToColor = {
-    primary: 'primary',
-    secondary: 'gray',
-    success: 'green',
-    info: 'blue',
-    warning: 'yellow',
-    danger: 'red',
-} as const
+// Map severity to color for NuxtUI --> WE DON'T CARE, WE ONLY GIVE SEVERITY
+const severities = ['primary', 'secondary', 'success', 'info', 'warning', 'danger']
 
 // Compute color from severity prop, default to gray
 const color = computed(() => {
-    const severity = attrs.severity as string | undefined
-    return severity ? severityToColor[severity as keyof typeof severityToColor] || 'gray' : 'gray'
+    if (attrs.severity && severities.includes(attrs.severity as string)) {
+        return attrs.severity
+    }
+    return 'secondary'
 })
 
 // Compute variant - if 'text' prop is true, use 'ghost'
@@ -27,16 +20,17 @@ const variant = computed(() => {
 })
 
 // Get icon name and class
-const iconName = computed(() => (attrs.icon as string) ?? '')
-const iconClass = computed(() => attrs['icon-class'] || '')
+//const iconClass = computed(() => attrs['icon-class'] || '')
 
 // Get other attrs excluding the ones we're handling specially
 const buttonAttrs = computed(() => {
     const rest = { ...attrs }
     delete rest.severity
     delete rest.text
-    delete rest.icon
-    delete rest['icon-class']
+    // If needed : there is a "trailing-icon" property, that behaves like icon.
+    // but puts the icon at the end of the button instead of the beginning if
+    // we have text within the icon at some point.
+    rest.icon = rest.iconName ? `i-lucide-${rest.iconName}`.toLowerCase() : ''
     return rest
 })
 </script>
@@ -46,12 +40,6 @@ const buttonAttrs = computed(() => {
         :color="color"
         :variant="variant"
         v-bind="buttonAttrs"
-    >
-        <template #leading>
-            <LucideIcon
-                :class="iconClass"
-                :name="iconName"
-            />
-        </template>
-    </UButton>
+        :data-testid="(buttonAttrs.icon as string).toLowerCase()"
+    />
 </template>

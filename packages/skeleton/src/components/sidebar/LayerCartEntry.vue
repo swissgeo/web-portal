@@ -87,21 +87,21 @@ function removeLayer() {
     <li>
         <div class="flex">
             <IconButton
-                :icon="layer.isVisible ? 'Eye' : 'EyeOff'"
+                :iconName="layer.isVisible ? 'Eye' : 'EyeOff'"
                 @click="toggleVisibility()"
                 severity="secondary"
             />
             <div class="flex flex-col justify-between">
                 <IconButton
                     :disabled="layer.zIndex === layersLength"
-                    icon="ChevronUp"
+                    iconName="ChevronUp"
                     severity="secondary"
                     class="h-0.5"
                     @click="moveUp()"
                 ></IconButton>
                 <IconButton
                     :disabled="layer.zIndex === 1"
-                    icon="ChevronDown"
+                    iconName="ChevronDown"
                     severity="secondary"
                     class="h-0.5"
                     @click="moveDown()"
@@ -155,7 +155,7 @@ function removeLayer() {
                 </select>
             </div>
             <IconButton
-                icon="Trash"
+                iconName="Trash"
                 @click="removeLayer"
             />
         </div>
