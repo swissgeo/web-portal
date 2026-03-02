@@ -43,6 +43,7 @@
         "format:write": "prettier --write --ignore-path ../../.prettierignore .",
         "lint": "eslint",
         "lint:write": "eslint --fix",
+        "test:unit": "vitest run",
         "type-check": "tsc"
     },
     "dependencies": {
@@ -52,6 +53,7 @@
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
+        "@swissgeo/numbers": "catalog:",
         "@types/mapbox-gl": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
