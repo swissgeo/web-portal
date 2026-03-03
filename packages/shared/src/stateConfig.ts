@@ -90,10 +90,7 @@ function validateLayers(layers: unknown): asserts layers is LayerStateConfig[] {
     }
 }
 
-function validateLayerConfig(
-    layer: unknown,
-    path: string
-): asserts layer is LayerStateConfig {
+function validateLayerConfig(layer: unknown, path: string): asserts layer is LayerStateConfig {
     if (typeof layer !== 'object' || layer === null) {
         throw new Error(`${path} must be a non-null object`)
     }

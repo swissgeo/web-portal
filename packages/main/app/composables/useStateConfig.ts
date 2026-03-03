@@ -1,14 +1,13 @@
-import type { AppStateConfig, LayerStateConfig } from '@swissgeo/shared'
-
-import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import type { Layer, LayerType } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
-import log from '@swissgeo/log'
-import { parseAppState } from '@swissgeo/shared'
-import { WGS84 } from '@swissgeo/coordinates'
-import proj4 from 'proj4'
+import type { AppStateConfig, LayerStateConfig } from '@swissgeo/shared'
 
+import { WGS84 } from '@swissgeo/coordinates'
+import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
+import log from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
+import { parseAppState } from '@swissgeo/shared'
+import proj4 from 'proj4'
 
 const DISPATCHER = { name: 'state-config' }
 
@@ -45,9 +44,7 @@ async function stateConfigToLayer(
     // If the layer has a datasetId, fetch the full dataset from the OGC API
     // so that the map can render it properly (needs links for WMTS/WMS capabilities)
     if (config.datasetId) {
-        const dataset = await $fetch<Dataset>(
-            `${ogcApiEndpoint}/items/${config.datasetId}`
-        )
+        const dataset = await $fetch<Dataset>(`${ogcApiEndpoint}/items/${config.datasetId}`)
         return makeServerLayer(config.type as LayerType, dataset, {
             isVisible: config.isVisible,
             opacity: config.opacity,
@@ -117,10 +114,7 @@ export function useStateConfig() {
             config.map.center
         )
 
-        positionStore.setCenter(
-            [centerInProjection[0], centerInProjection[1]],
-            DISPATCHER
-        )
+        positionStore.setCenter([centerInProjection[0], centerInProjection[1]], DISPATCHER)
         positionStore.setZoom(config.map.zoom, DISPATCHER)
         positionStore.setRotation(config.map.rotation, DISPATCHER)
 
@@ -137,11 +131,7 @@ export function useStateConfig() {
 
         // Set background layer
         if (config.backgroundLayer) {
-            const bgLayer = await stateConfigToLayer(
-                config.backgroundLayer,
-                0,
-                ogcApiEndpoint
-            )
+            const bgLayer = await stateConfigToLayer(config.backgroundLayer, 0, ogcApiEndpoint)
             layerStore.setBackground(bgLayer)
         } else {
             layerStore.setBackground(null)

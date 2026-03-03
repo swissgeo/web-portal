@@ -87,9 +87,7 @@ function toggleStateConfig() {
             <UButton @click="toggleDrawing">
                 {{ $t('debug.openDrawingPanel') }}
             </UButton>
-            <UButton @click="toggleStateConfig">
-                State Config
-            </UButton>
+            <UButton @click="toggleStateConfig"> State Config </UButton>
         </div>
     </div>
 </template>

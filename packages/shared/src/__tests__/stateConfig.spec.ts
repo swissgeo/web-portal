@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest'
 
-import { parseAppState } from '../stateConfig'
 import type { AppStateConfig } from '../stateConfig'
+
+import { parseAppState } from '../stateConfig'
 
 const validState: AppStateConfig = {
     version: 1,
@@ -97,9 +98,7 @@ describe('parseAppState', () => {
 
     it('rejects missing map', () => {
         const { map: _, ...noMap } = validState
-        expect(() => parseAppState({ ...noMap, version: 1 })).toThrow(
-            'must include a "map" object'
-        )
+        expect(() => parseAppState({ ...noMap, version: 1 })).toThrow('must include a "map" object')
     })
 
     it('rejects invalid center', () => {

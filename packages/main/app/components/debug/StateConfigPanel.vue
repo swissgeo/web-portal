@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { IconButton } from '@swissgeo/skeleton'
-import { ref, onMounted } from 'vue'
-
 import { useStateConfig } from '~/composables/useStateConfig'
+import { ref, onMounted } from 'vue'
 
 const { exportState, importState } = useStateConfig()
 
