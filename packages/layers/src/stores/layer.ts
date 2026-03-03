@@ -24,31 +24,38 @@ export const useLayerStore = defineStore('layers', () => {
         return layers.value.findIndex((l) => l.uuid === uuid)
     }
 
+    /**
+     * Set a layer to a specific index in the layers array.
+     * Handles validation to ensure the target index is within bounds and differs from current position.
+     */
+    function setLayerIndex(uuid: string, targetIndex: number): void {
+        const currentIndex = layers.value.findIndex((l) => l.uuid === uuid)
+
+        // Validate: current index must be found, target must be in valid range, and must be different
+        if (
+            currentIndex >= 0 &&
+            targetIndex < layers.value.length &&
+            targetIndex >= 0 &&
+            currentIndex !== targetIndex
+        ) {
+            const [layer] = layers.value.splice(currentIndex, 1) as [Layer]
+            layers.value.splice(targetIndex, 0, layer)
+        }
+    }
+
     /** Move a layer one step up in the visual stack (toward top, higher index). */
     function moveLayerUp(uuid: string): void {
-        const index = layers.value.findIndex((l) => l.uuid === uuid)
-        if (index !== -1 && index < layers.value.length - 1) {
-            const [layer] = layers.value.splice(index, 1) as [Layer]
-            layers.value.splice(index + 1, 0, layer)
-        }
+        setLayerIndex(uuid, getLayerZIndex(uuid) + 1)
     }
 
     /** Move a layer one step down in the visual stack (toward bottom, lower index). */
     function moveLayerDown(uuid: string): void {
-        const index = layers.value.findIndex((l) => l.uuid === uuid)
-        if (index > 0) {
-            const [layer] = layers.value.splice(index, 1) as [Layer]
-            layers.value.splice(index - 1, 0, layer)
-        }
+        setLayerIndex(uuid, getLayerZIndex(uuid) - 1)
     }
 
     /** Move a layer to the top of the visual stack (end of the array). */
     function moveLayerToTop(uuid: string): void {
-        const index = layers.value.findIndex((l) => l.uuid === uuid)
-        if (index !== -1 && index !== layers.value.length - 1) {
-            const [layer] = layers.value.splice(index, 1) as [Layer]
-            layers.value.push(layer)
-        }
+        setLayerIndex(uuid, layers.value.length - 1)
     }
 
     function setBackground(layer: Layer | null) {
@@ -130,6 +137,7 @@ export const useLayerStore = defineStore('layers', () => {
         getLayerZIndex,
         // actions
         addLayer,
+        setLayerIndex,
         moveLayerUp,
         moveLayerDown,
         moveLayerToTop,
