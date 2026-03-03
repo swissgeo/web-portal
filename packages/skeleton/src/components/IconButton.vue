@@ -39,8 +39,8 @@ const buttonAttrs = computed(() => {
     <UButton
         :color="color"
         :class="{
-            'text-default': ['secondary', 'success', 'info', 'warning'].includes(color as string),
-            'text-inverted': ['primary', 'danger', 'neutral'].includes(color as string),
+            'text-default': ['secondary', 'info', 'warning', 'neutral'].includes(color as string),
+            'text-inverted': ['primary', 'danger', 'success'].includes(color as string),
         }"
         :variant="variant"
         v-bind="buttonAttrs"

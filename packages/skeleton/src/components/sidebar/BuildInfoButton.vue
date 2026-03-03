@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LucideIcon from '@/components/LucideIcon.vue'
+import IconButton from '@/components/IconButton.vue'
 
 const config = useRuntimeConfig()
 
@@ -12,22 +12,13 @@ const buildTime = config.public.buildTime
         mode="hover"
         :content="{ side: 'right' }"
     >
-        <UButton
-            color="neutral"
+        <IconButton
+            severity="neutral"
             variant="ghost"
             square
             aria-label="Build information"
-        >
-            <!--
-                    TODO: transform into IconButton
-        -->
-            <template #leading>
-                <LucideIcon
-                    name="Info"
-                    class="w-5 text-cyan-900 opacity-50"
-                />
-            </template>
-        </UButton>
+            iconName="info"
+        />
 
         <template #content>
             <div class="px-3 py-2 text-xs leading-relaxed whitespace-nowrap">
