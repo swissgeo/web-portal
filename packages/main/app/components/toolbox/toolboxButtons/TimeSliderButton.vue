@@ -10,7 +10,7 @@ const mapViewStore = useMapViewStore()
             title="Time Slider toggle button"
             :is-disabled="false"
             :is-active="mapViewStore.isTimeSliderVisible"
-            iconName="TimerReset"
+            iconName="Timer-Reset"
             @click="mapViewStore.toggleTimeSlider()"
         />
     </div>

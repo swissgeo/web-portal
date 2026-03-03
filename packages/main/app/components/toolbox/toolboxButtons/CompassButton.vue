@@ -5,6 +5,7 @@ import type MapEvent from 'ol/MapEvent'
 const RESET_ANIMATION_DURATION_MS = 300
 
 import { usePositionStore } from '@swissgeo/map'
+
 import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
 
 const dispatcher: ActionDispatcher = { name: 'OpenLayersCompassButton.vue' }
@@ -24,7 +25,7 @@ if (!olMap) {
 }*/
 
 const positionStore = usePositionStore()
-const { t } = useI18n()
+//const { t } = useI18n()
 
 const rotation = ref(-Math.PI / 4)
 const isResetting = ref(false)

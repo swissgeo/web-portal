@@ -3,7 +3,6 @@ import { useAttrs, computed } from 'vue'
 
 const attrs = useAttrs()
 
-// Map severity to color for NuxtUI --> WE DON'T CARE, WE ONLY GIVE SEVERITY
 const severities = ['primary', 'secondary', 'success', 'info', 'warning', 'danger', 'neutral']
 
 // Compute color from severity prop, default to gray
@@ -30,7 +29,7 @@ const buttonAttrs = computed(() => {
     // If needed : there is a "trailing-icon" property, that behaves like icon.
     // but puts the icon at the end of the button instead of the beginning if
     // we have text within the icon at some point.
-    rest.icon = rest.iconName ? `i-lucide-${rest.iconName}`.toLowerCase() : ''
+    rest.icon = rest.iconName ? `i-lucide-${rest.iconName as string}`.toLowerCase() : ''
     return rest
 })
 </script>
