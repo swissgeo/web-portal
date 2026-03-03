@@ -1,6 +1,6 @@
 import type { Component } from 'vue'
 
-import { ULocaleSelect, UButton, UInput, UPopover, USlider } from '#components'
+import { ULocaleSelect, UButton, UInput, UPopover, USlider, UIcon } from '#components'
 
 export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.vueApp.component('ULocaleSelect', ULocaleSelect)
@@ -10,4 +10,5 @@ export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.vueApp.component('UInput', UInput as unknown as Component)
     nuxtApp.vueApp.component('UPopover', UPopover as unknown as Component)
     nuxtApp.vueApp.component('USlider', USlider as unknown as Component)
+    nuxtApp.vueApp.component('UIcon', UIcon as unknown as Component)
 })

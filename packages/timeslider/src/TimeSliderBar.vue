@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { round } from '@swissgeo/numbers'
-import { LucideIcon } from '@swissgeo/skeleton'
 import GeoadminTooltip from '@swissgeo/tooltip'
 import { computed, ref, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -192,9 +191,9 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
                 @touchstart.passive="grabCursor"
                 @mousedown.passive="grabCursor"
             >
-                <LucideIcon
-                    name="GripVertical"
-                    class="h-5"
+                <UIcon
+                    name="i-lucide-grip-vertical"
+                    class="size-5"
                 />
             </div>
             <GeoadminTooltip
@@ -226,9 +225,9 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
                 @touchstart.passive="grabCursor"
                 @mousedown.passive="grabCursor"
             >
-                <LucideIcon
-                    name="GripVertical"
-                    class="h-5"
+                <UIcon
+                    name="i-lucide-grip-vertical"
+                    class="size-5"
                 />
             </div>
         </div>

@@ -3,7 +3,7 @@ import { IconButton } from '@swissgeo/skeleton'
 
 const emit = defineEmits(['click'])
 
-const {} = defineProps<{
+const { title } = defineProps<{
     title: string
     isActive: boolean
     isDisabled: boolean

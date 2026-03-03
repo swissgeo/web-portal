@@ -2,6 +2,7 @@
 import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
 
 import { usePositionStore } from '@swissgeo/map'
+
 import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
 
 const dispatcher: ActionDispatcher = { name: 'ZoomButtons.vue' }
