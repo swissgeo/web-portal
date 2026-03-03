@@ -14,7 +14,7 @@ const buildTime = config.public.buildTime
     >
         <IconButton
             severity="neutral"
-            variant="ghost"
+            :text="true"
             square
             aria-label="Build information"
             iconName="info"
