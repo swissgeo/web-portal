@@ -10,12 +10,12 @@ import * as geoJsonUtils from '@/utils/geoJsonUtils'
 
 import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
 
-const props = defineProps<{
+const { layer, zIndex } = defineProps<{
     layer: DatasetLayer
     zIndex: number
 }>()
 
-const { geoJsonUrl, styleData } = await useRecordsData(props.layer.dataset, 'OGC:GeoJSON')
+const { geoJsonUrl, styleData } = await useRecordsData(layer.dataset, 'OGC:GeoJSON')
 
 const { data } = await useFetch(geoJsonUrl.value).json<geoJsonUtils.FeatureCollectionWithCRS>()
 const geoJsonData = computed(() => {
@@ -38,31 +38,31 @@ const geoJsonStyle = computed(() => {
 })
 
 const { initialize, setZIndex, setVisibility, setOpacity } = useOlGeoJSONLayer(
-    props.layer.dataset.id,
-    props.layer.uuid,
-    props.layer.opacity,
-    props.layer.isLoading,
+    layer.dataset.id,
+    layer.uuid,
+    layer.opacity,
+    layer.isLoading,
     geoJsonData.value,
     geoJsonStyle.value,
-    props.zIndex
+    zIndex
 )
 
 watch(
-    () => props.layer.isVisible,
+    () => layer.isVisible,
     (newValue: boolean) => {
         setVisibility(newValue)
     }
 )
 
 watch(
-    () => props.zIndex,
+    () => zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
     }
 )
 
 watch(
-    () => props.layer.opacity,
+    () => layer.opacity,
     (newOpacity: number) => {
         setOpacity(newOpacity)
     }
