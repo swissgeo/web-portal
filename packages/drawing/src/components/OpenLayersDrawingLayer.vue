@@ -3,7 +3,6 @@ import type { FileLayer } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
-import { useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from '@swissgeo/shared'
 import KML from 'ol/format/KML'
@@ -17,12 +16,12 @@ import { useOlDrawing } from '@/composables/olDrawing.composable'
 import { useDrawingStore } from '@/stores/drawing'
 import { getMarkerIconById } from '@/utils/markerIcons'
 
-const { layer } = defineProps<{
+const { layer, zIndex } = defineProps<{
     layer: FileLayer
+    zIndex: number
 }>()
 
 const drawingStore = useDrawingStore()
-const layerStore = useLayerStore()
 
 const {
     startDrawing: startOlDrawing,
@@ -124,7 +123,7 @@ watch(
 
 // Watch for zIndex changes
 watch(
-    () => layerStore.getLayerZIndex(layer.uuid),
+    () => zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
     },

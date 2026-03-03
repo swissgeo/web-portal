@@ -5,39 +5,39 @@ import { onMounted, watch } from 'vue'
 
 import useOlGPXLayer from '@/composables/olGPXLayer.composable'
 
-const props = defineProps<{
+const { layer, zIndex } = defineProps<{
     layer: FileLayer
     zIndex: number
 }>()
 
-if (!props.layer.fileData) {
+if (!layer.fileData) {
     throw new Error('GPX layer has no file data')
 }
 
 const { initialize, setVisibility, setZIndex, setOpacity } = useOlGPXLayer(
-    props.layer.humanId,
-    props.layer.uuid,
-    props.layer.fileData,
-    props.layer.opacity,
-    props.zIndex
+    layer.humanId,
+    layer.uuid,
+    layer.fileData,
+    layer.opacity,
+    zIndex
 )
 
 watch(
-    () => props.layer.isVisible,
+    () => layer.isVisible,
     (newValue: boolean) => {
         setVisibility(newValue)
     }
 )
 
 watch(
-    () => props.zIndex,
+    () => zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
     }
 )
 
 watch(
-    () => props.layer.opacity,
+    () => layer.opacity,
     (newOpacity: number) => {
         setOpacity(newOpacity)
     }

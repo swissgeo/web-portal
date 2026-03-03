@@ -6,6 +6,7 @@ import { describe, it, expect, vi } from 'vitest'
 import OpenLayersDrawingLayer from '../components/OpenLayersDrawingLayer.vue'
 
 const mockSetSelectedIcon = vi.fn()
+const mockSetZIndex = vi.fn()
 const mockDrawingStore = {
     setSelectedIcon: mockSetSelectedIcon,
     drawingFeatures: [],
@@ -37,7 +38,7 @@ vi.mock('@/composables/olDrawing.composable', () => ({
         clearFeatures: vi.fn(),
         addFeatures: vi.fn(),
         setVisibility: vi.fn(),
-        setZIndex: vi.fn(),
+        setZIndex: mockSetZIndex,
         updateFeatureText: vi.fn(),
         setSelectedIcon: mockSetSelectedIcon,
     })),
@@ -48,13 +49,19 @@ vi.mock('@/utils/markerIcons', () => ({
 }))
 
 describe('OpenLayersDrawingLayer.vue', () => {
-    it('renders correctly', () => {
+    it('renders correctly and applies initial zIndex', async () => {
         const wrapper = mount(OpenLayersDrawingLayer, {
             props: {
                 layer: createLayerFixture(),
+                zIndex: 5,
             },
         })
         expect(wrapper.exists()).toBe(true)
+        expect(mockSetZIndex).toHaveBeenCalledWith(5)
+
+        // update zIndex prop and verify watcher triggers
+        await wrapper.setProps({ zIndex: 12 })
+        expect(mockSetZIndex).toHaveBeenCalledWith(12)
     })
 
     it('calls setSelectedIcon on icon selection', () => {
@@ -63,6 +70,7 @@ describe('OpenLayersDrawingLayer.vue', () => {
         mount(OpenLayersDrawingLayer, {
             props: {
                 layer: createLayerFixture(),
+                zIndex: 0,
             },
         })
 
