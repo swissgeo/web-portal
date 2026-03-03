@@ -9,6 +9,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     // TS doesn't consider that a `Component`, so we cast via `unknown`.
     nuxtApp.vueApp.component('UInput', UInput as unknown as Component)
     nuxtApp.vueApp.component('UPopover', UPopover as unknown as Component)
-    nuxtApp.vueApp.component('USlider', USlider as unknown as Component)
-    nuxtApp.vueApp.component('UIcon', UIcon as unknown as Component)
+    nuxtApp.vueApp.component('USlider', USlider as Component)
+    nuxtApp.vueApp.component('UIcon', UIcon as Component)
 })

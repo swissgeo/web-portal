@@ -11,6 +11,8 @@ export default defineConfig(({ mode }) => {
         test: {
             globals: true,
             environment: 'jsdom',
+
+            setupFiles: ['src/__tests__/config/components-stubs.ts'],
         },
         build: {
             ...getBaseBuildConfig(mode),

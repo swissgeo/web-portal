@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { useAttrs, computed } from 'vue'
 
+// we need to de-activate the automatic attribute passing to stop the computed values to be overriden by the attrs.
+defineOptions({ inheritAttrs: false })
+
 const attrs = useAttrs()
 
 const severities = ['primary', 'secondary', 'success', 'info', 'warning', 'danger', 'neutral']
@@ -18,31 +21,34 @@ const variant = computed(() => {
     return attrs.text ? 'ghost' : 'solid'
 })
 
-// Get icon name and class
-//const iconClass = computed(() => attrs['icon-class'] || '')
-
-// Get other attrs excluding the ones we're handling specially
-const buttonAttrs = computed(() => {
-    const rest = { ...attrs }
-    delete rest.severity
-    delete rest.text
+const icon = computed(() => {
     // If needed : there is a "trailing-icon" property, that behaves like icon.
     // but puts the icon at the end of the button instead of the beginning if
     // we have text within the icon at some point.
-    rest.icon = rest.iconName ? `i-lucide-${rest.iconName as string}`.toLowerCase() : ''
+    return attrs.iconName ? `i-lucide-${attrs.iconName as string}`.toLowerCase() : ''
+})
+// Get other attrs excluding the ones we're handling specially
+const buttonAttrs = computed(() => {
+    const rest = { ...attrs }
+    delete rest.icon
+    delete rest.variant
+    delete rest.color
+    delete rest['data-testid']
     return rest
 })
+//        v-bind="buttonAttrs"
 </script>
 
 <template>
     <UButton
-        :color="color"
         :class="{
             'text-default': ['secondary', 'info', 'warning', 'neutral'].includes(color as string),
             'text-inverted': ['primary', 'danger', 'success'].includes(color as string),
         }"
+        :color="color"
         :variant="variant"
+        :data-testid="`button-icon-${icon}`"
+        :icon="icon"
         v-bind="buttonAttrs"
-        :data-testid="(buttonAttrs.icon as string).toLowerCase()"
     />
 </template>
