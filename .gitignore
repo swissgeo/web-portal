@@ -25,3 +25,6 @@ logs
 
 # Python .venv
 .venv
+
+# amplify build
+.amplify-hosting
