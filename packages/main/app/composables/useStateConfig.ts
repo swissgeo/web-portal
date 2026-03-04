@@ -41,10 +41,7 @@ function layerToStateConfig(layer: Layer): LayerStateConfig {
     return config
 }
 
-async function stateConfigToLayer(
-    config: LayerStateConfig,
-    zIndexOffset: number
-): Promise<Layer> {
+function stateConfigToLayer(config: LayerStateConfig, zIndexOffset: number): Layer {
     const layerOptions: Partial<Layer> = {
         isVisible: config.isVisible,
         opacity: config.opacity,
@@ -140,13 +137,13 @@ export function useStateConfig() {
 
         for (let i = 0; i < config.layers.length; i++) {
             const layerConfig = config.layers[i]!
-            const layer = await stateConfigToLayer(layerConfig, i + 1)
+            const layer = stateConfigToLayer(layerConfig, i + 1)
             layerStore.addLayer(layer)
         }
 
         // Set background layer
         if (config.backgroundLayer) {
-            const bgLayer = await stateConfigToLayer(config.backgroundLayer, 0)
+            const bgLayer = stateConfigToLayer(config.backgroundLayer, 0)
             layerStore.setBackground(bgLayer)
         } else {
             layerStore.setBackground(null)
