@@ -113,7 +113,8 @@
                 "bottom-center": "Bas centre",
                 "bottom-right": "Bas droite"
             }
-        }
+        },
+        "openStateConfigPanel": "Ouvrir le panneau de configuration d'état"
     },
     "backgroundLayers": {
         "title": "Cartes affichées",

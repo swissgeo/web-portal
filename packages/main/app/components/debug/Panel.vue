@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import DrawingPanel from '~/components/debug/DrawingPanel.vue'
-import { ref } from 'vue'
+import { useStateConfig } from '~/composables/useStateConfig'
+import { ref, onMounted } from 'vue'
 
 const isLayersPanelOpen = ref(false)
 const isImportPanelOpen = ref(false)
@@ -23,6 +24,26 @@ function toggleDrawing() {
 function toggleStateConfig() {
     isStateConfigOpen.value = !isStateConfigOpen.value
 }
+
+const { exportState, importState } = useStateConfig()
+
+onMounted(() => {
+    if (import.meta.dev) {
+        ;(window as Record<string, unknown>).__swissgeo = {
+            exportState: () => {
+                const state = exportState()
+                // eslint-disable-next-line no-console
+                console.log(JSON.stringify(state, null, 2))
+                return state
+            },
+            importState: async (json: string) => {
+                await importState(json)
+                // eslint-disable-next-line no-console
+                console.log('State imported')
+            },
+        }
+    }
+})
 </script>
 
 <template>
@@ -87,7 +108,9 @@ function toggleStateConfig() {
             <UButton @click="toggleDrawing">
                 {{ $t('debug.openDrawingPanel') }}
             </UButton>
-            <UButton @click="toggleStateConfig"> State Config </UButton>
+            <UButton @click="toggleStateConfig">
+                {{ $t('debug.openStateConfigPanel') }}
+            </UButton>
         </div>
     </div>
 </template>

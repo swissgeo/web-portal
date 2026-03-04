@@ -113,7 +113,8 @@
                 "bottom-center": "Unten mittig",
                 "bottom-right": "Unten rechts"
             }
-        }
+        },
+        "openStateConfigPanel": "State Config Panel öffnen"
     },
     "backgroundLayers": {
         "title": "Angezeigte Karten",

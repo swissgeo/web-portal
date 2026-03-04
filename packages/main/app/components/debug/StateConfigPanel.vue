@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { IconButton } from '@swissgeo/skeleton'
 import { useStateConfig } from '~/composables/useStateConfig'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
+
+defineEmits<{ close: [] }>()
 
 const { exportState, importState } = useStateConfig()
 
@@ -36,24 +38,7 @@ async function handleImport() {
     }
 }
 
-onMounted(() => {
-    // Expose on window for console testing
-    if (import.meta.dev) {
-        ;(window as Record<string, unknown>).__swissgeo = {
-            exportState: () => {
-                const state = exportState()
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(state, null, 2))
-                return state
-            },
-            importState: async (json: string) => {
-                await importState(json)
-                // eslint-disable-next-line no-console
-                console.log('State imported')
-            },
-        }
-    }
-})
+
 </script>
 
 <template>
