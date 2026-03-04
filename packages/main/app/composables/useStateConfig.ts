@@ -25,7 +25,7 @@ function layerToStateConfig(layer: Layer): LayerStateConfig {
             (l) => l.rel.toLowerCase() === 'distributions'
         )
         if (distributionLink) {
-            config.capabilityUrl = distributionLink.href
+            config.distributionsUrl = distributionLink.href
         }
     }
 
@@ -56,12 +56,12 @@ function stateConfigToLayer(config: LayerStateConfig, zIndexOffset: number): Lay
         layerOptions.dimensions = dims
     }
 
-    if (config.capabilityUrl) {
+    if (config.distributionsUrl) {
         const fakeDataset: Dataset = {
             id: config.humanId,
             links: [
                 {
-                    href: config.capabilityUrl,
+                    href: config.distributionsUrl,
                     rel: 'distributions',
                     title: 'Distributions',
                     type: 'application/json',

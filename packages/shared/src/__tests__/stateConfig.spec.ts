@@ -161,7 +161,7 @@ describe('parseAppState', () => {
         ).toThrow('layers[0].opacity must be a number between 0 and 1')
     })
 
-    it('accepts a layer with capabilityUrl', () => {
+    it('accepts a layer with distributionsUrl', () => {
         const state = {
             ...validState,
             layers: [
@@ -171,13 +171,13 @@ describe('parseAppState', () => {
                     isVisible: true,
                     opacity: 1,
                     zIndex: 1,
-                    capabilityUrl:
+                    distributionsUrl:
                         '/api/v1/layers/external/aHR0cHM6Ly93bXRzLmdlby5icy5jaC8/external-layer',
                 },
             ],
         }
         const result = parseAppState(state)
-        expect(result.layers[0]!.capabilityUrl).toBe(
+        expect(result.layers[0]!.distributionsUrl).toBe(
             '/api/v1/layers/external/aHR0cHM6Ly93bXRzLmdlby5icy5jaC8/external-layer'
         )
     })
