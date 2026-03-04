@@ -161,6 +161,27 @@ describe('parseAppState', () => {
         ).toThrow('layers[0].opacity must be a number between 0 and 1')
     })
 
+    it('accepts a layer with capabilityUrl', () => {
+        const state = {
+            ...validState,
+            layers: [
+                {
+                    humanId: 'external-layer',
+                    type: 'wmts',
+                    isVisible: true,
+                    opacity: 1,
+                    zIndex: 1,
+                    capabilityUrl:
+                        '/api/v1/layers/external/aHR0cHM6Ly93bXRzLmdlby5icy5jaC8/external-layer',
+                },
+            ],
+        }
+        const result = parseAppState(state)
+        expect(result.layers[0]!.capabilityUrl).toBe(
+            '/api/v1/layers/external/aHR0cHM6Ly93bXRzLmdlby5icy5jaC8/external-layer'
+        )
+    })
+
     it('rejects invalid backgroundLayer', () => {
         expect(() =>
             parseAppState({
