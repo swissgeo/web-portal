@@ -80,7 +80,10 @@ function stateConfigToLayer(config: LayerStateConfig, zIndexOffset: number): Lay
         humanId: config.humanId,
         type: config.type as Layer['type'],
         isLoading: false,
-        ...layerOptions,
+        isVisible: config.isVisible,
+        opacity: config.opacity,
+        zIndex: config.zIndex ?? zIndexOffset,
+        dimensions: layerOptions.dimensions,
     }
 }
 
@@ -117,7 +120,7 @@ export function useStateConfig() {
      * Import app state from a JSON string, applying it to the stores.
      * Center coordinates are expected in WGS84 [lon, lat] and reprojected to the store's projection.
      */
-    async function importState(json: string): Promise<void> {
+    function importState(json: string): void {
         const raw = JSON.parse(json) as unknown
         const config = parseAppState(raw)
 

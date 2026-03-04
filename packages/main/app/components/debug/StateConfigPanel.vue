@@ -23,7 +23,7 @@ function handleExport() {
     }
 }
 
-async function handleImport() {
+function handleImport() {
     errorMessage.value = ''
     successMessage.value = ''
     if (!jsonText.value.trim()) {
@@ -31,14 +31,12 @@ async function handleImport() {
         return
     }
     try {
-        await importState(jsonText.value)
+        importState(jsonText.value)
         successMessage.value = 'State imported successfully'
     } catch (error) {
         errorMessage.value = error instanceof Error ? error.message : 'Failed to import state'
     }
 }
-
-
 </script>
 
 <template>

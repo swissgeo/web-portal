@@ -92,13 +92,15 @@ describe('parseAppState', () => {
     })
 
     it('rejects missing version', () => {
-        const { version: _version, ...noVersion } = validState
-        expect(() => parseAppState(noVersion)).toThrow('Unsupported state config version')
+        expect(() => parseAppState({ map: validState.map, layers: validState.layers })).toThrow(
+            'Unsupported state config version'
+        )
     })
 
     it('rejects missing map', () => {
-        const { map: _map, ...noMap } = validState
-        expect(() => parseAppState({ ...noMap, version: 1 })).toThrow('must include a "map" object')
+        expect(() => parseAppState({ version: 1, layers: validState.layers })).toThrow(
+            'must include a "map" object'
+        )
     })
 
     it('rejects invalid center', () => {
@@ -129,8 +131,7 @@ describe('parseAppState', () => {
     })
 
     it('rejects missing layers', () => {
-        const { layers: _layers, ...noLayers } = validState
-        expect(() => parseAppState({ ...noLayers, version: 1 })).toThrow(
+        expect(() => parseAppState({ version: 1, map: validState.map })).toThrow(
             'must include a "layers" array'
         )
     })

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import log from '@swissgeo/log'
 import DrawingPanel from '~/components/debug/DrawingPanel.vue'
 import { useStateConfig } from '~/composables/useStateConfig'
 import { ref, onMounted } from 'vue'
@@ -29,17 +30,15 @@ const { exportState, importState } = useStateConfig()
 
 onMounted(() => {
     if (import.meta.dev) {
-        ;(window as Record<string, unknown>).__swissgeo = {
+        ;(window as unknown as Record<string, unknown>).__swissgeo = {
             exportState: () => {
                 const state = exportState()
-                // eslint-disable-next-line no-console
-                console.log(JSON.stringify(state, null, 2))
+                log.debug({ messages: [JSON.stringify(state, null, 2)] })
                 return state
             },
-            importState: async (json: string) => {
-                await importState(json)
-                // eslint-disable-next-line no-console
-                console.log('State imported')
+            importState: (json: string) => {
+                importState(json)
+                log.debug({ messages: ['State imported'] })
             },
         }
     }

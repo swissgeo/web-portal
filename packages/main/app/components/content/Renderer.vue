@@ -22,8 +22,6 @@ const components = computed(() => {
         return []
     }
 
-    // console.log(`CONTAINERS: ${JSON.stringify(containers)}`)
-
     // return Object.values(containers)
     return containers
         .map((value: unknown, index: number) => {
