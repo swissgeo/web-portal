@@ -1,4 +1,4 @@
-import type { Layer, LayerType } from '@swissgeo/layers'
+import type { Dimension, DimensionId, Layer, LayerType } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
 import type { AppStateConfig, LayerStateConfig } from '@swissgeo/shared'
 
@@ -48,6 +48,14 @@ function stateConfigToLayer(config: LayerStateConfig, zIndexOffset: number): Lay
         zIndex: config.zIndex ?? zIndexOffset,
     }
 
+    if (config.dimensions) {
+        const dims: Partial<Record<DimensionId, Dimension>> = {}
+        for (const [key, val] of Object.entries(config.dimensions)) {
+            dims[key as DimensionId] = { currentValue: val.currentValue, availableValues: [] }
+        }
+        layerOptions.dimensions = dims
+    }
+
     if (config.capabilityUrl) {
         const fakeDataset: Dataset = {
             id: config.humanId,
@@ -71,10 +79,8 @@ function stateConfigToLayer(config: LayerStateConfig, zIndexOffset: number): Lay
         uuid: crypto.randomUUID(),
         humanId: config.humanId,
         type: config.type as Layer['type'],
-        isVisible: config.isVisible,
-        opacity: config.opacity,
-        zIndex: config.zIndex ?? zIndexOffset,
         isLoading: false,
+        ...layerOptions,
     }
 }
 
@@ -90,12 +96,10 @@ export function useStateConfig() {
      * Center coordinates are converted from the store's projection to WGS84 [lon, lat].
      */
     function exportState(): AppStateConfig {
-        const centerWgs84 = positionStore.centerEpsg4326
-
         const state: AppStateConfig = {
             version: 1,
             map: {
-                center: [centerWgs84[0], centerWgs84[1]],
+                center: positionStore.centerEpsg4326,
                 zoom: positionStore.zoom,
                 rotation: positionStore.rotation,
             },

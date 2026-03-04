@@ -1,5 +1,3 @@
-import type { Lang } from '@/language'
-
 /**
  * Serializable representation of a layer for state configuration.
  * Uses humanId (stable layer identifier) instead of uuid (runtime-generated).
@@ -11,7 +9,7 @@ export interface LayerStateConfig {
     opacity: number
     zIndex: number
     capabilityUrl?: string
-    dimensions?: Partial<Record<string, { currentValue: string | null }>>
+    dimensions?: Record<string, { currentValue: string | null }>
 }
 
 /**
@@ -27,7 +25,6 @@ export interface AppStateConfig {
     }
     layers: LayerStateConfig[]
     backgroundLayer?: LayerStateConfig | null
-    lang?: Lang
 }
 
 /**
