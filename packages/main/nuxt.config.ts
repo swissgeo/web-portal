@@ -67,9 +67,9 @@ export default defineNuxtConfig({
         detectBrowserLanguage: {
             useCookie: true,
             cookieKey: 'selectedLanguage',
-            redirectOn: 'root', // only redirect on root path
+            redirectOn: 'root',
         },
-        strategy: 'no_prefix', // don't do route paths
+        strategy: 'prefix',
         langDir: 'locales',
         locales: [
             {
@@ -86,6 +86,16 @@ export default defineNuxtConfig({
                 code: 'en',
                 name: 'English',
                 file: 'en.json',
+            },
+            {
+                code: 'it',
+                name: 'Italiano',
+                file: 'it.json',
+            },
+            {
+                code: 'rm',
+                name: 'Rumantsch',
+                file: 'rm.json',
             },
         ],
         defaultLocale: 'de',
