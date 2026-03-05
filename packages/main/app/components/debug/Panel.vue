@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import log from '@swissgeo/log'
 import DrawingPanel from '~/components/debug/DrawingPanel.vue'
-import { useStateConfig } from '~/composables/useStateConfig'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
 const isLayersPanelOpen = ref(false)
 const isImportPanelOpen = ref(false)
@@ -26,23 +24,6 @@ function toggleStateConfig() {
     isStateConfigOpen.value = !isStateConfigOpen.value
 }
 
-const { exportState, importState } = useStateConfig()
-
-onMounted(() => {
-    if (import.meta.dev) {
-        ;(window as unknown as Record<string, unknown>).__swissgeo = {
-            exportState: () => {
-                const state = exportState()
-                log.debug({ messages: [JSON.stringify(state, null, 2)] })
-                return state
-            },
-            importState: (json: string) => {
-                importState(json)
-                log.debug({ messages: ['State imported'] })
-            },
-        }
-    }
-})
 </script>
 
 <template>
