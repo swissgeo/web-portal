@@ -115,27 +115,6 @@ export default defineNuxtConfig({
             buildTime,
         },
     },
-    hooks: {
-        // 'i18n:registerModule': (register) => {
-        //     register({
-        //         langDir: './app/locales',
-        //         locales: [
-        //             {
-        //                 code: 'en',
-        //                 file: 'en.json',
-        //             },
-        //             {
-        //                 code: 'fr',
-        //                 file: 'fr.json',
-        //             },
-        //             {
-        //                 code: 'de',
-        //                 file: 'de.json',
-        //             },
-        //         ],
-        //     })
-        // },
-    },
     routeRules: {
         // cache the rendered pages for 2 minutes
         //'/content/**': { cache: { maxAge: process.dev ? 1 : 120 } },
