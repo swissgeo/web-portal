@@ -2,7 +2,8 @@
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { computed, onMounted, ref, watch } from 'vue'
 
-const { locale, locales, setLocale } = useI18n()
+const { locale, locales } = useI18n()
+const switchLocalePath = useSwitchLocalePath()
 
 const localeItems = computed(() =>
     locales.value.map((item) => ({
@@ -24,9 +25,11 @@ watch(locale, (value) => {
     selectedLocale.value = value
 })
 
-watch(selectedLocale, (value) => {
+watch(selectedLocale, async (value) => {
     if (value && value !== locale.value) {
-        setLocale(value as typeof locale.value).catch((err) => {
+        try {
+            await navigateTo(switchLocalePath(value))
+        } catch (err) {
             log.error({
                 title: 'SidebarLanguageSwitcherButton',
                 titleColor: LogPreDefinedColor.Rose,
@@ -35,7 +38,7 @@ watch(selectedLocale, (value) => {
                     err,
                 ],
             })
-        })
+        }
     }
 })
 </script>
