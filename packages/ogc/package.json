@@ -8,7 +8,8 @@
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "import": "./dist/index.es.js"
+            "import": "./dist/ogc.js",
+            "require": "./dist/ogc.umd.cjs"
         }
     },
     "main": "./dist/index.umd.js",
@@ -25,11 +26,13 @@
         "type-check": "tsc"
     },
     "dependencies": {
+        "@swissgeo/coordinates": "catalog:",
         "@swissgeo/log": "catalog:",
         "@swissgeo/shared": "workspace:*",
         "@types/openlayers": "catalog:",
         "@vueuse/core": "catalog:",
-        "ol": "catalog:"
+        "ol": "catalog:",
+        "proj4": "catalog:"
     },
     "devDependencies": {
         "@microsoft/api-extractor": "catalog:",
