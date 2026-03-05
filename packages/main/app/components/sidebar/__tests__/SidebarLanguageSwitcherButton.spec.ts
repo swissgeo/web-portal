@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
-import { ref, nextTick } from 'vue'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import SidebarLanguageSwitcherButton from '~/components/sidebar/SidebarLanguageSwitcherButton.vue'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { ref, nextTick } from 'vue'
 
 const mockApplyLocale = vi.fn()
 const mockLocale = ref('de')
