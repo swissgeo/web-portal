@@ -27,9 +27,9 @@ function createExpectedObject(layerType: LayerType, dataset: Dataset) {
 
 describe('Testing the information gathering from datasets', () => {
     it('returns dataset.id when properties are undefined', () => {
+        // @ts-expect-error Intentionally not defining properties
         const dataset: Dataset = {
             id: 'dataset-1',
-            properties: undefined,
         }
 
         const result = getInfoFromDataset(dataset)

@@ -1,12 +1,16 @@
 import type { ResolutionStep } from '@swissgeo/coordinates'
+import type { Map } from 'ol'
+import type { Ref } from 'vue'
 
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
 import ImageLayer from 'ol/layer/Image'
 import TileLayer from 'ol/layer/Tile'
 import { ImageWMS, TileWMS } from 'ol/source'
 import { TileGrid } from 'ol/tilegrid'
-import { computed } from 'vue'
+import { computed, ref, watch, watchEffect } from 'vue'
+
+import type { WMSLayer } from '@/types/layers'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
@@ -21,16 +25,24 @@ import usePositionStore from '@/stores/position'
 export const WMS_TILE_SIZE: number = 512 // px
 
 export default function useOlWmsLayer(
-    layerId: string,
-    uuid: string,
-    gutter: number,
-    opacity: number,
-    url: string,
-    version: string,
-    zIndex: number,
-    initialTimestamp: string | null
+    layer: Ref<WMSLayer>,
+    olMap: Ref<Map | undefined> | undefined
 ) {
+    const olLayer = ref<TileLayer<TileWMS> | ImageLayer<ImageWMS>>()
+    const source = ref<TileWMS | ImageWMS>()
+
     const positionStore = usePositionStore()
+
+    const layerId = computed(() => layer.value.layerId)
+    const zIndex = computed(() => layer.value.zIndex)
+    const isVisible = computed(() => layer.value.isVisible)
+    const opacity = computed(() => layer.value.opacity)
+    const dimension = computed(() => layer.value.dimensions)
+    const gutter = computed(() => layer.value.gutter)
+    const version = computed(() => layer.value.version)
+    const url = computed(() => layer.value.url)
+
+    const initialTimestamp = computed(() => dimension.value?.time?.currentValue || 'current')
 
     const format = computed(() => 'png') // format seems hardcoded in mapviewer, even though we
     // parse the capabilities to see if it's supported
@@ -51,10 +63,10 @@ export default function useOlWmsLayer(
             // SERVICE: "WMS",
             // REQUEST: "GetMap",
             TRANSPARENT: format.value === 'png',
-            LAYERS: layerId,
+            LAYERS: layerId.value,
             FORMAT: `image/${format.value}`,
             LANG: lang,
-            VERSION: version,
+            VERSION: version.value,
             CRS: positionStore.projection.epsg,
         }
         if (timestamp === ALL_YEARS_TIMESTAMP) {
@@ -72,9 +84,9 @@ export default function useOlWmsLayer(
 
     function createImageWMSSource(): ImageWMS {
         const config = {
-            url: url,
+            url: url.value,
             projection: positionStore.projection.epsg,
-            params: createUrlParams(initialTimestamp),
+            params: createUrlParams(initialTimestamp.value),
             // Limiting image request to exactly the size of the map viewport.
             // We have a couple layers that state when they have lastly been updated at the bottom
             // of the WMS image, and without this ratio prop this label is out of the map viewport.
@@ -82,8 +94,10 @@ export default function useOlWmsLayer(
             ratio: 1,
         }
 
-        log.debug(`Set WMS Source "ImageWMS" for layer ${layerId} with config`, {
-            messages: [config],
+        log.debug({
+            title: 'useOlWMSLayer',
+            titleColor: LogPreDefinedColor.Pink,
+            messages: [`Set WMS Source "ImageWMS" for layer ${layerId.value} with config`, config],
         })
 
         return new ImageWMS(config)
@@ -92,9 +106,9 @@ export default function useOlWmsLayer(
     function createTileWMSSource(): TileWMS {
         const config = {
             projection: positionStore.projection.epsg,
-            url: url,
-            gutter: gutter,
-            params: createUrlParams(initialTimestamp),
+            url: url.value,
+            gutter: gutter.value,
+            params: createUrlParams(initialTimestamp.value),
             tileGrid: !positionStore.projection.usesMercatorPyramid
                 ? new TileGrid({
                       resolutions: positionStore.projection
@@ -106,53 +120,82 @@ export default function useOlWmsLayer(
                   })
                 : undefined,
         }
-        log.debug(`Set WMS source "TileWMS" for ${layerId} with config`, { messages: [config] })
+        log.debug({
+            title: 'useOlWmsLayer',
+            titleColor: LogPreDefinedColor.Pink,
+            messages: ['Set WMS source "TimeWMS: for layerId with config', layerId.value, config],
+        })
+        log.debug(`Set WMS source "TileWMS" for ${layerId.value} with config`, {
+            messages: [config],
+        })
 
         return new TileWMS(config)
     }
 
     function createLayer() {
-        let layer: TileLayer<TileWMS> | ImageLayer<ImageWMS>
-        if (gutter !== -1) {
-            layer = new TileLayer<TileWMS>({
+        if (gutter.value !== -1) {
+            source.value = createTileWMSSource()
+            olLayer.value = new TileLayer<TileWMS>({
                 properties: {
                     id: layerId,
-                    uuid,
+                    uuid: layer.value.uuid,
                 },
-                opacity,
+                opacity: opacity.value,
                 source: createTileWMSSource(),
             })
         } else {
-            layer = new ImageLayer<ImageWMS>({
+            olLayer.value = new ImageLayer<ImageWMS>({
                 properties: {
                     id: layerId,
-                    uuid,
+                    uuid: layer.value.uuid,
                 },
-                opacity,
+                opacity: opacity.value,
                 source: createImageWMSSource(),
             })
         }
-        return layer
     }
+    watch(
+        () => layer.value.url,
+        () => {
+            createLayer()
+        },
+        { immediate: true }
+    )
 
-    const layer = createLayer()
+    const { addLayerToMap } = useAddLayerToMap(olLayer, zIndex, isVisible, opacity, olMap)
+
+    watch(
+        () => olLayer.value,
+        () => {
+            addLayerToMap()
+        }
+    )
+
+    watchEffect(() => {
+        if (dimension.value?.time?.currentValue) {
+            updateTimeDimension(dimension.value?.time?.currentValue)
+        }
+    })
 
     function updateTimeDimension(newTimestamp: string) {
-        log.debug(`Updating the time for ${layerId} to ${newTimestamp}`)
-        const source = layer.getSource()
-        source?.updateParams(createUrlParams(newTimestamp))
+        if (!source.value) {
+            log.warn({
+                title: 'useOlWMSLayer',
+                titleColor: LogPreDefinedColor.Pink,
+                messages: [
+                    `Cannot update time dimension for ${layerId.value}: source not initialized yet`,
+                ],
+            })
+            return
+        }
+
+        log.debug({
+            title: 'useOlWMSLayer',
+            titleColor: LogPreDefinedColor.Pink,
+            messages: [`Updating the time for ${layerId.value}`, newTimestamp],
+        })
+        source.value.updateParams(createUrlParams(newTimestamp))
     }
 
-    const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
-
-    function setOpacity(opacity: number) {
-        layer.setOpacity(opacity)
-    }
-
-    return {
-        setVisibility,
-        setZIndex,
-        updateTimeDimension,
-        setOpacity,
-    }
+    return {}
 }

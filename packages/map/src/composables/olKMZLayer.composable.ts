@@ -1,7 +1,9 @@
+import type { Map } from 'ol'
 import type { FeatureLike } from 'ol/Feature'
 import type Feature from 'ol/Feature'
+import type { Ref } from 'vue'
 
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { createTextFeatureStyle, EPSG_4326_WGS84 } from '@swissgeo/shared'
 import { unzip } from 'fflate'
 import KML from 'ol/format/KML'
@@ -9,28 +11,44 @@ import VectorLayer from 'ol/layer/Vector'
 import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
 import proj4 from 'proj4'
+import { computed, ref, watch } from 'vue'
+
+import type { KMZLayer } from '@/types'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
 
 export default function useOlKMZLayer(
-    layerId: string,
-    uuid: string,
-    kmzDataBase64: string,
-    opacity: number,
-    zIndex: number
+    layer: Ref<KMZLayer>,
+    olMap: Ref<Map | undefined> | undefined
 ) {
-    const layer = new VectorLayer({
-        properties: {
-            id: layerId,
-            uuid,
+    const layerId = computed(() => layer.value.layerId)
+    const zIndex = computed(() => layer.value.zIndex)
+    const isVisible = computed(() => layer.value.isVisible)
+    const opacity = computed(() => layer.value.opacity)
+    const kmzDataBase64 = computed(() => layer.value.fileData)
+
+    const olLayer = ref<VectorLayer>()
+
+    watch(
+        () => kmzDataBase64.value,
+        () => {
+            olLayer.value = new VectorLayer({
+                properties: {
+                    id: layerId,
+                    uuid: layer.value.uuid,
+                },
+                opacity: opacity.value,
+            })
+
+            void initialize()
         },
-        opacity,
-    })
+        { immediate: true }
+    )
 
     async function unzippKMZ(): Promise<Record<string, Uint8Array<ArrayBufferLike>>> {
         // Decode base64 to binary
-        const binaryString = atob(kmzDataBase64)
+        const binaryString = atob(kmzDataBase64.value)
         const uint8Array = new Uint8Array(binaryString.length)
         for (let i = 0; i < binaryString.length; i++) {
             uint8Array[i] = binaryString.charCodeAt(i)
@@ -114,7 +132,11 @@ export default function useOlKMZLayer(
     }
 
     async function initialize(): Promise<void> {
-        log.debug(`Initializing KMZ layer ${layerId}`)
+        log.debug({
+            title: 'useOlKMZLayer',
+            titleColor: LogPreDefinedColor.Rose,
+            messages: [`Initializing KMZ layer ${layerId.value}`],
+        })
         const positionStore = usePositionStore()
 
         try {
@@ -126,23 +148,36 @@ export default function useOlKMZLayer(
             processTextFeatures(features)
 
             const source = new VectorSource({ features })
-            layer.setSource(source)
+            if (olLayer.value) {
+                olLayer.value.setSource(source)
+            }
 
-            log.debug(`KMZ layer ${layerId} initialized with ${features.length} features`)
+            log.debug({
+                title: 'useOlKMZLayer',
+                titleColor: LogPreDefinedColor.Rose,
+                messages: [
+                    `KMZ layer ${layerId.value} initialized with ${features.length} features`,
+                ],
+            })
         } catch (error) {
             log.error({
                 title: 'useOlKMZLayer',
-                messages: [`Failed to initialize KMZ layer ${layerId}`, error],
+                titleColor: LogPreDefinedColor.Rose,
+                messages: [`Failed to initialize KMZ layer ${layerId.value}`, error],
             })
             throw error
         }
     }
 
-    const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
+    const { addLayerToMap } = useAddLayerToMap(olLayer, zIndex, isVisible, opacity, olMap)
 
-    function setOpacity(opacity: number) {
-        layer.setOpacity(opacity)
-    }
+    watch(
+        () => olLayer.value,
+        () => {
+            addLayerToMap()
+        },
+        { immediate: true }
+    )
 
-    return { initialize, setVisibility, setZIndex, setOpacity }
+    return {}
 }

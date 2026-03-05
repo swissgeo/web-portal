@@ -1,37 +1,22 @@
 <script lang="ts" setup>
-import type { DatasetLayer } from '@swissgeo/layers'
+import type { Map } from 'ol'
+import type { Ref } from 'vue'
 
-import { watch } from 'vue'
+import { computed, inject } from 'vue'
+
+import type { VectorLayer } from '@/types/layers'
 
 import useOlVectorLayer from '../composables/olVectorLayer.composable'
 
-const { layer, zIndex } = defineProps<{
-    layer: DatasetLayer
-    zIndex: number
+const { layer } = defineProps<{
+    layer: VectorLayer
 }>()
 
-const styleUrl = `/api/v1/layers/swissgeo/vectorTest`
+const layerRef = computed(() => layer)
 
-const { setVisibility, setZIndex, setOpacity } = useOlVectorLayer(
-    layer.dataset?.id ?? '',
-    zIndex,
-    styleUrl
-)
+const olMap = inject<Ref<Map | undefined>>('olMap')
 
-watch(
-    () => layer.isVisible,
-    (newVisibility) => setVisibility(newVisibility)
-)
-
-watch(
-    () => zIndex,
-    (newZIndex) => setZIndex(newZIndex)
-)
-
-watch(
-    () => layer.opacity,
-    (newOpacity) => setOpacity(newOpacity)
-)
+useOlVectorLayer(layerRef, olMap)
 </script>
 
 <template>

@@ -1,4 +1,4 @@
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -7,9 +7,6 @@ import type { Dimension, DimensionId, Layer, LayerInfo } from '@/index'
 export const useLayerStore = defineStore('layers', () => {
     /** List of layers added to the map. Index 0 = bottom of stack, last index = top. */
     const layers = ref<Layer[]>([])
-
-    /** Layer that's shown as background layer */
-    const backgroundLayer = ref<Layer | null>(null)
 
     function addLayer(layer: Layer) {
         layers.value.push(layer)
@@ -58,15 +55,7 @@ export const useLayerStore = defineStore('layers', () => {
         setLayerIndex(uuid, layers.value.length - 1)
     }
 
-    function setBackground(layer: Layer | null) {
-        backgroundLayer.value = layer
-    }
-
     function getLayerByUuid(layerUuid: string) {
-        if (backgroundLayer.value?.uuid === layerUuid) {
-            return backgroundLayer.value
-        }
-
         const layer = layers.value.find((layer: Layer) => layer.uuid === layerUuid)
         return layer
     }
@@ -90,7 +79,11 @@ export const useLayerStore = defineStore('layers', () => {
                 layer.dimensions = {}
             }
 
-            log.debug(`Updating ${layer.humanId} with dimension ${JSON.stringify(dimension)}`)
+            log.debug({
+                title: 'layer Store',
+                titleColor: LogPreDefinedColor.Cyan,
+                messages: [`Updating ${layer.humanId} with dimension ${JSON.stringify(dimension)}`],
+            })
 
             const existingDimension = layer.dimensions[id]
 
@@ -132,7 +125,6 @@ export const useLayerStore = defineStore('layers', () => {
 
     return {
         layers,
-        backgroundLayer,
         // getters
         getLayerZIndex,
         // actions
@@ -145,7 +137,6 @@ export const useLayerStore = defineStore('layers', () => {
         setOpacity,
         setLayerInfo,
         setDimension,
-        setBackground,
         removeLayer,
     }
 })

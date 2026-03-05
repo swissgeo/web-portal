@@ -8,7 +8,8 @@
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "import": "./dist/index.es.js"
+            "import": "./dist/map.js",
+            "require": "./dist/map.umd.cjs"
         },
         "./stylesheet": "./src/stylesheet.css"
     },

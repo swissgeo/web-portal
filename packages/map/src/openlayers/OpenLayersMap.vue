@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { Layer } from '@swissgeo/layers'
 import type { Map as OlMapType } from 'ol'
 import type { Ref } from 'vue'
 
@@ -10,6 +9,7 @@ import proj4 from 'proj4'
 import { onMounted, provide, ref, useTemplateRef } from 'vue'
 
 import type { MapLayerRenderer } from '@/types'
+import type { Layer } from '@/types/layers'
 
 import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.composable'
 

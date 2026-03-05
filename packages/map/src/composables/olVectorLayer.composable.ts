@@ -1,4 +1,5 @@
 import type { Map } from 'ol'
+import type { Ref } from 'vue'
 
 import log from '@swissgeo/log'
 import { applyStyle } from 'ol-mapbox-style'
@@ -6,7 +7,9 @@ import MVT from 'ol/format/MVT'
 import VectorTileLayer from 'ol/layer/VectorTile'
 import VectorTileSource from 'ol/source/VectorTile'
 import TileGrid from 'ol/tilegrid/TileGrid'
-import { inject, toValue } from 'vue'
+import { computed, ref, watch } from 'vue'
+
+import type { VectorLayer } from '@/types'
 
 import usePositionStore from '@/stores/position/'
 
@@ -24,6 +27,7 @@ interface TileMatrixSet {
     items: TileMatrixItem[]
     min_x: number
     min_y: number
+
     max_x: number
     max_y: number
 }
@@ -192,8 +196,18 @@ async function initializeVectorLayer(
     log.debug(`Vector layer ${layerId} initialized successfully`)
 }
 
-export default function useOlVectorLayer(layerId: string, zIndex: number, styleUrl: string) {
-    const olMap = toValue(inject<Map>('olMap'))
+export default function useOlVectorLayer(
+    layer: Ref<VectorLayer>,
+    olMap: Ref<Map | undefined> | undefined
+) {
+    const layerId = computed(() => layer.value.layerId)
+    const zIndex = computed(() => layer.value.zIndex)
+    const isVisible = computed(() => layer.value.isVisible)
+    const opacity = computed(() => layer.value.opacity)
+    const vectorData = computed(() => layer.value.fileData)
+
+    const styleUrl = `/api/v1/layers/swissgeo/vectorTest`
+
     const positionStore = usePositionStore()
 
     if (!olMap) {
@@ -201,35 +215,45 @@ export default function useOlVectorLayer(layerId: string, zIndex: number, styleU
         throw new Error('OpenLayersMap is not available')
     }
 
-    // Create the vector tile layer (source will be set after fetching config)
-    const layer = new VectorTileLayer({
-        declutter: true,
-        properties: {
-            id: layerId,
-        },
-        // Performance optimizations
-        renderMode: 'hybrid', // Better performance than 'vector'
-        updateWhileAnimating: true, // Smooth panning
-        updateWhileInteracting: true, // Smooth zooming
-        preload: 1, // Preload 1 zoom level ahead
+    const olLayer = ref<VectorTileLayer>()
+
+    watch(vectorData, () => {
+        // Create the vector tile layer (source will be set after fetching config)
+        olLayer.value = new VectorTileLayer({
+            declutter: true,
+            properties: {
+                id: layerId,
+            },
+            // Performance optimizations
+            renderMode: 'hybrid', // Better performance than 'vector'
+            updateWhileAnimating: true, // Smooth panning
+            updateWhileInteracting: true, // Smooth zooming
+            preload: 1, // Preload 1 zoom level ahead
+        })
+
+        // Initialize the layer asynchronously
+        initializeVectorLayer(
+            olLayer.value,
+            styleUrl,
+            positionStore.projection.epsg,
+            layerId.value,
+            zIndex.value
+        ).catch((error) => {
+            log.error(`Unable to load and attach the style for ${layerId.value}`, {
+                messages: [error],
+            })
+        })
     })
 
-    // Initialize the layer asynchronously
-    initializeVectorLayer(layer, styleUrl, positionStore.projection.epsg, layerId, zIndex).catch(
-        (error) => {
-            log.error(`Unable to load and attach the style for ${layerId}`, { messages: [error] })
-        }
+    const { addLayerToMap } = useAddLayerToMap(olLayer, zIndex, isVisible, opacity, olMap)
+
+    watch(
+        () => olLayer.value,
+        () => {
+            addLayerToMap()
+        },
+        { immediate: true }
     )
 
-    const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
-
-    function setOpacity(opacity: number) {
-        layer.setOpacity(opacity)
-    }
-
-    return {
-        setVisibility,
-        setZIndex,
-        setOpacity,
-    }
+    return {}
 }

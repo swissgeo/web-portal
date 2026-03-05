@@ -1,38 +1,62 @@
-import log from '@swissgeo/log'
+import type { Map } from 'ol'
+import type { Ref } from 'vue'
+
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { createTextFeatureStyle, EPSG_4326_WGS84 } from '@swissgeo/shared'
 import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'
 import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
 import proj4 from 'proj4'
+import { computed, ref, watch } from 'vue'
+
+import type { KMLLayer } from '@/types'
 
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
 import usePositionStore from '@/stores/position'
 
 export default function useOlKMLLayer(
-    layerId: string,
-    uuid: string,
-    kmlData: string,
-    opacity: number,
-    zIndex: number
+    layer: Ref<KMLLayer>,
+    olMap: Ref<Map | undefined> | undefined
 ) {
+    const layerId = computed(() => layer.value.layerId)
+    const zIndex = computed(() => layer.value.zIndex)
+    const isVisible = computed(() => layer.value.isVisible)
+    const opacity = computed(() => layer.value.opacity)
+    const kmlData = computed(() => layer.value.fileData)
+
     const positionStore = usePositionStore()
-    const layer = new VectorLayer({
-        properties: {
-            id: layerId,
-            uuid,
+
+    const olLayer = ref<VectorLayer>()
+
+    watch(
+        () => kmlData.value,
+        () => {
+            olLayer.value = new VectorLayer({
+                properties: {
+                    id: layerId,
+                    uuid: layer.value.uuid,
+                },
+                opacity: opacity.value,
+            })
+
+            initialize()
         },
-        opacity,
-    })
+        { immediate: true }
+    )
 
     function initialize(): void {
-        log.debug(`Initializing KML layer ${layerId}`)
+        log.debug({
+            title: 'useOlKMLLayer',
+            titleColor: LogPreDefinedColor.Fuchsia,
+            messages: [`Initializing KML layer ${layerId.value}`],
+        })
 
         const format = new KML({
             extractStyles: true, // Extract styles from KML for non-text features
         })
         register(proj4)
-        const features = format.readFeatures(kmlData, {
+        const features = format.readFeatures(kmlData.value, {
             featureProjection: positionStore.projection.epsg, // CH1903+ / LV95 / EPSG:2056
             dataProjection: EPSG_4326_WGS84, // WGS84
         })
@@ -60,15 +84,25 @@ export default function useOlKMLLayer(
             features,
         })
 
-        layer.setSource(source)
-        log.debug(`KML layer ${layerId} initialized with ${features.length} features`)
+        if (olLayer.value) {
+            olLayer.value.setSource(source)
+        }
+        log.debug({
+            title: 'useOlKmlLayer',
+            titleColor: LogPreDefinedColor.Fuchsia,
+            messages: [`KML layer ${layerId.value} initialized with ${features.length} features`],
+        })
     }
 
-    const { setVisibility, setZIndex } = useAddLayerToMap(layer, zIndex)
+    const { addLayerToMap } = useAddLayerToMap(olLayer, zIndex, isVisible, opacity, olMap)
 
-    function setOpacity(opacity: number) {
-        layer.setOpacity(opacity)
-    }
+    watch(
+        () => olLayer.value,
+        () => {
+            addLayerToMap()
+        },
+        { immediate: true }
+    )
 
-    return { initialize, setVisibility, setZIndex, setOpacity }
+    return {}
 }

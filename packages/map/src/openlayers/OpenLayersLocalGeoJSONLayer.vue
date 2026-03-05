@@ -1,51 +1,22 @@
 <script lang="ts" setup>
-import type { FileLayer } from '@swissgeo/layers'
+import type { Map } from 'ol'
+import type { Ref } from 'vue'
 
-import { watch, onMounted } from 'vue'
+import { computed, inject } from 'vue'
+
+import type { GeoJSONLayer } from '@/types'
 
 import useOlLocalGeoJSONLayer from '../composables/olLocalGeoJSONLayer.composable'
 
-const { layer, zIndex } = defineProps<{
-    layer: FileLayer
-    zIndex: number
+const { layer } = defineProps<{
+    layer: GeoJSONLayer
 }>()
 
-if (!layer.fileData) {
-    throw new Error('GeoJSON layer has no file data')
-}
+const olMap = inject<Ref<Map | undefined>>('olMap')
 
-const { initialize, setVisibility, setZIndex, setOpacity } = useOlLocalGeoJSONLayer(
-    layer.humanId,
-    layer.uuid,
-    layer.fileData,
-    layer.opacity,
-    zIndex
-)
+const layerRef = computed(() => layer)
 
-watch(
-    () => layer.isVisible,
-    (newValue: boolean) => {
-        setVisibility(newValue)
-    }
-)
-
-watch(
-    () => zIndex,
-    (newZIndex: number) => {
-        setZIndex(newZIndex)
-    }
-)
-
-watch(
-    () => layer.opacity,
-    (newOpacity: number) => {
-        setOpacity(newOpacity)
-    }
-)
-
-onMounted(() => {
-    initialize()
-})
+useOlLocalGeoJSONLayer(layerRef, olMap)
 </script>
 
 <template>

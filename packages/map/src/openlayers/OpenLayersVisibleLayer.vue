@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import type { DatasetLayer, Layer } from '@swissgeo/layers'
-
-import { useLayerStore } from '@swissgeo/layers'
 import { computed } from 'vue'
 
-import type { MapLayerRenderer } from '@/types'
+import type { MapLayerRenderer, Layer } from '@/types/layers'
+
+import { isWMTS, isWMS, isKML, isKMZ, isGPX, isGeoJSON, isVector } from '@/utils/recordUtils'
 
 import OpenLayersGeoJSONLayer from './OpenLayersGeoJSONLayer.vue'
 import OpenLayersGPXLayer from './OpenLayersGPXLayer.vue'
@@ -20,13 +19,9 @@ const { layer, customLayerRenderers } = defineProps<{
     customLayerRenderers?: MapLayerRenderer[]
 }>()
 
-const layerStore = useLayerStore()
-
-const zIndex = computed(() => layerStore.getLayerZIndex(layer.uuid))
-
 // Check if layer has a dataset (is DatasetLayer) or is a local file (FileLayer)
 const isLocalFile = computed(
-    () => !layer.dataset && 'fileData' in layer && layer.fileData !== undefined
+    () => !('dataset' in layer) && 'fileData' in layer && layer.fileData !== undefined
 )
 
 const customLayerRenderer = computed(() =>
@@ -38,47 +33,38 @@ const customLayerRenderer = computed(() =>
     <component
         :is="customLayerRenderer.component"
         :layer="layer as Layer"
-        :zIndex="zIndex"
         v-if="customLayerRenderer"
     />
     <OpenLayersWMTSLayer
-        :layer="layer as DatasetLayer"
-        :zIndex="zIndex"
-        v-else-if="layer.type === 'wmts'"
+        :layer="layer"
+        v-else-if="isWMTS(layer)"
     />
     <OpenLayersWMSLayer
-        :layer="layer as DatasetLayer"
-        :zIndex="zIndex"
-        v-else-if="layer.type === 'wms'"
+        :layer="layer"
+        v-else-if="isWMS(layer)"
     />
     <OpenLayersKMLLayer
-        :layer="layer as Layer"
-        :zIndex="zIndex"
-        v-else-if="layer.type === 'kml'"
+        :layer="layer"
+        v-else-if="isKML(layer)"
     />
     <OpenLayersKMZLayer
-        :layer="layer as Layer"
-        :zIndex="zIndex"
-        v-else-if="layer.type === 'kmz'"
+        :layer="layer"
+        v-else-if="isKMZ(layer)"
     />
     <OpenLayersGPXLayer
-        :layer="layer as Layer"
-        :zIndex="zIndex"
-        v-else-if="layer.type === 'gpx'"
+        :layer="layer"
+        v-else-if="isGPX(layer)"
     />
     <OpenLayersLocalGeoJSONLayer
-        :layer="layer as Layer"
-        :zIndex="zIndex"
-        v-else-if="layer.type === 'geojson' && isLocalFile"
+        :layer="layer"
+        v-else-if="isGeoJSON(layer) && isLocalFile"
     />
     <OpenLayersGeoJSONLayer
-        :layer="layer as DatasetLayer"
-        :zIndex="zIndex"
-        v-else-if="layer.type === 'geojson' && !isLocalFile"
+        :layer="layer"
+        v-else-if="isGeoJSON(layer) && !isLocalFile"
     />
     <OpenLayersVectorLayer
-        :layer="layer as DatasetLayer"
-        :zIndex="zIndex"
-        v-else-if="layer.type === 'vector'"
+        :layer="layer"
+        v-else-if="isVector(layer)"
     />
 </template>
