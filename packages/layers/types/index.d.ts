@@ -46,7 +46,7 @@ export interface FileLayer extends Layer {
 }
 
 export function useLayerStore(): any
-export function makeServerLayer(type: LayerType, dataset: Dataset, options?: Partial<Layer>): Layer
+export function makeServerLayer(dataset: Dataset, options?: Partial<Layer>): Layer
 export function getLayerInfoFromWMSCapabilities(
     capabilities: WMSCapabilities,
     layerId: string

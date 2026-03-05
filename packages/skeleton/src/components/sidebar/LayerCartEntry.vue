@@ -125,11 +125,6 @@ function removeLayer() {
                 :class="{ 'text-gray-300': !layer.isVisible }"
             >
                 {{ displayName }}
-                <span
-                    class="ml-1 rounded px-1 py-0.5 text-xs font-medium"
-                    :class="typeBadgeClass"
-                    >{{ layer.type }}</span
-                >
             </div>
             <div class="mt-2 flex items-center gap-2">
                 <span class="text-xs text-gray-600">Opacity:</span>
