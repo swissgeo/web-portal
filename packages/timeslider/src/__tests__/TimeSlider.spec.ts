@@ -8,7 +8,6 @@ const BASE_LAYER_CONFIG: Layer = {
     uuid: 'abc',
     humanId: 'def',
     isVisible: true,
-    type: 'wms',
     opacity: 0,
     isLoading: false,
 }

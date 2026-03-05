@@ -25,7 +25,7 @@ const backgroundRecords = computed(async () => {
 
     const values = await Promise.all(promises)
     return values.map((record: Dataset) => {
-        return makeServerLayer('wmts', record)
+        return makeServerLayer(record)
     })
 })
 
