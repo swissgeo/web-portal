@@ -1,3 +1,5 @@
+import type { Lang } from '@swissgeo/shared/language'
+
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
 
@@ -10,7 +12,7 @@ export const useAppStore = defineStore('app', () => {
     // which causes nuxt-i18n to update locale, which updates this computed.
     const currentLocale = computed(() => locale.value)
 
-    async function applyLocale(lang: string) {
+    async function applyLocale(lang: Lang) {
         await navigateTo(switchLocalePath(lang))
     }
 
