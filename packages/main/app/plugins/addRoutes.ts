@@ -62,7 +62,7 @@ const makeRouteEntries = (
 
         records.push({
             name: langEntry.slug,
-            path,
+            path: `/${lang}${path}`,
             file: '~/pages/page.vue',
             component: page,
             meta: {
