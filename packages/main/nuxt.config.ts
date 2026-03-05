@@ -14,6 +14,9 @@ try {
 const buildTime = new Date().toISOString()
 
 export default defineNuxtConfig({
+    app: {
+        buildAssetsDir: '/_nxt/',
+    },
     typescript: {
         typeCheck: false, //too much baggage ATM
     },
