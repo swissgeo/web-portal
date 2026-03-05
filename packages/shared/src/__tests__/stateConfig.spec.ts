@@ -7,7 +7,7 @@ import { parseAppState } from '../stateConfig'
 const validState: AppStateConfig = {
     version: 1,
     map: {
-        center: [7.4474, 46.948],
+        center: [2600000, 1200000],
         zoom: 10,
         rotation: 0,
     },
@@ -109,7 +109,7 @@ describe('parseAppState', () => {
                 ...validState,
                 map: { ...validState.map, center: [1] },
             })
-        ).toThrow('map.center must be a [lon, lat] number array')
+        ).toThrow('map.center must be a [x, y] number array in LV95 (EPSG:2056)')
     })
 
     it('rejects negative zoom', () => {

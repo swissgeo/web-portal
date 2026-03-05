@@ -23,7 +23,6 @@ function toggleDrawing() {
 function toggleStateConfig() {
     isStateConfigOpen.value = !isStateConfigOpen.value
 }
-
 </script>
 
 <template>

@@ -14,12 +14,12 @@ export interface LayerStateConfig {
 
 /**
  * JSON structure representing the full app state for sharing/shortlink.
- * Coordinates use WGS84 (EPSG:4326) [lon, lat] for interoperability.
+ * Coordinates use LV95 (EPSG:2056) [x, y].
  */
 export interface AppStateConfig {
     version: 1
     map: {
-        center: [number, number] // [lon, lat] in WGS84
+        center: [number, number] // [x, y] in LV95 (EPSG:2056)
         zoom: number
         rotation: number
     }
@@ -65,7 +65,7 @@ function validateMap(map: unknown): asserts map is AppStateConfig['map'] {
         typeof m.center[0] !== 'number' ||
         typeof m.center[1] !== 'number'
     ) {
-        throw new Error('map.center must be a [lon, lat] number array')
+        throw new Error('map.center must be a [x, y] number array in LV95 (EPSG:2056)')
     }
 
     if (typeof m.zoom !== 'number' || m.zoom < 0) {

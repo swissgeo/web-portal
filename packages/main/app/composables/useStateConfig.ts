@@ -2,12 +2,10 @@ import type { Dimension, DimensionId, Layer, LayerType } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
 import type { AppStateConfig, LayerStateConfig } from '@swissgeo/shared'
 
-import { WGS84 } from '@swissgeo/coordinates'
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
 import { parseAppState } from '@swissgeo/shared'
-import proj4 from 'proj4'
 
 const DISPATCHER = { name: 'state-config' }
 
@@ -96,13 +94,13 @@ export function useStateConfig() {
 
     /**
      * Export the current app state as an AppStateConfig object.
-     * Center coordinates are converted from the store's projection to WGS84 [lon, lat].
+     * Center coordinates are in LV95 (EPSG:2056) [x, y].
      */
     function exportState(): AppStateConfig {
         const state: AppStateConfig = {
             version: 1,
             map: {
-                center: positionStore.centerEpsg4326,
+                center: positionStore.center,
                 zoom: positionStore.zoom,
                 rotation: positionStore.rotation,
             },
@@ -118,7 +116,7 @@ export function useStateConfig() {
 
     /**
      * Import app state from a JSON string, applying it to the stores.
-     * Center coordinates are expected in WGS84 [lon, lat] and reprojected to the store's projection.
+     * Center coordinates are expected in LV95 (EPSG:2056) [x, y].
      */
     function importState(json: string): void {
         const raw = JSON.parse(json) as unknown
@@ -126,14 +124,7 @@ export function useStateConfig() {
 
         log.info('Importing state config', { messages: [JSON.stringify(config.map)] })
 
-        // Convert WGS84 [lon, lat] to the store's current projection
-        const centerInProjection = proj4(
-            WGS84.epsg,
-            positionStore.projection.epsg,
-            config.map.center
-        )
-
-        positionStore.setCenter([centerInProjection[0], centerInProjection[1]], DISPATCHER)
+        positionStore.setCenter(config.map.center, DISPATCHER)
         positionStore.setZoom(config.map.zoom, DISPATCHER)
         positionStore.setRotation(config.map.rotation, DISPATCHER)
 
