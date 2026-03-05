@@ -96,7 +96,7 @@ describe('Functionality of buttons with a LucideIcon within', () => {
                 'data-testid': 'NOT GOOD EITHER',
             },
         })
-        const iconButton = wrapper.find(`[data-testid="${expectedTestId}"`)
+        const iconButton = wrapper.find(`[data-testid="${expectedTestId}"]`)
         expect(iconButton).to.exist
         expect(iconButton.attributes().icon).to.eql(expectedIcon)
         expect(iconButton.attributes().variant).to.eql('ghost')

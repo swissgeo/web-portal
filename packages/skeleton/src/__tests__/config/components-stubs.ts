@@ -7,4 +7,5 @@ config.global.stubs = {
     UPopover: true,
     UIcon: true,
     ULocaleSelect: true,
+    USeparator: true,
 }
