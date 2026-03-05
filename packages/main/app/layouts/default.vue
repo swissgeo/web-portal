@@ -43,15 +43,16 @@ async function onSearchResultSelected(result: SearchResult) {
                 v-if="!isMapFullscreenMode"
                 class="z-2"
                 @search-result-selected="onSearchResultSelected"
-            />
-            <div
-                v-if="!isMapFullscreenMode"
-                class="pointer-events-none absolute bottom-4 left-0 z-3 flex w-16 justify-center"
             >
-                <div class="pointer-events-auto">
-                    <SidebarLanguageSwitcherButton />
-                </div>
-            </div>
+                <template #bottom-controls>
+                    <div
+                        class="pointer-events-auto"
+                        v-if="!isMapFullscreenMode"
+                    >
+                        <SidebarLanguageSwitcherButton />
+                    </div>
+                </template>
+            </SideBar>
             <div
                 class="h-full w-full"
                 :class="isMapFullscreenMode ? 'pl-0' : 'pl-20'"
