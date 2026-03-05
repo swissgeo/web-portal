@@ -50,7 +50,6 @@
         "vue-tsc": "catalog:"
     },
     "peerDependencies": {
-        "@vueuse/core": "catalog:",
         "pinia": "catalog:",
         "vue": "catalog:"
     },

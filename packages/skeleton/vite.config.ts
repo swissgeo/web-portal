@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
                 name: '@swissgeo/skeleton',
             },
             rollupOptions: {
-                external: ['vue', 'pinia', '@nuxt/ui', /#components/],
+                external: ['vue', 'pinia', '@nuxt/ui', /#components/, 'vue-i18n'],
                 output: {
                     exports: 'named',
                     globals: {
