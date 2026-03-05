@@ -19,12 +19,12 @@ describe('useAppStore', () => {
         vi.clearAllMocks()
     })
 
-    it('currentLocale reflects the i18n locale', () => {
+    it('locale reflects the i18n locale', () => {
         const store = useAppStore()
-        expect(store.currentLocale).toBe('de')
+        expect(store.locale).toBe('de')
 
         mockLocale.value = 'fr'
-        expect(store.currentLocale).toBe('fr')
+        expect(store.locale).toBe('fr')
     })
 
     it('applyLocale navigates to the path returned by switchLocalePath', async () => {
