@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { mount, flushPromises } from '@vue/test-utils'
 import SidebarLanguageSwitcherButton from '~/components/sidebar/SidebarLanguageSwitcherButton.vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ref, nextTick } from 'vue'
@@ -78,7 +78,7 @@ describe('SidebarLanguageSwitcherButton', () => {
         await nextTick()
 
         await wrapper.find('button').trigger('click')
-        await nextTick()
+        await flushPromises()
 
         const log = (await import('@swissgeo/log')).default
         expect(log.error).toHaveBeenCalled()
