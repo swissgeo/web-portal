@@ -1,6 +1,6 @@
 import { createPinia, setActivePinia } from 'pinia'
-import { ref } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { ref } from 'vue'
 
 const mockLocale = ref('de')
 const mockSwitchLocalePath = vi.fn((lang: string) => `/${lang}/map`)
