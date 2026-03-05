@@ -3,7 +3,7 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { computed, onMounted, ref, watch } from 'vue'
 
 const { locale, locales } = useI18n()
-const switchLocalePath = useSwitchLocalePath()
+const appStore = useAppStore()
 
 const localeItems = computed(() =>
     locales.value.map((item) => ({
@@ -28,7 +28,7 @@ watch(locale, (value) => {
 watch(selectedLocale, async (value) => {
     if (value && value !== locale.value) {
         try {
-            await navigateTo(switchLocalePath(value))
+            await appStore.applyLocale(value)
         } catch (err) {
             log.error({
                 title: 'SidebarLanguageSwitcherButton',
