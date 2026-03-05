@@ -62,7 +62,6 @@ const onKeydown = (event: KeyboardEvent) => {
             >
                 <template #trailing>
                     <!-- Clear/Loading button -->
-                    <!-- TODO: IconButtons instead -->
 
                     <IconButton
                         v-if="modelValue"
