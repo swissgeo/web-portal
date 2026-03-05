@@ -5,6 +5,9 @@ const localePath = useLocalePath()
 // const mainStore = useMainStore()
 
 const openSidebar = () => {
+    // NOTE: with the prefix i18n strategy, route.path is e.g. /de/search.
+    // split('/')[0] returns '' (empty string), so these cases will never match.
+    // Update to route.path.split('/')[2] and adjust the case values if uncommented.
     switch (route.path.split('/')[0]) {
         case 'search':
             // uiStore.setSidebar(SidebarType.SEARCH)

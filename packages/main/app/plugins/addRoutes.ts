@@ -60,6 +60,10 @@ const makeRouteEntries = (
         const slug = slugify(langEntry.slug)
         const path = joinURL(parentPath, slug)
 
+        // Child routes also use absolute paths (starting with /<lang>/...).
+        // This is intentional: each recursive call prepends /<lang> to its own record,
+        // so nested routes are correctly registered as /de/content/parent/child etc.
+        // Vue Router accepts absolute paths in the children array.
         records.push({
             name: langEntry.slug,
             path: `/${lang}${path}`,
