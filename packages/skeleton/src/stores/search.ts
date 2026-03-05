@@ -101,6 +101,10 @@ export const useSearchStore = defineStore('search', () => {
             const searchPromises: Promise<SearchResult[]>[] = [
                 searchLocation(newQuery, lang, abortController.signal),
             ]
+
+            if (!catalog.value?.records) {
+                return
+            }
             // the layers are searched through a local catalog, it's not an async operation
             const searchedLayers = searchLayers(newQuery, catalog.value?.records) ?? []
 
