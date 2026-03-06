@@ -4,11 +4,10 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { computed, toValue, watchEffect } from 'vue'
 
 import type { Distribution, DistributionCollection } from '@/types/Records'
-// import { useFetch } from '@vueuse/core'
 
 export function useDistribution(
     distributionCollection: Ref<DistributionCollection | null>,
-    distributionId: Ref<string>
+    distributionId: Ref<string | null>
 ) {
     const distribution = computed(() => {
         return extractDistribution(distributionCollection.value, distributionId.value)
@@ -36,7 +35,7 @@ export function useDistribution(
 
 export function extractDistribution(
     collection: DistributionCollection | null,
-    distributionId: string
+    distributionId: string | null
 ): Distribution | null {
     if (!collection || !('records' in collection) || !distributionId) {
         return null
