@@ -1,19 +1,20 @@
 import type { Ref } from 'vue'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { useFetch } from '@vueuse/core'
 import { computed, toValue, watchEffect } from 'vue'
 
 import type { Dataset, DistributionCollection } from '@/types/Records'
 
-export function useDistributionCollection(dataset: Ref<Dataset>) {
+import { useConditionalFetch } from './useConditionalFetch'
+
+export function useDistributionCollection(dataset: Ref<Dataset | null>) {
     const distributionUrl = computed(() => extractDistributionLink(dataset.value))
 
     const {
         data: distributionCollection,
         isFetching,
         error,
-    } = useFetch<DistributionCollection>(distributionUrl, { refetch: true }).get().json()
+    } = useConditionalFetch<DistributionCollection>(distributionUrl, ['get', 'json'])
 
     // Debug watchers
     watchEffect(() => {
@@ -40,7 +41,10 @@ export function useDistributionCollection(dataset: Ref<Dataset>) {
     }
 }
 
-export function extractDistributionLink(dataset: Dataset): string {
+export function extractDistributionLink(dataset: Pick<Dataset, 'links'> | null): string | null {
+    if (!dataset) {
+        return null
+    }
     const links = dataset.links
 
     if (!links) {
@@ -62,5 +66,5 @@ export function extractDistributionLink(dataset: Dataset): string {
         titleColor: LogPreDefinedColor.Yellow,
         messages: ['Unable to extract a distribution link', dataset.links],
     })
-    return ''
+    return null
 }
