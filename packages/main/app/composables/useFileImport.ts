@@ -48,7 +48,6 @@ export function useFileImport() {
             isVisible: true,
             type: layerType,
             isLoading: false,
-            zIndex: layerStore.greatestZIndex + 1,
             info: {
                 displayName: file.name,
                 abstract: `Imported from local file: ${file.name}`,

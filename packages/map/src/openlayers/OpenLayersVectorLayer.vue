@@ -5,15 +5,16 @@ import { watch } from 'vue'
 
 import useOlVectorLayer from '../composables/olVectorLayer.composable'
 
-const { layer } = defineProps<{
+const { layer, zIndex } = defineProps<{
     layer: DatasetLayer
+    zIndex: number
 }>()
 
 const styleUrl = `/api/v1/layers/swissgeo/vectorTest`
 
 const { setVisibility, setZIndex, setOpacity } = useOlVectorLayer(
     layer.dataset?.id ?? '',
-    1,
+    zIndex,
     styleUrl
 )
 
@@ -23,7 +24,7 @@ watch(
 )
 
 watch(
-    () => layer.zIndex,
+    () => zIndex,
     (newZIndex) => setZIndex(newZIndex)
 )
 

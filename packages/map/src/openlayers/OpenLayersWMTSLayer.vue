@@ -18,8 +18,9 @@ import { getTimeInfoFromWMTSCapabilities } from '../utils/timeUtils'
 
 const layerStore = useLayerStore()
 
-const { layer } = defineProps<{
+const { layer, zIndex } = defineProps<{
     layer: DatasetLayer
+    zIndex: number
 }>()
 
 const { capabilityUrl, defaultOpacityFromStyle } = await useRecordsData(layer.dataset, 'OGC:WMTS')
@@ -82,7 +83,7 @@ const { initialize, setVisibility, setZIndex, updateTimeDimension, setOpacity } 
     layer.uuid,
     options.value,
     defaultOpacityFromStyle.value,
-    layer.zIndex,
+    zIndex,
     initialTimestamp.value
 )
 
@@ -111,7 +112,7 @@ watch(
 )
 
 watch(
-    () => layer.zIndex,
+    () => zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
     }

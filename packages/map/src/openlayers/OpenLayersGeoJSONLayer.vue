@@ -10,8 +10,9 @@ import * as geoJsonUtils from '@/utils/geoJsonUtils'
 
 import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
 
-const { layer } = defineProps<{
+const { layer, zIndex } = defineProps<{
     layer: DatasetLayer
+    zIndex: number
 }>()
 
 const { geoJsonUrl, styleData } = await useRecordsData(layer.dataset, 'OGC:GeoJSON')
@@ -43,7 +44,7 @@ const { initialize, setZIndex, setVisibility, setOpacity } = useOlGeoJSONLayer(
     layer.isLoading,
     geoJsonData.value,
     geoJsonStyle.value,
-    layer.zIndex
+    zIndex
 )
 
 watch(
@@ -54,7 +55,7 @@ watch(
 )
 
 watch(
-    () => layer.zIndex,
+    () => zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
     }

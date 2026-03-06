@@ -1,33 +1,20 @@
 import type { Dataset } from '@swissgeo/ogc'
 
-import { createTestingPinia } from '@pinia/testing'
-import { setActivePinia } from 'pinia'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import type { Layer, LayerType } from '@/types'
+import type { LayerType } from '@/types'
 
-import { useLayerStore } from '@/stores/layer'
 import { getInfoFromDataset, makeServerLayer } from '@/utils/layerUtils'
-
-// we need to mock the layer store so we can check the functions work with various z indexes
-
-const pinia = createTestingPinia({
-    createSpy: vi.fn,
-})
-setActivePinia(pinia)
-const layerStore = useLayerStore()
-const fake_uuid = 'mock-uuid-with-extra-step'
 
 function createExpectedObject(layerType: LayerType, dataset: Dataset) {
     return {
-        uuid: fake_uuid,
+        uuid: 'mock-uuid-with-extra-step',
         humanId: 'dataset-1',
         opacity: 1,
         dataset,
         isVisible: true,
         type: layerType,
         isLoading: false,
-        zIndex: 6,
         info: {
             displayName: 'Layer Title',
             attribution: {
@@ -36,27 +23,6 @@ function createExpectedObject(layerType: LayerType, dataset: Dataset) {
             abstract: 'Layer description',
         },
     }
-}
-/**
- * we create a fake layers array to have the correct z index returned within our mocked store.
- * TO DO GPS-500 : remove zIndex and layer Store
- * @param nb_layer : number of layers to add
- */
-function setZindex(nb_layer: number) {
-    const layers: Layer[] = []
-    for (let i = 0; i < nb_layer; i++) {
-        layers.push({
-            type: 'wms',
-            opacity: 0.5,
-            isLoading: false,
-            uuid: '',
-            humanId: 'fake layer',
-            zIndex: 0,
-            isVisible: false,
-        })
-    }
-    layerStore.layers = layers
-    // the goal is to alter the layers variable in the store to change the zIndex.
 }
 
 describe('Testing the information gathering from datasets', () => {
@@ -171,7 +137,7 @@ describe('testing the makeServerLayer function', () => {
     beforeEach(() => {
         vi.clearAllMocks()
 
-        vi.spyOn(globalThis.crypto, 'randomUUID').mockReturnValue(fake_uuid)
+        vi.spyOn(globalThis.crypto, 'randomUUID').mockReturnValue('mock-uuid-with-extra-step')
     })
 
     const baseDataset: Dataset = {
@@ -198,23 +164,18 @@ describe('testing the makeServerLayer function', () => {
     `(
         'creates a layer with the correct defaults, of the correct type for the layer type : $layerType',
         ({ layerType, expectedServerLayerCreated }) => {
-            // TO DO GPS-500 : remove zIndex and layer Store
-
-            setZindex(5)
             const layer = makeServerLayer(layerType, baseDataset)
             expect(layer).toMatchObject(expectedServerLayerCreated)
         }
     )
-    // TO DO GPS-500 : remove zIndex and layer Store
+
     it('overrides defaults with options', () => {
         const layer = makeServerLayer('wms', baseDataset, {
             opacity: 0.3,
             isVisible: false,
-            zIndex: 999,
         })
 
         expect(layer.opacity).toBe(0.3)
         expect(layer.isVisible).toBe(false)
-        expect(layer.zIndex).toBe(999)
     })
 })

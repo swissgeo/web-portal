@@ -5,20 +5,21 @@ import { onMounted, watch } from 'vue'
 
 import useOlKMZLayer from '@/composables/olKMZLayer.composable'
 
-const { layer } = defineProps<{
+const { layer, zIndex } = defineProps<{
     layer: FileLayer
+    zIndex: number
 }>()
 
 if (!layer.fileData) {
     throw new Error('KMZ layer has no file data')
 }
 
-const { initialize, setVisibility, setZIndex } = useOlKMZLayer(
+const { initialize, setVisibility, setZIndex, setOpacity } = useOlKMZLayer(
     layer.humanId,
     layer.uuid,
     layer.fileData,
     layer.opacity,
-    layer.zIndex
+    zIndex
 )
 
 watch(
@@ -29,9 +30,16 @@ watch(
 )
 
 watch(
-    () => layer.zIndex,
+    () => zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
+    }
+)
+
+watch(
+    () => layer.opacity,
+    (newOpacity: number) => {
+        setOpacity(newOpacity)
     }
 )
 

@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { DefineComponent } from 'vue'
+import type { Layer } from '@swissgeo/layers'
+import type { Component, DefineComponent } from 'vue'
 
 export interface ActionDispatcher {
     name: string
+}
+
+export interface MapLayerRenderer {
+    matches: (layer: Layer) => boolean
+    component: Component
 }
 
 export const PROJECTION_EPSG: Record<string, string>

@@ -16,8 +16,9 @@ import { useOlDrawing } from '@/composables/olDrawing.composable'
 import { useDrawingStore } from '@/stores/drawing'
 import { getMarkerIconById } from '@/utils/markerIcons'
 
-const { layer } = defineProps<{
+const { layer, zIndex } = defineProps<{
     layer: FileLayer
+    zIndex: number
 }>()
 
 const drawingStore = useDrawingStore()
@@ -122,7 +123,7 @@ watch(
 
 // Watch for zIndex changes
 watch(
-    () => layer.zIndex,
+    () => zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
     },

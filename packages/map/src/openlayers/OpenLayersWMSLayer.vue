@@ -16,8 +16,9 @@ import { getTimeInfoFromWMSCapabilities } from '../utils/timeUtils'
 const layerStore = useLayerStore()
 
 type WMSCapabilityType = ReturnType<WMSCapabilities['read']>
-const { layer } = defineProps<{
+const { layer, zIndex } = defineProps<{
     layer: DatasetLayer
+    zIndex: number
 }>()
 
 const gutter = computed(() => {
@@ -69,7 +70,7 @@ const { setVisibility, setZIndex, updateTimeDimension, setOpacity } = useOlWmsLa
     layer.opacity,
     url.value,
     version.value,
-    layer.zIndex,
+    zIndex,
     initialTimestamp.value
 )
 
@@ -81,7 +82,7 @@ watch(
 )
 
 watch(
-    () => layer.zIndex,
+    () => zIndex,
     (newZIndex: number) => {
         setZIndex(newZIndex)
     }

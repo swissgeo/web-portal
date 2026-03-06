@@ -11,7 +11,6 @@ const BASE_LAYER_CONFIG: Layer = {
     type: 'wms',
     opacity: 0,
     isLoading: false,
-    zIndex: 0,
 }
 
 test.each([
