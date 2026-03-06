@@ -8,6 +8,7 @@ export interface LayerStateConfig {
     isVisible: boolean
     opacity: number
     zIndex: number
+    displayName?: string
     distributionsUrl?: string
     dimensions?: Record<string, { currentValue: string | null }>
 }

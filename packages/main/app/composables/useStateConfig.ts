@@ -16,6 +16,7 @@ function layerToStateConfig(layer: Layer): LayerStateConfig {
         isVisible: layer.isVisible,
         opacity: layer.opacity,
         zIndex: layer.zIndex,
+        displayName: layer.info?.displayName,
     }
 
     if (layer.dataset) {
@@ -66,7 +67,7 @@ function stateConfigToLayer(config: LayerStateConfig, zIndexOffset: number): Lay
                 },
             ],
             properties: {
-                title: config.humanId,
+                title: config.displayName ?? config.humanId,
                 type: 'Dataset' as const,
             },
         }
