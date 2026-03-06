@@ -17,7 +17,6 @@ const validState: AppStateConfig = {
             type: 'wmts',
             isVisible: true,
             opacity: 1,
-            zIndex: 1,
         },
     ],
 }
@@ -36,7 +35,6 @@ describe('parseAppState', () => {
                 type: 'wmts',
                 isVisible: true,
                 opacity: 1,
-                zIndex: 0,
             },
         }
         const result = parseAppState(state)
@@ -64,7 +62,6 @@ describe('parseAppState', () => {
                     type: 'wms',
                     isVisible: true,
                     opacity: 0.8,
-                    zIndex: 1,
                     dimensions: {
                         time: { currentValue: '2020' },
                     },
@@ -140,7 +137,7 @@ describe('parseAppState', () => {
         expect(() =>
             parseAppState({
                 ...validState,
-                layers: [{ type: 'wms', isVisible: true, opacity: 1, zIndex: 1 }],
+                layers: [{ type: 'wms', isVisible: true, opacity: 1 }],
             })
         ).toThrow('layers[0].humanId must be a string')
     })
@@ -155,7 +152,6 @@ describe('parseAppState', () => {
                         type: 'wms',
                         isVisible: true,
                         opacity: 1.5,
-                        zIndex: 1,
                     },
                 ],
             })
@@ -171,7 +167,6 @@ describe('parseAppState', () => {
                     type: 'wmts',
                     isVisible: true,
                     opacity: 1,
-                    zIndex: 1,
                     distributionsUrl:
                         '/api/v1/layers/external/aHR0cHM6Ly93bXRzLmdlby5icy5jaC8/external-layer',
                 },

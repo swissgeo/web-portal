@@ -15,7 +15,6 @@ function layerToStateConfig(layer: Layer): LayerStateConfig {
         type: layer.type,
         isVisible: layer.isVisible,
         opacity: layer.opacity,
-        zIndex: layer.zIndex,
         displayName: layer.info?.displayName,
     }
 
@@ -40,11 +39,10 @@ function layerToStateConfig(layer: Layer): LayerStateConfig {
     return config
 }
 
-function stateConfigToLayer(config: LayerStateConfig, zIndexOffset: number): Layer {
+function stateConfigToLayer(config: LayerStateConfig): Layer {
     const layerOptions: Partial<Layer> = {
         isVisible: config.isVisible,
         opacity: config.opacity,
-        zIndex: config.zIndex ?? zIndexOffset,
     }
 
     if (config.dimensions) {
@@ -81,7 +79,6 @@ function stateConfigToLayer(config: LayerStateConfig, zIndexOffset: number): Lay
         isLoading: false,
         isVisible: config.isVisible,
         opacity: config.opacity,
-        zIndex: config.zIndex ?? zIndexOffset,
         dimensions: layerOptions.dimensions,
     }
 }
@@ -134,15 +131,13 @@ export function useStateConfig() {
             layerStore.removeLayer(layer.uuid)
         }
 
-        for (let i = 0; i < config.layers.length; i++) {
-            const layerConfig = config.layers[i]!
-            const layer = stateConfigToLayer(layerConfig, i + 1)
-            layerStore.addLayer(layer)
+        for (const layerConfig of config.layers) {
+            layerStore.addLayer(stateConfigToLayer(layerConfig))
         }
 
         // Set background layer
         if (config.backgroundLayer) {
-            const bgLayer = stateConfigToLayer(config.backgroundLayer, 0)
+            const bgLayer = stateConfigToLayer(config.backgroundLayer)
             layerStore.setBackground(bgLayer)
         } else {
             layerStore.setBackground(null)

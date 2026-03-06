@@ -7,7 +7,6 @@ export interface LayerStateConfig {
     type: string
     isVisible: boolean
     opacity: number
-    zIndex: number
     displayName?: string
     distributionsUrl?: string
     dimensions?: Record<string, { currentValue: string | null }>
@@ -109,9 +108,5 @@ function validateLayerConfig(layer: unknown, path: string): asserts layer is Lay
 
     if (typeof l.opacity !== 'number' || l.opacity < 0 || l.opacity > 1) {
         throw new Error(`${path}.opacity must be a number between 0 and 1`)
-    }
-
-    if (typeof l.zIndex !== 'number') {
-        throw new Error(`${path}.zIndex must be a number`)
     }
 }
