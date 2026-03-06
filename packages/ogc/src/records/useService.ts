@@ -54,7 +54,7 @@ export function useService(distribution: Ref<Distribution | null>) {
  * @param distribution
  * @returns
  */
-export function extractServiceUrl(distribution: Distribution | null): string | null {
+export function extractServiceUrl(distribution: Pick<Distribution, 'links'> | null): string | null {
     if (!distribution) {
         return null
     }

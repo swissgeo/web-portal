@@ -34,13 +34,60 @@ describe('useService fetching the service data from the OGC records', () => {
         await flushPromises()
         expect(serviceData.value).toEqual(ChGeoadminWmts)
     })
+
+    it('fetches the service data after the distribution becomes available', async () => {
+        const distribution = ref<Distribution | null>(null)
+        const { serviceData } = useService(distribution)
+        expect(serviceData.value).toBe(null)
+
+        distribution.value = ChBafuSchutzgebieteLuftfahrtWmts as Distribution
+        await flushPromises()
+        expect(serviceData.value).toEqual(ChGeoadminWmts)
+    })
 })
 
 describe('extract service URL', () => {
-    it.skip('extracts the URL correctly', () => {
-        const url = extractServiceUrl(distribution.value)
+    it('extracts the URL correctly', () => {
+        const distribution = ChBafuSchutzgebieteLuftfahrtWmts as Distribution
+        const url = extractServiceUrl(distribution)
         expect(url).toEqual(
             'https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wmts'
         )
     })
+
+    it('handles an empty distribution', () => {
+        const distribution = null
+        const url = extractServiceUrl(distribution)
+        expect(url).toBe(null)
+    })
+
+    it('handles an broken distribution', () => {
+        const distribution = {
+            links: [
+                {
+                    href: 'https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wmts',
+                },
+            ],
+        }
+        // @ts-expect-error Intentionally breaking the type
+        const url = extractServiceUrl(distribution)
+        expect(url).toBe(null)
+    })
+
+    it.each(['service', 'Service', 'SerVice', 'SERVICE'])(
+        'works with random case service rels (%s)',
+        (rel) => {
+            const dataset = {
+                links: [
+                    {
+                        rel,
+                        href: 'my-link',
+                    },
+                ],
+            }
+
+            const link = extractServiceUrl(dataset)
+            expect(link).toEqual('my-link')
+        }
+    )
 })
