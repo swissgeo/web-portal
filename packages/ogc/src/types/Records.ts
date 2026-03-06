@@ -53,7 +53,7 @@ export interface Link {
     href: string
     rel: string
     type?: string
-    title: string
+    title?: string
 }
 
 export interface LinkVariable {
