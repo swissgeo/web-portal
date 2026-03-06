@@ -1,39 +1,60 @@
+import type { Style } from 'mapbox-gl'
 import type { Ref } from 'vue'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { useFetch } from '@vueuse/core'
-import { computed } from 'vue'
+import { computed, watchEffect } from 'vue'
 
 import type { Distribution, Link } from '@/types/Records'
 
+import { useConditionalFetch } from './useConditionalFetch'
+
 export function useStyle(distribution: Ref<Distribution | null>) {
-    const styleDataUrl = computed(() =>
-        distribution.value ? extractStyleUrl(distribution.value) : null
-    )
+    const styleDataUrl = computed(() => extractStyleUrl(distribution.value))
 
-    if (!styleDataUrl.value) {
-        log.error({})
-        throw new Error() // TODO
-    }
+    const {
+        data: styleData,
+        isFetching,
+        error,
+    } = useConditionalFetch<Style>(styleDataUrl, ['get', 'json'])
 
-    const { data: styleData } = useFetch(styleDataUrl.value)
+    watchEffect(() => {
+        log.debug({
+            title: 'useStyle',
+            titleColor: LogPreDefinedColor.Pink,
+            messages: ['Style URL is now', styleDataUrl.value],
+        })
+    })
+
+    watchEffect(() => {
+        log.debug({
+            title: 'useStyle',
+            titleColor: LogPreDefinedColor.Pink,
+            messages: ['Received new style data', styleData.value],
+        })
+    })
 
     return {
         styleDataUrl,
         styleData,
+        isFetching,
+        error,
     }
 }
 
-export function extractStyleUrl(distributionData: Distribution): string | null {
-    const links = distributionData.links
+export function extractStyleUrl(distribution: Distribution | null): string | null {
+    if (!distribution) {
+        return null
+    }
+
+    const links = distribution.links
 
     if (!links) {
         log.error({
             title: 'useStyle',
-            titleColor: LogPreDefinedColor.Yellow,
-            messages: ['Unable to find links in distribution', distributionData],
+            titleColor: LogPreDefinedColor.Pink,
+            messages: ['Unable to find links in distribution', distribution],
         })
-        throw new Error(`Unable to find links for distribution}`)
+        return null
     }
 
     const link = getStyleLinks(links)[0]

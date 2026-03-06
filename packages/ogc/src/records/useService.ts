@@ -15,7 +15,7 @@ export function useService(distribution: Ref<Distribution | null>) {
         data: serviceData,
         isFetching,
         error,
-    } = useConditionalFetch<Service>(serviceUrl).get().json()
+    } = useConditionalFetch<Service>(serviceUrl, ['get', 'json'])
 
     watchEffect(() => {
         log.debug({

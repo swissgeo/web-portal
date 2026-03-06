@@ -104,6 +104,10 @@ function updateTimeDimension(layerUuid: string, dimension: Partial<Dimension>) {
     layerStore.setDimension('time', layerUuid, dimension)
 }
 
+function updateOpacity(layerUuid: string, opacity: number) {
+    layerStore.setOpacity(layerUuid, opacity)
+}
+
 function changeBackground(layer: Layer | null) {
     log.debug({
         title: 'map',
@@ -168,6 +172,7 @@ watch(
             :key="layer.uuid"
             :zIndex="layerStore.getLayerZIndex(layer.uuid)"
             @update="updateLayerData(layer.uuid, $event)"
+            @updateOpacity="updateOpacity"
             @remove="removeLayerData(layer.uuid)"
             @updateTimeDimension="updateTimeDimension"
         ></MapDatasetLayer>

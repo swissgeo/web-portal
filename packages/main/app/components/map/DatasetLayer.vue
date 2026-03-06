@@ -11,6 +11,7 @@
 import type { DatasetLayer, Dimension } from '@swissgeo/layers'
 import type { Layer as MapLayer, LayerType } from '@swissgeo/map'
 import type { Distribution } from '@swissgeo/ogc'
+import type { AnyLayer, RasterLayer, Style } from 'mapbox-gl'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import {
@@ -18,15 +19,19 @@ import {
     useDistribution,
     useDistributionCollection,
     useService,
+    useStyle,
     useWmtsCapabilities,
     useWmsCapabilities,
     useGeoJson,
 } from '@swissgeo/ogc'
 import { getTimeInfoFromWMTSCapabilities } from '~/utils/timeUtils'
 
+const DEFAULT_OPACITY = 1
+
 const emit = defineEmits<{
     update: [layer: MapLayer]
     updateTimeDimension: [layerUuid: string, dimension: Partial<Dimension>]
+    updateOpacity: [layerUuid: string, opacity: number]
     remove: [void]
 }>()
 
@@ -145,6 +150,7 @@ function determineLayerType(distribution: Ref<Distribution | null>): LayerType {
  * Specifically, parse the capabilities and update the time info
  */
 function getWmtsSpecificData() {
+    const { styleData } = useStyle(distribution)
     const { wmtsData } = useWmtsCapabilities(serviceData, layerId)
 
     const options = computed(() => wmtsData.value?.options || null)
@@ -155,6 +161,17 @@ function getWmtsSpecificData() {
     watch(timeInfo, () => {
         processTimeInfo(timeInfo)
     })
+
+    watch(
+        styleData,
+        () => {
+            if (styleData.value) {
+                const defaultOpacity = defaultOpacityFromStyle(styleData.value)
+                emit('updateOpacity', layer.uuid, defaultOpacity)
+            }
+        },
+        { immediate: true }
+    )
 
     watch(
         () => options.value,
@@ -171,6 +188,7 @@ function getWmtsSpecificData() {
  * Get data specific to WMS
  */
 function getWmsSpecificData() {
+    const { styleData } = useStyle(distribution)
     const { wmsData } = useWmsCapabilities(serviceData, layerId)
     const dimensions = computed(() => wmsData.value?.dimensions || null)
     const timeInfo = computed(() => getTimeInfoFromWMSCapabilities(dimensions.value))
@@ -182,6 +200,17 @@ function getWmsSpecificData() {
     const version = computed(() => capabilities.value?.version)
 
     processTimeInfo(timeInfo)
+
+    watch(
+        styleData,
+        () => {
+            if (styleData.value) {
+                const defaultOpacity = defaultOpacityFromStyle(styleData.value)
+                emit('updateOpacity', layer.uuid, defaultOpacity)
+            }
+        },
+        { immediate: true }
+    )
 
     watch(
         () => wmsData.value,
@@ -249,6 +278,26 @@ function processTimeInfo(timeInfo: Ref<TimeInfo>) {
         },
         { immediate: true }
     )
+}
+
+function defaultOpacityFromStyle(styleData: Style) {
+    const isRasterLayer = (layer: AnyLayer): layer is RasterLayer => layer.type === 'raster'
+
+    if (styleData && styleData.layers?.length) {
+        // so far, we assume that the first and only entry is the correct one
+        const layer = styleData.layers[0]
+
+        if (!layer || !isRasterLayer(layer)) {
+            return DEFAULT_OPACITY
+        }
+
+        const paint = layer.paint
+        const rasterOpacity = paint?.['raster-opacity']
+        if (rasterOpacity && typeof rasterOpacity === 'number') {
+            return rasterOpacity
+        }
+    }
+    return DEFAULT_OPACITY
 }
 </script>
 
