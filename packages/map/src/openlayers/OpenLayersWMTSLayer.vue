@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Map } from 'ol'
-import type { Ref } from 'vue'
+import type { ShallowRef } from 'vue'
 
 import { computed, inject } from 'vue'
 
@@ -14,7 +14,7 @@ const { layer } = defineProps<{
 
 const layerRef = computed(() => layer)
 
-const olMap = inject<Ref<Map | undefined>>('olMap')
+const olMap = inject<ShallowRef<Map | undefined>>('olMap')
 
 useOlWmtsLayer(layerRef, olMap)
 </script>

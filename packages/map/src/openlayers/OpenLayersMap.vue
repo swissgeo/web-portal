@@ -6,7 +6,7 @@ import { registerProj4 } from '@swissgeo/coordinates'
 import Map from 'ol/Map'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
-import { onMounted, provide, ref, useTemplateRef } from 'vue'
+import { onMounted, provide, shallowRef, useTemplateRef } from 'vue'
 
 import type { MapLayerRenderer } from '@/types'
 import type { Layer } from '@/types/layers'
@@ -23,7 +23,7 @@ const { layers } = defineProps<{
 }>()
 
 const mapElement = useTemplateRef('mapElement')
-const olMap = ref<OlMapType>()
+const olMap = shallowRef<OlMapType>()
 
 provide<Ref<OlMapType | undefined>>('olMap', olMap)
 

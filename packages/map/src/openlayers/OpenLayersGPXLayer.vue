@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Map } from 'ol'
-import type { Ref } from 'vue'
+import type { ShallowRef } from 'vue'
 
 import { computed, inject } from 'vue'
 
@@ -12,7 +12,7 @@ const { layer } = defineProps<{
     layer: GPXLayer
 }>()
 
-const olMap = inject<Ref<Map | undefined>>('olMap')
+const olMap = inject<ShallowRef<Map | undefined>>('olMap')
 
 const layerRef = computed(() => layer)
 
