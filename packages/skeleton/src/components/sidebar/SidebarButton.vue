@@ -6,7 +6,7 @@ const emit = defineEmits(['click'])
 const { title } = defineProps<{
     title: string
     isActive: boolean
-    icon: string
+    iconName: string
 }>()
 </script>
 
@@ -17,7 +17,7 @@ const { title } = defineProps<{
         :icon-class="{ 'text-white': isActive, 'w-5 text-cyan-900': true }"
         :text="!isActive"
         :title="title"
-        :icon="icon"
+        :iconName="iconName"
         @click="emit('click')"
     ></IconButton>
 </template>

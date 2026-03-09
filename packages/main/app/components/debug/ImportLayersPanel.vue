@@ -86,11 +86,11 @@ function addLayer(layer: string) {
             />
             <IconButton
                 @click="doIt"
-                icon="Send"
+                iconName="Send"
             ></IconButton>
             <IconButton
                 @click="$emit('close')"
-                icon="X"
+                iconName="X"
             >
             </IconButton>
         </div>

@@ -39,7 +39,6 @@ export declare const useSearchStore: () => {
 }
 
 export declare const IconButton: DefineComponent<any, any, any>
-export declare const LucideIcon: DefineComponent<any, any, any>
 export declare const ContentButton: DefineComponent<any, any, any>
 export declare const SearchButton: DefineComponent<any, any, any>
 export declare const SideBar: DefineComponent<any, any, any>

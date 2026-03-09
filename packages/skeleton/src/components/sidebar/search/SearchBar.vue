@@ -3,7 +3,7 @@
 
 import { ref } from 'vue'
 
-import LucideIcon from '../../LucideIcon.vue'
+import IconButton from '@/components/IconButton.vue'
 
 const props = defineProps<{
     modelValue: string
@@ -62,24 +62,14 @@ const onKeydown = (event: KeyboardEvent) => {
             >
                 <template #trailing>
                     <!-- Clear/Loading button -->
-                    <button
+
+                    <IconButton
                         v-if="modelValue"
-                        class="text-gray-400 transition-colors hover:text-gray-600"
-                        type="button"
-                        data-cy="searchbar-clear"
+                        :loading="isSearching"
+                        iconName="X"
+                        :text="true"
                         @click="onClear"
-                    >
-                        <LucideIcon
-                            v-if="isSearching"
-                            name="LoaderCircle"
-                            class="h-5 w-5 animate-spin"
-                        />
-                        <LucideIcon
-                            v-else
-                            name="X"
-                            class="h-5 w-5"
-                        />
-                    </button>
+                    />
                 </template>
             </UInput>
         </div>

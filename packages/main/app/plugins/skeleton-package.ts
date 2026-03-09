@@ -1,13 +1,16 @@
 import type { Component } from 'vue'
 
-import { ULocaleSelect, UButton, UInput, UPopover, USlider } from '#components'
+import { ULocaleSelect, UButton, UInput, UPopover, USlider, UIcon, USeparator } from '#components'
 
 export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.vueApp.component('ULocaleSelect', ULocaleSelect)
     nuxtApp.vueApp.component('UButton', UButton)
+    nuxtApp.vueApp.component('USeparator', USeparator)
+    nuxtApp.vueApp.component('UIcon', UIcon as Component)
+
     // UInput is typed as a generic/callable component by @nuxt/ui —
     // TS doesn't consider that a `Component`, so we cast via `unknown`.
     nuxtApp.vueApp.component('UInput', UInput as unknown as Component)
     nuxtApp.vueApp.component('UPopover', UPopover as unknown as Component)
-    nuxtApp.vueApp.component('USlider', USlider as unknown as Component)
+    nuxtApp.vueApp.component('USlider', USlider as Component)
 })

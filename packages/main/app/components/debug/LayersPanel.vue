@@ -56,7 +56,7 @@ function toggleVectorLayer() {
             />
             <IconButton
                 @click="$emit('close')"
-                icon="X"
+                iconName="X"
             >
             </IconButton>
         </div>

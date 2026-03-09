@@ -4,6 +4,12 @@
         "types": ["vue", "vite/client"],
         "plugins": [{ "name": "@dxup/unimport" }]
     },
-    "include": ["src/**/*.ts", "src/**/*.vue", "vite.config.ts", "../../base.vite.config.ts"],
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.vue",
+        "vite.config.ts",
+        "../../base.vite.config.ts",
+        ".output/*"
+    ],
     "exclude": ["node_modules", "dist"]
 }
