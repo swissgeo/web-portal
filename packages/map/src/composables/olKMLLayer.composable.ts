@@ -72,7 +72,7 @@ export default function useOlKMLLayer(
         })
 
         // Restore text properties for text features and normalize icon scale for drawing points.
-        const isDrawingKmlLayer = layerId === DRAWING_KML_LAYER_ID
+        const isDrawingKmlLayer = layerId.value === DRAWING_KML_LAYER_ID
         features.forEach((feature) => {
             if (isDrawingKmlLayer) {
                 feature.unset('__isSelected', true)
@@ -102,7 +102,7 @@ export default function useOlKMLLayer(
             if (geometry?.getType() === 'Point') {
                 const rawIconSize =
                     typeof styleProps.iconSize === 'number' ||
-                        typeof styleProps.iconSize === 'string'
+                    typeof styleProps.iconSize === 'string'
                         ? styleProps.iconSize
                         : feature.get('iconSize')
                 const iconColor =
@@ -113,8 +113,8 @@ export default function useOlKMLLayer(
                     typeof rawIconSize === 'number'
                         ? rawIconSize
                         : typeof rawIconSize === 'string'
-                            ? Number(rawIconSize)
-                            : NaN
+                          ? Number(rawIconSize)
+                          : NaN
 
                 if (existingFeatureStyle && typeof existingFeatureStyle !== 'function') {
                     const styleList = Array.isArray(existingFeatureStyle)
@@ -136,8 +136,8 @@ export default function useOlKMLLayer(
                                 ? iconSize
                                 : typeof imageStyle.getScale() === 'number' &&
                                     Number.isFinite(imageStyle.getScale())
-                                    ? imageStyle.getScale()
-                                    : 1
+                                  ? imageStyle.getScale()
+                                  : 1
 
                         return new Style({
                             image: new Icon({

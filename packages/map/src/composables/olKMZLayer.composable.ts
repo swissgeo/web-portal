@@ -130,8 +130,8 @@ export default function useOlKMZLayer(
 
             if (isTextFeature || (text && geometry?.getType() === 'Point' && !hasIcon)) {
                 const textContent = text || name
-                    ; (feature as Feature).set('text', textContent)
-                    ; (feature as Feature).set('isTextFeature', true)
+                ;(feature as Feature).set('text', textContent)
+                ;(feature as Feature).set('isTextFeature', true)
             }
 
             if (isDrawingFeature(feature)) {
@@ -140,7 +140,7 @@ export default function useOlKMZLayer(
                 olFeature.setStyle(createDrawingFeatureStyleFunction(olFeature.getStyle()))
                 olFeature.changed()
             } else if (parseBoolean(feature.get('isTextFeature'))) {
-                ; (feature as Feature).setStyle(
+                ;(feature as Feature).setStyle(
                     createTextFeatureStyle(String(feature.get('text') ?? ''))
                 )
             }
