@@ -4,6 +4,9 @@ import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi } from 'vitest'
 
 import OpenLayersDrawingLayer from '../components/OpenLayersDrawingLayer.vue'
+;(globalThis as { useI18n?: () => { t: (_key: string) => string } }).useI18n = () => ({
+    t: (key: string) => key,
+})
 
 const mockSetSelectedIcon = vi.fn()
 const mockSetZIndex = vi.fn()

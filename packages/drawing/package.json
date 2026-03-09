@@ -21,6 +21,7 @@
         "format:write": "prettier --write   --ignore-path ../../.prettierignore .",
         "lint": "eslint",
         "lint:write": "eslint --fix",
+        "test:unit": "vitest run --config ../../vitest.config.ts",
         "type-check": "vue-tsc"
     },
     "dependencies": {
