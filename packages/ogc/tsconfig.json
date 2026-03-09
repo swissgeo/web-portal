@@ -5,7 +5,8 @@
         "src/**/*.vue",
         "env.d.ts",
         "vite.config.ts",
-        "../../base.vite.config.ts"
+        "../../base.vite.config.ts",
+        "vitest.config.ts"
     ],
     "compilerOptions": {
         "types": ["vue", "vite/client"],
