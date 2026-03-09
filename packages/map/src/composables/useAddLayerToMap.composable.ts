@@ -7,7 +7,7 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 import LayerGroup from 'ol/layer/Group'
 import Layer from 'ol/layer/Layer'
 import VectorSource from 'ol/source/Vector'
-import { onBeforeUnmount, watchEffect } from 'vue'
+import { onBeforeUnmount, toRaw, watchEffect } from 'vue'
 
 /**
  * Vue composable that will handle the addition or removal of an OpenLayers layer. This is a
@@ -59,7 +59,7 @@ export default function useAddLayerToMap(
                 olMap.value,
             ],
         })
-        olMap.value.addLayer(olLayer.value)
+        olMap.value.addLayer(toRaw(olLayer.value))
         setZIndex(zIndex.value)
     }
 
