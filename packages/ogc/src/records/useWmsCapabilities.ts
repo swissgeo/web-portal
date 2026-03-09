@@ -13,15 +13,16 @@ import type { Service } from '@/types/Records'
 type WMSCapabilities = ReturnType<InstanceType<typeof WMSCapabilitiesParser>['read']>
 
 import { useCapabilities } from './useCapabilities'
+import { useConditionalFetch } from './useConditionalFetch'
 ;(function registerCustomProjection() {
     registerProj4(proj4)
     register(proj4)
 })()
 
-export function useWmsCapabilities(serviceData: Ref<Service>, layerId: Ref<string | null>) {
+export function useWmsCapabilities(serviceData: Ref<Service | null>, layerId: Ref<string | null>) {
     const { capabilityUrl } = useCapabilities(serviceData)
 
-    const { data: wmsCapabilityData } = useFetch<string>(capabilityUrl)
+    const { data: wmsCapabilityData } = useConditionalFetch<string>(capabilityUrl)
 
     const wmsData = computed(() => parseWmsCapabilities(wmsCapabilityData.value, layerId.value))
 
@@ -37,9 +38,12 @@ export function useWmsCapabilities(serviceData: Ref<Service>, layerId: Ref<strin
     }
 }
 
-export function parseWmsCapabilities(capabilityData: string, layerId: string | null) {
+export function parseWmsCapabilities(capabilityData: string | null, layerId: string | null) {
     if (!capabilityData || !layerId) {
-        return
+        return {
+            capabilities: null,
+            dimensions: null,
+        }
     }
     const wmsParser = new WMSCapabilitiesParser()
     const capabilities = wmsParser.read(capabilityData)
@@ -59,7 +63,5 @@ export function getDimensions(capabilities: WMSCapabilities, layerId: string) {
 
     const layerData = capabilities.Capability.Layer.Layer
     const thisLayer = layerData.find((_layer: WMSCapabilityLayer) => _layer.Name === layerId)
-    if (thisLayer && 'Dimension' in thisLayer) {
-        return thisLayer.Dimension
-    }
+    return thisLayer?.Dimension ?? null
 }
