@@ -1,11 +1,21 @@
+import type { WMSCapabilityDimension, WMTSCapabilityDimension } from '@swissgeo/ogc'
+
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { ALL_YEARS_TIMESTAMP } from '@swissgeo/shared'
 
-import type { WMSDimension, WMTSDimension } from '@/openlayers/types'
+/**
+ * Timestamp to describe "current" or latest available data for a time enabled WMTS layer (and also
+ * is the default value to give any WMTS layer that is not time enabled, as this timestamp is
+ * required in the URL scheme)
+ */
+export const CURRENT_YEAR_TIMESTAMP: string = 'current'
+// TODO move this to shared?
 
-type TimeInfo = { availableTimes: string[] | null; defaultTime: string | null }
+export type TimeInfo = { availableTimes: string[] | null; defaultTime: string | null }
 
-export const getTimeInfoFromWMTSCapabilities = (dimensions: WMTSDimension[]): TimeInfo => {
+export const getTimeInfoFromWMTSCapabilities = (
+    dimensions: WMTSCapabilityDimension[]
+): TimeInfo => {
     // Guard against missing or invalid dimensions
     if (!Array.isArray(dimensions) || dimensions.length === 0) {
         return { availableTimes: null, defaultTime: null }
@@ -29,7 +39,7 @@ export const getTimeInfoFromWMTSCapabilities = (dimensions: WMTSDimension[]): Ti
 
 /** @param dimensions Dimensions of the WMS capabilities */
 
-export const getTimeInfoFromWMSCapabilities = (dimensions: WMSDimension[]): TimeInfo => {
+export const getTimeInfoFromWMSCapabilities = (dimensions: WMSCapabilityDimension[]): TimeInfo => {
     const getTimeDimension = () => {
         if (!dimensions) {
             return null

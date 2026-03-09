@@ -1,12 +1,13 @@
 import type { Map } from 'ol'
 // import LayerGroup from 'ol/layer/Group'
 import type BaseLayer from 'ol/layer/Base'
+import type { Ref } from 'vue'
 
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import LayerGroup from 'ol/layer/Group'
 import Layer from 'ol/layer/Layer'
 import VectorSource from 'ol/source/Vector'
-import { inject, onBeforeUnmount, onMounted, toValue } from 'vue'
+import { onBeforeUnmount, watchEffect } from 'vue'
 
 /**
  * Vue composable that will handle the addition or removal of an OpenLayers layer. This is a
@@ -18,70 +19,103 @@ import { inject, onBeforeUnmount, onMounted, toValue } from 'vue'
  * This layer should be one of OpenLayers JS API layer type, i.e. `/ol/layer/Vector`,
  * `/ol/layer/Tile`, etc...
  *
- * It is also possible to set a prop called zIndex, which will be used (if defined) to place the
- * layer accordingly in the layer stack of OpenLayers.
  */
-export default function useAddLayerToMap(olLayer: BaseLayer, zIndex: number) {
-    const olMap = toValue(inject<Map>('olMap'))
-    if (!olMap) {
-        log.error('OpenLayersMap is not available')
-        throw new Error('OpenLayersMap is not available')
-    }
-
-    onMounted(() => {
-        addLayerToMap()
-    })
-
+export default function useAddLayerToMap(
+    olLayer: Ref<BaseLayer | undefined>,
+    zIndex: Ref<number>,
+    isVisible: Ref<boolean>,
+    opacity: Ref<number>,
+    olMap: Ref<Map | undefined> | undefined
+) {
     onBeforeUnmount(() => {
         clearSources()
         removeLayerFromMap()
     })
 
     function clearSources() {
-        if (olLayer instanceof Layer) {
+        if (olLayer.value instanceof Layer) {
             // if the source of this layer can be cleared (if it's a vector layer),
             // we clear it before removing it from the map, ensuring that all features are unloaded
-            if ('getSource' in olLayer && olLayer.getSource() instanceof VectorSource) {
-                ;(olLayer.getSource() as VectorSource).clear()
+            if ('getSource' in olLayer && olLayer.value.getSource() instanceof VectorSource) {
+                ;(olLayer.value.getSource() as VectorSource).clear()
             }
             if ('setSource' in olLayer) {
-                olLayer.setSource(null)
+                olLayer.value.setSource(null)
             }
         }
     }
 
     function addLayerToMap(): void {
-        if (olMap) {
-            olMap.addLayer(olLayer)
+        if (!olMap || !olMap.value || !olLayer.value) {
+            return
         }
-        setZIndex(zIndex)
+        log.debug({
+            title: 'useAddLayerToMap',
+            titleColor: LogPreDefinedColor.Amber,
+            messages: [
+                // @ts-expect-error This ol layer should have the prop
+                `Going to add layer ${olLayer.value.ol_uid} to map ${olMap.value.ol_uid} with zIndex ${zIndex.value}`,
+                olLayer.value,
+                olMap.value,
+            ],
+        })
+        olMap.value.addLayer(olLayer.value)
+        setZIndex(zIndex.value)
     }
 
     function removeLayerFromMap(): void {
-        if (olMap) {
+        if (!olMap || !olMap.value || !olLayer.value) {
+            return
+        }
+        log.debug({
+            title: 'useAddLayerToMap',
+            titleColor: LogPreDefinedColor.Amber,
             // @ts-expect-error This ol layer should have the prop
-            log.debug(`Removing layer ${olLayer.ol_uid} from map`, olLayer)
-            olMap.removeLayer(olLayer)
+            messages: ['Removing layer from map', olLayer.value.ol_uid],
+        })
+        olMap.value.removeLayer(olLayer.value)
 
-            // TODO maybe there's more elegant version
-            if (olLayer instanceof LayerGroup) {
-                olLayer.getLayers().clear()
-            }
+        // TODO maybe there's more elegant version
+        if (olLayer.value instanceof LayerGroup) {
+            olLayer.value.getLayers().clear()
         }
     }
 
     function setVisibility(isVisible: boolean) {
-        olLayer.setVisible(isVisible)
+        if (olLayer.value) {
+            olLayer.value.setVisible(isVisible)
+        }
     }
 
     function setZIndex(zIndex: number) {
-        olLayer.setZIndex(zIndex)
+        if (olLayer.value) {
+            olLayer.value.setZIndex(zIndex)
+        }
     }
+
+    function setOpacity(opacity: number) {
+        if (olLayer.value) {
+            olLayer.value.setOpacity(opacity)
+        }
+    }
+
+    watchEffect(() => {
+        setZIndex(zIndex.value)
+    })
+
+    watchEffect(() => {
+        setVisibility(isVisible.value)
+    })
+
+    watchEffect(() => {
+        setOpacity(opacity.value)
+    })
 
     return {
         addLayerToMap,
         removeLayerFromMap,
         setVisibility,
         setZIndex,
+        setOpacity,
     }
 }

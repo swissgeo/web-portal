@@ -7,7 +7,7 @@ import '../env.d.ts' // for reproject
 import MapModule from '@/MapModule.vue'
 import usePositionStore from '@/stores/position'
 
-export type { MapLayerRenderer } from '@/types'
+export type { MapLayerRenderer, Layer, LayerType } from '@/types'
 import type { ActionDispatcher } from './stores/types'
 
 import * as PROJECTION_EPSG from './composables/types.d'

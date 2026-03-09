@@ -1,4 +1,5 @@
-import type { Dataset, GeoJSON } from '@swissgeo/ogc'
+import type { Dataset } from '@swissgeo/ogc'
+import type GeoJSON from 'ol/format/GeoJSON'
 
 export type LayerType = 'wmts' | 'wms' | 'geojson' | 'vector' | 'kml' | 'kmz' | 'gpx'
 
@@ -26,6 +27,8 @@ export interface Dimension {
  */
 export type DimensionId = 'time'
 
+export type DimensionRecord = Partial<Record<DimensionId, Dimension>>
+
 export interface Layer {
     uuid: string
     humanId: string // something human readable. usually the layer ID. Not unique!
@@ -35,7 +38,7 @@ export interface Layer {
     isLoading: boolean
     info?: LayerInfo | null
     dataset?: Dataset
-    dimensions?: Partial<Record<DimensionId, Dimension>>
+    dimensions?: DimensionRecord
 }
 
 export interface DatasetLayer extends Layer {

@@ -9,9 +9,7 @@
     ],
     "compilerOptions": {
         "types": ["vue", "vite/client"],
-        "paths": {
-            "@types": ["types/index.d.ts"],
-            "@types/*": ["types/*"]
-        }
+        "baseUrl": ".",
+        "paths": { "@/*": ["src/*"] }
     }
 }

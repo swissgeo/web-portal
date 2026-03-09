@@ -40,6 +40,10 @@ function toggleVectorLayer() {
         makeServerLayer('vector', {
             id: 'ch.swisstopouseLayerStore.vector',
             links: [],
+            properties: {
+                title: 'Vector Test',
+                type: 'Dataset',
+            },
         })
     )
 }
@@ -60,7 +64,7 @@ function toggleVectorLayer() {
             >
             </IconButton>
         </div>
-        <div class="mt-12 h-[300px] overflow-scroll pb-18">
+        <div class="mt-12 h-75 overflow-scroll pb-18">
             <table class="">
                 <thead>
                     <tr class="border-b">

@@ -2,12 +2,19 @@
 import type { Layer } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
 
-import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
+import { makeServerLayer } from '@swissgeo/layers'
 import { computedAsync } from '@vueuse/core'
 
 import { AVAILABLE_BACKGROUNDS } from './constants'
 
-const layerStore = useLayerStore()
+const emit = defineEmits<{
+    setBackground: [backgroundLayer: Layer | null]
+}>()
+
+const { currentBackground } = defineProps<{
+    currentBackground: Layer | null
+}>()
+
 const runtimeConfig = useRuntimeConfig()
 
 const backgroundRecords = computed(async () => {
@@ -28,7 +35,7 @@ const sortedBackgroundLayersWithNull = computedAsync<(Layer | null)[]>(
 )
 
 onMounted(() => {
-    layerStore.setBackground(null)
+    emit('setBackground', null)
 })
 
 watch(
@@ -44,13 +51,13 @@ watch(
         const fallbackBackground = backgrounds.find((background): background is Layer => {
             return background !== null
         })
-        layerStore.setBackground(defaultBackground ?? fallbackBackground ?? null)
+        emit('setBackground', defaultBackground ?? fallbackBackground ?? null)
     },
     { once: true }
 )
 
 function selectBackground(backgroundLayer: Layer | null) {
-    layerStore.setBackground(backgroundLayer /*, dispatcher*/)
+    emit('setBackground', backgroundLayer)
 }
 </script>
 
@@ -59,14 +66,14 @@ function selectBackground(backgroundLayer: Layer | null) {
     <MapBackgroundSelectorSquared
         class="max-sm:hidden"
         :background-layers="sortedBackgroundLayersWithNull"
-        :current-background-layer="layerStore.backgroundLayer"
+        :current-background-layer="currentBackground"
         @select-background="selectBackground"
     />
     <!-- Mobile (below sm): circular buttons spread upward, fixed bottom-left -->
     <MapBackgroundSelectorRounded
         class="sm:hidden"
         :background-layers="sortedBackgroundLayersWithNull"
-        :current-background-layer="layerStore.backgroundLayer"
+        :current-background-layer="currentBackground"
         @select-background="selectBackground"
     />
 </template>

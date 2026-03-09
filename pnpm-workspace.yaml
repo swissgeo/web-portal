@@ -19,7 +19,7 @@ catalog:
     '@nuxtjs/google-fonts': ^3.2.0
     '@nuxtjs/i18n': ^10.0.6
     '@pinia/nuxt': ^0.11.2
-    '@pinia/testing': '^1.0.3'
+    '@pinia/testing': ^1.0.3
     '@prettier/plugin-xml': ^3.4.2
     '@swissgeo/config-eslint': ^1.0.0
     '@swissgeo/config-prettier': ^1.0.0
@@ -44,9 +44,10 @@ catalog:
     '@vitejs/plugin-vue': ^6.0.4
     '@vue/eslint-config-prettier': ^10.2.0
     '@vue/eslint-config-typescript': ^14.6.0
+    '@vue/reactivity': ^3.5.28
     '@vue/test-utils': ^2.4.6
     '@vue/tsconfig': ^0.8.1
-    '@vueuse/core': ^14.0.0
+    '@vueuse/core': ^14.2.1
     '@xmldom/xmldom': ^0.8.11
     axios: ^1.11.0
     chai: ^6.2.0
@@ -86,10 +87,11 @@ catalog:
     stylelint-config-recommended-vue: 1.6.1
     stylelint-order: ^7.0.0
     tailwindcss: ^4.1.18
+    tailwindcss-primeui: ^0.6.1
     typescript: ^5.9.3
     typescript-eslint: ^8.46.1
-    unplugin-dts: 1.0.0-beta.6
     ufo: ^1.6.1
+    unplugin-dts: 1.0.0-beta.6
     vite: ^7.3.1
     vite-plugin-node-polyfills: ^0.25.0
     vite-plugin-vue-devtools: ^8.0.1

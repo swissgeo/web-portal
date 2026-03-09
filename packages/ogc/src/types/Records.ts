@@ -30,7 +30,7 @@ export interface OGCRecord<recordType extends string> {
     id: string
     links?: Link[]
     linkTemplates?: TemplateLink[]
-    properties?: Property<recordType>
+    properties: Property<recordType>
 }
 
 /**
@@ -52,7 +52,7 @@ export interface Language {
 export interface Link {
     href: string
     rel: string
-    type: string
+    type?: string
     title: string
 }
 
@@ -74,13 +74,15 @@ export interface TemplateLink {
 export interface Property<recordType extends string> {
     title: string
     type: recordType
-    // maybe we'll have to split this away to a "service property"
+    // TODO maybe we'll have to split this away to a "service property"
     protocol?: ServiceProtocol
     attribution?: string
     externalIds?: string[]
     contacts?: Contact[]
     language?: Language
     description?: string
+    // TODO maybe this is only available in the Dataset props
+    preferredDistributionId?: string
 }
 
 export interface Contact {

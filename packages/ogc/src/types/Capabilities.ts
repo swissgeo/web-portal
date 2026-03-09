@@ -1,12 +1,17 @@
-export interface WMSLayer {
+/**
+ * Expose some common types so that not all the packages need to install the openlayers package as
+ * dependency
+ */
+
+export interface WMSCapabilityLayer {
     Name?: string
     Title?: string
     Abstract?: string
-    Layer?: WMSLayer[] // For nested groups
-    Dimension?: WMSDimension[]
+    Layer?: WMSCapabilityLayer[] // For nested groups
+    Dimension?: WMSCapabilityDimension[]
 }
 
-export interface WMSDimension {
+export interface WMSCapabilityDimension {
     name: string
     units: string
     unitSymbol?: string
@@ -15,7 +20,7 @@ export interface WMSDimension {
     values?: string // This usually contains the time string "2023-01-01/2023-12-31/P1D"
 }
 
-export interface WMTSLayer {
+export interface WMTSCapabilityLayer {
     Identifier: string
     Title: string
     Abstract?: string
@@ -31,7 +36,7 @@ export interface WMTSLayer {
         LegendURL?: any[]
     }>
     Format: string[]
-    Dimension?: WMTSDimension[]
+    Dimension?: WMTSCapabilityDimension[]
     ResourceURL?: Array<{
         format: string
         resourceType: string
@@ -39,7 +44,7 @@ export interface WMTSLayer {
     }>
 }
 
-export interface WMTSDimension {
+export interface WMTSCapabilityDimension {
     Identifier: string
     Default: string
     Value: string[]
