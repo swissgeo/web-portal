@@ -8,11 +8,14 @@ import OpenLayersDrawingLayer from '../components/OpenLayersDrawingLayer.vue'
 const mockSetSelectedIcon = vi.fn()
 const mockSetZIndex = vi.fn()
 const mockDrawingStore = {
-    setSelectedIcon: mockSetSelectedIcon,
     drawingFeatures: [],
     drawingMode: 'None',
+    isDrawing: false,
     featureCount: 0,
     selectedIconId: undefined,
+    setSelectedFeatureId: vi.fn(),
+    setSelectedFeatureInfo: vi.fn(),
+    clearPassiveSelection: vi.fn(),
 }
 
 function createLayerFixture(): FileLayer {
@@ -34,6 +37,8 @@ vi.mock('@/composables/olDrawing.composable', () => ({
     useOlDrawing: vi.fn(() => ({
         startDrawing: vi.fn(),
         stopDrawing: vi.fn(),
+        enableActiveEditing: vi.fn(),
+        disableActiveEditing: vi.fn(),
         getFeatures: vi.fn(() => []),
         clearFeatures: vi.fn(),
         addFeatures: vi.fn(),
@@ -41,6 +46,8 @@ vi.mock('@/composables/olDrawing.composable', () => ({
         setZIndex: mockSetZIndex,
         updateFeatureText: vi.fn(),
         setSelectedIcon: mockSetSelectedIcon,
+        enablePassiveInspection: vi.fn(),
+        disablePassiveInspection: vi.fn(),
     })),
 }))
 
@@ -74,8 +81,8 @@ describe('OpenLayersDrawingLayer.vue', () => {
             },
         })
 
-        // simulate icon selection by calling the store method directly
-        mockDrawingStore.setSelectedIcon('icon-id')
+        // simulate icon selection by calling the OL composable callback target directly
+        mockSetSelectedIcon('icon-id')
         expect(mockSetSelectedIcon).toHaveBeenCalledWith('icon-id')
     })
 })

@@ -88,6 +88,7 @@ function changeBackground(layer: Layer | null) {
         />
         <Toolbox />
         <DebugPanel class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"></DebugPanel>
+        <DrawingFeatureInfoWindow />
 
         <MapBackgroundSelector
             :currentBackground="backgroundLayer"

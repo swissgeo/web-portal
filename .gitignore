@@ -25,3 +25,6 @@ logs
 
 # Python .venv
 .venv
+
+# GitHub prompts
+.github/prompts

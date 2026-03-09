@@ -10,7 +10,7 @@ import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue'
 
-import type { DrawingMode } from '@/types'
+import type { DrawingHoverHintPayload, DrawingMode } from '@/types'
 
 import { useOlDrawing } from '@/composables/olDrawing.composable'
 import { useDrawingStore } from '@/stores/drawing'
@@ -22,42 +22,41 @@ const { layer, zIndex } = defineProps<{
 }>()
 
 const drawingStore = useDrawingStore()
+const { t } = useI18n()
 
 const {
     startDrawing: startOlDrawing,
     stopDrawing: stopOlDrawing,
+    enableActiveEditing,
+    disableActiveEditing,
     getFeatures,
     clearFeatures,
     addFeatures,
     setVisibility,
     setZIndex,
-    updateFeatureText,
     setSelectedIcon,
-} = useOlDrawing(layer.humanId, layer.uuid, layer.opacity)
+    enablePassiveInspection,
+    disablePassiveInspection,
+} = useOlDrawing(layer.humanId, layer.uuid, layer.opacity, {
+    translate: (key, params) => t(key, params ?? {}),
+})
 
 // Track if we've initialized features
 const hasInitialized = ref(false)
 let updateFeatureTimeout: ReturnType<typeof setTimeout> | undefined
 
-// Text editing state
-const editingTextFeature = ref<Feature<Geometry> | undefined>(undefined)
-const editingText = ref('')
-const showTextPopup = ref(false)
+const showHoverHint = ref(false)
+const hoverHintText = ref('')
+const hoverHintX = ref(0)
+const hoverHintY = ref(0)
 
 // Function to update features - only updates the feature array for UI display
 // KML conversion/save happens only when closing the drawing panel
-const updateFeatures = (feature?: Feature<Geometry>) => {
+const updateFeatures = (_feature?: Feature<Geometry>) => {
     if (drawingStore) {
         // Clear any pending update
         if (updateFeatureTimeout) {
             clearTimeout(updateFeatureTimeout)
-        }
-
-        // If this is a text feature, show the popup for editing
-        if (feature && feature.get('text')) {
-            editingTextFeature.value = feature
-            editingText.value = feature.get('text') || 'New Text'
-            showTextPopup.value = true
         }
 
         // Debounce updates to reduce reactive overhead
@@ -73,43 +72,62 @@ const updateFeatures = (feature?: Feature<Geometry>) => {
     }
 }
 
-// Function to save the edited text
-const saveText = () => {
-    if (editingTextFeature.value && editingText.value) {
-        updateFeatureText(editingTextFeature.value as Feature<Geometry>, editingText.value)
-        updateFeatures()
-    }
-    showTextPopup.value = false
-    editingTextFeature.value = undefined
-    editingText.value = ''
-}
-
-const cancelTextEdit = () => {
-    showTextPopup.value = false
-    editingTextFeature.value = undefined
-    editingText.value = ''
-}
-
 const clearDrawingFeatures = () => {
     clearFeatures()
     stopOlDrawing()
 }
 
-// Watch for drawing mode changes from the manager
+const applyInteractionState = async (isDrawingEnabled: boolean, mode: DrawingMode) => {
+    // Ensure interactions are switched atomically when mode/state toggles
+    stopOlDrawing()
+    disableActiveEditing()
+    disablePassiveInspection()
+    if (!isDrawingEnabled) {
+        enablePassiveInspection(
+            (payload) => {
+                drawingStore.setSelectedFeatureId(payload?.featureId ?? null)
+                drawingStore.setSelectedFeatureInfo(payload)
+            },
+            (hoverHintPayload: DrawingHoverHintPayload | null) => {
+                if (!hoverHintPayload) {
+                    showHoverHint.value = false
+                    return
+                }
+
+                hoverHintText.value = hoverHintPayload.text
+                hoverHintX.value = hoverHintPayload.x
+                hoverHintY.value = hoverHintPayload.y
+                showHoverHint.value = true
+            }
+        )
+        enableActiveEditing()
+        return
+    }
+
+    showHoverHint.value = false
+    drawingStore.clearPassiveSelection()
+
+    if (mode === 'None') {
+        return
+    }
+
+    // Wait for next tick to ensure layer is fully initialized
+    await nextTick()
+    startOlDrawing(mode, (feature) => {
+        updateFeatures(feature)
+        drawingStore.setDrawingMode('None')
+        drawingStore.setDrawingEnabled(false)
+    })
+}
+
+// Watch for active/passive interaction changes from the manager
 watch(
-    () => drawingStore?.drawingMode,
-    async (newMode: DrawingMode) => {
-        if (newMode === 'None') {
-            // Explicitly stop the drawing interaction
-            clearDrawingFeatures()
-            return
-        }
-
-        // Wait for next tick to ensure layer is fully initialized
-        await nextTick()
-
-        // Start drawing with callback to update features immediately
-        startOlDrawing(newMode, updateFeatures)
+    () => [drawingStore?.isDrawing, drawingStore?.drawingMode] as const,
+    async ([isDrawingEnabled, newMode]) => {
+        await applyInteractionState(Boolean(isDrawingEnabled), newMode)
+    },
+    {
+        immediate: true,
     }
 )
 
@@ -159,6 +177,10 @@ watch(
 // On mount, restore any existing features
 onMounted(() => {
     if (!hasInitialized.value) {
+        if (layer.info?.displayName) {
+            drawingStore.setDrawingName(layer.info.displayName)
+        }
+
         // First check if we have features in the drawing manager
         if (drawingStore.drawingFeatures.length > 0) {
             addFeatures(drawingStore.drawingFeatures as Feature<Geometry>[])
@@ -169,6 +191,11 @@ onMounted(() => {
         // Otherwise, try to parse any existing KML data from the layer
         if (layer.fileData) {
             try {
+                const metadataDrawingName = drawingStore.extractDrawingNameFromKML(layer.fileData)
+                if (metadataDrawingName) {
+                    drawingStore.setDrawingName(metadataDrawingName)
+                }
+
                 register(proj4)
                 const format = new KML({
                     extractStyles: true,
@@ -214,6 +241,9 @@ onMounted(() => {
 onUnmounted(() => {
     // Clean up drawing interactions
     clearDrawingFeatures()
+    disableActiveEditing()
+    disablePassiveInspection()
+    showHoverHint.value = false
 })
 </script>
 
@@ -222,45 +252,19 @@ onUnmounted(() => {
 
     <!-- Teleport to body so position:fixed works relative to the browser window, not OL's transformed viewport -->
     <Teleport to="body">
-        <!-- Using inline style instead of Tailwind for positioning: Tailwind's transform/translate
-             utilities (e.g. -translate-x-1/2) caused incorrect placement in this context,
-             likely due to Tailwind CSS variable-based transforms conflicting with OpenLayers'
-             own CSS transforms on the map viewport. -->
         <div
-            v-if="showTextPopup"
-            style="
-                position: fixed;
-                top: 16px;
-                left: 50%;
-                transform: translateX(-50%);
-                z-index: 9999;
-            "
-            class="w-80 rounded-lg border border-gray-300 bg-white p-4 shadow-2xl"
+            v-if="showHoverHint"
+            :style="{
+                position: 'fixed',
+                left: `${hoverHintX}px`,
+                top: `${hoverHintY}px`,
+                zIndex: '9997',
+                backgroundColor: 'rgba(55, 65, 81, 0.92)',
+                color: '#ffffff',
+            }"
+            class="pointer-events-none rounded px-2 py-1 text-xs"
         >
-            <h3 class="mb-3 text-base font-semibold">Edit Text</h3>
-            <input
-                v-model="editingText"
-                type="text"
-                class="mb-3 w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
-                placeholder="Enter text..."
-                @keyup.enter="saveText"
-                @keyup.esc="cancelTextEdit"
-                autofocus
-            />
-            <div class="flex justify-end gap-2">
-                <button
-                    @click="cancelTextEdit"
-                    class="rounded bg-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-300"
-                >
-                    Cancel
-                </button>
-                <button
-                    @click="saveText"
-                    class="rounded bg-blue-500 px-3 py-1.5 text-sm text-white hover:bg-blue-600"
-                >
-                    Save
-                </button>
-            </div>
+            {{ hoverHintText }}
         </div>
     </Teleport>
 </template>

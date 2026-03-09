@@ -4,19 +4,38 @@ import type { Geometry } from 'ol/geom'
 
 import { useLayerStore } from '@swissgeo/layers'
 import log from '@swissgeo/log'
-import { DRAWING_LAYER_ID } from '@swissgeo/shared'
+import { DRAWING_KML_LAYER_ID, DRAWING_LAYER_ID } from '@swissgeo/shared'
 
 import { useDrawingStore } from '@/stores/drawing'
+import {
+    createEmptyDrawingKML,
+    exportFeaturesToGPXBlob,
+    exportFeaturesToKMLBlob,
+    exportFeaturesToKMZBlob,
+    serializeFeaturesToKML,
+} from '@/utils/drawingUtils'
 
-const DRAWING_KML_LAYER_ID = 'user-drawing-layer-kml'
-const DRAWING_LAYER_NAME = 'My Drawings'
-const DRAWING_KML_LAYER_NAME = 'My Drawings KML'
+const DRAWING_ABSTRACT = 'User-created drawings on the map'
+
+function toFileSafeName(value: string): string {
+    const normalized = value
+        .trim()
+        .replaceAll(/[^a-zA-Z0-9-_ ]/g, '')
+        .replaceAll(/\s+/g, '_')
+
+    return normalized.length > 0 ? normalized : 'drawing'
+}
 
 /**
  * Composable for managing drawing layer lifecycle in the layer store
  * Handles app-specific layer operations and file downloads
  */
 export function useDrawingManager() {
+    const resolveFeatureContext = () => ({
+        drawingMode: drawingStore.drawingMode,
+        measurementSubtype: drawingStore.measurementSubtype,
+    })
+
     const layerStore = useLayerStore()
     const drawingStore = useDrawingStore()
 
@@ -33,10 +52,10 @@ export function useDrawingManager() {
             type: 'kml',
             isLoading: false,
             info: {
-                displayName: DRAWING_LAYER_NAME,
-                abstract: 'User-created drawings on the map',
+                displayName: drawingStore.drawingName,
+                abstract: DRAWING_ABSTRACT,
             },
-            fileData: drawingStore.generateEmptyKML(),
+            fileData: createEmptyDrawingKML(drawingStore.drawingName),
         }
 
         layerStore.addLayer(config)
@@ -56,11 +75,13 @@ export function useDrawingManager() {
             type: 'kml',
             isLoading: false,
             info: {
-                displayName: DRAWING_KML_LAYER_NAME,
-                abstract: 'User-created drawings on the map',
+                displayName: drawingStore.drawingName,
+                abstract: DRAWING_ABSTRACT,
             },
-            fileData: drawingStore.featuresToKML(
-                drawingStore.drawingFeatures as Feature<Geometry>[]
+            fileData: serializeFeaturesToKML(
+                drawingStore.drawingFeatures as Feature<Geometry>[],
+                drawingStore.drawingName,
+                resolveFeatureContext()
             ),
         }
         return config
@@ -144,24 +165,35 @@ export function useDrawingManager() {
      * Export and download as KML
      */
     function downloadKML() {
-        const blob = drawingStore.exportToKML()
-        downloadFile(blob, 'drawing.kml')
+        const blob = exportFeaturesToKMLBlob(
+            drawingStore.drawingFeatures as Feature<Geometry>[],
+            drawingStore.drawingName,
+            resolveFeatureContext()
+        )
+        downloadFile(blob, `${toFileSafeName(drawingStore.drawingName)}.kml`)
     }
 
     /**
      * Export and download as KMZ
      */
     async function downloadKMZ() {
-        const blob = await drawingStore.exportToKMZ()
-        downloadFile(blob, 'drawing.kmz')
+        const blob = await exportFeaturesToKMZBlob(
+            drawingStore.drawingFeatures as Feature<Geometry>[],
+            drawingStore.drawingName,
+            resolveFeatureContext()
+        )
+        downloadFile(blob, `${toFileSafeName(drawingStore.drawingName)}.kmz`)
     }
 
     /**
      * Export and download as GPX
      */
     function downloadGPX() {
-        const blob = drawingStore.exportToGPX()
-        downloadFile(blob, 'drawing.gpx')
+        const blob = exportFeaturesToGPXBlob(
+            drawingStore.drawingFeatures as Feature<Geometry>[],
+            drawingStore.drawingName
+        )
+        downloadFile(blob, `${toFileSafeName(drawingStore.drawingName)}.gpx`)
     }
 
     return {
