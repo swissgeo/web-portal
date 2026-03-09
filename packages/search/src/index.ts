@@ -1,6 +1,12 @@
 // Main exports for @swissgeo/search package
 
-export { searchLayers, searchLocation, searchLayerFeatures, sanitizeTitle } from './api/search'
+export {
+    searchLayers,
+    searchLocation,
+    searchLayerFeatures,
+    sanitizeTitle,
+    SearchResultTypesEnum,
+} from './api/search'
 export type {
     SearchResult,
     SearchResultTypes,

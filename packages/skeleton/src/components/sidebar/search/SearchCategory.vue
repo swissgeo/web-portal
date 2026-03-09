@@ -59,7 +59,6 @@ defineExpose({
                 ref="entries"
                 :index="index"
                 :entry="entry"
-                data-cy="search-result-entry"
                 @select="emit('select', entry)"
                 @first-entry-reached="emit('firstEntryReached')"
                 @last-entry-reached="emit('lastEntryReached')"
