@@ -30,7 +30,6 @@ import { unByKey } from 'ol/Observable'
 import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Icon, Stroke, Style, Text as TextStyle } from 'ol/style'
-import { getUid } from 'ol/util'
 import proj4 from 'proj4'
 import { inject, markRaw, onBeforeUnmount, readonly, ref, toValue } from 'vue'
 
@@ -44,6 +43,7 @@ import type {
 import type { MarkerIcon } from '@/utils/markerIcons'
 
 import { useDrawingStore } from '@/stores/drawing'
+import { resolveFeatureId } from '@/utils/drawingUtils'
 import { DEFAULT_MARKER_ICON, getMarkerIconById } from '@/utils/markerIcons'
 
 interface UseOlDrawingOptions {
@@ -1681,49 +1681,44 @@ export function useOlDrawing(
 
             const featureId = resolveFeatureId(feature)
 
-            if (geometryType === 'LineString') {
-                const lineGeometry = geometry as LineString
-                const coordinates = lineGeometry.getCoordinates()
-                if (coordinates.length < 2) {
-                    return
-                }
+            const lineGeometry = geometry as LineString
+            const coordinates = lineGeometry.getCoordinates()
+            if (coordinates.length < 2) {
+                return
+            }
 
-                const firstCoordinate = coordinates[0]
-                const secondCoordinate = coordinates[1]
-                const penultimateCoordinate = coordinates[coordinates.length - 2]
-                const lastCoordinate = coordinates[coordinates.length - 1]
+            const firstCoordinate = coordinates[0]
+            const secondCoordinate = coordinates[1]
+            const penultimateCoordinate = coordinates[coordinates.length - 2]
+            const lastCoordinate = coordinates[coordinates.length - 1]
 
-                if (firstCoordinate && secondCoordinate) {
-                    endpointHandleSource.addFeature(
-                        new OlFeature({
-                            geometry: new Point(
-                                resolveOffsetEndpointHandleCoordinate(
-                                    firstCoordinate,
-                                    secondCoordinate
-                                )
-                            ),
-                            __endpointHandle: true,
-                            __drawingFeatureId: featureId,
-                            __handleAction: 'append-start',
-                        })
-                    )
-                }
+            if (firstCoordinate && secondCoordinate) {
+                endpointHandleSource.addFeature(
+                    new OlFeature({
+                        geometry: new Point(
+                            resolveOffsetEndpointHandleCoordinate(firstCoordinate, secondCoordinate)
+                        ),
+                        __endpointHandle: true,
+                        __drawingFeatureId: featureId,
+                        __handleAction: 'append-start',
+                    })
+                )
+            }
 
-                if (lastCoordinate && penultimateCoordinate) {
-                    endpointHandleSource.addFeature(
-                        new OlFeature({
-                            geometry: new Point(
-                                resolveOffsetEndpointHandleCoordinate(
-                                    lastCoordinate,
-                                    penultimateCoordinate
-                                )
-                            ),
-                            __endpointHandle: true,
-                            __drawingFeatureId: featureId,
-                            __handleAction: 'append-end',
-                        })
-                    )
-                }
+            if (lastCoordinate && penultimateCoordinate) {
+                endpointHandleSource.addFeature(
+                    new OlFeature({
+                        geometry: new Point(
+                            resolveOffsetEndpointHandleCoordinate(
+                                lastCoordinate,
+                                penultimateCoordinate
+                            )
+                        ),
+                        __endpointHandle: true,
+                        __drawingFeatureId: featureId,
+                        __handleAction: 'append-end',
+                    })
+                )
             }
         })
     }
@@ -2243,19 +2238,8 @@ export function useOlDrawing(
         endpointHandleSource.clear(true)
     }
 
-    function resolveFeatureId(feature: Feature<Geometry>): string {
-        const existingFeatureId = feature.getId()
-        if (typeof existingFeatureId === 'string') {
-            return existingFeatureId
-        }
-
-        const runtimeFeatureId = String(feature.get('__drawingFeatureId') ?? getUid(feature))
-        feature.set('__drawingFeatureId', runtimeFeatureId, true)
-        return runtimeFeatureId
-    }
-
     function resolveFeatureKind(feature: Feature<Geometry>): DrawingFeatureKind {
-        return resolveDrawingFeatureKind(feature) as DrawingFeatureKind
+        return resolveDrawingFeatureKind(feature)
     }
 
     function resolveHoverTargetLabel(feature: Feature<Geometry>): string {

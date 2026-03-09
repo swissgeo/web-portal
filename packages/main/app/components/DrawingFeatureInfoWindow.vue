@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { DrawingFeatureKind } from '@swissgeo/drawing'
+import type { DrawingFeatureKind, TextAnchor } from '@swissgeo/drawing'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
-import { MARKER_ICONS, useDrawingStore } from '@swissgeo/drawing'
+import { MARKER_ICONS, resolveFeatureId, useDrawingStore } from '@swissgeo/drawing'
 import { Eye, EyeOff, MapPin, Trash2, Type, X } from 'lucide-vue-next'
 import { computed, nextTick, onBeforeUnmount, reactive, ref, watch } from 'vue'
 
@@ -24,17 +24,6 @@ const dragState = reactive({
 })
 
 const hasInfo = computed(() => !drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo))
-
-type TextAnchor =
-    | 'top-left'
-    | 'top-center'
-    | 'top-right'
-    | 'center-left'
-    | 'center'
-    | 'center-right'
-    | 'bottom-left'
-    | 'bottom-center'
-    | 'bottom-right'
 
 const TEXT_ANCHOR_OPTIONS: TextAnchor[] = [
     'top-left',
@@ -105,14 +94,6 @@ const editorState = reactive({
     fillOpacity: 0.2,
     isDashedLine: false,
 })
-
-function resolveFeatureId(feature: Feature<Geometry>): string {
-    const featureId = feature.getId()
-    if (typeof featureId === 'string') {
-        return featureId
-    }
-    return String(feature.get('__drawingFeatureId') ?? '')
-}
 
 const selectedFeature = computed<Feature<Geometry> | null>(() => {
     const selectedId = drawingStore.selectedFeatureId

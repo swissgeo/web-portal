@@ -1,26 +1,15 @@
+import type {
+    DrawingFeatureKindValue as SharedDrawingFeatureKind,
+    TextAnchor as SharedTextAnchor,
+} from '@swissgeo/shared'
+
 export type DrawingMode = 'None' | 'Point' | 'LineString' | 'Polygon' | 'Text' | 'Measurement'
 
 export type MeasurementDrawingSubtype = 'Radius' | 'Path'
 
-export type DrawingFeatureKind =
-    | 'Point'
-    | 'Text'
-    | 'LineString'
-    | 'Polygon'
-    | 'MeasurementRadius'
-    | 'MeasurementPath'
-    | 'Unknown'
+export type DrawingFeatureKind = SharedDrawingFeatureKind
 
-export type TextAnchor =
-    | 'top-left'
-    | 'top-center'
-    | 'top-right'
-    | 'center-left'
-    | 'center'
-    | 'center-right'
-    | 'bottom-left'
-    | 'bottom-center'
-    | 'bottom-right'
+export type TextAnchor = SharedTextAnchor
 
 export interface DrawingPointStyleProps {
     iconId?: string

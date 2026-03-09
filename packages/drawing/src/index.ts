@@ -12,6 +12,7 @@ export {
     getMarkerIconById,
     type MarkerIcon,
 } from '@/utils/markerIcons'
+export { resolveFeatureId } from '@/utils/drawingUtils'
 
 // Types
 export type {

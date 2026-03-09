@@ -16,6 +16,7 @@ import { zip } from 'fflate'
 import GPX from 'ol/format/GPX'
 import KML from 'ol/format/KML'
 import { Fill, Icon, Stroke, Style } from 'ol/style'
+import { getUid } from 'ol/util'
 
 import type {
     DrawingFeatureAttributes,
@@ -47,6 +48,17 @@ function escapeXml(value: string): string {
 export function sanitizeDrawingName(value: string): string {
     const normalizedName = value.trim()
     return normalizedName.length > 0 ? normalizedName : DEFAULT_DRAWING_NAME
+}
+
+export function resolveFeatureId(feature: Feature<Geometry>): string {
+    const existingFeatureId = feature.getId()
+    if (typeof existingFeatureId === 'string') {
+        return existingFeatureId
+    }
+
+    const runtimeFeatureId = String(feature.get('__drawingFeatureId') ?? getUid(feature))
+    feature.set('__drawingFeatureId', runtimeFeatureId, true)
+    return runtimeFeatureId
 }
 
 export function withKmlDocumentMetadata(kmlString: string, drawingName: string): string {
