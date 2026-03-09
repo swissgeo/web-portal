@@ -57,9 +57,10 @@ export interface Link {
 }
 
 export interface LinkVariable {
-    description: string
-    format: string
     type: string
+    description: string
+    format?: string
+    default?: string | number
     enum?: (string | number)[]
 }
 
