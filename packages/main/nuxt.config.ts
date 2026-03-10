@@ -4,11 +4,13 @@ import { fileURLToPath, URL } from 'node:url'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-let gitCommit = 'unknown'
-try {
-    gitCommit = execSync('git rev-parse --short HEAD').toString().trim()
-} catch {
-    // git not available at build time
+function getGitCommit() {
+    try {
+        return process.env.GIT_COMMIT ?? execSync('git rev-parse --short HEAD').toString().trim()
+    } catch {
+        // git not available at build time
+        return 'unknown'
+    }
 }
 
 const buildTime = new Date().toISOString()
@@ -92,7 +94,7 @@ export default defineNuxtConfig({
             overlayId: '',
             aboutMenu: { id: 199, translationKey: 'menuTitles.about' },
             knowledgeMenu: { id: 200, translationKey: 'menuTitles.knowledge' },
-            gitCommit,
+            gitCommit: getGitCommit(),
             buildTime,
         },
     },
