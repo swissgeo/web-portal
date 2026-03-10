@@ -80,6 +80,7 @@ function stateConfigToLayer(config: LayerStateConfig): Layer {
         isVisible: config.isVisible,
         opacity: config.opacity,
         dimensions: layerOptions.dimensions,
+        info: config.displayName ? { displayName: config.displayName } : undefined,
     }
 }
 

@@ -116,14 +116,17 @@ function removeLayer() {
             >
                 {{ displayName }}
                 <span
+                    class="ml-1 rounded px-1 py-0.5 text-xs font-medium"
                     :class="{
-                        'bg-amber-200': layer.type === 'wms',
-                        'bg-fuchsia-200': layer.type === 'wmts',
-                        'bg-emerald-200': layer.type === 'kml',
-                        'bg-sky-200': layer.type === 'kmz',
+                        'bg-amber-100 text-amber-800': layer.type === 'wms',
+                        'bg-fuchsia-100 text-fuchsia-800': layer.type === 'wmts',
+                        'bg-emerald-100 text-emerald-800': layer.type === 'kml',
+                        'bg-sky-100 text-sky-800': layer.type === 'kmz',
+                        'bg-violet-100 text-violet-800': layer.type === 'vector',
+                        'bg-orange-100 text-orange-800': layer.type === 'gpx',
+                        'bg-teal-100 text-teal-800': layer.type === 'geojson',
                     }"
-                >
-                    ({{ layer.type }})</span
+                >{{ layer.type }}</span
                 >
             </div>
             <div class="mt-2 flex items-center gap-2">
