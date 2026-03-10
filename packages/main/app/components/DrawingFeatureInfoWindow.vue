@@ -5,7 +5,7 @@ import type { Geometry } from 'ol/geom'
 
 import { MARKER_ICONS, resolveFeatureId, useDrawingStore } from '@swissgeo/drawing'
 import { Eye, EyeOff, MapPin, Trash2, Type, X } from 'lucide-vue-next'
-import { computed, nextTick, onBeforeUnmount, reactive, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onBeforeMount, reactive, ref, watch } from 'vue'
 
 const drawingStore = useDrawingStore()
 const { t } = useI18n()
@@ -401,9 +401,11 @@ watch(
     { immediate: true }
 )
 
-if (typeof window !== 'undefined') {
-    window.addEventListener('resize', handleWindowResize)
-}
+onBeforeMount(() => {
+    if (typeof window !== 'undefined') {
+        window.addEventListener('resize', handleWindowResize)
+    }
+})
 
 onBeforeUnmount(() => {
     stopDrag()

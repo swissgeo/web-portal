@@ -16,7 +16,7 @@ import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.com
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
-const { layers } = defineProps<{
+const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
     layers: Layer[]
     backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]

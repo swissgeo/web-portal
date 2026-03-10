@@ -62,47 +62,80 @@ export function resolveFeatureId(feature: Feature<Geometry>): string {
 }
 
 export function withKmlDocumentMetadata(kmlString: string, drawingName: string): string {
-    const safeName = escapeXml(drawingName)
-    const safeDescription = escapeXml(DRAWING_DESCRIPTION)
+    if (typeof DOMParser === 'undefined' || typeof XMLSerializer === 'undefined') {
+        return kmlString
+    }
 
-    const documentStart = kmlString.indexOf('<Document')
-    if (documentStart !== -1) {
-        const documentOpenEnd = kmlString.indexOf('>', documentStart)
-        if (documentOpenEnd !== -1) {
-            const documentClose = kmlString.indexOf('</Document>', documentOpenEnd)
-            if (documentClose !== -1) {
-                const documentBody = kmlString.slice(documentOpenEnd + 1, documentClose)
-                let withoutDocumentMetadata = documentBody
-                let hasLeadingMetadata = true
-                while (hasLeadingMetadata) {
-                    const next = withoutDocumentMetadata.replace(
-                        /^\s*<(name|description)>[\s\S]*?<\/\1>\s*/,
-                        ''
-                    )
-                    hasLeadingMetadata = next !== withoutDocumentMetadata
-                    withoutDocumentMetadata = next
-                }
-                const metadataBlock = `<name>${safeName}</name><description>${safeDescription}</description>`
-                return `${kmlString.slice(0, documentOpenEnd + 1)}${metadataBlock}${withoutDocumentMetadata}${kmlString.slice(documentClose)}`
-            }
+    const xmlDeclaration = kmlString.match(/^\s*<\?xml[^>]*\?>\s*/i)?.[0] ?? ''
+    const parser = new DOMParser()
+    const xmlDocument = parser.parseFromString(kmlString, 'application/xml')
+
+    if (xmlDocument.querySelector('parsererror')) {
+        return kmlString
+    }
+
+    const kmlRoot = xmlDocument.documentElement
+    if (!kmlRoot || kmlRoot.localName !== 'kml') {
+        return kmlString
+    }
+
+    const kmlNamespace = kmlRoot.namespaceURI ?? null
+
+    let documentElement: Element | null = null
+    for (const childNode of Array.from(kmlRoot.childNodes)) {
+        if (childNode.nodeType !== Node.ELEMENT_NODE) {
+            continue
+        }
+        const childElement = childNode as Element
+        if (childElement.localName === 'Document') {
+            documentElement = childElement
+            break
         }
     }
 
-    const kmlOpenMatch = kmlString.match(/^<kml[^>]*>/)
-    if (!kmlOpenMatch) {
-        return kmlString
+    if (!documentElement) {
+        documentElement = kmlNamespace
+            ? xmlDocument.createElementNS(kmlNamespace, 'Document')
+            : xmlDocument.createElement('Document')
+
+        while (kmlRoot.firstChild) {
+            documentElement.appendChild(kmlRoot.firstChild)
+        }
+        kmlRoot.appendChild(documentElement)
     }
 
-    const kmlOpenTag = kmlOpenMatch[0]
-    const kmlOpenEnd = kmlString.indexOf('>') + 1
-    const kmlClose = kmlString.lastIndexOf('</kml>')
-
-    if (kmlClose === -1) {
-        return kmlString
+    for (const childNode of Array.from(documentElement.childNodes)) {
+        if (childNode.nodeType !== Node.ELEMENT_NODE) {
+            continue
+        }
+        const childElement = childNode as Element
+        if (childElement.localName === 'name' || childElement.localName === 'description') {
+            documentElement.removeChild(childElement)
+        }
     }
 
-    const innerContent = kmlString.slice(kmlOpenEnd, kmlClose)
-    return `${kmlOpenTag}<Document><name>${safeName}</name><description>${safeDescription}</description>${innerContent}</Document></kml>`
+    const nameElement = kmlNamespace
+        ? xmlDocument.createElementNS(kmlNamespace, 'name')
+        : xmlDocument.createElement('name')
+    nameElement.textContent = drawingName
+
+    const descriptionElement = kmlNamespace
+        ? xmlDocument.createElementNS(kmlNamespace, 'description')
+        : xmlDocument.createElement('description')
+    descriptionElement.textContent = DRAWING_DESCRIPTION
+
+    const firstContentNode = documentElement.firstChild
+    documentElement.insertBefore(descriptionElement, firstContentNode)
+    documentElement.insertBefore(nameElement, descriptionElement)
+
+    const serializer = new XMLSerializer()
+    let serialized = serializer.serializeToString(xmlDocument)
+
+    if (xmlDeclaration.length > 0 && !serialized.trimStart().startsWith('<?xml')) {
+        serialized = `${xmlDeclaration}${serialized}`
+    }
+
+    return serialized
 }
 
 export function withGpxMetadata(gpxString: string, drawingName: string): string {
@@ -165,9 +198,9 @@ function createGeometryStyle(
 
     const dashPattern =
         Array.isArray(styleRecord.dashPattern) &&
-        styleRecord.dashPattern.every(
-            (value) => typeof value === 'number' && Number.isFinite(value)
-        )
+            styleRecord.dashPattern.every(
+                (value) => typeof value === 'number' && Number.isFinite(value)
+            )
             ? (styleRecord.dashPattern as number[])
             : undefined
 
@@ -233,7 +266,7 @@ export function resolveFeatureStyle(feature: Feature<Geometry>): DrawingFeatureS
     STYLE_PROPERTY_KEYS.forEach((propertyKey) => {
         const propertyValue = feature.get(propertyKey)
         if (propertyValue !== undefined && propertyValue !== null) {
-            ;(mergedStyle as Record<StylePropertyKey, unknown>)[propertyKey] = propertyValue
+            ; (mergedStyle as Record<StylePropertyKey, unknown>)[propertyKey] = propertyValue
         }
     })
 

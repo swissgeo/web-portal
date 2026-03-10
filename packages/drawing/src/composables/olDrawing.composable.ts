@@ -379,40 +379,40 @@ export function useOlDrawing(
                     if (radius > 0) {
                         const strokeColor =
                             typeof styleProps.strokeColor === 'string' &&
-                            styleProps.strokeColor.length > 0
+                                styleProps.strokeColor.length > 0
                                 ? styleProps.strokeColor
                                 : '#dc2626'
                         const strokeWidth =
                             typeof styleProps.strokeWidth === 'number' &&
-                            Number.isFinite(styleProps.strokeWidth)
+                                Number.isFinite(styleProps.strokeWidth)
                                 ? Math.max(1, styleProps.strokeWidth)
                                 : 2
                         const strokeOpacity =
                             typeof styleProps.strokeOpacity === 'number' &&
-                            Number.isFinite(styleProps.strokeOpacity)
+                                Number.isFinite(styleProps.strokeOpacity)
                                 ? Math.min(Math.max(styleProps.strokeOpacity, 0), 1)
                                 : 1
                         const dashPattern =
                             Array.isArray(styleProps.dashPattern) &&
-                            styleProps.dashPattern.every(
-                                (value) => typeof value === 'number' && Number.isFinite(value)
-                            )
+                                styleProps.dashPattern.every(
+                                    (value) => typeof value === 'number' && Number.isFinite(value)
+                                )
                                 ? styleProps.dashPattern
                                 : [8, 4]
                         const intervalKilometers =
                             typeof styleProps.intervalKilometers === 'number' &&
-                            Number.isFinite(styleProps.intervalKilometers)
+                                Number.isFinite(styleProps.intervalKilometers)
                                 ? Math.max(1, styleProps.intervalKilometers)
                                 : DEFAULT_MEASUREMENT_INTERVAL_KILOMETERS
                         const intervalMeters = intervalKilometers * 1000
                         const labelColor =
                             typeof styleProps.labelColor === 'string' &&
-                            styleProps.labelColor.length > 0
+                                styleProps.labelColor.length > 0
                                 ? styleProps.labelColor
                                 : '#111827'
                         const labelSize =
                             typeof styleProps.labelSize === 'number' &&
-                            Number.isFinite(styleProps.labelSize)
+                                Number.isFinite(styleProps.labelSize)
                                 ? Math.max(10, styleProps.labelSize)
                                 : 12
 
@@ -561,24 +561,24 @@ export function useOlDrawing(
                         : '#dc2626'
                 const strokeWidth =
                     typeof styleProps.strokeWidth === 'number' &&
-                    Number.isFinite(styleProps.strokeWidth)
+                        Number.isFinite(styleProps.strokeWidth)
                         ? Math.max(1, styleProps.strokeWidth)
                         : 3
                 const strokeOpacity =
                     typeof styleProps.strokeOpacity === 'number' &&
-                    Number.isFinite(styleProps.strokeOpacity)
+                        Number.isFinite(styleProps.strokeOpacity)
                         ? Math.min(Math.max(styleProps.strokeOpacity, 0), 1)
                         : 1
                 const dashPattern =
                     Array.isArray(styleProps.dashPattern) &&
-                    styleProps.dashPattern.every(
-                        (value) => typeof value === 'number' && Number.isFinite(value)
-                    )
+                        styleProps.dashPattern.every(
+                            (value) => typeof value === 'number' && Number.isFinite(value)
+                        )
                         ? styleProps.dashPattern
                         : [10, 7]
                 const intervalKilometers =
                     typeof styleProps.intervalKilometers === 'number' &&
-                    Number.isFinite(styleProps.intervalKilometers)
+                        Number.isFinite(styleProps.intervalKilometers)
                         ? Math.max(1, styleProps.intervalKilometers)
                         : DEFAULT_MEASUREMENT_PATH_INTERVAL_KILOMETERS
                 const intervalMeters = intervalKilometers * 1000
@@ -705,7 +705,7 @@ export function useOlDrawing(
                 : 2
         const strokeOpacity =
             typeof styleProps.strokeOpacity === 'number' &&
-            Number.isFinite(styleProps.strokeOpacity)
+                Number.isFinite(styleProps.strokeOpacity)
                 ? Math.min(Math.max(styleProps.strokeOpacity, 0), 1)
                 : 1
         const fillColor =
@@ -718,9 +718,9 @@ export function useOlDrawing(
                 : 0.2
         const dashPattern =
             Array.isArray(styleProps.dashPattern) &&
-            styleProps.dashPattern.every(
-                (value) => typeof value === 'number' && Number.isFinite(value)
-            )
+                styleProps.dashPattern.every(
+                    (value) => typeof value === 'number' && Number.isFinite(value)
+                )
                 ? styleProps.dashPattern
                 : undefined
 
@@ -879,6 +879,7 @@ export function useOlDrawing(
         type: DrawingMode,
         onFeatureAdded?: (feature: Feature<Geometry>) => void
     ) {
+        console.log('startDrawing type', type)
         // Stop any existing draw interaction first
         stopDrawing()
 
@@ -891,16 +892,17 @@ export function useOlDrawing(
         type: DrawingMode,
         onFeatureAdded?: (feature: Feature<Geometry>) => void
     ) {
+        console.log('addDrawingInteraction type', type)
         const isLineFirstDrawMode = type === 'LineString' || type === 'Polygon'
         // For text, we use Point geometry
         const geometryType =
             type === 'Text'
                 ? 'Point'
                 : type === 'Measurement'
-                  ? 'LineString'
-                  : isLineFirstDrawMode
-                    ? 'Polygon'
-                    : type
+                    ? 'LineString'
+                    : isLineFirstDrawMode
+                        ? 'Polygon'
+                        : type
         let measurementGeometryListener: EventsKey | null = null
         let lineSketchAddFeatureListener: EventsKey | null = null
         let lineSketchPointCount = 0
@@ -1156,8 +1158,8 @@ export function useOlDrawing(
                 type === 'Measurement'
                     ? measurementSketchStyle
                     : isLineFirstDrawMode
-                      ? lineSketchStyle
-                      : undefined,
+                        ? lineSketchStyle
+                        : undefined,
         })
 
         if (type === 'Measurement') {
@@ -1935,24 +1937,24 @@ export function useOlDrawing(
                 : ({} as Record<string, unknown>)
         const extensionStrokeColor =
             typeof extensionStyleProps.strokeColor === 'string' &&
-            extensionStyleProps.strokeColor.length > 0
+                extensionStyleProps.strokeColor.length > 0
                 ? extensionStyleProps.strokeColor
                 : '#ff0000'
         const extensionStrokeWidth =
             typeof extensionStyleProps.strokeWidth === 'number' &&
-            Number.isFinite(extensionStyleProps.strokeWidth)
+                Number.isFinite(extensionStyleProps.strokeWidth)
                 ? Math.max(1, extensionStyleProps.strokeWidth)
                 : 2
         const extensionStrokeOpacity =
             typeof extensionStyleProps.strokeOpacity === 'number' &&
-            Number.isFinite(extensionStyleProps.strokeOpacity)
+                Number.isFinite(extensionStyleProps.strokeOpacity)
                 ? Math.min(Math.max(extensionStyleProps.strokeOpacity, 0), 1)
                 : 1
         const extensionDashPattern =
             Array.isArray(extensionStyleProps.dashPattern) &&
-            extensionStyleProps.dashPattern.every(
-                (value) => typeof value === 'number' && Number.isFinite(value)
-            )
+                extensionStyleProps.dashPattern.every(
+                    (value) => typeof value === 'number' && Number.isFinite(value)
+                )
                 ? extensionStyleProps.dashPattern
                 : undefined
 
@@ -2303,8 +2305,8 @@ export function useOlDrawing(
     ): DrawingHoverHintPayload {
         const hintText = feature
             ? translateUi('debug.drawingHoverHint.selectFeature', {
-                  target: resolveHoverTargetLabel(feature),
-              })
+                target: resolveHoverTargetLabel(feature),
+            })
             : translateUi('debug.drawingHoverHint.nothingToSelect')
 
         return {
