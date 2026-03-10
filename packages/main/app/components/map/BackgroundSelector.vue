@@ -35,12 +35,19 @@ const sortedBackgroundLayersWithNull = computedAsync<(Layer | null)[]>(
 )
 
 onMounted(() => {
-    emit('setBackground', null)
+    // Don't reset if a background was already restored (e.g. from localStorage)
+    if (!currentBackground) {
+        emit('setBackground', null)
+    }
 })
 
 watch(
     sortedBackgroundLayersWithNull,
     (backgrounds) => {
+        // Don't override a background that was already restored (e.g. from localStorage)
+        if (currentBackground) {
+            return
+        }
         // as soon as the layer data is ready for the backgrounds, select
         // pixelkarte-farbe
         const defaultBackgroundId = AVAILABLE_BACKGROUNDS[1]
