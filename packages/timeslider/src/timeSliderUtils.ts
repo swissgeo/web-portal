@@ -1,8 +1,8 @@
 import type { Dimension, Layer } from '@swissgeo/layers'
 
-import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { isTimestampYYYYMMDD } from '@swissgeo/numbers'
-import { ALL_YEARS_TIMESTAMP, CURRENT_YEAR_TIMESTAMP } from '@swissgeo/shared'
+import { ALL_YEARS_TIMESTAMP, CURRENT_YEAR_TIMESTAMP, getYearFromGeoadminValue } from '@swissgeo/shared'
+
+export { getYearFromGeoadminValue }
 
 // FIXME: This type will move to @swissgeo/shared — see https://github.com/swissgeo/web-portal/pull/62
 export type LayerWithTime = Layer & { dimensions: { time: Dimension } }
@@ -32,7 +32,7 @@ export function getYearsWithData(layersWithTimestamps: LayerWithTime[]) {
                 continue
             }
 
-            const year = getYearFromGeoadminWMTSValue(timestamp)
+            const year = getYearFromGeoadminValue(timestamp)
             if (!year) {
                 continue
             }
@@ -65,32 +65,6 @@ export function getYearsWithData(layersWithTimestamps: LayerWithTime[]) {
     }
 }
 
-export function getYearFromGeoadminWMTSValue(timestamp: string): string | undefined {
-    if (timestamp.match(/^\d{4}$/)) {
-        return timestamp
-    }
-
-    if (isTimestampYYYYMMDD(timestamp)) {
-        return timestamp.substring(0, 4)
-    }
-
-    const date = new Date(timestamp)
-    if (!isNaN(date.getFullYear())) {
-        const parsedYear = date.getFullYear().toString().padStart(4, '0')
-
-        if (parsedYear) {
-            return parsedYear
-        }
-    }
-
-    log.error({
-        title: 'Time Slider Utils',
-        titleColor: LogPreDefinedColor.Emerald,
-        messages: ['Unable to parse the timestamp', timestamp],
-    })
-    return undefined
-}
-
 export function convertYearToTimestamp(layer: LayerWithTime, year: number) {
     const availableValues = layer.dimensions.time.availableValues
     if (availableValues.includes(year.toString())) {
@@ -101,7 +75,7 @@ export function convertYearToTimestamp(layer: LayerWithTime, year: number) {
     // year back to something that can be used on this layer!
 
     for (const timestamp of availableValues) {
-        const valueInYear = getYearFromGeoadminWMTSValue(timestamp)
+        const valueInYear = getYearFromGeoadminValue(timestamp)
         if (year.toString() === valueInYear) {
             return timestamp
         }

@@ -18,8 +18,8 @@ test.each([
     ['all', undefined],
     ['20190222', '2019'],
     ['2016-08-15', '2016'],
-])('The years parser for WMTS style years parses correctly', (timestamp, expectedYear) => {
-    const year = TimeSliderUtils.getYearFromGeoadminWMTSValue(timestamp)
+])('The years parser for geoadmin style years parses correctly', (timestamp, expectedYear) => {
+    const year = TimeSliderUtils.getYearFromGeoadminValue(timestamp)
     expect(year).toEqual(expectedYear)
 })
 

@@ -11,7 +11,7 @@ import type { LayerWithTime } from './timeSliderUtils'
 import TimeSliderBar from './TimeSliderBar.vue'
 import {
     convertYearToTimestamp,
-    getYearFromGeoadminWMTSValue,
+    getYearFromGeoadminValue,
     getYearsWithData,
 } from './timeSliderUtils'
 
@@ -121,7 +121,7 @@ function initializeCurrentYear() {
                 ],
             })
 
-            const parsedYear = getYearFromGeoadminWMTSValue(timeConfig.currentValue)
+            const parsedYear = getYearFromGeoadminValue(timeConfig.currentValue)
             if (parsedYear) {
                 currentYear.value = parseInt(parsedYear)
             }
