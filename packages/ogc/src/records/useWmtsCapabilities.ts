@@ -36,6 +36,7 @@ export function useWmtsCapabilities(serviceData: Ref<Service | null>, layerId: R
     })
 
     return {
+        capabilityUrl,
         wmtsData,
     }
 }
@@ -44,6 +45,7 @@ export function parseWmtsCapabilities(capabilityData: string | null, layerId: st
     if (!capabilityData || !layerId) {
         return
     }
+
     const wmtsParser = new WMTSCapabilitiesParser()
     const capabilities = wmtsParser.read(capabilityData)
 
