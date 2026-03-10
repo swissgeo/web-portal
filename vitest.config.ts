@@ -20,6 +20,7 @@ export default defineConfig({
       '@/constants/projections': resolve(__dirname, 'packages/drawing/src/constants/projections.ts'),
       '@/stores/drawing': resolve(__dirname, 'packages/drawing/src/stores/drawing.ts'),
       '@/types': resolve(__dirname, 'packages/drawing/src/types.ts'),
+      '@/utils/drawingUtils': resolve(__dirname, 'packages/drawing/src/utils/drawingUtils.ts'),
       '@/utils/markerIcons': resolve(__dirname, 'packages/drawing/src/utils/markerIcons.ts'),
       '@': resolve(__dirname, 'packages/map/src'),
       '~': resolve(__dirname, 'packages/main/app'),

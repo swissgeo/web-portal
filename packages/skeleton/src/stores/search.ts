@@ -106,7 +106,7 @@ export const useSearchStore = defineStore('search', () => {
                 return
             }
             // the layers are searched through a local catalog, it's not an async operation
-            const searchedLayers = searchLayers(newQuery, catalog.value?.records) ?? []
+            const searchedLayers = searchLayers(newQuery, catalog.value?.records ?? [])
 
             // Add feature search for each searchable layer
             for (const layer of searchableLayers) {

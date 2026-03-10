@@ -14,7 +14,7 @@ import type {
  * Catalog record structure as used in layer search. This extends the base OGCRecord with the
  * specific property structure used by the swissgeo catalog.
  */
-interface CatalogRecord {
+export interface CatalogRecord {
     id: string
     properties?: {
         title?: string

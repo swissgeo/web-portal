@@ -10,7 +10,7 @@ import type { SimpleGeometry } from 'ol/geom'
 import type { Options as RegularShapeOptions } from 'ol/style/RegularShape'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { isNumber } from '@swissgeo/numbers'
+import { parseNumeric } from '@swissgeo/shared'
 import { LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon } from 'ol/geom'
 import { Circle, Fill, Icon, RegularShape, Stroke, Style, Text } from 'ol/style'
 
@@ -291,8 +291,11 @@ class OlStyleForPropertyValue {
                 return
             }
 
-            const min = parseFloat(limits[0]?.replace(/\s/g, '') || '0')
-            const max = parseFloat(limits[1]?.replace(/\s/g, '') || '0')
+            const min = parseNumeric((limits[0] ?? '').replace(/\s/g, ''))
+            const max = parseNumeric((limits[1] ?? '').replace(/\s/g, ''))
+            if (min === undefined || max === undefined) {
+                return
+            }
 
             if (!olStyleSpecs && value >= min && value < max) {
                 olStyleSpecs = geomStyles[range]
@@ -356,10 +359,11 @@ class OlStyleForPropertyValue {
     ): Style {
         if (imageRotationProperty) {
             const rotation = properties[imageRotationProperty]
-            if (rotation && isNumber(rotation)) {
+            const parsedRotation = parseNumeric(rotation)
+            if (parsedRotation !== undefined) {
                 const image = olStyle.getImage()
                 if (image) {
-                    image.setRotation(Number(rotation))
+                    image.setRotation(parsedRotation)
                 }
             }
         }

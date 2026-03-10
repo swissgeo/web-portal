@@ -63,7 +63,7 @@ export const MARKER_ICONS: MarkerIcon[] = [
             'data:image/svg+xml;base64,' +
             btoa(`
 <svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
-  <path d="M16 2 l4 12 h13 l-10 8 l4 12 l-11-8 l-11 8 l4-12 l-10-8 h13 z" fill="#ffff00" stroke="#ff8800" stroke-width="2"/>
+    <path d="M16 2 l4 12 h13 l-10 8 l4 12 l-11-8 l-11 8 l4-12 l-10-8 h13 z" fill="#ffff00" stroke="#ffffff" stroke-width="2"/>
 </svg>`),
         width: 32,
         height: 32,

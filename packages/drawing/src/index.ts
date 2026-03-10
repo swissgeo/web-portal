@@ -12,9 +12,20 @@ export {
     getMarkerIconById,
     type MarkerIcon,
 } from '@/utils/markerIcons'
+export { resolveFeatureId } from '@/utils/drawingUtils'
 
 // Types
-export type { DrawingMode } from '@/types'
+export type {
+    DrawingFeatureAttributes,
+    DrawingFeatureInfoPayload,
+    DrawingHoverHintPayload,
+    DrawingFeatureKind,
+    DrawingFeatureMetadata,
+    DrawingFeatureStyleProps,
+    DrawingMode,
+    MeasurementDrawingSubtype,
+    TextAnchor,
+} from '@/types'
 
 // Components
 export { default as OpenLayersDrawingLayer } from '@/components/OpenLayersDrawingLayer.vue'

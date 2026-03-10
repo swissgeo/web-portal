@@ -12,7 +12,7 @@ import OpenLayersScale from './openlayers/OpenLayersScale.vue'
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 
-const { layers, backgroundLayer } = defineProps<{
+const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
     layers: Layer[]
     backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]

@@ -9,5 +9,6 @@ export type {
     FeatureSearchResult,
     SearchResponse,
     SearchResponseResult,
-    CatalogRecord,
 } from './types/search'
+
+export type { CatalogRecord } from './api/search'

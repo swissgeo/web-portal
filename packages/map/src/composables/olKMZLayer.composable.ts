@@ -4,7 +4,13 @@ import type Feature from 'ol/Feature'
 import type { Ref } from 'vue'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { createTextFeatureStyle, EPSG_4326_WGS84 } from '@swissgeo/shared'
+import {
+    createDrawingFeatureStyleFunction,
+    createTextFeatureStyle,
+    EPSG_4326_WGS84,
+    isDrawingFeature,
+    parseBoolean,
+} from '@swissgeo/shared'
 import { unzip } from 'fflate'
 import KML from 'ol/format/KML'
 import VectorLayer from 'ol/layer/Vector'
@@ -112,21 +118,31 @@ export default function useOlKMZLayer(
         })
     }
 
-    function processTextFeatures(features: FeatureLike[]): void {
+    function normalizeFeatureProperties(features: FeatureLike[]): void {
         features.forEach((feature) => {
             const name = feature.get('name')
             const text = feature.get('text')
-            const isTextFeature = feature.get('isTextFeature')
+            const isTextFeature = parseBoolean(feature.get('isTextFeature'))
             const geometry = feature.getGeometry()
+            const hasIcon =
+                typeof feature.get('iconId') === 'string' &&
+                String(feature.get('iconId')).length > 0
 
-            if (
-                isTextFeature ||
-                (text && geometry?.getType() === 'Point' && !feature.get('iconId'))
-            ) {
+            if (isTextFeature || (text && geometry?.getType() === 'Point' && !hasIcon)) {
                 const textContent = text || name
                 ;(feature as Feature).set('text', textContent)
                 ;(feature as Feature).set('isTextFeature', true)
-                ;(feature as Feature).setStyle(createTextFeatureStyle(textContent))
+            }
+
+            if (isDrawingFeature(feature)) {
+                const olFeature = feature as Feature
+                olFeature.unset('__isSelected', true)
+                olFeature.setStyle(createDrawingFeatureStyleFunction(olFeature.getStyle()))
+                olFeature.changed()
+            } else if (parseBoolean(feature.get('isTextFeature'))) {
+                ;(feature as Feature).setStyle(
+                    createTextFeatureStyle(String(feature.get('text') ?? ''))
+                )
             }
         })
     }
@@ -145,7 +161,7 @@ export default function useOlKMZLayer(
             const modifiedKML = replaceIconReferences(kmlContent, iconFiles)
             const features = parseKMLFeatures(modifiedKML, positionStore.projection.epsg)
 
-            processTextFeatures(features)
+            normalizeFeatureProperties(features)
 
             const source = new VectorSource({ features })
             if (olLayer.value) {

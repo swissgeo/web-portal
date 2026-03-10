@@ -7,12 +7,18 @@ import { useLayerStore } from '@swissgeo/layers'
 import { MapModule } from '@swissgeo/map'
 import { MapDatasetLayer } from '#components'
 
+import { projectLayersForMap } from '@/utils/layerOrder'
+
 const layerStore = useLayerStore()
 
 const backgroundLayer = ref<Layer | null>(null)
 
 const backgroundLayerMapData = ref<MapLayer>()
-const layersForMap = ref<MapLayer[]>([])
+const layersByUuid = ref<Record<string, MapLayer>>({})
+
+const layersForMap = computed(() => {
+    return projectLayersForMap(layerStore.layers, layersByUuid.value)
+})
 
 const customLayerRenderers: MapLayerRenderer[] = [
     {
@@ -31,12 +37,12 @@ const storeFileLayers = computed(() => {
     return layerStore.layers.filter((layer) => !isDatasetLayer(layer))
 })
 
-function updateLayerData(index: number, layerData: MapLayer) {
-    layersForMap.value[index] = layerData
+function updateLayerData(layerUuid: string, layerData: MapLayer) {
+    layersByUuid.value[layerUuid] = layerData
 }
 
-function removeLayerData(index: number) {
-    layersForMap.value.splice(index, 1)
+function removeLayerData(layerUuid: string) {
+    delete layersByUuid.value[layerUuid]
 }
 
 function updateTimeDimension(layerUuid: string, dimension: Partial<Dimension>) {
@@ -54,20 +60,20 @@ function changeBackground(layer: Layer | null) {
 <template>
     <ClientOnly>
         <MapFileLayer
-            v-for="(layer, idx) in storeFileLayers"
+            v-for="layer in storeFileLayers"
             :layer="layer"
             :key="layer.uuid"
             :zIndex="layerStore.getLayerZIndex(layer.uuid)"
-            @update="updateLayerData(idx, $event)"
-            @remove="removeLayerData(idx)"
+            @update="updateLayerData(layer.uuid, $event)"
+            @remove="removeLayerData(layer.uuid)"
         ></MapFileLayer>
         <MapDatasetLayer
-            v-for="(layer, idx) in storeDatasetLayers"
+            v-for="layer in storeDatasetLayers"
             :layer="layer"
             :key="layer.uuid"
             :zIndex="layerStore.getLayerZIndex(layer.uuid)"
-            @update="updateLayerData(idx, $event)"
-            @remove="removeLayerData(idx)"
+            @update="updateLayerData(layer.uuid, $event)"
+            @remove="removeLayerData(layer.uuid)"
             @updateTimeDimension="updateTimeDimension"
         ></MapDatasetLayer>
 
@@ -88,6 +94,7 @@ function changeBackground(layer: Layer | null) {
         />
         <Toolbox />
         <DebugPanel class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"></DebugPanel>
+        <DrawingFeatureInfoWindow />
 
         <MapBackgroundSelector
             :currentBackground="backgroundLayer"

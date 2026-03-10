@@ -17,6 +17,7 @@ logs
 .DS_Store
 .fleet
 .idea
+.vscode/
 
 # Local env files
 .env
@@ -25,3 +26,6 @@ logs
 
 # Python .venv
 .venv
+
+# GitHub prompts
+.github/prompts
