@@ -135,7 +135,10 @@ function dispatchCurrentYearToStore() {
     }
 
     for (const layer of layersWithTimestamps.value) {
-        const yearValue = convertYearToTimestamp(layer.dimensions.time.availableValues, currentYear.value)
+        const yearValue = convertYearToTimestamp(
+            layer.dimensions.time.availableValues,
+            currentYear.value
+        )
 
         if (yearValue === null) {
             emit('update-visibility', { uuid: layer.uuid, isVisible: false })

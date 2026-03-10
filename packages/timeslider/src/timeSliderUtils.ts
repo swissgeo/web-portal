@@ -1,6 +1,11 @@
 import type { Dimension, Layer } from '@swissgeo/layers'
 
-import { ALL_YEARS_TIMESTAMP, CURRENT_YEAR_TIMESTAMP, convertYearToTimestamp, getYearFromGeoadminValue } from '@swissgeo/shared'
+import {
+    ALL_YEARS_TIMESTAMP,
+    CURRENT_YEAR_TIMESTAMP,
+    convertYearToTimestamp,
+    getYearFromGeoadminValue,
+} from '@swissgeo/shared'
 
 export { convertYearToTimestamp, getYearFromGeoadminValue }
 
@@ -64,4 +69,3 @@ export function getYearsWithData(layersWithTimestamps: LayerWithTime[]) {
         yearsSeparate,
     }
 }
-

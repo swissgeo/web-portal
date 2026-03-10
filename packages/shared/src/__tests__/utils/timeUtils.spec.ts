@@ -1,7 +1,11 @@
 import { describe, it, expect, test } from 'vitest'
 
 import { ALL_YEARS_TIMESTAMP } from '@/globals'
-import { convertYearToTimestamp, getDisplayNameFromTimestamp, getYearFromGeoadminValue } from '@/utils/timeUtils'
+import {
+    convertYearToTimestamp,
+    getDisplayNameFromTimestamp,
+    getYearFromGeoadminValue,
+} from '@/utils/timeUtils'
 
 describe('Testing the display timestamp util function', () => {
     it.each`
