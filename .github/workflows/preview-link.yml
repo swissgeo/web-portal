@@ -1,0 +1,15 @@
+name: on-pr
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - labeled
+      - unlabeled
+
+jobs:
+  pr-preview:
+    uses: swissgeo/.github/.github/workflows/k8s-pr-preview-auto.yml@main
+    with:
+      preview-domain: www.${{ github.base_ref == 'main' && 'int' || 'dev' }}.sgdi.tech
