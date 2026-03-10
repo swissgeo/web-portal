@@ -7,7 +7,7 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 import LayerGroup from 'ol/layer/Group'
 import Layer from 'ol/layer/Layer'
 import VectorSource from 'ol/source/Vector'
-import { onBeforeUnmount, toRaw, watchEffect } from 'vue'
+import { onBeforeUnmount, shallowRef, toRaw, watchEffect } from 'vue'
 
 /**
  * Vue composable that will handle the addition or removal of an OpenLayers layer. This is a
@@ -27,21 +27,30 @@ export default function useAddLayerToMap(
     opacity: Ref<number>,
     olMap: Ref<Map | undefined> | undefined
 ) {
+    const layerOnMap = shallowRef<BaseLayer>()
+
     onBeforeUnmount(() => {
-        clearSources()
+        clearSources(layerOnMap.value ?? olLayer.value)
         removeLayerFromMap()
     })
 
-    function clearSources() {
-        if (olLayer.value instanceof Layer) {
+    function clearSources(layer: BaseLayer | undefined) {
+        const rawLayer = layer ? toRaw(layer) : undefined
+        if (rawLayer instanceof Layer) {
             // if the source of this layer can be cleared (if it's a vector layer),
             // we clear it before removing it from the map, ensuring that all features are unloaded
-            if ('getSource' in olLayer && olLayer.value.getSource() instanceof VectorSource) {
-                ;(olLayer.value.getSource() as VectorSource).clear()
+            const source = rawLayer.getSource()
+            if (source instanceof VectorSource) {
+                source.clear()
             }
-            if ('setSource' in olLayer) {
-                olLayer.value.setSource(null)
-            }
+
+            rawLayer.setSource(null)
+        }
+    }
+
+    function clearLayerGroup(layer: BaseLayer) {
+        if (layer instanceof LayerGroup) {
+            layer.getLayers().clear()
         }
     }
 
@@ -49,36 +58,55 @@ export default function useAddLayerToMap(
         if (!olMap || !olMap.value || !olLayer.value) {
             return
         }
+        const rawLayer = toRaw(olLayer.value)
+
+        if (layerOnMap.value === rawLayer) {
+            setZIndex(zIndex.value)
+            return
+        }
+
+        if (layerOnMap.value) {
+            olMap.value.removeLayer(layerOnMap.value)
+            clearLayerGroup(layerOnMap.value)
+        }
+
         log.debug({
             title: 'useAddLayerToMap',
             titleColor: LogPreDefinedColor.Amber,
             messages: [
                 // @ts-expect-error This ol layer should have the prop
-                `Going to add layer ${olLayer.value.ol_uid} to map ${olMap.value.ol_uid} with zIndex ${zIndex.value}`,
-                olLayer.value,
+                `Going to add layer ${rawLayer.ol_uid} to map ${olMap.value.ol_uid} with zIndex ${zIndex.value}`,
+                rawLayer,
                 olMap.value,
             ],
         })
-        olMap.value.addLayer(toRaw(olLayer.value))
+        olMap.value.addLayer(rawLayer)
+        layerOnMap.value = rawLayer
         setZIndex(zIndex.value)
     }
 
     function removeLayerFromMap(): void {
-        if (!olMap || !olMap.value || !olLayer.value) {
+        if (!olMap || !olMap.value) {
             return
         }
+
+        const rawLayer = toRaw(layerOnMap.value ?? olLayer.value)
+        if (!rawLayer) {
+            return
+        }
+
         log.debug({
             title: 'useAddLayerToMap',
             titleColor: LogPreDefinedColor.Amber,
             // @ts-expect-error This ol layer should have the prop
-            messages: ['Removing layer from map', olLayer.value.ol_uid],
+            messages: ['Removing layer from map', rawLayer.ol_uid],
         })
-        olMap.value.removeLayer(olLayer.value)
-
-        // TODO maybe there's more elegant version
-        if (olLayer.value instanceof LayerGroup) {
-            olLayer.value.getLayers().clear()
+        olMap.value.removeLayer(rawLayer)
+        if (layerOnMap.value === rawLayer) {
+            layerOnMap.value = undefined
         }
+
+        clearLayerGroup(rawLayer)
     }
 
     function setVisibility(isVisible: boolean) {

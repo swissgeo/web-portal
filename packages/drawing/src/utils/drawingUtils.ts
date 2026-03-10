@@ -198,9 +198,9 @@ function createGeometryStyle(
 
     const dashPattern =
         Array.isArray(styleRecord.dashPattern) &&
-            styleRecord.dashPattern.every(
-                (value) => typeof value === 'number' && Number.isFinite(value)
-            )
+        styleRecord.dashPattern.every(
+            (value) => typeof value === 'number' && Number.isFinite(value)
+        )
             ? (styleRecord.dashPattern as number[])
             : undefined
 
@@ -266,7 +266,7 @@ export function resolveFeatureStyle(feature: Feature<Geometry>): DrawingFeatureS
     STYLE_PROPERTY_KEYS.forEach((propertyKey) => {
         const propertyValue = feature.get(propertyKey)
         if (propertyValue !== undefined && propertyValue !== null) {
-            ; (mergedStyle as Record<StylePropertyKey, unknown>)[propertyKey] = propertyValue
+            ;(mergedStyle as Record<StylePropertyKey, unknown>)[propertyKey] = propertyValue
         }
     })
 

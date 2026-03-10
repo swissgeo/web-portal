@@ -11,8 +11,8 @@ export function isDrawingLayer(layer: LayerLike): boolean {
         typeof layer.humanId === 'string'
             ? layer.humanId
             : typeof layer.layerId === 'string'
-                ? layer.layerId
-                : null
+              ? layer.layerId
+              : null
 
     const layerType = typeof layer.type === 'string' ? layer.type.toLowerCase() : null
 
