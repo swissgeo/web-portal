@@ -1,8 +1,8 @@
 import type { Dimension, Layer } from '@swissgeo/layers'
 
-import { ALL_YEARS_TIMESTAMP, CURRENT_YEAR_TIMESTAMP, getYearFromGeoadminValue } from '@swissgeo/shared'
+import { ALL_YEARS_TIMESTAMP, CURRENT_YEAR_TIMESTAMP, convertYearToTimestamp, getYearFromGeoadminValue } from '@swissgeo/shared'
 
-export { getYearFromGeoadminValue }
+export { convertYearToTimestamp, getYearFromGeoadminValue }
 
 // FIXME: This type will move to @swissgeo/shared — see https://github.com/swissgeo/web-portal/pull/62
 export type LayerWithTime = Layer & { dimensions: { time: Dimension } }
@@ -65,20 +65,3 @@ export function getYearsWithData(layersWithTimestamps: LayerWithTime[]) {
     }
 }
 
-export function convertYearToTimestamp(layer: LayerWithTime, year: number) {
-    const availableValues = layer.dimensions.time.availableValues
-    if (availableValues.includes(year.toString())) {
-        return year.toString()
-    }
-
-    // We're probably dealing with a WMTS layer. We now need to convert this
-    // year back to something that can be used on this layer!
-
-    for (const timestamp of availableValues) {
-        const valueInYear = getYearFromGeoadminValue(timestamp)
-        if (year.toString() === valueInYear) {
-            return timestamp
-        }
-    }
-    return null
-}
