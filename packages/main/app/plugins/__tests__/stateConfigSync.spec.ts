@@ -6,7 +6,7 @@ const STORAGE_KEY = 'swissgeo_app_state'
 // It's a Nuxt auto-import (global), unavailable in the jsdom test environment.
 // vi.hoisted runs before vi.mock and static imports, which is exactly what we need.
 const watcherCallbackRef = vi.hoisted(() => {
-    globalThis.defineNuxtPlugin = (plugin: unknown) => plugin
+    ;(globalThis as Record<string, unknown>).defineNuxtPlugin = (plugin: unknown) => plugin
     return { fn: null as ((state: unknown) => void) | null }
 })
 

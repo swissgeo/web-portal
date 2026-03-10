@@ -126,7 +126,7 @@ function removeLayer() {
                         'bg-orange-100 text-orange-800': layer.type === 'gpx',
                         'bg-teal-100 text-teal-800': layer.type === 'geojson',
                     }"
-                >{{ layer.type }}</span
+                    >{{ layer.type }}</span
                 >
             </div>
             <div class="mt-2 flex items-center gap-2">
