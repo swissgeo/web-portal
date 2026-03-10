@@ -29,9 +29,9 @@ export function getYearFromGeoadminValue(timestamp: string): string | undefined 
 
 /**
  * Converts a year (number) back to the matching raw timestamp string from a list of available values.
- * Returns null if no matching timestamp is found.
+ * Returns undefined if no matching timestamp is found.
  */
-export function convertYearToTimestamp(availableValues: string[], year: number): string | null {
+export function convertYearToTimestamp(availableValues: string[], year: number): string | undefined {
     if (availableValues.includes(year.toString())) {
         return year.toString()
     }
@@ -42,7 +42,7 @@ export function convertYearToTimestamp(availableValues: string[], year: number):
             return timestamp
         }
     }
-    return null
+    return undefined
 }
 
 export function getDisplayNameFromTimestamp(timestamp: string | null | undefined) {

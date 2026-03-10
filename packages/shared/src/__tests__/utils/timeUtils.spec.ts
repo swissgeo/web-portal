@@ -36,8 +36,8 @@ describe('Testing convertYearToTimestamp', () => {
         expect(convertYearToTimestamp(['20161231', '20191231', '20230101'], 2019)).toBe('20191231')
     })
 
-    test('returns null if no matching timestamp found', () => {
-        expect(convertYearToTimestamp(['2016', '2019'], 2023)).toBeNull()
+    test('returns undefined if no matching timestamp found', () => {
+        expect(convertYearToTimestamp(['2016', '2019'], 2023)).toBeUndefined()
     })
 })
 

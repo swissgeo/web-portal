@@ -140,7 +140,7 @@ function dispatchCurrentYearToStore() {
             currentYear.value
         )
 
-        if (yearValue === null) {
+        if (yearValue === undefined) {
             emit('update-visibility', { uuid: layer.uuid, isVisible: false })
         } else {
             emit('update-visibility', { uuid: layer.uuid, isVisible: true })
