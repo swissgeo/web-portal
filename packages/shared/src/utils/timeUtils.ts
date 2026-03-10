@@ -2,6 +2,31 @@ import { isTimestampYYYYMMDD } from '@swissgeo/numbers'
 
 import { ALL_YEARS_TIMESTAMP } from '@/globals'
 
+/**
+ * Extracts the year (as a 4-character string) from a geoadmin timestamp value.
+ * Handles formats: 'YYYY', 'YYYYMMDD', 'YYYY-MM-DD', ISO 8601, etc.
+ * Returns undefined if the timestamp cannot be parsed.
+ */
+export function getYearFromGeoadminValue(timestamp: string): string | undefined {
+    if (timestamp.match(/^\d{4}$/)) {
+        return timestamp
+    }
+
+    if (isTimestampYYYYMMDD(timestamp)) {
+        return timestamp.substring(0, 4)
+    }
+
+    const date = new Date(timestamp)
+    if (!isNaN(date.getFullYear())) {
+        const parsedYear = date.getFullYear().toString().padStart(4, '0')
+        if (parsedYear) {
+            return parsedYear
+        }
+    }
+
+    return undefined
+}
+
 export function getDisplayNameFromTimestamp(timestamp: string | null | undefined) {
     if (timestamp === null || timestamp === undefined) {
         return '-'
@@ -15,33 +40,7 @@ export function getDisplayNameFromTimestamp(timestamp: string | null | undefined
         // all in the requests
         return ALL_YEARS_TIMESTAMP
     } else {
-        let parsedYear: string | undefined
-        // let month: string | undefined
-        // let day: string | undefined
-        if (isTimestampYYYYMMDD(timestamp)) {
-            parsedYear = timestamp.substring(0, 4)
-            // month = timestamp.substring(4, 6)
-            // day = timestamp.substring(6, 8)
-        } else {
-            const date = new Date(timestamp)
-            if (!isNaN(date.getFullYear())) {
-                parsedYear = date.getFullYear().toString().padStart(4, '0')
-            }
-            // if (!isNaN(date.getMonth())) {
-            //     // getMonth returns value between 0 and 11
-            //     month = (date.getMonth() + 1).toString().padStart(2, '0')
-            // }
-            // if (!isNaN(date.getDate())) {
-            //     day = date.getDate().toString().padStart(2, '0')
-        }
-        // TODO with the current implementation I don't see how interval is really used...
-        // if (parsedYear !== undefined && month !== undefined && day !== undefined) {
-        //     interval = Interval.fromISO(`${parsedYear}-${month}-${day}/P1D`)
-        // } else if (parsedYear !== undefined && month !== undefined) {
-        //     interval = Interval.fromISO(`${parsedYear}-${month}-01/P1M`)
-        // } else if (parsedYear !== undefined) {
-        //     interval = Interval.fromISO(`${parsedYear}-01-01/P1Y`)
-        // }
+        const parsedYear = getYearFromGeoadminValue(timestamp)
         if (parsedYear) {
             return parseInt(parsedYear)
         }
