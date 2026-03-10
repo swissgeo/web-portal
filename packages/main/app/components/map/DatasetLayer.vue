@@ -34,6 +34,7 @@ const { layer, zIndex } = defineProps<{
     layer: DatasetLayer
     zIndex: number
 }>()
+const { locale } = useI18n()
 
 // holds the data that's specific for the layers
 const layerSpecificData = ref()
@@ -173,6 +174,7 @@ function getWmsSpecificData() {
     const timeInfo = computed(() => getTimeInfoFromWMSCapabilities(dimensions.value))
 
     const capabilities = computed(() => wmsData?.value?.capabilities)
+    const currentLang = computed(() => locale.value.toLowerCase())
 
     const url = computed(() => capabilities.value?.Service.OnlineResource)
     const version = computed(() => capabilities.value?.version)
@@ -186,10 +188,19 @@ function getWmsSpecificData() {
                 url,
                 gutter: 0,
                 version,
-                lang: 'DE',
+                lang: currentLang.value,
             }
         }
     )
+
+    watch(currentLang, () => {
+        if (layerSpecificData.value) {
+            layerSpecificData.value = {
+                ...layerSpecificData.value,
+                lang: currentLang.value,
+            }
+        }
+    })
 }
 
 function getGeoJSONSpecificData() {

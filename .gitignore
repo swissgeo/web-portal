@@ -27,8 +27,9 @@ logs
 # Python .venv
 .venv
 
-# GitHub prompts
+# GitHub
 .github/prompts
+.github/mcp
 
 # git rebase conflict
 *.orig

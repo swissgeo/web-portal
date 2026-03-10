@@ -6,9 +6,15 @@ import { IconButton } from '@swissgeo/skeleton'
 
 const filterTerm = ref<string>('')
 const runtimeConfig = useRuntimeConfig()
+const { locale } = useI18n()
 
 const { data: recordLayers } = await useFetch<DatasetCollection>(
-    runtimeConfig.public.ogcApiEndpoint
+    runtimeConfig.public.ogcApiEndpoint,
+    {
+        query: {
+            lang: locale.value,
+        },
+    }
 )
 
 const layerStore = useLayerStore()
