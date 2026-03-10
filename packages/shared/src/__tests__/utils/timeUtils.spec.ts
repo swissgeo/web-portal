@@ -1,7 +1,7 @@
 import { describe, it, expect, test } from 'vitest'
 
 import { ALL_YEARS_TIMESTAMP } from '@/globals'
-import { getDisplayNameFromTimestamp, getYearFromGeoadminValue } from '@/utils/timeUtils'
+import { convertYearToTimestamp, getDisplayNameFromTimestamp, getYearFromGeoadminValue } from '@/utils/timeUtils'
 
 describe('Testing the display timestamp util function', () => {
     it.each`
@@ -20,6 +20,20 @@ describe('Testing the display timestamp util function', () => {
         ${'returns unknown if it is not an expected value'}                                                 | ${'1923 zeppelins en France'} | ${'unknown'}
     `('$description', ({ _, timestamp, displayedName }) => {
         expect(getDisplayNameFromTimestamp(timestamp)).to.eql(displayedName)
+    })
+})
+
+describe('Testing convertYearToTimestamp', () => {
+    test('returns year as string if available values contain it directly', () => {
+        expect(convertYearToTimestamp(['2016', '2019', '2023'], 2019)).toBe('2019')
+    })
+
+    test('returns the raw YYYYMMDD timestamp when year matches', () => {
+        expect(convertYearToTimestamp(['20161231', '20191231', '20230101'], 2019)).toBe('20191231')
+    })
+
+    test('returns null if no matching timestamp found', () => {
+        expect(convertYearToTimestamp(['2016', '2019'], 2023)).toBeNull()
     })
 })
 
