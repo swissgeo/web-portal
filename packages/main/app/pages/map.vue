@@ -4,9 +4,9 @@ import type { MapLayerRenderer, Layer as MapLayer } from '@swissgeo/map'
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from '@swissgeo/drawing'
 import { useLayerStore } from '@swissgeo/layers'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
 import { MapDatasetLayer } from '#components'
-import log, { LogPreDefinedColor } from '@swissgeo/log'
 
 import { projectLayersForMap } from '@/utils/layerOrder'
 

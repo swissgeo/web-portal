@@ -99,11 +99,16 @@ export default function useAddLayerToMap(
             title: 'useAddLayerToMap',
             titleColor: LogPreDefinedColor.Amber,
             // @ts-expect-error This ol layer should have the prop
-            messages: ['Removing layer from map', rawLayer.ol_uid],
+            messages: ['Removing layer with ID from map:', olLayer.value.ol_uid],
         })
-        olMap.value.removeLayer(rawLayer)
-        if (layerOnMap.value === rawLayer) {
-            layerOnMap.value = undefined
+
+        const removed = olMap.value.removeLayer(rawLayer)
+        if (removed === undefined) {
+            log.error({
+                title: 'useAddLayerToMap',
+                titleColor: LogPreDefinedColor.Red,
+                messages: ['ERROR: unable to remove the layer from the map'],
+            })
         }
 
         clearLayerGroup(rawLayer)
