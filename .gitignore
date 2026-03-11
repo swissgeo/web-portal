@@ -29,3 +29,6 @@ logs
 
 # GitHub prompts
 .github/prompts
+
+# git rebase conflict
+*.orig
