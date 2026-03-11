@@ -1,6 +1,4 @@
-import { appendResponseHeader, createError, getRouterParam } from 'h3'
-
-const basePath = 'http://localhost:3000/api/v1/layers/external/'
+import { appendResponseHeader, createError, getRouterParam, getRequestURL } from 'h3'
 
 export default defineEventHandler((event) => {
     const capabilityUrlParam = getRouterParam(event, 'capabilityUrl')
@@ -15,7 +13,10 @@ export default defineEventHandler((event) => {
     }
 
     const capabilityUrl = decodeURIComponent(capabilityUrlParam)
-    const serviceUrl = basePath + `service/${capabilityUrlParam}`
+
+    // Derive base URL from the incoming request so it works on any host/port
+    const requestUrl = getRequestURL(event)
+    const serviceUrl = `${requestUrl.origin}/api/v1/layers/external/service/${capabilityUrlParam}`
 
     // Determine protocol based on the capability URL
     let protocol = 'OGC:WMTS'
@@ -26,6 +27,7 @@ export default defineEventHandler((event) => {
     appendResponseHeader(event, 'Content-Type', 'application/json')
     appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)
     return {
+        id: layerId,
         records: [
             {
                 id: `${layerId}`,
