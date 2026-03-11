@@ -7,7 +7,7 @@ const STORAGE_KEY = 'swissgeo_app_state'
 // vi.hoisted runs before vi.mock and static imports, which is exactly what we need.
 const watcherCallbackRef = vi.hoisted(() => {
     ;(globalThis as Record<string, unknown>).defineNuxtPlugin = (plugin: unknown) => plugin
-    return { fn: null as ((state: unknown) => void) | null }
+    return { fn: null as ((_state: unknown) => void) | null }
 })
 
 const mockImportState = vi.fn()
@@ -22,7 +22,7 @@ vi.mock('@swissgeo/log', () => ({
 }))
 
 vi.mock('@vueuse/core', () => ({
-    watchDebounced: (_getter: unknown, callback: (state: unknown) => void) => {
+    watchDebounced: (_getter: unknown, callback: (_state: unknown) => void) => {
         watcherCallbackRef.fn = callback
     },
 }))
