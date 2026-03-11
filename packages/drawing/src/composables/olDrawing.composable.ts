@@ -1665,7 +1665,7 @@ export function useOlDrawing(
     function rebuildEndpointHandles() {
         endpointHandleSource.clear(true)
 
-        if (drawingStore.isDrawing && drawingStore.drawingMode !== 'None') {
+        if (drawingStore.drawingMode !== 'None') {
             return
         }
 

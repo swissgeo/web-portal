@@ -107,10 +107,7 @@ export function useDrawingManager() {
             layerStore.moveLayerToTop(existingLayer.uuid)
         }
 
-        if (!drawingStore.isDrawing) {
-            drawingStore.toggleDrawing()
-        }
-        console.log('Started drawing mode', drawingStore.isDrawing)
+        drawingStore.setDrawingEnabled(true)
         log.debug('Started drawing mode')
     }
 
@@ -118,9 +115,7 @@ export function useDrawingManager() {
      * Stop drawing mode and persist as KML layer
      */
     function stopDrawing() {
-        if (drawingStore.isDrawing) {
-            drawingStore.toggleDrawing()
-        }
+        drawingStore.setDrawingEnabled(false)
 
         // Create persistent KML layer if we have features
         if (drawingStore.drawingFeatures.length > 0) {

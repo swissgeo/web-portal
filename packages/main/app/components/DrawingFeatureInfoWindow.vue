@@ -23,7 +23,7 @@ const dragState = reactive({
     offsetY: 0,
 })
 
-const hasInfo = computed(() => !drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo))
+const hasInfo = computed(() => drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo))
 
 const TEXT_ANCHOR_OPTIONS: TextAnchor[] = [
     'top-left',
@@ -273,7 +273,6 @@ function deleteSelectedFeature() {
         (candidate) => resolveFeatureId(candidate) !== selectedId
     )
     drawingStore.setDrawingMode('None')
-    drawingStore.setDrawingEnabled(false)
     drawingStore.clearPassiveSelection()
 }
 
