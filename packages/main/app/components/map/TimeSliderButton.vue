@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { Dimension, Layer } from '@swissgeo/layers'
-import type { LayerWithTime } from '@swissgeo/timeslider'
 
 import { useLayerStore } from '@swissgeo/layers'
 import { useSidebarStore } from '@swissgeo/skeleton'
 import { TimeSlider } from '@swissgeo/timeslider'
+
+type LayerWithTime = Layer & { dimensions: { time: Dimension } }
 
 const mapViewStore = useMapViewStore()
 const layerStore = useLayerStore()
