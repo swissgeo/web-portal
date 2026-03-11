@@ -109,14 +109,7 @@ onMounted(() => {
 })
 
 async function updateDistributionData() {
-    const distributionDataUpdate = await $fetch<DistributionCollection>(
-        distributionLink.value.href,
-        {
-            query: {
-                lang: locale.value,
-            },
-        }
-    )
+    const distributionDataUpdate = await $fetch<DistributionCollection>(distributionLink.value.href)
 
     if (distributionDataUpdate) {
         state.value.distributionData = distributionDataUpdate

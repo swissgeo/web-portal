@@ -18,7 +18,7 @@ const isMapPage = computed(() => {
 const isMapFullscreenMode = computed(() => isMapPage.value && mapViewStore.isFullscreenModeActive)
 
 watch(route, (value) => {
-    log.debug('route changed', value.fullPath)
+    log.debug('route has changed', value.fullPath)
 
     if (!isMapPage.value && mapViewStore.isFullscreenModeActive) {
         mapViewStore.exitFullscreenMode()

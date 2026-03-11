@@ -33,6 +33,23 @@ describe('Layer store helpers', () => {
         expect(store.getLayerZIndex('missing')).toBe(-1)
     })
 
+    it('replaces a layer in place', () => {
+        const store = useLayerStore()
+        store.addLayer(makeLayer('a'))
+        store.addLayer(makeLayer('b'))
+
+        const replacement = makeLayer('replacement')
+        store.replaceLayer('a', replacement)
+
+        expect(store.layers.map((l) => l.uuid)).toEqual(['replacement', 'b'])
+        expect(store.getLayerZIndex('replacement')).toBe(0)
+        expect(store.getLayerZIndex('a')).toBe(-1)
+
+        // unknown uuid: no-op
+        store.replaceLayer('missing', makeLayer('c'))
+        expect(store.layers.map((l) => l.uuid)).toEqual(['replacement', 'b'])
+    })
+
     it('setLayerIndex moves layers to specified index', () => {
         const store = useLayerStore()
         store.addLayer(makeLayer('a'))

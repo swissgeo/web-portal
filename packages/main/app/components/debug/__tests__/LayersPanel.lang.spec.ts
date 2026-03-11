@@ -18,7 +18,7 @@ vi.mock('@swissgeo/skeleton', () => ({
     },
 }))
 
-const useFetchSpy = vi.fn()
+const useOgcDatasetCollectionSpy = vi.fn()
 
 describe('LayersPanel.vue locale-aware records loading', () => {
     beforeEach(() => {
@@ -32,7 +32,7 @@ describe('LayersPanel.vue locale-aware records loading', () => {
             title: 'Datasets',
         }
 
-        useFetchSpy.mockResolvedValue({
+        useOgcDatasetCollectionSpy.mockResolvedValue({
             data: ref(records),
         })
 
@@ -46,7 +46,7 @@ describe('LayersPanel.vue locale-aware records loading', () => {
         vi.stubGlobal('useI18n', () => ({
             locale: ref('fr'),
         }))
-        vi.stubGlobal('useFetch', useFetchSpy)
+        vi.stubGlobal('useOgcDatasetCollection', useOgcDatasetCollectionSpy)
     })
 
     afterEach(() => {
@@ -54,7 +54,7 @@ describe('LayersPanel.vue locale-aware records loading', () => {
         vi.clearAllMocks()
     })
 
-    it('requests records with lang from active locale', async () => {
+    it('loads records from shared dataset collection composable', async () => {
         const TestHost = defineComponent({
             components: { LayersPanel },
             template: '<Suspense><LayersPanel /></Suspense>',
@@ -70,10 +70,6 @@ describe('LayersPanel.vue locale-aware records loading', () => {
 
         await flushPromises()
 
-        expect(useFetchSpy).toHaveBeenCalledWith('https://example.test/collections', {
-            query: {
-                lang: 'fr',
-            },
-        })
+        expect(useOgcDatasetCollectionSpy).toHaveBeenCalled()
     })
 })

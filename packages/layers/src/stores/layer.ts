@@ -12,6 +12,14 @@ export const useLayerStore = defineStore('layers', () => {
         layers.value.push(layer)
     }
 
+    function replaceLayer(layerUuid: string, replacement: Layer) {
+        const index = layers.value.findIndex((layer) => layer.uuid === layerUuid)
+        if (index < 0) {
+            return
+        }
+        layers.value.splice(index, 1, replacement)
+    }
+
     /**
      * Returns the z-index for a layer based on its position in the layers array.
      * layers[0] is the bottom layer (lowest z-index), layers[n-1] is the top.
@@ -129,6 +137,7 @@ export const useLayerStore = defineStore('layers', () => {
         getLayerZIndex,
         // actions
         addLayer,
+        replaceLayer,
         setLayerIndex,
         moveLayerUp,
         moveLayerDown,
