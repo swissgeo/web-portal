@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 export const useMapViewStore = defineStore('mapView', () => {
     const isTimeSliderVisible = ref(false)
+    const isFullscreenModeActive = ref(false)
 
     function toggleTimeSlider() {
         isTimeSliderVisible.value = !isTimeSliderVisible.value
@@ -12,9 +13,25 @@ export const useMapViewStore = defineStore('mapView', () => {
         isTimeSliderVisible.value = false
     }
 
+    function enterFullscreenMode() {
+        isFullscreenModeActive.value = true
+    }
+
+    function exitFullscreenMode() {
+        isFullscreenModeActive.value = false
+    }
+
+    function toggleFullscreenMode() {
+        isFullscreenModeActive.value = !isFullscreenModeActive.value
+    }
+
     return {
         isTimeSliderVisible,
+        isFullscreenModeActive,
         toggleTimeSlider,
         closeTimeSlider,
+        enterFullscreenMode,
+        exitFullscreenMode,
+        toggleFullscreenMode,
     }
 })

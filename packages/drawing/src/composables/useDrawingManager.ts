@@ -110,7 +110,7 @@ export function useDrawingManager() {
         if (!drawingStore.isDrawing) {
             drawingStore.toggleDrawing()
         }
-
+        console.log('Started drawing mode', drawingStore.isDrawing)
         log.debug('Started drawing mode')
     }
 

@@ -8,9 +8,21 @@ import { SideBar } from '@swissgeo/skeleton'
 import { useSearchSelection } from '@/composables/useSearchSelection'
 
 const route = useRoute()
+const mapViewStore = useMapViewStore()
+
+const isMapPage = computed(() => {
+    const routeName = String(route.name ?? '')
+    return route.path.includes('/map') || routeName.includes('map')
+})
+
+const isMapFullscreenMode = computed(() => isMapPage.value && mapViewStore.isFullscreenModeActive)
 
 watch(route, (value) => {
     log.debug('route changed', value.fullPath)
+
+    if (!isMapPage.value && mapViewStore.isFullscreenModeActive) {
+        mapViewStore.exitFullscreenMode()
+    }
 })
 
 // Handle search result selection
@@ -28,15 +40,22 @@ async function onSearchResultSelected(result: SearchResult) {
     >
         <div class="relative h-screen">
             <SideBar
+                v-if="!isMapFullscreenMode"
                 class="z-2"
                 @search-result-selected="onSearchResultSelected"
             />
-            <div class="pointer-events-none absolute bottom-4 left-0 z-3 flex w-16 justify-center">
+            <div
+                v-if="!isMapFullscreenMode"
+                class="pointer-events-none absolute bottom-4 left-0 z-3 flex w-16 justify-center"
+            >
                 <div class="pointer-events-auto">
                     <SidebarLanguageSwitcherButton />
                 </div>
             </div>
-            <div class="h-full w-full pl-20">
+            <div
+                class="h-full w-full"
+                :class="isMapFullscreenMode ? 'pl-0' : 'pl-20'"
+            >
                 <slot />
             </div>
         </div>

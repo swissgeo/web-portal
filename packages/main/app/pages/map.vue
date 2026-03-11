@@ -10,6 +10,7 @@ import { MapDatasetLayer } from '#components'
 import { projectLayersForMap } from '@/utils/layerOrder'
 
 const layerStore = useLayerStore()
+const mapViewStore = useMapViewStore()
 
 const backgroundLayer = ref<Layer | null>(null)
 
@@ -19,6 +20,8 @@ const layersByUuid = ref<Record<string, MapLayer>>({})
 const layersForMap = computed(() => {
     return projectLayersForMap(layerStore.layers, layersByUuid.value)
 })
+
+const showAdditionalMapUi = computed(() => !mapViewStore.isFullscreenModeActive)
 
 const customLayerRenderers: MapLayerRenderer[] = [
     {
@@ -93,8 +96,11 @@ function changeBackground(layer: Layer | null) {
             class="h-screen w-full"
         />
         <Toolbox />
-        <DebugPanel class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"></DebugPanel>
-        <DrawingFeatureInfoWindow />
+        <DebugPanel
+            v-if="showAdditionalMapUi"
+            class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"
+        ></DebugPanel>
+        <DrawingFeatureInfoWindow v-if="showAdditionalMapUi" />
 
         <MapBackgroundSelector
             :currentBackground="backgroundLayer"
