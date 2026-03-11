@@ -3,7 +3,7 @@
 This repository contains the frontend implementation for SWISSGEO, the future central geodata platform for Switzerland.
 
 > [!IMPORTANT]
-This project is currently under active development. Features and documentation are subject to frequent changes.
+> This project is currently under active development. Features and documentation are subject to frequent changes.
 
 ## Project Context
 
@@ -11,7 +11,7 @@ SWISSGEO is the upcoming unified hub for Swiss geospatial data, merging federal 
 
 ### ℹ️ Resources
 
-Project overview:  [Official SWISSGEO Platform info in German](https://www.geoinformation.ch/de/swissgeo-geoplattform) or [French Version here](https://www.geoinformation.ch/fr/swissgeo-geoplateforme) (FR)
+Project overview: [Official SWISSGEO Platform info in German](https://www.geoinformation.ch/de/swissgeo-geoplattform) or [French Version here](https://www.geoinformation.ch/fr/swissgeo-geoplateforme) (FR)
 
 ## Quick-Start
 
@@ -84,30 +84,23 @@ A `Dockerfile` is provided to build and run the application in a container. It a
 **Build the image:**
 
 ```sh
-docker build -t swissgeo-app .
+# build with source maps
+pnpm run docker:build:dev
 
-# Or explicitly set the target environment
-docker build --build-arg TARGET_ENV=prod -t swissgeo-app .
+# build without source maps
+pnpm run docker:build:prod
 ```
 
 **Run the container:**
 
 ```sh
-docker run -p 8080:80 swissgeo-app
+# with source maps
+pnpm run docker:run:dev
+
+# or without source maps
+pnpm run docker:run:prod
 ```
 
-The app will be available at `http://localhost:8080`.
+The app will be available at `http://localhost:3000`.
 
 > **Note:** Environment variables (`NUXT_API_ENDPOINT`, `NUXT_AUTH_TOKEN`, `NUXT_MAPTILER_API_KEY`, etc.) must be set at runtime via `-e` flags or an env file — do not bake secrets into the image.
->
-> ```sh
-> # Pass variables individually
-> docker run -p 8080:80 \
->   -e NUXT_API_ENDPOINT=https://... \
->   -e NUXT_AUTH_TOKEN=... \
->   -e NUXT_MAPTILER_API_KEY=... \
->   swissgeo-app
->
-> # Or use a .env file (copy packages/main/.env.example and fill in the values)
-> docker run -p 8080:80 --env-file packages/main/.env swissgeo-app
-> ```
