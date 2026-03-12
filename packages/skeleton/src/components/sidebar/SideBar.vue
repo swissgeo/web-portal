@@ -46,6 +46,7 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH
                         <SidebarIcons></SidebarIcons>
                     </div>
                     <div class="flex flex-col items-center gap-2">
+                        <slot name="bottom-controls" />
                         <BuildInfoButton></BuildInfoButton>
                     </div>
                 </div>

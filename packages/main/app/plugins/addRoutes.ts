@@ -24,7 +24,8 @@ const getMenu = async (id: number) => {
     }
 }
 
-const isSupportedLang = (lang: string): lang is Lang => ALLOWED_LANGUAGES.includes(lang)
+const isSupportedLang = (lang: string): lang is Lang =>
+    (ALLOWED_LANGUAGES as readonly string[]).includes(lang)
 
 const makeRouteEntries = (
     menuEntry: MenuEntry,
@@ -60,9 +61,13 @@ const makeRouteEntries = (
         const slug = slugify(langEntry.slug)
         const path = joinURL(parentPath, slug)
 
+        // Child routes also use absolute paths (starting with /<lang>/...).
+        // This is intentional: each recursive call prepends /<lang> to its own record,
+        // so nested routes are correctly registered as /de/content/parent/child etc.
+        // Vue Router accepts absolute paths in the children array.
         records.push({
             name: langEntry.slug,
-            path,
+            path: `/${lang}${path}`,
             file: '~/pages/page.vue',
             component: page,
             meta: {

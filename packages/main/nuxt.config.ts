@@ -67,9 +67,12 @@ export default defineNuxtConfig({
         detectBrowserLanguage: {
             useCookie: true,
             cookieKey: 'selectedLanguage',
-            redirectOn: 'root', // only redirect on root path
+            // 'root' redirects only on '/'. Bare paths like '/map' (without a lang prefix)
+            // will 404 — this is an intentional change; the app now requires a lang prefix.
+            // Change to 'all' (and add any needed redirects) if backward-compatibility for '/map' is ever required.
+            redirectOn: 'root',
         },
-        strategy: 'no_prefix', // don't do route paths
+        strategy: 'prefix',
         langDir: 'locales',
         locales: [
             {
@@ -87,6 +90,16 @@ export default defineNuxtConfig({
                 name: 'English',
                 file: 'en.json',
             },
+            {
+                code: 'it',
+                name: 'Italiano',
+                file: 'it.json',
+            },
+            {
+                code: 'rm',
+                name: 'Rumantsch',
+                file: 'rm.json',
+            },
         ],
         defaultLocale: 'de',
     },
@@ -103,27 +116,6 @@ export default defineNuxtConfig({
             gitCommit: getGitCommit(),
             buildTime,
         },
-    },
-    hooks: {
-        // 'i18n:registerModule': (register) => {
-        //     register({
-        //         langDir: './app/locales',
-        //         locales: [
-        //             {
-        //                 code: 'en',
-        //                 file: 'en.json',
-        //             },
-        //             {
-        //                 code: 'fr',
-        //                 file: 'fr.json',
-        //             },
-        //             {
-        //                 code: 'de',
-        //                 file: 'de.json',
-        //             },
-        //         ],
-        //     })
-        // },
     },
     routeRules: {
         // cache the rendered pages for 2 minutes

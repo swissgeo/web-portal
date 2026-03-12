@@ -1,7 +1,7 @@
 import type { Lang } from '@/language'
 
 // System Constants
-export const ALLOWED_LANGUAGES: Lang[] = ['de', 'fr']
+export const ALLOWED_LANGUAGES: Lang[] = ['de', 'fr', 'en', 'it', 'rm']
 export const DRAWING_LAYER_ID = 'user-drawing-layer'
 
 // Time constants
