@@ -9,6 +9,8 @@ import { useDrawingStore } from '@swissgeo/drawing'
  */
 import { useLayerStore } from '@swissgeo/layers'
 
+import { useGeolocationStore } from '@/stores/geolocation'
+
 import FullScreenButton from '@/components/toolbox/toolboxButtons/FullScreenButton.vue'
 import GeolocButton from '@/components/toolbox/toolboxButtons/GeolocButton.vue'
 import RecenterButton from '@/components/toolbox/toolboxButtons/RecenterButton.vue'
@@ -21,11 +23,14 @@ import CompassButton from './toolboxButtons/CompassButton.vue'
 const layerStore = useLayerStore()
 const drawingStore = useDrawingStore()
 const mapViewStore = useMapViewStore()
+const geolocationStore = useGeolocationStore()
 
 const showFullScreeButton = computed(() => !drawingStore.isDrawing)
 // Buttons related to the geolocation function
 const showGelocationButton = ref(true)
-const showRecenterButton = ref(true)
+const showRecenterButton = computed(
+    () => geolocationStore.active && !geolocationStore.tracking
+)
 const showCompassButton = ref(true)
 
 const showZoomButtons = ref(true)

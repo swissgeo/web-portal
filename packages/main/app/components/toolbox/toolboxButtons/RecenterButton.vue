@@ -1,44 +1,27 @@
 <script setup lang="ts">
-// import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
+import type { ActionDispatcher } from '@swissgeo/map'
 
-// import { usePositionStore } from '@swissgeo/map'
+import { useGeolocationStore } from '@/stores/geolocation'
+
 import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
 
-// const dispatcher: ActionDispatcher = { name: 'RecenterButton.vue' }
+const dispatcher: ActionDispatcher = { name: 'RecenterButton.vue' }
 
-// const positionStore = usePositionStore()
+const geolocationStore = useGeolocationStore()
 
-function isDisabled(): boolean {
-    return true
-}
 function toggleTracking(): void {
-    throw new Error('GEOLOCATION NOT IMPLEMENTED, SO WE CANNOT RECENTER')
-    // Toggle tracking mode
-    // const newTrackingState = false
-
-    // If enabling tracking and device has orientation, enable auto-rotation
-    // if (newTrackingState && positionStore.hasOrientation) {
-    //     positionStore.setAutoRotation(true, dispatcher)
-    // } else if (!newTrackingState) {
-    //     // If disabling tracking, also disable auto-rotation and reset rotation
-    //     if (positionStore.autoRotation) {
-    //         positionStore.setRotation(0, dispatcher)
-    //         positionStore.setAutoRotation(false, dispatcher)
-    //     }
-    // }
+    geolocationStore.setGeolocationTracking(true, dispatcher)
 }
 </script>
 
 <template>
     <ToolBoxButton
-        title="Recenter button"
-        :is-disabled="isDisabled()"
+        title="Re-center map on location"
+        :is-disabled="false"
         :is-active="false"
         iconName="Shrink"
         @click="toggleTracking()"
     />
 </template>
 
-<style scoped>
-/*@import '@/modules/map/scss/toolbox-buttons';*/
-</style>
+<style scoped></style>
