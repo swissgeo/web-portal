@@ -1,28 +1,10 @@
 <script setup lang="ts">
 import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
 
-const { t } = useI18n()
+const mapViewStore = useMapViewStore()
 
 function toggleFullScreen() {
-    throw new Error('Full screen mode toggle not yet implemented')
-}
-
-function isChromiumBrowser() {
-    return 'chrome' in window
-}
-
-const isInWindowFullScreenModeNotChromium = computed(
-    () =>
-        window.innerWidth === screen.width &&
-        window.innerHeight === screen.height &&
-        !isChromiumBrowser()
-)
-
-function isDisabled(): boolean {
-    return true
-}
-function isActive(): boolean {
-    return false
+    mapViewStore.toggleFullscreenMode()
 }
 
 onMounted(() => {
@@ -41,23 +23,17 @@ function unbindEscapeKey(): void {
 }
 
 function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape' && !!document.fullscreenElement) {
-        toggleFullScreen()
+    if (event.key === 'Escape' && mapViewStore.isFullscreenModeActive) {
+        mapViewStore.exitFullscreenMode()
     }
 }
 </script>
 
 <template>
-    <div
-        v-if="isInWindowFullScreenModeNotChromium"
-        class="fullscreen-warning"
-    >
-        {{ t('full_screen_window_exit') }}
-    </div>
     <ToolBoxButton
         title="Toggle full screen button"
-        :is-disabled="isDisabled()"
-        :is-active="isActive()"
+        :is-disabled="false"
+        :is-active="mapViewStore.isFullscreenModeActive"
         iconName="Expand"
         @click="toggleFullScreen()"
     />

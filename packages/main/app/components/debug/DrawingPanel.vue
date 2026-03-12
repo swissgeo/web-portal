@@ -48,7 +48,6 @@ function updateDrawingName(event: Event) {
 function selectDrawingType(type: DrawingMode) {
     if (drawingStore.drawingMode === type) {
         drawingStore.setDrawingMode('None')
-        drawingStore.setDrawingEnabled(false)
         return
     }
 
@@ -100,7 +99,6 @@ function confirmClear() {
 
 onMounted(() => {
     startDrawing()
-    drawingStore.setDrawingEnabled(false)
 })
 </script>
 

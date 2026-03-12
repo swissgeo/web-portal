@@ -9,6 +9,7 @@ import KML from 'ol/format/KML'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import type { DrawingHoverHintPayload, DrawingMode } from '@/types'
 
@@ -82,7 +83,8 @@ const applyInteractionState = async (isDrawingEnabled: boolean, mode: DrawingMod
     stopOlDrawing()
     disableActiveEditing()
     disablePassiveInspection()
-    if (!isDrawingEnabled) {
+    if (!isDrawingEnabled || mode === 'None') {
+        showHoverHint.value = false
         enablePassiveInspection(
             (payload) => {
                 drawingStore.setSelectedFeatureId(payload?.featureId ?? null)
@@ -107,16 +109,11 @@ const applyInteractionState = async (isDrawingEnabled: boolean, mode: DrawingMod
     showHoverHint.value = false
     drawingStore.clearPassiveSelection()
 
-    if (mode === 'None') {
-        return
-    }
-
     // Wait for next tick to ensure layer is fully initialized
     await nextTick()
     startOlDrawing(mode, (feature) => {
         updateFeatures(feature)
         drawingStore.setDrawingMode('None')
-        drawingStore.setDrawingEnabled(false)
     })
 }
 
