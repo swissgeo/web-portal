@@ -14,6 +14,9 @@ function getGitCommit() {
 }
 
 const buildTime = new Date().toISOString()
+// NUXT always force NODE_ENV to production so we cannot use it to make a development build with
+// source map, therefore using our own DEVELOPMENT_BUILD environment variable
+const isDevelopment = process.env.DEVELOPMENT_BUILD === '1'
 
 export default defineNuxtConfig({
     app: {
@@ -24,6 +27,7 @@ export default defineNuxtConfig({
     },
     compatibilityDate: '2025-07-15',
     devtools: { enabled: true },
+    dev: isDevelopment,
     build: {
         transpile: [],
     },
@@ -43,19 +47,21 @@ export default defineNuxtConfig({
     },
     sourcemap: {
         // Enable in dev, disable in prod (unless you have a private uploader)
-        server: process.env.NODE_ENV !== 'production',
-        client: process.env.NODE_ENV !== 'production',
+        server: isDevelopment,
+        client: isDevelopment,
     },
     vite: {
         plugins: [vueDevTools() as never, nodePolyfills() as never],
         build: {
-            minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
+            minify: isDevelopment ? false : 'terser',
+            sourcemap: isDevelopment,
         },
         resolve: {
             alias: {
                 '@geonetwork-ui': fileURLToPath(new URL('./geonetwork-ui', import.meta.url)),
             },
         },
+        mode: isDevelopment ? 'development' : 'production',
     },
     i18n: {
         detectBrowserLanguage: {

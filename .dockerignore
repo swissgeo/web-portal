@@ -5,9 +5,13 @@
 **/.nitro
 **/.cache
 **/dist
-**/*.log
+**/_.log
 .DS_Store
 **/.env
-**/.env.*
+**/.env._
 .git
+.github
+docs
 CLAUDE.md
+renovate.json
+LICENSE.md

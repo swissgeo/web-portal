@@ -1,26 +1,105 @@
-# syntax=docker/dockerfile:1
-FROM node:24-alpine AS build
-ARG TARGET_ENV="prod"
-ARG GIT_HASH="unknown"
-WORKDIR /app
-RUN echo "Building for '$TARGET_ENV'"
+###########################################################
+# Container that contains basic configurations used by all other containers
+# It should only contain variables that don't change or change very infrequently
+# so that the cache is not needlessly invalidated
+FROM node:24-alpine AS base
+ENV PORT=3000
+ENV HOST=0.0.0.0
+ENV USER=swissgeo
+ENV GROUP=swissgeo
+ENV INSTALL_DIR=/app
+ENV BUILD_DIR=/build
+
+RUN    addgroup -S ${GROUP} \
+    && adduser -G ${GROUP} -S ${USER}
+
+###########################################################
+# Builder container
+FROM base AS builder
+
+WORKDIR ${BUILD_DIR}
 
 RUN corepack enable
 
-COPY --exclude=node_modules . ./
-
+COPY . .
 RUN pnpm install --frozen-lockfile
-RUN GIT_COMMIT=${GIT_HASH} pnpm run build:${TARGET_ENV}
 
-FROM node:24-alpine
+###########################################################
+# Builder dev container
+FROM builder AS builder-dev
 
-WORKDIR /app
+ARG VERSION=unknown
+ARG GIT_HASH=unknown
+ARG GIT_BRANCH=unknown
+ARG GIT_DIRTY=""
+ARG AUTHOR=unknown
+LABEL git.hash=$GIT_HASH
+LABEL git.branch=$GIT_BRANCH
+LABEL git.dirty="$GIT_DIRTY"
+LABEL author=$AUTHOR
+LABEL version=$VERSION
 
-COPY --from=build app/packages/main/.output/ ./
+RUN GIT_COMMIT=${GIT_HASH} pnpm run build:dev
 
-ENV PORT=80
-ENV HOST=0.0.0.0
+###########################################################
+# Builder prod container
+FROM builder AS builder-prod
 
-EXPOSE 80
+ARG VERSION=unknown
+ARG GIT_HASH=unknown
+ARG GIT_BRANCH=unknown
+ARG GIT_DIRTY=""
+ARG AUTHOR=unknown
+LABEL git.hash=$GIT_HASH
+LABEL git.branch=$GIT_BRANCH
+LABEL git.dirty="$GIT_DIRTY"
+LABEL author=$AUTHOR
+LABEL version=$VERSION
 
-CMD ["node", "/app/server/index.mjs"]
+RUN GIT_COMMIT=${GIT_HASH} pnpm run build:prod
+
+###########################################################
+# Container to use in dev
+FROM base AS dev
+LABEL target=dev
+
+ARG VERSION=unknown
+ARG GIT_HASH=unknown
+ARG GIT_BRANCH=unknown
+ARG GIT_DIRTY=""
+ARG AUTHOR=unknown
+LABEL git.hash=$GIT_HASH
+LABEL git.branch=$GIT_BRANCH
+LABEL git.dirty="$GIT_DIRTY"
+LABEL author=$AUTHOR
+LABEL version=$VERSION
+
+COPY --chown=${USER}:${GROUP} --from=builder-dev ${BUILD_DIR}/packages/main/.output/ ${INSTALL_DIR}/
+
+USER ${USER}
+EXPOSE ${PORT}
+WORKDIR ${INSTALL_DIR}
+ENTRYPOINT ["node", "server/index.mjs"]
+
+###########################################################
+# Container to use in prod
+FROM base AS prod
+LABEL target=prod
+
+ARG VERSION=unknown
+ARG GIT_HASH=unknown
+ARG GIT_BRANCH=unknown
+ARG GIT_DIRTY=""
+ARG AUTHOR=unknown
+LABEL git.hash=$GIT_HASH
+LABEL git.branch=$GIT_BRANCH
+LABEL git.dirty="$GIT_DIRTY"
+LABEL author=$AUTHOR
+LABEL version=$VERSION
+
+COPY --chown=${USER}:${GROUP} --from=builder-prod ${BUILD_DIR}/packages/main/.output/ ${INSTALL_DIR}/
+
+USER ${USER}
+EXPOSE ${PORT}
+WORKDIR ${INSTALL_DIR}
+ENTRYPOINT ["node", "server/index.mjs"]
