@@ -1,64 +1,73 @@
 <script setup lang="ts">
-// import type { Layer } from '@swissgeo/layers'
+import type { Layer } from '@/types/layers'
 
-// import { computed } from 'vue'
-// import { useI18n } from 'vue-i18n'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-// import MapFooterAttributionItem from './attributionsDisplay/MapFooterAttributionItem.vue'
+import MapFooterAttributionItem from './attributionsDisplay/MapFooterAttributionItem.vue'
 // //import ThirdPartyDisclaimer from '@/utils/components/ThirdPartyDisclaimer.vue'
 
-// const { t } = useI18n()
-// const { layers, backgroundLayer } = defineProps<{
-//     layers: Layer[]
-//     backgroundLayer: Layer | null
-// }>()
+const { t } = useI18n()
+const { layers, backgroundLayer } = defineProps<{
+    layers: Layer[]
+    backgroundLayer: Layer | null
+}>()
 
-// const visibleLayers = computed(() => {
-//     return layers.filter((layer) => layer.isVisible)
-// })
+const visibleLayers = computed(() => {
+    return layers.filter((layer) => layer.isVisible)
+})
 
-// const attributedLayers = computed(() => {
-//     const layersWithAttributions = []
-//     if (backgroundLayer && backgroundLayer.info?.attribution) {
-//         layersWithAttributions.push(backgroundLayer)
-//     }
-//     layersWithAttributions.push(
-//         ...visibleLayers.value.filter((layer) => !!layer.info?.attribution?.title)
-//     )
-//     return layersWithAttributions
-// })
+const attributedLayers = computed(() => {
+    console.log('visibleLayers for attribution:', visibleLayers.value, backgroundLayer)
+    const layersWithAttributions: Layer[] = []
 
-// const sources = computed(() => {
-//     return attributedLayers.value
-//         .map((layer) => {
-//             return {
-//                 id: layer?.info!.attribution!.title.replace(/[._]/g, '-'),
-//                 name: layer?.info!.attribution!.title,
-//                 url: layer?.info!.attribution!.url,
-//                 /*
-//                 TODO:
-//                 hasDataDisclaimer: layersStore.hasDataDisclaimer(layer.id, {
-//                     isExternal: layer.isExternal,
-//                     baseUrl: layer.baseUrl,
-//                 }),
-//                 isLocalFile: layersStore.isLocalFile(layer),
-//                 */
-//                 hasDataDisclaimer: false,
-//                 isLocalFile: false,
-//             }
-//         })
-//         .flat()
-//         .filter((attribution, index, array) => {
-//             const firstIndex = array.findIndex((item) => item.name === attribution.name)
-//             return index === firstIndex
-//         })
-// })
+    if (backgroundLayer?.isVisible && backgroundLayer.info?.attribution?.title) {
+        layersWithAttributions.push(backgroundLayer)
+    }
+
+    layersWithAttributions.push(
+        ...visibleLayers.value.filter((layer) => !!layer.info?.attribution?.title)
+    )
+
+    return layersWithAttributions
+})
+
+const sources = computed(() => {
+    return attributedLayers.value
+        .map((layer) => {
+            console.log('Processing layer for attribution:', layer)
+            const title = layer.info?.attribution?.title
+            if (!title) {
+                return null
+            }
+
+            return {
+                id: title.replace(/[._]/g, '-'),
+                name: title,
+                url: layer.info?.attribution?.url,
+                hasDataDisclaimer: false,
+                isLocalFile: false,
+            }
+        })
+        .filter((source): source is NonNullable<typeof source> => !!source)
+        .filter((attribution, index, array) => {
+            const firstIndex = array.findIndex((item) => item.name === attribution.name)
+            return index === firstIndex
+        })
+})
+
+watch(
+    () => sources.value,
+    (newSources) => {
+        console.log('Attribution sources updated:', newSources, attributedLayers.value)
+    },
+    { immediate: true }
+)
 </script>
 
 <template>
-    <div></div>
-    <!-- <div
-        class="fixed bottom-[3rem] left-[5rem] max-w-[200px] bg-white text-sm"
+    <div
+        class="fixed bottom-[3rem] left-[5rem] z-[1000] max-w-[200px] bg-white px-1 text-sm text-black"
         data-cy="layers-copyrights"
     >
         <span v-if="sources.length > 0">{{ t('copyright_data') }}</span>
@@ -67,21 +76,6 @@
             :key="source.name"
             class="d-inline-flex"
         >
-                <ThirdPartyDisclaimer
-                v-if="source.hasDataDisclaimer"
-                :source-name="source.name"
-                :complete-disclaimer-on-click="!source.url"
-                :is-local-file="source.isLocalFile"
-            >
-                <MapFooterAttributionItem
-                    :source-id="source.id"
-                    :source-name="source.name"
-                    :source-url="source.url"
-                    :has-data-disclaimer="true"
-                    :is-last="index === sources.length - 1"
-                />
-            </ThirdPartyDisclaimer>
-                add back the v-else if we add back the third party disclaimer.
             <MapFooterAttributionItem
                 :source-id="source.id"
                 :source-name="source.name"
@@ -90,7 +84,7 @@
                 :is-last="index === sources.length - 1"
             />
         </span>
-    </div> -->
+    </div>
 </template>
 
 <style scoped></style>

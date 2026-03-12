@@ -20,6 +20,16 @@ export type DimensionRecord = Partial<Record<DimensionId, Dimension>>
 
 export type LayerFormat = 'WMTS' | 'WMS' | 'GeoJSON' | 'KML' | 'KMZ' | 'GPX'
 
+export interface LayerAttribution {
+    title: string
+    url?: string
+    logoUrl?: string
+}
+
+export interface LayerInfo {
+    attribution?: LayerAttribution
+}
+
 export interface Layer {
     format: LayerFormat
     layerId: string
@@ -27,6 +37,7 @@ export interface Layer {
     opacity: number
     isVisible: boolean
     zIndex: number
+    info?: LayerInfo
 }
 
 export interface WMTSLayer extends Layer {
