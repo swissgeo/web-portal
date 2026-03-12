@@ -4,6 +4,7 @@ import type { MapLayerRenderer, Layer as MapLayer } from '@swissgeo/map'
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from '@swissgeo/drawing'
 import { useLayerStore } from '@swissgeo/layers'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
 import { MapDatasetLayer } from '#components'
 
@@ -53,10 +54,16 @@ function updateTimeDimension(layerUuid: string, dimension: Partial<Dimension>) {
 }
 
 function changeBackground(layer: Layer | null) {
-    backgroundLayer.value = null
-    if (layer) {
-        backgroundLayer.value = layer
-    }
+    log.debug({
+        title: 'map',
+        titleColor: LogPreDefinedColor.Red,
+        messages: ['Changing background from <1> to <2>', backgroundLayer.value, layer],
+    })
+    backgroundLayer.value = layer
+}
+
+function removeBackgroundLayerData() {
+    backgroundLayerMapData.value = null
 }
 </script>
 
@@ -87,6 +94,7 @@ function changeBackground(layer: Layer | null) {
             :layer="backgroundLayer as DatasetLayer"
             @update="backgroundLayerMapData = $event"
             :zIndex="0"
+            @remove="removeBackgroundLayerData"
         ></MapDatasetLayer>
 
         <MapModule

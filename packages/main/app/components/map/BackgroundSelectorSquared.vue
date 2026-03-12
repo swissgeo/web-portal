@@ -65,7 +65,6 @@ const { selectorOpen, toggleShowSelector, onSelectBackground } =
             />
         </TransitionGroup>
         <MapBackgroundSelectorEntry
-            v-if="currentBackgroundLayer"
             :background-layer="currentBackgroundLayer"
             :folded="selectorOpen"
             :is-current="false"
