@@ -24,7 +24,8 @@ const getMenu = async (id: number) => {
     }
 }
 
-const isSupportedLang = (lang: string): lang is Lang => ALLOWED_LANGUAGES.includes(lang)
+const isSupportedLang = (lang: string): lang is Lang =>
+    (ALLOWED_LANGUAGES as readonly string[]).includes(lang)
 
 const makeRouteEntries = (
     menuEntry: MenuEntry,

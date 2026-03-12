@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Lang } from '@swissgeo/shared/language'
+
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { computed, onMounted, ref, watch } from 'vue'
 
@@ -14,7 +16,7 @@ const localeItems = computed(() =>
     }))
 )
 
-const selectedLocale = ref<string>(locale.value)
+const selectedLocale = ref<Lang>(locale.value)
 const isClient = ref(false)
 
 onMounted(() => {
