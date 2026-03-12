@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "build": "nuxt build",
-        "build:dev": "nuxt build --mode development",
+        "build:dev": "DEVELOPMENT_BUILD=1 nuxt build",
         "build:prod": "nuxt build",
         "dev": "nuxt dev",
         "format": "prettier --check --ignore-path ../../.prettierignore .",
