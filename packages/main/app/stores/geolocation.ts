@@ -176,12 +176,16 @@ function handleGeolocationError(
 
     const toast = useToast()
 
+    // Use numeric constants directly — GeolocationPositionError is not available in all environments
+    const PERMISSION_DENIED = 1
+    const TIMEOUT = 3
+
     switch (error.code) {
-        case GeolocationPositionError.PERMISSION_DENIED:
+        case PERMISSION_DENIED:
             this.setGeolocationDenied(true, dispatcher)
             toast.add({ title: 'Location permission denied', color: 'error' })
             break
-        case GeolocationPositionError.TIMEOUT:
+        case TIMEOUT:
             this.setGeolocationActive(false, dispatcher)
             toast.add({ title: 'Location request timed out', color: 'warning' })
             break
