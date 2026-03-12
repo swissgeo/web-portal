@@ -13,6 +13,10 @@ function getGitCommit() {
     }
 }
 
+function getVersion() {
+    return process.env.VERSION ?? getGitCommit()
+}
+
 const buildTime = new Date().toISOString()
 // NUXT always force NODE_ENV to production so we cannot use it to make a development build with
 // source map, therefore using our own DEVELOPMENT_BUILD environment variable
@@ -114,6 +118,7 @@ export default defineNuxtConfig({
             aboutMenu: { id: 199, translationKey: 'menuTitles.about' },
             knowledgeMenu: { id: 200, translationKey: 'menuTitles.knowledge' },
             gitCommit: getGitCommit(),
+            version: getVersion(),
             buildTime,
         },
     },

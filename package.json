@@ -15,7 +15,7 @@
         "check:write": "pnpm run format:write && pnpm run lint:write && pnpm run type-check",
         "clean": "find packages -name 'dist' -type d -exec rm -rf {} + 2>/dev/null || true",
         "dev": "pnpm --filter=main run dev",
-        "docker:build": "GIT_HASH=\"$(git describe --tags)\"; docker build --build-arg GIT_HASH=${GIT_HASH} --target ${TARGET}  -t web-portal:local-${USER}-${GIT_HASH}${TAG_SUFFIX:-} .",
+        "docker:build": "VERSION=\"$(git describe --tags)\"; docker build --build-arg VERSION=${VERSION} --target ${TARGET}  -t web-portal:local-${USER}-${VERSION}${TAG_SUFFIX:-} .",
         "docker:build:dev": "TARGET=dev TAG_SUFFIX=-dev pnpm run docker:build",
         "docker:build:prod": "TARGET=prod pnpm run docker:build",
         "docker:run": "docker run -p 3000:3000 -it --env-file packages/main/.env web-portal:local-${USER}-$(git describe --tags)${TAG_SUFFIX:-}",
