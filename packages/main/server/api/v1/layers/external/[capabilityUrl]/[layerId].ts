@@ -28,6 +28,9 @@ export default defineEventHandler((event) => {
     appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)
     return {
         id: layerId,
+        type: 'Collection',
+        itemType: 'Distribution',
+        title: layerId,
         records: [
             {
                 id: `${layerId}`,
