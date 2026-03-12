@@ -3,15 +3,19 @@ import type { Layer as BaseLayer, DatasetLayer, Dimension, Layer } from '@swissg
 import type { MapLayerRenderer, Layer as MapLayer } from '@swissgeo/map'
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from '@swissgeo/drawing'
-import { useLayerStore } from '@swissgeo/layers'
+import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
 import { MapDatasetLayer } from '#components'
 
+import { useOgcDatasetCollectionStore } from '@/stores/ogcDatasetCollection'
 import { projectLayersForMap } from '@/utils/layerOrder'
 
 const layerStore = useLayerStore()
 const mapViewStore = useMapViewStore()
+const { locale } = useI18n()
+const ogcDatasetCollectionStore = useOgcDatasetCollectionStore()
+const { data: recordLayers } = await useOgcDatasetCollection({ initializeOnUse: false })
 
 const backgroundLayer = ref<Layer | null>(null)
 
@@ -36,6 +40,18 @@ const isDatasetLayer = (layer: BaseLayer): layer is DatasetLayer =>
 const storeDatasetLayers = computed(() => {
     return layerStore.layers.filter((layer) => isDatasetLayer(layer))
 })
+
+watch(
+    () => storeDatasetLayers.value.length,
+    (datasetLayerCount) => {
+        if (datasetLayerCount === 0 || ogcDatasetCollectionStore.initialized) {
+            return
+        }
+
+        void ogcDatasetCollectionStore.initialize(locale.value)
+    },
+    { immediate: true }
+)
 
 const storeFileLayers = computed(() => {
     return layerStore.layers.filter((layer) => !isDatasetLayer(layer))
@@ -65,6 +81,44 @@ function changeBackground(layer: Layer | null) {
 function removeBackgroundLayerData() {
     backgroundLayerMapData.value = null
 }
+
+function refreshDatasetLayersForLocale() {
+    if (!recordLayers.value?.records) {
+        return
+    }
+
+    const datasetLayers = layerStore.layers.filter((layer) => isDatasetLayer(layer))
+
+    if (datasetLayers.length === 0) {
+        return
+    }
+
+    const recordsById = new Map(recordLayers.value.records.map((record) => [record.id, record]))
+
+    for (const existingLayer of datasetLayers) {
+        const localizedDataset = recordsById.get(existingLayer.dataset.id)
+
+        if (!localizedDataset) {
+            continue
+        }
+
+        const replacement = makeServerLayer(existingLayer.type, localizedDataset, {
+            uuid: existingLayer.uuid,
+            isVisible: existingLayer.isVisible,
+            opacity: existingLayer.opacity,
+            dimensions: existingLayer.dimensions,
+        })
+
+        layerStore.replaceLayer(existingLayer.uuid, replacement)
+    }
+}
+
+watch(
+    () => recordLayers.value,
+    () => {
+        refreshDatasetLayersForLocale()
+    }
+)
 </script>
 
 <template>

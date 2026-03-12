@@ -6,6 +6,7 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { useStorage } from '@vueuse/core'
 
 const layerStore = useLayerStore()
+const { locale } = useI18n()
 
 const { layer } = defineProps<{
     layer: Dataset
@@ -16,10 +17,27 @@ const { layer } = defineProps<{
  * localStorage. In order to update them from time to time, we update the entry when the value is
  * hovered
  */
-const state = useStorage(layer.id, {
+const state = useStorage(`debug:layers-panel:distribution:${layer.id}:${locale.value}`, {
     distributionData: null,
 } as {
     distributionData: DistributionCollection | null
+})
+
+const localizedLayer = computed<Dataset>(() => {
+    const currentLocale = locale.value
+    const existingLanguage = layer.properties?.language
+
+    return {
+        ...layer,
+        properties: {
+            ...layer.properties,
+            language: {
+                code: currentLocale,
+                dir: existingLanguage?.dir ?? 'ltr',
+                name: existingLanguage?.name ?? currentLocale,
+            },
+        },
+    }
 })
 
 const distributionLink = computed(() => {
@@ -98,12 +116,12 @@ async function updateDistributionData() {
     }
 }
 
-function addLayerToMap(layer: Dataset) {
+function addLayerToMap() {
     if (!type.value) {
         throw Error('Neither OGC:WMS nor OGC:WMTS found in the definition')
     }
     if (type.value !== 'UNKNOWN') {
-        layerStore.addLayer(makeServerLayer(type.value, layer))
+        layerStore.addLayer(makeServerLayer(type.value, localizedLayer.value))
     }
 }
 </script>
@@ -113,7 +131,7 @@ function addLayerToMap(layer: Dataset) {
         <td class="border-b pb-2">
             <button
                 class="cursor-pointer"
-                @click="addLayerToMap(layer)"
+                @click="addLayerToMap()"
             >
                 {{ layer.id }}
             </button>

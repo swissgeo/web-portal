@@ -41,12 +41,12 @@ export default function useOlWmsLayer(
     const gutter = computed(() => layer.value.gutter)
     const version = computed(() => layer.value.version)
     const url = computed(() => layer.value.url)
+    const lang = computed(() => layer.value.lang)
 
     const initialTimestamp = computed(() => dimension.value?.time?.currentValue || 'current')
 
     const format = computed(() => 'png') // format seems hardcoded in mapviewer, even though we
     // parse the capabilities to see if it's supported
-    const lang = 'de' // TODO
 
     /**
      * Definition of all relevant URL param for our WMS backends. This is because both
@@ -65,7 +65,7 @@ export default function useOlWmsLayer(
             TRANSPARENT: format.value === 'png',
             LAYERS: layerId.value,
             FORMAT: `image/${format.value}`,
-            LANG: lang,
+            LANG: lang.value,
             VERSION: version.value,
             CRS: positionStore.projection.epsg,
         }
@@ -141,16 +141,17 @@ export default function useOlWmsLayer(
                     uuid: layer.value.uuid,
                 },
                 opacity: opacity.value,
-                source: createTileWMSSource(),
+                source: source.value,
             })
         } else {
+            source.value = createImageWMSSource()
             olLayer.value = new ImageLayer<ImageWMS>({
                 properties: {
                     id: layerId,
                     uuid: layer.value.uuid,
                 },
                 opacity: opacity.value,
-                source: createImageWMSSource(),
+                source: source.value,
             })
         }
     }
@@ -177,6 +178,20 @@ export default function useOlWmsLayer(
         }
     })
 
+    watch(
+        () => lang.value,
+        () => {
+            updateSourceParams(dimension.value?.time?.currentValue || 'current')
+        }
+    )
+
+    function updateSourceParams(timestamp: string) {
+        if (!source.value) {
+            return
+        }
+        source.value.updateParams(createUrlParams(timestamp))
+    }
+
     function updateTimeDimension(newTimestamp: string) {
         if (!source.value) {
             log.warn({
@@ -194,7 +209,7 @@ export default function useOlWmsLayer(
             titleColor: LogPreDefinedColor.Pink,
             messages: [`Updating the time for ${layerId.value}`, newTimestamp],
         })
-        source.value.updateParams(createUrlParams(newTimestamp))
+        updateSourceParams(newTimestamp)
     }
 
     return {}

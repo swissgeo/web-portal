@@ -1,15 +1,11 @@
 <script lang="ts" setup>
-import type { DatasetCollection, Dataset } from '@swissgeo/ogc'
+import type { Dataset } from '@swissgeo/ogc'
 
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 const filterTerm = ref<string>('')
-const runtimeConfig = useRuntimeConfig()
-
-const { data: recordLayers } = await useFetch<DatasetCollection>(
-    runtimeConfig.public.ogcApiEndpoint
-)
+const { data: recordLayers } = await useOgcDatasetCollection()
 
 const layerStore = useLayerStore()
 
