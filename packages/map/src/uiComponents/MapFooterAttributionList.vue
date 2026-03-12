@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Layer } from '@/types/layers'
-
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import type { Layer } from '@/types/layers'
 
 import MapFooterAttributionItem from './attributionsDisplay/MapFooterAttributionItem.vue'
 // //import ThirdPartyDisclaimer from '@/utils/components/ThirdPartyDisclaimer.vue'
@@ -18,7 +18,6 @@ const visibleLayers = computed(() => {
 })
 
 const attributedLayers = computed(() => {
-    console.log('visibleLayers for attribution:', visibleLayers.value, backgroundLayer)
     const layersWithAttributions: Layer[] = []
 
     if (backgroundLayer?.isVisible && backgroundLayer.info?.attribution?.title) {
@@ -35,7 +34,6 @@ const attributedLayers = computed(() => {
 const sources = computed(() => {
     return attributedLayers.value
         .map((layer) => {
-            console.log('Processing layer for attribution:', layer)
             const title = layer.info?.attribution?.title
             if (!title) {
                 return null
@@ -55,14 +53,6 @@ const sources = computed(() => {
             return index === firstIndex
         })
 })
-
-watch(
-    () => sources.value,
-    (newSources) => {
-        console.log('Attribution sources updated:', newSources, attributedLayers.value)
-    },
-    { immediate: true }
-)
 </script>
 
 <template>
@@ -70,7 +60,7 @@ watch(
         class="fixed bottom-[3rem] left-[5rem] z-[1000] max-w-[200px] bg-white px-1 text-sm text-black"
         data-cy="layers-copyrights"
     >
-        <span v-if="sources.length > 0">{{ t('copyright_data') }}</span>
+        <span v-if="sources.length > 0">{{ t('footer.copyRightData') }}</span>
         <span
             v-for="(source, index) in sources"
             :key="source.name"
