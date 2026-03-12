@@ -14,8 +14,12 @@ const geolocationStore = useGeolocationStore()
 const positionStore = usePositionStore()
 
 const title = computed(() => {
-    if (geolocationStore.denied) return 'Location permission denied'
-    if (geolocationStore.active) return 'Stop tracking'
+    if (geolocationStore.denied) {
+        return 'Location permission denied'
+    }
+    if (geolocationStore.active) {
+        return 'Stop tracking'
+    }
     return 'Start tracking'
 })
 
