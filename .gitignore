@@ -31,5 +31,9 @@ logs
 .github/prompts
 .github/mcp
 
+# Claude Code
+CLAUDE.md
+.claude/
+
 # git rebase conflict
 *.orig

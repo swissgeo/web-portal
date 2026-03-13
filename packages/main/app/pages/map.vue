@@ -17,8 +17,6 @@ const { locale } = useI18n()
 const ogcDatasetCollectionStore = useOgcDatasetCollectionStore()
 const { data: recordLayers } = await useOgcDatasetCollection({ initializeOnUse: false })
 
-const backgroundLayer = ref<Layer | null>(null)
-
 const backgroundLayerMapData = ref<MapLayer>()
 const layersByUuid = ref<Record<string, MapLayer>>({})
 
@@ -73,9 +71,9 @@ function changeBackground(layer: Layer | null) {
     log.debug({
         title: 'map',
         titleColor: LogPreDefinedColor.Red,
-        messages: ['Changing background from <1> to <2>', backgroundLayer.value, layer],
+        messages: ['Changing background from <1> to <2>', layerStore.backgroundLayer, layer],
     })
-    backgroundLayer.value = layer
+    layerStore.setBackground(layer)
 }
 
 function removeBackgroundLayerData() {
@@ -143,9 +141,9 @@ watch(
 
         <!-- Mapping the background layer -->
         <MapDatasetLayer
-            v-if="backgroundLayer"
-            :key="backgroundLayer.uuid"
-            :layer="backgroundLayer as DatasetLayer"
+            v-if="layerStore.backgroundLayer"
+            :key="layerStore.backgroundLayer.uuid"
+            :layer="layerStore.backgroundLayer as DatasetLayer"
             @update="backgroundLayerMapData = $event"
             :zIndex="0"
             @remove="removeBackgroundLayerData"
@@ -165,7 +163,7 @@ watch(
         <DrawingFeatureInfoWindow v-if="showAdditionalMapUi" />
 
         <MapBackgroundSelector
-            :currentBackground="backgroundLayer"
+            :currentBackground="layerStore.backgroundLayer"
             @setBackground="changeBackground"
         />
         <MapTimeSliderButton />

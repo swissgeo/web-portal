@@ -8,6 +8,13 @@ export const useLayerStore = defineStore('layers', () => {
     /** List of layers added to the map. Index 0 = bottom of stack, last index = top. */
     const layers = ref<Layer[]>([])
 
+    /** The active background layer, or null if none is selected. */
+    const backgroundLayer = ref<Layer | null>(null)
+
+    function setBackground(layer: Layer | null) {
+        backgroundLayer.value = layer
+    }
+
     function addLayer(layer: Layer) {
         layers.value.push(layer)
     }
@@ -133,10 +140,12 @@ export const useLayerStore = defineStore('layers', () => {
 
     return {
         layers,
+        backgroundLayer,
         // getters
         getLayerZIndex,
         // actions
         addLayer,
+        setBackground,
         replaceLayer,
         setLayerIndex,
         moveLayerUp,
