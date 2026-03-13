@@ -75,15 +75,10 @@ export default defineNuxtConfig({
         mode: isDevelopment ? 'development' : 'production',
     },
     i18n: {
-        detectBrowserLanguage: {
-            useCookie: true,
-            cookieKey: 'selectedLanguage',
-            // 'root' redirects only on '/'. Bare paths like '/map' (without a lang prefix)
-            // will 404 — this is an intentional change; the app now requires a lang prefix.
-            // Change to 'all' (and add any needed redirects) if backward-compatibility for '/map' is ever required.
-            redirectOn: 'root',
-        },
-        strategy: 'prefix',
+        // Avoid forcing language redirects from '/'.
+        detectBrowserLanguage: false,
+        // Keep prefixed routes for non-default locales while allowing default-locale '/map'.
+        strategy: 'prefix_except_default',
         langDir: 'locales',
         locales: [
             {
