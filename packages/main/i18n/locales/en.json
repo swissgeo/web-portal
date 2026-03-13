@@ -113,7 +113,8 @@
                 "bottom-center": "Bottom center",
                 "bottom-right": "Bottom right"
             }
-        }
+        },
+        "openStateConfigPanel": "Open State Config Panel"
     },
     "backgroundLayers": {
         "title": "Displayed maps",

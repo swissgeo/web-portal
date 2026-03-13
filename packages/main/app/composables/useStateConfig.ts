@@ -1,0 +1,122 @@
+import type { Dimension, DimensionId, Layer, LayerType } from '@swissgeo/layers'
+import type { Dataset } from '@swissgeo/ogc'
+import type { AppStateConfig, LayerStateConfig } from '@swissgeo/shared'
+
+import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
+import log from '@swissgeo/log'
+import { usePositionStore } from '@swissgeo/map'
+import { parseAppState } from '@swissgeo/shared'
+
+const DISPATCHER = { name: 'state-config' }
+
+function layerToStateConfig(layer: Layer, ogcApiEndpoint: string): LayerStateConfig {
+    const datasetUrl = layer.dataset?.id
+        ? `${ogcApiEndpoint}/items/${layer.dataset.id}`
+        : `${ogcApiEndpoint}/items/${layer.humanId}`
+
+    const config: LayerStateConfig = {
+        datasetUrl,
+        type: layer.type,
+        isVisible: layer.isVisible,
+        opacity: layer.opacity,
+    }
+
+    if (layer.dimensions) {
+        config.dimensions = {}
+        for (const [key, dim] of Object.entries(layer.dimensions)) {
+            if (dim) {
+                config.dimensions[key] = { currentValue: dim.currentValue }
+            }
+        }
+    }
+
+    return config
+}
+
+async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer> {
+    const layerOptions: Partial<Layer> = {
+        isVisible: config.isVisible,
+        opacity: config.opacity,
+    }
+
+    if (config.dimensions) {
+        const dims: Partial<Record<DimensionId, Dimension>> = {}
+        for (const [key, val] of Object.entries(config.dimensions)) {
+            dims[key as DimensionId] = { currentValue: val.currentValue, availableValues: [] }
+        }
+        layerOptions.dimensions = dims
+    }
+
+    const dataset = await $fetch<Dataset>(config.datasetUrl)
+    return makeServerLayer(config.type as LayerType, dataset, layerOptions)
+}
+
+/**
+ * Composable for exporting and importing app state as JSON.
+ */
+export function useStateConfig() {
+    const positionStore = usePositionStore()
+    const layerStore = useLayerStore()
+    const runtimeConfig = useRuntimeConfig()
+    const ogcApiEndpoint = runtimeConfig.public.ogcApiEndpoint
+
+    /**
+     * Export the current app state as an AppStateConfig object.
+     * Center coordinates are in LV95 (EPSG:2056) [x, y].
+     */
+    function exportState(): AppStateConfig {
+        const state: AppStateConfig = {
+            version: 2,
+            map: {
+                center: positionStore.center,
+                zoom: positionStore.zoom,
+                rotation: positionStore.rotation,
+            },
+            layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l, ogcApiEndpoint)),
+        }
+
+        if (layerStore.backgroundLayer) {
+            state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer, ogcApiEndpoint)
+        }
+
+        return state
+    }
+
+    /**
+     * Import app state from a JSON string, applying it to the stores.
+     * Center coordinates are expected in LV95 (EPSG:2056) [x, y].
+     * Fetches each layer's dataset from its datasetUrl.
+     */
+    async function importState(json: string): Promise<void> {
+        const raw = JSON.parse(json) as unknown
+        const config = parseAppState(raw)
+
+        log.info('Importing state config', { messages: [JSON.stringify(config.map)] })
+
+        positionStore.setCenter(config.map.center, DISPATCHER)
+        positionStore.setZoom(config.map.zoom, DISPATCHER)
+        positionStore.setRotation(config.map.rotation, DISPATCHER)
+
+        // Clear and re-add layers
+        for (const layer of [...layerStore.layers]) {
+            layerStore.removeLayer(layer.uuid)
+        }
+
+        // Fetch all layers in parallel
+        const [layers, bgLayer] = await Promise.all([
+            Promise.all(config.layers.map((lc) => stateConfigToLayer(lc))),
+            config.backgroundLayer ? stateConfigToLayer(config.backgroundLayer) : null,
+        ])
+
+        for (const layer of layers) {
+            layerStore.addLayer(layer)
+        }
+
+        layerStore.setBackground(bgLayer)
+    }
+
+    return {
+        exportState,
+        importState,
+    }
+}
