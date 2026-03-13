@@ -45,8 +45,10 @@
         "prettier-plugin-jsdoc": "catalog:",
         "prettier-plugin-packagejson": "catalog:",
         "prettier-plugin-tailwindcss": "catalog:",
+        "turbo": "catalog:",
         "vitest": "catalog:"
     },
+    "packageManager": "pnpm@10.18.2",
     "pnpm": {
         "overrides": {
             "stylelint-config-recommended": "^16.0.0"

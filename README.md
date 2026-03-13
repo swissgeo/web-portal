@@ -24,13 +24,13 @@ pnpm install
 Compile the sub-packages in watch mode:
 
 ```sh
-pnpm build:dev:watch
+pnpx turbo build:dev:watch
 ```
 
 Run the dev server for coding
 
 ```sh
-pnpm run dev
+pnpx run dev
 ```
 
 ## Environment Variables
@@ -104,3 +104,10 @@ pnpm run docker:run:prod
 The app will be available at `http://localhost:3000`.
 
 > **Note:** Environment variables (`NUXT_API_ENDPOINT`, `NUXT_AUTH_TOKEN`, `NUXT_MAPTILER_API_KEY`, etc.) must be set at runtime via `-e` flags or an env file — do not bake secrets into the image.
+
+## Turbo
+
+The repo makes use of [Turbo](https://turborepo.dev/), a supercharger for monorepos. Turbo caches the outcome of certain scripts and won't re-run it if its not needed.
+
+What you can do is, instead of just using `pnpm run build|lint|format|type-check` is to use `pnpx turbo build|lint|format|type-check`. 
+This will engage the wrapper and make use of these functionalities and speed up your workflow!
