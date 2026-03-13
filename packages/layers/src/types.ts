@@ -46,6 +46,4 @@ export interface Layer {
     layerUrl?: string
 }
 
-export { useLayerStore } from '@/stores/layer'
-
 export * from './utils'

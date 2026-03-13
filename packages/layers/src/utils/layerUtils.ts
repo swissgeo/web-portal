@@ -42,6 +42,8 @@ export const getInfoFromDataset = (dataset: Dataset): LayerInfo => {
 export const makeServerLayer = (dataset: Dataset, options?: Partial<Layer>): Layer => {
     log.debug(`Creating store layer from ${JSON.stringify(dataset)}`)
 
+    // TODO we should validate the dataset here
+
     return {
         type: 'dataset',
         uuid: crypto.randomUUID(),
