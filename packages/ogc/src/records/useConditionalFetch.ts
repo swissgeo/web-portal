@@ -19,11 +19,18 @@ export function useConditionalFetch<T>(url: Ref<string | null>) {
 
     watch(
         url,
-        (newUrl) => {
+        (newUrl, _previousUrl, onCleanup) => {
             if (!newUrl) {
                 return
             }
+
+            // Cancel stale in-flight requests when the target URL changes.
+            fetchRef.abort()
             void fetchRef.execute()
+
+            onCleanup(() => {
+                fetchRef.abort()
+            })
         },
         { immediate: true }
     )

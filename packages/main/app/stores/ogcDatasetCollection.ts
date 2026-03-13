@@ -1,8 +1,8 @@
 import type { DatasetCollection } from '@swissgeo/ogc'
-import type { Ref, WatchHandle } from 'vue'
+import type { EffectScope, Ref, WatchHandle } from 'vue'
 
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { effectScope, ref, watch } from 'vue'
 
 type FetchOptions = {
     force?: boolean
@@ -19,8 +19,13 @@ export const useOgcDatasetCollectionStore = defineStore('ogcDatasetCollection', 
 
     const inFlightLanguage = ref<string | null>(null)
     const inFlightRequest = ref<Promise<void> | null>(null)
+    const latestRequestId = ref(0)
+
+    const inFlightRequestsByLanguage = new Map<string, Promise<void>>()
 
     let localeWatchHandle: WatchHandle | null = null
+    let localeWatchSource: Ref<string> | null = null
+    let localeWatchScope: EffectScope | null = null
 
     async function fetchForLanguage(language: string, options: FetchOptions = {}) {
         const { force = false } = options
@@ -29,31 +34,53 @@ export const useOgcDatasetCollectionStore = defineStore('ogcDatasetCollection', 
             return
         }
 
-        if (inFlightRequest.value && inFlightLanguage.value === language) {
-            await inFlightRequest.value
+        const existingLanguageRequest = inFlightRequestsByLanguage.get(language)
+        if (existingLanguageRequest) {
+            await existingLanguageRequest
             return
         }
+
+        const requestId = latestRequestId.value + 1
+        latestRequestId.value = requestId
 
         inFlightLanguage.value = language
         inFlightRequest.value = (async () => {
             pending.value = true
 
             try {
-                data.value = await $fetch<DatasetCollection>(runtimeConfig.public.ogcApiEndpoint, {
-                    query: {
-                        language,
-                    },
-                })
+                const fetchedData = await $fetch<DatasetCollection>(
+                    runtimeConfig.public.ogcApiEndpoint,
+                    {
+                        query: {
+                            language,
+                        },
+                    }
+                )
+
+                // Ignore out-of-order responses from older locale requests.
+                if (requestId !== latestRequestId.value) {
+                    return
+                }
+
+                data.value = fetchedData
                 currentLanguage.value = language
                 error.value = null
             } catch (fetchError) {
-                error.value = fetchError
+                if (requestId === latestRequestId.value) {
+                    error.value = fetchError
+                }
             } finally {
-                pending.value = false
-                inFlightRequest.value = null
-                inFlightLanguage.value = null
+                inFlightRequestsByLanguage.delete(language)
+
+                if (requestId === latestRequestId.value) {
+                    pending.value = false
+                    inFlightRequest.value = null
+                    inFlightLanguage.value = null
+                }
             }
         })()
+
+        inFlightRequestsByLanguage.set(language, inFlightRequest.value)
 
         await inFlightRequest.value
     }
@@ -74,15 +101,23 @@ export const useOgcDatasetCollectionStore = defineStore('ogcDatasetCollection', 
     }
 
     function startLocaleSync(locale: Ref<string>) {
-        if (localeWatchHandle) {
+        if (localeWatchSource === locale && localeWatchHandle) {
             return
         }
 
-        localeWatchHandle = watch(locale, (language) => {
-            if (!initialized.value) {
-                return
-            }
-            void fetchForLanguage(language, { force: true })
+        localeWatchHandle?.()
+        localeWatchScope?.stop()
+        localeWatchSource = locale
+
+        // Use a detached scope so this watcher survives component unmount/remount cycles.
+        localeWatchScope = effectScope(true)
+        localeWatchScope.run(() => {
+            localeWatchHandle = watch(locale, (language) => {
+                if (!initialized.value) {
+                    return
+                }
+                void fetchForLanguage(language, { force: true })
+            })
         })
     }
 
@@ -91,6 +126,7 @@ export const useOgcDatasetCollectionStore = defineStore('ogcDatasetCollection', 
         pending,
         error,
         initialized,
+        currentLanguage,
         initialize,
         fetchForLanguage,
         startLocaleSync,
