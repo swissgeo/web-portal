@@ -11,7 +11,7 @@ import type { LayerWithTime } from './timeSliderUtils'
 import TimeSliderBar from './TimeSliderBar.vue'
 import {
     convertYearToTimestamp,
-    getYearFromGeoadminWMTSValue,
+    getYearFromGeoadminValue,
     getYearsWithData,
 } from './timeSliderUtils'
 
@@ -121,7 +121,7 @@ function initializeCurrentYear() {
                 ],
             })
 
-            const parsedYear = getYearFromGeoadminWMTSValue(timeConfig.currentValue)
+            const parsedYear = getYearFromGeoadminValue(timeConfig.currentValue)
             if (parsedYear) {
                 currentYear.value = parseInt(parsedYear)
             }
@@ -135,9 +135,12 @@ function dispatchCurrentYearToStore() {
     }
 
     for (const layer of layersWithTimestamps.value) {
-        const yearValue = convertYearToTimestamp(layer, currentYear.value)
+        const yearValue = convertYearToTimestamp(
+            layer.dimensions.time.availableValues,
+            currentYear.value
+        )
 
-        if (yearValue === null) {
+        if (yearValue === undefined) {
             emit('update-visibility', { uuid: layer.uuid, isVisible: false })
         } else {
             emit('update-visibility', { uuid: layer.uuid, isVisible: true })

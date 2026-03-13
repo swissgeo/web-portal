@@ -4,4 +4,8 @@ export * from './livingdocs'
 export type * from './language'
 export * from './drawingStyle'
 export { createTextFeatureStyle, createTextStyle } from './textFeatureStyle'
-export { getDisplayNameFromTimestamp } from './utils/timeUtils'
+export {
+    convertYearToTimestamp,
+    getDisplayNameFromTimestamp,
+    getYearFromGeoadminValue,
+} from './utils/timeUtils'
