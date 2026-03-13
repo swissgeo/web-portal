@@ -9,6 +9,10 @@
             "outputs": ["dist/**"],
             "dependsOn": ["^build-libs"]
         },
+        "build-libs:dev": {
+            "outputs": ["dist/**"],
+            "dependsOn": ["^build-libs:dev"]
+        },
         "type-check": {
             "dependsOn": ["build", "^type-check"]
         },
@@ -20,7 +24,8 @@
         },
         "dev": {
             "persistent": true,
-            "cache": false
+            "cache": false,
+            "dependsOn": ["build-libs:dev"]
         }
     }
 }
