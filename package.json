@@ -11,6 +11,8 @@
         "build:prod": "pnpm --recursive --if-present --workspace-concurrency=2 run build:prod",
         "build-libs": "pnpm --filter=!main run --recursive --if-present build",
         "build-libs:dev": "pnpm --filter=!main run --recursive --if-present build:dev",
+        "check": "pnpm run format && pnpm run lint && pnpm run type-check",
+        "check:write": "pnpm run format:write && pnpm run lint:write && pnpm run type-check",
         "clean": "find packages -name 'dist' -type d -exec rm -rf {} + 2>/dev/null || true",
         "dev": "pnpm --filter=main run dev",
         "docker:build": "GIT_HASH=\"$(git describe --tags)\"; docker build --build-arg GIT_HASH=${GIT_HASH} --target ${TARGET}  -t web-portal:local-${USER}-${GIT_HASH}${TAG_SUFFIX:-} .",
