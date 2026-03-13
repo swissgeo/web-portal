@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { FileLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
@@ -18,7 +18,7 @@ import { useDrawingStore } from '@/stores/drawing'
 import { getMarkerIconById } from '@/utils/markerIcons'
 
 const { layer, zIndex } = defineProps<{
-    layer: FileLayer
+    layer: Layer
     zIndex: number
 }>()
 
@@ -197,9 +197,9 @@ function restoreFeatures() {
         }
 
         // Otherwise, try to parse any existing KML data from the layer
-        if (layer.fileData) {
+        if (layer.data && typeof layer.data === 'string') {
             try {
-                const metadataDrawingName = drawingStore.extractDrawingNameFromKML(layer.fileData)
+                const metadataDrawingName = drawingStore.extractDrawingNameFromKML(layer.data)
                 if (metadataDrawingName) {
                     drawingStore.setDrawingName(metadataDrawingName)
                 }
@@ -208,7 +208,7 @@ function restoreFeatures() {
                 const format = new KML({
                     extractStyles: true,
                 })
-                const features = format.readFeatures(layer.fileData, {
+                const features = format.readFeatures(layer.data, {
                     featureProjection: EPSG_2056_CH1903,
                     dataProjection: EPSG_4326_WGS84,
                 })
@@ -245,14 +245,6 @@ function restoreFeatures() {
         hasInitialized.value = true
     }
 }
-
-onUnmounted(() => {
-    // Clean up drawing interactions
-    clearDrawingFeatures()
-    disableActiveEditing()
-    disablePassiveInspection()
-    showHoverHint.value = false
-})
 </script>
 
 <template>

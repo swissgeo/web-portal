@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { Layer as BaseLayer, DatasetLayer, Dimension, Layer } from '@swissgeo/layers'
+import type { Layer as BaseLayer, Dimension, Layer } from '@swissgeo/layers'
 import type { MapLayerRenderer, Layer as MapLayer } from '@swissgeo/map'
+import type { Dataset } from '@swissgeo/ogc'
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from '@swissgeo/drawing'
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
-import { MapDatasetLayer } from '#components'
 
 import { useOgcDatasetCollectionStore } from '@/stores/ogcDatasetCollection'
 import { projectLayersForMap } from '@/utils/layerOrder'
@@ -16,6 +16,8 @@ const mapViewStore = useMapViewStore()
 const { locale } = useI18n()
 const ogcDatasetCollectionStore = useOgcDatasetCollectionStore()
 const { data: recordLayers } = await useOgcDatasetCollection({ initializeOnUse: false })
+
+const backgroundLayer = ref<(BaseLayer & { data: Dataset }) | null>(null)
 
 const backgroundLayerMapData = ref<MapLayer>()
 const layersByUuid = ref<Record<string, MapLayer>>({})
@@ -32,8 +34,7 @@ const customLayerRenderers: MapLayerRenderer[] = [
         component: OpenLayersDrawingLayer,
     },
 ]
-const isDatasetLayer = (layer: BaseLayer): layer is DatasetLayer =>
-    'dataset' in layer && !!layer.dataset
+const isDatasetLayer = (layer: BaseLayer) => layer.type === 'dataset'
 
 const storeDatasetLayers = computed(() => {
     return layerStore.layers.filter((layer) => isDatasetLayer(layer))
@@ -62,10 +63,10 @@ const storeFileLayers = computed(() => {
 // }
 
 // function isLayerLocalizedForCurrentLocale(
-//     layer: DatasetLayer,
+//     layer: Layer,
 //     currentLocale: string | null | undefined
 // ): boolean {
-//     const layerLanguage = layer.dataset.properties?.language?.code
+//     const layerLanguage = (layer.data! as Dataset).properties?.language?.code
 
 //     // Layers without language metadata are treated as locale-neutral.
 //     if (!layerLanguage) {
@@ -108,36 +109,43 @@ function updateOpacity(layerUuid: string, opacity: number) {
     layerStore.setOpacity(layerUuid, opacity)
 }
 
-function changeBackground(layer: Layer | null) {
+function changeBackground(layer: BaseLayer | null) {
     log.debug({
         title: 'map',
         titleColor: LogPreDefinedColor.Red,
-        messages: ['Changing background from <1> to <2>', layerStore.backgroundLayer, layer],
+        messages: ['Changing background from <1> to <2>', backgroundLayer.value, layer],
     })
-    layerStore.setBackground(layer)
+    backgroundLayer.value = layer as BaseLayer & { data: Dataset }
 }
 
 function removeBackgroundLayerData() {
     backgroundLayerMapData.value = null
 }
 
-function refreshDatasetLayersForLocale() {
+function refreshLayersForLocale() {
     if (!recordLayers.value?.records) {
         return
     }
 
-    const datasetLayers = layerStore.layers.filter((layer) => isDatasetLayer(layer))
+    const layers = layerStore.layers.filter((layer) => isDatasetLayer(layer))
+
+    if (layers.length === 0) {
+        return
+    }
 
     const recordsById = new Map(recordLayers.value.records.map((record) => [record.id, record]))
 
-    for (const existingLayer of datasetLayers) {
-        const localizedDataset = recordsById.get(existingLayer.dataset.id)
+    for (const existingLayer of layers) {
+        if (!existingLayer.data || typeof existingLayer.data === 'string') {
+            continue
+        }
+        const localizedDataset = recordsById.get(existingLayer.data.id)
 
         if (!localizedDataset) {
             continue
         }
 
-        const replacement = makeServerLayer(existingLayer.type, localizedDataset, {
+        const replacement = makeServerLayer(localizedDataset, {
             uuid: existingLayer.uuid,
             isVisible: existingLayer.isVisible,
             opacity: existingLayer.opacity,
@@ -151,7 +159,7 @@ function refreshDatasetLayersForLocale() {
 watch(
     () => recordLayers.value,
     () => {
-        refreshDatasetLayersForLocale()
+        refreshLayersForLocale()
     }
 )
 </script>
@@ -179,9 +187,9 @@ watch(
 
         <!-- Mapping the background layer -->
         <MapDatasetLayer
-            v-if="layerStore.backgroundLayer && isDatasetLayer(layerStore.backgroundLayer)"
-            :key="layerStore.backgroundLayer.uuid"
-            :layer="layerStore.backgroundLayer"
+            v-if="backgroundLayer"
+            :key="backgroundLayer.uuid"
+            :layer="backgroundLayer"
             @update="backgroundLayerMapData = $event"
             :zIndex="-1"
             @remove="removeBackgroundLayerData"
@@ -201,7 +209,7 @@ watch(
         <DrawingFeatureInfoWindow v-if="showAdditionalMapUi" />
 
         <MapBackgroundSelector
-            :currentBackground="layerStore.backgroundLayer"
+            :currentBackground="backgroundLayer"
             @setBackground="changeBackground"
         />
         <MapTimeSliderButton />

@@ -1,5 +1,4 @@
 import type { Dataset } from '@swissgeo/ogc'
-import type GeoJSON from 'ol/format/GeoJSON'
 
 export type FileLayerType = 'geojson' | 'kml' | 'kmz' | 'gpx'
 
@@ -29,26 +28,22 @@ export type DimensionId = 'time'
 
 export type DimensionRecord = Partial<Record<DimensionId, Dimension>>
 
+export type LayerType = 'dataset' | 'kml' | 'kmz' | 'gpx' | 'geojson'
+
 export interface Layer {
+    type: LayerType
     uuid: string
     humanId: string // something human readable. usually the layer ID. Not unique!
     isVisible: boolean
     opacity: number
     isLoading: boolean
     info?: LayerInfo | null
-    dataset?: Dataset
+    // data is either the dataset or the file data, depending on whether
+    // this is used a file layer or dataset layer
+    data?: Dataset | string
     dimensions?: DimensionRecord
-}
-
-export interface DatasetLayer extends Layer {
-    dataset: Dataset
-}
-
-// File layer fills properties for file location or so
-export interface FileLayer extends Layer {
-    type: FileLayerType
-    fileData?: string // Raw file content for KML/KMZ/GPX files
-    geoJsonData?: GeoJSON // Parsed GeoJSON data (for backward compatibility)
+    // Url to the dataset or the file
+    layerUrl?: string
 }
 
 export { useLayerStore } from '@/stores/layer'

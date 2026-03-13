@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { LayerType } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
 
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'

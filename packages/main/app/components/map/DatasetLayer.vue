@@ -8,10 +8,10 @@
  * map module. The intermediate conversion is basically the traversal of the OGC dataset that
  * is being provided.
  */
-import type { DatasetLayer, Dimension } from '@swissgeo/layers'
+import type { Layer, Dimension } from '@swissgeo/layers'
 import type { Layer as MapLayer, LayerType } from '@swissgeo/map'
-import type { Distribution } from '@swissgeo/ogc'
 import type { AnyLayer, RasterLayer, Style } from 'mapbox-gl'
+import type { Dataset, Distribution } from '@swissgeo/ogc'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import {
@@ -35,13 +35,15 @@ const emit = defineEmits<{
     remove: [void]
 }>()
 
+type DatasetLayer = Layer & { data: Dataset }
+
 const { layer, zIndex } = defineProps<{
     layer: DatasetLayer
     zIndex: number
 }>()
 const { locale } = useI18n()
 
-const dataset = computed(() => layer.dataset)
+const dataset = computed(() => layer.data)
 
 // holds the data that's specific for the layers
 const layerSpecificData = ref()
@@ -270,7 +272,7 @@ function processTimeInfo(timeInfo: Ref<TimeInfo>) {
                 dimension.availableValues = availableTimes
             }
             log.debug({
-                title: 'DatasetLayer',
+                title: 'Layer',
                 titleColor: LogPreDefinedColor.Yellow,
                 messages: ['Sending update of dimensions from the capabilities', timeInfo.value],
             })

@@ -6,21 +6,12 @@ import type { Layer } from '@/types'
 
 import { getInfoFromDataset, makeServerLayer } from '@/utils/layerUtils'
 
-// we need to mock the layer store so we can check the functions work with various z indexes
-
-const pinia = createTestingPinia({
-    createSpy: vi.fn,
-})
-setActivePinia(pinia)
-const layerStore = useLayerStore()
-const fake_uuid = 'mock-uuid-with-extra-step'
-
 function createExpectedObject(dataset: Dataset) {
     return {
         uuid: 'mock-uuid-with-extra-step',
         humanId: 'dataset-1',
         opacity: 1,
-        dataset,
+        data: dataset,
         isVisible: true,
         isLoading: false,
         info: {
@@ -43,13 +34,12 @@ function setZindex(nb_layer: number) {
         layers.push({
             opacity: 0.5,
             isLoading: false,
+            type: 'dataset',
             uuid: '',
             humanId: 'fake layer',
             isVisible: false,
         })
     }
-    layerStore.layers = layers
-    // the goal is to alter the layers variable in the store to change the zIndex.
 }
 
 describe('Testing the information gathering from datasets', () => {

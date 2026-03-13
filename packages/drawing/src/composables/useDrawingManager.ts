@@ -1,4 +1,4 @@
-import type { FileLayer, Layer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 import type { Feature } from 'ol'
 import type { Geometry } from 'ol/geom'
 
@@ -44,7 +44,7 @@ export function useDrawingManager() {
      */
     function createDrawingLayer() {
         const uuid = crypto.randomUUID()
-        const config: FileLayer = {
+        const config: Layer = {
             uuid,
             humanId: DRAWING_LAYER_ID,
             opacity: 1,
@@ -55,7 +55,7 @@ export function useDrawingManager() {
                 displayName: drawingStore.drawingName,
                 abstract: DRAWING_ABSTRACT,
             },
-            fileData: createEmptyDrawingKML(drawingStore.drawingName),
+            data: createEmptyDrawingKML(drawingStore.drawingName),
         }
 
         layerStore.addLayer(config)
@@ -66,25 +66,24 @@ export function useDrawingManager() {
     /**
      * Create the persistent KML layer from drawing features
      */
-    function createKMLLayer(): FileLayer {
-        const config: FileLayer = {
+    function createKMLLayer(): Layer {
+        return {
+            type: 'kml',
             uuid: crypto.randomUUID(),
             humanId: DRAWING_KML_LAYER_ID,
             opacity: 1,
             isVisible: true,
-            type: 'kml',
             isLoading: false,
             info: {
                 displayName: drawingStore.drawingName,
                 abstract: DRAWING_ABSTRACT,
             },
-            fileData: serializeFeaturesToKML(
+            data: serializeFeaturesToKML(
                 drawingStore.drawingFeatures as Feature<Geometry>[],
                 drawingStore.drawingName,
                 resolveFeatureContext()
             ),
         }
-        return config
     }
 
     /**
@@ -119,7 +118,7 @@ export function useDrawingManager() {
 
         // Create persistent KML layer if we have features
         if (drawingStore.drawingFeatures.length > 0) {
-            const kmlLayer: FileLayer = createKMLLayer()
+            const kmlLayer = createKMLLayer()
             drawingStore.setDrawingKMLLayerUuid(kmlLayer.uuid)
             layerStore.addLayer(kmlLayer)
         }

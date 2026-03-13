@@ -5,6 +5,7 @@ import { expect, test } from 'vitest'
 import * as TimeSliderUtils from '../timeSliderUtils.ts'
 
 const BASE_LAYER_CONFIG: Layer = {
+    type: 'dataset',
     uuid: 'abc',
     humanId: 'def',
     isVisible: true,

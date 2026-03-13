@@ -1,4 +1,4 @@
-import type { FileLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi } from 'vitest'
@@ -21,13 +21,13 @@ const mockDrawingStore = {
     clearPassiveSelection: vi.fn(),
 }
 
-function createLayerFixture(): FileLayer {
+function createLayerFixture(): Layer {
     return {
         humanId: 'test-layer',
         uuid: '1234',
         opacity: 1,
         ce: { value: null },
-    } as unknown as FileLayer
+    } as unknown as Layer
 }
 
 vi.mock('@/stores/drawing', () => ({

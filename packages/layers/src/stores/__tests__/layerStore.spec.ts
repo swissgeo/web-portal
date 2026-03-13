@@ -9,7 +9,7 @@ function makeLayer(id: string): Layer {
     return {
         uuid: id,
         humanId: id,
-        type: 'wms',
+        type: 'dataset',
         opacity: 1,
         isVisible: true,
         isLoading: false,

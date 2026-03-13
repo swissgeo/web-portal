@@ -53,7 +53,7 @@ export function useFileImport() {
                 abstract: `Imported from local file: ${file.name}`,
             },
             // Store the raw file data for KML/KMZ/GPX
-            fileData,
+            data: fileData,
         }
         layerStore.addLayer(layer)
         log.info(`Successfully imported file: ${file.name}`)
