@@ -12,7 +12,7 @@ const watcherCallbackRef = vi.hoisted(() => {
 
 const mockImportState = vi.fn()
 const mockExportState = vi.fn(() => ({
-    version: 1,
+    version: 2,
     map: { center: [2600000, 1200000] as [number, number], zoom: 8, rotation: 0 },
     layers: [],
 }))
@@ -38,13 +38,13 @@ vi.mock('~/composables/useStateConfig', () => ({
 // so the default export is the raw plugin config object.
 import plugin from '~/plugins/stateConfigSync.client'
 
-type PluginConfig = { hooks: { 'app:created': () => void } }
+type PluginConfig = { hooks: { 'app:created': () => Promise<void> } }
 const pluginConfig = plugin as unknown as PluginConfig
 
-/** Invoke the app:created hook and reset the captured watcher callback. */
-function invokeHook() {
+/** Invoke the app:created hook and wait for it to complete. */
+async function invokeHook() {
     watcherCallbackRef.fn = null
-    pluginConfig.hooks['app:created']()
+    await pluginConfig.hooks['app:created']()
 }
 
 describe('stateConfigSync plugin', () => {
@@ -55,43 +55,41 @@ describe('stateConfigSync plugin', () => {
     })
 
     describe('state restoration on load', () => {
-        it('does not call importState when localStorage is empty', () => {
-            invokeHook()
+        it('does not call importState when localStorage is empty', async () => {
+            await invokeHook()
             expect(mockImportState).not.toHaveBeenCalled()
         })
 
-        it('calls importState with the stored JSON string when state is present', () => {
+        it('calls importState with the stored JSON string when state is present', async () => {
             const stored = JSON.stringify({
-                version: 1,
+                version: 2,
                 map: { center: [0, 0], zoom: 10, rotation: 0 },
                 layers: [],
             })
             localStorage.setItem(STORAGE_KEY, stored)
 
-            invokeHook()
+            await invokeHook()
 
             expect(mockImportState).toHaveBeenCalledWith(stored)
         })
 
-        it('removes the corrupt key and does not throw when importState fails', () => {
+        it('removes the corrupt key and does not throw when importState fails', async () => {
             localStorage.setItem(STORAGE_KEY, 'not-valid-json')
-            mockImportState.mockImplementationOnce(() => {
-                throw new Error('Parse error')
-            })
+            mockImportState.mockRejectedValueOnce(new Error('Parse error'))
 
-            expect(() => invokeHook()).not.toThrow()
+            await expect(invokeHook()).resolves.not.toThrow()
             expect(localStorage.getItem(STORAGE_KEY)).toBeNull()
         })
     })
 
     describe('reactive persistence', () => {
-        it('sets up a watcher after the hook runs', () => {
-            invokeHook()
+        it('sets up a watcher after the hook runs', async () => {
+            await invokeHook()
             expect(watcherCallbackRef.fn).not.toBeNull()
         })
 
-        it('writes state to localStorage when the watcher fires', () => {
-            invokeHook()
+        it('writes state to localStorage when the watcher fires', async () => {
+            await invokeHook()
             const state = mockExportState()
 
             watcherCallbackRef.fn!(state)
@@ -99,14 +97,14 @@ describe('stateConfigSync plugin', () => {
             expect(localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(state))
         })
 
-        it('skips the first watcher fire after a successful import (isImporting flag)', () => {
+        it('skips the first watcher fire after a successful import (isImporting flag)', async () => {
             const stored = JSON.stringify({
-                version: 1,
+                version: 2,
                 map: { center: [0, 0], zoom: 10, rotation: 0 },
                 layers: [],
             })
             localStorage.setItem(STORAGE_KEY, stored)
-            invokeHook()
+            await invokeHook()
             localStorage.clear() // clear so we can detect any subsequent write
 
             // First fire after import → skipped
@@ -118,8 +116,8 @@ describe('stateConfigSync plugin', () => {
             expect(localStorage.getItem(STORAGE_KEY)).not.toBeNull()
         })
 
-        it('does not skip the watcher fire when there was no prior import', () => {
-            invokeHook() // no stored state → isImporting stays false
+        it('does not skip the watcher fire when there was no prior import', async () => {
+            await invokeHook() // no stored state → isImporting stays false
 
             watcherCallbackRef.fn!(mockExportState())
 

@@ -1,14 +1,12 @@
 /**
  * Serializable representation of a layer for state configuration.
- * Uses humanId (stable layer identifier) instead of uuid (runtime-generated).
+ * Uses datasetUrl to re-fetch the full dataset on import.
  */
 export interface LayerStateConfig {
-    humanId: string
+    datasetUrl: string
     type: string
     isVisible: boolean
     opacity: number
-    displayName?: string
-    distributionsUrl?: string
     dimensions?: Record<string, { currentValue: string | null }>
 }
 
@@ -17,7 +15,7 @@ export interface LayerStateConfig {
  * Coordinates use LV95 (EPSG:2056) [x, y].
  */
 export interface AppStateConfig {
-    version: 1
+    version: 2
     map: {
         center: [number, number] // [x, y] in LV95 (EPSG:2056)
         zoom: number
@@ -38,7 +36,7 @@ export function parseAppState(json: unknown): AppStateConfig {
 
     const obj = json as Record<string, unknown>
 
-    if (obj.version !== 1) {
+    if (obj.version !== 2) {
         throw new Error(`Unsupported state config version: ${String(obj.version)}`)
     }
 
@@ -94,8 +92,8 @@ function validateLayerConfig(layer: unknown, path: string): asserts layer is Lay
 
     const l = layer as Record<string, unknown>
 
-    if (typeof l.humanId !== 'string') {
-        throw new Error(`${path}.humanId must be a string`)
+    if (typeof l.datasetUrl !== 'string') {
+        throw new Error(`${path}.datasetUrl must be a string`)
     }
 
     if (typeof l.type !== 'string') {

@@ -5,7 +5,7 @@ import type { AppStateConfig } from '../stateConfig'
 import { parseAppState } from '../stateConfig'
 
 const validState: AppStateConfig = {
-    version: 1,
+    version: 2,
     map: {
         center: [2600000, 1200000],
         zoom: 10,
@@ -13,7 +13,7 @@ const validState: AppStateConfig = {
     },
     layers: [
         {
-            humanId: 'ch.swisstopo.pixelkarte-farbe',
+            datasetUrl: 'https://api.example.com/ogc/items/ch.swisstopo.pixelkarte-farbe',
             type: 'wmts',
             isVisible: true,
             opacity: 1,
@@ -31,7 +31,7 @@ describe('parseAppState', () => {
         const state = {
             ...validState,
             backgroundLayer: {
-                humanId: 'ch.swisstopo.background',
+                datasetUrl: 'https://api.example.com/ogc/items/ch.swisstopo.background',
                 type: 'wmts',
                 isVisible: true,
                 opacity: 1,
@@ -58,7 +58,7 @@ describe('parseAppState', () => {
             ...validState,
             layers: [
                 {
-                    humanId: 'ch.swisstopo.zeitreihen',
+                    datasetUrl: 'https://api.example.com/ogc/items/ch.swisstopo.zeitreihen',
                     type: 'wms',
                     isVisible: true,
                     opacity: 0.8,
@@ -83,7 +83,7 @@ describe('parseAppState', () => {
     })
 
     it('rejects unsupported version', () => {
-        expect(() => parseAppState({ ...validState, version: 2 })).toThrow(
+        expect(() => parseAppState({ ...validState, version: 1 })).toThrow(
             'Unsupported state config version'
         )
     })
@@ -95,7 +95,7 @@ describe('parseAppState', () => {
     })
 
     it('rejects missing map', () => {
-        expect(() => parseAppState({ version: 1, layers: validState.layers })).toThrow(
+        expect(() => parseAppState({ version: 2, layers: validState.layers })).toThrow(
             'must include a "map" object'
         )
     })
@@ -128,18 +128,18 @@ describe('parseAppState', () => {
     })
 
     it('rejects missing layers', () => {
-        expect(() => parseAppState({ version: 1, map: validState.map })).toThrow(
+        expect(() => parseAppState({ version: 2, map: validState.map })).toThrow(
             'must include a "layers" array'
         )
     })
 
-    it('rejects layer with missing humanId', () => {
+    it('rejects layer with missing datasetUrl', () => {
         expect(() =>
             parseAppState({
                 ...validState,
                 layers: [{ type: 'wms', isVisible: true, opacity: 1 }],
             })
-        ).toThrow('layers[0].humanId must be a string')
+        ).toThrow('layers[0].datasetUrl must be a string')
     })
 
     it('rejects layer with opacity out of range', () => {
@@ -148,7 +148,7 @@ describe('parseAppState', () => {
                 ...validState,
                 layers: [
                     {
-                        humanId: 'test',
+                        datasetUrl: 'https://api.example.com/ogc/items/test',
                         type: 'wms',
                         isVisible: true,
                         opacity: 1.5,
@@ -158,31 +158,11 @@ describe('parseAppState', () => {
         ).toThrow('layers[0].opacity must be a number between 0 and 1')
     })
 
-    it('accepts a layer with distributionsUrl', () => {
-        const state = {
-            ...validState,
-            layers: [
-                {
-                    humanId: 'external-layer',
-                    type: 'wmts',
-                    isVisible: true,
-                    opacity: 1,
-                    distributionsUrl:
-                        '/api/v1/layers/external/aHR0cHM6Ly93bXRzLmdlby5icy5jaC8/external-layer',
-                },
-            ],
-        }
-        const result = parseAppState(state)
-        expect(result.layers[0]!.distributionsUrl).toBe(
-            '/api/v1/layers/external/aHR0cHM6Ly93bXRzLmdlby5icy5jaC8/external-layer'
-        )
-    })
-
     it('rejects invalid backgroundLayer', () => {
         expect(() =>
             parseAppState({
                 ...validState,
-                backgroundLayer: { humanId: 'test' },
+                backgroundLayer: { datasetUrl: 'https://api.example.com/ogc/items/test' },
             })
         ).toThrow('backgroundLayer.type must be a string')
     })

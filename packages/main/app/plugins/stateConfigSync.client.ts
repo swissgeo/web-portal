@@ -9,7 +9,7 @@ export default defineNuxtPlugin({
     dependsOn: ['pinia'],
 
     hooks: {
-        'app:created'() {
+        async 'app:created'() {
             const { exportState, importState } = useStateConfig()
 
             // isImporting flag prevents writing back to localStorage immediately
@@ -21,7 +21,7 @@ export default defineNuxtPlugin({
                 const stored = localStorage.getItem(STORAGE_KEY)
                 if (stored) {
                     isImporting = true
-                    importState(stored)
+                    await importState(stored)
                     log.info('Restored app state from localStorage')
                 }
             } catch (error) {

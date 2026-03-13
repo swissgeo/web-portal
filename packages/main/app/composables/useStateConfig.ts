@@ -9,22 +9,16 @@ import { parseAppState } from '@swissgeo/shared'
 
 const DISPATCHER = { name: 'state-config' }
 
-function layerToStateConfig(layer: Layer): LayerStateConfig {
+function layerToStateConfig(layer: Layer, ogcApiEndpoint: string): LayerStateConfig {
+    const datasetUrl = layer.dataset?.id
+        ? `${ogcApiEndpoint}/items/${layer.dataset.id}`
+        : `${ogcApiEndpoint}/items/${layer.humanId}`
+
     const config: LayerStateConfig = {
-        humanId: layer.humanId,
+        datasetUrl,
         type: layer.type,
         isVisible: layer.isVisible,
         opacity: layer.opacity,
-        displayName: layer.info?.displayName,
-    }
-
-    if (layer.dataset) {
-        const distributionLink = layer.dataset.links?.find(
-            (l) => l.rel.toLowerCase() === 'distributions'
-        )
-        if (distributionLink) {
-            config.distributionsUrl = distributionLink.href
-        }
     }
 
     if (layer.dimensions) {
@@ -39,7 +33,7 @@ function layerToStateConfig(layer: Layer): LayerStateConfig {
     return config
 }
 
-function stateConfigToLayer(config: LayerStateConfig): Layer {
+async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer> {
     const layerOptions: Partial<Layer> = {
         isVisible: config.isVisible,
         opacity: config.opacity,
@@ -53,35 +47,8 @@ function stateConfigToLayer(config: LayerStateConfig): Layer {
         layerOptions.dimensions = dims
     }
 
-    if (config.distributionsUrl) {
-        const fakeDataset: Dataset = {
-            id: config.humanId,
-            links: [
-                {
-                    href: config.distributionsUrl,
-                    rel: 'distributions',
-                    title: 'Distributions',
-                    type: 'application/json',
-                },
-            ],
-            properties: {
-                title: config.displayName ?? config.humanId,
-                type: 'Dataset' as const,
-            },
-        }
-        return makeServerLayer(config.type as LayerType, fakeDataset, layerOptions)
-    }
-
-    return {
-        uuid: crypto.randomUUID(),
-        humanId: config.humanId,
-        type: config.type as Layer['type'],
-        isLoading: false,
-        isVisible: config.isVisible,
-        opacity: config.opacity,
-        dimensions: layerOptions.dimensions,
-        info: config.displayName ? { displayName: config.displayName } : undefined,
-    }
+    const dataset = await $fetch<Dataset>(config.datasetUrl)
+    return makeServerLayer(config.type as LayerType, dataset, layerOptions)
 }
 
 /**
@@ -90,6 +57,8 @@ function stateConfigToLayer(config: LayerStateConfig): Layer {
 export function useStateConfig() {
     const positionStore = usePositionStore()
     const layerStore = useLayerStore()
+    const runtimeConfig = useRuntimeConfig()
+    const ogcApiEndpoint = runtimeConfig.public.ogcApiEndpoint
 
     /**
      * Export the current app state as an AppStateConfig object.
@@ -97,17 +66,17 @@ export function useStateConfig() {
      */
     function exportState(): AppStateConfig {
         const state: AppStateConfig = {
-            version: 1,
+            version: 2,
             map: {
                 center: positionStore.center,
                 zoom: positionStore.zoom,
                 rotation: positionStore.rotation,
             },
-            layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l)),
+            layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l, ogcApiEndpoint)),
         }
 
         if (layerStore.backgroundLayer) {
-            state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer)
+            state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer, ogcApiEndpoint)
         }
 
         return state
@@ -116,8 +85,9 @@ export function useStateConfig() {
     /**
      * Import app state from a JSON string, applying it to the stores.
      * Center coordinates are expected in LV95 (EPSG:2056) [x, y].
+     * Fetches each layer's dataset from its datasetUrl.
      */
-    function importState(json: string): void {
+    async function importState(json: string): Promise<void> {
         const raw = JSON.parse(json) as unknown
         const config = parseAppState(raw)
 
@@ -132,17 +102,17 @@ export function useStateConfig() {
             layerStore.removeLayer(layer.uuid)
         }
 
-        for (const layerConfig of config.layers) {
-            layerStore.addLayer(stateConfigToLayer(layerConfig))
+        // Fetch all layers in parallel
+        const [layers, bgLayer] = await Promise.all([
+            Promise.all(config.layers.map((lc) => stateConfigToLayer(lc))),
+            config.backgroundLayer ? stateConfigToLayer(config.backgroundLayer) : null,
+        ])
+
+        for (const layer of layers) {
+            layerStore.addLayer(layer)
         }
 
-        // Set background layer
-        if (config.backgroundLayer) {
-            const bgLayer = stateConfigToLayer(config.backgroundLayer)
-            layerStore.setBackground(bgLayer)
-        } else {
-            layerStore.setBackground(null)
-        }
+        layerStore.setBackground(bgLayer)
     }
 
     return {
