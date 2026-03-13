@@ -123,9 +123,9 @@ export default defineNuxtConfig({
         maptilerApiKey: '',
         what3wordsApiKey: '',
         public: {
-            ogcApiEndpoint:
-                'https://services.dev.sgdi.tech/api/oar/v0/collections/swissgeo.catalog',
-            layersConfigEndpoint: '',
+            ogcApiEndpoint: '',
+            layersConfigEndpoint:
+                'https://sys-api3.dev.bgdi.ch/rest/services/all/MapServer/layersConfig',
             overlayId: '',
             aboutMenu: { id: 199, translationKey: 'menuTitles.about' },
             knowledgeMenu: { id: 200, translationKey: 'menuTitles.knowledge' },
