@@ -39,7 +39,7 @@ LABEL git.dirty="$GIT_DIRTY"
 LABEL author=$AUTHOR
 LABEL version=$VERSION
 
-RUN GIT_COMMIT=${GIT_HASH} pnpx turbo build:dev
+RUN GIT_COMMIT=${GIT_HASH} pnpm run build:dev
 
 ###########################################################
 # Builder prod container
