@@ -51,6 +51,4 @@ export interface FileLayer extends Layer {
     geoJsonData?: GeoJSON // Parsed GeoJSON data (for backward compatibility)
 }
 
-export { useLayerStore } from '@/stores/layer'
-
 export * from './utils'
