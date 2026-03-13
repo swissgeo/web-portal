@@ -171,8 +171,19 @@ watch(
     }
 )
 
-// On mount, restore any existing features
 onMounted(() => {
+    restoreFeatures()
+})
+
+onUnmounted(() => {
+    // Clean up drawing interactions
+    clearDrawingFeatures()
+    disableActiveEditing()
+    disablePassiveInspection()
+    showHoverHint.value = false
+})
+
+function restoreFeatures() {
     if (!hasInitialized.value) {
         if (layer.info?.displayName) {
             drawingStore.setDrawingName(layer.info.displayName)
@@ -233,7 +244,7 @@ onMounted(() => {
         }
         hasInitialized.value = true
     }
-})
+}
 
 onUnmounted(() => {
     // Clean up drawing interactions
