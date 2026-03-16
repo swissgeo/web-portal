@@ -1,4 +1,4 @@
-import type { LayerInfo } from '@swissgeo/shared'
+import type { LayerInfo } from '@swissgeo/layers'
 import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/shared/geojson'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 import type { Component } from 'vue'

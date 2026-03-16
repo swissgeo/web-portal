@@ -77,6 +77,62 @@ describe('Testing the information gathering from datasets', () => {
         })
     })
 
+    it('prioritizes first contact organisation over attribution', () => {
+        const dataset: Dataset = {
+            id: 'dataset-contacts-priority',
+            properties: {
+                title: 'Layer Title',
+                attribution: 'SwissGeo',
+                contacts: [
+                    {
+                        country: 'CH',
+                        role: 'pointOfContact',
+                        organisation: 'Federal Office of Topography',
+                    },
+                ],
+                type: 'Dataset',
+            },
+        }
+
+        const result = getInfoFromDataset(dataset)
+
+        expect(result).toEqual({
+            displayName: 'Layer Title',
+            attribution: {
+                title: 'Federal Office of Topography',
+            },
+            abstract: undefined,
+        })
+    })
+
+    it('falls back to properties.attribution when first contact organisation is blank', () => {
+        const dataset: Dataset = {
+            id: 'dataset-contact-blank',
+            properties: {
+                title: 'Layer Title',
+                attribution: 'SwissGeo fallback',
+                contacts: [
+                    {
+                        country: 'CH',
+                        role: 'pointOfContact',
+                        organisation: '   ',
+                    },
+                ],
+                type: 'Dataset',
+            },
+        }
+
+        const result = getInfoFromDataset(dataset)
+
+        expect(result).toEqual({
+            displayName: 'Layer Title',
+            attribution: {
+                title: 'SwissGeo fallback',
+            },
+            abstract: undefined,
+        })
+    })
+
     it('includes abstract when description is provided', () => {
         const dataset: Dataset = {
             id: 'dataset-5',

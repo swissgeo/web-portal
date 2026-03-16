@@ -124,8 +124,6 @@ export default defineNuxtConfig({
         what3wordsApiKey: '',
         public: {
             ogcApiEndpoint: '',
-            layersConfigEndpoint:
-                'https://sys-api3.dev.bgdi.ch/rest/services/all/MapServer/layersConfig',
             overlayId: '',
             aboutMenu: { id: 199, translationKey: 'menuTitles.about' },
             knowledgeMenu: { id: 200, translationKey: 'menuTitles.knowledge' },
