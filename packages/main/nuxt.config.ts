@@ -75,8 +75,13 @@ export default defineNuxtConfig({
         mode: isDevelopment ? 'development' : 'production',
     },
     i18n: {
-        // Avoid forcing language redirects from '/'.
-        detectBrowserLanguage: false,
+        // Persist the user's last-selected locale in a cookie so revisiting '/' restores it.
+        detectBrowserLanguage: {
+            useCookie: true,
+            cookieKey: 'i18n_redirected',
+            redirectOn: 'root',
+            alwaysRedirect: false,
+        },
         // Keep prefixed routes for non-default locales while allowing default-locale '/map'.
         strategy: 'prefix_except_default',
         langDir: 'locales',
