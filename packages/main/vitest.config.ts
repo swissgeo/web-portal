@@ -1,4 +1,5 @@
 import { defineVitestConfig } from '@nuxt/test-utils/config'
+import { resolve } from 'path'
 
 export default defineVitestConfig({
     test: {
@@ -9,5 +10,12 @@ export default defineVitestConfig({
         // on the top of a file
         environment: 'happy-dom',
         hookTimeout: 5000,
+    },
+    resolve: {
+        alias: {
+            // h3 is a Nitro transitive dep not directly accessible in pnpm;
+            // redirect to a lightweight stub so server utils/routes compile in tests.
+            'h3': resolve(__dirname, '../../test-utils/h3-stub.ts'),
+        },
     },
 })
