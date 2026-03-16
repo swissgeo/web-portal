@@ -8,10 +8,10 @@
  * map module. The intermediate conversion is basically the traversal of the OGC dataset that
  * is being provided.
  */
-import type { Layer, Dimension } from '@swissgeo/layers'
+import type { Dimension, DatasetLayer } from '@swissgeo/layers'
 import type { Layer as MapLayer, LayerType } from '@swissgeo/map'
+import type { Distribution } from '@swissgeo/ogc'
 import type { AnyLayer, RasterLayer, Style } from 'mapbox-gl'
-import type { Dataset, Distribution } from '@swissgeo/ogc'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import {
@@ -34,8 +34,6 @@ const emit = defineEmits<{
     updateOpacity: [layerUuid: string, opacity: number]
     remove: [void]
 }>()
-
-type DatasetLayer = Layer & { data: Dataset }
 
 const { layer, zIndex } = defineProps<{
     layer: DatasetLayer

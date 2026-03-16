@@ -2,7 +2,7 @@ import type { Dataset } from '@swissgeo/ogc'
 
 import log, { LogLevel } from '@swissgeo/log'
 
-import type { Layer, LayerInfo } from '@/index'
+import type { DatasetLayer, Layer, LayerInfo } from '@/index'
 
 // can't be inherited from the main package apparently
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
@@ -55,4 +55,8 @@ export const makeServerLayer = (dataset: Dataset, options?: Partial<Layer>): Lay
         info: getInfoFromDataset(dataset),
         ...options,
     }
+}
+
+export const isDatasetLayer = (layer: Layer): layer is DatasetLayer => {
+    return layer.type === 'dataset'
 }

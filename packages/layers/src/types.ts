@@ -46,4 +46,10 @@ export interface Layer {
     layerUrl?: string
 }
 
+// Type to narrow above type
+export interface DatasetLayer extends Layer {
+    type: 'dataset'
+    data: Dataset
+}
+
 export * from './utils'

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { Layer as BaseLayer, Dimension, Layer } from '@swissgeo/layers'
+import type { Layer as BaseLayer, Dimension } from '@swissgeo/layers'
 import type { MapLayerRenderer, Layer as MapLayer } from '@swissgeo/map'
 import type { Dataset } from '@swissgeo/ogc'
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from '@swissgeo/drawing'
-import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
+import { makeServerLayer, useLayerStore, isDatasetLayer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
 
@@ -34,8 +34,6 @@ const customLayerRenderers: MapLayerRenderer[] = [
         component: OpenLayersDrawingLayer,
     },
 ]
-const isDatasetLayer = (layer: BaseLayer) => layer.type === 'dataset'
-
 const storeDatasetLayers = computed(() => {
     return layerStore.layers.filter((layer) => isDatasetLayer(layer))
 })

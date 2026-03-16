@@ -2,8 +2,6 @@ import type { Dataset } from '@swissgeo/ogc'
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import type { Layer } from '@/types'
-
 import { getInfoFromDataset, makeServerLayer } from '@/utils/layerUtils'
 
 function createExpectedObject(dataset: Dataset) {
