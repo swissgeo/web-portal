@@ -39,10 +39,12 @@ const storeDatasetLayers = computed(() => {
     return layerStore.layers.filter((layer) => isDatasetLayer(layer))
 })
 
+const requiresOgcDatasetInitialization = computed(() => ogcDatasetCollectionStore.initialized)
+
 watch(
-    () => storeDatasetLayers.value.length,
-    (datasetLayerCount) => {
-        if (datasetLayerCount === 0 || ogcDatasetCollectionStore.initialized) {
+    () => requiresOgcDatasetInitialization.value,
+    (shouldInitialize) => {
+        if (!shouldInitialize || ogcDatasetCollectionStore.initialized) {
             return
         }
 
@@ -53,6 +55,41 @@ watch(
 
 const storeFileLayers = computed(() => {
     return layerStore.layers.filter((layer) => !isDatasetLayer(layer))
+})
+
+function normalizeLanguageCode(language: string | null | undefined): string {
+    return (language ?? '').toLowerCase()
+}
+
+function isLayerLocalizedForCurrentLocale(
+    layer: DatasetLayer,
+    currentLocale: string | null | undefined
+): boolean {
+    const layerLanguage = layer.dataset.properties?.language?.code
+
+    // Layers without language metadata are treated as locale-neutral.
+    if (!layerLanguage) {
+        return true
+    }
+
+    return normalizeLanguageCode(layerLanguage) === normalizeLanguageCode(currentLocale)
+}
+
+const canRenderDatasetLayersForLocale = computed(() => {
+    return (
+        normalizeLanguageCode(ogcDatasetCollectionStore.currentLanguage) ===
+        normalizeLanguageCode(locale.value)
+    )
+})
+
+const localizedDatasetLayers = computed(() => {
+    if (!canRenderDatasetLayersForLocale.value) {
+        return []
+    }
+
+    return storeDatasetLayers.value.filter((layer) =>
+        isLayerLocalizedForCurrentLocale(layer, locale.value)
+    )
 })
 
 function updateLayerData(layerUuid: string, layerData: MapLayer) {
@@ -86,10 +123,6 @@ function refreshDatasetLayersForLocale() {
     }
 
     const datasetLayers = layerStore.layers.filter((layer) => isDatasetLayer(layer))
-
-    if (datasetLayers.length === 0) {
-        return
-    }
 
     const recordsById = new Map(recordLayers.value.records.map((record) => [record.id, record]))
 
@@ -130,7 +163,7 @@ watch(
             @remove="removeLayerData(layer.uuid)"
         ></MapFileLayer>
         <MapDatasetLayer
-            v-for="layer in storeDatasetLayers"
+            v-for="layer in localizedDatasetLayers"
             :layer="layer"
             :key="layer.uuid"
             :zIndex="layerStore.getLayerZIndex(layer.uuid)"
@@ -141,9 +174,9 @@ watch(
 
         <!-- Mapping the background layer -->
         <MapDatasetLayer
-            v-if="layerStore.backgroundLayer"
+            v-if="layerStore.backgroundLayer && isDatasetLayer(layerStore.backgroundLayer)"
             :key="layerStore.backgroundLayer.uuid"
-            :layer="layerStore.backgroundLayer as DatasetLayer"
+            :layer="layerStore.backgroundLayer"
             @update="backgroundLayerMapData = $event"
             :zIndex="0"
             @remove="removeBackgroundLayerData"

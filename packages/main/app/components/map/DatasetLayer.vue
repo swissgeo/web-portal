@@ -36,11 +36,13 @@ const { layer, zIndex } = defineProps<{
 }>()
 const { locale } = useI18n()
 
+const dataset = computed(() => layer.dataset)
+
 // holds the data that's specific for the layers
 const layerSpecificData = ref()
 
-const { distributionCollection } = useDistributionCollection(ref(layer.dataset))
-const { preferredDistributionId } = usePreferredDistribution(ref(layer.dataset))
+const { distributionCollection } = useDistributionCollection(dataset)
+const { preferredDistributionId } = usePreferredDistribution(dataset)
 
 // if there's a preferred distribution, let's get that one, otherwise the first one
 const distributionId = computed(() => {
