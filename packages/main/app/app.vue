@@ -5,7 +5,5 @@ log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error
 </script>
 
 <template>
-    <NuxtLayout>
-        <NuxtPage />
-    </NuxtLayout>
+    <NuxtPage :page-key="(route) => route.path.replace(/^\/(de|fr|en)/, '')" />
 </template>

@@ -19,6 +19,7 @@ const layersLength = computed(() => layerStore.layers.length)
 const layerZIndex = computed(() => layerStore.getLayerZIndex(layer.uuid))
 
 const displayName = computed(() => {
+    // get the info from the dataset
     if (layer.info && layer.info.displayName) {
         return layer.info.displayName
     } else {

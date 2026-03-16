@@ -26,6 +26,7 @@ process.env.NODE_ENV = isDevelopment ? 'dev' : process.env.NODE_ENV
 export default defineNuxtConfig({
     app: {
         buildAssetsDir: '/_nxt/',
+        keepalive: true,
     },
     typescript: {
         typeCheck: false, //too much baggage ATM

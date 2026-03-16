@@ -7,14 +7,11 @@ import { makeServerLayer, useLayerStore, isDatasetLayer } from '@swissgeo/layers
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
 
-import { useOgcDatasetCollectionStore } from '@/stores/ogcDatasetCollection'
 import { projectLayersForMap } from '@/utils/layerOrder'
 
 const layerStore = useLayerStore()
 const mapViewStore = useMapViewStore()
 const { locale } = useI18n()
-const ogcDatasetCollectionStore = useOgcDatasetCollectionStore()
-const { data: recordLayers } = await useOgcDatasetCollection({ initializeOnUse: false })
 
 const backgroundLayer = ref<DatasetLayer | null>(null)
 
@@ -37,27 +34,13 @@ const storeDatasetLayers = computed(() => {
     return layerStore.layers.filter((layer) => isDatasetLayer(layer))
 })
 
-const requiresOgcDatasetInitialization = computed(() => ogcDatasetCollectionStore.initialized)
-
-watch(
-    () => requiresOgcDatasetInitialization.value,
-    (shouldInitialize) => {
-        if (!shouldInitialize || ogcDatasetCollectionStore.initialized) {
-            return
-        }
-
-        void ogcDatasetCollectionStore.initialize(locale.value)
-    },
-    { immediate: true }
-)
-
 const storeFileLayers = computed(() => {
     return layerStore.layers.filter((layer) => !isDatasetLayer(layer))
 })
 
-// function normalizeLanguageCode(language: string | null | undefined): string {
-//     return (language ?? '').toLowerCase()
-// }
+function updateStoreLayerData(layerUuid: string, dataset: Dataset) {
+    layerStore.setLayerData(layerUuid, dataset)
+}
 
 // function isLayerLocalizedForCurrentLocale(
 //     layer: Layer,
@@ -90,7 +73,7 @@ const storeFileLayers = computed(() => {
 //     )
 // })
 
-function updateLayerData(layerUuid: string, layerData: MapLayer) {
+function updateMapLayerData(layerUuid: string, layerData: MapLayer) {
     layersByUuid.value[layerUuid] = layerData
 }
 
@@ -121,96 +104,67 @@ function removeBackgroundLayerData() {
     backgroundLayerMapData.value = null
 }
 
-function refreshLayersForLocale() {
-    if (!recordLayers.value?.records) {
-        return
-    }
-
-    const layers = layerStore.layers.filter((layer) => isDatasetLayer(layer))
-
-    if (layers.length === 0) {
-        return
-    }
-
-    const recordsById = new Map(recordLayers.value.records.map((record) => [record.id, record]))
-
-    for (const existingLayer of layers) {
-        if (!existingLayer.data || typeof existingLayer.data === 'string') {
-            continue
-        }
-        const localizedDataset = recordsById.get(existingLayer.data.id)
-
-        if (!localizedDataset) {
-            continue
-        }
-
-        const replacement = makeServerLayer(localizedDataset, {
-            uuid: existingLayer.uuid,
-            isVisible: existingLayer.isVisible,
-            opacity: existingLayer.opacity,
-            dimensions: existingLayer.dimensions,
-        })
-
-        layerStore.replaceLayer(existingLayer.uuid, replacement)
-    }
+function updateLayerInfo(layerUuid: string, info: LayerInfo) {
+    layerStore.setLayerInfo(layerUuid, info)
 }
 
-watch(
-    () => recordLayers.value,
-    () => {
-        refreshLayersForLocale()
-    }
-)
+onMounted(() => {
+    console.log('remounting Map page')
+})
 </script>
 
 <template>
-    <ClientOnly>
-        <MapFileLayer
-            v-for="layer in storeFileLayers"
-            :layer="layer"
-            :key="layer.uuid"
-            :zIndex="layerStore.getLayerZIndex(layer.uuid)"
-            @update="updateLayerData(layer.uuid, $event)"
-            @remove="removeLayerData(layer.uuid)"
-        ></MapFileLayer>
-        <MapDatasetLayer
-            v-for="layer in storeDatasetLayers"
-            :layer="layer"
-            :key="layer.uuid"
-            :zIndex="layerStore.getLayerZIndex(layer.uuid)"
-            @update="updateLayerData(layer.uuid, $event)"
-            @updateOpacity="updateOpacity"
-            @remove="removeLayerData(layer.uuid)"
-            @updateTimeDimension="updateTimeDimension"
-        ></MapDatasetLayer>
+    <NuxtLayout>
+        <ClientOnly>
+            <MapDatamappingFileLayer
+                v-for="layer in storeFileLayers"
+                :layer="layer"
+                :key="layer.uuid"
+                :zIndex="layerStore.getLayerZIndex(layer.uuid)"
+                @update="updateMapLayerData(layer.uuid, $event)"
+                @remove="removeLayerData(layer.uuid)"
+            ></MapDatamappingFileLayer>
+            <MapDatamappingDatasetLayer
+                v-for="layer in storeDatasetLayers"
+                :layer="layer"
+                :key="layer.uuid"
+                :zIndex="layerStore.getLayerZIndex(layer.uuid)"
+                @update="updateMapLayerData(layer.uuid, $event)"
+                @updateLayerInfo="updateLayerInfo"
+                @updateOpacity="updateOpacity"
+                @remove="removeLayerData(layer.uuid)"
+                @updateTimeDimension="updateTimeDimension"
+                @updateDataset="updateStoreLayerData"
+            ></MapDatamappingDatasetLayer>
 
-        <!-- Mapping the background layer -->
-        <MapDatasetLayer
-            v-if="backgroundLayer"
-            :key="backgroundLayer.uuid"
-            :layer="backgroundLayer"
-            @update="backgroundLayerMapData = $event"
-            :zIndex="-1"
-            @remove="removeBackgroundLayerData"
-        ></MapDatasetLayer>
+            <!-- Mapping the background layer -->
+            <MapDatamappingDatasetLayer
+                v-if="layerStore.backgroundLayer && isDatasetLayer(layerStore.backgroundLayer)"
+                :key="layerStore.backgroundLayer.uuid"
+                :layer="layerStore.backgroundLayer"
+                @update="backgroundLayerMapData = $event"
+                :zIndex="-1"
+                @remove="removeBackgroundLayerData"
+            ></MapDatamappingDatasetLayer>
 
-        <MapModule
-            :layers="layersForMap"
-            :background-layer="backgroundLayerMapData"
-            :custom-layer-renderers="customLayerRenderers"
-            class="h-screen w-full"
-        />
-        <Toolbox />
-        <DebugPanel
-            v-if="showAdditionalMapUi"
-            class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"
-        ></DebugPanel>
-        <DrawingFeatureInfoWindow v-if="showAdditionalMapUi" />
+            <MapModule
+                :layers="layersForMap"
+                :background-layer="backgroundLayerMapData"
+                :custom-layer-renderers="customLayerRenderers"
+                class="h-screen w-full"
+            />
+            <Toolbox />
+            <DebugPanel
+                v-if="showAdditionalMapUi"
+                class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"
+            ></DebugPanel>
+            <DrawingFeatureInfoWindow v-if="showAdditionalMapUi" />
 
-        <MapBackgroundSelector
-            :currentBackground="backgroundLayer"
+            <!-- <MapBackgroundSelector
+            :currentBackground="layerStore.backgroundLayer"
             @setBackground="changeBackground"
-        />
-        <MapTimeSliderButton />
-    </ClientOnly>
+        /> -->
+            <MapTimeSliderButton />
+        </ClientOnly>
+    </NuxtLayout>
 </template>
