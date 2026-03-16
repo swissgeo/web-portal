@@ -21,8 +21,9 @@ export function useCapabilities(serviceData: Ref<Service | null>) {
     }
 }
 
-export function extractCapabilityUrl(serviceData: Service | null): string | null {
-    // TODO safeguard for layers that don't support this
+export function extractCapabilityUrl(
+    serviceData: Pick<Service, 'links' | 'linkTemplates'> | null
+): string | null {
     if (!serviceData) {
         return null
     }
@@ -30,8 +31,8 @@ export function extractCapabilityUrl(serviceData: Service | null): string | null
     if ('links' in serviceData && serviceData.links && serviceData.links.length) {
         const link = serviceData.links[0]
 
-        if (link!.rel === 'about') {
-            const uri = link!.href
+        if (link!.rel.toLowerCase() === 'about') {
+            const uri = link!.href ?? null
             return uri
         }
     }
@@ -44,10 +45,10 @@ export function extractCapabilityUrl(serviceData: Service | null): string | null
         // it's the simpler version
         const link = serviceData.linkTemplates[0]
 
-        if (link!.rel === 'about') {
+        if (link!.rel.toLowerCase() === 'about') {
             const uri = link!.uriTemplate.replace('{EPSG}', '2056')
-            return uri
+            return uri ?? null
         }
     }
-    throw new Error(`Unable to find links for`)
+    return null
 }

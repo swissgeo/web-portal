@@ -53,13 +53,14 @@ export interface Link {
     href: string
     rel: string
     type?: string
-    title: string
+    title?: string
 }
 
 export interface LinkVariable {
-    description: string
-    format: string
     type: string
+    description: string
+    format?: string
+    default?: string | number
     enum?: (string | number)[]
 }
 
