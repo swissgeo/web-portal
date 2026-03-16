@@ -28,7 +28,7 @@ import itRoute from '../it'
 import mapRoute from '../map'
 import rmRoute from '../rm'
 
-type Handler = (event: H3Event) => unknown
+type Handler = (_event: H3Event) => unknown
 const event = {} as H3Event
 
 // ─── Entry-point routes (/ and /map) ────────────────────────────────────────
