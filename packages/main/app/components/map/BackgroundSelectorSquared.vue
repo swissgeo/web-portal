@@ -40,7 +40,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground } =
 </script>
 
 <template>
-    <div class="bg-selector fixed right-4 bottom-4 flex items-end gap-2">
+    <div class="bg-selector fixed right-4 bottom-4 flex items-end gap-2 max-sm:hidden">
         <!--
             Each entry is animated individually so it can fly out from the trigger position.
             --reverse-index: 0 = closest to trigger (appears/disappears first), higher = further away.

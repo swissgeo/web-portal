@@ -76,14 +76,12 @@ function selectBackground(backgroundLayer: Layer | null) {
 <template>
     <!-- Desktop (sm+): rectangular buttons spread to the left, fixed bottom-right -->
     <MapBackgroundSelectorSquared
-        class="max-sm:hidden"
         :background-layers="sortedBackgroundLayersWithNull"
         :current-background-layer="currentBackground"
         @select-background="selectBackground"
     />
     <!-- Mobile (below sm): circular buttons spread upward, fixed bottom-left -->
     <MapBackgroundSelectorRounded
-        class="sm:hidden"
         :background-layers="sortedBackgroundLayersWithNull"
         :current-background-layer="currentBackground"
         @select-background="selectBackground"

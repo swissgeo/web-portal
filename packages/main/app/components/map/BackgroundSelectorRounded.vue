@@ -76,7 +76,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgro
 
         <!-- Trigger: shows the current background; thicker border when open -->
         <button
-            class="bg-round-btn bg-round-trigger cursor-pointer overflow-hidden rounded-full border-solid border-[#343a40]"
+            class="bg-round-btn bg-round-trigger cursor-pointer overflow-hidden rounded-full border-solid border-[#343a40] sm:hidden"
             :class="{ open: selectorOpen }"
             type="button"
             data-cy="background-selector-trigger"
