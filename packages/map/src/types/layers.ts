@@ -1,3 +1,4 @@
+import type { LayerInfo } from '@swissgeo/shared'
 import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/shared/geojson'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 import type { Component } from 'vue'
@@ -19,16 +20,6 @@ export type DimensionId = 'time'
 export type DimensionRecord = Partial<Record<DimensionId, Dimension>>
 
 export type LayerFormat = 'WMTS' | 'WMS' | 'GeoJSON' | 'KML' | 'KMZ' | 'GPX'
-
-export interface LayerAttribution {
-    title: string
-    url?: string
-    logoUrl?: string
-}
-
-export interface LayerInfo {
-    attribution?: LayerAttribution
-}
 
 export interface Layer {
     format: LayerFormat

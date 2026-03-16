@@ -59,8 +59,9 @@ const sources = computed(() => {
     <div
         class="fixed bottom-[3rem] left-[5rem] z-[1000] max-w-[200px] bg-white px-1 text-sm text-black"
         data-cy="layers-copyrights"
+        v-if="sources.length > 0"
     >
-        <span v-if="sources.length > 0">{{ t('footer.copyRightData') }}</span>
+        <span>{{ t('footer.copyRightData') }}</span>
         <span
             v-for="(source, index) in sources"
             :key="source.name"

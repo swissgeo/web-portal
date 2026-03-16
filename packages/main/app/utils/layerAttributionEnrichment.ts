@@ -1,4 +1,4 @@
-import type { LayerAttribution } from '@swissgeo/layers'
+import type { LayerAttribution } from '@swissgeo/shared'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 
