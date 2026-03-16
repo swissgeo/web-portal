@@ -24,7 +24,6 @@ export interface AppStateConfig {
     layers: LayerStateConfig[]
     backgroundLayer?: LayerStateConfig | null
 }
-
 /**
  * Validates and parses a JSON value into an AppStateConfig.
  * Throws descriptive errors on invalid input.

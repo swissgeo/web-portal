@@ -1,8 +1,8 @@
+import type { AppStateConfig } from '@swissgeo/shared'
+
 import { describe, it, expect } from 'vitest'
 
-import type { AppStateConfig } from '../stateConfig'
-
-import { parseAppState } from '../stateConfig'
+import { parseAppState } from '@/stateConfig'
 
 const validState: AppStateConfig = {
     version: 2,

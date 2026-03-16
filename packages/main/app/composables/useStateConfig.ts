@@ -5,7 +5,7 @@ import type { AppStateConfig, LayerStateConfig } from '@swissgeo/shared'
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
-import { parseAppState } from '@swissgeo/shared'
+import { parseAppState } from '@swissgeo/statesharing'
 
 const DISPATCHER = { name: 'state-config' }
 
