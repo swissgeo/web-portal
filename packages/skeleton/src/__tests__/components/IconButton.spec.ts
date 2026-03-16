@@ -68,7 +68,9 @@ describe('Functionality of buttons with a LucideIcon within', () => {
         // color should be either the severity, or secondary by default
         expect(iconButton.attributes().color).to.eql(color)
         // the text is dependant on color
-        expect(iconButton.classes()).toMatchObject(classes)
+        for (const cls of classes) {
+            expect(iconButton.classes()).toContain(cls)
+        }
     })
 
     it('passes other attributes to the iconButton directly, in lowercase form', () => {

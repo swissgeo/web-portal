@@ -45,7 +45,7 @@ async function handleImport() {
             <h3 class="text-lg font-semibold">State Config (JSON)</h3>
             <IconButton
                 @click="$emit('close')"
-                icon="X"
+                iconName="X"
                 title="Close"
             />
         </div>
