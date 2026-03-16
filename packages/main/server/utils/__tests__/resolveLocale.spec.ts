@@ -36,5 +36,4 @@ describe('resolveLocale', () => {
         mockParseCookies.mockReturnValue({ i18n_redirected: '' })
         expect(resolveLocale(event)).toBe('de')
     })
-
 })
