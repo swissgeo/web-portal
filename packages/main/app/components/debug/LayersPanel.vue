@@ -72,7 +72,7 @@ function toggleVectorLayer() {
                     </tr>
                 </thead>
                 <DebugLayersPanelEntry
-                    :layer="layer"
+                    :dataset="layer"
                     v-for="layer in filteredAvailableLayers"
                     :key="layer.id"
                 />
