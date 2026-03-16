@@ -57,40 +57,40 @@ const storeFileLayers = computed(() => {
     return layerStore.layers.filter((layer) => !isDatasetLayer(layer))
 })
 
-function normalizeLanguageCode(language: string | null | undefined): string {
-    return (language ?? '').toLowerCase()
-}
+// function normalizeLanguageCode(language: string | null | undefined): string {
+//     return (language ?? '').toLowerCase()
+// }
 
-function isLayerLocalizedForCurrentLocale(
-    layer: DatasetLayer,
-    currentLocale: string | null | undefined
-): boolean {
-    const layerLanguage = layer.dataset.properties?.language?.code
+// function isLayerLocalizedForCurrentLocale(
+//     layer: DatasetLayer,
+//     currentLocale: string | null | undefined
+// ): boolean {
+//     const layerLanguage = layer.dataset.properties?.language?.code
 
-    // Layers without language metadata are treated as locale-neutral.
-    if (!layerLanguage) {
-        return true
-    }
+//     // Layers without language metadata are treated as locale-neutral.
+//     if (!layerLanguage) {
+//         return true
+//     }
 
-    return normalizeLanguageCode(layerLanguage) === normalizeLanguageCode(currentLocale)
-}
+//     return normalizeLanguageCode(layerLanguage) === normalizeLanguageCode(currentLocale)
+// }
 
-const canRenderDatasetLayersForLocale = computed(() => {
-    return (
-        normalizeLanguageCode(ogcDatasetCollectionStore.currentLanguage) ===
-        normalizeLanguageCode(locale.value)
-    )
-})
+// const canRenderDatasetLayersForLocale = computed(() => {
+//     return (
+//         normalizeLanguageCode(ogcDatasetCollectionStore.currentLanguage) ===
+//         normalizeLanguageCode(locale.value)
+//     )
+// })
 
-const localizedDatasetLayers = computed(() => {
-    if (!canRenderDatasetLayersForLocale.value) {
-        return []
-    }
+// const localizedDatasetLayers = computed(() => {
+//     if (!canRenderDatasetLayersForLocale.value) {
+//         return []
+//     }
 
-    return storeDatasetLayers.value.filter((layer) =>
-        isLayerLocalizedForCurrentLocale(layer, locale.value)
-    )
-})
+//     return storeDatasetLayers.value.filter((layer) =>
+//         isLayerLocalizedForCurrentLocale(layer, locale.value)
+//     )
+// })
 
 function updateLayerData(layerUuid: string, layerData: MapLayer) {
     layersByUuid.value[layerUuid] = layerData
@@ -167,7 +167,7 @@ watch(
             @remove="removeLayerData(layer.uuid)"
         ></MapFileLayer>
         <MapDatasetLayer
-            v-for="layer in localizedDatasetLayers"
+            v-for="layer in storeDatasetLayers"
             :layer="layer"
             :key="layer.uuid"
             :zIndex="layerStore.getLayerZIndex(layer.uuid)"
@@ -183,7 +183,7 @@ watch(
             :key="layerStore.backgroundLayer.uuid"
             :layer="layerStore.backgroundLayer"
             @update="backgroundLayerMapData = $event"
-            :zIndex="0"
+            :zIndex="-1"
             @remove="removeBackgroundLayerData"
         ></MapDatasetLayer>
 
