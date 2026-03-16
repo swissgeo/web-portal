@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { MenuTree, Page } from '@swissgeo/shared/api'
-import type { Lang } from '@swissgeo/shared/language'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 
 import { SidebarType, useSidebarStore } from '@swissgeo/skeleton'
@@ -37,7 +36,7 @@ const getMenuForPage = (route: RouteLocationNormalizedLoadedGeneric) => {
 
         const traverseMenu = (menu: MenuTree) => {
             for (const entry of menu) {
-                const entryInLang = entry[locale.value as Lang]
+                const entryInLang = entry[locale.value]
                 if (entryInLang) {
                     if (entryInLang?.documentId === route.meta.documentId) {
                         return true

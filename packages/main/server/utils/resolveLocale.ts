@@ -1,10 +1,8 @@
+import type { Lang } from '@swissgeo/shared'
 import type { H3Event } from 'h3'
 
-import { parseCookies } from 'h3'
-
-import type { Lang } from '@swissgeo/shared'
-
 import { VALID_LOCALES } from '@swissgeo/shared'
+import { parseCookies } from 'h3'
 
 /**
  * Resolves the user's preferred locale from the i18n_redirected cookie,
