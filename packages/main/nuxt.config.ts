@@ -75,15 +75,13 @@ export default defineNuxtConfig({
         mode: isDevelopment ? 'development' : 'production',
     },
     i18n: {
-        // Persist the user's last-selected locale in a cookie so revisiting '/' restores it.
-        detectBrowserLanguage: {
-            useCookie: true,
-            cookieKey: 'i18n_redirected',
-            redirectOn: 'root',
-            alwaysRedirect: false,
-        },
-        // Keep prefixed routes for non-default locales while allowing default-locale '/map'.
-        strategy: 'prefix_except_default',
+        // Disable automatic browser-language detection to prevent the i18n middleware
+        // from redirecting unprefixed paths to locale roots reserved for the CMS.
+        detectBrowserLanguage: false,
+        // All locales use a prefix (/de/map, /fr/map, …) so routing is symmetric.
+        // /map is served as an alias of /de/map (see pages/map.vue definePageMeta).
+        // / is handled by server/routes/index.ts which redirects based on the locale cookie.
+        strategy: 'prefix',
         langDir: 'locales',
         locales: [
             {
