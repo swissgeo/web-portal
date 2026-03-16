@@ -72,7 +72,7 @@ describe('LayersPanelEntry.vue locale-aware behavior', () => {
     })
 
     it('builds locale-aware storage key', () => {
-        const layer: Dataset = {
+        const dataset: Dataset = {
             id: 'ch.test.layer',
             links: [
                 { rel: 'distributions', href: 'https://example.test/distributions', title: 'd' },
@@ -84,7 +84,7 @@ describe('LayersPanelEntry.vue locale-aware behavior', () => {
         }
 
         mount(LayersPanelEntry, {
-            props: { layer },
+            props: { dataset },
         })
 
         expect(useStorage).toHaveBeenCalledWith(
@@ -94,7 +94,7 @@ describe('LayersPanelEntry.vue locale-aware behavior', () => {
     })
 
     it('adds layer with locale-derived dataset language', async () => {
-        const layer: Dataset = {
+        const dataset: Dataset = {
             id: 'ch.test.layer',
             links: [
                 { rel: 'distributions', href: 'https://example.test/distributions', title: 'd' },
@@ -106,7 +106,7 @@ describe('LayersPanelEntry.vue locale-aware behavior', () => {
         }
 
         const wrapper = mount(LayersPanelEntry, {
-            props: { layer },
+            props: { dataset },
         })
 
         await wrapper.find('button').trigger('click')

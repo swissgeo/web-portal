@@ -1,36 +1,23 @@
 <script setup lang="ts">
-import type { Dataset, DistributionCollection } from '@swissgeo/ogc'
+import type { Dataset } from '@swissgeo/ogc'
 
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
-import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { useStorage } from '@vueuse/core'
 
 const layerStore = useLayerStore()
 const { locale } = useI18n()
 
-const { layer } = defineProps<{
-    layer: Dataset
+const { dataset } = defineProps<{
+    dataset: Dataset
 }>()
-
-/**
- * Since we're making 900+ requests to the server to populate this list we store the values in
- * localStorage. In order to update them from time to time, we update the entry when the value is
- * hovered
- */
-const state = useStorage(`debug:layers-panel:distribution:${layer.id}:${locale.value}`, {
-    distributionData: null,
-} as {
-    distributionData: DistributionCollection | null
-})
 
 const localizedLayer = computed<Dataset>(() => {
     const currentLocale = locale.value
-    const existingLanguage = layer.properties?.language
+    const existingLanguage = dataset.properties?.language
 
     return {
-        ...layer,
+        ...dataset,
         properties: {
-            ...layer.properties,
+            ...dataset.properties,
             language: {
                 code: currentLocale,
                 dir: existingLanguage?.dir ?? 'ltr',
@@ -38,18 +25,6 @@ const localizedLayer = computed<Dataset>(() => {
             },
         },
     }
-})
-
-const distributionLink = computed(() => {
-    if (!layer.links) {
-        throw new Error(`${JSON.stringify(layer)} has no links`)
-    }
-    for (const link of layer.links) {
-        if (link.rel === 'distributions') {
-            return link
-        }
-    }
-    throw new Error(`Unable to find distribution link for ${layer.id}`)
 })
 
 const layerBgMap: Record<string, string> = {
@@ -64,57 +39,18 @@ const layerBg = computed(() => {
 })
 
 /**
- * Extract the layer type from the links
- *
- * Whatever is found first (WMTS or WMS) defines the layer type!
- *
- * @param layer
+ * Extract the layer type from the preferred layer type
  */
-const type = computed((): 'wmts' | 'wms' | 'geojson' | 'vector' | 'UNKNOWN' => {
-    if (!state.value.distributionData) {
-        return 'UNKNOWN'
-    }
-
-    if (!state.value.distributionData.records) {
-        log.error({
-            title: 'LayersPanelEntry',
-            titleColor: LogPreDefinedColor.Rose,
-            messages: [
-                `dataset ${state.value.distributionData.id} has no records`,
-                state.value.distributionData,
-            ],
-        })
-    }
-
-    for (const record of state.value.distributionData.records) {
-        const protocol = record.properties?.protocol
-
-        if (protocol === 'OGC:WMTS') {
-            return 'wmts'
-        } else if (protocol === 'OGC:WMS') {
-            return 'wms'
-        } else if (protocol === 'OGC:GeoJSON') {
-            return 'geojson'
+const type = computed((): 'wmts' | 'wms' | 'UNKNOWN' => {
+    if (dataset.properties.preferredDistributionId) {
+        const protocol = dataset.properties.preferredDistributionId.split(':')[1]
+        if (protocol?.toLowerCase()) {
+            return protocol as 'wmts' | 'wms'
         }
     }
 
     return 'UNKNOWN'
 })
-
-onMounted(() => {
-    if (state.value.distributionData === null) {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        updateDistributionData()
-    }
-})
-
-async function updateDistributionData() {
-    const distributionDataUpdate = await $fetch<DistributionCollection>(distributionLink.value.href)
-
-    if (distributionDataUpdate) {
-        state.value.distributionData = distributionDataUpdate
-    }
-}
 
 function addLayerToMap() {
     if (!type.value) {
@@ -133,7 +69,7 @@ function addLayerToMap() {
                 class="cursor-pointer"
                 @click="addLayerToMap()"
             >
-                {{ layer.id }}
+                {{ dataset.id }}
             </button>
         </td>
         <td
