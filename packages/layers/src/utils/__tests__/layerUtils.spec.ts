@@ -21,24 +21,6 @@ function createExpectedObject(dataset: Dataset) {
         },
     }
 }
-/**
- * we create a fake layers array to have the correct z index returned within our mocked store.
- * TO DO GPS-500 : remove zIndex and layer Store
- * @param nb_layer : number of layers to add
- */
-function setZindex(nb_layer: number) {
-    const layers: Layer[] = []
-    for (let i = 0; i < nb_layer; i++) {
-        layers.push({
-            opacity: 0.5,
-            isLoading: false,
-            type: 'dataset',
-            uuid: '',
-            humanId: 'fake layer',
-            isVisible: false,
-        })
-    }
-}
 
 describe('Testing the information gathering from datasets', () => {
     it('returns dataset.id when properties are undefined', () => {
@@ -179,9 +161,6 @@ describe('testing the makeServerLayer function', () => {
     `(
         'creates a layer with the correct defaults, of the correct type for the layer type : $layerType',
         ({ expectedServerLayerCreated }) => {
-            // TO DO GPS-500 : remove zIndex and layer Store
-
-            setZindex(5)
             const layer = makeServerLayer(baseDataset)
             expect(layer).toMatchObject(expectedServerLayerCreated)
         }
