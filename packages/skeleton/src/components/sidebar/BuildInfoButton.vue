@@ -3,7 +3,7 @@ import IconButton from '@/components/IconButton.vue'
 
 const config = useRuntimeConfig()
 
-const gitCommit = config.public.gitCommit
+const version = config.public.version
 const buildTime = config.public.buildTime
 </script>
 
@@ -22,7 +22,7 @@ const buildTime = config.public.buildTime
 
         <template #content>
             <div class="px-3 py-2 text-xs leading-relaxed whitespace-nowrap">
-                <div><span class="font-semibold">Commit:</span> {{ gitCommit }}</div>
+                <div><span class="font-semibold">Version:</span> {{ version }}</div>
                 <div><span class="font-semibold">Built:</span> {{ buildTime }}</div>
             </div>
         </template>

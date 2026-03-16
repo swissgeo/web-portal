@@ -39,7 +39,7 @@ LABEL git.dirty="$GIT_DIRTY"
 LABEL author=$AUTHOR
 LABEL version=$VERSION
 
-RUN GIT_COMMIT=${GIT_HASH} pnpm run build:dev
+RUN GIT_COMMIT=${GIT_HASH} VERSION=${VERSION} pnpm run build:dev
 
 ###########################################################
 # Builder prod container
@@ -56,7 +56,7 @@ LABEL git.dirty="$GIT_DIRTY"
 LABEL author=$AUTHOR
 LABEL version=$VERSION
 
-RUN GIT_COMMIT=${GIT_HASH} pnpm run build:prod
+RUN GIT_COMMIT=${GIT_HASH} VERSION=${VERSION} pnpm run build:prod
 
 ###########################################################
 # Container to use in dev

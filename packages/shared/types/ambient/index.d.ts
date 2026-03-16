@@ -16,6 +16,7 @@ export interface RuntimeConfig {
         }
         ogcApiEndpoint: string
         gitCommit: string
+        version: string
         buildTime: string
     }
 }
