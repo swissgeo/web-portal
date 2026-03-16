@@ -44,6 +44,7 @@ const buttonAttrs = computed(() => {
         :class="{
             'text-default': ['secondary', 'info', 'warning', 'neutral'].includes(color as string),
             'text-inverted': ['primary', 'danger', 'success'].includes(color as string),
+            'cursor-pointer': true,
         }"
         :color="color"
         :variant="variant"
