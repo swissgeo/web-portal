@@ -23,6 +23,7 @@ import {
     useWmtsCapabilities,
     useWmsCapabilities,
     useGeoJson,
+    useVector,
 } from '@swissgeo/ogc'
 import { getTimeInfoFromWMTSCapabilities } from '~/utils/timeUtils'
 
@@ -105,7 +106,7 @@ watch(
 )
 
 /**
- * If we're dealing with a geoJSON, then this watcher needs triggering,
+ * If we're dealing with a geoJSON or vector tile layer, then this watcher needs triggering,
  * as we don't have the serviceData there
  */
 watch(
@@ -113,6 +114,8 @@ watch(
     () => {
         if (layerType.value === 'GeoJSON') {
             getGeoJSONSpecificData()
+        } else if (layerType.value === 'Vector') {
+            getVectorSpecificData()
         }
     }
 )
@@ -140,6 +143,10 @@ function determineLayerType(distribution: Ref<Distribution | null>): LayerType {
             return 'WMS'
         case 'OGC:GeoJSON':
             return 'GeoJSON'
+        // @ts-expect-error Not implementing the type in the serviceprotocol
+        // as I don't quite know yet how we'll implement the vector layer
+        case 'Vector':
+            return 'Vector'
     }
 
     return null
@@ -245,6 +252,26 @@ function getGeoJSONSpecificData() {
                 geoJsonStyle: geoJsonData.value.geoJsonStyle,
             }
         }
+    )
+}
+
+function getVectorSpecificData() {
+    const { styleUrl } = useVector(distribution)
+
+    watchEffect(() => {
+        console.log(styleUrl)
+    })
+
+    watch(
+        styleUrl,
+        () => {
+            layerSpecificData.value = {
+                // tileData: vectorData.value.tileData,
+                // styleData: vectorData.value.styleData,
+                styleUrl: styleUrl,
+            }
+        },
+        { immediate: true }
     )
 }
 

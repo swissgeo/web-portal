@@ -204,46 +204,44 @@ export default function useOlVectorLayer(
     const zIndex = computed(() => layer.value.zIndex)
     const isVisible = computed(() => layer.value.isVisible)
     const opacity = computed(() => layer.value.opacity)
-    const vectorData = computed(() => layer.value.fileData)
 
-    const styleUrl = `/api/v1/layers/swissgeo/vectorTest`
+    const styleUrl = computed(() => layer.value.styleUrl)
 
     const positionStore = usePositionStore()
 
-    if (!olMap) {
-        log.error('OpenLayersMap is not available')
-        throw new Error('OpenLayersMap is not available')
-    }
-
     const olLayer = ref<VectorTileLayer>()
 
-    watch(vectorData, () => {
-        // Create the vector tile layer (source will be set after fetching config)
-        olLayer.value = new VectorTileLayer({
-            declutter: true,
-            properties: {
-                id: layerId,
-            },
-            // Performance optimizations
-            renderMode: 'hybrid', // Better performance than 'vector'
-            updateWhileAnimating: true, // Smooth panning
-            updateWhileInteracting: true, // Smooth zooming
-            preload: 1, // Preload 1 zoom level ahead
-        })
-
-        // Initialize the layer asynchronously
-        initializeVectorLayer(
-            olLayer.value,
-            styleUrl,
-            positionStore.projection.epsg,
-            layerId.value,
-            zIndex.value
-        ).catch((error) => {
-            log.error(`Unable to load and attach the style for ${layerId.value}`, {
-                messages: [error],
+    watch(
+        styleUrl,
+        () => {
+            // Create the vector tile layer (source will be set after fetching config)
+            olLayer.value = new VectorTileLayer({
+                declutter: true,
+                properties: {
+                    id: layerId,
+                },
+                // Performance optimizations
+                renderMode: 'hybrid', // Better performance than 'vector'
+                updateWhileAnimating: true, // Smooth panning
+                updateWhileInteracting: true, // Smooth zooming
+                preload: 1, // Preload 1 zoom level ahead
             })
-        })
-    })
+
+            // Initialize the layer asynchronously
+            initializeVectorLayer(
+                olLayer.value,
+                styleUrl.value,
+                positionStore.projection.epsg,
+                layerId.value,
+                zIndex.value
+            ).catch((error) => {
+                log.error(`Unable to load and attach the style for ${layerId.value}`, {
+                    messages: [error],
+                })
+            })
+        },
+        { immediate: true }
+    )
 
     const { addLayerToMap } = useAddLayerToMap(olLayer, zIndex, isVisible, opacity, olMap)
 

@@ -21,11 +21,11 @@ export function useDistribution(
             title: 'useDistribution',
             titleColor: LogPreDefinedColor.Amber,
             messages: [
-                'Extracted distribution from collection',
+                'Extracted <distribution> with <layerId> from <collection> based on <distributionId>',
                 toValue(distribution),
-                toValue(distributionCollection),
-                'with layerId',
                 toValue(layerId),
+                toValue(distributionCollection),
+                toValue(distributionId),
             ],
         })
     )
@@ -44,9 +44,6 @@ export function extractDistribution(
     const records = collection.records
 
     for (const distribution of records) {
-        if (!distribution.properties) {
-            break // go to exception below
-        }
         if (distribution.id === distributionId) {
             // we found the feature with the id that's requested, carry on
             return distribution

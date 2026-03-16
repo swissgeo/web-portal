@@ -32,16 +32,24 @@ const filteredAvailableLayers = computed((): Dataset[] => {
 })
 
 function toggleVectorLayer() {
-    layerStore.addLayer(
-        makeServerLayer({
-            id: 'ch.swisstopouseLayerStore.vector',
-            links: [],
-            properties: {
-                title: 'Vector Test',
-                type: 'Dataset',
-            },
-        })
-    )
+    layerStore.addLayer({
+        humanId: 'vector-layer',
+        uuid: 'vector-layer',
+        // layerUrl: '/api/v1/layers/vectorTest',
+        isVisible: true,
+        opacity: 1,
+        type: 'dataset',
+        isLoading: false,
+        dataset: {
+            id: 'ch.swisstopo.vt',
+            links: [
+                {
+                    href: '/api/v1/layers/vt/distributions',
+                    rel: 'distributions',
+                },
+            ],
+        } as Dataset,
+    })
 }
 </script>
 

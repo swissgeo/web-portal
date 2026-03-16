@@ -29,6 +29,10 @@ export type DimensionId = 'time'
 
 export type DimensionRecord = Partial<Record<DimensionId, Dimension>>
 
+// adding vector here as a special case. It's actually probably a dataset, but
+// until we have this implemented correctly, using this type
+export type LayerType = 'dataset' | 'kml' | 'kmz' | 'gpx' | 'geojson' | 'vector'
+
 export interface Layer {
     uuid: string
     humanId: string // something human readable. usually the layer ID. Not unique!

@@ -13,7 +13,6 @@ const pinia = createTestingPinia({
 })
 setActivePinia(pinia)
 const layerStore = useLayerStore()
-const fake_uuid = 'mock-uuid-with-extra-step'
 
 function createExpectedObject(dataset: Dataset) {
     return {
