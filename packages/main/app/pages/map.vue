@@ -183,7 +183,7 @@ watch(
             :key="layerStore.backgroundLayer.uuid"
             :layer="layerStore.backgroundLayer"
             @update="backgroundLayerMapData = $event"
-            :zIndex="0"
+            :zIndex="-1"
             @remove="removeBackgroundLayerData"
         ></MapDatasetLayer>
 
