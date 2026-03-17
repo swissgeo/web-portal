@@ -422,9 +422,6 @@ importers:
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared
-      '@vueuse/core':
-        specifier: 'catalog:'
-        version: 14.2.1(vue@3.5.28(typescript@5.9.3))
       lodash:
         specifier: 'catalog:'
         version: 4.17.23
@@ -865,9 +862,6 @@ importers:
 
   packages/shared:
     dependencies:
-      '@vueuse/core':
-        specifier: 'catalog:'
-        version: 14.2.1(vue@3.5.28(typescript@5.9.3))
       nuxt:
         specifier: 'catalog:'
         version: 4.3.0(@parcel/watcher@2.5.6)(@types/node@25.5.0)(@vue/compiler-sfc@3.5.28)(cac@6.7.14)(db0@0.3.4)(eslint@9.39.2(jiti@2.6.1))(ioredis@5.9.2)(lightningcss@1.30.2)(magicast@0.5.1)(meow@13.2.0)(optionator@0.9.4)(rollup@4.57.1)(stylelint@16.26.1(typescript@5.9.3))(terser@5.46.0)(typescript@5.9.3)(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(yaml@2.8.2)

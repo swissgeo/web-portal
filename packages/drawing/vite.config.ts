@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => {
             rollupOptions: {
                 external: [
                     'vue',
+                    'vue-i18n',
                     'pinia',
                     '@swissgeo/layers',
                     '@swissgeo/log',

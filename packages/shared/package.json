@@ -64,7 +64,6 @@
         "vite-tsconfig-paths": "catalog:"
     },
     "peerDependencies": {
-        "@vueuse/core": "catalog:",
         "ol": "catalog:",
         "vue": "catalog:"
     },
