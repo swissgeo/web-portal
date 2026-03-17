@@ -35,26 +35,8 @@ export default defineConfig(({ mode }) => {
             tsconfigPaths(),
             vue(),
             dts({
-                beforeWriteFile: (filePath, content) => {
-                    const normalizedPath = filePath.replace(/\\/g, '/')
-                    const rewrittenPath = normalizedPath
-                        .replace('/dist/src/', '/dist/')
-                        .replace('/dist/types/', '/dist/')
-
-                    return {
-                        filePath: rewrittenPath,
-                        content,
-                    }
-                },
-                copyDtsFiles: true,
-                cleanVueFileName: true,
-                include: [
-                    fileURLToPath(new URL('./src', import.meta.url)),
-                    fileURLToPath(new URL('./types', import.meta.url)),
-                ],
-                insertTypesEntry: true,
-                outDirs: [fileURLToPath(new URL('./dist', import.meta.url))],
-                tsconfigPath: fileURLToPath(new URL('./tsconfig.json', import.meta.url)),
+                bundleTypes: true,
+                processor: 'vue',
             }),
         ],
     }

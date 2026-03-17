@@ -1021,18 +1021,9 @@ importers:
       '@swissgeo/config-typescript':
         specifier: 'catalog:'
         version: 1.0.0(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3))
-      '@swissgeo/numbers':
-        specifier: 'catalog:'
-        version: 1.0.0(proj4@2.20.2)
       '@swissgeo/shared':
         specifier: 'workspace:'
         version: link:../shared
-      '@types/mapbox-gl':
-        specifier: 'catalog:'
-        version: 3.4.1
-      '@vitejs/plugin-vue':
-        specifier: 'catalog:'
-        version: 6.0.4(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.6.1)

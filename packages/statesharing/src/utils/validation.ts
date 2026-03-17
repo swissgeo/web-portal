@@ -18,8 +18,8 @@ export function isInstanceOfLayerStateConfig(object: unknown): object is LayerSt
         }
     })
 
-    if (!('datasetUrl' in maybeLayerState)) {
-        throw new Error('mandatory attribute datasetUrl not present in layer state configuration')
+    if (!('layerUrl' in maybeLayerState)) {
+        throw new Error('mandatory attribute layerUrl not present in layer state configuration')
     }
 
     if (!('type' in maybeLayerState)) {
@@ -32,7 +32,7 @@ export function isInstanceOfLayerStateConfig(object: unknown): object is LayerSt
         throw new Error('mandatory attribute opacity not present in layer state configuration')
     }
 
-    if (typeof maybeLayerState.datasetUrl !== 'string') {
+    if (typeof maybeLayerState.layerUrl !== 'string') {
         throw new Error('datasetUrl attribute should be a string')
     }
     if (typeof maybeLayerState.type !== 'string') {
@@ -201,6 +201,6 @@ function validateMap(map: AppStateConfig['map']): asserts map is AppStateConfig[
 
 function validateLayerConfig(layer: LayerStateConfig): asserts layer is LayerStateConfig {
     if (layer.opacity < 0 || layer.opacity > 1) {
-        throw new Error(`${layer.datasetUrl} opacity must be a number between 0 and 1`)
+        throw new Error(`${layer.layerUrl} opacity must be a number between 0 and 1`)
     }
 }

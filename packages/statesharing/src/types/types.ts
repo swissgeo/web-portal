@@ -3,7 +3,7 @@
  * Uses datasetUrl to re-fetch the full dataset on import.
  */
 export interface LayerStateConfig {
-    datasetUrl: string
+    layerUrl: string
     type: string
     isVisible: boolean
     opacity: number
@@ -26,5 +26,5 @@ export interface AppStateConfig {
 }
 
 // used only internally in validation. They are kept here to be easy to modify when we modify the interface.
-export const layerStateConfigKeys = ['datasetUrl', 'type', 'isVisible', 'opacity', 'dimensions']
+export const layerStateConfigKeys = ['layerUrl', 'type', 'isVisible', 'opacity', 'dimensions']
 export const validAppStateConfigKeys = ['version', 'map', 'layers', 'backgroundLayer']

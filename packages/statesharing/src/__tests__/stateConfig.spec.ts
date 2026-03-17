@@ -1,11 +1,12 @@
-import type { AppStateConfig } from '@swissgeo/shared'
-
 import { describe, it, expect } from 'vitest'
 
-import { validateAppState } from '@/stateConfig'
+import type { AppStateConfig } from '@/types/types'
+
+import { APP_STATE_CONFIG_VERSION } from '@/constants'
+import { validateAndPrepareAppStateConfig } from '@/stateConfig'
 
 const validState: AppStateConfig = {
-    version: 2,
+    version: APP_STATE_CONFIG_VERSION,
     map: {
         center: [2600000, 1200000],
         zoom: 10,
@@ -21,9 +22,9 @@ const validState: AppStateConfig = {
     ],
 }
 
-describe('validateAppState', () => {
+describe('validateAndPrepareAppStateConfig', () => {
     it('accepts a valid state config', () => {
-        const result = validateAppState(validState)
+        const result = validateAndPrepareAppStateConfig(validState)
         expect(result).toEqual(validState)
     })
 
@@ -37,19 +38,19 @@ describe('validateAppState', () => {
                 opacity: 1,
             },
         }
-        const result = validateAppState(state)
+        const result = validateAndPrepareAppStateConfig(state)
         expect(result.backgroundLayer).toBeDefined()
     })
 
     it('accepts a state with null backgroundLayer', () => {
         const state = { ...validState, backgroundLayer: null }
-        const result = validateAppState(state)
+        const result = validateAndPrepareAppStateConfig(state)
         expect(result.backgroundLayer).toBeNull()
     })
 
     it('accepts a state with empty layers array', () => {
         const state = { ...validState, layers: [] }
-        const result = validateAppState(state)
+        const result = validateAndPrepareAppStateConfig(state)
         expect(result.layers).toEqual([])
     })
 
@@ -68,50 +69,52 @@ describe('validateAppState', () => {
                 },
             ],
         }
-        const result = validateAppState(state)
+        const result = validateAndPrepareAppStateConfig(state)
         expect(result.layers[0]!.dimensions).toEqual({
             time: { currentValue: '2020' },
         })
     })
 
     it('rejects null input', () => {
-        expect(() => validateAppState(null)).toThrow('must be a non-null object')
+        expect(() => validateAndPrepareAppStateConfig(null)).toThrow('must be a non-null object')
     })
 
     it('rejects non-object input', () => {
-        expect(() => validateAppState('string')).toThrow('must be a non-null object')
+        expect(() => validateAndPrepareAppStateConfig('string')).toThrow(
+            'must be a non-null object'
+        )
     })
 
     it('rejects unsupported version', () => {
-        expect(() => validateAppState({ ...validState, version: 1 })).toThrow(
+        expect(() => validateAndPrepareAppStateConfig({ ...validState, version: 1 })).toThrow(
             'Unsupported state config version'
         )
     })
 
     it('rejects missing version', () => {
-        expect(() => validateAppState({ map: validState.map, layers: validState.layers })).toThrow(
-            'Unsupported state config version'
-        )
+        expect(() =>
+            validateAndPrepareAppStateConfig({ map: validState.map, layers: validState.layers })
+        ).toThrow('Mandatory key "version" not present in the state')
     })
 
     it('rejects missing map', () => {
-        expect(() => validateAppState({ version: 2, layers: validState.layers })).toThrow(
-            'must include a "map" object'
-        )
+        expect(() =>
+            validateAndPrepareAppStateConfig({ version: 2, layers: validState.layers })
+        ).toThrow('Mandatory key "map" not present in the state')
     })
 
     it('rejects invalid center', () => {
         expect(() =>
-            validateAppState({
+            validateAndPrepareAppStateConfig({
                 ...validState,
                 map: { ...validState.map, center: [1] },
             })
-        ).toThrow('map.center must be a [x, y] number array in LV95 (EPSG:2056)')
+        ).toThrow('Center should be an array of two numbers')
     })
 
     it('rejects negative zoom', () => {
         expect(() =>
-            validateAppState({
+            validateAndPrepareAppStateConfig({
                 ...validState,
                 map: { ...validState.map, zoom: -1 },
             })
@@ -120,50 +123,51 @@ describe('validateAppState', () => {
 
     it('rejects non-number rotation', () => {
         expect(() =>
-            validateAppState({
+            validateAndPrepareAppStateConfig({
                 ...validState,
                 map: { ...validState.map, rotation: 'abc' },
             })
-        ).toThrow('map.rotation must be a number')
+        ).toThrow('rotation attribute should be a number')
     })
 
     it('rejects missing layers', () => {
-        expect(() => validateAppState({ version: 2, map: validState.map })).toThrow(
-            'must include a "layers" array'
+        expect(() => validateAndPrepareAppStateConfig({ version: 2, map: validState.map })).toThrow(
+            'Mandatory key "layers" not present in the state'
         )
     })
 
     it('rejects layer with missing layerUrl', () => {
         expect(() =>
-            validateAppState({
+            validateAndPrepareAppStateConfig({
                 ...validState,
                 layers: [{ type: 'wms', isVisible: true, opacity: 1 }],
             })
-        ).toThrow('layers[0].layerUrl must be a string')
+        ).toThrow('mandatory attribute layerUrl not present in layer state configuration')
     })
 
     it('rejects layer with opacity out of range', () => {
+        const layerUrl = 'https://api.example.com/ogc/items/test'
         expect(() =>
-            validateAppState({
+            validateAndPrepareAppStateConfig({
                 ...validState,
                 layers: [
                     {
-                        layerUrl: 'https://api.example.com/ogc/items/test',
+                        layerUrl,
                         type: 'wms',
                         isVisible: true,
                         opacity: 1.5,
                     },
                 ],
             })
-        ).toThrow('layers[0].opacity must be a number between 0 and 1')
+        ).toThrow(`${layerUrl} opacity must be a number between 0 and 1`)
     })
 
     it('rejects invalid backgroundLayer', () => {
         expect(() =>
-            validateAppState({
+            validateAndPrepareAppStateConfig({
                 ...validState,
                 backgroundLayer: { layerUrl: 'https://api.example.com/ogc/items/test' },
             })
-        ).toThrow('backgroundLayer.type must be a string')
+        ).toThrow('mandatory attribute type not present in layer state configuration')
     })
 })
