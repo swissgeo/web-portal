@@ -21,29 +21,4 @@ export const CURRENT_YEAR_TIMESTAMP: string = 'current'
 export const EPSG_4326_WGS84: string = 'EPSG:4326'
 export const EPSG_2056_CH1903: string = 'EPSG:2056'
 
-/**
- * Serializable representation of a layer for state configuration.
- * Uses datasetUrl to re-fetch the full dataset on import.
- */
-export interface LayerStateConfig {
-    datasetUrl: string
-    type: string
-    isVisible: boolean
-    opacity: number
-    dimensions?: Record<string, { currentValue: string | null }>
-}
-
-/**
- * JSON structure representing the full app state for sharing/shortlink.
- * Coordinates use LV95 (EPSG:2056) [x, y].
- */
-export interface AppStateConfig {
-    version: 2
-    map: {
-        center: [number, number] // [x, y] in LV95 (EPSG:2056)
-        zoom: number
-        rotation: number
-    }
-    layers: LayerStateConfig[]
-    backgroundLayer?: LayerStateConfig | null
-}
+export const EPSG_2056_BOUNDING_BOX = [2420000, 1030000, 2900000, 1350000]

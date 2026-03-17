@@ -3,7 +3,7 @@
     "include": [
         "src/**/*.ts",
         "src/**/*.vue",
-        "types/**/*.ts",
+        "src/types/**/*.ts",
         "vite.config.ts",
         "../../base.vite.config.ts"
     ],
