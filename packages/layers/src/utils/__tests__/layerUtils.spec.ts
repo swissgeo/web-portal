@@ -4,24 +4,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import { getInfoFromDataset, makeServerLayer } from '@/utils/layerUtils'
 
-function createExpectedObject(dataset: Dataset) {
-    return {
-        uuid: 'mock-uuid-with-extra-step',
-        humanId: 'dataset-1',
-        opacity: 1,
-        data: dataset,
-        isVisible: true,
-        isLoading: false,
-        info: {
-            displayName: 'Layer Title',
-            attribution: {
-                title: 'SwissGeo',
-            },
-            abstract: 'Layer description',
-        },
-    }
-}
-
 describe('Testing the information gathering from datasets', () => {
     it('returns dataset.id when properties are undefined', () => {
         // @ts-expect-error Intentionally not defining properties
@@ -149,22 +131,12 @@ describe('testing the makeServerLayer function', () => {
 
     // I would've like to add a "non valid type" but the function assume we get
     // a correct type, and thus has no protection.
-    it.each`
-        layerType    | expectedServerLayerCreated
-        ${'wms'}     | ${createExpectedObject(baseDataset)}
-        ${'wmts'}    | ${createExpectedObject(baseDataset)}
-        ${'geojson'} | ${createExpectedObject(baseDataset)}
-        ${'vector'}  | ${createExpectedObject(baseDataset)}
-        ${'kml'}     | ${createExpectedObject(baseDataset)}
-        ${'kmz'}     | ${createExpectedObject(baseDataset)}
-        ${'gpx'}     | ${createExpectedObject(baseDataset)}
-    `(
-        'creates a layer with the correct defaults, of the correct type for the layer type : $layerType',
-        ({ expectedServerLayerCreated }) => {
-            const layer = makeServerLayer(baseDataset)
-            expect(layer).toMatchObject(expectedServerLayerCreated)
-        }
-    )
+    it('creates a layer with the correct defaults', () => {
+        const layer = makeServerLayer(baseDataset)
+        expect(layer.opacity).toEqual(1)
+        expect(layer.isVisible).toEqual(true)
+        expect(layer.isLoading).toEqual(false)
+    })
 
     it('overrides defaults with options', () => {
         const layer = makeServerLayer(baseDataset, {

@@ -1,6 +1,7 @@
 import type { Dataset } from '@swissgeo/ogc'
 
 export type FileLayerType = 'geojson' | 'kml' | 'kmz' | 'gpx'
+export type LayerType = 'dataset' | FileLayerType
 
 export interface LayerAttribution {
     title: string
@@ -27,8 +28,6 @@ export interface Dimension {
 export type DimensionId = 'time'
 
 export type DimensionRecord = Partial<Record<DimensionId, Dimension>>
-
-export type LayerType = 'dataset' | 'kml' | 'kmz' | 'gpx' | 'geojson'
 
 export interface Layer {
     type: LayerType

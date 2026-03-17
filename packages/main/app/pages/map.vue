@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { Layer as BaseLayer, Dimension } from '@swissgeo/layers'
 import type { MapLayerRenderer, Layer as MapLayer } from '@swissgeo/map'
-import type { Dataset } from '@swissgeo/ogc'
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from '@swissgeo/drawing'
 import { makeServerLayer, useLayerStore, isDatasetLayer } from '@swissgeo/layers'
