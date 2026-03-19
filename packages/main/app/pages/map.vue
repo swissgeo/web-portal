@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Layer as BaseLayer, Dimension } from '@swissgeo/layers'
+import type { Layer as BaseLayer, DatasetLayer, Dimension } from '@swissgeo/layers'
 import type { MapLayerRenderer, Layer as MapLayer } from '@swissgeo/map'
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from '@swissgeo/drawing'
@@ -16,7 +16,7 @@ const { locale } = useI18n()
 const ogcDatasetCollectionStore = useOgcDatasetCollectionStore()
 const { data: recordLayers } = await useOgcDatasetCollection({ initializeOnUse: false })
 
-const backgroundLayer = ref<(BaseLayer & { data: Dataset }) | null>(null)
+const backgroundLayer = ref<DatasetLayer | null>(null)
 
 const backgroundLayerMapData = ref<MapLayer>()
 const layersByUuid = ref<Record<string, MapLayer>>({})
@@ -112,7 +112,9 @@ function changeBackground(layer: BaseLayer | null) {
         titleColor: LogPreDefinedColor.Red,
         messages: ['Changing background from <1> to <2>', backgroundLayer.value, layer],
     })
-    backgroundLayer.value = layer as BaseLayer & { data: Dataset }
+    if (layer && isDatasetLayer(layer)) {
+        backgroundLayer.value = layer
+    }
 }
 
 function removeBackgroundLayerData() {

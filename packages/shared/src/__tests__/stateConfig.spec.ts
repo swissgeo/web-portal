@@ -13,7 +13,7 @@ const validState: AppStateConfig = {
     },
     layers: [
         {
-            datasetUrl: 'https://api.example.com/ogc/items/ch.swisstopo.pixelkarte-farbe',
+            layerUrl: 'https://api.example.com/ogc/items/ch.swisstopo.pixelkarte-farbe',
             type: 'wmts',
             isVisible: true,
             opacity: 1,
