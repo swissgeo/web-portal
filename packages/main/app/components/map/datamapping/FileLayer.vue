@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { FileLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 import type { Layer as MapLayer } from '@swissgeo/map'
 
 const { layer, zIndex } = defineProps<{
-    layer: FileLayer
+    layer: Layer
     zIndex: number
 }>()
 
