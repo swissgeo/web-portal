@@ -23,7 +23,7 @@ export default function useOlGPXLayer(
     const zIndex = computed(() => layer.value.zIndex)
     const isVisible = computed(() => layer.value.isVisible)
     const opacity = computed(() => layer.value.opacity)
-    const gpxData = computed(() => layer.value.fileData)
+    const gpxData = computed(() => layer.value.data)
 
     const olLayer = ref<VectorLayer>()
 

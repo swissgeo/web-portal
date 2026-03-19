@@ -33,7 +33,7 @@ export default function useOlKMLLayer(
     const zIndex = computed(() => layer.value.zIndex)
     const isVisible = computed(() => layer.value.isVisible)
     const opacity = computed(() => layer.value.opacity)
-    const kmlData = computed(() => layer.value.fileData)
+    const kmlData = computed(() => layer.value.data)
 
     const positionStore = usePositionStore()
 

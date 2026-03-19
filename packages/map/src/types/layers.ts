@@ -46,17 +46,17 @@ export interface WMSLayer extends Layer {
 
 export interface KMLLayer extends Layer {
     type: 'KML'
-    fileData: string
+    data: string
 }
 
 export interface KMZLayer extends Layer {
     type: 'KMZ'
-    fileData: string
+    data: string
 }
 
 export interface GPXLayer extends Layer {
     type: 'GPX'
-    fileData: string
+    data: string
 }
 
 export interface GeoJSONLayer extends Layer {
@@ -67,7 +67,7 @@ export interface GeoJSONLayer extends Layer {
 
 export interface VectorLayer extends Layer {
     type: 'Vector'
-    fileData: string
+    data: string
 }
 
 export interface MapLayerRenderer {
