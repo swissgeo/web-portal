@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Layer } from '@swissgeo/layers'
+import type { Dataset } from '@swissgeo/ogc'
 
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -25,14 +26,19 @@ const layerTranslationKey = computed(() => mapBackgroundLayerToTranslationKey(ba
 
 function mapBackgroundLayerToTranslationKey(layer: Layer | null): string {
     let translationKey = ''
+
     if (layer === null) {
         translationKey = 'backgroundLayers.voidMap'
-    } else if (layer.dataset?.id === AVAILABLE_BACKGROUNDS[0]) {
-        translationKey = `backgroundLayers.greyMap`
-    } else if (layer.dataset?.id === AVAILABLE_BACKGROUNDS[1]) {
-        translationKey = `backgroundLayers.colorMap`
-    } else if (layer.dataset?.id === AVAILABLE_BACKGROUNDS[2]) {
-        translationKey = `backgroundLayers.swissimage`
+    } else {
+        const layerData = layer.data as Dataset
+
+        if (layerData.id === AVAILABLE_BACKGROUNDS[0]) {
+            translationKey = `backgroundLayers.greyMap`
+        } else if (layerData.id === AVAILABLE_BACKGROUNDS[1]) {
+            translationKey = `backgroundLayers.colorMap`
+        } else if (layerData.id === AVAILABLE_BACKGROUNDS[2]) {
+            translationKey = `backgroundLayers.swissimage`
+        }
     }
     return t(translationKey)
 }

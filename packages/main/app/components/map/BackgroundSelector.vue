@@ -25,7 +25,7 @@ const backgroundRecords = computed(async () => {
 
     const values = await Promise.all(promises)
     return values.map((record: Dataset) => {
-        return makeServerLayer('wmts', record)
+        return makeServerLayer(record)
     })
 })
 
@@ -51,8 +51,13 @@ watch(
         // as soon as the layer data is ready for the backgrounds, select
         // pixelkarte-farbe
         const defaultBackgroundId = AVAILABLE_BACKGROUNDS[1]
-        const defaultBackground = backgrounds.find((background): background is Layer => {
-            return background?.dataset?.id === defaultBackgroundId
+        const defaultBackground = backgrounds.find((background) => {
+            return (
+                background &&
+                background.data &&
+                typeof background.data === 'object' &&
+                background?.data?.id === defaultBackgroundId
+            )
         })
 
         const fallbackBackground = backgrounds.find((background): background is Layer => {

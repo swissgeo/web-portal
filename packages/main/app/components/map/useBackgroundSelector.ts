@@ -16,7 +16,17 @@ export default function useBackgroundSelector(
     const selectorOpen = ref<boolean>(false)
 
     function getImageForBackgroundLayer(backgroundLayer?: Layer | null) {
-        const backgroundId = backgroundLayer?.dataset?.id ?? 'void'
+        if (!backgroundLayer) {
+            return voidUrl
+        }
+
+        if (!backgroundLayer.data || typeof backgroundLayer.data === 'string') {
+            throw new Error('something wrong with the background layer')
+        }
+
+        const layerData = backgroundLayer.data
+
+        const backgroundId = layerData.id
         switch (backgroundId) {
             case 'ch.swisstopo.pixelkarte-farbe':
                 return pixelkarteFarbeUrl
@@ -24,9 +34,6 @@ export default function useBackgroundSelector(
                 return pixelkarteGrauUrl
             case 'ch.swisstopo.swissimage':
                 return swissImageUrl
-            case 'void':
-            default:
-                return voidUrl
         }
     }
 

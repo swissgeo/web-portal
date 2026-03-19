@@ -1,4 +1,4 @@
-import type { Dimension, DimensionId, Layer, LayerType } from '@swissgeo/layers'
+import type { Dimension, DimensionId, Layer } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
 import type { AppStateConfig, LayerStateConfig } from '@swissgeo/shared'
 
@@ -9,13 +9,11 @@ import { parseAppState } from '@swissgeo/shared'
 
 const DISPATCHER = { name: 'state-config' }
 
-function layerToStateConfig(layer: Layer, ogcApiEndpoint: string): LayerStateConfig {
-    const datasetUrl = layer.dataset?.id
-        ? `${ogcApiEndpoint}/items/${layer.dataset.id}`
-        : `${ogcApiEndpoint}/items/${layer.humanId}`
+function layerToStateConfig(layer: Layer): LayerStateConfig {
+    const layerUrl = layer.layerUrl
 
     const config: LayerStateConfig = {
-        datasetUrl,
+        layerUrl,
         type: layer.type,
         isVisible: layer.isVisible,
         opacity: layer.opacity,
@@ -33,7 +31,7 @@ function layerToStateConfig(layer: Layer, ogcApiEndpoint: string): LayerStateCon
     return config
 }
 
-async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer> {
+async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer | null> {
     const layerOptions: Partial<Layer> = {
         isVisible: config.isVisible,
         opacity: config.opacity,
@@ -47,8 +45,12 @@ async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer> {
         layerOptions.dimensions = dims
     }
 
-    const dataset = await $fetch<Dataset>(config.datasetUrl)
-    return makeServerLayer(config.type as LayerType, dataset, layerOptions)
+    if (config.layerUrl) {
+        // TODO the state config needs to handle file layers
+        const data = await $fetch<Dataset>(config.layerUrl)
+        return makeServerLayer(data, layerOptions)
+    }
+    return null
 }
 
 /**
@@ -57,8 +59,6 @@ async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer> {
 export function useStateConfig() {
     const positionStore = usePositionStore()
     const layerStore = useLayerStore()
-    const runtimeConfig = useRuntimeConfig()
-    const ogcApiEndpoint = runtimeConfig.public.ogcApiEndpoint
 
     /**
      * Export the current app state as an AppStateConfig object.
@@ -72,11 +72,11 @@ export function useStateConfig() {
                 zoom: positionStore.zoom,
                 rotation: positionStore.rotation,
             },
-            layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l, ogcApiEndpoint)),
+            layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l)),
         }
 
         if (layerStore.backgroundLayer) {
-            state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer, ogcApiEndpoint)
+            state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer)
         }
 
         return state
@@ -109,7 +109,9 @@ export function useStateConfig() {
         ])
 
         for (const layer of layers) {
-            layerStore.addLayer(layer)
+            if (layer) {
+                layerStore.addLayer(layer)
+            }
         }
 
         layerStore.setBackground(bgLayer)

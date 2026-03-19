@@ -1,7 +1,6 @@
 // Composable to handle search result selection
 // Connects search results to map actions (center, zoom, add layers)
 
-import type { LayerType } from '@swissgeo/layers'
 import type { Dataset, DistributionCollection, Link } from '@swissgeo/ogc'
 import type {
     SearchResult,
@@ -98,7 +97,7 @@ export function useSearchSelection() {
                     log.info('Layer already exists in map:', result.layerId)
                     return
                 }
-                layerStore.addLayer(makeServerLayer(layerType, layerRecord))
+                layerStore.addLayer(makeServerLayer(layerRecord))
             } else {
                 log.error({
                     title: 'useSearchSelection/handleLayerSelection',
@@ -116,7 +115,7 @@ export function useSearchSelection() {
     }
 
     // Helper function to determine layer type from distribution data
-    function getLayerType(collectionData: DistributionCollection): LayerType | 'UNKNOWN' {
+    function getLayerType(collectionData: DistributionCollection): string {
         for (const record of collectionData.records) {
             const protocol = record.properties?.protocol
 

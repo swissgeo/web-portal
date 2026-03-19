@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { LayerType } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
 
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
@@ -14,7 +13,7 @@ const layerStore = useLayerStore()
 // WMS: https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0
 const importUrl = ref('https://wmts.geo.bs.ch/1.0.0/WMTSCapabilities.xml')
 const layers: Ref<string[]> = ref([])
-const currentLayerType: Ref<LayerType | null> = ref(null)
+const currentLayerType: Ref<string | null> = ref(null)
 
 const encodedUrl = computed(() => encodeURIComponent(importUrl.value))
 
@@ -71,7 +70,7 @@ function addLayer(layer: string) {
         throw new Error('Layer type must be determined before adding a layer')
     }
 
-    layerStore.addLayer(makeServerLayer(currentLayerType.value, fakeDataset))
+    layerStore.addLayer(makeServerLayer(fakeDataset))
 }
 </script>
 

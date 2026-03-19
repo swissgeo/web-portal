@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { FileLayer } from '@swissgeo/layers'
+import type { Layer } from '@swissgeo/layers'
 import type { Layer as MapLayer } from '@swissgeo/map'
 
 const { layer, zIndex } = defineProps<{
-    layer: FileLayer
+    layer: Layer
     zIndex: number
 }>()
 
@@ -13,9 +13,11 @@ const emit = defineEmits<{
 }>()
 
 const layerZIndex = computed(() => zIndex)
+const fileData = computed(() => layer.data)
 
 const layerData = computed(() => ({
     ...layer,
+    fileData,
     zIndex: layerZIndex.value,
     type: layer.type.toUpperCase(),
 }))

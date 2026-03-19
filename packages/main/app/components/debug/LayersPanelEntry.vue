@@ -57,7 +57,7 @@ function addLayerToMap() {
         throw Error('Neither OGC:WMS nor OGC:WMTS found in the definition')
     }
     if (type.value !== 'UNKNOWN') {
-        layerStore.addLayer(makeServerLayer(type.value, localizedLayer.value))
+        layerStore.addLayer(makeServerLayer(localizedLayer.value))
     }
 }
 </script>

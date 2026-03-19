@@ -3,7 +3,7 @@
  * Uses datasetUrl to re-fetch the full dataset on import.
  */
 export interface LayerStateConfig {
-    datasetUrl: string
+    layerUrl?: string
     type: string
     isVisible: boolean
     opacity: number
@@ -92,8 +92,8 @@ function validateLayerConfig(layer: unknown, path: string): asserts layer is Lay
 
     const l = layer as Record<string, unknown>
 
-    if (typeof l.datasetUrl !== 'string') {
-        throw new Error(`${path}.datasetUrl must be a string`)
+    if (typeof l.layerUrl !== 'string') {
+        throw new Error(`${path}.layerUrl must be a string`)
     }
 
     if (typeof l.type !== 'string') {

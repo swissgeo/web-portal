@@ -2,28 +2,7 @@ import type { Dataset } from '@swissgeo/ogc'
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import type { LayerType } from '@/types'
-
 import { getInfoFromDataset, makeServerLayer } from '@/utils/layerUtils'
-
-function createExpectedObject(layerType: LayerType, dataset: Dataset) {
-    return {
-        uuid: 'mock-uuid-with-extra-step',
-        humanId: 'dataset-1',
-        opacity: 1,
-        dataset,
-        isVisible: true,
-        type: layerType,
-        isLoading: false,
-        info: {
-            displayName: 'Layer Title',
-            attribution: {
-                title: 'SwissGeo',
-            },
-            abstract: 'Layer description',
-        },
-    }
-}
 
 describe('Testing the information gathering from datasets', () => {
     it('returns dataset.id when properties are undefined', () => {
@@ -152,25 +131,15 @@ describe('testing the makeServerLayer function', () => {
 
     // I would've like to add a "non valid type" but the function assume we get
     // a correct type, and thus has no protection.
-    it.each`
-        layerType    | expectedServerLayerCreated
-        ${'wms'}     | ${createExpectedObject('wms', baseDataset)}
-        ${'wmts'}    | ${createExpectedObject('wmts', baseDataset)}
-        ${'geojson'} | ${createExpectedObject('geojson', baseDataset)}
-        ${'vector'}  | ${createExpectedObject('vector', baseDataset)}
-        ${'kml'}     | ${createExpectedObject('kml', baseDataset)}
-        ${'kmz'}     | ${createExpectedObject('kmz', baseDataset)}
-        ${'gpx'}     | ${createExpectedObject('gpx', baseDataset)}
-    `(
-        'creates a layer with the correct defaults, of the correct type for the layer type : $layerType',
-        ({ layerType, expectedServerLayerCreated }) => {
-            const layer = makeServerLayer(layerType, baseDataset)
-            expect(layer).toMatchObject(expectedServerLayerCreated)
-        }
-    )
+    it('creates a layer with the correct defaults', () => {
+        const layer = makeServerLayer(baseDataset)
+        expect(layer.opacity).toEqual(1)
+        expect(layer.isVisible).toEqual(true)
+        expect(layer.isLoading).toEqual(false)
+    })
 
     it('overrides defaults with options', () => {
-        const layer = makeServerLayer('wms', baseDataset, {
+        const layer = makeServerLayer(baseDataset, {
             opacity: 0.3,
             isVisible: false,
         })

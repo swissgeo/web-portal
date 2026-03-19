@@ -13,7 +13,7 @@ const validState: AppStateConfig = {
     },
     layers: [
         {
-            datasetUrl: 'https://api.example.com/ogc/items/ch.swisstopo.pixelkarte-farbe',
+            layerUrl: 'https://api.example.com/ogc/items/ch.swisstopo.pixelkarte-farbe',
             type: 'wmts',
             isVisible: true,
             opacity: 1,
@@ -31,7 +31,7 @@ describe('parseAppState', () => {
         const state = {
             ...validState,
             backgroundLayer: {
-                datasetUrl: 'https://api.example.com/ogc/items/ch.swisstopo.background',
+                layerUrl: 'https://api.example.com/ogc/items/ch.swisstopo.background',
                 type: 'wmts',
                 isVisible: true,
                 opacity: 1,
@@ -58,7 +58,7 @@ describe('parseAppState', () => {
             ...validState,
             layers: [
                 {
-                    datasetUrl: 'https://api.example.com/ogc/items/ch.swisstopo.zeitreihen',
+                    layerUrl: 'https://api.example.com/ogc/items/ch.swisstopo.zeitreihen',
                     type: 'wms',
                     isVisible: true,
                     opacity: 0.8,
@@ -133,13 +133,13 @@ describe('parseAppState', () => {
         )
     })
 
-    it('rejects layer with missing datasetUrl', () => {
+    it('rejects layer with missing layerUrl', () => {
         expect(() =>
             parseAppState({
                 ...validState,
                 layers: [{ type: 'wms', isVisible: true, opacity: 1 }],
             })
-        ).toThrow('layers[0].datasetUrl must be a string')
+        ).toThrow('layers[0].layerUrl must be a string')
     })
 
     it('rejects layer with opacity out of range', () => {
@@ -148,7 +148,7 @@ describe('parseAppState', () => {
                 ...validState,
                 layers: [
                     {
-                        datasetUrl: 'https://api.example.com/ogc/items/test',
+                        layerUrl: 'https://api.example.com/ogc/items/test',
                         type: 'wms',
                         isVisible: true,
                         opacity: 1.5,
@@ -162,7 +162,7 @@ describe('parseAppState', () => {
         expect(() =>
             parseAppState({
                 ...validState,
-                backgroundLayer: { datasetUrl: 'https://api.example.com/ogc/items/test' },
+                backgroundLayer: { layerUrl: 'https://api.example.com/ogc/items/test' },
             })
         ).toThrow('backgroundLayer.type must be a string')
     })

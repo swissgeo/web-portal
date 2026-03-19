@@ -32,7 +32,7 @@ export default function useOlKMZLayer(
     const zIndex = computed(() => layer.value.zIndex)
     const isVisible = computed(() => layer.value.isVisible)
     const opacity = computed(() => layer.value.opacity)
-    const kmzDataBase64 = computed(() => layer.value.fileData)
+    const kmzDataBase64 = computed(() => layer.value.data)
 
     const olLayer = ref<VectorLayer>()
 

@@ -204,7 +204,7 @@ export default function useOlVectorLayer(
     const zIndex = computed(() => layer.value.zIndex)
     const isVisible = computed(() => layer.value.isVisible)
     const opacity = computed(() => layer.value.opacity)
-    const vectorData = computed(() => layer.value.fileData)
+    const vectorData = computed(() => layer.value.data)
 
     const styleUrl = `/api/v1/layers/swissgeo/vectorTest`
 

@@ -33,7 +33,7 @@ const filteredAvailableLayers = computed((): Dataset[] => {
 
 function toggleVectorLayer() {
     layerStore.addLayer(
-        makeServerLayer('vector', {
+        makeServerLayer({
             id: 'ch.swisstopouseLayerStore.vector',
             links: [],
             properties: {
