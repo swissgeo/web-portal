@@ -47,7 +47,7 @@ describe('useBackgroundSelector', () => {
         it('returns a URL for pixelkarte-farbe', () => {
             const { getImageForBackgroundLayer } = useBackgroundSelector(vi.fn())
             const layer = {
-                dataset: { id: 'ch.swisstopo.pixelkarte-farbe' },
+                data: { id: 'ch.swisstopo.pixelkarte-farbe' },
             } as unknown as Layer
             const url = getImageForBackgroundLayer(layer)
             expect(url).toBeTruthy()
@@ -57,7 +57,7 @@ describe('useBackgroundSelector', () => {
         it('returns a URL for pixelkarte-grau', () => {
             const { getImageForBackgroundLayer } = useBackgroundSelector(vi.fn())
             const layer = {
-                dataset: { id: 'ch.swisstopo.pixelkarte-grau' },
+                data: { id: 'ch.swisstopo.pixelkarte-grau' },
             } as unknown as Layer
             expect(getImageForBackgroundLayer(layer)).toContain('pixelkarte-grau')
         })
@@ -65,7 +65,7 @@ describe('useBackgroundSelector', () => {
         it('returns a URL for swissimage', () => {
             const { getImageForBackgroundLayer } = useBackgroundSelector(vi.fn())
             const layer = {
-                dataset: { id: 'ch.swisstopo.swissimage' },
+                data: { id: 'ch.swisstopo.swissimage' },
             } as unknown as Layer
             expect(getImageForBackgroundLayer(layer)).toContain('swissimage')
         })
@@ -82,20 +82,20 @@ describe('useBackgroundSelector', () => {
 
         it('falls back to the void image for an unknown layer id', () => {
             const { getImageForBackgroundLayer } = useBackgroundSelector(vi.fn())
-            const layer = { dataset: { id: 'unknown.layer' } } as unknown as Layer
+            const layer = { data: { id: 'unknown.layer' } } as unknown as Layer
             expect(getImageForBackgroundLayer(layer)).toContain('void')
         })
 
         it('returns distinct URLs for different layer types', () => {
             const { getImageForBackgroundLayer } = useBackgroundSelector(vi.fn())
             const farbe = getImageForBackgroundLayer({
-                dataset: { id: 'ch.swisstopo.pixelkarte-farbe' },
+                data: { id: 'ch.swisstopo.pixelkarte-farbe' },
             } as unknown as Layer)
             const grau = getImageForBackgroundLayer({
-                dataset: { id: 'ch.swisstopo.pixelkarte-grau' },
+                data: { id: 'ch.swisstopo.pixelkarte-grau' },
             } as unknown as Layer)
             const aerial = getImageForBackgroundLayer({
-                dataset: { id: 'ch.swisstopo.swissimage' },
+                data: { id: 'ch.swisstopo.swissimage' },
             } as unknown as Layer)
             const voidImg = getImageForBackgroundLayer(null)
 

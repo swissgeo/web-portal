@@ -15,7 +15,7 @@ export default function useBackgroundSelector(
 ) {
     const selectorOpen = ref<boolean>(false)
 
-    function getImageForBackgroundLayer(backgroundLayer?: Layer | null) {
+    function getImageForBackgroundLayer(backgroundLayer?: Layer | null): string {
         if (!backgroundLayer) {
             return voidUrl
         }
@@ -35,6 +35,8 @@ export default function useBackgroundSelector(
             case 'ch.swisstopo.swissimage':
                 return swissImageUrl
         }
+
+        return voidUrl
     }
 
     function onSelectBackground(backgroundLayer: Layer | null) {
