@@ -103,3 +103,10 @@ USER ${USER}
 EXPOSE ${PORT}
 WORKDIR ${INSTALL_DIR}
 ENTRYPOINT ["node", "server/index.mjs"]
+
+###########################################################
+# Container to use for checks
+FROM builder-dev AS checker
+LABEL target=checker
+
+WORKDIR ${BUILD_DIR}
