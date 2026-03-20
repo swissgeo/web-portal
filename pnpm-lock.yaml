@@ -139,7 +139,7 @@ catalogs:
       specifier: ^0.5.0
       version: 0.5.0
     happy-dom:
-      specifier: ^20.5.3
+      specifier: 20.6.1
       version: 20.6.1
     lodash:
       specifier: ^4.17.21
@@ -392,6 +392,9 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.6.1)
+      happy-dom:
+        specifier: 'catalog:'
+        version: 20.6.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
