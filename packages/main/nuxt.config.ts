@@ -30,6 +30,9 @@ export default defineNuxtConfig({
     },
     typescript: {
         typeCheck: false, //too much baggage ATM
+        tsConfig: {
+            include: ['**/__tests__/**/*'],
+        },
     },
     compatibilityDate: '2025-07-15',
     devtools: { enabled: true },
