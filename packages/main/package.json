@@ -15,6 +15,7 @@
         "lint": "eslint",
         "lint:write": "eslint --fix",
         "preview": "nuxt preview",
+        "test:unit": "vitest run",
         "type-check": "nuxt typecheck"
     },
     "dependencies": {
@@ -77,6 +78,7 @@
         "typescript": "catalog:",
         "vite-plugin-vue-devtools": "catalog:",
         "vitest": "catalog:",
+        "vitest-environment-nuxt": "catalog:",
         "vue-router": "catalog:",
         "vue-tsc": "catalog:"
     },
