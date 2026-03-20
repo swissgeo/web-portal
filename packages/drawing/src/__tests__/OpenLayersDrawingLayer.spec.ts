@@ -9,7 +9,10 @@ import OpenLayersDrawingLayer from '../components/OpenLayersDrawingLayer.vue'
 })
 
 const mockSetSelectedIcon = vi.fn()
-const mockSetZIndex = vi.fn()
+const { mockSetZIndex } = vi.hoisted(() => ({
+    mockSetZIndex: vi.fn(),
+}))
+
 const mockDrawingStore = {
     drawingFeatures: [],
     drawingMode: 'None',
@@ -19,6 +22,7 @@ const mockDrawingStore = {
     setSelectedFeatureId: vi.fn(),
     setSelectedFeatureInfo: vi.fn(),
     clearPassiveSelection: vi.fn(),
+    setOlLayer: vi.fn(),
 }
 
 function createLayerFixture(): Layer {
@@ -36,6 +40,7 @@ vi.mock('@/stores/drawing', () => ({
     })),
 }))
 
+// this isn't really mocking the thing!
 vi.mock('@/composables/olDrawing.composable', () => ({
     useOlDrawing: vi.fn(() => ({
         startDrawing: vi.fn(),
@@ -56,6 +61,13 @@ vi.mock('@/composables/olDrawing.composable', () => ({
 
 vi.mock('@/utils/markerIcons', () => ({
     getMarkerIconById: vi.fn(() => undefined),
+    DEFAULT_MARKER_ICON: 'default',
+}))
+
+vi.mock('vue-i18n', () => ({
+    useI18n: vi.fn(() => ({
+        t: vi.fn(),
+    })),
 }))
 
 describe('OpenLayersDrawingLayer.vue', () => {
