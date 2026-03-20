@@ -7,18 +7,12 @@ import { IconButton } from '@swissgeo/skeleton'
 const { locale } = useI18n()
 
 const filterTerm = ref<string>('')
-
 // the composable will update the data if the locale changes
-const { data: recordLayers } = useOgcDatasetCollection(locale)
+const { data: recordLayers } = useOgcCatalog(locale)
 
 const layerStore = useLayerStore()
 
 const availableLayers = computed(() => {
-    // const vtLayer: OGCFeature = {
-    //     id: 'VECTOR TEST',
-    //     links: [],
-    // }
-    // recordLayers.value!.features.unshift(vtLayer)
     return recordLayers.value
 })
 
