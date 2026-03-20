@@ -29,6 +29,7 @@ vi.mock('@swissgeo/log', () => ({
 
 vi.mock('@vueuse/core', () => ({
     useStorage: vi.fn(),
+    createSharedComposable: vi.fn(),
 }))
 
 describe('LayersPanelEntry.vue locale-aware behavior', () => {

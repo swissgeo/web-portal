@@ -1,9 +1,29 @@
-import type { DatasetCollection } from '@swissgeo/ogc'
-
-import { flushPromises, mount } from '@vue/test-utils'
+import { flushPromises, shallowMount } from '@vue/test-utils'
 import LayersPanel from '~/components/debug/LayersPanel.vue'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { computed, defineComponent, ref } from 'vue'
+import { describe, expect, it, vi } from 'vitest'
+
+const { useOgcCatalogSpy, locale } = vi.hoisted(() => ({
+    useOgcCatalogSpy: vi.fn(() => ({
+        data: [],
+    })),
+    locale: 'de',
+}))
+
+vi.mock('~/composables/useOgcCatalog', () => ({
+    useOgcCatalog: useOgcCatalogSpy,
+}))
+
+vi.mock('vue-i18n', async (importOriginal) => {
+    const actual = await importOriginal()
+    return {
+        // @ts-expect-error It works and this is a test
+        ...actual,
+        useI18n: vi.fn(() => ({
+            t: vi.fn((key: string) => key),
+            locale,
+        })),
+    }
+})
 
 vi.mock('@swissgeo/layers', () => ({
     useLayerStore: () => ({
@@ -18,49 +38,9 @@ vi.mock('@swissgeo/skeleton', () => ({
     },
 }))
 
-const useOgcDatasetCollectionSpy = vi.fn()
-
 describe('LayersPanel.vue locale-aware records loading', () => {
-    beforeEach(() => {
-        vi.clearAllMocks()
-
-        const records: DatasetCollection = {
-            id: 'datasets',
-            type: 'Collection',
-            records: [],
-            itemType: 'Dataset',
-            title: 'Datasets',
-        }
-
-        useOgcDatasetCollectionSpy.mockResolvedValue({
-            data: ref(records),
-        })
-
-        vi.stubGlobal('ref', ref)
-        vi.stubGlobal('computed', computed)
-        vi.stubGlobal('useRuntimeConfig', () => ({
-            public: {
-                ogcApiEndpoint: 'https://example.test/collections',
-            },
-        }))
-        vi.stubGlobal('useI18n', () => ({
-            locale: ref('fr'),
-        }))
-        vi.stubGlobal('useOgcDatasetCollection', useOgcDatasetCollectionSpy)
-    })
-
-    afterEach(() => {
-        vi.unstubAllGlobals()
-        vi.clearAllMocks()
-    })
-
     it('loads records from shared dataset collection composable', async () => {
-        const TestHost = defineComponent({
-            components: { LayersPanel },
-            template: '<Suspense><LayersPanel /></Suspense>',
-        })
-
-        mount(TestHost, {
+        shallowMount(LayersPanel, {
             global: {
                 stubs: {
                     DebugLayersPanelEntry: true,
@@ -70,6 +50,7 @@ describe('LayersPanel.vue locale-aware records loading', () => {
 
         await flushPromises()
 
-        expect(useOgcDatasetCollectionSpy).toHaveBeenCalled()
+        expect(useOgcCatalogSpy).toHaveBeenCalled()
+        expect(useOgcCatalogSpy).toHaveBeenCalledWith(locale)
     })
 })
