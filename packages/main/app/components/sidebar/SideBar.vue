@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { SearchResult } from '@swissgeo/search'
+import type { Layer as MapLayer } from '@swissgeo/map'
 
 import LogoPic from '@/components/LogoPic.vue'
 import LayerCart from '@/components/sidebar/LayerCart.vue'
@@ -13,7 +14,9 @@ const emit = defineEmits<{
     'search-result-selected': [result: SearchResult]
     'reset-app': [void]
 }>()
-
+const { mapLayers } = defineProps<{
+    mapLayers: MapLayer[]
+}>()
 defineSlots<{
     'bottom-controls'?: () => unknown
 }>()
@@ -56,7 +59,14 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH
                     :style="{ width: sidebarSecondColumnWidth + 'px' }"
                     class="relative flex h-full bg-white transition-[width] duration-75 ease-out"
                 >
-                    <LayerCart v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"></LayerCart>
+                    <!-- TODO and TO DISCUSS:
+                    layertCart should have the mapData layers (except bg layer) as a prop
+                    searchPanel should have sources
+                -->
+                    <LayerCart
+                        v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
+                        :layers="mapLayers"
+                    ></LayerCart>
                     <SearchPanel
                         v-if="uiStore.currentSidebar === SidebarType.SEARCH"
                         @result-selected="handleSearchResultSelected"

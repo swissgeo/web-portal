@@ -7,9 +7,8 @@ import OpenLayersMouseTracker from './openlayers/OpenLayersMouseTracker.vue'
 import OpenLayersScale from './openlayers/OpenLayersScale.vue'
 // import MapFooterAttributionList from './uiComponents/MapFooterAttributionList.vue'
 
-const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
+const { layers, customLayerRenderers } = defineProps<{
     layers: Layer[]
-    backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
 }>()
 </script>
@@ -19,7 +18,6 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
         <div></div>
         <!-- here's the switch between openlayers and cesium -->
         <OpenLayersMap
-            :backgroundLayer="backgroundLayer"
             :custom-layer-renderers="customLayerRenderers"
             :layers="layers"
         >

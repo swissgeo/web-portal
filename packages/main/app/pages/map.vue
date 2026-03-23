@@ -1,25 +1,23 @@
 <script lang="ts" setup>
-import type { Layer as BaseLayer, DatasetLayer, Dimension, LayerInfo } from '@swissgeo/layers'
-import type { MapLayerRenderer, Layer as MapLayer } from '@swissgeo/map'
-import type { Dataset } from '@swissgeo/ogc'
+import type { Layer as BaseLayer } from '@swissgeo/layers'
+import type { MapLayerRenderer } from '@swissgeo/map'
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from '@swissgeo/drawing'
-import { useLayerStore, isDatasetLayer } from '@swissgeo/layers'
+import { useLayerStore } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
 
-import { projectLayersForMap } from '@/utils/layerOrder'
+import SourceToMapDataConverter from '../components/SourceToMapDataConverter.vue'
 
 const layerStore = useLayerStore()
 const mapViewStore = useMapViewStore()
 
-const backgroundLayer = ref<DatasetLayer | null>(null)
-
 const backgroundLayerMapData = ref<MapLayer | null>(null)
 const layersByUuid = ref<Record<string, MapLayer>>({})
+const backgroundLayer = computed(() => layerStore.backgroundLayer)
 
 const layersForMap = computed(() => {
-    return projectLayersForMap(layerStore.layers, layersByUuid.value)
+    return mapViewStore.getMapLayers().value
 })
 
 const showAdditionalMapUi = computed(() => !mapViewStore.isFullscreenModeActive)
@@ -30,93 +28,21 @@ const customLayerRenderers: MapLayerRenderer[] = [
         component: OpenLayersDrawingLayer,
     },
 ]
-const storeDatasetLayers = computed(() => {
-    return layerStore.layers.filter((layer) => isDatasetLayer(layer))
-})
-
-const storeFileLayers = computed(() => {
-    return layerStore.layers.filter((layer) => !isDatasetLayer(layer))
-})
-
-function updateStoreLayerData(layerUuid: string, dataset: Dataset) {
-    layerStore.setLayerData(layerUuid, dataset)
-}
-
-function updateMapLayerData(layerUuid: string, layerData: MapLayer) {
-    layersByUuid.value[layerUuid] = layerData
-}
-
-function removeLayerData(layerUuid: string) {
-    delete layersByUuid.value[layerUuid]
-}
-
-function updateTimeDimension(layerUuid: string, dimension: Partial<Dimension>) {
-    layerStore.setDimension('time', layerUuid, dimension)
-}
-
-function updateOpacity(layerUuid: string, opacity: number) {
-    layerStore.setOpacity(layerUuid, opacity)
-}
 
 function changeBackground(layer: BaseLayer | null) {
-    log.debug({
-        title: 'map',
-        titleColor: LogPreDefinedColor.Red,
-        messages: ['Changing background from <1> to <2>', backgroundLayer.value, layer],
-    })
-    if (layer && isDatasetLayer(layer)) {
-        backgroundLayer.value = layer
-    } else if (layer === null) {
-        // the "void" layer
-        backgroundLayer.value = null
-    }
-}
-
-function removeBackgroundLayerData() {
-    backgroundLayerMapData.value = null
-}
-
-function updateLayerInfo(layerUuid: string, info: LayerInfo) {
-    layerStore.setLayerInfo(layerUuid, info)
+    // TODO: have a setter rather than a direct access
+    layerStore.backgroundLayer = layer
 }
 </script>
 
 <template>
     <ClientOnly>
-        <MapDatamappingFileConverter
-            v-for="layer in storeFileLayers"
-            :layer="layer"
-            :key="layer.uuid"
-            :zIndex="layerStore.getLayerZIndex(layer.uuid)"
-            @update="updateMapLayerData(layer.uuid, $event)"
-            @remove="removeLayerData(layer.uuid)"
-        ></MapDatamappingFileConverter>
-        <MapDatamappingOgcDatasetConverter
-            v-for="layer in storeDatasetLayers"
-            :layer="layer"
-            :key="layer.uuid"
-            :zIndex="layerStore.getLayerZIndex(layer.uuid)"
-            @update="updateMapLayerData(layer.uuid, $event)"
-            @updateLayerInfo="updateLayerInfo"
-            @updateOpacity="updateOpacity"
-            @remove="removeLayerData(layer.uuid)"
-            @updateTimeDimension="updateTimeDimension"
-            @updateDataset="updateStoreLayerData"
-        ></MapDatamappingOgcDatasetConverter>
-
-        <!-- Mapping the background layer -->
-        <MapDatamappingOgcDatasetConverter
-            v-if="backgroundLayer"
-            :key="backgroundLayer.uuid"
-            :layer="backgroundLayer"
-            @update="backgroundLayerMapData = $event"
-            :zIndex="-1"
-            @remove="removeBackgroundLayerData"
-        ></MapDatamappingOgcDatasetConverter>
-
+        <SourceToMapDataConverter
+            :source-bg-layer="backgroundLayer"
+            :source-data="layerStore.layers"
+        />
         <MapModule
             :layers="layersForMap"
-            :background-layer="backgroundLayerMapData"
             :custom-layer-renderers="customLayerRenderers"
             class="h-screen w-full"
         />

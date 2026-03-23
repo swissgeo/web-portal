@@ -16,9 +16,8 @@ import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.com
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
-const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
+const { layers, customLayerRenderers } = defineProps<{
     layers: Layer[]
-    backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
 }>()
 
@@ -62,12 +61,6 @@ createOlMap()
         data-cy="ol-map"
         @contextmenu.prevent
     >
-        <OpenLayersVisibleLayer
-            :layer="backgroundLayer"
-            :custom-layer-renderers="customLayerRenderers"
-            v-if="backgroundLayer"
-            :key="backgroundLayer.uuid"
-        />
         <OpenLayersVisibleLayer
             :layer="layer"
             :custom-layer-renderers="customLayerRenderers"
