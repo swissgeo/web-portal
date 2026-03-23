@@ -7,14 +7,14 @@ import { computed, onMounted, ref, watch } from 'vue'
 const { locale, locales } = useI18n()
 const appStore = useAppStore()
 
-const localeItems = computed(() =>
-    locales.value.map((item) => ({
+const localeItems = computed(() => {
+    return locales.value.map((item) => ({
         code: item.code,
         name: item.name ?? item.code,
         dir: (item.dir ?? 'ltr') as 'ltr' | 'rtl',
         messages: {},
     }))
-)
+})
 
 const selectedLocale = ref<Lang>(locale.value)
 const isClient = ref(false)
