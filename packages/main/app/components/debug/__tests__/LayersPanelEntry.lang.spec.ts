@@ -1,5 +1,6 @@
 import type { Dataset } from '@swissgeo/ogc'
 
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { mount } from '@vue/test-utils'
 import LayersPanelEntry from '~/components/debug/LayersPanelEntry.vue'
 import { describe, expect, it, vi } from 'vitest'
@@ -25,15 +26,10 @@ vi.mock('@swissgeo/log', () => ({
     },
 }))
 
-vi.mock('vue-i18n', async (importOriginal) => {
-    const actual = await importOriginal()
-    return {
-        // @ts-expect-error It works and this is a test
-        ...actual,
-        useI18n: vi.fn(() => ({
-            t: vi.fn((key: string) => key),
-        })),
-    }
+mockNuxtImport('useI18n', () => {
+    return () => ({
+        t: vi.fn((key: string) => key),
+    })
 })
 
 describe('LayersPanelEntry.vue locale-aware behavior', () => {
