@@ -10,7 +10,8 @@ export const useAppStore = defineStore('app', () => {
     // which causes nuxt-i18n to update locale (URL is source of truth).
     // Read locale.value directly for serialization when needed.
     async function applyLocale(lang: Lang) {
-        await navigateTo(switchLocalePath(lang))
+        const path = switchLocalePath(lang)
+        await navigateTo(path)
     }
 
     return { locale, applyLocale }
