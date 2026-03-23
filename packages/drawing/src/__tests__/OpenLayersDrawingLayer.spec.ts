@@ -66,7 +66,7 @@ vi.mock('@/utils/markerIcons', () => ({
 
 vi.mock('vue-i18n', () => ({
     useI18n: vi.fn(() => ({
-        t: vi.fn(),
+        t: vi.fn((key: string) => key),
     })),
 }))
 

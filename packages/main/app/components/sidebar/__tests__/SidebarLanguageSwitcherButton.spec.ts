@@ -1,3 +1,4 @@
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { mount, flushPromises } from '@vue/test-utils'
 import SidebarLanguageSwitcherButton from '~/components/sidebar/SidebarLanguageSwitcherButton.vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -21,17 +22,12 @@ vi.mock('@/stores/app', () => ({
     })),
 }))
 
-vi.mock('vue-i18n', async (importOriginal) => {
-    const actual = await importOriginal()
-    return {
-        // @ts-expect-error It works and this is a test
-        ...actual,
-        useI18n: vi.fn(() => ({
-            t: vi.fn((key: string) => key),
-            locale,
-            locales,
-        })),
-    }
+mockNuxtImport('useI18n', () => {
+    return () => ({
+        t: vi.fn((key: string) => key),
+        locale,
+        locales,
+    })
 })
 
 vi.mock('@swissgeo/log', () => ({

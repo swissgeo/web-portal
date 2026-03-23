@@ -1,5 +1,6 @@
 import type { Layer } from '@swissgeo/layers'
 
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { mount } from '@vue/test-utils'
 // vue-i18n is aliased to a stub in vitest.config.ts, so no manual mock needed.
 // useBackgroundSelector's PNG imports resolve correctly via the ~ alias.
@@ -12,15 +13,10 @@ const mockLayer = {
     data: { id: 'ch.swisstopo.pixelkarte-farbe' },
 } as unknown as Layer
 
-vi.mock('vue-i18n', async (importOriginal) => {
-    const original = await importOriginal()
-    return {
-        // @ts-expect-error It works and this is a test
-        ...original,
-        useI18n: vi.fn(() => ({
-            t: vi.fn((key: string) => key),
-        })),
-    }
+mockNuxtImport('useI18n', () => {
+    return () => ({
+        t: vi.fn((key: string) => key),
+    })
 })
 
 describe('BackgroundSelectorEntry.vue', () => {

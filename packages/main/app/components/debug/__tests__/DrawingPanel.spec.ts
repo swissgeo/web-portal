@@ -1,5 +1,6 @@
 import type { ComponentPublicInstance } from 'vue'
 
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { useDrawingStore } from '@swissgeo/drawing'
 import { shallowMount } from '@vue/test-utils'
 import DrawingPanel from '~/components/debug/DrawingPanel.vue'
@@ -9,28 +10,25 @@ type DrawingPanelVm = ComponentPublicInstance & {
     handleClose: () => void
 }
 
-const messages = {
-    en: {
-        debug: {
-            drawingClearConfirmTitle: 'Delete all drawings?',
-            drawingClearConfirmDescription:
-                'This action will remove all drawings from the current session.',
-            drawingClearConfirmCancel: 'Cancel',
-            drawingClearConfirmConfirm: 'Delete',
+const { messages } = vi.hoisted(() => ({
+    messages: {
+        en: {
+            debug: {
+                drawingClearConfirmTitle: 'Delete all drawings?',
+                drawingClearConfirmDescription:
+                    'This action will remove all drawings from the current session.',
+                drawingClearConfirmCancel: 'Cancel',
+                drawingClearConfirmConfirm: 'Delete',
+            },
         },
     },
-} as const
+}))
 
-vi.mock('vue-i18n', async (importOriginal) => {
-    const actual = await importOriginal()
-    return {
-        // @ts-expect-error It works and this is a test
-        ...actual,
-        useI18n: vi.fn(() => ({
-            t: vi.fn((key: string) => key),
-            messages,
-        })),
-    }
+mockNuxtImport('useI18n', () => {
+    return () => ({
+        t: vi.fn((key: string) => key),
+        messages,
+    })
 })
 
 function mountDrawingPanel() {
