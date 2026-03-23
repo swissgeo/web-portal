@@ -1,10 +1,9 @@
 import type { ComponentPublicInstance } from 'vue'
 
 import { useDrawingStore } from '@swissgeo/drawing'
-import { mount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import DrawingPanel from '~/components/debug/DrawingPanel.vue'
 import { describe, it, expect, vi } from 'vitest'
-import { ref } from 'vue'
 
 type DrawingPanelVm = ComponentPublicInstance & {
     handleClose: () => void
@@ -35,7 +34,7 @@ vi.mock('vue-i18n', async (importOriginal) => {
 })
 
 function mountDrawingPanel() {
-    return mount(DrawingPanel, {})
+    return shallowMount(DrawingPanel, {})
 }
 
 const setDrawingMode = vi.fn()
