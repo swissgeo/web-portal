@@ -12,9 +12,8 @@ import OpenLayersScalePrint from './openlayers/OpenLayersScalePrint.vue'
 
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 
-const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
+const { layers, customLayerRenderers } = defineProps<{
     layers: Layer[]
-    backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
     displayMode: 'web' | 'print'
 }>()
@@ -24,7 +23,6 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
     <div>
         <!-- here's the switch between openlayers and cesium -->
         <OpenLayersMap
-            :backgroundLayer="backgroundLayer"
             :custom-layer-renderers="customLayerRenderers"
             :layers="layers"
         >

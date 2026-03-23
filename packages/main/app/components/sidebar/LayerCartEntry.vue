@@ -9,16 +9,18 @@ import { computed } from 'vue'
 import IconButton from '@/components/IconButton.vue'
 import { useDatasetPanelStore } from '@/stores/datasetPanel'
 
-const { layer } = defineProps<{
+const { layer, index } = defineProps<{
     layer: Layer
+    index: number
 }>()
 
 const layerStore = useLayerStore()
 const drawingStore = useDrawingStore()
 const datasetPanelStore = useDatasetPanelStore()
+const mapViewStore = useMapViewStore()
 
 const layersLength = computed(() => layerStore.layers.length)
-const layerZIndex = computed(() => layerStore.getLayerZIndex(layer.uuid))
+const layerZIndex = computed(() => index)
 
 const displayName = computed(() => {
     // get the info from the dataset
