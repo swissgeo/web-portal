@@ -3,7 +3,7 @@
  * Uses datasetUrl to re-fetch the full dataset on import.
  */
 export interface LayerStateConfig {
-    layerUrl: string
+    layerUrl?: string
     type: string
     isVisible: boolean
     opacity: number
