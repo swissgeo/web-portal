@@ -25,6 +25,8 @@ export const useMapViewStore = defineStore('mapView', () => {
         isFullscreenModeActive.value = !isFullscreenModeActive.value
     }
 
+    // layers will be here
+
     return {
         isTimeSliderVisible,
         isFullscreenModeActive,

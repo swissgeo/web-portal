@@ -9,14 +9,15 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
 
 import { projectLayersForMap } from '@/utils/layerOrder'
+import SourceToMapDataConverter from '../components/SourceToMapDataConverter.vue'
 
 const layerStore = useLayerStore()
 const mapViewStore = useMapViewStore()
 
-const backgroundLayer = ref<DatasetLayer | null>(null)
+const backgroundLayer = ref<DatasetLayer | null>(null) // IN MAP VIEW STORE
 
 const backgroundLayerMapData = ref<MapLayer>()
-const layersByUuid = ref<Record<string, MapLayer>>({})
+const layersByUuid = ref<Record<string, MapLayer>>({}) // IN MAP VIEW STORE
 
 const layersForMap = computed(() => {
     return projectLayersForMap(layerStore.layers, layersByUuid.value)
@@ -83,6 +84,10 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
 
 <template>
     <ClientOnly>
+        <SourceToMapDataConverter
+            :source-bg-layer="layerStore.backgroundLayer"
+            :source-data="layerStore.layers"
+        />
         <MapDatamappingFileLayer
             v-for="layer in storeFileLayers"
             :layer="layer"
