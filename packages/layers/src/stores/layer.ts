@@ -1,3 +1,5 @@
+import type { Dataset } from '@swissgeo/ogc'
+
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -122,6 +124,7 @@ export const useLayerStore = defineStore('layers', () => {
     }
 
     function setLayerInfo(layerUuid: string, info: LayerInfo): void {
+        log.debug(`Setting layer info for ${layerUuid} to ${JSON.stringify(info)}`)
         const layer = getLayerByUuid(layerUuid)
         if (!layer) {
             return
@@ -136,6 +139,14 @@ export const useLayerStore = defineStore('layers', () => {
         }
         const index = layers.value.indexOf(layer)
         layers.value.splice(index, 1)
+    }
+
+    function setLayerData(layerUuid: string, dataset: Dataset) {
+        const layer = getLayerByUuid(layerUuid)
+        if (!layer) {
+            return null
+        }
+        layer.data = dataset
     }
 
     return {
@@ -156,5 +167,6 @@ export const useLayerStore = defineStore('layers', () => {
         setLayerInfo,
         setDimension,
         removeLayer,
+        setLayerData,
     }
 })

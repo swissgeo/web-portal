@@ -13,11 +13,9 @@ const emit = defineEmits<{
 }>()
 
 const layerZIndex = computed(() => zIndex)
-const fileData = computed(() => layer.data)
 
 const layerData = computed(() => ({
     ...layer,
-    fileData,
     zIndex: layerZIndex.value,
     type: layer.type.toUpperCase(),
 }))

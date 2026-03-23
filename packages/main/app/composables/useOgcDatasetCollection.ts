@@ -1,33 +1,24 @@
 import type { DatasetCollection } from '@swissgeo/ogc'
 import type { Ref } from 'vue'
 
-import { storeToRefs } from 'pinia'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 
-import { useOgcDatasetCollectionStore } from '@/stores/ogcDatasetCollection'
+export function useOgcDatasetCollection(language: Ref<string>) {
+    const runtimeConfig = useRuntimeConfig()
 
-type UseOgcDatasetCollectionOptions = {
-    initializeOnUse?: boolean
-}
+    log.debug({
+        title: 'useOgcDatasetCollection',
+        titleColor: LogPreDefinedColor.Yellow,
+        messages: ['loading the catalog with language', language.value],
+    })
 
-export async function useOgcDatasetCollection(options: UseOgcDatasetCollectionOptions = {}) {
-    const { initializeOnUse = true } = options
-    const { locale } = useI18n()
-    const ogcDatasetCollectionStore = useOgcDatasetCollectionStore()
-
-    ogcDatasetCollectionStore.startLocaleSync(locale)
-    if (initializeOnUse) {
-        await ogcDatasetCollectionStore.initialize(locale.value)
-    }
-
-    const { data, pending, error } = storeToRefs(ogcDatasetCollectionStore)
+    const { data: recordData } = useFetch<DatasetCollection>(runtimeConfig.public.ogcApiEndpoint, {
+        query: {
+            language: language.value,
+        },
+    })
 
     return {
-        data,
-        pending,
-        error,
-    } as {
-        data: Ref<DatasetCollection | null>
-        pending: Ref<boolean>
-        error: Ref<unknown>
+        data: recordData,
     }
 }

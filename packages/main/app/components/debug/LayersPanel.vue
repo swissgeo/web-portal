@@ -4,8 +4,12 @@ import type { Dataset } from '@swissgeo/ogc'
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
+const { locale } = useI18n()
+
 const filterTerm = ref<string>('')
-const { data: recordLayers } = await useOgcDatasetCollection()
+
+// the composable will update the data if the locale changes
+const { data: recordLayers } = useOgcDatasetCollection(locale)
 
 const layerStore = useLayerStore()
 
