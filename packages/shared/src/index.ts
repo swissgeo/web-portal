@@ -9,5 +9,3 @@ export {
     getDisplayNameFromTimestamp,
     getYearFromGeoadminValue,
 } from './utils/timeUtils'
-export { parseAppState } from './stateConfig'
-export type { AppStateConfig, LayerStateConfig } from './stateConfig'

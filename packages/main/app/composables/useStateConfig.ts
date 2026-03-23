@@ -1,11 +1,11 @@
 import type { Dimension, DimensionId, Layer } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
-import type { AppStateConfig, LayerStateConfig } from '@swissgeo/shared'
+import type { AppStateConfig, LayerStateConfig } from '@swissgeo/statesharing'
 
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
-import { parseAppState } from '@swissgeo/shared'
+import { APP_STATE_CONFIG_VERSION, validateAndPrepareAppStateConfig } from '@swissgeo/statesharing'
 
 const DISPATCHER = { name: 'state-config' }
 
@@ -66,7 +66,7 @@ export function useStateConfig() {
      */
     function exportState(): AppStateConfig {
         const state: AppStateConfig = {
-            version: 2,
+            version: APP_STATE_CONFIG_VERSION,
             map: {
                 center: positionStore.center,
                 zoom: positionStore.zoom,
@@ -89,7 +89,7 @@ export function useStateConfig() {
      */
     async function importState(json: string): Promise<void> {
         const raw = JSON.parse(json) as unknown
-        const config = parseAppState(raw)
+        const config = validateAndPrepareAppStateConfig(raw)
 
         log.info('Importing state config', { messages: [JSON.stringify(config.map)] })
 
