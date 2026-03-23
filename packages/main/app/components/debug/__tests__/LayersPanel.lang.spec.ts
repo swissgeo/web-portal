@@ -40,13 +40,7 @@ vi.mock('@swissgeo/skeleton', () => ({
 
 describe('LayersPanel.vue locale-aware records loading', () => {
     it('loads records from shared dataset collection composable', async () => {
-        shallowMount(LayersPanel, {
-            global: {
-                stubs: {
-                    DebugLayersPanelEntry: true,
-                },
-            },
-        })
+        shallowMount(LayersPanel)
 
         await flushPromises()
 
