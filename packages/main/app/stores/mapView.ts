@@ -29,7 +29,6 @@ export const useMapViewStore = defineStore('mapView', () => {
         }
         return index
     }
-
     function getMapLayers(): Ref<MapLayer[]> {
         // returning the Ref so the reactivity is packed within
         return mapLayers

@@ -5,8 +5,8 @@ import type { Dataset } from '@swissgeo/ogc'
 
 import { isDatasetLayer } from '@swissgeo/layers'
 
-import DatasetLayer from '@/components/map/datamapping/DatasetLayer.vue'
-import FileLayer from '@/components/map/datamapping/FileLayer.vue'
+import MapDatamappingFileConverter from '@/components/map/datamapping/FileConverter.vue'
+import MapDatamappingOgcDatasetConverter from '@/components/map/datamapping/OgcDatasetConverter.vue'
 
 const { sourceBgLayer, sourceData } = defineProps<{
     sourceBgLayer: SourceData | null
@@ -44,13 +44,6 @@ function updateStoreLayerData(uuid: string, dataset: Dataset) {}
  * What do I give back ?
  *  --> a MapData Array in the store
  *  --> when a new Layer is added, we need to send it to the source
- *
- *
- * questions
- *
- *  adding layer to the store
- *      - order shouldn't matter in the layers store
- *      - order should matter in the map store
  */
 
 // QUESTIONS
@@ -61,8 +54,11 @@ function updateStoreLayerData(uuid: string, dataset: Dataset) {}
 
 <template>
     <div v-for="(data, index) in [sourceBgLayer, ...sourceData].filter((data) => !!data)">
-        <div :key="data.uuid">
-            <DatasetLayer
+        <div
+            :key="data.uuid"
+            v-if="!data.hasBeenConverted"
+        >
+            <MapDatamappingOgcDatasetConverter
                 v-if="isDatasetLayer(data)"
                 :layer="data"
                 :zIndex="index"
@@ -73,7 +69,7 @@ function updateStoreLayerData(uuid: string, dataset: Dataset) {}
                 @updateTimeDimension="updateTimeDimension(index, {})"
                 @updateDataset="updateStoreLayerData"
             />
-            <FileLayer
+            <MapDatamappingFileConverter
                 v-else
                 :layer="data"
                 :zIndex="index"

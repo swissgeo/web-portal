@@ -23,6 +23,8 @@ const layerData = computed(() => ({
     displayName: layer.info?.displayName ?? layer.humanId,
     format: layerFormat.value,
     layerId: layer.humanId,
+    type: layer.type.toUpperCase(),
+    displayName: layer.info?.displayName ?? layer.humanId,
 }))
 
 watch(layerData, () => emit('update', layerData.value), { immediate: true })

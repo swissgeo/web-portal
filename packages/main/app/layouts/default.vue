@@ -47,6 +47,7 @@ async function onSearchResultSelected(result: SearchResult) {
                 @search-result-selected="onSearchResultSelected"
                 :mapLayers="mapLayers"
                 @reset-app="resetApp"
+                :mapLayers="mapLayers"
             >
                 <template #bottom-controls>
                     <div
