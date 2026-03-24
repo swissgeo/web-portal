@@ -21,11 +21,16 @@ vi.mock('@swissgeo/log', () => ({
     default: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }))
 
-vi.mock('@vueuse/core', () => ({
-    watchDebounced: (_getter: unknown, callback: (_state: unknown) => void) => {
-        watcherCallbackRef.fn = callback
-    },
-}))
+vi.mock('@vueuse/core', async (importOriginal) => {
+    const original = await importOriginal()
+    return {
+        // @ts-expect-error It works and this is a test
+        ...original,
+        watchDebounced: (_getter: unknown, callback: (_state: unknown) => void) => {
+            watcherCallbackRef.fn = callback
+        },
+    }
+})
 
 vi.mock('~/composables/useStateConfig', () => ({
     useStateConfig: () => ({

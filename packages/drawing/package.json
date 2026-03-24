@@ -21,7 +21,7 @@
         "format:write": "prettier --write   --ignore-path ../../.prettierignore .",
         "lint": "eslint",
         "lint:write": "eslint --fix",
-        "test:unit": "vitest run --config ../../vitest.config.ts",
+        "test:unit": "vitest run",
         "type-check": "vue-tsc"
     },
     "dependencies": {
@@ -40,6 +40,7 @@
         "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
+        "happy-dom": "catalog:",
         "typescript": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:",

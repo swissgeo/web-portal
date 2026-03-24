@@ -3,7 +3,7 @@ import type { Ref } from 'vue'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 
-export function useOgcDatasetCollection(language: Ref<string>) {
+export function useOgcCatalog(language: Ref<string>) {
     const runtimeConfig = useRuntimeConfig()
 
     log.debug({

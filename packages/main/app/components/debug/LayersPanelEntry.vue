@@ -4,28 +4,10 @@ import type { Dataset } from '@swissgeo/ogc'
 import { makeServerLayer, useLayerStore } from '@swissgeo/layers'
 
 const layerStore = useLayerStore()
-const { locale } = useI18n()
 
 const { dataset } = defineProps<{
     dataset: Dataset
 }>()
-
-const localizedLayer = computed<Dataset>(() => {
-    const currentLocale = locale.value
-    const existingLanguage = dataset.properties?.language
-
-    return {
-        ...dataset,
-        properties: {
-            ...dataset.properties,
-            language: {
-                code: currentLocale,
-                dir: existingLanguage?.dir ?? 'ltr',
-                name: existingLanguage?.name ?? currentLocale,
-            },
-        },
-    }
-})
 
 const layerBgMap: Record<string, string> = {
     wms: 'bg-amber-200',
@@ -57,7 +39,7 @@ function addLayerToMap() {
         throw Error('Neither OGC:WMS nor OGC:WMTS found in the definition')
     }
     if (type.value !== 'UNKNOWN') {
-        layerStore.addLayer(makeServerLayer(localizedLayer.value))
+        layerStore.addLayer(makeServerLayer(dataset))
     }
 }
 </script>

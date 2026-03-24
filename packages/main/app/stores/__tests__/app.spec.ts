@@ -1,21 +1,33 @@
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ref } from 'vue'
 
-const mockLocale = ref('de')
-const mockSwitchLocalePath = vi.fn((lang: string) => `/${lang}/map`)
-const mockNavigateTo = vi.fn()
+const { locale } = vi.hoisted(() => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { ref } = require('vue')
+    return { locale: ref('de') }
+})
 
-vi.stubGlobal('useI18n', () => ({ locale: mockLocale }))
-vi.stubGlobal('useSwitchLocalePath', () => mockSwitchLocalePath)
-vi.stubGlobal('navigateTo', mockNavigateTo)
+const { useSwitchLocalePath, mockNavigateTo } = vi.hoisted(() => {
+    return {
+        useSwitchLocalePath: vi.fn((lang: string) => `/${lang}/map`),
+        mockNavigateTo: vi.fn(),
+    }
+})
+
+mockNuxtImport('useSwitchLocalePath', () => () => useSwitchLocalePath)
+mockNuxtImport('navigateTo', () => mockNavigateTo)
+mockNuxtImport('useI18n', () => () => ({
+    t: vi.fn((key: string) => key),
+    locale,
+}))
 
 import { useAppStore } from '~/stores/app'
 
 describe('useAppStore', () => {
     beforeEach(() => {
         setActivePinia(createPinia())
-        mockLocale.value = 'de'
+        locale.value = 'de'
         vi.clearAllMocks()
     })
 
@@ -23,7 +35,7 @@ describe('useAppStore', () => {
         const store = useAppStore()
         expect(store.locale).toBe('de')
 
-        mockLocale.value = 'fr'
+        locale.value = 'fr'
         expect(store.locale).toBe('fr')
     })
 
@@ -31,7 +43,7 @@ describe('useAppStore', () => {
         const store = useAppStore()
         await store.applyLocale('fr')
 
-        expect(mockSwitchLocalePath).toHaveBeenCalledWith('fr')
+        expect(useSwitchLocalePath).toHaveBeenCalledWith('fr')
         expect(mockNavigateTo).toHaveBeenCalledWith('/fr/map')
     })
 })

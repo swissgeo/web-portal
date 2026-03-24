@@ -1,6 +1,6 @@
 import type { ComponentPublicInstance } from 'vue'
 
-import { mount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import ImportLocalLayersPanel from '~/components/debug/ImportLocalLayersPanel.vue'
 import { useFileImport } from '~/composables/useFileImport'
 import { describe, it, expect, vi } from 'vitest'
@@ -18,12 +18,12 @@ vi.mock('~/composables/useFileImport', () => ({
 
 describe('ImportLocalLayersPanel.vue', () => {
     it('renders correctly', () => {
-        const wrapper = mount(ImportLocalLayersPanel)
+        const wrapper = shallowMount(ImportLocalLayersPanel)
         expect(wrapper.exists()).toBe(true)
     })
 
     it('shows error message when no file is selected', async () => {
-        const wrapper = mount(ImportLocalLayersPanel)
+        const wrapper = shallowMount(ImportLocalLayersPanel)
 
         // call import handler directly to avoid relying on unresolved Button component
         await (wrapper.vm as ImportLocalLayersPanelVm).handleImport()
@@ -31,7 +31,7 @@ describe('ImportLocalLayersPanel.vue', () => {
     })
 
     it('calls importFile when a file is selected and import is triggered', async () => {
-        const wrapper = mount(ImportLocalLayersPanel)
+        const wrapper = shallowMount(ImportLocalLayersPanel)
         const file = new File(['test'], 'test.kml', {
             type: 'application/vnd.google-earth.kml+xml',
         })

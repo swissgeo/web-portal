@@ -30,6 +30,9 @@ export default defineNuxtConfig({
     },
     typescript: {
         typeCheck: false, //too much baggage ATM
+        tsConfig: {
+            include: ['**/__tests__/**/*'],
+        },
     },
     compatibilityDate: '2025-07-15',
     devtools: { enabled: true },
@@ -41,6 +44,7 @@ export default defineNuxtConfig({
         '@nuxt/eslint',
         '@nuxt/image',
         '@nuxt/test-utils',
+        '@nuxt/test-utils/module',
         '@pinia/nuxt',
         '@nuxtjs/i18n',
         '@nuxt/ui',

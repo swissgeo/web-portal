@@ -1,59 +1,38 @@
 import type { ComponentPublicInstance } from 'vue'
 
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { useDrawingStore } from '@swissgeo/drawing'
-import { mount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import DrawingPanel from '~/components/debug/DrawingPanel.vue'
 import { describe, it, expect, vi } from 'vitest'
-import { ref } from 'vue'
 
 type DrawingPanelVm = ComponentPublicInstance & {
     handleClose: () => void
 }
 
-const messages = {
-    en: {
-        debug: {
-            drawingClearConfirmTitle: 'Delete all drawings?',
-            drawingClearConfirmDescription:
-                'This action will remove all drawings from the current session.',
-            drawingClearConfirmCancel: 'Cancel',
-            drawingClearConfirmConfirm: 'Delete',
+const { messages } = vi.hoisted(() => ({
+    messages: {
+        en: {
+            debug: {
+                drawingClearConfirmTitle: 'Delete all drawings?',
+                drawingClearConfirmDescription:
+                    'This action will remove all drawings from the current session.',
+                drawingClearConfirmCancel: 'Cancel',
+                drawingClearConfirmConfirm: 'Delete',
+            },
         },
     },
-} as const
-
-function resolveMessage(path: string): string {
-    const parts = path.split('.')
-    let value: unknown = messages.en
-
-    for (const part of parts) {
-        if (typeof value !== 'object' || value === null || !(part in value)) {
-            return path
-        }
-        value = (value as Record<string, unknown>)[part]
-    }
-
-    return typeof value === 'string' ? value : path
-}
-
-const i18nPlugin = {
-    install(app: { config: { globalProperties: Record<string, unknown> } }) {
-        const locale = ref('en')
-        app.config.globalProperties.$t = (path: string) =>
-            locale.value === 'en' ? resolveMessage(path) : path
-    },
-}
-
-vi.stubGlobal('useI18n', () => ({
-    t: (path: string) => resolveMessage(path),
 }))
 
-function mountDrawingPanel() {
-    return mount(DrawingPanel, {
-        global: {
-            plugins: [i18nPlugin],
-        },
+mockNuxtImport('useI18n', () => {
+    return () => ({
+        t: vi.fn((key: string) => key),
+        messages,
     })
+})
+
+function mountDrawingPanel() {
+    return shallowMount(DrawingPanel, {})
 }
 
 const setDrawingMode = vi.fn()
