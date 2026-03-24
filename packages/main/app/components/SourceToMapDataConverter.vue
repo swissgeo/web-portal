@@ -1,28 +1,38 @@
 <script setup lang="ts">
-import { isDatasetLayer, type Dimension, type Layer as SourceData } from '@swissgeo/layers'
-import { MapDatasetLayer, MapFileLayer } from '../../.nuxt/components'
+import {
+    isDatasetLayer,
+    type Dimension,
+    type LayerInfo,
+    type Layer as SourceData,
+} from '@swissgeo/layers'
+import DatasetLayer from '@/components/map/datamapping/DatasetLayer.vue'
+import FileLayer from '@/components/map/datamapping/FileLayer.vue'
 import type { Layer as MapLayer } from '@swissgeo/map'
+import type { Dataset } from '@swissgeo/ogc'
 
 const { sourceBgLayer, sourceData } = defineProps<{
     sourceBgLayer: SourceData | null
     sourceData: SourceData[]
 }>()
 
+const mapViewStore = useMapViewStore()
+
 function updateMapLayerData(index: number, mapLayerData: MapLayer) {
-    console.log(index)
-    console.log(mapLayerData)
+    mapViewStore.updateLayerData(index, mapLayerData)
 }
-function removeLayerData(index: number | string) {
-    console.log(index)
+function removeLayerData(index: number) {
+    mapViewStore.removeLayer(index)
 }
-function updateLayerInfo(index: number) {
-    console.log(index)
+function updateLayerInfo(index: number | string, layerInfo: LayerInfo) {}
+
+function updateOpacity(index: number, opacity: number) {
+    mapViewStore.updateLayerOpacity(index, opacity)
+}
+function updateTimeDimension(index: number, dimension: Partial<Dimension>) {
+    mapViewStore.updateLayerDimension(index, dimension, 'time')
 }
 
-function updateOpacity(index: number) {}
-function updateTimeDimension(index: number, dimension: Partial<Dimension>) {}
-
-function updateStoreLayerData(index: number, dataset: SourceData) {}
+function updateStoreLayerData(uuid: string, dataset: Dataset) {}
 /**
  * What do I receive ?
  *  FROM ABOVE:
@@ -35,7 +45,7 @@ function updateStoreLayerData(index: number, dataset: SourceData) {}
  *      --> alter order
  * What do I give back ?
  *  --> a MapData Array in the store
- *  -->
+ *  --> when a new Layer is added, we need to send it to the source
  *
  *
  * questions
@@ -48,18 +58,18 @@ function updateStoreLayerData(index: number, dataset: SourceData) {}
 
 <template>
     <div v-for="(data, index) in [sourceBgLayer, ...sourceData].filter((data) => !!data)">
-        <MapDatasetLayer
+        <DatasetLayer
             v-if="isDatasetLayer(data)"
             :layer="data"
             :zIndex="index"
             @update="updateMapLayerData(index, $event)"
             @updateLayerInfo="updateLayerInfo"
-            @updateOpacity="updateOpacity"
+            @updateOpacity="updateOpacity(index, 1)"
             @remove="removeLayerData(index)"
-            @updateTimeDimension="updateTimeDimension"
+            @updateTimeDimension="updateTimeDimension(index, {})"
             @updateDataset="updateStoreLayerData"
         />
-        <MapFileLayer
+        <FileLayer
             v-else
             :layer="data"
             :zIndex="index"

@@ -43,6 +43,7 @@ async function onSearchResultSelected(result: SearchResult) {
                 v-if="!isMapFullscreenMode"
                 class="z-2"
                 @search-result-selected="onSearchResultSelected"
+                :mapLayers=""
             >
                 <template #bottom-controls>
                     <div
