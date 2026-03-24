@@ -1,5 +1,6 @@
 import type { Dataset } from '@swissgeo/ogc'
 
+import { omit } from 'lodash'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import { getInfoFromDataset, makeServerLayer } from '@/utils/layerUtils'
@@ -127,6 +128,12 @@ describe('testing the makeServerLayer function', () => {
             description: 'Layer description',
             type: 'Dataset',
         },
+        links: [
+            {
+                rel: 'self',
+                href: 'link-to-self',
+            },
+        ],
     }
 
     // I would've like to add a "non valid type" but the function assume we get
@@ -146,5 +153,28 @@ describe('testing the makeServerLayer function', () => {
 
         expect(layer.opacity).toBe(0.3)
         expect(layer.isVisible).toBe(false)
+    })
+
+    it('extracts the layerURL from the dataset correctly', () => {
+        const layer = makeServerLayer(baseDataset)
+        expect(layer.layerUrl).toEqual('link-to-self')
+    })
+
+    it('throws an error when there are no links in the dataset', () => {
+        const faultyDataset = omit(baseDataset, ['links'])
+        expect(() => makeServerLayer(faultyDataset)).toThrow()
+    })
+
+    it('throws an error when there is no self-links in the dataset', () => {
+        const faultyDataset = {
+            ...baseDataset,
+            links: [
+                {
+                    rel: 'distributions',
+                    href: 'link',
+                },
+            ],
+        }
+        expect(() => makeServerLayer(faultyDataset)).toThrow()
     })
 })
