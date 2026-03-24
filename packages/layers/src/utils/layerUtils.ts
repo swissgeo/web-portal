@@ -42,9 +42,18 @@ export const getInfoFromDataset = (dataset: Dataset): LayerInfo => {
 export const makeServerLayer = (dataset: Dataset, options?: Partial<Layer>): Layer => {
     log.debug(`Creating store layer from ${JSON.stringify(dataset)}`)
 
-    // TODO we should validate the dataset here
+    // extract the self link from the dataset
+    const layerUrl = (() => {
+        const selfLink = dataset.links?.filter((link) => link.rel === 'self').pop()
+
+        if (!selfLink?.href) {
+            throw new Error("The dataset doesn't contain a link to itself. We cannot use this")
+        }
+        return selfLink.href
+    })()
 
     return {
+        layerUrl,
         type: 'dataset',
         uuid: crypto.randomUUID(),
         humanId: dataset.id,
