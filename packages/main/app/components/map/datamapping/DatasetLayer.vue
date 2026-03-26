@@ -15,10 +15,18 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
  * This code maps the data from the layer store to the data structure needed by the
  * map module. The intermediate conversion is basically the traversal of the OGC dataset that
  * is being provided.
+ *
+ * Some notes on how all this is structured:
+ * - We use the useGenericOgcData composable that contains the needed code to traverse the part
+ *   of the OGC records that is generic for all the records
+ * - Based on the inferred type of display, we also render the sub converters, see the template below
+ * - The sub-converters ultimately deliver the data needed for openlayers to display the data
+ * - The data from the sub-converter as well as some incoming data are together being merged into one object
+ *   and the parent is informed about the changes
  */
 import type { WMSLayerData } from './WmsLayer.vue'
 
-import { useDatasetLayer } from './useDatasetLayer'
+import { useGenericOgcData } from './useGenericOgcData'
 
 const { locale } = useI18n()
 
@@ -36,17 +44,46 @@ const emit = defineEmits<{
     updateLayerInfo: [layerUuid: string, info: LayerInfo]
 }>()
 
-const { layerType, layerSpecificData, distribution, serviceData, layerId } = useDatasetLayer(
-    layer,
-    zIndex,
-    () => emit('remove'),
-    (...args) => emit('update', ...args)
-)
+const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(computed(() => layer))
+
+// holds the data that's specific for the layers from the sub mappers
+const layerSpecificData = ref()
+
+const layerZIndex = computed(() => zIndex)
+
+/**
+ * Reactively merge the data from the store as well as the
+ * data from the OGC records
+ */
+const layerData = computed((): MapLayer => {
+    return {
+        layerId: layerId.value,
+        format: layerFormat.value,
+        uuid: layer.uuid,
+
+        ...layerSpecificData.value,
+
+        // some data we pass directly from the original, so when it's updated
+        // the change will be reflected in the data that the map receives
+        dimensions: layer.dimensions ?? null,
+        isVisible: layer.isVisible,
+        opacity: layer.opacity,
+        zIndex: layerZIndex.value,
+    }
+})
+
+// trigger the update to the parent
+watch(layerData, () => emit('update', layerData.value), { immediate: true })
 
 watch(locale, () => {
     refreshDataset()
 })
 
+onBeforeUnmount(() => {
+    emit('remove')
+})
+
+// receive the layer specific data from the subconverters
 function pushLayerSpecificData<T>(data: T) {
     layerSpecificData.value = data
 }

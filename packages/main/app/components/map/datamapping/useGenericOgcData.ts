@@ -1,5 +1,5 @@
 import type { DatasetLayer } from '@swissgeo/layers'
-import type { Layer as MapLayer, LayerType } from '@swissgeo/map'
+import type { LayerType } from '@swissgeo/map'
 import type { Distribution } from '@swissgeo/ogc'
 
 import {
@@ -9,28 +9,15 @@ import {
     useService,
 } from '@swissgeo/ogc'
 
-export function useDatasetLayer(
-    layer: DatasetLayer,
-    zIndex: number,
-    removeCallback: () => void,
-    updateCallback: (data: MapLayer) => void
-) {
-    const dataset = computed(() => layer.data)
-
-    // holds the data that's specific for the layers
-    const layerSpecificData = ref()
+export function useGenericOgcData(layer: Ref<DatasetLayer>) {
+    const dataset = computed(() => layer.value.data)
 
     const { distributionCollection } = useDistributionCollection(dataset)
     const { preferredDistributionId } = usePreferredDistribution(dataset)
 
     // if there's a preferred distribution, let's get that one, otherwise the first one
     const distributionId = computed(() => {
-        if (
-            !distributionCollection.value ||
-            !distributionCollection.value ||
-            !distributionCollection.value.records ||
-            !distributionCollection.value.records.length
-        ) {
+        if (!distributionCollection.value?.records?.length) {
             // If any of these is null-ish, then there's no point in returning the preferredDistributionId
             return null
         }
@@ -40,37 +27,9 @@ export function useDatasetLayer(
     const { distribution, layerId } = useDistribution(distributionCollection, distributionId)
     const { serviceData } = useService(distribution)
 
-    const layerType = computed(() => determineLayerType(distribution))
-    const layerZIndex = computed(() => zIndex)
+    const layerFormat = computed(() => determineFormat(distribution))
 
-    /**
-     * Reactively merge the data from the store as well as the
-     * data from the OGC records
-     */
-    const layerData = computed((): MapLayer => {
-        return {
-            layerId: layerId.value,
-            type: layerType.value,
-            ...layerSpecificData.value,
-
-            uuid: layer.uuid,
-
-            // some data we pass directly from the original, so when it's updated
-            // the change will be reflected in the data that the map receives
-            dimensions: layer.dimensions,
-            isVisible: layer.isVisible,
-            opacity: layer.opacity,
-            zIndex: layerZIndex.value,
-        }
-    })
-
-    watch(layerData, () => updateCallback(layerData.value))
-
-    onBeforeUnmount(() => {
-        removeCallback()
-    })
-
-    function determineLayerType(distribution: Ref<Distribution | null>): LayerType {
+    function determineFormat(distribution: Ref<Distribution | null>): LayerType {
         if (!distribution || !distribution.value || !distribution.value.properties) {
             return null
         }
@@ -97,10 +56,9 @@ export function useDatasetLayer(
 
     return {
         distributionCollection,
-        layerSpecificData,
         distribution,
         serviceData,
-        layerType,
+        layerFormat,
         layerId,
     }
 }
