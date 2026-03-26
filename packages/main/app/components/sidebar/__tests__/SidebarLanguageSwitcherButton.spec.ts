@@ -3,9 +3,8 @@ import { mount, flushPromises } from '@vue/test-utils'
 import SidebarLanguageSwitcherButton from '~/components/sidebar/SidebarLanguageSwitcherButton.vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { locale, locales, mockApplyLocale } = vi.hoisted(() => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { ref } = require('vue')
+const { locale, locales, mockApplyLocale } = await vi.hoisted(async () => {
+    const { ref } = await import('vue')
     return {
         locale: ref('de'),
         locales: ref([
