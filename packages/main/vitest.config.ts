@@ -15,7 +15,7 @@ export default defineVitestConfig({
         alias: {
             // h3 is a Nitro transitive dep not directly accessible in pnpm;
             // redirect to a lightweight stub so server utils/routes compile in tests.
-            'h3': resolve(__dirname, '../../test-utils/h3-stub.ts'),
+            h3: resolve(__dirname, '../../test-utils/h3-stub.ts'),
         },
     },
 })
