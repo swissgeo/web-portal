@@ -27,7 +27,7 @@ describe.skip('OpenLayersKMLLayer.vue', () => {
         const wrapper = mount(OpenLayersKMLLayer, {
             props: {
                 layer: {
-                    type: 'KML',
+                    format: 'KML',
                     layerId: 'test-layer',
                     uuid: '1234',
                     data: '<kml></kml>',
@@ -44,7 +44,7 @@ describe.skip('OpenLayersKMLLayer.vue', () => {
         mount(OpenLayersKMLLayer, {
             props: {
                 layer: {
-                    type: 'KML',
+                    format: 'KML',
                     layerId: 'test-layer',
                     uuid: '1234',
                     data: '<kml></kml>',

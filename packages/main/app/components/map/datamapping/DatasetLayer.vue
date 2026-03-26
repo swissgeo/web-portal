@@ -95,7 +95,7 @@ function refreshDataset() {
 
 <template>
     <MapDatamappingWmtsLayer
-        v-if="layerType === 'WMTS'"
+        v-if="layerFormat === 'WMTS'"
         :distribution
         :serviceData
         :layerId
@@ -104,7 +104,7 @@ function refreshDataset() {
         @updateOpacity="emit('updateOpacity', layer.uuid, $event)"
     ></MapDatamappingWmtsLayer>
     <MapDatamappingWmsLayer
-        v-if="layerType === 'WMS'"
+        v-if="layerFormat === 'WMS'"
         :distribution
         :serviceData
         :layerId

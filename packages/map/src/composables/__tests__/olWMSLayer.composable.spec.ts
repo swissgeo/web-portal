@@ -73,7 +73,7 @@ describe('useOlWmsLayer LANG propagation', () => {
         updateParamsSpy.mockClear()
 
         const layer = ref<WMSLayer>({
-            type: 'WMS',
+            format: 'WMS',
             layerId: 'ch.test.layer',
             uuid: 'uuid-1',
             opacity: 1,
