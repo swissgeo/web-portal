@@ -19,7 +19,7 @@ describe.skip('OpenLayersGPXLayer.vue', () => {
         const wrapper = mount(OpenLayersGPXLayer, {
             props: {
                 layer: {
-                    type: 'GPX',
+                    format: 'GPX',
                     layerId: 'test-layer',
                     uuid: '1234',
                     data: '<gpx></gpx>',
@@ -36,7 +36,7 @@ describe.skip('OpenLayersGPXLayer.vue', () => {
         mount(OpenLayersGPXLayer, {
             props: {
                 layer: {
-                    type: 'GPX',
+                    format: 'GPX',
                     layerId: 'test-layer',
                     uuid: '1234',
                     data: '<gpx></gpx>',

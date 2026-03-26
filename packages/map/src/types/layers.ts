@@ -18,10 +18,10 @@ export type DimensionId = 'time'
 
 export type DimensionRecord = Partial<Record<DimensionId, Dimension>>
 
-export type LayerType = 'WMTS' | 'WMS' | 'GeoJSON' | 'KML' | 'KMZ' | 'GPX' | 'Vector'
+export type LayerFormat = 'WMTS' | 'WMS' | 'GeoJSON' | 'KML' | 'KMZ' | 'GPX' | 'Vector'
 
 export interface Layer {
-    type: LayerType
+    format: LayerFormat
     layerId: string
     uuid: string
     opacity: number
@@ -31,13 +31,13 @@ export interface Layer {
 }
 
 export interface WMTSLayer extends Layer {
-    type: 'WMTS'
+    format: 'WMTS'
     options: WMTSOptions
     dimensions: DimensionRecord
 }
 
 export interface WMSLayer extends Layer {
-    type: 'WMS'
+    format: 'WMS'
     dimensions: DimensionRecord
     gutter: number
     url: string
@@ -46,28 +46,28 @@ export interface WMSLayer extends Layer {
 }
 
 export interface KMLLayer extends Layer {
-    type: 'KML'
+    format: 'KML'
     data: string
 }
 
 export interface KMZLayer extends Layer {
-    type: 'KMZ'
+    format: 'KMZ'
     data: string
 }
 
 export interface GPXLayer extends Layer {
-    type: 'GPX'
+    format: 'GPX'
     data: string
 }
 
 export interface GeoJSONLayer extends Layer {
-    type: 'GeoJSON'
+    format: 'GeoJSON'
     geoJsonData: FeatureCollectionWithCRS
     geoJsonStyle?: GeoAdminGeoJSONStyleDefinition
 }
 
 export interface VectorLayer extends Layer {
-    type: 'Vector'
+    format: 'Vector'
     data: string
 }
 

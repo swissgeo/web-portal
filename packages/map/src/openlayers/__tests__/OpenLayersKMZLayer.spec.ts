@@ -27,7 +27,7 @@ describe.skip('OpenLayersKMZLayer.vue', () => {
         const wrapper = mount(OpenLayersKMZLayer, {
             props: {
                 layer: {
-                    type: 'KMZ',
+                    format: 'KMZ',
                     layerId: 'test-layer',
                     uuid: '1234',
                     data: 'base64encodeddata',
@@ -44,7 +44,7 @@ describe.skip('OpenLayersKMZLayer.vue', () => {
         mount(OpenLayersKMZLayer, {
             props: {
                 layer: {
-                    type: 'KMZ',
+                    format: 'KMZ',
                     layerId: 'test-layer',
                     uuid: '1234',
                     data: 'base64encodeddata',
