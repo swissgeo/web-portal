@@ -42,6 +42,8 @@ const layerMockData: Ref<DatasetLayerType> = ref({
 // MOCKING all the parts that are called by the composable from the OGC package
 // the values as well as the mocked composables are returned, so that we can
 // test the behaviour of the changes
+// we mock and return the data as well as the composables themselves. The data
+// is returned so that we can change the behaviour for the tests
 const {
     useDistributionCollectionMock,
     usePreferredDistributionMock,

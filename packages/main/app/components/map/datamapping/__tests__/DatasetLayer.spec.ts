@@ -1,5 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { flushPromises, mount, shallowMount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
 
 import DatasetLayer from '../DatasetLayer.vue'
@@ -39,6 +39,10 @@ vi.mock('@/components/map/datamapping/useGenericOgcData', () => ({
         layerFormat,
         layerId,
     })),
+}))
+
+vi.mock('@/components/map/datamapping/useDatasetLocaleRefresh', () => ({
+    default: vi.fn(() => ({})),
 }))
 
 describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
@@ -204,6 +208,4 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
 
         expect(wrapper.emitted()).toHaveProperty('remove')
     })
-
-    // TODO test the dataset refreshing on locale change
 })

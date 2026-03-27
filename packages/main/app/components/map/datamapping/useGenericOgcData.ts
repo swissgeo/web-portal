@@ -1,5 +1,5 @@
 import type { DatasetLayer } from '@swissgeo/layers'
-import type { LayerType } from '@swissgeo/map'
+import type { LayerFormat } from '@swissgeo/map'
 import type { Distribution } from '@swissgeo/ogc'
 
 import {
@@ -29,7 +29,7 @@ export function useGenericOgcData(layer: Ref<DatasetLayer>) {
 
     const layerFormat = computed(() => determineFormat(distribution))
 
-    function determineFormat(distribution: Ref<Distribution | null>): LayerType {
+    function determineFormat(distribution: Ref<Distribution | null>): LayerFormat {
         if (!distribution || !distribution.value || !distribution.value.properties) {
             return null
         }

@@ -4,9 +4,6 @@ import type { Layer as MapLayer } from '@swissgeo/map'
 import type { Dataset } from '@swissgeo/ogc'
 import type { Options as WMTSOptions } from 'ol/source/WMTS'
 
-import { getInfoFromDataset } from '@swissgeo/layers'
-import log, { LogPreDefinedColor } from '@swissgeo/log'
-
 /**
  * Dataset Layer Converter Container
  *
@@ -26,9 +23,8 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
  */
 import type { WMSLayerData } from './WmsLayer.vue'
 
+import useDatasetLocaleRefresh from './useDatasetLocaleRefresh'
 import { useGenericOgcData } from './useGenericOgcData'
-
-const { locale } = useI18n()
 
 const { layer, zIndex } = defineProps<{
     layer: DatasetLayer
@@ -45,6 +41,13 @@ const emit = defineEmits<{
 }>()
 
 const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(computed(() => layer))
+
+// Registering composable that will ensure that a dataset is refreshed when the locale changes
+useDatasetLocaleRefresh(
+    layer,
+    (...args) => emit('updateDataset', ...args),
+    (...args) => emit('updateLayerInfo', ...args)
+)
 
 // holds the data that's specific for the layers from the sub mappers
 const layerSpecificData = ref()
@@ -75,10 +78,6 @@ const layerData = computed((): MapLayer => {
 // trigger the update to the parent
 watch(layerData, () => emit('update', layerData.value), { immediate: true })
 
-watch(locale, () => {
-    refreshDataset()
-})
-
 onBeforeUnmount(() => {
     emit('remove')
 })
@@ -86,47 +85,6 @@ onBeforeUnmount(() => {
 // receive the layer specific data from the subconverters
 function pushLayerSpecificData<T>(data: T) {
     layerSpecificData.value = data
-}
-
-function refreshDataset() {
-    log.debug({
-        title: 'DatasetLayer',
-        titleColor: LogPreDefinedColor.Red,
-        messages: ['Refreshing the dataset for', layerId.value],
-    })
-
-    if (!layer.data.links) {
-        return
-    }
-    const datasetLinkObject = layer.data.links.filter((link) => link.rel === 'self')
-    if (datasetLinkObject.length === 0) {
-        // TODO think about some error handling and toast that into the user's face
-        return
-    }
-    if (!datasetLinkObject[0] || !datasetLinkObject[0].href) {
-        // TODO think about some error handling and toast that into the user's face
-        return
-    }
-    const datasetUrl = new URL(datasetLinkObject[0].href)
-
-    // Change the query param
-    datasetUrl.searchParams.set('language', locale.value)
-
-    // Get back a string
-    const newUrlString = datasetUrl.toString()
-
-    const { data: dataset } = useFetch<Dataset>(newUrlString)
-
-    watch(
-        dataset,
-        () => {
-            if (dataset.value) {
-                emit('updateDataset', layer.uuid, dataset.value)
-                emit('updateLayerInfo', layer.uuid, getInfoFromDataset(dataset.value))
-            }
-        },
-        { immediate: true }
-    )
 }
 </script>
 
