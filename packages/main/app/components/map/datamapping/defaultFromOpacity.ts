@@ -1,8 +1,8 @@
 import type { AnyLayer, RasterLayer, Style } from 'mapbox-gl'
 
-const DEFAULT_OPACITY = 1
+const FALLBACK_OPACITY = 1
 
-export function defaultOpacityFromStyle(styleData: Style) {
+export function defaultOpacityFromStyle(styleData: Pick<Style, 'layers'>) {
     const isRasterLayer = (layer: AnyLayer): layer is RasterLayer => layer.type === 'raster'
 
     if (styleData && styleData.layers?.length) {
@@ -10,7 +10,7 @@ export function defaultOpacityFromStyle(styleData: Style) {
         const layer = styleData.layers[0]
 
         if (!layer || !isRasterLayer(layer)) {
-            return DEFAULT_OPACITY
+            return FALLBACK_OPACITY
         }
 
         const paint = layer.paint
@@ -19,5 +19,5 @@ export function defaultOpacityFromStyle(styleData: Style) {
             return rasterOpacity
         }
     }
-    return DEFAULT_OPACITY
+    return FALLBACK_OPACITY
 }
