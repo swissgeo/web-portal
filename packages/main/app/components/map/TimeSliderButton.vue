@@ -10,11 +10,12 @@ const mapViewStore = useMapViewStore()
 const layerStore = useLayerStore()
 const sidebarStore = useSidebarStore()
 
-const timeLayers = computed((): LayerWithTime[] =>
-    layerStore.layers.filter(
-        (layer: Layer) =>
-            !!layer.dimensions && 'time' in layer.dimensions && !!layer.dimensions.time
-    ) as LayerWithTime[]
+const timeLayers = computed(
+    (): LayerWithTime[] =>
+        layerStore.layers.filter(
+            (layer: Layer) =>
+                !!layer.dimensions && 'time' in layer.dimensions && !!layer.dimensions.time
+        ) as LayerWithTime[]
 )
 
 function onClose() {
