@@ -2,18 +2,15 @@ import type { H3Event } from 'h3'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-// defineEventHandler and setResponseStatus are Nitro auto-import globals.
-// Stub them before any imports so route modules evaluate correctly.
-const mockSetResponseStatus = vi.hoisted(() => {
-    const fn = vi.fn()
-    ;(globalThis as Record<string, unknown>).defineEventHandler = (handler: unknown) => handler
-    ;(globalThis as Record<string, unknown>).setResponseStatus = fn
-    return fn
-})
-
+// All route files now explicitly import from h3 — mock the module.
 const mockSendRedirect = vi.hoisted(() => vi.fn())
+const mockSetResponseStatus = vi.hoisted(() => vi.fn())
+const mockDefineEventHandler = vi.hoisted(() => (handler: unknown) => handler)
+
 vi.mock('h3', () => ({
+    defineEventHandler: mockDefineEventHandler,
     sendRedirect: mockSendRedirect,
+    setResponseStatus: mockSetResponseStatus,
 }))
 
 // resolveLocale is a Nitro server-util auto-import — stub it as a global.
