@@ -21,7 +21,7 @@ import type { Options as WMTSOptions } from 'ol/source/WMTS'
  * - The data from the sub-converter as well as some incoming data are together being merged into one object
  *   and the parent is informed about the changes
  */
-import type { WMSLayerData } from './WmsLayer.vue'
+import type { WMSLayerData } from './OgcWmsLayerConverter.vue'
 
 import useDatasetLocaleRefresh from './useDatasetLocaleRefresh'
 import { useGenericOgcData } from './useGenericOgcData'
@@ -89,7 +89,7 @@ function pushLayerSpecificData<T>(data: T) {
 </script>
 
 <template>
-    <MapDatamappingWmtsLayer
+    <MapDatamappingOgcWmtsLayerConverter
         v-if="layerFormat === 'WMTS'"
         :distribution
         :serviceData
@@ -97,8 +97,8 @@ function pushLayerSpecificData<T>(data: T) {
         @updateOptions="pushLayerSpecificData<{ options: WMTSOptions }>"
         @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
         @updateOpacity="emit('updateOpacity', layer.uuid, $event)"
-    ></MapDatamappingWmtsLayer>
-    <MapDatamappingWmsLayer
+    ></MapDatamappingOgcWmtsLayerConverter>
+    <MapDatamappingOgcWmsLayerConverter
         v-if="layerFormat === 'WMS'"
         :distribution
         :serviceData
@@ -106,5 +106,5 @@ function pushLayerSpecificData<T>(data: T) {
         @updateData="pushLayerSpecificData<WMSLayerData>"
         @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
         @updateOpacity="emit('updateOpacity', layer.uuid, $event)"
-    ></MapDatamappingWmsLayer>
+    ></MapDatamappingOgcWmsLayerConverter>
 </template>
