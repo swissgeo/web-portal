@@ -7,14 +7,13 @@ import type { Map } from 'ol'
 import type { Coordinate } from 'ol/coordinate'
 import type { Ref } from 'vue'
 
+import { useAddLayerToMap } from '@swissgeo/map'
 import Feature from 'ol/Feature'
 import { Circle } from 'ol/geom'
 import { Vector as VectorLayer } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import { Fill, Stroke, Style } from 'ol/style'
 import { computed, inject, onMounted, shallowRef, watch } from 'vue'
-
-import { useAddLayerToMap } from '@swissgeo/map'
 
 import { useGeolocationStore } from '@/stores/geolocation'
 

@@ -4,9 +4,8 @@ import type { ActionDispatcher } from '@swissgeo/map'
 import { usePositionStore } from '@swissgeo/map'
 import { computed } from 'vue'
 
-import { useGeolocationStore } from '@/stores/geolocation'
-
 import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
+import { useGeolocationStore } from '@/stores/geolocation'
 
 const dispatcher: ActionDispatcher = { name: 'GeolocButton.vue' }
 

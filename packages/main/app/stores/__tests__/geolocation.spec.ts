@@ -1,11 +1,10 @@
 import type { SingleCoordinate } from '@swissgeo/coordinates'
 
 import { LV95, WGS84, registerProj4 } from '@swissgeo/coordinates'
-import proj4 from 'proj4'
-import { createPinia, setActivePinia } from 'pinia'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-
 import { useGeolocationStore } from '~/stores/geolocation'
+import { createPinia, setActivePinia } from 'pinia'
+import proj4 from 'proj4'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Register Swiss projections so proj4 can convert WGS84 ↔ LV95 in tests
 registerProj4(proj4)
@@ -37,7 +36,7 @@ vi.mock('@swissgeo/map', async () => {
             projection: LV95,
             // The mock centre never changes — deliberately, to keep setCenterIfInBounds
             // always calling setCenter (isEqual check will always be false).
-            center: LV95.bounds!.center,
+            center: LV95.bounds.center,
             setCenter: mockSetCenter,
             setZoom: mockSetZoom,
         }),

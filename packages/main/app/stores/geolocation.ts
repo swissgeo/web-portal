@@ -4,10 +4,10 @@ import type { ActionDispatcher } from '@swissgeo/map'
 import { LV95, WGS84 } from '@swissgeo/coordinates'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
+import { useToast } from '#imports'
 import { isEqual } from 'es-toolkit'
 import { defineStore } from 'pinia'
 import proj4 from 'proj4'
-import { useToast } from '#imports'
 
 interface GeolocationStoreState {
     /** Flag telling if the user has activated the geolocation feature */
@@ -62,12 +62,19 @@ export const useGeolocationStore = defineStore('geolocation', {
                         })
                         geolocationWatcherId = navigator.geolocation.watchPosition(
                             (pos) => handleNewGeolocationPosition.call(this, pos, dispatcher),
-                            (err) => handleGeolocationError.call(this, err, { reactivate: false }, dispatcher),
+                            (err) =>
+                                handleGeolocationError.call(
+                                    this,
+                                    err,
+                                    { reactivate: false },
+                                    dispatcher
+                                ),
                             { enableHighAccuracy: true }
                         )
                         handleNewGeolocationPosition.call(this, position, dispatcher)
                     },
-                    (err) => handleGeolocationError.call(this, err, { reactivate: true }, dispatcher),
+                    (err) =>
+                        handleGeolocationError.call(this, err, { reactivate: true }, dispatcher),
                     {
                         enableHighAccuracy: true,
                         maximumAge: 5 * 60 * 1000,
@@ -155,7 +162,10 @@ function handleNewGeolocationPosition(
         setCenterIfInBounds(positionProjected, dispatcher)
     }
 
-    if (!isEqual(this.position as number[], positionProjected as number[]) || this.accuracy !== accuracy) {
+    if (
+        !isEqual(this.position as number[], positionProjected as number[]) ||
+        this.accuracy !== accuracy
+    ) {
         this.setGeolocationPosition(positionProjected, dispatcher)
         this.setGeolocationAccuracy(accuracy, dispatcher)
     }

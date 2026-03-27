@@ -1,7 +1,7 @@
 import '../env.d.ts' // for reproject
 
-import MapModule from '@/MapModule.vue'
 import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
+import MapModule from '@/MapModule.vue'
 import usePositionStore from '@/stores/position'
 
 // importing as "type" doesn't work with the DTS bundler somehow

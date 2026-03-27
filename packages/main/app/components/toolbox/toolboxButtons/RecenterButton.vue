@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type { ActionDispatcher } from '@swissgeo/map'
 
-import { useGeolocationStore } from '@/stores/geolocation'
-
 import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
+import { useGeolocationStore } from '@/stores/geolocation'
 
 const dispatcher: ActionDispatcher = { name: 'RecenterButton.vue' }
 
