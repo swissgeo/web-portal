@@ -236,6 +236,9 @@ function setCenterIfInBounds(center: SingleCoordinate, dispatcher: ActionDispatc
             titleColor: LogPreDefinedColor.Amber,
             messages: [`Current geolocation is out of bounds: ${JSON.stringify(center)}`],
         })
-        toast.add({ title: 'Location is outside the supported area', color: 'warning' })
+        toast.add({
+            title: 'Your location is outside of Switzerland and cannot be shown on the map',
+            color: 'warning',
+        })
     }
 }
