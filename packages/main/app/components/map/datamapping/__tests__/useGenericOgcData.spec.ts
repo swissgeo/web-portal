@@ -150,7 +150,7 @@ vi.mock('@swissgeo/ogc', () => ({
     useService: useServiceMock,
 }))
 
-describe('', () => {
+describe('useGenericOgcData ', () => {
     beforeEach(() => {
         vi.clearAllMocks()
     })
@@ -186,6 +186,7 @@ describe('', () => {
     })
 
     it('updates the distribution when preferredDistributionId changes', async () => {
+        // this is a use case where we test if the reactivity cascades
         const { distribution } = useGenericOgcData(layerMockData)
         await flushPromises()
 
