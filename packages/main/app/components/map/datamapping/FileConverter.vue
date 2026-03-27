@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Layer } from '@swissgeo/layers'
-import type { Layer as MapLayer } from '@swissgeo/map'
+import type { LayerFormat, Layer as MapLayer } from '@swissgeo/map'
 
 const { layer, zIndex } = defineProps<{
     layer: Layer
@@ -14,17 +14,16 @@ const emit = defineEmits<{
 
 const layerZIndex = computed(() => zIndex)
 
+const layerFormat = computed((): LayerFormat => layer.type.toUpperCase() as LayerFormat)
+
 const layerData = computed(() => ({
     ...layer,
     zIndex: layerZIndex.value,
-    type: layer.type.toUpperCase(),
+    format: layerFormat.value,
+    layerId: layer.humanId,
 }))
 
-watch(
-    () => layerData.value,
-    () => emit('update', layerData.value),
-    { immediate: true }
-)
+watch(layerData, () => emit('update', layerData.value), { immediate: true })
 
 onBeforeUnmount(() => {
     emit('remove')
