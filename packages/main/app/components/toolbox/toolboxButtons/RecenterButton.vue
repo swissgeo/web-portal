@@ -16,7 +16,7 @@ function toggleTracking(): void {
 <template>
     <ToolBoxButton
         title="Re-center map on location"
-        :is-disabled="false"
+        :is-disabled="!geolocationStore.active || geolocationStore.tracking"
         :is-active="false"
         iconName="Shrink"
         @click="toggleTracking()"
