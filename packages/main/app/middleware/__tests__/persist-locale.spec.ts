@@ -1,16 +1,17 @@
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-// defineNuxtRouteMiddleware is called at module load time — stub it via vi.hoisted.
-vi.hoisted(() => {
-    ;(globalThis as Record<string, unknown>).defineNuxtRouteMiddleware = (fn: unknown) => fn
+const { mockLocale, mockCookieRef, mockUseCookie } = vi.hoisted(() => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { ref } = require('vue')
+    const mockLocale = ref('de')
+    const mockCookieRef = ref(null as string | null)
+    const mockUseCookie = vi.fn(() => mockCookieRef)
+    return { mockLocale, mockCookieRef, mockUseCookie }
 })
 
-const mockLocale = { value: 'de' }
-const mockCookieRef = { value: null as string | null }
-const mockUseCookie = vi.fn(() => mockCookieRef)
-
-vi.stubGlobal('useI18n', () => ({ locale: mockLocale }))
-vi.stubGlobal('useCookie', mockUseCookie)
+mockNuxtImport('useI18n', () => () => ({ locale: mockLocale }))
+mockNuxtImport('useCookie', () => mockUseCookie)
 
 import persistLocale from '~/middleware/persist-locale'
 
