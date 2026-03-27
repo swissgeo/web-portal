@@ -2,7 +2,7 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises, mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
 
-import DatasetLayer from '../DatasetLayer.vue'
+import OgcDatasetConverter from '../OgcDatasetConverter.vue'
 
 mockNuxtImport('useI18n', () => {
     return () => ({
@@ -47,7 +47,7 @@ vi.mock('@/components/map/datamapping/useDatasetLocaleRefresh', () => ({
 
 describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
     it('emits the basic data regardless of the OGC travelling', () => {
-        const wrapper = mount(DatasetLayer, {
+        const wrapper = mount(OgcDatasetConverter, {
             shallow: true,
             propsData: {
                 layer: {
@@ -57,6 +57,7 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
                     type: 'dataset',
                     humanId: 'human-id',
                     uuid: 'some-fancy-uuid',
+                    // @ts-expect-error intentionally not giving a dataset
                     data: null,
                 },
                 zIndex: 1,
@@ -88,9 +89,10 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
             uuid: 'some-fancy-uuid',
             data: null,
         } // layer data as from the layer store
-        const wrapper = mount(DatasetLayer, {
+        const wrapper = mount(OgcDatasetConverter, {
             shallow: true,
             propsData: {
+                // @ts-expect-error intentionally not giving data
                 layer: layerData,
                 zIndex: 1,
             },
@@ -100,6 +102,7 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
         expect(wrapper.emitted('update')).toHaveLength(1)
         // not testing initial state as that's covered by the test above
 
+        // @ts-expect-error intentionally not giving a dataset
         await wrapper.setProps({ layer: { ...layerData, isVisible: false } })
         // we got an update!
         expect(wrapper.emitted('update')).toHaveLength(2)
@@ -115,6 +118,7 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
             },
         ])
 
+        // @ts-expect-error intentionally not giving a dataset
         await wrapper.setProps({ layer: { ...layerData, opacity: 0.3 } })
         expect(wrapper.emitted('update')).toHaveLength(3)
         // no need to test the entire object again
@@ -122,7 +126,7 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
     })
 
     it('renders the correct sub-converter depending on the deduced layer type', async () => {
-        const wrapper = mount(DatasetLayer, {
+        const wrapper = mount(OgcDatasetConverter, {
             propsData: {
                 layer: {
                     isVisible: true,
@@ -131,6 +135,7 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
                     type: 'dataset',
                     humanId: 'human-id',
                     uuid: 'some-fancy-uuid',
+                    // @ts-expect-error intentionally not giving a dataset
                     data: null,
                 },
                 zIndex: 1,
@@ -158,7 +163,7 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
     })
 
     it('emit update contains the layerSpecificData ', async () => {
-        const wrapper = mount(DatasetLayer, {
+        const wrapper = mount(OgcDatasetConverter, {
             shallow: true,
             propsData: {
                 layer: {
@@ -168,6 +173,7 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
                     type: 'dataset',
                     humanId: 'human-id',
                     uuid: 'some-fancy-uuid',
+                    // @ts-expect-error intentionally not giving a dataset
                     data: null,
                 },
                 zIndex: 1,
@@ -188,7 +194,7 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
     })
 
     it('emits the remove if the converter gets unmounted', async () => {
-        const wrapper = mount(DatasetLayer, {
+        const wrapper = mount(OgcDatasetConverter, {
             shallow: true,
             propsData: {
                 layer: {
@@ -198,6 +204,7 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
                     type: 'dataset',
                     humanId: 'human-id',
                     uuid: 'some-fancy-uuid',
+                    // @ts-expect-error intentionally not giving a dataset
                     data: null,
                 },
                 zIndex: 1,

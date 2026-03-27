@@ -91,7 +91,7 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
             @update="updateMapLayerData(layer.uuid, $event)"
             @remove="removeLayerData(layer.uuid)"
         ></MapDatamappingFileLayer>
-        <MapDatamappingDatasetLayer
+        <MapDatamappingOgcDatasetConverter
             v-for="layer in storeDatasetLayers"
             :layer="layer"
             :key="layer.uuid"
@@ -102,17 +102,17 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
             @remove="removeLayerData(layer.uuid)"
             @updateTimeDimension="updateTimeDimension"
             @updateDataset="updateStoreLayerData"
-        ></MapDatamappingDatasetLayer>
+        ></MapDatamappingOgcDatasetConverter>
 
         <!-- Mapping the background layer -->
-        <MapDatamappingDatasetLayer
+        <MapDatamappingOgcDatasetConverter
             v-if="backgroundLayer"
             :key="backgroundLayer.uuid"
             :layer="backgroundLayer"
             @update="backgroundLayerMapData = $event"
             :zIndex="-1"
             @remove="removeBackgroundLayerData"
-        ></MapDatamappingDatasetLayer>
+        ></MapDatamappingOgcDatasetConverter>
 
         <MapModule
             :layers="layersForMap"
