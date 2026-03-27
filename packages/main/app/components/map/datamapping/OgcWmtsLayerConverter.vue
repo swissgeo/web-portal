@@ -3,10 +3,8 @@ import type { Dimension } from '@swissgeo/layers'
 import type { Distribution, Service } from '@swissgeo/ogc'
 import type { Options } from 'ol/source/WMTS'
 
-import { useStyle, useWmtsCapabilities } from '@swissgeo/ogc'
-
-import { defaultOpacityFromStyle } from './defaultFromOpacity'
 import { processTimeInfo } from './processTimeInfo'
+import { useOgcWmtsData } from './useOgcWmtsData'
 
 // not destructuring these to keep the reactivity
 const props = defineProps<{
@@ -15,19 +13,16 @@ const props = defineProps<{
     layerId: string | null
 }>()
 
-const { styleData } = useStyle(toRef(props, 'distribution'))
-const { wmtsData } = useWmtsCapabilities(toRef(props, 'serviceData'), toRef(props, 'layerId'))
-
-const options = computed(() => wmtsData.value?.options || null)
-const dimensions = computed(() => wmtsData.value?.dimensions || null)
-
-const timeInfo = computed(() => getTimeInfoFromWMTSCapabilities(dimensions.value))
-
 const emit = defineEmits<{
     updateOptions: [{ options: Options }]
     updateTimeDimension: [dimension: Partial<Dimension>]
     updateOpacity: [opacity: number]
 }>()
+
+const distribution = computed(() => props.distribution)
+const serviceData = computed(() => props.serviceData)
+const layerId = computed(() => props.layerId)
+const { timeInfo, options, defaultOpacity } = useOgcWmtsData(distribution, serviceData, layerId)
 
 watch(timeInfo, () => {
     const dimension = processTimeInfo(timeInfo)
@@ -35,13 +30,10 @@ watch(timeInfo, () => {
 })
 
 watch(
-    styleData,
-    (newStyle, oldStyle) => {
-        // when we're going from no style to some style, we want to execute this
-        // otherwise we don't, as this will prserve the opacity as is it in the store
-        if (!oldStyle && newStyle) {
-            const defaultOpacity = defaultOpacityFromStyle(newStyle)
-            emit('updateOpacity', defaultOpacity)
+    defaultOpacity,
+    () => {
+        if (defaultOpacity.value !== null) {
+            emit('updateOpacity', defaultOpacity.value)
         }
     },
     { immediate: true }

@@ -22,7 +22,7 @@ describe('defaultOpacityFromStyle', () => {
         expect(opacity).toEqual(0.75)
     })
 
-    it("retrieves the fallback opacity if the style doesn\'t contain the info", () => {
+    it("retrieves the fallback opacity if the style doesn't contain the info", () => {
         const style = {
             id: 'ch.bag.radonkarte:wmts:style',
             layers: [
