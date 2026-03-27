@@ -178,7 +178,7 @@ describe('useGenericOgcData ', () => {
         expectTypeOf(serviceData).toEqualTypeOf<ShallowRef<Service | null>>()
         expect(serviceData.value).toBeDefined()
 
-        expectTypeOf(layerFormat).toEqualTypeOf<ComputedRef<LayerFormat>>()
+        expectTypeOf(layerFormat).toEqualTypeOf<ComputedRef<LayerFormat | null>>()
         expect(layerFormat.value).toEqual('WMTS')
 
         expectTypeOf(layerId).toEqualTypeOf<ComputedRef<string | null>>()

@@ -21,7 +21,7 @@ import type { Options as WMTSOptions } from 'ol/source/WMTS'
  * - The data from the sub-converter as well as some incoming data are together being merged into one object
  *   and the parent is informed about the changes
  */
-import type { WMSLayerData } from './OgcWmsLayerConverter.vue'
+import type { WMSLayerData } from './useOgcWmsData'
 
 import useDatasetLocaleRefresh from './useDatasetLocaleRefresh'
 import { useGenericOgcData } from './useGenericOgcData'
