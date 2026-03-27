@@ -111,13 +111,9 @@ export const useGeolocationStore = defineStore('geolocation', {
             }
         },
 
-        setGeolocationPosition(position: SingleCoordinate, dispatcher: ActionDispatcher): void {
+        setGeolocationPosition(position: SingleCoordinate, _dispatcher: ActionDispatcher): void {
             if (Array.isArray(position) && position.length === 2) {
                 this.position = position
-                if (this.tracking) {
-                    const positionStore = usePositionStore()
-                    positionStore.setCenter(position, dispatcher)
-                }
             } else {
                 log.debug({
                     title: 'Geolocation store / setGeolocationPosition',
@@ -203,7 +199,11 @@ function handleGeolocationError(
             this.errorCount += 1
             if (this.errorCount < 3) {
                 if (reactivate) {
+                    // Preserve errorCount across reactivation so retries can
+                    // eventually reach the failure threshold
+                    const previousErrorCount = this.errorCount
                     this.setGeolocationActive(true, dispatcher)
+                    this.errorCount = previousErrorCount
                 }
             } else {
                 toast.add({ title: 'Unable to determine location', color: 'warning' })

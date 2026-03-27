@@ -1,8 +1,8 @@
 import '../env.d.ts' // for reproject
 
-import useAddLayerToMap from '@/composables/useAddLayerToMap.composable'
-import MapModule from '@/MapModule.vue'
-import usePositionStore from '@/stores/position'
+import useAddLayerToMap from './composables/useAddLayerToMap.composable'
+import MapModule from './MapModule.vue'
+import usePositionStore from './stores/position'
 
 // importing as "type" doesn't work with the DTS bundler somehow
 // eslint-disable-next-line @typescript-eslint/consistent-type-exports
