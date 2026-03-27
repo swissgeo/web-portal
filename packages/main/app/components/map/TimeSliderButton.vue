@@ -12,8 +12,9 @@ const sidebarStore = useSidebarStore()
 
 const timeLayers = computed((): LayerWithTime[] =>
     layerStore.layers.filter(
-        (layer: Layer): layer is LayerWithTime => !!layer.dimensions && 'time' in layer.dimensions
-    )
+        (layer: Layer) =>
+            !!layer.dimensions && 'time' in layer.dimensions && !!layer.dimensions.time
+    ) as LayerWithTime[]
 )
 
 function onClose() {
