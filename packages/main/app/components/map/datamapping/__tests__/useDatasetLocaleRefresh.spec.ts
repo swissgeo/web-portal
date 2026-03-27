@@ -26,20 +26,25 @@ mockNuxtImport('useFetch', () => {
 })
 
 describe('useDatasetRefresh', () => {
-    it('updates the URL when the locale changes', async () => {
-        const partialLayer = {
-            uuid: 'uuid',
-            humanId: 'keusches-nonnenkraut',
-            data: {
-                links: [
-                    {
-                        rel: 'self',
-                        href: 'http://swissgeo.ch?language=de',
-                    },
-                ],
+    const partialLayer = {
+        uuid: 'uuid',
+        humanId: 'keusches-nonnenkraut',
+        data: {
+            links: [
+                {
+                    rel: 'self',
+                    href: 'http://swissgeo.ch?language=de',
+                },
+            ],
+            id: 'keusches-nonnenkraut',
+            properties: {
+                type: 'Dataset' as const,
+                title: 'Keusches Nonnenkraut',
             },
-        }
+        },
+    }
 
+    it('updates the URL when the locale changes', async () => {
         const updateCallback = vi.fn()
         const updateInfoCallback = vi.fn()
         const { newUrlString } = useDatasetLocaleRefresh(
@@ -54,18 +59,6 @@ describe('useDatasetRefresh', () => {
     })
 
     it('updates the URL when the locale changes without previously having the query param', async () => {
-        const partialLayer = {
-            uuid: 'uuid',
-            humanId: 'keusches-nonnenkraut',
-            data: {
-                links: [
-                    {
-                        rel: 'self',
-                        href: 'http://swissgeo.ch',
-                    },
-                ],
-            },
-        }
         const updateCallback = vi.fn()
         const updateInfoCallback = vi.fn()
         const { newUrlString } = useDatasetLocaleRefresh(
@@ -79,19 +72,6 @@ describe('useDatasetRefresh', () => {
     })
 
     it('Triggers a refresh when the locale changes', async () => {
-        const partialLayer = {
-            uuid: 'uuid',
-            humanId: 'keusches-nonnenkraut',
-            data: {
-                links: [
-                    {
-                        rel: 'self',
-                        href: 'http://swissgeo.ch?language=de',
-                    },
-                ],
-            },
-        }
-
         const updateCallback = vi.fn()
         const updateInfoCallback = vi.fn()
         useDatasetLocaleRefresh(partialLayer, updateCallback, updateInfoCallback)

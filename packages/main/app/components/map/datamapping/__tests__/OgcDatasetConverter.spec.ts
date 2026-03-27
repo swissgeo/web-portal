@@ -142,10 +142,10 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
             },
             global: {
                 stubs: {
-                    MapDatamappingWmtsLayer: {
+                    MapDatamappingOgcWmtsLayerConverter: {
                         template: '<div>WMTS converter</div>',
                     },
-                    MapDatamappingWmsLayer: {
+                    MapDatamappingOgcWmsLayerConverter: {
                         template: '<div>WMS converter</div>',
                     },
                 },
