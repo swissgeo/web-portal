@@ -15,7 +15,7 @@ const mapViewStore = useMapViewStore()
 
 const backgroundLayer = ref<DatasetLayer | null>(null)
 
-const backgroundLayerMapData = ref<MapLayer>()
+const backgroundLayerMapData = ref<MapLayer | null>(null)
 const layersByUuid = ref<Record<string, MapLayer>>({})
 
 const layersForMap = computed(() => {
