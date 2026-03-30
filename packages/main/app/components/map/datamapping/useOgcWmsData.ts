@@ -2,6 +2,8 @@ import type { Distribution, Service } from '@swissgeo/ogc'
 
 import { useStyle, useWmsCapabilities } from '@swissgeo/ogc'
 
+import { getTimeInfoFromWMSCapabilities } from '@/utils/timeUtils'
+
 import { defaultOpacityFromStyle } from './defaultFromOpacity'
 
 export type WMSLayerData = {
