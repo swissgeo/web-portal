@@ -6,9 +6,18 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const mockSendRedirect = vi.hoisted(() => vi.fn())
 const mockSetResponseStatus = vi.hoisted(() => vi.fn())
 const mockDefineEventHandler = vi.hoisted(() => (handler: unknown) => handler)
+const mockGetRouterParam = vi.hoisted(() =>
+    vi.fn(
+        (event: H3Event, name: string) =>
+            (event as unknown as { context: { params: Record<string, string> } }).context?.params?.[
+                name
+            ]
+    )
+)
 
 vi.mock('h3', () => ({
     defineEventHandler: mockDefineEventHandler,
+    getRouterParam: mockGetRouterParam,
     sendRedirect: mockSendRedirect,
     setResponseStatus: mockSetResponseStatus,
 }))
@@ -17,13 +26,9 @@ vi.mock('h3', () => ({
 const mockResolveLocale = vi.fn()
 vi.stubGlobal('resolveLocale', mockResolveLocale)
 
-import deRoute from '../de'
-import enRoute from '../en'
-import frRoute from '../fr'
+import localeRoute from '../[locale]'
 import indexRoute from '../index'
-import itRoute from '../it'
 import mapRoute from '../map'
-import rmRoute from '../rm'
 
 type Handler = (_event: H3Event) => unknown
 const event = {} as H3Event
@@ -70,14 +75,15 @@ describe('CMS locale root routes — return 404 so the proxy can serve the CMS',
         vi.clearAllMocks()
     })
 
-    it.each([
-        ['/de', deRoute as Handler],
-        ['/fr', frRoute as Handler],
-        ['/it', itRoute as Handler],
-        ['/en', enRoute as Handler],
-        ['/rm', rmRoute as Handler],
-    ])('%s returns 404', (_, handler) => {
-        handler(event)
-        expect(mockSetResponseStatus).toHaveBeenCalledWith(event, 404)
+    it.each(['de', 'fr', 'it', 'en', 'rm'])('/%s returns 404', (locale) => {
+        const localeEvent = { context: { params: { locale } } } as unknown as H3Event
+        ;(localeRoute as Handler)(localeEvent)
+        expect(mockSetResponseStatus).toHaveBeenCalledWith(localeEvent, 404)
+    })
+
+    it('does not return 404 for non-locale paths', () => {
+        const otherEvent = { context: { params: { locale: 'other' } } } as unknown as H3Event
+        ;(localeRoute as Handler)(otherEvent)
+        expect(mockSetResponseStatus).not.toHaveBeenCalled()
     })
 })

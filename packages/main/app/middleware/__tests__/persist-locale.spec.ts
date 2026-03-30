@@ -1,10 +1,9 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { mockLocale, mockCookieRef, mockUseCookie } = vi.hoisted(async () => {
-    const { ref } = await import('vue')
-    const mockLocale = ref('de')
-    const mockCookieRef = ref(null as string | null)
+const { mockLocale, mockCookieRef, mockUseCookie } = vi.hoisted(() => {
+    const mockLocale = { value: 'de' }
+    const mockCookieRef = { value: null as string | null }
     const mockUseCookie = vi.fn(() => mockCookieRef)
     return { mockLocale, mockCookieRef, mockUseCookie }
 })
