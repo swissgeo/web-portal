@@ -1,9 +1,8 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { mockLocale, mockCookieRef, mockUseCookie } = vi.hoisted(() => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { ref } = require('vue')
+const { mockLocale, mockCookieRef, mockUseCookie } = vi.hoisted(async () => {
+    const { ref } = await import('vue')
     const mockLocale = ref('de')
     const mockCookieRef = ref(null as string | null)
     const mockUseCookie = vi.fn(() => mockCookieRef)
