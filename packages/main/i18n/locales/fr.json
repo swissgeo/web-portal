@@ -118,6 +118,11 @@
         "stateConfig": "panneau de configuration",
         "share": "Partager"
     },
+    "geolocation": {
+        "permissionDenied": "Autorisation de localisation refusée",
+        "stopTracking": "Arrêter le suivi",
+        "startTracking": "Démarrer le suivi"
+    },
     "backgroundLayers": {
         "title": "Cartes affichées",
         "voidMap": "Carte vide",

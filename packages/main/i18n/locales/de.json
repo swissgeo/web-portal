@@ -118,6 +118,11 @@
         "stateConfig": "State Config",
         "share": "Teilen"
     },
+    "geolocation": {
+        "permissionDenied": "Standortberechtigung verweigert",
+        "stopTracking": "Standort-Tracking beenden",
+        "startTracking": "Standort-Tracking starten"
+    },
     "backgroundLayers": {
         "title": "Angezeigte Karten",
         "voidMap": "Leere Karte",

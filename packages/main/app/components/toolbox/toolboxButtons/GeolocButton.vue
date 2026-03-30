@@ -3,23 +3,25 @@ import type { ActionDispatcher } from '@swissgeo/map'
 
 import { usePositionStore } from '@swissgeo/map'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
 import { useGeolocationStore } from '@/stores/geolocation'
 
 const dispatcher: ActionDispatcher = { name: 'GeolocButton.vue' }
 
+const { t } = useI18n()
 const geolocationStore = useGeolocationStore()
 const positionStore = usePositionStore()
 
 const title = computed(() => {
     if (geolocationStore.denied) {
-        return 'Location permission denied'
+        return t('geolocation.permissionDenied')
     }
     if (geolocationStore.active) {
-        return 'Stop tracking'
+        return t('geolocation.stopTracking')
     }
-    return 'Start tracking'
+    return t('geolocation.startTracking')
 })
 
 function toggleGeolocation(): void {
