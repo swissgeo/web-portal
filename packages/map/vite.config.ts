@@ -9,10 +9,6 @@ import { getBaseBuildConfig } from '../../base.vite.config'
 
 export default defineConfig(({ mode }) => {
     return {
-        test: {
-            globals: true,
-            environment: 'jsdom',
-        },
         build: {
             ...getBaseBuildConfig(mode),
             lib: {
@@ -32,7 +28,6 @@ export default defineConfig(({ mode }) => {
         resolve: {
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url)),
-                '@types': fileURLToPath(new URL('./types', import.meta.url)),
                 '@stores': fileURLToPath(new URL('./src/stores', import.meta.url)),
             },
         },
