@@ -13,9 +13,13 @@ export function useOgcWmtsData(
     const { wmtsData } = useWmtsCapabilities(service, layerId)
 
     const options = computed(() => wmtsData.value?.options || null)
-    const dimensions = computed(() => wmtsData.value?.dimensions || null)
+    const dimensions = computed(() => {
+        return wmtsData.value?.dimensions || null
+    })
 
-    const timeInfo = computed(() => getTimeInfoFromWMTSCapabilities(dimensions.value))
+    const timeInfo = computed(() => {
+        return getTimeInfoFromWMTSCapabilities(dimensions.value)
+    })
 
     const defaultOpacity = computed(() => {
         if (styleData.value) {
