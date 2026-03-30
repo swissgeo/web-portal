@@ -7,16 +7,13 @@
         "vite.config.ts",
         "types/**/*.d.ts",
         "../../base.vite.config.ts",
-        "../main/app/utils/timeUtils.ts"
+        "vitest.config.ts"
     ],
     "compilerOptions": {
         "types": ["vue", "vite/client"],
         "paths": {
             "@/*": ["./src/*", "../skeleton/src/*"],
-            "@types/*": ["./types/*"],
-            "@stores/*": ["./src/stores/*", "../skeleton/src/stores/*"],
-            "~/*": ["../main/app/*"]
+            "@stores/*": ["./src/stores/*", "../skeleton/src/stores/*"]
         }
-    },
-    "ignoreDeprecations": "6.0"
+    }
 }
