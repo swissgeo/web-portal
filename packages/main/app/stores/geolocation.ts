@@ -28,6 +28,8 @@ interface GeolocationStoreState {
     firstTime: boolean
 }
 
+const MAX_GEOLOCATION_ERRORS = 3
+
 let geolocationWatcherId: number | undefined
 
 export const useGeolocationStore = defineStore('geolocation', {
@@ -49,37 +51,49 @@ export const useGeolocationStore = defineStore('geolocation', {
                 this.errorCount = 0
 
                 if (this.position && this.tracking) {
+                    // Re-use the last known position as a placeholder so the map
+                    // centres immediately on re-activation while waiting for a
+                    // fresh GPS fix to arrive.
                     setCenterIfInBounds(this.position, dispatcher)
                     this.accuracy = 50 * 1000 // 50km placeholder until real fix arrives
                 }
 
+                const onWatchSuccess = (pos: GeolocationPosition) =>
+                    handleNewGeolocationPosition.call(this, pos, dispatcher)
+                const onWatchError = (err: GeolocationPositionError) =>
+                    handleGeolocationError.call(this, err, { reactivate: false }, dispatcher)
+
+                const onCurrentSuccess = (position: GeolocationPosition) => {
+                    log.debug({
+                        title: 'Geolocation store / setGeolocationActive',
+                        titleColor: LogPreDefinedColor.Amber,
+                        messages: ['Geolocation API current position', position],
+                    })
+                    // Start the continuous watcher for subsequent position updates, then
+                    // immediately handle the first fix from getCurrentPosition so the map
+                    // centres without waiting for the first watchPosition callback.
+                    // The two callbacks do not race: getCurrentPosition resolves once and
+                    // the watcher only fires after it, so handleNewGeolocationPosition is
+                    // always called with increasing-accuracy positions in order.
+                    geolocationWatcherId = navigator.geolocation.watchPosition(
+                        onWatchSuccess,
+                        onWatchError,
+                        { enableHighAccuracy: true }
+                    )
+                    handleNewGeolocationPosition.call(this, position, dispatcher)
+                }
+                const onCurrentError = (err: GeolocationPositionError) =>
+                    handleGeolocationError.call(this, err, { reactivate: true }, dispatcher)
+                const currentOptions: PositionOptions = {
+                    enableHighAccuracy: true,
+                    maximumAge: 5 * 60 * 1000,
+                    timeout: 2 * 60 * 1000,
+                }
+
                 navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        log.debug({
-                            title: 'Geolocation store / setGeolocationActive',
-                            titleColor: LogPreDefinedColor.Amber,
-                            messages: ['Geolocation API current position', position],
-                        })
-                        geolocationWatcherId = navigator.geolocation.watchPosition(
-                            (pos) => handleNewGeolocationPosition.call(this, pos, dispatcher),
-                            (err) =>
-                                handleGeolocationError.call(
-                                    this,
-                                    err,
-                                    { reactivate: false },
-                                    dispatcher
-                                ),
-                            { enableHighAccuracy: true }
-                        )
-                        handleNewGeolocationPosition.call(this, position, dispatcher)
-                    },
-                    (err) =>
-                        handleGeolocationError.call(this, err, { reactivate: true }, dispatcher),
-                    {
-                        enableHighAccuracy: true,
-                        maximumAge: 5 * 60 * 1000,
-                        timeout: 2 * 60 * 1000,
-                    }
+                    onCurrentSuccess,
+                    onCurrentError,
+                    currentOptions
                 )
             } else if (geolocationWatcherId !== undefined) {
                 log.debug({
@@ -197,7 +211,7 @@ function handleGeolocationError(
             break
         default:
             this.errorCount += 1
-            if (this.errorCount < 3) {
+            if (this.errorCount < MAX_GEOLOCATION_ERRORS) {
                 if (reactivate) {
                     // Preserve errorCount across reactivation so retries can
                     // eventually reach the failure threshold
