@@ -4,7 +4,6 @@
  * geolocation position.
  */
 import type { Map } from 'ol'
-import type { Coordinate } from 'ol/coordinate'
 import type { Ref } from 'vue'
 
 import { useAddLayerToMap } from '@swissgeo/map'
@@ -25,7 +24,7 @@ const accuracy = computed(() => geolocationStore.accuracy)
 
 const olMap = inject<Ref<Map | undefined>>('olMap')
 
-const accuracyCircle = new Circle((position.value ?? [0, 0]) as Coordinate, accuracy.value)
+const accuracyCircle = new Circle(position.value ?? [0, 0], accuracy.value)
 const accuracyFeature = new Feature({ geometry: accuracyCircle })
 accuracyFeature.setStyle(
     new Style({
@@ -52,7 +51,7 @@ onMounted(() => addLayerToMap())
 
 watch(position, (newPosition) => {
     if (newPosition) {
-        accuracyCircle.setCenter(newPosition as Coordinate)
+        accuracyCircle.setCenter(newPosition)
     }
 })
 
