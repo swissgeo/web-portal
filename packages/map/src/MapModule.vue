@@ -12,11 +12,13 @@ import OpenLayersScale from './openlayers/OpenLayersScale.vue'
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 
-const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
+const { layers, backgroundLayer, customLayerRenderers, mouseTracker = true } = defineProps<{
     layers: Layer[]
     backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
+    mouseTracker?: boolean
 }>()
+
 </script>
 
 <template>
@@ -35,7 +37,7 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
                 :layers="layers"
                 :background-layer="backgroundLayer"
             /> -->
-            <OpenLayersMouseTracker />
+            <OpenLayersMouseTracker v-if="mouseTracker" />
         </OpenLayersMap>
     </div>
 </template>
