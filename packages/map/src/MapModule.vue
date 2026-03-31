@@ -10,11 +10,12 @@ import OpenLayersScale from './openlayers/OpenLayersScale.vue'
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 
-const { layers, backgroundLayer, customLayerRenderers, mouseTracker = true } = defineProps<{
+const { layers, backgroundLayer, customLayerRenderers, mouseTracker = true, scale = true } = defineProps<{
     layers: Layer[]
     backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
     mouseTracker?: boolean
+    scale?: boolean
 }>()
 
 </script>
