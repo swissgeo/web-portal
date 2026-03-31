@@ -2,9 +2,8 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { locale } = vi.hoisted(() => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { ref } = require('vue')
+const { locale } = await vi.hoisted(async () => {
+    const { ref } = await import('vue')
     return { locale: ref('de') }
 })
 

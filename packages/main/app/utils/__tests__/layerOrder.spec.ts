@@ -1,5 +1,5 @@
 import type { Layer as StoreLayer } from '@swissgeo/layers'
-import type { Layer as MapLayer } from '@swissgeo/map'
+import type { WMSLayer } from '@swissgeo/map'
 
 import { describe, expect, it } from 'vitest'
 
@@ -11,11 +11,11 @@ function createStoreLayer(uuid: string): StoreLayer {
     } as StoreLayer
 }
 
-function createMapLayer(uuid: string, zIndex: number): MapLayer {
+function createMapLayer(uuid: string, zIndex: number): WMSLayer {
     return {
         uuid,
         zIndex,
-        type: 'WMS',
+        format: 'WMS',
         layerId: `layer-${uuid}`,
         opacity: 1,
         isVisible: true,

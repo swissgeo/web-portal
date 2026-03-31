@@ -42,7 +42,7 @@ describe.skip('OpenLayersLocalGeoJSONLayer.vue', () => {
         const wrapper = mount(OpenLayersLocalGeoJSONLayer, {
             props: {
                 layer: {
-                    type: 'GeoJSON',
+                    format: 'GeoJSON',
                     layerId: 'test-layer',
                     uuid: '1234',
                     // fileData: '{}',
@@ -60,7 +60,7 @@ describe.skip('OpenLayersLocalGeoJSONLayer.vue', () => {
         mount(OpenLayersLocalGeoJSONLayer, {
             props: {
                 layer: {
-                    type: 'GeoJSON',
+                    format: 'GeoJSON',
                     layerId: 'test-layer',
                     uuid: '1234',
                     // fileData: '{}',

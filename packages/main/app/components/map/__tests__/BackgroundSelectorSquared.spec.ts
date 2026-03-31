@@ -6,15 +6,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 type SquaredVM = { selectBackgroundCallback: (_layer: Layer | null) => void }
 
 // Use vi.hoisted so these refs are available inside the hoisted vi.mock factory.
-const { mockSelectorOpen, mockOnSelectBackground, mockToggleShowSelector } = vi.hoisted(() => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { ref } = require('vue')
-    return {
-        mockSelectorOpen: ref(false),
-        mockOnSelectBackground: vi.fn(),
-        mockToggleShowSelector: vi.fn(),
+const { mockSelectorOpen, mockOnSelectBackground, mockToggleShowSelector } = await vi.hoisted(
+    async () => {
+        const { ref } = await import('vue')
+        return {
+            mockSelectorOpen: ref(false),
+            mockOnSelectBackground: vi.fn(),
+            mockToggleShowSelector: vi.fn(),
+        }
     }
-})
+)
 
 vi.mock('~/components/map/useBackgroundSelector', () => ({
     default: vi.fn(() => ({

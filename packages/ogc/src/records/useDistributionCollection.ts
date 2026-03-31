@@ -12,8 +12,10 @@ export function useDistributionCollection(dataset: Ref<Dataset | null>) {
 
     const {
         data: distributionCollection,
+        /*
         isFetching,
         error,
+         */
     } = useConditionalFetch<DistributionCollection>(distributionUrl, ['get', 'json'])
 
     // Debug watchers
@@ -36,8 +38,10 @@ export function useDistributionCollection(dataset: Ref<Dataset | null>) {
     return {
         distributionUrl,
         distributionCollection,
+        /*
         isFetching,
         error,
+        */
     }
 }
 
