@@ -119,6 +119,7 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
             :background-layer="backgroundLayerMapData"
             :custom-layer-renderers="customLayerRenderers"
             :mouse-tracker="false"
+            :scale="false"
             class="h-screen w-full"
         />
 
@@ -126,6 +127,7 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
 
         <MapBackgroundSelector
             :currentBackground="backgroundLayer"
+            :show="false"
             @setBackground="changeBackground"
         />
         <MapTimeSliderButton />
