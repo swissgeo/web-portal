@@ -127,6 +127,9 @@ export default defineNuxtConfig({
             buildTime,
         },
     },
+    nitro: {
+        ignore: ['**/__tests__/**'],
+    },
     routeRules: {
         // cache the rendered pages for 2 minutes
         //'/content/**': { cache: { maxAge: process.dev ? 1 : 120 } },
