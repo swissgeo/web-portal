@@ -7,11 +7,16 @@ import OpenLayersMap from './openlayers/OpenLayersMap.vue'
 import OpenLayersMouseTracker from './openlayers/OpenLayersMouseTracker.vue'
 import OpenLayersScale from './openlayers/OpenLayersScale.vue'
 
-const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
+// TODO somehow the statement in main/app.vue doesn't do it
+log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
+
+const { layers, backgroundLayer, customLayerRenderers, mouseTracker = true } = defineProps<{
     layers: Layer[]
     backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
+    mouseTracker?: boolean
 }>()
+
 </script>
 
 <template>
@@ -32,7 +37,7 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
                     v-bind="slotProps"
                 />
             </OpenLayersContextMenuPopup>
-            <OpenLayersMouseTracker />
+            <OpenLayersMouseTracker v-if="mouseTracker" />
         </OpenLayersMap>
     </div>
 </template>
