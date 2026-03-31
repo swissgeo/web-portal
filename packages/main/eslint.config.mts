@@ -15,6 +15,14 @@ export default [
         languageOptions: {
             parserOptions: {
                 tsconfigRootDir: import.meta.dirname,
+                // Server routes and utils are not included in the Nuxt-generated tsconfig,
+                // so we allow them to be linted with a default project.
+                projectService: {
+                    allowDefaultProject: [
+                        'server/utils/__tests__/*.ts',
+                        'server/routes/__tests__/*.ts',
+                    ],
+                },
             },
         },
     },

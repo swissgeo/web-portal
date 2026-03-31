@@ -128,7 +128,7 @@ describe('parseLocationResult function', () => {
 
 describe('searchLocation function', () => {
     beforeEach(() => {
-        global.fetch = vi.fn()
+        globalThis.fetch = vi.fn()
     })
 
     afterEach(() => {
@@ -269,7 +269,7 @@ describe('searchLayerFeatures', () => {
     const featureFounds: FeatureSearchResult[] = []
 
     beforeEach(() => {
-        global.fetch = vi.fn()
+        globalThis.fetch = vi.fn()
         searchResult[0] = {
             id: 0,
             weight: 0,
