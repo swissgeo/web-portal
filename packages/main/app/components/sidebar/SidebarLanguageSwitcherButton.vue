@@ -2,14 +2,14 @@
 import type { Lang } from '@swissgeo/shared/language'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const { locale, locales } = useI18n()
 const appStore = useAppStore()
 
 const localeItems = computed(() => {
     return locales.value.map((item) => ({
-        code: item.code,
+        code: item.code === 'en' ? 'en-GB' : item.code,
         name: item.name ?? item.code,
         dir: (item.dir ?? 'ltr') as 'ltr' | 'rtl',
         messages: {},
@@ -17,11 +17,6 @@ const localeItems = computed(() => {
 })
 
 const selectedLocale = ref<Lang>(locale.value)
-const isClient = ref(false)
-
-onMounted(() => {
-    isClient.value = true
-})
 
 watch(locale, (value) => {
     selectedLocale.value = value
@@ -30,7 +25,8 @@ watch(locale, (value) => {
 watch(selectedLocale, async (value) => {
     if (value && value !== locale.value) {
         try {
-            await appStore.applyLocale(value)
+            const normalizedLocale = value?.split('-')[0] as Lang // 'en-GB' → 'en'
+            await appStore.applyLocale(normalizedLocale)
         } catch (err) {
             log.error({
                 title: 'SidebarLanguageSwitcherButton',
@@ -46,16 +42,20 @@ watch(selectedLocale, async (value) => {
 </script>
 
 <template>
-    <div v-if="isClient">
+    <ClientOnly>
         <ULocaleSelect
             v-model="selectedLocale"
             :locales="localeItems"
             :highlight="true"
             :highlight-on-hover="true"
             :arrow="false"
+            :avatar="{
+                icon: 'i-lucide-globe',
+            }"
             size="md"
             variant="ghost"
             :trailing="false"
+            trailingIcon="i-lucide-globe"
             aria-label="Language switcher"
             :ui="{
                 content: '!w-auto min-w-[150px] !max-w-none',
@@ -65,5 +65,5 @@ watch(selectedLocale, async (value) => {
                 trailingIcon: 'hidden',
             }"
         />
-    </div>
+    </ClientOnly>
 </template>
