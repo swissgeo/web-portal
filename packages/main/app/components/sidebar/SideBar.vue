@@ -8,8 +8,6 @@ import LayerCart from '@/components/sidebar/LayerCart.vue'
 import SearchPanel from '@/components/sidebar/search/SearchPanel.vue'
 import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
 
-import BuildInfoButton from './BuildInfoButton.vue'
-
 const uiStore = useSidebarStore()
 
 const emit = defineEmits<{
@@ -50,7 +48,6 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH
                     </div>
                     <div class="flex flex-col items-center gap-2">
                         <slot name="bottom-controls" />
-                        <BuildInfoButton></BuildInfoButton>
                     </div>
                 </div>
                 <!-- Second column -->
