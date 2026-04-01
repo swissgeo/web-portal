@@ -60,7 +60,6 @@ createOlMap()
         ref="mapElement"
         class="ol-map h-full w-full"
         data-cy="ol-map"
-        @contextmenu.prevent
     >
         <OpenLayersVisibleLayer
             :layer="backgroundLayer"
