@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { CoordinateSystem } from '@swissgeo/coordinates'
 
+import proj4 from 'proj4'
 import { LV95 } from '@swissgeo/coordinates'
 import { Check, Copy } from 'lucide-vue-next'
-import { computed } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 
 import { useClipboard } from '../composables/useClipboard.composable'
 
@@ -14,6 +15,10 @@ import coordinateFormat, {
     UTMFormat,
     WGS84Format,
 } from '@/utils/coordinates/coordinateFormat'
+import log from '@swissgeo/log'
+
+const WHAT_3_WORDS_API_BASE_URL = 'https://api.what3words.com/v3'
+const WHAT_3_WORDS_API_KEY = ''
 
 const props = defineProps<{
     coordinate: [number, number] | null
@@ -28,9 +33,34 @@ interface Row {
     value: string
 }
 
-const rows = computed((): Row[] => {
+const rows = ref<Row[]>([])
+
+const resolveLink = (row: Row): string | undefined => {
+    if (typeof row.labelLink === 'function') {
+        return row.labelLink(row.value)
+    }
+    return row.labelLink
+}
+
+const fetchW3WLink = async (w3wValue: string): Promise<string> => {
+    try {
+        const response = await fetch(
+            `${WHAT_3_WORDS_API_BASE_URL}/convert-to-3wa?coordinates=${w3wValue}&key=${WHAT_3_WORDS_API_KEY}`
+        )
+        const data = await response.json()
+        return String(data.words)
+    } catch (error) {
+        log.error(`Error fetching what3words value for coordinate: ${w3wValue}`)
+        return 'Error fetching what3words'
+    }
+}
+
+watchEffect(async () => {
     const coord = props.coordinate
-    if (!coord) return []
+    if (!coord) {
+        rows.value = []
+        return
+    }
 
     const proj = currentProjection.value
     const lv95 = coordinateFormat(LV95Format, coord, proj)
@@ -38,10 +68,11 @@ const rows = computed((): Row[] => {
     const wgs84Dec = coordinateFormat(WGS84Format, coord, proj, true)
     const utm = coordinateFormat(UTMFormat, coord, proj)
     const mgrs = coordinateFormat(MGRSFormat, coord, proj)
-    // what3words value is the first line of wgs84 decimal, used only in the link
-    const w3wValue = wgs84Dec.split('\n')[0]?.trim() ?? ''
 
-    return [
+    const [lon, lat] = proj4(proj.epsg, 'EPSG:4326', coord)
+    const w3wValue = await fetchW3WLink(`${lat.toFixed(6)},${lon.toFixed(6)}`)
+
+    rows.value = [
         {
             label: LV95Format.label,
             labelLink: 'https://www.swisstopo.admin.ch/en/the-swiss-coordinates-system',
@@ -73,13 +104,6 @@ const rows = computed((): Row[] => {
         },
     ]
 })
-
-function resolveLink(row: Row): string | undefined {
-    if (typeof row.labelLink === 'function') {
-        return row.labelLink(row.value)
-    }
-    return row.labelLink
-}
 
 // One clipboard instance per row label, created once and reused
 const ROW_LABELS = [
