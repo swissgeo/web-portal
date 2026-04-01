@@ -35,6 +35,7 @@ interface Row {
 }
 
 const rows = ref<Row[]>([])
+const clipboards = ref<ReturnType<typeof useClipboard>[]>([])
 
 const resolveLink = (row: Row): string | undefined => {
     if (typeof row.labelLink === 'function') {
@@ -64,7 +65,6 @@ const fetchElevation = async (coord: [number, number]): Promise<string> => {
         const data = await response.json()
         const elevation_m = parseFloat(data.height as string)
         const elevation_ft = elevation_m * METERS_TO_FEET_FACTOR
-        console.log(elevation_m, elevation_ft)
 
         return `${elevation_m.toFixed(2)}m\n${elevation_ft.toFixed(2)}ft`
     } catch (error) {
@@ -77,6 +77,7 @@ watchEffect(async () => {
     const coord = props.coordinate
     if (!coord) {
         rows.value = []
+        clipboards.value = []
         return
     }
 
@@ -106,7 +107,7 @@ watchEffect(async () => {
         {
             label: WGS84Format.label,
             labelLink: 'https://epsg.io/4326',
-            value: `${wgs84Dec}`,
+            value: wgs84Dec,
         },
         {
             label: UTMFormat.label,
@@ -128,27 +129,14 @@ watchEffect(async () => {
             value: elevation,
         },
     ]
+    clipboards.value = rows.value.map(() => useClipboard())
 })
-
-// One clipboard instance per row label, created once and reused
-const ROW_LABELS = [
-    'CH1903+ / LV95',
-    'CH1903 / LV03',
-    'WGS 84 (lat/lon)',
-    'UTM',
-    'MGRS',
-    'what3words',
-] as const
-const clipboards = Object.fromEntries(ROW_LABELS.map((label) => [label, useClipboard()])) as Record<
-    string,
-    ReturnType<typeof useClipboard>
->
 </script>
 
 <template>
     <div class="divide-y divide-gray-100">
         <div
-            v-for="row in rows"
+            v-for="(row, index) in rows"
             :key="row.label"
             class="flex items-center justify-between gap-4 px-4 py-2 hover:bg-gray-50"
         >
@@ -172,10 +160,10 @@ const clipboards = Object.fromEntries(ROW_LABELS.map((label) => [label, useClipb
             </span>
             <button
                 class="shrink-0 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
-                @click="clipboards[row.label]?.copy(row.value)"
+                @click="clipboards[index]?.copy(row.value)"
             >
                 <Check
-                    v-if="clipboards[row.label]?.copied.value"
+                    v-if="clipboards[index]?.copied"
                     :size="14"
                     class="text-green-500"
                 />
