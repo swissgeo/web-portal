@@ -11,9 +11,9 @@ const emit = defineEmits<{
     setBackground: [backgroundLayer: Layer | null]
 }>()
 
-const { currentBackground, show = true } = defineProps<{
+const { currentBackground, showUi = true } = defineProps<{
     currentBackground: Layer | null,
-    show?: boolean,
+    showUi?: boolean,
 }>()
 
 const runtimeConfig = useRuntimeConfig()
@@ -77,14 +77,14 @@ function selectBackground(backgroundLayer: Layer | null) {
 <template>
     <!-- Desktop (sm+): rectangular buttons spread to the left, fixed bottom-right -->
     <MapBackgroundSelectorSquared
-        v-if="show"
+        v-if="showUi"
         :background-layers="sortedBackgroundLayersWithNull"
         :current-background-layer="currentBackground"
         @select-background="selectBackground"
     />
     <!-- Mobile (below sm): circular buttons spread upward, fixed bottom-left -->
     <MapBackgroundSelectorRounded
-        v-if="show"
+        v-if="showUi"
         :background-layers="sortedBackgroundLayersWithNull"
         :current-background-layer="currentBackground"
         @select-background="selectBackground"
