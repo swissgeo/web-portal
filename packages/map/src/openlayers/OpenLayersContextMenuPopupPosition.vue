@@ -1,0 +1,140 @@
+<script setup lang="ts">
+import type { CoordinateSystem } from '@swissgeo/coordinates'
+
+import { LV95 } from '@swissgeo/coordinates'
+import { Check, Copy } from 'lucide-vue-next'
+import { computed } from 'vue'
+
+import { useClipboard } from '../composables/useClipboard.composable'
+
+import coordinateFormat, {
+    LV03Format,
+    LV95Format,
+    MGRSFormat,
+    UTMFormat,
+    WGS84Format,
+} from '@/utils/coordinates/coordinateFormat'
+
+const props = defineProps<{
+    coordinate: [number, number] | null
+    projection?: CoordinateSystem
+}>()
+
+const currentProjection = computed(() => props.projection ?? LV95)
+
+interface Row {
+    label: string
+    labelLink?: string | ((value: string) => string)
+    value: string
+}
+
+const rows = computed((): Row[] => {
+    const coord = props.coordinate
+    if (!coord) return []
+
+    const proj = currentProjection.value
+    const lv95 = coordinateFormat(LV95Format, coord, proj)
+    const lv03 = coordinateFormat(LV03Format, coord, proj)
+    const wgs84Dec = coordinateFormat(WGS84Format, coord, proj, true)
+    const utm = coordinateFormat(UTMFormat, coord, proj)
+    const mgrs = coordinateFormat(MGRSFormat, coord, proj)
+    // what3words value is the first line of wgs84 decimal, used only in the link
+    const w3wValue = wgs84Dec.split('\n')[0]?.trim() ?? ''
+
+    return [
+        {
+            label: LV95Format.label,
+            labelLink: 'https://www.swisstopo.admin.ch/en/the-swiss-coordinates-system',
+            value: lv95,
+        },
+        {
+            label: LV03Format.label,
+            labelLink: 'https://www.swisstopo.admin.ch/en/national-triangulation-network-lv03',
+            value: lv03,
+        },
+        {
+            label: WGS84Format.label,
+            labelLink: 'https://epsg.io/4326',
+            value: `${wgs84Dec}`,
+        },
+        {
+            label: UTMFormat.label,
+            labelLink: 'https://epsg.io/32632',
+            value: utm,
+        },
+        {
+            label: MGRSFormat.label,
+            value: mgrs,
+        },
+        {
+            label: 'what3words',
+            labelLink: (value) => `https://what3words.com/${value}`,
+            value: w3wValue,
+        },
+    ]
+})
+
+function resolveLink(row: Row): string | undefined {
+    if (typeof row.labelLink === 'function') {
+        return row.labelLink(row.value)
+    }
+    return row.labelLink
+}
+
+// One clipboard instance per row label, created once and reused
+const ROW_LABELS = [
+    'CH1903+ / LV95',
+    'CH1903 / LV03',
+    'WGS 84 (lat/lon)',
+    'UTM',
+    'MGRS',
+    'what3words',
+] as const
+const clipboards = Object.fromEntries(ROW_LABELS.map((label) => [label, useClipboard()])) as Record<
+    string,
+    ReturnType<typeof useClipboard>
+>
+</script>
+
+<template>
+    <div class="divide-y divide-gray-100">
+        <div
+            v-for="row in rows"
+            :key="row.label"
+            class="flex items-start justify-between gap-4 px-4 py-2 hover:bg-gray-50"
+        >
+            <a
+                v-if="resolveLink(row)"
+                :href="resolveLink(row)"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="min-w-[120px] shrink-0 text-sm font-medium text-primary underline"
+            >
+                {{ row.label }}
+            </a>
+            <span
+                v-else
+                class="min-w-[120px] shrink-0 text-sm font-medium text-gray-700"
+            >
+                {{ row.label }}
+            </span>
+            <span class="flex-1 text-sm whitespace-pre-line text-gray-700">
+                {{ row.value }}
+            </span>
+            <button
+                class="shrink-0 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                @click="clipboards[row.label]?.copy(row.value)"
+            >
+                <Check
+                    v-if="clipboards[row.label]?.copied.value"
+                    :size="14"
+                    class="text-green-500"
+                />
+                <Copy
+                    v-else
+                    :size="14"
+                />
+            </button>
+        </div>
+    </div>
+</template>

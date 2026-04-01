@@ -31,17 +31,7 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
                 :layers="layers"
                 :background-layer="backgroundLayer"
             /> -->
-            <OpenLayersContextMenuPopup>
-                <template #default="{ coordinate, close }">
-                    <div class="context-menu">
-                        <p>
-                            Lon: {{ coordinate?.[0].toFixed(5) }}, Lat:
-                            {{ coordinate?.[1].toFixed(5) }}
-                        </p>
-                        <button @click="close">Close</button>
-                    </div>
-                </template>
-            </OpenLayersContextMenuPopup>
+            <OpenLayersContextMenuPopup />
             <OpenLayersMouseTracker />
         </OpenLayersMap>
     </div>
