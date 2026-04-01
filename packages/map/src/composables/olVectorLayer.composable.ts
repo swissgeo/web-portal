@@ -49,6 +49,8 @@ interface TileGridConfig {
     origin: [number, number]
     extent: [number, number, number, number]
     tileSize: number
+    minZoom: number
+    maxZoom: number
 }
 
 /** Sorts tile matrix items by zoom level in ascending order */
@@ -108,7 +110,8 @@ function buildTileGridConfig(
         return null
     }
 
-    const maxZoom = tileJson.maxzoom ?? sortedItems[sortedItems.length - 1]?.zoom_level ?? 0
+    const tileMatrixMaxZoom = sortedItems[sortedItems.length - 1]?.zoom_level ?? 0
+    const maxZoom = tileJson.maxzoom ?? tileMatrixMaxZoom
     const resolutions = buildResolutions(sortedItems, maxZoom)
     if (!resolutions) {
         return null
@@ -125,6 +128,8 @@ function buildTileGridConfig(
             tileMatrixSet.max_y,
         ],
         tileSize: firstItem.tile_width,
+        minZoom: tileJson.minzoom ?? 0,
+        maxZoom,
     }
 }
 
@@ -179,6 +184,8 @@ async function initializeVectorLayer(
         tileGrid: tileGrid,
         projection: projection,
         url: config.tileUrls[0],
+        minZoom: config.minZoom, // Don't request tiles below server's min zoom
+        maxZoom: config.maxZoom, // Prevent requesting tiles beyond server's max zoom
         // Performance optimizations
         cacheSize: 512, // Increase tile cache (default is 128)
         transition: 250, // Smooth tile fade-in (ms)
