@@ -19,6 +19,7 @@ import log from '@swissgeo/log'
 
 const WHAT_3_WORDS_API_BASE_URL = 'https://api.what3words.com/v3'
 const WHAT_3_WORDS_API_KEY = ''
+const METERS_TO_FEET_FACTOR = 3.28084
 
 const props = defineProps<{
     coordinate: [number, number] | null
@@ -55,6 +56,23 @@ const fetchW3WLink = async (w3wValue: string): Promise<string> => {
     }
 }
 
+const fetchElevation = async (coord: [number, number]): Promise<string> => {
+    try {
+        const response = await fetch(
+            `https://api3.geo.admin.ch/rest/services/height?easting=${coord[0]}&northing=${coord[1]}`
+        )
+        const data = await response.json()
+        const elevation_m = parseFloat(data.height as string)
+        const elevation_ft = elevation_m * METERS_TO_FEET_FACTOR
+        console.log(elevation_m, elevation_ft)
+
+        return `${elevation_m.toFixed(2)}m\n${elevation_ft.toFixed(2)}ft`
+    } catch (error) {
+        log.error(`Error fetching elevation for coordinate: ${coord}`)
+        return 'Error fetching elevation'
+    }
+}
+
 watchEffect(async () => {
     const coord = props.coordinate
     if (!coord) {
@@ -71,6 +89,8 @@ watchEffect(async () => {
 
     const [lon, lat] = proj4(proj.epsg, 'EPSG:4326', coord)
     const w3wValue = await fetchW3WLink(`${lat.toFixed(6)},${lon.toFixed(6)}`)
+
+    const elevation = await fetchElevation(coord)
 
     rows.value = [
         {
@@ -102,6 +122,11 @@ watchEffect(async () => {
             labelLink: (value) => `https://what3words.com/${value}`,
             value: w3wValue,
         },
+        {
+            label: 'Elevation',
+            labelLink: 'https://www.swisstopo.admin.ch/en/swiss-reference-systems',
+            value: elevation,
+        },
     ]
 })
 
@@ -125,7 +150,7 @@ const clipboards = Object.fromEntries(ROW_LABELS.map((label) => [label, useClipb
         <div
             v-for="row in rows"
             :key="row.label"
-            class="flex items-start justify-between gap-4 px-4 py-2 hover:bg-gray-50"
+            class="flex items-center justify-between gap-4 px-4 py-2 hover:bg-gray-50"
         >
             <a
                 v-if="resolveLink(row)"
