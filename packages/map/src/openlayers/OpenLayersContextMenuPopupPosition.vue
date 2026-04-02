@@ -4,7 +4,7 @@ import type { CoordinateSystem } from '@swissgeo/coordinates'
 import { LV95 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
 import proj4 from 'proj4'
-import { computed, ref, watchEffect } from 'vue'
+import { computed, inject, ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import coordinateFormat, {
@@ -15,6 +15,7 @@ import coordinateFormat, {
     WGS84Format,
 } from '@/utils/coordinates/coordinateFormat'
 
+import { W3W_RESOLVER_KEY } from '../composables/injectionKeys'
 import { useClipboard } from '../composables/useClipboard.composable'
 
 const METERS_TO_FEET_FACTOR = 3.28084
@@ -25,6 +26,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const w3wResolver = inject(W3W_RESOLVER_KEY)
 
 const currentProjection = computed(() => props.projection ?? LV95)
 
@@ -45,14 +47,15 @@ const resolveLink = (row: Row): string | undefined => {
     return row.labelLink
 }
 
-const fetchW3WLink = async (lat: number, lon: number): Promise<string> => {
+const fetchW3WLink = async (lat: number, lon: number): Promise<string | null> => {
+    if (!w3wResolver) {
+        return null
+    }
     try {
-        const response = await fetch(`/api/v1/what3words/convert-to-3wa?lat=${lat}&lon=${lon}`)
-        const data = (await response.json()) as { words: string }
-        return data.words
+        return await w3wResolver(lat, lon)
     } catch (_error: unknown) {
         log.error(`Error fetching what3words value for coordinate: ${lat},${lon}`)
-        return 'Error fetching what3words'
+        return null
     }
 }
 
@@ -121,11 +124,15 @@ watchEffect(() => {
                 label: MGRSFormat.label,
                 value: mgrs,
             },
-            {
-                label: 'what3words',
-                labelLink: (value) => `https://what3words.com/${value}`,
-                value: w3wValue,
-            },
+            ...(w3wValue !== null
+                ? [
+                      {
+                          label: 'what3words',
+                          labelLink: (value: string) => `https://what3words.com/${value}`,
+                          value: w3wValue,
+                      },
+                  ]
+                : []),
             {
                 label: elevationLabel,
                 labelLink: 'https://www.swisstopo.admin.ch/en/swiss-reference-systems',
