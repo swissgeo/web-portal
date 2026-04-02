@@ -11,11 +11,11 @@ const watcherCallbackRef = vi.hoisted(() => {
 })
 
 const mockImportState = vi.fn()
-const mockExportState = vi.fn(() => ({
+const mockExportState = ref({
     version: 2,
     map: { center: [2600000, 1200000] as [number, number], zoom: 8, rotation: 0 },
     layers: [],
-}))
+})
 
 vi.mock('@swissgeo/log', () => ({
     default: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
@@ -95,7 +95,7 @@ describe('stateConfigSync plugin', () => {
 
         it('writes state to sessionStorage when the watcher fires', async () => {
             await invokeHook()
-            const state = mockExportState()
+            const state = mockExportState.value
 
             watcherCallbackRef.fn!(state)
 
@@ -113,18 +113,18 @@ describe('stateConfigSync plugin', () => {
             sessionStorage.clear() // clear so we can detect any subsequent write
 
             // First fire after import → skipped
-            watcherCallbackRef.fn!(mockExportState())
+            watcherCallbackRef.fn!(mockExportState.value)
             expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull()
 
             // Second fire → saved normally
-            watcherCallbackRef.fn!(mockExportState())
+            watcherCallbackRef.fn!(mockExportState.value)
             expect(sessionStorage.getItem(STORAGE_KEY)).not.toBeNull()
         })
 
         it('does not skip the watcher fire when there was no prior import', async () => {
             await invokeHook() // no stored state → isImporting stays false
 
-            watcherCallbackRef.fn!(mockExportState())
+            watcherCallbackRef.fn!(mockExportState.value)
 
             expect(sessionStorage.getItem(STORAGE_KEY)).not.toBeNull()
         })
