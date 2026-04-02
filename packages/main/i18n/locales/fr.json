@@ -114,7 +114,9 @@
                 "bottom-right": "Bas droite"
             }
         },
-        "openStateConfigPanel": "Ouvrir le panneau de configuration d'état"
+        "openStateConfigPanel": "Ouvrir le panneau de configuration d'état",
+        "stateConfig": "panneau de configuration",
+        "share": "Partager"
     },
     "backgroundLayers": {
         "title": "Cartes affichées",

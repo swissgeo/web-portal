@@ -114,7 +114,9 @@
                 "bottom-right": "Unten rechts"
             }
         },
-        "openStateConfigPanel": "State Config Panel öffnen"
+        "openStateConfigPanel": "State Config Panel öffnen",
+        "stateConfig": "State Config",
+        "share": "Teilen"
     },
     "backgroundLayers": {
         "title": "Angezeigte Karten",
