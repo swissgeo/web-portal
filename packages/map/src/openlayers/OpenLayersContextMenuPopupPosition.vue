@@ -25,7 +25,34 @@ const props = defineProps<{
     projection?: CoordinateSystem
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+
+type LocaleKey = 'de' | 'fr' | 'it' | 'en'
+
+const LV95_LINKS: Partial<Record<LocaleKey, string>> = {
+    de: 'https://www.swisstopo.admin.ch/de/schweizer-koordinatensystem',
+    fr: 'https://www.swisstopo.admin.ch/fr/le-systeme-de-coordonnees-suisse',
+    it: 'https://www.swisstopo.admin.ch/it/il-sistema-di-coordinate-svizzero',
+    en: 'https://www.swisstopo.admin.ch/en/the-swiss-coordinates-system',
+}
+
+const LV03_LINKS: Partial<Record<LocaleKey, string>> = {
+    de: 'https://www.swisstopo.admin.ch/de/landestriangulation-lv03',
+    fr: 'https://www.swisstopo.admin.ch/fr/mensuration-nationale-mn03',
+    it: 'https://www.swisstopo.admin.ch/it/triangolazione-nazionale-mn03',
+    en: 'https://www.swisstopo.admin.ch/en/national-triangulation-network-lv03',
+}
+
+const ELEVATION_LINKS: Partial<Record<LocaleKey, string>> = {
+    de: 'https://www.swisstopo.admin.ch/de/schweizerische-bezugssysteme',
+    fr: 'https://www.swisstopo.admin.ch/fr/systemes-de-reference-suisses',
+    it: 'https://www.swisstopo.admin.ch/it/sistemi-di-riferimento-geodetici-svizzeri',
+    en: 'https://www.swisstopo.admin.ch/en/swiss-reference-systems',
+}
+
+const swisstopoLink = (map: Partial<Record<LocaleKey, string>>): string =>
+    map[locale.value as LocaleKey] ?? map.en!
+
 const w3wResolver = inject(W3W_RESOLVER_KEY)
 
 const currentProjection = computed(() => props.projection ?? LV95)
@@ -113,12 +140,12 @@ watchEffect(() => {
         rows.value = [
             {
                 label: LV95Format.label,
-                labelLink: 'https://www.swisstopo.admin.ch/en/the-swiss-coordinates-system',
+                labelLink: swisstopoLink(LV95_LINKS),
                 value: lv95,
             },
             {
                 label: LV03Format.label,
-                labelLink: 'https://www.swisstopo.admin.ch/en/national-triangulation-network-lv03',
+                labelLink: swisstopoLink(LV03_LINKS),
                 value: lv03,
             },
             {
@@ -146,7 +173,7 @@ watchEffect(() => {
                 : []),
             {
                 label: elevationLabel,
-                labelLink: 'https://www.swisstopo.admin.ch/en/swiss-reference-systems',
+                labelLink: swisstopoLink(ELEVATION_LINKS),
                 value: elevation,
             },
         ]
