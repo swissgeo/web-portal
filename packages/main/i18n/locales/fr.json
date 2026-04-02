@@ -139,7 +139,8 @@
             "elevation": "Élévation",
             "title": "Position",
             "tabPosition": "Coordonnées",
-            "tabShare": "Partager la position"
+            "tabShare": "Partager la position",
+            "errorFetchingElevation": "Erreur de récupération de l'élévation"
         }
     }
 }

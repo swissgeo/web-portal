@@ -139,7 +139,8 @@
             "elevation": "Höhe",
             "title": "Position",
             "tabPosition": "Koordinaten",
-            "tabShare": "Position teilen"
+            "tabShare": "Position teilen",
+            "errorFetchingElevation": "Fehler beim Abrufen der Höhe"
         }
     }
 }

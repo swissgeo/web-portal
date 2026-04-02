@@ -70,13 +70,19 @@ const fetchElevation = async (coord: [number, number]): Promise<string> => {
             `https://api3.geo.admin.ch/rest/services/height?easting=${coord[0]}&northing=${coord[1]}`
         )
         const data = await response.json()
-        const elevationM = parseFloat(data.height as string)
+        if (!data || !data.height) {
+            throw new Error('Invalid elevation data')
+        }
+        const elevationM = parseFloat(data.height)
+        if (isNaN(elevationM)) {
+            throw new Error('Elevation data is not a number')
+        }
         const elevationFt = elevationM * METERS_TO_FEET_FACTOR
 
         return `${elevationM.toFixed(2)}m\n${elevationFt.toFixed(2)}ft`
     } catch (_error: unknown) {
         log.error(`Error fetching elevation for coordinate: ${coord.toString()}`)
-        return 'Error fetching elevation'
+        return t('map.contextMenuPopup.errorFetchingElevation')
     }
 }
 

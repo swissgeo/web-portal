@@ -139,7 +139,8 @@
             "elevation": "Elevation",
             "title": "Position",
             "tabPosition": "Coordinates",
-            "tabShare": "Share Position"
+            "tabShare": "Share Position",
+            "errorFetchingElevation": "Error retrieving elevation"
         }
     }
 }
