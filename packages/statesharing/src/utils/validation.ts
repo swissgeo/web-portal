@@ -174,6 +174,7 @@ export function validateAppState(json: unknown): AppStateConfig {
     }
 
     validateMap(json.map)
+    validatePrint(json.print)
     json.layers.forEach((layer) => validateLayerConfig(layer))
 
     if (json.backgroundLayer !== undefined && json.backgroundLayer !== null) {
@@ -227,4 +228,29 @@ function validateLayerConfig(layer: LayerStateConfig): asserts layer is LayerSta
     if (layer.opacity < 0 || layer.opacity > 1) {
         throw new Error(`${layer.layerUrl} opacity must be a number between 0 and 1`)
     }
+}
+
+/**
+ * Validates the 'print' property of a state
+ */
+function validatePrint(printProps: AppStateConfig['print']): asserts printProps is AppStateConfig['print'] {
+    if (printProps === undefined) {
+        return
+    }
+
+    if (!printFormats.includes(printProps.format)) {
+        throw new Error(`The print format must be one of: ${printFormats.join(' ')}`)
+    }
+
+    if (!printOrientations.includes(printProps.orientation)) {
+        throw new Error(`The print orientation must be one of: ${printOrientations.join(' ')}`)
+    }
+
+    if (printProps.resolution <= 0) {
+        throw new Error('The print resolution must be greater than 0')
+    }
+
+    if (printProps.scale <= 0) {
+        throw new Error('The print scale must be greater than 0')
+    }    
 }
