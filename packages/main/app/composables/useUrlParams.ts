@@ -7,7 +7,7 @@ const URL_PARAM_STATE = 'state'
 export function useUrlParams() {
     const route = useRoute()
     const router = useRouter()
-
+    
     /**
      * Read the state ID from URL param, load the state corresponding to this ID,
      * return it as a payload and removed the param from the URL
