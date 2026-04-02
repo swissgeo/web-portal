@@ -126,6 +126,7 @@ export default defineNuxtConfig({
             version: getVersion(),
             buildTime,
             wantedLogLevels: 'error,warn',
+            shareServiceUrl: 'http://localhost:3010',
         },
     },
     nitro: {
