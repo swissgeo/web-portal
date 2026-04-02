@@ -3,7 +3,6 @@ import type { CoordinateSystem } from '@swissgeo/coordinates'
 
 import { LV95 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
-import { Check, Copy } from 'lucide-vue-next'
 import proj4 from 'proj4'
 import { computed, ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -148,38 +147,32 @@ watchEffect(() => {
             :key="row.label"
             class="flex items-center justify-between gap-4 px-4 py-2 hover:bg-gray-50"
         >
-            <a
+            <ULink
                 v-if="resolveLink(row)"
-                :href="resolveLink(row)"
+                :to="resolveLink(row)"
                 target="_blank"
-                rel="noopener noreferrer"
-                class="min-w-[120px] shrink-0 text-sm font-medium text-primary underline"
+                class="min-w-[120px]"
             >
                 {{ row.label }}
-            </a>
+            </ULink>
             <span
                 v-else
-                class="min-w-[120px] shrink-0 text-sm font-medium text-gray-700"
+                class="min-w-[120px]"
             >
                 {{ row.label }}
             </span>
             <span class="flex-1 text-sm whitespace-pre-line text-gray-700">
                 {{ row.value }}
             </span>
-            <button
-                class="shrink-0 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+            <UButton
+                :icon="clipboards[index]?.copied ? 'i-lucide-check' : 'i-lucide-copy'"
+                :class="clipboards[index]?.copied ? 'text-green-500' : ''"
+                color="neutral"
+                variant="ghost"
+                square
+                size="sm"
                 @click="clipboards[index]?.copy(row.value)"
-            >
-                <Check
-                    v-if="clipboards[index]?.copied"
-                    :size="14"
-                    class="text-green-500"
-                />
-                <Copy
-                    v-else
-                    :size="14"
-                />
-            </button>
+            />
         </div>
     </div>
 </template>

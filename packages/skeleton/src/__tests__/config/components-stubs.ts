@@ -4,8 +4,10 @@ import { config } from '@vue/test-utils'
 config.global.stubs = {
     UButton: true,
     UInput: true,
+    ULink: true,
     UPopover: true,
     UIcon: true,
     ULocaleSelect: true,
     USeparator: true,
+    UTabs: true,
 }

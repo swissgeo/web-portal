@@ -2,7 +2,6 @@
 import type { Map as OlMap } from 'ol'
 import type { Ref } from 'vue'
 
-import { ChevronDown, ChevronUp, X } from 'lucide-vue-next'
 import Overlay from 'ol/Overlay'
 import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -22,11 +21,10 @@ const popupEl = ref<HTMLDivElement>()
 let overlay: Overlay | null = null
 
 const isCollapsed = ref(false)
-const activeTab = ref<'position' | 'share'>('position')
 
 const tabs = computed(() => [
-    { label: t('map.contextMenuPopup.tabPosition'), value: 'position' as const },
-    { label: t('map.contextMenuPopup.tabShare'), value: 'share' as const },
+    { label: t('map.contextMenuPopup.tabPosition'), slot: 'position' as const },
+    { label: t('map.contextMenuPopup.tabShare'), slot: 'share' as const },
 ])
 
 onMounted(() => {
@@ -73,51 +71,42 @@ onUnmounted(() => olMap?.value?.removeOverlay(overlay!))
                     t('map.contextMenuPopup.title')
                 }}</span>
                 <div class="flex items-center gap-1">
-                    <button
-                        class="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                    <UButton
+                        :icon="isCollapsed ? 'i-lucide-chevron-down' : 'i-lucide-chevron-up'"
+                        color="neutral"
+                        variant="ghost"
+                        square
+                        size="xs"
                         @click="isCollapsed = !isCollapsed"
-                    >
-                        <ChevronUp
-                            v-if="!isCollapsed"
-                            :size="14"
-                        />
-                        <ChevronDown
-                            v-else
-                            :size="14"
-                        />
-                    </button>
-                    <button
-                        class="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                    />
+                    <UButton
+                        icon="i-lucide-x"
+                        color="neutral"
+                        variant="ghost"
+                        square
+                        size="xs"
                         @click="close"
-                    >
-                        <X :size="14" />
-                    </button>
+                    />
                 </div>
             </div>
 
             <div v-if="!isCollapsed">
-                <div class="flex border-b border-gray-200">
-                    <button
-                        v-for="tab in tabs"
-                        :key="tab.value"
-                        class="px-4 py-2 text-sm font-medium transition-colors"
-                        :class="
-                            activeTab === tab.value
-                                ? 'border-b-2 border-primary text-primary'
-                                : 'text-gray-500 hover:text-gray-800'
-                        "
-                        @click="activeTab = tab.value"
-                    >
-                        {{ tab.label }}
-                    </button>
-                </div>
-
-                <OpenLayersContextMenuPopupPosition
-                    v-if="activeTab === 'position'"
-                    :coordinate="coordinate"
-                    :projection="positionStore.projection"
-                />
-                <OpenLayersContextMenuPopupShare v-else />
+                <UTabs
+                    :items="tabs"
+                    variant="link"
+                    size="sm"
+                    :unmount-on-hide="false"
+                >
+                    <template #position>
+                        <OpenLayersContextMenuPopupPosition
+                            :coordinate="coordinate"
+                            :projection="positionStore.projection"
+                        />
+                    </template>
+                    <template #share>
+                        <OpenLayersContextMenuPopupShare />
+                    </template>
+                </UTabs>
             </div>
         </div>
     </div>
