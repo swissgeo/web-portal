@@ -9,7 +9,7 @@ const appStore = useAppStore()
 
 const localeItems = computed(() => {
     return locales.value.map((item) => ({
-        code: item.code === 'en' ? 'en-GB' : item.code,
+        code: item.code,
         name: item.name ?? item.code,
         dir: (item.dir ?? 'ltr') as 'ltr' | 'rtl',
         messages: {},
@@ -25,8 +25,7 @@ watch(locale, (value) => {
 watch(selectedLocale, async (value) => {
     if (value && value !== locale.value) {
         try {
-            const normalizedLocale = value?.split('-')[0] as Lang // 'en-GB' → 'en'
-            await appStore.applyLocale(normalizedLocale)
+            await appStore.applyLocale(value)
         } catch (err) {
             log.error({
                 title: 'SidebarLanguageSwitcherButton',
@@ -43,27 +42,31 @@ watch(selectedLocale, async (value) => {
 
 <template>
     <ClientOnly>
-        <ULocaleSelect
+        <USelectMenu
             v-model="selectedLocale"
-            :locales="localeItems"
+            :items="localeItems"
+            value-key="code"
+            label-key="name"
             :highlight="true"
             :highlight-on-hover="true"
             :arrow="false"
-            :avatar="{
-                icon: 'i-lucide-globe',
-            }"
             size="md"
             variant="ghost"
             :trailing="false"
-            trailingIcon="i-lucide-globe"
+            :searchInput="false"
             aria-label="Language switcher"
             :ui="{
                 content: '!w-auto min-w-[150px] !max-w-none',
                 base: 'p-5 !shadow-none !ring-0',
-                value: 'hidden',
-                leadingAvatarSize: '8',
                 trailingIcon: 'hidden',
+                value: 'hidden',
             }"
-        />
+        >
+            <template #leading>
+                <span class="text-sm font-medium uppercase">
+                    {{ selectedLocale }}
+                </span>
+            </template>
+        </USelectMenu>
     </ClientOnly>
 </template>
