@@ -3,10 +3,6 @@ import { Check, Copy } from 'lucide-vue-next'
 
 import { useClipboard } from '../composables/useClipboard.composable'
 
-defineProps<{
-    coordinate: [number, number] | null
-}>()
-
 const SHARE_URL = 'https://map.geo.admin.ch/?...'
 
 const { copy, copied } = useClipboard()

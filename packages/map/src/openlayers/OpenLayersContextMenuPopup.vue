@@ -113,10 +113,7 @@ onUnmounted(() => olMap?.value?.removeOverlay(overlay!))
                     :coordinate="coordinate"
                     :projection="positionStore.projection"
                 />
-                <OpenLayersContextMenuPopupShare
-                    v-else
-                    :coordinate="coordinate"
-                />
+                <OpenLayersContextMenuPopupShare v-else />
             </div>
         </div>
     </div>
