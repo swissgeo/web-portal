@@ -1,3 +1,4 @@
+import log from '@swissgeo/log'
 import { createError, getQuery } from 'h3'
 
 const WHAT_3_WORDS_API_BASE_URL = 'https://api.what3words.com/v3'
@@ -24,14 +25,15 @@ export default defineEventHandler(async (event) => {
             `${WHAT_3_WORDS_API_BASE_URL}/convert-to-3wa`,
             {
                 query: {
-                    coordinates: `${lat},${lon}`,
+                    coordinates: `${latNum},${lonNum}`,
                     key: config.what3wordsApiKey,
                 },
             }
         )
 
         return { words: data.words }
-    } catch (_error) {
+    } catch (error) {
+        log.error(`what3words upstream error for coordinates ${latNum},${lonNum}: ${String(error)}`)
         throw createError({
             statusCode: 500,
             statusMessage: 'Error fetching what3words data',

@@ -47,6 +47,7 @@ onMounted(() => {
 
 watch([isVisible, coordinate], ([visible, coord]) => {
     if (visible && coord) {
+        isCollapsed.value = false
         overlay?.setPosition(coord)
     } else {
         overlay?.setPosition(undefined)
@@ -59,7 +60,7 @@ onUnmounted(() => olMap?.value?.removeOverlay(overlay!))
 <template>
     <div
         ref="popupEl"
-        class="w-100"
+        class="w-96"
     >
         <div
             v-if="isVisible"

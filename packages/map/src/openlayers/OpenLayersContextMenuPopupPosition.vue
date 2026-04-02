@@ -4,7 +4,7 @@ import type { CoordinateSystem } from '@swissgeo/coordinates'
 import { LV95 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
 import proj4 from 'proj4'
-import { computed, inject, ref, watchEffect } from 'vue'
+import { computed, inject, ref, watch, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import coordinateFormat, {
@@ -38,7 +38,10 @@ interface Row {
 
 const rows = ref<Row[]>([])
 const clipboards = ref<ReturnType<typeof useClipboard>[]>([])
-const resolvedLinks = computed(() => rows.value.map((row) => resolveLink(row)))
+
+watch(rows, (newRows) => {
+    clipboards.value = newRows.map(() => useClipboard())
+})
 
 const resolveLink = (row: Row): string | undefined => {
     if (typeof row.labelLink === 'function') {
@@ -46,6 +49,8 @@ const resolveLink = (row: Row): string | undefined => {
     }
     return row.labelLink
 }
+
+const resolvedLinks = computed(() => rows.value.map((row) => resolveLink(row)))
 
 const fetchW3WLink = async (lat: number, lon: number): Promise<string | null> => {
     if (!w3wResolver) {
@@ -65,10 +70,10 @@ const fetchElevation = async (coord: [number, number]): Promise<string> => {
             `https://api3.geo.admin.ch/rest/services/height?easting=${coord[0]}&northing=${coord[1]}`
         )
         const data = await response.json()
-        const elevation_m = parseFloat(data.height as string)
-        const elevation_ft = elevation_m * METERS_TO_FEET_FACTOR
+        const elevationM = parseFloat(data.height as string)
+        const elevationFt = elevationM * METERS_TO_FEET_FACTOR
 
-        return `${elevation_m.toFixed(2)}m\n${elevation_ft.toFixed(2)}ft`
+        return `${elevationM.toFixed(2)}m\n${elevationFt.toFixed(2)}ft`
     } catch (_error: unknown) {
         log.error(`Error fetching elevation for coordinate: ${coord.toString()}`)
         return 'Error fetching elevation'
@@ -139,7 +144,6 @@ watchEffect(() => {
                 value: elevation,
             },
         ]
-        clipboards.value = rows.value.map(() => useClipboard())
     })()
 })
 </script>
