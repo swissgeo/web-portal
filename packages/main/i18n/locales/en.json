@@ -114,7 +114,9 @@
                 "bottom-right": "Bottom right"
             }
         },
-        "openStateConfigPanel": "Open State Config Panel"
+        "openStateConfigPanel": "Open State Config Panel",
+        "stateConfig": "State Config",
+        "share": "Share"
     },
     "backgroundLayers": {
         "title": "Displayed maps",

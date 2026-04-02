@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { IconButton } from '@swissgeo/skeleton'
 import { useStateConfig } from '~/composables/useStateConfig'
 import { ref } from 'vue'
 
@@ -40,16 +39,7 @@ async function handleImport() {
 </script>
 
 <template>
-    <div class="p-4">
-        <div class="mb-2 flex items-center justify-between">
-            <h3 class="text-lg font-semibold">State Config (JSON)</h3>
-            <IconButton
-                @click="$emit('close')"
-                iconName="X"
-                title="Close"
-            />
-        </div>
-
+    <div class="h-87.5 w-150 bg-white p-4 shadow">
         <div class="mb-2 flex gap-2">
             <UButton
                 color="neutral"
