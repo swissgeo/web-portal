@@ -64,7 +64,7 @@ export function useStateConfig() {
      * Export the current app state as an AppStateConfig object.
      * Center coordinates are in LV95 (EPSG:2056) [x, y].
      */
-    function exportState(): AppStateConfig {
+    const exportState = computed((): AppStateConfig => {
         const state: AppStateConfig = {
             version: APP_STATE_CONFIG_VERSION,
             map: {
@@ -80,7 +80,7 @@ export function useStateConfig() {
         }
 
         return state
-    }
+    })
 
     /**
      * Import app state from a JSON string, applying it to the stores.

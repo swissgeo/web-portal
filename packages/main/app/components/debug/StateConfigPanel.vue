@@ -15,7 +15,7 @@ function handleExport() {
     errorMessage.value = ''
     successMessage.value = ''
     try {
-        const state = exportState()
+        const state = exportState.value
         jsonText.value = JSON.stringify(state, null, 2)
         successMessage.value = 'State exported'
     } catch (error) {
