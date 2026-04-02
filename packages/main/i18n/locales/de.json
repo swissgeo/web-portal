@@ -133,5 +133,13 @@
     },
     "state": {
         "restoreUnableWarning": "Der Zustand der App konnte nicht wiederhergestellt werden"
+    },
+    "map": {
+        "contextMenuPopup": {
+            "elevation": "Höhe",
+            "title": "Position",
+            "tabPosition": "Position",
+            "tabShare": "Position teilen"
+        }
     }
 }

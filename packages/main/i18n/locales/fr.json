@@ -133,5 +133,13 @@
     },
     "state": {
         "restoreUnableWarning": "L'état de l'application n'a pas pu être restauré"
+    },
+    "map": {
+        "contextMenuPopup": {
+            "elevation": "Élévation",
+            "title": "Position",
+            "tabPosition": "Position",
+            "tabShare": "Partager la position"
+        }
     }
 }

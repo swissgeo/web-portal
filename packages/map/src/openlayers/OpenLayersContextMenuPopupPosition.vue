@@ -6,6 +6,7 @@ import log from '@swissgeo/log'
 import { Check, Copy } from 'lucide-vue-next'
 import proj4 from 'proj4'
 import { computed, ref, watchEffect } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import coordinateFormat, {
     LV03Format,
@@ -25,6 +26,8 @@ const props = defineProps<{
     coordinate: [number, number] | null
     projection?: CoordinateSystem
 }>()
+
+const { t } = useI18n()
 
 const currentProjection = computed(() => props.projection ?? LV95)
 
@@ -89,6 +92,9 @@ watchEffect(() => {
         const utm = coordinateFormat(UTMFormat, coord, proj)
         const mgrs = coordinateFormat(MGRSFormat, coord, proj)
 
+        // Read all translations synchronously before any await so watchEffect tracks the locale
+        const elevationLabel = t('map.contextMenuPopup.elevation')
+
         const [lon, lat] = proj4(proj.epsg, 'EPSG:4326', coord)
         const w3wValue = await fetchW3WLink(`${lat.toFixed(6)},${lon.toFixed(6)}`)
 
@@ -125,7 +131,7 @@ watchEffect(() => {
                 value: w3wValue,
             },
             {
-                label: 'Elevation',
+                label: elevationLabel,
                 labelLink: 'https://www.swisstopo.admin.ch/en/swiss-reference-systems',
                 value: elevation,
             },

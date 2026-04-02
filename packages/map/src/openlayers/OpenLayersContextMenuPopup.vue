@@ -4,7 +4,8 @@ import type { Ref } from 'vue'
 
 import { ChevronDown, ChevronUp, X } from 'lucide-vue-next'
 import Overlay from 'ol/Overlay'
-import { inject, ref, watch, onMounted, onUnmounted } from 'vue'
+import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import usePositionStore from '@/stores/position'
 
@@ -15,6 +16,7 @@ import OpenLayersContextMenuPopupShare from './OpenLayersContextMenuPopupShare.v
 const olMap = inject<Ref<OlMap | undefined>>('olMap')
 const { isVisible, coordinate, close } = useMapContextMenu()
 const positionStore = usePositionStore()
+const { t } = useI18n()
 
 const popupEl = ref<HTMLDivElement>()
 let overlay: Overlay | null = null
@@ -22,10 +24,10 @@ let overlay: Overlay | null = null
 const isCollapsed = ref(false)
 const activeTab = ref<'position' | 'share'>('position')
 
-const tabs: { label: string; value: 'position' | 'share' }[] = [
-    { label: 'Position', value: 'position' },
-    { label: 'Share Position', value: 'share' },
-]
+const tabs = computed(() => [
+    { label: t('map.contextMenuPopup.tabPosition'), value: 'position' as const },
+    { label: t('map.contextMenuPopup.tabShare'), value: 'share' as const },
+])
 
 onMounted(() => {
     overlay = new Overlay({
@@ -67,7 +69,9 @@ onUnmounted(() => olMap?.value?.removeOverlay(overlay!))
             @click.stop
         >
             <div class="flex items-center justify-between border-b border-gray-200 px-4 py-2">
-                <span class="text-sm font-semibold text-gray-800">Position</span>
+                <span class="text-sm font-semibold text-gray-800">{{
+                    t('map.contextMenuPopup.title')
+                }}</span>
                 <div class="flex items-center gap-1">
                     <button
                         class="rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
