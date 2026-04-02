@@ -138,7 +138,7 @@
         "contextMenuPopup": {
             "elevation": "Elevation",
             "title": "Position",
-            "tabPosition": "Position",
+            "tabPosition": "Coordinates",
             "tabShare": "Share Position"
         }
     }

@@ -13,12 +13,28 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    const data = await $fetch<{ words: string }>(`${WHAT_3_WORDS_API_BASE_URL}/convert-to-3wa`, {
-        query: {
-            coordinates: `${lat},${lon}`,
-            key: config.what3wordsApiKey,
-        },
-    })
+    const latNum = parseFloat(lat)
+    const lonNum = parseFloat(lon)
+    if (isNaN(latNum) || isNaN(lonNum)) {
+        throw createError({ statusCode: 400, statusMessage: 'lat and lon must be numeric' })
+    }
 
-    return { words: data.words }
+    try {
+        const data = await $fetch<{ words: string }>(
+            `${WHAT_3_WORDS_API_BASE_URL}/convert-to-3wa`,
+            {
+                query: {
+                    coordinates: `${lat},${lon}`,
+                    key: config.what3wordsApiKey,
+                },
+            }
+        )
+
+        return { words: data.words }
+    } catch (_error) {
+        throw createError({
+            statusCode: 500,
+            statusMessage: 'Error fetching what3words data',
+        })
+    }
 })

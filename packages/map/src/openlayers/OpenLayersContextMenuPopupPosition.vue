@@ -36,6 +36,7 @@ interface Row {
 
 const rows = ref<Row[]>([])
 const clipboards = ref<ReturnType<typeof useClipboard>[]>([])
+const resolvedLinks = computed(() => rows.value.map((row) => resolveLink(row)))
 
 const resolveLink = (row: Row): string | undefined => {
     if (typeof row.labelLink === 'function') {
@@ -144,9 +145,10 @@ watchEffect(() => {
             class="flex items-center justify-between gap-4 px-4 py-2 hover:bg-gray-50"
         >
             <ULink
-                v-if="resolveLink(row)"
-                :to="resolveLink(row)"
+                v-if="resolvedLinks[index]"
+                :to="resolvedLinks[index]"
                 target="_blank"
+                rel="noopener noreferrer"
                 class="min-w-[120px]"
             >
                 {{ row.label }}
