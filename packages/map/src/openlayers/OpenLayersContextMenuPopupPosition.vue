@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import type { CoordinateSystem } from '@swissgeo/coordinates'
 
-import proj4 from 'proj4'
 import { LV95 } from '@swissgeo/coordinates'
+import log from '@swissgeo/log'
 import { Check, Copy } from 'lucide-vue-next'
+import proj4 from 'proj4'
 import { computed, ref, watchEffect } from 'vue'
-
-import { useClipboard } from '../composables/useClipboard.composable'
 
 import coordinateFormat, {
     LV03Format,
@@ -15,7 +14,8 @@ import coordinateFormat, {
     UTMFormat,
     WGS84Format,
 } from '@/utils/coordinates/coordinateFormat'
-import log from '@swissgeo/log'
+
+import { useClipboard } from '../composables/useClipboard.composable'
 
 const WHAT_3_WORDS_API_BASE_URL = 'https://api.what3words.com/v3'
 const WHAT_3_WORDS_API_KEY = ''
@@ -30,7 +30,7 @@ const currentProjection = computed(() => props.projection ?? LV95)
 
 interface Row {
     label: string
-    labelLink?: string | ((value: string) => string)
+    labelLink?: string | ((_value: string) => string)
     value: string
 }
 
@@ -51,7 +51,7 @@ const fetchW3WLink = async (w3wValue: string): Promise<string> => {
         )
         const data = await response.json()
         return String(data.words)
-    } catch (error) {
+    } catch (_error: unknown) {
         log.error(`Error fetching what3words value for coordinate: ${w3wValue}`)
         return 'Error fetching what3words'
     }
@@ -67,69 +67,71 @@ const fetchElevation = async (coord: [number, number]): Promise<string> => {
         const elevation_ft = elevation_m * METERS_TO_FEET_FACTOR
 
         return `${elevation_m.toFixed(2)}m\n${elevation_ft.toFixed(2)}ft`
-    } catch (error) {
-        log.error(`Error fetching elevation for coordinate: ${coord}`)
+    } catch (_error: unknown) {
+        log.error(`Error fetching elevation for coordinate: ${coord.toString()}`)
         return 'Error fetching elevation'
     }
 }
 
-watchEffect(async () => {
-    const coord = props.coordinate
-    if (!coord) {
-        rows.value = []
-        clipboards.value = []
-        return
-    }
+watchEffect(() => {
+    void (async () => {
+        const coord = props.coordinate
+        if (!coord) {
+            rows.value = []
+            clipboards.value = []
+            return
+        }
 
-    const proj = currentProjection.value
-    const lv95 = coordinateFormat(LV95Format, coord, proj)
-    const lv03 = coordinateFormat(LV03Format, coord, proj)
-    const wgs84Dec = coordinateFormat(WGS84Format, coord, proj, true)
-    const utm = coordinateFormat(UTMFormat, coord, proj)
-    const mgrs = coordinateFormat(MGRSFormat, coord, proj)
+        const proj = currentProjection.value
+        const lv95 = coordinateFormat(LV95Format, coord, proj)
+        const lv03 = coordinateFormat(LV03Format, coord, proj)
+        const wgs84Dec = coordinateFormat(WGS84Format, coord, proj, true)
+        const utm = coordinateFormat(UTMFormat, coord, proj)
+        const mgrs = coordinateFormat(MGRSFormat, coord, proj)
 
-    const [lon, lat] = proj4(proj.epsg, 'EPSG:4326', coord)
-    const w3wValue = await fetchW3WLink(`${lat.toFixed(6)},${lon.toFixed(6)}`)
+        const [lon, lat] = proj4(proj.epsg, 'EPSG:4326', coord)
+        const w3wValue = await fetchW3WLink(`${lat.toFixed(6)},${lon.toFixed(6)}`)
 
-    const elevation = await fetchElevation(coord)
+        const elevation = await fetchElevation(coord)
 
-    rows.value = [
-        {
-            label: LV95Format.label,
-            labelLink: 'https://www.swisstopo.admin.ch/en/the-swiss-coordinates-system',
-            value: lv95,
-        },
-        {
-            label: LV03Format.label,
-            labelLink: 'https://www.swisstopo.admin.ch/en/national-triangulation-network-lv03',
-            value: lv03,
-        },
-        {
-            label: WGS84Format.label,
-            labelLink: 'https://epsg.io/4326',
-            value: wgs84Dec,
-        },
-        {
-            label: UTMFormat.label,
-            labelLink: 'https://epsg.io/32632',
-            value: utm,
-        },
-        {
-            label: MGRSFormat.label,
-            value: mgrs,
-        },
-        {
-            label: 'what3words',
-            labelLink: (value) => `https://what3words.com/${value}`,
-            value: w3wValue,
-        },
-        {
-            label: 'Elevation',
-            labelLink: 'https://www.swisstopo.admin.ch/en/swiss-reference-systems',
-            value: elevation,
-        },
-    ]
-    clipboards.value = rows.value.map(() => useClipboard())
+        rows.value = [
+            {
+                label: LV95Format.label,
+                labelLink: 'https://www.swisstopo.admin.ch/en/the-swiss-coordinates-system',
+                value: lv95,
+            },
+            {
+                label: LV03Format.label,
+                labelLink: 'https://www.swisstopo.admin.ch/en/national-triangulation-network-lv03',
+                value: lv03,
+            },
+            {
+                label: WGS84Format.label,
+                labelLink: 'https://epsg.io/4326',
+                value: wgs84Dec,
+            },
+            {
+                label: UTMFormat.label,
+                labelLink: 'https://epsg.io/32632',
+                value: utm,
+            },
+            {
+                label: MGRSFormat.label,
+                value: mgrs,
+            },
+            {
+                label: 'what3words',
+                labelLink: (value) => `https://what3words.com/${value}`,
+                value: w3wValue,
+            },
+            {
+                label: 'Elevation',
+                labelLink: 'https://www.swisstopo.admin.ch/en/swiss-reference-systems',
+                value: elevation,
+            },
+        ]
+        clipboards.value = rows.value.map(() => useClipboard())
+    })()
 })
 </script>
 
