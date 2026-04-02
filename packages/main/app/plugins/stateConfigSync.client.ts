@@ -37,7 +37,7 @@ export default defineNuxtPlugin({
 
             // Watch for state changes and persist to sessionStorage
             watchDebounced(
-                () => exportState(),
+                exportState,
                 (newState) => {
                     if (isImporting) {
                         isImporting = false
