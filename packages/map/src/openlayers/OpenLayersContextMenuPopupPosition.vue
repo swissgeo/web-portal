@@ -17,8 +17,6 @@ import coordinateFormat, {
 
 import { useClipboard } from '../composables/useClipboard.composable'
 
-const WHAT_3_WORDS_API_BASE_URL = 'https://api.what3words.com/v3'
-const WHAT_3_WORDS_API_KEY = ''
 const METERS_TO_FEET_FACTOR = 3.28084
 
 const props = defineProps<{
@@ -46,15 +44,13 @@ const resolveLink = (row: Row): string | undefined => {
     return row.labelLink
 }
 
-const fetchW3WLink = async (w3wValue: string): Promise<string> => {
+const fetchW3WLink = async (lat: number, lon: number): Promise<string> => {
     try {
-        const response = await fetch(
-            `${WHAT_3_WORDS_API_BASE_URL}/convert-to-3wa?coordinates=${w3wValue}&key=${WHAT_3_WORDS_API_KEY}`
-        )
-        const data = await response.json()
-        return String(data.words)
+        const response = await fetch(`/api/v1/what3words/convert-to-3wa?lat=${lat}&lon=${lon}`)
+        const data = (await response.json()) as { words: string }
+        return data.words
     } catch (_error: unknown) {
-        log.error(`Error fetching what3words value for coordinate: ${w3wValue}`)
+        log.error(`Error fetching what3words value for coordinate: ${lat},${lon}`)
         return 'Error fetching what3words'
     }
 }
@@ -95,7 +91,7 @@ watchEffect(() => {
         const elevationLabel = t('map.contextMenuPopup.elevation')
 
         const [lon, lat] = proj4(proj.epsg, 'EPSG:4326', coord)
-        const w3wValue = await fetchW3WLink(`${lat.toFixed(6)},${lon.toFixed(6)}`)
+        const w3wValue = await fetchW3WLink(lat, lon)
 
         const elevation = await fetchElevation(coord)
 

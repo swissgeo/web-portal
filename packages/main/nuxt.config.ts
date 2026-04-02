@@ -117,6 +117,7 @@ export default defineNuxtConfig({
         apiEndpoint: '',
         authToken: '',
         maptilerApiKey: '',
+        what3wordsApiKey: '',
         public: {
             ogcApiEndpoint: '',
             overlayId: '',
