@@ -1,6 +1,7 @@
 packages:
     - packages/*
     - packages/config/*
+    - support/service-shortlink-mock/
 
 catalog:
     '@eslint/js': ^9.38.0
