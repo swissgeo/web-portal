@@ -87,13 +87,13 @@ watchEffect(() => {
         const utm = coordinateFormat(UTMFormat, coord, proj)
         const mgrs = coordinateFormat(MGRSFormat, coord, proj)
 
-        // Read all translations synchronously before any await so watchEffect tracks the locale
         const elevationLabel = t('map.contextMenuPopup.elevation')
 
         const [lon, lat] = proj4(proj.epsg, 'EPSG:4326', coord)
-        const w3wValue = await fetchW3WLink(lat, lon)
-
-        const elevation = await fetchElevation(coord)
+        const [w3wValue, elevation] = await Promise.all([
+            fetchW3WLink(lat, lon),
+            fetchElevation(coord),
+        ])
 
         rows.value = [
             {
