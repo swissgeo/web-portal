@@ -54,7 +54,7 @@ export const useGeolocationStore = defineStore('geolocation', {
                     // Re-use the last known position as a placeholder so the map
                     // centres immediately on re-activation while waiting for a
                     // fresh GPS fix to arrive.
-                    setCenterIfInBounds(this.position, dispatcher)
+                    setCenterIfInBounds(this.position, dispatcher, this)
                     this.accuracy = 50 * 1000 // 50km placeholder until real fix arrives
                 }
 
@@ -95,14 +95,23 @@ export const useGeolocationStore = defineStore('geolocation', {
                     onCurrentError,
                     currentOptions
                 )
-            } else if (geolocationWatcherId !== undefined) {
-                log.debug({
-                    title: 'Geolocation store / setGeolocationActive',
-                    titleColor: LogPreDefinedColor.Amber,
-                    messages: ['Clearing geolocation watcher'],
-                })
-                navigator.geolocation.clearWatch(geolocationWatcherId)
-                geolocationWatcherId = undefined
+            } else {
+                if (geolocationWatcherId !== undefined) {
+                    log.debug({
+                        title: 'Geolocation store / setGeolocationActive',
+                        titleColor: LogPreDefinedColor.Amber,
+                        messages: ['Clearing geolocation watcher'],
+                    })
+                    navigator.geolocation.clearWatch(geolocationWatcherId)
+                    geolocationWatcherId = undefined
+                }
+                // Reset transient error and tracking state so a fresh activation
+                // starts cleanly. Position is kept so the placeholder re-use on
+                // re-activation still works.
+                this.denied = false
+                this.errorCount = 0
+                this.tracking = true
+                this.accuracy = 0
             }
         },
 
@@ -113,7 +122,7 @@ export const useGeolocationStore = defineStore('geolocation', {
         setGeolocationTracking(tracking: boolean, dispatcher: ActionDispatcher): void {
             this.tracking = tracking
             if (this.tracking && this.position) {
-                setCenterIfInBounds(this.position, dispatcher)
+                setCenterIfInBounds(this.position, dispatcher, this)
             }
         },
 
@@ -169,7 +178,7 @@ function handleNewGeolocationPosition(
 
     // Center map BEFORE updating position to avoid setCenter disabling tracking
     if (this.tracking) {
-        setCenterIfInBounds(positionProjected, dispatcher)
+        setCenterIfInBounds(positionProjected, dispatcher, this)
     }
 
     if (
@@ -228,7 +237,11 @@ function handleGeolocationError(
     }
 }
 
-function setCenterIfInBounds(center: SingleCoordinate, dispatcher: ActionDispatcher): void {
+function setCenterIfInBounds(
+    center: SingleCoordinate,
+    dispatcher: ActionDispatcher,
+    store: ReturnType<typeof useGeolocationStore>
+): void {
     const positionStore = usePositionStore()
     const toast = useToast()
 
@@ -238,7 +251,6 @@ function setCenterIfInBounds(center: SingleCoordinate, dispatcher: ActionDispatc
         if (!isEqual(positionStore.center as number[], center as number[])) {
             positionStore.setCenter(center, dispatcher)
 
-            const store = useGeolocationStore()
             if (store.firstTime) {
                 store.firstTime = false
                 positionStore.setZoom(positionStore.projection.get1_25000ZoomLevel(), dispatcher)
