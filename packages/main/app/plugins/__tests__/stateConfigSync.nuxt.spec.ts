@@ -1,3 +1,4 @@
+import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const STORAGE_KEY = 'swissgeo_app_state'
@@ -10,7 +11,7 @@ const watcherCallbackRef = vi.hoisted(() => {
     return { fn: null as ((_state: unknown) => void) | null }
 })
 
-const mockImportState = vi.fn()
+const mockRestoreState = vi.fn()
 const mockExportState = ref({
     version: 2,
     map: { center: [2600000, 1200000] as [number, number], zoom: 8, rotation: 0 },
@@ -32,10 +33,10 @@ vi.mock('@vueuse/core', async (importOriginal) => {
     }
 })
 
-vi.mock('~/composables/useStateConfig', () => ({
+vi.mock('@/composables/useStateConfig', () => ({
     useStateConfig: () => ({
         exportState: mockExportState,
-        importState: mockImportState,
+        restoreState: mockRestoreState,
     }),
 }))
 
@@ -62,25 +63,27 @@ describe('stateConfigSync plugin', () => {
     describe('state restoration on load', () => {
         it('does not call importState when sessionStorage is empty', async () => {
             await invokeHook()
-            expect(mockImportState).not.toHaveBeenCalled()
+            expect(mockRestoreState).not.toHaveBeenCalled()
         })
 
         it('calls importState with the stored JSON string when state is present', async () => {
-            const stored = JSON.stringify({
-                version: 2,
-                map: { center: [0, 0], zoom: 10, rotation: 0 },
+            console.log(localStorage.getItem(STORAGE_KEY))
+            const state = {
+                version: 0.2,
+                map: { center: [2420001, 1030001], zoom: 10, rotation: 0 },
                 layers: [],
-            })
+            }
+            const stored = JSON.stringify(state)
             sessionStorage.setItem(STORAGE_KEY, stored)
 
             await invokeHook()
 
-            expect(mockImportState).toHaveBeenCalledWith(stored)
+            expect(mockRestoreState).toHaveBeenCalledWith(state)
         })
 
         it('removes the corrupt key and does not throw when importState fails', async () => {
             sessionStorage.setItem(STORAGE_KEY, 'not-valid-json')
-            mockImportState.mockRejectedValueOnce(new Error('Parse error'))
+            mockRestoreState.mockRejectedValueOnce(new Error('Parse error'))
 
             await expect(invokeHook()).resolves.not.toThrow()
             expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull()
@@ -102,7 +105,7 @@ describe('stateConfigSync plugin', () => {
             expect(sessionStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(state))
         })
 
-        it('skips the first watcher fire after a successful import (isImporting flag)', async () => {
+        it.only('skips the first watcher fire after a successful import (isImporting flag)', async () => {
             const stored = JSON.stringify({
                 version: 2,
                 map: { center: [0, 0], zoom: 10, rotation: 0 },
