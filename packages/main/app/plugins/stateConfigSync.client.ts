@@ -31,8 +31,8 @@ export default defineNuxtPlugin({
             try {
                 const stored = sessionStorage.getItem(STORAGE_KEY)
                 if (stored) {
-                    const config = validateAndPrepareAppStateConfig(JSON.parse(stored))
                     isImporting = true
+                    const config = validateAndPrepareAppStateConfig(JSON.parse(stored))
                     await restoreState(config)
                     log.info('Restored app state from sessionStorage')
                 }

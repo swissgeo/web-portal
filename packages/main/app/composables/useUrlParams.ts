@@ -11,7 +11,7 @@ export function useUrlParams() {
      * Read the state ID from URL param, load the state corresponding to this ID,
      * return it as a payload and removed the param from the URL
      */
-    async function getStateFromUrl(): Promise<JSON | null> {
+    async function getStateFromUrl(): Promise<Record<string, unknown> | null> {
         const stateParam = route.query[URL_PARAM_STATE]
 
         if (!stateParam) {
@@ -43,7 +43,7 @@ export function useUrlParams() {
 /**
  * Retrieve state from service-shortlink
  */
-async function getStateFromStateId(stateId: string): Promise<JSON | null> {
+async function getStateFromStateId(stateId: string): Promise<Record<string, unknown> | null> {
     const runtimeConfig = useRuntimeConfig()
     const shortLinkUrl = new URL(runtimeConfig.public.shareServiceUrl)
     shortLinkUrl.searchParams.set('state', stateId)
