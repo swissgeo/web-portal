@@ -5,7 +5,7 @@ import type { AppStateConfig, LayerStateConfig } from '@swissgeo/statesharing'
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
-import { APP_STATE_CONFIG_VERSION, validateAndPrepareAppStateConfig } from '@swissgeo/statesharing'
+import { APP_STATE_CONFIG_VERSION } from '@swissgeo/statesharing'
 
 const DISPATCHER = { name: 'state-config' }
 
@@ -87,11 +87,8 @@ export function useStateConfig() {
      * Center coordinates are expected in LV95 (EPSG:2056) [x, y].
      * Fetches each layer's dataset from its datasetUrl.
      */
-    async function importState(json: string): Promise<void> {
-        const raw = JSON.parse(json) as unknown
-        const config = validateAndPrepareAppStateConfig(raw)
-
-        log.info('Importing state config', { messages: [JSON.stringify(config.map)] })
+    async function restoreState(config: AppStateConfig): Promise<void> {
+        log.info('Importing state config', { messages: config.map })
 
         positionStore.setCenter(config.map.center, DISPATCHER)
         positionStore.setZoom(config.map.zoom, DISPATCHER)
@@ -119,6 +116,6 @@ export function useStateConfig() {
 
     return {
         exportState,
-        importState,
+        restoreState,
     }
 }

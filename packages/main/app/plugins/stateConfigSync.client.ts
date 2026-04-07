@@ -1,4 +1,5 @@
 import log from '@swissgeo/log'
+import { validateAndPrepareAppStateConfig } from '@swissgeo/statesharing'
 import { watchDebounced } from '@vueuse/core'
 import { useStateConfig } from '~/composables/useStateConfig'
 
@@ -10,14 +11,15 @@ export default defineNuxtPlugin({
 
     hooks: {
         async 'app:created'() {
-            const { exportState, importState } = useStateConfig()
+            const { exportState, restoreState } = useStateConfig()
             const { getStateFromUrl } = useUrlParams()
             const stateFromUrlParam = await getStateFromUrl()
 
             // If a valid state ID is preent in URL, it takes precedance over the state in LocalStorage
             if (stateFromUrlParam) {
-                await importState(stateFromUrlParam)
-                localStorage.setItem(STORAGE_KEY, stateFromUrlParam)
+                const config = validateAndPrepareAppStateConfig(stateFromUrlParam)
+                await restoreState(config)
+                sessionStorage.setItem(STORAGE_KEY, JSON.stringify(config))
                 return
             }
 
@@ -29,8 +31,9 @@ export default defineNuxtPlugin({
             try {
                 const stored = sessionStorage.getItem(STORAGE_KEY)
                 if (stored) {
+                    const config = validateAndPrepareAppStateConfig(JSON.parse(stored))
                     isImporting = true
-                    await importState(stored)
+                    await restoreState(config)
                     log.info('Restored app state from sessionStorage')
                 }
             } catch (error) {
