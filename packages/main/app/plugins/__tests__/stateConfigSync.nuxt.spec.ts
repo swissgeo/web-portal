@@ -1,4 +1,3 @@
-import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const STORAGE_KEY = 'swissgeo_app_state'
@@ -18,9 +17,13 @@ const mockExportState = ref({
     layers: [],
 })
 
-vi.mock('@swissgeo/log', () => ({
-    default: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
-}))
+vi.mock('@swissgeo/log', async (importOriginal) => {
+    const original = await importOriginal()
+    return {
+        // @ts-expect-error Spreading this actually works and is forseen by the docs
+        default: { ...original, info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+    }
+})
 
 vi.mock('@vueuse/core', async (importOriginal) => {
     const original = await importOriginal()
