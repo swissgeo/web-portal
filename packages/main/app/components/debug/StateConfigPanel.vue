@@ -4,7 +4,7 @@ import { ref } from 'vue'
 
 defineEmits<{ close: [] }>()
 
-const { exportState, importState } = useStateConfig()
+const { exportState, restoreState } = useStateConfig()
 
 const jsonText = ref('')
 const errorMessage = ref('')
@@ -30,7 +30,7 @@ async function handleImport() {
         return
     }
     try {
-        await importState(jsonText.value)
+        await restoreState(JSON.parse(jsonText.value))
         successMessage.value = 'State imported successfully'
     } catch (error) {
         errorMessage.value = error instanceof Error ? error.message : 'Failed to import state'
