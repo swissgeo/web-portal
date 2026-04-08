@@ -35,7 +35,7 @@ const sortedBackgroundLayersWithNull = computedAsync<(Layer | null)[]>(
 )
 
 onMounted(() => {
-    // Don't reset if a background was already restored (e.g. from localStorage)
+    // Don't reset if a background was already restored (e.g. from sessionStorage)
     if (!currentBackground) {
         emit('setBackground', null)
     }
@@ -44,7 +44,7 @@ onMounted(() => {
 watch(
     sortedBackgroundLayersWithNull,
     (backgrounds) => {
-        // Don't override a background that was already restored (e.g. from localStorage)
+        // Don't override a background that was already restored (e.g. from sessionStorage)
         if (currentBackground) {
             return
         }
