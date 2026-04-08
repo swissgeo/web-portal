@@ -4,7 +4,8 @@ import { useStyle, useWmsCapabilities } from '@swissgeo/ogc'
 
 import { getTimeInfoFromWMSCapabilities } from '@/utils/timeUtils'
 
-import { defaultGutterFromStyle, defaultOpacityFromStyle } from './defaultFromOpacity'
+import { defaultOpacityFromStyle } from './defaultFromOpacity'
+import { defaultGutterFromStyle } from './defaultGutterFromStyle'
 
 export type WMSLayerData = {
     url: Ref<string>

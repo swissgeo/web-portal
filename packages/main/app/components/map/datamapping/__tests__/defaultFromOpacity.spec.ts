@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { defaultGutterFromStyle, defaultOpacityFromStyle } from '../defaultFromOpacity'
+import { defaultOpacityFromStyle } from '../defaultFromOpacity'
+import { defaultGutterFromStyle } from '../defaultGutterFromStyle'
 
 describe('defaultOpacityFromStyle', () => {
     it('retrieves the correct default opacity', () => {
