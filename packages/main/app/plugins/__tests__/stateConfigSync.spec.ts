@@ -54,13 +54,13 @@ async function invokeHook() {
 
 describe('stateConfigSync plugin', () => {
     beforeEach(() => {
-        localStorage.clear()
+        sessionStorage.clear()
         vi.clearAllMocks()
         watcherCallbackRef.fn = null
     })
 
     describe('state restoration on load', () => {
-        it('does not call importState when localStorage is empty', async () => {
+        it('does not call importState when sessionStorage is empty', async () => {
             await invokeHook()
             expect(mockImportState).not.toHaveBeenCalled()
         })
@@ -71,7 +71,7 @@ describe('stateConfigSync plugin', () => {
                 map: { center: [0, 0], zoom: 10, rotation: 0 },
                 layers: [],
             })
-            localStorage.setItem(STORAGE_KEY, stored)
+            sessionStorage.setItem(STORAGE_KEY, stored)
 
             await invokeHook()
 
@@ -79,11 +79,11 @@ describe('stateConfigSync plugin', () => {
         })
 
         it('removes the corrupt key and does not throw when importState fails', async () => {
-            localStorage.setItem(STORAGE_KEY, 'not-valid-json')
+            sessionStorage.setItem(STORAGE_KEY, 'not-valid-json')
             mockImportState.mockRejectedValueOnce(new Error('Parse error'))
 
             await expect(invokeHook()).resolves.not.toThrow()
-            expect(localStorage.getItem(STORAGE_KEY)).toBeNull()
+            expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull()
         })
     })
 
@@ -93,13 +93,13 @@ describe('stateConfigSync plugin', () => {
             expect(watcherCallbackRef.fn).not.toBeNull()
         })
 
-        it('writes state to localStorage when the watcher fires', async () => {
+        it('writes state to sessionStorage when the watcher fires', async () => {
             await invokeHook()
             const state = mockExportState()
 
             watcherCallbackRef.fn!(state)
 
-            expect(localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(state))
+            expect(sessionStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(state))
         })
 
         it('skips the first watcher fire after a successful import (isImporting flag)', async () => {
@@ -108,17 +108,17 @@ describe('stateConfigSync plugin', () => {
                 map: { center: [0, 0], zoom: 10, rotation: 0 },
                 layers: [],
             })
-            localStorage.setItem(STORAGE_KEY, stored)
+            sessionStorage.setItem(STORAGE_KEY, stored)
             await invokeHook()
-            localStorage.clear() // clear so we can detect any subsequent write
+            sessionStorage.clear() // clear so we can detect any subsequent write
 
             // First fire after import → skipped
             watcherCallbackRef.fn!(mockExportState())
-            expect(localStorage.getItem(STORAGE_KEY)).toBeNull()
+            expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull()
 
             // Second fire → saved normally
             watcherCallbackRef.fn!(mockExportState())
-            expect(localStorage.getItem(STORAGE_KEY)).not.toBeNull()
+            expect(sessionStorage.getItem(STORAGE_KEY)).not.toBeNull()
         })
 
         it('does not skip the watcher fire when there was no prior import', async () => {
@@ -126,7 +126,7 @@ describe('stateConfigSync plugin', () => {
 
             watcherCallbackRef.fn!(mockExportState())
 
-            expect(localStorage.getItem(STORAGE_KEY)).not.toBeNull()
+            expect(sessionStorage.getItem(STORAGE_KEY)).not.toBeNull()
         })
     })
 })
