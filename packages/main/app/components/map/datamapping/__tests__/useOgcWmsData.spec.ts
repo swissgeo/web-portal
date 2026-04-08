@@ -1,5 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useOgcWmsData } from '../useOgcWmsData'
 
@@ -10,22 +10,24 @@ mockNuxtImport('useI18n', () => {
     })
 })
 
-const { useStyleMock, useWmsCapabilitiesMock, wmsDataMock } = await vi.hoisted(async () => {
-    const { ref } = await import('vue')
-    const styleDataMock = ref({})
-    const wmsDataMock = ref({})
+const { useStyleMock, useWmsCapabilitiesMock, styleDataMock, wmsDataMock } = await vi.hoisted(
+    async () => {
+        const { ref } = await import('vue')
+        const styleDataMock = ref({})
+        const wmsDataMock = ref({})
 
-    return {
-        useStyleMock: vi.fn(() => ({
-            styleData: styleDataMock.value,
-        })),
-        useWmsCapabilitiesMock: vi.fn(() => ({
-            wmsData: wmsDataMock,
-        })),
-        styleDataMock,
-        wmsDataMock,
+        return {
+            useStyleMock: vi.fn(() => ({
+                styleData: styleDataMock,
+            })),
+            useWmsCapabilitiesMock: vi.fn(() => ({
+                wmsData: wmsDataMock,
+            })),
+            styleDataMock,
+            wmsDataMock,
+        }
     }
-})
+)
 
 vi.mock('@swissgeo/ogc', () => ({
     useStyle: useStyleMock,
@@ -40,6 +42,11 @@ vi.mock('@/utils/timeUtils', () => ({
 }))
 
 describe('useOgcWmsData', () => {
+    beforeEach(() => {
+        styleDataMock.value = {}
+        wmsDataMock.value = {}
+    })
+
     it('calls the right composables', () => {
         const distribution = ref({})
         const service = ref({})
@@ -135,5 +142,38 @@ describe('useOgcWmsData', () => {
             gutter: 0,
             lang: 'fr',
         })
+    })
+
+    it('extracts gutter from style data', () => {
+        const distribution = ref({})
+        const service = ref({})
+        const layerId = ref('')
+
+        styleDataMock.value = {
+            id: 'ch.bafu.gefahren-aktuelle_erdbeben:wms:style',
+            layers: [
+                {
+                    id: 'ch.bafu.gefahren-aktuelle_erdbeben:wms:style',
+                    paint: {
+                        'raster-gutter': 25,
+                    },
+                    source: 'wms.geo.admin.ch',
+                    type: 'raster',
+                },
+            ],
+        }
+
+        wmsDataMock.value = {
+            capabilities: {
+                Service: {
+                    OnlineResource: 'http://swissgeo.ch',
+                },
+                version: '1.3.0',
+            },
+        }
+
+        // @ts-expect-error Intentionally not caring about the types
+        const { wmsDataForOl } = useOgcWmsData(distribution, service, layerId)
+        expect(wmsDataForOl.value?.gutter).toEqual(25)
     })
 })
