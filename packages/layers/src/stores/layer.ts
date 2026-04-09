@@ -165,6 +165,10 @@ export const useLayerStore = defineStore('layers', () => {
         layer.data = dataset
     }
 
+    function $reset() {
+        layers.value = []
+    }
+
     return {
         layers,
         backgroundLayer,
@@ -184,5 +188,6 @@ export const useLayerStore = defineStore('layers', () => {
         setDimension,
         removeLayer,
         setLayerData,
+        $reset,
     }
 })

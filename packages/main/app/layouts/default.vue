@@ -7,6 +7,7 @@ import SideBar from '@/components/sidebar/SideBar.vue'
 
 import { useSearchSelection } from '@/composables/useSearchSelection'
 
+const { resetApp } = useResetApp()
 const route = useRoute()
 const mapViewStore = useMapViewStore()
 
@@ -45,6 +46,7 @@ async function onSearchResultSelected(result: SearchResult) {
                 class="z-2"
                 @search-result-selected="onSearchResultSelected"
                 :mapLayers="mapLayers"
+                @reset-app="resetApp"
             >
                 <template #bottom-controls>
                     <div

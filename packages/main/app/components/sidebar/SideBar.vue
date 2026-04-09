@@ -12,6 +12,7 @@ const uiStore = useSidebarStore()
 
 const emit = defineEmits<{
     'search-result-selected': [result: SearchResult]
+    'reset-app': [void]
 }>()
 const { mapLayers } = defineProps<{
     mapLayers: MapLayer[]
@@ -20,7 +21,9 @@ defineSlots<{
     'bottom-controls'?: () => unknown
 }>()
 
-function resetApp() {}
+function resetApp() {
+    emit('reset-app')
+}
 
 function handleSearchResultSelected(result: SearchResult) {
     emit('search-result-selected', result)
