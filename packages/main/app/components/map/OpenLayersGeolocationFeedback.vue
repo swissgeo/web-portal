@@ -8,7 +8,6 @@ import type { Ref } from 'vue'
 
 import log from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
-import { isEqual } from 'es-toolkit'
 import { inject, onBeforeMount, onBeforeUnmount } from 'vue'
 
 import { useGeolocationStore } from '@/stores/geolocation'
@@ -35,11 +34,7 @@ onBeforeUnmount(() => {
 })
 
 function disableTrackingAndAutoRotation(): void {
-    if (
-        geolocationStore.tracking &&
-        geolocationStore.position &&
-        !isEqual(positionStore.center as number[], geolocationStore.position as number[])
-    ) {
+    if (geolocationStore.tracking) {
         log.debug('Map dragged — disabling geolocation tracking and auto-rotation')
         geolocationStore.setGeolocationTracking(false, dispatcher)
         positionStore.setAutoRotation(false, dispatcher)
