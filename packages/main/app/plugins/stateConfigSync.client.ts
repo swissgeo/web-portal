@@ -4,7 +4,7 @@ export default defineNuxtPlugin({
 
     hooks: {
         async 'app:created'() {
-            const { restore } = useSessionStorage()
+            const { restore } = useRestoreState()
             await restore()
         },
     },
