@@ -24,13 +24,15 @@
         "type-check": "tsc"
     },
     "dependencies": {
-        "nuxt": "catalog:"
+        "nuxt": "catalog:",
+        "semver": "catalog:"
     },
     "devDependencies": {
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "catalog:",
         "@swissgeo/config-typescript": "catalog:",
         "@swissgeo/shared": "workspace:",
+        "@types/semver": "catalog:",
         "eslint": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",
