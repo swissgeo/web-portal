@@ -46,6 +46,8 @@ const state = (): PositionStoreState => ({
 
 import resolution from '@/stores/position/getters/resolution'
 
+import $reset from './actions/$reset'
+
 const getters: PositionStoreGetters = {
     centerEpsg4326,
     resolution,
@@ -66,6 +68,7 @@ const actions = {
     // setCrossHair,
     // setCameraPosition,
     // setProjection,
+    $reset,
 }
 
 const usePositionStore = defineStore('position', {
