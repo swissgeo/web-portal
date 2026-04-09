@@ -12,30 +12,30 @@ export default defineNuxtPlugin({
         async 'app:created'() {
             const { exportState, importState } = useStateConfig()
 
-            // isImporting flag prevents writing back to localStorage immediately
+            // isImporting flag prevents writing back to sessionStorage immediately
             // after we just read from it during hydration.
             let isImporting = false
 
-            // Restore state from localStorage on load
+            // Restore state from sessionStorage on load
             try {
-                const stored = localStorage.getItem(STORAGE_KEY)
+                const stored = sessionStorage.getItem(STORAGE_KEY)
                 if (stored) {
                     isImporting = true
                     await importState(stored)
-                    log.info('Restored app state from localStorage')
+                    log.info('Restored app state from sessionStorage')
                 }
             } catch (error) {
-                log.warn('Failed to restore app state from localStorage, clearing stored state', {
+                log.warn('Failed to restore app state from sessionStorage, clearing stored state', {
                     messages: [String(error)],
                 })
                 try {
-                    localStorage.removeItem(STORAGE_KEY)
+                    sessionStorage.removeItem(STORAGE_KEY)
                 } catch {
-                    // localStorage not available, silently ignore
+                    // sessionStorage not available, silently ignore
                 }
             }
 
-            // Watch for state changes and persist to localStorage
+            // Watch for state changes and persist to sessionStorage
             watchDebounced(
                 () => exportState(),
                 (newState) => {
@@ -44,9 +44,9 @@ export default defineNuxtPlugin({
                         return
                     }
                     try {
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
+                        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
                     } catch (error) {
-                        log.warn('Failed to persist app state to localStorage', {
+                        log.warn('Failed to persist app state to sessionStorage', {
                             messages: [String(error)],
                         })
                     }
