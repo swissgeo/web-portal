@@ -7,6 +7,7 @@ import { SideBar } from '@swissgeo/skeleton'
 
 import { useSearchSelection } from '@/composables/useSearchSelection'
 
+const { resetApp } = useResetApp()
 const route = useRoute()
 const mapViewStore = useMapViewStore()
 
@@ -43,6 +44,7 @@ async function onSearchResultSelected(result: SearchResult) {
                 v-if="!isMapFullscreenMode"
                 class="z-2"
                 @search-result-selected="onSearchResultSelected"
+                @reset-app="resetApp"
             >
                 <template #bottom-controls>
                     <div
