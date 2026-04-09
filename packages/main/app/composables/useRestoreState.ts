@@ -13,14 +13,14 @@ const STORAGE_KEY = 'swissgeo_app_state'
  */
 export function useRestoreState() {
     async function restore() {
-        const { exportState, restoreState } = useStateConfig()
+        const { exportState, importState } = useStateConfig()
         const { getStateFromUrl } = useUrlParams()
         const stateFromUrlParam = await getStateFromUrl()
 
-        // If a valid state ID is preent in URL, it takes precedance over the state in LocalStorage
+        // If a valid state ID is present in URL, it takes precedance over the state in LocalStorage
         if (stateFromUrlParam) {
             const config = validateAndPrepareAppStatePayload(stateFromUrlParam)
-            await restoreState(config)
+            await importState(config)
             sessionStorage.setItem(STORAGE_KEY, JSON.stringify(config))
             return
         }
@@ -35,7 +35,7 @@ export function useRestoreState() {
             if (stored) {
                 isImporting = true
                 const config = validateAndPrepareAppStatePayload(JSON.parse(stored))
-                await restoreState(config)
+                await importState(config)
                 log.info('Restored app state from sessionStorage')
             }
         } catch (error) {
