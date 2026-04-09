@@ -89,7 +89,7 @@ export function useStateConfig() {
      * Center coordinates are expected in LV95 (EPSG:2056) [x, y].
      * Fetches each layer's dataset from its datasetUrl.
      */
-    async function restoreState(payload: AppStatePayload): Promise<void> {
+    async function importState(payload: AppStatePayload): Promise<void> {
         log.info('Importing state config', { messages: payload })
 
         positionStore.setCenter(payload.state.map.center, DISPATCHER)
@@ -120,6 +120,6 @@ export function useStateConfig() {
 
     return {
         exportState,
-        restoreState,
+        importState,
     }
 }
