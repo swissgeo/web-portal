@@ -11,6 +11,15 @@ export default defineNuxtPlugin({
     hooks: {
         async 'app:created'() {
             const { exportState, importState } = useStateConfig()
+            const { getStateFromUrl } = useUrlParams()
+            const stateFromUrlParam = await getStateFromUrl()
+
+            // If a valid state ID is preent in URL, it takes precedance over the state in LocalStorage
+            if (stateFromUrlParam) {
+                await importState(stateFromUrlParam)
+                localStorage.setItem(STORAGE_KEY, stateFromUrlParam)
+                return
+            }
 
             // isImporting flag prevents writing back to sessionStorage immediately
             // after we just read from it during hydration.
