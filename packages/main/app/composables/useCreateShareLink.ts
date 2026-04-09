@@ -1,8 +1,8 @@
-import type { AppStateConfig } from '@swissgeo/statesharing'
+import type { AppStatePayload } from '@swissgeo/statesharing'
 
 import { useFetch } from '@vueuse/core'
 
-export function useCreateShareLink(state: Ref<AppStateConfig>) {
+export function useCreateShareLink(state: Ref<AppStatePayload>) {
     const runtimeConfig = useRuntimeConfig()
 
     // intentionally not using nuxt's useFetch as the one frome vueuse suits more the

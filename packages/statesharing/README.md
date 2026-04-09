@@ -16,12 +16,13 @@ In its final state, this module will handle all operations regarding sharing and
 
 ## Exposed Members
 
-| member                             | type     | description                                                           |
-| ---------------------------------- | -------- | --------------------------------------------------------------------- |
-| `validateAndPrepareAppStateConfig` | function | Verify the typing and content of the app state and ensure it is valid |
-| `AppStateConfig`                   | type     | A representation of the state of the entire application               |
-| `LayerStateConfig`                 | type     | A representation of the state of a single layer                       |
-| `APP_STATE_CONFIG_VERSION`         | constant | The current version of the state sharing tool, as a semver float.     |
+| member                              | type     | description                                                            |
+| ----------------------------------- | -------- | ---------------------------------------------------------------------- |
+| `validateAndPrepareAppStatePayload` | function | Verify the typing and content of the app state and ensure it is valid  |
+| `AppStateConfig`                    | type     | A representation of the state of the entire application                |
+| `AppStatePayload`                   | type     | A representation of the payload to be sent and received by the backend |
+| `LayerStateConfig`                  | type     | A representation of the state of a single layer                        |
+| `APP_STATE_CONFIG_VERSION`          | constant | The current version of the state sharing tool, as a semver float.      |
 
 ## internal Members
 
@@ -29,7 +30,7 @@ those are validation functions and constants used in such validation functions. 
 
 | member                         | type     | description                                                                                                     |
 | ------------------------------ | -------- | --------------------------------------------------------------------------------------------------------------- |
-| `validateAppState`             | function | Check the version and call all other validators to ensure the AppStateConfig is correct                         |
+| `validateAppStatePayload`      | function | Check the version and call all other validators to ensure the AppStateConfig is correct                         |
 | `isInstanceOfAppStateConfig`   | function | Checks that the given object fits the `AppStateConfig` interface requirements (attributes and correct typing)   |
 | `isInstanceOfLayerStateConfig` | function | Checks that the given object fits the `LayerStateConfig` interface requirements (attributes and correct typing) |
 | `validateMap`                  | function | validate that the map's center coordinates are within bounds                                                    |

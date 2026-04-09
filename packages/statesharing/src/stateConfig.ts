@@ -1,12 +1,14 @@
-import type { AppStateConfig } from '@/types/types'
+import type { AppStatePayload } from '@/types/types'
 
-import { validateAppState } from '@/utils/validation'
+import { validateAppStatePayload } from '@/utils/validation'
 
-export function validateAndPrepareAppStateConfig(json: JSON): AppStateConfig {
-    const validatedJson = validateAppState(json)
+export function validateAndPrepareAppStatePayload(json: unknown): AppStatePayload {
+    const validatedJson = validateAppStatePayload(json)
 
-    if (validatedJson.backgroundLayer) {
-        validatedJson.backgroundLayer.opacity = 1
+    const payload = validatedJson
+
+    if (payload.state.backgroundLayer) {
+        payload.state.backgroundLayer.opacity = 1
     }
-    return validatedJson
+    return payload
 }

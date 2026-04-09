@@ -1,6 +1,6 @@
 import type { Dimension, DimensionId, Layer } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
-import type { AppStateConfig, LayerStateConfig } from '@swissgeo/statesharing'
+import type { AppStateConfig, AppStatePayload, LayerStateConfig } from '@swissgeo/statesharing'
 
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
@@ -64,22 +64,24 @@ export function useStateConfig() {
      * Export the current app state as an AppStateConfig object.
      * Center coordinates are in LV95 (EPSG:2056) [x, y].
      */
-    const exportState = computed((): AppStateConfig => {
-        const state: AppStateConfig = {
+    const exportState = computed((): AppStatePayload => {
+        const payload: AppStatePayload = {
             version: APP_STATE_CONFIG_VERSION,
-            map: {
-                center: positionStore.center,
-                zoom: positionStore.zoom,
-                rotation: positionStore.rotation,
-            },
-            layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l)),
+            state: {
+                map: {
+                    center: positionStore.center,
+                    zoom: positionStore.zoom,
+                    rotation: positionStore.rotation,
+                },
+                layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l)),
+            } as AppStateConfig,
         }
 
         if (layerStore.backgroundLayer) {
-            state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer)
+            payload.state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer)
         }
 
-        return state
+        return payload
     })
 
     /**
@@ -87,12 +89,12 @@ export function useStateConfig() {
      * Center coordinates are expected in LV95 (EPSG:2056) [x, y].
      * Fetches each layer's dataset from its datasetUrl.
      */
-    async function restoreState(config: AppStateConfig): Promise<void> {
-        log.info('Importing state config', { messages: config.map })
+    async function restoreState(payload: AppStatePayload): Promise<void> {
+        log.info('Importing state config', { messages: payload })
 
-        positionStore.setCenter(config.map.center, DISPATCHER)
-        positionStore.setZoom(config.map.zoom, DISPATCHER)
-        positionStore.setRotation(config.map.rotation, DISPATCHER)
+        positionStore.setCenter(payload.state.map.center, DISPATCHER)
+        positionStore.setZoom(payload.state.map.zoom, DISPATCHER)
+        positionStore.setRotation(payload.state.map.rotation, DISPATCHER)
 
         // Clear and re-add layers
         for (const layer of [...layerStore.layers]) {
@@ -101,8 +103,10 @@ export function useStateConfig() {
 
         // Fetch all layers in parallel
         const [layers, bgLayer] = await Promise.all([
-            Promise.all(config.layers.map((lc) => stateConfigToLayer(lc))),
-            config.backgroundLayer ? stateConfigToLayer(config.backgroundLayer) : null,
+            Promise.all(payload.state.layers.map((lc) => stateConfigToLayer(lc))),
+            payload.state.backgroundLayer
+                ? stateConfigToLayer(payload.state.backgroundLayer)
+                : null,
         ])
 
         for (const layer of layers) {
