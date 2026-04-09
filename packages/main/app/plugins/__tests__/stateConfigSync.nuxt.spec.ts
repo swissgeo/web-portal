@@ -10,7 +10,7 @@ const watcherCallbackRef = vi.hoisted(() => {
     return { fn: null as ((_state: unknown) => void) | null }
 })
 
-const mockRestoreState = vi.fn()
+const mockImportState = vi.fn()
 const mockExportState = ref({
     version: 2,
     map: { center: [2600000, 1200000] as [number, number], zoom: 8, rotation: 0 },
@@ -39,7 +39,7 @@ vi.mock('@vueuse/core', async (importOriginal) => {
 vi.mock('@/composables/useStateConfig', () => ({
     useStateConfig: () => ({
         exportState: mockExportState,
-        restoreState: mockRestoreState,
+        importState: mockImportState,
     }),
 }))
 
@@ -66,7 +66,7 @@ describe('stateConfigSync plugin', () => {
     describe('state restoration on load', () => {
         it('does not call importState when sessionStorage is empty', async () => {
             await invokeHook()
-            expect(mockRestoreState).not.toHaveBeenCalled()
+            expect(mockImportState).not.toHaveBeenCalled()
         })
 
         it('calls importState with the stored JSON string when state is present', async () => {
@@ -81,12 +81,12 @@ describe('stateConfigSync plugin', () => {
 
             await invokeHook()
 
-            expect(mockRestoreState).toHaveBeenCalledWith(state)
+            expect(mockImportState).toHaveBeenCalledWith(state)
         })
 
         it('removes the corrupt key and does not throw when importState fails', async () => {
             sessionStorage.setItem(STORAGE_KEY, 'not-valid-json')
-            mockRestoreState.mockRejectedValueOnce(new Error('Parse error'))
+            mockImportState.mockRejectedValueOnce(new Error('Parse error'))
 
             await expect(invokeHook()).resolves.not.toThrow()
             expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull()
