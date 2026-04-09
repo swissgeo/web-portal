@@ -49,7 +49,7 @@ describe('defaultGutterFromStyle', () => {
                     id: 'ch.bafu.gefahren-aktuelle_erdbeben:wms:style',
                     paint: {
                         'raster-gutter': 25,
-                    },
+                    } as Record<string, unknown>,
                     source: 'wms.geo.admin.ch',
                     type: 'raster' as const,
                 },
