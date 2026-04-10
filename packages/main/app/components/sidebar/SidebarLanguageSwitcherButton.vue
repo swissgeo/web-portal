@@ -2,7 +2,7 @@
 import type { Lang } from '@swissgeo/shared/language'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const { locale, locales } = useI18n()
 const appStore = useAppStore()
@@ -17,11 +17,6 @@ const localeItems = computed(() => {
 })
 
 const selectedLocale = ref<Lang>(locale.value)
-const isClient = ref(false)
-
-onMounted(() => {
-    isClient.value = true
-})
 
 watch(locale, (value) => {
     selectedLocale.value = value
@@ -46,24 +41,32 @@ watch(selectedLocale, async (value) => {
 </script>
 
 <template>
-    <div v-if="isClient">
-        <ULocaleSelect
+    <ClientOnly>
+        <USelectMenu
             v-model="selectedLocale"
-            :locales="localeItems"
+            :items="localeItems"
+            value-key="code"
+            label-key="name"
             :highlight="true"
             :highlight-on-hover="true"
             :arrow="false"
             size="md"
             variant="ghost"
             :trailing="false"
+            :searchInput="false"
             aria-label="Language switcher"
             :ui="{
                 content: '!w-auto min-w-[150px] !max-w-none',
                 base: 'p-5 !shadow-none !ring-0',
-                value: 'hidden',
-                leadingAvatarSize: '8',
                 trailingIcon: 'hidden',
+                value: 'hidden',
             }"
-        />
-    </div>
+        >
+            <template #leading>
+                <span class="text-sm font-medium uppercase">
+                    {{ selectedLocale }}
+                </span>
+            </template>
+        </USelectMenu>
+    </ClientOnly>
 </template>

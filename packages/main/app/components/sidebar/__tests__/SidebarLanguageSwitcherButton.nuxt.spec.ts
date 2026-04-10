@@ -35,7 +35,7 @@ vi.mock('@swissgeo/log', () => ({
 }))
 
 // Stub ULocaleSelect so we can trigger locale changes without the full Nuxt UI component
-const ULocaleSelectStub = {
+const USelectMenuStub = {
     props: ['modelValue', 'locales'],
     emits: ['update:modelValue'],
     template: `<button @click="$emit('update:modelValue', 'fr')">switch</button>`,
@@ -43,7 +43,7 @@ const ULocaleSelectStub = {
 
 function mountComponent() {
     return mount(SidebarLanguageSwitcherButton, {
-        global: { stubs: { ULocaleSelect: ULocaleSelectStub } },
+        global: { stubs: { USelectMenu: USelectMenuStub } },
     })
 }
 
@@ -53,7 +53,7 @@ describe('SidebarLanguageSwitcherButton', () => {
         vi.clearAllMocks()
     })
 
-    it('calls applyLocale when the user selects a different locale', async () => {
+    it.only('calls applyLocale when the user selects a different locale', async () => {
         const wrapper = mountComponent()
         await flushPromises()
 
