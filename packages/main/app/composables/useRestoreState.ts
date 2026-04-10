@@ -2,8 +2,9 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { validateAndPrepareAppStatePayload } from '@swissgeo/statesharing'
 import { watchDebounced } from '@vueuse/core'
 import { useStateConfig } from '~/composables/useStateConfig'
+import { useUrlParams } from '~/composables/useUrlParams'
 
-const STORAGE_KEY = 'swissgeo_app_state'
+export const STORAGE_KEY = 'swissgeo_app_state'
 
 /**
  * Restoring a state
@@ -32,7 +33,7 @@ export function useRestoreState() {
                 messages: ['State from the URL param', stateFromUrlParam],
             })
 
-            // If a valid state ID is preent in URL, it takes precedance over the state in LocalStorage
+            // If a valid state ID is preent in URL, it takes precedance over the state in SessionStorage
             if (stateFromUrlParam) {
                 const config = validateAndPrepareAppStatePayload(stateFromUrlParam)
                 await importState(config)
