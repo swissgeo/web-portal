@@ -83,14 +83,14 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
 
 <template>
     <ClientOnly>
-        <MapDatamappingFileLayer
+        <MapDatamappingFileConverter
             v-for="layer in storeFileLayers"
             :layer="layer"
             :key="layer.uuid"
             :zIndex="layerStore.getLayerZIndex(layer.uuid)"
             @update="updateMapLayerData(layer.uuid, $event)"
             @remove="removeLayerData(layer.uuid)"
-        ></MapDatamappingFileLayer>
+        ></MapDatamappingFileConverter>
         <MapDatamappingOgcDatasetConverter
             v-for="layer in storeDatasetLayers"
             :layer="layer"
