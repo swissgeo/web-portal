@@ -5,6 +5,7 @@ import { useStyle, useWmsCapabilities } from '@swissgeo/ogc'
 import { getTimeInfoFromWMSCapabilities } from '@/utils/timeUtils'
 
 import { defaultOpacityFromStyle } from './defaultFromOpacity'
+import { defaultGutterFromStyle } from './defaultGutterFromStyle'
 
 export type WMSLayerData = {
     url: Ref<string>
@@ -31,9 +32,17 @@ export function useOgcWmsData(
     const url = computed(() => capabilities.value?.Service.OnlineResource)
     const version = computed(() => capabilities.value?.version)
 
+    const defaultGutter = computed(() => {
+        if (styleData.value) {
+            return defaultGutterFromStyle(styleData.value)
+        } else {
+            return 0
+        }
+    })
+
     const wmsDataForOl = computed(() => ({
         url: url.value,
-        gutter: 0,
+        gutter: defaultGutter.value,
         version: version.value,
         lang: currentLang.value,
     }))
