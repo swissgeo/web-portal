@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
                 name: '@swissgeo/layers',
             },
             rollupOptions: {
-                external: ['vue', 'pinia'],
+                external: ['vue', 'pinia', '@swissgeo/log'],
                 output: {
                     exports: 'named',
                     globals: {
