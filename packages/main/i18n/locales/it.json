@@ -2,6 +2,7 @@
     "geolocation": {
         "permissionDenied": "Autorizzazione alla posizione negata",
         "stopTracking": "Interrompi il tracciamento",
-        "startTracking": "Avvia il tracciamento"
+        "startGeolocation": "Avvia la geolocalizzazione",
+        "recenterMap": "Ricentra la mappa"
     }
 }

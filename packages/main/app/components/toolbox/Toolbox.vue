@@ -28,10 +28,7 @@ const showFullScreeButton = computed(() => !drawingStore.isDrawing)
 // Buttons related to the geolocation function
 const showGelocationButton = ref(true)
 const showRecenterButton = computed(
-    () =>
-        geolocationStore.active &&
-        geolocationStore.position !== undefined &&
-        !geolocationStore.tracking
+    () => geolocationStore.active && geolocationStore.position !== undefined
 )
 const showCompassButton = ref(true)
 

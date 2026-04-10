@@ -121,7 +121,8 @@
     "geolocation": {
         "permissionDenied": "Standortberechtigung verweigert",
         "stopTracking": "Standort-Tracking beenden",
-        "startTracking": "Standort-Tracking starten"
+        "startGeolocation": "Standortbestimmung starten",
+        "recenterMap": "Karte neu zentrieren"
     },
     "backgroundLayers": {
         "title": "Angezeigte Karten",

@@ -36,7 +36,7 @@ export const useGeolocationStore = defineStore('geolocation', {
     state: (): GeolocationStoreState => ({
         active: false,
         denied: false,
-        tracking: true,
+        tracking: false,
         position: undefined,
         accuracy: 0,
         errorCount: 0,
@@ -49,14 +49,6 @@ export const useGeolocationStore = defineStore('geolocation', {
 
             if (this.active) {
                 this.errorCount = 0
-
-                if (this.position && this.tracking) {
-                    // Re-use the last known position as a placeholder so the map
-                    // centres immediately on re-activation while waiting for a
-                    // fresh GPS fix to arrive.
-                    setCenterIfInBounds(this.position, dispatcher, this)
-                    this.accuracy = 50 * 1000 // 50km placeholder until real fix arrives
-                }
 
                 const onWatchSuccess = (pos: GeolocationPosition) =>
                     handleNewGeolocationPosition.call(this, pos, dispatcher)
@@ -106,12 +98,18 @@ export const useGeolocationStore = defineStore('geolocation', {
                     geolocationWatcherId = undefined
                 }
                 // Reset transient error and tracking state so a fresh activation
-                // starts cleanly. Position is kept so the placeholder re-use on
-                // re-activation still works.
+                // starts cleanly. Position is kept for the marker.
                 this.denied = false
                 this.errorCount = 0
-                this.tracking = true
+                this.tracking = false
                 this.accuracy = 0
+
+                // Disable auto-rotation and reset map rotation to north
+                const positionStore = usePositionStore()
+                if (positionStore.autoRotation) {
+                    positionStore.setAutoRotation(false, dispatcher)
+                    positionStore.setRotation(0, dispatcher)
+                }
             }
         },
 

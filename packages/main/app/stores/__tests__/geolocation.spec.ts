@@ -192,33 +192,37 @@ describe('geolocation store', () => {
             expect(store.position![1]).toBeCloseTo(swissY, 0)
         })
 
-        it('centers the map when tracking is active', () => {
+        it('does not center the map on activation (tracking is off by default)', () => {
             const store = useGeolocationStore()
             store.setGeolocationActive(true, dispatcher)
+            expect(mockSetCenter).not.toHaveBeenCalled()
+        })
+
+        it('centers the map when tracking is enabled', () => {
+            const store = useGeolocationStore()
+            store.setGeolocationActive(true, dispatcher)
+            vi.clearAllMocks()
+            store.setGeolocationTracking(true, dispatcher)
             expect(mockSetCenter).toHaveBeenCalledWith(
                 expect.arrayContaining([expect.closeTo(swissX, 0), expect.closeTo(swissY, 0)]),
                 dispatcher
             )
         })
 
-        it('does not center the map when tracking is disabled', () => {
-            const store = useGeolocationStore()
-            store.tracking = false
-            store.setGeolocationActive(true, dispatcher)
-            expect(mockSetCenter).not.toHaveBeenCalled()
-        })
-
-        it('sets optimal zoom (1:25 000) on first activation', () => {
+        it('sets optimal zoom (1:25 000) on first tracking enable', () => {
             const store = useGeolocationStore()
             store.setGeolocationActive(true, dispatcher)
+            store.setGeolocationTracking(true, dispatcher)
             expect(mockSetZoom).toHaveBeenCalledWith(LV95.get1_25000ZoomLevel(), dispatcher)
         })
 
-        it('does not set zoom again after the first activation', () => {
+        it('does not set zoom again after the first tracking enable', () => {
             const store = useGeolocationStore()
-            store.setGeolocationActive(true, dispatcher) // firstTime → false
+            store.setGeolocationActive(true, dispatcher)
+            store.setGeolocationTracking(true, dispatcher) // firstTime → false
             vi.clearAllMocks()
-            store.setGeolocationActive(true, dispatcher) // secondactivation — no zoom
+            store.setGeolocationTracking(false, dispatcher)
+            store.setGeolocationTracking(true, dispatcher) // second time — no zoom
             expect(mockSetZoom).not.toHaveBeenCalled()
         })
 
@@ -243,8 +247,9 @@ describe('geolocation store', () => {
             })
         })
 
-        it('shows an out-of-bounds error toast', () => {
+        it('shows an out-of-bounds error toast when tracking is enabled', () => {
             const store = useGeolocationStore()
+            store.tracking = true
             store.setGeolocationActive(true, dispatcher)
             expect(mockToastAdd).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -254,12 +259,8 @@ describe('geolocation store', () => {
         })
 
         it('does not call setCenter via setCenterIfInBounds for out-of-bounds coordinates', () => {
-            // setCenterIfInBounds guards centering; setGeolocationPosition may still
-            // call setCenter but the real position store would reject out-of-bounds coords.
-            // Here we assert that the out-of-bounds guard path in setCenterIfInBounds fired
-            // (evidenced by the error toast) and NOT by asserting setCenter was skipped,
-            // since the mock position store has no bounds check.
             const store = useGeolocationStore()
+            store.tracking = true
             store.setGeolocationActive(true, dispatcher)
             expect(mockToastAdd).toHaveBeenCalled()
         })

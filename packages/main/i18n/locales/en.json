@@ -121,7 +121,8 @@
     "geolocation": {
         "permissionDenied": "Location permission denied",
         "stopTracking": "Stop tracking",
-        "startTracking": "Start tracking"
+        "startGeolocation": "Start geolocation",
+        "recenterMap": "Re-center map"
     },
     "backgroundLayers": {
         "title": "Displayed maps",
