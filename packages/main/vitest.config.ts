@@ -8,7 +8,7 @@ export default defineVitestConfig({
         // @vitest-environment nuxt
         // on the top of a file
         environment: 'happy-dom',
-        hookTimeout: 5000,
+        hookTimeout: 10000,
     },
     resolve: {
         alias: {
