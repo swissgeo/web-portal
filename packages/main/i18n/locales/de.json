@@ -125,5 +125,11 @@
         "colorMap": "Karte farbig",
         "greyMap": "Karte SW",
         "swissimage": "Luftbilder"
+    },
+    "toaster": {
+        "warningTitle": "Warnung",
+        "errorTitle": "Error",
+        "successTitle": "Erfolg"
+    }
     }
 }
