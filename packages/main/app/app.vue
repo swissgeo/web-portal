@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import log, { LogLevel } from '@swissgeo/log'
+import log from '@swissgeo/log'
 
-log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
+import parseWantedLogLevels from './utils/parseWantedLoglevels'
 
 const config = useRuntimeConfig()
+
+log.wantedLevels = parseWantedLogLevels(config.public.wantedLogLevels)
 
 const version = config.public.version
 const buildTime = config.public.buildTime
