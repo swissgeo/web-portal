@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
                 name: '@swissgeo/timeslider',
             },
             rollupOptions: {
-                external: ['vue', 'lucide-vue-next'],
+                external: ['vue', 'lucide-vue-next', '@swissgeo/log'],
                 output: {
                     exports: 'named',
                     globals: {
