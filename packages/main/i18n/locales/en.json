@@ -130,6 +130,8 @@
         "warningTitle": "Warning",
         "errorTitle": "Error",
         "successTitle": "Success"
-    }
+    },
+    "state": {
+        "restoreUnableWarning": "The app state could not be restored"
     }
 }

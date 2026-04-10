@@ -1,4 +1,4 @@
-import { useFetch } from '@vueuse/core'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 
 // URL param providing the ID to a state (map config such a center, resolution, print info, etc.)
 const URL_PARAM_STATE = 'state'
@@ -32,7 +32,16 @@ export function useUrlParams() {
             return null
         }
 
-        return await getStateFromStateId(stateId)
+        log.debug({
+            title: 'useUrlParam',
+            titleColor: LogPreDefinedColor.Sky,
+            messages: [
+                'State found in the URL param, using this to fetch the state from the service',
+                stateId,
+            ],
+        })
+
+        return getStateFromStateId(stateId)
     }
 
     return {
@@ -48,7 +57,7 @@ async function getStateFromStateId(stateId: string): Promise<Record<string, unkn
     const shortLinkUrl = new URL(runtimeConfig.public.shareServiceUrl)
     shortLinkUrl.searchParams.set('state', stateId)
 
-    const { data: appConfig } = await useFetch<JSON>(shortLinkUrl.toString()).get().json()
+    const appConfig = await $fetch<JSON>(shortLinkUrl.toString())
 
-    return appConfig.value
+    return appConfig
 }

@@ -130,6 +130,8 @@
         "warningTitle": "Warnung",
         "errorTitle": "Error",
         "successTitle": "Erfolg"
-    }
+    },
+    "state": {
+        "restoreUnableWarning": "Der Zustand der App konnte nicht wiederhergestellt werden"
     }
 }
