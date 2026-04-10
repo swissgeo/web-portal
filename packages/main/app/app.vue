@@ -1,11 +1,5 @@
 <script lang="ts" setup>
-import log from '@swissgeo/log'
-
-import parseWantedLogLevels from './utils/parseWantedLoglevels'
-
 const config = useRuntimeConfig()
-
-log.wantedLevels = parseWantedLogLevels(config.public.wantedLogLevels)
 
 const version = config.public.version
 const buildTime = config.public.buildTime
