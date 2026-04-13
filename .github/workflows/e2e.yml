@@ -9,7 +9,16 @@ on:
 jobs:
   e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 45
+    env:
+      # Env vars consumed by the Nuxt build and the preview server. Secrets
+      # may be empty in non-production environments; populate via GitHub
+      # repository/environment secrets when available.
+      NUXT_PUBLIC_OGC_API_ENDPOINT: ${{ secrets.NUXT_PUBLIC_OGC_API_ENDPOINT }}
+      NUXT_PUBLIC_OVERLAY_ID: ${{ secrets.NUXT_PUBLIC_OVERLAY_ID }}
+      NUXT_MAPTILER_API_KEY: ${{ secrets.NUXT_MAPTILER_API_KEY }}
+      NUXT_API_ENDPOINT: ${{ secrets.NUXT_API_ENDPOINT }}
+      NUXT_AUTH_TOKEN: ${{ secrets.NUXT_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -25,6 +34,12 @@ jobs:
 
       - name: Build packages
         run: pnpm build
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
