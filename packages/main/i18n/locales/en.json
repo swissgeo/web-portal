@@ -143,5 +143,15 @@
             "errorFetchingElevation": "Error retrieving elevation",
             "errorFetchingW3W": "Error retrieving What3Words address"
         }
+    },
+    "dataset": {
+        "abstract": "Abstract",
+        "contacts": "Contacts",
+        "links": "Links",
+        "services": "Services",
+        "add_to_map": "Add to map",
+        "already_on_map": "Already on map",
+        "loading": "Loading…",
+        "close": "Close"
     }
 }

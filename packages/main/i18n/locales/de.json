@@ -143,5 +143,15 @@
             "errorFetchingElevation": "Fehler beim Abrufen der Höhe",
             "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse"
         }
+    },
+    "dataset": {
+        "abstract": "Beschreibung",
+        "contacts": "Kontakte",
+        "links": "Links",
+        "services": "Dienste",
+        "add_to_map": "Zur Karte hinzufügen",
+        "already_on_map": "Bereits auf der Karte",
+        "loading": "Lädt…",
+        "close": "Schliessen"
     }
 }

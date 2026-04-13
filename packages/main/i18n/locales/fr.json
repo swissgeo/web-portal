@@ -143,5 +143,15 @@
             "errorFetchingElevation": "Erreur de récupération de l'élévation",
             "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words"
         }
+    },
+    "dataset": {
+        "abstract": "Résumé",
+        "contacts": "Contacts",
+        "links": "Liens",
+        "services": "Services",
+        "add_to_map": "Ajouter à la carte",
+        "already_on_map": "Déjà sur la carte",
+        "loading": "Chargement…",
+        "close": "Fermer"
     }
 }
