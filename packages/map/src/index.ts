@@ -1,6 +1,7 @@
 import '../env.d.ts' // for reproject
 
 import MapModule from '@/MapModule.vue'
+import OpenLayersContextMenuPopup from '@/openlayers/OpenLayersContextMenuPopup.vue'
 import usePositionStore from '@/stores/position'
 
 // importing as "type" doesn't work with the DTS bundler somehow
@@ -9,8 +10,6 @@ export * from '@/types/layers'
 import type { ActionDispatcher } from './stores/types'
 
 import * as PROJECTION_EPSG from './composables/types.d'
-
-import OpenLayersContextMenuPopup from '@/openlayers/OpenLayersContextMenuPopup.vue'
 
 export { useOlMapContextMenu } from './composables/useOlMapContextMenu.composable'
 export {
