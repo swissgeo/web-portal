@@ -3,12 +3,11 @@ import type { Ref } from 'vue'
 
 import { inject, onUnmounted, ref, watch } from 'vue'
 
-export function useMapContextMenu() {
+export function useOlMapContextMenu() {
     const olMap = inject<Ref<OlMap | undefined>>('olMap')
 
     const isVisible = ref(false)
     const coordinate = ref<[number, number] | null>(null)
-    const pixel = ref<[number, number] | null>(null)
 
     let cleanup: (() => void) | null = null
 
@@ -22,7 +21,6 @@ export function useMapContextMenu() {
         const coord = map.getCoordinateFromPixel(px)
         isVisible.value = true
         coordinate.value = coord as [number, number]
-        pixel.value = px as [number, number]
     }
 
     const close = () => {
@@ -44,5 +42,5 @@ export function useMapContextMenu() {
 
     onUnmounted(() => cleanup?.())
 
-    return { isVisible, coordinate, pixel, close }
+    return { isVisible, coordinate, close }
 }

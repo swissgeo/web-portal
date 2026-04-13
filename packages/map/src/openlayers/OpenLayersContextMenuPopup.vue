@@ -8,12 +8,12 @@ import { useI18n } from 'vue-i18n'
 
 import usePositionStore from '@/stores/position'
 
-import { useMapContextMenu } from '../composables/useOlMapContextMenu.composable'
+import { useOlMapContextMenu } from '../composables/useOlMapContextMenu.composable'
 import OpenLayersContextMenuPopupPosition from './OpenLayersContextMenuPopupPosition.vue'
 import OpenLayersContextMenuPopupShare from './OpenLayersContextMenuPopupShare.vue'
 
 const olMap = inject<Ref<OlMap | undefined>>('olMap')
-const { isVisible, coordinate, close } = useMapContextMenu()
+const { isVisible, coordinate, close } = useOlMapContextMenu()
 const positionStore = usePositionStore()
 const { t } = useI18n()
 
