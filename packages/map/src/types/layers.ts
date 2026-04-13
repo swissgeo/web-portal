@@ -27,6 +27,7 @@ export interface Layer {
     opacity: number
     isVisible: boolean
     zIndex: number
+    displayName?: string
 }
 
 export interface WMTSLayer extends Layer {

@@ -5,8 +5,8 @@ import type { Dataset } from '@swissgeo/ogc'
 
 import { isDatasetLayer } from '@swissgeo/layers'
 
-import DatasetLayer from '@/components/map/datamapping/DatasetLayer.vue'
-import FileLayer from '@/components/map/datamapping/FileLayer.vue'
+import MapDatamappingFileConverter from '@/components/map/datamapping/FileConverter.vue'
+import MapDatamappingOgcDatasetConverter from '@/components/map/datamapping/OgcDatasetConverter.vue'
 
 const { sourceBgLayer, sourceData } = defineProps<{
     sourceBgLayer: SourceData | null
@@ -61,25 +61,25 @@ function updateStoreLayerData(uuid: string, dataset: Dataset) {}
 
 <template>
     <div v-for="(data, index) in [sourceBgLayer, ...sourceData].filter((data) => !!data)">
-        <DatasetLayer
-            v-if="isDatasetLayer(data)"
-            :layer="data"
-            :zIndex="index"
-            :key="data.uuid"
-            @update="updateMapLayerData(index, $event)"
-            @updateLayerInfo="updateLayerInfo"
-            @updateOpacity="updateOpacity(index, 1)"
-            @remove="removeLayerData(index)"
-            @updateTimeDimension="updateTimeDimension(index, {})"
-            @updateDataset="updateStoreLayerData"
-        />
-        <FileLayer
-            v-else
-            :layer="data"
-            :zIndex="index"
-            :key="data.uuid"
-            @update="updateMapLayerData(index, $event)"
-            @remove="removeLayerData(index)"
-        />
+        <div :key="data.uuid">
+            <MapDatamappingOgcDatasetConverter
+                v-if="isDatasetLayer(data)"
+                :layer="data"
+                :zIndex="index"
+                @update="updateMapLayerData(index, $event)"
+                @updateLayerInfo="updateLayerInfo"
+                @updateOpacity="updateOpacity(index, 1)"
+                @remove="removeLayerData(index)"
+                @updateTimeDimension="updateTimeDimension(index, {})"
+                @updateDataset="updateStoreLayerData"
+            />
+            <MapDatamappingFileConverter
+                v-else
+                :layer="data"
+                :zIndex="index"
+                @update="updateMapLayerData(index, $event)"
+                @remove="removeLayerData(index)"
+            />
+        </div>
     </div>
 </template>
