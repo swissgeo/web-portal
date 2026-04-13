@@ -66,24 +66,32 @@ watch(locale, () => {
 
 const EXCLUDED_LINK_RELS = new Set(['self', 'collection', 'distributions'])
 const displayLinks = computed<Link[]>(() => {
-    if (!dataset.value?.links) return []
+    if (!dataset.value?.links) {
+        return []
+    }
     return dataset.value.links.filter((l) => !EXCLUDED_LINK_RELS.has(l.rel?.toLowerCase() ?? ''))
 })
 
 const serviceDistributions = computed<Distribution[]>(() => {
-    if (!distributionCollection.value?.records) return []
+    if (!distributionCollection.value?.records) {
+        return []
+    }
     return distributionCollection.value.records.filter(
         (d) => d.properties.protocol !== 'OGC:GeoJSON'
     )
 })
 
 const isAlreadyOnMap = computed(() => {
-    if (!dataset.value) return false
+    if (!dataset.value) {
+        return false
+    }
     return layerStore.layers.some((l) => l.humanId === dataset.value!.id)
 })
 
 function addToMap() {
-    if (!dataset.value || isAlreadyOnMap.value) return
+    if (!dataset.value || isAlreadyOnMap.value) {
+        return
+    }
     layerStore.addLayer(makeServerLayer(dataset.value))
 }
 </script>
@@ -93,6 +101,7 @@ function addToMap() {
         v-model:open="datasetViewStore.isOpen"
         :modal="false"
         :overlay="false"
+        :dismissible="false"
         :title="dataset?.properties.title ?? ''"
         side="right"
         @update:open="
@@ -124,7 +133,7 @@ function addToMap() {
                 class="flex flex-col gap-6"
             >
                 <section v-if="dataset.properties.description">
-                    <h3 class="mb-2 text-xs font-semibold tracking-wider text-muted uppercase">
+                    <h3 class="mb-2">
                         {{ $t('dataset.abstract') }}
                     </h3>
                     <p class="text-sm leading-relaxed">
@@ -133,7 +142,7 @@ function addToMap() {
                 </section>
 
                 <section v-if="dataset.properties.contacts?.length">
-                    <h3 class="mb-2 text-xs font-semibold tracking-wider text-muted uppercase">
+                    <h3 class="mb-2">
                         {{ $t('dataset.contacts') }}
                     </h3>
                     <div class="flex flex-col gap-3">
@@ -146,14 +155,14 @@ function addToMap() {
                 </section>
 
                 <section v-if="displayLinks.length">
-                    <h3 class="mb-2 text-xs font-semibold tracking-wider text-muted uppercase">
+                    <h3 class="mb-2">
                         {{ $t('dataset.links') }}
                     </h3>
                     <DatasetViewLinkList :links="displayLinks" />
                 </section>
 
                 <section v-if="serviceDistributions.length">
-                    <h3 class="mb-2 text-xs font-semibold tracking-wider text-muted uppercase">
+                    <h3 class="mb-2">
                         {{ $t('dataset.services') }}
                     </h3>
                     <DatasetViewServiceList :distributions="serviceDistributions" />

@@ -32,22 +32,18 @@ function getProtocolLabel(distribution: Distribution): string {
                 :to="getServiceLink(dist)!"
                 target="_blank"
                 raw
-                class="flex items-center gap-2 text-sm text-blue-600 hover:underline"
+                class="flex items-center gap-2"
             >
                 <UIcon
                     name="i-lucide-server"
                     class="size-3 shrink-0"
                 />
                 <span class="font-medium">{{ getProtocolLabel(dist) }}</span>
-                <span
-                    v-if="dist.properties.title"
-                    class="text-neutral-500"
-                    >— {{ dist.properties.title }}</span
-                >
+                <span v-if="dist.properties.title">— {{ dist.properties.title }}</span>
             </ULink>
             <div
                 v-else
-                class="flex items-center gap-2 text-sm text-neutral-500"
+                class="flex items-center gap-2 text-sm"
             >
                 <UIcon
                     name="i-lucide-server"

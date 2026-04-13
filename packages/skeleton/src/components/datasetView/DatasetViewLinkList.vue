@@ -16,7 +16,7 @@ defineProps<{
                 :to="link.href"
                 target="_blank"
                 raw
-                class="flex items-center gap-1 text-sm text-blue-600 hover:underline"
+                class="flex items-center gap-1"
             >
                 <UIcon
                     name="i-lucide-external-link"

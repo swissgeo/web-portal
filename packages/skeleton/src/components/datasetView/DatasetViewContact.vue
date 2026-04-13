@@ -7,9 +7,13 @@ defineProps<{
 </script>
 
 <template>
-    <div class="flex flex-col gap-1 text-sm">
-        <span class="font-medium text-neutral-800">{{ contact.organisation }}</span>
-        <span class="text-neutral-500">{{ contact.role }}</span>
-        <span class="text-neutral-500">{{ contact.country }}</span>
-    </div>
+    <UUser
+        :name="contact.organisation"
+        :description="`${contact.role} (${contact.country})`"
+        :avatar="{
+            src: '',
+            alt: contact.organisation,
+        }"
+        size="xl"
+    />
 </template>
