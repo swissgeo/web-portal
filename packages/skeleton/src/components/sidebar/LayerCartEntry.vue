@@ -7,6 +7,7 @@ import { getDisplayNameFromTimestamp } from '@swissgeo/shared'
 import { computed } from 'vue'
 
 import IconButton from '@/components/IconButton.vue'
+import { useDatasetViewStore } from '@/stores/datasetView'
 
 const { layer } = defineProps<{
     layer: Layer
@@ -14,6 +15,7 @@ const { layer } = defineProps<{
 
 const layerStore = useLayerStore()
 const drawingStore = useDrawingStore()
+const datasetViewStore = useDatasetViewStore()
 
 const layersLength = computed(() => layerStore.layers.length)
 const layerZIndex = computed(() => layerStore.getLayerZIndex(layer.uuid))
@@ -82,6 +84,10 @@ function removeLayer() {
         drawingStore.clearDrawingFeatures()
     }
 }
+
+function openDatasetView() {
+    datasetViewStore.openDatasetView(layer.humanId)
+}
 </script>
 
 <template>
@@ -145,6 +151,12 @@ function removeLayer() {
                     </option>
                 </select>
             </div>
+            <IconButton
+                v-if="layer.type === 'dataset'"
+                iconName="Info"
+                severity="secondary"
+                @click="openDatasetView"
+            />
             <IconButton
                 iconName="Trash"
                 @click="removeLayer"
