@@ -10,7 +10,18 @@ import type { ActionDispatcher } from './stores/types'
 
 import * as PROJECTION_EPSG from './composables/types.d'
 
+import OpenLayersContextMenuPopup from '@/openlayers/OpenLayersContextMenuPopup.vue'
+
 export { W3W_RESOLVER_KEY } from './composables/injectionKeys'
 export { useOlMapContextMenu } from './composables/useOlMapContextMenu.composable'
-export { MapModule, usePositionStore, PROJECTION_EPSG }
+export {
+    default as coordinateFormat,
+    LV95Format,
+    LV03Format,
+    WGS84Format,
+    UTMFormat,
+    MGRSFormat,
+} from './utils/coordinates/coordinateFormat'
+export type { CoordinateFormat } from './utils/coordinates/coordinateFormat'
+export { MapModule, usePositionStore, PROJECTION_EPSG, OpenLayersContextMenuPopup }
 export type { ActionDispatcher }
