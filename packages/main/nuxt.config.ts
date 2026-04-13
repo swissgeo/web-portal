@@ -58,8 +58,8 @@ export default defineNuxtConfig({
     },
     sourcemap: {
         // Enable in dev, disable in prod (unless you have a private uploader)
-        server: isDevelopment,
-        client: isDevelopment,
+        server: false,
+        client: false,
     },
     vite: {
         plugins: [vueDevTools() as never, nodePolyfills() as never],
@@ -126,6 +126,7 @@ export default defineNuxtConfig({
             version: getVersion(),
             buildTime,
             wantedLogLevels: 'error,warn',
+            shareServiceUrl: 'http://localhost:3010',
         },
     },
     nitro: {

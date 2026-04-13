@@ -1,11 +1,11 @@
 import type { Dimension, DimensionId, Layer } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
-import type { AppStateConfig, LayerStateConfig } from '@swissgeo/statesharing'
+import type { AppStateConfig, AppStatePayload, LayerStateConfig } from '@swissgeo/statesharing'
 
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
-import { APP_STATE_CONFIG_VERSION, validateAndPrepareAppStateConfig } from '@swissgeo/statesharing'
+import { APP_STATE_CONFIG_VERSION } from '@swissgeo/statesharing'
 
 const DISPATCHER = { name: 'state-config' }
 
@@ -64,38 +64,38 @@ export function useStateConfig() {
      * Export the current app state as an AppStateConfig object.
      * Center coordinates are in LV95 (EPSG:2056) [x, y].
      */
-    function exportState(): AppStateConfig {
-        const state: AppStateConfig = {
+    const exportState = computed((): AppStatePayload => {
+        const payload: AppStatePayload = {
             version: APP_STATE_CONFIG_VERSION,
-            map: {
-                center: positionStore.center,
-                zoom: positionStore.zoom,
-                rotation: positionStore.rotation,
-            },
-            layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l)),
+            app: 'web-portal' as const,
+            state: {
+                map: {
+                    center: positionStore.center,
+                    zoom: positionStore.zoom,
+                    rotation: positionStore.rotation,
+                },
+                layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l)),
+            } as AppStateConfig,
         }
 
         if (layerStore.backgroundLayer) {
-            state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer)
+            payload.state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer)
         }
 
-        return state
-    }
+        return payload
+    })
 
     /**
      * Import app state from a JSON string, applying it to the stores.
      * Center coordinates are expected in LV95 (EPSG:2056) [x, y].
      * Fetches each layer's dataset from its datasetUrl.
      */
-    async function importState(json: string): Promise<void> {
-        const raw = JSON.parse(json) as unknown
-        const config = validateAndPrepareAppStateConfig(raw)
+    async function importState(payload: AppStatePayload): Promise<void> {
+        log.info('Importing state config', { messages: payload })
 
-        log.info('Importing state config', { messages: [JSON.stringify(config.map)] })
-
-        positionStore.setCenter(config.map.center, DISPATCHER)
-        positionStore.setZoom(config.map.zoom, DISPATCHER)
-        positionStore.setRotation(config.map.rotation, DISPATCHER)
+        positionStore.setCenter(payload.state.map.center, DISPATCHER)
+        positionStore.setZoom(payload.state.map.zoom, DISPATCHER)
+        positionStore.setRotation(payload.state.map.rotation, DISPATCHER)
 
         // Clear and re-add layers
         for (const layer of [...layerStore.layers]) {
@@ -104,8 +104,10 @@ export function useStateConfig() {
 
         // Fetch all layers in parallel
         const [layers, bgLayer] = await Promise.all([
-            Promise.all(config.layers.map((lc) => stateConfigToLayer(lc))),
-            config.backgroundLayer ? stateConfigToLayer(config.backgroundLayer) : null,
+            Promise.all(payload.state.layers.map((lc) => stateConfigToLayer(lc))),
+            payload.state.backgroundLayer
+                ? stateConfigToLayer(payload.state.backgroundLayer)
+                : null,
         ])
 
         for (const layer of layers) {

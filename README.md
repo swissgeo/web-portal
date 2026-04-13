@@ -46,6 +46,7 @@ The available variables are:
 ```sh
 NUXT_PUBLIC_OGC_API_ENDPOINT=   # OGC API endpoint (exposed to client)
 NUXT_PUBLIC_WANTED_LOG_LEVELS=  # String of log levels wanted (error|warn|info|debug)
+NUXT_PUBLIC_SHARE_SERVICE_URL=  # The URL to the share service 
 ```
 
 

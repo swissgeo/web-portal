@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { inject } from 'vue'
 
-defineEmits(['logo-click'])
+defineEmits(['logoClick'])
 
 const { condensed = false } = defineProps<{
     condensed?: boolean
@@ -14,8 +14,9 @@ const isDesktop = inject<boolean>('isDesktop', true)
     <!-- the desktop icon in the sidebar -->
     <div
         v-if="condensed"
-        class="flex h-14 w-full items-center justify-center"
+        class="flex h-14 w-full cursor-pointer items-center justify-center"
         data-testid="sidebar-logo-pic-condensed"
+        @click="$emit('logoClick')"
     >
         <img
             src="@/assets/images/swissgeo_rgb_icon.svg"
@@ -31,7 +32,7 @@ const isDesktop = inject<boolean>('isDesktop', true)
     >
         <div
             class="ml-3.5 flex translate-x-[0.5px] cursor-pointer items-center justify-center p-2"
-            @click="$emit('logo-click')"
+            @click="$emit('logoClick')"
         >
             <img
                 src="@/assets/images/swissgeo_rgb_sek.svg"

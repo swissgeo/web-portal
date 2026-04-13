@@ -15,7 +15,6 @@ export interface LayerStateConfig {
  * Coordinates use LV95 (EPSG:2056) [x, y].
  */
 export interface AppStateConfig {
-    version: number
     map: {
         center: [number, number] // [x, y] in LV95 (EPSG:2056)
         zoom: number
@@ -25,6 +24,13 @@ export interface AppStateConfig {
     backgroundLayer?: LayerStateConfig | null
 }
 
+export interface AppStatePayload {
+    version: string
+    state: AppStateConfig
+    app: 'web-portal'
+}
+
 // used only internally in validation. They are kept here to be easy to modify when we modify the interface.
 export const layerStateConfigKeys = ['layerUrl', 'type', 'isVisible', 'opacity', 'dimensions']
-export const validAppStateConfigKeys = ['version', 'map', 'layers', 'backgroundLayer']
+export const validAppStateConfigKeys = ['map', 'layers', 'backgroundLayer']
+export const validateAppStatePayloadKeys = ['version', 'state', 'app']

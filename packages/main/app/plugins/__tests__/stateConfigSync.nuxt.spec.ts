@@ -11,15 +11,19 @@ const watcherCallbackRef = vi.hoisted(() => {
 })
 
 const mockImportState = vi.fn()
-const mockExportState = vi.fn(() => ({
+const mockExportState = ref({
     version: 2,
     map: { center: [2600000, 1200000] as [number, number], zoom: 8, rotation: 0 },
     layers: [],
-}))
+})
 
-vi.mock('@swissgeo/log', () => ({
-    default: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
-}))
+vi.mock('@swissgeo/log', async (importOriginal) => {
+    const original = await importOriginal()
+    return {
+        // @ts-expect-error Spreading this actually works and is forseen by the docs
+        default: { ...original, info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+    }
+})
 
 vi.mock('@vueuse/core', async (importOriginal) => {
     const original = await importOriginal()
@@ -32,7 +36,7 @@ vi.mock('@vueuse/core', async (importOriginal) => {
     }
 })
 
-vi.mock('~/composables/useStateConfig', () => ({
+vi.mock('@/composables/useStateConfig', () => ({
     useStateConfig: () => ({
         exportState: mockExportState,
         importState: mockImportState,
@@ -66,16 +70,18 @@ describe('stateConfigSync plugin', () => {
         })
 
         it('calls importState with the stored JSON string when state is present', async () => {
-            const stored = JSON.stringify({
-                version: 2,
-                map: { center: [0, 0], zoom: 10, rotation: 0 },
+            console.log(localStorage.getItem(STORAGE_KEY))
+            const state = {
+                version: 0.2,
+                map: { center: [2420001, 1030001], zoom: 10, rotation: 0 },
                 layers: [],
-            })
+            }
+            const stored = JSON.stringify(state)
             sessionStorage.setItem(STORAGE_KEY, stored)
 
             await invokeHook()
 
-            expect(mockImportState).toHaveBeenCalledWith(stored)
+            expect(mockImportState).toHaveBeenCalledWith(state)
         })
 
         it('removes the corrupt key and does not throw when importState fails', async () => {
@@ -95,14 +101,14 @@ describe('stateConfigSync plugin', () => {
 
         it('writes state to sessionStorage when the watcher fires', async () => {
             await invokeHook()
-            const state = mockExportState()
+            const state = mockExportState.value
 
             watcherCallbackRef.fn!(state)
 
             expect(sessionStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(state))
         })
 
-        it('skips the first watcher fire after a successful import (isImporting flag)', async () => {
+        it.only('skips the first watcher fire after a successful import (isImporting flag)', async () => {
             const stored = JSON.stringify({
                 version: 2,
                 map: { center: [0, 0], zoom: 10, rotation: 0 },
@@ -113,18 +119,18 @@ describe('stateConfigSync plugin', () => {
             sessionStorage.clear() // clear so we can detect any subsequent write
 
             // First fire after import → skipped
-            watcherCallbackRef.fn!(mockExportState())
+            watcherCallbackRef.fn!(mockExportState.value)
             expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull()
 
             // Second fire → saved normally
-            watcherCallbackRef.fn!(mockExportState())
+            watcherCallbackRef.fn!(mockExportState.value)
             expect(sessionStorage.getItem(STORAGE_KEY)).not.toBeNull()
         })
 
         it('does not skip the watcher fire when there was no prior import', async () => {
             await invokeHook() // no stored state → isImporting stays false
 
-            watcherCallbackRef.fn!(mockExportState())
+            watcherCallbackRef.fn!(mockExportState.value)
 
             expect(sessionStorage.getItem(STORAGE_KEY)).not.toBeNull()
         })

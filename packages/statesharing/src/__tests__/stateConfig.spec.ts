@@ -1,12 +1,13 @@
 import { describe, it, expect } from 'vitest'
 
-import type { AppStateConfig } from '@/types/types'
+import type { AppStateConfig, AppStatePayload } from '@/types/types'
 
-import { APP_STATE_CONFIG_VERSION } from '@/constants'
-import { validateAndPrepareAppStateConfig } from '@/stateConfig'
+import { APP_STATE_CONFIG_CONSTRAINT, APP_STATE_CONFIG_VERSION } from '@/constants'
+import { validateAndPrepareAppStatePayload } from '@/stateConfig'
+
+const VERSION = APP_STATE_CONFIG_VERSION
 
 const validState: AppStateConfig = {
-    version: APP_STATE_CONFIG_VERSION,
     map: {
         center: [2600000, 1200000],
         zoom: 10,
@@ -22,10 +23,16 @@ const validState: AppStateConfig = {
     ],
 }
 
-describe('validateAndPrepareAppStateConfig', () => {
+const validPayload: AppStatePayload = {
+    version: VERSION,
+    state: validState,
+    app: 'web-portal',
+}
+
+describe('validateAndPrepareAppStatePayload', () => {
     it('accepts a valid state config', () => {
-        const result = validateAndPrepareAppStateConfig(validState)
-        expect(result).toEqual(validState)
+        const result = validateAndPrepareAppStatePayload(validPayload)
+        expect(result).toEqual(validPayload)
     })
 
     it('accepts a state with backgroundLayer', () => {
@@ -38,20 +45,36 @@ describe('validateAndPrepareAppStateConfig', () => {
                 opacity: 1,
             },
         }
-        const result = validateAndPrepareAppStateConfig(state)
-        expect(result.backgroundLayer).toBeDefined()
+        const payload = {
+            version: VERSION,
+            state,
+        }
+        const result = validateAndPrepareAppStatePayload(payload)
+        expect(result.state.backgroundLayer).toBeDefined()
     })
 
     it('accepts a state with null backgroundLayer', () => {
-        const state = { ...validState, backgroundLayer: null }
-        const result = validateAndPrepareAppStateConfig(state)
-        expect(result.backgroundLayer).toBeNull()
+        const state = {
+            ...validState,
+            backgroundLayer: null,
+        }
+
+        const payload = {
+            version: VERSION,
+            state,
+        }
+        const result = validateAndPrepareAppStatePayload(payload)
+        expect(result.state.backgroundLayer).toBeNull()
     })
 
     it('accepts a state with empty layers array', () => {
         const state = { ...validState, layers: [] }
-        const result = validateAndPrepareAppStateConfig(state)
-        expect(result.layers).toEqual([])
+        const payload = {
+            version: VERSION,
+            state,
+        }
+        const result = validateAndPrepareAppStatePayload(payload)
+        expect(result.state.layers).toEqual([])
     })
 
     it('accepts a layer with dimensions', () => {
@@ -69,78 +92,99 @@ describe('validateAndPrepareAppStateConfig', () => {
                 },
             ],
         }
-        const result = validateAndPrepareAppStateConfig(state)
-        expect(result.layers[0]!.dimensions).toEqual({
+        const payload = {
+            version: VERSION,
+            state,
+        }
+        const result = validateAndPrepareAppStatePayload(payload)
+        expect(result.state.layers[0]!.dimensions).toEqual({
             time: { currentValue: '2020' },
         })
     })
 
     it('rejects null input', () => {
-        expect(() => validateAndPrepareAppStateConfig(null)).toThrow('must be a non-null object')
+        expect(() => validateAndPrepareAppStatePayload(null)).toThrow('must be a non-null object')
     })
 
     it('rejects non-object input', () => {
-        expect(() => validateAndPrepareAppStateConfig('string')).toThrow(
+        expect(() => validateAndPrepareAppStatePayload('string')).toThrow(
             'must be a non-null object'
         )
     })
 
     it('rejects unsupported version', () => {
-        expect(() => validateAndPrepareAppStateConfig({ ...validState, version: 1 })).toThrow(
-            'Unsupported state config version'
-        )
+        expect(() =>
+            validateAndPrepareAppStatePayload({ state: validState, version: '1' })
+        ).toThrow(`The version 1 does not satisfy the constraint ${APP_STATE_CONFIG_CONSTRAINT}`)
     })
 
     it('rejects missing version', () => {
         expect(() =>
-            validateAndPrepareAppStateConfig({ map: validState.map, layers: validState.layers })
-        ).toThrow('Mandatory key "version" not present in the state')
+            validateAndPrepareAppStatePayload({
+                state: { map: validState.map, layers: validState.layers },
+            })
+        ).toThrow('Mandatory key "version" not present in the payload')
     })
 
     it('rejects missing map', () => {
         expect(() =>
-            validateAndPrepareAppStateConfig({ version: 2, layers: validState.layers })
+            validateAndPrepareAppStatePayload({
+                version: '0.2.0',
+                state: { layers: validState.layers },
+            })
         ).toThrow('Mandatory key "map" not present in the state')
     })
 
     it('rejects invalid center', () => {
         expect(() =>
-            validateAndPrepareAppStateConfig({
-                ...validState,
-                map: { ...validState.map, center: [1] },
+            validateAndPrepareAppStatePayload({
+                version: VERSION,
+                state: {
+                    ...validState,
+                    map: { ...validState.map, center: [1] },
+                },
             })
         ).toThrow('Center should be an array of two numbers')
     })
 
     it('rejects negative zoom', () => {
         expect(() =>
-            validateAndPrepareAppStateConfig({
-                ...validState,
-                map: { ...validState.map, zoom: -1 },
+            validateAndPrepareAppStatePayload({
+                version: VERSION,
+                state: {
+                    ...validState,
+                    map: { ...validState.map, zoom: -1 },
+                },
             })
         ).toThrow('map.zoom must be a non-negative number')
     })
 
     it('rejects non-number rotation', () => {
         expect(() =>
-            validateAndPrepareAppStateConfig({
-                ...validState,
-                map: { ...validState.map, rotation: 'abc' },
+            validateAndPrepareAppStatePayload({
+                version: VERSION,
+                state: {
+                    ...validState,
+                    map: { ...validState.map, rotation: 'abc' },
+                },
             })
         ).toThrow('rotation attribute should be a number')
     })
 
     it('rejects missing layers', () => {
-        expect(() => validateAndPrepareAppStateConfig({ version: 2, map: validState.map })).toThrow(
-            'Mandatory key "layers" not present in the state'
-        )
+        expect(() =>
+            validateAndPrepareAppStatePayload({ version: '0.2.0', state: { map: validState.map } })
+        ).toThrow('Mandatory key "layers" not present in the state')
     })
 
     it('rejects layer with missing layerUrl', () => {
         expect(() =>
-            validateAndPrepareAppStateConfig({
-                ...validState,
-                layers: [{ type: 'wms', isVisible: true, opacity: 1 }],
+            validateAndPrepareAppStatePayload({
+                version: VERSION,
+                state: {
+                    ...validState,
+                    layers: [{ type: 'wms', isVisible: true, opacity: 1 }],
+                },
             })
         ).toThrow('mandatory attribute layerUrl not present in layer state configuration')
     })
@@ -148,25 +192,31 @@ describe('validateAndPrepareAppStateConfig', () => {
     it('rejects layer with opacity out of range', () => {
         const layerUrl = 'https://api.example.com/ogc/items/test'
         expect(() =>
-            validateAndPrepareAppStateConfig({
-                ...validState,
-                layers: [
-                    {
-                        layerUrl,
-                        type: 'wms',
-                        isVisible: true,
-                        opacity: 1.5,
-                    },
-                ],
+            validateAndPrepareAppStatePayload({
+                version: VERSION,
+                state: {
+                    ...validState,
+                    layers: [
+                        {
+                            layerUrl,
+                            type: 'wms',
+                            isVisible: true,
+                            opacity: 1.5,
+                        },
+                    ],
+                },
             })
         ).toThrow(`${layerUrl} opacity must be a number between 0 and 1`)
     })
 
     it('rejects invalid backgroundLayer', () => {
         expect(() =>
-            validateAndPrepareAppStateConfig({
-                ...validState,
-                backgroundLayer: { layerUrl: 'https://api.example.com/ogc/items/test' },
+            validateAndPrepareAppStatePayload({
+                version: VERSION,
+                state: {
+                    ...validState,
+                    backgroundLayer: { layerUrl: 'https://api.example.com/ogc/items/test' },
+                },
             })
         ).toThrow('mandatory attribute type not present in layer state configuration')
     })

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { IconButton } from '@swissgeo/skeleton'
 import { useStateConfig } from '~/composables/useStateConfig'
 import { ref } from 'vue'
 
@@ -15,7 +14,7 @@ function handleExport() {
     errorMessage.value = ''
     successMessage.value = ''
     try {
-        const state = exportState()
+        const state = exportState.value
         jsonText.value = JSON.stringify(state, null, 2)
         successMessage.value = 'State exported'
     } catch (error) {
@@ -31,7 +30,7 @@ async function handleImport() {
         return
     }
     try {
-        await importState(jsonText.value)
+        await importState(JSON.parse(jsonText.value))
         successMessage.value = 'State imported successfully'
     } catch (error) {
         errorMessage.value = error instanceof Error ? error.message : 'Failed to import state'
@@ -40,16 +39,7 @@ async function handleImport() {
 </script>
 
 <template>
-    <div class="p-4">
-        <div class="mb-2 flex items-center justify-between">
-            <h3 class="text-lg font-semibold">State Config (JSON)</h3>
-            <IconButton
-                @click="$emit('close')"
-                iconName="X"
-                title="Close"
-            />
-        </div>
-
+    <div class="h-87.5 w-150 bg-white p-4 shadow">
         <div class="mb-2 flex gap-2">
             <UButton
                 color="neutral"

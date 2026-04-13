@@ -1,9 +1,14 @@
 import { EPSG_2056_BOUNDING_BOX } from '@swissgeo/shared'
+import semver from 'semver'
 
-import type { AppStateConfig, LayerStateConfig } from '@/types/types'
+import type { AppStateConfig, AppStatePayload, LayerStateConfig } from '@/types/types'
 
-import { APP_STATE_CONFIG_VERSION } from '@/constants'
-import { layerStateConfigKeys, validAppStateConfigKeys } from '@/types/types'
+import { APP_STATE_CONFIG_CONSTRAINT } from '@/constants'
+import {
+    layerStateConfigKeys,
+    validAppStateConfigKeys,
+    validateAppStatePayloadKeys,
+} from '@/types/types'
 
 export function isInstanceOfLayerStateConfig(object: unknown): object is LayerStateConfig {
     const maybeLayerState = object as LayerStateConfig
@@ -72,19 +77,11 @@ export function isInstanceOfAppStateConfig(object: unknown): object is AppStateC
         }
     })
 
-    if (!('version' in maybeAppState)) {
-        throw new Error('Mandatory key "version" not present in the state')
-    }
-
     if (!('map' in maybeAppState)) {
         throw new Error('Mandatory key "map" not present in the state')
     }
     if (!('layers' in maybeAppState)) {
         throw new Error('Mandatory key "layers" not present in the state')
-    }
-
-    if (typeof maybeAppState.version !== 'number') {
-        throw new Error('Version should be a number')
     }
 
     if (typeof maybeAppState.map !== 'object') {
@@ -135,6 +132,30 @@ export function isInstanceOfAppStateConfig(object: unknown): object is AppStateC
     return true
 }
 
+function isInstanceOfAppStatePayload(object: unknown): object is AppStatePayload {
+    const maybeAppPayload = object as AppStatePayload
+
+    if (!maybeAppPayload || typeof maybeAppPayload !== 'object') {
+        throw new Error('App state should be a JSON object')
+    }
+
+    Object.keys(maybeAppPayload).forEach((key) => {
+        if (!validateAppStatePayloadKeys.includes(key)) {
+            throw new Error(`The following key is not a valid app State key : ${key}`)
+        }
+    })
+
+    if (!('version' in maybeAppPayload)) {
+        throw new Error('Mandatory key "version" not present in the payload')
+    }
+
+    if (typeof maybeAppPayload.version !== 'string') {
+        throw new Error('Version should be a string')
+    }
+
+    return true
+}
+
 /**
  * Ensure the given object is a valid AppStateConfig.
  *
@@ -152,25 +173,6 @@ export function validateAppState(json: unknown): AppStateConfig {
         throw new Error('State config is not conform')
     }
 
-    /**
-     * We are using semver style versioning, so we need to check
-     * - is the version a number (already checked in `isInstanceOfAppStateConfig`)
-     * - is the version smaller or equal to the current version
-     * - is the version in the same major as the current version
-     */
-    if (json.version > APP_STATE_CONFIG_VERSION) {
-        throw new Error(
-            `Unsupported state config version ${json.version.toString()} : this version never existed`
-        )
-    }
-    if (
-        json.version.toString().substring(0, 1) !==
-        APP_STATE_CONFIG_VERSION.toString().substring(0, 1)
-    ) {
-        throw new Error(
-            `Unsupported state config version ${json.version.toString()} : We are currently on version ${APP_STATE_CONFIG_VERSION.toString()}, please use the same Major version`
-        )
-    }
     validateMap(json.map)
     json.layers.forEach((layer) => validateLayerConfig(layer))
 
@@ -178,6 +180,27 @@ export function validateAppState(json: unknown): AppStateConfig {
         validateLayerConfig(json.backgroundLayer)
         // currently, nothing stops someone to change the background opacity, so we force it to 1
     }
+
+    return json
+}
+
+export function validateAppStatePayload(json: unknown): AppStatePayload {
+    if (typeof json !== 'object' || json === null) {
+        throw new Error('State payload must be a non-null object')
+    }
+
+    // this makes a check on the object to ensure all types are as expected.
+    if (!isInstanceOfAppStatePayload(json)) {
+        throw new Error('State payload is not conform')
+    }
+
+    if (!semver.satisfies(json.version, APP_STATE_CONFIG_CONSTRAINT)) {
+        throw new Error(
+            `The version ${json.version} does not satisfy the constraint ${APP_STATE_CONFIG_CONSTRAINT}`
+        )
+    }
+
+    validateAppState(json.state)
 
     return json
 }
