@@ -125,6 +125,7 @@ export default defineNuxtConfig({
             gitCommit: getGitCommit(),
             version: getVersion(),
             buildTime,
+            wantedLogLevels: 'error,warn',
         },
     },
     nitro: {
