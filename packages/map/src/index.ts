@@ -12,7 +12,6 @@ import * as PROJECTION_EPSG from './composables/types.d'
 
 import OpenLayersContextMenuPopup from '@/openlayers/OpenLayersContextMenuPopup.vue'
 
-export { W3W_RESOLVER_KEY } from './composables/injectionKeys'
 export { useOlMapContextMenu } from './composables/useOlMapContextMenu.composable'
 export {
     default as coordinateFormat,
