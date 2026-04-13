@@ -67,6 +67,7 @@ export function useStateConfig() {
     const exportState = computed((): AppStatePayload => {
         const payload: AppStatePayload = {
             version: APP_STATE_CONFIG_VERSION,
+            app: 'web-portal' as const,
             state: {
                 map: {
                     center: positionStore.center,

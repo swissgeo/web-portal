@@ -26,6 +26,7 @@ const validState: AppStateConfig = {
 const validPayload: AppStatePayload = {
     version: VERSION,
     state: validState,
+    app: 'web-portal',
 }
 
 describe('validateAndPrepareAppStatePayload', () => {
