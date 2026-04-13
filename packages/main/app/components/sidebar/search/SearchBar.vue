@@ -1,9 +1,7 @@
 <script setup lang="ts">
 // Adapted from web-mapviewer SearchBar.vue
-
+import { IconButton } from '@swissgeo/skeleton'
 import { ref } from 'vue'
-
-import IconButton from '@/components/IconButton.vue'
 
 const props = defineProps<{
     modelValue: string
@@ -41,7 +39,9 @@ const onKeydown = (event: KeyboardEvent) => {
 <template>
     <div class="border-b border-gray-200 p-4">
         <div class="relative">
-            <!-- Input field -->
+            <!-- Input field
+            TODO : icon should not be here
+            -->
             <UInput
                 ref="searchInput"
                 :model-value="modelValue"
@@ -51,7 +51,7 @@ const onKeydown = (event: KeyboardEvent) => {
                 autocorrect="off"
                 spellcheck="false"
                 size="md"
-                color="gray"
+                color="secondary"
                 variant="outline"
                 class="w-full"
                 :ui="{ icon: { trailing: { pointer: '' } } }"

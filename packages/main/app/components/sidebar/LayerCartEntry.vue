@@ -1,12 +1,12 @@
 <script lang="ts" setup>
+// TODO : map view store alterations
 import type { Layer } from '@swissgeo/layers'
 
 import { useDrawingStore } from '@swissgeo/drawing'
 import { useLayerStore } from '@swissgeo/layers'
 import { getDisplayNameFromTimestamp } from '@swissgeo/shared'
+import { IconButton } from '@swissgeo/skeleton'
 import { computed } from 'vue'
-
-import IconButton from '@/components/IconButton.vue'
 
 const { layer, index } = defineProps<{
     layer: Layer
@@ -18,7 +18,6 @@ const drawingStore = useDrawingStore()
 const mapViewStore = useMapViewStore()
 
 const layersLength = computed(() => layerStore.layers.length)
-const layerZIndex = computed(() => index)
 
 const displayName = computed(() => {
     // get the info from the dataset
@@ -96,14 +95,14 @@ function removeLayer() {
             />
             <div class="flex flex-col justify-between">
                 <IconButton
-                    :disabled="layerZIndex === layersLength - 1"
+                    :disabled="index === layersLength - 1"
                     iconName="Chevron-Up"
                     severity="secondary"
                     class="h-0.5"
                     @click="moveUp()"
                 ></IconButton>
                 <IconButton
-                    :disabled="layerZIndex === 0"
+                    :disabled="index === 0"
                     iconName="Chevron-Down"
                     severity="secondary"
                     class="h-0.5"
