@@ -3,7 +3,7 @@
 import type { SearchResult } from '@swissgeo/search'
 
 import log from '@swissgeo/log'
-import { SideBar } from '@swissgeo/skeleton'
+import { SideBar, DatasetView } from '@swissgeo/skeleton'
 
 import { useSearchSelection } from '@/composables/useSearchSelection'
 
@@ -61,6 +61,7 @@ async function onSearchResultSelected(result: SearchResult) {
             >
                 <slot />
             </div>
+            <DatasetView v-if="!isMapFullscreenMode" />
         </div>
     </main>
 </template>
