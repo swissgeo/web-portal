@@ -5,11 +5,6 @@ import { defineStore } from 'pinia'
 
 import type { PositionStoreGetters, PositionStoreState } from '@/stores/position/types/position'
 
-import setZoom from '@/stores/position/actions/setZoom'
-
-/** Default projection to be used throughout the application */
-export const DEFAULT_PROJECTION: CoordinateSystem = LV95
-
 import decreaseZoom from '@/stores/position/actions/decreaseZoom'
 import increaseZoom from '@/stores/position/actions/increaseZoom'
 // import setAutoRotation from "@/stores/position/actions/setAutoRotation";
@@ -20,6 +15,7 @@ import setDisplayedFormat from '@/stores/position/actions/setDisplayedFormat'
 // import setHasOrientation from "@/stores/position/actions/setHasOrientation";
 // import setProjection from '@/stores/position/actions/setProjection'
 import setRotation from '@/stores/position/actions/setRotation'
+import setZoom from '@/stores/position/actions/setZoom'
 // import zoomToExtent from "@/stores/position/actions/zoomToExtent";
 import centerEpsg4326 from '@/stores/position/getters/centerEpsg4326'
 import { LV95Format } from '@/utils/coordinates/coordinateFormat'
@@ -27,8 +23,12 @@ import { LV95Format } from '@/utils/coordinates/coordinateFormat'
 // import isExtentOnlyWithinLV95Bounds from "@/stores/position/getters/isExtentOnlyWithinLV95Bounds";
 // import resolution from "@/stores/position/getters/resolution";
 
+/** Default projection to be used throughout the application */
+export const DEFAULT_PROJECTION: CoordinateSystem = LV95
+export const DEFAULT_FORMAT = LV95Format
+
 const state = (): PositionStoreState => ({
-    displayFormat: LV95Format,
+    displayFormat: DEFAULT_FORMAT,
     // // some unit tests fail because DEFAULT_PROJECTION is somehow not yet defined when they are run
     // // hence the `?.` operator
     zoom: DEFAULT_PROJECTION.getDefaultZoom(),
