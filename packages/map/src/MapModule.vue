@@ -46,5 +46,3 @@ const { layers, backgroundLayer, customLayerRenderers, showMouseTracker = true, 
         </OpenLayersMap>
     </div>
 </template>
-
-<style scoped></style>

@@ -1,4 +1,4 @@
-import type { AppStateConfig } from '@swissgeo/statesharing'
+import type { PrintConfig } from '@swissgeo/statesharing'
 
 import { defineStore } from 'pinia'
 
@@ -8,11 +8,12 @@ import { defineStore } from 'pinia'
  * and importState()
  */
 export const usePrintStore = defineStore('print', () => {
-    const printConfig = ref<AppStateConfig['print']>()
-    
-    function setPrintConfig(pc: AppStateConfig['print']) {        
-        printConfig.value = pc;
-    }
+    const printConfig = ref<PrintConfig>()
 
-    return { printConfig, setPrintConfig }
+    try {
+        const { getPrintConfig } = useUrlParams()
+        printConfig.value = getPrintConfig()
+    } catch { /* empty */ }
+
+    return { printConfig }
 })
