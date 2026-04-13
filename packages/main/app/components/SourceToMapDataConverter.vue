@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import {
-    isDatasetLayer,
-    type Dimension,
-    type LayerInfo,
-    type Layer as SourceData,
-} from '@swissgeo/layers'
-import DatasetLayer from '@/components/map/datamapping/DatasetLayer.vue'
-import FileLayer from '@/components/map/datamapping/FileLayer.vue'
+import type { Dimension, LayerInfo, Layer as SourceData } from '@swissgeo/layers'
 import type { Layer as MapLayer } from '@swissgeo/map'
 import type { Dataset } from '@swissgeo/ogc'
+
+import { isDatasetLayer } from '@swissgeo/layers'
+
+import DatasetLayer from '@/components/map/datamapping/DatasetLayer.vue'
+import FileLayer from '@/components/map/datamapping/FileLayer.vue'
 
 const { sourceBgLayer, sourceData } = defineProps<{
     sourceBgLayer: SourceData | null
@@ -54,6 +52,11 @@ function updateStoreLayerData(uuid: string, dataset: Dataset) {}
  *      - order shouldn't matter in the layers store
  *      - order should matter in the map store
  */
+
+// QUESTIONS
+
+// v-bind key
+// can I enforce a "once" on this ?
 </script>
 
 <template>
@@ -62,6 +65,7 @@ function updateStoreLayerData(uuid: string, dataset: Dataset) {}
             v-if="isDatasetLayer(data)"
             :layer="data"
             :zIndex="index"
+            :key="data.uuid"
             @update="updateMapLayerData(index, $event)"
             @updateLayerInfo="updateLayerInfo"
             @updateOpacity="updateOpacity(index, 1)"
@@ -73,6 +77,7 @@ function updateStoreLayerData(uuid: string, dataset: Dataset) {}
             v-else
             :layer="data"
             :zIndex="index"
+            :key="data.uuid"
             @update="updateMapLayerData(index, $event)"
             @remove="removeLayerData(index)"
         />

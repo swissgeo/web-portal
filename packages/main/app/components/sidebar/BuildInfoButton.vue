@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import IconButton from '@/components/IconButton.vue'
+import { IconButton } from '@swissgeo/skeleton'
 
 const config = useRuntimeConfig()
 

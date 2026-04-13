@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { SearchResult } from '@swissgeo/search'
 import type { Layer as MapLayer } from '@swissgeo/map'
+import type { SearchResult } from '@swissgeo/search'
 
-import LogoPic from '@/components/LogoPic.vue'
+import { LogoPic, useSidebarStore, SidebarType, SIDEBAR_CONTENT_WIDTH } from '@swissgeo/skeleton'
+
 import LayerCart from '@/components/sidebar/LayerCart.vue'
 import SearchPanel from '@/components/sidebar/search/SearchPanel.vue'
 import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
-import { useSidebarStore, SidebarType, SIDEBAR_CONTENT_WIDTH } from '@/stores/ui'
 
 const uiStore = useSidebarStore()
 
@@ -65,7 +65,7 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH
                 -->
                     <LayerCart
                         v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
-                        :layers="mapLayers"
+                        :mapLayers="mapLayers"
                     ></LayerCart>
                     <SearchPanel
                         v-if="uiStore.currentSidebar === SidebarType.SEARCH"

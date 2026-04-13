@@ -3,7 +3,7 @@
 import type { SearchResult } from '@swissgeo/search'
 
 import log from '@swissgeo/log'
-import { SideBar } from '@swissgeo/skeleton'
+import SideBar from '@/components/sidebar/SideBar.vue'
 
 import { useSearchSelection } from '@/composables/useSearchSelection'
 
@@ -11,6 +11,7 @@ const { resetApp } = useResetApp()
 const route = useRoute()
 const mapViewStore = useMapViewStore()
 
+const mapLayers = computed(() => mapViewStore.getMapLayers())
 const isMapPage = computed(() => {
     const routeName = String(route.name ?? '')
     return route.path.includes('/map') || routeName.includes('map')
@@ -45,7 +46,7 @@ async function onSearchResultSelected(result: SearchResult) {
                 class="z-2"
                 @search-result-selected="onSearchResultSelected"
                 @reset-app="resetApp"
-                :mapLayers=""
+                :mapLayers="mapLayers"
             >
                 <template #bottom-controls>
                     <div
