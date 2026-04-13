@@ -1,7 +1,7 @@
 import { flushPromises } from '@vue/test-utils'
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { ref } from 'vue'
 
 import type { Dataset } from '@/types/Records'
@@ -21,7 +21,7 @@ describe('useDistributionCollection fetching the data distribution from the OGC 
     ]
     const server = setupServer(...handlers)
 
-    beforeEach(() => server.listen())
+    beforeAll(() => server.listen())
 
     afterAll(() => server.close())
 
@@ -99,7 +99,7 @@ describe('useDistributionCollection 404', () => {
         ),
     ]
     const server = setupServer(...handlers)
-    beforeEach(() => {
+    beforeAll(() => {
         server.listen()
     })
 
@@ -124,7 +124,7 @@ describe('useDistributionCollection 5xx', () => {
         ),
     ]
     const server = setupServer(...handlers)
-    beforeEach(() => {
+    beforeAll(() => {
         server.listen()
     })
 
