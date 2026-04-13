@@ -18,12 +18,12 @@ test.describe('map page', () => {
 
     test('displays the toolbox with zoom controls', async ({ page }) => {
         await expect(page.locator('[data-cy="toolbox-right"]')).toBeVisible()
-        await expect(page.locator('[data-testid="button-icon-i-lucide-plus"]')).toBeVisible()
-        await expect(page.locator('[data-testid="button-icon-i-lucide-minus"]')).toBeVisible()
+        await expect(page.locator('[data-cy="zoom-in"]')).toBeVisible()
+        await expect(page.locator('[data-cy="zoom-out"]')).toBeVisible()
     })
 
     test('displays the fullscreen button', async ({ page }) => {
-        await expect(page.locator('[data-testid="button-icon-i-lucide-expand"]')).toBeVisible()
+        await expect(page.locator('[data-cy="fullscreen-toggle"]')).toBeVisible()
     })
 
     test('clicking the search tab reveals the search input', async ({ page }) => {

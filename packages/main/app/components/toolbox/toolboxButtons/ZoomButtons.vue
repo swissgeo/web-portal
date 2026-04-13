@@ -20,12 +20,14 @@ function decreaseZoom() {
 
 <template>
     <ToolBoxButton
+        data-cy="zoom-in"
         title="Zoom In button"
         :is-disabled="false"
         :is-active="true"
         iconName="Plus"
         @click="increaseZoom()"
     /><ToolBoxButton
+        data-cy="zoom-out"
         title="Zoom out button"
         :is-disabled="false"
         :is-active="true"
