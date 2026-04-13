@@ -10,8 +10,6 @@
  * Any unrecognised warning or error still prints unchanged.
  */
 
-import { afterAll, beforeAll } from 'vitest'
-
 /**
  * Substrings of console messages that are known to come from booting the Nuxt
  * app inside a test with no real routes/data, and are safe to silence.
@@ -48,25 +46,20 @@ function shouldSilence(args: unknown[]): boolean {
     })
 }
 
-const originalWarn = console.warn
-const originalError = console.error
-
-beforeAll(() => {
-    console.warn = (...args: unknown[]) => {
+// Install the filters at module-evaluation time so they catch messages emitted
+// during Nuxt boot / component module load, which happens before any Vitest
+// lifecycle hook (beforeAll) would fire. The filters stay active for the
+// entire process — fine for test runs, and there is no teardown to worry
+// about since the process exits at the end.
+//
+// We patch log/info/warn/error because Vue's "<Suspense> is experimental"
+// notice goes through one of the stdout channels (log/info), not warn/error.
+for (const method of ['log', 'info', 'warn', 'error'] as const) {
+    const original = console[method].bind(console)
+    console[method] = (...args: unknown[]) => {
         if (shouldSilence(args)) {
             return
         }
-        originalWarn(...args)
+        original(...args)
     }
-    console.error = (...args: unknown[]) => {
-        if (shouldSilence(args)) {
-            return
-        }
-        originalError(...args)
-    }
-})
-
-afterAll(() => {
-    console.warn = originalWarn
-    console.error = originalError
-})
+}
