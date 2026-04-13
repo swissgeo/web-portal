@@ -14,7 +14,9 @@ export function useClipboard() {
     async function copy(text: string): Promise<void> {
         await navigator.clipboard.writeText(text)
         copied.value = true
-        if (resetTimer) clearTimeout(resetTimer)
+        if (resetTimer) {
+            clearTimeout(resetTimer)
+        }
         resetTimer = setTimeout(() => {
             copied.value = false
         }, RESET_DELAY_MS)
