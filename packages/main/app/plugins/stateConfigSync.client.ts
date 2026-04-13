@@ -3,9 +3,9 @@ export default defineNuxtPlugin({
     dependsOn: ['pinia'],
 
     hooks: {
-        'app:created'() {
+        async 'app:created'() {
             const { restore } = useRestoreState()
-            void restore()
+            await restore()
         },
     },
 })
