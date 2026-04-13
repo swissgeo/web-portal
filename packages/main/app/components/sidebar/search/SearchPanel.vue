@@ -4,10 +4,9 @@
 
 import type { SearchResult } from '@swissgeo/search'
 
+import { useSearchStore } from '@swissgeo/skeleton'
 import { useDebounceFn } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
-
-import { useSearchStore } from '@/stores/search'
 
 import SearchBar from './SearchBar.vue'
 import SearchResults from './SearchResults.vue'

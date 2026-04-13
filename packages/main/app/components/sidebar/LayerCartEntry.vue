@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO : map view store alterations
 import type { Layer } from '@swissgeo/layers'
 
 import { useDrawingStore } from '@swissgeo/drawing'
@@ -20,7 +21,6 @@ const datasetPanelStore = useDatasetPanelStore()
 const mapViewStore = useMapViewStore()
 
 const layersLength = computed(() => layerStore.layers.length)
-const layerZIndex = computed(() => index)
 
 const displayName = computed(() => {
     // get the info from the dataset
@@ -102,14 +102,14 @@ function openDatasetPanel() {
             />
             <div class="flex flex-col justify-between">
                 <IconButton
-                    :disabled="layerZIndex === layersLength - 1"
+                    :disabled="index === layersLength - 1"
                     iconName="Chevron-Up"
                     severity="secondary"
                     class="h-0.5"
                     @click="moveUp()"
                 ></IconButton>
                 <IconButton
-                    :disabled="layerZIndex === 0"
+                    :disabled="index === 0"
                     iconName="Chevron-Down"
                     severity="secondary"
                     class="h-0.5"

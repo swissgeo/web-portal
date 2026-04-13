@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { useLayerStore } from '@swissgeo/layers'
-import { computed } from 'vue'
 import type { Layer as MapLayer } from '@swissgeo/map'
+
+import { computed } from 'vue'
 
 import LayerCartEntry from './LayerCartEntry.vue'
 
-const layerStore = useLayerStore()
 const { mapLayers } = defineProps<{
     mapLayers: MapLayer[]
 }>()
-const sortedLayers = computed(() => mapLayers.reverse())
+// slice() creates a copy, which allows us to avoid mutating the original
+const sortedLayers = computed(() => mapLayers.slice().reverse())
 </script>
 
 <template>
