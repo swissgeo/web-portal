@@ -2,7 +2,6 @@
 import type { MapLayerRenderer } from '@/types'
 import type { Layer } from '@/types/layers'
 
-import OpenLayersContextMenuPopup from './openlayers/OpenLayersContextMenuPopup.vue'
 import OpenLayersMap from './openlayers/OpenLayersMap.vue'
 import OpenLayersMouseTracker from './openlayers/OpenLayersMouseTracker.vue'
 import OpenLayersScale from './openlayers/OpenLayersScale.vue'
@@ -31,7 +30,8 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
                 :layers="layers"
                 :background-layer="backgroundLayer"
             /> -->
-            <OpenLayersContextMenuPopup />
+            <!-- Named slot for the host application to inject context-menu popup content -->
+            <slot name="context-menu-popup" />
             <OpenLayersMouseTracker />
         </OpenLayersMap>
     </div>
