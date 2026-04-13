@@ -13,6 +13,27 @@ export const useLayerStore = defineStore('layers', () => {
     /** The active background layer, or null if none is selected. */
     const backgroundLayer = ref<Layer | null>(null)
 
+    /**
+     * Gets either an index or an uuid to identify a layer withing the map Layers,
+     * and return the index at which the layer is.
+     *
+     *
+     * @param identifier either the index in the array, or the layer's uuid
+     * @returns the index itself, or the index found
+     * @throws Error if the uuid is not found within the array
+     */
+    function _getIndexFromIdentifier(identifier: string | number): number {
+        const index =
+            typeof identifier === 'number'
+                ? identifier
+                : layers.value.findIndex((layer) => layer.uuid === identifier)
+
+        if (index < 0) {
+            throw new Error(`Incorrect identifier given : ${identifier}`)
+        }
+        return index
+    }
+
     function setBackground(layer: Layer | null) {
         backgroundLayer.value = layer
     }
@@ -21,12 +42,8 @@ export const useLayerStore = defineStore('layers', () => {
         layers.value.push(layer)
     }
 
-    function replaceLayer(layerUuid: string, replacement: Layer) {
-        const index = layers.value.findIndex((layer) => layer.uuid === layerUuid)
-        if (index < 0) {
-            return
-        }
-        layers.value.splice(index, 1, replacement)
+    function replaceLayer(identifier: string | number, replacement: Layer) {
+        layers.value.splice(_getIndexFromIdentifier(identifier), 1, replacement)
     }
 
     /**
@@ -42,9 +59,8 @@ export const useLayerStore = defineStore('layers', () => {
      * Set a layer to a specific index in the layers array.
      * Handles validation to ensure the target index is within bounds and differs from current position.
      */
-    function setLayerIndex(uuid: string, targetIndex: number): void {
-        const currentIndex = layers.value.findIndex((l) => l.uuid === uuid)
-
+    function setLayerIndex(identifier: string | number, targetIndex: number): void {
+        const currentIndex = _getIndexFromIdentifier(identifier)
         // Validate: current index must be found, target must be in valid range, and must be different
         if (
             currentIndex >= 0 &&
@@ -58,18 +74,18 @@ export const useLayerStore = defineStore('layers', () => {
     }
 
     /** Move a layer one step up in the visual stack (toward top, higher index). */
-    function moveLayerUp(uuid: string): void {
-        setLayerIndex(uuid, getLayerZIndex(uuid) + 1)
+    function moveLayerUp(identifier: string | number): void {
+        setLayerIndex(identifier, _getIndexFromIdentifier(identifier) + 1)
     }
 
     /** Move a layer one step down in the visual stack (toward bottom, lower index). */
-    function moveLayerDown(uuid: string): void {
-        setLayerIndex(uuid, getLayerZIndex(uuid) - 1)
+    function moveLayerDown(identifier: string | number): void {
+        setLayerIndex(identifier, _getIndexFromIdentifier(identifier) - 1)
     }
 
     /** Move a layer to the top of the visual stack (end of the array). */
-    function moveLayerToTop(uuid: string): void {
-        setLayerIndex(uuid, layers.value.length - 1)
+    function moveLayerToTop(identifier: string | number): void {
+        setLayerIndex(identifier, layers.value.length - 1)
     }
 
     function getLayerByUuid(layerUuid: string) {

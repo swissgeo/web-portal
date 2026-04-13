@@ -18,6 +18,7 @@ const layerData = computed(() => ({
     ...layer,
     zIndex: layerZIndex.value,
     type: layer.type.toUpperCase(),
+    displayName: layer.info?.displayName ?? layer.humanId,
 }))
 
 watch(

@@ -61,25 +61,25 @@ function updateStoreLayerData(uuid: string, dataset: Dataset) {}
 
 <template>
     <div v-for="(data, index) in [sourceBgLayer, ...sourceData].filter((data) => !!data)">
-        <DatasetLayer
-            v-if="isDatasetLayer(data)"
-            :layer="data"
-            :zIndex="index"
-            :key="data.uuid"
-            @update="updateMapLayerData(index, $event)"
-            @updateLayerInfo="updateLayerInfo"
-            @updateOpacity="updateOpacity(index, 1)"
-            @remove="removeLayerData(index)"
-            @updateTimeDimension="updateTimeDimension(index, {})"
-            @updateDataset="updateStoreLayerData"
-        />
-        <FileLayer
-            v-else
-            :layer="data"
-            :zIndex="index"
-            :key="data.uuid"
-            @update="updateMapLayerData(index, $event)"
-            @remove="removeLayerData(index)"
-        />
+        <div :key="data.uuid">
+            <DatasetLayer
+                v-if="isDatasetLayer(data)"
+                :layer="data"
+                :zIndex="index"
+                @update="updateMapLayerData(index, $event)"
+                @updateLayerInfo="updateLayerInfo"
+                @updateOpacity="updateOpacity(index, 1)"
+                @remove="removeLayerData(index)"
+                @updateTimeDimension="updateTimeDimension(index, {})"
+                @updateDataset="updateStoreLayerData"
+            />
+            <FileLayer
+                v-else
+                :layer="data"
+                :zIndex="index"
+                @update="updateMapLayerData(index, $event)"
+                @remove="removeLayerData(index)"
+            />
+        </div>
     </div>
 </template>
