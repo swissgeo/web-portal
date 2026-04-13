@@ -2,6 +2,9 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
     testDir: './e2e',
+    // Dev-mode Vite cold compile plus OpenLayers hydration needs a generous
+    // per-test budget.
+    timeout: 120_000,
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
