@@ -3,7 +3,7 @@ import { useClipboard } from '@vueuse/core'
 
 const SHARE_URL = 'https://map.geo.admin.ch/?...'
 
-const { copy, copied } = useClipboard({ legacy: true })
+const { copy, copied } = useClipboard()
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CoordinateSystem } from '@swissgeo/coordinates'
 import type { Lang } from '@swissgeo/shared'
+import type { UseClipboardReturn } from '@vueuse/core'
 
 import { LV95 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
@@ -47,8 +48,7 @@ const ELEVATION_LINKS: Partial<Record<Lang, string>> = {
     en: 'https://www.swisstopo.admin.ch/en/swiss-reference-systems',
 }
 
-const swisstopoLink = (map: Partial<Record<Lang, string>>): string =>
-    map[locale.value as Lang] ?? map.en!
+const swisstopoLink = (map: Partial<Record<Lang, string>>): string => map[locale.value] ?? map.en!
 
 const w3wResolver = inject(W3W_RESOLVER_KEY)
 
@@ -63,11 +63,10 @@ interface Row {
 const rows = ref<Row[]>([])
 const isLoading = ref(false)
 
-// One useClipboard instance per row, keyed by index. Reset when rows change.
-const clipboards = ref<ReturnType<typeof useClipboard>[]>([])
+const clipboards = ref<UseClipboardReturn<boolean>[]>([])
 
 watch(rows, (newRows) => {
-    clipboards.value = newRows.map(() => useClipboard({ legacy: true }))
+    clipboards.value = newRows.map(() => useClipboard())
 })
 
 const resolveLink = (row: Row): string | undefined => {
@@ -196,7 +195,7 @@ watchEffect(() => {
                 :key="i"
                 class="flex items-center justify-between gap-4"
             >
-                <USkeleton class="h-4 w-[120px] rounded" />
+                <USkeleton class="h-4 w-30 rounded" />
                 <USkeleton class="h-4 flex-1 rounded" />
                 <USkeleton class="size-7 rounded" />
             </div>
@@ -212,13 +211,13 @@ watchEffect(() => {
                 :to="resolvedLinks[index]"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="min-w-[120px]"
+                class="min-w-30"
             >
                 {{ row.label }}
             </ULink>
             <span
                 v-else
-                class="min-w-[120px]"
+                class="min-w-30"
             >
                 {{ row.label }}
             </span>
@@ -226,8 +225,8 @@ watchEffect(() => {
                 {{ row.value }}
             </span>
             <UButton
-                :icon="clipboards[index]?.copied.value ? 'i-lucide-check' : 'i-lucide-copy'"
-                :class="clipboards[index]?.copied.value ? 'text-green-500' : ''"
+                :icon="clipboards[index]?.copied ? 'i-lucide-check' : 'i-lucide-copy'"
+                :class="clipboards[index]?.copied ? 'text-green-500' : ''"
                 color="neutral"
                 variant="ghost"
                 square

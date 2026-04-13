@@ -30,7 +30,6 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
                 :layers="layers"
                 :background-layer="backgroundLayer"
             /> -->
-            <!-- Named slot for the host application to inject context-menu popup content -->
             <slot name="context-menu-popup" />
             <OpenLayersMouseTracker />
         </OpenLayersMap>
