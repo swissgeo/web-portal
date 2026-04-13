@@ -9,5 +9,6 @@ import SideBar from '@/components/sidebar/SideBar.vue'
 
 export * from '@/stores/ui'
 export * from '@/stores/search'
+export * from '@/stores/datasetView'
 
 export { SideBar, SearchButton, ContentButton, IconButton }
