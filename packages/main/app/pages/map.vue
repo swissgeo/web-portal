@@ -6,16 +6,9 @@ import type { Dataset } from '@swissgeo/ogc'
 import { OpenLayersDrawingLayer, isDrawingLayer } from '@swissgeo/drawing'
 import { useLayerStore, isDatasetLayer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { MapModule, W3W_RESOLVER_KEY } from '@swissgeo/map'
+import { MapModule } from '@swissgeo/map'
 
 import { projectLayersForMap } from '@/utils/layerOrder'
-
-provide(W3W_RESOLVER_KEY, async (lat: number, lon: number): Promise<string> => {
-    const data = await $fetch<{ words: string }>('/api/v1/what3words/convert-to-3wa', {
-        query: { lat, lon },
-    })
-    return data.words
-})
 
 const layerStore = useLayerStore()
 const mapViewStore = useMapViewStore()

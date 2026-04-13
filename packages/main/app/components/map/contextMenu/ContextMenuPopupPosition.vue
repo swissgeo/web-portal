@@ -11,7 +11,6 @@ import {
     LV95Format,
     MGRSFormat,
     UTMFormat,
-    W3W_RESOLVER_KEY,
     WGS84Format,
 } from '@swissgeo/map'
 import { useClipboard } from '@vueuse/core'
@@ -50,9 +49,19 @@ const ELEVATION_LINKS: Partial<Record<Lang, string>> = {
 
 const swisstopoLink = (map: Partial<Record<Lang, string>>): string => map[locale.value] ?? map.en!
 
-const w3wResolver = inject(W3W_RESOLVER_KEY)
-
 const currentProjection = computed(() => props.projection ?? LV95)
+
+const fetchW3WLink = async (lat: number, lon: number): Promise<string | null> => {
+    try {
+        const data = await $fetch<{ words: string }>('/api/v1/what3words/convert-to-3wa', {
+            query: { lat, lon },
+        })
+        return data.words
+    } catch (_error: unknown) {
+        log.error(`Error fetching what3words value for coordinate: ${lat},${lon}`)
+        return null
+    }
+}
 
 interface Row {
     label: string
@@ -77,18 +86,6 @@ const resolveLink = (row: Row): string | undefined => {
 }
 
 const resolvedLinks = computed(() => rows.value.map((row) => resolveLink(row)))
-
-const fetchW3WLink = async (lat: number, lon: number): Promise<string | null> => {
-    if (!w3wResolver) {
-        return null
-    }
-    try {
-        return await w3wResolver(lat, lon)
-    } catch (_error: unknown) {
-        log.error(`Error fetching what3words value for coordinate: ${lat},${lon}`)
-        return null
-    }
-}
 
 const fetchElevation = async (coord: [number, number]): Promise<string> => {
     try {
