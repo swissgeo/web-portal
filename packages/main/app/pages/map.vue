@@ -126,7 +126,11 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
             :background-layer="backgroundLayerMapData"
             :custom-layer-renderers="customLayerRenderers"
             class="h-screen w-full"
-        />
+        >
+            <template #context-menu-popup>
+                <MapContextMenuPopup />
+            </template>
+        </MapModule>
         <Toolbox />
         <DebugPanel
             v-if="showAdditionalMapUi"
