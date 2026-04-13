@@ -105,3 +105,29 @@ The repo makes use of [Turbo](https://turborepo.dev/), a supercharger for monore
 
 What you can do is, instead of just using `pnpm run build|lint|format|type-check` is to use `pnpx turbo build|lint|format|type-check`.
 This will engage the wrapper and make use of these functionalities and speed up your workflow!
+
+## End-to-end tests
+
+E2E tests live in `e2e/` and use [Playwright](https://playwright.dev/). The first time you run them locally, install the browser binary:
+
+```sh
+pnpm exec playwright install --with-deps chromium
+```
+
+Then build the library packages (the Nuxt dev server imports them from their `dist/` output):
+
+```sh
+pnpm build:dev
+```
+
+Run the tests:
+
+```sh
+pnpm test:e2e
+```
+
+Playwright auto-starts the Nuxt dev server on `http://localhost:3000`. If you already have `pnpm run dev` running, it will reuse that server.
+
+> **Note:** The first page load in dev mode can take 30–45s while Vite compiles modules on demand. Subsequent test runs in the same session are fast thanks to HMR.
+
+**In CI** the workflow runs the tests against a production preview (`pnpm --filter main preview`) after a full `pnpm build`, which avoids the dev-mode cold-start delay. The workflow definition lives at `.github/workflows/e2e.yml`.
