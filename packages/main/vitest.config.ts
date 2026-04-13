@@ -9,6 +9,9 @@ export default defineVitestConfig({
         // on the top of a file
         environment: 'happy-dom',
         hookTimeout: 10000,
+        // Filters out known-harmless console noise from the Nuxt test env
+        // (Vue Router "no match", H3 404 at boot, <Suspense> dev warning).
+        setupFiles: ['./tests/setup.ts'],
     },
     resolve: {
         alias: {
