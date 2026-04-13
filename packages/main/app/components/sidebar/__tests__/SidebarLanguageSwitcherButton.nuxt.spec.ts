@@ -53,7 +53,7 @@ describe('SidebarLanguageSwitcherButton', () => {
         vi.clearAllMocks()
     })
 
-    it.only('calls applyLocale when the user selects a different locale', async () => {
+    it('calls applyLocale when the user selects a different locale', async () => {
         const wrapper = mountComponent()
         await flushPromises()
 
