@@ -65,6 +65,7 @@ interface Row {
 
 const rows = ref<Row[]>([])
 const clipboards = ref<ReturnType<typeof useClipboard>[]>([])
+const isLoading = ref(false)
 
 watch(rows, (newRows) => {
     clipboards.value = newRows.map(() => useClipboard())
@@ -119,8 +120,11 @@ watchEffect(() => {
         if (!coord) {
             rows.value = []
             clipboards.value = []
+            isLoading.value = false
             return
         }
+
+        isLoading.value = true
 
         const proj = currentProjection.value
         const lv95 = coordinateFormat(LV95Format, coord, proj)
@@ -177,6 +181,7 @@ watchEffect(() => {
                 value: elevation,
             },
         ]
+        isLoading.value = false
     })()
 })
 </script>
@@ -184,6 +189,21 @@ watchEffect(() => {
 <template>
     <div class="divide-y divide-gray-100">
         <div
+            v-if="isLoading"
+            class="flex flex-col gap-2 px-4 py-3"
+        >
+            <div
+                v-for="i in 6"
+                :key="i"
+                class="flex items-center justify-between gap-4"
+            >
+                <USkeleton class="h-4 w-[120px] rounded" />
+                <USkeleton class="h-4 flex-1 rounded" />
+                <USkeleton class="size-7 rounded" />
+            </div>
+        </div>
+        <div
+            v-else
             v-for="(row, index) in rows"
             :key="row.label"
             class="flex items-center justify-between gap-4 px-4 py-2 hover:bg-gray-50"

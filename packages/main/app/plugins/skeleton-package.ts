@@ -10,6 +10,7 @@ import {
     UIcon,
     USeparator,
     UTabs,
+    USkeleton,
 } from '#components'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -19,6 +20,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.vueApp.component('USeparator', USeparator)
     nuxtApp.vueApp.component('UIcon', UIcon as Component)
     nuxtApp.vueApp.component('UTabs', UTabs as Component)
+    nuxtApp.vueApp.component('USkeleton', USkeleton as Component)
 
     // UInput is typed as a generic/callable component by @nuxt/ui —
     // TS doesn't consider that a `Component`, so we cast via `unknown`.

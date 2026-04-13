@@ -10,4 +10,5 @@ config.global.stubs = {
     ULocaleSelect: true,
     USeparator: true,
     UTabs: true,
+    USkeleton: true,
 }
