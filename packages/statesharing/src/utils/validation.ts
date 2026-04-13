@@ -1,11 +1,13 @@
 import { EPSG_2056_BOUNDING_BOX } from '@swissgeo/shared'
 import semver from 'semver'
 
-import type { AppStateConfig, AppStatePayload, LayerStateConfig } from '@/types/types'
+import type { AppStateConfig, AppStatePayload, LayerStateConfig, PrintConfig } from '@/types/types'
 
 import { APP_STATE_CONFIG_CONSTRAINT } from '@/constants'
 import {
     layerStateConfigKeys,
+    printFormats,
+    printOrientations,
     validAppStateConfigKeys,
     validateAppStatePayloadKeys,
 } from '@/types/types'
@@ -174,7 +176,6 @@ export function validateAppState(json: unknown): AppStateConfig {
     }
 
     validateMap(json.map)
-    validatePrint(json.print)
     json.layers.forEach((layer) => validateLayerConfig(layer))
 
     if (json.backgroundLayer !== undefined && json.backgroundLayer !== null) {
@@ -231,26 +232,35 @@ function validateLayerConfig(layer: LayerStateConfig): asserts layer is LayerSta
 }
 
 /**
- * Validates the 'print' property of a state
+ * Test if the provided element is an object
  */
-function validatePrint(printProps: AppStateConfig['print']): asserts printProps is AppStateConfig['print'] {
-    if (printProps === undefined) {
-        return
+export function isObject(val: unknown): boolean {
+    return typeof val === 'object' && !Array.isArray(val) && val !== null
+}
+
+/**
+ * Validates a print config
+ */
+export function validatePrintConfig(printProps: unknown): asserts printProps is PrintConfig {    
+    if (!isObject(printProps)) {
+        throw new Error('The print config object must be an object')
     }
 
-    if (!printFormats.includes(printProps.format)) {
+    const maybePrintProps = printProps as Partial<PrintConfig>
+
+    if (!maybePrintProps.format || !printFormats.includes(maybePrintProps.format)) {
         throw new Error(`The print format must be one of: ${printFormats.join(' ')}`)
     }
 
-    if (!printOrientations.includes(printProps.orientation)) {
+    if (!maybePrintProps.orientation || !printOrientations.includes(maybePrintProps.orientation)) {
         throw new Error(`The print orientation must be one of: ${printOrientations.join(' ')}`)
     }
 
-    if (printProps.resolution <= 0) {
+    if (maybePrintProps.resolution === undefined || maybePrintProps.resolution <= 0) {
         throw new Error('The print resolution must be greater than 0')
     }
 
-    if (printProps.scale <= 0) {
+    if (maybePrintProps.scale === undefined || maybePrintProps.scale <= 0) {
         throw new Error('The print scale must be greater than 0')
     }    
 }

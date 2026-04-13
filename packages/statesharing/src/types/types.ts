@@ -27,24 +27,25 @@ export interface AppStateConfig {
     }
     layers: LayerStateConfig[]
     backgroundLayer?: LayerStateConfig | null,
-    print?: {
-        /**
-         * Format of the print output
-         */
-        format: PrintFormat;
-        /**
-         * Resolution of the print in dip per inch, DPI (eg. 96)
-         */
-        resolution: number;
-        /**
-         * Orientation of the print, landscape being horizonal, portrait being vertical
-         */
-        orientation: PrintOrientation;
-        /**
-         * Scale of the print in meter per meter (eg. 25000)
-         */
-        scale: number;
-    }
+}
+
+export interface PrintConfig {
+    /**
+     * Format of the print output
+     */
+    format: PrintFormat;
+    /**
+     * Resolution of the print in dip per inch, DPI (eg. 96)
+     */
+    resolution: number;
+    /**
+     * Orientation of the print, landscape being horizonal, portrait being vertical
+     */
+    orientation: PrintOrientation;
+    /**
+     * Scale of the print in meter per meter (eg. 25000)
+     */
+    scale: number;
 }
 
 export interface AppStatePayload {
@@ -55,4 +56,4 @@ export interface AppStatePayload {
 // used only internally in validation. They are kept here to be easy to modify when we modify the interface.
 export const layerStateConfigKeys = ['layerUrl', 'type', 'isVisible', 'opacity', 'dimensions']
 export const validAppStateConfigKeys = ['map', 'layers', 'backgroundLayer']
-export const validateAppStatePayloadKeys = ['version', 'state']
+export const validateAppStatePayloadKeys = ['version', 'state', 'app']

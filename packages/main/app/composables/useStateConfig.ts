@@ -59,7 +59,6 @@ async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer | nul
 export function useStateConfig() {
     const positionStore = usePositionStore()
     const layerStore = useLayerStore()
-    const printStore = usePrintStore()
 
     /**
      * Export the current app state as an AppStateConfig object.

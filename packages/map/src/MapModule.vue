@@ -6,6 +6,7 @@ import OpenLayersContextMenuPopup from './openlayers/OpenLayersContextMenuPopup.
 import OpenLayersMap from './openlayers/OpenLayersMap.vue'
 import OpenLayersMouseTracker from './openlayers/OpenLayersMouseTracker.vue'
 import OpenLayersScale from './openlayers/OpenLayersScale.vue'
+import log, { LogLevel } from '@swissgeo/log'
 // import MapFooterAttributionList from './uiComponents/MapFooterAttributionList.vue'
 
 // TODO somehow the statement in main/app.vue doesn't do it
@@ -47,5 +48,3 @@ const { layers, backgroundLayer, customLayerRenderers, showMouseTracker = true, 
         </OpenLayersMap>
     </div>
 </template>
-
-<style scoped></style>
