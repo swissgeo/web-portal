@@ -11,5 +11,6 @@ import type { ActionDispatcher } from './stores/types'
 import * as PROJECTION_EPSG from './composables/types.d'
 
 export { W3W_RESOLVER_KEY } from './composables/injectionKeys'
+export { useOlMapContextMenu } from './composables/useOlMapContextMenu.composable'
 export { MapModule, usePositionStore, PROJECTION_EPSG }
 export type { ActionDispatcher }
