@@ -1,7 +1,7 @@
 import { flushPromises } from '@vue/test-utils'
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { ref } from 'vue'
 
 import type { Distribution } from '@/types/Records'
@@ -21,7 +21,7 @@ describe('useService fetching the service data from the OGC records', () => {
     ]
     const server = setupServer(...handlers)
 
-    beforeEach(() => server.listen())
+    beforeAll(() => server.listen())
 
     afterAll(() => server.close())
 

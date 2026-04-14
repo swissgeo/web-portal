@@ -1,9 +1,10 @@
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { validateAndPrepareAppStatePayload } from '@swissgeo/statesharing'
 import { watchDebounced } from '@vueuse/core'
 import { useStateConfig } from '~/composables/useStateConfig'
+import { useUrlParams } from '~/composables/useUrlParams'
 
-const STORAGE_KEY = 'swissgeo_app_state'
+export const STORAGE_KEY = 'swissgeo_app_state'
 
 /**
  * Restoring a state
@@ -12,35 +13,68 @@ const STORAGE_KEY = 'swissgeo_app_state'
  * the URL parameter.
  */
 export function useRestoreState() {
+    const toaster = useToaster()
+    const { $i18n } = useNuxtApp()
+
+    const { exportState, importState } = useStateConfig()
+
+    // isImporting flag prevents writing back to sessionStorage immediately
+    // after we just read from it during hydration.
+    const isImporting = ref(false)
+
     async function restore() {
-        const { exportState, importState } = useStateConfig()
+        log.debug({
+            title: 'useRestoreState',
+            titleColor: LogPreDefinedColor.Sky,
+            messages: ['About to restore state from URL or sessionStorage'],
+        })
+
         const { getStateFromUrl } = useUrlParams()
-        const stateFromUrlParam = await getStateFromUrl()
+        try {
+            const stateFromUrlParam = await getStateFromUrl()
+            log.debug({
+                title: 'useRestoreState',
+                titleColor: LogPreDefinedColor.Sky,
+                messages: ['State from the URL param', stateFromUrlParam],
+            })
 
-        // If a valid state ID is present in URL, it takes precedance over the state in LocalStorage
-        if (stateFromUrlParam) {
-            const config = validateAndPrepareAppStatePayload(stateFromUrlParam)
-            await importState(config)
-            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(config))
-            return
+            // If a valid state ID is preent in URL, it takes precedance over the state in SessionStorage
+            if (stateFromUrlParam) {
+                const config = validateAndPrepareAppStatePayload(stateFromUrlParam)
+                await importState(config)
+                sessionStorage.setItem(STORAGE_KEY, JSON.stringify(config))
+                return
+            }
+        } catch {
+            log.error({
+                title: 'useRestoreState',
+                titleColor: LogPreDefinedColor.Sky,
+                messages: ['State restoration is unsuccessful'],
+            })
+            toaster.showWarning($i18n.t('state.restoreUnableWarning'))
         }
-
-        // isImporting flag prevents writing back to sessionStorage immediately
-        // after we just read from it during hydration.
-        let isImporting = false
 
         // Restore state from sessionStorage on load
         try {
             const stored = sessionStorage.getItem(STORAGE_KEY)
             if (stored) {
-                isImporting = true
+                isImporting.value = true
                 const config = validateAndPrepareAppStatePayload(JSON.parse(stored))
                 await importState(config)
-                log.info('Restored app state from sessionStorage')
+                log.info({
+                    title: 'useRestoreState',
+                    titleColor: LogPreDefinedColor.Sky,
+                    messages: ['Restored app state from sessionStorage'],
+                })
             }
         } catch (error) {
-            log.warn('Failed to restore app state from sessionStorage, clearing stored state', {
-                messages: [String(error)],
+            log.warn({
+                title: 'useRestoreState',
+                color: LogPreDefinedColor.Sky,
+                messages: [
+                    'Failed to restore app state from sessionStorage, clearing stored state',
+                    String(error),
+                ],
             })
             try {
                 sessionStorage.removeItem(STORAGE_KEY)
@@ -48,29 +82,40 @@ export function useRestoreState() {
                 // sessionStorage not available, silently ignore
             }
         }
-
-        // Watch for state changes and persist to sessionStorage
-        watchDebounced(
-            exportState,
-            (newState) => {
-                if (isImporting) {
-                    isImporting = false
-                    return
-                }
-                try {
-                    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
-                } catch (error) {
-                    log.warn('Failed to persist app state to sessionStorage', {
-                        messages: [String(error)],
-                    })
-                }
-            },
-            { deep: true, debounce: 500, immediate: false }
-        )
     }
 
+    // Watch for state changes and persist to sessionStorage
+    watchDebounced(
+        exportState,
+        (newState) => {
+            if (isImporting.value) {
+                isImporting.value = false
+                return
+            }
+            try {
+                sessionStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
+                log.debug({
+                    title: 'useRestoreState',
+                    titleColor: LogPreDefinedColor.Sky,
+                    messages: ['Storing the current state to the sessionStorage'],
+                })
+            } catch (error) {
+                log.warn({
+                    title: 'useRestoreState',
+                    titleColor: LogPreDefinedColor.Sky,
+                    messages: ['Failed to persist app state to sessionStorage', String(error)],
+                })
+            }
+        },
+        { deep: true, debounce: 500, immediate: false }
+    )
+
     function clear() {
-        log.info('Clearing the session storage')
+        log.info({
+            title: 'usRestoreState',
+            titleColor: LogPreDefinedColor.Sky,
+            messages: ['Clearing the session storage'],
+        })
         sessionStorage.clear()
     }
 

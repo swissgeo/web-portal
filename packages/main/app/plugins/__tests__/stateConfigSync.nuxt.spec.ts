@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const STORAGE_KEY = 'swissgeo_app_state'
+import { STORAGE_KEY } from '@/composables/useRestoreState'
 
 // Stub defineNuxtPlugin before the plugin module is evaluated.
 // It's a Nuxt auto-import (global), unavailable in the jsdom test environment.
@@ -20,8 +20,9 @@ const mockExportState = ref({
 vi.mock('@swissgeo/log', async (importOriginal) => {
     const original = await importOriginal()
     return {
+        default: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
         // @ts-expect-error Spreading this actually works and is forseen by the docs
-        default: { ...original, info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+        ...original,
     }
 })
 
@@ -35,6 +36,11 @@ vi.mock('@vueuse/core', async (importOriginal) => {
         },
     }
 })
+vi.mock('@/composables/useUrlParams', () => ({
+    useUrlParams: vi.fn(() => ({
+        getStateFromUrl: null,
+    })),
+}))
 
 vi.mock('@/composables/useStateConfig', () => ({
     useStateConfig: () => ({
@@ -65,6 +71,8 @@ describe('stateConfigSync plugin', () => {
 
     describe('state restoration on load', () => {
         it('does not call importState when sessionStorage is empty', async () => {
+            // const { restore } = useRestoreState()
+            // await restore()
             await invokeHook()
             expect(mockImportState).not.toHaveBeenCalled()
         })
@@ -72,9 +80,12 @@ describe('stateConfigSync plugin', () => {
         it('calls importState with the stored JSON string when state is present', async () => {
             console.log(localStorage.getItem(STORAGE_KEY))
             const state = {
-                version: 0.2,
-                map: { center: [2420001, 1030001], zoom: 10, rotation: 0 },
-                layers: [],
+                version: '0.2.0',
+                state: {
+                    map: { center: [2420001, 1030001], zoom: 10, rotation: 0 },
+                    layers: [],
+                },
+                app: 'web-portal' as const,
             }
             const stored = JSON.stringify(state)
             sessionStorage.setItem(STORAGE_KEY, stored)
@@ -108,7 +119,7 @@ describe('stateConfigSync plugin', () => {
             expect(sessionStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(state))
         })
 
-        it.only('skips the first watcher fire after a successful import (isImporting flag)', async () => {
+        it('skips the first watcher fire after a successful import (isImporting flag)', async () => {
             const stored = JSON.stringify({
                 version: 2,
                 map: { center: [0, 0], zoom: 10, rotation: 0 },

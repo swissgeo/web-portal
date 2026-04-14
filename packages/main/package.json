@@ -72,6 +72,7 @@
         "eslint-plugin-perfectionist": "catalog:",
         "fs-extra": "catalog:",
         "happy-dom": "catalog:",
+        "msw": "catalog:",
         "playwright-core": "catalog:",
         "stylelint": "catalog:",
         "tailwindcss": "catalog:",

@@ -3,7 +3,7 @@ import type { Dataset } from '@swissgeo/ogc'
 import type { AppStateConfig, AppStatePayload, LayerStateConfig } from '@swissgeo/statesharing'
 
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
-import log from '@swissgeo/log'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
 import { APP_STATE_CONFIG_VERSION } from '@swissgeo/statesharing'
 
@@ -91,7 +91,11 @@ export function useStateConfig() {
      * Fetches each layer's dataset from its datasetUrl.
      */
     async function importState(payload: AppStatePayload): Promise<void> {
-        log.info('Importing state config', { messages: payload })
+        log.info({
+            title: 'useStateConfig',
+            titleColor: LogPreDefinedColor.Sky,
+            messages: ['Importing state config', payload],
+        })
 
         positionStore.setCenter(payload.state.map.center, DISPATCHER)
         positionStore.setZoom(payload.state.map.zoom, DISPATCHER)

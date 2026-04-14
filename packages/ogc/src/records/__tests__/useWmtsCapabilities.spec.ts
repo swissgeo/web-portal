@@ -3,7 +3,7 @@ import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import fs from 'node:fs'
 import { resolve } from 'path'
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { ref } from 'vue'
 
 import type { Service } from '@/types'
@@ -31,7 +31,7 @@ describe('useWmtsCapabilities fetching and parsing WMTS capabilities', () => {
         console.log('Matching:', request.method, request.url)
     })
 
-    beforeEach(() => server.listen())
+    beforeAll(() => server.listen())
 
     afterAll(() => server.close())
 

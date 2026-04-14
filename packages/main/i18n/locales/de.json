@@ -125,5 +125,13 @@
         "colorMap": "Karte farbig",
         "greyMap": "Karte SW",
         "swissimage": "Luftbilder"
+    },
+    "toaster": {
+        "warningTitle": "Warnung",
+        "errorTitle": "Error",
+        "successTitle": "Erfolg"
+    },
+    "state": {
+        "restoreUnableWarning": "Der Zustand der App konnte nicht wiederhergestellt werden"
     }
 }

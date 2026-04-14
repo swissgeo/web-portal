@@ -125,5 +125,13 @@
         "colorMap": "Carte en couleur",
         "greyMap": "Carte en niveaux de gris",
         "swissimage": "Imagerie aérienne"
+    },
+    "toaster": {
+        "warningTitle": "Attention",
+        "errorTitle": "Erreur",
+        "successTitle": "Succès"
+    },
+    "state": {
+        "restoreUnableWarning": "L'état de l'application n'a pas pu être restauré"
     }
 }
