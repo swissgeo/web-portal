@@ -10,7 +10,6 @@ import type {
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
-import { useDatasetViewStore } from '@swissgeo/skeleton'
 
 export function useSearchSelection() {
     async function handleResultSelection(result: SearchResult) {
@@ -24,7 +23,7 @@ export function useSearchSelection() {
         } else if (result.resultType === 'FEATURE') {
             handleFeatureSelection(result as FeatureSearchResult)
         } else if (result.resultType === 'LAYER') {
-            handleLayerSelection(result as LayerSearchResult)
+            await handleLayerSelection(result as LayerSearchResult)
         }
     }
 
@@ -50,16 +49,16 @@ export function useSearchSelection() {
         positionStore.setZoom(featureZoom, { name: 'search-feature-selection' })
     }
 
-    function handleLayerSelection(result: LayerSearchResult) {
-        const datasetViewStore = useDatasetViewStore()
+    async function handleLayerSelection(result: LayerSearchResult) {
+        const localePath = useLocalePath()
 
         log.debug({
             title: 'useSearchSelection/handleLayerSelection',
             titleColor: LogPreDefinedColor.Green,
-            messages: ['Opening dataset view for:', result.layerId],
+            messages: ['Navigating to dataset page for:', result.layerId],
         })
 
-        datasetViewStore.openDatasetView(result.layerId)
+        await navigateTo(localePath(`/dataset/${result.layerId}`))
     }
 
     return {

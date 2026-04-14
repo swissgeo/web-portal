@@ -95,6 +95,7 @@ function addToMap() {
                 color="neutral"
                 variant="subtle"
                 class="w-full justify-center"
+                @click="datasetViewStore.closeDatasetView()"
             >
                 {{ $t('dataset.view_detail_page') }}
             </UButton>
