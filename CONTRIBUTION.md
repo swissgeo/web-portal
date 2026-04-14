@@ -92,7 +92,19 @@ In the past, mostly interface testing (with cypress) was done. Testing like this
 
 If a test is hard to write as a `*.spec.ts` because of too many Nuxt entanglements, treat that as a signal to simplify the code — the same "poor architecture" heuristic as above.
 
-All current tests run in happy-dom. Run one project at a time with `pnpm exec vitest --project happy-dom` or `--project nuxt`.
+**When to use `*.spec.ts` (happy-dom):**
+- Testing a component's render, emit, or prop behaviour
+- Testing a composable's logic in isolation
+- Testing a utility or helper function
+- The test stubs its Nuxt dependencies (auto-imports, composables) via `mockNuxtImport` or `vi.mock`
+
+**When to use `*.nuxt.spec.ts` (Nuxt env):**
+- Testing Nuxt routing behaviour itself (e.g. verifying that navigating to `/de/map` renders the right page, or that middleware redirects fire)
+- Testing plugin interaction or boot order (e.g. `dependsOn` sequencing, `app:created` hook orchestration across plugins)
+- Testing SSR or hydration behaviour (e.g. `<ClientOnly>` rendering, server-side HTML output)
+- The stub chain has grown too deep (roughly > 5 mocks) and the test is more stub than test — at that point the Nuxt env is cheaper and more trustworthy
+
+All current tests run in happy-dom. Run one project at a time with `pnpm exec vitest --project happy-dom` or `--project nuxt`. If you add a `*.nuxt.spec.ts` file, expect console noise from Nuxt boot (Vue Router "no match", H3 404 at init) — consider adding a `setupFiles` filter if it becomes distracting.
 
 ## Visions
 
