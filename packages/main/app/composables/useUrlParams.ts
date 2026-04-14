@@ -52,7 +52,7 @@ export function useUrlParams() {
     function getStateFromUrl(): Promise<unknown> {
         const stateId = extractStateId()
         if (!stateId) {
-            return new Promise(() => null)
+            return Promise.resolve(null)
         }
         return fetchStateFromStateId(stateId)
     }

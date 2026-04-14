@@ -94,4 +94,16 @@ describe('useUrlParams state extraction', () => {
         const stateId = extractStateId()
         expect(stateId).toBeNull()
     })
+
+    it("Returns a promise with null if the's no state param", async () => {
+        useRouteMock.query = {
+            // @ts-expect-error Specifying another param to test the absence
+            anotherParam: 'value',
+        }
+        const { getStateFromUrl } = useUrlParams()
+        const getStateSpy = vi.fn(getStateFromUrl)
+        const state = await getStateSpy()
+        expect(getStateSpy).toHaveResolved()
+        expect(state).toBeNull()
+    })
 })
