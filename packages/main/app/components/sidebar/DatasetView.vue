@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import type { Dataset, DistributionCollection } from '@swissgeo/ogc'
-
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import { DatasetViewContent, useDatasetViewStore } from '@swissgeo/skeleton'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps<{
     detailPagePath?: string
@@ -11,55 +9,10 @@ const props = defineProps<{
 
 const datasetViewStore = useDatasetViewStore()
 const layerStore = useLayerStore()
-const { locale } = useI18n()
-const runtimeConfig = useRuntimeConfig()
 
-const dataset = ref<Dataset | null>(null)
-const distributionCollection = ref<DistributionCollection | null>(null)
-const isLoading = ref(false)
-const fetchError = ref<string | null>(null)
-
-async function fetchDataset(id: string) {
-    isLoading.value = true
-    fetchError.value = null
-    dataset.value = null
-    distributionCollection.value = null
-    try {
-        const url = `${runtimeConfig.public.ogcApiEndpoint}/items/${id}?language=${locale.value}`
-        const record = await $fetch<Dataset>(url)
-        dataset.value = record
-
-        const distributionsLink = record.links?.find((l) => l.rel === 'distributions')
-        if (distributionsLink?.href) {
-            distributionCollection.value = await $fetch<DistributionCollection>(
-                `${distributionsLink.href}?language=${locale.value}`
-            )
-        }
-    } catch (e) {
-        fetchError.value = String(e)
-    } finally {
-        isLoading.value = false
-    }
-}
-
-watch(
-    () => datasetViewStore.activeDatasetId,
-    (id) => {
-        if (id) {
-            void fetchDataset(id)
-        } else {
-            dataset.value = null
-            distributionCollection.value = null
-        }
-    },
-    { immediate: true }
+const { dataset, distributionCollection, isLoading, error } = useDatasetRecord(
+    () => datasetViewStore.activeDatasetId
 )
-
-watch(locale, () => {
-    if (datasetViewStore.activeDatasetId) {
-        void fetchDataset(datasetViewStore.activeDatasetId)
-    }
-})
 
 const isAlreadyOnMap = computed(() => {
     if (!dataset.value) {
@@ -102,16 +55,16 @@ function addToMap() {
             </div>
 
             <div
-                v-else-if="fetchError"
+                v-else-if="error"
                 class="flex h-full items-center justify-center text-sm text-red-500"
             >
-                {{ fetchError }}
+                {{ error.message }}
             </div>
 
             <DatasetViewContent
                 v-else-if="dataset"
                 :dataset="dataset"
-                :distribution-collection="distributionCollection"
+                :distribution-collection="distributionCollection ?? null"
             />
         </template>
 
