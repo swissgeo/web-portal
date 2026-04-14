@@ -3,7 +3,9 @@
 import type { SearchResult } from '@swissgeo/search'
 
 import log from '@swissgeo/log'
-import { SideBar, DatasetView, useDatasetViewStore } from '@swissgeo/skeleton'
+import { SideBar, useDatasetViewStore } from '@swissgeo/skeleton'
+
+import DatasetView from '@/components/sidebar/DatasetView.vue'
 
 import { useSearchSelection } from '@/composables/useSearchSelection'
 

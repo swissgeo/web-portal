@@ -2,12 +2,8 @@
 import type { Dataset, DistributionCollection } from '@swissgeo/ogc'
 
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
+import { DatasetViewContent, useDatasetViewStore } from '@swissgeo/skeleton'
 import { computed, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-import { useDatasetViewStore } from '@/stores/datasetView'
-
-import DatasetViewContent from './DatasetViewContent.vue'
 
 const props = defineProps<{
     detailPagePath?: string
@@ -16,7 +12,6 @@ const props = defineProps<{
 const datasetViewStore = useDatasetViewStore()
 const layerStore = useLayerStore()
 const { locale } = useI18n()
-
 const runtimeConfig = useRuntimeConfig()
 
 const dataset = ref<Dataset | null>(null)
