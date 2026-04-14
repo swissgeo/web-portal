@@ -2,7 +2,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type * as Types from '@swissgeo/shared/ambient'
 
-import DatasetViewContent from '@/components/datasetView/DatasetViewContent.vue'
 import IconButton from '@/components/IconButton.vue'
 import ContentButton from '@/components/sidebar/ContentButton.vue'
 import SearchButton from '@/components/sidebar/SearchButton.vue'
@@ -12,4 +11,4 @@ export * from '@/stores/ui'
 export * from '@/stores/search'
 export * from '@/stores/datasetView'
 
-export { SideBar, SearchButton, ContentButton, IconButton, DatasetViewContent }
+export { SideBar, SearchButton, ContentButton, IconButton }

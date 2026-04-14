@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
-import { DatasetViewContent } from '@swissgeo/skeleton'
 
 const route = useRoute()
 const localePath = useLocalePath()

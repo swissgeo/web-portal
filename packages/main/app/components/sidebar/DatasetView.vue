@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
-import { DatasetViewContent, useDatasetViewStore } from '@swissgeo/skeleton'
+import { useDatasetViewStore } from '@swissgeo/skeleton'
 import { computed } from 'vue'
 
 const props = defineProps<{
