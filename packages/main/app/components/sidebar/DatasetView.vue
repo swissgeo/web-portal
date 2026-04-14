@@ -76,7 +76,7 @@ function addToMap() {
                 class="w-full justify-center"
                 @click="addToMap"
             >
-                {{ $t('dataset.add_to_map') }}
+                {{ $t('dataset.addToMap') }}
             </UButton>
             <div
                 v-else-if="dataset && isAlreadyOnMap"
@@ -86,7 +86,7 @@ function addToMap() {
                     name="i-lucide-check"
                     class="size-4"
                 />
-                {{ $t('dataset.already_on_map') }}
+                {{ $t('dataset.alreadyOnMap') }}
             </div>
             <UButton
                 v-if="dataset && props.detailPagePath"
@@ -97,7 +97,7 @@ function addToMap() {
                 class="w-full justify-center"
                 @click="datasetViewStore.closeDatasetView()"
             >
-                {{ $t('dataset.view_detail_page') }}
+                {{ $t('dataset.viewDetailPage') }}
             </UButton>
         </template>
     </USlideover>

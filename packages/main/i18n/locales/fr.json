@@ -149,12 +149,12 @@
         "contacts": "Contacts",
         "links": "Liens",
         "services": "Services",
-        "add_to_map": "Ajouter à la carte",
-        "already_on_map": "Déjà sur la carte",
+        "addToMap": "Ajouter à la carte",
+        "alreadyOnMap": "Déjà sur la carte",
         "loading": "Chargement…",
         "close": "Fermer",
-        "view_detail_page": "Voir la page détaillée",
-        "show_on_map": "Voir sur la carte",
-        "back_to_map": "Retour à la carte"
+        "viewDetailPage": "Voir la page détaillée",
+        "showOnMap": "Voir sur la carte",
+        "backToMap": "Retour à la carte"
     }
 }

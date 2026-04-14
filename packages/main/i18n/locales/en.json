@@ -149,12 +149,12 @@
         "contacts": "Contacts",
         "links": "Links",
         "services": "Services",
-        "add_to_map": "Add to map",
-        "already_on_map": "Already on map",
+        "addToMap": "Add to map",
+        "alreadyOnMap": "Already on map",
         "loading": "Loading…",
         "close": "Close",
-        "view_detail_page": "View detail page",
-        "show_on_map": "Show on map",
-        "back_to_map": "Back to map"
+        "viewDetailPage": "View detail page",
+        "showOnMap": "Show on map",
+        "backToMap": "Back to map"
     }
 }
