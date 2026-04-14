@@ -21,8 +21,7 @@ const { layers, backgroundLayer, customLayerRenderers, showMouseTracker = true, 
 </script>
 
 <template>
-    <div class=".full-screen-map">
-        <div></div>
+    <div>
         <!-- here's the switch between openlayers and cesium -->
         <OpenLayersMap
             :backgroundLayer="backgroundLayer"
