@@ -92,7 +92,7 @@ In the past, mostly interface testing (with cypress) was done. Testing like this
 
 If a test is hard to write as a `*.spec.ts` because of too many Nuxt entanglements, treat that as a signal to simplify the code — the same "poor architecture" heuristic as above.
 
-`packages/main/tests/setup.ts` silences known-harmless Nuxt-boot noise (Vue Router "no match", H3 404 at init, `<Suspense>` dev warning). `testTimeout` and `hookTimeout` are 30s at the root so Nuxt cold-boot doesn't flake; unit tests finish in ms so the ceiling is inert for them. Run one project at a time with `pnpm exec vitest --project happy-dom` or `--project nuxt`.
+All current tests run in happy-dom. Run one project at a time with `pnpm exec vitest --project happy-dom` or `--project nuxt`.
 
 ## Visions
 
