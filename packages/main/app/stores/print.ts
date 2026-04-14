@@ -7,6 +7,12 @@ import { defineStore } from 'pinia'
  */
 export const usePrintStore = defineStore('print', () => {
     const printConfig = ref<PrintConfig>()
+    const printSizePixel = computed<{width: number, height: number} | null>(() => {
+        if (!printConfig.value) {
+            return null
+        }        
+        return getPageSizeInPixels(printConfig.value.format, printConfig.value.orientation, printConfig.value.resolution)
+    })
 
     function readPrintConfigFromUrl(removeFromUrl = false) {
         try {
@@ -15,5 +21,5 @@ export const usePrintStore = defineStore('print', () => {
         } catch { /* empty */ }
     }
 
-    return { printConfig, readPrintConfigFromUrl }
+    return { printConfig, readPrintConfigFromUrl, printSizePixel }
 })

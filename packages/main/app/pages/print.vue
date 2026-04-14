@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { getPageSizeInPixels } from '../utils/printUtils';
+// import { getPageSizeInPixels } from '../utils/printUtils';
 
 
-const { printConfig } = usePrintStore()
-console.log("printConfig", printConfig);
+// const { printConfig } = usePrintStore()
+// console.log("printConfig", printConfig);
 
-if (printConfig) {
-    const pageSizePixel = getPageSizeInPixels(printConfig?.format, printConfig?.orientation, printConfig?.resolution)
-    console.log(">>> pageSizePixel", pageSizePixel);
+// if (printConfig) {
+//     const pageSizePixel = getPageSizeInPixels(printConfig?.format, printConfig?.orientation, printConfig?.resolution)
+//     console.log(">>> pageSizePixel", pageSizePixel);
     
-}
+// }
 
 </script>
 

@@ -128,7 +128,7 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
             :custom-layer-renderers="customLayerRenderers"
             :show-mouse-tracker="showUi"
             :show-scale="showUi"
-            class="h-screen w-full"
+            class="h-full w-full"
         >
             <template #context-menu-popup="{ coordinate, isVisible, close }">
                 <MapContextMenuPopup
