@@ -154,6 +154,7 @@
         "loading": "Chargement…",
         "close": "Fermer",
         "view_detail_page": "Voir la page détaillée",
-        "show_on_map": "Voir sur la carte"
+        "show_on_map": "Voir sur la carte",
+        "back_to_map": "Retour à la carte"
     }
 }

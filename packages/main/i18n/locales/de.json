@@ -154,6 +154,7 @@
         "loading": "Lädt…",
         "close": "Schliessen",
         "view_detail_page": "Detailseite anzeigen",
-        "show_on_map": "Auf der Karte anzeigen"
+        "show_on_map": "Auf der Karte anzeigen",
+        "back_to_map": "Zurück zur Karte"
     }
 }

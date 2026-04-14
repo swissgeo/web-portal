@@ -2,6 +2,7 @@
 import { DatasetViewContent } from '@swissgeo/skeleton'
 
 const route = useRoute()
+const localePath = useLocalePath()
 
 const id = computed(() => route.params.id as string)
 
@@ -15,6 +16,16 @@ useSeoMeta({
 
 <template>
     <div class="mx-auto max-w-3xl px-4 py-8">
+        <UButton
+            :to="localePath('/map')"
+            icon="i-lucide-arrow-left"
+            color="neutral"
+            variant="ghost"
+            class="mb-6"
+        >
+            {{ $t('dataset.back_to_map') }}
+        </UButton>
+
         <div
             v-if="error"
             class="flex items-center justify-center text-sm text-red-500"

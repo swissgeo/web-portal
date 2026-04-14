@@ -154,6 +154,7 @@
         "loading": "Loading…",
         "close": "Close",
         "view_detail_page": "View detail page",
-        "show_on_map": "Show on map"
+        "show_on_map": "Show on map",
+        "back_to_map": "Back to map"
     }
 }
