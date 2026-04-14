@@ -9,6 +9,10 @@ import { useDatasetViewStore } from '@/stores/datasetView'
 
 import DatasetViewContent from './DatasetViewContent.vue'
 
+const props = defineProps<{
+    detailPagePath?: string
+}>()
+
 const datasetViewStore = useDatasetViewStore()
 const layerStore = useLayerStore()
 const { locale } = useI18n()
@@ -136,6 +140,16 @@ function addToMap() {
                 />
                 {{ $t('dataset.already_on_map') }}
             </div>
+            <UButton
+                v-if="dataset && props.detailPagePath"
+                :to="props.detailPagePath"
+                icon="i-lucide-external-link"
+                color="neutral"
+                variant="subtle"
+                class="w-full justify-center"
+            >
+                {{ $t('dataset.view_detail_page') }}
+            </UButton>
         </template>
     </USlideover>
 </template>

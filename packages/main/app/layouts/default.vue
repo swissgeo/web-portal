@@ -3,13 +3,22 @@
 import type { SearchResult } from '@swissgeo/search'
 
 import log from '@swissgeo/log'
-import { SideBar, DatasetView } from '@swissgeo/skeleton'
+import { SideBar, DatasetView, useDatasetViewStore } from '@swissgeo/skeleton'
 
 import { useSearchSelection } from '@/composables/useSearchSelection'
 
 const { resetApp } = useResetApp()
 const route = useRoute()
 const mapViewStore = useMapViewStore()
+const localePath = useLocalePath()
+const datasetViewStore = useDatasetViewStore()
+
+const datasetDetailPath = computed(() => {
+    if (!datasetViewStore.activeDatasetId) {
+        return undefined
+    }
+    return localePath(`/dataset/${datasetViewStore.activeDatasetId}`)
+})
 
 const isMapPage = computed(() => {
     const routeName = String(route.name ?? '')
@@ -61,7 +70,10 @@ async function onSearchResultSelected(result: SearchResult) {
             >
                 <slot />
             </div>
-            <DatasetView v-if="!isMapFullscreenMode" />
+            <DatasetView
+                v-if="!isMapFullscreenMode"
+                :detail-page-path="datasetDetailPath"
+            />
         </div>
     </main>
 </template>
