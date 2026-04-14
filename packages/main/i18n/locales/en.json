@@ -152,6 +152,8 @@
         "add_to_map": "Add to map",
         "already_on_map": "Already on map",
         "loading": "Loading…",
-        "close": "Close"
+        "close": "Close",
+        "view_detail_page": "View detail page",
+        "show_on_map": "Show on map"
     }
 }

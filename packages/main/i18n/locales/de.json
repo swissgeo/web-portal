@@ -152,6 +152,8 @@
         "add_to_map": "Zur Karte hinzufügen",
         "already_on_map": "Bereits auf der Karte",
         "loading": "Lädt…",
-        "close": "Schliessen"
+        "close": "Schliessen",
+        "view_detail_page": "Detailseite anzeigen",
+        "show_on_map": "Auf der Karte anzeigen"
     }
 }
