@@ -26,11 +26,6 @@ export default defineVitestConfig({
         // real hangs surfacing without flaky timeouts on cold boot.
         testTimeout: 30000,
         hookTimeout: 30000,
-        // Filters out known-harmless console noise from the Nuxt test env
-        // (Vue Router "no match", H3 404 at boot, <Suspense> dev warning).
-        // Loaded in both sub-projects; no-op in happy-dom since the patterns
-        // never match there.
-        setupFiles: ['./tests/setup.ts'],
     },
     resolve: {
         alias: {
