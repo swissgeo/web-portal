@@ -1,6 +1,6 @@
 import type { Dataset, DistributionCollection } from '@swissgeo/ogc'
-
 import type { MaybeRefOrGetter } from 'vue'
+
 import { toValue } from 'vue'
 
 export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
