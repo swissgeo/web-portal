@@ -71,24 +71,26 @@ export function useUrlParams() {
      * Get the print config from the URL
      * ?print_format=a4&print_orientation=landscape&print_scale=25000&print_resolution=96
      */
-    function getPrintConfig(): PrintConfig {
+    function getPrintConfig(removeFromUrl = false): PrintConfig {
         const printConfig = {
             format: route.query[URL_PARAM_PRINT_FORMAT],
             orientation: route.query[URL_PARAM_PRINT_ORIENTATION],
             resolution: parseFloat(route.query[URL_PARAM_PRINT_RESOLUTION] as string),
             scale: parseFloat(route.query[URL_PARAM_PRINT_SCALE] as string),
-        }        
+        }
 
-        // remove the print config from the URL (without page refresh)
-        onNuxtReady(async () => {
-            const newQuery = { ...route.query }
-            delete newQuery[URL_PARAM_PRINT_FORMAT]
-            delete newQuery[URL_PARAM_PRINT_ORIENTATION]
-            delete newQuery[URL_PARAM_PRINT_RESOLUTION]
-            delete newQuery[URL_PARAM_PRINT_SCALE]
-            await router.replace({ query: newQuery })
-        })
-
+        if (removeFromUrl) {
+            // remove the print config from the URL (without page refresh)
+            onNuxtReady(async () => {
+                const newQuery = { ...route.query }
+                delete newQuery[URL_PARAM_PRINT_FORMAT]
+                delete newQuery[URL_PARAM_PRINT_ORIENTATION]
+                delete newQuery[URL_PARAM_PRINT_RESOLUTION]
+                delete newQuery[URL_PARAM_PRINT_SCALE]
+                await router.replace({ query: newQuery })
+            })
+        }
+        
         validatePrintConfig(printConfig);
         return printConfig
     }

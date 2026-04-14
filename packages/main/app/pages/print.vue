@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 
 const { printConfig } = usePrintStore()
+console.log("printConfig", printConfig);
 
 </script>
 
