@@ -45,7 +45,6 @@ async function onSearchResultSelected(result: SearchResult) {
                 class="z-2"
                 @search-result-selected="onSearchResultSelected"
                 @reset-app="resetApp"
-                :mapLayers="mapLayers"
             >
                 <template #bottom-controls>
                     <div

@@ -72,7 +72,6 @@ const layerData = computed((): MapLayer => {
         isVisible: layer.isVisible,
         opacity: layer.opacity,
         zIndex: layerZIndex.value,
-        displayName: layer.info?.displayName ?? layer.humanId,
     }
 })
 
