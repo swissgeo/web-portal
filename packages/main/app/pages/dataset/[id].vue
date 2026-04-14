@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { DatasetViewContent } from '@swissgeo/skeleton'
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
+import { DatasetViewContent } from '@swissgeo/skeleton'
 
 const route = useRoute()
 const localePath = useLocalePath()
@@ -17,12 +17,16 @@ useSeoMeta({
 const layerStore = useLayerStore()
 
 const isAlreadyOnMap = computed(() => {
-    if (!dataset.value) return false
+    if (!dataset.value) {
+        return false
+    }
     return layerStore.layers.some((l) => l.humanId === dataset.value!.id)
 })
 
 function addToMap() {
-    if (!dataset.value || isAlreadyOnMap.value) return
+    if (!dataset.value || isAlreadyOnMap.value) {
+        return
+    }
     layerStore.addLayer(makeServerLayer(dataset.value))
 }
 </script>
