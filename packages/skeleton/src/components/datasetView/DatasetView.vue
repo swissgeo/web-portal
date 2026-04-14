@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Dataset, DistributionCollection, Distribution, Link } from '@swissgeo/ogc'
+import type { Dataset, DistributionCollection } from '@swissgeo/ogc'
 
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import { computed, ref, watch } from 'vue'
@@ -7,9 +7,7 @@ import { useI18n } from 'vue-i18n'
 
 import { useDatasetViewStore } from '@/stores/datasetView'
 
-import DatasetViewContact from './DatasetViewContact.vue'
-import DatasetViewLinkList from './DatasetViewLinkList.vue'
-import DatasetViewServiceList from './DatasetViewServiceList.vue'
+import DatasetViewContent from './DatasetViewContent.vue'
 
 const datasetViewStore = useDatasetViewStore()
 const layerStore = useLayerStore()
@@ -64,23 +62,6 @@ watch(locale, () => {
     }
 })
 
-const EXCLUDED_LINK_RELS = new Set(['self', 'collection', 'distributions'])
-const displayLinks = computed<Link[]>(() => {
-    if (!dataset.value?.links) {
-        return []
-    }
-    return dataset.value.links.filter((l) => !EXCLUDED_LINK_RELS.has(l.rel?.toLowerCase() ?? ''))
-})
-
-const serviceDistributions = computed<Distribution[]>(() => {
-    if (!distributionCollection.value?.records) {
-        return []
-    }
-    return distributionCollection.value.records.filter(
-        (d) => d.properties.protocol !== 'OGC:GeoJSON'
-    )
-})
-
 const isAlreadyOnMap = computed(() => {
     if (!dataset.value) {
         return false
@@ -128,46 +109,11 @@ function addToMap() {
                 {{ fetchError }}
             </div>
 
-            <div
+            <DatasetViewContent
                 v-else-if="dataset"
-                class="flex flex-col gap-6"
-            >
-                <section v-if="dataset.properties.description">
-                    <h3 class="mb-2">
-                        {{ $t('dataset.abstract') }}
-                    </h3>
-                    <p class="text-sm leading-relaxed">
-                        {{ dataset.properties.description }}
-                    </p>
-                </section>
-
-                <section v-if="dataset.properties.contacts?.length">
-                    <h3 class="mb-2">
-                        {{ $t('dataset.contacts') }}
-                    </h3>
-                    <div class="flex flex-col gap-3">
-                        <DatasetViewContact
-                            v-for="(contact, i) in dataset.properties.contacts"
-                            :key="i"
-                            :contact="contact"
-                        />
-                    </div>
-                </section>
-
-                <section v-if="displayLinks.length">
-                    <h3 class="mb-2">
-                        {{ $t('dataset.links') }}
-                    </h3>
-                    <DatasetViewLinkList :links="displayLinks" />
-                </section>
-
-                <section v-if="serviceDistributions.length">
-                    <h3 class="mb-2">
-                        {{ $t('dataset.services') }}
-                    </h3>
-                    <DatasetViewServiceList :distributions="serviceDistributions" />
-                </section>
-            </div>
+                :dataset="dataset"
+                :distribution-collection="distributionCollection"
+            />
         </template>
 
         <template #footer>
