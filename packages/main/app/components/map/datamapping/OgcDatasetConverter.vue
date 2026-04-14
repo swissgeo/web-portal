@@ -59,6 +59,7 @@ const layerZIndex = computed(() => zIndex)
  * data from the OGC records
  */
 const layerData = computed((): MapLayer => {
+    console.error(layerSpecificData.value)
     return {
         layerId: layerId.value,
         format: layerFormat.value,
@@ -69,10 +70,10 @@ const layerData = computed((): MapLayer => {
         // some data we pass directly from the original, so when it's updated
         // the change will be reflected in the data that the map receives
         dimensions: layer.dimensions ?? null,
-        isVisible: layer.isVisible,
-        opacity: layer.opacity,
         zIndex: layerZIndex.value,
         displayName: layer.info?.displayName ?? layer.humanId,
+        isVisible: true,
+        opacity: 1,
     }
 })
 

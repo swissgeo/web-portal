@@ -72,12 +72,12 @@ function toggleVisibility() {
 
 function moveUp() {
     mapViewStore.moveLayerUp(layerIndex)
-    layerStore.moveLayerUp(layerIndex - bgLayerModifier.value)
+    //layerStore.moveLayerUp(layerIndex - bgLayerModifier.value)
 }
 
 function moveDown() {
     mapViewStore.moveLayerDown(layerIndex)
-    layerStore.moveLayerDown(layerIndex - bgLayerModifier.value)
+    //layerStore.moveLayerDown(layerIndex - bgLayerModifier.value)
 }
 
 function removeLayer() {

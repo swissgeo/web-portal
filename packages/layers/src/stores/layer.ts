@@ -93,19 +93,23 @@ export const useLayerStore = defineStore('layers', () => {
         return layer
     }
 
-    function toggleVisibility(layerUuid: string): void {
-        const layer = getLayerByUuid(layerUuid)
+    function toggleVisibility(identifier: string | number) {
+        const layer = layers.value[_getIndexFromIdentifier(identifier)]
         if (!layer) {
             return null
         }
         layer.isVisible = !layer.isVisible
     }
 
-    function setDimension(id: DimensionId, layerUuid: string, dimension: Partial<Dimension>) {
-        const layer = getLayerByUuid(layerUuid)
+    function setDimension(
+        id: DimensionId,
+        identifier: string | number,
+        dimension: Partial<Dimension>
+    ) {
+        const layer = layers.value[_getIndexFromIdentifier(identifier)]
         if (!layer) {
             log.error('Unable to find layer for setting available times', {
-                messages: [layerUuid],
+                messages: [identifier],
             })
         } else {
             if (!layer.dimensions) {
@@ -128,10 +132,10 @@ export const useLayerStore = defineStore('layers', () => {
         }
     }
 
-    function setOpacity(layerUuid: string, opacity: number): void {
-        const layer = getLayerByUuid(layerUuid)
+    function setOpacity(identifier: string | number, opacity: number) {
+        const layer = layers.value[_getIndexFromIdentifier(identifier)]
         if (!layer) {
-            log.error(`Layer with uuid ${layerUuid} not found`)
+            log.error(`Layer with uuid or index ${identifier} not found`)
             return null
         }
         const clampedOpacity = Math.max(0, Math.min(1, opacity))
@@ -139,17 +143,18 @@ export const useLayerStore = defineStore('layers', () => {
         layer.opacity = clampedOpacity
     }
 
-    function setLayerInfo(layerUuid: string, info: LayerInfo): void {
-        log.debug(`Setting layer info for ${layerUuid} to ${JSON.stringify(info)}`)
-        const layer = getLayerByUuid(layerUuid)
+    function setLayerInfo(identifier: string | number, info: LayerInfo): void {
+        log.debug(`Setting layer info for layer ${identifier} to ${JSON.stringify(info)}`)
+
+        const layer = layers.value[_getIndexFromIdentifier(identifier)]
         if (!layer) {
             return
         }
         layer.info = info
     }
 
-    function removeLayer(layerUuid: string): void {
-        const layer = getLayerByUuid(layerUuid)
+    function removeLayer(identifier: string | number) {
+        const layer = layers.value[_getIndexFromIdentifier(identifier)]
         if (!layer) {
             return null
         }
@@ -157,8 +162,8 @@ export const useLayerStore = defineStore('layers', () => {
         layers.value.splice(index, 1)
     }
 
-    function setLayerData(layerUuid: string, dataset: Dataset): void {
-        const layer = getLayerByUuid(layerUuid)
+    function setLayerData(identifier: string | number, dataset: Dataset) {
+        const layer = layers.value[_getIndexFromIdentifier(identifier)]
         if (!layer) {
             return null
         }

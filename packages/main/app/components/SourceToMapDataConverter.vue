@@ -3,7 +3,7 @@ import type { Dimension, LayerInfo, Layer as SourceData } from '@swissgeo/layers
 import type { Layer as MapLayer } from '@swissgeo/map'
 import type { Dataset } from '@swissgeo/ogc'
 
-import { isDatasetLayer } from '@swissgeo/layers'
+import { isDatasetLayer, useLayerStore } from '@swissgeo/layers'
 
 import MapDatamappingFileConverter from '@/components/map/datamapping/FileConverter.vue'
 import MapDatamappingOgcDatasetConverter from '@/components/map/datamapping/OgcDatasetConverter.vue'
@@ -21,16 +21,22 @@ function updateMapLayerData(index: number, mapLayerData: MapLayer) {
 function removeLayerData(index: number) {
     mapViewStore.removeLayer(index)
 }
-function updateLayerInfo(index: number | string, layerInfo: LayerInfo) {}
-
-function updateOpacity(index: number, opacity: number) {
-    mapViewStore.updateLayerOpacity(index, opacity)
-}
-function updateTimeDimension(index: number, dimension: Partial<Dimension>) {
-    mapViewStore.updateLayerDimension(index, dimension, 'time')
+function updateLayerInfo(identifier: number | string, layerInfo: LayerInfo) {
+    useLayerStore().setLayerInfo(identifier, layerInfo)
 }
 
-function updateStoreLayerData(uuid: string, dataset: Dataset) {}
+function updateOpacity(identifier: number | string, opacity: number) {
+    // for some reason, the default opacity is not applied.
+    // for some reason, the opacity is reset on language change
+    mapViewStore.updateLayerOpacity(identifier, opacity)
+}
+function updateTimeDimension(identifier: number | string, dimension: Partial<Dimension>) {
+    useLayerStore().setDimension('time', identifier, dimension)
+}
+
+function updateStoreLayerData(identifier: number | string, dataset: Dataset) {
+    useLayerStore().setLayerData(identifier, dataset)
+}
 /**
  * What do I receive ?
  *  FROM ABOVE:
@@ -60,26 +66,27 @@ function updateStoreLayerData(uuid: string, dataset: Dataset) {}
 </script>
 
 <template>
-    <div v-for="(data, index) in [sourceBgLayer, ...sourceData].filter((data) => !!data)">
-        <div :key="data.uuid">
-            <MapDatamappingOgcDatasetConverter
-                v-if="isDatasetLayer(data)"
-                :layer="data"
-                :zIndex="index"
-                @update="updateMapLayerData(index, $event)"
-                @updateLayerInfo="updateLayerInfo"
-                @updateOpacity="updateOpacity(index, 1)"
-                @remove="removeLayerData(index)"
-                @updateTimeDimension="updateTimeDimension(index, {})"
-                @updateDataset="updateStoreLayerData"
-            />
-            <MapDatamappingFileConverter
-                v-else
-                :layer="data"
-                :zIndex="index"
-                @update="updateMapLayerData(index, $event)"
-                @remove="removeLayerData(index)"
-            />
-        </div>
+    <div
+        v-for="(data, index) in [sourceBgLayer, ...sourceData].filter((data) => !!data)"
+        v-bind:key="data.uuid"
+    >
+        <MapDatamappingOgcDatasetConverter
+            v-if="isDatasetLayer(data)"
+            :layer="data"
+            :zIndex="index"
+            @update="updateMapLayerData(index, $event)"
+            @updateLayerInfo="updateLayerInfo"
+            @updateOpacity="updateOpacity"
+            @remove="removeLayerData(index)"
+            @updateTimeDimension="updateTimeDimension"
+            @updateDataset="updateStoreLayerData"
+        />
+        <MapDatamappingFileConverter
+            v-else
+            :layer="data"
+            :zIndex="index"
+            @update="updateMapLayerData(index, $event)"
+            @remove="removeLayerData(index)"
+        />
     </div>
 </template>
