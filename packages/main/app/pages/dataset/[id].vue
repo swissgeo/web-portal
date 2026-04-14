@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { DatasetViewContent } from '@swissgeo/skeleton'
+import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 
 const route = useRoute()
 const localePath = useLocalePath()
@@ -12,19 +13,51 @@ useSeoMeta({
     title: dataset.value?.properties.title,
     description: dataset.value?.properties.description,
 })
+
+const layerStore = useLayerStore()
+
+const isAlreadyOnMap = computed(() => {
+    if (!dataset.value) return false
+    return layerStore.layers.some((l) => l.humanId === dataset.value!.id)
+})
+
+function addToMap() {
+    if (!dataset.value || isAlreadyOnMap.value) return
+    layerStore.addLayer(makeServerLayer(dataset.value))
+}
 </script>
 
 <template>
     <div class="mx-auto max-w-3xl px-4 py-8">
-        <UButton
-            :to="localePath('/map')"
-            icon="i-lucide-arrow-left"
-            color="neutral"
-            variant="ghost"
-            class="mb-6"
-        >
-            {{ $t('dataset.back_to_map') }}
-        </UButton>
+        <div class="mb-6 flex items-center justify-between">
+            <UButton
+                :to="localePath('/map')"
+                icon="i-lucide-arrow-left"
+                color="neutral"
+                variant="ghost"
+            >
+                {{ $t('dataset.back_to_map') }}
+            </UButton>
+
+            <UButton
+                v-if="dataset && !isAlreadyOnMap"
+                icon="i-lucide-map"
+                color="primary"
+                @click="addToMap"
+            >
+                {{ $t('dataset.add_to_map') }}
+            </UButton>
+            <div
+                v-else-if="dataset && isAlreadyOnMap"
+                class="flex items-center gap-2 text-sm text-muted"
+            >
+                <UIcon
+                    name="i-lucide-check"
+                    class="size-4"
+                />
+                {{ $t('dataset.already_on_map') }}
+            </div>
+        </div>
 
         <div
             v-if="error"
