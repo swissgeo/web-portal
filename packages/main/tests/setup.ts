@@ -3,9 +3,10 @@
  *
  * The Nuxt test environment boots a real Nuxt app per file. Because tests
  * typically don't register pages/routes, the boot emits harmless warnings
- * (Vue Router "no match", H3 404, Suspense dev notice) and plugin messages
- * (menus fetch, app banner, log levels). This file filters those specific
- * patterns so they don't cloud real failures.
+ * (Vue Router "no match", H3 404, Suspense dev notice, menus fetch).
+ * This file filters those specific patterns so they don't cloud real
+ * failures. Informational plugin messages (app banner, log levels) are
+ * kept — they confirm the app booted with the right config.
  *
  * The filter only activates in the Nuxt env — detected via the
  * `__NUXT_VITEST_ENVIRONMENT__` flag that vitest-environment-nuxt sets
@@ -31,14 +32,6 @@ if (isNuxtEnv) {
         // addRoutes.ts plugin calls useFetch for menu data — no backend in tests.
         // Can't mock: plugins run during Nuxt boot before setupFiles or test code.
         'No data received from menus',
-        // printInfo.ts plugin logs the app banner at boot (3 separate console.log calls).
-        // Can't mock: same reason — plugin runs during boot, not test code.
-        'SWISSGEO',
-        'Version:',
-        'Build Time:',
-        // setLogLevels.ts plugin logs the parsed log levels via console.log.
-        // Can't mock: same reason — plugin runs during boot.
-        'Setting the log levels to',
     ]
 
     function shouldSilence(args: unknown[]): boolean {

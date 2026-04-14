@@ -19,11 +19,14 @@ const mockExportState = ref({
     layers: [],
 })
 
-// useRestoreState chains into useUrlParams which needs these Nuxt composables.
-// Stubbing them here avoids booting a full Nuxt app just for route access.
+// useRestoreState chains into Nuxt composables (useToaster, useNuxtApp,
+// useUrlParams → useRoute/useRouter). Stubbing them here avoids booting a
+// full Nuxt app just for these dependencies.
 mockNuxtImport('useRoute', () => () => ({ query: {} }))
 mockNuxtImport('useRouter', () => () => ({ replace: vi.fn() }))
 mockNuxtImport('onNuxtReady', () => vi.fn())
+mockNuxtImport('useToaster', () => () => ({ showWarning: vi.fn() }))
+mockNuxtImport('useNuxtApp', () => () => ({ $i18n: { t: vi.fn((key: string) => key) } }))
 
 vi.mock('@swissgeo/log', async (importOriginal) => {
     const original = await importOriginal<typeof import('@swissgeo/log')>()
