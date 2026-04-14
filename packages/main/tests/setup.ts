@@ -18,14 +18,26 @@ const isNuxtEnv =
 
 if (isNuxtEnv) {
     const SILENCED_PATTERNS = [
+        // No pages registered in tests → router can't resolve "/" or "/de".
+        // Can't fix: Vue Router's internal warn() fires during Nuxt boot before
+        // any test code runs. No hook to register routes early enough.
         '[Vue Router warn]: No match found for location with path',
+        // Nuxt's error layer surfaces the same no-route condition as a 404.
+        // Can't fix: same root cause as the Vue Router warn above.
         '[nuxt] error caught during app initialization',
+        // Vue dev warning when any component tree uses <Suspense> (Nuxt wraps
+        // pages in it). Can't fix: Vue upstream — Suspense is still experimental.
         '<Suspense> is an experimental feature',
-        // Plugin boot messages — harmless in tests, no backend available.
+        // addRoutes.ts plugin calls useFetch for menu data — no backend in tests.
+        // Can't mock: plugins run during Nuxt boot before setupFiles or test code.
         'No data received from menus',
+        // printInfo.ts plugin logs the app banner at boot (3 separate console.log calls).
+        // Can't mock: same reason — plugin runs during boot, not test code.
         'SWISSGEO',
         'Version:',
         'Build Time:',
+        // setLogLevels.ts plugin logs the parsed log levels via console.log.
+        // Can't mock: same reason — plugin runs during boot.
         'Setting the log levels to',
     ]
 
