@@ -1,3 +1,5 @@
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { ref } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { STORAGE_KEY } from '@/composables/useRestoreState'
@@ -17,14 +19,25 @@ const mockExportState = ref({
     layers: [],
 })
 
+// useRestoreState chains into useUrlParams which needs these Nuxt composables.
+// Stubbing them here avoids booting a full Nuxt app just for route access.
+mockNuxtImport('useRoute', () => () => ({ query: {} }))
+mockNuxtImport('useRouter', () => () => ({ replace: vi.fn() }))
+mockNuxtImport('onNuxtReady', () => vi.fn())
+
 vi.mock('@swissgeo/log', async (importOriginal) => {
-    const original = await importOriginal()
+    const original = await importOriginal<typeof import('@swissgeo/log')>()
     return {
-        default: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
-        // @ts-expect-error Spreading this actually works and is forseen by the docs
         ...original,
+        default: { ...original.default, info: vi.fn(), warn: vi.fn(), error: vi.fn() },
     }
 })
+
+// Bypass validation so the test focuses on the restore/persist flow, not the
+// payload schema. validateAndPrepareAppStatePayload is tested in its own package.
+vi.mock('@swissgeo/statesharing', () => ({
+    validateAndPrepareAppStatePayload: (input: unknown) => input,
+}))
 
 vi.mock('@vueuse/core', async (importOriginal) => {
     const original = await importOriginal()
@@ -42,7 +55,7 @@ vi.mock('@/composables/useUrlParams', () => ({
     })),
 }))
 
-vi.mock('@/composables/useStateConfig', () => ({
+vi.mock('~/composables/useStateConfig', () => ({
     useStateConfig: () => ({
         exportState: mockExportState,
         importState: mockImportState,
@@ -78,7 +91,6 @@ describe('stateConfigSync plugin', () => {
         })
 
         it('calls importState with the stored JSON string when state is present', async () => {
-            console.log(localStorage.getItem(STORAGE_KEY))
             const state = {
                 version: '0.2.0',
                 state: {
