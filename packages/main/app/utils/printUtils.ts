@@ -8,7 +8,7 @@ const A0_SHORT_SIDE_MM = 841
 // Length in millimeter of the long side of the page
 const A0_LONG_SIDE_MM = 1189
 
-
+// Ratios between A0 and the smaller Ax page size
 const formatRatiosToA0: Record<PrintFormat, number> = {
     a0: SQRT_2 ** 0,
     a1: SQRT_2 ** 1,
@@ -22,7 +22,14 @@ const formatRatiosToA0: Record<PrintFormat, number> = {
  * Get the print page size in pixels from a given format (eg. 'a4'), an orientation (eg. 'landscape') and a resolution in DPI (eg. 192)
  */
 export function getPageSizeInPixels(format: PrintFormat, orientation: PrintOrientation, resolutionDpi: number): { width: number, height: number } {
-    const longSide = resolutionDpi * ~~(A0_LONG_SIDE_MM / formatRatiosToA0[format]) / MM_PER_INCH
-    const shortSide = resolutionDpi * ~~(A0_SHORT_SIDE_MM / formatRatiosToA0[format]) / MM_PER_INCH
+    const longSide = computeNumberOfPixelsForPrint(~~(A0_LONG_SIDE_MM / formatRatiosToA0[format]), resolutionDpi)
+    const shortSide = computeNumberOfPixelsForPrint(~~(A0_SHORT_SIDE_MM / formatRatiosToA0[format]), resolutionDpi)
     return orientation === 'landscape' ? { width: longSide, height: shortSide } : { width: shortSide, height: longSide }
+}
+
+/**
+ * Get the size in pixel for a given size in millimeter and DPI resolution
+ */
+export function computeNumberOfPixelsForPrint(sizeMm: number, resolutionDpi: number): number {
+    return resolutionDpi * sizeMm / MM_PER_INCH
 }
