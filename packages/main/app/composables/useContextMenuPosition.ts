@@ -1,5 +1,6 @@
 import type { CoordinateSystem } from '@swissgeo/coordinates'
 import type { Lang } from '@swissgeo/shared'
+import type { ContextMenuRow } from '~/types/contextMenu'
 import type { ComputedRef, Ref } from 'vue'
 
 import log from '@swissgeo/log'
@@ -21,12 +22,6 @@ const ELEVATION_LINKS: Partial<Record<Lang, string>> = {
     fr: 'https://www.swisstopo.admin.ch/fr/systemes-de-reference-suisses',
     it: 'https://www.swisstopo.admin.ch/it/sistemi-di-riferimento-geodetici-svizzeri',
     en: 'https://www.swisstopo.admin.ch/en/swiss-reference-systems',
-}
-
-export interface Row {
-    label: string
-    labelLink?: string | ((_value: string) => string)
-    value: string
 }
 
 export function useContextMenuPosition(
@@ -87,7 +82,7 @@ export function useContextMenuPosition(
         return `${elevationM.toFixed(2)}m\n${elevationFt.toFixed(2)}ft`
     })
 
-    const rows = computed<Row[]>(() => {
+    const rows = computed<ContextMenuRow[]>(() => {
         const coord = coordinate.value
         const proj = projection.value
         if (!coord || isLoading.value) {

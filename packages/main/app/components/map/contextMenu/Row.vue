@@ -1,11 +1,9 @@
 <script setup lang="ts">
+import type { ContextMenuRow } from '~/types/contextMenu'
+
 import { useClipboard } from '@vueuse/core'
 
-const { labelLink, value } = defineProps<{
-    label: string
-    labelLink?: string | ((_value: string) => string)
-    value: string
-}>()
+const { labelLink, value } = defineProps<ContextMenuRow>()
 
 const { copy, copied } = useClipboard({ legacy: true })
 
