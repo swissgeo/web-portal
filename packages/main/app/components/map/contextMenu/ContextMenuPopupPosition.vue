@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type { CoordinateSystem } from '@swissgeo/coordinates'
+import type { Row } from '~/composables/useContextMenuPosition'
 
 import { LV95 } from '@swissgeo/coordinates'
-
-import { useContextMenuPosition } from '../../../composables/useContextMenuPosition'
 
 const props = defineProps<{
     coordinate: [number, number] | null
@@ -14,12 +13,6 @@ const { rows, isLoading, clipboards } = useContextMenuPosition(
     computed(() => props.coordinate),
     computed(() => props.projection ?? LV95)
 )
-
-interface Row {
-    label: string
-    labelLink?: string | ((_value: string) => string)
-    value: string
-}
 
 const resolveLink = (row: Row): string | undefined => {
     if (typeof row.labelLink === 'function') {
