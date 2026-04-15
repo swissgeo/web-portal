@@ -8,7 +8,7 @@ import { inject, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useOlMapContextMenu } from '../composables/useOlMapContextMenu.composable'
 
 const olMap = inject<Ref<OlMap | undefined>>('olMap')
-const { isVisible, coordinate } = useOlMapContextMenu()
+const { isVisible, coordinate, close } = useOlMapContextMenu()
 
 const popupEl = ref<HTMLDivElement>()
 let overlay: Overlay | null = null
@@ -52,6 +52,10 @@ onUnmounted(() => olMap?.value?.removeOverlay(overlay!))
         ref="popupEl"
         class="w-96"
     >
-        <slot />
+        <slot
+            :coordinate="coordinate"
+            :is-visible="isVisible"
+            :close="close"
+        />
     </div>
 </template>

@@ -1,7 +1,6 @@
 import '../env.d.ts' // for reproject
 
 import MapModule from '@/MapModule.vue'
-import OpenLayersContextMenuPopup from '@/openlayers/OpenLayersContextMenuPopup.vue'
 import usePositionStore from '@/stores/position'
 
 // importing as "type" doesn't work with the DTS bundler somehow
@@ -11,7 +10,6 @@ import type { ActionDispatcher } from './stores/types'
 
 import * as PROJECTION_EPSG from './composables/types.d'
 
-export { useOlMapContextMenu } from './composables/useOlMapContextMenu.composable'
 export {
     default as coordinateFormat,
     LV95Format,
@@ -21,5 +19,5 @@ export {
     MGRSFormat,
 } from './utils/coordinates/coordinateFormat'
 export type { CoordinateFormat } from './utils/coordinates/coordinateFormat'
-export { MapModule, usePositionStore, PROJECTION_EPSG, OpenLayersContextMenuPopup }
+export { MapModule, usePositionStore, PROJECTION_EPSG }
 export type { ActionDispatcher }

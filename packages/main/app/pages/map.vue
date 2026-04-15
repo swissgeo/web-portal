@@ -120,8 +120,12 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
             :custom-layer-renderers="customLayerRenderers"
             class="h-screen w-full"
         >
-            <template #context-menu-popup>
-                <MapContextMenuPopup />
+            <template #context-menu-popup="{ coordinate, isVisible, close }">
+                <MapContextMenuPopup
+                    :coordinate="coordinate"
+                    :is-visible="isVisible"
+                    :close="close"
+                />
             </template>
         </MapModule>
         <Toolbox />
