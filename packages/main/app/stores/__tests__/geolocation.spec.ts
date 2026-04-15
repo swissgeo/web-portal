@@ -1,5 +1,6 @@
 import type { SingleCoordinate } from '@swissgeo/coordinates'
 
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { LV95, WGS84, registerProj4 } from '@swissgeo/coordinates'
 import { useGeolocationStore } from '~/stores/geolocation'
 import { createPinia, setActivePinia } from 'pinia'
@@ -19,14 +20,13 @@ const { mockSetCenter, mockSetZoom, mockToastAdd } = vi.hoisted(() => ({
 
 // --- Module mocks ---
 
-vi.mock('#imports', () => ({
-    useToast: () => ({ add: mockToastAdd }),
-}))
-
-// Also mock the underlying @nuxt/ui useToast for Nuxt-aware test environments
-// where #imports resolves to real Nuxt auto-imports
-vi.mock('@nuxt/ui/runtime/composables/useToast', () => ({
-    useToast: () => ({ add: mockToastAdd }),
+// Stub the auto-imported `useToaster` composable. The geolocation store uses
+// showWarning/showError, and the mock routes their message argument into a
+// {title, color} shape so the existing toast assertions still match.
+mockNuxtImport('useToaster', () => () => ({
+    showWarning: (message: string) => mockToastAdd({ title: message, color: 'warning' }),
+    showError: (message: string) => mockToastAdd({ title: message, color: 'error' }),
+    showSuccess: (message: string) => mockToastAdd({ title: message, color: 'success' }),
 }))
 
 vi.mock('@swissgeo/map', async () => {
