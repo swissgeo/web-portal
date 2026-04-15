@@ -47,6 +47,7 @@ export interface Language {
     code: string
     dir: string
     name: string
+    alternate?: string
 }
 
 export interface Link {
@@ -81,6 +82,7 @@ export interface Property<recordType extends string> {
     externalIds?: string[]
     contacts?: Contact[]
     language?: Language
+    languages?: Language[]
     description?: string
     // TODO maybe this is only available in the Dataset props
     preferredDistributionId?: string

@@ -78,6 +78,16 @@ function addToMap() {
                 :dataset="dataset"
                 :distribution-collection="distributionCollection ?? null"
             />
+
+            <section
+                v-if="dataset.properties.languages?.length"
+                class="mt-6"
+            >
+                <h3 class="mb-2">
+                    {{ $t('dataset.languages') }}
+                </h3>
+                <DatasetViewLanguages :languages="dataset.properties.languages" />
+            </section>
         </template>
     </div>
 </template>
