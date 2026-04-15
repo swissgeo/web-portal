@@ -49,14 +49,10 @@ export function useContextMenuPosition(
         },
     })
 
-    const elevationQuery = computed(() =>
-        coordinate.value ? { easting: coordinate.value[0], northing: coordinate.value[1] } : null
-    )
-
     const { data: elevationData, pending: elevationPending } = useFetch(
         '/api/v1/elevation/height',
         {
-            query: elevationQuery,
+            query: latLon,
             onResponseError: ({ error }) => {
                 log.error(`Error fetching elevation: ${String(error)}`)
             },
