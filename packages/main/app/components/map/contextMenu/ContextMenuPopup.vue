@@ -58,7 +58,7 @@ watch(
             </div>
         </div>
 
-        <div v-if="!isCollapsed">
+        <div v-show="!isCollapsed">
             <UTabs
                 :items="tabs"
                 variant="link"
