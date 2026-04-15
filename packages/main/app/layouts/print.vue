@@ -1,21 +1,21 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
-// Padding in millimeters to add around the print (internal to the page)
-const PRINT_PADDING_MM = 4
+// Margin in millimeters to add around the print (internal to the page)
+const PRINT_MARGIN_MM = 4
 const { getPrintConfigFromUrl } = useUrlParams()
 const printConfig = getPrintConfigFromUrl()
 
 const containerWidth = ref('100dw')
 const containerHeight = ref('100dvh')
-const containerPadding = ref('0')
+const containerMargin = ref('0')
 
 onMounted(() => {
     // We want the padding to be internal to the page
-    const padding = computeNumberOfPixelsForPrint(PRINT_PADDING_MM, printConfig.resolution)
+    const margin = computeNumberOfPixelsForPrint(PRINT_MARGIN_MM, printConfig.resolution)
     const {width, height } = getPageSizeInPixels(printConfig.format, printConfig.orientation, printConfig.resolution)
-    containerWidth.value = `${width - 2 * padding}px`
-    containerHeight.value = `${height - 2 * padding}px`
-    containerPadding.value = `${padding}px`
+    containerWidth.value = `${width - 2 * margin}px`
+    containerHeight.value = `${height - 2 * margin}px`
+    containerMargin.value = `${margin}px`
 })
 </script>
 
@@ -26,7 +26,7 @@ onMounted(() => {
         :style="{ 
             width: containerWidth, 
             height: containerHeight,
-            padding: containerPadding,
+            margin: containerMargin,
         }"
     >
         <slot />

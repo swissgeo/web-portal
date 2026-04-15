@@ -80,8 +80,7 @@
 }
 
 .disclaimer {
-    padding-right: 3rem !important;
-    padding-left: 3rem !important;
+    margin: calc(1.32 * max(max(.8vw, .8vh), 8px));
     text-align: justify;
 }
 
