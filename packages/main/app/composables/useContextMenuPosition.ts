@@ -44,8 +44,6 @@ export function useContextMenuPosition(
 
     const { data: w3wData, pending: w3wPending } = useFetch('/api/v1/what3words/convert-to-3wa', {
         query: latLon,
-        immediate: !!latLon.value,
-        watch: [latLon],
         onResponseError: ({ error }) => {
             log.error(`Error fetching what3words value: ${String(error)}`)
         },
@@ -59,8 +57,6 @@ export function useContextMenuPosition(
         '/api/v1/elevation/height',
         {
             query: elevationQuery,
-            immediate: !!coordinate.value,
-            watch: [coordinate],
             onResponseError: ({ error }) => {
                 log.error(`Error fetching elevation: ${String(error)}`)
             },
