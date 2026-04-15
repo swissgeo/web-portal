@@ -21,8 +21,8 @@ const formatRatiosToA0: Record<PrintFormat, number> = {
 /**
  * Get the print page size in pixels from a given format (eg. 'a4'), an orientation (eg. 'landscape') and a resolution in DPI (eg. 192)
  */
-export function getPageSizeInPixels(format: PrintFormat, orientation: PrintOrientation, resolution: number): { width: number, height: number } {
-    const longSide = resolution * ~~(A0_LONG_SIDE_MM / formatRatiosToA0[format]) / MM_PER_INCH
-    const shortSide = resolution * ~~(A0_SHORT_SIDE_MM / formatRatiosToA0[format]) / MM_PER_INCH
+export function getPageSizeInPixels(format: PrintFormat, orientation: PrintOrientation, resolutionDpi: number): { width: number, height: number } {
+    const longSide = resolutionDpi * ~~(A0_LONG_SIDE_MM / formatRatiosToA0[format]) / MM_PER_INCH
+    const shortSide = resolutionDpi * ~~(A0_SHORT_SIDE_MM / formatRatiosToA0[format]) / MM_PER_INCH
     return orientation === 'landscape' ? { width: longSide, height: shortSide } : { width: shortSide, height: longSide }
 }

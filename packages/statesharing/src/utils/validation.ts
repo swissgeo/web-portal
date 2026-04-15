@@ -260,7 +260,7 @@ export function validatePrintConfig(printProps: unknown): asserts printProps is 
         throw new Error('The print resolution must be greater than 0')
     }
 
-    if (maybePrintProps.scale === undefined || maybePrintProps.scale <= 0) {
-        throw new Error('The print scale must be greater than 0')
+    if (maybePrintProps.zoom === undefined || maybePrintProps.zoom <= 0) {
+        throw new Error('The zoom must be greater than 0')
     }    
 }

@@ -43,9 +43,9 @@ export interface PrintConfig {
      */
     orientation: PrintOrientation;
     /**
-     * Scale of the print in meter per meter (eg. 25000)
+     * Zoom enforced for the print. Should overwrite the zoom level from state
      */
-    scale: number;
+    zoom: number;
 }
 
 export interface AppStatePayload {
