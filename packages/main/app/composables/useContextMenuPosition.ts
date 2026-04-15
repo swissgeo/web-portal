@@ -47,38 +47,29 @@ export function useContextMenuPosition(
         return { lat, lon }
     })
 
-    const { data: w3wData, pending: w3wPending } = useAsyncData(
-        () => `w3w-${latLon.value?.lat}-${latLon.value?.lon}`,
-        async () => {
-            if (!latLon.value) {
-                return null
-            }
-            const { lat, lon } = latLon.value
-            return $fetch<{ words: string }>('/api/v1/what3words/convert-to-3wa', {
-                query: { lat, lon },
-            }).catch((error) => {
-                log.error(`Error fetching what3words value: ${String(error)}`)
-                return null
-            })
+    const { data: w3wData, pending: w3wPending } = useFetch('/api/v1/what3words/convert-to-3wa', {
+        query: latLon,
+        immediate: !!latLon.value,
+        watch: [latLon],
+        onResponseError: ({ error }) => {
+            log.error(`Error fetching what3words value: ${String(error)}`)
         },
-        { watch: [latLon] }
+    })
+
+    const elevationQuery = computed(() =>
+        coordinate.value ? { easting: coordinate.value[0], northing: coordinate.value[1] } : null
     )
 
-    const { data: elevationData, pending: elevationPending } = useAsyncData(
-        () => `elevation-${coordinate.value?.[0]}-${coordinate.value?.[1]}`,
-        async () => {
-            if (!coordinate.value) {
-                return null
-            }
-            const [easting, northing] = coordinate.value
-            return $fetch<{ height: string }>('/api/v1/elevation/height', {
-                query: { easting, northing },
-            }).catch((error) => {
+    const { data: elevationData, pending: elevationPending } = useFetch(
+        '/api/v1/elevation/height',
+        {
+            query: elevationQuery,
+            immediate: !!coordinate.value,
+            watch: [coordinate],
+            onResponseError: ({ error }) => {
                 log.error(`Error fetching elevation: ${String(error)}`)
-                return null
-            })
-        },
-        { watch: [coordinate] }
+            },
+        }
     )
 
     const isLoading = computed(() => w3wPending.value || elevationPending.value)
