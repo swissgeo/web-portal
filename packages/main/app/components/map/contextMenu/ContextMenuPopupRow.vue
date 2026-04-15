@@ -5,7 +5,7 @@ import { useClipboard } from '@vueuse/core'
 
 const { labelLink, value } = defineProps<ContextMenuRow>()
 
-const { copy, copied } = useClipboard({ legacy: true })
+const { copy, copied } = useClipboard({ legacy: true }) // legacy: true enables document.execCommand fallback for browsers without Clipboard API support
 
 const resolvedLink = computed(() => {
     if (typeof labelLink === 'function') {

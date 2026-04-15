@@ -30,7 +30,7 @@ const { rows, isLoading } = useContextMenuPosition(
                 <USkeleton class="size-7 rounded" />
             </div>
         </div>
-        <MapContextMenuRow
+        <MapContextMenuPopupRow
             v-else
             v-for="row in rows"
             :key="row.label"
