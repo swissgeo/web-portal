@@ -52,12 +52,6 @@ export function useSearchSelection() {
     async function handleLayerSelection(result: LayerSearchResult) {
         const localePath = useLocalePath()
 
-        log.debug({
-            title: 'useSearchSelection/handleLayerSelection',
-            titleColor: LogPreDefinedColor.Green,
-            messages: ['Navigating to dataset page for:', result.layerId],
-        })
-
         await navigateTo(localePath(`/dataset/${result.layerId}`))
     }
 
