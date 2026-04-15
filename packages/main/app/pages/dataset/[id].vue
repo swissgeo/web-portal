@@ -6,7 +6,7 @@ const localePath = useLocalePath()
 
 const id = computed(() => route.params.id as string)
 
-const { dataset, distributionCollection, error } = await useDatasetRecord(id)
+const { dataset, distributionCollection, error } = useDatasetRecord(id)
 
 useSeoMeta({
     title: dataset.value?.properties.title,

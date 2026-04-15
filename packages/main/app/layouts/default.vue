@@ -6,7 +6,6 @@ import log from '@swissgeo/log'
 import { SideBar, useDatasetViewStore } from '@swissgeo/skeleton'
 
 import DatasetView from '@/components/sidebar/DatasetView.vue'
-
 import { useSearchSelection } from '@/composables/useSearchSelection'
 
 const { resetApp } = useResetApp()
