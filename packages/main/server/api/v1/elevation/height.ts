@@ -1,5 +1,5 @@
-import log from '@swissgeo/log'
 import { registerProj4 } from '@swissgeo/coordinates'
+import log from '@swissgeo/log'
 import { createError, getQuery } from 'h3'
 import proj4 from 'proj4'
 
