@@ -1,11 +1,9 @@
 import type { CoordinateSystem } from '@swissgeo/coordinates'
 import type { Lang } from '@swissgeo/shared'
-import type { UseClipboardReturn } from '@vueuse/core'
 import type { ComputedRef, Ref } from 'vue'
 
 import log from '@swissgeo/log'
 import { coordinateFormat, LV95Format, MGRSFormat, UTMFormat, WGS84Format } from '@swissgeo/map'
-import { useClipboard } from '@vueuse/core'
 import proj4 from 'proj4'
 import { useI18n } from 'vue-i18n'
 
@@ -146,15 +144,8 @@ export function useContextMenuPosition(
         ]
     })
 
-    const clipboards = ref<UseClipboardReturn<boolean>[]>([])
-
-    watch(rows, (newRows) => {
-        clipboards.value = newRows.map(() => useClipboard())
-    })
-
     return {
         rows,
         isLoading,
-        clipboards,
     }
 }
