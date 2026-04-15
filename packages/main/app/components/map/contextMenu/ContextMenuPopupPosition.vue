@@ -5,14 +5,7 @@ import type { UseClipboardReturn } from '@vueuse/core'
 
 import { LV95 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
-import {
-    coordinateFormat,
-    LV03Format,
-    LV95Format,
-    MGRSFormat,
-    UTMFormat,
-    WGS84Format,
-} from '@swissgeo/map'
+import { coordinateFormat, LV95Format, MGRSFormat, UTMFormat, WGS84Format } from '@swissgeo/map'
 import { useClipboard } from '@vueuse/core'
 import proj4 from 'proj4'
 import { useI18n } from 'vue-i18n'
@@ -31,13 +24,6 @@ const LV95_LINKS: Partial<Record<Lang, string>> = {
     fr: 'https://www.swisstopo.admin.ch/fr/le-systeme-de-coordonnees-suisse',
     it: 'https://www.swisstopo.admin.ch/it/il-sistema-di-coordinate-svizzero',
     en: 'https://www.swisstopo.admin.ch/en/the-swiss-coordinates-system',
-}
-
-const LV03_LINKS: Partial<Record<Lang, string>> = {
-    de: 'https://www.swisstopo.admin.ch/de/landestriangulation-lv03',
-    fr: 'https://www.swisstopo.admin.ch/fr/mensuration-nationale-mn03',
-    it: 'https://www.swisstopo.admin.ch/it/triangolazione-nazionale-mn03',
-    en: 'https://www.swisstopo.admin.ch/en/national-triangulation-network-lv03',
 }
 
 const ELEVATION_LINKS: Partial<Record<Lang, string>> = {
@@ -123,7 +109,6 @@ watchEffect(() => {
 
         const proj = currentProjection.value
         const lv95 = coordinateFormat(LV95Format, coord, proj)
-        const lv03 = coordinateFormat(LV03Format, coord, proj)
         const wgs84Dec = coordinateFormat(WGS84Format, coord, proj, true)
         const utm = coordinateFormat(UTMFormat, coord, proj)
         const mgrs = coordinateFormat(MGRSFormat, coord, proj)
@@ -141,11 +126,6 @@ watchEffect(() => {
                 label: LV95Format.label,
                 labelLink: swisstopoLink(LV95_LINKS),
                 value: lv95,
-            },
-            {
-                label: LV03Format.label,
-                labelLink: swisstopoLink(LV03_LINKS),
-                value: lv03,
             },
             {
                 label: WGS84Format.label,
