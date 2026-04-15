@@ -4,7 +4,6 @@ import type { ActionDispatcher } from '@swissgeo/map'
 import { LV95, WGS84 } from '@swissgeo/coordinates'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
-import { useToast } from '#imports'
 import { isEqual } from 'es-toolkit'
 import { defineStore } from 'pinia'
 import proj4 from 'proj4'
@@ -201,7 +200,7 @@ function handleGeolocationError(
         messages: ['Geolocation activation failed', error],
     })
 
-    const toast = useToast()
+    const toaster = useToaster()
 
     // Use numeric constants directly — GeolocationPositionError is not available in all environments
     const PERMISSION_DENIED = 1
@@ -210,11 +209,11 @@ function handleGeolocationError(
     switch (error.code) {
         case PERMISSION_DENIED:
             this.setGeolocationDenied(true, dispatcher)
-            toast.add({ title: 'Location permission denied', color: 'error' })
+            toaster.showError('Location permission denied')
             break
         case TIMEOUT:
             this.setGeolocationActive(false, dispatcher)
-            toast.add({ title: 'Location request timed out', color: 'warning' })
+            toaster.showWarning('Location request timed out')
             break
         default:
             this.errorCount += 1
@@ -227,7 +226,7 @@ function handleGeolocationError(
                     this.errorCount = previousErrorCount
                 }
             } else {
-                toast.add({ title: 'Unable to determine location', color: 'warning' })
+                toaster.showWarning('Unable to determine location')
                 if (reactivate) {
                     this.setGeolocationActive(false, dispatcher)
                 }
@@ -241,7 +240,7 @@ function setCenterIfInBounds(
     store: ReturnType<typeof useGeolocationStore>
 ): void {
     const positionStore = usePositionStore()
-    const toast = useToast()
+    const toaster = useToaster()
 
     const lv95BoundsInCurrentProjection = LV95.getBoundsAs(positionStore.projection)
 
@@ -260,9 +259,8 @@ function setCenterIfInBounds(
             titleColor: LogPreDefinedColor.Amber,
             messages: [`Current geolocation is out of bounds: ${JSON.stringify(center)}`],
         })
-        toast.add({
-            title: 'Your location is outside of Switzerland and cannot be shown on the map',
-            color: 'warning',
-        })
+        toaster.showWarning(
+            'Your location is outside of Switzerland and cannot be shown on the map'
+        )
     }
 }
