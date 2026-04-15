@@ -9,8 +9,8 @@ const id = computed(() => route.params.id as string)
 const { dataset, distributionCollection, error } = useDatasetRecord(id)
 
 useSeoMeta({
-    title: dataset.value?.properties.title,
-    description: dataset.value?.properties.description,
+    title: () => dataset.value?.properties.title,
+    description: () => dataset.value?.properties.description,
 })
 
 const layerStore = useLayerStore()

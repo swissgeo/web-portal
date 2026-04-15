@@ -7,13 +7,16 @@ defineProps<{
     languages: Language[]
 }>()
 
-function resolveLanguageName(lang: Language): string {
+const displayNames = computed(() => {
     try {
-        const displayNames = new Intl.DisplayNames([locale.value], { type: 'language' })
-        return displayNames.of(lang.code)?.replace(/^\w/, (c) => c.toUpperCase()) ?? lang.name
+        return new Intl.DisplayNames([locale.value], { type: 'language' })
     } catch {
-        return lang.name
+        return null
     }
+})
+
+function resolveLanguageName(lang: Language): string {
+    return displayNames.value?.of(lang.code)?.replace(/^\w/, (c) => c.toUpperCase()) ?? lang.name
 }
 </script>
 
