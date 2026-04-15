@@ -130,4 +130,4 @@ Playwright auto-starts the Nuxt dev server on `http://localhost:3000`. If you al
 
 > **Note:** The first page load in dev mode can take 30–45s while Vite compiles modules on demand. Subsequent test runs in the same session are fast thanks to HMR.
 
-**In CI** the workflow runs the tests against a production preview (`pnpm --filter main preview`) after a full `pnpm build`, which avoids the dev-mode cold-start delay. The workflow definition lives at `.github/workflows/e2e.yml`.
+**In CI** (AWS CodeBuild) the tests run against a production preview (`pnpm --filter main preview`) after a full `pnpm build`, which avoids the dev-mode cold-start delay. The Playwright config switches automatically when `CI=true` is set.
