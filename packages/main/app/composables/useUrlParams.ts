@@ -12,7 +12,11 @@ const URL_PARAM_STATE = 'state'
 const URL_PARAM_PRINT_FORMAT = 'print_format'
 const URL_PARAM_PRINT_ORIENTATION = 'print_orientation'
 const URL_PARAM_PRINT_RESOLUTION = 'print_resolution'
-const URL_PARAM_PRINT_SCALE = 'print_scale'
+
+// URL param to force a zoom level, overriding the one provided by a state
+// (only used for print at the moment but could be not print-specific in the future)
+const URL_PARAM_ZOOM = 'z'
+
 
 export function useUrlParams() {
     const route = useRoute()
@@ -69,35 +73,38 @@ export function useUrlParams() {
 
     /**
      * Get the print config from the URL
-     * ?print_format=a4&print_orientation=landscape&print_scale=25000&print_resolution=96
+     * ?print_format=a4&print_orientation=landscape&print_resolution=96
      */
-    function getPrintConfig(removeFromUrl = false): PrintConfig {
+    function getPrintConfigFromUrl(): PrintConfig {
         const printConfig = {
             format: route.query[URL_PARAM_PRINT_FORMAT],
             orientation: route.query[URL_PARAM_PRINT_ORIENTATION],
-            resolution: parseFloat(route.query[URL_PARAM_PRINT_RESOLUTION] as string),
-            scale: parseFloat(route.query[URL_PARAM_PRINT_SCALE] as string),
-        }
-
-        if (removeFromUrl) {
-            // remove the print config from the URL (without page refresh)
-            onNuxtReady(async () => {
-                const newQuery = { ...route.query }
-                delete newQuery[URL_PARAM_PRINT_FORMAT]
-                delete newQuery[URL_PARAM_PRINT_ORIENTATION]
-                delete newQuery[URL_PARAM_PRINT_RESOLUTION]
-                delete newQuery[URL_PARAM_PRINT_SCALE]
-                await router.replace({ query: newQuery })
-            })
+            resolution: Number.parseFloat(route.query[URL_PARAM_PRINT_RESOLUTION] as string),
+            zoom: getZoomFromUrl(),
         }
         
         validatePrintConfig(printConfig);
         return printConfig
     }
 
+    /**
+     * Get the forced zoom value from the URL
+     */
+    function getZoomFromUrl(): number | null {
+        const stateParam = route.query[URL_PARAM_ZOOM]
+
+        if (typeof stateParam !== 'string') {
+            return null
+        }
+
+        const z = Number.parseFloat(stateParam)
+        return Number.isNaN(z) ? null : z
+    }
+
     return {
         getStateFromUrl,
         extractStateId,
-        getPrintConfig,
+        getPrintConfigFromUrl,
+        getZoomFromUrl,
     }
 }

@@ -1,15 +1,15 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
+const { getPrintConfigFromUrl } = useUrlParams()
+const printConfig = getPrintConfigFromUrl()
 
-const printStore = usePrintStore()
-const width = ref('100dw')
-const height = ref('100dvh')
+const containerWidth = ref('100dw')
+const containerHeight = ref('100dvh')
 
 onMounted(() => {
-    if (printStore.printSizePixel) {
-        width.value = `${printStore.printSizePixel.width}px`
-        height.value = `${printStore.printSizePixel.height}px`
-    }
+    const {width, height } = getPageSizeInPixels(printConfig.format, printConfig.orientation, printConfig.resolution)
+    containerWidth.value = `${width}px`
+    containerHeight.value = `${height}px`
 })
 </script>
 
@@ -18,8 +18,8 @@ onMounted(() => {
         ref="main"
         class="font-sans"
         :style="{ 
-            width, 
-            height, 
+            width: containerWidth, 
+            height: containerHeight, 
         }"
     >
         <slot />
