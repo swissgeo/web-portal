@@ -32,13 +32,13 @@ function addToMap() {
 
 <template>
     <div class="h-full overflow-y-auto">
-        <div class="mx-auto max-w-3xl px-4 py-8">
-            <div class="mb-6 flex items-center justify-between">
+        <article class="mx-auto max-w-3xl px-4 py-8">
+            <nav class="mb-6 flex items-center justify-between">
                 <UButton
                     :to="localePath('/map')"
                     icon="i-lucide-arrow-left"
                     color="neutral"
-                    variant="ghost"
+                    variant="subtle"
                 >
                     {{ $t('dataset.backToMap') }}
                 </UButton>
@@ -51,7 +51,7 @@ function addToMap() {
                 >
                     {{ $t('dataset.addToMap') }}
                 </UButton>
-                <div
+                <span
                     v-else-if="dataset && isAlreadyOnMap"
                     class="flex items-center gap-2 text-sm text-muted"
                 >
@@ -60,15 +60,15 @@ function addToMap() {
                         class="size-4"
                     />
                     {{ $t('dataset.alreadyOnMap') }}
-                </div>
-            </div>
+                </span>
+            </nav>
 
-            <div
+            <p
                 v-if="error"
                 class="flex items-center justify-center text-sm text-red-500"
             >
                 {{ error.message }}
-            </div>
+            </p>
 
             <template v-else-if="dataset">
                 <h1 class="mb-8 text-2xl font-bold">
@@ -90,6 +90,6 @@ function addToMap() {
                     <DatasetViewLanguages :languages="dataset.properties.languages" />
                 </section>
             </template>
-        </div>
+        </article>
     </div>
 </template>

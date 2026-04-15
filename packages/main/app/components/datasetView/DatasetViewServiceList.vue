@@ -41,7 +41,7 @@ function getProtocolLabel(distribution: Distribution): string {
                 <span class="font-medium">{{ getProtocolLabel(dist) }}</span>
                 <span v-if="dist.properties.title">— {{ dist.properties.title }}</span>
             </ULink>
-            <div
+            <span
                 v-else
                 class="flex items-center gap-2 text-sm"
             >
@@ -50,7 +50,7 @@ function getProtocolLabel(distribution: Distribution): string {
                     class="size-3 shrink-0"
                 />
                 <span class="font-medium">{{ getProtocolLabel(dist) }}</span>
-            </div>
+            </span>
         </li>
     </ul>
 </template>

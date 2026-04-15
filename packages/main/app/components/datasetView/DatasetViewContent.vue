@@ -46,13 +46,14 @@ const serviceDistributions = computed<Distribution[]>(() => {
             <h3 class="mb-2">
                 {{ $t('dataset.contacts') }}
             </h3>
-            <div class="flex flex-col gap-3">
-                <DatasetViewContact
+            <ul class="flex flex-col gap-3">
+                <li
                     v-for="(contact, i) in dataset.properties.contacts"
                     :key="i"
-                    :contact="contact"
-                />
-            </div>
+                >
+                    <DatasetViewContact :contact="contact" />
+                </li>
+            </ul>
         </section>
 
         <section v-if="displayLinks.length">
