@@ -3,42 +3,43 @@ import type { MaybeRefOrGetter } from 'vue'
 
 import { toValue } from 'vue'
 
+interface DatasetRecord {
+    dataset: Dataset | null
+    distributionCollection: DistributionCollection | null
+}
+
 export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
     const runtimeConfig = useRuntimeConfig()
     const { locale } = useI18n()
 
-    const {
-        data: dataset,
-        status,
-        error,
-    } = useAsyncData<Dataset | null>(
-        () => `dataset-${toValue(id)}-${locale.value}`,
+    const { data, status, error } = useAsyncData<DatasetRecord>(
+        () => `dataset-record-${toValue(id)}-${locale.value}`,
         async () => {
             const resolvedId = toValue(id)
             if (!resolvedId) {
-                return null
+                return { dataset: null, distributionCollection: null }
             }
-            return $fetch<Dataset>(
+
+            const dataset = await $fetch<Dataset>(
                 `${runtimeConfig.public.ogcApiEndpoint}/items/${resolvedId}?language=${locale.value}`
             )
+
+            const distributionsLink = dataset.links?.find((l) => l.rel === 'distributions')
+            if (!distributionsLink?.href) {
+                return { dataset, distributionCollection: null }
+            }
+
+            const distributionCollection = await $fetch<DistributionCollection>(
+                `${distributionsLink.href}?language=${locale.value}`
+            )
+
+            return { dataset, distributionCollection }
         },
         { watch: [() => toValue(id), locale] }
     )
 
-    const { data: distributionCollection } = useAsyncData<DistributionCollection | null>(
-        () => `dataset-distributions-${toValue(id)}-${locale.value}`,
-        async () => {
-            const distributionsLink = dataset.value?.links?.find((l) => l.rel === 'distributions')
-            if (!distributionsLink?.href) {
-                return null
-            }
-            return $fetch<DistributionCollection>(
-                `${distributionsLink.href}?language=${locale.value}`
-            )
-        },
-        { watch: [dataset] }
-    )
-
+    const dataset = computed(() => data.value?.dataset ?? null)
+    const distributionCollection = computed(() => data.value?.distributionCollection ?? null)
     const isLoading = computed(() => status.value === 'pending')
 
     return {
