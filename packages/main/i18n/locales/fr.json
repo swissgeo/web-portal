@@ -140,7 +140,8 @@
             "title": "Position",
             "tabPosition": "Coordonnées",
             "tabShare": "Partager la position",
-            "errorFetchingElevation": "Erreur de récupération de l'élévation"
+            "errorFetchingElevation": "Erreur de récupération de l'élévation",
+            "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words"
         }
     }
 }

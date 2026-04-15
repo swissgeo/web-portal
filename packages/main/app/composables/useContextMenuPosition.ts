@@ -103,7 +103,7 @@ export function useContextMenuPosition(
             return []
         }
 
-        const w3wWords = w3wData.value?.words ?? null
+        const w3wWords = w3wData.value?.words ?? t('map.contextMenuPopup.errorFetchingW3W')
         const elevation =
             elevationFormatted.value ?? t('map.contextMenuPopup.errorFetchingElevation')
 
@@ -127,15 +127,11 @@ export function useContextMenuPosition(
                 label: MGRSFormat.label,
                 value: coordinateFormat(MGRSFormat, coord, proj),
             },
-            ...(w3wWords !== null
-                ? [
-                      {
-                          label: 'what3words',
-                          labelLink: (value: string) => `https://what3words.com/${value}`,
-                          value: w3wWords,
-                      },
-                  ]
-                : []),
+            {
+                label: 'what3words',
+                labelLink: (value: string) => `https://what3words.com/${value}`,
+                value: w3wWords,
+            },
             {
                 label: t('map.contextMenuPopup.elevation'),
                 labelLink: swisstopoLink(ELEVATION_LINKS),

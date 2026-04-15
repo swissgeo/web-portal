@@ -140,7 +140,8 @@
             "title": "Position",
             "tabPosition": "Coordinates",
             "tabShare": "Share Position",
-            "errorFetchingElevation": "Error retrieving elevation"
+            "errorFetchingElevation": "Error retrieving elevation",
+            "errorFetchingW3W": "Error retrieving What3Words address"
         }
     }
 }

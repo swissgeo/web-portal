@@ -140,7 +140,8 @@
             "title": "Position",
             "tabPosition": "Koordinaten",
             "tabShare": "Position teilen",
-            "errorFetchingElevation": "Fehler beim Abrufen der Höhe"
+            "errorFetchingElevation": "Fehler beim Abrufen der Höhe",
+            "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse"
         }
     }
 }
