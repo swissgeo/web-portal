@@ -1,9 +1,20 @@
 <script lang="ts" setup>
 import type { Language } from '@swissgeo/ogc'
 
+const { locale } = useI18n()
+
 defineProps<{
     languages: Language[]
 }>()
+
+function resolveLanguageName(lang: Language): string {
+    try {
+        const displayNames = new Intl.DisplayNames([locale.value], { type: 'language' })
+        return displayNames.of(lang.code)?.replace(/^\w/, (c) => c.toUpperCase()) ?? lang.name
+    } catch {
+        return lang.name
+    }
+}
 </script>
 
 <template>
@@ -16,7 +27,7 @@ defineProps<{
                 color="neutral"
                 variant="subtle"
             >
-                {{ lang.alternate ?? lang.name }}
+                {{ resolveLanguageName(lang) }}
             </UBadge>
         </li>
     </ul>
