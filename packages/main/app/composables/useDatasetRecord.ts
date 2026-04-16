@@ -29,8 +29,10 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
                 return { dataset, distributionCollection: null }
             }
 
+            const distributionsUrl = new URL(distributionsLink.href)
+            distributionsUrl.searchParams.set('language', locale.value)
             const distributionCollection = await $fetch<DistributionCollection>(
-                `${distributionsLink.href}?language=${locale.value}`
+                distributionsUrl.toString()
             )
 
             return { dataset, distributionCollection }
