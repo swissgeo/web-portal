@@ -1,20 +1,75 @@
 <script lang="ts" setup>
+import * as skeleton from '@swissgeo/skeleton'
+
+console.log("skeleton", skeleton.SwissGeoLogoRgbPrio);
+
+
+// Margin in millimeters to add around the print (internal to the page)
+const PRINT_MARGIN_MM = 4
+const { getPrintConfigFromUrl } = useUrlParams()
+const printConfig = getPrintConfigFromUrl()
+
+const containerWidth = ref('100dw')
+const containerHeight = ref('100dvh')
+const containerMargin = ref('0')
+const pixelPerMm = ref(0)
+
+onMounted(() => {
+    pixelPerMm.value = computeNumberOfPixelsForPrint(1, printConfig.resolution)
+    // We want the padding to be internal to the page
+    const margin = pixelPerMm.value * PRINT_MARGIN_MM
+    const {width, height } = getPageSizeInPixels(printConfig.format, printConfig.orientation, printConfig.resolution)
+    containerWidth.value = `${width - 2 * margin}px`
+    containerHeight.value = `${height - 2 * margin}px`
+    containerMargin.value = `${margin}px`
+})
+
 
 </script>
 
 
 <template>
     <NuxtLayout name="print">
-        <div class="print-container">
+        <div
+            class="print-container"
+            :style="{ 
+                width: containerWidth, 
+                height: containerHeight,
+                margin: containerMargin,
+                fontSize: `${pixelPerMm * 2.5}px`,
+            }"
+        >
             <div class="map-container">
                 <MapViewer :show-ui="false"/>
             </div>
             
             <!-- This is the footer of the printed document -->
-            <div class="footer-container">
+            <div
+                class="footer-container"
+                :style="{ 
+                    marginTop: `${pixelPerMm * 4}px`,
+                    gap: `${pixelPerMm * 16}px`,
+                }"
+            >
                 <!-- Footer left part: Swisstopo logo -->
-                <div class="confederation-info">
-                    <svg xmlns='http://www.w3.org/2000/svg' class="coat-of-arms" viewBox="0 0 604 669"><g><path fill='#D52B1E' d='M302,2 C 402,2 502,19 602,52 C 602,286 604,534 302,667 C 0,534 2,286 2,52 C 102,19 202,2 302,2 z'/><path fill='#fff' d='M102,242 h140 v-140 h120 v140 h140 v120 h-140 v140 h-120 v-140 h-140 z'/></g></svg>
+                <div
+                    class="confederation-info"
+                    :style="{ 
+                        gap: `${pixelPerMm * 4}px`
+                    }"
+                >
+                    <div
+                        :style="{ 
+                            width: `${pixelPerMm * 20}px`
+                        }"
+                    >
+                        <img
+                            :src="skeleton.SwissGeoLogoRgbPrio"
+                            alt="Swissgeo logo"
+                            style='width: 100%;'
+                        />
+                    </div>
+                   
                     <div>
                         <p>Schweizerische Eidgenossenschaft</p>
                         <p>Confédération suisse</p>
@@ -41,9 +96,7 @@
 .print-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%;
-    font-size: max(max(.8vw, .8vh), 8px);
+    /* font-size: max(max(.8vw, .8vh), 8px); */
 }
 
 .map-container {
@@ -58,15 +111,12 @@
     padding: 0.25rem;
     display: flex;
     flex-direction: row;
-    gap: 1rem;
 }
 
 .confederation-info {
     display: flex;
     flex-direction: row;
-    margin: calc(1.32 * max(max(.8vw, .8vh), 8px));
-    gap: calc(1.32 * max(max(.8vw, .8vh), 8px));
-    width: 100%;
+    /* width: 100%; */
     white-space: nowrap;
 }
 
@@ -75,12 +125,10 @@
 }
 
 .coat-of-arms {
-    width: calc(5 * .66 * max(max(.8vw, .8vh), 8px));
     height: fit-content;
 }
 
 .disclaimer {
-    margin: calc(1.32 * max(max(.8vw, .8vh), 8px));
     text-align: justify;
 }
 
