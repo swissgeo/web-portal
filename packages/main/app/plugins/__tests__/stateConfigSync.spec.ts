@@ -29,15 +29,12 @@ mockNuxtImport('useToaster', () => () => ({ showWarning: vi.fn() }))
 mockNuxtImport('useNuxtApp', () => () => ({ $i18n: { t: vi.fn((key: string) => key) } }))
 
 vi.mock('@swissgeo/log', async (importOriginal) => {
-    const original = (await importOriginal()) as Record<string, unknown>
+    const original = await importOriginal()
     return {
+        // @ts-expect-error importOriginal returns unknown but spread works at runtime
         ...original,
-        default: {
-            ...(original.default as Record<string, unknown>),
-            info: vi.fn(),
-            warn: vi.fn(),
-            error: vi.fn(),
-        },
+        // @ts-expect-error same as above — override log methods with spies
+        default: { ...original.default, info: vi.fn(), warn: vi.fn(), error: vi.fn() },
     }
 })
 
