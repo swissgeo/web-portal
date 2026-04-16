@@ -28,9 +28,7 @@ describe('Nuxt i18n integration', () => {
     it('provides the configured locales from nuxt.config.ts', async () => {
         const wrapper = await mountSuspended(I18nProbe)
 
-        const codes = wrapper.vm.locales.map(
-            (l: { code: string }) => l.code,
-        )
+        const codes = wrapper.vm.locales.map((l: { code: string }) => l.code)
         expect(codes).toContain('de')
         expect(codes).toContain('fr')
         expect(codes).toContain('en')

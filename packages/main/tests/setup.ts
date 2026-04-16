@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Vitest setup file for *.nuxt.spec.ts tests.
  *

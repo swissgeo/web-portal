@@ -1,6 +1,6 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { ref } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { ref } from 'vue'
 
 import { STORAGE_KEY } from '@/composables/useRestoreState'
 
@@ -29,7 +29,7 @@ mockNuxtImport('useToaster', () => () => ({ showWarning: vi.fn() }))
 mockNuxtImport('useNuxtApp', () => () => ({ $i18n: { t: vi.fn((key: string) => key) } }))
 
 vi.mock('@swissgeo/log', async (importOriginal) => {
-    const original = await importOriginal<typeof import('@swissgeo/log')>()
+    const original = await importOriginal()
     return {
         ...original,
         default: { ...original.default, info: vi.fn(), warn: vi.fn(), error: vi.fn() },
