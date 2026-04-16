@@ -29,10 +29,15 @@ mockNuxtImport('useToaster', () => () => ({ showWarning: vi.fn() }))
 mockNuxtImport('useNuxtApp', () => () => ({ $i18n: { t: vi.fn((key: string) => key) } }))
 
 vi.mock('@swissgeo/log', async (importOriginal) => {
-    const original = await importOriginal()
+    const original = (await importOriginal()) as Record<string, unknown>
     return {
         ...original,
-        default: { ...original.default, info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+        default: {
+            ...(original.default as Record<string, unknown>),
+            info: vi.fn(),
+            warn: vi.fn(),
+            error: vi.fn(),
+        },
     }
 })
 
