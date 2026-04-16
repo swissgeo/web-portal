@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
+import log from '@swissgeo/log'
 import { useDatasetViewStore } from '@swissgeo/skeleton'
 import { computed } from 'vue'
 
@@ -21,11 +22,22 @@ const isAlreadyOnMap = computed(() => {
     return layerStore.layers.some((l) => l.humanId === dataset.value!.id)
 })
 
+const toast = useToast()
+const { t } = useI18n()
+
 function addToMap() {
     if (!dataset.value || isAlreadyOnMap.value) {
         return
     }
-    layerStore.addLayer(makeServerLayer(dataset.value))
+    try {
+        layerStore.addLayer(makeServerLayer(dataset.value))
+    } catch (e) {
+        log.error('Failed to add dataset to map', e instanceof Error ? e : new Error(String(e)))
+        toast.add({
+            color: 'error',
+            title: t('dataset.addToMapError'),
+        })
+    }
 }
 </script>
 

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
+import log from '@swissgeo/log'
 
 const route = useRoute()
 const localePath = useLocalePath()
@@ -14,6 +15,8 @@ useSeoMeta({
 })
 
 const layerStore = useLayerStore()
+const toast = useToast()
+const { t } = useI18n()
 
 const isAlreadyOnMap = computed(() => {
     if (!dataset.value) {
@@ -26,7 +29,15 @@ function addToMap() {
     if (!dataset.value || isAlreadyOnMap.value) {
         return
     }
-    layerStore.addLayer(makeServerLayer(dataset.value))
+    try {
+        layerStore.addLayer(makeServerLayer(dataset.value))
+    } catch (e) {
+        log.error('Failed to add dataset to map', e instanceof Error ? e : new Error(String(e)))
+        toast.add({
+            color: 'error',
+            title: t('dataset.addToMapError'),
+        })
+    }
 }
 </script>
 

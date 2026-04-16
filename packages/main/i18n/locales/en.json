@@ -154,6 +154,7 @@
         "alreadyOnMap": "Already on map",
         "viewDetailPage": "View detail page",
         "showOnMap": "Show on map",
-        "backToMap": "Back to map"
+        "backToMap": "Back to map",
+        "addToMapError": "Failed to add layer to map"
     }
 }

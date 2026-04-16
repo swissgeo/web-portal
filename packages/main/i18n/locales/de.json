@@ -154,6 +154,7 @@
         "alreadyOnMap": "Bereits auf der Karte",
         "viewDetailPage": "Detailseite anzeigen",
         "showOnMap": "Auf der Karte anzeigen",
-        "backToMap": "Zurück zur Karte"
+        "backToMap": "Zurück zur Karte",
+        "addToMapError": "Ebene konnte nicht zur Karte hinzugefügt werden"
     }
 }

@@ -154,6 +154,7 @@
         "alreadyOnMap": "Déjà sur la carte",
         "viewDetailPage": "Voir la page détaillée",
         "showOnMap": "Voir sur la carte",
-        "backToMap": "Retour à la carte"
+        "backToMap": "Retour à la carte",
+        "addToMapError": "Impossible d'ajouter la couche à la carte"
     }
 }
