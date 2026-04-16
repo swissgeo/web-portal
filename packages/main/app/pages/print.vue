@@ -5,6 +5,8 @@ import { SwissGeoLogoRgbPrio } from '@swissgeo/skeleton'
 
 // Margin in millimeters to add around the print (internal to the page)
 const PRINT_MARGIN_MM = 4
+// const viewStore = useMapViewStore()
+const { link } = useCreateShareLinkForPrint()
 const { getPrintConfigFromUrl } = useUrlParams()
 const printConfig = getPrintConfigFromUrl()
 
@@ -21,6 +23,8 @@ onMounted(() => {
     containerWidth.value = `${width - 2 * margin}px`
     containerHeight.value = `${height - 2 * margin}px`
     containerMargin.value = `${margin}px`
+    console.log(">>>>>>>>>< link", link.value);
+    
 })
 
 </script>
@@ -39,14 +43,26 @@ onMounted(() => {
             <div class="map-container">
                 <MapViewer :show-ui="false"/>
                 <div
+                    v-if="link"
                     class="qr-code-container">
+                    <div
+                        v-if="link"
+                        class="link-container"
+                    >
+                        Visit this map at<a class="underline" :href="link">{{ link }}</a>
+                    </div>
                     <vue-qrcode
-                        value="https://www.swisstopo.admin.ch"
+                        :value="link"
                         :options="{
-                            width: pixelPerMm * 20
+                            width: pixelPerMm * 20,
+                            color: {
+                                dark: '#1c6b85'
+                            }
                         }"
                         ></vue-qrcode>
                 </div>
+
+                
             </div>
             
             <!-- This is the footer of the printed document -->
@@ -147,5 +163,15 @@ onMounted(() => {
     bottom: 0;
     right: 0;
     z-index: 2;
+    display: flex;
+    flex-direction: row;
+}
+
+.link-container,
+.link-container a {
+    background-color: #FFF;
+    align-self: end;
+    padding: 2px 10px;
+    color: rgb(28, 107, 133);
 }
 </style>

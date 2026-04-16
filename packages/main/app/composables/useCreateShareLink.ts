@@ -12,7 +12,7 @@ export function useCreateShareLink(state: Ref<AppStatePayload>) {
         .json()
 
     const shareLink = computed(() => {
-        if (hash.value) {
+        if (hash.value) {            
             const baseUrl = new URL(document.location.href)
             const params = baseUrl.searchParams
             params.set('state', hash.value.id)
@@ -26,4 +26,22 @@ export function useCreateShareLink(state: Ref<AppStatePayload>) {
     return {
         shareLink,
     }
+}
+
+/**
+ * Create a link to the /map route.
+ */
+export function useCreateShareLinkForPrint() {
+    const appStore = useAppStore()
+    const viewStore = useMapViewStore()
+    const link = computed(() => {
+        if (viewStore.stateId) {
+            const url = new URL(`${appStore.locale}/map`, location.origin)
+            url.searchParams.set('state', viewStore.stateId)
+            return url.href
+        }
+        return null
+    })
+
+    return { link }
 }

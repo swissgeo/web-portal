@@ -21,12 +21,11 @@ const URL_PARAM_ZOOM = 'z'
 export function useUrlParams() {
     const route = useRoute()
     const router = useRouter()
-    
+
     /**
-     * Read the state ID from URL param, load the state corresponding to this ID,
-     * return it as a payload and removed the param from the URL
+     * Get the state ID from URL, or null is missing
      */
-    function extractStateId(): string | null {
+    function getStateIdFromUrl(): string | null {
         const stateParam = route.query[URL_PARAM_STATE]
 
         if (!stateParam) {
@@ -35,6 +34,16 @@ export function useUrlParams() {
 
         // Extract the value, handling the case where multiple params with the same name exist
         const stateId = Array.isArray(stateParam) ? stateParam[0] : stateParam
+        return stateId || null;
+    }
+    
+    /**
+     * Read the state ID from URL param, load the state corresponding to this ID,
+     * return it as a payload and removed the param from the URL
+     */
+    async function getStateFromUrl(): Promise<{ state: JSON | null, stateId: string} > {
+        // Extract the value, handling the case where multiple params with the same name exist
+        const stateId = getStateIdFromUrl()
 
         // remove the state ID from the URL (without page refresh)
         onNuxtReady(async () => {
@@ -44,7 +53,7 @@ export function useUrlParams() {
         })
 
         if (typeof stateId !== 'string') {
-            return null
+            return { state: null, stateId: '' }
         }
 
         log.debug({
@@ -56,19 +65,10 @@ export function useUrlParams() {
             ],
         })
 
-        return stateId
-    }
-
-    /**
-     * Read the state ID from URL param, load the state corresponding to this ID,
-     * return it as a payload and removed the param from the URL
-     */
-    function getStateFromUrl(): Promise<unknown> {
-        const stateId = extractStateId()
-        if (!stateId) {
-            return Promise.resolve(null)
+        return {
+            state: await fetchStateFromStateId(stateId),
+            stateId,
         }
-        return fetchStateFromStateId(stateId)
     }
 
     /**
@@ -102,8 +102,8 @@ export function useUrlParams() {
     }
 
     return {
+        getStateIdFromUrl,
         getStateFromUrl,
-        extractStateId,
         getPrintConfigFromUrl,
         getZoomFromUrl,
     }

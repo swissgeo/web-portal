@@ -29,21 +29,23 @@ export function useRestoreState() {
             messages: ['About to restore state from URL or sessionStorage'],
         })
 
+        const viewStore = useMapViewStore()
         const { getStateFromUrl, getZoomFromUrl } = useUrlParams()
         const zoomFromUrl = getZoomFromUrl()
         
         try {
-            const stateFromUrlParam = await getStateFromUrl()
+            const { state, stateId } = await getStateFromUrl()
              
             log.debug({
                 title: 'useRestoreState',
                 titleColor: LogPreDefinedColor.Sky,
-                messages: ['State from the URL param', stateFromUrlParam],
+                messages: ['State from the URL param', state],
             })
 
             // If a valid state ID is preent in URL, it takes precedance over the state in SessionStorage
-            if (stateFromUrlParam) {
-                const config = validateAndPrepareAppStatePayload(stateFromUrlParam)
+            if (state) {
+                const config = validateAndPrepareAppStatePayload(state)
+                viewStore.setStateId(stateId)
 
                 // If a zoom is in URL, it overwrite the zoom from config
                 // (used in the print feature)
