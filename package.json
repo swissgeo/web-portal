@@ -26,8 +26,9 @@
         "lint": "pnpm run --parallel --no-bail --if-present lint",
         "lint:write": "pnpm run --parallel --no-bail --if-present lint:write",
         "test": "pnpm run test:unit",
-        "test:integration": "playwright test",
         "test:coverage": "vitest run --coverage",
+        "test:integration": "playwright test",
+        "test:integration:ci": "playwright test -c playwright.config.ci.ts",
         "test:ui": "vitest --ui",
         "test:unit": "pnpm run --parallel --no-bail --if-present test:unit",
         "type-check": "pnpm run --parallel --no-bail --if-present type-check"
