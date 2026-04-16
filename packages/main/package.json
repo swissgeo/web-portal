@@ -19,6 +19,7 @@
         "type-check": "nuxt typecheck"
     },
     "dependencies": {
+        "@chenfengyuan/vue-qrcode": "^2.0.0",
         "@floating-ui/vue": "catalog:",
         "@fontsource/dm-sans": "catalog:",
         "@fontsource/geologica": "catalog:",
@@ -56,12 +57,13 @@
         "ol": "catalog:",
         "pinia": "catalog:",
         "proj4": "catalog:",
+        "qrcode": "^1.5.4",
         "sanitize-html": "catalog:",
         "slugify": "catalog:",
         "sortablejs": "catalog:",
         "ufo": "catalog:",
         "vite-plugin-node-polyfills": "catalog:",
-        "vue": "catalog:"
+        "vue": "^3.5.28"
     },
     "devDependencies": {
         "@eslint/markdown": "catalog:",

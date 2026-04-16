@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import * as skeleton from '@swissgeo/skeleton'
-
-console.log("skeleton", skeleton.SwissGeoLogoRgbPrio);
+import VueQrcode from '@chenfengyuan/vue-qrcode'
+import { SwissGeoLogoRgbPrio } from '@swissgeo/skeleton'
 
 
 // Margin in millimeters to add around the print (internal to the page)
@@ -24,9 +23,7 @@ onMounted(() => {
     containerMargin.value = `${margin}px`
 })
 
-
 </script>
-
 
 <template>
     <NuxtLayout name="print">
@@ -41,6 +38,15 @@ onMounted(() => {
         >
             <div class="map-container">
                 <MapViewer :show-ui="false"/>
+                <div
+                    class="qr-code-container">
+                    <vue-qrcode
+                        value="https://www.swisstopo.admin.ch"
+                        :options="{
+                            width: pixelPerMm * 20
+                        }"
+                        ></vue-qrcode>
+                </div>
             </div>
             
             <!-- This is the footer of the printed document -->
@@ -64,7 +70,7 @@ onMounted(() => {
                         }"
                     >
                         <img
-                            :src="skeleton.SwissGeoLogoRgbPrio"
+                            :src="SwissGeoLogoRgbPrio"
                             alt="Swissgeo logo"
                             style='width: 100%;'
                         />
@@ -134,5 +140,12 @@ onMounted(() => {
 
 .disclaimer p:not(:last-child) {
     margin-bottom: 0.25em;
+}
+
+.qr-code-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 2;
 }
 </style>
