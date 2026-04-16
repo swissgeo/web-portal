@@ -1,15 +1,22 @@
 <script lang="ts" setup>
 import type { Contact } from '@swissgeo/ogc'
 
-defineProps<{
+const { contact } = defineProps<{
     contact: Contact
 }>()
+
+const description = computed(() => {
+    const parts = [contact.role, contact.country ? `(${contact.country})` : '']
+        .filter(Boolean)
+        .join(' ')
+    return parts || undefined
+})
 </script>
 
 <template>
     <UUser
         :name="contact.organisation"
-        :description="`${contact.role} (${contact.country})`"
+        :description="description"
         :avatar="{
             src: '',
             alt: contact.organisation,
