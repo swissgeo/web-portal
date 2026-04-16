@@ -3,7 +3,7 @@
 import type { Dataset, GeoJSON, WMSCapabilities, WMTSCapabilities } from '@swissgeo/ogc'
 import type { GeoAdminGeoJSONStyleDefinition } from '@swissgeo/shared/geojson'
 
-export type LayerType = 'wmts' | 'wms' | 'geojson' | 'vector' | 'kml' | 'kmz' | 'gpx'
+export type LayerType = 'wmts' | 'wms' | 'geojson' | 'kml' | 'kmz' | 'gpx'
 
 export interface LayerAttribution {
     title: string

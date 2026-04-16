@@ -13,7 +13,6 @@ const layerBgMap: Record<string, string> = {
     wms: 'bg-amber-200',
     wmts: 'bg-fuchsia-200',
     geojson: 'bg-rose-200',
-    vector: 'bg-slate-200',
 }
 
 const layerBg = computed(() => {

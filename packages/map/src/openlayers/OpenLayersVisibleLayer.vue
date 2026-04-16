@@ -3,14 +3,13 @@ import { computed } from 'vue'
 
 import type { MapLayerRenderer, Layer } from '@/types/layers'
 
-import { isWMTS, isWMS, isKML, isKMZ, isGPX, isGeoJSON, isVector } from '@/utils/recordUtils'
+import { isWMTS, isWMS, isKML, isKMZ, isGPX, isGeoJSON } from '@/utils/recordUtils'
 
 import OpenLayersGeoJSONLayer from './OpenLayersGeoJSONLayer.vue'
 import OpenLayersGPXLayer from './OpenLayersGPXLayer.vue'
 import OpenLayersKMLLayer from './OpenLayersKMLLayer.vue'
 import OpenLayersKMZLayer from './OpenLayersKMZLayer.vue'
 import OpenLayersLocalGeoJSONLayer from './OpenLayersLocalGeoJSONLayer.vue'
-import OpenLayersVectorLayer from './OpenLayersVectorLayer.vue'
 import OpenLayersWMSLayer from './OpenLayersWMSLayer.vue'
 import OpenLayersWMTSLayer from './OpenLayersWMTSLayer.vue'
 
@@ -62,9 +61,5 @@ const customLayerRenderer = computed(() =>
     <OpenLayersGeoJSONLayer
         :layer="layer"
         v-else-if="isGeoJSON(layer) && !isLocalFile"
-    />
-    <OpenLayersVectorLayer
-        :layer="layer"
-        v-else-if="isVector(layer)"
     />
 </template>

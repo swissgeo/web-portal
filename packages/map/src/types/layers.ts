@@ -18,7 +18,7 @@ export type DimensionId = 'time'
 
 export type DimensionRecord = Partial<Record<DimensionId, Dimension>>
 
-export type LayerFormat = 'WMTS' | 'WMS' | 'GeoJSON' | 'KML' | 'KMZ' | 'GPX' | 'Vector'
+export type LayerFormat = 'WMTS' | 'WMS' | 'GeoJSON' | 'KML' | 'KMZ' | 'GPX'
 
 export interface Layer {
     format: LayerFormat
@@ -63,11 +63,6 @@ export interface GeoJSONLayer extends Layer {
     format: 'GeoJSON'
     geoJsonData: FeatureCollectionWithCRS
     geoJsonStyle?: GeoAdminGeoJSONStyleDefinition
-}
-
-export interface VectorLayer extends Layer {
-    format: 'Vector'
-    data: string
 }
 
 export interface MapLayerRenderer {

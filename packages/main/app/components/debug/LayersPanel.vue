@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { Dataset } from '@swissgeo/ogc'
 
-import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import { IconButton } from '@swissgeo/skeleton'
 
 const { locale } = useI18n()
@@ -9,8 +8,6 @@ const { locale } = useI18n()
 const filterTerm = ref<string>('')
 // the composable will update the data if the locale changes
 const { data: recordLayers } = useOgcCatalog(locale)
-
-const layerStore = useLayerStore()
 
 const availableLayers = computed(() => {
     return recordLayers.value
@@ -28,19 +25,6 @@ const filteredAvailableLayers = computed((): Dataset[] => {
         layer.id.includes(filterTerm.value)
     )
 })
-
-function toggleVectorLayer() {
-    layerStore.addLayer(
-        makeServerLayer({
-            id: 'ch.swisstopouseLayerStore.vector',
-            links: [],
-            properties: {
-                title: 'Vector Test',
-                type: 'Dataset',
-            },
-        })
-    )
-}
 </script>
 
 <template>
@@ -60,15 +44,6 @@ function toggleVectorLayer() {
         </div>
         <div class="mt-12 h-75 overflow-scroll pb-18">
             <table class="">
-                <thead>
-                    <tr class="border-b">
-                        <!-- we're not getting this via API yet-->
-                        <td class="pb-2">
-                            <button @click="toggleVectorLayer">VECTOR TEST</button>
-                        </td>
-                        <td class="bg-slate-200 pb-2">vector</td>
-                    </tr>
-                </thead>
                 <DebugLayersPanelEntry
                     :dataset="layer"
                     v-for="layer in filteredAvailableLayers"
