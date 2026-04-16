@@ -110,3 +110,4 @@ FROM builder-dev AS checker
 LABEL target=checker
 
 WORKDIR ${BUILD_DIR}
+ENTRYPOINT ["node", "server/index.mjs"]

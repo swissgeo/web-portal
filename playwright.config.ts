@@ -32,7 +32,7 @@ export default defineConfig({
         // CI runs `pnpm build` as a dedicated step, then Playwright starts the
         // production preview server. Locally we keep `pnpm run dev` for HMR
         // while writing tests.
-        command: process.env.CI ? 'pnpm --filter main preview' : 'pnpm run dev',
+        command: process.env.CI ? `docker run --rm ${process.env.DOCKER_TAGS}` : 'pnpm run dev',
         url: 'http://localhost:3000',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
