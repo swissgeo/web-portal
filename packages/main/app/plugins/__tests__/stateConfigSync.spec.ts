@@ -99,12 +99,11 @@ describe('stateConfigSync plugin', () => {
 
         it('calls importState with the stored JSON string when state is present', async () => {
             const state = {
-                version: '0.2.0',
+                version: '1.0',
                 state: {
                     map: { center: [2420001, 1030001], zoom: 10, rotation: 0 },
                     layers: [],
                 },
-                app: 'web-portal' as const,
             }
             const stored = JSON.stringify(state)
             sessionStorage.setItem(STORAGE_KEY, stored)

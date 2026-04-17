@@ -27,10 +27,9 @@ export interface AppStateConfig {
 export interface AppStatePayload {
     version: string
     state: AppStateConfig
-    app: 'web-portal'
 }
 
 // used only internally in validation. They are kept here to be easy to modify when we modify the interface.
 export const layerStateConfigKeys = ['layerUrl', 'type', 'isVisible', 'opacity', 'dimensions']
 export const validAppStateConfigKeys = ['map', 'layers', 'backgroundLayer']
-export const validateAppStatePayloadKeys = ['version', 'state', 'app']
+export const validateAppStatePayloadKeys = ['version', 'state']

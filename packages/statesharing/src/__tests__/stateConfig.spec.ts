@@ -26,7 +26,6 @@ const validState: AppStateConfig = {
 const validPayload: AppStatePayload = {
     version: VERSION,
     state: validState,
-    app: 'web-portal',
 }
 
 describe('validateAndPrepareAppStatePayload', () => {
@@ -114,8 +113,8 @@ describe('validateAndPrepareAppStatePayload', () => {
 
     it('rejects unsupported version', () => {
         expect(() =>
-            validateAndPrepareAppStatePayload({ state: validState, version: '1' })
-        ).toThrow(`The version 1 does not satisfy the constraint ${APP_STATE_CONFIG_CONSTRAINT}`)
+            validateAndPrepareAppStatePayload({ state: validState, version: '2' })
+        ).toThrow(`The version 2 does not satisfy the constraint ${APP_STATE_CONFIG_CONSTRAINT}`)
     })
 
     it('rejects missing version', () => {
@@ -129,7 +128,7 @@ describe('validateAndPrepareAppStatePayload', () => {
     it('rejects missing map', () => {
         expect(() =>
             validateAndPrepareAppStatePayload({
-                version: '0.2.0',
+                version: '1.0',
                 state: { layers: validState.layers },
             })
         ).toThrow('Mandatory key "map" not present in the state')
@@ -173,7 +172,7 @@ describe('validateAndPrepareAppStatePayload', () => {
 
     it('rejects missing layers', () => {
         expect(() =>
-            validateAndPrepareAppStatePayload({ version: '0.2.0', state: { map: validState.map } })
+            validateAndPrepareAppStatePayload({ version: '1.0', state: { map: validState.map } })
         ).toThrow('Mandatory key "layers" not present in the state')
     })
 
