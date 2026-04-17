@@ -1,5 +1,4 @@
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { fetchStateFromStateId } from '~/utils/fetchStateFromStateId'
 
 import type { PrintConfig } from '../types/print'
 

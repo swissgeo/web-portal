@@ -51,15 +51,6 @@ describe('useUrlParams state extraction', () => {
         vi.clearAllMocks()
     })
 
-    // for some reason, if this isn't the first test in the sequence, it will fail
-    // I tried increasing the timeout, didn't really help. I suspect there is something
-    // fishy with our test setup, and created GPS-629 to investigate that
-    it('Calls the fetchState util', async () => {
-        const { getStateFromUrl } = useUrlParams()
-        await getStateFromUrl()
-        expect(fetchStateMock).toHaveBeenLastCalledWith('ABC')
-    })
-
     it('Extracts the state id from the URL correctly', () => {
         const { getStateIdFromUrl } = useUrlParams()
 

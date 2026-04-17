@@ -4,7 +4,26 @@ import { useClipboard } from '@vueuse/core'
 const { copy, copied } = useClipboard()
 
 const { exportState } = useStateConfig()
-const { shareLink } = useCreateShareLink(exportState)
+import { postAppStateApiStatePost } from '@swissgeo/statesharing'
+
+const stateId = ref(null)
+
+const shareLink = computed(() => {
+    if (!stateId.value) {
+        return ''
+    }
+    const baseUrl = new URL(document.location.href)
+    // baseUrl.pathname = ''
+    const params = baseUrl.searchParams
+    params.set('state', stateId.value)
+
+    return baseUrl.toString()
+})
+
+watch(exportState, async (newState) => {
+    const response = await postAppStateApiStatePost(newState)
+    stateId.value = response.data.id
+})
 </script>
 
 <template>
