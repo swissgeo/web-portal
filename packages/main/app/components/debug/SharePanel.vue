@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import { IconButton } from '@swissgeo/skeleton'
 
-const items = [
+const { t } = useI18n()
+
+const items = computed(() => [
     {
-        label: $t('debug.share'),
+        label: t('debug.share'),
         icon: 'i-lucide-share',
         slot: 'share',
     },
     {
-        label: $t('debug.stateConfig'),
+        label: t('debug.stateConfig'),
         icon: 'i-lucide-save',
         slot: 'stateconfig',
     },
-]
+])
 </script>
 
 <template>

@@ -58,8 +58,8 @@ export default defineNuxtConfig({
     },
     sourcemap: {
         // Enable in dev, disable in prod (unless you have a private uploader)
-        server: false,
-        client: false,
+        server: isDevelopment,
+        client: isDevelopment,
     },
     vite: {
         plugins: [vueDevTools() as never, nodePolyfills() as never],
