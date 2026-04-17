@@ -104,7 +104,21 @@ If a test is hard to write as a `*.spec.ts` because of too many Nuxt entanglemen
 - Testing SSR or hydration behaviour (e.g. `<ClientOnly>` rendering, server-side HTML output)
 - The stub chain has grown too deep (roughly > 5 mocks) and the test is more stub than test — at that point the Nuxt env is cheaper and more trustworthy
 
-All current tests run in happy-dom. Run one project at a time with `pnpm exec vitest --project happy-dom` or `--project nuxt`. If you add a `*.nuxt.spec.ts` file, expect console noise from Nuxt boot (Vue Router "no match", H3 404 at init) — consider adding a `setupFiles` filter if it becomes distracting.
+When stubbing Nuxt auto-imports, use the centralised mock factories in `packages/main/tests/mock-nuxt-imports.ts` so implementations stay consistent. `mockNuxtImport` is a compile-time macro (string literal required), so each call is explicit — but the factory comes from the shared module:
+
+```ts
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+
+const { mocks } = await vi.hoisted(async () => {
+    const { nuxtMocks } = await import('../../../tests/mock-nuxt-imports')
+    return { mocks: nuxtMocks }
+})
+
+mockNuxtImport('useRoute', () => mocks.useRoute())
+mockNuxtImport('useRouter', () => mocks.useRouter())
+```
+
+Run one project at a time with `pnpm exec vitest --project happy-dom` or `--project nuxt`. `packages/main/tests/setup.ts` filters known-harmless Nuxt-boot noise (Vue Router "no match", H3 404, menus fetch) — it only activates in the nuxt project. See `tests/nuxt/i18n-integration.nuxt.spec.ts` for a working example of a nuxt-env test.
 
 ## Visions
 
