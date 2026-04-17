@@ -89,8 +89,8 @@ export interface Property<recordType extends string> {
 }
 
 export interface Contact {
-    country: string
-    role: string
+    country?: string
+    role?: string
     organisation: string
 }
 
