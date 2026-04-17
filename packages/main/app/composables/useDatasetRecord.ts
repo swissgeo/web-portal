@@ -12,7 +12,7 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
     const runtimeConfig = useRuntimeConfig()
     const { locale } = useI18n()
 
-    const { data, status, error } = useAsyncData<DatasetRecord>(
+    const asyncData = useAsyncData<DatasetRecord>(
         () => `dataset-record-${toValue(id)}-${locale.value}`,
         async () => {
             const resolvedId = toValue(id)
@@ -40,6 +40,7 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
         { watch: [() => toValue(id), locale] }
     )
 
+    const { data, status, error } = asyncData
     const dataset = computed(() => data.value?.dataset ?? null)
     const distributionCollection = computed(() => data.value?.distributionCollection ?? null)
     const isLoading = computed(() => status.value === 'pending')
@@ -49,5 +50,6 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
         distributionCollection,
         isLoading,
         error,
+        promise: asyncData,
     }
 }

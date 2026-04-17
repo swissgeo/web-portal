@@ -144,6 +144,11 @@
             "errorFetchingW3W": "Error retrieving What3Words address"
         }
     },
+    "error": {
+        "notFound": "This dataset could not be found.",
+        "generic": "An unexpected error occurred.",
+        "backToMap": "Back to map"
+    },
     "dataset": {
         "abstract": "Abstract",
         "contacts": "Contacts",

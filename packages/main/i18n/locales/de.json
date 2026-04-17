@@ -144,6 +144,11 @@
             "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse"
         }
     },
+    "error": {
+        "notFound": "Dieser Datensatz konnte nicht gefunden werden.",
+        "generic": "Ein unerwarteter Fehler ist aufgetreten.",
+        "backToMap": "Zurück zur Karte"
+    },
     "dataset": {
         "abstract": "Beschreibung",
         "contacts": "Kontakte",

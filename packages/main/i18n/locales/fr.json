@@ -144,6 +144,11 @@
             "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words"
         }
     },
+    "error": {
+        "notFound": "Ce jeu de données est introuvable.",
+        "generic": "Une erreur inattendue s'est produite.",
+        "backToMap": "Retour à la carte"
+    },
     "dataset": {
         "abstract": "Résumé",
         "contacts": "Contacts",

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { NuxtError } from '#app'
+
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
 
@@ -7,7 +9,28 @@ const localePath = useLocalePath()
 
 const id = computed(() => route.params.id as string)
 
-const { dataset, distributionCollection, error } = useDatasetRecord(id)
+const { dataset, distributionCollection, error, promise } = useDatasetRecord(id)
+
+function maybeShowError(e: NuxtError | undefined) {
+    if (!e) {
+        return
+    }
+    showError({ status: e.status ?? 404, fatal: true })
+}
+
+// On SSR:
+// await the useAsyncData promise directly so we check the error
+// only after the fetch has fully resolved, onServerPrefetch hooks run in
+// parallel so registering our own hook is not sufficient.
+onServerPrefetch(async () => {
+    await promise
+    maybeShowError(error.value)
+})
+
+// On client navigation:
+// error.value starts null and is set after fetch
+// watch picks it up as soon as it resolves.
+watch(error, maybeShowError)
 
 useSeoMeta({
     title: () => dataset.value?.properties.title,
@@ -74,14 +97,7 @@ function addToMap() {
                 </span>
             </nav>
 
-            <p
-                v-if="error"
-                class="flex items-center justify-center text-sm text-red-500"
-            >
-                {{ error.message }}
-            </p>
-
-            <template v-else-if="dataset">
+            <template v-if="dataset">
                 <h1 class="mb-8 text-2xl font-bold">
                     {{ dataset.properties.title }}
                 </h1>
