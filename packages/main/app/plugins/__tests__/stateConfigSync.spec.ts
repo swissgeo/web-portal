@@ -4,12 +4,14 @@ import { ref } from 'vue'
 
 import { STORAGE_KEY } from '@/composables/useRestoreState'
 
-// Stub defineNuxtPlugin before the plugin module is evaluated.
-// It's a Nuxt auto-import (global), unavailable in the jsdom test environment.
-// vi.hoisted runs before vi.mock and static imports, which is exactly what we need.
-const watcherCallbackRef = vi.hoisted(() => {
+// Stub defineNuxtPlugin and load centralised mock factories before imports.
+const { watcherCallbackRef, mocks } = await vi.hoisted(async () => {
     ;(globalThis as Record<string, unknown>).defineNuxtPlugin = (plugin: unknown) => plugin
-    return { fn: null as ((_state: unknown) => void) | null }
+    const { nuxtMocks } = await import('../../../tests/mock-nuxt-imports')
+    return {
+        watcherCallbackRef: { fn: null as ((_state: unknown) => void) | null },
+        mocks: nuxtMocks,
+    }
 })
 
 const mockImportState = vi.fn()
@@ -21,12 +23,12 @@ const mockExportState = ref({
 
 // useRestoreState chains into Nuxt composables (useToaster, useNuxtApp,
 // useUrlParams → useRoute/useRouter). Stubbing them here avoids booting a
-// full Nuxt app just for these dependencies.
-mockNuxtImport('useRoute', () => () => ({ query: {} }))
-mockNuxtImport('useRouter', () => () => ({ replace: vi.fn() }))
-mockNuxtImport('onNuxtReady', () => vi.fn())
-mockNuxtImport('useToaster', () => () => ({ showWarning: vi.fn() }))
-mockNuxtImport('useNuxtApp', () => () => ({ $i18n: { t: vi.fn((key: string) => key) } }))
+// full Nuxt app just for these dependencies. Factories from tests/mock-nuxt-imports.ts.
+mockNuxtImport('useRoute', () => mocks.useRoute())
+mockNuxtImport('useRouter', () => mocks.useRouter())
+mockNuxtImport('onNuxtReady', () => mocks.onNuxtReady())
+mockNuxtImport('useToaster', () => mocks.useToaster())
+mockNuxtImport('useNuxtApp', () => mocks.useNuxtApp())
 
 vi.mock('@swissgeo/log', async (importOriginal) => {
     const original = await importOriginal()
