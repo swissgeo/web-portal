@@ -76,6 +76,7 @@ catalog:
     nuxt: ^4.2.2
     ol: ^10.7.0
     ol-mapbox-style: ^13.1.1
+    orval: ^8.8.0
     pinia: ^3.0.4
     playwright-core: ^1.58.2
     postcss-html: ^1.8.0
@@ -111,3 +112,4 @@ catalog:
     vue-i18n: ^11.2.2
     vue-router: ^5.0.0
     vue-tsc: ^3.2.4
+    zod: ^4.3.6

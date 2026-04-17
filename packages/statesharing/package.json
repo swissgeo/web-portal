@@ -20,19 +20,18 @@
         "format:write": "prettier --write --ignore-path ../../.prettierignore .",
         "lint": "eslint",
         "lint:write": "eslint --fix",
-        "test:unit": "vitest run",
-        "type-check": "tsc"
+        "type-check": "tsc",
+        "update:api": "orval"
     },
     "dependencies": {
-        "nuxt": "catalog:",
-        "semver": "catalog:"
+        "orval": "catalog:",
+        "zod": "catalog:"
     },
     "devDependencies": {
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "workspace:*",
         "@swissgeo/config-typescript": "workspace:*",
         "@swissgeo/shared": "workspace:",
-        "@types/semver": "catalog:",
         "eslint": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",
