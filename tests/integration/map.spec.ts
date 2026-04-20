@@ -74,6 +74,12 @@ test.describe('locale routing', () => {
         await expect(page).toHaveURL(/\/de\/map/)
     })
 
+    test('map page redirects to the default locale map', async ({ page }) => {
+        await page.goto('/')
+        await page.waitForURL('**/de/map')
+        await expect(page).toHaveURL(/\/de\/map/)
+    })
+
     test('navigating to /fr/map shows French sidebar labels', async ({ page }) => {
         await page.goto('/fr/map')
         await expect(page.getByRole('button', { name: 'Recherche' })).toBeVisible({
