@@ -132,6 +132,9 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
             <MapOpenLayersGeolocationFeedback
                 v-if="geolocationStore.active && geolocationStore.position"
             />
+            <template #map-footer-attribution="{ sources }">
+                <MapFooterAttributionList :sources="sources" />
+            </template>
         </MapModule>
         <Toolbox />
         <DebugPanel

@@ -21,3 +21,4 @@ export {
 export type { CoordinateFormat } from './utils/coordinates/coordinateFormat'
 export { MapModule, usePositionStore, useAddLayerToMap, PROJECTION_EPSG }
 export type { ActionDispatcher }
+export type { AttributionSource } from '@/MapModule.vue'
