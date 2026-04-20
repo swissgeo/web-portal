@@ -8,7 +8,6 @@ import type {
     FeatureSearchResult,
 } from '@swissgeo/search'
 
-import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
 
 export function useSearchSelection() {
