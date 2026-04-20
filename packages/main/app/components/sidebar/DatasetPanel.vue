@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log from '@swissgeo/log'
-import { useDatasetViewStore } from '@swissgeo/skeleton'
+import { useDatasetPanelStore } from '@swissgeo/skeleton'
 import { computed } from 'vue'
 
 const props = defineProps<{
     detailPagePath?: string
 }>()
 
-const datasetViewStore = useDatasetViewStore()
+const datasetPanelStore = useDatasetPanelStore()
 const layerStore = useLayerStore()
 
 const { dataset, distributionCollection, isLoading, error } = useDatasetRecord(
-    () => datasetViewStore.activeDatasetId
+    () => datasetPanelStore.activeDatasetId
 )
 
 const isAlreadyOnMap = computed(() => {
@@ -43,7 +43,7 @@ function addToMap() {
 
 <template>
     <USlideover
-        v-model:open="datasetViewStore.isOpen"
+        v-model:open="datasetPanelStore.isOpen"
         :modal="false"
         :overlay="false"
         :dismissible="false"
@@ -51,7 +51,7 @@ function addToMap() {
         side="right"
         @update:open="
             (v) => {
-                if (!v) datasetViewStore.closeDatasetView()
+                if (!v) datasetPanelStore.closeDatasetPanel()
             }
         "
     >
@@ -73,7 +73,7 @@ function addToMap() {
                 {{ error.message }}
             </div>
 
-            <DatasetViewContent
+            <DatasetDetail
                 v-else-if="dataset"
                 :dataset="dataset"
                 :distribution-collection="distributionCollection ?? null"
@@ -107,7 +107,7 @@ function addToMap() {
                 color="neutral"
                 variant="subtle"
                 class="w-full justify-center"
-                @click="datasetViewStore.closeDatasetView()"
+                @click="datasetPanelStore.closeDatasetPanel()"
             >
                 {{ $t('dataset.viewDetailPage') }}
             </UButton>

@@ -102,7 +102,7 @@ function addToMap() {
                     {{ dataset.properties.title }}
                 </h1>
 
-                <DatasetViewContent
+                <DatasetDetail
                     :dataset="dataset"
                     :distribution-collection="distributionCollection ?? null"
                 />
@@ -114,7 +114,7 @@ function addToMap() {
                     <h3 class="mb-2">
                         {{ $t('dataset.languages') }}
                     </h3>
-                    <DatasetViewLanguages :languages="dataset.properties.languages" />
+                    <DatasetLanguages :languages="dataset.properties.languages" />
                 </section>
             </template>
         </article>

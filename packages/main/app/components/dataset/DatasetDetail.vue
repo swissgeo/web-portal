@@ -3,9 +3,9 @@ import type { Dataset, DistributionCollection, Distribution, Link } from '@swiss
 
 import { computed } from 'vue'
 
-import DatasetViewContact from './DatasetViewContact.vue'
-import DatasetViewLinkList from './DatasetViewLinkList.vue'
-import DatasetViewServiceList from './DatasetViewServiceList.vue'
+import DatasetContact from './DatasetContact.vue'
+import DatasetLinkList from './DatasetLinkList.vue'
+import DatasetServiceList from './DatasetServiceList.vue'
 
 const props = defineProps<{
     dataset: Dataset
@@ -51,7 +51,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
                     v-for="(contact, i) in dataset.properties.contacts"
                     :key="i"
                 >
-                    <DatasetViewContact :contact="contact" />
+                    <DatasetContact :contact="contact" />
                 </li>
             </ul>
         </section>
@@ -60,14 +60,14 @@ const serviceDistributions = computed<Distribution[]>(() => {
             <h3 class="mb-2">
                 {{ $t('dataset.links') }}
             </h3>
-            <DatasetViewLinkList :links="displayLinks" />
+            <DatasetLinkList :links="displayLinks" />
         </section>
 
         <section v-if="serviceDistributions.length">
             <h3 class="mb-2">
                 {{ $t('dataset.services') }}
             </h3>
-            <DatasetViewServiceList :distributions="serviceDistributions" />
+            <DatasetServiceList :distributions="serviceDistributions" />
         </section>
     </div>
 </template>

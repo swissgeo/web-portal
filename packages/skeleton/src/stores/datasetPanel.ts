@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useDatasetViewStore = defineStore('datasetView', () => {
+export const useDatasetPanelStore = defineStore('datasetPanel', () => {
     const isOpen = ref(false)
     const activeDatasetId = ref<string | null>(null)
 
-    function openDatasetView(datasetId: string) {
+    function openDatasetPanel(datasetId: string) {
         activeDatasetId.value = datasetId
         isOpen.value = true
     }
 
-    function closeDatasetView() {
+    function closeDatasetPanel() {
         isOpen.value = false
         activeDatasetId.value = null
     }
@@ -18,7 +18,7 @@ export const useDatasetViewStore = defineStore('datasetView', () => {
     return {
         isOpen,
         activeDatasetId,
-        openDatasetView,
-        closeDatasetView,
+        openDatasetPanel,
+        closeDatasetPanel,
     }
 })
