@@ -133,7 +133,7 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
                 v-if="geolocationStore.active && geolocationStore.position"
             />
             <template #map-footer-attribution="{ sources }">
-                <MapFooterAttributionList :sources="sources" />
+                <MapAttributionList :sources="sources" />
             </template>
         </MapModule>
         <Toolbox />

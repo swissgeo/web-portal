@@ -1,9 +1,8 @@
-import { mount } from '@vue/test-utils'
-import { describe, expect, it, vi } from 'vitest'
-
 import type { AttributionSource } from '@swissgeo/map'
 
-import MapFooterAttributionList from '~/components/map/MapFooterAttributionList.vue'
+import { mount } from '@vue/test-utils'
+import AttributionList from '~/components/map/attribution/AttributionList.vue'
+import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('vue-i18n', () => ({
     useI18n: () => ({
@@ -11,14 +10,14 @@ vi.mock('vue-i18n', () => ({
     }),
 }))
 
-describe('MapFooterAttributionList.vue', () => {
+describe('AttributionList.vue', () => {
     it('renders provided sources', () => {
         const sources: AttributionSource[] = [
             { id: 'source-a', name: 'Source A', url: 'https://example.com/a' },
             { id: 'source-b', name: 'Source B' },
         ]
 
-        const wrapper = mount(MapFooterAttributionList, { props: { sources } })
+        const wrapper = mount(AttributionList, { props: { sources } })
 
         expect(wrapper.find('[data-cy="layers-copyrights"]').exists()).toBe(true)
         expect(wrapper.find('[data-cy="layer-copyright-Source A"]').exists()).toBe(true)
@@ -26,7 +25,7 @@ describe('MapFooterAttributionList.vue', () => {
     })
 
     it('renders nothing when sources is empty', () => {
-        const wrapper = mount(MapFooterAttributionList, { props: { sources: [] } })
+        const wrapper = mount(AttributionList, { props: { sources: [] } })
 
         expect(wrapper.find('[data-cy="layers-copyrights"]').exists()).toBe(false)
     })
@@ -37,7 +36,7 @@ describe('MapFooterAttributionList.vue', () => {
             { id: 'source-b', name: 'Source B' },
         ]
 
-        const wrapper = mount(MapFooterAttributionList, { props: { sources } })
+        const wrapper = mount(AttributionList, { props: { sources } })
 
         const items = wrapper.findAll('[data-cy^="layer-copyright-"]')
         expect(items[0]!.text()).toContain(',')
