@@ -11,7 +11,9 @@ const localePath = useLocalePath()
 const message = computed(() => {
     if (props.error.status === 404) {
         const resourceKey = `error.resources.${props.error.message}`
-        const resource = i18n.te(resourceKey) ? i18n.t(resourceKey) : i18n.t('error.resources.dataset')
+        const resource = i18n.te(resourceKey)
+            ? i18n.t(resourceKey)
+            : i18n.t('error.resources.dataset')
         return i18n.t('error.notFound', { resource })
     }
     return i18n.t('error.generic')
