@@ -49,6 +49,7 @@ onUnmounted(() => olMap?.value?.removeOverlay(overlay!))
 
 <template>
     <div
+        @click.right.stop
         ref="popupEl"
         class="w-96"
     >
