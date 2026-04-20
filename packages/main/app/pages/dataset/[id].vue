@@ -15,7 +15,7 @@ function maybeShowError(e: NuxtError | undefined) {
     if (!e) {
         return
     }
-    showError({ status: e.status ?? 404, fatal: true })
+    showError({ status: e.status ?? 404, message: 'dataset', fatal: true })
 }
 
 // On SSR:

@@ -145,9 +145,12 @@
         }
     },
     "error": {
-        "notFound": "Dieser Datensatz konnte nicht gefunden werden.",
+        "notFound": "{resource} konnte nicht gefunden werden.",
         "generic": "Ein unerwarteter Fehler ist aufgetreten.",
-        "backToMap": "Zurück zur Karte"
+        "backToMap": "Zurück zur Karte",
+        "resources": {
+            "dataset": "Dieser Datensatz"
+        }
     },
     "dataset": {
         "abstract": "Beschreibung",

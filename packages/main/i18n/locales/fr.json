@@ -145,9 +145,12 @@
         }
     },
     "error": {
-        "notFound": "Ce jeu de données est introuvable.",
+        "notFound": "{resource} est introuvable.",
         "generic": "Une erreur inattendue s'est produite.",
-        "backToMap": "Retour à la carte"
+        "backToMap": "Retour à la carte",
+        "resources": {
+            "dataset": "Ce jeu de données"
+        }
     },
     "dataset": {
         "abstract": "Résumé",

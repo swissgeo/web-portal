@@ -145,9 +145,12 @@
         }
     },
     "error": {
-        "notFound": "This dataset could not be found.",
+        "notFound": "{resource} could not be found.",
         "generic": "An unexpected error occurred.",
-        "backToMap": "Back to map"
+        "backToMap": "Back to map",
+        "resources": {
+            "dataset": "This dataset"
+        }
     },
     "dataset": {
         "abstract": "Abstract",
