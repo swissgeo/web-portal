@@ -83,6 +83,43 @@ In the past, mostly interface testing (with cypress) was done. Testing like this
 
 **If the components are hard to test because they have a ton of dependencies, then this might be a sign of a poor component architecture.**
 
+### Choosing the test environment (packages/main)
+
+`@nuxt/test-utils` auto-splits the `main` suite into two Vitest projects by filename. Pick the one that matches what the test actually needs:
+
+- **`*.spec.ts` — happy-dom project.** Fast, no Nuxt app booted. Stub Nuxt auto-imports with `mockNuxtImport` (from `@nuxt/test-utils/runtime`) or, for globals like `defineNuxtPlugin`, `vi.hoisted`. This should be the default.
+- **`*.nuxt.spec.ts` — nuxt project.** Boots a full Nuxt app per file via `vitest-environment-nuxt`. Use only when the test genuinely exercises Nuxt runtime (router, plugins, real composables). Expensive — several seconds of boot per file.
+
+If a test is hard to write as a `*.spec.ts` because of too many Nuxt entanglements, treat that as a signal to simplify the code — the same "poor architecture" heuristic as above.
+
+**When to use `*.spec.ts` (happy-dom):**
+- Testing a component's render, emit, or prop behaviour
+- Testing a composable's logic in isolation
+- Testing a utility or helper function
+- The test stubs its Nuxt dependencies (auto-imports, composables) via `mockNuxtImport` or `vi.mock`
+
+**When to use `*.nuxt.spec.ts` (Nuxt env):**
+- Testing Nuxt routing behaviour itself (e.g. verifying that navigating to `/de/map` renders the right page, or that middleware redirects fire)
+- Testing plugin interaction or boot order (e.g. `dependsOn` sequencing, `app:created` hook orchestration across plugins)
+- Testing SSR or hydration behaviour (e.g. `<ClientOnly>` rendering, server-side HTML output)
+- The stub chain has grown too deep (roughly > 5 mocks) and the test is more stub than test — at that point the Nuxt env is cheaper and more trustworthy
+
+When stubbing Nuxt auto-imports, use the centralised mock factories in `packages/main/tests/mock-nuxt-imports.ts` so implementations stay consistent. `mockNuxtImport` is a compile-time macro (string literal required), so each call is explicit — but the factory comes from the shared module:
+
+```ts
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+
+const { mocks } = await vi.hoisted(async () => {
+    const { nuxtMocks } = await import('../../../tests/mock-nuxt-imports')
+    return { mocks: nuxtMocks }
+})
+
+mockNuxtImport('useRoute', () => mocks.useRoute())
+mockNuxtImport('useRouter', () => mocks.useRouter())
+```
+
+Run one project at a time with `pnpm exec vitest --project happy-dom` or `--project nuxt`. `packages/main/tests/setup.ts` filters known-harmless Nuxt-boot noise (Vue Router "no match", H3 404, menus fetch) — it only activates in the nuxt project. See `tests/nuxt/i18n-integration.nuxt.spec.ts` for a working example of a nuxt-env test.
+
 ## Visions
 
 ### Package Setup

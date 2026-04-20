@@ -21,6 +21,7 @@ export default [
                     allowDefaultProject: [
                         'server/utils/__tests__/*.ts',
                         'server/routes/__tests__/*.ts',
+                        'tests/setup.ts',
                     ],
                 },
             },

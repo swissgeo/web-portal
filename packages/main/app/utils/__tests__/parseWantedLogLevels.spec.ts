@@ -1,8 +1,15 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import parseWantedLogLevels from '../parseWantedLoglevels'
 
 describe('parseWantedLogLevels', () => {
+    // The function under test calls console.log/warn to report the parsed
+    // levels. Spy on them to keep the test output clean.
+    beforeEach(() => {
+        vi.spyOn(console, 'log').mockImplementation(() => {})
+        vi.spyOn(console, 'warn').mockImplementation(() => {})
+    })
+
     it.each([
         ['Error', [0]],
         ['Warn', [1]],
