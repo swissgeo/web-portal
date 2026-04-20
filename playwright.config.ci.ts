@@ -17,6 +17,8 @@ export default defineConfig({
         // 5s default. 15s is enough for prod preview and leaves the 60s
         // hydration guard as a fallback for dev-mode cold starts.
         actionTimeout: 15_000,
+        screenshot: 'only-on-failure',
+        video: 'retry-with-video',
     },
     projects: [
         {
