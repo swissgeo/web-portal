@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter } from 'vue'
 
 import { toValue } from 'vue'
 
-interface DatasetRecord {
+export interface DatasetRecord {
     dataset: Dataset | null
     distributionCollection: DistributionCollection | null
 }
