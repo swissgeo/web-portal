@@ -3,7 +3,12 @@ import type { Dataset } from '@swissgeo/ogc'
 import { omit } from 'lodash'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import { getInfoFromDataset, makeServerLayer } from '@/utils/layerUtils'
+import {
+    getInfoFromDataset,
+    InvalidDatasetError,
+    makeServerLayer,
+    validateDataset,
+} from '@/utils/layerUtils'
 
 describe('Testing the information gathering from datasets', () => {
     it('returns dataset.id when properties are undefined', () => {
@@ -162,7 +167,7 @@ describe('testing the makeServerLayer function', () => {
 
     it('throws an error when there are no links in the dataset', () => {
         const faultyDataset = omit(baseDataset, ['links'])
-        expect(() => makeServerLayer(faultyDataset)).toThrow()
+        expect(() => makeServerLayer(faultyDataset)).toThrow(InvalidDatasetError)
     })
 
     it('throws an error when there is no self-links in the dataset', () => {
@@ -175,6 +180,81 @@ describe('testing the makeServerLayer function', () => {
                 },
             ],
         }
-        expect(() => makeServerLayer(faultyDataset)).toThrow()
+        expect(() => makeServerLayer(faultyDataset)).toThrow(InvalidDatasetError)
+    })
+})
+
+describe('validateDataset', () => {
+    const validDataset: Dataset = {
+        id: 'dataset-1',
+        properties: {
+            title: 'Layer Title',
+            type: 'Dataset',
+        },
+        links: [
+            {
+                rel: 'self',
+                href: 'link-to-self',
+            },
+        ],
+    }
+
+    it('accepts a well-formed dataset', () => {
+        expect(() => validateDataset(validDataset)).not.toThrow()
+    })
+
+    it('rejects null', () => {
+        expect(() => validateDataset(null)).toThrow(InvalidDatasetError)
+    })
+
+    it('rejects undefined', () => {
+        expect(() => validateDataset(undefined)).toThrow(InvalidDatasetError)
+    })
+
+    it('rejects a string', () => {
+        expect(() => validateDataset('not a dataset')).toThrow(InvalidDatasetError)
+    })
+
+    it('rejects a dataset with a missing id', () => {
+        const faulty = omit(validDataset, ['id'])
+        expect(() => validateDataset(faulty)).toThrow(/id/)
+    })
+
+    it('rejects a dataset with an empty id', () => {
+        expect(() => validateDataset({ ...validDataset, id: '' })).toThrow(/id/)
+    })
+
+    it('rejects a dataset with missing properties', () => {
+        const faulty = omit(validDataset, ['properties'])
+        expect(() => validateDataset(faulty)).toThrow(/properties/)
+    })
+
+    it('rejects a dataset whose properties.type is not "Dataset"', () => {
+        const faulty = {
+            ...validDataset,
+            properties: { ...validDataset.properties, type: 'Distribution' },
+        }
+        expect(() => validateDataset(faulty)).toThrow(/Dataset/)
+    })
+
+    it('rejects a dataset with an empty properties.title', () => {
+        const faulty = {
+            ...validDataset,
+            properties: { ...validDataset.properties, title: '' },
+        }
+        expect(() => validateDataset(faulty)).toThrow(/title/)
+    })
+
+    it('rejects a dataset whose links is not an array', () => {
+        const faulty = { ...validDataset, links: 'not-an-array' }
+        expect(() => validateDataset(faulty)).toThrow(/links/)
+    })
+
+    it('rejects a dataset without a self link', () => {
+        const faulty = {
+            ...validDataset,
+            links: [{ rel: 'distributions', href: 'link' }],
+        }
+        expect(() => validateDataset(faulty)).toThrow(/self/)
     })
 })
