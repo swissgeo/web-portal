@@ -38,6 +38,7 @@ const resolvedLink = computed(() => {
         <UButton
             :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
             :class="copied ? 'text-green-500' : ''"
+            class="cursor-pointer"
             color="neutral"
             variant="ghost"
             square
