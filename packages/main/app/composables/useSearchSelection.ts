@@ -1,7 +1,6 @@
 // Composable to handle search result selection
 // Connects search results to map actions (center, zoom, add layers)
 
-import type { Dataset, DistributionCollection, Link } from '@swissgeo/ogc'
 import type {
     SearchResult,
     LocationSearchResult,
@@ -9,10 +8,7 @@ import type {
     FeatureSearchResult,
 } from '@swissgeo/search'
 
-import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
-import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { usePositionStore } from '@swissgeo/map'
-import { useSearchStore } from '@swissgeo/skeleton'
 
 export function useSearchSelection() {
     async function handleResultSelection(result: SearchResult) {
@@ -52,83 +48,10 @@ export function useSearchSelection() {
         positionStore.setZoom(featureZoom, { name: 'search-feature-selection' })
     }
 
-    function isLayerExisting(layerId: string): boolean {
-        const layerStore = useLayerStore()
-        return layerStore.layers.some((layer: { humanId?: string }) => layer.humanId === layerId)
-    }
-
     async function handleLayerSelection(result: LayerSearchResult) {
-        const layerStore = useLayerStore()
-        const searchStore = useSearchStore()
+        const localePath = useLocalePath()
 
-        try {
-            await searchStore.loadCatalog()
-            const catalog = searchStore.catalog
-
-            const layerRecord = catalog?.records?.find((r: Dataset) => r.id === result.layerId)
-
-            if (!layerRecord) {
-                log.error({
-                    title: 'useSearchSelection/handleLayerSelection',
-                    titleColor: LogPreDefinedColor.Red,
-                    messages: ['Layer not found in catalog:', result.layerId],
-                })
-                return
-            }
-
-            const distributionLink = layerRecord.links?.find(
-                (link: Link) => link.rel === 'distributions'
-            )
-
-            if (!distributionLink) {
-                log.error({
-                    title: 'useSearchSelection/handleLayerSelection',
-                    titleColor: LogPreDefinedColor.Red,
-                    messages: ['No distribution link found for layer:', result.layerId],
-                })
-                return
-            }
-
-            const collectionData: DistributionCollection = await $fetch(distributionLink.href)
-            const layerType = getLayerType(collectionData)
-
-            if (layerType && layerType !== 'UNKNOWN') {
-                if (isLayerExisting(result.layerId)) {
-                    log.info('Layer already exists in map:', result.layerId)
-                    return
-                }
-                layerStore.addLayer(makeServerLayer(layerRecord))
-            } else {
-                log.error({
-                    title: 'useSearchSelection/handleLayerSelection',
-                    titleColor: LogPreDefinedColor.Red,
-                    messages: ['Could not determine layer type for:', result.layerId],
-                })
-            }
-        } catch (error) {
-            log.error({
-                title: 'useSearchSelection/handleLayerSelection',
-                titleColor: LogPreDefinedColor.Red,
-                messages: ['Failed to add layer to map:', error],
-            })
-        }
-    }
-
-    // Helper function to determine layer type from distribution data
-    function getLayerType(collectionData: DistributionCollection): string {
-        for (const record of collectionData.records) {
-            const protocol = record.properties?.protocol
-
-            if (protocol === 'OGC:WMTS') {
-                return 'wmts'
-            } else if (protocol === 'OGC:WMS') {
-                return 'wms'
-            } else if (protocol === 'OGC:GeoJSON') {
-                return 'geojson'
-            }
-        }
-
-        return 'UNKNOWN'
+        await navigateTo(localePath(`/dataset/${result.layerId}`))
     }
 
     return {

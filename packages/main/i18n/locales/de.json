@@ -143,5 +143,26 @@
             "errorFetchingElevation": "Fehler beim Abrufen der Höhe",
             "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse"
         }
+    },
+    "error": {
+        "notFound": "{resource} konnte nicht gefunden werden.",
+        "generic": "Ein unerwarteter Fehler ist aufgetreten.",
+        "backToMap": "Zurück zur Karte",
+        "resources": {
+            "dataset": "Dieser Datensatz"
+        }
+    },
+    "dataset": {
+        "abstract": "Beschreibung",
+        "contacts": "Kontakte",
+        "links": "Links",
+        "services": "Dienste",
+        "languages": "Sprachen",
+        "addToMap": "Zur Karte hinzufügen",
+        "alreadyOnMap": "Bereits auf der Karte",
+        "viewDetailPage": "Detailseite anzeigen",
+        "showOnMap": "Auf der Karte anzeigen",
+        "backToMap": "Zurück zur Karte",
+        "addToMapError": "Ebene konnte nicht zur Karte hinzugefügt werden"
     }
 }
