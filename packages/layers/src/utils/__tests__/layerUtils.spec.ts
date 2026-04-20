@@ -201,19 +201,15 @@ describe('testing the makeServerLayer function', () => {
     // a correct type, and thus has no protection.
     it('creates a layer with the correct defaults', () => {
         const layer = makeServerLayer(baseDataset)
-        expect(layer.opacity).toEqual(1)
-        expect(layer.isVisible).toEqual(true)
         expect(layer.isLoading).toEqual(false)
     })
 
     it('overrides defaults with options', () => {
         const layer = makeServerLayer(baseDataset, {
-            opacity: 0.3,
-            isVisible: false,
+            isLoading: true,
         })
 
-        expect(layer.opacity).toBe(0.3)
-        expect(layer.isVisible).toBe(false)
+        expect(layer.isLoading).toBe(true)
     })
 
     it('extracts the layerURL from the dataset correctly', () => {

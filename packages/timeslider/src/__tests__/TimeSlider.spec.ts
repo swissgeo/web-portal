@@ -8,8 +8,6 @@ const BASE_LAYER_CONFIG: Layer = {
     type: 'dataset',
     uuid: 'abc',
     humanId: 'def',
-    isVisible: true,
-    opacity: 0,
     isLoading: false,
 }
 

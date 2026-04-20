@@ -22,20 +22,38 @@ export const useLayerStore = defineStore('layers', () => {
      * @returns the index itself, or the index found
      * @throws Error if the uuid is not found within the array
      */
-    function _getIndexFromIdentifier(identifier: string | number): number {
+    function _getIndexFromIdentifier(identifier: string | number): number | undefined {
         const index =
             typeof identifier === 'number'
                 ? identifier
                 : layers.value.findIndex((layer) => layer.uuid === identifier)
 
         if (index < 0) {
-            throw new Error(`Incorrect identifier given : ${identifier}`)
+            log.error(`Incorrect identifier given : ${identifier}`)
+            return
         }
         return index
     }
 
+    /**
+     *
+     * @param identifier either the layer uuid or its index in the layer store. We recommend using the uuid
+     * @returns
+     */
+    function getLayer(identifier: string | number): Layer | undefined {
+        const index = _getIndexFromIdentifier(identifier)
+        if ((index || index === 0) && layers.value[index]) {
+            return layers.value[index]
+        }
+    }
     function setBackground(layer: Layer | null) {
         backgroundLayer.value = layer
+    }
+
+    function setBackgroundLayerData(data: Dataset) {
+        if (backgroundLayer.value) {
+            backgroundLayer.value.data = data
+        }
     }
 
     function addLayer(layer: Layer) {
@@ -43,62 +61,10 @@ export const useLayerStore = defineStore('layers', () => {
     }
 
     function replaceLayer(identifier: string | number, replacement: Layer) {
-        layers.value.splice(_getIndexFromIdentifier(identifier), 1, replacement)
-    }
-
-    /**
-     * Returns the z-index for a layer based on its position in the layers array.
-     * layers[0] is the bottom layer (lowest z-index), layers[n-1] is the top.
-     * Returns -1 if the layer is not found (e.g. background layer).
-     */
-    function getLayerZIndex(uuid: string): number {
-        return layers.value.findIndex((l) => l.uuid === uuid)
-    }
-
-    /**
-     * Set a layer to a specific index in the layers array.
-     * Handles validation to ensure the target index is within bounds and differs from current position.
-     */
-    function setLayerIndex(identifier: string | number, targetIndex: number): void {
-        const currentIndex = _getIndexFromIdentifier(identifier)
-        // Validate: current index must be found, target must be in valid range, and must be different
-        if (
-            currentIndex >= 0 &&
-            targetIndex < layers.value.length &&
-            targetIndex >= 0 &&
-            currentIndex !== targetIndex
-        ) {
-            const [layer] = layers.value.splice(currentIndex, 1) as [Layer]
-            layers.value.splice(targetIndex, 0, layer)
+        const index = _getIndexFromIdentifier(identifier)
+        if ((index || index === 0) && layers.value[index]) {
+            layers.value.splice(_getIndexFromIdentifier(identifier), 1, replacement)
         }
-    }
-
-    /** Move a layer one step up in the visual stack (toward top, higher index). */
-    function moveLayerUp(identifier: string | number): void {
-        setLayerIndex(identifier, _getIndexFromIdentifier(identifier) + 1)
-    }
-
-    /** Move a layer one step down in the visual stack (toward bottom, lower index). */
-    function moveLayerDown(identifier: string | number): void {
-        setLayerIndex(identifier, _getIndexFromIdentifier(identifier) - 1)
-    }
-
-    /** Move a layer to the top of the visual stack (end of the array). */
-    function moveLayerToTop(identifier: string | number): void {
-        setLayerIndex(identifier, layers.value.length - 1)
-    }
-
-    function getLayerByUuid(layerUuid: string) {
-        const layer = layers.value.find((layer: Layer) => layer.uuid === layerUuid)
-        return layer
-    }
-
-    function toggleVisibility(identifier: string | number) {
-        const layer = layers.value[_getIndexFromIdentifier(identifier)]
-        if (!layer) {
-            return null
-        }
-        layer.isVisible = !layer.isVisible
     }
 
     function setDimension(
@@ -106,12 +72,10 @@ export const useLayerStore = defineStore('layers', () => {
         identifier: string | number,
         dimension: Partial<Dimension>
     ) {
-        const layer = layers.value[_getIndexFromIdentifier(identifier)]
-        if (!layer) {
-            log.error('Unable to find layer for setting available times', {
-                messages: [identifier],
-            })
-        } else {
+        const index = _getIndexFromIdentifier(identifier)
+
+        if ((index || index === 0) && layers.value[index]) {
+            const layer = layers.value[index]
             if (!layer.dimensions) {
                 layer.dimensions = {}
             }
@@ -132,42 +96,37 @@ export const useLayerStore = defineStore('layers', () => {
         }
     }
 
-    function setOpacity(identifier: string | number, opacity: number) {
-        const layer = layers.value[_getIndexFromIdentifier(identifier)]
-        if (!layer) {
-            log.error(`Layer with uuid or index ${identifier} not found`)
-            return null
-        }
-        const clampedOpacity = Math.max(0, Math.min(1, opacity))
-        log.debug(`Setting opacity for ${layer.humanId} to ${clampedOpacity}`)
-        layer.opacity = clampedOpacity
-    }
-
     function setLayerInfo(identifier: string | number, info: LayerInfo): void {
         log.debug(`Setting layer info for layer ${identifier} to ${JSON.stringify(info)}`)
 
-        const layer = layers.value[_getIndexFromIdentifier(identifier)]
-        if (!layer) {
-            return
+        const index = _getIndexFromIdentifier(identifier)
+        if ((index || index === 0) && layers.value[index]) {
+            layers.value[index].info = info
+        } else if (typeof identifier === 'string' && backgroundLayer.value?.uuid === identifier) {
+            setBackgroundInfo(info)
         }
-        layer.info = info
+    }
+
+    function setBackgroundInfo(info: LayerInfo) {
+        if (backgroundLayer.value) {
+            backgroundLayer.value.info = info
+        }
     }
 
     function removeLayer(identifier: string | number) {
-        const layer = layers.value[_getIndexFromIdentifier(identifier)]
-        if (!layer) {
-            return null
+        const index = _getIndexFromIdentifier(identifier)
+        if ((index || index === 0) && layers.value[index]) {
+            layers.value.splice(index, 1)
         }
-        const index = layers.value.indexOf(layer)
-        layers.value.splice(index, 1)
     }
 
     function setLayerData(identifier: string | number, dataset: Dataset) {
-        const layer = layers.value[_getIndexFromIdentifier(identifier)]
-        if (!layer) {
-            return null
+        const index = _getIndexFromIdentifier(identifier)
+        if ((index || index === 0) && layers.value[index]) {
+            layers.value[index].data = dataset
+        } else if (typeof identifier === 'string' && backgroundLayer.value?.uuid === identifier) {
+            setBackgroundLayerData(dataset)
         }
-        layer.data = dataset
     }
 
     function $reset() {
@@ -178,17 +137,12 @@ export const useLayerStore = defineStore('layers', () => {
         layers,
         backgroundLayer,
         // getters
-        getLayerZIndex,
+        getLayer,
         // actions
         addLayer,
         setBackground,
         replaceLayer,
-        setLayerIndex,
-        moveLayerUp,
-        moveLayerDown,
-        moveLayerToTop,
-        toggleVisibility,
-        setOpacity,
+        setBackgroundLayerData,
         setLayerInfo,
         setDimension,
         removeLayer,

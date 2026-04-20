@@ -10,8 +10,6 @@ function makeLayer(id: string): Layer {
         uuid: id,
         humanId: id,
         type: 'dataset',
-        opacity: 1,
-        isVisible: true,
         isLoading: false,
     }
 }
@@ -19,18 +17,6 @@ function makeLayer(id: string): Layer {
 describe('Layer store helpers', () => {
     beforeEach(() => {
         setActivePinia(createPinia())
-    })
-
-    it('adds layers and computes z-index correctly', () => {
-        const store = useLayerStore()
-        expect(store.layers.length).toBe(0)
-
-        store.addLayer(makeLayer('a'))
-        store.addLayer(makeLayer('b'))
-        expect(store.layers.map((l) => l.uuid)).toEqual(['a', 'b'])
-        expect(store.getLayerZIndex('a')).toBe(0)
-        expect(store.getLayerZIndex('b')).toBe(1)
-        expect(store.getLayerZIndex('missing')).toBe(-1)
     })
 
     it('replaces a layer in place', () => {
@@ -42,8 +28,6 @@ describe('Layer store helpers', () => {
         store.replaceLayer('a', replacement)
 
         expect(store.layers.map((l) => l.uuid)).toEqual(['replacement', 'b'])
-        expect(store.getLayerZIndex('replacement')).toBe(0)
-        expect(store.getLayerZIndex('a')).toBe(-1)
 
         // unknown uuid: no-op
         store.replaceLayer('missing', makeLayer('c'))
@@ -51,6 +35,7 @@ describe('Layer store helpers', () => {
     })
 
     it('setLayerIndex moves layers to specified index', () => {
+        // TODO: we might remove that
         const store = useLayerStore()
         store.addLayer(makeLayer('a'))
         store.addLayer(makeLayer('b'))
@@ -70,29 +55,6 @@ describe('Layer store helpers', () => {
 
         // non-existent uuid should have no effect
         store.setLayerIndex('nonexistent', 0)
-        expect(store.layers.map((l) => l.uuid)).toEqual(['b', 'c', 'a'])
-    })
-
-    it('moveLayerUp, moveLayerDown and moveLayerToTop work as expected', () => {
-        const store = useLayerStore()
-        store.addLayer(makeLayer('a'))
-        store.addLayer(makeLayer('b'))
-        store.addLayer(makeLayer('c'))
-
-        store.moveLayerUp('a')
-        expect(store.layers.map((l) => l.uuid)).toEqual(['b', 'a', 'c'])
-
-        store.moveLayerDown('a')
-        expect(store.layers.map((l) => l.uuid)).toEqual(['a', 'b', 'c'])
-
-        store.moveLayerToTop('a')
-        expect(store.layers.map((l) => l.uuid)).toEqual(['b', 'c', 'a'])
-
-        // edge cases: moving top up or bottom down should be no-op
-        store.moveLayerUp('a')
-        expect(store.layers.map((l) => l.uuid)).toEqual(['b', 'c', 'a'])
-
-        store.moveLayerDown('b')
         expect(store.layers.map((l) => l.uuid)).toEqual(['b', 'c', 'a'])
     })
 })

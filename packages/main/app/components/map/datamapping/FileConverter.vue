@@ -16,14 +16,18 @@ const layerZIndex = computed(() => zIndex)
 
 const layerFormat = computed((): LayerFormat => layer.type.toUpperCase() as LayerFormat)
 
-const layerData = computed(() => ({
-    ...layer,
-    zIndex: layerZIndex.value,
-    format: layerFormat.value,
-    layerId: layer.humanId,
-    type: layer.type.toUpperCase(),
-    displayName: layer.info?.displayName ?? layer.humanId,
-}))
+const layerData = computed(
+    (): MapLayer => ({
+        ...layer,
+        zIndex: layerZIndex.value,
+        format: layerFormat.value,
+        layerId: layer.humanId,
+        //type: layer.type.toUpperCase(),
+        displayName: layer.info?.displayName ?? layer.humanId,
+        opacity: 1,
+        isVisible: true,
+    })
+)
 
 watch(layerData, () => emit('update', layerData.value), { immediate: true })
 

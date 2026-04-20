@@ -1,4 +1,5 @@
 import type { Dimension, DimensionId, Layer } from '@swissgeo/layers'
+import type { Layer as MapLayer } from '@swissgeo/map'
 import type { Dataset } from '@swissgeo/ogc'
 import type { AppStateConfig, AppStatePayload, LayerStateConfig } from '@swissgeo/statesharing'
 
@@ -9,19 +10,48 @@ import { APP_STATE_CONFIG_VERSION } from '@swissgeo/statesharing'
 
 const DISPATCHER = { name: 'state-config' }
 
-function layerToStateConfig(layer: Layer): LayerStateConfig {
-    const layerUrl = layer.layerUrl
+function layersToStateConfig(layers: MapLayer[]) {
+    const layersState: Partial<AppStateConfig> = {
+        layers: [],
+    }
+    if (layers.length > 0) {
+        const backgroundLayerPresent = Number(!!useLayerStore().backgroundLayer)
+
+        layers.slice(backgroundLayerPresent).map((mapLayer) => {
+            layersState.layers!.push(layerToStateConfig(mapLayer))
+        })
+        if (backgroundLayerPresent === 1) {
+            layersState.backgroundLayer = layerToStateConfig(layers[0]!)
+        }
+    }
+    return layersState
+}
+
+function layerToStateConfig(layer: MapLayer): LayerStateConfig {
+    // TODO : handle background
+    console.error('ENTRY HERE')
+    let sourceData: Layer | undefined | null = useLayerStore().getLayer(layer.uuid)
+    console.error(sourceData)
+    if (!sourceData) {
+        sourceData = useLayerStore().backgroundLayer
+        if (!sourceData || sourceData.uuid !== layer.uuid) {
+            throw new Error(
+                'FOR SOME REASON, A LAYER ON THE MAP IS NOT IN THE SOURCES. BUT WE DO NOT HANDLE BACKGROUND LAYER FOR NOW'
+            )
+        }
+    }
+    const layerUrl = sourceData.layerUrl
 
     const config: LayerStateConfig = {
         layerUrl,
-        type: layer.type,
+        type: sourceData.type,
         isVisible: layer.isVisible,
         opacity: layer.opacity,
     }
 
-    if (layer.dimensions) {
+    if (sourceData.dimensions) {
         config.dimensions = {}
-        for (const [key, dim] of Object.entries(layer.dimensions)) {
+        for (const [key, dim] of Object.entries(sourceData.dimensions)) {
             if (dim) {
                 config.dimensions[key] = { currentValue: dim.currentValue }
             }
@@ -59,6 +89,7 @@ async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer | nul
 export function useStateConfig() {
     const positionStore = usePositionStore()
     const layerStore = useLayerStore()
+    const mapviewStore = useMapViewStore()
 
     /**
      * Export the current app state as an AppStateConfig object.
@@ -73,14 +104,9 @@ export function useStateConfig() {
                     zoom: positionStore.zoom,
                     rotation: positionStore.rotation,
                 },
-                layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l)),
+                ...layersToStateConfig(mapviewStore.mapLayers),
             } as AppStateConfig,
         }
-
-        if (layerStore.backgroundLayer) {
-            payload.state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer)
-        }
-
         return payload
     })
 

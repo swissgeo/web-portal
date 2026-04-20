@@ -95,7 +95,7 @@ export const useSearchStore = defineStore('search', () => {
             // Get searchable layers from layer store
             // For now, enable feature search for ALL visible layers
             const layerStore = useLayerStore()
-            const searchableLayers = layerStore.layers.filter((layer: Layer) => layer.isVisible)
+            const searchableLayers = layerStore.layers.filter((layer: Layer) => true) // TODO: this was layer.isVisible.
 
             // Build search promises array
             const searchPromises: Promise<SearchResult[]>[] = [

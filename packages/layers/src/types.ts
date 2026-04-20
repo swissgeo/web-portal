@@ -33,8 +33,6 @@ export interface Layer {
     type: LayerType
     uuid: string
     humanId: string // something human readable. usually the layer ID. Not unique!
-    isVisible: boolean
-    opacity: number
     isLoading: boolean
     info?: LayerInfo
     // data is either the dataset or the file data, depending on whether

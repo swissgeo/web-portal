@@ -47,8 +47,6 @@ export function useDrawingManager() {
         const config: Layer = {
             uuid,
             humanId: DRAWING_LAYER_ID,
-            opacity: 1,
-            isVisible: true,
             type: 'kml',
             isLoading: false,
             info: {
@@ -71,8 +69,6 @@ export function useDrawingManager() {
             type: 'kml',
             uuid: crypto.randomUUID(),
             humanId: DRAWING_KML_LAYER_ID,
-            opacity: 1,
-            isVisible: true,
             isLoading: false,
             info: {
                 displayName: drawingStore.drawingName,

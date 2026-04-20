@@ -1,6 +1,7 @@
 import type { Dimension } from '@swissgeo/layers'
 import type { Layer as MapLayer } from '@swissgeo/map'
 
+import log from '@swissgeo/log'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -19,14 +20,15 @@ export const useMapViewStore = defineStore('mapView', () => {
      * @returns the index itself, or the index found
      * @throws Error if the uuid is not found within the array
      */
-    function _getIndexFromIdentifier(identifier: string | number): number {
+    function _getIndexFromIdentifier(identifier: string | number): number | undefined {
         const index =
             typeof identifier === 'number'
                 ? identifier
                 : mapLayers.value.findIndex((layer) => layer.uuid === identifier)
 
-        if (index < 0) {
-            throw new Error(`Incorrect identifier given : ${identifier}`)
+        if (index < 0 || index >= mapLayers.value.length) {
+            log.error(`Incorrect identifier given : ${identifier}`)
+            return
         }
         return index
     }
@@ -53,6 +55,7 @@ export const useMapViewStore = defineStore('mapView', () => {
 
         // Validate: current index must be found, target must be in valid range, and must be different
         if (
+            currentIndex &&
             currentIndex >= 0 &&
             targetIndex < mapLayers.value.length &&
             targetIndex >= 0 &&
@@ -65,37 +68,44 @@ export const useMapViewStore = defineStore('mapView', () => {
 
     /** Move a layer one step up in the visual stack (toward top, higher index). */
     function moveLayerUp(identifier: string | number): void {
-        setLayerIndex(identifier, _getIndexFromIdentifier(identifier) + 1)
+        const index = _getIndexFromIdentifier(identifier)
+        if (index || index === 0) {
+            setLayerIndex(index, index + 1)
+        }
     }
 
     /** Move a layer one step down in the visual stack (toward bottom, lower index). */
     function moveLayerDown(identifier: string | number): void {
-        setLayerIndex(identifier, _getIndexFromIdentifier(identifier) - 1)
+        const index = _getIndexFromIdentifier(identifier)
+        if (index || index === 0) {
+            setLayerIndex(index, index - 1)
+        }
     }
     function updateLayerOpacity(identifier: string | number, opacity: number) {
-        mapLayers.value[_getIndexFromIdentifier(identifier)].opacity = opacity
-    }
-
-    function updateLayerDimension(
-        index: number,
-        dimension: Partial<Dimension>,
-        dimensionId: string
-    ) {
-        if (!mapLayers.value[index].dimensions) {
-            mapLayers.value[index].dimensions = {}
-        }
-        mapLayers.value[index].dimensions[dimensionId] = {
-            ...mapLayers.value[index].dimensions[dimensionId],
-            ...dimension,
+        const index = _getIndexFromIdentifier(identifier)
+        if (index || index === 0) {
+            mapLayers.value[index]!.opacity = opacity
         }
     }
 
     function removeLayer(identifier: string | number) {
-        mapLayers.value.splice(_getIndexFromIdentifier(identifier), 1)
+        const index = _getIndexFromIdentifier(identifier)
+        if (index || index === 0) {
+            mapLayers.value.splice(index, 1)
+        }
     }
 
-    function updateLayerData(identifier: string | number, mapLayer: MapLayer) {
-        mapLayers.value[_getIndexFromIdentifier(identifier)] = mapLayer
+    function updateLayerData(
+        identifier: string | number,
+        mapLayer: MapLayer,
+        canCreateLayer: boolean
+    ) {
+        const index = _getIndexFromIdentifier(identifier)
+        if (index || index === 0) {
+            mapLayers.value[index] = mapLayer
+        } else if (canCreateLayer && typeof identifier === 'number') {
+            mapLayers.value[identifier] = mapLayer
+        }
     }
 
     function toggleTimeSlider() {
@@ -120,10 +130,20 @@ export const useMapViewStore = defineStore('mapView', () => {
 
     function setStateId(id: string) {
         stateId.value = id
+    }
 
     function toggleVisibility(identifier: string | number) {
         const index = _getIndexFromIdentifier(identifier)
-        mapLayers.value[index].isVisible = !mapLayers.value[index].isVisible
+        if (index || index === 0) {
+            mapLayers.value[index]!.isVisible = !mapLayers.value[index]!.isVisible
+        }
+    }
+
+    function setVisibility(identifier: string | number, visibility: boolean) {
+        const index = _getIndexFromIdentifier(identifier)
+        if (index || index === 0) {
+            mapLayers.value[index]!.isVisible = visibility
+        }
     }
 
     return {
@@ -141,12 +161,12 @@ export const useMapViewStore = defineStore('mapView', () => {
         toggleFullscreenMode,
         stateId,
         setStateId,
-        updateLayerDimension,
         updateLayerData,
         updateLayerOpacity,
         removeLayer,
         addLayerToBottom,
         addLayerToTop,
+        setVisibility,
         toggleVisibility,
         moveLayerUp,
         moveLayerDown,

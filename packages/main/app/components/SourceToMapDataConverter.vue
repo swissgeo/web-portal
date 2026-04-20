@@ -16,13 +16,13 @@ const { sourceBgLayer, sourceData } = defineProps<{
 const mapViewStore = useMapViewStore()
 
 function updateMapLayerData(index: number, mapLayerData: MapLayer) {
-    mapViewStore.updateLayerData(index, mapLayerData)
+    mapViewStore.updateLayerData(index, mapLayerData, true)
 }
 function removeLayerData(index: number) {
     mapViewStore.removeLayer(index)
 }
-function updateLayerInfo(identifier: number | string, layerInfo: LayerInfo) {
-    useLayerStore().setLayerInfo(identifier, layerInfo)
+function updateLayerInfo(index: number, uuid: string, layerInfo: LayerInfo) {
+    useLayerStore().setLayerInfo(uuid, layerInfo)
 }
 
 function updateOpacity(identifier: number | string, opacity: number) {
@@ -31,38 +31,14 @@ function updateOpacity(identifier: number | string, opacity: number) {
     mapViewStore.updateLayerOpacity(identifier, opacity)
 }
 function updateTimeDimension(identifier: number | string, dimension: Partial<Dimension>) {
-    useLayerStore().setDimension('time', identifier, dimension)
+    //useLayerStore().setDimension('time', identifier, dimension)
 }
 
-function updateStoreLayerData(identifier: number | string, dataset: Dataset) {
-    useLayerStore().setLayerData(identifier, dataset)
+function updateStoreLayerData(index: number, uuid: string, dataset: Dataset) {
+    if (index !== 0 || !useLayerStore().backgroundLayer) {
+        useLayerStore().setLayerData(uuid, dataset)
+    }
 }
-/**
- * What do I receive ?
- *  FROM ABOVE:
- *      --> SourceData to turn into MapData
- *          --> changing language should trigger this, as source data will change
- *      --> Initial State to set initial Options
- *  FROM "BELOW":
- *      --> update "dimensions"
- *      --> update "opacity" and "visibility"
- *      --> alter order
- * What do I give back ?
- *  --> a MapData Array in the store
- *  --> when a new Layer is added, we need to send it to the source
- *
- *
- * questions
- *
- *  adding layer to the store
- *      - order shouldn't matter in the layers store
- *      - order should matter in the map store
- */
-
-// QUESTIONS
-
-// v-bind key
-// can I enforce a "once" on this ?
 </script>
 
 <template>

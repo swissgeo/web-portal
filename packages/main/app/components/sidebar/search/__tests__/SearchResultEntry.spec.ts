@@ -4,7 +4,7 @@ import { SearchResultTypesEnum } from '@swissgeo/search'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import SearchResultEntry from '@/components/sidebar/search/SearchResultEntry.vue'
+import SearchResultEntry from '../SearchResultEntry.vue'
 
 describe('Search Result Entries', () => {
     const entries: SearchResult[] = [

@@ -30,12 +30,9 @@ const bgLayerModifier = computed(() => (layerStore.backgroundLayer ? 1 : 0))
 const layersLength = computed(() => mapViewStore.mapLayers.length)
 
 const currentTime = computed({
+    // we should get this from the layer store
     get() {
-        if (layer.dimensions?.time) {
-            return layer.dimensions.time.currentValue
-        } else {
-            return null
-        }
+        return layerStore.getLayer(layer.uuid)?.dimensions?.time?.currentValue ?? null
     },
     set(value) {
         layerStore.setDimension('time', layer.uuid, { currentValue: value })
@@ -43,10 +40,7 @@ const currentTime = computed({
 })
 
 const availableTimes = computed(() => {
-    if (layer.dimensions?.time) {
-        return layer.dimensions.time.availableValues
-    }
-    return []
+    return layerStore.getLayer(layer.uuid)?.dimensions?.time?.availableValues ?? []
 })
 
 const getTimestampName = (time: string) => {
@@ -58,12 +52,11 @@ const opacityPercent = computed({
     get: () => Math.round(layer.opacity * 100),
     set: (value: number) => {
         handleOpacityChange(value / 100)
-        //layerStore.setOpacity(layerIndex, value / 100)
     },
 })
 
-function handleOpacityChange(value: number) {
-    mapViewStore.updateLayerOpacity(layerIndex, value / 100)
+function handleOpacityChange(value: number | undefined) {
+    mapViewStore.updateLayerOpacity(layerIndex, (value ?? 0) / 100)
 }
 
 function toggleVisibility() {
@@ -72,17 +65,16 @@ function toggleVisibility() {
 
 function moveUp() {
     mapViewStore.moveLayerUp(layerIndex)
-    //layerStore.moveLayerUp(layerIndex - bgLayerModifier.value)
 }
 
 function moveDown() {
     mapViewStore.moveLayerDown(layerIndex)
-    //layerStore.moveLayerDown(layerIndex - bgLayerModifier.value)
 }
 
 function removeLayer() {
+    layerStore.removeLayer(layer.uuid)
+
     mapViewStore.removeLayer(layerIndex)
-    //layerStore.removeLayer(layerIndex - bgLayerModifier.value)
     if (layer.uuid === drawingStore.drawingKMLLayerUuid) {
         drawingStore.resetDrawingLayerUuid()
         drawingStore.clearDrawingFeatures()

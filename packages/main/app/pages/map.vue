@@ -4,7 +4,6 @@ import type { MapLayerRenderer } from '@swissgeo/map'
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from '@swissgeo/drawing'
 import { useLayerStore } from '@swissgeo/layers'
-import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
 
 import SourceToMapDataConverter from '../components/SourceToMapDataConverter.vue'
@@ -12,8 +11,6 @@ import SourceToMapDataConverter from '../components/SourceToMapDataConverter.vue
 const layerStore = useLayerStore()
 const mapViewStore = useMapViewStore()
 
-const backgroundLayerMapData = ref<MapLayer | null>(null)
-const layersByUuid = ref<Record<string, MapLayer>>({})
 const backgroundLayer = computed(() => layerStore.backgroundLayer)
 
 const layersForMap = computed(() => {
