@@ -7,8 +7,13 @@
 
  * OpenAPI spec version: v0.2.0-beta.2-6-g9076d04
  */
-import { Checker, GetAppStateResponse, SaveAppStateResponse } from '../model'
-import type { ErrorResponse, SaveAppStateRequest } from '../model'
+import type {
+    Checker,
+    ErrorResponse,
+    GetAppStateResponse,
+    SaveAppStateRequest,
+    SaveAppStateResponse,
+} from './serviceStatePortal.schemas'
 
 /**
  * Simple checker endpoint to be used by kubernetes probes
@@ -25,7 +30,7 @@ export type getCheckerCheckerGetResponseSuccess = getCheckerCheckerGetResponse20
 export type getCheckerCheckerGetResponse = getCheckerCheckerGetResponseSuccess
 
 export const getGetCheckerCheckerGetUrl = () => {
-    return `http://127.0.0.1:8000/checker`
+    return `/checker`
 }
 
 export const getCheckerCheckerGet = async (
@@ -38,8 +43,7 @@ export const getCheckerCheckerGet = async (
 
     const body = [204, 205, 304].includes(res.status) ? null : await res.text()
 
-    const parsedBody = body ? JSON.parse(body) : {}
-    const data = Checker.parse(parsedBody)
+    const data: getCheckerCheckerGetResponse['data'] = body ? JSON.parse(body) : {}
     return { data, status: res.status, headers: res.headers } as getCheckerCheckerGetResponse
 }
 
@@ -69,7 +73,7 @@ export type postAppStateApiStatePostResponse =
     | postAppStateApiStatePostResponseError
 
 export const getPostAppStateApiStatePostUrl = () => {
-    return `http://127.0.0.1:8000/api/state`
+    return `/api/state`
 }
 
 export const postAppStateApiStatePost = async (
@@ -85,8 +89,7 @@ export const postAppStateApiStatePost = async (
 
     const body = [204, 205, 304].includes(res.status) ? null : await res.text()
 
-    const parsedBody = body ? JSON.parse(body) : {}
-    const data = SaveAppStateResponse.parse(parsedBody)
+    const data: postAppStateApiStatePostResponse['data'] = body ? JSON.parse(body) : {}
     return { data, status: res.status, headers: res.headers } as postAppStateApiStatePostResponse
 }
 
@@ -125,7 +128,7 @@ export type getAppStateApiStateStateIdGetResponse =
     | getAppStateApiStateStateIdGetResponseError
 
 export const getGetAppStateApiStateStateIdGetUrl = (stateId: string) => {
-    return `http://127.0.0.1:8000/api/state/${stateId}`
+    return `/api/state/${stateId}`
 }
 
 export const getAppStateApiStateStateIdGet = async (
@@ -139,8 +142,7 @@ export const getAppStateApiStateStateIdGet = async (
 
     const body = [204, 205, 304].includes(res.status) ? null : await res.text()
 
-    const parsedBody = body ? JSON.parse(body) : {}
-    const data = GetAppStateResponse.parse(parsedBody)
+    const data: getAppStateApiStateStateIdGetResponse['data'] = body ? JSON.parse(body) : {}
     return {
         data,
         status: res.status,

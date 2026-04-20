@@ -21,4 +21,16 @@ export default defineConfig({
             },
         },
     },
+    stateshare_mock: {
+        input: {
+            target: 'http://127.0.0.1:8000/openapi.json',
+        },
+        output: {
+            mode: 'split',
+            target: 'src/api',
+            formatter: 'prettier',
+            client: 'fetch',
+            mock: true,
+        },
+    },
 })

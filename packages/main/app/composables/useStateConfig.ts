@@ -1,6 +1,6 @@
 import type { Dimension, DimensionId, Layer } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
-import type { LayerState, MapState, SaveAppState, StatePayload } from '@swissgeo/statesharing'
+import type { LayerState, MapState, AppState, SaveAppState } from '@swissgeo/statesharing'
 
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
@@ -77,7 +77,7 @@ export function useStateConfig() {
                     rotation: positionStore.rotation,
                 },
                 layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l)),
-            } as StatePayload,
+            },
         }
 
         // if (layerStore.backgroundLayer) {
@@ -104,7 +104,7 @@ export function useStateConfig() {
      * Center coordinates are expected in LV95 (EPSG:2056) [x, y].
      * Fetches each layer's dataset from its datasetUrl.
      */
-    async function importState(state: StatePayload): Promise<void> {
+    async function importState(state: AppState): Promise<void> {
         log.info({
             title: 'useStateConfig',
             titleColor: LogPreDefinedColor.Sky,
