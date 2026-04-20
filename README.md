@@ -46,9 +46,9 @@ The available variables are:
 ```sh
 NUXT_PUBLIC_OGC_API_ENDPOINT=   # OGC API endpoint (exposed to client)
 NUXT_PUBLIC_WANTED_LOG_LEVELS=  # String of log levels wanted (error|warn|info|debug)
-NUXT_PUBLIC_SHARE_SERVICE_URL=  # The URL to the share service 
+NUXT_PUBLIC_SHARE_SERVICE_URL=  # The URL to the share service
+NUXT_WHAT3WORDS_API_KEY=        # what3words API key (server-only)
 ```
-
 
 ## Monorepo setup
 
@@ -103,5 +103,5 @@ The app will be available at `http://localhost:3000`.
 
 The repo makes use of [Turbo](https://turborepo.dev/), a supercharger for monorepos. Turbo caches the outcome of certain scripts and won't re-run it if its not needed.
 
-What you can do is, instead of just using `pnpm run build|lint|format|type-check` is to use `pnpx turbo build|lint|format|type-check`. 
+What you can do is, instead of just using `pnpm run build|lint|format|type-check` is to use `pnpx turbo build|lint|format|type-check`.
 This will engage the wrapper and make use of these functionalities and speed up your workflow!

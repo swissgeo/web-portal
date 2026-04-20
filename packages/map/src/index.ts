@@ -10,5 +10,14 @@ import type { ActionDispatcher } from './stores/types'
 
 import * as PROJECTION_EPSG from './composables/types.d'
 
+export {
+    default as coordinateFormat,
+    LV95Format,
+    LV03Format,
+    WGS84Format,
+    UTMFormat,
+    MGRSFormat,
+} from './utils/coordinates/coordinateFormat'
+export type { CoordinateFormat } from './utils/coordinates/coordinateFormat'
 export { MapModule, usePositionStore, PROJECTION_EPSG }
 export type { ActionDispatcher }
