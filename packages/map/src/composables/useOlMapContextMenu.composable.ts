@@ -14,6 +14,7 @@ export function useOlMapContextMenu() {
     const viewportEl = shallowRef<HTMLElement | null>(null)
 
     let cleanup: (() => void) | null = null
+    let suppressNextSingleClick = false
 
     const openAtEvent = (evt: MouseEvent) => {
         const map = olMap?.value
@@ -35,6 +36,14 @@ export function useOlMapContextMenu() {
         isVisible.value = false
     }
 
+    const onSingleClick = () => {
+        if (suppressNextSingleClick) {
+            suppressNextSingleClick = false
+            return
+        }
+        close()
+    }
+
     watch(
         () => olMap?.value,
         (map) => {
@@ -45,8 +54,13 @@ export function useOlMapContextMenu() {
             }
             const viewport = map.getViewport()
             viewport.addEventListener('contextmenu', onContextMenu)
+            // singleclick fires after OL's double-click debounce, so zooming won't accidentally close the popup.
+            map.on('singleclick', onSingleClick)
             viewportEl.value = viewport
-            cleanup = () => viewport.removeEventListener('contextmenu', onContextMenu)
+            cleanup = () => {
+                viewport.removeEventListener('contextmenu', onContextMenu)
+                map.un('singleclick', onSingleClick)
+            }
         },
         { immediate: true }
     )
@@ -57,6 +71,7 @@ export function useOlMapContextMenu() {
         viewportEl,
         (evt) => {
             if (evt.pointerType !== 'mouse') {
+                suppressNextSingleClick = true
                 openAtEvent(evt)
             }
         },
