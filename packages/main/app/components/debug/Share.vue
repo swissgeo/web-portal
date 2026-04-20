@@ -4,9 +4,11 @@ import { useClipboard } from '@vueuse/core'
 const { copy, copied } = useClipboard()
 
 const { exportState } = useStateConfig()
-import { postAppStateApiStatePost } from '@swissgeo/statesharing'
+import { SaveAppState, postAppStateApiStatePost } from '@swissgeo/statesharing'
 
-const stateId = ref(null)
+const stateId = ref<string>()
+const stateIdRevealed = ref(false)
+const state = ref<SaveAppState>()
 
 const shareLink = computed(() => {
     if (!stateId.value) {
@@ -20,16 +22,36 @@ const shareLink = computed(() => {
     return baseUrl.toString()
 })
 
-watch(exportState, async (newState) => {
-    const response = await postAppStateApiStatePost(newState)
-    stateId.value = response.data.id
-})
+watch(
+    exportState,
+    (newState) => {
+        state.value = newState
+        stateIdRevealed.value = false
+    },
+    { immediate: true }
+)
+
+async function generateLink() {
+    if (state.value) {
+        const response = await postAppStateApiStatePost(state.value)
+        if ('id' in response.data) {
+            stateId.value = response.data.id
+            stateIdRevealed.value = true
+        }
+    }
+}
 </script>
 
 <template>
     <div class="flex h-32 w-150 flex-col gap-3 px-2 py-5">
         <div>Share Link:</div>
+        <UButton
+            @click="generateLink"
+            v-if="!stateIdRevealed"
+            >{{ $t('debug.generateShareLink') }}</UButton
+        >
         <UInput
+            v-else
             class="w-full"
             v-model="shareLink"
         >
@@ -38,9 +60,8 @@ watch(exportState, async (newState) => {
                 #trailing
             >
                 <UButton
-                    :color="copied ? 'success' : 'neutral'"
-                    class="bg-white"
-                    variant="link"
+                    :color="copied ? 'success' : 'primary'"
+                    variant="solid"
                     size="sm"
                     :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
                     aria-label="Copy to clipboard"

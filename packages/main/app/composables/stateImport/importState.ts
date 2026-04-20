@@ -1,11 +1,9 @@
-import { validateAndPrepareAppStatePayload } from '@swissgeo/statesharing'
-
-import { GetAppStateResponse } from '@swissgeo/statesharing'
+import { ReadAppState } from '@swissgeo/statesharing'
 
 export async function importState(state: unknown, overrideZoomFromUrl?: number | null) {
     const { importState } = useStateConfig()
 
-    const config = GetAppStateResponse.parse(state)
+    const config = ReadAppState.parse(state)
 
     // If a zoom is in URL, it overwrite the zoom from config
     // (used in the print feature)

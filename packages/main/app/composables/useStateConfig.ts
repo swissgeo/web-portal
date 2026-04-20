@@ -1,11 +1,6 @@
 import type { Dimension, DimensionId, Layer } from '@swissgeo/layers'
 import type { Dataset } from '@swissgeo/ogc'
-import type {
-    LayerState,
-    MapState,
-    PostAppStateApiStatePostBody,
-    StateV1,
-} from '@swissgeo/statesharing'
+import type { LayerState, MapState, SaveAppState, StatePayload } from '@swissgeo/statesharing'
 
 import { useLayerStore, makeServerLayer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
@@ -72,8 +67,8 @@ export function useStateConfig() {
      * Export the current app state as an AppStateConfig object.
      * Center coordinates are in LV95 (EPSG:2056) [x, y].
      */
-    const exportState = computed((): PostAppStateApiStatePostBody => {
-        const payload: PostAppStateApiStatePostBody = {
+    const exportState = computed((): SaveAppState => {
+        const payload: SaveAppState = {
             version: APP_STATE_CONFIG_VERSION,
             state: {
                 map: {
@@ -82,7 +77,7 @@ export function useStateConfig() {
                     rotation: positionStore.rotation,
                 },
                 layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l)),
-            } as StateV1,
+            } as StatePayload,
         }
 
         // if (layerStore.backgroundLayer) {
@@ -109,7 +104,7 @@ export function useStateConfig() {
      * Center coordinates are expected in LV95 (EPSG:2056) [x, y].
      * Fetches each layer's dataset from its datasetUrl.
      */
-    async function importState(state: StateV1): Promise<void> {
+    async function importState(state: StatePayload): Promise<void> {
         log.info({
             title: 'useStateConfig',
             titleColor: LogPreDefinedColor.Sky,
@@ -126,8 +121,8 @@ export function useStateConfig() {
         }
 
         // Fetch all layers in parallel
-        const [layers, bgLayer] = await Promise.all([
-            Promise.all(state.layers.map((lc) => stateConfigToLayer(lc))),
+        const [layers /*, bgLayer */] = await Promise.all([
+            Promise.all(state.layers?.map((lc) => stateConfigToLayer(lc)) ?? []),
             // state.backgroundLayer ? stateConfigToLayer(payload.state.backgroundLayer) : null,
         ])
 

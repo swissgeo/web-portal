@@ -119,7 +119,8 @@
         },
         "openStateConfigPanel": "Open State Config Panel",
         "stateConfig": "State Config",
-        "share": "Share"
+        "share": "Share",
+        "generateShareLink": "Generate share link"
     },
     "geolocation": {
         "permissionDenied": "Location permission denied",
