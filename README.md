@@ -106,9 +106,11 @@ The repo makes use of [Turbo](https://turborepo.dev/), a supercharger for monore
 What you can do is, instead of just using `pnpm run build|lint|format|type-check` is to use `pnpx turbo build|lint|format|type-check`.
 This will engage the wrapper and make use of these functionalities and speed up your workflow!
 
-## End-to-end tests
+## Integration tests
 
-E2E tests live in `e2e/` and use [Playwright](https://playwright.dev/). The first time you run them locally, install the browser binary:
+Integration tests live in `tests/integration/` and use [Playwright](https://playwright.dev/). They verify that UI components work together correctly (sidebar, map canvas, toolbox, locale routing) without depending on real external services — all outgoing API requests are mocked via `page.route()`.
+
+The first time you run them locally, install the browser binary:
 
 ```sh
 pnpm exec playwright install --with-deps chromium
@@ -123,7 +125,7 @@ pnpm build:dev
 Run the tests:
 
 ```sh
-pnpm test:e2e
+pnpm test:integration
 ```
 
 Playwright auto-starts the Nuxt dev server on `http://localhost:3000`. If you already have `pnpm run dev` running, it will reuse that server.

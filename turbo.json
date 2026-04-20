@@ -22,7 +22,7 @@
             "persistent": true,
             "cache": false
         },
-        "test:e2e": {
+        "test:integration": {
             "cache": false
         }
     }

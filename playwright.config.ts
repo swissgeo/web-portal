@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
-    testDir: './e2e',
+    testDir: './tests/integration',
     // Dev-mode Vite cold compile plus OpenLayers hydration needs a generous
     // per-test budget when running locally against `pnpm run dev`. In CI we
     // run against a production preview which is much faster.

@@ -26,7 +26,7 @@
         "lint": "pnpm run --parallel --no-bail --if-present lint",
         "lint:write": "pnpm run --parallel --no-bail --if-present lint:write",
         "test": "pnpm run test:unit",
-        "test:e2e": "playwright test",
+        "test:integration": "playwright test",
         "test:coverage": "vitest run --coverage",
         "test:ui": "vitest --ui",
         "test:unit": "pnpm run --parallel --no-bail --if-present test:unit",

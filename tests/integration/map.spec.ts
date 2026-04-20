@@ -4,8 +4,25 @@ import { expect, test } from '@playwright/test'
 // content; prod preview is much faster. The guard here covers both.
 const HYDRATION_TIMEOUT = 60_000
 
+/**
+ * Mock external API requests so integration tests don't depend on real
+ * services. Internal Nuxt server routes (/api/v1/*) call external backends
+ * server-side, so we only need to intercept client-side requests that
+ * leave the browser (e.g. OGC catalog, tile/style JSON, MapTiler).
+ */
+async function mockExternalRequests(page: import('@playwright/test').Page) {
+    // OGC catalog / dataset requests
+    await page.route('**/api/oar/**', (route) =>
+        route.fulfill({ status: 200, json: { collections: [], links: [] } })
+    )
+
+    // MapTiler tile requests
+    await page.route('**/api.maptiler.com/**', (route) => route.fulfill({ status: 200, body: '' }))
+}
+
 test.describe('map page', () => {
     test.beforeEach(async ({ page }) => {
+        await mockExternalRequests(page)
         await page.goto('/de/map')
         await expect(page.locator('[data-cy="ol-map"]')).toBeVisible({
             timeout: HYDRATION_TIMEOUT,
@@ -50,6 +67,10 @@ test.describe('map page', () => {
 })
 
 test.describe('locale routing', () => {
+    test.beforeEach(async ({ page }) => {
+        await mockExternalRequests(page)
+    })
+
     test('homepage redirects to the default locale map', async ({ page }) => {
         await page.goto('/')
         await page.waitForURL('**/de/map')
