@@ -7,17 +7,18 @@
 
  * OpenAPI spec version: v0.2.0-beta.2-6-g9076d04
  */
-import { faker } from '@faker-js/faker'
-
-import { HttpResponse, http } from 'msw'
 import type { RequestHandlerOptions } from 'msw'
 
-import { LayerTypeEnum } from './serviceStatePortal.schemas'
+import { faker } from '@faker-js/faker'
+import { HttpResponse, http } from 'msw'
+
 import type {
     Checker,
     GetAppStateResponse,
     SaveAppStateResponse,
 } from './serviceStatePortal.schemas'
+
+import { LayerTypeEnum } from './serviceStatePortal.schemas'
 
 export const getGetCheckerCheckerGetResponseMock = (
     overrideResponse: Partial<Extract<Checker, object>> = {}
@@ -150,6 +151,7 @@ export const getGetAppStateApiStateStateIdGetMockHandler = (
         options
     )
 }
+
 export const getServiceStatePortalMock = () => [
     getGetCheckerCheckerGetMockHandler(),
     getPostAppStateApiStatePostMockHandler(),

@@ -28,11 +28,13 @@
         "zod": "catalog:"
     },
     "devDependencies": {
+        "@faker-js/faker": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "workspace:*",
         "@swissgeo/config-typescript": "workspace:*",
         "@swissgeo/shared": "workspace:",
         "eslint": "catalog:",
+        "msw": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",
         "unplugin-dts": "catalog:",
