@@ -76,25 +76,26 @@ function addToMap() {
                 >
                     {{ $t('dataset.backToMap') }}
                 </UButton>
-
-                <UButton
-                    v-if="dataset && !isAlreadyOnMap"
-                    icon="i-lucide-map"
-                    color="primary"
-                    @click="addToMap"
-                >
-                    {{ $t('dataset.addToMap') }}
-                </UButton>
-                <span
-                    v-else-if="dataset && isAlreadyOnMap"
-                    class="flex items-center gap-2 text-sm text-muted"
-                >
-                    <UIcon
-                        name="i-lucide-check"
-                        class="size-4"
-                    />
-                    {{ $t('dataset.alreadyOnMap') }}
-                </span>
+                <ClientOnly>
+                    <UButton
+                        v-if="dataset && !isAlreadyOnMap"
+                        icon="i-lucide-map"
+                        color="primary"
+                        @click="addToMap"
+                    >
+                        {{ $t('dataset.addToMap') }}
+                    </UButton>
+                    <span
+                        v-else-if="dataset && isAlreadyOnMap"
+                        class="flex items-center gap-2 text-sm text-muted"
+                    >
+                        <UIcon
+                            name="i-lucide-check"
+                            class="size-4"
+                        />
+                        {{ $t('dataset.alreadyOnMap') }}
+                    </span>
+                </ClientOnly>
             </nav>
 
             <template v-if="dataset">
