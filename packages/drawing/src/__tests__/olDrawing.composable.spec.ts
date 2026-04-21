@@ -1,9 +1,14 @@
 import type { Layer } from '@swissgeo/layers'
+import type BaseEvent from 'ol/events/Event'
 import type Feature from 'ol/Feature'
 import type { Geometry } from 'ol/geom'
+import type VectorLayer from 'ol/layer/Vector'
 import type * as OlObservable from 'ol/Observable'
 
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
+import OlFeature from 'ol/Feature'
+import LineString from 'ol/geom/LineString'
+import Point from 'ol/geom/Point'
 import Draw from 'ol/interaction/Draw'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, ref } from 'vue'
@@ -93,6 +98,11 @@ vi.mock('ol/Observable', async () => {
     }
 })
 
+type MapHit = {
+    feature: Feature<Geometry>
+    layer: unknown
+}
+
 type MockMap = {
     addLayer: ReturnType<typeof vi.fn>
     removeLayer: ReturnType<typeof vi.fn>
@@ -104,6 +114,8 @@ type MockMap = {
     getInteractions: () => unknown[]
     forEachFeatureAtPixel: ReturnType<typeof vi.fn>
     getCoordinateFromPixel: ReturnType<typeof vi.fn>
+    __emit: (_type: string, _event: unknown) => void
+    __setHit: (_hit: MapHit | null) => void
     __interactions: unknown[]
 }
 
@@ -112,6 +124,8 @@ function createMapMock(): MockMap {
     document.body.appendChild(viewport)
 
     const interactions: unknown[] = []
+    const listeners = new Map<string, ((_event: unknown) => void)[]>()
+    let hit: MapHit | null = null
 
     const map: MockMap = {
         addLayer: vi.fn(),
@@ -125,14 +139,28 @@ function createMapMock(): MockMap {
                 interactions.splice(index, 1)
             }
         }),
-        on: vi.fn(() => ({ type: '', listener: vi.fn() })),
+        on: vi.fn((type: string, listener: (_event: unknown) => void) => {
+            const existing = listeners.get(type) ?? []
+            existing.push(listener)
+            listeners.set(type, existing)
+            return { type, listener }
+        }),
         getViewport: vi.fn(() => viewport),
-        getView: vi.fn(() => ({
-            getResolution: () => 1,
-        })),
+        getView: vi.fn(() => ({ getResolution: () => 1 })),
         getInteractions: vi.fn(() => interactions),
-        forEachFeatureAtPixel: vi.fn(() => undefined),
+        forEachFeatureAtPixel: vi.fn((_pixel, callback) => {
+            if (!hit) {
+                return undefined
+            }
+            return callback(hit.feature, hit.layer)
+        }),
         getCoordinateFromPixel: vi.fn((pixel: number[]) => pixel),
+        __emit: (type: string, event: unknown) => {
+            ;(listeners.get(type) ?? []).forEach((listener) => listener(event))
+        },
+        __setHit: (nextHit: MapHit | null) => {
+            hit = nextHit
+        },
         __interactions: interactions,
     }
 
@@ -171,6 +199,12 @@ function mountWithMap(map: MockMap, layerOverrides?: Partial<Layer>) {
         zIndexRef,
         api: (wrapper.vm as unknown as { api: ReturnType<typeof useOlDrawing> }).api,
     }
+}
+
+// Returns the OL VectorLayer registered via drawingStore.setOlLayer
+function getOlDrawingLayer(map: MockMap): VectorLayer {
+    void map
+    return drawingStoreMock.setOlLayer.mock.calls[0]?.[0] as VectorLayer
 }
 
 describe('useOlDrawing', () => {
@@ -284,18 +318,219 @@ describe('useOlDrawing', () => {
         })
     })
 
-    describe('drawing interactions via store state', () => {
-        it('adds a Draw interaction to the map when drawingMode is set to Point', async () => {
+    describe('startDrawing (triggered via drawingMode store state)', () => {
+        it('starts text drawing and applies text defaults on drawend', async () => {
             drawingStoreMock.isDrawing = true
-            drawingStoreMock.drawingMode = 'Point'
+            drawingStoreMock.drawingMode = 'Text'
             const map = createMapMock()
-            const { wrapper } = mountWithMap(map)
-
-            await wrapper.vm.$nextTick()
-            await wrapper.vm.$nextTick()
+            mountWithMap(map)
+            await flushPromises()
 
             const draw = map.__interactions.find((i) => i instanceof Draw)
             expect(draw).toBeDefined()
+
+            const textFeature = new OlFeature(new Point([100, 200])) as Feature<Geometry>
+            draw!.dispatchEvent({
+                type: 'drawend',
+                feature: textFeature,
+            } as unknown as BaseEvent)
+
+            expect(textFeature.get('text')).toBe('New Text')
+            expect(drawingStoreMock.updateFeatureAttributes).toHaveBeenCalledWith(
+                textFeature,
+                expect.objectContaining({ kind: 'Text' })
+            )
+            // drawend callback resets the mode to 'None'
+            expect(drawingStoreMock.setDrawingMode).toHaveBeenCalledWith('None')
+        })
+
+        it('starts measurement drawing and resolves path subtype on drawend', async () => {
+            drawingStoreMock.isDrawing = true
+            drawingStoreMock.drawingMode = 'Measurement'
+            const map = createMapMock()
+            mountWithMap(map)
+            await flushPromises()
+
+            const draw = map.__interactions.find((i) => i instanceof Draw)
+            expect(draw).toBeDefined()
+
+            const measurementFeature = new OlFeature(
+                new LineString([
+                    [0, 0],
+                    [1000, 0],
+                    [2000, 0],
+                ])
+            ) as Feature<Geometry>
+            draw!.dispatchEvent({
+                type: 'drawend',
+                feature: measurementFeature,
+            } as unknown as BaseEvent)
+
+            expect(drawingStoreMock.setMeasurementSubtype).toHaveBeenCalledWith('Path')
+            expect(drawingStoreMock.updateFeatureAttributes).toHaveBeenCalledWith(
+                measurementFeature,
+                expect.objectContaining({
+                    kind: 'MeasurementPath',
+                    measurementSubtype: 'Path',
+                })
+            )
+        })
+
+        it('applies the default icon when drawing a point feature', async () => {
+            drawingStoreMock.isDrawing = true
+            drawingStoreMock.drawingMode = 'Point'
+            const map = createMapMock()
+            mountWithMap(map)
+            await flushPromises()
+
+            const draw = map.__interactions.find((i) => i instanceof Draw)
+            expect(draw).toBeDefined()
+
+            const pointFeature = new OlFeature(new Point([1, 2])) as Feature<Geometry>
+            draw!.dispatchEvent({
+                type: 'drawend',
+                feature: pointFeature,
+            } as unknown as BaseEvent)
+
+            expect(drawingStoreMock.updateFeatureAttributes).toHaveBeenCalledWith(
+                pointFeature,
+                expect.objectContaining({
+                    kind: 'Point',
+                    style: expect.objectContaining({ iconId: defaultMarkerIcon.id }),
+                })
+            )
+        })
+
+        it('removes the Draw interaction on unmount while drawing', async () => {
+            drawingStoreMock.isDrawing = true
+            drawingStoreMock.drawingMode = 'Text'
+            const map = createMapMock()
+            const { wrapper } = mountWithMap(map)
+            await flushPromises()
+
+            const draw = map.__interactions.find((i) => i instanceof Draw)
+            expect(draw).toBeDefined()
+
+            wrapper.unmount()
+
+            expect(map.removeInteraction).toHaveBeenCalledWith(draw)
+        })
+    })
+
+    describe('passive inspection (default mode: isDrawing=false)', () => {
+        it('notifies store on feature click and updates hover hint on pointermove', async () => {
+            const feature = new OlFeature(new Point([15, 20])) as Feature<Geometry>
+            feature.set('kind', 'Point')
+            feature.set('title', 'Marker title')
+            drawingStoreMock.drawingFeatures = [feature]
+
+            const map = createMapMock()
+            const { api } = mountWithMap(map)
+            await flushPromises()
+
+            const olLayer = getOlDrawingLayer(map)
+            map.__setHit({ feature, layer: olLayer })
+
+            map.__emit('singleclick', { pixel: [10, 20], coordinate: [15, 20] })
+
+            expect(drawingStoreMock.setSelectedFeatureId).toHaveBeenCalled()
+            expect(drawingStoreMock.setSelectedFeatureInfo).toHaveBeenCalledWith(
+                expect.objectContaining({ kind: 'Point', title: 'Marker title' })
+            )
+
+            map.__emit('pointermove', {
+                pixel: [10, 20],
+                originalEvent: { clientX: 120, clientY: 300 },
+            })
+
+            expect(api.showHoverHint.value).toBe(true)
+            expect(api.hoverHintText.value).toContain('select')
+        })
+
+        it('clears cursor style when pointer leaves the viewport', async () => {
+            const map = createMapMock()
+            mountWithMap(map)
+            await flushPromises()
+
+            const viewport = map.getViewport()
+            viewport.dispatchEvent(new PointerEvent('pointerleave'))
+
+            expect(viewport.style.cursor).toBe('')
+        })
+    })
+
+    describe('active editing (default mode: isDrawing=false)', () => {
+        it('inserts a vertex on singleclick when a line feature is selected', async () => {
+            const lineFeature = new OlFeature(
+                new LineString([
+                    [0, 0],
+                    [20, 0],
+                ])
+            ) as Feature<Geometry>
+            lineFeature.set('__isSelected', true, true)
+            drawingStoreMock.drawingFeatures = [lineFeature]
+
+            const map = createMapMock()
+            mountWithMap(map)
+            await flushPromises()
+
+            const olLayer = getOlDrawingLayer(map)
+            map.__setHit({ feature: lineFeature, layer: olLayer })
+
+            map.__emit('singleclick', { pixel: [5, 0], coordinate: [10, 0] })
+
+            const coordinates = (lineFeature.getGeometry() as LineString).getCoordinates()
+            expect(coordinates).toHaveLength(3)
+        })
+
+        it('deletes a vertex on contextmenu when a line feature is selected', async () => {
+            const lineFeature = new OlFeature(
+                new LineString([
+                    [0, 0],
+                    [10, 0],
+                    [20, 0],
+                ])
+            ) as Feature<Geometry>
+            lineFeature.set('__isSelected', true, true)
+            drawingStoreMock.drawingFeatures = [lineFeature]
+
+            const map = createMapMock()
+            mountWithMap(map)
+            await flushPromises()
+
+            const olLayer = getOlDrawingLayer(map)
+            map.__setHit({ feature: lineFeature, layer: olLayer })
+
+            map.getViewport().dispatchEvent(
+                new MouseEvent('contextmenu', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: 10,
+                    clientY: 0,
+                })
+            )
+
+            const coordinates = (lineFeature.getGeometry() as LineString).getCoordinates()
+            expect(coordinates).toHaveLength(2)
+        })
+    })
+
+    describe('restoreFeatures (called on mount)', () => {
+        it('restores features from drawingFeatures store on mount', () => {
+            const feature = new OlFeature(new Point([1, 2])) as Feature<Geometry>
+            drawingStoreMock.drawingFeatures = [feature]
+
+            const map = createMapMock()
+            mountWithMap(map)
+
+            expect(drawingStoreMock.ensureFeatureAttributes).toHaveBeenCalledWith(feature)
+        })
+
+        it('sets drawing name from layer info on mount', () => {
+            const map = createMapMock()
+            mountWithMap(map, { info: { displayName: 'My Drawing' } })
+
+            expect(drawingStoreMock.setDrawingName).toHaveBeenCalledWith('My Drawing')
         })
     })
 })
