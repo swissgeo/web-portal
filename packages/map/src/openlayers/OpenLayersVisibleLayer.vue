@@ -32,6 +32,7 @@ const customLayerRenderer = computed(() =>
     <component
         :is="customLayerRenderer.component"
         :layer="layer as Layer"
+        :zIndex="layer.zIndex"
         v-if="customLayerRenderer"
     />
     <OpenLayersWMTSLayer
