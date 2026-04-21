@@ -7,13 +7,14 @@ import { computedAsync } from '@vueuse/core'
 
 import { AVAILABLE_BACKGROUNDS } from './constants'
 
+const displayMode = inject<'web' | 'print'>('displayMode')
+
 const emit = defineEmits<{
     setBackground: [backgroundLayer: Layer | null]
 }>()
 
-const { currentBackground, showUi = true } = defineProps<{
+const { currentBackground } = defineProps<{
     currentBackground: Layer | null,
-    showUi?: boolean,
 }>()
 
 const runtimeConfig = useRuntimeConfig()
@@ -77,14 +78,14 @@ function selectBackground(backgroundLayer: Layer | null) {
 <template>
     <!-- Desktop (sm+): rectangular buttons spread to the left, fixed bottom-right -->
     <MapBackgroundSelectorSquared
-        v-if="showUi"
+        v-if="displayMode === 'web'"
         :background-layers="sortedBackgroundLayersWithNull"
         :current-background-layer="currentBackground"
         @select-background="selectBackground"
     />
     <!-- Mobile (below sm): circular buttons spread upward, fixed bottom-left -->
     <MapBackgroundSelectorRounded
-        v-if="showUi"
+        v-if="displayMode === 'web'"
         :background-layers="sortedBackgroundLayersWithNull"
         :current-background-layer="currentBackground"
         @select-background="selectBackground"

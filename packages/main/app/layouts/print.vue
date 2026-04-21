@@ -1,5 +1,8 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
+import { provide } from 'vue'
+
+provide<'web' | 'print'>('displayMode', 'print')
 
 </script>
 

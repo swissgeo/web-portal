@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const toaster = { position: 'top-right' as const }
+provide<'web' | 'print'>('displayMode', 'web')
 </script>
 
 <template>
