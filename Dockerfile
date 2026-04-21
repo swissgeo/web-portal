@@ -102,12 +102,15 @@ COPY --chown=${USER}:${GROUP} --from=builder-prod ${BUILD_DIR}/packages/main/.ou
 USER ${USER}
 EXPOSE ${PORT}
 WORKDIR ${INSTALL_DIR}
-ENTRYPOINT ["node", "server/index.mjs"]
+ENTRYPOINT ["node", "/app/server/index.mjs"]
 
 ###########################################################
 # Container to use for checks
 FROM builder-dev AS checker
 LABEL target=checker
 
+# Also copy the build to run it for playwright tests
+COPY --chown=${USER}:${GROUP} --from=builder-dev ${BUILD_DIR}/packages/main/.output/ ${INSTALL_DIR}/
+
 WORKDIR ${BUILD_DIR}
-ENTRYPOINT ["node", "server/index.mjs"]
+CMD  ["node", "/app/server/index.mjs"]
