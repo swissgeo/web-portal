@@ -194,7 +194,8 @@ export function validateAppStatePayload(json: unknown): AppStatePayload {
         throw new Error('State payload is not conform')
     }
 
-    if (!semver.satisfies(json.version, APP_STATE_CONFIG_CONSTRAINT)) {
+    const version = semver.coerce(json.version)
+    if (!version || !semver.satisfies(version, APP_STATE_CONFIG_CONSTRAINT)) {
         throw new Error(
             `The version ${json.version} does not satisfy the constraint ${APP_STATE_CONFIG_CONSTRAINT}`
         )
