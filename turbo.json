@@ -21,6 +21,9 @@
         "dev": {
             "persistent": true,
             "cache": false
+        },
+        "test:integration": {
+            "cache": false
         }
     }
 }
