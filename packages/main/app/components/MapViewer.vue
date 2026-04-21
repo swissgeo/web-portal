@@ -12,12 +12,6 @@ import { useAttributionSources } from '@/composables/useAttributionSources'
 import { useGeolocationStore } from '@/stores/geolocation'
 import { projectLayersForMap } from '@/utils/layerOrder'
 
-const {
-    showUi = true,
-} = defineProps<{
-    showUi?: boolean
-}>()
-
 const layerStore = useLayerStore()
 const mapViewStore = useMapViewStore()
 const geolocationStore = useGeolocationStore()
@@ -93,6 +87,7 @@ const { sources: attributionSources } = useAttributionSources(
     computed(() => layerStore.layers),
     computed(() => layerStore.backgroundLayer)
 )
+const displayMode = inject<'web' | 'print'>('displayMode')
 </script>
 
 <template>
@@ -132,8 +127,6 @@ const { sources: attributionSources } = useAttributionSources(
             :layers="layersForMap"
             :background-layer="backgroundLayerMapData"
             :custom-layer-renderers="customLayerRenderers"
-            :show-mouse-tracker="showUi"
-            :show-scale="showUi"
             class="h-full w-full"
         >
             <template #context-menu-popup="{ coordinate, isVisible, close }">
@@ -149,17 +142,16 @@ const { sources: attributionSources } = useAttributionSources(
             <MapAttributionList :sources="attributionSources" />
         </MapModule>
         <Toolbox
-            v-if="showUi"
+            v-if="displayMode === 'web'"
         />
         <DebugPanel
-            v-if="showAdditionalMapUi && showUi"
+            v-if="showAdditionalMapUi && displayMode === 'web'"
             class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"
         ></DebugPanel>
         <DrawingFeatureInfoWindow v-if="showAdditionalMapUi" />
 
         <MapBackgroundSelector
             :currentBackground="backgroundLayer"
-            :show-ui="showUi"
             @setBackground="changeBackground"
         />
         <MapTimeSliderButton />

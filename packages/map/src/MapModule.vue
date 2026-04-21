@@ -6,17 +6,22 @@ import OpenLayersContextMenuPopup from './openlayers/OpenLayersContextMenuPopup.
 import OpenLayersMap from './openlayers/OpenLayersMap.vue'
 import OpenLayersMouseTracker from './openlayers/OpenLayersMouseTracker.vue'
 import OpenLayersScale from './openlayers/OpenLayersScale.vue'
+import log, { LogLevel } from '@swissgeo/log'
+import OpenLayersScalePrint from './openlayers/OpenLayersScalePrint.vue'
+import { computed, inject, onMounted } from 'vue'
+// import MapFooterAttributionList from './uiComponents/MapFooterAttributionList.vue'
 
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 
-const { layers, backgroundLayer, customLayerRenderers, showMouseTracker = true, showScale = true } = defineProps<{
+const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
     layers: Layer[]
     backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
-    showMouseTracker?: boolean
-    showScale?: boolean
 }>()
+
+
+const displayMode = inject<'web' | 'print'>('displayMode')
 
 </script>
 
@@ -28,9 +33,10 @@ const { layers, backgroundLayer, customLayerRenderers, showMouseTracker = true, 
             :custom-layer-renderers="customLayerRenderers"
             :layers="layers"
         >
-            <!-- <OpenLayersScale /> -->
             <slot />
-            <OpenLayersScale v-if="showScale"/>
+
+            <OpenLayersScale v-if="displayMode === 'web'"/>
+            <OpenLayersScalePrint v-else />
             <!-- <MapFooterAttributionList
                 :layers="layers"
                 :background-layer="backgroundLayer"
@@ -41,7 +47,7 @@ const { layers, backgroundLayer, customLayerRenderers, showMouseTracker = true, 
                     v-bind="slotProps"
                 />
             </OpenLayersContextMenuPopup>
-            <OpenLayersMouseTracker v-if="showMouseTracker" />
+            <OpenLayersMouseTracker v-if="displayMode === 'web'" />
         </OpenLayersMap>
     </div>
 </template>

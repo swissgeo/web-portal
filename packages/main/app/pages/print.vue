@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { onMounted } from 'vue'
 import VueQrcode from '@chenfengyuan/vue-qrcode'
 import { SwissGeoLogoRgbPrio } from '@swissgeo/skeleton'
 
@@ -15,6 +16,7 @@ const containerHeight = ref('100dvh')
 const containerMargin = ref('0')
 const pixelPerMm = ref(0)
 
+
 onMounted(() => {
     pixelPerMm.value = computeNumberOfPixelsForPrint(1, printConfig.resolution)
     // We want the padding to be internal to the page
@@ -22,9 +24,7 @@ onMounted(() => {
     const {width, height } = getPageSizeInPixels(printConfig.format, printConfig.orientation, printConfig.resolution)
     containerWidth.value = `${width - 2 * margin}px`
     containerHeight.value = `${height - 2 * margin}px`
-    containerMargin.value = `${margin}px`
-    console.log(">>>>>>>>>< link", link.value);
-    
+    containerMargin.value = `${margin}px`    
 })
 
 </script>
@@ -41,7 +41,7 @@ onMounted(() => {
             }"
         >
             <div class="map-container">
-                <MapViewer :show-ui="false"/>
+                <MapViewer />
                 <div
                     v-if="link"
                     class="qr-code-container">

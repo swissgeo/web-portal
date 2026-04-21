@@ -38,6 +38,9 @@ if (!olMap) {
     throw new Error('OpenLayersMap is not available')
 }
 
+const someString = toValue(inject<string>('someString'))
+
+console.log("someString seen from Scale comp", someString);
 
 onMounted(() => {
     if (scaleLineElement.value) {
@@ -54,7 +57,7 @@ onBeforeUnmount(() => olMap.removeControl(scaleLine))
     <div
         v-show="showScaleLine"
         ref="scaleLineElement"
-        class="scale-line-container fixed bottom-[1rem] left-[5rem] bg-white"
+        class="scale-line-container absolute top-[1rem] left-[5rem] bg-white"
         :class="withRelativeSize"
         data-cy="scaleline"
     />
