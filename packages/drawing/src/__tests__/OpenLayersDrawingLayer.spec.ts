@@ -1,69 +1,23 @@
 import type { Layer } from '@swissgeo/layers'
-import type { Feature } from 'ol'
-import type { Geometry } from 'ol/geom'
 
 import { mount } from '@vue/test-utils'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { ref } from 'vue'
 
 import OpenLayersDrawingLayer from '../components/OpenLayersDrawingLayer.vue'
-;(globalThis as { useI18n?: () => { t: (_key: string) => string } }).useI18n = () => ({
-    t: (key: string) => key,
-})
 
-const mockSetSelectedIcon = vi.fn()
-const { mockSetZIndex } = vi.hoisted(() => ({
-    mockSetZIndex: vi.fn(),
-}))
-
-const mockDrawingStore = {
-    drawingFeatures: [] as Feature<Geometry>[],
-    drawingMode: 'None',
-    isDrawing: false,
-    featureCount: 0,
-    selectedIconId: undefined as string | undefined,
-    setSelectedFeatureId: vi.fn(),
-    setSelectedFeatureInfo: vi.fn(),
-    clearPassiveSelection: vi.fn(),
-    setOlLayer: vi.fn(),
-}
-
-function createLayerFixture(): Layer {
-    return {
-        humanId: 'test-layer',
-        uuid: '1234',
-        opacity: 1,
-        ce: { value: null },
-    } as unknown as Layer
-}
-
-vi.mock('@/stores/drawing', () => ({
-    useDrawingStore: vi.fn(() => ({
-        ...mockDrawingStore,
+const { mockUseOlDrawing } = vi.hoisted(() => ({
+    mockUseOlDrawing: vi.fn(() => ({
+        showHoverHint: ref(false),
+        hoverHintText: ref(''),
+        hoverHintX: ref(0),
+        hoverHintY: ref(0),
+        selectedIcon: ref({ id: 'default' }),
     })),
 }))
 
-// this isn't really mocking the thing!
 vi.mock('@/composables/olDrawing.composable', () => ({
-    useOlDrawing: vi.fn(() => ({
-        startDrawing: vi.fn(),
-        stopDrawing: vi.fn(),
-        enableActiveEditing: vi.fn(),
-        disableActiveEditing: vi.fn(),
-        getFeatures: vi.fn(() => []),
-        clearFeatures: vi.fn(),
-        addFeatures: vi.fn(),
-        setVisibility: vi.fn(),
-        setZIndex: mockSetZIndex,
-        updateFeatureText: vi.fn(),
-        setSelectedIcon: mockSetSelectedIcon,
-        enablePassiveInspection: vi.fn(),
-        disablePassiveInspection: vi.fn(),
-    })),
-}))
-
-vi.mock('@/utils/markerIcons', () => ({
-    getMarkerIconById: vi.fn(() => undefined),
-    DEFAULT_MARKER_ICON: 'default',
+    useOlDrawing: mockUseOlDrawing,
 }))
 
 vi.mock('vue-i18n', () => ({
@@ -72,34 +26,94 @@ vi.mock('vue-i18n', () => ({
     })),
 }))
 
+function createLayerFixture(): Layer {
+    return {
+        humanId: 'test-layer',
+        uuid: '1234',
+        opacity: 1,
+        isVisible: true,
+        isLoading: false,
+        type: 'dataset',
+    } as unknown as Layer
+}
+
 describe('OpenLayersDrawingLayer.vue', () => {
-    it('renders correctly and applies initial zIndex', async () => {
+    beforeEach(() => {
+        mockUseOlDrawing.mockClear()
+    })
+
+    it('renders and calls useOlDrawing with layer and zIndex refs', () => {
         const wrapper = mount(OpenLayersDrawingLayer, {
             props: {
                 layer: createLayerFixture(),
                 zIndex: 5,
             },
         })
-        expect(wrapper.exists()).toBe(true)
-        expect(mockSetZIndex).toHaveBeenCalledWith(5)
 
-        // update zIndex prop and verify watcher triggers
-        await wrapper.setProps({ zIndex: 12 })
-        expect(mockSetZIndex).toHaveBeenCalledWith(12)
+        expect(wrapper.exists()).toBe(true)
+        expect(mockUseOlDrawing).toHaveBeenCalledTimes(1)
+
+        const args = mockUseOlDrawing.mock.calls[0] as unknown as [
+            { value: Layer },
+            { value: number },
+        ]
+        expect(args[0].value.humanId).toBe('test-layer')
+        expect(args[1].value).toBe(5)
     })
 
-    it('calls setSelectedIcon on icon selection', () => {
-        mockSetSelectedIcon.mockClear()
+    it('shows hover hint in document.body when showHoverHint is true', async () => {
+        const showHoverHint = ref(false)
+        const hoverHintText = ref('Click to select')
+        const hoverHintX = ref(100)
+        const hoverHintY = ref(200)
 
+        mockUseOlDrawing.mockReturnValueOnce({
+            showHoverHint,
+            hoverHintText,
+            hoverHintX,
+            hoverHintY,
+            selectedIcon: ref({ id: 'default' }),
+        })
+
+        // attachTo body so Teleport to="body" has a target
         mount(OpenLayersDrawingLayer, {
             props: {
                 layer: createLayerFixture(),
                 zIndex: 0,
             },
+            attachTo: document.body,
         })
 
-        // simulate icon selection by calling the OL composable callback target directly
-        mockSetSelectedIcon('icon-id')
-        expect(mockSetSelectedIcon).toHaveBeenCalledWith('icon-id')
+        expect(document.querySelector('.pointer-events-none')).toBeNull()
+
+        showHoverHint.value = true
+        await new Promise((r) => setTimeout(r, 0))
+
+        const hint = document.querySelector('.pointer-events-none')
+        expect(hint).not.toBeNull()
+        expect(hint?.textContent?.trim()).toBe('Click to select')
+    })
+
+    it('passes the olMap inject to useOlDrawing', () => {
+        const fakeMap = { addLayer: vi.fn(), removeLayer: vi.fn() }
+
+        mount(OpenLayersDrawingLayer, {
+            props: {
+                layer: createLayerFixture(),
+                zIndex: 3,
+            },
+            global: {
+                provide: {
+                    olMap: ref(fakeMap),
+                },
+            },
+        })
+
+        const callArgs = mockUseOlDrawing.mock.calls[0] as unknown as [
+            unknown,
+            unknown,
+            { value: unknown },
+        ]
+        expect(callArgs[2]?.value).toStrictEqual(fakeMap)
     })
 })

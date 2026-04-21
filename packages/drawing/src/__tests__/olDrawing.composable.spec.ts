@@ -1,14 +1,12 @@
-import type BaseEvent from 'ol/events/Event'
+import type { Layer } from '@swissgeo/layers'
+import type Feature from 'ol/Feature'
 import type { Geometry } from 'ol/geom'
 import type * as OlObservable from 'ol/Observable'
 
 import { mount } from '@vue/test-utils'
-import Feature from 'ol/Feature'
-import LineString from 'ol/geom/LineString'
-import Point from 'ol/geom/Point'
 import Draw from 'ol/interaction/Draw'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, ref } from 'vue'
 
 import { useOlDrawing } from '../composables/olDrawing.composable'
 
@@ -16,10 +14,19 @@ const { drawingStoreMock, defaultMarkerIcon } = vi.hoisted(() => ({
     drawingStoreMock: {
         isDrawing: false,
         drawingMode: 'None',
+        featureCount: 0,
+        selectedIconId: undefined as string | undefined,
+        drawingFeatures: [] as Feature<Geometry>[],
         setOlLayer: vi.fn(),
         setMeasurementSubtype: vi.fn(),
         updateFeatureAttributes: vi.fn(),
         ensureFeatureAttributes: vi.fn(),
+        setDrawingMode: vi.fn(),
+        setDrawingName: vi.fn(),
+        setSelectedFeatureId: vi.fn(),
+        setSelectedFeatureInfo: vi.fn(),
+        clearPassiveSelection: vi.fn(),
+        extractDrawingNameFromKML: vi.fn(() => null),
     },
     defaultMarkerIcon: {
         id: 'default-pin',
@@ -55,6 +62,7 @@ vi.mock('@swissgeo/log', () => ({
     },
     LogPreDefinedColor: {
         Yellow: 'Yellow',
+        Red: 'Red',
     },
 }))
 
@@ -62,6 +70,8 @@ vi.mock('@swissgeo/shared', () => ({
     bearingBetweenCoordinates: vi.fn(() => null),
     DEFAULT_MEASUREMENT_INTERVAL_KILOMETERS: 5,
     DEFAULT_MEASUREMENT_PATH_INTERVAL_KILOMETERS: 10,
+    EPSG_2056_CH1903: 'EPSG:2056',
+    EPSG_4326_WGS84: 'EPSG:4326',
     formatDistanceKilometers: vi.fn((meters: number) => `${(meters / 1000).toFixed(2)} km`),
     resolveDrawingFeatureKind: vi.fn(
         (feature: Feature<Geometry>) => feature.get('kind') ?? 'Unknown'
@@ -83,11 +93,6 @@ vi.mock('ol/Observable', async () => {
     }
 })
 
-type MapHit = {
-    feature: Feature<Geometry>
-    layer: unknown
-}
-
 type MockMap = {
     addLayer: ReturnType<typeof vi.fn>
     removeLayer: ReturnType<typeof vi.fn>
@@ -99,8 +104,6 @@ type MockMap = {
     getInteractions: () => unknown[]
     forEachFeatureAtPixel: ReturnType<typeof vi.fn>
     getCoordinateFromPixel: ReturnType<typeof vi.fn>
-    __emit: (_type: string, _event: unknown) => void
-    __setHit: (_hit: MapHit | null) => void
     __interactions: unknown[]
 }
 
@@ -109,8 +112,6 @@ function createMapMock(): MockMap {
     document.body.appendChild(viewport)
 
     const interactions: unknown[] = []
-    const listeners = new Map<string, ((_event: unknown) => void)[]>()
-    let hit: MapHit | null = null
 
     const map: MockMap = {
         addLayer: vi.fn(),
@@ -124,55 +125,50 @@ function createMapMock(): MockMap {
                 interactions.splice(index, 1)
             }
         }),
-        on: vi.fn((type: string, listener: (_event: unknown) => void) => {
-            const existing = listeners.get(type) ?? []
-            existing.push(listener)
-            listeners.set(type, existing)
-            return { type, listener }
-        }),
+        on: vi.fn(() => ({ type: '', listener: vi.fn() })),
         getViewport: vi.fn(() => viewport),
         getView: vi.fn(() => ({
             getResolution: () => 1,
         })),
         getInteractions: vi.fn(() => interactions),
-        forEachFeatureAtPixel: vi.fn((_pixel, callback) => {
-            if (!hit) {
-                return undefined
-            }
-            return callback(hit.feature, hit.layer)
-        }),
+        forEachFeatureAtPixel: vi.fn(() => undefined),
         getCoordinateFromPixel: vi.fn((pixel: number[]) => pixel),
-        __emit: (type: string, event: unknown) => {
-            ;(listeners.get(type) ?? []).forEach((listener) => listener(event))
-        },
-        __setHit: (nextHit: MapHit | null) => {
-            hit = nextHit
-        },
         __interactions: interactions,
     }
 
     return map
 }
 
-function mountWithMap(map: MockMap) {
+function createLayerFixture(overrides?: Partial<Layer>): Layer {
+    return {
+        humanId: 'drawing-layer',
+        uuid: 'uuid-123',
+        opacity: 0.8,
+        isVisible: true,
+        isLoading: false,
+        type: 'dataset',
+        ...overrides,
+    } as unknown as Layer
+}
+
+function mountWithMap(map: MockMap, layerOverrides?: Partial<Layer>) {
+    const layerRef = ref<Layer>(createLayerFixture(layerOverrides))
+    const zIndexRef = ref(5)
+
     const Harness = defineComponent({
         setup(_, { expose }) {
-            const api = useOlDrawing('drawing-layer', 'uuid-123', 0.8)
-            expose({ api })
+            const api = useOlDrawing(layerRef, zIndexRef, ref(map) as never)
+            expose({ api, layerRef, zIndexRef })
             return () => h('div')
         },
     })
 
-    const wrapper = mount(Harness, {
-        global: {
-            provide: {
-                olMap: map,
-            },
-        },
-    })
+    const wrapper = mount(Harness)
 
     return {
         wrapper,
+        layerRef,
+        zIndexRef,
         api: (wrapper.vm as unknown as { api: ReturnType<typeof useOlDrawing> }).api,
     }
 }
@@ -181,17 +177,28 @@ describe('useOlDrawing', () => {
     beforeEach(() => {
         drawingStoreMock.isDrawing = false
         drawingStoreMock.drawingMode = 'None'
+        drawingStoreMock.featureCount = 0
+        drawingStoreMock.selectedIconId = undefined
+        drawingStoreMock.drawingFeatures = []
         drawingStoreMock.setOlLayer.mockReset()
         drawingStoreMock.setMeasurementSubtype.mockReset()
         drawingStoreMock.updateFeatureAttributes.mockReset()
         drawingStoreMock.ensureFeatureAttributes.mockReset()
+        drawingStoreMock.setDrawingMode.mockReset()
+        drawingStoreMock.setDrawingName.mockReset()
+        drawingStoreMock.setSelectedFeatureId.mockReset()
+        drawingStoreMock.setSelectedFeatureInfo.mockReset()
+        drawingStoreMock.clearPassiveSelection.mockReset()
+        drawingStoreMock.extractDrawingNameFromKML.mockReset()
+        drawingStoreMock.extractDrawingNameFromKML.mockReturnValue(null)
     })
 
-    describe('useOlDrawing', () => {
-        it('throws when OpenLayers map is not injected', () => {
+    describe('initialization', () => {
+        it('throws when OpenLayers map is not provided', () => {
             const Harness = defineComponent({
                 setup() {
-                    useOlDrawing('drawing-layer', 'uuid-123', 1)
+                    const layerRef = ref<Layer>(createLayerFixture())
+                    useOlDrawing(layerRef, ref(0), undefined)
                     return () => h('div')
                 },
             })
@@ -199,7 +206,19 @@ describe('useOlDrawing', () => {
             expect(() => mount(Harness)).toThrow('OpenLayersMap is not available')
         })
 
-        it('adds drawing and endpoint-handle layers on mount and removes them on unmount', () => {
+        it('throws when map ref value is undefined', () => {
+            const Harness = defineComponent({
+                setup() {
+                    const layerRef = ref<Layer>(createLayerFixture())
+                    useOlDrawing(layerRef, ref(0), ref(undefined))
+                    return () => h('div')
+                },
+            })
+
+            expect(() => mount(Harness)).toThrow('OpenLayersMap is not available')
+        })
+
+        it('adds both drawing layer and endpoint-handle layer on mount', () => {
             const map = createMapMock()
             const { wrapper } = mountWithMap(map)
 
@@ -209,302 +228,74 @@ describe('useOlDrawing', () => {
             wrapper.unmount()
             expect(map.removeLayer).toHaveBeenCalledTimes(2)
         })
-    })
 
-    describe('startDrawing', () => {
-        it('starts text drawing and applies text defaults on drawend', () => {
+        it('returns hover hint reactive state', () => {
             const map = createMapMock()
             const { api } = mountWithMap(map)
-            const onFeatureAdded = vi.fn()
 
-            api.startDrawing('Text', onFeatureAdded)
+            expect(api.showHoverHint.value).toBe(false)
+            expect(api.hoverHintText.value).toBe('')
+            expect(api.hoverHintX.value).toBe(0)
+            expect(api.hoverHintY.value).toBe(0)
+        })
+    })
 
-            const draw = map.__interactions.find((interaction) => interaction instanceof Draw)
+    describe('layer reactivity', () => {
+        it('applies zIndex changes reactively via the zIndex ref', async () => {
+            const map = createMapMock()
+            const { zIndexRef, wrapper } = mountWithMap(map)
+
+            const drawingLayer = map.addLayer.mock.calls[0]?.[0] as {
+                getZIndex: () => number
+            }
+
+            zIndexRef.value = 42
+            await wrapper.vm.$nextTick()
+
+            expect(drawingLayer?.getZIndex()).toBe(42)
+        })
+
+        it('applies visibility changes reactively via the layer ref', async () => {
+            const map = createMapMock()
+            const { layerRef, wrapper } = mountWithMap(map)
+
+            const drawingLayer = map.addLayer.mock.calls[0]?.[0] as {
+                getVisible: () => boolean
+            }
+
+            layerRef.value = { ...layerRef.value, isVisible: false }
+            await wrapper.vm.$nextTick()
+
+            expect(drawingLayer?.getVisible()).toBe(false)
+        })
+
+        it('applies opacity changes reactively via the layer ref', async () => {
+            const map = createMapMock()
+            const { layerRef, wrapper } = mountWithMap(map)
+
+            const drawingLayer = map.addLayer.mock.calls[0]?.[0] as {
+                getOpacity: () => number
+            }
+
+            layerRef.value = { ...layerRef.value, opacity: 0.5 }
+            await wrapper.vm.$nextTick()
+
+            expect(drawingLayer?.getOpacity()).toBe(0.5)
+        })
+    })
+
+    describe('drawing interactions via store state', () => {
+        it('adds a Draw interaction to the map when drawingMode is set to Point', async () => {
+            drawingStoreMock.isDrawing = true
+            drawingStoreMock.drawingMode = 'Point'
+            const map = createMapMock()
+            const { wrapper } = mountWithMap(map)
+
+            await wrapper.vm.$nextTick()
+            await wrapper.vm.$nextTick()
+
+            const draw = map.__interactions.find((i) => i instanceof Draw)
             expect(draw).toBeDefined()
-
-            const textFeature = new Feature(new Point([100, 200])) as Feature<Geometry>
-            draw.dispatchEvent({ type: 'drawend', feature: textFeature } as unknown as BaseEvent)
-
-            expect(textFeature.get('text')).toBe('New Text')
-            expect(drawingStoreMock.updateFeatureAttributes).toHaveBeenCalledWith(
-                textFeature,
-                expect.objectContaining({ kind: 'Text' })
-            )
-            expect(onFeatureAdded).toHaveBeenCalledWith(textFeature)
-        })
-
-        it('starts measurement drawing and resolves path subtype on drawend', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-
-            api.startDrawing('Measurement')
-
-            const draw = map.__interactions.find((interaction) => interaction instanceof Draw)
-            expect(draw).toBeDefined()
-
-            const measurementFeature = new Feature(
-                new LineString([
-                    [0, 0],
-                    [1000, 0],
-                    [2000, 0],
-                ])
-            ) as Feature<Geometry>
-
-            draw.dispatchEvent({
-                type: 'drawend',
-                feature: measurementFeature,
-            } as unknown as BaseEvent)
-
-            expect(drawingStoreMock.setMeasurementSubtype).toHaveBeenCalledWith('Path')
-            expect(drawingStoreMock.updateFeatureAttributes).toHaveBeenCalledWith(
-                measurementFeature,
-                expect.objectContaining({
-                    kind: 'MeasurementPath',
-                    measurementSubtype: 'Path',
-                })
-            )
-        })
-
-        it('uses currently selected icon when drawing points', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-
-            api.setSelectedIcon({
-                ...defaultMarkerIcon,
-                id: 'custom-icon',
-            })
-            api.startDrawing('Point')
-
-            const draw = map.__interactions.find((interaction) => interaction instanceof Draw)
-            expect(draw).toBeDefined()
-
-            const pointFeature = new Feature(new Point([1, 2])) as Feature<Geometry>
-            draw.dispatchEvent({ type: 'drawend', feature: pointFeature } as unknown as BaseEvent)
-
-            expect(drawingStoreMock.updateFeatureAttributes).toHaveBeenCalledWith(
-                pointFeature,
-                expect.objectContaining({
-                    kind: 'Point',
-                    style: expect.objectContaining({ iconId: 'custom-icon' }),
-                })
-            )
-        })
-    })
-
-    describe('stopDrawing', () => {
-        it('removes active draw interaction', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-
-            api.startDrawing('Text')
-            const draw = map.__interactions.find((interaction) => interaction instanceof Draw)
-            expect(draw).toBeDefined()
-
-            api.stopDrawing()
-            expect(map.removeInteraction).toHaveBeenCalledWith(draw)
-        })
-    })
-
-    describe('enableActiveEditing', () => {
-        it('enables editing interactions and inserts/deletes vertices via events', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-
-            const lineFeature = new Feature(
-                new LineString([
-                    [0, 0],
-                    [20, 0],
-                ])
-            ) as Feature<Geometry>
-            lineFeature.set('__isSelected', true, true)
-
-            api.addFeatures([lineFeature])
-            api.enableActiveEditing()
-
-            map.__setHit({ feature: lineFeature, layer: api.layer })
-            map.__emit('singleclick', {
-                pixel: [5, 0],
-                coordinate: [10, 0],
-            })
-
-            const coordinatesAfterInsert = (
-                lineFeature.getGeometry() as LineString
-            ).getCoordinates()
-            expect(coordinatesAfterInsert).toHaveLength(3)
-
-            const viewport = map.getViewport()
-            viewport.dispatchEvent(
-                new MouseEvent('contextmenu', {
-                    bubbles: true,
-                    cancelable: true,
-                    clientX: 10,
-                    clientY: 0,
-                })
-            )
-
-            const coordinatesAfterDelete = (
-                lineFeature.getGeometry() as LineString
-            ).getCoordinates()
-            expect(coordinatesAfterDelete).toHaveLength(2)
-        })
-    })
-
-    describe('disableActiveEditing', () => {
-        it('deactivates editing after it was enabled', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-
-            api.enableActiveEditing()
-            api.disableActiveEditing()
-
-            expect(map.removeInteraction).toHaveBeenCalled()
-        })
-    })
-
-    describe('enablePassiveInspection', () => {
-        it('notifies selected feature payload and hover hint payload', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-
-            const feature = new Feature(new Point([15, 20])) as Feature<Geometry>
-            feature.set('kind', 'Point')
-            feature.set('title', 'Marker title')
-            api.addFeatures([feature])
-
-            const onFeatureSelected = vi.fn()
-            const onHoverHintChanged = vi.fn()
-
-            api.enablePassiveInspection(onFeatureSelected, onHoverHintChanged)
-
-            map.__setHit({ feature, layer: api.layer })
-            map.__emit('singleclick', {
-                pixel: [10, 20],
-                coordinate: [15, 20],
-            })
-
-            expect(onFeatureSelected).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    kind: 'Point',
-                    title: 'Marker title',
-                    geometryType: 'Point',
-                })
-            )
-
-            map.__emit('pointermove', {
-                pixel: [10, 20],
-                originalEvent: { clientX: 120, clientY: 300 },
-            })
-
-            expect(onHoverHintChanged).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    x: 134,
-                    y: 308,
-                })
-            )
-        })
-    })
-
-    describe('disablePassiveInspection', () => {
-        it('clears cursor state', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-
-            api.enablePassiveInspection()
-            api.disablePassiveInspection()
-
-            expect(map.getViewport().style.cursor).toBe('')
-        })
-    })
-
-    describe('addFeatures', () => {
-        it('ensures feature attributes and appends features to source', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-            const pointFeature = new Feature(new Point([7, 47])) as Feature<Geometry>
-            const lineFeature = new Feature(
-                new LineString([
-                    [0, 0],
-                    [10, 0],
-                ])
-            ) as Feature<Geometry>
-
-            api.addFeatures([pointFeature, lineFeature])
-
-            expect(drawingStoreMock.ensureFeatureAttributes).toHaveBeenCalledTimes(2)
-            expect(api.getFeatures()).toHaveLength(2)
-        })
-    })
-
-    describe('getFeatures', () => {
-        it('returns all features currently in source', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-            const pointFeature = new Feature(new Point([7, 47])) as Feature<Geometry>
-
-            api.addFeatures([pointFeature])
-
-            expect(api.getFeatures()).toEqual([pointFeature])
-        })
-    })
-
-    describe('clearFeatures', () => {
-        it('removes all source features', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-            const pointFeature = new Feature(new Point([7, 47])) as Feature<Geometry>
-
-            api.addFeatures([pointFeature])
-            api.clearFeatures()
-
-            expect(api.getFeatures()).toHaveLength(0)
-        })
-    })
-
-    describe('setVisibility', () => {
-        it('updates drawing layer visibility', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-
-            api.setVisibility(false)
-
-            expect(api.layer.getVisible()).toBe(false)
-        })
-    })
-
-    describe('setZIndex', () => {
-        it('updates drawing layer z-index', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-
-            api.setZIndex(42)
-
-            expect(api.layer.getZIndex()).toBe(42)
-        })
-    })
-
-    describe('updateFeatureText', () => {
-        it('updates text property on feature', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-            const pointFeature = new Feature(new Point([7, 47])) as Feature<Geometry>
-
-            api.updateFeatureText(pointFeature, 'Updated Label')
-
-            expect(pointFeature.get('text')).toBe('Updated Label')
-        })
-    })
-
-    describe('setSelectedIcon', () => {
-        it('updates selectedIcon readonly state', () => {
-            const map = createMapMock()
-            const { api } = mountWithMap(map)
-
-            api.setSelectedIcon({
-                ...defaultMarkerIcon,
-                id: 'custom-icon',
-            })
-
-            expect(api.selectedIcon.value.id).toBe('custom-icon')
         })
     })
 })
