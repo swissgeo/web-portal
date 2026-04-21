@@ -15,9 +15,6 @@ async function mockExternalRequests(page: import('@playwright/test').Page) {
     await page.route('**/api/oar/**', (route) =>
         route.fulfill({ status: 200, json: { collections: [], links: [] } })
     )
-
-    // MapTiler tile requests
-    await page.route('**/api.maptiler.com/**', (route) => route.fulfill({ status: 200, body: '' }))
 }
 
 test.describe('map page', () => {
