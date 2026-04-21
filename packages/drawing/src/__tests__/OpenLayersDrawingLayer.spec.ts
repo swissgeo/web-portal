@@ -113,7 +113,9 @@ describe('OpenLayersDrawingLayer.vue', () => {
             unknown,
             unknown,
             { value: unknown },
+            { translate?: unknown },
         ]
         expect(callArgs[2]?.value).toStrictEqual(fakeMap)
+        expect(typeof callArgs[3]?.translate).toBe('function')
     })
 })

@@ -32,6 +32,9 @@ const { drawingStoreMock, defaultMarkerIcon } = vi.hoisted(() => ({
         setSelectedFeatureInfo: vi.fn(),
         clearPassiveSelection: vi.fn(),
         extractDrawingNameFromKML: vi.fn(() => null),
+        setDrawingFeatures: vi.fn((features: Feature<Geometry>[]) => {
+            drawingStoreMock.drawingFeatures = features
+        }),
     },
     defaultMarkerIcon: {
         id: 'default-pin',
@@ -225,6 +228,10 @@ describe('useOlDrawing', () => {
         drawingStoreMock.clearPassiveSelection.mockReset()
         drawingStoreMock.extractDrawingNameFromKML.mockReset()
         drawingStoreMock.extractDrawingNameFromKML.mockReturnValue(null)
+        drawingStoreMock.setDrawingFeatures.mockReset()
+        drawingStoreMock.setDrawingFeatures.mockImplementation((features: Feature<Geometry>[]) => {
+            drawingStoreMock.drawingFeatures = features
+        })
     })
 
     describe('initialization', () => {

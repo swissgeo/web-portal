@@ -1907,7 +1907,7 @@ export function useOlDrawing(
         resetMapInteractionPointerState()
         rawMap.getViewport().style.cursor = ''
 
-        window.setTimeout(() => {
+        setTimeout(() => {
             endpointExtensionInProgress = false
             restoreDoubleClickZoomInteractions()
 
@@ -1922,7 +1922,7 @@ export function useOlDrawing(
             rebuildEndpointHandles()
         }, 0)
 
-        window.setTimeout(() => {
+        setTimeout(() => {
             suppressNextActiveSingleClick = false
         }, 200)
     }
@@ -2518,7 +2518,7 @@ export function useOlDrawing(
         updateFeatureTimeout = setTimeout(() => {
             const features = getFeatures()
             if (features.length !== drawingStore.drawingFeatures.length) {
-                drawingStore.drawingFeatures = features
+                drawingStore.setDrawingFeatures(features)
             }
             updateFeatureTimeout = undefined
         }, 150)
@@ -2639,7 +2639,7 @@ export function useOlDrawing(
                     })
 
                     addFeatures(features)
-                    drawingStore.drawingFeatures = features
+                    drawingStore.setDrawingFeatures(features)
                 }
             } catch (error) {
                 log.error({
