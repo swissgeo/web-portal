@@ -8,8 +8,7 @@ import OpenLayersMouseTracker from './openlayers/OpenLayersMouseTracker.vue'
 import OpenLayersScale from './openlayers/OpenLayersScale.vue'
 import log, { LogLevel } from '@swissgeo/log'
 import OpenLayersScalePrint from './openlayers/OpenLayersScalePrint.vue'
-import { computed, inject, onMounted } from 'vue'
-// import MapFooterAttributionList from './uiComponents/MapFooterAttributionList.vue'
+import { inject } from 'vue'
 
 // TODO somehow the statement in main/app.vue doesn't do it
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
@@ -37,6 +36,7 @@ const displayMode = inject<'web' | 'print'>('displayMode')
 
             <OpenLayersScale v-if="displayMode === 'web'"/>
             <OpenLayersScalePrint v-else />
+
             <!-- <MapFooterAttributionList
                 :layers="layers"
                 :background-layer="backgroundLayer"

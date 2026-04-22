@@ -1,4 +1,4 @@
-import 'ol/ol.css'
+import './stylesheet.css'
 
 import '../env.d.ts' // for reproject
 import useAddLayerToMap from './composables/useAddLayerToMap.composable'
