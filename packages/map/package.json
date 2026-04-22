@@ -11,7 +11,7 @@
             "import": "./dist/map.js",
             "require": "./dist/map.umd.cjs"
         },
-        "./stylesheet": "./src/stylesheet.css"
+        "./stylesheet": "./dist/map.css"
     },
     "scripts": {
         "build": "vite build",
