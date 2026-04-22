@@ -9,13 +9,13 @@ export function useCreateShareLink(state: Ref<AppStatePayload>) {
     // usecase here and doesn't have anything to do with SSR
     const { data: hash } = useFetch<string>(runtimeConfig.public.shareServiceUrl, { refetch: true })
         .post(state)
-        .json()
+        .text()
 
     const shareLink = computed(() => {
         if (hash.value) {            
             const baseUrl = new URL(document.location.href)
             const params = baseUrl.searchParams
-            params.set('state', hash.value.id)
+            params.set('state', hash.value)
 
             return baseUrl.toString()
         } else {
