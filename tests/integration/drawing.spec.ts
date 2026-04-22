@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { expect, test } from '@playwright/test'
 
 const HYDRATION_TIMEOUT = 60_000
@@ -162,5 +163,66 @@ test.describe('drawing panel', () => {
 
         await page.getByRole('button', { name: 'Delete' }).click()
         await expect(page.locator('[data-cy="drawing-feature-count"]')).toHaveText('0')
+    })
+})
+
+test.describe('import drawing files', () => {
+    test.beforeEach(async ({ page }) => {
+        await mockExternalRequests(page)
+        await page.goto('/en/map')
+        await expect(page.locator('[data-cy="ol-map"]')).toBeVisible({
+            timeout: HYDRATION_TIMEOUT,
+        })
+    })
+
+    test('imports a KML file and shows success message', async ({ page }) => {
+        await page.getByRole('button', { name: 'Open Import Local Layers Panel' }).click()
+        await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
+
+        const fileInput = page.locator('[data-cy="file-input"]')
+        await fileInput.setInputFiles(
+            fileURLToPath(new URL('../fixtures/test-drawing.kml', import.meta.url))
+        )
+
+        await expect(page.locator('[data-cy="file-input-text"]')).toHaveValue('test-drawing.kml')
+        await page.getByRole('button', { name: 'Import file' }).click()
+        await expect(page.getByText(/Successfully imported test-drawing.kml/)).toBeVisible()
+    })
+
+    test('imports a GeoJSON file and shows success message', async ({ page }) => {
+        await page.getByRole('button', { name: 'Open Import Local Layers Panel' }).click()
+        await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
+
+        const fileInput = page.locator('[data-cy="file-input"]')
+        await fileInput.setInputFiles(
+            fileURLToPath(new URL('../fixtures/test-drawing.geojson', import.meta.url))
+        )
+
+        await expect(page.locator('[data-cy="file-input-text"]')).toHaveValue(
+            'test-drawing.geojson'
+        )
+        await page.getByRole('button', { name: 'Import file' }).click()
+        await expect(page.getByText(/Successfully imported test-drawing.geojson/)).toBeVisible()
+    })
+
+    test('shows an error message when importing an unsupported file type', async ({ page }) => {
+        await page.getByRole('button', { name: 'Open Import Local Layers Panel' }).click()
+        await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
+
+        const fileInput = page.locator('[data-cy="file-input"]')
+        await fileInput.setInputFiles({
+            name: 'test.txt',
+            mimeType: 'text/plain',
+            buffer: Buffer.from('This is not a supported format'),
+        })
+
+        await page.getByRole('button', { name: 'Import file' }).click()
+        await expect(page.getByText(/Unsupported file type/)).toBeVisible()
+    })
+
+    test('import button is disabled when no file is selected', async ({ page }) => {
+        await page.getByRole('button', { name: 'Open Import Local Layers Panel' }).click()
+        await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Import file' })).toBeDisabled()
     })
 })
