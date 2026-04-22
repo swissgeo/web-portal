@@ -39,7 +39,7 @@ export interface Layer {
     opacity: number
     isVisible: boolean
     zIndex: number
-    info?: LayerInfo
+    info?: LayerInfo | null
 }
 
 export interface WMTSLayer extends Layer {

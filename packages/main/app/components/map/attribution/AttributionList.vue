@@ -28,6 +28,7 @@ const { t } = useI18n()
                 :source-url="source.url"
                 :has-data-disclaimer="false"
                 :is-last="index === sources.length - 1"
-            />        </span>
+            />
+        </span>
     </div>
 </template>

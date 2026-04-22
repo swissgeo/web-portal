@@ -23,18 +23,23 @@ describe('LayersPanelEntry.vue', () => {
         makeServerLayerMock.mockReset()
         vi.stubGlobal('computed', computed)
 
-        makeServerLayerMock.mockImplementation((dataset: { id: string; properties?: { contacts?: Array<{ organisation?: string }>; attribution?: string } }) => {
-            const contactOrganisation = dataset.properties?.contacts?.[0]?.organisation
-            return {
-                humanId: dataset.id,
-                info: {
-                    displayName: dataset.id,
-                    attribution: {
-                        title: contactOrganisation ?? dataset.properties?.attribution,
+        makeServerLayerMock.mockImplementation(
+            (dataset: {
+                id: string
+                properties?: { contacts?: Array<{ organisation?: string }>; attribution?: string }
+            }) => {
+                const contactOrganisation = dataset.properties?.contacts?.[0]?.organisation
+                return {
+                    humanId: dataset.id,
+                    info: {
+                        displayName: dataset.id,
+                        attribution: {
+                            title: contactOrganisation ?? dataset.properties?.attribution,
+                        },
                     },
-                },
-            } as Layer
-        })
+                } as Layer
+            }
+        )
     })
 
     afterEach(() => {
