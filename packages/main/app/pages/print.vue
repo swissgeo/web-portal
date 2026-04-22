@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import VueQrcode from '@chenfengyuan/vue-qrcode'
 import { SwissGeoLogoRgbPrio } from '@swissgeo/skeleton'
+import northArrowUrl from '~/assets/images/north_arrow.png'
+import { onMounted } from 'vue'
 
 
 // Margin in millimeters to add around the print (internal to the page)
@@ -42,6 +43,18 @@ onMounted(() => {
         >
             <div class="map-container">
                 <MapViewer />
+
+                <div
+                    class="north-arrow-container"
+                    :style="{
+                        width: `${pixelPerMm * 10}px`,
+                        top: `${pixelPerMm * 10}px`,
+                        right: `${pixelPerMm * 10}px`,
+                        filter: `drop-shadow(0px 0px ${pixelPerMm * 2}px #000) contrast(2)`,
+                    }"
+                >
+                    <img :src="northArrowUrl" alt="north arrow"/>
+                </div>
                 <div
                     v-if="link"
                     class="qr-code-container">
@@ -118,7 +131,6 @@ onMounted(() => {
 .print-container {
     display: flex;
     flex-direction: column;
-    /* font-size: max(max(.8vw, .8vh), 8px); */
 }
 
 .map-container {
@@ -138,7 +150,6 @@ onMounted(() => {
 .confederation-info {
     display: flex;
     flex-direction: row;
-    /* width: 100%; */
     white-space: nowrap;
 }
 
@@ -173,5 +184,13 @@ onMounted(() => {
     align-self: end;
     padding: 2px 10px;
     color: rgb(28, 107, 133);
+}
+
+.north-arrow-container {
+    position: absolute;
+}
+
+.north-arrow-container img {
+    width: 100%;
 }
 </style>
