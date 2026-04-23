@@ -10,7 +10,7 @@ async function mockExternalRequests(page: import('@playwright/test').Page) {
 }
 
 async function openDrawingPanel(page: import('@playwright/test').Page) {
-    await page.locator('[data-cy="debug-open-drawing-panel"]').click()
+    await page.getByRole('button', { name: 'Open Drawing Panel' }).click()
     await expect(page.locator('[data-cy="drawing-panel"]')).toBeVisible()
 }
 
@@ -50,7 +50,7 @@ test.describe('drawing panel', () => {
     })
 
     test('opens the drawing panel from the debug panel', async ({ page }) => {
-        await page.locator('[data-cy="debug-open-drawing-panel"]').click()
+        await page.getByRole('button', { name: 'Open Drawing Panel' }).click()
         await expect(page.locator('[data-cy="drawing-panel"]')).toBeVisible()
         await expect(page.getByText('Drawing Tools')).toBeVisible()
     })
