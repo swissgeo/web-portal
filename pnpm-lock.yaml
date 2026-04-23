@@ -1584,6 +1584,18 @@ importers:
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
+      stylelint-config-recommended-scss:
+        specifier: 'catalog:'
+        version: 17.0.1(postcss@8.5.8)(stylelint@16.26.1(typescript@5.9.3))
+      stylelint-config-recommended-vue:
+        specifier: 'catalog:'
+        version: 1.6.1(postcss-html@1.8.1)(stylelint@16.26.1(typescript@5.9.3))
+      stylelint-order:
+        specifier: 'catalog:'
+        version: 7.0.1(stylelint@16.26.1(typescript@5.9.3))
+      stylelint-scss:
+        specifier: 'catalog:'
+        version: 7.0.0(stylelint@16.26.1(typescript@5.9.3))
       tailwindcss:
         specifier: 'catalog:'
         version: 4.1.18

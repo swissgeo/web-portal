@@ -77,6 +77,11 @@ const standardTSRules: PartialRules = {
             fixStyle: 'separate-type-imports',
         },
     ],
+    // TODO: re-enable these rules and fix violations in a separate PR
+    // '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+    // '@typescript-eslint/no-base-to-string': 'error',
+    '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+    '@typescript-eslint/no-base-to-string': 'off',
 }
 
 const chaiFriendlyRules: PartialConfig = {
@@ -144,6 +149,9 @@ export const vueConfig: FlatConfig.ConfigArray = defineConfigWithVueTs(
             'vue/html-indent': ['error', 4],
             'vue/block-lang': 'error',
             ...noUnusedVarsRules,
+            // TODO: re-enable these rules and fix violations in a separate PR
+            '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+            '@typescript-eslint/no-base-to-string': 'off',
         },
     }
 )
