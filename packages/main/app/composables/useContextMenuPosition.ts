@@ -42,22 +42,38 @@ export function useContextMenuPosition(
         return { lat, lon }
     })
 
-    const { data: w3wData, pending: w3wPending } = useFetch('/api/v1/what3words/convert-to-3wa', {
+    const {
+        data: w3wData,
+        pending: w3wPending,
+        execute: executeW3w,
+    } = useFetch('/api/v1/what3words/convert-to-3wa', {
         query: latLon,
+        immediate: false,
+        watch: false,
         onResponseError: ({ error }) => {
             log.error(`Error fetching what3words value: ${String(error)}`)
         },
     })
 
-    const { data: elevationData, pending: elevationPending } = useFetch(
-        '/api/v1/elevation/height',
-        {
-            query: latLon,
-            onResponseError: ({ error }) => {
-                log.error(`Error fetching elevation: ${String(error)}`)
-            },
+    const {
+        data: elevationData,
+        pending: elevationPending,
+        execute: executeElevation,
+    } = useFetch('/api/v1/elevation/height', {
+        query: latLon,
+        immediate: false,
+        watch: false,
+        onResponseError: ({ error }) => {
+            log.error(`Error fetching elevation: ${String(error)}`)
+        },
+    })
+
+    watch(latLon, (val) => {
+        if (val) {
+            void executeW3w()
+            void executeElevation()
         }
-    )
+    })
 
     const isLoading = computed(() => w3wPending.value || elevationPending.value)
 
