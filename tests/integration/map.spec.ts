@@ -1,21 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-// Dev-mode Vite cold starts can take a while to hydrate the ClientOnly map
-// content; prod preview is much faster. The guard here covers both.
-const HYDRATION_TIMEOUT = 60_000
-
-/**
- * Mock external API requests so integration tests don't depend on real
- * services. Internal Nuxt server routes (/api/v1/*) call external backends
- * server-side, so we only need to intercept client-side requests that
- * leave the browser (e.g. OGC catalog, tile/style JSON, MapTiler).
- */
-async function mockExternalRequests(page: import('@playwright/test').Page) {
-    // OGC catalog / dataset requests
-    await page.route('**/api/oar/**', (route) =>
-        route.fulfill({ status: 200, json: { collections: [], links: [] } })
-    )
-}
+import { HYDRATION_TIMEOUT, mockExternalRequests } from './setup'
 
 test.describe('map page', () => {
     test.beforeEach(async ({ page }) => {
@@ -60,39 +45,5 @@ test.describe('map page', () => {
 
         await layerTab.click()
         await expect(searchInput).not.toBeVisible()
-    })
-})
-
-test.describe('locale routing', () => {
-    test.beforeEach(async ({ page }) => {
-        await mockExternalRequests(page)
-    })
-
-    test('homepage redirects to the default locale map', async ({ page }) => {
-        await page.goto('/')
-        await page.waitForURL('**/de/map')
-        await expect(page).toHaveURL(/\/de\/map/)
-    })
-
-    test('map page redirects to the default locale map', async ({ page }) => {
-        await page.goto('/')
-        await page.waitForURL('**/de/map')
-        await expect(page).toHaveURL(/\/de\/map/)
-    })
-
-    test('navigating to /fr/map shows French sidebar labels', async ({ page }) => {
-        await page.goto('/fr/map')
-        await expect(page.getByRole('button', { name: 'Recherche' })).toBeVisible({
-            timeout: HYDRATION_TIMEOUT,
-        })
-        await expect(page.getByRole('button', { name: 'Couches actives' })).toBeVisible()
-    })
-
-    test('navigating to /en/map shows English sidebar labels', async ({ page }) => {
-        await page.goto('/en/map')
-        await expect(page.getByRole('button', { name: 'Search' })).toBeVisible({
-            timeout: HYDRATION_TIMEOUT,
-        })
-        await expect(page.getByRole('button', { name: 'Active layers' })).toBeVisible()
     })
 })
