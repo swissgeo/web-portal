@@ -32,10 +32,8 @@ import Modify from 'ol/interaction/Modify'
 import Snap from 'ol/interaction/Snap'
 import VectorLayer from 'ol/layer/Vector'
 import { unByKey } from 'ol/Observable'
-import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Icon, Stroke, Style, Text as TextStyle } from 'ol/style'
-import proj4 from 'proj4'
 import {
     markRaw,
     nextTick,
@@ -74,7 +72,6 @@ export function useOlDrawing(
 ) {
     const mapOrUndefined = olMap?.value
     const drawingStore = useDrawingStore()
-    register(proj4)
     // Track the currently selected icon for new point features
     const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON!)
 
@@ -883,14 +880,6 @@ export function useOlDrawing(
     })
     watchEffect(() => {
         olDrawingLayer.setOpacity(layer.value.opacity)
-    })
-
-    onBeforeUnmount(() => {
-        stopDrawing()
-        disableActiveEditing()
-        disablePassiveInspection()
-        rawMap.removeLayer(endpointHandleLayer)
-        rawMap.removeLayer(olDrawingLayer)
     })
 
     /**
@@ -2594,10 +2583,10 @@ export function useOlDrawing(
         }
     )
 
-    const hasInitialized = ref(false)
+    let hasInitialized = false
 
     function restoreFeatures() {
-        if (hasInitialized.value) {
+        if (hasInitialized) {
             return
         }
 
@@ -2607,7 +2596,7 @@ export function useOlDrawing(
 
         if (drawingStore.drawingFeatures.length > 0) {
             addFeatures(drawingStore.drawingFeatures as Feature<Geometry>[])
-            hasInitialized.value = true
+            hasInitialized = true
             return
         }
 
@@ -2649,11 +2638,20 @@ export function useOlDrawing(
                 })
             }
         }
-        hasInitialized.value = true
+        hasInitialized = true
     }
 
     onMounted(() => {
         restoreFeatures()
+    })
+
+    onBeforeUnmount(() => {
+        stopDrawing()
+        disableActiveEditing()
+        disablePassiveInspection()
+        rawMap.removeLayer(endpointHandleLayer)
+        rawMap.removeLayer(olDrawingLayer)
+        clearTimeout(updateFeatureTimeout)
     })
 
     return {
