@@ -70,17 +70,15 @@ export function useOlDrawing(
     olMap: Ref<OlMap | undefined> | undefined,
     options?: UseOlDrawingOptions
 ) {
-    const mapOrUndefined = olMap?.value
-    const drawingStore = useDrawingStore()
-    // Track the currently selected icon for new point features
-    const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON!)
-
-    if (!mapOrUndefined) {
+    if (!olMap?.value) {
         log.error('OpenLayersMap is not available')
         throw new Error('OpenLayersMap is not available')
     }
-    // TypeScript can't narrow const across closures, so we use an explicit OlMap typed reference
-    const rawMap: OlMap = mapOrUndefined
+
+    const rawMap: OlMap = olMap.value
+    const drawingStore = useDrawingStore()
+    // Track the currently selected icon for new point features
+    const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON!)
 
     const source = new VectorSource({
         wrapX: false,
