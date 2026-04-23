@@ -34,20 +34,25 @@ const displayMode = inject<'web' | 'print'>('displayMode')
         >
             <slot />
 
-            <OpenLayersScale v-if="displayMode === 'web'"/>
-            <OpenLayersScalePrint v-else />
-
-            <!-- <MapFooterAttributionList
-                :layers="layers"
-                :background-layer="backgroundLayer"
-            /> -->
-            <OpenLayersContextMenuPopup v-slot="slotProps">
-                <slot
-                    name="context-menu-popup"
-                    v-bind="slotProps"
+            <template v-if="displayMode === 'web'">
+                <OpenLayersContextMenuPopup v-slot="slotProps" >
+                    <slot
+                        name="context-menu-popup"
+                        v-bind="slotProps"
+                    />
+                </OpenLayersContextMenuPopup>
+                <OpenLayersMouseTracker/>
+                <OpenLayersScale />
+                <!-- 
+                <MapFooterAttributionList
+                    :layers="layers"
+                    :background-layer="backgroundLayer"
                 />
-            </OpenLayersContextMenuPopup>
-            <OpenLayersMouseTracker v-if="displayMode === 'web'" />
+                -->
+            </template>
+            <template v-else>
+                <OpenLayersScalePrint/>
+            </template>
         </OpenLayersMap>
     </div>
 </template>
