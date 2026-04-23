@@ -30,16 +30,16 @@
     },
     "dependencies": {
         "@swissgeo/layers": "workspace:*",
-        "@swissgeo/log": "catalog:",
-        "@swissgeo/numbers": "catalog:",
+        "@swissgeo/log": "workspace:*",
+        "@swissgeo/numbers": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "@swissgeo/skeleton": "workspace:*",
-        "@swissgeo/tooltip": "catalog:"
+        "@swissgeo/tooltip": "workspace:*"
     },
     "devDependencies": {
         "@microsoft/api-extractor": "catalog:",
-        "@swissgeo/config-eslint": "catalog:",
-        "@swissgeo/config-typescript": "catalog:",
+        "@swissgeo/config-eslint": "workspace:*",
+        "@swissgeo/config-typescript": "workspace:*",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
         "typescript": "catalog:",

@@ -41,7 +41,7 @@
     "devDependencies": {
         "@playwright/test": "catalog:",
         "@prettier/plugin-xml": "catalog:",
-        "@swissgeo/config-prettier": "catalog:",
+        "@swissgeo/config-prettier": "workspace:*",
         "@vitejs/plugin-vue": "catalog:",
         "@vue/test-utils": "catalog:",
         "prettier": "catalog:",
