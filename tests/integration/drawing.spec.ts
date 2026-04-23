@@ -14,6 +14,32 @@ async function openDrawingPanel(page: import('@playwright/test').Page) {
     await expect(page.locator('[data-cy="drawing-panel"]')).toBeVisible()
 }
 
+/**
+ * Select the Point tool and place one point on the map.
+ *
+ * The drawing panel sits at the bottom-center of the viewport (~400 px tall),
+ * so we click in the top-right quadrant to stay clear of both the panel and
+ * the left sidebar. We also wait for the instruction text to appear first,
+ * which confirms that OpenLayers has wired up the drawing interaction.
+ */
+async function drawOnePoint(page: import('@playwright/test').Page) {
+    await page.locator('[data-cy="drawing-tool-point"]').click()
+    await expect(page.getByText('Click on the map to add a point')).toBeVisible()
+
+    const map = page.locator('[data-cy="ol-map"]')
+    const mapBox = await map.boundingBox()
+    if (!mapBox) {
+        throw new Error('Could not get map bounding box')
+    }
+
+    await map.click({
+        position: {
+            x: mapBox.width * 0.75,
+            y: mapBox.height * 0.25,
+        },
+    })
+}
+
 test.describe('drawing panel', () => {
     test.beforeEach(async ({ page }) => {
         await mockExternalRequests(page)
@@ -111,31 +137,13 @@ test.describe('drawing panel', () => {
 
     test('drawing a point on the map increases the feature count', async ({ page }) => {
         await openDrawingPanel(page)
-        await page.locator('[data-cy="drawing-tool-point"]').click()
-
-        const map = page.locator('[data-cy="ol-map"]')
-        const mapBox = await map.boundingBox()
-        if (mapBox) {
-            await map.click({
-                position: {
-                    x: mapBox.width / 2,
-                    y: mapBox.height / 2,
-                },
-            })
-        }
-
+        await drawOnePoint(page)
         await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
     })
 
     test('clear all confirmation dialog appears and cancels', async ({ page }) => {
         await openDrawingPanel(page)
-        await page.locator('[data-cy="drawing-tool-point"]').click()
-
-        const map = page.locator('[data-cy="ol-map"]')
-        const mapBox = await map.boundingBox()
-        if (mapBox) {
-            await map.click({ position: { x: mapBox.width / 2, y: mapBox.height / 2 } })
-        }
+        await drawOnePoint(page)
 
         await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
         await expect(page.locator('[data-cy="drawing-clear-all"]')).toBeEnabled()
@@ -149,13 +157,7 @@ test.describe('drawing panel', () => {
 
     test('clear all confirmation dialog deletes all features when confirmed', async ({ page }) => {
         await openDrawingPanel(page)
-        await page.locator('[data-cy="drawing-tool-point"]').click()
-
-        const map = page.locator('[data-cy="ol-map"]')
-        const mapBox = await map.boundingBox()
-        if (mapBox) {
-            await map.click({ position: { x: mapBox.width / 2, y: mapBox.height / 2 } })
-        }
+        await drawOnePoint(page)
 
         await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
         await page.locator('[data-cy="drawing-clear-all"]').click()
