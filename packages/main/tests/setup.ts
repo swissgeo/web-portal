@@ -14,6 +14,17 @@
  * before setupFiles run. Happy-dom tests are completely unaffected.
  */
 
+import { vi } from 'vitest'
+
+// neutralise the stateConfigSync plugin, otherwise the app created hook will run this
+// and potentially interfere with the tests
+vi.mock('~/composables/useRestoreState', () => ({
+    useRestoreState: () => ({
+        restore: vi.fn().mockResolvedValue(undefined),
+        listenToChange: vi.fn(),
+    }),
+}))
+
 const isNuxtEnv =
     typeof window !== 'undefined' &&
     !!(window as Record<string, unknown>).__NUXT_VITEST_ENVIRONMENT__
