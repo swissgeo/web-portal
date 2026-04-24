@@ -7,6 +7,7 @@ import WMSCapabilities from 'ol/format/WMSCapabilities'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 
 const layerStore = useLayerStore()
+const { origin } = useRequestURL()
 
 // Example URLs:
 // WMTS: https://wmts.geo.bs.ch/1.0.0/WMTSCapabilities.xml
@@ -54,7 +55,12 @@ function addLayer(layer: string) {
         id: layer,
         links: [
             {
-                href: `/api/wpa/v1/layers/external/${encodedUrl.value}/${layer}`,
+                href: `${origin}/api/wpa/v1/layers/external/dataset/${encodedUrl.value}/${layer}`,
+                rel: 'self',
+                title: 'This Record',
+            },
+            {
+                href: `${origin}/api/wpa/v1/layers/external/${encodedUrl.value}/${layer}`,
                 rel: 'distributions',
                 title: 'Distributions',
                 type: 'application/json',
