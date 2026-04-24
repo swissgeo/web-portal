@@ -21,6 +21,9 @@ const { useRouteMock, useRouterMock, fetchStateMock } = vi.hoisted(() => ({
     fetchStateMock: vi.fn(() => Promise.resolve('success')),
 }))
 
+// Mock navigateTo
+mockNuxtImport('navigateTo', () => vi.fn())
+
 // immediately invoke the callback
 mockNuxtImport('onNuxtReady', () => {
     return (fn: () => void) => fn()
