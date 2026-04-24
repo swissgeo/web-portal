@@ -177,6 +177,7 @@ function createLayerFixture(overrides?: Partial<Layer>): Layer {
         opacity: 0.8,
         isVisible: true,
         isLoading: false,
+        zIndex: 5,
         type: 'dataset',
         ...overrides,
     } as unknown as Layer
@@ -184,12 +185,11 @@ function createLayerFixture(overrides?: Partial<Layer>): Layer {
 
 function mountWithMap(map: MockMap, layerOverrides?: Partial<Layer>) {
     const layerRef = ref<Layer>(createLayerFixture(layerOverrides))
-    const zIndexRef = ref(5)
 
     const Harness = defineComponent({
         setup(_, { expose }) {
-            const api = useOlDrawing(layerRef, zIndexRef, ref(map) as never)
-            expose({ api, layerRef, zIndexRef })
+            const api = useOlDrawing(layerRef, ref(map) as never)
+            expose({ api, layerRef })
             return () => h('div')
         },
     })
@@ -199,7 +199,6 @@ function mountWithMap(map: MockMap, layerOverrides?: Partial<Layer>) {
     return {
         wrapper,
         layerRef,
-        zIndexRef,
         api: (wrapper.vm as unknown as { api: ReturnType<typeof useOlDrawing> }).api,
     }
 }
@@ -239,7 +238,7 @@ describe('useOlDrawing', () => {
             const Harness = defineComponent({
                 setup() {
                     const layerRef = ref<Layer>(createLayerFixture())
-                    useOlDrawing(layerRef, ref(0), undefined)
+                    useOlDrawing(layerRef, undefined)
                     return () => h('div')
                 },
             })
@@ -251,7 +250,7 @@ describe('useOlDrawing', () => {
             const Harness = defineComponent({
                 setup() {
                     const layerRef = ref<Layer>(createLayerFixture())
-                    useOlDrawing(layerRef, ref(0), ref(undefined))
+                    useOlDrawing(layerRef, ref(undefined))
                     return () => h('div')
                 },
             })
@@ -282,15 +281,15 @@ describe('useOlDrawing', () => {
     })
 
     describe('layer reactivity', () => {
-        it('applies zIndex changes reactively via the zIndex ref', async () => {
+        it('applies zIndex changes reactively via the layer ref', async () => {
             const map = createMapMock()
-            const { zIndexRef, wrapper } = mountWithMap(map)
+            const { layerRef, wrapper } = mountWithMap(map)
 
             const drawingLayer = map.addLayer.mock.calls[0]?.[0] as {
                 getZIndex: () => number
             }
 
-            zIndexRef.value = 42
+            layerRef.value = { ...layerRef.value, zIndex: 42 }
             await wrapper.vm.$nextTick()
 
             expect(drawingLayer?.getZIndex()).toBe(42)

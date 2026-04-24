@@ -8,19 +8,16 @@ import { useI18n } from 'vue-i18n'
 
 import { useOlDrawing } from '@/composables/olDrawing.composable'
 
-const { layer, zIndex } = defineProps<{
+const { layer } = defineProps<{
     layer: Layer
-    zIndex: number
 }>()
 
 const { t } = useI18n()
 const olMap = inject<ShallowRef<Map | undefined>>('olMap')
 const layerRef = computed(() => layer)
-const zIndexRef = computed(() => zIndex)
 
 const { showHoverHint, hoverHintText, hoverHintX, hoverHintY } = useOlDrawing(
     layerRef,
-    zIndexRef,
     olMap,
     { translate: (key, params) => t(key, params ?? {}) }
 )

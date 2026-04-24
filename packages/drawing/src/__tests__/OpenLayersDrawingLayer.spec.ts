@@ -33,6 +33,7 @@ function createLayerFixture(): Layer {
         opacity: 1,
         isVisible: true,
         isLoading: false,
+        zIndex: 5,
         type: 'dataset',
     } as unknown as Layer
 }
@@ -42,23 +43,18 @@ describe('OpenLayersDrawingLayer.vue', () => {
         mockUseOlDrawing.mockClear()
     })
 
-    it('renders and calls useOlDrawing with layer and zIndex refs', () => {
+    it('renders and calls useOlDrawing with layer ref', () => {
         const wrapper = mount(OpenLayersDrawingLayer, {
             props: {
                 layer: createLayerFixture(),
-                zIndex: 5,
             },
         })
 
         expect(wrapper.exists()).toBe(true)
         expect(mockUseOlDrawing).toHaveBeenCalledTimes(1)
 
-        const args = mockUseOlDrawing.mock.calls[0] as unknown as [
-            { value: Layer },
-            { value: number },
-        ]
+        const args = mockUseOlDrawing.mock.calls[0] as unknown as [{ value: Layer }]
         expect(args[0].value.humanId).toBe('test-layer')
-        expect(args[1].value).toBe(5)
     })
 
     it('shows hover hint in document.body when showHoverHint is true', async () => {
@@ -79,7 +75,6 @@ describe('OpenLayersDrawingLayer.vue', () => {
         mount(OpenLayersDrawingLayer, {
             props: {
                 layer: createLayerFixture(),
-                zIndex: 0,
             },
             attachTo: document.body,
         })
@@ -100,7 +95,6 @@ describe('OpenLayersDrawingLayer.vue', () => {
         mount(OpenLayersDrawingLayer, {
             props: {
                 layer: createLayerFixture(),
-                zIndex: 3,
             },
             global: {
                 provide: {
@@ -111,11 +105,10 @@ describe('OpenLayersDrawingLayer.vue', () => {
 
         const callArgs = mockUseOlDrawing.mock.calls[0] as unknown as [
             unknown,
-            unknown,
             { value: unknown },
             { translate?: unknown },
         ]
-        expect(callArgs[2]?.value).toStrictEqual(fakeMap)
-        expect(typeof callArgs[3]?.translate).toBe('function')
+        expect(callArgs[1]?.value).toStrictEqual(fakeMap)
+        expect(typeof callArgs[2]?.translate).toBe('function')
     })
 })

@@ -66,7 +66,6 @@ interface UseOlDrawingOptions {
  */
 export function useOlDrawing(
     layer: Ref<Layer>,
-    zIndex: Ref<number>,
     olMap: Ref<OlMap | undefined> | undefined,
     options?: UseOlDrawingOptions
 ) {
@@ -870,7 +869,7 @@ export function useOlDrawing(
     log.debug(`Added drawing layer ${layer.value.humanId} to map`)
 
     watchEffect(() => {
-        olDrawingLayer.setZIndex(zIndex.value)
+        olDrawingLayer.setZIndex(layer.value.zIndex)
     })
     watchEffect(() => {
         olDrawingLayer.setVisible(layer.value.isVisible)

@@ -13,6 +13,7 @@ function makeLayer(id: string): Layer {
         opacity: 1,
         isVisible: true,
         isLoading: false,
+        zIndex: 0,
     }
 }
 

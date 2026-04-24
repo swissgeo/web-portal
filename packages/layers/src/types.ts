@@ -36,6 +36,7 @@ export interface Layer {
     isVisible: boolean
     opacity: number
     isLoading: boolean
+    zIndex: number
     info?: LayerInfo | null
     // data is either the dataset or the file data, depending on whether
     // this is used a file layer or dataset layer
