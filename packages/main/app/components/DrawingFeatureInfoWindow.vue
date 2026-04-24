@@ -270,9 +270,7 @@ function deleteSelectedFeature() {
     }
 
     const features = drawingStore.drawingFeatures as unknown as Feature<Geometry>[]
-    const remaining = features.filter(
-        (candidate) => resolveFeatureId(candidate) !== selectedId
-    )
+    const remaining = features.filter((candidate) => resolveFeatureId(candidate) !== selectedId)
     features.splice(0, features.length, ...remaining)
     drawingStore.setDrawingMode('None')
     drawingStore.clearPassiveSelection()

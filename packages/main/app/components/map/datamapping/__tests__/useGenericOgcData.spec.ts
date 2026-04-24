@@ -162,9 +162,7 @@ describe('useGenericOgcData ', () => {
         await flushPromises()
 
         expect(useDistributionCollectionMock).toHaveBeenCalledTimes(1)
-        expectTypeOf(distributionCollection).toExtend<
-            ShallowRef<DistributionCollection | null>
-        >()
+        expectTypeOf(distributionCollection).toExtend<ShallowRef<DistributionCollection | null>>()
         expect(distributionCollection.value).toBeDefined()
         expect(distributionCollection.value).toHaveProperty('records', [distributionMockData.value])
 

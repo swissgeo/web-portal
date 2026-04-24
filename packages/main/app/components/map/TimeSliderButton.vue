@@ -14,7 +14,9 @@ function isLayerWithTime(layer: Layer): layer is LayerWithTime {
     return !!layer.dimensions && 'time' in layer.dimensions && !!layer.dimensions.time
 }
 
-const timeLayers = computed((): LayerWithTime[] => layerStore.layers.filter(isLayerWithTime) as LayerWithTime[])
+const timeLayers = computed(
+    (): LayerWithTime[] => layerStore.layers.filter(isLayerWithTime) as LayerWithTime[]
+)
 
 function onClose() {
     mapViewStore.closeTimeSlider()
