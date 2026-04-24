@@ -1,3 +1,5 @@
+import type { Ref } from 'vue'
+
 import type { DatasetLayer, LayerInfo } from '@swissgeo/layers'
 import type { Dataset, Link } from '@swissgeo/ogc'
 
@@ -18,29 +20,22 @@ export default function useDatasetLocaleRefresh(
 ) {
     const { locale } = useI18n()
 
-    const newUrlString = computed(() => {
-        if (!layer.data.links) {
-            throw new Error("dataset doesn't contain self link")
-        }
-        const datasetLinkObject = layer.data.links.filter((link: Link) => link.rel === 'self')
-        if (datasetLinkObject.length === 0) {
-            // TODO think about some error handling and toast that into the user's face
-            throw new Error("dataset doesn't contain self link")
-        }
-        if (!datasetLinkObject[0] || !datasetLinkObject[0].href) {
-            // TODO think about some error handling and toast that into the user's face
-            throw new Error("dataset doesn't contain self link")
-        }
-        const datasetUrl = new URL(datasetLinkObject[0].href)
+    const selfLink = layer.data.links?.find((link: Link) => link.rel === 'self')
 
-        // Change the query param
+    const newUrlString = computed((): string | null => {
+        if (!selfLink?.href) {
+            return null
+        }
+        const datasetUrl = new URL(selfLink.href)
         datasetUrl.searchParams.set('language', locale.value)
-
-        // Get back a string
         return datasetUrl.toString()
     })
 
-    const { data: dataset } = useFetch<Dataset>(newUrlString)
+    if (!selfLink?.href) {
+        return { newUrlString }
+    }
+
+    const { data: dataset } = useFetch<Dataset>(newUrlString as Ref<string>)
 
     watch(dataset, () => {
         if (dataset.value) {

@@ -26,6 +26,24 @@ mockNuxtImport('useFetch', () => {
 })
 
 describe('useDatasetRefresh', () => {
+    const layerWithoutSelfLink = {
+        uuid: 'uuid',
+        humanId: 'external-layer',
+        data: {
+            links: [
+                {
+                    rel: 'distributions',
+                    href: 'http://swissgeo.ch/distributions',
+                },
+            ],
+            id: 'external-layer',
+            properties: {
+                type: 'Dataset' as const,
+                title: 'External Layer',
+            },
+        },
+    }
+
     const partialLayer = {
         uuid: 'uuid',
         humanId: 'keusches-nonnenkraut',
@@ -43,6 +61,22 @@ describe('useDatasetRefresh', () => {
             },
         },
     }
+
+    it('does nothing when the dataset has no self link (e.g. external imported layers)', async () => {
+        const updateCallback = vi.fn()
+        const updateInfoCallback = vi.fn()
+        const { newUrlString } = useDatasetLocaleRefresh(
+            layerWithoutSelfLink,
+            updateCallback,
+            updateInfoCallback
+        )
+
+        await flushPromises()
+
+        expect(newUrlString.value).toBeNull()
+        expect(updateCallback).not.toHaveBeenCalled()
+        expect(updateInfoCallback).not.toHaveBeenCalled()
+    })
 
     it('updates the URL when the locale changes', async () => {
         const updateCallback = vi.fn()
