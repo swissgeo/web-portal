@@ -11,6 +11,7 @@ const BASE_LAYER_CONFIG: Layer = {
     isVisible: true,
     opacity: 0,
     isLoading: false,
+    zIndex: 0,
 }
 
 test.each([

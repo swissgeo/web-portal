@@ -48,6 +48,7 @@ export function useFileImport() {
             isVisible: true,
             type: layerType,
             isLoading: false,
+            zIndex: 0,
             info: {
                 displayName: file.name,
                 abstract: `Imported from local file: ${file.name}`,
