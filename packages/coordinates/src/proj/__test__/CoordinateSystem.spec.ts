@@ -30,7 +30,7 @@ describe('CoordinateSystem', () => {
     const coordinateSystemWithouBounds = new BoundlessCoordinateSystem()
     describe('getBoundsAs', () => {
         it('returns undefined if the bounds are not defined', () => {
-            expect(coordinateSystemWithouBounds.getBoundsAs(WEBMERCATOR)).to.be.undefined
+            expect(coordinateSystemWithouBounds.getBoundsAs(WEBMERCATOR)).toBe(undefined)
         })
         it('transforms LV95 into WebMercator correctly', () => {
             const result = LV95.getBoundsAs(WEBMERCATOR)
@@ -55,8 +55,8 @@ describe('CoordinateSystem', () => {
     })
     describe('isInBound', () => {
         it('returns false if no bounds are defined', () => {
-            expect(coordinateSystemWithouBounds.isInBounds(0, 0)).to.be.false
-            expect(coordinateSystemWithouBounds.isInBounds(1, 1)).to.be.false
+            expect(coordinateSystemWithouBounds.isInBounds(0, 0)).toBe(false)
+            expect(coordinateSystemWithouBounds.isInBounds(1, 1)).toBe(false)
         })
         // the remaining tests for this function are handled in the CoordinateSystemBounds.spec.ts file
     })

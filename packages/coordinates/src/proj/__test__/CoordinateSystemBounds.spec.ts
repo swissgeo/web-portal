@@ -28,7 +28,7 @@ describe('CoordinateSystemBounds', () => {
             const [singleChunk] = result
             expect(singleChunk).to.be.an('Object').that.has.ownProperty('coordinates')
             expect(singleChunk).to.haveOwnProperty('isWithinBounds')
-            expect(singleChunk.isWithinBounds).to.be.true
+            expect(singleChunk.isWithinBounds).toBe(true)
             expect(singleChunk.coordinates).to.eql(coordinatesWithinBounds)
         })
         it('splits the given coordinates in two chunks if part of it is outside bounds', () => {
@@ -45,7 +45,7 @@ describe('CoordinateSystemBounds', () => {
             expect(result).to.be.an('Array').of.length(2)
             const [outOfBoundChunk, inBoundChunk] = result
             expect(outOfBoundChunk).to.haveOwnProperty('isWithinBounds')
-            expect(outOfBoundChunk.isWithinBounds).to.be.false
+            expect(outOfBoundChunk.isWithinBounds).toBe(false)
             expect(outOfBoundChunk.coordinates).to.be.an('Array').of.length(2)
             expect(outOfBoundChunk.coordinates[0]).to.eql(coordinatesOverlappingBounds[0])
             // checking that the split happened on the bounds
@@ -54,7 +54,7 @@ describe('CoordinateSystemBounds', () => {
             expect(intersectingCoordinate).to.eql([bounds.lowerX, yValue])
             // next chunk must start by the intersecting coordinate
             expect(inBoundChunk).to.haveOwnProperty('isWithinBounds')
-            expect(inBoundChunk.isWithinBounds).to.be.true
+            expect(inBoundChunk.isWithinBounds).toBe(true)
             expect(inBoundChunk.coordinates).to.be.an('Array').of.length(4)
             const [firstInBoundCoordinate] = inBoundChunk.coordinates
             expect(firstInBoundCoordinate).to.be.an('Array').of.length(2)
@@ -80,14 +80,14 @@ describe('CoordinateSystemBounds', () => {
 
             // first chunk must now be the in bound one
             expect(inBoundChunk).to.haveOwnProperty('isWithinBounds')
-            expect(inBoundChunk.isWithinBounds).to.be.true
+            expect(inBoundChunk.isWithinBounds).toBe(true)
             expect(inBoundChunk.coordinates).to.be.an('Array').of.length(4)
             const lastInBoundCoordinate = inBoundChunk.coordinates.splice(-1)[0]
             expect(lastInBoundCoordinate).to.be.an('Array').of.length(2)
             expect(lastInBoundCoordinate).to.eql([bounds.lowerX, yValue])
 
             expect(outOfBoundChunk).to.haveOwnProperty('isWithinBounds')
-            expect(outOfBoundChunk.isWithinBounds).to.be.false
+            expect(outOfBoundChunk.isWithinBounds).toBe(false)
             expect(outOfBoundChunk.coordinates).to.be.an('Array').of.length(2)
             expect(outOfBoundChunk.coordinates[0]).to.eql([bounds.lowerX, yValue])
         })
@@ -108,27 +108,27 @@ describe('CoordinateSystemBounds', () => {
             expect(result).to.be.an('Array').of.length(4)
             const [firstChunk, secondChunk, thirdChunk, fourthChunk] = result
             // first chunk should have two coordinates, the first from the list and the first intersection
-            expect(firstChunk.isWithinBounds).to.be.false
+            expect(firstChunk.isWithinBounds).toBe(false)
             expect(firstChunk.coordinates).to.be.an('Array').of.length(2)
             expect(firstChunk.coordinates[0]).to.eql(coordinatesGoingBackAndForth[0])
             expect(firstChunk.coordinates[1]).to.eql(expectedFirstIntersection)
             // second chunk should start with the first intersection, then include the second coord
             // and finish with the second intersection
             expect(secondChunk.coordinates).to.be.an('Array').of.length(3)
-            expect(secondChunk.isWithinBounds).to.be.true
+            expect(secondChunk.isWithinBounds).toBe(true)
             expect(secondChunk.coordinates[0]).to.eql(expectedFirstIntersection)
             expect(secondChunk.coordinates[1]).to.eql(coordinatesGoingBackAndForth[1])
             expect(secondChunk.coordinates[2]).to.eql(expectedSecondIntersection)
             // third chunk should be : intersection2, coord3, coord4, intersection3
             expect(thirdChunk.coordinates).to.be.an('Array').of.length(4)
-            expect(thirdChunk.isWithinBounds).to.be.false
+            expect(thirdChunk.isWithinBounds).toBe(false)
             expect(thirdChunk.coordinates[0]).to.eql(expectedSecondIntersection)
             expect(thirdChunk.coordinates[1]).to.eql(coordinatesGoingBackAndForth[2])
             expect(thirdChunk.coordinates[2]).to.eql(coordinatesGoingBackAndForth[3])
             expect(thirdChunk.coordinates[3]).to.eql(expectedThirdIntersection)
             // last chunk should be : intersection3, coord5, coord6
             expect(fourthChunk.coordinates).to.be.an('Array').of.length(3)
-            expect(fourthChunk.isWithinBounds).to.be.true
+            expect(fourthChunk.isWithinBounds).toBe(true)
             expect(fourthChunk.coordinates[0]).to.eql(expectedThirdIntersection)
             expect(fourthChunk.coordinates[1]).to.eql(coordinatesGoingBackAndForth[4])
             expect(fourthChunk.coordinates[2]).to.eql(coordinatesGoingBackAndForth[5])
@@ -145,17 +145,17 @@ describe('CoordinateSystemBounds', () => {
             expect(result).to.be.an('Array').of.length(3)
             const [firstChunk, secondChunk, thirdChunk] = result
 
-            expect(firstChunk.isWithinBounds).to.be.false
+            expect(firstChunk.isWithinBounds).toBe(false)
             expect(firstChunk.coordinates).to.be.an('Array').of.length(2)
             expect(firstChunk.coordinates[0]).to.eql(coordinatesGoingThrough[0])
             expect(firstChunk.coordinates[1]).to.eql(expectedFirstIntersection)
 
-            expect(secondChunk.isWithinBounds).to.be.true
+            expect(secondChunk.isWithinBounds).toBe(true)
             expect(secondChunk.coordinates).to.be.an('Array').of.length(2)
             expect(secondChunk.coordinates[0]).to.eql(expectedFirstIntersection)
             expect(secondChunk.coordinates[1]).to.eql(expectedSecondIntersection)
 
-            expect(thirdChunk.isWithinBounds).to.be.false
+            expect(thirdChunk.isWithinBounds).toBe(false)
             expect(thirdChunk.coordinates).to.be.an('Array').of.length(2)
             expect(thirdChunk.coordinates[0]).to.eql(expectedSecondIntersection)
             expect(thirdChunk.coordinates[1]).to.eql(coordinatesGoingThrough[1])
@@ -169,20 +169,20 @@ describe('CoordinateSystemBounds', () => {
             expect(result).to.be.an('Array').of.length(3)
             const [firstChunk, secondChunk, thirdChunk] = result
 
-            expect(firstChunk.isWithinBounds).to.be.false
+            expect(firstChunk.isWithinBounds).toBe(false)
             expect(firstChunk.coordinates).to.be.an('Array').of.length(2)
             expect(firstChunk.coordinates[0]).to.eql(sample1[0])
             expect(firstChunk.coordinates[1][0]).to.approximately(2674764.8, 0.1)
             expect(firstChunk.coordinates[1][1]).to.approximately(1350000, 0.1)
 
-            expect(secondChunk.isWithinBounds).to.be.true
+            expect(secondChunk.isWithinBounds).toBe(true)
             expect(secondChunk.coordinates).to.be.an('Array').of.length(2)
             expect(secondChunk.coordinates[0][0]).to.approximately(2674764.8, 0.1)
             expect(secondChunk.coordinates[0][1]).to.approximately(1350000, 0.1)
             expect(secondChunk.coordinates[1][0]).to.approximately(2855830.1, 0.1)
             expect(secondChunk.coordinates[1][1]).to.approximately(1030000, 0.1)
 
-            expect(thirdChunk.isWithinBounds).to.be.false
+            expect(thirdChunk.isWithinBounds).toBe(false)
             expect(thirdChunk.coordinates).to.be.an('Array').of.length(2)
             expect(thirdChunk.coordinates[0][0]).to.approximately(2855830.1, 0.1)
             expect(thirdChunk.coordinates[0][1]).to.approximately(1030000, 0.1)
@@ -192,20 +192,20 @@ describe('CoordinateSystemBounds', () => {
             expect(reversedResult).to.be.an('Array').of.length(3)
             const [firstReversedChunk, secondReversedChunk, thirdReversedChunk] = reversedResult
 
-            expect(firstReversedChunk.isWithinBounds).to.be.false
+            expect(firstReversedChunk.isWithinBounds).toBe(false)
             expect(firstReversedChunk.coordinates).to.be.an('Array').of.length(2)
             expect(firstReversedChunk.coordinates[0]).to.eql(sample1[1])
             expect(firstReversedChunk.coordinates[1][0]).to.approximately(2855830.1, 0.1)
             expect(firstReversedChunk.coordinates[1][1]).to.approximately(1030000, 0.1)
 
-            expect(secondReversedChunk.isWithinBounds).to.be.true
+            expect(secondReversedChunk.isWithinBounds).toBe(true)
             expect(secondReversedChunk.coordinates).to.be.an('Array').of.length(2)
             expect(secondReversedChunk.coordinates[0][0]).to.approximately(2855830.1, 0.1)
             expect(secondReversedChunk.coordinates[0][1]).to.approximately(1030000, 0.1)
             expect(secondReversedChunk.coordinates[1][0]).to.approximately(2674764.8, 0.1)
             expect(secondReversedChunk.coordinates[1][1]).to.approximately(1350000, 0.1)
 
-            expect(thirdReversedChunk.isWithinBounds).to.be.false
+            expect(thirdReversedChunk.isWithinBounds).toBe(false)
             expect(thirdReversedChunk.coordinates).to.be.an('Array').of.length(2)
             expect(thirdReversedChunk.coordinates[0][0]).to.approximately(2674764.8, 0.1)
             expect(thirdReversedChunk.coordinates[0][1]).to.approximately(1350000, 0.1)
@@ -220,23 +220,23 @@ describe('CoordinateSystemBounds', () => {
             upperY: 1,
         })
         it('returns true if we are on the border of the bounds', () => {
-            expect(testInstance.isInBounds(-1, -1)).to.be.true
-            expect(testInstance.isInBounds(-1, 1)).to.be.true
-            expect(testInstance.isInBounds(1, -1)).to.be.true
-            expect(testInstance.isInBounds(1, 1)).to.be.true
+            expect(testInstance.isInBounds(-1, -1)).toBe(true)
+            expect(testInstance.isInBounds(-1, 1)).toBe(true)
+            expect(testInstance.isInBounds(1, -1)).toBe(true)
+            expect(testInstance.isInBounds(1, 1)).toBe(true)
         })
         it('returns true if we are in bounds not touching any border', () => {
-            expect(testInstance.isInBounds(0, 0)).to.be.true
+            expect(testInstance.isInBounds(0, 0)).toBe(true)
         })
         it('returns false if only one parameter (X or Y) is out of bound', () => {
-            expect(testInstance.isInBounds(-1, -2)).to.be.false
-            expect(testInstance.isInBounds(-2, -1)).to.be.false
-            expect(testInstance.isInBounds(-1, 2)).to.be.false
-            expect(testInstance.isInBounds(2, -1)).to.be.false
-            expect(testInstance.isInBounds(1, -2)).to.be.false
-            expect(testInstance.isInBounds(-2, 1)).to.be.false
-            expect(testInstance.isInBounds(1, 2)).to.be.false
-            expect(testInstance.isInBounds(2, 1)).to.be.false
+            expect(testInstance.isInBounds(-1, -2)).toBe(false)
+            expect(testInstance.isInBounds(-2, -1)).toBe(false)
+            expect(testInstance.isInBounds(-1, 2)).toBe(false)
+            expect(testInstance.isInBounds(2, -1)).toBe(false)
+            expect(testInstance.isInBounds(1, -2)).toBe(false)
+            expect(testInstance.isInBounds(-2, 1)).toBe(false)
+            expect(testInstance.isInBounds(1, 2)).toBe(false)
+            expect(testInstance.isInBounds(2, 1)).toBe(false)
         })
     })
     describe('flatten', () => {

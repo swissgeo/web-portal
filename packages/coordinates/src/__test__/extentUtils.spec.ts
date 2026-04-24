@@ -38,11 +38,11 @@ describe('Test extent utils', () => {
                 singleCoordinateOutOfLV95Bounds,
                 singleCoordinateOutOfLV95Bounds,
             ].flat() as FlatExtent
-            expect(getExtentIntersectionWithCurrentProjection(extent, WGS84, LV95)).to.be.undefined
+            expect(getExtentIntersectionWithCurrentProjection(extent, WGS84, LV95)).toBe(undefined)
         })
         it('returns undefined if the extent given is completely outside of the projection bounds', () => {
             const extent: FlatExtent = [-25.0, -20.0, -5.0, -45.0]
-            expect(getExtentIntersectionWithCurrentProjection(extent, WGS84, LV95)).to.be.undefined
+            expect(getExtentIntersectionWithCurrentProjection(extent, WGS84, LV95)).toBe(undefined)
         })
         it('reproject and cut an extent that is greater than LV95 extent on all sides', () => {
             const result = getExtentIntersectionWithCurrentProjection(
