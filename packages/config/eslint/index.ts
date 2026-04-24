@@ -117,9 +117,6 @@ export const unitTestsConfig: FlatConfig.ConfigArray = [
         rules: {
             'no-console': 'off',
             'no-prototype-builtins': 'off',
-            // Vitest expect() chains are expressions — disable unused-expression rules for test files
-            'no-unused-expressions': 'off',
-            '@typescript-eslint/no-unused-expressions': 'off',
             ...noUnusedVarsRules,
         },
     },
