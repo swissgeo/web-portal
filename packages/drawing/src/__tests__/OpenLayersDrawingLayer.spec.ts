@@ -1,4 +1,6 @@
 import type { Layer } from '@swissgeo/layers'
+import type { Feature } from 'ol'
+import type { Geometry } from 'ol/geom'
 
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi } from 'vitest'
@@ -14,11 +16,11 @@ const { mockSetZIndex } = vi.hoisted(() => ({
 }))
 
 const mockDrawingStore = {
-    drawingFeatures: [],
+    drawingFeatures: [] as Feature<Geometry>[],
     drawingMode: 'None',
     isDrawing: false,
     featureCount: 0,
-    selectedIconId: undefined,
+    selectedIconId: undefined as string | undefined,
     setSelectedFeatureId: vi.fn(),
     setSelectedFeatureInfo: vi.fn(),
     clearPassiveSelection: vi.fn(),

@@ -115,7 +115,6 @@ describe('parseLocationResult function', () => {
         expect(parseLocationResult(baseSearchResult)).toMatchObject(expectedResult)
     })
     it('Throws an exception when there is no attributes', () => {
-        //@ts-expect-error We are returning a falsy-value from the API here
         baseSearchResult.attrs = null
         try {
             parseLocationResult(baseSearchResult)

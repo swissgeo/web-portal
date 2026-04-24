@@ -44,7 +44,7 @@ describe('useCapabilities composable returning capability URL', () => {
 
 describe('extractCapabilitUrl', () => {
     it('handles invalid service data', () => {
-        const service = {
+        const service: Pick<Service, 'links' | 'linkTemplates'> = {
             links: [],
         }
 

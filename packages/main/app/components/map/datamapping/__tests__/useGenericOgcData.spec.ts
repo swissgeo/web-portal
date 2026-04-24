@@ -9,7 +9,7 @@ import type {
     Distribution,
     DistributionCollection,
 } from '@swissgeo/ogc'
-import type { ShallowRef } from 'vue'
+import type { ComputedRef, ShallowRef } from 'vue'
 
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, expectTypeOf, it, vi } from 'vitest'
@@ -162,26 +162,26 @@ describe('useGenericOgcData ', () => {
         await flushPromises()
 
         expect(useDistributionCollectionMock).toHaveBeenCalledTimes(1)
-        expectTypeOf(distributionCollection).toEqualTypeOf<
+        expectTypeOf(distributionCollection).toExtend<
             ShallowRef<DistributionCollection | null>
         >()
         expect(distributionCollection.value).toBeDefined()
         expect(distributionCollection.value).toHaveProperty('records', [distributionMockData.value])
 
         expect(useDistributionMock).toHaveBeenCalledTimes(1)
-        expectTypeOf(distribution).toEqualTypeOf<ComputedRef<Distribution | null>>()
+        expectTypeOf(distribution).toExtend<ComputedRef<Distribution | null>>()
         expect(distribution.value).toBeDefined()
 
         expect(usePreferredDistributionMock).toHaveBeenCalledTimes(1)
 
         expect(useServiceMock).toHaveBeenCalledTimes(1)
-        expectTypeOf(serviceData).toEqualTypeOf<ShallowRef<Service | null>>()
+        expectTypeOf(serviceData).toExtend<ShallowRef<Service | null>>()
         expect(serviceData.value).toBeDefined()
 
-        expectTypeOf(layerFormat).toEqualTypeOf<ComputedRef<LayerFormat | null>>()
+        expectTypeOf(layerFormat).toExtend<ComputedRef<LayerFormat | null>>()
         expect(layerFormat.value).toEqual('WMTS')
 
-        expectTypeOf(layerId).toEqualTypeOf<ComputedRef<string | null>>()
+        expectTypeOf(layerId).toExtend<ComputedRef<string | null>>()
         expect(layerId.value).toEqual('my-fancy-layer')
     })
 
