@@ -43,6 +43,7 @@
         "reproject": "catalog:"
     },
     "devDependencies": {
+        "@vueuse/core": "catalog:",
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "workspace:*",
         "@swissgeo/config-typescript": "workspace:*",
