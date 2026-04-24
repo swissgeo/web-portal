@@ -22,22 +22,52 @@ async function openDrawingPanel(page: import('@playwright/test').Page) {
  * the left sidebar. We also wait for the instruction text to appear first,
  * which confirms that OpenLayers has wired up the drawing interaction.
  */
-async function drawOnePoint(page: import('@playwright/test').Page) {
-    await page.locator('[data-cy="drawing-tool-point"]').click()
-    await expect(page.getByText('Click on the map to add a point')).toBeVisible()
-
+async function getMapBox(page: import('@playwright/test').Page) {
     const map = page.locator('[data-cy="ol-map"]')
     const mapBox = await map.boundingBox()
     if (!mapBox) {
         throw new Error('Could not get map bounding box')
     }
+    return { map, mapBox }
+}
 
-    await map.click({
-        position: {
-            x: mapBox.width * 0.75,
-            y: mapBox.height * 0.25,
-        },
-    })
+/**
+ * Select the Point tool and place one point on the map.
+ * Clicks in the top-right quadrant to avoid the bottom-center drawing panel.
+ */
+async function drawOnePoint(page: import('@playwright/test').Page) {
+    await page.locator('[data-cy="drawing-tool-point"]').click()
+    await expect(page.getByText('Click on the map to add a point')).toBeVisible()
+
+    const { map, mapBox } = await getMapBox(page)
+    await map.click({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.25 } })
+}
+
+/**
+ * Select the Text tool and place one text feature on the map.
+ */
+async function drawOneText(page: import('@playwright/test').Page) {
+    await page.locator('[data-cy="drawing-tool-text"]').click()
+    await expect(page.getByText('Click on the map to add text')).toBeVisible()
+
+    const { map, mapBox } = await getMapBox(page)
+    await map.click({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.25 } })
+}
+
+/**
+ * Select the Line tool, place two vertices, then double-click to finish the line.
+ * All clicks stay in the top area of the map to avoid the bottom-center drawing panel.
+ */
+async function drawOneLine(page: import('@playwright/test').Page) {
+    await page.locator('[data-cy="drawing-tool-line"]').click()
+    await expect(
+        page.getByText(/Click to draw a line, double-click to finish/)
+    ).toBeVisible()
+
+    const { map, mapBox } = await getMapBox(page)
+    await map.click({ position: { x: mapBox.width * 0.55, y: mapBox.height * 0.20 } })
+    await map.click({ position: { x: mapBox.width * 0.65, y: mapBox.height * 0.20 } })
+    await map.dblclick({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.20 } })
 }
 
 test.describe('drawing panel', () => {
@@ -139,6 +169,27 @@ test.describe('drawing panel', () => {
         await openDrawingPanel(page)
         await drawOnePoint(page)
         await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
+    })
+
+    test('drawing a line on the map increases the feature count', async ({ page }) => {
+        await openDrawingPanel(page)
+        await drawOneLine(page)
+        await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
+    })
+
+    test('drawing a text feature on the map increases the feature count', async ({ page }) => {
+        await openDrawingPanel(page)
+        await drawOneText(page)
+        await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
+    })
+
+    test('multiple drawing types can be used in the same session', async ({ page }) => {
+        await openDrawingPanel(page)
+        await drawOnePoint(page)
+        await expect(page.locator('[data-cy="drawing-feature-count"]')).toHaveText('1')
+
+        await drawOneLine(page)
+        await expect(page.locator('[data-cy="drawing-feature-count"]')).toHaveText('2')
     })
 
     test('clear all confirmation dialog appears and cancels', async ({ page }) => {
