@@ -66,13 +66,13 @@ describe('Search Result Entries', () => {
 
         const items = wrapper.findAll('[data-testid^="search-result-entry"]')
         expect(items).to.have.length(3)
-        expect(items[0]).to.exist
-        expect(items[1]).to.exist
-        expect(items[2]).to.exist
-        ;(items[initialIndex].element as HTMLElement).focus()
+        expect(items[0]!.exists()).toBe(true)
+        expect(items[1]!.exists()).toBe(true)
+        expect(items[2]!.exists()).toBe(true)
+        ;(items[initialIndex]!.element as HTMLElement).focus()
 
-        await items[initialIndex].trigger('keydown', { key: keyPressed })
-        expect(document.activeElement).toBe(items[finalIndex].element)
+        await items[initialIndex]!.trigger('keydown', { key: keyPressed })
+        expect(document.activeElement).toBe(items[finalIndex]!.element)
     })
     //                 :data-testid="`icon-${entry.resultType}`"
 
