@@ -75,7 +75,6 @@ export function useOlDrawing(
         throw new Error('OpenLayersMap is not available')
     }
 
-    const rawMap: OlMap = olMap.value
     const drawingStore = useDrawingStore()
     // Track the currently selected icon for new point features
     const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON!)
@@ -866,8 +865,8 @@ export function useOlDrawing(
     let suppressDoubleClickZoomUntil = 0
     let temporarilyDisabledDoubleClickZoomInteractions: DoubleClickZoom[] = []
 
-    rawMap.addLayer(olDrawingLayer)
-    rawMap.addLayer(endpointHandleLayer)
+    olMap!.value!.addLayer(olDrawingLayer)
+    olMap!.value!.addLayer(endpointHandleLayer)
     log.debug(`Added drawing layer ${layer.value.humanId} to map`)
 
     watchEffect(() => {
@@ -1314,7 +1313,7 @@ export function useOlDrawing(
             }
         })
 
-        rawMap.addInteraction(currentDraw)
+        olMap!.value!.addInteraction(currentDraw)
     }
 
     /**
@@ -1323,7 +1322,7 @@ export function useOlDrawing(
     function stopDrawing() {
         if (currentDraw) {
             currentDraw.setActive(false) // Deactivate first
-            rawMap.removeInteraction(currentDraw)
+            olMap!.value!.removeInteraction(currentDraw)
             currentDraw = null
             log.debug('Stopped drawing and removed interaction from map')
         } else {
@@ -1336,7 +1335,7 @@ export function useOlDrawing(
     }
 
     function getPixelToleranceInMapUnits(pixelTolerance = 10): number {
-        const resolution = rawMap.getView().getResolution()
+        const resolution = olMap!.value!.getView().getResolution()
         if (typeof resolution !== 'number' || Number.isNaN(resolution)) {
             return 1
         }
@@ -1581,7 +1580,7 @@ export function useOlDrawing(
     function endpointHandleAtPixel(pixel: number[]): OlFeature<Point> | null {
         let selectedHandle: OlFeature<Point> | null = null
 
-        rawMap.forEachFeatureAtPixel(
+        olMap!.value!.forEachFeatureAtPixel(
             pixel,
             (feature, targetLayer) => {
                 if (targetLayer === endpointHandleLayer) {
@@ -1814,7 +1813,7 @@ export function useOlDrawing(
     }
 
     function resetMapInteractionPointerState() {
-        rawMap.getInteractions().forEach((interaction) => {
+        olMap!.value!.getInteractions().forEach((interaction) => {
             if (
                 interaction === currentDraw ||
                 interaction === currentModify ||
@@ -1830,7 +1829,7 @@ export function useOlDrawing(
     }
 
     function releaseViewportPointerState() {
-        const viewport = rawMap.getViewport()
+        const viewport = olMap!.value!.getViewport()
         viewport.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
         viewport.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }))
 
@@ -1842,7 +1841,7 @@ export function useOlDrawing(
 
     function disableDoubleClickZoomInteractionsTemporarily() {
         temporarilyDisabledDoubleClickZoomInteractions = []
-        rawMap.getInteractions().forEach((interaction) => {
+        olMap!.value!.getInteractions().forEach((interaction) => {
             if (!(interaction instanceof DoubleClickZoom) || !interaction.getActive()) {
                 return
             }
@@ -1862,7 +1861,7 @@ export function useOlDrawing(
     function clearEndpointExtensionSnap() {
         if (endpointExtensionSnap) {
             endpointExtensionSnap.setActive(false)
-            rawMap.removeInteraction(endpointExtensionSnap)
+            olMap!.value!.removeInteraction(endpointExtensionSnap)
             endpointExtensionSnap = null
         }
     }
@@ -1883,7 +1882,7 @@ export function useOlDrawing(
 
         if (currentDraw) {
             currentDraw.setActive(false)
-            rawMap.removeInteraction(currentDraw)
+            olMap!.value!.removeInteraction(currentDraw)
             currentDraw = null
         }
         clearEndpointExtensionSnap()
@@ -1892,7 +1891,7 @@ export function useOlDrawing(
         suppressDoubleClickZoomUntil = Date.now() + 350
         releaseViewportPointerState()
         resetMapInteractionPointerState()
-        rawMap.getViewport().style.cursor = ''
+        olMap!.value!.getViewport().style.cursor = ''
 
         setTimeout(() => {
             endpointExtensionInProgress = false
@@ -2036,8 +2035,8 @@ export function useOlDrawing(
             restoreActiveEditingAfterEndpointExtension(targetFeature)
         })
 
-        rawMap.addInteraction(currentDraw)
-        rawMap.addInteraction(endpointExtensionSnap)
+        olMap!.value!.addInteraction(currentDraw)
+        olMap!.value!.addInteraction(endpointExtensionSnap)
         currentDraw.extend(lineFeature)
     }
 
@@ -2052,8 +2051,8 @@ export function useOlDrawing(
             source,
         })
 
-        rawMap.addInteraction(currentModify)
-        rawMap.addInteraction(currentSnap)
+        olMap!.value!.addInteraction(currentModify)
+        olMap!.value!.addInteraction(currentSnap)
         endpointHandleLayer.setVisible(true)
         rebuildEndpointHandles()
 
@@ -2073,7 +2072,7 @@ export function useOlDrawing(
             rebuildEndpointHandles()
         })
 
-        activeClickListener = rawMap.on('singleclick', (event) => {
+        activeClickListener = olMap!.value!.on('singleclick', (event) => {
             if (suppressNextActiveSingleClick) {
                 return
             }
@@ -2129,7 +2128,7 @@ export function useOlDrawing(
             rebuildEndpointHandles()
         })
 
-        activeMoveListener = rawMap.on('pointermove', (event) => {
+        activeMoveListener = olMap!.value!.on('pointermove', (event) => {
             if (!currentModify) {
                 return
             }
@@ -2144,7 +2143,7 @@ export function useOlDrawing(
             }
         })
 
-        const viewport = rawMap.getViewport()
+        const viewport = olMap!.value!.getViewport()
         activeViewportDblClickListener = (event: MouseEvent) => {
             if (endpointExtensionInProgress && currentDraw) {
                 currentDraw.finishDrawing()
@@ -2170,7 +2169,7 @@ export function useOlDrawing(
                 return
             }
 
-            const coordinate = rawMap.getCoordinateFromPixel(pixel)
+            const coordinate = olMap!.value!.getCoordinateFromPixel(pixel)
             if (!coordinate) {
                 return
             }
@@ -2218,25 +2217,25 @@ export function useOlDrawing(
         }
 
         if (activeContextMenuListener) {
-            rawMap.getViewport().removeEventListener('contextmenu', activeContextMenuListener)
+            olMap!.value!.getViewport().removeEventListener('contextmenu', activeContextMenuListener)
             activeContextMenuListener = null
         }
 
         if (activeViewportDblClickListener) {
-            rawMap.getViewport().removeEventListener('dblclick', activeViewportDblClickListener)
+            olMap!.value!.getViewport().removeEventListener('dblclick', activeViewportDblClickListener)
             activeViewportDblClickListener = null
         }
 
         if (currentModify) {
             currentModify.setActive(false)
             currentModify.getOverlay().getSource()?.clear(true)
-            rawMap.removeInteraction(currentModify)
+            olMap!.value!.removeInteraction(currentModify)
             currentModify = null
         }
 
         if (currentSnap) {
             currentSnap.setActive(false)
-            rawMap.removeInteraction(currentSnap)
+            olMap!.value!.removeInteraction(currentSnap)
             currentSnap = null
         }
 
@@ -2273,7 +2272,7 @@ export function useOlDrawing(
     function featureAtPixel(pixel: number[]): Feature<Geometry> | null {
         let selectedFeature: Feature<Geometry> | null = null
 
-        rawMap.forEachFeatureAtPixel(
+        olMap!.value!.forEachFeatureAtPixel(
             pixel,
             (feature, targetLayer) => {
                 if (targetLayer === olDrawingLayer) {
@@ -2393,7 +2392,7 @@ export function useOlDrawing(
     ) {
         disablePassiveInspection()
 
-        passiveClickListener = rawMap.on('singleclick', (event) => {
+        passiveClickListener = olMap!.value!.on('singleclick', (event) => {
             if (
                 endpointHandleAtPixel(event.pixel) ||
                 endpointHandleNearCoordinate(event.coordinate)
@@ -2414,13 +2413,13 @@ export function useOlDrawing(
             onFeatureSelected?.(payload)
         })
 
-        passiveMoveListener = rawMap.on('pointermove', (event) => {
+        passiveMoveListener = olMap!.value!.on('pointermove', (event) => {
             if (!event.originalEvent) {
                 return
             }
 
             const hoveredFeature = featureAtPixel(event.pixel)
-            rawMap.getViewport().style.cursor = hoveredFeature ? 'pointer' : ''
+            olMap!.value!.getViewport().style.cursor = hoveredFeature ? 'pointer' : ''
             const pointerEvent = event.originalEvent as PointerEvent
             const payload = toHoverHintPayload(
                 pointerEvent.clientX,
@@ -2430,9 +2429,9 @@ export function useOlDrawing(
             onHoverHintChanged?.(payload)
         })
 
-        const viewport = rawMap.getViewport()
+        const viewport = olMap!.value!.getViewport()
         passiveOutListener = () => {
-            rawMap.getViewport().style.cursor = ''
+            olMap!.value!.getViewport().style.cursor = ''
             onHoverHintChanged?.(null)
         }
         viewport.addEventListener('pointerleave', passiveOutListener)
@@ -2452,11 +2451,11 @@ export function useOlDrawing(
         }
 
         if (passiveOutListener) {
-            rawMap.getViewport().removeEventListener('pointerleave', passiveOutListener)
+            olMap!.value!.getViewport().removeEventListener('pointerleave', passiveOutListener)
             passiveOutListener = null
         }
 
-        rawMap.getViewport().style.cursor = ''
+        olMap!.value!.getViewport().style.cursor = ''
     }
 
     /**
@@ -2647,8 +2646,8 @@ export function useOlDrawing(
         stopDrawing()
         disableActiveEditing()
         disablePassiveInspection()
-        rawMap.removeLayer(endpointHandleLayer)
-        rawMap.removeLayer(olDrawingLayer)
+        olMap!.value!.removeLayer(endpointHandleLayer)
+        olMap!.value!.removeLayer(olDrawingLayer)
         clearTimeout(updateFeatureTimeout)
     })
 
