@@ -3,8 +3,10 @@ import { fetchStateFromStateId } from '~/utils/fetchStateFromStateId'
 
 import type { PrintConfig } from '../types/print'
 
-// URL param providing the ID to a state (map config such a center, resolution, print info, etc.)
+// URL param providing the ID to a state on service-portal-state
 const URL_PARAM_STATE = 'state'
+// URL param providing a state as base64 string
+const URL_PARAM_B64_STATE = 'statestr'
 
 // URL param related to print config
 const URL_PARAM_PRINT_FORMAT = 'print_format'
@@ -19,6 +21,46 @@ export function useUrlParams() {
     const route = useRoute()
     const router = useRouter()
 
+    function dropStateParam(paramName: typeof URL_PARAM_STATE | typeof URL_PARAM_B64_STATE) {
+        // remove the state ID from the URL (without page refresh)
+        onNuxtReady(async () => {
+            const newQuery = { ...route.query }
+            delete newQuery[paramName]
+            await router.replace({ query: newQuery })
+        })
+    }
+
+    // not using the state type here as we have not validated the data yet
+    function getB64State(): Record<string, unknown> | null {
+        const stateParam = route.query[URL_PARAM_B64_STATE]
+
+        if (!stateParam) {
+            return null
+        }
+
+        dropStateParam(URL_PARAM_B64_STATE)
+
+        // Extract the value, handling the case where multiple params with the same name exist
+        const stateString = Array.isArray(stateParam) ? stateParam[0] : stateParam
+
+        if (typeof stateString !== 'string') {
+            return null
+        }
+
+        log.debug({
+            title: 'useUrlParam',
+            titleColor: LogPreDefinedColor.Sky,
+            messages: ['State string found in the URL param', stateString],
+        })
+
+        try {
+            const state = JSON.parse(atob(stateString))
+            return state
+        } catch {
+            return null
+        }
+    }
+
     /**
      * Get the state ID from URL, or null is missing
      */
@@ -29,32 +71,13 @@ export function useUrlParams() {
             return null
         }
 
+        dropStateParam(URL_PARAM_STATE)
+
         // Extract the value, handling the case where multiple params with the same name exist
         const stateId = Array.isArray(stateParam) ? stateParam[0] : stateParam
 
         if (typeof stateId !== 'string') {
             return null
-        }
-        return stateId || null
-    }
-
-    /**
-     * Read the state ID from URL param, load the state corresponding to this ID,
-     * return it as a payload and removed the param from the URL
-     */
-    async function getStateFromUrl(): Promise<{ state: JSON | null; stateId: string }> {
-        // Extract the value, handling the case where multiple params with the same name exist
-        const stateId = getStateIdFromUrl()
-
-        // remove the state ID from the URL (without page refresh)
-        onNuxtReady(async () => {
-            const newQuery = { ...route.query }
-            delete newQuery[URL_PARAM_STATE]
-            await router.replace({ query: newQuery })
-        })
-
-        if (typeof stateId !== 'string') {
-            return { state: null, stateId: '' }
         }
 
         log.debug({
@@ -66,8 +89,24 @@ export function useUrlParams() {
             ],
         })
 
+        return stateId
+    }
+
+    /**
+     * Read the state ID from URL param, load the state corresponding to this ID,
+     * return it as a payload and removed the param from the URL
+     */
+    async function getStateFromUrl(): Promise<{ state: unknown; stateId: string | null }> {
+        const stateId = getStateIdFromUrl()
+        if (!stateId) {
+            return Promise.resolve({
+                state: null,
+                stateId: null,
+            })
+        }
+        const state = await fetchStateFromStateId(stateId)
         return {
-            state: await fetchStateFromStateId(stateId),
+            state,
             stateId,
         }
     }
@@ -103,8 +142,9 @@ export function useUrlParams() {
     }
 
     return {
-        getStateIdFromUrl,
         getStateFromUrl,
+        getStateIdFromUrl,
+        getB64State,
         getPrintConfigFromUrl,
         getZoomFromUrl,
     }

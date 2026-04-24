@@ -4,8 +4,11 @@ export default defineNuxtPlugin({
 
     hooks: {
         'app:created'() {
-            const { restore } = useRestoreState()
+            const { restore, listenToChange } = useRestoreState()
             void restore()
+
+            // activate the watching of the state changes
+            listenToChange()
         },
     },
 })
