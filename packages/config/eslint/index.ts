@@ -4,8 +4,6 @@ import jsESLint from '@eslint/js'
 import markdown from '@eslint/markdown'
 import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
-import pluginChaiFriendly from 'eslint-plugin-chai-friendly'
-import pluginCypress from 'eslint-plugin-cypress'
 import pluginImport from 'eslint-plugin-import'
 import mocha from 'eslint-plugin-mocha'
 import perfectionist from 'eslint-plugin-perfectionist'
@@ -14,7 +12,6 @@ import globals from 'globals'
 import tsESLint from 'typescript-eslint'
 
 type PartialRules = Partial<Record<string, FlatConfig.RuleEntry>>
-type PartialConfig = Partial<FlatConfig.Config>
 
 const commonTsAndJsRules: PartialRules = {
     eqeqeq: ['error', 'always'],
@@ -84,45 +81,6 @@ const standardTSRules: PartialRules = {
     '@typescript-eslint/no-base-to-string': 'off',
 }
 
-const chaiFriendlyRules: PartialConfig = {
-    plugins: {
-        'chai-friendly': pluginChaiFriendly,
-    },
-    rules: {
-        'no-console': 'off',
-        'no-prototype-builtins': 'off',
-        // see https://github.com/ihordiachenko/eslint-plugin-chai-friendly?tab=readme-ov-file#usage
-        'no-unused-expressions': 'off', // disable original rule for JS
-        '@typescript-eslint/no-unused-expressions': 'off', // disable original rule for TS
-        'chai-friendly/no-unused-expressions': 'error',
-        ...noUnusedVarsRules,
-    },
-}
-
-/**
- * Generates a set of ESLint rules for Cypress tests. The root directory of the Cypress tests can be
- * specified (the default value is 'tests/cypress/').
- *
- * @param cypressRootDir The root directory of the Cypress tests.
- * @returns The set of ESLint rules for Cypress tests.
- */
-export function cypressConfig(cypressRootDir: string = 'tests/cypress/'): FlatConfig.ConfigArray {
-    return tsESLint.config([
-        {
-            files: [`${cypressRootDir}**/*.ts`, `${cypressRootDir}**/*.js`],
-            languageOptions: {
-                parserOptions: {
-                    projectService: true,
-                    tsconfigRootDir: import.meta.dirname,
-                },
-            },
-            rules: standardTSRules,
-            ...pluginCypress.configs.recommended,
-            ...chaiFriendlyRules,
-        },
-    ])
-}
-
 const allIgnores: string[] = [
     '.gitignore',
     '**/node_modules',
@@ -159,7 +117,14 @@ export const vueConfig: FlatConfig.ConfigArray = defineConfigWithVueTs(
 export const unitTestsConfig: FlatConfig.ConfigArray = [
     {
         files: ['**/*.spec.{js,ts}', 'scripts/**.{js,ts}'],
-        ...chaiFriendlyRules,
+        rules: {
+            'no-console': 'off',
+            'no-prototype-builtins': 'off',
+            // Vitest expect() chains are expressions — disable unused-expression rules for test files
+            'no-unused-expressions': 'off',
+            '@typescript-eslint/no-unused-expressions': 'off',
+            ...noUnusedVarsRules,
+        },
     },
 ]
 
@@ -188,7 +153,6 @@ export const jsConfig: FlatConfig.ConfigArray = [
         ignores: ['**/*.md'],
         plugins: {
             mocha,
-            'chai-friendly': pluginChaiFriendly,
             perfectionist,
         },
         languageOptions: {
@@ -202,7 +166,6 @@ export const jsConfig: FlatConfig.ConfigArray = [
                 __APP_VERSION__: true,
                 __VITE_ENVIRONMENT__: true,
                 __CESIUM_STATIC_PATH__: true,
-                __IS_TESTING_WITH_CYPRESS__: true,
             },
 
             sourceType: 'module',

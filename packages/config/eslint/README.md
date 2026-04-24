@@ -10,8 +10,7 @@ This package provides a comprehensive ESLint flat config setup for SWISSGEO proj
 - Vue 3
 - JavaScript (ES6+)
 - Markdown files
-- Unit tests (Mocha, Chai)
-- Cypress E2E tests
+- Unit tests (Vitest)
 
 ## Installation
 
@@ -31,25 +30,12 @@ import eslintConfig from '@swissgeo/config-eslint'
 export default eslintConfig
 ```
 
-### With Cypress Tests
-
-If your project includes Cypress tests, use the `cypressConfig` function:
-
-```typescript
-import eslintConfig, { cypressConfig } from '@swissgeo/config-eslint'
-
-export default [
-  ...eslintConfig,
-  ...cypressConfig('tests/cypress/'), // Specify your Cypress root directory
-]
-```
-
 ### Granular Configurations
 
 You can also import specific configurations if you don't want the full default set:
 
 - `vueConfig`: Vue 3 specific rules
-- `unitTestsConfig`: Mocha/Chai rules for `*.spec.{js,ts}`
+- `unitTestsConfig`: Rules for `*.spec.{js,ts}` files
 - `markdownConfig`: Markdown linting rules
 - `jsConfig`: Standard JavaScript rules
 
@@ -105,8 +91,7 @@ Automatic alphabetical import sorting with `eslint-plugin-perfectionist`, treati
 
 ### Test Support
 
-- **Unit Tests**: Mocha and Chai-friendly rules for `*.spec.{js,ts}` files
-- **Cypress Tests**: Cypress-recommended rules with custom configuration
+- **Unit Tests**: Rules for `*.spec.{js,ts}` files
 
 ### Markdown Linting
 
@@ -126,4 +111,4 @@ BSD-3-Clause
 
 ## Repository
 
-[https://github.com/geoadmin/web-mapviewer](https://github.com/geoadmin/web-mapviewer)
+[https://github.com/swissgeo/web-portal](https://github.com/swissgeo/web-portal)

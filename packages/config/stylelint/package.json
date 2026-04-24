@@ -4,7 +4,7 @@
     "description": "Shared Stylelint config for SWISSGEO projects.",
     "repository": {
         "type": "git",
-        "url": "https://github.com/geoadmin/web-mapviewer.git",
+        "url": "https://github.com/swissgeo/web-portal.git",
         "directory": "packages/config/stylelint"
     },
     "license": "BSD-3-Clause",

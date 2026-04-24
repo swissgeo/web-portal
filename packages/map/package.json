@@ -32,7 +32,7 @@
         "@swissgeo/ogc": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "@swissgeo/skeleton": "workspace:*",
-        "@swissgeo/tooltip": "workspace:*",
+        "@swissgeo/tooltip": "catalog:",
         "@turf/turf": "catalog:",
         "@types/mapbox-gl": "catalog:",
         "fflate": "catalog:",

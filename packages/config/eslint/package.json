@@ -4,7 +4,7 @@
     "description": "Shared ESLint config for SWISSGEO projects.",
     "repository": {
         "type": "git",
-        "url": "https://github.com/geoadmin/web-mapviewer.git",
+        "url": "https://github.com/swissgeo/web-portal.git",
         "directory": "packages/config/eslint"
     },
     "license": "BSD-3-Clause",
@@ -30,8 +30,6 @@
         "@typescript-eslint/utils": "catalog:",
         "@vue/eslint-config-prettier": "catalog:",
         "@vue/eslint-config-typescript": "catalog:",
-        "eslint-plugin-chai-friendly": "catalog:",
-        "eslint-plugin-cypress": "catalog:",
         "eslint-plugin-import": "catalog:",
         "eslint-plugin-mocha": "catalog:",
         "eslint-plugin-perfectionist": "catalog:",
