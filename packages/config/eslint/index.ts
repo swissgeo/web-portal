@@ -163,9 +163,6 @@ export const jsConfig: FlatConfig.ConfigArray = [
                 ...globals.vitest,
                 ...globals.node,
                 defineModel: 'readonly',
-                __APP_VERSION__: true,
-                __VITE_ENVIRONMENT__: true,
-                __CESIUM_STATIC_PATH__: true,
             },
 
             sourceType: 'module',
