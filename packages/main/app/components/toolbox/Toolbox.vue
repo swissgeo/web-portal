@@ -15,17 +15,21 @@ import RecenterButton from '@/components/toolbox/toolboxButtons/RecenterButton.v
 import TimeSliderButton from '@/components/toolbox/toolboxButtons/TimeSliderButton.vue'
 import Toggle3dButton from '@/components/toolbox/toolboxButtons/Toggle3dButton.vue'
 import ZoomButtons from '@/components/toolbox/toolboxButtons/ZoomButtons.vue'
+import { useGeolocationStore } from '@/stores/geolocation'
 
 import CompassButton from './toolboxButtons/CompassButton.vue'
 
 const layerStore = useLayerStore()
 const drawingStore = useDrawingStore()
 const mapViewStore = useMapViewStore()
+const geolocationStore = useGeolocationStore()
 
 const showFullScreeButton = computed(() => !drawingStore.isDrawing)
 // Buttons related to the geolocation function
 const showGelocationButton = ref(true)
-const showRecenterButton = ref(true)
+const showRecenterButton = computed(
+    () => geolocationStore.active && geolocationStore.position !== undefined
+)
 const showCompassButton = ref(true)
 
 const showZoomButtons = ref(true)

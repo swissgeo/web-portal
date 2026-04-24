@@ -1,14 +1,29 @@
 <script setup lang="ts">
-import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
+import type { ActionDispatcher } from '@swissgeo/map'
 
-function isDisabled(): boolean {
-    return true
-}
-function isActive(): boolean {
-    return false
-}
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import ToolBoxButton from '@/components/toolbox/toolboxButtons/ToolBoxButton.vue'
+import { useGeolocationStore } from '@/stores/geolocation'
+
+const dispatcher: ActionDispatcher = { name: 'GeolocButton.vue' }
+
+const { t } = useI18n()
+const geolocationStore = useGeolocationStore()
+
+const title = computed(() => {
+    if (geolocationStore.denied) {
+        return t('geolocation.permissionDenied')
+    }
+    if (geolocationStore.active) {
+        return t('geolocation.stopTracking')
+    }
+    return t('geolocation.startGeolocation')
+})
+
 function toggleGeolocation(): void {
-    throw new Error('GEOLOCATION NOT YET IMPLEMENTED')
+    geolocationStore.toggleGeolocation(dispatcher)
 }
 </script>
 
@@ -18,9 +33,9 @@ function toggleGeolocation(): void {
         class="geoloc-button-div"
     >
         <ToolBoxButton
-            title="Geolocation toggle button"
-            :is-disabled="isDisabled()"
-            :is-active="isActive()"
+            :title="title"
+            :is-disabled="geolocationStore.denied"
+            :is-active="geolocationStore.active"
             iconName="Map-Pinned"
             @click="toggleGeolocation()"
         />

@@ -10,11 +10,11 @@ const mapViewStore = useMapViewStore()
 const layerStore = useLayerStore()
 const sidebarStore = useSidebarStore()
 
-const timeLayers = computed((): LayerWithTime[] =>
-    layerStore.layers.filter(
-        (layer: Layer): layer is LayerWithTime => !!layer.dimensions && 'time' in layer.dimensions
-    )
-)
+function isLayerWithTime(layer: Layer): layer is LayerWithTime {
+    return !!layer.dimensions && 'time' in layer.dimensions && !!layer.dimensions.time
+}
+
+const timeLayers = computed((): LayerWithTime[] => layerStore.layers.filter(isLayerWithTime))
 
 function onClose() {
     mapViewStore.closeTimeSlider()

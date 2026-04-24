@@ -13,13 +13,13 @@ const { title } = defineProps<{
 
 <template>
     <IconButton
-        :severity="isDisabled ? 'secondary' : isActive ? 'primary' : 'success'"
-        :icon-class="{ 'text-inverted': isActive, 'text-default': !isActive }"
-        :text="!isActive"
+        :severity="isDisabled ? 'secondary' : isActive ? 'primary' : 'info'"
         :iconName="iconName"
         :title="title"
-        :class="{ 'text-inverted': isActive, 'text-default': !isActive }"
+        :disabled="isDisabled"
         size="xl"
         @click="emit('click')"
     ></IconButton>
 </template>
+
+<style scoped></style>

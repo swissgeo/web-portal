@@ -7,7 +7,7 @@ import type { PositionStoreGetters, PositionStoreState } from '@/stores/position
 
 import decreaseZoom from '@/stores/position/actions/decreaseZoom'
 import increaseZoom from '@/stores/position/actions/increaseZoom'
-// import setAutoRotation from "@/stores/position/actions/setAutoRotation";
+import setAutoRotation from '@/stores/position/actions/setAutoRotation'
 // import setCameraPosition from "@/stores/position/actions/setCameraPosition";
 import setCenter from '@/stores/position/actions/setCenter'
 // import setCrossHair from "@/stores/position/actions/setCrossHair";
@@ -62,7 +62,7 @@ const actions = {
     decreaseZoom,
     // zoomToExtent,
     setRotation,
-    // setAutoRotation,
+    setAutoRotation,
     // setHasOrientation,
     setCenter,
     // setCrossHair,

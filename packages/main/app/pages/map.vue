@@ -8,10 +8,12 @@ import { useLayerStore, isDatasetLayer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
 
+import { useGeolocationStore } from '@/stores/geolocation'
 import { projectLayersForMap } from '@/utils/layerOrder'
 
 const layerStore = useLayerStore()
 const mapViewStore = useMapViewStore()
+const geolocationStore = useGeolocationStore()
 
 const backgroundLayer = ref<DatasetLayer | null>(null)
 
@@ -127,6 +129,9 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
                     :close="close"
                 />
             </template>
+            <MapOpenLayersGeolocationFeedback
+                v-if="geolocationStore.active && geolocationStore.position"
+            />
         </MapModule>
         <Toolbox />
         <DebugPanel

@@ -118,6 +118,12 @@
         "stateConfig": "State Config",
         "share": "Share"
     },
+    "geolocation": {
+        "permissionDenied": "Location permission denied",
+        "stopTracking": "Stop tracking",
+        "startGeolocation": "Start geolocation",
+        "recenterMap": "Re-center map"
+    },
     "backgroundLayers": {
         "title": "Displayed maps",
         "voidMap": "Void map",
