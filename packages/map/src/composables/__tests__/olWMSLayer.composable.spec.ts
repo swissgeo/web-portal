@@ -61,7 +61,7 @@ vi.mock('@/stores/position', () => ({
         projection: {
             epsg: 'EPSG:2056',
             usesMercatorPyramid: true,
-            getResolutionSteps: () => [],
+            getResolutionSteps: (): number[] => [],
             bounds: { flatten: [0, 0, 0, 0] },
             getTileOrigin: () => [0, 0],
         },

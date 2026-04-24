@@ -77,7 +77,7 @@ export const useLayerStore = defineStore('layers', () => {
         return layer
     }
 
-    function toggleVisibility(layerUuid: string) {
+    function toggleVisibility(layerUuid: string): void {
         const layer = getLayerByUuid(layerUuid)
         if (!layer) {
             return null
@@ -112,7 +112,7 @@ export const useLayerStore = defineStore('layers', () => {
         }
     }
 
-    function setOpacity(layerUuid: string, opacity: number) {
+    function setOpacity(layerUuid: string, opacity: number): void {
         const layer = getLayerByUuid(layerUuid)
         if (!layer) {
             log.error(`Layer with uuid ${layerUuid} not found`)
@@ -132,7 +132,7 @@ export const useLayerStore = defineStore('layers', () => {
         layer.info = info
     }
 
-    function removeLayer(layerUuid: string) {
+    function removeLayer(layerUuid: string): void {
         const layer = getLayerByUuid(layerUuid)
         if (!layer) {
             return null
@@ -141,7 +141,7 @@ export const useLayerStore = defineStore('layers', () => {
         layers.value.splice(index, 1)
     }
 
-    function setLayerData(layerUuid: string, dataset: Dataset) {
+    function setLayerData(layerUuid: string, dataset: Dataset): void {
         const layer = getLayerByUuid(layerUuid)
         if (!layer) {
             return null

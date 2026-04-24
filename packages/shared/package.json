@@ -51,9 +51,9 @@
     },
     "devDependencies": {
         "@microsoft/api-extractor": "catalog:",
-        "@swissgeo/config-eslint": "catalog:",
-        "@swissgeo/config-typescript": "catalog:",
-        "@swissgeo/numbers": "catalog:",
+        "@swissgeo/config-eslint": "workspace:*",
+        "@swissgeo/config-typescript": "workspace:*",
+        "@swissgeo/numbers": "workspace:*",
         "@types/mapbox-gl": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",

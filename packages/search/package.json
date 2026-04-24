@@ -25,12 +25,12 @@
         "type-check": "vue-tsc"
     },
     "dependencies": {
-        "@swissgeo/log": "catalog:",
+        "@swissgeo/log": "workspace:*",
         "@swissgeo/shared": "workspace:*"
     },
     "devDependencies": {
-        "@swissgeo/config-eslint": "catalog:",
-        "@swissgeo/config-typescript": "catalog:",
+        "@swissgeo/config-eslint": "workspace:*",
+        "@swissgeo/config-typescript": "workspace:*",
         "eslint": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:",

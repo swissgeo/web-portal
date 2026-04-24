@@ -53,7 +53,7 @@ describe('validateAndPrepareAppStatePayload', () => {
     })
 
     it('accepts a state with null backgroundLayer', () => {
-        const state = {
+        const state: AppStateConfig = {
             ...validState,
             backgroundLayer: null,
         }
@@ -67,7 +67,7 @@ describe('validateAndPrepareAppStatePayload', () => {
     })
 
     it('accepts a state with empty layers array', () => {
-        const state = { ...validState, layers: [] }
+        const state: AppStateConfig = { ...validState, layers: [] }
         const payload = {
             version: VERSION,
             state,

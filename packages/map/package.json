@@ -26,9 +26,9 @@
         "type-check": "vue-tsc"
     },
     "dependencies": {
-        "@swissgeo/coordinates": "catalog:",
-        "@swissgeo/log": "catalog:",
-        "@swissgeo/numbers": "catalog:",
+        "@swissgeo/coordinates": "workspace:*",
+        "@swissgeo/log": "workspace:*",
+        "@swissgeo/numbers": "workspace:*",
         "@swissgeo/ogc": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "@swissgeo/skeleton": "workspace:*",
@@ -44,8 +44,8 @@
     },
     "devDependencies": {
         "@microsoft/api-extractor": "catalog:",
-        "@swissgeo/config-eslint": "catalog:",
-        "@swissgeo/config-typescript": "catalog:",
+        "@swissgeo/config-eslint": "workspace:*",
+        "@swissgeo/config-typescript": "workspace:*",
         "@types/geojson": "catalog:",
         "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",

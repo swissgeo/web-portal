@@ -56,7 +56,7 @@ describe('extract service URL', () => {
     })
 
     it('handles an empty distribution', () => {
-        const distribution = null
+        const distribution: null = null
         const url = extractServiceUrl(distribution)
         expect(url).toBe(null)
     })
