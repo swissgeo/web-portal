@@ -34,7 +34,7 @@
         "@swissgeo/numbers": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "@swissgeo/skeleton": "workspace:*",
-        "@swissgeo/tooltip": "workspace:*"
+        "@swissgeo/tooltip": "catalog:"
     },
     "devDependencies": {
         "@microsoft/api-extractor": "catalog:",
