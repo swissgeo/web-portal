@@ -19,8 +19,8 @@
     "scripts": {
         "build": "pnpm run type-check && pnpm run generate-types && vite build",
         "generate-types": "tsc --declaration",
-        "lint": "eslint --fix",
-        "lint:no-fix": "eslint",
+        "lint": "eslint",
+        "lint:write": "eslint --fix",
         "prepare": "pnpm run build",
         "type-check": "tsc -p tsconfig.json"
     },
