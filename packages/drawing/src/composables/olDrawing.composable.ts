@@ -864,8 +864,8 @@ export function useOlDrawing(
     let suppressDoubleClickZoomUntil = 0
     let temporarilyDisabledDoubleClickZoomInteractions: DoubleClickZoom[] = []
 
-    olMap!.value!.addLayer(olDrawingLayer)
-    olMap!.value!.addLayer(endpointHandleLayer)
+    olMap.value.addLayer(olDrawingLayer)
+    olMap.value.addLayer(endpointHandleLayer)
     log.debug(`Added drawing layer ${layer.value.humanId} to map`)
 
     watchEffect(() => {
@@ -2216,12 +2216,16 @@ export function useOlDrawing(
         }
 
         if (activeContextMenuListener) {
-            olMap!.value!.getViewport().removeEventListener('contextmenu', activeContextMenuListener)
+            olMap!
+                .value!.getViewport()
+                .removeEventListener('contextmenu', activeContextMenuListener)
             activeContextMenuListener = null
         }
 
         if (activeViewportDblClickListener) {
-            olMap!.value!.getViewport().removeEventListener('dblclick', activeViewportDblClickListener)
+            olMap!
+                .value!.getViewport()
+                .removeEventListener('dblclick', activeViewportDblClickListener)
             activeViewportDblClickListener = null
         }
 
@@ -2645,8 +2649,8 @@ export function useOlDrawing(
         stopDrawing()
         disableActiveEditing()
         disablePassiveInspection()
-        olMap!.value!.removeLayer(endpointHandleLayer)
-        olMap!.value!.removeLayer(olDrawingLayer)
+        olMap.value!.removeLayer(endpointHandleLayer)
+        olMap.value!.removeLayer(olDrawingLayer)
         clearTimeout(updateFeatureTimeout)
     })
 

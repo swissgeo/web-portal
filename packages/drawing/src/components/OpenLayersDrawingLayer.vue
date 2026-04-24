@@ -16,11 +16,9 @@ const { t } = useI18n()
 const olMap = inject<ShallowRef<Map | undefined>>('olMap')
 const layerRef = computed(() => layer)
 
-const { showHoverHint, hoverHintText, hoverHintX, hoverHintY } = useOlDrawing(
-    layerRef,
-    olMap,
-    { translate: (key, params) => t(key, params ?? {}) }
-)
+const { showHoverHint, hoverHintText, hoverHintX, hoverHintY } = useOlDrawing(layerRef, olMap, {
+    translate: (key, params) => t(key, params ?? {}),
+})
 </script>
 
 <template>
