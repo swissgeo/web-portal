@@ -9,7 +9,7 @@ export default defineConfig({
     forbidOnly: true,
     retries: 2,
     workers: undefined,
-    reporter: [['html', { open: 'never' }], ['list']],
+    reporter: [['junit', { open: 'never' }], ['list']],
     use: {
         baseURL: 'http://localhost:3000',
         trace: 'on-first-retry',
