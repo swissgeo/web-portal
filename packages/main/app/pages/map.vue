@@ -11,6 +11,8 @@ import SourceToMapDataConverter from '../components/SourceToMapDataConverter.vue
 const layerStore = useLayerStore()
 const mapViewStore = useMapViewStore()
 
+const sourceLayers = computed(() => layerStore.layers)
+
 const backgroundLayer = computed(() => layerStore.backgroundLayer)
 
 const layersForMap = computed(() => {
@@ -27,8 +29,7 @@ const customLayerRenderers: MapLayerRenderer[] = [
 ]
 
 function changeBackground(layer: BaseLayer | null) {
-    // TODO: have a setter rather than a direct access
-    layerStore.backgroundLayer = layer
+    layerStore.setBackground(layer)
 }
 </script>
 
@@ -40,7 +41,7 @@ function changeBackground(layer: BaseLayer | null) {
     <ClientOnly>
         <SourceToMapDataConverter
             :source-bg-layer="backgroundLayer"
-            :source-data="layerStore.layers"
+            :source-data="sourceLayers"
         />
         <MapModule
             :layers="layersForMap"

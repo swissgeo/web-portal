@@ -1,4 +1,3 @@
-import type { Dimension } from '@swissgeo/layers'
 import type { Layer as MapLayer } from '@swissgeo/map'
 
 import log from '@swissgeo/log'

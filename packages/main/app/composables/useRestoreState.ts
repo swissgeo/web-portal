@@ -1,4 +1,6 @@
 import log, { LogPreDefinedColor } from '@swissgeo/log'
+import { useLayerStore } from '@swissgeo/layers'
+import { validateAndPrepareAppStatePayload } from '@swissgeo/statesharing'
 import { watchDebounced } from '@vueuse/core'
 import { importStateFromBase64 } from '~/composables/stateImport/importStateFromBase64'
 import { importStateFromService } from '~/composables/stateImport/importStateFromService'
@@ -51,6 +53,9 @@ export function useRestoreState() {
         watchDebounced(
             exportState,
             (newState) => {
+                if (useLayerStore().isThereImportOptions()) {
+                    return
+                }
                 try {
                     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
                     log.debug({

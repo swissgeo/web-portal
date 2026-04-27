@@ -52,8 +52,6 @@ useDatasetLocaleRefresh(
 // holds the data that's specific for the layers from the sub mappers
 const layerSpecificData = ref()
 
-const layerZIndex = computed(() => zIndex)
-
 /**
  * Reactively merge the data from the store as well as the
  * data from the OGC records
@@ -69,10 +67,7 @@ const layerData = computed((): MapLayer => {
         // some data we pass directly from the original, so when it's updated
         // the change will be reflected in the data that the map receives
         dimensions: layer.dimensions ?? null,
-        zIndex: layerZIndex.value,
         displayName: layer.info?.displayName ?? layer.humanId,
-        isVisible: true,
-        opacity: 1,
     }
 })
 

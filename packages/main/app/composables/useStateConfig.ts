@@ -28,15 +28,18 @@ function layersToStateConfig(layers: MapLayer[]) {
 }
 
 function layerToStateConfig(layer: MapLayer): LayerStateConfig {
-    // TODO : handle background
-    console.error('ENTRY HERE')
     let sourceData: Layer | undefined | null = useLayerStore().getLayer(layer.uuid)
-    console.error(sourceData)
     if (!sourceData) {
         sourceData = useLayerStore().backgroundLayer
         if (!sourceData || sourceData.uuid !== layer.uuid) {
+            /*We can end up here in the following cases :
+                1. A layer in the map Layers has no corresponding source
+                    1.1 This most certainly means a source has been cleared without clearing the map,
+                     or that a map has been removed without removing the source
+                2. For some reason, the background layer is null AND is part of the mapview, which shouldn't happen
+            */
             throw new Error(
-                'FOR SOME REASON, A LAYER ON THE MAP IS NOT IN THE SOURCES. BUT WE DO NOT HANDLE BACKGROUND LAYER FOR NOW'
+                `A layer with uuid ${layer?.uuid} couldn't be transformed to a Layer State Config. Most probable reason is a difference between the source Data and the map Layers`
             )
         }
     }
@@ -62,10 +65,7 @@ function layerToStateConfig(layer: MapLayer): LayerStateConfig {
 }
 
 async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer | null> {
-    const layerOptions: Partial<Layer> = {
-        isVisible: config.isVisible,
-        opacity: config.opacity,
-    }
+    const layerOptions: Partial<Layer> = {}
 
     if (config.dimensions) {
         const dims: Partial<Record<DimensionId, Dimension>> = {}
@@ -130,6 +130,9 @@ export function useStateConfig() {
         for (const layer of [...layerStore.layers]) {
             layerStore.removeLayer(layer.uuid)
         }
+        for (const layer of [...mapviewStore.mapLayers]) {
+            mapviewStore.removeLayer(layer.uuid)
+        }
 
         // Fetch all layers in parallel
         const [layers, bgLayer] = await Promise.all([
@@ -138,14 +141,23 @@ export function useStateConfig() {
                 ? stateConfigToLayer(payload.state.backgroundLayer)
                 : null,
         ])
-
-        for (const layer of layers) {
-            if (layer) {
-                layerStore.addLayer(layer)
+        layerStore.setBackground(bgLayer)
+        // need to add bg Layer to
+        for (let i = 0; i < layers.length; i++) {
+            if (layers[i]) {
+                const uuid = layers[i]!.uuid
+                const mapLayerData: Partial<MapLayer> = {
+                    opacity: payload.state.layers[i]?.opacity ?? 1,
+                    isVisible: payload.state.layers[i]?.isVisible ?? true,
+                }
+                layerStore.addImportOption(uuid, mapLayerData)
             }
         }
-
-        layerStore.setBackground(bgLayer)
+        for (let i = 0; i < layers.length; i++) {
+            if (layers[i]) {
+                layerStore.addLayer(layers[i]!)
+            }
+        }
     }
 
     return {

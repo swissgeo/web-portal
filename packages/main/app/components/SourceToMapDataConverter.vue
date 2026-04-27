@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Dimension, LayerInfo, Layer as SourceData } from '@swissgeo/layers'
+import type { /*Dimension, LayerInfo,*/ Layer as SourceData } from '@swissgeo/layers'
 import type { Layer as MapLayer } from '@swissgeo/map'
-import type { Dataset } from '@swissgeo/ogc'
+//import type { Dataset } from '@swissgeo/ogc'
 
 import { isDatasetLayer, useLayerStore } from '@swissgeo/layers'
 
@@ -14,10 +14,20 @@ const { sourceBgLayer, sourceData } = defineProps<{
 }>()
 
 const mapViewStore = useMapViewStore()
+const layerStore = useLayerStore()
 
+// there can be multiple calls to this function, and the options consumes themselves
+// on call, so we consume the options first, then we give it the current data if there is
+// some, and at last we revert to the default value only if there is no data and no options
 function updateMapLayerData(index: number, mapLayerData: MapLayer) {
+    const options = layerStore.consumeImportOptions(mapLayerData.uuid)
+    const currentData = mapViewStore.getMapLayers().value[index]
+    mapLayerData.opacity = options?.opacity ?? currentData?.opacity ?? 1
+    mapLayerData.isVisible = options?.isVisible ?? currentData?.isVisible ?? true
+
     mapViewStore.updateLayerData(index, mapLayerData, true)
 }
+/*
 function removeLayerData(index: number) {
     mapViewStore.removeLayer(index)
 }
@@ -25,19 +35,20 @@ function updateLayerInfo(index: number, uuid: string, layerInfo: LayerInfo) {
     useLayerStore().setLayerInfo(uuid, layerInfo)
 }
 
-function updateOpacity(identifier: number | string, opacity: number) {
-    // for some reason, the default opacity is not applied.
-    // for some reason, the opacity is reset on language change
-    mapViewStore.updateLayerOpacity(identifier, opacity)
-}
+
 function updateTimeDimension(identifier: number | string, dimension: Partial<Dimension>) {
-    //useLayerStore().setDimension('time', identifier, dimension)
+    useLayerStore().setDimension('time', identifier, dimension)
 }
 
 function updateStoreLayerData(index: number, uuid: string, dataset: Dataset) {
-    if (index !== 0 || !useLayerStore().backgroundLayer) {
+      if (index !== 0 || !useLayerStore().backgroundLayer) {
         useLayerStore().setLayerData(uuid, dataset)
     }
+}
+*/
+
+function updateOpacity(identifier: number | string, opacity: number) {
+    mapViewStore.updateLayerOpacity(identifier, opacity)
 }
 </script>
 
@@ -52,8 +63,8 @@ function updateStoreLayerData(index: number, uuid: string, dataset: Dataset) {
             :zIndex="index"
             @update="updateMapLayerData(index, $event)"
             @updateLayerInfo="updateLayerInfo"
-            @updateOpacity="updateOpacity"
             @remove="removeLayerData(index)"
+            @updateOpacity="updateOpacity"
             @updateTimeDimension="updateTimeDimension"
             @updateDataset="updateStoreLayerData"
         />

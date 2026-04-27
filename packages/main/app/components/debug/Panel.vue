@@ -49,10 +49,10 @@ function toggleStateConfig() {
             @close="toggleDrawing"
         >
         </DrawingPanel>
-        <!--<DebugSharePanel
+        <DebugSharePanel
             v-if="isSharePanelOpen"
             @close="toggleStateConfig"
-        />-->
+        />
         <div
             class="flex gap-2"
             v-if="

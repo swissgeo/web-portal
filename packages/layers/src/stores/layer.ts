@@ -13,6 +13,28 @@ export const useLayerStore = defineStore('layers', () => {
     /** The active background layer, or null if none is selected. */
     const backgroundLayer = ref<Layer | null>(null)
 
+    interface importOption {
+        isVisible?: boolean
+        opacity?: number
+    }
+
+    const importOptions = markRaw<Record<string, importOption>>({})
+
+    function addImportOption(uuid: string, option: importOption) {
+        importOptions[uuid] = option
+    }
+    function consumeImportOptions(uuid: string) {
+        const options = importOptions[uuid]
+        if (options) {
+            const deepClonedOptions = structuredClone(options)
+            delete importOptions[uuid]
+            return deepClonedOptions
+        }
+    }
+
+    function isThereImportOptions() {
+        return !!Object.keys(importOptions).length
+    }
     /**
      * Gets either an index or an uuid to identify a layer withing the map Layers,
      * and return the index at which the layer is.
@@ -138,6 +160,7 @@ export const useLayerStore = defineStore('layers', () => {
         backgroundLayer,
         // getters
         getLayer,
+        isThereImportOptions,
         // actions
         addLayer,
         setBackground,
@@ -147,6 +170,8 @@ export const useLayerStore = defineStore('layers', () => {
         setDimension,
         removeLayer,
         setLayerData,
+        addImportOption,
+        consumeImportOptions,
         $reset,
     }
 })

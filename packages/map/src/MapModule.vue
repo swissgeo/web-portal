@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import log, { LogLevel } from '@swissgeo/log'
+import { computed } from 'vue'
 
 import type { MapLayerRenderer } from '@/types'
-import type { Layer } from '@/types/layers'
+import type { Layer as MapLayer } from '@/types/layers'
 
 import OpenLayersContextMenuPopup from './openlayers/OpenLayersContextMenuPopup.vue'
 import OpenLayersMap from './openlayers/OpenLayersMap.vue'
@@ -13,10 +14,17 @@ import OpenLayersScalePrint from './openlayers/OpenLayersScalePrint.vue'
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
 
 const { layers, customLayerRenderers } = defineProps<{
-    layers: Layer[]
+    layers: MapLayer[]
     customLayerRenderers?: MapLayerRenderer[]
     displayMode: 'web' | 'print'
 }>()
+
+const layersWithZIndex = computed(() => {
+    // openlayers require a Zindex param. We set it to the layer orders here
+    const mapLayers = layers.slice()
+    mapLayers.forEach((mapLayer, index) => (mapLayer.zIndex = index))
+    return mapLayers
+})
 </script>
 
 <template>
@@ -24,7 +32,7 @@ const { layers, customLayerRenderers } = defineProps<{
         <!-- here's the switch between openlayers and cesium -->
         <OpenLayersMap
             :custom-layer-renderers="customLayerRenderers"
-            :layers="layers"
+            :layers="layersWithZIndex"
         >
             <slot />
 
