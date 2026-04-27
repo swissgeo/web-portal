@@ -60,6 +60,7 @@ import { DEFAULT_MARKER_ICON, getMarkerIconById } from '@/utils/markerIcons'
 
 interface UseOlDrawingOptions {
     translate?: (key: string, params?: Record<string, string | number>) => string
+    zIndex?: Ref<number>
 }
 /**
  * Composable for handling OpenLayers drawing interactions
@@ -869,7 +870,9 @@ export function useOlDrawing(
     log.debug(`Added drawing layer ${layer.value.humanId} to map`)
 
     watchEffect(() => {
-        olDrawingLayer.setZIndex(layer.value.zIndex)
+        if (options?.zIndex !== undefined) {
+            olDrawingLayer.setZIndex(options.zIndex.value)
+        }
     })
     watchEffect(() => {
         olDrawingLayer.setVisible(layer.value.isVisible)

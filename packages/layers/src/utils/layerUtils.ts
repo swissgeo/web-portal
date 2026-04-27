@@ -110,7 +110,6 @@ export const makeServerLayer = (dataset: Dataset, options?: Partial<Layer>): Lay
         data: dataset,
         isVisible: true,
         isLoading: false,
-        zIndex: 0,
         info: getInfoFromDataset(dataset),
         ...options,
     }

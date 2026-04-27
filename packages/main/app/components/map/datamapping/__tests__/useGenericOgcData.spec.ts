@@ -19,7 +19,6 @@ import { useGenericOgcData } from '../useGenericOgcData'
 const layerMockData: Ref<DatasetLayerType> = ref({
     isVisible: true,
     isLoading: false,
-    zIndex: 0,
     humanId: 'fancy-mc-layer',
     type: 'dataset',
     opacity: 1,

@@ -33,7 +33,6 @@ function createLayerFixture(): Layer {
         opacity: 1,
         isVisible: true,
         isLoading: false,
-        zIndex: 5,
         type: 'dataset',
     } as unknown as Layer
 }
@@ -47,6 +46,7 @@ describe('OpenLayersDrawingLayer.vue', () => {
         const wrapper = mount(OpenLayersDrawingLayer, {
             props: {
                 layer: createLayerFixture(),
+                zIndex: 5,
             },
         })
 
@@ -75,6 +75,7 @@ describe('OpenLayersDrawingLayer.vue', () => {
         mount(OpenLayersDrawingLayer, {
             props: {
                 layer: createLayerFixture(),
+                zIndex: 0,
             },
             attachTo: document.body,
         })
@@ -95,6 +96,7 @@ describe('OpenLayersDrawingLayer.vue', () => {
         mount(OpenLayersDrawingLayer, {
             props: {
                 layer: createLayerFixture(),
+                zIndex: 3,
             },
             global: {
                 provide: {
@@ -106,9 +108,10 @@ describe('OpenLayersDrawingLayer.vue', () => {
         const callArgs = mockUseOlDrawing.mock.calls[0] as unknown as [
             unknown,
             { value: unknown },
-            { translate?: unknown },
+            { translate?: unknown; zIndex?: { value: number } },
         ]
         expect(callArgs[1]?.value).toStrictEqual(fakeMap)
         expect(typeof callArgs[2]?.translate).toBe('function')
+        expect(callArgs[2]?.zIndex?.value).toBe(3)
     })
 })

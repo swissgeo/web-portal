@@ -51,7 +51,6 @@ export function useDrawingManager() {
             isVisible: true,
             type: 'kml',
             isLoading: false,
-            zIndex: 0,
             info: {
                 displayName: drawingStore.drawingName,
                 abstract: DRAWING_ABSTRACT,
@@ -75,7 +74,6 @@ export function useDrawingManager() {
             opacity: 1,
             isVisible: true,
             isLoading: false,
-            zIndex: 0,
             info: {
                 displayName: drawingStore.drawingName,
                 abstract: DRAWING_ABSTRACT,

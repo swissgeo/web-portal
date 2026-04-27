@@ -13,7 +13,6 @@ describe('FileConverter', () => {
             isVisible: false,
             opacity: 0,
             isLoading: false,
-            zIndex: 0,
         }
         const wrapper = mount(FileConverter, {
             props: {
@@ -71,7 +70,6 @@ describe('FileConverter', () => {
             isVisible: false,
             opacity: 0,
             isLoading: false,
-            zIndex: 0,
         }
         const wrapper = mount(FileConverter, {
             props: {
