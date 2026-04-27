@@ -34,6 +34,10 @@ export function useUrlParams() {
 
         // Extract the value, handling the case where multiple params with the same name exist
         const stateId = Array.isArray(stateParam) ? stateParam[0] : stateParam
+
+        if (typeof stateId !== 'string') {
+            return null
+        }
         return stateId || null;
     }
     
