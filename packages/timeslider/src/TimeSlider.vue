@@ -202,12 +202,12 @@ function handleKeyDownEvent(event: KeyboardEvent) {
     const target = event.target as HTMLElement
     if (['mainBody', 'timeSliderButton', 'timeSliderPlayButton'].includes(target.id)) {
         if (event.key === 'ArrowLeft') {
-            const value = currentYear.value! - 1
+            const value = currentYear.value - 1
             if (allYears.value.includes(value)) {
                 currentYear.value = value
             }
         } else if (event.key === 'ArrowRight') {
-            const value = currentYear.value! + 1
+            const value = currentYear.value + 1
             if (allYears.value.includes(value)) {
                 currentYear.value = value
             }

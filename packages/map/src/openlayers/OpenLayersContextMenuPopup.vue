@@ -25,7 +25,7 @@ function setupOverlay() {
         () => olMap?.value,
         (map) => {
             if (map) {
-                map.addOverlay(overlay!)
+                map.addOverlay(overlay)
             }
         },
         { immediate: true }
@@ -44,7 +44,7 @@ watch([isVisible, coordinate], ([visible, coord]) => {
     }
 })
 
-onUnmounted(() => olMap?.value?.removeOverlay(overlay!))
+onUnmounted(() => olMap?.value?.removeOverlay(overlay))
 </script>
 
 <template>
