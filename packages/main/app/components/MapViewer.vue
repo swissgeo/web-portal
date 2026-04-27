@@ -127,6 +127,7 @@ const displayMode = inject<'web' | 'print'>('displayMode')
             :layers="layersForMap"
             :background-layer="backgroundLayerMapData"
             :custom-layer-renderers="customLayerRenderers"
+            :display-mode="displayMode"
             class="h-full w-full"
         >
             <template #context-menu-popup="{ coordinate, isVisible, close }">

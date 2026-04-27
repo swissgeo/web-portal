@@ -3,7 +3,7 @@ import type { Map } from 'ol'
 import { LV95 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
 import ScaleLine from 'ol/control/ScaleLine'
-import { computed, inject, onMounted, ref, toValue, useTemplateRef } from 'vue'
+import { computed, inject, onMounted, ref, toValue, useTemplateRef, watch } from 'vue'
 
 import usePositionStore from '@/stores/position'
 
@@ -16,20 +16,26 @@ const showScaleLine = computed<boolean>(
     () => positionStore.projection.epsg === LV95.epsg || positionStore.zoom >= 9
 )
 
-const olMap = toValue(inject<Map>('olMap'))
-if (!olMap) {
-    log.error('OpenLayersMap is not available')
-    throw new Error('OpenLayersMap is not available')
-}
 
 const fontSizeFactor = ref<number>(1)
 const fontSize = computed(() => `${(10 * fontSizeFactor.value).toFixed(0)}px`)
 
-onMounted(() => {
-    olMap.once('postrender', () => {
+
+
+const olMap = inject<Map>('olMap')
+
+
+watch(() => olMap, () => {
+
+    const olMapInstance = toValue(olMap)
+    if (!olMapInstance) {
+        return
+    }
+
+    olMapInstance.once('postrender', () => {
         // The maximum width of the scale is a third of the map shortest side
         let scaleMaxWidth = 300
-        const mapSize = olMap.getSize()
+        const mapSize = olMapInstance.getSize()
 
         if (mapSize && mapSize.length === 2) {
             const shortestSide = Math.min((mapSize[0] as number), (mapSize[1] as number))
@@ -50,9 +56,13 @@ onMounted(() => {
         if (scaleLineElement.value) {
             scaleLine.setTarget(scaleLineElement.value)
         }
-        olMap.addControl(scaleLine)
+        olMapInstance.addControl(scaleLine)
     })
+}, {
+    immediate: true
 })
+
+
 </script>
 
 <template>
