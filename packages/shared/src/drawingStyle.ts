@@ -58,7 +58,7 @@ export function toRgbaColor(color: string, opacity: number): string {
     const normalizedOpacity = Math.min(Math.max(opacity, 0), 1)
     const shortHexMatch = color.match(/^#([0-9a-fA-F]{3})$/)
     if (shortHexMatch) {
-        const [r, g, b] = shortHexMatch[1]!
+        const [r, g, b] = shortHexMatch[1]
             .split('')
             .map((value) => Number.parseInt(`${value}${value}`, 16))
         return `rgba(${r}, ${g}, ${b}, ${normalizedOpacity})`
@@ -66,7 +66,7 @@ export function toRgbaColor(color: string, opacity: number): string {
 
     const longHexMatch = color.match(/^#([0-9a-fA-F]{6})$/)
     if (longHexMatch) {
-        const hex = longHexMatch[1]!
+        const hex = longHexMatch[1]
         const r = Number.parseInt(hex.slice(0, 2), 16)
         const g = Number.parseInt(hex.slice(2, 4), 16)
         const b = Number.parseInt(hex.slice(4, 6), 16)
@@ -743,8 +743,8 @@ export function createDrawingFeatureStyleFunction(
                 }
 
                 const distance = Math.hypot(
-                    currentCoordinate[0]! - previousCoordinate[0]!,
-                    currentCoordinate[1]! - previousCoordinate[1]!
+                    currentCoordinate[0] - previousCoordinate[0],
+                    currentCoordinate[1] - previousCoordinate[1]
                 )
                 segmentLengths.push(distance)
                 totalLength += distance
@@ -780,15 +780,15 @@ export function createDrawingFeatureStyleFunction(
                         continue
                     }
 
-                    const segmentStart = coordinates[index - 1]!
-                    const segmentEnd = coordinates[index]!
+                    const segmentStart = coordinates[index - 1]
+                    const segmentEnd = coordinates[index]
 
                     while (nextIntervalTarget <= traversed + segmentLength) {
                         const distanceIntoSegment = nextIntervalTarget - traversed
                         const ratio = distanceIntoSegment / segmentLength
                         const markerCoordinate: [number, number] = [
-                            segmentStart[0]! + (segmentEnd[0]! - segmentStart[0]!) * ratio,
-                            segmentStart[1]! + (segmentEnd[1]! - segmentStart[1]!) * ratio,
+                            segmentStart[0] + (segmentEnd[0] - segmentStart[0]) * ratio,
+                            segmentStart[1] + (segmentEnd[1] - segmentStart[1]) * ratio,
                         ]
 
                         measurementStyles.push(

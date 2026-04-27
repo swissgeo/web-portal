@@ -275,8 +275,8 @@ export async function searchLayerFeatures(
                 const boxMatch = result.attrs.geom_st_box2d.match(REGEX_BOUNDING_BOX)
                 if (boxMatch) {
                     // Use the first point (or center if it's a polygon)
-                    const x = parseFloat(boxMatch[1]!)
-                    const y = parseFloat(boxMatch[2]!)
+                    const x = parseFloat(boxMatch[1])
+                    const y = parseFloat(boxMatch[2])
                     coordinate = [x, y]
                 }
             }

@@ -47,7 +47,7 @@ function mountWithMap(fakeMap: FakeMap) {
             },
         },
     })
-    return { wrapper, composable: composable! }
+    return { wrapper, composable: composable }
 }
 
 describe('useOlMapContextMenu', () => {

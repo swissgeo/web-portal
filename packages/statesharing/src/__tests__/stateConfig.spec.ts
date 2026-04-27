@@ -96,7 +96,7 @@ describe('validateAndPrepareAppStatePayload', () => {
             state,
         }
         const result = validateAndPrepareAppStatePayload(payload)
-        expect(result.state.layers[0]!.dimensions).toEqual({
+        expect(result.state.layers[0].dimensions).toEqual({
             time: { currentValue: '2020' },
         })
     })

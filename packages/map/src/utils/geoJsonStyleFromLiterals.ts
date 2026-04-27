@@ -340,7 +340,7 @@ class OlStyleForPropertyValue {
             text = labelTemplate
             Object.keys(properties).forEach(
                 (prop) =>
-                    (text = (text as string).replace('${' + prop + '}', String(properties[prop])))
+                    (text = (text).replace('${' + prop + '}', String(properties[prop])))
             )
         }
         if (text) {

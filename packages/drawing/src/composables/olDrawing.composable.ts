@@ -63,7 +63,7 @@ export function useOlDrawing(
     const drawingStore = useDrawingStore()
     register(proj4)
     // Track the currently selected icon for new point features
-    const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON!)
+    const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON)
 
     if (!olMap) {
         log.error('OpenLayersMap is not available')
@@ -248,7 +248,7 @@ export function useOlDrawing(
             }
 
             if (styles.length === 1) {
-                return styles[0]!
+                return styles[0]
             }
 
             return styles
@@ -346,7 +346,7 @@ export function useOlDrawing(
                 }
 
                 if (styles.length === 1) {
-                    return styles[0]!
+                    return styles[0]
                 }
 
                 return styles
@@ -594,8 +594,8 @@ export function useOlDrawing(
                     }
 
                     const distance = Math.hypot(
-                        currentCoordinate[0]! - previousCoordinate[0]!,
-                        currentCoordinate[1]! - previousCoordinate[1]!
+                        currentCoordinate[0] - previousCoordinate[0],
+                        currentCoordinate[1] - previousCoordinate[1]
                     )
                     segmentLengths.push(distance)
                     totalLength += distance
@@ -632,15 +632,15 @@ export function useOlDrawing(
                             continue
                         }
 
-                        const segmentStart = coordinates[index - 1]!
-                        const segmentEnd = coordinates[index]!
+                        const segmentStart = coordinates[index - 1]
+                        const segmentEnd = coordinates[index]
 
                         while (nextIntervalTarget <= traversed + segmentLength) {
                             const distanceIntoSegment = nextIntervalTarget - traversed
                             const ratio = distanceIntoSegment / segmentLength
                             const markerCoordinate: number[] = [
-                                segmentStart[0]! + (segmentEnd[0]! - segmentStart[0]!) * ratio,
-                                segmentStart[1]! + (segmentEnd[1]! - segmentStart[1]!) * ratio,
+                                segmentStart[0] + (segmentEnd[0] - segmentStart[0]) * ratio,
+                                segmentStart[1] + (segmentEnd[1] - segmentStart[1]) * ratio,
                             ]
 
                             measurementStyles.push(
@@ -990,8 +990,8 @@ export function useOlDrawing(
                 })
             }
 
-            const centerCoordinate = coordinates[0]!
-            const edgeCoordinate = coordinates[coordinates.length - 1]!
+            const centerCoordinate = coordinates[0]
+            const edgeCoordinate = coordinates[coordinates.length - 1]
             const centerX = centerCoordinate[0]
             const centerY = centerCoordinate[1]
             const edgeX = edgeCoordinate[0]
@@ -1060,8 +1060,8 @@ export function useOlDrawing(
                                     return (
                                         totalLength +
                                         Math.hypot(
-                                            coordinate[0]! - previousCoordinate[0]!,
-                                            coordinate[1]! - previousCoordinate[1]!
+                                            coordinate[0] - previousCoordinate[0],
+                                            coordinate[1] - previousCoordinate[1]
                                         )
                                     )
                                 }, 0)
@@ -1306,7 +1306,7 @@ export function useOlDrawing(
             }
         })
 
-        olMap!.addInteraction(currentDraw)
+        olMap.addInteraction(currentDraw)
     }
 
     /**
@@ -1315,7 +1315,7 @@ export function useOlDrawing(
     function stopDrawing() {
         if (currentDraw) {
             currentDraw.setActive(false) // Deactivate first
-            olMap!.removeInteraction(currentDraw)
+            olMap.removeInteraction(currentDraw)
             currentDraw = null
             log.debug('Stopped drawing and removed interaction from map')
         } else {
@@ -1328,7 +1328,7 @@ export function useOlDrawing(
     }
 
     function getPixelToleranceInMapUnits(pixelTolerance = 10): number {
-        const resolution = olMap!.getView().getResolution()
+        const resolution = olMap.getView().getResolution()
         if (typeof resolution !== 'number' || Number.isNaN(resolution)) {
             return 1
         }
@@ -1423,7 +1423,7 @@ export function useOlDrawing(
                 return false
             }
 
-            nextUniqueVertices.push([...nextUniqueVertices[0]!])
+            nextUniqueVertices.push([...nextUniqueVertices[0]])
             const nextRings = [nextUniqueVertices, ...rings.slice(1)]
             polygonGeometry.setCoordinates(nextRings)
             feature.changed()
@@ -1547,7 +1547,7 @@ export function useOlDrawing(
                 return false
             }
 
-            const closedCoordinates = [...uniqueVertices, uniqueVertices[0]!]
+            const closedCoordinates = [...uniqueVertices, uniqueVertices[0]]
             const segmentIndex = resolveNearestSegmentIndex(
                 closedCoordinates,
                 coordinate,
@@ -1559,7 +1559,7 @@ export function useOlDrawing(
 
             const nextUniqueVertices = [...uniqueVertices]
             nextUniqueVertices.splice(segmentIndex + 1, 0, coordinate)
-            nextUniqueVertices.push([...nextUniqueVertices[0]!])
+            nextUniqueVertices.push([...nextUniqueVertices[0]])
 
             const nextRings = [nextUniqueVertices, ...rings.slice(1)]
             polygonGeometry.setCoordinates(nextRings)
@@ -1573,7 +1573,7 @@ export function useOlDrawing(
     function endpointHandleAtPixel(pixel: number[]): OlFeature<Point> | null {
         let selectedHandle: OlFeature<Point> | null = null
 
-        olMap!.forEachFeatureAtPixel(
+        olMap.forEachFeatureAtPixel(
             pixel,
             (feature, targetLayer) => {
                 if (targetLayer === endpointHandleLayer) {
@@ -1806,7 +1806,7 @@ export function useOlDrawing(
     }
 
     function resetMapInteractionPointerState() {
-        olMap!.getInteractions().forEach((interaction) => {
+        olMap.getInteractions().forEach((interaction) => {
             if (
                 interaction === currentDraw ||
                 interaction === currentModify ||
@@ -1822,7 +1822,7 @@ export function useOlDrawing(
     }
 
     function releaseViewportPointerState() {
-        const viewport = olMap!.getViewport()
+        const viewport = olMap.getViewport()
         viewport.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
         viewport.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }))
 
@@ -1834,7 +1834,7 @@ export function useOlDrawing(
 
     function disableDoubleClickZoomInteractionsTemporarily() {
         temporarilyDisabledDoubleClickZoomInteractions = []
-        olMap!.getInteractions().forEach((interaction) => {
+        olMap.getInteractions().forEach((interaction) => {
             if (!(interaction instanceof DoubleClickZoom) || !interaction.getActive()) {
                 return
             }
@@ -1854,7 +1854,7 @@ export function useOlDrawing(
     function clearEndpointExtensionSnap() {
         if (endpointExtensionSnap) {
             endpointExtensionSnap.setActive(false)
-            olMap!.removeInteraction(endpointExtensionSnap)
+            olMap.removeInteraction(endpointExtensionSnap)
             endpointExtensionSnap = null
         }
     }
@@ -1875,7 +1875,7 @@ export function useOlDrawing(
 
         if (currentDraw) {
             currentDraw.setActive(false)
-            olMap!.removeInteraction(currentDraw)
+            olMap.removeInteraction(currentDraw)
             currentDraw = null
         }
         clearEndpointExtensionSnap()
@@ -1884,7 +1884,7 @@ export function useOlDrawing(
         suppressDoubleClickZoomUntil = Date.now() + 350
         releaseViewportPointerState()
         resetMapInteractionPointerState()
-        olMap!.getViewport().style.cursor = ''
+        olMap.getViewport().style.cursor = ''
 
         window.setTimeout(() => {
             endpointExtensionInProgress = false
@@ -2028,8 +2028,8 @@ export function useOlDrawing(
             restoreActiveEditingAfterEndpointExtension(targetFeature)
         })
 
-        olMap!.addInteraction(currentDraw)
-        olMap!.addInteraction(endpointExtensionSnap)
+        olMap.addInteraction(currentDraw)
+        olMap.addInteraction(endpointExtensionSnap)
         currentDraw.extend(lineFeature)
     }
 
@@ -2044,8 +2044,8 @@ export function useOlDrawing(
             source,
         })
 
-        olMap!.addInteraction(currentModify)
-        olMap!.addInteraction(currentSnap)
+        olMap.addInteraction(currentModify)
+        olMap.addInteraction(currentSnap)
         endpointHandleLayer.setVisible(true)
         rebuildEndpointHandles()
 
@@ -2065,7 +2065,7 @@ export function useOlDrawing(
             rebuildEndpointHandles()
         })
 
-        activeClickListener = olMap!.on('singleclick', (event) => {
+        activeClickListener = olMap.on('singleclick', (event) => {
             if (suppressNextActiveSingleClick) {
                 return
             }
@@ -2121,7 +2121,7 @@ export function useOlDrawing(
             rebuildEndpointHandles()
         })
 
-        activeMoveListener = olMap!.on('pointermove', (event) => {
+        activeMoveListener = olMap.on('pointermove', (event) => {
             if (!currentModify) {
                 return
             }
@@ -2136,7 +2136,7 @@ export function useOlDrawing(
             }
         })
 
-        const viewport = olMap!.getViewport()
+        const viewport = olMap.getViewport()
         activeViewportDblClickListener = (event: MouseEvent) => {
             if (endpointExtensionInProgress && currentDraw) {
                 currentDraw.finishDrawing()
@@ -2162,7 +2162,7 @@ export function useOlDrawing(
                 return
             }
 
-            const coordinate = olMap!.getCoordinateFromPixel(pixel)
+            const coordinate = olMap.getCoordinateFromPixel(pixel)
             if (!coordinate) {
                 return
             }
@@ -2210,25 +2210,25 @@ export function useOlDrawing(
         }
 
         if (activeContextMenuListener) {
-            olMap!.getViewport().removeEventListener('contextmenu', activeContextMenuListener)
+            olMap.getViewport().removeEventListener('contextmenu', activeContextMenuListener)
             activeContextMenuListener = null
         }
 
         if (activeViewportDblClickListener) {
-            olMap!.getViewport().removeEventListener('dblclick', activeViewportDblClickListener)
+            olMap.getViewport().removeEventListener('dblclick', activeViewportDblClickListener)
             activeViewportDblClickListener = null
         }
 
         if (currentModify) {
             currentModify.setActive(false)
             currentModify.getOverlay().getSource()?.clear(true)
-            olMap!.removeInteraction(currentModify)
+            olMap.removeInteraction(currentModify)
             currentModify = null
         }
 
         if (currentSnap) {
             currentSnap.setActive(false)
-            olMap!.removeInteraction(currentSnap)
+            olMap.removeInteraction(currentSnap)
             currentSnap = null
         }
 
@@ -2265,7 +2265,7 @@ export function useOlDrawing(
     function featureAtPixel(pixel: number[]): Feature<Geometry> | null {
         let selectedFeature: Feature<Geometry> | null = null
 
-        olMap!.forEachFeatureAtPixel(
+        olMap.forEachFeatureAtPixel(
             pixel,
             (feature, targetLayer) => {
                 if (targetLayer === layer) {
@@ -2385,7 +2385,7 @@ export function useOlDrawing(
     ) {
         disablePassiveInspection()
 
-        passiveClickListener = olMap!.on('singleclick', (event) => {
+        passiveClickListener = olMap.on('singleclick', (event) => {
             if (
                 endpointHandleAtPixel(event.pixel) ||
                 endpointHandleNearCoordinate(event.coordinate)
@@ -2406,13 +2406,13 @@ export function useOlDrawing(
             onFeatureSelected?.(payload)
         })
 
-        passiveMoveListener = olMap!.on('pointermove', (event) => {
+        passiveMoveListener = olMap.on('pointermove', (event) => {
             if (!event.originalEvent) {
                 return
             }
 
             const hoveredFeature = featureAtPixel(event.pixel)
-            olMap!.getViewport().style.cursor = hoveredFeature ? 'pointer' : ''
+            olMap.getViewport().style.cursor = hoveredFeature ? 'pointer' : ''
             const pointerEvent = event.originalEvent as PointerEvent
             const payload = toHoverHintPayload(
                 pointerEvent.clientX,
@@ -2422,9 +2422,9 @@ export function useOlDrawing(
             onHoverHintChanged?.(payload)
         })
 
-        const viewport = olMap!.getViewport()
+        const viewport = olMap.getViewport()
         passiveOutListener = () => {
-            olMap!.getViewport().style.cursor = ''
+            olMap.getViewport().style.cursor = ''
             onHoverHintChanged?.(null)
         }
         viewport.addEventListener('pointerleave', passiveOutListener)
@@ -2444,11 +2444,11 @@ export function useOlDrawing(
         }
 
         if (passiveOutListener) {
-            olMap!.getViewport().removeEventListener('pointerleave', passiveOutListener)
+            olMap.getViewport().removeEventListener('pointerleave', passiveOutListener)
             passiveOutListener = null
         }
 
-        olMap!.getViewport().style.cursor = ''
+        olMap.getViewport().style.cursor = ''
     }
 
     /**
