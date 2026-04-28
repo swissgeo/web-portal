@@ -69,8 +69,8 @@ export const usePositionStore = defineStore('positionStore', () => {
 
         if (
             transformedCoordinates.length < 2 ||
-            !isFinite(transformedCoordinates[0]!) ||
-            !isFinite(transformedCoordinates[1]!)
+            !isFinite(transformedCoordinates[0]) ||
+            !isFinite(transformedCoordinates[1])
         ) {
             throw new Error('Transformed coordinates must be finite numbers.')
         }

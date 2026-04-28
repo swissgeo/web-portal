@@ -223,7 +223,7 @@ describe('useOlDrawing', () => {
             expect(draw).toBeDefined()
 
             const textFeature = new Feature(new Point([100, 200])) as Feature<Geometry>
-            draw!.dispatchEvent({ type: 'drawend', feature: textFeature } as unknown as BaseEvent)
+            draw.dispatchEvent({ type: 'drawend', feature: textFeature } as unknown as BaseEvent)
 
             expect(textFeature.get('text')).toBe('New Text')
             expect(drawingStoreMock.updateFeatureAttributes).toHaveBeenCalledWith(
@@ -250,7 +250,7 @@ describe('useOlDrawing', () => {
                 ])
             ) as Feature<Geometry>
 
-            draw!.dispatchEvent({
+            draw.dispatchEvent({
                 type: 'drawend',
                 feature: measurementFeature,
             } as unknown as BaseEvent)
@@ -279,7 +279,7 @@ describe('useOlDrawing', () => {
             expect(draw).toBeDefined()
 
             const pointFeature = new Feature(new Point([1, 2])) as Feature<Geometry>
-            draw!.dispatchEvent({ type: 'drawend', feature: pointFeature } as unknown as BaseEvent)
+            draw.dispatchEvent({ type: 'drawend', feature: pointFeature } as unknown as BaseEvent)
 
             expect(drawingStoreMock.updateFeatureAttributes).toHaveBeenCalledWith(
                 pointFeature,

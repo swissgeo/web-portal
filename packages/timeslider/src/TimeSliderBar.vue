@@ -113,7 +113,7 @@ watch(isInputYearValid, (newValue) => {
 function grabCursor(event: MouseEvent | TouchEvent) {
     emit('grabbing', true)
     if ('touches' in event) {
-        cursorX = event.touches[0]!.screenX
+        cursorX = event.touches[0].screenX
     } else {
         cursorX = event.screenX
     }
@@ -124,7 +124,7 @@ function grabCursor(event: MouseEvent | TouchEvent) {
 }
 
 function listenToMouseMove(event: MouseEvent | TouchEvent) {
-    const currentPosition = 'touches' in event ? event.touches[0]!.screenX : event.screenX
+    const currentPosition = 'touches' in event ? event.touches[0].screenX : event.screenX
     const deltaX = cursorX - currentPosition
     if (Math.abs(deltaX) >= distanceBetweenLabels.value && currentYear.value) {
         let futureYearIndex = allYears.indexOf(currentYear.value)

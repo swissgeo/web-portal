@@ -210,10 +210,10 @@ export function validateAppStatePayload(json: unknown): AppStatePayload {
 // so we only validate the data itself.
 function validateMap(map: AppStateConfig['map']): asserts map is AppStateConfig['map'] {
     if (
-        map.center[0] < EPSG_2056_BOUNDING_BOX[0]! ||
-        map.center[0] > EPSG_2056_BOUNDING_BOX[2]! ||
-        map.center[1] < EPSG_2056_BOUNDING_BOX[1]! ||
-        map.center[1] > EPSG_2056_BOUNDING_BOX[3]!
+        map.center[0] < EPSG_2056_BOUNDING_BOX[0] ||
+        map.center[0] > EPSG_2056_BOUNDING_BOX[2] ||
+        map.center[1] < EPSG_2056_BOUNDING_BOX[1] ||
+        map.center[1] > EPSG_2056_BOUNDING_BOX[3]
     ) {
         throw new Error('map.center must be a [x, y] number array within LV95 bounds')
     }

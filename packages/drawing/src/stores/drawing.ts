@@ -39,7 +39,7 @@ export const useDrawingStore = defineStore('drawing', () => {
     const drawingKMLLayerUuid = ref<string | null>()
     const drawingFeatures = ref<Feature<Geometry>[]>([])
     const featureCount = computed(() => drawingFeatures.value.length)
-    const selectedIconId = ref<string>(DEFAULT_MARKER_ICON!.id)
+    const selectedIconId = ref<string>(DEFAULT_MARKER_ICON.id)
     const olLayer = shallowRef<VectorLayer | undefined>(undefined)
 
     function resolveFeatureContext() {

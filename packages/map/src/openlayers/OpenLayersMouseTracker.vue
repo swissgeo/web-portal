@@ -44,8 +44,8 @@ function setMouseTracking() {
     mousePositionControl = new MousePosition({
         className: 'mouse-position-inner',
     })
-    mousePositionControl.setTarget(mousePosition.value!)
-    olMap!.addControl(mousePositionControl)
+    mousePositionControl.setTarget(mousePosition.value)
+    olMap.addControl(mousePositionControl)
     // we wait for the next cycle to set the projection, otherwise the info can
     // sometimes be lost (and we end up with a different projection in the position display)
     void nextTick(() => {
@@ -55,7 +55,7 @@ function setMouseTracking() {
 
 function removeMouseTracking() {
     if (mousePositionControl) {
-        olMap!.removeControl(mousePositionControl)
+        olMap.removeControl(mousePositionControl)
     }
 }
 

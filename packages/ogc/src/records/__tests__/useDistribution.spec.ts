@@ -15,16 +15,16 @@ describe('useDistribution composable returning the desired distribution', () => 
         const { distribution } = useDistribution(distributionCollection, distributionId)
 
         expect(distribution.value).toHaveProperty('properties')
-        expect(distribution.value!.properties).toHaveProperty('protocol')
-        expect(distribution.value!.properties.protocol).toEqual('OGC:WMTS')
-        expect(distribution.value!.links!.length).toBeGreaterThan(0)
+        expect(distribution.value.properties).toHaveProperty('protocol')
+        expect(distribution.value.properties.protocol).toEqual('OGC:WMTS')
+        expect(distribution.value.links.length).toBeGreaterThan(0)
 
         distributionId.value = 'ch.bafu.schutzgebiete-luftfahrt:wms'
 
         expect(distribution.value).toHaveProperty('properties')
-        expect(distribution.value!.properties).toHaveProperty('protocol')
-        expect(distribution.value!.properties.protocol).toEqual('OGC:WMS')
-        expect(distribution.value!.links!.length).toBeGreaterThan(0)
+        expect(distribution.value.properties).toHaveProperty('protocol')
+        expect(distribution.value.properties.protocol).toEqual('OGC:WMS')
+        expect(distribution.value.links.length).toBeGreaterThan(0)
     })
 
     it('correctly extracts the layer id', () => {
@@ -59,9 +59,9 @@ describe('useDistribution composable returning the desired distribution', () => 
             ChBafuSchutzgebieteLuftfahrtDistributions as DistributionCollection
 
         expect(distribution.value).toHaveProperty('properties')
-        expect(distribution.value!.properties).toHaveProperty('protocol')
-        expect(distribution.value!.properties.protocol).toEqual('OGC:WMTS')
-        expect(distribution.value!.links!.length).toBeGreaterThan(0)
+        expect(distribution.value.properties).toHaveProperty('protocol')
+        expect(distribution.value.properties.protocol).toEqual('OGC:WMTS')
+        expect(distribution.value.links.length).toBeGreaterThan(0)
     })
 
     it('data is loaded even if the layerId is ready delayed', () => {
@@ -76,9 +76,9 @@ describe('useDistribution composable returning the desired distribution', () => 
         distributionId.value = 'ch.bafu.schutzgebiete-luftfahrt:wmts'
 
         expect(distribution.value).toHaveProperty('properties')
-        expect(distribution.value!.properties).toHaveProperty('protocol')
-        expect(distribution.value!.properties.protocol).toEqual('OGC:WMTS')
-        expect(distribution.value!.links!.length).toBeGreaterThan(0)
+        expect(distribution.value.properties).toHaveProperty('protocol')
+        expect(distribution.value.properties.protocol).toEqual('OGC:WMTS')
+        expect(distribution.value.links.length).toBeGreaterThan(0)
     })
 
     it("doesn't trip with incomplete distribution data", () => {

@@ -338,10 +338,18 @@ class OlStyleForPropertyValue {
             }
         } else if (labelTemplate) {
             text = labelTemplate
-            Object.keys(properties).forEach(
-                (prop) =>
-                    (text = (text as string).replace('${' + prop + '}', String(properties[prop])))
-            )
+            Object.keys(properties).forEach((prop) => {
+                const propVal = properties[prop]
+                const propStr =
+                    propVal === null
+                        ? 'null'
+                        : propVal === undefined
+                          ? 'undefined'
+                          : typeof propVal === 'object'
+                            ? JSON.stringify(propVal)
+                            : `${propVal as string | number | boolean}`
+                text = text.replace('${' + prop + '}', propStr)
+            })
         }
         if (text) {
             const textStyle = olStyle.getText()
@@ -385,7 +393,7 @@ class OlStyleForPropertyValue {
         if (!olStyles) {
             let valueStr: string
             if (value === null || value === undefined) {
-                valueStr = String(value)
+                valueStr = value === null ? 'null' : 'undefined'
             } else if (typeof value === 'object') {
                 valueStr = Array.isArray(value) ? value.join(',') : JSON.stringify(value)
             } else {

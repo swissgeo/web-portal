@@ -333,9 +333,9 @@ describe('searchLayerFeatures', () => {
         expect(result[0]).toMatchObject(featureFounds[0] ?? {})
     })
     it('handles featureId attribute', async () => {
-        searchResult[0]!.attrs.featureId = 'feature Id'
-        featureFounds[0]!.id = 'feature Id'
-        featureFounds[0]!.featureId = 'feature Id'
+        searchResult[0].attrs.featureId = 'feature Id'
+        featureFounds[0].id = 'feature Id'
+        featureFounds[0].featureId = 'feature Id'
         ;(fetch as Mock).mockResolvedValue({
             ok: true,
             json: () => {
@@ -349,8 +349,8 @@ describe('searchLayerFeatures', () => {
         expect(result[0]).toMatchObject(featureFounds[0] ?? {})
     })
     it('handles detail attribute', async () => {
-        searchResult[0]!.attrs.detail = 'This is meant to be a description'
-        featureFounds[0]!.description = 'This is meant to be a description'
+        searchResult[0].attrs.detail = 'This is meant to be a description'
+        featureFounds[0].description = 'This is meant to be a description'
         ;(fetch as Mock).mockResolvedValue({
             ok: true,
             json: () => {
@@ -364,8 +364,8 @@ describe('searchLayerFeatures', () => {
         expect(result[0]).toMatchObject(featureFounds[0] ?? {})
     })
     it('handles bounding box attribute', async () => {
-        searchResult[0]!.attrs.geom_st_box2d = 'BOX(2600000 1200000,2600010 1200010)'
-        featureFounds[0]!.coordinate = [2600000, 1200000]
+        searchResult[0].attrs.geom_st_box2d = 'BOX(2600000 1200000,2600010 1200010)'
+        featureFounds[0].coordinate = [2600000, 1200000]
         ;(fetch as Mock).mockResolvedValue({
             ok: true,
             json: () => {
@@ -379,8 +379,8 @@ describe('searchLayerFeatures', () => {
         expect(result[0]).toMatchObject(featureFounds[0] ?? {})
     })
     it('handles zoom level attribute', async () => {
-        searchResult[0]!.attrs.zoomlevel = 18
-        featureFounds[0]!.zoom = 18
+        searchResult[0].attrs.zoomlevel = 18
+        featureFounds[0].zoom = 18
         ;(fetch as Mock).mockResolvedValue({
             ok: true,
             json: () => {

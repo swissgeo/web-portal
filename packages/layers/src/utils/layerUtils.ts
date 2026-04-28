@@ -96,7 +96,7 @@ export const makeServerLayer = (dataset: Dataset, options?: Partial<Layer>): Lay
     validateDataset(dataset)
 
     // extract the self link from the dataset (validated above)
-    const layerUrl = dataset.links!.find((link) => link.rel === 'self')!.href
+    const layerUrl = dataset.links.find((link) => link.rel === 'self').href
 
     return {
         layerUrl,
