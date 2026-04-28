@@ -74,7 +74,7 @@ export function useRestoreState() {
                 const config = validateAndPrepareAppStatePayload(JSON.parse(stored))
 
                 // If a zoom is in URL, it overwrite the zoom from config
-                // (used in the print feature, added in the localStorage logic for debugging)
+                // (used in the print feature, added in the session storage logic for debugging)
                 if (zoomFromUrl) {
                     config.state.map.zoom = zoomFromUrl
                 }

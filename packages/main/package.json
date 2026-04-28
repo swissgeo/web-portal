@@ -19,7 +19,6 @@
         "type-check": "nuxt typecheck"
     },
     "dependencies": {
-        "@chenfengyuan/vue-qrcode": "^2.0.0",
         "@floating-ui/vue": "catalog:",
         "@fontsource/dm-sans": "catalog:",
         "@fontsource/geologica": "catalog:",
@@ -63,7 +62,8 @@
         "sortablejs": "catalog:",
         "ufo": "catalog:",
         "vite-plugin-node-polyfills": "catalog:",
-        "vue": "^3.5.28"
+        "vue": "catalog:",
+        "@chenfengyuan/vue-qrcode": "catalog:"
     },
     "devDependencies": {
         "@eslint/markdown": "catalog:",

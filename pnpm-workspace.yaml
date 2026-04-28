@@ -4,6 +4,7 @@ packages:
     - support/service-shortlink-mock/
 
 catalog:
+    '@chenfengyuan/vue-qrcode': '^2.0.0'
     '@eslint/js': ^9.38.0
     '@eslint/markdown': ^7.4.0
     '@floating-ui/vue': ^1.1.9

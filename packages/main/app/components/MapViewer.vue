@@ -82,7 +82,8 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
     layerStore.setLayerInfo(layerUuid, info)
 }
 
-const displayMode = inject<'web' | 'print'>('displayMode')
+// The display mode is defined in the layout
+const displayMode = inject<'web' | 'print'>('displayMode', 'web')
 </script>
 
 <template>

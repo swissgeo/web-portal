@@ -1,13 +1,11 @@
 import { EPSG_2056_BOUNDING_BOX } from '@swissgeo/shared'
 import semver from 'semver'
 
-import type { AppStateConfig, AppStatePayload, LayerStateConfig, PrintConfig } from '@/types/types'
+import type { AppStateConfig, AppStatePayload, LayerStateConfig } from '@/types/types'
 
 import { APP_STATE_CONFIG_CONSTRAINT } from '@/constants'
 import {
     layerStateConfigKeys,
-    printFormats,
-    printOrientations,
     validAppStateConfigKeys,
     validateAppStatePayloadKeys,
 } from '@/types/types'
@@ -229,38 +227,4 @@ function validateLayerConfig(layer: LayerStateConfig): asserts layer is LayerSta
     if (layer.opacity < 0 || layer.opacity > 1) {
         throw new Error(`${layer.layerUrl} opacity must be a number between 0 and 1`)
     }
-}
-
-/**
- * Test if the provided element is an object
- */
-export function isObject(val: unknown): boolean {
-    return typeof val === 'object' && !Array.isArray(val) && val !== null
-}
-
-/**
- * Validates a print config
- */
-export function validatePrintConfig(printProps: unknown): asserts printProps is PrintConfig {    
-    if (!isObject(printProps)) {
-        throw new Error('The print config object must be an object')
-    }
-
-    const maybePrintProps = printProps as Partial<PrintConfig>
-
-    if (!maybePrintProps.format || !printFormats.includes(maybePrintProps.format)) {
-        throw new Error(`The print format must be one of: ${printFormats.join(' ')}`)
-    }
-
-    if (!maybePrintProps.orientation || !printOrientations.includes(maybePrintProps.orientation)) {
-        throw new Error(`The print orientation must be one of: ${printOrientations.join(' ')}`)
-    }
-
-    if (maybePrintProps.resolution === undefined || maybePrintProps.resolution <= 0) {
-        throw new Error('The print resolution must be greater than 0')
-    }
-
-    if (maybePrintProps.zoom === undefined || maybePrintProps.zoom <= 0) {
-        throw new Error('The zoom must be greater than 0')
-    }    
 }
