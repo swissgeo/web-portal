@@ -88,6 +88,8 @@ const { sources: attributionSources } = useAttributionSources(
     computed(() => layerStore.backgroundLayer)
 )
 const displayMode = inject<'web' | 'print'>('displayMode')
+// The display mode is defined in the layout
+const displayMode = inject<'web' | 'print'>('displayMode', 'web')
 </script>
 
 <template>

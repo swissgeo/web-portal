@@ -1,8 +1,7 @@
-import type { PrintConfig } from '@swissgeo/statesharing';
-
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import {  validatePrintConfig } from '@swissgeo/statesharing'
 import { fetchStateFromStateId } from '~/utils/fetchStateFromStateId'
+
+import type { PrintConfig } from '../types/print'
 
 
 // URL param providing the ID to a state (map config such a center, resolution, print info, etc.)
@@ -77,7 +76,7 @@ export function useUrlParams() {
 
     /**
      * Get the print config from the URL
-     * ?print_format=a4&print_orientation=landscape&print_resolution=96
+     * ?print_format=a4&print_orientation=landscape&print_resolution=96&z=8
      */
     function getPrintConfigFromUrl(): PrintConfig {
         const printConfig = {
