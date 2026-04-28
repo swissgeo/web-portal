@@ -6,15 +6,12 @@ settings:
 
 catalogs:
   default:
-<<<<<<< HEAD
-    '@eslint/js':
-      specifier: ^9.38.0
-      version: 9.39.2
-=======
     '@chenfengyuan/vue-qrcode':
       specifier: ^2.0.0
       version: 2.0.0
->>>>>>> df4a89e7 (GPS-553 addressing review 2)
+    '@eslint/js':
+      specifier: ^9.38.0
+      version: 9.39.2
     '@eslint/markdown':
       specifier: ^7.4.0
       version: 7.5.1
