@@ -20,7 +20,7 @@ describe('Functionality of buttons with a LucideIcon within', () => {
             },
         })
         const iconButton = wrapper.find(`[data-testid="${testId}"`)
-        expect(iconButton).to.exist
+        expect(iconButton.exists()).toBe(true)
         expect(iconButton.attributes().icon).to.eql(icon)
     })
 
@@ -38,7 +38,7 @@ describe('Functionality of buttons with a LucideIcon within', () => {
             },
         })
         const iconButton = wrapper.find(`[data-testid="${expectedTestId}"`)
-        expect(iconButton).to.exist
+        expect(iconButton.exists()).toBe(true)
         expect(iconButton.attributes().icon).to.eql(expectedIcon)
         expect(iconButton.attributes().variant).to.eql(variant)
     })
@@ -64,7 +64,7 @@ describe('Functionality of buttons with a LucideIcon within', () => {
         })
         const iconButton = wrapper.find(`[data-testid="${expectedTestId}"`)
         // we should find the button
-        expect(iconButton).to.exist
+        expect(iconButton.exists()).toBe(true)
         // color should be either the severity, or secondary by default
         expect(iconButton.attributes().color).to.eql(color)
         // the text is dependant on color
@@ -82,7 +82,7 @@ describe('Functionality of buttons with a LucideIcon within', () => {
             },
         })
         const iconButton = wrapper.find(`[data-testid="${expectedTestId}"`)
-        expect(iconButton).to.exist
+        expect(iconButton.exists()).toBe(true)
         expect(iconButton.attributes().customattribute).to.eql(customattribute)
     })
 
@@ -99,7 +99,7 @@ describe('Functionality of buttons with a LucideIcon within', () => {
             },
         })
         const iconButton = wrapper.find(`[data-testid="${expectedTestId}"]`)
-        expect(iconButton).to.exist
+        expect(iconButton.exists()).toBe(true)
         expect(iconButton.attributes().icon).to.eql(expectedIcon)
         expect(iconButton.attributes().variant).to.eql('ghost')
         expect(iconButton.attributes().color).to.eql('primary')

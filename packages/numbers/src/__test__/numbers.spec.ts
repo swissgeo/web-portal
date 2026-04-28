@@ -60,26 +60,26 @@ describe('Unit test functions from numbers utils', () => {
 
     describe('isNumber(value)', () => {
         it('returns true for a valid number', () => {
-            expect(isNumber(0)).to.be.true
-            expect(isNumber(1)).to.be.true
+            expect(isNumber(0)).toBe(true)
+            expect(isNumber(1)).toBe(true)
         })
 
         it('handles string number correctly', () => {
-            expect(isNumber('123.456')).to.be.true
-            expect(isNumber('123')).to.be.true
-            expect(isNumber('.456')).to.be.true
+            expect(isNumber('123.456')).toBe(true)
+            expect(isNumber('123')).toBe(true)
+            expect(isNumber('.456')).toBe(true)
         })
 
         it('returns false for a string starting with a number but ending with text', () => {
-            expect(isNumber('123.456hi')).to.be.false
+            expect(isNumber('123.456hi')).toBe(false)
         })
 
         it('returns false for a  strings finishing by a number', () => {
-            expect(isNumber('?123.456')).to.be.false
+            expect(isNumber('?123.456')).toBe(false)
         })
 
         it('rejects text strings', () => {
-            expect(isNumber('stupid plain string')).to.be.false
+            expect(isNumber('stupid plain string')).toBe(false)
         })
     })
 
@@ -155,27 +155,27 @@ describe('Unit test functions from numbers utils', () => {
 
     describe('isTimestampYYYYMMDD(timestamp)', () => {
         it('match valid timestamp YYYYMMDD', () => {
-            expect(isTimestampYYYYMMDD('99990101')).to.be.true
-            expect(isTimestampYYYYMMDD('99991231')).to.be.true
-            expect(isTimestampYYYYMMDD('20240101')).to.be.true
-            expect(isTimestampYYYYMMDD('20241201')).to.be.true
-            expect(isTimestampYYYYMMDD('20241231')).to.be.true
-            expect(isTimestampYYYYMMDD('30000101')).to.be.true
-            expect(isTimestampYYYYMMDD('00000101')).to.be.true
-            expect(isTimestampYYYYMMDD('10000101')).to.be.true
+            expect(isTimestampYYYYMMDD('99990101')).toBe(true)
+            expect(isTimestampYYYYMMDD('99991231')).toBe(true)
+            expect(isTimestampYYYYMMDD('20240101')).toBe(true)
+            expect(isTimestampYYYYMMDD('20241201')).toBe(true)
+            expect(isTimestampYYYYMMDD('20241231')).toBe(true)
+            expect(isTimestampYYYYMMDD('30000101')).toBe(true)
+            expect(isTimestampYYYYMMDD('00000101')).toBe(true)
+            expect(isTimestampYYYYMMDD('10000101')).toBe(true)
         })
         it('don not match invalid timestamp YYYYMMDD', () => {
-            expect(isTimestampYYYYMMDD('20241301')).to.be.false
-            expect(isTimestampYYYYMMDD('20241232')).to.be.false
-            expect(isTimestampYYYYMMDD('30000000')).to.be.false
-            expect(isTimestampYYYYMMDD('00000000')).to.be.false
-            expect(isTimestampYYYYMMDD('20240000')).to.be.false
-            expect(isTimestampYYYYMMDD('20240100')).to.be.false
-            expect(isTimestampYYYYMMDD('20240001')).to.be.false
-            expect(isTimestampYYYYMMDD('99999999')).to.be.false
-            expect(isTimestampYYYYMMDD('99990000')).to.be.false
-            expect(isTimestampYYYYMMDD('99991232')).to.be.false
-            expect(isTimestampYYYYMMDD('99991301')).to.be.false
+            expect(isTimestampYYYYMMDD('20241301')).toBe(false)
+            expect(isTimestampYYYYMMDD('20241232')).toBe(false)
+            expect(isTimestampYYYYMMDD('30000000')).toBe(false)
+            expect(isTimestampYYYYMMDD('00000000')).toBe(false)
+            expect(isTimestampYYYYMMDD('20240000')).toBe(false)
+            expect(isTimestampYYYYMMDD('20240100')).toBe(false)
+            expect(isTimestampYYYYMMDD('20240001')).toBe(false)
+            expect(isTimestampYYYYMMDD('99999999')).toBe(false)
+            expect(isTimestampYYYYMMDD('99990000')).toBe(false)
+            expect(isTimestampYYYYMMDD('99991232')).toBe(false)
+            expect(isTimestampYYYYMMDD('99991301')).toBe(false)
         })
     })
 })
