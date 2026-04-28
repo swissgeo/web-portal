@@ -1,10 +1,14 @@
 import { expect, test } from '@playwright/test'
 
-import { HYDRATION_TIMEOUT, mockExternalRequests } from './setup'
+import { HYDRATION_TIMEOUT, mockExternalRequests, cleanupExternalRequestMocks } from './setup'
 
 test.describe('locale routing', () => {
     test.beforeEach(async ({ page }) => {
-        await mockExternalRequests(page)
+        await mockExternalRequests(page).mockAll()
+    })
+
+    test.afterEach(async ({ page }) => {
+        cleanupExternalRequestMocks(page)
     })
 
     test('homepage redirects to the default locale map', async ({ page }) => {

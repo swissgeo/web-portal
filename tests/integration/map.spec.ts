@@ -1,14 +1,18 @@
 import { expect, test } from '@playwright/test'
 
-import { HYDRATION_TIMEOUT, mockExternalRequests } from './setup'
+import { HYDRATION_TIMEOUT, mockExternalRequests, cleanupExternalRequestMocks } from './setup'
 
 test.describe('map page', () => {
     test.beforeEach(async ({ page }) => {
-        await mockExternalRequests(page)
+        await mockExternalRequests(page).mockAll()
         await page.goto('/de/map')
         await expect(page.locator('[data-cy="ol-map"]')).toBeVisible({
             timeout: HYDRATION_TIMEOUT,
         })
+    })
+
+    test.afterEach(async ({ page }) => {
+        cleanupExternalRequestMocks(page)
     })
 
     test('renders the OpenLayers map canvas', async ({ page }) => {

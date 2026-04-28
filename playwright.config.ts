@@ -33,5 +33,10 @@ export default defineConfig({
         url: 'http://localhost:3000',
         reuseExistingServer: true,
         timeout: 120_000,
+        env: {
+            NODE_ENV: 'test',
+            NUXT_PUBLIC_OGC_API_ENDPOINT: 'http://mock-oar.org/api/oar',
+            NUXT_PUBLIC_API_ENDPOINT: 'http://mock-livingdocs.org/',
+        },
     },
 })
