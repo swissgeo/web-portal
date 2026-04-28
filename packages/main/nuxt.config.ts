@@ -73,6 +73,10 @@ export default defineNuxtConfig({
             },
         },
         mode: isDevelopment ? 'development' : 'production',
+        server: {
+            // disable hot module reload in tests
+            hmr: process.env.NODE_ENV === 'test' ? false : true,
+        },
     },
     i18n: {
         // Disable automatic browser-language detection to prevent the i18n middleware
