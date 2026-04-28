@@ -35,18 +35,15 @@ function updateLayerInfo(index: number, uuid: string, layerInfo: LayerInfo) {
     useLayerStore().setLayerInfo(uuid, layerInfo)
 }
 
-
-function updateTimeDimension(identifier: number | string, dimension: Partial<Dimension>) {
-    useLayerStore().setDimension('time', identifier, dimension)
-}
-
 function updateStoreLayerData(index: number, uuid: string, dataset: Dataset) {
       if (index !== 0 || !useLayerStore().backgroundLayer) {
         useLayerStore().setLayerData(uuid, dataset)
     }
 }
 */
-
+function updateTimeDimension(identifier: number | string, dimension: Partial<Dimension>) {
+    useLayerStore().setDimension('time', identifier, dimension)
+}
 function updateOpacity(identifier: number | string, opacity: number) {
     mapViewStore.updateLayerOpacity(identifier, opacity)
 }
