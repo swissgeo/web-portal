@@ -14,6 +14,7 @@ export default function useLdFetch() {
             headers: {
                 Authorization: `Bearer ${authToken}`,
             },
+            timeout: 5000,
             ...options,
         })
     }
