@@ -27,6 +27,8 @@ export default defineConfig({
         reuseExistingServer: true,
         timeout: 120_000,
         env: {
+            // env for the playwright running
+            // for the CI the same is used via .env.test
             NODE_ENV: 'test',
             NUXT_PUBLIC_OGC_API_ENDPOINT: 'http://mock-oar.org/api/oar',
             NUXT_PUBLIC_API_ENDPOINT: 'http://mock-livingdocs.org/',

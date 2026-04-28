@@ -24,6 +24,7 @@ logs
 # Local env files
 .env
 .env.*
+!.env.test
 !.env.example
 
 # Python .venv
