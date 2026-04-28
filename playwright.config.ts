@@ -2,14 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
     testDir: './tests/integration',
-    // Dev-mode Vite cold compile plus OpenLayers hydration needs a generous
-    // per-test budget when running locally against `pnpm run dev`.
-    timeout: 120_000,
-    // Default expect() timeout. 15s is enough for prod preview hydration;
-    // the HYDRATION_TIMEOUT guard in the spec file covers dev-mode cold starts.
-    expect: { timeout: 15_000 },
-    fullyParallel: true,
-    retries: 0,
+    retries: 1,
     workers: undefined,
     reporter: [['html', { open: 'never' }], ['list']],
     use: {
