@@ -1,4 +1,4 @@
-import type { ElevationProfile } from '@swissgeo/shared/types/api'
+import type { ElevationProfile } from '@swissgeo/shared/api'
 import type { LineString } from 'geojson'
 
 import log from '@swissgeo/log'
@@ -42,8 +42,7 @@ export default defineEventHandler(async (event) => {
         return await $fetch<ElevationProfile>(ELEVATION_PROFILE_API_BASE_URL, {
             method: 'POST',
             query: { offset: 0, sr: 2056, distinct_points: true },
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ geom: JSON.stringify(body) }).toString(),
+            body: { type: 'LineString', coordinates: body.coordinates },
         })
     } catch (error) {
         log.error(`Elevation profile upstream error: ${String(error)}`)
