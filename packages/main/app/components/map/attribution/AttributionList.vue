@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AttributionSource } from '@swissgeo/map'
+import type { AttributionSource } from '@/composables/useAttributionSources'
 
 import AttributionItem from './AttributionItem.vue'
 

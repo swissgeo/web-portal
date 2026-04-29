@@ -2,7 +2,6 @@
 import type { MapLayerRenderer } from '@/types'
 import type { Layer } from '@/types/layers'
 
-import OpenLayersAttributionProvider from './openlayers/OpenLayersAttributionProvider.vue'
 import OpenLayersContextMenuPopup from './openlayers/OpenLayersContextMenuPopup.vue'
 import OpenLayersMap from './openlayers/OpenLayersMap.vue'
 import OpenLayersMouseTracker from './openlayers/OpenLayersMouseTracker.vue'
@@ -27,16 +26,6 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
             <!-- <OpenLayersScale /> -->
             <slot />
             <OpenLayersScale />
-            <OpenLayersAttributionProvider
-                :layers="layers"
-                :background-layer="backgroundLayer"
-                v-slot="slotProps"
-            >
-                <slot
-                    name="map-footer-attribution"
-                    v-bind="slotProps"
-                />
-            </OpenLayersAttributionProvider>
             <OpenLayersContextMenuPopup v-slot="slotProps">
                 <slot
                     name="context-menu-popup"

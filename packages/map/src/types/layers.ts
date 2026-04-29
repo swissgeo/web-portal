@@ -4,18 +4,6 @@ import type { Component } from 'vue'
 
 import type { FeatureCollectionWithCRS } from '@/utils/geoJsonUtils'
 
-export interface LayerAttribution {
-    title: string
-    url?: string
-    logoUrl?: string
-}
-
-export interface LayerInfo {
-    displayName?: string
-    abstract?: string
-    attribution?: LayerAttribution
-}
-
 /**
  * At the moment, these 3 types are sort of like a duplicate of layers.
  * Maybe we'll figure out a way to share these types, but maybe it also makes
@@ -39,7 +27,6 @@ export interface Layer {
     opacity: number
     isVisible: boolean
     zIndex: number
-    info?: LayerInfo | null
 }
 
 export interface WMTSLayer extends Layer {
@@ -81,10 +68,4 @@ export interface GeoJSONLayer extends Layer {
 export interface MapLayerRenderer {
     matches: (layer: Layer) => boolean
     component: Component
-}
-
-export interface AttributionSource {
-    id: string
-    name: string
-    url?: string
 }

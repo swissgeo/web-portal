@@ -1,4 +1,4 @@
-import type { AttributionSource } from '@swissgeo/map'
+import type { AttributionSource } from '~/composables/useAttributionSources'
 
 import { mount } from '@vue/test-utils'
 import AttributionList from '~/components/map/attribution/AttributionList.vue'
