@@ -3,6 +3,7 @@ import type { LineString } from 'geojson'
 import type { Ref, ComputedRef } from 'vue'
 
 import log from '@swissgeo/log'
+import { useDebounceFn } from '@vueuse/core'
 
 export function useElevationProfile(lineString: Ref<LineString | null> | ComputedRef<LineString | null>) {
     const { data, pending, execute } = useFetch<ElevationProfileResponse>('/api/v1/elevation/profile', {
@@ -15,9 +16,11 @@ export function useElevationProfile(lineString: Ref<LineString | null> | Compute
         },
     })
 
+    const debouncedExecute = useDebounceFn(() => void execute(), 300)
+
     watch(lineString, (val) => {
         if (val) {
-            void execute()
+            void debouncedExecute()
         }
     }, { immediate: true })
 
