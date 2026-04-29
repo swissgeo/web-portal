@@ -1,4 +1,9 @@
-import type { ElevationProfile, ElevationProfilePoint } from '@swissgeo/shared/api'
+import type {
+    ElevationProfile,
+    ElevationProfileMetadata,
+    ElevationProfilePoint,
+    ElevationProfileResponse,
+} from '@swissgeo/shared/api'
 import type { LineString, Position } from 'geojson'
 
 import log from '@swissgeo/log'
@@ -43,6 +48,61 @@ async function fetchProfileChunk(coordinates: Position[]): Promise<ElevationProf
     })
 }
 
+function computeMetadata(points: ElevationProfilePoint[]): ElevationProfileMetadata {
+    const hasElevationData = points.some((p) => p.alts?.COMB !== undefined)
+    const hasDistanceData = points.some((p) => (p.dist ?? 0) > 0)
+
+    if (!hasElevationData) {
+        return {
+            totalLinearDist: points.at(-1)?.dist ?? 0,
+            minElevation: 0,
+            maxElevation: 0,
+            elevationDifference: 0,
+            totalAscent: 0,
+            totalDescent: 0,
+            slopeDistance: 0,
+            hasElevationData,
+            hasDistanceData,
+        }
+    }
+
+    const elevations = points.map((p) => p.alts?.COMB ?? 0)
+    const minElevation = Math.min(...elevations)
+    const maxElevation = Math.max(...elevations)
+    const elevationDifference = (points.at(-1)?.alts?.COMB ?? 0) - (points[0]?.alts?.COMB ?? 0)
+
+    let totalAscent = 0
+    let totalDescent = 0
+    let slopeDistance = 0
+
+    for (let i = 1; i < points.length; i++) {
+        const prev = points[i - 1]!
+        const curr = points[i]!
+        const elevDelta = (curr.alts?.COMB ?? 0) - (prev.alts?.COMB ?? 0)
+        const distDelta = curr.dist - prev.dist
+
+        if (elevDelta > 0) {
+            totalAscent += elevDelta
+        } else {
+            totalDescent += Math.abs(elevDelta)
+        }
+
+        slopeDistance += Math.sqrt(Math.pow(elevDelta, 2) + Math.pow(distDelta, 2))
+    }
+
+    return {
+        totalLinearDist: points.at(-1)?.dist ?? 0,
+        minElevation,
+        maxElevation,
+        elevationDifference,
+        totalAscent,
+        totalDescent,
+        slopeDistance,
+        hasElevationData,
+        hasDistanceData,
+    }
+}
+
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
 
@@ -61,13 +121,18 @@ export default defineEventHandler(async (event) => {
         const responses = await Promise.all(chunks.map(fetchProfileChunk))
 
         let distOffset = 0
-        const result: ElevationProfile = []
+        const points: ElevationProfilePoint[] = []
 
         for (const response of responses) {
             for (const point of response) {
-                result.push({ ...point, dist: point.dist + distOffset } as ElevationProfilePoint)
+                points.push({ ...point, dist: point.dist + distOffset })
             }
-            distOffset = result[result.length - 1]?.dist ?? distOffset
+            distOffset = points.at(-1)?.dist ?? distOffset
+        }
+
+        const result: ElevationProfileResponse = {
+            points,
+            metadata: computeMetadata(points),
         }
 
         return result
