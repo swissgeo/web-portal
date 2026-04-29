@@ -28,6 +28,7 @@
         "@swissgeo/log": "workspace:*",
         "@swissgeo/numbers": "workspace:*",
         "@swissgeo/coordinates": "workspace:*",
+        "@swissgeo/shared": "workspace:*",
         "@turf/turf": "catalog:",
         "axios": "catalog:",
         "chartjs-plugin-zoom": "catalog:",

@@ -732,6 +732,9 @@ importers:
       '@swissgeo/numbers':
         specifier: workspace:*
         version: link:../numbers
+      '@swissgeo/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@turf/turf':
         specifier: 'catalog:'
         version: 7.3.3
