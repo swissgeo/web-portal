@@ -5,6 +5,8 @@ import useAddLayerToMap from './composables/useAddLayerToMap.composable'
 import MapModule from './MapModule.vue'
 import usePositionStore from './stores/position'
 
+export * from './stores/map.ts'
+
 // importing as "type" doesn't work with the DTS bundler somehow
 // eslint-disable-next-line @typescript-eslint/consistent-type-exports
 export * from '@/types/layers'
