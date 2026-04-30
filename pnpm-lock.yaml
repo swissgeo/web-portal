@@ -772,12 +772,18 @@ importers:
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
+      '@tailwindcss/vite':
+        specifier: 'catalog:'
+        version: 4.1.18(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.5(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.6.1)
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 4.1.18
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -939,6 +945,9 @@ importers:
       '@swissgeo/drawing':
         specifier: workspace:*
         version: link:../drawing
+      '@swissgeo/elevation-profile':
+        specifier: workspace:*
+        version: link:../elevation-profile
       '@swissgeo/layers':
         specifier: workspace:*
         version: link:../layers

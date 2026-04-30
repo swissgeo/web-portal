@@ -33,6 +33,7 @@
         "@swissgeo/content": "workspace:*",
         "@swissgeo/coordinates": "workspace:*",
         "@swissgeo/drawing": "workspace:*",
+        "@swissgeo/elevation-profile": "workspace:*",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "workspace:*",
         "@swissgeo/map": "workspace:*",
