@@ -13,8 +13,15 @@ export type ScreenPoint = ElevationProfilePoint & {
 
 export type GetPointBeingHoveredFunction = () => ScreenPoint | undefined
 
+export interface Labels {
+    xAxis: string
+    yAxis: string
+    noData: string
+}
+
 const props = defineProps<{
     profile: ElevationProfileResponse
+    labels: Labels
 }>()
 
 const profileChartContainerRef = useTemplateRef<HTMLDivElement>('profileChartContainer')
@@ -69,7 +76,7 @@ const {
         >
             <div>
                 <small>
-                    <strong>X Label: </strong>
+                    <strong>{{ labels.xAxis }}: </strong>
                     <span data-cy="profile-popup-tooltip-distance">
                         {{ pointBeingHovered.dist }} {{ unitUsedOnDistanceAxis }}
                     </span>
@@ -77,14 +84,16 @@ const {
             </div>
             <div>
                 <small>
-                    <strong>Y Label: </strong>
+                    <strong>{{ labels.yAxis }}: </strong>
                     <span
                         v-if="pointBeingHovered.elevation && pointBeingHovered.elevation > 0"
                         data-cy="profile-popup-tooltip-elevation"
                     >
                         {{ pointBeingHovered.elevation }} m
                     </span>
-                    <span v-else>Not available</span>
+                    <span v-else>
+                        {{ labels.noData }}
+                    </span>
                 </small>
             </div>
         </div>

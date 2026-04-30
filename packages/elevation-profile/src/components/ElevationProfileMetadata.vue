@@ -3,57 +3,53 @@ import type { ElevationProfileMetadata } from '@swissgeo/shared/api'
 
 import { computed } from 'vue'
 import { formatDistance, formatElevation } from '../utils'
-interface ElevationProfileInformationProps {
-    metadata: ElevationProfileMetadata
+
+export interface Labels {
+    elevationDifference: string
+    elevationUp: string
+    elevationDown: string
+    poiUp: string
+    poiDown: string
+    distance: string
+    slopeDistance: string
 }
 
-const { metadata } = defineProps<ElevationProfileInformationProps>()
-
-interface ElevationProfileInformationMessages {
-    profile_distance: string
-    profile_elevation_difference: string
-    profile_elevation_down: string
-    profile_elevation_up: string
-    profile_hike_time: string
-    profile_poi_down: string
-    profile_poi_up: string
-    profile_slope_distance: string
-}
+const { metadata, labels } = defineProps<{ metadata: ElevationProfileMetadata; labels: Labels }>()
 
 const metadataEntries = computed(() => {
     return [
         {
-            title: 'profile_elevation_difference',
+            title: labels.elevationDifference,
             icons: ['i-lucide-arrow-down-up'],
             value: formatElevation(metadata.elevationDifference),
         },
         {
-            title: 'profile_elevation_up',
+            title: labels.elevationUp,
             icons: ['i-lucide-arrow-up-wide-narrow'],
             value: formatElevation(metadata.totalAscent),
         },
         {
-            title: 'profile_elevation_down',
+            title: labels.elevationDown,
             icons: ['i-lucide-arrow-down-wide-narrow'],
             value: formatElevation(metadata.totalDescent),
         },
         {
-            title: 'profile_poi_up',
+            title: labels.poiUp,
             icons: ['i-lucide-chevron-up'],
             value: formatElevation(metadata.maxElevation),
         },
         {
-            title: 'profile_poi_down',
+            title: labels.poiDown,
             icons: ['i-lucide-chevron-down'],
             value: formatElevation(metadata.minElevation),
         },
         {
-            title: 'profile_distance',
+            title: labels.distance,
             icons: ['i-lucide-globe', 'i-lucide-arrows-left-right'],
             value: formatDistance(metadata.totalLinearDist),
         },
         {
-            title: 'profile_slope_distance',
+            title: labels.slopeDistance,
             icons: ['i-lucide-mountain-snow', 'i-lucide-arrows-left-right'],
             value: formatDistance(metadata.slopeDistance),
         },
