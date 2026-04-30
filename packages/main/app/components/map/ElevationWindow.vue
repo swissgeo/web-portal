@@ -32,9 +32,9 @@ const olMap = computed(() => {
 const geometryRevision = ref(0)
 
 const WINDOW_MARGIN = 16
-const MIN_WIDTH = 280
-const MIN_HEIGHT = 160
-const DEFAULT_WIDTH = 320
+const MIN_WIDTH = 800
+const MIN_HEIGHT = 300
+const DEFAULT_WIDTH = 800
 
 const position = reactive({
     x: WINDOW_MARGIN,

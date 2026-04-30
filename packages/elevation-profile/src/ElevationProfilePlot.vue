@@ -315,7 +315,7 @@ function resizeChart() {
 <template>
     <div
         ref="profileChartContainer"
-        class="min-h-100px flex grow overflow-hidden p-2"
+        class="min-h-100px flex w-full grow overflow-hidden p-2"
         @mouseenter="startPositionTracking"
         @mouseleave="stopPositionTracking"
     >
