@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ElevationProfileResponse } from '@swissgeo/shared/api'
+import type { ElevationProfileResponse, ElevationProfilePoint } from '@swissgeo/shared/api'
 import type { ChartComponentRef } from 'vue-chartjs'
 
 import { useTemplateRef } from 'vue'
@@ -7,7 +7,7 @@ import { Line as LineChart } from 'vue-chartjs'
 
 import { useElevationProfileChart } from '@/composables/useElevationProfileChart'
 
-export type ScreenPoint = import('@swissgeo/shared/api').ElevationProfilePoint & {
+export type ScreenPoint = ElevationProfilePoint & {
     screenPosition: [number, number]
 }
 
