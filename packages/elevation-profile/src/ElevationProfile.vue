@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ElevationProfileResponse } from '@swissgeo/shared/api'
+
 import ElevationProfilePlot from './ElevationProfilePlot.vue'
 
 defineProps<{

@@ -10,7 +10,9 @@ const noDataPlugin: Plugin = {
     id: 'noData',
     afterDraw(chart: Chart, _args, pluginOptions: NoDataPluginOptions) {
         const { points, noDataText = 'No data' } = pluginOptions
-        if (!points?.length) return
+        if (!points?.length) {
+            return
+        }
 
         const {
             ctx,
@@ -20,14 +22,18 @@ const noDataPlugin: Plugin = {
         const { top, height } = chartArea ?? {}
         const { right, left } = x ?? {}
 
-        if (!x || !x.getPixelForValue || !left || !right) return
+        if (!x || !x.getPixelForValue || !left || !right) {
+            return
+        }
 
         let segmentStart: ElevationProfilePoint | null = null
 
         const drawRect = (start: ElevationProfilePoint, end: ElevationProfilePoint) => {
             const xStart = Math.max(x.getPixelForValue(start.dist), left)
             const xStop = Math.min(x.getPixelForValue(end.dist), right)
-            if ((xStart === left && xStop < left) || (xStop === right && xStart > right)) return
+            if ((xStart === left && xStop < left) || (xStop === right && xStart > right)) {
+                return
+            }
 
             ctx.save()
             const rectWidth = xStop - xStart

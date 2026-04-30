@@ -5,24 +5,33 @@ import type { Ref, ComputedRef } from 'vue'
 import log from '@swissgeo/log'
 import { useDebounceFn } from '@vueuse/core'
 
-export function useElevationProfile(lineString: Ref<LineString | null> | ComputedRef<LineString | null>) {
-    const { data, pending, execute } = useFetch<ElevationProfileResponse>('/api/v1/elevation/profile', {
-        method: 'POST',
-        body: lineString,
-        immediate: false,
-        watch: false,
-        onResponseError: ({ error }) => {
-            log.error(`Error fetching elevation profile: ${String(error)}`)
-        },
-    })
+export function useElevationProfile(
+    lineString: Ref<LineString | null> | ComputedRef<LineString | null>
+) {
+    const { data, pending, execute } = useFetch<ElevationProfileResponse>(
+        '/api/v1/elevation/profile',
+        {
+            method: 'POST',
+            body: lineString,
+            immediate: false,
+            watch: false,
+            onResponseError: ({ error }) => {
+                log.error(`Error fetching elevation profile: ${String(error)}`)
+            },
+        }
+    )
 
     const debouncedExecute = useDebounceFn(() => void execute(), 300)
 
-    watch(lineString, (val) => {
-        if (val) {
-            void debouncedExecute()
-        }
-    }, { immediate: true })
+    watch(
+        lineString,
+        (val) => {
+            if (val) {
+                void debouncedExecute()
+            }
+        },
+        { immediate: true }
+    )
 
     return {
         elevationProfile: data,

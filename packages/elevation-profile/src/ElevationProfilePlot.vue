@@ -148,7 +148,9 @@ const chartJsData: ComputedRef<ChartData<'line', ElevationProfileChartPoint[]>> 
 const chartJsScalesConfiguration: ComputedRef<
     { [key: string]: ScaleOptions<'linear'> } | undefined
 > = computed(() => {
-    if (!profileMetadata.value) return
+    if (!profileMetadata.value) {
+        return
+    }
     const scales: { [key: string]: ScaleOptions<'linear'> } = {
         x: {
             type: 'linear',
@@ -182,15 +184,19 @@ const chartJsTooltipConfiguration = computed(() => {
         enabled: false,
         external: (tooltipModel: { chart: Chart; tooltip: TooltipModel<'line'> }) => {
             const { chart, tooltip } = tooltipModel
-            if (!tooltip.dataPoints) return
+            if (!tooltip.dataPoints) {
+                return
+            }
             const tooltipElement = profileTooltipRef.value
-            if (!tooltipElement) return
+            if (!tooltipElement) {
+                return
+            }
             if (tooltipElement.style.opacity === '0') {
                 clearHoverPosition()
                 return
             }
             if (tooltip.dataPoints.length > 0 && track.value) {
-                const point: TooltipItem<'line'> = tooltip.dataPoints[0]!
+                const point: TooltipItem<'line'> = tooltip.dataPoints[0]
                 const raw = point.raw as ElevationProfileChartPoint
                 const chartPosition = chart.canvas.getBoundingClientRect()
                 pointBeingHovered.value = {
@@ -211,7 +217,9 @@ const chartJsTooltipConfiguration = computed(() => {
 })
 
 const chartJsZoomOptions: ComputedRef<ZoomPluginOptions | undefined> = computed(() => {
-    if (!profileMetadata.value) return
+    if (!profileMetadata.value) {
+        return
+    }
     const zoomOptions: ZoomPluginOptions = {
         limits: {
             x: {
