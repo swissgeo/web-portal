@@ -4,6 +4,7 @@ import type { Feature } from 'ol'
 import type { LineString as OlLineString, Polygon as OlPolygon, Geometry } from 'ol/geom'
 
 import { useDrawingStore, resolveFeatureId } from '@swissgeo/drawing'
+import { ElevationProfile } from '@swissgeo/elevation-profile'
 import { X } from 'lucide-vue-next'
 import GeoJSON from 'ol/format/GeoJSON'
 import { computed, nextTick, onBeforeUnmount, onBeforeMount, reactive, ref, watch } from 'vue'
@@ -232,12 +233,10 @@ function closeWindow() {
                 </div>
             </template>
 
-            <div
-                v-if="drawingStore.selectedFeatureInfo"
-                class="space-y-2 text-sm"
-            >
-                {{ elevationProfile?.metadata }}
-            </div>
+            <ElevationProfile
+                :profile-response="elevationProfile"
+                :is-loading="elevationPending"
+            />
         </UCard>
     </div>
 </template>
