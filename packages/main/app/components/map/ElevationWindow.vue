@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { LineString } from 'geojson'
 import type { Feature } from 'ol'
-import type { LineString as OlLineString, Geometry } from 'ol/geom'
+import type { LineString as OlLineString, Polygon as OlPolygon, Geometry } from 'ol/geom'
 
 import { useDrawingStore, resolveFeatureId } from '@swissgeo/drawing'
 import { X } from 'lucide-vue-next'
@@ -12,6 +12,7 @@ const drawingStore = useDrawingStore()
 const { t } = useI18n()
 const windowRef = ref<HTMLElement | null>(null)
 const olGeoJSON = new GeoJSON()
+const geometryRevision = ref(0)
 
 const WINDOW_MARGIN = 16
 const position = reactive({
@@ -27,7 +28,35 @@ const dragState = reactive({
 
 const hasInfo = computed(() => drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo))
 
+let unlistenGeometryChange: (() => void) | null = null
+
+watch(
+    () => drawingStore.selectedFeatureId,
+    (selectedId) => {
+        unlistenGeometryChange?.()
+        unlistenGeometryChange = null
+
+        if (!selectedId) {
+            return
+        }
+
+        const features = drawingStore.drawingFeatures as Feature<Geometry>[]
+        const feature = features.find((f) => resolveFeatureId(f) === selectedId)
+        if (!feature) {
+            return
+        }
+
+        const key = feature.on('change', () => {
+            geometryRevision.value++
+        })
+        unlistenGeometryChange = () => feature.un('change', key.listener)
+    },
+    { immediate: true }
+)
+
 const selectedLineString = computed<LineString | null>(() => {
+    void geometryRevision.value
+
     const selectedId = drawingStore.selectedFeatureId
     if (!selectedId) {
         return null
@@ -36,11 +65,22 @@ const selectedLineString = computed<LineString | null>(() => {
     const features = drawingStore.drawingFeatures as Feature<Geometry>[]
     const feature = features.find((f) => resolveFeatureId(f) === selectedId) ?? null
     const geometry = feature?.getGeometry()
-    if (geometry?.getType() !== 'LineString') {
-        return null
+    const type = geometry?.getType()
+
+    if (type === 'LineString') {
+        return olGeoJSON.writeGeometryObject(geometry as OlLineString) as LineString
     }
 
-    return olGeoJSON.writeGeometryObject(geometry as OlLineString) as LineString
+    if (type === 'Polygon') {
+        const ring = (geometry as OlPolygon).getLinearRing(0)
+        if (!ring) {
+            return null
+        }
+        const coords = ring.getCoordinates()
+        return { type: 'LineString', coordinates: coords }
+    }
+
+    return null
 })
 
 const { elevationProfile, elevationPending } = useElevationProfile(selectedLineString)
@@ -76,7 +116,7 @@ async function ensureInitialPosition() {
 
     const element = windowRef.value
     const width = element?.offsetWidth ?? 384
-    const initial = clampToViewport(window.innerWidth - width - WINDOW_MARGIN, WINDOW_MARGIN)
+    const initial = clampToViewport(WINDOW_MARGIN, WINDOW_MARGIN)
     position.x = initial.x
     position.y = initial.y
     position.initialized = true
@@ -148,6 +188,7 @@ onBeforeMount(() => {
 
 onBeforeUnmount(() => {
     stopDrag()
+    unlistenGeometryChange?.()
     if (typeof window !== 'undefined') {
         window.removeEventListener('resize', handleWindowResize)
     }
@@ -162,10 +203,10 @@ function closeWindow() {
     <div
         ref="windowRef"
         v-if="hasInfo && selectedLineString"
-        class="fixed z-9998 w-96 shadow-lg"
+        class="fixed z-9998 w-96"
         :style="{ left: `${position.x}px`, top: `${position.y}px` }"
     >
-        <UCard>
+        <UCard class="shadow-lg">
             <template #header>
                 <div
                     class="flex items-center justify-between select-none"
