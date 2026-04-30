@@ -114,8 +114,8 @@ async function ensureInitialPosition() {
         return
     }
 
-    const element = windowRef.value
-    const width = element?.offsetWidth ?? 384
+    // const element = windowRef.value
+    // const width = element?.offsetWidth ?? 384
     const initial = clampToViewport(WINDOW_MARGIN, WINDOW_MARGIN)
     position.x = initial.x
     position.y = initial.y
