@@ -1,15 +1,25 @@
 <script setup lang="ts">
 import type { LineString } from 'geojson'
 import type { Feature } from 'ol'
-import type Map from 'ol/Map'
 import type { LineString as OlLineString, Polygon as OlPolygon, Geometry } from 'ol/geom'
+import type Map from 'ol/Map'
 import type { Ref } from 'vue'
 
 import { useDrawingStore, resolveFeatureId } from '@swissgeo/drawing'
 import { ElevationProfile, ElevationProfileOpenLayersBridge } from '@swissgeo/elevation-profile'
-import { X } from 'lucide-vue-next'
+import { X, MoveDiagonal2 } from 'lucide-vue-next'
 import GeoJSON from 'ol/format/GeoJSON'
-import { computed, inject, markRaw, nextTick, onBeforeUnmount, onBeforeMount, reactive, ref, watch } from 'vue'
+import {
+    computed,
+    inject,
+    markRaw,
+    nextTick,
+    onBeforeUnmount,
+    onBeforeMount,
+    reactive,
+    ref,
+    watch,
+} from 'vue'
 
 const drawingStore = useDrawingStore()
 const { t } = useI18n()
@@ -22,15 +32,30 @@ const olMap = computed(() => {
 const geometryRevision = ref(0)
 
 const WINDOW_MARGIN = 16
+const MIN_WIDTH = 280
+const MIN_HEIGHT = 160
+const DEFAULT_WIDTH = 320
+
 const position = reactive({
     x: WINDOW_MARGIN,
     y: WINDOW_MARGIN,
     initialized: false,
 })
+const size = reactive({
+    width: DEFAULT_WIDTH,
+    height: 'auto' as number | 'auto',
+})
 const dragState = reactive({
     active: false,
     offsetX: 0,
     offsetY: 0,
+})
+const resizeState = reactive({
+    active: false,
+    startX: 0,
+    startY: 0,
+    startWidth: 0,
+    startHeight: 0,
 })
 
 const hasInfo = computed(() => drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo))
@@ -98,7 +123,7 @@ function clampToViewport(nextX: number, nextY: number) {
     }
 
     const element = windowRef.value
-    const width = element?.offsetWidth ?? 384
+    const width = element?.offsetWidth ?? size.width
     const height = element?.offsetHeight ?? 220
     const maxX = Math.max(WINDOW_MARGIN, window.innerWidth - width - WINDOW_MARGIN)
     const maxY = Math.max(WINDOW_MARGIN, window.innerHeight - height - WINDOW_MARGIN)
@@ -121,8 +146,6 @@ async function ensureInitialPosition() {
         return
     }
 
-    // const element = windowRef.value
-    // const width = element?.offsetWidth ?? 384
     const initial = clampToViewport(WINDOW_MARGIN, WINDOW_MARGIN)
     position.x = initial.x
     position.y = initial.y
@@ -168,6 +191,55 @@ function startDrag(event: PointerEvent) {
     window.addEventListener('pointercancel', stopDrag)
 }
 
+function onResizeMove(event: PointerEvent) {
+    if (!resizeState.active) {
+        return
+    }
+
+    const newWidth = Math.max(
+        MIN_WIDTH,
+        resizeState.startWidth + (event.clientX - resizeState.startX)
+    )
+    const newHeight = Math.max(
+        MIN_HEIGHT,
+        resizeState.startHeight + (event.clientY - resizeState.startY)
+    )
+
+    size.width = newWidth
+    size.height = newHeight
+}
+
+function stopResize() {
+    if (!resizeState.active || typeof window === 'undefined') {
+        return
+    }
+
+    resizeState.active = false
+    window.removeEventListener('pointermove', onResizeMove)
+    window.removeEventListener('pointerup', stopResize)
+    window.removeEventListener('pointercancel', stopResize)
+}
+
+function startResize(event: PointerEvent) {
+    if (event.button !== 0 || !windowRef.value || typeof window === 'undefined') {
+        return
+    }
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    const rect = windowRef.value.getBoundingClientRect()
+    resizeState.active = true
+    resizeState.startX = event.clientX
+    resizeState.startY = event.clientY
+    resizeState.startWidth = rect.width
+    resizeState.startHeight = rect.height
+
+    window.addEventListener('pointermove', onResizeMove)
+    window.addEventListener('pointerup', stopResize)
+    window.addEventListener('pointercancel', stopResize)
+}
+
 function handleWindowResize() {
     const clamped = clampToViewport(position.x, position.y)
     position.x = clamped.x
@@ -195,6 +267,7 @@ onBeforeMount(() => {
 
 onBeforeUnmount(() => {
     stopDrag()
+    stopResize()
     unlistenGeometryChange?.()
     if (typeof window !== 'undefined') {
         window.removeEventListener('resize', handleWindowResize)
@@ -210,10 +283,18 @@ function closeWindow() {
     <div
         ref="windowRef"
         v-if="hasInfo && selectedLineString"
-        class="fixed z-9998 w-96"
-        :style="{ left: `${position.x}px`, top: `${position.y}px` }"
+        class="fixed z-9998 overflow-hidden"
+        :style="{
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+            width: `${size.width}px`,
+            height: size.height === 'auto' ? 'auto' : `${size.height}px`,
+        }"
     >
-        <UCard class="shadow-lg">
+        <UCard
+            class="h-full shadow-lg"
+            :ui="{ body: 'h-full overflow-auto' }"
+        >
             <template #header>
                 <div
                     class="flex items-center justify-between select-none"
@@ -249,5 +330,13 @@ function closeWindow() {
                 />
             </ElevationProfile>
         </UCard>
+
+        <div
+            class="absolute right-2 bottom-2 h-4 w-4 cursor-se-resize"
+            :class="resizeState.active ? 'opacity-100' : 'opacity-50 hover:opacity-100'"
+            @pointerdown="startResize"
+        >
+            <MoveDiagonal2 :size="16" />
+        </div>
     </div>
 </template>
