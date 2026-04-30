@@ -73,13 +73,17 @@ export default defineNuxtConfig({
             },
         },
         mode: isDevelopment ? 'development' : 'production',
+        server: {
+            // disable hot module reload in tests
+            hmr: process.env.NODE_ENV === 'test' ? false : true,
+        },
     },
     i18n: {
         // Disable automatic browser-language detection to prevent the i18n middleware
         // from redirecting unprefixed paths to locale roots reserved for the CMS.
         detectBrowserLanguage: false,
         // All locales use a prefix (/de/map, /fr/map, …) so routing is symmetric.
-        // /map and / are handled by server/routes/map.ts and server/routes/index.ts,
+        // /map and / are handled by the redirectLocale middleware
         // which redirect to /<lang>/map based on the i18n_redirected cookie.
         strategy: 'prefix',
         langDir: 'locales',

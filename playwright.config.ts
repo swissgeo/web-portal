@@ -2,14 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
     testDir: './tests/integration',
-    // Dev-mode Vite cold compile plus OpenLayers hydration needs a generous
-    // per-test budget when running locally against `pnpm run dev`.
-    timeout: 120_000,
-    // Default expect() timeout. 15s is enough for prod preview hydration;
-    // the HYDRATION_TIMEOUT guard in the spec file covers dev-mode cold starts.
-    expect: { timeout: 15_000 },
-    fullyParallel: true,
-    retries: 0,
+    retries: 1,
     workers: undefined,
     reporter: [['html', { open: 'never' }], ['list']],
     use: {
@@ -33,5 +26,12 @@ export default defineConfig({
         url: 'http://localhost:3000',
         reuseExistingServer: true,
         timeout: 120_000,
+        env: {
+            // env for the playwright running
+            // for the CI the same is used via .env.test
+            NODE_ENV: 'test',
+            NUXT_PUBLIC_OGC_API_ENDPOINT: 'http://mock-oar.org/api/oar',
+            NUXT_PUBLIC_API_ENDPOINT: 'http://mock-livingdocs.org/',
+        },
     },
 })

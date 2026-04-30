@@ -5,11 +5,9 @@ export default defineConfig({
     // Default expect() timeout. 15s is enough for prod preview hydration;
     // the HYDRATION_TIMEOUT guard in the spec file covers dev-mode cold starts.
     expect: { timeout: 15_000 },
-    fullyParallel: true,
     forbidOnly: true,
     retries: 2,
-    workers: undefined,
-    reporter: [['html', { open: 'never' }], ['list']],
+    reporter: [['junit', { open: 'never' }], ['list']],
     use: {
         baseURL: 'http://localhost:3000',
         trace: 'on-first-retry',

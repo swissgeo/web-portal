@@ -14,9 +14,30 @@
  * before setupFiles run. Happy-dom tests are completely unaffected.
  */
 
-const isNuxtEnv =
-    typeof window !== 'undefined' &&
-    !!(window as Record<string, unknown>).__NUXT_VITEST_ENVIRONMENT__
+import { vi } from 'vitest'
+
+const { isNuxtEnv } = vi.hoisted(() => {
+    const isNuxtEnv =
+        typeof window !== 'undefined' &&
+        !!(window as Record<string, unknown>).__NUXT_VITEST_ENVIRONMENT__
+    return { isNuxtEnv }
+})
+
+// neutralise the stateConfigSync plugin if in nuxt env,
+// otherwise the app created hook will run this and potentially interfere with the tests
+vi.mock('~/composables/useRestoreState', async (importOriginal) => {
+    if (isNuxtEnv) {
+        return {
+            STORAGE_KEY: 'swissgeo_app_state',
+            useRestoreState: () => ({
+                restore: vi.fn().mockResolvedValue(undefined),
+                listenToChange: vi.fn(),
+            }),
+        }
+    } else {
+        return await importOriginal()
+    }
+})
 
 if (isNuxtEnv) {
     const SILENCED_PATTERNS = [
