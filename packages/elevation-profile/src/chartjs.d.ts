@@ -5,7 +5,7 @@ import type { NoDataPluginOptions } from '@/chartjs-plugins/nodata.plugin'
 
 declare module 'chart.js' {
     interface PluginOptionsByType<TType extends ChartType> {
-        noData?: NoDataPluginOptions<TType>
+        noData?: NoDataPluginOptions
         dataModel?: DataModelPluginOptions<TType>
     }
 }
