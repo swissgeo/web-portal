@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { ElevationProfileResponse } from '@swissgeo/shared/api'
 
-import ElevationProfileMetadata from './ElevationProfileMetadata.vue'
-import ElevationProfilePlot from './ElevationProfilePlot.vue'
+import ElevationProfileMetadata from './components/ElevationProfileMetadata.vue'
+import ElevationProfilePlot from './components/ElevationProfilePlot.vue'
 
 defineProps<{
     profileResponse?: ElevationProfileResponse
