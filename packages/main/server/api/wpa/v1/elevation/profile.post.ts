@@ -1,5 +1,4 @@
 import type {
-    ElevationProfile,
     ElevationProfileMetadata,
     ElevationProfilePoint,
     ElevationProfileResponse,
@@ -8,6 +7,13 @@ import type { LineString, Position } from 'geojson'
 
 import log from '@swissgeo/log'
 import { createError } from 'h3'
+
+interface RawProfilePoint {
+    alts?: { COMB?: number; DTM2?: number; DTM25?: number }
+    dist: number
+    easting: number
+    northing: number
+}
 
 const ELEVATION_PROFILE_API_BASE_URL = 'https://api3.geo.admin.ch/rest/services/profile.json'
 const MAX_POINTS_PER_CHUNK = 3000
@@ -40,17 +46,27 @@ function chunkCoordinates(coordinates: Position[]): Position[][] {
     return chunks
 }
 
-async function fetchProfileChunk(coordinates: Position[]): Promise<ElevationProfile> {
-    return $fetch<ElevationProfile>(ELEVATION_PROFILE_API_BASE_URL, {
+async function fetchProfileChunk(coordinates: Position[]): Promise<RawProfilePoint[]> {
+    return $fetch<RawProfilePoint[]>(ELEVATION_PROFILE_API_BASE_URL, {
         method: 'POST',
         query: { offset: 0, sr: 2056, distinct_points: true },
         body: { type: 'LineString', coordinates },
     })
 }
 
+function toEnrichedPoint(raw: RawProfilePoint, distOffset: number): ElevationProfilePoint {
+    const elevation = raw.alts?.COMB
+    return {
+        dist: raw.dist + distOffset,
+        coordinate: [raw.easting, raw.northing],
+        elevation,
+        hasElevationData: elevation !== undefined,
+    }
+}
+
 function computeMetadata(points: ElevationProfilePoint[]): ElevationProfileMetadata {
-    const hasElevationData = points.some((p) => p.alts?.COMB !== undefined)
-    const hasDistanceData = points.some((p) => (p.dist ?? 0) > 0)
+    const hasElevationData = points.some((p) => p.hasElevationData)
+    const hasDistanceData = points.some((p) => p.dist > 0)
 
     if (!hasElevationData) {
         return {
@@ -66,10 +82,10 @@ function computeMetadata(points: ElevationProfilePoint[]): ElevationProfileMetad
         }
     }
 
-    const elevations = points.map((p) => p.alts?.COMB ?? 0)
+    const elevations = points.map((p) => p.elevation ?? 0)
     const minElevation = Math.min(...elevations)
     const maxElevation = Math.max(...elevations)
-    const elevationDifference = (points.at(-1)?.alts?.COMB ?? 0) - (points[0]?.alts?.COMB ?? 0)
+    const elevationDifference = (points.at(-1)?.elevation ?? 0) - (points[0]?.elevation ?? 0)
 
     let totalAscent = 0
     let totalDescent = 0
@@ -78,7 +94,7 @@ function computeMetadata(points: ElevationProfilePoint[]): ElevationProfileMetad
     for (let i = 1; i < points.length; i++) {
         const prev = points[i - 1]!
         const curr = points[i]!
-        const elevDelta = (curr.alts?.COMB ?? 0) - (prev.alts?.COMB ?? 0)
+        const elevDelta = (curr.elevation ?? 0) - (prev.elevation ?? 0)
         const distDelta = curr.dist - prev.dist
 
         if (elevDelta > 0) {
@@ -124,18 +140,16 @@ export default defineEventHandler(async (event) => {
         const points: ElevationProfilePoint[] = []
 
         for (const response of responses) {
-            for (const point of response) {
-                points.push({ ...point, dist: point.dist + distOffset })
+            for (const raw of response) {
+                points.push(toEnrichedPoint(raw, distOffset))
             }
             distOffset = points.at(-1)?.dist ?? distOffset
         }
 
-        const result: ElevationProfileResponse = {
+        return {
             points,
             metadata: computeMetadata(points),
-        }
-
-        return result
+        } satisfies ElevationProfileResponse
     } catch (error) {
         log.error(`Elevation profile upstream error: ${String(error)}`)
         throw createError({
