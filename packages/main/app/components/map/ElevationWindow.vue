@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import type { LineString } from 'geojson'
 import type { Feature } from 'ol'
+import type Map from 'ol/Map'
 import type { LineString as OlLineString, Polygon as OlPolygon, Geometry } from 'ol/geom'
+import type { Ref } from 'vue'
 
 import { useDrawingStore, resolveFeatureId } from '@swissgeo/drawing'
-import { ElevationProfile } from '@swissgeo/elevation-profile'
+import { ElevationProfile, ElevationProfileOpenLayersBridge } from '@swissgeo/elevation-profile'
 import { X } from 'lucide-vue-next'
 import GeoJSON from 'ol/format/GeoJSON'
-import { computed, nextTick, onBeforeUnmount, onBeforeMount, reactive, ref, watch } from 'vue'
+import { computed, inject, markRaw, nextTick, onBeforeUnmount, onBeforeMount, reactive, ref, watch } from 'vue'
 
 const drawingStore = useDrawingStore()
 const { t } = useI18n()
 const windowRef = ref<HTMLElement | null>(null)
 const olGeoJSON = new GeoJSON()
+const olMapRef = inject<Ref<Map | undefined>>('olMap')
+const olMap = computed(() => {
+    return olMapRef?.value ? markRaw(olMapRef.value) : undefined
+})
 const geometryRevision = ref(0)
 
 const WINDOW_MARGIN = 16
@@ -236,7 +242,12 @@ function closeWindow() {
             <ElevationProfile
                 :profile-response="elevationProfile"
                 :is-loading="elevationPending"
-            />
+            >
+                <ElevationProfileOpenLayersBridge
+                    v-if="olMap"
+                    :ol-instance="olMap"
+                />
+            </ElevationProfile>
         </UCard>
     </div>
 </template>

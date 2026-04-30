@@ -14,7 +14,9 @@ defineProps<{
         <ElevationProfilePlot
             v-if="profileResponse"
             :profile="profileResponse"
-        />
+        >
+            <slot />
+        </ElevationProfilePlot>
     </div>
 </template>
 

@@ -15,6 +15,7 @@ import proj4 from 'proj4'
 import dataModelPlugin from '@/chartjs-plugins/datamodel.plugin'
 import noDataPlugin from '@/chartjs-plugins/nodata.plugin'
 import ElevationProfile from '@/ElevationProfile.vue'
+import ElevationProfileOpenLayersBridge from '@/ElevationProfileOpenLayersBridge.vue'
 import '@/style.css'
 
 registerProj4(proj4)
@@ -22,4 +23,4 @@ registerProj4(proj4)
 ChartJS.register(CategoryScale, Filler, Legend, LinearScale, LineElement, PointElement, Tooltip)
 ChartJS.register(zoomPlugin, noDataPlugin, dataModelPlugin)
 
-export { ElevationProfile }
+export { ElevationProfile, ElevationProfileOpenLayersBridge }

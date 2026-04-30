@@ -4,7 +4,7 @@ import type Map from 'ol/Map'
 import type { Raw } from 'vue'
 
 import Overlay from 'ol/Overlay'
-import { computed, inject, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, watch } from 'vue'
 
 import type { GetPointBeingHoveredFunction } from '@/ElevationProfilePlot.vue'
 
@@ -15,61 +15,32 @@ const { olInstance } = defineProps<{
 const getPointBeingHovered = inject<GetPointBeingHoveredFunction>('getPointBeingHovered')
 
 const coordinate = computed<SingleCoordinate | undefined>(() => {
-    if (getPointBeingHovered) {
-        return getPointBeingHovered()?.coordinate
-    }
-    return undefined
+    return getPointBeingHovered?.()?.coordinate
 })
 
-const overlayAdded = ref<boolean>(false)
+const markerElement = document.createElement('div')
+markerElement.style.cssText =
+    'width:20px;height:20px;border-radius:50%;border:3px solid #dc2626;background:rgba(239,68,68,0.75);pointer-events:none;'
 
-const tooltipElement = useTemplateRef<HTMLDivElement>('tooltipElement')
-
-// Overlay that shows the corresponding position on the OL map when hovering over the profile graph.
 const currentHoverPosOverlay = new Overlay({
+    element: markerElement,
     positioning: 'center-center',
     stopEvent: false,
 })
+
 onMounted(() => {
-    if (tooltipElement.value) {
-        currentHoverPosOverlay.setElement(tooltipElement.value)
-    }
-    if (coordinate.value) {
-        currentHoverPosOverlay.setPosition(coordinate.value)
-        addHoverPositionOverlay()
-    }
+    olInstance.addOverlay(currentHoverPosOverlay)
 })
+
 onBeforeUnmount(() => {
-    removeHoverPositionOverlay()
+    olInstance.removeOverlay(currentHoverPosOverlay)
 })
 
-watch(coordinate, () => {
-    currentHoverPosOverlay.setPosition(coordinate.value)
-    if (coordinate.value) {
-        addHoverPositionOverlay()
-    } else {
-        removeHoverPositionOverlay()
-    }
+watch(coordinate, (val) => {
+    currentHoverPosOverlay.setPosition(val)
 })
-
-function addHoverPositionOverlay() {
-    if (!overlayAdded.value && olInstance) {
-        olInstance.addOverlay(currentHoverPosOverlay)
-        overlayAdded.value = true
-    }
-}
-function removeHoverPositionOverlay() {
-    if (overlayAdded.value && olInstance) {
-        olInstance.removeOverlay(currentHoverPosOverlay)
-        overlayAdded.value = false
-    }
-}
 </script>
 
 <template>
-    <div
-        ref="tooltipElement"
-        class="size-5 rounded-full border-3 border-red-600 bg-red-500/75"
-    ></div>
     <slot />
 </template>
