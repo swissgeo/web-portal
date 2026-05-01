@@ -5,8 +5,12 @@ import type {
 } from '@swissgeo/shared/api'
 import type { LineString, Position } from 'geojson'
 
+import { registerProj4 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
 import { createError } from 'h3'
+import proj4 from 'proj4'
+
+registerProj4(proj4)
 
 interface RawProfilePoint {
     alts?: { COMB?: number; DTM2?: number; DTM25?: number }
@@ -17,16 +21,22 @@ interface RawProfilePoint {
 
 const ELEVATION_PROFILE_API_BASE_URL = 'https://api3.geo.admin.ch/rest/services/profile.json'
 const MAX_POINTS_PER_CHUNK = 3000
+const LV95_EPSG = 'EPSG:2056'
 
-function isValidLineString(body: unknown): body is LineString {
+function isValidLineString(body: unknown): body is { geojson: LineString; sr?: number } {
     if (!body || typeof body !== 'object') {
         return false
     }
     const b = body as Record<string, unknown>
+    const geojson = b['geojson']
+    if (!geojson || typeof geojson !== 'object') {
+        return false
+    }
+    const g = geojson as Record<string, unknown>
     return (
-        b['type'] === 'LineString' &&
-        Array.isArray(b['coordinates']) &&
-        (b['coordinates'] as unknown[]).every(
+        g['type'] === 'LineString' &&
+        Array.isArray(g['coordinates']) &&
+        (g['coordinates'] as unknown[]).every(
             (coord) =>
                 Array.isArray(coord) &&
                 coord.length === 2 &&
@@ -36,6 +46,13 @@ function isValidLineString(body: unknown): body is LineString {
                 !isNaN(coord[1])
         )
     )
+}
+
+function reprojectCoordinatesToLV95(coordinates: Position[], srEpsg: string): Position[] {
+    if (srEpsg === LV95_EPSG) {
+        return coordinates
+    }
+    return coordinates.map((coord) => proj4(srEpsg, LV95_EPSG, coord))
 }
 
 function chunkCoordinates(coordinates: Position[]): Position[][] {
@@ -125,13 +142,19 @@ export default defineEventHandler(async (event) => {
     if (!isValidLineString(body)) {
         throw createError({
             statusCode: 400,
-            statusMessage: 'Invalid request body: expected a GeoJSON LineString with coordinates',
+            statusMessage:
+                'Invalid request body: expected { geojson: GeoJSON LineString, sr?: number }',
         })
     }
 
-    log.info(`Received elevation profile request with ${body.coordinates.length} points`)
+    const srEpsg = body.sr ? `EPSG:${body.sr}` : LV95_EPSG
+    const lv95Coordinates = reprojectCoordinatesToLV95(body.geojson.coordinates, srEpsg)
 
-    const chunks = chunkCoordinates(body.coordinates)
+    log.info(
+        `Received elevation profile request with ${lv95Coordinates.length} points (input sr: ${srEpsg})`
+    )
+
+    const chunks = chunkCoordinates(lv95Coordinates)
 
     try {
         const responses = await Promise.all(chunks.map(fetchProfileChunk))
