@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import DrawingPanel from '~/components/debug/DrawingPanel.vue'
 
+import FramePrintPanel from './FramePrintPanel'
+
 const isLayersPanelOpen = ref(false)
 const isImportPanelOpen = ref(false)
 const isImportLocalPanelOpen = ref(false)
 const isDrawingOpen = ref(false)
 const isSharePanelOpen = ref(false)
+const isPrintPanelOpen = ref(false)
 function toggleLayersPanel() {
     isLayersPanelOpen.value = !isLayersPanelOpen.value
 }
@@ -21,6 +24,11 @@ function toggleDrawing() {
 }
 function toggleStateConfig() {
     isSharePanelOpen.value = !isSharePanelOpen.value
+}
+function togglePrintPanel() {
+    isPrintPanelOpen.value = !isPrintPanelOpen.value
+    console.log("DEBUG");
+    
 }
 </script>
 
@@ -53,6 +61,12 @@ function toggleStateConfig() {
             v-if="isSharePanelOpen"
             @close="toggleStateConfig"
         />
+
+        <FramePrintPanel
+            v-if="isPrintPanelOpen"
+            @close="togglePrintPanel"
+        />
+
         <div
             class="flex gap-2"
             v-if="
@@ -60,7 +74,8 @@ function toggleStateConfig() {
                 !isImportPanelOpen &&
                 !isImportLocalPanelOpen &&
                 !isDrawingOpen &&
-                !isSharePanelOpen
+                !isSharePanelOpen  &&
+                !isPrintPanelOpen
             "
         >
             <UButton
@@ -86,6 +101,10 @@ function toggleStateConfig() {
             </UButton>
             <UButton @click="toggleStateConfig">
                 {{ $t('debug.openStateConfigPanel') }}
+            </UButton>
+
+            <UButton @click="togglePrintPanel">
+                Frame a print
             </UButton>
         </div>
     </div>
