@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { ElevationProfileResponse } from '@swissgeo/shared/api'
 
+import { LV95, registerProj4, WGS84 } from '@swissgeo/coordinates'
+import proj4 from 'proj4'
 import { computed, ref } from 'vue'
 
 import type { Labels as MetadataLabels } from './components/ElevationProfileMetadata.vue'
@@ -8,6 +10,8 @@ import type { Labels as PlotLabels } from './components/ElevationProfilePlot.vue
 
 import ElevationProfileMetadata from './components/ElevationProfileMetadata.vue'
 import ElevationProfilePlot from './components/ElevationProfilePlot.vue'
+
+registerProj4(proj4)
 
 const props = withDefaults(
     defineProps<{
@@ -66,17 +70,37 @@ function reverseProfile(profile: ElevationProfileResponse): ElevationProfileResp
     }
 }
 
-function exportCSV(profile: ElevationProfileResponse): void {
-    const csvContent =
-        'data:text/csv;charset=utf-8,' +
-        ['distance,elevation', ...profile.points.map((p) => `${p.dist},${p.elevation}`)].join('\n')
-    const encodedUri = encodeURI(csvContent)
+function triggerDownload(blob: Blob): void {
+    const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
-    link.setAttribute('href', encodedUri)
-    link.setAttribute('download', `${props.filename}.csv`)
+    link.href = url
+    link.download = props.filename.endsWith('.csv') ? props.filename : `${props.filename}.csv`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+}
+
+function exportCSV(profile: ElevationProfileResponse): void {
+    const csvData =
+        [
+            ['Distance', 'Altitude', 'Easting', 'Northing', 'Longitude', 'Latitude'],
+            ...profile.points.map((point) => {
+                const [lon, lat] = proj4(LV95.epsg, WGS84.epsg, point.coordinate)
+                const [x, y] = [point.coordinate[0], point.coordinate[1]]
+                return [
+                    point.dist,
+                    point.elevation,
+                    LV95.roundCoordinateValue(x),
+                    LV95.roundCoordinateValue(y),
+                    WGS84.roundCoordinateValue(lon),
+                    WGS84.roundCoordinateValue(lat),
+                ]
+            }),
+        ]
+            .map((row) => row.join(';'))
+            .join('\n') + '\n'
+    triggerDownload(new Blob([csvData], { type: 'text/csv' }))
 }
 </script>
 
@@ -106,7 +130,7 @@ function exportCSV(profile: ElevationProfileResponse): void {
                 size="md"
                 color="primary"
                 variant="solid"
-                @click="exportCSV(profile)"
+                @click="exportCSV(profile!)"
             />
         </ElevationProfileMetadata>
     </div>
