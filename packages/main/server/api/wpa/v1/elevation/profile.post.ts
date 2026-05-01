@@ -5,7 +5,7 @@ import type {
 } from '@swissgeo/shared/api'
 import type { LineString, Position } from 'geojson'
 
-import { registerProj4 } from '@swissgeo/coordinates'
+import { LV95, registerProj4 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
 import { createError } from 'h3'
 import proj4 from 'proj4'
@@ -21,7 +21,6 @@ interface RawProfilePoint {
 
 const ELEVATION_PROFILE_API_BASE_URL = 'https://api3.geo.admin.ch/rest/services/profile.json'
 const MAX_POINTS_PER_CHUNK = 3000
-const LV95_EPSG = 'EPSG:2056'
 
 function isValidLineString(body: unknown): body is { geojson: LineString; sr?: number } {
     if (!body || typeof body !== 'object') {
@@ -49,10 +48,10 @@ function isValidLineString(body: unknown): body is { geojson: LineString; sr?: n
 }
 
 function reprojectCoordinatesToLV95(coordinates: Position[], srEpsg: string): Position[] {
-    if (srEpsg === LV95_EPSG) {
+    if (srEpsg === LV95.epsg) {
         return coordinates
     }
-    return coordinates.map((coord) => proj4(srEpsg, LV95_EPSG, coord))
+    return coordinates.map((coord) => proj4(srEpsg, LV95.epsg, coord))
 }
 
 function chunkCoordinates(coordinates: Position[]): Position[][] {
@@ -147,7 +146,7 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    const srEpsg = body.sr ? `EPSG:${body.sr}` : LV95_EPSG
+    const srEpsg = body.sr ? `EPSG:${body.sr}` : LV95.epsg
     const lv95Coordinates = reprojectCoordinatesToLV95(body.geojson.coordinates, srEpsg)
 
     log.info(
