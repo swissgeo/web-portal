@@ -82,7 +82,10 @@ const metadataEntries = computed(() => {
                         :key="`${data.title}-${indexIcon}`"
                         :name="icon"
                     />
-                    <span data-cy="profile-popup-info">
+                    <span
+                        data-cy="profile-popup-info"
+                        class="font-mono"
+                    >
                         {{ data.value }}
                     </span>
                 </small>

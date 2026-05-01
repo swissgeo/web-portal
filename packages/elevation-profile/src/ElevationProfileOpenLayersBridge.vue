@@ -3,8 +3,8 @@ import type Map from 'ol/Map'
 import type { Raw } from 'vue'
 
 import { LV95 } from '@swissgeo/coordinates'
-import proj4 from 'proj4'
 import Overlay from 'ol/Overlay'
+import proj4 from 'proj4'
 import { computed, inject, onBeforeUnmount, onMounted, watch } from 'vue'
 
 import type { GetPointBeingHoveredFunction } from '@/components/ElevationProfilePlot.vue'
