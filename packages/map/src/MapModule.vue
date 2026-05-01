@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import log, { LogLevel } from '@swissgeo/log'
+
 import type { MapLayerRenderer } from '@/types'
 import type { Layer } from '@/types/layers'
 
@@ -6,7 +8,6 @@ import OpenLayersContextMenuPopup from './openlayers/OpenLayersContextMenuPopup.
 import OpenLayersMap from './openlayers/OpenLayersMap.vue'
 import OpenLayersMouseTracker from './openlayers/OpenLayersMouseTracker.vue'
 import OpenLayersScale from './openlayers/OpenLayersScale.vue'
-import log, { LogLevel } from '@swissgeo/log'
 import OpenLayersScalePrint from './openlayers/OpenLayersScalePrint.vue'
 
 log.wantedLevels = [LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error]
@@ -15,9 +16,8 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
     layers: Layer[]
     backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
-    displayMode: 'web' | 'print',
+    displayMode: 'web' | 'print'
 }>()
-
 </script>
 
 <template>
@@ -31,17 +31,17 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
             <slot />
 
             <template v-if="displayMode === 'web'">
-                <OpenLayersContextMenuPopup v-slot="slotProps" >
+                <OpenLayersContextMenuPopup v-slot="slotProps">
                     <slot
                         name="context-menu-popup"
                         v-bind="slotProps"
                     />
                 </OpenLayersContextMenuPopup>
-                <OpenLayersMouseTracker/>
+                <OpenLayersMouseTracker />
                 <OpenLayersScale />
             </template>
             <template v-else>
-                <OpenLayersScalePrint/>
+                <OpenLayersScalePrint />
             </template>
         </OpenLayersMap>
     </div>

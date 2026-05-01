@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import type { Map } from 'ol'
 import { LV95 } from '@swissgeo/coordinates'
-import log from '@swissgeo/log'
 import ScaleLine from 'ol/control/ScaleLine'
-import { computed, inject, onMounted, ref, toValue, useTemplateRef, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, ref, toValue, useTemplateRef, watch } from 'vue'
+
 import { useMapStore } from '@/stores/map'
 import usePositionStore from '@/stores/position'
-
 
 const scaleLineElement = useTemplateRef<HTMLElement>('scaleLineElement')
 
@@ -17,49 +16,49 @@ const showScaleLine = computed<boolean>(
     () => positionStore.projection.epsg === LV95.epsg || positionStore.zoom >= 9
 )
 
-
 const fontSizeFactor = ref<number>(1)
 const fontSize = computed(() => `${(10 * fontSizeFactor.value).toFixed(0)}px`)
 const { olMap } = storeToRefs(mapStore)
 
-watch(() => olMap, () => {
-
-    const olMapInstance = toValue(olMap)
-    if (!olMapInstance) {
-        return
-    }
-
-    olMapInstance.once('postrender', () => {
-        // The maximum width of the scale is a third of the map shortest side
-        let scaleMaxWidth = 300
-        const mapSize = olMapInstance.getSize()
-
-        if (mapSize && mapSize.length === 2) {
-            const shortestSide = Math.min((mapSize[0] as number), (mapSize[1] as number))
-
-            // A factor is applied to the font size and the every element defined with the
-            // unit 'em' is css to keep bar and text large enough on large prints
-            fontSizeFactor.value = 0.5 * (shortestSide/1000) + 0.5
-            scaleMaxWidth = shortestSide / 3
+watch(
+    () => olMap,
+    () => {
+        const olMapInstance = toValue(olMap)
+        if (!olMapInstance) {
+            return
         }
 
-        const scaleLine = new ScaleLine({
-            className:  "scale-bar",
-            bar: true,
-            maxWidth: scaleMaxWidth,
-            minWidth: scaleMaxWidth * 0.66, // the min size is 2/3rd of the max size
+        olMapInstance.once('postrender', () => {
+            // The maximum width of the scale is a third of the map shortest side
+            let scaleMaxWidth = 300
+            const mapSize = olMapInstance.getSize()
+
+            if (mapSize && mapSize.length === 2) {
+                const shortestSide = Math.min(mapSize[0], mapSize[1])
+
+                // A factor is applied to the font size and the every element defined with the
+                // unit 'em' is css to keep bar and text large enough on large prints
+                fontSizeFactor.value = 0.5 * (shortestSide / 1000) + 0.5
+                scaleMaxWidth = shortestSide / 3
+            }
+
+            const scaleLine = new ScaleLine({
+                className: 'scale-bar',
+                bar: true,
+                maxWidth: scaleMaxWidth,
+                minWidth: scaleMaxWidth * 0.66, // the min size is 2/3rd of the max size
+            })
+
+            if (scaleLineElement.value) {
+                scaleLine.setTarget(scaleLineElement.value)
+            }
+            olMapInstance.addControl(scaleLine)
         })
-
-        if (scaleLineElement.value) {
-            scaleLine.setTarget(scaleLineElement.value)
-        }
-        olMapInstance.addControl(scaleLine)
-    })
-}, {
-    immediate: true
-})
-
-
+    },
+    {
+        immediate: true,
+    }
+)
 </script>
 
 <template>
@@ -106,7 +105,6 @@ watch(() => olMap, () => {
     display: flex;
 }
 
-
 .scale-line-container-print .scale-bar .ol-scale-step-marker {
     width: 1px;
     height: 2em;
@@ -140,7 +138,7 @@ watch(() => olMap, () => {
 }
 
 .scale-line-container-print .ol-scale-singlebar-even {
-    background-color: #FFFFFF !important;
+    background-color: #ffffff !important;
 }
 
 .scale-line-container-print .ol-scale-singlebar-odd {
@@ -160,8 +158,8 @@ watch(() => olMap, () => {
     .scale-line-container-print .ol-scale-step-marker,
     .scale-line-container-print .ol-scale-step-text,
     .scale-line-container-print .ol-scale-text {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
     .scale-line-container-print .ol-scale-singlebar {

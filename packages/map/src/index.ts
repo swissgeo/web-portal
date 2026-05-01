@@ -1,5 +1,4 @@
 import './stylesheet.css'
-
 import '../env.d.ts' // for reproject
 import useAddLayerToMap from './composables/useAddLayerToMap.composable'
 import MapModule from './MapModule.vue'
