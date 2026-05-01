@@ -938,9 +938,6 @@ importers:
       proj4:
         specifier: 'catalog:'
         version: 2.20.2
-      qrcode:
-        specifier: ^1.5.4
-        version: 1.5.4
       sanitize-html:
         specifier: 'catalog:'
         version: 2.17.0

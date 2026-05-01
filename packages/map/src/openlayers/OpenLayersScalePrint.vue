@@ -4,13 +4,14 @@ import { LV95 } from '@swissgeo/coordinates'
 import log from '@swissgeo/log'
 import ScaleLine from 'ol/control/ScaleLine'
 import { computed, inject, onMounted, ref, toValue, useTemplateRef, watch } from 'vue'
-
+import { useMapStore } from '@/stores/map'
 import usePositionStore from '@/stores/position'
 
 
 const scaleLineElement = useTemplateRef<HTMLElement>('scaleLineElement')
 
 const positionStore = usePositionStore()
+const mapStore = useMapStore()
 
 const showScaleLine = computed<boolean>(
     () => positionStore.projection.epsg === LV95.epsg || positionStore.zoom >= 9
@@ -19,11 +20,7 @@ const showScaleLine = computed<boolean>(
 
 const fontSizeFactor = ref<number>(1)
 const fontSize = computed(() => `${(10 * fontSizeFactor.value).toFixed(0)}px`)
-
-
-
-const olMap = inject<Map>('olMap')
-
+const { olMap } = storeToRefs(mapStore)
 
 watch(() => olMap, () => {
 
