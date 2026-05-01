@@ -3,7 +3,7 @@ import type { ElevationProfileResponse } from '@swissgeo/shared/api'
 
 import { LV95, registerProj4, WGS84 } from '@swissgeo/coordinates'
 import proj4 from 'proj4'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import type { Labels as MetadataLabels } from './components/ElevationProfileMetadata.vue'
 import type { Labels as PlotLabels } from './components/ElevationProfilePlot.vue'
@@ -13,36 +13,22 @@ import ElevationProfilePlot from './components/ElevationProfilePlot.vue'
 
 registerProj4(proj4)
 
+export interface Labels {
+    plot: PlotLabels
+    metadata: MetadataLabels
+}
+
 const props = withDefaults(
     defineProps<{
         profileResponse: ElevationProfileResponse
         isLoading: boolean
+        labels: Labels
         filename?: string
     }>(),
     {
         filename: 'export',
     }
 )
-
-const labels: {
-    plot: PlotLabels
-    metadata: MetadataLabels
-} = {
-    plot: {
-        xAxis: 'Distance',
-        yAxis: 'Elevation',
-        noData: 'No elevation data available',
-    },
-    metadata: {
-        elevationDifference: 'Difference of altitude start-end',
-        elevationUp: 'Ascent',
-        elevationDown: 'Descent',
-        poiUp: 'Highest point',
-        poiDown: 'Lowest point',
-        distance: 'Linear distance',
-        slopeDistance: 'Path distance',
-    },
-}
 
 const isReverse = ref<boolean>(false)
 const profile = computed<ElevationProfileResponse | undefined>(() => {

@@ -42,7 +42,8 @@ const {
     () => props.profile,
     chartRef,
     profileChartContainerRef,
-    profileTooltipRef
+    profileTooltipRef,
+    () => props.labels
 )
 </script>
 

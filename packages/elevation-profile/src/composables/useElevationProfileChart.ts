@@ -27,6 +27,7 @@ import { computed, onMounted, onUnmounted, provide, ref, toValue } from 'vue'
 import type {
     ScreenPoint,
     GetPointBeingHoveredFunction,
+    Labels,
 } from '@/components/ElevationProfilePlot.vue'
 
 import { BORDER_COLOR, FILL_COLOR } from '@/config'
@@ -45,7 +46,8 @@ export function useElevationProfileChart(
     profile: MaybeRefOrGetter<ElevationProfileResponse>,
     chartRef: Ref<{ chart?: Chart } | null>,
     profileChartContainerRef: Ref<HTMLDivElement | null>,
-    profileTooltipRef: Ref<HTMLDivElement | null>
+    profileTooltipRef: Ref<HTMLDivElement | null>,
+    labels: MaybeRefOrGetter<Labels>
 ) {
     const track = ref<boolean>(false)
     const pointBeingHovered = ref<ScreenPoint>()
@@ -58,6 +60,7 @@ export function useElevationProfileChart(
     const profilePoints: ComputedRef<ElevationProfilePoint[]> = computed(
         () => toValue(profile).points
     )
+    const profileLabels: ComputedRef<Labels> = computed(() => toValue(labels))
 
     const maxElevation = computed(() => profileMetadata.value.maxElevation ?? 0)
     const minElevation = computed(() => profileMetadata.value.minElevation ?? 0)
@@ -153,7 +156,7 @@ export function useElevationProfileChart(
                 max: totalLinearDist.value,
                 title: {
                     display: true,
-                    text: `Distance label [${unitUsedOnDistanceAxis.value}]`,
+                    text: `${profileLabels.value.xAxis} [${unitUsedOnDistanceAxis.value}]`,
                     font: { weight: 'bold' },
                     padding: 0,
                 },
@@ -165,7 +168,7 @@ export function useElevationProfileChart(
             y: {
                 title: {
                     display: true,
-                    text: `Elevation [m]`,
+                    text: `${profileLabels.value.yAxis} [m]`,
                     font: { weight: 'bold' },
                 },
                 min: yAxisMinimumValue.value,
@@ -261,7 +264,7 @@ export function useElevationProfileChart(
                 zoom: chartJsZoomOptions.value,
                 legend: { display: false },
                 tooltip: chartJsTooltipConfiguration.value,
-                noData: { points: profilePoints.value },
+                noData: { points: profilePoints.value, noDataText: profileLabels.value.noData },
             } as ChartOptions<'line'>['plugins'],
             scales: chartJsScalesConfiguration.value,
             interaction: { mode: 'index', intersect: false },

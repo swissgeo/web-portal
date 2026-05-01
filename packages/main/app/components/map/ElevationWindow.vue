@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Labels } from '@swissgeo/elevation-profile'
 import type { LineString } from 'geojson'
 import type { Feature } from 'ol'
 import type { LineString as OlLineString, Polygon as OlPolygon, Geometry } from 'ol/geom'
@@ -21,6 +22,7 @@ import {
     ref,
     watch,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const drawingStore = useDrawingStore()
 const positionStore = usePositionStore()
@@ -66,6 +68,23 @@ const resizeState = reactive({
     startWidth: 0,
     startHeight: 0,
 })
+
+const labels = computed<Labels>(() => ({
+    plot: {
+        xAxis: t('elevationProfile.plot.xAxis'),
+        yAxis: t('elevationProfile.plot.yAxis'),
+        noData: t('elevationProfile.plot.noData'),
+    },
+    metadata: {
+        elevationDifference: t('elevationProfile.metadata.elevationDifference'),
+        elevationUp: t('elevationProfile.metadata.elevationUp'),
+        elevationDown: t('elevationProfile.metadata.elevationDown'),
+        poiUp: t('elevationProfile.metadata.poiUp'),
+        poiDown: t('elevationProfile.metadata.poiDown'),
+        distance: t('elevationProfile.metadata.distance'),
+        slopeDistance: t('elevationProfile.metadata.slopeDistance'),
+    },
+}))
 
 const hasInfo = computed(() => drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo))
 
@@ -316,7 +335,7 @@ function closeWindow() {
                     <div class="flex items-center gap-2">
                         <span class="text-xs leading-none text-gray-400">⋮⋮</span>
                         <p class="text-sm font-medium text-gray-700">
-                            {{ t('debug.drawingFeatureInfo.windowTitle') }}
+                            {{ t('elevationProfile.windowTitle') }}
                         </p>
                     </div>
                     <UButton
@@ -336,6 +355,7 @@ function closeWindow() {
                 v-if="elevationProfile"
                 :profile-response="elevationProfile"
                 :is-loading="elevationPending"
+                :labels="labels"
             >
                 <ElevationProfileOpenLayersBridge
                     v-if="olMap"
