@@ -333,6 +333,7 @@ function closeWindow() {
             </template>
 
             <ElevationProfile
+                v-if="elevationProfile"
                 :profile-response="elevationProfile"
                 :is-loading="elevationPending"
             >

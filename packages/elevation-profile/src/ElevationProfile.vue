@@ -9,10 +9,16 @@ import type { Labels as PlotLabels } from './components/ElevationProfilePlot.vue
 import ElevationProfileMetadata from './components/ElevationProfileMetadata.vue'
 import ElevationProfilePlot from './components/ElevationProfilePlot.vue'
 
-const props = defineProps<{
-    profileResponse?: ElevationProfileResponse
-    isLoading: boolean
-}>()
+const props = withDefaults(
+    defineProps<{
+        profileResponse: ElevationProfileResponse
+        isLoading: boolean
+        filename?: string
+    }>(),
+    {
+        filename: 'export',
+    }
+)
 
 const labels: {
     plot: PlotLabels
@@ -67,7 +73,7 @@ function exportCSV(profile: ElevationProfileResponse): void {
     const encodedUri = encodeURI(csvContent)
     const link = document.createElement('a')
     link.setAttribute('href', encodedUri)
-    link.setAttribute('download', 'elevation_profile.csv')
+    link.setAttribute('download', `${props.filename}.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
