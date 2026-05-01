@@ -2,6 +2,7 @@
 import type { ElevationProfileMetadata } from '@swissgeo/shared/api'
 
 import { computed } from 'vue'
+
 import { formatDistance, formatElevation } from '../utils'
 
 export interface Labels {

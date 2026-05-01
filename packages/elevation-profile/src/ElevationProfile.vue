@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
 import type { ElevationProfileResponse } from '@swissgeo/shared/api'
+
+import { computed, ref } from 'vue'
+
+import type { Labels as MetadataLabels } from './components/ElevationProfileMetadata.vue'
+import type { Labels as PlotLabels } from './components/ElevationProfilePlot.vue'
 
 import ElevationProfileMetadata from './components/ElevationProfileMetadata.vue'
 import ElevationProfilePlot from './components/ElevationProfilePlot.vue'
-
-import type { Labels as PlotLabels } from './components/ElevationProfilePlot.vue'
-import type { Labels as MetadataLabels } from './components/ElevationProfileMetadata.vue'
 
 const props = defineProps<{
     profileResponse?: ElevationProfileResponse
