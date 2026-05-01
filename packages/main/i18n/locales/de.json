@@ -173,5 +173,22 @@
         "showOnMap": "Auf der Karte anzeigen",
         "backToMap": "Zurück zur Karte",
         "addToMapError": "Ebene konnte nicht zur Karte hinzugefügt werden"
+    },
+    "elevationProfile": {
+        "windowTitle": "Höhenprofil",
+        "plot": {
+            "xAxis": "Entfernung",
+            "yAxis": "Höhe",
+            "noData": "Keine Höhendaten verfügbar"
+        },
+        "metadata": {
+            "elevationDifference": "Höhenunterschied",
+            "elevationUp": "Anstieg",
+            "elevationDown": "Abstieg",
+            "poiUp": "Höchster Punkt",
+            "poiDown": "Tiefster Punkt",
+            "distance": "Lineare Entfernung",
+            "slopeDistance": "Pfadentfernung"
+        }
     }
 }

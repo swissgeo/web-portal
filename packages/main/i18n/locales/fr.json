@@ -173,5 +173,22 @@
         "showOnMap": "Voir sur la carte",
         "backToMap": "Retour à la carte",
         "addToMapError": "Impossible d'ajouter la couche à la carte"
+    },
+    "elevationProfile": {
+        "windowTitle": "Profil d'élévation",
+        "plot": {
+            "xAxis": "Distance",
+            "yAxis": "Élévation",
+            "noData": "Aucune donnée d'élévation disponible"
+        },
+        "metadata": {
+            "elevationDifference": "Différence d'élévation",
+            "elevationUp": "Montée",
+            "elevationDown": "Descente",
+            "poiUp": "Point le plus haut",
+            "poiDown": "Point le plus bas",
+            "distance": "Distance linéaire",
+            "slopeDistance": "Distance du trajet"
+        }
     }
 }
