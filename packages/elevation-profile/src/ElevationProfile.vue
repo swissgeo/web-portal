@@ -43,19 +43,21 @@ const profile = computed<ElevationProfileResponse | undefined>(() => {
 })
 
 function reverseProfile(profile: ElevationProfileResponse): ElevationProfileResponse {
-    const reversedProfile = {
+    const totalDist = profile.points.at(-1)?.dist ?? 0
+    const points = [...profile.points].reverse().map((point) => ({
+        ...point,
+        dist: totalDist - point.dist,
+    }))
+    return {
         ...profile,
         metadata: {
             ...profile.metadata,
             elevationDifference: -profile.metadata.elevationDifference,
             totalAscent: profile.metadata.totalDescent,
             totalDescent: profile.metadata.totalAscent,
-            maxElevation: profile.metadata.maxElevation,
-            minElevation: profile.metadata.minElevation,
         },
-        points: [...profile.points].reverse(),
+        points,
     }
-    return reversedProfile
 }
 
 function exportCSV(profile: ElevationProfileResponse): void {
@@ -93,7 +95,6 @@ function exportCSV(profile: ElevationProfileResponse): void {
                 variant="solid"
                 @click="isReverse = !isReverse"
             />
-
             <UButton
                 icon="i-lucide-download"
                 size="md"
