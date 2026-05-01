@@ -12,6 +12,8 @@ import {
 import zoomPlugin from 'chartjs-plugin-zoom'
 import proj4 from 'proj4'
 
+import type { Labels } from '@/ElevationProfile.vue'
+
 import dataModelPlugin from '@/chartjs-plugins/datamodel.plugin'
 import noDataPlugin from '@/chartjs-plugins/nodata.plugin'
 import ElevationProfile from '@/ElevationProfile.vue'
@@ -24,3 +26,4 @@ ChartJS.register(CategoryScale, Filler, Legend, LinearScale, LineElement, PointE
 ChartJS.register(zoomPlugin, noDataPlugin, dataModelPlugin)
 
 export { ElevationProfile, ElevationProfileOpenLayersBridge }
+export type { Labels }
