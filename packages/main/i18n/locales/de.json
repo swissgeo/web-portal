@@ -19,6 +19,9 @@
         "layers_results_header": "Layer",
         "no_results": "Keine Ergebnisse gefunden"
     },
+    "footer": {
+        "copyRightData": "© Daten: "
+    },
     "debug": {
         "openImportLocalLayersPanel": "Import Lokale Layer Panel öffnen",
         "openDrawingPanel": "Zeichenpanel öffnen",

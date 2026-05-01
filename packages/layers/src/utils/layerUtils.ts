@@ -69,7 +69,11 @@ export const getInfoFromDataset = (dataset: Dataset): LayerInfo => {
         }
     }
 
-    const attributionName = properties.attribution
+    const contactOrganisation = properties.contacts?.[0]?.organisation?.trim()
+    const attributionName =
+        contactOrganisation && contactOrganisation.length > 0
+            ? contactOrganisation
+            : properties.attribution
 
     let attribution
     if (attributionName) {
@@ -85,7 +89,6 @@ export const getInfoFromDataset = (dataset: Dataset): LayerInfo => {
         ...{ displayName },
         ...{ attribution },
         abstract,
-        // TODO also do contacts
     }
 }
 

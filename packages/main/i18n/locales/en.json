@@ -19,6 +19,9 @@
         "layers_results_header": "Layers",
         "no_results": "No results found"
     },
+    "footer": {
+        "copyRightData": "© Data: "
+    },
     "debug": {
         "openImportLocalLayersPanel": "Open Import Local Layers Panel",
         "openDrawingPanel": "Open Drawing Panel",

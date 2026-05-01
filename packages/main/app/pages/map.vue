@@ -8,6 +8,7 @@ import { useLayerStore, isDatasetLayer } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { MapModule } from '@swissgeo/map'
 
+import { useAttributionSources } from '@/composables/useAttributionSources'
 import { useGeolocationStore } from '@/stores/geolocation'
 import { projectLayersForMap } from '@/utils/layerOrder'
 
@@ -81,6 +82,11 @@ function removeBackgroundLayerData() {
 function updateLayerInfo(layerUuid: string, info: LayerInfo) {
     layerStore.setLayerInfo(layerUuid, info)
 }
+
+const { sources: attributionSources } = useAttributionSources(
+    computed(() => layerStore.layers),
+    computed(() => layerStore.backgroundLayer)
+)
 </script>
 
 <template>
@@ -132,6 +138,7 @@ function updateLayerInfo(layerUuid: string, info: LayerInfo) {
             <MapOpenLayersGeolocationFeedback
                 v-if="geolocationStore.active && geolocationStore.position"
             />
+            <MapAttributionList :sources="attributionSources" />
         </MapModule>
         <Toolbox />
         <DebugPanel

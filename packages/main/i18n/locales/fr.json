@@ -19,6 +19,9 @@
         "layers_results_header": "Couches",
         "no_results": "Aucun résultat trouvé"
     },
+    "footer": {
+        "copyRightData": "© Données: "
+    },
     "debug": {
         "openImportLocalLayersPanel": "Ouvrir le panneau d'importation des couches locales",
         "openDrawingPanel": "Ouvrir le panneau de dessin",
