@@ -3,7 +3,7 @@ import type { ElevationProfileResponse } from '@swissgeo/shared/api'
 
 import { LV95, registerProj4, WGS84 } from '@swissgeo/coordinates'
 import proj4 from 'proj4'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
 import type { Labels as MetadataLabels } from './components/ElevationProfileMetadata.vue'
 import type { Labels as PlotLabels } from './components/ElevationProfilePlot.vue'
