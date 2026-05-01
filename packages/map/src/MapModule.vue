@@ -39,12 +39,6 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
                 </OpenLayersContextMenuPopup>
                 <OpenLayersMouseTracker/>
                 <OpenLayersScale />
-                <!-- 
-                <MapFooterAttributionList
-                    :layers="layers"
-                    :background-layer="backgroundLayer"
-                />
-                -->
             </template>
             <template v-else>
                 <OpenLayersScalePrint/>

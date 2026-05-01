@@ -87,7 +87,7 @@ const { sources: attributionSources } = useAttributionSources(
     computed(() => layerStore.layers),
     computed(() => layerStore.backgroundLayer)
 )
-const displayMode = inject<'web' | 'print'>('displayMode')
+
 // The display mode is defined in the layout
 const displayMode = inject<'web' | 'print'>('displayMode', 'web')
 </script>
@@ -140,9 +140,9 @@ const displayMode = inject<'web' | 'print'>('displayMode', 'web')
                 />
             </template>
             <MapOpenLayersGeolocationFeedback
-                v-if="geolocationStore.active && geolocationStore.position"
+                v-if="geolocationStore.active && geolocationStore.position && displayMode === 'web'"
             />
-            <MapAttributionList :sources="attributionSources" />
+            <MapAttributionList v-if="displayMode === 'web'" :sources="attributionSources" />
         </MapModule>
         <Toolbox
             v-if="displayMode === 'web'"
