@@ -7,6 +7,7 @@ import type { Ref } from 'vue'
 
 import { useDrawingStore, resolveFeatureId } from '@swissgeo/drawing'
 import { ElevationProfile, ElevationProfileOpenLayersBridge } from '@swissgeo/elevation-profile'
+import { usePositionStore } from '@swissgeo/map'
 import { X, MoveDiagonal2 } from 'lucide-vue-next'
 import GeoJSON from 'ol/format/GeoJSON'
 import {
@@ -22,9 +23,17 @@ import {
 } from 'vue'
 
 const drawingStore = useDrawingStore()
+const positionStore = usePositionStore()
 const { t } = useI18n()
 const windowRef = ref<HTMLElement | null>(null)
-const olGeoJSON = new GeoJSON()
+const mapProjectionEpsg = computed(() => positionStore.projection.epsg)
+const olGeoJSON = computed(
+    () =>
+        new GeoJSON({
+            featureProjection: mapProjectionEpsg.value,
+            dataProjection: mapProjectionEpsg.value,
+        })
+)
 const olMapRef = inject<Ref<Map | undefined>>('olMap')
 const olMap = computed(() => {
     return olMapRef?.value ? markRaw(olMapRef.value) : undefined
@@ -100,7 +109,7 @@ const selectedLineString = computed<LineString | null>(() => {
     const type = geometry?.getType()
 
     if (type === 'LineString') {
-        return olGeoJSON.writeGeometryObject(geometry as OlLineString) as LineString
+        return olGeoJSON.value.writeGeometryObject(geometry as OlLineString) as LineString
     }
 
     if (type === 'Polygon') {
@@ -115,7 +124,10 @@ const selectedLineString = computed<LineString | null>(() => {
     return null
 })
 
-const { elevationProfile, elevationPending } = useElevationProfile(selectedLineString)
+const { elevationProfile, elevationPending } = useElevationProfile(
+    selectedLineString,
+    () => positionStore.projection.epsgNumber
+)
 
 function clampToViewport(nextX: number, nextY: number) {
     if (typeof window === 'undefined') {
@@ -327,6 +339,7 @@ function closeWindow() {
                 <ElevationProfileOpenLayersBridge
                     v-if="olMap"
                     :ol-instance="olMap"
+                    :map-projection="mapProjectionEpsg"
                 />
             </ElevationProfile>
         </UCard>
