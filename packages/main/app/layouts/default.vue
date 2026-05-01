@@ -47,7 +47,7 @@ async function onSearchResultSelected(result: SearchResult) {
 <template>
     <main
         ref="main"
-        class="font-sans"
+        class="h-screen font-sans"
     >
         <div class="relative h-screen">
             <SideBar

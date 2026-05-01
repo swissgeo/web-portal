@@ -82,7 +82,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="h-screen overflow-y-auto pt-10 pr-8 pb-10 pl-8">
-        <ContentRenderer :containers="containers" />
-    </div>
+    <NuxtLayout>
+        <div class="h-screen overflow-y-auto pt-10 pr-8 pb-10 pl-8">
+            <ContentRenderer :containers="containers" />
+        </div>
+    </NuxtLayout>
 </template>

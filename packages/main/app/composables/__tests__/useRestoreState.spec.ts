@@ -1,4 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const { watcherCallbackRef } = vi.hoisted(() => {
@@ -34,6 +35,9 @@ const mockExportState = ref({
 
 mockNuxtImport('useNuxtApp', mocks.useNuxtApp)
 mockNuxtImport('useToaster', mocks.useToaster)
+mockNuxtImport('useRoute', mocks.useRoute)
+mockNuxtImport('useRouter', mocks.useRouter)
+mockNuxtImport('onNuxtReady', mocks.onNuxtReady)
 
 vi.mock('~/composables/useStateConfig', () => ({
     useStateConfig: () => ({
@@ -44,6 +48,7 @@ vi.mock('~/composables/useStateConfig', () => ({
 
 describe('useRestoreState', () => {
     beforeEach(() => {
+        setActivePinia(createPinia())
         sessionStorage.clear()
         vi.clearAllMocks()
     })
@@ -119,9 +124,11 @@ describe('useRestoreState', () => {
 
         it('skips the first watcher fire after a successful import (isImporting flag)', async () => {
             const stored = JSON.stringify({
-                version: 2,
-                map: { center: [0, 0], zoom: 10, rotation: 0 },
-                layers: [],
+                version: '2.0.0',
+                state: {
+                    map: { center: [2600000, 1200000], zoom: 10, rotation: 0 },
+                    layers: [],
+                },
             })
             sessionStorage.setItem(STORAGE_KEY, stored)
             const { restore } = useRestoreState()

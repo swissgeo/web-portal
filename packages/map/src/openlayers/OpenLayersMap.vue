@@ -13,6 +13,7 @@ import type { Layer } from '@/types/layers'
 
 import useViewBasedOnProjection from '@/composables/useViewBasedOnProjection.composable'
 
+import { useMapStore } from '../stores/map'
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
@@ -24,6 +25,7 @@ const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
 
 const mapElement = useTemplateRef('mapElement')
 const olMap = shallowRef<OlMapType>()
+const mapStore = useMapStore()
 
 provide<Ref<OlMapType | undefined>>('olMap', olMap)
 
@@ -43,6 +45,11 @@ function createOlMap() {
     olMap.value = map
 
     useViewBasedOnProjection(olMap.value)
+    mapStore.setOlMap(map)
+
+    map.once('loadend', () => {
+        mapStore.setIsMapLoaded()
+    })
 }
 
 function mountOlMap() {

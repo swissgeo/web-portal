@@ -60,20 +60,18 @@ describe('useUrlParams state extraction', () => {
     })
 
     it('Extracts the state id from the URL correctly', () => {
-        const { extractStateId } = useUrlParams()
+        const { getStateIdFromUrl } = useUrlParams()
 
-        const stateId = extractStateId()
+        const stateId = getStateIdFromUrl()
         expect(stateId).toEqual('ABC')
-        expect(useRouterMock.replace).toHaveBeenCalled()
     })
 
     it('Extracts the first state param if there are multiple', () => {
         useRouteMock.query.state = ['DEF', 'GHI']
-        const { extractStateId } = useUrlParams()
+        const { getStateIdFromUrl } = useUrlParams()
 
-        const stateId = extractStateId()
+        const stateId = getStateIdFromUrl()
         expect(stateId).toEqual('DEF')
-        expect(useRouterMock.replace).toHaveBeenCalled()
     })
 
     it("Returns null if there's no state param", () => {
@@ -81,9 +79,9 @@ describe('useUrlParams state extraction', () => {
             // @ts-expect-error Specifying another param to test the absence
             anotherParam: 'value',
         }
-        const { extractStateId } = useUrlParams()
+        const { getStateIdFromUrl } = useUrlParams()
 
-        const stateId = extractStateId()
+        const stateId = getStateIdFromUrl()
         expect(stateId).toBeNull()
     })
 
@@ -92,9 +90,9 @@ describe('useUrlParams state extraction', () => {
             // @ts-expect-error Intentionally breaking the type here
             state: 3,
         }
-        const { extractStateId } = useUrlParams()
+        const { getStateIdFromUrl } = useUrlParams()
 
-        const stateId = extractStateId()
+        const stateId = getStateIdFromUrl()
         expect(stateId).toBeNull()
     })
 
@@ -107,6 +105,6 @@ describe('useUrlParams state extraction', () => {
         const getStateSpy = vi.fn(getStateFromUrl)
         const state = await getStateSpy()
         expect(getStateSpy).toHaveResolved()
-        expect(state).toBeNull()
+        expect(state).toMatchObject({ state: null, stateId: '' })
     })
 })

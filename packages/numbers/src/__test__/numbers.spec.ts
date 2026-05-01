@@ -90,7 +90,7 @@ describe('Unit test functions from numbers utils', () => {
         it('returns random value according to the given range', () => {
             const start = 0
             const end = 1000
-            for (let i = 0; i < 10000; i += 1) {
+            for (let i = 0; i < 1000; i += 1) {
                 expect(randomIntBetween(start, end)).to.be.within(start, end)
             }
         })

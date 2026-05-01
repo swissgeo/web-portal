@@ -19,6 +19,7 @@
         "type-check": "nuxt typecheck"
     },
     "dependencies": {
+        "@chenfengyuan/vue-qrcode": "catalog:",
         "@floating-ui/vue": "catalog:",
         "@fontsource/dm-sans": "catalog:",
         "@fontsource/geologica": "catalog:",
