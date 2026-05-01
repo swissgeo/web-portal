@@ -32,10 +32,10 @@ export function useRestoreState() {
         const viewStore = useMapViewStore()
         const { getStateFromUrl, getZoomFromUrl } = useUrlParams()
         const zoomFromUrl = getZoomFromUrl()
-        
+
         try {
             const { state, stateId } = await getStateFromUrl()
-             
+
             log.debug({
                 title: 'useRestoreState',
                 titleColor: LogPreDefinedColor.Sky,
@@ -52,7 +52,7 @@ export function useRestoreState() {
                 if (zoomFromUrl) {
                     config.state.map.zoom = zoomFromUrl
                 }
-                
+
                 await importState(config)
                 sessionStorage.setItem(STORAGE_KEY, JSON.stringify(config))
                 return
@@ -78,7 +78,7 @@ export function useRestoreState() {
                 if (zoomFromUrl) {
                     config.state.map.zoom = zoomFromUrl
                 }
-                
+
                 await importState(config)
                 log.info({
                     title: 'useRestoreState',

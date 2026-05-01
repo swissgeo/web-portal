@@ -49,7 +49,7 @@ function createOlMap() {
 
     map.once('loadend', () => {
         mapStore.setIsMapLoaded()
-    });
+    })
 }
 
 function mountOlMap() {

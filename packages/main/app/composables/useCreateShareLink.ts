@@ -10,7 +10,7 @@ function buildShareUrl(stateId: string | null): string {
     const url = new URL('', location.origin)
     url.searchParams.set('state', stateId)
     return url.href
-} 
+}
 
 export function useCreateShareLink(state?: Ref<AppStatePayload>) {
     let usableState = state
@@ -19,7 +19,7 @@ export function useCreateShareLink(state?: Ref<AppStatePayload>) {
         const { exportState } = useStateConfig()
         usableState = exportState
     }
-    
+
     const runtimeConfig = useRuntimeConfig()
 
     // intentionally not using nuxt's useFetch as the one frome vueuse suits more the
@@ -37,7 +37,7 @@ export function useCreateShareLink(state?: Ref<AppStatePayload>) {
 
 /**
  * Create a link for the print. The key difference from the function useCreateShareLink
- * is that 
+ * is that
  */
 export function useCreateShareLinkForPrint() {
     const viewStore = useMapViewStore()

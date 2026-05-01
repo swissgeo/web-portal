@@ -38,7 +38,6 @@ if (!olMap) {
     throw new Error('OpenLayersMap is not available')
 }
 
-
 onMounted(() => {
     if (scaleLineElement.value) {
         scaleLine.setTarget(scaleLineElement.value)

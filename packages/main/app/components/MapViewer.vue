@@ -142,11 +142,12 @@ const displayMode = inject<'web' | 'print'>('displayMode', 'web')
             <MapOpenLayersGeolocationFeedback
                 v-if="geolocationStore.active && geolocationStore.position && displayMode === 'web'"
             />
-            <MapAttributionList v-if="displayMode === 'web'" :sources="attributionSources" />
+            <MapAttributionList
+                v-if="displayMode === 'web'"
+                :sources="attributionSources"
+            />
         </MapModule>
-        <Toolbox
-            v-if="displayMode === 'web'"
-        />
+        <Toolbox v-if="displayMode === 'web'" />
         <DebugPanel
             v-if="showAdditionalMapUi && displayMode === 'web'"
             class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"

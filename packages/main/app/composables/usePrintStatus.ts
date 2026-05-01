@@ -1,4 +1,4 @@
-import { useMapStore } from "@swissgeo/map"
+import { useMapStore } from '@swissgeo/map'
 
 /**
  * Composable that triggers event sending to the print service when the map is fully loaded
@@ -18,10 +18,10 @@ export function usePrintStatus() {
 
     watch(printReady, () => {
         // Send the readiness signal
-        globalThis.postMessage({ type: "gaMapReady" })
+        globalThis.postMessage({ type: 'gaMapReady' })
     })
 
     return {
-        setPageReady
+        setPageReady,
     }
 }

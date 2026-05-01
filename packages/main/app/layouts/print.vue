@@ -3,13 +3,12 @@
 import { provide } from 'vue'
 
 provide<'web' | 'print'>('displayMode', 'print')
-
 </script>
 
 <template>
     <main
         ref="main"
-        class="font-sans fitting-content"
+        class="fitting-content font-sans"
     >
         <slot />
     </main>

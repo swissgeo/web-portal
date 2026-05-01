@@ -4,7 +4,7 @@ export default defineNuxtPlugin({
 
     hooks: {
         'app:created'() {
-            const { restore } = useRestoreState()            
+            const { restore } = useRestoreState()
             void restore()
         },
     },

@@ -3,7 +3,6 @@ import { fetchStateFromStateId } from '~/utils/fetchStateFromStateId'
 
 import type { PrintConfig } from '../types/print'
 
-
 // URL param providing the ID to a state (map config such a center, resolution, print info, etc.)
 const URL_PARAM_STATE = 'state'
 
@@ -15,7 +14,6 @@ const URL_PARAM_PRINT_RESOLUTION = 'print_resolution'
 // URL param to force a zoom level, overriding the one provided by a state
 // (only used for print at the moment but could be not print-specific in the future)
 const URL_PARAM_ZOOM = 'z'
-
 
 export function useUrlParams() {
     const route = useRoute()
@@ -37,14 +35,14 @@ export function useUrlParams() {
         if (typeof stateId !== 'string') {
             return null
         }
-        return stateId || null;
+        return stateId || null
     }
-    
+
     /**
      * Read the state ID from URL param, load the state corresponding to this ID,
      * return it as a payload and removed the param from the URL
      */
-    async function getStateFromUrl(): Promise<{ state: JSON | null, stateId: string} > {
+    async function getStateFromUrl(): Promise<{ state: JSON | null; stateId: string }> {
         // Extract the value, handling the case where multiple params with the same name exist
         const stateId = getStateIdFromUrl()
 
@@ -85,8 +83,8 @@ export function useUrlParams() {
             resolution: Number.parseFloat(route.query[URL_PARAM_PRINT_RESOLUTION] as string),
             zoom: getZoomFromUrl(),
         }
-        
-        validatePrintConfig(printConfig);
+
+        validatePrintConfig(printConfig)
         return printConfig
     }
 

@@ -14,7 +14,7 @@ const emit = defineEmits<{
 }>()
 
 const { currentBackground } = defineProps<{
-    currentBackground: Layer | null,
+    currentBackground: Layer | null
 }>()
 
 const runtimeConfig = useRuntimeConfig()

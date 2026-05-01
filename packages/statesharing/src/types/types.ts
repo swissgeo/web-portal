@@ -21,7 +21,7 @@ export interface AppStateConfig {
         rotation: number
     }
     layers: LayerStateConfig[]
-    backgroundLayer?: LayerStateConfig | null,
+    backgroundLayer?: LayerStateConfig | null
 }
 
 export interface AppStatePayload {
