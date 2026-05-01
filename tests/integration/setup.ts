@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 
 // olmap takes a while to load, since the headless browser is slower
-export const HYDRATION_TIMEOUT = 20_000
+export const HYDRATION_TIMEOUT = 50_000
 
 /**
  * Mock external API requests so integration tests don't depend on real
