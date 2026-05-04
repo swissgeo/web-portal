@@ -9,7 +9,7 @@ import type { Ref } from 'vue'
 import { useDrawingStore, resolveFeatureId } from '@swissgeo/drawing'
 import { ElevationProfile, ElevationProfileOpenLayersBridge } from '@swissgeo/elevation-profile'
 import { usePositionStore } from '@swissgeo/map'
-import { X, MoveDiagonal2 } from 'lucide-vue-next'
+import { X } from 'lucide-vue-next'
 import GeoJSON from 'ol/format/GeoJSON'
 import {
     computed,
@@ -43,8 +43,6 @@ const olMap = computed(() => {
 const geometryRevision = ref(0)
 
 const WINDOW_MARGIN = 16
-const MIN_WIDTH = 800
-const MIN_HEIGHT = 300
 const DEFAULT_WIDTH = 800
 
 const position = reactive({
@@ -60,13 +58,6 @@ const dragState = reactive({
     active: false,
     offsetX: 0,
     offsetY: 0,
-})
-const resizeState = reactive({
-    active: false,
-    startX: 0,
-    startY: 0,
-    startWidth: 0,
-    startHeight: 0,
 })
 
 const labels = computed<Labels>(() => ({
@@ -222,55 +213,6 @@ function startDrag(event: PointerEvent) {
     window.addEventListener('pointercancel', stopDrag)
 }
 
-function onResizeMove(event: PointerEvent) {
-    if (!resizeState.active) {
-        return
-    }
-
-    const newWidth = Math.max(
-        MIN_WIDTH,
-        resizeState.startWidth + (event.clientX - resizeState.startX)
-    )
-    const newHeight = Math.max(
-        MIN_HEIGHT,
-        resizeState.startHeight + (event.clientY - resizeState.startY)
-    )
-
-    size.width = newWidth
-    size.height = newHeight
-}
-
-function stopResize() {
-    if (!resizeState.active || typeof window === 'undefined') {
-        return
-    }
-
-    resizeState.active = false
-    window.removeEventListener('pointermove', onResizeMove)
-    window.removeEventListener('pointerup', stopResize)
-    window.removeEventListener('pointercancel', stopResize)
-}
-
-function startResize(event: PointerEvent) {
-    if (event.button !== 0 || !windowRef.value || typeof window === 'undefined') {
-        return
-    }
-
-    event.preventDefault()
-    event.stopPropagation()
-
-    const rect = windowRef.value.getBoundingClientRect()
-    resizeState.active = true
-    resizeState.startX = event.clientX
-    resizeState.startY = event.clientY
-    resizeState.startWidth = rect.width
-    resizeState.startHeight = rect.height
-
-    window.addEventListener('pointermove', onResizeMove)
-    window.addEventListener('pointerup', stopResize)
-    window.addEventListener('pointercancel', stopResize)
-}
-
 function handleWindowResize() {
     const clamped = clampToViewport(position.x, position.y)
     position.x = clamped.x
@@ -298,7 +240,6 @@ onBeforeMount(() => {
 
 onBeforeUnmount(() => {
     stopDrag()
-    stopResize()
     unlistenGeometryChange?.()
     if (typeof window !== 'undefined') {
         window.removeEventListener('resize', handleWindowResize)
@@ -364,13 +305,5 @@ function closeWindow() {
                 />
             </ElevationProfile>
         </UCard>
-
-        <div
-            class="absolute right-2 bottom-2 h-4 w-4 cursor-se-resize"
-            :class="resizeState.active ? 'opacity-100' : 'opacity-50 hover:opacity-100'"
-            @pointerdown="startResize"
-        >
-            <MoveDiagonal2 :size="16" />
-        </div>
     </div>
 </template>
