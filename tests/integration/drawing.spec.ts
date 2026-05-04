@@ -150,7 +150,10 @@ test.describe('drawing panel', () => {
 
     test('closing the drawing panel hides it', async ({ page }) => {
         await openDrawingPanel(page)
-        await page.getByTestId('drawing-close-button').click()
+        // The close button is a skeleton IconButton; its data-testid follows
+        // the convention `button-icon-i-lucide-<icon>`. Scoped to the drawing
+        // panel so the locator is unambiguous.
+        await page.getByTestId('drawing-panel').getByTestId('button-icon-i-lucide-x').click()
         await expect(page.getByTestId('drawing-panel')).not.toBeVisible()
     })
 

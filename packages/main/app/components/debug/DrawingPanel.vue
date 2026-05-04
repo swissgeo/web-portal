@@ -111,7 +111,6 @@ onMounted(() => {
             <h3 class="text-lg font-semibold">{{ t('debug.drawingPanelTitle') }}</h3>
             <IconButton
                 iconName="X"
-                data-testid="drawing-close-button"
                 @click="handleClose"
                 severity="secondary"
             />
