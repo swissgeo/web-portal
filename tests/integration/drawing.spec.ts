@@ -9,19 +9,14 @@ async function mockExternalRequests(page: import('@playwright/test').Page) {
     )
 }
 
+// The "Open Drawing Panel" trigger is a Nuxt UI UButton, whose underlying
+// ULink sets inheritAttrs: false — so a data-testid on the UButton does not
+// reach the rendered DOM. We locate it by its accessible role/name instead.
 async function openDrawingPanel(page: import('@playwright/test').Page) {
     await page.getByRole('button', { name: 'Open Drawing Panel' }).click()
-    await expect(page.locator('[data-cy="drawing-panel"]')).toBeVisible()
+    await expect(page.getByTestId('drawing-panel')).toBeVisible()
 }
 
-/**
- * Select the Point tool and place one point on the map.
- *
- * The drawing panel sits at the bottom-center of the viewport (~400 px tall),
- * so we click in the top-right quadrant to stay clear of both the panel and
- * the left sidebar. We also wait for the instruction text to appear first,
- * which confirms that OpenLayers has wired up the drawing interaction.
- */
 async function getMapBox(page: import('@playwright/test').Page) {
     const map = page.locator('[data-cy="ol-map"]')
     const mapBox = await map.boundingBox()
@@ -36,7 +31,7 @@ async function getMapBox(page: import('@playwright/test').Page) {
  * Clicks in the top-right quadrant to avoid the bottom-center drawing panel.
  */
 async function drawOnePoint(page: import('@playwright/test').Page) {
-    await page.locator('[data-cy="drawing-tool-point"]').click()
+    await page.getByTestId('drawing-tool-point').click()
     await expect(page.getByText('Click on the map to add a point')).toBeVisible()
 
     const { map, mapBox } = await getMapBox(page)
@@ -47,7 +42,7 @@ async function drawOnePoint(page: import('@playwright/test').Page) {
  * Select the Text tool and place one text feature on the map.
  */
 async function drawOneText(page: import('@playwright/test').Page) {
-    await page.locator('[data-cy="drawing-tool-text"]').click()
+    await page.getByTestId('drawing-tool-text').click()
     await expect(page.getByText('Click on the map to add text')).toBeVisible()
 
     const { map, mapBox } = await getMapBox(page)
@@ -59,15 +54,13 @@ async function drawOneText(page: import('@playwright/test').Page) {
  * All clicks stay in the top area of the map to avoid the bottom-center drawing panel.
  */
 async function drawOneLine(page: import('@playwright/test').Page) {
-    await page.locator('[data-cy="drawing-tool-line"]').click()
-    await expect(
-        page.getByText(/Click to draw a line, double-click to finish/)
-    ).toBeVisible()
+    await page.getByTestId('drawing-tool-line').click()
+    await expect(page.getByText(/Click to draw a line, double-click to finish/)).toBeVisible()
 
     const { map, mapBox } = await getMapBox(page)
-    await map.click({ position: { x: mapBox.width * 0.55, y: mapBox.height * 0.20 } })
-    await map.click({ position: { x: mapBox.width * 0.65, y: mapBox.height * 0.20 } })
-    await map.dblclick({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.20 } })
+    await map.click({ position: { x: mapBox.width * 0.55, y: mapBox.height * 0.2 } })
+    await map.click({ position: { x: mapBox.width * 0.65, y: mapBox.height * 0.2 } })
+    await map.dblclick({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.2 } })
 }
 
 test.describe('drawing panel', () => {
@@ -81,55 +74,55 @@ test.describe('drawing panel', () => {
 
     test('opens the drawing panel from the debug panel', async ({ page }) => {
         await page.getByRole('button', { name: 'Open Drawing Panel' }).click()
-        await expect(page.locator('[data-cy="drawing-panel"]')).toBeVisible()
+        await expect(page.getByTestId('drawing-panel')).toBeVisible()
         await expect(page.getByText('Drawing Tools')).toBeVisible()
     })
 
     test('drawing panel shows all tool buttons', async ({ page }) => {
         await openDrawingPanel(page)
-        await expect(page.locator('[data-cy="drawing-tool-point"]')).toBeVisible()
-        await expect(page.locator('[data-cy="drawing-tool-line"]')).toBeVisible()
-        await expect(page.locator('[data-cy="drawing-tool-text"]')).toBeVisible()
-        await expect(page.locator('[data-cy="drawing-tool-measurement"]')).toBeVisible()
+        await expect(page.getByTestId('drawing-tool-point')).toBeVisible()
+        await expect(page.getByTestId('drawing-tool-line')).toBeVisible()
+        await expect(page.getByTestId('drawing-tool-text')).toBeVisible()
+        await expect(page.getByTestId('drawing-tool-measurement')).toBeVisible()
     })
 
     test('drawing panel shows name input with default value', async ({ page }) => {
         await openDrawingPanel(page)
-        const nameInput = page.locator('[data-cy="drawing-name-input"]')
+        const nameInput = page.getByTestId('drawing-name-input')
         await expect(nameInput).toBeVisible()
         await expect(nameInput).toHaveValue('My Drawings')
     })
 
     test('drawing name can be changed', async ({ page }) => {
         await openDrawingPanel(page)
-        const nameInput = page.locator('[data-cy="drawing-name-input"]')
+        const nameInput = page.getByTestId('drawing-name-input')
         await nameInput.fill('Matterhorn Route')
         await expect(nameInput).toHaveValue('Matterhorn Route')
     })
 
     test('export and clear buttons are disabled when there are no features', async ({ page }) => {
         await openDrawingPanel(page)
-        await expect(page.locator('[data-cy="drawing-export-kml"]')).toBeDisabled()
-        await expect(page.locator('[data-cy="drawing-export-kmz"]')).toBeDisabled()
-        await expect(page.locator('[data-cy="drawing-export-gpx"]')).toBeDisabled()
-        await expect(page.locator('[data-cy="drawing-clear-all"]')).toBeDisabled()
+        await expect(page.getByTestId('drawing-export-kml')).toBeDisabled()
+        await expect(page.getByTestId('drawing-export-kmz')).toBeDisabled()
+        await expect(page.getByTestId('drawing-export-gpx')).toBeDisabled()
+        await expect(page.getByTestId('drawing-clear-all')).toBeDisabled()
     })
 
     test('feature count starts at zero', async ({ page }) => {
         await openDrawingPanel(page)
-        await expect(page.locator('[data-cy="drawing-feature-count"]')).toHaveText('0')
+        await expect(page.getByTestId('drawing-feature-count')).toHaveText('0')
     })
 
     test('clicking a tool button activates it', async ({ page }) => {
         await openDrawingPanel(page)
-        const pointButton = page.locator('[data-cy="drawing-tool-point"]')
+        const pointButton = page.getByTestId('drawing-tool-point')
         await pointButton.click()
         await expect(pointButton).toHaveClass(/bg-blue-500/)
     })
 
     test('clicking an active tool button deactivates it', async ({ page }) => {
         await openDrawingPanel(page)
-        const pointButton = page.locator('[data-cy="drawing-tool-point"]')
+        const pointButton = page.getByTestId('drawing-tool-point')
         await pointButton.click()
         await expect(pointButton).toHaveClass(/bg-blue-500/)
         await pointButton.click()
@@ -138,84 +131,84 @@ test.describe('drawing panel', () => {
 
     test('only one tool can be active at a time', async ({ page }) => {
         await openDrawingPanel(page)
-        await page.locator('[data-cy="drawing-tool-point"]').click()
-        await expect(page.locator('[data-cy="drawing-tool-point"]')).toHaveClass(/bg-blue-500/)
+        await page.getByTestId('drawing-tool-point').click()
+        await expect(page.getByTestId('drawing-tool-point')).toHaveClass(/bg-blue-500/)
 
-        await page.locator('[data-cy="drawing-tool-line"]').click()
-        await expect(page.locator('[data-cy="drawing-tool-line"]')).toHaveClass(/bg-blue-500/)
-        await expect(page.locator('[data-cy="drawing-tool-point"]')).not.toHaveClass(/bg-blue-500/)
+        await page.getByTestId('drawing-tool-line').click()
+        await expect(page.getByTestId('drawing-tool-line')).toHaveClass(/bg-blue-500/)
+        await expect(page.getByTestId('drawing-tool-point')).not.toHaveClass(/bg-blue-500/)
     })
 
     test('shows drawing instruction when a tool is active', async ({ page }) => {
         await openDrawingPanel(page)
-        await page.locator('[data-cy="drawing-tool-point"]').click()
+        await page.getByTestId('drawing-tool-point').click()
         await expect(page.getByText('Click on the map to add a point')).toBeVisible()
     })
 
     test('closing the drawing panel hides it', async ({ page }) => {
         await openDrawingPanel(page)
-        await page.locator('[data-cy="drawing-close-button"]').click()
-        await expect(page.locator('[data-cy="drawing-panel"]')).not.toBeVisible()
+        await page.getByTestId('drawing-close-button').click()
+        await expect(page.getByTestId('drawing-panel')).not.toBeVisible()
     })
 
     test('hides the fullscreen button while the drawing panel is open', async ({ page }) => {
         await expect(page.locator('[data-cy="fullscreen-toggle"]')).toBeVisible()
         await openDrawingPanel(page)
-        await page.locator('[data-cy="drawing-tool-point"]').click()
+        await page.getByTestId('drawing-tool-point').click()
         await expect(page.locator('[data-cy="fullscreen-toggle"]')).not.toBeVisible()
     })
 
     test('drawing a point on the map increases the feature count', async ({ page }) => {
         await openDrawingPanel(page)
         await drawOnePoint(page)
-        await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
+        await expect(page.getByTestId('drawing-feature-count')).not.toHaveText('0')
     })
 
     test('drawing a line on the map increases the feature count', async ({ page }) => {
         await openDrawingPanel(page)
         await drawOneLine(page)
-        await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
+        await expect(page.getByTestId('drawing-feature-count')).not.toHaveText('0')
     })
 
     test('drawing a text feature on the map increases the feature count', async ({ page }) => {
         await openDrawingPanel(page)
         await drawOneText(page)
-        await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
+        await expect(page.getByTestId('drawing-feature-count')).not.toHaveText('0')
     })
 
     test('multiple drawing types can be used in the same session', async ({ page }) => {
         await openDrawingPanel(page)
         await drawOnePoint(page)
-        await expect(page.locator('[data-cy="drawing-feature-count"]')).toHaveText('1')
+        await expect(page.getByTestId('drawing-feature-count')).toHaveText('1')
 
         await drawOneLine(page)
-        await expect(page.locator('[data-cy="drawing-feature-count"]')).toHaveText('2')
+        await expect(page.getByTestId('drawing-feature-count')).toHaveText('2')
     })
 
     test('clear all confirmation dialog appears and cancels', async ({ page }) => {
         await openDrawingPanel(page)
         await drawOnePoint(page)
 
-        await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
-        await expect(page.locator('[data-cy="drawing-clear-all"]')).toBeEnabled()
+        await expect(page.getByTestId('drawing-feature-count')).not.toHaveText('0')
+        await expect(page.getByTestId('drawing-clear-all')).toBeEnabled()
 
-        await page.locator('[data-cy="drawing-clear-all"]').click()
+        await page.getByTestId('drawing-clear-all').click()
         await expect(page.getByText('Delete all drawings?')).toBeVisible()
 
         await page.getByRole('button', { name: 'Cancel' }).click()
-        await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
+        await expect(page.getByTestId('drawing-feature-count')).not.toHaveText('0')
     })
 
     test('clear all confirmation dialog deletes all features when confirmed', async ({ page }) => {
         await openDrawingPanel(page)
         await drawOnePoint(page)
 
-        await expect(page.locator('[data-cy="drawing-feature-count"]')).not.toHaveText('0')
-        await page.locator('[data-cy="drawing-clear-all"]').click()
+        await expect(page.getByTestId('drawing-feature-count')).not.toHaveText('0')
+        await page.getByTestId('drawing-clear-all').click()
         await expect(page.getByText('Delete all drawings?')).toBeVisible()
 
         await page.getByRole('button', { name: 'Delete' }).click()
-        await expect(page.locator('[data-cy="drawing-feature-count"]')).toHaveText('0')
+        await expect(page.getByTestId('drawing-feature-count')).toHaveText('0')
     })
 })
 

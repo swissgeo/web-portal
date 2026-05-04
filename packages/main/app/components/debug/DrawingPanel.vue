@@ -105,13 +105,13 @@ onMounted(() => {
 <template>
     <div
         class="relative flex h-full flex-col bg-white p-4 shadow-lg"
-        data-cy="drawing-panel"
+        data-testid="drawing-panel"
     >
         <div class="mb-4 flex items-center justify-between">
             <h3 class="text-lg font-semibold">{{ t('debug.drawingPanelTitle') }}</h3>
             <IconButton
                 iconName="X"
-                data-cy="drawing-close-button"
+                data-testid="drawing-close-button"
                 @click="handleClose"
                 severity="secondary"
             />
@@ -129,7 +129,7 @@ onMounted(() => {
                 :value="drawingStore.drawingName"
                 type="text"
                 class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                data-cy="drawing-name-input"
+                data-testid="drawing-name-input"
                 @input="updateDrawingName"
             />
         </div>
@@ -139,7 +139,7 @@ onMounted(() => {
             <div class="flex gap-2">
                 <button
                     @click="selectDrawingType('Point')"
-                    data-cy="drawing-tool-point"
+                    data-testid="drawing-tool-point"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
                         drawingStore.drawingMode === 'Point'
@@ -151,7 +151,7 @@ onMounted(() => {
                 </button>
                 <button
                     @click="selectDrawingType('LineString')"
-                    data-cy="drawing-tool-line"
+                    data-testid="drawing-tool-line"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
                         drawingStore.drawingMode === 'LineString'
@@ -163,7 +163,7 @@ onMounted(() => {
                 </button>
                 <button
                     @click="selectDrawingType('Text')"
-                    data-cy="drawing-tool-text"
+                    data-testid="drawing-tool-text"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
                         drawingStore.drawingMode === 'Text'
@@ -175,7 +175,7 @@ onMounted(() => {
                 </button>
                 <button
                     @click="selectDrawingType('Measurement')"
-                    data-cy="drawing-tool-measurement"
+                    data-testid="drawing-tool-measurement"
                     :class="[
                         'rounded px-4 py-2 font-medium transition-colors',
                         drawingStore.drawingMode === 'Measurement'
@@ -199,7 +199,7 @@ onMounted(() => {
                 {{ t('debug.drawingFeaturesDrawnLabel') }}:
                 <span
                     class="font-bold"
-                    data-cy="drawing-feature-count"
+                    data-testid="drawing-feature-count"
                     >{{ drawingStore.featureCount }}</span
                 >
             </p>
@@ -213,7 +213,7 @@ onMounted(() => {
                 <button
                     @click="handleExport('kml')"
                     :disabled="drawingStore.featureCount === 0"
-                    data-cy="drawing-export-kml"
+                    data-testid="drawing-export-kml"
                     class="rounded bg-green-500 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-300"
                 >
                     {{ t('debug.drawingExportKML') }}
@@ -221,7 +221,7 @@ onMounted(() => {
                 <button
                     @click="handleExport('kmz')"
                     :disabled="drawingStore.featureCount === 0"
-                    data-cy="drawing-export-kmz"
+                    data-testid="drawing-export-kmz"
                     class="rounded bg-green-500 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-300"
                 >
                     {{ t('debug.drawingExportKMZ') }}
@@ -229,7 +229,7 @@ onMounted(() => {
                 <button
                     @click="handleExport('gpx')"
                     :disabled="drawingStore.featureCount === 0"
-                    data-cy="drawing-export-gpx"
+                    data-testid="drawing-export-gpx"
                     class="rounded bg-green-500 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-300"
                 >
                     {{ t('debug.drawingExportGPX') }}
@@ -241,7 +241,7 @@ onMounted(() => {
             <button
                 @click="openClearConfirmation"
                 :disabled="drawingStore.featureCount === 0"
-                data-cy="drawing-clear-all"
+                data-testid="drawing-clear-all"
                 class="w-full rounded bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:bg-gray-300"
             >
                 {{ t('debug.drawingClearAll') }}

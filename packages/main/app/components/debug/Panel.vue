@@ -82,7 +82,7 @@ function toggleStateConfig() {
                 {{ $t('debug.openImportLocalLayersPanel') }}
             </UButton>
             <UButton
-                data-cy="debug-open-drawing-panel"
+                data-testid="debug-open-drawing-panel"
                 @click="toggleDrawing"
             >
                 {{ $t('debug.openDrawingPanel') }}
