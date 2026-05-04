@@ -4,7 +4,6 @@ import { usePrintFraming } from '../../composables/usePrintFraming';
 import { IconButton } from '@swissgeo/skeleton'
 import { printFormats, printOrientations  } from '~/types/print'
 
-
 const emit = defineEmits<{
     close: []
 }>()
