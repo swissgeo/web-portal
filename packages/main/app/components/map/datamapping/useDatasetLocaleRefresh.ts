@@ -1,7 +1,6 @@
-import type { Ref } from 'vue'
-
 import type { DatasetLayer, LayerInfo } from '@swissgeo/layers'
 import type { Dataset, Link } from '@swissgeo/ogc'
+import type { Ref } from 'vue'
 
 import { getInfoFromDataset } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
