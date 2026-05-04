@@ -7,7 +7,8 @@ import { IconButton } from '@swissgeo/skeleton'
 import { printFormats, printOrientations  } from '~/types/print'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
-import { fromExtent } from 'ol/geom/Polygon'
+import Polygon, { fromExtent } from 'ol/geom/Polygon'
+import { Fill, Stroke, Style } from 'ol/style'
 
 const emit = defineEmits<{
     close: []
@@ -19,6 +20,11 @@ const printExtentFeature = new Feature()
 const printExtentLayer = new VectorLayer({
     source: new VectorSource({
         features: [ printExtentFeature ],
+    }),
+    style: new Style({
+        fill: new Fill({
+            color: 'rgba(0, 0, 30, 0.6)',
+        })
     }),
 })
 
@@ -82,7 +88,7 @@ const isZoomLocked = ref(false)
 const lastUnlockedZoomLevel = ref(zoomLevel.value)
 const zoomLevelForPrint = computed(() => {
     if (!isZoomLocked.value) {
-        lastUnlockedZoomLevel.value = zoomLevel.value
+        lastUnlockedZoomLevel.value = Math.round(zoomLevel.value)
     }
     return lastUnlockedZoomLevel.value
 })
@@ -125,10 +131,34 @@ function getPrintExtent(map: OlMapType, printZoom: number, widthPx: number, heig
 }
 
 
+function createCutoutGeometry(outerExtent: [number, number, number, number], innerExtent: [number, number, number, number]) {
+    const outerRing = fromExtent(outerExtent).getCoordinates()[0]
+    const innerRing = fromExtent(innerExtent).getCoordinates()[0]
+    if (!outerRing || !innerRing) return null
+    return new Polygon([outerRing, innerRing])
+}
+
+
 watch(printExtent, (newExtent) => {
     if (!newExtent) return
 
-    const polygon = fromExtent(newExtent)
+    const projectionExtent = olMap.value
+        ?.getView()
+        .getProjection()
+        .getExtent()
+
+    const mapExtent: [number, number, number, number] = (
+        projectionExtent
+        && projectionExtent[0] !== undefined
+        && projectionExtent[1] !== undefined
+        && projectionExtent[2] !== undefined
+        && projectionExtent[3] !== undefined
+    )
+        ? [projectionExtent[0], projectionExtent[1], projectionExtent[2], projectionExtent[3]]
+        : [-20_037_508.34, -20_037_508.34, 20_037_508.34, 20_037_508.34]
+    
+    const polygon = createCutoutGeometry(mapExtent, newExtent)
+    if (!polygon) return
     printExtentFeature.setGeometry(polygon)
 })
 

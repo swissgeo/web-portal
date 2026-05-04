@@ -10,26 +10,34 @@ export function useMap() {
     const center = ref<[number, number]>([0, 0])
     
     watch(
-        () => olMap,
-        (olMap) => {
-            if (!olMap) return
+        () => olMap.value,
+        (mapInstance) => {
+            if (!mapInstance) return
 
-            const view = olMap.value.getView()
+            const view = mapInstance.getView()
 
-            // initial value
-            zoomLevel.value = view.getZoom()
-
-            // sync on change
-            view.on('change:resolution', () => {
-                zoomLevel.value = view.getZoom()
-            })
-
-            view.on('change:center', () => {
+            const updateCenter = () => {
                 const newCenter = view.getCenter()
                 if (newCenter && newCenter[0] !== undefined && newCenter[1] !== undefined) {
                     center.value = [newCenter[0], newCenter[1]]
                 }
+            }
+
+            // initial value
+            zoomLevel.value = view.getZoom()
+            updateCenter()
+
+            // sync on change
+            view.on('change:resolution', () => {
+                zoomLevel.value = view.getZoom()
+                console.log("CHANGE");
+                
             })
+
+            view.on('change:center', updateCenter)
+            // During pan interactions this fires continuously while the pointer is moving.
+            mapInstance.on('pointerdrag', updateCenter)
+
         },
         { immediate: true }
     )
