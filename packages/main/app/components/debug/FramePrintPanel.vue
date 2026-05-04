@@ -28,7 +28,6 @@ const printOrientationItems = ref(printOrientations.map(orientation => ({
     value: orientation
 })))
 
-
 function handleClose() {
     emit('close')
 }
