@@ -142,4 +142,7 @@ export default defineNuxtConfig({
         //'/content/**': { cache: { maxAge: process.dev ? 1 : 120 } },
         //'/api/v1/**': { cache: { maxAge: process.dev ? 1 : 30 } },
     },
+    icon: {
+        localApiEndpoint: '/api/wps/v1/icons',
+    },
 })
