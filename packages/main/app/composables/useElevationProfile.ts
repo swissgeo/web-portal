@@ -4,7 +4,7 @@ import type { MaybeRefOrGetter, Ref, ComputedRef } from 'vue'
 
 import log from '@swissgeo/log'
 import { useDebounceFn } from '@vueuse/core'
-import { computed, toValue } from 'vue'
+import { computed, toValue, watch } from 'vue'
 
 export function useElevationProfile(
     lineString: Ref<LineString | null> | ComputedRef<LineString | null>,

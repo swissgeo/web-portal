@@ -2,7 +2,7 @@
 import type { ElevationProfileResponse, ElevationProfilePoint } from '@swissgeo/shared/api'
 import type { ChartComponentRef } from 'vue-chartjs'
 
-import { useTemplateRef } from 'vue'
+import { provide, useTemplateRef } from 'vue'
 import { Line as LineChart } from 'vue-chartjs'
 
 import { useElevationProfileChart } from '@/composables/useElevationProfileChart'
@@ -45,6 +45,8 @@ const {
     profileTooltipRef,
     () => props.labels
 )
+
+provide<GetPointBeingHoveredFunction>('getPointBeingHovered', () => pointBeingHovered.value)
 </script>
 
 <template>
@@ -87,7 +89,7 @@ const {
                 <small>
                     <strong>{{ labels.yAxis }}: </strong>
                     <span
-                        v-if="pointBeingHovered.elevation && pointBeingHovered.elevation > 0"
+                        v-if="pointBeingHovered.elevation !== null"
                         data-cy="profile-popup-tooltip-elevation"
                     >
                         {{ pointBeingHovered.elevation }} m

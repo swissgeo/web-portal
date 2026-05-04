@@ -21,5 +21,3 @@ export interface ElevationProfileResponse {
     points: ElevationProfilePoint[]
     metadata: ElevationProfileMetadata
 }
-
-export type ElevationProfile = ElevationProfilePoint[]

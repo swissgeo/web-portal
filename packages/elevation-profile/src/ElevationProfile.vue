@@ -31,7 +31,7 @@ const props = withDefaults(
 )
 
 const isReverse = ref<boolean>(false)
-const profile = computed<ElevationProfileResponse | undefined>(() => {
+const profile = computed<ElevationProfileResponse>(() => {
     if (!props.profileResponse) {
         return
     }
@@ -40,10 +40,10 @@ const profile = computed<ElevationProfileResponse | undefined>(() => {
 
 function reverseProfile(profile: ElevationProfileResponse): ElevationProfileResponse {
     const totalDist = profile.points.at(-1)?.dist ?? 0
-    const points = [...profile.points].reverse().map((point) => ({
-        ...point,
-        dist: totalDist - point.dist,
-    }))
+    const points = [...profile.points]
+        .reverse()
+        .map((point) => ({ ...point, dist: totalDist - point.dist }))
+        .sort((a, b) => a.dist - b.dist)
     return {
         ...profile,
         metadata: {
@@ -116,7 +116,7 @@ function exportCSV(profile: ElevationProfileResponse): void {
                 size="md"
                 color="primary"
                 variant="solid"
-                @click="exportCSV(profile!)"
+                @click="exportCSV(profile)"
             />
         </ElevationProfileMetadata>
     </div>

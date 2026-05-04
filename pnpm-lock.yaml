@@ -762,9 +762,6 @@ importers:
       vue-chartjs:
         specifier: 'catalog:'
         version: 5.3.3(chart.js@4.5.1)(vue@3.5.28(typescript@5.9.3))
-      vue-i18n:
-        specifier: 'catalog:'
-        version: 11.3.1(vue@3.5.28(typescript@5.9.3))
     devDependencies:
       '@microsoft/api-extractor':
         specifier: 'catalog:'

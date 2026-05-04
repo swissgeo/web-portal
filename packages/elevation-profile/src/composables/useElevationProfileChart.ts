@@ -22,11 +22,10 @@ import type { MaybeRefOrGetter, ComputedRef, Ref } from 'vue'
 
 import { round } from '@swissgeo/numbers'
 import { resetZoom } from 'chartjs-plugin-zoom'
-import { computed, onMounted, onUnmounted, provide, ref, toValue } from 'vue'
+import { computed, onMounted, onUnmounted, ref, toValue } from 'vue'
 
 import type {
     ScreenPoint,
-    GetPointBeingHoveredFunction,
     Labels,
 } from '@/components/ElevationProfilePlot.vue'
 
@@ -51,8 +50,6 @@ export function useElevationProfileChart(
 ) {
     const track = ref<boolean>(false)
     const pointBeingHovered = ref<ScreenPoint>()
-
-    provide<GetPointBeingHoveredFunction>('getPointBeingHovered', () => pointBeingHovered.value)
 
     const profileMetadata: ComputedRef<ElevationProfileMetadata> = computed(
         () => toValue(profile).metadata

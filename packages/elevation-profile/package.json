@@ -54,8 +54,7 @@
         "ol": "catalog:",
         "proj4": "catalog:",
         "vue": "catalog:",
-        "vue-chartjs": "catalog:",
-        "vue-i18n": "catalog:"
+        "vue-chartjs": "catalog:"
     },
     "packageManager": "pnpm@10.29.2"
 }

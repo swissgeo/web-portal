@@ -27,26 +27,28 @@ const coordinate = computed(() => {
     return proj4(LV95.epsg, mapProjection, lv95Coord) as [number, number]
 })
 
-const markerElement = document.createElement('div')
-markerElement.style.cssText =
-    'width:20px;height:20px;border-radius:50%;border:3px solid #dc2626;background:rgba(239,68,68,0.75);pointer-events:none;'
-
-const currentHoverPosOverlay = new Overlay({
-    element: markerElement,
-    positioning: 'center-center',
-    stopEvent: false,
-})
+let currentHoverPosOverlay: Overlay | undefined
 
 onMounted(() => {
+    const markerElement = document.createElement('div')
+    markerElement.style.cssText =
+        'width:20px;height:20px;border-radius:50%;border:3px solid #dc2626;background:rgba(239,68,68,0.75);pointer-events:none;'
+    currentHoverPosOverlay = new Overlay({
+        element: markerElement,
+        positioning: 'center-center',
+        stopEvent: false,
+    })
     olInstance.addOverlay(currentHoverPosOverlay)
 })
 
 onBeforeUnmount(() => {
-    olInstance.removeOverlay(currentHoverPosOverlay)
+    if (currentHoverPosOverlay) {
+        olInstance.removeOverlay(currentHoverPosOverlay)
+    }
 })
 
 watch(coordinate, (val) => {
-    currentHoverPosOverlay.setPosition(val)
+    currentHoverPosOverlay?.setPosition(val)
 })
 </script>
 
