@@ -60,7 +60,7 @@ describe('useRestoreState', () => {
             expect(mockImportState).not.toHaveBeenCalled()
         })
 
-        it('calls importState with the stored JSON string when state is present', async () => {
+        it('calls importState with the stored JSON string when state is present in sessionStorage', async () => {
             const state = {
                 version: '1.0',
                 state: {
@@ -106,9 +106,15 @@ describe('useRestoreState', () => {
     })
 
     describe('useRestoreState reactive persistence', () => {
-        it('sets up a watcher after the hook runs', async () => {
+        it('does not set up a watcher automatically after the hook runs', async () => {
             const { restore } = useRestoreState()
             await restore()
+            expect(watcherCallbackRef.fn).toBeNull()
+        })
+
+        it('sets up a watcher with the listen callback', () => {
+            const { listenToChange } = useRestoreState()
+            listenToChange()
             expect(watcherCallbackRef.fn).not.toBeNull()
         })
 
@@ -122,29 +128,7 @@ describe('useRestoreState', () => {
             expect(sessionStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(state))
         })
 
-        it('skips the first watcher fire after a successful import (isImporting flag)', async () => {
-            const stored = JSON.stringify({
-                version: '2.0.0',
-                state: {
-                    map: { center: [2600000, 1200000], zoom: 10, rotation: 0 },
-                    layers: [],
-                },
-            })
-            sessionStorage.setItem(STORAGE_KEY, stored)
-            const { restore } = useRestoreState()
-            await restore()
-            sessionStorage.clear() // clear so we can detect any subsequent write
-
-            // First fire after import → skipped
-            watcherCallbackRef.fn!(mockExportState.value)
-            expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull()
-
-            // Second fire → saved normally
-            watcherCallbackRef.fn!(mockExportState.value)
-            expect(sessionStorage.getItem(STORAGE_KEY)).not.toBeNull()
-        })
-
-        it('does not skip the watcher fire when there was no prior import', async () => {
+        it('saves the restored state to the session storage', async () => {
             const { restore } = useRestoreState()
             await restore() // no stored state → isImporting stays false
 
