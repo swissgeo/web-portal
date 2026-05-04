@@ -119,7 +119,8 @@
         },
         "openStateConfigPanel": "Open State Config Panel",
         "stateConfig": "State Config",
-        "share": "Share"
+        "share": "Share",
+        "openPrintPanel": "Open Print Panel"
     },
     "geolocation": {
         "permissionDenied": "Location permission denied",

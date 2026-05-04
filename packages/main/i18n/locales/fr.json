@@ -119,7 +119,8 @@
         },
         "openStateConfigPanel": "Ouvrir le panneau de configuration d'état",
         "stateConfig": "panneau de configuration",
-        "share": "Partager"
+        "share": "Partager",
+        "openPrintPanel": "Ouvrir le panneau d'impression"
     },
     "geolocation": {
         "permissionDenied": "Autorisation de localisation refusée",
