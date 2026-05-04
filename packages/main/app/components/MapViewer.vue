@@ -68,6 +68,7 @@ const displayMode = inject<'web' | 'print'>('displayMode', 'web')
                 v-if="displayMode === 'web'"
                 :sources="attributionSources"
             />
+            <MapElevationWindow v-if="showAdditionalMapUi" />
         </MapModule>
         <Toolbox v-if="displayMode === 'web'" />
         <DebugPanel
