@@ -68,14 +68,15 @@ describe('ImportLayersPanel.vue', () => {
 
         expect(makeServerLayerSpy).toHaveBeenCalledTimes(1)
         const dataset = makeServerLayerSpy.mock.calls[0]![0]
+        const links = dataset.links ?? []
 
         const expectedEncoded = encodeURIComponent(vm.importUrl)
-        const selfLink = dataset.links.find((l) => l.rel === 'self')
+        const selfLink = links.find((l) => l.rel === 'self')
         expect(selfLink?.href).toBe(
             `http://localhost:3000/api/v1/layers/external/dataset/${expectedEncoded}/layer-a`
         )
 
-        const distributionsLink = dataset.links.find((l) => l.rel === 'distributions')
+        const distributionsLink = links.find((l) => l.rel === 'distributions')
         expect(distributionsLink?.href).toBe(`/api/v1/layers/external/${expectedEncoded}/layer-a`)
 
         expect(dataset.id).toBe('layer-a')
