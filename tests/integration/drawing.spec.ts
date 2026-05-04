@@ -1,7 +1,10 @@
 import { fileURLToPath } from 'node:url'
 import { expect, test } from '@playwright/test'
 
+import en from '../../packages/main/i18n/locales/en.json'
+
 const HYDRATION_TIMEOUT = 60_000
+const t = en.debug
 
 async function mockExternalRequests(page: import('@playwright/test').Page) {
     await page.route('**/api/oar/**', (route) =>
@@ -13,7 +16,7 @@ async function mockExternalRequests(page: import('@playwright/test').Page) {
 // ULink sets inheritAttrs: false — so a data-testid on the UButton does not
 // reach the rendered DOM. We locate it by its accessible role/name instead.
 async function openDrawingPanel(page: import('@playwright/test').Page) {
-    await page.getByRole('button', { name: 'Open Drawing Panel' }).click()
+    await page.getByRole('button', { name: t.openDrawingPanel }).click()
     await expect(page.getByTestId('drawing-panel')).toBeVisible()
 }
 
@@ -32,7 +35,7 @@ async function getMapBox(page: import('@playwright/test').Page) {
  */
 async function drawOnePoint(page: import('@playwright/test').Page) {
     await page.getByTestId('drawing-tool-point').click()
-    await expect(page.getByText('Click on the map to add a point')).toBeVisible()
+    await expect(page.getByText(t.drawingInstructionPoint)).toBeVisible()
 
     const { map, mapBox } = await getMapBox(page)
     await map.click({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.25 } })
@@ -43,7 +46,7 @@ async function drawOnePoint(page: import('@playwright/test').Page) {
  */
 async function drawOneText(page: import('@playwright/test').Page) {
     await page.getByTestId('drawing-tool-text').click()
-    await expect(page.getByText('Click on the map to add text')).toBeVisible()
+    await expect(page.getByText(t.drawingInstructionText)).toBeVisible()
 
     const { map, mapBox } = await getMapBox(page)
     await map.click({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.25 } })
@@ -55,7 +58,7 @@ async function drawOneText(page: import('@playwright/test').Page) {
  */
 async function drawOneLine(page: import('@playwright/test').Page) {
     await page.getByTestId('drawing-tool-line').click()
-    await expect(page.getByText(/Click to draw a line, double-click to finish/)).toBeVisible()
+    await expect(page.getByText(t.drawingInstructionLine)).toBeVisible()
 
     const { map, mapBox } = await getMapBox(page)
     await map.click({ position: { x: mapBox.width * 0.55, y: mapBox.height * 0.2 } })
@@ -73,9 +76,9 @@ test.describe('drawing panel', () => {
     })
 
     test('opens the drawing panel from the debug panel', async ({ page }) => {
-        await page.getByRole('button', { name: 'Open Drawing Panel' }).click()
+        await page.getByRole('button', { name: t.openDrawingPanel }).click()
         await expect(page.getByTestId('drawing-panel')).toBeVisible()
-        await expect(page.getByText('Drawing Tools')).toBeVisible()
+        await expect(page.getByText(t.drawingPanelTitle)).toBeVisible()
     })
 
     test('drawing panel shows all tool buttons', async ({ page }) => {
@@ -142,7 +145,7 @@ test.describe('drawing panel', () => {
     test('shows drawing instruction when a tool is active', async ({ page }) => {
         await openDrawingPanel(page)
         await page.getByTestId('drawing-tool-point').click()
-        await expect(page.getByText('Click on the map to add a point')).toBeVisible()
+        await expect(page.getByText(t.drawingInstructionPoint)).toBeVisible()
     })
 
     test('closing the drawing panel hides it', async ({ page }) => {
@@ -193,9 +196,9 @@ test.describe('drawing panel', () => {
         await expect(page.getByTestId('drawing-clear-all')).toBeEnabled()
 
         await page.getByTestId('drawing-clear-all').click()
-        await expect(page.getByText('Delete all drawings?')).toBeVisible()
+        await expect(page.getByText(t.drawingClearConfirmTitle)).toBeVisible()
 
-        await page.getByRole('button', { name: 'Cancel' }).click()
+        await page.getByRole('button', { name: t.drawingClearConfirmCancel }).click()
         await expect(page.getByTestId('drawing-feature-count')).not.toHaveText('0')
     })
 
@@ -205,9 +208,9 @@ test.describe('drawing panel', () => {
 
         await expect(page.getByTestId('drawing-feature-count')).not.toHaveText('0')
         await page.getByTestId('drawing-clear-all').click()
-        await expect(page.getByText('Delete all drawings?')).toBeVisible()
+        await expect(page.getByText(t.drawingClearConfirmTitle)).toBeVisible()
 
-        await page.getByRole('button', { name: 'Delete' }).click()
+        await page.getByRole('button', { name: t.drawingClearConfirmConfirm }).click()
         await expect(page.getByTestId('drawing-feature-count')).toHaveText('0')
     })
 })
@@ -222,7 +225,7 @@ test.describe('import drawing files', () => {
     })
 
     test('imports a KML file and shows success message', async ({ page }) => {
-        await page.getByRole('button', { name: 'Open Import Local Layers Panel' }).click()
+        await page.getByRole('button', { name: t.openImportLocalLayersPanel }).click()
         await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
 
         const fileInput = page.locator('[data-cy="file-input"]')
@@ -236,7 +239,7 @@ test.describe('import drawing files', () => {
     })
 
     test('imports a GeoJSON file and shows success message', async ({ page }) => {
-        await page.getByRole('button', { name: 'Open Import Local Layers Panel' }).click()
+        await page.getByRole('button', { name: t.openImportLocalLayersPanel }).click()
         await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
 
         const fileInput = page.locator('[data-cy="file-input"]')
@@ -252,7 +255,7 @@ test.describe('import drawing files', () => {
     })
 
     test('shows an error message when importing an unsupported file type', async ({ page }) => {
-        await page.getByRole('button', { name: 'Open Import Local Layers Panel' }).click()
+        await page.getByRole('button', { name: t.openImportLocalLayersPanel }).click()
         await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
 
         const fileInput = page.locator('[data-cy="file-input"]')
@@ -267,7 +270,7 @@ test.describe('import drawing files', () => {
     })
 
     test('import button is disabled when no file is selected', async ({ page }) => {
-        await page.getByRole('button', { name: 'Open Import Local Layers Panel' }).click()
+        await page.getByRole('button', { name: t.openImportLocalLayersPanel }).click()
         await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
         await expect(page.getByRole('button', { name: 'Import file' })).toBeDisabled()
     })
