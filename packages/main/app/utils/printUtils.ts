@@ -26,16 +26,23 @@ const formatRatiosToA0: Record<PrintFormat, number> = {
 export function getPageSizeInPixels(
     format: PrintFormat,
     orientation: PrintOrientation,
-    resolutionDpi: number
+    resolutionDpi: number,
+    round: boolean = true,
 ): { width: number; height: number } {
-    const longSide = computeNumberOfPixelsForPrint(
+    let longSide = computeNumberOfPixelsForPrint(
         ~~(A0_LONG_SIDE_MM / formatRatiosToA0[format]),
         resolutionDpi
     )
-    const shortSide = computeNumberOfPixelsForPrint(
+    let shortSide = computeNumberOfPixelsForPrint(
         ~~(A0_SHORT_SIDE_MM / formatRatiosToA0[format]),
         resolutionDpi
     )
+
+    if(round) {
+        longSide = Math.round(longSide)
+        shortSide = Math.round(shortSide)
+    }
+
     return orientation === 'landscape'
         ? { width: longSide, height: shortSide }
         : { width: shortSide, height: longSide }
