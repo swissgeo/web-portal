@@ -1,7 +1,6 @@
 import type { MenuTree } from '@swissgeo/shared/api'
 import type { Lang } from '@swissgeo/shared/language'
 
-import { useRuntimeConfig } from '#imports'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -98,28 +97,6 @@ export const useMenuStore = defineStore('menuStore', () => {
 
         return null
     }
-
-    function _initMenuIds() {
-        const runtimeConfig = useRuntimeConfig()
-
-        if (!menuMetaData.value) {
-            menuMetaData.value = [
-                runtimeConfig.public.aboutMenu,
-                runtimeConfig.public.knowledgeMenu,
-            ]
-        }
-
-        // if (!menuIds.value) {
-        //     menuIds.value = {
-        //         About: runtimeConfig.public.aboutMenu.id,
-        //         Knowledge: runtimeConfig.public.knowledgeMenu.id,
-        //     }
-        // }
-    }
-    // #endregion
-
-    // initialize the data here
-    _initMenuIds()
 
     return {
         currentMenuTree: currentMenuTreeId,
