@@ -27,14 +27,13 @@ const icon = computed(() => {
     // we have text within the icon at some point.
     return attrs.iconName ? `i-lucide-${attrs.iconName as string}`.toLowerCase() : ''
 })
-// Get other attrs excluding the ones we're handling specially.
-// `data-testid` is intentionally kept so a caller-supplied value can override
-// the default `button-icon-${icon}` via v-bind precedence in the template.
+// Get other attrs excluding the ones we're handling specially
 const buttonAttrs = computed(() => {
     const rest = { ...attrs }
     delete rest.icon
     delete rest.variant
     delete rest.color
+    delete rest['data-testid']
     return rest
 })
 //        v-bind="buttonAttrs"
