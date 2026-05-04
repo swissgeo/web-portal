@@ -49,6 +49,7 @@
         "@types/geojson": "catalog:",
         "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
+        "@vueuse/core": "catalog:",
         "eslint": "catalog:",
         "stylelint": "catalog:",
         "typescript": "catalog:",

@@ -1,14 +1,18 @@
+import type { Layer } from '@swissgeo/layers'
 import type { Feature, Map as OlMap } from 'ol'
 import type { EventsKey } from 'ol/events'
 import type { Geometry } from 'ol/geom'
 import type { Type } from 'ol/geom/Geometry'
 import type { StyleFunction, StyleLike } from 'ol/style/Style'
+import type { Ref } from 'vue'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import {
     bearingBetweenCoordinates,
     DEFAULT_MEASUREMENT_INTERVAL_KILOMETERS,
     DEFAULT_MEASUREMENT_PATH_INTERVAL_KILOMETERS,
+    EPSG_2056_CH1903,
+    EPSG_4326_WGS84,
     formatDistanceKilometers,
     resolveDrawingFeatureKind,
     resolvePointLabelAnchor,
@@ -17,6 +21,7 @@ import {
 } from '@swissgeo/shared'
 import { primaryAction } from 'ol/events/condition'
 import OlFeature from 'ol/Feature'
+import KML from 'ol/format/KML'
 import LineString from 'ol/geom/LineString'
 import MultiPoint from 'ol/geom/MultiPoint'
 import Point from 'ol/geom/Point'
@@ -27,11 +32,18 @@ import Modify from 'ol/interaction/Modify'
 import Snap from 'ol/interaction/Snap'
 import VectorLayer from 'ol/layer/Vector'
 import { unByKey } from 'ol/Observable'
-import { register } from 'ol/proj/proj4'
 import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Icon, Stroke, Style, Text as TextStyle } from 'ol/style'
-import proj4 from 'proj4'
-import { inject, markRaw, onBeforeUnmount, readonly, ref, toValue } from 'vue'
+import {
+    markRaw,
+    nextTick,
+    onBeforeUnmount,
+    onMounted,
+    readonly,
+    ref,
+    watch,
+    watchEffect,
+} from 'vue'
 
 import type {
     DrawingFeatureInfoPayload,
@@ -48,27 +60,24 @@ import { DEFAULT_MARKER_ICON, getMarkerIconById } from '@/utils/markerIcons'
 
 interface UseOlDrawingOptions {
     translate?: (key: string, params?: Record<string, string | number>) => string
+    zIndex?: Ref<number>
 }
 /**
  * Composable for handling OpenLayers drawing interactions
  */
 export function useOlDrawing(
-    layerId: string,
-    uuid: string,
-    opacity: number,
+    layer: Ref<Layer>,
+    olMap: Ref<OlMap | undefined> | undefined,
     options?: UseOlDrawingOptions
 ) {
-    // TODO: Consider passing the map as a parameter instead of using inject
-    const olMap = toValue(inject<OlMap>('olMap'))
-    const drawingStore = useDrawingStore()
-    register(proj4)
-    // Track the currently selected icon for new point features
-    const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON)
-
-    if (!olMap) {
+    if (!olMap?.value) {
         log.error('OpenLayersMap is not available')
         throw new Error('OpenLayersMap is not available')
     }
+
+    const drawingStore = useDrawingStore()
+    // Track the currently selected icon for new point features
+    const selectedIcon = ref<MarkerIcon>(DEFAULT_MARKER_ICON!)
 
     const source = new VectorSource({
         wrapX: false,
@@ -248,7 +257,7 @@ export function useOlDrawing(
             }
 
             if (styles.length === 1) {
-                return styles[0]
+                return styles[0]!
             }
 
             return styles
@@ -346,7 +355,7 @@ export function useOlDrawing(
                 }
 
                 if (styles.length === 1) {
-                    return styles[0]
+                    return styles[0]!
                 }
 
                 return styles
@@ -594,8 +603,8 @@ export function useOlDrawing(
                     }
 
                     const distance = Math.hypot(
-                        currentCoordinate[0] - previousCoordinate[0],
-                        currentCoordinate[1] - previousCoordinate[1]
+                        currentCoordinate[0]! - previousCoordinate[0]!,
+                        currentCoordinate[1]! - previousCoordinate[1]!
                     )
                     segmentLengths.push(distance)
                     totalLength += distance
@@ -632,15 +641,15 @@ export function useOlDrawing(
                             continue
                         }
 
-                        const segmentStart = coordinates[index - 1]
-                        const segmentEnd = coordinates[index]
+                        const segmentStart = coordinates[index - 1]!
+                        const segmentEnd = coordinates[index]!
 
                         while (nextIntervalTarget <= traversed + segmentLength) {
                             const distanceIntoSegment = nextIntervalTarget - traversed
                             const ratio = distanceIntoSegment / segmentLength
                             const markerCoordinate: number[] = [
-                                segmentStart[0] + (segmentEnd[0] - segmentStart[0]) * ratio,
-                                segmentStart[1] + (segmentEnd[1] - segmentStart[1]) * ratio,
+                                segmentStart[0]! + (segmentEnd[0]! - segmentStart[0]!) * ratio,
+                                segmentStart[1]! + (segmentEnd[1]! - segmentStart[1]!) * ratio,
                             ]
 
                             measurementStyles.push(
@@ -823,20 +832,17 @@ export function useOlDrawing(
         return selectedStyles
     }
 
-    function createOlLayer(layerId: string, uuid: string): VectorLayer {
-        const olLayer = new VectorLayer({
-            properties: {
-                id: layerId,
-                uuid,
-            },
-            opacity,
-            source,
-            style: styleFunction as StyleFunction,
-        })
-        // Use markRaw to prevent Vue from making this reactive (huge performance improvement)
-        drawingStore.setOlLayer(markRaw(olLayer))
-        return olLayer
-    }
+    const olDrawingLayer = new VectorLayer({
+        properties: {
+            id: layer.value.humanId,
+            uuid: layer.value.uuid,
+        },
+        opacity: layer.value.opacity,
+        source,
+        style: styleFunction as StyleFunction,
+    })
+    // Use markRaw to prevent Vue from making this reactive (huge performance improvement)
+    drawingStore.setOlLayer(markRaw(olDrawingLayer))
 
     let currentDraw: Draw | null = null
     let currentModify: Modify | null = null
@@ -858,18 +864,21 @@ export function useOlDrawing(
     let suppressNextActiveSingleClick = false
     let suppressDoubleClickZoomUntil = 0
     let temporarilyDisabledDoubleClickZoomInteractions: DoubleClickZoom[] = []
-    const layer = createOlLayer(layerId, uuid)
-    // Add layer to map immediately
-    olMap.addLayer(layer)
-    olMap.addLayer(endpointHandleLayer)
-    log.debug(`Added drawing layer ${layerId} to map`)
 
-    onBeforeUnmount(() => {
-        stopDrawing()
-        disableActiveEditing()
-        disablePassiveInspection()
-        olMap.removeLayer(endpointHandleLayer)
-        olMap.removeLayer(layer)
+    olMap.value.addLayer(olDrawingLayer)
+    olMap.value.addLayer(endpointHandleLayer)
+    log.debug(`Added drawing layer ${layer.value.humanId} to map`)
+
+    watchEffect(() => {
+        if (options?.zIndex !== undefined) {
+            olDrawingLayer.setZIndex(options.zIndex.value)
+        }
+    })
+    watchEffect(() => {
+        olDrawingLayer.setVisible(layer.value.isVisible)
+    })
+    watchEffect(() => {
+        olDrawingLayer.setOpacity(layer.value.opacity)
     })
 
     /**
@@ -990,8 +999,8 @@ export function useOlDrawing(
                 })
             }
 
-            const centerCoordinate = coordinates[0]
-            const edgeCoordinate = coordinates[coordinates.length - 1]
+            const centerCoordinate = coordinates[0]!
+            const edgeCoordinate = coordinates[coordinates.length - 1]!
             const centerX = centerCoordinate[0]
             const centerY = centerCoordinate[1]
             const edgeX = edgeCoordinate[0]
@@ -1060,8 +1069,8 @@ export function useOlDrawing(
                                     return (
                                         totalLength +
                                         Math.hypot(
-                                            coordinate[0] - previousCoordinate[0],
-                                            coordinate[1] - previousCoordinate[1]
+                                            coordinate[0]! - previousCoordinate[0]!,
+                                            coordinate[1]! - previousCoordinate[1]!
                                         )
                                     )
                                 }, 0)
@@ -1306,7 +1315,7 @@ export function useOlDrawing(
             }
         })
 
-        olMap.addInteraction(currentDraw)
+        olMap!.value!.addInteraction(currentDraw)
     }
 
     /**
@@ -1315,7 +1324,7 @@ export function useOlDrawing(
     function stopDrawing() {
         if (currentDraw) {
             currentDraw.setActive(false) // Deactivate first
-            olMap.removeInteraction(currentDraw)
+            olMap!.value!.removeInteraction(currentDraw)
             currentDraw = null
             log.debug('Stopped drawing and removed interaction from map')
         } else {
@@ -1328,7 +1337,7 @@ export function useOlDrawing(
     }
 
     function getPixelToleranceInMapUnits(pixelTolerance = 10): number {
-        const resolution = olMap.getView().getResolution()
+        const resolution = olMap!.value!.getView().getResolution()
         if (typeof resolution !== 'number' || Number.isNaN(resolution)) {
             return 1
         }
@@ -1423,7 +1432,7 @@ export function useOlDrawing(
                 return false
             }
 
-            nextUniqueVertices.push([...nextUniqueVertices[0]])
+            nextUniqueVertices.push([...nextUniqueVertices[0]!])
             const nextRings = [nextUniqueVertices, ...rings.slice(1)]
             polygonGeometry.setCoordinates(nextRings)
             feature.changed()
@@ -1547,7 +1556,7 @@ export function useOlDrawing(
                 return false
             }
 
-            const closedCoordinates = [...uniqueVertices, uniqueVertices[0]]
+            const closedCoordinates = [...uniqueVertices, uniqueVertices[0]!]
             const segmentIndex = resolveNearestSegmentIndex(
                 closedCoordinates,
                 coordinate,
@@ -1559,7 +1568,7 @@ export function useOlDrawing(
 
             const nextUniqueVertices = [...uniqueVertices]
             nextUniqueVertices.splice(segmentIndex + 1, 0, coordinate)
-            nextUniqueVertices.push([...nextUniqueVertices[0]])
+            nextUniqueVertices.push([...nextUniqueVertices[0]!])
 
             const nextRings = [nextUniqueVertices, ...rings.slice(1)]
             polygonGeometry.setCoordinates(nextRings)
@@ -1573,7 +1582,7 @@ export function useOlDrawing(
     function endpointHandleAtPixel(pixel: number[]): OlFeature<Point> | null {
         let selectedHandle: OlFeature<Point> | null = null
 
-        olMap.forEachFeatureAtPixel(
+        olMap!.value!.forEachFeatureAtPixel(
             pixel,
             (feature, targetLayer) => {
                 if (targetLayer === endpointHandleLayer) {
@@ -1806,7 +1815,7 @@ export function useOlDrawing(
     }
 
     function resetMapInteractionPointerState() {
-        olMap.getInteractions().forEach((interaction) => {
+        olMap!.value!.getInteractions().forEach((interaction) => {
             if (
                 interaction === currentDraw ||
                 interaction === currentModify ||
@@ -1822,7 +1831,7 @@ export function useOlDrawing(
     }
 
     function releaseViewportPointerState() {
-        const viewport = olMap.getViewport()
+        const viewport = olMap!.value!.getViewport()
         viewport.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
         viewport.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }))
 
@@ -1834,7 +1843,7 @@ export function useOlDrawing(
 
     function disableDoubleClickZoomInteractionsTemporarily() {
         temporarilyDisabledDoubleClickZoomInteractions = []
-        olMap.getInteractions().forEach((interaction) => {
+        olMap!.value!.getInteractions().forEach((interaction) => {
             if (!(interaction instanceof DoubleClickZoom) || !interaction.getActive()) {
                 return
             }
@@ -1854,7 +1863,7 @@ export function useOlDrawing(
     function clearEndpointExtensionSnap() {
         if (endpointExtensionSnap) {
             endpointExtensionSnap.setActive(false)
-            olMap.removeInteraction(endpointExtensionSnap)
+            olMap!.value!.removeInteraction(endpointExtensionSnap)
             endpointExtensionSnap = null
         }
     }
@@ -1875,7 +1884,7 @@ export function useOlDrawing(
 
         if (currentDraw) {
             currentDraw.setActive(false)
-            olMap.removeInteraction(currentDraw)
+            olMap!.value!.removeInteraction(currentDraw)
             currentDraw = null
         }
         clearEndpointExtensionSnap()
@@ -1884,9 +1893,9 @@ export function useOlDrawing(
         suppressDoubleClickZoomUntil = Date.now() + 350
         releaseViewportPointerState()
         resetMapInteractionPointerState()
-        olMap.getViewport().style.cursor = ''
+        olMap!.value!.getViewport().style.cursor = ''
 
-        window.setTimeout(() => {
+        setTimeout(() => {
             endpointExtensionInProgress = false
             restoreDoubleClickZoomInteractions()
 
@@ -1901,7 +1910,7 @@ export function useOlDrawing(
             rebuildEndpointHandles()
         }, 0)
 
-        window.setTimeout(() => {
+        setTimeout(() => {
             suppressNextActiveSingleClick = false
         }, 200)
     }
@@ -2028,8 +2037,8 @@ export function useOlDrawing(
             restoreActiveEditingAfterEndpointExtension(targetFeature)
         })
 
-        olMap.addInteraction(currentDraw)
-        olMap.addInteraction(endpointExtensionSnap)
+        olMap!.value!.addInteraction(currentDraw)
+        olMap!.value!.addInteraction(endpointExtensionSnap)
         currentDraw.extend(lineFeature)
     }
 
@@ -2044,8 +2053,8 @@ export function useOlDrawing(
             source,
         })
 
-        olMap.addInteraction(currentModify)
-        olMap.addInteraction(currentSnap)
+        olMap!.value!.addInteraction(currentModify)
+        olMap!.value!.addInteraction(currentSnap)
         endpointHandleLayer.setVisible(true)
         rebuildEndpointHandles()
 
@@ -2065,7 +2074,7 @@ export function useOlDrawing(
             rebuildEndpointHandles()
         })
 
-        activeClickListener = olMap.on('singleclick', (event) => {
+        activeClickListener = olMap!.value!.on('singleclick', (event) => {
             if (suppressNextActiveSingleClick) {
                 return
             }
@@ -2121,7 +2130,7 @@ export function useOlDrawing(
             rebuildEndpointHandles()
         })
 
-        activeMoveListener = olMap.on('pointermove', (event) => {
+        activeMoveListener = olMap!.value!.on('pointermove', (event) => {
             if (!currentModify) {
                 return
             }
@@ -2136,7 +2145,7 @@ export function useOlDrawing(
             }
         })
 
-        const viewport = olMap.getViewport()
+        const viewport = olMap!.value!.getViewport()
         activeViewportDblClickListener = (event: MouseEvent) => {
             if (endpointExtensionInProgress && currentDraw) {
                 currentDraw.finishDrawing()
@@ -2162,7 +2171,7 @@ export function useOlDrawing(
                 return
             }
 
-            const coordinate = olMap.getCoordinateFromPixel(pixel)
+            const coordinate = olMap!.value!.getCoordinateFromPixel(pixel)
             if (!coordinate) {
                 return
             }
@@ -2210,25 +2219,29 @@ export function useOlDrawing(
         }
 
         if (activeContextMenuListener) {
-            olMap.getViewport().removeEventListener('contextmenu', activeContextMenuListener)
+            olMap!
+                .value!.getViewport()
+                .removeEventListener('contextmenu', activeContextMenuListener)
             activeContextMenuListener = null
         }
 
         if (activeViewportDblClickListener) {
-            olMap.getViewport().removeEventListener('dblclick', activeViewportDblClickListener)
+            olMap!
+                .value!.getViewport()
+                .removeEventListener('dblclick', activeViewportDblClickListener)
             activeViewportDblClickListener = null
         }
 
         if (currentModify) {
             currentModify.setActive(false)
             currentModify.getOverlay().getSource()?.clear(true)
-            olMap.removeInteraction(currentModify)
+            olMap!.value!.removeInteraction(currentModify)
             currentModify = null
         }
 
         if (currentSnap) {
             currentSnap.setActive(false)
-            olMap.removeInteraction(currentSnap)
+            olMap!.value!.removeInteraction(currentSnap)
             currentSnap = null
         }
 
@@ -2265,17 +2278,17 @@ export function useOlDrawing(
     function featureAtPixel(pixel: number[]): Feature<Geometry> | null {
         let selectedFeature: Feature<Geometry> | null = null
 
-        olMap.forEachFeatureAtPixel(
+        olMap!.value!.forEachFeatureAtPixel(
             pixel,
             (feature, targetLayer) => {
-                if (targetLayer === layer) {
+                if (targetLayer === olDrawingLayer) {
                     selectedFeature = feature as Feature<Geometry>
                     return true
                 }
                 return false
             },
             {
-                layerFilter: (candidateLayer) => candidateLayer === layer,
+                layerFilter: (candidateLayer) => candidateLayer === olDrawingLayer,
                 hitTolerance: 6,
             }
         )
@@ -2385,7 +2398,7 @@ export function useOlDrawing(
     ) {
         disablePassiveInspection()
 
-        passiveClickListener = olMap.on('singleclick', (event) => {
+        passiveClickListener = olMap!.value!.on('singleclick', (event) => {
             if (
                 endpointHandleAtPixel(event.pixel) ||
                 endpointHandleNearCoordinate(event.coordinate)
@@ -2406,13 +2419,13 @@ export function useOlDrawing(
             onFeatureSelected?.(payload)
         })
 
-        passiveMoveListener = olMap.on('pointermove', (event) => {
+        passiveMoveListener = olMap!.value!.on('pointermove', (event) => {
             if (!event.originalEvent) {
                 return
             }
 
             const hoveredFeature = featureAtPixel(event.pixel)
-            olMap.getViewport().style.cursor = hoveredFeature ? 'pointer' : ''
+            olMap!.value!.getViewport().style.cursor = hoveredFeature ? 'pointer' : ''
             const pointerEvent = event.originalEvent as PointerEvent
             const payload = toHoverHintPayload(
                 pointerEvent.clientX,
@@ -2422,9 +2435,9 @@ export function useOlDrawing(
             onHoverHintChanged?.(payload)
         })
 
-        const viewport = olMap.getViewport()
+        const viewport = olMap!.value!.getViewport()
         passiveOutListener = () => {
-            olMap.getViewport().style.cursor = ''
+            olMap!.value!.getViewport().style.cursor = ''
             onHoverHintChanged?.(null)
         }
         viewport.addEventListener('pointerleave', passiveOutListener)
@@ -2444,11 +2457,11 @@ export function useOlDrawing(
         }
 
         if (passiveOutListener) {
-            olMap.getViewport().removeEventListener('pointerleave', passiveOutListener)
+            olMap!.value!.getViewport().removeEventListener('pointerleave', passiveOutListener)
             passiveOutListener = null
         }
 
-        olMap.getViewport().style.cursor = ''
+        olMap!.value!.getViewport().style.cursor = ''
     }
 
     /**
@@ -2477,53 +2490,178 @@ export function useOlDrawing(
         log.debug(`Added ${features.length} features to drawing`)
     }
 
-    /**
-     * Set the visibility of the drawing layer
-     */
-    function setVisibility(isVisible: boolean) {
-        layer.setVisible(isVisible)
-    }
-
-    /**
-     * Set the z-index of the drawing layer
-     */
-    function setZIndex(zIndex: number) {
-        layer.setZIndex(zIndex)
-    }
-
-    /**
-     * Update the text of a feature
-     */
-    function updateFeatureText(feature: Feature<Geometry>, text: string) {
-        feature.set('text', text)
-        feature.changed()
-        log.debug('Updated feature text:', text)
-    }
-
-    /**
-     * Set the icon to use for new point features
-     */
     function setSelectedIcon(icon: MarkerIcon) {
         selectedIcon.value = icon
         log.debug('Selected icon:', icon.id)
     }
 
+    // --- Hover hint state exposed to the template ---
+    const showHoverHint = ref(false)
+    const hoverHintText = ref('')
+    const hoverHintX = ref(0)
+    const hoverHintY = ref(0)
+
+    let updateFeatureTimeout: ReturnType<typeof setTimeout> | undefined
+
+    function updateFeatures(_feature?: Feature<Geometry>) {
+        if (updateFeatureTimeout) {
+            clearTimeout(updateFeatureTimeout)
+        }
+        updateFeatureTimeout = setTimeout(() => {
+            const features = getFeatures()
+            if (features.length !== drawingStore.drawingFeatures.length) {
+                drawingStore.setDrawingFeatures(features)
+            }
+            updateFeatureTimeout = undefined
+        }, 150)
+    }
+
+    function clearDrawingFeatures() {
+        clearFeatures()
+        stopDrawing()
+    }
+
+    async function applyInteractionState(isDrawingEnabled: boolean, mode: DrawingMode) {
+        stopDrawing()
+        disableActiveEditing()
+        disablePassiveInspection()
+        if (!isDrawingEnabled || mode === 'None') {
+            showHoverHint.value = false
+            enablePassiveInspection(
+                (payload) => {
+                    drawingStore.setSelectedFeatureId(payload?.featureId ?? null)
+                    drawingStore.setSelectedFeatureInfo(payload)
+                },
+                (hoverHintPayload: DrawingHoverHintPayload | null) => {
+                    if (!hoverHintPayload) {
+                        showHoverHint.value = false
+                        return
+                    }
+                    hoverHintText.value = hoverHintPayload.text
+                    hoverHintX.value = hoverHintPayload.x
+                    hoverHintY.value = hoverHintPayload.y
+                    showHoverHint.value = true
+                }
+            )
+            enableActiveEditing()
+            return
+        }
+
+        showHoverHint.value = false
+        drawingStore.clearPassiveSelection()
+
+        await nextTick()
+        startDrawing(mode, (feature) => {
+            updateFeatures(feature)
+            drawingStore.setDrawingMode('None')
+        })
+    }
+
+    watch(
+        () => [drawingStore.isDrawing, drawingStore.drawingMode] as const,
+        async ([isDrawingEnabled, newMode]) => {
+            await applyInteractionState(Boolean(isDrawingEnabled), newMode)
+        },
+        { immediate: true }
+    )
+
+    watch(
+        () => drawingStore.featureCount,
+        (newCount, oldCount) => {
+            if (newCount === 0 && oldCount > 0) {
+                clearDrawingFeatures()
+            }
+        }
+    )
+
+    watch(
+        () => drawingStore.selectedIconId,
+        (newIconId) => {
+            if (newIconId) {
+                const icon = getMarkerIconById(newIconId)
+                if (icon) {
+                    setSelectedIcon(icon)
+                }
+            }
+        }
+    )
+
+    let hasInitialized = false
+
+    function restoreFeatures() {
+        if (hasInitialized) {
+            return
+        }
+
+        if (layer.value.info?.displayName) {
+            drawingStore.setDrawingName(layer.value.info.displayName)
+        }
+
+        if (drawingStore.drawingFeatures.length > 0) {
+            addFeatures(drawingStore.drawingFeatures as Feature<Geometry>[])
+            hasInitialized = true
+            return
+        }
+
+        if (layer.value.data && typeof layer.value.data === 'string') {
+            try {
+                const metadataDrawingName = drawingStore.extractDrawingNameFromKML(layer.value.data)
+                if (metadataDrawingName) {
+                    drawingStore.setDrawingName(metadataDrawingName)
+                }
+
+                const format = new KML({ extractStyles: true })
+                const features = format.readFeatures(layer.value.data, {
+                    featureProjection: EPSG_2056_CH1903,
+                    dataProjection: EPSG_4326_WGS84,
+                })
+                if (features.length > 0) {
+                    features.forEach((feature) => {
+                        const name = feature.get('name')
+                        const text = feature.get('text')
+                        const iconId = feature.get('iconId')
+
+                        if (name && !text && feature.getGeometry()?.getType() === 'Point') {
+                            feature.set('text', name)
+                        }
+
+                        if (iconId) {
+                            feature.set('iconId', iconId)
+                        }
+                    })
+
+                    addFeatures(features)
+                    drawingStore.setDrawingFeatures(features)
+                }
+            } catch (error) {
+                log.error({
+                    title: 'useOlDrawing',
+                    titleColor: LogPreDefinedColor.Red,
+                    messages: ['Failed to parse existing KML data', error],
+                })
+            }
+        }
+        hasInitialized = true
+    }
+
+    onMounted(() => {
+        restoreFeatures()
+    })
+
+    onBeforeUnmount(() => {
+        stopDrawing()
+        disableActiveEditing()
+        disablePassiveInspection()
+        olMap.value!.removeLayer(endpointHandleLayer)
+        olMap.value!.removeLayer(olDrawingLayer)
+        clearTimeout(updateFeatureTimeout)
+    })
+
     return {
-        layer,
-        source,
-        startDrawing,
-        stopDrawing,
-        enableActiveEditing,
-        disableActiveEditing,
-        getFeatures,
-        clearFeatures,
-        addFeatures,
-        setVisibility,
-        setZIndex,
-        updateFeatureText,
-        setSelectedIcon,
-        enablePassiveInspection,
-        disablePassiveInspection,
+        showHoverHint,
+        hoverHintText,
+        hoverHintX,
+        hoverHintY,
         selectedIcon: readonly(selectedIcon),
     }
 }

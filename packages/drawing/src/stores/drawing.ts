@@ -127,6 +127,10 @@ export const useDrawingStore = defineStore('drawing', () => {
         clearPassiveSelection()
     }
 
+    function setDrawingFeatures(features: Feature<Geometry>[]) {
+        drawingFeatures.value = features
+    }
+
     function setOlLayer(layer: VectorLayer) {
         olLayer.value = layer
     }
@@ -166,6 +170,7 @@ export const useDrawingStore = defineStore('drawing', () => {
         setDrawingLayerUuid,
         resetDrawingLayerUuid,
         clearDrawingFeatures,
+        setDrawingFeatures,
         setOlLayer,
         setDrawingKMLLayerUuid,
         setSelectedIconId,
