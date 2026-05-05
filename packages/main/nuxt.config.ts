@@ -28,7 +28,7 @@ export default defineNuxtConfig({
         keepalive: true,
     },
     typescript: {
-        typeCheck: false, //too much baggage ATM
+        typeCheck: true,
         tsConfig: {
             include: ['**/__tests__/**/*'],
         },
