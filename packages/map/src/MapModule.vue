@@ -21,7 +21,10 @@ const { layers, customLayerRenderers } = defineProps<{
 
 const layersWithZIndex = computed(() => {
     // openlayers require a Zindex param. We set it to the layer orders here
-    const mapLayers = layers.map((mapLayer, index) => (mapLayer.zIndex = index))
+    const mapLayers = layers.map((mapLayer, index) => {
+        mapLayer.zIndex = index
+        return mapLayer
+    })
     return mapLayers
 })
 </script>

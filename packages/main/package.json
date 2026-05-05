@@ -31,6 +31,7 @@
         "@nuxtjs/google-fonts": "catalog:",
         "@nuxtjs/i18n": "catalog:",
         "@pinia/nuxt": "catalog:",
+        "@swissgeo/content": "workspace:*",
         "@swissgeo/coordinates": "workspace:*",
         "@swissgeo/drawing": "workspace:*",
         "@swissgeo/layers": "workspace:*",

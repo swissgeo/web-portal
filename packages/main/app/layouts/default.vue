@@ -4,10 +4,9 @@ import type { SearchResult } from '@swissgeo/search'
 
 import log from '@swissgeo/log'
 import { useDatasetPanelStore } from '@swissgeo/skeleton'
-import SideBar from '@/components/sidebar/SideBar.vue'
 
 import DatasetPanel from '@/components/sidebar/DatasetPanel.vue'
-
+import SideBar from '@/components/sidebar/SideBar.vue'
 import { useSearchSelection } from '@/composables/useSearchSelection'
 
 const { resetApp } = useResetApp()

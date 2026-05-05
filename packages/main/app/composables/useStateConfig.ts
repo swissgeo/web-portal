@@ -36,9 +36,11 @@ function layerToStateConfig(layer: MapLayer): LayerStateConfig {
                 1. A layer in the map Layers has no corresponding source
                     1.1 This most certainly means a source has been cleared without clearing the map,
                      or that a map has been removed without removing the source
-                2. For some reason, the background layer is null AND is part of the mapview, which shouldn't happen
+                2. the background layer has changed on one store, but not the other
+
+                TODO: solve number two, as it happens on every background layer change, then introduce back the `THROW ERROR` rather than the log error
             */
-            throw new Error(
+            log.error(
                 `A layer with uuid ${layer?.uuid} couldn't be transformed to a Layer State Config. Most probable reason is a difference between the source Data and the map Layers`
             )
         }

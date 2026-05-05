@@ -19,13 +19,13 @@ export function useAttributionSources(
 
         const attributedLayers: Layer[] = []
 
-        if (resolvedBackground?.isVisible && resolvedBackground.info?.attribution?.title) {
+        if (resolvedBackground && resolvedBackground.info?.attribution?.title) {
             attributedLayers.push(resolvedBackground)
         }
 
         attributedLayers.push(
             ...resolvedLayers
-                .filter((layer) => layer.isVisible)
+                //.filter((layer) => layer.isVisible) TODO : mruh
                 .filter((layer) => !!layer.info?.attribution?.title)
         )
 

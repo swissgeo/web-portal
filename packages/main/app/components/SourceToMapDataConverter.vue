@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Layer as SourceData } from '@swissgeo/layers'
+import type { Dimension, Layer as SourceData } from '@swissgeo/layers'
 import type { Layer as MapLayer } from '@swissgeo/map'
 
 import { isDatasetLayer, useLayerStore } from '@swissgeo/layers'
@@ -40,7 +40,7 @@ function updateStoreLayerData(index: number, uuid: string, dataset: Dataset) {
     }
 }
 */
-function updateTimeDimension(identifier: number | string, dimension: Partial<Dimension>) {
+function updateTimeDimension(identifier: string, dimension: Partial<Dimension>) {
     useLayerStore().setDimension('time', identifier, dimension)
 }
 function updateOpacity(identifier: number | string, opacity: number) {
@@ -58,18 +58,14 @@ function updateOpacity(identifier: number | string, opacity: number) {
             :layer="data"
             :zIndex="index"
             @update="updateMapLayerData(index, $event)"
-            @updateLayerInfo="updateLayerInfo"
-            @remove="removeLayerData(index)"
             @updateOpacity="updateOpacity"
             @updateTimeDimension="updateTimeDimension"
-            @updateDataset="updateStoreLayerData"
         />
         <MapDatamappingFileConverter
             v-else
             :layer="data"
             :zIndex="index"
             @update="updateMapLayerData(index, $event)"
-            @remove="removeLayerData(index)"
         />
     </div>
 </template>

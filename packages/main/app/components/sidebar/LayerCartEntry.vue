@@ -5,20 +5,12 @@ import type { Layer as MapLayer } from '@swissgeo/map'
 import { useDrawingStore } from '@swissgeo/drawing'
 import { useLayerStore } from '@swissgeo/layers'
 import { getDisplayNameFromTimestamp } from '@swissgeo/shared'
+import { useDatasetPanelStore, IconButton } from '@swissgeo/skeleton'
 import { computed } from 'vue'
 
-<<<<<<< HEAD
-import IconButton from '@/components/IconButton.vue'
-import { useDatasetPanelStore } from '@/stores/datasetPanel'
-
-const { layer, index } = defineProps<{
-    layer: Layer
-    index: number
-=======
 const { layer, layerIndex } = defineProps<{
     layer: MapLayer
     layerIndex: number
->>>>>>> 795eee52 (GPS-583: map Layers handling)
 }>()
 
 const layerStore = useLayerStore()
@@ -82,7 +74,14 @@ function removeLayer() {
 }
 
 function openDatasetPanel() {
-    datasetPanelStore.openDatasetPanel(layer.humanId)
+    const source = layerStore.getLayer(layer.uuid)
+    if (source) {
+        datasetPanelStore.openDatasetPanel(source.humanId)
+    }
+}
+
+function isFromDataSet() {
+    return layerStore.getLayer(layer.uuid)?.type === 'dataset'
 }
 </script>
 
@@ -114,7 +113,7 @@ function openDatasetPanel() {
         <div class="flex-1">
             <div
                 class="overflow-x-hidden text-nowrap"
-                :title="layer.title"
+                :title="layer.displayName"
                 :class="{ 'text-gray-300': !layer.isVisible }"
             >
                 {{ layer.displayName }}
@@ -148,7 +147,7 @@ function openDatasetPanel() {
                 </select>
             </div>
             <IconButton
-                v-if="layer.type === 'dataset'"
+                v-if="isFromDataSet()"
                 iconName="Info"
                 severity="secondary"
                 @click="openDatasetPanel"

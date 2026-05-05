@@ -15,7 +15,7 @@ const emit = defineEmits<{
     'reset-app': [void]
 }>()
 const { mapLayers } = defineProps<{
-    mapLayers: MapLayer[]
+    mapLayers: Ref<MapLayer[]>
 }>()
 defineSlots<{
     'bottom-controls'?: () => unknown

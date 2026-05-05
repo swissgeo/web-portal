@@ -1,6 +1,5 @@
-import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { useLayerStore } from '@swissgeo/layers'
-import { validateAndPrepareAppStatePayload } from '@swissgeo/statesharing'
+import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { watchDebounced } from '@vueuse/core'
 import { importStateFromBase64 } from '~/composables/stateImport/importStateFromBase64'
 import { importStateFromService } from '~/composables/stateImport/importStateFromService'

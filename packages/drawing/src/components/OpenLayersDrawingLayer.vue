@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-
-import type { ShallowRef } from 'vue'
 import type { Layer as MapLayer } from '@swissgeo/map'
 import type { Map } from 'ol'
+import type { ShallowRef } from 'vue'
 
 import { computed, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -20,7 +19,6 @@ const layerRef = computed(() => layer)
 const zIndexRef = computed(() => zIndex)
 
 const { showHoverHint, hoverHintText, hoverHintX, hoverHintY } = useOlDrawing(layerRef, olMap, {
-
     translate: (key, params) => t(key, params ?? {}),
     zIndex: zIndexRef,
 })
