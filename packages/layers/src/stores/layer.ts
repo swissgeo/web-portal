@@ -13,6 +13,18 @@ export const useLayerStore = defineStore('layers', () => {
     /** The active background layer, or null if none is selected. */
     const backgroundLayer = ref<Layer | null>(null)
 
+    /**
+     * Quick explanation on this interface:
+     *  Right now, we have a distinction between
+     *  - the source for layers, which tells the application where to look for the tiles / data
+     *  - The map layers, which contains the information openlayers need to render the layers
+     *
+     * the visibility and opacity do not belong in the sources, but we do not want them to be overwritten by the
+     * styling that happens on the first pass through the conversion pipeline
+     *
+     * These options are kept in the state on importing until the conversion pipeline is finished, then they are applied to the map layers and removed.
+     * Once the importOptions object is empty, we know the import has been completed.
+     */
     interface importOption {
         isVisible?: boolean
         opacity?: number
@@ -40,18 +52,15 @@ export const useLayerStore = defineStore('layers', () => {
      * and return the index at which the layer is.
      *
      *
-     * @param identifier either the index in the array, or the layer's uuid
+     * @param uuid either the index in the array, or the layer's uuid
      * @returns the index itself, or the index found
      * @throws Error if the uuid is not found within the array
      */
-    function _getIndexFromIdentifier(identifier: string | number): number | undefined {
-        const index =
-            typeof identifier === 'number'
-                ? identifier
-                : layers.value.findIndex((layer) => layer.uuid === identifier)
+    function _getIndexFromIdentifier(uuid: string): number | undefined {
+        const index = layers.value.findIndex((layer) => layer.uuid === uuid)
 
         if (index < 0) {
-            log.error(`Incorrect identifier given : ${identifier}`)
+            log.error(`Incorrect uuid given : ${uuid}`)
             return
         }
         return index
@@ -59,11 +68,11 @@ export const useLayerStore = defineStore('layers', () => {
 
     /**
      *
-     * @param identifier either the layer uuid or its index in the layer store. We recommend using the uuid
+     * @param uuid either the layer uuid or its index in the layer store. We recommend using the uuid
      * @returns
      */
-    function getLayer(identifier: string | number): Layer | undefined {
-        const index = _getIndexFromIdentifier(identifier)
+    function getLayer(uuid: string): Layer | undefined {
+        const index = _getIndexFromIdentifier(uuid)
         if ((index || index === 0) && layers.value[index]) {
             return layers.value[index]
         }
@@ -82,19 +91,15 @@ export const useLayerStore = defineStore('layers', () => {
         layers.value.push(layer)
     }
 
-    function replaceLayer(identifier: string | number, replacement: Layer) {
-        const index = _getIndexFromIdentifier(identifier)
+    function replaceLayer(uuid: string, replacement: Layer) {
+        const index = _getIndexFromIdentifier(uuid)
         if ((index || index === 0) && layers.value[index]) {
-            layers.value.splice(_getIndexFromIdentifier(identifier), 1, replacement)
+            layers.value.splice(_getIndexFromIdentifier(uuid)!, 1, replacement)
         }
     }
 
-    function setDimension(
-        id: DimensionId,
-        identifier: string | number,
-        dimension: Partial<Dimension>
-    ) {
-        const index = _getIndexFromIdentifier(identifier)
+    function setDimension(id: DimensionId, uuid: string, dimension: Partial<Dimension>) {
+        const index = _getIndexFromIdentifier(uuid)
 
         if ((index || index === 0) && layers.value[index]) {
             const layer = layers.value[index]
@@ -118,13 +123,13 @@ export const useLayerStore = defineStore('layers', () => {
         }
     }
 
-    function setLayerInfo(identifier: string | number, info: LayerInfo): void {
-        log.debug(`Setting layer info for layer ${identifier} to ${JSON.stringify(info)}`)
+    function setLayerInfo(uuid: string, info: LayerInfo): void {
+        log.debug(`Setting layer info for layer ${uuid} to ${JSON.stringify(info)}`)
 
-        const index = _getIndexFromIdentifier(identifier)
+        const index = _getIndexFromIdentifier(uuid)
         if ((index || index === 0) && layers.value[index]) {
             layers.value[index].info = info
-        } else if (typeof identifier === 'string' && backgroundLayer.value?.uuid === identifier) {
+        } else if (typeof uuid === 'string' && backgroundLayer.value?.uuid === uuid) {
             setBackgroundInfo(info)
         }
     }
@@ -135,18 +140,18 @@ export const useLayerStore = defineStore('layers', () => {
         }
     }
 
-    function removeLayer(identifier: string | number) {
-        const index = _getIndexFromIdentifier(identifier)
+    function removeLayer(uuid: string) {
+        const index = _getIndexFromIdentifier(uuid)
         if ((index || index === 0) && layers.value[index]) {
             layers.value.splice(index, 1)
         }
     }
 
-    function setLayerData(identifier: string | number, dataset: Dataset) {
-        const index = _getIndexFromIdentifier(identifier)
+    function setLayerData(uuid: string, dataset: Dataset) {
+        const index = _getIndexFromIdentifier(uuid)
         if ((index || index === 0) && layers.value[index]) {
             layers.value[index].data = dataset
-        } else if (typeof identifier === 'string' && backgroundLayer.value?.uuid === identifier) {
+        } else if (typeof uuid === 'string' && backgroundLayer.value?.uuid === uuid) {
             setBackgroundLayerData(dataset)
         }
     }

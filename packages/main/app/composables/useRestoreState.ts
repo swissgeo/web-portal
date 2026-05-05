@@ -53,6 +53,19 @@ export function useRestoreState() {
         watchDebounced(
             exportState,
             (newState) => {
+                /**
+                 * While we're loading the session Storage / importing stuff, we don't want
+                 * to export the state while importing it.
+                 *
+                 * With how the state import is done, each source imported will have its import options associated,
+                 * which are attributes for the openlayers Map that do not belong in the source store.
+                 *
+                 * When those sources are converted to map Layers, we consume these options
+                 *
+                 * When there is no longer any option to consume, this means we've finished importing the previous state,
+                 * and we can, once again, start exporting the state.
+                 *
+                 */
                 if (useLayerStore().isThereImportOptions()) {
                     return
                 }

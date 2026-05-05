@@ -4,6 +4,10 @@ import log from '@swissgeo/log'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+/**
+ * The map View store is used to hold data useful for the map Module to render layers.
+ * Sources from @swissgeo/layers will be converted from raw Data to OL-consumable Data.
+ */
 export const useMapViewStore = defineStore('mapView', () => {
     const isTimeSliderVisible = ref(false)
     const isFullscreenModeActive = ref(false)
@@ -26,7 +30,7 @@ export const useMapViewStore = defineStore('mapView', () => {
                 : mapLayers.value.findIndex((layer) => layer.uuid === identifier)
 
         if (index < 0 || index >= mapLayers.value.length) {
-            log.error(`Incorrect identifier given : ${identifier}`)
+            log.warn(`Incorrect identifier given : ${identifier}`)
             return
         }
         return index

@@ -6,8 +6,7 @@
         "env.d.ts",
         "vite.config.ts",
         "types/**/*.d.ts",
-        "../../base.vite.config.ts",
-        "../main/app/components/sidebar/search/__tests__/SearchResultEntry.spec.ts"
+        "../../base.vite.config.ts"
     ],
     "compilerOptions": {
         "types": ["vue", "vite/client"],

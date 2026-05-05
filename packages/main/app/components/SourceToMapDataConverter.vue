@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { /*Dimension, LayerInfo,*/ Layer as SourceData } from '@swissgeo/layers'
+import type { Layer as SourceData } from '@swissgeo/layers'
 import type { Layer as MapLayer } from '@swissgeo/map'
-//import type { Dataset } from '@swissgeo/ogc'
 
 import { isDatasetLayer, useLayerStore } from '@swissgeo/layers'
 

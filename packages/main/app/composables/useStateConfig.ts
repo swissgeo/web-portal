@@ -141,11 +141,14 @@ export function useStateConfig() {
                 ? stateConfigToLayer(payload.state.backgroundLayer)
                 : null,
         ])
+
         layerStore.setBackground(bgLayer)
-        // need to add bg Layer to
+
         for (let i = 0; i < layers.length; i++) {
             if (layers[i]) {
                 const uuid = layers[i]!.uuid
+                // we're adding some information about visibility and opacity to apply after conversion
+                // also setting defaults in case they are not specified
                 const mapLayerData: Partial<MapLayer> = {
                     opacity: payload.state.layers[i]?.opacity ?? 1,
                     isVisible: payload.state.layers[i]?.isVisible ?? true,
