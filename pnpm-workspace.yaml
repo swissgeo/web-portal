@@ -2,6 +2,7 @@ packages:
     - packages/*
     - packages/config/*
     - support/service-shortlink-mock/
+    - tests/integration
 
 catalog:
     '@chenfengyuan/vue-qrcode': '^2.0.0'

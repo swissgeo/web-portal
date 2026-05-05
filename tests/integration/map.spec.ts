@@ -12,7 +12,7 @@ test.describe('map page', () => {
     })
 
     test.afterEach(async ({ page }) => {
-        cleanupExternalRequestMocks(page)
+        await cleanupExternalRequestMocks(page)
     })
 
     test('renders the OpenLayers map canvas', async ({ page }) => {

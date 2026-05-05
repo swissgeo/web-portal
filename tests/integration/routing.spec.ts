@@ -8,7 +8,7 @@ test.describe('locale routing', () => {
     })
 
     test.afterEach(async ({ page }) => {
-        cleanupExternalRequestMocks(page)
+        await cleanupExternalRequestMocks(page)
     })
 
     test('homepage redirects to the default locale map', async ({ page }) => {
