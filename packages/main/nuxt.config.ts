@@ -28,7 +28,6 @@ export default defineNuxtConfig({
         keepalive: true,
     },
     typescript: {
-        typeCheck: true,
         tsConfig: {
             include: ['**/__tests__/**/*'],
         },
