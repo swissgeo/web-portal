@@ -1,6 +1,5 @@
 import type { DatasetLayer, LayerInfo } from '@swissgeo/layers'
 import type { Dataset, Link } from '@swissgeo/ogc'
-import type { Ref } from 'vue'
 
 import { getInfoFromDataset } from '@swissgeo/layers'
 import log, { LogPreDefinedColor } from '@swissgeo/log'
@@ -21,20 +20,18 @@ export default function useDatasetLocaleRefresh(
 
     const selfLink = layer.data.links?.find((link: Link) => link.rel === 'self')
 
-    const newUrlString = computed((): string | null => {
-        if (!selfLink?.href) {
-            return null
-        }
-        const datasetUrl = new URL(selfLink.href)
+    if (!selfLink?.href) {
+        return { newUrlString: computed(() => null) }
+    }
+
+    const selfHref = selfLink.href
+    const newUrlString = computed((): string => {
+        const datasetUrl = new URL(selfHref)
         datasetUrl.searchParams.set('language', locale.value)
         return datasetUrl.toString()
     })
 
-    if (!selfLink?.href) {
-        return { newUrlString }
-    }
-
-    const { data: dataset } = useFetch<Dataset>(newUrlString as Ref<string>)
+    const { data: dataset } = useFetch<Dataset>(newUrlString)
 
     watch(dataset, () => {
         if (dataset.value) {
