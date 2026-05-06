@@ -25,10 +25,13 @@ import {
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-const drawingStore = useDrawingStore()
-const positionStore = usePositionStore()
-const { t } = useI18n()
-const windowRef = useTemplateRef<HTMLElement>('windowRef')
+const WINDOW_MARGIN = 16
+const DEFAULT_WIDTH = 800
+
+const olMapRef = inject<Ref<Map | undefined>>('olMap')
+
+const geometryRevision = ref(0)
+
 const mapProjectionEpsg = computed(() => positionStore.projection.epsg)
 const olGeoJSON = computed(
     () =>
@@ -37,30 +40,9 @@ const olGeoJSON = computed(
             dataProjection: mapProjectionEpsg.value,
         })
 )
-const olMapRef = inject<Ref<Map | undefined>>('olMap')
 const olMap = computed(() => {
     return olMapRef?.value ? markRaw(olMapRef.value) : undefined
 })
-const geometryRevision = ref(0)
-
-const WINDOW_MARGIN = 16
-const DEFAULT_WIDTH = 800
-
-const position = reactive({
-    x: WINDOW_MARGIN,
-    y: WINDOW_MARGIN,
-    initialized: false,
-})
-const size = reactive({
-    width: DEFAULT_WIDTH,
-    height: 'auto' as number | 'auto',
-})
-const dragState = reactive({
-    active: false,
-    offsetX: 0,
-    offsetY: 0,
-})
-
 const labels = computed<Labels>(() => ({
     plot: {
         xAxis: t('elevationProfile.plot.xAxis'),
@@ -77,35 +59,7 @@ const labels = computed<Labels>(() => ({
         slopeDistance: t('elevationProfile.metadata.slopeDistance'),
     },
 }))
-
 const hasInfo = computed(() => drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo))
-
-let unlistenGeometryChange: (() => void) | null = null
-
-watch(
-    () => drawingStore.selectedFeatureId,
-    (selectedId) => {
-        unlistenGeometryChange?.()
-        unlistenGeometryChange = null
-
-        if (!selectedId) {
-            return
-        }
-
-        const features = drawingStore.drawingFeatures as Feature<Geometry>[]
-        const feature = features.find((f) => resolveFeatureId(f) === selectedId)
-        if (!feature) {
-            return
-        }
-
-        const key = feature.on('change', () => {
-            geometryRevision.value++
-        })
-        unlistenGeometryChange = () => feature.un('change', key.listener)
-    },
-    { immediate: true }
-)
-
 const selectedLineString = computed<LineString | null>(() => {
     void geometryRevision.value
 
@@ -135,10 +89,31 @@ const selectedLineString = computed<LineString | null>(() => {
     return null
 })
 
+const position = reactive({
+    x: WINDOW_MARGIN,
+    y: WINDOW_MARGIN,
+    initialized: false,
+})
+const size = reactive({
+    width: DEFAULT_WIDTH,
+    height: 'auto' as number | 'auto',
+})
+const dragState = reactive({
+    active: false,
+    offsetX: 0,
+    offsetY: 0,
+})
+
+const drawingStore = useDrawingStore()
+const positionStore = usePositionStore()
+const { t } = useI18n()
+const windowRef = useTemplateRef<HTMLElement>('windowRef')
 const { elevationProfile, elevationPending } = useElevationProfile(
     selectedLineString,
     () => positionStore.projection.epsgNumber
 )
+
+let unlistenGeometryChange: (() => void) | null = null
 
 function clampToViewport(nextX: number, nextY: number) {
     if (typeof window === 'undefined') {
@@ -220,6 +195,10 @@ function handleWindowResize() {
     position.y = clamped.y
 }
 
+function closeWindow() {
+    drawingStore.clearPassiveSelection()
+}
+
 watch(
     hasInfo,
     async (visible) => {
@@ -229,6 +208,30 @@ watch(
 
         await ensureInitialPosition()
         handleWindowResize()
+    },
+    { immediate: true }
+)
+
+watch(
+    () => drawingStore.selectedFeatureId,
+    (selectedId) => {
+        unlistenGeometryChange?.()
+        unlistenGeometryChange = null
+
+        if (!selectedId) {
+            return
+        }
+
+        const features = drawingStore.drawingFeatures as Feature<Geometry>[]
+        const feature = features.find((f) => resolveFeatureId(f) === selectedId)
+        if (!feature) {
+            return
+        }
+
+        const key = feature.on('change', () => {
+            geometryRevision.value++
+        })
+        unlistenGeometryChange = () => feature.un('change', key.listener)
     },
     { immediate: true }
 )
@@ -246,10 +249,6 @@ onBeforeUnmount(() => {
         window.removeEventListener('resize', handleWindowResize)
     }
 })
-
-function closeWindow() {
-    drawingStore.clearPassiveSelection()
-}
 </script>
 
 <template>
