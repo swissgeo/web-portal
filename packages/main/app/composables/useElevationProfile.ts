@@ -10,6 +10,9 @@ export function useElevationProfile(
     lineString: Ref<LineString | null> | ComputedRef<LineString | null>,
     epsgNumber: MaybeRefOrGetter<number> = 2056
 ) {
+    const { t } = useI18n()
+    const toaster = useToaster()
+
     const body = computed(() => {
         const geojson = lineString.value
         if (!geojson) {
@@ -18,7 +21,7 @@ export function useElevationProfile(
         return { geojson, sr: toValue(epsgNumber) }
     })
 
-    const { data, pending, execute } = useFetch<ElevationProfileResponse>(
+    const { data, pending, error, execute } = useFetch<ElevationProfileResponse>(
         '/api/v1/elevation/profile',
         {
             method: 'POST',
@@ -27,6 +30,11 @@ export function useElevationProfile(
             watch: false,
             onResponseError: ({ error }) => {
                 log.error(`Error fetching elevation profile: ${String(error)}`)
+                toaster.showError(t('elevationProfile.fetchError'))
+            },
+            onRequestError: ({ error }) => {
+                log.error(`Error fetching elevation profile: ${String(error)}`)
+                toaster.showError(t('elevationProfile.fetchError'))
             },
         }
     )
@@ -37,6 +45,7 @@ export function useElevationProfile(
         lineString,
         (val) => {
             if (val) {
+                error.value = undefined
                 void debouncedExecute()
             }
         },
@@ -46,5 +55,6 @@ export function useElevationProfile(
     return {
         elevationProfile: data,
         elevationPending: pending,
+        elevationError: error,
     }
 }

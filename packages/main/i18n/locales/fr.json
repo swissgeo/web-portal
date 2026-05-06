@@ -189,6 +189,7 @@
             "poiDown": "Point le plus bas",
             "distance": "Distance linéaire",
             "slopeDistance": "Distance du trajet"
-        }
+        },
+        "fetchError": "Impossible de récupérer le profil d'altitude"
     }
 }

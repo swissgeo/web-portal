@@ -189,6 +189,7 @@
             "poiDown": "Tiefster Punkt",
             "distance": "Lineare Entfernung",
             "slopeDistance": "Pfadentfernung"
-        }
+        },
+        "fetchError": "Höhenprofil konnte nicht abgerufen werden"
     }
 }

@@ -108,7 +108,7 @@ const drawingStore = useDrawingStore()
 const positionStore = usePositionStore()
 const { t } = useI18n()
 const windowRef = useTemplateRef<HTMLElement>('windowRef')
-const { elevationProfile, elevationPending } = useElevationProfile(
+const { elevationProfile, elevationPending, elevationError } = useElevationProfile(
     selectedLineString,
     () => positionStore.projection.epsgNumber
 )
@@ -292,10 +292,20 @@ onBeforeUnmount(() => {
                 </div>
             </template>
 
+            <USkeleton
+                v-if="elevationPending"
+                class="h-40 w-full"
+            />
+            <div
+                v-else-if="elevationError"
+                class="flex items-center justify-center h-40 text-sm text-red-500"
+            >
+                {{ t('elevationProfile.fetchError') }}
+            </div>
             <ElevationProfile
-                v-if="elevationProfile"
+                v-else-if="elevationProfile"
                 :profile-response="elevationProfile"
-                :is-loading="elevationPending"
+                :is-loading="false"
                 :labels="labels"
             >
                 <ElevationProfileOpenLayersBridge

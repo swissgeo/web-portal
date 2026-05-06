@@ -189,6 +189,7 @@
             "poiDown": "Lowest point",
             "distance": "Linear distance",
             "slopeDistance": "Path distance"
-        }
+        },
+        "fetchError": "Could not retrieve elevation profile"
     }
 }
