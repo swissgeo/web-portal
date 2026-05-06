@@ -1,5 +1,6 @@
-import type { ElevationProfilePoint } from '@/types'
 import type { Chart, Plugin } from 'chart.js'
+
+import type { ElevationProfilePoint } from '@/types'
 
 export interface NoDataPluginOptions {
     points: ElevationProfilePoint[]

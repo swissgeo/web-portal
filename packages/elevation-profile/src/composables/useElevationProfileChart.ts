@@ -1,9 +1,4 @@
 import type {
-    ElevationProfileResponse,
-    ElevationProfilePoint,
-    ElevationProfileMetadata,
-} from '@/types'
-import type {
     Chart,
     ChartData,
     ChartDataset,
@@ -28,6 +23,11 @@ import type {
     ScreenPoint,
     Labels,
 } from '@/components/ElevationProfilePlot.vue'
+import type {
+    ElevationProfileResponse,
+    ElevationProfilePoint,
+    ElevationProfileMetadata,
+} from '@/types'
 
 import { BORDER_COLOR, FILL_COLOR } from '@/config'
 

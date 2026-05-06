@@ -298,7 +298,7 @@ onBeforeUnmount(() => {
             />
             <div
                 v-else-if="elevationError"
-                class="flex items-center justify-center h-40 text-sm text-red-500"
+                class="flex h-40 items-center justify-center text-sm text-red-500"
             >
                 {{ t('elevationProfile.fetchError') }}
             </div>

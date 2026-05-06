@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { ElevationProfileResponse, ElevationProfilePoint } from '@/types'
 import type { ChartComponentRef } from 'vue-chartjs'
 
 import { provide, useTemplateRef } from 'vue'
 import { Line as LineChart } from 'vue-chartjs'
+
+import type { ElevationProfileResponse, ElevationProfilePoint } from '@/types'
 
 import { useElevationProfileChart } from '@/composables/useElevationProfileChart'
 
