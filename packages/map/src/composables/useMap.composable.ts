@@ -1,13 +1,15 @@
 import { storeToRefs } from 'pinia'
 import { useMapStore } from '../stores/map'
 import { ref, watch } from 'vue'
+import type { Extent } from 'ol/extent'
 
 
 export function useMap() {
     const mapStore = useMapStore()
-    const { olMap } = storeToRefs(mapStore)
+    const { olMap, isMapLoaded } = storeToRefs(mapStore)
     const zoomLevel = ref<number>(0)
     const center = ref<[number, number]>([0, 0])
+    const viewportExtent = ref<Extent>([0, 0, 0, 0])
     
     watch(
         () => olMap.value,
@@ -19,8 +21,10 @@ export function useMap() {
             const updateCenter = () => {
                 const newCenter = view.getCenter()
                 if (newCenter && newCenter[0] !== undefined && newCenter[1] !== undefined) {
-                    center.value = [newCenter[0], newCenter[1]]
+                    center.value = [newCenter[0] as number, newCenter[1] as number]
                 }
+
+                viewportExtent.value = view.calculateExtent(mapInstance.getSize());
             }
 
             // initial value
@@ -29,9 +33,7 @@ export function useMap() {
 
             // sync on change
             view.on('change:resolution', () => {
-                zoomLevel.value = view.getZoom()
-                console.log("CHANGE");
-                
+                zoomLevel.value = view.getZoom()                
             })
 
             view.on('change:center', updateCenter)
@@ -44,7 +46,9 @@ export function useMap() {
 
     return {
         olMap,
+        isMapLoaded,
         zoomLevel,
         center,
+        viewportExtent,
     }
 }

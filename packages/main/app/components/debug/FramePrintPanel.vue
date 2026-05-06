@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Feature, type Map as OlMapType } from 'ol'
+import {containsExtent, type Extent} from 'ol/extent';
 import type {PrintFormat, PrintOrientation} from '~/types/print'
 
 import { usePrintFraming, useMap } from '@swissgeo/map'
@@ -7,14 +8,15 @@ import { IconButton } from '@swissgeo/skeleton'
 import { printFormats, printOrientations  } from '~/types/print'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
-import Polygon, { fromExtent } from 'ol/geom/Polygon'
-import { Fill, Stroke, Style } from 'ol/style'
+import { Fill, Style } from 'ol/style'
+import { EPSG_2056_BOUNDING_BOX } from '@swissgeo/shared'
+import { createCutoutGeometry } from '@swissgeo/coordinates';
 
 const emit = defineEmits<{
     close: []
 }>()
 
-const { zoomLevel, olMap, center } = useMap()
+const { zoomLevel, olMap, center, viewportExtent } = useMap()
 
 const printExtentFeature = new Feature()
 const printExtentLayer = new VectorLayer({
@@ -74,7 +76,7 @@ const pageSizeInPixels = computed(() => {
     )
 })
 
-const { isEnabled} = usePrintFraming()
+// const { isEnabled} = usePrintFraming()
 const isCenterLocked = ref(false)
 const lastUnlockedCenter = ref<[number, number]>([0, 0])
 const centerForPrint = computed(() => {
@@ -88,7 +90,7 @@ const isZoomLocked = ref(false)
 const lastUnlockedZoomLevel = ref(zoomLevel.value)
 const zoomLevelForPrint = computed(() => {
     if (!isZoomLocked.value) {
-        lastUnlockedZoomLevel.value = Math.round(zoomLevel.value)
+        lastUnlockedZoomLevel.value = Math.ceil(zoomLevel.value)
     }
     return lastUnlockedZoomLevel.value
 })
@@ -112,6 +114,20 @@ const printExtent = computed(() => {
     )
 })
 
+const isPrintExtentOutOfBounds = computed(() => {
+    if (!printExtent.value) return false
+    return !containsExtent(EPSG_2056_BOUNDING_BOX, printExtent.value)
+})
+
+const isPrintExtentBeyondViewport = computed(() => {
+    console.log("DEBUG 1");
+    
+    if (!printExtent.value || !olMap.value) return false
+    console.log("DEBUG 2");
+
+    return !containsExtent(viewportExtent.value, printExtent.value)
+})
+
 
 function getPrintExtent(map: OlMapType, printZoom: number, widthPx: number, heightPx: number, mapCenter: [number, number]): [number, number, number, number] | null {
     const view = map.getView()
@@ -131,33 +147,10 @@ function getPrintExtent(map: OlMapType, printZoom: number, widthPx: number, heig
 }
 
 
-function createCutoutGeometry(outerExtent: [number, number, number, number], innerExtent: [number, number, number, number]) {
-    const outerRing = fromExtent(outerExtent).getCoordinates()[0]
-    const innerRing = fromExtent(innerExtent).getCoordinates()[0]
-    if (!outerRing || !innerRing) return null
-    return new Polygon([outerRing, innerRing])
-}
-
-
 watch(printExtent, (newExtent) => {
     if (!newExtent) return
 
-    const projectionExtent = olMap.value
-        ?.getView()
-        .getProjection()
-        .getExtent()
-
-    const mapExtent: [number, number, number, number] = (
-        projectionExtent
-        && projectionExtent[0] !== undefined
-        && projectionExtent[1] !== undefined
-        && projectionExtent[2] !== undefined
-        && projectionExtent[3] !== undefined
-    )
-        ? [projectionExtent[0], projectionExtent[1], projectionExtent[2], projectionExtent[3]]
-        : [-20_037_508.34, -20_037_508.34, 20_037_508.34, 20_037_508.34]
-    
-    const polygon = createCutoutGeometry(mapExtent, newExtent)
+    const polygon = createCutoutGeometry(EPSG_2056_BOUNDING_BOX, newExtent)
     if (!polygon) return
     printExtentFeature.setGeometry(polygon)
 })
@@ -181,13 +174,15 @@ watch(printExtent, (newExtent) => {
             <h2 class="text-lg font-bold mb-4">Print Framing</h2>
             <div>Zoom Level: {{ zoomLevel }}</div>
             <div>Zoom Level for print: {{ zoomLevelForPrint }}</div>
-            <UFormField
+            <div>Out of Swiss bounds: {{ isPrintExtentOutOfBounds }}</div>
+            <div>Beyond viewport: {{ isPrintExtentBeyondViewport }}</div>
+            <!-- <UFormField
                 orientation="horizontal"
                 label="Enable Print Framing"
                 class="w-72"
             >
                 <USwitch id="enable-checkbox" v-model="isEnabled"  />
-            </UFormField>
+            </UFormField> -->
 
             <UFormField
                 orientation="horizontal"
