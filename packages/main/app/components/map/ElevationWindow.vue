@@ -20,6 +20,7 @@ import {
     onBeforeMount,
     reactive,
     ref,
+    useTemplateRef,
     watch,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -27,7 +28,7 @@ import { useI18n } from 'vue-i18n'
 const drawingStore = useDrawingStore()
 const positionStore = usePositionStore()
 const { t } = useI18n()
-const windowRef = ref<HTMLElement | null>(null)
+const windowRef = useTemplateRef<HTMLElement>('windowRef')
 const mapProjectionEpsg = computed(() => positionStore.projection.epsg)
 const olGeoJSON = computed(
     () =>
