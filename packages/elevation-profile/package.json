@@ -31,7 +31,9 @@
         "@swissgeo/shared": "workspace:*",
         "@turf/turf": "catalog:",
         "axios": "catalog:",
+        "chart.js": "catalog:",
         "chartjs-plugin-zoom": "catalog:",
+        "vue-chartjs": "catalog:",
         "proj4": "catalog:"
     },
     "devDependencies": {
@@ -50,11 +52,9 @@
         "vue-tsc": "catalog:"
     },
     "peerDependencies": {
-        "chart.js": "catalog:",
         "ol": "catalog:",
         "proj4": "catalog:",
-        "vue": "catalog:",
-        "vue-chartjs": "catalog:"
+        "vue": "catalog:"
     },
     "packageManager": "pnpm@10.29.2"
 }
