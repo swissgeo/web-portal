@@ -255,7 +255,7 @@ onBeforeUnmount(() => {
     <div
         ref="windowRef"
         v-if="hasInfo && selectedLineString"
-        class="fixed z-9998 overflow-hidden"
+        class="fixed z-9998"
         :style="{
             left: `${position.x}px`,
             top: `${position.y}px`,
