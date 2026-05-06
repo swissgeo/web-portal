@@ -230,7 +230,6 @@ export function usePrintFraming() {
 
     function mountPrintExtentLayer() {
         if (!olMap.value) return
-
         olMap.value.addLayer(printExtentLayer)
     }
 
