@@ -1,6 +1,8 @@
 import type { PrintFormat, PrintOrientation, PrintConfig } from '../types/print'
+import { type Map as OlMapType } from 'ol'
 
 import { printFormats, printOrientations } from '../types/print'
+import type { Extent } from 'ol/extent'
 
 const MM_PER_INCH = 25.4
 const SQRT_2 = 2 ** 0.5
@@ -87,4 +89,22 @@ export function validatePrintConfig(printProps: unknown): asserts printProps is 
     if (maybePrintProps.zoom === undefined || maybePrintProps.zoom <= 0) {
         throw new Error('The zoom must be greater or equal to 0')
     }
+}
+
+
+export function getPrintExtent(map: OlMapType, printZoom: number, widthPx: number, heightPx: number, mapCenter: [number, number]): Extent | null {
+    const view = map.getView()
+
+    const resolution = view.getResolutionForZoom(printZoom)
+    if (!resolution) return null
+
+    const halfWidth = (widthPx * resolution) / 2
+    const halfHeight = (heightPx * resolution) / 2
+
+    return [
+        mapCenter[0] - halfWidth,
+        mapCenter[1] - halfHeight,
+        mapCenter[0] + halfWidth,
+        mapCenter[1] + halfHeight,
+    ]
 }
