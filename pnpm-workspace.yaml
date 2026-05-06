@@ -24,7 +24,6 @@ catalog:
     '@pinia/nuxt': ^0.11.2
     '@pinia/testing': ^1.0.3
     '@prettier/plugin-xml': ^3.4.2
-    '@swissgeo/tooltip': ^1.0.0
     '@tailwindcss/vite': ^4.1.12
     '@tsconfig/node22': ^22.0.5
     '@turf/turf': ^7.3.1
