@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
                 name: '@swissgeo/elevation-profile',
             },
             rollupOptions: {
-                external: ['vue', 'vue-i18n', 'chart.js', 'vue-chartjs', '@swissgeo/log'],
+                external: ['vue', 'chart.js', 'vue-chartjs', '@swissgeo/log', 'proj4', /^ol(\/|$)/],
                 output: {
                     exports: 'named',
                     globals: {
