@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { round } from '@swissgeo/numbers'
-import GeoadminTooltip from '@swissgeo/tooltip'
 import { computed, ref, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
