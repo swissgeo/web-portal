@@ -6,6 +6,8 @@ import type { SingleCoordinate } from '@/coordinatesUtils'
 import type { CoordinateSystem } from '@/proj'
 
 import { WGS84 } from '@/proj'
+import type { Extent } from 'ol/extent'
+import Polygon, { fromExtent } from 'ol/geom/Polygon'
 
 export type FlatExtent = [number, number, number, number]
 export type NormalizedExtent = [[number, number], [number, number]]
@@ -192,5 +194,16 @@ const extentUtils: SwissGeoExtentUtils = {
     createPixelExtentAround,
     getExtentCenter,
 }
+
+/**
+ * Create a polygon with a hole. The outer ring is provided by outerExtent and the hole ring is provided by innerExtent
+ */
+export function createCutoutGeometry(outerExtent: Extent, innerExtent: Extent) {
+    const outerRing = fromExtent(outerExtent).getCoordinates()[0]
+    const innerRing = fromExtent(innerExtent).getCoordinates()[0]
+    if (!outerRing || !innerRing) return null
+    return new Polygon([outerRing, innerRing])
+}
+
 export { extentUtils }
 export default extentUtils
