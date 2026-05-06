@@ -19,7 +19,6 @@ interface RawProfilePoint {
     northing: number
 }
 
-const ELEVATION_PROFILE_API_BASE_URL = 'https://api3.geo.admin.ch/rest/services/profile.json'
 const MAX_POINTS_PER_CHUNK = 3000
 
 function isValidLineString(body: unknown): body is { geojson: LineString; sr?: number } {
@@ -63,7 +62,8 @@ function chunkCoordinates(coordinates: Position[]): Position[][] {
 }
 
 async function fetchProfileChunk(coordinates: Position[]): Promise<RawProfilePoint[]> {
-    return $fetch<RawProfilePoint[]>(ELEVATION_PROFILE_API_BASE_URL, {
+    const config = useRuntimeConfig()
+    return $fetch<RawProfilePoint[]>(config.elevationProfileApiBaseUrl, {
         method: 'POST',
         query: { offset: 0, sr: 2056, distinct_points: true },
         body: { type: 'LineString', coordinates },
