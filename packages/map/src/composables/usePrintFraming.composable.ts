@@ -2,10 +2,10 @@ import { storeToRefs } from 'pinia'
 import { onBeforeUnmount, ref, watch } from 'vue'
 
 import { useMapStore } from '../stores/map'
+import { useMap } from './useMap.composable'
 
 export function usePrintFraming() {
-    const mapStore = useMapStore()
-    const { olMap } = storeToRefs(mapStore)
+    const { zoomLevel, olMap, center, viewportExtent } = useMap()
     const isEnabled = ref(false)
 
     watch(isEnabled, (enabled) => {
