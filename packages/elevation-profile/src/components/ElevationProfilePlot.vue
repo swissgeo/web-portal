@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ElevationProfileResponse, ElevationProfilePoint } from '@swissgeo/shared/api'
+import type { ElevationProfileResponse, ElevationProfilePoint } from '@/types'
 import type { ChartComponentRef } from 'vue-chartjs'
 
 import { provide, useTemplateRef } from 'vue'

@@ -2,7 +2,7 @@ import type {
     ElevationProfileMetadata,
     ElevationProfilePoint,
     ElevationProfileResponse,
-} from '@swissgeo/shared/api'
+} from '@swissgeo/elevation-profile'
 import type { LineString, Position } from 'geojson'
 
 import { LV95, registerProj4 } from '@swissgeo/coordinates'

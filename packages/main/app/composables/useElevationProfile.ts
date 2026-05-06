@@ -1,4 +1,4 @@
-import type { ElevationProfileResponse } from '@swissgeo/shared/api'
+import type { ElevationProfileResponse } from '@swissgeo/elevation-profile'
 import type { LineString } from 'geojson'
 import type { MaybeRefOrGetter, Ref, ComputedRef } from 'vue'
 

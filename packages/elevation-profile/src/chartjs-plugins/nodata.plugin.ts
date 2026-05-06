@@ -1,4 +1,4 @@
-import type { ElevationProfilePoint } from '@swissgeo/shared/api'
+import type { ElevationProfilePoint } from '@/types'
 import type { Chart, Plugin } from 'chart.js'
 
 export interface NoDataPluginOptions {

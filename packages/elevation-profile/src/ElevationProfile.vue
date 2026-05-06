@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ElevationProfileResponse } from '@swissgeo/shared/api'
+import type { ElevationProfileResponse } from '@/types'
 
 import { LV95, registerProj4, WGS84 } from '@swissgeo/coordinates'
 import proj4 from 'proj4'

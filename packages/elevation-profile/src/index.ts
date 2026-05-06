@@ -27,3 +27,4 @@ ChartJS.register(zoomPlugin, noDataPlugin, dataModelPlugin)
 
 export { ElevationProfile, ElevationProfileOpenLayersBridge }
 export type { Labels }
+export type { ElevationProfilePoint, ElevationProfileMetadata, ElevationProfileResponse } from '@/types'

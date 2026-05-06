@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ElevationProfileMetadata } from '@swissgeo/shared/api'
+import type { ElevationProfileMetadata } from '@/types'
 
 import { computed } from 'vue'
 

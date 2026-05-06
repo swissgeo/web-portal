@@ -2,7 +2,7 @@ import type {
     ElevationProfileResponse,
     ElevationProfilePoint,
     ElevationProfileMetadata,
-} from '@swissgeo/shared/api'
+} from '@/types'
 import type {
     Chart,
     ChartData,
