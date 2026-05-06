@@ -222,10 +222,10 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
             class="arrow"
             :style="cursorArrowPosition"
         />
-        <GeoadminTooltip
+        <UTooltip
             placement="bottom"
-            theme="secondary"
-            use-default-padding
+            delay-duration="0"
+            arrow
         >
             <TimeSliderBarSteps
                 :allYears="allYears"
@@ -236,9 +236,12 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
                 :sliderWidth="sliderWidth"
             />
             <template #content>
-                <!-- tooltip content placeholder -->
+                <p>
+                    <!-- TODO: Add slider explaination -->
+                    {{ t('time_slider_legend_explanation') }}
+                </p>
             </template>
-        </GeoadminTooltip>
+        </UTooltip>
         <div class="relative h-5">
             <div
                 v-for="yearAsLabel in yearsShownAsLabel"
