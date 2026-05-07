@@ -28,4 +28,12 @@ test.describe('map page', () => {
     test.skip('displays the fullscreen button', async ({ page }) => {
         await expect(page.locator('[data-cy="fullscreen-toggle"]')).toBeVisible()
     })
+
+    test.only('displays the map with the defaults', async ({ page }) => {
+        const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap)
+        const zoom = await page.evaluate((map) => map.getView().getZoom(), mapRef)
+        const center = await page.evaluate((map) => map.getView().getCenter(), mapRef)
+        await expect(zoom).toEqual(1)
+        await expect(center).toEqual([2660000, 1190000])
+    })
 })
