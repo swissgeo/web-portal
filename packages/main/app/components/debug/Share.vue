@@ -4,7 +4,7 @@ import { useClipboard } from '@vueuse/core'
 const { copy, copied } = useClipboard()
 
 const { exportState } = useStateConfig()
-import { SaveAppState, postAppStateApiStatePost } from '@swissgeo/statesharing'
+import { type SaveAppState, postAppStatePost } from '@swissgeo/statesharing'
 
 const stateId = ref<string>()
 const stateIdRevealed = ref(false)
@@ -33,7 +33,7 @@ watch(
 
 async function generateLink() {
     if (state.value) {
-        const response = await postAppStateApiStatePost(state.value)
+        const response = await postAppStatePost(state.value)
         if ('id' in response.data) {
             stateId.value = response.data.id
             stateIdRevealed.value = true

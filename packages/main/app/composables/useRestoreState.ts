@@ -1,5 +1,4 @@
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { getAppStateApiStateStateIdGet, ReadAppStateValidator } from '@swissgeo/statesharing'
 import { watchDebounced } from '@vueuse/core'
 import { importStateFromBase64 } from '~/composables/stateImport/importStateFromBase64'
 import { importStateFromService } from '~/composables/stateImport/importStateFromService'

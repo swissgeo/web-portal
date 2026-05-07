@@ -9,17 +9,15 @@
  */
 import { z as zod } from 'zod'
 
-export const getAppStateResponseStateMapZoomOneMax = 13
+export const postAppStatePostBodyStateMapZoomOneMax = 13
 
-export const getAppStateResponseStateMapRotationOneMin = 0
-export const getAppStateResponseStateMapRotationOneMax = 6.283185307179586
+export const postAppStatePostBodyStateMapRotationOneMin = 0
+export const postAppStatePostBodyStateMapRotationOneMax = 6.283185307179586
 
-export const getAppStateResponseStateLayersItemOpacityOneMin = 0
-export const getAppStateResponseStateLayersItemOpacityOneMax = 1
+export const postAppStatePostBodyStateLayersItemOpacityOneMin = 0
+export const postAppStatePostBodyStateLayersItemOpacityOneMax = 1
 
-export const getAppStateResponseDeprecatedDefault = false
-export const getAppStateResponseWarningDefault = ``
-export const GetAppStateResponse = zod.object({
+export const PostAppStatePostBody = zod.object({
     state: zod
         .object({
             map: zod
@@ -29,11 +27,11 @@ export const GetAppStateResponse = zod.object({
                             zod.tuple([
                                 zod
                                     .number()
-                                    // .gt(getAppStateResponseStateMapCenterOne0ItemExclusiveMin)
+                                    // .gt(postAppStatePostBodyStateMapCenterOne0ItemExclusiveMin)
                                     .describe('Coordinate x in LV95 \/ EPSG:2056 (meters)'),
                                 zod
                                     .number()
-                                    // .gt(getAppStateResponseStateMapCenterOne1ItemExclusiveMin)
+                                    // .gt(postAppStatePostBodyStateMapCenterOne1ItemExclusiveMin)
                                     .describe('Coordinate y in LV95 \/ EPSG:2056 (meters)'),
                             ]),
                             zod.null(),
@@ -42,7 +40,7 @@ export const GetAppStateResponse = zod.object({
                         .describe('Center of the map in [x, y] coordinates in lv95 \/ EPSG:2056'),
                     zoom: zod
                         .union([
-                            zod.number().min(1).max(getAppStateResponseStateMapZoomOneMax),
+                            zod.number().min(1).max(postAppStatePostBodyStateMapZoomOneMax),
                             zod.null(),
                         ])
                         .optional()
@@ -51,8 +49,8 @@ export const GetAppStateResponse = zod.object({
                         .union([
                             zod
                                 .number()
-                                .min(getAppStateResponseStateMapRotationOneMin)
-                                .max(getAppStateResponseStateMapRotationOneMax),
+                                .min(postAppStatePostBodyStateMapRotationOneMin)
+                                .max(postAppStatePostBodyStateMapRotationOneMax),
                             zod.null(),
                         ])
                         .optional()
@@ -78,8 +76,8 @@ export const GetAppStateResponse = zod.object({
                             .union([
                                 zod
                                     .number()
-                                    .min(getAppStateResponseStateLayersItemOpacityOneMin)
-                                    .max(getAppStateResponseStateLayersItemOpacityOneMax),
+                                    .min(postAppStatePostBodyStateLayersItemOpacityOneMin)
+                                    .max(postAppStatePostBodyStateLayersItemOpacityOneMax),
                                 zod.null(),
                             ])
                             .optional()
@@ -109,16 +107,8 @@ export const GetAppStateResponse = zod.object({
                 .optional()
                 .describe('List of layers to be displayed on the map'),
         })
-        .describe('State object of the application'),
-    deprecated: zod
-        .boolean()
-        .default(getAppStateResponseDeprecatedDefault)
-        .describe('When true the application state version is deprecated'),
-    warning: zod
-        .string()
-        .default(getAppStateResponseWarningDefault)
-        .describe('Warning message about deprecation flag'),
+        .describe('State of the application to save'),
 })
 
-export type GetAppStateResponse = zod.input<typeof GetAppStateResponse>
-export type GetAppStateResponseOutput = zod.output<typeof GetAppStateResponse>
+export type PostAppStatePostBody = zod.input<typeof PostAppStatePostBody>
+export type PostAppStatePostBodyOutput = zod.output<typeof PostAppStatePostBody>

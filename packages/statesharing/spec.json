@@ -1,0 +1,406 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Service State Portal",
+        "description": "This service allow the web-portal application to save its state and retrieve\n        it later on.\n        ",
+        "contact": { "name": "swissgeo", "url": "https://www.swissgeo.ch/infos" },
+        "license": { "name": "BSD 3-Clause License", "identifier": "BSD-3-Clause" },
+        "version": "v0.2.0-beta.2-6-g9076d04"
+    },
+    "paths": {
+        "/checker": {
+            "get": {
+                "tags": ["Internal"],
+                "summary": "Kubernetes Probe",
+                "description": "Simple checker endpoint to be used by kubernetes probes",
+                "operationId": "get_checker_checker_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/Checker" }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/state": {
+            "post": {
+                "tags": ["Application State"],
+                "summary": "Save Application State",
+                "description": "Save the given application state",
+                "operationId": "post_app_state_api_state_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": { "$ref": "#/components/schemas/SaveAppStateRequest" }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/SaveAppStateResponse" }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/state/{state_id}": {
+            "get": {
+                "tags": ["Application State"],
+                "summary": "Get Application State",
+                "description": "Retrieve an application state by ID",
+                "operationId": "get_app_state_api_state__state_id__get",
+                "parameters": [
+                    {
+                        "name": "state_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 16,
+                            "maxLength": 16,
+                            "description": "ID of the state",
+                            "examples": ["abcef12345678910"],
+                            "title": "State Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/GetAppStateResponse" }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                            }
+                        },
+                        "description": "Not Found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Checker": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "title": "Success",
+                        "description": "True when the probe is successful, false otherwise",
+                        "examples": [true]
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "description": "Failure explanation in case of failure, otherwise OK",
+                        "examples": ["OK"]
+                    },
+                    "version": {
+                        "type": "string",
+                        "title": "Version",
+                        "description": "Version of the service",
+                        "examples": ["v0.1.0"]
+                    }
+                },
+                "type": "object",
+                "required": ["success", "message", "version"],
+                "title": "Checker"
+            },
+            "ErrorResponse": {
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "title": "Error",
+                        "description": "Error text code",
+                        "examples": ["validation_error"]
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "description": "Error message"
+                    },
+                    "detail": {
+                        "anyOf": [{}, { "type": "null" }],
+                        "title": "Detail",
+                        "description": "Details on the error"
+                    }
+                },
+                "type": "object",
+                "required": ["error", "message"],
+                "title": "ErrorResponse"
+            },
+            "GetAppStateResponse": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "maxLength": 16,
+                        "minLength": 16,
+                        "title": "Id",
+                        "description": "ID of the state",
+                        "examples": ["abcef12345678910"]
+                    },
+                    "version": {
+                        "type": "string",
+                        "title": "Version",
+                        "description": "Version of the state object: `major.minor`",
+                        "examples": ["1.0"]
+                    },
+                    "state": { "$ref": "#/components/schemas/StateV1" },
+                    "deprecated": {
+                        "type": "boolean",
+                        "title": "Deprecated",
+                        "description": "When true the application state version is deprecated",
+                        "default": false
+                    },
+                    "warning": {
+                        "type": "string",
+                        "title": "Warning",
+                        "description": "Warning message about deprecation flag",
+                        "default": ""
+                    }
+                },
+                "type": "object",
+                "required": ["id", "version", "state"],
+                "title": "GetAppStateResponse"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": { "$ref": "#/components/schemas/ValidationError" },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "LayerDimensionsState": {
+                "properties": {
+                    "time": {
+                        "$ref": "#/components/schemas/TimeDimension",
+                        "description": "Time dimension with current value"
+                    }
+                },
+                "type": "object",
+                "title": "LayerDimensionsState"
+            },
+            "LayerState": {
+                "properties": {
+                    "layerUrl": {
+                        "type": "string",
+                        "minLength": 1,
+                        "format": "uri",
+                        "title": "Layerurl",
+                        "description": "URL of the layer to be displayed on the map",
+                        "examples": [
+                            "https://services.swissgeo.ch/api/oar/v0/collections/swissgeo.catalog/items/ch.bafu.neophyten-grossbluetiges_heusenkraut?language=de"
+                        ]
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/LayerTypeEnum",
+                        "description": "Type of the layer (e.g. dataset, gpx, kml)",
+                        "examples": ["dataset"]
+                    },
+                    "isVisible": {
+                        "type": "boolean",
+                        "title": "Isvisible",
+                        "description": "Whether the layer is visible on the map",
+                        "default": true
+                    },
+                    "opacity": {
+                        "type": "number",
+                        "maximum": 1.0,
+                        "minimum": 0.0,
+                        "title": "Opacity",
+                        "description": "Opacity of the layer (between 0 and 1)",
+                        "default": 1,
+                        "examples": [0.75]
+                    },
+                    "dimensions": {
+                        "$ref": "#/components/schemas/LayerDimensionsState",
+                        "description": "Dimensions of the layer (e.g. time dimension with current value)"
+                    }
+                },
+                "type": "object",
+                "required": ["layerUrl", "type"],
+                "title": "LayerState"
+            },
+            "LayerTypeEnum": {
+                "type": "string",
+                "enum": ["dataset", "gpx", "kml"],
+                "title": "LayerTypeEnum"
+            },
+            "MapState": {
+                "properties": {
+                    "center": {
+                        "prefixItems": [
+                            {
+                                "type": "number",
+                                "description": "Coordinate x in LV95 / EPSG:2056 (meters)"
+                            },
+                            {
+                                "type": "number",
+                                "description": "Coordinate y in LV95 / EPSG:2056 (meters)"
+                            }
+                        ],
+                        "type": "array",
+                        "maxItems": 2,
+                        "minItems": 2,
+                        "title": "Center",
+                        "description": "Center of the map in [x, y] coordinates in lv95 / EPSG:2056",
+                        "examples": [[2660000, 1190000]]
+                    },
+                    "zoom": {
+                        "type": "number",
+                        "maximum": 13.0,
+                        "minimum": 1.0,
+                        "title": "Zoom",
+                        "description": "Zoom level of the map",
+                        "default": 1,
+                        "examples": [1]
+                    },
+                    "rotation": {
+                        "type": "number",
+                        "maximum": 6.283185307179586,
+                        "minimum": 0.0,
+                        "title": "Rotation",
+                        "description": "Rotation of the map in radian",
+                        "default": 0,
+                        "examples": [0]
+                    }
+                },
+                "type": "object",
+                "title": "MapState"
+            },
+            "SaveAppStateRequest": {
+                "properties": {
+                    "version": {
+                        "type": "string",
+                        "title": "Version",
+                        "description": "Version of the state object: `major.minor`",
+                        "examples": ["1.0"]
+                    },
+                    "state": {
+                        "$ref": "#/components/schemas/StateV1",
+                        "description": "State of the application to save"
+                    }
+                },
+                "type": "object",
+                "required": ["version", "state"],
+                "title": "SaveAppStateRequest"
+            },
+            "SaveAppStateResponse": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "maxLength": 16,
+                        "minLength": 16,
+                        "title": "Id",
+                        "description": "ID of the saved state, to be used to retrieve the state later",
+                        "examples": ["abcef12345678910"]
+                    },
+                    "deprecated": {
+                        "type": "boolean",
+                        "title": "Deprecated",
+                        "description": "When true the application state version provided is deprecated",
+                        "default": false,
+                        "examples": []
+                    },
+                    "warning": {
+                        "type": "string",
+                        "title": "Warning",
+                        "description": "Warning message about deprecation flag",
+                        "default": ""
+                    }
+                },
+                "type": "object",
+                "required": ["id"],
+                "title": "SaveAppStateResponse"
+            },
+            "StateV1": {
+                "properties": {
+                    "map": {
+                        "$ref": "#/components/schemas/MapState",
+                        "description": "State of the map"
+                    },
+                    "layers": {
+                        "items": { "$ref": "#/components/schemas/LayerState" },
+                        "type": "array",
+                        "title": "Layers",
+                        "description": "List of layers to be displayed on the map"
+                    }
+                },
+                "type": "object",
+                "title": "StateV1",
+                "description": "State object of the application"
+            },
+            "TimeDimension": {
+                "properties": {
+                    "currentValue": {
+                        "anyOf": [
+                            { "type": "string", "format": "date-time" },
+                            { "type": "string", "const": "current" }
+                        ],
+                        "title": "Currentvalue",
+                        "description": "Current selected time value",
+                        "default": "current",
+                        "examples": ["current"]
+                    }
+                },
+                "type": "object",
+                "title": "TimeDimension"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": { "type": "string", "title": "Message" },
+                    "type": { "type": "string", "title": "Error Type" },
+                    "input": { "title": "Input" },
+                    "ctx": { "type": "object", "title": "Context" }
+                },
+                "type": "object",
+                "required": ["loc", "msg", "type"],
+                "title": "ValidationError"
+            }
+        }
+    },
+    "tags": [
+        { "name": "Internal", "description": "Internal APIs not for external uses" },
+        { "name": "Application State", "description": "Application State Operations" }
+    ]
+}

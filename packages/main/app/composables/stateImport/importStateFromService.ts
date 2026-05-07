@@ -1,5 +1,5 @@
 import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { getAppStateApiStateStateIdGet } from '@swissgeo/statesharing'
+import { getAppStateStateIdGet } from '@swissgeo/statesharing'
 
 import { importState } from './importState'
 /**
@@ -15,7 +15,7 @@ export async function importStateFromService(): Promise<boolean> {
     const { $i18n } = useNuxtApp()
 
     try {
-        const { state: stateFromUrlParam, stateId } = await getAppStateApiStateStateIdGet()
+        const { state: stateFromUrlParam, stateId } = await getAppStateStateIdGet()
 
         log.debug({
             title: 'importStateFromService',
