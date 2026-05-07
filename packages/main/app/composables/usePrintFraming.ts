@@ -11,6 +11,8 @@ import { containsExtent } from 'ol/extent'
 import { EPSG_2056_BOUNDING_BOX } from '@swissgeo/shared'
 import { createCutoutGeometry } from '@swissgeo/coordinates'
 
+const TOAST_DURATION = 5000
+
 export function usePrintFraming() {
     const DARK_BLUE = 'rgba(0, 0, 30, 0.6)'
     const BRIGHT_RED = 'rgba(255, 0, 0, 0.6)'
@@ -26,6 +28,8 @@ export function usePrintFraming() {
             features: [ printExtentFeature ],
         }),
         style: style,
+        updateWhileAnimating: true,
+        updateWhileInteracting: true,
     })
 
     const toast = useToast()
@@ -63,6 +67,7 @@ export function usePrintFraming() {
 
     const printExtent = computed(() => {
         if (!olMap.value) return null
+        
         return getPrintExtent(
             olMap.value,
             zoomLevelForPrint.value,
@@ -108,7 +113,12 @@ export function usePrintFraming() {
         const polygon = createCutoutGeometry(EPSG_2056_BOUNDING_BOX, newExtent)
         if (!polygon) return
         printExtentFeature.setGeometry(polygon)
-    })
+        console.log("DEBUG 2");
+        printExtentFeature.changed()
+        printExtentLayer.changed()
+        olMap.value?.renderSync()
+        
+    }, { immediate: true })
 
 
     watch(isZoomStepEnabled, (enabled) => {        
@@ -130,7 +140,7 @@ export function usePrintFraming() {
                 description: 'The print extent must be fully contained within the Swiss bounding box to be printable.',
                 icon: 'i-octicon-x-circle-fill-24',
                 color: 'error',
-                duration: 0,
+                duration: TOAST_DURATION,
                 close: false,
             })
         } else {
@@ -146,7 +156,7 @@ export function usePrintFraming() {
                 description: 'You can lock the center and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.',
                 icon: 'i-octicon-screen-full-24',
                 color: 'info',
-                duration: 0,
+                duration: TOAST_DURATION,
                 close: false,
             })
         } else {
@@ -155,10 +165,6 @@ export function usePrintFraming() {
     })
 
     watch(isAtLockedZoomLevel, (isAtLocked) => {
-
-        console.log("isAtLocked", isAtLocked);
-        
-
         if(!isAtLocked) {
             toast.add({
                 id: 'warning_not_at_locked_zoom_level',
@@ -166,7 +172,7 @@ export function usePrintFraming() {
                 description: 'The zoom level on screen does not correspond to the locked zoom level for print.',
                 icon: 'i-octicon-search-24',
                 color: 'warning',
-                duration: 0,
+                duration: TOAST_DURATION,
                 close: false,
             })
         } else {
@@ -196,8 +202,7 @@ export function usePrintFraming() {
 
     function mountPrintExtentLayer() {
         if (!olMap.value) return
-        console.log("DEBUG 1", printExtentLayer);
-        
+
         olMap.value.addLayer(printExtentLayer)
     }
 

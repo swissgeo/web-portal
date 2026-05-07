@@ -46,8 +46,8 @@ function handleClose() {
             >
             </IconButton>
         </div>
-        <div>
-            <h2 class="text-lg font-bold mb-4">Print Framing</h2>
+        <div class="flex flex-col gap-4">
+            <h3 class="text-lg font-bold mb-4">Print Framing</h3>
             <div>Zoom Level: {{ zoomLevel }}</div>
             <div>Zoom Level for print: {{ zoomLevelForPrint }}</div>
             <div>Out of Swiss bounds: {{ isPrintExtentOutOfBounds }}</div>
@@ -114,5 +114,6 @@ function handleClose() {
   z-index: 10;
   min-width: 100px;
   min-height: 100px;
+  padding: 10px;
 }
 </style>
