@@ -46,7 +46,7 @@ export function extractCapabilityUrl(
         const link = serviceData.linkTemplates[0]
 
         if (link.rel.toLowerCase() === 'about') {
-            const uri = link.uriTemplate.replace('{EPSG}', '2056')
+            const uri = link.uriTemplate.replace(/\{epsg\}/gi, '2056')
             return uri ?? null
         }
     }
