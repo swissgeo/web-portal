@@ -26,7 +26,7 @@ export interface Layer {
     uuid: string
     opacity: number
     isVisible: boolean
-    zIndex: number
+    zIndex?: number
     displayName?: string
 }
 

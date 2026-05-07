@@ -41,6 +41,15 @@ export const useMapViewStore = defineStore('mapView', () => {
         return mapLayers
     }
 
+    function getMapLayerFromUuid(uuid: string): MapLayer | undefined {
+        const index = _getIndexFromIdentifier(uuid)
+
+        if (index) {
+            return mapLayers.value[index]
+        }
+        return
+    }
+
     function addLayerToTop(mapLayer: MapLayer) {
         mapLayers.value.push(mapLayer)
     }
@@ -156,6 +165,7 @@ export const useMapViewStore = defineStore('mapView', () => {
         mapLayers,
         // getters
         getMapLayers,
+        getMapLayerFromUuid,
         // actions
         toggleTimeSlider,
         closeTimeSlider,

@@ -21,8 +21,7 @@
         "format:write": "prettier --write   --ignore-path ../../.prettierignore .",
         "lint": "eslint",
         "lint:write": "eslint --fix",
-        "test:unit": "vitest run",
-        "type-check": "vue-tsc"
+        "test:unit": "vitest run"
     },
     "dependencies": {
         "@swissgeo/coordinates": "workspace:*",

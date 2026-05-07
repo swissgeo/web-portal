@@ -3,6 +3,8 @@ import type { MaybeRefOrGetter } from 'vue'
 
 import { computed, toValue } from 'vue'
 
+const mapViewStore = useMapViewStore()
+
 export interface AttributionSource {
     id: string
     name: string
@@ -25,7 +27,7 @@ export function useAttributionSources(
 
         attributedLayers.push(
             ...resolvedLayers
-                //.filter((layer) => layer.isVisible) TODO : mruh
+                .filter((layer) => mapViewStore.getMapLayerFromUuid(layer.uuid)?.isVisible)
                 .filter((layer) => !!layer.info?.attribution?.title)
         )
 

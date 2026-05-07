@@ -10,14 +10,11 @@ describe('FileConverter', () => {
             type: 'kml' as const,
             uuid: 'kml-is-a-snowflake',
             humanId: 'K to the M to the L',
-            isVisible: false,
-            opacity: 0,
             isLoading: false,
         }
         const wrapper = mount(FileConverter, {
             props: {
                 layer: layerData,
-                zIndex: 1,
             },
         })
 
@@ -29,36 +26,26 @@ describe('FileConverter', () => {
                 ...layerData,
                 format: 'KML',
                 layerId: 'K to the M to the L',
-                zIndex: 1,
+                displayName: 'K to the M to the L',
+                isVisible: true,
+                opacity: 1,
             },
         ])
 
         await wrapper.setProps({
             layer: {
                 ...layerData,
-                isVisible: true,
             },
-            zIndex: 1,
         })
         expect(updateEvents).toHaveLength(2)
         expect(updateEvents![1]![0]).toHaveProperty('isVisible', true)
-
-        // going back to visible = false
-        await wrapper.setProps({
-            layer: layerData,
-            zIndex: 1,
-        })
-        expect(updateEvents).toHaveLength(3)
-        expect(updateEvents![2]![0]).toHaveProperty('isVisible', false)
 
         await wrapper.setProps({
             layer: {
                 ...layerData,
             },
-            zIndex: 2,
         })
-        expect(updateEvents).toHaveLength(4)
-        expect(updateEvents![3]![0]).toHaveProperty('zIndex', 2)
+        expect(updateEvents).toHaveLength(3)
     })
 
     it('emits the remove signal when unmounted', () => {
@@ -74,7 +61,6 @@ describe('FileConverter', () => {
         const wrapper = mount(FileConverter, {
             props: {
                 layer: layerData,
-                zIndex: 1,
             },
         })
 

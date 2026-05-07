@@ -2,7 +2,7 @@ import type { Dataset } from '@swissgeo/ogc'
 
 import log, { LogPreDefinedColor } from '@swissgeo/log'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, markRaw } from 'vue'
 
 import type { Dimension, DimensionId, Layer, LayerInfo } from '@/index'
 
