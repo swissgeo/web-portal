@@ -30,7 +30,6 @@
         "@swissgeo/coordinates": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "@turf/turf": "catalog:",
-        "axios": "catalog:",
         "chart.js": "catalog:",
         "chartjs-plugin-zoom": "catalog:",
         "vue-chartjs": "catalog:",

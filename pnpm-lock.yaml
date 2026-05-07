@@ -741,9 +741,6 @@ importers:
       '@turf/turf':
         specifier: 'catalog:'
         version: 7.3.3
-      axios:
-        specifier: 'catalog:'
-        version: 1.15.2
       chart.js:
         specifier: 'catalog:'
         version: 4.5.1
@@ -15284,7 +15281,8 @@ snapshots:
 
   async@3.2.6: {}
 
-  asynckit@0.4.0: {}
+  asynckit@0.4.0:
+    optional: true
 
   autoprefixer@10.4.24(postcss@8.5.8):
     dependencies:
@@ -15306,6 +15304,7 @@ snapshots:
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
+    optional: true
 
   b4a@1.7.3: {}
 
@@ -15605,6 +15604,7 @@ snapshots:
   combined-stream@1.0.8:
     dependencies:
       delayed-stream: 1.0.0
+    optional: true
 
   commander@10.0.1: {}
 
@@ -15919,7 +15919,8 @@ snapshots:
 
   defu@6.1.6: {}
 
-  delayed-stream@1.0.0: {}
+  delayed-stream@1.0.0:
+    optional: true
 
   denque@2.1.0: {}
 
@@ -16683,7 +16684,8 @@ snapshots:
 
   flatted@3.4.2: {}
 
-  follow-redirects@1.16.0: {}
+  follow-redirects@1.16.0:
+    optional: true
 
   fontaine@0.7.0:
     dependencies:
@@ -16761,6 +16763,7 @@ snapshots:
       es-set-tostringtag: 2.1.0
       hasown: 2.0.2
       mime-types: 2.1.35
+    optional: true
 
   format@0.2.2: {}
 
@@ -18082,13 +18085,15 @@ snapshots:
       bn.js: 4.12.2
       brorand: 1.1.0
 
-  mime-db@1.52.0: {}
+  mime-db@1.52.0:
+    optional: true
 
   mime-db@1.54.0: {}
 
   mime-types@2.1.35:
     dependencies:
       mime-db: 1.52.0
+    optional: true
 
   mime-types@3.0.2:
     dependencies:
@@ -19405,7 +19410,8 @@ snapshots:
 
   protocols@2.0.2: {}
 
-  proxy-from-env@2.1.0: {}
+  proxy-from-env@2.1.0:
+    optional: true
 
   public-encrypt@4.0.3:
     dependencies:
