@@ -28,9 +28,7 @@ export function mockExternalRequests(page: Page) {
      *  ATTENTION: this will probably not work for SSR rendered pages in tests
      */
     const mockLivingdocs = async () => {
-        await page.route('http://mock-livingdocs.org/**', (route) => {
-            route.fulfill({ status: 200 })
-        })
+        await page.route('http://mock-livingdocs.org/**', (route) => route.fulfill({ status: 200 }))
     }
 
     /**
@@ -44,10 +42,11 @@ export function mockExternalRequests(page: Page) {
             const url = route.request().url()
 
             if (['fetch', 'xhr'].includes(type)) {
+                // eslint-disable-next-line no-console
                 console.warn('Unmocked API request:', url)
             }
 
-            route.continue()
+            return route.continue()
         })
     }
 

@@ -1,12 +1,14 @@
-import { fileURLToPath } from 'node:url'
+import type { Page } from '@playwright/test'
+
 import { expect, test } from '@playwright/test'
+import { fileURLToPath } from 'node:url'
 
 import en from '../../packages/main/i18n/locales/en.json' with { type: 'json' }
 
 const HYDRATION_TIMEOUT = 60_000
 const t = en.debug
 
-async function mockExternalRequests(page: import('@playwright/test').Page) {
+async function mockExternalRequests(page: Page) {
     await page.route('**/api/oar/**', (route) =>
         route.fulfill({ status: 200, json: { collections: [], links: [] } })
     )
@@ -15,12 +17,12 @@ async function mockExternalRequests(page: import('@playwright/test').Page) {
 // The "Open Drawing Panel" trigger is a Nuxt UI UButton, whose underlying
 // ULink sets inheritAttrs: false — so a data-testid on the UButton does not
 // reach the rendered DOM. We locate it by its accessible role/name instead.
-async function openDrawingPanel(page: import('@playwright/test').Page) {
+async function openDrawingPanel(page: Page) {
     await page.getByRole('button', { name: t.openDrawingPanel }).click()
     await expect(page.getByTestId('drawing-panel')).toBeVisible()
 }
 
-async function getMapBox(page: import('@playwright/test').Page) {
+async function getMapBox(page: Page) {
     const map = page.locator('[data-cy="ol-map"]')
     const mapBox = await map.boundingBox()
     if (!mapBox) {
@@ -33,7 +35,7 @@ async function getMapBox(page: import('@playwright/test').Page) {
  * Select the Point tool and place one point on the map.
  * Clicks in the top-right quadrant to avoid the bottom-center drawing panel.
  */
-async function drawOnePoint(page: import('@playwright/test').Page) {
+async function drawOnePoint(page: Page) {
     await page.getByTestId('drawing-tool-point').click()
     await expect(page.getByText(t.drawingInstructionPoint)).toBeVisible()
 
@@ -44,7 +46,7 @@ async function drawOnePoint(page: import('@playwright/test').Page) {
 /**
  * Select the Text tool and place one text feature on the map.
  */
-async function drawOneText(page: import('@playwright/test').Page) {
+async function drawOneText(page: Page) {
     await page.getByTestId('drawing-tool-text').click()
     await expect(page.getByText(t.drawingInstructionText)).toBeVisible()
 
@@ -56,7 +58,7 @@ async function drawOneText(page: import('@playwright/test').Page) {
  * Select the Line tool, place two vertices, then double-click to finish the line.
  * All clicks stay in the top area of the map to avoid the bottom-center drawing panel.
  */
-async function drawOneLine(page: import('@playwright/test').Page) {
+async function drawOneLine(page: Page) {
     await page.getByTestId('drawing-tool-line').click()
     await expect(page.getByText(t.drawingInstructionLine)).toBeVisible()
 
