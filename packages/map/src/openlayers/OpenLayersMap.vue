@@ -17,9 +17,8 @@ import { useMapStore } from '../stores/map'
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import OpenLayersVisibleLayer from './OpenLayersVisibleLayer.vue'
 
-const { layers, backgroundLayer, customLayerRenderers } = defineProps<{
+const { layers, customLayerRenderers } = defineProps<{
     layers: Layer[]
-    backgroundLayer: Layer | null
     customLayerRenderers?: MapLayerRenderer[]
 }>()
 
@@ -68,12 +67,6 @@ createOlMap()
         class="ol-map h-full w-full"
         data-cy="ol-map"
     >
-        <OpenLayersVisibleLayer
-            :layer="backgroundLayer"
-            :custom-layer-renderers="customLayerRenderers"
-            v-if="backgroundLayer"
-            :key="backgroundLayer.uuid"
-        />
         <OpenLayersVisibleLayer
             :layer="layer"
             :custom-layer-renderers="customLayerRenderers"

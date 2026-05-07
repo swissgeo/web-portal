@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import type { Layer as MapLayer } from '@swissgeo/map'
 import type { SearchResult } from '@swissgeo/search'
 
-import LogoPic from '@/components/LogoPic.vue'
+import { LogoPic, useSidebarStore, SidebarType, SIDEBAR_CONTENT_WIDTH } from '@swissgeo/skeleton'
+
 import LayerCart from '@/components/sidebar/LayerCart.vue'
 import SearchPanel from '@/components/sidebar/search/SearchPanel.vue'
 import SidebarIcons from '@/components/sidebar/SidebarIcons.vue'
-import { useSidebarStore, SidebarType, SIDEBAR_CONTENT_WIDTH } from '@/stores/ui'
 
 const uiStore = useSidebarStore()
 
@@ -13,7 +14,9 @@ const emit = defineEmits<{
     'search-result-selected': [result: SearchResult]
     'reset-app': [void]
 }>()
-
+const { mapLayers } = defineProps<{
+    mapLayers: Ref<MapLayer[]>
+}>()
 defineSlots<{
     'bottom-controls'?: () => unknown
 }>()
@@ -56,7 +59,14 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH
                     :style="{ width: sidebarSecondColumnWidth + 'px' }"
                     class="relative flex h-full bg-white transition-[width] duration-75 ease-out"
                 >
-                    <LayerCart v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"></LayerCart>
+                    <!-- TODO and TO DISCUSS:
+                    layertCart should have the mapData layers (except bg layer) as a prop
+                    searchPanel should have sources
+                -->
+                    <LayerCart
+                        v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
+                        :mapLayers="mapLayers"
+                    ></LayerCart>
                     <SearchPanel
                         v-if="uiStore.currentSidebar === SidebarType.SEARCH"
                         @result-selected="handleSearchResultSelected"

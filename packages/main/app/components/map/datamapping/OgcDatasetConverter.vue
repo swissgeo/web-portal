@@ -36,8 +36,8 @@ const emit = defineEmits<{
     updateTimeDimension: [layerUuid: string, dimension: Partial<Dimension>]
     updateOpacity: [layerUuid: string, opacity: number]
     remove: [void]
-    updateDataset: [layerUuid: string, dataset: Dataset]
-    updateLayerInfo: [layerUuid: string, info: LayerInfo]
+    updateDataset: [index: number, layerUuid: string, dataset: Dataset]
+    updateLayerInfo: [index: number, layerUuid: string, info: LayerInfo]
 }>()
 
 const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(computed(() => layer))
@@ -45,14 +45,12 @@ const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(co
 // Registering composable that will ensure that a dataset is refreshed when the locale changes
 useDatasetLocaleRefresh(
     layer,
-    (...args) => emit('updateDataset', ...args),
-    (...args) => emit('updateLayerInfo', ...args)
+    (...args) => emit('updateDataset', zIndex, ...args),
+    (...args) => emit('updateLayerInfo', zIndex, ...args)
 )
 
 // holds the data that's specific for the layers from the sub mappers
 const layerSpecificData = ref()
-
-const layerZIndex = computed(() => zIndex)
 
 /**
  * Reactively merge the data from the store as well as the
@@ -69,9 +67,7 @@ const layerData = computed((): MapLayer => {
         // some data we pass directly from the original, so when it's updated
         // the change will be reflected in the data that the map receives
         dimensions: layer.dimensions ?? null,
-        isVisible: layer.isVisible,
-        opacity: layer.opacity,
-        zIndex: layerZIndex.value,
+        displayName: layer.info?.displayName ?? layer.humanId,
     }
 })
 

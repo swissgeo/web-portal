@@ -51,8 +51,6 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
             shallow: true,
             propsData: {
                 layer: {
-                    isVisible: true,
-                    opacity: 0.42,
                     isLoading: false,
                     type: 'dataset',
                     humanId: 'human-id',
@@ -60,7 +58,6 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
                     // @ts-expect-error intentionally not giving a dataset
                     data: null,
                 },
-                zIndex: 1,
             },
         })
 
@@ -69,20 +66,16 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
         expect(wrapper.emitted('update')![0]).toEqual([
             {
                 layerId: 'layer-id',
-                opacity: 0.42,
-                isVisible: true,
                 uuid: 'some-fancy-uuid',
                 format: 'WMTS',
-                zIndex: 1,
                 dimensions: null,
+                displayName: 'human-id',
             },
         ])
     })
 
     it('emits the update if the data if the basic data is updated', async () => {
         const layerData = {
-            isVisible: true,
-            opacity: 0.42,
             isLoading: false,
             type: 'dataset' as const,
             humanId: 'human-id',
@@ -94,7 +87,6 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
             propsData: {
                 // @ts-expect-error intentionally not giving data
                 layer: layerData,
-                zIndex: 1,
             },
         })
 
@@ -109,28 +101,18 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
         expect(wrapper.emitted('update')![1]).toEqual([
             {
                 layerId: 'layer-id',
-                opacity: 0.42,
-                isVisible: false,
                 uuid: 'some-fancy-uuid',
                 format: 'WMTS',
-                zIndex: 1,
                 dimensions: null,
+                displayName: 'human-id',
             },
         ])
-
-        // @ts-expect-error intentionally not giving a dataset
-        await wrapper.setProps({ layer: { ...layerData, opacity: 0.3 } })
-        expect(wrapper.emitted('update')).toHaveLength(3)
-        // no need to test the entire object again
-        expect(wrapper.emitted('update')![2]![0]).toHaveProperty('opacity', 0.3)
     })
 
     it('renders the correct sub-converter depending on the deduced layer type', async () => {
         const wrapper = mount(OgcDatasetConverter, {
             propsData: {
                 layer: {
-                    isVisible: true,
-                    opacity: 1,
                     isLoading: false,
                     type: 'dataset',
                     humanId: 'human-id',
@@ -138,7 +120,6 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
                     // @ts-expect-error intentionally not giving a dataset
                     data: null,
                 },
-                zIndex: 1,
             },
             global: {
                 stubs: {
@@ -167,8 +148,6 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
             shallow: true,
             propsData: {
                 layer: {
-                    isVisible: true,
-                    opacity: 1,
                     isLoading: false,
                     type: 'dataset',
                     humanId: 'human-id',
@@ -176,7 +155,6 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
                     // @ts-expect-error intentionally not giving a dataset
                     data: null,
                 },
-                zIndex: 1,
             },
         })
         // @ts-expect-error Type-checker can't deduce that this method actually exists
@@ -198,8 +176,6 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
             shallow: true,
             propsData: {
                 layer: {
-                    isVisible: true,
-                    opacity: 1,
                     isLoading: false,
                     type: 'dataset',
                     humanId: 'human-id',
@@ -207,7 +183,6 @@ describe('DatasetLayer Mapper/Converter Component for WMTS', () => {
                     // @ts-expect-error intentionally not giving a dataset
                     data: null,
                 },
-                zIndex: 1,
             },
         })
         wrapper.unmount()

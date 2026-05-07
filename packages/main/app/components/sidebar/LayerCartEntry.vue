@@ -1,41 +1,30 @@
 <script lang="ts" setup>
-import type { Layer } from '@swissgeo/layers'
+// TODO : map view store alterations
+import type { Layer as MapLayer } from '@swissgeo/map'
 
 import { useDrawingStore } from '@swissgeo/drawing'
 import { useLayerStore } from '@swissgeo/layers'
 import { getDisplayNameFromTimestamp } from '@swissgeo/shared'
+import { useDatasetPanelStore, IconButton } from '@swissgeo/skeleton'
 import { computed } from 'vue'
 
-import IconButton from '@/components/IconButton.vue'
-import { useDatasetPanelStore } from '@/stores/datasetPanel'
-
-const { layer } = defineProps<{
-    layer: Layer
+const { layer, layerIndex } = defineProps<{
+    layer: MapLayer
+    layerIndex: number
 }>()
 
 const layerStore = useLayerStore()
 const drawingStore = useDrawingStore()
 const datasetPanelStore = useDatasetPanelStore()
+const mapViewStore = useMapViewStore()
+const bgLayerModifier = computed(() => (layerStore.backgroundLayer ? 1 : 0))
 
-const layersLength = computed(() => layerStore.layers.length)
-const layerZIndex = computed(() => layerStore.getLayerZIndex(layer.uuid))
-
-const displayName = computed(() => {
-    // get the info from the dataset
-    if (layer.info && layer.info.displayName) {
-        return layer.info.displayName
-    } else {
-        return layer.humanId
-    }
-})
+const layersLength = computed(() => mapViewStore.mapLayers.length)
 
 const currentTime = computed({
+    // we should get this from the layer store
     get() {
-        if (layer.dimensions?.time) {
-            return layer.dimensions.time.currentValue
-        } else {
-            return null
-        }
+        return layerStore.getLayer(layer.uuid)?.dimensions?.time?.currentValue ?? null
     },
     set(value) {
         layerStore.setDimension('time', layer.uuid, { currentValue: value })
@@ -43,10 +32,7 @@ const currentTime = computed({
 })
 
 const availableTimes = computed(() => {
-    if (layer.dimensions?.time) {
-        return layer.dimensions.time.availableValues
-    }
-    return []
+    return layerStore.getLayer(layer.uuid)?.dimensions?.time?.availableValues ?? []
 })
 
 const getTimestampName = (time: string) => {
@@ -57,28 +43,30 @@ const getTimestampName = (time: string) => {
 const opacityPercent = computed({
     get: () => Math.round(layer.opacity * 100),
     set: (value: number) => {
-        layerStore.setOpacity(layer.uuid, value / 100)
+        handleOpacityChange(value / 100)
     },
 })
 
-function handleOpacityChange(value: number) {
-    layerStore.setOpacity(layer.uuid, value / 100)
+function handleOpacityChange(value: number | undefined) {
+    mapViewStore.updateLayerOpacity(layerIndex, (value ?? 0) / 100)
 }
 
 function toggleVisibility() {
-    layerStore.toggleVisibility(layer.uuid)
+    mapViewStore.toggleVisibility(layerIndex)
 }
 
 function moveUp() {
-    layerStore.moveLayerUp(layer.uuid)
+    mapViewStore.moveLayerUp(layerIndex)
 }
 
 function moveDown() {
-    layerStore.moveLayerDown(layer.uuid)
+    mapViewStore.moveLayerDown(layerIndex)
 }
 
 function removeLayer() {
     layerStore.removeLayer(layer.uuid)
+
+    mapViewStore.removeLayer(layerIndex)
     if (layer.uuid === drawingStore.drawingKMLLayerUuid) {
         drawingStore.resetDrawingLayerUuid()
         drawingStore.clearDrawingFeatures()
@@ -86,7 +74,14 @@ function removeLayer() {
 }
 
 function openDatasetPanel() {
-    datasetPanelStore.openDatasetPanel(layer.humanId)
+    const source = layerStore.getLayer(layer.uuid)
+    if (source) {
+        datasetPanelStore.openDatasetPanel(source.humanId)
+    }
+}
+
+function isFromDataSet() {
+    return layerStore.getLayer(layer.uuid)?.type === 'dataset'
 }
 </script>
 
@@ -100,14 +95,14 @@ function openDatasetPanel() {
             />
             <div class="flex flex-col justify-between">
                 <IconButton
-                    :disabled="layerZIndex === layersLength - 1"
+                    :disabled="layerIndex === layersLength - bgLayerModifier"
                     iconName="Chevron-Up"
                     severity="secondary"
                     class="h-0.5"
                     @click="moveUp()"
                 ></IconButton>
                 <IconButton
-                    :disabled="layerZIndex === 0"
+                    :disabled="layerIndex === bgLayerModifier"
                     iconName="Chevron-Down"
                     severity="secondary"
                     class="h-0.5"
@@ -118,10 +113,10 @@ function openDatasetPanel() {
         <div class="flex-1">
             <div
                 class="overflow-x-hidden text-nowrap"
-                :title="layer.humanId"
+                :title="layer.displayName"
                 :class="{ 'text-gray-300': !layer.isVisible }"
             >
-                {{ displayName }}
+                {{ layer.displayName }}
             </div>
             <div class="mt-2 flex items-center gap-2">
                 <span class="text-xs text-gray-600">Opacity:</span>
@@ -152,7 +147,7 @@ function openDatasetPanel() {
                 </select>
             </div>
             <IconButton
-                v-if="layer.type === 'dataset'"
+                v-if="isFromDataSet()"
                 iconName="Info"
                 severity="secondary"
                 @click="openDatasetPanel"

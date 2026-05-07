@@ -1,4 +1,5 @@
 import type { Dimension, DimensionId, Layer } from '@swissgeo/layers'
+import type { Layer as MapLayer } from '@swissgeo/map'
 import type { Dataset } from '@swissgeo/ogc'
 import type { AppStateConfig, AppStatePayload, LayerStateConfig } from '@swissgeo/statesharing'
 
@@ -9,19 +10,53 @@ import { APP_STATE_CONFIG_VERSION } from '@swissgeo/statesharing'
 
 const DISPATCHER = { name: 'state-config' }
 
-function layerToStateConfig(layer: Layer): LayerStateConfig {
-    const layerUrl = layer.layerUrl
+function layersToStateConfig(layers: MapLayer[]) {
+    const layersState: Partial<AppStateConfig> = {
+        layers: [],
+    }
+    if (layers.length > 0) {
+        const backgroundLayerPresent = Number(!!useLayerStore().backgroundLayer)
+
+        layers.slice(backgroundLayerPresent).map((mapLayer) => {
+            layersState.layers!.push(layerToStateConfig(mapLayer))
+        })
+        if (backgroundLayerPresent === 1) {
+            layersState.backgroundLayer = layerToStateConfig(layers[0]!)
+        }
+    }
+    return layersState
+}
+
+function layerToStateConfig(layer: MapLayer): LayerStateConfig {
+    let sourceData: Layer | undefined | null = useLayerStore().getLayer(layer.uuid)
+    if (!sourceData) {
+        sourceData = useLayerStore().backgroundLayer
+        if (!sourceData || sourceData.uuid !== layer.uuid) {
+            /*We can end up here in the following cases :
+                1. A layer in the map Layers has no corresponding source
+                    1.1 This most certainly means a source has been cleared without clearing the map,
+                     or that a map has been removed without removing the source
+                2. the background layer has changed on one store, but not the other
+
+                TODO: solve number two, as it happens on every background layer change, then introduce back the `THROW ERROR` rather than the log error
+            */
+            log.error(
+                `A layer with uuid ${layer?.uuid} couldn't be transformed to a Layer State Config. Most probable reason is a difference between the source Data and the map Layers`
+            )
+        }
+    }
+    const layerUrl = sourceData.layerUrl
 
     const config: LayerStateConfig = {
         layerUrl,
-        type: layer.type,
+        type: sourceData.type,
         isVisible: layer.isVisible,
         opacity: layer.opacity,
     }
 
-    if (layer.dimensions) {
+    if (sourceData.dimensions) {
         config.dimensions = {}
-        for (const [key, dim] of Object.entries(layer.dimensions)) {
+        for (const [key, dim] of Object.entries(sourceData.dimensions)) {
             if (dim) {
                 config.dimensions[key] = { currentValue: dim.currentValue }
             }
@@ -32,10 +67,7 @@ function layerToStateConfig(layer: Layer): LayerStateConfig {
 }
 
 async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer | null> {
-    const layerOptions: Partial<Layer> = {
-        isVisible: config.isVisible,
-        opacity: config.opacity,
-    }
+    const layerOptions: Partial<Layer> = {}
 
     if (config.dimensions) {
         const dims: Partial<Record<DimensionId, Dimension>> = {}
@@ -59,6 +91,7 @@ async function stateConfigToLayer(config: LayerStateConfig): Promise<Layer | nul
 export function useStateConfig() {
     const positionStore = usePositionStore()
     const layerStore = useLayerStore()
+    const mapviewStore = useMapViewStore()
 
     /**
      * Export the current app state as an AppStateConfig object.
@@ -73,14 +106,9 @@ export function useStateConfig() {
                     zoom: positionStore.zoom,
                     rotation: positionStore.rotation,
                 },
-                layers: layerStore.layers.map((l: Layer) => layerToStateConfig(l)),
+                ...layersToStateConfig(mapviewStore.mapLayers),
             } as AppStateConfig,
         }
-
-        if (layerStore.backgroundLayer) {
-            payload.state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer)
-        }
-
         return payload
     })
 
@@ -104,6 +132,9 @@ export function useStateConfig() {
         for (const layer of [...layerStore.layers]) {
             layerStore.removeLayer(layer.uuid)
         }
+        for (const layer of [...mapviewStore.mapLayers]) {
+            mapviewStore.removeLayer(layer.uuid)
+        }
 
         // Fetch all layers in parallel
         const [layers, bgLayer] = await Promise.all([
@@ -113,13 +144,25 @@ export function useStateConfig() {
                 : null,
         ])
 
-        for (const layer of layers) {
-            if (layer) {
-                layerStore.addLayer(layer)
+        layerStore.setBackground(bgLayer)
+
+        for (let i = 0; i < layers.length; i++) {
+            if (layers[i]) {
+                const uuid = layers[i]!.uuid
+                // we're adding some information about visibility and opacity to apply after conversion
+                // also setting defaults in case they are not specified
+                const mapLayerData: Partial<MapLayer> = {
+                    opacity: payload.state.layers[i]?.opacity ?? 1,
+                    isVisible: payload.state.layers[i]?.isVisible ?? true,
+                }
+                layerStore.addImportOption(uuid, mapLayerData)
             }
         }
-
-        layerStore.setBackground(bgLayer)
+        for (let i = 0; i < layers.length; i++) {
+            if (layers[i]) {
+                layerStore.addLayer(layers[i]!)
+            }
+        }
     }
 
     return {

@@ -2,11 +2,10 @@
 import type { MenuMetaData } from '@swissgeo/content'
 
 import { useMenuStore } from '@swissgeo/content'
+import { useSidebarStore, SidebarType } from '@swissgeo/skeleton'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-
-import { useSidebarStore, SidebarType } from '@/stores/ui'
 
 import SidebarButton from './SidebarButton.vue'
 

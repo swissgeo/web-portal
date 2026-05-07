@@ -3,6 +3,8 @@ import type { MaybeRefOrGetter } from 'vue'
 
 import { computed, toValue } from 'vue'
 
+const mapViewStore = useMapViewStore()
+
 export interface AttributionSource {
     id: string
     name: string
@@ -19,13 +21,13 @@ export function useAttributionSources(
 
         const attributedLayers: Layer[] = []
 
-        if (resolvedBackground?.isVisible && resolvedBackground.info?.attribution?.title) {
+        if (resolvedBackground && resolvedBackground.info?.attribution?.title) {
             attributedLayers.push(resolvedBackground)
         }
 
         attributedLayers.push(
             ...resolvedLayers
-                .filter((layer) => layer.isVisible)
+                .filter((layer) => mapViewStore.getMapLayerFromUuid(layer.uuid)?.isVisible)
                 .filter((layer) => !!layer.info?.attribution?.title)
         )
 

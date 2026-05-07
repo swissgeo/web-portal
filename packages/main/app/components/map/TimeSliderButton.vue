@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Dimension, Layer } from '@swissgeo/layers'
-import type { LayerWithTime } from '@swissgeo/timeslider'
+import type { Dimension } from '@swissgeo/layers'
+import type { Layer as MapLayer } from '@swissgeo/map'
 
 import { useLayerStore } from '@swissgeo/layers'
 import { useSidebarStore } from '@swissgeo/skeleton'
@@ -10,14 +10,14 @@ const mapViewStore = useMapViewStore()
 const layerStore = useLayerStore()
 const sidebarStore = useSidebarStore()
 
-function isLayerWithTime(layer: Layer): layer is LayerWithTime {
-    return !!layer.dimensions && 'time' in layer.dimensions && !!layer.dimensions.time
-}
-
-const timeLayers = computed((): LayerWithTime[] =>
-    layerStore.layers.filter<LayerWithTime>(isLayerWithTime)
+const timeLayers = computed((): MapLayer[] =>
+    mapViewStore.mapLayers.filter((layer: MapLayer) => isTimeLayer(layer))
 )
 
+// TODO HERE: give a MAPLAYER and do some mixing to get dimensions from
+function isTimeLayer(mapLayer: MapLayer) {
+    return !!layerStore.getLayer(mapLayer.uuid)?.dimensions?.time
+}
 function onClose() {
     mapViewStore.closeTimeSlider()
 }
@@ -35,10 +35,7 @@ function onUpdateDimension({
 }
 
 function onUpdateVisibility({ uuid, isVisible }: { uuid: string; isVisible: boolean }) {
-    const layer = layerStore.layers.find((l) => l.uuid === uuid)
-    if (layer) {
-        layer.isVisible = isVisible
-    }
+    mapViewStore.setVisibility(uuid, isVisible)
 }
 </script>
 

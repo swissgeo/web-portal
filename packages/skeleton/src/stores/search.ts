@@ -1,7 +1,6 @@
 // Search store for web-poc-portal
 // Adapted from web-mapviewer search store
 
-import type { Layer } from '@swissgeo/layers'
 import type { DatasetCollection } from '@swissgeo/ogc'
 import type { SearchResult } from '@swissgeo/search'
 
@@ -95,7 +94,17 @@ export const useSearchStore = defineStore('search', () => {
             // Get searchable layers from layer store
             // For now, enable feature search for ALL visible layers
             const layerStore = useLayerStore()
-            const searchableLayers = layerStore.layers.filter((layer: Layer) => layer.isVisible)
+
+            /**
+             * TODO:
+             *  - at one point, the search will be its own module.
+             *  - at that point, the source will tell us if the layer is searchable
+             *  - we will give the sources through a prop
+             *  - We will also give a prop to the search module making a link between map visibility and the uuid (in the context of a map view search)
+             *  this will give something like :
+             * const searchableLayers = sources.filter((source) => source.isSearchable && isVisible[source.uuid])
+             */
+            const searchableLayers = layerStore.layers
 
             // Build search promises array
             const searchPromises: Promise<SearchResult[]>[] = [

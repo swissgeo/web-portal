@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Layer } from '@swissgeo/layers'
+import type { Layer as MapLayer } from '@swissgeo/map'
 import type { Map } from 'ol'
 import type { ShallowRef } from 'vue'
 
@@ -9,7 +9,7 @@ import { useI18n } from 'vue-i18n'
 import { useOlDrawing } from '@/composables/olDrawing.composable'
 
 const { layer, zIndex } = defineProps<{
-    layer: Layer
+    layer: MapLayer
     zIndex: number
 }>()
 

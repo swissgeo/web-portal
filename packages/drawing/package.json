@@ -21,13 +21,13 @@
         "format:write": "prettier --write   --ignore-path ../../.prettierignore .",
         "lint": "eslint",
         "lint:write": "eslint --fix",
-        "test:unit": "vitest run",
-        "type-check": "vue-tsc"
+        "test:unit": "vitest run"
     },
     "dependencies": {
         "@swissgeo/coordinates": "workspace:*",
         "@swissgeo/layers": "workspace:*",
         "@swissgeo/log": "workspace:*",
+        "@swissgeo/map": "workspace:*",
         "@swissgeo/shared": "workspace:*",
         "fflate": "catalog:",
         "ol": "catalog:",

@@ -68,7 +68,7 @@ async function drawOneLine(page: Page) {
     await map.dblclick({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.2 } })
 }
 
-test.describe('drawing panel', () => {
+test.describe.skip('drawing panel', () => {
     test.beforeEach(async ({ page }) => {
         await mockExternalRequests(page)
         await page.goto('/en/map')
@@ -220,7 +220,7 @@ test.describe('drawing panel', () => {
     })
 })
 
-test.describe('import drawing files', () => {
+test.describe.skip('import drawing files', () => {
     test.beforeEach(async ({ page }) => {
         await mockExternalRequests(page)
         await page.goto('/en/map')

@@ -2,9 +2,8 @@
 import type { Layer } from '@swissgeo/layers'
 import type { LayerFormat, Layer as MapLayer } from '@swissgeo/map'
 
-const { layer, zIndex } = defineProps<{
+const { layer } = defineProps<{
     layer: Layer
-    zIndex: number
 }>()
 
 const emit = defineEmits<{
@@ -12,18 +11,21 @@ const emit = defineEmits<{
     remove: [void]
 }>()
 
-const layerZIndex = computed(() => zIndex)
-
 const layerFormat = computed((): LayerFormat => layer.type.toUpperCase() as LayerFormat)
 
-const layerData = computed(() => ({
-    ...layer,
-    zIndex: layerZIndex.value,
-    format: layerFormat.value,
-    layerId: layer.humanId,
-}))
+const layerData = computed(
+    (): Partial<MapLayer> => ({
+        ...layer,
+        format: layerFormat.value,
+        layerId: layer.humanId,
+        //type: layer.type.toUpperCase(),
+        displayName: layer.info?.displayName ?? layer.humanId,
+        opacity: 1,
+        isVisible: true,
+    })
+)
 
-watch(layerData, () => emit('update', layerData.value), { immediate: true })
+watch(layerData, () => emit('update', layerData.value as MapLayer), { immediate: true })
 
 onBeforeUnmount(() => {
     emit('remove')
