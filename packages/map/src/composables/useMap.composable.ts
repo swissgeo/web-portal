@@ -21,7 +21,7 @@ export function useMap() {
             const updateCenter = () => {
                 const newCenter = view.getCenter()
                 if (newCenter && newCenter[0] !== undefined && newCenter[1] !== undefined) {
-                    center.value = [newCenter[0] as number, newCenter[1] as number]
+                    center.value = newCenter.slice(0, 2) as [number, number]
                 }
 
                 viewportExtent.value = view.calculateExtent(mapInstance.getSize());
