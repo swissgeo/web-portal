@@ -33,11 +33,26 @@ export function usePrintFraming() {
     })
 
     const toast = useToast()
+    const { customStateConfig, customStateMapCenter, customStateMapZoom } = useCustomStateConfig()
+    const { hash, state } = useCreateShareLinkForCustomState()
     const { zoomLevel, olMap, center, viewportExtent } = useMap()
     const isZoomStepEnabled = ref(false)
     const selectedPrintFormat = ref<PrintFormat>("a4")
     const selectedPrintResolution = ref(96)
     const selectedPrintOrientation = ref<PrintOrientation>("landscape")
+    const printPreviewUrl = computed(() => {
+        if(!hash.value) return null
+        // print_format=a4&print_orientation=landscape&print_resolution=96&z=8&state=3441a32c702feb892e24fac8b
+        const url = new URL("/en/print", window.location.origin)
+        url.searchParams.set('state', hash.value)
+        url.searchParams.set('print_format', selectedPrintFormat.value)
+        url.searchParams.set('print_orientation', selectedPrintOrientation.value)
+        url.searchParams.set('print_resolution', selectedPrintResolution.value.toString())
+        url.searchParams.set('z', zoomLevelForPrint.value.toString())
+        console.log("url", url.toString());
+        
+        return url.toString()
+    })
 
     const pageSizeInPixels = computed(() => {
         return getPageSizeInPixels(
@@ -106,6 +121,15 @@ export function usePrintFraming() {
 
         view.setZoom(zoomLevelForPrint.value)
     }
+
+
+    watch(zoomLevelForPrint, (newZoom) => {
+        customStateMapZoom.value = newZoom
+    })
+
+    watch(centerForPrint, (newCenter) => {
+        customStateMapCenter.value = newCenter
+    })
 
     watch(printExtent, (newExtent) => {
         if (!newExtent) return
@@ -180,6 +204,10 @@ export function usePrintFraming() {
         }
     })
 
+    watch(customStateConfig, (newConfig) => {
+        state.value = newConfig
+    })
+
     function enableZoomStep() {
 
         if (!olMap.value) {
@@ -234,5 +262,6 @@ export function usePrintFraming() {
         isPrintExtentOutOfBounds,
         isPrintExtentBeyondViewport,
         adjustToLockedView,
+        printPreviewUrl,
     }
 }

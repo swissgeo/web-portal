@@ -32,6 +32,7 @@ export function useCreateShareLink(state?: Ref<AppStatePayload>) {
 
     return {
         shareLink,
+        hash,
     }
 }
 
@@ -43,4 +44,28 @@ export function useCreateShareLinkForPrint() {
     const viewStore = useMapViewStore()
     const shareLink = computed(() => buildShareUrl(viewStore.stateId))
     return { shareLink }
+}
+
+/**
+ * Add a custom state to the service (mock at the moment) with the state being a ref
+ * so that this composable function can be used to push multiple states to the service,
+ * for example when the print framing parameters change and we want to update the share link accordingly.
+ */
+export function useCreateShareLinkForCustomState() {
+    const state = ref<AppStatePayload | null>(null)
+    const runtimeConfig = useRuntimeConfig()
+
+    const { data: hash, execute } = useFetch<string>(runtimeConfig.public.shareServiceUrl, { refetch: true })
+        .post(state)
+        .text()
+
+    watch(state, () => execute(), { deep: true })
+
+    const shareLink = computed(() => buildShareUrl(hash.value))
+
+    return {
+        shareLink,
+        hash,
+        state,
+    }
 }

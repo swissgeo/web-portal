@@ -10,7 +10,7 @@ const emit = defineEmits<{
 }>()
 
 const { zoomLevel } = useMap()
-const { isZoomStepEnabled, selectedPrintFormat, selectedPrintResolution, selectedPrintOrientation, isCenterLocked, isZoomLocked, zoomLevelForPrint, isPrintExtentOutOfBounds, isPrintExtentBeyondViewport, adjustToLockedView } = usePrintFraming()
+const { isZoomStepEnabled, selectedPrintFormat, selectedPrintResolution, selectedPrintOrientation, isCenterLocked, isZoomLocked, zoomLevelForPrint, isPrintExtentOutOfBounds, isPrintExtentBeyondViewport, adjustToLockedView, printPreviewUrl } = usePrintFraming()
 
 const printFormatItems = ref(printFormats.map(format => ({
     label: format.toUpperCase(),
@@ -100,6 +100,8 @@ function handleClose() {
                 <USelect v-model="selectedPrintOrientation" :items="printOrientationItems" />
             </UFormField>
             <UButton v-if="isCenterLocked || isZoomLocked" @click="adjustToLockedView">Zoom to locked zoom level</UButton>
+            <a v-if="printPreviewUrl" :href="printPreviewUrl" target="_blank">Open Print Preview</a>
+
         </div>
     </div>
 </template>
