@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { execSync } from 'node:child_process'
-import { fileURLToPath, URL } from 'node:url'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
@@ -29,7 +28,6 @@ export default defineNuxtConfig({
         keepalive: true,
     },
     typescript: {
-        typeCheck: false, //too much baggage ATM
         tsConfig: {
             include: ['**/__tests__/**/*'],
         },
@@ -66,11 +64,6 @@ export default defineNuxtConfig({
         build: {
             minify: isDevelopment ? false : 'terser',
             sourcemap: isDevelopment,
-        },
-        resolve: {
-            alias: {
-                '@geonetwork-ui': fileURLToPath(new URL('./geonetwork-ui', import.meta.url)),
-            },
         },
         mode: isDevelopment ? 'development' : 'production',
         server: {
@@ -117,16 +110,9 @@ export default defineNuxtConfig({
         defaultLocale: 'de',
     },
     runtimeConfig: {
-        // set these via .env file
-        apiEndpoint: '',
-        authToken: '',
-        maptilerApiKey: '',
         what3wordsApiKey: '',
         public: {
             ogcApiEndpoint: '',
-            overlayId: '',
-            aboutMenu: { id: 199, translationKey: 'menuTitles.about' },
-            knowledgeMenu: { id: 200, translationKey: 'menuTitles.knowledge' },
             gitCommit: getGitCommit(),
             version: getVersion(),
             buildTime,
