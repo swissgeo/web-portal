@@ -56,7 +56,7 @@ export function usePrintFraming() {
     const lastUnlockedZoomLevel = ref(zoomLevel.value)
     const zoomLevelForPrint = computed(() => {
         if (!isZoomLocked.value) {
-            lastUnlockedZoomLevel.value = Math.ceil(zoomLevel.value)
+            lastUnlockedZoomLevel.value = Math.round(zoomLevel.value)
         }
         return lastUnlockedZoomLevel.value
     })
@@ -83,7 +83,7 @@ export function usePrintFraming() {
     })
 
     const isAtLockedZoomLevel = computed(() => {
-        return zoomLevelForPrint.value === Math.ceil(zoomLevel.value)
+        return zoomLevelForPrint.value === zoomLevel.value
     })
 
     function adjustToLockedView() {
@@ -155,6 +155,9 @@ export function usePrintFraming() {
     })
 
     watch(isAtLockedZoomLevel, (isAtLocked) => {
+
+        console.log("isAtLocked", isAtLocked);
+        
 
         if(!isAtLocked) {
             toast.add({
