@@ -1533,6 +1533,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.12.0
+      '@types/openlayers':
+        specifier: 'catalog:'
+        version: 4.6.23
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.6.1)

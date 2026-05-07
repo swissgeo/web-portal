@@ -28,26 +28,4 @@ test.describe('map page', () => {
     test.skip('displays the fullscreen button', async ({ page }) => {
         await expect(page.locator('[data-cy="fullscreen-toggle"]')).toBeVisible()
     })
-
-    test.skip('clicking the search tab reveals the search input', async ({ page }) => {
-        const searchTab = page.getByRole('button', { name: 'Suche' })
-        await searchTab.click()
-
-        const searchInput = page.getByPlaceholder('Ort, Layer oder Koordinaten suchen...')
-        await expect(searchInput).toBeVisible()
-        await searchInput.fill('Bern')
-        await expect(searchInput).toHaveValue('Bern')
-    })
-
-    test.skip('sidebar tabs switch between search and layers', async ({ page }) => {
-        const searchTab = page.getByRole('button', { name: 'Suche' })
-        const layerTab = page.getByRole('button', { name: 'Aktive Ebenen' })
-        const searchInput = page.getByPlaceholder('Ort, Layer oder Koordinaten suchen...')
-
-        await searchTab.click()
-        await expect(searchInput).toBeVisible()
-
-        await layerTab.click()
-        await expect(searchInput).not.toBeVisible()
-    })
 })

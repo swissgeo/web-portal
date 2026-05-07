@@ -31,7 +31,7 @@ provide<Ref<OlMapType | undefined>>('olMap', olMap)
 onMounted(() => {
     mountOlMap()
     // make it available for debugging
-    ;(window as Window & { map?: OlMapType }).map = olMap.value
+    ;(window as Window & { swissgeoOlMap?: OlMapType }).swissgeoOlMap = olMap.value
 })
 
 function registerCustomProjection() {

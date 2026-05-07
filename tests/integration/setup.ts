@@ -1,4 +1,11 @@
 import type { Page } from '@playwright/test'
+import type { Map as OlMapType } from 'ol'
+
+declare global {
+    interface Window {
+        swissgeoOlMap?: OlMapType
+    }
+}
 
 // olmap takes a while to load, since the headless browser is slower
 export const HYDRATION_TIMEOUT = 50_000
@@ -55,7 +62,7 @@ export function mockExternalRequests(page: Page) {
      */
     const mockAll = async () => {
         // ATTENTION: the priority is reversed: the first route is matched last,
-        // the last registered one has the highes priority
+        // the last registered one has the highest priority
         await mockCatchAll()
         await mockOar()
         await mockLivingdocs()
