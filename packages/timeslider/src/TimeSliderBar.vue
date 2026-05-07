@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { round } from '@swissgeo/numbers'
-import GeoadminTooltip from '@swissgeo/tooltip'
-import { computed, ref, useTemplateRef, watch } from 'vue'
+import { computed, ref, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import TimeSliderBarSteps from './TimeSliderBarSteps.vue'
@@ -72,10 +71,6 @@ const inputYear = computed({
 const cursorArrowPosition = computed(() => ({ left: `${yearPositionOnSlider.value - 4.5}px` }))
 const distanceBetweenLabels = computed(() => sliderWidth.value / allYears.length)
 
-const outsideRangeTooltip = useTemplateRef<{ openTooltip: () => void; closeTooltip: () => void }>(
-    'outsideRangeTooltip'
-)
-
 const yearsShownAsLabel = computed(() => {
     const amountOfLabelsOnScreen = round(sliderWidth.value / (LABEL_WIDTH + MARGIN_BETWEEN_LABELS))
 
@@ -100,14 +95,6 @@ const yearPositionOnSlider = computed(() => {
 const cursorPosition = computed(() => {
     const yearCursorWidth = yearCursor.value?.clientWidth || 0
     return `${Math.max(yearPositionOnSlider.value - yearCursorWidth / 2 + 4.5, 0)}px`
-})
-
-watch(isInputYearValid, (newValue) => {
-    if (!newValue) {
-        outsideRangeTooltip.value?.openTooltip()
-    } else {
-        outsideRangeTooltip.value?.closeTooltip()
-    }
 })
 
 function grabCursor(event: MouseEvent | TouchEvent) {
@@ -196,12 +183,10 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
                     class="size-5"
                 />
             </div>
-            <GeoadminTooltip
-                ref="outsideRangeTooltip"
-                theme="danger"
-                :tooltip-content="tooltipYearOutsideRangeContent"
-                open-trigger="manual"
-                use-default-padding
+            <UTooltip
+                :open="!isInputYearValid"
+                :text="tooltipYearOutsideRangeContent"
+                arrow
             >
                 <input
                     v-model="inputYear"
@@ -219,7 +204,7 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
                     "
                     @keypress.enter="yearCursorInput?.blur()"
                 />
-            </GeoadminTooltip>
+            </UTooltip>
             <div
                 class="border-left flex items-center border-gray-200"
                 @touchstart.passive="grabCursor"
@@ -236,10 +221,10 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
             class="arrow"
             :style="cursorArrowPosition"
         />
-        <GeoadminTooltip
+        <UTooltip
             placement="bottom"
-            theme="secondary"
-            use-default-padding
+            delay-duration="0"
+            arrow
         >
             <TimeSliderBarSteps
                 :allYears="allYears"
@@ -250,9 +235,12 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
                 :sliderWidth="sliderWidth"
             />
             <template #content>
-                <!-- tooltip content placeholder -->
+                <p>
+                    <!-- TODO: Add slider explaination -->
+                    {{ t('time_slider_legend_explanation') }}
+                </p>
             </template>
-        </GeoadminTooltip>
+        </UTooltip>
         <div class="relative h-5">
             <div
                 v-for="yearAsLabel in yearsShownAsLabel"
