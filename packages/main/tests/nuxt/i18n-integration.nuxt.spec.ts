@@ -10,6 +10,7 @@
  * For testing component logic in isolation, prefer *.spec.ts (happy-dom)
  * with `mockNuxtImport` stubs — it's faster and more focused.
  */
+
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import { defineComponent } from 'vue'
