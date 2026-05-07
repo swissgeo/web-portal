@@ -32,9 +32,6 @@ const props = withDefaults(
 
 const isReverse = ref<boolean>(false)
 const profile = computed<ElevationProfileResponse>(() => {
-    if (!props.profileResponse) {
-        return
-    }
     return isReverse.value ? reverseProfile(props.profileResponse) : props.profileResponse
 })
 
