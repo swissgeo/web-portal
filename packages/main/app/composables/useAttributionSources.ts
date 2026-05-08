@@ -3,8 +3,6 @@ import type { MaybeRefOrGetter } from 'vue'
 
 import { computed, toValue } from 'vue'
 
-const mapViewStore = useMapViewStore()
-
 export interface AttributionSource {
     id: string
     name: string
@@ -15,6 +13,8 @@ export function useAttributionSources(
     layers: MaybeRefOrGetter<Layer[]>,
     backgroundLayer: MaybeRefOrGetter<Layer | null>
 ) {
+    const mapViewStore = useMapViewStore()
+
     const sources = computed((): AttributionSource[] => {
         const resolvedLayers = toValue(layers)
         const resolvedBackground = toValue(backgroundLayer)
