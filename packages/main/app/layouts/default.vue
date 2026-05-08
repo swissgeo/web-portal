@@ -51,7 +51,7 @@ async function onSearchResultSelected(result: SearchResult) {
         ref="main"
         class="h-screen font-sans"
     >
-        <div class="relative h-screen">
+        <div class="relative h-full">
             <SideBar
                 v-if="!isMapFullscreenMode"
                 class="z-2"
