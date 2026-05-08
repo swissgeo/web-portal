@@ -43,7 +43,6 @@ export function usePrintFraming() {
         if (!hash.value) {
             return null
         }
-        // print_format=a4&print_orientation=landscape&print_resolution=96&z=8&state=3441a32c702feb892e24fac8b
         const url = new URL('/en/print', window.location.origin)
         url.searchParams.set('state', hash.value)
         url.searchParams.set('print_format', selectedPrintFormat.value)

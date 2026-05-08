@@ -175,15 +175,17 @@ export function useStateConfig() {
  * Create a custom state config object not tied to the current app state.
  */
 export function useCustomStateConfig() {
-    const layerStore = useLayerStore()
+    const mapviewStore = useMapViewStore()
     const customStateMapCenter = ref<[number, number]>([0, 0])
     const customStateMapZoom = ref(0)
     const customStateMapRotation = ref(0)
     const layerStateConfig = ref<LayerStateConfig[]>([])
+    const backgroundLayerStateConfig = ref<LayerStateConfig | null>(null)
 
     const makeUseOfCurentLayers = () => {
-        const layers = layerStore.layers.map((l: Layer) => layerToStateConfig(l))
-        layerStateConfig.value = layers
+        const { layers, backgroundLayer } = layersToStateConfig(mapviewStore.mapLayers)
+        backgroundLayerStateConfig.value = backgroundLayer ?? null
+        layerStateConfig.value = layers ?? []
     }
 
     const customStateConfig = computed((): AppStatePayload => {
@@ -196,11 +198,8 @@ export function useCustomStateConfig() {
                     rotation: customStateMapRotation.value,
                 },
                 layers: layerStateConfig.value,
+                backgroundLayer: backgroundLayerStateConfig.value,
             } as AppStateConfig,
-        }
-
-        if (layerStore.backgroundLayer) {
-            payload.state.backgroundLayer = layerToStateConfig(layerStore.backgroundLayer)
         }
 
         return payload
@@ -217,5 +216,6 @@ export function useCustomStateConfig() {
         customStateMapRotation,
         layerStateConfig,
         makeUseOfCurentLayers,
+        backgroundLayerStateConfig,
     }
 }

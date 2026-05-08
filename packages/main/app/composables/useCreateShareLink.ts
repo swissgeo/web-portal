@@ -1,6 +1,6 @@
 import type { AppStatePayload } from '@swissgeo/statesharing'
 
-import { useFetch } from '@vueuse/core'
+import { useFetch, watchDebounced } from '@vueuse/core'
 
 function buildShareUrl(stateId: string | null): string {
     if (!stateId) {
@@ -55,13 +55,37 @@ export function useCreateShareLinkForCustomState() {
     const state = ref<AppStatePayload | null>(null)
     const runtimeConfig = useRuntimeConfig()
 
-    const { data: hash, execute } = useFetch<string>(runtimeConfig.public.shareServiceUrl, {
-        refetch: true,
+    const {
+        data: hash,
+        execute,
+        abort,
+        isFetching,
+    } = useFetch<string>(runtimeConfig.public.shareServiceUrl, {
+        immediate: false,
+        refetch: false,
     })
         .post(state)
         .text()
 
-    watch(state, () => execute(), { deep: true })
+    watchDebounced(
+        state,
+        () => {
+            if (!state.value) {
+                return
+            }
+
+            if (isFetching.value) {
+                abort()
+            }
+
+            void execute()
+        },
+        {
+            deep: true,
+            debounce: 500,
+            maxWait: 1500,
+        }
+    )
 
     const shareLink = computed(() => buildShareUrl(hash.value))
 
