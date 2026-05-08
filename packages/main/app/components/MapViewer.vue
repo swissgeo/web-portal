@@ -12,6 +12,11 @@ const geolocationStore = useGeolocationStore()
 const layerStore = useLayerStore()
 const mapViewStore = useMapViewStore()
 
+const { sources: attributionSources } = useAttributionSources(
+    computed(() => layerStore.layers),
+    computed(() => layerStore.backgroundLayer)
+)
+
 const sourceLayers = computed(() => layerStore.layers)
 
 const backgroundLayer = computed(() => layerStore.backgroundLayer)
@@ -32,10 +37,6 @@ const customLayerRenderers: MapLayerRenderer[] = [
 function changeBackground(layer: BaseLayer | null) {
     layerStore.setBackground(layer)
 }
-const { sources: attributionSources } = useAttributionSources(
-    computed(() => layerStore.layers),
-    computed(() => layerStore.backgroundLayer)
-)
 
 // The display mode is defined in the layout
 const displayMode = inject<'web' | 'print'>('displayMode', 'web')
@@ -53,7 +54,7 @@ const displayMode = inject<'web' | 'print'>('displayMode', 'web')
             :layers="layersForMap"
             :custom-layer-renderers="customLayerRenderers"
             :display-mode="displayMode"
-            class="h-screen w-full"
+            class="h-full w-full"
         >
             <template #context-menu-popup="{ coordinate, isVisible, close }">
                 <MapContextMenuPopup
