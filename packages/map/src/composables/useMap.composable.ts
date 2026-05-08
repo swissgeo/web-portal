@@ -1,8 +1,9 @@
-import { storeToRefs } from 'pinia'
-import { useMapStore } from '../stores/map'
-import { ref, watch } from 'vue'
 import type { Extent } from 'ol/extent'
 
+import { storeToRefs } from 'pinia'
+import { ref, watch } from 'vue'
+
+import { useMapStore } from '../stores/map'
 
 export function useMap() {
     const mapStore = useMapStore()
@@ -10,11 +11,13 @@ export function useMap() {
     const zoomLevel = ref<number>(0)
     const center = ref<[number, number]>([0, 0])
     const viewportExtent = ref<Extent>([0, 0, 0, 0])
-    
+
     watch(
         () => olMap.value,
         (mapInstance) => {
-            if (!mapInstance) return
+            if (!mapInstance) {
+                return
+            }
 
             const view = mapInstance.getView()
 
@@ -24,7 +27,7 @@ export function useMap() {
                     center.value = newCenter.slice(0, 2) as [number, number]
                 }
 
-                viewportExtent.value = view.calculateExtent(mapInstance.getSize());
+                viewportExtent.value = view.calculateExtent(mapInstance.getSize())
             }
 
             // initial value
@@ -33,13 +36,12 @@ export function useMap() {
 
             // sync on change
             view.on('change:resolution', () => {
-                zoomLevel.value = view.getZoom()                
+                zoomLevel.value = view.getZoom()
             })
 
             view.on('change:center', updateCenter)
             // During pan interactions this fires continuously while the pointer is moving.
             mapInstance.on('pointerdrag', updateCenter)
-
         },
         { immediate: true }
     )

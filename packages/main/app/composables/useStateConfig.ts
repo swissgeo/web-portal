@@ -208,7 +208,7 @@ export function useCustomStateConfig() {
 
     onMounted(() => {
         makeUseOfCurentLayers()
-    }) 
+    })
 
     return {
         customStateConfig,
@@ -219,4 +219,3 @@ export function useCustomStateConfig() {
         makeUseOfCurentLayers,
     }
 }
-

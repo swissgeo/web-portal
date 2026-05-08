@@ -1,15 +1,14 @@
-import { storeToRefs } from 'pinia'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-
+import { createCutoutGeometry } from '@swissgeo/coordinates'
 import { useMap } from '@swissgeo/map'
+import { EPSG_2056_BOUNDING_BOX } from '@swissgeo/shared'
+import { containsExtent } from 'ol/extent'
 import Feature from 'ol/Feature'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import { Fill, Style } from 'ol/style'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+
 import type { PrintFormat, PrintOrientation } from '../types/print'
-import { containsExtent } from 'ol/extent'
-import { EPSG_2056_BOUNDING_BOX } from '@swissgeo/shared'
-import { createCutoutGeometry } from '@swissgeo/coordinates'
 
 const TOAST_DURATION = 5000
 
@@ -21,11 +20,11 @@ export function usePrintFraming() {
     const style = new Style({
         fill: new Fill({
             color: DARK_BLUE,
-        })
+        }),
     })
     const printExtentLayer = new VectorLayer({
         source: new VectorSource({
-            features: [ printExtentFeature ],
+            features: [printExtentFeature],
         }),
         style: style,
         updateWhileAnimating: true,
@@ -37,20 +36,21 @@ export function usePrintFraming() {
     const { hash, state } = useCreateShareLinkForCustomState()
     const { zoomLevel, olMap, center, viewportExtent } = useMap()
     const isZoomStepEnabled = ref(false)
-    const selectedPrintFormat = ref<PrintFormat>("a4")
+    const selectedPrintFormat = ref<PrintFormat>('a4')
     const selectedPrintResolution = ref(96)
-    const selectedPrintOrientation = ref<PrintOrientation>("landscape")
+    const selectedPrintOrientation = ref<PrintOrientation>('landscape')
     const printPreviewUrl = computed(() => {
-        if(!hash.value) return null
+        if (!hash.value) {
+            return null
+        }
         // print_format=a4&print_orientation=landscape&print_resolution=96&z=8&state=3441a32c702feb892e24fac8b
-        const url = new URL("/en/print", window.location.origin)
+        const url = new URL('/en/print', window.location.origin)
         url.searchParams.set('state', hash.value)
         url.searchParams.set('print_format', selectedPrintFormat.value)
         url.searchParams.set('print_orientation', selectedPrintOrientation.value)
         url.searchParams.set('print_resolution', selectedPrintResolution.value.toString())
         url.searchParams.set('z', zoomLevelForPrint.value.toString())
-        console.log("url", url.toString());
-        
+
         return url.toString()
     })
 
@@ -81,24 +81,30 @@ export function usePrintFraming() {
     })
 
     const printExtent = computed(() => {
-        if (!olMap.value) return null
-        
+        if (!olMap.value) {
+            return null
+        }
+
         return getPrintExtent(
             olMap.value,
             zoomLevelForPrint.value,
             pageSizeInPixels.value.width,
             pageSizeInPixels.value.height,
-            centerForPrint.value,
+            centerForPrint.value
         )
     })
 
     const isPrintExtentOutOfBounds = computed(() => {
-        if (!printExtent.value) return false
+        if (!printExtent.value) {
+            return false
+        }
         return !containsExtent(EPSG_2056_BOUNDING_BOX, printExtent.value)
     })
 
-    const isPrintExtentBeyondViewport = computed(() => {        
-        if (!printExtent.value || !olMap.value) return false
+    const isPrintExtentBeyondViewport = computed(() => {
+        if (!printExtent.value || !olMap.value) {
+            return false
+        }
         return !containsExtent(viewportExtent.value, printExtent.value)
     })
 
@@ -107,7 +113,9 @@ export function usePrintFraming() {
     })
 
     function adjustToLockedView() {
-        if (!olMap.value) return
+        if (!olMap.value) {
+            return
+        }
 
         const view = olMap.value.getView()
 
@@ -115,13 +123,15 @@ export function usePrintFraming() {
             view.setZoom(zoomLevelForPrint.value)
         }
 
-        if (centerForPrint.value[0] !== view.getCenter()?.[0] || centerForPrint.value[1] !== view.getCenter()?.[1]) {
+        if (
+            centerForPrint.value[0] !== view.getCenter()?.[0] ||
+            centerForPrint.value[1] !== view.getCenter()?.[1]
+        ) {
             view.setCenter(centerForPrint.value)
         }
 
         view.setZoom(zoomLevelForPrint.value)
     }
-
 
     watch(zoomLevelForPrint, (newZoom) => {
         customStateMapZoom.value = newZoom
@@ -131,21 +141,26 @@ export function usePrintFraming() {
         customStateMapCenter.value = newCenter
     })
 
-    watch(printExtent, (newExtent) => {
-        if (!newExtent) return
+    watch(
+        printExtent,
+        (newExtent) => {
+            if (!newExtent) {
+                return
+            }
 
-        const polygon = createCutoutGeometry(EPSG_2056_BOUNDING_BOX, newExtent)
-        if (!polygon) return
-        printExtentFeature.setGeometry(polygon)
-        console.log("DEBUG 2");
-        printExtentFeature.changed()
-        printExtentLayer.changed()
-        olMap.value?.renderSync()
-        
-    }, { immediate: true })
+            const polygon = createCutoutGeometry(EPSG_2056_BOUNDING_BOX, newExtent)
+            if (!polygon) {
+                return
+            }
+            printExtentFeature.setGeometry(polygon)
+            printExtentFeature.changed()
+            printExtentLayer.changed()
+            olMap.value?.renderSync()
+        },
+        { immediate: true }
+    )
 
-
-    watch(isZoomStepEnabled, (enabled) => {        
+    watch(isZoomStepEnabled, (enabled) => {
         if (enabled) {
             enableZoomStep()
         } else {
@@ -157,11 +172,12 @@ export function usePrintFraming() {
     // and show a warning toast, otherwise set it to blue and remove the toast if it exists
     watch(isPrintExtentOutOfBounds, (isOutOfBounds) => {
         style.getFill()?.setColor(isOutOfBounds ? BRIGHT_RED : DARK_BLUE)
-        if(isOutOfBounds) {
+        if (isOutOfBounds) {
             toast.add({
                 id: 'warning_print_extent_out_of_bounds',
                 title: 'Print extent is out of Swiss bounds',
-                description: 'The print extent must be fully contained within the Swiss bounding box to be printable.',
+                description:
+                    'The print extent must be fully contained within the Swiss bounding box to be printable.',
                 icon: 'i-octicon-x-circle-fill-24',
                 color: 'error',
                 duration: TOAST_DURATION,
@@ -173,11 +189,12 @@ export function usePrintFraming() {
     })
 
     watch(isPrintExtentBeyondViewport, (isOutOfBounds) => {
-        if(isOutOfBounds) {
+        if (isOutOfBounds) {
             toast.add({
                 id: 'warning_print_extent_beyond_viewport',
                 title: 'Print extent is out of viewport',
-                description: 'You can lock the center and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.',
+                description:
+                    'You can lock the center and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.',
                 icon: 'i-octicon-screen-full-24',
                 color: 'info',
                 duration: TOAST_DURATION,
@@ -189,11 +206,12 @@ export function usePrintFraming() {
     })
 
     watch(isAtLockedZoomLevel, (isAtLocked) => {
-        if(!isAtLocked) {
+        if (!isAtLocked) {
             toast.add({
                 id: 'warning_not_at_locked_zoom_level',
                 title: 'Zoom level is not at locked zoom level',
-                description: 'The zoom level on screen does not correspond to the locked zoom level for print.',
+                description:
+                    'The zoom level on screen does not correspond to the locked zoom level for print.',
                 icon: 'i-octicon-search-24',
                 color: 'warning',
                 duration: TOAST_DURATION,
@@ -209,15 +227,13 @@ export function usePrintFraming() {
     })
 
     function enableZoomStep() {
-
         if (!olMap.value) {
             return
         }
 
         const view = olMap.value.getView()
-        view.setConstrainResolution(true)      
+        view.setConstrainResolution(true)
     }
-
 
     function disableZoomStep() {
         if (!olMap.value) {
@@ -229,12 +245,16 @@ export function usePrintFraming() {
     }
 
     function mountPrintExtentLayer() {
-        if (!olMap.value) return
+        if (!olMap.value) {
+            return
+        }
         olMap.value.addLayer(printExtentLayer)
     }
 
     function unmountPrintExtentLayer() {
-        if (!olMap.value) return
+        if (!olMap.value) {
+            return
+        }
         olMap.value.removeLayer(printExtentLayer)
     }
 

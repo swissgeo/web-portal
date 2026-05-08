@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import DrawingPanel from '~/components/debug/DrawingPanel.vue'
+
 import FramePrintPanel from './FramePrintPanel'
 
 const isLayersPanelOpen = ref(false)
@@ -28,7 +29,6 @@ function toggleStateConfig() {
 
 function togglePrintPanel() {
     isPrintPanelOpen.value = !isPrintPanelOpen.value
-    console.log("DEBUG");   
 }
 </script>
 

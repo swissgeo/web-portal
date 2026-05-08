@@ -1,8 +1,9 @@
+import type { Map as OlMapType } from 'ol'
+import type { Extent } from 'ol/extent'
+
 import type { PrintFormat, PrintOrientation, PrintConfig } from '../types/print'
-import { type Map as OlMapType } from 'ol'
 
 import { printFormats, printOrientations } from '../types/print'
-import type { Extent } from 'ol/extent'
 
 const MM_PER_INCH = 25.4
 const SQRT_2 = 2 ** 0.5
@@ -29,7 +30,7 @@ export function getPageSizeInPixels(
     format: PrintFormat,
     orientation: PrintOrientation,
     resolutionDpi: number,
-    round: boolean = true,
+    round: boolean = true
 ): { width: number; height: number } {
     let longSide = computeNumberOfPixelsForPrint(
         ~~(A0_LONG_SIDE_MM / formatRatiosToA0[format]),
@@ -40,7 +41,7 @@ export function getPageSizeInPixels(
         resolutionDpi
     )
 
-    if(round) {
+    if (round) {
         longSide = Math.round(longSide)
         shortSide = Math.round(shortSide)
     }
@@ -91,12 +92,19 @@ export function validatePrintConfig(printProps: unknown): asserts printProps is 
     }
 }
 
-
-export function getPrintExtent(map: OlMapType, printZoom: number, widthPx: number, heightPx: number, mapCenter: [number, number]): Extent | null {
+export function getPrintExtent(
+    map: OlMapType,
+    printZoom: number,
+    widthPx: number,
+    heightPx: number,
+    mapCenter: [number, number]
+): Extent | null {
     const view = map.getView()
 
     const resolution = view.getResolutionForZoom(printZoom)
-    if (!resolution) return null
+    if (!resolution) {
+        return null
+    }
 
     const halfWidth = (widthPx * resolution) / 2
     const halfHeight = (heightPx * resolution) / 2

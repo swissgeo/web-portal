@@ -55,7 +55,9 @@ export function useCreateShareLinkForCustomState() {
     const state = ref<AppStatePayload | null>(null)
     const runtimeConfig = useRuntimeConfig()
 
-    const { data: hash, execute } = useFetch<string>(runtimeConfig.public.shareServiceUrl, { refetch: true })
+    const { data: hash, execute } = useFetch<string>(runtimeConfig.public.shareServiceUrl, {
+        refetch: true,
+    })
         .post(state)
         .text()
 
