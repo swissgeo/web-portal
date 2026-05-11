@@ -73,7 +73,9 @@ export default defineEventHandler(async (event) => {
     const language = typeof languageQuery === 'string' ? languageQuery : undefined
     const fetchUrl = new URL(capabilityUrl)
     if (language) {
+        // language: OGC API convention; lang: swisstopo and various WMS servers
         fetchUrl.searchParams.set('language', language)
+        fetchUrl.searchParams.set('lang', language)
     }
 
     const title =

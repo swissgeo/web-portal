@@ -194,6 +194,7 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
         expect(fetchMock).toHaveBeenCalledTimes(1)
         const fetchedUrl = new URL(fetchMock.mock.calls[0][0] as string)
         expect(fetchedUrl.searchParams.get('language')).toBe('fr')
+        expect(fetchedUrl.searchParams.get('lang')).toBe('fr')
         expect(result.properties.title).toBe('Titre Français')
     })
 
@@ -225,6 +226,7 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
         expect(fetchedUrl.searchParams.get('SERVICE')).toBe('WMS')
         expect(fetchedUrl.searchParams.get('REQUEST')).toBe('GetCapabilities')
         expect(fetchedUrl.searchParams.get('language')).toBe('de')
+        expect(fetchedUrl.searchParams.get('lang')).toBe('de')
     })
 
     it('throws a 400 when capabilityUrl is missing', async () => {
