@@ -127,7 +127,7 @@ export default defineNuxtConfig({
     routeRules: {
         // cache the rendered pages for 2 minutes
         //'/content/**': { cache: { maxAge: process.dev ? 1 : 120 } },
-        //'/api/v1/**': { cache: { maxAge: process.dev ? 1 : 30 } },
+        //'/api/wpa/v1/**': { cache: { maxAge: process.dev ? 1 : 30 } },
     },
     icon: {
         localApiEndpoint: '/api/wpa/v1/icons',
