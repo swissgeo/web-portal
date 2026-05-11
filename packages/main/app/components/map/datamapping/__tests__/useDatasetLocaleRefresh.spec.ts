@@ -127,11 +127,7 @@ describe('useDatasetRefresh', () => {
                 },
             },
         }
-        const { newUrlString } = useDatasetLocaleRefresh(
-            layerWithRelativeSelf,
-            vi.fn(),
-            vi.fn()
-        )
+        const { newUrlString } = useDatasetLocaleRefresh(layerWithRelativeSelf, vi.fn(), vi.fn())
         locale.value = 'fr'
         await flushPromises()
         expect(newUrlString.value).toEqual(

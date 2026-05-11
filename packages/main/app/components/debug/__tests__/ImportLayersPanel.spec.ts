@@ -72,9 +72,7 @@ describe('ImportLayersPanel.vue', () => {
 
         const expectedEncoded = encodeURIComponent(vm.importUrl)
         const selfLink = links.find((l) => l.rel === 'self')
-        expect(selfLink?.href).toBe(
-            `/api/v1/layers/external/dataset/${expectedEncoded}/layer-a`
-        )
+        expect(selfLink?.href).toBe(`/api/v1/layers/external/dataset/${expectedEncoded}/layer-a`)
 
         const distributionsLink = links.find((l) => l.rel === 'distributions')
         expect(distributionsLink?.href).toBe(`/api/v1/layers/external/${expectedEncoded}/layer-a`)
