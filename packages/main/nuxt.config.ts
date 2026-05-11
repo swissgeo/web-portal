@@ -111,6 +111,7 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         what3wordsApiKey: '',
+        geoadminApiBaseUrl: '',
         public: {
             ogcApiEndpoint: '',
             gitCommit: getGitCommit(),
