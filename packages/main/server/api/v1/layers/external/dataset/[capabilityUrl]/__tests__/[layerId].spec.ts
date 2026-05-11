@@ -1,10 +1,11 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const routerParams: Record<string, string | undefined> = {}
 let requestUrl = new URL('http://localhost:3000/api/v1/layers/external/dataset/x/y')
 
-;(globalThis as Record<string, unknown>).defineEventHandler = (fn: (_event: unknown) => unknown) =>
-    fn
+;(globalThis as Record<string, unknown>).defineEventHandler = (
+    fn: (_event: unknown) => unknown
+) => fn
 
 vi.mock('h3', () => ({
     getRouterParam: (_event: unknown, name: string) => routerParams[name],
@@ -19,7 +20,7 @@ vi.mock('h3', () => ({
     },
 }))
 
-const handler = (await import('../[layerId]')).default as (_event: unknown) => unknown
+const handler = (await import('../[layerId]')).default as (_event: unknown) => Promise<unknown>
 
 interface DatasetResponse {
     id: string
@@ -27,8 +28,57 @@ interface DatasetResponse {
     properties: { title: string; type: string }
 }
 
+function mockFetchOnce(body: string, ok = true) {
+    const fetchMock = vi.fn().mockResolvedValue({
+        ok,
+        text: () => Promise.resolve(body),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    return fetchMock
+}
+
+beforeEach(() => {
+    routerParams.capabilityUrl = undefined
+    routerParams.layerId = undefined
+})
+
+afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
+})
+
 describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => {
-    it('returns a dataset with self and distributions links', () => {
+    it('extracts the title from a WMTS capabilities document', async () => {
+        const capabilityUrl = 'https://wmts.example.com/1.0.0/WMTSCapabilities.xml'
+        const encoded = encodeURIComponent(capabilityUrl)
+        routerParams.capabilityUrl = encoded
+        routerParams.layerId = 'my-layer'
+        requestUrl = new URL(
+            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
+        )
+
+        mockFetchOnce(`<?xml version="1.0" encoding="UTF-8"?>
+            <Capabilities xmlns="http://www.opengis.net/wmts/1.0"
+                          xmlns:ows="http://www.opengis.net/ows/1.1">
+                <Contents>
+                    <Layer>
+                        <ows:Title>Other Title</ows:Title>
+                        <ows:Identifier>other-layer</ows:Identifier>
+                    </Layer>
+                    <Layer>
+                        <ows:Title>My Real Title</ows:Title>
+                        <ows:Identifier>my-layer</ows:Identifier>
+                    </Layer>
+                </Contents>
+            </Capabilities>`)
+
+        const result = (await handler({})) as DatasetResponse
+
+        expect(result.id).toBe('my-layer')
+        expect(result.properties.title).toBe('My Real Title')
+    })
+
+    it('extracts the title from a WMS capabilities document', async () => {
         const capabilityUrl = 'https://wms.example.com/?SERVICE=WMS'
         const encoded = encodeURIComponent(capabilityUrl)
         routerParams.capabilityUrl = encoded
@@ -37,16 +87,84 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
             `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
         )
 
-        const result = handler({}) as DatasetResponse
+        mockFetchOnce(`<?xml version="1.0"?>
+            <WMS_Capabilities xmlns="http://www.opengis.net/wms">
+                <Capability>
+                    <Layer>
+                        <Layer>
+                            <Name>my-layer</Name>
+                            <Title>WMS Real Title</Title>
+                        </Layer>
+                    </Layer>
+                </Capability>
+            </WMS_Capabilities>`)
 
-        expect(result.id).toBe('my-layer')
-        expect(result.properties).toEqual({
-            title: 'my-layer on wms.example.com',
-            type: 'Dataset',
-        })
+        const result = (await handler({})) as DatasetResponse
+
+        expect(result.properties.title).toBe('WMS Real Title')
+    })
+
+    it('falls back to a synthetic title when the capabilities fetch fails', async () => {
+        const capabilityUrl = 'https://wms.example.com/?SERVICE=WMS'
+        const encoded = encodeURIComponent(capabilityUrl)
+        routerParams.capabilityUrl = encoded
+        routerParams.layerId = 'my-layer'
+        requestUrl = new URL(
+            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
+        )
+
+        vi.stubGlobal(
+            'fetch',
+            vi.fn().mockRejectedValue(new Error('network down'))
+        )
+
+        const result = (await handler({})) as DatasetResponse
+
+        expect(result.properties.title).toBe('my-layer on wms.example.com')
+    })
+
+    it('falls back to a synthetic title when the layer is not found in capabilities', async () => {
+        const capabilityUrl = 'https://wmts.example.com/1.0.0/WMTSCapabilities.xml'
+        const encoded = encodeURIComponent(capabilityUrl)
+        routerParams.capabilityUrl = encoded
+        routerParams.layerId = 'missing-layer'
+        requestUrl = new URL(
+            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/missing-layer`
+        )
+
+        mockFetchOnce(`<?xml version="1.0" encoding="UTF-8"?>
+            <Capabilities xmlns="http://www.opengis.net/wmts/1.0"
+                          xmlns:ows="http://www.opengis.net/ows/1.1">
+                <Contents>
+                    <Layer>
+                        <ows:Title>Other Title</ows:Title>
+                        <ows:Identifier>other-layer</ows:Identifier>
+                    </Layer>
+                </Contents>
+            </Capabilities>`)
+
+        const result = (await handler({})) as DatasetResponse
+
+        expect(result.properties.title).toBe('missing-layer on wmts.example.com')
+    })
+
+    it('returns the correct self and distributions links', async () => {
+        const capabilityUrl = 'https://wms.example.com/?SERVICE=WMS'
+        const encoded = encodeURIComponent(capabilityUrl)
+        routerParams.capabilityUrl = encoded
+        routerParams.layerId = 'my-layer'
+        requestUrl = new URL(
+            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
+        )
+
+        vi.stubGlobal(
+            'fetch',
+            vi.fn().mockRejectedValue(new Error('skip parsing'))
+        )
+
+        const result = (await handler({})) as DatasetResponse
 
         const selfLink = result.links.find((l) => l.rel === 'self')
-        expect(selfLink).toBeDefined()
         expect(selfLink?.href).toBe(
             `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
         )
@@ -58,17 +176,17 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
         expect(distributionsLink?.type).toBe('application/json')
     })
 
-    it('throws a 400 when capabilityUrl is missing', () => {
+    it('throws a 400 when capabilityUrl is missing', async () => {
         routerParams.capabilityUrl = undefined
         routerParams.layerId = 'my-layer'
 
-        expect(() => handler({})).toThrow()
+        await expect(Promise.resolve(handler({}))).rejects.toThrow()
     })
 
-    it('throws a 400 when layerId is missing', () => {
+    it('throws a 400 when layerId is missing', async () => {
         routerParams.capabilityUrl = 'whatever'
         routerParams.layerId = undefined
 
-        expect(() => handler({})).toThrow()
+        await expect(Promise.resolve(handler({}))).rejects.toThrow()
     })
 })

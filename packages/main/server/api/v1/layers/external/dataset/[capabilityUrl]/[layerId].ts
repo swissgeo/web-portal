@@ -1,6 +1,58 @@
-import { appendResponseHeader, createError, getRouterParam, getRequestURL } from 'h3'
+import { DOMParser } from '@xmldom/xmldom'
+import { appendResponseHeader, createError, getRequestURL, getRouterParam } from 'h3'
 
-export default defineEventHandler((event) => {
+async function fetchLayerTitle(capabilityUrl: string, layerId: string): Promise<string | null> {
+    try {
+        const response = await fetch(capabilityUrl)
+        if (!response.ok) {
+            return null
+        }
+        const xml = await response.text()
+        const doc = new DOMParser().parseFromString(xml, 'text/xml')
+        return extractLayerTitle(doc, layerId)
+    } catch {
+        return null
+    }
+}
+
+function extractLayerTitle(doc: Document, layerId: string): string | null {
+    const rootName = doc.documentElement?.nodeName
+    if (!rootName) {
+        return null
+    }
+
+    if (rootName === 'Capabilities') {
+        return findWmtsLayerTitle(doc, layerId)
+    }
+    if (rootName === 'WMS_Capabilities' || rootName === 'WMT_MS_Capabilities') {
+        return findWmsLayerTitle(doc, layerId)
+    }
+    return null
+}
+
+function findWmtsLayerTitle(doc: Document, layerId: string): string | null {
+    const layers = doc.getElementsByTagName('Layer')
+    for (let i = 0; i < layers.length; i++) {
+        const identifier = layers[i].getElementsByTagName('ows:Identifier')[0]?.textContent
+        if (identifier === layerId) {
+            return layers[i].getElementsByTagName('ows:Title')[0]?.textContent ?? null
+        }
+    }
+    return null
+}
+
+function findWmsLayerTitle(doc: Document, layerId: string): string | null {
+    const layers = doc.getElementsByTagName('Layer')
+    for (let i = 0; i < layers.length; i++) {
+        const name = layers[i].getElementsByTagName('Name')[0]?.textContent
+        if (name === layerId) {
+            return layers[i].getElementsByTagName('Title')[0]?.textContent ?? null
+        }
+    }
+    return null
+}
+
+export default defineEventHandler(async (event) => {
     const capabilityUrlParam = getRouterParam(event, 'capabilityUrl')
     const layerId = getRouterParam(event, 'layerId')
 
@@ -17,6 +69,9 @@ export default defineEventHandler((event) => {
     const selfUrl = `${requestUrl.origin}/api/v1/layers/external/dataset/${capabilityUrlParam}/${layerId}`
     const distributionsUrl = `${requestUrl.origin}/api/v1/layers/external/${capabilityUrlParam}/${layerId}`
     const hostname = new URL(capabilityUrl).hostname
+
+    const title =
+        (await fetchLayerTitle(capabilityUrl, layerId)) ?? `${layerId} on ${hostname}`
 
     appendResponseHeader(event, 'Content-Type', 'application/json')
     appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)
@@ -36,7 +91,7 @@ export default defineEventHandler((event) => {
             },
         ],
         properties: {
-            title: `${layerId} on ${hostname}`,
+            title,
             type: 'Dataset',
         },
     }
