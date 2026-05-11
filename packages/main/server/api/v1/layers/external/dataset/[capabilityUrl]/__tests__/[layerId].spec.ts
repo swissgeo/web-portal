@@ -4,9 +4,8 @@ const routerParams: Record<string, string | undefined> = {}
 let requestUrl = new URL('http://localhost:3000/api/v1/layers/external/dataset/x/y')
 let query: Record<string, string | undefined> = {}
 
-;(globalThis as Record<string, unknown>).defineEventHandler = (
-    fn: (_event: unknown) => unknown
-) => fn
+;(globalThis as Record<string, unknown>).defineEventHandler = (fn: (_event: unknown) => unknown) =>
+    fn
 
 vi.mock('h3', () => ({
     getRouterParam: (_event: unknown, name: string) => routerParams[name],
@@ -116,10 +115,7 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
             `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
         )
 
-        vi.stubGlobal(
-            'fetch',
-            vi.fn().mockRejectedValue(new Error('network down'))
-        )
+        vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network down')))
 
         const result = (await handler({})) as DatasetResponse
 
@@ -160,10 +156,7 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
             `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
         )
 
-        vi.stubGlobal(
-            'fetch',
-            vi.fn().mockRejectedValue(new Error('skip parsing'))
-        )
+        vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('skip parsing')))
 
         const result = (await handler({})) as DatasetResponse
 
