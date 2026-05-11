@@ -25,6 +25,10 @@ mockNuxtImport('useFetch', () => {
     })
 })
 
+mockNuxtImport('useRequestURL', () => {
+    return () => new URL('http://localhost:3000/de/map')
+})
+
 describe('useDatasetRefresh', () => {
     const layerWithoutSelfLink = {
         uuid: 'uuid',
@@ -103,6 +107,36 @@ describe('useDatasetRefresh', () => {
         locale.value = 'fr'
         await flushPromises()
         expect(newUrlString.value).toEqual('http://swissgeo.ch/?language=fr')
+    })
+
+    it('resolves a relative self link against the current request URL', async () => {
+        const layerWithRelativeSelf = {
+            uuid: 'uuid',
+            humanId: 'imported-layer',
+            data: {
+                links: [
+                    {
+                        rel: 'self',
+                        href: '/api/v1/layers/external/dataset/abc/my-layer',
+                    },
+                ],
+                id: 'imported-layer',
+                properties: {
+                    type: 'Dataset' as const,
+                    title: 'Imported',
+                },
+            },
+        }
+        const { newUrlString } = useDatasetLocaleRefresh(
+            layerWithRelativeSelf,
+            vi.fn(),
+            vi.fn()
+        )
+        locale.value = 'fr'
+        await flushPromises()
+        expect(newUrlString.value).toEqual(
+            'http://localhost:3000/api/v1/layers/external/dataset/abc/my-layer?language=fr'
+        )
     })
 
     it('Triggers a refresh when the locale changes', async () => {

@@ -25,8 +25,9 @@ export default function useDatasetLocaleRefresh(
     }
 
     const selfHref = selfLink.href
+    const requestUrl = useRequestURL()
     const newUrlString = computed((): string => {
-        const datasetUrl = new URL(selfHref)
+        const datasetUrl = new URL(selfHref, requestUrl.href)
         datasetUrl.searchParams.set('language', locale.value)
         return datasetUrl.toString()
     })

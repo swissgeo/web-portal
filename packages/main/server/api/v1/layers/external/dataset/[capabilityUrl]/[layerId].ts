@@ -1,5 +1,5 @@
 import { DOMParser } from '@xmldom/xmldom'
-import { appendResponseHeader, createError, getQuery, getRequestURL, getRouterParam } from 'h3'
+import { appendResponseHeader, createError, getQuery, getRouterParam } from 'h3'
 
 async function fetchLayerTitle(capabilityUrl: string, layerId: string): Promise<string | null> {
     try {
@@ -65,9 +65,8 @@ export default defineEventHandler(async (event) => {
     }
 
     const capabilityUrl = decodeURIComponent(capabilityUrlParam)
-    const requestUrl = getRequestURL(event)
-    const selfUrl = `${requestUrl.origin}/api/v1/layers/external/dataset/${capabilityUrlParam}/${layerId}`
-    const distributionsUrl = `${requestUrl.origin}/api/v1/layers/external/${capabilityUrlParam}/${layerId}`
+    const selfUrl = `/api/v1/layers/external/dataset/${capabilityUrlParam}/${layerId}`
+    const distributionsUrl = `/api/v1/layers/external/${capabilityUrlParam}/${layerId}`
     const hostname = new URL(capabilityUrl).hostname
 
     const languageQuery = getQuery(event).language

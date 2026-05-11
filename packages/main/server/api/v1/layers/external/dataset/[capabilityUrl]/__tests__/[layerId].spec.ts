@@ -161,14 +161,10 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
         const result = (await handler({})) as DatasetResponse
 
         const selfLink = result.links.find((l) => l.rel === 'self')
-        expect(selfLink?.href).toBe(
-            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
-        )
+        expect(selfLink?.href).toBe(`/api/v1/layers/external/dataset/${encoded}/my-layer`)
 
         const distributionsLink = result.links.find((l) => l.rel === 'distributions')
-        expect(distributionsLink?.href).toBe(
-            `http://localhost:3000/api/v1/layers/external/${encoded}/my-layer`
-        )
+        expect(distributionsLink?.href).toBe(`/api/v1/layers/external/${encoded}/my-layer`)
         expect(distributionsLink?.type).toBe('application/json')
     })
 
