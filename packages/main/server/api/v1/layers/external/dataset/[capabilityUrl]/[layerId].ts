@@ -1,5 +1,5 @@
 import { DOMParser } from '@xmldom/xmldom'
-import { appendResponseHeader, createError, getRequestURL, getRouterParam } from 'h3'
+import { appendResponseHeader, createError, getQuery, getRequestURL, getRouterParam } from 'h3'
 
 async function fetchLayerTitle(capabilityUrl: string, layerId: string): Promise<string | null> {
     try {
@@ -70,8 +70,15 @@ export default defineEventHandler(async (event) => {
     const distributionsUrl = `${requestUrl.origin}/api/v1/layers/external/${capabilityUrlParam}/${layerId}`
     const hostname = new URL(capabilityUrl).hostname
 
+    const languageQuery = getQuery(event).language
+    const language = typeof languageQuery === 'string' ? languageQuery : undefined
+    const fetchUrl = new URL(capabilityUrl)
+    if (language) {
+        fetchUrl.searchParams.set('language', language)
+    }
+
     const title =
-        (await fetchLayerTitle(capabilityUrl, layerId)) ?? `${layerId} on ${hostname}`
+        (await fetchLayerTitle(fetchUrl.toString(), layerId)) ?? `${layerId} on ${hostname}`
 
     appendResponseHeader(event, 'Content-Type', 'application/json')
     appendResponseHeader(event, 'Cache-Control', `max-age=${60 * 60}`)
