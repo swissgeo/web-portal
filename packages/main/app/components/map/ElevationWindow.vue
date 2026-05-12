@@ -9,7 +9,7 @@ import type { Ref } from 'vue'
 import { useDrawingStore, resolveFeatureId } from '@swissgeo/drawing'
 import { ElevationProfile, ElevationProfileOpenLayersBridge } from '@swissgeo/elevation-profile'
 import { usePositionStore } from '@swissgeo/map'
-import { X } from 'lucide-vue-next'
+import { X, GripVertical } from 'lucide-vue-next'
 import GeoJSON from 'ol/format/GeoJSON'
 import {
     computed,
@@ -274,7 +274,9 @@ onBeforeUnmount(() => {
                     @pointerdown.prevent="startDrag"
                 >
                     <div class="flex items-center gap-2">
-                        <span class="text-xs leading-none text-gray-400">⋮⋮</span>
+                        <span class="text-xs leading-none text-gray-400">
+                            <GripVertical :size="14" />
+                        </span>
                         <p class="text-sm font-medium text-gray-700">
                             {{ t('elevationProfile.windowTitle') }}
                         </p>
