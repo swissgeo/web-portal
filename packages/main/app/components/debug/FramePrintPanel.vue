@@ -50,7 +50,7 @@ function handleClose() {
 </script>
 
 <template>
-    <div class="container">
+    <div class="z-10 h-fit min-h-[100px] w-fit min-w-[100px] bg-white p-[10px]">
         <div>
             <IconButton
                 @click="handleClose"
@@ -144,15 +144,3 @@ function handleClose() {
         </div>
     </div>
 </template>
-
-<style scoped>
-.container {
-    background: white;
-    width: fit-content;
-    height: fit-content;
-    z-index: 10;
-    min-width: 100px;
-    min-height: 100px;
-    padding: 10px;
-}
-</style>

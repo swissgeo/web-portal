@@ -10,8 +10,6 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import type { PrintFormat, PrintOrientation } from '../types/print'
 
-const TOAST_DURATION = 5000
-
 export function usePrintFraming() {
     const DARK_BLUE = 'rgba(0, 0, 30, 0.6)'
     const BRIGHT_RED = 'rgba(255, 0, 0, 0.6)'
@@ -31,7 +29,7 @@ export function usePrintFraming() {
         updateWhileInteracting: true,
     })
 
-    const toast = useToast()
+    const toaster = useToaster()
     const { customStateConfig, customStateMapCenter, customStateMapZoom } = useCustomStateConfig()
     const { hash, state } = useCreateShareLinkForCustomState()
     const { zoomLevel, olMap, center, viewportExtent } = useMap()
@@ -172,52 +170,43 @@ export function usePrintFraming() {
     watch(isPrintExtentOutOfBounds, (isOutOfBounds) => {
         style.getFill()?.setColor(isOutOfBounds ? BRIGHT_RED : DARK_BLUE)
         if (isOutOfBounds) {
-            toast.add({
-                id: 'warning_print_extent_out_of_bounds',
-                title: 'Print extent is out of Swiss bounds',
-                description:
-                    'The print extent must be fully contained within the Swiss bounding box to be printable.',
-                icon: 'i-octicon-x-circle-fill-24',
-                color: 'error',
-                duration: TOAST_DURATION,
-                close: false,
-            })
+            toaster.showWarning(
+                'The print extent must be fully contained within the Swiss bounding box to be printable.',
+                {
+                    id: 'warning_print_extent_out_of_bounds',
+                    title: 'Print extent is out of Swiss bounds',
+                }
+            )
         } else {
-            toast.remove('warning_print_extent_out_of_bounds')
+            toaster.remove('warning_print_extent_out_of_bounds')
         }
     })
 
     watch(isPrintExtentBeyondViewport, (isOutOfBounds) => {
         if (isOutOfBounds) {
-            toast.add({
-                id: 'warning_print_extent_beyond_viewport',
-                title: 'Print extent is out of viewport',
-                description:
-                    'You can lock the center and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.',
-                icon: 'i-octicon-screen-full-24',
-                color: 'info',
-                duration: TOAST_DURATION,
-                close: false,
-            })
+            toaster.showWarning(
+                'You can lock the center and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.',
+                {
+                    id: 'warning_print_extent_beyond_viewport',
+                    title: 'Print extent is out of viewport',
+                }
+            )
         } else {
-            toast.remove('warning_print_extent_beyond_viewport')
+            toaster.remove('warning_print_extent_beyond_viewport')
         }
     })
 
     watch(isAtLockedZoomLevel, (isAtLocked) => {
         if (!isAtLocked) {
-            toast.add({
-                id: 'warning_not_at_locked_zoom_level',
-                title: 'Zoom level is not at locked zoom level',
-                description:
-                    'The zoom level on screen does not correspond to the locked zoom level for print.',
-                icon: 'i-octicon-search-24',
-                color: 'warning',
-                duration: TOAST_DURATION,
-                close: false,
-            })
+            toaster.showWarning(
+                'The zoom level on screen does not correspond to the locked zoom level for print.',
+                {
+                    id: 'warning_not_at_locked_zoom_level',
+                    title: 'Zoom level is not at locked zoom level',
+                }
+            )
         } else {
-            toast.remove('warning_not_at_locked_zoom_level')
+            toaster.remove('warning_not_at_locked_zoom_level')
         }
     })
 
