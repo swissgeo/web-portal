@@ -37,7 +37,6 @@
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "workspace:*",
         "@swissgeo/config-typescript": "workspace:*",
-        "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
         "happy-dom": "catalog:",

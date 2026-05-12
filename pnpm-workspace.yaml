@@ -36,7 +36,6 @@ catalog:
     '@types/luxon': ^3.7.1
     '@types/mapbox-gl': ^3.4.1
     '@types/node': ^24.8.1
-    '@types/openlayers': ^4.6.23
     '@types/pako': ^2.0.4
     '@types/sanitize-html': ^2.16.0
     '@types/semver': ^7.7.1
