@@ -15,8 +15,8 @@
         "@swissgeo/config-eslint": "workspace:*",
         "@swissgeo/config-typescript": "workspace:*",
         "@types/node": "catalog:",
-        "@types/openlayers": "catalog:",
         "eslint": "catalog:",
+        "ol": "catalog:",
         "prettier": "catalog:",
         "typescript": "catalog:"
     }
