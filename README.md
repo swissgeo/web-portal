@@ -48,6 +48,7 @@ NUXT_PUBLIC_OGC_API_ENDPOINT=   # OGC API endpoint (exposed to client)
 NUXT_PUBLIC_WANTED_LOG_LEVELS=  # String of log levels wanted (error|warn|info|debug)
 NUXT_PUBLIC_SHARE_SERVICE_URL=  # The URL to the share service
 NUXT_WHAT3WORDS_API_KEY=        # what3words API key (server-only)
+NUXT_GEOADMIN_API_BASE_URL=     # Base URL for geo.admin.ch API (server-only)
 ```
 
 ## Monorepo setup
