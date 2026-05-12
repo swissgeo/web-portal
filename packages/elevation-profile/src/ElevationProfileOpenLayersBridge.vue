@@ -31,8 +31,14 @@ let currentHoverPosOverlay: Overlay | undefined
 
 onMounted(() => {
     const markerElement = document.createElement('div')
-    markerElement.style.cssText =
-        'width:20px;height:20px;border-radius:50%;border:3px solid #dc2626;background:rgba(239,68,68,0.75);pointer-events:none;'
+    markerElement.style.cssText = [
+        'width:20px',
+        'height:20px',
+        'border-radius:50%',
+        'border:3px solid #dc2626',
+        'background:rgba(239,68,68,0.75)',
+        'pointer-events:none',
+    ].join(';')
     currentHoverPosOverlay = new Overlay({
         element: markerElement,
         positioning: 'center-center',
