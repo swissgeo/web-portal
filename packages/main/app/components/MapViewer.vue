@@ -44,8 +44,6 @@ const displayMode = inject<'web' | 'print'>('displayMode', 'web')
 
 <template>
     <ClientOnly>
-        <DrawingFeatureInfoWindow v-if="showAdditionalMapUi" />
-
         <SourceToMapDataConverter
             :source-bg-layer="backgroundLayer"
             :source-data="sourceLayers"
