@@ -1,0 +1,12 @@
+{
+    "$schema": "https://turborepo.dev/schema.json",
+    "extends": [
+        "//"
+    ],
+    "tasks": {
+        "dev": {
+            "persistent": true,
+            "cache": false
+        }
+    }
+}

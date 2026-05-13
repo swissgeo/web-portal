@@ -14,6 +14,7 @@
         "check": "pnpm run format && pnpm run lint && pnpm run type-check",
         "check:write": "pnpm run format:write && pnpm run lint:write && pnpm run type-check",
         "clean": "find packages -name 'dist' -type d -exec rm -rf {} + 2>/dev/null || true",
+        "clean:turbo": "find . -name '.turbo' -type d -exec rm -rf {} + 2>/dev/null || true",
         "dev": "pnpm --filter=main run dev",
         "docker:build": "VERSION=\"$(git describe --tags)\"; docker build --build-arg VERSION=${VERSION} --target ${TARGET}  -t web-portal:local-${USER}-${VERSION}${TAG_SUFFIX:-} .",
         "docker:build:dev": "TARGET=dev TAG_SUFFIX=-dev pnpm run docker:build",

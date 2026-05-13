@@ -1,28 +1,54 @@
 {
     "$schema": "https://turborepo.dev/schema.json",
+    "concurrency": "25",
     "tasks": {
         "build": {
-            "outputs": ["dist/**"],
-            "dependsOn": ["^build"]
+            "outputs": [
+                "dist/**"
+            ],
+            "dependsOn": [
+                "^build"
+            ]
         },
-        "build-libs": {
-            "outputs": ["dist/**"],
-            "dependsOn": ["^build-libs"]
+        "build:dev": {
+            "outputs": [
+                "dist/**"
+            ],
+            "dependsOn": [
+                "^build:dev"
+            ]
         },
-        "type-check": {
-            "dependsOn": ["build", "^type-check"]
+        "build:prod": {
+            "outputs": [
+                "dist/**"
+            ],
+            "dependsOn": [
+                "^build:prod"
+            ]
         },
-        "lint": {
-            "dependsOn": ["build", "^lint"]
-        },
-        "format": {
-            "dependsOn": ["build"]
-        },
-        "dev": {
+        "build:dev:watch": {
             "persistent": true,
             "cache": false
         },
+        "type-check": {
+            "dependsOn": [
+                "^build"
+            ]
+        },
+        "lint": {},
+        "format": {},
+        "dev": {
+            "cache": false
+        },
+        "test:unit": {
+            "dependsOn": [
+                "^build"
+            ]
+        },
         "test:integration": {
+            "cache": false
+        },
+        "test:integration:ci": {
             "cache": false
         }
     }
