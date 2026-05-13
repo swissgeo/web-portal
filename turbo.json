@@ -3,37 +3,23 @@
     "concurrency": "25",
     "tasks": {
         "build": {
-            "outputs": [
-                "dist/**"
-            ],
-            "dependsOn": [
-                "^build"
-            ]
+            "outputs": ["dist/**"],
+            "dependsOn": ["^build"]
         },
         "build:dev": {
-            "outputs": [
-                "dist/**"
-            ],
-            "dependsOn": [
-                "^build:dev"
-            ]
+            "outputs": ["dist/**"],
+            "dependsOn": ["^build:dev"]
         },
         "build:prod": {
-            "outputs": [
-                "dist/**"
-            ],
-            "dependsOn": [
-                "^build:prod"
-            ]
+            "outputs": ["dist/**"],
+            "dependsOn": ["^build:prod"]
         },
         "build:dev:watch": {
             "persistent": true,
             "cache": false
         },
         "type-check": {
-            "dependsOn": [
-                "^build"
-            ]
+            "dependsOn": ["^build"]
         },
         "lint": {},
         "format": {},
@@ -41,9 +27,7 @@
             "cache": false
         },
         "test:unit": {
-            "dependsOn": [
-                "^build"
-            ]
+            "dependsOn": ["^build"]
         },
         "test:integration": {
             "cache": false
