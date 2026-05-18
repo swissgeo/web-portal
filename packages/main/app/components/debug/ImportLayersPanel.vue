@@ -54,7 +54,7 @@ function addLayer(layer: string) {
         id: layer,
         links: [
             {
-                href: `/api/v1/layers/external/${encodedUrl.value}/${layer}`,
+                href: `/api/wpa/v1/layers/external/${encodedUrl.value}/${layer}`,
                 rel: 'distributions',
                 title: 'Distributions',
                 type: 'application/json',

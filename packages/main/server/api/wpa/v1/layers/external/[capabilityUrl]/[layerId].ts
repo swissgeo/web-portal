@@ -16,7 +16,7 @@ export default defineEventHandler((event) => {
 
     // Derive base URL from the incoming request so it works on any host/port
     const requestUrl = getRequestURL(event)
-    const serviceUrl = `${requestUrl.origin}/api/v1/layers/external/service/${capabilityUrlParam}`
+    const serviceUrl = `${requestUrl.origin}/api/wpa/v1/layers/external/service/${capabilityUrlParam}`
 
     // Determine protocol based on the capability URL
     let protocol = 'OGC:WMTS'

@@ -19,7 +19,7 @@ const documentId = computed<string>(() => {
 
 const { data } = await useFetch<Page>(
     // wrapping it in function to have it react to the documentId change
-    () => `/api/v1/content/page/${documentId.value}`
+    () => `/api/wpa/v1/content/page/${documentId.value}`
 )
 
 const containers = computed(() => {

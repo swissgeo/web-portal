@@ -46,7 +46,7 @@ export function useContextMenuPosition(
         data: w3wData,
         pending: w3wPending,
         execute: executeW3w,
-    } = useFetch('/api/v1/what3words/convert-to-3wa', {
+    } = useFetch('/api/wpa/v1/what3words/convert-to-3wa', {
         query: latLon,
         immediate: false,
         watch: false,
@@ -59,7 +59,7 @@ export function useContextMenuPosition(
         data: elevationData,
         pending: elevationPending,
         execute: executeElevation,
-    } = useFetch('/api/v1/elevation/height', {
+    } = useFetch('/api/wpa/v1/elevation/height', {
         query: latLon,
         immediate: false,
         watch: false,
