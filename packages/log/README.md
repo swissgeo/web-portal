@@ -30,13 +30,13 @@ npm install @swissgeo/log
 The default export is a `log` object that provides methods for different log levels.
 
 ```typescript
-import log from '@swissgeo/log'
+import log from "@swissgeo/log";
 
-log.error('This is an error message')
-log.warn('This is a warning')
+log.error("This is an error message");
+log.warn("This is a warning");
 
 // By default, info and debug levels are disabled
-log.info('This will not be shown by default')
+log.info("This will not be shown by default");
 ```
 
 ### Enabling Log Levels
@@ -44,17 +44,17 @@ log.info('This will not be shown by default')
 You can control which levels are displayed by modifying the `wantedLevels` array.
 
 ```typescript
-import log, { LogLevel } from '@swissgeo/log'
+import log, { LogLevel } from "@swissgeo/log";
 
 // Enable all log levels
 log.wantedLevels = [
   LogLevel.Error,
   LogLevel.Warn,
   LogLevel.Info,
-  LogLevel.Debug
-]
+  LogLevel.Debug,
+];
 
-log.info('Now this info message will be displayed')
+log.info("Now this info message will be displayed");
 ```
 
 ### Styled Logs with Titles
@@ -62,19 +62,19 @@ log.info('Now this info message will be displayed')
 You can provide an object to any log method to create a stylized title for your log message.
 
 ```typescript
-import log, { LogPreDefinedColor } from '@swissgeo/log'
+import log, { LogPreDefinedColor } from "@swissgeo/log";
 
 log.info({
-  title: 'API',
+  title: "API",
   titleColor: LogPreDefinedColor.Sky,
-  messages: ['Fetching data from server...', { url: '/api/data' }]
-})
+  messages: ["Fetching data from server...", { url: "/api/data" }],
+});
 
 log.warn({
-  title: 'DEPRECATED',
+  title: "DEPRECATED",
   titleColor: LogPreDefinedColor.Amber,
-  messages: ['This method will be removed in v2.0']
-})
+  messages: ["This method will be removed in v2.0"],
+});
 ```
 
 ### Using Message Classes
@@ -82,18 +82,17 @@ log.warn({
 The package also provides `Message`, `ErrorMessage`, and `WarningMessage` classes for structured data, to help their integration in translation tools such as `vue-i18n`.
 
 ```typescript
-import { Message, ErrorMessage } from '@swissgeo/log'
+import { Message, ErrorMessage } from "@swissgeo/log";
 
-const msg = new Message('translation.key', { count: 5 })
-const errorMsg = new ErrorMessage('error.occurred')
+const msg = new Message("translation.key", { count: 5 });
+const errorMsg = new ErrorMessage("error.occurred");
 
-console.log(msg.msg) // 'translation.key'
-console.log(msg.params) // { count: 5 }
+console.log(msg.msg); // 'translation.key'
+console.log(msg.params); // { count: 5 }
 
 // and can then be used as (in vue-i18n context)
-t(msg.msg, msg.params)
+t(msg.msg, msg.params);
 // translation exemple (using params to swap placeholders) => "There was an error with 5 problems"
-
 ```
 
 ## Available Colors
