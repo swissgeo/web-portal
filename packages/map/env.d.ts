@@ -4,7 +4,7 @@ declare global {
     }
 }
 
-const map = window.map || {}
+const swissgeoOlMap = window.swissgeoOlMap || {}
 
 declare module 'reproject' {
     import type { Geometry, FeatureCollection, GeoJsonProperties } from 'geojson'

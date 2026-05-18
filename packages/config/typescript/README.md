@@ -94,7 +94,6 @@ This package includes optional TypeScript definitions for common libraries:
 - `@types/lodash`
 - `@types/luxon`
 - `@types/node`
-- `@types/openlayers`
 - `@types/pako`
 
 Install only the type definitions you need for your project.

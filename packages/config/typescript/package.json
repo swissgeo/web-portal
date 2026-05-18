@@ -23,7 +23,6 @@
         "@types/lodash": "catalog:",
         "@types/luxon": "catalog:",
         "@types/node": "catalog:",
-        "@types/openlayers": "catalog:",
         "@types/pako": "catalog:"
     }
 }

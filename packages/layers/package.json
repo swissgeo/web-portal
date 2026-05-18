@@ -37,7 +37,6 @@
         "@swissgeo/config-eslint": "workspace:*",
         "@swissgeo/config-typescript": "workspace:*",
         "@types/lodash": "catalog:",
-        "@types/openlayers": "catalog:",
         "@vitejs/plugin-vue": "catalog:",
         "eslint": "catalog:",
         "ol": "catalog:",

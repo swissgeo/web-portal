@@ -93,9 +93,6 @@ catalogs:
     '@types/node':
       specifier: ^24.8.1
       version: 24.12.0
-    '@types/openlayers':
-      specifier: ^4.6.23
-      version: 4.6.23
     '@types/pako':
       specifier: ^2.0.4
       version: 2.0.4
@@ -509,9 +506,6 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.12.0
-      '@types/openlayers':
-        specifier: 'catalog:'
-        version: 4.6.23
       '@types/pako':
         specifier: 'catalog:'
         version: 2.0.4
@@ -693,9 +687,6 @@ importers:
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
-      '@types/openlayers':
-        specifier: 'catalog:'
-        version: 4.6.23
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.5(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
@@ -760,9 +751,6 @@ importers:
       '@types/lodash':
         specifier: 'catalog:'
         version: 4.17.23
-      '@types/openlayers':
-        specifier: 'catalog:'
-        version: 4.6.23
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.5(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
@@ -1081,9 +1069,6 @@ importers:
       '@types/geojson':
         specifier: 'catalog:'
         version: 7946.0.16
-      '@types/openlayers':
-        specifier: 'catalog:'
-        version: 4.6.23
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.5(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
@@ -1160,9 +1145,6 @@ importers:
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared
-      '@types/openlayers':
-        specifier: 'catalog:'
-        version: 4.6.23
       '@vueuse/core':
         specifier: 'catalog:'
         version: 14.2.1(vue@3.5.28(typescript@5.9.3))
@@ -1536,6 +1518,9 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.6.1)
+      ol:
+        specifier: 'catalog:'
+        version: 10.7.0
       prettier:
         specifier: 'catalog:'
         version: 3.8.1
@@ -4518,9 +4503,6 @@ packages:
 
   '@types/node@25.6.0':
     resolution: {integrity: sha512-+qIYRKdNYJwY3vRCZMdJbPLJAtGjQBudzZzdzwQYkEPQd+PJGixUL5QfvCLDaULoLv+RhT3LDkwEfKaAkgSmNQ==}
-
-  '@types/openlayers@4.6.23':
-    resolution: {integrity: sha512-7jCPIa4D4LV03Rttae1AEqvkIN0+nc6Snz4IgA/IjsJD5O3ONxpscqIOdp1qAGuAsikR/ZC9vrPF9np8JRc6ig==}
 
   '@types/pako@2.0.4':
     resolution: {integrity: sha512-VWDCbrLeVXJM9fihYodcLiIv0ku+AlOa/TQ1SvYOaBuyrSKgEcro95LJyIsJ4vSo6BXIxOKxiJAat04CmST9Fw==}
@@ -14272,8 +14254,6 @@ snapshots:
   '@types/node@25.6.0':
     dependencies:
       undici-types: 7.19.2
-
-  '@types/openlayers@4.6.23': {}
 
   '@types/pako@2.0.4':
     optional: true

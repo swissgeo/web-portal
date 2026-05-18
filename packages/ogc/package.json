@@ -29,7 +29,6 @@
         "@swissgeo/coordinates": "workspace:*",
         "@swissgeo/log": "workspace:*",
         "@swissgeo/shared": "workspace:*",
-        "@types/openlayers": "catalog:",
         "@vueuse/core": "catalog:",
         "ol": "catalog:",
         "proj4": "catalog:"
