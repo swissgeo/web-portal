@@ -21,16 +21,16 @@ Install all the dependencies:
 pnpm install
 ```
 
-Compile the sub-packages in watch mode:
+Compile the sub-packages in watch mode (terminal 1):
 
 ```sh
-pnpx turbo build:dev:watch
+pnpm turbo build:dev:watch
 ```
 
-Run the dev server for coding
+Run the dev server for coding (terminal 2):
 
 ```sh
-pnpx run dev
+pnpm run dev
 ```
 
 ## Environment Variables
@@ -104,7 +104,7 @@ The app will be available at `http://localhost:3000`.
 
 The repo makes use of [Turbo](https://turborepo.dev/), a supercharger for monorepos. Turbo caches the outcome of certain scripts and won't re-run it if its not needed.
 
-What you can do is, instead of just using `pnpm run build|lint|format|type-check` is to use `pnpx turbo build|lint|format|type-check`.
+What you can do is, instead of just using `pnpm run build|lint|format|type-check` is to use `pnpm turbo build|lint|format|type-check`.
 This will engage the wrapper and make use of these functionalities and speed up your workflow!
 
 ## Integration tests

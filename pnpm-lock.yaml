@@ -1035,9 +1035,6 @@ importers:
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared
-      '@swissgeo/skeleton':
-        specifier: workspace:*
-        version: link:../skeleton
       '@turf/turf':
         specifier: 'catalog:'
         version: 7.3.3
