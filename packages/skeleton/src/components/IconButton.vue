@@ -48,7 +48,6 @@ const buttonAttrs = computed(() => {
         }"
         :color="color"
         :variant="variant"
-        :data-testid="`button-icon-${icon}`"
         :icon="icon"
         v-bind="buttonAttrs"
     />

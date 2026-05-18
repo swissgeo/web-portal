@@ -31,7 +31,7 @@ function handleKeydown(event: KeyboardEvent) {
 
 <template>
     <ToolBoxButton
-        data-cy="fullscreen-toggle"
+        data-testid="fullscreen-toggle"
         title="Toggle full screen button"
         :is-disabled="false"
         :is-active="mapViewStore.isFullscreenModeActive"

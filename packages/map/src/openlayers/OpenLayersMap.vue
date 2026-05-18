@@ -65,7 +65,7 @@ createOlMap()
     <div
         ref="mapElement"
         class="ol-map h-full w-full"
-        data-cy="ol-map"
+        data-testid="ol-map"
     >
         <OpenLayersVisibleLayer
             :layer="layer"

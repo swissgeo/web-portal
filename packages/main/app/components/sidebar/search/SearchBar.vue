@@ -55,7 +55,7 @@ const onKeydown = (event: KeyboardEvent) => {
                 variant="outline"
                 class="w-full"
                 :ui="{ icon: { trailing: { pointer: '' } } }"
-                data-cy="searchbar"
+                data-testid="searchbar"
                 @input="onInput"
                 @keydown="onKeydown"
                 autofocus

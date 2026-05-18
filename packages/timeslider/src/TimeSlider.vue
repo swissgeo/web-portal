@@ -219,7 +219,7 @@ function handleKeyDownEvent(event: KeyboardEvent) {
 <template>
     <div
         ref="sliderContainer"
-        data-cy="time-slider"
+        data-testid="time-slider"
         class="rounded-lg border border-gray-200 bg-white px-2 py-2 shadow-lg"
         :class="{ grabbed: yearCursorIsGrabbed }"
     >

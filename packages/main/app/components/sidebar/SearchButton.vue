@@ -25,7 +25,7 @@ const toggleSearch = () => {
         <!-- :is-active="uiStore.isSearchVisible" -->
         <SidebarButton
             :is-active="uiStore.currentSidebar == 'search'"
-            data-cy="button-search-panel"
+            data-testid="button-search-panel"
             :title="$t('menu.search')"
             iconName="Search"
             @click="toggleSearch"

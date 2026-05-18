@@ -66,14 +66,14 @@ function onFileSelected(evt: Event): void {
                 type="file"
                 :accept="acceptedFileTypes.join(',')"
                 hidden
-                data-cy="file-input"
+                data-testid="file-input"
                 @change="onFileSelected"
             />
             <UButton
                 color="neutral"
                 variant="outline"
                 type="button"
-                data-cy="file-input-browse-button"
+                data-testid="file-input-browse-button"
                 :disabled="isLoading"
                 @click="inputLocalFile?.click()"
             >
@@ -86,7 +86,7 @@ function onFileSelected(evt: Event): void {
                 placeholder="No file selected"
                 readonly
                 tabindex="-1"
-                data-cy="file-input-text"
+                data-testid="file-input-text"
                 @click="inputLocalFile?.click()"
             />
             <IconButton

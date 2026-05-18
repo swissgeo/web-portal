@@ -63,7 +63,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgro
                 class="bg-round-btn cursor-pointer overflow-hidden rounded-full border-4 border-solid border-[#343a40]"
                 :class="{ active: isCurrent(backgroundLayer) }"
                 type="button"
-                :data-cy="layerKey(backgroundLayer)"
+                :data-testid="layerKey(backgroundLayer)"
                 @click="onSelectBackground(backgroundLayer)"
             >
                 <img
@@ -79,7 +79,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground, getImageForBackgro
             class="bg-round-btn bg-round-trigger cursor-pointer overflow-hidden rounded-full border-solid border-[#343a40]"
             :class="{ open: selectorOpen }"
             type="button"
-            data-cy="background-selector-trigger"
+            data-testid="background-selector-trigger"
             @click="toggleShowSelector"
         >
             <img

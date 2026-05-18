@@ -21,8 +21,11 @@ const {
         :href="sourceUrl"
         :target="sourceUrl ? '_blank' : null"
         class="map-footer-attribution-source clear-no-ios-long-press"
-        :class="{ 'text-primary': hasDataDisclaimer, 'is-link': sourceUrl || hasDataDisclaimer }"
-        :data-cy="`layer-copyright-${sourceName}`"
+        :class="{
+            'text-primary': hasDataDisclaimer,
+            'is-link': sourceUrl || hasDataDisclaimer,
+        }"
+        :data-testid="`layer-copyright-${sourceName}`"
     >
         {{ `${sourceName}${isLast ? '' : ','}` }}
     </component>

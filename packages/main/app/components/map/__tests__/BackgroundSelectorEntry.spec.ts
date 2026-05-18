@@ -20,19 +20,19 @@ mockNuxtImport('useI18n', () => {
 })
 
 describe('BackgroundSelectorEntry.vue', () => {
-    describe('data-cy attribute', () => {
+    describe('data-testid attribute', () => {
         it('is "void" for the void layer', () => {
             const wrapper = mount(BackgroundSelectorEntry, {
                 props: { backgroundLayer: voidLayer, isCurrent: false },
             })
-            expect(wrapper.find('button').attributes('data-cy')).toBe('void')
+            expect(wrapper.find('button').attributes('data-testid')).toBe('void')
         })
 
         it('is the layer uuid for a real layer', () => {
             const wrapper = mount(BackgroundSelectorEntry, {
                 props: { backgroundLayer: mockLayer, isCurrent: false },
             })
-            expect(wrapper.find('button').attributes('data-cy')).toBe('test-uuid')
+            expect(wrapper.find('button').attributes('data-testid')).toBe('test-uuid')
         })
     })
 

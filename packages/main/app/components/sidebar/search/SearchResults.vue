@@ -93,7 +93,7 @@ defineExpose({ focusFirstEntry })
     <!-- Results container -->
     <div
         class="flex-1 overflow-y-auto"
-        data-cy="search-results"
+        data-testid="search-results"
     >
         <SearchCategory
             v-for="(category, index) in categories"
@@ -102,7 +102,7 @@ defineExpose({ focusFirstEntry })
             ref="resultCategories"
             :title="t(`search.${category.id}_results_header`)"
             :results="category.results"
-            :data-cy="`search-results-${category.id}`"
+            :data-testid="`search-results-${category.id}`"
             @select="onEntrySelected"
             @first-entry-reached="onFirstEntryReached(index)"
             @last-entry-reached="onLastEntryReached(index)"

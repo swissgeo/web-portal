@@ -23,7 +23,7 @@ async function openDrawingPanel(page: Page) {
 }
 
 async function getMapBox(page: Page) {
-    const map = page.locator('[data-cy="ol-map"]')
+    const map = page.getByTestId('ol-map')
     const mapBox = await map.boundingBox()
     if (!mapBox) {
         throw new Error('Could not get map bounding box')
@@ -40,7 +40,9 @@ async function drawOnePoint(page: Page) {
     await expect(page.getByText(t.drawingInstructionPoint)).toBeVisible()
 
     const { map, mapBox } = await getMapBox(page)
-    await map.click({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.25 } })
+    await map.click({
+        position: { x: mapBox.width * 0.75, y: mapBox.height * 0.25 },
+    })
 }
 
 /**
@@ -51,7 +53,9 @@ async function drawOneText(page: Page) {
     await expect(page.getByText(t.drawingInstructionText)).toBeVisible()
 
     const { map, mapBox } = await getMapBox(page)
-    await map.click({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.25 } })
+    await map.click({
+        position: { x: mapBox.width * 0.75, y: mapBox.height * 0.25 },
+    })
 }
 
 /**
@@ -63,16 +67,22 @@ async function drawOneLine(page: Page) {
     await expect(page.getByText(t.drawingInstructionLine)).toBeVisible()
 
     const { map, mapBox } = await getMapBox(page)
-    await map.click({ position: { x: mapBox.width * 0.55, y: mapBox.height * 0.2 } })
-    await map.click({ position: { x: mapBox.width * 0.65, y: mapBox.height * 0.2 } })
-    await map.dblclick({ position: { x: mapBox.width * 0.75, y: mapBox.height * 0.2 } })
+    await map.click({
+        position: { x: mapBox.width * 0.55, y: mapBox.height * 0.2 },
+    })
+    await map.click({
+        position: { x: mapBox.width * 0.65, y: mapBox.height * 0.2 },
+    })
+    await map.dblclick({
+        position: { x: mapBox.width * 0.75, y: mapBox.height * 0.2 },
+    })
 }
 
 test.describe.skip('drawing panel', () => {
     test.beforeEach(async ({ page }) => {
         await mockExternalRequests(page)
         await page.goto('/en/map')
-        await expect(page.locator('[data-cy="ol-map"]')).toBeVisible({
+        await expect(page.locator('[data-testid="ol-map"]')).toBeVisible({
             timeout: HYDRATION_TIMEOUT,
         })
     })
@@ -160,10 +170,10 @@ test.describe.skip('drawing panel', () => {
     })
 
     test('hides the fullscreen button while the drawing panel is open', async ({ page }) => {
-        await expect(page.locator('[data-cy="fullscreen-toggle"]')).toBeVisible()
+        await expect(page.locator('[data-testid="fullscreen-toggle"]')).toBeVisible()
         await openDrawingPanel(page)
         await page.getByTestId('drawing-tool-point').click()
-        await expect(page.locator('[data-cy="fullscreen-toggle"]')).not.toBeVisible()
+        await expect(page.locator('[data-testid="fullscreen-toggle"]')).not.toBeVisible()
     })
 
     test('drawing a point on the map increases the feature count', async ({ page }) => {
@@ -224,35 +234,37 @@ test.describe.skip('import drawing files', () => {
     test.beforeEach(async ({ page }) => {
         await mockExternalRequests(page)
         await page.goto('/en/map')
-        await expect(page.locator('[data-cy="ol-map"]')).toBeVisible({
+        await expect(page.locator('[data-testid="ol-map"]')).toBeVisible({
             timeout: HYDRATION_TIMEOUT,
         })
     })
 
     test('imports a KML file and shows success message', async ({ page }) => {
         await page.getByRole('button', { name: t.openImportLocalLayersPanel }).click()
-        await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
+        await expect(page.locator('[data-testid="file-input-browse-button"]')).toBeVisible()
 
-        const fileInput = page.locator('[data-cy="file-input"]')
+        const fileInput = page.locator('[data-testid="file-input"]')
         await fileInput.setInputFiles(
             fileURLToPath(new URL('../fixtures/test-drawing.kml', import.meta.url))
         )
 
-        await expect(page.locator('[data-cy="file-input-text"]')).toHaveValue('test-drawing.kml')
+        await expect(page.locator('[data-testid="file-input-text"]')).toHaveValue(
+            'test-drawing.kml'
+        )
         await page.getByRole('button', { name: 'Import file' }).click()
         await expect(page.getByText(/Successfully imported test-drawing.kml/)).toBeVisible()
     })
 
     test('imports a GeoJSON file and shows success message', async ({ page }) => {
         await page.getByRole('button', { name: t.openImportLocalLayersPanel }).click()
-        await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
+        await expect(page.locator('[data-testid="file-input-browse-button"]')).toBeVisible()
 
-        const fileInput = page.locator('[data-cy="file-input"]')
+        const fileInput = page.locator('[data-testid="file-input"]')
         await fileInput.setInputFiles(
             fileURLToPath(new URL('../fixtures/test-drawing.geojson', import.meta.url))
         )
 
-        await expect(page.locator('[data-cy="file-input-text"]')).toHaveValue(
+        await expect(page.locator('[data-testid="file-input-text"]')).toHaveValue(
             'test-drawing.geojson'
         )
         await page.getByRole('button', { name: 'Import file' }).click()
@@ -261,9 +273,9 @@ test.describe.skip('import drawing files', () => {
 
     test('shows an error message when importing an unsupported file type', async ({ page }) => {
         await page.getByRole('button', { name: t.openImportLocalLayersPanel }).click()
-        await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
+        await expect(page.locator('[data-testid="file-input-browse-button"]')).toBeVisible()
 
-        const fileInput = page.locator('[data-cy="file-input"]')
+        const fileInput = page.locator('[data-testid="file-input"]')
         await fileInput.setInputFiles({
             name: 'test.txt',
             mimeType: 'text/plain',
@@ -276,7 +288,7 @@ test.describe.skip('import drawing files', () => {
 
     test('import button is disabled when no file is selected', async ({ page }) => {
         await page.getByRole('button', { name: t.openImportLocalLayersPanel }).click()
-        await expect(page.locator('[data-cy="file-input-browse-button"]')).toBeVisible()
+        await expect(page.locator('[data-testid="file-input-browse-button"]')).toBeVisible()
         await expect(page.getByRole('button', { name: 'Import file' })).toBeDisabled()
     })
 })

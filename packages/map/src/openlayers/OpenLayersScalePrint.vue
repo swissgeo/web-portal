@@ -67,7 +67,7 @@ watch(
         v-show="showScaleLine"
         ref="scaleLineElement"
         class="scale-line-container-print absolute bg-white"
-        data-cy="scaleline"
+        data-testid="scaleline"
         :style="{
             fontSize: fontSize,
         }"
