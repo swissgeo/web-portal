@@ -5,11 +5,11 @@ import proj4 from 'proj4'
 
 registerProj4(proj4)
 
-const ELEVATION_API_BASE_URL = 'https://api3.geo.admin.ch/rest/services'
 const LV95_EPSG = 'EPSG:2056'
 const WGS84_EPSG = 'EPSG:4326'
 
 export default defineEventHandler(async (event) => {
+    const config = useRuntimeConfig()
     const { lat, lon } = getQuery(event)
 
     if (!lat || !lon || typeof lat !== 'string' || typeof lon !== 'string') {
@@ -28,7 +28,10 @@ export default defineEventHandler(async (event) => {
     const [easting, northing] = proj4(WGS84_EPSG, LV95_EPSG, [lonNum, latNum])
 
     try {
-        const data = await $fetch<{ height: string }>(`${ELEVATION_API_BASE_URL}/height`, {
+        if (!config.geoadminApiBaseUrl) {
+            throw new Error('Geoadmin API base URL is not configured')
+        }
+        const data = await $fetch<{ height: string }>(`${config.geoadminApiBaseUrl}/height`, {
             query: { easting, northing },
         })
 
