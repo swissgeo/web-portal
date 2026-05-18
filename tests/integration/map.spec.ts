@@ -75,17 +75,17 @@ test.describe('map page', () => {
         await cleanupExternalRequestMocks(page)
     })
 
-    test.skip('renders the OpenLayers map canvas', async ({ page }) => {
+    test('renders the OpenLayers map canvas', async ({ page }) => {
         await expect(page.getByTestId('ol-map')).toBeVisible()
     })
 
-    test.skip('displays the toolbox with zoom controls', async ({ page }) => {
+    test('displays the toolbox with zoom controls', async ({ page }) => {
         await expect(page.getByTestId('toolbox-right')).toBeVisible()
         await expect(page.getByTestId('zoom-in')).toBeVisible()
         await expect(page.getByTestId('zoom-out')).toBeVisible()
     })
 
-    test.skip('displays the fullscreen button', async ({ page }) => {
+    test('displays the fullscreen button', async ({ page }) => {
         await expect(page.getByTestId('fullscreen-toggle')).toBeVisible()
     })
 
