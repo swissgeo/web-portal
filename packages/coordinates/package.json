@@ -22,6 +22,7 @@
         "build:dev:watch": "pnpm run build --watch --mode development",
         "build:int": "pnpm run build --mode integration",
         "build:prod": "pnpm run build --mode production",
+        "demo": "vite",
         "generate-types": "vue-tsc --declaration",
         "lint": "eslint",
         "lint:write": "eslint --fix",
