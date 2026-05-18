@@ -63,7 +63,7 @@ function chunkCoordinates(coordinates: Position[]): Position[][] {
 
 async function fetchProfileChunk(coordinates: Position[]): Promise<RawProfilePoint[]> {
     const config = useRuntimeConfig()
-    return $fetch<RawProfilePoint[]>(config.elevationProfileApiBaseUrl, {
+    return $fetch<RawProfilePoint[]>(`${config.geoadminApiBaseUrl}/profile.json`, {
         method: 'POST',
         query: { offset: 0, sr: 2056, distinct_points: true },
         body: { type: 'LineString', coordinates },
