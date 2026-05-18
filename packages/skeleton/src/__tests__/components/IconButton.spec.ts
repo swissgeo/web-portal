@@ -6,17 +6,18 @@ import IconButton from '@/components/IconButton.vue'
 describe('Functionality of buttons with a LucideIcon within', () => {
     const iconName = 'a-beAutifUl-cirCle'
     const expectedIcon = 'i-lucide-a-beautiful-circle'
-    const expectedTestId = `button-icon-${expectedIcon}`
+    const testId = `button-icon-${expectedIcon}`
 
     // ensuring icon name is handled correctly to produce an 'icon' property and the test id
     it.each`
-        description                                        | name         | icon            | testId
-        ${'ensure icon name is used correctly as an icon'} | ${iconName}  | ${expectedIcon} | ${expectedTestId}
-        ${'we can give an undefined icon name too'}        | ${undefined} | ${''}           | ${'button-icon-'}
-    `('$description', ({ _, name, icon, testId }) => {
+        description                                        | name         | icon
+        ${'ensure icon name is used correctly as an icon'} | ${iconName}  | ${expectedIcon}
+        ${'we can give an undefined icon name too'}        | ${undefined} | ${''}
+    `('$description', ({ _, name, icon }) => {
         const wrapper = mount(IconButton, {
             attrs: {
                 iconName: name,
+                'data-testid': testId,
             },
         })
         const iconButton = wrapper.find(`[data-testid="${testId}"`)
@@ -35,9 +36,10 @@ describe('Functionality of buttons with a LucideIcon within', () => {
             attrs: {
                 iconName,
                 text,
+                'data-testid': testId,
             },
         })
-        const iconButton = wrapper.find(`[data-testid="${expectedTestId}"`)
+        const iconButton = wrapper.find(`[data-testid="${testId}"`)
         expect(iconButton.exists()).toBe(true)
         expect(iconButton.attributes().icon).to.eql(expectedIcon)
         expect(iconButton.attributes().variant).to.eql(variant)
@@ -60,9 +62,10 @@ describe('Functionality of buttons with a LucideIcon within', () => {
             attrs: {
                 iconName,
                 severity,
+                'data-testid': testId,
             },
         })
-        const iconButton = wrapper.find(`[data-testid="${expectedTestId}"`)
+        const iconButton = wrapper.find(`[data-testid="${testId}"`)
         // we should find the button
         expect(iconButton.exists()).toBe(true)
         // color should be either the severity, or secondary by default
@@ -79,9 +82,10 @@ describe('Functionality of buttons with a LucideIcon within', () => {
             attrs: {
                 iconName,
                 customAttribute: customattribute,
+                'data-testid': testId,
             },
         })
-        const iconButton = wrapper.find(`[data-testid="${expectedTestId}"`)
+        const iconButton = wrapper.find(`[data-testid="${testId}"`)
         expect(iconButton.exists()).toBe(true)
         expect(iconButton.attributes().customattribute).to.eql(customattribute)
     })
@@ -95,10 +99,10 @@ describe('Functionality of buttons with a LucideIcon within', () => {
                 color: 'success',
                 variant: 'solid',
                 icon: 'i-lucide-not-the-good-one',
-                'data-testid': 'NOT GOOD EITHER',
+                'data-testid': testId,
             },
         })
-        const iconButton = wrapper.find(`[data-testid="${expectedTestId}"]`)
+        const iconButton = wrapper.find(`[data-testid="${testId}"]`)
         expect(iconButton.exists()).toBe(true)
         expect(iconButton.attributes().icon).to.eql(expectedIcon)
         expect(iconButton.attributes().variant).to.eql('ghost')

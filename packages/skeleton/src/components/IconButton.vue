@@ -33,7 +33,7 @@ const buttonAttrs = computed(() => {
     delete rest.icon
     delete rest.variant
     delete rest.color
-    delete rest['data-testid']
+
     return rest
 })
 //        v-bind="buttonAttrs"

@@ -19,6 +19,7 @@ const { title } = defineProps<{
         :disabled="isDisabled"
         size="xl"
         @click="emit('click')"
+        v-bind="$attrs"
     ></IconButton>
 </template>
 
