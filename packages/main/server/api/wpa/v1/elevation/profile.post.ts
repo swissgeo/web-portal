@@ -95,6 +95,7 @@ function computeMetadata(points: ElevationProfilePoint[]): ElevationProfileMetad
             slopeDistance: 0,
             hasElevationData,
             hasDistanceData,
+            dataModel: undefined,
         }
     }
 
@@ -132,6 +133,7 @@ function computeMetadata(points: ElevationProfilePoint[]): ElevationProfileMetad
         slopeDistance,
         hasElevationData,
         hasDistanceData,
+        dataModel: 'swissALTI3D/COMB',
     }
 }
 

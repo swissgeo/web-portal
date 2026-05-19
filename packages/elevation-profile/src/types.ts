@@ -15,6 +15,7 @@ export interface ElevationProfileMetadata {
     slopeDistance: number
     hasElevationData: boolean
     hasDistanceData: boolean
+    dataModel?: string
 }
 
 export interface ElevationProfileResponse {

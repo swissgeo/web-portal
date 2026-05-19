@@ -1,5 +1,7 @@
 import type { Plugin } from 'chart.js'
 
+import log from '@swissgeo/log'
+
 export interface DataModelPluginOptions {
     /**
      * Name of the data model that will be written in the top right corner of the chart. Defaults to
@@ -17,6 +19,9 @@ export interface DataModelPluginOptions {
 const dataModelPlugin: Plugin = {
     id: 'dataModel',
     afterDraw(chart, _, pluginOptions: DataModelPluginOptions) {
+        if (!pluginOptions.dataModelName) {
+            log.warn('No data model name provided for dataModelPlugin, using default value')
+        }
         const dataModelName: string = pluginOptions.dataModelName ?? 'swissALTI3D/DHM25'
         const { ctx, chartArea } = chart
         const { top = 0, width = 0, right = 0 } = chartArea ?? {}

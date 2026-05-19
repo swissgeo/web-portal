@@ -19,10 +19,7 @@ import { round } from '@swissgeo/numbers'
 import { resetZoom } from 'chartjs-plugin-zoom'
 import { computed, onMounted, onUnmounted, ref, toValue } from 'vue'
 
-import type {
-    ScreenPoint,
-    Labels,
-} from '@/components/ElevationProfilePlot.vue'
+import type { ScreenPoint, Labels } from '@/components/ElevationProfilePlot.vue'
 import type {
     ElevationProfileResponse,
     ElevationProfilePoint,
@@ -262,6 +259,7 @@ export function useElevationProfileChart(
                 legend: { display: false },
                 tooltip: chartJsTooltipConfiguration.value,
                 noData: { points: profilePoints.value, noDataText: profileLabels.value.noData },
+                dataModel: { dataModelName: profileMetadata.value.dataModel },
             } as ChartOptions<'line'>['plugins'],
             scales: chartJsScalesConfiguration.value,
             interaction: { mode: 'index', intersect: false },
