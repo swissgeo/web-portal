@@ -55,7 +55,7 @@ onBeforeUnmount(() => olMap.removeControl(scaleLine))
         ref="scaleLineElement"
         class="scale-line-container fixed bottom-4 left-20"
         :class="{ 'with-relative-size': withRelativeSize }"
-        data-cy="scaleline"
+        data-testid="scaleline"
     />
 </template>
 

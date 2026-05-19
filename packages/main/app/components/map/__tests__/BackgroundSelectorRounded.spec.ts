@@ -51,23 +51,23 @@ beforeEach(() => {
 describe('BackgroundSelectorRounded.vue', () => {
     it('always renders the trigger button', () => {
         const wrapper = mount(BackgroundSelectorRounded, { props: defaultProps })
-        expect(wrapper.find('[data-cy="background-selector-trigger"]').exists()).toBe(true)
+        expect(wrapper.find('[data-testid="background-selector-trigger"]').exists()).toBe(true)
     })
 
     it('shows no option buttons when the selector is closed', () => {
         mockSelectorOpen.value = false
         const wrapper = mount(BackgroundSelectorRounded, { props: defaultProps })
-        expect(wrapper.find('[data-cy="void"]').exists()).toBe(false)
-        expect(wrapper.find('[data-cy="uuid-grau"]').exists()).toBe(false)
-        expect(wrapper.find('[data-cy="uuid-farbe"]').exists()).toBe(false)
+        expect(wrapper.find('[data-testid="void"]').exists()).toBe(false)
+        expect(wrapper.find('[data-testid="uuid-grau"]').exists()).toBe(false)
+        expect(wrapper.find('[data-testid="uuid-farbe"]').exists()).toBe(false)
     })
 
     it('shows all option buttons when the selector is open', () => {
         mockSelectorOpen.value = true
         const wrapper = mount(BackgroundSelectorRounded, { props: defaultProps })
-        expect(wrapper.find('[data-cy="void"]').exists()).toBe(true)
-        expect(wrapper.find('[data-cy="uuid-grau"]').exists()).toBe(true)
-        expect(wrapper.find('[data-cy="uuid-farbe"]').exists()).toBe(true)
+        expect(wrapper.find('[data-testid="void"]').exists()).toBe(true)
+        expect(wrapper.find('[data-testid="uuid-grau"]').exists()).toBe(true)
+        expect(wrapper.find('[data-testid="uuid-farbe"]').exists()).toBe(true)
     })
 
     it('does not emit selectBackground when the current layer is re-selected', async () => {

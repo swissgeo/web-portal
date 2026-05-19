@@ -49,7 +49,7 @@ function mapBackgroundLayerToTranslationKey(layer: Layer | null): string {
         class="bg-entry relative cursor-pointer overflow-hidden rounded-lg border-4 border-solid border-[#343a40]"
         :class="{ active: isCurrent, folded }"
         type="button"
-        :data-cy="cyId"
+        :data-testid="cyId"
         @click="emit('click')"
     >
         <span class="bg-entry-image flex h-[65px] items-center justify-center overflow-hidden">

@@ -68,7 +68,9 @@ const inputYear = computed({
     },
 })
 
-const cursorArrowPosition = computed(() => ({ left: `${yearPositionOnSlider.value - 4.5}px` }))
+const cursorArrowPosition = computed(() => ({
+    left: `${yearPositionOnSlider.value - 4.5}px`,
+}))
 const distanceBetweenLabels = computed(() => sliderWidth.value / allYears.length)
 
 const yearsShownAsLabel = computed(() => {
@@ -164,17 +166,16 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
 <template>
     <div
         class="min-0 relative flex-1 overflow-visible bg-white pr-1 pl-12"
-        data-cy="time-slider-bar"
+        data-testid="time-slider-bar"
     >
         <div
             ref="yearCursor"
-            data-cy=""
             class="absolute top-2 flex h-[34px] gap-1 rounded border border-gray-200 py-1 select-none"
             :style="{ left: cursorPosition }"
         >
             <div
                 class="border-right flex cursor-pointer items-center border-gray-200"
-                data-cy="time-slider-bar-cursor-grab"
+                data-testid="time-slider-bar-cursor-grab"
                 @touchstart.passive="grabCursor"
                 @mousedown.passive="grabCursor"
             >
@@ -192,7 +193,7 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
                     v-model="inputYear"
                     class="w-11 px-0 py-0 text-center outline-none"
                     :class="{ 'is-invalid': !isInputYearValid }"
-                    data-cy="time-slider-bar-cursor-year"
+                    data-testid="time-slider-bar-cursor-year"
                     maxlength="4"
                     type="text"
                     @keydown="
@@ -217,7 +218,7 @@ const sliderWidth = computed(() => containerWidth - padding - PLAY_BUTTON_SIZE -
             </div>
         </div>
         <div
-            data-cy="time-slider-bar-cursor-arrow"
+            data-testid="time-slider-bar-cursor-arrow"
             class="arrow"
             :style="cursorArrowPosition"
         />

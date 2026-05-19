@@ -92,7 +92,7 @@ function setDisplayedFormatWithId(): void {
         <select
             v-model="displayedFormatId"
             class="map-projection form-control-xs"
-            data-cy="mouse-position-select"
+            data-testid="mouse-position-select"
             @change="setDisplayedFormatWithId"
         >
             <option
@@ -106,7 +106,7 @@ function setDisplayedFormatWithId(): void {
         <div
             ref="mousePosition"
             class="mouse-position"
-            data-cy="mouse-position"
+            data-testid="mouse-position"
         />
     </div>
 </template>

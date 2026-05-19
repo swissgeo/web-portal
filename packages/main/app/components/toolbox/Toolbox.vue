@@ -48,7 +48,7 @@ watch(showTimeSliderButton, (hasTimeLayers) => {
 <template>
     <div
         class="toolbox-right absolute top-[1rem] right-[1rem] w-[40px] space-y-1"
-        data-cy="toolbox-right"
+        data-testid="toolbox-right"
     >
         <FullScreenButton v-if="showFullScreeButton" />
         <GeolocButton v-if="showGelocationButton" />

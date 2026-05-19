@@ -6,7 +6,7 @@ test.describe('sidebar', () => {
     test.beforeEach(async ({ page }) => {
         await mockExternalRequests(page).mockAll()
         await page.goto('/de/map')
-        await expect(page.locator('[data-cy="ol-map"]')).toBeVisible({
+        await expect(page.getByTestId('ol-map')).toBeVisible({
             timeout: HYDRATION_TIMEOUT,
         })
     })

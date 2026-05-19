@@ -19,15 +19,15 @@ describe('AttributionList.vue', () => {
 
         const wrapper = mount(AttributionList, { props: { sources } })
 
-        expect(wrapper.find('[data-cy="layers-copyrights"]').exists()).toBe(true)
-        expect(wrapper.find('[data-cy="layer-copyright-Source A"]').exists()).toBe(true)
-        expect(wrapper.find('[data-cy="layer-copyright-Source B"]').exists()).toBe(true)
+        expect(wrapper.find('[data-testid="layers-copyrights"]').exists()).toBe(true)
+        expect(wrapper.find('[data-testid="layer-copyright-Source A"]').exists()).toBe(true)
+        expect(wrapper.find('[data-testid="layer-copyright-Source B"]').exists()).toBe(true)
     })
 
     it('renders nothing when sources is empty', () => {
         const wrapper = mount(AttributionList, { props: { sources: [] } })
 
-        expect(wrapper.find('[data-cy="layers-copyrights"]').exists()).toBe(false)
+        expect(wrapper.find('[data-testid="layers-copyrights"]').exists()).toBe(false)
     })
 
     it('renders last item without trailing comma', () => {
@@ -38,7 +38,7 @@ describe('AttributionList.vue', () => {
 
         const wrapper = mount(AttributionList, { props: { sources } })
 
-        const items = wrapper.findAll('[data-cy^="layer-copyright-"]')
+        const items = wrapper.findAll('[data-testid^="layer-copyright-"]')
         expect(items[0]!.text()).toContain(',')
         expect(items[1]!.text()).not.toContain(',')
     })

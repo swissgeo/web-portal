@@ -32,7 +32,11 @@ test.describe('map page', () => {
 
         await page.route(
             'http://mock-oar.org/api/oar/v0/collections/ch.swisstopo.pixelkarte-farbe*',
-            (route) => route.fulfill({ status: 200, json: ChSwisstopoPixelkarteFarbeDistribution })
+            (route) =>
+                route.fulfill({
+                    status: 200,
+                    json: ChSwisstopoPixelkarteFarbeDistribution,
+                })
         )
 
         // we let all the backgrounds to return the data for pixelkarte-farbe
@@ -62,7 +66,7 @@ test.describe('map page', () => {
         await mockBackgroundRoutes(page)
 
         await page.goto('/de/map')
-        await expect(page.locator('[data-cy="ol-map"]')).toBeVisible({
+        await expect(page.getByTestId('ol-map')).toBeVisible({
             timeout: HYDRATION_TIMEOUT,
         })
     })
@@ -72,17 +76,17 @@ test.describe('map page', () => {
     })
 
     test.skip('renders the OpenLayers map canvas', async ({ page }) => {
-        await expect(page.locator('[data-cy="ol-map"]')).toBeVisible()
+        await expect(page.getByTestId('ol-map')).toBeVisible()
     })
 
     test.skip('displays the toolbox with zoom controls', async ({ page }) => {
-        await expect(page.locator('[data-cy="toolbox-right"]')).toBeVisible()
-        await expect(page.locator('[data-cy="zoom-in"]')).toBeVisible()
-        await expect(page.locator('[data-cy="zoom-out"]')).toBeVisible()
+        await expect(page.getByTestId('toolbox-right')).toBeVisible()
+        await expect(page.getByTestId('zoom-in')).toBeVisible()
+        await expect(page.getByTestId('zoom-out')).toBeVisible()
     })
 
     test.skip('displays the fullscreen button', async ({ page }) => {
-        await expect(page.locator('[data-cy="fullscreen-toggle"]')).toBeVisible()
+        await expect(page.getByTestId('fullscreen-toggle')).toBeVisible()
     })
 
     test('displays the map with the defaults', async ({ page }) => {

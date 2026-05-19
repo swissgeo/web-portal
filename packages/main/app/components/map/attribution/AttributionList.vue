@@ -14,7 +14,7 @@ const { t } = useI18n()
     <div
         v-if="sources.length > 0"
         class="fixed bottom-12 left-20 z-1000 max-w-50 bg-white px-1 text-sm text-black"
-        data-cy="layers-copyrights"
+        data-testid="layers-copyrights"
     >
         <span>{{ t('footer.copyRightData') }}</span>
         <span

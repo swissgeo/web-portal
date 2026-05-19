@@ -24,7 +24,7 @@ const toggle = () => {
         <!-- :is-active="uiStore.isSearchVisible" -->
         <SidebarButton
             :is-active="uiStore.currentSidebar == 'layerCart'"
-            data-cy="button-search-panel"
+            data-testid="button-search-panel"
             :title="$t('menu.layerCart')"
             iconName="Map"
             @click="toggle"
