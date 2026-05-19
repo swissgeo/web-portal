@@ -17,14 +17,12 @@ const currentLayerType: Ref<string | null> = ref(null)
 
 const encodedUrl = computed(() => encodeURIComponent(importUrl.value))
 
-async function doIt() {
+async function loadCapabilities() {
     if (importUrl.value.toLowerCase().includes('wmts')) {
-        // do wmts
         const data = await $fetch<string>(importUrl.value)
         extractWmtsLayers(data)
         currentLayerType.value = 'wmts'
     } else if (importUrl.value.toLowerCase().includes('wms')) {
-        // do wms
         const data = await $fetch<string>(importUrl.value)
         extractWmsLayers(data)
         currentLayerType.value = 'wms'
@@ -47,6 +45,19 @@ function extractWmsLayers(capaData: string) {
     layers.value = layerList.map((layer: { Name: string }) => layer.Name)
 }
 
+/**
+ * Build a synthetic OGC `Dataset` for a layer harvested from a raw WMS/WMTS
+ * `GetCapabilities` document and push it through the normal layer pipeline.
+ *
+ * The rest of the app treats every layer as an OGC API record (with `self` and
+ * `distributions` links). Externally-imported WMS/WMTS layers have no such
+ * record, so we fabricate one whose links point at our own
+ * `/api/wpa/v1/layers/external/...` endpoints, which then serve a synthesised
+ * Dataset / Distribution collection that mimics the real OGC API shape.
+ *
+ * This is a deliberate hack: it lets one converter pipeline handle both
+ * internal and external layers. See `datamapping/README.md` for context.
+ */
 function addLayer(layer: string) {
     const capaUrl = new URL(importUrl.value)
 
@@ -86,10 +97,10 @@ function addLayer(layer: string) {
                 v-model="importUrl"
                 class="w-full border border-gray-200 px-2 py-1"
                 placeholder="Capability URL"
-                @keydown.enter="doIt"
+                @keydown.enter="loadCapabilities"
             />
             <IconButton
-                @click="doIt"
+                @click="loadCapabilities"
                 iconName="Send"
             ></IconButton>
             <IconButton

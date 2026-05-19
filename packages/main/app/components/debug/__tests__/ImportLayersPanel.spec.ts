@@ -39,7 +39,7 @@ mockNuxtImport('useRequestURL', () => () => new URL('http://localhost:3000/'))
 interface PanelVm {
     importUrl: string
     layers: string[]
-    doIt: () => Promise<void>
+    loadCapabilities: () => Promise<void>
     addLayer: (_layer: string) => void
 }
 
@@ -49,7 +49,7 @@ describe('ImportLayersPanel.vue', () => {
         const vm = wrapper.vm as unknown as PanelVm
         vm.importUrl = 'https://wmts.example.com/1.0.0/WMTSCapabilities.xml'
 
-        await vm.doIt()
+        await vm.loadCapabilities()
 
         expect(fetchSpy).toHaveBeenCalledWith(vm.importUrl)
         expect(vm.layers).toEqual(['layer-a', 'layer-b'])
@@ -60,7 +60,7 @@ describe('ImportLayersPanel.vue', () => {
         const vm = wrapper.vm as unknown as PanelVm
         vm.importUrl = 'https://wmts.example.com/1.0.0/WMTSCapabilities.xml'
 
-        await vm.doIt()
+        await vm.loadCapabilities()
         addLayerSpy.mockClear()
         makeServerLayerSpy.mockClear()
 
@@ -72,10 +72,14 @@ describe('ImportLayersPanel.vue', () => {
 
         const expectedEncoded = encodeURIComponent(vm.importUrl)
         const selfLink = links.find((l) => l.rel === 'self')
-        expect(selfLink?.href).toBe(`/api/v1/layers/external/dataset/${expectedEncoded}/layer-a`)
+        expect(selfLink?.href).toBe(
+            `/api/wpa/v1/layers/external/dataset/${expectedEncoded}/layer-a`
+        )
 
         const distributionsLink = links.find((l) => l.rel === 'distributions')
-        expect(distributionsLink?.href).toBe(`/api/v1/layers/external/${expectedEncoded}/layer-a`)
+        expect(distributionsLink?.href).toBe(
+            `/api/wpa/v1/layers/external/${expectedEncoded}/layer-a`
+        )
 
         expect(dataset.id).toBe('layer-a')
         expect(dataset.properties.title).toBe('layer-a on wmts.example.com')
