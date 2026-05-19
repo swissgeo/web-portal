@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const routerParams: Record<string, string | undefined> = {}
-let requestUrl = new URL('http://localhost:3000/api/v1/layers/external/dataset/x/y')
+let requestUrl = new URL('http://localhost:3000/api/wpa/v1/layers/external/dataset/x/y')
 let query: Record<string, string | undefined> = {}
 
 ;(globalThis as Record<string, unknown>).defineEventHandler = (fn: (_event: unknown) => unknown) =>
@@ -49,14 +49,14 @@ afterEach(() => {
     vi.restoreAllMocks()
 })
 
-describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => {
+describe('GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => {
     it('extracts the title from a WMTS capabilities document', async () => {
         const capabilityUrl = 'https://wmts.example.com/1.0.0/WMTSCapabilities.xml'
         const encoded = encodeURIComponent(capabilityUrl)
         routerParams.capabilityUrl = encoded
         routerParams.layerId = 'my-layer'
         requestUrl = new URL(
-            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
+            `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer`
         )
 
         mockFetchOnce(`<?xml version="1.0" encoding="UTF-8"?>
@@ -86,7 +86,7 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
         routerParams.capabilityUrl = encoded
         routerParams.layerId = 'my-layer'
         requestUrl = new URL(
-            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
+            `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer`
         )
 
         mockFetchOnce(`<?xml version="1.0"?>
@@ -106,29 +106,27 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
         expect(result.properties.title).toBe('WMS Real Title')
     })
 
-    it('falls back to a synthetic title when the capabilities fetch fails', async () => {
+    it('throws when the capabilities fetch fails', async () => {
         const capabilityUrl = 'https://wms.example.com/?SERVICE=WMS'
         const encoded = encodeURIComponent(capabilityUrl)
         routerParams.capabilityUrl = encoded
         routerParams.layerId = 'my-layer'
         requestUrl = new URL(
-            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
+            `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer`
         )
 
         vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network down')))
 
-        const result = (await handler({})) as DatasetResponse
-
-        expect(result.properties.title).toBe('my-layer on wms.example.com')
+        await expect(handler({})).rejects.toThrow(/network down/)
     })
 
-    it('falls back to a synthetic title when the layer is not found in capabilities', async () => {
+    it('throws when the layer is not found in capabilities', async () => {
         const capabilityUrl = 'https://wmts.example.com/1.0.0/WMTSCapabilities.xml'
         const encoded = encodeURIComponent(capabilityUrl)
         routerParams.capabilityUrl = encoded
         routerParams.layerId = 'missing-layer'
         requestUrl = new URL(
-            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/missing-layer`
+            `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/missing-layer`
         )
 
         mockFetchOnce(`<?xml version="1.0" encoding="UTF-8"?>
@@ -142,9 +140,18 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
                 </Contents>
             </Capabilities>`)
 
-        const result = (await handler({})) as DatasetResponse
+        await expect(handler({})).rejects.toThrow(/not found in capabilities/)
+    })
 
-        expect(result.properties.title).toBe('missing-layer on wmts.example.com')
+    it('throws when the capabilities document has an unrecognised root', async () => {
+        const capabilityUrl = 'https://example.com/weird.xml'
+        const encoded = encodeURIComponent(capabilityUrl)
+        routerParams.capabilityUrl = encoded
+        routerParams.layerId = 'my-layer'
+
+        mockFetchOnce(`<?xml version="1.0"?><NotCapabilities/>`)
+
+        await expect(handler({})).rejects.toThrow(/Unrecognised capabilities root/)
     })
 
     it('returns the correct self and distributions links', async () => {
@@ -153,18 +160,28 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
         routerParams.capabilityUrl = encoded
         routerParams.layerId = 'my-layer'
         requestUrl = new URL(
-            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer`
+            `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer`
         )
 
-        vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('skip parsing')))
+        mockFetchOnce(`<?xml version="1.0"?>
+            <WMS_Capabilities xmlns="http://www.opengis.net/wms">
+                <Capability>
+                    <Layer>
+                        <Layer>
+                            <Name>my-layer</Name>
+                            <Title>WMS Title</Title>
+                        </Layer>
+                    </Layer>
+                </Capability>
+            </WMS_Capabilities>`)
 
         const result = (await handler({})) as DatasetResponse
 
         const selfLink = result.links.find((l) => l.rel === 'self')
-        expect(selfLink?.href).toBe(`/api/v1/layers/external/dataset/${encoded}/my-layer`)
+        expect(selfLink?.href).toBe(`/api/wpa/v1/layers/external/dataset/${encoded}/my-layer`)
 
         const distributionsLink = result.links.find((l) => l.rel === 'distributions')
-        expect(distributionsLink?.href).toBe(`/api/v1/layers/external/${encoded}/my-layer`)
+        expect(distributionsLink?.href).toBe(`/api/wpa/v1/layers/external/${encoded}/my-layer`)
         expect(distributionsLink?.type).toBe('application/json')
     })
 
@@ -175,7 +192,7 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
         routerParams.layerId = 'my-layer'
         query = { language: 'fr' }
         requestUrl = new URL(
-            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer?language=fr`
+            `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer?language=fr`
         )
 
         const fetchMock = mockFetchOnce(`<?xml version="1.0" encoding="UTF-8"?>
@@ -205,7 +222,7 @@ describe('GET /api/v1/layers/external/dataset/[capabilityUrl]/[layerId]', () => 
         routerParams.layerId = 'my-layer'
         query = { language: 'de' }
         requestUrl = new URL(
-            `http://localhost:3000/api/v1/layers/external/dataset/${encoded}/my-layer?language=de`
+            `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer?language=de`
         )
 
         const fetchMock = mockFetchOnce(`<?xml version="1.0"?>
