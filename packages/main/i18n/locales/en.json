@@ -173,5 +173,23 @@
         "showOnMap": "Show on map",
         "backToMap": "Back to map",
         "addToMapError": "Failed to add layer to map"
+    },
+    "elevationProfile": {
+        "windowTitle": "Elevation Profile",
+        "plot": {
+            "xAxis": "Distance",
+            "yAxis": "Elevation",
+            "noData": "No elevation data available"
+        },
+        "metadata": {
+            "elevationDifference": "Difference of altitude start-end",
+            "elevationUp": "Ascent",
+            "elevationDown": "Descent",
+            "poiUp": "Highest point",
+            "poiDown": "Lowest point",
+            "distance": "Linear distance",
+            "slopeDistance": "Path distance"
+        },
+        "fetchError": "Could not retrieve elevation profile"
     }
 }

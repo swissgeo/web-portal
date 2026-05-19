@@ -1296,6 +1296,12 @@ export function useOlDrawing(
 
             drawingStore.ensureFeatureAttributes(event.feature)
 
+            if (type === 'Measurement') {
+                const payload = toFeatureInfoPayload(event.feature, [])
+                drawingStore.setSelectedFeatureId(payload.featureId)
+                drawingStore.setSelectedFeatureInfo(payload)
+            }
+
             // Notify that a feature was added (for UI updates like feature count)
             // No expensive KML conversion here - that happens only when closing the panel
             if (onFeatureAdded) {
