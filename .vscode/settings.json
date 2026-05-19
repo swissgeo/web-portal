@@ -1,12 +1,11 @@
 {
-    "typescript.preferences.importModuleSpecifier": "relative",
+    "js/ts.preferences.importModuleSpecifier": "relative",
     "eslint.workingDirectories": [{ "pattern": "./packages/*/" }],
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[xml]": {
-        "editor.defaultFormatter": "mikeburgh.xml-format"
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "stylelint.validate": ["css", "scss", "less", "postcss", "vue"],
     "[vue]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true
