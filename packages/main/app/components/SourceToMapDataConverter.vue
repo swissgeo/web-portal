@@ -27,11 +27,11 @@ function updateMapLayerData(index: number, mapLayerData: MapLayer) {
 
     mapViewStore.updateLayerData(index, mapLayerData, true)
 }
-function updateLayerInfo(_index: number, uuid: string, info: LayerInfo) {
+function updateLayerInfo(uuid: string, info: LayerInfo) {
     layerStore.setLayerInfo(uuid, info)
 }
 
-function updateStoreLayerData(_index: number, uuid: string, dataset: Dataset) {
+function updateStoreLayerData(uuid: string, dataset: Dataset) {
     layerStore.setLayerData(uuid, dataset)
 }
 
@@ -51,7 +51,6 @@ function updateOpacity(identifier: number | string, opacity: number) {
         <MapDatamappingOgcDatasetConverter
             v-if="isDatasetLayer(data)"
             :layer="data"
-            :zIndex="index"
             @update="updateMapLayerData(index, $event)"
             @updateOpacity="updateOpacity"
             @updateTimeDimension="updateTimeDimension"
@@ -61,7 +60,6 @@ function updateOpacity(identifier: number | string, opacity: number) {
         <MapDatamappingFileConverter
             v-else
             :layer="data"
-            :zIndex="index"
             @update="updateMapLayerData(index, $event)"
         />
     </div>

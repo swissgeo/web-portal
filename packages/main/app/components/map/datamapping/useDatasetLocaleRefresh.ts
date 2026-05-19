@@ -21,7 +21,9 @@ export default function useDatasetLocaleRefresh(
     const selfLink = layer.data.links?.find((link: Link) => link.rel === 'self')
 
     if (!selfLink?.href) {
-        return { newUrlString: computed(() => null) }
+        throw new Error(
+            `Dataset "${layer.humanId}" has no "self" link; cannot refresh on locale change`
+        )
     }
 
     const selfHref = selfLink.href

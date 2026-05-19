@@ -26,9 +26,8 @@ import type { WMSLayerData } from './useOgcWmsData'
 import useDatasetLocaleRefresh from './useDatasetLocaleRefresh'
 import { useGenericOgcData } from './useGenericOgcData'
 
-const { layer, zIndex } = defineProps<{
+const { layer } = defineProps<{
     layer: DatasetLayer
-    zIndex: number
 }>()
 
 const emit = defineEmits<{
@@ -36,18 +35,26 @@ const emit = defineEmits<{
     updateTimeDimension: [layerUuid: string, dimension: Partial<Dimension>]
     updateOpacity: [layerUuid: string, opacity: number]
     remove: [void]
-    updateDataset: [index: number, layerUuid: string, dataset: Dataset]
-    updateLayerInfo: [index: number, layerUuid: string, info: LayerInfo]
+    updateDataset: [layerUuid: string, dataset: Dataset]
+    updateLayerInfo: [layerUuid: string, info: LayerInfo]
 }>()
 
 const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(computed(() => layer))
 
-// Registering composable that will ensure that a dataset is refreshed when the locale changes
-useDatasetLocaleRefresh(
-    layer,
-    (...args) => emit('updateDataset', zIndex, ...args),
-    (...args) => emit('updateLayerInfo', zIndex, ...args)
-)
+// Registering composable that will ensure that a dataset is refreshed when the locale changes.
+// useDatasetLocaleRefresh throws if the dataset has no "self" link (e.g. a malformed OGC record);
+// catch it here so a single broken layer cannot abort the whole converter setup, and surface it
+// to the user via a toast.
+try {
+    useDatasetLocaleRefresh(
+        layer,
+        (...args) => emit('updateDataset', ...args),
+        (...args) => emit('updateLayerInfo', ...args)
+    )
+} catch (error) {
+    const toaster = useToaster()
+    toaster.showError(error instanceof Error ? error.message : String(error))
+}
 
 // holds the data that's specific for the layers from the sub mappers
 const layerSpecificData = ref()

@@ -66,18 +66,13 @@ describe('useDatasetRefresh', () => {
         },
     }
 
-    it('does nothing when the dataset has no self link (e.g. external imported layers)', async () => {
+    it('throws when the dataset has no self link', () => {
         const updateCallback = vi.fn()
         const updateInfoCallback = vi.fn()
-        const { newUrlString } = useDatasetLocaleRefresh(
-            layerWithoutSelfLink,
-            updateCallback,
-            updateInfoCallback
-        )
 
-        await flushPromises()
-
-        expect(newUrlString.value).toBeNull()
+        expect(() =>
+            useDatasetLocaleRefresh(layerWithoutSelfLink, updateCallback, updateInfoCallback)
+        ).toThrow(/no "self" link/)
         expect(updateCallback).not.toHaveBeenCalled()
         expect(updateInfoCallback).not.toHaveBeenCalled()
     })
@@ -117,7 +112,7 @@ describe('useDatasetRefresh', () => {
                 links: [
                     {
                         rel: 'self',
-                        href: '/api/v1/layers/external/dataset/abc/my-layer',
+                        href: '/api/wpa/v1/layers/external/dataset/abc/my-layer',
                     },
                 ],
                 id: 'imported-layer',
@@ -131,7 +126,7 @@ describe('useDatasetRefresh', () => {
         locale.value = 'fr'
         await flushPromises()
         expect(newUrlString.value).toEqual(
-            'http://localhost:3000/api/v1/layers/external/dataset/abc/my-layer?language=fr'
+            'http://localhost:3000/api/wpa/v1/layers/external/dataset/abc/my-layer?language=fr'
         )
     })
 
