@@ -25,6 +25,8 @@
         "build:dev:watch": "pnpm run build --watch --mode development",
         "build:int": "pnpm run build --mode integration",
         "build:prod": "pnpm run build --mode production",
+        "format": "prettier --check --ignore-path ../../.prettierignore --config ../../prettier.config.ts .",
+        "format:write": "prettier --write --ignore-path ../../.prettierignore --config ../../prettier.config.ts .",
         "generate-types": "tsc --declaration",
         "lint": "eslint",
         "lint:write": "eslint --fix",

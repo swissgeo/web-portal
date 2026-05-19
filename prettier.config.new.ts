@@ -1,4 +1,4 @@
-import defineConfig from '@swissgeo/config-prettier-old'
+import defineConfig from '@swissgeo/config-prettier'
 
 const config = defineConfig(
     '@prettier/plugin-xml',

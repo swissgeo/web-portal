@@ -110,17 +110,24 @@ export function getExtentIntersectionWithCurrentProjection(
             currentProjectionAsExtentProjection
         )
     }
-    let intersectionOfExtents = bbox(bboxClip(bboxPolygon(currentProjectionAsExtentProjection), flattenExtent(extent)))
+    let intersectionOfExtents = bbox(
+        bboxClip(bboxPolygon(currentProjectionAsExtentProjection), flattenExtent(extent))
+    )
 
     if (
-        !intersectionOfExtents || intersectionOfExtents.length !== 4 ||
+        !intersectionOfExtents ||
+        intersectionOfExtents.length !== 4 ||
         intersectionOfExtents.every((value) => Math.abs(value) === Infinity)
     ) {
         return undefined
     }
     if (extentProjection.epsg !== currentProjection.epsg) {
         // if we transformed the current projection extent above, we now need to output the correct proj
-        intersectionOfExtents = projExtent(extentProjection, currentProjection, intersectionOfExtents)
+        intersectionOfExtents = projExtent(
+            extentProjection,
+            currentProjection,
+            intersectionOfExtents
+        )
     }
 
     return intersectionOfExtents

@@ -1,28 +1,6 @@
 import type { Config } from 'prettier'
 
-const defaultConfig: Config = {
-    printWidth: 100,
-    singleQuote: true,
-    singleAttributePerLine: true,
-    semi: false,
-    trailingComma: 'es5',
-    tabWidth: 4,
-    jsxSingleQuote: false,
-    overrides: [
-        {
-            files: '*.md',
-            options: {
-                tabWidth: 2,
-            },
-        },
-        {
-            files: '*.yml',
-            options: {
-                tabWidth: 2,
-            },
-        },
-    ],
-}
+const defaultConfig: Config = {}
 
 type AvailablePlugins =
     | '@prettier/plugin-xml'
