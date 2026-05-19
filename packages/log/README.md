@@ -47,12 +47,7 @@ You can control which levels are displayed by modifying the `wantedLevels` array
 import log, { LogLevel } from '@swissgeo/log'
 
 // Enable all log levels
-log.wantedLevels = [
-  LogLevel.Error,
-  LogLevel.Warn,
-  LogLevel.Info,
-  LogLevel.Debug
-]
+log.wantedLevels = [LogLevel.Error, LogLevel.Warn, LogLevel.Info, LogLevel.Debug]
 
 log.info('Now this info message will be displayed')
 ```
@@ -67,13 +62,13 @@ import log, { LogPreDefinedColor } from '@swissgeo/log'
 log.info({
   title: 'API',
   titleColor: LogPreDefinedColor.Sky,
-  messages: ['Fetching data from server...', { url: '/api/data' }]
+  messages: ['Fetching data from server...', { url: '/api/data' }],
 })
 
 log.warn({
   title: 'DEPRECATED',
   titleColor: LogPreDefinedColor.Amber,
-  messages: ['This method will be removed in v2.0']
+  messages: ['This method will be removed in v2.0'],
 })
 ```
 
@@ -93,7 +88,6 @@ console.log(msg.params) // { count: 5 }
 // and can then be used as (in vue-i18n context)
 t(msg.msg, msg.params)
 // translation exemple (using params to swap placeholders) => "There was an error with 5 problems"
-
 ```
 
 ## Available Colors
