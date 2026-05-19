@@ -63,7 +63,7 @@ const metadataEntries = computed(() => {
         <div
             v-if="metadata.hasElevationData"
             class="flex gap-2 overflow-x-auto rounded border border-neutral-300 p-1 py-2 md:p-2 md:py-3"
-            data-cy="profile-popup-info-container"
+            data-testid="profile-popup-info-container"
         >
             <UTooltip
                 v-for="(data, index) in metadataEntries"
@@ -75,7 +75,7 @@ const metadataEntries = computed(() => {
                     :class="{
                         'border-r border-neutral-300 pe-2': index !== metadataEntries.length - 1,
                     }"
-                    :data-cy="`profile-popup-info-${data.title}`"
+                    :data-testid="`profile-popup-info-${data.title}`"
                 >
                     <UIcon
                         v-for="(icon, indexIcon) in data.icons"
@@ -83,7 +83,7 @@ const metadataEntries = computed(() => {
                         :name="icon"
                     />
                     <span
-                        data-cy="profile-popup-info"
+                        data-testid="profile-popup-info"
                         class="font-mono"
                     >
                         {{ data.value }}

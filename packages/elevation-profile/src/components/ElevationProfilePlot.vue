@@ -63,7 +63,7 @@ provide<GetPointBeingHoveredFunction>('getPointBeingHovered', () => pointBeingHo
             :data="chartJsData"
             :options="chartJsOptions"
             class="min-w-full"
-            data-cy="profile-graph"
+            data-testid="profile-graph"
             @mouseleave="clearHoverPosition"
             @contextmenu.prevent="resetZoomToBaseValue"
         />
@@ -72,7 +72,7 @@ provide<GetPointBeingHoveredFunction>('getPointBeingHovered', () => pointBeingHo
         ref="profileTooltip"
         class="fixed rounded border bg-white px-2 py-1"
         :style="tooltipStyle"
-        data-cy="profile-popup-tooltip"
+        data-testid="profile-popup-tooltip"
     >
         <div
             v-if="pointBeingHovered && pointBeingHovered.hasElevationData"
@@ -81,7 +81,7 @@ provide<GetPointBeingHoveredFunction>('getPointBeingHovered', () => pointBeingHo
             <div>
                 <small>
                     <strong>{{ labels.xAxis }}: </strong>
-                    <span data-cy="profile-popup-tooltip-distance">
+                    <span data-testid="profile-popup-tooltip-distance">
                         {{ pointBeingHovered.dist }} {{ unitUsedOnDistanceAxis }}
                     </span>
                 </small>
@@ -91,7 +91,7 @@ provide<GetPointBeingHoveredFunction>('getPointBeingHovered', () => pointBeingHo
                     <strong>{{ labels.yAxis }}: </strong>
                     <span
                         v-if="pointBeingHovered.elevation !== null"
-                        data-cy="profile-popup-tooltip-elevation"
+                        data-testid="profile-popup-tooltip-elevation"
                     >
                         {{ pointBeingHovered.elevation }} m
                     </span>
