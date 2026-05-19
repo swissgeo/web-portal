@@ -25,9 +25,9 @@
         "build:dev:watch": "pnpm run build --watch --mode development",
         "build:int": "pnpm run build --mode integration",
         "build:prod": "pnpm run build --mode production",
-        "format": "prettier --check --ignore-path ../../.prettierignore --config ../../prettier.config.ts .",
-        "format:write": "prettier --write --ignore-path ../../.prettierignore --config ../../prettier.config.ts .",
         "generate-types": "tsc --declaration",
+        "format": "prettier --check --ignore-path ../../.prettierignore .",
+        "format:write": "prettier --write --ignore-path ../../.prettierignore .",
         "lint": "eslint",
         "lint:write": "eslint --fix",
         "prepare": "pnpm run build",
@@ -36,8 +36,10 @@
     "devDependencies": {
         "@microsoft/api-extractor": "catalog:",
         "@swissgeo/config-eslint": "workspace:*",
+        "@swissgeo/config-prettier": "workspace:*",
         "@swissgeo/config-typescript": "workspace:*",
         "eslint": "catalog:",
+        "prettier": "catalog:",
         "typescript": "catalog:",
         "unplugin-dts": "catalog:",
         "vite": "catalog:"
