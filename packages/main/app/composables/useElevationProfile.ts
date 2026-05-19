@@ -22,7 +22,7 @@ export function useElevationProfile(
     })
 
     const { data, pending, error, execute } = useFetch<ElevationProfileResponse>(
-        '/api/v1/elevation/profile',
+        '/api/wpa/v1/elevation/profile',
         {
             method: 'POST',
             body,
