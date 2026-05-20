@@ -1,7 +1,7 @@
 declare global {
-    interface Window {
-        map: OlMap
-    }
+  interface Window {
+    map: OlMap;
+  }
 }
 
-const map = window.map || {}
+const map = window.map || {};

@@ -1,39 +1,43 @@
-import type { Ref } from 'vue'
+import type { Ref } from "vue";
 
-import log, { LogPreDefinedColor } from '@swissgeo/log'
-import { computed, watchEffect } from 'vue'
+import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { computed, watchEffect } from "vue";
 
-import type { Distribution, DistributionCollection } from '@/types/Records'
+import type { Distribution, DistributionCollection } from "@/types/Records";
 
-export function useDistributionProtocols(distributionCollection: Ref<DistributionCollection>) {
-    const availableProtocols = computed(() => extractProtocols(distributionCollection.value))
+export function useDistributionProtocols(
+  distributionCollection: Ref<DistributionCollection>,
+) {
+  const availableProtocols = computed(() =>
+    extractProtocols(distributionCollection.value),
+  );
 
-    watchEffect(() => {
-        log.debug({
-            title: 'useDistributionProtocol',
-            titleColor: LogPreDefinedColor.Yellow,
-            messages: [
-                'Found protocols in the distribution',
-                distributionCollection,
-                availableProtocols,
-            ],
-        })
-    })
-
-    return {
+  watchEffect(() => {
+    log.debug({
+      title: "useDistributionProtocol",
+      titleColor: LogPreDefinedColor.Yellow,
+      messages: [
+        "Found protocols in the distribution",
+        distributionCollection,
         availableProtocols,
-    }
+      ],
+    });
+  });
+
+  return {
+    availableProtocols,
+  };
 }
 
 function extractProtocols(distributionCollection: DistributionCollection) {
-    if (!distributionCollection) {
-        return null
-    }
-    const records = distributionCollection.records
+  if (!distributionCollection) {
+    return null;
+  }
+  const records = distributionCollection.records;
 
-    if (!records.length) {
-        return []
-    }
+  if (!records.length) {
+    return [];
+  }
 
-    return records.map((record: Distribution) => record.properties.protocol)
+  return records.map((record: Distribution) => record.properties.protocol);
 }
