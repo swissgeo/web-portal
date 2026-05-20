@@ -1,60 +1,60 @@
 {
-    "name": "@swissgeo/timeslider",
-    "version": "1.0.0",
-    "description": "",
-    "keywords": [],
-    "license": "ISC",
-    "author": "",
-    "type": "module",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.es.js"
-        },
-        "./stylesheet": [
-            "./dist/timeslider.css"
-        ]
+  "name": "@swissgeo/timeslider",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.es.js"
     },
-    "main": "index.ts",
-    "scripts": {
-        "build": "vite build",
-        "build:dev": "vite build --mode development",
-        "build:dev:watch": "vite build --watch --mode development",
-        "build:prod": "vite build",
-        "format": "prettier --check --ignore-path ../../.prettierignore .",
-        "format:write": "prettier --write --ignore-path ../../.prettierignore .",
-        "lint": "eslint",
-        "lint:write": "eslint --fix",
-        "test": "vitest run",
-        "type-check": "vue-tsc"
-    },
-    "dependencies": {
-        "@swissgeo/layers": "workspace:*",
-        "@swissgeo/log": "workspace:*",
-        "@swissgeo/numbers": "workspace:*",
-        "@swissgeo/shared": "workspace:*",
-        "@swissgeo/skeleton": "workspace:*"
-    },
-    "devDependencies": {
-        "@microsoft/api-extractor": "catalog:",
-        "@swissgeo/config-eslint": "workspace:*",
-        "@swissgeo/config-prettier": "workspace:*",
-        "@swissgeo/config-typescript": "workspace:*",
-        "@vitejs/plugin-vue": "catalog:",
-        "eslint": "catalog:",
-        "prettier": "catalog:",
-        "typescript": "catalog:",
-        "unplugin-dts": "catalog:",
-        "vite": "catalog:",
-        "vite-tsconfig-paths": "catalog:",
-        "vitest": "catalog:",
-        "vue-tsc": "catalog:"
-    },
-    "peerDependencies": {
-        "@vueuse/core": "catalog:",
-        "lucide-vue-next": "catalog:",
-        "vue": "catalog:",
-        "vue-i18n": "catalog:"
-    },
-    "packageManager": "pnpm@10.29.2"
+    "./stylesheet": [
+      "./dist/timeslider.css"
+    ]
+  },
+  "main": "index.ts",
+  "scripts": {
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "build:dev:watch": "vite build --watch --mode development",
+    "build:prod": "vite build",
+    "format": "prettier --check --ignore-path ../../.prettierignore .",
+    "format:write": "prettier --write --ignore-path ../../.prettierignore .",
+    "lint": "eslint",
+    "lint:write": "eslint --fix",
+    "test": "vitest run",
+    "type-check": "vue-tsc"
+  },
+  "dependencies": {
+    "@swissgeo/layers": "workspace:*",
+    "@swissgeo/log": "workspace:*",
+    "@swissgeo/numbers": "workspace:*",
+    "@swissgeo/shared": "workspace:*",
+    "@swissgeo/skeleton": "workspace:*"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "catalog:",
+    "@swissgeo/config-eslint": "workspace:*",
+    "@swissgeo/config-prettier": "workspace:*",
+    "@swissgeo/config-typescript": "workspace:*",
+    "@vitejs/plugin-vue": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:",
+    "unplugin-dts": "catalog:",
+    "vite": "catalog:",
+    "vite-tsconfig-paths": "catalog:",
+    "vitest": "catalog:",
+    "vue-tsc": "catalog:"
+  },
+  "peerDependencies": {
+    "@vueuse/core": "catalog:",
+    "lucide-vue-next": "catalog:",
+    "vue": "catalog:",
+    "vue-i18n": "catalog:"
+  },
+  "packageManager": "pnpm@10.29.2"
 }
