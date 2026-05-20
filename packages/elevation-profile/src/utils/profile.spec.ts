@@ -2,47 +2,10 @@ import { registerProj4 } from "@swissgeo/coordinates";
 import proj4 from "proj4";
 import { describe, expect, it } from "vitest";
 
-import type { ElevationProfileResponse } from "@/types";
 import { buildCSV, reverseProfile } from "@/utils/profile";
+import { makeProfile } from "@/test/fixtures";
 
 registerProj4(proj4);
-
-const makeProfile = (
-  overrides: Partial<ElevationProfileResponse> = {},
-): ElevationProfileResponse => ({
-  points: [
-    {
-      dist: 0,
-      coordinate: [2600000, 1200000],
-      elevation: 400,
-      hasElevationData: true,
-    },
-    {
-      dist: 500,
-      coordinate: [2600500, 1200000],
-      elevation: 500,
-      hasElevationData: true,
-    },
-    {
-      dist: 1000,
-      coordinate: [2601000, 1200000],
-      elevation: 450,
-      hasElevationData: true,
-    },
-  ],
-  metadata: {
-    totalLinearDist: 1000,
-    minElevation: 400,
-    maxElevation: 500,
-    elevationDifference: 50,
-    totalAscent: 100,
-    totalDescent: 50,
-    slopeDistance: 1010,
-    hasElevationData: true,
-    hasDistanceData: true,
-  },
-  ...overrides,
-});
 
 describe("reverseProfile", () => {
   it("does not mutate the original profile", () => {
@@ -67,12 +30,12 @@ describe("reverseProfile", () => {
 
   it("negates elevationDifference", () => {
     const result = reverseProfile(makeProfile());
-    expect(result.metadata.elevationDifference).toBe(-50);
+    expect(result.metadata.elevationDifference).toBe(-100);
   });
 
   it("swaps totalAscent and totalDescent", () => {
     const result = reverseProfile(makeProfile());
-    expect(result.metadata.totalAscent).toBe(50);
+    expect(result.metadata.totalAscent).toBe(0);
     expect(result.metadata.totalDescent).toBe(100);
   });
 
@@ -81,7 +44,7 @@ describe("reverseProfile", () => {
     expect(result.metadata.minElevation).toBe(400);
     expect(result.metadata.maxElevation).toBe(500);
     expect(result.metadata.totalLinearDist).toBe(1000);
-    expect(result.metadata.slopeDistance).toBe(1010);
+    expect(result.metadata.slopeDistance).toBe(1005);
   });
 
   it("handles a single-point profile without errors", () => {
