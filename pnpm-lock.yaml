@@ -702,6 +702,9 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
+      '@swissgeo/config-prettier':
+        specifier: workspace:*
+        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -714,6 +717,9 @@ importers:
       happy-dom:
         specifier: 'catalog:'
         version: 20.8.9
+      prettier:
+        specifier: 'catalog:'
+        version: 3.8.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
