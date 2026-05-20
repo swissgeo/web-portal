@@ -210,8 +210,8 @@ export function createCutoutGeometry(outerExtent: Extent, innerExtent: Extent) {
     const outerRing = fromExtent(outerExtent).getCoordinates()[0]
     const innerRing = fromExtent(innerExtent).getCoordinates()[0]
     if (!outerRing || !innerRing) {
-return null
-}
+        return null
+    }
     return new Polygon([outerRing, innerRing])
 }
 
