@@ -2,6 +2,8 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { defineComponent, h } from "vue";
 
+import type { ElevationProfileResponse } from "@/types";
+
 import ElevationProfile from "@/ElevationProfile.vue";
 import { makeProfile } from "@/test/fixtures";
 
@@ -37,7 +39,8 @@ function mountComponent(profileResponse = makeProfile()) {
       stubs: {
         ElevationProfilePlot: {
           props: ["profile", "labels"],
-          template: '<div data-testid="plot" :data-profile="JSON.stringify(profile)" />',
+          template:
+            '<div data-testid="plot" :data-profile="JSON.stringify(profile)" />',
         },
         ElevationProfileMetadata: {
           template: '<div data-testid="metadata"><slot /></div>',
@@ -53,7 +56,9 @@ describe("ElevationProfile", () => {
     it("renders the profile in its original direction initially", () => {
       const wrapper = mountComponent();
       const plot = wrapper.find('[data-testid="plot"]');
-      const profile = JSON.parse(plot.attributes("data-profile") ?? "{}") as ElevationProfileResponse;
+      const profile = JSON.parse(
+        plot.attributes("data-profile") ?? "{}",
+      ) as ElevationProfileResponse;
       expect(profile.points[0].dist).toBe(0);
       expect(profile.metadata.elevationDifference).toBe(100);
     });
@@ -64,7 +69,9 @@ describe("ElevationProfile", () => {
       await buttons[0].trigger("click");
 
       const plot = wrapper.find('[data-testid="plot"]');
-      const profile = JSON.parse(plot.attributes("data-profile") ?? "{}") as ElevationProfileResponse;
+      const profile = JSON.parse(
+        plot.attributes("data-profile") ?? "{}",
+      ) as ElevationProfileResponse;
       expect(profile.metadata.elevationDifference).toBe(-100);
       expect(profile.metadata.totalAscent).toBe(0);
       expect(profile.metadata.totalDescent).toBe(100);
@@ -77,7 +84,9 @@ describe("ElevationProfile", () => {
       await buttons[0].trigger("click");
 
       const plot = wrapper.find('[data-testid="plot"]');
-      const profile = JSON.parse(plot.attributes("data-profile") ?? "{}") as ElevationProfileResponse;
+      const profile = JSON.parse(
+        plot.attributes("data-profile") ?? "{}",
+      ) as ElevationProfileResponse;
       expect(profile.metadata.elevationDifference).toBe(100);
     });
   });
@@ -91,21 +100,27 @@ describe("ElevationProfile", () => {
         createObjectURL: createObjectURLMock,
         revokeObjectURL: revokeObjectURLMock,
       });
-      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
+        () => {},
+      );
 
       const wrapper = mountComponent();
       const buttons = wrapper.findAll("button");
       await buttons[1].trigger("click");
 
       expect(createObjectURLMock).toHaveBeenCalledOnce();
-      expect(createObjectURLMock.mock.calls[0][0]).toBeInstanceOf(Blob);
+      expect(
+        (createObjectURLMock.mock.calls[0] as unknown[])[0],
+      ).toBeInstanceOf(Blob);
 
       vi.unstubAllGlobals();
       vi.restoreAllMocks();
     });
 
     it("uses the default filename 'export.csv' when no filename prop is given", async () => {
-      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
+        () => {},
+      );
       const appendSpy = vi.spyOn(document.body, "appendChild");
       vi.stubGlobal("URL", {
         ...URL,
@@ -125,7 +140,9 @@ describe("ElevationProfile", () => {
     });
 
     it("appends .csv to a provided filename that lacks the extension", async () => {
-      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
+        () => {},
+      );
       vi.stubGlobal("URL", {
         ...URL,
         createObjectURL: vi.fn(() => "blob:mock-url"),
@@ -160,7 +177,9 @@ describe("ElevationProfile", () => {
     });
 
     it("does not double-append .csv to a filename that already has it", async () => {
-      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
+        () => {},
+      );
       vi.stubGlobal("URL", {
         ...URL,
         createObjectURL: vi.fn(() => "blob:mock-url"),
