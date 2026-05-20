@@ -86,53 +86,50 @@ describe("chartJsData", () => {
 });
 
 describe("y-axis bounds (via chartJsOptions)", () => {
-  it("sets y min below minElevation by at least 5", () => {
-    const { chartJsOptions } = setupComposable(makeProfile());
-    const yMin = (
-      chartJsOptions.value?.scales as Record<string, { min?: number }>
-    )?.y?.min;
-    expect(yMin).toBeLessThan(400);
-    expect(yMin).toBeGreaterThanOrEqual(0);
-  });
-
-  it("sets y max above maxElevation by at least 5", () => {
-    const { chartJsOptions } = setupComposable(makeProfile());
-    const yMax = (
-      chartJsOptions.value?.scales as Record<string, { max?: number }>
-    )?.y?.max;
-    expect(yMax).toBeGreaterThan(500);
-  });
-
-  it("clamps y min to 0 when calculation would go negative", () => {
-    const profile = makeProfile({
-      metadata: {
-        ...makeProfile().metadata,
-        minElevation: 2,
-        maxElevation: 4,
-      },
-    });
+  function getYScale(profile: ElevationProfileResponse) {
     const { chartJsOptions } = setupComposable(profile);
-    const yMin = (
-      chartJsOptions.value?.scales as Record<string, { min?: number }>
-    )?.y?.min;
-    expect(yMin).toBe(0);
-  });
-
-  it("applies 10% of elevation delta as padding, minimum 5", () => {
-    const profile = makeProfile({
-      metadata: {
-        ...makeProfile().metadata,
-        minElevation: 0,
-        maxElevation: 1000,
-      },
-    });
-    const { chartJsOptions } = setupComposable(profile);
-    const scales = chartJsOptions.value?.scales as Record<
+    return chartJsOptions.value?.scales as Record<
       string,
       { min?: number; max?: number }
     >;
-    expect(scales?.y?.min).toBe(0);
-    expect(scales?.y?.max).toBeGreaterThanOrEqual(1100);
+  }
+
+  it("sets y min to floor(minElevation) minus 10% delta padding", () => {
+    // min=400, max=500, delta=100, 10%=10, padding=max(10,5)=10 → yMin=390
+    expect(getYScale(makeProfile()).y?.min).toBe(390);
+  });
+
+  it("sets y max to ceil(maxElevation) plus 10% delta padding", () => {
+    // min=400, max=500, delta=100, 10%=10, padding=max(10,5)=10 → yMax=510
+    expect(getYScale(makeProfile()).y?.max).toBe(510);
+  });
+
+  it("uses minimum padding of 5 when 10% delta is smaller", () => {
+    // min=400, max=402, delta=2, 10%=0 (rounded), padding=max(0,5)=5 → yMin=395, yMax=407
+    const profile = makeProfile({
+      metadata: { ...makeProfile().metadata, minElevation: 400, maxElevation: 402 },
+    });
+    const scales = getYScale(profile);
+    expect(scales.y?.min).toBe(395);
+    expect(scales.y?.max).toBe(407);
+  });
+
+  it("clamps y min to 0 when calculation would go negative", () => {
+    // min=2, max=4, delta=2, 10%=0, padding=5 → yMin=max(2-5,0)=0
+    const profile = makeProfile({
+      metadata: { ...makeProfile().metadata, minElevation: 2, maxElevation: 4 },
+    });
+    expect(getYScale(profile).y?.min).toBe(0);
+  });
+
+  it("applies 10% of elevation delta as padding for large ranges", () => {
+    // min=0, max=1000, delta=1000, 10%=100, padding=100 → yMin=0, yMax=1100
+    const profile = makeProfile({
+      metadata: { ...makeProfile().metadata, minElevation: 0, maxElevation: 1000 },
+    });
+    const scales = getYScale(profile);
+    expect(scales.y?.min).toBe(0);
+    expect(scales.y?.max).toBe(1100);
   });
 });
 
