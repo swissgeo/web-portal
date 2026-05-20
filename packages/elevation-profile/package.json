@@ -49,6 +49,7 @@
     "unplugin-dts": "catalog:",
     "vite": "catalog:",
     "vite-tsconfig-paths": "catalog:",
+    "@vue/test-utils": "catalog:",
     "vitest": "catalog:",
     "vue-tsc": "catalog:"
   },
