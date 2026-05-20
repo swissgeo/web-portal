@@ -1,2 +1,2 @@
-export type * from './Records'
-export type * from './Capabilities'
+export type * from "./Records";
+export type * from "./Capabilities";

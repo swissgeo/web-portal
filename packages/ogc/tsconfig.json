@@ -1,17 +1,17 @@
 {
-    "extends": "@swissgeo/config-typescript/tsconfig.base.json",
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.vue",
-        "env.d.ts",
-        "prettier.config.ts",
-        "vite.config.ts",
-        "../../base.vite.config.ts",
-        "vitest.config.ts"
-    ],
-    "compilerOptions": {
-        "types": ["vue", "vite/client"],
-        "baseUrl": ".",
-        "paths": { "@/*": ["src/*"] }
-    }
+  "extends": "@swissgeo/config-typescript/tsconfig.base.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "env.d.ts",
+    "prettier.config.ts",
+    "vite.config.ts",
+    "../../base.vite.config.ts",
+    "vitest.config.ts"
+  ],
+  "compilerOptions": {
+    "types": ["vue", "vite/client"],
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] }
+  }
 }

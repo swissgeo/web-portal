@@ -43,17 +43,17 @@ Here are a few pseudo-code examples
 
 ```js
 // getting just the capabilities for a WMTS layer
-distributionCollection = useDistributionCollection(dataset)
-distribution = useDistribution(distributionCollection)
-service = useService(distribution)
-capabilities = useWmtsCapabilities(service)
+distributionCollection = useDistributionCollection(dataset);
+distribution = useDistribution(distributionCollection);
+service = useService(distribution);
+capabilities = useWmtsCapabilities(service);
 
 // getting the capabilities AND the style for a wmts layer
-distributionCollection = useDistributionCollection(dataset)
-distribution = useDistribution(distributionCollection)
-style = useStyle(distribution)
-service = useService(distribution)
-capabilities = useWmtsCapabilities(service)
+distributionCollection = useDistributionCollection(dataset);
+distribution = useDistribution(distributionCollection);
+style = useStyle(distribution);
+service = useService(distribution);
+capabilities = useWmtsCapabilities(service);
 ```
 
 The latter example showcases how both `useStyle` and `useService` are direct consumers of the distribution data. Yet the `distribution` needs only be fetched once.
