@@ -4,6 +4,7 @@
         "src/**/*.ts",
         "src/**/*.vue",
         "env.d.ts",
+        "prettier.config.ts",
         "vite.config.ts",
         "types/**/*.d.ts",
         "../../base.vite.config.ts"
