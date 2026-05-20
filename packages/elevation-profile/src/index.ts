@@ -1,30 +1,42 @@
-import { registerProj4 } from '@swissgeo/coordinates'
+import { registerProj4 } from "@swissgeo/coordinates";
 import {
-    CategoryScale,
-    Chart as ChartJS,
-    Filler,
-    Legend,
-    LinearScale,
-    LineElement,
-    PointElement,
-    Tooltip,
-} from 'chart.js'
-import zoomPlugin from 'chartjs-plugin-zoom'
-import proj4 from 'proj4'
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Tooltip,
+} from "chart.js";
+import zoomPlugin from "chartjs-plugin-zoom";
+import proj4 from "proj4";
 
-import type { Labels } from '@/ElevationProfile.vue'
+import type { Labels } from "@/ElevationProfile.vue";
 
-import dataModelPlugin from '@/chartjs-plugins/datamodel.plugin'
-import noDataPlugin from '@/chartjs-plugins/nodata.plugin'
-import ElevationProfile from '@/ElevationProfile.vue'
-import ElevationProfileOpenLayersBridge from '@/ElevationProfileOpenLayersBridge.vue'
-import '@/style.css'
+import dataModelPlugin from "@/chartjs-plugins/datamodel.plugin";
+import noDataPlugin from "@/chartjs-plugins/nodata.plugin";
+import ElevationProfile from "@/ElevationProfile.vue";
+import ElevationProfileOpenLayersBridge from "@/ElevationProfileOpenLayersBridge.vue";
+import "@/style.css";
 
-registerProj4(proj4)
+registerProj4(proj4);
 
-ChartJS.register(CategoryScale, Filler, Legend, LinearScale, LineElement, PointElement, Tooltip)
-ChartJS.register(zoomPlugin, noDataPlugin, dataModelPlugin)
+ChartJS.register(
+  CategoryScale,
+  Filler,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Tooltip,
+);
+ChartJS.register(zoomPlugin, noDataPlugin, dataModelPlugin);
 
-export { ElevationProfile, ElevationProfileOpenLayersBridge }
-export type { Labels }
-export type { ElevationProfilePoint, ElevationProfileMetadata, ElevationProfileResponse } from '@/types'
+export { ElevationProfile, ElevationProfileOpenLayersBridge };
+export type { Labels };
+export type {
+  ElevationProfilePoint,
+  ElevationProfileMetadata,
+  ElevationProfileResponse,
+} from "@/types";

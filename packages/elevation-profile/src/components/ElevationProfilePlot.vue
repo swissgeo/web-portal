@@ -1,106 +1,111 @@
 <script setup lang="ts">
-import type { ChartComponentRef } from 'vue-chartjs'
+import type { ChartComponentRef } from "vue-chartjs";
 
-import { provide, useTemplateRef } from 'vue'
-import { Line as LineChart } from 'vue-chartjs'
+import { provide, useTemplateRef } from "vue";
+import { Line as LineChart } from "vue-chartjs";
 
-import type { ElevationProfileResponse, ElevationProfilePoint } from '@/types'
+import type { ElevationProfileResponse, ElevationProfilePoint } from "@/types";
 
-import { useElevationProfileChart } from '@/composables/useElevationProfileChart'
+import { useElevationProfileChart } from "@/composables/useElevationProfileChart";
 
 export type ScreenPoint = ElevationProfilePoint & {
-    screenPosition: [number, number]
-}
+  screenPosition: [number, number];
+};
 
-export type GetPointBeingHoveredFunction = () => ScreenPoint | undefined
+export type GetPointBeingHoveredFunction = () => ScreenPoint | undefined;
 
 export interface Labels {
-    xAxis: string
-    yAxis: string
-    noData: string
+  xAxis: string;
+  yAxis: string;
+  noData: string;
 }
 
 const props = defineProps<{
-    profile: ElevationProfileResponse
-    labels: Labels
-}>()
+  profile: ElevationProfileResponse;
+  labels: Labels;
+}>();
 
-const profileChartContainerRef = useTemplateRef<HTMLDivElement>('profileChartContainer')
-const profileTooltipRef = useTemplateRef<HTMLDivElement>('profileTooltip')
-const chartRef = useTemplateRef<ChartComponentRef>('chart')
+const profileChartContainerRef = useTemplateRef<HTMLDivElement>(
+  "profileChartContainer",
+);
+const profileTooltipRef = useTemplateRef<HTMLDivElement>("profileTooltip");
+const chartRef = useTemplateRef<ChartComponentRef>("chart");
 
 const {
-    pointBeingHovered,
-    unitUsedOnDistanceAxis,
-    chartJsData,
-    chartJsOptions,
-    startPositionTracking,
-    stopPositionTracking,
-    clearHoverPosition,
-    resetZoomToBaseValue,
-    tooltipStyle,
+  pointBeingHovered,
+  unitUsedOnDistanceAxis,
+  chartJsData,
+  chartJsOptions,
+  startPositionTracking,
+  stopPositionTracking,
+  clearHoverPosition,
+  resetZoomToBaseValue,
+  tooltipStyle,
 } = useElevationProfileChart(
-    () => props.profile,
-    chartRef,
-    profileChartContainerRef,
-    profileTooltipRef,
-    () => props.labels
-)
+  () => props.profile,
+  chartRef,
+  profileChartContainerRef,
+  profileTooltipRef,
+  () => props.labels,
+);
 
-provide<GetPointBeingHoveredFunction>('getPointBeingHovered', () => pointBeingHovered.value)
+provide<GetPointBeingHoveredFunction>(
+  "getPointBeingHovered",
+  () => pointBeingHovered.value,
+);
 </script>
 
 <template>
+  <div
+    ref="profileChartContainer"
+    class="min-h-100px flex w-full grow overflow-hidden p-2"
+    @mouseenter="startPositionTracking"
+    @mouseleave="stopPositionTracking"
+  >
+    <LineChart
+      v-if="chartJsOptions"
+      ref="chart"
+      :data="chartJsData"
+      :options="chartJsOptions"
+      class="min-w-full"
+      data-testid="profile-graph"
+      @mouseleave="clearHoverPosition"
+      @contextmenu.prevent="resetZoomToBaseValue"
+    />
+  </div>
+  <div
+    ref="profileTooltip"
+    class="fixed rounded border bg-white px-2 py-1"
+    :style="tooltipStyle"
+    data-testid="profile-popup-tooltip"
+  >
     <div
-        ref="profileChartContainer"
-        class="min-h-100px flex w-full grow overflow-hidden p-2"
-        @mouseenter="startPositionTracking"
-        @mouseleave="stopPositionTracking"
+      v-if="pointBeingHovered && pointBeingHovered.hasElevationData"
+      class="m-auto p-1"
     >
-        <LineChart
-            v-if="chartJsOptions"
-            ref="chart"
-            :data="chartJsData"
-            :options="chartJsOptions"
-            class="min-w-full"
-            data-testid="profile-graph"
-            @mouseleave="clearHoverPosition"
-            @contextmenu.prevent="resetZoomToBaseValue"
-        />
+      <div>
+        <small>
+          <strong>{{ labels.xAxis }}: </strong>
+          <span data-testid="profile-popup-tooltip-distance">
+            {{ pointBeingHovered.dist }} {{ unitUsedOnDistanceAxis }}
+          </span>
+        </small>
+      </div>
+      <div>
+        <small>
+          <strong>{{ labels.yAxis }}: </strong>
+          <span
+            v-if="pointBeingHovered.elevation !== null"
+            data-testid="profile-popup-tooltip-elevation"
+          >
+            {{ pointBeingHovered.elevation }} m
+          </span>
+          <span v-else>
+            {{ labels.noData }}
+          </span>
+        </small>
+      </div>
     </div>
-    <div
-        ref="profileTooltip"
-        class="fixed rounded border bg-white px-2 py-1"
-        :style="tooltipStyle"
-        data-testid="profile-popup-tooltip"
-    >
-        <div
-            v-if="pointBeingHovered && pointBeingHovered.hasElevationData"
-            class="m-auto p-1"
-        >
-            <div>
-                <small>
-                    <strong>{{ labels.xAxis }}: </strong>
-                    <span data-testid="profile-popup-tooltip-distance">
-                        {{ pointBeingHovered.dist }} {{ unitUsedOnDistanceAxis }}
-                    </span>
-                </small>
-            </div>
-            <div>
-                <small>
-                    <strong>{{ labels.yAxis }}: </strong>
-                    <span
-                        v-if="pointBeingHovered.elevation !== null"
-                        data-testid="profile-popup-tooltip-elevation"
-                    >
-                        {{ pointBeingHovered.elevation }} m
-                    </span>
-                    <span v-else>
-                        {{ labels.noData }}
-                    </span>
-                </small>
-            </div>
-        </div>
-        <slot />
-    </div>
+    <slot />
+  </div>
 </template>
