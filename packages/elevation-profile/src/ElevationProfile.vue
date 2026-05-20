@@ -72,6 +72,7 @@ function exportCSV(profile: ElevationProfileResponse): void {
       :labels="labels.metadata"
     >
       <UButton
+        data-testid="btn-reverse"
         icon="i-lucide-arrow-left-right"
         size="md"
         color="primary"
@@ -79,6 +80,7 @@ function exportCSV(profile: ElevationProfileResponse): void {
         @click="isReverse = !isReverse"
       />
       <UButton
+        data-testid="btn-download"
         icon="i-lucide-download"
         size="md"
         color="primary"

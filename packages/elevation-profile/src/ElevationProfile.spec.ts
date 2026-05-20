@@ -23,8 +23,13 @@ const makeLabels = () => ({
 const StubButton = defineComponent({
   props: { icon: String },
   emits: ["click"],
-  setup(_, { emit }) {
-    return () => h("button", { onClick: () => emit("click") });
+  inheritAttrs: false,
+  setup(_, { emit, attrs }) {
+    return () =>
+      h("button", {
+        "data-testid": attrs["data-testid"],
+        onClick: () => emit("click"),
+      });
   },
 });
 
@@ -65,8 +70,7 @@ describe("ElevationProfile", () => {
 
     it("reverses the profile when the first button is clicked", async () => {
       const wrapper = mountComponent();
-      const buttons = wrapper.findAll("button");
-      await buttons[0].trigger("click");
+      await wrapper.find('[data-testid="btn-reverse"]').trigger("click");
 
       const plot = wrapper.find('[data-testid="plot"]');
       const profile = JSON.parse(
@@ -79,9 +83,8 @@ describe("ElevationProfile", () => {
 
     it("restores the original profile when the reverse button is clicked again", async () => {
       const wrapper = mountComponent();
-      const buttons = wrapper.findAll("button");
-      await buttons[0].trigger("click");
-      await buttons[0].trigger("click");
+      await wrapper.find('[data-testid="btn-reverse"]').trigger("click");
+      await wrapper.find('[data-testid="btn-reverse"]').trigger("click");
 
       const plot = wrapper.find('[data-testid="plot"]');
       const profile = JSON.parse(
@@ -105,8 +108,7 @@ describe("ElevationProfile", () => {
       );
 
       const wrapper = mountComponent();
-      const buttons = wrapper.findAll("button");
-      await buttons[1].trigger("click");
+      await wrapper.find('[data-testid="btn-download"]').trigger("click");
 
       expect(createObjectURLMock).toHaveBeenCalledOnce();
       expect(
@@ -129,8 +131,7 @@ describe("ElevationProfile", () => {
       });
 
       const wrapper = mountComponent();
-      const buttons = wrapper.findAll("button");
-      await buttons[1].trigger("click");
+      await wrapper.find('[data-testid="btn-download"]').trigger("click");
 
       const link = appendSpy.mock.calls[0]?.[0] as HTMLAnchorElement;
       expect(link.download).toBe("export.csv");
@@ -166,8 +167,7 @@ describe("ElevationProfile", () => {
         },
       });
 
-      const buttons = wrapper.findAll("button");
-      await buttons[1].trigger("click");
+      await wrapper.find('[data-testid="btn-download"]').trigger("click");
 
       const link = appendSpy.mock.calls[0]?.[0] as HTMLAnchorElement;
       expect(link.download).toBe("my-profile.csv");
@@ -203,8 +203,7 @@ describe("ElevationProfile", () => {
         },
       });
 
-      const buttons = wrapper.findAll("button");
-      await buttons[1].trigger("click");
+      await wrapper.find('[data-testid="btn-download"]').trigger("click");
 
       const link = appendSpy.mock.calls[0]?.[0] as HTMLAnchorElement;
       expect(link.download).toBe("data.csv");
