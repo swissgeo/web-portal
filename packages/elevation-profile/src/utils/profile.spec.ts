@@ -62,6 +62,12 @@ describe("reverseProfile", () => {
     expect(result.points).toHaveLength(1);
     expect(result.points[0].dist).toBe(0);
   });
+
+  it("handles an empty points array without errors", () => {
+    const empty = makeProfile({ points: [] });
+    const result = reverseProfile(empty);
+    expect(result.points).toHaveLength(0);
+  });
 });
 
 describe("buildCSV", () => {
@@ -112,5 +118,21 @@ describe("buildCSV", () => {
   it("ends with a trailing newline", () => {
     const csv = buildCSV(makeProfile());
     expect(csv.endsWith("\n")).toBe(true);
+  });
+
+  it("outputs an empty field for a point with no elevation", () => {
+    const profile = makeProfile({
+      points: [
+        {
+          dist: 0,
+          coordinate: [2600000, 1200000],
+          elevation: undefined,
+          hasElevationData: false,
+        },
+      ],
+    });
+    const dataLine = buildCSV(profile).split("\n")[1];
+    const [, altitude] = dataLine.split(";");
+    expect(altitude).toBe("");
   });
 });

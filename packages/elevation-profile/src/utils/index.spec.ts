@@ -26,6 +26,11 @@ describe("formatDistance", () => {
     expect(formatDistance(12345)).toBe("12.35km");
     expect(formatDistance(1500)).toBe("1.50km");
   });
+
+  it("formats negative values as meters (not caught by falsy guard)", () => {
+    expect(formatDistance(-1)).toBe("-1.00m");
+    expect(formatDistance(-500)).toBe("-500.00m");
+  });
 });
 
 describe("formatElevation", () => {
@@ -51,5 +56,10 @@ describe("formatElevation", () => {
     expect(formatElevation(1000)).toBe("1'000m");
     expect(formatElevation(4478)).toBe("4'478m");
     expect(formatElevation(1234.7)).toBe("1'235m");
+  });
+
+  it("formats negative values as meters (not caught by falsy guard)", () => {
+    expect(formatElevation(-1)).toBe("-1.00m");
+    expect(formatElevation(-500)).toBe("-500.00m");
   });
 });

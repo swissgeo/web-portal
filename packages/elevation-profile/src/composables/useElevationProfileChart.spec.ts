@@ -74,6 +74,22 @@ describe("chartJsData", () => {
     expect(data[0].y).toBeNull();
   });
 
+  it("falls back to x=0 when dist is undefined", () => {
+    const profile = makeProfile({
+      points: [
+        {
+          dist: undefined as unknown as number,
+          coordinate: [2600000, 1200000],
+          elevation: 400,
+          hasElevationData: true,
+        },
+      ],
+    });
+    const { chartJsData } = setupComposable(profile);
+    const data = chartJsData.value.datasets[0].data as Array<{ x: number }>;
+    expect(data[0].x).toBe(0);
+  });
+
   it("preserves the original point fields alongside x and y", () => {
     const { chartJsData } = setupComposable(makeProfile());
     const point = chartJsData.value.datasets[0].data[0] as unknown as Record<
@@ -107,7 +123,11 @@ describe("y-axis bounds (via chartJsOptions)", () => {
   it("uses minimum padding of 5 when 10% delta is smaller", () => {
     // min=400, max=402, delta=2, 10%=0 (rounded), padding=max(0,5)=5 → yMin=395, yMax=407
     const profile = makeProfile({
-      metadata: { ...makeProfile().metadata, minElevation: 400, maxElevation: 402 },
+      metadata: {
+        ...makeProfile().metadata,
+        minElevation: 400,
+        maxElevation: 402,
+      },
     });
     const scales = getYScale(profile);
     expect(scales.y?.min).toBe(395);
@@ -125,7 +145,11 @@ describe("y-axis bounds (via chartJsOptions)", () => {
   it("applies 10% of elevation delta as padding for large ranges", () => {
     // min=0, max=1000, delta=1000, 10%=100, padding=100 → yMin=0, yMax=1100
     const profile = makeProfile({
-      metadata: { ...makeProfile().metadata, minElevation: 0, maxElevation: 1000 },
+      metadata: {
+        ...makeProfile().metadata,
+        minElevation: 0,
+        maxElevation: 1000,
+      },
     });
     const scales = getYScale(profile);
     expect(scales.y?.min).toBe(0);
@@ -147,6 +171,52 @@ describe("noData plugin options", () => {
     const noData = (chartJsOptions.value?.plugins as Record<string, unknown>)
       ?.noData as { noDataText: string };
     expect(noData?.noDataText).toBe("No data");
+  });
+});
+
+describe("dataModel plugin options", () => {
+  it("passes dataModelName from metadata to the dataModel plugin", () => {
+    const profile = makeProfile({
+      metadata: { ...makeProfile().metadata, dataModel: "swissALTI3D" },
+    });
+    const { chartJsOptions } = setupComposable(profile);
+    const dataModel = (chartJsOptions.value?.plugins as Record<string, unknown>)
+      ?.dataModel as { dataModelName?: string };
+    expect(dataModel?.dataModelName).toBe("swissALTI3D");
+  });
+
+  it("passes undefined dataModelName when metadata has no dataModel", () => {
+    const { chartJsOptions } = setupComposable(makeProfile());
+    const dataModel = (chartJsOptions.value?.plugins as Record<string, unknown>)
+      ?.dataModel as { dataModelName?: string };
+    expect(dataModel?.dataModelName).toBeUndefined();
+  });
+});
+
+describe("x-axis label", () => {
+  it("includes 'm' unit in x-axis title when distance is below 10000", () => {
+    const { chartJsOptions } = setupComposable(makeProfile());
+    const xTitle = (
+      chartJsOptions.value?.scales as Record<
+        string,
+        { title?: { text?: string } }
+      >
+    )?.x?.title?.text;
+    expect(xTitle).toBe("Distance [m]");
+  });
+
+  it("includes 'km' unit in x-axis title when distance is >= 10000", () => {
+    const profile = makeProfile({
+      metadata: { ...makeProfile().metadata, totalLinearDist: 15000 },
+    });
+    const { chartJsOptions } = setupComposable(profile);
+    const xTitle = (
+      chartJsOptions.value?.scales as Record<
+        string,
+        { title?: { text?: string } }
+      >
+    )?.x?.title?.text;
+    expect(xTitle).toBe("Distance [km]");
   });
 });
 
