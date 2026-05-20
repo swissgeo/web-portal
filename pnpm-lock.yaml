@@ -1355,12 +1355,18 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
+      '@swissgeo/config-prettier':
+        specifier: workspace:*
+        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.6.1)
+      prettier:
+        specifier: 'catalog:'
+        version: 3.8.1
       unplugin-dts:
         specifier: 'catalog:'
         version: 1.0.0-beta.6(@microsoft/api-extractor@7.56.0(@types/node@25.6.0))(esbuild@0.27.2)(rollup@4.57.1)(typescript@5.9.3)(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))
