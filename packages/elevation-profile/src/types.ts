@@ -1,24 +1,24 @@
 export interface ElevationProfilePoint {
-    dist: number
-    coordinate: [number, number]
-    elevation?: number
-    hasElevationData: boolean
+  dist: number;
+  coordinate: [number, number];
+  elevation?: number;
+  hasElevationData: boolean;
 }
 
 export interface ElevationProfileMetadata {
-    totalLinearDist: number
-    minElevation: number
-    maxElevation: number
-    elevationDifference: number
-    totalAscent: number
-    totalDescent: number
-    slopeDistance: number
-    hasElevationData: boolean
-    hasDistanceData: boolean
-    dataModel?: string
+  totalLinearDist: number;
+  minElevation: number;
+  maxElevation: number;
+  elevationDifference: number;
+  totalAscent: number;
+  totalDescent: number;
+  slopeDistance: number;
+  hasElevationData: boolean;
+  hasDistanceData: boolean;
+  dataModel?: string;
 }
 
 export interface ElevationProfileResponse {
-    points: ElevationProfilePoint[]
-    metadata: ElevationProfileMetadata
+  points: ElevationProfilePoint[];
+  metadata: ElevationProfileMetadata;
 }

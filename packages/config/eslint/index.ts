@@ -104,7 +104,6 @@ export const vueConfig: FlatConfig.ConfigArray = defineConfigWithVueTs(
         },
         rules: {
             ...commonTsAndJsRules,
-            'vue/html-indent': ['error', 4],
             'vue/block-lang': 'error',
             ...noUnusedVarsRules,
         },
