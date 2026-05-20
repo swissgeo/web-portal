@@ -97,8 +97,8 @@ describe("useDistribution composable returning the desired distribution", () => 
     const distributionCollection = ref({});
 
     const distributionId = ref<string | null>(null);
-    // @ts-expect-error Intentionally giving it invalid data
     const { distribution } = useDistribution(
+      // @ts-expect-error Intentionally giving it invalid data
       distributionCollection,
       distributionId,
     );
