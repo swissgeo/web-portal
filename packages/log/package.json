@@ -30,7 +30,6 @@
     "format:write": "prettier --write --ignore-path ../../.prettierignore .",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "prepare": "pnpm run build",
     "type-check": "tsc -p tsconfig.json"
   },
   "devDependencies": {
