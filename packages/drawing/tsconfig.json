@@ -6,6 +6,7 @@
         "vite.config.ts",
         ".output/auto-imports.d.ts",
         "types/**/*.d.ts",
+        "prettier.config.ts",
         "../../base.vite.config",
         "vitest.config.ts"
     ],
