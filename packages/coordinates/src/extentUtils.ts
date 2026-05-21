@@ -1,5 +1,8 @@
+import type { Extent } from 'ol/extent'
+
 import { round } from '@swissgeo/numbers'
 import { bbox, bboxClip, bboxPolygon, buffer, point } from '@turf/turf'
+import Polygon, { fromExtent } from 'ol/geom/Polygon'
 import proj4 from 'proj4'
 
 import type { SingleCoordinate } from '@/coordinatesUtils'
@@ -199,5 +202,18 @@ const extentUtils: SwissGeoExtentUtils = {
     createPixelExtentAround,
     getExtentCenter,
 }
+
+/**
+ * Create a polygon with a hole. The outer ring is provided by outerExtent and the hole ring is provided by innerExtent
+ */
+export function createCutoutGeometry(outerExtent: Extent, innerExtent: Extent) {
+    const outerRing = fromExtent(outerExtent).getCoordinates()[0]
+    const innerRing = fromExtent(innerExtent).getCoordinates()[0]
+    if (!outerRing || !innerRing) {
+        return null
+    }
+    return new Polygon([outerRing, innerRing])
+}
+
 export { extentUtils }
 export default extentUtils

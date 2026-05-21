@@ -170,3 +170,52 @@ export function useStateConfig() {
         importState,
     }
 }
+
+/**
+ * Create a custom state config object not tied to the current app state.
+ */
+export function useCustomStateConfig() {
+    const mapviewStore = useMapViewStore()
+    const customStateMapCenter = ref<[number, number]>([0, 0])
+    const customStateMapZoom = ref(0)
+    const customStateMapRotation = ref(0)
+    const layerStateConfig = ref<LayerStateConfig[]>([])
+    const backgroundLayerStateConfig = ref<LayerStateConfig | null>(null)
+
+    const makeUseOfCurentLayers = () => {
+        const { layers, backgroundLayer } = layersToStateConfig(mapviewStore.mapLayers)
+        backgroundLayerStateConfig.value = backgroundLayer ?? null
+        layerStateConfig.value = layers ?? []
+    }
+
+    const customStateConfig = computed((): AppStatePayload => {
+        const payload: AppStatePayload = {
+            version: APP_STATE_CONFIG_VERSION,
+            state: {
+                map: {
+                    center: customStateMapCenter.value,
+                    zoom: customStateMapZoom.value,
+                    rotation: customStateMapRotation.value,
+                },
+                layers: layerStateConfig.value,
+                backgroundLayer: backgroundLayerStateConfig.value,
+            } as AppStateConfig,
+        }
+
+        return payload
+    })
+
+    onMounted(() => {
+        makeUseOfCurentLayers()
+    })
+
+    return {
+        customStateConfig,
+        customStateMapCenter,
+        customStateMapZoom,
+        customStateMapRotation,
+        layerStateConfig,
+        makeUseOfCurentLayers,
+        backgroundLayerStateConfig,
+    }
+}

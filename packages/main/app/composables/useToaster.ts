@@ -37,9 +37,14 @@ export function useToaster() {
         })
     }
 
+    function remove(id: string) {
+        toast.remove(id)
+    }
+
     return {
         showWarning,
         showError,
         showSuccess,
+        remove,
     }
 }

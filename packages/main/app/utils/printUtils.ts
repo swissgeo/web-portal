@@ -1,3 +1,6 @@
+import type { Map as OlMapType } from 'ol'
+import type { Extent } from 'ol/extent'
+
 import type { PrintFormat, PrintOrientation, PrintConfig } from '../types/print'
 
 import { printFormats, printOrientations } from '../types/print'
@@ -21,21 +24,42 @@ const formatRatiosToA0: Record<PrintFormat, number> = {
 }
 
 /**
+ * Get the print page size in meter for a given format (eg. 'a4') and an orientation (eg. 'landscape')
+ */
+export function getPageSizeInMeters(format: PrintFormat, orientation: PrintOrientation) {
+    const longSide = ~~(A0_LONG_SIDE_MM / formatRatiosToA0[format])
+    const shortSide = ~~(A0_SHORT_SIDE_MM / formatRatiosToA0[format])
+
+    if (orientation === 'landscape') {
+        return { width: longSide, height: shortSide }
+    } else {
+        return { width: shortSide, height: longSide }
+    }
+}
+
+/**
  * Get the print page size in pixels from a given format (eg. 'a4'), an orientation (eg. 'landscape') and a resolution in DPI (eg. 192)
  */
 export function getPageSizeInPixels(
     format: PrintFormat,
     orientation: PrintOrientation,
-    resolutionDpi: number
+    resolutionDpi: number,
+    round: boolean = true
 ): { width: number; height: number } {
-    const longSide = computeNumberOfPixelsForPrint(
+    let longSide = computeNumberOfPixelsForPrint(
         ~~(A0_LONG_SIDE_MM / formatRatiosToA0[format]),
         resolutionDpi
     )
-    const shortSide = computeNumberOfPixelsForPrint(
+    let shortSide = computeNumberOfPixelsForPrint(
         ~~(A0_SHORT_SIDE_MM / formatRatiosToA0[format]),
         resolutionDpi
     )
+
+    if (round) {
+        longSide = Math.round(longSide)
+        shortSide = Math.round(shortSide)
+    }
+
     return orientation === 'landscape'
         ? { width: longSide, height: shortSide }
         : { width: shortSide, height: longSide }
@@ -80,4 +104,29 @@ export function validatePrintConfig(printProps: unknown): asserts printProps is 
     if (maybePrintProps.zoom === undefined || maybePrintProps.zoom <= 0) {
         throw new Error('The zoom must be greater or equal to 0')
     }
+}
+
+export function getPrintExtent(
+    map: OlMapType,
+    printZoom: number,
+    widthPx: number,
+    heightPx: number,
+    mapCenter: [number, number]
+): Extent | null {
+    const view = map.getView()
+
+    const resolution = view.getResolutionForZoom(printZoom)
+    if (!resolution) {
+        return null
+    }
+
+    const halfWidth = (widthPx * resolution) / 2
+    const halfHeight = (heightPx * resolution) / 2
+
+    return [
+        mapCenter[0] - halfWidth,
+        mapCenter[1] - halfHeight,
+        mapCenter[0] + halfWidth,
+        mapCenter[1] + halfHeight,
+    ]
 }
