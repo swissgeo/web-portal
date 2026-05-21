@@ -90,6 +90,9 @@ test.describe('map page', () => {
     })
 
     test('displays the map with the defaults', async ({ page }) => {
+        await page.waitForFunction(() => window.swissgeoOlMap !== undefined, null, {
+            timeout: 20000,
+        })
         const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap)
         const zoom = await page.evaluate((map) => map.getView().getZoom(), mapRef)
         const center = await page.evaluate((map) => map.getView().getCenter(), mapRef)
@@ -98,6 +101,9 @@ test.describe('map page', () => {
     })
 
     test('Loads the pixelkarte-farbe as default background', async ({ page }) => {
+        await page.waitForFunction(() => window.swissgeoOlMap !== undefined, null, {
+            timeout: 20000,
+        })
         const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap)
         const layers = await page.evaluate((map) => {
             const arr = map.getLayers().getArray()
