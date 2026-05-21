@@ -91,4 +91,13 @@ describe('redirect plugin', () => {
         await redirector(fromObj)
         expect(navigateToMock).toHaveBeenCalledExactlyOnceWith(toObj, { redirectCode: 301 })
     })
+
+    it.each(['/api', '/api/wpa/v1/print', '/health'])(
+        'skips middleware for server route %s',
+        async (serverRoute: string) => {
+            const to = { path: serverRoute, query: {} }
+            await redirector(to)
+            expect(navigateToMock).not.toHaveBeenCalled()
+        }
+    )
 })

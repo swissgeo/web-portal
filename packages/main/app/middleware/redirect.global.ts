@@ -1,5 +1,7 @@
 import type { RouteLocationNormalized } from 'vue-router'
 
+const SERVER_ROUTES = ['/api', '/health']
+
 export function isRootPath(path: string) {
     return path === '/'
 }
@@ -8,7 +10,7 @@ export function isRootPath(path: string) {
  * List of paths that should *not* be localized
  */
 export function isExempt(path: string) {
-    if (path === '/health') {
+    if (SERVER_ROUTES.some((prefix) => path.startsWith(prefix))) {
         return true
     }
 }
@@ -32,7 +34,7 @@ export function redirector(to: Pick<RouteLocationNormalized, 'path' | 'query'>) 
     const localePath = useLocalePath()
 
     if (isExempt(to.path)) {
-        return
+        return undefined
     } else if (isRootPath(to.path) || isLocaleRoot(to.path)) {
         return navigateTo({ path: localePath('/map'), query: to.query }, { redirectCode: 301 })
     } else if (!isLocalized(to.path)) {
