@@ -24,6 +24,20 @@ const formatRatiosToA0: Record<PrintFormat, number> = {
 }
 
 /**
+ * Get the print page size in meter for a given format (eg. 'a4') and an orientation (eg. 'landscape')
+ */
+export function getPageSizeInMeters(format: PrintFormat, orientation: PrintOrientation) {
+    const longSide = ~~(A0_LONG_SIDE_MM / formatRatiosToA0[format])
+    const shortSide = ~~(A0_SHORT_SIDE_MM / formatRatiosToA0[format])
+
+    if (orientation === 'landscape') {
+        return { width: longSide, height: shortSide }
+    } else {
+        return { width: shortSide, height: longSide }
+    }
+}
+
+/**
  * Get the print page size in pixels from a given format (eg. 'a4'), an orientation (eg. 'landscape') and a resolution in DPI (eg. 192)
  */
 export function getPageSizeInPixels(

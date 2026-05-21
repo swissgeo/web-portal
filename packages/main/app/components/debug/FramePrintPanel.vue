@@ -22,6 +22,7 @@ const {
     isPrintExtentBeyondViewport,
     adjustToLockedView,
     printPreviewUrl,
+    scaleOfPrintFormatted,
 } = usePrintFraming()
 
 const printFormatItems = ref(
@@ -65,6 +66,7 @@ function handleClose() {
             <div>Zoom Level for print: {{ zoomLevelForPrint }}</div>
             <div>Out of Swiss bounds: {{ isPrintExtentOutOfBounds }}</div>
             <div>Beyond viewport: {{ isPrintExtentBeyondViewport }}</div>
+            <div>Scale of print: {{ scaleOfPrintFormatted }}</div>
             <UFormField
                 orientation="horizontal"
                 label="Enable strict zoom steps"

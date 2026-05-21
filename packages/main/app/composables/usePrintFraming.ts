@@ -91,6 +91,24 @@ export function usePrintFraming() {
         )
     })
 
+    const scaleOfPrint = computed(() => {
+        if (!olMap.value || !Array.isArray(printExtent.value) || printExtent.value.length !== 4) {
+            return null
+        }
+        const extentWidthMeter = printExtent.value[2] - printExtent.value[0]
+        const pageWidthMeter =
+            getPageSizeInMeters(selectedPrintFormat.value, selectedPrintOrientation.value).width /
+            1000 // convert from mm to meter
+        return extentWidthMeter / pageWidthMeter
+    })
+
+    const scaleOfPrintFormatted = computed(() => {
+        if (!scaleOfPrint.value) {
+            return null
+        }
+        return `1:${Math.round(scaleOfPrint.value)}`
+    })
+
     const isPrintExtentOutOfBounds = computed(() => {
         if (!printExtent.value) {
             return false
@@ -270,5 +288,7 @@ export function usePrintFraming() {
         isPrintExtentBeyondViewport,
         adjustToLockedView,
         printPreviewUrl,
+        scaleOfPrint,
+        scaleOfPrintFormatted,
     }
 }
