@@ -1,1 +1,1 @@
-export type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
+export type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";

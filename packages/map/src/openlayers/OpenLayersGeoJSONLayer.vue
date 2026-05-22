@@ -1,25 +1,25 @@
 <script lang="ts" setup>
-import type { Map } from 'ol'
-import type { Ref } from 'vue'
+import type { Map } from "ol";
+import type { Ref } from "vue";
 
-import { computed, inject } from 'vue'
+import { computed, inject } from "vue";
 
-import type { GeoJSONLayer } from '@/types'
+import type { GeoJSONLayer } from "@/types";
 
 // import * as geoJsonUtils from '@/utils/geoJsonUtils'
-import useOlGeoJSONLayer from '../composables/olGeoJSONLayer.composable'
+import useOlGeoJSONLayer from "../composables/olGeoJSONLayer.composable";
 
 const { layer } = defineProps<{
-    layer: GeoJSONLayer
-}>()
+  layer: GeoJSONLayer;
+}>();
 
-const layerRef = computed(() => layer)
+const layerRef = computed(() => layer);
 
-const olMap = inject<Ref<Map | undefined>>('olMap')
+const olMap = inject<Ref<Map | undefined>>("olMap");
 
-useOlGeoJSONLayer(layerRef, olMap)
+useOlGeoJSONLayer(layerRef, olMap);
 </script>
 
 <template>
-    <slot></slot>
+  <slot></slot>
 </template>

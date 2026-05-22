@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-import type { Map } from 'ol'
-import type { ShallowRef } from 'vue'
+import type { Map } from "ol";
+import type { ShallowRef } from "vue";
 
-import { computed, inject } from 'vue'
+import { computed, inject } from "vue";
 
-import type { GPXLayer } from '@/types'
+import type { GPXLayer } from "@/types";
 
-import useOlGPXLayer from '@/composables/olGPXLayer.composable'
+import useOlGPXLayer from "@/composables/olGPXLayer.composable";
 
 const { layer } = defineProps<{
-    layer: GPXLayer
-}>()
+  layer: GPXLayer;
+}>();
 
-const olMap = inject<ShallowRef<Map | undefined>>('olMap')
+const olMap = inject<ShallowRef<Map | undefined>>("olMap");
 
-const layerRef = computed(() => layer)
+const layerRef = computed(() => layer);
 
-useOlGPXLayer(layerRef, olMap)
+useOlGPXLayer(layerRef, olMap);
 </script>
 
 <template>
-    <slot />
+  <slot />
 </template>

@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-import type { Map } from 'ol'
-import type { ShallowRef } from 'vue'
+import type { Map } from "ol";
+import type { ShallowRef } from "vue";
 
-import { computed, inject } from 'vue'
+import { computed, inject } from "vue";
 
-import type { KMZLayer } from '@/types'
+import type { KMZLayer } from "@/types";
 
-import useOlKMZLayer from '@/composables/olKMZLayer.composable'
+import useOlKMZLayer from "@/composables/olKMZLayer.composable";
 
 const { layer } = defineProps<{
-    layer: KMZLayer
-}>()
+  layer: KMZLayer;
+}>();
 
-const olMap = inject<ShallowRef<Map | undefined>>('olMap')
+const olMap = inject<ShallowRef<Map | undefined>>("olMap");
 
-const layerRef = computed(() => layer)
+const layerRef = computed(() => layer);
 
-useOlKMZLayer(layerRef, olMap)
+useOlKMZLayer(layerRef, olMap);
 </script>
 
 <template>
-    <slot />
+  <slot />
 </template>

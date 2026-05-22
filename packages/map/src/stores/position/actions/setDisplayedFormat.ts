@@ -1,12 +1,12 @@
-import type { ActionDispatcher } from '@swissgeo/shared/action-dispatcher'
+import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
 
-import type { PositionStore } from '@/stores/position/types/position'
-import type { CoordinateFormat } from '@/utils/coordinates/coordinateFormat'
+import type { PositionStore } from "@/stores/position/types/position";
+import type { CoordinateFormat } from "@/utils/coordinates/coordinateFormat";
 
 export default function setDisplayedFormat(
-    this: PositionStore,
-    displayedFormat: CoordinateFormat,
-    dispatcher: ActionDispatcher
+  this: PositionStore,
+  displayedFormat: CoordinateFormat,
+  dispatcher: ActionDispatcher,
 ): void {
-    this.displayFormat = displayedFormat
+  this.displayFormat = displayedFormat;
 }
