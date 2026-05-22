@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { Dimension, Layer as SourceData } from '@swissgeo/layers'
+import type { Dimension, LayerInfo, Layer as SourceData } from '@swissgeo/layers'
 import type { Layer as MapLayer } from '@swissgeo/map'
+import type { Dataset } from '@swissgeo/ogc'
 
 import { isDatasetLayer, useLayerStore } from '@swissgeo/layers'
 
@@ -26,22 +27,16 @@ function updateMapLayerData(index: number, mapLayerData: MapLayer) {
 
     mapViewStore.updateLayerData(index, mapLayerData, true)
 }
-/*
-function removeLayerData(index: number) {
-    mapViewStore.removeLayer(index)
-}
-function updateLayerInfo(index: number, uuid: string, layerInfo: LayerInfo) {
-    useLayerStore().setLayerInfo(uuid, layerInfo)
+function updateLayerInfo(uuid: string, info: LayerInfo) {
+    layerStore.setLayerInfo(uuid, info)
 }
 
-function updateStoreLayerData(index: number, uuid: string, dataset: Dataset) {
-      if (index !== 0 || !useLayerStore().backgroundLayer) {
-        useLayerStore().setLayerData(uuid, dataset)
-    }
+function updateStoreLayerData(uuid: string, dataset: Dataset) {
+    layerStore.setLayerData(uuid, dataset)
 }
-*/
+
 function updateTimeDimension(identifier: string, dimension: Partial<Dimension>) {
-    useLayerStore().setDimension('time', identifier, dimension)
+    layerStore.setDimension('time', identifier, dimension)
 }
 function updateOpacity(identifier: number | string, opacity: number) {
     mapViewStore.updateLayerOpacity(identifier, opacity)
@@ -56,15 +51,15 @@ function updateOpacity(identifier: number | string, opacity: number) {
         <MapDatamappingOgcDatasetConverter
             v-if="isDatasetLayer(data)"
             :layer="data"
-            :zIndex="index"
             @update="updateMapLayerData(index, $event)"
             @updateOpacity="updateOpacity"
             @updateTimeDimension="updateTimeDimension"
+            @updateDataset="updateStoreLayerData"
+            @updateLayerInfo="updateLayerInfo"
         />
         <MapDatamappingFileConverter
             v-else
             :layer="data"
-            :zIndex="index"
             @update="updateMapLayerData(index, $event)"
         />
     </div>

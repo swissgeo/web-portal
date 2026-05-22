@@ -18,25 +18,19 @@ export default function useDatasetLocaleRefresh(
 ) {
     const { locale } = useI18n()
 
-    const newUrlString = computed(() => {
-        if (!layer.data.links) {
-            throw new Error("dataset doesn't contain self link")
-        }
-        const datasetLinkObject = layer.data.links.filter((link: Link) => link.rel === 'self')
-        if (datasetLinkObject.length === 0) {
-            // TODO think about some error handling and toast that into the user's face
-            throw new Error("dataset doesn't contain self link")
-        }
-        if (!datasetLinkObject[0] || !datasetLinkObject[0].href) {
-            // TODO think about some error handling and toast that into the user's face
-            throw new Error("dataset doesn't contain self link")
-        }
-        const datasetUrl = new URL(datasetLinkObject[0].href)
+    const selfLink = layer.data.links?.find((link: Link) => link.rel === 'self')
 
-        // Change the query param
+    if (!selfLink?.href) {
+        throw new Error(
+            `Dataset "${layer.humanId}" has no "self" link; cannot refresh on locale change`
+        )
+    }
+
+    const selfHref = selfLink.href
+    const requestUrl = useRequestURL()
+    const newUrlString = computed((): string => {
+        const datasetUrl = new URL(selfHref, requestUrl.href)
         datasetUrl.searchParams.set('language', locale.value)
-
-        // Get back a string
         return datasetUrl.toString()
     })
 

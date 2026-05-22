@@ -23,3 +23,16 @@ The setup is fully reactive.
 ## File and Dataset
 
 There are two main entrypoints to this: `OgcDatasetConverter.vue` and `FileConverter.vue`. The first one concerts itself, as the name suggest, to convert an OGC dataset into openlayers data. The second one merely maps the layer data from the source to a datastructure used by the map module.
+
+## Externally-imported WMS / WMTS layers (the "fake dataset" hack)
+
+Internal layers come from the OGC API catalog and arrive as proper `Dataset` records (with `self` and `distributions` links). Externally-imported layers — those harvested by `ImportLayersPanel.vue` from a raw WMS/WMTS `GetCapabilities` document — do **not** have such a record.
+
+To keep a single pipeline for both cases, `ImportLayersPanel.addLayer()` fabricates a synthetic `Dataset` whose `self` and `distributions` links point at our own server routes:
+
+- `/api/wpa/v1/layers/external/dataset/<encodedCapabilityUrl>/<layerId>` → synthesises a `Dataset`
+- `/api/wpa/v1/layers/external/<encodedCapabilityUrl>/<layerId>` → synthesises a `Distribution` collection
+
+These routes parse the upstream capabilities document on demand and return OGC-API-shaped JSON so the rest of `datamapping/` cannot tell the difference between an internal and an external layer.
+
+This is a deliberate hack and is documented here so it can either be kept knowingly or revisited later.

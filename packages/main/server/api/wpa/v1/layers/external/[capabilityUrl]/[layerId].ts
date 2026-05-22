@@ -1,4 +1,4 @@
-import { appendResponseHeader, createError, getRouterParam, getRequestURL } from 'h3'
+import { appendResponseHeader, createError, getRouterParam } from 'h3'
 
 export default defineEventHandler((event) => {
     const capabilityUrlParam = getRouterParam(event, 'capabilityUrl')
@@ -13,10 +13,7 @@ export default defineEventHandler((event) => {
     }
 
     const capabilityUrl = decodeURIComponent(capabilityUrlParam)
-
-    // Derive base URL from the incoming request so it works on any host/port
-    const requestUrl = getRequestURL(event)
-    const serviceUrl = `${requestUrl.origin}/api/wpa/v1/layers/external/service/${capabilityUrlParam}`
+    const serviceUrl = `/api/wpa/v1/layers/external/service/${capabilityUrlParam}`
 
     // Determine protocol based on the capability URL
     let protocol = 'OGC:WMTS'
