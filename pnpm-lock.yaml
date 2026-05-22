@@ -187,8 +187,8 @@ catalogs:
       specifier: ^4.17.21
       version: 4.18.1
     lucide-vue-next:
-      specifier: ^0.577.0
-      version: 0.577.0
+      specifier: ^1.0.0
+      version: 1.0.0
     msw:
       specifier: ^2.13.2
       version: 2.14.3
@@ -688,7 +688,7 @@ importers:
         version: 0.8.2
       lucide-vue-next:
         specifier: 'catalog:'
-        version: 0.577.0(vue@3.5.34(typescript@5.9.3))
+        version: 1.0.0(vue@3.5.34(typescript@5.9.3))
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -1043,7 +1043,7 @@ importers:
         version: 0.8.2
       lucide-vue-next:
         specifier: 'catalog:'
-        version: 0.577.0(vue@3.5.34(typescript@5.9.3))
+        version: 1.0.0(vue@3.5.34(typescript@5.9.3))
       nuxt:
         specifier: 'catalog:'
         version: 4.4.6(@babel/plugin-proposal-decorators@7.29.0(@babel/core@7.29.0))(@babel/plugin-syntax-jsx@7.28.6(@babel/core@7.29.0))(@babel/plugin-syntax-typescript@7.28.6(@babel/core@7.29.0))(@parcel/watcher@2.5.6)(@types/node@25.6.0)(@vue/compiler-sfc@3.5.34)(cac@6.7.14)(db0@0.3.4)(eslint@9.39.2(jiti@2.7.0))(ioredis@5.10.1)(lightningcss@1.30.2)(magicast@0.5.3)(meow@13.2.0)(optionator@0.9.4)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(rollup-plugin-visualizer@7.0.1(rollup@4.60.4))(rollup@4.60.4)(stylelint@16.26.1(typescript@5.9.3))(terser@5.46.0)(typescript@5.9.3)(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))(vue-tsc@3.2.4(typescript@5.9.3))(yaml@2.8.2)
@@ -1164,7 +1164,7 @@ importers:
         version: 0.5.0
       lucide-vue-next:
         specifier: 'catalog:'
-        version: 0.577.0(vue@3.5.34(typescript@5.9.3))
+        version: 1.0.0(vue@3.5.34(typescript@5.9.3))
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -1469,7 +1469,7 @@ importers:
         version: 14.2.1(vue@3.5.34(typescript@5.9.3))
       lucide-vue-next:
         specifier: 'catalog:'
-        version: 0.577.0(vue@3.5.34(typescript@5.9.3))
+        version: 1.0.0(vue@3.5.34(typescript@5.9.3))
       vue:
         specifier: 'catalog:'
         version: 3.5.34(typescript@5.9.3)
@@ -1603,7 +1603,7 @@ importers:
         version: 14.2.1(vue@3.5.34(typescript@5.9.3))
       lucide-vue-next:
         specifier: 'catalog:'
-        version: 0.577.0(vue@3.5.34(typescript@5.9.3))
+        version: 1.0.0(vue@3.5.34(typescript@5.9.3))
       vue:
         specifier: 'catalog:'
         version: 3.5.34(typescript@5.9.3)
@@ -7833,8 +7833,8 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
-  lucide-vue-next@0.577.0:
-    resolution: {integrity: sha512-py05bAfv9SHVJqscbiOnjcnLlEmOffA58a+7XhZuFxrs6txe1E8VoR1ngWGTYO+9aVKABAz8l3ee3PqiQN9QPA==}
+  lucide-vue-next@1.0.0:
+    resolution: {integrity: sha512-V6SPvx1IHTj/UY+FrIYWV5faISsPSb8BnWSFDxAtezWKvWc9ZZ40PDrdu1/Qb5vg4lHWr1hs1BAMGVGm6V1Xdg==}
     deprecated: Package deprecated. Please use @lucide/vue instead.
     peerDependencies:
       vue: '>=3.0.1'
@@ -18297,7 +18297,7 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-vue-next@0.577.0(vue@3.5.34(typescript@5.9.3)):
+  lucide-vue-next@1.0.0(vue@3.5.34(typescript@5.9.3)):
     dependencies:
       vue: 3.5.34(typescript@5.9.3)
 

@@ -72,7 +72,7 @@ catalog:
     globals: ^17.0.0
     happy-dom: 20.9.0
     lodash: ^4.17.21
-    lucide-vue-next: ^0.577.0
+    lucide-vue-next: ^1.0.0
     msw: ^2.13.2
     nuxt: ^4.4.6
     ol: ^10.7.0
