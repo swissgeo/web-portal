@@ -1,18 +1,18 @@
-import { formatThousand, isNumber, round } from '@swissgeo/numbers'
-import proj4 from 'proj4'
+import { formatThousand, isNumber, round } from "@swissgeo/numbers";
+import proj4 from "proj4";
 
-import type CoordinateSystem from '@/proj/CoordinateSystem'
+import type CoordinateSystem from "@/proj/CoordinateSystem";
 
-import { allCoordinateSystems, WGS84 } from '@/proj'
+import { allCoordinateSystems, WGS84 } from "@/proj";
 
-export type SingleCoordinate = [number, number]
-export type Single3DCoordinate = [number, number, number]
+export type SingleCoordinate = [number, number];
+export type Single3DCoordinate = [number, number, number];
 
 function isValidCoordinate(input: unknown): boolean {
-    if (!Array.isArray(input) || input.length === 0) {
-        return false
-    }
-    return typeof input[0] === 'number' && typeof input[1] === 'number'
+  if (!Array.isArray(input) || input.length === 0) {
+    return false;
+  }
+  return typeof input[0] === "number" && typeof input[1] === "number";
 }
 
 /**
@@ -28,36 +28,38 @@ function isValidCoordinate(input: unknown): boolean {
  * @see https://stackoverflow.com/a/2901298/4840446
  */
 function toRoundedString(
-    coordinate: SingleCoordinate,
-    digits: number,
-    withThousandsSeparator: boolean = true,
-    enforceDigit: boolean = false
+  coordinate: SingleCoordinate,
+  digits: number,
+  withThousandsSeparator: boolean = true,
+  enforceDigit: boolean = false,
 ): string | undefined {
-    if (
-        !Array.isArray(coordinate) ||
-        coordinate.length !== 2 ||
-        !coordinate.every(isNumber) ||
-        coordinate.some(
-            (value) => value === Number.POSITIVE_INFINITY || value === Number.NEGATIVE_INFINITY
-        )
-    ) {
-        return
-    }
-    return coordinate
-        .map((value) => {
-            const roundedValue: number = round(value, digits)
-            let stringValue: string
-            if (enforceDigit) {
-                stringValue = roundedValue.toFixed(digits)
-            } else {
-                stringValue = roundedValue.toString()
-            }
-            if (withThousandsSeparator) {
-                return formatThousand(stringValue)
-            }
-            return stringValue
-        })
-        .join(', ')
+  if (
+    !Array.isArray(coordinate) ||
+    coordinate.length !== 2 ||
+    !coordinate.every(isNumber) ||
+    coordinate.some(
+      (value) =>
+        value === Number.POSITIVE_INFINITY ||
+        value === Number.NEGATIVE_INFINITY,
+    )
+  ) {
+    return;
+  }
+  return coordinate
+    .map((value) => {
+      const roundedValue: number = round(value, digits);
+      let stringValue: string;
+      if (enforceDigit) {
+        stringValue = roundedValue.toFixed(digits);
+      } else {
+        stringValue = roundedValue.toString();
+      }
+      if (withThousandsSeparator) {
+        return formatThousand(stringValue);
+      }
+      return stringValue;
+    })
+    .join(", ");
 }
 
 /**
@@ -69,26 +71,32 @@ function toRoundedString(
  * @returns Coordinates wrapped on the X axis
  */
 function wrapXCoordinates<T extends SingleCoordinate | SingleCoordinate[]>(
-    coordinates: T,
-    projection: CoordinateSystem
+  coordinates: T,
+  projection: CoordinateSystem,
 ): T {
-    if (projection.usesMercatorPyramid && projection.bounds && Array.isArray(coordinates)) {
-        if (coordinates.length === 2 && coordinates.every(isNumber)) {
-            const [x, y] = coordinates as SingleCoordinate
-            if (x >= projection.bounds.lowerX && x <= projection.bounds.upperX) {
-                return coordinates
-            }
-            const boundsWidth = projection.bounds.upperX - projection.bounds.lowerX
-            const worldsAway = Math.floor((x - projection.bounds.lowerX) / boundsWidth)
-            const offset = worldsAway * boundsWidth
-            return [x - offset, y] as T
-        } else if (coordinates.every(Array.isArray)) {
-            return (coordinates as SingleCoordinate[]).map((coordinate) =>
-                wrapXCoordinates(coordinate, projection)
-            ) as T
-        }
+  if (
+    projection.usesMercatorPyramid &&
+    projection.bounds &&
+    Array.isArray(coordinates)
+  ) {
+    if (coordinates.length === 2 && coordinates.every(isNumber)) {
+      const [x, y] = coordinates as SingleCoordinate;
+      if (x >= projection.bounds.lowerX && x <= projection.bounds.upperX) {
+        return coordinates;
+      }
+      const boundsWidth = projection.bounds.upperX - projection.bounds.lowerX;
+      const worldsAway = Math.floor(
+        (x - projection.bounds.lowerX) / boundsWidth,
+      );
+      const offset = worldsAway * boundsWidth;
+      return [x - offset, y] as T;
+    } else if (coordinates.every(Array.isArray)) {
+      return (coordinates as SingleCoordinate[]).map((coordinate) =>
+        wrapXCoordinates(coordinate, projection),
+      ) as T;
     }
-    return coordinates
+  }
+  return coordinates;
 }
 
 /**
@@ -100,19 +108,22 @@ function wrapXCoordinates<T extends SingleCoordinate | SingleCoordinate[]>(
  * it, or return the array as is if it is not required
  */
 function unwrapGeometryCoordinates(
-    geometryCoordinates?: SingleCoordinate[] | SingleCoordinate[][] | SingleCoordinate[][][]
+  geometryCoordinates?:
+    | SingleCoordinate[]
+    | SingleCoordinate[][]
+    | SingleCoordinate[][][],
 ): SingleCoordinate[] {
-    if (!geometryCoordinates) {
-        return []
-    }
+  if (!geometryCoordinates) {
+    return [];
+  }
 
-    if (geometryCoordinates.every((value) => isValidCoordinate(value))) {
-        return geometryCoordinates as SingleCoordinate[]
-    } else {
-        return unwrapGeometryCoordinates(
-            (geometryCoordinates as SingleCoordinate[][] | SingleCoordinate[][][])[0]
-        )
-    }
+  if (geometryCoordinates.every((value) => isValidCoordinate(value))) {
+    return geometryCoordinates as SingleCoordinate[];
+  } else {
+    return unwrapGeometryCoordinates(
+      (geometryCoordinates as SingleCoordinate[][] | SingleCoordinate[][][])[0],
+    );
+  }
 }
 
 /**
@@ -120,69 +131,73 @@ function unwrapGeometryCoordinates(
  *
  * @param coordinates
  */
-function removeZValues(coordinates: SingleCoordinate[] | Single3DCoordinate[]): SingleCoordinate[] {
-    if (Array.isArray(coordinates)) {
-        if (coordinates.every((coordinate) => coordinate.length === 2)) {
-            return coordinates
-        } else if (coordinates.some((coordinate) => coordinate.length > 2)) {
-            return coordinates.map((coordinate) => [coordinate[0], coordinate[1]])
-        }
+function removeZValues(
+  coordinates: SingleCoordinate[] | Single3DCoordinate[],
+): SingleCoordinate[] {
+  if (Array.isArray(coordinates)) {
+    if (coordinates.every((coordinate) => coordinate.length === 2)) {
+      return coordinates;
+    } else if (coordinates.some((coordinate) => coordinate.length > 2)) {
+      return coordinates.map((coordinate) => [coordinate[0], coordinate[1]]);
     }
-    throw new Error('Invalid coordinates received, cannot remove Z values')
+  }
+  throw new Error("Invalid coordinates received, cannot remove Z values");
 }
 
 function reprojectAndRound<T extends SingleCoordinate | SingleCoordinate[]>(
-    from: CoordinateSystem,
-    into: CoordinateSystem,
-    coordinates: T
+  from: CoordinateSystem,
+  into: CoordinateSystem,
+  coordinates: T,
 ): T {
-    if (!from || !into) {
-        throw new Error('Invalid arguments, must receive two CRS')
-    }
-    if (!isValidCoordinate(coordinates)) {
-        throw new Error(
-            'Invalid coordinates received, must be an array of number or an array of coordinates'
-        )
-    }
-    const depthOne = coordinates[0]
-    if (Array.isArray(depthOne)) {
-        return (coordinates as SingleCoordinate[]).map((coordinate) =>
-            reprojectAndRound(from, into, coordinate)
-        ) as T
-    }
-    return proj4(from.epsg, into.epsg, coordinates as SingleCoordinate).map((value) =>
-        into.roundCoordinateValue(value)
-    ) as T
+  if (!from || !into) {
+    throw new Error("Invalid arguments, must receive two CRS");
+  }
+  if (!isValidCoordinate(coordinates)) {
+    throw new Error(
+      "Invalid coordinates received, must be an array of number or an array of coordinates",
+    );
+  }
+  const depthOne = coordinates[0];
+  if (Array.isArray(depthOne)) {
+    return (coordinates as SingleCoordinate[]).map((coordinate) =>
+      reprojectAndRound(from, into, coordinate),
+    ) as T;
+  }
+  return proj4(from.epsg, into.epsg, coordinates as SingleCoordinate).map(
+    (value) => into.roundCoordinateValue(value),
+  ) as T;
 }
 
 function parseCRS(crs?: string): CoordinateSystem | undefined {
-    const epsgNumber = crs?.split(':').pop()
-    if (!epsgNumber) {
-        return
-    }
+  const epsgNumber = crs?.split(":").pop();
+  if (!epsgNumber) {
+    return;
+  }
 
-    if (epsgNumber === 'WGS84') {
-        return WGS84
-    }
-    return allCoordinateSystems.find((system) => system.epsg === `EPSG:${epsgNumber}`)
+  if (epsgNumber === "WGS84") {
+    return WGS84;
+  }
+  return allCoordinateSystems.find(
+    (system) => system.epsg === `EPSG:${epsgNumber}`,
+  );
 }
 
 export interface SwissGeoCoordinatesUtils {
-    toRoundedString: typeof toRoundedString
-    wrapXCoordinates: typeof wrapXCoordinates
-    unwrapGeometryCoordinates: typeof unwrapGeometryCoordinates
-    removeZValues: typeof removeZValues
-    reprojectAndRound: typeof reprojectAndRound
-    parseCRS: typeof parseCRS
+  toRoundedString: typeof toRoundedString;
+  wrapXCoordinates: typeof wrapXCoordinates;
+  unwrapGeometryCoordinates: typeof unwrapGeometryCoordinates;
+  removeZValues: typeof removeZValues;
+  reprojectAndRound: typeof reprojectAndRound;
+  parseCRS: typeof parseCRS;
 }
 
 const coordinatesUtils: SwissGeoCoordinatesUtils = {
-    toRoundedString,
-    wrapXCoordinates,
-    unwrapGeometryCoordinates,
-    removeZValues,
-    reprojectAndRound,
-    parseCRS,
-}
-export { coordinatesUtils }
-export default coordinatesUtils
+  toRoundedString,
+  wrapXCoordinates,
+  unwrapGeometryCoordinates,
+  removeZValues,
+  reprojectAndRound,
+  parseCRS,
+};
+export { coordinatesUtils };
+export default coordinatesUtils;

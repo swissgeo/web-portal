@@ -1,78 +1,78 @@
-import { mount } from '@vue/test-utils'
-import { describe, it, expect, vi } from 'vitest'
+import { mount } from "@vue/test-utils";
+import { describe, it, expect, vi } from "vitest";
 
-import type { FeatureCollectionWithCRS } from '@/utils/geoJsonUtils'
+import type { FeatureCollectionWithCRS } from "@/utils/geoJsonUtils";
 
-import useOlLocalGeoJSONLayer from '@/composables/olLocalGeoJSONLayer.composable'
-import OpenLayersLocalGeoJSONLayer from '@/openlayers/OpenLayersLocalGeoJSONLayer.vue'
+import useOlLocalGeoJSONLayer from "@/composables/olLocalGeoJSONLayer.composable";
+import OpenLayersLocalGeoJSONLayer from "@/openlayers/OpenLayersLocalGeoJSONLayer.vue";
 
-const initialize = vi.fn()
-const setVisibility = vi.fn()
-const setZIndex = vi.fn()
+const initialize = vi.fn();
+const setVisibility = vi.fn();
+const setZIndex = vi.fn();
 
-vi.mock('../../composables/olLocalGeoJSONLayer.composable', () => ({
-    default: vi.fn(() => ({
-        initialize,
-        setVisibility,
-        setZIndex,
-    })),
-}))
+vi.mock("../../composables/olLocalGeoJSONLayer.composable", () => ({
+  default: vi.fn(() => ({
+    initialize,
+    setVisibility,
+    setZIndex,
+  })),
+}));
 
-vi.mock('ol/layer/Vector', () => ({
-    default: vi.fn(() => ({
-        setSource: vi.fn(),
-    })),
-}))
+vi.mock("ol/layer/Vector", () => ({
+  default: vi.fn(() => ({
+    setSource: vi.fn(),
+  })),
+}));
 
-vi.mock('ol/source/Vector', () => ({
-    default: vi.fn(() => ({
-        addFeature: vi.fn(),
-        clear: vi.fn(),
-    })),
-}))
+vi.mock("ol/source/Vector", () => ({
+  default: vi.fn(() => ({
+    addFeature: vi.fn(),
+    clear: vi.fn(),
+  })),
+}));
 
-vi.mock('@/stores/position', () => ({
-    default: vi.fn(() => ({
-        projection: { epsg: 'EPSG:2056' },
-    })),
-}))
+vi.mock("@/stores/position", () => ({
+  default: vi.fn(() => ({
+    projection: { epsg: "EPSG:2056" },
+  })),
+}));
 
-describe.skip('OpenLayersLocalGeoJSONLayer.vue', () => {
-    it('renders correctly', () => {
-        const wrapper = mount(OpenLayersLocalGeoJSONLayer, {
-            props: {
-                layer: {
-                    format: 'GeoJSON',
-                    layerId: 'test-layer',
-                    uuid: '1234',
-                    // fileData: '{}',
-                    geoJsonData: {} as FeatureCollectionWithCRS,
-                    opacity: 1,
-                    isVisible: true,
-                    zIndex: 0,
-                },
-            },
-        })
-        expect(wrapper.exists()).toBe(true)
-    })
+describe.skip("OpenLayersLocalGeoJSONLayer.vue", () => {
+  it("renders correctly", () => {
+    const wrapper = mount(OpenLayersLocalGeoJSONLayer, {
+      props: {
+        layer: {
+          format: "GeoJSON",
+          layerId: "test-layer",
+          uuid: "1234",
+          // fileData: '{}',
+          geoJsonData: {} as FeatureCollectionWithCRS,
+          opacity: 1,
+          isVisible: true,
+          zIndex: 0,
+        },
+      },
+    });
+    expect(wrapper.exists()).toBe(true);
+  });
 
-    it('calls initialize on mount', () => {
-        mount(OpenLayersLocalGeoJSONLayer, {
-            props: {
-                layer: {
-                    format: 'GeoJSON',
-                    layerId: 'test-layer',
-                    uuid: '1234',
-                    // fileData: '{}',
-                    geoJsonData: {} as FeatureCollectionWithCRS,
-                    opacity: 1,
-                    isVisible: true,
-                    zIndex: 0,
-                },
-            },
-        })
-        // @ts-expect-error useOlLocalGeoJSONLayer not fully typed
-        useOlLocalGeoJSONLayer()
-        // expect(initialize).toHaveBeenCalled()
-    })
-})
+  it("calls initialize on mount", () => {
+    mount(OpenLayersLocalGeoJSONLayer, {
+      props: {
+        layer: {
+          format: "GeoJSON",
+          layerId: "test-layer",
+          uuid: "1234",
+          // fileData: '{}',
+          geoJsonData: {} as FeatureCollectionWithCRS,
+          opacity: 1,
+          isVisible: true,
+          zIndex: 0,
+        },
+      },
+    });
+    // @ts-expect-error useOlLocalGeoJSONLayer not fully typed
+    useOlLocalGeoJSONLayer();
+    // expect(initialize).toHaveBeenCalled()
+  });
+});

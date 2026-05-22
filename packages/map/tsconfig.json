@@ -1,19 +1,20 @@
 {
-    "extends": "@swissgeo/config-typescript/tsconfig.base.json",
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.vue",
-        "env.d.ts",
-        "vite.config.ts",
-        "types/**/*.d.ts",
-        "../../base.vite.config.ts",
-        "vitest.config.ts"
-    ],
-    "compilerOptions": {
-        "types": ["vue", "vite/client"],
-        "paths": {
-            "@/*": ["./src/*", "../skeleton/src/*"],
-            "@stores/*": ["./src/stores/*", "../skeleton/src/stores/*"]
-        }
+  "extends": "@swissgeo/config-typescript/tsconfig.base.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "env.d.ts",
+    "prettier.config.ts",
+    "vite.config.ts",
+    "types/**/*.d.ts",
+    "../../base.vite.config.ts",
+    "vitest.config.ts"
+  ],
+  "compilerOptions": {
+    "types": ["vue", "vite/client"],
+    "paths": {
+      "@/*": ["./src/*", "../skeleton/src/*"],
+      "@stores/*": ["./src/stores/*", "../skeleton/src/stores/*"]
     }
+  }
 }

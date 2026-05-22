@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-import type { Map } from 'ol'
-import type { ShallowRef } from 'vue'
+import type { Map } from "ol";
+import type { ShallowRef } from "vue";
 
-import { computed, inject } from 'vue'
+import { computed, inject } from "vue";
 
-import type { WMTSLayer } from '@/types/layers'
+import type { WMTSLayer } from "@/types/layers";
 
-import useOlWmtsLayer from '@/composables/olWMTSLayer.composable'
+import useOlWmtsLayer from "@/composables/olWMTSLayer.composable";
 
 const { layer } = defineProps<{
-    layer: WMTSLayer
-}>()
+  layer: WMTSLayer;
+}>();
 
-const layerRef = computed(() => layer)
+const layerRef = computed(() => layer);
 
-const olMap = inject<ShallowRef<Map | undefined>>('olMap')
+const olMap = inject<ShallowRef<Map | undefined>>("olMap");
 
-useOlWmtsLayer(layerRef, olMap)
+useOlWmtsLayer(layerRef, olMap);
 </script>
 
 <template>
-    <slot />
+  <slot />
 </template>

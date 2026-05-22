@@ -1,18 +1,18 @@
-import type { SingleCoordinate, CoordinateSystem } from '@swissgeo/coordinates'
+import type { SingleCoordinate, CoordinateSystem } from "@swissgeo/coordinates";
 
-import { LV03 } from '@swissgeo/coordinates'
-import { round } from '@swissgeo/numbers'
-import proj4 from 'proj4'
+import { LV03 } from "@swissgeo/coordinates";
+import { round } from "@swissgeo/numbers";
+import proj4 from "proj4";
 
-import type { CoordinateFormat } from '@/utils/coordinates/coordinateFormat'
+import type { CoordinateFormat } from "@/utils/coordinates/coordinateFormat";
 //const { t } = useI18n()
 
-import { LV03Format, LV95Format } from '@/utils/coordinates/coordinateFormat'
+import { LV03Format, LV95Format } from "@/utils/coordinates/coordinateFormat";
 
 interface HumanReadableCoordinateParams {
-    coordinates: SingleCoordinate
-    projection: CoordinateSystem
-    displayedFormat: CoordinateFormat
+  coordinates: SingleCoordinate;
+  projection: CoordinateSystem;
+  displayedFormat: CoordinateFormat;
 }
 
 /**
@@ -30,21 +30,21 @@ interface HumanReadableCoordinateParams {
  * second, that would not be a good idea...
  */
 export default function getHumanReadableCoordinate({
-    coordinates,
-    projection,
-    displayedFormat,
+  coordinates,
+  projection,
+  displayedFormat,
 }: HumanReadableCoordinateParams): string {
-    if (displayedFormat.id === LV95Format.id) {
-        return `${/*t*/ 'coordinates_label'} ${displayedFormat.formatCallback(coordinates, false)}`
-    } else if (displayedFormat.id === LV03Format.id) {
-        const lv03Coordinates =
-            projection.epsg === LV03.epsg
-                ? coordinates
-                : proj4(projection.epsg, LV03.epsg, coordinates)
-        return `${/*t*/ 'coordinates_label'} ${/*t*/ 'approx_abbr'} ${displayedFormat.formatCallback(
-            lv03Coordinates.map((value) => round(value)) as SingleCoordinate,
-            false
-        )}`
-    }
-    return displayedFormat.formatCallback(coordinates, true)
+  if (displayedFormat.id === LV95Format.id) {
+    return `${/*t*/ "coordinates_label"} ${displayedFormat.formatCallback(coordinates, false)}`;
+  } else if (displayedFormat.id === LV03Format.id) {
+    const lv03Coordinates =
+      projection.epsg === LV03.epsg
+        ? coordinates
+        : proj4(projection.epsg, LV03.epsg, coordinates);
+    return `${/*t*/ "coordinates_label"} ${/*t*/ "approx_abbr"} ${displayedFormat.formatCallback(
+      lv03Coordinates.map((value) => round(value)) as SingleCoordinate,
+      false,
+    )}`;
+  }
+  return displayedFormat.formatCallback(coordinates, true);
 }

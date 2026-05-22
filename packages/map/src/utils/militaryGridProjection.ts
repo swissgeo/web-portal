@@ -7,35 +7,35 @@
 //
 //     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import type { FlatExtent, SingleCoordinate } from '@swissgeo/coordinates'
+import type { FlatExtent, SingleCoordinate } from "@swissgeo/coordinates";
 
 /** UTM zones are grouped, and assigned to one of a group of 6 sets. */
-const NUM_100K_SETS: number = 6
+const NUM_100K_SETS: number = 6;
 
 /** The column letters (for easting) of the lower left value, per set. */
-const SET_ORIGIN_COLUMN_LETTERS: string = 'AJSAJS'
+const SET_ORIGIN_COLUMN_LETTERS: string = "AJSAJS";
 
 /** The row letters (for northing) of the lower left value, per set. */
-const SET_ORIGIN_ROW_LETTERS: string = 'AFAFAF'
+const SET_ORIGIN_ROW_LETTERS: string = "AFAFAF";
 
-const A: number = 65 // A
-const I: number = 73 // I
-const O: number = 79 // O
-const V: number = 86 // V
-const Z: number = 90 // Z
+const A: number = 65; // A
+const I: number = 73; // I
+const O: number = 79; // O
+const V: number = 86; // V
+const Z: number = 90; // Z
 
 type LatLon = {
-    lat: number
-    lon: number
-}
+  lat: number;
+  lon: number;
+};
 
 // TODO don't know how to call this
 type Bbox = {
-    top: number
-    right: number
-    bottom: number
-    left: number
-}
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+};
 
 /**
  * Convert lat/lon to MGRS.
@@ -46,21 +46,25 @@ type Bbox = {
  *   or 0 for 100 km). Default is `5`
  * @returns The MGRS string for the given location and accuracy.
  */
-export function latLonToMGRS(lat: number, lon: number, accuracy?: number): string {
-    if (lon < -180 || lon > 180) {
-        throw new TypeError(`forward received an invalid longitude of ${lon}`)
-    }
-    if (lat < -90 || lat > 90) {
-        throw new TypeError(`forward received an invalid latitude of ${lat}`)
-    }
+export function latLonToMGRS(
+  lat: number,
+  lon: number,
+  accuracy?: number,
+): string {
+  if (lon < -180 || lon > 180) {
+    throw new TypeError(`forward received an invalid longitude of ${lon}`);
+  }
+  if (lat < -90 || lat > 90) {
+    throw new TypeError(`forward received an invalid latitude of ${lat}`);
+  }
 
-    if (lat < -80 || lat > 84) {
-        throw new TypeError(
-            `forward received a latitude of ${lat}, but this library does not support conversions of points in polar regions below 80°S and above 84°N`
-        )
-    }
+  if (lat < -80 || lat > 84) {
+    throw new TypeError(
+      `forward received a latitude of ${lat}, but this library does not support conversions of points in polar regions below 80°S and above 84°N`,
+    );
+  }
 
-    return encodeUTM(latLonToUTM(lat, lon), accuracy ?? 5)
+  return encodeUTM(latLonToUTM(lat, lon), accuracy ?? 5);
 }
 
 /**
@@ -71,30 +75,30 @@ export function latLonToMGRS(lat: number, lon: number, accuracy?: number): strin
  *   values in WGS84, representing the bounding box for the provided MGRS reference.
  */
 export function inverse(mgrs: string): FlatExtent {
-    const [bbox, type] = UTMtoLatLon(decodeUTM(mgrs.toUpperCase()))
+  const [bbox, type] = UTMtoLatLon(decodeUTM(mgrs.toUpperCase()));
 
-    if (type === 'latlon') {
-        const _bbox = bbox as LatLon
-        return [_bbox.lon, _bbox.lat, _bbox.lon, _bbox.lat]
-    } else {
-        const _bbox = bbox as Bbox
-        return [_bbox.left, _bbox.bottom, _bbox.right, _bbox.top]
-    }
+  if (type === "latlon") {
+    const _bbox = bbox as LatLon;
+    return [_bbox.lon, _bbox.lat, _bbox.lon, _bbox.lat];
+  } else {
+    const _bbox = bbox as Bbox;
+    return [_bbox.left, _bbox.bottom, _bbox.right, _bbox.top];
+  }
 }
 
 export function toPoint(mgrs: string): SingleCoordinate {
-    if (mgrs === '') {
-        throw new TypeError('toPoint received a blank string')
-    }
-    const [bbox, type] = UTMtoLatLon(decodeUTM(mgrs.toUpperCase()))
+  if (mgrs === "") {
+    throw new TypeError("toPoint received a blank string");
+  }
+  const [bbox, type] = UTMtoLatLon(decodeUTM(mgrs.toUpperCase()));
 
-    if (type === 'latlon') {
-        const _bbox = bbox as LatLon
-        return [_bbox.lon, _bbox.lat]
-    } else {
-        const _bbox = bbox as Bbox
-        return [(_bbox.left + _bbox.right) / 2, (_bbox.top + _bbox.bottom) / 2]
-    }
+  if (type === "latlon") {
+    const _bbox = bbox as LatLon;
+    return [_bbox.lon, _bbox.lat];
+  } else {
+    const _bbox = bbox as Bbox;
+    return [(_bbox.left + _bbox.right) / 2, (_bbox.top + _bbox.bottom) / 2];
+  }
 }
 
 /**
@@ -104,7 +108,7 @@ export function toPoint(mgrs: string): SingleCoordinate {
  * @returns The angle in radians.
  */
 function degToRad(deg: number): number {
-    return deg * (Math.PI / 180)
+  return deg * (Math.PI / 180);
 }
 
 /**
@@ -114,15 +118,15 @@ function degToRad(deg: number): number {
  * @returns The angle in degrees.
  */
 function radToDeg(rad: number): number {
-    return 180 * (rad / Math.PI)
+  return 180 * (rad / Math.PI);
 }
 
 export interface UTM {
-    easting: number
-    northing: number
-    zoneLetter: string
-    zoneNumber: number
-    accuracy?: number
+  easting: number;
+  northing: number;
+  zoneLetter: string;
+  zoneNumber: number;
+  accuracy?: number;
 }
 
 /**
@@ -134,97 +138,104 @@ export interface UTM {
  *   optional accuracy property in digits. Returns null if the conversion failed.
  */
 export function latLonToUTM(lat: number, lon: number): UTM {
-    const a = 6378137 //ellip.radius;
-    const eccSquared = 0.00669438 //ellip.eccsq;
-    const k0 = 0.9996
-    const LatRad = degToRad(lat)
-    const LongRad = degToRad(lon)
-    let zoneNumber: number
-    // (int)
-    zoneNumber = Math.floor((lon + 180) / 6) + 1
+  const a = 6378137; //ellip.radius;
+  const eccSquared = 0.00669438; //ellip.eccsq;
+  const k0 = 0.9996;
+  const LatRad = degToRad(lat);
+  const LongRad = degToRad(lon);
+  let zoneNumber: number;
+  // (int)
+  zoneNumber = Math.floor((lon + 180) / 6) + 1;
 
-    //Make sure the longitude 180 is in Zone 60
-    if (lon === 180) {
-        zoneNumber = 60
+  //Make sure the longitude 180 is in Zone 60
+  if (lon === 180) {
+    zoneNumber = 60;
+  }
+
+  // Special zone for Norway
+  if (lat >= 56 && lat < 64 && lon >= 3 && lon < 12) {
+    zoneNumber = 32;
+  }
+
+  // Special zones for Svalbard
+  if (lat >= 72 && lat < 84) {
+    if (lon >= 0 && lon < 9) {
+      zoneNumber = 31;
+    } else if (lon >= 9 && lon < 21) {
+      zoneNumber = 33;
+    } else if (lon >= 21 && lon < 33) {
+      zoneNumber = 35;
+    } else if (lon >= 33 && lon < 42) {
+      zoneNumber = 37;
     }
+  }
 
-    // Special zone for Norway
-    if (lat >= 56 && lat < 64 && lon >= 3 && lon < 12) {
-        zoneNumber = 32
-    }
+  const LongOrigin = (zoneNumber - 1) * 6 - 180 + 3; // +3 puts origin in the middle of a zone
+  const LongOriginRad = degToRad(LongOrigin);
 
-    // Special zones for Svalbard
-    if (lat >= 72 && lat < 84) {
-        if (lon >= 0 && lon < 9) {
-            zoneNumber = 31
-        } else if (lon >= 9 && lon < 21) {
-            zoneNumber = 33
-        } else if (lon >= 21 && lon < 33) {
-            zoneNumber = 35
-        } else if (lon >= 33 && lon < 42) {
-            zoneNumber = 37
-        }
-    }
+  const eccPrimeSquared = eccSquared / (1 - eccSquared);
 
-    const LongOrigin = (zoneNumber - 1) * 6 - 180 + 3 // +3 puts origin in the middle of a zone
-    const LongOriginRad = degToRad(LongOrigin)
+  const N = a / Math.sqrt(1 - eccSquared * Math.sin(LatRad) * Math.sin(LatRad));
+  const T = Math.tan(LatRad) * Math.tan(LatRad);
+  const C = eccPrimeSquared * Math.cos(LatRad) * Math.cos(LatRad);
+  const A = Math.cos(LatRad) * (LongRad - LongOriginRad);
 
-    const eccPrimeSquared = eccSquared / (1 - eccSquared)
+  const M =
+    a *
+    ((1 -
+      eccSquared / 4 -
+      (3 * eccSquared * eccSquared) / 64 -
+      (5 * eccSquared * eccSquared * eccSquared) / 256) *
+      LatRad -
+      ((3 * eccSquared) / 8 +
+        (3 * eccSquared * eccSquared) / 32 +
+        (45 * eccSquared * eccSquared * eccSquared) / 1024) *
+        Math.sin(2 * LatRad) +
+      ((15 * eccSquared * eccSquared) / 256 +
+        (45 * eccSquared * eccSquared * eccSquared) / 1024) *
+        Math.sin(4 * LatRad) -
+      ((35 * eccSquared * eccSquared * eccSquared) / 3072) *
+        Math.sin(6 * LatRad));
 
-    const N = a / Math.sqrt(1 - eccSquared * Math.sin(LatRad) * Math.sin(LatRad))
-    const T = Math.tan(LatRad) * Math.tan(LatRad)
-    const C = eccPrimeSquared * Math.cos(LatRad) * Math.cos(LatRad)
-    const A = Math.cos(LatRad) * (LongRad - LongOriginRad)
+  const easting =
+    k0 *
+      N *
+      (A +
+        ((1 - T + C) * A * A * A) / 6 +
+        ((5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) *
+          A *
+          A *
+          A *
+          A *
+          A) /
+          120) +
+    500000;
 
-    const M =
-        a *
-        ((1 -
-            eccSquared / 4 -
-            (3 * eccSquared * eccSquared) / 64 -
-            (5 * eccSquared * eccSquared * eccSquared) / 256) *
-            LatRad -
-            ((3 * eccSquared) / 8 +
-                (3 * eccSquared * eccSquared) / 32 +
-                (45 * eccSquared * eccSquared * eccSquared) / 1024) *
-                Math.sin(2 * LatRad) +
-            ((15 * eccSquared * eccSquared) / 256 +
-                (45 * eccSquared * eccSquared * eccSquared) / 1024) *
-                Math.sin(4 * LatRad) -
-            ((35 * eccSquared * eccSquared * eccSquared) / 3072) * Math.sin(6 * LatRad))
+  let northing =
+    k0 *
+    (M +
+      N *
+        Math.tan(LatRad) *
+        ((A * A) / 2 +
+          ((5 - T + 9 * C + 4 * C * C) * A * A * A * A) / 24 +
+          ((61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) *
+            A *
+            A *
+            A *
+            A *
+            A *
+            A) /
+            720));
+  if (lat < 0) {
+    northing += 10000000; // 10'000'000 meter offset for the Southern Hemisphere
+  }
 
-    const easting =
-        k0 *
-            N *
-            (A +
-                ((1 - T + C) * A * A * A) / 6 +
-                ((5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * A * A * A * A * A) / 120) +
-        500000
-
-    let northing =
-        k0 *
-        (M +
-            N *
-                Math.tan(LatRad) *
-                ((A * A) / 2 +
-                    ((5 - T + 9 * C + 4 * C * C) * A * A * A * A) / 24 +
-                    ((61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) *
-                        A *
-                        A *
-                        A *
-                        A *
-                        A *
-                        A) /
-                        720))
-    if (lat < 0) {
-        northing += 10000000 // 10'000'000 meter offset for the Southern Hemisphere
-    }
-
-    return {
-        northing: Math.trunc(northing),
-        easting: Math.trunc(easting),
-        zoneNumber: zoneNumber,
-        zoneLetter: getLetterDesignator(lat),
-    }
+  return {
+    northing: Math.trunc(northing),
+    easting: Math.trunc(easting),
+    zoneNumber: zoneNumber,
+    zoneLetter: getLetterDesignator(lat),
+  };
 }
 
 /**
@@ -239,121 +250,137 @@ export function latLonToUTM(lat: number, lon: number): UTM {
  *   provided), or top, right, bottom and left values for the bounding box calculated according to
  *   the provided accuracy. Returns null if the conversion failed.
  */
-function UTMtoLatLon(utm: UTM): [LatLon | Bbox, 'bbox' | 'latlon'] {
-    const UTMNorthing = utm.northing
-    const UTMEasting = utm.easting
-    const { zoneLetter, zoneNumber } = utm
+function UTMtoLatLon(utm: UTM): [LatLon | Bbox, "bbox" | "latlon"] {
+  const UTMNorthing = utm.northing;
+  const UTMEasting = utm.easting;
+  const { zoneLetter, zoneNumber } = utm;
 
-    // check the ZoneNumber is valid
-    if (zoneNumber < 0 || zoneNumber > 60) {
-        throw Error('UTMtoLatLon: zoneNumber is invalid')
-    }
+  // check the ZoneNumber is valid
+  if (zoneNumber < 0 || zoneNumber > 60) {
+    throw Error("UTMtoLatLon: zoneNumber is invalid");
+  }
 
-    const k0 = 0.9996
-    const a = 6378137 //ellip.radius;
-    const eccSquared = 0.00669438 //ellip.eccsq;
-    const e1 = (1 - Math.sqrt(1 - eccSquared)) / (1 + Math.sqrt(1 - eccSquared))
+  const k0 = 0.9996;
+  const a = 6378137; //ellip.radius;
+  const eccSquared = 0.00669438; //ellip.eccsq;
+  const e1 = (1 - Math.sqrt(1 - eccSquared)) / (1 + Math.sqrt(1 - eccSquared));
 
-    // remove 500,000 meter offset for longitude
-    const x = UTMEasting - 500000
-    let y = UTMNorthing
+  // remove 500,000 meter offset for longitude
+  const x = UTMEasting - 500000;
+  let y = UTMNorthing;
 
-    // We must know somehow if we are in the Northern or Southern
-    // hemisphere, this is the only time we use the letter So even
-    // if the Zone letter isn't exactly correct it should indicate
-    // the hemisphere correctly
-    if (zoneLetter < 'N') {
-        y -= 10000000 // remove 10,000,000 meter offset used
-        // for southern hemisphere
-    }
+  // We must know somehow if we are in the Northern or Southern
+  // hemisphere, this is the only time we use the letter So even
+  // if the Zone letter isn't exactly correct it should indicate
+  // the hemisphere correctly
+  if (zoneLetter < "N") {
+    y -= 10000000; // remove 10,000,000 meter offset used
+    // for southern hemisphere
+  }
 
-    // There are 60 zones with zone 1 being at West -180 to -174
-    const LongOrigin = (zoneNumber - 1) * 6 - 180 + 3 // +3 puts origin
-    // in middle of
-    // zone
+  // There are 60 zones with zone 1 being at West -180 to -174
+  const LongOrigin = (zoneNumber - 1) * 6 - 180 + 3; // +3 puts origin
+  // in middle of
+  // zone
 
-    const eccPrimeSquared = eccSquared / (1 - eccSquared)
+  const eccPrimeSquared = eccSquared / (1 - eccSquared);
 
-    const M = y / k0
-    const mu =
-        M /
-        (a *
-            (1 -
-                eccSquared / 4 -
-                (3 * eccSquared * eccSquared) / 64 -
-                (5 * eccSquared * eccSquared * eccSquared) / 256))
+  const M = y / k0;
+  const mu =
+    M /
+    (a *
+      (1 -
+        eccSquared / 4 -
+        (3 * eccSquared * eccSquared) / 64 -
+        (5 * eccSquared * eccSquared * eccSquared) / 256));
 
-    const phi1Rad =
-        mu +
-        ((3 * e1) / 2 - (27 * e1 * e1 * e1) / 32) * Math.sin(2 * mu) +
-        ((21 * e1 * e1) / 16 - (55 * e1 * e1 * e1 * e1) / 32) * Math.sin(4 * mu) +
-        ((151 * e1 * e1 * e1) / 96) * Math.sin(6 * mu)
-    // double phi1 = ProjMath.radToDeg(phi1Rad);
+  const phi1Rad =
+    mu +
+    ((3 * e1) / 2 - (27 * e1 * e1 * e1) / 32) * Math.sin(2 * mu) +
+    ((21 * e1 * e1) / 16 - (55 * e1 * e1 * e1 * e1) / 32) * Math.sin(4 * mu) +
+    ((151 * e1 * e1 * e1) / 96) * Math.sin(6 * mu);
+  // double phi1 = ProjMath.radToDeg(phi1Rad);
 
-    const N1 = a / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad))
-    const T1 = Math.tan(phi1Rad) * Math.tan(phi1Rad)
-    const C1 = eccPrimeSquared * Math.cos(phi1Rad) * Math.cos(phi1Rad)
-    const R1 =
-        (a * (1 - eccSquared)) /
-        Math.pow(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad), 1.5)
-    const D = x / (N1 * k0)
+  const N1 =
+    a / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad));
+  const T1 = Math.tan(phi1Rad) * Math.tan(phi1Rad);
+  const C1 = eccPrimeSquared * Math.cos(phi1Rad) * Math.cos(phi1Rad);
+  const R1 =
+    (a * (1 - eccSquared)) /
+    Math.pow(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad), 1.5);
+  const D = x / (N1 * k0);
 
-    let lat =
-        phi1Rad -
-        ((N1 * Math.tan(phi1Rad)) / R1) *
-            ((D * D) / 2 -
-                ((5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * eccPrimeSquared) * D * D * D * D) / 24 +
-                ((61 + 90 * T1 + 298 * C1 + 45 * T1 * T1 - 252 * eccPrimeSquared - 3 * C1 * C1) *
-                    D *
-                    D *
-                    D *
-                    D *
-                    D *
-                    D) /
-                    720)
-    lat = radToDeg(lat)
+  let lat =
+    phi1Rad -
+    ((N1 * Math.tan(phi1Rad)) / R1) *
+      ((D * D) / 2 -
+        ((5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * eccPrimeSquared) *
+          D *
+          D *
+          D *
+          D) /
+          24 +
+        ((61 +
+          90 * T1 +
+          298 * C1 +
+          45 * T1 * T1 -
+          252 * eccPrimeSquared -
+          3 * C1 * C1) *
+          D *
+          D *
+          D *
+          D *
+          D *
+          D) /
+          720);
+  lat = radToDeg(lat);
 
-    let lon =
-        (D -
-            ((1 + 2 * T1 + C1) * D * D * D) / 6 +
-            ((5 - 2 * C1 + 28 * T1 - 3 * C1 * C1 + 8 * eccPrimeSquared + 24 * T1 * T1) *
-                D *
-                D *
-                D *
-                D *
-                D) /
-                120) /
-        Math.cos(phi1Rad)
-    lon = LongOrigin + radToDeg(lon)
+  let lon =
+    (D -
+      ((1 + 2 * T1 + C1) * D * D * D) / 6 +
+      ((5 -
+        2 * C1 +
+        28 * T1 -
+        3 * C1 * C1 +
+        8 * eccPrimeSquared +
+        24 * T1 * T1) *
+        D *
+        D *
+        D *
+        D *
+        D) /
+        120) /
+    Math.cos(phi1Rad);
+  lon = LongOrigin + radToDeg(lon);
 
-    if (typeof utm.accuracy === 'number') {
-        const result = UTMtoLatLon({
-            northing: utm.northing + utm.accuracy,
-            easting: utm.easting + utm.accuracy,
-            zoneLetter: utm.zoneLetter,
-            zoneNumber: utm.zoneNumber,
-        })
+  if (typeof utm.accuracy === "number") {
+    const result = UTMtoLatLon({
+      northing: utm.northing + utm.accuracy,
+      easting: utm.easting + utm.accuracy,
+      zoneLetter: utm.zoneLetter,
+      zoneNumber: utm.zoneNumber,
+    });
 
-        const [topRight] = result as [LatLon, string]
+    const [topRight] = result as [LatLon, string];
 
-        return [
-            {
-                top: topRight.lat,
-                right: topRight.lon,
-                bottom: lat,
-                left: lon,
-            },
-            'bbox',
-        ]
-    } else {
-        return [
-            {
-                lat,
-                lon,
-            },
-            'latlon',
-        ]
-    }
+    return [
+      {
+        top: topRight.lat,
+        right: topRight.lon,
+        bottom: lat,
+        left: lon,
+      },
+      "bbox",
+    ];
+  } else {
+    return [
+      {
+        lat,
+        lon,
+      },
+      "latlon",
+    ];
+  }
 }
 
 /**
@@ -363,24 +390,24 @@ function UTMtoLatLon(utm: UTM): [LatLon | Bbox, 'bbox' | 'latlon'] {
  * @returns The letter designator.
  */
 export function getLetterDesignator(latitude: number): string {
-    if (latitude <= 84 && latitude >= 72) {
-        // the X band is 12 degrees high
-        return 'X'
-    } else if (latitude < 72 && latitude >= -80) {
-        // Latitude bands are lettered C through X, excluding I and O
-        const bandLetters = 'CDEFGHJKLMNPQRSTUVWX'
-        const bandHeight = 8
-        const minLatitude = -80
-        const index = Math.floor((latitude - minLatitude) / bandHeight)
-        if (index < 0 || index > bandLetters.length - 1) {
-            throw new Error('Latitude out of range')
-        }
-        return bandLetters[index]
-    } else if (latitude > 84 || latitude < -80) {
-        // This is here as an error flag to show that the Latitude is outside MGRS limits
-        return 'Z'
+  if (latitude <= 84 && latitude >= 72) {
+    // the X band is 12 degrees high
+    return "X";
+  } else if (latitude < 72 && latitude >= -80) {
+    // Latitude bands are lettered C through X, excluding I and O
+    const bandLetters = "CDEFGHJKLMNPQRSTUVWX";
+    const bandHeight = 8;
+    const minLatitude = -80;
+    const index = Math.floor((latitude - minLatitude) / bandHeight);
+    if (index < 0 || index > bandLetters.length - 1) {
+      throw new Error("Latitude out of range");
     }
-    throw new Error('Latitude out of range')
+    return bandLetters[index];
+  } else if (latitude > 84 || latitude < -80) {
+    // This is here as an error flag to show that the Latitude is outside MGRS limits
+    return "Z";
+  }
+  throw new Error("Latitude out of range");
 }
 
 /**
@@ -391,13 +418,19 @@ export function getLetterDesignator(latitude: number): string {
  * @returns MGRS string for the given UTM location.
  */
 export function encodeUTM(utm: UTM, accuracy: number = 5): string {
-    const seasting = `00000${utm.easting}`
-    const snorthing = `00000${utm.northing}`
-    const id100k = get100kID(utm.easting, utm.northing, utm.zoneNumber)
-    const easting = seasting.substring(seasting.length - 5, seasting.length - 5 + accuracy)
-    const northing = snorthing.substring(snorthing.length - 5, snorthing.length - 5 + accuracy)
+  const seasting = `00000${utm.easting}`;
+  const snorthing = `00000${utm.northing}`;
+  const id100k = get100kID(utm.easting, utm.northing, utm.zoneNumber);
+  const easting = seasting.substring(
+    seasting.length - 5,
+    seasting.length - 5 + accuracy,
+  );
+  const northing = snorthing.substring(
+    snorthing.length - 5,
+    snorthing.length - 5 + accuracy,
+  );
 
-    return `${utm.zoneNumber}${utm.zoneLetter}${id100k}${easting}${northing}`
+  return `${utm.zoneNumber}${utm.zoneLetter}${id100k}${easting}${northing}`;
 }
 
 /**
@@ -408,11 +441,15 @@ export function encodeUTM(utm: UTM, accuracy: number = 5): string {
  * @param zoneNumber
  * @returns The two letter 100k designator for the given UTM location.
  */
-function get100kID(easting: number, northing: number, zoneNumber: number): string {
-    const setParm = get100kSetForZone(zoneNumber)
-    const setColumn = Math.floor(easting / 100000)
-    const setRow = Math.floor(northing / 100000) % 20
-    return getLetter100kID(setColumn, setRow, setParm)
+function get100kID(
+  easting: number,
+  northing: number,
+  zoneNumber: number,
+): string {
+  const setParm = get100kSetForZone(zoneNumber);
+  const setColumn = Math.floor(easting / 100000);
+  const setRow = Math.floor(northing / 100000) % 20;
+  return getLetter100kID(setColumn, setRow, setParm);
 }
 
 /**
@@ -422,12 +459,12 @@ function get100kID(easting: number, northing: number, zoneNumber: number): strin
  * @returns The 100k set the UTM zone is in.
  */
 function get100kSetForZone(i: number): number {
-    let setParm = i % NUM_100K_SETS
-    if (setParm === 0) {
-        setParm = NUM_100K_SETS
-    }
+  let setParm = i % NUM_100K_SETS;
+  if (setParm === 0) {
+    setParm = NUM_100K_SETS;
+  }
 
-    return setParm
+  return setParm;
 }
 
 /**
@@ -443,78 +480,78 @@ function get100kSetForZone(i: number): number {
  * @returns Two letter MGRS 100k code.
  */
 function getLetter100kID(column: number, row: number, parm: number): string {
-    // colOrigin and rowOrigin are the letters at the origin of the set
-    const index = parm - 1
-    const colOrigin = SET_ORIGIN_COLUMN_LETTERS.charCodeAt(index)
-    const rowOrigin = SET_ORIGIN_ROW_LETTERS.charCodeAt(index)
+  // colOrigin and rowOrigin are the letters at the origin of the set
+  const index = parm - 1;
+  const colOrigin = SET_ORIGIN_COLUMN_LETTERS.charCodeAt(index);
+  const rowOrigin = SET_ORIGIN_ROW_LETTERS.charCodeAt(index);
 
-    // colInt and rowInt are the letters to build to return
-    let colInt = colOrigin + column - 1
-    let rowInt = rowOrigin + row
-    let rollover = false
+  // colInt and rowInt are the letters to build to return
+  let colInt = colOrigin + column - 1;
+  let rowInt = rowOrigin + row;
+  let rollover = false;
 
-    if (colInt > Z) {
-        colInt = colInt - Z + A - 1
-        rollover = true
+  if (colInt > Z) {
+    colInt = colInt - Z + A - 1;
+    rollover = true;
+  }
+
+  if (
+    colInt === I ||
+    (colOrigin < I && colInt > I) ||
+    ((colInt > I || colOrigin < I) && rollover)
+  ) {
+    colInt++;
+  }
+
+  if (
+    colInt === O ||
+    (colOrigin < O && colInt > O) ||
+    ((colInt > O || colOrigin < O) && rollover)
+  ) {
+    colInt++;
+
+    if (colInt === I) {
+      colInt++;
     }
+  }
 
-    if (
-        colInt === I ||
-        (colOrigin < I && colInt > I) ||
-        ((colInt > I || colOrigin < I) && rollover)
-    ) {
-        colInt++
+  if (colInt > Z) {
+    colInt = colInt - Z + A - 1;
+  }
+
+  if (rowInt > V) {
+    rowInt = rowInt - V + A - 1;
+    rollover = true;
+  } else {
+    rollover = false;
+  }
+
+  if (
+    rowInt === I ||
+    (rowOrigin < I && rowInt > I) ||
+    ((rowInt > I || rowOrigin < I) && rollover)
+  ) {
+    rowInt++;
+  }
+
+  if (
+    rowInt === O ||
+    (rowOrigin < O && rowInt > O) ||
+    ((rowInt > O || rowOrigin < O) && rollover)
+  ) {
+    rowInt++;
+
+    if (rowInt === I) {
+      rowInt++;
     }
+  }
 
-    if (
-        colInt === O ||
-        (colOrigin < O && colInt > O) ||
-        ((colInt > O || colOrigin < O) && rollover)
-    ) {
-        colInt++
+  if (rowInt > V) {
+    rowInt = rowInt - V + A - 1;
+  }
 
-        if (colInt === I) {
-            colInt++
-        }
-    }
-
-    if (colInt > Z) {
-        colInt = colInt - Z + A - 1
-    }
-
-    if (rowInt > V) {
-        rowInt = rowInt - V + A - 1
-        rollover = true
-    } else {
-        rollover = false
-    }
-
-    if (
-        rowInt === I ||
-        (rowOrigin < I && rowInt > I) ||
-        ((rowInt > I || rowOrigin < I) && rollover)
-    ) {
-        rowInt++
-    }
-
-    if (
-        rowInt === O ||
-        (rowOrigin < O && rowInt > O) ||
-        ((rowInt > O || rowOrigin < O) && rollover)
-    ) {
-        rowInt++
-
-        if (rowInt === I) {
-            rowInt++
-        }
-    }
-
-    if (rowInt > V) {
-        rowInt = rowInt - V + A - 1
-    }
-
-    const twoLetter = String.fromCharCode(colInt) + String.fromCharCode(rowInt)
-    return twoLetter
+  const twoLetter = String.fromCharCode(colInt) + String.fromCharCode(rowInt);
+  return twoLetter;
 }
 
 /**
@@ -525,97 +562,99 @@ function getLetter100kID(column: number, row: number, parm: number): string {
  *   meters) properties.
  */
 function decodeUTM(mgrsString: string): UTM {
-    if (mgrsString && mgrsString.length === 0) {
-        throw new TypeError('MGRSPoint coverting from nothing')
+  if (mgrsString && mgrsString.length === 0) {
+    throw new TypeError("MGRSPoint coverting from nothing");
+  }
+
+  //remove any spaces in MGRS String
+  mgrsString = mgrsString.replace(/ /g, "");
+
+  const { length } = mgrsString;
+
+  let hunK = null;
+  let sb = "";
+  let testChar;
+  let i = 0;
+
+  // get Zone number
+  while (!/[A-Z]/.test((testChar = mgrsString.charAt(i)))) {
+    if (i >= 2) {
+      throw new Error(`MGRSPoint bad conversion from: ${mgrsString}`);
     }
+    sb += testChar;
+    i++;
+  }
 
-    //remove any spaces in MGRS String
-    mgrsString = mgrsString.replace(/ /g, '')
+  const zoneNumber = parseInt(sb, 10);
 
-    const { length } = mgrsString
+  if (i === 0 || i + 3 > length) {
+    // A good MGRS string has to be 4-5 digits long,
+    // ##AAA/#AAA at least.
+    throw new Error(`MGRSPoint bad conversion from ${mgrsString}`);
+  }
 
-    let hunK = null
-    let sb = ''
-    let testChar
-    let i = 0
+  const zoneLetter = mgrsString.charAt(i++);
 
-    // get Zone number
-    while (!/[A-Z]/.test((testChar = mgrsString.charAt(i)))) {
-        if (i >= 2) {
-            throw new Error(`MGRSPoint bad conversion from: ${mgrsString}`)
-        }
-        sb += testChar
-        i++
-    }
+  // Should we check the zone letter here? Why not.
+  if (
+    zoneLetter <= "A" ||
+    zoneLetter === "B" ||
+    zoneLetter === "Y" ||
+    zoneLetter >= "Z" ||
+    zoneLetter === "I" ||
+    zoneLetter === "O"
+  ) {
+    throw new Error(
+      `MGRSPoint zone letter ${zoneLetter} not handled: ${mgrsString}`,
+    );
+  }
 
-    const zoneNumber = parseInt(sb, 10)
+  hunK = mgrsString.substring(i, (i += 2));
 
-    if (i === 0 || i + 3 > length) {
-        // A good MGRS string has to be 4-5 digits long,
-        // ##AAA/#AAA at least.
-        throw new Error(`MGRSPoint bad conversion from ${mgrsString}`)
-    }
+  const set = get100kSetForZone(zoneNumber);
 
-    const zoneLetter = mgrsString.charAt(i++)
+  const east100k = getEastingFromChar(hunK.charAt(0), set);
+  let north100k = getNorthingFromChar(hunK.charAt(1), set);
 
-    // Should we check the zone letter here? Why not.
-    if (
-        zoneLetter <= 'A' ||
-        zoneLetter === 'B' ||
-        zoneLetter === 'Y' ||
-        zoneLetter >= 'Z' ||
-        zoneLetter === 'I' ||
-        zoneLetter === 'O'
-    ) {
-        throw new Error(`MGRSPoint zone letter ${zoneLetter} not handled: ${mgrsString}`)
-    }
+  // We have a bug where the northing may be 2000000 too low.
+  // How do we know when to roll over?
 
-    hunK = mgrsString.substring(i, (i += 2))
+  while (north100k < getMinNorthing(zoneLetter)) {
+    north100k += 2000000;
+  }
 
-    const set = get100kSetForZone(zoneNumber)
+  // calculate the char index for easting/northing separator
+  const remainder = length - i;
 
-    const east100k = getEastingFromChar(hunK.charAt(0), set)
-    let north100k = getNorthingFromChar(hunK.charAt(1), set)
+  if (remainder % 2 !== 0) {
+    throw new Error(
+      `MGRSPoint has to have an even number of digits after the zone letter and two 100km letters - front half for easting meters, second half for northing meters ${mgrsString}`,
+    );
+  }
 
-    // We have a bug where the northing may be 2000000 too low.
-    // How do we know when to roll over?
+  const sep = remainder / 2;
 
-    while (north100k < getMinNorthing(zoneLetter)) {
-        north100k += 2000000
-    }
+  let sepEasting = 0;
+  let sepNorthing = 0;
+  let accuracyBonus, sepEastingString, sepNorthingString;
+  if (sep > 0) {
+    accuracyBonus = 100000 / Math.pow(10, sep);
+    sepEastingString = mgrsString.substring(i, i + sep);
+    sepEasting = parseFloat(sepEastingString) * accuracyBonus;
+    sepNorthingString = mgrsString.substring(i + sep);
+    sepNorthing = parseFloat(sepNorthingString) * accuracyBonus;
+  }
 
-    // calculate the char index for easting/northing separator
-    const remainder = length - i
+  const easting = sepEasting + east100k;
+  const northing = sepNorthing + north100k;
 
-    if (remainder % 2 !== 0) {
-        throw new Error(
-            `MGRSPoint has to have an even number of digits after the zone letter and two 100km letters - front half for easting meters, second half for northing meters ${mgrsString}`
-        )
-    }
-
-    const sep = remainder / 2
-
-    let sepEasting = 0
-    let sepNorthing = 0
-    let accuracyBonus, sepEastingString, sepNorthingString
-    if (sep > 0) {
-        accuracyBonus = 100000 / Math.pow(10, sep)
-        sepEastingString = mgrsString.substring(i, i + sep)
-        sepEasting = parseFloat(sepEastingString) * accuracyBonus
-        sepNorthingString = mgrsString.substring(i + sep)
-        sepNorthing = parseFloat(sepNorthingString) * accuracyBonus
-    }
-
-    const easting = sepEasting + east100k
-    const northing = sepNorthing + north100k
-
-    return {
-        easting,
-        northing,
-        zoneLetter,
-        zoneNumber,
-        accuracy: accuracyBonus,
-    }
+  return {
+    easting,
+    northing,
+    zoneLetter,
+    zoneNumber,
+    accuracy: accuracyBonus,
+  };
 }
 
 /**
@@ -628,31 +667,31 @@ function decodeUTM(mgrsString: string): UTM {
  * @returns The easting value for the given letter and set.
  */
 function getEastingFromChar(e: string, set: number): number {
-    // colOrigin is the letter at the origin of the set for the
-    // column
-    let curCol = SET_ORIGIN_COLUMN_LETTERS.charCodeAt(set - 1)
-    let eastingValue = 100000
-    let rewindMarker = false
+  // colOrigin is the letter at the origin of the set for the
+  // column
+  let curCol = SET_ORIGIN_COLUMN_LETTERS.charCodeAt(set - 1);
+  let eastingValue = 100000;
+  let rewindMarker = false;
 
-    while (curCol !== e.charCodeAt(0)) {
-        curCol++
-        if (curCol === I) {
-            curCol++
-        }
-        if (curCol === O) {
-            curCol++
-        }
-        if (curCol > Z) {
-            if (rewindMarker) {
-                throw new Error(`Bad character: ${e}`)
-            }
-            curCol = A
-            rewindMarker = true
-        }
-        eastingValue += 100000
+  while (curCol !== e.charCodeAt(0)) {
+    curCol++;
+    if (curCol === I) {
+      curCol++;
     }
+    if (curCol === O) {
+      curCol++;
+    }
+    if (curCol > Z) {
+      if (rewindMarker) {
+        throw new Error(`Bad character: ${e}`);
+      }
+      curCol = A;
+      rewindMarker = true;
+    }
+    eastingValue += 100000;
+  }
 
-    return eastingValue
+  return eastingValue;
 }
 
 /**
@@ -668,38 +707,38 @@ function getEastingFromChar(e: string, set: number): number {
  * @returns The northing value for the given letter and set.
  */
 function getNorthingFromChar(n: string, set: number): number {
-    if (n > 'V') {
-        throw new TypeError(`MGRSPoint given invalid Northing ${n}`)
+  if (n > "V") {
+    throw new TypeError(`MGRSPoint given invalid Northing ${n}`);
+  }
+
+  // rowOrigin is the letter at the origin of the set for the
+  // column
+  let curRow = SET_ORIGIN_ROW_LETTERS.charCodeAt(set - 1);
+  let northingValue = 0;
+  let rewindMarker = false;
+
+  while (curRow !== n.charCodeAt(0)) {
+    curRow++;
+    if (curRow === I) {
+      curRow++;
     }
-
-    // rowOrigin is the letter at the origin of the set for the
-    // column
-    let curRow = SET_ORIGIN_ROW_LETTERS.charCodeAt(set - 1)
-    let northingValue = 0
-    let rewindMarker = false
-
-    while (curRow !== n.charCodeAt(0)) {
-        curRow++
-        if (curRow === I) {
-            curRow++
-        }
-        if (curRow === O) {
-            curRow++
-        }
-        // fixing a bug making whole application hang in this loop
-        // when 'n' is a wrong character
-        if (curRow > V) {
-            if (rewindMarker) {
-                // making sure that this loop ends
-                throw new Error(`Bad character: ${n}`)
-            }
-            curRow = A
-            rewindMarker = true
-        }
-        northingValue += 100000
+    if (curRow === O) {
+      curRow++;
     }
+    // fixing a bug making whole application hang in this loop
+    // when 'n' is a wrong character
+    if (curRow > V) {
+      if (rewindMarker) {
+        // making sure that this loop ends
+        throw new Error(`Bad character: ${n}`);
+      }
+      curRow = A;
+      rewindMarker = true;
+    }
+    northingValue += 100000;
+  }
 
-    return northingValue
+  return northingValue;
 }
 
 /**
@@ -710,74 +749,74 @@ function getNorthingFromChar(n: string, set: number): number {
  * @param zoneLetter The MGRS zone to get the min northing for.
  */
 function getMinNorthing(zoneLetter: string): number {
-    let northing: number
-    switch (zoneLetter) {
-        case 'C':
-            northing = 1100000
-            break
-        case 'D':
-            northing = 2000000
-            break
-        case 'E':
-            northing = 2800000
-            break
-        case 'F':
-            northing = 3700000
-            break
-        case 'G':
-            northing = 4600000
-            break
-        case 'H':
-            northing = 5500000
-            break
-        case 'J':
-            northing = 6400000
-            break
-        case 'K':
-            northing = 7300000
-            break
-        case 'L':
-            northing = 8200000
-            break
-        case 'M':
-            northing = 9100000
-            break
-        case 'N':
-            northing = 0
-            break
-        case 'P':
-            northing = 800000
-            break
-        case 'Q':
-            northing = 1700000
-            break
-        case 'R':
-            northing = 2600000
-            break
-        case 'S':
-            northing = 3500000
-            break
-        case 'T':
-            northing = 4400000
-            break
-        case 'U':
-            northing = 5300000
-            break
-        case 'V':
-            northing = 6200000
-            break
-        case 'W':
-            northing = 7000000
-            break
-        case 'X':
-            northing = 7900000
-            break
-        default:
-            northing = -1
-    }
-    if (northing >= 0) {
-        return northing
-    } else {
-        throw new TypeError(`Invalid zone letter: ${zoneLetter}`)
-    }
+  let northing: number;
+  switch (zoneLetter) {
+    case "C":
+      northing = 1100000;
+      break;
+    case "D":
+      northing = 2000000;
+      break;
+    case "E":
+      northing = 2800000;
+      break;
+    case "F":
+      northing = 3700000;
+      break;
+    case "G":
+      northing = 4600000;
+      break;
+    case "H":
+      northing = 5500000;
+      break;
+    case "J":
+      northing = 6400000;
+      break;
+    case "K":
+      northing = 7300000;
+      break;
+    case "L":
+      northing = 8200000;
+      break;
+    case "M":
+      northing = 9100000;
+      break;
+    case "N":
+      northing = 0;
+      break;
+    case "P":
+      northing = 800000;
+      break;
+    case "Q":
+      northing = 1700000;
+      break;
+    case "R":
+      northing = 2600000;
+      break;
+    case "S":
+      northing = 3500000;
+      break;
+    case "T":
+      northing = 4400000;
+      break;
+    case "U":
+      northing = 5300000;
+      break;
+    case "V":
+      northing = 6200000;
+      break;
+    case "W":
+      northing = 7000000;
+      break;
+    case "X":
+      northing = 7900000;
+      break;
+    default:
+      northing = -1;
+  }
+  if (northing >= 0) {
+    return northing;
+  } else {
+    throw new TypeError(`Invalid zone letter: ${zoneLetter}`);
+  }
 }

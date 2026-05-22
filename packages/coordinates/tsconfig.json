@@ -1,4 +1,4 @@
 {
-    "extends": "@swissgeo/config-typescript/tsconfig.vue.json",
-    "include": ["**/*.ts", "**/*.vue"]
+  "extends": "@swissgeo/config-typescript/tsconfig.vue.json",
+  "include": ["**/*.ts", "**/*.vue"]
 }
