@@ -75,7 +75,7 @@ export interface PositionStoreGetters {
   // isExtentOnlyWithinLV95Bounds(): boolean
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 export type PositionStore = ReturnType<
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   typeof import("@/stores/position").default
 >;
