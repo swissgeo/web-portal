@@ -53,7 +53,7 @@
         "turbo": "catalog:",
         "vitest": "catalog:"
     },
-    "packageManager": "pnpm@10.18.2",
+    "packageManager": "pnpm@10.33.4",
     "pnpm": {
         "overrides": {
             "stylelint-config-recommended": "^16.0.0"

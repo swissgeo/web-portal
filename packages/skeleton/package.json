@@ -60,5 +60,5 @@
     "vue-i18n": "catalog:",
     "vue-router": "catalog:"
   },
-  "packageManager": "pnpm@10.30.0"
+  "packageManager": "pnpm@10.33.4"
 }

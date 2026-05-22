@@ -56,5 +56,5 @@
   "peerDependencies": {
     "vue": "catalog:"
   },
-  "packageManager": "pnpm@10.30.0"
+  "packageManager": "pnpm@10.33.4"
 }
