@@ -34,11 +34,11 @@ Note: If you intend to use the OpenLayers utilities, you will also need to insta
 The default export provides access to all coordinate systems and utility modules.
 
 ```typescript
-import { LV95, WGS84, coordinatesUtils } from '@swissgeo/coordinates'
+import { LV95, WGS84, coordinatesUtils } from "@swissgeo/coordinates";
 
 // Reproject a coordinate
-const pointLV95 = [2600000, 1200000]
-const pointWGS84 = coordinatesUtils.reprojectAndRound(LV95, WGS84, pointLV95)
+const pointLV95 = [2600000, 1200000];
+const pointWGS84 = coordinatesUtils.reprojectAndRound(LV95, WGS84, pointLV95);
 ```
 
 ### Projections and Constants
@@ -46,38 +46,38 @@ const pointWGS84 = coordinatesUtils.reprojectAndRound(LV95, WGS84, pointLV95)
 You can import specific coordinate systems and constants:
 
 ```typescript
-import { LV95, constants } from '@swissgeo/coordinates'
+import { LV95, constants } from "@swissgeo/coordinates";
 
-console.log(LV95.epsg) // "EPSG:2056"
-console.log(constants.LV95_RESOLUTIONS) // Array of resolutions for LV95
+console.log(LV95.epsg); // "EPSG:2056"
+console.log(constants.LV95_RESOLUTIONS); // Array of resolutions for LV95
 ```
 
 ### Coordinate Utilities
 
 ```typescript
-import { coordinatesUtils } from '@swissgeo/coordinates'
+import { coordinatesUtils } from "@swissgeo/coordinates";
 
 // Format coordinates for display
-const formatted = coordinatesUtils.toRoundedString([2600000, 1200000], 2)
+const formatted = coordinatesUtils.toRoundedString([2600000, 1200000], 2);
 // => "2'600'000.00, 1'200'000.00"
 
 // Parse CRS string to CoordinateSystem object
-const crs = coordinatesUtils.parseCRS('EPSG:2056')
+const crs = coordinatesUtils.parseCRS("EPSG:2056");
 // => LV95
 ```
 
 ### Extent Utilities
 
 ```typescript
-import { extentUtils, LV95, WGS84 } from '@swissgeo/coordinates'
+import { extentUtils, LV95, WGS84 } from "@swissgeo/coordinates";
 
-const extentLV95 = [2485000, 1075000, 2837000, 1296000]
+const extentLV95 = [2485000, 1075000, 2837000, 1296000];
 
 // Reproject an extent
-const extentWGS84 = extentUtils.projExtent(LV95, WGS84, extentLV95)
+const extentWGS84 = extentUtils.projExtent(LV95, WGS84, extentLV95);
 
 // Get center of an extent
-const center = extentUtils.getExtentCenter(extentLV95)
+const center = extentUtils.getExtentCenter(extentLV95);
 ```
 
 ### OpenLayers Integration

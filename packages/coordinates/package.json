@@ -1,72 +1,72 @@
 {
-    "name": "@swissgeo/coordinates",
-    "version": "1.0.6",
-    "description": "Projection definition and coordinates utils for SWISSGEO projects.",
-    "license": "BSD-3-Clause",
-    "type": "module",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs"
-        },
-        "./ol": {
-            "types": "./dist/ol.d.ts",
-            "import": "./dist/ol.js",
-            "require": "./dist/ol.cjs"
-        }
+  "name": "@swissgeo/coordinates",
+  "version": "1.0.6",
+  "description": "Projection definition and coordinates utils for SWISSGEO projects.",
+  "license": "BSD-3-Clause",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
-    "scripts": {
-        "build": "pnpm run type-check && pnpm run generate-types && vite build",
-        "build:dev": "pnpm run build --mode development",
-        "build:dev:watch": "pnpm run build --watch --mode development",
-        "build:int": "pnpm run build --mode integration",
-        "build:prod": "pnpm run build --mode production",
-        "demo": "vite",
-        "format": "prettier --check --ignore-path ../../.prettierignore .",
-        "format:write": "prettier --write --ignore-path ../../.prettierignore .",
-        "generate-types": "vue-tsc --declaration",
-        "lint": "eslint",
-        "lint:write": "eslint --fix",
-        "prepare": "pnpm run build",
-        "preview": "vite preview",
-        "test:unit": "vitest run",
-        "test:unit:watch": "vitest watch",
-        "type-check": "vue-tsc --build"
-    },
-    "dependencies": {
-        "@swissgeo/log": "workspace:*",
-        "@swissgeo/numbers": "workspace:*",
-        "lodash": "catalog:"
-    },
-    "devDependencies": {
-        "@microsoft/api-extractor": "catalog:",
-        "@swissgeo/config-eslint": "workspace:*",
-        "@swissgeo/config-prettier": "workspace:*",
-        "@swissgeo/config-typescript": "workspace:*",
-        "@tailwindcss/vite": "catalog:",
-        "@turf/turf": "catalog:",
-        "@types/chai": "catalog:",
-        "@types/geojson": "catalog:",
-        "@types/lodash": "catalog:",
-        "@vitejs/plugin-vue": "catalog:",
-        "chai": "catalog:",
-        "eslint": "catalog:",
-        "prettier": "catalog:",
-        "tailwindcss": "catalog:",
-        "typescript": "catalog:",
-        "unplugin-dts": "catalog:",
-        "vite": "catalog:",
-        "vite-plugin-vue-devtools": "catalog:",
-        "vite-tsconfig-paths": "catalog:",
-        "vitest": "catalog:",
-        "vue": "catalog:",
-        "vue-tsc": "catalog:"
-    },
-    "peerDependencies": {
-        "proj4": "catalog:"
-    },
-    "optionalDependencies": {
-        "ol": "catalog:"
+    "./ol": {
+      "types": "./dist/ol.d.ts",
+      "import": "./dist/ol.js",
+      "require": "./dist/ol.cjs"
     }
+  },
+  "scripts": {
+    "build": "pnpm run type-check && pnpm run generate-types && vite build",
+    "build:dev": "pnpm run build --mode development",
+    "build:dev:watch": "pnpm run build --watch --mode development",
+    "build:int": "pnpm run build --mode integration",
+    "build:prod": "pnpm run build --mode production",
+    "demo": "vite",
+    "format": "prettier --check --ignore-path ../../.prettierignore .",
+    "format:write": "prettier --write --ignore-path ../../.prettierignore .",
+    "generate-types": "vue-tsc --declaration",
+    "lint": "eslint",
+    "lint:write": "eslint --fix",
+    "prepare": "pnpm run build",
+    "preview": "vite preview",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest watch",
+    "type-check": "vue-tsc --build"
+  },
+  "dependencies": {
+    "@swissgeo/log": "workspace:*",
+    "@swissgeo/numbers": "workspace:*",
+    "lodash": "catalog:"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "catalog:",
+    "@swissgeo/config-eslint": "workspace:*",
+    "@swissgeo/config-prettier": "workspace:*",
+    "@swissgeo/config-typescript": "workspace:*",
+    "@tailwindcss/vite": "catalog:",
+    "@turf/turf": "catalog:",
+    "@types/chai": "catalog:",
+    "@types/geojson": "catalog:",
+    "@types/lodash": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "chai": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "unplugin-dts": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-vue-devtools": "catalog:",
+    "vite-tsconfig-paths": "catalog:",
+    "vitest": "catalog:",
+    "vue": "catalog:",
+    "vue-tsc": "catalog:"
+  },
+  "peerDependencies": {
+    "proj4": "catalog:"
+  },
+  "optionalDependencies": {
+    "ol": "catalog:"
+  }
 }

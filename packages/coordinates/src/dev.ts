@@ -1,6 +1,6 @@
-import { createApp } from 'vue'
+import { createApp } from "vue";
 
-import DevApp from '@/DevApp.vue'
+import DevApp from "@/DevApp.vue";
 
-const devApp = createApp(DevApp)
-devApp.mount('#app')
+const devApp = createApp(DevApp);
+devApp.mount("#app");

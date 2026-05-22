@@ -1,12 +1,12 @@
-import type { SingleCoordinate } from '@/coordinatesUtils'
-import type { CoordinateSystemProps } from '@/proj/CoordinateSystem'
-import type CoordinateSystemBounds from '@/proj/CoordinateSystemBounds'
+import type { SingleCoordinate } from "@/coordinatesUtils";
+import type { CoordinateSystemProps } from "@/proj/CoordinateSystem";
+import type CoordinateSystemBounds from "@/proj/CoordinateSystemBounds";
 
-import CoordinateSystem from '@/proj/CoordinateSystem'
+import CoordinateSystem from "@/proj/CoordinateSystem";
 
 export interface CustomCoordinateSystemProps extends CoordinateSystemProps {
-    /** With a custom coordinate system, bounds are mandatory. */
-    bounds: CoordinateSystemBounds
+  /** With a custom coordinate system, bounds are mandatory. */
+  bounds: CoordinateSystemBounds;
 }
 
 /**
@@ -22,37 +22,39 @@ export interface CustomCoordinateSystemProps extends CoordinateSystemProps {
  * @see https://wiki.openstreetmap.org/wiki/Zoom_levels
  */
 export default abstract class CustomCoordinateSystem extends CoordinateSystem {
-    declare public readonly bounds: CoordinateSystemBounds
+  declare public readonly bounds: CoordinateSystemBounds;
 
-    protected constructor(args: CustomCoordinateSystemProps) {
-        super(args)
-    }
+  protected constructor(args: CustomCoordinateSystemProps) {
+    super(args);
+  }
 
-    /**
-     * The origin to use as anchor for tile coordinate calculations. It will return the bound's
-     * [lowerX, upperY] as default value (meaning the top-left corner of bounds). If this is not the
-     * behavior you want, you have to override this function.
-     */
-    getTileOrigin(): SingleCoordinate {
-        return this.bounds.topLeft
-    }
+  /**
+   * The origin to use as anchor for tile coordinate calculations. It will return the bound's
+   * [lowerX, upperY] as default value (meaning the top-left corner of bounds). If this is not the
+   * behavior you want, you have to override this function.
+   */
+  getTileOrigin(): SingleCoordinate {
+    return this.bounds.topLeft;
+  }
 
-    /**
-     * Transforms a zoom level from this custom coordinate system, back to a zoom level such as
-     * described in https://wiki.openstreetmap.org/wiki/Zoom_levels
-     *
-     * @abstract
-     * @param customZoomLevel A zoom level in this custom coordinate system
-     * @returns A standard (or OpenStreetMap) zoom level
-     */
-    abstract transformCustomZoomLevelToStandard(customZoomLevel: number): number
+  /**
+   * Transforms a zoom level from this custom coordinate system, back to a zoom level such as
+   * described in https://wiki.openstreetmap.org/wiki/Zoom_levels
+   *
+   * @abstract
+   * @param customZoomLevel A zoom level in this custom coordinate system
+   * @returns A standard (or OpenStreetMap) zoom level
+   */
+  abstract transformCustomZoomLevelToStandard(customZoomLevel: number): number;
 
-    /**
-     * Transforms a standard (or OpenStreetMap) zoom level into a zoom level in this coordinate
-     * system
-     *
-     * @param standardZoomLevel A standard zoom level
-     * @returns A zoom level in this custom coordinate system
-     */
-    abstract transformStandardZoomLevelToCustom(standardZoomLevel: number): number
+  /**
+   * Transforms a standard (or OpenStreetMap) zoom level into a zoom level in this coordinate
+   * system
+   *
+   * @param standardZoomLevel A standard zoom level
+   * @returns A zoom level in this custom coordinate system
+   */
+  abstract transformStandardZoomLevelToCustom(
+    standardZoomLevel: number,
+  ): number;
 }

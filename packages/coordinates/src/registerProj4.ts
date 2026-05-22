@@ -1,10 +1,10 @@
-import type proj4 from 'proj4'
+import type proj4 from "proj4";
 
-import log from '@swissgeo/log'
+import log from "@swissgeo/log";
 
-import type CoordinateSystem from '@/proj/CoordinateSystem'
+import type CoordinateSystem from "@/proj/CoordinateSystem";
 
-import { LV03, LV95, WEBMERCATOR } from '@/proj'
+import { LV03, LV95, WEBMERCATOR } from "@/proj";
 
 /**
  * Proj4 comes with [EPSG:4326]{@link https://epsg.io/4326} as default projection.
@@ -17,22 +17,29 @@ import { LV03, LV95, WEBMERCATOR } from '@/proj'
  * LV03 and/or WebMercator if you intended to use them too)
  */
 const registerProj4 = (
-    proj4Instance: typeof proj4,
-    projections: CoordinateSystem[] = [WEBMERCATOR, LV95, LV03]
+  proj4Instance: typeof proj4,
+  projections: CoordinateSystem[] = [WEBMERCATOR, LV95, LV03],
 ): void => {
-    // adding projection defining a transformation matrix to proj4 (these projection matrices can be found on the epsg.io website)
-    projections
-        .filter((projection) => projection.proj4transformationMatrix)
-        .forEach((projection) => {
-            try {
-                proj4Instance.defs(projection.epsg, projection.proj4transformationMatrix)
-            } catch (err) {
-                const error = err ? (err as Error) : new Error('Unknown error')
-                log.error('Error while setting up projection in proj4', projection.epsg, error)
-                throw error
-            }
-        })
-}
+  // adding projection defining a transformation matrix to proj4 (these projection matrices can be found on the epsg.io website)
+  projections
+    .filter((projection) => projection.proj4transformationMatrix)
+    .forEach((projection) => {
+      try {
+        proj4Instance.defs(
+          projection.epsg,
+          projection.proj4transformationMatrix,
+        );
+      } catch (err) {
+        const error = err ? (err as Error) : new Error("Unknown error");
+        log.error(
+          "Error while setting up projection in proj4",
+          projection.epsg,
+          error,
+        );
+        throw error;
+      }
+    });
+};
 
-export { registerProj4 }
-export default registerProj4
+export { registerProj4 };
+export default registerProj4;
