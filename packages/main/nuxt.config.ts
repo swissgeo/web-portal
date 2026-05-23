@@ -77,7 +77,7 @@ export default defineNuxtConfig({
         detectBrowserLanguage: false,
         // All locales use a prefix (/de/map, /fr/map, …) so routing is symmetric.
         // /map and / are handled by the redirectLocale middleware
-        // which redirect to /<lang>/map based on the i18n_redirected cookie.
+        // which redirects to /<lang>/map based on the browser Accept-Language.
         strategy: 'prefix',
         langDir: 'locales',
         locales: [

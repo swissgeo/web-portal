@@ -3,6 +3,11 @@ import { expect, test } from '@playwright/test'
 import { HYDRATION_TIMEOUT, mockExternalRequests, cleanupExternalRequestMocks } from './setup'
 
 test.describe('locale routing', () => {
+    // Pin the browser locale so unlocalized-path redirects are deterministic.
+    // Without this, chromium defaults to en-US and GPS-666's Accept-Language
+    // resolution sends `/dataset/x` to `/en/dataset/x` instead of `/de/...`.
+    test.use({ locale: 'de-CH' })
+
     test.beforeEach(async ({ page }) => {
         await mockExternalRequests(page).mockAll()
     })
@@ -18,7 +23,7 @@ test.describe('locale routing', () => {
     })
 
     test('map page redirects to the default locale map', async ({ page }) => {
-        await page.goto('/')
+        await page.goto('/map')
         await page.waitForURL('**/de/map')
         await expect(page).toHaveURL(/\/de\/map/)
     })
@@ -56,4 +61,48 @@ test.describe('locale routing', () => {
         })
         await expect(page.getByRole('button', { name: 'Active layers' })).toBeVisible()
     })
+})
+
+test.describe('locale routing — browser language detection (GPS-666)', () => {
+    test.beforeEach(async ({ page }) => {
+        await mockExternalRequests(page).mockAll()
+    })
+
+    test.afterEach(async ({ page }) => {
+        await cleanupExternalRequestMocks(page)
+    })
+
+    for (const from of ['/', '/map']) {
+        test.describe(`${from} redirects`, () => {
+            test.describe('uses the browser language', () => {
+                test.use({ locale: 'fr-CH' })
+
+                test(`${from} → /fr/map`, async ({ page }) => {
+                    await page.goto(from)
+                    await page.waitForURL('**/fr/map')
+                    await expect(page).toHaveURL(/\/fr\/map/)
+                })
+            })
+
+            test.describe('falls back to the default locale for unsupported browser language', () => {
+                test.use({ locale: 'es-ES' })
+
+                test(`${from} → /de/map`, async ({ page }) => {
+                    await page.goto(from)
+                    await page.waitForURL('**/de/map')
+                    await expect(page).toHaveURL(/\/de\/map/)
+                })
+            })
+
+            test.describe('preserves query string across the redirect', () => {
+                test.use({ locale: 'fr-CH' })
+
+                test(`${from}?state=foo → /fr/map?state=foo`, async ({ page }) => {
+                    await page.goto(`${from}?state=foo`)
+                    await page.waitForURL('**/fr/map?state=foo')
+                    await expect(page).toHaveURL(/\/fr\/map\?state=foo/)
+                })
+            })
+        })
+    }
 })
