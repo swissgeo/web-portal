@@ -23,6 +23,7 @@ export default [
                         'server/utils/__tests__/*.ts',
                         'server/routes/__tests__/*.ts',
                         'server/api/wpa/v1/layers/external/dataset/?capabilityUrl?/__tests__/*.ts',
+                        'server/middleware/*.ts',
                         'tests/setup.ts',
                     ],
                 },
