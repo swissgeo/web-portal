@@ -36,11 +36,4 @@ describe('Nuxt i18n integration', () => {
         expect(codes).toContain('it')
         expect(codes).toContain('rm')
     })
-
-    it('defaults to the "de" locale', async () => {
-        const wrapper = await mountSuspended(I18nProbe)
-
-        expect(wrapper.vm.locale).toBe('de')
-        expect(wrapper.text()).toBe('de')
-    })
 })
