@@ -20,6 +20,7 @@ FROM base AS builder
 WORKDIR ${BUILD_DIR}
 
 RUN corepack enable
+RUN corepack use pnpm@latest-11
 
 COPY . .
 RUN pnpm install --frozen-lockfile
