@@ -5,7 +5,8 @@
 Below are some principles to help take decisions when developing the project. These are meant to convey some of the ideas on how the code is set up and hopefully help understand some of the structure of the code.
 
 > [!NOTE]
-> some notes on the *terminology*: the word _state_ is herein used meaning basically anything that holds a value. So as soon as a bunch of variables are assigned a value, these form a "state". There are different kinds of state: 
+> some notes on the _terminology_: the word _state_ is herein used meaning basically anything that holds a value. So as soon as a bunch of variables are assigned a value, these form a "state". There are different kinds of state:
+>
 > - component state: every component has state in it's setup function
 > - pinina store state: these are states that are shared horizontally between components
 > - composable state: also composables have their own state
@@ -14,9 +15,9 @@ Below are some principles to help take decisions when developing the project. Th
 
 For every information, one should consider the scope of it's use. From the book The Pragmatic Programmer: [Shared state is invalid state](https://media.pragprog.com/titles/tpp20/shared-state.pdf).
 
-Of course, state needs to be passed around. For that, Vue follows the principle of: prop in, event out. We pass state via prop *to* the child component and out *from* the child via event (emit). If we follow this, then the possibility for error becomse already much smaller.
+Of course, state needs to be passed around. For that, Vue follows the principle of: prop in, event out. We pass state via prop _to_ the child component and out _from_ the child via event (emit). If we follow this, then the possibility for error becomse already much smaller.
 
-_basically this principle is the same as with any procedural programming language: pass in data to a function, get it returned. Within the function the scope of the data is narrowed to that function_ 
+_basically this principle is the same as with any procedural programming language: pass in data to a function, get it returned. Within the function the scope of the data is narrowed to that function_
 
 ### Consider the flow of data
 
@@ -26,13 +27,13 @@ Apart from the flow of data between child/parent components, also consider the f
 
 Store state is sort of a global state. It is similar to globals as the general programming paradigma: they can be access from everywhere and mutated from everywhere. This goes into above mention: shared state is invalid state.
 
-*This means that tracking the scope, validity and flow of these states (see above) can become difficult.* Especially with a bigger codebase.
+_This means that tracking the scope, validity and flow of these states (see above) can become difficult._ Especially with a bigger codebase.
 
-Validity: If state is in a component, then when the component gets removed, state is also removed. When the component is re-mounted, then the state is pure and valid. 
+Validity: If state is in a component, then when the component gets removed, state is also removed. When the component is re-mounted, then the state is pure and valid.
 Scope: as mentioned above, it's sort of global
-Flow: Since a pinia store introduces the possibility to mutate the state from everywhere, it becomes quickly unclear what is affected by this change. 
+Flow: Since a pinia store introduces the possibility to mutate the state from everywhere, it becomes quickly unclear what is affected by this change.
 
-*This doesn't mean pinia is evil*. Pinia is very useful. This only means that we should utilize it very intentional. If there's a need for a pinia store, thinking about the overall application architecture for a second goes a long way!  
+_This doesn't mean pinia is evil_. Pinia is very useful. This only means that we should utilize it very intentional. If there's a need for a pinia store, thinking about the overall application architecture for a second goes a long way!
 
 ### Vue isn't OOP
 
@@ -59,7 +60,7 @@ Sometimes the need for introducing a css class that contains the style is also a
 
 Sometimes it isn't necessary to specify the entire type for a variable. Sometimes, a narrower type is sufficient. To demonstrate what I mean, take a look at [extractDistributionLinks](./packages/ogc/src/records/useDistributionCollection.ts). This function doesn't need the entire `Dataset` type, it works as long as something is passed that has `links` with a specific structure in it. Narrowing this type makes testing easier also.
 
-Narrowing types also means that we can tell the type checking if something really *is* something. Instead of using a cast (`as`), this can be elegantly solved, for example, like so:
+Narrowing types also means that we can tell the type checking if something really _is_ something. Instead of using a cast (`as`), this can be elegantly solved, for example, like so:
 
 ```js
 // consider the return type
@@ -71,7 +72,6 @@ export const isDatasetLayer = (layer: Layer): layer is DatasetLayer => {
 If this is used, from here on the type checker knows that the `layer` variable is of type `DatasetLayer`, without the (unsafe) need for a type cast.
 
 More info about type narrowing: https://www.typescriptlang.org/docs/handbook/2/narrowing.html
-
 
 ### Stick to the defaults
 
@@ -93,12 +93,14 @@ In the past, mostly interface testing (with cypress) was done. Testing like this
 If a test is hard to write as a `*.spec.ts` because of too many Nuxt entanglements, treat that as a signal to simplify the code — the same "poor architecture" heuristic as above.
 
 **When to use `*.spec.ts` (happy-dom):**
+
 - Testing a component's render, emit, or prop behaviour
 - Testing a composable's logic in isolation
 - Testing a utility or helper function
 - The test stubs its Nuxt dependencies (auto-imports, composables) via `mockNuxtImport` or `vi.mock`
 
 **When to use `*.nuxt.spec.ts` (Nuxt env):**
+
 - Testing Nuxt routing behaviour itself (e.g. verifying that navigating to `/de/map` renders the right page, or that middleware redirects fire)
 - Testing plugin interaction or boot order (e.g. `dependsOn` sequencing, `app:created` hook orchestration across plugins)
 - Testing SSR or hydration behaviour (e.g. `<ClientOnly>` rendering, server-side HTML output)
@@ -107,15 +109,15 @@ If a test is hard to write as a `*.spec.ts` because of too many Nuxt entanglemen
 When stubbing Nuxt auto-imports, use the centralised mock factories in `packages/main/tests/mock-nuxt-imports.ts` so implementations stay consistent. `mockNuxtImport` is a compile-time macro (string literal required), so each call is explicit — but the factory comes from the shared module:
 
 ```ts
-import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 
 const { mocks } = await vi.hoisted(async () => {
-    const { nuxtMocks } = await import('../../../tests/mock-nuxt-imports')
-    return { mocks: nuxtMocks }
-})
+  const { nuxtMocks } = await import("../../../tests/mock-nuxt-imports");
+  return { mocks: nuxtMocks };
+});
 
-mockNuxtImport('useRoute', () => mocks.useRoute())
-mockNuxtImport('useRouter', () => mocks.useRouter())
+mockNuxtImport("useRoute", () => mocks.useRoute());
+mockNuxtImport("useRouter", () => mocks.useRouter());
 ```
 
 Run one project at a time with `pnpm exec vitest --project happy-dom` or `--project nuxt`. `packages/main/tests/setup.ts` filters known-harmless Nuxt-boot noise (Vue Router "no match", H3 404, menus fetch) — it only activates in the nuxt project. See `tests/nuxt/i18n-integration.nuxt.spec.ts` for a working example of a nuxt-env test.
@@ -126,7 +128,7 @@ Run one project at a time with `pnpm exec vitest --project happy-dom` or `--proj
 
 The reason for the package setup was initially to be able to provide small functonal packages to be usable by the public. They would be published to the npm registry.
 
-A good example is the map package: if we can keep it "pure", then anyone in need for a map similar to ours can use this package to quickly conjure an app with the map in it. Not all the packages need to be usable by a broad set of people, but *if* we can provide some packages 
+A good example is the map package: if we can keep it "pure", then anyone in need for a map similar to ours can use this package to quickly conjure an app with the map in it. Not all the packages need to be usable by a broad set of people, but _if_ we can provide some packages
 
 Another good side effect of the package setup is that it forces us to keep a clean(er) architecture.
 

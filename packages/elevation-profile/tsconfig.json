@@ -7,7 +7,6 @@
     "src/**/*.ts",
     "src/**/*.vue",
     "types/**/*.d.ts",
-    "prettier.config.ts",
     "vite.config.ts",
     "../../base.vite.config.ts"
   ],

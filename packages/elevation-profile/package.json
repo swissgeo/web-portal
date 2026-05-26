@@ -4,7 +4,6 @@
   "description": "Components to request and display an elevation profile over Switzerland",
   "license": "BSD-3-Clause",
   "type": "module",
-  "main": "src/index.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -14,6 +13,7 @@
       "./dist/elevation-profile.css"
     ]
   },
+  "main": "src/index.ts",
   "scripts": {
     "build": "vite build",
     "build:dev": "vite build --mode development",
@@ -27,26 +27,24 @@
     "type-check": "vue-tsc"
   },
   "dependencies": {
+    "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
-    "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/shared": "workspace:*",
     "@turf/turf": "catalog:",
     "chart.js": "catalog:",
     "chartjs-plugin-zoom": "catalog:",
-    "vue-chartjs": "catalog:",
-    "proj4": "catalog:"
+    "proj4": "catalog:",
+    "vue-chartjs": "catalog:"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
-    "@swissgeo/config-prettier": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
-    "@vitejs/plugin-vue": "catalog:",
     "@tailwindcss/vite": "catalog:",
-    "tailwindcss": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
     "eslint": "catalog:",
-    "prettier": "catalog:",
+    "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:",

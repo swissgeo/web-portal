@@ -3,7 +3,6 @@
   "extends": "./.nuxt/tsconfig.json",
   "files": [
     "app.config.ts",
-    "prettier.config.ts",
     "server/plugins/gather-sourcemaps.ts",
     "server/plugins/loglevels.ts",
     "vitest.config.ts"

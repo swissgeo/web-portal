@@ -1,16 +1,16 @@
 {
-    "name": "service-shortlink-mock",
-    "version": "0.0.0",
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "serve": "listhen --port 3010 -w src/main.ts"
-    },
-    "dependencies": {
-        "h3": "^1.15",
-        "listhen": "^1.9.1"
-    },
-    "devDependencies": {
-        "@types/node": "catalog:"
-    }
+  "name": "service-shortlink-mock",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "listhen --port 3010 -w src/main.ts"
+  },
+  "dependencies": {
+    "h3": "^1.15",
+    "listhen": "^1.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
 }

@@ -42,7 +42,6 @@
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
-    "@swissgeo/config-prettier": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@turf/turf": "catalog:",
@@ -52,7 +51,6 @@
     "@vitejs/plugin-vue": "catalog:",
     "chai": "catalog:",
     "eslint": "catalog:",
-    "prettier": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",

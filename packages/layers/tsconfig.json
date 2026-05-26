@@ -5,7 +5,6 @@
     "src/**/*.vue",
     "env.d.ts",
     "vite.config.ts",
-    "prettier.config.ts",
     "../../base.vite.config.ts",
     ".output/auto-imports.d.ts",
     "types/**/*.d.ts"

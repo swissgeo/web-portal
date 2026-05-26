@@ -24,9 +24,9 @@ npm install --save-dev @swissgeo/config-stylelint stylelint postcss-html
 Create a `stylelint.config.js` file in your project root:
 
 ```javascript
-import stylelintConfig from '@swissgeo/config-stylelint'
+import stylelintConfig from "@swissgeo/config-stylelint";
 
-export default stylelintConfig
+export default stylelintConfig;
 ```
 
 Or reference it in your `package.json`:
@@ -44,15 +44,15 @@ Or reference it in your `package.json`:
 You can extend or override the default configuration:
 
 ```javascript
-import stylelintConfig from '@swissgeo/config-stylelint'
+import stylelintConfig from "@swissgeo/config-stylelint";
 
 export default {
   ...stylelintConfig,
   rules: {
     // Your custom rules
-    'color-hex-length': 'long',
+    "color-hex-length": "long",
   },
-}
+};
 ```
 
 ## Features

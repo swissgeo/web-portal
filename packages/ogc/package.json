@@ -36,7 +36,6 @@
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
-    "@swissgeo/config-prettier": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@types/mapbox-gl": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
@@ -44,7 +43,6 @@
     "@vue/server-renderer": "catalog:",
     "@vue/test-utils": "catalog:",
     "eslint": "catalog:",
-    "prettier": "catalog:",
     "happy-dom": "catalog:",
     "msw": "catalog:",
     "stylelint": "catalog:",

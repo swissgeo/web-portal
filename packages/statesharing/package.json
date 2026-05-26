@@ -30,12 +30,10 @@
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
-    "@swissgeo/config-prettier": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@swissgeo/shared": "workspace:",
     "@types/semver": "catalog:",
     "eslint": "catalog:",
-    "prettier": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",

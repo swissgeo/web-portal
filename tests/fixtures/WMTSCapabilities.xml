@@ -1,5 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
+<?xml version="1.0" encoding="UTF-8" ?>
+<Capabilities
+  xmlns="http://www.opengis.net/wmts/1.0"
+  xmlns:ows="http://www.opengis.net/ows/1.1"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:gml="http://www.opengis.net/gml"
+  xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd"
+  version="1.0.0"
+>
     <ows:ServiceIdentification>
         <ows:Title>WMTS BGDI</ows:Title>
         <ows:Abstract>-</ows:Abstract>
@@ -13,7 +21,9 @@
         <ows:Operation name="GetCapabilities">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml">
+                    <ows:Get
+            xlink:href="https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml"
+          >
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>REST</ows:Value>
@@ -40,13 +50,16 @@
     <Contents>
         <Layer>
             <ows:Title>Landeskarten (farbig)</ows:Title>
-            <ows:Abstract>swisstopo erstellt Landeskarten in den Massstäben 1:10‘000 bis 1:1 Million. Der Layer Landeskarten (farbig) nutzt die unterschiedlichen Massstäbe und zeigt die geeignetste Karte in Abhängigkeit der gewählten Zoomstufe an. Der Layer Landeskarte (farbig) dient als Hintergrundkarte im Geoportal des Bundes. Er ist auch in den Geodiensten WMS und WMTS verfügbar. Einmal jährlich wird eine Kopie der WMTS-Kachelpyramide im JPEG-Format und Web-Mercator-Koordinatensystem (EPSG:3857) bis Zoom Level/Tile Matrix 18 (0,5 m Auflösung) zum Download bereitgestellt.</ows:Abstract>
+            <ows:Abstract
+      >swisstopo erstellt Landeskarten in den Massstäben 1:10‘000 bis 1:1 Million. Der Layer Landeskarten (farbig) nutzt die unterschiedlichen Massstäbe und zeigt die geeignetste Karte in Abhängigkeit der gewählten Zoomstufe an. Der Layer Landeskarte (farbig) dient als Hintergrundkarte im Geoportal des Bundes. Er ist auch in den Geodiensten WMS und WMTS verfügbar. Einmal jährlich wird eine Kopie der WMTS-Kachelpyramide im JPEG-Format und Web-Mercator-Koordinatensystem (EPSG:3857) bis Zoom Level/Tile Matrix 18 (0,5 m Auflösung) zum Download bereitgestellt.</ows:Abstract>
             <ows:WGS84BoundingBox>
                 <ows:LowerCorner>5.140242 45.398181</ows:LowerCorner>
                 <ows:UpperCorner>11.47757 48.230651</ows:UpperCorner>
             </ows:WGS84BoundingBox>
             <ows:Identifier>ch.swisstopo.pixelkarte-farbe</ows:Identifier>
-            <ows:Metadata xlink:href="https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/metadata/f9c31be1-887c-4203-8b11-57b40ecc039b"/>
+            <ows:Metadata
+        xlink:href="https://www.geocat.ch/geonetwork/srv/ger/catalog.search#/metadata/f9c31be1-887c-4203-8b11-57b40ecc039b"
+      />
             <Style>
                 <ows:Title>Landeskarten (farbig)</ows:Title>
                 <ows:Identifier>ch.swisstopo.pixelkarte-farbe</ows:Identifier>
@@ -60,7 +73,11 @@
             <TileMatrixSetLink>
                 <TileMatrixSet>2056_27</TileMatrixSet>
             </TileMatrixSetLink>
-            <ResourceURL format="image/jpeg" resourceType="tile" template="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.jpeg"/>
+            <ResourceURL
+        format="image/jpeg"
+        resourceType="tile"
+        template="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/{Time}/2056/{TileMatrix}/{TileCol}/{TileRow}.jpeg"
+      />
         </Layer>
 
 
@@ -321,5 +338,7 @@
             </TileMatrix>
         </TileMatrixSet>
     </Contents>
-    <ServiceMetadataURL xlink:href="https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml"/>
-<script xmlns=""/></Capabilities>
+    <ServiceMetadataURL
+    xlink:href="https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml"
+  />
+<script xmlns="" /></Capabilities>

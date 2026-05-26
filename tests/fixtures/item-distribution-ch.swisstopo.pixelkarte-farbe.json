@@ -1,52 +1,52 @@
 {
-    "id": "ch.swisstopo.pixelkarte-farbe",
-    "itemType": "record",
-    "links": [],
-    "records": [
+  "id": "ch.swisstopo.pixelkarte-farbe",
+  "itemType": "record",
+  "links": [],
+  "records": [
+    {
+      "id": "ch.swisstopo.pixelkarte-farbe:wmts",
+      "links": [
         {
-            "id": "ch.swisstopo.pixelkarte-farbe:wmts",
-            "links": [
-                {
-                    "href": "http://mock-oar.org/api/oar/v0/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
-                    "hreflang": "en",
-                    "rel": "dataset",
-                    "title": "Dataset Record"
-                },
-                {
-                    "href": "http://mock-oar.org/api/oar/v0/collections/geoadmin.services/items/wmts-geoadminch",
-                    "rel": "service"
-                }
-            ],
-            "properties": {
-                "protocol": "OGC:WMTS",
-                "title": "OGC Web Map Tile Service (WMTS)",
-                "type": "Distribution"
-            },
-            "type": "Feature"
+          "href": "http://mock-oar.org/api/oar/v0/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
+          "hreflang": "en",
+          "rel": "dataset",
+          "title": "Dataset Record"
         },
         {
-            "id": "ch.swisstopo.pixelkarte-farbe:wms",
-            "links": [
-                {
-                    "href": "http://mock-oar.org/api/oar/v0/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
-                    "hreflang": "en",
-                    "rel": "dataset",
-                    "title": "Dataset Record"
-                },
-                {
-                    "href": "http://mock-oar.org/api/oar/v0/collections/geoadmin.services/items/wms-geoadminch",
-                    "rel": "service"
-                }
-            ],
-            "properties": {
-                "protocol": "OGC:WMS",
-                "title": "OGC Web Map Service (WMS)",
-                "type": "Distribution"
-            },
-            "type": "Feature"
+          "href": "http://mock-oar.org/api/oar/v0/collections/geoadmin.services/items/wmts-geoadminch",
+          "rel": "service"
         }
-    ],
-    "recordsArrayName": "records",
-    "title": "Distributions for ch.swisstopo.pixelkarte-farbe",
-    "type": "Collection"
+      ],
+      "properties": {
+        "protocol": "OGC:WMTS",
+        "title": "OGC Web Map Tile Service (WMTS)",
+        "type": "Distribution"
+      },
+      "type": "Feature"
+    },
+    {
+      "id": "ch.swisstopo.pixelkarte-farbe:wms",
+      "links": [
+        {
+          "href": "http://mock-oar.org/api/oar/v0/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
+          "hreflang": "en",
+          "rel": "dataset",
+          "title": "Dataset Record"
+        },
+        {
+          "href": "http://mock-oar.org/api/oar/v0/collections/geoadmin.services/items/wms-geoadminch",
+          "rel": "service"
+        }
+      ],
+      "properties": {
+        "protocol": "OGC:WMS",
+        "title": "OGC Web Map Service (WMS)",
+        "type": "Distribution"
+      },
+      "type": "Feature"
+    }
+  ],
+  "recordsArrayName": "records",
+  "title": "Distributions for ch.swisstopo.pixelkarte-farbe",
+  "type": "Collection"
 }

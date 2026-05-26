@@ -5,14 +5,14 @@
 @import "@fontsource/dm-sans";
 @import "@swissgeo/timeslider/stylesheet";
 
-@source '../../../../skeleton/';
-@source '../../../../content/';
-@source '../../../../map/';
-@source '../../../../timeslider/';
+@source "../../../../skeleton/";
+@source "../../../../content/";
+@source "../../../../map/";
+@source "../../../../timeslider/";
 
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
 @import "@nuxt/ui";
-@source '../../../../skeleton/src/**/*.{vue,ts,js,tsx,jsx}';
+@source "../../../../skeleton/src/**/*.{vue,ts,js,tsx,jsx}";
 
 @theme static {
   --font-sans: "Inter", system-ui, sans-serif;
