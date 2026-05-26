@@ -16,7 +16,7 @@
     "lint:write": "eslint --fix",
     "preview": "nuxt preview",
     "test:unit": "vitest run",
-    "test:coverage": "vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov --coverage.reporter=text-summary --passWithNoTests"
+    "test:coverage": "vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov --coverage.reporter=text-summary --coverage.reporter=json-summary --passWithNoTests"
   },
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "catalog:",
