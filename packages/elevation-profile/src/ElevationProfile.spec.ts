@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h } from "vue";
 
 import type { ElevationProfileResponse } from "@/types";
@@ -95,6 +95,22 @@ describe("ElevationProfile", () => {
   });
 
   describe("CSV export", () => {
+    beforeEach(() => {
+      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
+        () => {},
+      );
+      vi.stubGlobal("URL", {
+        ...URL,
+        createObjectURL: vi.fn(() => "blob:mock-url"),
+        revokeObjectURL: vi.fn(),
+      });
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+      vi.restoreAllMocks();
+    });
+
     it("triggers a download when the download button is clicked", async () => {
       const createObjectURLMock = vi.fn(() => "blob:mock-url");
       const revokeObjectURLMock = vi.fn();
@@ -103,9 +119,6 @@ describe("ElevationProfile", () => {
         createObjectURL: createObjectURLMock,
         revokeObjectURL: revokeObjectURLMock,
       });
-      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
-        () => {},
-      );
 
       const wrapper = mountComponent();
       await wrapper.find('[data-testid="btn-download"]').trigger("click");
@@ -114,41 +127,19 @@ describe("ElevationProfile", () => {
       expect(
         (createObjectURLMock.mock.calls[0] as unknown[])[0],
       ).toBeInstanceOf(Blob);
-
-      vi.unstubAllGlobals();
-      vi.restoreAllMocks();
     });
 
     it("uses the default filename 'export.csv' when no filename prop is given", async () => {
-      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
-        () => {},
-      );
       const appendSpy = vi.spyOn(document.body, "appendChild");
-      vi.stubGlobal("URL", {
-        ...URL,
-        createObjectURL: vi.fn(() => "blob:mock-url"),
-        revokeObjectURL: vi.fn(),
-      });
 
       const wrapper = mountComponent();
       await wrapper.find('[data-testid="btn-download"]').trigger("click");
 
       const link = appendSpy.mock.calls[0]?.[0] as HTMLAnchorElement;
       expect(link.download).toBe("export.csv");
-
-      vi.unstubAllGlobals();
-      vi.restoreAllMocks();
     });
 
     it("appends .csv to a provided filename that lacks the extension", async () => {
-      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
-        () => {},
-      );
-      vi.stubGlobal("URL", {
-        ...URL,
-        createObjectURL: vi.fn(() => "blob:mock-url"),
-        revokeObjectURL: vi.fn(),
-      });
       const appendSpy = vi.spyOn(document.body, "appendChild");
 
       const wrapper = mount(ElevationProfile, {
@@ -171,20 +162,9 @@ describe("ElevationProfile", () => {
 
       const link = appendSpy.mock.calls[0]?.[0] as HTMLAnchorElement;
       expect(link.download).toBe("my-profile.csv");
-
-      vi.unstubAllGlobals();
-      vi.restoreAllMocks();
     });
 
     it("does not double-append .csv to a filename that already has it", async () => {
-      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
-        () => {},
-      );
-      vi.stubGlobal("URL", {
-        ...URL,
-        createObjectURL: vi.fn(() => "blob:mock-url"),
-        revokeObjectURL: vi.fn(),
-      });
       const appendSpy = vi.spyOn(document.body, "appendChild");
 
       const wrapper = mount(ElevationProfile, {
@@ -207,9 +187,6 @@ describe("ElevationProfile", () => {
 
       const link = appendSpy.mock.calls[0]?.[0] as HTMLAnchorElement;
       expect(link.download).toBe("data.csv");
-
-      vi.unstubAllGlobals();
-      vi.restoreAllMocks();
     });
   });
 });
