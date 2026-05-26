@@ -11,6 +11,10 @@ on:
       - main
       - develop
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   unit:
     name: unit tests + coverage
@@ -41,7 +45,7 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
           flags: unit
           files: ./packages/*/coverage/lcov.info
+          use_oidc: true
