@@ -1084,6 +1084,9 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
+      '@swissgeo/config-prettier':
+        specifier: workspace:*
+        version: link:../config/prettier
       '@types/mapbox-gl':
         specifier: 'catalog:'
         version: 3.4.1
@@ -1108,6 +1111,9 @@ importers:
       playwright-core:
         specifier: 'catalog:'
         version: 1.59.1
+      prettier:
+        specifier: 'catalog:'
+        version: 3.8.1
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
