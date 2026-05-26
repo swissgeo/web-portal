@@ -25,7 +25,6 @@
     "generate-types": "tsc --declaration",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "prepare": "pnpm run build",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest watch",
     "type-check": "tsc -p tsconfig.json"
