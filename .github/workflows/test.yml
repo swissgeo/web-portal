@@ -14,6 +14,7 @@ on:
 permissions:
   contents: read
   id-token: write
+  pull-requests: write
 
 jobs:
   unit:
@@ -58,7 +59,14 @@ jobs:
                 process.stdout.write(`| ${process.argv[2]} | ${pct(s.statements)} | ${pct(s.branches)} | ${pct(s.functions)} | ${pct(s.lines)} |\n`);
               ' "$f" "$pkg"
             done
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Post coverage summary as PR comment
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: coverage-summary
+          path: coverage-summary.md
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
