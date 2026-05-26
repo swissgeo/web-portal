@@ -177,8 +177,6 @@ export function useCreateShareLink(
 
 export function useCreateShareLinkForPrint() {
     const viewStore = useMapViewStore()
-    console.log('>>>>>>>>> viewStore.stateId', viewStore.stateId)
-
     const shareLink = computed(() => buildShareUrl(viewStore.stateId))
     return { shareLink }
 }

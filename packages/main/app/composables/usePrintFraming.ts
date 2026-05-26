@@ -1,3 +1,5 @@
+import type { Extent } from 'ol/extent'
+
 import { createCutoutGeometry } from '@swissgeo/coordinates'
 import { useMap } from '@swissgeo/map'
 import { EPSG_2056_BOUNDING_BOX } from '@swissgeo/shared'
@@ -50,8 +52,6 @@ export function usePrintFraming() {
         url.searchParams.set('print_orientation', selectedPrintOrientation.value)
         url.searchParams.set('print_resolution', selectedPrintResolution.value.toString())
         url.searchParams.set('z', zoomLevelForPrint.value.toString())
-        console.log('url.toString()', url.toString())
-
         return url.toString()
     })
 
@@ -67,7 +67,7 @@ export function usePrintFraming() {
     const lastUnlockedCenter = ref<[number, number]>([0, 0])
     const centerForPrint = computed(() => {
         if (!isCenterLocked.value) {
-            lastUnlockedCenter.value = center.value as [number, number]
+            lastUnlockedCenter.value = [...center.value]
         }
         return lastUnlockedCenter.value
     })
@@ -99,7 +99,7 @@ export function usePrintFraming() {
         if (!olMap.value || !Array.isArray(printExtent.value) || printExtent.value.length !== 4) {
             return null
         }
-        const extentWidthMeter = printExtent.value[2] - printExtent.value[0]
+        const extentWidthMeter = (printExtent.value[2] as number) - (printExtent.value[0] as number)
         const pageWidthMeter =
             getPageSizeInMeters(selectedPrintFormat.value, selectedPrintOrientation.value).width /
             1000 // convert from mm to meter
@@ -124,7 +124,7 @@ export function usePrintFraming() {
         if (!printExtent.value || !olMap.value) {
             return false
         }
-        return !containsExtent(viewportExtent.value, printExtent.value)
+        return !containsExtent(viewportExtent.value as Extent, printExtent.value)
     })
 
     const isAtLockedZoomLevel = computed(() => {

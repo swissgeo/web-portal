@@ -8,20 +8,21 @@ import { importState } from './importState'
  * @returns whether there was something imported
  */
 export async function importStateFromBase64(): Promise<boolean> {
-    const { getB64State, getZoomFromUrl } = useUrlParams()
-
+    const { getZoomFromUrl, getStateFromUrl } = useUrlParams()
+    const viewStore = useMapViewStore()
     const toaster = useToaster()
     const { $i18n } = useNuxtApp()
 
     try {
-        const state = getB64State()
+        const { state, stateId } = await getStateFromUrl()
 
-        if (state) {
+        if (state && stateId) {
             log.debug({
                 title: 'useImportStateFromBase64',
                 titleColor: LogPreDefinedColor.Sky,
                 messages: ['B64 State from the URL param', state],
             })
+            viewStore.setStateId(stateId)
             await importState(state, getZoomFromUrl())
 
             log.info({
