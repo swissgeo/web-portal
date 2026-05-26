@@ -21,7 +21,8 @@
     "format:write": "prettier --write   --ignore-path ../../.prettierignore .",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "test:unit": "vitest run"
+    "test:unit": "vitest run",
+    "test:coverage": "vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov --coverage.reporter=text-summary"
   },
   "dependencies": {
     "@swissgeo/coordinates": "workspace:*",

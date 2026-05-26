@@ -22,6 +22,7 @@
     "lint": "eslint",
     "lint:write": "eslint --fix",
     "test:unit": "vitest run",
+    "test:coverage": "vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov --coverage.reporter=text-summary",
     "type-check": "vue-tsc"
   },
   "dependencies": {

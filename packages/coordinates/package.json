@@ -31,6 +31,7 @@
     "prepare": "pnpm run build",
     "preview": "vite preview",
     "test:unit": "vitest run",
+    "test:coverage": "vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov --coverage.reporter=text-summary",
     "test:unit:watch": "vitest watch",
     "type-check": "vue-tsc --build"
   },
