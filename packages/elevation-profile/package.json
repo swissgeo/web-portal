@@ -23,7 +23,7 @@
     "format:write": "prettier --write --ignore-path ../../.prettierignore .",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "test": "vitest run",
+    "test:unit": "vitest run",
     "type-check": "vue-tsc"
   },
   "dependencies": {
