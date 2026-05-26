@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { LV95, registerProj4, WGS84 } from "@swissgeo/coordinates";
+import { registerProj4 } from "@swissgeo/coordinates";
 import proj4 from "proj4";
 import { computed, ref } from "vue";
 
 import type { ElevationProfileResponse } from "@/types";
+
+import { buildCSV, reverseProfile } from "@/utils/profile";
 
 import type { Labels as MetadataLabels } from "./components/ElevationProfileMetadata.vue";
 import type { Labels as PlotLabels } from "./components/ElevationProfilePlot.vue";
@@ -37,26 +39,6 @@ const profile = computed<ElevationProfileResponse>(() => {
     : props.profileResponse;
 });
 
-function reverseProfile(
-  profile: ElevationProfileResponse,
-): ElevationProfileResponse {
-  const totalDist = profile.points.at(-1)?.dist ?? 0;
-  const points = [...profile.points]
-    .reverse()
-    .map((point) => ({ ...point, dist: totalDist - point.dist }))
-    .sort((a, b) => a.dist - b.dist);
-  return {
-    ...profile,
-    metadata: {
-      ...profile.metadata,
-      elevationDifference: -profile.metadata.elevationDifference,
-      totalAscent: profile.metadata.totalDescent,
-      totalDescent: profile.metadata.totalAscent,
-    },
-    points,
-  };
-}
-
 function triggerDownload(blob: Blob): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -71,25 +53,7 @@ function triggerDownload(blob: Blob): void {
 }
 
 function exportCSV(profile: ElevationProfileResponse): void {
-  const csvData =
-    [
-      ["Distance", "Altitude", "Easting", "Northing", "Longitude", "Latitude"],
-      ...profile.points.map((point) => {
-        const [lon, lat] = proj4(LV95.epsg, WGS84.epsg, point.coordinate);
-        const [x, y] = [point.coordinate[0], point.coordinate[1]];
-        return [
-          point.dist,
-          point.elevation,
-          LV95.roundCoordinateValue(x),
-          LV95.roundCoordinateValue(y),
-          WGS84.roundCoordinateValue(lon),
-          WGS84.roundCoordinateValue(lat),
-        ];
-      }),
-    ]
-      .map((row) => row.join(";"))
-      .join("\n") + "\n";
-  triggerDownload(new Blob([csvData], { type: "text/csv" }));
+  triggerDownload(new Blob([buildCSV(profile)], { type: "text/csv" }));
 }
 </script>
 
@@ -108,6 +72,7 @@ function exportCSV(profile: ElevationProfileResponse): void {
       :labels="labels.metadata"
     >
       <UButton
+        data-testid="btn-reverse"
         icon="i-lucide-arrow-left-right"
         size="md"
         color="primary"
@@ -115,6 +80,7 @@ function exportCSV(profile: ElevationProfileResponse): void {
         @click="isReverse = !isReverse"
       />
       <UButton
+        data-testid="btn-download"
         icon="i-lucide-download"
         size="md"
         color="primary"

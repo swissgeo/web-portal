@@ -23,7 +23,7 @@
     "format:write": "prettier --write --ignore-path ../../.prettierignore .",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "test": "vitest run",
+    "test:unit": "vitest run",
     "type-check": "vue-tsc"
   },
   "dependencies": {
@@ -43,6 +43,7 @@
     "@swissgeo/config-typescript": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
+    "@vue/test-utils": "catalog:",
     "eslint": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
