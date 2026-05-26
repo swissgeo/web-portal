@@ -4,5 +4,5 @@
  * log things.
  */
 export interface ActionDispatcher {
-    name: string
+  name: string;
 }

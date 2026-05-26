@@ -1,10 +1,10 @@
-export const VALID_LOCALES = ['de', 'fr', 'it', 'en', 'rm'] as const
-export type Lang = (typeof VALID_LOCALES)[number]
+export const VALID_LOCALES = ["de", "fr", "it", "en", "rm"] as const;
+export type Lang = (typeof VALID_LOCALES)[number];
 
 // Fallback locale used when no Accept-Language tag matches a supported locale.
 // Mirrored from nuxt.config.ts i18n.defaultLocale; kept here as the single
 // source of truth shared between the Nitro middleware and the Vue middleware.
-export const DEFAULT_LOCALE: Lang = 'de'
+export const DEFAULT_LOCALE: Lang = "de";
 
 /**
  * Pick the first supported locale from an Accept-Language header.
@@ -15,21 +15,21 @@ export const DEFAULT_LOCALE: Lang = 'de'
  * Returns `undefined` when the header is empty or no tag matches.
  */
 export function pickLocaleFromAcceptLanguage<T extends string>(
-    header: string | undefined,
-    supported: readonly T[]
+  header: string | undefined,
+  supported: readonly T[],
 ): T | undefined {
-    if (!header) {
-        return undefined
+  if (!header) {
+    return undefined;
+  }
+  const tags = header
+    .split(",")
+    .map((tag) => tag.split(";")[0].trim().toLowerCase())
+    .filter((tag) => tag.length > 0);
+  for (const tag of tags) {
+    const primary = tag.split("-")[0] as T;
+    if (supported.includes(primary)) {
+      return primary;
     }
-    const tags = header
-        .split(',')
-        .map((tag) => tag.split(';')[0].trim().toLowerCase())
-        .filter((tag) => tag.length > 0)
-    for (const tag of tags) {
-        const primary = tag.split('-')[0] as T
-        if (supported.includes(primary)) {
-            return primary
-        }
-    }
-    return undefined
+  }
+  return undefined;
 }

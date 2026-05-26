@@ -1,1 +1,1 @@
-export type UuidString = `${string}-${string}-${string}-${string}-${string}`
+export type UuidString = `${string}-${string}-${string}-${string}-${string}`;

@@ -1,5 +1,12 @@
-import type { ContentPageMetadata, Publication, Systemdata } from '../livingdocs/Publication'
+import type {
+  ContentPageMetadata,
+  Publication,
+  Systemdata,
+} from "../livingdocs/Publication";
 
-export type LanguageReference = { metadata: ContentPageMetadata; systemdata: Systemdata }
+export type LanguageReference = {
+  metadata: ContentPageMetadata;
+  systemdata: Systemdata;
+};
 
-export type Page = Publication & { languageReferences: LanguageReference[] }
+export type Page = Publication & { languageReferences: LanguageReference[] };

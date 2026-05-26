@@ -1,2 +1,2 @@
-export type * from './Menu'
-export type * from './Page'
+export type * from "./Menu";
+export type * from "./Page";
