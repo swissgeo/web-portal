@@ -27,7 +27,7 @@
     "lint:write": "eslint --fix",
     "prepare": "pnpm run build",
     "test:unit": "vitest run",
-    "test:coverage": "vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov --coverage.reporter=text-summary",
+    "test:coverage": "vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov --coverage.reporter=text-summary --passWithNoTests",
     "test:unit:watch": "vitest watch",
     "type-check": "tsc -p tsconfig.json"
   },
