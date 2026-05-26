@@ -16,11 +16,7 @@
       "type": "application/xml",
       "variables": {
         "epsg": {
-          "enum": [
-            2056,
-            21781,
-            4326
-          ],
+          "enum": [2056, 21781, 4326],
           "type": "number",
           "format": "integer",
           "default": 2056,

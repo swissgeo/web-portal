@@ -1,70 +1,70 @@
 {
-    "id": "ch.swisstopo.pixelkarte-farbe",
-    "links": [
-        {
-            "href": "http://mock-oar.org/api/oar/v0/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
-            "rel": "self",
-            "title": "This Record"
-        },
-        {
-            "href": "http://mock-oar.org/api/oar/v0/collections/swissgeo.catalog?language=en",
-            "rel": "collection",
-            "title": "Swissgeo Catalog"
-        },
-        {
-            "href": "http://mock-oar.org/api/oar/v0/collections/ch.swisstopo.pixelkarte-farbe?language=en",
-            "rel": "distributions",
-            "title": "Distributions"
-        }
-    ],
-    "type": "Feature",
-    "geometry": {
-        "coordinates": [
-            [
-                [5.96, 45.82],
-                [5.96, 47.81],
-                [10.49, 47.81],
-                [10.49, 45.82],
-                [5.96, 45.82]
-            ]
-        ],
-        "type": "Polygon"
+  "id": "ch.swisstopo.pixelkarte-farbe",
+  "links": [
+    {
+      "href": "http://mock-oar.org/api/oar/v0/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
+      "rel": "self",
+      "title": "This Record"
     },
-    "properties": {
-        "contacts": [],
-        "description": "ERR:NO_DESCRIPTION",
-        "language": {
-            "code": "en",
-            "dir": "ltr",
-            "name": "English"
-        },
-        "languages": [
-            {
-                "alternate": "German",
-                "code": "de",
-                "dir": "ltr",
-                "name": "Deutsch"
-            },
-            {
-                "alternate": "French",
-                "code": "fr",
-                "dir": "ltr",
-                "name": "Français"
-            },
-            {
-                "alternate": "Italian",
-                "code": "it",
-                "dir": "ltr",
-                "name": "Italiano"
-            },
-            {
-                "code": "en",
-                "dir": "ltr",
-                "name": "English"
-            }
-        ],
-        "preferredDistributionId": "ch.swisstopo.pixelkarte-farbe:wmts",
-        "title": "National Maps (color)",
-        "type": "Dataset"
+    {
+      "href": "http://mock-oar.org/api/oar/v0/collections/swissgeo.catalog?language=en",
+      "rel": "collection",
+      "title": "Swissgeo Catalog"
+    },
+    {
+      "href": "http://mock-oar.org/api/oar/v0/collections/ch.swisstopo.pixelkarte-farbe?language=en",
+      "rel": "distributions",
+      "title": "Distributions"
     }
+  ],
+  "type": "Feature",
+  "geometry": {
+    "coordinates": [
+      [
+        [5.96, 45.82],
+        [5.96, 47.81],
+        [10.49, 47.81],
+        [10.49, 45.82],
+        [5.96, 45.82]
+      ]
+    ],
+    "type": "Polygon"
+  },
+  "properties": {
+    "contacts": [],
+    "description": "ERR:NO_DESCRIPTION",
+    "language": {
+      "code": "en",
+      "dir": "ltr",
+      "name": "English"
+    },
+    "languages": [
+      {
+        "alternate": "German",
+        "code": "de",
+        "dir": "ltr",
+        "name": "Deutsch"
+      },
+      {
+        "alternate": "French",
+        "code": "fr",
+        "dir": "ltr",
+        "name": "Français"
+      },
+      {
+        "alternate": "Italian",
+        "code": "it",
+        "dir": "ltr",
+        "name": "Italiano"
+      },
+      {
+        "code": "en",
+        "dir": "ltr",
+        "name": "English"
+      }
+    ],
+    "preferredDistributionId": "ch.swisstopo.pixelkarte-farbe:wmts",
+    "title": "National Maps (color)",
+    "type": "Dataset"
+  }
 }

@@ -1,11 +1,11 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["github>swissgeo/.github:renovate-preset"],
-    "reviewers": ["schtibe", "keetraxx"],
-    "baseBranchPatterns": ["develop"],
-    "postUpgradeTasks": {
-        "commands": ["pnpm --ignore-scripts update {{{depName}}}"],
-        "fileFilters": ["pnpm-lock.yaml"],
-        "executionMode": "update"
-    }
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>swissgeo/.github:renovate-preset"],
+  "reviewers": ["schtibe", "keetraxx"],
+  "baseBranchPatterns": ["develop"],
+  "postUpgradeTasks": {
+    "commands": ["pnpm --ignore-scripts update {{{depName}}}"],
+    "fileFilters": ["pnpm-lock.yaml"],
+    "executionMode": "update"
+  }
 }

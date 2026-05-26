@@ -1,28 +1,28 @@
 {
-    "name": "@swissgeo/config-typescript",
-    "version": "1.0.1",
-    "description": "TypeScript configuration for SWISSGEO projects.",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/geoadmin/web-mapviewer.git",
-        "directory": "packages/config/typescript"
-    },
-    "license": "BSD-3-Clause",
-    "main": "tsconfig.base.json",
-    "dependencies": {
-        "@vue/tsconfig": "catalog:"
-    },
-    "peerDependencies": {
-        "typescript": "catalog:"
-    },
-    "optionalDependencies": {
-        "@types/bootstrap": "catalog:",
-        "@types/chai": "catalog:",
-        "@types/geojson": "catalog:",
-        "@types/jsdom": "catalog:",
-        "@types/lodash": "catalog:",
-        "@types/luxon": "catalog:",
-        "@types/node": "catalog:",
-        "@types/pako": "catalog:"
-    }
+  "name": "@swissgeo/config-typescript",
+  "version": "1.0.1",
+  "description": "TypeScript configuration for SWISSGEO projects.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/geoadmin/web-mapviewer.git",
+    "directory": "packages/config/typescript"
+  },
+  "license": "BSD-3-Clause",
+  "main": "tsconfig.base.json",
+  "dependencies": {
+    "@vue/tsconfig": "catalog:"
+  },
+  "peerDependencies": {
+    "typescript": "catalog:"
+  },
+  "optionalDependencies": {
+    "@types/bootstrap": "catalog:",
+    "@types/chai": "catalog:",
+    "@types/geojson": "catalog:",
+    "@types/jsdom": "catalog:",
+    "@types/lodash": "catalog:",
+    "@types/luxon": "catalog:",
+    "@types/node": "catalog:",
+    "@types/pako": "catalog:"
+  }
 }

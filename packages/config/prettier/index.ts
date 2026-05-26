@@ -1,12 +1,12 @@
-import type { Config } from 'prettier'
+import type { Config } from "prettier";
 
-const defaultConfig: Config = {}
+const defaultConfig: Config = {};
 
 type AvailablePlugins =
-    | '@prettier/plugin-xml'
-    | 'prettier-plugin-jsdoc'
-    | 'prettier-plugin-packagejson'
-    | 'prettier-plugin-tailwindcss'
+  | "@prettier/plugin-xml"
+  | "prettier-plugin-jsdoc"
+  | "prettier-plugin-packagejson"
+  | "prettier-plugin-tailwindcss";
 
 /**
  * Define the prettier config, given the plugins to use
@@ -16,11 +16,11 @@ type AvailablePlugins =
  */
 
 function defineConfig(...plugins: AvailablePlugins[]): Config {
-    const config = { ...defaultConfig }
-    if (plugins) {
-        config.plugins = plugins
-    }
-    return config
+  const config = { ...defaultConfig };
+  if (plugins) {
+    config.plugins = plugins;
+  }
+  return config;
 }
 
-export default defineConfig
+export default defineConfig;

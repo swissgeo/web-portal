@@ -1,3 +1,3 @@
-import defaultConfig from './index'
+import defaultConfig from "./index";
 
-export default defaultConfig
+export default defaultConfig;

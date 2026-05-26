@@ -25,9 +25,9 @@ npm install --save-dev @swissgeo/config-eslint eslint
 Create an `eslint.config.mts` file in your project root:
 
 ```typescript
-import eslintConfig from '@swissgeo/config-eslint'
+import eslintConfig from "@swissgeo/config-eslint";
 
-export default eslintConfig
+export default eslintConfig;
 ```
 
 ### Granular Configurations
@@ -40,12 +40,9 @@ You can also import specific configurations if you don't want the full default s
 - `jsConfig`: Standard JavaScript rules
 
 ```typescript
-import { jsConfig, vueConfig } from '@swissgeo/config-eslint'
+import { jsConfig, vueConfig } from "@swissgeo/config-eslint";
 
-export default [
-  ...jsConfig,
-  ...vueConfig,
-]
+export default [...jsConfig, ...vueConfig];
 ```
 
 ### Custom Configuration
@@ -53,7 +50,7 @@ export default [
 You can extend or override the default configuration:
 
 ```typescript
-import eslintConfig from '@swissgeo/config-eslint'
+import eslintConfig from "@swissgeo/config-eslint";
 
 export default [
   ...eslintConfig,
@@ -62,7 +59,7 @@ export default [
       // Your custom rules
     },
   },
-]
+];
 ```
 
 ## Features

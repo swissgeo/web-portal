@@ -33,23 +33,23 @@ pnpm install --workspace-root --save-dev @prettier/plugin-xml prettier-plugin-js
 Create a `prettier.config.js` (or `prettier.config.ts`) file in your project root (or monorepo root) and call the exported `defineConfig` function:
 
 ```javascript
-import defineConfig from '@swissgeo/config-prettier'
+import defineConfig from "@swissgeo/config-prettier";
 
 // No extra plugins
-export default defineConfig()
+export default defineConfig();
 ```
 
 To enable plugins, pass them as arguments (make sure they are installed in your project):
 
 ```javascript
-import defineConfig from '@swissgeo/config-prettier'
+import defineConfig from "@swissgeo/config-prettier";
 
 export default defineConfig(
-  '@prettier/plugin-xml',
-  'prettier-plugin-jsdoc',
-  'prettier-plugin-packagejson',
-  'prettier-plugin-tailwindcss'
-)
+  "@prettier/plugin-xml",
+  "prettier-plugin-jsdoc",
+  "prettier-plugin-packagejson",
+  "prettier-plugin-tailwindcss",
+);
 ```
 
 ### Extending the Configuration
@@ -57,15 +57,15 @@ export default defineConfig(
 You can extend or override the resulting configuration:
 
 ```javascript
-import defineConfig from '@swissgeo/config-prettier'
+import defineConfig from "@swissgeo/config-prettier";
 
-const base = defineConfig('prettier-plugin-jsdoc')
+const base = defineConfig("prettier-plugin-jsdoc");
 
 export default {
   ...base,
   // Your custom overrides
   printWidth: 120,
-}
+};
 ```
 
 ## Configuration Details

@@ -1,12 +1,12 @@
-import defaultConfig from './index'
+import defaultConfig from "./index";
 
 export default [
-    ...defaultConfig,
-    {
-        languageOptions: {
-            parserOptions: {
-                tsconfigRootDir: import.meta.dirname,
-            },
-        },
+  ...defaultConfig,
+  {
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
-]
+  },
+];

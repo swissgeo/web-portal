@@ -1,9 +1,9 @@
 {
-    "extends": "@swissgeo/config-typescript/tsconfig.base.json",
-    "include": ["**/*.ts"],
-    "exclude": ["node_modules", "eslint.config.mts"],
-    "compilerOptions": {
-        "noEmit": true,
-        "types": ["node"]
-    }
+  "extends": "@swissgeo/config-typescript/tsconfig.base.json",
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "eslint.config.mts"],
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"]
+  }
 }
