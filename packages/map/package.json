@@ -43,13 +43,11 @@
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
-    "@swissgeo/config-prettier": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@types/geojson": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
     "@vueuse/core": "catalog:",
     "eslint": "catalog:",
-    "prettier": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",

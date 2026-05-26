@@ -543,9 +543,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -555,9 +552,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -598,9 +592,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -628,9 +619,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       tailwindcss:
         specifier: 'catalog:'
         version: 4.1.18
@@ -708,9 +696,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -723,9 +708,6 @@ importers:
       happy-dom:
         specifier: 'catalog:'
         version: 20.9.0
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -784,9 +766,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -799,9 +778,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       tailwindcss:
         specifier: 'catalog:'
         version: 4.1.18
@@ -857,9 +833,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -878,9 +851,6 @@ importers:
       pinia:
         specifier: 'catalog:'
         version: 3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3))
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -912,18 +882,12 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -1084,9 +1048,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@types/mapbox-gl':
         specifier: 'catalog:'
         version: 3.4.1
@@ -1111,9 +1072,6 @@ importers:
       playwright-core:
         specifier: 'catalog:'
         version: 1.59.1
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -1196,9 +1154,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -1214,9 +1169,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -1248,9 +1200,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -1263,9 +1212,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -1309,9 +1255,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -1339,9 +1282,6 @@ importers:
       msw:
         specifier: 'catalog:'
         version: 2.14.3(@types/node@25.6.0)(typescript@5.9.3)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -1373,18 +1313,12 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       unplugin-dts:
         specifier: 'catalog:'
         version: 1.0.0-beta.6(@microsoft/api-extractor@7.56.0(@types/node@25.6.0))(esbuild@0.28.0)(rollup@4.60.4)(typescript@5.9.3)(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))
@@ -1413,9 +1347,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -1431,9 +1362,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -1498,9 +1426,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -1519,9 +1444,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -1565,9 +1487,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -1580,9 +1499,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -1635,9 +1551,6 @@ importers:
       '@swissgeo/config-eslint':
         specifier: workspace:*
         version: link:../config/eslint
-      '@swissgeo/config-prettier':
-        specifier: workspace:*
-        version: link:../config/prettier
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
@@ -1647,9 +1560,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.3

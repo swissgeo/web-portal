@@ -1,7 +1,6 @@
 {
   "extends": "@swissgeo/config-typescript/tsconfig.base.json",
   "include": [
-    "prettier.config.ts",
     "src/**/*.ts",
     "src/**/*.vue",
     "types/**/*.ts",

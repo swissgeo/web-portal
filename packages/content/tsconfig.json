@@ -3,7 +3,6 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.vue",
-    "prettier.config.ts",
     "vite.config.ts",
     "../../base.vite.config"
   ]
