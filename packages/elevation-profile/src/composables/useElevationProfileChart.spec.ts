@@ -49,7 +49,7 @@ describe("chartJsData", () => {
     expect(data).toHaveLength(3);
     expect(data[0].x).toBe(0);
     expect(data[0].y).toBe(400);
-    expect(data[1].x).toBe(500);
+    expect(data[1].x).toBe(300);
     expect(data[1].y).toBe(450);
     expect(data[2].x).toBe(1000);
     expect(data[2].y).toBe(500);

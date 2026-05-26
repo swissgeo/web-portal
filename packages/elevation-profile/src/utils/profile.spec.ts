@@ -24,7 +24,7 @@ describe("reverseProfile", () => {
   it("recalculates dist values so they start at 0", () => {
     const result = reverseProfile(makeProfile());
     expect(result.points[0].dist).toBe(0);
-    expect(result.points[1].dist).toBe(500);
+    expect(result.points[1].dist).toBe(700);
     expect(result.points[2].dist).toBe(1000);
   });
 

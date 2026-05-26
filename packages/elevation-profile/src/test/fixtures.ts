@@ -11,8 +11,8 @@ export const makeProfile = (
       hasElevationData: true,
     },
     {
-      dist: 500,
-      coordinate: [2600500, 1200000],
+      dist: 300,
+      coordinate: [2600300, 1200000],
       elevation: 450,
       hasElevationData: true,
     },
