@@ -14,68 +14,68 @@
  * before setupFiles run. Happy-dom tests are completely unaffected.
  */
 
-import { vi } from 'vitest'
+import { vi } from "vitest";
 
 const { isNuxtEnv } = vi.hoisted(() => {
-    const isNuxtEnv =
-        typeof window !== 'undefined' &&
-        !!(window as Record<string, unknown>).__NUXT_VITEST_ENVIRONMENT__
-    return { isNuxtEnv }
-})
+  const isNuxtEnv =
+    typeof window !== "undefined" &&
+    !!(window as Record<string, unknown>).__NUXT_VITEST_ENVIRONMENT__;
+  return { isNuxtEnv };
+});
 
 // neutralise the stateConfigSync plugin if in nuxt env,
 // otherwise the app created hook will run this and potentially interfere with the tests
-vi.mock('~/composables/useRestoreState', async (importOriginal) => {
-    if (isNuxtEnv) {
-        return {
-            STORAGE_KEY: 'swissgeo_app_state',
-            useRestoreState: () => ({
-                restore: vi.fn().mockResolvedValue(undefined),
-                listenToChange: vi.fn(),
-            }),
-        }
-    } else {
-        return await importOriginal()
-    }
-})
+vi.mock("~/composables/useRestoreState", async (importOriginal) => {
+  if (isNuxtEnv) {
+    return {
+      STORAGE_KEY: "swissgeo_app_state",
+      useRestoreState: () => ({
+        restore: vi.fn().mockResolvedValue(undefined),
+        listenToChange: vi.fn(),
+      }),
+    };
+  } else {
+    return await importOriginal();
+  }
+});
 
 if (isNuxtEnv) {
-    const SILENCED_PATTERNS = [
-        // No pages registered in tests → router can't resolve "/" or "/de".
-        // Can't fix: Vue Router's internal warn() fires during Nuxt boot before
-        // any test code runs. No hook to register routes early enough.
-        '[Vue Router warn]: No match found for location with path',
-        // Nuxt's error layer surfaces the same no-route condition as a 404.
-        // Can't fix: same root cause as the Vue Router warn above.
-        '[nuxt] error caught during app initialization',
-        // Vue dev warning when any component tree uses <Suspense> (Nuxt wraps
-        // pages in it). Can't fix: Vue upstream — Suspense is still experimental.
-        '<Suspense> is an experimental feature',
-        // addRoutes.ts plugin calls useFetch for menu data — no backend in tests.
-        // Can't mock: plugins run during Nuxt boot before setupFiles or test code.
-        'No data received from menus',
-    ]
+  const SILENCED_PATTERNS = [
+    // No pages registered in tests → router can't resolve "/" or "/de".
+    // Can't fix: Vue Router's internal warn() fires during Nuxt boot before
+    // any test code runs. No hook to register routes early enough.
+    "[Vue Router warn]: No match found for location with path",
+    // Nuxt's error layer surfaces the same no-route condition as a 404.
+    // Can't fix: same root cause as the Vue Router warn above.
+    "[nuxt] error caught during app initialization",
+    // Vue dev warning when any component tree uses <Suspense> (Nuxt wraps
+    // pages in it). Can't fix: Vue upstream — Suspense is still experimental.
+    "<Suspense> is an experimental feature",
+    // addRoutes.ts plugin calls useFetch for menu data — no backend in tests.
+    // Can't mock: plugins run during Nuxt boot before setupFiles or test code.
+    "No data received from menus",
+  ];
 
-    function shouldSilence(args: unknown[]): boolean {
-        const first = args[0]
-        let text: string
-        if (typeof first === 'string') {
-            text = first
-        } else if (first instanceof Error) {
-            text = first.message
-        } else {
-            return false
-        }
-        return SILENCED_PATTERNS.some((pattern) => text.includes(pattern))
+  function shouldSilence(args: unknown[]): boolean {
+    const first = args[0];
+    let text: string;
+    if (typeof first === "string") {
+      text = first;
+    } else if (first instanceof Error) {
+      text = first.message;
+    } else {
+      return false;
     }
+    return SILENCED_PATTERNS.some((pattern) => text.includes(pattern));
+  }
 
-    for (const method of ['log', 'info', 'warn', 'error'] as const) {
-        const original = console[method].bind(console)
-        console[method] = (...args: unknown[]) => {
-            if (shouldSilence(args)) {
-                return
-            }
-            original(...args)
-        }
-    }
+  for (const method of ["log", "info", "warn", "error"] as const) {
+    const original = console[method].bind(console);
+    console[method] = (...args: unknown[]) => {
+      if (shouldSilence(args)) {
+        return;
+      }
+      original(...args);
+    };
+  }
 }

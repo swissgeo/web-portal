@@ -2,59 +2,64 @@
 // Connects search results to map actions (center, zoom, add layers)
 
 import type {
-    SearchResult,
-    LocationSearchResult,
-    LayerSearchResult,
-    FeatureSearchResult,
-} from '@swissgeo/search'
+  SearchResult,
+  LocationSearchResult,
+  LayerSearchResult,
+  FeatureSearchResult,
+} from "@swissgeo/search";
 
-import { usePositionStore } from '@swissgeo/map'
+import { usePositionStore } from "@swissgeo/map";
 
 export function useSearchSelection() {
-    async function handleResultSelection(result: SearchResult) {
-        // Only run on client side to avoid SSR serialization issues
-        if (!process.client) {
-            return
-        }
-
-        if (result.resultType === 'LOCATION') {
-            handleLocationSelection(result as LocationSearchResult)
-        } else if (result.resultType === 'FEATURE') {
-            handleFeatureSelection(result as FeatureSearchResult)
-        } else if (result.resultType === 'LAYER') {
-            await handleLayerSelection(result as LayerSearchResult)
-        }
+  async function handleResultSelection(result: SearchResult) {
+    // Only run on client side to avoid SSR serialization issues
+    if (!process.client) {
+      return;
     }
 
-    function handleLocationSelection(result: LocationSearchResult) {
-        if (!result.coordinate) {
-            return
-        }
+    if (result.resultType === "LOCATION") {
+      handleLocationSelection(result as LocationSearchResult);
+    } else if (result.resultType === "FEATURE") {
+      handleFeatureSelection(result as FeatureSearchResult);
+    } else if (result.resultType === "LAYER") {
+      await handleLayerSelection(result as LayerSearchResult);
+    }
+  }
 
-        const positionStore = usePositionStore()
-        positionStore.setCenter(result.coordinate, { name: 'search-result-selection' })
-        positionStore.setZoom(result.zoom, { name: 'search-result-selection' })
+  function handleLocationSelection(result: LocationSearchResult) {
+    if (!result.coordinate) {
+      return;
     }
 
-    function handleFeatureSelection(result: FeatureSearchResult) {
-        if (!result.coordinate) {
-            return
-        }
+    const positionStore = usePositionStore();
+    positionStore.setCenter(result.coordinate, {
+      name: "search-result-selection",
+    });
+    positionStore.setZoom(result.zoom, { name: "search-result-selection" });
+  }
 
-        const positionStore = usePositionStore()
-        positionStore.setCenter(result.coordinate, { name: 'search-feature-selection' })
-
-        const featureZoom = result.zoom && result.zoom > 0 && result.zoom < 20 ? result.zoom : 10
-        positionStore.setZoom(featureZoom, { name: 'search-feature-selection' })
+  function handleFeatureSelection(result: FeatureSearchResult) {
+    if (!result.coordinate) {
+      return;
     }
 
-    async function handleLayerSelection(result: LayerSearchResult) {
-        const localePath = useLocalePath()
+    const positionStore = usePositionStore();
+    positionStore.setCenter(result.coordinate, {
+      name: "search-feature-selection",
+    });
 
-        await navigateTo(localePath(`/dataset/${result.layerId}`))
-    }
+    const featureZoom =
+      result.zoom && result.zoom > 0 && result.zoom < 20 ? result.zoom : 10;
+    positionStore.setZoom(featureZoom, { name: "search-feature-selection" });
+  }
 
-    return {
-        handleResultSelection,
-    }
+  async function handleLayerSelection(result: LayerSearchResult) {
+    const localePath = useLocalePath();
+
+    await navigateTo(localePath(`/dataset/${result.layerId}`));
+  }
+
+  return {
+    handleResultSelection,
+  };
 }

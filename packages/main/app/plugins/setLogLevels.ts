@@ -1,13 +1,13 @@
-import log from '@swissgeo/log'
-import parseWantedLogLevels from '~/utils/parseWantedLoglevels'
+import log from "@swissgeo/log";
+import parseWantedLogLevels from "~/utils/parseWantedLoglevels";
 
 export default defineNuxtPlugin({
-    name: 'setLogLevels',
+  name: "setLogLevels",
 
-    hooks: {
-        'app:created'() {
-            const config = useRuntimeConfig()
-            log.wantedLevels = parseWantedLogLevels(config.public.wantedLogLevels)
-        },
+  hooks: {
+    "app:created"() {
+      const config = useRuntimeConfig();
+      log.wantedLevels = parseWantedLogLevels(config.public.wantedLogLevels);
     },
-})
+  },
+});

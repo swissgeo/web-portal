@@ -1,196 +1,196 @@
 {
-    "menuTitles": {
-        "knowledge": "Wissen",
-        "about": "Über Swissgeo"
+  "menuTitles": {
+    "knowledge": "Wissen",
+    "about": "Über Swissgeo"
+  },
+  "welcomeOverlay": {
+    "moreInfos": "Mehr Infos",
+    "startPrototype": "Prototyp starten",
+    "dontShowAgain": "Nicht mehr anzeigen"
+  },
+  "menu": {
+    "search": "Suche",
+    "layerCart": "Aktive Ebenen"
+  },
+  "search": {
+    "placeholder": "Ort, Layer oder Koordinaten suchen...",
+    "locations_results_header": "Orte",
+    "features_results_header": "Features",
+    "layers_results_header": "Layer",
+    "no_results": "Keine Ergebnisse gefunden"
+  },
+  "footer": {
+    "copyRightData": "© Daten: "
+  },
+  "debug": {
+    "openImportLocalLayersPanel": "Import Lokale Layer Panel öffnen",
+    "openDrawingPanel": "Zeichenpanel öffnen",
+    "openImportLayersPanel": "Import Layer Panel öffnen",
+    "openLayersPanel": "Layer Panel öffnen",
+    "drawingPanelTitle": "Zeichenwerkzeuge",
+    "drawingNameLabel": "Zeichnungsname",
+    "drawingToolSelectLabel": "Zeichenwerkzeug auswählen:",
+    "drawingToolPoint": "Punkt",
+    "drawingToolLine": "Linie",
+    "drawingToolText": "Text",
+    "drawingToolMeasurement": "Messen",
+    "drawingInstructionPoint": "Auf die Karte klicken, um einen Punkt hinzuzufügen",
+    "drawingInstructionLine": "Klicken, um eine Linie zu zeichnen, Doppelklick zum Beenden oder nahe am Start klicken, um als Polygon zu schließen",
+    "drawingInstructionText": "Auf die Karte klicken, um Text hinzuzufügen",
+    "drawingInstructionMeasurementRadius": "Zwei Punkte klicken, um einen Radius zu setzen; dritten Punkt hinzufügen, um als Pfad fortzufahren",
+    "drawingInstructionMeasurementPath": "Weiter klicken, um Pfadknoten hinzuzufügen, Doppelklick zum Beenden",
+    "drawingInstructionDefault": "Klicken, um das Zeichnen zu starten",
+    "drawingFeaturesDrawnLabel": "Gezeichnete Elemente",
+    "drawingExportLabel": "Export:",
+    "drawingExportKML": "KML exportieren",
+    "drawingExportKMZ": "KMZ exportieren",
+    "drawingExportGPX": "GPX exportieren",
+    "drawingClearAll": "Alle Zeichnungen löschen",
+    "drawingClearConfirmTitle": "Alle Zeichnungen löschen?",
+    "drawingClearConfirmDescription": "Diese Aktion entfernt alle Zeichnungen aus der aktuellen Sitzung.",
+    "drawingClearConfirmCancel": "Abbrechen",
+    "drawingClearConfirmConfirm": "Löschen",
+    "drawingHoverHint": {
+      "selectFeature": "Klicken, um {target} auszuwählen",
+      "nothingToSelect": "Nichts auszuwählen",
+      "targetMarker": "Marker",
+      "targetText": "Text",
+      "targetLine": "Linie",
+      "targetPolygon": "Polygon",
+      "targetMeasurement": "Messung",
+      "targetFeature": "Element"
     },
-    "welcomeOverlay": {
-        "moreInfos": "Mehr Infos",
-        "startPrototype": "Prototyp starten",
-        "dontShowAgain": "Nicht mehr anzeigen"
+    "drawingFeatureInfo": {
+      "windowTitle": "Elementinformationen",
+      "typeLabel": "Typ",
+      "titleLabel": "Titel",
+      "textLabel": "Text",
+      "titleOrTextLabel": "Titel/Text",
+      "descriptionLabel": "Beschreibung",
+      "coordinatesLabel": "Koordinaten",
+      "areaLabel": "Fläche",
+      "perimeterLabel": "Umfang",
+      "lineStyleLabel": "Linienstil",
+      "strokeWidthLabel": "Strichbreite",
+      "strokeOpacityLabel": "Strichtransparenz",
+      "strokeColorLabel": "Strichfarbe",
+      "dashedLineLabel": "Gestrichelte Linie",
+      "fillColorLabel": "Füllfarbe",
+      "fillOpacityLabel": "Fülltransparenz",
+      "markerStyleButton": "Markerstil",
+      "textStyleButton": "Textstil",
+      "hideDescriptionOnMap": "Beschreibung auf Karte ausblenden",
+      "showDescriptionOnMap": "Beschreibung auf Karte anzeigen",
+      "markerSizeLabel": "Markergröße",
+      "markerColorLabel": "Markerfarbe",
+      "markerSymbolLabel": "Markersymbol",
+      "textSizeLabel": "Textgröße",
+      "textColorLabel": "Textfarbe",
+      "textAnchorLabel": "Textanker",
+      "deleteFeatureButton": "Element löschen",
+      "sizeSmall": "Klein",
+      "sizeMedium": "Mittel",
+      "sizeLarge": "Groß",
+      "sizeExtraLarge": "Extra groß",
+      "strokeThin": "Dünn",
+      "strokeMedium": "Mittel",
+      "strokeThick": "Dick",
+      "strokeExtraThick": "Extra dick",
+      "kind": {
+        "point": "Punkt",
+        "text": "Text",
+        "lineString": "Linie",
+        "polygon": "Polygon",
+        "measurementRadius": "Messung (Radius)",
+        "measurementPath": "Messung (Pfad)",
+        "unknown": "Unbekannt"
+      },
+      "anchor": {
+        "top-left": "Oben links",
+        "top-center": "Oben mittig",
+        "top-right": "Oben rechts",
+        "center-left": "Mitte links",
+        "center": "Mitte",
+        "center-right": "Mitte rechts",
+        "bottom-left": "Unten links",
+        "bottom-center": "Unten mittig",
+        "bottom-right": "Unten rechts"
+      }
     },
-    "menu": {
-        "search": "Suche",
-        "layerCart": "Aktive Ebenen"
-    },
-    "search": {
-        "placeholder": "Ort, Layer oder Koordinaten suchen...",
-        "locations_results_header": "Orte",
-        "features_results_header": "Features",
-        "layers_results_header": "Layer",
-        "no_results": "Keine Ergebnisse gefunden"
-    },
-    "footer": {
-        "copyRightData": "© Daten: "
-    },
-    "debug": {
-        "openImportLocalLayersPanel": "Import Lokale Layer Panel öffnen",
-        "openDrawingPanel": "Zeichenpanel öffnen",
-        "openImportLayersPanel": "Import Layer Panel öffnen",
-        "openLayersPanel": "Layer Panel öffnen",
-        "drawingPanelTitle": "Zeichenwerkzeuge",
-        "drawingNameLabel": "Zeichnungsname",
-        "drawingToolSelectLabel": "Zeichenwerkzeug auswählen:",
-        "drawingToolPoint": "Punkt",
-        "drawingToolLine": "Linie",
-        "drawingToolText": "Text",
-        "drawingToolMeasurement": "Messen",
-        "drawingInstructionPoint": "Auf die Karte klicken, um einen Punkt hinzuzufügen",
-        "drawingInstructionLine": "Klicken, um eine Linie zu zeichnen, Doppelklick zum Beenden oder nahe am Start klicken, um als Polygon zu schließen",
-        "drawingInstructionText": "Auf die Karte klicken, um Text hinzuzufügen",
-        "drawingInstructionMeasurementRadius": "Zwei Punkte klicken, um einen Radius zu setzen; dritten Punkt hinzufügen, um als Pfad fortzufahren",
-        "drawingInstructionMeasurementPath": "Weiter klicken, um Pfadknoten hinzuzufügen, Doppelklick zum Beenden",
-        "drawingInstructionDefault": "Klicken, um das Zeichnen zu starten",
-        "drawingFeaturesDrawnLabel": "Gezeichnete Elemente",
-        "drawingExportLabel": "Export:",
-        "drawingExportKML": "KML exportieren",
-        "drawingExportKMZ": "KMZ exportieren",
-        "drawingExportGPX": "GPX exportieren",
-        "drawingClearAll": "Alle Zeichnungen löschen",
-        "drawingClearConfirmTitle": "Alle Zeichnungen löschen?",
-        "drawingClearConfirmDescription": "Diese Aktion entfernt alle Zeichnungen aus der aktuellen Sitzung.",
-        "drawingClearConfirmCancel": "Abbrechen",
-        "drawingClearConfirmConfirm": "Löschen",
-        "drawingHoverHint": {
-            "selectFeature": "Klicken, um {target} auszuwählen",
-            "nothingToSelect": "Nichts auszuwählen",
-            "targetMarker": "Marker",
-            "targetText": "Text",
-            "targetLine": "Linie",
-            "targetPolygon": "Polygon",
-            "targetMeasurement": "Messung",
-            "targetFeature": "Element"
-        },
-        "drawingFeatureInfo": {
-            "windowTitle": "Elementinformationen",
-            "typeLabel": "Typ",
-            "titleLabel": "Titel",
-            "textLabel": "Text",
-            "titleOrTextLabel": "Titel/Text",
-            "descriptionLabel": "Beschreibung",
-            "coordinatesLabel": "Koordinaten",
-            "areaLabel": "Fläche",
-            "perimeterLabel": "Umfang",
-            "lineStyleLabel": "Linienstil",
-            "strokeWidthLabel": "Strichbreite",
-            "strokeOpacityLabel": "Strichtransparenz",
-            "strokeColorLabel": "Strichfarbe",
-            "dashedLineLabel": "Gestrichelte Linie",
-            "fillColorLabel": "Füllfarbe",
-            "fillOpacityLabel": "Fülltransparenz",
-            "markerStyleButton": "Markerstil",
-            "textStyleButton": "Textstil",
-            "hideDescriptionOnMap": "Beschreibung auf Karte ausblenden",
-            "showDescriptionOnMap": "Beschreibung auf Karte anzeigen",
-            "markerSizeLabel": "Markergröße",
-            "markerColorLabel": "Markerfarbe",
-            "markerSymbolLabel": "Markersymbol",
-            "textSizeLabel": "Textgröße",
-            "textColorLabel": "Textfarbe",
-            "textAnchorLabel": "Textanker",
-            "deleteFeatureButton": "Element löschen",
-            "sizeSmall": "Klein",
-            "sizeMedium": "Mittel",
-            "sizeLarge": "Groß",
-            "sizeExtraLarge": "Extra groß",
-            "strokeThin": "Dünn",
-            "strokeMedium": "Mittel",
-            "strokeThick": "Dick",
-            "strokeExtraThick": "Extra dick",
-            "kind": {
-                "point": "Punkt",
-                "text": "Text",
-                "lineString": "Linie",
-                "polygon": "Polygon",
-                "measurementRadius": "Messung (Radius)",
-                "measurementPath": "Messung (Pfad)",
-                "unknown": "Unbekannt"
-            },
-            "anchor": {
-                "top-left": "Oben links",
-                "top-center": "Oben mittig",
-                "top-right": "Oben rechts",
-                "center-left": "Mitte links",
-                "center": "Mitte",
-                "center-right": "Mitte rechts",
-                "bottom-left": "Unten links",
-                "bottom-center": "Unten mittig",
-                "bottom-right": "Unten rechts"
-            }
-        },
-        "openStateConfigPanel": "State Config Panel öffnen",
-        "stateConfig": "State Config",
-        "share": "Teilen",
-        "openPrintPanel": "Druckpanel öffnen"
-    },
-    "geolocation": {
-        "permissionDenied": "Standortberechtigung verweigert",
-        "stopTracking": "Standort-Tracking beenden",
-        "startGeolocation": "Standortbestimmung starten",
-        "recenterMap": "Karte neu zentrieren"
-    },
-    "backgroundLayers": {
-        "title": "Angezeigte Karten",
-        "voidMap": "Leere Karte",
-        "backgroundMap": "Hintergrundkarte",
-        "colorMap": "Karte farbig",
-        "greyMap": "Karte SW",
-        "swissimage": "Luftbilder"
-    },
-    "toaster": {
-        "warningTitle": "Warnung",
-        "errorTitle": "Error",
-        "successTitle": "Erfolg"
-    },
-    "state": {
-        "restoreUnableWarning": "Der Zustand der App konnte nicht wiederhergestellt werden"
-    },
-    "map": {
-        "contextMenuPopup": {
-            "elevation": "Höhe",
-            "title": "Position",
-            "tabPosition": "Koordinaten",
-            "tabShare": "Position teilen",
-            "errorFetchingElevation": "Fehler beim Abrufen der Höhe",
-            "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse"
-        }
-    },
-    "error": {
-        "notFound": "{resource} konnte nicht gefunden werden.",
-        "generic": "Ein unerwarteter Fehler ist aufgetreten.",
-        "backToMap": "Zurück zur Karte",
-        "resources": {
-            "dataset": "Dieser Datensatz"
-        }
-    },
-    "dataset": {
-        "abstract": "Beschreibung",
-        "contacts": "Kontakte",
-        "links": "Links",
-        "services": "Dienste",
-        "languages": "Sprachen",
-        "addToMap": "Zur Karte hinzufügen",
-        "alreadyOnMap": "Bereits auf der Karte",
-        "viewDetailPage": "Detailseite anzeigen",
-        "showOnMap": "Auf der Karte anzeigen",
-        "backToMap": "Zurück zur Karte",
-        "addToMapError": "Ebene konnte nicht zur Karte hinzugefügt werden"
-    },
-    "elevationProfile": {
-        "windowTitle": "Höhenprofil",
-        "plot": {
-            "xAxis": "Entfernung",
-            "yAxis": "Höhe",
-            "noData": "Keine Höhendaten verfügbar"
-        },
-        "metadata": {
-            "elevationDifference": "Höhenunterschied",
-            "elevationUp": "Anstieg",
-            "elevationDown": "Abstieg",
-            "poiUp": "Höchster Punkt",
-            "poiDown": "Tiefster Punkt",
-            "distance": "Lineare Entfernung",
-            "slopeDistance": "Pfadentfernung"
-        },
-        "fetchError": "Höhenprofil konnte nicht abgerufen werden"
+    "openStateConfigPanel": "State Config Panel öffnen",
+    "stateConfig": "State Config",
+    "share": "Teilen",
+    "openPrintPanel": "Druckpanel öffnen"
+  },
+  "geolocation": {
+    "permissionDenied": "Standortberechtigung verweigert",
+    "stopTracking": "Standort-Tracking beenden",
+    "startGeolocation": "Standortbestimmung starten",
+    "recenterMap": "Karte neu zentrieren"
+  },
+  "backgroundLayers": {
+    "title": "Angezeigte Karten",
+    "voidMap": "Leere Karte",
+    "backgroundMap": "Hintergrundkarte",
+    "colorMap": "Karte farbig",
+    "greyMap": "Karte SW",
+    "swissimage": "Luftbilder"
+  },
+  "toaster": {
+    "warningTitle": "Warnung",
+    "errorTitle": "Error",
+    "successTitle": "Erfolg"
+  },
+  "state": {
+    "restoreUnableWarning": "Der Zustand der App konnte nicht wiederhergestellt werden"
+  },
+  "map": {
+    "contextMenuPopup": {
+      "elevation": "Höhe",
+      "title": "Position",
+      "tabPosition": "Koordinaten",
+      "tabShare": "Position teilen",
+      "errorFetchingElevation": "Fehler beim Abrufen der Höhe",
+      "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse"
     }
+  },
+  "error": {
+    "notFound": "{resource} konnte nicht gefunden werden.",
+    "generic": "Ein unerwarteter Fehler ist aufgetreten.",
+    "backToMap": "Zurück zur Karte",
+    "resources": {
+      "dataset": "Dieser Datensatz"
+    }
+  },
+  "dataset": {
+    "abstract": "Beschreibung",
+    "contacts": "Kontakte",
+    "links": "Links",
+    "services": "Dienste",
+    "languages": "Sprachen",
+    "addToMap": "Zur Karte hinzufügen",
+    "alreadyOnMap": "Bereits auf der Karte",
+    "viewDetailPage": "Detailseite anzeigen",
+    "showOnMap": "Auf der Karte anzeigen",
+    "backToMap": "Zurück zur Karte",
+    "addToMapError": "Ebene konnte nicht zur Karte hinzugefügt werden"
+  },
+  "elevationProfile": {
+    "windowTitle": "Höhenprofil",
+    "plot": {
+      "xAxis": "Entfernung",
+      "yAxis": "Höhe",
+      "noData": "Keine Höhendaten verfügbar"
+    },
+    "metadata": {
+      "elevationDifference": "Höhenunterschied",
+      "elevationUp": "Anstieg",
+      "elevationDown": "Abstieg",
+      "poiUp": "Höchster Punkt",
+      "poiDown": "Tiefster Punkt",
+      "distance": "Lineare Entfernung",
+      "slopeDistance": "Pfadentfernung"
+    },
+    "fetchError": "Höhenprofil konnte nicht abgerufen werden"
+  }
 }

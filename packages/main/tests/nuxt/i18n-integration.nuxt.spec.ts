@@ -11,29 +11,29 @@
  * with `mockNuxtImport` stubs — it's faster and more focused.
  */
 
-import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
-import { defineComponent } from 'vue'
+import { mountSuspended } from "@nuxt/test-utils/runtime";
+import { describe, expect, it } from "vitest";
+import { defineComponent } from "vue";
 
 // A minimal component that reads from the real Nuxt i18n context.
 // No stubs — useI18n() is the real composable provided by @nuxtjs/i18n.
 const I18nProbe = defineComponent({
-    setup() {
-        const { locale, locales } = useI18n()
-        return { locale, locales }
-    },
-    template: '<span>{{ locale }}</span>',
-})
+  setup() {
+    const { locale, locales } = useI18n();
+    return { locale, locales };
+  },
+  template: "<span>{{ locale }}</span>",
+});
 
-describe('Nuxt i18n integration', () => {
-    it('provides the configured locales from nuxt.config.ts', async () => {
-        const wrapper = await mountSuspended(I18nProbe)
+describe("Nuxt i18n integration", () => {
+  it("provides the configured locales from nuxt.config.ts", async () => {
+    const wrapper = await mountSuspended(I18nProbe);
 
-        const codes = wrapper.vm.locales.map((l: { code: string }) => l.code)
-        expect(codes).toContain('de')
-        expect(codes).toContain('fr')
-        expect(codes).toContain('en')
-        expect(codes).toContain('it')
-        expect(codes).toContain('rm')
-    })
-})
+    const codes = wrapper.vm.locales.map((l: { code: string }) => l.code);
+    expect(codes).toContain("de");
+    expect(codes).toContain("fr");
+    expect(codes).toContain("en");
+    expect(codes).toContain("it");
+    expect(codes).toContain("rm");
+  });
+});
