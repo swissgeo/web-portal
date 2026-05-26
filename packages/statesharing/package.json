@@ -25,7 +25,8 @@
   },
   "dependencies": {
     "nuxt": "catalog:",
-    "semver": "catalog:"
+    "semver": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
@@ -34,6 +35,7 @@
     "@swissgeo/shared": "workspace:",
     "@types/semver": "catalog:",
     "eslint": "catalog:",
+    "orval": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
