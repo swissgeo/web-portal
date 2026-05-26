@@ -75,10 +75,14 @@ onMounted(() => {
             >
               Visit this map at
               <a
+                v-if="shareLink.length < 50"
                 class="bg-white text-[#1c6b85] underline"
                 :href="shareLink"
                 print-link
                 >{{ shareLink }}</a
+              >
+              <span v-else class="bg-white text-[#1c6b85]" print-link
+                >the following link</span
               >
             </div>
             <vue-qrcode
@@ -93,55 +97,32 @@ onMounted(() => {
           </div>
         </div>
 
-                    <div
-                        class="absolute"
-                        :style="{
-                            width: `${pixelPerMm * 10}px`,
-                            top: `${pixelPerMm * 10}px`,
-                            right: `${pixelPerMm * 10}px`,
-                            filter: `drop-shadow(0px 0px ${pixelPerMm * 2}px #000) contrast(2)`,
-                        }"
-                    >
-                        <img
-                            class="w-full"
-                            :src="northArrowUrl"
-                            alt="north arrow"
-                        />
-                    </div>
-                    <div
-                        v-if="shareLink"
-                        class="absolute right-0 bottom-0 z-[2] flex flex-row"
-                    >
-                        <div
-                            v-if="shareLink"
-                            class="self-end bg-white px-[10px] py-[2px] text-[#1c6b85]"
-                        >
-                            Visit this map at
-                            <a
-                                v-if="shareLink.length < 50"
-                                class="bg-white text-[#1c6b85] underline"
-                                :href="shareLink"
-                                print-link
-                                >{{ shareLink }}</a
-                            >
-                            <span
-                                v-else
-                                class="bg-white text-[#1c6b85]"
-                                print-link
-                                >the following link</span
-                            >
-                        </div>
-                        <vue-qrcode
-                            :value="shareLink"
-                            :options="{
-                                width: pixelPerMm * 20,
-                                color: {
-                                    dark: '#1c6b85',
-                                },
-                            }"
-                        ></vue-qrcode>
-                    </div>
-                </div>
+        <!-- This is the footer of the printed document -->
+        <div
+          class="flex flex-row p-1"
+          :style="{
+            marginTop: `${pixelPerMm * 4}px`,
+            gap: `${pixelPerMm * 16}px`,
+          }"
+        >
+          <!-- Footer left part: Swisstopo logo -->
+          <div
+            class="flex flex-row whitespace-nowrap"
+            :style="{
+              gap: `${pixelPerMm * 4}px`,
+            }"
+          >
+            <div
+              :style="{
+                width: `${pixelPerMm * 20}px`,
+              }"
+            >
+              <img
+                :src="SwissGeoLogoRgbPrio"
+                alt="Swissgeo logo"
+                class="w-full"
+              />
+            </div>
 
             <!-- This section will possibly contain names of contributing organization, or possibly be removed -->
             <!-- <div>

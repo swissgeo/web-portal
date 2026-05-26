@@ -5,16 +5,16 @@ import { watchDebounced } from "@vueuse/core";
 import { postStateToStateId } from "~/utils/postStateToStateId";
 import { toValue } from "vue";
 
-import { URL_PARAM_STATE } from './useUrlParams'
+import { URL_PARAM_STATE } from "./useUrlParams";
 
 function buildShareUrl(stateId: string | null): string {
   if (!stateId) {
     return "";
   }
 
-    const url = new URL('', location.origin)
-    url.searchParams.set(URL_PARAM_STATE, stateId)
-    return url.href
+  const url = new URL("", location.origin);
+  url.searchParams.set(URL_PARAM_STATE, stateId);
+  return url.href;
 }
 
 /**
@@ -176,9 +176,9 @@ export function useCreateShareLink(
 }
 
 export function useCreateShareLinkForPrint() {
-    const viewStore = useMapViewStore()
-    const shareLink = computed(() => buildShareUrl(viewStore.stateId))
-    return { shareLink }
+  const viewStore = useMapViewStore();
+  const shareLink = computed(() => buildShareUrl(viewStore.stateId));
+  return { shareLink };
 }
 
 /**
@@ -188,62 +188,64 @@ export function useCreateShareLinkForPrint() {
  * If the option forcePortableState is set to `true`, then the state will be encoded as base64 string and added to the share link as a query parameter,
  * instead of being sent to the service.
  */
-export function useCreateShareLinkForCustomState(forcePortableState: boolean = false) {
-    const state = ref<AppStatePayload | null>(null)
-    const runtimeConfig = useRuntimeConfig()
-    const hash = ref<string | null>(null)
+export function useCreateShareLinkForCustomState(
+  forcePortableState: boolean = false,
+) {
+  const state = ref<AppStatePayload | null>(null);
+  const runtimeConfig = useRuntimeConfig();
+  const hash = ref<string | null>(null);
 
-    if (forcePortableState) {
-        watchDebounced(
-            state,
-            () => {
-                if (!state.value) {
-                    hash.value = null
-                    return
-                }
-                hash.value = btoa(JSON.stringify(state.value))
-            },
-            {
-                deep: true,
-                debounce: 500,
-                maxWait: 1500,
-            }
-        )
-    } else {
-        const { data, execute, abort, isFetching } = useFetch<string>(
-            runtimeConfig.public.shareServiceUrl,
-            {
-                immediate: false,
-                refetch: false,
-            }
-        )
-            .post(state)
-            .text()
+  if (forcePortableState) {
+    watchDebounced(
+      state,
+      () => {
+        if (!state.value) {
+          hash.value = null;
+          return;
+        }
+        hash.value = btoa(JSON.stringify(state.value));
+      },
+      {
+        deep: true,
+        debounce: 500,
+        maxWait: 1500,
+      },
+    );
+  } else {
+    const { data, execute, abort, isFetching } = useFetch<string>(
+      runtimeConfig.public.shareServiceUrl,
+      {
+        immediate: false,
+        refetch: false,
+      },
+    )
+      .post(state)
+      .text();
 
-        hash.value = data.value
+    hash.value = data.value;
 
-        watchDebounced(
-            state,
-            () => {
-                if (!state.value) {
-                    return
-                }
+    watchDebounced(
+      state,
+      () => {
+        if (!state.value) {
+          return;
+        }
 
-                if (isFetching.value) {
-                    abort()
-                }
+        if (isFetching.value) {
+          abort();
+        }
 
-                void execute()
-            },
-            {
-                deep: true,
-                debounce: 500,
-                maxWait: 1500,
-            }
-        )
-    }
+        void execute();
+      },
+      {
+        deep: true,
+        debounce: 500,
+        maxWait: 1500,
+      },
+    );
+  }
 
-    const shareLink = computed(() => buildShareUrl(hash.value, forcePortableState))
+  const shareLink = computed(() => buildShareUrl(hash.value));
 
   return {
     shareLink,
