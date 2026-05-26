@@ -49,6 +49,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxtjs/i18n",
     "@nuxt/ui",
+    "@scayle/nuxt-opentelemetry",
   ],
   css: ["~/assets/css/main.css"],
   ui: {
@@ -113,6 +114,10 @@ export default defineNuxtConfig({
     defaultLocale: "de",
   },
   runtimeConfig: {
+    opentelemetry: {
+      enabled: true,
+      pathBlocklist: ["/health"],
+    },
     what3wordsApiKey: "",
     geoadminApiBaseUrl: "",
     public: {
