@@ -1,8 +1,8 @@
 {
-    "geolocation": {
-        "permissionDenied": "Autorizzazione alla posizione negata",
-        "stopTracking": "Interrompi il tracciamento",
-        "startGeolocation": "Avvia la geolocalizzazione",
-        "recenterMap": "Ricentra la mappa"
-    }
+  "geolocation": {
+    "permissionDenied": "Autorizzazione alla posizione negata",
+    "stopTracking": "Interrompi il tracciamento",
+    "startGeolocation": "Avvia la geolocalizzazione",
+    "recenterMap": "Ricentra la mappa"
+  }
 }

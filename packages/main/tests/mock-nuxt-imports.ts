@@ -19,12 +19,12 @@
  *   mockNuxtImport('useRoute', () => mocks.useRoute())
  *   mockNuxtImport('useRouter', () => mocks.useRouter())
  */
-import { vi } from 'vitest'
+import { vi } from "vitest";
 
 export const nuxtMocks = {
-    useRoute: () => () => ({ query: {} }),
-    useRouter: () => () => ({ replace: vi.fn(), afterEach: vi.fn() }),
-    onNuxtReady: () => vi.fn(),
-    useToaster: () => () => ({ showWarning: vi.fn(), showError: vi.fn() }),
-    useNuxtApp: () => () => ({ $i18n: { t: vi.fn((key: string) => key) } }),
-}
+  useRoute: () => () => ({ query: {} }),
+  useRouter: () => () => ({ replace: vi.fn(), afterEach: vi.fn() }),
+  onNuxtReady: () => vi.fn(),
+  useToaster: () => () => ({ showWarning: vi.fn(), showError: vi.fn() }),
+  useNuxtApp: () => () => ({ $i18n: { t: vi.fn((key: string) => key) } }),
+};

@@ -1,7 +1,7 @@
 export function useExternalUrl() {
-    function openExternalUrl(url: string) {
-        window.open(url, '_blank', 'noopener,noreferrer')
-    }
+  function openExternalUrl(url: string) {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
 
-    return { openExternalUrl }
+  return { openExternalUrl };
 }

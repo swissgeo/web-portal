@@ -1,4 +1,4 @@
-import { defineVitestConfig } from '@nuxt/test-utils/config'
+import { defineVitestConfig } from "@nuxt/test-utils/config";
 
 /**
  * `defineVitestConfig` auto-splits the suite into two Vitest projects:
@@ -18,13 +18,13 @@ import { defineVitestConfig } from '@nuxt/test-utils/config'
  * match", H3 404, Suspense warning). No-op in happy-dom.
  */
 export default defineVitestConfig({
-    test: {
-        environment: 'happy-dom',
-        testTimeout: 30000,
-        hookTimeout: 30000,
-        setupFiles: ['./tests/setup.ts'],
-    },
-    resolve: {
-        alias: {},
-    },
-})
+  test: {
+    environment: "happy-dom",
+    testTimeout: 30000,
+    hookTimeout: 30000,
+    setupFiles: ["./tests/setup.ts"],
+  },
+  resolve: {
+    alias: {},
+  },
+});
