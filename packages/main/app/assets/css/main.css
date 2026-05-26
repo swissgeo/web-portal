@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import "@swissgeo/map/stylesheet";
 @import "@fontsource/inter";
-@import "@fontsource/geologica";
-@import "@fontsource/dm-sans";
 @import "@swissgeo/timeslider/stylesheet";
 
 @source "../../../../skeleton/";
@@ -16,8 +14,6 @@
 
 @theme static {
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-geologica: "Geologica", system-ui, sans-serif;
-  --font-dm-sans: "DM Sans", system-ui, sans-serif;
 
   --color-brown-50: #f4f3f2;
   --color-brown-100: #e4e1dd;
