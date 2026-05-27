@@ -111,13 +111,13 @@ export default defineNuxtConfig({
   runtimeConfig: {
     what3wordsApiKey: "",
     geoadminApiBaseUrl: "",
+    shareServiceUrl: "http://localhost:3010",
     public: {
       ogcApiEndpoint: "",
       gitCommit: getGitCommit(),
       version: getVersion(),
       buildTime,
       wantedLogLevels: "error,warn",
-      shareServiceUrl: "http://localhost:3010",
     },
   },
   nitro: {

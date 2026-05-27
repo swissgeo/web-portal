@@ -1,7 +1,9 @@
 import type { AppStatePayload } from "~/composables/useStateConfig";
+import type { SaveAppStateResponse } from "@swissgeo/statesharing";
 
-import { postAppStatePost } from "@swissgeo/statesharing";
 import { watchDebounced } from "@vueuse/core";
+
+const STATE_PROXY_URL = "/api/wpa/v1/state";
 
 function buildShareUrl(stateId: string | null): string {
   if (!stateId) {
@@ -14,13 +16,15 @@ function buildShareUrl(stateId: string | null): string {
 }
 
 async function saveState(state: AppStatePayload): Promise<string | null> {
-  const response = await postAppStatePost({ state: state.state });
-
-  if (response.status !== 200) {
+  try {
+    const response = await $fetch<SaveAppStateResponse>(STATE_PROXY_URL, {
+      method: "POST",
+      body: { state: state.state },
+    });
+    return response.id;
+  } catch {
     return null;
   }
-
-  return response.data.id;
 }
 
 export function useCreateShareLink(state?: Ref<AppStatePayload>) {
@@ -76,14 +80,12 @@ export function useCreateShareLinkForCustomState() {
       isFetching.value = true;
 
       try {
-        const response = await postAppStatePost(
-          { state: newState.state },
-          { signal: abortController.signal },
-        );
-
-        if (response.status === 200) {
-          hash.value = response.data.id;
-        }
+        const response = await $fetch<SaveAppStateResponse>(STATE_PROXY_URL, {
+          method: "POST",
+          body: { state: newState.state },
+          signal: abortController.signal,
+        });
+        hash.value = response.id;
       } catch {
         // aborted or network error — silently ignore
       } finally {
