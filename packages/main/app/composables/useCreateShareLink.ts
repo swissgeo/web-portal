@@ -1,6 +1,7 @@
-import type { AppStatePayload } from "@swissgeo/statesharing";
+import type { AppStatePayload } from "~/composables/useStateConfig";
 
-import { useFetch, watchDebounced } from "@vueuse/core";
+import { postAppStatePost } from "@swissgeo/statesharing";
+import { watchDebounced } from "@vueuse/core";
 
 function buildShareUrl(stateId: string | null): string {
   if (!stateId) {
@@ -12,6 +13,16 @@ function buildShareUrl(stateId: string | null): string {
   return url.href;
 }
 
+async function saveState(state: AppStatePayload): Promise<string | null> {
+  const response = await postAppStatePost({ state: state.state });
+
+  if (response.status !== 200) {
+    return null;
+  }
+
+  return response.data.id;
+}
+
 export function useCreateShareLink(state?: Ref<AppStatePayload>) {
   let usableState = state;
 
@@ -20,16 +31,15 @@ export function useCreateShareLink(state?: Ref<AppStatePayload>) {
     usableState = exportState;
   }
 
-  const runtimeConfig = useRuntimeConfig();
+  const hash = ref<string | null>(null);
 
-  // intentionally not using nuxt's useFetch as the one frome vueuse suits more the
-  // usecase here and doesn't have anything to do with SSR
-  const { data: hash } = useFetch<string>(
-    runtimeConfig.public.shareServiceUrl,
-    { refetch: true },
-  )
-    .post(usableState)
-    .text();
+  watch(
+    usableState,
+    async (newState) => {
+      hash.value = await saveState(newState);
+    },
+    { immediate: true },
+  );
 
   const shareLink = computed(() => buildShareUrl(hash.value));
 
@@ -39,49 +49,46 @@ export function useCreateShareLink(state?: Ref<AppStatePayload>) {
   };
 }
 
-/**
- * Create a link for the print. The key difference from the function useCreateShareLink
- * is that
- */
 export function useCreateShareLinkForPrint() {
   const viewStore = useMapViewStore();
   const shareLink = computed(() => buildShareUrl(viewStore.stateId));
   return { shareLink };
 }
 
-/**
- * Add a custom state to the service (mock at the moment) with the state being a ref
- * so that this composable function can be used to push multiple states to the service,
- * for example when the print framing parameters change and we want to update the share link accordingly.
- */
 export function useCreateShareLinkForCustomState() {
   const state = ref<AppStatePayload | null>(null);
-  const runtimeConfig = useRuntimeConfig();
-
-  const {
-    data: hash,
-    execute,
-    abort,
-    isFetching,
-  } = useFetch<string>(runtimeConfig.public.shareServiceUrl, {
-    immediate: false,
-    refetch: false,
-  })
-    .post(state)
-    .text();
+  const hash = ref<string | null>(null);
+  const isFetching = ref(false);
+  let abortController: AbortController | null = null;
 
   watchDebounced(
     state,
-    () => {
-      if (!state.value) {
+    async (newState) => {
+      if (!newState) {
         return;
       }
 
-      if (isFetching.value) {
-        abort();
+      if (isFetching.value && abortController) {
+        abortController.abort();
       }
 
-      void execute();
+      abortController = new AbortController();
+      isFetching.value = true;
+
+      try {
+        const response = await postAppStatePost(
+          { state: newState.state },
+          { signal: abortController.signal },
+        );
+
+        if (response.status === 200) {
+          hash.value = response.data.id;
+        }
+      } catch {
+        // aborted or network error — silently ignore
+      } finally {
+        isFetching.value = false;
+      }
     },
     {
       deep: true,
