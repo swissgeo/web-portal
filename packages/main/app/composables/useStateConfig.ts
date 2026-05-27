@@ -84,9 +84,6 @@ async function stateConfigToLayer(
   return null;
 }
 
-/**
- * Composable for exporting and importing app state as JSON.
- */
 export function useStateConfig() {
   const positionStore = usePositionStore();
   const layerStore = useLayerStore();
@@ -154,9 +151,6 @@ export function useStateConfig() {
   };
 }
 
-/**
- * Create a custom state config object not tied to the current app state.
- */
 export function useCustomStateConfig() {
   const mapviewStore = useMapViewStore();
   const customStateMapCenter = ref<[number, number]>([0, 0]);
@@ -164,7 +158,7 @@ export function useCustomStateConfig() {
   const customStateMapRotation = ref(0);
   const layerStateConfig = ref<LayerStateInput[]>([]);
 
-  const makeUseOfCurentLayers = () => {
+  const makeUseOfCurrentLayers = () => {
     layerStateConfig.value = layersToStateConfig(mapviewStore.mapLayers);
   };
 
@@ -182,9 +176,7 @@ export function useCustomStateConfig() {
     };
   });
 
-  onMounted(() => {
-    makeUseOfCurentLayers();
-  });
+  onMounted(makeUseOfCurrentLayers);
 
   return {
     customStateConfig,
@@ -192,6 +184,6 @@ export function useCustomStateConfig() {
     customStateMapZoom,
     customStateMapRotation,
     layerStateConfig,
-    makeUseOfCurentLayers,
+    makeUseOfCurrentLayers,
   };
 }
