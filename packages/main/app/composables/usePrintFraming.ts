@@ -51,8 +51,19 @@ export function usePrintFraming() {
         url.searchParams.set('print_format', selectedPrintFormat.value)
         url.searchParams.set('print_orientation', selectedPrintOrientation.value)
         url.searchParams.set('print_resolution', selectedPrintResolution.value.toString())
-        url.searchParams.set('z', zoomLevelForPrint.value.toString())
         return url.toString()
+    })
+
+    const printRequestBody = computed<PrintPostRequestBody | null>(() => {
+        if (!hash.value) {
+            return null
+        }
+        return {
+            stateId: hash.value,
+            format: selectedPrintFormat.value,
+            orientation: selectedPrintOrientation.value,
+            resolution: selectedPrintResolution.value,
+        }
     })
 
     const pageSizeInPixels = computed(() => {
@@ -189,20 +200,24 @@ export function usePrintFraming() {
 
     // Update the color of the frame polygon to red if outside of Swiss boundaries
     // and show a warning toast, otherwise set it to blue and remove the toast if it exists
-    watch(isPrintExtentOutOfBounds, (isOutOfBounds) => {
-        style.getFill()?.setColor(isOutOfBounds ? BRIGHT_RED : DARK_BLUE)
-        if (isOutOfBounds) {
-            toaster.showWarning(
-                'The print extent must be fully contained within the Swiss bounding box to be printable.',
-                {
-                    id: 'warning_print_extent_out_of_bounds',
-                    title: 'Print extent is out of Swiss bounds',
-                }
-            )
-        } else {
-            toaster.remove('warning_print_extent_out_of_bounds')
-        }
-    })
+    watch(
+        isPrintExtentOutOfBounds,
+        (isOutOfBounds) => {
+            style.getFill()?.setColor(isOutOfBounds ? BRIGHT_RED : DARK_BLUE)
+            if (isOutOfBounds) {
+                toaster.showWarning(
+                    'The print extent must be fully contained within the Swiss bounding box to be printable.',
+                    {
+                        id: 'warning_print_extent_out_of_bounds',
+                        title: 'Print extent is out of Swiss bounds',
+                    }
+                )
+            } else {
+                toaster.remove('warning_print_extent_out_of_bounds')
+            }
+        },
+        { immediate: true }
+    )
 
     watch(isPrintExtentBeyondViewport, (isOutOfBounds) => {
         if (isOutOfBounds) {
@@ -294,5 +309,6 @@ export function usePrintFraming() {
         printPreviewUrl,
         scaleOfPrint,
         scaleOfPrintFormatted,
+        printRequestBody,
     }
 }
