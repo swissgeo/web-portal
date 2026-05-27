@@ -6,6 +6,17 @@ export type {
   SaveAppStateRequest as SaveAppState,
   GetAppStateResponse as GetAppState,
   LayerStateOutput as LayerState,
+  LayerStateInput,
   MapState,
 } from "./client/schemas";
 export type { StateV1Input as AppState } from "./client/schemas";
+export {
+  postAppStatePost,
+  getAppStateStateIdGet,
+} from "./client/serviceStatePortal";
+export type {
+  postAppStatePostResponse,
+  postAppStatePostResponseSuccess,
+  getAppStateStateIdGetResponse,
+  getAppStateStateIdGetResponseSuccess,
+} from "./client/serviceStatePortal";
