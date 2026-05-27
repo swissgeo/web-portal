@@ -18,29 +18,30 @@ const DISPATCHER = { name: "state-config" };
 function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
   if (layers.length === 0) return [];
 
-  const backgroundLayerPresent = Number(!!useLayerStore().backgroundLayer);
+  const startIndex = useLayerStore().backgroundLayer ? 1 : 0;
 
-  return layers.slice(backgroundLayerPresent).map((mapLayer) =>
-    layerToStateConfig(mapLayer),
-  );
+  return layers.slice(startIndex).map(layerToStateConfig);
 }
 
 function layerToStateConfig(layer: MapLayer): LayerStateInput {
-  let sourceData: Layer | undefined | null = useLayerStore().getLayer(
-    layer.uuid,
-  );
+  const layerStore = useLayerStore();
+  let sourceData: Layer | undefined | null = layerStore.getLayer(layer.uuid);
+
   if (!sourceData) {
-    sourceData = useLayerStore().backgroundLayer;
+    sourceData = layerStore.backgroundLayer;
     if (!sourceData || sourceData.uuid !== layer.uuid) {
       log.error(
         `A layer with uuid ${layer?.uuid} couldn't be transformed to a Layer State Config. Most probable reason is a difference between the source Data and the map Layers`,
       );
     }
   }
-  const layerUrl = sourceData.layerUrl;
+
+  if (!sourceData) {
+    throw new Error(`Cannot serialize layer ${layer.uuid}: no source data found`);
+  }
 
   const config: LayerStateInput = {
-    layerUrl: layerUrl as string,
+    layerUrl: sourceData.layerUrl as string,
     type: sourceData.type as LayerStateInput["type"],
     isVisible: layer.isVisible,
     opacity: layer.opacity,
