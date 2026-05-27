@@ -1,51 +1,37 @@
 import type { Dimension, DimensionId, Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
-import type {
-  AppStateConfig,
-  AppStatePayload,
-  LayerStateConfig,
-} from "@swissgeo/statesharing";
+import type { AppState, LayerStateInput } from "@swissgeo/statesharing";
 
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
 
+export type AppStatePayload = {
+  version: string;
+  state: AppState;
+};
+
 const DISPATCHER = { name: "state-config" };
 
-function layersToStateConfig(layers: MapLayer[]) {
-  const layersState: Partial<AppStateConfig> = {
-    layers: [],
-  };
-  if (layers.length > 0) {
-    const backgroundLayerPresent = Number(!!useLayerStore().backgroundLayer);
+function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
+  if (layers.length === 0) return [];
 
-    layers.slice(backgroundLayerPresent).map((mapLayer) => {
-      layersState.layers!.push(layerToStateConfig(mapLayer));
-    });
-    if (backgroundLayerPresent === 1) {
-      layersState.backgroundLayer = layerToStateConfig(layers[0]!);
-    }
-  }
-  return layersState;
+  const backgroundLayerPresent = Number(!!useLayerStore().backgroundLayer);
+
+  return layers.slice(backgroundLayerPresent).map((mapLayer) =>
+    layerToStateConfig(mapLayer),
+  );
 }
 
-function layerToStateConfig(layer: MapLayer): LayerStateConfig {
+function layerToStateConfig(layer: MapLayer): LayerStateInput {
   let sourceData: Layer | undefined | null = useLayerStore().getLayer(
     layer.uuid,
   );
   if (!sourceData) {
     sourceData = useLayerStore().backgroundLayer;
     if (!sourceData || sourceData.uuid !== layer.uuid) {
-      /*We can end up here in the following cases :
-                1. A layer in the map Layers has no corresponding source
-                    1.1 This most certainly means a source has been cleared without clearing the map,
-                     or that a map has been removed without removing the source
-                2. the background layer has changed on one store, but not the other
-
-                TODO: solve number two, as it happens on every background layer change, then introduce back the `THROW ERROR` rather than the log error
-            */
       log.error(
         `A layer with uuid ${layer?.uuid} couldn't be transformed to a Layer State Config. Most probable reason is a difference between the source Data and the map Layers`,
       );
@@ -53,7 +39,7 @@ function layerToStateConfig(layer: MapLayer): LayerStateConfig {
   }
   const layerUrl = sourceData.layerUrl;
 
-  const config: LayerStateConfig = {
+  const config: LayerStateInput = {
     layerUrl,
     type: sourceData.type,
     isVisible: layer.isVisible,
@@ -63,8 +49,8 @@ function layerToStateConfig(layer: MapLayer): LayerStateConfig {
   if (sourceData.dimensions) {
     config.dimensions = {};
     for (const [key, dim] of Object.entries(sourceData.dimensions)) {
-      if (dim) {
-        config.dimensions[key] = { currentValue: dim.currentValue };
+      if (dim && key === "time") {
+        config.dimensions.time = { currentValue: dim.currentValue };
       }
     }
   }
@@ -73,23 +59,24 @@ function layerToStateConfig(layer: MapLayer): LayerStateConfig {
 }
 
 async function stateConfigToLayer(
-  config: LayerStateConfig,
+  config: LayerStateInput,
 ): Promise<Layer | null> {
   const layerOptions: Partial<Layer> = {};
 
   if (config.dimensions) {
     const dims: Partial<Record<DimensionId, Dimension>> = {};
     for (const [key, val] of Object.entries(config.dimensions)) {
-      dims[key as DimensionId] = {
-        currentValue: val.currentValue,
-        availableValues: [],
-      };
+      if (val) {
+        dims[key as DimensionId] = {
+          currentValue: val.currentValue,
+          availableValues: [],
+        };
+      }
     }
     layerOptions.dimensions = dims;
   }
 
   if (config.layerUrl) {
-    // TODO the state config needs to handle file layers
     const data = await $fetch<Dataset>(config.layerUrl);
     return makeServerLayer(data, layerOptions);
   }
@@ -104,12 +91,8 @@ export function useStateConfig() {
   const layerStore = useLayerStore();
   const mapviewStore = useMapViewStore();
 
-  /**
-   * Export the current app state as an AppStateConfig object.
-   * Center coordinates are in LV95 (EPSG:2056) [x, y].
-   */
   const exportState = computed((): AppStatePayload => {
-    const payload: AppStatePayload = {
+    return {
       version: APP_STATE_CONFIG_VERSION,
       state: {
         map: {
@@ -117,17 +100,11 @@ export function useStateConfig() {
           zoom: positionStore.zoom,
           rotation: positionStore.rotation,
         },
-        ...layersToStateConfig(mapviewStore.mapLayers),
-      } as AppStateConfig,
+        layers: layersToStateConfig(mapviewStore.mapLayers),
+      },
     };
-    return payload;
   });
 
-  /**
-   * Import app state from a JSON string, applying it to the stores.
-   * Center coordinates are expected in LV95 (EPSG:2056) [x, y].
-   * Fetches each layer's dataset from its datasetUrl.
-   */
   async function importState(payload: AppStatePayload): Promise<void> {
     log.info({
       title: "useStateConfig",
@@ -135,11 +112,10 @@ export function useStateConfig() {
       messages: ["Importing state config", payload],
     });
 
-    positionStore.setCenter(payload.state.map.center, DISPATCHER);
-    positionStore.setZoom(payload.state.map.zoom, DISPATCHER);
-    positionStore.setRotation(payload.state.map.rotation, DISPATCHER);
+    positionStore.setCenter(payload.state.map?.center ?? undefined, DISPATCHER);
+    positionStore.setZoom(payload.state.map?.zoom ?? undefined, DISPATCHER);
+    positionStore.setRotation(payload.state.map?.rotation ?? undefined, DISPATCHER);
 
-    // Clear and re-add layers
     for (const layer of [...layerStore.layers]) {
       layerStore.removeLayer(layer.uuid);
     }
@@ -147,24 +123,19 @@ export function useStateConfig() {
       mapviewStore.removeLayer(layer.uuid);
     }
 
-    // Fetch all layers in parallel
-    const [layers, bgLayer] = await Promise.all([
-      Promise.all(payload.state.layers.map((lc) => stateConfigToLayer(lc))),
-      payload.state.backgroundLayer
-        ? stateConfigToLayer(payload.state.backgroundLayer)
-        : null,
-    ]);
+    layerStore.setBackground(null);
 
-    layerStore.setBackground(bgLayer);
+    const stateLayers = payload.state.layers ?? [];
+    const layers = await Promise.all(
+      stateLayers.map((lc) => stateConfigToLayer(lc)),
+    );
 
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
         const uuid = layers[i]!.uuid;
-        // we're adding some information about visibility and opacity to apply after conversion
-        // also setting defaults in case they are not specified
         const mapLayerData: Partial<MapLayer> = {
-          opacity: payload.state.layers[i]?.opacity ?? 1,
-          isVisible: payload.state.layers[i]?.isVisible ?? true,
+          opacity: stateLayers[i]?.opacity ?? 1,
+          isVisible: stateLayers[i]?.isVisible ?? true,
         };
         layerStore.addImportOption(uuid, mapLayerData);
       }
@@ -190,19 +161,14 @@ export function useCustomStateConfig() {
   const customStateMapCenter = ref<[number, number]>([0, 0]);
   const customStateMapZoom = ref(0);
   const customStateMapRotation = ref(0);
-  const layerStateConfig = ref<LayerStateConfig[]>([]);
-  const backgroundLayerStateConfig = ref<LayerStateConfig | null>(null);
+  const layerStateConfig = ref<LayerStateInput[]>([]);
 
   const makeUseOfCurentLayers = () => {
-    const { layers, backgroundLayer } = layersToStateConfig(
-      mapviewStore.mapLayers,
-    );
-    backgroundLayerStateConfig.value = backgroundLayer ?? null;
-    layerStateConfig.value = layers ?? [];
+    layerStateConfig.value = layersToStateConfig(mapviewStore.mapLayers);
   };
 
   const customStateConfig = computed((): AppStatePayload => {
-    const payload: AppStatePayload = {
+    return {
       version: APP_STATE_CONFIG_VERSION,
       state: {
         map: {
@@ -211,11 +177,8 @@ export function useCustomStateConfig() {
           rotation: customStateMapRotation.value,
         },
         layers: layerStateConfig.value,
-        backgroundLayer: backgroundLayerStateConfig.value,
-      } as AppStateConfig,
+      },
     };
-
-    return payload;
   });
 
   onMounted(() => {
@@ -229,6 +192,5 @@ export function useCustomStateConfig() {
     customStateMapRotation,
     layerStateConfig,
     makeUseOfCurentLayers,
-    backgroundLayerStateConfig,
   };
 }
