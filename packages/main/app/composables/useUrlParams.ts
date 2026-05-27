@@ -11,10 +11,6 @@ const URL_PARAM_PRINT_FORMAT = 'print_format'
 const URL_PARAM_PRINT_ORIENTATION = 'print_orientation'
 const URL_PARAM_PRINT_RESOLUTION = 'print_resolution'
 
-// URL param to force a zoom level, overriding the one provided by a state
-// (only used for print at the moment but could be not print-specific in the future)
-const URL_PARAM_ZOOM = 'z'
-
 export function useUrlParams() {
     const route = useRoute()
     const router = useRouter()
@@ -98,31 +94,15 @@ export function useUrlParams() {
             format: route.query[URL_PARAM_PRINT_FORMAT],
             orientation: route.query[URL_PARAM_PRINT_ORIENTATION],
             resolution: Number.parseFloat(route.query[URL_PARAM_PRINT_RESOLUTION] as string),
-            zoom: getZoomFromUrl(),
         }
 
         validatePrintConfig(printConfig)
         return printConfig
     }
 
-    /**
-     * Get the forced zoom value from the URL
-     */
-    function getZoomFromUrl(): number | null {
-        const stateParam = route.query[URL_PARAM_ZOOM]
-
-        if (typeof stateParam !== 'string') {
-            return null
-        }
-
-        const z = Number.parseFloat(stateParam)
-        return Number.isNaN(z) ? null : z
-    }
-
     return {
         getStateFromUrl,
         getStateIdFromUrl,
         getPrintConfigFromUrl,
-        getZoomFromUrl,
     }
 }
