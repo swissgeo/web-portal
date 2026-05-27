@@ -1,4 +1,4 @@
-import { StatePayloadValidator } from "@swissgeo/statesharing";
+import { APP_STATE_CONFIG_VERSION, StatePayloadValidator } from "@swissgeo/statesharing";
 
 import type { AppStatePayload } from "~/composables/useStateConfig";
 

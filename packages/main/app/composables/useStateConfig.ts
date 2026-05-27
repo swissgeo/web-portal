@@ -40,8 +40,8 @@ function layerToStateConfig(layer: MapLayer): LayerStateInput {
   const layerUrl = sourceData.layerUrl;
 
   const config: LayerStateInput = {
-    layerUrl,
-    type: sourceData.type,
+    layerUrl: layerUrl as string,
+    type: sourceData.type as LayerStateInput["type"],
     isVisible: layer.isVisible,
     opacity: layer.opacity,
   };
@@ -68,7 +68,7 @@ async function stateConfigToLayer(
     for (const [key, val] of Object.entries(config.dimensions)) {
       if (val) {
         dims[key as DimensionId] = {
-          currentValue: val.currentValue,
+          currentValue: val.currentValue ?? null,
           availableValues: [],
         };
       }
