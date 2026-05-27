@@ -1,17 +1,15 @@
-/**
- * Retrieve state from service-shortlink
- */
+import type { GetAppState } from "@swissgeo/statesharing";
+
+import { getAppStateStateIdGet } from "@swissgeo/statesharing";
+
 export async function fetchStateFromStateId(
   stateId: string,
-): Promise<Record<string, unknown> | null> {
-  // not using the state type yet as we haven't validated it yet
-  const runtimeConfig = useRuntimeConfig();
-  const shortLinkUrl = new URL(runtimeConfig.public.shareServiceUrl);
-  shortLinkUrl.searchParams.set("state", stateId);
+): Promise<GetAppState | null> {
+  const response = await getAppStateStateIdGet(stateId);
 
-  const appConfig = await $fetch<Record<string, unknown>>(
-    shortLinkUrl.toString(),
-  );
+  if (response.status !== 200) {
+    return null;
+  }
 
-  return appConfig;
+  return response.data;
 }
