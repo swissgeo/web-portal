@@ -16,7 +16,9 @@ export type AppStatePayload = {
 const DISPATCHER = { name: "state-config" };
 
 function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
-  if (layers.length === 0) return [];
+  if (layers.length === 0) {
+    return [];
+  }
 
   const startIndex = useLayerStore().backgroundLayer ? 1 : 0;
 
@@ -37,7 +39,9 @@ function layerToStateConfig(layer: MapLayer): LayerStateInput {
   }
 
   if (!sourceData) {
-    throw new Error(`Cannot serialize layer ${layer.uuid}: no source data found`);
+    throw new Error(
+      `Cannot serialize layer ${layer.uuid}: no source data found`,
+    );
   }
 
   const config: LayerStateInput = {
@@ -112,7 +116,10 @@ export function useStateConfig() {
 
     positionStore.setCenter(payload.state.map?.center ?? undefined, DISPATCHER);
     positionStore.setZoom(payload.state.map?.zoom ?? undefined, DISPATCHER);
-    positionStore.setRotation(payload.state.map?.rotation ?? undefined, DISPATCHER);
+    positionStore.setRotation(
+      payload.state.map?.rotation ?? undefined,
+      DISPATCHER,
+    );
 
     for (const layer of [...layerStore.layers]) {
       layerStore.removeLayer(layer.uuid);

@@ -1,6 +1,9 @@
-import { APP_STATE_CONFIG_VERSION, StatePayloadValidator } from "@swissgeo/statesharing";
-
 import type { AppStatePayload } from "~/composables/useStateConfig";
+
+import {
+  APP_STATE_CONFIG_VERSION,
+  StatePayloadValidator,
+} from "@swissgeo/statesharing";
 
 export async function importState(
   rawPayload: unknown,
@@ -18,7 +21,7 @@ export async function importState(
     state: parsed,
   };
 
-  if (overrideZoomFromUrl != null) {
+  if (overrideZoomFromUrl !== null && overrideZoomFromUrl !== undefined) {
     payload.state.map = { ...payload.state.map, zoom: overrideZoomFromUrl };
   }
 

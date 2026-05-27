@@ -1,7 +1,7 @@
 import type { AppStatePayload } from "~/composables/useStateConfig";
 
-import { postStateToStateId } from "~/utils/postStateToStateId";
 import { watchDebounced } from "@vueuse/core";
+import { postStateToStateId } from "~/utils/postStateToStateId";
 
 function buildShareUrl(stateId: string | null): string {
   if (!stateId) {
@@ -66,6 +66,7 @@ export function useCreateShareLinkForCustomState() {
           signal: abortController.signal,
         });
       } catch {
+        // Ignore errors, e.g. from aborting the request
       } finally {
         isFetching.value = false;
       }

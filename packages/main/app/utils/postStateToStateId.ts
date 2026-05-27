@@ -1,5 +1,4 @@
-import type { AppState } from "@swissgeo/statesharing";
-import type { SaveAppStateResponse } from "@swissgeo/statesharing";
+import type { AppState, SaveAppStateResponse } from "@swissgeo/statesharing";
 
 export async function postStateToStateId(
   state: AppState,
