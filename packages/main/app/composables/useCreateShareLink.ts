@@ -1,9 +1,7 @@
 import type { AppStatePayload } from "~/composables/useStateConfig";
-import type { SaveAppStateResponse } from "@swissgeo/statesharing";
 
+import { postStateToStateId } from "~/utils/postStateToStateId";
 import { watchDebounced } from "@vueuse/core";
-
-const STATE_PROXY_URL = "/api/wpa/v1/state";
 
 function buildShareUrl(stateId: string | null): string {
   if (!stateId) {
@@ -15,32 +13,16 @@ function buildShareUrl(stateId: string | null): string {
   return url.href;
 }
 
-async function saveState(state: AppStatePayload): Promise<string | null> {
-  try {
-    const response = await $fetch<SaveAppStateResponse>(STATE_PROXY_URL, {
-      method: "POST",
-      body: { state: state.state },
-    });
-    return response.id;
-  } catch {
-    return null;
-  }
-}
-
 export function useCreateShareLink(state?: Ref<AppStatePayload>) {
-  let usableState = state;
-
-  if (!usableState) {
-    const { exportState } = useStateConfig();
-    usableState = exportState;
-  }
+  const { exportState } = useStateConfig();
+  const usableState = state ?? exportState;
 
   const hash = ref<string | null>(null);
 
   watch(
     usableState,
     async (newState) => {
-      hash.value = await saveState(newState);
+      hash.value = await postStateToStateId(newState.state);
     },
     { immediate: true },
   );
@@ -80,14 +62,10 @@ export function useCreateShareLinkForCustomState() {
       isFetching.value = true;
 
       try {
-        const response = await $fetch<SaveAppStateResponse>(STATE_PROXY_URL, {
-          method: "POST",
-          body: { state: newState.state },
+        hash.value = await postStateToStateId(newState.state, {
           signal: abortController.signal,
         });
-        hash.value = response.id;
       } catch {
-        // aborted or network error — silently ignore
       } finally {
         isFetching.value = false;
       }
