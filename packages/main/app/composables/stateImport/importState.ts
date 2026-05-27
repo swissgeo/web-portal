@@ -1,18 +1,27 @@
-import { validateAndPrepareAppStatePayload } from "@swissgeo/statesharing";
+import { StatePayloadValidator } from "@swissgeo/statesharing";
+
+import type { AppStatePayload } from "~/composables/useStateConfig";
 
 export async function importState(
-  state: unknown,
+  rawPayload: unknown,
   overrideZoomFromUrl?: number | null,
 ) {
   const { importState } = useStateConfig();
 
-  const config = validateAndPrepareAppStatePayload(state);
+  const parsed = StatePayloadValidator.parse(
+    (rawPayload as AppStatePayload)?.state ?? rawPayload,
+  );
 
-  // If a zoom is in URL, it overwrite the zoom from config
-  // (used in the print feature)
+  const payload: AppStatePayload = {
+    version:
+      (rawPayload as AppStatePayload)?.version ?? APP_STATE_CONFIG_VERSION,
+    state: parsed,
+  };
+
   if (overrideZoomFromUrl) {
-    config.state.map.zoom = overrideZoomFromUrl;
+    payload.state.map = { ...payload.state.map, zoom: overrideZoomFromUrl };
   }
-  await importState(config);
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+
+  await importState(payload);
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 }
