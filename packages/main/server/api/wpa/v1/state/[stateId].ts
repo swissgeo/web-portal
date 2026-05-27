@@ -1,6 +1,7 @@
+import type { GetAppState } from "@swissgeo/statesharing";
 import { ReadAppStateValidator } from "@swissgeo/statesharing";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<GetAppState> => {
   const config = useRuntimeConfig();
   const stateId = getRouterParam(event, "stateId");
 
