@@ -18,7 +18,7 @@ export async function importState(
     state: parsed,
   };
 
-  if (overrideZoomFromUrl) {
+  if (overrideZoomFromUrl != null) {
     payload.state.map = { ...payload.state.map, zoom: overrideZoomFromUrl };
   }
 
