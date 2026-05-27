@@ -111,7 +111,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     what3wordsApiKey: "",
     geoadminApiBaseUrl: "",
-    shareServiceUrl: "http://localhost:3010",
+    shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
     public: {
       ogcApiEndpoint: "",
       gitCommit: getGitCommit(),
