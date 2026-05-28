@@ -87,13 +87,8 @@ Extends the base configuration with Vue-specific settings:
 
 This package includes optional TypeScript definitions for common libraries:
 
-- `@types/bootstrap`
-- `@types/chai`
 - `@types/geojson`
-- `@types/jsdom`
-- `@types/luxon`
 - `@types/node`
-- `@types/pako`
 
 Install only the type definitions you need for your project.
 

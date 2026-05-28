@@ -36,8 +36,6 @@
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
-    "@types/chai": "catalog:",
-    "chai": "catalog:",
     "eslint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
