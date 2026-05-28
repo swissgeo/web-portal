@@ -45,16 +45,14 @@
     "test:unit": "vitest run",
     "type-check": "tsc"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "nuxt": "catalog:",
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
-    "@types/mapbox-gl": "catalog:",
     "eslint": "catalog:",
+    "nuxt": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",

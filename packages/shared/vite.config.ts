@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
         name: "@swissgeo/shared",
       },
       rollupOptions: {
-        external: ["nuxt"],
+        external: ["nuxt", "@swissgeo/numbers", "vue"],
       },
     },
     resolve: {

@@ -1188,9 +1188,6 @@ importers:
       '@swissgeo/numbers':
         specifier: workspace:*
         version: link:../numbers
-      '@types/mapbox-gl':
-        specifier: 'catalog:'
-        version: 3.4.1
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
