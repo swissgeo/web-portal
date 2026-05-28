@@ -1,11 +1,12 @@
+import type { containsExtent } from "ol/extent";
+import type Feature from "ol/Feature";
+import type VectorLayer from "ol/layer/Vector";
+import type VectorSource from "ol/source/Vector";
+import type { Fill, Style } from "ol/style";
+
 import { createCutoutGeometry } from "@swissgeo/coordinates";
 import { useMap } from "@swissgeo/map";
 import { EPSG_2056_BOUNDING_BOX } from "@swissgeo/shared";
-import { containsExtent } from "ol/extent";
-import Feature from "ol/Feature";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { Fill, Style } from "ol/style";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import type { PrintFormat, PrintOrientation } from "../types/print";
