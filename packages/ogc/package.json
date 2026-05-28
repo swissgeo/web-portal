@@ -12,7 +12,6 @@
       "require": "./dist/ogc.umd.cjs"
     }
   },
-  "main": "./dist/index.umd.js",
   "scripts": {
     "build": "vite build",
     "build:dev": "vite build --mode development",

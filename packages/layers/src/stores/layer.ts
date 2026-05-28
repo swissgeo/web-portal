@@ -6,6 +6,23 @@ import { ref, markRaw } from "vue";
 
 import type { Dimension, DimensionId, Layer, LayerInfo } from "@/index";
 
+/**
+ * Quick explanation on this interface:
+ *  Right now, we have a distinction between
+ *  - the source for layers, which tells the application where to look for the tiles / data
+ *  - The map layers, which contains the information openlayers need to render the layers
+ *
+ * the visibility and opacity do not belong in the sources, but we do not want them to be overwritten by the
+ * styling that happens on the first pass through the conversion pipeline
+ *
+ * These options are kept in the state on importing until the conversion pipeline is finished, then they are applied to the map layers and removed.
+ * Once the importOptions object is empty, we know the import has been completed.
+ */
+interface importOption {
+  isVisible?: boolean;
+  opacity?: number;
+}
+
 export const useLayerStore = defineStore("layers", () => {
   /** List of layers added to the map. Index 0 = bottom of stack, last index = top. */
   const layers = ref<Layer[]>([]);
@@ -13,28 +30,12 @@ export const useLayerStore = defineStore("layers", () => {
   /** The active background layer, or null if none is selected. */
   const backgroundLayer = ref<Layer | null>(null);
 
-  /**
-   * Quick explanation on this interface:
-   *  Right now, we have a distinction between
-   *  - the source for layers, which tells the application where to look for the tiles / data
-   *  - The map layers, which contains the information openlayers need to render the layers
-   *
-   * the visibility and opacity do not belong in the sources, but we do not want them to be overwritten by the
-   * styling that happens on the first pass through the conversion pipeline
-   *
-   * These options are kept in the state on importing until the conversion pipeline is finished, then they are applied to the map layers and removed.
-   * Once the importOptions object is empty, we know the import has been completed.
-   */
-  interface importOption {
-    isVisible?: boolean;
-    opacity?: number;
-  }
-
   const importOptions = markRaw<Record<string, importOption>>({});
 
   function addImportOption(uuid: string, option: importOption) {
     importOptions[uuid] = option;
   }
+
   function consumeImportOptions(uuid: string) {
     const options = importOptions[uuid];
     if (options) {

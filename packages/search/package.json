@@ -6,12 +6,9 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.es.js"
+      "import": "./dist/search.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "vite build",
     "build:dev": "vite build --mode development",
@@ -22,19 +19,19 @@
     "lint": "eslint",
     "lint:write": "eslint --fix",
     "test:unit": "vitest run",
-    "type-check": "vue-tsc"
+    "type-check": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@swissgeo/log": "workspace:*",
     "@swissgeo/shared": "workspace:*"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "eslint": "catalog:",
     "unplugin-dts": "catalog:",
-    "vite": "catalog:",
-    "vue-tsc": "catalog:"
+    "vite": "catalog:"
   },
   "peerDependencies": {
     "vue": "catalog:"

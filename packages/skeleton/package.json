@@ -8,11 +8,9 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.es.js"
+      "import": "./dist/skeleton.js"
     }
   },
-  "main": "./dist/index.es.js",
-  "module": "./dist/index.es.js",
   "scripts": {
     "build": "vite build",
     "build:dev": "vite build --mode development",

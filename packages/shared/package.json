@@ -8,7 +8,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.es.js"
+      "import": "./dist/shared.js"
     },
     "./ambient": {
       "types": "./dist/ambient/index.d.ts"
@@ -18,8 +18,7 @@
     },
     "./livingdocs": {
       "types": "./dist/livingdocs/index.d.ts",
-      "import": "./dist/index.es.js",
-      "default": "./dist/index.es.js"
+      "import": "./dist/shared.js"
     },
     "./ogc": {
       "types": "./dist/ogc/index.d.ts"

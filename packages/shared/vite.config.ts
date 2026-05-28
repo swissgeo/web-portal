@@ -28,7 +28,6 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
-        "~": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
     plugins: [
@@ -47,16 +46,10 @@ export default defineConfig(({ mode }) => {
           };
         },
         copyDtsFiles: true,
-        cleanVueFileName: true,
         include: [
           fileURLToPath(new URL("./src", import.meta.url)),
           fileURLToPath(new URL("./types", import.meta.url)),
         ],
-        insertTypesEntry: true,
-        outDirs: [fileURLToPath(new URL("./dist", import.meta.url))],
-        tsconfigPath: fileURLToPath(
-          new URL("./tsconfig.json", import.meta.url),
-        ),
       }),
     ],
   };

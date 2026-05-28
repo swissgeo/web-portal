@@ -13,8 +13,8 @@ export default defineConfig(({ mode }) => {
       ...getBaseBuildConfig(mode),
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
-        fileName: (format) => `index.${format}.js`,
         name: "@swissgeo/timeslider",
+        formats: ["es"],
       },
       rollupOptions: {
         external: ["vue", "lucide-vue-next", "@swissgeo/log"],

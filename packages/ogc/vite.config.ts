@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
         name: "@swissgeo/ogc",
+        formats: ["es"],
       },
       rollupOptions: {
         external: ["vue", "pinia", "@swissgeo/log"],
