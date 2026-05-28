@@ -13,7 +13,13 @@ export default defineConfig(({ mode }) => {
         formats: ["es"],
       },
       rollupOptions: {
-        external: ["vue", "pinia", "@swissgeo/log", "@swissgeo/numbers", "@swissgeo/ogc"],
+        external: [
+          "vue",
+          "pinia",
+          "@swissgeo/log",
+          "@swissgeo/numbers",
+          "@swissgeo/ogc",
+        ],
       },
     },
     resolve: {

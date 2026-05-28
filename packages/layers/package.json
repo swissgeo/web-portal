@@ -34,12 +34,12 @@
     "@pinia/testing": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
+    "es-toolkit": "catalog:",
     "eslint": "catalog:",
     "pinia": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
-    "es-toolkit": "catalog:",
     "vite": "catalog:",
     "vue-tsc": "catalog:"
   },
