@@ -16,13 +16,18 @@ export default defineConfig(({ mode }) => {
         formats: ["es"],
       },
       rollupOptions: {
-        external: ["vue", "lucide-vue-next", "@swissgeo/log"],
-        output: {
-          exports: "named",
-          globals: {
-            vue: "Vue",
-          },
-        },
+        external: [
+          "vue",
+          "lucide-vue-next",
+          "@swissgeo/log",
+          "@swissgeo/layers",
+          "@swissgeo/numbers",
+          "@swissgeo/skeleton",
+          "@swissgeo/shared",
+          "@vueuse/core",
+          "vue-i18n",
+          "@lucide/vue",
+        ],
       },
     },
     resolve: {

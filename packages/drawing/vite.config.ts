@@ -25,19 +25,14 @@ export default defineConfig(({ mode }) => {
           "@swissgeo/shared",
           "ol",
           "@lucide/vue",
+          "proj4",
+          "@vueuse/core",
         ],
-        output: {
-          exports: "named",
-          globals: {
-            vue: "Vue",
-          },
-        },
       },
     },
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
-        "~": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
     plugins: [

@@ -16,13 +16,14 @@ export default defineConfig(({ mode }) => {
         formats: ["es"],
       },
       rollupOptions: {
-        external: ["vue", "pinia", "@lucide/vue", "@swissgeo/log"],
-        output: {
-          exports: "named",
-          globals: {
-            vue: "Vue",
-          },
-        },
+        external: [
+          "vue",
+          "pinia",
+          "@lucide/vue",
+          "@swissgeo/log",
+          "vue-i18n",
+          "@vueuse/core",
+        ],
       },
     },
     resolve: {
