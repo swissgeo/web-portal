@@ -25,12 +25,6 @@ export default defineConfig(({ mode }) => {
           "proj4",
           /^ol(\/|$)/,
         ],
-        output: {
-          exports: "named",
-          globals: {
-            vue: "Vue",
-          },
-        },
       },
     },
     resolve: {

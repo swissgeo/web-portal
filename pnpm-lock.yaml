@@ -93,18 +93,12 @@ catalogs:
     '@vitest/ui':
       specifier: ^4.1.2
       version: 4.1.5
-    '@vue/compiler-dom':
-      specifier: ^3.5.34
-      version: 3.5.35
     '@vue/eslint-config-prettier':
       specifier: ^10.2.0
       version: 10.2.0
     '@vue/eslint-config-typescript':
       specifier: ^14.6.0
       version: 14.6.0
-    '@vue/server-renderer':
-      specifier: ^3.5.34
-      version: 3.5.35
     '@vue/test-utils':
       specifier: ^2.4.10
       version: 2.4.10
@@ -748,9 +742,6 @@ importers:
 
   packages/layers:
     dependencies:
-      '@swissgeo/coordinates':
-        specifier: workspace:*
-        version: link:../coordinates
       '@swissgeo/log':
         specifier: workspace:*
         version: link:../log
@@ -763,12 +754,6 @@ importers:
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared
-      es-toolkit:
-        specifier: 'catalog:'
-        version: 1.44.0
-      vue:
-        specifier: 'catalog:'
-        version: 3.5.35(typescript@5.9.3)
     devDependencies:
       '@microsoft/api-extractor':
         specifier: 'catalog:'
@@ -782,15 +767,12 @@ importers:
       '@swissgeo/config-typescript':
         specifier: workspace:*
         version: link:../config/typescript
-      '@vitejs/plugin-vue':
+      es-toolkit:
         specifier: 'catalog:'
-        version: 6.0.7(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.35(typescript@5.9.3))
+        version: 1.44.0
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      ol:
-        specifier: 'catalog:'
-        version: 10.9.0
       pinia:
         specifier: 'catalog:'
         version: 3.0.4(typescript@5.9.3)(vue@3.5.35(typescript@5.9.3))
@@ -806,9 +788,6 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2)
-      vite-tsconfig-paths:
-        specifier: 'catalog:'
-        version: 6.1.1(typescript@5.9.3)(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))
       vue-tsc:
         specifier: 'catalog:'
         version: 3.2.4(typescript@5.9.3)
@@ -1159,12 +1138,6 @@ importers:
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.7(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.35(typescript@5.9.3))
-      '@vue/compiler-dom':
-        specifier: 'catalog:'
-        version: 3.5.35
-      '@vue/server-renderer':
-        specifier: 'catalog:'
-        version: 3.5.35(vue@3.5.35(typescript@5.9.3))
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.10(@vue/compiler-dom@3.5.35)(@vue/server-renderer@3.5.35(vue@3.5.35(typescript@5.9.3)))(vue@3.5.35(typescript@5.9.3))
@@ -1189,9 +1162,6 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2)
-      vite-tsconfig-paths:
-        specifier: 'catalog:'
-        version: 6.1.1(typescript@5.9.3)(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))
 
   packages/search:
     dependencies:
@@ -1251,9 +1221,6 @@ importers:
       '@types/mapbox-gl':
         specifier: 'catalog:'
         version: 3.4.1
-      '@vitejs/plugin-vue':
-        specifier: 'catalog:'
-        version: 6.0.7(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.35(typescript@5.9.3))
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
@@ -1330,18 +1297,9 @@ importers:
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
         version: 6.0.7(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.35(typescript@5.9.3))
-      '@vue/compiler-dom':
-        specifier: 'catalog:'
-        version: 3.5.35
-      '@vue/server-renderer':
-        specifier: 'catalog:'
-        version: 3.5.35(vue@3.5.35(typescript@5.9.3))
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
-      happy-dom:
-        specifier: 'catalog:'
-        version: 20.9.0
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -1354,9 +1312,6 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2)
-      vite-tsconfig-paths:
-        specifier: 'catalog:'
-        version: 6.1.1(typescript@5.9.3)(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))
       vue-tsc:
         specifier: 'catalog:'
         version: 3.2.4(typescript@5.9.3)
@@ -1467,9 +1422,6 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2)
-      vite-tsconfig-paths:
-        specifier: 'catalog:'
-        version: 6.1.1(typescript@5.9.3)(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))
       vitest:
         specifier: 'catalog:'
         version: 4.1.7(@types/node@25.6.0)(happy-dom@20.9.0)(msw@2.14.3(@types/node@25.6.0)(typescript@5.9.3))(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))
@@ -6774,9 +6726,6 @@ packages:
   globjoin@0.1.4:
     resolution: {integrity: sha512-xYfnw62CKG8nLkZBfWbhWwDw02CHty86jfPcc2cr3ZfeuK9ysoVPPEUxf21bAD/rWAgk52SuBrLJlefNy8mvFg==}
 
-  globrex@0.1.2:
-    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
-
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
@@ -9248,16 +9197,6 @@ packages:
     engines: {node: '>=18.12'}
     peerDependencies:
       typescript: '>=4.8.4'
-
-  tsconfck@3.1.6:
-    resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-    peerDependencies:
-      typescript: ^5.0.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
@@ -16925,8 +16864,6 @@ snapshots:
       unicorn-magic: 0.4.0
 
   globjoin@0.1.4: {}
-
-  globrex@0.1.2: {}
 
   gopd@1.2.0: {}
 

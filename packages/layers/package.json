@@ -24,32 +24,27 @@
     "type-check": "vue-tsc"
   },
   "dependencies": {
-    "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
     "@swissgeo/ogc": "workspace:*",
-    "@swissgeo/shared": "workspace:*",
-    "es-toolkit": "catalog:"
+    "@swissgeo/shared": "workspace:*"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@pinia/testing": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
-    "@vitejs/plugin-vue": "catalog:",
     "eslint": "catalog:",
-    "ol": "catalog:",
     "pinia": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
+    "es-toolkit": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
     "vue-tsc": "catalog:"
   },
   "peerDependencies": {
-    "pinia": "catalog:",
-    "vue": "catalog:"
+    "pinia": "catalog:"
   },
   "packageManager": "pnpm@11.3.0"
 }

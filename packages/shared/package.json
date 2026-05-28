@@ -54,7 +54,6 @@
     "@swissgeo/config-typescript": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
     "@types/mapbox-gl": "catalog:",
-    "@vitejs/plugin-vue": "catalog:",
     "eslint": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
