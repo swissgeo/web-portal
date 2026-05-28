@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
           "@swissgeo/layers",
           "@swissgeo/log",
           "@swissgeo/shared",
-          "ol",
+          /^ol(\/|$)/,
           "@lucide/vue",
           "proj4",
           "@vueuse/core",
