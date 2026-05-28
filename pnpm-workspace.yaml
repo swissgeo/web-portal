@@ -4,6 +4,15 @@ packages:
   - support/service-shortlink-mock/
   - tests/integration
 
+allowBuilds:
+  "@parcel/watcher": false
+  esbuild: false
+  msw: false
+  sharp: false
+  unrs-resolver: false
+  vue-demi: false
+  "@swissgeo/config-typescript": true
+
 catalog:
   "@chenfengyuan/vue-qrcode": "^2.0.0"
   "@eslint/js": ^9.38.0
