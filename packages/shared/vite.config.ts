@@ -14,13 +14,7 @@ export default defineConfig(({ mode }) => {
         name: "@swissgeo/shared",
       },
       rollupOptions: {
-        external: ["vue", "ol"],
-        output: {
-          exports: "named",
-          globals: {
-            vue: "Vue",
-          },
-        },
+        external: ["nuxt"],
       },
     },
     resolve: {

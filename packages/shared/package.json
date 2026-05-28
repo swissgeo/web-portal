@@ -46,9 +46,9 @@
     "type-check": "tsc"
   },
   "dependencies": {
-    "nuxt": "catalog:"
   },
   "devDependencies": {
+    "nuxt": "catalog:",
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
