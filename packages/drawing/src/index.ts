@@ -15,17 +15,8 @@ export {
 export { resolveFeatureId } from "@/utils/drawingUtils";
 
 // Types
-export type {
-  DrawingFeatureAttributes,
-  DrawingFeatureInfoPayload,
-  DrawingHoverHintPayload,
-  DrawingFeatureKind,
-  DrawingFeatureMetadata,
-  DrawingFeatureStyleProps,
-  DrawingMode,
-  MeasurementDrawingSubtype,
-  TextAnchor,
-} from "@/types";
+// eslint-disable-next-line @typescript-eslint/consistent-type-exports
+export * from "./types";
 
 // Components
 export { default as OpenLayersDrawingLayer } from "@/components/OpenLayersDrawingLayer.vue";
