@@ -22,7 +22,6 @@
     "@fontsource/inter": "catalog:",
     "@lucide/vue": "catalog:",
     "@nuxt/eslint": "catalog:",
-    "@nuxt/image": "catalog:",
     "@nuxt/ui": "catalog:",
     "@nuxtjs/i18n": "catalog:",
     "@pinia/nuxt": "catalog:",

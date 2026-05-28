@@ -19,7 +19,6 @@ catalog:
   "@fontsource/inter": ^5.2.6
   "@microsoft/api-extractor": ^7.56.0
   "@nuxt/eslint": ^1.9.0
-  "@nuxt/image": ^2.0.0
   "@nuxt/test-utils": ^4.0.3
   "@nuxt/types": ^2.18.1
   "@nuxt/ui": ^4.8.0
