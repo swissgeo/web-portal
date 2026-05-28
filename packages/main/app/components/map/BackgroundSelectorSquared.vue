@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Layer } from "@swissgeo/layers";
 
-import { CircleChevronRight } from "lucide-vue-next";
+import { CircleChevronRight } from "@lucide/vue";
 
 import useBackgroundSelector from "./useBackgroundSelector";
 

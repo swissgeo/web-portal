@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
           "@swissgeo/log",
           "@swissgeo/shared",
           "ol",
-          "lucide-vue-next",
+          "@lucide/vue",
         ],
         output: {
           exports: "named",

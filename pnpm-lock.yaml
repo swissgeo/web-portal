@@ -18,6 +18,9 @@ catalogs:
     '@fontsource/inter':
       specifier: ^5.2.6
       version: 5.2.8
+    '@lucide/vue':
+      specifier: ^1.16.0
+      version: 1.16.0
     '@microsoft/api-extractor':
       specifier: ^7.55.1
       version: 7.56.0
@@ -156,9 +159,6 @@ catalogs:
     happy-dom:
       specifier: 20.9.0
       version: 20.9.0
-    lucide-vue-next:
-      specifier: ^1.0.0
-      version: 1.0.0
     msw:
       specifier: ^2.13.2
       version: 2.14.3
@@ -596,6 +596,9 @@ importers:
 
   packages/drawing:
     dependencies:
+      '@lucide/vue':
+        specifier: 'catalog:'
+        version: 1.16.0(vue@3.5.35(typescript@5.9.3))
       '@swissgeo/coordinates':
         specifier: workspace:*
         version: link:../coordinates
@@ -617,9 +620,6 @@ importers:
       fflate:
         specifier: 'catalog:'
         version: 0.8.2
-      lucide-vue-next:
-        specifier: 'catalog:'
-        version: 1.0.0(vue@3.5.35(typescript@5.9.3))
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -849,6 +849,9 @@ importers:
       '@fontsource/inter':
         specifier: 'catalog:'
         version: 5.2.8
+      '@lucide/vue':
+        specifier: 'catalog:'
+        version: 1.16.0(vue@3.5.35(typescript@5.9.3))
       '@nuxt/eslint':
         specifier: 'catalog:'
         version: 1.13.0(@typescript-eslint/utils@8.54.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.9.3))(@vue/compiler-sfc@3.5.35)(eslint-import-resolver-node@0.3.9)(eslint@9.39.2(jiti@2.7.0))(magicast@0.5.3)(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))
@@ -924,9 +927,6 @@ importers:
       fflate:
         specifier: 'catalog:'
         version: 0.8.2
-      lucide-vue-next:
-        specifier: 'catalog:'
-        version: 1.0.0(vue@3.5.35(typescript@5.9.3))
       nuxt:
         specifier: 'catalog:'
         version: 4.4.6(@babel/plugin-proposal-decorators@7.29.0(@babel/core@7.29.0))(@babel/plugin-syntax-jsx@7.28.6(@babel/core@7.29.0))(@babel/plugin-syntax-typescript@7.28.6(@babel/core@7.29.0))(@parcel/watcher@2.5.6)(@types/node@24.12.0)(@vue/compiler-sfc@3.5.35)(cac@6.7.14)(db0@0.3.4)(eslint@9.39.2(jiti@2.7.0))(ioredis@5.10.1)(lightningcss@1.32.0)(magicast@0.5.3)(meow@13.2.0)(optionator@0.9.4)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.35(typescript@5.9.3)))(rollup-plugin-visualizer@7.0.1(rollup@4.60.4))(rollup@4.60.4)(stylelint@16.26.1(typescript@5.9.3))(terser@5.46.0)(typescript@5.9.3)(vite@7.3.3(@types/node@24.12.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))(vue-tsc@3.2.4(typescript@5.9.3))(yaml@2.8.2)
@@ -994,6 +994,9 @@ importers:
 
   packages/map:
     dependencies:
+      '@lucide/vue':
+        specifier: 'catalog:'
+        version: 1.16.0(vue@3.5.35(typescript@5.9.3))
       '@swissgeo/coordinates':
         specifier: workspace:*
         version: link:../coordinates
@@ -1021,9 +1024,6 @@ importers:
       geojson:
         specifier: 'catalog:'
         version: 0.5.0
-      lucide-vue-next:
-        specifier: 'catalog:'
-        version: 1.0.0(vue@3.5.35(typescript@5.9.3))
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1275,6 +1275,9 @@ importers:
 
   packages/skeleton:
     dependencies:
+      '@lucide/vue':
+        specifier: 'catalog:'
+        version: 1.16.0(vue@3.5.35(typescript@5.9.3))
       '@nuxt/ui':
         specifier: 'catalog:'
         version: 4.8.0(@internationalized/date@3.12.1)(@internationalized/number@3.6.6)(@tiptap/extensions@3.23.6(@tiptap/core@3.23.6(@tiptap/pm@3.23.6))(@tiptap/pm@3.23.6))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.7)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(change-case@5.4.4)(db0@0.3.4)(embla-carousel@8.6.0)(ioredis@5.10.1)(magicast@0.5.3)(qrcode@1.5.4)(tailwindcss@4.3.0)(typescript@5.9.3)(vite@7.3.3(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.46.0)(yaml@2.8.2))(vue-router@5.0.7(@vue/compiler-sfc@3.5.35)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.35(typescript@5.9.3)))(vue@3.5.35(typescript@5.9.3)))(vue@3.5.35(typescript@5.9.3))(yjs@13.6.29)
@@ -1302,9 +1305,6 @@ importers:
       '@vueuse/core':
         specifier: 'catalog:'
         version: 14.3.0(vue@3.5.35(typescript@5.9.3))
-      lucide-vue-next:
-        specifier: 'catalog:'
-        version: 1.0.0(vue@3.5.35(typescript@5.9.3))
       vue:
         specifier: 'catalog:'
         version: 3.5.35(typescript@5.9.3)
@@ -1415,6 +1415,9 @@ importers:
 
   packages/timeslider:
     dependencies:
+      '@lucide/vue':
+        specifier: 'catalog:'
+        version: 1.16.0(vue@3.5.35(typescript@5.9.3))
       '@swissgeo/layers':
         specifier: workspace:*
         version: link:../layers
@@ -1433,9 +1436,6 @@ importers:
       '@vueuse/core':
         specifier: 'catalog:'
         version: 14.3.0(vue@3.5.35(typescript@5.9.3))
-      lucide-vue-next:
-        specifier: 'catalog:'
-        version: 1.0.0(vue@3.5.35(typescript@5.9.3))
       vue:
         specifier: 'catalog:'
         version: 3.5.35(typescript@5.9.3)
@@ -2725,6 +2725,11 @@ packages:
 
   '@kwsites/promise-deferred@1.1.1':
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
+
+  '@lucide/vue@1.16.0':
+    resolution: {integrity: sha512-kiHx0fe49DMjQuvNaEOu9Jou6u9FwdqQ8xbZIKlD47sXrOI8g59kIeeQL42NBLI4AvO+UJsbaPX0hEK/4rHSBQ==}
+    peerDependencies:
+      vue: '>=3.0.1'
 
   '@mapbox/jsonlint-lines-primitives@2.0.2':
     resolution: {integrity: sha512-rY0o9A5ECsTQRVhv7tL/OyDpGAoUB4tTvLiW1DSzQGq4bvTPhNw1VpSNjDJc5GFZ2XuyOtSWSVN05qOtcD71qQ==}
@@ -7419,12 +7424,6 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
-  lucide-vue-next@1.0.0:
-    resolution: {integrity: sha512-V6SPvx1IHTj/UY+FrIYWV5faISsPSb8BnWSFDxAtezWKvWc9ZZ40PDrdu1/Qb5vg4lHWr1hs1BAMGVGm6V1Xdg==}
-    deprecated: Package deprecated. Please use @lucide/vue instead.
-    peerDependencies:
-      vue: '>=3.0.1'
-
   magic-regexp@0.10.0:
     resolution: {integrity: sha512-Uly1Bu4lO1hwHUW0CQeSWuRtzCMNO00CmXtS8N6fyvB3B979GOEEeAkiTUDsmbYLAbvpUS/Kt5c4ibosAzVyVg==}
 
@@ -11071,6 +11070,10 @@ snapshots:
       - supports-color
 
   '@kwsites/promise-deferred@1.1.1': {}
+
+  '@lucide/vue@1.16.0(vue@3.5.35(typescript@5.9.3))':
+    dependencies:
+      vue: 3.5.35(typescript@5.9.3)
 
   '@mapbox/jsonlint-lines-primitives@2.0.2': {}
 
@@ -17563,10 +17566,6 @@ snapshots:
   lru-cache@6.0.0:
     dependencies:
       yallist: 4.0.0
-
-  lucide-vue-next@1.0.0(vue@3.5.35(typescript@5.9.3)):
-    dependencies:
-      vue: 3.5.35(typescript@5.9.3)
 
   magic-regexp@0.10.0:
     dependencies:

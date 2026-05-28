@@ -20,6 +20,7 @@
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "catalog:",
     "@fontsource/inter": "catalog:",
+    "@lucide/vue": "catalog:",
     "@nuxt/eslint": "catalog:",
     "@nuxt/image": "catalog:",
     "@nuxt/ui": "catalog:",
@@ -45,7 +46,6 @@
     "es-toolkit": "catalog:",
     "eslint": "catalog:",
     "fflate": "catalog:",
-    "lucide-vue-next": "catalog:",
     "nuxt": "catalog:",
     "ol": "catalog:",
     "pinia": "catalog:",

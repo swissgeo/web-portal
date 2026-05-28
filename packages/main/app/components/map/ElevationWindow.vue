@@ -11,13 +11,13 @@ import type {
 import type Map from "ol/Map";
 import type { Ref } from "vue";
 
+import { X, GripVertical } from "@lucide/vue";
 import { useDrawingStore, resolveFeatureId } from "@swissgeo/drawing";
 import {
   ElevationProfile,
   ElevationProfileOpenLayersBridge,
 } from "@swissgeo/elevation-profile";
 import { usePositionStore } from "@swissgeo/map";
-import { X, GripVertical } from "lucide-vue-next";
 import {
   computed,
   inject,
