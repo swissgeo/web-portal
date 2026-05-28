@@ -35,7 +35,6 @@ catalog:
   "@types/chai": ^5.2.2
   "@types/geojson": ^7946.0.16
   "@types/jsdom": ^28.0.1
-  "@types/lodash": ^4.14.192
   "@types/luxon": ^3.7.1
   "@types/mapbox-gl": ^3.4.1
   "@types/node": ^24.12.0
@@ -71,7 +70,6 @@ catalog:
   geojson: ^0.5.0
   globals: ^17.0.0
   happy-dom: 20.9.0
-  lodash: ^4.17.21
   lucide-vue-next: ^1.0.0
   msw: ^2.13.2
   nuxt: ^4.4.6

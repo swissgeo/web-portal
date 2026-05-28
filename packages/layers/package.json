@@ -29,14 +29,13 @@
     "@swissgeo/numbers": "workspace:*",
     "@swissgeo/ogc": "workspace:*",
     "@swissgeo/shared": "workspace:*",
-    "lodash": "catalog:"
+    "es-toolkit": "catalog:"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@pinia/testing": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
-    "@types/lodash": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
     "eslint": "catalog:",
     "ol": "catalog:",

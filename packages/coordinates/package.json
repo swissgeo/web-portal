@@ -36,7 +36,7 @@
   "dependencies": {
     "@swissgeo/log": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
-    "lodash": "catalog:"
+    "es-toolkit": "catalog:"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
@@ -46,7 +46,6 @@
     "@turf/turf": "catalog:",
     "@types/chai": "catalog:",
     "@types/geojson": "catalog:",
-    "@types/lodash": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
     "chai": "catalog:",
     "eslint": "catalog:",

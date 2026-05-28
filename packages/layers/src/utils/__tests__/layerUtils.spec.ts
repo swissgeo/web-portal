@@ -1,6 +1,6 @@
 import type { Dataset } from "@swissgeo/ogc";
 
-import { omit } from "lodash";
+import { omit } from "es-toolkit/object";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 import {

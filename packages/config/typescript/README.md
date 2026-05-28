@@ -91,7 +91,6 @@ This package includes optional TypeScript definitions for common libraries:
 - `@types/chai`
 - `@types/geojson`
 - `@types/jsdom`
-- `@types/lodash`
 - `@types/luxon`
 - `@types/node`
 - `@types/pako`

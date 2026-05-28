@@ -20,7 +20,6 @@
     "@types/chai": "catalog:",
     "@types/geojson": "catalog:",
     "@types/jsdom": "catalog:",
-    "@types/lodash": "catalog:",
     "@types/luxon": "catalog:",
     "@types/node": "catalog:",
     "@types/pako": "catalog:"
