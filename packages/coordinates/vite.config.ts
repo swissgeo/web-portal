@@ -5,7 +5,6 @@ import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import dts from "unplugin-dts/vite";
 import vueDevTools from "vite-plugin-vue-devtools";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 const config: UserConfig = {
   build: {
@@ -38,7 +37,6 @@ const config: UserConfig = {
     },
   },
   plugins: [
-    tsconfigPaths(),
     tailwindcss(),
     vue(),
     vueDevTools(),

@@ -42,7 +42,6 @@
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
     "vue-tsc": "catalog:"
   },
   "peerDependencies": {

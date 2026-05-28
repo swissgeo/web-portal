@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import dts from "unplugin-dts/vite";
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
@@ -8,8 +9,7 @@ export default defineConfig(({ mode }) => {
     build: {
       ...getBaseBuildConfig(mode),
       lib: {
-        entry: [fileURLToPath(new URL("./src/index.ts", import.meta.url))],
-        fileName: (format) => `index.${format}.js`,
+        entry: resolve(__dirname, "src/index.ts"),
         formats: ["es"],
         name: "@swissgeo/shared",
       },
