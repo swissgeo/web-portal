@@ -177,9 +177,6 @@ catalogs:
     pinia:
       specifier: ^3.0.4
       version: 3.0.4
-    playwright-core:
-      specifier: ^1.58.2
-      version: 1.59.1
     postcss-html:
       specifier: ^1.8.0
       version: 1.8.1
@@ -985,9 +982,6 @@ importers:
       happy-dom:
         specifier: 'catalog:'
         version: 20.9.0
-      playwright-core:
-        specifier: 'catalog:'
-        version: 1.59.1
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)

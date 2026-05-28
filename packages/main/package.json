@@ -62,7 +62,6 @@
     "@vue/test-utils": "catalog:",
     "eslint-plugin-perfectionist": "catalog:",
     "happy-dom": "catalog:",
-    "playwright-core": "catalog:",
     "stylelint": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
