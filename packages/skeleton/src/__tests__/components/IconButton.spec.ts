@@ -20,7 +20,7 @@ describe("Functionality of buttons with a LucideIcon within", () => {
         "data-testid": testId,
       },
     });
-    const iconButton = wrapper.find(`[data-testid="${testId}"`);
+    const iconButton = wrapper.find(`[data-testid="${testId}"]`);
     expect(iconButton.exists()).toBe(true);
     expect(iconButton.attributes().icon).to.eql(icon);
   });
@@ -39,7 +39,7 @@ describe("Functionality of buttons with a LucideIcon within", () => {
         "data-testid": testId,
       },
     });
-    const iconButton = wrapper.find(`[data-testid="${testId}"`);
+    const iconButton = wrapper.find(`[data-testid="${testId}"]`);
     expect(iconButton.exists()).toBe(true);
     expect(iconButton.attributes().icon).to.eql(expectedIcon);
     expect(iconButton.attributes().variant).to.eql(variant);
@@ -65,7 +65,7 @@ describe("Functionality of buttons with a LucideIcon within", () => {
         "data-testid": testId,
       },
     });
-    const iconButton = wrapper.find(`[data-testid="${testId}"`);
+    const iconButton = wrapper.find(`[data-testid="${testId}"]`);
     // we should find the button
     expect(iconButton.exists()).toBe(true);
     // color should be either the severity, or secondary by default
@@ -85,7 +85,7 @@ describe("Functionality of buttons with a LucideIcon within", () => {
         "data-testid": testId,
       },
     });
-    const iconButton = wrapper.find(`[data-testid="${testId}"`);
+    const iconButton = wrapper.find(`[data-testid="${testId}"]`);
     expect(iconButton.exists()).toBe(true);
     expect(iconButton.attributes().customattribute).to.eql(customattribute);
   });

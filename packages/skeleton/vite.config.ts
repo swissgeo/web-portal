@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
   return {
     test: {
       globals: true,
-      environment: "jsdom",
+      environment: "happy-dom",
       setupFiles: ["src/__tests__/config/components-stubs.ts"],
     },
     build: {

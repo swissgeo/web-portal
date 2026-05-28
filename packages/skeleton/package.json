@@ -42,6 +42,7 @@
     "@vue/compiler-dom": "catalog:",
     "@vue/server-renderer": "catalog:",
     "eslint": "catalog:",
+    "happy-dom": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",

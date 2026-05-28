@@ -1339,6 +1339,9 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.7.0)
+      happy-dom:
+        specifier: 'catalog:'
+        version: 20.9.0
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
