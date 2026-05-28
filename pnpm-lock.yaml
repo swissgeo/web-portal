@@ -90,6 +90,9 @@ catalogs:
     '@vitejs/plugin-vue':
       specifier: ^6.0.5
       version: 6.0.7
+    '@vitest/ui':
+      specifier: ^4.1.2
+      version: 4.1.5
     '@vue/compiler-dom':
       specifier: ^3.5.34
       version: 3.5.34
@@ -971,7 +974,7 @@ importers:
         specifier: 'catalog:'
         version: 24.12.0
       '@vitest/ui':
-        specifier: ^4.1.2
+        specifier: 'catalog:'
         version: 4.1.5(vitest@4.1.3)
       '@vue/test-utils':
         specifier: 'catalog:'
@@ -9263,10 +9266,6 @@ packages:
     resolution: {integrity: sha512-M/Q0B2cp4K7kynaT/vnED1j8TlLY+Pp7C6Wl2bl/7u/F0mUVwdyOpwomQb8JpYLitHUssAJRmLZdMCGsrx7i+g==}
     engines: {node: '>=18'}
 
-  tinyglobby@0.2.15:
-    resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
-    engines: {node: '>=12.0.0'}
-
   tinyglobby@0.2.16:
     resolution: {integrity: sha512-pn99VhoACYR8nFHhxqix+uvsbXineAasWm5ojXoN8xEwK5Kd3/TrhNn1wByuD52UxWRLy8pu+kRMniEi6Eq9Zg==}
     engines: {node: '>=12.0.0'}
@@ -15142,7 +15141,7 @@ snapshots:
       flatted: 3.4.2
       pathe: 2.0.3
       sirv: 3.0.2
-      tinyglobby: 0.2.15
+      tinyglobby: 0.2.16
       tinyrainbow: 3.1.0
       vitest: 4.1.3(@types/node@24.12.0)(@vitest/ui@4.1.5)(happy-dom@20.9.0)(msw@2.14.3(@types/node@24.12.0)(typescript@5.9.3))(vite@7.3.3(@types/node@24.12.0)(jiti@2.7.0)(lightningcss@1.30.2)(terser@5.46.0)(yaml@2.8.2))
 
@@ -20452,11 +20451,6 @@ snapshots:
   tinyclip@0.1.12: {}
 
   tinyexec@1.2.2: {}
-
-  tinyglobby@0.2.15:
-    dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
 
   tinyglobby@0.2.16:
     dependencies:

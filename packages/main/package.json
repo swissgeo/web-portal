@@ -58,7 +58,7 @@
     "@swissgeo/config-eslint": "workspace:*",
     "@types/mapbox-gl": "catalog:",
     "@types/node": "catalog:",
-    "@vitest/ui": "^4.1.2",
+    "@vitest/ui": "catalog:",
     "@vue/test-utils": "catalog:",
     "eslint-plugin-perfectionist": "catalog:",
     "happy-dom": "catalog:",
