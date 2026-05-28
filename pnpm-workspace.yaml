@@ -5,13 +5,12 @@ packages:
   - tests/integration
 
 allowBuilds:
-  "@parcel/watcher": false
+  '@parcel/watcher': false
   esbuild: false
   msw: false
   sharp: false
   unrs-resolver: false
   vue-demi: false
-  "@swissgeo/config-typescript": true
 
 catalog:
   "@chenfengyuan/vue-qrcode": "^2.0.0"
