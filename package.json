@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "build": "pnpm --recursive run build",
-    "build:dev": "pnpm --recursive --if-present run build:dev",
+    "build:dev": "pnpm --recursive --workspace-concurrency=0 --if-present run build:dev",
     "build:dev:watch": "pnpm --filter=!main --recursive --parallel --if-present run build:dev:watch",
-    "build:prod": "pnpm --recursive --if-present run build:prod",
+    "build:prod": "pnpm --recursive --workspace-concurrency=0 --if-present run build:prod",
     "build-libs": "pnpm --filter=!main run --recursive --if-present build",
     "build-libs:dev": "pnpm --filter=!main run --recursive --if-present build:dev",
     "check": "pnpm run format && pnpm run lint && pnpm run type-check",
