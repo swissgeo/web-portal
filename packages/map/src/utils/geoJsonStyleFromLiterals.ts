@@ -157,8 +157,10 @@ function getOlBasicStyles(
  * https://sys-api3.dev.bgdi.ch/static/vectorStyles/ch.bafu.hydroweb-messstationen_grundwasser.json
  */
 function getOlStyleFromLiterals(
-  geoadminStyleJson:
+  geoadminStyleJson: // disabled these warnings since the custom geojson will go away soon
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     | GeoAdminGeoJSONRangeDefinition
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     | GeoAdminGeoJSONStyleSingle,
 ): Style {
   const { vectorOptions, geomType } = geoadminStyleJson;
