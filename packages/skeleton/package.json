@@ -26,10 +26,8 @@
   "dependencies": {
     "@lucide/vue": "catalog:",
     "@swissgeo/content": "workspace:*",
-    "@swissgeo/drawing": "workspace:*",
     "@swissgeo/layers": "workspace:*",
     "@swissgeo/log": "workspace:*",
-    "@swissgeo/numbers": "workspace:*",
     "@swissgeo/search": "workspace:*",
     "@swissgeo/shared": "workspace:*"
   },

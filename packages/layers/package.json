@@ -25,7 +25,6 @@
   },
   "dependencies": {
     "@swissgeo/log": "workspace:*",
-    "@swissgeo/numbers": "workspace:*",
     "@swissgeo/ogc": "workspace:*",
     "@swissgeo/shared": "workspace:*"
   },
