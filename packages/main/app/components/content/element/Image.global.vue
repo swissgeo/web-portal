@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { Image } from "@swissgeo/shared/livingdocs";
+import type { Image } from "@swissgeo/content";
 
-import { isImage } from "@swissgeo/shared/livingdocs";
+import { isImage } from "@swissgeo/content";
 
 const { data } = defineProps<{ data: Image }>();
 const imageUrl = computed(() => {

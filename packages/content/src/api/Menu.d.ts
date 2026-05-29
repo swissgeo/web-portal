@@ -1,7 +1,6 @@
-import type { Lang } from "@/Language";
+import type { Lang } from "@swissgeo/shared/Language";
 
 export type Slug = string;
-
 export type DocumentId = string;
 
 export type MenuEntryLangaugeItem = {

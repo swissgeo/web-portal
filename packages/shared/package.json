@@ -16,10 +16,6 @@
     "./api": {
       "types": "./dist/api/index.d.ts"
     },
-    "./livingdocs": {
-      "types": "./dist/livingdocs/index.d.ts",
-      "import": "./dist/shared.js"
-    },
     "./ogc": {
       "types": "./dist/ogc/index.d.ts"
     },

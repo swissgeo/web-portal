@@ -2,7 +2,7 @@ import type {
   ContentPageMetadata,
   Publication,
   Systemdata,
-} from "../livingdocs/Publication";
+} from "../types/Publication";
 
 export type LanguageReference = {
   metadata: ContentPageMetadata;
