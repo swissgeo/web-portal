@@ -16,9 +16,6 @@
     "./api": {
       "types": "./dist/api/index.d.ts"
     },
-    "./ogc": {
-      "types": "./dist/ogc/index.d.ts"
-    },
     "./language": {
       "types": "./dist/language.d.ts"
     },
