@@ -54,7 +54,6 @@ const onKeydown = (event: KeyboardEvent) => {
         color="secondary"
         variant="outline"
         class="w-full"
-        :ui="{ icon: { trailing: { pointer: '' } } }"
         data-testid="searchbar"
         @input="onInput"
         @keydown="onKeydown"

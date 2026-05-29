@@ -2,7 +2,6 @@
 import type { Labels } from "@swissgeo/elevation-profile";
 import type { LineString } from "geojson";
 import type { Feature } from "ol";
-import type GeoJSON from "ol/format/GeoJSON";
 import type {
   LineString as OlLineString,
   Polygon as OlPolygon,
@@ -18,6 +17,7 @@ import {
   ElevationProfileOpenLayersBridge,
 } from "@swissgeo/elevation-profile";
 import { usePositionStore } from "@swissgeo/map";
+import GeoJSON from "ol/format/GeoJSON";
 import {
   computed,
   inject,

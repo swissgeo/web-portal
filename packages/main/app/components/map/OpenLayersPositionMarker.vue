@@ -3,15 +3,15 @@
  * Renders a dot marker on the map at the current geolocation position.
  */
 import type { Map } from "ol";
-import type Feature from "ol/Feature";
-import type { Point } from "ol/geom";
-import type { Vector as VectorLayer } from "ol/layer";
-import type { Vector as VectorSource } from "ol/source";
-import type { Fill, Stroke, Style } from "ol/style";
-import type CircleStyle from "ol/style/Circle";
 import type { Ref } from "vue";
 
 import { useAddLayerToMap } from "@swissgeo/map";
+import Feature from "ol/Feature";
+import { Point } from "ol/geom";
+import { Vector as VectorLayer } from "ol/layer";
+import { Vector as VectorSource } from "ol/source";
+import { Fill, Stroke, Style } from "ol/style";
+import CircleStyle from "ol/style/Circle";
 import { computed, inject, onMounted, shallowRef, watch } from "vue";
 
 import { useGeolocationStore } from "@/stores/geolocation";

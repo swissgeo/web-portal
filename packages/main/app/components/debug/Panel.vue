@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import DrawingPanel from "~/components/debug/DrawingPanel.vue";
 
-import FramePrintPanel from "./FramePrintPanel";
-
 const isLayersPanelOpen = ref(false);
 const isImportPanelOpen = ref(false);
 const isImportLocalPanelOpen = ref(false);
@@ -58,7 +56,7 @@ function togglePrintPanel() {
     >
     </DrawingPanel>
     <DebugSharePanel v-if="isSharePanelOpen" @close="toggleStateConfig" />
-    <FramePrintPanel v-if="isPrintPanelOpen" @close="togglePrintPanel" />
+    <DebugFramePrintPanel v-if="isPrintPanelOpen" @close="togglePrintPanel" />
     <div
       class="flex gap-2"
       v-if="

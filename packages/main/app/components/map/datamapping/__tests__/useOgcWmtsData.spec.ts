@@ -124,8 +124,8 @@ describe("useOgcWmtsData", () => {
       ],
     };
 
-    // @ts-expect-error Not caring about the types here
     const { options, timeInfo, defaultOpacity } = useOgcWmtsData(
+      // @ts-expect-error Not caring about the types here
       distribution,
       service,
       layerId,
@@ -170,8 +170,8 @@ describe("useOgcWmtsData", () => {
       ],
     };
 
-    // @ts-expect-error Not caring about the types here
     const { options, timeInfo, defaultOpacity } = useOgcWmtsData(
+      // @ts-expect-error Not caring about the types here
       distribution,
       service,
       layerId,
@@ -215,8 +215,8 @@ describe("useOgcWmtsData reactivity", () => {
     });
     const layerId = ref("umtriebiger-pilzknöterich");
 
-    // @ts-expect-error Intentionally not providing the right types
     const { options, defaultOpacity } = useOgcWmtsData(
+      // @ts-expect-error Intentionally not providing the right types
       distribution,
       service,
       layerId,

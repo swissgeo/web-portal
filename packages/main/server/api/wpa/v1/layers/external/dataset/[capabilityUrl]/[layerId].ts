@@ -59,13 +59,22 @@ async function fetchLayerTitle(
   const titleTag = TagNames[`${capabilitiesType}_TITLE`];
 
   const layers = doc.getElementsByTagName("Layer");
-  for (let i = 0; i < layers.length; i++) {
+
+  if (!layers) {
+    throw createError({
+      status: 500,
+      statusMessage: "Server Error",
+      message: "Error parsing the capabilities",
+    });
+  }
+
+  for (const layer of layers) {
     const identifier =
-      layers[i].getElementsByTagName(identifierTag)[0]?.textContent;
+      layer.getElementsByTagName(identifierTag)[0]?.textContent;
     if (identifier !== layerId) {
       continue;
     }
-    const title = layers[i].getElementsByTagName(titleTag)[0]?.textContent;
+    const title = layer.getElementsByTagName(titleTag)[0]?.textContent;
     if (!title) {
       throw createError({
         status: 502,
