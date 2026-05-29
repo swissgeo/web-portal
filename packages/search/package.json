@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "@swissgeo/log": "workspace:*",
-    "@swissgeo/shared": "workspace:*"
+    "@swissgeo/shared": "workspace:*",
+    "typescript": "catalog:"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
