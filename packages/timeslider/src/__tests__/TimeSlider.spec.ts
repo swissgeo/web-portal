@@ -3,6 +3,7 @@ import type { Layer } from "@swissgeo/layers";
 import { expect, test } from "vitest";
 
 import * as TimeSliderUtils from "../timeSliderUtils.ts";
+import * as TimeUtils from "../timeUtils.ts";
 
 const BASE_LAYER_CONFIG: Layer = {
   type: "dataset",
@@ -19,7 +20,7 @@ test.each([
 ])(
   "The years parser for geoadmin style years parses correctly",
   (timestamp, expectedYear) => {
-    const year = TimeSliderUtils.getYearFromGeoadminValue(timestamp);
+    const year = TimeUtils.getYearFromGeoadminValue(timestamp);
     expect(year).toEqual(expectedYear);
   },
 );

@@ -922,6 +922,9 @@ importers:
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared
+      '@swissgeo/timeslider':
+        specifier: workspace:*
+        version: link:../timeslider
       '@turf/turf':
         specifier: 'catalog:'
         version: 7.3.3

@@ -3,11 +3,8 @@ import type { Layer } from "@swissgeo/layers";
 import {
   ALL_YEARS_TIMESTAMP,
   CURRENT_YEAR_TIMESTAMP,
-  convertYearToTimestamp,
   getYearFromGeoadminValue,
-} from "@swissgeo/shared";
-
-export { convertYearToTimestamp, getYearFromGeoadminValue };
+} from "./timeUtils";
 
 // use the most narrow type needed for this to work
 export type LayerWithTime = Pick<Layer, "dimensions" | "uuid">;
