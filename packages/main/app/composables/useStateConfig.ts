@@ -138,6 +138,8 @@ export function useStateConfig() {
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
         const uuid = layers[i]!.uuid;
+        // we're adding some information about visibility and opacity to apply after conversion
+        // also setting defaults in case they are not specified
         const mapLayerData: Partial<MapLayer> = {
           opacity: stateLayers[i]?.opacity ?? 1,
           isVisible: stateLayers[i]?.isVisible ?? true,
@@ -158,6 +160,9 @@ export function useStateConfig() {
   };
 }
 
+/**
+ * Create a custom state config object not tied to the current app state.
+ */
 export function useCustomStateConfig() {
   const mapviewStore = useMapViewStore();
   const customStateMapCenter = ref<[number, number]>([0, 0]);
