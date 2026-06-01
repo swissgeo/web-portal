@@ -1,10 +1,13 @@
 import type { SaveAppState } from "@swissgeo/statesharing";
 
+import log from "@swissgeo/log";
 import { SaveAppStateResponse } from "@swissgeo/statesharing";
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
   const body = await readBody<SaveAppState>(event);
+
+  log.debug(`Proxying POST state to ${config.shareServiceUrl}`);
 
   try {
     const data = await $fetch<unknown>(config.shareServiceUrl, {

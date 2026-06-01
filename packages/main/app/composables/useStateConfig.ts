@@ -162,6 +162,7 @@ export function useStateConfig() {
 
 /**
  * Create a custom state config object not tied to the current app state.
+ * Used for print export, where map position and layers differ from the live view.
  */
 export function useCustomStateConfig() {
   const mapviewStore = useMapViewStore();

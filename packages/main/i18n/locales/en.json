@@ -142,7 +142,8 @@
     "successTitle": "Success"
   },
   "state": {
-    "restoreUnableWarning": "The app state could not be restored"
+    "restoreUnableWarning": "The app state could not be restored",
+    "shareLinkError": "The share link could not be generated"
   },
   "map": {
     "contextMenuPopup": {

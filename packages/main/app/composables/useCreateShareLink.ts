@@ -42,6 +42,8 @@ export function useCreateShareLinkForPrint() {
 }
 
 export function useCreateShareLinkForCustomState() {
+  const { t } = useI18n();
+  const toaster = useToaster();
   const state = ref<AppStatePayload | null>(null);
   const hash = ref<string | null>(null);
   const isFetching = ref(false);
@@ -65,8 +67,11 @@ export function useCreateShareLinkForCustomState() {
         hash.value = await postStateToStateId(newState.state, {
           signal: abortController.signal,
         });
-      } catch {
-        // Ignore errors, e.g. from aborting the request
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+        toaster.showWarning(t("state.shareLinkError"));
       } finally {
         isFetching.value = false;
       }
