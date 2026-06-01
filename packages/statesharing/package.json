@@ -31,20 +31,13 @@
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
-    "@swissgeo/shared": "workspace:",
-    "@types/semver": "catalog:",
     "eslint": "catalog:",
     "orval": "catalog:",
-    "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
   },
-  "peerDependencies": {
-    "@vueuse/core": "catalog:",
-    "ol": "catalog:",
-    "vue": "catalog:"
-  },
+  "peerDependencies": {},
   "packageManager": "pnpm@11.6.0"
 }
