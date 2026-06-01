@@ -2,16 +2,20 @@ import fs from "fs";
 import { defineConfig } from "orval";
 import path from "path";
 
+const shareServiceUrl =
+  process.env.NUXT_SHARE_SERVICE_URL ??
+  "https://www.dev.sgdi.tech/api/wps/v1/state";
+
 export default defineConfig({
   stateshare: {
     input: {
-      target: "https://www.dev.sgdi.tech/api/wps/v1/state/openapi.json",
+      target: `${shareServiceUrl}/openapi.json`,
     },
     output: {
       target: "src/client",
       formatter: "prettier",
       client: "fetch",
-      baseUrl: "https://www.dev.sgdi.tech/api/wps/v1/state/",
+      baseUrl: `${shareServiceUrl}/`,
       schemas: {
         path: "./src/client/schemas",
         type: "zod", // generates .zod.ts files alongside your TypeScript types
