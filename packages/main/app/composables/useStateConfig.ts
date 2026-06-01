@@ -15,6 +15,21 @@ export type AppStatePayload = {
 
 const DISPATCHER = { name: "state-config" };
 
+function normalizeTimeValueToISO(
+  value: string | null | undefined,
+): string | null | undefined {
+  if (!value || value === "current") {
+    return value;
+  }
+  if (/^\d{8}$/.test(value)) {
+    return `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}T00:00:00Z`;
+  }
+  if (/^\d{4}$/.test(value)) {
+    return `${value}-01-01T00:00:00Z`;
+  }
+  return value;
+}
+
 function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
   if (layers.length === 0) {
     return [];
@@ -55,7 +70,9 @@ function layerToStateConfig(layer: MapLayer): LayerStateInput {
     config.dimensions = {};
     for (const [key, dim] of Object.entries(sourceData.dimensions)) {
       if (dim && key === "time") {
-        config.dimensions.time = { currentValue: dim.currentValue };
+        config.dimensions.time = {
+          currentValue: normalizeTimeValueToISO(dim.currentValue),
+        };
       }
     }
   }

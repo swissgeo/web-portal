@@ -8,6 +8,10 @@ import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
+import {
+  convertYearToTimestamp,
+  getYearFromGeoadminValue,
+} from "@swissgeo/shared";
 
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";
@@ -43,7 +47,23 @@ function updateTimeDimension(
   identifier: string,
   dimension: Partial<Dimension>,
 ) {
-  layerStore.setDimension("time", identifier, dimension);
+  const existingCurrentValue =
+    layerStore.getLayer(identifier)?.dimensions?.time?.currentValue;
+  const existingYear = existingCurrentValue
+    ? getYearFromGeoadminValue(existingCurrentValue)
+    : undefined;
+  const matchedValue =
+    existingYear && dimension.availableValues?.length
+      ? convertYearToTimestamp(
+          dimension.availableValues,
+          parseInt(existingYear),
+        )
+      : undefined;
+
+  layerStore.setDimension("time", identifier, {
+    ...dimension,
+    ...(matchedValue ? { currentValue: matchedValue } : {}),
+  });
 }
 function updateOpacity(identifier: number | string, opacity: number) {
   mapViewStore.updateLayerOpacity(identifier, opacity);
