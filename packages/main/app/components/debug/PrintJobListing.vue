@@ -8,8 +8,11 @@ const open = ref(false);
 
 const totalCount = computed(() => requestCollection.value.length);
 
-function statusLabel(status: "open" | "finished" | "error"): string {
+function statusLabel(status: PrintJobStatusResponse["status"]): string {
   if (status === "open") {
+    return "Queued";
+  }
+  if (status === "started") {
     return "Processing…";
   }
   if (status === "finished") {
@@ -19,9 +22,9 @@ function statusLabel(status: "open" | "finished" | "error"): string {
 }
 
 function statusColor(
-  status: "open" | "finished" | "error",
+  status: PrintJobStatusResponse["status"],
 ): "info" | "success" | "error" {
-  if (status === "open") {
+  if (status === "open" || status === "started") {
     return "info";
   }
   if (status === "finished") {
@@ -85,9 +88,9 @@ function statusColor(
           <UButton
             v-if="
               item.lastResponse.status === 'finished' &&
-              item.lastResponse.pdfUrl
+              item.lastResponse.pdfPath
             "
-            :href="item.lastResponse.pdfUrl"
+            :href="item.lastResponse.pdfPath"
             target="_blank"
             rel="noopener"
             label="Download"
