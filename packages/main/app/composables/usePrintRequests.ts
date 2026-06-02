@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 
 import type { PrintFormat, PrintOrientation } from "../types/print";
 
@@ -24,7 +24,7 @@ export type PrintJobStatusResponse = {
   /**
    * A print job can be "open" when it's being processed, "finished" when the PDF is ready or "error" if something went wrong during the processing
    */
-  status: "open" | "finished" | "error";
+  status: "open" | "started" | "finished" | "error";
   /**
    * ISO string of the date when the print job was created, but not started yet
    */
@@ -38,9 +38,9 @@ export type PrintJobStatusResponse = {
    */
   finished: string;
   /**
-   * URL to the detailed report of the print job, if available. This endpoint is specific a print job and must be used to obtain status update.
+   * URL to the detailed report of the print job, if available. This endpoint is specific to a print job and must be used to obtain status updates.
    */
-  reportUrl: string | null;
+  reportPath: string | null;
   /**
    * Optional message providing additional information about the print job status
    */
@@ -48,7 +48,7 @@ export type PrintJobStatusResponse = {
   /**
    * URL to the generated PDF file, if available
    */
-  pdfUrl?: string;
+  pdfPath?: string;
 };
 
 type PrintRequestCollectionItem = {
@@ -119,10 +119,13 @@ export function usePrintRequests() {
 
   /**
    * A collection of print requests that are still open (pdf is not ready yet)
+   * That includes the request that have both statuses "open" and "started"
    */
   const ongoingRequests = computed(() => {
     return requestCollection.value.filter(
-      (request) => request.lastResponse.status === "open",
+      (request: PrintRequestCollectionItem) =>
+        request.lastResponse.status === "open" ||
+        request.lastResponse.status === "started",
     );
   });
 
@@ -131,7 +134,8 @@ export function usePrintRequests() {
    */
   const finishedRequests = computed(() => {
     return requestCollection.value.filter(
-      (request) => request.lastResponse.status === "finished",
+      (request: PrintRequestCollectionItem) =>
+        request.lastResponse.status === "finished",
     );
   });
 
@@ -140,7 +144,8 @@ export function usePrintRequests() {
    */
   const errorRequests = computed(() => {
     return requestCollection.value.filter(
-      (request) => request.lastResponse.status === "error",
+      (request: PrintRequestCollectionItem) =>
+        request.lastResponse.status === "error",
     );
   });
 
@@ -149,27 +154,29 @@ export function usePrintRequests() {
    */
   async function refreshOpenRequests() {
     const openRequests = requestCollection.value.filter(
-      (request) =>
+      (request: PrintRequestCollectionItem) =>
         request.lastResponse.status === "open" &&
-        typeof request.lastResponse.reportUrl === "string" &&
+        typeof request.lastResponse.reportPath === "string" &&
         request.isPolling === false,
     );
 
-    const tasks = openRequests.map(async (request) => {
-      const reportUrl = request.lastResponse.reportUrl;
-      if (!reportUrl) {
-        return;
-      }
+    const tasks = openRequests.map(
+      async (request: PrintRequestCollectionItem) => {
+        const reportPath = request.lastResponse.reportPath;
+        if (!reportPath) {
+          return;
+        }
 
-      request.isPolling = true;
-      try {
-        request.lastResponse = await $fetch(reportUrl);
-      } catch {
-        // ignore temporary polling error
-      } finally {
-        request.isPolling = false;
-      }
-    });
+        request.isPolling = true;
+        try {
+          request.lastResponse = await $fetch(reportPath);
+        } catch {
+          // ignore temporary polling error
+        } finally {
+          request.isPolling = false;
+        }
+      },
+    );
 
     await Promise.allSettled(tasks);
   }
