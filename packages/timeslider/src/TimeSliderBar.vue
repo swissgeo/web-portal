@@ -230,7 +230,7 @@ const sliderWidth = computed(
       class="arrow"
       :style="cursorArrowPosition"
     />
-    <UTooltip placement="bottom" delay-duration="0" arrow>
+    <UTooltip placement="bottom" :delay-duration="0" arrow>
       <TimeSliderBarSteps
         :allYears="allYears"
         :years-joint="yearsWithData.yearsJoint"
