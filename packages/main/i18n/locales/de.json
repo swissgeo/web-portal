@@ -192,5 +192,9 @@
       "slopeDistance": "Pfadentfernung"
     },
     "fetchError": "Höhenprofil konnte nicht abgerufen werden"
+  },
+  "timeSlider": {
+    "legendExplanation": "Die Zeitschieberegler zeigen die zeitliche Verteilung der Daten an. Sie können die Schieberegler verwenden, um den Zeitraum zu filtern, der auf der Karte angezeigt wird.",
+    "outsideValidYearRange": "Außerhalb des gültigen Jahresbereichs"
   }
 }

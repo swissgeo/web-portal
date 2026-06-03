@@ -35,7 +35,7 @@ const yearCursorInput = useTemplateRef<HTMLInputElement>("yearCursorInput");
 
 const tooltipYearOutsideRangeContent = computed(
   () =>
-    `${t("outside_valid_year_range")} ${allYears[0]}-${allYears[allYears.length - 1]}`,
+    `${t("timeSlider.outsideValidYearRange")} ${allYears[0]}-${allYears[allYears.length - 1]}`,
 );
 
 const currentYear = computed({
@@ -230,7 +230,7 @@ const sliderWidth = computed(
       class="arrow"
       :style="cursorArrowPosition"
     />
-    <UTooltip placement="bottom" delay-duration="0" arrow>
+    <UTooltip placement="bottom" :delay-duration="0" arrow>
       <TimeSliderBarSteps
         :allYears="allYears"
         :years-joint="yearsWithData.yearsJoint"
@@ -241,8 +241,7 @@ const sliderWidth = computed(
       />
       <template #content>
         <p>
-          <!-- TODO: Add slider explaination -->
-          {{ t("time_slider_legend_explanation") }}
+          {{ t("timeSlider.legendExplanation") }}
         </p>
       </template>
     </UTooltip>
