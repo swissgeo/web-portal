@@ -1,17 +1,14 @@
 import type { Layer } from "@swissgeo/layers";
 
-import { describe, expect, it } from "vitest";
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
-//import { useAttributionSources } from '../useAttributionSources'
+import { useAttributionSources } from "../useAttributionSources";
 
-//quick hack so that the test files stop trying to import the attribution file.
-function useAttributionSources(layers, background) {
-  if (layers && background) {
-    return "yes";
-  }
-  return "";
-}
+const getMapLayerFromUuid = vi.hoisted(() => vi.fn());
+
+mockNuxtImport("useMapViewStore", () => () => ({ getMapLayerFromUuid }));
 
 function makeLayer(overrides: Partial<Layer> = {}): Layer {
   return {
@@ -23,15 +20,19 @@ function makeLayer(overrides: Partial<Layer> = {}): Layer {
   };
 }
 
-// TODO soon : mock store and re-run those tests
-describe.skip("useAttributionSources", () => {
-  it.skip("returns empty array when no layers have attribution", () => {
+describe("useAttributionSources", () => {
+  beforeEach(() => {
+    getMapLayerFromUuid.mockReturnValue({ isVisible: false });
+  });
+
+  it("returns empty array when no layers have attribution", () => {
     const layers = [makeLayer(), makeLayer()];
     const { sources } = useAttributionSources(layers, null);
     expect(sources.value).toEqual([]);
   });
 
-  it.skip("returns sources for visible layers with attribution", () => {
+  it("returns sources for visible layers with attribution", () => {
+    getMapLayerFromUuid.mockReturnValue({ isVisible: true });
     const layers = [
       makeLayer({
         info: {
@@ -50,7 +51,7 @@ describe.skip("useAttributionSources", () => {
     ]);
   });
 
-  it.skip("excludes invisible layers", () => {
+  it("excludes invisible layers", () => {
     const layers = [
       makeLayer({
         info: { displayName: "A", attribution: { title: "Source A" } },
@@ -60,7 +61,8 @@ describe.skip("useAttributionSources", () => {
     expect(sources.value).toEqual([]);
   });
 
-  it.skip("deduplicates sources with the same name", () => {
+  it("deduplicates sources with the same name", () => {
+    getMapLayerFromUuid.mockReturnValue({ isVisible: true });
     const layers = [
       makeLayer({
         info: { displayName: "A", attribution: { title: "Shared Source" } },
@@ -74,7 +76,16 @@ describe.skip("useAttributionSources", () => {
     expect(sources.value[0]!.name).toBe("Shared Source");
   });
 
-  it.skip("includes visible background layer attribution first", () => {
+  it("includes background layer attribution regardless of map visibility", () => {
+    const background = makeLayer({
+      info: { displayName: "BG", attribution: { title: "BG Source" } },
+    });
+    const { sources } = useAttributionSources([], background);
+    expect(sources.value[0]!.name).toBe("BG Source");
+  });
+
+  it("includes background layer first, then visible overlay layers", () => {
+    getMapLayerFromUuid.mockReturnValue({ isVisible: true });
     const background = makeLayer({
       info: { displayName: "BG", attribution: { title: "BG Source" } },
     });
@@ -88,15 +99,8 @@ describe.skip("useAttributionSources", () => {
     expect(sources.value[1]!.name).toBe("Layer Source");
   });
 
-  it.skip("excludes invisible background layer", () => {
-    const background = makeLayer({
-      info: { displayName: "BG", attribution: { title: "BG Source" } },
-    });
-    const { sources } = useAttributionSources([], background);
-    expect(sources.value).toEqual([]);
-  });
-
-  it.skip("replaces dots and underscores with hyphens in id", () => {
+  it("replaces dots and underscores with hyphens in id", () => {
+    getMapLayerFromUuid.mockReturnValue({ isVisible: true });
     const layers = [
       makeLayer({
         info: { displayName: "A", attribution: { title: "swisstopo.ch_data" } },
@@ -106,11 +110,12 @@ describe.skip("useAttributionSources", () => {
     expect(sources.value[0]!.id).toBe("swisstopo-ch-data");
   });
 
-  it.skip("reacts to ref changes", () => {
+  it("reacts to ref changes", () => {
     const layers = ref<Layer[]>([]);
     const { sources } = useAttributionSources(layers, null);
     expect(sources.value).toEqual([]);
 
+    getMapLayerFromUuid.mockReturnValue({ isVisible: true });
     layers.value = [
       makeLayer({
         info: { displayName: "A", attribution: { title: "Dynamic Source" } },
