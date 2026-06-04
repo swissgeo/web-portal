@@ -43,7 +43,6 @@
     "@playwright/test": "catalog:",
     "@prettier/plugin-xml": "catalog:",
     "@swissgeo/config-prettier": "workspace:*",
-    "@swissgeo/config-prettier-old": "npm:@swissgeo/config-prettier@^1.0.0",
     "@vitejs/plugin-vue": "catalog:",
     "@vue/test-utils": "catalog:",
     "prettier": "catalog:",
