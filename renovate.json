@@ -4,7 +4,7 @@
   "reviewers": ["schtibe", "keetraxx"],
   "baseBranchPatterns": ["develop"],
   "postUpgradeTasks": {
-    "commands": ["pnpm --ignore-scripts update {{{depName}}}"],
+    "commands": ["pnpm update {{{depName}}}"],
     "fileFilters": ["pnpm-lock.yaml"],
     "executionMode": "update"
   }

@@ -3,7 +3,6 @@ import { resolve } from "path";
 import dts from "unplugin-dts/vite";
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 import { getBaseBuildConfig } from "../../base.vite.config";
 
@@ -13,17 +12,22 @@ export default defineConfig(({ mode }) => {
       ...getBaseBuildConfig(mode),
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
-        fileName: (format) => `index.${format}.js`,
         name: "@swissgeo/timeslider",
+        formats: ["es"],
       },
       rollupOptions: {
-        external: ["vue", "lucide-vue-next", "@swissgeo/log"],
-        output: {
-          exports: "named",
-          globals: {
-            vue: "Vue",
-          },
-        },
+        external: [
+          "vue",
+          "lucide-vue-next",
+          "@swissgeo/log",
+          "@swissgeo/layers",
+          "@swissgeo/numbers",
+          "@swissgeo/skeleton",
+          "@swissgeo/shared",
+          "@vueuse/core",
+          "vue-i18n",
+          "@lucide/vue",
+        ],
       },
     },
     resolve: {
@@ -32,7 +36,6 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
-      tsconfigPaths(),
       vue(),
       dts({
         bundleTypes: true,

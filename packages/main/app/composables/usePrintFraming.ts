@@ -67,7 +67,7 @@ export function usePrintFraming() {
   const lastUnlockedCenter = ref<[number, number]>([0, 0]);
   const centerForPrint = computed(() => {
     if (!isCenterLocked.value) {
-      lastUnlockedCenter.value = center.value;
+      lastUnlockedCenter.value = center.value as [number, number]; // don't assign readonly type;
     }
     return lastUnlockedCenter.value;
   });
@@ -96,14 +96,22 @@ export function usePrintFraming() {
   });
 
   const scaleOfPrint = computed(() => {
+    function isExtentTuple(
+      arr: unknown[],
+    ): arr is [number, number, number, number] {
+      return arr.length === 4 && arr.every((el) => el !== undefined);
+    }
+
     if (
       !olMap.value ||
-      !Array.isArray(printExtent.value) ||
-      printExtent.value.length !== 4
+      !printExtent.value ||
+      !isExtentTuple(printExtent.value)
     ) {
       return null;
     }
+
     const extentWidthMeter = printExtent.value[2] - printExtent.value[0];
+
     const pageWidthMeter =
       getPageSizeInMeters(
         selectedPrintFormat.value,
@@ -130,7 +138,7 @@ export function usePrintFraming() {
     if (!printExtent.value || !olMap.value) {
       return false;
     }
-    return !containsExtent(viewportExtent.value, printExtent.value);
+    return !containsExtent(viewportExtent.value as number[], printExtent.value);
   });
 
   const isAtLockedZoomLevel = computed(() => {

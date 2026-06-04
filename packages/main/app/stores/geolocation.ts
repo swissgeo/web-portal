@@ -4,7 +4,7 @@ import type { ActionDispatcher } from "@swissgeo/map";
 import { LV95, WGS84 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
-import { isEqual } from "es-toolkit";
+import { isEqual } from "es-toolkit/predicate";
 import { defineStore } from "pinia";
 import proj4 from "proj4";
 

@@ -28,7 +28,6 @@
     "generate-types": "vue-tsc --declaration",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "prepare": "pnpm run build",
     "preview": "vite preview",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest watch",
@@ -37,7 +36,7 @@
   "dependencies": {
     "@swissgeo/log": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
-    "lodash": "catalog:"
+    "es-toolkit": "catalog:"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
@@ -45,18 +44,14 @@
     "@swissgeo/config-typescript": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@turf/turf": "catalog:",
-    "@types/chai": "catalog:",
     "@types/geojson": "catalog:",
-    "@types/lodash": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
-    "chai": "catalog:",
     "eslint": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:",
     "vite-plugin-vue-devtools": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",
     "vue-tsc": "catalog:"

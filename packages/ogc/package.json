@@ -12,7 +12,6 @@
       "require": "./dist/ogc.umd.cjs"
     }
   },
-  "main": "./dist/index.umd.js",
   "scripts": {
     "build": "vite build",
     "build:dev": "vite build --mode development",
@@ -28,7 +27,6 @@
   "dependencies": {
     "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/log": "workspace:*",
-    "@swissgeo/shared": "workspace:*",
     "@vueuse/core": "catalog:",
     "ol": "catalog:",
     "proj4": "catalog:"
@@ -38,9 +36,6 @@
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@types/mapbox-gl": "catalog:",
-    "@vitejs/plugin-vue": "catalog:",
-    "@vue/compiler-dom": "catalog:",
-    "@vue/server-renderer": "catalog:",
     "@vue/test-utils": "catalog:",
     "eslint": "catalog:",
     "happy-dom": "catalog:",
@@ -48,8 +43,7 @@
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
-    "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:"
+    "vite": "catalog:"
   },
   "peerDependencies": {
     "vue": "catalog:"

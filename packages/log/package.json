@@ -20,17 +20,16 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm run type-check && pnpm run generate-types && vite build",
-    "build:dev": "pnpm run build --mode development",
-    "build:dev:watch": "pnpm run build --watch --mode development",
-    "build:int": "pnpm run build --mode integration",
-    "build:prod": "pnpm run build --mode production",
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "build:dev:watch": "vite build --watch --mode development",
+    "build:int": "vite build --mode integration",
+    "build:prod": "vite build --mode production",
     "format": "prettier --check --ignore-path ../../.prettierignore .",
     "format:write": "prettier --write --ignore-path ../../.prettierignore .",
     "generate-types": "tsc --declaration",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "prepare": "pnpm run build",
     "type-check": "tsc -p tsconfig.json"
   },
   "devDependencies": {

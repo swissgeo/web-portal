@@ -1,7 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { execSync } from "node:child_process";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
-import vueDevTools from "vite-plugin-vue-devtools";
 
 function getGitCommit() {
   try {
@@ -36,14 +34,13 @@ export default defineNuxtConfig({
     },
   },
   compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
+  devtools: { enabled: isDevelopment },
   dev: isDevelopment,
   build: {
     transpile: [],
   },
   modules: [
     "@nuxt/eslint",
-    "@nuxt/image",
     "@nuxt/test-utils",
     "@nuxt/test-utils/module",
     "@pinia/nuxt",
@@ -63,7 +60,6 @@ export default defineNuxtConfig({
     client: isDevelopment,
   },
   vite: {
-    plugins: [vueDevTools() as never, nodePolyfills() as never],
     build: {
       minify: isDevelopment ? false : "terser",
       sourcemap: isDevelopment,

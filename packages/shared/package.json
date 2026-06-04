@@ -8,7 +8,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.es.js"
+      "import": "./dist/shared.js"
     },
     "./ambient": {
       "types": "./dist/ambient/index.d.ts"
@@ -18,8 +18,7 @@
     },
     "./livingdocs": {
       "types": "./dist/livingdocs/index.d.ts",
-      "import": "./dist/index.es.js",
-      "default": "./dist/index.es.js"
+      "import": "./dist/shared.js"
     },
     "./ogc": {
       "types": "./dist/ogc/index.d.ts"
@@ -46,22 +45,18 @@
     "test:unit": "vitest run",
     "type-check": "tsc"
   },
-  "dependencies": {
-    "nuxt": "catalog:"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
-    "@types/mapbox-gl": "catalog:",
-    "@vitejs/plugin-vue": "catalog:",
     "eslint": "catalog:",
+    "nuxt": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
-    "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:"
+    "vite": "catalog:"
   },
   "peerDependencies": {
     "ol": "catalog:",

@@ -3,7 +3,6 @@ import { resolve } from "path";
 import dts from "unplugin-dts/vite";
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 import { getBaseBuildConfig } from "../../base.vite.config";
 
@@ -13,8 +12,8 @@ export default defineConfig(({ mode }) => {
       ...getBaseBuildConfig(mode),
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
-        fileName: (format) => `index.${format}.js`,
         name: "@swissgeo/elevation-profile",
+        formats: ["es"],
       },
       rollupOptions: {
         external: [
@@ -25,12 +24,6 @@ export default defineConfig(({ mode }) => {
           "proj4",
           /^ol(\/|$)/,
         ],
-        output: {
-          exports: "named",
-          globals: {
-            vue: "Vue",
-          },
-        },
       },
     },
     resolve: {
@@ -39,7 +32,6 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
-      tsconfigPaths(),
       vue(),
       dts({
         bundleTypes: true,

@@ -1,4 +1,4 @@
-import type { Dimension, Layer } from "@swissgeo/layers";
+import type { Layer } from "@swissgeo/layers";
 
 import {
   ALL_YEARS_TIMESTAMP,
@@ -9,8 +9,8 @@ import {
 
 export { convertYearToTimestamp, getYearFromGeoadminValue };
 
-// FIXME: This type will move to @swissgeo/shared — see https://github.com/swissgeo/web-portal/pull/62
-export type LayerWithTime = Layer & { dimensions: { time: Dimension } };
+// use the most narrow type needed for this to work
+export type LayerWithTime = Pick<Layer, "dimensions" | "uuid">;
 
 /**
  * Create two sets with values that occur in the layers with timestamps

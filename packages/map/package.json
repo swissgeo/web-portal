@@ -29,7 +29,6 @@
     "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
-    "@swissgeo/ogc": "workspace:*",
     "@swissgeo/shared": "workspace:*",
     "@turf/turf": "catalog:",
     "@types/mapbox-gl": "catalog:",
@@ -52,12 +51,11 @@
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
     "vue-tsc": "catalog:"
   },
   "peerDependencies": {
+    "@lucide/vue": "catalog:",
     "@vueuse/core": "catalog:",
-    "lucide-vue-next": "catalog:",
     "vue": "catalog:",
     "vue-i18n": "catalog:"
   },

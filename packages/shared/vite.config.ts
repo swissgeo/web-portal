@@ -1,8 +1,7 @@
-import vue from "@vitejs/plugin-vue";
+import { resolve } from "path";
 import dts from "unplugin-dts/vite";
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 import { getBaseBuildConfig } from "../../base.vite.config";
 export default defineConfig(({ mode }) => {
@@ -10,30 +9,20 @@ export default defineConfig(({ mode }) => {
     build: {
       ...getBaseBuildConfig(mode),
       lib: {
-        entry: [fileURLToPath(new URL("./src/index.ts", import.meta.url))],
-        fileName: (format) => `index.${format}.js`,
+        entry: resolve(__dirname, "src/index.ts"),
         formats: ["es"],
         name: "@swissgeo/shared",
       },
       rollupOptions: {
-        external: ["vue", "ol"],
-        output: {
-          exports: "named",
-          globals: {
-            vue: "Vue",
-          },
-        },
+        external: ["nuxt", "@swissgeo/numbers", "vue"],
       },
     },
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
-        "~": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
     plugins: [
-      tsconfigPaths(),
-      vue(),
       dts({
         beforeWriteFile: (filePath, content) => {
           const normalizedPath = filePath.replace(/\\/g, "/");
@@ -47,16 +36,10 @@ export default defineConfig(({ mode }) => {
           };
         },
         copyDtsFiles: true,
-        cleanVueFileName: true,
         include: [
           fileURLToPath(new URL("./src", import.meta.url)),
           fileURLToPath(new URL("./types", import.meta.url)),
         ],
-        insertTypesEntry: true,
-        outDirs: [fileURLToPath(new URL("./dist", import.meta.url))],
-        tsconfigPath: fileURLToPath(
-          new URL("./tsconfig.json", import.meta.url),
-        ),
       }),
     ],
   };

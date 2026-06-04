@@ -37,8 +37,7 @@
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
-    "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:"
+    "vite": "catalog:"
   },
   "peerDependencies": {
     "@vueuse/core": "catalog:",

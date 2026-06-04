@@ -7,13 +7,12 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.es.js"
+      "import": "./dist/elevation-profile.js"
     },
     "./stylesheet": [
       "./dist/elevation-profile.css"
     ]
   },
-  "main": "src/index.ts",
   "scripts": {
     "build": "vite build",
     "build:dev": "vite build --mode development",
@@ -49,7 +48,6 @@
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
     "vitest": "catalog:",
     "vue-tsc": "catalog:"
   },

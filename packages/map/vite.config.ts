@@ -3,7 +3,6 @@ import { resolve } from "path";
 import dts from "unplugin-dts/vite";
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 import { getBaseBuildConfig } from "../../base.vite.config";
 
@@ -14,15 +13,17 @@ export default defineConfig(({ mode }) => {
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
         name: "@swissgeo/map",
+        formats: ["es"],
       },
       rollupOptions: {
-        external: ["vue", "pinia", "lucide-vue-next", "@swissgeo/log"],
-        output: {
-          exports: "named",
-          globals: {
-            vue: "Vue",
-          },
-        },
+        external: [
+          "vue",
+          "pinia",
+          "@lucide/vue",
+          "@swissgeo/log",
+          "vue-i18n",
+          "@vueuse/core",
+        ],
       },
     },
     resolve: {
@@ -32,7 +33,6 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
-      tsconfigPaths(),
       vue(),
       dts({
         bundleTypes: true,

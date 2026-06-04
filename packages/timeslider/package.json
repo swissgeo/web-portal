@@ -9,13 +9,12 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.es.js"
+      "import": "./dist/timeslider.js"
     },
     "./stylesheet": [
       "./dist/timeslider.css"
     ]
   },
-  "main": "index.ts",
   "scripts": {
     "build": "vite build",
     "build:dev": "vite build --mode development",
@@ -25,7 +24,7 @@
     "format:write": "prettier --write --ignore-path ../../.prettierignore .",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "test": "vitest run",
+    "test:unit": "vitest run",
     "type-check": "vue-tsc"
   },
   "dependencies": {
@@ -44,13 +43,12 @@
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
     "vitest": "catalog:",
     "vue-tsc": "catalog:"
   },
   "peerDependencies": {
+    "@lucide/vue": "catalog:",
     "@vueuse/core": "catalog:",
-    "lucide-vue-next": "catalog:",
     "vue": "catalog:",
     "vue-i18n": "catalog:"
   },

@@ -17,9 +17,9 @@
     }
   },
   "scripts": {
-    "build": "pnpm run type-check && pnpm run generate-types && vite build",
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
     "generate-types": "tsc --declaration",
-    "prepare": "pnpm run build",
     "type-check": "tsc -p tsconfig.json"
   },
   "devDependencies": {

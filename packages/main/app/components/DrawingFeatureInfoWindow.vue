@@ -3,12 +3,12 @@ import type { DrawingFeatureKind, TextAnchor } from "@swissgeo/drawing";
 import type { Feature } from "ol";
 import type { Geometry } from "ol/geom";
 
+import { Eye, EyeOff, MapPin, Trash2, Type, X } from "@lucide/vue";
 import {
   MARKER_ICONS,
   resolveFeatureId,
   useDrawingStore,
 } from "@swissgeo/drawing";
-import { Eye, EyeOff, MapPin, Trash2, Type, X } from "lucide-vue-next";
 import {
   computed,
   nextTick,

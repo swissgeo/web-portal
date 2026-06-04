@@ -14,7 +14,7 @@ import {
   lineString,
   points,
 } from "@turf/turf";
-import { sortBy } from "lodash";
+import { sortBy } from "es-toolkit/compat";
 
 import type { SingleCoordinate } from "@/coordinatesUtils";
 import type { CoordinatesChunk } from "@/proj/types";
@@ -42,6 +42,7 @@ function reassembleLineSegments(
   let candidateFeatures = path.features;
   const orderedFeatures: Feature<LineString, GeoJsonProperties>[] = [];
   while (candidateFeatures.length > 0) {
+    // TODO according to the es-toolkit docs, this should be replaced by the native Array.prototype.sort
     candidateFeatures = sortBy(candidateFeatures, (f) => {
       if (f.geometry && f.geometry.coordinates && f.geometry.coordinates[0]) {
         return distance(origin, f.geometry.coordinates[0]);

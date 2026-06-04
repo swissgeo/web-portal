@@ -10,14 +10,17 @@ const mapViewStore = useMapViewStore();
 const layerStore = useLayerStore();
 const sidebarStore = useSidebarStore();
 
-const timeLayers = computed((): MapLayer[] =>
+export type LayerWithTime = MapLayer & { dimensions: { time: Dimension } };
+
+const timeLayers = computed((): LayerWithTime[] =>
   mapViewStore.mapLayers.filter((layer: MapLayer) => isTimeLayer(layer)),
 );
 
 // TODO HERE: give a MAPLAYER and do some mixing to get dimensions from
-function isTimeLayer(mapLayer: MapLayer) {
+function isTimeLayer(mapLayer: MapLayer): mapLayer is LayerWithTime {
   return !!layerStore.getLayer(mapLayer.uuid)?.dimensions?.time;
 }
+
 function onClose() {
   mapViewStore.closeTimeSlider();
 }
