@@ -4,6 +4,9 @@ packages:
   - support/service-shortlink-mock/
   - tests/integration
 
+overrides:
+  vue: ^3.5.35
+
 allowBuilds:
   "@parcel/watcher": false
   esbuild: false
