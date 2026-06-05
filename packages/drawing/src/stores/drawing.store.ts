@@ -80,21 +80,6 @@ export const useDrawingStore2 = defineStore("drawing2", () => {
   const focusedFeature = ref<Feature<Geometry> | null>(null);
   const focusMode = ref<FocusMode>("none");
 
-  /**
-   * When a feature is selected, set it as the focused feature and update the focus mode to "read".
-   * When the selection is cleared, reset the focused feature and set the focus mode to "none".
-   */
-  selectInteractions.on("select", (event) => {
-    const selectedFeatures = event.target.getFeatures().getArray();
-    if (selectedFeatures.length > 0) {
-      focusedFeature.value = selectedFeatures[0];
-      focusMode.value = "read";
-    } else {
-      focusedFeature.value = null;
-      focusMode.value = "none";
-    }
-  });
-
   return {
     focusedFeature: focusedFeature,
     focusMode: focusMode,
