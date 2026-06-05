@@ -42,3 +42,13 @@ export declare const IconButton: DefineComponent<any, any, any>;
 export declare const ContentButton: DefineComponent<any, any, any>;
 export declare const SearchButton: DefineComponent<any, any, any>;
 export declare const SideBar: DefineComponent<any, any, any>;
+
+declare global {
+  // TODO there should be a better way than this, decoupling the package from the need for useRuntimeConfig
+  // alltogether IMO
+  const useRuntimeConfig: () => {
+    public: {
+      ogcApiEndpoint: string;
+    };
+  };
+}

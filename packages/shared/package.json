@@ -10,12 +10,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/shared.js"
     },
-    "./ambient": {
-      "types": "./dist/ambient/index.d.ts"
-    },
-    "./api": {
-      "types": "./dist/api/index.d.ts"
-    },
     "./language": {
       "types": "./dist/language.d.ts"
     },
