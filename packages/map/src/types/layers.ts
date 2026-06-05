@@ -1,7 +1,7 @@
-import type { GeoAdminGeoJSONStyleDefinition } from "@swissgeo/shared/geojson";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 import type { Component } from "vue";
 
+import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 import type { FeatureCollectionWithCRS } from "@/utils/geoJsonUtils";
 
 /**

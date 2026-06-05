@@ -1,4 +1,4 @@
-import type { Lang } from "@swissgeo/shared/Language";
+import type { Lang } from "@swissgeo/shared/language";
 
 export type Slug = string;
 export type DocumentId = string;

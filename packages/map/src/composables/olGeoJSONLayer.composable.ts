@@ -12,6 +12,7 @@ import proj4 from "proj4";
 import { computed, ref, watch } from "vue";
 
 import type { GeoJSONLayer } from "@/types";
+import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
@@ -60,7 +61,9 @@ export default function useOlGeoJSONLayer(
       titleColor: LogPreDefinedColor.Yellow,
       messages: ["Setting geoJSON style", geoJsonStyle.value],
     });
-    const styleFunction = new OlStyleForPropertyValue(geoJsonStyle.value);
+    const styleFunction = new OlStyleForPropertyValue(
+      geoJsonStyle.value as GeoAdminGeoJSONStyleDefinition,
+    );
 
     if (olLayer.value) {
       olLayer.value.setStyle((feature: FeatureLike, res) => {

@@ -12,7 +12,6 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
 export const useSearchStore = defineStore("search", () => {
-  // TODO there should be a better way than this, decoupling the package from the need for nuxt
   const runtimeConfig = useRuntimeConfig();
   // State
   const query = ref("");
