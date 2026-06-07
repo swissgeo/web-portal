@@ -59,7 +59,7 @@ catalog:
   fflate: ^0.8.2
   geojson: ^0.5.0
   globals: ^17.0.0
-  happy-dom: 20.10.1
+  happy-dom: 20.9.0
   msw: ^2.13.2
   nuxt: ^4.4.6
   ol: ^10.9.0
@@ -83,7 +83,7 @@ catalog:
   turbo: ^2.9.15
   typescript: ^5.9.3
   typescript-eslint: ^8.46.1
-  unplugin-dts: 1.0.2
+  unplugin-dts: 1.0.0-beta.6
   vite: ^7.3.3
   vite-plugin-vue-devtools: ^8.0.1
   vitest: ^4.1.7
