@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import DrawingPanel from "~/components/debug/DrawingPanel.vue";
+import { useMapLibreGeoJsonDemo } from "~/composables/useMapLibreGeoJsonDemo";
+
+const { addDemoLayer: addMapLibreGeoJsonDemo } = useMapLibreGeoJsonDemo();
 
 const isLayersPanelOpen = ref(false);
 const isImportPanelOpen = ref(false);
@@ -87,6 +90,12 @@ function togglePrintPanel() {
       </UButton>
       <UButton @click="togglePrintPanel">
         {{ $t("debug.openPrintPanel") }}
+      </UButton>
+      <UButton
+        data-testid="debug-add-maplibre-geojson-demo"
+        @click="addMapLibreGeoJsonDemo"
+      >
+        Add MapLibre GeoJSON demo
       </UButton>
     </div>
   </div>
