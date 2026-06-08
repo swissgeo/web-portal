@@ -30,6 +30,7 @@
     "@swissgeo/log": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
     "@swissgeo/shared": "workspace:*",
+    "@swissgeo/timeslider": "workspace:*",
     "@turf/turf": "catalog:",
     "@types/mapbox-gl": "catalog:",
     "fflate": "catalog:",

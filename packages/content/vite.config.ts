@@ -1,4 +1,5 @@
 import vue from "@vitejs/plugin-vue";
+import { resolve } from "path";
 import dts from "unplugin-dts/vite";
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
@@ -10,7 +11,7 @@ export default defineConfig(({ mode }) => {
     build: {
       ...getBaseBuildConfig(mode),
       lib: {
-        entry: [fileURLToPath(new URL("./src/index.ts", import.meta.url))],
+        entry: resolve(__dirname, "src/index.ts"),
         name: "@swissgeo/content",
         formats: ["es"],
       },
@@ -27,7 +28,6 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
-        "~": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
     plugins: [

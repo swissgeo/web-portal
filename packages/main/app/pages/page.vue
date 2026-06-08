@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { MenuTree, Page } from "@swissgeo/shared/api";
+import type { MenuTree, Page } from "@swissgeo/content";
 import type { RouteLocationNormalizedLoadedGeneric } from "vue-router";
 
 import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";

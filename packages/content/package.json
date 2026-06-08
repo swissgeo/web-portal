@@ -23,7 +23,8 @@
     "type-check": "vue-tsc"
   },
   "dependencies": {
-    "@swissgeo/shared": "workspace:*"
+    "@swissgeo/shared": "workspace:*",
+    "es-toolkit": "catalog:"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",

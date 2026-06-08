@@ -1,10 +1,10 @@
-import type { Paragraph } from "../types/livingdocs/Paragraph";
+import type { Paragraph } from "./types/Paragraph";
 import type {
   ContentItem,
   Image,
   LeadContentPageWithCheckbox,
-} from "../types/livingdocs/Publication";
-import type { TitleComponent } from "../types/livingdocs/Title";
+} from "./types/Publication";
+import type { TitleComponent } from "./types/Title";
 
 export function isLeadContentPageWithCheckbox(
   item: ContentItem,

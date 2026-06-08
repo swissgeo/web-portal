@@ -16,11 +16,8 @@ import {
 import type { LayerWithTime } from "./timeSliderUtils";
 
 import TimeSliderBar from "./TimeSliderBar.vue";
-import {
-  convertYearToTimestamp,
-  getYearFromGeoadminValue,
-  getYearsWithData,
-} from "./timeSliderUtils";
+import { getYearsWithData } from "./timeSliderUtils";
+import { convertYearToTimestamp, getYearFromGeoadminValue } from "./timeUtils";
 
 const { layers } = defineProps<{
   layers: LayerWithTime[];

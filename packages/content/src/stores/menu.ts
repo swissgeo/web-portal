@@ -1,8 +1,9 @@
-import type { MenuTree } from "@swissgeo/shared/api";
 import type { Lang } from "@swissgeo/shared/language";
 
 import { defineStore } from "pinia";
 import { ref } from "vue";
+
+import type { MenuTree } from "@/api";
 
 export type MenuIds = {
   readonly About: number;
@@ -100,6 +101,27 @@ export const useMenuStore = defineStore("menuStore", () => {
     }
 
     return null;
+  }
+
+  // mocking the runtimeconfig here
+  // it was used from global state, and to satisfy the type-checker the shared package
+  // contained a hacky way of exposing some nuxt types for other packages. I don't think
+  // we should do it that way but instead maybe pass in the data from `main`
+  // Since we're not doing any CMS content rendering just right now but wanna keep the code,
+  // I'm mocking this here to satisfy the type checker (these specific variables in runtimeConfig have been removed anyway!)
+  function useRuntimeConfig() {
+    return {
+      public: {
+        aboutMenu: {
+          id: 1,
+          translationKey: "a",
+        },
+        knowledgeMenu: {
+          id: 2,
+          translationKey: "b",
+        },
+      },
+    };
   }
 
   function _initMenuIds() {

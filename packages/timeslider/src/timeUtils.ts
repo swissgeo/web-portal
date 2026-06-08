@@ -1,6 +1,17 @@
 import { isTimestampYYYYMMDD } from "@swissgeo/numbers";
 
-import { ALL_YEARS_TIMESTAMP } from "@/globals";
+// Time constants
+/**
+ * "Timestamp" to describe "Every" period in which the data is available, and the intention to show them all at the same time (for example: accidents).
+ */
+export const ALL_YEARS_TIMESTAMP: string = "all";
+
+/**
+ * Timestamp to describe "current" or latest available data for a time enabled WMTS layer (and also
+ * is the default value to give any WMTS layer that is not time enabled, as this timestamp is
+ * required in the URL scheme)
+ */
+export const CURRENT_YEAR_TIMESTAMP: string = "current";
 
 /**
  * Extracts the year (as a 4-character string) from a geoadmin timestamp value.

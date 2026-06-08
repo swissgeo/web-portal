@@ -4,6 +4,13 @@
     "src/**/*.ts",
     "src/**/*.vue",
     "vite.config.ts",
-    "../../base.vite.config"
-  ]
+    "../../base.vite.config.ts"
+  ],
+  "compilerOptions": {
+    "rootDir": "../../",
+    "types": ["vue"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }

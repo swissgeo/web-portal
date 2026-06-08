@@ -1,4 +1,4 @@
-import type { LanguageReference, Page } from "@swissgeo/shared/api";
+import type { LanguageReference, Page } from "@swissgeo/content";
 import type { RouteRecordRaw } from "vue-router";
 
 import { useRouter } from "#imports";

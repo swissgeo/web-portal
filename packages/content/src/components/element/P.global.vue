@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Paragraph } from "@swissgeo/shared/livingdocs";
+import type { Paragraph } from "@/types";
 
 const { data } = defineProps<{ data: Paragraph }>();
 </script>

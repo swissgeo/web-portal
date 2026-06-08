@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { TitleComponent } from "@swissgeo/shared/livingdocs";
+import type { TitleComponent } from "@/types";
 
 const { data } = defineProps<{ data: TitleComponent }>();
 </script>

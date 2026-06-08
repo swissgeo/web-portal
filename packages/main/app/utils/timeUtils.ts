@@ -4,7 +4,7 @@ import type {
 } from "@swissgeo/ogc";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import { ALL_YEARS_TIMESTAMP } from "@swissgeo/shared";
+import { ALL_YEARS_TIMESTAMP } from "@swissgeo/timeslider";
 
 /**
  * Timestamp to describe "current" or latest available data for a time enabled WMTS layer (and also

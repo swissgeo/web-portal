@@ -1,6 +1,3 @@
-// Search store for web-poc-portal
-// Adapted from web-mapviewer search store
-
 import type { DatasetCollection } from "@swissgeo/ogc";
 import type { SearchResult } from "@swissgeo/search";
 
@@ -33,7 +30,7 @@ export const useSearchStore = defineStore("search", () => {
     }
 
     try {
-      const baseUrl = runtimeConfig.public.ogcApiEndpoint;
+      const baseUrl = runtimeConfig.public.ogcApiEndpoint as string;
 
       // Build URL with language parameter
       const url = new URL(baseUrl);

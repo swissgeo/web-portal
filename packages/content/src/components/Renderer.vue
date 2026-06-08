@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { pascalCase } from "es-toolkit/string";
+import { computed, resolveComponent } from "vue";
 
 const { containers } = defineProps<{ containers: unknown[] }>();
 

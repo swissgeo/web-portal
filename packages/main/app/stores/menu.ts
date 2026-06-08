@@ -1,4 +1,4 @@
-import type { MenuTree } from "@swissgeo/shared/api";
+import type { MenuTree } from "@swissgeo/content";
 import type { Lang } from "@swissgeo/shared/language";
 
 import { defineStore } from "pinia";

@@ -1,10 +1,3 @@
-import type {
-  GeoAdminGeoJSONStyleType,
-  GeoAdminGeoJSONRangeDefinition,
-  GeoAdminGeoJSONVectorOptions,
-  GeoAdminGeoJSONStyleDefinition,
-  GeoAdminGeoJSONStyleSingle,
-} from "@swissgeo/shared/geojson";
 import type { Feature } from "ol";
 import type { SimpleGeometry } from "ol/geom";
 import type { Options as RegularShapeOptions } from "ol/style/RegularShape";
@@ -28,6 +21,14 @@ import {
   Style,
   Text,
 } from "ol/style";
+
+import type {
+  GeoAdminGeoJSONStyleType,
+  GeoAdminGeoJSONRangeDefinition,
+  GeoAdminGeoJSONVectorOptions,
+  GeoAdminGeoJSONStyleDefinition,
+  GeoAdminGeoJSONStyleSingle,
+} from "./geojson";
 
 // TODO I don't know enough about styles to do this right now...
 

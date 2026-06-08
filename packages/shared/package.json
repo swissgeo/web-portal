@@ -10,19 +10,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/shared.js"
     },
-    "./ambient": {
-      "types": "./dist/ambient/index.d.ts"
-    },
-    "./api": {
-      "types": "./dist/api/index.d.ts"
-    },
-    "./livingdocs": {
-      "types": "./dist/livingdocs/index.d.ts",
-      "import": "./dist/shared.js"
-    },
-    "./ogc": {
-      "types": "./dist/ogc/index.d.ts"
-    },
     "./language": {
       "types": "./dist/language.d.ts"
     },
@@ -42,7 +29,6 @@
     "format:write": "prettier --write --ignore-path ../../.prettierignore .",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "test:unit": "vitest run",
     "type-check": "tsc"
   },
   "dependencies": {},
