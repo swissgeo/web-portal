@@ -23,3 +23,5 @@ export { default as OpenLayersDrawingLayer } from "@/components/OpenLayersDrawin
 
 // Layer matching
 export { isDrawingLayer } from "@/utils/isDrawingLayer";
+
+export { useDrawing } from "@/composables/useDrawing.composable";

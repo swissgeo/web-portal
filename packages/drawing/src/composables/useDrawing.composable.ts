@@ -3,9 +3,10 @@ import type { Geometry } from "ol/geom";
 
 import { useMap } from "@swissgeo/map";
 import { storeToRefs } from "pinia";
+import { computed, readonly, ref, watch } from "vue";
 
 import { useDrawingStore2 } from "../stores/drawing.store";
-import { computed, readonly, ref } from "vue";
+import { useLayerStore } from "@swissgeo/layers";
 
 /**
  * Type to describe the metrics related to a Point feature
@@ -62,6 +63,46 @@ export function useDrawing() {
     selectInteractions,
   } = drawingStore;
   const { olMap, isMapLoaded } = useMap();
+  const layerStore = useLayerStore();
+  const allDrawInteractions = [
+    drawPointInteraction,
+    drawLineStringInteraction,
+    drawPolygonInteraction,
+    drawCircleInteraction,
+  ];
+
+  console.log("DEBUG");
+
+  // Adding the drawing layer to the map
+  watch(
+    isMapLoaded,
+    (loaded) => {
+      if (!loaded) {
+        return;
+      }
+
+      if (olMap.value?.getAllLayers().includes(drawingVectorLayer)) {
+        return;
+      }
+
+      console.log("adding drawing layer...");
+
+      olMap.value?.addLayer(drawingVectorLayer);
+
+      // TODO: check if the "kml" type is appropriate
+      layerStore.addLayer({
+        uuid: drawingVectorLayer.get("uuid"),
+        humanId: drawingVectorLayer.get("humanId"),
+        type: "kml",
+        isLoading: false,
+        info: {
+          displayName: "Drawing layer foo bar",
+          abstract: "Some drawings",
+        },
+      });
+    },
+    { immediate: true },
+  );
 
   /**
    * Get the type of the currently focused feature, if any.
@@ -99,33 +140,6 @@ export function useDrawing() {
    * As soon as the drawing has started, the feature being created takes the seat as focusedFeature
    * and the focus mode is set to "create".
    */
-  drawPointInteraction.on("drawstart", (event) => {
-    focusedFeature.value = event.feature;
-    focusMode.value = "create";
-  });
-
-  /**
-   * As soon as the drawing has started, the feature being created takes the seat as focusedFeature
-   * and the focus mode is set to "create".
-   */
-  drawLineStringInteraction.on("drawstart", (event) => {
-    focusedFeature.value = event.feature;
-    focusMode.value = "create";
-  });
-
-  /**
-   * As soon as the drawing has started, the feature being created takes the seat as focusedFeature
-   * and the focus mode is set to "create".
-   */
-  drawPolygonInteraction.on("drawstart", (event) => {
-    focusedFeature.value = event.feature;
-    focusMode.value = "create";
-  });
-
-  /**
-   * As soon as the drawing has started, the feature being created takes the seat as focusedFeature
-   * and the focus mode is set to "create".
-   */
   drawCircleInteraction.on("drawstart", (event) => {
     focusedFeature.value = event.feature;
     focusMode.value = "create";
@@ -146,6 +160,39 @@ export function useDrawing() {
     }
   });
 
+  // When a feature is finished to be created or modified (tyipically with a double-click),
+  // the focus is then switched to "read"
+  allDrawInteractions.forEach((interaction) => {
+    /**
+     * As soon as the drawing has started, the feature being created takes the seat as focusedFeature
+     * and the focus mode is set to "create".
+     */
+    interaction.on("drawstart", (event) => {
+      focusedFeature.value = event.feature;
+      focusMode.value = "create";
+    });
+
+    /**
+     * When a drawing ends (in create mode), the interactions are all disabled.
+     */
+    interaction.on("drawend", () => {
+      console.log("EVENT: drawend");
+      removeFocus();
+
+      disableAllInteractionWithDelay();
+    });
+
+    // interaction.on("modifyend", () => {
+    //   console.log("EVENT: modifyend");
+    //   focusMode.value = "read";
+    // });
+
+    // interaction.on("drawabort", () => {
+    //   console.log("EVENT: drawabort");
+    //   focusMode.value = "none";
+    // });
+  });
+
   /**
    * Disables all editing and select interactions on the map
    */
@@ -161,6 +208,12 @@ export function useDrawing() {
     olMap.value.removeInteraction(drawCircleInteraction);
     olMap.value.removeInteraction(snapInteraction);
     olMap.value.removeInteraction(selectInteractions);
+  }
+
+  function disableAllInteractionWithDelay() {
+    setTimeout(() => {
+      disableAllInteractions();
+    }, 50);
   }
 
   /**
@@ -222,6 +275,7 @@ export function useDrawing() {
 
     disableAllInteractions();
     removeFocus();
+    focusMode.value = "create";
 
     // Note: the focusedFeature and focus mode will be set in the drawstart event listener of each draw interaction (above)
     switch (geometryType) {
@@ -238,7 +292,6 @@ export function useDrawing() {
         olMap.value.addInteraction(drawCircleInteraction);
         break;
     }
-
     olMap.value.addInteraction(snapInteraction);
   }
 
@@ -265,5 +318,7 @@ export function useDrawing() {
     removeFocusedFeature,
     focusedFeatureType: readonly(focusedFeatureType),
     numberOfFeatures: readonly(numberOfFeatures),
+    focusMode: readonly(focusMode),
+    focusedFeature: readonly(focusedFeature),
   };
 }

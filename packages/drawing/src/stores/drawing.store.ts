@@ -1,6 +1,7 @@
 import type Feature from "ol/Feature";
 import type { Geometry } from "ol/geom";
 
+import { DRAWING_LAYER_ID } from "@swissgeo/shared";
 import Draw from "ol/interaction/Draw";
 import Modify from "ol/interaction/Modify";
 import Select from "ol/interaction/Select.js";
@@ -18,6 +19,11 @@ export const useDrawingStore2 = defineStore("drawing2", () => {
   const drawingVectorSource = markRaw(new VectorSource());
   const drawingVectorLayer = markRaw(
     new VectorLayer({
+      // These properties are used to identified the layer on the app logic (eg. layer tree)
+      properties: {
+        humanId: DRAWING_LAYER_ID,
+        uuid: crypto.randomUUID(),
+      },
       source: drawingVectorSource,
 
       // Temporary style
