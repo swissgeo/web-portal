@@ -71,7 +71,7 @@ export const getInfoFromDataset = (dataset: Dataset): LayerInfo => {
     };
   }
 
-  const contactOrganisation = properties.contacts?.[0]?.organisation?.trim();
+  const contactOrganisation = properties.contacts?.[0]?.organization?.trim();
   const attributionName =
     contactOrganisation && contactOrganisation.length > 0
       ? contactOrganisation

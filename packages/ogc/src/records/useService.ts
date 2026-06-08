@@ -94,5 +94,5 @@ export function extractServiceUrl(
 }
 
 export const getDataServiceLinks = (links: Link[]): Link[] => {
-  return getLinksByRel(links, "service");
+  return getLinksByRel(links, "dataservice");
 };

@@ -1,60 +1,99 @@
 {
-  "id": "ch.bafu.schutzgebiete-luftfahrt",
-  "itemType": "record",
-  "links": [],
-  "records": [
+  "type": "FeatureCollection",
+  "features": [
     {
       "id": "ch.bafu.schutzgebiete-luftfahrt:wmts",
       "links": [
         {
-          "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/swissgeo.catalog/items/ch.bafu.schutzgebiete-luftfahrt?language=en",
-          "hreflang": "en",
+          "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items/ch.bafu.schutzgebiete-luftfahrt:wmts?language=en",
+          "rel": "self",
+          "title": "This Record",
+          "type": "application/json",
+          "hreflang": "en"
+        },
+        {
+          "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions?language=en",
+          "rel": "collection",
+          "title": "Link to the collection this item belongs to",
+          "type": "application/json",
+          "hreflang": "en"
+        },
+        {
+          "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/swissgeo.catalog/items/ch.bafu.schutzgebiete-luftfahrt?language=en",
           "rel": "dataset",
-          "title": "Dataset Record",
-          "type": "application/json"
+          "title": "Link to parent dataset ch.bafu.schutzgebiete-luftfahrt",
+          "type": "application/json",
+          "hreflang": "en"
         },
         {
-          "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wmts",
-          "rel": "service"
-        },
-        {
-          "href": "https://services.dev.sgdi.tech/api/oas/v0/styles/ch.bafu.schutzgebiete-luftfahrt:wmts:style",
-          "rel": "styledby",
-          "title": "Style Hints for WMTS Raster Layer (Maplibre Style Spec)",
+          "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/geoadmin.services/items/wmts-geoadminch",
+          "rel": "dataservice",
           "type": "application/json"
         }
       ],
+      "linkTemplates": [],
+      "type": "Feature",
       "properties": {
-        "protocol": "OGC:WMTS",
-        "title": "OGC Web Map Tile Service (WMTS)",
-        "type": "Distribution"
-      },
-      "type": "Feature"
+        "type": "Distribution",
+        "title": "WMTS Layer",
+        "protocol": "ogc:wmts",
+        "externalIds": ["ch.bafu.schutzgebiete-luftfahrt"]
+      }
     },
     {
       "id": "ch.bafu.schutzgebiete-luftfahrt:wms",
       "links": [
         {
-          "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/swissgeo.catalog/items/ch.bafu.schutzgebiete-luftfahrt?language=en",
-          "hreflang": "en",
-          "rel": "dataset",
-          "title": "Dataset Record",
-          "type": "application/json"
+          "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items/ch.bafu.schutzgebiete-luftfahrt:wms?language=en",
+          "rel": "self",
+          "title": "This Record",
+          "type": "application/json",
+          "hreflang": "en"
         },
         {
-          "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wms",
-          "rel": "service"
+          "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions?language=en",
+          "rel": "collection",
+          "title": "Link to the collection this item belongs to",
+          "type": "application/json",
+          "hreflang": "en"
+        },
+        {
+          "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/swissgeo.catalog/items/ch.bafu.schutzgebiete-luftfahrt?language=en",
+          "rel": "dataset",
+          "title": "Link to parent dataset ch.bafu.schutzgebiete-luftfahrt",
+          "type": "application/json",
+          "hreflang": "en"
+        },
+        {
+          "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/geoadmin.services/items/wms-geoadminch",
+          "rel": "dataservice",
+          "type": "application/json"
         }
       ],
+      "linkTemplates": [],
+      "type": "Feature",
       "properties": {
-        "protocol": "OGC:WMS",
-        "title": "OGC Web Map Service (WMS)",
-        "type": "Distribution"
-      },
-      "type": "Feature"
+        "type": "Distribution",
+        "title": "WMS Layer",
+        "protocol": "ogc:wms",
+        "externalIds": ["ch.bafu.schutzgebiete-luftfahrt"]
+      }
     }
   ],
-  "recordsArrayName": "records",
-  "title": "Distributions for ch.bafu.schutzgebiete-luftfahrt",
-  "type": "Collection"
+  "links": [
+    {
+      "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items?language=en",
+      "rel": "self",
+      "title": "Link to this resource",
+      "type": "application/json",
+      "hreflang": "en"
+    },
+    {
+      "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions?language=en",
+      "rel": "collection",
+      "title": "Link to the collection these items belong to",
+      "type": "application/json",
+      "hreflang": "en"
+    }
+  ]
 }

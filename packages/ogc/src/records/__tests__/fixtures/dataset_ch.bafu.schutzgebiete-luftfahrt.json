@@ -2,33 +2,36 @@
   "id": "ch.bafu.schutzgebiete-luftfahrt",
   "links": [
     {
-      "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/swissgeo.catalog/items/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/swissgeo.catalog/items/ch.bafu.schutzgebiete-luftfahrt?language=en",
       "rel": "self",
-      "title": "This Record"
+      "title": "This Record",
+      "type": "application/json",
+      "hreflang": "en"
     },
     {
-      "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/swissgeo.catalog?language=en",
+      "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/swissgeo.catalog?language=en",
       "rel": "collection",
-      "title": "Swissgeo Catalog"
+      "title": "Link to the collection this item belongs to",
+      "type": "application/json",
+      "hreflang": "en"
     },
     {
-      "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
       "rel": "distributions",
-      "title": "Distributions"
-    },
-    {
-      "href": "http://www.bafu.admin.ch/oekol-infrastruktur",
-      "rel": "describedby",
-      "title": "Details"
+      "title": "Distributions",
+      "type": "application/json"
     },
     {
       "href": "https://www.geocat.ch/geonetwork/srv/eng/catalog.search#/metadata/c3f513a7-f860-4894-a139-6218a9697519",
       "rel": "alternate",
-      "title": "GeoCat Metadata"
+      "title": "GeoCat Metadata",
+      "type": "application/json"
     }
   ],
+  "linkTemplates": [],
   "type": "Feature",
   "geometry": {
+    "type": "Polygon",
     "coordinates": [
       [
         [5.96, 45.82],
@@ -37,50 +40,49 @@
         [10.49, 45.82],
         [5.96, 45.82]
       ]
-    ],
-    "type": "Polygon"
+    ]
   },
   "properties": {
     "contacts": [
       {
+        "organization": "Federal Office for the Environment / Biodiversity and Landscape Division",
         "country": "CH",
-        "organisation": "Bundesamt für Umwelt BAFU",
-        "role": "dataOwner"
+        "role": "pointOfContact"
       }
     ],
-    "description": "Die Schutzgebiete der militärischen Luftfahrthinderniskarte beinhalten den Nationalpark, Hochmoore, ausgewählte Auengebiete und Flachmoore, Wasser- und Zugvogelreservate und Eidgenössische Jagdbanngebiete. Bei den Wasser- und Zugvogelreservaten wurden bei einigen Objekten mit bestehender Nutzung die Perimeter angepasst. Bei den Mooren und Auen an Seen und Flussufern wurden zudem die Perimeter mit einem Puffer von 100m versehen.",
+    "description": "The layer protected areas in the military air navigation obstacles publication1:100'000 contains the Swiss National Park, raised bogs, selected floodplains and fens, water and migrant bird reserves and Swiss game reserves.",
     "language": {
       "code": "en",
-      "dir": "ltr",
-      "name": "English"
+      "name": "English",
+      "dir": "ltr"
     },
     "languages": [
       {
-        "alternate": "German",
         "code": "de",
+        "name": "Deutsch",
         "dir": "ltr",
-        "name": "Deutsch"
+        "alternate": "German"
       },
       {
-        "alternate": "French",
         "code": "fr",
+        "name": "Français",
         "dir": "ltr",
-        "name": "Français"
+        "alternate": "French"
       },
       {
-        "alternate": "Italian",
         "code": "it",
+        "name": "Italiano",
         "dir": "ltr",
-        "name": "Italiano"
+        "alternate": "Italian"
       },
       {
         "code": "en",
-        "dir": "ltr",
-        "name": "English"
+        "name": "English",
+        "dir": "ltr"
       }
     ],
     "preferredDistributionId": "ch.bafu.schutzgebiete-luftfahrt:wmts",
-    "title": "Schutzgebiete MIL",
+    "title": "Protected areas in the military air navigation obstacles publication",
     "type": "Dataset"
   }
 }

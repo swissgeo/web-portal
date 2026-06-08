@@ -19,9 +19,9 @@ const filteredAvailableLayers = computed((): Dataset[] => {
   }
 
   if (filterTerm.value === "") {
-    return availableLayers.value.records;
+    return availableLayers.value.features;
   }
-  return availableLayers.value.records.filter((layer: Dataset) =>
+  return availableLayers.value.features.filter((layer: Dataset) =>
     layer.id.includes(filterTerm.value),
   );
 });

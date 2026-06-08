@@ -2,23 +2,30 @@
   "id": "ch.swisstopo.pixelkarte-farbe",
   "links": [
     {
-      "href": "http://mock-oar.org/api/oar/v0/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
+      "href": "http://mock-oar.org/api/oar/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
       "rel": "self",
-      "title": "This Record"
+      "title": "This Record",
+      "type": "application/json",
+      "hreflang": "en"
     },
     {
-      "href": "http://mock-oar.org/api/oar/v0/collections/swissgeo.catalog?language=en",
+      "href": "http://mock-oar.org/api/oar/collections/swissgeo.catalog?language=en",
       "rel": "collection",
-      "title": "Swissgeo Catalog"
+      "title": "Link to the collection this item belongs to",
+      "type": "application/json",
+      "hreflang": "en"
     },
     {
-      "href": "http://mock-oar.org/api/oar/v0/collections/ch.swisstopo.pixelkarte-farbe?language=en",
+      "href": "http://mock-oar.org/api/oar/collections/ch.swisstopo.pixelkarte-farbe.distributions/items",
       "rel": "distributions",
-      "title": "Distributions"
+      "title": "Distributions",
+      "type": "application/json"
     }
   ],
+  "linkTemplates": [],
   "type": "Feature",
   "geometry": {
+    "type": "Polygon",
     "coordinates": [
       [
         [5.96, 45.82],
@@ -27,44 +34,54 @@
         [10.49, 45.82],
         [5.96, 45.82]
       ]
-    ],
-    "type": "Polygon"
+    ]
   },
   "properties": {
-    "contacts": [],
-    "description": "ERR:NO_DESCRIPTION",
+    "contacts": [
+      {
+        "organization": "Federal Office of Topography swisstopo",
+        "country": "CH",
+        "role": "owner"
+      },
+      {
+        "organization": "Federal Office of Topography swisstopo",
+        "country": "CH",
+        "role": "pointOfContact"
+      }
+    ],
+    "description": "swisstopo produces national maps in the scales 1:10'000 up to 1:1 Million. The layer National maps (color) combines the different maps and shows the best fitted map for each zoom level. The layer National maps (color) is used as base map in the swiss federal geoportal. It is also available as WMS and WMTS geoservices. Once a year, a copy of the WMTS tile pyramid is made available for download in JPEG format and in the Web Mercator coordinate system (EPSG:3857) up to zoom level/tile matrix 18 (0.5 m resolution).",
     "language": {
       "code": "en",
-      "dir": "ltr",
-      "name": "English"
+      "name": "English",
+      "dir": "ltr"
     },
     "languages": [
       {
-        "alternate": "German",
         "code": "de",
+        "name": "Deutsch",
         "dir": "ltr",
-        "name": "Deutsch"
+        "alternate": "German"
       },
       {
-        "alternate": "French",
         "code": "fr",
+        "name": "Français",
         "dir": "ltr",
-        "name": "Français"
+        "alternate": "French"
       },
       {
-        "alternate": "Italian",
         "code": "it",
+        "name": "Italiano",
         "dir": "ltr",
-        "name": "Italiano"
+        "alternate": "Italian"
       },
       {
         "code": "en",
-        "dir": "ltr",
-        "name": "English"
+        "name": "English",
+        "dir": "ltr"
       }
     ],
     "preferredDistributionId": "ch.swisstopo.pixelkarte-farbe:wmts",
-    "title": "National Maps (color)",
+    "title": "National maps of Switzerland (color)",
     "type": "Dataset"
   }
 }

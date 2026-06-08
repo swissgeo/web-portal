@@ -15,11 +15,11 @@ const description = computed(() => {
 
 <template>
   <UUser
-    :name="contact.organisation"
+    :name="contact.organization"
     :description="description"
     :avatar="{
       src: '',
-      alt: contact.organisation,
+      alt: contact.organization,
     }"
     size="xl"
   />

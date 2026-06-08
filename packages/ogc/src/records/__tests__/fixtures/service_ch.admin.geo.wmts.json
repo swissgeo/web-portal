@@ -1,34 +1,45 @@
 {
-  "id": "wmts.geo.admin.ch",
+  "id": "wmts-geoadminch",
   "links": [
     {
-      "href": "some_url_that_does_not_exist",
-      "rel": "service-desc",
-      "type": "application/json"
+      "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/geoadmin.services/items/wmts-geoadminch?language=en",
+      "rel": "self",
+      "title": "This Record",
+      "type": "application/json",
+      "hreflang": "en"
+    },
+    {
+      "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/geoadmin.services?language=en",
+      "rel": "collection",
+      "title": "Link to the collection this item belongs to",
+      "type": "application/json",
+      "hreflang": "en"
     },
     {
       "href": "https://docs.geo.admin.ch/visualize-data/wmts.html",
       "rel": "service-doc",
+      "title": "Service Documentation (DE)",
       "type": "application/json"
     }
   ],
   "linkTemplates": [
     {
-      "uriTemplate": "https://wmts.geo.admin.ch/EPSG/{EPSG}/1.0.0/WMTSCapabilities.xml",
-      "type": "application/vnd.ogc.wmts_xml",
-      "variables": {
-        "EPSG": {
-          "description": "EPSG",
-          "format": "integer",
-          "type": "number",
-          "default": 2056,
-          "enum": [2056, 21781, 4326]
-        }
-      },
+      "uriTemplate": "https://wmts.geo.admin.ch/EPSG/{epsg}/1.0.0/WMTSCapabilities.xml",
       "rel": "about",
-      "title": "WMTS Capabilities File"
+      "title": "WMTS Capabilities File",
+      "type": "application/xml",
+      "variables": {
+        "epsg": {
+          "enum": [2056, 21781, 4326],
+          "type": "number",
+          "format": "integer",
+          "default": 2056,
+          "description": "EPSG"
+        }
+      }
     }
   ],
+  "type": "Feature",
   "properties": {
     "title": "WMTS geo.admin.ch",
     "type": "ogc:wmts"
