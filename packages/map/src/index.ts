@@ -20,4 +20,13 @@ export {
   MGRSFormat,
 } from "./utils/coordinates/coordinateFormat";
 export type { CoordinateFormat } from "./utils/coordinates/coordinateFormat";
+export { geoadminToMapLibreStyle } from "./utils/geoadminToMapLibreStyle";
+export type {
+  MapLibreStyle,
+  MapLibreLayer,
+  GeoadminToMapLibreResult,
+  GeoadminToMapLibreOptions,
+} from "./utils/geoadminToMapLibreStyle";
+export { createShapeIcon, makeGetImage } from "./utils/maplibreShapeIcons";
+export type { ShapeIconSpec, ShapeIconType } from "./utils/maplibreShapeIcons";
 export { MapModule, usePositionStore, useAddLayerToMap, PROJECTION_EPSG };
