@@ -23,4 +23,13 @@ export type { CoordinateFormat } from "./utils/coordinates/coordinateFormat";
 export { buildWmtsOptions } from "./utils/buildWmtsOptions";
 export type { BuildWmtsOptionsConfig } from "./utils/buildWmtsOptions";
 export type { FeatureCollectionWithCRS } from "./utils/geoJsonUtils";
+export { geoadminToMapLibreStyle } from "./utils/geoadminToMapLibreStyle";
+export type {
+  MapLibreStyle,
+  MapLibreLayer,
+  GeoadminToMapLibreResult,
+  GeoadminToMapLibreOptions,
+} from "./utils/geoadminToMapLibreStyle";
+export { createShapeIcon, makeGetImage } from "./utils/maplibreShapeIcons";
+export type { ShapeIconSpec, ShapeIconType } from "./utils/maplibreShapeIcons";
 export { MapModule, usePositionStore, useAddLayerToMap, PROJECTION_EPSG };
