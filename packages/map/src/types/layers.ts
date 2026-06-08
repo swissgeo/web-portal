@@ -1,8 +1,10 @@
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 import type { Component } from "vue";
 
+import type { MapLibreStyle } from "@/utils/geoadminToMapLibreStyle";
 import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 import type { FeatureCollectionWithCRS } from "@/utils/geoJsonUtils";
+import type { ShapeIconSpec } from "@/utils/maplibreShapeIcons";
 
 /**
  * At the moment, these 3 types are sort of like a duplicate of layers.
@@ -63,7 +65,15 @@ export interface GPXLayer extends Layer {
 export interface GeoJSONLayer extends Layer {
   format: "GeoJSON";
   geoJsonData: FeatureCollectionWithCRS;
+  /** Legacy geoadmin "literals" style, rendered by `OlStyleForPropertyValue`. */
   geoJsonStyle?: GeoAdminGeoJSONStyleDefinition;
+  /**
+   * Standard MapLibre / mapbox-gl style, rendered via `ol-mapbox-style`. When set,
+   * it takes precedence over `geoJsonStyle`. The companion `mapLibreIcons` supply
+   * the generated icons for non-circle point shapes.
+   */
+  mapLibreStyle?: MapLibreStyle;
+  mapLibreIcons?: ShapeIconSpec[];
 }
 
 export interface MapLayerRenderer {
