@@ -1,6 +1,6 @@
 import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
 
-import type { PositionStore } from "@/stores/position/types/position";
+import type { PositionStore } from "@/stores/position";
 
 import { DEFAULT_PROJECTION, DEFAULT_FORMAT } from "..";
 

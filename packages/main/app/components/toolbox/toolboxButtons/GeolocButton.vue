@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ActionDispatcher } from "@swissgeo/map";
+import type { ActionDispatcher } from "@swissgeo/shared";
 
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";

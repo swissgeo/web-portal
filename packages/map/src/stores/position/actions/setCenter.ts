@@ -5,7 +5,7 @@ import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
 // import { WGS84 } from '@swissgeo/coordinates'
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 
-import type { PositionStore } from "@/stores/position/types/position";
+import type { PositionStore } from "@/stores/position";
 
 // import useCesiumStore from '@/stores/cesium'
 // import useGeolocationStore from '@/stores/geolocation'

@@ -108,7 +108,7 @@ const position = reactive({
 });
 const size = reactive({
   width: DEFAULT_WIDTH,
-  height: "auto" as number | "auto",
+  height: "auto",
 });
 const dragState = reactive({
   active: false,

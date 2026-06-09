@@ -100,6 +100,7 @@ const editorState = reactive({
   iconSize: 1,
   textColor: "#111827",
   textSize: 16,
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   textAnchor: "center" as TextAnchor,
   strokeColor: "#ff0000",
   strokeWidth: 2,

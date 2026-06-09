@@ -81,3 +81,5 @@ const usePositionStore = defineStore("position", {
 });
 
 export default usePositionStore;
+
+export type PositionStore = ReturnType<typeof usePositionStore>;

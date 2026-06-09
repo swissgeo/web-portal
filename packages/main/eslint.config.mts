@@ -19,7 +19,6 @@ export default [
         // so we allow them to be linted with a default project.
         projectService: {
           allowDefaultProject: [
-            "nuxt.config.ts",
             "server/utils/__tests__/*.ts",
             "server/routes/__tests__/*.ts",
             "server/api/wpa/v1/layers/external/dataset/?capabilityUrl?/__tests__/*.ts",
