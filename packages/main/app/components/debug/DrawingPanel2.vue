@@ -1,8 +1,14 @@
 <script setup lang="ts">
+import type { Map } from "ol";
+
+import { useMap } from "@swissgeo/map";
+
 import { useDrawing } from "@swissgeo/drawing";
 import { IconButton } from "@swissgeo/skeleton";
 
 const { t } = useI18n();
+
+const { olMap } = useMap();
 
 const {
   disableAllInteractions,
@@ -15,8 +21,7 @@ const {
   numberOfFeatures,
   focusMode,
   focusedFeature,
-  hasDrawInteractionOn,
-} = useDrawing();
+} = useDrawing(olMap.value);
 
 const emit = defineEmits<{
   close: [];
@@ -36,6 +41,11 @@ function cancelDrawing() {
   removeFocusedFeature();
   removeFocus();
 }
+
+onUnmounted(() => {
+  disableAllInteractions();
+  removeFocus();
+});
 </script>
 
 <template>
@@ -108,7 +118,7 @@ function cancelDrawing() {
         </UButton>
 
         <UButton
-          v-if="focusMode === 'read' && focusedFeature"
+          v-if="focusMode === 'select' && focusedFeature"
           color="primary"
           variant="solid"
           data-testid="modify-tool"
@@ -128,7 +138,7 @@ function cancelDrawing() {
         </UButton>
 
         <UButton
-          v-if="focusMode === 'read' && focusedFeature"
+          v-if="focusMode === 'select' && focusedFeature"
           color="error"
           variant="solid"
           data-testid="modify-tool"

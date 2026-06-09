@@ -934,6 +934,9 @@ importers:
       '@swissgeo/coordinates':
         specifier: workspace:*
         version: link:../coordinates
+      '@swissgeo/drawing':
+        specifier: workspace:*
+        version: link:../drawing
       '@swissgeo/log':
         specifier: workspace:*
         version: link:../log

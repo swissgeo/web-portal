@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDrawingStore } from "@swissgeo/drawing";
+// import { useDrawingStore } from "@swissgeo/drawing";
 /**
  * The Toolbox contains buttons to be used on the map. It is responsible for deciding which buttons
  * should show up and which shouldn't.
@@ -23,11 +23,11 @@ import { useGeolocationStore } from "@/stores/geolocation";
 import CompassButton from "./toolboxButtons/CompassButton.vue";
 
 const layerStore = useLayerStore();
-const drawingStore = useDrawingStore();
+// const drawingStore = useDrawingStore();
 const mapViewStore = useMapViewStore();
 const geolocationStore = useGeolocationStore();
 
-const showFullScreeButton = computed(() => !drawingStore.isDrawing);
+// const showFullScreeButton = computed(() => !drawingStore.isDrawing);
 // Buttons related to the geolocation function
 const showGelocationButton = ref(true);
 const showRecenterButton = computed(
@@ -64,7 +64,7 @@ const isEmbedMode = computed(() => displayMode === "embed");
     class="toolbox-right absolute top-[1rem] right-[1rem] w-[40px] space-y-1"
     data-testid="toolbox-right"
   >
-    <FullScreenButton v-if="isWebMode && showFullScreeButton" />
+    <!-- <FullScreenButton v-if="isWebMode && showFullScreeButton" /> -->
     <GeolocButton v-if="isWebMode && showGelocationButton" />
     <CompassButton v-if="isWebMode && showCompassButton" />
     <RecenterButton v-if="isWebMode && showRecenterButton" />

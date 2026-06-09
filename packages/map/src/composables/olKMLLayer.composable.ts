@@ -1,6 +1,7 @@
 import type { Map } from "ol";
 import type { Ref } from "vue";
 
+import { useDrawing } from "@swissgeo/drawing";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import {
   createDrawingFeatureStyleFunction,
@@ -29,11 +30,22 @@ export default function useOlKMLLayer(
   layer: Ref<KMLLayer>,
   olMap: Ref<Map | undefined> | undefined,
 ) {
+  const { bearsUuid, drawingVectorLayer } = useDrawing(olMap.value!);
   const layerId = computed(() => layer.value.layerId);
   const zIndex = computed(() => layer.value.zIndex);
   const isVisible = computed(() => layer.value.isVisible);
   const opacity = computed(() => layer.value.opacity);
   const kmlData = computed(() => layer.value.data);
+
+  watch(opacity, (newOpacity) => {
+    console.log("<<< Opacity", newOpacity, olLayer.value);
+
+    if (!olLayer.value) {
+      return;
+    }
+
+    olLayer.value.setOpacity(newOpacity);
+  });
 
   const positionStore = usePositionStore();
 
@@ -42,15 +54,19 @@ export default function useOlKMLLayer(
   watch(
     () => kmlData.value,
     () => {
-      olLayer.value = new VectorLayer({
-        properties: {
-          id: layerId,
-          uuid: layer.value.uuid,
-        },
-        opacity: opacity.value,
-      });
-
-      initialize();
+      if (bearsUuid(layer.value.uuid)) {
+        olLayer.value = drawingVectorLayer;
+      } else {
+        olLayer.value = new VectorLayer({
+          properties: {
+            id: layerId,
+            uuid: layer.value.uuid,
+          },
+          opacity: opacity.value,
+        });
+        // TODO: clean this to adapt to drawing layer
+        initialize();
+      }
     },
     { immediate: true },
   );

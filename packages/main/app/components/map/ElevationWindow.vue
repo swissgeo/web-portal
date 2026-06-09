@@ -11,7 +11,7 @@ import type Map from "ol/Map";
 import type { Ref } from "vue";
 
 import { X, GripVertical } from "@lucide/vue";
-import { useDrawingStore, resolveFeatureId } from "@swissgeo/drawing";
+import { resolveFeatureId } from "@swissgeo/drawing";
 import {
   ElevationProfile,
   ElevationProfileOpenLayersBridge,
@@ -66,40 +66,41 @@ const labels = computed<Labels>(() => ({
     slopeDistance: t("elevationProfile.metadata.slopeDistance"),
   },
 }));
-const hasInfo = computed(
-  () => drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo),
-);
-const selectedLineString = computed<LineString | null>(() => {
-  void geometryRevision.value;
+// const hasInfo = computed(
+//   () => drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo),
+// );
 
-  const selectedId = drawingStore.selectedFeatureId;
-  if (!selectedId) {
-    return null;
-  }
+// const selectedLineString = computed<LineString | null>(() => {
+//   void geometryRevision.value;
 
-  const features = drawingStore.drawingFeatures as Feature<Geometry>[];
-  const feature =
-    features.find((f) => resolveFeatureId(f) === selectedId) ?? null;
-  const geometry = feature?.getGeometry();
-  const type = geometry?.getType();
+//   const selectedId = drawingStore.selectedFeatureId;
+//   if (!selectedId) {
+//     return null;
+//   }
 
-  if (type === "LineString") {
-    return olGeoJSON.value.writeGeometryObject(
-      geometry as OlLineString,
-    ) as LineString;
-  }
+//   const features = drawingStore.drawingFeatures as Feature<Geometry>[];
+//   const feature =
+//     features.find((f) => resolveFeatureId(f) === selectedId) ?? null;
+//   const geometry = feature?.getGeometry();
+//   const type = geometry?.getType();
 
-  if (type === "Polygon") {
-    const ring = (geometry as OlPolygon).getLinearRing(0);
-    if (!ring) {
-      return null;
-    }
-    const coords = ring.getCoordinates();
-    return { type: "LineString", coordinates: coords };
-  }
+//   if (type === "LineString") {
+//     return olGeoJSON.value.writeGeometryObject(
+//       geometry as OlLineString,
+//     ) as LineString;
+//   }
 
-  return null;
-});
+//   if (type === "Polygon") {
+//     const ring = (geometry as OlPolygon).getLinearRing(0);
+//     if (!ring) {
+//       return null;
+//     }
+//     const coords = ring.getCoordinates();
+//     return { type: "LineString", coordinates: coords };
+//   }
+
+//   return null;
+// });
 
 const position = reactive({
   x: WINDOW_MARGIN,
@@ -116,7 +117,6 @@ const dragState = reactive({
   offsetY: 0,
 });
 
-const drawingStore = useDrawingStore();
 const positionStore = usePositionStore();
 const { t } = useI18n();
 const windowRef = useTemplateRef<HTMLElement>("windowRef");
@@ -214,10 +214,6 @@ function handleWindowResize() {
   position.y = clamped.y;
 }
 
-function closeWindow() {
-  drawingStore.clearPassiveSelection();
-}
-
 watch(
   hasInfo,
   async (visible) => {
@@ -231,29 +227,30 @@ watch(
   { immediate: true },
 );
 
-watch(
-  () => drawingStore.selectedFeatureId,
-  (selectedId) => {
-    unlistenGeometryChange?.();
-    unlistenGeometryChange = null;
+// TODO: adapt to the new drawing module
+// watch(
+//   () => drawingStore.selectedFeatureId,
+//   (selectedId) => {
+//     unlistenGeometryChange?.();
+//     unlistenGeometryChange = null;
 
-    if (!selectedId) {
-      return;
-    }
+//     if (!selectedId) {
+//       return;
+//     }
 
-    const features = drawingStore.drawingFeatures as Feature<Geometry>[];
-    const feature = features.find((f) => resolveFeatureId(f) === selectedId);
-    if (!feature) {
-      return;
-    }
+//     const features = drawingStore.drawingFeatures as Feature<Geometry>[];
+//     const feature = features.find((f) => resolveFeatureId(f) === selectedId);
+//     if (!feature) {
+//       return;
+//     }
 
-    const key = feature.on("change", () => {
-      geometryRevision.value++;
-    });
-    unlistenGeometryChange = () => feature.un("change", key.listener);
-  },
-  { immediate: true },
-);
+//     const key = feature.on("change", () => {
+//       geometryRevision.value++;
+//     });
+//     unlistenGeometryChange = () => feature.un("change", key.listener);
+//   },
+//   { immediate: true },
+// );
 
 onBeforeMount(() => {
   if (typeof window !== "undefined") {
@@ -263,7 +260,7 @@ onBeforeMount(() => {
 
 onBeforeUnmount(() => {
   stopDrag();
-  unlistenGeometryChange?.();
+  // unlistenGeometryChange?.();
   if (typeof window !== "undefined") {
     window.removeEventListener("resize", handleWindowResize);
   }

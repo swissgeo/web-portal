@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DrawingPanel2 from "~/components/debug/DrawingPanel2.vue";
 
-import DrawingPanel from "~/components/debug/DrawingPanel.vue";
+// import DrawingPanel from "~/components/debug/DrawingPanel.vue";
 
 const isLayersPanelOpen = ref(false);
 const isImportPanelOpen = ref(false);

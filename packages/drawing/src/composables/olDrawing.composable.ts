@@ -2163,6 +2163,8 @@ export function useOlDrawing(
   function enableActiveEditing() {
     disableActiveEditing();
 
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
     currentModify = new Modify({
       source,
       pixelTolerance: 10,

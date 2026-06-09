@@ -68,7 +68,6 @@ const displayMode = inject(displayModeKey, "web");
         v-if="showAdditionalMapUi && displayMode === 'web'"
         class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"
       ></DebugPanel>
-      <DrawingFeatureInfoWindow v-if="showAdditionalMapUi" />
       <MapBackgroundSelector
         :currentBackground="backgroundLayer"
         @setBackground="changeBackground"

@@ -17,7 +17,7 @@ export const DRAWING_LAYER_ID: string;
 export const EPSG_4326_WGS84: string;
 export const EPSG_2056_CH1903: string;
 
-export function useOlDrawing(...args: any[]): any;
-export function useDrawingManager(): any;
-export function useDrawingStore(): any;
+// export function useOlDrawing(...args: any[]): any;
+// export function useDrawingManager(): any;
+// export function useDrawingStore(): any;
 export function getMarkerIconById(iconId: string): MarkerIcon | undefined;
