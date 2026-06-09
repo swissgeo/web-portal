@@ -13,6 +13,7 @@ import type { ComputedRef, ShallowRef } from "vue";
 
 import { flushPromises } from "@vue/test-utils";
 import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
+import { ref } from "vue";
 
 import { useGenericOgcData } from "../useGenericOgcData";
 
