@@ -1,21 +1,21 @@
 import type { SaveAppState } from "@swissgeo/statesharing";
 
 import log from "@swissgeo/log";
-import { SaveAppStateResponse } from "@swissgeo/statesharing";
+import {
+  APP_STATE_SERVICE_BASE_URL,
+  postAppStatePost,
+} from "@swissgeo/statesharing";
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig();
   const body = await readBody<SaveAppState>(event);
 
-  log.debug(`Proxying POST state to ${config.shareServiceUrl}`);
+  log.debug(`Proxying POST state to ${APP_STATE_SERVICE_BASE_URL}`);
 
   try {
-    const data = await $fetch<unknown>(config.shareServiceUrl, {
-      method: "POST",
-      body,
-    });
-    return SaveAppStateResponse.parse(data);
-  } catch {
+    const { data } = await postAppStatePost({ body, throwOnError: true });
+    return data;
+  } catch (error) {
+    log.error("Failed to save state", { error });
     throw createError({
       statusCode: 502,
       statusMessage: "Failed to save state",

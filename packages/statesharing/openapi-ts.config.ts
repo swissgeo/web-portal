@@ -1,11 +1,9 @@
 import { defineConfig } from "@hey-api/openapi-ts";
 
-const shareServiceUrl =
-  process.env.NUXT_SHARE_SERVICE_URL ??
-  "https://www.dev.sgdi.tech/api/wps/v1/state";
+import { APP_STATE_SERVICE_BASE_URL } from "./src/constants";
 
 export default defineConfig({
-  input: `${shareServiceUrl}/openapi.json`,
+  input: `${APP_STATE_SERVICE_BASE_URL}/openapi.json`,
   output: {
     path: "src/hey-api",
     postProcess: ["prettier"],
@@ -13,7 +11,7 @@ export default defineConfig({
   plugins: [
     {
       name: "@hey-api/client-fetch",
-      baseUrl: `${shareServiceUrl}/`,
+      baseUrl: `${APP_STATE_SERVICE_BASE_URL}/`,
     },
     "zod",
     {
