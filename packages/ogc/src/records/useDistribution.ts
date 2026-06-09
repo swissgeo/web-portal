@@ -1,4 +1,4 @@
-import type { Ref } from "vue";
+import type { ComputedRef, Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computed, toValue, watchEffect } from "vue";
@@ -8,7 +8,10 @@ import type { Distribution, DistributionCollection } from "@/types/Records";
 export function useDistribution(
   distributionCollection: Ref<DistributionCollection | null>,
   distributionId: Ref<string | null>,
-) {
+): {
+  distribution: ComputedRef<Distribution>;
+  layerId: ComputedRef<string>;
+} {
   const distribution = computed(() => {
     return extractDistribution(
       distributionCollection.value,

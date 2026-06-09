@@ -1,3 +1,4 @@
+import type { UseFetchReturn } from "@vueuse/core";
 import type { Ref } from "vue";
 
 import { useFetch } from "@vueuse/core";
@@ -15,7 +16,7 @@ import { watch } from "vue";
 export function useConditionalFetch<T>(
   url: Ref<string | null>,
   builderFunctions?: string[],
-) {
+): UseFetchReturn<T> & PromiseLike<UseFetchReturn<T>> {
   const fetchRef = useFetch<T>(url as unknown as string, {
     immediate: false,
   });

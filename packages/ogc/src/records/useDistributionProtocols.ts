@@ -1,13 +1,19 @@
-import type { Ref } from "vue";
+import type { ComputedRef, Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computed, watchEffect } from "vue";
 
-import type { Distribution, DistributionCollection } from "@/types/Records";
+import type {
+  Distribution,
+  DistributionCollection,
+  ServiceProtocol,
+} from "@/types/Records";
 
 export function useDistributionProtocols(
   distributionCollection: Ref<DistributionCollection>,
-) {
+): {
+  availableProtocols: ComputedRef<ServiceProtocol[]>;
+} {
   const availableProtocols = computed(() =>
     extractProtocols(distributionCollection.value),
   );

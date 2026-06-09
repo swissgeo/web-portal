@@ -1,5 +1,5 @@
 import { resolve } from "path";
-import dts from "unplugin-dts/vite";
+import { dts } from "rolldown-plugin-dts";
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
 
@@ -12,10 +12,10 @@ export default defineConfig(({ mode }) => {
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
         name: "@swissgeo/ogc",
-        formats: ["es"],
       },
-      rollupOptions: {
+      rolldownOptions: {
         external: ["vue", "pinia", "@swissgeo/log"],
+        output: [{ dir: "dist", format: "es" }],
       },
     },
     resolve: {
@@ -25,8 +25,11 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       dts({
-        bundleTypes: true,
+        oxc: true,
       }),
     ],
+    oxc: {
+      exclude: [/\.js$/, /\.d\.[cm]?ts$/],
+    },
   };
 });

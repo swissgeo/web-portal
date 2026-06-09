@@ -1,4 +1,4 @@
-import type { Ref } from "vue";
+import type { ComputedRef, Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computed, watchEffect } from "vue";
@@ -7,7 +7,12 @@ import type { Distribution } from "@/types";
 
 import { useConditionalFetch } from "./useConditionalFetch";
 
-export function useGeoJson(distribution: Ref<Distribution>) {
+export function useGeoJson(distribution: Ref<Distribution>): {
+  geoJsonData: ComputedRef<{
+    geoJsonData: any;
+    geoJsonStyle: any;
+  }>;
+} {
   const dataUrl = computed(() => extractGeoJsonDataUrl(distribution.value));
   const styleUrl = computed(() => extractGeoJsonStyleUrl(distribution.value));
 

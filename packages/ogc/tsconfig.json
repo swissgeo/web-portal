@@ -4,13 +4,15 @@
     "src/**/*.ts",
     "src/**/*.vue",
     "env.d.ts",
-    "vite.config.ts",
     "../../base.vite.config.ts",
-    "vitest.config.ts"
+    "vitest.config.ts",
   ],
+  "exclude": ["vite.config.ts"],
   "compilerOptions": {
     "types": ["vue", "vite/client"],
     "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] }
-  }
+    "paths": { "@/*": ["src/*"] },
+    "declaration": true,
+    "isolatedDeclarations": true,
+  },
 }

@@ -1,11 +1,13 @@
-import type { Ref } from "vue";
+import type { ComputedRef, Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computed, toValue, watchEffect } from "vue";
 
 import type { Service } from "@/types/Records";
 
-export function useCapabilities(serviceData: Ref<Service | null>) {
+export function useCapabilities(serviceData: Ref<Service | null>): {
+  capabilityUrl: ComputedRef<string>;
+} {
   const capabilityUrl = computed(() => extractCapabilityUrl(serviceData.value));
 
   watchEffect(() => {

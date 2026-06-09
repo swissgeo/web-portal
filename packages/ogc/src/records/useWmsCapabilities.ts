@@ -1,4 +1,4 @@
-import type { Ref } from "vue";
+import type { ComputedRef, Ref } from "vue";
 
 import { registerProj4 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
@@ -24,7 +24,12 @@ import { useConditionalFetch } from "./useConditionalFetch";
 export function useWmsCapabilities(
   serviceData: Ref<Service | null>,
   layerId: Ref<string | null>,
-) {
+): {
+  wmsData: ComputedRef<{
+    capabilities: any;
+    dimensions: any;
+  }>;
+} {
   const { capabilityUrl } = useCapabilities(serviceData);
 
   const { data: wmsCapabilityData } =
@@ -49,7 +54,10 @@ export function useWmsCapabilities(
 export function parseWmsCapabilities(
   capabilityData: string | null,
   layerId: string | null,
-) {
+): {
+  capabilities: any;
+  dimensions: any;
+} {
   if (!capabilityData || !layerId) {
     return {
       capabilities: null,
@@ -67,7 +75,10 @@ export function parseWmsCapabilities(
   };
 }
 
-export function getDimensions(capabilities: WMSCapabilities, layerId: string) {
+export function getDimensions(
+  capabilities: WMSCapabilities,
+  layerId: string,
+): any {
   if (!capabilities) {
     return null;
   }

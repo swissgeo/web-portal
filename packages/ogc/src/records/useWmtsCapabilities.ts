@@ -1,10 +1,10 @@
-import type { Ref } from "vue";
+import type { ComputedRef, Ref } from "vue";
 
 import { registerProj4 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import WMTSCapabilitiesParser from "ol/format/WMTSCapabilities";
 import { register } from "ol/proj/proj4";
-import { optionsFromCapabilities } from "ol/source/WMTS";
+import { optionsFromCapabilities, type Options } from "ol/source/WMTS";
 import proj4 from "proj4";
 import { computed, watchEffect } from "vue";
 
@@ -25,7 +25,14 @@ import { useConditionalFetch } from "./useConditionalFetch";
 export function useWmtsCapabilities(
   serviceData: Ref<Service | null>,
   layerId: Ref<string | null>,
-) {
+): {
+  capabilityUrl: ComputedRef<string>;
+  wmtsData: ComputedRef<{
+    capabilities: any;
+    options: Options;
+    dimensions: any;
+  }>;
+} {
   const { capabilityUrl } = useCapabilities(serviceData);
 
   const { data: wmtsCapabilityData } =
@@ -52,7 +59,11 @@ export function useWmtsCapabilities(
 export function parseWmtsCapabilities(
   capabilityData: string | null,
   layerId: string | null,
-) {
+): {
+  capabilities: any;
+  options: Options;
+  dimensions: any;
+} {
   if (!capabilityData || !layerId) {
     return;
   }
@@ -73,7 +84,10 @@ export function parseWmtsCapabilities(
   };
 }
 
-export function getDimensions(capabilities: WMTSCapabilities, layerId: string) {
+export function getDimensions(
+  capabilities: WMTSCapabilities,
+  layerId: string,
+): any {
   if (!capabilities) {
     return null;
   }

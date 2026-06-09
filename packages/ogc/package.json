@@ -7,9 +7,8 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/ogc.js",
-      "require": "./dist/ogc.umd.cjs"
+      "types": "./dist/ogc.ts",
+      "import": "./dist/ogc.js"
     }
   },
   "scripts": {
@@ -29,7 +28,8 @@
     "@swissgeo/log": "workspace:*",
     "@vueuse/core": "catalog:",
     "ol": "catalog:",
-    "proj4": "catalog:"
+    "proj4": "catalog:",
+    "rolldown-plugin-dts": "^0.25.2"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
@@ -43,6 +43,7 @@
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
+    "unplugin-isolated-decl": "^0.16.0",
     "vite": "catalog:"
   },
   "peerDependencies": {
