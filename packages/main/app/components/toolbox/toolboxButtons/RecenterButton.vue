@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ActionDispatcher } from "@swissgeo/map";
+import type { ActionDispatcher } from "@swissgeo/shared";
 
 import { usePositionStore } from "@swissgeo/map";
 import { computed } from "vue";

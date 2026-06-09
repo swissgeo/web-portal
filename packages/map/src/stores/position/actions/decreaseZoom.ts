@@ -2,7 +2,7 @@ import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
 
 import { SwissCoordinateSystem } from "@swissgeo/coordinates";
 
-import type { PositionStore } from "@/stores/position/types/position";
+import type { PositionStore } from "@/stores/position";
 
 export default function decreaseZoom(
   this: PositionStore,

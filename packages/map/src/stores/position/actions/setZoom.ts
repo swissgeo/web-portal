@@ -3,7 +3,7 @@ import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { isNumber } from "@swissgeo/numbers";
 
-import type { PositionStore } from "@/stores/position/types/position";
+import type { PositionStore } from "@/stores/position";
 
 // import { calculateHeight } from '@/modules/map/components/cesium/utils/cameraUtils'
 // import useCesiumStore from '@/stores/cesium'

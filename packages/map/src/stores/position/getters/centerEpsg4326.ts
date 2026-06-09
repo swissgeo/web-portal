@@ -3,7 +3,7 @@ import type { SingleCoordinate } from "@swissgeo/coordinates";
 import { WGS84 } from "@swissgeo/coordinates";
 import proj4 from "proj4";
 
-import type { PositionStore } from "@/stores/position/types/position";
+import type { PositionStore } from "@/stores/position";
 
 export default function centerEpsg4326(this: PositionStore): SingleCoordinate {
   const centerEpsg4326Unrounded = proj4(

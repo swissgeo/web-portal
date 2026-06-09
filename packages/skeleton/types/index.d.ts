@@ -47,8 +47,14 @@ declare global {
   // TODO there should be a better way than this, decoupling the package from the need for useRuntimeConfig
   // alltogether IMO
   const useRuntimeConfig: () => {
+    what3wordsApiKey: string;
+    geoadminApiBaseUrl: string;
     public: {
       ogcApiEndpoint: string;
+      shareServiceUrl: string;
+      wantedLogLevels: string;
+      version: string;
+      buildTime: string;
     };
   };
 }

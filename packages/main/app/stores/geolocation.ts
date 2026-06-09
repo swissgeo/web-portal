@@ -1,5 +1,5 @@
 import type { SingleCoordinate } from "@swissgeo/coordinates";
-import type { ActionDispatcher } from "@swissgeo/map";
+import type { ActionDispatcher } from "@swissgeo/shared";
 
 import { LV95, WGS84 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
