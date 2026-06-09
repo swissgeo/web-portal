@@ -100,7 +100,6 @@ export function validatePrintConfig(
   }
 
   const maybePrintProps = printProps as Partial<PrintConfig>;
-
   if (
     !maybePrintProps.format ||
     !printFormats.includes(maybePrintProps.format)
@@ -118,12 +117,11 @@ export function validatePrintConfig(
       `The print orientation must be one of: ${printOrientations.join(" ")}`,
     );
   }
-
   if (
-    maybePrintProps.resolution === undefined ||
+    !maybePrintProps.resolution || isNaN(maybePrintProps.resolution) ||
     maybePrintProps.resolution <= 0
   ) {
-    throw new Error("The print resolution must be greater than 0");
+    throw new Error("The print resolution must be a number greater than 0, value received: ", maybePrintProps.resolution);
   }
 
   if (maybePrintProps.zoom === undefined || maybePrintProps.zoom <= 0) {
