@@ -1,7 +1,0 @@
-{
-  "extends": "@swissgeo/config-typescript/tsconfig.base.json",
-  "compilerOptions": {
-    "isolatedDeclarations": false,
-  },
-  "include": ["vite.config.ts"],
-}

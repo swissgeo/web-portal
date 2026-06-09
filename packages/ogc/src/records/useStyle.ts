@@ -1,5 +1,5 @@
-import type { Style, StyleSpecification } from "mapbox-gl";
-import type { ComputedRef, Ref, ShallowRef } from "vue";
+import type { Style } from "mapbox-gl";
+import type { Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computed, watchEffect } from "vue";
@@ -8,12 +8,7 @@ import type { Distribution, Link } from "@/types/Records";
 
 import { useConditionalFetch } from "./useConditionalFetch";
 
-export function useStyle(distribution: Ref<Distribution | null>): {
-  styleDataUrl: ComputedRef<string>;
-  styleData: ShallowRef<StyleSpecification>;
-  isFetching: Readonly<ShallowRef<boolean>>;
-  error: ShallowRef<any>;
-} {
+export function useStyle(distribution: Ref<Distribution | null>) {
   const styleDataUrl = computed(() => extractStyleUrl(distribution.value));
 
   const {

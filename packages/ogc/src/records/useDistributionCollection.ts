@@ -1,4 +1,4 @@
-import type { ComputedRef, Ref, ShallowRef } from "vue";
+import type { Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computed, toValue, watchEffect } from "vue";
@@ -7,10 +7,7 @@ import type { Dataset, DistributionCollection } from "@/types/Records";
 
 import { useConditionalFetch } from "./useConditionalFetch";
 
-export function useDistributionCollection(dataset: Ref<Dataset | null>): {
-  distributionUrl: ComputedRef<string>;
-  distributionCollection: ShallowRef<DistributionCollection>;
-} {
+export function useDistributionCollection(dataset: Ref<Dataset | null>) {
   const distributionUrl = computed(() =>
     extractDistributionLink(dataset.value),
   );

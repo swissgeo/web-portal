@@ -1,4 +1,7 @@
 export * from "./records";
 
-export type * from "@/types/Records";
-export type * from "@/types/Capabilities";
+// It only works when not doing a type import
+// eslint-disable-next-line @typescript-eslint/consistent-type-exports
+export * from "@/types/Records";
+// eslint-disable-next-line @typescript-eslint/consistent-type-exports
+export * from "@/types/Capabilities";
