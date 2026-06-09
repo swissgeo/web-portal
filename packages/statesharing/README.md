@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Provides types, Zod validators and the version constant for the app state sharing API. The HTTP client is generated from the OpenAPI spec via [orval](https://orval.dev) — see `orval.config.ts`.
+Provides types, Zod validators and the version constant for the app state sharing API. The HTTP client is generated from the OpenAPI spec via [Hey API](https://heyapi.dev), see `openapi-ts.config.ts`.
 
 All HTTP calls go through Nuxt server proxy routes (`packages/main/server/api/wpa/v1/state/`) to avoid CORS. The generated client itself is not called directly from the browser.
 

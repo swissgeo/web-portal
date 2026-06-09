@@ -2,7 +2,6 @@
   "extends": "@swissgeo/config-typescript/tsconfig.base.json",
   "include": [
     "openapi-ts.config.ts",
-    "orval.config.ts",
     "src/**/*.ts",
     "src/**/*.vue",
     "src/types/**/*.ts",

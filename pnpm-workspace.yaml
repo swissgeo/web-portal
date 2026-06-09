@@ -68,7 +68,6 @@ catalog:
   nuxt: ^4.4.6
   ol: ^10.9.0
   ol-mapbox-style: ^13.1.1
-  orval: ^8.12.3
   pinia: ^3.0.4
   playwright-core: ^1.58.2
   postcss-html: ^1.8.0
