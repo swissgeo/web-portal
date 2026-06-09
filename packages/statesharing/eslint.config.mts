@@ -4,7 +4,7 @@ import { globalIgnores } from "eslint/config";
 
 export default [
   ...defaultConfig,
-  globalIgnores([".nuxt", ".output", "node_modules", "src/client/*"]),
+  globalIgnores([".nuxt", ".output", "node_modules", "src/hey-api/*"]),
   {
     languageOptions: {
       parserOptions: {
