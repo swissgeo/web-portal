@@ -1,12 +1,13 @@
-import type { CoordinateSystem } from "@swissgeo/coordinates";
+import type { CoordinateSystem, SingleCoordinate } from "@swissgeo/coordinates";
 
 import { LV95 } from "@swissgeo/coordinates";
-import { defineStore } from "pinia";
+import { defineStore, type StoreDefinition } from "pinia";
 
 import type {
   PositionStoreGetters,
   PositionStoreState,
 } from "@/stores/position/types/position";
+import type { CoordinateFormat } from "@/utils/coordinates/coordinateFormat";
 
 import decreaseZoom from "@/stores/position/actions/decreaseZoom";
 import increaseZoom from "@/stores/position/actions/increaseZoom";
@@ -28,7 +29,7 @@ import { LV95Format } from "@/utils/coordinates/coordinateFormat";
 
 /** Default projection to be used throughout the application */
 export const DEFAULT_PROJECTION: CoordinateSystem = LV95;
-export const DEFAULT_FORMAT = LV95Format;
+export const DEFAULT_FORMAT: CoordinateFormat = LV95Format;
 
 const state = (): PositionStoreState => ({
   displayFormat: DEFAULT_FORMAT,
@@ -74,7 +75,29 @@ const actions = {
   $reset,
 };
 
-const usePositionStore = defineStore("position", {
+const usePositionStore: StoreDefinition<
+  "position",
+  PositionStoreState,
+  {
+    centerEpsg4326(): SingleCoordinate;
+    resolution(): number;
+  },
+  {
+    setDisplayedFormat: typeof setDisplayedFormat;
+    setZoom: typeof setZoom;
+    increaseZoom: typeof increaseZoom;
+    decreaseZoom: typeof decreaseZoom;
+    // zoomToExtent,
+    setRotation: typeof setRotation;
+    setAutoRotation: typeof setAutoRotation;
+    // setHasOrientation,
+    setCenter: typeof setCenter;
+    // setCrossHair,
+    // setCameraPosition,
+    // setProjection,
+    $reset: typeof $reset;
+  }
+> = defineStore("position", {
   state,
   getters: { ...getters },
   actions,

@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
-import dts from "unplugin-dts/vite";
+import { dts } from "rolldown-plugin-dts";
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
 
@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
         name: "@swissgeo/map",
         formats: ["es"],
       },
-      rollupOptions: {
+      rolldownOptions: {
         external: [
           "vue",
           "pinia",

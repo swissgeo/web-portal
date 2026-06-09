@@ -4,16 +4,17 @@
     "src/**/*.ts",
     "src/**/*.vue",
     "env.d.ts",
-    "vite.config.ts",
     "types/**/*.d.ts",
     "../../base.vite.config.ts",
-    "vitest.config.ts"
+    "vitest.config.ts",
   ],
   "compilerOptions": {
     "types": ["vue", "vite/client"],
     "paths": {
       "@/*": ["./src/*", "../skeleton/src/*"],
-      "@stores/*": ["./src/stores/*", "../skeleton/src/stores/*"]
-    }
-  }
+      "@stores/*": ["./src/stores/*", "../skeleton/src/stores/*"],
+    },
+    "declaration": true,
+    "isolatedDeclarations": true,
+  },
 }
