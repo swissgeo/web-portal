@@ -4,7 +4,7 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import {
   convertYearToTimestamp,
   getYearFromGeoadminValue,
-} from "@swissgeo/shared";
+} from "@swissgeo/timeslider";
 
 /**
  * Process the dimensions and turn the into a time info that is being passed to the layer store

@@ -11,7 +11,7 @@ import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import {
   convertYearToTimestamp,
   getYearFromGeoadminValue,
-} from "@swissgeo/shared";
+} from "@swissgeo/timeslider";
 
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";
