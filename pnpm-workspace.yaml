@@ -30,7 +30,6 @@ catalog:
   "@tailwindcss/vite": ^4.1.12
   "@turf/turf": ^7.3.1
   "@types/geojson": ^7946.0.16
-  "@types/mapbox-gl": ^3.4.1
   "@types/node": ^24.12.0
   "@types/semver": ^7.7.1
   "@typescript-eslint/utils": ^8.46.1
@@ -60,6 +59,7 @@ catalog:
   geojson: ^0.5.0
   globals: ^17.0.0
   happy-dom: 20.10.2
+  mapbox-gl: ^3.24.0
   msw: ^2.13.2
   nuxt: ^4.4.6
   ol: ^10.9.0
