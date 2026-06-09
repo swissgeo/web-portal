@@ -87,13 +87,11 @@ async function stateConfigToLayer(
 
   if (config.dimensions) {
     const dims: Partial<Record<DimensionId, Dimension>> = {};
-    for (const [key, val] of Object.entries(config.dimensions)) {
-      if (val) {
-        dims[key as DimensionId] = {
-          currentValue: val.currentValue ?? null,
-          availableValues: [],
-        };
-      }
+    if (config.dimensions.time) {
+      dims.time = {
+        currentValue: config.dimensions.time.currentValue ?? null,
+        availableValues: [],
+      };
     }
     layerOptions.dimensions = dims;
   }
@@ -131,12 +129,16 @@ export function useStateConfig() {
       messages: ["Importing state config", payload],
     });
 
-    positionStore.setCenter(payload.state.map?.center ?? undefined, DISPATCHER);
-    positionStore.setZoom(payload.state.map?.zoom ?? undefined, DISPATCHER);
-    positionStore.setRotation(
-      payload.state.map?.rotation ?? undefined,
-      DISPATCHER,
-    );
+    const map = payload.state.map;
+    if (map?.center !== null && map?.center !== undefined) {
+      positionStore.setCenter(map.center, DISPATCHER);
+    }
+    if (map?.zoom !== null && map?.zoom !== undefined) {
+      positionStore.setZoom(map.zoom, DISPATCHER);
+    }
+    if (map?.rotation !== null && map?.rotation !== undefined) {
+      positionStore.setRotation(map.rotation, DISPATCHER);
+    }
 
     for (const layer of [...layerStore.layers]) {
       layerStore.removeLayer(layer.uuid);
@@ -149,7 +151,7 @@ export function useStateConfig() {
 
     const stateLayers = payload.state.layers ?? [];
     const layers = await Promise.all(
-      stateLayers.map((lc) => stateConfigToLayer(lc)),
+      stateLayers.map((lc: LayerStateInput) => stateConfigToLayer(lc)),
     );
 
     for (let i = 0; i < layers.length; i++) {

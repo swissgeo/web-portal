@@ -263,7 +263,7 @@ export type TimeDimension = {
    *
    * Current selected time value
    */
-  currentValue?: string | "current" | null;
+  currentValue?: string | null;
 };
 
 /**

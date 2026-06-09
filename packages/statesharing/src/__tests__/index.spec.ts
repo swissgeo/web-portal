@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   APP_STATE_CONFIG_VERSION,
   ReadAppStateValidator,
-  SaveAppStateResponse,
+  SaveAppStateResponseValidator,
   SaveAppStateValidator,
   StatePayloadValidator,
 } from "../index";
@@ -96,9 +96,9 @@ describe("ReadAppStateValidator", () => {
   });
 });
 
-describe("SaveAppStateResponse", () => {
+describe("SaveAppStateResponseValidator", () => {
   it("accepts a valid response", () => {
-    const result = SaveAppStateResponse.parse({
+    const result = SaveAppStateResponseValidator.parse({
       id: "abcdefghijklmnop",
       deprecated: false,
       warning: "",
@@ -108,7 +108,7 @@ describe("SaveAppStateResponse", () => {
 
   it("rejects an id shorter than 16 characters", () => {
     expect(() =>
-      SaveAppStateResponse.parse({
+      SaveAppStateResponseValidator.parse({
         id: "tooshort",
         deprecated: false,
         warning: "",
@@ -117,7 +117,9 @@ describe("SaveAppStateResponse", () => {
   });
 
   it("applies default values for deprecated and warning", () => {
-    const result = SaveAppStateResponse.parse({ id: "abcdefghijklmnop" });
+    const result = SaveAppStateResponseValidator.parse({
+      id: "abcdefghijklmnop",
+    });
     expect(result.deprecated).toBe(false);
     expect(result.warning).toBe("");
   });

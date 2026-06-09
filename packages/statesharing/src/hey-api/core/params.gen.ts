@@ -152,6 +152,7 @@ export function buildClientParams(
             const name = field.map || key;
             (params[field.in] as Record<string, unknown>)[name] = value;
           } else {
+            // @ts-expect-error
             params[field.map] = value;
           }
         } else {
