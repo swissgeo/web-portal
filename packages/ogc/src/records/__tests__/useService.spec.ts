@@ -7,7 +7,7 @@ import { ref } from "vue";
 import type { Distribution } from "@/types/Records";
 
 import { useService, extractServiceUrl } from "../useService";
-import ChBafuSchutzgebieteLuftfahrtWmts from "./fixtures/distribution_ch.bafu.schutzgebiete-luftfahrt:wmts.json";
+import ChBafuSchutzgebieteLuftfahrtWmts from "./fixtures/distribution_ch.bafu.schutzgebiete-luftfahrt_wmts.json";
 import ChGeoadminWmts from "./fixtures/service_ch.admin.geo.wmts.json";
 
 describe("useService fetching the service data from the OGC records", () => {
