@@ -11,23 +11,21 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.umd.cjs"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
+    "build": "rolldown --config rolldown.config.js",
+    "build:dev": "rolldown --config rolldown.config.js --environment NODE_ENV:development",
     "generate-types": "tsc --declaration",
     "type-check": "tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-typescript": "workspace:*",
+    "rolldown": "^1.1.0",
     "typescript": "catalog:",
-    "unplugin-dts": "catalog:",
-    "vite": "catalog:"
+    "unplugin-dts": "catalog:"
   },
   "peerDependencies": {
     "prettier": "catalog:"
