@@ -1,4 +1,5 @@
 import vue from "@vitejs/plugin-vue";
+import { resolve } from "path";
 import dts from "unplugin-dts/vite";
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
@@ -8,26 +9,18 @@ export default defineConfig(({ mode }) => {
   return {
     build: {
       ...getBaseBuildConfig(mode),
+      minify: false,
       lib: {
-        entry: [fileURLToPath(new URL("./src/index.ts", import.meta.url))],
-        fileName: (format) => `index.${format}.js`,
+        entry: resolve(__dirname, "src/index.ts"),
         formats: ["es"],
-        name: "@swissgeo/statesharing",
       },
       rollupOptions: {
         external: ["vue", "ol", "@swissgeo/shared"],
-        output: {
-          exports: "named",
-          globals: {
-            vue: "Vue",
-          },
-        },
       },
     },
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
-        "~": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
     plugins: [

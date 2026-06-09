@@ -1,5 +1,6 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 
 import { useOgcWmtsData } from "../useOgcWmtsData";
 
