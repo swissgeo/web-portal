@@ -76,6 +76,8 @@ catalog:
   prettier-plugin-tailwindcss: ^0.8.0
   proj4: ^2.20.2
   reproject: ^1.2.7
+  rolldown: ^1.1.0
+  rolldown-plugin-dts: ^0.25.2
   semver: ^7.7.4
   stylelint: 16.26.1
   stylelint-config-recommended-scss: ^17.0.1
