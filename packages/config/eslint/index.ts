@@ -208,6 +208,12 @@ const defaultConfig: FlatConfig.ConfigArray = tsESLint.config(
   },
   // we have to declare that AFTER the TS specifics, our unit test rules from the JS config are otherwise ignored (when the tests are written in TS)
   unitTestsConfig,
+  {
+    files: ["rolldown.config.*"],
+    rules: {
+      "import/no-unresolved": "off",
+    },
+  },
 );
 
 export default defaultConfig;
