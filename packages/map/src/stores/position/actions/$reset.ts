@@ -7,7 +7,7 @@ import { DEFAULT_PROJECTION, DEFAULT_FORMAT } from "..";
 export default function $reset(
   this: PositionStore,
   dispatcher: ActionDispatcher,
-): void {
+) {
   this.setCenter(DEFAULT_PROJECTION.bounds.center, dispatcher);
   this.setZoom(DEFAULT_PROJECTION.getDefaultZoom(), dispatcher);
   this.setRotation(0, dispatcher);

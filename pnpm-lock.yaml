@@ -168,9 +168,6 @@ catalogs:
     reproject:
       specifier: ^1.2.7
       version: 1.2.7
-    rolldown-plugin-dts:
-      specifier: ^0.25.2
-      version: 0.25.2
     stylelint:
       specifier: 16.26.1
       version: 16.26.1
@@ -983,9 +980,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 10.4.1(jiti@2.7.0)
-      rolldown-plugin-dts:
-        specifier: 'catalog:'
-        version: 0.25.2(rolldown@1.0.3)(typescript@5.9.3)(vue-tsc@3.2.4(typescript@5.9.3))
       stylelint:
         specifier: 'catalog:'
         version: 16.26.1(typescript@5.9.3)
@@ -1050,9 +1044,6 @@ importers:
       proj4:
         specifier: 'catalog:'
         version: 2.20.2
-      rolldown-plugin-dts:
-        specifier: ^0.25.2
-        version: 0.25.2(rolldown@1.0.3)(typescript@5.9.3)(vue-tsc@3.2.4(typescript@5.9.3))
       vue:
         specifier: 'catalog:'
         version: 3.5.35(typescript@5.9.3)
@@ -1090,9 +1081,6 @@ importers:
       unplugin-dts:
         specifier: 'catalog:'
         version: 1.0.2(@microsoft/api-extractor@7.56.0(@types/node@25.6.0))(esbuild@0.28.1)(rolldown@1.0.3)(rollup@4.60.4)(typescript@5.9.3)(vite@8.0.16(@types/node@25.6.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.46.0)(yaml@2.9.0))
-      unplugin-isolated-decl:
-        specifier: ^0.16.0
-        version: 0.16.0(typescript@5.9.3)
       vite:
         specifier: 'catalog:'
         version: 8.0.16(@types/node@25.6.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.46.0)(yaml@2.9.0)
@@ -5282,10 +5270,6 @@ packages:
     resolution: {integrity: sha512-m1Q/RaVOnTp9JxPX+F+Zn7IcLYMzM8kZofDImfsKZd8MbR+ikdOzTeztStWqfrqIxZnYWryyI9ePm3NGjnZgGw==}
     engines: {node: '>=20.19.0'}
 
-  ast-kit@3.0.0-beta.1:
-    resolution: {integrity: sha512-trmleAnZ2PxN/loHWVhhx1qeOHSRXq4TDsBBxq3GqeJitfk3+jTQ+v/C1km/KYq9M7wKqCewMh+/NAvVH7m+bw==}
-    engines: {node: '>=20.19.0'}
-
   ast-walker-scope@0.8.3:
     resolution: {integrity: sha512-cbdCP0PGOBq0ASG+sjnKIoYkWMKhhz+F/h9pRexUdX2Hd38+WOlBkRKlqkGOSm0YQpcFMQBJeK4WspUAkwsEdg==}
     engines: {node: '>=20.19.0'}
@@ -5877,15 +5861,6 @@ packages:
   dotenv@17.4.2:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
-
-  dts-resolver@3.0.0:
-    resolution: {integrity: sha512-1T1f+z+4tl9XD+m+0HBgWoL/nm0bOIffyWaUuUSBlFg/86IWvfx+wjNaO/ybU0AJzG9/Mi5hBUgGV6zCmWEN7Q==}
-    engines: {node: ^22.18.0 || >=24.0.0}
-    peerDependencies:
-      oxc-resolver: '>=11.0.0'
-    peerDependenciesMeta:
-      oxc-resolver:
-        optional: true
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -6570,10 +6545,6 @@ packages:
 
   get-tsconfig@4.14.0:
     resolution: {integrity: sha512-yTb+8DXzDREzgvYmh6s9vHsSVCHeC0G3PI5bEXNBHtmshPnO+S5O7qgLEOn0I5QvMy6kpZN8K1NKGyilLb93wA==}
-
-  get-tsconfig@5.0.0-beta.5:
-    resolution: {integrity: sha512-/6gFNr0N04nob252sTQxyFLi3eKFRqIg1I87YcqAMT1i6SQrSF6KujUEQrtrjMV0H/eejTCltLdDSTEMzHbnsQ==}
-    engines: {node: '>=20.20.0'}
 
   giget@3.3.0:
     resolution: {integrity: sha512-gzi2D96p+AMfDcmJHGDj3KJ9NRiwvlFAU5yfa3ROwWZmFUjX4P43x3BcyRaOMMLto1vUo7C+86+MFhYTl6Ryiw==}
@@ -8493,25 +8464,6 @@ packages:
   robust-predicates@3.0.2:
     resolution: {integrity: sha512-IXgzBWvWQwE6PrDI05OvmXUIruQTcoMDzRsOd5CDvHCVLcLHMTSYvOK5Cm46kWqlV3yAbuSpBZdJ5oP5OUoStg==}
 
-  rolldown-plugin-dts@0.25.2:
-    resolution: {integrity: sha512-nMhN/R+vmR8GM45ZW1FWMSjRTSDDn/6w4GTf8RNrEFCBdl8B1kySWrU1ixPtbwzXoRlcO+R/S88VgXuJQwfdDg==}
-    engines: {node: ^22.18.0 || >=24.0.0}
-    peerDependencies:
-      '@ts-macro/tsc': ^0.3.6
-      '@typescript/native-preview': '>=7.0.0-dev.20260325.1'
-      rolldown: ^1.0.0
-      typescript: ^5.0.0 || ^6.0.0
-      vue-tsc: ~3.2.0
-    peerDependenciesMeta:
-      '@ts-macro/tsc':
-        optional: true
-      '@typescript/native-preview':
-        optional: true
-      typescript:
-        optional: true
-      vue-tsc:
-        optional: true
-
   rolldown@1.0.3:
     resolution: {integrity: sha512-i00lAJ2ks1BYr7rjNjKC7BcqAS7nVfiT3QX1SI5aY+AFHblCmaUf9OE9dbdzDvW6dJxbi2ZCZiy9v3CcwOiX3g==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -9239,18 +9191,6 @@ packages:
       vite:
         optional: true
       webpack:
-        optional: true
-
-  unplugin-isolated-decl@0.16.0:
-    resolution: {integrity: sha512-Y2uOMSQOIdjBbq2GyYoaMKX6C1o1DPQyadH29zdP/wJHvtxq1o7GuXLDq/f3dPKsltd9SGj35Fs2xHjy7cm0eQ==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    peerDependencies:
-      '@swc/core': ^1.6.6
-      typescript: ^5.5.2 || ^6.0.0
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      typescript:
         optional: true
 
   unplugin-utils@0.3.1:
@@ -15223,12 +15163,6 @@ snapshots:
       '@babel/parser': 7.29.3
       pathe: 2.0.3
 
-  ast-kit@3.0.0-beta.1:
-    dependencies:
-      '@babel/parser': 8.0.0-rc.6
-      estree-walker: 3.0.3
-      pathe: 2.0.3
-
   ast-walker-scope@0.8.3:
     dependencies:
       '@babel/parser': 7.29.3
@@ -15767,8 +15701,6 @@ snapshots:
       type-fest: 5.6.0
 
   dotenv@17.4.2: {}
-
-  dts-resolver@3.0.0: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -16692,10 +16624,6 @@ snapshots:
       get-intrinsic: 1.3.0
 
   get-tsconfig@4.14.0:
-    dependencies:
-      resolve-pkg-maps: 1.0.0
-
-  get-tsconfig@5.0.0-beta.5:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
@@ -19333,23 +19261,6 @@ snapshots:
 
   robust-predicates@3.0.2: {}
 
-  rolldown-plugin-dts@0.25.2(rolldown@1.0.3)(typescript@5.9.3)(vue-tsc@3.2.4(typescript@5.9.3)):
-    dependencies:
-      '@babel/generator': 8.0.0-rc.6
-      '@babel/helper-validator-identifier': 8.0.0-rc.6
-      '@babel/parser': 8.0.0-rc.6
-      ast-kit: 3.0.0-beta.1
-      birpc: 4.0.0
-      dts-resolver: 3.0.0
-      get-tsconfig: 5.0.0-beta.5
-      obug: 2.1.1
-      rolldown: 1.0.3
-    optionalDependencies:
-      typescript: 5.9.3
-      vue-tsc: 3.2.4(typescript@5.9.3)
-    transitivePeerDependencies:
-      - oxc-resolver
-
   rolldown@1.0.3:
     dependencies:
       '@oxc-project/types': 0.133.0
@@ -20238,17 +20149,6 @@ snapshots:
       vite: 8.0.16(@types/node@25.6.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.46.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
-
-  unplugin-isolated-decl@0.16.0(typescript@5.9.3):
-    dependencies:
-      magic-string: 0.30.21
-      obug: 2.1.1
-      oxc-parser: 0.131.0
-      oxc-transform: 0.131.0
-      unplugin: 3.0.0
-      unplugin-utils: 0.3.1
-    optionalDependencies:
-      typescript: 5.9.3
 
   unplugin-utils@0.3.1:
     dependencies:

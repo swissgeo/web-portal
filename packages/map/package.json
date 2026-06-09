@@ -48,7 +48,6 @@
     "@vitejs/plugin-vue": "catalog:",
     "@vueuse/core": "catalog:",
     "eslint": "catalog:",
-    "rolldown-plugin-dts": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",

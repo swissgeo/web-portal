@@ -26,13 +26,7 @@ export default function useAddLayerToMap(
   isVisible: Ref<boolean>,
   opacity: Ref<number>,
   olMap: Ref<Map | undefined> | undefined,
-): {
-  addLayerToMap: () => void;
-  removeLayerFromMap: () => void;
-  setVisibility: (isVisible: boolean) => void;
-  setZIndex: (zIndex: number) => void;
-  setOpacity: (opacity: number) => void;
-} {
+) {
   const layerOnMap = shallowRef<BaseLayer>();
 
   onBeforeUnmount(() => {
