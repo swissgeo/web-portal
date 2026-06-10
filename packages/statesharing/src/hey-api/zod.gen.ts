@@ -29,7 +29,7 @@ export const zLayerTypeEnum = z.enum(["dataset", "gpx", "kml"]);
  * MapState
  */
 export const zMapState = z.object({
-  center: z.tuple([z.number().gte(0), z.number().gte(0)]).nullish(),
+  center: z.tuple([z.number().gt(0), z.number().gt(0)]).nullish(),
   zoom: z.number().gte(1).lte(13).nullish(),
   rotation: z.number().gte(0).lte(6.283185307179586).nullish(),
 });
@@ -47,7 +47,7 @@ export const zSaveAppStateResponse = z.object({
  * TimeDimension
  */
 export const zTimeDimension = z.object({
-  currentValue: z.union([z.iso.datetime(), z.literal("current")]).nullish(),
+  currentValue: z.string().max(50).nullish(),
 });
 
 /**

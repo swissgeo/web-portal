@@ -18,7 +18,7 @@ function makeMapLayer(uuid: string): MapLayer {
   return { uuid, format: "WMTS", layerId: uuid, opacity: 1, isVisible: true };
 }
 
-describe("useStateConfig > normalizeTimeValueToISO via exportState", () => {
+describe("useStateConfig > exportState time dimension", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     mockMapLayers.length = 0;
@@ -41,25 +41,25 @@ describe("useStateConfig > normalizeTimeValueToISO via exportState", () => {
     mockMapLayers.push(makeMapLayer(uuid));
   }
 
-  it("converts a YYYYMMDD currentValue to ISO datetime", () => {
+  it("passes through a YYYYMMDD currentValue unchanged", () => {
     setupLayerWithTimeValue("20240101");
     const { exportState } = useStateConfig();
 
     expect(
       exportState.value.state.layers?.[0]?.dimensions?.time?.currentValue,
-    ).toBe("2024-01-01T00:00:00Z");
+    ).toBe("20240101");
   });
 
-  it("converts a YYYY currentValue to ISO datetime", () => {
+  it("passes through a YYYY currentValue unchanged", () => {
     setupLayerWithTimeValue("1981");
     const { exportState } = useStateConfig();
 
     expect(
       exportState.value.state.layers?.[0]?.dimensions?.time?.currentValue,
-    ).toBe("1981-01-01T00:00:00Z");
+    ).toBe("1981");
   });
 
-  it("passes through a currentValue that is already ISO", () => {
+  it("passes through an ISO currentValue unchanged", () => {
     setupLayerWithTimeValue("2024-01-01T00:00:00Z");
     const { exportState } = useStateConfig();
 
