@@ -1,26 +1,29 @@
 import type { Map as OlMap } from "ol";
+import type { Coordinate } from "ol/coordinate";
 import type Feature from "ol/Feature";
 import type { Circle, Geometry, LineString, Point, Polygon } from "ol/geom";
 import type VectorLayer from "ol/layer/Vector";
 import type { Ref } from "vue";
 
+import { registerProj4, WGS84 } from "@swissgeo/coordinates";
 import { useLayerStore } from "@swissgeo/layers";
 import { storeToRefs } from "pinia";
+import proj4 from "proj4";
 import { computed, onMounted, readonly, ref, watch } from "vue";
-
-import { getArea, getLength } from "ol/sphere.js";
 
 import type { FocusMode } from "../stores/drawing.store";
 
 import { useDrawingStore2 } from "../stores/drawing.store";
-import type { Coordinate } from "ol/coordinate";
 import { getLinearRingLength } from "../utils/drawingUtils";
+
+registerProj4(proj4);
 
 /**
  * Type to describe the metrics related to a Point feature
  */
 export type PointMetrics = {
   coordinate: Coordinate;
+  coordinatesWgs84: Coordinate;
 };
 
 /**
@@ -43,6 +46,7 @@ export type PolygonMetrics = {
  */
 export type CircleMetrics = {
   center: Coordinate;
+  centerWgs84: Coordinate;
   radiusMeters: number;
   areaSquareMeters: number;
   perimeterMeters: number;
@@ -133,7 +137,12 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     switch (geometry.getType()) {
       case "Point": {
         const coordinates = (geometry as Point).getCoordinates();
-        return { coordinate: coordinates };
+        const coordinatesWgs84 = proj4(
+          olMap.getView().getProjection().getCode(),
+          WGS84.epsg,
+          coordinates,
+        );
+        return { coordinate: coordinates, coordinatesWgs84 };
       }
 
       case "LineString": {
@@ -150,14 +159,23 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
         return { areaSquareMeters, perimeterMeters };
       }
       case "Circle": {
-        // const center = geometry.getCenter() as [number, number];
-        // const radiusMeters = geometry.getRadius();
         const center = (geometry as Circle).getCenter();
+        const centerWgs84 = proj4(
+          olMap.getView().getProjection().getCode(),
+          WGS84.epsg,
+          center,
+        );
         const radiusMeters = (geometry as Circle).getRadius();
 
         const areaSquareMeters = Math.PI * radiusMeters * radiusMeters;
         const perimeterMeters = 2 * Math.PI * radiusMeters;
-        return { center, radiusMeters, areaSquareMeters, perimeterMeters };
+        return {
+          center,
+          centerWgs84,
+          radiusMeters,
+          areaSquareMeters,
+          perimeterMeters,
+        };
       }
       default:
         return null;
