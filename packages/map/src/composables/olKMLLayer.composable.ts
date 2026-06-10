@@ -36,6 +36,7 @@ export default function useOlKMLLayer(
   const isVisible = computed(() => layer.value.isVisible);
   const opacity = computed(() => layer.value.opacity);
   const kmlData = computed(() => layer.value.data);
+  const isDrawingLayer = computed(() => bearsUuid(layer.value.uuid));
 
   watch(opacity, (newOpacity) => {
     console.log("<<< Opacity", newOpacity, olLayer.value);
@@ -54,7 +55,8 @@ export default function useOlKMLLayer(
   watch(
     () => kmlData.value,
     () => {
-      if (bearsUuid(layer.value.uuid)) {
+      // A KML layer could be used for drawing, in that case we want to keep the same OL layer
+      if (isDrawingLayer.value) {
         olLayer.value = drawingVectorLayer;
       } else {
         olLayer.value = new VectorLayer({
@@ -223,7 +225,11 @@ export default function useOlKMLLayer(
   watch(
     () => olLayer.value,
     () => {
-      addLayerToMap();
+      // if the kml layer is a drawing layer, it is already added to the map
+      // from within the drawing module
+      if (!isDrawingLayer.value) {
+        addLayerToMap();
+      }
     },
     { immediate: true },
   );
