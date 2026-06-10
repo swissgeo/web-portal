@@ -69,6 +69,53 @@ export default defineNuxtConfig({
       // disable hot module reload in tests
       hmr: process.env.NODE_ENV === "test" ? false : true,
     },
+    plugins: [
+      {
+        /**
+         * Dirty fix due to the migration to Vite 8
+         * See https://github.com/nuxt-modules/i18n/issues/3949
+         * As well as https://github.com/nuxt-modules/i18n/issues/3953#issuecomment-4187681431 where this workaround is proposed
+         * TODO: Investigate if this can be removed once the i18n module is updated to support Vite 8
+         */
+        name: "i18n-json-vite8-fix",
+        enforce: "pre",
+        configResolved(config) {
+          const jsonPlugin = config.plugins.find((p) => p.name === "vite:json");
+          if (!jsonPlugin?.transform) {
+            return;
+          }
+
+          const originalTransform =
+            typeof jsonPlugin.transform === "function"
+              ? jsonPlugin.transform
+              : jsonPlugin.transform?.handler;
+          if (!originalTransform) {
+            return;
+          }
+
+          const patchedTransform = function (
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            this: any,
+            code: string,
+            id: string,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ...args: any[]
+          ) {
+            // Skip i18n locale JSON files, let unplugin-vue-i18n handle them
+            if (/i18n\/locales\/.*\.json$/.test(id)) {
+              return;
+            }
+            return originalTransform.call(this, code, id, ...args);
+          };
+
+          if (typeof jsonPlugin.transform === "function") {
+            jsonPlugin.transform = patchedTransform;
+          } else if (jsonPlugin.transform?.handler) {
+            jsonPlugin.transform.handler = patchedTransform;
+          }
+        },
+      },
+    ],
   },
   i18n: {
     // Disable automatic browser-language detection to prevent the i18n middleware
