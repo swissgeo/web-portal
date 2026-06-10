@@ -1,6 +1,6 @@
 import type { Map as OlMap } from "ol";
 import type Feature from "ol/Feature";
-import type { Geometry } from "ol/geom";
+import type { Circle, Geometry, LineString, Point, Polygon } from "ol/geom";
 import type VectorLayer from "ol/layer/Vector";
 import type { Ref } from "vue";
 
@@ -8,15 +8,19 @@ import { useLayerStore } from "@swissgeo/layers";
 import { storeToRefs } from "pinia";
 import { computed, onMounted, readonly, ref, watch } from "vue";
 
+import { getArea, getLength } from "ol/sphere.js";
+
 import type { FocusMode } from "../stores/drawing.store";
 
 import { useDrawingStore2 } from "../stores/drawing.store";
+import type { Coordinate } from "ol/coordinate";
+import { getLinearRingLength } from "../utils/drawingUtils";
 
 /**
  * Type to describe the metrics related to a Point feature
  */
 export type PointMetrics = {
-  coordinate: [number, number];
+  coordinate: Coordinate;
 };
 
 /**
@@ -38,8 +42,10 @@ export type PolygonMetrics = {
  * Type to describe the metrics related to a Circle feature
  */
 export type CircleMetrics = {
-  center: [number, number];
+  center: Coordinate;
   radiusMeters: number;
+  areaSquareMeters: number;
+  perimeterMeters: number;
 };
 
 /**
@@ -67,6 +73,7 @@ export interface UseDrawingApi {
   focusedFeature: Ref<Feature<Geometry> | null>;
   bearsUuid: (uuid: string) => boolean;
   drawingVectorLayer: VectorLayer;
+  focusedFeatureMetrics: Ref<FocusedFeatureMetrics>;
 }
 
 export function useDrawing(olMap: OlMap): UseDrawingApi {
@@ -91,13 +98,71 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     drawCircleInteraction,
   ];
 
-  const layer = computed(() =>
-    layerStore.getLayer(drawingVectorLayer.get("uuid")),
-  );
+  /**
+   * This is an incremental counter that updates when the feature in focus is being created or edited.
+   * This if only for internal use to trigger the update of the computed property focusedFeatureMetrics.
+   */
+  const creatingOrEditingIterations = ref(0);
 
-  watch(layer, (newLayer) => {
-    console.log("newLayer", newLayer);
+  /**
+   * This is the metrics specific to the feature in focus.
+   * They are update as the user draws of edits.
+   */
+  const focusedFeatureMetrics = ref<FocusedFeatureMetrics>(null);
+
+  watch(creatingOrEditingIterations, () => {
+    focusedFeatureMetrics.value = computeFocusedFeatureMetrics();
   });
+
+  /**
+   * Compute the metrics related to the focused feature, depending on its geometry type.
+   */
+  function computeFocusedFeatureMetrics(): FocusedFeatureMetrics {
+    if (!focusedFeature.value) {
+      return null;
+    }
+
+    const geometry = focusedFeature.value.getGeometry();
+
+    console.log("geometry", geometry);
+
+    if (!geometry) {
+      return null;
+    }
+
+    switch (geometry.getType()) {
+      case "Point": {
+        const coordinates = (geometry as Point).getCoordinates();
+        return { coordinate: coordinates };
+      }
+
+      case "LineString": {
+        const lengthMeters = (geometry as LineString).getLength();
+        return { lengthMeters };
+      }
+
+      case "Polygon": {
+        const areaSquareMeters = (geometry as Polygon).getArea();
+        const perimeterMeters = getLinearRingLength(
+          (geometry as Polygon).getLinearRing(0),
+        );
+
+        return { areaSquareMeters, perimeterMeters };
+      }
+      case "Circle": {
+        // const center = geometry.getCenter() as [number, number];
+        // const radiusMeters = geometry.getRadius();
+        const center = (geometry as Circle).getCenter();
+        const radiusMeters = (geometry as Circle).getRadius();
+
+        const areaSquareMeters = Math.PI * radiusMeters * radiusMeters;
+        const perimeterMeters = 2 * Math.PI * radiusMeters;
+        return { center, radiusMeters, areaSquareMeters, perimeterMeters };
+      }
+      default:
+        return null;
+    }
+  }
 
   // watchEffect(() => {
   //   drawingVectorLayer.setVisible(layer.value.isVisible);
@@ -239,6 +304,11 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
      */
     interaction.on("drawstart", (event) => {
       focusedFeature.value = event.feature;
+      console.log(">>>>>>>> focusedFeature.value", focusedFeature.value);
+
+      focusedFeature.value.on("change", () => {
+        creatingOrEditingIterations.value++;
+      });
     });
 
     /**
@@ -279,6 +349,7 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     drawCircleInteraction.setActive(false);
     snapInteraction.setActive(false);
     selectInteractions.setActive(false);
+    creatingOrEditingIterations.value = 0;
   }
 
   /**
@@ -325,6 +396,7 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     selectInteractions.clearSelection();
     focusedFeature.value = null;
     focusMode.value = "none";
+    creatingOrEditingIterations.value = 0;
 
     console.log("Remaining interactions:", olMap.getInteractions());
   }
@@ -397,5 +469,6 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     bearsUuid,
     // Expose the OL layer with a stable public type for declaration generation.
     drawingVectorLayer: drawingVectorLayer as unknown as VectorLayer,
+    focusedFeatureMetrics,
   };
 }

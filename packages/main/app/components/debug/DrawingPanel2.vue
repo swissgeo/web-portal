@@ -18,6 +18,7 @@ const {
   enableDrawInteraction,
   removeFocusedFeature,
   focusedFeatureType,
+  focusedFeatureMetrics,
   numberOfFeatures,
   focusMode,
   focusedFeature,
@@ -59,6 +60,11 @@ onUnmounted(() => {
     </div>
 
     <div class="mb-4">
+      <textarea
+        v-if="focusedFeatureMetrics"
+        :value="JSON.stringify(focusedFeatureMetrics, null, 2)"
+        readonly
+      ></textarea>
       <div class="grid grid-cols-2 gap-2">
         <UButton
           v-if="focusMode === 'none'"
