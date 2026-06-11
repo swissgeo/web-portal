@@ -235,4 +235,26 @@ test.describe("embedded map in iframe", () => {
       iframeElement.getByTestId("fullscreen-toggle"),
     ).not.toBeVisible();
   });
+
+  test("displays the see on swissgeo.ch button inside the iframe", async ({
+    page,
+  }) => {
+    const iframeElement = page.frameLocator("iframe");
+    await expect(
+      iframeElement.getByTestId("embedded-map-viewer-view-on-swissgeo-button"),
+    ).toBeVisible({
+      timeout: HYDRATION_TIMEOUT,
+    });
+  });
+
+  test("see on swissgeo.ch button has the correct link", async ({ page }) => {
+    const iframeElement = page.frameLocator("iframe");
+    const button = iframeElement.getByTestId(
+      "embedded-map-viewer-view-on-swissgeo-button",
+    );
+    await expect(button).toHaveAttribute(
+      "href",
+      "http://localhost:3000/map?state=dummyStateForTesting",
+    );
+  });
 });

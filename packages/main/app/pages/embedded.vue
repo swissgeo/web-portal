@@ -1,9 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const route = useRoute();
+const stateQuery = route.query.state as string | undefined;
+</script>
 
 <template>
   <NuxtLayout name="embedded">
-    <EmbeddedMapViewer />
+    <EmbeddedMapViewer :state-query="stateQuery" />
   </NuxtLayout>
 </template>
-
-<style scoped></style>

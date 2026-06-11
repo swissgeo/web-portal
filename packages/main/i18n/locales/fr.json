@@ -200,5 +200,8 @@
   },
   "compareSlider": {
     "toggleButtonTitle": "Basculer le curseur de comparaison"
+  },
+  "embedded": {
+    "viewOn": "Voir sur {platform}"
   }
 }

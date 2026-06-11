@@ -4,9 +4,12 @@ import type { MapLayerRenderer } from "@swissgeo/map";
 import { OpenLayersDrawingLayer, isDrawingLayer } from "@swissgeo/drawing";
 import { useLayerStore } from "@swissgeo/layers";
 import { MapModule } from "@swissgeo/map";
+import { LogoPic } from "@swissgeo/skeleton";
 
 import SourceToMapDataConverter from "../components/SourceToMapDataConverter.vue";
 
+const url = useRequestURL();
+const { t } = useI18n();
 const geolocationStore = useGeolocationStore();
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
@@ -15,6 +18,10 @@ const { sources: attributionSources } = useAttributionSources(
   computed(() => layerStore.layers),
   computed(() => layerStore.backgroundLayer),
 );
+
+const { stateQuery } = defineProps<{
+  stateQuery?: string;
+}>();
 
 const sourceLayers = computed(() => layerStore.layers);
 
@@ -37,6 +44,17 @@ const displayMode = inject<"web" | "print" | "embedded">("displayMode", "web");
 
 <template>
   <ClientOnly>
+    <UButton
+      v-if="stateQuery"
+      class="fixed top-4 left-4 z-9999"
+      :to="`${url.origin}/map?state=${stateQuery}`"
+      target="_blank"
+      variant="outline"
+      data-testid="embedded-map-viewer-view-on-swissgeo-button"
+    >
+      <LogoPic class="h-auto w-auto!" :condensed="true" />
+      <span>{{ t("embedded.viewOn", { platform: "swissgeo.ch" }) }}</span>
+    </UButton>
     <SourceToMapDataConverter
       :source-bg-layer="backgroundLayer"
       :source-data="sourceLayers"
