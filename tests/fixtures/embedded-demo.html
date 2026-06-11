@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Embedded demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: sans-serif;
+        padding: 16px;
+        background: #f5f5f5;
+      }
+      h1 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+        color: #333;
+      }
+      iframe {
+        display: block;
+        width: 100%;
+        height: calc(100vh - 48px);
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Embedded map demo</h1>
+    <iframe
+      src="http://localhost:3000/fr/embedded"
+      title="Embedded map"
+    ></iframe>
+  </body>
+</html>
