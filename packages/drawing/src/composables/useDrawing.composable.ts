@@ -15,7 +15,12 @@ import type { FocusMode } from "../stores/drawing.store";
 
 import { useDrawingStore2 } from "../stores/drawing.store";
 import { getLinearRingLength } from "../utils/drawingUtils";
-import { initializeStyleProperties } from "../utils/drawingStyle";
+import {
+  applyIdleStyle,
+  applyEditingStyle,
+  applySelectedStyle,
+  initializeStyleProperties,
+} from "../utils/drawingStyle";
 
 registerProj4(proj4);
 
@@ -312,11 +317,46 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     }
   });
 
-  // watch([focusedFeature, focusMode], () => {
-  //   if (focusMode.value === "create" && focusedFeature.value) {
-  //     console.log("CREATION START");
-  //   }
-  // });
+  /**
+   * A feature was focused and is no longer focused, whether another one is focused or none,
+   * The style is reset to the basic style (in case it was in edit or create mode before)
+   */
+  watch(focusedFeature, (newFocusedFeature, oldFocusedFeature) => {
+    if (oldFocusedFeature && oldFocusedFeature !== newFocusedFeature) {
+      applyIdleStyle(oldFocusedFeature);
+      return;
+    }
+  });
+
+  /**
+   * Update the style of the feature
+   */
+  watch([focusedFeature, focusMode], ([newFocusedFeature, newFocusMode]) => {
+    if (!newFocusedFeature) {
+      return;
+    }
+
+    switch (newFocusMode) {
+      case "none":
+        applySelectedStyle(focusedFeature.value);
+        break;
+      case "select":
+        applySelectedStyle(focusedFeature.value);
+        break;
+
+      case "create":
+        // Add the default styling properties
+        // (not the creating/editing style, but the style that can later be modified and persited)
+        initializeStyleProperties(focusedFeature.value);
+      // Note: no break here, as the creating style is the same as the editing style for now
+      // eslint-disable-next-line no-fallthrough
+      case "edit":
+        // Apply the style for creating/editing to the feature,
+        // so that it is visually different while being created/edited.
+        applyEditingStyle(focusedFeature.value);
+        break;
+    }
+  });
 
   // When a feature is finished to be created or modified (tyipically with a double-click),
   // the focus is then switched to "none"
@@ -327,11 +367,6 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
      */
     interaction.on("drawstart", (event) => {
       focusedFeature.value = event.feature;
-      console.log(">>>>>>>> focusedFeature.value", focusedFeature.value);
-
-      // Add the default styling properties
-      // (not the creating/editing style, but the style that can later be modified and persited)
-      initializeStyleProperties(focusedFeature.value);
 
       focusedFeature.value.on("change", () => {
         creatingOrEditingIterations.value++;
