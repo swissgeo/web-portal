@@ -12,4 +12,15 @@ export default [
       },
     },
   },
+  {
+    // Node dev scripts (e.g. fetch-geoadmin-styles.mjs) run outside the browser.
+    files: ["scripts/**/*.mjs"],
+    languageOptions: {
+      globals: {
+        fetch: "readonly",
+        console: "readonly",
+        process: "readonly",
+      },
+    },
+  },
 ];
