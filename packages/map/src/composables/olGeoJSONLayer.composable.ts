@@ -2,6 +2,7 @@ import type { Map } from "ol";
 import type { FeatureLike } from "ol/Feature";
 import type { Ref } from "vue";
 
+import { constants as coordinateConstants } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { Feature } from "ol";
 import { stylefunction } from "ol-mapbox-style";
@@ -113,11 +114,13 @@ export default function useOlGeoJSONLayer(
       messages: ["Applying MapLibre style via ol-mapbox-style", style],
     });
     const getImage = makeGetImage(layer.value.mapLibreIcons ?? []);
+    // Pass the LV95 view resolutions so ol-mapbox-style maps the current map
+    // resolution to the same zoom levels the converter used for minzoom/maxzoom.
     stylefunction(
       olLayer.value,
       style,
       sourceId,
-      undefined,
+      coordinateConstants.LV95_RESOLUTIONS,
       undefined,
       undefined,
       undefined,

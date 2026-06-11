@@ -1,5 +1,6 @@
 import type { GeoJSONLayer } from "@swissgeo/map";
 
+import { LV95 } from "@swissgeo/coordinates";
 import log from "@swissgeo/log";
 import { geoadminToMapLibreStyle } from "@swissgeo/map";
 import geoJsonData from "~/assets/poc/hydroweb-grundwasser.data.json";
@@ -24,6 +25,10 @@ export function useMapLibreGeoJsonDemo() {
     const { style, icons } = geoadminToMapLibreStyle(
       geoadminStyle as GeoadminStyle,
       sourceId,
+      // Map geoadmin resolution bands to LV95 zoom levels (the converter bakes
+      // minzoom/maxzoom; the composable feeds LV95_RESOLUTIONS to ol-mapbox-style
+      // so runtime resolution→zoom matches).
+      { resolutionToZoom: (resolution) => LV95.getZoomForResolution(resolution) },
     );
 
     log.info({

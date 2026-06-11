@@ -1,3 +1,4 @@
+import { LV95 } from "@swissgeo/coordinates";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it, expect } from "vitest";
@@ -105,9 +106,8 @@ describe("geoadmin styles batch conversion", () => {
 
       let result;
       try {
-        // resolutionToZoom is a stub here; the batch checks structure, not exact zoom.
         result = geoadminToMapLibreStyle(raw, id, {
-          resolutionToZoom: (res) => Math.max(0, 20 - Math.log2(res)),
+          resolutionToZoom: (res) => LV95.getZoomForResolution(res),
         });
       } catch (err) {
         failures.push(`${id}: converter threw — ${(err as Error).message}`);
