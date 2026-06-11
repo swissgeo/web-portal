@@ -201,7 +201,7 @@
   "compareSlider": {
     "toggleButtonTitle": "Basculer le curseur de comparaison"
   },
-  "embedded": {
+  "embed": {
     "viewOn": "Voir sur {platform}"
   }
 }

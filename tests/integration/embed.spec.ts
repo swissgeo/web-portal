@@ -38,7 +38,7 @@ import {
   cleanupExternalRequestMocks,
 } from "./setup";
 
-test.describe("embedded map page", () => {
+test.describe("embed map page", () => {
   const getZoom = async (page: Page) => {
     const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
     const zoom = await page.evaluate((map) => map.getView().getZoom(), mapRef);
@@ -98,7 +98,7 @@ test.describe("embedded map page", () => {
     // override the OAR routes
     await mockBackgroundRoutes(page);
 
-    await page.goto("/en/embedded");
+    await page.goto("/en/embed");
     await expect(page.getByTestId("ol-map")).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
@@ -143,7 +143,7 @@ test.describe("embedded map page", () => {
       (value) => sessionStorage.setItem("swissgeo_app_state", value),
       basicMapStateFixture,
     );
-    await page.goto("/en/embedded");
+    await page.goto("/en/embed");
     await expect(page.getByTestId("ol-map")).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
@@ -193,11 +193,9 @@ test.describe("embedded map page", () => {
   });
 });
 
-test.describe("embedded map in iframe", () => {
-  const demoPagePath = new URL(
-    "../fixtures/embedded-demo.html",
-    import.meta.url,
-  ).pathname;
+test.describe("embed map in iframe", () => {
+  const demoPagePath = new URL("../fixtures/embed-demo.html", import.meta.url)
+    .pathname;
 
   test.beforeEach(async ({ page }) => {
     await mockExternalRequests(page).mockAll();
@@ -208,7 +206,7 @@ test.describe("embedded map in iframe", () => {
     await cleanupExternalRequestMocks(page);
   });
 
-  test("renders the embedded map inside the iframe", async ({ page }) => {
+  test("renders the embed map inside the iframe", async ({ page }) => {
     const iframeElement = page.frameLocator("iframe");
     await expect(iframeElement.getByTestId("ol-map")).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
@@ -241,7 +239,7 @@ test.describe("embedded map in iframe", () => {
   }) => {
     const iframeElement = page.frameLocator("iframe");
     await expect(
-      iframeElement.getByTestId("embedded-map-viewer-view-on-swissgeo-button"),
+      iframeElement.getByTestId("embed-map-viewer-view-on-swissgeo-button"),
     ).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
@@ -250,7 +248,7 @@ test.describe("embedded map in iframe", () => {
   test("see on swissgeo.ch button has the correct link", async ({ page }) => {
     const iframeElement = page.frameLocator("iframe");
     const button = iframeElement.getByTestId(
-      "embedded-map-viewer-view-on-swissgeo-button",
+      "embed-map-viewer-view-on-swissgeo-button",
     );
     await expect(button).toHaveAttribute(
       "href",

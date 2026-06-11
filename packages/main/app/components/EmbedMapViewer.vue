@@ -39,7 +39,7 @@ const customLayerRenderers: MapLayerRenderer[] = [
 ];
 
 // The display mode is defined in the layout
-const displayMode = inject<"web" | "print" | "embedded">("displayMode", "web");
+const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
 </script>
 
 <template>
@@ -50,10 +50,10 @@ const displayMode = inject<"web" | "print" | "embedded">("displayMode", "web");
       :to="`${url.origin}/map?state=${stateQuery}`"
       target="_blank"
       variant="outline"
-      data-testid="embedded-map-viewer-view-on-swissgeo-button"
+      data-testid="embed-map-viewer-view-on-swissgeo-button"
     >
       <LogoPic class="h-auto w-auto!" :condensed="true" />
-      <span>{{ t("embedded.viewOn", { platform: "swissgeo.ch" }) }}</span>
+      <span>{{ t("embed.viewOn", { platform: "swissgeo.ch" }) }}</span>
     </UButton>
     <SourceToMapDataConverter
       :source-bg-layer="backgroundLayer"

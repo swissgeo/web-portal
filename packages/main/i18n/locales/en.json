@@ -201,7 +201,7 @@
   "compareSlider": {
     "toggleButtonTitle": "Toggle compare slider"
   },
-  "embedded": {
+  "embed": {
     "viewOn": "View on {platform}"
   }
 }

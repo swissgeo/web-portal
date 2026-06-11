@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { provide } from "vue";
 
-provide<"web" | "print" | "embedded">("displayMode", "embedded");
+provide<"web" | "print" | "embed">("displayMode", "embed");
 </script>
 
 <template>

@@ -4,7 +4,7 @@ const stateQuery = route.query.state as string | undefined;
 </script>
 
 <template>
-  <NuxtLayout name="embedded">
-    <EmbeddedMapViewer :state-query="stateQuery" />
+  <NuxtLayout name="embed">
+    <EmbedMapViewer :state-query="stateQuery" />
   </NuxtLayout>
 </template>

@@ -28,7 +28,7 @@ const {
 } = defineProps<{
   layers: MapLayer[];
   customLayerRenderers?: MapLayerRenderer[];
-  displayMode: "web" | "print" | "embedded";
+  displayMode: "web" | "print" | "embed";
   /** Whether the compare slider is shown over the map (web mode only). */
   compareSliderActive?: boolean;
   /** Horizontal position of the compare slider, as a ratio of the map width. */
@@ -79,7 +79,7 @@ const layersWithZIndex = computed(() => {
       <template v-else-if="displayMode === 'print'">
         <OpenLayersScalePrint />
       </template>
-      <template v-else-if="displayMode === 'embedded'">
+      <template v-else-if="displayMode === 'embed'">
         <OpenLayersScale />
       </template>
     </OpenLayersMap>

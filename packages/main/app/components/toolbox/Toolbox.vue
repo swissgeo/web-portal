@@ -52,7 +52,7 @@ watch(showTimeSliderButton, (hasTimeLayers) => {
 const showCompareSliderButton = computed(
   () => mapViewStore.visibleLayers.length > 0,
 );
-const displayMode = inject<"web" | "print" | "embedded">("displayMode", "web");
+const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
 </script>
 
 <template>
@@ -71,7 +71,7 @@ const displayMode = inject<"web" | "print" | "embedded">("displayMode", "web");
       v-if="['web'].includes(displayMode) && showRecenterButton"
     />
     <ZoomButtons
-      v-if="['web', 'embedded'].includes(displayMode) && showZoomButtons"
+      v-if="['web', 'embed'].includes(displayMode) && showZoomButtons"
     />
     <Toggle3dButton v-if="['web'].includes(displayMode) && show3dButton" />
     <TimeSliderButton

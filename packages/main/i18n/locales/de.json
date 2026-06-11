@@ -201,7 +201,7 @@
   "compareSlider": {
     "toggleButtonTitle": "Vergleichsregler umschalten"
   },
-  "embedded": {
+  "embed": {
     "viewOn": "Auf {platform} anzeigen"
   }
 }
