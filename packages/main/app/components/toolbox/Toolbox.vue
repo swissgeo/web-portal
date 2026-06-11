@@ -8,6 +8,7 @@ import { useDrawingStore } from "@swissgeo/drawing";
  * logic behind the available buttons, it should become a computed value instead.
  */
 import { useLayerStore } from "@swissgeo/layers";
+import { inject } from "vue";
 
 import CompareSliderButton from "@/components/toolbox/toolboxButtons/CompareSliderButton.vue";
 import FullScreenButton from "@/components/toolbox/toolboxButtons/FullScreenButton.vue";
@@ -51,6 +52,7 @@ watch(showTimeSliderButton, (hasTimeLayers) => {
 const showCompareSliderButton = computed(
   () => mapViewStore.visibleLayers.length > 0,
 );
+const displayMode = inject<"web" | "print" | "embedded">("displayMode", "web");
 </script>
 
 <template>
@@ -58,14 +60,26 @@ const showCompareSliderButton = computed(
     class="toolbox-right absolute top-[1rem] right-[1rem] w-[40px] space-y-1"
     data-testid="toolbox-right"
   >
-    <FullScreenButton v-if="showFullScreeButton" />
-    <GeolocButton v-if="showGelocationButton" />
-    <CompassButton v-if="showCompassButton" />
-    <RecenterButton v-if="showRecenterButton" />
-    <ZoomButtons v-if="showZoomButtons" />
-    <Toggle3dButton v-if="show3dButton" />
-    <TimeSliderButton v-if="showTimeSliderButton" />
-    <CompareSliderButton v-if="showCompareSliderButton" />
+    <FullScreenButton
+      v-if="['web'].includes(displayMode) && showFullScreeButton"
+    />
+    <GeolocButton
+      v-if="['web'].includes(displayMode) && showGelocationButton"
+    />
+    <CompassButton v-if="['web'].includes(displayMode) && showCompassButton" />
+    <RecenterButton
+      v-if="['web'].includes(displayMode) && showRecenterButton"
+    />
+    <ZoomButtons
+      v-if="['web', 'embedded'].includes(displayMode) && showZoomButtons"
+    />
+    <Toggle3dButton v-if="['web'].includes(displayMode) && show3dButton" />
+    <TimeSliderButton
+      v-if="['web'].includes(displayMode) && showTimeSliderButton"
+    />
+    <CompareSliderButton
+      v-if="['web'].includes(displayMode) && showCompareSliderButton"
+    />
     <slot />
   </div>
 </template>
