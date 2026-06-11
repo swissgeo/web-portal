@@ -15,6 +15,7 @@ import type { FocusMode } from "../stores/drawing.store";
 
 import { useDrawingStore2 } from "../stores/drawing.store";
 import { getLinearRingLength } from "../utils/drawingUtils";
+import { initializeStyleProperties } from "../utils/drawingStyle";
 
 registerProj4(proj4);
 
@@ -127,8 +128,6 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     }
 
     const geometry = focusedFeature.value.getGeometry();
-
-    console.log("geometry", geometry);
 
     if (!geometry) {
       return null;
@@ -313,6 +312,12 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     }
   });
 
+  // watch([focusedFeature, focusMode], () => {
+  //   if (focusMode.value === "create" && focusedFeature.value) {
+  //     console.log("CREATION START");
+  //   }
+  // });
+
   // When a feature is finished to be created or modified (tyipically with a double-click),
   // the focus is then switched to "none"
   allDrawInteractions.forEach((interaction) => {
@@ -323,6 +328,10 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     interaction.on("drawstart", (event) => {
       focusedFeature.value = event.feature;
       console.log(">>>>>>>> focusedFeature.value", focusedFeature.value);
+
+      // Add the default styling properties
+      // (not the creating/editing style, but the style that can later be modified and persited)
+      initializeStyleProperties(focusedFeature.value);
 
       focusedFeature.value.on("change", () => {
         creatingOrEditingIterations.value++;
