@@ -1,11 +1,11 @@
-import type { GeoAdminGeoJSONStyleDefinition } from "@swissgeo/shared/geojson";
-
 import { Feature } from "ol";
 import { stylefunction } from "ol-mapbox-style";
 import Point from "ol/geom/Point";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { describe, it, expect, vi } from "vitest";
+
+import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 
 import { geoadminToMapLibreStyle } from "@/utils/geoadminToMapLibreStyle";
 

@@ -1,16 +1,16 @@
+import log, { LogPreDefinedColor } from "@swissgeo/log";
+
 import type {
   GeoAdminGeoJSONStyleDefinition,
   GeoAdminGeoJSONStyleSingle,
   GeoAdminGeoJSONVectorOptions,
-} from "@swissgeo/shared/geojson";
-
-import log, { LogPreDefinedColor } from "@swissgeo/log";
+} from "@/utils/geojson";
 
 import type { ShapeIconSpec, ShapeIconType } from "./maplibreShapeIcons";
 
 import { shapeIconName } from "./maplibreShapeIcons";
 
-// `GeoAdminGeoJSONLabel` is not exported from @swissgeo/shared/geojson, so we derive
+// `GeoAdminGeoJSONLabel` is not exported from @/utils/geojson, so we derive
 // it from the vector options type.
 type GeoAdminLabel = NonNullable<GeoAdminGeoJSONVectorOptions["label"]>;
 
