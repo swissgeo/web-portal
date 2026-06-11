@@ -2,7 +2,7 @@
 <script lang="ts" setup>
 import { provide } from "vue";
 
-provide<"web" | "print">("displayMode", "print");
+provide<"web" | "print" | "embedded">("displayMode", "print");
 </script>
 
 <template>
