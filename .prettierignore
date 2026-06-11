@@ -6,3 +6,6 @@ node_modules
 dist
 .nuxt
 .output
+
+# Fetched geoadmin style snapshots (external data, refreshed via a script) — GPS-732
+packages/map/src/__tests__/fixtures/geoadmin-styles/

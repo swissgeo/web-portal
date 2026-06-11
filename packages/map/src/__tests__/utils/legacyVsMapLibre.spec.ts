@@ -81,7 +81,10 @@ function visual(styles: Style[]): Visual {
       const withStroke = image as {
         getStroke?: () => { getColor: () => unknown; getWidth: () => number };
       };
-      if (typeof withStroke.getStroke === "function" && withStroke.getStroke()) {
+      if (
+        typeof withStroke.getStroke === "function" &&
+        withStroke.getStroke()
+      ) {
         d.imgStroke = norm(withStroke.getStroke()!.getColor());
         d.imgStrokeWidth = withStroke.getStroke()!.getWidth();
       }
@@ -112,7 +115,9 @@ function mapLibreStyles(
   resolution = 1,
 ): Style[] {
   const { style, icons } = geoadminToMapLibreStyle(def, "s");
-  const layer = new VectorLayer({ source: new VectorSource({ features: [feature] }) });
+  const layer = new VectorLayer({
+    source: new VectorSource({ features: [feature] }),
+  });
   stylefunction(
     layer,
     style,

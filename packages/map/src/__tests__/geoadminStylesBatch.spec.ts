@@ -41,7 +41,9 @@ function validateStyle(style: MapLibreStyle, id: string): string[] {
   }
   const sourceIds = Object.keys(style.sources);
   if (sourceIds.length !== 1) {
-    problems.push(`${id}: expected exactly one source, got ${sourceIds.length}`);
+    problems.push(
+      `${id}: expected exactly one source, got ${sourceIds.length}`,
+    );
   }
   const sourceId = sourceIds[0];
   if (sourceId && style.sources[sourceId]!.type !== "geojson") {
@@ -74,10 +76,7 @@ function validateStyle(style: MapLibreStyle, id: string): string[] {
 
 describe("geoadmin styles batch conversion", () => {
   if (files.length === 0) {
-    it.skip(
-      "no snapshots — run: node packages/map/scripts/fetch-geoadmin-styles.mjs",
-      () => {},
-    );
+    it.skip("no snapshots — run: node packages/map/scripts/fetch-geoadmin-styles.mjs", () => {});
     return;
   }
 
@@ -133,12 +132,10 @@ describe("geoadmin styles batch conversion", () => {
       }
     }
 
-     
     console.log(
       "geoadmin → MapLibre batch summary:\n" + JSON.stringify(tally, null, 2),
     );
     if (failures.length > 0) {
-       
       console.error("Conversion failures:\n" + failures.join("\n"));
     }
 
