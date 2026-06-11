@@ -28,7 +28,9 @@ export function useMapLibreGeoJsonDemo() {
       // Map geoadmin resolution bands to LV95 zoom levels (the converter bakes
       // minzoom/maxzoom; the composable feeds LV95_RESOLUTIONS to ol-mapbox-style
       // so runtime resolution→zoom matches).
-      { resolutionToZoom: (resolution) => LV95.getZoomForResolution(resolution) },
+      {
+        resolutionToZoom: (resolution) => LV95.getZoomForResolution(resolution),
+      },
     );
 
     log.info({
