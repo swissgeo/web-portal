@@ -32,7 +32,7 @@ const customLayerRenderers: MapLayerRenderer[] = [
 ];
 
 // The display mode is defined in the layout
-const displayMode = inject<"web" | "print">("displayMode", "web");
+const displayMode = inject<"web" | "print" | "embedded">("displayMode", "web");
 </script>
 
 <template>
