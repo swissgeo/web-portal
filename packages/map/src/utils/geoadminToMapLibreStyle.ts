@@ -223,10 +223,7 @@ function applyCommon(
     if (entry.minResolution !== undefined && entry.minResolution > 0) {
       layer.maxzoom = toZoom(entry.minResolution);
     }
-    if (
-      entry.maxResolution !== undefined &&
-      entry.maxResolution !== Infinity
-    ) {
+    if (entry.maxResolution !== undefined && entry.maxResolution !== Infinity) {
       layer.minzoom = toZoom(entry.maxResolution);
     }
   }
