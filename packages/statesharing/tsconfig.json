@@ -10,6 +10,7 @@
     "../../base.vite.config.ts"
   ],
   "compilerOptions": {
-    "types": ["vue"]
+    "types": ["vue"],
+    "rootDir": "../.."
   }
 }

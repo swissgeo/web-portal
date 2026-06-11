@@ -2,7 +2,8 @@
   "extends": "@swissgeo/config-typescript/tsconfig.base.json",
   "compilerOptions": {
     "types": ["vue", "vite/client"],
-    "plugins": [{ "name": "@dxup/unimport" }]
+    "plugins": [{ "name": "@dxup/unimport" }],
+    "rootDir": "../.."
   },
   "include": [
     "src/**/*.ts",

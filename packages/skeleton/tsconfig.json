@@ -12,7 +12,7 @@
     "types": ["vue", "vite/client"],
     "paths": {
       "@/*": ["./src/*"]
-    }
-  },
-  "ignoreDeprecations": "6.0"
+    },
+    "rootDir": "../.."
+  }
 }
