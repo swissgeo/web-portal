@@ -1,5 +1,0 @@
-# geoadmin style snapshots are fetched on demand and not committed:
-#   node packages/map/scripts/fetch-geoadmin-styles.mjs
-# The batch test (geoadminStylesBatch.spec.ts) skips when this dir has no snapshots.
-*
-!.gitignore
