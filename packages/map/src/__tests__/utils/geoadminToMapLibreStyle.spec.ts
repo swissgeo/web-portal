@@ -1,6 +1,6 @@
-import type { GeoAdminGeoJSONStyleDefinition } from "@swissgeo/shared/geojson";
-
 import { describe, it, expect } from "vitest";
+
+import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 
 import {
   geoadminToMapLibreStyle,
