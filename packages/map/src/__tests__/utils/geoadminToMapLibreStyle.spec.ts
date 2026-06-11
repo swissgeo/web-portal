@@ -5,7 +5,9 @@ import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 import {
   geoadminToMapLibreStyle,
   labelTemplateToExpression,
+  parseCssFont,
 } from "@/utils/geoadminToMapLibreStyle";
+import { makeGetImage } from "@/utils/maplibreShapeIcons";
 
 // The real geoadmin style for ch.bafu.hydroweb-messstationen_grundwasser. `rotation`
 // is present in real data but absent from the exported type, so we cast the literal.
@@ -226,5 +228,115 @@ describe("labelTemplateToExpression", () => {
 
   it("returns the literal string when there are no tokens", () => {
     expect(labelTemplateToExpression("static")).toBe("static");
+  });
+});
+
+describe("parseCssFont", () => {
+  it("extracts size and family stack from a CSS font shorthand", () => {
+    expect(
+      parseCssFont("bold 12px FrutigerNeueW02-Regular,Frutiger,sans-serif"),
+    ).toEqual({
+      size: 12,
+      families: ["FrutigerNeueW02-Regular", "Frutiger", "sans-serif"],
+    });
+  });
+});
+
+describe("makeGetImage", () => {
+  it("returns a URL string for icon-image URLs not in the icon set", () => {
+    const getImage = makeGetImage([]);
+    const url = "https://data.geo.admin.ch/ch.meteoschweiz/images/nodata14.png";
+    // first arg (layer) is unused by the callback
+    expect(getImage({} as never, url)).toBe(url);
+    expect(getImage({} as never, "not-a-url")).toBeUndefined();
+  });
+});
+
+// The doc's reference example: ch.bafu.hydroweb-messstationen_grundwassertemperatur
+// (icon type + label + resolution bands). Verifies the fixes the GEOIN doc surfaced.
+const GRUNDWASSERTEMPERATUR = {
+  type: "unique",
+  property: "quant-class",
+  values: [
+    {
+      geomType: "point",
+      value: 0,
+      minResolution: 100,
+      vectorOptions: {
+        type: "icon",
+        src: "https://data.geo.admin.ch/ch.meteoschweiz/images/nodata14.png",
+      },
+    },
+    {
+      geomType: "point",
+      value: 0,
+      maxResolution: 100,
+      vectorOptions: {
+        type: "icon",
+        src: "https://data.geo.admin.ch/ch.meteoschweiz/images/nodata16.png",
+        label: {
+          template: "${name}",
+          text: {
+            textAlign: "center",
+            textBaseline: "middle",
+            font: "bold 12px FrutigerNeueW02-Regular,Frutiger,sans-serif",
+            scale: 1,
+            offsetY: -28,
+            padding: [2, 2, 2, 2],
+            stroke: { color: "rgba(14,80,114,0.9)", width: 3 },
+            backgroundFill: { color: "rgba(14,80,114,0.9)" },
+            fill: { color: "white" },
+          },
+        },
+      },
+    },
+  ],
+} as unknown as GeoAdminGeoJSONStyleDefinition;
+
+describe("geoadminToMapLibreStyle - icon + label + resolution (doc reference)", () => {
+  // res 100 -> zoom 14, matching the doc's expected conversion.
+  const resolutionToZoom = (res: number) => (res === 100 ? 14 : 0);
+  const { style, icons } = geoadminToMapLibreStyle(
+    GRUNDWASSERTEMPERATUR,
+    "src",
+    { resolutionToZoom },
+  );
+
+  it("emits two symbol layers, no generated shape icons", () => {
+    expect(style.layers).toHaveLength(2);
+    expect(style.layers.every((l) => l.type === "symbol")).toBe(true);
+    expect(icons).toHaveLength(0);
+  });
+
+  it("uses the icon src URL as icon-image and maps resolution to zoom", () => {
+    const small = style.layers[0]!;
+    expect(small.layout!["icon-image"]).toBe(
+      "https://data.geo.admin.ch/ch.meteoschweiz/images/nodata14.png",
+    );
+    expect(small.filter).toEqual(["==", ["get", "quant-class"], 0]);
+    // minResolution 100 -> maxzoom 14
+    expect(small.maxzoom).toBe(14);
+    expect(small.minzoom).toBeUndefined();
+  });
+
+  it("converts the label faithfully (font stack, px->em offset, halo)", () => {
+    const large = style.layers[1]!;
+    expect(large.minzoom).toBe(14); // maxResolution 100 -> minzoom
+    expect(large.layout!["text-field"]).toEqual(["get", "name"]);
+    expect(large.layout!["text-font"]).toEqual([
+      "FrutigerNeueW02-Regular",
+      "Frutiger",
+      "sans-serif",
+    ]);
+    expect(large.layout!["text-size"]).toBe(12);
+    expect(large.layout!["text-anchor"]).toBe("center");
+    // -28px / 12px ≈ -2.33em (the doc rounds to -2.3)
+    expect((large.layout!["text-offset"] as number[])[1]).toBeCloseTo(
+      -28 / 12,
+      5,
+    );
+    expect(large.paint!["text-color"]).toBe("white");
+    expect(large.paint!["text-halo-color"]).toBe("rgba(14,80,114,0.9)");
+    expect(large.paint!["text-halo-width"]).toBe(3);
   });
 });

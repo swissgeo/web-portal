@@ -147,7 +147,7 @@ export function makeGetImage(
 ): (
   layer: VectorLayer | VectorTileLayer,
   name: string,
-) => HTMLCanvasElement | undefined {
+) => HTMLCanvasElement | string | undefined {
   const specByName = new Map(icons.map((icon) => [icon.name, icon]));
   const cache = new Map<string, HTMLCanvasElement>();
 
@@ -158,6 +158,11 @@ export function makeGetImage(
     }
     const spec = specByName.get(name);
     if (!spec) {
+      // `icon`-type points reference an external image by URL; ol-mapbox-style
+      // accepts a URL string from getImage and loads it itself.
+      if (/^(https?:|data:)/.test(name)) {
+        return name;
+      }
       return undefined;
     }
     const canvas = createShapeIcon(spec);

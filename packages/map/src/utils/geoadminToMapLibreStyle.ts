@@ -153,25 +153,88 @@ export function labelTemplateToExpression(
   return ["concat", ...parts];
 }
 
+interface ParsedFont {
+  size?: number;
+  families?: string[];
+}
+
+/**
+ * geoadmin labels carry a CSS font shorthand, e.g.
+ * `"bold 12px FrutigerNeueW02-Regular,Frutiger,sans-serif"`. Extract the pixel
+ * size and the family stack (MapLibre `text-font` is an array of family names).
+ */
+export function parseCssFont(font: string): ParsedFont {
+  const result: ParsedFont = {};
+  const sizeMatch = /(\d+(?:\.\d+)?)px/.exec(font);
+  if (sizeMatch) {
+    result.size = parseFloat(sizeMatch[1]!);
+    const familyPart = font.slice(sizeMatch.index + sizeMatch[0].length).trim();
+    if (familyPart) {
+      result.families = familyPart
+        .split(",")
+        .map((family) => family.trim().replace(/^["']|["']$/g, ""))
+        .filter(Boolean);
+    }
+  }
+  return result;
+}
+
+const VERTICAL_ANCHOR: Record<string, string> = {
+  top: "top",
+  hanging: "top",
+  middle: "",
+  alphabetic: "bottom",
+  ideographic: "bottom",
+  bottom: "bottom",
+};
+const HORIZONTAL_ANCHOR: Record<string, string> = {
+  left: "left",
+  start: "left",
+  center: "",
+  right: "right",
+  end: "right",
+};
+
+/** Maps canvas textBaseline/textAlign to the closest MapLibre `text-anchor`. */
+function textAnchor(baseline?: string, align?: string): string {
+  const parts = [
+    VERTICAL_ANCHOR[baseline ?? ""] ?? "",
+    HORIZONTAL_ANCHOR[align ?? ""] ?? "",
+  ].filter(Boolean);
+  return parts.length ? parts.join("-") : "center";
+}
+
 function textPaintAndLayout(label: GeoAdminLabel): {
   layout: Record<string, unknown>;
   paint: Record<string, unknown>;
 } {
+  const font = label.text.font ? parseCssFont(label.text.font) : {};
+
   const layout: Record<string, unknown> = {
     "text-field": labelTemplateToExpression(label.template),
     "text-allow-overlap": true,
   };
-  if (label.text.font) {
-    // geoadmin uses a CSS font shorthand; MapLibre needs a font stack. We keep the
-    // size via text-size and leave the font family to the renderer's default.
-    const sizeMatch = /(\d+(?:\.\d+)?)px/.exec(label.text.font);
-    if (sizeMatch) {
-      layout["text-size"] = parseFloat(sizeMatch[1]!);
-    }
+  if (font.size !== undefined) {
+    layout["text-size"] = font.size;
+  }
+  if (font.families?.length) {
+    layout["text-font"] = font.families;
+  }
+  layout["text-anchor"] = textAnchor(
+    label.text.textBaseline,
+    label.text.textAlign,
+  );
+  if (["left", "center", "right"].includes(label.text.textAlign)) {
+    layout["text-justify"] = label.text.textAlign;
   }
   if (label.text.offsetX !== undefined || label.text.offsetY !== undefined) {
-    // MapLibre text-offset is in ems; geoadmin uses pixels. Best-effort for the POC.
-    layout["text-offset"] = [label.text.offsetX ?? 0, label.text.offsetY ?? 0];
+    // geoadmin offsets are pixels; MapLibre text-offset is in ems, so divide by
+    // the font size (fall back to MapLibre's default text-size of 16).
+    const em = font.size ?? 16;
+    layout["text-offset"] = [
+      (label.text.offsetX ?? 0) / em,
+      (label.text.offsetY ?? 0) / em,
+    ];
   }
 
   const paint: Record<string, unknown> = {};
