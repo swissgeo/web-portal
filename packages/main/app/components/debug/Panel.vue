@@ -1,11 +1,16 @@
 <script lang="ts" setup>
+import geoadminLayers from "~/assets/poc/geoadminLayers.json";
 import DrawingPanel from "~/components/debug/DrawingPanel.vue";
+import { useGeoadminGeoJsonLoader } from "~/composables/useGeoadminGeoJsonLoader";
 import { useMapLibreGeoJsonDemo } from "~/composables/useMapLibreGeoJsonDemo";
 
 const {
   addDemoLayer: addMapLibreGeoJsonDemo,
   addLegacyDemoLayer: addLegacyGeoJsonDemo,
 } = useMapLibreGeoJsonDemo();
+
+const { loadLayer } = useGeoadminGeoJsonLoader();
+const selectedLayerId = ref<string>(geoadminLayers[0] ?? "");
 
 const isLayersPanelOpen = ref(false);
 const isImportPanelOpen = ref(false);
@@ -105,6 +110,19 @@ function togglePrintPanel() {
         @click="addLegacyGeoJsonDemo"
       >
         Add legacy GeoJSON demo
+      </UButton>
+      <select
+        v-model="selectedLayerId"
+        class="max-w-[260px] rounded border border-gray-300 bg-white px-2 text-sm"
+        data-testid="debug-geojson-layer-select"
+      >
+        <option v-for="id in geoadminLayers" :key="id" :value="id">
+          {{ id }}
+        </option>
+      </select>
+      <UButton @click="loadLayer(selectedLayerId)"> Load (MapLibre) </UButton>
+      <UButton @click="loadLayer(selectedLayerId, { legacy: true })">
+        Load (legacy)
       </UButton>
     </div>
   </div>
