@@ -61,11 +61,7 @@ test.describe("MapLibre GeoJSON demo — visual", () => {
         }
         return map
           .getAllLayers()
-          .some(
-            (layer) =>
-              layer.get("id") === "poc-maplibre-grundwasser" ||
-              layer.get("uuid"),
-          );
+          .some((layer) => layer.get("id") === "poc-maplibre-grundwasser");
       },
       { timeout: HYDRATION_TIMEOUT },
     );
