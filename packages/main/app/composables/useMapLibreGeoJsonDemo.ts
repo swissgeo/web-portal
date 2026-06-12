@@ -53,7 +53,25 @@ export function useMapLibreGeoJsonDemo() {
     mapViewStore.addLayerToTop(layer);
   }
 
+  function addLegacyDemoLayer(): void {
+    // Same fixture data, rendered through the LEGACY OlStyleForPropertyValue path
+    // (geoJsonStyle, no mapLibreStyle) — for a before/after visual comparison.
+    const layer: GeoJSONLayer = {
+      format: "GeoJSON",
+      layerId: "poc-legacy-grundwasser",
+      uuid: crypto.randomUUID(),
+      opacity: 1,
+      isVisible: true,
+      displayName: "POC legacy GeoJSON (grundwasser)",
+      geoJsonData: geoJsonData as GeoJSONLayer["geoJsonData"],
+      geoJsonStyle: geoadminStyle as GeoadminStyle,
+    };
+
+    mapViewStore.addLayerToTop(layer);
+  }
+
   return {
     addDemoLayer,
+    addLegacyDemoLayer,
   };
 }
