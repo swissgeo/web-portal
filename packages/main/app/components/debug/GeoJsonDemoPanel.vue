@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { useLayerStore } from "@swissgeo/layers";
 import { IconButton } from "@swissgeo/skeleton";
 import geoadminLayers from "~/assets/poc/geoadminLayers.json";
 import { useGeoadminGeoJsonLoader } from "~/composables/useGeoadminGeoJsonLoader";
+import { useMapViewStore } from "~/stores/mapView";
 import { ref } from "vue";
 
 defineEmits<{ close: [] }>();
 
 const { loadLayer } = useGeoadminGeoJsonLoader();
+const mapViewStore = useMapViewStore();
+const layerStore = useLayerStore();
 const selectedLayerId = ref<string>(geoadminLayers[0] ?? "");
 const copyLabel = ref("Copy id");
 
@@ -16,6 +20,24 @@ async function copyId(): Promise<void> {
   setTimeout(() => {
     copyLabel.value = "Copy id";
   }, 1500);
+}
+
+// Add the selected layer twice — MapLibre + legacy — so the compare slider can
+// swipe between the two renderings.
+async function addBothStyles(): Promise<void> {
+  await loadLayer(selectedLayerId.value);
+  await loadLayer(selectedLayerId.value, { legacy: true });
+}
+
+// Remove all overlay layers but keep the background layer (matched by uuid).
+function clearAllLayers(): void {
+  const backgroundUuid = layerStore.backgroundLayer?.uuid;
+  for (let index = mapViewStore.mapLayers.length - 1; index >= 0; index--) {
+    if (mapViewStore.mapLayers[index]?.uuid === backgroundUuid) {
+      continue;
+    }
+    mapViewStore.removeLayer(index);
+  }
 }
 </script>
 
@@ -27,7 +49,8 @@ async function copyId(): Promise<void> {
     </div>
     <p class="mb-2 text-sm text-gray-600">
       Fetches the layer's real data + style from geoadmin, then adds it with the
-      chosen styling. Add one at a time; reload to clear.
+      chosen styling. "Add (both)" adds MapLibre + legacy so the compare slider
+      can swipe between them.
     </p>
     <select
       v-model="selectedLayerId"
@@ -38,13 +61,17 @@ async function copyId(): Promise<void> {
         {{ id }}
       </option>
     </select>
-    <div class="mt-3 flex gap-2">
+    <div class="mt-3 flex flex-wrap gap-2">
       <UButton @click="loadLayer(selectedLayerId)"> Add (MapLibre) </UButton>
       <UButton @click="loadLayer(selectedLayerId, { legacy: true })">
         Add (legacy)
       </UButton>
+      <UButton @click="addBothStyles"> Add (both) </UButton>
       <UButton color="neutral" variant="outline" @click="copyId">
         {{ copyLabel }}
+      </UButton>
+      <UButton color="error" variant="outline" @click="clearAllLayers">
+        Clear all layers
       </UButton>
     </div>
   </div>
