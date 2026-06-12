@@ -1,17 +1,6 @@
 <script lang="ts" setup>
-import geoadminLayers from "~/assets/poc/geoadminLayers.json";
 import DrawingPanel from "~/components/debug/DrawingPanel.vue";
 import ImportDrawingPanel from "~/components/debug/ImportDrawingPanel.vue";
-import { useGeoadminGeoJsonLoader } from "~/composables/useGeoadminGeoJsonLoader";
-import { useMapLibreGeoJsonDemo } from "~/composables/useMapLibreGeoJsonDemo";
-
-const {
-  addDemoLayer: addMapLibreGeoJsonDemo,
-  addLegacyDemoLayer: addLegacyGeoJsonDemo,
-} = useMapLibreGeoJsonDemo();
-
-const { loadLayer } = useGeoadminGeoJsonLoader();
-const selectedLayerId = ref<string>(geoadminLayers[0] ?? "");
 
 const isLayersPanelOpen = ref(false);
 const isImportPanelOpen = ref(false);
@@ -20,6 +9,7 @@ const isImportDrawingOpen = ref(false);
 const isDrawingOpen = ref(false);
 const isSharePanelOpen = ref(false);
 const isPrintPanelOpen = ref(false);
+const isGeoJsonDemoOpen = ref(false);
 
 function toggleLayersPanel() {
   isLayersPanelOpen.value = !isLayersPanelOpen.value;
@@ -43,6 +33,10 @@ function toggleStateConfig() {
 
 function togglePrintPanel() {
   isPrintPanelOpen.value = !isPrintPanelOpen.value;
+}
+
+function toggleGeoJsonDemo() {
+  isGeoJsonDemoOpen.value = !isGeoJsonDemoOpen.value;
 }
 </script>
 
@@ -82,6 +76,11 @@ function togglePrintPanel() {
 
     <DebugSharePanel v-if="isSharePanelOpen" @close="toggleStateConfig" />
     <DebugFramePrintPanel v-if="isPrintPanelOpen" @close="togglePrintPanel" />
+    <DebugGeoJsonDemoPanel
+      class="relative w-[560px] overflow-hidden bg-white shadow"
+      v-if="isGeoJsonDemoOpen"
+      @close="toggleGeoJsonDemo"
+    />
     <div
       class="flex gap-2"
       v-if="
@@ -91,7 +90,8 @@ function togglePrintPanel() {
         !isImportDrawingOpen &&
         !isDrawingOpen &&
         !isSharePanelOpen &&
-        !isPrintPanelOpen
+        !isPrintPanelOpen &&
+        !isGeoJsonDemoOpen
       "
     >
       <UButton color="primary" variant="outline" @click="toggleLayersPanel">
@@ -136,29 +136,10 @@ function togglePrintPanel() {
         {{ $t("debug.openPrintPanel") }}
       </UButton>
       <UButton
-        data-testid="debug-add-maplibre-geojson-demo"
-        @click="addMapLibreGeoJsonDemo"
+        data-testid="debug-open-geojson-demo-panel"
+        @click="toggleGeoJsonDemo"
       >
-        Add MapLibre GeoJSON demo
-      </UButton>
-      <UButton
-        data-testid="debug-add-legacy-geojson-demo"
-        @click="addLegacyGeoJsonDemo"
-      >
-        Add legacy GeoJSON demo
-      </UButton>
-      <select
-        v-model="selectedLayerId"
-        class="max-w-[260px] rounded border border-gray-300 bg-white px-2 text-sm"
-        data-testid="debug-geojson-layer-select"
-      >
-        <option v-for="id in geoadminLayers" :key="id" :value="id">
-          {{ id }}
-        </option>
-      </select>
-      <UButton @click="loadLayer(selectedLayerId)"> Load (MapLibre) </UButton>
-      <UButton @click="loadLayer(selectedLayerId, { legacy: true })">
-        Load (legacy)
+        Load geoadmin GeoJSON…
       </UButton>
     </div>
   </div>
