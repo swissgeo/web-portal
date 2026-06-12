@@ -3,7 +3,10 @@ import DrawingPanel from "~/components/debug/DrawingPanel.vue";
 import ImportDrawingPanel from "~/components/debug/ImportDrawingPanel.vue";
 import { useMapLibreGeoJsonDemo } from "~/composables/useMapLibreGeoJsonDemo";
 
-const { addDemoLayer: addMapLibreGeoJsonDemo } = useMapLibreGeoJsonDemo();
+const {
+  addDemoLayer: addMapLibreGeoJsonDemo,
+  addLegacyDemoLayer: addLegacyGeoJsonDemo,
+} = useMapLibreGeoJsonDemo();
 
 const isLayersPanelOpen = ref(false);
 const isImportPanelOpen = ref(false);
@@ -132,6 +135,12 @@ function togglePrintPanel() {
         @click="addMapLibreGeoJsonDemo"
       >
         Add MapLibre GeoJSON demo
+      </UButton>
+      <UButton
+        data-testid="debug-add-legacy-geojson-demo"
+        @click="addLegacyGeoJsonDemo"
+      >
+        Add legacy GeoJSON demo
       </UButton>
     </div>
   </div>
