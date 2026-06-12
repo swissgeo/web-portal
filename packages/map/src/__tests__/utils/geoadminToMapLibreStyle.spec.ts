@@ -66,21 +66,21 @@ describe("geoadminToMapLibreStyle - unique (hydroweb grundwasser)", () => {
     });
   });
 
-  it("filters each layer by the discriminating property and value", () => {
+  it("filters each layer by the discriminating property and value (type-tolerant)", () => {
     expect(style.layers[0]!.filter).toEqual([
       "==",
-      ["get", "grundwasser-class"],
-      2,
+      ["to-string", ["get", "grundwasser-class"]],
+      "2",
     ]);
     expect(style.layers[1]!.filter).toEqual([
       "==",
-      ["get", "grundwasser-class"],
-      1,
+      ["to-string", ["get", "grundwasser-class"]],
+      "1",
     ]);
     expect(style.layers[2]!.filter).toEqual([
       "==",
-      ["get", "grundwasser-class"],
-      3,
+      ["to-string", ["get", "grundwasser-class"]],
+      "3",
     ]);
   });
 
@@ -150,8 +150,8 @@ describe("geoadminToMapLibreStyle - range", () => {
     const outline = style.layers.find((layer) => layer.type === "line")!;
     expect(fill.filter).toEqual([
       "all",
-      [">=", ["get", "value"], 0],
-      ["<", ["get", "value"], 10],
+      [">=", ["to-number", ["get", "value"]], 0],
+      ["<", ["to-number", ["get", "value"]], 10],
     ]);
     expect(fill.paint).toMatchObject({ "fill-color": "#ff0000" });
     expect(outline.paint).toMatchObject({
@@ -313,7 +313,11 @@ describe("geoadminToMapLibreStyle - icon + label + resolution (doc reference)", 
     expect(small.layout!["icon-image"]).toBe(
       "https://data.geo.admin.ch/ch.meteoschweiz/images/nodata14.png",
     );
-    expect(small.filter).toEqual(["==", ["get", "quant-class"], 0]);
+    expect(small.filter).toEqual([
+      "==",
+      ["to-string", ["get", "quant-class"]],
+      "0",
+    ]);
     // minResolution 100 -> maxzoom 14
     expect(small.maxzoom).toBe(14);
     expect(small.minzoom).toBeUndefined();

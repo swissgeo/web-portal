@@ -99,7 +99,14 @@ function normalizeEntries(
       vectorOptions: value.vectorOptions,
       minResolution: value.minResolution,
       maxResolution: value.maxResolution,
-      filter: ["==", ["get", geoadmin.property], value.value],
+      // geoadmin data often encodes the discriminating value as a string (e.g.
+      // "2"), while the style value may be numeric — MapLibre's `==` is
+      // type-strict, so compare both as strings.
+      filter: [
+        "==",
+        ["to-string", ["get", geoadmin.property]],
+        String(value.value),
+      ],
     }));
   }
 
@@ -109,10 +116,11 @@ function normalizeEntries(
     vectorOptions: range.vectorOptions,
     minResolution: range.minResolution,
     maxResolution: range.maxResolution,
+    // Coerce the property to a number so string-encoded values compare correctly.
     filter: [
       "all",
-      [">=", ["get", geoadmin.property], range.range[0]],
-      ["<", ["get", geoadmin.property], range.range[1]],
+      [">=", ["to-number", ["get", geoadmin.property]], range.range[0]],
+      ["<", ["to-number", ["get", geoadmin.property]], range.range[1]],
     ],
   }));
 }
