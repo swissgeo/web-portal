@@ -55,6 +55,9 @@ export function getOlImageStyleForShape(
   } else {
     const regularShapeOptions: Partial<RegularShapeOptions> = {
       ...basicStyles,
+      // Without a radius an OpenLayers RegularShape renders nothing — non-circle
+      // shapes (triangle/square/…) carry their size in vectorOptions.radius.
+      radius: (vectorOptions as { radius?: number }).radius,
     };
     if (vectorOptions.type === "square") {
       regularShapeOptions.points = 4;
