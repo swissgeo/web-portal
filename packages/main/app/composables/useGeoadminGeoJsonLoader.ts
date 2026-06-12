@@ -25,6 +25,11 @@ const DATA_URL_OVERRIDES: Record<string, string> = {
 const DATA_URL = (id: string) =>
   DATA_URL_OVERRIDES[id] ?? `https://data.geo.admin.ch/${id}/${id}_de.json`;
 
+// Browser fetches to the geoadmin hosts are CORS-blocked, so go through the
+// same-origin POC proxy (server/api/wpa/v1/poc/geojson.get.ts).
+const PROXIED = (url: string) =>
+  `/api/wpa/v1/poc/geojson?url=${encodeURIComponent(url)}`;
+
 export function useGeoadminGeoJsonLoader() {
   const mapViewStore = useMapViewStore();
 
@@ -37,8 +42,8 @@ export function useGeoadminGeoJsonLoader() {
     }
     try {
       const [geoadminStyle, geoJsonData] = await Promise.all([
-        fetch(STYLE_URL(layerId)).then((res) => res.json()),
-        fetch(DATA_URL(layerId)).then((res) => res.json()),
+        fetch(PROXIED(STYLE_URL(layerId))).then((res) => res.json()),
+        fetch(PROXIED(DATA_URL(layerId))).then((res) => res.json()),
       ]);
 
       const base = {
