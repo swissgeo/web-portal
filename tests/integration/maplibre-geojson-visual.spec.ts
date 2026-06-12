@@ -46,6 +46,11 @@ test.describe("MapLibre GeoJSON demo — visual", () => {
   test("renders the converted geoadmin style (circle/triangle/diamond)", async ({
     page,
   }) => {
+    // Headless map boot + the reactive layer-add chain can exceed Playwright's
+    // default 30s test budget, so give the whole test room (must exceed the
+    // waitForFunction timeout below).
+    test.setTimeout(120_000);
+
     // The button is a Nuxt UI UButton whose data-testid does not reach the DOM
     // (ULink inheritAttrs: false), so locate it by its accessible name.
     await page
