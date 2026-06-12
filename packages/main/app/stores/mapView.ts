@@ -1,8 +1,9 @@
 import type { Layer as MapLayer } from "@swissgeo/map";
 
+import { useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 /**
  * The map View store is used to hold data useful for the map Module to render layers.
@@ -11,8 +12,25 @@ import { ref } from "vue";
 export const useMapViewStore = defineStore("mapView", () => {
   const isTimeSliderVisible = ref(false);
   const isFullscreenModeActive = ref(false);
+  /** Whether the compare slider is currently displayed over the map. */
+  const isCompareSliderActive = ref(false);
+  /**
+   * Horizontal position of the compare slider, expressed as a ratio of the map
+   * width (0 = far left, 1 = far right). The topmost visible layer is clipped to
+   * the left of this position, revealing the layers underneath on the right.
+   */
+  const compareRatio = ref(0.5);
   const stateId = ref("");
   const mapLayers: Ref<MapLayer[]> = ref([]);
+
+  const layerStore = useLayerStore();
+
+  /** Visible overlay layers, ordered bottom-to-top (background excluded). */
+  const visibleLayers = computed(() =>
+    mapLayers.value
+      .slice(Number(!!layerStore.backgroundLayer))
+      .filter((layer) => layer.isVisible),
+  );
 
   /**
    * Gets either an index or an uuid to identify a layer withing the map Layers,
@@ -133,6 +151,27 @@ export const useMapViewStore = defineStore("mapView", () => {
     isTimeSliderVisible.value = false;
   }
 
+  function toggleCompareSlider() {
+    isCompareSliderActive.value = !isCompareSliderActive.value;
+  }
+
+  function setCompareSliderActive(active: boolean) {
+    isCompareSliderActive.value = active;
+  }
+
+  /**
+   * Update the compare ratio (the slider's horizontal position as a fraction of
+   * the map width). Out-of-range input — e.g. a stray value from the URL — is
+   * clamped into [0, 1] rather than dropped, so the slider always lands on a
+   * usable position. Non-finite input is ignored.
+   */
+  function setCompareRatio(ratio: number) {
+    if (!Number.isFinite(ratio)) {
+      return;
+    }
+    compareRatio.value = Math.min(Math.max(ratio, 0), 1);
+  }
+
   function enterFullscreenMode() {
     isFullscreenModeActive.value = true;
   }
@@ -167,13 +206,19 @@ export const useMapViewStore = defineStore("mapView", () => {
     // values
     isTimeSliderVisible,
     isFullscreenModeActive,
+    isCompareSliderActive,
+    compareRatio,
     mapLayers,
     // getters
+    visibleLayers,
     getMapLayers,
     getMapLayerFromUuid,
     // actions
     toggleTimeSlider,
     closeTimeSlider,
+    toggleCompareSlider,
+    setCompareSliderActive,
+    setCompareRatio,
     enterFullscreenMode,
     exitFullscreenMode,
     toggleFullscreenMode,

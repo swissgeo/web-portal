@@ -4,5 +4,8 @@
     "stopTracking": "Interrompi il tracciamento",
     "startGeolocation": "Avvia la geolocalizzazione",
     "recenterMap": "Ricentra la mappa"
+  },
+  "compareSlider": {
+    "toggleButtonTitle": "Attiva/disattiva il cursore di confronto"
   }
 }
