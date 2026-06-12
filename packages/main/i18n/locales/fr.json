@@ -196,5 +196,8 @@
   "timeSlider": {
     "legendExplanation": "Les curseurs temporels indiquent la distribution temporelle des données. Vous pouvez utiliser les curseurs pour filtrer la plage de temps affichée sur la carte.",
     "outsideValidYearRange": "Hors de la plage d'années valide"
+  },
+  "compareSlider": {
+    "toggleButtonTitle": "Basculer le curseur de comparaison"
   }
 }

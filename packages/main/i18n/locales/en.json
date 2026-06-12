@@ -196,5 +196,8 @@
   "timeSlider": {
     "legendExplanation": "The time sliders indicate the temporal distribution of the data. You can use the sliders to filter the time range displayed on the map.",
     "outsideValidYearRange": "Outside of valid year range"
+  },
+  "compareSlider": {
+    "toggleButtonTitle": "Toggle compare slider"
   }
 }

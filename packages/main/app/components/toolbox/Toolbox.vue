@@ -9,6 +9,7 @@ import { useDrawingStore } from "@swissgeo/drawing";
  */
 import { useLayerStore } from "@swissgeo/layers";
 
+import CompareSliderButton from "@/components/toolbox/toolboxButtons/CompareSliderButton.vue";
 import FullScreenButton from "@/components/toolbox/toolboxButtons/FullScreenButton.vue";
 import GeolocButton from "@/components/toolbox/toolboxButtons/GeolocButton.vue";
 import RecenterButton from "@/components/toolbox/toolboxButtons/RecenterButton.vue";
@@ -45,6 +46,11 @@ watch(showTimeSliderButton, (hasTimeLayers) => {
     mapViewStore.closeTimeSlider();
   }
 });
+
+// the slider needs at least one visible overlay to compare against
+const showCompareSliderButton = computed(
+  () => mapViewStore.visibleLayers.length > 0,
+);
 </script>
 
 <template>
@@ -59,6 +65,7 @@ watch(showTimeSliderButton, (hasTimeLayers) => {
     <ZoomButtons v-if="showZoomButtons" />
     <Toggle3dButton v-if="show3dButton" />
     <TimeSliderButton v-if="showTimeSliderButton" />
+    <CompareSliderButton v-if="showCompareSliderButton" />
     <slot />
   </div>
 </template>

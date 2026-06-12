@@ -25,6 +25,17 @@ const layersForMap = computed(() => {
   return mapViewStore.getMapLayers().value;
 });
 
+// the layer the compare slider clips: the topmost visible overlay (the
+// background/basemap is excluded by the store getter and never clipped)
+const topVisibleLayer = computed(() => mapViewStore.visibleLayers.at(-1));
+
+// deactivate the compare slider once there is no overlay left to compare
+watch(topVisibleLayer, (layer) => {
+  if (!layer && mapViewStore.isCompareSliderActive) {
+    mapViewStore.setCompareSliderActive(false);
+  }
+});
+
 const showAdditionalMapUi = computed(
   () => !mapViewStore.isFullscreenModeActive,
 );
@@ -54,7 +65,11 @@ const displayMode = inject<"web" | "print">("displayMode", "web");
       :layers="layersForMap"
       :custom-layer-renderers="customLayerRenderers"
       :display-mode="displayMode"
+      :compare-slider-active="mapViewStore.isCompareSliderActive"
+      :compare-ratio="mapViewStore.compareRatio"
+      :compare-slider-clipped-layer="topVisibleLayer"
       class="h-full w-full"
+      @update:compare-ratio="mapViewStore.setCompareRatio"
     >
       <template #context-menu-popup="{ coordinate, isVisible, close }">
         <MapContextMenuPopup

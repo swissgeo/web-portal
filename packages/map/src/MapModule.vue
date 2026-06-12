@@ -5,6 +5,7 @@ import { computed } from "vue";
 import type { MapLayerRenderer } from "@/types";
 import type { Layer as MapLayer } from "@/types/layers";
 
+import OpenLayersCompareSlider from "./openlayers/OpenLayersCompareSlider.vue";
 import OpenLayersContextMenuPopup from "./openlayers/OpenLayersContextMenuPopup.vue";
 import OpenLayersMap from "./openlayers/OpenLayersMap.vue";
 import OpenLayersMouseTracker from "./openlayers/OpenLayersMouseTracker.vue";
@@ -18,10 +19,29 @@ log.wantedLevels = [
   LogLevel.Error,
 ];
 
-const { layers, customLayerRenderers } = defineProps<{
+const {
+  layers,
+  customLayerRenderers,
+  compareSliderActive = false,
+  compareRatio = 0.5,
+  compareSliderClippedLayer,
+} = defineProps<{
   layers: MapLayer[];
   customLayerRenderers?: MapLayerRenderer[];
   displayMode: "web" | "print";
+  /** Whether the compare slider is shown over the map (web mode only). */
+  compareSliderActive?: boolean;
+  /** Horizontal position of the compare slider, as a ratio of the map width. */
+  compareRatio?: number;
+  /** The layer the compare slider clips; nothing is shown without it. */
+  compareSliderClippedLayer?: Pick<
+    MapLayer,
+    "layerId" | "uuid" | "displayName"
+  >;
+}>();
+
+const emit = defineEmits<{
+  "update:compareRatio": [ratio: number];
 }>();
 
 const layersWithZIndex = computed(() => {
@@ -49,6 +69,12 @@ const layersWithZIndex = computed(() => {
         </OpenLayersContextMenuPopup>
         <OpenLayersMouseTracker />
         <OpenLayersScale />
+        <OpenLayersCompareSlider
+          v-if="compareSliderActive && compareSliderClippedLayer"
+          :compare-ratio="compareRatio"
+          :clipped-layer="compareSliderClippedLayer"
+          @update:compare-ratio="emit('update:compareRatio', $event)"
+        />
       </template>
       <template v-else>
         <OpenLayersScalePrint />
