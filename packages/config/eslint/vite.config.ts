@@ -10,6 +10,7 @@ const config: UserConfig = {
         index: resolve(__dirname, "index.ts"),
       },
       name: "@swissgeo/config-eslint",
+      formats: ["es"],
     },
     rollupOptions: {
       // Mark ESLint-related packages as external so Vite doesn't try to bundle them.
