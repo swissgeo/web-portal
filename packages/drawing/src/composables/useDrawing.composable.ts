@@ -9,7 +9,7 @@ import { registerProj4, WGS84 } from "@swissgeo/coordinates";
 import { useLayerStore } from "@swissgeo/layers";
 import { storeToRefs } from "pinia";
 import proj4 from "proj4";
-import { computed, onMounted, readonly, ref, watch } from "vue";
+import { computed, nextTick, onMounted, readonly, ref, watch } from "vue";
 
 import type { FocusMode } from "../stores/drawing.store";
 
@@ -322,6 +322,8 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
    * The style is reset to the basic style (in case it was in edit or create mode before)
    */
   watch(focusedFeature, (newFocusedFeature, oldFocusedFeature) => {
+    console.log("FOCUSED ON", focusedFeature);
+
     if (oldFocusedFeature && oldFocusedFeature !== newFocusedFeature) {
       applyIdleStyle(oldFocusedFeature);
       return;
@@ -338,7 +340,7 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
 
     switch (newFocusMode) {
       case "none":
-        applySelectedStyle(focusedFeature.value);
+        applyIdleStyle(focusedFeature.value);
         break;
       case "select":
         applySelectedStyle(focusedFeature.value);
@@ -376,15 +378,15 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     /**
      * When a drawing ends (in create mode), the interactions are all disabled.
      */
-    interaction.on("drawend", () => {
+    interaction.on("drawend", async () => {
       console.log("EVENT: drawend.");
-      removeFocus();
 
       // the disabling of all interactions is delayed to avoid conflicts with the internal logic of OL,
       // because is disabled immediately at "drawend", the DoubleClick event would trigger as part of validating a drawing.
-      setTimeout(() => {
+      await nextTick(() => {
+        removeFocus();
         disableAllInteractions();
-      }, 50);
+      });
     });
 
     // interaction.on("modifyend", () => {

@@ -28,13 +28,7 @@ export const useDrawingStore2 = defineStore("drawing2", () => {
       source: drawingVectorSource,
 
       // Temporary style
-      style: {
-        "fill-color": "rgba(255, 255, 255, 0.2)",
-        "stroke-color": "#ffcc33",
-        "stroke-width": 2,
-        "circle-radius": 7,
-        "circle-fill-color": "#ffcc33",
-      },
+      style: null,
     }),
   );
 
@@ -48,7 +42,7 @@ export const useDrawingStore2 = defineStore("drawing2", () => {
   // The modify interaction to edit the geometry of a selected feature.
   // It works in pair with the select interaction, as it modifies the currently selected feature.
   const modifyInteraction = markRaw(
-    new Modify({ features: selectInteractions.getFeatures() }),
+    new Modify({ features: selectInteractions.getFeatures(), style: {} }),
   );
   modifyInteraction.setActive(false);
 
@@ -61,6 +55,7 @@ export const useDrawingStore2 = defineStore("drawing2", () => {
     new Draw({
       source: drawingVectorSource,
       type: "Point",
+      style: {},
     }),
   );
   drawPointInteraction.setActive(false);
@@ -70,6 +65,7 @@ export const useDrawingStore2 = defineStore("drawing2", () => {
     new Draw({
       source: drawingVectorSource,
       type: "LineString",
+      style: {},
     }),
   );
   drawLineStringInteraction.setActive(false);
@@ -79,6 +75,7 @@ export const useDrawingStore2 = defineStore("drawing2", () => {
     new Draw({
       source: drawingVectorSource,
       type: "Polygon",
+      style: {},
     }),
   );
   drawPolygonInteraction.setActive(false);
@@ -88,6 +85,7 @@ export const useDrawingStore2 = defineStore("drawing2", () => {
     new Draw({
       source: drawingVectorSource,
       type: "Circle",
+      style: {},
     }),
   );
   drawCircleInteraction.setActive(false);
