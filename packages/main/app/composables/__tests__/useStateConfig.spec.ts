@@ -41,48 +41,21 @@ describe("useStateConfig > exportState time dimension", () => {
     mockMapLayers.push(makeMapLayer(uuid));
   }
 
-  it("passes through a YYYYMMDD currentValue unchanged", () => {
-    setupLayerWithTimeValue("20240101");
-    const { exportState } = useStateConfig();
+  it.each([
+    ["YYYYMMDD", "20240101"],
+    ["YYYY", "1981"],
+    ["ISO", "2024-01-01T00:00:00Z"],
+    ["'current'", "current"],
+    ["null", null],
+  ] as [string, string | null][])(
+    "passes through a %s currentValue unchanged",
+    (_label, value) => {
+      setupLayerWithTimeValue(value);
+      const { exportState } = useStateConfig();
 
-    expect(
-      exportState.value.state.layers?.[0]?.dimensions?.time?.currentValue,
-    ).toBe("20240101");
-  });
-
-  it("passes through a YYYY currentValue unchanged", () => {
-    setupLayerWithTimeValue("1981");
-    const { exportState } = useStateConfig();
-
-    expect(
-      exportState.value.state.layers?.[0]?.dimensions?.time?.currentValue,
-    ).toBe("1981");
-  });
-
-  it("passes through an ISO currentValue unchanged", () => {
-    setupLayerWithTimeValue("2024-01-01T00:00:00Z");
-    const { exportState } = useStateConfig();
-
-    expect(
-      exportState.value.state.layers?.[0]?.dimensions?.time?.currentValue,
-    ).toBe("2024-01-01T00:00:00Z");
-  });
-
-  it("passes through 'current'", () => {
-    setupLayerWithTimeValue("current");
-    const { exportState } = useStateConfig();
-
-    expect(
-      exportState.value.state.layers?.[0]?.dimensions?.time?.currentValue,
-    ).toBe("current");
-  });
-
-  it("passes through null", () => {
-    setupLayerWithTimeValue(null);
-    const { exportState } = useStateConfig();
-
-    expect(
-      exportState.value.state.layers?.[0]?.dimensions?.time?.currentValue,
-    ).toBeNull();
-  });
+      expect(
+        exportState.value.state.layers?.[0]?.dimensions?.time?.currentValue,
+      ).toBe(value);
+    },
+  );
 });

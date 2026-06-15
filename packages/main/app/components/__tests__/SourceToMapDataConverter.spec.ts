@@ -43,7 +43,7 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
     setActivePinia(createPinia());
   });
 
-  it("preserves the year of an existing ISO currentValue by matching it against the new availableValues", async () => {
+  it("resolves the stored year (2024) onto the incoming availableValues, ignoring the incoming currentValue (20230101)", async () => {
     const layerStore = useLayerStore();
     layerStore.addLayer(makeSourceLayer("test-uuid", "2024-01-01T00:00:00Z"));
 
@@ -55,6 +55,11 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
       },
     });
 
+    // The store already holds "2024-01-01T00:00:00Z"; the incoming dimension
+    // carries "20230101" as currentValue and ["20230101","20240101"] as
+    // availableValues. The handler should extract year 2024 from the stored
+    // value and match it to "20240101" in the new list, overriding the
+    // incoming "20230101".
     await emitUpdateTimeDimension(wrapper, {
       availableValues: ["20230101", "20240101"],
       currentValue: "20230101",

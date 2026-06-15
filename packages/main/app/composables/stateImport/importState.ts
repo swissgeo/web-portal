@@ -16,8 +16,7 @@ export async function importState(
   );
 
   const payload: AppStatePayload = {
-    version:
-      (rawPayload as AppStatePayload)?.version ?? APP_STATE_CONFIG_VERSION,
+    version: APP_STATE_CONFIG_VERSION,
     state: parsed,
   };
 

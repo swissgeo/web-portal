@@ -60,6 +60,11 @@ function updateTimeDimension(
         )
       : undefined;
 
+  // When capabilities are refreshed the incoming dimension may carry a
+  // different currentValue. If the store already holds a value, we extract
+  // its year and find the matching entry in the new availableValues so the
+  // user's previously-selected year is preserved across capability refreshes.
+  // matchedValue intentionally overrides dimension.currentValue when found.
   layerStore.setDimension("time", identifier, {
     ...dimension,
     ...(matchedValue ? { currentValue: matchedValue } : {}),

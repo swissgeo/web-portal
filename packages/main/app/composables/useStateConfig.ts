@@ -54,8 +54,8 @@ function layerToStateConfig(layer: MapLayer): LayerStateInput {
   if (sourceData.dimensions) {
     config.dimensions = {};
     for (const [key, dim] of Object.entries(sourceData.dimensions)) {
-      if (dim && key === "time") {
-        config.dimensions.time = {
+      if (dim) {
+        config.dimensions[key as DimensionId] = {
           currentValue: dim.currentValue,
         };
       }

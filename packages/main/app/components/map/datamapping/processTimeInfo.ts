@@ -18,7 +18,9 @@ export function processTimeInfo(timeInfo: Ref<TimeInfo>) {
     dimension.availableValues = availableTimes;
   }
 
-  if (defaultTime) {
+  if (availableTimes?.length && !defaultTime) {
+    dimension.currentValue = availableTimes[availableTimes.length - 1];
+  } else if (defaultTime) {
     if (availableTimes?.length) {
       const year = getYearFromGeoadminValue(defaultTime);
       const matched = year
