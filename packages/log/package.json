@@ -20,11 +20,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "build:dev:watch": "vite build --watch --mode development",
-    "build:int": "vite build --mode integration",
-    "build:prod": "vite build --mode production",
+    "build": "rolldown --config rolldown.config.js",
+    "build:dev": "rolldown --config rolldown.config.js --environment NODE_ENV:development",
+    "build:dev:watch": "rolldown --config rolldown.config.js --watch --environment NODE_ENV:development",
+    "build:int": "rolldown --config rolldown.config.js --environment NODE_ENV:integration",
+    "build:prod": "rolldown --config rolldown.config.js",
     "format": "prettier --check --ignore-path ../../.prettierignore .",
     "format:write": "prettier --write --ignore-path ../../.prettierignore .",
     "generate-types": "tsc --declaration",
