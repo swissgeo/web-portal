@@ -1,9 +1,13 @@
 import path from "path";
-import { mergeConfig } from "vitest/config";
+import { fileURLToPath, URL } from "url";
+import { defineConfig } from "vitest/config";
 
-import viteConfig from "./vite.config";
-
-export default mergeConfig(viteConfig, {
+export default defineConfig({
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
   test: {
     coverage: {
       provider: "v8",
