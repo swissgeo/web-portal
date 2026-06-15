@@ -1,10 +1,12 @@
 {
   "extends": "@swissgeo/config-typescript/tsconfig.base.json",
   "include": [
+    "openapi-ts.config.ts",
     "src/**/*.ts",
     "src/**/*.vue",
     "src/types/**/*.ts",
     "vite.config.ts",
+    "vitest.config.ts",
     "../../base.vite.config.ts"
   ],
   "compilerOptions": {

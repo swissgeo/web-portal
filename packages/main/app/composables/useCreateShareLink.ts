@@ -1,6 +1,7 @@
-import type { AppStatePayload } from "@swissgeo/statesharing";
+import type { AppStatePayload } from "~/composables/useStateConfig";
 
-import { useFetch, watchDebounced } from "@vueuse/core";
+import { watchDebounced } from "@vueuse/core";
+import { postStateToStateId } from "~/utils/postStateToStateId";
 
 function buildShareUrl(stateId: string | null): string {
   if (!stateId) {
@@ -13,23 +14,18 @@ function buildShareUrl(stateId: string | null): string {
 }
 
 export function useCreateShareLink(state?: Ref<AppStatePayload>) {
-  let usableState = state;
+  const { exportState } = useStateConfig();
+  const usableState = state ?? exportState;
 
-  if (!usableState) {
-    const { exportState } = useStateConfig();
-    usableState = exportState;
-  }
+  const hash = ref<string | null>(null);
 
-  const runtimeConfig = useRuntimeConfig();
-
-  // intentionally not using nuxt's useFetch as the one frome vueuse suits more the
-  // usecase here and doesn't have anything to do with SSR
-  const { data: hash } = useFetch<string>(
-    runtimeConfig.public.shareServiceUrl,
-    { refetch: true },
-  )
-    .post(usableState)
-    .text();
+  watch(
+    usableState,
+    async (newState) => {
+      hash.value = await postStateToStateId(newState.state);
+    },
+    { immediate: true },
+  );
 
   const shareLink = computed(() => buildShareUrl(hash.value));
 
@@ -39,49 +35,46 @@ export function useCreateShareLink(state?: Ref<AppStatePayload>) {
   };
 }
 
-/**
- * Create a link for the print. The key difference from the function useCreateShareLink
- * is that
- */
 export function useCreateShareLinkForPrint() {
   const viewStore = useMapViewStore();
   const shareLink = computed(() => buildShareUrl(viewStore.stateId));
   return { shareLink };
 }
 
-/**
- * Add a custom state to the service (mock at the moment) with the state being a ref
- * so that this composable function can be used to push multiple states to the service,
- * for example when the print framing parameters change and we want to update the share link accordingly.
- */
 export function useCreateShareLinkForCustomState() {
+  const { t } = useI18n();
+  const toaster = useToaster();
   const state = ref<AppStatePayload | null>(null);
-  const runtimeConfig = useRuntimeConfig();
-
-  const {
-    data: hash,
-    execute,
-    abort,
-    isFetching,
-  } = useFetch<string>(runtimeConfig.public.shareServiceUrl, {
-    immediate: false,
-    refetch: false,
-  })
-    .post(state)
-    .text();
+  const hash = ref<string | null>(null);
+  const isFetching = ref(false);
+  let abortController: AbortController | null = null;
 
   watchDebounced(
     state,
-    () => {
-      if (!state.value) {
+    async (newState) => {
+      if (!newState) {
         return;
       }
 
-      if (isFetching.value) {
-        abort();
+      if (isFetching.value && abortController) {
+        abortController.abort();
       }
 
-      void execute();
+      abortController = new AbortController();
+      isFetching.value = true;
+
+      try {
+        hash.value = await postStateToStateId(newState.state, {
+          signal: abortController.signal,
+        });
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+        toaster.showWarning(t("state.shareLinkError"));
+      } finally {
+        isFetching.value = false;
+      }
     },
     {
       deep: true,

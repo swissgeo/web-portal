@@ -2,38 +2,42 @@
 
 ## Purpose
 
-The State Sharing Module's goal is to provide the app with a way to handle the conservation of the app's state, either with other parties, or when one would like to reload the app itself.
+Provides types, Zod validators and the version constant for the app state sharing API. The HTTP client is generated from the OpenAPI spec via [Hey API](https://heyapi.dev), see `openapi-ts.config.ts`.
 
-In its current state, this module only serves as a validation tool called within the main module.
+All HTTP calls go through Nuxt server proxy routes (`packages/main/server/api/wpa/v1/state/`) to avoid CORS. The generated client itself is not called directly from the browser.
 
-In its final state, this module will handle all operations regarding sharing and importing the state of the application
+## Regenerating the types and validators
+
+The types and validators (zod) are generated from the OpenAPI spec served by the state service. The URL is read from `NUXT_SHARE_SERVICE_URL` (falling back to the dev endpoint), so it stays in sync with the runtime config:
+
+```sh
+# defaults to https://www.dev.sgdi.tech/api/wps/v1/state
+pnpm --filter @swissgeo/statesharing generate-types
+
+# target a different environment
+NUXT_SHARE_SERVICE_URL=https://www.prod.sgdi.tech/api/wps/v1/state pnpm --filter @swissgeo/statesharing generate-types
+
+pnpm --filter @swissgeo/statesharing build
+```
 
 ## Dependencies
 
-| module             | provides                                 |
-| ------------------ | ---------------------------------------- |
-| `@swissgeo/shared` | The bounding box for the LV95 projection |
+| module | provides                  |
+| ------ | ------------------------- |
+| `zod`  | Runtime schema validation |
 
 ## Exposed Members
 
-| member                              | type     | description                                                            |
-| ----------------------------------- | -------- | ---------------------------------------------------------------------- |
-| `validateAndPrepareAppStatePayload` | function | Verify the typing and content of the app state and ensure it is valid  |
-| `AppStateConfig`                    | type     | A representation of the state of the entire application                |
-| `AppStatePayload`                   | type     | A representation of the payload to be sent and received by the backend |
-| `LayerStateConfig`                  | type     | A representation of the state of a single layer                        |
-| `APP_STATE_CONFIG_VERSION`          | constant | The current version of the state sharing tool, as a semver float.      |
-
-## internal Members
-
-those are validation functions and constants used in such validation functions. They should not be exposed to other modules, as this is this module's job to validate, serialize and deserialize the state.
-
-| member                         | type     | description                                                                                                     |
-| ------------------------------ | -------- | --------------------------------------------------------------------------------------------------------------- |
-| `validateAppStatePayload`      | function | Check the version and call all other validators to ensure the AppStateConfig is correct                         |
-| `isInstanceOfAppStateConfig`   | function | Checks that the given object fits the `AppStateConfig` interface requirements (attributes and correct typing)   |
-| `isInstanceOfLayerStateConfig` | function | Checks that the given object fits the `LayerStateConfig` interface requirements (attributes and correct typing) |
-| `validateMap`                  | function | validate that the map's center coordinates are within bounds                                                    |
-| `validateLayer`                | function | validate that the layer's opacity is between 0 and 1                                                            |
-| `layerStateConfigKeys`         | constant | constant used to store the layer state config attributes keys to check that we are not allowing wrong keys      |
-| `validAppStateConfigKeys`      | constant | constant used to store the app state config attributes keys to check that we are not allowing wrong keys        |
+| member                     | type      | description                                                              |
+| -------------------------- | --------- | ------------------------------------------------------------------------ |
+| `APP_STATE_CONFIG_VERSION` | constant  | Current version of the state payload format                              |
+| `ReadAppStateValidator`    | validator | Zod schema to validate the GET `/state/{stateId}` response               |
+| `SaveAppStateValidator`    | validator | Zod schema to validate the POST `/state` request body                    |
+| `StatePayloadValidator`    | validator | Zod schema to validate and parse a raw app state object (`StateV1Input`) |
+| `SaveAppStateResponse`     | validator | Zod schema to validate the POST `/state` response                        |
+| `SaveAppState`             | type      | POST request body type                                                   |
+| `GetAppState`              | type      | GET response type                                                        |
+| `AppState`                 | type      | Core app state (`StateV1Input`): map position + layers                   |
+| `LayerState`               | type      | Output representation of a single layer in the state                     |
+| `LayerStateInput`          | type      | Input representation of a single layer in the state                      |
+| `MapState`                 | type      | Map position (center, zoom, rotation)                                    |

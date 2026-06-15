@@ -38,6 +38,7 @@
     "@swissgeo/ogc": "workspace:*",
     "@vitejs/plugin-vue": "catalog:",
     "eslint": "catalog:",
+    "happy-dom": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",

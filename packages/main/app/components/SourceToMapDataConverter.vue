@@ -8,6 +8,10 @@ import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
+import {
+  convertYearToTimestamp,
+  getYearFromGeoadminValue,
+} from "@swissgeo/timeslider";
 
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";
@@ -43,7 +47,28 @@ function updateTimeDimension(
   identifier: string,
   dimension: Partial<Dimension>,
 ) {
-  layerStore.setDimension("time", identifier, dimension);
+  const existingCurrentValue =
+    layerStore.getLayer(identifier)?.dimensions?.time?.currentValue;
+  const existingYear = existingCurrentValue
+    ? getYearFromGeoadminValue(existingCurrentValue)
+    : undefined;
+  const matchedValue =
+    existingYear && dimension.availableValues?.length
+      ? convertYearToTimestamp(
+          dimension.availableValues,
+          parseInt(existingYear),
+        )
+      : undefined;
+
+  // When capabilities are refreshed the incoming dimension may carry a
+  // different currentValue. If the store already holds a value, we extract
+  // its year and find the matching entry in the new availableValues so the
+  // user's previously-selected year is preserved across capability refreshes.
+  // matchedValue intentionally overrides dimension.currentValue when found.
+  layerStore.setDimension("time", identifier, {
+    ...dimension,
+    ...(matchedValue ? { currentValue: matchedValue } : {}),
+  });
 }
 function updateOpacity(identifier: number | string, opacity: number) {
   mapViewStore.updateLayerOpacity(identifier, opacity);
