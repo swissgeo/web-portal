@@ -1,0 +1,15 @@
+import defaultConfig from "@swissgeo/config-eslint";
+
+import { globalIgnores } from "eslint/config";
+
+export default [
+  ...defaultConfig,
+  globalIgnores(["dist", "node_modules"]),
+  {
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+];

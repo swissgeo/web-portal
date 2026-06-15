@@ -1,0 +1,27 @@
+{
+  "name": "@swissgeo/config-stylelint",
+  "version": "1.0.1",
+  "description": "Shared Stylelint config for SWISSGEO projects.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swissgeo/web-portal.git",
+    "directory": "packages/config/stylelint"
+  },
+  "license": "BSD-3-Clause",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "postcss-html": "catalog:",
+    "stylelint-config-recommended-scss": "catalog:",
+    "stylelint-config-recommended-vue": "catalog:",
+    "stylelint-order": "catalog:",
+    "stylelint-scss": "catalog:"
+  },
+  "devDependencies": {
+    "@swissgeo/config-typescript": "workspace:*",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "stylelint": "catalog:"
+  }
+}

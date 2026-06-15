@@ -1,0 +1,41 @@
+{
+  "name": "@swissgeo/config-prettier",
+  "version": "1.0.1",
+  "description": "Shared Prettier config for SWISSGEO projects.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swissgeo/web-portal.git",
+    "directory": "packages/config/prettier"
+  },
+  "license": "BSD-3-Clause",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "generate-types": "tsc --declaration",
+    "type-check": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "catalog:",
+    "@swissgeo/config-typescript": "workspace:*",
+    "typescript": "catalog:",
+    "unplugin-dts": "catalog:",
+    "vite": "catalog:"
+  },
+  "peerDependencies": {
+    "prettier": "catalog:"
+  },
+  "optionalDependencies": {
+    "@prettier/plugin-xml": "catalog:",
+    "prettier-plugin-jsdoc": "catalog:",
+    "prettier-plugin-packagejson": "catalog:",
+    "prettier-plugin-tailwindcss": "catalog:"
+  }
+}

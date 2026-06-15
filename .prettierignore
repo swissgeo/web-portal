@@ -1,0 +1,8 @@
+pnpm-lock.yaml
+.github/
+patches/
+
+node_modules
+dist
+.nuxt
+.output

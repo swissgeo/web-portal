@@ -1,0 +1,11 @@
+{
+  "geolocation": {
+    "permissionDenied": "Permissiun da localisaziun refusada",
+    "stopTracking": "Fermar il tractament da posiziun",
+    "startGeolocation": "Activar la geolocalisaziun",
+    "recenterMap": "Recentrar la charta"
+  },
+  "compareSlider": {
+    "toggleButtonTitle": "Activar/deactivar il cursur da cumparegliaziun"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "ch.bafu.schutzgebiete-luftfahrt:wmts",
+  "links": [
+    {
+      "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/swissgeo.catalog/items/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "hreflang": "en",
+      "rel": "dataset",
+      "title": "Dataset Record",
+      "type": "application/json"
+    },
+    {
+      "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wmts",
+      "rel": "service"
+    },
+    {
+      "href": "https://services.dev.sgdi.tech/api/oas/v0/styles/ch.bafu.schutzgebiete-luftfahrt:wmts:style",
+      "rel": "styledby",
+      "title": "Style Hints for WMTS Raster Layer (Maplibre Style Spec)",
+      "type": "application/json"
+    }
+  ],
+  "properties": {
+    "protocol": "OGC:WMTS",
+    "title": "OGC Web Map Tile Service (WMTS)",
+    "type": "Distribution"
+  },
+  "type": "Feature"
+}

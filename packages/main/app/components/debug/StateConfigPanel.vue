@@ -1,0 +1,73 @@
+<script setup lang="ts">
+import { useStateConfig } from "~/composables/useStateConfig";
+import { ref } from "vue";
+
+defineEmits<{ close: [] }>();
+
+const { exportState, importState } = useStateConfig();
+
+const jsonText = ref("");
+const errorMessage = ref("");
+const successMessage = ref("");
+
+function handleExport() {
+  errorMessage.value = "";
+  successMessage.value = "";
+  try {
+    const state = exportState.value;
+    jsonText.value = JSON.stringify(state, null, 2);
+    successMessage.value = "State exported";
+  } catch (error) {
+    errorMessage.value =
+      error instanceof Error ? error.message : "Failed to export state";
+  }
+}
+
+async function handleImport() {
+  errorMessage.value = "";
+  successMessage.value = "";
+  if (!jsonText.value.trim()) {
+    errorMessage.value = "Please paste a JSON state config first";
+    return;
+  }
+  try {
+    await importState(JSON.parse(jsonText.value));
+    successMessage.value = "State imported successfully";
+  } catch (error) {
+    errorMessage.value =
+      error instanceof Error ? error.message : "Failed to import state";
+  }
+}
+</script>
+
+<template>
+  <div class="h-87.5 w-150 bg-white p-4 shadow">
+    <div class="mb-2 flex gap-2">
+      <UButton color="neutral" variant="outline" @click="handleExport">
+        Export
+      </UButton>
+      <UButton color="neutral" variant="outline" @click="handleImport">
+        Import
+      </UButton>
+    </div>
+
+    <textarea
+      v-model="jsonText"
+      class="h-[180px] w-full rounded border border-gray-300 p-2 font-mono text-xs"
+      placeholder='Click "Export" to see current state, or paste JSON here and click "Import"'
+    />
+
+    <div
+      v-if="successMessage"
+      class="mt-2 rounded bg-green-100 p-2 text-sm text-green-800"
+    >
+      {{ successMessage }}
+    </div>
+    <div
+      v-if="errorMessage"
+      class="mt-2 rounded bg-red-100 p-2 text-sm text-red-800"
+    >
+      {{ errorMessage }}
+    </div>
+  </div>
+</template>

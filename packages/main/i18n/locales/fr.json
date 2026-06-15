@@ -1,0 +1,203 @@
+{
+  "menuTitles": {
+    "knowledge": "Savoir",
+    "about": "À propos de Swissgeo"
+  },
+  "welcomeOverlay": {
+    "moreInfos": "Plus d'infos",
+    "startPrototype": "Démarrer le prototype",
+    "dontShowAgain": "Ne plus afficher"
+  },
+  "menu": {
+    "search": "Recherche",
+    "layerCart": "Couches actives"
+  },
+  "search": {
+    "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",
+    "locations_results_header": "Lieux",
+    "features_results_header": "Objets",
+    "layers_results_header": "Couches",
+    "no_results": "Aucun résultat trouvé"
+  },
+  "footer": {
+    "copyRightData": "© Données: "
+  },
+  "debug": {
+    "openImportLocalLayersPanel": "Ouvrir le panneau d'importation des couches locales",
+    "openDrawingPanel": "Ouvrir le panneau de dessin",
+    "openImportLayersPanel": "Ouvrir le panneau d'importation des couches",
+    "openLayersPanel": "Ouvrir le panneau des couches",
+    "drawingPanelTitle": "Outils de dessin",
+    "drawingNameLabel": "Nom du dessin",
+    "drawingToolSelectLabel": "Sélectionner un outil de dessin :",
+    "drawingToolPoint": "Point",
+    "drawingToolLine": "Ligne",
+    "drawingToolText": "Texte",
+    "drawingToolMeasurement": "Mesure",
+    "drawingInstructionPoint": "Cliquez sur la carte pour ajouter un point",
+    "drawingInstructionLine": "Cliquez pour tracer une ligne, double-cliquez pour terminer, ou cliquez près du départ pour fermer en polygone",
+    "drawingInstructionText": "Cliquez sur la carte pour ajouter du texte",
+    "drawingInstructionMeasurementRadius": "Cliquez deux points pour définir un rayon ; ajoutez un troisième point pour continuer en trajet",
+    "drawingInstructionMeasurementPath": "Continuez à cliquer pour ajouter des sommets, double-cliquez pour terminer",
+    "drawingInstructionDefault": "Cliquez pour commencer à dessiner",
+    "drawingFeaturesDrawnLabel": "Éléments dessinés",
+    "drawingExportLabel": "Export :",
+    "drawingExportKML": "Exporter KML",
+    "drawingExportKMZ": "Exporter KMZ",
+    "drawingExportGPX": "Exporter GPX",
+    "drawingClearAll": "Effacer tous les dessins",
+    "drawingClearConfirmTitle": "Supprimer tous les dessins ?",
+    "drawingClearConfirmDescription": "Cette action supprimera tous les dessins de la session en cours.",
+    "drawingClearConfirmCancel": "Annuler",
+    "drawingClearConfirmConfirm": "Supprimer",
+    "drawingHoverHint": {
+      "selectFeature": "Cliquez pour sélectionner {target}",
+      "nothingToSelect": "Rien à sélectionner",
+      "targetMarker": "le marqueur",
+      "targetText": "le texte",
+      "targetLine": "la ligne",
+      "targetPolygon": "le polygone",
+      "targetMeasurement": "la mesure",
+      "targetFeature": "l'élément"
+    },
+    "drawingFeatureInfo": {
+      "windowTitle": "Infos de l'élément",
+      "typeLabel": "Type",
+      "titleLabel": "Titre",
+      "textLabel": "Texte",
+      "titleOrTextLabel": "Titre/Texte",
+      "descriptionLabel": "Description",
+      "coordinatesLabel": "Coordonnées",
+      "areaLabel": "Surface",
+      "perimeterLabel": "Périmètre",
+      "lineStyleLabel": "Style de ligne",
+      "strokeWidthLabel": "Épaisseur du trait",
+      "strokeOpacityLabel": "Opacité du trait",
+      "strokeColorLabel": "Couleur du trait",
+      "dashedLineLabel": "Ligne en pointillés",
+      "fillColorLabel": "Couleur de remplissage",
+      "fillOpacityLabel": "Opacité du remplissage",
+      "markerStyleButton": "Style du marqueur",
+      "textStyleButton": "Style du texte",
+      "hideDescriptionOnMap": "Masquer la description sur la carte",
+      "showDescriptionOnMap": "Afficher la description sur la carte",
+      "markerSizeLabel": "Taille du marqueur",
+      "markerColorLabel": "Couleur du marqueur",
+      "markerSymbolLabel": "Symbole du marqueur",
+      "textSizeLabel": "Taille du texte",
+      "textColorLabel": "Couleur du texte",
+      "textAnchorLabel": "Ancrage du texte",
+      "deleteFeatureButton": "Supprimer l'élément",
+      "sizeSmall": "Petit",
+      "sizeMedium": "Moyen",
+      "sizeLarge": "Grand",
+      "sizeExtraLarge": "Très grand",
+      "strokeThin": "Fin",
+      "strokeMedium": "Moyen",
+      "strokeThick": "Épais",
+      "strokeExtraThick": "Très épais",
+      "kind": {
+        "point": "Point",
+        "text": "Texte",
+        "lineString": "Ligne",
+        "polygon": "Polygone",
+        "measurementRadius": "Mesure (rayon)",
+        "measurementPath": "Mesure (trajet)",
+        "unknown": "Inconnu"
+      },
+      "anchor": {
+        "top-left": "Haut gauche",
+        "top-center": "Haut centre",
+        "top-right": "Haut droite",
+        "center-left": "Centre gauche",
+        "center": "Centre",
+        "center-right": "Centre droite",
+        "bottom-left": "Bas gauche",
+        "bottom-center": "Bas centre",
+        "bottom-right": "Bas droite"
+      }
+    },
+    "openStateConfigPanel": "Ouvrir le panneau de configuration d'état",
+    "stateConfig": "panneau de configuration",
+    "share": "Partager",
+    "openPrintPanel": "Ouvrir le panneau d'impression"
+  },
+  "geolocation": {
+    "permissionDenied": "Autorisation de localisation refusée",
+    "stopTracking": "Arrêter le suivi",
+    "startGeolocation": "Démarrer la géolocalisation",
+    "recenterMap": "Recentrer la carte"
+  },
+  "backgroundLayers": {
+    "title": "Cartes affichées",
+    "voidMap": "Carte vide",
+    "backgroundMap": "Carte de fond",
+    "colorMap": "Carte en couleur",
+    "greyMap": "Carte en niveaux de gris",
+    "swissimage": "Imagerie aérienne"
+  },
+  "toaster": {
+    "warningTitle": "Attention",
+    "errorTitle": "Erreur",
+    "successTitle": "Succès"
+  },
+  "state": {
+    "restoreUnableWarning": "L'état de l'application n'a pas pu être restauré"
+  },
+  "map": {
+    "contextMenuPopup": {
+      "elevation": "Élévation",
+      "title": "Position",
+      "tabPosition": "Coordonnées",
+      "tabShare": "Partager la position",
+      "errorFetchingElevation": "Erreur de récupération de l'élévation",
+      "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words"
+    }
+  },
+  "error": {
+    "notFound": "{resource} est introuvable.",
+    "generic": "Une erreur inattendue s'est produite.",
+    "backToMap": "Retour à la carte",
+    "resources": {
+      "dataset": "Ce jeu de données"
+    }
+  },
+  "dataset": {
+    "abstract": "Résumé",
+    "contacts": "Contacts",
+    "links": "Liens",
+    "services": "Services",
+    "languages": "Langues",
+    "addToMap": "Ajouter à la carte",
+    "alreadyOnMap": "Déjà sur la carte",
+    "viewDetailPage": "Voir la page détaillée",
+    "showOnMap": "Voir sur la carte",
+    "backToMap": "Retour à la carte",
+    "addToMapError": "Impossible d'ajouter la couche à la carte"
+  },
+  "elevationProfile": {
+    "windowTitle": "Profil d'élévation",
+    "plot": {
+      "xAxis": "Distance",
+      "yAxis": "Élévation",
+      "noData": "Aucune donnée d'élévation disponible"
+    },
+    "metadata": {
+      "elevationDifference": "Différence d'élévation",
+      "elevationUp": "Montée",
+      "elevationDown": "Descente",
+      "poiUp": "Point le plus haut",
+      "poiDown": "Point le plus bas",
+      "distance": "Distance linéaire",
+      "slopeDistance": "Distance du trajet"
+    },
+    "fetchError": "Impossible de récupérer le profil d'altitude"
+  },
+  "timeSlider": {
+    "legendExplanation": "Les curseurs temporels indiquent la distribution temporelle des données. Vous pouvez utiliser les curseurs pour filtrer la plage de temps affichée sur la carte.",
+    "outsideValidYearRange": "Hors de la plage d'années valide"
+  },
+  "compareSlider": {
+    "toggleButtonTitle": "Basculer le curseur de comparaison"
+  }
+}

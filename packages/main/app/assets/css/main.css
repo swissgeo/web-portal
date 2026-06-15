@@ -1,0 +1,295 @@
+@import "tailwindcss";
+@import "@swissgeo/map/stylesheet";
+@import "@fontsource/inter";
+@import "@swissgeo/timeslider/stylesheet";
+
+@source "../../../../skeleton/";
+@source "../../../../content/";
+@source "../../../../map/";
+@source "../../../../timeslider/";
+
+@custom-variant dark (&:where(.dark-mode, .dark-mode *));
+@import "@nuxt/ui";
+@source "../../../../skeleton/src/**/*.{vue,ts,js,tsx,jsx}";
+
+@theme static {
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --color-brown-50: #f4f3f2;
+  --color-brown-100: #e4e1dd;
+  --color-brown-200: #ccc2bc;
+  --color-brown-300: #ae9e96;
+  --color-brown-400: #968279;
+  --color-brown-500: #867169;
+  --color-brown-600: #745f5a;
+  --color-brown-700: #5e4c4a;
+  --color-brown-800: #514342;
+  --color-brown-900: #483b3b;
+  --color-brown-950: #282021;
+
+  --color-turquoise-50: #effefc;
+  --color-turquoise-100: #cafdf7;
+  --color-turquoise-200: #95faf2;
+  --color-turquoise-300: #57f1e9;
+  --color-turquoise-400: #25dcd8;
+  --color-turquoise-500: #0cc0bf;
+  --color-turquoise-600: #06999b;
+  --color-turquoise-700: #0a787b;
+  --color-turquoise-800: #0d5f62;
+  --color-turquoise-900: #104f51;
+  --color-turquoise-950: #022f33;
+
+  --color-red-pastel-50: #fff7f5;
+  --color-red-pastel-100: #f8eeeb;
+  --color-red-pastel-200: #f1deda;
+  --color-red-pastel-300: #e5c3bc;
+  --color-red-pastel-400: #d69f96;
+  --color-red-pastel-500: #c37a70;
+  --color-red-pastel-600: #aa5751;
+  --color-red-pastel-700: #904340;
+  --color-red-pastel-800: #793938;
+  --color-red-pastel-900: #683334;
+  --color-red-pastel-950: #391818;
+
+  --color-zinc-50: #fafafa;
+  --color-zinc-100: #f4f4f5;
+  --color-zinc-200: #e4e4e7;
+  --color-zinc-300: #d4d4d8;
+  --color-zinc-400: #a1a1aa;
+  --color-zinc-500: #71717a;
+  --color-zinc-600: #52525b;
+  --color-zinc-700: #3f3f46;
+  --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
+
+  --color-neutral-50: #f5f6f6;
+  --color-neutral-100: #e5e7e8;
+  --color-neutral-200: #cfd1d2;
+  --color-neutral-300: #adb1b3;
+  --color-neutral-400: #848a8c;
+  --color-neutral-500: #696f71;
+  --color-neutral-600: #595f61;
+  --color-neutral-700: #4c5152;
+  --color-neutral-800: #434647;
+  --color-neutral-900: #3b3d3e;
+  --color-neutral-950: #0e0f0f;
+
+  --color-red-50: #fef3f2;
+  --color-red-100: #fee5e2;
+  --color-red-200: #ffcec9;
+  --color-red-300: #fdaca4;
+  --color-red-400: #fa7c6f;
+  --color-red-500: #f25241;
+  --color-red-600: #d4301f;
+  --color-red-700: #bb291a;
+  --color-red-800: #9b2519;
+  --color-red-900: #81251b;
+  --color-red-950: #460f09;
+
+  --color-orange-50: #fdf5ef;
+  --color-orange-100: #fae7da;
+  --color-orange-200: #f3cdb5;
+  --color-orange-300: #ecab85;
+  --color-orange-400: #e38054;
+  --color-orange-500: #dc6033;
+  --color-orange-600: #ce4928;
+  --color-orange-700: #ab3823;
+  --color-orange-800: #892e23;
+  --color-orange-900: #6f291f;
+  --color-orange-950: #3b120f;
+
+  --color-light-brown-50: #f8f4ee;
+  --color-light-brown-100: #efe3d2;
+  --color-light-brown-200: #e0c9a8;
+  --color-light-brown-300: #cea676;
+  --color-light-brown-400: #bf8850;
+  --color-light-brown-500: #b07542;
+  --color-light-brown-600: #975c37;
+  --color-light-brown-700: #79452f;
+  --color-light-brown-800: #663a2d;
+  --color-light-brown-900: #59322a;
+  --color-light-brown-950: #331915;
+
+  --color-yellow-50: #fef9ec;
+  --color-yellow-100: #fbeeca;
+  --color-yellow-200: #f7dc90;
+  --color-yellow-300: #f4ca64;
+  --color-yellow-400: #f0af2f;
+  --color-yellow-500: #e98f17;
+  --color-yellow-600: #ce6b11;
+  --color-yellow-700: #ab4b12;
+  --color-yellow-800: #8b3b15;
+  --color-yellow-900: #733114;
+  --color-yellow-950: #421806;
+
+  --color-lime-50: #f7fee7;
+  --color-lime-100: #ecfccb;
+  --color-lime-200: #d9f99d;
+  --color-lime-300: #bef264;
+  --color-lime-400: #a3e635;
+  --color-lime-500: #84cc16;
+  --color-lime-600: #65a30d;
+  --color-lime-700: #4d7c0f;
+  --color-lime-800: #3f6212;
+  --color-lime-900: #365314;
+  --color-lime-950: #1a2e05;
+
+  --color-green-50: #f2f7f3;
+  --color-green-100: #e0ebe0;
+  --color-green-200: #c3d7c4;
+  --color-green-300: #9bba9f;
+  --color-green-400: #6b9571;
+  --color-green-500: #4f7a57;
+  --color-green-600: #3b6043;
+  --color-green-700: #3e5860;
+  --color-green-800: #384b52;
+  --color-green-900: #324047;
+  --color-green-950: #1e282e;
+
+  --color-green-pastel-50: #f3f8f8;
+  --color-green-pastel-100: #e0eced;
+  --color-green-pastel-200: #c5d9dc;
+  --color-green-pastel-300: #9dbec3;
+  --color-green-pastel-400: #6d9aa3;
+  --color-green-pastel-500: #5a8b96;
+  --color-green-pastel-600: #476973;
+  --color-green-pastel-700: #0a787b;
+  --color-green-pastel-800: #0d5f62;
+  --color-green-pastel-900: #104f51;
+  --color-green-pastel-950: #022f33;
+
+  --color-cyan-50: #eefcfd;
+  --color-cyan-100: #d4f5f9;
+  --color-cyan-200: #aeeaf3;
+  --color-cyan-300: #76d8ea;
+  --color-cyan-400: #37bed9;
+  --color-cyan-500: #1ba2bf;
+  --color-cyan-600: #1a82a0;
+  --color-cyan-700: #1c6b85;
+  --color-cyan-800: #1f576b;
+  --color-cyan-900: #1e485b;
+  --color-cyan-950: #0e2e3e;
+
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+  --color-blue-950: #172554;
+
+  --color-violet-50: #f5f3ff;
+  --color-violet-100: #ede9fe;
+  --color-violet-200: #ddd6fe;
+  --color-violet-300: #c4b5fd;
+  --color-violet-400: #a78bfa;
+  --color-violet-500: #8b5cf6;
+  --color-violet-600: #7c3aed;
+  --color-violet-700: #6d28d9;
+  --color-violet-800: #5b21b6;
+  --color-violet-900: #4c1d95;
+  --color-violet-950: #2e1065;
+
+  --color-black: #0e0f0f;
+  --color-white: #ffffff;
+}
+
+h1 {
+  @apply text-4xl;
+  @apply pb-8;
+  @apply text-primary;
+}
+
+h2 {
+  @apply text-2xl;
+  @apply pt-12 pb-8 first-of-type:pt-2;
+}
+
+@layer custom {
+  :root {
+    --p-content-border-radius: 8px;
+    --p-panel-content-padding: 0px;
+    --p-iconfield-icon-color: var(--color-black);
+    --p-form-field-icon-color: var(--color-black);
+    --p-button-secondary-color: var(--color-black);
+    --p-button-text-secondary-color: var(--color-black);
+    --p-panel-header-color: var(--color-black);
+    --p-button-outlined-secondary-color: var(--color-black);
+    --p-button-text-secondary-color: var(--color-cyan-800);
+
+    --font-sans: "Inter";
+  }
+
+  .p-panel {
+    @apply shadow;
+  }
+
+  .p-panel-header {
+    border-bottom-width: 1px;
+    @apply h-16 px-6;
+  }
+
+  .p-panel-content {
+    @apply px-6 py-4;
+  }
+}
+
+body {
+  /* We have to reset these variables here again. I don't quite know why
+    but it seems that tailwind removes them if they're not referenced anywhere.
+    They're probably only used to create the variants, then dropped.
+    But for our in-JS desktop/mobile switch we need access to those, hence
+    the explicit resetting here */
+  --breakpoint-sm: var(--breakpoint-sm);
+  --breakpoint-md: var(--breakpoint-md);
+  --breakpoint-lg: var(--breakpoint-lg);
+  --breakpoint-xl: var(--breakpoint-xl);
+  --breakpoint-2xl: var(--breakpoint-2xl);
+}
+
+:root {
+  --ui-color-primary-50: var(--color-cyan-50);
+  --ui-color-primary-100: var(--color-cyan-100);
+  --ui-color-primary-200: var(--color-cyan-200);
+  --ui-color-primary-300: var(--color-cyan-300);
+  --ui-color-primary-400: var(--color-cyan-400);
+  --ui-color-primary-500: var(--color-cyan-500);
+  --ui-color-primary-600: var(--color-cyan-600);
+  --ui-color-primary-700: var(--color-cyan-700);
+  --ui-color-primary-800: var(--color-cyan-800);
+  --ui-color-primary-900: var(--color-cyan-900);
+  --ui-color-primary-950: var(--color-cyan-950);
+
+  --ui-color-secondary-50: var(--color-green-pastel-50);
+  --ui-color-secondary-100: var(--color-green-pastel-100);
+  --ui-color-secondary-200: var(--color-green-pastel-200);
+  --ui-color-secondary-300: var(--color-green-pastel-300);
+  --ui-color-secondary-400: var(--color-green-pastel-400);
+  --ui-color-secondary-500: var(--color-green-pastel-500);
+  --ui-color-secondary-600: var(--color-green-pastel-600);
+  --ui-color-secondary-700: var(--color-green-pastel-700);
+  --ui-color-secondary-800: var(--color-green-pastel-800);
+  --ui-color-secondary-900: var(--color-green-pastel-900);
+  --ui-color-secondary-950: var(--color-green-pastel-950);
+
+  --ui-radius: 8px;
+  --ui-primary: var(--ui-color-primary-700);
+  --ui-primary-hover: var(--ui-color-primary-800);
+  --ui-primary-active: var(--ui-color-primary-900);
+  --ui-secondary: var(--ui-color-secondary-50);
+  --ui-secondary-hover: var(--ui-color-secondary-100);
+  --ui-secondary-active: var(--ui-color-secondary-200);
+}
+
+a:not(.p-menu-item-link):not([data-menu], [print-link]) {
+  @apply text-blue-700;
+}
+
+a:hover:not(.p-menu-item-link):not([data-menu], [print-link]) {
+  @apply text-blue-500;
+}

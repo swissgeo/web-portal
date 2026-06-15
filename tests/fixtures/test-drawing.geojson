@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [8.5417, 47.3769]
+      },
+      "properties": {
+        "name": "Test Point",
+        "description": "A test point in Zurich"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [8.5417, 47.3769],
+          [8.5517, 47.3869],
+          [8.5617, 47.3769]
+        ]
+      },
+      "properties": {
+        "name": "Test Line",
+        "description": "A test line"
+      }
+    }
+  ]
+}
