@@ -1,28 +1,31 @@
 import type { GetAppState } from "@swissgeo/statesharing";
 
 import log from "@swissgeo/log";
-import { getAppStateStateIdGet } from "@swissgeo/statesharing";
-
-import { stateSharingClient as client } from "../../../../utils/state-sharing-client";
+import { ReadAppStateValidator } from "@swissgeo/statesharing";
 
 export default defineEventHandler(async (event): Promise<GetAppState> => {
   const stateId = getRouterParam(event, "stateId");
+  const config = useRuntimeConfig();
 
   if (!stateId) {
     throw createError({ statusCode: 400, statusMessage: "Missing stateId" });
   }
 
   log.debug(
-    `Proxying GET state for stateId=${stateId} to ${client.getConfig().baseUrl}`,
+    `Proxying GET state for stateId=${stateId} to ${config.shareServiceUrl}`,
   );
 
   try {
-    const { data } = await getAppStateStateIdGet({
-      client,
-      path: { state_id: stateId },
-      throwOnError: true,
-    });
-    return data;
+    const data = await $fetch<GetAppState>(
+      `${config.shareServiceUrl}/${stateId}`,
+      {
+        method: "GET",
+      },
+    );
+
+    const parsedData = ReadAppStateValidator.parse(data);
+
+    return parsedData;
   } catch (error) {
     log.error("Failed to get state", { error });
     throw createError({

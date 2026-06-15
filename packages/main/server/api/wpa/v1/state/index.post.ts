@@ -1,22 +1,23 @@
 import type { SaveAppState } from "@swissgeo/statesharing";
 
 import log from "@swissgeo/log";
-import { postAppStatePost } from "@swissgeo/statesharing";
-
-import { stateSharingClient as client } from "../../../../utils/state-sharing-client";
+import { SaveAppStateResponseValidator } from "@swissgeo/statesharing";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<SaveAppState>(event);
+  const config = useRuntimeConfig();
 
-  log.debug(`Proxying POST state to ${client.getConfig().baseUrl}`);
+  log.debug(`Proxying POST state to ${config.shareServiceUrl}`);
 
   try {
-    const { data } = await postAppStatePost({
-      client,
+    const data = await $fetch(`${config.shareServiceUrl}/`, {
+      method: "POST",
       body,
-      throwOnError: true,
     });
-    return data;
+
+    const parsedData = SaveAppStateResponseValidator.parse(data);
+
+    return parsedData;
   } catch (error) {
     log.error("Failed to save state", { error });
     throw createError({

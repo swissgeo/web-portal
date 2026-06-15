@@ -8,15 +8,5 @@ export default defineConfig({
     path: "src/hey-api",
     postProcess: ["prettier"],
   },
-  plugins: [
-    {
-      name: "@hey-api/client-fetch",
-      baseUrl: `${APP_STATE_SERVICE_BASE_URL}/`,
-    },
-    "zod",
-    {
-      name: "@hey-api/sdk",
-      validator: "zod",
-    },
-  ],
+  plugins: ["@hey-api/typescript", "zod"],
 });
