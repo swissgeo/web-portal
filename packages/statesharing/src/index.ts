@@ -15,4 +15,5 @@ export type {
   MapState,
   SaveAppStateResponse,
 } from "./hey-api/types.gen";
+export { createClient, createConfig } from "./hey-api/client";
 export type { StateV1Input as AppState } from "./hey-api/types.gen";

@@ -1,10 +1,9 @@
 import type { GetAppState } from "@swissgeo/statesharing";
 
 import log from "@swissgeo/log";
-import {
-  APP_STATE_SERVICE_BASE_URL,
-  getAppStateStateIdGet,
-} from "@swissgeo/statesharing";
+import { getAppStateStateIdGet } from "@swissgeo/statesharing";
+
+import { stateSharingClient as client } from "../../../../utils/state-sharing-client";
 
 export default defineEventHandler(async (event): Promise<GetAppState> => {
   const stateId = getRouterParam(event, "stateId");
@@ -14,11 +13,12 @@ export default defineEventHandler(async (event): Promise<GetAppState> => {
   }
 
   log.debug(
-    `Proxying GET state for stateId=${stateId} to ${APP_STATE_SERVICE_BASE_URL}`,
+    `Proxying GET state for stateId=${stateId} to ${client.getConfig().baseUrl}`,
   );
 
   try {
     const { data } = await getAppStateStateIdGet({
+      client,
       path: { state_id: stateId },
       throwOnError: true,
     });
