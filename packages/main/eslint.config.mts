@@ -24,7 +24,6 @@ export default [
             "server/api/wpa/v1/layers/external/dataset/?capabilityUrl?/__tests__/*.ts",
             "server/middleware/*.ts",
             "tests/setup.ts",
-            "nuxt.config.ts",
           ],
         },
       },
