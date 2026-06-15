@@ -35,7 +35,7 @@ export const useDrawingStore2 = defineStore("drawing2", () => {
   // The select interaction to select a feature on the map. This is used to set the focused feature and enable editing or show feature info.
   // Selecting multiple features is disabled
   const selectInteractions = markRaw(
-    new Select({ multi: false, hitTolerance: 5 }),
+    new Select({ multi: false, hitTolerance: 5, style: null }),
   );
   selectInteractions.setActive(false);
 

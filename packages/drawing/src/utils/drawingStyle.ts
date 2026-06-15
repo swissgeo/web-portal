@@ -17,6 +17,17 @@ export const POINT_RADIUS_KEY = "pointRadius";
 export const POINT_COLOR_KEY = "pointColor";
 
 /**
+ * The style as exchanged between the drawing composable and the UI for editing the style of a feature.
+ */
+export type FeatureStyle = {
+  [FILL_COLOR_KEY]?: string;
+  [STROKE_COLOR_KEY]?: string;
+  [STROKE_WIDTH_KEY]?: number;
+  [POINT_RADIUS_KEY]?: number;
+  [POINT_COLOR_KEY]?: string;
+};
+
+/**
  * Default values for the style properties.
  * Note: these are not for the style "as creating/editing" but for the initial style of a feature when it is created.
  */
@@ -40,7 +51,6 @@ export const EDITING_POINT_RADIUS =
   1 + DEFAULT_POINT_RADIUS + EDITING_OUTLINE_WIDTH / 2;
 export const EDITING_OUTLINE_COLOR = "#FFFFFF";
 
-export const SELECTED_STROKE_WIDTH = 3;
 export const SELECTED_OUTLINE_WIDTH = 2;
 export const SELECTED_POINT_RADIUS =
   1 + DEFAULT_POINT_RADIUS + SELECTED_OUTLINE_WIDTH / 2;
@@ -137,7 +147,7 @@ const SELECTED_STYLE = (feature: FeatureLike) => {
     new Style({
       stroke: new Stroke({
         color: SELECTED_OUTLINE_COLOR,
-        width: SELECTED_STROKE_WIDTH + SELECTED_OUTLINE_WIDTH * 2,
+        width: props[STROKE_WIDTH_KEY] + SELECTED_OUTLINE_WIDTH * 2,
       }),
     }),
 
@@ -147,7 +157,7 @@ const SELECTED_STYLE = (feature: FeatureLike) => {
       }),
       stroke: new Stroke({
         color: props[STROKE_COLOR_KEY],
-        width: SELECTED_STROKE_WIDTH,
+        width: props[STROKE_WIDTH_KEY],
       }),
     }),
   ];
@@ -273,4 +283,31 @@ export function applySelectedStyle(feature: Feature<Geometry>) {
   }
 
   feature.setStyle(SELECTED_STYLE);
+}
+
+/**
+ * From a given feature, extract the style-related properties and return them as an object.
+ * Note: depending on the type of geometry, some properties may be undefined, as they are not relevant for that type of geometry.
+ */
+export function getStylePropertiesAsObject(
+  feature: Feature<Geometry>,
+): FeatureStyle {
+  return {
+    [FILL_COLOR_KEY]: feature.get(FILL_COLOR_KEY),
+    [STROKE_COLOR_KEY]: feature.get(STROKE_COLOR_KEY),
+    [STROKE_WIDTH_KEY]: feature.get(STROKE_WIDTH_KEY),
+    [POINT_RADIUS_KEY]: feature.get(POINT_RADIUS_KEY),
+    [POINT_COLOR_KEY]: feature.get(POINT_COLOR_KEY),
+  };
+}
+
+export function setStylePropertiesFromObject(
+  feature: Feature<Geometry>,
+  style: FeatureStyle,
+) {
+  feature.set(FILL_COLOR_KEY, style[FILL_COLOR_KEY]);
+  feature.set(STROKE_COLOR_KEY, style[STROKE_COLOR_KEY]);
+  feature.set(STROKE_WIDTH_KEY, style[STROKE_WIDTH_KEY]);
+  feature.set(POINT_RADIUS_KEY, style[POINT_RADIUS_KEY]);
+  feature.set(POINT_COLOR_KEY, style[POINT_COLOR_KEY]);
 }

@@ -20,6 +20,14 @@ import {
   applyEditingStyle,
   applySelectedStyle,
   initializeStyleProperties,
+  getStylePropertiesAsObject,
+  type FeatureStyle,
+  setStylePropertiesFromObject,
+  FILL_COLOR_KEY,
+  STROKE_COLOR_KEY,
+  STROKE_WIDTH_KEY,
+  POINT_RADIUS_KEY,
+  POINT_COLOR_KEY,
 } from "../utils/drawingStyle";
 
 registerProj4(proj4);
@@ -68,25 +76,7 @@ export type FocusedFeatureMetrics =
   | CircleMetrics
   | null;
 
-export interface UseDrawingApi {
-  disableAllInteractions: () => void;
-  enableSelectInteraction: () => void;
-  enableModifyInteraction: () => void;
-  removeFocus: () => void;
-  enableDrawInteraction: (
-    geometryType: "Point" | "LineString" | "Polygon" | "Circle",
-  ) => void;
-  removeFocusedFeature: () => void;
-  focusedFeatureType: Readonly<Ref<string | null>>;
-  numberOfFeatures: Readonly<Ref<number>>;
-  focusMode: Readonly<Ref<FocusMode>>;
-  focusedFeature: Ref<Feature<Geometry> | null>;
-  bearsUuid: (uuid: string) => boolean;
-  drawingVectorLayer: VectorLayer;
-  focusedFeatureMetrics: Ref<FocusedFeatureMetrics>;
-}
-
-export function useDrawing(olMap: OlMap): UseDrawingApi {
+export function useDrawing(olMap: OlMap) {
   const drawingStore = useDrawingStore2();
   const { focusedFeature, focusMode } = storeToRefs(drawingStore);
   const {
@@ -120,9 +110,28 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
    */
   const focusedFeatureMetrics = ref<FocusedFeatureMetrics>(null);
 
-  watch(creatingOrEditingIterations, () => {
-    focusedFeatureMetrics.value = computeFocusedFeatureMetrics();
-  });
+  const fillColor = ref<string | null>("#ff00ff");
+  const strokeColor = ref<string | null>(null);
+  const strokeWidth = ref<number | null>(null);
+  const pointRadius = ref<number | null>(null);
+  const pointColor = ref<string | null>(null);
+
+  watch(
+    creatingOrEditingIterations,
+    () => {
+      focusedFeatureMetrics.value = computeFocusedFeatureMetrics();
+
+      console.log("change");
+
+      // Refresh some styling properties that are exposed as
+      fillColor.value = focusedFeature.value?.get(FILL_COLOR_KEY) ?? null;
+      strokeColor.value = focusedFeature.value?.get(STROKE_COLOR_KEY) ?? null;
+      strokeWidth.value = focusedFeature.value?.get(STROKE_WIDTH_KEY) ?? null;
+      pointRadius.value = focusedFeature.value?.get(POINT_RADIUS_KEY) ?? null;
+      pointColor.value = focusedFeature.value?.get(POINT_COLOR_KEY) ?? null;
+    },
+    { immediate: true },
+  );
 
   /**
    * Compute the metrics related to the focused feature, depending on its geometry type.
@@ -350,6 +359,10 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
         // Add the default styling properties
         // (not the creating/editing style, but the style that can later be modified and persited)
         initializeStyleProperties(focusedFeature.value);
+
+        // Add an empty description to the new polygon
+        focusedFeature.value.set("description", "");
+
       // Note: no break here, as the creating style is the same as the editing style for now
       // eslint-disable-next-line no-fallthrough
       case "edit":
@@ -359,6 +372,20 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
         break;
     }
   });
+
+  function setFillColor(color: string) {
+    if (!focusedFeature.value) {
+      return;
+    }
+    focusedFeature.value.set(FILL_COLOR_KEY, color);
+  }
+
+  function setStrokeColor(color: string) {
+    if (!focusedFeature.value) {
+      return;
+    }
+    focusedFeature.value.set(STROKE_COLOR_KEY, color);
+  }
 
   // When a feature is finished to be created or modified (tyipically with a double-click),
   // the focus is then switched to "none"
@@ -534,5 +561,9 @@ export function useDrawing(olMap: OlMap): UseDrawingApi {
     // Expose the OL layer with a stable public type for declaration generation.
     drawingVectorLayer: drawingVectorLayer as unknown as VectorLayer,
     focusedFeatureMetrics,
+    setFillColor,
+    fillColor,
+    setStrokeColor,
+    strokeColor,
   };
 }

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { Map } from "ol";
 
-import { useMap } from "@swissgeo/map";
-
 import { useDrawing } from "@swissgeo/drawing";
+import { useMap } from "@swissgeo/map";
 import { IconButton } from "@swissgeo/skeleton";
+
+import LinestringStyleEditor from "./LinestringStyleEditor.vue";
+import PolygonStyleEditor from "./PolygonStyleEditor.vue";
 
 const { t } = useI18n();
 
@@ -60,6 +62,12 @@ onUnmounted(() => {
     </div>
 
     <div class="mb-4">
+      <PolygonStyleEditor
+        v-if="
+          focusedFeatureType === 'Circle' || focusedFeatureType === 'Polygon'
+        "
+      />
+      <LinestringStyleEditor v-if="focusedFeatureType === 'LineString'" />
       <textarea
         v-if="focusedFeatureMetrics"
         :value="JSON.stringify(focusedFeatureMetrics, null, 2)"
