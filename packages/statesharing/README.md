@@ -6,16 +6,16 @@ Provides types, Zod validators and the version constant for the app state sharin
 
 All HTTP calls go through Nuxt server proxy routes (`packages/main/server/api/wpa/v1/state/`) to avoid CORS. The generated client itself is not called directly from the browser.
 
-## Regenerating the client
+## Regenerating the types and validators
 
-The client is generated from the OpenAPI spec served by the state service. The URL is read from `NUXT_SHARE_SERVICE_URL` (falling back to the dev endpoint), so it stays in sync with the runtime config:
+The types and validators (zod) are generated from the OpenAPI spec served by the state service. The URL is read from `NUXT_SHARE_SERVICE_URL` (falling back to the dev endpoint), so it stays in sync with the runtime config:
 
 ```sh
 # defaults to https://www.dev.sgdi.tech/api/wps/v1/state
-pnpm --filter @swissgeo/statesharing generate-client
+pnpm --filter @swissgeo/statesharing generate-types
 
 # target a different environment
-NUXT_SHARE_SERVICE_URL=https://www.prod.sgdi.tech/api/wps/v1/state pnpm --filter @swissgeo/statesharing generate-client
+NUXT_SHARE_SERVICE_URL=https://www.prod.sgdi.tech/api/wps/v1/state pnpm --filter @swissgeo/statesharing generate-types
 
 pnpm --filter @swissgeo/statesharing build
 ```
