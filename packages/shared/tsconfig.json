@@ -5,6 +5,7 @@
     "src/**/*.vue",
     "types/**/*.ts",
     "vite.config.ts",
+    "vitest.config.ts",
     "../../base.vite.config.ts"
   ],
   "compilerOptions": {

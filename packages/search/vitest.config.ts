@@ -1,4 +1,3 @@
-import vue from "@vitejs/plugin-vue";
 import path from "path";
 import { defineConfig } from "vitest/config";
 
@@ -7,14 +6,8 @@ export default defineConfig({
     environment: "happy-dom",
     coverage: {
       provider: "v8",
-      reportsDirectory: path.resolve(__dirname, "../../coverage/unit/map"),
+      reportsDirectory: path.resolve(__dirname, "../../coverage/unit/search"),
       reporter: ["lcov", "cobertura"],
     },
   },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
-    },
-  },
-  plugins: [vue()],
 });

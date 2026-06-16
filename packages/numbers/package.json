@@ -26,6 +26,7 @@
     "lint": "eslint",
     "lint:write": "eslint --fix",
     "test:unit": "vitest run",
+    "test:unit:coverage": "vitest run --coverage",
     "test:unit:watch": "vitest watch",
     "type-check": "tsc -p tsconfig.json"
   },

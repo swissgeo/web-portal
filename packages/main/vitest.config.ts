@@ -1,4 +1,5 @@
 import { defineVitestConfig } from "@nuxt/test-utils/config";
+import path from "path";
 
 /**
  * `defineVitestConfig` auto-splits the suite into two Vitest projects:
@@ -23,6 +24,11 @@ export default defineVitestConfig({
     testTimeout: 30000,
     hookTimeout: 30000,
     setupFiles: ["./tests/setup.ts"],
+    coverage: {
+      provider: "v8",
+      reportsDirectory: path.resolve(__dirname, "../../coverage/unit/main"),
+      reporter: ["lcov", "cobertura"],
+    },
   },
   resolve: {
     alias: {},

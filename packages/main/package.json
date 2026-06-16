@@ -16,6 +16,7 @@
     "lint:write": "eslint --fix",
     "preview": "nuxt preview",
     "test:unit": "vitest run",
+    "test:unit:coverage": "vitest run --coverage",
     "type-check": "nuxt typecheck"
   },
   "dependencies": {
