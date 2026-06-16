@@ -24,7 +24,13 @@ const backgroundRecords = computed(async () => {
   for (const backgroundId of AVAILABLE_BACKGROUNDS) {
     promises.push(
       $fetch(
-        `${runtimeConfig.public.ogcApiEndpoint}/collections/${runtimeConfig.public.ogcCatalogCollection}/items/${backgroundId}`,
+        joinURL(
+          runtimeConfig.public.ogcApiEndpoint,
+          "/collections/",
+          runtimeConfig.public.ogcCatalogCollection,
+          "/items/",
+          backgroundId,
+        ),
       ),
     );
   }
