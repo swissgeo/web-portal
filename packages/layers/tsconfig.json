@@ -13,6 +13,7 @@
     "types": ["vue", "pinia"],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "rootDir": "../.."
   }
 }

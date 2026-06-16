@@ -33,7 +33,7 @@ catalog:
   "@types/geojson": ^7946.0.16
   "@types/node": ^24.12.0
   "@types/semver": ^7.7.1
-  "@typescript-eslint/utils": ^8.46.1
+  "@typescript-eslint/utils": ^8.61.0
   "@vitejs/plugin-vue": ^6.0.7
   "@vitest/ui": "^4.1.2"
   "@vue/compiler-dom": ^3.5.34
@@ -82,8 +82,8 @@ catalog:
   stylelint-scss: ^7.0.0
   tailwindcss: ^4.1.18
   turbo: ^2.9.16
-  typescript: ^5.9.3
-  typescript-eslint: ^8.46.1
+  typescript: ^6.0.0
+  typescript-eslint: ^8.61.0
   unplugin-dts: 1.0.2
   vite: ^8.0.0
   vite-plugin-vue-devtools: ^8.0.1
