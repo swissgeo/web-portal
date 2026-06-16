@@ -1,5 +1,7 @@
 # SWISSGEO Web Portal
 
+[![codecov-develop](https://codecov.io/gh/swissgeo/web-portal/branch/develop/graph/badge.svg)](https://codecov.io/gh/swissgeo/web-portal)
+
 This repository contains the frontend implementation for SWISSGEO, the future central geodata platform for Switzerland.
 
 > [!IMPORTANT]
