@@ -49,11 +49,11 @@ const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
       class="fixed top-4 left-4 z-9999"
       :to="`${url.origin}/map?state=${stateQuery}`"
       target="_blank"
-      variant="outline"
+      variant="solid"
       data-testid="embed-map-viewer-view-on-swissgeo-button"
     >
       <LogoPic class="h-auto w-auto!" :condensed="true" />
-      <span>{{ t("embed.viewOn", { platform: "swissgeo.ch" }) }}</span>
+      {{ t("embed.viewOn", { platform: "swissgeo.ch" }) }}
     </UButton>
     <SourceToMapDataConverter
       :source-bg-layer="backgroundLayer"
