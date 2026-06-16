@@ -56,7 +56,6 @@
     "vue-tsc": "catalog:"
   },
   "peerDependencies": {
-    "@lucide/vue": "catalog:",
     "@vueuse/core": "catalog:",
     "vue": "catalog:",
     "vue-i18n": "catalog:"

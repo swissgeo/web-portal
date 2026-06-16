@@ -16,14 +16,7 @@ export default defineConfig(({ mode }) => {
         formats: ["es"],
       },
       rollupOptions: {
-        external: [
-          "vue",
-          "pinia",
-          "@lucide/vue",
-          "@swissgeo/log",
-          "vue-i18n",
-          "@vueuse/core",
-        ],
+        external: ["vue", "pinia", "@swissgeo/log", "vue-i18n", "@vueuse/core"],
       },
     },
     resolve: {
