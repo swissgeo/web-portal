@@ -32,6 +32,8 @@ export default defineConfig({
       NODE_ENV: "test",
       NUXT_PUBLIC_OGC_API_ENDPOINT: "http://mock-oar.org/api/oar",
       NUXT_PUBLIC_API_ENDPOINT: "http://mock-livingdocs.org/",
+      // Pass through COVERAGE=1 to enable inline sourcemaps for v8 coverage
+      COVERAGE: process.env.COVERAGE ?? "",
     },
   },
 });

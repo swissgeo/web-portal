@@ -16,8 +16,12 @@
     "@swissgeo/config-typescript": "workspace:*",
     "@types/node": "catalog:",
     "eslint": "catalog:",
+    "istanbul-lib-coverage": "catalog:",
+    "istanbul-lib-report": "catalog:",
+    "istanbul-reports": "catalog:",
     "ol": "catalog:",
     "prettier": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "v8-to-istanbul": "catalog:"
   }
 }
