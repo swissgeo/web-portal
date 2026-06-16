@@ -1185,9 +1185,6 @@ importers:
       '@nuxt/ui':
         specifier: 'catalog:'
         version: 4.8.2(@internationalized/date@3.11.0)(@internationalized/number@3.6.5)(@tiptap/extensions@3.25.0(@tiptap/core@3.25.0(@tiptap/pm@3.25.0))(@tiptap/pm@3.25.0))(@tiptap/y-tiptap@3.0.2(prosemirror-model@1.25.7)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(change-case@5.4.4)(db0@0.3.4)(embla-carousel@8.6.0)(ioredis@5.10.1)(magicast@0.5.3)(qrcode@1.5.4)(tailwindcss@4.3.1)(typescript@6.0.3)(vite@8.0.16(@types/node@25.6.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.46.0)(yaml@2.9.0))(vue-router@5.1.0(@vue/compiler-sfc@3.5.38)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.38(typescript@6.0.3)))(vite@8.0.16(@types/node@25.6.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.46.0)(yaml@2.9.0))(vue@3.5.38(typescript@6.0.3)))(vue@3.5.38(typescript@6.0.3))(yjs@13.6.29)(zod@4.4.3)
-      '@swissgeo/content':
-        specifier: workspace:*
-        version: link:../content
       '@swissgeo/layers':
         specifier: workspace:*
         version: link:../layers
