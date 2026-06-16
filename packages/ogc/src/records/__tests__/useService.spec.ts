@@ -74,7 +74,7 @@ describe("extract service URL", () => {
     expect(url).toBe(null);
   });
 
-  it.each(["service", "Service", "SerVice", "SERVICE"])(
+  it.each(["dataservice", "Dataservice", "DataSerVice", "DATASERVICE"])(
     "works with random case service rels (%s)",
     (rel) => {
       const dataset = {

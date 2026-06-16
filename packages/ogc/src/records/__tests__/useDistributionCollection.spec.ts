@@ -16,7 +16,7 @@ import ChBafuSchutzgebieteLuftfahrtDistributions from "./fixtures/distribution-c
 describe("useDistributionCollection fetching the data distribution from the OGC records", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/v0/collections/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
       () => {
         return HttpResponse.json(ChBafuSchutzgebieteLuftfahrtDistributions);
       },
@@ -36,7 +36,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
     );
 
     expect(distributionLink).toBe(
-      "https://services.dev.sgdi.tech/api/oar/v0/collections/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
     );
   });
 

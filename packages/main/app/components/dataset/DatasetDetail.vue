@@ -29,11 +29,11 @@ const displayLinks = computed<Link[]>(() => {
 });
 
 const serviceDistributions = computed<Distribution[]>(() => {
-  if (!props.distributionCollection?.records) {
+  if (!props.distributionCollection?.features) {
     return [];
   }
-  return props.distributionCollection.records.filter(
-    (d) => d.properties.protocol !== "OGC:GeoJSON",
+  return props.distributionCollection.features.filter(
+    (d) => d.properties.protocol?.toLowerCase() !== "ogc:geojson",
   );
 });
 </script>

@@ -68,17 +68,15 @@ const mockDataset: Dataset = {
 };
 
 const mockDistributions: DistributionCollection = {
-  id: "distributions",
-  type: "Collection",
-  itemType: "distribution",
-  title: "Distributions",
-  records: [
+  type: "FeatureCollection",
+  features: [
     {
       id: "wms",
       properties: { type: "Distribution", title: "WMS" },
       links: [{ rel: "enclosure", href: "https://wms.example.com" }],
     },
   ],
+  links: [],
 };
 
 describe("useDatasetRecord", () => {
@@ -112,7 +110,7 @@ describe("useDatasetRecord", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "https://api.example.com/distributions?language=de",
     );
-    expect(distributionCollection.value?.records).toHaveLength(1);
+    expect(distributionCollection.value?.features).toHaveLength(1);
   });
 
   it("overwrites existing language param in distributions URL without duplicating it", async () => {

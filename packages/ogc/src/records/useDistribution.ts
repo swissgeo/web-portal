@@ -16,18 +16,18 @@ export function useDistribution(
     );
   });
 
-  // TODO not sure if this is the right one
-  const layerId = computed(() => distributionCollection.value?.id || null);
+  const layerId = computed(
+    () => distribution.value?.properties.externalIds?.[0] || null,
+  );
 
   watchEffect(() =>
     log.debug({
       title: "useDistribution",
       titleColor: LogPreDefinedColor.Amber,
       messages: [
-        "Extracted distribution from collection",
+        "Extracted <1> distribution from collection <2> with layerId <3>",
         toValue(distribution),
         toValue(distributionCollection),
-        "with layerId",
         toValue(layerId),
       ],
     }),
@@ -40,13 +40,13 @@ export function extractDistribution(
   collection: DistributionCollection | null,
   distributionId: string | null,
 ): Distribution | null {
-  if (!collection || !("records" in collection) || !distributionId) {
+  if (!collection || !("features" in collection) || !distributionId) {
     return null;
   }
 
-  const records = collection.records;
+  const features = collection.features;
 
-  for (const distribution of records) {
+  for (const distribution of features) {
     if (!distribution.properties) {
       break; // go to exception below
     }

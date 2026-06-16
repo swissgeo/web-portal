@@ -12,14 +12,20 @@ export function useOgcCatalog(language: Ref<string>) {
     messages: ["loading the catalog with language", language.value],
   });
 
-  const { data: recordData } = useFetch<DatasetCollection>(
-    runtimeConfig.public.ogcApiEndpoint,
-    {
-      query: {
-        language: language.value,
-      },
-    },
+  const catalogLink = computed(() =>
+    joinURL(
+      runtimeConfig.public.ogcApiEndpoint,
+      "/collections/",
+      runtimeConfig.public.ogcCatalogCollection,
+      "/items",
+    ),
   );
+
+  const { data: recordData } = useFetch<DatasetCollection>(catalogLink.value, {
+    query: {
+      language: language.value,
+    },
+  });
 
   return {
     data: recordData,

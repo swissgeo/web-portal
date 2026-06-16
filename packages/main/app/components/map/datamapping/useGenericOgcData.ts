@@ -17,13 +17,13 @@ export function useGenericOgcData(layer: Ref<DatasetLayer>) {
 
   // if there's a preferred distribution, let's get that one, otherwise the first one
   const distributionId = computed(() => {
-    if (!distributionCollection.value?.records?.length) {
+    if (!distributionCollection.value?.features?.length) {
       // If any of these is null-ish, then there's no point in returning the preferredDistributionId
       return null;
     }
     return (
       preferredDistributionId.value ??
-      distributionCollection.value.records[0]!.id
+      distributionCollection.value.features[0]!.id
     );
   });
 
