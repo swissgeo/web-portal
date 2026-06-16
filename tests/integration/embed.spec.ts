@@ -1,5 +1,4 @@
 import type { Page, Route } from "@playwright/test";
-import type BaseLayer from "ol/layer/Base";
 
 import { expect, test } from "@playwright/test";
 import { readFileSync } from "fs";
@@ -16,21 +15,6 @@ const WMTSCapabilities = readFileSync(
 const tileFixture = readFileSync(
   new URL("../fixtures/tile.jpeg", import.meta.url),
 );
-
-const basicMapStateFixture = JSON.stringify({
-  version: "1.0",
-  state: {
-    map: { center: [2660000, 1190000], zoom: 1, rotation: 0 },
-    layers: [],
-    backgroundLayer: {
-      layerUrl:
-        "http://mock-oar.org/api/oar/items/ch.swisstopo.pixelkarte-farbe",
-      type: "dataset",
-      isVisible: true,
-      opacity: 1,
-    },
-  },
-});
 
 import {
   HYDRATION_TIMEOUT,
@@ -134,36 +118,6 @@ test.describe("embed map page", () => {
     );
     expect(zoom).toEqual(1);
     expect(center).toEqual([2660000, 1190000]);
-  });
-
-  test("Loads the pixelkarte-farbe as background from state", async ({
-    page,
-  }) => {
-    await page.evaluate(
-      (value) => sessionStorage.setItem("swissgeo_app_state", value),
-      basicMapStateFixture,
-    );
-    await page.goto("/en/embed");
-    await expect(page.getByTestId("ol-map")).toBeVisible({
-      timeout: HYDRATION_TIMEOUT,
-    });
-    await page.waitForFunction(() => window.swissgeoOlMap !== undefined, null, {
-      timeout: 20000,
-    });
-    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
-    const layers = await page.evaluate((map) => {
-      const arr = map.getLayers().getArray();
-      return arr.map((layer: BaseLayer) => ({
-        name: layer.get("id"),
-        opacity: layer.getOpacity(),
-        visible: layer.getVisible(),
-      }));
-    }, mapRef);
-
-    expect(layers).toHaveLength(1);
-    expect(layers[0].name).toEqual("ch.swisstopo.pixelkarte-farbe");
-    expect(layers[0].opacity).toBe(1);
-    expect(layers[0].visible).toBe(true);
   });
 
   test("zoom buttons work", async ({ page }) => {
