@@ -33,7 +33,7 @@
       </div>
     </div>
     <!-- Stroke Width -->
-    <!-- <div>
+    <div>
       <label class="mb-1 block text-sm font-medium text-gray-900"
         >Stroke Width</label
       >
@@ -45,7 +45,7 @@
         step="1"
         @input="setStrokeWidth(Number($event.target.value))"
       />
-    </div> -->
+    </div>
   </div>
   <div
     v-else
@@ -60,6 +60,13 @@ import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
 
 const { olMap } = useMap();
-const { focusedFeature, setFillColor, fillColor, setStrokeColor, strokeColor } =
-  useDrawing(olMap.value!);
+const {
+  focusedFeature,
+  setFillColor,
+  fillColor,
+  setStrokeColor,
+  strokeColor,
+  setStrokeWidth,
+  strokeWidth,
+} = useDrawing(olMap.value!);
 </script>

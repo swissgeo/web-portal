@@ -1,34 +1,54 @@
 import type { Map as OlMap } from "ol";
 import type { Coordinate } from "ol/coordinate";
+import type { EventsKey } from "ol/events";
 import type Feature from "ol/Feature";
 import type { Circle, Geometry, LineString, Point, Polygon } from "ol/geom";
 import type VectorLayer from "ol/layer/Vector";
+import type { VectorSourceEvent } from "ol/source/Vector";
 import type { Ref } from "vue";
 
 import { registerProj4, WGS84 } from "@swissgeo/coordinates";
 import { useLayerStore } from "@swissgeo/layers";
+import { watchDebounced } from "@vueuse/core";
+import { unByKey } from "ol/Observable";
 import { storeToRefs } from "pinia";
 import proj4 from "proj4";
-import { computed, nextTick, onMounted, readonly, ref, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  readonly,
+  ref,
+  watch,
+} from "vue";
 
 import type { FocusMode } from "../stores/drawing.store";
 
 import { useDrawingStore2 } from "../stores/drawing.store";
-import { getLinearRingLength } from "../utils/drawingUtils";
 import {
   applyIdleStyle,
   applyEditingStyle,
   applySelectedStyle,
   initializeStyleProperties,
-  getStylePropertiesAsObject,
-  type FeatureStyle,
-  setStylePropertiesFromObject,
   FILL_COLOR_KEY,
   STROKE_COLOR_KEY,
   STROKE_WIDTH_KEY,
   POINT_RADIUS_KEY,
   POINT_COLOR_KEY,
+  setFeatureFillColorStyleProperty,
+  setFeatureStrokeColorStyleProperty,
+  getFeatureFillColorStyleProperty,
+  getFeatureStrokeColorStyleProperty,
+  getFeatureStrokeWidthStyleProperty,
+  getFeaturePointRadiusStyleProperty,
+  getFeaturePointColorStyleProperty,
+  setFeatureStrokeWidthStyleProperty,
+  setFeaturePointRadiusStyleProperty,
+  setFeaturePointColorStyleProperty,
 } from "../utils/drawingStyle";
+import { getLinearRingLength } from "../utils/drawingUtils";
+import { get } from "ol/proj";
 
 registerProj4(proj4);
 
@@ -98,6 +118,10 @@ export function useDrawing(olMap: OlMap) {
     drawCircleInteraction,
   ];
 
+  // Store the keys of event handlers so that they can be removed later when the
+  // component is unmounted or when the interactions are disabled.
+  const handlersToRemove: EventsKey[] = [];
+
   /**
    * This is an incremental counter that updates when the feature in focus is being created or edited.
    * This if only for internal use to trigger the update of the computed property focusedFeatureMetrics.
@@ -110,27 +134,44 @@ export function useDrawing(olMap: OlMap) {
    */
   const focusedFeatureMetrics = ref<FocusedFeatureMetrics>(null);
 
-  const fillColor = ref<string | null>("#ff00ff");
+  const fillColor = ref<string | null>(null);
   const strokeColor = ref<string | null>(null);
   const strokeWidth = ref<number | null>(null);
   const pointRadius = ref<number | null>(null);
   const pointColor = ref<string | null>(null);
 
-  watch(
-    creatingOrEditingIterations,
+  /**
+   * Watch for changes that occurs in the vector layer of if the focus has changed.
+   * This can be about a feature being added/removed/modified or even a property of a feature
+   * such as a color.
+   * Note: this is debounced to avoid too many updates when the user is drawing or editing a feature.
+   */
+  watchDebounced(
+    [creatingOrEditingIterations, focusedFeature],
     () => {
+      // Update the number of features and the metrics of the focused feature
+      numberOfFeatures.value = drawingVectorSource.getFeatures().length;
+
+      // Update the metrics of the focused feature (if focused)
       focusedFeatureMetrics.value = computeFocusedFeatureMetrics();
 
-      console.log("change");
+      // Update some styling states from the underlaying OL feature properties:
 
-      // Refresh some styling properties that are exposed as
-      fillColor.value = focusedFeature.value?.get(FILL_COLOR_KEY) ?? null;
-      strokeColor.value = focusedFeature.value?.get(STROKE_COLOR_KEY) ?? null;
-      strokeWidth.value = focusedFeature.value?.get(STROKE_WIDTH_KEY) ?? null;
-      pointRadius.value = focusedFeature.value?.get(POINT_RADIUS_KEY) ?? null;
-      pointColor.value = focusedFeature.value?.get(POINT_COLOR_KEY) ?? null;
+      fillColor.value = getFeatureFillColorStyleProperty(focusedFeature.value);
+      strokeColor.value = getFeatureStrokeColorStyleProperty(
+        focusedFeature.value,
+      );
+      strokeWidth.value = getFeatureStrokeWidthStyleProperty(
+        focusedFeature.value,
+      );
+      pointRadius.value = getFeaturePointRadiusStyleProperty(
+        focusedFeature.value,
+      );
+      pointColor.value = getFeaturePointColorStyleProperty(
+        focusedFeature.value,
+      );
     },
-    { immediate: true },
+    { immediate: true, debounce: 100 },
   );
 
   /**
@@ -298,24 +339,24 @@ export function useDrawing(olMap: OlMap) {
   });
 
   /**
-   * Update the states that exposes the number of features (when added)
+   * This callback is driving the update of a few states, including:
+   * - the number of features in the drawing layer
+   * - the metrics of the focused feature (e.g. length, area, etc.)
+   * - some styling properties such as fill and stroke color
+   * - possibly more in the future.
    */
-  drawingVectorSource.on("addfeature", () => {
-    numberOfFeatures.value = drawingVectorSource.getFeatures().length;
+  let handler = drawingVectorSource.on("changefeature", () => {
+    creatingOrEditingIterations.value++;
   });
-
-  /**
-   * Update the states that exposes the number of features (when removed)
-   */
-  drawingVectorSource.on("removefeature", () => {
-    numberOfFeatures.value = drawingVectorSource.getFeatures().length;
-  });
+  // Keeping track of handlers to remove them at unmount, so that they are not added multiple times
+  // (which would cause the event to fire multiple times)
+  handlersToRemove.push(handler);
 
   /**
    * When a feature is selected, set it as the focused feature and update the focus mode to "read".
    * When the selection is cleared, reset the focused feature and set the focus mode to "none".
    */
-  selectInteractions.on("select", (event) => {
+  handler = selectInteractions.on("select", (event) => {
     const selectedFeatures = event.target.getFeatures().getArray();
     if (selectedFeatures.length > 0) {
       focusedFeature.value = selectedFeatures[0];
@@ -325,66 +366,90 @@ export function useDrawing(olMap: OlMap) {
       focusMode.value = "none";
     }
   });
+  handlersToRemove.push(handler);
 
   /**
-   * A feature was focused and is no longer focused, whether another one is focused or none,
-   * The style is reset to the basic style (in case it was in edit or create mode before)
+   * Update the style of the feature depending on focus and focus mode.
    */
-  watch(focusedFeature, (newFocusedFeature, oldFocusedFeature) => {
-    console.log("FOCUSED ON", focusedFeature);
+  watch(
+    [focusedFeature, focusMode],
+    ([newFocusedFeature, newFocusMode], [oldFocusedFeature, _oldFocusMode]) => {
+      // If there was a previously focused feature that is different from the new one,
+      // it means that we switched focus from one feature to another.
+      // In this case, we reset the style of the old focused feature to the idle style and we return early,
+      // as the new focused feature will be styled by the next iterations of the watch.
+      if (oldFocusedFeature && oldFocusedFeature !== newFocusedFeature) {
+        applyIdleStyle(oldFocusedFeature);
+      }
 
-    if (oldFocusedFeature && oldFocusedFeature !== newFocusedFeature) {
-      applyIdleStyle(oldFocusedFeature);
-      return;
-    }
-  });
+      // If no feature is currently focused, we don't need to do anything
+      if (!newFocusedFeature) {
+        return;
+      }
+
+      // From now on, a feature is selected. The style is applied according to the focus mode.
+      switch (newFocusMode) {
+        case "none":
+          applyIdleStyle(focusedFeature.value);
+          break;
+        case "select":
+          applySelectedStyle(focusedFeature.value);
+          break;
+
+        case "create":
+          // Add the default styling properties
+          // (not the creating/editing style, but the style that can later be modified and persited)
+          initializeStyleProperties(focusedFeature.value);
+
+          // Add an empty description to the new polygon
+          focusedFeature.value.set("description", "");
+
+        // Note: no break here, as the creating style is the same as the editing style for now
+        // eslint-disable-next-line no-fallthrough
+        case "edit":
+          // Apply the style for creating/editing to the feature,
+          // so that it is visually different while being created/edited.
+          applyEditingStyle(focusedFeature.value);
+          break;
+      }
+    },
+    { immediate: true },
+  );
 
   /**
-   * Update the style of the feature
+   * Set the color of the fill (hex). The transparency is automatically included.
    */
-  watch([focusedFeature, focusMode], ([newFocusedFeature, newFocusMode]) => {
-    if (!newFocusedFeature) {
-      return;
-    }
-
-    switch (newFocusMode) {
-      case "none":
-        applyIdleStyle(focusedFeature.value);
-        break;
-      case "select":
-        applySelectedStyle(focusedFeature.value);
-        break;
-
-      case "create":
-        // Add the default styling properties
-        // (not the creating/editing style, but the style that can later be modified and persited)
-        initializeStyleProperties(focusedFeature.value);
-
-        // Add an empty description to the new polygon
-        focusedFeature.value.set("description", "");
-
-      // Note: no break here, as the creating style is the same as the editing style for now
-      // eslint-disable-next-line no-fallthrough
-      case "edit":
-        // Apply the style for creating/editing to the feature,
-        // so that it is visually different while being created/edited.
-        applyEditingStyle(focusedFeature.value);
-        break;
-    }
-  });
-
   function setFillColor(color: string) {
-    if (!focusedFeature.value) {
-      return;
-    }
-    focusedFeature.value.set(FILL_COLOR_KEY, color);
+    setFeatureFillColorStyleProperty(focusedFeature.value, color);
   }
 
+  /**
+   * Set the stroke color (hex) of the feature. The transparency is automatically included.
+   */
   function setStrokeColor(color: string) {
-    if (!focusedFeature.value) {
-      return;
-    }
-    focusedFeature.value.set(STROKE_COLOR_KEY, color);
+    setFeatureStrokeColorStyleProperty(focusedFeature.value, color);
+  }
+
+  /**
+   * Set the stroke width (in pixels) of the feature.
+   * Note: this is only applicable to LineString, Circle, and Polygon features.
+   */
+  function setStrokeWidth(width: number) {
+    setFeatureStrokeWidthStyleProperty(focusedFeature.value, width);
+  }
+
+  /**
+   * Set the radius (in pixels) of the point feature. This is only applicable to Point features.
+   */
+  function setPointRadius(radius: number) {
+    setFeaturePointRadiusStyleProperty(focusedFeature.value, radius);
+  }
+
+  /**
+   * Set the color of the point feature. This is only applicable to Point features.
+   */
+  function setPointColor(color: string) {
+    setFeaturePointColorStyleProperty(focusedFeature.value, color);
   }
 
   // When a feature is finished to be created or modified (tyipically with a double-click),
@@ -394,18 +459,16 @@ export function useDrawing(olMap: OlMap) {
      * As soon as the drawing has started, the feature being created takes the seat as focusedFeature
      * and the focus mode is set to "create".
      */
-    interaction.on("drawstart", (event) => {
+    handler = interaction.on("drawstart", (event) => {
+      console.log("EVENT: drawstart.", event.feature);
       focusedFeature.value = event.feature;
-
-      focusedFeature.value.on("change", () => {
-        creatingOrEditingIterations.value++;
-      });
     });
+    handlersToRemove.push(handler);
 
     /**
      * When a drawing ends (in create mode), the interactions are all disabled.
      */
-    interaction.on("drawend", async () => {
+    handler = interaction.on("drawend", async () => {
       console.log("EVENT: drawend.");
 
       // the disabling of all interactions is delayed to avoid conflicts with the internal logic of OL,
@@ -415,6 +478,7 @@ export function useDrawing(olMap: OlMap) {
         disableAllInteractions();
       });
     });
+    handlersToRemove.push(handler);
 
     // interaction.on("modifyend", () => {
     //   console.log("EVENT: modifyend");
@@ -488,8 +552,6 @@ export function useDrawing(olMap: OlMap) {
     focusedFeature.value = null;
     focusMode.value = "none";
     creatingOrEditingIterations.value = 0;
-
-    console.log("Remaining interactions:", olMap.getInteractions());
   }
 
   /**
@@ -546,6 +608,15 @@ export function useDrawing(olMap: OlMap) {
     return drawingVectorLayer.get("uuid") === uuid;
   }
 
+  function removeAllHandlers() {
+    unByKey(handlersToRemove);
+    handlersToRemove.length = 0;
+  }
+
+  onUnmounted(() => {
+    removeAllHandlers();
+  });
+
   return {
     disableAllInteractions,
     enableSelectInteraction,
@@ -565,5 +636,11 @@ export function useDrawing(olMap: OlMap) {
     fillColor,
     setStrokeColor,
     strokeColor,
+    setStrokeWidth,
+    strokeWidth,
+    pointRadius,
+    pointColor,
+    setPointRadius,
+    setPointColor,
   };
 }

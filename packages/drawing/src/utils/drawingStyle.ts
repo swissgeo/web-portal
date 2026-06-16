@@ -27,13 +27,15 @@ export type FeatureStyle = {
   [POINT_COLOR_KEY]?: string;
 };
 
+export const DEFAULT_HEX_FILL_ALPHA = "4d";
+
 /**
  * Default values for the style properties.
  * Note: these are not for the style "as creating/editing" but for the initial style of a feature when it is created.
  */
 export const DEFAULT_STROKE_COLOR = "#ff0000";
 export const DEFAULT_STROKE_WIDTH = 2;
-export const DEFAULT_FILL_COLOR = "rgba(255, 0, 0, 0.3)";
+export const DEFAULT_FILL_COLOR = `#ff0000${DEFAULT_HEX_FILL_ALPHA}`;
 export const DEFAULT_POINT_RADIUS = 4;
 export const DEFAULT_POINT_COLOR = "#ff0000";
 
@@ -44,7 +46,7 @@ export const DEFAULT_POINT_COLOR = "#ff0000";
  */
 export const EDITING_STROKE_COLOR = "#ff8800";
 export const EDITING_STROKE_WIDTH = 2;
-export const EDITING_FILL_COLOR = "rgba(255, 170, 0, 0.3)";
+export const EDITING_FILL_COLOR = `#ffaa00${DEFAULT_HEX_FILL_ALPHA}`;
 export const EDITING_OUTLINE_WIDTH = 2;
 export const EDITING_POINT_COLOR = "#ff8800";
 export const EDITING_POINT_RADIUS =
@@ -310,4 +312,99 @@ export function setStylePropertiesFromObject(
   feature.set(STROKE_WIDTH_KEY, style[STROKE_WIDTH_KEY]);
   feature.set(POINT_RADIUS_KEY, style[POINT_RADIUS_KEY]);
   feature.set(POINT_COLOR_KEY, style[POINT_COLOR_KEY]);
+}
+
+function setFeatureStyleProperty(
+  feature: Feature<Geometry>,
+  key: string,
+  value: string | number,
+) {
+  if (!feature) {
+    return;
+  }
+  feature.set(key, value);
+}
+
+function getFeatureStyleProperty(
+  feature: Feature<Geometry>,
+  key: string,
+): null | string | number {
+  if (!feature) {
+    return null;
+  }
+  return feature.get(key) ?? null;
+}
+
+export function setFeatureFillColorStyleProperty(
+  feature: Feature<Geometry>,
+  color: string,
+) {
+  setFeatureStyleProperty(
+    feature,
+    FILL_COLOR_KEY,
+    `${color}${DEFAULT_HEX_FILL_ALPHA}`,
+  );
+}
+
+export function getFeatureFillColorStyleProperty(
+  feature: Feature<Geometry>,
+): string | null {
+  const color = getFeatureStyleProperty(feature, FILL_COLOR_KEY);
+  return typeof color === "string" ? color.slice(0, 7) : null;
+}
+
+export function setFeatureStrokeColorStyleProperty(
+  feature: Feature<Geometry>,
+  color: string,
+) {
+  setFeatureStyleProperty(feature, STROKE_COLOR_KEY, color);
+}
+
+export function getFeatureStrokeColorStyleProperty(
+  feature: Feature<Geometry>,
+): string | null {
+  const color = getFeatureStyleProperty(feature, STROKE_COLOR_KEY);
+  return typeof color === "string" ? color : null;
+}
+
+export function setFeatureStrokeWidthStyleProperty(
+  feature: Feature<Geometry>,
+  width: number,
+) {
+  setFeatureStyleProperty(feature, STROKE_WIDTH_KEY, width);
+}
+
+export function getFeatureStrokeWidthStyleProperty(
+  feature: Feature<Geometry>,
+): number | null {
+  const width = getFeatureStyleProperty(feature, STROKE_WIDTH_KEY);
+  return typeof width === "number" ? width : null;
+}
+
+export function setFeaturePointRadiusStyleProperty(
+  feature: Feature<Geometry>,
+  radius: number,
+) {
+  setFeatureStyleProperty(feature, POINT_RADIUS_KEY, radius);
+}
+
+export function getFeaturePointRadiusStyleProperty(
+  feature: Feature<Geometry>,
+): number | null {
+  const radius = getFeatureStyleProperty(feature, POINT_RADIUS_KEY);
+  return typeof radius === "number" ? radius : null;
+}
+
+export function setFeaturePointColorStyleProperty(
+  feature: Feature<Geometry>,
+  color: string,
+) {
+  setFeatureStyleProperty(feature, POINT_COLOR_KEY, color);
+}
+
+export function getFeaturePointColorStyleProperty(
+  feature: Feature<Geometry>,
+): string | null {
+  const color = getFeatureStyleProperty(feature, POINT_COLOR_KEY);
+  return typeof color === "string" ? color : null;
 }

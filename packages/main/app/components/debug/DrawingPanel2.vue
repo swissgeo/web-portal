@@ -68,6 +68,7 @@ onUnmounted(() => {
         "
       />
       <LinestringStyleEditor v-if="focusedFeatureType === 'LineString'" />
+      <div>Number of features: {{ numberOfFeatures }}</div>
       <textarea
         v-if="focusedFeatureMetrics"
         :value="JSON.stringify(focusedFeatureMetrics, null, 2)"
