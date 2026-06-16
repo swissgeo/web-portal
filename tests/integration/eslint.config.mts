@@ -4,7 +4,7 @@ import { globalIgnores } from "eslint/config";
 
 export default [
   ...defaultConfig,
-  globalIgnores(["node_modules"]),
+  globalIgnores(["node_modules", "*.mjs"]),
   {
     languageOptions: {
       parserOptions: {
