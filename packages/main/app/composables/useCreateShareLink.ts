@@ -123,6 +123,16 @@ function useShareLinkState(
   };
 }
 
+function buildEmbedCode(stateId: string | null): string {
+  if (!stateId) {
+    return "";
+  }
+
+  const url = new URL("/embed", location.origin);
+  url.searchParams.set("state", stateId);
+  return `<iframe src="${url.href}" width="600" height="400" frameborder="0"></iframe>`;
+}
+
 /**
  * Creates a reactive share link from the current app state.
  *
@@ -145,9 +155,11 @@ export function useCreateShareLink(
 
   const needToRefresh = computed(() => !autoRefresh && needsRefresh.value);
   const shareLink = computed(() => buildShareUrl(hash.value));
+  const embedCode = computed(() => buildEmbedCode(hash.value));
 
   return {
     shareLink,
+    embedCode,
     hash,
     refresh,
     needToRefresh,
