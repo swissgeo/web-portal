@@ -48,7 +48,11 @@ const customLayerRenderers: MapLayerRenderer[] = [
 ];
 
 function changeBackground(layer: BaseLayer | null) {
+  const oldLayer = layerStore.backgroundLayer;
   layerStore.setBackground(layer);
+  if (oldLayer && !layer) {
+    mapViewStore.removeLayer(0);
+  }
 }
 
 // The display mode is defined in the layout
