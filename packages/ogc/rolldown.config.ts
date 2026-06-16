@@ -14,5 +14,5 @@ export default {
       sourcemap: isDev,
     },
   ],
-  external: ["vue", "pinia", "@swissgeo/log"],
+  external: ["vue", "pinia", "@swissgeo/log", "ol", /^ol\/.*/],
 };
