@@ -29,6 +29,9 @@
     "test:unit": {
       "dependsOn": ["^build"]
     },
+    "test:unit:coverage": {
+      "dependsOn": ["^build"]
+    },
     "test:integration": {
       "cache": false
     },
