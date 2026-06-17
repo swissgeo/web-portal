@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import { useDrawing } from "@swissgeo/drawing";
+import { useMap } from "@swissgeo/map";
+
+const { olMap } = useMap();
+const { fillColor, strokeColor, strokeWidth } = useDrawing(olMap.value!);
+</script>
+
 <template>
   <div class="rounded border border-gray-300 bg-gray-50 p-4">
     <h3 class="mb-4 text-base font-semibold">Polygon Style</h3>
@@ -9,9 +17,8 @@
       <div class="flex gap-2">
         <input
           type="color"
-          :value="fillColor"
+          v-model="fillColor"
           class="h-8 w-12 cursor-pointer rounded border border-gray-300"
-          @input="setFillColor($event.target.value)"
         />
       </div>
     </div>
@@ -23,9 +30,8 @@
       <div class="flex gap-2">
         <input
           type="color"
-          :value="strokeColor"
+          v-model="strokeColor"
           class="h-8 w-12 cursor-pointer rounded border border-gray-300"
-          @input="setStrokeColor($event.target.value)"
         />
       </div>
     </div>
@@ -36,28 +42,11 @@
       >
       <input
         type="number"
-        :value="strokeWidth"
+        v-model="strokeWidth"
         class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
         min="0"
         step="1"
-        @input="setStrokeWidth(Number($event.target.value))"
       />
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useDrawing } from "@swissgeo/drawing";
-import { useMap } from "@swissgeo/map";
-
-const { olMap } = useMap();
-const {
-  focusedFeature,
-  setFillColor,
-  fillColor,
-  setStrokeColor,
-  strokeColor,
-  setStrokeWidth,
-  strokeWidth,
-} = useDrawing(olMap.value!);
-</script>

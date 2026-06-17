@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import { useDrawing } from "@swissgeo/drawing";
+import { useMap } from "@swissgeo/map";
+
+const { olMap } = useMap();
+const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing(
+  olMap.value!,
+);
+
+const lengthMeters = computed(() => {
+  if (!focusedFeatureMetrics.value) {
+    return 0;
+  }
+  return "lengthMeters" in focusedFeatureMetrics.value
+    ? Math.round(focusedFeatureMetrics.value.lengthMeters * 100) / 100
+    : 0;
+});
+</script>
+
 <template>
   <div class="rounded border border-gray-300 bg-gray-50 p-4">
     <h3 class="mb-4 text-base font-semibold">Linestring Style</h3>
@@ -9,9 +28,8 @@
       <div class="flex gap-2">
         <input
           type="color"
-          :value="strokeColor"
+          v-model="strokeColor"
           class="h-8 w-12 cursor-pointer rounded border border-gray-300"
-          @input="setStrokeColor($event.target.value)"
         />
       </div>
     </div>
@@ -22,37 +40,12 @@
       >
       <input
         type="number"
-        :value="strokeWidth"
+        v-model="strokeWidth"
         class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
         min="0"
         step="1"
-        @input="setStrokeWidth(Number($event.target.value))"
       />
     </div>
     <div>Length: {{ lengthMeters }}m</div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useDrawing } from "@swissgeo/drawing";
-import { useMap } from "@swissgeo/map";
-
-const { olMap } = useMap();
-const {
-  focusedFeature,
-  setStrokeColor,
-  strokeColor,
-  setStrokeWidth,
-  strokeWidth,
-  focusedFeatureMetrics,
-} = useDrawing(olMap.value!);
-
-const lengthMeters = computed(() => {
-  if (!focusedFeatureMetrics.value) {
-    return 0;
-  }
-  return "lengthMeters" in focusedFeatureMetrics.value
-    ? Math.round(focusedFeatureMetrics.value.lengthMeters * 100) / 100
-    : 0;
-});
-</script>

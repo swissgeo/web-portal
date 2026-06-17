@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import type { Map } from "ol";
-
 import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
 import { IconButton } from "@swissgeo/skeleton";
 
-import LinestringStyleEditor from "./LinestringStyleEditor.vue";
-import PolygonStyleEditor from "./PolygonStyleEditor.vue";
 import DrawingFeaturePropertyPanel from "./DrawingFeaturePropertyPanel.vue";
 
 const { t } = useI18n();
@@ -20,8 +16,6 @@ const {
   removeFocus,
   enableDrawInteraction,
   removeFocusedFeature,
-  focusedFeatureType,
-  focusedFeatureMetrics,
   numberOfFeatures,
   focusMode,
   focusedFeature,
