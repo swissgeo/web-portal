@@ -50,7 +50,7 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
       >
       <input
         type="number"
-        v-model="strokeWidth"
+        v-model.number="strokeWidth"
         class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
         min="0"
         step="1"

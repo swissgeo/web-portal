@@ -4,6 +4,7 @@
     :key="focusedFeature?.getId()"
     class="flex flex-col gap-2 rounded border border-gray-300 bg-gray-50 p-4"
   >
+    <div>{{ focusedFeatureType }}</div>
     <UInput v-model="title" />
     <UTextarea
       size="xl"

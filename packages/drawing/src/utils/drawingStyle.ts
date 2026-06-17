@@ -241,6 +241,8 @@ export function initializeStylePropertiesPointGeometry(
  * Adds the necessary properties to the feature to store the style information, with default values.
  */
 export function initializeStyleProperties(feature: Feature<Geometry>) {
+  console.log("initializeStyleProperties", feature);
+
   switch (feature.getGeometry().getType()) {
     case "Point":
       initializeStylePropertiesPointGeometry(feature as Feature<Point>);
@@ -303,17 +305,6 @@ export function getStylePropertiesAsObject(
     [POINT_RADIUS_KEY]: feature.get(POINT_RADIUS_KEY),
     [POINT_COLOR_KEY]: feature.get(POINT_COLOR_KEY),
   };
-}
-
-export function setStylePropertiesFromObject(
-  feature: Feature<Geometry>,
-  style: FeatureStyle,
-) {
-  feature.set(FILL_COLOR_KEY, style[FILL_COLOR_KEY]);
-  feature.set(STROKE_COLOR_KEY, style[STROKE_COLOR_KEY]);
-  feature.set(STROKE_WIDTH_KEY, style[STROKE_WIDTH_KEY]);
-  feature.set(POINT_RADIUS_KEY, style[POINT_RADIUS_KEY]);
-  feature.set(POINT_COLOR_KEY, style[POINT_COLOR_KEY]);
 }
 
 function setFeatureStyleProperty(

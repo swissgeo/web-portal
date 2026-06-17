@@ -19,6 +19,7 @@ import {
   readonly,
   ref,
   watch,
+  triggerRef,
 } from "vue";
 
 import { useDrawingStore2 } from "../stores/drawing.store";
@@ -143,6 +144,8 @@ export function useDrawing(olMap: OlMap) {
 
     set(newColor: string) {
       setFeatureFillColorStyleProperty(focusedFeature.value, newColor);
+      // Since the fill color is a style property, we need to trigger the ref to ensure that the change is reactive and updates any watchers or computed properties that depend on it.
+      triggerRef(focusedFeature);
     },
   });
 
@@ -153,6 +156,8 @@ export function useDrawing(olMap: OlMap) {
 
     set(newColor: string) {
       setFeatureStrokeColorStyleProperty(focusedFeature.value, newColor);
+      // Since the stroke color is a style property, we need to trigger the ref to ensure that the change is reactive and updates any watchers or computed properties that depend on it.
+      triggerRef(focusedFeature);
     },
   });
 
@@ -163,6 +168,9 @@ export function useDrawing(olMap: OlMap) {
 
     set(newWidth: number) {
       setFeatureStrokeWidthStyleProperty(focusedFeature.value, newWidth);
+
+      // Since the stroke width is a style property, we need to trigger the ref to ensure that the change is reactive and updates any watchers or computed properties that depend on it.
+      triggerRef(focusedFeature);
     },
   });
 
@@ -173,6 +181,8 @@ export function useDrawing(olMap: OlMap) {
 
     set(newRadius: number) {
       setFeaturePointRadiusStyleProperty(focusedFeature.value, newRadius);
+      // Since the point radius is a style property, we need to trigger the ref to ensure that the change is reactive and updates any watchers or computed properties that depend on it.
+      triggerRef(focusedFeature);
     },
   });
 
@@ -183,6 +193,8 @@ export function useDrawing(olMap: OlMap) {
 
     set(newColor: string) {
       setFeaturePointColorStyleProperty(focusedFeature.value, newColor);
+      // Since the point color is a style property, we need to trigger the ref to ensure that the change is reactive and updates any watchers or computed properties that depend on it.
+      triggerRef(focusedFeature);
     },
   });
 
@@ -204,6 +216,8 @@ export function useDrawing(olMap: OlMap) {
         return;
       }
       setFeatureTitle(focusedFeature.value, newTitle);
+      // Since the title is a property, we need to trigger the ref to ensure that the change is reactive and updates any watchers or computed properties that depend on it.
+      triggerRef(focusedFeature);
     },
   });
 
@@ -220,6 +234,8 @@ export function useDrawing(olMap: OlMap) {
         return;
       }
       setFeatureDescription(focusedFeature.value, newDescription);
+      // Since the description is a property, we need to trigger the ref to ensure that the change is reactive and updates any watchers or computed properties that depend on it.
+      triggerRef(focusedFeature);
     },
   });
 
