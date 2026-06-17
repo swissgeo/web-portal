@@ -1,6 +1,6 @@
 <template>
   <div class="rounded border border-gray-300 bg-gray-50 p-4">
-    <h3 class="mb-4 text-base font-semibold">Polygon Style</h3>
+    <h3 class="mb-4 text-base font-semibold">Circle Style</h3>
     <!-- Fill Color -->
     <div class="mb-3">
       <label class="mb-1 block text-sm font-medium text-gray-900"

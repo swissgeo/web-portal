@@ -7,6 +7,7 @@ import { IconButton } from "@swissgeo/skeleton";
 
 import LinestringStyleEditor from "./LinestringStyleEditor.vue";
 import PolygonStyleEditor from "./PolygonStyleEditor.vue";
+import DrawingFeaturePropertyPanel from "./DrawingFeaturePropertyPanel.vue";
 
 const { t } = useI18n();
 
@@ -62,22 +63,13 @@ onUnmounted(() => {
     </div>
 
     <div class="mb-4">
-      <PolygonStyleEditor
-        v-if="
-          focusedFeatureType === 'Circle' || focusedFeatureType === 'Polygon'
-        "
-      />
-      <LinestringStyleEditor v-if="focusedFeatureType === 'LineString'" />
-      <div>Number of features: {{ numberOfFeatures }}</div>
-      <textarea
-        v-if="focusedFeatureMetrics"
-        :value="JSON.stringify(focusedFeatureMetrics, null, 2)"
-        readonly
-      ></textarea>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-1 gap-1">
+        <DrawingFeaturePropertyPanel
+          v-if="focusedFeature && focusMode === 'select'"
+        />
         <UButton
           v-if="focusMode === 'none'"
-          color="primary"
+          color="info"
           variant="solid"
           data-testid="drawing-tool-polyline"
           @click="enableDrawInteraction('LineString')"
@@ -86,7 +78,7 @@ onUnmounted(() => {
         </UButton>
         <UButton
           v-if="focusMode === 'none'"
-          color="primary"
+          color="info"
           variant="solid"
           data-testid="drawing-tool-polygon"
           @click="enableDrawInteraction('Polygon')"
@@ -95,7 +87,7 @@ onUnmounted(() => {
         </UButton>
         <UButton
           v-if="focusMode === 'none'"
-          color="primary"
+          color="info"
           variant="solid"
           data-testid="drawing-tool-circle"
           @click="enableDrawInteraction('Circle')"
@@ -104,7 +96,7 @@ onUnmounted(() => {
         </UButton>
         <UButton
           v-if="focusMode === 'none'"
-          color="primary"
+          color="info"
           variant="solid"
           data-testid="drawing-tool-point"
           @click="enableDrawInteraction('Point')"
@@ -114,7 +106,7 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'none' && numberOfFeatures > 0"
-          color="primary"
+          color="info"
           variant="solid"
           data-testid="select-tool"
           @click="enableSelectInteraction"
@@ -134,22 +126,32 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'select' && focusedFeature"
-          color="primary"
-          variant="solid"
-          data-testid="modify-tool"
-          @click="enableModifyInteraction"
-        >
-          Modify selected feature
-        </UButton>
-
-        <UButton
-          v-if="focusMode === 'edit' && focusedFeature"
-          color="primary"
+          color="neutral"
           variant="solid"
           data-testid="modify-tool"
           @click="terminateModification"
         >
-          Finish modification
+          Deselect feature
+        </UButton>
+
+        <UButton
+          v-if="focusMode === 'select' && focusedFeature"
+          color="info"
+          variant="solid"
+          data-testid="modify-tool"
+          @click="enableModifyInteraction"
+        >
+          Modify selected feature's geometry
+        </UButton>
+
+        <UButton
+          v-if="focusMode === 'edit' && focusedFeature"
+          color="info"
+          variant="solid"
+          data-testid="modify-tool"
+          @click="terminateModification"
+        >
+          Finish geometry modification
         </UButton>
 
         <UButton

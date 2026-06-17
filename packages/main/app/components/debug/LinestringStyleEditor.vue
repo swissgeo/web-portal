@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="focusedFeature"
-    class="rounded border border-gray-300 bg-gray-50 p-4"
-  >
+  <div class="rounded border border-gray-300 bg-gray-50 p-4">
     <h3 class="mb-4 text-base font-semibold">Linestring Style</h3>
     <!-- Stroke Color -->
     <div class="mb-3">
@@ -32,6 +29,7 @@
         @input="setStrokeWidth(Number($event.target.value))"
       />
     </div>
+    <div>Length: {{ lengthMeters }}m</div>
   </div>
 </template>
 
@@ -46,5 +44,15 @@ const {
   strokeColor,
   setStrokeWidth,
   strokeWidth,
+  focusedFeatureMetrics,
 } = useDrawing(olMap.value!);
+
+const lengthMeters = computed(() => {
+  if (!focusedFeatureMetrics.value) {
+    return 0;
+  }
+  return "lengthMeters" in focusedFeatureMetrics.value
+    ? Math.round(focusedFeatureMetrics.value.lengthMeters * 100) / 100
+    : 0;
+});
 </script>
