@@ -132,7 +132,9 @@ const SELECTED_STYLE = (feature: FeatureLike) => {
     return [
       new Style({
         image: new CircleStyle({
-          radius: SELECTED_POINT_RADIUS,
+          // Only half of the outline width is added to the radius because
+          // the outline is drawn on both sides of the circle's edge.
+          radius: props[POINT_RADIUS_KEY] + SELECTED_OUTLINE_WIDTH / 2,
           fill: new Fill({
             color: props[POINT_COLOR_KEY],
           }),

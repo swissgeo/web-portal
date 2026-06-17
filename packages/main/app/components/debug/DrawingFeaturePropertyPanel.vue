@@ -15,6 +15,7 @@
     <PolygonStyleEditor v-if="focusedFeatureType === 'Polygon'" />
     <CircleStyleEditor v-if="focusedFeatureType === 'Circle'" />
     <LinestringStyleEditor v-if="focusedFeatureType === 'LineString'" />
+    <PointStyleEditor v-if="focusedFeatureType === 'Point'" />
     <div>Number of features: {{ numberOfFeatures }}</div>
     <textarea
       v-if="focusedFeatureMetrics"
@@ -28,9 +29,10 @@
 import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
 
-import LinestringStyleEditor from "./LinestringStyleEditor.vue";
-import PolygonStyleEditor from "./PolygonStyleEditor.vue";
 import CircleStyleEditor from "./CircleStyleEditor.vue";
+import LinestringStyleEditor from "./LinestringStyleEditor.vue";
+import PointStyleEditor from "./PointStyleEditor.vue";
+import PolygonStyleEditor from "./PolygonStyleEditor.vue";
 const { olMap } = useMap();
 const {
   focusedFeature,

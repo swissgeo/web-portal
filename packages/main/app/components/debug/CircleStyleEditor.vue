@@ -3,7 +3,9 @@ import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
 
 const { olMap } = useMap();
-const { fillColor, strokeColor, strokeWidth } = useDrawing(olMap.value!);
+const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
+  useDrawing(olMap.value!);
+import type { CircleMetrics } from "@swissgeo/drawing";
 </script>
 
 <template>
@@ -47,6 +49,23 @@ const { fillColor, strokeColor, strokeWidth } = useDrawing(olMap.value!);
         min="0"
         step="1"
       />
+    </div>
+    <div v-if="focusedFeatureMetrics">
+      Perimeter:
+      {{ Math.round((focusedFeatureMetrics as CircleMetrics).perimeterMeters) }}
+      m
+    </div>
+    <div v-if="focusedFeatureMetrics">
+      Radius:
+      {{ Math.round((focusedFeatureMetrics as CircleMetrics).radiusMeters) }}
+      m
+    </div>
+    <div v-if="focusedFeatureMetrics">
+      Area:
+      {{
+        Math.round((focusedFeatureMetrics as CircleMetrics).areaSquareMeters)
+      }}
+      m²
     </div>
   </div>
 </template>

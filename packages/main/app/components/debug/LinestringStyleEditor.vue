@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { LineStringMetrics } from "@swissgeo/drawing";
+
 import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
 
@@ -6,15 +8,6 @@ const { olMap } = useMap();
 const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing(
   olMap.value!,
 );
-
-const lengthMeters = computed(() => {
-  if (!focusedFeatureMetrics.value) {
-    return 0;
-  }
-  return "lengthMeters" in focusedFeatureMetrics.value
-    ? Math.round(focusedFeatureMetrics.value.lengthMeters * 100) / 100
-    : 0;
-});
 </script>
 
 <template>
@@ -46,6 +39,12 @@ const lengthMeters = computed(() => {
         step="1"
       />
     </div>
-    <div>Length: {{ lengthMeters }}m</div>
+    <div v-if="focusedFeatureMetrics">
+      Length:
+      {{
+        Math.round((focusedFeatureMetrics as LineStringMetrics).lengthMeters)
+      }}
+      m
+    </div>
   </div>
 </template>

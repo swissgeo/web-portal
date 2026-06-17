@@ -21,4 +21,4 @@ export * from "./types";
 // Components
 // export { default as OpenLayersDrawingLayer } from "@/components/OpenLayersDrawingLayer.vue";
 
-export { useDrawing } from "@/composables/useDrawing.composable";
+export * from "@/composables/useDrawing.composable";
