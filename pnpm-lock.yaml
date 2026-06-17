@@ -126,6 +126,9 @@ catalogs:
     globals:
       specifier: ^17.0.0
       version: 17.6.0
+    h3:
+      specifier: ^1.15.11
+      version: 1.15.11
     happy-dom:
       specifier: 20.10.3
       version: 20.10.3
@@ -843,6 +846,9 @@ importers:
       fflate:
         specifier: 'catalog:'
         version: 0.8.3
+      h3:
+        specifier: 'catalog:'
+        version: 1.15.11
       nuxt:
         specifier: 'catalog:'
         version: 4.4.8(@babel/plugin-proposal-decorators@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@parcel/watcher@2.5.6)(@types/node@24.13.2)(@vue/compiler-sfc@3.5.38)(cac@6.7.14)(db0@0.3.4)(eslint@10.5.0(jiti@2.7.0))(ioredis@5.11.1)(lightningcss@1.32.0)(magicast@0.5.3)(meow@13.2.0)(optionator@0.9.4)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.38(typescript@6.0.3)))(rolldown@1.0.3)(rollup-plugin-visualizer@7.0.1(rolldown@1.0.3)(rollup@4.62.0))(rollup@4.62.0)(srvx@0.11.16)(stylelint@16.26.1(typescript@6.0.3))(terser@5.48.0)(typescript@6.0.3)(vite@8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))(vue-tsc@3.3.5(typescript@6.0.3))(yaml@2.9.0)
