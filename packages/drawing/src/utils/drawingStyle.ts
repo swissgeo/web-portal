@@ -35,7 +35,7 @@ export const DEFAULT_HEX_FILL_ALPHA = "4d";
  */
 export const DEFAULT_STROKE_COLOR = "#ff0000";
 export const DEFAULT_STROKE_WIDTH = 2;
-export const DEFAULT_FILL_COLOR = `#ff0000${DEFAULT_HEX_FILL_ALPHA}`;
+export const DEFAULT_FILL_COLOR = "#ff0000";
 export const DEFAULT_POINT_RADIUS = 4;
 export const DEFAULT_POINT_COLOR = "#ff0000";
 
@@ -46,7 +46,7 @@ export const DEFAULT_POINT_COLOR = "#ff0000";
  */
 export const EDITING_STROKE_COLOR = "#ff8800";
 export const EDITING_STROKE_WIDTH = 2;
-export const EDITING_FILL_COLOR = `#ffaa00${DEFAULT_HEX_FILL_ALPHA}`;
+export const EDITING_FILL_COLOR = "#ffaa00";
 export const EDITING_OUTLINE_WIDTH = 2;
 export const EDITING_POINT_COLOR = "#ff8800";
 export const EDITING_POINT_RADIUS =
@@ -75,7 +75,7 @@ const EDITING_STYLE: StyleFunction = (_feature: FeatureLike) => {
         width: EDITING_STROKE_WIDTH,
       }),
       fill: new Fill({
-        color: EDITING_FILL_COLOR,
+        color: `${EDITING_FILL_COLOR}${DEFAULT_HEX_FILL_ALPHA}`,
       }),
     }),
 
@@ -155,7 +155,7 @@ const SELECTED_STYLE = (feature: FeatureLike) => {
 
     new Style({
       fill: new Fill({
-        color: props[FILL_COLOR_KEY],
+        color: `${props[FILL_COLOR_KEY]}${DEFAULT_HEX_FILL_ALPHA}`,
       }),
       stroke: new Stroke({
         color: props[STROKE_COLOR_KEY],
@@ -186,7 +186,7 @@ const IDLE_STYLE: StyleFunction = (feature: FeatureLike) => {
 
   return new Style({
     fill: new Fill({
-      color: props[FILL_COLOR_KEY],
+      color: `${props[FILL_COLOR_KEY]}${DEFAULT_HEX_FILL_ALPHA}`,
     }),
     stroke: new Stroke({
       color: props[STROKE_COLOR_KEY],
@@ -339,18 +339,14 @@ export function setFeatureFillColorStyleProperty(
   feature: Feature<Geometry>,
   color: string,
 ) {
-  setFeatureStyleProperty(
-    feature,
-    FILL_COLOR_KEY,
-    `${color}${DEFAULT_HEX_FILL_ALPHA}`,
-  );
+  setFeatureStyleProperty(feature, FILL_COLOR_KEY, color);
 }
 
 export function getFeatureFillColorStyleProperty(
   feature: Feature<Geometry>,
 ): string | null {
   const color = getFeatureStyleProperty(feature, FILL_COLOR_KEY);
-  return typeof color === "string" ? color.slice(0, 7) : null;
+  return typeof color === "string" ? color : null;
 }
 
 export function setFeatureStrokeColorStyleProperty(
