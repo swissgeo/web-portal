@@ -4,9 +4,6 @@ import type { EventsKey } from "ol/events";
 import type Feature from "ol/Feature";
 import type { Circle, Geometry, LineString, Point, Polygon } from "ol/geom";
 import type VectorLayer from "ol/layer/Vector";
-import type { VectorSourceEvent } from "ol/source/Vector";
-import type { Ref } from "vue";
-
 import { registerProj4, WGS84 } from "@swissgeo/coordinates";
 import { useLayerStore } from "@swissgeo/layers";
 import { watchDebounced } from "@vueuse/core";
@@ -23,19 +20,12 @@ import {
   watch,
 } from "vue";
 
-import type { FocusMode } from "../stores/drawing.store";
-
 import { useDrawingStore2 } from "../stores/drawing.store";
 import {
   applyIdleStyle,
   applyEditingStyle,
   applySelectedStyle,
   initializeStyleProperties,
-  FILL_COLOR_KEY,
-  STROKE_COLOR_KEY,
-  STROKE_WIDTH_KEY,
-  POINT_RADIUS_KEY,
-  POINT_COLOR_KEY,
   setFeatureFillColorStyleProperty,
   setFeatureStrokeColorStyleProperty,
   getFeatureFillColorStyleProperty,
@@ -48,6 +38,13 @@ import {
   setFeaturePointColorStyleProperty,
 } from "../utils/drawingStyle";
 import { getLinearRingLength } from "../utils/drawingUtils";
+import {
+  getFeatureDescription,
+  getFeatureTitle,
+  initializeMetadataProperties,
+  setFeatureDescription,
+  setFeatureTitle,
+} from "../utils/drawingMetadata";
 import { get } from "ol/proj";
 
 registerProj4(proj4);
@@ -134,11 +131,20 @@ export function useDrawing(olMap: OlMap) {
    */
   const focusedFeatureMetrics = ref<FocusedFeatureMetrics>(null);
 
+  /**
+   * Style properties of the focused feature, as states
+   */
   const fillColor = ref<string | null>(null);
   const strokeColor = ref<string | null>(null);
   const strokeWidth = ref<number | null>(null);
   const pointRadius = ref<number | null>(null);
   const pointColor = ref<string | null>(null);
+
+  /**
+   * Non-style properties of the focused feature, as states
+   */
+  const title = ref<string | null>(null);
+  const description = ref<string | null>(null);
 
   /**
    * Watch for changes that occurs in the vector layer of if the focus has changed.
@@ -156,7 +162,6 @@ export function useDrawing(olMap: OlMap) {
       focusedFeatureMetrics.value = computeFocusedFeatureMetrics();
 
       // Update some styling states from the underlaying OL feature properties:
-
       fillColor.value = getFeatureFillColorStyleProperty(focusedFeature.value);
       strokeColor.value = getFeatureStrokeColorStyleProperty(
         focusedFeature.value,
@@ -170,6 +175,10 @@ export function useDrawing(olMap: OlMap) {
       pointColor.value = getFeaturePointColorStyleProperty(
         focusedFeature.value,
       );
+
+      // Update some non-styling states from the underlaying OL feature properties:
+      title.value = getFeatureTitle(focusedFeature.value);
+      description.value = getFeatureDescription(focusedFeature.value);
     },
     { immediate: true, debounce: 100 },
   );
@@ -401,8 +410,8 @@ export function useDrawing(olMap: OlMap) {
           // (not the creating/editing style, but the style that can later be modified and persited)
           initializeStyleProperties(focusedFeature.value);
 
-          // Add an empty description to the new polygon
-          focusedFeature.value.set("description", "");
+          // Initialize the non-style metadata properties (title, description) for the new feature
+          initializeMetadataProperties(focusedFeature.value);
 
         // Note: no break here, as the creating style is the same as the editing style for now
         // eslint-disable-next-line no-fallthrough
@@ -450,6 +459,26 @@ export function useDrawing(olMap: OlMap) {
    */
   function setPointColor(color: string) {
     setFeaturePointColorStyleProperty(focusedFeature.value, color);
+  }
+
+  /**
+   * Set the title to the focused feature
+   */
+  function setTitle(title: string) {
+    if (!focusedFeature.value) {
+      return;
+    }
+    setFeatureTitle(focusedFeature.value, title);
+  }
+
+  /**
+   * Set the description to the focused feature
+   */
+  function setDescription(description: string) {
+    if (!focusedFeature.value) {
+      return;
+    }
+    setFeatureDescription(focusedFeature.value, description);
   }
 
   // When a feature is finished to be created or modified (tyipically with a double-click),
@@ -642,5 +671,9 @@ export function useDrawing(olMap: OlMap) {
     pointColor,
     setPointRadius,
     setPointColor,
+    title,
+    description,
+    setTitle,
+    setDescription,
   };
 }
