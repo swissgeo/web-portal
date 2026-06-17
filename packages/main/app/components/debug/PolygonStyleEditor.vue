@@ -20,7 +20,7 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
   <div class="rounded border border-gray-300 bg-gray-50 p-4">
     <h3 class="mb-4 text-base font-semibold">Polygon Style</h3>
     <!-- Fill Color -->
-    <div class="mb-3">
+    <div class="mb-3 flex items-center gap-3">
       <label class="mb-1 block text-sm font-medium text-gray-900"
         >Fill Color</label
       >
@@ -33,10 +33,8 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
       </div>
     </div>
     <!-- Stroke Color -->
-    <div class="mb-3">
-      <label class="mb-1 block text-sm font-medium text-gray-900"
-        >Stroke Color</label
-      >
+    <div class="mb-3 flex items-center gap-3">
+      <label class="mb-1 text-sm font-medium text-gray-900">Stroke Color</label>
       <div class="flex gap-2">
         <input
           type="color"
@@ -46,7 +44,7 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
       </div>
     </div>
     <!-- Stroke Width -->
-    <div>
+    <div class="mb-3 flex items-center gap-3">
       <label class="mb-1 block text-sm font-medium text-gray-900"
         >Stroke Width</label
       >

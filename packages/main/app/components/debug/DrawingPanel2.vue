@@ -58,6 +58,7 @@ onUnmounted(() => {
 
     <div class="mb-4">
       <div class="grid grid-cols-1 gap-1">
+        <div>Number of features: {{ numberOfFeatures }}</div>
         <DrawingFeaturePropertyPanel
           v-if="focusedFeature && focusMode === 'select'"
         />

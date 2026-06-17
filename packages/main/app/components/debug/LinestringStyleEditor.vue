@@ -14,7 +14,7 @@ const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing(
   <div class="rounded border border-gray-300 bg-gray-50 p-4">
     <h3 class="mb-4 text-base font-semibold">Linestring Style</h3>
     <!-- Stroke Color -->
-    <div class="mb-3">
+    <div class="mb-3 flex items-center gap-3">
       <label class="mb-1 block text-sm font-medium text-gray-900"
         >Stroke Color</label
       >
@@ -27,7 +27,7 @@ const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing(
       </div>
     </div>
     <!-- Stroke Width -->
-    <div>
+    <div class="mb-3 flex items-center gap-3">
       <label class="mb-1 block text-sm font-medium text-gray-900"
         >Stroke Width</label
       >

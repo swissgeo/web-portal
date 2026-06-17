@@ -16,12 +16,6 @@
     <CircleStyleEditor v-if="focusedFeatureType === 'Circle'" />
     <LinestringStyleEditor v-if="focusedFeatureType === 'LineString'" />
     <PointStyleEditor v-if="focusedFeatureType === 'Point'" />
-    <div>Number of features: {{ numberOfFeatures }}</div>
-    <textarea
-      v-if="focusedFeatureMetrics"
-      :value="JSON.stringify(focusedFeatureMetrics, null, 2)"
-      readonly
-    ></textarea>
   </div>
 </template>
 
@@ -34,12 +28,7 @@ import LinestringStyleEditor from "./LinestringStyleEditor.vue";
 import PointStyleEditor from "./PointStyleEditor.vue";
 import PolygonStyleEditor from "./PolygonStyleEditor.vue";
 const { olMap } = useMap();
-const {
-  focusedFeature,
-  focusedFeatureType,
-  focusedFeatureMetrics,
-  numberOfFeatures,
-  title,
-  description,
-} = useDrawing(olMap.value!);
+const { focusedFeature, focusedFeatureType, title, description } = useDrawing(
+  olMap.value!,
+);
 </script>
