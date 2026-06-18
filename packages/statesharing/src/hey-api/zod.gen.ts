@@ -3,15 +3,6 @@
 import * as z from "zod";
 
 /**
- * Checker
- */
-export const zChecker = z.object({
-  success: z.boolean(),
-  message: z.string(),
-  version: z.string(),
-});
-
-/**
  * ErrorResponse
  */
 export const zErrorResponse = z.object({
@@ -132,11 +123,6 @@ export const zValidationError = z.object({
 export const zHttpValidationError = z.object({
   detail: z.array(zValidationError).optional(),
 });
-
-/**
- * Successful Response
- */
-export const zGetCheckerCheckerGetResponse = zChecker;
 
 export const zPostAppStatePostBody = zSaveAppStateRequest;
 
