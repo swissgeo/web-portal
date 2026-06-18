@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export type DrawingMode = "None" | "Point" | "LineString" | "Polygon" | "Text";
 
 export interface MarkerIcon {

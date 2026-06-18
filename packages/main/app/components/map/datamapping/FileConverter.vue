@@ -27,7 +27,7 @@ const layerData = computed(
   }),
 );
 
-watch(layerData, () => emit("update", layerData.value as MapLayer), {
+watch(layerData, () => emit("update", layerData.value), {
   immediate: true,
 });
 

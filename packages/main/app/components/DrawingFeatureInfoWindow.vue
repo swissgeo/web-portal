@@ -100,8 +100,8 @@ const editorState = reactive({
   iconSize: 1,
   textColor: "#111827",
   textSize: 16,
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  textAnchor: "center" as TextAnchor,
+
+  textAnchor: "center",
   strokeColor: "#ff0000",
   strokeWidth: 2,
   strokeOpacity: 1,
@@ -190,10 +190,7 @@ function loadSelectedFeatureIntoEditor(feature: Feature<Geometry> | null) {
   editorState.iconSize = resolveNumber(style.iconSize, 1);
   editorState.textColor = resolveString(style.textColor, "#111827");
   editorState.textSize = resolveNumber(style.textSize, 16);
-  editorState.textAnchor = resolveString(
-    style.textAnchor,
-    "center",
-  ) as TextAnchor;
+  editorState.textAnchor = resolveString(style.textAnchor, "center");
   editorState.strokeColor = resolveString(style.strokeColor, "#ff0000");
   editorState.strokeWidth = resolveNumber(style.strokeWidth, 2);
   editorState.strokeOpacity = resolveNumber(style.strokeOpacity, 1);

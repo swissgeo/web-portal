@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { useDrawing, type PolygonMetrics } from "@swissgeo/drawing";
+import type { PolygonMetrics } from "@swissgeo/drawing";
+
+import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
 
 const { olMap } = useMap();
 const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
-  useDrawing(olMap.value!);
+  useDrawing(olMap.value);
 
 // const perimeterMeters = computed(() => {
 //   if (!focusedFeatureMetrics.value) {

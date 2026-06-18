@@ -12,7 +12,7 @@ import { displayModeKey } from "~/types/injectionKeys";
 import { inject } from "vue";
 
 import CompareSliderButton from "@/components/toolbox/toolboxButtons/CompareSliderButton.vue";
-import FullScreenButton from "@/components/toolbox/toolboxButtons/FullScreenButton.vue";
+// import FullScreenButton from "@/components/toolbox/toolboxButtons/FullScreenButton.vue";
 import GeolocButton from "@/components/toolbox/toolboxButtons/GeolocButton.vue";
 import RecenterButton from "@/components/toolbox/toolboxButtons/RecenterButton.vue";
 import TimeSliderButton from "@/components/toolbox/toolboxButtons/TimeSliderButton.vue";

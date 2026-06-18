@@ -119,8 +119,6 @@ export const useMapViewStore = defineStore("mapView", () => {
   function updateLayerOpacity(identifier: string | number, opacity: number) {
     const index = _getIndexFromIdentifier(identifier);
     if (index || index === 0) {
-      console.log(mapLayers.value);
-
       mapLayers.value[index]!.opacity = opacity;
     }
   }

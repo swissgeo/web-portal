@@ -4,7 +4,7 @@ import { useMap } from "@swissgeo/map";
 
 const { olMap } = useMap();
 const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
-  useDrawing(olMap.value!);
+  useDrawing(olMap.value);
 import type { CircleMetrics } from "@swissgeo/drawing";
 </script>
 

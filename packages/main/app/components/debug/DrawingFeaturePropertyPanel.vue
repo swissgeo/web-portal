@@ -30,6 +30,6 @@ import PointStyleEditor from "./PointStyleEditor.vue";
 import PolygonStyleEditor from "./PolygonStyleEditor.vue";
 const { olMap } = useMap();
 const { focusedFeature, focusedFeatureType, title, description } = useDrawing(
-  olMap.value!,
+  olMap.value,
 );
 </script>

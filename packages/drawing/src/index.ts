@@ -1,10 +1,3 @@
-// Composables
-// export { useOlDrawing } from "@/composables/olDrawing.composable";
-// export { useDrawingManager } from "@/composables/useDrawingManager";
-
-// Store
-// export { useDrawingStore } from "@/stores/drawing";
-
 // Utils
 export {
   MARKER_ICONS,

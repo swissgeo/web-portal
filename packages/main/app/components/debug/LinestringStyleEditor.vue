@@ -6,7 +6,7 @@ import { useMap } from "@swissgeo/map";
 
 const { olMap } = useMap();
 const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing(
-  olMap.value!,
+  olMap.value,
 );
 </script>
 

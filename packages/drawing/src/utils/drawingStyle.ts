@@ -241,8 +241,6 @@ export function initializeStylePropertiesPointGeometry(
  * Adds the necessary properties to the feature to store the style information, with default values.
  */
 export function initializeStyleProperties(feature: Feature<Geometry>) {
-  console.log("initializeStyleProperties", feature);
-
   switch (feature.getGeometry().getType()) {
     case "Point":
       initializeStylePropertiesPointGeometry(feature as Feature<Point>);

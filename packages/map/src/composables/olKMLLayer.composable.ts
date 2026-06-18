@@ -39,8 +39,6 @@ export default function useOlKMLLayer(
   const isDrawingLayer = computed(() => bearsUuid(layer.value.uuid));
 
   watch(opacity, (newOpacity) => {
-    console.log("<<< Opacity", newOpacity, olLayer.value);
-
     if (!olLayer.value) {
       return;
     }
