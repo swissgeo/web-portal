@@ -236,9 +236,11 @@ describe("geoadminToMapLibreStyle - resolutionToZoom", () => {
     const resolutionToZoom = (res: number) => 20 - Math.log2(res);
     const { style } = geoadminToMapLibreStyle(def, "src", { resolutionToZoom });
     const circle = style.layers[0]!;
-    // minResolution (2) -> maxzoom; maxResolution (100) -> minzoom.
-    expect(circle.maxzoom).toBeCloseTo(20 - Math.log2(2), 5);
-    expect(circle.minzoom).toBeCloseTo(20 - Math.log2(100), 5);
+    // minResolution (2) -> maxzoom; maxResolution (100) -> minzoom. Both bounds are
+    // shifted up by one zoom level so the inclusive geoadmin band edge survives
+    // MapLibre's exclusive maxzoom (see applyCommon).
+    expect(circle.maxzoom).toBeCloseTo(20 - Math.log2(2) + 1, 5);
+    expect(circle.minzoom).toBeCloseTo(20 - Math.log2(100) + 1, 5);
   });
 });
 
@@ -349,14 +351,15 @@ describe("geoadminToMapLibreStyle - icon + label + resolution (doc reference)", 
       ["to-string", ["get", "quant-class"]],
       "0",
     ]);
-    // minResolution 100 -> maxzoom 14
-    expect(small.maxzoom).toBe(14);
+    // minResolution 100 -> zoom 14, +1 so the inclusive band edge survives
+    // MapLibre's exclusive maxzoom.
+    expect(small.maxzoom).toBe(15);
     expect(small.minzoom).toBeUndefined();
   });
 
   it("converts the label faithfully (font stack, px->em offset, halo)", () => {
     const large = style.layers[1]!;
-    expect(large.minzoom).toBe(14); // maxResolution 100 -> minzoom
+    expect(large.minzoom).toBe(15); // maxResolution 100 -> zoom 14, +1 boundary shift
     expect(large.layout!["text-field"]).toEqual(["get", "name"]);
     expect(large.layout!["text-font"]).toEqual([
       "FrutigerNeueW02-Regular",
