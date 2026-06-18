@@ -22,6 +22,8 @@ const {
   >;
 }>();
 
+const { zoomOnlyCtrl } = useEmbedConfig();
+
 const emit = defineEmits<{
   "update:compareRatio": [ratio: number];
 }>();
@@ -55,6 +57,7 @@ const customLayerRenderers: MapLayerRenderer[] = [
       :compare-slider-active="compareSliderActive"
       :compare-ratio="compareRatio"
       :compare-slider-clipped-layer="compareSliderClippedLayer"
+      :zoom-only-ctrl="zoomOnlyCtrl"
       class="h-full w-full"
       @update:compare-ratio="emit('update:compareRatio', $event)"
     >

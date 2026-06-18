@@ -1,5 +1,5 @@
 import type { AppStatePayload } from "~/composables/useStateConfig";
-import type { MaybeRefOrGetter } from "vue";
+import type { MaybeRefOrGetter, Ref } from "vue";
 
 import { watchDebounced } from "@vueuse/core";
 import { postStateToStateId } from "~/utils/postStateToStateId";
@@ -123,13 +123,16 @@ function useShareLinkState(
   };
 }
 
-function buildEmbedCode(stateId: string | null): string {
+function buildEmbedCode(stateId: string | null, zoomOnlyCtrl: boolean): string {
   if (!stateId) {
     return "";
   }
 
   const url = new URL("/embed", location.origin);
   url.searchParams.set("state", stateId);
+  if (zoomOnlyCtrl) {
+    url.searchParams.set("zoomOnlyCtrl", "true");
+  }
   return `<iframe src="${url.href}" width="600" height="400" frameborder="0"></iframe>`;
 }
 
@@ -145,17 +148,20 @@ function buildEmbedCode(stateId: string | null): string {
  */
 export function useCreateShareLink(
   state?: MaybeRefOrGetter<AppStatePayload | null>,
-  autoRefresh: boolean = false,
+  options?: { autoRefresh?: boolean; zoomOnlyCtrl?: Ref<boolean> },
+) {
 ) {
   const { exportState } = useStateConfig();
   const usableState = state ?? exportState;
   const { hash, needsRefresh, refresh } = useShareLinkState(usableState, {
-    autoRefresh,
+    autoRefresh: options?.autoRefresh,
   });
 
-  const needToRefresh = computed(() => !autoRefresh && needsRefresh.value);
+  const needToRefresh = computed(() => !options?.autoRefresh && needsRefresh.value);
   const shareLink = computed(() => buildShareUrl(hash.value));
-  const embedCode = computed(() => buildEmbedCode(hash.value));
+  const embedCode = computed(() =>
+    buildEmbedCode(hash.value, options?.zoomOnlyCtrl?.value ?? false),
+  );
 
   return {
     shareLink,

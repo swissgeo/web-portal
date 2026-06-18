@@ -5,10 +5,7 @@ const url = useRequestURL();
 const { t } = useI18n();
 
 const { attributionSources, displayMode } = useMapViewerSetup();
-
-const { stateId } = defineProps<{
-  stateId?: string;
-}>();
+const { stateId } = useEmbedConfig();
 </script>
 
 <template>

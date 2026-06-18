@@ -1,10 +1,13 @@
 <script setup lang="ts">
 const route = useRoute();
-const stateId = route.query.state as string | undefined;
+provideEmbedConfig({
+  stateId: route.query.state as string | undefined,
+  zoomOnlyCtrl: route.query.zoomOnlyCtrl === "true",
+});
 </script>
 
 <template>
   <NuxtLayout name="embed">
-    <EmbedMapViewer :state-id="stateId" />
+    <EmbedMapViewer />
   </NuxtLayout>
 </template>

@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import { useClipboard } from "@vueuse/core";
 
-const { copy, copied } = useClipboard();
+const zoomOnlyCtrl = ref(false);
 
+const { copy, copied } = useClipboard();
 const { exportState } = useStateConfig();
-const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(exportState);
+const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(exportState, {
+  zoomOnlyCtrl,
+});
 </script>
 
 <template>
@@ -38,6 +41,10 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(expo
       Generate share link
     </UButton>
     <div>Embedding:</div>
+    <UCheckbox
+      v-model="zoomOnlyCtrl"
+      label="Enable zoom only with Ctrl/Cmd key"
+    />
     <UInput class="w-full" v-model="embedCode">
       <template v-if="embedCode?.length" #trailing>
         <UButton

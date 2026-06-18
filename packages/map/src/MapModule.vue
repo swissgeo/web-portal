@@ -25,6 +25,7 @@ const {
   compareSliderActive = false,
   compareRatio = 0.5,
   compareSliderClippedLayer,
+  zoomOnlyCtrl = false,
 } = defineProps<{
   layers: MapLayer[];
   customLayerRenderers?: MapLayerRenderer[];
@@ -38,6 +39,8 @@ const {
     MapLayer,
     "layerId" | "uuid" | "displayName"
   >;
+  /** Whether zoom interactions should only be active when Ctrl/Cmd key is pressed. */
+  zoomOnlyCtrl?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -60,6 +63,7 @@ const layersWithZIndex = computed(() => {
     <OpenLayersMap
       :custom-layer-renderers="customLayerRenderers"
       :layers="layersWithZIndex"
+      :zoom-only-ctrl="zoomOnlyCtrl"
     >
       <slot />
 
