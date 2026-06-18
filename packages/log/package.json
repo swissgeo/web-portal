@@ -6,14 +6,12 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.umd.cjs"
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./Message": {
-      "types": "./dist/Message.d.ts",
-      "import": "./dist/Message.js",
-      "require": "./dist/Message.umd.js"
+      "types": "./dist/src/Message.d.ts",
+      "import": "./dist/Message.js"
     }
   },
   "files": [
