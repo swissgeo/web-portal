@@ -308,11 +308,21 @@ function applyCommon(
   if (toZoom) {
     // Zoom is inverse to resolution: the smallest resolution (minResolution) is the
     // most zoomed-in level (maxzoom), and vice-versa.
+    //
+    // geoadmin bands are half-open with the LOWER (minResolution) bound inclusive:
+    // an entry applies when `minResolution <= resolution < maxResolution`. MapLibre's
+    // zoom window is the mirror image — `minzoom <= zoom < maxzoom`, with maxzoom
+    // EXCLUSIVE. `resolutionToZoom` snaps to an integer grid level, so a band edge
+    // lands exactly on a rest zoom level; we add 1 to both bounds to keep that edge
+    // level on the same side as the legacy renderer. Without it the next entry takes
+    // over one zoom level too early (e.g. messnetz-beobachtungen rendering its larger
+    // labelled circle already at zoom 1 instead of zoom 2). Assumes grid-aligned band
+    // resolutions, which all production geoadmin styles use.
     if (entry.minResolution !== undefined && entry.minResolution > 0) {
-      layer.maxzoom = toZoom(entry.minResolution);
+      layer.maxzoom = toZoom(entry.minResolution) + 1;
     }
     if (entry.maxResolution !== undefined && entry.maxResolution !== Infinity) {
-      layer.minzoom = toZoom(entry.maxResolution);
+      layer.minzoom = toZoom(entry.maxResolution) + 1;
     }
   }
   return layer;
