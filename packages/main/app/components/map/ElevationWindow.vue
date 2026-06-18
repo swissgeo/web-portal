@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <script setup lang="ts">
 import type { Labels } from "@swissgeo/elevation-profile";
 import type { LineString } from "geojson";
