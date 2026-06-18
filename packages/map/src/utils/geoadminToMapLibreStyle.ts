@@ -76,6 +76,20 @@ interface NormalizedEntry {
   minResolution?: number;
   maxResolution?: number;
   filter?: MapLibreExpression;
+  // A number is a static rotation angle (radians); a string names the feature
+  // property holding the angle (data-driven, e.g. wind direction).
+  rotation?: string | number;
+}
+
+/**
+ * geoadmin carries rotation as a sibling of `vectorOptions` on each style entry
+ * (and on the style root for `single`). Mirrors web-mapviewer's
+ * `imageRotationProperty`.
+ */
+function extractRotation(entry: object): string | number | undefined {
+  return "rotation" in entry
+    ? (entry as { rotation?: string | number }).rotation
+    : undefined;
 }
 
 function normalizeEntries(
@@ -89,6 +103,7 @@ function normalizeEntries(
         vectorOptions: single.vectorOptions,
         minResolution: single.minResolution,
         maxResolution: single.maxResolution,
+        rotation: extractRotation(single),
       },
     ];
   }
@@ -99,6 +114,7 @@ function normalizeEntries(
       vectorOptions: value.vectorOptions,
       minResolution: value.minResolution,
       maxResolution: value.maxResolution,
+      rotation: extractRotation(value),
       // geoadmin data often encodes the discriminating value as a string (e.g.
       // "2"), while the style value may be numeric — MapLibre's `==` is
       // type-strict, so compare both as strings.
@@ -116,6 +132,7 @@ function normalizeEntries(
     vectorOptions: range.vectorOptions,
     minResolution: range.minResolution,
     maxResolution: range.maxResolution,
+    rotation: extractRotation(range),
     // Coerce the property to a number so string-encoded values compare correctly.
     filter: [
       "all",
@@ -372,6 +389,52 @@ function buildLayersForEntry(
   return layers;
 }
 
+/**
+ * Resolves the rotation for a point symbol. An entry-level rotation (a feature
+ * property name, data-driven) takes precedence — matching web-mapviewer, where
+ * `imageRotationProperty` overrides the static angle. Otherwise a static numeric
+ * rotation declared inside `vectorOptions` is used.
+ */
+function resolveRotation(
+  entry: NormalizedEntry,
+  vectorOptions: GeoAdminGeoJSONVectorOptions,
+): string | number | undefined {
+  if (entry.rotation !== undefined) {
+    return entry.rotation;
+  }
+  return "rotation" in vectorOptions
+    ? (vectorOptions as { rotation?: number }).rotation
+    : undefined;
+}
+
+/**
+ * Applies a geoadmin rotation (radians) to a symbol layer as MapLibre
+ * `icon-rotate` (degrees). A number is a static angle; a string names the
+ * feature property holding the angle, which becomes a data-driven expression so
+ * each feature rotates independently (e.g. wind direction).
+ */
+function applyRotation(
+  symbol: MapLibreLayer,
+  rotation: string | number | undefined,
+): void {
+  if (rotation === undefined) {
+    return;
+  }
+  const radToDeg = 180 / Math.PI;
+  symbol.layout = symbol.layout ?? {};
+  if (typeof rotation === "number") {
+    symbol.layout["icon-rotate"] = rotation * radToDeg;
+  } else {
+    symbol.layout["icon-rotate"] = [
+      "*",
+      ["to-number", ["get", rotation]],
+      radToDeg,
+    ];
+  }
+  // The angle is a geographic bearing, so it must track the map, not the screen.
+  symbol.layout["icon-rotation-alignment"] = "map";
+}
+
 function buildPointLayers(
   entry: NormalizedEntry,
   vectorOptions: GeoAdminGeoJSONVectorOptions,
@@ -412,6 +475,7 @@ function buildPointLayers(
     if (vectorOptions.scale !== undefined) {
       symbol.layout!["icon-size"] = vectorOptions.scale;
     }
+    applyRotation(symbol, resolveRotation(entry, vectorOptions));
     foldLabelIntoSymbol(symbol, vectorOptions.label);
     layers.push(applyCommon(symbol, entry, ctx));
   } else if (isShapeIconType(vectorOptions.type)) {
@@ -445,14 +509,7 @@ function buildPointLayers(
         "icon-rotation-alignment": "map",
       },
     };
-    // geoadmin rotation is in radians; MapLibre icon-rotate is in degrees.
-    const rotation =
-      "rotation" in vectorOptions
-        ? (vectorOptions as { rotation?: number }).rotation
-        : undefined;
-    if (rotation !== undefined) {
-      symbol.layout!["icon-rotate"] = (rotation * 180) / Math.PI;
-    }
+    applyRotation(symbol, resolveRotation(entry, vectorOptions));
     foldLabelIntoSymbol(symbol, vectorOptions.label);
     layers.push(applyCommon(symbol, entry, ctx));
   } else {
