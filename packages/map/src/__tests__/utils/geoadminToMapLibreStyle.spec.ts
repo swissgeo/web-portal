@@ -161,6 +161,37 @@ describe("geoadminToMapLibreStyle - range", () => {
   });
 });
 
+describe("geoadminToMapLibreStyle - data-driven rotation (wind direction)", () => {
+  // Real geoadmin shape: rotation sits beside `vectorOptions` and names a feature
+  // property (radians), e.g. ch.meteoschweiz.messwerte-wind-boeenspitze-kmh-10min.
+  const WIND = {
+    type: "range",
+    property: "value",
+    ranges: [
+      {
+        geomType: "point",
+        range: [5, 11],
+        rotation: "wind_direction_radian",
+        vectorOptions: {
+          type: "icon",
+          src: "https://data.geo.admin.ch/arrow16.png",
+        },
+      },
+    ],
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+
+  it("emits a data-driven icon-rotate expression (radians -> degrees) per feature", () => {
+    const { style } = geoadminToMapLibreStyle(WIND, "src");
+    const symbol = style.layers.find((layer) => layer.type === "symbol")!;
+    expect(symbol.layout!["icon-rotate"]).toEqual([
+      "*",
+      ["to-number", ["get", "wind_direction_radian"]],
+      180 / Math.PI,
+    ]);
+    expect(symbol.layout!["icon-rotation-alignment"]).toBe("map");
+  });
+});
+
 describe("geoadminToMapLibreStyle - single line", () => {
   const SINGLE: GeoAdminGeoJSONStyleDefinition = {
     type: "single",
