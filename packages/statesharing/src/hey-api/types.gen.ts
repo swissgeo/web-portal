@@ -5,30 +5,6 @@ export type ClientOptions = {
 };
 
 /**
- * Checker
- */
-export type Checker = {
-  /**
-   * Success
-   *
-   * True when the probe is successful, false otherwise
-   */
-  success: boolean;
-  /**
-   * Message
-   *
-   * Failure explanation in case of failure, otherwise OK
-   */
-  message: string;
-  /**
-   * Version
-   *
-   * Version of the service
-   */
-  version: string;
-};
-
-/**
  * ErrorResponse
  */
 export type ErrorResponse = {
@@ -293,23 +269,6 @@ export type ValidationError = {
     [key: string]: unknown;
   };
 };
-
-export type GetCheckerCheckerGetData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/checker";
-};
-
-export type GetCheckerCheckerGetResponses = {
-  /**
-   * Successful Response
-   */
-  200: Checker;
-};
-
-export type GetCheckerCheckerGetResponse =
-  GetCheckerCheckerGetResponses[keyof GetCheckerCheckerGetResponses];
 
 export type PostAppStatePostData = {
   body: SaveAppStateRequest;
