@@ -19,8 +19,8 @@ const { sources: attributionSources } = useAttributionSources(
   computed(() => layerStore.backgroundLayer),
 );
 
-const { stateQuery } = defineProps<{
-  stateQuery?: string;
+const { stateId } = defineProps<{
+  stateId?: string;
 }>();
 
 const sourceLayers = computed(() => layerStore.layers);
@@ -45,9 +45,9 @@ const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
 <template>
   <ClientOnly>
     <UButton
-      v-if="stateQuery"
+      v-if="stateId"
       class="fixed top-4 left-4 z-9999"
-      :to="`${url.origin}/map?state=${stateQuery}`"
+      :to="`${url.origin}/map?state=${stateId}`"
       target="_blank"
       variant="solid"
       data-testid="embed-map-viewer-view-on-swissgeo-button"

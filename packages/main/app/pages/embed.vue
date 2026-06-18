@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const route = useRoute();
-const stateQuery = route.query.state as string | undefined;
+const stateId = route.query.state as string | undefined;
 </script>
 
 <template>
   <NuxtLayout name="embed">
-    <EmbedMapViewer :state-query="stateQuery" />
+    <EmbedMapViewer :state-id="stateId" />
   </NuxtLayout>
 </template>
