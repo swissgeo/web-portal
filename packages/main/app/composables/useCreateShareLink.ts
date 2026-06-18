@@ -15,6 +15,14 @@ function buildShareUrl(stateId: string | null): string {
   return url.href;
 }
 
+/**
+ * Options for controlling share link state generation.
+ *
+ * - `autoRefresh: true` — automatically POST state to the API whenever it changes.
+ *   Optionally debounce with `debounce`/`maxWait`.
+ * - `autoRefresh: false` (default) — tracks changes but only fetches when `refresh()` is called.
+ *   The `debounce` option is ignored when `autoRefresh` is false.
+ */
 type ShareLinkOptions = {
   autoRefresh?: boolean;
   debounce?: number;
@@ -67,36 +75,22 @@ function useShareLinkState(
     deep: options.deep ?? false,
     immediate: true,
   };
+  const onStateChange = (newState: AppStatePayload | null) => {
+    if (!newState) {
+      return;
+    }
+    void syncHash(newState);
+  };
 
   if (options.autoRefresh) {
     if (options.debounce) {
-      watchDebounced(
-        watchSource,
-        (newState) => {
-          if (!newState) {
-            return;
-          }
-
-          void syncHash(newState);
-        },
-        {
-          ...watchOptions,
-          debounce: options.debounce,
-          maxWait: options.maxWait,
-        },
-      );
+      watchDebounced(watchSource, (newState) => onStateChange(newState), {
+        ...watchOptions,
+        debounce: options.debounce,
+        maxWait: options.maxWait,
+      });
     } else {
-      watch(
-        watchSource,
-        (newState) => {
-          if (!newState) {
-            return;
-          }
-
-          void syncHash(newState);
-        },
-        watchOptions,
-      );
+      watch(watchSource, (newState) => onStateChange(newState), watchOptions);
     }
   } else {
     watch(
@@ -129,6 +123,16 @@ function useShareLinkState(
   };
 }
 
+/**
+ * Creates a reactive share link from the current app state.
+ *
+ * By default (`autoRefresh = false`), the hash is NOT fetched automatically.
+ * Call `refresh()` to generate the link, and check `needToRefresh` to show
+ * a "regenerate" UI when the state has changed since the last fetch.
+ *
+ * Pass `autoRefresh = true` to fetch the hash immediately on mount
+ * and re-fetch whenever the state changes.
+ */
 export function useCreateShareLink(
   state?: MaybeRefOrGetter<AppStatePayload | null>,
   autoRefresh: boolean = false,
