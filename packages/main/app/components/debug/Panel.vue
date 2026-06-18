@@ -80,7 +80,10 @@ function togglePrintPanel() {
       <UButton data-testid="debug-open-drawing-panel" @click="toggleDrawing">
         {{ $t("debug.openDrawingPanel") }}
       </UButton>
-      <UButton @click="toggleStateConfig">
+      <UButton
+        @click="toggleStateConfig"
+        data-testid="debug-open-state-config-panel"
+      >
         {{ $t("debug.openStateConfigPanel") }}
       </UButton>
       <UButton @click="togglePrintPanel">

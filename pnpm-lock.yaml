@@ -1344,6 +1344,9 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 10.5.0(jiti@2.7.0)
+      msw:
+        specifier: 'catalog:'
+        version: 2.14.6(@types/node@24.13.2)(typescript@6.0.3)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -8510,10 +8513,6 @@ packages:
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
-  picomatch@2.3.1:
-    resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
-    engines: {node: '>=8.6'}
-
   picomatch@2.3.2:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
@@ -11323,7 +11322,6 @@ snapshots:
       '@inquirer/type': 4.0.7(@types/node@24.13.2)
     optionalDependencies:
       '@types/node': 24.13.2
-    optional: true
 
   '@inquirer/confirm@6.1.1(@types/node@25.9.3)':
     dependencies:
@@ -11343,7 +11341,6 @@ snapshots:
       signal-exit: 4.1.0
     optionalDependencies:
       '@types/node': 24.13.2
-    optional: true
 
   '@inquirer/core@11.2.1(@types/node@25.9.3)':
     dependencies:
@@ -11362,7 +11359,6 @@ snapshots:
   '@inquirer/type@4.0.7(@types/node@24.13.2)':
     optionalDependencies:
       '@types/node': 24.13.2
-    optional: true
 
   '@inquirer/type@4.0.7(@types/node@25.9.3)':
     optionalDependencies:
@@ -18833,7 +18829,7 @@ snapshots:
   micromatch@4.0.8:
     dependencies:
       braces: 3.0.3
-      picomatch: 2.3.1
+      picomatch: 2.3.2
 
   mime-db@1.54.0: {}
 
@@ -18937,7 +18933,6 @@ snapshots:
       typescript: 6.0.3
     transitivePeerDependencies:
       - '@types/node'
-    optional: true
 
   msw@2.14.6(@types/node@25.9.3)(typescript@6.0.3):
     dependencies:
@@ -19527,7 +19522,7 @@ snapshots:
     dependencies:
       citty: 0.2.2
       pathe: 2.0.3
-      tinyexec: 1.2.2
+      tinyexec: 1.2.4
 
   nypm@0.6.7:
     dependencies:
@@ -19889,8 +19884,6 @@ snapshots:
   perfect-debounce@2.1.0: {}
 
   picocolors@1.1.1: {}
-
-  picomatch@2.3.1: {}
 
   picomatch@2.3.2: {}
 

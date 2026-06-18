@@ -59,6 +59,12 @@ export function mockExternalRequests(page: Page) {
     });
   };
 
+  const mockStateSharing = async () => {
+    await page.route("http://localhost:3000/api/wpa/v1/state", (route) =>
+      route.fulfill({ status: 200, json: { id: "mocked-state-id" } }),
+    );
+  };
+
   /**
    * Just a wrapper/container to mock everything at once
    */
@@ -68,6 +74,7 @@ export function mockExternalRequests(page: Page) {
     await mockCatchAll();
     await mockOar();
     await mockLivingdocs();
+    await mockStateSharing();
   };
 
   return {
