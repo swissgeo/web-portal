@@ -13,6 +13,7 @@ type FakeMap = {
   layers: BaseLayer[];
   addLayer: ReturnType<typeof vi.fn>;
   removeLayer: ReturnType<typeof vi.fn>;
+  getAllLayers: ReturnType<typeof vi.fn>;
 };
 
 function createFakeMap(): FakeMap {
@@ -29,6 +30,7 @@ function createFakeMap(): FakeMap {
         layers.splice(index, 1);
       }
     }),
+    getAllLayers: vi.fn(() => layers),
   };
 }
 
