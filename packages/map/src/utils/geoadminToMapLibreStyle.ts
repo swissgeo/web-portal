@@ -28,6 +28,15 @@ type GeoAdminLabel = NonNullable<GeoAdminGeoJSONVectorOptions["label"]>;
  * - Multi-token label templates beyond a single `${prop}` are converted best-effort.
  * - `minResolution`/`maxResolution` are mapped to `minzoom`/`maxzoom` only when a
  *   `resolutionToZoom` function is supplied.
+ * - Draw order differs from the legacy renderer. Each style entry (unique value /
+ *   range) becomes its own MapLibre layer, and layers paint strictly in array order,
+ *   so every feature of one entry paints under every feature of the next — and
+ *   circles vs. shapes land in different layer *types* (`circle` vs. `symbol`) that
+ *   cannot share a layer. The legacy `OlStyleForPropertyValue` instead drew every
+ *   feature in a single OpenLayers vector layer in feature/source order, so shapes
+ *   interleaved per-feature. MapLibre groups by style entry; the legacy interleaves
+ *   by feature. There is no faithful 1:1 mapping (see e.g.
+ *   ch.bafu.hydroweb-messstationen_vorhersage: triangle-over-circle ordering varies).
  */
 
 // --- Minimal MapLibre style typings (only the subset we emit) -----------------
