@@ -53,6 +53,9 @@ const showCompareSliderButton = computed(
   () => mapViewStore.visibleLayers.length > 0,
 );
 const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
+
+const isWebMode = computed(() => displayMode === "web");
+const isEmbedMode = computed(() => displayMode === "embed");
 </script>
 
 <template>
@@ -60,26 +63,14 @@ const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
     class="toolbox-right absolute top-[1rem] right-[1rem] w-[40px] space-y-1"
     data-testid="toolbox-right"
   >
-    <FullScreenButton
-      v-if="['web'].includes(displayMode) && showFullScreeButton"
-    />
-    <GeolocButton
-      v-if="['web'].includes(displayMode) && showGelocationButton"
-    />
-    <CompassButton v-if="['web'].includes(displayMode) && showCompassButton" />
-    <RecenterButton
-      v-if="['web'].includes(displayMode) && showRecenterButton"
-    />
-    <ZoomButtons
-      v-if="['web', 'embed'].includes(displayMode) && showZoomButtons"
-    />
-    <Toggle3dButton v-if="['web'].includes(displayMode) && show3dButton" />
-    <TimeSliderButton
-      v-if="['web'].includes(displayMode) && showTimeSliderButton"
-    />
-    <CompareSliderButton
-      v-if="['web'].includes(displayMode) && showCompareSliderButton"
-    />
+    <FullScreenButton v-if="isWebMode && showFullScreeButton" />
+    <GeolocButton v-if="isWebMode && showGelocationButton" />
+    <CompassButton v-if="isWebMode && showCompassButton" />
+    <RecenterButton v-if="isWebMode && showRecenterButton" />
+    <ZoomButtons v-if="(isWebMode || isEmbedMode) && showZoomButtons" />
+    <Toggle3dButton v-if="isWebMode && show3dButton" />
+    <TimeSliderButton v-if="isWebMode && showTimeSliderButton" />
+    <CompareSliderButton v-if="isWebMode && showCompareSliderButton" />
     <slot />
   </div>
 </template>
