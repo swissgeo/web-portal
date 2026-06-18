@@ -52,7 +52,7 @@ function changeBackground(layer: BaseLayer | null) {
 }
 
 // The display mode is defined in the layout
-const displayMode = inject<"web" | "print">("displayMode", "web");
+const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
 </script>
 
 <template>
