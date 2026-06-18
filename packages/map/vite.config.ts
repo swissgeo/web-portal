@@ -28,7 +28,6 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       dts({
-        bundleTypes: true,
         processor: "vue",
       }),
     ],
