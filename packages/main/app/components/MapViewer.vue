@@ -1,35 +1,23 @@
 <script lang="ts" setup>
 import type { Layer as BaseLayer } from "@swissgeo/layers";
-import type { MapLayerRenderer } from "@swissgeo/map";
 
-import { OpenLayersDrawingLayer, isDrawingLayer } from "@swissgeo/drawing";
 import { useLayerStore } from "@swissgeo/layers";
-import { MapModule } from "@swissgeo/map";
-
-import SourceToMapDataConverter from "../components/SourceToMapDataConverter.vue";
 
 const geolocationStore = useGeolocationStore();
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
+
+const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
+
+const backgroundLayer = computed(() => layerStore.backgroundLayer);
 
 const { sources: attributionSources } = useAttributionSources(
   computed(() => layerStore.layers),
   computed(() => layerStore.backgroundLayer),
 );
 
-const sourceLayers = computed(() => layerStore.layers);
-
-const backgroundLayer = computed(() => layerStore.backgroundLayer);
-
-const layersForMap = computed(() => {
-  return mapViewStore.getMapLayers().value;
-});
-
-// the layer the compare slider clips: the topmost visible overlay (the
-// background/basemap is excluded by the store getter and never clipped)
 const topVisibleLayer = computed(() => mapViewStore.visibleLayers.at(-1));
 
-// deactivate the compare slider once there is no overlay left to compare
 watch(topVisibleLayer, (layer) => {
   if (!layer && mapViewStore.isCompareSliderActive) {
     mapViewStore.setCompareSliderActive(false);
@@ -40,45 +28,28 @@ const showAdditionalMapUi = computed(
   () => !mapViewStore.isFullscreenModeActive,
 );
 
-const customLayerRenderers: MapLayerRenderer[] = [
-  {
-    matches: isDrawingLayer,
-    component: OpenLayersDrawingLayer,
-  },
-];
-
 function changeBackground(layer: BaseLayer | null) {
   layerStore.setBackground(layer);
 }
-
-// The display mode is defined in the layout
-const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
 </script>
 
 <template>
-  <ClientOnly>
-    <SourceToMapDataConverter
-      :source-bg-layer="backgroundLayer"
-      :source-data="sourceLayers"
-    />
-    <MapModule
-      :layers="layersForMap"
-      :custom-layer-renderers="customLayerRenderers"
-      :display-mode="displayMode"
-      :compare-slider-active="mapViewStore.isCompareSliderActive"
-      :compare-ratio="mapViewStore.compareRatio"
-      :compare-slider-clipped-layer="topVisibleLayer"
-      class="h-full w-full"
-      @update:compare-ratio="mapViewStore.setCompareRatio"
-    >
-      <template #context-menu-popup="{ coordinate, isVisible, close }">
-        <MapContextMenuPopup
-          :coordinate="coordinate"
-          :is-visible="isVisible"
-          :close="close"
-        />
-      </template>
-      <MapOpenLayersGeolocationFeedback
+  <BaseMapViewer
+    :display-mode="displayMode"
+    :compare-slider-active="mapViewStore.isCompareSliderActive"
+    :compare-ratio="mapViewStore.compareRatio"
+    :compare-slider-clipped-layer="topVisibleLayer"
+    @update:compare-ratio="mapViewStore.setCompareRatio"
+  >
+    <template #context-menu-popup="{ coordinate, isVisible, close }">
+      <MapContextMenuPopup
+        :coordinate="coordinate"
+        :is-visible="isVisible"
+        :close="close"
+      />
+    </template>
+    <template #map-ui>
+      <LazyMapOpenLayersGeolocationFeedback
         v-if="
           geolocationStore.active &&
           geolocationStore.position &&
@@ -89,19 +60,19 @@ const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
         v-if="displayMode === 'web'"
         :sources="attributionSources"
       />
-      <MapElevationWindow v-if="showAdditionalMapUi" />
-    </MapModule>
-    <Toolbox v-if="displayMode === 'web'" />
-    <DebugPanel
-      v-if="showAdditionalMapUi && displayMode === 'web'"
-      class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"
-    ></DebugPanel>
-    <DrawingFeatureInfoWindow v-if="showAdditionalMapUi" />
-
-    <MapBackgroundSelector
-      :currentBackground="backgroundLayer"
-      @setBackground="changeBackground"
-    />
-    <MapTimeSliderButton />
-  </ClientOnly>
+      <LazyMapElevationWindow v-if="showAdditionalMapUi" />
+    </template>
+    <template #after>
+      <DebugPanel
+        v-if="showAdditionalMapUi && displayMode === 'web'"
+        class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"
+      ></DebugPanel>
+      <DrawingFeatureInfoWindow v-if="showAdditionalMapUi" />
+      <MapBackgroundSelector
+        :currentBackground="backgroundLayer"
+        @setBackground="changeBackground"
+      />
+      <MapTimeSliderButton />
+    </template>
+  </BaseMapViewer>
 </template>
