@@ -5,11 +5,14 @@ const url = useRequestURL();
 const { t } = useI18n();
 
 const { attributionSources, displayMode } = useMapViewerSetup();
-const { stateId } = useEmbedConfig();
+const { stateId, zoomOnlyCtrl } = defineProps<{
+  stateId?: string;
+  zoomOnlyCtrl: boolean;
+}>();
 </script>
 
 <template>
-  <BaseMapViewer :display-mode="displayMode">
+  <BaseMapViewer :display-mode="displayMode" :zoom-only-ctrl="zoomOnlyCtrl">
     <template v-if="stateId" #before>
       <UButton
         class="fixed top-4 left-4 z-9999"

@@ -12,6 +12,7 @@ const {
   compareSliderActive,
   compareRatio,
   compareSliderClippedLayer,
+  zoomOnlyCtrl = false,
 } = defineProps<{
   displayMode?: "web" | "print" | "embed";
   compareSliderActive?: boolean;
@@ -20,9 +21,8 @@ const {
     MapLayer,
     "layerId" | "uuid" | "displayName"
   >;
+  zoomOnlyCtrl?: boolean;
 }>();
-
-const { zoomOnlyCtrl } = useEmbedConfig();
 
 const emit = defineEmits<{
   "update:compareRatio": [ratio: number];

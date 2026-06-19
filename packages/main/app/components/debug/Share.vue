@@ -5,9 +5,12 @@ const zoomOnlyCtrl = ref(false);
 
 const { copy, copied } = useClipboard();
 const { exportState } = useStateConfig();
-const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(exportState, {
-  zoomOnlyCtrl,
-});
+const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
+  exportState,
+  {
+    zoomOnlyCtrl,
+  },
+);
 </script>
 
 <template>

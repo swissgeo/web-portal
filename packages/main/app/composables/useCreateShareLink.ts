@@ -150,14 +150,15 @@ export function useCreateShareLink(
   state?: MaybeRefOrGetter<AppStatePayload | null>,
   options?: { autoRefresh?: boolean; zoomOnlyCtrl?: Ref<boolean> },
 ) {
-) {
   const { exportState } = useStateConfig();
   const usableState = state ?? exportState;
   const { hash, needsRefresh, refresh } = useShareLinkState(usableState, {
     autoRefresh: options?.autoRefresh,
   });
 
-  const needToRefresh = computed(() => !options?.autoRefresh && needsRefresh.value);
+  const needToRefresh = computed(
+    () => !options?.autoRefresh && needsRefresh.value,
+  );
   const shareLink = computed(() => buildShareUrl(hash.value));
   const embedCode = computed(() =>
     buildEmbedCode(hash.value, options?.zoomOnlyCtrl?.value ?? false),
