@@ -12,6 +12,7 @@ export default defineConfig({
         "../../coverage/unit/elevation-profile",
       ),
       reporter: ["lcov", "cobertura"],
+      include: ["src/**/*.ts", "src/**/*.vue"],
     },
   },
   resolve: {

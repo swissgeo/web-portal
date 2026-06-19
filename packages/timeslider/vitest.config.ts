@@ -13,6 +13,7 @@ export default defineConfig({
         "../../coverage/unit/timeslider",
       ),
       reporter: ["lcov", "cobertura"],
+      include: ["src/**/*.ts", "src/**/*.vue"],
     },
   },
   resolve: {
