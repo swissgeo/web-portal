@@ -135,15 +135,6 @@ catalogs:
     happy-dom:
       specifier: 20.10.3
       version: 20.10.3
-    istanbul-lib-coverage:
-      specifier: ^3.2.2
-      version: 3.2.2
-    istanbul-lib-report:
-      specifier: ^3.0.1
-      version: 3.0.1
-    istanbul-reports:
-      specifier: ^3.2.0
-      version: 3.2.0
     mapbox-gl:
       specifier: ^3.24.0
       version: 3.24.1
@@ -213,9 +204,6 @@ catalogs:
     unplugin-dts:
       specifier: 1.0.2
       version: 1.0.2
-    v8-to-istanbul:
-      specifier: ^9.3.0
-      version: 9.3.0
     vite:
       specifier: ^8.0.0
       version: 8.0.16
@@ -1368,15 +1356,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 10.5.0(jiti@2.7.0)
-      istanbul-lib-coverage:
-        specifier: 'catalog:'
-        version: 3.2.2
-      istanbul-lib-report:
-        specifier: 'catalog:'
-        version: 3.0.1
-      istanbul-reports:
-        specifier: 'catalog:'
-        version: 3.2.0
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1386,9 +1365,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
-      v8-to-istanbul:
-        specifier: 'catalog:'
-        version: 9.3.0
 
 packages:
 
@@ -4949,9 +4925,6 @@ packages:
 
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
-
-  '@types/istanbul-lib-coverage@2.0.6':
-    resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
 
   '@types/jsesc@2.5.1':
     resolution: {integrity: sha512-9VN+6yxLOPLOav+7PwjZbxiID2bVaeq0ED4qSQmdQTdjnXJSaCVKTR58t15oqH1H5t8Ng2ZX1SabJVoN9Q34bw==}
@@ -9806,10 +9779,6 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
-
-  v8-to-istanbul@9.3.0:
-    resolution: {integrity: sha512-kiGUalWN+rgBJ/1OHZsBtU4rXZOfj/7rKQxULKlIzwzQSvMJUUNgPwJEEh7gU6xEVxC0ahoOBvN2YI8GH6FNgA==}
-    engines: {node: '>=10.12.0'}
 
   valibot@1.4.1:
     resolution: {integrity: sha512-klCmFTz2jeDluy9RwX+F884TCiogtdBJ/YaxSx1EOBYXa3NXNWj8kR1jjN8rzluwojJVWWaHJ4r1U5LfICnM3g==}
@@ -15053,8 +15022,6 @@ snapshots:
   '@types/hast@3.0.4':
     dependencies:
       '@types/unist': 3.0.3
-
-  '@types/istanbul-lib-coverage@2.0.6': {}
 
   '@types/jsesc@2.5.1': {}
 
@@ -21168,12 +21135,6 @@ snapshots:
       punycode: 2.3.1
 
   util-deprecate@1.0.2: {}
-
-  v8-to-istanbul@9.3.0:
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.31
-      '@types/istanbul-lib-coverage': 2.0.6
-      convert-source-map: 2.0.0
 
   valibot@1.4.1(typescript@6.0.3):
     optionalDependencies:

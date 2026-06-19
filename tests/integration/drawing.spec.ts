@@ -1,9 +1,9 @@
 import type { Page } from "@playwright/test";
 
+import { expect, test } from "@playwright/test";
 import { fileURLToPath } from "node:url";
 
 import en from "../../packages/main/i18n/locales/en.json" with { type: "json" };
-import { expect, test } from "./fixtures";
 
 const HYDRATION_TIMEOUT = 60_000;
 const t = en.debug;

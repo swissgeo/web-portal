@@ -29,8 +29,6 @@
     "test": "pnpm run test:unit",
     "test:integration": "playwright test",
     "test:integration:ci": "playwright test -c playwright.config.ci.ts",
-    "test:integration:coverage": "COVERAGE=1 playwright test && node tests/integration/generate-coverage-report.mjs",
-    "test:integration:coverage:ci": "playwright test -c playwright.config.ci.ts && node tests/integration/generate-coverage-report.mjs",
     "test:ui": "vitest --ui",
     "test:unit": "pnpm run --parallel --no-bail --if-present test:unit",
     "test:unit:coverage": "pnpm run --parallel --no-bail --if-present test:unit:coverage",

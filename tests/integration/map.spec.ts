@@ -1,12 +1,12 @@
 import type { Page, Route } from "@playwright/test";
 import type BaseLayer from "ol/layer/Base";
 
+import { expect, test } from "@playwright/test";
 import { readFileSync } from "fs";
 
 import ChSwisstopoPixelkarteFarbeDataset from "../fixtures/item-dataset-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
 import ChSwisstopoPixelkarteFarbeDistribution from "../fixtures/item-distribution-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
 import ChWmtsGeoadmin from "../fixtures/wmts-geoadminch.json" with { type: "json" };
-import { expect, test } from "./fixtures";
 import { waitForZoom } from "./utils";
 const WMTSCapabilities = readFileSync(
   new URL("../fixtures/WMTSCapabilities.xml", import.meta.url),
