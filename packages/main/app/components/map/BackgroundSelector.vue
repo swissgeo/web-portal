@@ -4,11 +4,11 @@ import type { Dataset } from "@swissgeo/ogc";
 
 import { makeServerLayer } from "@swissgeo/layers";
 import { computedAsync } from "@vueuse/core";
-import { joinURL } from "ufo";
+import { displayModeKey } from "~/types/injectionKeys";
 
 import { AVAILABLE_BACKGROUNDS } from "./constants";
 
-const displayMode = inject<"web" | "print" | "embed">("displayMode");
+const displayMode = inject(displayModeKey);
 
 const emit = defineEmits<{
   setBackground: [backgroundLayer: Layer | null];

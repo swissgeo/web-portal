@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { displayModeKey } from "~/types/injectionKeys";
 const toaster = { position: "top-center" as const };
-provide<"web" | "print" | "embed">("displayMode", "web");
+provide(displayModeKey, "web");
 </script>
 
 <template>
