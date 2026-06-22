@@ -5,14 +5,15 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    environment: "node",
+    environment: "happy-dom",
     coverage: {
       provider: "v8",
       reportsDirectory: path.resolve(
         __dirname,
-        "../../coverage/unit/statesharing",
+        "../../coverage/unit/timeslider",
       ),
       reporter: ["lcov", "cobertura"],
+      include: ["src/**/*.ts", "src/**/*.vue"],
     },
   },
   resolve: {

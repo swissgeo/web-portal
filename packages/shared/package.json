@@ -29,6 +29,8 @@
     "format:write": "prettier --write --ignore-path ../../.prettierignore .",
     "lint": "eslint",
     "lint:write": "eslint --fix",
+    "test:unit": "vitest run",
+    "test:unit:coverage": "vitest run --coverage",
     "type-check": "tsc"
   },
   "dependencies": {},

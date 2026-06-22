@@ -1,0 +1,7 @@
+# To validate this config file use the following command:
+# curl -X POST --data-binary @codecov.yml https://codecov.io/validate
+# For more information on the available configuration options, see:
+# https://docs.codecov.com/docs/flags#recommended-automatic-flag-management
+flag_management:
+  default_rules: # the rules that will be followed for any flag added, generally
+    carryforward: true
