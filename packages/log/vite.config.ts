@@ -10,6 +10,7 @@ const config: UserConfig = {
         index: resolve(__dirname, "src/index.ts"),
         Message: resolve(__dirname, "src/Message.ts"),
       },
+      formats: ["es"],
       name: "@swissgeo/log",
     },
     rollupOptions: {
@@ -18,11 +19,7 @@ const config: UserConfig = {
       },
     },
   },
-  plugins: [
-    dts({
-      bundleTypes: true,
-    }),
-  ],
+  plugins: [dts()],
 };
 
 export default config;
