@@ -22,19 +22,23 @@ const { currentBackground } = defineProps<{
 const runtimeConfig = useRuntimeConfig();
 
 const backgroundRecords = computed(async () => {
+  const { locale } = useI18n();
+
   const promises: Promise<Dataset>[] = [];
   for (const backgroundId of AVAILABLE_BACKGROUNDS) {
-    promises.push(
-      $fetch(
-        joinURL(
-          runtimeConfig.public.ogcApiEndpoint,
-          "/collections/",
-          runtimeConfig.public.ogcCatalogCollection,
-          "/items/",
-          backgroundId,
-        ),
+    const url = new URL(
+      joinURL(
+        runtimeConfig.public.ogcApiEndpoint,
+        "/collections/",
+        runtimeConfig.public.ogcCatalogCollection,
+        "/items/",
+        backgroundId,
       ),
     );
+
+    url.searchParams.set("language", locale.value);
+
+    promises.push($fetch(url.toString()));
   }
 
   const values = await Promise.all(promises);
