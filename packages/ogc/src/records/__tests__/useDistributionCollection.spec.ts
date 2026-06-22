@@ -113,9 +113,12 @@ describe("useDistributionCollection 404", () => {
     ),
   ];
   const server = setupServer(...handlers);
-  beforeAll(() => {
-    server.listen();
-  });
+
+  beforeAll(() => server.listen());
+
+  afterAll(() => server.close());
+
+  afterEach(() => server.resetHandlers());
 
   it("doesn't trip with 404", async () => {
     const dataset = ref(ChBafuSchutzgebieteLuftfahrt as Dataset);
@@ -138,9 +141,12 @@ describe("useDistributionCollection 5xx", () => {
     ),
   ];
   const server = setupServer(...handlers);
-  beforeAll(() => {
-    server.listen();
-  });
+
+  beforeAll(() => server.listen());
+
+  afterAll(() => server.close());
+
+  afterEach(() => server.resetHandlers());
 
   it("doesn't trip with 5xx", async () => {
     const dataset = ref(ChBafuSchutzgebieteLuftfahrt as Dataset);
