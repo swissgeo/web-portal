@@ -105,6 +105,9 @@ export function useStateConfig() {
           rotation: positionStore.rotation,
         },
         layers: layersToStateConfig(mapviewStore.mapLayers),
+        bgLayer: layerStore.backgroundLayer
+          ? layerToStateConfig(mapviewStore.mapLayers[0]!)
+          : null,
       },
     };
   });
@@ -135,12 +138,14 @@ export function useStateConfig() {
     }
 
     layerStore.setBackground(null);
-
     const stateLayers = payload.state.layers ?? [];
     const layers = await Promise.all(
       stateLayers.map((lc: LayerStateInput) => stateConfigToLayer(lc)),
     );
-
+    if (payload.state.bgLayer) {
+      const bgLayer: Layer = stateConfigToLayer(payload.state.bgLayer);
+      layerStore.setBackground(bgLayer);
+    }
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
         const uuid = layers[i]!.uuid;
@@ -153,6 +158,7 @@ export function useStateConfig() {
         layerStore.addImportOption(uuid, mapLayerData);
       }
     }
+    // here we add the background layer back
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
         if (isBackgroundLayer(layers[i]!)) {
