@@ -49,13 +49,15 @@ export const useLayerStore = defineStore("layers", () => {
     return !!Object.keys(importOptions).length;
   }
   /**
-   * Gets either an index or an uuid to identify a layer withing the map Layers,
-   * and return the index at which the layer is.
+   * Returns the index of the overlay layer with the given uuid within the
+   * `layers` array, or undefined if no overlay layer matches.
    *
+   * Note: the background layer is stored separately (in `backgroundLayer`),
+   * so it is intentionally not found here. Use `getLayer` when the
+   * background layer is also a valid target.
    *
-   * @param uuid either the index in the array, or the layer's uuid
-   * @returns the index itself, or the index found
-   * @throws Error if the uuid is not found within the array
+   * @param uuid the layer's uuid
+   * @returns the index, or undefined if not found (an error is logged)
    */
   function _getIndexFromIdentifier(uuid: string): number | undefined {
     const index = layers.value.findIndex((layer) => layer.uuid === uuid);
@@ -68,24 +70,28 @@ export const useLayerStore = defineStore("layers", () => {
   }
 
   /**
+   * Resolves a layer by its uuid, searching both the overlay layers and the
+   * background layer (which is stored separately, not in the `layers` array).
    *
-   * @param uuid either the layer uuid or its index in the layer store. We recommend using the uuid
-   * @returns
+   * @param uuid the layer's uuid
+   * @returns the matching layer, or undefined if no layer has this uuid
+   *          (an error is logged only in that case)
    */
   function getLayer(uuid: string): Layer | undefined {
-    const index = _getIndexFromIdentifier(uuid);
-    if ((index || index === 0) && layers.value[index]) {
-      return layers.value[index];
+    const layer =
+      layers.value.find((candidate) => candidate.uuid === uuid) ??
+      (backgroundLayer.value?.uuid === uuid
+        ? backgroundLayer.value
+        : undefined);
+
+    if (!layer) {
+      log.error(`Incorrect uuid given : ${uuid}`);
+      return;
     }
+    return layer;
   }
   function setBackground(layer: Layer | null) {
     backgroundLayer.value = layer;
-  }
-
-  function setBackgroundLayerData(data: Dataset) {
-    if (backgroundLayer.value) {
-      backgroundLayer.value.data = data;
-    }
   }
 
   function addLayer(layer: Layer) {
@@ -104,10 +110,9 @@ export const useLayerStore = defineStore("layers", () => {
     uuid: string,
     dimension: Partial<Dimension>,
   ) {
-    const index = _getIndexFromIdentifier(uuid);
+    const layer = getLayer(uuid);
 
-    if ((index || index === 0) && layers.value[index]) {
-      const layer = layers.value[index];
+    if (layer) {
       if (!layer.dimensions) {
         layer.dimensions = {};
       }
@@ -135,20 +140,9 @@ export const useLayerStore = defineStore("layers", () => {
       `Setting layer info for layer ${uuid} to ${JSON.stringify(info)}`,
     );
 
-    const index = _getIndexFromIdentifier(uuid);
-    if ((index || index === 0) && layers.value[index]) {
-      layers.value[index].info = info;
-    } else if (
-      typeof uuid === "string" &&
-      backgroundLayer.value?.uuid === uuid
-    ) {
-      setBackgroundInfo(info);
-    }
-  }
-
-  function setBackgroundInfo(info: LayerInfo) {
-    if (backgroundLayer.value) {
-      backgroundLayer.value.info = info;
+    const layer = getLayer(uuid);
+    if (layer) {
+      layer.info = info;
     }
   }
 
@@ -160,14 +154,9 @@ export const useLayerStore = defineStore("layers", () => {
   }
 
   function setLayerData(uuid: string, dataset: Dataset) {
-    const index = _getIndexFromIdentifier(uuid);
-    if ((index || index === 0) && layers.value[index]) {
-      layers.value[index].data = dataset;
-    } else if (
-      typeof uuid === "string" &&
-      backgroundLayer.value?.uuid === uuid
-    ) {
-      setBackgroundLayerData(dataset);
+    const layer = getLayer(uuid);
+    if (layer) {
+      layer.data = dataset;
     }
   }
 
@@ -185,7 +174,6 @@ export const useLayerStore = defineStore("layers", () => {
     addLayer,
     setBackground,
     replaceLayer,
-    setBackgroundLayerData,
     setLayerInfo,
     setDimension,
     removeLayer,

@@ -1,5 +1,6 @@
+import log from "@swissgeo/log";
 import { setActivePinia, createPinia } from "pinia";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 
 import type { Layer } from "@/index";
 
@@ -51,6 +52,60 @@ describe("Layer store helpers", () => {
         availableValues: ["1981", "2024"],
         currentValue: "2024",
       });
+    });
+  });
+
+  describe("background layer resolution (GPS-792)", () => {
+    let errorSpy: ReturnType<typeof vi.spyOn>;
+
+    beforeEach(() => {
+      errorSpy = vi.spyOn(log, "error").mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      errorSpy.mockRestore();
+    });
+
+    it("does not log 'Incorrect uuid' when operating on the background layer", () => {
+      const store = useLayerStore();
+      store.addLayer(makeLayer("overlay"));
+      store.setBackground(makeLayer("bg"));
+
+      const info = { displayName: "Background", abstract: "abstract" };
+      store.setLayerInfo("bg", info);
+      store.setLayerData("bg", { id: "dataset" } as never);
+      store.setDimension("time", "bg", {
+        availableValues: ["1981", "2024"],
+        currentValue: "2024",
+      });
+
+      expect(errorSpy).not.toHaveBeenCalled();
+      expect(store.backgroundLayer?.info).toEqual(info);
+      expect(store.backgroundLayer?.data).toEqual({ id: "dataset" });
+      expect(store.backgroundLayer?.dimensions?.time).toEqual({
+        availableValues: ["1981", "2024"],
+        currentValue: "2024",
+      });
+    });
+
+    it("getLayer resolves the background layer by uuid", () => {
+      const store = useLayerStore();
+      const bg = makeLayer("bg");
+      store.setBackground(bg);
+
+      expect(store.getLayer("bg")?.uuid).toBe("bg");
+      expect(errorSpy).not.toHaveBeenCalled();
+    });
+
+    it("still logs an error for a uuid that matches no layer", () => {
+      const store = useLayerStore();
+      store.addLayer(makeLayer("overlay"));
+      store.setBackground(makeLayer("bg"));
+
+      expect(store.getLayer("does-not-exist")).toBeUndefined();
+      expect(errorSpy).toHaveBeenCalledWith(
+        "Incorrect uuid given : does-not-exist",
+      );
     });
   });
 
