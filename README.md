@@ -1,6 +1,9 @@
 # SWISSGEO Web Portal
 
-[![codecov-develop](https://codecov.io/gh/swissgeo/web-portal/branch/develop/graph/badge.svg)](https://codecov.io/gh/swissgeo/web-portal)
+| Branch  | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| develop | ![Build Status](https://codebuild.eu-central-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoibU83d3BvUEVmWkhQamlIKzlQaWgvY0dtSWdmSU84R0gzU0gxTlhTcnVkQklrbVFaZWpyVjlpQzFBYUtWUXJBbnAzelp0eGlWQi9ISmFyand6NWYyemFNPSIsIml2UGFyYW1ldGVyU3BlYyI6ImF4aDZIenFoRHlJTnBKdmsiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=develop) [![codecov-develop](https://codecov.io/gh/swissgeo/web-portal/branch/develop/graph/badge.svg)](https://codecov.io/gh/swissgeo/web-portal) |
+| main    | ![Build Status](https://codebuild.eu-central-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoibU83d3BvUEVmWkhQamlIKzlQaWgvY0dtSWdmSU84R0gzU0gxTlhTcnVkQklrbVFaZWpyVjlpQzFBYUtWUXJBbnAzelp0eGlWQi9ISmFyand6NWYyemFNPSIsIml2UGFyYW1ldGVyU3BlYyI6ImF4aDZIenFoRHlJTnBKdmsiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main) [![codecov-main](https://codecov.io/gh/swissgeo/web-portal/branch/main/graph/badge.svg)](https://codecov.io/gh/swissgeo/web-portal)          |
 
 This repository contains the frontend implementation for SWISSGEO, the future central geodata platform for Switzerland.
 
