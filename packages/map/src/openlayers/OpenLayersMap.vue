@@ -3,6 +3,10 @@ import type { Map as OlMapType } from "ol";
 import type { Ref } from "vue";
 
 import { registerProj4 } from "@swissgeo/coordinates";
+import { platformModifierKeyOnly } from "ol/events/condition.js";
+import { defaults } from "ol/interaction/defaults.js";
+import DragPan from "ol/interaction/DragPan.js";
+import MouseWheelZoom from "ol/interaction/MouseWheelZoom.js";
 import Map from "ol/Map";
 import { register } from "ol/proj/proj4";
 import proj4 from "proj4";
@@ -17,9 +21,10 @@ import { useMapStore } from "../stores/map";
 // import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import OpenLayersVisibleLayer from "./OpenLayersVisibleLayer.vue";
 
-const { layers, customLayerRenderers } = defineProps<{
+const { layers, customLayerRenderers, zoomOnlyCtrl } = defineProps<{
   layers: Layer[];
   customLayerRenderers?: MapLayerRenderer[];
+  zoomOnlyCtrl?: boolean;
 }>();
 
 const mapElement = useTemplateRef("mapElement");
@@ -40,8 +45,30 @@ function registerCustomProjection() {
   register(proj4);
 }
 
-function createOlMap() {
-  const map = new Map({ controls: [] });
+function createOlMap(zoomOnlyCtrl = false) {
+  const map = new Map({
+    controls: [],
+    ...(zoomOnlyCtrl
+      ? {
+          interactions: defaults({
+            dragPan: false,
+            mouseWheelZoom: false,
+          }).extend([
+            new DragPan({
+              condition: function (event) {
+                return (
+                  (this as DragPan).getPointerCount() === 2 ||
+                  platformModifierKeyOnly(event)
+                );
+              },
+            }),
+            new MouseWheelZoom({
+              condition: platformModifierKeyOnly,
+            }),
+          ]),
+        }
+      : {}),
+  });
   olMap.value = map;
 
   useViewBasedOnProjection(olMap.value);
@@ -59,7 +86,7 @@ function mountOlMap() {
 }
 
 registerCustomProjection();
-createOlMap();
+createOlMap(zoomOnlyCtrl);
 </script>
 
 <template>

@@ -8,6 +8,7 @@ import { useDrawingStore } from "@swissgeo/drawing";
  * logic behind the available buttons, it should become a computed value instead.
  */
 import { useLayerStore } from "@swissgeo/layers";
+import { inject } from "vue";
 
 import CompareSliderButton from "@/components/toolbox/toolboxButtons/CompareSliderButton.vue";
 import FullScreenButton from "@/components/toolbox/toolboxButtons/FullScreenButton.vue";
@@ -51,6 +52,10 @@ watch(showTimeSliderButton, (hasTimeLayers) => {
 const showCompareSliderButton = computed(
   () => mapViewStore.visibleLayers.length > 0,
 );
+const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
+
+const isWebMode = computed(() => displayMode === "web");
+const isEmbedMode = computed(() => displayMode === "embed");
 </script>
 
 <template>
@@ -58,14 +63,14 @@ const showCompareSliderButton = computed(
     class="toolbox-right absolute top-[1rem] right-[1rem] w-[40px] space-y-1"
     data-testid="toolbox-right"
   >
-    <FullScreenButton v-if="showFullScreeButton" />
-    <GeolocButton v-if="showGelocationButton" />
-    <CompassButton v-if="showCompassButton" />
-    <RecenterButton v-if="showRecenterButton" />
-    <ZoomButtons v-if="showZoomButtons" />
-    <Toggle3dButton v-if="show3dButton" />
-    <TimeSliderButton v-if="showTimeSliderButton" />
-    <CompareSliderButton v-if="showCompareSliderButton" />
+    <FullScreenButton v-if="isWebMode && showFullScreeButton" />
+    <GeolocButton v-if="isWebMode && showGelocationButton" />
+    <CompassButton v-if="isWebMode && showCompassButton" />
+    <RecenterButton v-if="isWebMode && showRecenterButton" />
+    <ZoomButtons v-if="(isWebMode || isEmbedMode) && showZoomButtons" />
+    <Toggle3dButton v-if="isWebMode && show3dButton" />
+    <TimeSliderButton v-if="isWebMode && showTimeSliderButton" />
+    <CompareSliderButton v-if="isWebMode && showCompareSliderButton" />
     <slot />
   </div>
 </template>

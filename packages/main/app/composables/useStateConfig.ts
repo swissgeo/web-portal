@@ -7,6 +7,7 @@ import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
+import { AVAILABLE_BACKGROUNDS } from "~/components/map/constants";
 
 export type AppStatePayload = {
   version: string;
@@ -15,14 +16,15 @@ export type AppStatePayload = {
 
 const DISPATCHER = { name: "state-config" };
 
+function isBackgroundLayer(layer: Layer): boolean {
+  return AVAILABLE_BACKGROUNDS.includes(layer.humanId);
+}
+
 function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
   if (layers.length === 0) {
     return [];
   }
-
-  const startIndex = useLayerStore().backgroundLayer ? 1 : 0;
-
-  return layers.slice(startIndex).map(layerToStateConfig);
+  return layers.map(layerToStateConfig);
 }
 
 function layerToStateConfig(layer: MapLayer): LayerStateInput {
@@ -153,7 +155,11 @@ export function useStateConfig() {
     }
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
-        layerStore.addLayer(layers[i]!);
+        if (isBackgroundLayer(layers[i]!)) {
+          layerStore.setBackground(layers[i]!);
+        } else {
+          layerStore.addLayer(layers[i]!);
+        }
       }
     }
   }

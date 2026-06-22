@@ -7,7 +7,7 @@ import { computedAsync } from "@vueuse/core";
 
 import { AVAILABLE_BACKGROUNDS } from "./constants";
 
-const displayMode = inject<"web" | "print">("displayMode");
+const displayMode = inject<"web" | "print" | "embed">("displayMode");
 
 const emit = defineEmits<{
   setBackground: [backgroundLayer: Layer | null];

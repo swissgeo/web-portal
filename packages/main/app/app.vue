@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const toaster = { position: "top-center" as const };
-provide<"web" | "print">("displayMode", "web");
+provide<"web" | "print" | "embed">("displayMode", "web");
 </script>
 
 <template>
