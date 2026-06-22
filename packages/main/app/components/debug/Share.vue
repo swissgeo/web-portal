@@ -4,13 +4,18 @@ import { useClipboard } from "@vueuse/core";
 const { copy, copied } = useClipboard();
 
 const { exportState } = useStateConfig();
-const { shareLink } = useCreateShareLink(exportState);
+const { shareLink, refresh, needToRefresh } = useCreateShareLink(exportState);
 </script>
 
 <template>
   <div class="flex h-32 w-150 flex-col gap-3 px-2 py-5">
     <div>Share Link:</div>
-    <UInput class="w-full" v-model="shareLink">
+    <UInput
+      class="w-full"
+      :model-value="shareLink"
+      v-if="!needToRefresh"
+      readonly
+    >
       <template v-if="shareLink?.length" #trailing>
         <UButton
           :color="copied ? 'success' : 'neutral'"
@@ -23,5 +28,14 @@ const { shareLink } = useCreateShareLink(exportState);
         />
       </template>
     </UInput>
+    <UButton
+      v-else
+      variant="subtle"
+      icon="i-lucide-refresh-cw"
+      aria-label="Refresh share link"
+      @click="refresh()"
+    >
+      Generate share link
+    </UButton>
   </div>
 </template>
