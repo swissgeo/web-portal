@@ -52,6 +52,7 @@
     "ol": "catalog:",
     "pinia": "catalog:",
     "proj4": "catalog:",
+    "ufo": "catalog:",
     "vue": "catalog:"
   },
   "devDependencies": {

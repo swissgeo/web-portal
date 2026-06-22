@@ -2,6 +2,7 @@ import type { DatasetCollection } from "@swissgeo/ogc";
 import type { Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { joinURL } from "ufo";
 
 export function useOgcCatalog(language: Ref<string>) {
   const runtimeConfig = useRuntimeConfig();
