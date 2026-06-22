@@ -16,7 +16,7 @@ export const FOCUS_MODES = ["select", "create", "edit", "none"] as const;
 export type FocusMode = (typeof FOCUS_MODES)[number];
 
 // TODO rename when ready
-export const useDrawingStore2 = defineStore("drawing2", () => {
+export const useDrawingStore = defineStore("drawing", () => {
   const drawingVectorSource = markRaw(new VectorSource({ format: new KML() }));
   const drawingVectorLayer = markRaw(
     new VectorLayer({

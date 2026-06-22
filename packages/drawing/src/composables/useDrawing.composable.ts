@@ -22,7 +22,7 @@ import {
   triggerRef,
 } from "vue";
 
-import { useDrawingStore2 } from "../stores/drawing.store";
+import { useDrawingStore } from "../stores/drawing.store";
 import {
   getFeatureDescription,
   getFeatureTitle,
@@ -95,7 +95,7 @@ export type FocusedFeatureMetrics =
   | null;
 
 export function useDrawing(olMap: OlMap) {
-  const drawingStore = useDrawingStore2();
+  const drawingStore = useDrawingStore();
   const { focusedFeature, focusMode } = storeToRefs(drawingStore);
   const {
     drawingVectorSource,

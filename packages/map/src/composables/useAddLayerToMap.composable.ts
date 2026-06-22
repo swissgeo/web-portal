@@ -60,9 +60,9 @@ export default function useAddLayerToMap(
     }
     const rawLayer = toRaw(olLayer.value);
 
-    // The layer can already be on the map (e.g. managed by another composable).
+    // The layer can already be on the map (eg. managed by another composable).
     // In that case, only sync local state and zIndex.
-    if (olMap.value.getAllLayers().includes(rawLayer)) {
+    if (olMap.value.getAllLayers().some(layer => layer === rawLayer)) {
       layerOnMap.value = rawLayer;
       setZIndex(zIndex.value);
       return;
