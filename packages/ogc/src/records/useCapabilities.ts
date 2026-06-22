@@ -29,11 +29,11 @@ export function extractCapabilityUrl(
   }
 
   if ("links" in serviceData && serviceData.links && serviceData.links.length) {
-    const link = serviceData.links[0];
-
-    if (link.rel.toLowerCase() === "about") {
-      const uri = link.href ?? null;
-      return uri;
+    for (const link of serviceData.links) {
+      if (link.rel.toLowerCase() === "about") {
+        const uri = link.href ?? null;
+        return uri;
+      }
     }
   }
   if (

@@ -7,6 +7,9 @@ import { extractCapabilityUrl, useCapabilities } from "../useCapabilities";
 import ChGeoadminWms from "./fixtures/service_ch.admin.geo.wms.json";
 import ChGeoadminWmts from "./fixtures/service_ch.admin.geo.wmts.json";
 
+// this fixture has both link and linkTemplates
+import ChGeoadminWmts2 from "./fixtures/service_ch.admin.geo.wmts2.json";
+
 describe("useCapabilities composable returning capability URL", () => {
   it("extracts the correct capability URL from WMTS service", () => {
     const service = ref<Service>(ChGeoadminWmts as Service);
@@ -83,23 +86,11 @@ describe("extractCapabilitUrl", () => {
   });
 
   it("precedes link over linkTemplate", () => {
-    const service = {
-      linksTemplates: [
-        {
-          rel: "about",
-          uriTemplate: "http://cool-template-link",
-        },
-      ],
-      links: [
-        {
-          rel: "about",
-          href: "http://cool-href-link",
-        },
-      ],
-    };
-
-    const capabilitUrl = extractCapabilityUrl(service);
-    expect(capabilitUrl).toEqual("http://cool-href-link");
+    // and also works if it's the last in the list
+    const capabilitUrl = extractCapabilityUrl(ChGeoadminWmts2);
+    expect(capabilitUrl).toEqual(
+      "https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilitiesLink.xml",
+    );
   });
 
   it.each(["about", "ABOUT", "aBout", "About"])(
