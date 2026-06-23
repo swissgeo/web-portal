@@ -94,7 +94,7 @@ describe("useDatasetRecord", () => {
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.example.com/collections/catalog/items/ch.swisstopo.test?language=de",
+      "https://api.example.com/collections/catalog/collections/swissgeo.catalog/items/ch.swisstopo.test?language=de",
     );
     expect(dataset.value?.id).toBe("ch.swisstopo.test");
   });
@@ -180,5 +180,42 @@ describe("useDatasetRecord", () => {
     await flushPromises();
 
     expect(error.value).toBeTruthy();
+  });
+
+  it("builds dataset URL from ogcApiEndpoint base with correct path", async () => {
+    fetchMock
+      .mockResolvedValueOnce(mockDataset)
+      .mockResolvedValueOnce(mockDistributions);
+
+    useDatasetRecord("ch.swisstopo.test");
+    await flushPromises();
+
+    const calledUrl = new URL(fetchMock.mock.calls[0]![0] as string);
+    expect(calledUrl.origin).toBe("https://api.example.com");
+    expect(calledUrl.pathname).toBe(
+      "/collections/catalog/collections/swissgeo.catalog/items/ch.swisstopo.test",
+    );
+  });
+
+  it("strips trailing slash from ogcApiEndpoint before building URL", async () => {
+    mockNuxtImport("useRuntimeConfig", () => () => ({
+      public: {
+        ogcApiEndpoint: "https://api.example.com/collections/catalog/",
+      },
+    }));
+
+    fetchMock
+      .mockResolvedValueOnce(mockDataset)
+      .mockResolvedValueOnce(mockDistributions);
+
+    useDatasetRecord("ch.swisstopo.test");
+    await flushPromises();
+
+    const calledUrl = fetchMock.mock.calls[0]![0] as string;
+    const { pathname } = new URL(calledUrl);
+    expect(pathname).not.toContain("//");
+    expect(calledUrl).toBe(
+      "https://api.example.com/collections/catalog/collections/swissgeo.catalog/items/ch.swisstopo.test?language=de",
+    );
   });
 });

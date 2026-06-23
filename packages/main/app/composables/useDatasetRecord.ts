@@ -20,9 +20,12 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
         return { dataset: null, distributionCollection: null };
       }
 
-      const dataset = await $fetch<Dataset>(
-        `${runtimeConfig.public.ogcApiEndpoint}/items/${resolvedId}?language=${locale.value}`,
+      const url = new URL(
+        `${runtimeConfig.public.ogcApiEndpoint.replace(/\/$/, "")}/collections/swissgeo.catalog/items/${resolvedId}`,
       );
+      url.searchParams.set("language", locale.value);
+
+      const dataset = await $fetch<Dataset>(url.toString());
 
       const distributionsLink = dataset.links?.find(
         (l) => l.rel === "distributions",
