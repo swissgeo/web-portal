@@ -1,15 +1,7 @@
 {
   "extends": "@swissgeo/config-typescript/tsconfig.base.json",
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.vue",
-    "env.d.ts",
-    "vite.config.ts",
-    "../../base.vite.config.ts",
-    "vitest.config.ts"
-  ],
+  "include": ["src/**/*.ts", "rolldown.config.ts", "vitest.config.ts"],
   "compilerOptions": {
-    "types": ["vue", "vite/client"],
     "paths": { "@/*": ["./src/*"] },
     "rootDir": "../.."
   }

@@ -11,14 +11,12 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.umd.cjs"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
+    "build": "rolldown --config rolldown.config.ts",
+    "build:dev": "rolldown --config rolldown.config.ts --environment NODE_ENV:development",
     "generate-types": "tsc --declaration",
     "lint": "eslint",
     "lint:write": "eslint --fix",
@@ -42,9 +40,8 @@
     "@swissgeo/config-typescript": "workspace:*",
     "@types/node": "catalog:",
     "globals": "catalog:",
-    "typescript": "catalog:",
-    "unplugin-dts": "catalog:",
-    "vite": "catalog:"
+    "rolldown": "catalog:",
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "@swissgeo/config-stylelint": "workspace:*",
