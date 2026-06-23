@@ -82,9 +82,6 @@ const selectedLineString = computed<LineString | null>(() => {
     return null;
   }
 
-  console.log("Elevation: do things with geometry" );
-  
-
   const geometry = focusedFeature.value.getGeometry();
 
   const type = geometry?.getType();
