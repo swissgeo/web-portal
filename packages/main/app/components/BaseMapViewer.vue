@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Layer as MapLayer, MapLayerRenderer } from "@swissgeo/map";
+import type { DisplayMode } from "~/types/injectionKeys";
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from "@swissgeo/drawing";
 import { useLayerStore } from "@swissgeo/layers";
@@ -14,7 +15,7 @@ const {
   compareSliderClippedLayer,
   zoomOnlyCtrl = false,
 } = defineProps<{
-  displayMode?: "web" | "print" | "embed";
+  displayMode?: DisplayMode;
   compareSliderActive?: boolean;
   compareRatio?: number;
   compareSliderClippedLayer?: Pick<

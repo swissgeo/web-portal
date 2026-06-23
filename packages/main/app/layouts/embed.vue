@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { displayModeKey } from "~/types/injectionKeys";
 import { provide } from "vue";
 
-provide<"web" | "print" | "embed">("displayMode", "embed");
+provide(displayModeKey, "embed");
 </script>
 
 <template>
