@@ -1,7 +1,7 @@
 import type { Dimension, DimensionId, Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
-import type { AppState, LayerStateInput } from "@swissgeo/statesharing";
+import type { LayerStateInput, AppState } from "@swissgeo/statesharing";
 
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
@@ -105,7 +105,7 @@ export function useStateConfig() {
           rotation: positionStore.rotation,
         },
         layers: layersToStateConfig(mapviewStore.mapLayers),
-        bgLayer: layerStore.backgroundLayer
+        bg_layer: layerStore.backgroundLayer
           ? layerToStateConfig(mapviewStore.mapLayers[0]!)
           : null,
       },
@@ -142,10 +142,12 @@ export function useStateConfig() {
     const layers = await Promise.all(
       stateLayers.map((lc: LayerStateInput) => stateConfigToLayer(lc)),
     );
-    if (payload.state.bgLayer) {
-      const bgLayer: Layer = stateConfigToLayer(payload.state.bgLayer);
-      layerStore.setBackground(bgLayer);
-    }
+    const bgLayer: Layer | null = await stateConfigToLayer(
+      payload.state.bg_layer,
+    );
+
+    layerStore.setBackground(bgLayer);
+
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
         const uuid = layers[i]!.uuid;
@@ -182,13 +184,21 @@ export function useStateConfig() {
  */
 export function useCustomStateConfig() {
   const mapviewStore = useMapViewStore();
+  const layerStore = useLayerStore();
   const customStateMapCenter = ref<[number, number]>([0, 0]);
   const customStateMapZoom = ref(0);
   const customStateMapRotation = ref(0);
   const layerStateConfig = ref<LayerStateInput[]>([]);
-
+  const backgroundLayerStateConfig = ref<LayerStateInput | null>(null);
   const makeUseOfCurrentLayers = () => {
     layerStateConfig.value = layersToStateConfig(mapviewStore.mapLayers);
+  };
+  const backgroundLayerState = () => {
+    if (layerStore.backgroundLayer) {
+      return layerToStateConfig(mapviewStore.mapLayers[0]);
+    } else {
+      return null;
+    }
   };
 
   const customStateConfig = computed((): AppStatePayload => {
@@ -201,12 +211,13 @@ export function useCustomStateConfig() {
           rotation: customStateMapRotation.value,
         },
         layers: layerStateConfig.value,
+        bg_layer: backgroundLayerStateConfig.value,
       },
     };
   });
 
   onMounted(makeUseOfCurrentLayers);
-
+  onMounted(backgroundLayerState);
   return {
     customStateConfig,
     customStateMapCenter,
