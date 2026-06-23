@@ -21,6 +21,9 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
         return HttpResponse.json(ChBafuSchutzgebieteLuftfahrtDistributions);
       },
     ),
+    http.get("http://services.dev.sgdi.tech/api/oar", () => {
+      return HttpResponse.error();
+    }),
   ];
   const server = setupServer(...handlers);
 
