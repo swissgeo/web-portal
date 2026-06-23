@@ -251,7 +251,7 @@ export function useDrawing(olMap: OlMap) {
    */
   watchDebounced(
     [creatingOrEditingIterations, focusedFeature],
-    () => {      
+    () => {
       // Update the number of features and the metrics of the focused feature
       numberOfFeatures.value = drawingVectorSource.getFeatures().length;
 
@@ -264,7 +264,7 @@ export function useDrawing(olMap: OlMap) {
   /**
    * Compute the metrics related to the focused feature, depending on its geometry type.
    */
-  function computeFocusedFeatureMetrics(): FocusedFeatureMetrics {    
+  function computeFocusedFeatureMetrics(): FocusedFeatureMetrics {
     if (!focusedFeature.value) {
       return null;
     }
@@ -287,7 +287,7 @@ export function useDrawing(olMap: OlMap) {
       }
 
       case "LineString": {
-        const lengthMeters = (geometry as LineString).getLength();        
+        const lengthMeters = (geometry as LineString).getLength();
         return { lengthMeters };
       }
 
@@ -409,7 +409,7 @@ export function useDrawing(olMap: OlMap) {
 
     olMap.addLayer(drawingVectorLayer);
 
-    if(!layerStore.getLayer(drawingVectorLayer.get("uuid"))) {
+    if (!layerStore.getLayer(drawingVectorLayer.get("uuid"))) {
       layerStore.addLayer({
         uuid: drawingVectorLayer.get("uuid"),
         humanId: drawingVectorLayer.get("humanId"),
@@ -421,7 +421,6 @@ export function useDrawing(olMap: OlMap) {
         },
       });
     }
-    
   });
 
   /**
@@ -431,7 +430,7 @@ export function useDrawing(olMap: OlMap) {
    * - some styling properties such as fill and stroke color
    * - possibly more in the future.
    */
-  let handler = drawingVectorSource.on("changefeature", () => {    
+  let handler = drawingVectorSource.on("changefeature", () => {
     creatingOrEditingIterations.value++;
   });
 
@@ -536,7 +535,6 @@ export function useDrawing(olMap: OlMap) {
       // the disabling of all interactions is delayed to avoid conflicts with the internal logic of OL,
       // because is disabled immediately at "drawend", the DoubleClick event would trigger as part of validating a drawing.
       await nextTick(() => {
-        
         disableAllInteractions();
 
         focusOnFinishedFeature();
@@ -685,7 +683,7 @@ export function useDrawing(olMap: OlMap) {
     handlersToRemove.length = 0;
   }
 
-  onUnmounted(() => {    
+  onUnmounted(() => {
     removeAllHandlers();
   });
 

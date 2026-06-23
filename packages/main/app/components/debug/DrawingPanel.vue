@@ -20,7 +20,7 @@ const {
   focusMode,
   focusedFeature,
   focusedFeatureType,
-} = useDrawing(olMap.value!);
+} = useDrawing(olMap.value);
 
 const emit = defineEmits<{
   close: [];
@@ -161,7 +161,12 @@ onUnmounted(() => {
         </UButton>
 
         <div
-          v-if="focusMode === 'edit' && focusedFeature && (focusedFeatureType === 'LineString' || focusedFeatureType === 'Polygon')"
+          v-if="
+            focusMode === 'edit' &&
+            focusedFeature &&
+            (focusedFeatureType === 'LineString' ||
+              focusedFeatureType === 'Polygon')
+          "
           class="text-gray-400 italic"
         >
           (Shift + click on a point to delete it)

@@ -12,7 +12,11 @@ import type Map from "ol/Map";
 import type { Ref } from "vue";
 
 import { X, GripVertical } from "@lucide/vue";
-import { useDrawing, type LineStringMetrics, type PolygonMetrics } from "@swissgeo/drawing";
+import {
+  useDrawing,
+  type LineStringMetrics,
+  type PolygonMetrics,
+} from "@swissgeo/drawing";
 import {
   ElevationProfile,
   ElevationProfileOpenLayersBridge,
@@ -38,7 +42,9 @@ const DEFAULT_WIDTH = 800;
 
 const olMapRef = inject<Ref<Map | undefined>>("olMap");
 
-  const { focusedFeature, focusMode, focusedFeatureMetrics } = useDrawing(olMapRef!.value!);
+const { focusedFeature, focusMode, focusedFeatureMetrics } = useDrawing(
+  olMapRef!.value!,
+);
 
 const mapProjectionEpsg = computed(() => positionStore.projection.epsg);
 const olGeoJSON = computed(
@@ -68,12 +74,7 @@ const labels = computed<Labels>(() => ({
   },
 }));
 
-const hasInfo = computed(
-  () => focusMode.value !== "none",
-);
-
-
-
+const hasInfo = computed(() => focusMode.value !== "none");
 
 const selectedLineString = computed<LineString | null>(() => {
   // void focusedFeatureMetrics.value;
@@ -90,11 +91,12 @@ const selectedLineString = computed<LineString | null>(() => {
     // When starting the creation of a LineString with a first point,
     // OL automatically creates a second point that is the same as the first,
     // hence momentarily creating an invalid null-length LineString
-    const lineStringLength = (focusedFeatureMetrics.value as LineStringMetrics)?.lengthMeters;
+    const lineStringLength = (focusedFeatureMetrics.value as LineStringMetrics)
+      ?.lengthMeters;
     if (!lineStringLength) {
       return null;
     }
-    
+
     return olGeoJSON.value.writeGeometryObject(
       geometry as OlLineString,
     ) as LineString;
@@ -102,7 +104,8 @@ const selectedLineString = computed<LineString | null>(() => {
 
   if (type === "Polygon") {
     // Permieter is already computed as part of the drawing metrics
-    const perimeter = (focusedFeatureMetrics.value as PolygonMetrics)?.perimeterMeters;
+    const perimeter = (focusedFeatureMetrics.value as PolygonMetrics)
+      ?.perimeterMeters;
 
     if (!perimeter) {
       return null;
@@ -244,10 +247,8 @@ watch(
   { immediate: true },
 );
 
-
 function closeWindow() {
   console.log("closing the elevation window");
-  
 }
 
 onBeforeMount(() => {

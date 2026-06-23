@@ -2,6 +2,7 @@ import type Feature from "ol/Feature";
 import type { Geometry } from "ol/geom";
 
 import { DRAWING_LAYER_ID } from "@swissgeo/shared";
+import { singleClick } from "ol/events/condition";
 import KML from "ol/format/KML";
 import Draw from "ol/interaction/Draw";
 import Modify from "ol/interaction/Modify";
@@ -11,7 +12,6 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { defineStore } from "pinia";
 import { markRaw, ref, shallowRef } from "vue";
-import { singleClick } from "ol/events/condition";
 
 export const FOCUS_MODES = ["select", "create", "edit", "none"] as const;
 export type FocusMode = (typeof FOCUS_MODES)[number];
@@ -43,7 +43,12 @@ export const useDrawingStore = defineStore("drawing", () => {
   // The modify interaction to edit the geometry of a selected feature.
   // It works in pair with the select interaction, as it modifies the currently selected feature.
   const modifyInteraction = markRaw(
-    new Modify({ features: selectInteractions.getFeatures(), style: {}, deleteCondition: (event) => event.originalEvent.shiftKey && singleClick(event)}),
+    new Modify({
+      features: selectInteractions.getFeatures(),
+      style: {},
+      deleteCondition: (event) =>
+        event.originalEvent.shiftKey && singleClick(event),
+    }),
   );
   modifyInteraction.setActive(false);
 
