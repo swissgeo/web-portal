@@ -88,7 +88,27 @@ export function useGeoadminGeoJsonLoader() {
     }
   }
 
+  // Fetch the raw geoadmin style for a layer and convert it to a MapLibre style,
+  // so the debug panel can show both side by side without adding a layer.
+  async function fetchStyles(layerId: string): Promise<{
+    geoadminStyle: unknown;
+    mapLibreStyle: unknown;
+  }> {
+    const geoadminStyle = await fetch(PROXIED(STYLE_URL(layerId))).then((res) =>
+      res.json(),
+    );
+    const { style } = geoadminToMapLibreStyle(
+      geoadminStyle as GeoadminStyle,
+      layerId,
+      {
+        resolutionToZoom: (resolution) => LV95.getZoomForResolution(resolution),
+      },
+    );
+    return { geoadminStyle, mapLibreStyle: style };
+  }
+
   return {
     loadLayer,
+    fetchStyles,
   };
 }
