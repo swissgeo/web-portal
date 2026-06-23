@@ -571,6 +571,184 @@ function buildLabelLayer(
   return applyCommon(symbol, entry, ctx);
 }
 
+// --- Conversion notes ---------------------------------------------------------
+
+export interface MapLibreConversionNote {
+  /** What the geoadmin style declares. */
+  geoadmin: string;
+  /** What the converter emits in the MapLibre style for it. */
+  maplibre: string;
+}
+
+/**
+ * Explains, deterministically (no LLM), how a given geoadmin style is translated
+ * to MapLibre. It walks the same normalized entries the converter builds from and
+ * reports each construct that is actually present as a "geoadmin → MapLibre" pair,
+ * deduplicated so a 30-value `unique` style does not repeat the same note 30 times.
+ *
+ * This mirrors {@link geoadminToMapLibreStyle}; keep the two in sync when the
+ * conversion rules change.
+ */
+export function geoadminToMapLibreConversionNotes(
+  geoadmin: GeoAdminGeoJSONStyleDefinition,
+  options: GeoadminToMapLibreOptions = {},
+): MapLibreConversionNote[] {
+  const notes: MapLibreConversionNote[] = [];
+  const seen = new Set<string>();
+  const add = (geoadminText: string, maplibreText: string): void => {
+    const key = `${geoadminText}→${maplibreText}`;
+    if (seen.has(key)) {
+      return;
+    }
+    seen.add(key);
+    notes.push({ geoadmin: geoadminText, maplibre: maplibreText });
+  };
+
+  // Top-level selection model.
+  if (geoadmin.type === "single") {
+    add(
+      'type "single" — one rule for every feature',
+      "a single set of MapLibre layers with no filter",
+    );
+  } else if (geoadmin.type === "unique") {
+    add(
+      `type "unique" on property "${geoadmin.property}" — ${geoadmin.values.length} discrete value(s)`,
+      'one MapLibre layer per value, filtered with ["==", ["to-string", ["get", property]], value] (compared as strings)',
+    );
+  } else if (geoadmin.type === "range") {
+    add(
+      `type "range" on property "${geoadmin.property}" — ${geoadmin.ranges.length} numeric band(s)`,
+      'one MapLibre layer per band, filtered with ["all", [">=", …], ["<", …]] on ["to-number", ["get", property]]',
+    );
+  }
+
+  const entries = normalizeEntries(geoadmin);
+  let hasResolutionBand = false;
+
+  for (const entry of entries) {
+    const { vectorOptions, geomType } = entry;
+
+    if (geomType === "polygon") {
+      if (
+        vectorOptions &&
+        "fill" in vectorOptions &&
+        vectorOptions.fill?.color
+      ) {
+        add("polygon fill color", 'a "fill" layer (fill-color)');
+      }
+      if (
+        vectorOptions &&
+        "stroke" in vectorOptions &&
+        vectorOptions.stroke?.color
+      ) {
+        add(
+          "polygon stroke",
+          'a separate "line" layer for the outline (line-color, line-width)',
+        );
+      }
+    } else if (geomType === "line") {
+      add("line geometry stroke", 'a "line" layer (line-color, line-width)');
+    } else if (geomType === "point" && vectorOptions) {
+      if (vectorOptions.type === "circle") {
+        add(
+          'point "circle" (radius/fill/stroke)',
+          'a "circle" layer (circle-radius, circle-color, circle-stroke-color/width)',
+        );
+      } else if (vectorOptions.type === "icon") {
+        add(
+          'point "icon" (external src image)',
+          'a "symbol" layer (icon-image = src, icon-size = scale)',
+        );
+      } else if (isShapeIconType(vectorOptions.type)) {
+        add(
+          `point "${vectorOptions.type}" shape`,
+          'a generated canvas icon plus a "symbol" layer referencing it (icon-image)',
+        );
+      }
+    }
+
+    // Labels.
+    const label = vectorOptions?.label;
+    if (label) {
+      add(
+        "label template",
+        'a symbol "text-field" (${prop} → ["get", prop]; mixed templates → ["concat", …])',
+      );
+      if (label.text.font) {
+        add(
+          "label CSS font shorthand",
+          '"text-size" + "text-font" parsed out of the CSS font',
+        );
+      }
+      if (label.text.textBaseline || label.text.textAlign) {
+        add(
+          "label textBaseline/textAlign",
+          '"text-anchor" (and "text-justify")',
+        );
+      }
+      if (label.text.offsetX !== undefined || label.text.offsetY !== undefined) {
+        add(
+          "label pixel offset",
+          '"text-offset" (pixels converted to ems via the font size)',
+        );
+      }
+      if (label.text.fill?.color) {
+        add("label fill color", '"text-color"');
+      }
+      if (label.text.stroke?.color) {
+        add("label stroke", '"text-halo-color" + "text-halo-width"');
+      }
+    }
+
+    // Rotation.
+    const rotation = vectorOptions
+      ? resolveRotation(entry, vectorOptions)
+      : entry.rotation;
+    if (typeof rotation === "number") {
+      add(
+        "static rotation (radians)",
+        '"icon-rotate" in degrees, "icon-rotation-alignment": "map"',
+      );
+    } else if (typeof rotation === "string") {
+      add(
+        `data-driven rotation from property "${rotation}"`,
+        '"icon-rotate" expression (radians → degrees) per feature, "icon-rotation-alignment": "map"',
+      );
+    }
+
+    if (
+      (entry.minResolution !== undefined && entry.minResolution > 0) ||
+      (entry.maxResolution !== undefined && entry.maxResolution !== Infinity)
+    ) {
+      hasResolutionBand = true;
+    }
+  }
+
+  if (hasResolutionBand) {
+    if (options.resolutionToZoom) {
+      add(
+        "minResolution / maxResolution band",
+        '"minzoom" / "maxzoom" (zoom is inverse to resolution; band edge shifted by +1 to match the legacy renderer)',
+      );
+    } else {
+      add(
+        "minResolution / maxResolution band",
+        "not converted — no resolutionToZoom supplied, so zoom bounds are omitted",
+      );
+    }
+  }
+
+  // Draw-order caveat once the style splits into more than one layer.
+  if (entries.length > 1) {
+    add(
+      "all entries drawn in one OpenLayers vector layer, interleaved per feature",
+      "one MapLibre layer per entry, painted strictly in array order — so draw order can differ from the legacy renderer",
+    );
+  }
+
+  return notes;
+}
+
 // --- Public entry point -------------------------------------------------------
 
 export function geoadminToMapLibreStyle(
