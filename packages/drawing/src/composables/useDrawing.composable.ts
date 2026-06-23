@@ -120,6 +120,10 @@ export function useDrawing(olMap: OlMap) {
   // component is unmounted or when the interactions are disabled.
   const handlersToRemove: EventsKey[] = [];
 
+  // This particular handler is dealt with separately because it attached only to the geometry of the feature being drawn
+  // at drawstart, and removed at drawend.
+  let sketchGeometryHandler: EventsKey | null = null;
+
   /**
    * This is an incremental counter that updates when the feature in focus is being created or edited.
    * This if only for internal use to trigger the update of the computed property focusedFeatureMetrics.
@@ -247,7 +251,7 @@ export function useDrawing(olMap: OlMap) {
    */
   watchDebounced(
     [creatingOrEditingIterations, focusedFeature],
-    () => {
+    () => {      
       // Update the number of features and the metrics of the focused feature
       numberOfFeatures.value = drawingVectorSource.getFeatures().length;
 
@@ -260,7 +264,7 @@ export function useDrawing(olMap: OlMap) {
   /**
    * Compute the metrics related to the focused feature, depending on its geometry type.
    */
-  function computeFocusedFeatureMetrics(): FocusedFeatureMetrics {
+  function computeFocusedFeatureMetrics(): FocusedFeatureMetrics {    
     if (!focusedFeature.value) {
       return null;
     }
@@ -283,7 +287,7 @@ export function useDrawing(olMap: OlMap) {
       }
 
       case "LineString": {
-        const lengthMeters = (geometry as LineString).getLength();
+        const lengthMeters = (geometry as LineString).getLength();        
         return { lengthMeters };
       }
 
@@ -427,9 +431,10 @@ export function useDrawing(olMap: OlMap) {
    * - some styling properties such as fill and stroke color
    * - possibly more in the future.
    */
-  let handler = drawingVectorSource.on("changefeature", () => {
+  let handler = drawingVectorSource.on("changefeature", () => {    
     creatingOrEditingIterations.value++;
   });
+
   // Keeping track of handlers to remove them at unmount, so that they are not added multiple times
   // (which would cause the event to fire multiple times)
   handlersToRemove.push(handler);
@@ -507,6 +512,15 @@ export function useDrawing(olMap: OlMap) {
      */
     handler = interaction.on("drawstart", (event) => {
       focusedFeature.value = event.feature;
+
+      const geometry = event.feature.getGeometry();
+      if (!geometry) {
+        return;
+      }
+
+      sketchGeometryHandler = geometry.on("change", () => {
+        creatingOrEditingIterations.value++;
+      });
     });
     handlersToRemove.push(handler);
 
@@ -514,22 +528,21 @@ export function useDrawing(olMap: OlMap) {
      * When a drawing ends (in create mode), the interactions are all disabled.
      */
     handler = interaction.on("drawend", async () => {
+      if (sketchGeometryHandler) {
+        unByKey(sketchGeometryHandler);
+        sketchGeometryHandler = null;
+      }
+
       // the disabling of all interactions is delayed to avoid conflicts with the internal logic of OL,
       // because is disabled immediately at "drawend", the DoubleClick event would trigger as part of validating a drawing.
       await nextTick(() => {
-        removeFocus();
+        
         disableAllInteractions();
+
+        focusOnFinishedFeature();
       });
     });
     handlersToRemove.push(handler);
-
-    // interaction.on("modifyend", () => {
-    //   console.log("EVENT: modifyend");
-    // });
-
-    // interaction.on("drawabort", () => {
-    //   console.log("EVENT: drawabort");
-    // });
   });
 
   /**
@@ -538,6 +551,12 @@ export function useDrawing(olMap: OlMap) {
   function disableAllInteractions() {
     if (!olMap) {
       return;
+    }
+
+    // in case a sketch geometry handler is still active, we remove it to avoid memory leaks and unexpected behavior
+    if (sketchGeometryHandler) {
+      unByKey(sketchGeometryHandler);
+      sketchGeometryHandler = null;
     }
 
     modifyInteraction.setActive(false);
@@ -593,6 +612,17 @@ export function useDrawing(olMap: OlMap) {
     selectInteractions.clearSelection();
     focusedFeature.value = null;
     focusMode.value = "none";
+    creatingOrEditingIterations.value = 0;
+  }
+
+  /**
+   * When a feature is just finished, we keep it under focus so that the user can modify its properties if needed,
+   * or toggle the geometry edition mode faster than having to re-select it.
+   */
+  function focusOnFinishedFeature() {
+    selectInteractions.setActive(true);
+    selectInteractions.selectFeature(focusedFeature.value as Feature<Geometry>);
+    focusMode.value = "select";
     creatingOrEditingIterations.value = 0;
   }
 
@@ -655,7 +685,7 @@ export function useDrawing(olMap: OlMap) {
     handlersToRemove.length = 0;
   }
 
-  onUnmounted(() => {
+  onUnmounted(() => {    
     removeAllHandlers();
   });
 

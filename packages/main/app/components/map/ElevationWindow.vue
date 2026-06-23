@@ -12,7 +12,7 @@ import type Map from "ol/Map";
 import type { Ref } from "vue";
 
 import { X, GripVertical } from "@lucide/vue";
-import { resolveFeatureId } from "@swissgeo/drawing";
+import { useDrawing, type LineStringMetrics, type PolygonMetrics } from "@swissgeo/drawing";
 import {
   ElevationProfile,
   ElevationProfileOpenLayersBridge,
@@ -38,7 +38,7 @@ const DEFAULT_WIDTH = 800;
 
 const olMapRef = inject<Ref<Map | undefined>>("olMap");
 
-const geometryRevision = ref(0);
+  const { focusedFeature, focusMode, focusedFeatureMetrics } = useDrawing(olMapRef!.value!);
 
 const mapProjectionEpsg = computed(() => positionStore.projection.epsg);
 const olGeoJSON = computed(
@@ -67,41 +67,60 @@ const labels = computed<Labels>(() => ({
     slopeDistance: t("elevationProfile.metadata.slopeDistance"),
   },
 }));
-// const hasInfo = computed(
-//   () => drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo),
-// );
 
-// const selectedLineString = computed<LineString | null>(() => {
-//   void geometryRevision.value;
+const hasInfo = computed(
+  () => focusMode.value !== "none",
+);
 
-//   const selectedId = drawingStore.selectedFeatureId;
-//   if (!selectedId) {
-//     return null;
-//   }
 
-//   const features = drawingStore.drawingFeatures as Feature<Geometry>[];
-//   const feature =
-//     features.find((f) => resolveFeatureId(f) === selectedId) ?? null;
-//   const geometry = feature?.getGeometry();
-//   const type = geometry?.getType();
 
-//   if (type === "LineString") {
-//     return olGeoJSON.value.writeGeometryObject(
-//       geometry as OlLineString,
-//     ) as LineString;
-//   }
 
-//   if (type === "Polygon") {
-//     const ring = (geometry as OlPolygon).getLinearRing(0);
-//     if (!ring) {
-//       return null;
-//     }
-//     const coords = ring.getCoordinates();
-//     return { type: "LineString", coordinates: coords };
-//   }
+const selectedLineString = computed<LineString | null>(() => {
+  // void focusedFeatureMetrics.value;
 
-//   return null;
-// });
+  if (!focusedFeature.value) {
+    return null;
+  }
+
+  console.log("Elevation: do things with geometry" );
+  
+
+  const geometry = focusedFeature.value.getGeometry();
+
+  const type = geometry?.getType();
+
+  if (type === "LineString") {
+    // When starting the creation of a LineString with a first point,
+    // OL automatically creates a second point that is the same as the first,
+    // hence momentarily creating an invalid null-length LineString
+    const lineStringLength = (focusedFeatureMetrics.value as LineStringMetrics)?.lengthMeters;
+    if (!lineStringLength) {
+      return null;
+    }
+    
+    return olGeoJSON.value.writeGeometryObject(
+      geometry as OlLineString,
+    ) as LineString;
+  }
+
+  if (type === "Polygon") {
+    // Permieter is already computed as part of the drawing metrics
+    const perimeter = (focusedFeatureMetrics.value as PolygonMetrics)?.perimeterMeters;
+
+    if (!perimeter) {
+      return null;
+    }
+
+    const ring = (geometry as OlPolygon).getLinearRing(0);
+    if (!ring) {
+      return null;
+    }
+    const coords = ring.getCoordinates();
+    return { type: "LineString", coordinates: coords };
+  }
+
+  return null;
+});
 
 const position = reactive({
   x: WINDOW_MARGIN,
@@ -228,30 +247,11 @@ watch(
   { immediate: true },
 );
 
-// TODO: adapt to the new drawing module
-// watch(
-//   () => drawingStore.selectedFeatureId,
-//   (selectedId) => {
-//     unlistenGeometryChange?.();
-//     unlistenGeometryChange = null;
 
-//     if (!selectedId) {
-//       return;
-//     }
-
-//     const features = drawingStore.drawingFeatures as Feature<Geometry>[];
-//     const feature = features.find((f) => resolveFeatureId(f) === selectedId);
-//     if (!feature) {
-//       return;
-//     }
-
-//     const key = feature.on("change", () => {
-//       geometryRevision.value++;
-//     });
-//     unlistenGeometryChange = () => feature.un("change", key.listener);
-//   },
-//   { immediate: true },
-// );
+function closeWindow() {
+  console.log("closing the elevation window");
+  
+}
 
 onBeforeMount(() => {
   if (typeof window !== "undefined") {
@@ -261,7 +261,6 @@ onBeforeMount(() => {
 
 onBeforeUnmount(() => {
   stopDrag();
-  // unlistenGeometryChange?.();
   if (typeof window !== "undefined") {
     window.removeEventListener("resize", handleWindowResize);
   }
