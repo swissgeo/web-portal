@@ -30,9 +30,7 @@
     "test:unit:watch": "vitest watch",
     "type-check": "tsc -p tsconfig.json"
   },
-  "dependencies": {
-    "@swissgeo/log": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",

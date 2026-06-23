@@ -1015,10 +1015,6 @@ importers:
         version: 3.3.5(typescript@6.0.3)
 
   packages/numbers:
-    dependencies:
-      '@swissgeo/log':
-        specifier: workspace:*
-        version: link:../log
     devDependencies:
       '@microsoft/api-extractor':
         specifier: 'catalog:'
