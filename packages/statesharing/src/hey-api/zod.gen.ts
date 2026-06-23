@@ -78,6 +78,7 @@ export const zLayerStateOutput = z.object({
 export const zStateV1Input = z.object({
   map: zMapState.optional(),
   layers: z.array(zLayerStateInput).optional(),
+  bg_layer: zLayerStateInput.nullish(),
 });
 
 /**
@@ -95,6 +96,7 @@ export const zSaveAppStateRequest = z.object({
 export const zStateV1Output = z.object({
   map: zMapState.optional(),
   layers: z.array(zLayerStateOutput).optional(),
+  bg_layer: zLayerStateOutput.nullish(),
 });
 
 /**
