@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { MapLibreConversionNote } from "@swissgeo/map";
+
 import { useLayerStore } from "@swissgeo/layers";
 import { IconButton } from "@swissgeo/skeleton";
 import geoadminLayers from "~/assets/poc/geoadminLayers.json";
@@ -18,6 +20,8 @@ const isStyleModalOpen = ref(false);
 const isLoadingStyle = ref(false);
 const geoadminStyleJson = ref("");
 const mapLibreStyleJson = ref("");
+const conversionNotes = ref<MapLibreConversionNote[]>([]);
+const showNotes = ref(true);
 // Layer whose style is shown in the modal. Independent of the panel select so the
 // in-modal dropdown can switch styles without touching the panel selection.
 const styleLayerId = ref<string>(geoadminLayers[0] ?? "");
@@ -31,10 +35,16 @@ async function loadStyle(layerId: string): Promise<void> {
   isLoadingStyle.value = true;
   geoadminStyleJson.value = "";
   mapLibreStyleJson.value = "";
+  conversionNotes.value = [];
   try {
-    const { geoadminStyle, mapLibreStyle } = await fetchStyles(layerId);
+    const {
+      geoadminStyle,
+      mapLibreStyle,
+      conversionNotes: notes,
+    } = await fetchStyles(layerId);
     geoadminStyleJson.value = JSON.stringify(geoadminStyle, null, 2);
     mapLibreStyleJson.value = JSON.stringify(mapLibreStyle, null, 2);
+    conversionNotes.value = notes;
   } catch (error) {
     geoadminStyleJson.value = `Failed to load style: ${String(error)}`;
   } finally {
@@ -135,42 +145,79 @@ function clearAllLayers(): void {
         <div v-if="isLoadingStyle" class="text-sm text-gray-600">
           Loading style…
         </div>
-        <div v-else class="grid grid-cols-2 gap-4">
-          <div>
-            <h4 class="mb-1 text-sm font-semibold">Geoadmin style (original)</h4>
-            <div
-              class="max-h-[70vh] overflow-auto rounded bg-gray-100 font-mono text-xs"
+        <div v-else>
+          <div
+            v-if="conversionNotes.length"
+            class="mb-4 rounded border border-gray-200 bg-gray-50 p-3"
+          >
+            <button
+              type="button"
+              class="mb-2 flex w-full items-center gap-1 text-left text-sm font-semibold"
+              @click="showNotes = !showNotes"
             >
-              <div
-                v-for="(line, index) in geoadminStyleLines"
-                :key="index"
-                class="flex"
-              >
-                <span
-                  class="w-10 shrink-0 select-none border-r border-gray-300 px-2 text-right text-gray-400"
+              <span>{{ showNotes ? "▾" : "▸" }}</span>
+              <span>Conversion notes ({{ conversionNotes.length }})</span>
+            </button>
+            <table v-if="showNotes" class="w-full text-xs">
+              <thead>
+                <tr class="text-left text-gray-500">
+                  <th class="w-1/2 pr-2 pb-1 font-medium">Geoadmin style</th>
+                  <th class="w-1/2 pb-1 font-medium">MapLibre output</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(note, index) in conversionNotes"
+                  :key="index"
+                  class="border-t border-gray-200 align-top"
                 >
-                  {{ index + 1 }}
-                </span>
-                <pre class="whitespace-pre px-2">{{ line }}</pre>
+                  <td class="py-1 pr-2">{{ note.geoadmin }}</td>
+                  <td class="py-1 font-mono">{{ note.maplibre }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <h4 class="mb-1 text-sm font-semibold">
+                Geoadmin style (original)
+              </h4>
+              <div
+                class="max-h-[70vh] overflow-auto rounded bg-gray-100 font-mono text-xs"
+              >
+                <div
+                  v-for="(line, index) in geoadminStyleLines"
+                  :key="index"
+                  class="flex"
+                >
+                  <span
+                    class="w-10 shrink-0 border-r border-gray-300 px-2 text-right text-gray-400 select-none"
+                  >
+                    {{ index + 1 }}
+                  </span>
+                  <pre class="px-2 whitespace-pre">{{ line }}</pre>
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            <h4 class="mb-1 text-sm font-semibold">MapLibre style (converted)</h4>
-            <div
-              class="max-h-[70vh] overflow-auto rounded bg-gray-100 font-mono text-xs"
-            >
+            <div>
+              <h4 class="mb-1 text-sm font-semibold">
+                MapLibre style (converted)
+              </h4>
               <div
-                v-for="(line, index) in mapLibreStyleLines"
-                :key="index"
-                class="flex"
+                class="max-h-[70vh] overflow-auto rounded bg-gray-100 font-mono text-xs"
               >
-                <span
-                  class="w-10 shrink-0 select-none border-r border-gray-300 px-2 text-right text-gray-400"
+                <div
+                  v-for="(line, index) in mapLibreStyleLines"
+                  :key="index"
+                  class="flex"
                 >
-                  {{ index + 1 }}
-                </span>
-                <pre class="whitespace-pre px-2">{{ line }}</pre>
+                  <span
+                    class="w-10 shrink-0 border-r border-gray-300 px-2 text-right text-gray-400 select-none"
+                  >
+                    {{ index + 1 }}
+                  </span>
+                  <pre class="px-2 whitespace-pre">{{ line }}</pre>
+                </div>
               </div>
             </div>
           </div>

@@ -1,8 +1,11 @@
-import type { GeoJSONLayer } from "@swissgeo/map";
+import type { GeoJSONLayer , MapLibreConversionNote } from "@swissgeo/map";
 
 import { LV95 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import { geoadminToMapLibreStyle } from "@swissgeo/map";
+import {
+  geoadminToMapLibreConversionNotes,
+  geoadminToMapLibreStyle,
+} from "@swissgeo/map";
 import { useMapViewStore } from "~/stores/mapView";
 
 /**
@@ -93,18 +96,25 @@ export function useGeoadminGeoJsonLoader() {
   async function fetchStyles(layerId: string): Promise<{
     geoadminStyle: unknown;
     mapLibreStyle: unknown;
+    conversionNotes: MapLibreConversionNote[];
   }> {
     const geoadminStyle = await fetch(PROXIED(STYLE_URL(layerId))).then((res) =>
       res.json(),
     );
+    const options = {
+      resolutionToZoom: (resolution: number) =>
+        LV95.getZoomForResolution(resolution),
+    };
     const { style } = geoadminToMapLibreStyle(
       geoadminStyle as GeoadminStyle,
       layerId,
-      {
-        resolutionToZoom: (resolution) => LV95.getZoomForResolution(resolution),
-      },
+      options,
     );
-    return { geoadminStyle, mapLibreStyle: style };
+    const conversionNotes = geoadminToMapLibreConversionNotes(
+      geoadminStyle as GeoadminStyle,
+      options,
+    );
+    return { geoadminStyle, mapLibreStyle: style, conversionNotes };
   }
 
   return {
