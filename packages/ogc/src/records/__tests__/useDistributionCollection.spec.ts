@@ -109,7 +109,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
 describe("useDistributionCollection 404", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/v0/collections/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
       () => {
         return HttpResponse.json("Not Found", { status: 404 });
       },
@@ -137,7 +137,7 @@ describe("useDistributionCollection 404", () => {
 describe("useDistributionCollection 5xx", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/v0/collections/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
       () => {
         return HttpResponse.error();
       },
