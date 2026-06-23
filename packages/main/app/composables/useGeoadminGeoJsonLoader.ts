@@ -1,4 +1,4 @@
-import type { GeoJSONLayer , MapLibreConversionNote } from "@swissgeo/map";
+import type { GeoJSONLayer, MapLibreConversionNote } from "@swissgeo/map";
 
 import { LV95 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
