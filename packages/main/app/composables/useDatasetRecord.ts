@@ -1,6 +1,7 @@
 import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
 import type { MaybeRefOrGetter } from "vue";
 
+import { joinURL } from "ufo";
 import { toValue } from "vue";
 
 export interface DatasetRecord {
@@ -21,7 +22,13 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
       }
 
       const url = new URL(
-        `${runtimeConfig.public.ogcApiEndpoint.replace(/\/$/, "")}/collections/swissgeo.catalog/items/${resolvedId}`,
+        joinURL(
+          runtimeConfig.public.ogcApiEndpoint,
+          "collections",
+          "swissgeo.catalog",
+          "items",
+          resolvedId,
+        ),
       );
       url.searchParams.set("language", locale.value);
 
