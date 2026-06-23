@@ -686,7 +686,10 @@ export function geoadminToMapLibreConversionNotes(
           '"text-anchor" (and "text-justify")',
         );
       }
-      if (label.text.offsetX !== undefined || label.text.offsetY !== undefined) {
+      if (
+        label.text.offsetX !== undefined ||
+        label.text.offsetY !== undefined
+      ) {
         add(
           "label pixel offset",
           '"text-offset" (pixels converted to ems via the font size)',
