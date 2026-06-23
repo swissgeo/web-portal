@@ -6,7 +6,7 @@ import { IconButton } from "@swissgeo/skeleton";
 import geoadminLayers from "~/assets/poc/geoadminLayers.json";
 import { useGeoadminGeoJsonLoader } from "~/composables/useGeoadminGeoJsonLoader";
 import { useMapViewStore } from "~/stores/mapView";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 defineEmits<{ close: [] }>();
 
@@ -18,8 +18,9 @@ const copyLabel = ref("Copy id");
 
 const isStyleModalOpen = ref(false);
 const isLoadingStyle = ref(false);
-const geoadminStyleJson = ref("");
-const mapLibreStyleJson = ref("");
+const geoadminStyle = ref<unknown>(null);
+const mapLibreStyle = ref<unknown>(null);
+const styleError = ref("");
 const conversionNotes = ref<MapLibreConversionNote[]>([]);
 const showNotes = ref(true);
 // Layer whose style is shown in the modal. Independent of the panel select so the
@@ -33,27 +34,25 @@ async function loadStyle(layerId: string): Promise<void> {
     return;
   }
   isLoadingStyle.value = true;
-  geoadminStyleJson.value = "";
-  mapLibreStyleJson.value = "";
+  geoadminStyle.value = null;
+  mapLibreStyle.value = null;
+  styleError.value = "";
   conversionNotes.value = [];
   try {
     const {
-      geoadminStyle,
-      mapLibreStyle,
+      geoadminStyle: geoadmin,
+      mapLibreStyle: mapLibre,
       conversionNotes: notes,
     } = await fetchStyles(layerId);
-    geoadminStyleJson.value = JSON.stringify(geoadminStyle, null, 2);
-    mapLibreStyleJson.value = JSON.stringify(mapLibreStyle, null, 2);
+    geoadminStyle.value = geoadmin;
+    mapLibreStyle.value = mapLibre;
     conversionNotes.value = notes;
   } catch (error) {
-    geoadminStyleJson.value = `Failed to load style: ${String(error)}`;
+    styleError.value = `Failed to load style: ${String(error)}`;
   } finally {
     isLoadingStyle.value = false;
   }
 }
-
-const geoadminStyleLines = computed(() => geoadminStyleJson.value.split("\n"));
-const mapLibreStyleLines = computed(() => mapLibreStyleJson.value.split("\n"));
 
 // Open the modal for the currently selected panel layer.
 async function showStyle(): Promise<void> {
@@ -177,26 +176,18 @@ function clearAllLayers(): void {
               </tbody>
             </table>
           </div>
-          <div class="grid grid-cols-2 gap-4">
+          <p v-if="styleError" class="text-sm text-red-600">
+            {{ styleError }}
+          </p>
+          <div v-else class="grid grid-cols-2 gap-4">
             <div>
               <h4 class="mb-1 text-sm font-semibold">
                 Geoadmin style (original)
               </h4>
               <div
-                class="max-h-[70vh] overflow-auto rounded bg-gray-100 font-mono text-xs"
+                class="max-h-[70vh] overflow-auto rounded bg-gray-100 p-2 font-mono text-xs leading-5 whitespace-nowrap"
               >
-                <div
-                  v-for="(line, index) in geoadminStyleLines"
-                  :key="index"
-                  class="flex"
-                >
-                  <span
-                    class="w-10 shrink-0 border-r border-gray-300 px-2 text-right text-gray-400 select-none"
-                  >
-                    {{ index + 1 }}
-                  </span>
-                  <pre class="px-2 whitespace-pre">{{ line }}</pre>
-                </div>
+                <DebugJsonTree :value="geoadminStyle" />
               </div>
             </div>
             <div>
@@ -204,20 +195,9 @@ function clearAllLayers(): void {
                 MapLibre style (converted)
               </h4>
               <div
-                class="max-h-[70vh] overflow-auto rounded bg-gray-100 font-mono text-xs"
+                class="max-h-[70vh] overflow-auto rounded bg-gray-100 p-2 font-mono text-xs leading-5 whitespace-nowrap"
               >
-                <div
-                  v-for="(line, index) in mapLibreStyleLines"
-                  :key="index"
-                  class="flex"
-                >
-                  <span
-                    class="w-10 shrink-0 border-r border-gray-300 px-2 text-right text-gray-400 select-none"
-                  >
-                    {{ index + 1 }}
-                  </span>
-                  <pre class="px-2 whitespace-pre">{{ line }}</pre>
-                </div>
+                <DebugJsonTree :value="mapLibreStyle" />
               </div>
             </div>
           </div>
