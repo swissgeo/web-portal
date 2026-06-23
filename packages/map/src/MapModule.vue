@@ -48,11 +48,15 @@ const emit = defineEmits<{
 }>();
 
 const layersWithZIndex = computed(() => {
+  console.log("layers", layers);
+  
   // openlayers require a Zindex param. We set it to the layer orders here
   const mapLayers = layers.map((mapLayer, index) => {
     mapLayer.zIndex = index;
     return mapLayer;
   });
+  console.log("mapLayers", mapLayers);
+  
   return mapLayers;
 });
 </script>

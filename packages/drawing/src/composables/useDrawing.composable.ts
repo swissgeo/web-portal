@@ -405,16 +405,19 @@ export function useDrawing(olMap: OlMap) {
 
     olMap.addLayer(drawingVectorLayer);
 
-    layerStore.addLayer({
-      uuid: drawingVectorLayer.get("uuid"),
-      humanId: drawingVectorLayer.get("humanId"),
-      type: "kml",
-      isLoading: false,
-      info: {
-        displayName: "Drawing layer foo bar",
-        abstract: "Some drawings",
-      },
-    });
+    if(!layerStore.getLayer(drawingVectorLayer.get("uuid"))) {
+      layerStore.addLayer({
+        uuid: drawingVectorLayer.get("uuid"),
+        humanId: drawingVectorLayer.get("humanId"),
+        type: "kml",
+        isLoading: false,
+        info: {
+          displayName: "Drawing layer",
+          abstract: "This layer is for drawings",
+        },
+      });
+    }
+    
   });
 
   /**
