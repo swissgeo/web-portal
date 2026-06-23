@@ -201,6 +201,9 @@ catalogs:
     typescript-eslint:
       specifier: ^8.61.0
       version: 8.61.0
+    ufo:
+      specifier: ^1.6.4
+      version: 1.6.4
     unplugin-dts:
       specifier: 1.0.2
       version: 1.0.2
@@ -867,6 +870,9 @@ importers:
       proj4:
         specifier: 'catalog:'
         version: 2.20.9(geotiff@3.0.5)
+      ufo:
+        specifier: 'catalog:'
+        version: 1.6.4
       vue:
         specifier: 'catalog:'
         version: 3.5.38(typescript@6.0.3)

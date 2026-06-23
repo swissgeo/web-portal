@@ -4,6 +4,7 @@ import type { Dataset } from "@swissgeo/ogc";
 
 import { makeServerLayer } from "@swissgeo/layers";
 import { computedAsync } from "@vueuse/core";
+import { joinURL } from "ufo";
 
 import { AVAILABLE_BACKGROUNDS } from "./constants";
 
