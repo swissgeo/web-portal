@@ -2,12 +2,11 @@
 import type { Layer as BaseLayer } from "@swissgeo/layers";
 
 import { useLayerStore } from "@swissgeo/layers";
+import { displayModeKey } from "~/types/injectionKeys";
 
 const geolocationStore = useGeolocationStore();
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
-
-const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
 
 const backgroundLayer = computed(() => layerStore.backgroundLayer);
 
@@ -31,6 +30,8 @@ const showAdditionalMapUi = computed(
 function changeBackground(layer: BaseLayer | null) {
   layerStore.setBackground(layer);
 }
+
+const displayMode = inject(displayModeKey, "web");
 </script>
 
 <template>

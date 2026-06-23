@@ -3,6 +3,7 @@ import type { MapLayerRenderer } from "@swissgeo/map";
 
 import { OpenLayersDrawingLayer, isDrawingLayer } from "@swissgeo/drawing";
 import { useLayerStore } from "@swissgeo/layers";
+import { displayModeKey } from "~/types/injectionKeys";
 
 export function useMapViewerSetup() {
   const geolocationStore = useGeolocationStore();
@@ -25,7 +26,7 @@ export function useMapViewerSetup() {
     },
   ];
 
-  const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
+  const displayMode = inject(displayModeKey, "web");
 
   function changeBackground(layer: BaseLayer | null) {
     layerStore.setBackground(layer);

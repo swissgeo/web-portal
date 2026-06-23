@@ -8,6 +8,7 @@ import { useDrawingStore } from "@swissgeo/drawing";
  * logic behind the available buttons, it should become a computed value instead.
  */
 import { useLayerStore } from "@swissgeo/layers";
+import { displayModeKey } from "~/types/injectionKeys";
 import { inject } from "vue";
 
 import CompareSliderButton from "@/components/toolbox/toolboxButtons/CompareSliderButton.vue";
@@ -52,7 +53,7 @@ watch(showTimeSliderButton, (hasTimeLayers) => {
 const showCompareSliderButton = computed(
   () => mapViewStore.visibleLayers.length > 0,
 );
-const displayMode = inject<"web" | "print" | "embed">("displayMode", "web");
+const displayMode = inject(displayModeKey, "web");
 
 const isWebMode = computed(() => displayMode === "web");
 const isEmbedMode = computed(() => displayMode === "embed");
