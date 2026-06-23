@@ -291,16 +291,6 @@ onBeforeUnmount(() => {
               {{ t("elevationProfile.windowTitle") }}
             </p>
           </div>
-          <UButton
-            size="xs"
-            variant="ghost"
-            color="neutral"
-            square
-            @pointerdown.stop
-            @click="closeWindow"
-          >
-            <X :size="14" />
-          </UButton>
         </div>
       </template>
 
