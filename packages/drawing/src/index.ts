@@ -5,6 +5,5 @@ export {
   getMarkerIconById,
   type MarkerIcon,
 } from "@/utils/markerIcons";
-export { resolveFeatureId } from "@/utils/drawingUtils";
 
 export * from "@/composables/useDrawing.composable";
