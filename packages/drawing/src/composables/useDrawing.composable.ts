@@ -407,9 +407,11 @@ export function useDrawing(olMap: OlMap) {
       return;
     }
 
+    console.log("adding drawing layer...");
     olMap.addLayer(drawingVectorLayer);
 
     if (!layerStore.getLayer(drawingVectorLayer.get("uuid"))) {
+      
       layerStore.addLayer({
         uuid: drawingVectorLayer.get("uuid"),
         humanId: drawingVectorLayer.get("humanId"),
