@@ -20,7 +20,10 @@ const {
   focusMode,
   focusedFeature,
   focusedFeatureType,
-} = useDrawing(olMap.value);
+  mountDrawingLayer,
+  clearDrawingLayer,
+  isDrawingLayerInLayerStore,
+} = useDrawing(olMap.value!);
 
 const emit = defineEmits<{
   close: [];
@@ -29,6 +32,17 @@ const emit = defineEmits<{
 function handleClose() {
   emit("close");
 }
+
+/**
+ * If the drawing layer is removed from the layer store, we should close the drawing panel, as it is no longer relevant.
+ */
+watch(isDrawingLayerInLayerStore,
+  (isDrawingLayerPresentInStore, wasDrawingLayerPresentInStore) => {      
+    if (!isDrawingLayerPresentInStore && wasDrawingLayerPresentInStore) {
+      emit("close");
+    }
+  }
+);
 
 function terminateModification() {
   disableAllInteractions();
@@ -40,6 +54,10 @@ function cancelDrawing() {
   removeFocusedFeature();
   removeFocus();
 }
+
+onMounted(() => {
+  mountDrawingLayer();
+});
 
 onUnmounted(() => {
   disableAllInteractions();
@@ -171,6 +189,16 @@ onUnmounted(() => {
         >
           (Shift + click on a point to delete it)
         </div>
+
+        <UButton
+          v-if="focusMode === 'none' && numberOfFeatures > 0"
+          color="error"
+          variant="solid"
+          data-testid="drawing-tool-clear"
+          @click="clearDrawingLayer"
+        >
+          Clear drawing layer
+        </UButton>
       </div>
     </div>
   </div>

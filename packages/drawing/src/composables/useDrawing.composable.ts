@@ -97,6 +97,7 @@ export type FocusedFeatureMetrics =
 export function useDrawing(olMap: OlMap) {
   const drawingStore = useDrawingStore();
   const { focusedFeature, focusMode } = storeToRefs(drawingStore);
+  const { layers: layersInLayerStore } = storeToRefs(useLayerStore());
   const {
     drawingVectorSource,
     drawingVectorLayer,
@@ -242,6 +243,14 @@ export function useDrawing(olMap: OlMap) {
       triggerRef(focusedFeature);
     },
   });
+
+  /**
+   * Can be used to track the adding or removing of the drawing layer from the layer store, which is the source of truth for the layers.
+   */
+  const isDrawingLayerInLayerStore = computed(() => 
+    layersInLayerStore.value.some(
+      (layer) => layer.uuid === drawingVectorLayer.get("uuid"),
+    ));
 
   /**
    * Watch for changes that occurs in the vector layer of if the focus has changed.
@@ -390,9 +399,11 @@ export function useDrawing(olMap: OlMap) {
 
   const numberOfFeatures = ref(0);
 
-  onMounted(() => {
-    numberOfFeatures.value = drawingVectorSource.getFeatures().length;
-
+  /**
+   * Add the drawing layer to the map and to the layer store,
+   * plus add the (disabled) interactions to the map that are necessary for the drawing feature to work.
+   */
+  function mountDrawingLayer() {
     // As the map is available, all the interactions necessary to the drawing feature
     // are add, but all are disabled by default.
     olMap.addInteraction(modifyInteraction);
@@ -403,15 +414,13 @@ export function useDrawing(olMap: OlMap) {
     olMap.addInteraction(snapInteraction);
     olMap.addInteraction(selectInteractions);
 
-    if (olMap.getAllLayers().includes(drawingVectorLayer)) {
-      return;
+    // Add the drawing layer to the map if it is not already there
+    if (!olMap.getAllLayers().includes(drawingVectorLayer)) {
+      olMap.addLayer(drawingVectorLayer);
     }
-
-    console.log("adding drawing layer...");
-    olMap.addLayer(drawingVectorLayer);
-
+    
+    // Add the drawing layer to the layer store if it is not already there
     if (!layerStore.getLayer(drawingVectorLayer.get("uuid"))) {
-      
       layerStore.addLayer({
         uuid: drawingVectorLayer.get("uuid"),
         humanId: drawingVectorLayer.get("humanId"),
@@ -423,6 +432,44 @@ export function useDrawing(olMap: OlMap) {
         },
       });
     }
+  }
+
+  /**
+   * Remove the drawing layer from the map and from the layer store,
+   * and remove all the interactions related to the drawing feature from the map.
+   */
+  function unmountDrawingLayer() {
+    // Remove all the interactions related to the drawing feature from the map
+    olMap.removeInteraction(modifyInteraction);
+    olMap.removeInteraction(drawPointInteraction);
+    olMap.removeInteraction(drawLineStringInteraction);
+    olMap.removeInteraction(drawPolygonInteraction);
+    olMap.removeInteraction(drawCircleInteraction);
+    olMap.removeInteraction(snapInteraction);
+    olMap.removeInteraction(selectInteractions);
+
+    // Remove the drawing layer from the map if it is there
+    if (olMap.getAllLayers().includes(drawingVectorLayer)) {
+      olMap.removeLayer(drawingVectorLayer);
+    }
+
+    // Remove the drawing layer from the layer store if it is there
+    if (layerStore.getLayer(drawingVectorLayer.get("uuid"))) {
+      layerStore.removeLayer(drawingVectorLayer.get("uuid"));
+    }
+
+    clearDrawingLayer();
+  }
+
+  /**
+   * Clear all the features from the drawing layer.
+   */
+  function clearDrawingLayer() {
+    drawingVectorSource.clear();
+  }
+
+  onMounted(() => {
+    numberOfFeatures.value = drawingVectorSource.getFeatures().length;
   });
 
   /**
@@ -502,6 +549,18 @@ export function useDrawing(olMap: OlMap) {
       }
     },
     { immediate: true },
+  );
+
+  /**
+   * Detects if the drawing layer has been removed from the layer store, and if so, unmounts it from the map.
+   * Note: the layer store is the source of truth for the layers, and mostl importantly what is exposed to the UI.
+   */
+  watch(isDrawingLayerInLayerStore,
+    (isDrawingLayerPresentInStore, wasDrawingLayerPresentInStore) => {      
+      if (!isDrawingLayerPresentInStore && wasDrawingLayerPresentInStore) {
+        unmountDrawingLayer();
+      }
+    }
   );
 
   // When a feature is finished to be created or modified (tyipically with a double-click),
@@ -711,5 +770,9 @@ export function useDrawing(olMap: OlMap) {
     pointColor,
     title,
     description,
+    mountDrawingLayer,
+    unmountDrawingLayer,
+    clearDrawingLayer,
+    isDrawingLayerInLayerStore,
   };
 }
