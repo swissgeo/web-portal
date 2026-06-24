@@ -23,7 +23,7 @@ const {
   mountDrawingLayer,
   clearDrawingLayer,
   isDrawingLayerInLayerStore,
-} = useDrawing(olMap.value!);
+} = useDrawing(olMap.value);
 
 const emit = defineEmits<{
   close: [];
@@ -36,12 +36,13 @@ function handleClose() {
 /**
  * If the drawing layer is removed from the layer store, we should close the drawing panel, as it is no longer relevant.
  */
-watch(isDrawingLayerInLayerStore,
-  (isDrawingLayerPresentInStore, wasDrawingLayerPresentInStore) => {      
+watch(
+  isDrawingLayerInLayerStore,
+  (isDrawingLayerPresentInStore, wasDrawingLayerPresentInStore) => {
     if (!isDrawingLayerPresentInStore && wasDrawingLayerPresentInStore) {
       emit("close");
     }
-  }
+  },
 );
 
 function terminateModification() {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type {Layer as MapLayer, MapLayerRenderer} from "@swissgeo/map";
+import type { Layer as MapLayer, MapLayerRenderer } from "@swissgeo/map";
 import type { DisplayMode } from "~/types/injectionKeys";
 
 import { useLayerStore } from "@swissgeo/layers";

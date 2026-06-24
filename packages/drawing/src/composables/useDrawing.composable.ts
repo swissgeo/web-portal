@@ -247,10 +247,11 @@ export function useDrawing(olMap: OlMap) {
   /**
    * Can be used to track the adding or removing of the drawing layer from the layer store, which is the source of truth for the layers.
    */
-  const isDrawingLayerInLayerStore = computed(() => 
+  const isDrawingLayerInLayerStore = computed(() =>
     layersInLayerStore.value.some(
       (layer) => layer.uuid === drawingVectorLayer.get("uuid"),
-    ));
+    ),
+  );
 
   /**
    * Watch for changes that occurs in the vector layer of if the focus has changed.
@@ -418,7 +419,7 @@ export function useDrawing(olMap: OlMap) {
     if (!olMap.getAllLayers().includes(drawingVectorLayer)) {
       olMap.addLayer(drawingVectorLayer);
     }
-    
+
     // Add the drawing layer to the layer store if it is not already there
     if (!layerStore.getLayer(drawingVectorLayer.get("uuid"))) {
       layerStore.addLayer({
@@ -555,12 +556,13 @@ export function useDrawing(olMap: OlMap) {
    * Detects if the drawing layer has been removed from the layer store, and if so, unmounts it from the map.
    * Note: the layer store is the source of truth for the layers, and mostl importantly what is exposed to the UI.
    */
-  watch(isDrawingLayerInLayerStore,
-    (isDrawingLayerPresentInStore, wasDrawingLayerPresentInStore) => {      
+  watch(
+    isDrawingLayerInLayerStore,
+    (isDrawingLayerPresentInStore, wasDrawingLayerPresentInStore) => {
       if (!isDrawingLayerPresentInStore && wasDrawingLayerPresentInStore) {
         unmountDrawingLayer();
       }
-    }
+    },
   );
 
   // When a feature is finished to be created or modified (tyipically with a double-click),

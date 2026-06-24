@@ -147,8 +147,6 @@ export const useLayerStore = defineStore("layers", () => {
   }
 
   function removeLayer(uuid: string) {
-    console.log("removing layer from store");
-    
     const index = _getIndexFromIdentifier(uuid);
     if ((index || index === 0) && layers.value[index]) {
       layers.value.splice(index, 1);
