@@ -16,7 +16,7 @@ const layerFormat = computed(
 );
 
 const layerData = computed(
-  (): Partial<MapLayer> => ({
+  (): MapLayer => ({
     ...layer,
     format: layerFormat.value,
     layerId: layer.humanId,
