@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { useDrawing } from "@swissgeo/drawing";
-import { useMap } from "@swissgeo/map";
 
-const { olMap } = useMap();
 const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
-  useDrawing(olMap.value);
+  useDrawing();
 import type { CircleMetrics } from "@swissgeo/drawing";
 </script>
 

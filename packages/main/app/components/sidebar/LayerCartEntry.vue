@@ -69,12 +69,7 @@ function moveDown() {
 
 function removeLayer() {
   layerStore.removeLayer(layer.uuid);
-
   mapViewStore.removeLayer(layerIndex);
-  // if (layer.uuid === drawingStore.drawingKMLLayerUuid) {
-  //   drawingStore.resetDrawingLayerUuid();
-  //   drawingStore.clearDrawingFeatures();
-  // }
 }
 
 function openDatasetPanel() {

@@ -2,12 +2,8 @@
 import type { LineStringMetrics } from "@swissgeo/drawing";
 
 import { useDrawing } from "@swissgeo/drawing";
-import { useMap } from "@swissgeo/map";
 
-const { olMap } = useMap();
-const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing(
-  olMap.value,
-);
+const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing();
 </script>
 
 <template>

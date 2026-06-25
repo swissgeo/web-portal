@@ -2,20 +2,9 @@
 import type { PolygonMetrics } from "@swissgeo/drawing";
 
 import { useDrawing } from "@swissgeo/drawing";
-import { useMap } from "@swissgeo/map";
 
-const { olMap } = useMap();
 const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
-  useDrawing(olMap.value);
-
-// const perimeterMeters = computed(() => {
-//   if (!focusedFeatureMetrics.value) {
-//     return 0;
-//   }
-//   return "lengthMeters" in focusedFeatureMetrics.value
-//     ? Math.round(focusedFeatureMetrics.value.lengthMeters * 100) / 100
-//     : 0;
-// });
+  useDrawing();
 </script>
 
 <template>

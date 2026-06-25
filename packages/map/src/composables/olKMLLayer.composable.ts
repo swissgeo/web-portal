@@ -30,13 +30,15 @@ export default function useOlKMLLayer(
   layer: Ref<KMLLayer>,
   olMap: Ref<Map | undefined> | undefined,
 ) {
-  const { bearsUuid, drawingVectorLayer } = useDrawing(olMap.value!);
+  const { drawingVectorLayer, DRAWING_LAYER_UUID } = useDrawing();
   const layerId = computed(() => layer.value.layerId);
   const zIndex = computed(() => layer.value.zIndex);
   const isVisible = computed(() => layer.value.isVisible);
   const opacity = computed(() => layer.value.opacity);
   const kmlData = computed(() => layer.value.data);
-  const isDrawingLayer = computed(() => bearsUuid(layer.value.uuid));
+  const isDrawingLayer = computed(
+    () => DRAWING_LAYER_UUID === layer.value.uuid,
+  );
 
   watch(opacity, (newOpacity) => {
     if (!olLayer.value) {
@@ -64,7 +66,6 @@ export default function useOlKMLLayer(
           },
           opacity: opacity.value,
         });
-        // TODO: clean this to adapt to drawing layer
         initialize();
       }
     },

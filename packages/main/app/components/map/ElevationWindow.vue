@@ -1,22 +1,13 @@
-<!-- eslint-disable -->
 <script setup lang="ts">
+import type { LineStringMetrics, PolygonMetrics } from "@swissgeo/drawing";
 import type { Labels } from "@swissgeo/elevation-profile";
 import type { LineString } from "geojson";
-import type { Feature } from "ol";
-import type {
-  LineString as OlLineString,
-  Polygon as OlPolygon,
-  Geometry,
-} from "ol/geom";
+import type { Polygon as OlPolygon } from "ol/geom";
 import type Map from "ol/Map";
 import type { Ref } from "vue";
 
-import { X, GripVertical } from "@lucide/vue";
-import {
-  useDrawing,
-  type LineStringMetrics,
-  type PolygonMetrics,
-} from "@swissgeo/drawing";
+import { GripVertical } from "@lucide/vue";
+import { useDrawing } from "@swissgeo/drawing";
 import {
   ElevationProfile,
   ElevationProfileOpenLayersBridge,
@@ -31,7 +22,6 @@ import {
   onBeforeUnmount,
   onBeforeMount,
   reactive,
-  ref,
   useTemplateRef,
   watch,
 } from "vue";
@@ -42,9 +32,7 @@ const DEFAULT_WIDTH = 800;
 
 const olMapRef = inject<Ref<Map | undefined>>("olMap");
 
-const { focusedFeature, focusMode, focusedFeatureMetrics } = useDrawing(
-  olMapRef!.value!,
-);
+const { focusedFeature, focusMode, focusedFeatureMetrics } = useDrawing();
 
 const mapProjectionEpsg = computed(() => positionStore.projection.epsg);
 const olGeoJSON = computed(
@@ -93,20 +81,23 @@ const selectedLineString = computed<LineString | null>(() => {
     // hence momentarily creating an invalid null-length LineString
     const lineStringLength = (focusedFeatureMetrics.value as LineStringMetrics)
       ?.lengthMeters;
+
+    // Until the user moves the pointer away from the location of the very first point,
+    // the length is still 0 and we don't want to show the elevation profile yet.
     if (!lineStringLength) {
       return null;
     }
 
-    return olGeoJSON.value.writeGeometryObject(
-      geometry as OlLineString,
-    ) as LineString;
+    return olGeoJSON.value.writeGeometryObject(geometry) as LineString;
   }
 
   if (type === "Polygon") {
-    // Permieter is already computed as part of the drawing metrics
+    // Perimeter is already computed as part of the drawing metrics
     const perimeter = (focusedFeatureMetrics.value as PolygonMetrics)
       ?.perimeterMeters;
 
+    // Directly after placing the first point, the pointer is still at the same location
+    // until the user moves it. As a result, the perimeter is 0 and we don't want to show the elevation profile yet.
     if (!perimeter) {
       return null;
     }
@@ -145,8 +136,6 @@ const { elevationProfile, elevationPending, elevationError } =
     selectedLineString,
     () => positionStore.projection.epsgNumber,
   );
-
-let unlistenGeometryChange: (() => void) | null = null;
 
 function clampToViewport(nextX: number, nextY: number) {
   if (typeof window === "undefined") {
@@ -246,10 +235,6 @@ watch(
   },
   { immediate: true },
 );
-
-function closeWindow() {
-  console.log("closing the elevation window");
-}
 
 onBeforeMount(() => {
   if (typeof window !== "undefined") {

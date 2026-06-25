@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useDrawing } from "@swissgeo/drawing";
-import { useMap } from "@swissgeo/map";
 
-const { olMap } = useMap();
-const { pointColor, pointRadius } = useDrawing(olMap.value);
+const { pointColor, pointRadius } = useDrawing();
 </script>
 
 <template>

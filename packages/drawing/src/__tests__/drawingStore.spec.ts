@@ -25,7 +25,7 @@ describe("drawing store", () => {
 
   it("creates a drawing vector layer linked to the drawing source", () => {
     vi.spyOn(globalThis.crypto, "randomUUID").mockReturnValue(
-      "drawing-layer-uuid",
+      "12345678-1234-1234-1234-123456789012",
     );
 
     const store = useDrawingStore();
@@ -34,7 +34,9 @@ describe("drawing store", () => {
       store.drawingVectorSource,
     );
     expect(store.drawingVectorLayer.get("humanId")).toBe(DRAWING_LAYER_ID);
-    expect(store.drawingVectorLayer.get("uuid")).toBe("drawing-layer-uuid");
+    expect(store.drawingVectorLayer.get("uuid")).toBe(
+      "12345678-1234-1234-1234-123456789012",
+    );
     expect(store.drawingVectorLayer.getStyle()).toBeNull();
   });
 

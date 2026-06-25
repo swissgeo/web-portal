@@ -13,13 +13,7 @@ import { setActivePinia, createPinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
 
-import type {
-  CircleMetrics,
-  LineStringMetrics,
-  PointMetrics,
-  PolygonMetrics,
-  useDrawing,
-} from "@/composables/useDrawing.composable";
+import type { useDrawing } from "@/composables/useDrawing.composable";
 
 import { useDrawing as createDrawingComposable } from "@/composables/useDrawing.composable";
 import { useDrawingStore } from "@/stores/drawing.store";
@@ -36,6 +30,13 @@ import {
   STROKE_COLOR_KEY,
   STROKE_WIDTH_KEY,
 } from "@/utils/drawingStyle";
+
+import type {
+  CircleMetrics,
+  LineStringMetrics,
+  PointMetrics,
+  PolygonMetrics,
+} from "../utils/drawingUtils";
 
 type DrawingComposable = ReturnType<typeof useDrawing>;
 
@@ -106,7 +107,7 @@ function mountHarness() {
 
   const Harness = defineComponent({
     setup() {
-      drawing = createDrawingComposable(fakeMap as unknown as OlMap);
+      drawing = createDrawingComposable();
       return () => h("div");
     },
   });
@@ -150,7 +151,7 @@ describe("useDrawing", () => {
     const feature = makeFeature(new Point([2600000, 1200000]));
 
     drawingStore.drawingVectorSource.addFeature(feature);
-    drawing.mountDrawingLayer();
+    drawing.mountDrawingLayer(fakeMap as unknown as OlMap);
 
     expect(fakeMap.interactions).toEqual([
       drawingStore.modifyInteraction,
@@ -188,8 +189,8 @@ describe("useDrawing", () => {
   it("does not add the drawing layer twice when mounted repeatedly", () => {
     const { drawing, drawingStore, fakeMap, wrapper } = mountHarness();
 
-    drawing.mountDrawingLayer();
-    drawing.mountDrawingLayer();
+    drawing.mountDrawingLayer(fakeMap as unknown as OlMap);
+    drawing.mountDrawingLayer(fakeMap as unknown as OlMap);
 
     expect(fakeMap.layers).toEqual([drawingStore.drawingVectorLayer]);
 
@@ -210,21 +211,24 @@ describe("useDrawing", () => {
   });
 
   it("reports whether a uuid belongs to the drawing layer", () => {
-    const { drawing, drawingStore, wrapper } = mountHarness();
+    const { drawingStore, wrapper } = mountHarness();
     const drawingLayerUuid = drawingStore.drawingVectorLayer.get("uuid");
 
-    expect(drawing.bearsUuid(drawingLayerUuid)).toBe(true);
-    expect(drawing.bearsUuid("some-other-layer")).toBe(false);
+    expect(drawingStore.DRAWING_LAYER_UUID === drawingLayerUuid).toBe(true);
+    expect(
+      drawingStore.DRAWING_LAYER_UUID ===
+        "00000000-0000-0000-0000-000000000000",
+    ).toBe(false);
 
     wrapper.unmount();
   });
 
   it("enables selection from a clean focus state", async () => {
-    const { drawing, drawingStore, wrapper } = mountHarness();
+    const { drawing, drawingStore, wrapper, fakeMap } = mountHarness();
     const feature = makeFeature(new Point([2600000, 1200000]));
 
     drawingStore.drawingVectorSource.addFeature(feature);
-    drawing.mountDrawingLayer();
+    drawing.mountDrawingLayer(fakeMap as unknown as OlMap);
     drawingStore.focusedFeature = feature;
     drawingStore.focusMode = "edit";
     drawingStore.selectInteractions.selectFeature(feature);
@@ -253,7 +257,9 @@ describe("useDrawing", () => {
   });
 
   it("enables modify mode for a focused feature", async () => {
-    const { drawing, drawingStore, wrapper } = mountHarness();
+    const { drawing, drawingStore, wrapper, fakeMap } = mountHarness();
+    drawing.mountDrawingLayer(fakeMap as unknown as OlMap);
+
     const feature = makeFeature(new Point([2600000, 1200000]));
 
     await focusFeature(drawingStore, feature);
@@ -274,7 +280,8 @@ describe("useDrawing", () => {
     ["Polygon", "drawPolygonInteraction"],
     ["Circle", "drawCircleInteraction"],
   ] as const)("enables %s drawing mode", (geometryType, interactionKey) => {
-    const { drawing, drawingStore, wrapper } = mountHarness();
+    const { drawing, drawingStore, wrapper, fakeMap } = mountHarness();
+    drawing.mountDrawingLayer(fakeMap as unknown as OlMap);
 
     drawing.enableDrawInteraction(geometryType);
 
@@ -286,11 +293,11 @@ describe("useDrawing", () => {
   });
 
   it("keeps a drawn feature focused after draw end", async () => {
-    const { drawing, drawingStore, wrapper } = mountHarness();
+    const { drawing, drawingStore, wrapper, fakeMap } = mountHarness();
     const feature = makeFeature(new Point([2600000, 1200000]));
 
     drawingStore.drawingVectorSource.addFeature(feature);
-    drawing.mountDrawingLayer();
+    drawing.mountDrawingLayer(fakeMap as unknown as OlMap);
     drawing.enableDrawInteraction("Point");
     drawingStore.drawPointInteraction.dispatchEvent({
       type: "drawstart",

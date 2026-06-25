@@ -23,7 +23,7 @@ const {
   mountDrawingLayer,
   clearDrawingLayer,
   isDrawingLayerInLayerStore,
-} = useDrawing(olMap.value);
+} = useDrawing();
 
 const emit = defineEmits<{
   close: [];
@@ -57,7 +57,7 @@ function cancelDrawing() {
 }
 
 onMounted(() => {
-  mountDrawingLayer();
+  mountDrawingLayer(olMap.value);
 });
 
 onUnmounted(() => {
