@@ -5,6 +5,8 @@ import { computed, toValue, watchEffect } from "vue";
 
 import type { Service } from "@/types/Records";
 
+import { replaceTemplateVarsWithDefaults } from "./utils";
+
 export function useCapabilities(serviceData: Ref<Service | null>) {
   const capabilityUrl = computed(() => extractCapabilityUrl(serviceData.value));
 
@@ -29,11 +31,11 @@ export function extractCapabilityUrl(
   }
 
   if ("links" in serviceData && serviceData.links && serviceData.links.length) {
-    const link = serviceData.links[0];
-
-    if (link.rel.toLowerCase() === "about") {
-      const uri = link.href ?? null;
-      return uri;
+    for (const link of serviceData.links) {
+      if (link.rel.toLowerCase() === "about") {
+        const uri = link.href ?? null;
+        return uri;
+      }
     }
   }
   if (
@@ -43,12 +45,12 @@ export function extractCapabilityUrl(
   ) {
     // if there are links and linkTemplates, we want links to take precedence
     // it's the simpler version
-    const link = serviceData.linkTemplates[0];
-
-    if (link.rel.toLowerCase() === "about") {
-      const uri = link.uriTemplate.replace(/\{epsg\}/gi, "2056"); // "{EPSG}" seems to be lowercased or uppercased so we replace both versions.
-      return uri ?? null;
+    for (const link of serviceData.linkTemplates) {
+      if (link.rel.toLowerCase() === "about") {
+        return replaceTemplateVarsWithDefaults(link);
+      }
     }
   }
+
   return null;
 }

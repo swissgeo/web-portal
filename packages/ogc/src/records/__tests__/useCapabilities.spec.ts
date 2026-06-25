@@ -5,7 +5,11 @@ import type { Service } from "@/types";
 
 import { extractCapabilityUrl, useCapabilities } from "../useCapabilities";
 import ChGeoadminWms from "./fixtures/service_ch.admin.geo.wms.json";
+// this fixture has multiple linkTemplate
+import ChGeoadminWms2 from "./fixtures/service_ch.admin.geo.wms2.json";
 import ChGeoadminWmts from "./fixtures/service_ch.admin.geo.wmts.json";
+// this fixture has both link and linkTemplates
+import ChGeoadminWmts2 from "./fixtures/service_ch.admin.geo.wmts2.json";
 
 describe("useCapabilities composable returning capability URL", () => {
   it("extracts the correct capability URL from WMTS service", () => {
@@ -24,7 +28,7 @@ describe("useCapabilities composable returning capability URL", () => {
     const { capabilityUrl } = useCapabilities(service);
 
     expect(capabilityUrl.value).toEqual(
-      "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&FORMAT=text/xml&lang={lang}",
+      "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&FORMAT=text/xml&lang=de",
     );
   });
 
@@ -83,23 +87,11 @@ describe("extractCapabilitUrl", () => {
   });
 
   it("precedes link over linkTemplate", () => {
-    const service = {
-      linksTemplates: [
-        {
-          rel: "about",
-          uriTemplate: "http://cool-template-link",
-        },
-      ],
-      links: [
-        {
-          rel: "about",
-          href: "http://cool-href-link",
-        },
-      ],
-    };
-
-    const capabilitUrl = extractCapabilityUrl(service);
-    expect(capabilitUrl).toEqual("http://cool-href-link");
+    // and also works if it's the last in the list
+    const capabilitUrl = extractCapabilityUrl(ChGeoadminWmts2);
+    expect(capabilitUrl).toEqual(
+      "https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilitiesLink.xml",
+    );
   });
 
   it.each(["about", "ABOUT", "aBout", "About"])(
@@ -118,4 +110,11 @@ describe("extractCapabilitUrl", () => {
       expect(capabilitUrl).toEqual("http://about");
     },
   );
+
+  it("Can handle multiple link templates", () => {
+    const capabilitUrl = extractCapabilityUrl(ChGeoadminWms2);
+    expect(capabilitUrl).toEqual(
+      "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&FORMAT=text/xml&lang=de",
+    );
+  });
 });
