@@ -101,7 +101,7 @@ function addToMap() {
         </nav>
 
         <template v-if="dataset">
-          <h1 class="mb-8 text-2xl font-bold">
+          <h1 class="mb-8 text-2xl font-bold" data-testid="dataset-title">
             {{ dataset.properties.title }}
           </h1>
 

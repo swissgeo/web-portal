@@ -44,12 +44,15 @@ const serviceDistributions = computed<Distribution[]>(() => {
       <h3 class="mb-2">
         {{ $t("dataset.abstract") }}
       </h3>
-      <p class="text-sm leading-relaxed">
+      <p class="text-sm leading-relaxed" data-testid="dataset-description">
         {{ dataset.properties.description }}
       </p>
     </section>
 
-    <section v-if="dataset.properties.contacts?.length">
+    <section
+      v-if="dataset.properties.contacts?.length"
+      data-testid="dataset-contacts"
+    >
       <h3 class="mb-2">
         {{ $t("dataset.contacts") }}
       </h3>
