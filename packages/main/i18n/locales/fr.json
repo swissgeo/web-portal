@@ -153,7 +153,8 @@
       "tabShare": "Partager la position",
       "errorFetchingElevation": "Erreur de récupération de l'élévation",
       "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words"
-    }
+    },
+    "addToMapError": "Impossible d'ajouter la couche {layerId} à la carte"
   },
   "error": {
     "notFound": "{resource} est introuvable.",

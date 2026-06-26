@@ -46,13 +46,15 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
   it("fetches the distribution correctly", async () => {
     const dataset = ref(ChBafuSchutzgebieteLuftfahrt as Dataset);
 
-    const { distributionCollection } = useDistributionCollection(dataset);
+    const { distributionCollection, error } =
+      useDistributionCollection(dataset);
 
     expect(distributionCollection.value).toBe(null);
     await flushPromises();
     expect(distributionCollection.value).toEqual(
       ChBafuSchutzgebieteLuftfahrtDistributions,
     );
+    expect(error.value).toBeNull();
   });
 
   it("fetches the distribution correctly after the dataset becomes available", async () => {
@@ -69,6 +71,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
     expect(distributionCollection.value).toEqual(
       ChBafuSchutzgebieteLuftfahrtDistributions,
     );
+    expect(error.value).toBeNull();
   });
 
   it("doesn't trip with an invalid dataset", () => {
@@ -82,6 +85,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
 
     expect(distributionUrl.value).toBe(null);
     expect(distributionCollection.value).toBe(null);
+    expect(error.value).toBeNull();
   });
 
   it("doesn't trip with an unreachable URL", async () => {
@@ -103,6 +107,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
       "http://services.dev.sgdi.tech/api/oar",
     );
     expect(distributionCollection.value).toBe(null);
+    expect(error.value).toBeNull();
   });
 });
 
@@ -126,11 +131,16 @@ describe("useDistributionCollection 404", () => {
   it("doesn't trip with 404", async () => {
     const dataset = ref(ChBafuSchutzgebieteLuftfahrt as Dataset);
 
-    const { distributionCollection } = useDistributionCollection(dataset);
+    const { distributionCollection, error } =
+      useDistributionCollection(dataset);
+
+    expect(error.value).toEqual(null);
 
     expect(distributionCollection.value).toBe(null);
     await flushPromises();
     expect(distributionCollection.value).toEqual(null);
+
+    expect(error.value).toEqual("Not Found");
   });
 });
 
@@ -154,11 +164,14 @@ describe("useDistributionCollection 5xx", () => {
   it("doesn't trip with 5xx", async () => {
     const dataset = ref(ChBafuSchutzgebieteLuftfahrt as Dataset);
 
-    const { distributionCollection } = useDistributionCollection(dataset);
+    const { distributionCollection, error } =
+      useDistributionCollection(dataset);
 
     expect(distributionCollection.value).toBe(null);
     await flushPromises();
     expect(distributionCollection.value).toEqual(null);
+
+    expect(error.value).toEqual("Failed to fetch");
   });
 });
 

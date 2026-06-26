@@ -153,7 +153,8 @@
       "tabShare": "Share Position",
       "errorFetchingElevation": "Error retrieving elevation",
       "errorFetchingW3W": "Error retrieving What3Words address"
-    }
+    },
+    "addToMapError": "Failed to add layer {layerId} to map"
   },
   "error": {
     "notFound": "{resource} could not be found.",
