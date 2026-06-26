@@ -162,11 +162,14 @@ export function useDrawing() {
   });
 
   /**
-   * Update the style of the feature depending on focus and focus mode.
+   * Update the style of the formerly focused feature.
    */
   watch(
     [focusedFeature, focusMode],
-    ([newFocusedFeature, newFocusMode], [oldFocusedFeature, _oldFocusMode]) => {
+    (
+      [newFocusedFeature, _newFocusMode],
+      [oldFocusedFeature, _oldFocusMode],
+    ) => {
       // If there was a previously focused feature that is different from the new one,
       // it means that we switched focus from one feature to another.
       // In this case, we reset the style of the old focused feature to the idle style and we return early,
@@ -174,7 +177,16 @@ export function useDrawing() {
       if (oldFocusedFeature && oldFocusedFeature !== newFocusedFeature) {
         applyIdleStyle(oldFocusedFeature);
       }
+    },
+    { immediate: true },
+  );
 
+  /**
+   * Update the style of the newly focused feature depending on focus and focus mode.
+   */
+  watch(
+    [focusedFeature, focusMode],
+    ([newFocusedFeature, newFocusMode]) => {
       // If no feature is currently focused, we don't need to do anything
       if (!newFocusedFeature) {
         return;

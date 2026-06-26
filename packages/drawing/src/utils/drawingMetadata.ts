@@ -4,14 +4,14 @@ import type { Geometry } from "ol/geom";
 export const TITLE_KEY = "title";
 export const DESCRIPTION_KEY = "description";
 
-let counter = 0;
+let counter_drawing_features = 0;
 
 /**
  * Initializes the metadata properties of a feature with default values.
  */
 export function initializeMetadataProperties(feature: Feature<Geometry>) {
   feature.setProperties({
-    [TITLE_KEY]: `Feature ${++counter}`,
+    [TITLE_KEY]: `Feature ${++counter_drawing_features}`,
     [DESCRIPTION_KEY]: "",
   });
 }
@@ -30,20 +30,14 @@ export function setFeatureTitle(feature: Feature<Geometry>, title: string) {
  * Get the title of a feature.
  */
 export function getFeatureTitle(feature: Feature<Geometry>): string {
-  if (!feature) {
-    return "";
-  }
-  return feature.get(TITLE_KEY) || "";
+  return feature?.get(TITLE_KEY) ?? "";
 }
 
 /**
  * Get the description of a feature.
  */
 export function getFeatureDescription(feature: Feature<Geometry>): string {
-  if (!feature) {
-    return "";
-  }
-  return feature.get(DESCRIPTION_KEY) || "";
+  return feature?.get(DESCRIPTION_KEY) ?? "";
 }
 
 /**

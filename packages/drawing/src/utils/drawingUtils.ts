@@ -84,13 +84,9 @@ export function computeFocusedFeatureMetrics(
     return null;
   }
 
-  const geometry = feature.getGeometry();
+  const geometry = feature?.getGeometry();
 
-  if (!geometry) {
-    return null;
-  }
-
-  switch (geometry.getType()) {
+  switch (geometry?.getType()) {
     case "Point": {
       const coordinates = (geometry as Point).getCoordinates();
       const coordinatesWgs84 = proj4(LV95.epsg, WGS84.epsg, coordinates);

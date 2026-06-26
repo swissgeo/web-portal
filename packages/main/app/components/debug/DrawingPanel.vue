@@ -73,12 +73,19 @@ onUnmounted(() => {
   >
     <div class="mb-4 flex items-center justify-between">
       <h3 class="text-lg font-semibold">{{ t("debug.drawingPanelTitle") }}</h3>
-      <IconButton iconName="X" @click="handleClose" severity="secondary" />
+      <IconButton
+        iconName="X"
+        @click="handleClose"
+        severity="secondary"
+        data-testid="drawing-panel-close"
+      />
     </div>
 
     <div class="mb-4">
       <div class="grid grid-cols-1 gap-1">
-        <div>Number of features: {{ numberOfFeatures }}</div>
+        <div data-testid="drawing-feature-count">
+          Number of features: {{ numberOfFeatures }}
+        </div>
         <DrawingFeaturePropertyPanel
           v-if="focusedFeature && focusMode === 'select'"
         />
@@ -123,7 +130,7 @@ onUnmounted(() => {
           v-if="focusMode === 'none' && numberOfFeatures > 0"
           color="info"
           variant="solid"
-          data-testid="select-tool"
+          data-testid="select-feature-tool"
           @click="enableSelectInteraction"
         >
           Select feature
@@ -133,7 +140,7 @@ onUnmounted(() => {
           v-if="focusMode === 'create'"
           color="error"
           variant="solid"
-          data-testid="select-tool"
+          data-testid="cancel-drawing-tool"
           @click="cancelDrawing"
         >
           Cancel drawing
@@ -143,7 +150,7 @@ onUnmounted(() => {
           v-if="focusMode === 'select' && focusedFeature"
           color="neutral"
           variant="solid"
-          data-testid="modify-tool"
+          data-testid="deselect-feature-tool"
           @click="terminateModification"
         >
           Deselect feature
@@ -153,7 +160,7 @@ onUnmounted(() => {
           v-if="focusMode === 'select' && focusedFeature"
           color="info"
           variant="solid"
-          data-testid="modify-tool"
+          data-testid="modify-geometry-tool"
           @click="enableModifyInteraction"
         >
           Modify selected feature's geometry
@@ -163,7 +170,7 @@ onUnmounted(() => {
           v-if="focusMode === 'edit' && focusedFeature"
           color="info"
           variant="solid"
-          data-testid="modify-tool"
+          data-testid="finish-modification-tool"
           @click="terminateModification"
         >
           Finish geometry modification
@@ -173,7 +180,7 @@ onUnmounted(() => {
           v-if="focusMode === 'select' && focusedFeature"
           color="error"
           variant="solid"
-          data-testid="modify-tool"
+          data-testid="delete-feature-tool"
           @click="removeFocusedFeature"
         >
           Delete selected feature

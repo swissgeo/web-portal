@@ -8,7 +8,10 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
 </script>
 
 <template>
-  <div class="rounded border border-gray-300 bg-gray-50 p-4">
+  <div
+    class="rounded border border-gray-300 bg-gray-50 p-4"
+    data-testid="polygon-style-editor"
+  >
     <h3 class="mb-4 text-base font-semibold">Polygon Style</h3>
     <!-- Fill Color -->
     <div class="mb-3 flex items-center gap-3">
@@ -20,6 +23,7 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
           type="color"
           v-model="fillColor"
           class="h-8 w-12 cursor-pointer rounded border border-gray-300"
+          data-testid="polygon-fill-color"
         />
       </div>
     </div>
@@ -31,6 +35,7 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
           type="color"
           v-model="strokeColor"
           class="h-8 w-12 cursor-pointer rounded border border-gray-300"
+          data-testid="polygon-stroke-color"
         />
       </div>
     </div>
@@ -45,16 +50,17 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
         class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
         min="0"
         step="1"
+        data-testid="polygon-stroke-width"
       />
     </div>
-    <div v-if="focusedFeatureMetrics">
+    <div v-if="focusedFeatureMetrics" data-testid="polygon-perimeter">
       Perimeter:
       {{
         Math.round((focusedFeatureMetrics as PolygonMetrics).perimeterMeters)
       }}
       m
     </div>
-    <div v-if="focusedFeatureMetrics">
+    <div v-if="focusedFeatureMetrics" data-testid="polygon-area">
       Area:
       {{
         Math.round((focusedFeatureMetrics as PolygonMetrics).areaSquareMeters)

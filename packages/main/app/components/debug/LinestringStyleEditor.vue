@@ -7,7 +7,10 @@ const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing();
 </script>
 
 <template>
-  <div class="rounded border border-gray-300 bg-gray-50 p-4">
+  <div
+    class="rounded border border-gray-300 bg-gray-50 p-4"
+    data-testid="linestring-style-editor"
+  >
     <h3 class="mb-4 text-base font-semibold">Linestring Style</h3>
     <!-- Stroke Color -->
     <div class="mb-3 flex items-center gap-3">
@@ -19,6 +22,7 @@ const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing();
           type="color"
           v-model="strokeColor"
           class="h-8 w-12 cursor-pointer rounded border border-gray-300"
+          data-testid="linestring-stroke-color"
         />
       </div>
     </div>
@@ -33,9 +37,10 @@ const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing();
         class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
         min="0"
         step="1"
+        data-testid="linestring-stroke-width"
       />
     </div>
-    <div v-if="focusedFeatureMetrics">
+    <div v-if="focusedFeatureMetrics" data-testid="linestring-length">
       Length:
       {{
         Math.round((focusedFeatureMetrics as LineStringMetrics).lengthMeters)

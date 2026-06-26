@@ -50,10 +50,6 @@ export const useDrawingStore = defineStore("drawing", () => {
    */
   let mountedMap: OlMap | null = null;
 
-  // Store the keys of event handlers so that they can be removed later when the
-  // component is unmounted or when the interactions are disabled.
-  const handlersToRemove: EventsKey[] = [];
-
   const drawingVectorSource = markRaw(new VectorSource({ format: new KML() }));
   const drawingVectorLayer = markRaw(
     new VectorLayer({
@@ -326,19 +322,15 @@ export const useDrawingStore = defineStore("drawing", () => {
    * - some styling properties such as fill and stroke color
    * - possibly more in the future.
    */
-  let handler = drawingVectorSource.on("changefeature", () => {
+  drawingVectorSource.on("changefeature", () => {
     creatingOrEditingIterations.value++;
   });
-
-  // Keeping track of handlers to remove them at unmount, so that they are not added multiple times
-  // (which would cause the event to fire multiple times)
-  handlersToRemove.push(handler);
 
   /**
    * When a feature is selected, set it as the focused feature and update the focus mode to "read".
    * When the selection is cleared, reset the focused feature and set the focus mode to "none".
    */
-  handler = selectInteractions.on("select", (event) => {
+  selectInteractions.on("select", (event) => {
     const selectedFeatures = event.target.getFeatures().getArray();
     if (selectedFeatures.length > 0) {
       focusedFeature.value = selectedFeatures[0];
@@ -348,7 +340,6 @@ export const useDrawingStore = defineStore("drawing", () => {
       focusMode.value = "none";
     }
   });
-  handlersToRemove.push(handler);
 
   /**
    * When a feature is finished to be created or modified (typically with a double-click),
@@ -359,7 +350,7 @@ export const useDrawingStore = defineStore("drawing", () => {
      * As soon as the drawing has started, the feature being created takes the seat as focusedFeature
      * and the focus mode is set to "create".
      */
-    handler = interaction.on("drawstart", (event) => {
+    interaction.on("drawstart", (event) => {
       focusedFeature.value = event.feature;
 
       const geometry = event.feature.getGeometry();
@@ -371,12 +362,11 @@ export const useDrawingStore = defineStore("drawing", () => {
         creatingOrEditingIterations.value++;
       });
     });
-    handlersToRemove.push(handler);
 
     /**
      * When a drawing ends (in create mode), the interactions are all disabled.
      */
-    handler = interaction.on("drawend", async () => {
+    interaction.on("drawend", async () => {
       if (sketchGeometryHandler) {
         unByKey(sketchGeometryHandler);
         sketchGeometryHandler = null;
@@ -389,7 +379,6 @@ export const useDrawingStore = defineStore("drawing", () => {
         focusOnFinishedFeature();
       });
     });
-    handlersToRemove.push(handler);
   });
 
   /**
@@ -484,12 +473,6 @@ export const useDrawingStore = defineStore("drawing", () => {
     );
     removeFocus();
   }
-
-  // TODO: to keep?
-  // function removeAllHandlers() {
-  //   unByKey(handlersToRemove);
-  //   handlersToRemove.length = 0;
-  // }
 
   return {
     DRAWING_LAYER_UUID,

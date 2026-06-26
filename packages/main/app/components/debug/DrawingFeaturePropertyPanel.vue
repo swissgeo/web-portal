@@ -13,15 +13,17 @@ const { focusedFeature, focusedFeatureType, title, description } = useDrawing();
     v-if="focusedFeature"
     :key="focusedFeature?.getId()"
     class="flex flex-col gap-2 rounded border border-gray-300 bg-gray-50 p-4"
+    data-testid="drawing-feature-property-panel"
   >
-    <div>{{ focusedFeatureType }}</div>
-    <UInput v-model="title" />
+    <div data-testid="drawing-feature-type">{{ focusedFeatureType }}</div>
+    <UInput v-model="title" data-testid="drawing-feature-title" />
     <UTextarea
       size="xl"
       placeholder="Description..."
       :rows="4"
       class="w-full"
       v-model="description"
+      data-testid="drawing-feature-description"
     ></UTextarea>
     <PolygonStyleEditor v-if="focusedFeatureType === 'Polygon'" />
     <CircleStyleEditor v-if="focusedFeatureType === 'Circle'" />

@@ -2,7 +2,6 @@
 // TODO : map view store alterations
 import type { Layer as MapLayer } from "@swissgeo/map";
 
-// import { useDrawingStore } from "@swissgeo/drawing";
 import { useLayerStore } from "@swissgeo/layers";
 import { useDatasetPanelStore, IconButton } from "@swissgeo/skeleton";
 import { getDisplayNameFromTimestamp } from "@swissgeo/timeslider";
