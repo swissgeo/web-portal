@@ -14,10 +14,9 @@ import {
 vi.mock("@/composables/useAddLayerToMap.composable", () => ({
   default: useAddLayerToMapSpy,
 }));
-
 vi.mock("@swissgeo/log", () => ({
   default: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
-  LogPreDefinedColor: { Green: "green" },
+  LogPreDefinedColor: new Proxy({}, { get: (_t, p) => String(p) }),
 }));
 
 const { MockWMTS, updateDimensionsSpy } = vi.hoisted(() => {
