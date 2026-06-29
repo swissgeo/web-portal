@@ -1,19 +1,18 @@
-import type { GeoAdminGeoJSONStyleDefinition } from "../geojson";
-
 import { Feature } from "ol";
-import Point from "ol/geom/Point";
 import LineString from "ol/geom/LineString";
+import Point from "ol/geom/Point";
 import Polygon from "ol/geom/Polygon";
 import CircleStyle from "ol/style/Circle";
-import Fill from "ol/style/Fill";
 import Icon from "ol/style/Icon";
 import RegularShape from "ol/style/RegularShape";
-import Stroke from "ol/style/Stroke";
 import Style from "ol/style/Style";
 import { describe, expect, it, vi } from "vitest";
 
-import { getOlImageStyleForShape } from "../geoJsonStyleFromLiterals";
-import OlStyleForPropertyValue from "../geoJsonStyleFromLiterals";
+import type { GeoAdminGeoJSONStyleDefinition } from "../geojson";
+
+import OlStyleForPropertyValue, {
+  getOlImageStyleForShape,
+} from "../geoJsonStyleFromLiterals";
 
 vi.mock("@swissgeo/log", () => ({
   default: {
@@ -400,7 +399,7 @@ describe("OlStyleForPropertyValue", () => {
   });
 
   describe("rotation", () => {
-    const config: GeoAdminGeoJSONStyleDefinition = {
+    const config = {
       type: "single",
       property: "direction",
       geomType: "point",
@@ -409,7 +408,7 @@ describe("OlStyleForPropertyValue", () => {
         type: "icon",
         src: "arrow.png",
       },
-    };
+    } as unknown as GeoAdminGeoJSONStyleDefinition;
 
     it("applies rotation from property", () => {
       const olStyle = new OlStyleForPropertyValue(config);
