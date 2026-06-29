@@ -4,6 +4,11 @@ import type { Geometry } from "ol/geom";
 export const TITLE_KEY = "title";
 export const DESCRIPTION_KEY = "description";
 
+/**
+ * This counter is only used to generate a default title for each feature,
+ * so it is not critical that it restarts on page load.
+ * (aka. this is never used to generate a unique identifier for a feature, just a default title)
+ */
 let counter_drawing_features = 0;
 
 /**

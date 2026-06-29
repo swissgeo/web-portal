@@ -165,11 +165,8 @@ export function useDrawing() {
    * Update the style of the formerly focused feature.
    */
   watch(
-    [focusedFeature, focusMode],
-    (
-      [newFocusedFeature, _newFocusMode],
-      [oldFocusedFeature, _oldFocusMode],
-    ) => {
+    focusedFeature,
+    (newFocusedFeature, oldFocusedFeature) => {
       // If there was a previously focused feature that is different from the new one,
       // it means that we switched focus from one feature to another.
       // In this case, we reset the style of the old focused feature to the idle style and we return early,
