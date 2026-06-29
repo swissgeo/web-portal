@@ -24,16 +24,27 @@ export const useSearchStore = defineStore("search", () => {
 
   // Load catalog data with language support
   const loadCatalog = async (lang?: string) => {
-    // If catalog exists and language hasn't changed, don't reload
-    if (catalog.value && catalogLanguage.value === lang) {
+    // If a non-empty catalog is already loaded for this language, don't reload.
+    // Guard on features (not just a truthy value) so a previous empty/failed
+    // response doesn't get cached and block a real fetch.
+    if (catalog.value?.features?.length && catalogLanguage.value === lang) {
       return;
     }
 
     try {
       const baseUrl = runtimeConfig.public.ogcApiEndpoint as string;
+      const collection = runtimeConfig.public.ogcCatalogCollection as string;
+
+      // The catalog records live at the collection's items endpoint, not at the
+      // OGC API landing page (which only exposes links). Ensure a trailing slash
+      // so the relative path is appended rather than replacing the last segment
+      // of the base URL.
+      const url = new URL(
+        `collections/${collection}/items`,
+        baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`,
+      );
 
       // Build URL with language parameter
-      const url = new URL(baseUrl);
       if (lang) {
         url.searchParams.set("language", lang);
       }
