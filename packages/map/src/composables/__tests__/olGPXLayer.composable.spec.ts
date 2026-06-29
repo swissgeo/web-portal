@@ -19,11 +19,7 @@ vi.mock("@/stores/position", () => ({
 }));
 
 vi.mock("@swissgeo/log", () => ({
-  default: {
-    debug: vi.fn(),
-    error: vi.fn(),
-    warn: vi.fn(),
-  },
+  default: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
   LogPreDefinedColor: { Fuchsia: "fuchsia" },
 }));
 
