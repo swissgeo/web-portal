@@ -28,7 +28,11 @@ const showAdditionalMapUi = computed(
 );
 
 function changeBackground(layer: BaseLayer | null) {
+  const oldLayer = layerStore.backgroundLayer;
   layerStore.setBackground(layer);
+  if (oldLayer && !layer) {
+    mapViewStore.removeLayer(0);
+  }
 }
 
 const displayMode = inject(displayModeKey, "web");
