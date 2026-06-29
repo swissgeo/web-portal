@@ -2,7 +2,6 @@
 // TODO : map view store alterations
 import type { Layer as MapLayer } from "@swissgeo/map";
 
-import { useDrawingStore } from "@swissgeo/drawing";
 import { useLayerStore } from "@swissgeo/layers";
 import { useDatasetPanelStore, IconButton } from "@swissgeo/skeleton";
 import { getDisplayNameFromTimestamp } from "@swissgeo/timeslider";
@@ -14,7 +13,7 @@ const { layer, layerIndex } = defineProps<{
 }>();
 
 const layerStore = useLayerStore();
-const drawingStore = useDrawingStore();
+// const drawingStore = useDrawingStore();
 const datasetPanelStore = useDatasetPanelStore();
 const mapViewStore = useMapViewStore();
 const bgLayerModifier = computed(() => (layerStore.backgroundLayer ? 1 : 0));
@@ -69,12 +68,7 @@ function moveDown() {
 
 function removeLayer() {
   layerStore.removeLayer(layer.uuid);
-
   mapViewStore.removeLayer(layerIndex);
-  if (layer.uuid === drawingStore.drawingKMLLayerUuid) {
-    drawingStore.resetDrawingLayerUuid();
-    drawingStore.clearDrawingFeatures();
-  }
 }
 
 function openDatasetPanel() {

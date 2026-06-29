@@ -2,7 +2,6 @@
 import type { Layer as MapLayer, MapLayerRenderer } from "@swissgeo/map";
 import type { DisplayMode } from "~/types/injectionKeys";
 
-import { OpenLayersDrawingLayer, isDrawingLayer } from "@swissgeo/drawing";
 import { useLayerStore } from "@swissgeo/layers";
 import { MapModule } from "@swissgeo/map";
 
@@ -36,12 +35,7 @@ const sourceLayers = computed(() => layerStore.layers);
 const backgroundLayer = computed(() => layerStore.backgroundLayer);
 const layersForMap = computed(() => mapViewStore.getMapLayers().value);
 
-const customLayerRenderers: MapLayerRenderer[] = [
-  {
-    matches: isDrawingLayer,
-    component: OpenLayersDrawingLayer,
-  },
-];
+const customLayerRenderers: MapLayerRenderer[] = [];
 </script>
 
 <template>

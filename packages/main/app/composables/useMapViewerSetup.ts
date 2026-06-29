@@ -1,7 +1,6 @@
 import type { Layer as BaseLayer } from "@swissgeo/layers";
 import type { MapLayerRenderer } from "@swissgeo/map";
 
-import { OpenLayersDrawingLayer, isDrawingLayer } from "@swissgeo/drawing";
 import { useLayerStore } from "@swissgeo/layers";
 import { displayModeKey } from "~/types/injectionKeys";
 
@@ -19,12 +18,7 @@ export function useMapViewerSetup() {
   const backgroundLayer = computed(() => layerStore.backgroundLayer);
   const layersForMap = computed(() => mapViewStore.getMapLayers().value);
 
-  const customLayerRenderers: MapLayerRenderer[] = [
-    {
-      matches: isDrawingLayer,
-      component: OpenLayersDrawingLayer,
-    },
-  ];
+  const customLayerRenderers: MapLayerRenderer[] = [];
 
   const displayMode = inject(displayModeKey, "web");
 

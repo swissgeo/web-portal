@@ -16,7 +16,7 @@ const layerFormat = computed(
 );
 
 const layerData = computed(
-  (): Partial<MapLayer> => ({
+  (): MapLayer => ({
     ...layer,
     format: layerFormat.value,
     layerId: layer.humanId,
@@ -27,7 +27,7 @@ const layerData = computed(
   }),
 );
 
-watch(layerData, () => emit("update", layerData.value as MapLayer), {
+watch(layerData, () => emit("update", layerData.value), {
   immediate: true,
 });
 

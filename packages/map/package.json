@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@swissgeo/coordinates": "workspace:*",
+    "@swissgeo/drawing": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
     "@swissgeo/shared": "workspace:*",
