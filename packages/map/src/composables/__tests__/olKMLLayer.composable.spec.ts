@@ -15,23 +15,13 @@ import {
 vi.mock("@/composables/useAddLayerToMap.composable", () => ({
   default: useAddLayerToMapSpy,
 }));
-
 vi.mock("@/stores/position", () => ({
   default: vi.fn(() => mockPositionStore),
 }));
-
-vi.mock("@swissgeo/drawing", () => ({
-  useDrawing: vi.fn(() => ({
-    drawingVectorLayer: mockDrawingVectorLayer,
-    DRAWING_LAYER_UUID: "drawing-layer-uuid",
-  })),
-}));
-
 vi.mock("@swissgeo/log", () => ({
   default: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
-  LogPreDefinedColor: { Fuchsia: "fuchsia" },
+  LogPreDefinedColor: new Proxy({}, { get: (_t, p) => String(p) }),
 }));
-
 vi.mock("@swissgeo/shared", () => ({
   createDrawingFeatureStyleFunction: vi.fn((style: unknown) => style),
   createTextFeatureStyle: vi.fn(() => ({})),
@@ -41,6 +31,12 @@ vi.mock("@swissgeo/shared", () => ({
   parseBoolean: vi.fn((val: unknown) => val === "true" || val === true),
   resolveColoredSvgDataUrl: vi.fn((_src: string, color: string) => color),
   resolveStyleProps: vi.fn(() => ({})),
+}));
+vi.mock("@swissgeo/drawing", () => ({
+  useDrawing: vi.fn(() => ({
+    drawingVectorLayer: mockDrawingVectorLayer,
+    DRAWING_LAYER_UUID: "drawing-layer-uuid",
+  })),
 }));
 
 vi.mock("ol/proj/proj4", () => ({

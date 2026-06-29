@@ -6,26 +6,21 @@ import type { GPXLayer } from "@/types";
 
 import {
   clearAddLayerToMapMocks,
-  useAddLayerToMapSpy,
   mockPositionStore,
+  useAddLayerToMapSpy,
 } from "./__mocks__/composables";
 
 vi.mock("@/composables/useAddLayerToMap.composable", () => ({
   default: useAddLayerToMapSpy,
 }));
-
 vi.mock("@/stores/position", () => ({
   default: vi.fn(() => mockPositionStore),
 }));
-
 vi.mock("@swissgeo/log", () => ({
   default: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
-  LogPreDefinedColor: { Fuchsia: "fuchsia" },
+  LogPreDefinedColor: new Proxy({}, { get: (_t, p) => String(p) }),
 }));
-
-vi.mock("@swissgeo/shared", () => ({
-  EPSG_4326_WGS84: "EPSG:4326",
-}));
+vi.mock("@swissgeo/shared", () => ({ EPSG_4326_WGS84: "EPSG:4326" }));
 
 const { MockGPX, mockReadFeatures } = vi.hoisted(() => {
   const mockReadFeatures = vi.fn(() => []);
