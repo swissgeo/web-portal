@@ -113,16 +113,16 @@ function getOlBasicStyles(
 ): OLBasicStyles {
   const olStyles: OLBasicStyles = {};
 
-  if (vectorOptions.type === "icon") {
-    // nothing to do, the icon styles itself already
-    return olStyles;
-  }
-
-  if (vectorOptions.fill) {
-    olStyles.fill = new Fill(vectorOptions.fill);
-  }
-  if (vectorOptions.stroke) {
-    olStyles.stroke = new Stroke(vectorOptions.stroke);
+  // An icon paints its own fill/stroke, so those are skipped for icons — but a
+  // label can still sit on top of an icon (e.g. the meteoschweiz measurement
+  // layers label each station icon), so the label block below still applies.
+  if (vectorOptions.type !== "icon") {
+    if (vectorOptions.fill) {
+      olStyles.fill = new Fill(vectorOptions.fill);
+    }
+    if (vectorOptions.stroke) {
+      olStyles.stroke = new Stroke(vectorOptions.stroke);
+    }
   }
   if (vectorOptions.label) {
     let backgroundFill: Fill | undefined;
