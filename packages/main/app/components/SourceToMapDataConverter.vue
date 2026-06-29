@@ -102,7 +102,7 @@ function removeBgLayer() {
 
 <template>
   <MapDatamappingOgcDatasetConverter
-    v-if="isDatasetLayer(sourceBgLayer)"
+    v-if="sourceBgLayer && isDatasetLayer(sourceBgLayer)"
     :layer="sourceBgLayer as DatasetLayer"
     @update="updateBgLayer($event)"
     @updateDataset="updateStoreLayerData"
@@ -117,7 +117,7 @@ function removeBgLayer() {
     <MapDatamappingOgcDatasetConverter
       v-if="isDatasetLayer(data)"
       :layer="data"
-      @update="updateMapLayerData(index + 1, $event)"
+      @update="updateMapLayerData(index + Number(!!sourceBgLayer), $event)"
       @updateOpacity="updateOpacity"
       @updateTimeDimension="updateTimeDimension"
       @updateDataset="updateStoreLayerData"
