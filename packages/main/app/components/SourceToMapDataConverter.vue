@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {
+  DatasetLayer,
   Dimension,
   LayerInfo,
   Layer as SourceData,
@@ -34,6 +35,26 @@ function updateMapLayerData(index: number, mapLayerData: MapLayer) {
   mapLayerData.isVisible = options?.isVisible ?? currentData?.isVisible ?? true;
 
   mapViewStore.updateLayerData(index, mapLayerData, true);
+}
+
+function updateBgLayer(mapLayerData: MapLayer | null) {
+  if (!mapLayerData) {
+    return;
+  }
+
+  /**
+   * If the first layer in the map view store can be found in the source layers,
+   * this means this is not a background layer, which means the previous background layer
+   * is null, and thus we can simply unshift the background layer
+   *
+   * Otherwise, we replace the background layer
+   */
+  const currentDataUuid = mapViewStore.mapLayers[0]?.uuid;
+  if (layerStore.getLayer(`${currentDataUuid}`)) {
+    mapViewStore.mapLayers.unshift(mapLayerData);
+  } else {
+    updateMapLayerData(0, mapLayerData);
+  }
 }
 function updateLayerInfo(uuid: string, info: LayerInfo) {
   layerStore.setLayerInfo(uuid, info);
@@ -73,19 +94,30 @@ function updateTimeDimension(
 function updateOpacity(identifier: number | string, opacity: number) {
   mapViewStore.updateLayerOpacity(identifier, opacity);
 }
+
+function removeBgLayer() {
+  mapViewStore.mapLayers.shift();
+}
 </script>
 
 <template>
+  <MapDatamappingOgcDatasetConverter
+    v-if="isDatasetLayer(sourceBgLayer)"
+    :layer="sourceBgLayer as DatasetLayer"
+    @update="updateBgLayer($event)"
+    @updateDataset="updateStoreLayerData"
+    @updateLayerInfo="updateLayerInfo"
+    @remove="removeBgLayer"
+  />
+
   <div
-    v-for="(data, index) in [sourceBgLayer, ...sourceData].filter(
-      (data) => !!data,
-    )"
+    v-for="(data, index) in sourceData.filter((data) => !!data)"
     v-bind:key="data.uuid"
   >
     <MapDatamappingOgcDatasetConverter
       v-if="isDatasetLayer(data)"
       :layer="data"
-      @update="updateMapLayerData(index, $event)"
+      @update="updateMapLayerData(index + 1, $event)"
       @updateOpacity="updateOpacity"
       @updateTimeDimension="updateTimeDimension"
       @updateDataset="updateStoreLayerData"
