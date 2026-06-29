@@ -24,7 +24,10 @@ function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
   if (layers.length === 0) {
     return [];
   }
-  return layers.map(layerToStateConfig);
+
+  const startIndex =
+    useMapViewStore().mapLayers.length - useLayerStore().layers.length;
+  return layers.slice(startIndex).map(layerToStateConfig);
 }
 
 function layerToStateConfig(layer: MapLayer): LayerStateInput {
@@ -105,9 +108,10 @@ export function useStateConfig() {
           rotation: positionStore.rotation,
         },
         layers: layersToStateConfig(mapviewStore.mapLayers),
-        bg_layer: layerStore.backgroundLayer
-          ? layerToStateConfig(mapviewStore.mapLayers[0]!)
-          : null,
+        bg_layer:
+          layerStore.backgroundLayer && mapviewStore.mapLayers[0]
+            ? layerToStateConfig(mapviewStore.mapLayers[0])
+            : null,
       },
     };
   });
