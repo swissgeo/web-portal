@@ -377,4 +377,14 @@ describe("geoadminToMapLibreStyle - icon + label + resolution (doc reference)", 
     expect(large.paint!["text-halo-color"]).toBe("rgba(14,80,114,0.9)");
     expect(large.paint!["text-halo-width"]).toBe(3);
   });
+
+  it("carries the label background as ol:text-background metadata", () => {
+    // MapLibre has no text-background paint, so the geoadmin backgroundFill is
+    // stashed on metadata for the OpenLayers side to re-apply (applyOlTextBackground).
+    const large = style.layers[1]!;
+    expect(large.metadata!["ol:text-background"]).toEqual({
+      fill: "rgba(14,80,114,0.9)",
+      padding: [2, 2, 2, 2],
+    });
+  });
 });

@@ -21,6 +21,7 @@ import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
 import * as geoJsonUtils from "@/utils/geoJsonUtils";
 import { makeGetImage } from "@/utils/maplibreShapeIcons";
+import { applyOlTextBackground } from "@/utils/textBackgroundHelper";
 
 import OlStyleForPropertyValue from "../utils/geoJsonStyleFromLiterals";
 
@@ -146,6 +147,10 @@ export default function useOlGeoJSONLayer(
       undefined,
       getImage,
     );
+    // ol-mapbox-style can't render a label background box; re-apply the geoadmin
+    // label background (carried in layer metadata by the converter) using
+    // OpenLayers' native Text backgroundFill.
+    applyOlTextBackground(olLayer.value, style);
   }
 
   function setFeatures(): void {
