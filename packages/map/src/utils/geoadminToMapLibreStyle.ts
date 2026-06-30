@@ -54,6 +54,13 @@ export interface MapLibreLayer {
   maxzoom?: number;
   layout?: Record<string, unknown>;
   paint?: Record<string, unknown>;
+  /**
+   * Free-form metadata (mapbox spec). Used to carry things the spec can't express but
+   * the OpenLayers renderer can — e.g. `ol:text-background` for a label background box
+   * (see {@link applyOlTextBackground}), since neither `icon-text-fit` nor a text
+   * background survives `ol-mapbox-style`.
+   */
+  metadata?: Record<string, unknown>;
 }
 
 export interface MapLibreStyle {
@@ -280,6 +287,29 @@ function textPaintAndLayout(label: GeoAdminLabel): {
     paint["text-halo-width"] = label.text.stroke.width ?? 1;
   }
   return { layout, paint };
+}
+
+/**
+ * geoadmin labels can declare a filled background box (`label.text.backgroundFill` /
+ * `backgroundStroke` / `padding`), which the legacy renderer drew via OpenLayers' Text
+ * style. MapLibre has no equivalent paint and `ol-mapbox-style` drops it, so we stash it
+ * on the layer's `metadata` for the OpenLayers side to re-apply (see
+ * {@link applyOlTextBackground}). Returns `undefined` when there is no background.
+ */
+function labelBackgroundMetadata(
+  label: GeoAdminLabel,
+): Record<string, unknown> | undefined {
+  const { backgroundFill, backgroundStroke, padding } = label.text;
+  if (!backgroundFill && !backgroundStroke) {
+    return undefined;
+  }
+  return {
+    "ol:text-background": {
+      ...(backgroundFill ? { fill: backgroundFill.color } : {}),
+      ...(backgroundStroke ? { stroke: backgroundStroke } : {}),
+      padding,
+    },
+  };
 }
 
 // --- Per-entry layer building -------------------------------------------------
@@ -552,6 +582,10 @@ function foldLabelIntoSymbol(
   const { layout, paint } = textPaintAndLayout(label);
   symbol.layout = { ...symbol.layout, ...layout };
   symbol.paint = { ...symbol.paint, ...paint };
+  const background = labelBackgroundMetadata(label);
+  if (background) {
+    symbol.metadata = { ...symbol.metadata, ...background };
+  }
 }
 
 function buildLabelLayer(
@@ -568,6 +602,10 @@ function buildLabelLayer(
     layout,
     paint,
   };
+  const background = labelBackgroundMetadata(label);
+  if (background) {
+    symbol.metadata = background;
+  }
   return applyCommon(symbol, entry, ctx);
 }
 
