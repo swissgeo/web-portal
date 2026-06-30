@@ -254,6 +254,11 @@ function textPaintAndLayout(label: GeoAdminLabel): {
   const layout: Record<string, unknown> = {
     "text-field": labelTemplateToExpression(label.template),
     "text-allow-overlap": true,
+    // MapLibre's `text-max-width` defaults to 10 ems, so ol-mapbox-style word-wraps
+    // longer labels; the legacy OpenLayers renderer never auto-wraps (it only breaks
+    // on an explicit `\n`). Use a large width to disable auto-wrap and match legacy —
+    // explicit `\n` in a template still breaks lines.
+    "text-max-width": 100,
   };
   if (font.size !== undefined) {
     layout["text-size"] = font.size;
@@ -509,6 +514,12 @@ function buildPointLayers(
       circle.paint!["circle-stroke-width"] = vectorOptions.stroke.width ?? 1;
     }
     layers.push(applyCommon(circle, entry, ctx));
+    // A `circle` layer can't carry a `text-field`, and unlike icon/shape points
+    // there's no symbol layer to fold the label into. Emit a separate symbol
+    // text layer (drawn above the circle) so circle-point labels aren't dropped.
+    if (vectorOptions.label) {
+      layers.push(buildLabelLayer(entry, vectorOptions.label, ctx, idPrefix));
+    }
   } else if (vectorOptions.type === "icon") {
     // Icon points reference an external image; the renderer's getImage resolves the
     // icon name to the src URL.

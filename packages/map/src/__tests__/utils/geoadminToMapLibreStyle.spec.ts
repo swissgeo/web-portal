@@ -127,6 +127,49 @@ describe("geoadminToMapLibreStyle - unique (hydroweb grundwasser)", () => {
   });
 });
 
+describe("geoadminToMapLibreStyle - circle point with a label", () => {
+  // A `circle` layer can't carry a `text-field`, so the converter must emit a
+  // separate symbol text layer; otherwise circle-point labels are dropped
+  // (the ~44 meteoschweiz/hydroweb measurement layers).
+  const CIRCLE_WITH_LABEL = {
+    type: "single",
+    property: "id",
+    geomType: "point",
+    vectorOptions: {
+      type: "circle",
+      radius: 6,
+      fill: { color: "#1d6ec9" },
+      label: {
+        template: "${station_name}",
+        text: {
+          font: "bold 12px Arial",
+          fill: { color: "white" },
+          backgroundFill: { color: "rgba(14,80,114,0.9)" },
+          padding: [2, 2, 2, 2],
+        },
+      },
+    },
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+
+  const { style } = geoadminToMapLibreStyle(CIRCLE_WITH_LABEL, "src");
+
+  it("emits a circle layer AND a companion symbol text layer", () => {
+    expect(style.layers).toHaveLength(2);
+    expect(style.layers[0]!.type).toBe("circle");
+    const label = style.layers[1]!;
+    expect(label.type).toBe("symbol");
+    expect(label.layout!["text-field"]).toEqual(["get", "station_name"]);
+  });
+
+  it("carries the label background box into the symbol layer metadata", () => {
+    const label = style.layers[1]!;
+    expect(label.metadata!["ol:text-background"]).toMatchObject({
+      fill: "rgba(14,80,114,0.9)",
+      padding: [2, 2, 2, 2],
+    });
+  });
+});
+
 describe("geoadminToMapLibreStyle - range", () => {
   const RANGE: GeoAdminGeoJSONStyleDefinition = {
     type: "range",
