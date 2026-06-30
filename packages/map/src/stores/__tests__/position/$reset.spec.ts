@@ -1,16 +1,10 @@
-import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
-
 import { describe, it, expect } from "vitest";
 
 import { LV03Format } from "@/utils/coordinates/coordinateFormat";
 
-import { positionStore } from "../__mocks__/stores";
+import { positionStore, mockDispatcher } from "../__mocks__/stores";
 import { DEFAULT_PROJECTION, DEFAULT_FORMAT } from "../../position";
 import $reset from "../../position/actions/$reset";
-
-const mockDispatcher: ActionDispatcher = {
-  name: "mockDispatcher",
-};
 
 describe("$reset", () => {
   it("should reset the store to its initial state", () => {
