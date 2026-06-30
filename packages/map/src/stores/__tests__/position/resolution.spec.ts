@@ -1,24 +1,21 @@
-import { describe, it, expect, vi } from "vitest";
+import { createPinia, setActivePinia } from "pinia";
+import { describe, it, expect } from "vitest";
 
-import type { PositionStore } from "@/stores/position";
+import usePositionStore from "@/stores/position";
 
 import resolution from "../../position/getters/resolution";
 
+const pinia = createPinia();
+setActivePinia(pinia); // Sets the active instance manually
+
+const store = usePositionStore();
+
 describe("resolution", () => {
   it("should return the resolution for the current zoom and center", () => {
-    const mockProjection = {
-      getResolutionForZoom: vi.fn().mockReturnValue(100),
-    };
+    store.zoom = 3;
+    store.center = [0, 0];
 
-    const mockStore = {
-      projection: mockProjection,
-      zoom: 5,
-      center: [0, 0],
-    } as unknown as PositionStore;
-
-    const result = resolution.call(mockStore);
-
-    expect(mockProjection.getResolutionForZoom).toHaveBeenCalledWith(5, [0, 0]);
+    const result = resolution.call(store);
     expect(result).toBe(100);
   });
 });
