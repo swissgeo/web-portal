@@ -1,6 +1,8 @@
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { resourceFromAttributes } from "@opentelemetry/resources";
+import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import * as opentelemetry from "@opentelemetry/sdk-node";
 import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
 import log from "@swissgeo/log";
@@ -22,8 +24,15 @@ const exporterOptions = {
 };
 
 const traceExporter = new OTLPTraceExporter(exporterOptions);
+
+const metricExporter = new OTLPMetricExporter(exporterOptions);
+const metricReader = new PeriodicExportingMetricReader({
+  exporter: metricExporter,
+});
+
 const sdk = new opentelemetry.NodeSDK({
   traceExporter,
+  metricReaders: [metricReader],
   instrumentations: [getNodeAutoInstrumentations()],
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: process.env.OTEL_SERVICE_NAME || "web-portal",
