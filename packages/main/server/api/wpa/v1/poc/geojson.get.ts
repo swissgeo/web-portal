@@ -20,5 +20,10 @@ export default defineEventHandler(async (event) => {
       statusMessage: "Missing or disallowed url query parameter",
     });
   }
-  return await $fetch(url);
+  // Some geoadmin data files are served as `binary/octet-stream` rather than
+  // `application/json`. Without forcing the response type, ofetch would hand back
+  // a Blob for those (instead of parsed JSON), which the browser then can't read
+  // as a FeatureCollection. Both the style and data endpoints return JSON, so
+  // parse it as JSON regardless of the upstream content-type.
+  return await $fetch(url, { responseType: "json" });
 });
