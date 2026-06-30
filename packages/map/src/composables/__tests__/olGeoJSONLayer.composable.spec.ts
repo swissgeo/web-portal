@@ -61,12 +61,6 @@ vi.mock("ol/source/Vector", () => ({
   }),
 }));
 
-vi.mock("ol/Feature", () => ({
-  Feature: vi.fn(function MockFeature(geometry?: unknown) {
-    return { getProperties: () => ({}), getGeometry: () => geometry };
-  }),
-}));
-
 vi.mock("@/utils/geoJsonUtils", () => ({
   reprojectGeoJsonData: vi.fn((_data: unknown, _proj: unknown) => ({
     type: "FeatureCollection",

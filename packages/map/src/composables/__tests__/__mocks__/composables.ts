@@ -63,8 +63,6 @@ export const mockDrawingVectorLayer = shallowRef({
   getSource: vi.fn(() => ({ clear: vi.fn() })),
 });
 
-export const mockDrawinG_LAYER_UUID = "drawing-layer-uuid";
-
 export const mockMapStore = {
   olMap: shallowRef(null),
   isMapLoaded: computed(() => false),
