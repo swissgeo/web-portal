@@ -1,1 +1,0 @@
-../../../skeleton/src/stores/ui.ts
