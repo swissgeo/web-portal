@@ -31,7 +31,9 @@ const layerStore = useLayerStore();
 function updateMapLayerData(index: number, mapLayerData: MapLayer) {
   const options = layerStore.consumeImportOptions(mapLayerData.uuid);
   const currentData = mapViewStore.getMapLayers().value[index];
-  mapLayerData.opacity = options?.opacity ?? currentData?.opacity ?? 1;
+
+  mapLayerData.opacity =
+    options?.opacity ?? currentData?.opacity ?? mapLayerData.opacity;
   mapLayerData.isVisible = options?.isVisible ?? currentData?.isVisible ?? true;
 
   mapViewStore.updateLayerData(index, mapLayerData, true);
@@ -42,6 +44,7 @@ function updateBgLayer(mapLayerData: MapLayer | null) {
     return;
   }
 
+  mapLayerData.opacity = 1;
   /**
    * If the first layer in the map view store can be found in the source layers,
    * this means this is not a background layer, which means the previous background layer
@@ -91,9 +94,6 @@ function updateTimeDimension(
     ...(matchedValue ? { currentValue: matchedValue } : {}),
   });
 }
-function updateOpacity(identifier: number | string, opacity: number) {
-  mapViewStore.updateLayerOpacity(identifier, opacity);
-}
 
 function removeBgLayer() {
   mapViewStore.mapLayers.shift();
@@ -118,7 +118,6 @@ function removeBgLayer() {
       v-if="isDatasetLayer(data)"
       :layer="data"
       @update="updateMapLayerData(index + Number(!!sourceBgLayer), $event)"
-      @updateOpacity="updateOpacity"
       @updateTimeDimension="updateTimeDimension"
       @updateDataset="updateStoreLayerData"
       @updateLayerInfo="updateLayerInfo"

@@ -59,6 +59,7 @@
     "eslint": "catalog:",
     "fflate": "catalog:",
     "h3": "catalog:",
+    "lodash": "^4.18.1",
     "nuxt": "catalog:",
     "ol": "catalog:",
     "pinia": "catalog:",

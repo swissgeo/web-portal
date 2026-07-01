@@ -48,7 +48,6 @@ function layerToStateConfig(layer: MapLayer): LayerStateInput {
       `Cannot serialize layer ${layer.uuid}: no source data found`,
     );
   }
-
   const config: LayerStateInput = {
     layerUrl: sourceData.layerUrl as string,
     type: sourceData.type as LayerStateInput["type"],
@@ -71,10 +70,12 @@ function layerToStateConfig(layer: MapLayer): LayerStateInput {
 }
 
 async function stateConfigToLayer(
-  config: LayerStateInput,
+  config: LayerStateInput | null,
 ): Promise<Layer | null> {
   const layerOptions: Partial<Layer> = {};
-
+  if (!config) {
+    return null;
+  }
   if (config.dimensions) {
     const dims: Partial<Record<DimensionId, Dimension>> = {};
     if (config.dimensions.time) {
@@ -147,7 +148,7 @@ export function useStateConfig() {
       stateLayers.map((lc: LayerStateInput) => stateConfigToLayer(lc)),
     );
     const bgLayer: Layer | null = await stateConfigToLayer(
-      payload.state.bg_layer,
+      payload.state.bg_layer ?? null,
     );
 
     layerStore.setBackground(bgLayer);
@@ -198,7 +199,7 @@ export function useCustomStateConfig() {
     layerStateConfig.value = layersToStateConfig(mapviewStore.mapLayers);
   };
   const backgroundLayerState = () => {
-    if (layerStore.backgroundLayer) {
+    if (layerStore.backgroundLayer && mapviewStore.mapLayers[0]) {
       return layerToStateConfig(mapviewStore.mapLayers[0]);
     } else {
       return null;
