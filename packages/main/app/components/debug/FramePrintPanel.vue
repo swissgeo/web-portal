@@ -28,6 +28,7 @@ const {
   printPreviewUrl,
   scaleOfPrintFormatted,
   printRequestBody,
+  updatePrintState,
 } = usePrintFraming();
 
 const printFormatItems = ref(
@@ -54,12 +55,17 @@ function handleClose() {
   emit("close");
 }
 
-function handleSendPrintRequest() {
-  if (!printRequestBody.value) {
-    return;
-  }
 
-  void sendPrintRequest(printRequestBody.value);
+watch(printRequestBody, (newPrintRequestBody) => {
+  console.log("Print request body updated:", newPrintRequestBody);
+});
+
+watch(printPreviewUrl, (newPrintPreviewUrl) => {
+  console.log("Print preview URL updated:", newPrintPreviewUrl);
+});
+
+function handleSendPrintRequest() {
+  updatePrintState();
 }
 </script>
 
@@ -130,9 +136,6 @@ function handleSendPrintRequest() {
       >
       <UButton v-if="!isPrintExtentOutOfBounds" @click="handleSendPrintRequest"
         >Send Print Request</UButton
-      >
-      <a v-if="printPreviewUrl" :href="printPreviewUrl" target="_blank"
-        >Open Print Preview</a
       >
       <PrintJobListing />
     </div>

@@ -37,7 +37,7 @@ export function usePrintFraming() {
   const ENFORCE_PORTABLE_STATE = false; // force using the portable (base64) state for print-related share links until the state service is ready and can handle the probably bigger state for print framing
 
   const toaster = useToaster();
-  const { customStateConfig, customStateMapCenter, customStateMapZoom } =
+  const { customStateConfig, customStateMapCenter, customStateMapZoom, customStateMapRotation } =
     useCustomStateConfig();
   const { hash, state } = useCreateShareLinkForCustomState(
     ENFORCE_PORTABLE_STATE,
@@ -178,13 +178,13 @@ export function usePrintFraming() {
     view.setZoom(zoomLevelForPrint.value);
   }
 
-  watch(zoomLevelForPrint, (newZoom) => {
+  watch(zoomLevelForPrint, (newZoom) => {    
     customStateMapZoom.value = newZoom;
-  });
+  }, { immediate: true });
 
   watch(centerForPrint, (newCenter) => {
     customStateMapCenter.value = newCenter;
-  });
+  }, { immediate: true });
 
   watch(
     printExtent,
@@ -262,9 +262,17 @@ export function usePrintFraming() {
     }
   });
 
-  watch(customStateConfig, (newConfig) => {
-    state.value = newConfig;
-  });
+  /**
+   * Generate a new state ID (on state server) corresponding to the the current print
+   * framing configuration and update the state in the URL with this new ID.
+   */
+  function updatePrintState() {
+    if (!customStateConfig.value) {
+      return;
+    }
+    
+    state.value = customStateConfig.value;
+  }
 
   function enableZoomStep() {
     if (!olMap.value) {
@@ -325,5 +333,6 @@ export function usePrintFraming() {
     scaleOfPrint,
     scaleOfPrintFormatted,
     printRequestBody,
+    updatePrintState,
   };
 }

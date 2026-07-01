@@ -207,7 +207,7 @@ export function useCustomStateConfig() {
     }
   };
 
-  const customStateConfig = computed((): AppStatePayload => {
+  const customStateConfig = computed((): AppStatePayload => {    
     return {
       version: APP_STATE_CONFIG_VERSION,
       state: {
