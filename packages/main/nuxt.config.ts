@@ -124,6 +124,7 @@ export default defineNuxtConfig({
       version: getVersion(),
       buildTime,
       wantedLogLevels: "error,warn",
+      printServiceApi: "",
     },
   },
   nitro: {

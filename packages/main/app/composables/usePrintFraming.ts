@@ -11,8 +11,9 @@ import { Fill, Style } from "ol/style";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import type { PrintFormat, PrintOrientation } from '../types/print'
-import { URL_PARAM_STATE } from './useUrlParams'
 import type { PrintPostRequestBody } from "./usePrintRequests";
+
+import { URL_PARAM_STATE } from './useUrlParams'
 
 export function usePrintFraming() {
   const DARK_BLUE = "rgba(0, 0, 30, 0.6)";
@@ -33,7 +34,7 @@ export function usePrintFraming() {
     updateWhileInteracting: true,
   });
 
-  const ENFORCE_PORTABLE_STATE = true; // force using the portable (base64) state for print-related share links until the state service is ready and can handle the probably bigger state for print framing
+  const ENFORCE_PORTABLE_STATE = false; // force using the portable (base64) state for print-related share links until the state service is ready and can handle the probably bigger state for print framing
 
   const toaster = useToaster();
   const { customStateConfig, customStateMapCenter, customStateMapZoom } =

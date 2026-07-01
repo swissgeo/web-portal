@@ -213,7 +213,7 @@ export function useCreateShareLinkForCustomState(
     );
   } else {
     const { data, execute, abort, isFetching } = useFetch<string>(
-      runtimeConfig.public.shareServiceUrl,
+      runtimeConfig.shareServiceUrl,
       {
         immediate: false,
         refetch: false,
@@ -250,7 +250,6 @@ export function useCreateShareLinkForCustomState(
   return {
     shareLink,
     hash,
-    isFetching,
     state,
   };
 }
