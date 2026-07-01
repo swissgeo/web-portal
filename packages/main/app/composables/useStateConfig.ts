@@ -185,7 +185,7 @@ export function useCustomStateConfig() {
     layerStateConfig.value = layersToStateConfig(mapviewStore.mapLayers);
   };
 
-  const customStateConfig = computed((): AppStatePayload => {
+  const customStateConfig = computed((): AppStatePayload => {    
     return {
       version: APP_STATE_CONFIG_VERSION,
       state: {

@@ -1,7 +1,7 @@
 import type { AppStatePayload } from "~/composables/useStateConfig";
 import type { MaybeRefOrGetter, Ref } from "vue";
 
-import { watchDebounced } from "@vueuse/core";
+import { useFetch, watchDebounced } from "@vueuse/core";
 import { postStateToStateId } from "~/utils/postStateToStateId";
 import { toValue } from "vue";
 
@@ -192,8 +192,9 @@ export function useCreateShareLinkForCustomState(
   forcePortableState: boolean = false,
 ) {
   const state = ref<AppStatePayload | null>(null);
-  const runtimeConfig = useRuntimeConfig();
   const hash = ref<string | null>(null);
+  let abortController: AbortController = new AbortController();
+  const isFetching = ref(false);
 
   if (forcePortableState) {
     watchDebounced(
@@ -212,35 +213,38 @@ export function useCreateShareLinkForCustomState(
       },
     );
   } else {
-    const { data, execute, abort, isFetching } = useFetch<string>(
-      runtimeConfig.shareServiceUrl,
-      {
-        immediate: false,
-        refetch: false,
-      },
-    )
-      .post(state)
-      .text();
 
-    hash.value = data.value;
-
-    watchDebounced(
+    watch(
       state,
-      () => {
+      async () => {
+
         if (!state.value) {
+          hash.value = null;
           return;
         }
 
+        // Only one fetch at a time, abort the previous one if a new state change occurs
         if (isFetching.value) {
-          abort();
+          abortController.abort();
         }
 
-        void execute();
+        abortController = new AbortController();
+        isFetching.value = true;
+
+        try {
+          hash.value = await postStateToStateId(state.value.state, {
+            signal: abortController.signal,
+          });
+        } catch (error) {
+          console.warn("Error while posting state to service", error);
+        } finally {
+          if (abortController === abortController) {
+            isFetching.value = false;
+          }
+        }
       },
       {
         deep: true,
-        debounce: 500,
-        maxWait: 1500,
       },
     );
   }
