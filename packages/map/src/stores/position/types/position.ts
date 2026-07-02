@@ -1,9 +1,6 @@
-// import type { NormalizedExtent, SingleCoordinate } from "@swissgeo/coordinates";
 import type { CoordinateSystem, SingleCoordinate } from "@swissgeo/coordinates";
 
 import type { CoordinateFormat } from "@/utils/coordinates/coordinateFormat";
-
-// import { CrossHairs } from '@/stores/position/types/crossHairs.enum'
 
 export interface CameraPosition {
   /** X position of the camera in the 3D reference system (metric mercator) */
@@ -24,7 +21,7 @@ export interface CameraPosition {
 }
 
 export interface PositionStoreState {
-  // /** The display format selected for the mouse tracker */
+  /** The display format selected for the mouse tracker */
   displayFormat: CoordinateFormat;
   /** The map zoom level, which define the resolution of the view */
   zoom: number;
@@ -35,11 +32,6 @@ export interface PositionStoreState {
    * possible if the device has orientation capabilities)
    */
   autoRotation: boolean;
-  // /**
-  //  * Flag which indicates if the device has orientation capabilities (e.g. can use map auto
-  //  * rotate)
-  //  */
-  // hasOrientation: boolean
   /** Center of the view expressed with the current projection */
   center: SingleCoordinate;
   /**
@@ -51,26 +43,11 @@ export interface PositionStoreState {
    * 1:100'000, etc...)
    */
   projection: CoordinateSystem;
-  // crossHair?: CrossHairs
-  // crossHairPosition?: SingleCoordinate
-  // /**
-  //  * Position of the view when we are in 3D, always expressed in EPSG:3857 (only projection system
-  //  * that works with Cesium)
-  //  *
-  //  * Will be set to undefined when the 3D map is not active
-  //  */
-  // camera?: CameraPosition
 }
 
 export interface PositionStoreGetters {
-  /** The center of the map reprojected in EPSG:4326 */ centerEpsg4326(): SingleCoordinate;
+  /** The center of the map reprojected in EPSG:4326 */
+  centerEpsg4326(): SingleCoordinate;
   /** Resolution of the view expressed in meter per pixel */
   resolution(): number;
-  // /** The extent of the view, expressed with two coordinates numbers (`[ bottomLeft, topRight ]`) */
-  // extent(): NormalizedExtent
-  // /**
-  //  * Flag telling if the current extent is contained into the LV95 bounds (meaning only things
-  //  * from our LV 95 services are currently in display)
-  //  */
-  // isExtentOnlyWithinLV95Bounds(): boolean
 }
