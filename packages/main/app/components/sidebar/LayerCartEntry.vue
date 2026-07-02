@@ -44,7 +44,7 @@ const getTimestampName = (time: string) => {
 
 // Opacity as percentage (0-100) for the slider
 const opacityPercent = computed({
-  get: () => Math.round(layer.opacity * 100),
+  get: () => Math.round(layer.opacity ?? 1 * 100),
   set: (value: number) => {
     handleOpacityChange(value / 100);
   },
