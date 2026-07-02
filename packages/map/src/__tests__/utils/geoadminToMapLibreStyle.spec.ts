@@ -170,7 +170,7 @@ describe("geoadminToMapLibreStyle - circle point with a label", () => {
   });
 });
 
-describe("geoadminToMapLibreStyle - range", () => {
+describe("geoadminToMapLibreStyle - range (polygon)", () => {
   const RANGE: GeoAdminGeoJSONStyleDefinition = {
     type: "range",
     property: "value",
@@ -186,21 +186,136 @@ describe("geoadminToMapLibreStyle - range", () => {
       },
     ],
   };
+  // Polygon fill + outline are merged into shared data-driven layers; the range
+  // selection lives in the paint expression, not a per-layer filter.
+  const rangeCond = [
+    "all",
+    [">=", ["to-number", ["get", "value"]], 0],
+    ["<", ["to-number", ["get", "value"]], 10],
+  ];
 
-  it("emits a half-open range filter and fill + outline layers for polygons", () => {
+  it("merges polygon fill + outline into shared data-driven layers", () => {
     const { style } = geoadminToMapLibreStyle(RANGE, "src");
     const fill = style.layers.find((layer) => layer.type === "fill")!;
-    const outline = style.layers.find((layer) => layer.type === "line")!;
-    expect(fill.filter).toEqual([
-      "all",
-      [">=", ["to-number", ["get", "value"]], 0],
-      ["<", ["to-number", ["get", "value"]], 10],
+    const stroke = style.layers.find((layer) => layer.type === "line")!;
+
+    // No per-entry filter on the fill; the range drives fill-color via a case.
+    expect(fill.filter).toBeUndefined();
+    expect(fill.paint!["fill-color"]).toEqual([
+      "case",
+      rangeCond,
+      "#ff0000",
+      "rgba(0, 0, 0, 0)",
     ]);
-    expect(fill.paint).toMatchObject({ "fill-color": "#ff0000" });
-    expect(outline.paint).toMatchObject({
-      "line-color": "#000000",
-      "line-width": 2,
-    });
+
+    // Only polygon outlines here, so the shared line layer is filtered to polygons.
+    expect(stroke.filter).toEqual(["==", ["geometry-type"], "Polygon"]);
+    expect(stroke.paint!["line-color"]).toEqual([
+      "case",
+      rangeCond,
+      "#000000",
+      "rgba(0, 0, 0, 0)",
+    ]);
+    expect(stroke.paint!["line-width"]).toEqual(["case", rangeCond, 2, 0]);
+  });
+});
+
+describe("geoadminToMapLibreStyle - mixed polygon/line unique (draw-order fix)", () => {
+  // A warnkarte-shaped style: the same property value maps to a polygon fill/outline
+  // AND a line stroke. Merging every polygon into one fill layer and every stroke into
+  // one line layer restores the legacy renderer's source-order drawing (GPS-732 finding
+  // C: previously the last entries painted over everything).
+  const MIXED = {
+    type: "unique",
+    property: "ws-class",
+    values: [
+      {
+        geomType: "polygon",
+        value: 0,
+        vectorOptions: {
+          fill: { color: "#CCCCCC" },
+          stroke: { color: "#FFFFFF", width: 1 },
+        },
+      },
+      {
+        geomType: "polygon",
+        value: 1,
+        vectorOptions: {
+          fill: { color: "#CCFF66" },
+          stroke: { color: "#FFFFFF", width: 1 },
+        },
+      },
+      {
+        geomType: "line",
+        value: 0,
+        vectorOptions: { stroke: { color: "#CCCCCC", width: 3 } },
+      },
+      {
+        geomType: "line",
+        value: 1,
+        vectorOptions: { stroke: { color: "#CCFF66", width: 3 } },
+      },
+    ],
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+  const { style } = geoadminToMapLibreStyle(MIXED, "src");
+
+  it("collapses all polygons into ONE fill layer and all strokes into ONE line layer", () => {
+    expect(style.layers.filter((l) => l.type === "fill")).toHaveLength(1);
+    expect(style.layers.filter((l) => l.type === "line")).toHaveLength(1);
+    expect(style.layers).toHaveLength(2);
+  });
+
+  it("drives fill-color with a match over the style property, no per-entry filter", () => {
+    const fill = style.layers.find((l) => l.type === "fill")!;
+    expect(fill.filter).toBeUndefined();
+    expect(fill.paint!["fill-color"]).toEqual([
+      "match",
+      ["to-string", ["get", "ws-class"]],
+      "0",
+      "#CCCCCC",
+      "1",
+      "#CCFF66",
+      "rgba(0, 0, 0, 0)",
+    ]);
+  });
+
+  it("branches stroke paint on geometry-type (polygon outline vs line geometry)", () => {
+    const stroke = style.layers.find((l) => l.type === "line")!;
+    // Both geometries present -> case on geometry-type, so no per-layer filter.
+    expect(stroke.filter).toBeUndefined();
+    expect(stroke.paint!["line-color"]).toEqual([
+      "case",
+      ["==", ["geometry-type"], "Polygon"],
+      [
+        "match",
+        ["to-string", ["get", "ws-class"]],
+        "0",
+        "#FFFFFF",
+        "1",
+        "#FFFFFF",
+        "rgba(0, 0, 0, 0)",
+      ],
+      [
+        "match",
+        ["to-string", ["get", "ws-class"]],
+        "0",
+        "#CCCCCC",
+        "1",
+        "#CCFF66",
+        "rgba(0, 0, 0, 0)",
+      ],
+    ]);
+    expect(stroke.paint!["line-width"]).toEqual([
+      "case",
+      ["==", ["geometry-type"], "Polygon"],
+      ["match", ["to-string", ["get", "ws-class"]], "0", 1, "1", 1, 0],
+      ["match", ["to-string", ["get", "ws-class"]], "0", 3, "1", 3, 0],
+    ]);
+  });
+
+  it("orders fill below stroke", () => {
+    expect(style.layers[0]!.type).toBe("fill");
+    expect(style.layers[1]!.type).toBe("line");
   });
 });
 
@@ -247,12 +362,14 @@ describe("geoadminToMapLibreStyle - single line", () => {
     },
   };
 
-  it("emits a single unfiltered line layer", () => {
+  it("emits one line layer with static paint, filtered to line geometries", () => {
     const { style } = geoadminToMapLibreStyle(SINGLE, "src");
     expect(style.layers).toHaveLength(1);
     const line = style.layers[0]!;
     expect(line.type).toBe("line");
-    expect(line.filter).toBeUndefined();
+    // The shared line layer would also stroke polygons (a MapLibre `line` layer applies
+    // to both), so a line-only style is filtered to line geometries.
+    expect(line.filter).toEqual(["==", ["geometry-type"], "LineString"]);
     expect(line.paint).toMatchObject({
       "line-color": "#0000ff",
       "line-width": 3,
