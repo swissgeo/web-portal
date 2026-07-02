@@ -3,12 +3,21 @@ import type { PrintJobStatusResponse } from "~/composables/usePrintRequests";
 
 import { usePrintRequests } from "~/composables/usePrintRequests";
 
-const { ongoingRequests, finishedRequests, errorRequests, requestCollectionNewerToOlder, clearRequestCollection } =
-  usePrintRequests();
+const {
+  ongoingRequests,
+  finishedRequests,
+  errorRequests,
+  requestCollectionNewerToOlder,
+  clearRequestCollection,
+} = usePrintRequests();
 
 const open = ref(false);
 
 const totalCount = computed(() => requestCollectionNewerToOlder.value.length);
+const requestStatusSummary = computed(
+  () =>
+    `${ongoingRequests.value.length} processing, ${finishedRequests.value.length} ready, ${errorRequests.value.length} failed`,
+);
 
 function statusLabel(status: PrintJobStatusResponse["status"]): string {
   if (status === "open") {
@@ -44,14 +53,56 @@ function statusColor(
       footer: 'justify-end',
     }"
   >
-    <!-- Trigger button showing a badge when jobs are pending -->
+    <!-- Trigger button showing a compact summary of all print job statuses -->
     <UButton label="Open Print Jobs" icon="i-lucide-printer">
-      <template v-if="ongoingRequests.length > 0" #trailing>
+      <template v-if="totalCount > 0" #trailing>
         <UBadge
-          :label="String(ongoingRequests.length)"
-          color="info"
+          color="neutral"
           size="sm"
-        />
+          variant="subtle"
+          class="h-5 gap-1.5 px-1.5"
+          :aria-label="requestStatusSummary"
+          :title="requestStatusSummary"
+        >
+          <span
+            v-if="ongoingRequests.length > 0"
+            class="inline-flex items-center gap-0.5 text-info"
+          >
+            <UIcon
+              name="i-lucide-loader-circle"
+              class="size-3.5"
+              :class="{ 'animate-spin': ongoingRequests.length > 0 }"
+              aria-hidden="true"
+            />
+            <span class="text-xs tabular-nums">{{
+              ongoingRequests.length
+            }}</span>
+          </span>
+          <span
+            v-if="finishedRequests.length > 0"
+            class="inline-flex items-center gap-0.5 text-success"
+          >
+            <UIcon
+              name="i-lucide-circle-check"
+              class="size-3.5"
+              aria-hidden="true"
+            />
+            <span class="text-xs tabular-nums">{{
+              finishedRequests.length
+            }}</span>
+          </span>
+          <span
+            v-if="errorRequests.length > 0"
+            class="inline-flex items-center gap-0.5 text-error"
+          >
+            <UIcon
+              name="i-lucide-circle-x"
+              class="size-3.5"
+              aria-hidden="true"
+            />
+            <span class="text-xs tabular-nums">{{ errorRequests.length }}</span>
+          </span>
+        </UBadge>
       </template>
     </UButton>
 
@@ -61,12 +112,13 @@ function statusColor(
           <h2 class="text-base font-semibold">Print Jobs</h2>
           <div class="mt-1 flex w-full items-center gap-4">
             <p class="text-sm text-muted">
-              {{ ongoingRequests.length }} processing · {{ finishedRequests.length }} ready ·
+              {{ ongoingRequests.length }} processing ·
+              {{ finishedRequests.length }} ready ·
               {{ errorRequests.length }} failed
             </p>
 
             <UButton
-            v-if="totalCount > 0"
+              v-if="totalCount > 0"
               class="ml-auto"
               label="Clear all"
               color="error"
