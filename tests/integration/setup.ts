@@ -25,7 +25,23 @@ export function mockExternalRequests(page: Page) {
    */
   const mockOar = async () => {
     await page.route("http://mock-oar.org/**", (route) =>
-      route.fulfill({ status: 200, json: { collections: [], links: [] } }),
+      route.fulfill({
+        status: 200,
+        json: {
+          collections: [],
+          links: [
+            {
+              rel: "self",
+              href: "http://mock-oar.org/empty-mock-layer",
+            },
+          ],
+          id: "empty-mock-layer",
+          properties: {
+            type: "Dataset",
+            title: "Empty Mock Layer",
+          },
+        },
+      }),
     );
   };
 
