@@ -13,9 +13,9 @@ export function useService(distribution: Ref<Distribution | null>) {
 
   const {
     data: serviceData,
+    error,
     /*
         isFetching,
-        error,
         */
   } = useConditionalFetch<Service>(serviceUrl, ["get", "json"]);
 
@@ -46,9 +46,9 @@ export function useService(distribution: Ref<Distribution | null>) {
   return {
     serviceUrl,
     serviceData,
+    error,
     /*
         isFetching,
-        error,
         */
   };
 }

@@ -37,12 +37,72 @@ describe("useService fetching the service data from the OGC records", () => {
 
   it("fetches the service data after the distribution becomes available", async () => {
     const distribution = ref<Distribution | null>(null);
-    const { serviceData } = useService(distribution);
+    const { serviceData, error } = useService(distribution);
     expect(serviceData.value).toBe(null);
 
     distribution.value = ChBafuSchutzgebieteLuftfahrtWmts as Distribution;
     await flushPromises();
     expect(serviceData.value).toEqual(ChGeoadminWmts);
+
+    expect(error).toBeNull();
+  });
+});
+
+describe("handles service links 404", () => {
+  const handlers = [
+    http.get(
+      "https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wmts",
+      () => {
+        return HttpResponse.json("Not Found", { status: 404 });
+      },
+    ),
+  ];
+
+  const server = setupServer(...handlers);
+
+  beforeAll(() => server.listen());
+
+  afterAll(() => server.close());
+
+  afterEach(() => server.resetHandlers());
+
+  it("doesn't trip with 404", async () => {
+    const distribution = ref(ChBafuSchutzgebieteLuftfahrtWmts as Distribution);
+    const { serviceData, error } = useService(distribution);
+    expect(error.value).toBeNull();
+
+    await flushPromises();
+    expect(serviceData.value).toBeNull();
+    expect(error.value).toEqual("Not Found");
+  });
+});
+
+describe("handles service links 5xx", () => {
+  const handlers = [
+    http.get(
+      "https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wmts",
+      () => {
+        return HttpResponse.error();
+      },
+    ),
+  ];
+
+  const server = setupServer(...handlers);
+
+  beforeAll(() => server.listen());
+
+  afterAll(() => server.close());
+
+  afterEach(() => server.resetHandlers());
+
+  it("doesn't trip with 5xx", async () => {
+    const distribution = ref(ChBafuSchutzgebieteLuftfahrtWmts as Distribution);
+    const { serviceData, error } = useService(distribution);
+    expect(error.value).toBeNull();
+
+    await flushPromises();
+    expect(serviceData.value).toBeNull();
+    expect(error.value).toEqual("Failed to fetch");
   });
 });
 
