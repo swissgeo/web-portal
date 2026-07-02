@@ -8,6 +8,7 @@ allowBuilds:
   "@parcel/watcher": false
   esbuild: false
   msw: false
+  protobufjs: false
   sharp: false
   unrs-resolver: false
   vue-demi: false
@@ -23,6 +24,16 @@ catalog:
   "@nuxt/test-utils": ^4.0.3
   "@nuxt/ui": ^4.8.2
   "@nuxtjs/i18n": ^10.4.0
+  "@opentelemetry/api": "^1.9.1"
+  "@opentelemetry/auto-instrumentations-node": "^0.77.0"
+  "@opentelemetry/core": "^2.8.0"
+  "@opentelemetry/exporter-metrics-otlp-grpc": "^0.219.0"
+  "@opentelemetry/exporter-trace-otlp-grpc": "^0.219.0"
+  "@opentelemetry/resources": "^2.8.0"
+  "@opentelemetry/sdk-metrics": "^2.8.0"
+  "@opentelemetry/sdk-node": "^0.219.0"
+  "@opentelemetry/sdk-trace-base": "^2.8.0"
+  "@opentelemetry/semantic-conventions": "^1.41.1"
   "@lucide/vue": ^1.18.0
   "@pinia/nuxt": ^0.11.2
   "@pinia/testing": ^1.0.3
