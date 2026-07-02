@@ -56,6 +56,12 @@ describe("position store", () => {
       store.decreaseZoom(mockDispatcher);
       expect(store.zoom).toBe(initialZoom - 1);
     });
+
+    it("should not be able to set zoom below 0", () => {
+      store.setZoom(0, mockDispatcher);
+      store.decreaseZoom(mockDispatcher);
+      expect(store.zoom).toBe(0);
+    });
   });
 
   describe("setRotation", () => {

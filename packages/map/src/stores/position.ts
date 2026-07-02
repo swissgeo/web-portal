@@ -60,19 +60,19 @@ const usePositionStore = defineStore("position", () => {
   }
 
   function increaseZoom(dispatcher: ActionDispatcher): void {
-    if (projection.value instanceof SwissCoordinateSystem) {
-      zoom.value = projection.value.roundZoomLevel(zoom.value, true) + 1;
-    } else {
-      zoom.value = projection.value.roundZoomLevel(zoom.value) + 1;
-    }
+    const rounded =
+      projection.value instanceof SwissCoordinateSystem
+        ? projection.value.roundZoomLevel(zoom.value, true)
+        : projection.value.roundZoomLevel(zoom.value);
+    setZoom(rounded + 1, dispatcher);
   }
 
   function decreaseZoom(dispatcher: ActionDispatcher): void {
-    if (projection.value instanceof SwissCoordinateSystem) {
-      zoom.value = projection.value.roundZoomLevel(zoom.value, true) - 1;
-    } else {
-      zoom.value = projection.value.roundZoomLevel(zoom.value) - 1;
-    }
+    const rounded =
+      projection.value instanceof SwissCoordinateSystem
+        ? projection.value.roundZoomLevel(zoom.value, true)
+        : projection.value.roundZoomLevel(zoom.value);
+    setZoom(rounded - 1, dispatcher);
   }
 
   function setRotation(
