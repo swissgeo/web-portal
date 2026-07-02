@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type {PrintJobStatusResponse} from "~/composables/usePrintRequests";
+import type { PrintJobStatusResponse } from "~/composables/usePrintRequests";
 
-import { usePrintRequests  } from "~/composables/usePrintRequests";
+import { usePrintRequests } from "~/composables/usePrintRequests";
 
 const { requestCollection, ongoingRequests, finishedRequests, errorRequests } =
   usePrintRequests();

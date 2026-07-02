@@ -4,20 +4,15 @@ import type { PrintFormat, PrintOrientation } from "../types/print";
 
 /**
  * Body of the POST request sent to the print service to trigger a print job.
- *
- * The payload is shape as such:
- * {
- *  "stateId": "foo1234567890",
- *  "format": "a4",
- *  "orientation": "landscape",
- *  "resolution": 96,
- * }
  */
 export type PrintPostRequestBody = {
-  state: string;
+  state_id: string;
   print_format: PrintFormat;
   print_orientation: PrintOrientation;
   print_resolution: number;
+  print_legend: boolean;
+  print_grid: boolean;
+  print_lang: string;
 };
 
 export type PrintJobStatusResponse = {
@@ -99,7 +94,7 @@ const usePrintRequestsStore = defineStore("printRequests", () => {
 
 export function usePrintRequests() {
   const runtimeConfig = useRuntimeConfig();
-  const printUrl = runtimeConfig.public.printServiceApi;
+  const printUrl = runtimeConfig.public.printServiceUrl;
   const { requestCollection } = storeToRefs(usePrintRequestsStore());
 
   if (import.meta.client) {
@@ -185,21 +180,27 @@ export function usePrintRequests() {
    * Send a new print request to the pint service.
    * This will update the collections of requests.
    */
-  async function sendPrintRequest(printPostRequestBody: PrintPostRequestBody) {
-    const data = await $fetch<PrintJobStatusResponse>(printUrl, {
-      method: "POST",
-      body: printPostRequestBody,
-    });
+  async function sendCustomPrintRequest(
+    printPostRequestBody: PrintPostRequestBody,
+  ) {
+    try {
+      const data = await $fetch<PrintJobStatusResponse>(printUrl, {
+        method: "POST",
+        body: printPostRequestBody,
+      });
 
-    requestCollection.value.push({
-      requestBody: printPostRequestBody,
-      lastResponse: data,
-      isPolling: false,
-    });
+      requestCollection.value.push({
+        requestBody: printPostRequestBody,
+        lastResponse: data,
+        isPolling: false,
+      });
+    } catch (_err) {
+      // nothing to do, the request failed and the user will see an error message in the UI
+    }
   }
 
   return {
-    sendPrintRequest,
+    sendCustomPrintRequest,
     refreshOpenRequests,
     requestCollection,
     ongoingRequests,
