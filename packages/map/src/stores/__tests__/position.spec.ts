@@ -187,4 +187,20 @@ describe("position store", () => {
       expect(store.resolution).toBe(100);
     });
   });
+
+  describe("non-SwissCoordinateSystem projections", () => {
+    it("should increase zoom level by 1 for non-SwissCoordinateSystem projections", () => {
+      store.$patch({ projection: WGS84 });
+      const initialZoom = store.zoom;
+      store.increaseZoom(mockDispatcher);
+      expect(store.zoom).toBe(initialZoom + 1);
+    });
+
+    it("should decrease zoom level by 1 for non-SwissCoordinateSystem projections", () => {
+      store.$patch({ projection: WGS84 });
+      const initialZoom = store.zoom;
+      store.decreaseZoom(mockDispatcher);
+      expect(store.zoom).toBe(initialZoom - 1);
+    });
+  });
 });
