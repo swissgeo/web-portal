@@ -1,7 +1,7 @@
 import type { AppStatePayload } from "~/composables/useStateConfig";
 import type { MaybeRefOrGetter, Ref } from "vue";
 
-import { useFetch, watchDebounced } from "@vueuse/core";
+import { watchDebounced } from "@vueuse/core";
 import { postStateToStateId } from "~/utils/postStateToStateId";
 import { toValue } from "vue";
 
@@ -213,11 +213,9 @@ export function useCreateShareLinkForCustomState(
       },
     );
   } else {
-
     watch(
       state,
       async () => {
-
         if (!state.value) {
           hash.value = null;
           return;
@@ -235,8 +233,8 @@ export function useCreateShareLinkForCustomState(
           hash.value = await postStateToStateId(state.value.state, {
             signal: abortController.signal,
           });
-        } catch (error) {
-          console.warn("Error while posting state to service", error);
+        } catch (_error) {
+          // nothing to do, the hash will remain null if the request fails
         } finally {
           if (abortController === abortController) {
             isFetching.value = false;

@@ -2,12 +2,9 @@
 import { useMap } from "@swissgeo/map";
 import { IconButton } from "@swissgeo/skeleton";
 import PrintJobListing from "~/components/debug/PrintJobListing.vue";
-import { usePrintRequests } from "~/composables/usePrintRequests";
 import { printFormats, printOrientations } from "~/types/print";
 
 import { usePrintFraming } from "../../composables/usePrintFraming";
-
-const { sendPrintRequest } = usePrintRequests();
 
 const emit = defineEmits<{
   close: [];
@@ -25,9 +22,7 @@ const {
   isPrintExtentOutOfBounds,
   isPrintExtentBeyondViewport,
   adjustToLockedView,
-  printPreviewUrl,
   scaleOfPrintFormatted,
-  printRequestBody,
   updatePrintState,
 } = usePrintFraming();
 
@@ -54,15 +49,6 @@ const printOrientationItems = ref(
 function handleClose() {
   emit("close");
 }
-
-
-watch(printRequestBody, (newPrintRequestBody) => {
-  console.log("Print request body updated:", newPrintRequestBody);
-});
-
-watch(printPreviewUrl, (newPrintPreviewUrl) => {
-  console.log("Print preview URL updated:", newPrintPreviewUrl);
-});
 
 function handleSendPrintRequest() {
   updatePrintState();

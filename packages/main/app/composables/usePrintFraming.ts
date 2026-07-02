@@ -10,14 +10,18 @@ import VectorSource from "ol/source/Vector";
 import { Fill, Style } from "ol/style";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 
-import type { PrintFormat, PrintOrientation } from '../types/print'
+import type { PrintFormat, PrintOrientation } from "../types/print";
 import type { PrintPostRequestBody } from "./usePrintRequests";
 
-import { URL_PARAM_STATE } from './useUrlParams'
+import { usePrintRequests } from "./usePrintRequests";
+import { URL_PARAM_STATE } from "./useUrlParams";
 
 export function usePrintFraming() {
   const DARK_BLUE = "rgba(0, 0, 30, 0.6)";
   const BRIGHT_RED = "rgba(255, 0, 0, 0.6)";
+
+  const { locale } = useI18n();
+  const { sendCustomPrintRequest } = usePrintRequests();
 
   const printExtentFeature = new Feature();
   const style = new Style({
@@ -37,12 +41,13 @@ export function usePrintFraming() {
   const ENFORCE_PORTABLE_STATE = false; // force using the portable (base64) state for print-related share links until the state service is ready and can handle the probably bigger state for print framing
 
   const toaster = useToaster();
-  const { customStateConfig, customStateMapCenter, customStateMapZoom, customStateMapRotation } =
+  const { customStateConfig, customStateMapCenter, customStateMapZoom } =
     useCustomStateConfig();
   const { hash, state } = useCreateShareLinkForCustomState(
     ENFORCE_PORTABLE_STATE,
   );
   const { zoomLevel, olMap, center, viewportExtent } = useMap();
+  const currentLang = computed(() => locale.value.toLowerCase());
   const isZoomStepEnabled = ref(false);
   const selectedPrintFormat = ref<PrintFormat>("a4");
   const selectedPrintResolution = ref(96);
@@ -62,15 +67,27 @@ export function usePrintFraming() {
     return url.toString();
   });
 
+  const isReadyToPrint = computed(() => {
+    return (
+      !!hash.value &&
+      !isPrintExtentOutOfBounds.value &&
+      !isPrintExtentBeyondViewport.value &&
+      !!printRequestBody.value
+    );
+  });
+
   const printRequestBody = computed<PrintPostRequestBody | null>(() => {
     if (!hash.value) {
       return null;
     }
     return {
-      state: hash.value,
+      state_id: hash.value,
       print_format: selectedPrintFormat.value,
       print_orientation: selectedPrintOrientation.value,
       print_resolution: selectedPrintResolution.value,
+      print_legend: false,
+      print_grid: false,
+      print_lang: currentLang.value,
     };
   });
 
@@ -178,13 +195,21 @@ export function usePrintFraming() {
     view.setZoom(zoomLevelForPrint.value);
   }
 
-  watch(zoomLevelForPrint, (newZoom) => {    
-    customStateMapZoom.value = newZoom;
-  }, { immediate: true });
+  watch(
+    zoomLevelForPrint,
+    (newZoom) => {
+      customStateMapZoom.value = newZoom;
+    },
+    { immediate: true },
+  );
 
-  watch(centerForPrint, (newCenter) => {
-    customStateMapCenter.value = newCenter;
-  }, { immediate: true });
+  watch(
+    centerForPrint,
+    (newCenter) => {
+      customStateMapCenter.value = newCenter;
+    },
+    { immediate: true },
+  );
 
   watch(
     printExtent,
@@ -270,9 +295,19 @@ export function usePrintFraming() {
     if (!customStateConfig.value) {
       return;
     }
-    
+
     state.value = customStateConfig.value;
   }
+
+  watch(isReadyToPrint, async () => {
+    if (!isReadyToPrint.value || !printRequestBody.value) {
+      return;
+    }
+    await sendCustomPrintRequest(printRequestBody.value);
+
+    // Reset state to prevent sending multiple requests for the same print framing configuration
+    state.value = null;
+  });
 
   function enableZoomStep() {
     if (!olMap.value) {
@@ -332,7 +367,7 @@ export function usePrintFraming() {
     printPreviewUrl,
     scaleOfPrint,
     scaleOfPrintFormatted,
-    printRequestBody,
     updatePrintState,
+    isReadyToPrint,
   };
 }
