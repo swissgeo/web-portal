@@ -35,7 +35,7 @@ export type PrintJobStatusResponse = {
   /**
    * URL to the detailed report of the print job, if available. This endpoint is specific to a print job and must be used to obtain status updates.
    */
-  reportPath: string | null;
+  reportUrl: string | null;
   /**
    * Optional message providing additional information about the print job status
    */
@@ -43,7 +43,7 @@ export type PrintJobStatusResponse = {
   /**
    * URL to the generated PDF file, if available
    */
-  pdfPath?: string;
+  pdfUrl?: string;
 };
 
 type PrintRequestCollectionItem = {
@@ -53,7 +53,7 @@ type PrintRequestCollectionItem = {
 };
 
 const PRINT_REQUESTS_STORAGE_KEY = "printRequestsCollection";
-const PRINT_STATUS_POLL_INTERVAL_MS = 5000;
+const PRINT_STATUS_POLL_INTERVAL_MS = 2000;
 
 /**
  * Pinia store that centralizes the print request collection and its localStorage persistence.
@@ -61,6 +61,7 @@ const PRINT_STATUS_POLL_INTERVAL_MS = 5000;
  */
 const usePrintRequestsStore = defineStore("printRequests", () => {
   const requestCollection = ref<PrintRequestCollectionItem[]>([]);
+  const isPollingGlobal = ref(false);
 
   if (import.meta.client) {
     // Hydrate from localStorage on first load
@@ -89,28 +90,47 @@ const usePrintRequestsStore = defineStore("printRequests", () => {
     );
   }
 
-  return { requestCollection };
+  function clearRequestCollection() {
+    requestCollection.value = [];
+    localStorage.removeItem(PRINT_REQUESTS_STORAGE_KEY);
+  }
+
+  return { requestCollection, isPollingGlobal, clearRequestCollection };
 });
 
 export function usePrintRequests() {
   const runtimeConfig = useRuntimeConfig();
   const printUrl = runtimeConfig.public.printServiceUrl;
-  const { requestCollection } = storeToRefs(usePrintRequestsStore());
+  const { requestCollection, isPollingGlobal } = storeToRefs(usePrintRequestsStore());
+  const { clearRequestCollection } = usePrintRequestsStore();
+
+  function startPolling() {
+    if (isPollingGlobal.value) {
+      return;
+    }
+
+    isPollingGlobal.value = true;
+
+    setInterval(() => {
+      void refreshOpenRequests();
+    }, PRINT_STATUS_POLL_INTERVAL_MS);
+  }
 
   if (import.meta.client) {
     /**
      * Regularly poll the print service for the status of the print jobs that are still open,
      * to update their status in the UI when they are finished.
      */
-    const pollingTimer = setInterval(() => {
-      void refreshOpenRequests();
-    }, PRINT_STATUS_POLL_INTERVAL_MS);
-
-    // Remove the polling timer when the component is unmounted
-    onBeforeUnmount(() => {
-      clearInterval(pollingTimer);
-    });
+    startPolling();
   }
+
+  const requestCollectionNewerToOlder = computed(() => {
+    return [...requestCollection.value].sort((a, b) => {
+      const dateA = new Date(a.lastResponse.created);
+      const dateB = new Date(b.lastResponse.created);
+      return dateB.getTime() - dateA.getTime();
+    });
+  });
 
   /**
    * A collection of print requests that are still open (pdf is not ready yet)
@@ -150,21 +170,21 @@ export function usePrintRequests() {
   async function refreshOpenRequests() {
     const openRequests = requestCollection.value.filter(
       (request: PrintRequestCollectionItem) =>
-        request.lastResponse.status === "open" &&
-        typeof request.lastResponse.reportPath === "string" &&
+        (request.lastResponse.status === "open" || request.lastResponse.status === "started") &&
+        typeof request.lastResponse.reportUrl === "string" &&
         request.isPolling === false,
     );
 
     const tasks = openRequests.map(
       async (request: PrintRequestCollectionItem) => {
-        const reportPath = request.lastResponse.reportPath;
-        if (!reportPath) {
+        const reportUrl = request.lastResponse.reportUrl;
+        if (!reportUrl) {
           return;
         }
 
         request.isPolling = true;
         try {
-          request.lastResponse = await $fetch(reportPath);
+          request.lastResponse = await $fetch(reportUrl);
         } catch {
           // ignore temporary polling error
         } finally {
@@ -193,7 +213,10 @@ export function usePrintRequests() {
         requestBody: printPostRequestBody,
         lastResponse: data,
         isPolling: false,
+
       });
+
+      startPolling();
     } catch (_err) {
       // nothing to do, the request failed and the user will see an error message in the UI
     }
@@ -206,5 +229,7 @@ export function usePrintRequests() {
     ongoingRequests,
     finishedRequests,
     errorRequests,
+    requestCollectionNewerToOlder,
+    clearRequestCollection,
   };
 }
