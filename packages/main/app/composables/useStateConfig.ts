@@ -24,10 +24,17 @@ function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
   if (layers.length === 0) {
     return [];
   }
-  return layers.map(layerToStateConfig);
+  const startIndex = useLayerStore().backgroundLayer ? 1 : 0;
+
+  // Skip layers with no matching source (e.g. a directly-injected map-only layer
+  // like the GPS-732 demo) — layerToStateConfig returns null for those.
+  return layers
+    .slice(startIndex)
+    .map(layerToStateConfig)
+    .filter((config): config is LayerStateInput => config !== null);
 }
 
-function layerToStateConfig(layer: MapLayer): LayerStateInput {
+function layerToStateConfig(layer: MapLayer): LayerStateInput | null {
   const layerStore = useLayerStore();
   let sourceData: Layer | undefined | null = layerStore.getLayer(layer.uuid);
 
@@ -37,6 +44,8 @@ function layerToStateConfig(layer: MapLayer): LayerStateInput {
       log.error(
         `A layer with uuid ${layer?.uuid} couldn't be transformed to a Layer State Config. Most probable reason is a difference between the source Data and the map Layers`,
       );
+      // No matching source layer: skip it rather than dereferencing null.
+      return null;
     }
   }
 

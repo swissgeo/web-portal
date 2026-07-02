@@ -7,6 +7,7 @@ const isImportLocalPanelOpen = ref(false);
 const isDrawingOpen = ref(false);
 const isSharePanelOpen = ref(false);
 const isPrintPanelOpen = ref(false);
+const isGeoJsonDemoOpen = ref(false);
 
 function toggleLayersPanel() {
   isLayersPanelOpen.value = !isLayersPanelOpen.value;
@@ -27,6 +28,10 @@ function toggleStateConfig() {
 
 function togglePrintPanel() {
   isPrintPanelOpen.value = !isPrintPanelOpen.value;
+}
+
+function toggleGeoJsonDemo() {
+  isGeoJsonDemoOpen.value = !isGeoJsonDemoOpen.value;
 }
 </script>
 
@@ -59,6 +64,11 @@ function togglePrintPanel() {
 
     <DebugSharePanel v-if="isSharePanelOpen" @close="toggleStateConfig" />
     <DebugFramePrintPanel v-if="isPrintPanelOpen" @close="togglePrintPanel" />
+    <DebugGeoJsonDemoPanel
+      class="relative w-[560px] overflow-hidden bg-white shadow"
+      v-if="isGeoJsonDemoOpen"
+      @close="toggleGeoJsonDemo"
+    />
     <div
       class="flex gap-2"
       v-if="
@@ -67,7 +77,8 @@ function togglePrintPanel() {
         !isImportLocalPanelOpen &&
         !isDrawingOpen &&
         !isSharePanelOpen &&
-        !isPrintPanelOpen
+        !isPrintPanelOpen &&
+        !isGeoJsonDemoOpen
       "
     >
       <UButton @click="toggleLayersPanel" class="cursor-pointer">
@@ -87,6 +98,12 @@ function togglePrintPanel() {
       </UButton>
       <UButton @click="togglePrintPanel">
         {{ $t("debug.openPrintPanel") }}
+      </UButton>
+      <UButton
+        data-testid="debug-open-geojson-demo-panel"
+        @click="toggleGeoJsonDemo"
+      >
+        Load geoadmin GeoJSON…
       </UButton>
     </div>
   </div>
