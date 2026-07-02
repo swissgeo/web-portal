@@ -32,11 +32,11 @@ export async function importStateFromBase64(): Promise<boolean> {
       });
       return true;
     }
-  } catch {
+  } catch (error: unknown) {
     log.error({
       title: "useImportStateFromBase64",
       titleColor: LogPreDefinedColor.Sky,
-      messages: ["State restoration is unsuccessful"],
+      messages: ["State restoration is unsuccessful", error],
     });
     toaster.showWarning($i18n.t("state.restoreUnableWarning"));
   }

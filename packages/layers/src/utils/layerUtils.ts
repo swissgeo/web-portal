@@ -33,7 +33,9 @@ export const validateDataset: (value: unknown) => asserts value is Dataset = (
   const candidate = value as Partial<Dataset>;
 
   if (!isNonEmptyString(candidate.id)) {
-    throw new InvalidDatasetError('missing or empty "id"');
+    throw new InvalidDatasetError(
+      `missing or empty "id" in ${JSON.stringify(value)}`,
+    );
   }
 
   if (!candidate.properties || typeof candidate.properties !== "object") {

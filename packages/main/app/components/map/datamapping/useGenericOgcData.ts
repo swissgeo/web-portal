@@ -52,7 +52,7 @@ export function useGenericOgcData(layer: Ref<DatasetLayer>) {
       titleColor: LogPreDefinedColor.Red,
       messages: [
         layer.value.humanId,
-        ...values.map((value) => value.toString()),
+        ...values.filter((value) => !!value).map((value) => value.toString()),
       ],
     });
   });

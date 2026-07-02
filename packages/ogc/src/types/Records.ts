@@ -24,6 +24,7 @@ export interface Feature<recordType extends string> {
   links?: Link[];
   linkTemplates?: TemplateLink[];
   properties: Property<recordType>;
+  type: "Feature";
 }
 
 /**

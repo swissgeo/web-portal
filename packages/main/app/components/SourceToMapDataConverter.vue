@@ -32,6 +32,7 @@ const dimensionsStore = useDimensionsStore();
 // some, and at last we revert to the default value only if there is no data and no options
 function updateMapLayerData(index: number, mapLayerData: MapLayer) {
   const options = layerStore.consumeImportOptions(mapLayerData.uuid);
+
   const currentData = mapViewStore.getMapLayers().value[index];
 
   mapLayerData.opacity =
