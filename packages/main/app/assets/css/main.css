@@ -285,11 +285,3 @@ body {
   --ui-secondary-hover: var(--ui-color-secondary-100);
   --ui-secondary-active: var(--ui-color-secondary-200);
 }
-
-a:not(.p-menu-item-link):not([data-menu], [print-link]) {
-  @apply text-blue-700;
-}
-
-a:hover:not(.p-menu-item-link):not([data-menu], [print-link]) {
-  @apply text-blue-500;
-}

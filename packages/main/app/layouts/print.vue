@@ -1,8 +1,9 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
+import { displayModeKey } from "~/types/injectionKeys";
 import { provide } from "vue";
 
-provide<"web" | "print">("displayMode", "print");
+provide(displayModeKey, "print");
 </script>
 
 <template>

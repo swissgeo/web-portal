@@ -48,3 +48,6 @@ CLAUDE.md
 test-results/
 playwright-report/
 blob-report/
+
+# Coverage reports
+coverage/

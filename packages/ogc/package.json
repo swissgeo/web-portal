@@ -8,27 +8,26 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/ogc.js",
-      "require": "./dist/ogc.umd.cjs"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "build:dev:watch": "vite build --watch --mode development",
-    "build:prod": "vite build",
+    "build": "rolldown --config rolldown.config.ts",
+    "build:dev": "rolldown --config rolldown.config.ts --environment NODE_ENV:development",
+    "build:dev:watch": "rolldown --config rolldown.config.ts --watch --environment NODE_ENV:development",
+    "build:prod": "rolldown --config rolldown.config.ts",
     "format": "prettier --check --ignore-path ../../.prettierignore .",
     "format:write": "prettier --write --ignore-path ../../.prettierignore .",
     "lint": "eslint",
     "lint:write": "eslint --fix",
     "test:unit": "vitest run",
+    "test:unit:coverage": "vitest run --coverage",
     "type-check": "tsc"
   },
   "dependencies": {
     "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@vueuse/core": "catalog:",
-    "ol": "catalog:",
     "proj4": "catalog:"
   },
   "devDependencies": {
@@ -40,13 +39,14 @@
     "happy-dom": "catalog:",
     "mapbox-gl": "catalog:",
     "msw": "catalog:",
+    "rolldown": "catalog:",
+    "rolldown-plugin-dts": "catalog:",
     "stylelint": "catalog:",
-    "typescript": "catalog:",
-    "unplugin-dts": "catalog:",
-    "vite": "catalog:"
+    "typescript": "catalog:"
   },
   "peerDependencies": {
+    "ol": "catalog:",
     "vue": "catalog:"
   },
-  "packageManager": "pnpm@11.6.0"
+  "packageManager": "pnpm@11.8.0"
 }

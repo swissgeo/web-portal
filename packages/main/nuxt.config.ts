@@ -21,6 +21,7 @@ const buildTime = new Date().toISOString();
 // NUXT always force NODE_ENV to production so we cannot use it to make a development build with
 // source map, therefore using our own DEVELOPMENT_BUILD environment variable
 const isDevelopment = process.env.DEVELOPMENT_BUILD === "1";
+const isCoverage = process.env.COVERAGE === "1";
 process.env.NODE_ENV = isDevelopment ? "dev" : process.env.NODE_ENV;
 
 export default defineNuxtConfig({
@@ -57,12 +58,14 @@ export default defineNuxtConfig({
   sourcemap: {
     // Enable in dev, disable in prod (unless you have a private uploader)
     server: isDevelopment,
-    client: isDevelopment,
+    client: isDevelopment || isCoverage,
   },
   vite: {
     build: {
       minify: isDevelopment ? false : "terser",
-      sourcemap: isDevelopment,
+      // Use inline sourcemaps for coverage so v8-to-istanbul can remap to
+      // original source files without needing to fetch external .map files
+      sourcemap: isDevelopment ? true : isCoverage ? "inline" : false,
     },
     mode: isDevelopment ? "development" : "production",
     server: {
@@ -111,13 +114,14 @@ export default defineNuxtConfig({
   runtimeConfig: {
     what3wordsApiKey: "",
     geoadminApiBaseUrl: "",
+    shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
     public: {
       ogcApiEndpoint: "",
+      ogcCatalogCollection: "swissgeo.catalog",
       gitCommit: getGitCommit(),
       version: getVersion(),
       buildTime,
       wantedLogLevels: "error,warn",
-      shareServiceUrl: "http://localhost:3010",
     },
   },
   nitro: {

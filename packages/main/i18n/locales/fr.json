@@ -142,7 +142,8 @@
     "successTitle": "Succès"
   },
   "state": {
-    "restoreUnableWarning": "L'état de l'application n'a pas pu être restauré"
+    "restoreUnableWarning": "L'état de l'application n'a pas pu être restauré",
+    "shareLinkError": "Le lien de partage n'a pas pu être généré"
   },
   "map": {
     "contextMenuPopup": {
@@ -199,5 +200,8 @@
   },
   "compareSlider": {
     "toggleButtonTitle": "Basculer le curseur de comparaison"
+  },
+  "embed": {
+    "viewOn": "Voir sur {platform}"
   }
 }

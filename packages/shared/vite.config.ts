@@ -27,8 +27,8 @@ export default defineConfig(({ mode }) => {
         beforeWriteFile: (filePath, content) => {
           const normalizedPath = filePath.replace(/\\/g, "/");
           const rewrittenPath = normalizedPath
-            .replace("/dist/src/", "/dist/")
-            .replace("/dist/types/", "/dist/");
+            .replace("/dist/packages/shared/src/", "/dist/")
+            .replace("/dist/packages/shared/types/", "/dist/");
 
           return {
             filePath: rewrittenPath,

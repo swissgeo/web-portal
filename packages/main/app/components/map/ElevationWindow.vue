@@ -1,17 +1,13 @@
 <script setup lang="ts">
+import type { LineStringMetrics, PolygonMetrics } from "@swissgeo/drawing";
 import type { Labels } from "@swissgeo/elevation-profile";
 import type { LineString } from "geojson";
-import type { Feature } from "ol";
-import type {
-  LineString as OlLineString,
-  Polygon as OlPolygon,
-  Geometry,
-} from "ol/geom";
+import type { Polygon as OlPolygon } from "ol/geom";
 import type Map from "ol/Map";
 import type { Ref } from "vue";
 
-import { X, GripVertical } from "@lucide/vue";
-import { useDrawingStore, resolveFeatureId } from "@swissgeo/drawing";
+import { GripVertical } from "@lucide/vue";
+import { useDrawing } from "@swissgeo/drawing";
 import {
   ElevationProfile,
   ElevationProfileOpenLayersBridge,
@@ -26,7 +22,6 @@ import {
   onBeforeUnmount,
   onBeforeMount,
   reactive,
-  ref,
   useTemplateRef,
   watch,
 } from "vue";
@@ -37,7 +32,7 @@ const DEFAULT_WIDTH = 800;
 
 const olMapRef = inject<Ref<Map | undefined>>("olMap");
 
-const geometryRevision = ref(0);
+const { focusedFeature, focusMode, focusedFeatureMetrics } = useDrawing();
 
 const mapProjectionEpsg = computed(() => positionStore.projection.epsg);
 const olGeoJSON = computed(
@@ -66,30 +61,47 @@ const labels = computed<Labels>(() => ({
     slopeDistance: t("elevationProfile.metadata.slopeDistance"),
   },
 }));
-const hasInfo = computed(
-  () => drawingStore.isDrawing && Boolean(drawingStore.selectedFeatureInfo),
-);
-const selectedLineString = computed<LineString | null>(() => {
-  void geometryRevision.value;
 
-  const selectedId = drawingStore.selectedFeatureId;
-  if (!selectedId) {
+const hasInfo = computed(() => focusMode.value !== "none");
+
+const selectedLineString = computed<LineString | null>(() => {
+  // void focusedFeatureMetrics.value;
+
+  if (!focusedFeature.value) {
     return null;
   }
 
-  const features = drawingStore.drawingFeatures as Feature<Geometry>[];
-  const feature =
-    features.find((f) => resolveFeatureId(f) === selectedId) ?? null;
-  const geometry = feature?.getGeometry();
+  const geometry = focusedFeature.value.getGeometry();
+
   const type = geometry?.getType();
 
   if (type === "LineString") {
-    return olGeoJSON.value.writeGeometryObject(
-      geometry as OlLineString,
-    ) as LineString;
+    // When starting the creation of a LineString with a first point,
+    // OL automatically creates a second point that is the same as the first,
+    // hence momentarily creating an invalid null-length LineString
+    const lineStringLength = (focusedFeatureMetrics.value as LineStringMetrics)
+      ?.lengthMeters;
+
+    // Until the user moves the pointer away from the location of the very first point,
+    // the length is still 0 and we don't want to show the elevation profile yet.
+    if (!lineStringLength) {
+      return null;
+    }
+
+    return olGeoJSON.value.writeGeometryObject(geometry) as LineString;
   }
 
   if (type === "Polygon") {
+    // Perimeter is already computed as part of the drawing metrics
+    const perimeter = (focusedFeatureMetrics.value as PolygonMetrics)
+      ?.perimeterMeters;
+
+    // Directly after placing the first point, the pointer is still at the same location
+    // until the user moves it. As a result, the perimeter is 0 and we don't want to show the elevation profile yet.
+    if (!perimeter) {
+      return null;
+    }
+
     const ring = (geometry as OlPolygon).getLinearRing(0);
     if (!ring) {
       return null;
@@ -116,7 +128,6 @@ const dragState = reactive({
   offsetY: 0,
 });
 
-const drawingStore = useDrawingStore();
 const positionStore = usePositionStore();
 const { t } = useI18n();
 const windowRef = useTemplateRef<HTMLElement>("windowRef");
@@ -125,8 +136,6 @@ const { elevationProfile, elevationPending, elevationError } =
     selectedLineString,
     () => positionStore.projection.epsgNumber,
   );
-
-let unlistenGeometryChange: (() => void) | null = null;
 
 function clampToViewport(nextX: number, nextY: number) {
   if (typeof window === "undefined") {
@@ -214,10 +223,6 @@ function handleWindowResize() {
   position.y = clamped.y;
 }
 
-function closeWindow() {
-  drawingStore.clearPassiveSelection();
-}
-
 watch(
   hasInfo,
   async (visible) => {
@@ -231,30 +236,6 @@ watch(
   { immediate: true },
 );
 
-watch(
-  () => drawingStore.selectedFeatureId,
-  (selectedId) => {
-    unlistenGeometryChange?.();
-    unlistenGeometryChange = null;
-
-    if (!selectedId) {
-      return;
-    }
-
-    const features = drawingStore.drawingFeatures as Feature<Geometry>[];
-    const feature = features.find((f) => resolveFeatureId(f) === selectedId);
-    if (!feature) {
-      return;
-    }
-
-    const key = feature.on("change", () => {
-      geometryRevision.value++;
-    });
-    unlistenGeometryChange = () => feature.un("change", key.listener);
-  },
-  { immediate: true },
-);
-
 onBeforeMount(() => {
   if (typeof window !== "undefined") {
     window.addEventListener("resize", handleWindowResize);
@@ -263,7 +244,6 @@ onBeforeMount(() => {
 
 onBeforeUnmount(() => {
   stopDrag();
-  unlistenGeometryChange?.();
   if (typeof window !== "undefined") {
     window.removeEventListener("resize", handleWindowResize);
   }
@@ -297,16 +277,6 @@ onBeforeUnmount(() => {
               {{ t("elevationProfile.windowTitle") }}
             </p>
           </div>
-          <UButton
-            size="xs"
-            variant="ghost"
-            color="neutral"
-            square
-            @pointerdown.stop
-            @click="closeWindow"
-          >
-            <X :size="14" />
-          </UButton>
         </div>
       </template>
 

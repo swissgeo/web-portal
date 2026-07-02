@@ -19,14 +19,14 @@ describe("useDistribution composable returning the desired distribution", () => 
 
     expect(distribution.value).toHaveProperty("properties");
     expect(distribution.value.properties).toHaveProperty("protocol");
-    expect(distribution.value.properties.protocol).toEqual("OGC:WMTS");
+    expect(distribution.value.properties.protocol).toEqual("ogc:wmts");
     expect(distribution.value.links.length).toBeGreaterThan(0);
 
     distributionId.value = "ch.bafu.schutzgebiete-luftfahrt:wms";
 
     expect(distribution.value).toHaveProperty("properties");
     expect(distribution.value.properties).toHaveProperty("protocol");
-    expect(distribution.value.properties.protocol).toEqual("OGC:WMS");
+    expect(distribution.value.properties.protocol).toEqual("ogc:wms");
     expect(distribution.value.links.length).toBeGreaterThan(0);
   });
 
@@ -69,7 +69,7 @@ describe("useDistribution composable returning the desired distribution", () => 
 
     expect(distribution.value).toHaveProperty("properties");
     expect(distribution.value.properties).toHaveProperty("protocol");
-    expect(distribution.value.properties.protocol).toEqual("OGC:WMTS");
+    expect(distribution.value.properties.protocol).toEqual("ogc:wmts");
     expect(distribution.value.links.length).toBeGreaterThan(0);
   });
 
@@ -89,7 +89,7 @@ describe("useDistribution composable returning the desired distribution", () => 
 
     expect(distribution.value).toHaveProperty("properties");
     expect(distribution.value.properties).toHaveProperty("protocol");
-    expect(distribution.value.properties.protocol).toEqual("OGC:WMTS");
+    expect(distribution.value.properties.protocol).toEqual("ogc:wmts");
     expect(distribution.value.links.length).toBeGreaterThan(0);
   });
 

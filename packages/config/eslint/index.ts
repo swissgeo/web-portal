@@ -89,6 +89,7 @@ const allIgnores: string[] = [
   "**/node_modules",
   "**/.github",
   "**/dist",
+  "**/.output",
   "tsconfig.json",
   "**/*.md",
   "**/eslint.config.mts",

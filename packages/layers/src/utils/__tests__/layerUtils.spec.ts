@@ -87,7 +87,7 @@ describe("Testing the information gathering from datasets", () => {
           {
             country: "CH",
             role: "pointOfContact",
-            organisation: "Federal Office of Topography",
+            organization: "Federal Office of Topography",
           },
         ],
         type: "Dataset",
@@ -115,7 +115,7 @@ describe("Testing the information gathering from datasets", () => {
           {
             country: "CH",
             role: "pointOfContact",
-            organisation: "   ",
+            organization: "   ",
           },
         ],
         type: "Dataset",

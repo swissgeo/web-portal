@@ -49,8 +49,10 @@ declare global {
   const useRuntimeConfig: () => {
     what3wordsApiKey: string;
     geoadminApiBaseUrl: string;
+    shareServiceUrl: string;
     public: {
       ogcApiEndpoint: string;
+      ogcCatalogCollection: string;
       shareServiceUrl: string;
       wantedLogLevels: string;
       version: string;

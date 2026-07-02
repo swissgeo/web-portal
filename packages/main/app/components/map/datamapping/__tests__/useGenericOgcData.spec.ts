@@ -64,7 +64,7 @@ const {
       },
     ],
     properties: {
-      protocol: "OGC:WMTS",
+      protocol: "ogc:wmts",
     },
   } as Distribution);
 
@@ -73,11 +73,9 @@ const {
   //
   const distributionUrlMockData = ref("");
   const distributionCollectionMockData = ref({
-    records: [distributionMockData.value],
-    id: "grosspuriges-heuchlerkraut",
-    itemType: "record",
-    type: "Collection" as const,
-    title: "Grossspuriges Heuchlerkraut",
+    features: [distributionMockData.value],
+    type: "FeatureCollection" as const,
+    links: [],
   });
   const useDistributionCollectionMock = vi.fn(
     (): ReturnType<typeof useDistributionCollectionOriginal> => ({
@@ -178,7 +176,7 @@ describe("useGenericOgcData ", () => {
       ShallowRef<DistributionCollection | null>
     >();
     expect(distributionCollection.value).toBeDefined();
-    expect(distributionCollection.value).toHaveProperty("records", [
+    expect(distributionCollection.value).toHaveProperty("features", [
       distributionMockData.value,
     ]);
 
@@ -206,17 +204,17 @@ describe("useGenericOgcData ", () => {
 
     expect(distribution.value).toHaveProperty(
       "properties.protocol",
-      "OGC:WMTS",
+      "ogc:wmts",
     );
 
     distributionMockData.value = {
       id: "grossspuriges-heuchlerkraut:wms",
       links: [{ href: "link-to-service", rel: "service" }],
-      properties: { protocol: "OGC:WMS", title: "wms", type: "Distribution" },
+      properties: { protocol: "ogc:wms", title: "wms", type: "Distribution" },
     };
     preferredDistributionIdMockData.value = "grossspuriges-heuchlerkraut:wms";
     await flushPromises();
 
-    expect(distribution.value).toHaveProperty("properties.protocol", "OGC:WMS");
+    expect(distribution.value).toHaveProperty("properties.protocol", "ogc:wms");
   });
 });

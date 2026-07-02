@@ -16,11 +16,14 @@ import ChBafuSchutzgebieteLuftfahrtDistributions from "./fixtures/distribution-c
 describe("useDistributionCollection fetching the data distribution from the OGC records", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/v0/collections/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
       () => {
         return HttpResponse.json(ChBafuSchutzgebieteLuftfahrtDistributions);
       },
     ),
+    http.get("http://services.dev.sgdi.tech/api/oar", () => {
+      return HttpResponse.error();
+    }),
   ];
   const server = setupServer(...handlers);
 
@@ -36,7 +39,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
     );
 
     expect(distributionLink).toBe(
-      "https://services.dev.sgdi.tech/api/oar/v0/collections/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
     );
   });
 
@@ -106,16 +109,19 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
 describe("useDistributionCollection 404", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/v0/collections/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
       () => {
         return HttpResponse.json("Not Found", { status: 404 });
       },
     ),
   ];
   const server = setupServer(...handlers);
-  beforeAll(() => {
-    server.listen();
-  });
+
+  beforeAll(() => server.listen());
+
+  afterAll(() => server.close());
+
+  afterEach(() => server.resetHandlers());
 
   it("doesn't trip with 404", async () => {
     const dataset = ref(ChBafuSchutzgebieteLuftfahrt as Dataset);
@@ -131,16 +137,19 @@ describe("useDistributionCollection 404", () => {
 describe("useDistributionCollection 5xx", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/v0/collections/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
       () => {
         return HttpResponse.error();
       },
     ),
   ];
   const server = setupServer(...handlers);
-  beforeAll(() => {
-    server.listen();
-  });
+
+  beforeAll(() => server.listen());
+
+  afterAll(() => server.close());
+
+  afterEach(() => server.resetHandlers());
 
   it("doesn't trip with 5xx", async () => {
     const dataset = ref(ChBafuSchutzgebieteLuftfahrt as Dataset);

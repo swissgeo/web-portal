@@ -114,12 +114,12 @@ export const useSearchStore = defineStore("search", () => {
         searchLocation(newQuery, lang, abortController.signal),
       ];
 
-      if (!catalog.value?.records) {
+      if (!catalog.value?.features) {
         return;
       }
       // the layers are searched through a local catalog, it's not an async operation
       const searchedLayers =
-        searchLayers(newQuery, catalog.value?.records ?? []) ?? [];
+        searchLayers(newQuery, catalog.value?.features ?? []) ?? [];
 
       // Add feature search for each searchable layer
       for (const layer of searchableLayers) {

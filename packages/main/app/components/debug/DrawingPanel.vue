@@ -1,110 +1,68 @@
 <script setup lang="ts">
-import type { DrawingMode } from "@swissgeo/drawing";
-
-import { useDrawingStore, useDrawingManager } from "@swissgeo/drawing";
-import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { useDrawing } from "@swissgeo/drawing";
+import { useMap } from "@swissgeo/map";
 import { IconButton } from "@swissgeo/skeleton";
-import { computed, onMounted, ref } from "vue";
+
+import DrawingFeaturePropertyPanel from "./DrawingFeaturePropertyPanel.vue";
+
+const { t } = useI18n();
+
+const { olMap } = useMap();
+
+const {
+  disableAllInteractions,
+  enableSelectInteraction,
+  enableModifyInteraction,
+  removeFocus,
+  enableDrawInteraction,
+  removeFocusedFeature,
+  numberOfFeatures,
+  focusMode,
+  focusedFeature,
+  focusedFeatureType,
+  mountDrawingLayer,
+  clearDrawingLayer,
+  isDrawingLayerInLayerStore,
+} = useDrawing();
 
 const emit = defineEmits<{
   close: [];
 }>();
 
-const drawingStore = useDrawingStore();
-const { t } = useI18n();
-const {
-  startDrawing,
-  stopDrawing,
-  downloadKML,
-  downloadKMZ,
-  downloadGPX,
-  clearDrawing,
-} = useDrawingManager();
-const isClearConfirmOpen = ref(false);
-
-const drawingInstruction = computed(() => {
-  if (!drawingStore.isDrawing) {
-    return "";
-  }
-
-  if (drawingStore.drawingMode === "Point") {
-    return t("debug.drawingInstructionPoint");
-  }
-  if (drawingStore.drawingMode === "LineString") {
-    return t("debug.drawingInstructionLine");
-  }
-  if (drawingStore.drawingMode === "Text") {
-    return t("debug.drawingInstructionText");
-  }
-  if (drawingStore.drawingMode === "Measurement") {
-    if (drawingStore.measurementSubtype === "Radius") {
-      return t("debug.drawingInstructionMeasurementRadius");
-    }
-    return t("debug.drawingInstructionMeasurementPath");
-  }
-
-  return t("debug.drawingInstructionDefault");
-});
-
-function updateDrawingName(event: Event) {
-  const target = event.target as HTMLInputElement | null;
-  drawingStore.setDrawingName(target?.value ?? "");
-}
-
-function selectDrawingType(type: DrawingMode) {
-  if (drawingStore.drawingMode === type) {
-    drawingStore.setDrawingMode("None");
-    return;
-  }
-
-  drawingStore.setDrawingMode(type);
-  drawingStore.setDrawingEnabled(true);
-  drawingStore.clearPassiveSelection();
-}
-
 function handleClose() {
-  stopDrawing();
-  drawingStore.setDrawingMode("None");
-  drawingStore.setDrawingEnabled(false);
-  drawingStore.clearPassiveSelection();
   emit("close");
 }
 
-async function handleExport(format: "kml" | "kmz" | "gpx") {
-  try {
-    switch (format) {
-      case "kml":
-        downloadKML();
-        return;
-      case "kmz":
-        await downloadKMZ();
-        return;
-      case "gpx":
-        downloadGPX();
-        return;
+/**
+ * If the drawing layer is removed from the layer store, we should close the drawing panel, as it is no longer relevant.
+ */
+watch(
+  isDrawingLayerInLayerStore,
+  (isDrawingLayerPresentInStore, wasDrawingLayerPresentInStore) => {
+    if (!isDrawingLayerPresentInStore && wasDrawingLayerPresentInStore) {
+      emit("close");
     }
-  } catch (error) {
-    log.error({
-      title: "DrawingPanel/handleExport",
-      titleColor: LogPreDefinedColor.Red,
-      messages: ["Failed to export", format.toUpperCase(), error],
-    });
-  }
+  },
+);
+
+function terminateModification() {
+  disableAllInteractions();
+  removeFocus();
 }
 
-function openClearConfirmation() {
-  isClearConfirmOpen.value = true;
-}
-
-function confirmClear() {
-  clearDrawing();
-  drawingStore.setDrawingMode("None");
-  drawingStore.clearPassiveSelection();
-  isClearConfirmOpen.value = false;
+function cancelDrawing() {
+  disableAllInteractions();
+  removeFocusedFeature();
+  removeFocus();
 }
 
 onMounted(() => {
-  startDrawing();
+  mountDrawingLayer(olMap.value);
+});
+
+onUnmounted(() => {
+  disableAllInteractions();
+  removeFocus();
 });
 </script>
 
@@ -115,156 +73,141 @@ onMounted(() => {
   >
     <div class="mb-4 flex items-center justify-between">
       <h3 class="text-lg font-semibold">{{ t("debug.drawingPanelTitle") }}</h3>
-      <IconButton iconName="X" @click="handleClose" severity="secondary" />
-    </div>
-
-    <div class="mb-4">
-      <label
-        for="drawing-name-input"
-        class="mb-2 block text-sm font-medium text-gray-700"
-      >
-        {{ t("debug.drawingNameLabel") }}
-      </label>
-      <input
-        id="drawing-name-input"
-        :value="drawingStore.drawingName"
-        type="text"
-        class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-        data-testid="drawing-name-input"
-        @input="updateDrawingName"
+      <IconButton
+        iconName="X"
+        @click="handleClose"
+        severity="secondary"
+        data-testid="drawing-panel-close"
       />
     </div>
 
     <div class="mb-4">
-      <p class="mb-2 text-sm text-gray-600">
-        {{ t("debug.drawingToolSelectLabel") }}
-      </p>
-      <div class="flex gap-2">
-        <button
-          @click="selectDrawingType('Point')"
-          data-testid="drawing-tool-point"
-          :class="[
-            'rounded px-4 py-2 font-medium transition-colors',
-            drawingStore.drawingMode === 'Point'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-          ]"
-        >
-          📍 {{ t("debug.drawingToolPoint") }}
-        </button>
-        <button
-          @click="selectDrawingType('LineString')"
-          data-testid="drawing-tool-line"
-          :class="[
-            'rounded px-4 py-2 font-medium transition-colors',
-            drawingStore.drawingMode === 'LineString'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-          ]"
-        >
-          📏 {{ t("debug.drawingToolLine") }}
-        </button>
-        <button
-          @click="selectDrawingType('Text')"
-          data-testid="drawing-tool-text"
-          :class="[
-            'rounded px-4 py-2 font-medium transition-colors',
-            drawingStore.drawingMode === 'Text'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-          ]"
-        >
-          📝 {{ t("debug.drawingToolText") }}
-        </button>
-        <button
-          @click="selectDrawingType('Measurement')"
-          data-testid="drawing-tool-measurement"
-          :class="[
-            'rounded px-4 py-2 font-medium transition-colors',
-            drawingStore.drawingMode === 'Measurement'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-          ]"
-        >
-          📐 {{ t("debug.drawingToolMeasurement") }}
-        </button>
-      </div>
-      <p v-if="drawingStore.isDrawing" class="mt-2 text-sm text-blue-600">
-        {{ drawingInstruction }}
-      </p>
-    </div>
-
-    <div class="mb-4 rounded border border-gray-300 bg-gray-50 p-3">
-      <p class="text-sm font-medium text-gray-700">
-        {{ t("debug.drawingFeaturesDrawnLabel") }}:
-        <span class="font-bold" data-testid="drawing-feature-count">{{
-          drawingStore.featureCount
-        }}</span>
-      </p>
-    </div>
-
-    <div class="mb-4">
-      <p class="mb-2 text-sm font-medium text-gray-700">
-        {{ t("debug.drawingExportLabel") }}
-      </p>
-      <div class="flex gap-2">
-        <button
-          @click="handleExport('kml')"
-          :disabled="drawingStore.featureCount === 0"
-          data-testid="drawing-export-kml"
-          class="rounded bg-green-500 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-300"
-        >
-          {{ t("debug.drawingExportKML") }}
-        </button>
-        <button
-          @click="handleExport('kmz')"
-          :disabled="drawingStore.featureCount === 0"
-          data-testid="drawing-export-kmz"
-          class="rounded bg-green-500 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-300"
-        >
-          {{ t("debug.drawingExportKMZ") }}
-        </button>
-        <button
-          @click="handleExport('gpx')"
-          :disabled="drawingStore.featureCount === 0"
-          data-testid="drawing-export-gpx"
-          class="rounded bg-green-500 px-3 py-2 text-sm text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-300"
-        >
-          {{ t("debug.drawingExportGPX") }}
-        </button>
-      </div>
-    </div>
-
-    <div class="mt-auto">
-      <button
-        @click="openClearConfirmation"
-        :disabled="drawingStore.featureCount === 0"
-        data-testid="drawing-clear-all"
-        class="w-full rounded bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:bg-gray-300"
-      >
-        {{ t("debug.drawingClearAll") }}
-      </button>
-    </div>
-
-    <UModal
-      v-model:open="isClearConfirmOpen"
-      :title="t('debug.drawingClearConfirmTitle')"
-      :description="t('debug.drawingClearConfirmDescription')"
-    >
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <UButton
-            color="neutral"
-            variant="outline"
-            @click="isClearConfirmOpen = false"
-          >
-            {{ t("debug.drawingClearConfirmCancel") }}
-          </UButton>
-          <UButton color="error" @click="confirmClear">
-            {{ t("debug.drawingClearConfirmConfirm") }}
-          </UButton>
+      <div class="grid grid-cols-1 gap-1">
+        <div data-testid="drawing-feature-count">
+          Number of features: {{ numberOfFeatures }}
         </div>
-      </template>
-    </UModal>
+        <DrawingFeaturePropertyPanel
+          v-if="focusedFeature && focusMode === 'select'"
+        />
+        <UButton
+          v-if="focusMode === 'none'"
+          color="info"
+          variant="solid"
+          data-testid="drawing-tool-polyline"
+          @click="enableDrawInteraction('LineString')"
+        >
+          Create polyline
+        </UButton>
+        <UButton
+          v-if="focusMode === 'none'"
+          color="info"
+          variant="solid"
+          data-testid="drawing-tool-polygon"
+          @click="enableDrawInteraction('Polygon')"
+        >
+          Create polygon
+        </UButton>
+        <UButton
+          v-if="focusMode === 'none'"
+          color="info"
+          variant="solid"
+          data-testid="drawing-tool-circle"
+          @click="enableDrawInteraction('Circle')"
+        >
+          Create circle
+        </UButton>
+        <UButton
+          v-if="focusMode === 'none'"
+          color="info"
+          variant="solid"
+          data-testid="drawing-tool-point"
+          @click="enableDrawInteraction('Point')"
+        >
+          Create point
+        </UButton>
+
+        <UButton
+          v-if="focusMode === 'none' && numberOfFeatures > 0"
+          color="info"
+          variant="solid"
+          data-testid="select-feature-tool"
+          @click="enableSelectInteraction"
+        >
+          Select feature
+        </UButton>
+
+        <UButton
+          v-if="focusMode === 'create'"
+          color="error"
+          variant="solid"
+          data-testid="cancel-drawing-tool"
+          @click="cancelDrawing"
+        >
+          Cancel drawing
+        </UButton>
+
+        <UButton
+          v-if="focusMode === 'select' && focusedFeature"
+          color="neutral"
+          variant="solid"
+          data-testid="deselect-feature-tool"
+          @click="terminateModification"
+        >
+          Deselect feature
+        </UButton>
+
+        <UButton
+          v-if="focusMode === 'select' && focusedFeature"
+          color="info"
+          variant="solid"
+          data-testid="modify-geometry-tool"
+          @click="enableModifyInteraction"
+        >
+          Modify selected feature's geometry
+        </UButton>
+
+        <UButton
+          v-if="focusMode === 'edit' && focusedFeature"
+          color="info"
+          variant="solid"
+          data-testid="finish-modification-tool"
+          @click="terminateModification"
+        >
+          Finish geometry modification
+        </UButton>
+
+        <UButton
+          v-if="focusMode === 'select' && focusedFeature"
+          color="error"
+          variant="solid"
+          data-testid="delete-feature-tool"
+          @click="removeFocusedFeature"
+        >
+          Delete selected feature
+        </UButton>
+
+        <div
+          v-if="
+            focusMode === 'edit' &&
+            focusedFeature &&
+            (focusedFeatureType === 'LineString' ||
+              focusedFeatureType === 'Polygon')
+          "
+          class="text-gray-400 italic"
+        >
+          (Shift + click on a point to delete it)
+        </div>
+
+        <UButton
+          v-if="focusMode === 'none' && numberOfFeatures > 0"
+          color="error"
+          variant="solid"
+          data-testid="drawing-tool-clear"
+          @click="clearDrawingLayer"
+        >
+          Clear drawing layer
+        </UButton>
+      </div>
+    </div>
   </div>
 </template>

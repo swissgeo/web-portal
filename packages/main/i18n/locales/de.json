@@ -142,7 +142,8 @@
     "successTitle": "Erfolg"
   },
   "state": {
-    "restoreUnableWarning": "Der Zustand der App konnte nicht wiederhergestellt werden"
+    "restoreUnableWarning": "Der Zustand der App konnte nicht wiederhergestellt werden",
+    "shareLinkError": "Der Freigabelink konnte nicht generiert werden"
   },
   "map": {
     "contextMenuPopup": {
@@ -199,5 +200,8 @@
   },
   "compareSlider": {
     "toggleButtonTitle": "Vergleichsregler umschalten"
+  },
+  "embed": {
+    "viewOn": "Auf {platform} anzeigen"
   }
 }

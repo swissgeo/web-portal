@@ -1,6 +1,9 @@
-import type { AppStatePayload } from "@swissgeo/statesharing";
+import type { AppStatePayload } from "~/composables/useStateConfig";
+import type { MaybeRefOrGetter, Ref } from "vue";
 
-import { useFetch, watchDebounced } from "@vueuse/core";
+import { watchDebounced } from "@vueuse/core";
+import { postStateToStateId } from "~/utils/postStateToStateId";
+import { toValue } from "vue";
 
 function buildShareUrl(stateId: string | null): string {
   if (!stateId) {
@@ -12,89 +15,190 @@ function buildShareUrl(stateId: string | null): string {
   return url.href;
 }
 
-export function useCreateShareLink(state?: Ref<AppStatePayload>) {
-  let usableState = state;
+/**
+ * Options for controlling share link state generation.
+ *
+ * - `autoRefresh: true` — automatically POST state to the API whenever it changes.
+ *   Optionally debounce with `debounce`/`maxWait`.
+ * - `autoRefresh: false` (default) — tracks changes but only fetches when `refresh()` is called.
+ *   The `debounce` option is ignored when `autoRefresh` is false.
+ */
+type ShareLinkOptions = {
+  autoRefresh?: boolean;
+  debounce?: number;
+  deep?: boolean;
+  maxWait?: number;
+  onError?: (error: unknown) => void;
+};
 
-  if (!usableState) {
-    const { exportState } = useStateConfig();
-    usableState = exportState;
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === "AbortError";
+}
+
+function useShareLinkState(
+  state: MaybeRefOrGetter<AppStatePayload | null>,
+  options: ShareLinkOptions = {},
+) {
+  const hash = ref<string | null>(null);
+  const needsRefresh = ref(false);
+  const isFetching = ref(false);
+  let abortController: AbortController | null = null;
+
+  const syncHash = async (newState: AppStatePayload) => {
+    if (abortController) {
+      abortController.abort();
+    }
+
+    const currentController = new AbortController();
+    abortController = currentController;
+    isFetching.value = true;
+
+    try {
+      hash.value = await postStateToStateId(newState.state, {
+        signal: currentController.signal,
+      });
+      needsRefresh.value = false;
+    } catch (error) {
+      if (!isAbortError(error)) {
+        options.onError?.(error);
+      }
+    } finally {
+      if (abortController === currentController) {
+        abortController = null;
+        isFetching.value = false;
+      }
+    }
+  };
+
+  const watchSource = () => toValue(state);
+  const watchOptions = {
+    deep: options.deep ?? false,
+    immediate: true,
+  };
+  const onStateChange = (newState: AppStatePayload | null) => {
+    if (!newState) {
+      return;
+    }
+    void syncHash(newState);
+  };
+
+  if (options.autoRefresh) {
+    if (options.debounce) {
+      watchDebounced(watchSource, (newState) => onStateChange(newState), {
+        ...watchOptions,
+        debounce: options.debounce,
+        maxWait: options.maxWait,
+      });
+    } else {
+      watch(watchSource, (newState) => onStateChange(newState), watchOptions);
+    }
+  } else {
+    watch(
+      watchSource,
+      (newState) => {
+        if (!newState) {
+          return;
+        }
+
+        needsRefresh.value = true;
+      },
+      watchOptions,
+    );
   }
 
-  const runtimeConfig = useRuntimeConfig();
+  const refresh = async () => {
+    const currentState = toValue(state);
+    if (!currentState) {
+      return;
+    }
 
-  // intentionally not using nuxt's useFetch as the one frome vueuse suits more the
-  // usecase here and doesn't have anything to do with SSR
-  const { data: hash } = useFetch<string>(
-    runtimeConfig.public.shareServiceUrl,
-    { refetch: true },
-  )
-    .post(usableState)
-    .text();
-
-  const shareLink = computed(() => buildShareUrl(hash.value));
+    await syncHash(currentState);
+  };
 
   return {
-    shareLink,
     hash,
+    isFetching,
+    needsRefresh,
+    refresh,
   };
 }
 
+function buildEmbedCode(stateId: string | null, zoomOnlyCtrl: boolean): string {
+  if (!stateId) {
+    return "";
+  }
+
+  const url = new URL("/embed", location.origin);
+  url.searchParams.set("state", stateId);
+  if (zoomOnlyCtrl) {
+    url.searchParams.set("zoomOnlyCtrl", "true");
+  }
+  return `<iframe src="${url.href}" width="600" height="400" frameborder="0"></iframe>`;
+}
+
 /**
- * Create a link for the print. The key difference from the function useCreateShareLink
- * is that
+ * Creates a reactive share link from the current app state.
+ *
+ * By default (`autoRefresh = false`), the hash is NOT fetched automatically.
+ * Call `refresh()` to generate the link, and check `needToRefresh` to show
+ * a "regenerate" UI when the state has changed since the last fetch.
+ *
+ * Pass `autoRefresh = true` to fetch the hash immediately on mount
+ * and re-fetch whenever the state changes.
  */
+export function useCreateShareLink(
+  state?: MaybeRefOrGetter<AppStatePayload | null>,
+  options?: { autoRefresh?: boolean; zoomOnlyCtrl?: Ref<boolean> },
+) {
+  const { exportState } = useStateConfig();
+  const usableState = state ?? exportState;
+  const { hash, needsRefresh, refresh } = useShareLinkState(usableState, {
+    autoRefresh: options?.autoRefresh,
+  });
+
+  const needToRefresh = computed(
+    () => !options?.autoRefresh && needsRefresh.value,
+  );
+  const shareLink = computed(() => buildShareUrl(hash.value));
+  const embedCode = computed(() =>
+    buildEmbedCode(hash.value, options?.zoomOnlyCtrl?.value ?? false),
+  );
+
+  return {
+    shareLink,
+    embedCode,
+    hash,
+    refresh,
+    needToRefresh,
+  };
+}
+
 export function useCreateShareLinkForPrint() {
   const viewStore = useMapViewStore();
   const shareLink = computed(() => buildShareUrl(viewStore.stateId));
   return { shareLink };
 }
 
-/**
- * Add a custom state to the service (mock at the moment) with the state being a ref
- * so that this composable function can be used to push multiple states to the service,
- * for example when the print framing parameters change and we want to update the share link accordingly.
- */
 export function useCreateShareLinkForCustomState() {
+  const { t } = useI18n();
+  const toaster = useToaster();
   const state = ref<AppStatePayload | null>(null);
-  const runtimeConfig = useRuntimeConfig();
-
-  const {
-    data: hash,
-    execute,
-    abort,
-    isFetching,
-  } = useFetch<string>(runtimeConfig.public.shareServiceUrl, {
-    immediate: false,
-    refetch: false,
-  })
-    .post(state)
-    .text();
-
-  watchDebounced(
-    state,
-    () => {
-      if (!state.value) {
-        return;
-      }
-
-      if (isFetching.value) {
-        abort();
-      }
-
-      void execute();
+  const { hash, isFetching } = useShareLinkState(state, {
+    autoRefresh: true,
+    debounce: 500,
+    deep: true,
+    maxWait: 1500,
+    onError: () => {
+      toaster.showWarning(t("state.shareLinkError"));
     },
-    {
-      deep: true,
-      debounce: 500,
-      maxWait: 1500,
-    },
-  );
+  });
 
   const shareLink = computed(() => buildShareUrl(hash.value));
 
   return {
     shareLink,
     hash,
+    isFetching,
     state,
   };
 }

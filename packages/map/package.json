@@ -7,7 +7,7 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/packages/map/src/index.d.ts",
       "import": "./dist/map.js",
       "require": "./dist/map.umd.cjs"
     },
@@ -23,10 +23,12 @@
     "lint": "eslint",
     "lint:write": "eslint --fix",
     "test:unit": "vitest run",
+    "test:unit:coverage": "vitest run --coverage",
     "type-check": "vue-tsc"
   },
   "dependencies": {
     "@swissgeo/coordinates": "workspace:*",
+    "@swissgeo/drawing": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
     "@swissgeo/shared": "workspace:*",
@@ -55,10 +57,9 @@
     "vue-tsc": "catalog:"
   },
   "peerDependencies": {
-    "@lucide/vue": "catalog:",
     "@vueuse/core": "catalog:",
     "vue": "catalog:",
     "vue-i18n": "catalog:"
   },
-  "packageManager": "pnpm@11.6.0"
+  "packageManager": "pnpm@11.8.0"
 }

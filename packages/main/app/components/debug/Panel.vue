@@ -49,12 +49,14 @@ function togglePrintPanel() {
       @close="toggleLocalImportPanel"
     >
     </DebugImportLocalLayersPanel>
+
     <DrawingPanel
       class="relative h-[400px] w-[350px] overflow-hidden bg-white shadow"
       v-if="isDrawingOpen"
       @close="toggleDrawing"
     >
     </DrawingPanel>
+
     <DebugSharePanel v-if="isSharePanelOpen" @close="toggleStateConfig" />
     <DebugFramePrintPanel v-if="isPrintPanelOpen" @close="togglePrintPanel" />
     <div

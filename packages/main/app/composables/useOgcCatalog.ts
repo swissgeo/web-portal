@@ -2,6 +2,7 @@ import type { DatasetCollection } from "@swissgeo/ogc";
 import type { Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { joinURL } from "ufo";
 
 export function useOgcCatalog(language: Ref<string>) {
   const runtimeConfig = useRuntimeConfig();
@@ -12,14 +13,20 @@ export function useOgcCatalog(language: Ref<string>) {
     messages: ["loading the catalog with language", language.value],
   });
 
-  const { data: recordData } = useFetch<DatasetCollection>(
-    runtimeConfig.public.ogcApiEndpoint,
-    {
-      query: {
-        language: language.value,
-      },
-    },
+  const catalogLink = computed(() =>
+    joinURL(
+      runtimeConfig.public.ogcApiEndpoint,
+      "/collections/",
+      runtimeConfig.public.ogcCatalogCollection,
+      "/items",
+    ),
   );
+
+  const { data: recordData } = useFetch<DatasetCollection>(catalogLink.value, {
+    query: {
+      language: language.value,
+    },
+  });
 
   return {
     data: recordData,

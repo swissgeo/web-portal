@@ -4,10 +4,12 @@ import type { Dataset } from "@swissgeo/ogc";
 
 import { makeServerLayer } from "@swissgeo/layers";
 import { computedAsync } from "@vueuse/core";
+import { displayModeKey } from "~/types/injectionKeys";
+import { joinURL } from "ufo";
 
 import { AVAILABLE_BACKGROUNDS } from "./constants";
 
-const displayMode = inject<"web" | "print">("displayMode");
+const displayMode = inject(displayModeKey);
 
 const emit = defineEmits<{
   setBackground: [backgroundLayer: Layer | null];
@@ -20,11 +22,23 @@ const { currentBackground } = defineProps<{
 const runtimeConfig = useRuntimeConfig();
 
 const backgroundRecords = computed(async () => {
+  const { locale } = useI18n();
+
   const promises: Promise<Dataset>[] = [];
   for (const backgroundId of AVAILABLE_BACKGROUNDS) {
-    promises.push(
-      $fetch(`${runtimeConfig.public.ogcApiEndpoint}/items/${backgroundId}`),
+    const url = new URL(
+      joinURL(
+        runtimeConfig.public.ogcApiEndpoint,
+        "/collections/",
+        runtimeConfig.public.ogcCatalogCollection,
+        "/items/",
+        backgroundId,
+      ),
     );
+
+    url.searchParams.set("language", locale.value);
+
+    promises.push($fetch(url.toString()));
   }
 
   const values = await Promise.all(promises);

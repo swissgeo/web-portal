@@ -1,6 +1,7 @@
 import type { Map } from "ol";
 import type { Ref } from "vue";
 
+import { useDrawing } from "@swissgeo/drawing";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import {
   createDrawingFeatureStyleFunction,
@@ -29,11 +30,23 @@ export default function useOlKMLLayer(
   layer: Ref<KMLLayer>,
   olMap: Ref<Map | undefined> | undefined,
 ) {
+  const { drawingVectorLayer, DRAWING_LAYER_UUID } = useDrawing();
   const layerId = computed(() => layer.value.layerId);
   const zIndex = computed(() => layer.value.zIndex);
   const isVisible = computed(() => layer.value.isVisible);
   const opacity = computed(() => layer.value.opacity);
   const kmlData = computed(() => layer.value.data);
+  const isDrawingLayer = computed(
+    () => DRAWING_LAYER_UUID === layer.value.uuid,
+  );
+
+  watch(opacity, (newOpacity) => {
+    if (!olLayer.value) {
+      return;
+    }
+
+    olLayer.value.setOpacity(newOpacity);
+  });
 
   const positionStore = usePositionStore();
 
@@ -42,15 +55,19 @@ export default function useOlKMLLayer(
   watch(
     () => kmlData.value,
     () => {
-      olLayer.value = new VectorLayer({
-        properties: {
-          id: layerId,
-          uuid: layer.value.uuid,
-        },
-        opacity: opacity.value,
-      });
-
-      initialize();
+      // A KML layer could be used for drawing, in that case we want to keep the same OL layer
+      if (isDrawingLayer.value) {
+        olLayer.value = drawingVectorLayer;
+      } else {
+        olLayer.value = new VectorLayer({
+          properties: {
+            id: layerId,
+            uuid: layer.value.uuid,
+          },
+          opacity: opacity.value,
+        });
+        initialize();
+      }
     },
     { immediate: true },
   );
@@ -207,7 +224,11 @@ export default function useOlKMLLayer(
   watch(
     () => olLayer.value,
     () => {
-      addLayerToMap();
+      // if the kml layer is a drawing layer, it is already added to the map
+      // from within the drawing module
+      if (!isDrawingLayer.value) {
+        addLayerToMap();
+      }
     },
     { immediate: true },
   );

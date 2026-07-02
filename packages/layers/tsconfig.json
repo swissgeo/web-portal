@@ -4,15 +4,14 @@
     "src/**/*.ts",
     "src/**/*.vue",
     "env.d.ts",
-    "vite.config.ts",
-    "../../base.vite.config.ts",
-    ".output/auto-imports.d.ts",
-    "types/**/*.d.ts"
+    "vitest.config.ts",
+    "rolldown.config.ts"
   ],
   "compilerOptions": {
-    "types": ["vue", "pinia"],
+    "types": ["pinia"],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "rootDir": "../.."
   }
 }

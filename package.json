@@ -27,11 +27,11 @@
     "lint": "pnpm run --parallel --no-bail --if-present lint",
     "lint:write": "pnpm run --parallel --no-bail --if-present lint:write",
     "test": "pnpm run test:unit",
-    "test:coverage": "vitest run --coverage",
     "test:integration": "playwright test",
     "test:integration:ci": "playwright test -c playwright.config.ci.ts",
     "test:ui": "vitest --ui",
     "test:unit": "pnpm run --parallel --no-bail --if-present test:unit",
+    "test:unit:coverage": "pnpm run --parallel --no-bail --if-present test:unit:coverage",
     "type-check": "pnpm run --parallel --no-bail --if-present type-check"
   },
   "dependencies": {
@@ -44,7 +44,9 @@
     "@prettier/plugin-xml": "catalog:",
     "@swissgeo/config-prettier": "workspace:*",
     "@vitejs/plugin-vue": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "@vue/test-utils": "catalog:",
+    "@vue/language-core": "catalog:",
     "prettier": "catalog:",
     "prettier-plugin-jsdoc": "catalog:",
     "prettier-plugin-packagejson": "catalog:",
@@ -52,5 +54,5 @@
     "turbo": "catalog:",
     "vitest": "catalog:"
   },
-  "packageManager": "pnpm@11.6.0"
+  "packageManager": "pnpm@11.8.0"
 }

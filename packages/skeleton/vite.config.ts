@@ -12,6 +12,11 @@ export default defineConfig(({ mode }) => {
       globals: true,
       environment: "happy-dom",
       setupFiles: ["src/__tests__/config/components-stubs.ts"],
+      coverage: {
+        provider: "v8",
+        reportsDirectory: resolve(__dirname, "../../coverage/unit/skeleton"),
+        reporter: ["lcov", "cobertura"],
+      },
     },
     build: {
       ...getBaseBuildConfig(mode),

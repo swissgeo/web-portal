@@ -20,14 +20,15 @@
     "format:write": "prettier --write   --ignore-path ../../.prettierignore .",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "test:unit": "vitest run"
+    "test:unit": "vitest run",
+    "test:unit:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/layers": "workspace:*",
     "@swissgeo/log": "workspace:*",
-    "@swissgeo/map": "workspace:*",
     "@swissgeo/shared": "workspace:*",
+    "@vueuse/core": "catalog:",
     "fflate": "catalog:",
     "ol": "catalog:",
     "proj4": "catalog:"
@@ -50,5 +51,5 @@
     "vue": "catalog:",
     "vue-i18n": "catalog:"
   },
-  "packageManager": "pnpm@11.6.0"
+  "packageManager": "pnpm@11.8.0"
 }

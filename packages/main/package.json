@@ -16,6 +16,7 @@
     "lint:write": "eslint --fix",
     "preview": "nuxt preview",
     "test:unit": "vitest run",
+    "test:unit:coverage": "vitest run --coverage",
     "type-check": "nuxt typecheck"
   },
   "dependencies": {
@@ -46,10 +47,12 @@
     "es-toolkit": "catalog:",
     "eslint": "catalog:",
     "fflate": "catalog:",
+    "h3": "catalog:",
     "nuxt": "catalog:",
     "ol": "catalog:",
     "pinia": "catalog:",
     "proj4": "catalog:",
+    "ufo": "catalog:",
     "vue": "catalog:"
   },
   "devDependencies": {
@@ -70,5 +73,5 @@
     "vue-router": "catalog:",
     "vue-tsc": "catalog:"
   },
-  "packageManager": "pnpm@11.6.0"
+  "packageManager": "pnpm@11.8.0"
 }

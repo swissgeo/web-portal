@@ -25,10 +25,11 @@ const {
   compareSliderActive = false,
   compareRatio = 0.5,
   compareSliderClippedLayer,
+  zoomOnlyCtrl = false,
 } = defineProps<{
   layers: MapLayer[];
   customLayerRenderers?: MapLayerRenderer[];
-  displayMode: "web" | "print";
+  displayMode: "web" | "print" | "embed";
   /** Whether the compare slider is shown over the map (web mode only). */
   compareSliderActive?: boolean;
   /** Horizontal position of the compare slider, as a ratio of the map width. */
@@ -38,6 +39,8 @@ const {
     MapLayer,
     "layerId" | "uuid" | "displayName"
   >;
+  /** Whether zoom interactions should only be active when Ctrl/Cmd key is pressed. */
+  zoomOnlyCtrl?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -60,6 +63,7 @@ const layersWithZIndex = computed(() => {
     <OpenLayersMap
       :custom-layer-renderers="customLayerRenderers"
       :layers="layersWithZIndex"
+      :zoom-only-ctrl="zoomOnlyCtrl"
     >
       <slot />
 
@@ -76,8 +80,11 @@ const layersWithZIndex = computed(() => {
           @update:compare-ratio="emit('update:compareRatio', $event)"
         />
       </template>
-      <template v-else>
+      <template v-else-if="displayMode === 'print'">
         <OpenLayersScalePrint />
+      </template>
+      <template v-else-if="displayMode === 'embed'">
+        <OpenLayersScale />
       </template>
     </OpenLayersMap>
   </div>

@@ -30,6 +30,7 @@
     "lint:write": "eslint --fix",
     "preview": "vite preview",
     "test:unit": "vitest run",
+    "test:unit:coverage": "vitest run --coverage",
     "test:unit:watch": "vitest watch",
     "type-check": "vue-tsc --build"
   },

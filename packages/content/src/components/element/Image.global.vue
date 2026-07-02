@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import type { Image } from "@swissgeo/content";
-
-import { isImage } from "@swissgeo/content";
 import { computed } from "vue";
+
+import type { Image } from "@/types";
+
+import { isImage } from "@/utils";
 
 const { data } = defineProps<{ data: Image }>();
 const imageUrl = computed(() => {

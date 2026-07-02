@@ -1,13 +1,14 @@
 {
   "extends": "@swissgeo/config-typescript/tsconfig.base.json",
   "include": [
+    "openapi-ts.config.ts",
     "src/**/*.ts",
     "src/**/*.vue",
-    "src/types/**/*.ts",
-    "vite.config.ts",
-    "../../base.vite.config.ts"
+    "rolldown.config.ts",
+    "vitest.config.ts"
   ],
   "compilerOptions": {
-    "types": ["vue"]
+    "types": ["vue"],
+    "rootDir": "../.."
   }
 }

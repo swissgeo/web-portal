@@ -2,15 +2,10 @@
 /**
  * The basic collection type. This is a list of records
  */
-export interface Collection<record extends OGCRecord<string>> {
-  id: string;
-  type: "Collection";
-  records: record[];
-  itemType: string;
-  title: string;
-  // portal?: {
-  //     preferredDistributionId: string
-  // }
+export interface Collection<record extends Feature<string>> {
+  type: "FeatureCollection";
+  features: record[];
+  links: Link[];
 }
 
 export type DatasetCollection = Collection<Dataset>;
@@ -23,10 +18,8 @@ export type DistributionCollection = Collection<Distribution>;
 /**
  * The basic record type. This contains the links to information as well
  * as a properties property with some additional information
- *
- * Record would clash with Typescript type
  */
-export interface OGCRecord<recordType extends string> {
+export interface Feature<recordType extends string> {
   id: string;
   links?: Link[];
   linkTemplates?: TemplateLink[];
@@ -36,9 +29,9 @@ export interface OGCRecord<recordType extends string> {
 /**
  *  Concrete Record Types
  */
-export type Dataset = OGCRecord<"Dataset">;
-export type Distribution = OGCRecord<"Distribution">;
-export type Service = OGCRecord<ServiceProtocol>;
+export type Dataset = Feature<"Dataset">;
+export type Distribution = Feature<"Distribution">;
+export type Service = Feature<ServiceProtocol>;
 
 // #endregion
 
@@ -91,7 +84,7 @@ export interface Property<recordType extends string> {
 export interface Contact {
   country?: string;
   role?: string;
-  organisation: string;
+  organization: string;
 }
 
-export type ServiceProtocol = "OGC:WMTS" | "OGC:WMS" | "OGC:GeoJSON";
+export type ServiceProtocol = "ogc:wmts" | "ogc:wms" | "ogc:geojson";

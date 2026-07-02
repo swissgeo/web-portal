@@ -33,11 +33,11 @@ function extractProtocols(distributionCollection: DistributionCollection) {
   if (!distributionCollection) {
     return null;
   }
-  const records = distributionCollection.records;
+  const features = distributionCollection.features;
 
-  if (!records.length) {
+  if (!features.length) {
     return [];
   }
 
-  return records.map((record: Distribution) => record.properties.protocol);
+  return features.map((record: Distribution) => record.properties.protocol);
 }

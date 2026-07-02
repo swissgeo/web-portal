@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useDrawingStore } from "@swissgeo/drawing";
+import { useDrawing } from "@swissgeo/drawing";
+// import { useDrawingStore } from "@swissgeo/drawing";
 /**
  * The Toolbox contains buttons to be used on the map. It is responsible for deciding which buttons
  * should show up and which shouldn't.
@@ -8,6 +9,8 @@ import { useDrawingStore } from "@swissgeo/drawing";
  * logic behind the available buttons, it should become a computed value instead.
  */
 import { useLayerStore } from "@swissgeo/layers";
+import { displayModeKey } from "~/types/injectionKeys";
+import { inject } from "vue";
 
 import CompareSliderButton from "@/components/toolbox/toolboxButtons/CompareSliderButton.vue";
 import FullScreenButton from "@/components/toolbox/toolboxButtons/FullScreenButton.vue";
@@ -20,12 +23,14 @@ import { useGeolocationStore } from "@/stores/geolocation";
 
 import CompassButton from "./toolboxButtons/CompassButton.vue";
 
+const { focusMode } = useDrawing();
+
 const layerStore = useLayerStore();
-const drawingStore = useDrawingStore();
+// const drawingStore = useDrawingStore();
 const mapViewStore = useMapViewStore();
 const geolocationStore = useGeolocationStore();
 
-const showFullScreeButton = computed(() => !drawingStore.isDrawing);
+const showFullScreeButton = computed(() => focusMode.value === "none");
 // Buttons related to the geolocation function
 const showGelocationButton = ref(true);
 const showRecenterButton = computed(
@@ -51,6 +56,10 @@ watch(showTimeSliderButton, (hasTimeLayers) => {
 const showCompareSliderButton = computed(
   () => mapViewStore.visibleLayers.length > 0,
 );
+const displayMode = inject(displayModeKey, "web");
+
+const isWebMode = computed(() => displayMode === "web");
+const isEmbedMode = computed(() => displayMode === "embed");
 </script>
 
 <template>
@@ -58,14 +67,14 @@ const showCompareSliderButton = computed(
     class="toolbox-right absolute top-[1rem] right-[1rem] w-[40px] space-y-1"
     data-testid="toolbox-right"
   >
-    <FullScreenButton v-if="showFullScreeButton" />
-    <GeolocButton v-if="showGelocationButton" />
-    <CompassButton v-if="showCompassButton" />
-    <RecenterButton v-if="showRecenterButton" />
-    <ZoomButtons v-if="showZoomButtons" />
-    <Toggle3dButton v-if="show3dButton" />
-    <TimeSliderButton v-if="showTimeSliderButton" />
-    <CompareSliderButton v-if="showCompareSliderButton" />
+    <FullScreenButton v-if="isWebMode && showFullScreeButton" />
+    <GeolocButton v-if="isWebMode && showGelocationButton" />
+    <CompassButton v-if="isWebMode && showCompassButton" />
+    <RecenterButton v-if="isWebMode && showRecenterButton" />
+    <ZoomButtons v-if="(isWebMode || isEmbedMode) && showZoomButtons" />
+    <Toggle3dButton v-if="isWebMode && show3dButton" />
+    <TimeSliderButton v-if="isWebMode && showTimeSliderButton" />
+    <CompareSliderButton v-if="isWebMode && showCompareSliderButton" />
     <slot />
   </div>
 </template>
