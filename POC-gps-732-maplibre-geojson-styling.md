@@ -170,18 +170,25 @@ undefined, getImage)` from `ol-mapbox-style`, with `getImage` from
 
 ## Known limitations
 
-- **Draw order does not match the legacy renderer.** The converter emits one MapLibre
-  layer per style entry (unique value / range), and MapLibre paints layers strictly in
-  array order — so all features of one entry paint under all features of the next.
-  Circles and non-circle shapes additionally land in different layer _types_ (`circle`
-  vs. `symbol`), which cannot share a layer. The legacy `OlStyleForPropertyValue` drew
-  every feature in a single OpenLayers vector layer in feature/source order, so shapes
-  interleaved per-feature. MapLibre groups by style entry; legacy interleaves by
-  feature — there is no faithful 1:1 mapping. Visible e.g. in
-  `ch.bafu.hydroweb-messstationen_vorhersage`, where triangle-over-circle ordering
-  differs from legacy. Approximations (`circle-sort-key` / `symbol-sort-key` from a
-  feature property) only help _within_ a layer type and still cannot interleave circles
-  with symbols. Accepted as a documented limitation for the POC.
+- **Draw order for polygon/line features now matches the legacy renderer** (fixes
+  review finding C, e.g. `ch.bafu.hydroweb-warnkarte_national`). The converter collapses
+  every polygon fill into one `fill` layer and every stroke (polygon outlines + line
+  geometries) into one `line` layer, carrying the per-value differences as data-driven
+  `["match"]` / `["case"]` paint expressions (polygon-vs-line disambiguated with
+  `["geometry-type"]`). `ol-mapbox-style` assigns one z-index per MapLibre layer, so a
+  single shared layer is drawn by OpenLayers in source order — exactly like the legacy
+  `OlStyleForPropertyValue`, which drew every feature in one vector layer with no
+  per-entry z-index. Previously each style entry became its own layer, so the last
+  entries (e.g. the warnkarte region polygons) painted over everything.
+
+- **Draw order for point features still groups by style entry.** Point entries stay one
+  layer each because MapLibre cannot interleave `circle` and `symbol` layer types the
+  way the legacy renderer interleaved per feature (`circle-sort-key` / `symbol-sort-key`
+  only help _within_ a layer type). This is the residual case flagged in review as "not
+  such an issue for point symbols" (e.g. `ch.bafu.hydroweb-messstationen_vorhersage`).
+  MapLibre also always paints all `fill` below all `line` below all `symbol`, so a source
+  order that interleaves _across_ geometry types cannot be reproduced 1:1. Accepted as a
+  documented limitation for the POC.
 
 ## Out of scope (follow-ups)
 
