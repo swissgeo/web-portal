@@ -18,7 +18,7 @@ import { computed, onBeforeUnmount, onMounted, toValue, watch } from "vue";
 //   toValue,
 //   watch,
 // } from "vue";
-import usePositionStore from "@/stores/position/";
+import usePositionStore from "@/stores/position";
 
 // import { VIEW_MIN_RESOLUTION } from "@/config/map.config";
 /**
