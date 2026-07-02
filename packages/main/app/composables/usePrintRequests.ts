@@ -101,7 +101,9 @@ const usePrintRequestsStore = defineStore("printRequests", () => {
 export function usePrintRequests() {
   const runtimeConfig = useRuntimeConfig();
   const printUrl = runtimeConfig.public.printServiceUrl;
-  const { requestCollection, isPollingGlobal } = storeToRefs(usePrintRequestsStore());
+  const { requestCollection, isPollingGlobal } = storeToRefs(
+    usePrintRequestsStore(),
+  );
   const { clearRequestCollection } = usePrintRequestsStore();
 
   function startPolling() {
@@ -170,7 +172,8 @@ export function usePrintRequests() {
   async function refreshOpenRequests() {
     const openRequests = requestCollection.value.filter(
       (request: PrintRequestCollectionItem) =>
-        (request.lastResponse.status === "open" || request.lastResponse.status === "started") &&
+        (request.lastResponse.status === "open" ||
+          request.lastResponse.status === "started") &&
         typeof request.lastResponse.reportUrl === "string" &&
         request.isPolling === false,
     );
@@ -213,7 +216,6 @@ export function usePrintRequests() {
         requestBody: printPostRequestBody,
         lastResponse: data,
         isPolling: false,
-
       });
 
       startPolling();

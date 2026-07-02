@@ -68,8 +68,6 @@ export function usePrintFraming() {
   });
 
   const isReadyToPrint = computed(() => {
-    console.log("DEBUG 1");
-    
     return (
       !!hash.value &&
       !isPrintExtentOutOfBounds.value &&
