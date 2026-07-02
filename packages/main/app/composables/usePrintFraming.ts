@@ -1,3 +1,5 @@
+import type { Extent } from "ol/extent";
+
 import { createCutoutGeometry } from "@swissgeo/coordinates";
 import { useMap } from "@swissgeo/map";
 import { EPSG_2056_BOUNDING_BOX } from "@swissgeo/shared";
@@ -9,10 +11,17 @@ import { Fill, Style } from "ol/style";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import type { PrintFormat, PrintOrientation } from "../types/print";
+import type { PrintPostRequestBody } from "./usePrintRequests";
+
+import { usePrintRequests } from "./usePrintRequests";
+import { URL_PARAM_STATE } from "./useUrlParams";
 
 export function usePrintFraming() {
   const DARK_BLUE = "rgba(0, 0, 30, 0.6)";
   const BRIGHT_RED = "rgba(255, 0, 0, 0.6)";
+
+  const { locale } = useI18n();
+  const { sendCustomPrintRequest } = usePrintRequests();
 
   const printExtentFeature = new Feature();
   const style = new Style({
@@ -29,11 +38,16 @@ export function usePrintFraming() {
     updateWhileInteracting: true,
   });
 
+  const ENFORCE_PORTABLE_STATE = false; // force using the portable (base64) state for print-related share links until the state service is ready and can handle the probably bigger state for print framing
+
   const toaster = useToaster();
   const { customStateConfig, customStateMapCenter, customStateMapZoom } =
     useCustomStateConfig();
-  const { hash, state } = useCreateShareLinkForCustomState();
+  const { hash, state } = useCreateShareLinkForCustomState(
+    ENFORCE_PORTABLE_STATE,
+  );
   const { zoomLevel, olMap, center, viewportExtent } = useMap();
+  const currentLang = computed(() => locale.value.toLowerCase());
   const isZoomStepEnabled = ref(false);
   const selectedPrintFormat = ref<PrintFormat>("a4");
   const selectedPrintResolution = ref(96);
@@ -43,16 +57,37 @@ export function usePrintFraming() {
       return null;
     }
     const url = new URL("/en/print", window.location.origin);
-    url.searchParams.set("state", hash.value);
+    url.searchParams.set(URL_PARAM_STATE, hash.value);
     url.searchParams.set("print_format", selectedPrintFormat.value);
     url.searchParams.set("print_orientation", selectedPrintOrientation.value);
     url.searchParams.set(
       "print_resolution",
       selectedPrintResolution.value.toString(),
     );
-    url.searchParams.set("z", zoomLevelForPrint.value.toString());
-
     return url.toString();
+  });
+
+  const isReadyToPrint = computed(() => {
+    return (
+      !!hash.value &&
+      !isPrintExtentOutOfBounds.value &&
+      !!printRequestBody.value
+    );
+  });
+
+  const printRequestBody = computed<PrintPostRequestBody | null>(() => {
+    if (!hash.value) {
+      return null;
+    }
+    return {
+      state_id: hash.value,
+      print_format: selectedPrintFormat.value,
+      print_orientation: selectedPrintOrientation.value,
+      print_resolution: selectedPrintResolution.value,
+      print_legend: false,
+      print_grid: false,
+      print_lang: currentLang.value,
+    };
   });
 
   const pageSizeInPixels = computed(() => {
@@ -67,7 +102,7 @@ export function usePrintFraming() {
   const lastUnlockedCenter = ref<[number, number]>([0, 0]);
   const centerForPrint = computed(() => {
     if (!isCenterLocked.value) {
-      lastUnlockedCenter.value = center.value as [number, number]; // don't assign readonly type;
+      lastUnlockedCenter.value = [...center.value];
     }
     return lastUnlockedCenter.value;
   });
@@ -96,22 +131,15 @@ export function usePrintFraming() {
   });
 
   const scaleOfPrint = computed(() => {
-    function isExtentTuple(
-      arr: unknown[],
-    ): arr is [number, number, number, number] {
-      return arr.length === 4 && arr.every((el) => el !== undefined);
-    }
-
     if (
       !olMap.value ||
-      !printExtent.value ||
-      !isExtentTuple(printExtent.value)
+      !Array.isArray(printExtent.value) ||
+      printExtent.value.length !== 4
     ) {
       return null;
     }
-
-    const extentWidthMeter = printExtent.value[2] - printExtent.value[0];
-
+    const extentWidthMeter =
+      (printExtent.value[2] as number) - (printExtent.value[0] as number);
     const pageWidthMeter =
       getPageSizeInMeters(
         selectedPrintFormat.value,
@@ -138,7 +166,7 @@ export function usePrintFraming() {
     if (!printExtent.value || !olMap.value) {
       return false;
     }
-    return !containsExtent(viewportExtent.value as number[], printExtent.value);
+    return !containsExtent(viewportExtent.value as Extent, printExtent.value);
   });
 
   const isAtLockedZoomLevel = computed(() => {
@@ -166,13 +194,21 @@ export function usePrintFraming() {
     view.setZoom(zoomLevelForPrint.value);
   }
 
-  watch(zoomLevelForPrint, (newZoom) => {
-    customStateMapZoom.value = newZoom;
-  });
+  watch(
+    zoomLevelForPrint,
+    (newZoom) => {
+      customStateMapZoom.value = newZoom;
+    },
+    { immediate: true },
+  );
 
-  watch(centerForPrint, (newCenter) => {
-    customStateMapCenter.value = newCenter;
-  });
+  watch(
+    centerForPrint,
+    (newCenter) => {
+      customStateMapCenter.value = newCenter;
+    },
+    { immediate: true },
+  );
 
   watch(
     printExtent,
@@ -203,20 +239,24 @@ export function usePrintFraming() {
 
   // Update the color of the frame polygon to red if outside of Swiss boundaries
   // and show a warning toast, otherwise set it to blue and remove the toast if it exists
-  watch(isPrintExtentOutOfBounds, (isOutOfBounds) => {
-    style.getFill()?.setColor(isOutOfBounds ? BRIGHT_RED : DARK_BLUE);
-    if (isOutOfBounds) {
-      toaster.showWarning(
-        "The print extent must be fully contained within the Swiss bounding box to be printable.",
-        {
-          id: "warning_print_extent_out_of_bounds",
-          title: "Print extent is out of Swiss bounds",
-        },
-      );
-    } else {
-      toaster.remove("warning_print_extent_out_of_bounds");
-    }
-  });
+  watch(
+    isPrintExtentOutOfBounds,
+    (isOutOfBounds) => {
+      style.getFill()?.setColor(isOutOfBounds ? BRIGHT_RED : DARK_BLUE);
+      if (isOutOfBounds) {
+        toaster.showWarning(
+          "The print extent must be fully contained within the Swiss bounding box to be printable.",
+          {
+            id: "warning_print_extent_out_of_bounds",
+            title: "Print extent is out of Swiss bounds",
+          },
+        );
+      } else {
+        toaster.remove("warning_print_extent_out_of_bounds");
+      }
+    },
+    { immediate: true },
+  );
 
   watch(isPrintExtentBeyondViewport, (isOutOfBounds) => {
     if (isOutOfBounds) {
@@ -246,8 +286,26 @@ export function usePrintFraming() {
     }
   });
 
-  watch(customStateConfig, (newConfig) => {
-    state.value = newConfig;
+  /**
+   * Generate a new state ID (on state server) corresponding to the the current print
+   * framing configuration and update the state in the URL with this new ID.
+   */
+  function updatePrintState() {
+    if (!customStateConfig.value) {
+      return;
+    }
+
+    state.value = customStateConfig.value;
+  }
+
+  watch(isReadyToPrint, async () => {
+    if (!isReadyToPrint.value || !printRequestBody.value) {
+      return;
+    }
+    await sendCustomPrintRequest(printRequestBody.value);
+
+    // Reset state to prevent sending multiple requests for the same print framing configuration
+    state.value = null;
   });
 
   function enableZoomStep() {
@@ -308,5 +366,7 @@ export function usePrintFraming() {
     printPreviewUrl,
     scaleOfPrint,
     scaleOfPrintFormatted,
+    updatePrintState,
+    isReadyToPrint,
   };
 }

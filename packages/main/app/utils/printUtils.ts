@@ -125,10 +125,6 @@ export function validatePrintConfig(
   ) {
     throw new Error("The print resolution must be greater than 0");
   }
-
-  if (maybePrintProps.zoom === undefined || maybePrintProps.zoom <= 0) {
-    throw new Error("The zoom must be greater or equal to 0");
-  }
 }
 
 export function getPrintExtent(

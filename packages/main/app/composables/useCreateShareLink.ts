@@ -5,13 +5,15 @@ import { watchDebounced } from "@vueuse/core";
 import { postStateToStateId } from "~/utils/postStateToStateId";
 import { toValue } from "vue";
 
+import { URL_PARAM_STATE } from "./useUrlParams";
+
 function buildShareUrl(stateId: string | null): string {
   if (!stateId) {
     return "";
   }
 
   const url = new URL("", location.origin);
-  url.searchParams.set("state", stateId);
+  url.searchParams.set(URL_PARAM_STATE, stateId);
   return url.href;
 }
 
@@ -179,26 +181,77 @@ export function useCreateShareLinkForPrint() {
   return { shareLink };
 }
 
-export function useCreateShareLinkForCustomState() {
-  const { t } = useI18n();
-  const toaster = useToaster();
+/**
+ * Add a custom state to the service (mock at the moment) with the state being a ref
+ * so that this composable function can be used to push multiple states to the service,
+ * for example when the print framing parameters change and we want to update the share link accordingly.
+ * If the option forcePortableState is set to `true`, then the state will be encoded as base64 string and added to the share link as a query parameter,
+ * instead of being sent to the service.
+ */
+export function useCreateShareLinkForCustomState(
+  forcePortableState: boolean = false,
+) {
   const state = ref<AppStatePayload | null>(null);
-  const { hash, isFetching } = useShareLinkState(state, {
-    autoRefresh: true,
-    debounce: 500,
-    deep: true,
-    maxWait: 1500,
-    onError: () => {
-      toaster.showWarning(t("state.shareLinkError"));
-    },
-  });
+  const hash = ref<string | null>(null);
+  let abortController: AbortController = new AbortController();
+  const isFetching = ref(false);
+
+  if (forcePortableState) {
+    watchDebounced(
+      state,
+      () => {
+        if (!state.value) {
+          hash.value = null;
+          return;
+        }
+        hash.value = btoa(JSON.stringify(state.value));
+      },
+      {
+        deep: true,
+        debounce: 500,
+        maxWait: 1500,
+      },
+    );
+  } else {
+    watch(
+      state,
+      async () => {
+        if (!state.value) {
+          hash.value = null;
+          return;
+        }
+
+        // Only one fetch at a time, abort the previous one if a new state change occurs
+        if (isFetching.value) {
+          abortController.abort();
+        }
+
+        abortController = new AbortController();
+        isFetching.value = true;
+
+        try {
+          hash.value = await postStateToStateId(state.value.state, {
+            signal: abortController.signal,
+          });
+        } catch (_error) {
+          // nothing to do, the hash will remain null if the request fails
+        } finally {
+          if (abortController === abortController) {
+            isFetching.value = false;
+          }
+        }
+      },
+      {
+        deep: true,
+      },
+    );
+  }
 
   const shareLink = computed(() => buildShareUrl(hash.value));
 
   return {
     shareLink,
     hash,
-    isFetching,
     state,
   };
 }

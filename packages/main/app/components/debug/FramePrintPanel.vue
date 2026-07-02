@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useMap } from "@swissgeo/map";
 import { IconButton } from "@swissgeo/skeleton";
+import PrintJobListing from "~/components/debug/PrintJobListing.vue";
 import { printFormats, printOrientations } from "~/types/print";
 
 import { usePrintFraming } from "../../composables/usePrintFraming";
@@ -21,8 +22,8 @@ const {
   isPrintExtentOutOfBounds,
   isPrintExtentBeyondViewport,
   adjustToLockedView,
-  printPreviewUrl,
   scaleOfPrintFormatted,
+  updatePrintState,
 } = usePrintFraming();
 
 const printFormatItems = ref(
@@ -47,6 +48,10 @@ const printOrientationItems = ref(
 
 function handleClose() {
   emit("close");
+}
+
+function handleSendPrintRequest() {
+  updatePrintState();
 }
 </script>
 
@@ -115,9 +120,10 @@ function handleClose() {
       <UButton v-if="isCenterLocked || isZoomLocked" @click="adjustToLockedView"
         >Zoom to locked zoom level</UButton
       >
-      <a v-if="printPreviewUrl" :href="printPreviewUrl" target="_blank"
-        >Open Print Preview</a
+      <UButton v-if="!isPrintExtentOutOfBounds" @click="handleSendPrintRequest"
+        >Send Print Request</UButton
       >
+      <PrintJobListing />
     </div>
   </div>
 </template>

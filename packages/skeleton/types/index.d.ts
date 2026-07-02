@@ -52,6 +52,7 @@ declare global {
     shareServiceUrl: string;
     public: {
       ogcApiEndpoint: string;
+      printServiceUrl: string;
       ogcCatalogCollection: string;
       shareServiceUrl: string;
       wantedLogLevels: string;

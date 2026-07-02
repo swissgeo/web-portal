@@ -16,8 +16,4 @@ export interface PrintConfig {
    * Orientation of the print, landscape being horizonal, portrait being vertical
    */
   orientation: PrintOrientation;
-  /**
-   * Zoom enforced for the print. Should overwrite the zoom level from state
-   */
-  zoom: number;
 }

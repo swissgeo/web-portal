@@ -122,6 +122,7 @@ export default defineNuxtConfig({
       version: getVersion(),
       buildTime,
       wantedLogLevels: "error,warn",
+      printServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/print/jobs",
     },
   },
   nitro: {
