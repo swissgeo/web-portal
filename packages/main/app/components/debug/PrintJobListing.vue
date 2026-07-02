@@ -3,12 +3,12 @@ import type { PrintJobStatusResponse } from "~/composables/usePrintRequests";
 
 import { usePrintRequests } from "~/composables/usePrintRequests";
 
-const { requestCollection, ongoingRequests, finishedRequests, errorRequests } =
+const { ongoingRequests, finishedRequests, errorRequests, requestCollectionNewerToOlder, clearRequestCollection } =
   usePrintRequests();
 
 const open = ref(false);
 
-const totalCount = computed(() => requestCollection.value.length);
+const totalCount = computed(() => requestCollectionNewerToOlder.value.length);
 
 function statusLabel(status: PrintJobStatusResponse["status"]): string {
   if (status === "open") {
@@ -39,9 +39,10 @@ function statusColor(
 <template>
   <UModal
     v-model:open="open"
-    title="Print Jobs"
-    :description="`${ongoingRequests.length} processing · ${finishedRequests.length} ready · ${errorRequests.length} failed`"
-    :ui="{ footer: 'justify-end' }"
+    :ui="{
+      body: 'max-h-[50vh] overflow-y-auto',
+      footer: 'justify-end',
+    }"
   >
     <!-- Trigger button showing a badge when jobs are pending -->
     <UButton label="Open Print Jobs" icon="i-lucide-printer">
@@ -54,6 +55,31 @@ function statusColor(
       </template>
     </UButton>
 
+    <template #header>
+      <div class="flex w-full items-start justify-between gap-4">
+        <div class="w-full">
+          <h2 class="text-base font-semibold">Print Jobs</h2>
+          <div class="mt-1 flex w-full items-center gap-4">
+            <p class="text-sm text-muted">
+              {{ ongoingRequests.length }} processing · {{ finishedRequests.length }} ready ·
+              {{ errorRequests.length }} failed
+            </p>
+
+            <UButton
+            v-if="totalCount > 0"
+              class="ml-auto"
+              label="Clear all"
+              color="error"
+              variant="outline"
+              size="sm"
+              :disabled="totalCount === 0"
+              @click="clearRequestCollection"
+            />
+          </div>
+        </div>
+      </div>
+    </template>
+
     <template #body>
       <div v-if="totalCount === 0" class="py-8 text-center text-sm text-muted">
         No print jobs yet.
@@ -61,7 +87,7 @@ function statusColor(
 
       <ul v-else class="divide-y divide-default">
         <li
-          v-for="(item, index) in requestCollection"
+          v-for="(item, index) in requestCollectionNewerToOlder"
           :key="index"
           class="flex items-center justify-between gap-4 py-3"
         >
@@ -90,9 +116,9 @@ function statusColor(
           <UButton
             v-if="
               item.lastResponse.status === 'finished' &&
-              item.lastResponse.pdfPath
+              item.lastResponse.pdfUrl
             "
-            :href="item.lastResponse.pdfPath"
+            :href="item.lastResponse.pdfUrl"
             target="_blank"
             rel="noopener"
             label="Download"
