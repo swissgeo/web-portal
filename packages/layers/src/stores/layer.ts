@@ -27,8 +27,11 @@ export const useLayerStore = defineStore("layers", () => {
   /** List of layers added to the map. Index 0 = bottom of stack, last index = top. */
   const layers = ref<Layer[]>([]);
 
-  /** The active background layer, or null if none is selected. */
-  const backgroundLayer = ref<Layer | null>(null);
+  /**
+   * The active background layer, or null if none is selected. Initialising to undefined to
+   * be able to distinguish the unitialized state from setting none
+   */
+  const backgroundLayer = ref<Layer | null | undefined>(undefined);
 
   const importOptions = markRaw<Record<string, importOption>>({});
 
@@ -90,7 +93,13 @@ export const useLayerStore = defineStore("layers", () => {
     }
     return layer;
   }
+
   function setBackground(layer: Layer | null) {
+    log.debug({
+      title: "layer store",
+      titleColor: LogPreDefinedColor.Cyan,
+      messages: ["Changing background in the store to", layer],
+    });
     backgroundLayer.value = layer;
   }
 

@@ -13,7 +13,7 @@ const {
   isCurrent = false,
   folded = false,
 } = defineProps<{
-  backgroundLayer: Layer | null;
+  backgroundLayer: Layer | null | undefined;
   isCurrent: boolean;
   folded?: boolean;
 }>();
@@ -21,17 +21,19 @@ const { t } = useI18n();
 const { getImageForBackgroundLayer } = useBackgroundSelector(() => {});
 
 const emit = defineEmits(["click"]);
-const cyId = computed(() =>
-  backgroundLayer === null ? "void" : backgroundLayer.uuid,
+const testId = computed(() =>
+  backgroundLayer ? backgroundLayer.uuid : "void",
 );
 const layerTranslationKey = computed(() =>
   mapBackgroundLayerToTranslationKey(backgroundLayer),
 );
 
-function mapBackgroundLayerToTranslationKey(layer: Layer | null): string {
+function mapBackgroundLayerToTranslationKey(
+  layer: Layer | null | undefined,
+): string {
   let translationKey = "";
 
-  if (layer === null) {
+  if (layer === null || layer === undefined) {
     translationKey = "backgroundLayers.voidMap";
   } else {
     const layerData = layer.data as Dataset;
@@ -53,7 +55,7 @@ function mapBackgroundLayerToTranslationKey(layer: Layer | null): string {
     class="bg-entry relative cursor-pointer overflow-hidden rounded-lg border-4 border-solid border-[#343a40]"
     :class="{ active: isCurrent, folded }"
     type="button"
-    :data-testid="cyId"
+    :data-testid="testId"
     @click="emit('click')"
   >
     <span
