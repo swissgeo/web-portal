@@ -28,15 +28,22 @@ type GeoAdminLabel = NonNullable<GeoAdminGeoJSONVectorOptions["label"]>;
  * - Multi-token label templates beyond a single `${prop}` are converted best-effort.
  * - `minResolution`/`maxResolution` are mapped to `minzoom`/`maxzoom` only when a
  *   `resolutionToZoom` function is supplied.
- * - Draw order differs from the legacy renderer. Each style entry (unique value /
- *   range) becomes its own MapLibre layer, and layers paint strictly in array order,
- *   so every feature of one entry paints under every feature of the next — and
- *   circles vs. shapes land in different layer *types* (`circle` vs. `symbol`) that
- *   cannot share a layer. The legacy `OlStyleForPropertyValue` instead drew every
- *   feature in a single OpenLayers vector layer in feature/source order, so shapes
- *   interleaved per-feature. MapLibre groups by style entry; the legacy interleaves
- *   by feature. There is no faithful 1:1 mapping (see e.g.
- *   ch.bafu.hydroweb-messstationen_vorhersage: triangle-over-circle ordering varies).
+ * - Draw order for POLYGON/LINE features now matches the legacy renderer. All polygon
+ *   fills collapse into one `fill` layer and all strokes (polygon outlines + line
+ *   geometries) into one `line` layer, with the per-value differences carried as
+ *   data-driven `["match"]` / `["case"]` paint expressions. `ol-mapbox-style` assigns
+ *   one z-index per MapLibre layer, so a single layer means OpenLayers draws its
+ *   features in source order — exactly like the legacy `OlStyleForPropertyValue`,
+ *   which drew every feature in one vector layer with no per-entry z-index. This fixes
+ *   the reported ordering bug (e.g. ch.bafu.hydroweb-warnkarte_national, where the last
+ *   region polygons used to paint over everything).
+ * - Draw order for POINT features still groups by style entry. Point entries stay one
+ *   layer each (circle / symbol), because MapLibre cannot interleave `circle` and
+ *   `symbol` layer types per feature. This is the residual case flagged in review as
+ *   "not such an issue for point symbols" (see e.g.
+ *   ch.bafu.hydroweb-messstationen_vorhersage). Even with the polygon/line fix,
+ *   MapLibre always paints all `fill` below all `line` below all `symbol`, so a source
+ *   order that interleaves *across* geometry types cannot be reproduced 1:1.
  */
 
 // --- Minimal MapLibre style typings (only the subset we emit) -----------------
@@ -95,6 +102,15 @@ interface NormalizedEntry {
   // A number is a static rotation angle (radians); a string names the feature
   // property holding the angle (data-driven, e.g. wind direction).
   rotation?: string | number;
+  // Position of this entry in the original style, used to keep generated point-layer
+  // ids stable and ordered.
+  index: number;
+  // The raw discriminating value: the `unique` value, or the `[min, max)` range. Used
+  // to build data-driven ["match"] / ["case"] paint expressions when polygon/line
+  // entries are merged into a single MapLibre layer (see buildFillLayers /
+  // buildStrokeLayers).
+  value?: string | number;
+  range?: [number, number];
 }
 
 /**
@@ -120,17 +136,20 @@ function normalizeEntries(
         minResolution: single.minResolution,
         maxResolution: single.maxResolution,
         rotation: extractRotation(single),
+        index: 0,
       },
     ];
   }
 
   if (geoadmin.type === "unique") {
-    return geoadmin.values.map((value) => ({
+    return geoadmin.values.map((value, index) => ({
       geomType: value.geomType,
       vectorOptions: value.vectorOptions,
       minResolution: value.minResolution,
       maxResolution: value.maxResolution,
       rotation: extractRotation(value),
+      index,
+      value: value.value,
       // geoadmin data often encodes the discriminating value as a string (e.g.
       // "2"), while the style value may be numeric — MapLibre's `==` is
       // type-strict, so compare both as strings.
@@ -143,12 +162,14 @@ function normalizeEntries(
   }
 
   // range
-  return geoadmin.ranges.map((range) => ({
+  return geoadmin.ranges.map((range, index) => ({
     geomType: range.geomType,
     vectorOptions: range.vectorOptions,
     minResolution: range.minResolution,
     maxResolution: range.maxResolution,
     rotation: extractRotation(range),
+    index,
+    range: range.range,
     // Coerce the property to a number so string-encoded values compare correctly.
     filter: [
       "all",
@@ -335,7 +356,6 @@ function isShapeIconType(type: string): type is ShapeIconType {
 interface BuildContext {
   sourceId: string;
   baseId: string;
-  index: number;
   options: GeoadminToMapLibreOptions;
   icons: ShapeIconSpec[];
 }
@@ -372,75 +392,340 @@ function applyCommon(
   return layer;
 }
 
-function buildLayersForEntry(
+// --- Merged polygon/line layers (data-driven paint) ---------------------------
+//
+// Polygon and line features are drawn through as few MapLibre layers as possible —
+// one `fill` layer for every polygon fill, one `line` layer for every stroke (polygon
+// outline + line geometry) — with the per-value differences carried in data-driven
+// paint expressions. This is what makes their draw order match the legacy renderer:
+// `ol-mapbox-style` sets one z-index per MapLibre layer, so features that share a
+// layer are painted by OpenLayers in source order rather than grouped per style entry.
+
+const TRANSPARENT_COLOR = "rgba(0, 0, 0, 0)";
+
+/** A polygon/line entry's fill color, or undefined when it declares none. */
+function fillColorOf(entry: NormalizedEntry): string | undefined {
+  const vo = entry.vectorOptions;
+  return vo && "fill" in vo ? vo.fill?.color : undefined;
+}
+
+/** A polygon/line entry's stroke color, or undefined when it declares none. */
+function strokeColorOf(entry: NormalizedEntry): string | undefined {
+  const vo = entry.vectorOptions;
+  return vo && "stroke" in vo ? vo.stroke?.color : undefined;
+}
+
+/** A polygon/line entry's stroke width (defaulting to 1 like the legacy renderer). */
+function strokeWidthOf(entry: NormalizedEntry): number | undefined {
+  const vo = entry.vectorOptions;
+  if (vo && "stroke" in vo && vo.stroke?.color) {
+    return vo.stroke.width ?? 1;
+  }
+  return undefined;
+}
+
+/**
+ * Builds a single data-driven paint value from a set of entries that all feed the same
+ * MapLibre layer (e.g. every polygon fill). `getPaint` returns an entry's paint value,
+ * or undefined to skip it.
+ *
+ * - `single` → the one entry's value, as a constant.
+ * - `unique` → `["match", ["to-string", ["get", property]], value, paint, …, fallback]`.
+ * - `range`  → `["case", ["all", [">=", …], ["<", …]], paint, …, fallback]`.
+ *
+ * Returns undefined when no entry contributes a value, so the caller can skip the layer.
+ */
+function buildDataDrivenValue<T>(
+  geoadmin: GeoAdminGeoJSONStyleDefinition,
+  entries: NormalizedEntry[],
+  getPaint: (entry: NormalizedEntry) => T | undefined,
+  fallback: T,
+): T | MapLibreExpression | undefined {
+  if (geoadmin.type === "single") {
+    return entries.length ? getPaint(entries[0]!) : undefined;
+  }
+
+  if (geoadmin.type === "unique") {
+    const arms: unknown[] = [];
+    for (const entry of entries) {
+      const paint = getPaint(entry);
+      if (paint === undefined || entry.value === undefined) {
+        continue;
+      }
+      arms.push(String(entry.value), paint);
+    }
+    if (arms.length === 0) {
+      return undefined;
+    }
+    return [
+      "match",
+      ["to-string", ["get", geoadmin.property]],
+      ...arms,
+      fallback,
+    ];
+  }
+
+  // range
+  const arms: unknown[] = [];
+  for (const entry of entries) {
+    const paint = getPaint(entry);
+    if (paint === undefined || !entry.range) {
+      continue;
+    }
+    arms.push(
+      [
+        "all",
+        [">=", ["to-number", ["get", geoadmin.property]], entry.range[0]],
+        ["<", ["to-number", ["get", geoadmin.property]], entry.range[1]],
+      ],
+      paint,
+    );
+  }
+  if (arms.length === 0) {
+    return undefined;
+  }
+  return ["case", ...arms, fallback];
+}
+
+interface ZoomBand {
+  minzoom?: number;
+  maxzoom?: number;
+}
+
+/** Computes an entry's MapLibre zoom window from its resolution band (see applyCommon). */
+function entryZoomBand(entry: NormalizedEntry, ctx: BuildContext): ZoomBand {
+  const toZoom = ctx.options.resolutionToZoom;
+  const band: ZoomBand = {};
+  if (!toZoom) {
+    return band;
+  }
+  if (entry.minResolution !== undefined && entry.minResolution > 0) {
+    band.maxzoom = toZoom(entry.minResolution) + 1;
+  }
+  if (entry.maxResolution !== undefined && entry.maxResolution !== Infinity) {
+    band.minzoom = toZoom(entry.maxResolution) + 1;
+  }
+  return band;
+}
+
+function bandKey(band: ZoomBand): string {
+  return `${band.minzoom ?? ""}|${band.maxzoom ?? ""}`;
+}
+
+function applyZoomBand(layer: MapLibreLayer, band: ZoomBand): MapLibreLayer {
+  if (band.minzoom !== undefined) {
+    layer.minzoom = band.minzoom;
+  }
+  if (band.maxzoom !== undefined) {
+    layer.maxzoom = band.maxzoom;
+  }
+  return layer;
+}
+
+interface BandGroup {
+  band: ZoomBand;
+  entries: NormalizedEntry[];
+}
+
+/**
+ * Groups entries by their zoom band, preserving first-seen order. Entries in the same
+ * band can share one MapLibre layer (a layer has a single zoom window); different bands
+ * stay separate. Production polygon/line styles have no resolution bands, so this
+ * usually yields a single group.
+ */
+function groupByBand(
+  entries: NormalizedEntry[],
+  ctx: BuildContext,
+): BandGroup[] {
+  const order: string[] = [];
+  const groups = new Map<string, BandGroup>();
+  for (const entry of entries) {
+    const band = entryZoomBand(entry, ctx);
+    const key = bandKey(band);
+    let group = groups.get(key);
+    if (!group) {
+      group = { band, entries: [] };
+      groups.set(key, group);
+      order.push(key);
+    }
+    group.entries.push(entry);
+  }
+  return order.map((key) => groups.get(key)!);
+}
+
+/** One `fill` layer per zoom band covering all polygon entries. */
+function buildFillLayers(
+  geoadmin: GeoAdminGeoJSONStyleDefinition,
+  polygonEntries: NormalizedEntry[],
+  ctx: BuildContext,
+): MapLibreLayer[] {
+  const layers: MapLibreLayer[] = [];
+  const groups = groupByBand(polygonEntries, ctx);
+  groups.forEach((group, i) => {
+    const fillColor = buildDataDrivenValue(
+      geoadmin,
+      group.entries,
+      fillColorOf,
+      TRANSPARENT_COLOR,
+    );
+    if (fillColor === undefined) {
+      return;
+    }
+    const suffix = groups.length > 1 ? `-${i}` : "";
+    const fill: MapLibreLayer = {
+      id: `${ctx.baseId}-fill${suffix}`,
+      type: "fill",
+      source: ctx.sourceId,
+      paint: { "fill-color": fillColor as unknown },
+    };
+    layers.push(applyZoomBand(fill, group.band));
+  });
+  return layers;
+}
+
+const GEOMETRY_IS_POLYGON: MapLibreExpression = [
+  "==",
+  ["geometry-type"],
+  "Polygon",
+];
+const GEOMETRY_IS_LINE: MapLibreExpression = [
+  "==",
+  ["geometry-type"],
+  "LineString",
+];
+
+/**
+ * One `line` layer per zoom band covering every stroke — both polygon outlines and
+ * line geometries. A MapLibre `line` layer applies to lines AND polygons, so when both
+ * are present the paint is a `["case", ["geometry-type"] == "Polygon", …outline…,
+ * …line…]`; when only one is present the layer is instead filtered by geometry type so
+ * it does not accidentally stroke the other.
+ */
+function buildStrokeLayers(
+  geoadmin: GeoAdminGeoJSONStyleDefinition,
+  polygonEntries: NormalizedEntry[],
+  lineEntries: NormalizedEntry[],
+  ctx: BuildContext,
+): MapLibreLayer[] {
+  const polyStroke = polygonEntries.filter(
+    (entry) => strokeColorOf(entry) !== undefined,
+  );
+  const lineStroke = lineEntries.filter(
+    (entry) => strokeColorOf(entry) !== undefined,
+  );
+  if (!polyStroke.length && !lineStroke.length) {
+    return [];
+  }
+
+  // Union the bands of both stroke sources, preserving first-seen order.
+  const order: string[] = [];
+  const byBand = new Map<
+    string,
+    { band: ZoomBand; poly: NormalizedEntry[]; line: NormalizedEntry[] }
+  >();
+  const collect = (
+    entries: NormalizedEntry[],
+    which: "poly" | "line",
+  ): void => {
+    for (const group of groupByBand(entries, ctx)) {
+      const key = bandKey(group.band);
+      let bucket = byBand.get(key);
+      if (!bucket) {
+        bucket = { band: group.band, poly: [], line: [] };
+        byBand.set(key, bucket);
+        order.push(key);
+      }
+      bucket[which] = group.entries;
+    }
+  };
+  collect(polyStroke, "poly");
+  collect(lineStroke, "line");
+
+  const layers: MapLibreLayer[] = [];
+  const multiBand = order.length > 1;
+  order.forEach((key, i) => {
+    const bucket = byBand.get(key)!;
+    const polyColor = buildDataDrivenValue(
+      geoadmin,
+      bucket.poly,
+      strokeColorOf,
+      TRANSPARENT_COLOR,
+    );
+    const polyWidth = buildDataDrivenValue(
+      geoadmin,
+      bucket.poly,
+      strokeWidthOf,
+      0,
+    );
+    const lineColor = buildDataDrivenValue(
+      geoadmin,
+      bucket.line,
+      strokeColorOf,
+      TRANSPARENT_COLOR,
+    );
+    const lineWidth = buildDataDrivenValue(
+      geoadmin,
+      bucket.line,
+      strokeWidthOf,
+      0,
+    );
+
+    let color: unknown;
+    let width: unknown;
+    let filter: MapLibreExpression | undefined;
+    if (polyColor !== undefined && lineColor !== undefined) {
+      // Both geometries in this layer — branch the paint on geometry type.
+      color = ["case", GEOMETRY_IS_POLYGON, polyColor, lineColor];
+      width = ["case", GEOMETRY_IS_POLYGON, polyWidth ?? 0, lineWidth ?? 0];
+    } else if (polyColor !== undefined) {
+      color = polyColor;
+      width = polyWidth ?? 1;
+      filter = GEOMETRY_IS_POLYGON;
+    } else if (lineColor !== undefined) {
+      color = lineColor;
+      width = lineWidth ?? 1;
+      filter = GEOMETRY_IS_LINE;
+    } else {
+      return;
+    }
+
+    const suffix = multiBand ? `-${i}` : "";
+    const stroke: MapLibreLayer = {
+      id: `${ctx.baseId}-stroke${suffix}`,
+      type: "line",
+      source: ctx.sourceId,
+      paint: { "line-color": color, "line-width": width },
+    };
+    if (filter) {
+      stroke.filter = filter;
+    }
+    layers.push(applyZoomBand(stroke, bucket.band));
+  });
+  return layers;
+}
+
+/**
+ * Builds the layers for a single point entry (kept one-per-entry: MapLibre cannot
+ * interleave `circle` and `symbol` layer types the way the legacy renderer interleaved
+ * per feature). Also emits label layers for non-point entries that carry a label.
+ */
+function buildPointOrLabelLayers(
   entry: NormalizedEntry,
   ctx: BuildContext,
 ): MapLibreLayer[] {
   const { vectorOptions, geomType } = entry;
-  const layers: MapLibreLayer[] = [];
-  const idPrefix = `${ctx.baseId}-${ctx.index}`;
+  const idPrefix = `${ctx.baseId}-${entry.index}`;
 
-  if (geomType === "polygon") {
-    const fill: MapLibreLayer = {
-      id: `${idPrefix}-fill`,
-      type: "fill",
-      source: ctx.sourceId,
-      paint: {},
-    };
-    if (vectorOptions && "fill" in vectorOptions && vectorOptions.fill?.color) {
-      fill.paint!["fill-color"] = vectorOptions.fill.color;
-    }
-    layers.push(applyCommon(fill, entry, ctx));
-
-    if (
-      vectorOptions &&
-      "stroke" in vectorOptions &&
-      vectorOptions.stroke?.color
-    ) {
-      const outline: MapLibreLayer = {
-        id: `${idPrefix}-outline`,
-        type: "line",
-        source: ctx.sourceId,
-        paint: {
-          "line-color": vectorOptions.stroke.color,
-          "line-width": vectorOptions.stroke.width ?? 1,
-        },
-      };
-      layers.push(applyCommon(outline, entry, ctx));
-    }
-  } else if (geomType === "line") {
-    const line: MapLibreLayer = {
-      id: `${idPrefix}-line`,
-      type: "line",
-      source: ctx.sourceId,
-      paint: {},
-    };
-    if (
-      vectorOptions &&
-      "stroke" in vectorOptions &&
-      vectorOptions.stroke?.color
-    ) {
-      line.paint!["line-color"] = vectorOptions.stroke.color;
-      line.paint!["line-width"] = vectorOptions.stroke.width ?? 1;
-    }
-    layers.push(applyCommon(line, entry, ctx));
-  } else if (geomType === "point" && vectorOptions) {
-    layers.push(...buildPointLayers(entry, vectorOptions, ctx, idPrefix));
-  } else if (vectorOptions) {
-    log.warn({
-      title: "geoadminToMapLibreStyle",
-      titleColor: LogPreDefinedColor.Orange,
-      messages: ["Unsupported geomType, skipping entry", geomType],
-    });
+  if (geomType === "point" && vectorOptions) {
+    return buildPointLayers(entry, vectorOptions, ctx, idPrefix);
   }
 
-  // A label on a non-point entry needs its own symbol layer (point shapes fold the
-  // label into their symbol layer below).
+  // A label on a polygon/line entry needs its own symbol layer (its fill/stroke paint
+  // is already merged into the shared fill/line layers above).
   if (geomType !== "point" && vectorOptions?.label) {
-    layers.push(buildLabelLayer(entry, vectorOptions.label, ctx, idPrefix));
+    return [buildLabelLayer(entry, vectorOptions.label, ctx, idPrefix)];
   }
-
-  return layers;
+  return [];
 }
 
 /**
@@ -683,7 +968,10 @@ export function geoadminToMapLibreConversionNotes(
         "fill" in vectorOptions &&
         vectorOptions.fill?.color
       ) {
-        add("polygon fill color", 'a "fill" layer (fill-color)');
+        add(
+          "polygon fill color",
+          'one shared "fill" layer for all polygons (fill-color as a data-driven match/case over the style values)',
+        );
       }
       if (
         vectorOptions &&
@@ -692,11 +980,14 @@ export function geoadminToMapLibreConversionNotes(
       ) {
         add(
           "polygon stroke",
-          'a separate "line" layer for the outline (line-color, line-width)',
+          'one shared "line" layer for all strokes (line-color/line-width data-driven; polygon outlines branch on geometry-type)',
         );
       }
     } else if (geomType === "line") {
-      add("line geometry stroke", 'a "line" layer (line-color, line-width)');
+      add(
+        "line geometry stroke",
+        'the shared "line" layer (line-color/line-width data-driven; line geometries branch on geometry-type)',
+      );
     } else if (geomType === "point" && vectorOptions) {
       if (vectorOptions.type === "circle") {
         add(
@@ -790,11 +1081,17 @@ export function geoadminToMapLibreConversionNotes(
     }
   }
 
-  // Draw-order caveat once the style splits into more than one layer.
+  // Draw-order note. Polygon/line features are merged into shared data-driven layers,
+  // so they keep the legacy renderer's source-order drawing; point entries stay one
+  // layer each and are grouped by entry.
+  const hasPoints = entries.some((entry) => entry.geomType === "point");
   if (entries.length > 1) {
     add(
       "all entries drawn in one OpenLayers vector layer, interleaved per feature",
-      "one MapLibre layer per entry, painted strictly in array order — so draw order can differ from the legacy renderer",
+      "polygon/line features share one fill + one line layer, so they keep source order like the legacy renderer" +
+        (hasPoints
+          ? "; point entries stay one layer each, so points are still grouped by entry"
+          : ""),
     );
   }
 
@@ -812,16 +1109,43 @@ export function geoadminToMapLibreStyle(
   const ctx: BuildContext = {
     sourceId,
     baseId: sourceId,
-    index: 0,
     options,
     icons,
   };
 
-  const layers: MapLibreLayer[] = [];
-  normalizeEntries(geoadmin).forEach((entry, index) => {
-    ctx.index = index;
-    layers.push(...buildLayersForEntry(entry, ctx));
-  });
+  const entries = normalizeEntries(geoadmin);
+  const polygonEntries = entries.filter(
+    (entry) => entry.geomType === "polygon",
+  );
+  const lineEntries = entries.filter((entry) => entry.geomType === "line");
+
+  for (const entry of entries) {
+    if (
+      entry.vectorOptions &&
+      entry.geomType !== "polygon" &&
+      entry.geomType !== "line" &&
+      entry.geomType !== "point"
+    ) {
+      log.warn({
+        title: "geoadminToMapLibreStyle",
+        titleColor: LogPreDefinedColor.Orange,
+        messages: ["Unsupported geomType, skipping entry", entry.geomType],
+      });
+    }
+  }
+
+  // Order matters: MapLibre paints layers in array order. Polygon fills (bottom), then
+  // all strokes (polygon outlines + lines), then point/label symbols (top). Polygon and
+  // line features are merged into shared data-driven layers so OpenLayers draws them in
+  // source order — matching the legacy renderer (see the file header's draw-order note).
+  const layers: MapLibreLayer[] = [
+    ...buildFillLayers(geoadmin, polygonEntries, ctx),
+    ...buildStrokeLayers(geoadmin, polygonEntries, lineEntries, ctx),
+  ];
+  // Point layers (and any polygon/line labels) stay one-per-entry, in original order.
+  for (const entry of entries) {
+    layers.push(...buildPointOrLabelLayers(entry, ctx));
+  }
 
   const style: MapLibreStyle = {
     version: 8,
