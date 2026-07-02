@@ -63,6 +63,10 @@ export const useLayerStore = defineStore("layers", () => {
     const index = layers.value.findIndex((layer) => layer.uuid === uuid);
 
     if (index < 0) {
+      if (uuid === backgroundLayer.value?.uuid) {
+        // background layer errors are a false positive, so we don't log them
+        return;
+      }
       log.error(`Incorrect uuid given : ${uuid}`);
       return;
     }

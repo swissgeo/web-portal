@@ -15,9 +15,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  updateData: [WMSLayerData];
+  updateData: [opacity: number | null, WMSLayerData];
   updateTimeDimension: [dimension: Partial<Dimension>];
-  updateOpacity: [opacity: number];
 }>();
 
 const distribution = computed(() => props.distribution);
@@ -36,20 +35,17 @@ watch(timeInfo, () => {
 });
 
 watch(
-  defaultOpacity,
-  () => {
-    if (defaultOpacity.value !== null) {
-      emit("updateOpacity", defaultOpacity.value);
+  [wmsDataForOl, defaultOpacity],
+  ([_new_options, new_opacity], [_old_options, old_opacity]) => {
+    if (
+      wmsDataForOl.value &&
+      (defaultOpacity.value || old_opacity === new_opacity)
+    ) {
+      emit("updateData", defaultOpacity.value, wmsDataForOl.value);
     }
   },
   { immediate: true },
 );
-
-watch(wmsDataForOl, () => {
-  if (wmsDataForOl.value) {
-    emit("updateData", wmsDataForOl.value);
-  }
-});
 </script>
 
 <template><slot /></template>

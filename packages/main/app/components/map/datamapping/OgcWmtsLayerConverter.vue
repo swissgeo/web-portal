@@ -14,9 +14,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  updateOptions: [{ options: Options }];
+  updateOptions: [opacity: number | null, { options: Options }];
   updateTimeDimension: [dimension: Partial<Dimension>];
-  updateOpacity: [opacity: number];
 }>();
 
 const distribution = computed(() => props.distribution);
@@ -34,20 +33,15 @@ watch(timeInfo, () => {
 });
 
 watch(
-  defaultOpacity,
-  () => {
-    if (defaultOpacity.value !== null) {
-      emit("updateOpacity", defaultOpacity.value);
-    }
-  },
-  { immediate: true },
-);
-
-watch(
-  options,
-  () => {
-    if (options.value) {
-      emit("updateOptions", { options: options.value });
+  [options, defaultOpacity],
+  ([_new_options, new_opacity], [_old_options, old_opacity]) => {
+    if (
+      options.value &&
+      (defaultOpacity.value || old_opacity === new_opacity)
+    ) {
+      emit("updateOptions", defaultOpacity.value, {
+        options: options.value,
+      });
     }
   },
   { immediate: true },

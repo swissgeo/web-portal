@@ -15,6 +15,8 @@ const { sources: attributionSources } = useAttributionSources(
   computed(() => layerStore.backgroundLayer),
 );
 
+// the layer the compare slider clips: the topmost visible overlay (the
+// background/basemap is excluded by the store getter and never clipped)
 const topVisibleLayer = computed(() => mapViewStore.visibleLayers.at(-1));
 
 watch(topVisibleLayer, (layer) => {
