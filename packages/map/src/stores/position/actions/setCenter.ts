@@ -1,14 +1,9 @@
 import type { SingleCoordinate } from "@swissgeo/coordinates";
 import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
-// import proj4 from 'proj4'
 
-// import { WGS84 } from '@swissgeo/coordinates'
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 
 import type { PositionStore } from "@/stores/position";
-
-// import useCesiumStore from '@/stores/cesium'
-// import useGeolocationStore from '@/stores/geolocation'
 
 export default function setCenter(
   this: PositionStore,
@@ -38,36 +33,4 @@ export default function setCenter(
       ],
     });
   }
-
-  //   const geolocationStore = useGeolocationStore();
-
-  // TODO: fix this, it stops the tracking when receiving the first geolocation position update
-  //   if (geolocationStore.tracking && geolocationStore.position !== center) {
-  //     // if we moved the map we disabled the geolocation tracking (unless the tracking moved the map)
-  //     geolocationStore.setGeolocationTracking(false, dispatcher);
-  //     this.setAutoRotation(false, dispatcher);
-  //   }
-
-  //   const cesiumStore = useCesiumStore();
-  //   if (cesiumStore.active && this.camera) {
-  //     // updating the 3D position with the new center values (from a search result selection, for example)
-  //     const centerWgs84 = proj4<SingleCoordinate>(
-  //       this.projection.epsg,
-  //       WGS84.epsg,
-  //       [this.center[0], this.center[1]]
-  //     );
-  //     // Use a special dispatcher to indicate this is a sync operation from setCenter
-  //     // This prevents infinite recursion with setCameraPosition
-  //     this.setCameraPosition(
-  //       {
-  //         x: centerWgs84[0],
-  //         y: centerWgs84[1],
-  //         z: this.camera.z,
-  //         roll: this.camera.roll,
-  //         pitch: this.camera.pitch,
-  //         heading: this.camera.heading,
-  //       },
-  //       { name: "setCenter" } // Special dispatcher to prevent recursion
-  //     );
-  //   }
 }
