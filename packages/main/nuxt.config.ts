@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { execSync } from "node:child_process";
 
+import "./server/instrumentation";
+
 function getGitCommit() {
   try {
     return (
