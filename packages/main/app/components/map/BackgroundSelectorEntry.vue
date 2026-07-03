@@ -21,8 +21,9 @@ const { t } = useI18n();
 const { getImageForBackgroundLayer } = useBackgroundSelector(() => {});
 
 const emit = defineEmits(["click"]);
-const testId = computed(() =>
-  backgroundLayer ? backgroundLayer.uuid : "void",
+const testId = computed(
+  () =>
+    `background-selector-${backgroundLayer ? backgroundLayer.humanId : "void"}`,
 );
 const layerTranslationKey = computed(() =>
   mapBackgroundLayerToTranslationKey(backgroundLayer),
