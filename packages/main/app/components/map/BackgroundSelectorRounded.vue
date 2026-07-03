@@ -5,7 +5,7 @@ import useBackgroundSelector from "./useBackgroundSelector";
 
 const { backgroundLayers, currentBackgroundLayer } = defineProps<{
   backgroundLayers: (Layer | null)[];
-  currentBackgroundLayer: Layer | null;
+  currentBackgroundLayer: Layer | null | undefined;
 }>();
 
 const emit = defineEmits<{

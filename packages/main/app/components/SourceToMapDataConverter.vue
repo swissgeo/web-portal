@@ -17,7 +17,7 @@ import MapDatamappingFileConverter from "@/components/map/datamapping/FileConver
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";
 
 const { sourceBgLayer, sourceData } = defineProps<{
-  sourceBgLayer: SourceData | null;
+  sourceBgLayer: SourceData | null | undefined;
   sourceData: SourceData[];
 }>();
 
