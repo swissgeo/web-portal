@@ -2,7 +2,6 @@ import { storeToRefs } from "pinia";
 
 import { usePrintRequestsStore } from "../stores/printRequest";
 
-
 /**
  * Interval in milliseconds to poll the print service for the status of open print jobs.
  * This is a trade-off between responsiveness and server load.
@@ -12,7 +11,7 @@ const PRINT_STATUS_POLL_INTERVAL_MS = 2000;
 /**
  * Composable that provides a collection of print requests and their status, and allows to send new print requests to the print service.
  * It also provides a method to refresh the status of the print jobs that are still open.
- * It makes use of the print request store to centralize the data and ensure all instances of this composable share the same data, 
+ * It makes use of the print request store to centralize the data and ensure all instances of this composable share the same data,
  * and is the prefered interface to interact with the print service.
  */
 export function usePrintRequests() {
