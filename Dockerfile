@@ -80,7 +80,7 @@ COPY --chown=${USER}:${GROUP} --from=builder-dev ${BUILD_DIR}/packages/main/.out
 USER ${USER}
 EXPOSE ${PORT}
 WORKDIR ${INSTALL_DIR}
-ENTRYPOINT ["node", "--import", "/app/server/instrumentation.js", "/app/server/index.mjs"]
+ENTRYPOINT ["node", "--import", "/app/server/instrumentation.mjs", "/app/server/index.mjs"]
 
 ###########################################################
 # Container to use in prod
@@ -103,7 +103,7 @@ COPY --chown=${USER}:${GROUP} --from=builder-prod ${BUILD_DIR}/packages/main/.ou
 USER ${USER}
 EXPOSE ${PORT}
 WORKDIR ${INSTALL_DIR}
-ENTRYPOINT ["node", "--import", "/app/server/instrumentation.js", "/app/server/index.mjs"]
+ENTRYPOINT ["node", "--import", "/app/server/instrumentation.mjs", "/app/server/index.mjs"]
 
 ###########################################################
 # Container to use for checks
