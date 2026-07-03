@@ -1,103 +1,20 @@
-import { defineStore, storeToRefs } from "pinia";
+import { storeToRefs } from "pinia";
 
-import type { PrintFormat, PrintOrientation } from "../types/print";
+import { usePrintRequestsStore } from "../stores/printRequest";
+
 
 /**
- * Body of the POST request sent to the print service to trigger a print job.
+ * Interval in milliseconds to poll the print service for the status of open print jobs.
+ * This is a trade-off between responsiveness and server load.
  */
-export type PrintPostRequestBody = {
-  state_id: string;
-  print_format: PrintFormat;
-  print_orientation: PrintOrientation;
-  print_resolution: number;
-  print_legend: boolean;
-  print_grid: boolean;
-  print_lang: string;
-};
-
-export type PrintJobStatusResponse = {
-  /**
-   * A print job can be "open" when it's being processed, "finished" when the PDF is ready or "error" if something went wrong during the processing
-   */
-  status: "open" | "started" | "finished" | "error";
-  /**
-   * ISO string of the date when the print job was created, but not started yet
-   */
-  created: string;
-  /**
-   * ISO string of the date when the print job started to be processed
-   */
-  started: string;
-  /**
-   * ISO string of the date when the print job finished (either with success or error depending on the status)
-   */
-  finished: string;
-  /**
-   * URL to the detailed report of the print job, if available. This endpoint is specific to a print job and must be used to obtain status updates.
-   */
-  reportUrl: string | null;
-  /**
-   * Optional message providing additional information about the print job status
-   */
-  message?: string | null;
-  /**
-   * URL to the generated PDF file, if available
-   */
-  pdfUrl?: string;
-};
-
-type PrintRequestCollectionItem = {
-  requestBody: PrintPostRequestBody;
-  lastResponse: PrintJobStatusResponse;
-  isPolling: boolean;
-};
-
-const PRINT_REQUESTS_STORAGE_KEY = "printRequestsCollection";
 const PRINT_STATUS_POLL_INTERVAL_MS = 2000;
 
 /**
- * Pinia store that centralizes the print request collection and its localStorage persistence.
- * Using a store ensures all instances of usePrintRequests() share the same data.
+ * Composable that provides a collection of print requests and their status, and allows to send new print requests to the print service.
+ * It also provides a method to refresh the status of the print jobs that are still open.
+ * It makes use of the print request store to centralize the data and ensure all instances of this composable share the same data, 
+ * and is the prefered interface to interact with the print service.
  */
-const usePrintRequestsStore = defineStore("printRequests", () => {
-  const requestCollection = ref<PrintRequestCollectionItem[]>([]);
-  const isPollingGlobal = ref(false);
-
-  if (import.meta.client) {
-    // Hydrate from localStorage on first load
-    const serialized = localStorage.getItem(PRINT_REQUESTS_STORAGE_KEY);
-    if (serialized) {
-      try {
-        const parsed = JSON.parse(serialized);
-        if (Array.isArray(parsed)) {
-          requestCollection.value = parsed;
-        }
-      } catch {
-        // Ignore invalid persisted content and keep empty state.
-      }
-    }
-
-    // Persist every change back to localStorage
-    watch(
-      requestCollection,
-      (newCollection) => {
-        localStorage.setItem(
-          PRINT_REQUESTS_STORAGE_KEY,
-          JSON.stringify(newCollection),
-        );
-      },
-      { deep: true },
-    );
-  }
-
-  function clearRequestCollection() {
-    requestCollection.value = [];
-    localStorage.removeItem(PRINT_REQUESTS_STORAGE_KEY);
-  }
-
-  return { requestCollection, isPollingGlobal, clearRequestCollection };
-});
-
 export function usePrintRequests() {
   const runtimeConfig = useRuntimeConfig();
   const printUrl = runtimeConfig.public.printServiceUrl;
@@ -106,6 +23,11 @@ export function usePrintRequests() {
   );
   const { clearRequestCollection } = usePrintRequestsStore();
 
+  /**
+   * Start polling the print service for the status of open print jobs, if not already started.
+   * (the startus of whether this has started or not is held in the store so mounting this
+   * composable multiple times will not start multiple polling intervals)
+   */
   function startPolling() {
     if (isPollingGlobal.value) {
       return;
@@ -118,14 +40,15 @@ export function usePrintRequests() {
     }, PRINT_STATUS_POLL_INTERVAL_MS);
   }
 
+  // The polling only happens client-side
   if (import.meta.client) {
-    /**
-     * Regularly poll the print service for the status of the print jobs that are still open,
-     * to update their status in the UI when they are finished.
-     */
     startPolling();
   }
 
+  /**
+   * Exposes the request collection sorted from newer to older, based on the creation date of the print job.
+   * This is useful for displaying the most recent print jobs first in the UI.
+   */
   const requestCollectionNewerToOlder = computed(() => {
     return [...requestCollection.value].sort((a, b) => {
       const dateA = new Date(a.lastResponse.created);
@@ -167,7 +90,9 @@ export function usePrintRequests() {
   });
 
   /**
-   * Refresh the status of the print jobs that were left open
+   * Refresh the status of the print jobs that were left "open" or "started" (pdf is not ready yet)
+   * by polling the print service for their status.
+   * Note: not exposed to the outside, as the polling is done automatically in the background only from this composable.
    */
   async function refreshOpenRequests() {
     const openRequests = requestCollection.value.filter(
@@ -178,6 +103,8 @@ export function usePrintRequests() {
         request.isPolling === false,
     );
 
+    // A "task" of polling a print job happens only if such print job is not currently being polled
+    // from a previous polling round (due to interval calls)
     const tasks = openRequests.map(
       async (request: PrintRequestCollectionItem) => {
         const reportUrl = request.lastResponse.reportUrl;
@@ -212,13 +139,16 @@ export function usePrintRequests() {
         body: printPostRequestBody,
       });
 
+      // Adding a new element in the requestCollection, which contains both the payload
+      // of the request (POST body) and the response from the print service (status of the print job)
       requestCollection.value.push({
         requestBody: printPostRequestBody,
         lastResponse: data,
         isPolling: false,
       });
 
-      startPolling();
+      // Note: here no need to call startPolling(), as this was already done when the composable was mounted,
+      // and the polling is done in the background automatically.
     } catch (_err) {
       // nothing to do, the request failed and the user will see an error message in the UI
     }
@@ -226,7 +156,6 @@ export function usePrintRequests() {
 
   return {
     sendCustomPrintRequest,
-    refreshOpenRequests,
     requestCollection,
     ongoingRequests,
     finishedRequests,

@@ -10,8 +10,8 @@ import VectorSource from "ol/source/Vector";
 import { Fill, Style } from "ol/style";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 
+import type { PrintPostRequestBody } from "../stores/printRequest";
 import type { PrintFormat, PrintOrientation } from "../types/print";
-import type { PrintPostRequestBody } from "./usePrintRequests";
 
 import { usePrintRequests } from "./usePrintRequests";
 import { URL_PARAM_STATE } from "./useUrlParams";
