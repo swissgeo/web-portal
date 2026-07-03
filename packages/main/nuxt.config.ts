@@ -128,6 +128,17 @@ export default defineNuxtConfig({
   },
   nitro: {
     ignore: ["**/__tests__/**"],
+    externals: {
+      inline: [
+        "node_modules/@opentelemetry/exporter-metrics-otlp-grpc",
+        "node_modules/@opentelemetry/auto-instrumentations-node",
+        "node_modules/@opentelemetry/exporter-trace-otlp-grpc",
+        "node_modules/@opentelemetry/resources",
+        "node_modules/@opentelemetry/sdk-metrics",
+        "node_modules/@opentelemetry/sdk-node",
+        "node_modules/@opentelemetry/semantic-conventions",
+      ],
+    },
   },
   routeRules: {
     // cache the rendered pages for 2 minutes
