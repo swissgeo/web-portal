@@ -4,7 +4,7 @@
   "license": "BSD-3-Clause",
   "type": "module",
   "scripts": {
-    ".compile-otel": "esbuild server/instrumentation.ts --bundle --platform=node --format=esm --target=es2022 --packages=bundle --outfile=.output/server/instrumentation.mjs",
+    ".compile-otel": "rolldown -c rolldown.otel.config.mjs",
     "build": "nuxt build && pnpm run .compile-otel",
     "build:dev": "DEVELOPMENT_BUILD=1 nuxt build && pnpm run .compile-otel",
     "build:prod": "nuxt build && pnpm run .compile-otel",
@@ -76,6 +76,7 @@
     "eslint-plugin-perfectionist": "catalog:",
     "happy-dom": "catalog:",
     "mapbox-gl": "catalog:",
+    "rolldown": "catalog:",
     "stylelint": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
