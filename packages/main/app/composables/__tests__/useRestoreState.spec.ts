@@ -7,11 +7,13 @@ const {
   importStateFromBase64Mock,
   importStateFromServiceMock,
   watcherCallbackRef,
+  watcherOptionsRef,
 } = vi.hoisted(() => {
   return {
     importStateFromBase64Mock: vi.fn(),
     importStateFromServiceMock: vi.fn(),
     watcherCallbackRef: { fn: null as ((_state: unknown) => void) | null },
+    watcherOptionsRef: { value: null as unknown },
   };
 });
 
@@ -19,8 +21,13 @@ vi.mock("@vueuse/core", async (importOriginal) => {
   const original = await importOriginal<typeof import("@vueuse/core")>();
   return {
     ...original,
-    watchDebounced: (_getter: unknown, callback: (_state: unknown) => void) => {
+    watchDebounced: (
+      _getter: unknown,
+      callback: (_state: unknown) => void,
+      options: unknown,
+    ) => {
       watcherCallbackRef.fn = callback;
+      watcherOptionsRef.value = options;
     },
   };
 });
@@ -73,6 +80,7 @@ describe("useRestoreState", () => {
     setActivePinia(createPinia());
     sessionStorage.clear();
     watcherCallbackRef.fn = null;
+    watcherOptionsRef.value = null;
     vi.clearAllMocks();
     mockImportState.mockReset();
     importStateFromBase64Mock.mockReset();
@@ -141,6 +149,17 @@ describe("useRestoreState", () => {
       const { listenToChange } = useRestoreState();
       listenToChange();
       expect(watcherCallbackRef.fn).not.toBeNull();
+    });
+
+    it("sets up the watcher without immediate persistence", () => {
+      const { listenToChange } = useRestoreState();
+      listenToChange();
+
+      expect(watcherOptionsRef.value).toEqual({
+        deep: true,
+        debounce: 500,
+        immediate: false,
+      });
     });
 
     it("writes state to sessionStorage when the watcher fires", () => {
