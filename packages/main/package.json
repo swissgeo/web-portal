@@ -15,7 +15,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint",
     "lint:write": "eslint --fix",
-    "preview": "node --import ./.output/server/instrumentation.js ./.output/server/index.mjs",
+    "preview": "node --import ./.output/server/instrumentation.mjs ./.output/server/index.mjs",
     "test:unit": "vitest run",
     "test:unit:coverage": "vitest run --coverage",
     "type-check": "nuxt typecheck"
