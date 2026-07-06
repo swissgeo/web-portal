@@ -81,6 +81,7 @@ describe("useRestoreState", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     sessionStorage.clear();
+    localStorage.clear();
     watcherCallbackRef.fn = null;
     watcherOptionsRef.value = null;
     vi.clearAllMocks();
@@ -172,6 +173,18 @@ describe("useRestoreState", () => {
       watcherCallbackRef.fn!(state);
 
       expect(sessionStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(state));
+    });
+
+    it("does not write persisted state to localStorage", () => {
+      const { listenToChange } = useRestoreState();
+      listenToChange();
+
+      watcherCallbackRef.fn!(mockExportState.value);
+
+      expect(sessionStorage.getItem(STORAGE_KEY)).toBe(
+        JSON.stringify(mockExportState.value),
+      );
+      expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
     });
 
     it("does not persist while layer import options are pending", () => {
