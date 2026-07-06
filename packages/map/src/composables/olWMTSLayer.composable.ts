@@ -27,7 +27,6 @@ export default function useOlWmtsLayer(
   const initialTimestamp = computed(
     () => dimension.value?.time?.currentValue || "current",
   );
-  // const initialTimestamp = ref('current')
 
   const wmtsTimeConfig = computed(() => {
     return getTimeConfig(initialTimestamp.value);
@@ -106,7 +105,5 @@ export default function useOlWmtsLayer(
     source.value.updateDimensions(timeConfig.dimensions);
   }
 
-  return {
-    /*updateTimeDimension*/
-  };
+  return {};
 }

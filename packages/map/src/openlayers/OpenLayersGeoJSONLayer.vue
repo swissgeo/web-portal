@@ -6,7 +6,6 @@ import { computed, inject } from "vue";
 
 import type { GeoJSONLayer } from "@/types";
 
-// import * as geoJsonUtils from '@/utils/geoJsonUtils'
 import useOlGeoJSONLayer from "../composables/olGeoJSONLayer.composable";
 
 const { layer } = defineProps<{
