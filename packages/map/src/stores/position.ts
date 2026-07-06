@@ -15,6 +15,8 @@ import { normalizeAngle } from "@/utils/normalizeAngle";
 
 export const DEFAULT_PROJECTION: CoordinateSystem = LV95;
 export const DEFAULT_FORMAT = LV95Format;
+export const MIN_ZOOM = 0;
+export const MAX_ZOOM = 13;
 
 const usePositionStore = defineStore("position", () => {
   const displayFormat = ref<CoordinateFormat>(DEFAULT_FORMAT);
@@ -48,7 +50,7 @@ const usePositionStore = defineStore("position", () => {
   }
 
   function setZoom(newZoom: number, dispatcher: ActionDispatcher): void {
-    if (!isNumber(newZoom) || newZoom < 0) {
+    if (!isNumber(newZoom) || newZoom < MIN_ZOOM || newZoom > MAX_ZOOM) {
       log.error({
         title: "Position store / setZoom",
         titleColor: LogPreDefinedColor.Red,
@@ -73,6 +75,14 @@ const usePositionStore = defineStore("position", () => {
         ? projection.value.roundZoomLevel(zoom.value, true)
         : projection.value.roundZoomLevel(zoom.value);
     setZoom(rounded - 1, dispatcher);
+  }
+
+  function canIncreaseZoom(): boolean {
+    return zoom.value < MAX_ZOOM;
+  }
+
+  function canDecreaseZoom(): boolean {
+    return zoom.value > MIN_ZOOM;
   }
 
   function setRotation(
@@ -145,7 +155,9 @@ const usePositionStore = defineStore("position", () => {
     setDisplayedFormat,
     setZoom,
     increaseZoom,
+    canIncreaseZoom,
     decreaseZoom,
+    canDecreaseZoom,
     setRotation,
     setAutoRotation,
     setCenter,
