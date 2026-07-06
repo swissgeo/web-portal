@@ -1,3 +1,5 @@
+import type * as VueUseCore from "@vueuse/core";
+
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useLayerStore } from "@swissgeo/layers";
 import { createPinia, setActivePinia } from "pinia";
@@ -18,7 +20,7 @@ const {
 });
 
 vi.mock("@vueuse/core", async (importOriginal) => {
-  const original = await importOriginal<typeof import("@vueuse/core")>();
+  const original = await importOriginal<typeof VueUseCore>();
   return {
     ...original,
     watchDebounced: (
