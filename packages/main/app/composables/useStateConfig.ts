@@ -16,11 +16,12 @@ export type AppStatePayload = {
 
 const DISPATCHER = { name: "state-config" };
 
-function isBackgroundLayer(layer: Layer): boolean {
+// exported only for testing purpose. Do not use this outside this file
+export function isBackgroundLayer(layer: Layer): boolean {
   return AVAILABLE_BACKGROUNDS.includes(layer.humanId);
 }
-
-function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
+// exported only for testing purpose. Do not use this outside this file
+export function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
   if (layers.length === 0) {
     return [];
   }
@@ -29,8 +30,8 @@ function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
     useMapViewStore().mapLayers.length - useLayerStore().layers.length;
   return layers.slice(startIndex).map(layerToStateConfig);
 }
-
-function layerToStateConfig(layer: MapLayer): LayerStateInput {
+// exported only for testing purpose. Do not use this outside this file
+export function layerToStateConfig(layer: MapLayer): LayerStateInput {
   const layerStore = useLayerStore();
   let sourceData: Layer | undefined | null = layerStore.getLayer(layer.uuid);
 
