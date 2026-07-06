@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import path from "path";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
@@ -10,6 +10,10 @@ export default defineConfig({
       reportsDirectory: path.resolve(__dirname, "../../coverage/unit/map"),
       reporter: ["lcov", "cobertura"],
       include: ["src/**/*.ts", "src/**/*.vue"],
+      exclude: [
+        ...configDefaults.coverage.exclude,
+        "*/__tests__/__mocks__/**/*",
+      ],
     },
   },
   resolve: {
