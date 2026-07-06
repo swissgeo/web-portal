@@ -31,8 +31,13 @@
     "prepare": "pnpm run build",
     "type-check": "tsc -p tsconfig.json"
   },
+  "dependencies": {
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/api-logs": "catalog:"
+  },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
+    "@opentelemetry/sdk-logs": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@types/node": "catalog:",
