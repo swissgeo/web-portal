@@ -1,4 +1,5 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { useLayerStore } from "@swissgeo/layers";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -150,6 +151,17 @@ describe("useRestoreState", () => {
       watcherCallbackRef.fn!(state);
 
       expect(sessionStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(state));
+    });
+
+    it("does not persist while layer import options are pending", () => {
+      const layerStore = useLayerStore();
+      layerStore.addImportOption("importing-layer", { isVisible: true });
+      const { listenToChange } = useRestoreState();
+      listenToChange();
+
+      watcherCallbackRef.fn!(mockExportState.value);
+
+      expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull();
     });
 
     it("persists after restore when listening is started", async () => {
