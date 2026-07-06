@@ -1,5 +1,9 @@
 /** @module swissgeo/log */
 
+import type { LogAttributes } from "@opentelemetry/api-logs";
+
+import { context } from "@opentelemetry/api";
+import { logs, SeverityNumber } from "@opentelemetry/api-logs";
 /** A log level reference. The levels correspond to the native console methods and their log level. */
 export enum LogLevel {
   Error,
@@ -7,6 +11,13 @@ export enum LogLevel {
   Info,
   Debug,
 }
+
+const severityMap: Record<LogLevel, SeverityNumber> = {
+  [LogLevel.Error]: SeverityNumber.ERROR,
+  [LogLevel.Warn]: SeverityNumber.WARN,
+  [LogLevel.Info]: SeverityNumber.INFO,
+  [LogLevel.Debug]: SeverityNumber.DEBUG,
+};
 
 /**
  * Colors coming from TailwindCSS colors, taking the column 500
@@ -72,6 +83,59 @@ function processStyle(messages: SwissGeoLogInput[]): SwissGeoLogInput[] {
   });
 }
 
+/*
+ * Emit the log to OpenTelemetry
+ */
+function emitOtelLog(level: LogLevel, messages: SwissGeoLogInput[]) {
+  const parts: string[] = [];
+  const attributes: LogAttributes = {};
+
+  for (const input of messages) {
+    if (input && typeof input === "object" && "messages" in input) {
+      if ("title" in input && typeof input.title === "string") {
+        parts.push(`[${input.title}]`);
+      }
+      for (const m of input.messages) {
+        if (m && typeof m === "object" && "msg" in m) {
+          parts.push(String(m.msg));
+          if (
+            "params" in (m as object) &&
+            typeof (m as Record<string, unknown>).params === "object"
+          ) {
+            Object.assign(
+              attributes,
+              (m as unknown as { params: Record<string, unknown> }).params,
+            );
+          }
+        } else {
+          parts.push(String(m));
+        }
+      }
+    } else if (input && typeof input === "object" && "msg" in input) {
+      parts.push(String((input as { msg: string }).msg));
+      if (
+        "params" in (input as object) &&
+        typeof (input as Record<string, unknown>).params === "object"
+      ) {
+        Object.assign(
+          attributes,
+          (input as unknown as { params: Record<string, unknown> }).params,
+        );
+      }
+    } else {
+      parts.push(String(input));
+    }
+  }
+
+  logs.getLogger("@swissgeo/log").emit({
+    severityNumber: severityMap[level],
+    severityText: LogLevel[level],
+    body: parts.join(" "),
+    attributes: Object.keys(attributes).length > 0 ? attributes : undefined,
+    context: context.active(),
+  });
+}
+
 function logToConsole(level: LogLevel, messages: SwissGeoLogInput[]) {
   if (!log.wantedLevels.includes(level)) {
     return;
@@ -93,6 +157,8 @@ function logToConsole(level: LogLevel, messages: SwissGeoLogInput[]) {
       break;
   }
   /* eslint-enable no-console */
+
+  emitOtelLog(level, messages);
 }
 
 interface SwissGeoLogMessage {
