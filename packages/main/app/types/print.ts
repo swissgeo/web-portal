@@ -1,4 +1,4 @@
-export const printFormats = ["a2", "a3", "a4", "a5"] as const;
+export const printFormats = ["a3", "a4", "a5"] as const;
 export type PrintFormat = (typeof printFormats)[number];
 export const printOrientations = ["landscape", "portrait"] as const;
 export type PrintOrientation = (typeof printOrientations)[number];
