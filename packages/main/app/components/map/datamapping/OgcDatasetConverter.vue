@@ -33,7 +33,6 @@ const { layer } = defineProps<{
 const emit = defineEmits<{
   update: [layer: MapLayer];
   updateTimeDimension: [layerUuid: string, dimension: Partial<Dimension>];
-  updateOpacity: [layerUuid: string, opacity: number];
   remove: [void];
   updateDataset: [layerUuid: string, dataset: Dataset];
   updateLayerInfo: [layerUuid: string, info: LayerInfo];
@@ -88,8 +87,9 @@ onBeforeUnmount(() => {
 });
 
 // receive the layer specific data from the subconverters
-function pushLayerSpecificData<T>(data: T) {
+function pushLayerSpecificData<T>(opacity: number, data: T) {
   layerSpecificData.value = data;
+  layerData.value.opacity = opacity;
 }
 </script>
 
@@ -101,7 +101,6 @@ function pushLayerSpecificData<T>(data: T) {
     :layerId
     @updateOptions="pushLayerSpecificData<{ options: WMTSOptions }>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
-    @updateOpacity="emit('updateOpacity', layer.uuid, $event)"
   ></MapDatamappingOgcWmtsLayerConverter>
   <MapDatamappingOgcWmsLayerConverter
     v-if="layerFormat === 'WMS'"
@@ -110,6 +109,5 @@ function pushLayerSpecificData<T>(data: T) {
     :layerId
     @updateData="pushLayerSpecificData<WMSLayerData>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
-    @updateOpacity="emit('updateOpacity', layer.uuid, $event)"
   ></MapDatamappingOgcWmsLayerConverter>
 </template>

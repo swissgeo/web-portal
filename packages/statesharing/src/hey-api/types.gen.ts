@@ -210,6 +210,10 @@ export type StateV1Input = {
    * List of layers to be displayed on the map
    */
   layers?: Array<LayerStateInput>;
+  /**
+   * The Background Layer
+   */
+  bg_layer?: LayerStateInput | null;
 };
 
 /**
@@ -228,6 +232,10 @@ export type StateV1Output = {
    * List of layers to be displayed on the map
    */
   layers?: Array<LayerStateOutput>;
+  /**
+   * The Background Layer
+   */
+  bg_layer?: LayerStateOutput | null;
 };
 
 /**
