@@ -73,7 +73,9 @@ test.describe("state loading", () => {
     await expectNoBackground(page);
   });
 
-  test("restores persisted session state after navigation", async ({ page }) => {
+  test("restores persisted session state after navigation", async ({
+    page,
+  }) => {
     await page.goto("/de/map?statestr=" + noBackgroundStateStr);
     await expectNoBackground(page);
     await expectNoBackgroundStatePersisted(page);
