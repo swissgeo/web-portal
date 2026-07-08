@@ -46,6 +46,7 @@ export type PrintJobStatusResponse = {
   pdfUrl?: string;
 };
 
+
 /**
  * A print request collection is a piece of data that is kept and traces the history of the print jobs that were sent to the print service.
  * Each element of the collection contains both the payload of the request (POST body) and the response from the print service (status of the print job).
@@ -54,8 +55,10 @@ export type PrintJobStatusResponse = {
  */
 export type PrintRequestCollectionItem = {
   requestBody: PrintPostRequestBody;
-  lastResponse: PrintJobStatusResponse;
+  lastResponse: PrintJobStatusResponse | null;
   isPolling: boolean;
+  timestamp: number;
+  networkError: string | null;
 };
 
 /**

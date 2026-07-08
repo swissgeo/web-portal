@@ -50,8 +50,8 @@ export function usePrintRequests() {
    */
   const requestCollectionNewerToOlder = computed(() => {
     return [...requestCollection.value].sort((a, b) => {
-      const dateA = new Date(a.lastResponse.created);
-      const dateB = new Date(b.lastResponse.created);
+      const dateA = new Date(a.timestamp);
+      const dateB = new Date(b.timestamp);
       return dateB.getTime() - dateA.getTime();
     });
   });
@@ -63,8 +63,9 @@ export function usePrintRequests() {
   const ongoingRequests = computed(() => {
     return requestCollection.value.filter(
       (request: PrintRequestCollectionItem) =>
-        request.lastResponse.status === "open" ||
-        request.lastResponse.status === "started",
+        request.lastResponse &&
+        (request.lastResponse.status === "open" ||
+          request.lastResponse.status === "started"),
     );
   });
 
@@ -74,7 +75,7 @@ export function usePrintRequests() {
   const finishedRequests = computed(() => {
     return requestCollection.value.filter(
       (request: PrintRequestCollectionItem) =>
-        request.lastResponse.status === "finished",
+        request.lastResponse && request.lastResponse.status === "finished",
     );
   });
 
@@ -84,7 +85,8 @@ export function usePrintRequests() {
   const errorRequests = computed(() => {
     return requestCollection.value.filter(
       (request: PrintRequestCollectionItem) =>
-        request.lastResponse.status === "error",
+        request.networkError !== null ||
+        (request.lastResponse && request.lastResponse.status === "error"),
     );
   });
 
@@ -96,6 +98,7 @@ export function usePrintRequests() {
   async function refreshOpenRequests() {
     const openRequests = requestCollection.value.filter(
       (request: PrintRequestCollectionItem) =>
+        request.lastResponse &&
         (request.lastResponse.status === "open" ||
           request.lastResponse.status === "started") &&
         typeof request.lastResponse.reportUrl === "string" &&
@@ -106,7 +109,7 @@ export function usePrintRequests() {
     // from a previous polling round (due to interval calls)
     const tasks = openRequests.map(
       async (request: PrintRequestCollectionItem) => {
-        const reportUrl = request.lastResponse.reportUrl;
+        const reportUrl = request?.lastResponse?.reportUrl;
         if (!reportUrl) {
           return;
         }
@@ -144,12 +147,20 @@ export function usePrintRequests() {
         requestBody: printPostRequestBody,
         lastResponse: data,
         isPolling: false,
+        timestamp: Date.now(),
+        networkError: null,
       });
 
       // Note: here no need to call startPolling(), as this was already done when the composable was mounted,
       // and the polling is done in the background automatically.
-    } catch (_err) {
-      // nothing to do, the request failed and the user will see an error message in the UI
+    } catch (err) {
+      requestCollection.value.push({
+        requestBody: printPostRequestBody,
+        lastResponse: null,
+        isPolling: false,
+        timestamp: Date.now(),
+        networkError: (err as Error).message,
+      });
     }
   }
 

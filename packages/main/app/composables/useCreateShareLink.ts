@@ -236,9 +236,7 @@ export function useCreateShareLinkForCustomState(
         } catch (_error) {
           // nothing to do, the hash will remain null if the request fails
         } finally {
-          if (abortController === abortController) {
-            isFetching.value = false;
-          }
+          isFetching.value = false;
         }
       },
       {

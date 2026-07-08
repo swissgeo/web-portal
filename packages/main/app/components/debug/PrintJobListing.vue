@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PrintJobStatusResponse } from "~/composables/usePrintRequests";
+import type { PrintJobStatusResponse } from "~/stores/printRequest"
 
 import { usePrintRequests } from "~/composables/usePrintRequests";
 
@@ -19,7 +19,7 @@ const requestStatusSummary = computed(
     `${ongoingRequests.value.length} processing, ${finishedRequests.value.length} ready, ${errorRequests.value.length} failed`,
 );
 
-function statusLabel(status: PrintJobStatusResponse["status"]): string {
+function statusLabel(status: PrintJobStatusResponse["status"] | null): string {
   if (status === "open") {
     return "Queued";
   }
@@ -33,7 +33,7 @@ function statusLabel(status: PrintJobStatusResponse["status"]): string {
 }
 
 function statusColor(
-  status: PrintJobStatusResponse["status"],
+  status: PrintJobStatusResponse["status"] | null,
 ): "info" | "success" | "error" {
   if (status === "open" || status === "started") {
     return "info";
@@ -147,8 +147,8 @@ function statusColor(
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2">
               <UBadge
-                :label="statusLabel(item.lastResponse.status)"
-                :color="statusColor(item.lastResponse.status)"
+                :label="statusLabel(item.lastResponse?.status ?? null)"
+                :color="statusColor(item.lastResponse?.status ?? null)"
                 size="sm"
                 variant="subtle"
               />
@@ -160,15 +160,15 @@ function statusColor(
             </div>
             <p class="mt-0.5 truncate text-xs text-muted">
               Created:
-              {{ new Date(item.lastResponse.created).toLocaleString() }}
+              {{ new Date(item.timestamp).toLocaleString() }}
             </p>
           </div>
 
           <!-- Right: download button when ready -->
           <UButton
             v-if="
-              item.lastResponse.status === 'finished' &&
-              item.lastResponse.pdfUrl
+              item.lastResponse?.status === 'finished' &&
+              item.lastResponse?.pdfUrl
             "
             :href="item.lastResponse.pdfUrl"
             target="_blank"
@@ -181,12 +181,12 @@ function statusColor(
             external
           />
           <UIcon
-            v-else-if="item.lastResponse.status === 'open'"
+            v-else-if="item.lastResponse?.status === 'open'"
             name="i-lucide-loader-circle"
             class="size-5 animate-spin text-info"
           />
           <UIcon
-            v-else-if="item.lastResponse.status === 'error'"
+            v-else-if="item.networkError || item.lastResponse?.status === 'error'"
             name="i-lucide-circle-x"
             class="size-5 text-error"
           />
