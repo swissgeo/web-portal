@@ -196,15 +196,16 @@ export function useCustomStateConfig() {
   const customStateMapRotation = ref(0);
   const layerStateConfig = ref<LayerState[]>([]);
   const backgroundLayerStateConfig = ref<LayerState | null>(null);
-  const makeUseOfCurrentLayers = () => {
-    layerStateConfig.value = layersToStateConfig(mapviewStore.mapLayers);
-  };
   const backgroundLayerState = () => {
     if (layerStore.backgroundLayer && mapviewStore.mapLayers[0]) {
       return layerToStateConfig(mapviewStore.mapLayers[0]);
     } else {
       return null;
     }
+  };
+  const makeUseOfCurrentLayers = () => {
+    layerStateConfig.value = layersToStateConfig(mapviewStore.mapLayers);
+    backgroundLayerStateConfig.value = backgroundLayerState();
   };
 
   const customStateConfig = computed((): AppStatePayload => {
@@ -223,7 +224,6 @@ export function useCustomStateConfig() {
   });
 
   onMounted(makeUseOfCurrentLayers);
-  onMounted(backgroundLayerState);
   return {
     customStateConfig,
     customStateMapCenter,
