@@ -14,7 +14,12 @@ import type { PrintPostRequestBody } from "../stores/printRequest";
 import type { PrintFormat, PrintOrientation } from "../types/print";
 
 import { usePrintRequests } from "./usePrintRequests";
-import { URL_PARAM_STATE } from "./useUrlParams";
+import {
+  URL_PARAM_STATE,
+  URL_PARAM_PRINT_ORIENTATION,
+  URL_PARAM_PRINT_FORMAT,
+  URL_PARAM_PRINT_RESOLUTION,
+} from "./useUrlParams";
 
 /**
  * Colors used to display the print extent frame on the map.
@@ -72,10 +77,13 @@ export function usePrintFraming() {
     }
     const url = new URL("/en/print", window.location.origin);
     url.searchParams.set(URL_PARAM_STATE, hash.value);
-    url.searchParams.set("print_format", selectedPrintFormat.value);
-    url.searchParams.set("print_orientation", selectedPrintOrientation.value);
+    url.searchParams.set(URL_PARAM_PRINT_FORMAT, selectedPrintFormat.value);
     url.searchParams.set(
-      "print_resolution",
+      URL_PARAM_PRINT_ORIENTATION,
+      selectedPrintOrientation.value,
+    );
+    url.searchParams.set(
+      URL_PARAM_PRINT_RESOLUTION,
       selectedPrintResolution.value.toString(),
     );
     return url.toString();
@@ -330,13 +338,10 @@ export function usePrintFraming() {
     (isOutOfBounds) => {
       style.getFill()?.setColor(isOutOfBounds ? BRIGHT_RED : DARK_BLUE);
       if (isOutOfBounds) {
-        toaster.showWarning(
-            "",
-          {
-            id: "warning_print_extent_out_of_bounds",
-            title: t("print.warningOutsideSwitzerlandTitle"),
-          },
-        );
+        toaster.showWarning("", {
+          id: "warning_print_extent_out_of_bounds",
+          title: t("print.warningOutsideSwitzerlandTitle"),
+        });
       } else {
         toaster.remove("warning_print_extent_out_of_bounds");
       }
@@ -349,13 +354,10 @@ export function usePrintFraming() {
    */
   watch(isPrintExtentBeyondViewport, (isOutOfBounds) => {
     if (isOutOfBounds) {
-      toaster.showWarning(
-        t("print.warningPrintExtentBeyondViewport"),
-        {
-          id: "warning_print_extent_beyond_viewport",
-          title: "Print extent is out of viewport",
-        },
-      );
+      toaster.showWarning(t("print.warningPrintExtentBeyondViewport"), {
+        id: "warning_print_extent_beyond_viewport",
+        title: "Print extent is out of viewport",
+      });
     } else {
       toaster.remove("warning_print_extent_beyond_viewport");
     }
@@ -366,13 +368,10 @@ export function usePrintFraming() {
    */
   watch(isAtLockedZoomLevel, (isAtLocked) => {
     if (!isAtLocked) {
-      toaster.showWarning(
-        t("print.warningZoomOutOfSync"),
-        {
-          id: "warning_not_at_locked_zoom_level",
-          title: t("print.warningZoomOutOfSyncTitle"),
-        },
-      );
+      toaster.showWarning(t("print.warningZoomOutOfSync"), {
+        id: "warning_not_at_locked_zoom_level",
+        title: t("print.warningZoomOutOfSyncTitle"),
+      });
     } else {
       toaster.remove("warning_not_at_locked_zoom_level");
     }

@@ -131,7 +131,7 @@ function buildEmbedCode(stateId: string | null, zoomOnlyCtrl: boolean): string {
   }
 
   const url = new URL("/embed", location.origin);
-  url.searchParams.set("state", stateId);
+  url.searchParams.set(URL_PARAM_STATE, stateId);
   if (zoomOnlyCtrl) {
     url.searchParams.set("zoomOnlyCtrl", "true");
   }

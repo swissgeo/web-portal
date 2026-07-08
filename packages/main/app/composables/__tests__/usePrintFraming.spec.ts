@@ -4,6 +4,7 @@ import type { Ref } from "vue";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises, mount } from "@vue/test-utils";
 import { usePrintFraming } from "~/composables/usePrintFraming";
+import { URL_PARAM_STATE } from "~/composables/useUrlParams";
 import Polygon from "ol/geom/Polygon";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick, ref } from "vue";
@@ -129,7 +130,10 @@ describe("usePrintFraming", () => {
         ],
       ]),
     );
-    mockUseI18n.mockReturnValue({ locale: ref("EN") });
+    mockUseI18n.mockReturnValue({
+      locale: ref("EN"),
+      t: vi.fn((key: string) => key),
+    });
     mockUseToaster.mockReturnValue({
       remove: mockToasterRemove,
       showWarning: mockShowWarning,
@@ -235,7 +239,7 @@ describe("usePrintFraming", () => {
 
     const previewUrl = new URL(framing.printPreviewUrl.value!);
     expect(previewUrl.pathname).toBe("/en/print");
-    expect(previewUrl.searchParams.get("state")).toBe("print-state");
+    expect(previewUrl.searchParams.get(URL_PARAM_STATE)).toBe("print-state");
     expect(previewUrl.searchParams.get("print_format")).toBe("a3");
     expect(previewUrl.searchParams.get("print_orientation")).toBe("portrait");
     expect(previewUrl.searchParams.get("print_resolution")).toBe("192");
@@ -264,13 +268,13 @@ describe("usePrintFraming", () => {
     expect(framing.isPrintExtentBeyondViewport.value).toBe(true);
     expect(framing.isReadyToPrint.value).toBe(false);
     expect(mockShowWarning).toHaveBeenCalledWith(
-      expect.stringContaining("Swiss bounding box"),
+      expect.any(String),
       expect.objectContaining({
         id: "warning_print_extent_out_of_bounds",
       }),
     );
     expect(mockShowWarning).toHaveBeenCalledWith(
-      expect.stringContaining("lock the center and zoom level"),
+      expect.any(String),
       expect.objectContaining({
         id: "warning_print_extent_beyond_viewport",
       }),

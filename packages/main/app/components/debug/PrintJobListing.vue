@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PrintJobStatusResponse } from "~/stores/printRequest"
+import type { PrintJobStatusResponse } from "~/stores/printRequest";
 
 import { usePrintRequests } from "~/composables/usePrintRequests";
 
@@ -111,7 +111,9 @@ function statusColor(
     <template #header>
       <div class="flex w-full items-start justify-between gap-4">
         <div class="w-full">
-          <h2 class="text-base font-semibold">{{ t("print.printJobsWindowTitle") }}</h2>
+          <h2 class="text-base font-semibold">
+            {{ t("print.printJobsWindowTitle") }}
+          </h2>
           <div class="mt-1 flex w-full items-center gap-4">
             <p class="text-sm text-muted">
               {{ ongoingRequests.length }} {{ t("print.statusProcessing") }} ·
@@ -188,7 +190,9 @@ function statusColor(
             class="size-5 animate-spin text-info"
           />
           <UIcon
-            v-else-if="item.networkError || item.lastResponse?.status === 'error'"
+            v-else-if="
+              item.networkError || item.lastResponse?.status === 'error'
+            "
             name="i-lucide-circle-x"
             class="size-5 text-error"
           />

@@ -2,9 +2,8 @@
 import { useMap } from "@swissgeo/map";
 import { IconButton } from "@swissgeo/skeleton";
 import PrintJobListing from "~/components/debug/PrintJobListing.vue";
+import { usePrintFraming } from "~/composables/usePrintFraming";
 import { printFormats, printOrientations } from "~/types/print";
-
-import { usePrintFraming } from "../../composables/usePrintFraming";
 
 const emit = defineEmits<{
   close: [];
@@ -42,7 +41,10 @@ const printResolutionItems = ref([
 
 const printOrientationItems = ref(
   printOrientations.map((orientation) => ({
-    label: orientation ===  "portrait" ? t("print.orientationPortrait") : t("print.orientationLandscape"),
+    label:
+      orientation === "portrait"
+        ? t("print.orientationPortrait")
+        : t("print.orientationLandscape"),
     value: orientation,
   })),
 );
@@ -66,8 +68,14 @@ function handleSendPrintRequest() {
       <h3 class="mb-4 text-lg font-bold">Print Framing</h3>
       <div>{{ t("print.zoomLevel") }}: {{ zoomLevel }}</div>
       <div>{{ t("print.zoomLevelForPrint") }}: {{ zoomLevelForPrint }}</div>
-      <div>{{ t("print.warningOutsideSwitzerland") }}: {{ isPrintExtentOutOfBounds }}</div>
-      <div>{{ t("print.warningOutsideViewportLabel") }}: {{ isPrintExtentBeyondViewport }}</div>
+      <div>
+        {{ t("print.warningOutsideSwitzerland") }}:
+        {{ isPrintExtentOutOfBounds }}
+      </div>
+      <div>
+        {{ t("print.warningOutsideViewportLabel") }}:
+        {{ isPrintExtentBeyondViewport }}
+      </div>
       <div>{{ t("print.printScale") }}: {{ scaleOfPrintFormatted }}</div>
       <UFormField
         orientation="horizontal"
@@ -93,7 +101,11 @@ function handleSendPrintRequest() {
         <USwitch id="lock-zoom-checkbox" v-model="isZoomLocked" />
       </UFormField>
 
-      <UFormField orientation="horizontal" :label="t('print.printSizeLabel')" class="w-72">
+      <UFormField
+        orientation="horizontal"
+        :label="t('print.printSizeLabel')"
+        class="w-72"
+      >
         <USelect v-model="selectedPrintFormat" :items="printFormatItems" />
       </UFormField>
 
@@ -118,11 +130,15 @@ function handleSendPrintRequest() {
           :items="printOrientationItems"
         />
       </UFormField>
-      <UButton v-if="isCenterLocked || isZoomLocked" @click="adjustToLockedView"
-        >{{ t('print.zoomToLockedZoomLevel') }}</UButton
+      <UButton
+        v-if="isCenterLocked || isZoomLocked"
+        @click="adjustToLockedView"
+        >{{ t("print.zoomToLockedZoomLevel") }}</UButton
       >
-      <UButton v-if="!isPrintExtentOutOfBounds" @click="handleSendPrintRequest"
-        >{{ t('print.sendPrintRequest') }}</UButton
+      <UButton
+        v-if="!isPrintExtentOutOfBounds"
+        @click="handleSendPrintRequest"
+        >{{ t("print.sendPrintRequest") }}</UButton
       >
       <PrintJobListing />
     </div>

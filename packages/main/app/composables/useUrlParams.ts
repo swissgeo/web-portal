@@ -7,9 +7,9 @@ import type { PrintConfig } from "../types/print";
 export const URL_PARAM_STATE = "state";
 
 // URL param related to print config
-const URL_PARAM_PRINT_FORMAT = "print_format";
-const URL_PARAM_PRINT_ORIENTATION = "print_orientation";
-const URL_PARAM_PRINT_RESOLUTION = "print_resolution";
+export const URL_PARAM_PRINT_FORMAT = "print_format";
+export const URL_PARAM_PRINT_ORIENTATION = "print_orientation";
+export const URL_PARAM_PRINT_RESOLUTION = "print_resolution";
 
 export function useUrlParams() {
   const route = useRoute();

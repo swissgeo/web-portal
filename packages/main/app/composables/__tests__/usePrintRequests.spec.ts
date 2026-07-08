@@ -48,6 +48,8 @@ function makeRequest(
 ): PrintRequestCollectionItem {
   return {
     requestBody,
+    timestamp: Date.parse(created),
+    networkError: null,
     lastResponse: makeResponse(status, created),
     isPolling: false,
     ...overrides,
@@ -105,6 +107,8 @@ describe("usePrintRequests", () => {
         requestBody,
         lastResponse: response,
         isPolling: false,
+        networkError: null,
+        timestamp: expect.any(Number),
       },
     ]);
   });
@@ -114,7 +118,15 @@ describe("usePrintRequests", () => {
     const { requestCollection, sendCustomPrintRequest } = usePrintRequests();
 
     await expect(sendCustomPrintRequest(requestBody)).resolves.toBeUndefined();
-    expect(requestCollection.value).toEqual([]);
+    expect(requestCollection.value).toEqual([
+      {
+        requestBody,
+        lastResponse: null,
+        isPolling: false,
+        networkError: "service unavailable",
+        timestamp: expect.any(Number),
+      },
+    ]);
   });
 
   it("polls eligible open requests and updates their response", async () => {
@@ -166,7 +178,7 @@ describe("usePrintRequests", () => {
 
     await vi.advanceTimersByTimeAsync(2000);
 
-    expect(request.lastResponse.status).toBe("started");
+    expect(request?.lastResponse?.status).toBe("started");
     expect(request.isPolling).toBe(false);
   });
 
