@@ -10,6 +10,7 @@ const emit = defineEmits<{
   close: [];
 }>();
 
+const { t } = useI18n();
 const { zoomLevel } = useMap();
 const {
   isZoomStepEnabled,
@@ -41,7 +42,7 @@ const printResolutionItems = ref([
 
 const printOrientationItems = ref(
   printOrientations.map((orientation) => ({
-    label: orientation.toUpperCase(),
+    label: orientation ===  "portrait" ? t("print.orientationPortrait") : t("print.orientationLandscape"),
     value: orientation,
   })),
 );
@@ -63,14 +64,14 @@ function handleSendPrintRequest() {
     </div>
     <div class="flex flex-col gap-4">
       <h3 class="mb-4 text-lg font-bold">Print Framing</h3>
-      <div>Zoom Level: {{ zoomLevel }}</div>
-      <div>Zoom Level for print: {{ zoomLevelForPrint }}</div>
-      <div>Out of Swiss bounds: {{ isPrintExtentOutOfBounds }}</div>
-      <div>Beyond viewport: {{ isPrintExtentBeyondViewport }}</div>
-      <div>Scale of print: {{ scaleOfPrintFormatted }}</div>
+      <div>{{ t("print.zoomLevel") }}: {{ zoomLevel }}</div>
+      <div>{{ t("print.zoomLevelForPrint") }}: {{ zoomLevelForPrint }}</div>
+      <div>{{ t("print.warningOutsideSwitzerland") }}: {{ isPrintExtentOutOfBounds }}</div>
+      <div>{{ t("print.warningOutsideViewportLabel") }}: {{ isPrintExtentBeyondViewport }}</div>
+      <div>{{ t("print.printScale") }}: {{ scaleOfPrintFormatted }}</div>
       <UFormField
         orientation="horizontal"
-        label="Enable strict zoom steps"
+        :label="t('print.enableStrictZoomStepsLabel')"
         class="w-72"
       >
         <USwitch id="enable-zoom-step-checkbox" v-model="isZoomStepEnabled" />
@@ -78,7 +79,7 @@ function handleSendPrintRequest() {
 
       <UFormField
         orientation="horizontal"
-        label="Lock center to view"
+        :label="t('print.lockCenterToViewLabel')"
         class="w-72"
       >
         <USwitch id="lock-center-checkbox" v-model="isCenterLocked" />
@@ -86,19 +87,19 @@ function handleSendPrintRequest() {
 
       <UFormField
         orientation="horizontal"
-        label="Lock zoom to view"
+        :label="t('print.lockZoomToViewLabel')"
         class="w-72"
       >
         <USwitch id="lock-zoom-checkbox" v-model="isZoomLocked" />
       </UFormField>
 
-      <UFormField orientation="horizontal" label="Print size" class="w-72">
+      <UFormField orientation="horizontal" :label="t('print.printSizeLabel')" class="w-72">
         <USelect v-model="selectedPrintFormat" :items="printFormatItems" />
       </UFormField>
 
       <UFormField
         orientation="horizontal"
-        label="Print resolution"
+        :label="t('print.printResolutionLabel')"
         class="w-72"
       >
         <USelect
@@ -109,7 +110,7 @@ function handleSendPrintRequest() {
 
       <UFormField
         orientation="horizontal"
-        label="Print orientation"
+        :label="t('print.printOrientationLabel')"
         class="w-72"
       >
         <USelect
@@ -118,10 +119,10 @@ function handleSendPrintRequest() {
         />
       </UFormField>
       <UButton v-if="isCenterLocked || isZoomLocked" @click="adjustToLockedView"
-        >Zoom to locked zoom level</UButton
+        >{{ t('print.zoomToLockedZoomLevel') }}</UButton
       >
       <UButton v-if="!isPrintExtentOutOfBounds" @click="handleSendPrintRequest"
-        >Send Print Request</UButton
+        >{{ t('print.sendPrintRequest') }}</UButton
       >
       <PrintJobListing />
     </div>

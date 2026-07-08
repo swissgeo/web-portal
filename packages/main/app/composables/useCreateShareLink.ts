@@ -193,7 +193,7 @@ export function useCreateShareLinkForCustomState(
 ) {
   const state = ref<AppStatePayload | null>(null);
   const hash = ref<string | null>(null);
-  let abortController: AbortController = new AbortController();
+  let abortController: AbortController | null = null;
   const isFetching = ref(false);
 
   if (forcePortableState) {
@@ -223,7 +223,7 @@ export function useCreateShareLinkForCustomState(
 
         // Only one fetch at a time, abort the previous one if a new state change occurs
         if (isFetching.value) {
-          abortController.abort();
+          abortController?.abort();
         }
 
         abortController = new AbortController();
@@ -231,7 +231,7 @@ export function useCreateShareLinkForCustomState(
 
         try {
           hash.value = await postStateToStateId(state.value.state, {
-            signal: abortController.signal,
+            signal: abortController?.signal,
           });
         } catch (_error) {
           // nothing to do, the hash will remain null if the request fails

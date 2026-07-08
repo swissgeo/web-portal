@@ -203,5 +203,37 @@
   },
   "embed": {
     "viewOn": "Auf {platform} anzeigen"
+  },
+  "print": {
+    "warningOutsideSwitzerland": "Außerhalb CH",
+    "warningOutsideSwitzerlandTitle": "Außerhalb der Schweiz",
+    "warningZoomOutOfSync": "Die Zoomstufe auf dem Bildschirm entspricht nicht der gesperrten Zoomstufe für den Druck.",
+    "warningZoomOutOfSyncTitle": "Zoomstufe entspricht nicht der gesperrten Zoomstufe",
+    "statusProcessing": "in Bearbeitung",
+    "statusQueued": "in Warteschlange",
+    "statusError": "Fehler",
+    "statusFailed": "fehlgeschlagen",
+    "statusReady": "bereit",
+    "clearAll": "Alle löschen",
+    "noPrintJobsYet": "Noch keine Druckaufträge.",
+    "created": "Erstellt",
+    "download": "Herunterladen",
+    "zoomLevel": "Zoomstufe",
+    "zoomLevelForPrint": "Zoomstufe für den Druck",
+    "warningOutsideViewportLabel": "Druckrahmen außerhalb der Ansicht",
+    "printScale": "Druckmaßstab",
+    "enableStrictZoomStepsLabel": "Feste Zoomstufen aktivieren",
+    "lockCenterToViewLabel": "Zentrum auf aktuelle Ansicht sperren",
+    "lockZoomToViewLabel": "Zoom auf aktuelle Ansicht sperren",
+    "printSizeLabel": "Druckformat",
+    "printResolutionLabel": "Druckauflösung",
+    "printOrientationLabel": "Druckausrichtung",
+    "zoomToLockedZoomLevel": "Zur gesperrten Zoomstufe zoomen",
+    "sendPrintRequest": "Druckauftrag senden",
+    "openPrintJobs": "Druckaufträge öffnen",
+    "printJobsWindowTitle": "Druckaufträge",
+    "warningPrintExtentBeyondViewport": "Sie können das Zentrum und die Zoomstufe sperren, damit der Druckbereich beim Verschieben und Zoomen der Karte nicht aus dem Ansichtsbereich gerät.",
+    "orientationPortrait": "Hochformat",
+    "orientationLandscape": "Querformat"
   }
 }

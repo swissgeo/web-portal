@@ -29,7 +29,7 @@ const BRIGHT_RED = "rgba(255, 0, 0, 0.6)";
  * The frame is blue when the print extent is within Swiss boundaries and red when it is outside of Swiss boundaries.
  */
 export function usePrintFraming() {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const { sendCustomPrintRequest } = usePrintRequests();
 
   // OL Geometric feature representing the print extent frame on the map
@@ -331,10 +331,10 @@ export function usePrintFraming() {
       style.getFill()?.setColor(isOutOfBounds ? BRIGHT_RED : DARK_BLUE);
       if (isOutOfBounds) {
         toaster.showWarning(
-          "The print extent must be fully contained within the Swiss bounding box to be printable.",
+            "",
           {
             id: "warning_print_extent_out_of_bounds",
-            title: "Print extent is out of Swiss bounds",
+            title: t("print.warningOutsideSwitzerlandTitle"),
           },
         );
       } else {
@@ -350,7 +350,7 @@ export function usePrintFraming() {
   watch(isPrintExtentBeyondViewport, (isOutOfBounds) => {
     if (isOutOfBounds) {
       toaster.showWarning(
-        "You can lock the center and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.",
+        t("print.warningPrintExtentBeyondViewport"),
         {
           id: "warning_print_extent_beyond_viewport",
           title: "Print extent is out of viewport",
@@ -367,10 +367,10 @@ export function usePrintFraming() {
   watch(isAtLockedZoomLevel, (isAtLocked) => {
     if (!isAtLocked) {
       toaster.showWarning(
-        "The zoom level on screen does not correspond to the locked zoom level for print.",
+        t("print.warningZoomOutOfSync"),
         {
           id: "warning_not_at_locked_zoom_level",
-          title: "Zoom level is not at locked zoom level",
+          title: t("print.warningZoomOutOfSyncTitle"),
         },
       );
     } else {

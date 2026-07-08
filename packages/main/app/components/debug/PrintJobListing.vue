@@ -3,6 +3,8 @@ import type { PrintJobStatusResponse } from "~/stores/printRequest"
 
 import { usePrintRequests } from "~/composables/usePrintRequests";
 
+const { t } = useI18n();
+
 const {
   ongoingRequests,
   finishedRequests,
@@ -16,20 +18,20 @@ const open = ref(false);
 const totalCount = computed(() => requestCollectionNewerToOlder.value.length);
 const requestStatusSummary = computed(
   () =>
-    `${ongoingRequests.value.length} processing, ${finishedRequests.value.length} ready, ${errorRequests.value.length} failed`,
+    `${ongoingRequests.value.length} ${t("print.statusProcessing")}, ${finishedRequests.value.length} ${t("print.statusReady")}, ${errorRequests.value.length} ${t("print.statusFailed")}`,
 );
 
 function statusLabel(status: PrintJobStatusResponse["status"] | null): string {
   if (status === "open") {
-    return "Queued";
+    return t("print.statusQueued");
   }
   if (status === "started") {
-    return "Processing…";
+    return t("print.statusProcessing");
   }
   if (status === "finished") {
-    return "Ready";
+    return t("print.statusReady");
   }
-  return "Error";
+  return t("print.statusError");
 }
 
 function statusColor(
@@ -54,7 +56,7 @@ function statusColor(
     }"
   >
     <!-- Trigger button showing a compact summary of all print job statuses -->
-    <UButton label="Open Print Jobs" icon="i-lucide-printer">
+    <UButton :label="t('print.openPrintJobs')" icon="i-lucide-printer">
       <template v-if="totalCount > 0" #trailing>
         <UBadge
           color="neutral"
@@ -109,18 +111,18 @@ function statusColor(
     <template #header>
       <div class="flex w-full items-start justify-between gap-4">
         <div class="w-full">
-          <h2 class="text-base font-semibold">Print Jobs</h2>
+          <h2 class="text-base font-semibold">{{ t("print.printJobsWindowTitle") }}</h2>
           <div class="mt-1 flex w-full items-center gap-4">
             <p class="text-sm text-muted">
-              {{ ongoingRequests.length }} processing ·
-              {{ finishedRequests.length }} ready ·
-              {{ errorRequests.length }} failed
+              {{ ongoingRequests.length }} {{ t("print.statusProcessing") }} ·
+              {{ finishedRequests.length }} {{ t("print.statusReady") }} ·
+              {{ errorRequests.length }} {{ t("print.statusFailed") }}
             </p>
 
             <UButton
               v-if="totalCount > 0"
               class="ml-auto"
-              label="Clear all"
+              :label="t('print.clearAll')"
               color="error"
               variant="outline"
               size="sm"
@@ -134,7 +136,7 @@ function statusColor(
 
     <template #body>
       <div v-if="totalCount === 0" class="py-8 text-center text-sm text-muted">
-        No print jobs yet.
+        {{ t("print.noPrintJobsYet") }}
       </div>
 
       <ul v-else class="divide-y divide-default">
@@ -159,7 +161,7 @@ function statusColor(
               </span>
             </div>
             <p class="mt-0.5 truncate text-xs text-muted">
-              Created:
+              {{ t("print.created") }}:
               {{ new Date(item.timestamp).toLocaleString() }}
             </p>
           </div>
@@ -173,7 +175,7 @@ function statusColor(
             :href="item.lastResponse.pdfUrl"
             target="_blank"
             rel="noopener"
-            label="Download"
+            :label="t('print.download')"
             icon="i-lucide-download"
             color="success"
             variant="subtle"
