@@ -56,6 +56,12 @@ describe("position store", () => {
       store.decreaseZoom(mockDispatcher);
       expect(store.zoom).toBe(initialZoom - 1);
     });
+
+    it("should not be able to set zoom below 0", () => {
+      store.setZoom(0, mockDispatcher);
+      store.decreaseZoom(mockDispatcher);
+      expect(store.zoom).toBe(0);
+    });
   });
 
   describe("setRotation", () => {
@@ -179,6 +185,22 @@ describe("position store", () => {
     it("should return the resolution for the current zoom and center", () => {
       store.$patch({ zoom: 3, center: [0, 0] });
       expect(store.resolution).toBe(100);
+    });
+  });
+
+  describe("non-SwissCoordinateSystem projections", () => {
+    it("should increase zoom level by 1 for non-SwissCoordinateSystem projections", () => {
+      store.$patch({ projection: WGS84 });
+      const initialZoom = store.zoom;
+      store.increaseZoom(mockDispatcher);
+      expect(store.zoom).toBe(initialZoom + 1);
+    });
+
+    it("should decrease zoom level by 1 for non-SwissCoordinateSystem projections", () => {
+      store.$patch({ projection: WGS84 });
+      const initialZoom = store.zoom;
+      store.decreaseZoom(mockDispatcher);
+      expect(store.zoom).toBe(initialZoom - 1);
     });
   });
 });
