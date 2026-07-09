@@ -1,6 +1,6 @@
 import type { Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
-import type { LayerStateInput } from "@swissgeo/statesharing";
+import type { LayerState } from "@swissgeo/statesharing";
 import type { AppStatePayload } from "~/composables/useStateConfig";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
@@ -56,7 +56,7 @@ const backgroundLayer: MapLayer = {
   displayName: "background layer 1",
   layerId: "ch.swisstopo.pixelkarte-grau",
 };
-const expectedBackgroundState: LayerStateInput = {
+const expectedBackgroundState: LayerState = {
   layerUrl: "https://test.ch",
   type: "dataset",
   dimensions: undefined,
@@ -67,7 +67,7 @@ const datasetsForStore: Layer[] = [];
 
 const mockedMapLayers: MapLayer[] = [];
 
-const expectedStatesConfig: LayerStateInput[] = [];
+const expectedStatesConfig: LayerState[] = [];
 for (let index = 0; index < 4; index++) {
   mockedMapLayers.push({
     uuid: `uuid-${index}`,
@@ -195,8 +195,7 @@ describe("useStateConfig - Helper functions", () => {
 
     layerStore.setBackground(backgroundDataset);
 
-    const layerStateInputs: LayerStateInput[] =
-      layersToStateConfig(mockMapLayers);
+    const layerStateInputs: LayerState[] = layersToStateConfig(mockMapLayers);
 
     expect(layerStateInputs.length).to.eq(4);
 
@@ -224,8 +223,7 @@ describe("useStateConfig - Helper functions", () => {
     mockMapLayers.push(...mockedMapLayers);
     layerStore.layers.push(...datasetsForStore);
 
-    const layerStateInputs: LayerStateInput[] =
-      layersToStateConfig(mockMapLayers);
+    const layerStateInputs: LayerState[] = layersToStateConfig(mockMapLayers);
 
     expect(layerStateInputs.length).to.eq(4);
     for (let index = 0; index < layerStateInputs.length; index++) {

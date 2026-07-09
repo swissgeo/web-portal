@@ -32,7 +32,7 @@ export type ErrorResponse = {
  * GetAppStateResponse
  */
 export type GetAppStateResponse = {
-  state: StateV1Output;
+  state: StateV1;
   /**
    * Deprecated
    *
@@ -70,39 +70,7 @@ export type LayerDimensionsState = {
 /**
  * LayerState
  */
-export type LayerStateInput = {
-  /**
-   * Layerurl
-   *
-   * URL of the layer to be displayed on the map
-   */
-  layerUrl: string;
-  /**
-   * Type of the layer (e.g. dataset, gpx, kml)
-   */
-  type: LayerTypeEnum;
-  /**
-   * Isvisible
-   *
-   * Whether the layer is visible on the map
-   */
-  isVisible?: boolean | null;
-  /**
-   * Opacity
-   *
-   * Opacity of the layer (between 0 and 1)
-   */
-  opacity?: number | null;
-  /**
-   * Dimensions of the layer (e.g. time dimension with current value)
-   */
-  dimensions?: LayerDimensionsState;
-};
-
-/**
- * LayerState
- */
-export type LayerStateOutput = {
+export type LayerState = {
   /**
    * Layerurl
    *
@@ -167,7 +135,7 @@ export type SaveAppStateRequest = {
   /**
    * State of the application to save
    */
-  state: StateV1Input;
+  state: StateV1;
 };
 
 /**
@@ -199,7 +167,7 @@ export type SaveAppStateResponse = {
  *
  * State object of the application
  */
-export type StateV1Input = {
+export type StateV1 = {
   /**
    * State of the map
    */
@@ -209,33 +177,11 @@ export type StateV1Input = {
    *
    * List of layers to be displayed on the map
    */
-  layers?: Array<LayerStateInput>;
+  layers?: Array<LayerState>;
   /**
    * The Background Layer
    */
-  bg_layer?: LayerStateInput | null;
-};
-
-/**
- * StateV1
- *
- * State object of the application
- */
-export type StateV1Output = {
-  /**
-   * State of the map
-   */
-  map?: MapState;
-  /**
-   * Layers
-   *
-   * List of layers to be displayed on the map
-   */
-  layers?: Array<LayerStateOutput>;
-  /**
-   * The Background Layer
-   */
-  bg_layer?: LayerStateOutput | null;
+  bg_layer?: LayerState | null;
 };
 
 /**
