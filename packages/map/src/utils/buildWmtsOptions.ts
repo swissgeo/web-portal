@@ -84,11 +84,12 @@ export async function buildWmtsOptions(
 }
 
 /**
- * Turns a full EPSG URN into the simple `EPSG:xxxx` code OpenLayers registers
- * (e.g. `urn:ogc:def:crs:EPSG:6.18:3:2056` -> `EPSG:2056`). Non-EPSG URNs and
- * already-simple codes are returned untouched.
+ * Turns a full EPSG URN into the simple `EPSG:xxxx` code OpenLayers registers.
+ * Handles the common forms `urn:ogc:def:crs:EPSG:2056`,
+ * `urn:ogc:def:crs:EPSG::2056` and `urn:ogc:def:crs:EPSG:6.18:3:2056` (all ->
+ * `EPSG:2056`). Non-EPSG URNs and already-simple codes are returned untouched.
  */
 function simplifyEpsgUrn(crs: string): string {
-  const match = crs.match(/urn:ogc:def:crs:EPSG:.*?:(\d+)$/i);
+  const match = crs.match(/^urn:ogc:def:crs:EPSG:.*?(\d+)$/i);
   return match ? `EPSG:${match[1]}` : crs;
 }
