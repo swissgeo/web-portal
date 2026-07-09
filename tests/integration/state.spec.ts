@@ -15,6 +15,7 @@ const noBackgroundStateStr = btoa(
     version: "1.0",
     state: {
       layers: [],
+      bg_layer: null,
     },
   }),
 );
@@ -44,14 +45,13 @@ async function expectNoBackgroundStatePersisted(page: Page) {
         page.evaluate((storageKey) => {
           const storedState = sessionStorage.getItem(storageKey);
           if (!storedState) {
-            return null;
+            return false;
           }
-          const layers = JSON.parse(storedState)?.state?.layers;
-          return Array.isArray(layers) ? layers.length : null;
+          return JSON.parse(storedState)?.state?.bg_layer === null;
         }, STORAGE_KEY),
       { timeout: HYDRATION_TIMEOUT },
     )
-    .toBe(0);
+    .toBe(true);
 }
 
 test.describe("state loading", () => {
