@@ -56,10 +56,11 @@ const {
     // stands in for map's buildWmtsOptions: echoes back the endpoint + layer so
     // tests can assert the async options wiring without OpenLayers.
     buildWmtsOptionsMock: vi.fn(
-      async (endpoint: { serviceUrl?: string }, layerName: string) => ({
-        url: endpoint?.serviceUrl,
-        layerId: layerName,
-      }),
+      (endpoint: { serviceUrl?: string }, layerName: string) =>
+        Promise.resolve({
+          url: endpoint?.serviceUrl,
+          layerId: layerName,
+        }),
     ),
   };
 });
