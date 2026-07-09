@@ -14,7 +14,10 @@ import {
 } from "../useWmsCapabilities";
 import ChGeoadminWms from "./fixtures/service_ch.admin.geo.wms.json";
 
-const wmsPath = resolve(__dirname, "fixtures/capabilities_wms.geo.admin.ch.xml");
+const wmsPath = resolve(
+  __dirname,
+  "fixtures/capabilities_wms.geo.admin.ch.xml",
+);
 const capabilitiesXML = fs.readFileSync(wmsPath, "utf-8");
 
 const SERVICE_URL = "https://wms.geo.admin.ch/de/?";

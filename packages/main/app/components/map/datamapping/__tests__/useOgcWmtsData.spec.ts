@@ -169,7 +169,9 @@ describe("useOgcWmtsData", () => {
     // access the computed so it evaluates and calls the (mocked) adapter
     void timeInfo.value;
 
-    expect(getTimeInfoFromWMTSCapabilitiesMock).toHaveBeenCalledWith(dimensions);
+    expect(getTimeInfoFromWMTSCapabilitiesMock).toHaveBeenCalledWith(
+      dimensions,
+    );
   });
 
   it("updates the options reactively when the endpoint changes", async () => {

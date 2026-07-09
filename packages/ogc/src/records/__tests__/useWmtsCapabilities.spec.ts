@@ -3,7 +3,15 @@ import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import fs from "node:fs";
 import { resolve } from "path";
-import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { ref } from "vue";
 
 import type { Service } from "@/types";

@@ -1,6 +1,9 @@
 import type { Ref } from "vue";
 
-import { enableFallbackWithoutWorker, WmtsEndpoint } from "@camptocamp/ogc-client";
+import {
+  enableFallbackWithoutWorker,
+  WmtsEndpoint,
+} from "@camptocamp/ogc-client";
 import { registerProj4 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computedAsync } from "@vueuse/core";
