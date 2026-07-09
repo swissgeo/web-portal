@@ -8,10 +8,10 @@ import { defaultOpacityFromStyle } from "./defaultFromOpacity";
 import { defaultGutterFromStyle } from "./defaultGutterFromStyle";
 
 export type WMSLayerData = {
-  url: Ref<string>;
+  url: string | undefined;
   gutter: number;
-  version: Ref<string>;
-  lang: string; // TODO also ref?
+  version: string | undefined;
+  lang: string;
 };
 
 export function useOgcWmsData(
@@ -28,11 +28,10 @@ export function useOgcWmsData(
     getTimeInfoFromWMSCapabilities(dimensions.value),
   );
 
-  const capabilities = computed(() => wmsData?.value?.capabilities);
   const currentLang = computed(() => locale.value.toLowerCase());
 
-  const url = computed(() => capabilities.value?.Service.OnlineResource);
-  const version = computed(() => capabilities.value?.version);
+  const url = computed(() => wmsData.value?.url ?? undefined);
+  const version = computed(() => wmsData.value?.version ?? undefined);
 
   const defaultGutter = computed(() => {
     if (styleData.value) {

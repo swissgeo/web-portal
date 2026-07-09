@@ -1,26 +1,25 @@
 import type { Ref } from "vue";
 
+import { enableFallbackWithoutWorker, WmtsEndpoint } from "@camptocamp/ogc-client";
 import { registerProj4 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import WMTSCapabilitiesParser from "ol/format/WMTSCapabilities";
-import { register } from "ol/proj/proj4";
-import { optionsFromCapabilities } from "ol/source/WMTS";
+import { computedAsync } from "@vueuse/core";
 import proj4 from "proj4";
-import { computed, watchEffect } from "vue";
+import { watchEffect } from "vue";
 
-import type { WMTSCapabilityLayer } from "@/types/Capabilities";
 import type { Service } from "@/types/Records";
 
-type WMTSCapabilities = ReturnType<
-  InstanceType<typeof WMTSCapabilitiesParser>["read"]
->;
-
 import { useCapabilities } from "./useCapabilities";
-import { useConditionalFetch } from "./useConditionalFetch";
-(function registerCustomProjection() {
-  registerProj4(proj4);
-  register(proj4);
-})();
+
+// ogc-client parses capabilities in a Web Worker by default. Disable it so that
+// parsing also works in SSR and test environments (and so request mocking such
+// as msw can intercept the capabilities fetch on the main thread).
+enableFallbackWithoutWorker();
+
+// ogc-client resolves coordinate systems via proj4; make sure the custom Swiss
+// projections are registered. This is a proj4 concern (not OpenLayers), so it
+// stays here. The OpenLayers-side `register(proj4)` now lives in `map`.
+registerProj4(proj4);
 
 export function useWmtsCapabilities(
   serviceData: Ref<Service | null>,
@@ -28,11 +27,9 @@ export function useWmtsCapabilities(
 ) {
   const { capabilityUrl } = useCapabilities(serviceData);
 
-  const { data: wmtsCapabilityData } =
-    useConditionalFetch<string>(capabilityUrl);
-
-  const wmtsData = computed(() =>
-    parseWmtsCapabilities(wmtsCapabilityData.value, layerId.value),
+  const wmtsData = computedAsync(
+    () => parseWmtsCapabilities(capabilityUrl.value, layerId.value),
+    null,
   );
 
   watchEffect(() => {
@@ -49,41 +46,22 @@ export function useWmtsCapabilities(
   };
 }
 
-export function parseWmtsCapabilities(
-  capabilityData: string | null,
+export async function parseWmtsCapabilities(
+  capabilityUrl: string | null,
   layerId: string | null,
 ) {
-  if (!capabilityData || !layerId) {
-    return;
-  }
-
-  const wmtsParser = new WMTSCapabilitiesParser();
-  const capabilities = wmtsParser.read(capabilityData);
-
-  const options = optionsFromCapabilities(capabilities, {
-    layer: layerId,
-  });
-
-  const dimensions = getDimensions(capabilities, layerId);
-
-  return {
-    capabilities,
-    options,
-    dimensions,
-  };
-}
-
-export function getDimensions(capabilities: WMTSCapabilities, layerId: string) {
-  if (!capabilities) {
+  if (!capabilityUrl || !layerId) {
     return null;
   }
-  const capabilityOfLayer = capabilities.Contents.Layer.find(
-    (layerEntry: WMTSCapabilityLayer) => layerEntry.Identifier === layerId,
-  );
 
-  if (!capabilityOfLayer) {
-    return undefined;
-  }
+  const endpoint = await new WmtsEndpoint(capabilityUrl).isReady();
+  const layer = endpoint.getLayerByName(layerId);
 
-  return capabilityOfLayer.Dimension;
+  return {
+    // The parsed endpoint is passed to `map`, which builds the OpenLayers WMTS
+    // source options from it (see `buildWmtsOptions`). This keeps OpenLayers out
+    // of `@swissgeo/ogc`.
+    endpoint,
+    dimensions: layer?.dimensions ?? null,
+  };
 }

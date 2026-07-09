@@ -1,6 +1,8 @@
 import type { Distribution, Service } from "@swissgeo/ogc";
 
+import { buildWmtsOptions } from "@swissgeo/map";
 import { useStyle, useWmtsCapabilities } from "@swissgeo/ogc";
+import { computedAsync } from "@vueuse/core";
 
 import { defaultOpacityFromStyle } from "./defaultFromOpacity";
 
@@ -12,7 +14,16 @@ export function useOgcWmtsData(
   const { styleData } = useStyle(distribution);
   const { wmtsData } = useWmtsCapabilities(service, layerId);
 
-  const options = computed(() => wmtsData.value?.options || null);
+  // The OpenLayers WMTS options are now assembled in `map` from the parsed
+  // ogc-client endpoint (async), instead of being produced OL-side in `ogc`.
+  const options = computedAsync(async () => {
+    const endpoint = wmtsData.value?.endpoint;
+    if (!endpoint || !layerId.value) {
+      return null;
+    }
+    return buildWmtsOptions(endpoint, layerId.value);
+  }, null);
+
   const dimensions = computed(() => {
     return wmtsData.value?.dimensions || null;
   });
