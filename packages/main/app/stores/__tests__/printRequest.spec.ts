@@ -26,6 +26,8 @@ function makeRequest(): PrintRequestCollectionItem {
       reportUrl: "/jobs/1",
     },
     isPolling: false,
+    timestamp: 1690000000000,
+    networkError: null,
   };
 }
 
@@ -67,7 +69,7 @@ describe("printRequest store", () => {
 
     expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!)).toHaveLength(1);
 
-    store.requestCollection[0]!.lastResponse.status = "finished";
+    store.requestCollection[0]!.lastResponse!.status = "finished";
     await nextTick();
 
     expect(
