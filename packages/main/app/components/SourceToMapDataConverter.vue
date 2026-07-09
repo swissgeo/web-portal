@@ -128,7 +128,7 @@ function removeBgLayer() {
     <MapDatamappingFileConverter
       v-else
       :layer="data"
-      @update="updateMapLayerData(index, $event)"
+      @update="updateMapLayerData(index + 1, $event)"
     />
   </div>
 </template>
