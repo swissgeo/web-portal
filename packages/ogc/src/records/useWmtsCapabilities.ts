@@ -1,9 +1,6 @@
 import type { Ref } from "vue";
 
-import {
-  enableFallbackWithoutWorker,
-  WmtsEndpoint,
-} from "@camptocamp/ogc-client";
+import { WmtsEndpoint } from "@camptocamp/ogc-client";
 import { registerProj4 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computedAsync } from "@vueuse/core";
@@ -14,10 +11,11 @@ import type { Service } from "@/types/Records";
 
 import { useCapabilities } from "./useCapabilities";
 
-// ogc-client parses capabilities in a Web Worker by default. Disable it so that
-// parsing also works in SSR and test environments (and so request mocking such
-// as msw can intercept the capabilities fetch on the main thread).
-enableFallbackWithoutWorker();
+// Note: ogc-client parses capabilities in a Web Worker in the browser, and in a
+// self-contained main-thread fallback in Node (SSR / unit tests). We do NOT call
+// enableFallbackWithoutWorker() in the browser: its main-thread fallback is
+// broken in 1.3.0 (requester and handler use different EventTarget instances),
+// which hangs the parse. The Worker path works with real requests.
 
 // ogc-client resolves coordinate systems via proj4; make sure the custom Swiss
 // projections are registered. This is a proj4 concern (not OpenLayers), so it
