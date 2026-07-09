@@ -3,7 +3,7 @@ import type * as VueUseCore from "@vueuse/core";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useLayerStore } from "@swissgeo/layers";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const {
   importStateFromBase64Mock,
@@ -90,6 +90,14 @@ describe("useRestoreState", () => {
     importStateFromServiceMock.mockReset();
     importStateFromBase64Mock.mockResolvedValue(false);
     importStateFromServiceMock.mockResolvedValue(false);
+  });
+
+  afterEach(() => {
+    try {
+      expect(localStorage.length).toBe(0);
+    } finally {
+      localStorage.clear();
+    }
   });
 
   describe("state restoration on load", () => {
