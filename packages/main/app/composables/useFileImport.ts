@@ -18,16 +18,14 @@ export function useFileImport() {
 
     const filename = file.name.toLowerCase();
     let layerType: LayerType;
-    let fileData: string | undefined;
+    let fileData: string | Uint8Array | undefined;
 
     // Determine layer type based on file extension
     if (filename.endsWith(".kmz")) {
       layerType = "kmz";
       // Store raw file data for KMZ
       const arrayBuffer = await file.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      // Convert to base64 for storage
-      fileData = btoa(String.fromCharCode(...uint8Array));
+      fileData = new Uint8Array(arrayBuffer);
     } else if (filename.endsWith(".kml")) {
       layerType = "kml";
       fileData = await file.text();

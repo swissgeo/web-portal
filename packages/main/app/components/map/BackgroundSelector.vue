@@ -58,6 +58,7 @@ watch(
         background &&
         background.data &&
         typeof background.data === "object" &&
+        "id" in background.data &&
         background?.data?.id === defaultBackgroundId
       );
     });

@@ -32,12 +32,12 @@ export default function useOlKMZLayer(
   const zIndex = computed(() => layer.value.zIndex);
   const isVisible = computed(() => layer.value.isVisible);
   const opacity = computed(() => layer.value.opacity);
-  const kmzDataBase64 = computed(() => layer.value.data);
+  const kmzDataBuffer = computed(() => layer.value.data);
 
   const olLayer = ref<VectorLayer>();
 
   watch(
-    () => kmzDataBase64.value,
+    () => kmzDataBuffer.value,
     () => {
       olLayer.value = new VectorLayer({
         properties: {
@@ -52,15 +52,8 @@ export default function useOlKMZLayer(
     { immediate: true },
   );
 
-  async function unzippKMZ(): Promise<
-    Record<string, Uint8Array<ArrayBufferLike>>
-  > {
-    // Decode base64 to binary
-    const binaryString = atob(kmzDataBase64.value);
-    const uint8Array = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      uint8Array[i] = binaryString.charCodeAt(i);
-    }
+  async function unzippKMZ(): Promise<Record<string, Uint8Array>> {
+    const uint8Array = new Uint8Array(kmzDataBuffer.value);
 
     return await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
       unzip(
@@ -174,6 +167,7 @@ export default function useOlKMZLayer(
     try {
       const unzipped = await unzippKMZ();
       const { kmlContent, iconFiles } = extractKMLAndIcons(unzipped);
+
       const modifiedKML = replaceIconReferences(kmlContent, iconFiles);
       const features = parseKMLFeatures(
         modifiedKML,

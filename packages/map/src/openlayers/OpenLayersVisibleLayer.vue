@@ -27,10 +27,7 @@ const { layer, customLayerRenderers } = defineProps<{
 
 // Check if layer has a dataset (is DatasetLayer) or is a local file (FileLayer)
 const isLocalFile = computed(
-  () =>
-    !("dataset" in layer) &&
-    "fileData" in layer &&
-    layer.fileData !== undefined,
+  () => "data" in layer && typeof layer.data === "string",
 );
 
 const customLayerRenderer = computed(() =>

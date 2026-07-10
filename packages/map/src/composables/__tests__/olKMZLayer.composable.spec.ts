@@ -79,7 +79,7 @@ vi.mock("ol/source/Vector", () => ({
 import useOlKMZLayer from "../olKMZLayer.composable";
 
 function makeKMZLayer(overrides: Partial<KMZLayer> = {}): KMZLayer {
-  // Simple base64-encoded minimal KMZ (a zip with just a doc.kml)
+  // Simple binary placeholder; unzip is mocked in these tests.
   return {
     format: "KMZ",
     layerId: "test-kmz",
@@ -87,7 +87,7 @@ function makeKMZLayer(overrides: Partial<KMZLayer> = {}): KMZLayer {
     opacity: 1,
     isVisible: true,
     zIndex: 5,
-    data: btoa("PK"), // minimal placeholder
+    data: new TextEncoder().encode("PK"),
     ...overrides,
   };
 }

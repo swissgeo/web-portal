@@ -9,7 +9,7 @@ import VectorLayer from "ol/layer/Vector";
 import { register } from "ol/proj/proj4";
 import VectorSource from "ol/source/Vector";
 import proj4 from "proj4";
-import { computed, ref, watch } from "vue";
+import { computed, shallowRef, watch } from "vue";
 
 import type { GeoJSONLayer } from "@/types";
 import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
@@ -33,8 +33,7 @@ export default function useOlGeoJSONLayer(
   const geoJsonStyle = computed(() => layer.value.geoJsonStyle);
 
   const projection = computed(() => positionStore.projection);
-
-  const olLayer = ref<VectorLayer>();
+  const olLayer = shallowRef<VectorLayer>();
 
   watch(
     [() => geoJsonStyle.value, () => geoJsonData.value],
@@ -89,14 +88,14 @@ export default function useOlGeoJSONLayer(
       messages: ["Setting geoJSON source", geoJsonData.value],
     });
 
+    const reprojectedGeoJsonData = geoJsonUtils.reprojectGeoJsonData(
+      geoJsonData.value,
+      projection.value,
+    );
+
     olLayer.value.setSource(
       new VectorSource({
-        features: new GeoJSON().readFeatures(
-          geoJsonUtils.reprojectGeoJsonData(
-            geoJsonData.value,
-            projection.value,
-          ),
-        ),
+        features: new GeoJSON().readFeatures(reprojectedGeoJsonData),
       }),
     );
   }
