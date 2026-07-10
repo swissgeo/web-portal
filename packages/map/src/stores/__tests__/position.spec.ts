@@ -1,6 +1,6 @@
 import type { SingleCoordinate } from "@swissgeo/coordinates";
 
-import { WGS84, LV03, WEBMERCATOR } from "@swissgeo/coordinates";
+import { WGS84, LV03, WEBMERCATOR, constants } from "@swissgeo/coordinates";
 import { setActivePinia, createPinia } from "pinia";
 import { describe, it, expect, beforeEach } from "vitest";
 
@@ -9,6 +9,9 @@ import usePositionStore, {
   DEFAULT_PROJECTION,
 } from "@/stores/position";
 import { LV95Format, LV03Format } from "@/utils/coordinates/coordinateFormat";
+
+const MIN_ZOOM = constants.SWISSTOPO_MIN_ZOOM_LEVEL;
+const MAX_ZOOM = constants.SWISSTOPO_MAX_ZOOM_LEVEL;
 
 describe("position store", () => {
   const mockDispatcher = { name: "test" };
@@ -40,6 +43,16 @@ describe("position store", () => {
       store.setZoom(-1, mockDispatcher);
       expect(store.zoom).not.toEqual(-1);
     });
+
+    it("should not set zoom to a value greater than MAX_ZOOM", () => {
+      store.setZoom(MAX_ZOOM + 1, mockDispatcher);
+      expect(store.zoom).not.toEqual(MAX_ZOOM + 1);
+    });
+
+    it("should not set zoom to a value less than MIN_ZOOM", () => {
+      store.setZoom(MIN_ZOOM - 1, mockDispatcher);
+      expect(store.zoom).not.toEqual(MIN_ZOOM - 1);
+    });
   });
 
   describe("increaseZoom", () => {
@@ -48,19 +61,50 @@ describe("position store", () => {
       store.increaseZoom(mockDispatcher);
       expect(store.zoom).toBe(initialZoom + 1);
     });
+
+    it("should not be able to set zoom above MAX_ZOOM", () => {
+      store.setZoom(MAX_ZOOM, mockDispatcher);
+      store.increaseZoom(mockDispatcher);
+      expect(store.zoom).toBe(MAX_ZOOM);
+    });
   });
 
   describe("decreaseZoom", () => {
     it("should decrease the zoom level by 1", () => {
+      store.setZoom(5, mockDispatcher);
       const initialZoom = store.zoom;
       store.decreaseZoom(mockDispatcher);
       expect(store.zoom).toBe(initialZoom - 1);
     });
 
-    it("should not be able to set zoom below 0", () => {
-      store.setZoom(0, mockDispatcher);
+    it("should not be able to set zoom below MIN_ZOOM", () => {
+      store.setZoom(MIN_ZOOM, mockDispatcher);
       store.decreaseZoom(mockDispatcher);
-      expect(store.zoom).toBe(0);
+      expect(store.zoom).toBe(MIN_ZOOM);
+    });
+  });
+
+  describe("canIncreaseZoom", () => {
+    it("should return true if zoom is less than MAX_ZOOM", () => {
+      store.setZoom(MAX_ZOOM - 1, mockDispatcher);
+      expect(store.canIncreaseZoom()).toBe(true);
+    });
+
+    it("should return false if zoom is equal to MAX_ZOOM", () => {
+      store.setZoom(MAX_ZOOM, mockDispatcher);
+      expect(store.canIncreaseZoom()).toBe(false);
+    });
+  });
+
+  describe("canDecreaseZoom", () => {
+    it("should return true if zoom is greater than MIN_ZOOM", () => {
+      store.setZoom(MIN_ZOOM + 1, mockDispatcher);
+      expect(store.canDecreaseZoom()).toBe(true);
+    });
+
+    it("should return false if zoom is equal to MIN_ZOOM", () => {
+      store.setZoom(MIN_ZOOM, mockDispatcher);
+      expect(store.canDecreaseZoom()).toBe(false);
     });
   });
 
@@ -198,6 +242,7 @@ describe("position store", () => {
 
     it("should decrease zoom level by 1 for non-SwissCoordinateSystem projections", () => {
       store.$patch({ projection: WGS84 });
+      store.setZoom(5, mockDispatcher); // So that we are not at the minimum zoom level (which is the default zoom level)
       const initialZoom = store.zoom;
       store.decreaseZoom(mockDispatcher);
       expect(store.zoom).toBe(initialZoom - 1);
