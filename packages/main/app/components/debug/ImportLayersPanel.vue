@@ -15,7 +15,16 @@ const importUrl = ref("https://wmts.geo.bs.ch/1.0.0/WMTSCapabilities.xml");
 const layers: Ref<string[]> = ref([]);
 const currentLayerType: Ref<string | null> = ref(null);
 
-const encodedUrl = computed(() => encodeURIComponent(importUrl.value));
+const layerFilter = ref("");
+const filteredLayers = computed(() => {
+  const query = layerFilter.value.trim().toLowerCase();
+  if (!query) {
+    return layers.value;
+  }
+  return layers.value.filter((layer) => layer.toLowerCase().includes(query));
+});
+
+const encodedUrl = computed(() => encodeCapabilityUrl(importUrl.value));
 
 async function loadCapabilities() {
   if (importUrl.value.toLowerCase().includes("wmts")) {
@@ -105,14 +114,26 @@ function addLayer(layer: string) {
       <IconButton @click="$emit('close')" iconName="X"> </IconButton>
     </div>
     <div class="mt-12 h-[300px] overflow-scroll pb-18">
+      <input
+        v-if="layers.length"
+        v-model="layerFilter"
+        class="mb-2 w-full border border-gray-200 px-2 py-1"
+        :placeholder="`Filter ${layers.length} layers…`"
+      />
       <ul>
-        <li v-for="layer in layers" :key="layer" class="py-2">
+        <li v-for="layer in filteredLayers" :key="layer" class="py-2">
           <button
             class="cursor-pointer hover:bg-cyan-200"
             @click="addLayer(layer)"
           >
             {{ layer }}
           </button>
+        </li>
+        <li
+          v-if="layers.length && !filteredLayers.length"
+          class="py-2 text-gray-400"
+        >
+          No layers match “{{ layerFilter }}”
         </li>
       </ul>
     </div>

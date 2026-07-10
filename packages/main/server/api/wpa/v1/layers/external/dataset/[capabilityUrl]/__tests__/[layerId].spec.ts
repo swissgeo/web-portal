@@ -63,7 +63,7 @@ afterEach(() => {
 describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", () => {
   it("extracts the title from a WMTS capabilities document", async () => {
     const capabilityUrl = "https://wmts.example.com/1.0.0/WMTSCapabilities.xml";
-    const encoded = encodeURIComponent(capabilityUrl);
+    const encoded = Buffer.from(capabilityUrl).toString("base64url");
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
     requestUrl = new URL(
@@ -93,7 +93,7 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
 
   it("extracts the title from a WMS capabilities document", async () => {
     const capabilityUrl = "https://wms.example.com/?SERVICE=WMS";
-    const encoded = encodeURIComponent(capabilityUrl);
+    const encoded = Buffer.from(capabilityUrl).toString("base64url");
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
     requestUrl = new URL(
@@ -119,7 +119,7 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
 
   it("throws when the capabilities fetch fails", async () => {
     const capabilityUrl = "https://wms.example.com/?SERVICE=WMS";
-    const encoded = encodeURIComponent(capabilityUrl);
+    const encoded = Buffer.from(capabilityUrl).toString("base64url");
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
     requestUrl = new URL(
@@ -136,7 +136,7 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
 
   it("throws when the layer is not found in capabilities", async () => {
     const capabilityUrl = "https://wmts.example.com/1.0.0/WMTSCapabilities.xml";
-    const encoded = encodeURIComponent(capabilityUrl);
+    const encoded = Buffer.from(capabilityUrl).toString("base64url");
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "missing-layer";
     requestUrl = new URL(
@@ -159,7 +159,7 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
 
   it("throws when the capabilities document has an unrecognised root", async () => {
     const capabilityUrl = "https://example.com/weird.xml";
-    const encoded = encodeURIComponent(capabilityUrl);
+    const encoded = Buffer.from(capabilityUrl).toString("base64url");
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
 
@@ -170,7 +170,7 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
 
   it("returns the correct self and distributions links", async () => {
     const capabilityUrl = "https://wms.example.com/?SERVICE=WMS";
-    const encoded = encodeURIComponent(capabilityUrl);
+    const encoded = Buffer.from(capabilityUrl).toString("base64url");
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
     requestUrl = new URL(
@@ -207,7 +207,7 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
 
   it("forwards the language query param to the capabilities fetch", async () => {
     const capabilityUrl = "https://wmts.example.com/1.0.0/WMTSCapabilities.xml";
-    const encoded = encodeURIComponent(capabilityUrl);
+    const encoded = Buffer.from(capabilityUrl).toString("base64url");
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
     query = { language: "fr" };
@@ -238,7 +238,7 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
   it("appends language without clobbering existing query params on the capabilities URL", async () => {
     const capabilityUrl =
       "https://wms.example.com/?SERVICE=WMS&REQUEST=GetCapabilities";
-    const encoded = encodeURIComponent(capabilityUrl);
+    const encoded = Buffer.from(capabilityUrl).toString("base64url");
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
     query = { language: "de" };

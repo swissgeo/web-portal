@@ -11,7 +11,11 @@ export default defineEventHandler((event) => {
     });
   }
 
-  const capabilityUrl = decodeURIComponent(capabilityUrlParam);
+  // base64url-encoded by the client so the URL survives as a single path
+  // segment (see app/utils/externalLayerUrl.ts).
+  const capabilityUrl = Buffer.from(capabilityUrlParam, "base64url").toString(
+    "utf-8",
+  );
 
   appendResponseHeader(event, "Content-Type", "application/json");
   appendResponseHeader(event, "Cache-Control", `max-age=${60 * 60}`);

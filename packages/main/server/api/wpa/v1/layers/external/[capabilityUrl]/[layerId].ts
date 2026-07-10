@@ -12,7 +12,11 @@ export default defineEventHandler((event) => {
     });
   }
 
-  const capabilityUrl = decodeURIComponent(capabilityUrlParam);
+  // base64url-encoded by the client so the URL survives as a single path
+  // segment (see app/utils/externalLayerUrl.ts).
+  const capabilityUrl = Buffer.from(capabilityUrlParam, "base64url").toString(
+    "utf-8",
+  );
   const serviceUrl = `/api/wpa/v1/layers/external/service/${capabilityUrlParam}`;
 
   // Determine protocol based on the capability URL
