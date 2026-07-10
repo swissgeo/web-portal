@@ -22,28 +22,30 @@ const requestStatusSummary = computed(
 );
 
 function statusLabel(status: PrintJobStatusResponse["status"] | null): string {
-  if (status === "open") {
-    return t("print.statusQueued");
+  switch (status) {
+    case "open":
+      return t("print.statusQueued");
+    case "started":
+      return t("print.statusProcessing");
+    case "finished":
+      return t("print.statusReady");
+    default:
+      return t("print.statusError");
   }
-  if (status === "started") {
-    return t("print.statusProcessing");
-  }
-  if (status === "finished") {
-    return t("print.statusReady");
-  }
-  return t("print.statusError");
 }
 
 function statusColor(
   status: PrintJobStatusResponse["status"] | null,
 ): "info" | "success" | "error" {
-  if (status === "open" || status === "started") {
-    return "info";
+  switch (status) {
+    case "open":
+    case "started":
+      return "info";
+    case "finished":
+      return "success";
+    default:
+      return "error";
   }
-  if (status === "finished") {
-    return "success";
-  }
-  return "error";
 }
 </script>
 

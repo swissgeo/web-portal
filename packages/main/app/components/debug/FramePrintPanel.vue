@@ -52,10 +52,6 @@ const printOrientationItems = ref(
 function handleClose() {
   emit("close");
 }
-
-function handleSendPrintRequest() {
-  updatePrintState();
-}
 </script>
 
 <template>
@@ -135,11 +131,9 @@ function handleSendPrintRequest() {
         @click="adjustToLockedView"
         >{{ t("print.zoomToLockedZoomLevel") }}</UButton
       >
-      <UButton
-        v-if="!isPrintExtentOutOfBounds"
-        @click="handleSendPrintRequest"
-        >{{ t("print.sendPrintRequest") }}</UButton
-      >
+      <UButton v-if="!isPrintExtentOutOfBounds" @click="updatePrintState">{{
+        t("print.sendPrintRequest")
+      }}</UButton>
       <PrintJobListing />
     </div>
   </div>
