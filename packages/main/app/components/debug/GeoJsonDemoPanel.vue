@@ -1,0 +1,208 @@
+<script setup lang="ts">
+import type { MapLibreConversionNote } from "@swissgeo/map";
+
+import { useLayerStore } from "@swissgeo/layers";
+import { IconButton } from "@swissgeo/skeleton";
+import geoadminLayers from "~/assets/poc/geoadminLayers.json";
+import { useGeoadminGeoJsonLoader } from "~/composables/useGeoadminGeoJsonLoader";
+import { useMapViewStore } from "~/stores/mapView";
+import { ref } from "vue";
+
+defineEmits<{ close: [] }>();
+
+const { loadLayer, fetchStyles } = useGeoadminGeoJsonLoader();
+const mapViewStore = useMapViewStore();
+const layerStore = useLayerStore();
+const selectedLayerId = ref<string>(geoadminLayers[0] ?? "");
+const copyLabel = ref("Copy id");
+
+const isStyleModalOpen = ref(false);
+const isLoadingStyle = ref(false);
+const geoadminStyle = ref<unknown>(null);
+const mapLibreStyle = ref<unknown>(null);
+const styleError = ref("");
+const conversionNotes = ref<MapLibreConversionNote[]>([]);
+const showNotes = ref(true);
+// Layer whose style is shown in the modal. Independent of the panel select so the
+// in-modal dropdown can switch styles without touching the panel selection.
+const styleLayerId = ref<string>(geoadminLayers[0] ?? "");
+
+// Fetch a layer's style and show both the raw geoadmin style and the converted
+// MapLibre style, without adding a layer to the map.
+async function loadStyle(layerId: string): Promise<void> {
+  if (!layerId) {
+    return;
+  }
+  isLoadingStyle.value = true;
+  geoadminStyle.value = null;
+  mapLibreStyle.value = null;
+  styleError.value = "";
+  conversionNotes.value = [];
+  try {
+    const {
+      geoadminStyle: geoadmin,
+      mapLibreStyle: mapLibre,
+      conversionNotes: notes,
+    } = await fetchStyles(layerId);
+    geoadminStyle.value = geoadmin;
+    mapLibreStyle.value = mapLibre;
+    conversionNotes.value = notes;
+  } catch (error) {
+    styleError.value = `Failed to load style: ${String(error)}`;
+  } finally {
+    isLoadingStyle.value = false;
+  }
+}
+
+// Open the modal for the currently selected panel layer.
+async function showStyle(): Promise<void> {
+  styleLayerId.value = selectedLayerId.value;
+  isStyleModalOpen.value = true;
+  await loadStyle(styleLayerId.value);
+}
+
+async function copyId(): Promise<void> {
+  await navigator.clipboard.writeText(selectedLayerId.value);
+  copyLabel.value = "Copied!";
+  setTimeout(() => {
+    copyLabel.value = "Copy id";
+  }, 1500);
+}
+
+// Add the selected layer twice — MapLibre + legacy — so the compare slider can
+// swipe between the two renderings.
+async function addBothStyles(): Promise<void> {
+  await loadLayer(selectedLayerId.value);
+  await loadLayer(selectedLayerId.value, { legacy: true });
+}
+
+// Remove all overlay layers but keep the background layer (matched by uuid).
+function clearAllLayers(): void {
+  const backgroundUuid = layerStore.backgroundLayer?.uuid;
+  for (let index = mapViewStore.mapLayers.length - 1; index >= 0; index--) {
+    if (mapViewStore.mapLayers[index]?.uuid === backgroundUuid) {
+      continue;
+    }
+    mapViewStore.removeLayer(index);
+  }
+}
+</script>
+
+<template>
+  <div class="p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <h3 class="text-lg font-semibold">Load geoadmin GeoJSON layer (POC)</h3>
+      <IconButton @click="$emit('close')" iconName="X" title="Close" />
+    </div>
+    <p class="mb-2 text-sm text-gray-600">
+      Fetches the layer's real data + style from geoadmin, then adds it with the
+      chosen styling. "Add (both)" adds MapLibre + legacy so the compare slider
+      can swipe between them.
+    </p>
+    <select
+      v-model="selectedLayerId"
+      class="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm"
+      data-testid="debug-geojson-layer-select"
+    >
+      <option v-for="id in geoadminLayers" :key="id" :value="id">
+        {{ id }}
+      </option>
+    </select>
+    <div class="mt-3 flex flex-wrap gap-2">
+      <UButton @click="loadLayer(selectedLayerId)"> Add (MapLibre) </UButton>
+      <UButton @click="loadLayer(selectedLayerId, { legacy: true })">
+        Add (legacy)
+      </UButton>
+      <UButton @click="addBothStyles"> Add (both) </UButton>
+      <UButton color="neutral" variant="outline" @click="showStyle">
+        Show style
+      </UButton>
+      <UButton color="neutral" variant="outline" @click="copyId">
+        {{ copyLabel }}
+      </UButton>
+      <UButton color="error" variant="outline" @click="clearAllLayers">
+        Clear all layers
+      </UButton>
+    </div>
+
+    <UModal
+      v-model:open="isStyleModalOpen"
+      :title="`Style — ${styleLayerId}`"
+      :ui="{ content: 'max-w-[95vw] sm:max-w-[95vw]' }"
+    >
+      <template #body>
+        <select
+          v-model="styleLayerId"
+          @change="loadStyle(styleLayerId)"
+          class="mb-3 w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm"
+          data-testid="debug-geojson-style-select"
+        >
+          <option v-for="id in geoadminLayers" :key="id" :value="id">
+            {{ id }}
+          </option>
+        </select>
+        <div v-if="isLoadingStyle" class="text-sm text-gray-600">
+          Loading style…
+        </div>
+        <div v-else>
+          <div
+            v-if="conversionNotes.length"
+            class="mb-4 rounded border border-gray-200 bg-gray-50 p-3"
+          >
+            <button
+              type="button"
+              class="mb-2 flex w-full items-center gap-1 text-left text-sm font-semibold"
+              @click="showNotes = !showNotes"
+            >
+              <span>{{ showNotes ? "▾" : "▸" }}</span>
+              <span>Conversion notes ({{ conversionNotes.length }})</span>
+            </button>
+            <table v-if="showNotes" class="w-full text-xs">
+              <thead>
+                <tr class="text-left text-gray-500">
+                  <th class="w-1/2 pr-2 pb-1 font-medium">Geoadmin style</th>
+                  <th class="w-1/2 pb-1 font-medium">MapLibre output</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(note, index) in conversionNotes"
+                  :key="index"
+                  class="border-t border-gray-200 align-top"
+                >
+                  <td class="py-1 pr-2">{{ note.geoadmin }}</td>
+                  <td class="py-1 font-mono">{{ note.maplibre }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p v-if="styleError" class="text-sm text-red-600">
+            {{ styleError }}
+          </p>
+          <div v-else class="grid grid-cols-2 gap-4">
+            <div>
+              <h4 class="mb-1 text-sm font-semibold">
+                Geoadmin style (original)
+              </h4>
+              <div
+                class="max-h-[70vh] overflow-auto rounded bg-gray-100 p-2 font-mono text-xs leading-5 whitespace-nowrap"
+              >
+                <DebugJsonTree :value="geoadminStyle" />
+              </div>
+            </div>
+            <div>
+              <h4 class="mb-1 text-sm font-semibold">
+                MapLibre style (converted)
+              </h4>
+              <div
+                class="max-h-[70vh] overflow-auto rounded bg-gray-100 p-2 font-mono text-xs leading-5 whitespace-nowrap"
+              >
+                <DebugJsonTree :value="mapLibreStyle" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </UModal>
+  </div>
+</template>

@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "grundwasser-class": 1, "name": "Station A" },
+      "geometry": { "type": "Point", "coordinates": [7.4, 46.95] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "grundwasser-class": 1, "name": "Station B" },
+      "geometry": { "type": "Point", "coordinates": [8.3, 47.05] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "grundwasser-class": 2, "name": "Station C" },
+      "geometry": { "type": "Point", "coordinates": [7.5, 46.9] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "grundwasser-class": 2, "name": "Station D" },
+      "geometry": { "type": "Point", "coordinates": [8.4, 46.8] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "grundwasser-class": 3, "name": "Station E" },
+      "geometry": { "type": "Point", "coordinates": [7.6, 47.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "grundwasser-class": 3, "name": "Station F" },
+      "geometry": { "type": "Point", "coordinates": [8.2, 46.95] }
+    }
+  ]
+}
