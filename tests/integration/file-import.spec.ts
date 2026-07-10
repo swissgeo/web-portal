@@ -30,7 +30,7 @@ const getVectorFeatureCounts = (page: Page) =>
       }),
   );
 
-// Keyed by the layer id, which useOlLocalGeoJSONLayer sets to the filename, so
+// Keyed by the layer id, which useOlJSONLayer sets to the filename, so
 // the lookup doesn't depend on where OpenLayers ordered the layer.
 const getVectorExtentById = (page: Page, layerId: string) =>
   page.evaluate((id) => {

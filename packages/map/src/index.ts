@@ -24,3 +24,5 @@ export { buildWmtsOptions } from "./utils/buildWmtsOptions";
 export type { BuildWmtsOptionsConfig } from "./utils/buildWmtsOptions";
 export type { FeatureCollectionWithCRS } from "./utils/geoJsonUtils";
 export { MapModule, usePositionStore, useAddLayerToMap, PROJECTION_EPSG };
+
+export * from "./utils/geoJsonUtils";
