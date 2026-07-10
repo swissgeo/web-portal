@@ -27,12 +27,14 @@ export default defineEventHandler((event) => {
 
   appendResponseHeader(event, "Content-Type", "application/json");
   appendResponseHeader(event, "Cache-Control", `max-age=${60 * 60}`);
+  // Must match the OGC API shape the datamapping pipeline consumes:
+  // a FeatureCollection with `features` (not `records`), otherwise
+  // useGenericOgcData reads an undefined `.features` and silently renders
+  // nothing.
   return {
-    id: layerId,
-    type: "Collection",
-    itemType: "Distribution",
-    title: layerId,
-    records: [
+    type: "FeatureCollection",
+    links: [],
+    features: [
       {
         id: `${layerId}`,
         links: [
@@ -42,9 +44,10 @@ export default defineEventHandler((event) => {
           },
         ],
         properties: {
+          title: layerId,
+          type: "Distribution",
           protocol,
           externalIds: [layerId],
-          type: "Distribution",
         },
       },
     ],
