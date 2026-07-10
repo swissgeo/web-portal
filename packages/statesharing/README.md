@@ -38,6 +38,5 @@ pnpm --filter @swissgeo/statesharing build
 | `SaveAppState`             | type      | POST request body type                                                   |
 | `GetAppState`              | type      | GET response type                                                        |
 | `AppState`                 | type      | Core app state (`StateV1Input`): map position + layers                   |
-| `LayerState`               | type      | Output representation of a single layer in the state                     |
-| `LayerStateInput`          | type      | Input representation of a single layer in the state                      |
+| `LayerState`               | type      | Representation of a single layer in the state                            |
 | `MapState`                 | type      | Map position (center, zoom, rotation)                                    |

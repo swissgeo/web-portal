@@ -121,28 +121,31 @@ test.describe("embed map page", () => {
   });
 
   test("zoom buttons work", async ({ page }) => {
-    await page.evaluateHandle(() => window.swissgeoOlMap);
-
     await test.step("Check simple zooming", async () => {
+      await page.getByTestId("zoom-in").click();
+      await waitForZoom(page);
+
+      expect(await getZoom(page)).toEqual(2);
+
       await page.getByTestId("zoom-out").click();
       await waitForZoom(page);
 
-      expect(await getZoom(page)).toEqual(0);
-
-      await page.getByTestId("zoom-out").click();
-
-      // second zoom-out click doesn't change the state
-      // also not waiting here
-      expect(await getZoom(page)).toEqual(0);
+      expect(await getZoom(page)).toEqual(1);
     });
 
     await test.step("Zoom all the way in", async () => {
+      while ((await getZoom(page)) !== 0) {
+        await page.getByTestId("zoom-out").click();
+        await waitForZoom(page);
+      }
+
       // now let's zoom all the way in
       for (let zoom = 1; zoom <= 13; zoom++) {
         await page.getByTestId("zoom-in").click();
         await waitForZoom(page);
         expect(await getZoom(page)).toEqual(zoom);
       }
+      await expect(page.getByTestId("zoom-in")).toBeDisabled();
     });
   });
 });

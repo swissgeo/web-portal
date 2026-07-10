@@ -21,7 +21,7 @@ export const zLayerTypeEnum = z.enum(["dataset", "gpx", "kml"]);
  */
 export const zMapState = z.object({
   center: z.tuple([z.number().gt(0), z.number().gt(0)]).nullish(),
-  zoom: z.number().gte(1).lte(13).nullish(),
+  zoom: z.number().gte(0).lte(13).nullish(),
   rotation: z.number().gte(0).lte(6.283185307179586).nullish(),
 });
 
@@ -51,18 +51,7 @@ export const zLayerDimensionsState = z.object({
 /**
  * LayerState
  */
-export const zLayerStateInput = z.object({
-  layerUrl: z.url().min(1),
-  type: zLayerTypeEnum,
-  isVisible: z.boolean().nullish(),
-  opacity: z.number().gte(0).lte(1).nullish(),
-  dimensions: zLayerDimensionsState.optional(),
-});
-
-/**
- * LayerState
- */
-export const zLayerStateOutput = z.object({
+export const zLayerState = z.object({
   layerUrl: z.url().min(1),
   type: zLayerTypeEnum,
   isVisible: z.boolean().nullish(),
@@ -75,37 +64,26 @@ export const zLayerStateOutput = z.object({
  *
  * State object of the application
  */
-export const zStateV1Input = z.object({
+export const zStateV1 = z.object({
   map: zMapState.optional(),
-  layers: z.array(zLayerStateInput).optional(),
-  bg_layer: zLayerStateInput.nullish(),
-});
-
-/**
- * SaveAppStateRequest
- */
-export const zSaveAppStateRequest = z.object({
-  state: zStateV1Input,
-});
-
-/**
- * StateV1
- *
- * State object of the application
- */
-export const zStateV1Output = z.object({
-  map: zMapState.optional(),
-  layers: z.array(zLayerStateOutput).optional(),
-  bg_layer: zLayerStateOutput.nullish(),
+  layers: z.array(zLayerState).optional(),
+  bg_layer: zLayerState.nullish(),
 });
 
 /**
  * GetAppStateResponse
  */
 export const zGetAppStateResponse = z.object({
-  state: zStateV1Output,
+  state: zStateV1,
   deprecated: z.boolean().optional().default(false),
   warning: z.string().optional().default(""),
+});
+
+/**
+ * SaveAppStateRequest
+ */
+export const zSaveAppStateRequest = z.object({
+  state: zStateV1,
 });
 
 /**

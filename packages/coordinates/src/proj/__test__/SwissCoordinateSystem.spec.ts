@@ -4,14 +4,19 @@ import { LV03, LV95 } from "@/proj";
 import {
   LV95_RESOLUTIONS,
   SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX,
+  SWISSTOPO_MAX_ZOOM_LEVEL,
+  SWISSTOPO_MIN_ZOOM_LEVEL,
 } from "@/proj/SwissCoordinateSystem";
 
 describe("Unit test functions from SwissCoordinateSystem", () => {
   describe("transformCustomZoomLevelToStandard", () => {
     it("transforms rounded value correctly", () => {
       // most zoom levels on mf-geoadmin3 were forced as integer, so we have to make sure we translate them correctly
-      // there is 14 zoom levels described in mf-geoadmin3
-      for (let swisstopoZoom = 0; swisstopoZoom <= 14; swisstopoZoom++) {
+      for (
+        let swisstopoZoom = SWISSTOPO_MIN_ZOOM_LEVEL;
+        swisstopoZoom <= SWISSTOPO_MAX_ZOOM_LEVEL;
+        swisstopoZoom++
+      ) {
         expect(LV95.transformCustomZoomLevelToStandard(swisstopoZoom)).to.eq(
           SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[swisstopoZoom],
         );
@@ -21,7 +26,11 @@ describe("Unit test functions from SwissCoordinateSystem", () => {
       }
     });
     it("floors any floating swisstopo zoom given before searching for the equivalent", () => {
-      for (let swisstopoZoom = 0; swisstopoZoom <= 14; swisstopoZoom++) {
+      for (
+        let swisstopoZoom = SWISSTOPO_MIN_ZOOM_LEVEL;
+        swisstopoZoom <= SWISSTOPO_MAX_ZOOM_LEVEL;
+        swisstopoZoom++
+      ) {
         for (
           let above = swisstopoZoom;
           above < swisstopoZoom + 1;
@@ -65,7 +74,7 @@ describe("Unit test functions from SwissCoordinateSystem", () => {
                 expected: 0,
               };
             }
-            if (lv95Zoom >= 14) {
+            if (lv95Zoom >= SWISSTOPO_MAX_ZOOM_LEVEL) {
               return {
                 start: 21,
                 end: 30,

@@ -1,7 +1,12 @@
 import type { CoordinateSystem, SingleCoordinate } from "@swissgeo/coordinates";
 import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
 
-import { LV95, SwissCoordinateSystem, WGS84 } from "@swissgeo/coordinates";
+import {
+  LV95,
+  SwissCoordinateSystem,
+  WGS84,
+  constants,
+} from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { isNumber } from "@swissgeo/numbers";
 import { defineStore } from "pinia";
@@ -15,6 +20,9 @@ import { normalizeAngle } from "@/utils/normalizeAngle";
 
 export const DEFAULT_PROJECTION: CoordinateSystem = LV95;
 export const DEFAULT_FORMAT = LV95Format;
+
+const MIN_ZOOM = constants.SWISSTOPO_MIN_ZOOM_LEVEL;
+const MAX_ZOOM = constants.SWISSTOPO_MAX_ZOOM_LEVEL;
 
 const usePositionStore = defineStore("position", () => {
   const displayFormat = ref<CoordinateFormat>(DEFAULT_FORMAT);
@@ -48,7 +56,7 @@ const usePositionStore = defineStore("position", () => {
   }
 
   function setZoom(newZoom: number, dispatcher: ActionDispatcher): void {
-    if (!isNumber(newZoom) || newZoom < 0) {
+    if (!isNumber(newZoom) || newZoom < MIN_ZOOM || newZoom > MAX_ZOOM) {
       log.error({
         title: "Position store / setZoom",
         titleColor: LogPreDefinedColor.Red,
@@ -64,7 +72,8 @@ const usePositionStore = defineStore("position", () => {
       projection.value instanceof SwissCoordinateSystem
         ? projection.value.roundZoomLevel(zoom.value, true)
         : projection.value.roundZoomLevel(zoom.value);
-    setZoom(rounded + 1, dispatcher);
+    const newZoom = Math.min(rounded + 1, MAX_ZOOM);
+    setZoom(newZoom, dispatcher);
   }
 
   function decreaseZoom(dispatcher: ActionDispatcher): void {
@@ -72,7 +81,16 @@ const usePositionStore = defineStore("position", () => {
       projection.value instanceof SwissCoordinateSystem
         ? projection.value.roundZoomLevel(zoom.value, true)
         : projection.value.roundZoomLevel(zoom.value);
-    setZoom(rounded - 1, dispatcher);
+    const newZoom = Math.max(rounded - 1, MIN_ZOOM);
+    setZoom(newZoom, dispatcher);
+  }
+
+  function canIncreaseZoom(): boolean {
+    return zoom.value < MAX_ZOOM;
+  }
+
+  function canDecreaseZoom(): boolean {
+    return zoom.value > MIN_ZOOM;
   }
 
   function setRotation(
@@ -145,7 +163,9 @@ const usePositionStore = defineStore("position", () => {
     setDisplayedFormat,
     setZoom,
     increaseZoom,
+    canIncreaseZoom,
     decreaseZoom,
+    canDecreaseZoom,
     setRotation,
     setAutoRotation,
     setCenter,

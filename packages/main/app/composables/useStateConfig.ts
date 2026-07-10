@@ -1,7 +1,7 @@
 import type { Dimension, DimensionId, Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
-import type { LayerStateInput, AppState } from "@swissgeo/statesharing";
+import type { LayerState, AppState } from "@swissgeo/statesharing";
 
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
@@ -21,7 +21,7 @@ export function isBackgroundLayer(layer: Layer): boolean {
   return AVAILABLE_BACKGROUNDS.includes(layer.humanId);
 }
 // exported only for testing purpose. Do not use this outside this file
-export function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
+export function layersToStateConfig(layers: MapLayer[]): LayerState[] {
   if (layers.length === 0) {
     return [];
   }
@@ -31,7 +31,7 @@ export function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
   return layers.slice(startIndex).map(layerToStateConfig);
 }
 // exported only for testing purpose. Do not use this outside this file
-export function layerToStateConfig(layer: MapLayer): LayerStateInput {
+export function layerToStateConfig(layer: MapLayer): LayerState {
   const layerStore = useLayerStore();
   let sourceData: Layer | undefined | null = layerStore.getLayer(layer.uuid);
 
@@ -49,9 +49,9 @@ export function layerToStateConfig(layer: MapLayer): LayerStateInput {
       `Cannot serialize layer ${layer.uuid}: no source data found`,
     );
   }
-  const config: LayerStateInput = {
+  const config: LayerState = {
     layerUrl: sourceData.layerUrl as string,
-    type: sourceData.type as LayerStateInput["type"],
+    type: sourceData.type as LayerState["type"],
     isVisible: layer.isVisible,
     opacity: layer.opacity,
   };
@@ -71,7 +71,7 @@ export function layerToStateConfig(layer: MapLayer): LayerStateInput {
 }
 
 async function stateConfigToLayer(
-  config: LayerStateInput | null,
+  config: LayerState | null,
 ): Promise<Layer | null> {
   const layerOptions: Partial<Layer> = {};
   if (!config) {
@@ -146,7 +146,7 @@ export function useStateConfig() {
     layerStore.setBackground(null);
     const stateLayers = payload.state.layers ?? [];
     const layers = await Promise.all(
-      stateLayers.map((lc: LayerStateInput) => stateConfigToLayer(lc)),
+      stateLayers.map((lc: LayerState) => stateConfigToLayer(lc)),
     );
     const bgLayer: Layer | null = await stateConfigToLayer(
       payload.state.bg_layer ?? null,
@@ -194,8 +194,8 @@ export function useCustomStateConfig() {
   const customStateMapCenter = ref<[number, number]>([0, 0]);
   const customStateMapZoom = ref(0);
   const customStateMapRotation = ref(0);
-  const layerStateConfig = ref<LayerStateInput[]>([]);
-  const backgroundLayerStateConfig = ref<LayerStateInput | null>(null);
+  const layerStateConfig = ref<LayerState[]>([]);
+  const backgroundLayerStateConfig = ref<LayerState | null>(null);
   const makeUseOfCurrentLayers = () => {
     layerStateConfig.value = layersToStateConfig(mapviewStore.mapLayers);
   };
