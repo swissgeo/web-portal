@@ -40,7 +40,9 @@ export default defineEventHandler((event) => {
         links: [
           {
             href: serviceUrl,
-            rel: "service",
+            // the pipeline resolves the service via rel "dataservice"
+            // (getDataServiceLinks), not "service"
+            rel: "dataservice",
           },
         ],
         properties: {
