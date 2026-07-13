@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
           "@swissgeo/skeleton",
           "@swissgeo/shared",
           "@vueuse/core",
+          "pinia",
           "vue-i18n",
           "@lucide/vue",
         ],

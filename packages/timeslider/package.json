@@ -41,6 +41,7 @@
     "@swissgeo/config-typescript": "workspace:*",
     "@vitejs/plugin-vue": "catalog:",
     "eslint": "catalog:",
+    "pinia": "catalog:",
     "typescript": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:",
@@ -50,6 +51,7 @@
   "peerDependencies": {
     "@lucide/vue": "catalog:",
     "@vueuse/core": "catalog:",
+    "pinia": "catalog:",
     "vue": "catalog:",
     "vue-i18n": "catalog:"
   },
