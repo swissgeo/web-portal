@@ -18,7 +18,6 @@ import type { Layer } from "@/types/layers";
 import useViewBasedOnProjection from "@/composables/useViewBasedOnProjection.composable";
 
 import { useMapStore } from "../stores/map";
-// import { constants, LV95, WEBMERCATOR } from '@swissgeo/coordinates'
 import OpenLayersVisibleLayer from "./OpenLayersVisibleLayer.vue";
 
 const { layers, customLayerRenderers, zoomOnlyCtrl } = defineProps<{
@@ -97,25 +96,6 @@ createOlMap(zoomOnlyCtrl);
       :key="layer.uuid"
       v-for="layer in layers"
     />
-    <!-- <OpenLayersVisibleLayers />
-        <OpenLayersPinnedLocation />
-        <OpenLayersCrossHair />
-        <OpenLayersHighlightedFeature />
-        <OpenLayersGeolocationFeedback v-if="geolocationActive && geoPosition" />
-        <OpenLayersRectangleSelectionFeedback /> -->
-    <!-- Debug tooling -->
-    <!-- <OpenLayersTileDebugInfo
-            v-if="showTileDebugInfo"
-            :z-index="zIndexTileInfo"
-        />
-        <OpenLayersLayerExtents
-            v-if="showLayerExtents"
-            :z-index="zIndexLayerExtents"
-        />
-        <OpenLayersSelectionRectangle
-            v-if="showSelectionRectangle"
-            :z-index="zIndexSelectionRectangle"
-        /> -->
   </div>
   <!-- So that external modules can have access to the map instance through the provided 'olMap' -->
   <slot />

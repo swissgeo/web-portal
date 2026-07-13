@@ -159,12 +159,13 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     });
     // @ts-expect-error Type-checker can't deduce that this method actually exists
     // but isn't really exposed
-    wrapper.vm.pushLayerSpecificData({
+    wrapper.vm.pushLayerSpecificData(1, {
       options: {
         url: "http://swissgeo.ch",
       },
     });
     await flushPromises();
+
     expect(wrapper.emitted("update")).toHaveLength(2);
     expect(wrapper.emitted("update")!.pop()!.pop()).toHaveProperty("options", {
       url: "http://swissgeo.ch",

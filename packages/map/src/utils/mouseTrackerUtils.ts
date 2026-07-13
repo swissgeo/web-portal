@@ -5,7 +5,6 @@ import { round } from "@swissgeo/numbers";
 import proj4 from "proj4";
 
 import type { CoordinateFormat } from "@/utils/coordinates/coordinateFormat";
-//const { t } = useI18n()
 
 import { LV03Format, LV95Format } from "@/utils/coordinates/coordinateFormat";
 
@@ -35,13 +34,13 @@ export default function getHumanReadableCoordinate({
   displayedFormat,
 }: HumanReadableCoordinateParams): string {
   if (displayedFormat.id === LV95Format.id) {
-    return `${/*t*/ "coordinates_label"} ${displayedFormat.formatCallback(coordinates, false)}`;
+    return `${"coordinates_label"} ${displayedFormat.formatCallback(coordinates, false)}`;
   } else if (displayedFormat.id === LV03Format.id) {
     const lv03Coordinates =
       projection.epsg === LV03.epsg
         ? coordinates
         : proj4(projection.epsg, LV03.epsg, coordinates);
-    return `${/*t*/ "coordinates_label"} ${/*t*/ "approx_abbr"} ${displayedFormat.formatCallback(
+    return `${"coordinates_label"} ${"approx_abbr"} ${displayedFormat.formatCallback(
       lv03Coordinates.map((value) => round(value)) as SingleCoordinate,
       false,
     )}`;

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { normalizeAngle } from "../position/utils/normalizeAngle";
+import { normalizeAngle } from "../normalizeAngle";
 
 describe("normalizeAngle", () => {
   it("should normalize angles greater than PI", () => {

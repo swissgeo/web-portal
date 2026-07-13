@@ -10,17 +10,8 @@ import { View } from "ol";
 import { DoubleClickZoom } from "ol/interaction";
 import { computed, onBeforeUnmount, onMounted, toValue, watch } from "vue";
 
-// import {
-//   computed,
-//   type MaybeRef,
-//   onBeforeUnmount,
-//   onMounted,
-//   toValue,
-//   watch,
-// } from "vue";
-import usePositionStore from "@/stores/position/";
+import usePositionStore from "@/stores/position";
 
-// import { VIEW_MIN_RESOLUTION } from "@/config/map.config";
 /**
  * Map view's minimal resolution Currently set so that OL scalebar displays 10 meters Scalebar about
  * 1" on screen, hence about 100px. So, 10 meters/100px = 0.1 Caveat: setting resolution (minimum
