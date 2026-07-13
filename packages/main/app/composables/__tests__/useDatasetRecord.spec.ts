@@ -16,7 +16,10 @@ const { locale, asyncDataRef } = await vi.hoisted(async () => {
 mockNuxtImport("useI18n", () => () => ({ locale }));
 
 mockNuxtImport("useRuntimeConfig", () => () => ({
-  public: { ogcApiEndpoint: "https://api.example.com/collections/catalog" },
+  public: {
+    ogcApiEndpoint: "https://api.example.com/collections/catalog",
+    ogcCatalogCollection: "swissgeo-catalog",
+  },
 }));
 
 const fetchMock = vi.fn();
@@ -94,7 +97,7 @@ describe("useDatasetRecord", () => {
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.example.com/collections/catalog/collections/swissgeo.catalog/items/ch.swisstopo.test?language=de",
+      "https://api.example.com/collections/catalog/collections/swissgeo-catalog/items/ch.swisstopo.test?language=de",
     );
     expect(dataset.value?.id).toBe("ch.swisstopo.test");
   });
@@ -193,7 +196,7 @@ describe("useDatasetRecord", () => {
     const calledUrl = new URL(fetchMock.mock.calls[0]![0] as string);
     expect(calledUrl.origin).toBe("https://api.example.com");
     expect(calledUrl.pathname).toBe(
-      "/collections/catalog/collections/swissgeo.catalog/items/ch.swisstopo.test",
+      "/collections/catalog/collections/swissgeo-catalog/items/ch.swisstopo.test",
     );
   });
 
@@ -201,6 +204,7 @@ describe("useDatasetRecord", () => {
     mockNuxtImport("useRuntimeConfig", () => () => ({
       public: {
         ogcApiEndpoint: "https://api.example.com/collections/catalog/",
+        ogcCatalogCollection: "swissgeo-catalog",
       },
     }));
 
@@ -215,7 +219,7 @@ describe("useDatasetRecord", () => {
     const { pathname } = new URL(calledUrl);
     expect(pathname).not.toContain("//");
     expect(calledUrl).toBe(
-      "https://api.example.com/collections/catalog/collections/swissgeo.catalog/items/ch.swisstopo.test?language=de",
+      "https://api.example.com/collections/catalog/collections/swissgeo-catalog/items/ch.swisstopo.test?language=de",
     );
   });
 });
