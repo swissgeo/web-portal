@@ -2,14 +2,14 @@
   "id": "ch.swisstopo.pixelkarte-farbe",
   "links": [
     {
-      "href": "http://mock-oar.org/api/oar/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
+      "href": "http://mock-oar.org/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
       "rel": "self",
       "title": "This Record",
       "type": "application/json",
       "hreflang": "en"
     },
     {
-      "href": "http://mock-oar.org/api/oar/collections/swissgeo.catalog?language=en",
+      "href": "http://mock-oar.org/api/oar/collections/swissgeo-catalog?language=en",
       "rel": "collection",
       "title": "Link to the collection this item belongs to",
       "type": "application/json",
