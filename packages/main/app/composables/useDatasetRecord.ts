@@ -25,7 +25,7 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
         joinURL(
           runtimeConfig.public.ogcApiEndpoint,
           "collections",
-          "swissgeo.catalog",
+          runtimeConfig.public.ogcCatalogCollection,
           "items",
           resolvedId,
         ),
