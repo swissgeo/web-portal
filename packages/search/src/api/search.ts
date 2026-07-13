@@ -10,23 +10,22 @@ import type {
   SearchResponseResult,
 } from "@/types/search";
 
-/**
- * Catalog record structure as used in layer search. This extends the base OGCRecord with the
- * specific property structure used by the swissgeo catalog.
- */
-
 export enum SearchResultTypesEnum {
   layer = "LAYER",
   location = "LOCATION",
   feature = "FEATURE",
 }
 
+/**
+ * Catalog record structure as returned by the OGC API Records `/items` endpoint
+ * and consumed by the layer search. Only the fields we map to a search result
+ * are declared here.
+ */
 export interface CatalogRecord {
   id: string;
   properties?: {
     title?: string;
     description?: string;
-    keywords?: string[];
   };
 }
 
@@ -161,64 +160,64 @@ export async function searchLocation(
 }
 
 /**
- * Search for layers in the local OGC catalog
+ * Search for layers in the OGC records catalog (PyGeoAPI).
+ *
+ * The matching is performed server-side through the OGC API Records `q`
+ * full-text parameter, so this issues a network request rather than filtering a
+ * pre-loaded catalog. The catalog `/items` endpoint is expected to return a
+ * GeoJSON FeatureCollection.
  *
  * @param queryString - Search query text
+ * @param catalogUrl - The catalog `/items` endpoint (without query parameters)
  * @param lang - Language code (de, fr, etc.)
- * @param catalogRecords - Array of OGC catalog records
+ * @param abortSignal - Optional abort signal for cancellation
  * @param limit - Maximum number of results (default: 10)
- * @returns the layer search results
+ * @returns Promise with the layer search results
  */
-export function searchLayers(
+export async function searchLayers(
   queryString: string,
-  catalogRecords: CatalogRecord[],
+  catalogUrl: string,
+  lang: string,
+  abortSignal?: AbortSignal,
   limit: number = 10,
-): LayerSearchResult[] {
-  const query = queryString.toLowerCase().trim();
+): Promise<LayerSearchResult[]> {
+  const trimmedQuery = queryString.trim();
 
-  if (query.length < 2) {
+  if (trimmedQuery.length < 2) {
     return [];
   }
 
+  const url = new URL(catalogUrl);
+  url.searchParams.set("f", "json");
+  url.searchParams.set("q", trimmedQuery);
+  url.searchParams.set("language", lang);
+  url.searchParams.set("limit", String(limit));
+
   try {
-    const matches = catalogRecords
-      .filter(
-        (
-          record,
-        ): record is CatalogRecord & {
-          properties: NonNullable<CatalogRecord["properties"]>;
-        } => {
-          if (!record.properties) {
-            return false;
-          }
+    const response = await fetch(url.toString(), { signal: abortSignal });
 
-          const title = record.properties.title || "";
-          const description = record.properties.description || "";
-          const keywords = record.properties.keywords || [];
+    if (!response.ok) {
+      throw new Error(`Layer search API error: ${response.status}`);
+    }
 
-          return (
-            record.id.toLowerCase().includes(query) ||
-            title.toLowerCase().includes(query) ||
-            description.toLowerCase().includes(query) ||
-            keywords.some((k: string) => k.toLowerCase().includes(query))
-          );
-        },
-      )
-      .slice(0, limit)
-      .map((record) => {
-        const title = record.properties.title || record.id;
-        return {
-          resultType: "LAYER" as const,
-          id: record.id,
-          layerId: record.id,
-          title,
-          sanitizedTitle: sanitizeTitle(title),
-          description: record.properties.description || "",
-        };
-      });
+    const data: { features?: CatalogRecord[] } = await response.json();
 
-    return matches;
+    return (data.features ?? []).map((record) => {
+      const title = record.properties?.title || record.id;
+      return {
+        resultType: "LAYER" as const,
+        id: record.id,
+        layerId: record.id,
+        title,
+        sanitizedTitle: sanitizeTitle(title),
+        description: record.properties?.description || "",
+      };
+    });
   } catch (error) {
+    // Re-throw abort errors so they can be handled separately
+    if (error instanceof Error && error.name === "AbortError") {
+      throw error;
+    }
     log.error({
       title: "searchLayers",
       titleColor: LogPreDefinedColor.Red,
