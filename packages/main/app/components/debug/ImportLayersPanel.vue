@@ -128,7 +128,9 @@ function addLayer(layer: string) {
 
 <template>
   <div>
-    <div class="absolute z-10 flex w-full items-center justify-between gap-2 px-2">
+    <div
+      class="absolute z-10 flex w-full items-center justify-between gap-2 px-2"
+    >
       <div class="relative w-full">
         <input
           v-model="importUrl"
