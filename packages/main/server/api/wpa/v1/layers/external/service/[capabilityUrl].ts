@@ -1,5 +1,7 @@
 import { appendResponseHeader, createError, getRouterParam } from "h3";
 
+import { decodeCapabilityUrl } from "../../../../../../utils/externalLayerUrl";
+
 export default defineEventHandler((event) => {
   const capabilityUrlParam = getRouterParam(event, "capabilityUrl");
 
@@ -11,11 +13,7 @@ export default defineEventHandler((event) => {
     });
   }
 
-  // base64url-encoded by the client so the URL survives as a single path
-  // segment (see app/utils/externalLayerUrl.ts).
-  const capabilityUrl = Buffer.from(capabilityUrlParam, "base64url").toString(
-    "utf-8",
-  );
+  const capabilityUrl = decodeCapabilityUrl(capabilityUrlParam);
 
   appendResponseHeader(event, "Content-Type", "application/json");
   appendResponseHeader(event, "Cache-Control", `max-age=${60 * 60}`);

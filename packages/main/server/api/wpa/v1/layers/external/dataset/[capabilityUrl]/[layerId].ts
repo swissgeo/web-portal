@@ -6,6 +6,8 @@ import {
   getRouterParam,
 } from "h3";
 
+import { decodeCapabilityUrl } from "../../../../../../../utils/externalLayerUrl";
+
 type CapabilitiesType = "WMS" | "WMTS";
 
 enum TagNames {
@@ -104,11 +106,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // base64url-encoded by the client so the URL survives as a single path
-  // segment (see app/utils/externalLayerUrl.ts).
-  const capabilityUrl = Buffer.from(capabilityUrlParam, "base64url").toString(
-    "utf-8",
-  );
+  const capabilityUrl = decodeCapabilityUrl(capabilityUrlParam);
   const selfUrl = `/api/wpa/v1/layers/external/dataset/${capabilityUrlParam}/${layerId}`;
   const distributionsUrl = `/api/wpa/v1/layers/external/${capabilityUrlParam}/${layerId}`;
 
