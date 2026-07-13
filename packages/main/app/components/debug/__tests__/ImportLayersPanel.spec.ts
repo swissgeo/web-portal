@@ -3,6 +3,7 @@ import type { Dataset } from "@swissgeo/ogc";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { shallowMount } from "@vue/test-utils";
 import ImportLayersPanel from "~/components/debug/ImportLayersPanel.vue";
+import { encodeCapabilityUrl } from "~/utils/externalLayerUrl";
 import { describe, expect, it, vi } from "vitest";
 
 const wmtsCapabilities = `<?xml version="1.0" encoding="UTF-8"?>
@@ -73,7 +74,7 @@ describe("ImportLayersPanel.vue", () => {
     const dataset = makeServerLayerSpy.mock.calls[0]![0];
     const links = dataset.links ?? [];
 
-    const expectedEncoded = encodeURIComponent(vm.importUrl);
+    const expectedEncoded = encodeCapabilityUrl(vm.importUrl);
     const selfLink = links.find((l) => l.rel === "self");
     expect(selfLink?.href).toBe(
       `/api/wpa/v1/layers/external/dataset/${expectedEncoded}/layer-a`,

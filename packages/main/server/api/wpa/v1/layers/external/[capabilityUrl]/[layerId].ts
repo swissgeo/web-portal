@@ -1,5 +1,7 @@
 import { appendResponseHeader, createError, getRouterParam } from "h3";
 
+import { decodeCapabilityUrl } from "../../../../../../utils/externalLayerUrl";
+
 export default defineEventHandler((event) => {
   const capabilityUrlParam = getRouterParam(event, "capabilityUrl");
   const layerId = getRouterParam(event, "layerId");
@@ -12,7 +14,7 @@ export default defineEventHandler((event) => {
     });
   }
 
-  const capabilityUrl = decodeURIComponent(capabilityUrlParam);
+  const capabilityUrl = decodeCapabilityUrl(capabilityUrlParam);
   const serviceUrl = `/api/wpa/v1/layers/external/service/${capabilityUrlParam}`;
 
   // Determine protocol based on the capability URL
@@ -24,23 +26,24 @@ export default defineEventHandler((event) => {
   appendResponseHeader(event, "Content-Type", "application/json");
   appendResponseHeader(event, "Cache-Control", `max-age=${60 * 60}`);
   return {
-    id: layerId,
-    type: "Collection",
-    itemType: "Distribution",
-    title: layerId,
-    records: [
+    type: "FeatureCollection",
+    links: [],
+    features: [
       {
         id: `${layerId}`,
         links: [
           {
             href: serviceUrl,
-            rel: "service",
+            // the pipeline resolves the service via rel "dataservice"
+            // (getDataServiceLinks), not "service"
+            rel: "dataservice",
           },
         ],
         properties: {
+          title: layerId,
+          type: "Distribution",
           protocol,
           externalIds: [layerId],
-          type: "Distribution",
         },
       },
     ],

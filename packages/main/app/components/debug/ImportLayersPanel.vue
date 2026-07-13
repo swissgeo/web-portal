@@ -8,14 +8,48 @@ import WMTSCapabilities from "ol/format/WMTSCapabilities";
 
 const layerStore = useLayerStore();
 
-// Example URLs:
-// WMTS: https://wmts.geo.bs.ch/1.0.0/WMTSCapabilities.xml
-// WMS: https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0
 const importUrl = ref("https://wmts.geo.bs.ch/1.0.0/WMTSCapabilities.xml");
+
+// Common capability URLs, so they don't have to be typed every time.
+const presetUrls = [
+  {
+    label: "geo.admin — WMTS (EPSG:2056)",
+    url: "https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml",
+  },
+  {
+    label: "geo.admin — WMTS (EPSG:3857)",
+    url: "https://wmts.geo.admin.ch/EPSG/3857/1.0.0/WMTSCapabilities.xml",
+  },
+  {
+    label: "geo.admin — WMS",
+    url: "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0",
+  },
+  {
+    label: "geo.bs.ch — WMTS",
+    url: "https://wmts.geo.bs.ch/1.0.0/WMTSCapabilities.xml",
+  },
+];
+
+const showPresets = ref(false);
+
+function applyPreset(url: string) {
+  importUrl.value = url;
+  showPresets.value = false;
+  void loadCapabilities();
+}
 const layers: Ref<string[]> = ref([]);
 const currentLayerType: Ref<string | null> = ref(null);
 
-const encodedUrl = computed(() => encodeURIComponent(importUrl.value));
+const layerFilter = ref("");
+const filteredLayers = computed(() => {
+  const query = layerFilter.value.trim().toLowerCase();
+  if (!query) {
+    return layers.value;
+  }
+  return layers.value.filter((layer) => layer.toLowerCase().includes(query));
+});
+
+const encodedUrl = computed(() => encodeCapabilityUrl(importUrl.value));
 
 async function loadCapabilities() {
   if (importUrl.value.toLowerCase().includes("wmts")) {
@@ -94,25 +128,63 @@ function addLayer(layer: string) {
 
 <template>
   <div>
-    <div class="absolute flex w-full items-center justify-between gap-4 px-2">
-      <input
-        v-model="importUrl"
-        class="w-full border border-gray-200 px-2 py-1"
-        placeholder="Capability URL"
-        @keydown.enter="loadCapabilities"
-      />
+    <div
+      class="absolute z-10 flex w-full items-center justify-between gap-2 px-2"
+    >
+      <div class="relative w-full">
+        <input
+          v-model="importUrl"
+          class="w-full border border-gray-200 py-1 pr-7 pl-2"
+          placeholder="Capability URL (type or pick a preset)"
+          @keydown.enter="loadCapabilities"
+        />
+        <button
+          type="button"
+          class="absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer px-1 text-gray-500"
+          title="Preset capability URLs"
+          @click="showPresets = !showPresets"
+        >
+          ▾
+        </button>
+        <ul
+          v-if="showPresets"
+          class="absolute top-full right-0 left-0 z-20 max-h-60 overflow-auto border border-gray-200 bg-white shadow"
+        >
+          <li v-for="preset in presetUrls" :key="preset.url">
+            <button
+              type="button"
+              class="block w-full cursor-pointer px-2 py-1 text-left hover:bg-cyan-200"
+              @click="applyPreset(preset.url)"
+            >
+              {{ preset.label }}
+            </button>
+          </li>
+        </ul>
+      </div>
       <IconButton @click="loadCapabilities" iconName="Send"></IconButton>
       <IconButton @click="$emit('close')" iconName="X"> </IconButton>
     </div>
     <div class="mt-12 h-[300px] overflow-scroll pb-18">
+      <input
+        v-if="layers.length"
+        v-model="layerFilter"
+        class="mb-2 w-full border border-gray-200 px-2 py-1"
+        :placeholder="`Filter ${layers.length} layers…`"
+      />
       <ul>
-        <li v-for="layer in layers" :key="layer" class="py-2">
+        <li v-for="layer in filteredLayers" :key="layer" class="py-2">
           <button
             class="cursor-pointer hover:bg-cyan-200"
             @click="addLayer(layer)"
           >
             {{ layer }}
           </button>
+        </li>
+        <li
+          v-if="layers.length && !filteredLayers.length"
+          class="py-2 text-gray-400"
+        >
+          No layers match “{{ layerFilter }}”
         </li>
       </ul>
     </div>
