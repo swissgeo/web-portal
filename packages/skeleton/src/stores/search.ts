@@ -83,12 +83,7 @@ export const useSearchStore = defineStore("search", () => {
       // through the OGC API Records catalog, alongside locations and features.
       const searchPromises: Promise<SearchResult[]>[] = [
         searchLocation(newQuery, lang, abortController.signal),
-        searchLayers(
-          newQuery,
-          catalogItemsUrl(),
-          lang,
-          abortController.signal,
-        ),
+        searchLayers(newQuery, catalogItemsUrl(), lang, abortController.signal),
       ];
 
       // Add feature search for each searchable layer
