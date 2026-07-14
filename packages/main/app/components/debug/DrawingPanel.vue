@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { useDrawing } from "@swissgeo/drawing";
+import type { DropdownMenuItem } from "@nuxt/ui";
+import type Feature from "ol/Feature";
+import type { Geometry } from "ol/geom";
+
+import { useDrawing, getFeatureTitle } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
 import { IconButton } from "@swissgeo/skeleton";
 
@@ -23,6 +27,8 @@ const {
   mountDrawingLayer,
   clearDrawingLayer,
   isDrawingLayerInLayerStore,
+  serializeFocusedFeatureAsBlob,
+  serializeAllFeaturesAsBlob,
 } = useDrawing();
 
 const emit = defineEmits<{
@@ -31,6 +37,108 @@ const emit = defineEmits<{
 
 function handleClose() {
   emit("close");
+}
+
+/**
+ * Dropdown elements for exporting the currently focused feature in various formats.
+ */
+const exportFocusedFeatureItems = ref<DropdownMenuItem[]>([
+  {
+    label: "GeoJSON",
+    onClick: () => exportFocusedFeature("geojson"),
+  },
+  {
+    label: "GPX Track",
+    onClick: () => exportFocusedFeature("gpx-track"),
+  },
+  {
+    label: "GPX Route",
+    onClick: () => exportFocusedFeature("gpx-route"),
+  },
+  {
+    label: "KML",
+    onClick: () => exportFocusedFeature("kml"),
+  },
+  {
+    label: "KMZ",
+    onClick: () => exportFocusedFeature("kmz"),
+  },
+]);
+
+/**
+ * Drops down elements for exporting all features in the drawing layer in various formats.
+ */
+const exportAllFeaturesItems = ref<DropdownMenuItem[]>([
+  {
+    label: "GeoJSON",
+    onClick: () => exportAllFeatures("geojson"),
+  },
+  {
+    label: "GPX Track",
+    onClick: () => exportAllFeatures("gpx-track"),
+  },
+  {
+    label: "GPX Route",
+    onClick: () => exportAllFeatures("gpx-route"),
+  },
+  {
+    label: "KML",
+    onClick: () => exportAllFeatures("kml"),
+  },
+  {
+    label: "KMZ",
+    onClick: () => exportAllFeatures("kmz"),
+  },
+]);
+
+/**
+ * Triggers a download of the currently focused feature in the specified format.
+ */
+function exportFocusedFeature(
+  format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
+) {
+  if (!focusedFeature.value) {
+    return;
+  }
+
+  const blob = serializeFocusedFeatureAsBlob(format);
+  if (blob) {
+    const featureTitle =
+      getFeatureTitle(focusedFeature.value as Feature<Geometry>) || "feature";
+    // make a filename that is safe for the filesystem by removing all characters that are not
+    // letters, numbers, underscores, or hyphens, and replacing spaces with underscores
+    const fileBasename = featureTitle
+      .replace(/\s+/g, "_")
+      .replace(/[^\p{L}\p{N}_-]/gu, "");
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${fileBasename}.${format.split("-")[0]}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+}
+
+/**
+ * Triggers a download of all features in the drawing layer in the specified format.
+ */
+function exportAllFeatures(
+  format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
+) {
+  const blob = serializeAllFeaturesAsBlob(format);
+  if (blob) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `scene.${format.split("-")[0]}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
 }
 
 /**
@@ -90,6 +198,16 @@ onUnmounted(() => {
           v-if="focusedFeature && focusMode === 'select'"
         />
         <UButton
+          v-if="focusMode === 'none' && numberOfFeatures > 0"
+          color="neutral"
+          variant="solid"
+          data-testid="select-feature-tool"
+          @click="enableSelectInteraction"
+        >
+          Select feature
+        </UButton>
+
+        <UButton
           v-if="focusMode === 'none'"
           color="info"
           variant="solid"
@@ -124,16 +242,6 @@ onUnmounted(() => {
           @click="enableDrawInteraction('Point')"
         >
           Create point
-        </UButton>
-
-        <UButton
-          v-if="focusMode === 'none' && numberOfFeatures > 0"
-          color="info"
-          variant="solid"
-          data-testid="select-feature-tool"
-          @click="enableSelectInteraction"
-        >
-          Select feature
         </UButton>
 
         <UButton
@@ -207,6 +315,38 @@ onUnmounted(() => {
         >
           Clear drawing layer
         </UButton>
+
+        <UDropdownMenu
+          v-if="focusedFeature"
+          arrow
+          :items="exportFocusedFeatureItems"
+          :ui="{
+            content: 'w-48',
+          }"
+        >
+          <UButton
+            label="Export feature"
+            icon="i-lucide-save"
+            color="info"
+            variant="solid"
+          />
+        </UDropdownMenu>
+
+        <UDropdownMenu
+          v-if="numberOfFeatures > 0"
+          arrow
+          :items="exportAllFeaturesItems"
+          :ui="{
+            content: 'w-48',
+          }"
+        >
+          <UButton
+            label="Export all features"
+            icon="i-lucide-save"
+            color="info"
+            variant="solid"
+          />
+        </UDropdownMenu>
       </div>
     </div>
   </div>

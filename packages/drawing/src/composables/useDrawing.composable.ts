@@ -27,6 +27,13 @@ import {
   setFeaturePointRadiusStyleProperty,
   setFeaturePointColorStyleProperty,
 } from "../utils/drawingStyle";
+import {
+  olFeatureToGeoJSON,
+  olFeatureToKML,
+  olFeatureToGPX,
+  olFeatureToKMZ,
+  exportFormatToMimeType,
+} from "../utils/exportUtils";
 
 export function useDrawing() {
   const drawingStore = useDrawingStore();
@@ -218,6 +225,92 @@ export function useDrawing() {
     { immediate: true },
   );
 
+  /**
+   * Get the currently focused feature as a string in the specified format.
+   */
+  function serializeFocusedFeature(
+    format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
+  ): string | ArrayBuffer | null {
+    if (!focusedFeature.value) {
+      return null;
+    }
+
+    switch (format) {
+      case "gpx-track":
+        return olFeatureToGPX(focusedFeature.value, "track");
+      case "gpx-route":
+        return olFeatureToGPX(focusedFeature.value, "route");
+      case "kml":
+        return olFeatureToKML(focusedFeature.value);
+      case "kmz":
+        return olFeatureToKMZ(focusedFeature.value);
+      case "geojson":
+      default:
+        return olFeatureToGeoJSON(focusedFeature.value);
+    }
+  }
+
+  /**
+   * Get the currently focused feature as a Blob in the specified format.
+   */
+  function serializeFocusedFeatureAsBlob(
+    format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
+  ): Blob | null {
+    const serializedFeature = serializeFocusedFeature(format);
+    if (!serializedFeature) {
+      return null;
+    }
+
+    const blob = new Blob([serializedFeature], {
+      type: exportFormatToMimeType[format],
+    });
+    return blob;
+  }
+
+  /**
+   * Get all features in the drawing layer as a string in the specified format.
+   */
+  function serializeAllFeatures(
+    format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
+  ): string | ArrayBuffer | null {
+    if (!drawingStore.drawingVectorSource) {
+      return null;
+    }
+
+    const features = drawingStore.drawingVectorSource.getFeatures();
+
+    switch (format) {
+      case "gpx-track":
+        return olFeatureToGPX(features, "track");
+      case "gpx-route":
+        return olFeatureToGPX(features, "route");
+      case "kml":
+        return olFeatureToKML(features);
+      case "kmz":
+        return olFeatureToKMZ(features);
+      case "geojson":
+      default:
+        return olFeatureToGeoJSON(features);
+    }
+  }
+
+  /**
+   * Export all features in the drawing layer as a Blob in the specified format.
+   */
+  function serializeAllFeaturesAsBlob(
+    format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
+  ): Blob | null {
+    const serializedFeatures = serializeAllFeatures(format);
+    if (!serializedFeatures) {
+      return null;
+    }
+
+    const blob = new Blob([serializedFeatures], {
+      type: exportFormatToMimeType[format],
+    });
+    return blob;
+  }
+
   return {
     disableAllInteractions: drawingStore.disableAllInteractions,
     enableSelectInteraction: drawingStore.enableSelectInteraction,
@@ -244,5 +337,9 @@ export function useDrawing() {
     title,
     description,
     DRAWING_LAYER_UUID: drawingStore.DRAWING_LAYER_UUID,
+    serializeFocusedFeature,
+    serializeFocusedFeatureAsBlob,
+    serializeAllFeatures,
+    serializeAllFeaturesAsBlob,
   };
 }
