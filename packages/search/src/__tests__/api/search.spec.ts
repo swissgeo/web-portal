@@ -215,7 +215,7 @@ describe("searchLocation function", () => {
 
 describe("searchLayers function", () => {
   const catalogUrl =
-    "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-catalog/items";
+    "http://mock-oar.test/api/oar/collections/swissgeo-catalog/items";
 
   beforeEach(() => {
     globalThis.fetch = vi.fn();
