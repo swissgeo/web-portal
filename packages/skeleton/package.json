@@ -29,7 +29,8 @@
     "@swissgeo/layers": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@swissgeo/search": "workspace:*",
-    "@swissgeo/shared": "workspace:*"
+    "@swissgeo/shared": "workspace:*",
+    "ufo": "catalog:"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
