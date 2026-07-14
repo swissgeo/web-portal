@@ -1,14 +1,16 @@
-import type { DatasetLayer, Dimension } from "@swissgeo/layers";
+import type { DatasetLayer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
+import type { Dimension } from "@swissgeo/timeslider";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useLayerStore } from "@swissgeo/layers";
+import { useDimensionsStore } from "@swissgeo/timeslider";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import SourceToMapDataConverter from "../SourceToMapDataConverter.vue";
+import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
 
 const mockMapLayers: MapLayer[] = [];
 
@@ -61,15 +63,12 @@ const FileConverterStub = defineComponent({
   emits: ["update"],
   template: "<div />",
 });
-function makeSourceLayer(uuid: string, currentValue?: string) {
+function makeSourceLayer(uuid: string) {
   return {
     uuid,
     humanId: uuid,
     type: "dataset" as const,
     isLoading: false,
-    ...(currentValue !== undefined
-      ? { dimensions: { time: { availableValues: [], currentValue } } }
-      : {}),
   };
 }
 
@@ -112,13 +111,17 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
 
   it("resolves the stored year (2024) onto the incoming availableValues, ignoring the incoming currentValue (20230101)", async () => {
     const layerStore = useLayerStore();
-    layerStore.addLayer(makeSourceLayer("test-uuid", "2024-01-01T00:00:00Z"));
+    const dimensionsStore = useDimensionsStore();
+    layerStore.addLayer(makeSourceLayer("test-uuid"));
+    dimensionsStore.setDimension("test-uuid", "time", {
+      currentValue: "2024-01-01T00:00:00Z",
+    });
 
     const wrapper = mount(SourceToMapDataConverter, {
       shallow: true,
       props: {
         sourceBgLayer: null,
-        sourceData: [makeSourceLayer("test-uuid", "2024-01-01T00:00:00Z")],
+        sourceData: [makeSourceLayer("test-uuid")],
       },
     });
 
@@ -132,20 +135,24 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
       currentValue: "20230101",
     });
 
-    expect(
-      layerStore.getLayer("test-uuid")?.dimensions?.time?.currentValue,
-    ).toBe("20240101");
+    expect(dimensionsStore.getDimensions("test-uuid")?.time?.currentValue).toBe(
+      "20240101",
+    );
   });
 
   it("uses the incoming currentValue when the existing year is not found in the new availableValues", async () => {
     const layerStore = useLayerStore();
-    layerStore.addLayer(makeSourceLayer("test-uuid", "1999-01-01T00:00:00Z"));
+    const dimensionsStore = useDimensionsStore();
+    layerStore.addLayer(makeSourceLayer("test-uuid"));
+    dimensionsStore.setDimension("test-uuid", "time", {
+      currentValue: "1999-01-01T00:00:00Z",
+    });
 
     const wrapper = mount(SourceToMapDataConverter, {
       shallow: true,
       props: {
         sourceBgLayer: null,
-        sourceData: [makeSourceLayer("test-uuid", "1999-01-01T00:00:00Z")],
+        sourceData: [makeSourceLayer("test-uuid")],
       },
     });
 
@@ -154,9 +161,9 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
       currentValue: "20230101",
     });
 
-    expect(
-      layerStore.getLayer("test-uuid")?.dimensions?.time?.currentValue,
-    ).toBe("20230101");
+    expect(dimensionsStore.getDimensions("test-uuid")?.time?.currentValue).toBe(
+      "20230101",
+    );
   });
 
   it("uses the incoming currentValue as-is when there is no existing currentValue", async () => {
@@ -177,7 +184,7 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
     });
 
     expect(
-      layerStore.getLayer("test-uuid")?.dimensions?.time?.currentValue,
+      useDimensionsStore().getDimensions("test-uuid")?.time?.currentValue,
     ).toBe("20230101");
   });
 });

@@ -9,10 +9,12 @@ import { useDrawing } from "@swissgeo/drawing";
  * logic behind the available buttons, it should become a computed value instead.
  */
 import { useLayerStore } from "@swissgeo/layers";
+import { useDimensionsStore } from "@swissgeo/timeslider";
 import { displayModeKey } from "~/types/injectionKeys";
 import { inject } from "vue";
 
 import CompareSliderButton from "@/components/toolbox/toolboxButtons/CompareSliderButton.vue";
+import CompassButton from "@/components/toolbox/toolboxButtons/CompassButton.vue";
 import FullScreenButton from "@/components/toolbox/toolboxButtons/FullScreenButton.vue";
 import GeolocButton from "@/components/toolbox/toolboxButtons/GeolocButton.vue";
 import RecenterButton from "@/components/toolbox/toolboxButtons/RecenterButton.vue";
@@ -21,11 +23,10 @@ import Toggle3dButton from "@/components/toolbox/toolboxButtons/Toggle3dButton.v
 import ZoomButtons from "@/components/toolbox/toolboxButtons/ZoomButtons.vue";
 import { useGeolocationStore } from "@/stores/geolocation";
 
-import CompassButton from "./toolboxButtons/CompassButton.vue";
-
 const { focusMode } = useDrawing();
 
 const layerStore = useLayerStore();
+const dimensionsStore = useDimensionsStore();
 // const drawingStore = useDrawingStore();
 const mapViewStore = useMapViewStore();
 const geolocationStore = useGeolocationStore();
@@ -42,7 +43,7 @@ const showZoomButtons = ref(true);
 const show3dButton = ref(true);
 const showTimeSliderButton = computed(() => {
   return layerStore.layers.some(
-    (layer) => layer.dimensions && "time" in layer.dimensions,
+    (layer) => !!dimensionsStore.getDimensions(layer.uuid)?.time,
   );
 });
 

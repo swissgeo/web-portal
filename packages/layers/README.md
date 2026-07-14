@@ -22,7 +22,6 @@ What's basically needed for a layer is the `data` and a `type` describing what i
 | opacity    | The layer's opacity to be displayed on the map                                                                                      |
 | info       | Some information such as the title, attribution etc. of the layer. Used i.e. when displaying the list of layers                     |
 | isLoading  | currently unused                                                                                                                    |
-| dimensions | (for WMS and WMTS only) Dimensions of the layer and the currently selected value                                                    |
 | layerUrl   | The URL of the layer data. For dataset layers it's the URL to the dataset, for file layers it could be where the file resides       |
 
 ## Store

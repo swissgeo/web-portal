@@ -1,13 +1,16 @@
-import type { Layer } from "@swissgeo/layers";
+import type { DimensionRecord } from "@/types";
 
 import {
   ALL_YEARS_TIMESTAMP,
   CURRENT_YEAR_TIMESTAMP,
   getYearFromGeoadminValue,
-} from "./timeUtils";
+} from "@/timeUtils";
 
 // use the most narrow type needed for this to work
-export type LayerWithTime = Pick<Layer, "dimensions" | "uuid">;
+export type LayerWithTime = {
+  uuid: string;
+  dimensions: DimensionRecord;
+};
 
 /**
  * Create two sets with values that occur in the layers with timestamps

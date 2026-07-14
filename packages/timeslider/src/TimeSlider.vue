@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Dimension } from "@swissgeo/layers";
-
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { IconButton } from "@swissgeo/skeleton";
 import { useDebounceFn, useResizeObserver } from "@vueuse/core";
@@ -13,11 +11,12 @@ import {
   watch,
 } from "vue";
 
-import type { LayerWithTime } from "./timeSliderUtils";
+import type { LayerWithTime } from "@/timeSliderUtils";
+import type { Dimension } from "@/types";
 
-import TimeSliderBar from "./TimeSliderBar.vue";
-import { getYearsWithData } from "./timeSliderUtils";
-import { convertYearToTimestamp, getYearFromGeoadminValue } from "./timeUtils";
+import TimeSliderBar from "@/TimeSliderBar.vue";
+import { getYearsWithData } from "@/timeSliderUtils";
+import { convertYearToTimestamp, getYearFromGeoadminValue } from "@/timeUtils";
 
 const { layers } = defineProps<{
   layers: LayerWithTime[];

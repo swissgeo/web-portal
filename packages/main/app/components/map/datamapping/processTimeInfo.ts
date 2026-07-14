@@ -1,4 +1,4 @@
-import type { Dimension } from "@swissgeo/layers";
+import type { Dimension } from "@swissgeo/timeslider";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import {
@@ -7,7 +7,7 @@ import {
 } from "@swissgeo/timeslider";
 
 /**
- * Process the dimensions and turn the into a time info that is being passed to the layer store
+ * Process the dimensions and turn the into a time info that is being passed to the dimensions store
  */
 export function processTimeInfo(timeInfo: Ref<TimeInfo>) {
   const { defaultTime, availableTimes } = timeInfo.value;
@@ -33,7 +33,7 @@ export function processTimeInfo(timeInfo: Ref<TimeInfo>) {
     }
   }
   log.debug({
-    title: "WmtsLayer",
+    title: "processTimeInfo",
     titleColor: LogPreDefinedColor.Yellow,
     messages: [
       "Sending update of dimensions from the capabilities",

@@ -2,7 +2,7 @@ import log from "@swissgeo/log";
 import { setActivePinia, createPinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useDimensionsStore } from "../dimensions";
+import { useDimensionsStore } from "@/stores/dimensions";
 
 describe("useDimensionsStore", () => {
   beforeEach(() => {

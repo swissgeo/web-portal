@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { Dimension } from "@swissgeo/layers";
 import type { Distribution, Service } from "@swissgeo/ogc";
+import type { Dimension } from "@swissgeo/timeslider";
 
-import type { WMSLayerData } from "./useOgcWmsData";
+import type { WMSLayerData } from "@/components/map/datamapping/useOgcWmsData";
 
-import { processTimeInfo } from "./processTimeInfo";
-import { useOgcWmsData } from "./useOgcWmsData";
+import { processTimeInfo } from "@/components/map/datamapping/processTimeInfo";
+import { useOgcWmsData } from "@/components/map/datamapping/useOgcWmsData";
 
 // not destructuring these to keep the reactivity
 const props = defineProps<{

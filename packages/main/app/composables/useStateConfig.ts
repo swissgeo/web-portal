@@ -1,12 +1,14 @@
-import type { Dimension, DimensionId, Layer } from "@swissgeo/layers";
+import type { Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 import type { LayerState, AppState } from "@swissgeo/statesharing";
+import type { Dimension, DimensionId } from "@swissgeo/timeslider";
 
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
+import { useDimensionsStore } from "@swissgeo/timeslider";
 import { AVAILABLE_BACKGROUNDS } from "~/components/map/constants";
 
 export type AppStatePayload = {
@@ -33,6 +35,7 @@ export function layersToStateConfig(layers: MapLayer[]): LayerState[] {
 // exported only for testing purpose. Do not use this outside this file
 export function layerToStateConfig(layer: MapLayer): LayerState {
   const layerStore = useLayerStore();
+  const dimensionsStore = useDimensionsStore();
   let sourceData: Layer | undefined | null = layerStore.getLayer(layer.uuid);
 
   if (!sourceData) {
@@ -56,12 +59,13 @@ export function layerToStateConfig(layer: MapLayer): LayerState {
     opacity: layer.opacity,
   };
 
-  if (sourceData.dimensions) {
+  const dimensions = dimensionsStore.getDimensions(sourceData.uuid);
+  if (dimensions) {
     config.dimensions = {};
-    for (const [key, dim] of Object.entries(sourceData.dimensions)) {
-      if (dim) {
+    for (const [key, dimension] of Object.entries(dimensions)) {
+      if (dimension) {
         config.dimensions[key as DimensionId] = {
-          currentValue: dim.currentValue,
+          currentValue: dimension.currentValue,
         };
       }
     }
@@ -73,24 +77,24 @@ export function layerToStateConfig(layer: MapLayer): LayerState {
 async function stateConfigToLayer(
   config: LayerState | null,
 ): Promise<Layer | null> {
-  const layerOptions: Partial<Layer> = {};
   if (!config) {
     return null;
-  }
-  if (config.dimensions) {
-    const dims: Partial<Record<DimensionId, Dimension>> = {};
-    if (config.dimensions.time) {
-      dims.time = {
-        currentValue: config.dimensions.time.currentValue ?? null,
-        availableValues: [],
-      };
-    }
-    layerOptions.dimensions = dims;
   }
 
   if (config.layerUrl) {
     const data = await $fetch<Dataset>(config.layerUrl);
-    return makeServerLayer(data, layerOptions);
+    const layer = makeServerLayer(data);
+
+    if (config.dimensions?.time) {
+      const dimensions: Partial<Record<DimensionId, Dimension>> = {};
+      dimensions.time = {
+        currentValue: config.dimensions.time.currentValue ?? null,
+        availableValues: [],
+      };
+      useDimensionsStore().setLayerDimensions(layer.uuid, dimensions);
+    }
+
+    return layer;
   }
   return null;
 }
@@ -98,6 +102,7 @@ async function stateConfigToLayer(
 export function useStateConfig() {
   const positionStore = usePositionStore();
   const layerStore = useLayerStore();
+  const dimensionsStore = useDimensionsStore();
   const mapviewStore = useMapViewStore();
 
   const exportState = computed((): AppStatePayload => {
@@ -137,6 +142,7 @@ export function useStateConfig() {
     }
 
     for (const layer of [...layerStore.layers]) {
+      dimensionsStore.clearLayerDimensions(layer.uuid);
       layerStore.removeLayer(layer.uuid);
     }
     for (const layer of [...mapviewStore.mapLayers]) {

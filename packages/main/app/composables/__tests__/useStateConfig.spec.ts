@@ -8,6 +8,7 @@ import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
 import { mount } from "@vue/test-utils";
+import { useDimensionsStore } from "@swissgeo/timeslider";
 import {
   isBackgroundLayer,
   layersToStateConfig,
@@ -97,7 +98,7 @@ for (let index = 0; index < 4; index++) {
   });
 }
 
-describe("useStateConfig > exportState time dimension", () => {
+describe("useStateConfig manages to export time dimension from State", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     mockMapLayers.length = 0;
@@ -105,6 +106,7 @@ describe("useStateConfig > exportState time dimension", () => {
 
   function setupLayerWithTimeValue(currentValue: string | null) {
     const layerStore = useLayerStore();
+    const dimensionsStore = useDimensionsStore();
     const uuid = "test-layer";
 
     layerStore.addLayer({
@@ -113,9 +115,10 @@ describe("useStateConfig > exportState time dimension", () => {
       type: "dataset",
       isLoading: false,
       layerUrl: "https://example.com/layer",
-      dimensions: {
-        time: { availableValues: [], currentValue },
-      },
+    });
+    dimensionsStore.setDimension(uuid, "time", {
+      availableValues: [],
+      currentValue,
     });
     mockMapLayers.push(makeMapLayer(uuid));
   }
@@ -139,7 +142,7 @@ describe("useStateConfig > exportState time dimension", () => {
   );
 });
 
-describe("useStateConfig - Helper functions", () => {
+describe("useStateConfig - Helper functions are functional", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     mockMapLayers.length = 0;
@@ -261,7 +264,7 @@ describe("useStateConfig - Helper functions", () => {
   });
 });
 
-describe("useStateConfig > importState", () => {
+describe("useStateConfig manages to import a State with importState", () => {
   const mockedMakeServerLayer = vi.mocked(makeServerLayer);
   const mockedLayer: Layer = {
     uuid: "uuid-1",
