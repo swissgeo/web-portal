@@ -203,5 +203,37 @@
   },
   "embed": {
     "viewOn": "Voir sur {platform}"
+  },
+  "print": {
+    "warningOutsideSwitzerland": "Emprise d'impression hors de Suisse",
+    "warningOutsideSwitzerlandTitle": "Hors des limites de la Suisse",
+    "warningZoomOutOfSync": "Le niveau de zoom à l'écran ne correspond pas au niveau de zoom verrouillé pour l'impression.",
+    "warningZoomOutOfSyncTitle": "Le niveau de zoom n'est pas au niveau de zoom verrouillé",
+    "statusProcessing": "en cours",
+    "statusQueued": "en attente",
+    "statusError": "erreur",
+    "statusFailed": "échoué",
+    "statusReady": "prêt",
+    "clearAll": "Tout effacer",
+    "noPrintJobsYet": "Aucun travail d'impression pour le moment.",
+    "created": "Créé",
+    "download": "Télécharger",
+    "zoomLevel": "Niveau de zoom",
+    "zoomLevelForPrint": "Niveau de zoom pour l'impression",
+    "warningOutsideViewportLabel": "L'emprise est-elle hors du viewport",
+    "printScale": "Échelle d'impression",
+    "enableStrictZoomStepsLabel": "Niveau de zoom ajusté aux arrondis",
+    "lockCenterToViewLabel": "Verrouiller le centre sur la vue actuelle",
+    "lockZoomToViewLabel": "Verrouiller le zoom sur la vue actuelle",
+    "printSizeLabel": "Format d'impression",
+    "printResolutionLabel": "Résolution d'impression",
+    "printOrientationLabel": "Orientation d'impression",
+    "zoomToLockedZoomLevel": "Zoom au niveau de zoom verrouillé",
+    "sendPrintRequest": "Envoyer la demande d'impression",
+    "openPrintJobs": "Ouvrir les requêtes d'impression",
+    "printJobsWindowTitle": "Requêtes d'impression",
+    "warningPrintExtentBeyondViewport": "Vous pouvez verrouiller le centre et le niveau de zoom pour empêcher l'emprise d'impression de sortir du viewport lors des interactions avec la carte.",
+    "orientationPortrait": "portrait",
+    "orientationLandscape": "paysage"
   }
 }

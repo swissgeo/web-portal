@@ -21,6 +21,21 @@ catalogs:
     '@hey-api/openapi-ts':
       specifier: ^0.99.0
       version: 0.99.0
+    '@intlify/core':
+      specifier: ^11.4.0
+      version: 11.4.5
+    '@intlify/core-base':
+      specifier: ^11.4.0
+      version: 11.4.5
+    '@intlify/message-compiler':
+      specifier: ^11.4.0
+      version: 11.4.5
+    '@intlify/shared':
+      specifier: ^11.4.0
+      version: 11.4.5
+    '@intlify/utils':
+      specifier: ^0.14.1
+      version: 0.14.1
     '@lucide/vue':
       specifier: ^1.18.0
       version: 1.18.0
@@ -813,6 +828,21 @@ importers:
       '@fontsource/inter':
         specifier: 'catalog:'
         version: 5.2.8
+      '@intlify/core':
+        specifier: 'catalog:'
+        version: 11.4.5
+      '@intlify/core-base':
+        specifier: 'catalog:'
+        version: 11.4.5
+      '@intlify/message-compiler':
+        specifier: 'catalog:'
+        version: 11.4.5
+      '@intlify/shared':
+        specifier: 'catalog:'
+        version: 11.4.5
+      '@intlify/utils':
+        specifier: 'catalog:'
+        version: 0.14.1
       '@lucide/vue':
         specifier: 'catalog:'
         version: 1.18.0(vue@3.5.38(typescript@6.0.3))
@@ -939,6 +969,9 @@ importers:
       vue:
         specifier: 'catalog:'
         version: 3.5.38(typescript@6.0.3)
+      vue-i18n:
+        specifier: 'catalog:'
+        version: 11.4.5(vue@3.5.38(typescript@6.0.3))
     devDependencies:
       '@eslint/markdown':
         specifier: 'catalog:'

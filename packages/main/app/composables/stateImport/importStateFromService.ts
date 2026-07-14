@@ -8,7 +8,7 @@ import { importState } from "./importState";
  */
 export async function importStateFromService(): Promise<boolean> {
   const viewStore = useMapViewStore();
-  const { getStateFromUrl, getZoomFromUrl } = useUrlParams();
+  const { getStateFromUrl } = useUrlParams();
 
   const toaster = useToaster();
   const { $i18n } = useNuxtApp();
@@ -23,10 +23,8 @@ export async function importStateFromService(): Promise<boolean> {
     });
 
     if (stateFromUrlParam && stateId) {
-      const overrideZoomFromUrl = getZoomFromUrl();
       viewStore.setStateId(stateId);
-
-      await importState(stateFromUrlParam, overrideZoomFromUrl);
+      await importState(stateFromUrlParam);
       log.info({
         title: "importStateFromService",
         titleColor: LogPreDefinedColor.Sky,

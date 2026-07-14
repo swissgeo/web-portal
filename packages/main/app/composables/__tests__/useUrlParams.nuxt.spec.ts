@@ -9,7 +9,6 @@ const { useRouteMock, useRouterMock, fetchStateMock } = vi.hoisted(() => ({
   } as {
     query: {
       state?: string | string[];
-      statestr?: string;
     };
   },
   useRouterMock: {
@@ -114,16 +113,16 @@ describe("useUrlParam base64 state extraction", () => {
   beforeEach(() => {
     useRouteMock.query = {
       // intentionally providing a fixed value here. The content is irrelevant for this test
-      statestr:
+      state:
         "ewogICJ2ZXJzaW9uIjogIjEuMCIsCiAgInN0YXRlIjogewogICAgIm1hcCI6IHsKICAgICAgImNlbnRlciI6IFsKICAgICAgICAyNjYwMDAwLAogICAgICAgIDExOTAwMDAKICAgICAgXQogICB9CiAgfQp9",
     };
 
     vi.clearAllMocks();
   });
 
-  it("extracts a state from base64", () => {
-    const { getB64State } = useUrlParams();
-    const state = getB64State();
+  it("extracts a state from base64", async () => {
+    const { getStateFromUrl } = useUrlParams();
+    const { state } = await getStateFromUrl();
     expect(state).toEqual({
       version: "1.0",
       state: {
@@ -134,11 +133,11 @@ describe("useUrlParam base64 state extraction", () => {
     });
   });
 
-  it("drops the parameter after importing the base64 state", () => {
-    const { getB64State } = useUrlParams();
-    expect(useRouteMock.query).toHaveProperty("statestr");
+  it("drops the parameter after importing the base64 state", async () => {
+    const { getStateFromUrl } = useUrlParams();
+    expect(useRouteMock.query).toHaveProperty("state");
 
-    const state = getB64State();
+    const { state } = await getStateFromUrl();
     expect(state).toBeTruthy();
     expect(useRouterMock.replace).toHaveBeenCalledWith({ query: {} });
   });

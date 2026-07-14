@@ -203,5 +203,37 @@
   },
   "embed": {
     "viewOn": "View on {platform}"
+  },
+  "print": {
+    "warningOutsideSwitzerland": "Is out of Swiss bounds",
+    "warningOutsideSwitzerlandTitle": "Print extent is out of Swiss bounds",
+    "warningZoomOutOfSync": "The zoom level on screen does not correspond to the locked zoom level for print.",
+    "warningZoomOutOfSyncTitle": "Zoom level is not at locked zoom level",
+    "statusProcessing": "processing",
+    "statusQueued": "queued",
+    "statusError": "error",
+    "statusFailed": "failed",
+    "statusReady": "ready",
+    "clearAll": "Clear all",
+    "noPrintJobsYet": "No print jobs yet.",
+    "created": "Created",
+    "download": "Download",
+    "zoomLevel": "Zoom level",
+    "zoomLevelForPrint": "Zoom level for print",
+    "warningOutsideViewportLabel": "Is frame beyond viewport",
+    "printScale": "Scale of print",
+    "enableStrictZoomStepsLabel": "Enable strict zoom steps",
+    "lockCenterToViewLabel": "Lock center to current view",
+    "lockZoomToViewLabel": "Lock zoom to current view",
+    "printSizeLabel": "Print size",
+    "printResolutionLabel": "Print resolution",
+    "printOrientationLabel": "Print orientation",
+    "zoomToLockedZoomLevel": "Zoom to locked zoom level",
+    "sendPrintRequest": "Send Print Request",
+    "openPrintJobs": "Open Print Jobs",
+    "printJobsWindowTitle": "Print Jobs",
+    "warningPrintExtentBeyondViewport": "You can lock the center and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.",
+    "orientationPortrait": "portrait",
+    "orientationLandscape": "landscape"
   }
 }

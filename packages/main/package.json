@@ -23,6 +23,11 @@
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "catalog:",
     "@fontsource/inter": "catalog:",
+    "@intlify/core": "catalog:",
+    "@intlify/core-base": "catalog:",
+    "@intlify/message-compiler": "catalog:",
+    "@intlify/shared": "catalog:",
+    "@intlify/utils": "catalog:",
     "@lucide/vue": "catalog:",
     "@nuxt/eslint": "catalog:",
     "@nuxt/ui": "catalog:",
@@ -64,7 +69,8 @@
     "pinia": "catalog:",
     "proj4": "catalog:",
     "ufo": "catalog:",
-    "vue": "catalog:"
+    "vue": "catalog:",
+    "vue-i18n": "catalog:"
   },
   "devDependencies": {
     "@eslint/markdown": "catalog:",
