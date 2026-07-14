@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { DatasetCollection } from "@swissgeo/ogc";
 import type { SearchResult } from "@swissgeo/search";
 import type { ComputedRef, DefineComponent } from "vue";
 
@@ -27,7 +26,6 @@ export declare const useSearchStore: () => {
   query: string;
   results: SearchResult[];
   isSearching: boolean;
-  catalog: DatasetCollection | undefined;
   hasResults: ComputedRef<boolean>;
   locationResults: ComputedRef<SearchResult[]>;
   layerResults: ComputedRef<SearchResult[]>;
@@ -35,7 +33,6 @@ export declare const useSearchStore: () => {
   setSearchQuery: (newQuery: string, lang?: string) => Promise<void>;
   selectResult: (result: SearchResult) => SearchResult;
   clearSearch: () => void;
-  loadCatalog: () => Promise<void>;
 };
 
 export declare const IconButton: DefineComponent<any, any, any>;

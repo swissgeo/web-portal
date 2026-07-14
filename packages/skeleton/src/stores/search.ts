@@ -8,6 +8,7 @@ import {
   searchLayerFeatures,
 } from "@swissgeo/search";
 import { defineStore } from "pinia";
+import { joinURL } from "ufo";
 import { ref, computed } from "vue";
 
 export const useSearchStore = defineStore("search", () => {
@@ -20,14 +21,13 @@ export const useSearchStore = defineStore("search", () => {
   let abortController: AbortController | undefined;
 
   // Build the OGC API Records `/items` endpoint used to search layers.
-  const catalogItemsUrl = () => {
-    const endpoint = (runtimeConfig.public.ogcApiEndpoint as string).replace(
-      /\/$/,
-      "",
+  const catalogItemsUrl = () =>
+    joinURL(
+      runtimeConfig.public.ogcApiEndpoint as string,
+      "collections",
+      runtimeConfig.public.ogcCatalogCollection as string,
+      "items",
     );
-    const collection = runtimeConfig.public.ogcCatalogCollection as string;
-    return `${endpoint}/collections/${collection}/items`;
-  };
 
   // Getters
   const hasResults = computed(() => results.value.length > 0);
