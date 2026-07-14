@@ -1,4 +1,4 @@
-import type { DimensionRecord } from "@/types";
+import type { Dimension } from "@/types";
 
 import {
   ALL_YEARS_TIMESTAMP,
@@ -6,23 +6,13 @@ import {
   getYearFromGeoadminValue,
 } from "@/timeUtils";
 
-// use the most narrow type needed for this to work
-export type LayerWithTime = {
-  uuid: string;
-  dimensions: DimensionRecord;
-};
-
 /**
  * Create two sets with values that occur in the layers with timestamps
  *
  * `yearsJoint` contains the values that are shared in all the layers `yearsSeparate` contains the
  * values that are exclusive to some layers
  */
-export function getYearsWithData(layersWithTimestamps: LayerWithTime[]) {
-  const timeConfigs = layersWithTimestamps.map(
-    (layer) => layer.dimensions.time,
-  );
-
+export function getYearsWithData(timeConfigs: Dimension[]) {
   if (timeConfigs.length === 0) {
     return {
       yearsJoint: [],

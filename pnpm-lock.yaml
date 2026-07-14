@@ -1381,9 +1381,6 @@ importers:
       '@lucide/vue':
         specifier: 'catalog:'
         version: 1.18.0(vue@3.5.38(typescript@6.0.3))
-      '@swissgeo/layers':
-        specifier: workspace:*
-        version: link:../layers
       '@swissgeo/log':
         specifier: workspace:*
         version: link:../log

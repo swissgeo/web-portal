@@ -7,8 +7,8 @@ import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
-import { mount } from "@vue/test-utils";
 import { useDimensionsStore } from "@swissgeo/timeslider";
+import { mount } from "@vue/test-utils";
 import {
   isBackgroundLayer,
   layersToStateConfig,

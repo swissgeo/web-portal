@@ -29,7 +29,6 @@
     "type-check": "vue-tsc"
   },
   "dependencies": {
-    "@swissgeo/layers": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
     "@swissgeo/shared": "workspace:*",

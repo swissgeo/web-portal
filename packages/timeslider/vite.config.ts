@@ -20,7 +20,6 @@ export default defineConfig(({ mode }) => {
           "vue",
           "lucide-vue-next",
           "@swissgeo/log",
-          "@swissgeo/layers",
           "@swissgeo/numbers",
           "@swissgeo/skeleton",
           "@swissgeo/shared",

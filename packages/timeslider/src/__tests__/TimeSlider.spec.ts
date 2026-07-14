@@ -1,16 +1,9 @@
-import type { Layer } from "@swissgeo/layers";
-
 import { expect, test } from "vitest";
 
-import * as TimeSliderUtils from "../timeSliderUtils.ts";
-import * as TimeUtils from "../timeUtils.ts";
+import type { Dimension } from "@/types";
 
-const BASE_LAYER_CONFIG: Layer = {
-  type: "dataset",
-  uuid: "abc",
-  humanId: "def",
-  isLoading: false,
-};
+import * as TimeSliderUtils from "@/timeSliderUtils";
+import * as TimeUtils from "@/timeUtils";
 
 test.each([
   ["2016", "2016"],
@@ -26,99 +19,56 @@ test.each([
 );
 
 test("The years data getter returns the correct data", () => {
-  const layers: TimeSliderUtils.LayerWithTime[] = [
+  const timeConfigs: Dimension[] = [
     {
-      ...BASE_LAYER_CONFIG,
-      dimensions: {
-        time: {
-          currentValue: "2026",
-          availableValues: ["2019", "2026", "2016", "1987"],
-        },
-      },
+      currentValue: "2026",
+      availableValues: ["2019", "2026", "2016", "1987"],
     },
     {
-      ...BASE_LAYER_CONFIG,
-      dimensions: {
-        time: {
-          currentValue: "2026",
-          availableValues: ["2026", "2025", "2019", "2016"],
-        },
-      },
+      currentValue: "2026",
+      availableValues: ["2026", "2025", "2019", "2016"],
     },
     {
-      ...BASE_LAYER_CONFIG,
-      dimensions: {
-        time: {
-          currentValue: "2026",
-          availableValues: ["2025", "2019", "2016"],
-        },
-      },
+      currentValue: "2026",
+      availableValues: ["2025", "2019", "2016"],
     },
   ];
   const { yearsJoint, yearsSeparate } =
-    TimeSliderUtils.getYearsWithData(layers);
+    TimeSliderUtils.getYearsWithData(timeConfigs);
   expect(yearsJoint).toEqual([2016, 2019]);
   expect(yearsSeparate).toEqual([1987, 2025, 2026]);
 });
 
 test("The years getter filters the correct data with WMTS timestamps", () => {
-  const layers: TimeSliderUtils.LayerWithTime[] = [
+  const timeConfigs: Dimension[] = [
     {
-      ...BASE_LAYER_CONFIG,
-      dimensions: {
-        time: {
-          currentValue: "2026",
-          availableValues: ["2019", "2026", "2016", "1987"],
-        },
-      },
+      currentValue: "2026",
+      availableValues: ["2019", "2026", "2016", "1987"],
     },
     {
-      ...BASE_LAYER_CONFIG,
-      dimensions: {
-        time: {
-          currentValue: "2026",
-          // 2021, 2020, 2019, 2016
-          availableValues: ["20211231", "20201231", "20191231", "20161231"],
-        },
-      },
+      currentValue: "2026",
+      availableValues: ["20211231", "20201231", "20191231", "20161231"],
     },
   ];
   const { yearsJoint, yearsSeparate } =
-    TimeSliderUtils.getYearsWithData(layers);
+    TimeSliderUtils.getYearsWithData(timeConfigs);
   expect(yearsJoint).toEqual([2016, 2019]);
   expect(yearsSeparate).toEqual([1987, 2020, 2021, 2026]);
 });
 
 test('The years getter filters with "all" included', () => {
-  const layers: TimeSliderUtils.LayerWithTime[] = [
+  const timeConfigs: Dimension[] = [
     {
-      ...BASE_LAYER_CONFIG,
-      dimensions: {
-        time: {
-          currentValue: "2026",
-          availableValues: ["2019", "2026", "2016", "1987", "all"],
-        },
-      },
+      currentValue: "2026",
+      availableValues: ["2019", "2026", "2016", "1987", "all"],
     },
     {
-      ...BASE_LAYER_CONFIG,
-      dimensions: {
-        time: {
-          currentValue: "2026",
-          // 2021, 2020, 2019, 2016
-          availableValues: [
-            "20211231",
-            "20201231",
-            "20191231",
-            "20161231",
-            "all",
-          ],
-        },
-      },
+      currentValue: "2026",
+      availableValues: ["20211231", "20201231", "20191231", "20161231", "all"],
     },
   ];
   const { yearsJoint, yearsSeparate } =
-    TimeSliderUtils.getYearsWithData(layers);
+    TimeSliderUtils.getYearsWithData(timeConfigs);
   expect(yearsJoint).toEqual([2016, 2019]);
   expect(yearsSeparate).toEqual([1987, 2020, 2021, 2026]);
 });

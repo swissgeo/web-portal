@@ -4,7 +4,10 @@ import type { Layer as MapLayer } from "@swissgeo/map";
 
 import { useLayerStore } from "@swissgeo/layers";
 import { useDatasetPanelStore, IconButton } from "@swissgeo/skeleton";
-import { getDisplayNameFromTimestamp, useDimensionsStore } from "@swissgeo/timeslider";
+import {
+  getDisplayNameFromTimestamp,
+  useDimensionsStore,
+} from "@swissgeo/timeslider";
 import { computed } from "vue";
 
 const { layer, layerIndex } = defineProps<{
@@ -33,9 +36,7 @@ const currentTime = computed({
 });
 
 const availableTimes = computed(() => {
-  return (
-    dimensionsStore.getDimensions(layer.uuid)?.time?.availableValues ?? []
-  );
+  return dimensionsStore.getDimensions(layer.uuid)?.time?.availableValues ?? [];
 });
 
 const getTimestampName = (time: string) => {

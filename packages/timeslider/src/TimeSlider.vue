@@ -11,24 +11,17 @@ import {
   watch,
 } from "vue";
 
-import type { LayerWithTime } from "@/timeSliderUtils";
-import type { Dimension } from "@/types";
-
+import { useDimensionsStore } from "@/stores/dimensions";
 import TimeSliderBar from "@/TimeSliderBar.vue";
 import { getYearsWithData } from "@/timeSliderUtils";
 import { convertYearToTimestamp, getYearFromGeoadminValue } from "@/timeUtils";
 
-const { layers } = defineProps<{
-  layers: LayerWithTime[];
-}>();
-
 const emit = defineEmits<{
   close: [];
-  "update-dimension": [
-    { uuid: string; key: string; dimension: Partial<Dimension> },
-  ];
   "update-visibility": [{ uuid: string; isVisible: boolean }];
 }>();
+
+const dimensionsStore = useDimensionsStore();
 
 let playYearInterval: ReturnType<typeof setInterval> | undefined;
 
@@ -43,7 +36,12 @@ useResizeObserver(sliderContainer, (entries) => {
   containerWidth.value = entries[0]?.contentRect.width ?? 0;
 });
 
-const layersWithTimestamps = computed((): LayerWithTime[] => layers);
+const layerTimeDimensions = computed(() =>
+  dimensionsStore.layersWithDimension("time").map((uuid) => ({
+    uuid,
+    timeDimension: dimensionsStore.getDimensions(uuid)?.time,
+  })),
+);
 
 const youngestYear = computed(() => new Date().getFullYear());
 
@@ -67,7 +65,9 @@ const allYears = computed(() => {
 });
 
 const yearsWithData = computed(() =>
-  getYearsWithData(layersWithTimestamps.value),
+  getYearsWithData(
+    layerTimeDimensions.value.map((entry) => entry.timeDimension),
+  ),
 );
 
 watch(currentYear, () => {
@@ -75,7 +75,7 @@ watch(currentYear, () => {
 });
 
 // Close timeslider when all time-enabled layers are removed
-watch(layersWithTimestamps, (newLayers) => {
+watch(layerTimeDimensions, (newLayers) => {
   if (newLayers.length === 0) {
     log.debug({
       title: "TimeSlider.vue",
@@ -108,7 +108,7 @@ onUnmounted(() => {
 });
 
 function initializeCurrentYear() {
-  if (layersWithTimestamps.value.length > 1) {
+  if (layerTimeDimensions.value.length > 1) {
     const availableYearsWithData = yearsWithData.value.yearsJoint;
     if (availableYearsWithData.length > 0) {
       currentYear.value =
@@ -117,8 +117,8 @@ function initializeCurrentYear() {
       currentYear.value = youngestYear.value;
     }
   } else {
-    const onlyLayer = layersWithTimestamps.value[0];
-    const timeConfig = onlyLayer?.dimensions.time;
+    const onlyTimeDimension = layerTimeDimensions.value[0];
+    const timeConfig = onlyTimeDimension?.timeDimension;
 
     if (timeConfig?.currentValue) {
       log.debug({
@@ -141,21 +141,17 @@ function dispatchCurrentYearToStore() {
   if (!currentYear.value) {
     return;
   }
-
-  for (const layer of layersWithTimestamps.value) {
+  for (const { uuid, timeDimension } of layerTimeDimensions.value) {
     const yearValue = convertYearToTimestamp(
-      layer.dimensions.time.availableValues,
+      timeDimension.availableValues,
       currentYear.value,
     );
 
     if (yearValue === undefined) {
-      emit("update-visibility", { uuid: layer.uuid, isVisible: false });
+      emit("update-visibility", { uuid, isVisible: false });
     } else {
-      emit("update-visibility", { uuid: layer.uuid, isVisible: true });
-      const dimension: Partial<Dimension> = {
-        currentValue: yearValue,
-      };
-      emit("update-dimension", { uuid: layer.uuid, key: "time", dimension });
+      emit("update-visibility", { uuid, isVisible: true });
+      dimensionsStore.setDimension(uuid, "time", { currentValue: yearValue });
     }
   }
 }
