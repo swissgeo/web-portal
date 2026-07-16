@@ -1,5 +1,6 @@
 import { useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
+import { useDimensionsStore } from "@swissgeo/timeslider";
 
 export function useResetApp() {
   // we only want this on the client side
@@ -8,11 +9,13 @@ export function useResetApp() {
 
     const layerStore = useLayerStore();
     const positionStore = usePositionStore();
+    const dimensionsStore = useDimensionsStore();
 
     function resetApp() {
       clearSessionStorage();
       layerStore.$reset();
       positionStore.$reset();
+      dimensionsStore.$reset();
     }
 
     return { resetApp };

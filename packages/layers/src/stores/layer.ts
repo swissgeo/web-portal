@@ -114,7 +114,7 @@ export const useLayerStore = defineStore("layers", () => {
   function replaceLayer(uuid: string, replacement: Layer) {
     const index = _getIndexFromIdentifier(uuid);
     if ((index || index === 0) && layers.value[index]) {
-      layers.value.splice(_getIndexFromIdentifier(uuid)!, 1, replacement);
+      layers.value.splice(index, 1, replacement);
     }
   }
 

@@ -85,15 +85,6 @@ async function stateConfigToLayer(
     const data = await $fetch<Dataset>(config.layerUrl);
     const layer = makeServerLayer(data);
 
-    if (config.dimensions?.time) {
-      const dimensions: Partial<Record<DimensionId, Dimension>> = {};
-      dimensions.time = {
-        currentValue: config.dimensions.time.currentValue ?? null,
-        availableValues: [],
-      };
-      useDimensionsStore().setLayerDimensions(layer.uuid, dimensions);
-    }
-
     return layer;
   }
   return null;
@@ -170,6 +161,16 @@ export function useStateConfig() {
           isVisible: stateLayers[i]?.isVisible ?? true,
         };
         layerStore.addImportOption(uuid, mapLayerData);
+
+        if (stateLayers[i]?.dimensions?.time) {
+          const dimensions: Partial<Record<DimensionId, Dimension>> = {};
+          dimensions.time = {
+            currentValue:
+              stateLayers[i]!.dimensions!.time!.currentValue ?? null,
+            availableValues: [],
+          };
+          useDimensionsStore().setLayerDimensions(uuid, dimensions);
+        }
       }
     }
     // here we add the background layer back
