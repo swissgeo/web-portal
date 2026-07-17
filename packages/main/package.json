@@ -23,6 +23,7 @@
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "catalog:",
     "@fontsource/inter": "catalog:",
+    "@huggingface/transformers": "catalog:",
     "@intlify/core": "catalog:",
     "@intlify/core-base": "catalog:",
     "@intlify/message-compiler": "catalog:",

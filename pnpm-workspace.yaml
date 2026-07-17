@@ -8,6 +8,7 @@ allowBuilds:
   "@parcel/watcher": false
   esbuild: false
   msw: false
+  onnxruntime-node: false
   protobufjs: false
   sharp: false
   unrs-resolver: false
@@ -19,6 +20,7 @@ catalog:
   "@eslint/markdown": ^8.0.0
   "@fontsource/inter": ^5.2.6
   "@hey-api/openapi-ts": ^0.99.0
+  "@huggingface/transformers": ^4.2.0
   "@intlify/core": ^11.4.0
   "@intlify/core-base": ^11.4.0
   "@intlify/message-compiler": ^11.4.0
