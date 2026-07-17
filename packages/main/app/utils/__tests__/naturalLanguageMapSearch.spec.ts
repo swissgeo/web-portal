@@ -8,6 +8,7 @@ import {
   findCatalogCandidates,
   findBestLayer,
   isCatalogRecord,
+  rankCandidateEmbeddings,
   refersToCurrentLocation,
 } from "../naturalLanguageMapSearch";
 
@@ -139,5 +140,25 @@ describe("natural-language map search", () => {
 
   it("rejects malformed embedding output", () => {
     expect(findBestLayer(new Float32Array([1, 2]), 4, catalog)).toBeUndefined();
+  });
+
+  it("ranks multiple normalized embedding candidates", () => {
+    const embeddings = new Float32Array([1, 0, 0.5, 0.5, 0.9, 0.1, 0.1, 0.9]);
+
+    expect(
+      rankCandidateEmbeddings(embeddings, 2, ["middle", "best", "last"], 2),
+    ).toEqual([
+      { id: "best", score: expect.closeTo(0.9) },
+      { id: "middle", score: expect.closeTo(0.5) },
+    ]);
+  });
+
+  it("rejects malformed ranked embedding input", () => {
+    expect(
+      rankCandidateEmbeddings(new Float32Array([1, 2]), 2, ["one", "two"]),
+    ).toEqual([]);
+    expect(
+      rankCandidateEmbeddings(new Float32Array([1, 0, 0, 1]), 2, ["one"], 0),
+    ).toEqual([]);
   });
 });

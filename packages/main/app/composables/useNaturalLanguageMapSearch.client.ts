@@ -1,5 +1,3 @@
-import type { FeatureExtractionPipeline } from "@huggingface/transformers";
-
 import {
   makeServerLayer,
   useLayerStore,
@@ -9,38 +7,40 @@ import { usePositionStore } from "@swissgeo/map";
 import { searchLocation } from "@swissgeo/search";
 import { joinURL } from "ufo";
 
-import type { NaturalLanguageCatalogRecord } from "@/utils/naturalLanguageMapSearch";
+import type {
+  LayerMatch,
+  NaturalLanguageCatalogRecord,
+} from "@/utils/naturalLanguageMapSearch";
+import type {
+  SemanticProgressResponse,
+  SemanticResultResponse,
+} from "@/utils/naturalLanguageMapSearchProtocol";
 
 import {
   expandLayerQuery,
   extractPlaceQuery,
   findCatalogCandidates,
-  findBestLayer,
   isCatalogRecord,
   refersToCurrentLocation,
   semanticText,
 } from "@/utils/naturalLanguageMapSearch";
+import { rankLayersWithWorker } from "@/utils/naturalLanguageMapSearchWorker.client";
 
-const MODEL_ID = "Xenova/paraphrase-multilingual-MiniLM-L12-v2";
 const MINIMUM_LAYER_SCORE = 0.4;
 const DISPATCHER = { name: "natural-language-map-search-poc" };
 
-let extractorPromise: Promise<FeatureExtractionPipeline> | undefined;
 const catalogPromises = new Map<
   string,
   Promise<readonly NaturalLanguageCatalogRecord[]>
 >();
 
-function loadExtractor(): Promise<FeatureExtractionPipeline> {
-  extractorPromise ??= import("@huggingface/transformers").then(
-    ({ pipeline }) =>
-      pipeline("feature-extraction", MODEL_ID, {
-        device: "wasm",
-        dtype: "q8",
-      }),
-  );
-  return extractorPromise;
+export interface NaturalLanguageLayerSuggestion {
+  id: string;
+  score: number;
+  title: string;
 }
+
+type PlaceResult = { place?: string } | { error: unknown };
 
 function readCatalogRecords(
   value: unknown,
@@ -78,6 +78,52 @@ function loadCatalog(
   return request;
 }
 
+function formatDuration(durationMs: number): string {
+  if (durationMs < 1000) {
+    return `${Math.round(durationMs)} ms`;
+  }
+  return `${(durationMs / 1000).toFixed(1)} s`;
+}
+
+function progressStatus(progress: SemanticProgressResponse): string {
+  if (progress.stage === "loading-model") {
+    return "Loading the multilingual model…";
+  }
+  if (progress.stage === "embedding") {
+    return `Embedding ${progress.totalCandidates - progress.cachedCandidates} new candidates…`;
+  }
+  return "Ranking the best catalog matches…";
+}
+
+function rankingSummary(result: SemanticResultResponse): string {
+  const totalCandidates = result.cacheHits + result.embeddedCandidates;
+  return `${formatDuration(result.timings.totalMs)}, ${result.cacheHits}/${totalCandidates} vectors cached`;
+}
+
+function suggestion(match: LayerMatch): NaturalLanguageLayerSuggestion {
+  return {
+    id: match.layer.id,
+    score: match.score,
+    title: match.layer.properties?.title ?? match.layer.id,
+  };
+}
+
+function settlePlace(
+  promise: Promise<string | undefined>,
+): Promise<PlaceResult> {
+  return promise.then(
+    (place) => ({ place }),
+    (error: unknown) => ({ error }),
+  );
+}
+
+function placeFrom(result: PlaceResult): string | undefined {
+  if ("error" in result) {
+    throw result.error;
+  }
+  return result.place;
+}
+
 export function useNaturalLanguageMapSearch() {
   const runtimeConfig = useRuntimeConfig();
   const layerStore = useLayerStore();
@@ -85,29 +131,30 @@ export function useNaturalLanguageMapSearch() {
   const geolocationStore = useGeolocationStore();
   const isRunning = ref(false);
   const status = ref("");
+  const suggestions = ref<NaturalLanguageLayerSuggestion[]>([]);
 
-  async function classifyLayer(
+  async function classifyLayers(
     query: string,
     candidates: readonly NaturalLanguageCatalogRecord[],
-  ) {
-    status.value = `Ranking ${candidates.length} catalog candidates…`;
-    const extractor = await loadExtractor();
-    const inputs = [query, ...candidates.map((layer) => semanticText(layer))];
-    const output = await extractor(inputs, {
-      normalize: true,
-      pooling: "mean",
+  ): Promise<{ matches: LayerMatch[]; result: SemanticResultResponse }> {
+    const recordsById = new Map(
+      candidates.map((record) => [record.id, record]),
+    );
+    const result = await rankLayersWithWorker(
+      query,
+      candidates.map((record) => ({
+        id: record.id,
+        text: semanticText(record),
+      })),
+      (progress) => {
+        status.value = progressStatus(progress);
+      },
+    );
+    const matches = result.scores.flatMap(({ id, score }) => {
+      const layer = recordsById.get(id);
+      return layer ? [{ layer, score }] : [];
     });
-
-    if (
-      output.type !== "float32" ||
-      !(output.data instanceof Float32Array) ||
-      output.dims[0] !== inputs.length
-    ) {
-      throw new Error("The model returned unexpected embeddings");
-    }
-
-    const vectorSize = output.dims[1] ?? 0;
-    return findBestLayer(output.data, vectorSize, candidates);
+    return { matches, result };
   }
 
   async function addLayer(datasetId: string, locale: string): Promise<void> {
@@ -160,6 +207,26 @@ export function useNaturalLanguageMapSearch() {
     return place.sanitizedTitle;
   }
 
+  async function chooseLayer(
+    selected: NaturalLanguageLayerSuggestion,
+    locale: string,
+  ): Promise<void> {
+    if (isRunning.value) {
+      return;
+    }
+
+    isRunning.value = true;
+    try {
+      status.value = `Adding ${selected.title}…`;
+      await addLayer(selected.id, locale);
+      status.value = `Added ${selected.title}`;
+    } catch (error) {
+      status.value = error instanceof Error ? error.message : String(error);
+    } finally {
+      isRunning.value = false;
+    }
+  }
+
   async function run(query: string, locale: string): Promise<void> {
     const trimmedQuery = query.trim();
     if (trimmedQuery.length < 3 || isRunning.value) {
@@ -167,6 +234,9 @@ export function useNaturalLanguageMapSearch() {
     }
 
     isRunning.value = true;
+    suggestions.value = [];
+    const placeResultPromise = settlePlace(moveToPlace(trimmedQuery, locale));
+
     try {
       status.value = "Searching the full catalog…";
       const catalog = await loadCatalog(
@@ -176,33 +246,28 @@ export function useNaturalLanguageMapSearch() {
       const layerQuery = expandLayerQuery(trimmedQuery);
       const candidates = findCatalogCandidates(layerQuery, catalog);
       if (candidates.length === 0) {
-        status.value = "No matching catalog records found.";
+        const place = placeFrom(await placeResultPromise);
+        status.value = place
+          ? `Moved to ${place}, but found no matching catalog records.`
+          : "No matching catalog records found.";
         return;
       }
 
-      const placeResultPromise = moveToPlace(trimmedQuery, locale).then(
-        (place) => ({ place }),
-        (error: unknown) => ({ error }),
-      );
-      const match = await classifyLayer(layerQuery, candidates);
-      if (!match || match.score < MINIMUM_LAYER_SCORE) {
-        status.value =
-          "No confident layer match. Try naming the kind of map data you need.";
+      const { matches, result } = await classifyLayers(layerQuery, candidates);
+      suggestions.value = matches.map(suggestion);
+      const place = placeFrom(await placeResultPromise);
+      const [bestMatch] = matches;
+      if (!bestMatch || bestMatch.score < MINIMUM_LAYER_SCORE) {
+        const location = place ? ` near ${place}` : "";
+        status.value = `No confident layer match${location} · ${rankingSummary(result)}`;
         return;
       }
 
-      const layerTitle = match.layer.properties?.title ?? match.layer.id;
-      status.value = `Adding ${layerTitle}…`;
-      const [, placeResult] = await Promise.all([
-        addLayer(match.layer.id, locale),
-        placeResultPromise,
-      ]);
-      if ("error" in placeResult) {
-        throw placeResult.error;
-      }
-      status.value = placeResult.place
-        ? `Added ${layerTitle} near ${placeResult.place}`
-        : `Added ${layerTitle}`;
+      const selected = suggestion(bestMatch);
+      status.value = `Adding ${selected.title}…`;
+      await addLayer(selected.id, locale);
+      const location = place ? ` near ${place}` : "";
+      status.value = `Added ${selected.title}${location} · ${rankingSummary(result)}`;
     } catch (error) {
       status.value = error instanceof Error ? error.message : String(error);
     } finally {
@@ -210,5 +275,5 @@ export function useNaturalLanguageMapSearch() {
     }
   }
 
-  return { isRunning, run, status };
+  return { chooseLayer, isRunning, run, status, suggestions };
 }

@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import type { NaturalLanguageLayerSuggestion } from "@/composables/useNaturalLanguageMapSearch.client";
+
 const query = ref("");
 const { locale } = useI18n();
-const { isRunning, run, status } = useNaturalLanguageMapSearch();
+const { chooseLayer, isRunning, run, status, suggestions } =
+  useNaturalLanguageMapSearch();
 
 function submit() {
   void run(query.value, locale.value);
+}
+
+function choose(suggestion: NaturalLanguageLayerSuggestion) {
+  void chooseLayer(suggestion, locale.value);
 }
 </script>
 
@@ -28,5 +35,28 @@ function submit() {
     <p v-if="status" class="mt-1 px-1 text-xs text-muted" aria-live="polite">
       {{ status }}
     </p>
+    <ul
+      v-if="suggestions.length > 0"
+      class="mt-2 grid gap-1"
+      aria-label="Alternative catalog layers"
+    >
+      <li v-for="suggestion in suggestions" :key="suggestion.id">
+        <UButton
+          type="button"
+          color="neutral"
+          variant="soft"
+          size="xs"
+          block
+          :disabled="isRunning"
+          class="justify-between"
+          @click="choose(suggestion)"
+        >
+          <span class="truncate">{{ suggestion.title }}</span>
+          <span class="ml-2 font-mono tabular-nums">
+            {{ suggestion.score.toFixed(2) }}
+          </span>
+        </UButton>
+      </li>
+    </ul>
   </div>
 </template>

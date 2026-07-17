@@ -12,6 +12,11 @@ export interface LayerMatch {
   score: number;
 }
 
+export interface LayerScore {
+  id: string;
+  score: number;
+}
+
 interface CatalogSearchDocument {
   description: string;
   keywords: string;
@@ -296,21 +301,39 @@ export function findBestLayer(
   vectorSize: number,
   layers: readonly NaturalLanguageCatalogRecord[],
 ): LayerMatch | undefined {
-  if (vectorSize <= 0 || data.length !== vectorSize * (layers.length + 1)) {
-    return;
+  const [bestScore] = rankCandidateEmbeddings(
+    data,
+    vectorSize,
+    layers.map(({ id }) => id),
+    1,
+  );
+  const layer = layers.find(({ id }) => id === bestScore?.id);
+  return layer && bestScore ? { layer, score: bestScore.score } : undefined;
+}
+
+export function rankCandidateEmbeddings(
+  data: Float32Array,
+  vectorSize: number,
+  candidateIds: readonly string[],
+  limit: number = 3,
+): LayerScore[] {
+  if (
+    vectorSize <= 0 ||
+    limit <= 0 ||
+    data.length !== vectorSize * (candidateIds.length + 1)
+  ) {
+    return [];
   }
 
-  let bestMatch: LayerMatch | undefined;
-  for (let index = 0; index < layers.length; index += 1) {
-    let score = 0;
-    const candidateOffset = (index + 1) * vectorSize;
-    for (let dimension = 0; dimension < vectorSize; dimension += 1) {
-      score += data[dimension]! * data[candidateOffset + dimension]!;
-    }
-
-    if (!bestMatch || score > bestMatch.score) {
-      bestMatch = { layer: layers[index]!, score };
-    }
-  }
-  return bestMatch;
+  return candidateIds
+    .map((id, index): LayerScore => {
+      let score = 0;
+      const candidateOffset = (index + 1) * vectorSize;
+      for (let dimension = 0; dimension < vectorSize; dimension += 1) {
+        score += data[dimension]! * data[candidateOffset + dimension]!;
+      }
+      return { id, score };
+    })
+    .sort((left, right) => right.score - left.score)
+    .slice(0, limit);
 }
