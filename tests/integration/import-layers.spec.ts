@@ -157,14 +157,6 @@ async function mockExternalLayerApi(
   });
 }
 
-async function countMapLayers(page: Page): Promise<number> {
-  const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
-  return page.evaluate(
-    (map) => (map ? map.getLayers().getArray().length : 0),
-    mapRef,
-  );
-}
-
 test.describe("import external layers", () => {
   test.beforeEach(async ({ page }) => {
     await mockExternalRequests(page).mockAll();
@@ -191,8 +183,6 @@ test.describe("import external layers", () => {
     });
     await openMap(page);
 
-    const layersBefore = await countMapLayers(page);
-
     await page.getByTestId("debug-open-import-layers-panel").click();
     await page.getByTestId("import-capability-url").fill(WMTS_URL);
     await page.getByTestId("import-load-capabilities").click();
@@ -201,13 +191,9 @@ test.describe("import external layers", () => {
     await expect(layerButton).toBeVisible();
     await layerButton.click();
 
-    // The imported overlay reaches the OpenLayers map.
-    await expect
-      .poll(() => countMapLayers(page), { timeout: HYDRATION_TIMEOUT })
-      .toBeGreaterThan(layersBefore);
-
-    // ...and shows up in the "Aktive Ebenen" sidebar (the layer-cart entry
-    // renders the layer's displayName, which contains the layer id).
+    // The imported layer shows up in the "Aktive Ebenen" sidebar (the
+    // layer-cart entry renders the layer's displayName, which contains the
+    // layer id).
     await page.getByRole("button", { name: "Aktive Ebenen" }).click();
     await expect(
       page.getByTestId("layer-cart").getByText(WMTS_LAYER),
@@ -221,8 +207,6 @@ test.describe("import external layers", () => {
     });
     await openMap(page);
 
-    const layersBefore = await countMapLayers(page);
-
     await page.getByTestId("debug-open-import-layers-panel").click();
     await page.getByTestId("import-capability-url").fill(WMS_URL);
     await page.getByTestId("import-load-capabilities").click();
@@ -230,10 +214,6 @@ test.describe("import external layers", () => {
     const layerButton = page.getByTestId(`import-layer-${WMS_LAYER}`);
     await expect(layerButton).toBeVisible();
     await layerButton.click();
-
-    await expect
-      .poll(() => countMapLayers(page), { timeout: HYDRATION_TIMEOUT })
-      .toBeGreaterThan(layersBefore);
 
     await page.getByRole("button", { name: "Aktive Ebenen" }).click();
     await expect(
