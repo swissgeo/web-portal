@@ -17,12 +17,19 @@ export interface SemanticWorkerTimings {
 
 export type SemanticWorkerStage = "loading-model" | "embedding" | "ranking";
 
+export interface SemanticLoadRequest {
+  requestId: number;
+  type: "load";
+}
+
 export interface SemanticRankRequest {
   candidates: SemanticLayerInput[];
   query: string;
   requestId: number;
   type: "rank";
 }
+
+export type SemanticWorkerRequest = SemanticLoadRequest | SemanticRankRequest;
 
 export interface SemanticProgressResponse {
   cachedCandidates: number;
@@ -41,6 +48,11 @@ export interface SemanticResultResponse {
   type: "result";
 }
 
+export interface SemanticReadyResponse {
+  requestId: number;
+  type: "ready";
+}
+
 export interface SemanticErrorResponse {
   message: string;
   requestId: number;
@@ -50,6 +62,7 @@ export interface SemanticErrorResponse {
 export type SemanticWorkerResponse =
   | SemanticProgressResponse
   | SemanticResultResponse
+  | SemanticReadyResponse
   | SemanticErrorResponse;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -87,6 +100,16 @@ function isSemanticWorkerTimings(
 function isSemanticWorkerStage(value: unknown): value is SemanticWorkerStage {
   return (
     value === "loading-model" || value === "embedding" || value === "ranking"
+  );
+}
+
+export function isSemanticLoadRequest(
+  value: unknown,
+): value is SemanticLoadRequest {
+  return (
+    isRecord(value) &&
+    value.type === "load" &&
+    Number.isInteger(value.requestId)
   );
 }
 
@@ -130,6 +153,10 @@ export function isSemanticWorkerResponse(
       value.scores.every(isSemanticLayerScore) &&
       isSemanticWorkerTimings(value.timings)
     );
+  }
+
+  if (value.type === "ready") {
+    return true;
   }
 
   return value.type === "error" && typeof value.message === "string";

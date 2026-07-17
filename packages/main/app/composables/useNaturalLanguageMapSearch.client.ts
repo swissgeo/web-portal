@@ -24,7 +24,10 @@ import {
   refersToCurrentLocation,
   semanticText,
 } from "@/utils/naturalLanguageMapSearch";
-import { rankLayersWithWorker } from "@/utils/naturalLanguageMapSearchWorker.client";
+import {
+  preloadModelWithWorker,
+  rankLayersWithWorker,
+} from "@/utils/naturalLanguageMapSearchWorker.client";
 
 const MINIMUM_LAYER_SCORE = 0.4;
 const DISPATCHER = { name: "natural-language-map-search-poc" };
@@ -41,6 +44,7 @@ export interface NaturalLanguageLayerSuggestion {
 }
 
 type PlaceResult = { place?: string } | { error: unknown };
+export type SemanticModelLoadState = "error" | "idle" | "loading" | "ready";
 
 function readCatalogRecords(
   value: unknown,
@@ -130,6 +134,7 @@ export function useNaturalLanguageMapSearch() {
   const positionStore = usePositionStore();
   const geolocationStore = useGeolocationStore();
   const isRunning = ref(false);
+  const modelLoadState = ref<SemanticModelLoadState>("idle");
   const status = ref("");
   const suggestions = ref<NaturalLanguageLayerSuggestion[]>([]);
 
@@ -155,6 +160,26 @@ export function useNaturalLanguageMapSearch() {
       return layer ? [{ layer, score }] : [];
     });
     return { matches, result };
+  }
+
+  async function loadModel(): Promise<void> {
+    if (
+      modelLoadState.value === "loading" ||
+      modelLoadState.value === "ready"
+    ) {
+      return;
+    }
+
+    modelLoadState.value = "loading";
+    status.value = "Loading the multilingual model…";
+    try {
+      await preloadModelWithWorker();
+      modelLoadState.value = "ready";
+      status.value = "Model ready";
+    } catch (error) {
+      modelLoadState.value = "error";
+      status.value = error instanceof Error ? error.message : String(error);
+    }
   }
 
   async function addLayer(datasetId: string, locale: string): Promise<void> {
@@ -229,7 +254,11 @@ export function useNaturalLanguageMapSearch() {
 
   async function run(query: string, locale: string): Promise<void> {
     const trimmedQuery = query.trim();
-    if (trimmedQuery.length < 3 || isRunning.value) {
+    if (
+      trimmedQuery.length < 3 ||
+      isRunning.value ||
+      modelLoadState.value !== "ready"
+    ) {
       return;
     }
 
@@ -275,5 +304,13 @@ export function useNaturalLanguageMapSearch() {
     }
   }
 
-  return { chooseLayer, isRunning, run, status, suggestions };
+  return {
+    chooseLayer,
+    isRunning,
+    loadModel,
+    modelLoadState,
+    run,
+    status,
+    suggestions,
+  };
 }

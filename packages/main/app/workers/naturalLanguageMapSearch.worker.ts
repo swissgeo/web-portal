@@ -4,6 +4,7 @@ import { pipeline } from "@huggingface/transformers";
 
 import type {
   SemanticLayerInput,
+  SemanticLoadRequest,
   SemanticProgressResponse,
   SemanticRankRequest,
   SemanticResultResponse,
@@ -12,7 +13,10 @@ import type {
 } from "../utils/naturalLanguageMapSearchProtocol";
 
 import { rankCandidateEmbeddings } from "../utils/naturalLanguageMapSearch";
-import { isSemanticRankRequest } from "../utils/naturalLanguageMapSearchProtocol";
+import {
+  isSemanticLoadRequest,
+  isSemanticRankRequest,
+} from "../utils/naturalLanguageMapSearchProtocol";
 
 const MODEL_ID = "Xenova/paraphrase-multilingual-MiniLM-L12-v2";
 const RESULT_LIMIT = 3;
@@ -47,8 +51,16 @@ async function loadExtractor(): Promise<FeatureExtractionPipeline> {
   extractorPromise ??= pipeline("feature-extraction", MODEL_ID, {
     device: "wasm",
     dtype: "q8",
+  }).catch((error: unknown) => {
+    extractorPromise = undefined;
+    throw error;
   });
   return extractorPromise;
+}
+
+async function load(request: SemanticLoadRequest): Promise<void> {
+  await loadExtractor();
+  send({ requestId: request.requestId, type: "ready" });
 }
 
 function cachedCandidate(
@@ -165,6 +177,18 @@ function messageFrom(error: unknown): string {
 }
 
 self.addEventListener("message", (event: MessageEvent<unknown>) => {
+  if (isSemanticLoadRequest(event.data)) {
+    const request = event.data;
+    void load(request).catch((error: unknown) => {
+      send({
+        message: messageFrom(error),
+        requestId: request.requestId,
+        type: "error",
+      });
+    });
+    return;
+  }
+
   if (!isSemanticRankRequest(event.data)) {
     return;
   }

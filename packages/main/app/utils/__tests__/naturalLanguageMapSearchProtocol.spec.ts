@@ -1,11 +1,24 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  isSemanticLoadRequest,
   isSemanticRankRequest,
   isSemanticWorkerResponse,
 } from "../naturalLanguageMapSearchProtocol";
 
 describe("natural-language map search worker protocol", () => {
+  it("accepts a valid model load request", () => {
+    expect(isSemanticLoadRequest({ requestId: 1, type: "load" })).toBe(true);
+  });
+
+  it.each([
+    undefined,
+    { type: "load", requestId: "one" },
+    { type: "rank", requestId: 1 },
+  ])("rejects malformed model load request %#", (value) => {
+    expect(isSemanticLoadRequest(value)).toBe(false);
+  });
+
   it("accepts a valid rank request", () => {
     expect(
       isSemanticRankRequest({
@@ -46,6 +59,7 @@ describe("natural-language map search worker protocol", () => {
       },
       type: "result",
     },
+    { requestId: 1, type: "ready" },
     { message: "failed", requestId: 1, type: "error" },
   ])("accepts valid worker response %#", (value) => {
     expect(isSemanticWorkerResponse(value)).toBe(true);

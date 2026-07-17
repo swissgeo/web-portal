@@ -2,7 +2,9 @@ import type {
   SemanticLayerInput,
   SemanticProgressResponse,
   SemanticRankRequest,
+  SemanticReadyResponse,
   SemanticResultResponse,
+  SemanticWorkerRequest,
 } from "./naturalLanguageMapSearchProtocol";
 
 import { isSemanticWorkerResponse } from "./naturalLanguageMapSearchProtocol";
@@ -10,10 +12,12 @@ import { isSemanticWorkerResponse } from "./naturalLanguageMapSearchProtocol";
 interface PendingRequest {
   onProgress?: (progress: SemanticProgressResponse) => void;
   reject: (reason: Error) => void;
-  resolve: (result: SemanticResultResponse) => void;
+  resolve: (response: SemanticReadyResponse | SemanticResultResponse) => void;
 }
 
 let nextRequestId = 1;
+let modelLoadPromise: Promise<void> | undefined;
+let modelReady = false;
 let semanticWorker: Worker | undefined;
 const pendingRequests = new Map<number, PendingRequest>();
 
@@ -50,6 +54,8 @@ function handleWorkerError(event: ErrorEvent): void {
   rejectPendingRequests(new Error(message));
   semanticWorker?.terminate();
   semanticWorker = undefined;
+  modelLoadPromise = undefined;
+  modelReady = false;
 }
 
 function getSemanticWorker(): Worker {
@@ -64,11 +70,54 @@ function getSemanticWorker(): Worker {
   return semanticWorker;
 }
 
+function sendRequest(
+  request: SemanticWorkerRequest,
+  onProgress?: (progress: SemanticProgressResponse) => void,
+): Promise<SemanticReadyResponse | SemanticResultResponse> {
+  return new Promise((resolve, reject) => {
+    pendingRequests.set(request.requestId, { onProgress, reject, resolve });
+    try {
+      getSemanticWorker().postMessage(request);
+    } catch (error) {
+      pendingRequests.delete(request.requestId);
+      reject(error instanceof Error ? error : new Error(String(error)));
+    }
+  });
+}
+
+export function preloadModelWithWorker(): Promise<void> {
+  if (!modelLoadPromise) {
+    const requestId = nextRequestId;
+    nextRequestId += 1;
+    modelLoadPromise = sendRequest({ requestId, type: "load" })
+      .then((response) => {
+        if (response.type !== "ready") {
+          throw new Error(
+            "Semantic search worker returned an invalid response",
+          );
+        }
+        modelReady = true;
+      })
+      .catch((error: unknown) => {
+        modelLoadPromise = undefined;
+        modelReady = false;
+        throw error;
+      });
+  }
+  return modelLoadPromise;
+}
+
 export function rankLayersWithWorker(
   query: string,
   candidates: SemanticLayerInput[],
   onProgress?: (progress: SemanticProgressResponse) => void,
 ): Promise<SemanticResultResponse> {
+  if (!modelReady) {
+    return Promise.reject(
+      new Error("Load the semantic model before searching"),
+    );
+  }
+
   const requestId = nextRequestId;
   nextRequestId += 1;
 
@@ -79,13 +128,10 @@ export function rankLayersWithWorker(
     type: "rank",
   };
 
-  return new Promise((resolve, reject) => {
-    pendingRequests.set(requestId, { onProgress, reject, resolve });
-    try {
-      getSemanticWorker().postMessage(request);
-    } catch (error) {
-      pendingRequests.delete(requestId);
-      reject(error instanceof Error ? error : new Error(String(error)));
+  return sendRequest(request, onProgress).then((response) => {
+    if (response.type !== "result") {
+      throw new Error("Semantic search worker returned an invalid response");
     }
+    return response;
   });
 }
