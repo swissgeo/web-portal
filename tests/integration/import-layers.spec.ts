@@ -63,7 +63,13 @@ async function mockExternalLayerApi(
   // BEFORE the more specific `/dataset/` and `/service/` routes — otherwise it
   // would shadow them (e.g. `/service/<url>` also matches `*/*`).
   await page.route("**/api/wpa/v1/layers/external/*/*", (route, request) => {
-    const layerId = request.url().split("/").pop() ?? "";
+    const parts = request.url().split("/");
+    const layerId = parts.pop() ?? "";
+    const encodedUrl = parts.pop() ?? "";
+    // Mirror the real handler: the distribution's `dataservice` link points at
+    // the `/service/<encodedUrl>` endpoint (mocked below), which `useService`
+    // fetches to resolve the capability document.
+    const serviceHref = [...parts, "service", encodedUrl].join("/");
     return route.fulfill({
       status: 200,
       json: {
@@ -74,7 +80,7 @@ async function mockExternalLayerApi(
             id: layerId,
             links: [
               {
-                href: request.url().replace(/\/[^/]+$/, ""),
+                href: serviceHref,
                 rel: "dataservice",
               },
             ],
