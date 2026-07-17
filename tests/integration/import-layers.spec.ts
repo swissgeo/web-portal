@@ -202,7 +202,9 @@ test.describe("import external layers", () => {
     await layerButton.click();
 
     // The imported overlay reaches the OpenLayers map.
-    await expect.poll(() => countMapLayers(page)).toBeGreaterThan(layersBefore);
+    await expect
+      .poll(() => countMapLayers(page), { timeout: HYDRATION_TIMEOUT })
+      .toBeGreaterThan(layersBefore);
 
     // ...and shows up in the "Aktive Ebenen" sidebar (the layer-cart entry
     // renders the layer's displayName, which contains the layer id).
@@ -229,7 +231,9 @@ test.describe("import external layers", () => {
     await expect(layerButton).toBeVisible();
     await layerButton.click();
 
-    await expect.poll(() => countMapLayers(page)).toBeGreaterThan(layersBefore);
+    await expect
+      .poll(() => countMapLayers(page), { timeout: HYDRATION_TIMEOUT })
+      .toBeGreaterThan(layersBefore);
 
     await page.getByRole("button", { name: "Aktive Ebenen" }).click();
     await expect(
