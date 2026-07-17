@@ -30,13 +30,11 @@ const WMTS_LAYER = "ch.swisstopo.pixelkarte-farbe";
 const WMS_LAYER = "ch.swisstopo.test-wms";
 
 /**
- * Mock everything the external-layer import pipeline touches so the test never
- * reaches the real geo.admin service:
- *  - the raw capabilities document (fetched browser-side by the panel and by
- *    the ogc composables),
- *  - our own `/api/wpa/v1/layers/external/**` endpoints (browser -> Nuxt),
- *    short-circuiting their server-side geo.admin fetch,
- *  - the map tiles.
+ * Mock the external-layer import pipeline so the test stays offline. Only the
+ * raw-capabilities route drives the assertions (it populates the import list);
+ * the `/external/**` endpoint and tile mocks are defensive — adding a layer
+ * mounts the converter pipeline, which fires those requests in the background,
+ * and mocking them keeps the run hermetic and free of unmocked-request noise.
  */
 async function mockExternalLayerApi(
   page: Page,
@@ -55,20 +53,18 @@ async function mockExternalLayerApi(
     }),
   );
 
-  // Synthetic OGC record served by our own endpoints. Shapes mirror the real
-  // handlers in packages/main/server/api/wpa/v1/layers/external/.
+  // Distributions endpoint. Shapes mirror the real handlers in
+  // packages/main/server/api/wpa/v1/layers/external/.
   //
-  // Playwright matches the LAST-registered route first, so the broad
-  // distributions glob (`.../external/<url>/<layer>`) must be registered
-  // BEFORE the more specific `/dataset/` and `/service/` routes — otherwise it
-  // would shadow them (e.g. `/service/<url>` also matches `*/*`).
+  // Playwright matches the last-registered route first, so this broad glob must
+  // be registered BEFORE the more specific `/dataset/` and `/service/` routes
+  // (`/service/<url>` also matches `*/*`), or it would shadow them.
   await page.route("**/api/wpa/v1/layers/external/*/*", (route, request) => {
     const parts = request.url().split("/");
     const layerId = parts.pop() ?? "";
     const encodedUrl = parts.pop() ?? "";
-    // Mirror the real handler: the distribution's `dataservice` link points at
-    // the `/service/<encodedUrl>` endpoint (mocked below), which `useService`
-    // fetches to resolve the capability document.
+    // The distribution's `dataservice` link points at the `/service/<url>`
+    // endpoint (mocked below), which `useService` follows to the capabilities.
     const serviceHref = [...parts, "service", encodedUrl].join("/");
     return route.fulfill({
       status: 200,
@@ -166,6 +162,8 @@ test.describe("import external layers", () => {
     await cleanupExternalRequestMocks(page);
   });
 
+  // Navigates to the German locale, so the assertions below rely on German UI
+  // labels (e.g. "Aktive Ebenen").
   async function openMap(page: Page) {
     await page.goto("/de/map");
     await expect(page.getByTestId("ol-map")).toBeVisible({
@@ -191,9 +189,8 @@ test.describe("import external layers", () => {
     await expect(layerButton).toBeVisible();
     await layerButton.click();
 
-    // The imported layer shows up in the "Aktive Ebenen" sidebar (the
-    // layer-cart entry renders the layer's displayName, which contains the
-    // layer id).
+    // The imported layer shows up in the "Aktive Ebenen" sidebar (the cart
+    // entry's displayName contains the layer id).
     await page.getByRole("button", { name: "Aktive Ebenen" }).click();
     await expect(
       page.getByTestId("layer-cart").getByText(WMTS_LAYER),
@@ -229,7 +226,7 @@ test.describe("import external layers", () => {
     await openMap(page);
 
     await page.getByTestId("debug-open-import-layers-panel").click();
-    await page.locator('[title="Preset capability URLs"]').click();
+    await page.getByTestId("import-preset-toggle").click();
     await page
       .getByRole("button", { name: "geo.admin — WMTS (EPSG:2056)" })
       .click();

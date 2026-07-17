@@ -141,6 +141,7 @@ function addLayer(layer: string) {
         />
         <button
           type="button"
+          data-testid="import-preset-toggle"
           class="absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer px-1 text-gray-500"
           title="Preset capability URLs"
           @click="showPresets = !showPresets"
@@ -167,12 +168,7 @@ function addLayer(layer: string) {
         @click="loadCapabilities"
         iconName="Send"
       ></IconButton>
-      <IconButton
-        data-testid="import-close"
-        @click="$emit('close')"
-        iconName="X"
-      >
-      </IconButton>
+      <IconButton @click="$emit('close')" iconName="X"> </IconButton>
     </div>
     <div class="mt-12 h-[300px] overflow-scroll pb-18">
       <input
@@ -181,7 +177,7 @@ function addLayer(layer: string) {
         class="mb-2 w-full border border-gray-200 px-2 py-1"
         :placeholder="`Filter ${layers.length} layers…`"
       />
-      <ul data-testid="import-layer-list">
+      <ul>
         <li v-for="layer in filteredLayers" :key="layer" class="py-2">
           <button
             :data-testid="`import-layer-${layer}`"
