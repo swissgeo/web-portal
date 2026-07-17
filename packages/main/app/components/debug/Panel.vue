@@ -73,7 +73,11 @@ function togglePrintPanel() {
       <UButton @click="toggleLayersPanel" class="cursor-pointer">
         {{ $t("debug.openLayersPanel") }}
       </UButton>
-      <UButton @click="toggleImportPanel" class="cursor-pointer">
+      <UButton
+        data-testid="debug-open-import-layers-panel"
+        @click="toggleImportPanel"
+        class="cursor-pointer"
+      >
         {{ $t("debug.openImportLayersPanel") }}
       </UButton>
       <UButton @click="toggleLocalImportPanel" class="cursor-pointer">

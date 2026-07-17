@@ -134,6 +134,7 @@ function addLayer(layer: string) {
       <div class="relative w-full">
         <input
           v-model="importUrl"
+          data-testid="import-capability-url"
           class="w-full border border-gray-200 py-1 pr-7 pl-2"
           placeholder="Capability URL (type or pick a preset)"
           @keydown.enter="loadCapabilities"
@@ -161,8 +162,17 @@ function addLayer(layer: string) {
           </li>
         </ul>
       </div>
-      <IconButton @click="loadCapabilities" iconName="Send"></IconButton>
-      <IconButton @click="$emit('close')" iconName="X"> </IconButton>
+      <IconButton
+        data-testid="import-load-capabilities"
+        @click="loadCapabilities"
+        iconName="Send"
+      ></IconButton>
+      <IconButton
+        data-testid="import-close"
+        @click="$emit('close')"
+        iconName="X"
+      >
+      </IconButton>
     </div>
     <div class="mt-12 h-[300px] overflow-scroll pb-18">
       <input
@@ -171,9 +181,10 @@ function addLayer(layer: string) {
         class="mb-2 w-full border border-gray-200 px-2 py-1"
         :placeholder="`Filter ${layers.length} layers…`"
       />
-      <ul>
+      <ul data-testid="import-layer-list">
         <li v-for="layer in filteredLayers" :key="layer" class="py-2">
           <button
+            :data-testid="`import-layer-${layer}`"
             class="cursor-pointer hover:bg-cyan-200"
             @click="addLayer(layer)"
           >
