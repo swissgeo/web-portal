@@ -180,6 +180,10 @@ export function useNaturalLanguageMapSearch() {
         return;
       }
 
+      const placeResultPromise = moveToPlace(trimmedQuery, locale).then(
+        (place) => ({ place }),
+        (error: unknown) => ({ error }),
+      );
       const match = await classifyLayer(layerQuery, candidates);
       if (!match || match.score < MINIMUM_LAYER_SCORE) {
         status.value =
@@ -189,12 +193,15 @@ export function useNaturalLanguageMapSearch() {
 
       const layerTitle = match.layer.properties?.title ?? match.layer.id;
       status.value = `Adding ${layerTitle}…`;
-      const [, place] = await Promise.all([
+      const [, placeResult] = await Promise.all([
         addLayer(match.layer.id, locale),
-        moveToPlace(trimmedQuery, locale),
+        placeResultPromise,
       ]);
-      status.value = place
-        ? `Added ${layerTitle} near ${place}`
+      if ("error" in placeResult) {
+        throw placeResult.error;
+      }
+      status.value = placeResult.place
+        ? `Added ${layerTitle} near ${placeResult.place}`
         : `Added ${layerTitle}`;
     } catch (error) {
       status.value = error instanceof Error ? error.message : String(error);
