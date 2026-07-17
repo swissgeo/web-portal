@@ -1,4 +1,4 @@
-import type BaseLayer from "ol/layer/Base";
+import type { Page } from "@playwright/test";
 
 import { expect, test } from "@playwright/test";
 
@@ -8,7 +8,57 @@ import {
   cleanupExternalRequestMocks,
 } from "./setup";
 
+const STORAGE_KEY = "swissgeo_app_state";
+
+const noBackgroundStateStr = btoa(
+  JSON.stringify({
+    version: "1.0",
+    state: {
+      layers: [],
+      bg_layer: null,
+    },
+  }),
+);
+
+async function expectNoBackground(page: Page) {
+  await expect(page.getByTestId("ol-map")).toBeVisible({
+    timeout: HYDRATION_TIMEOUT,
+  });
+
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(
+          () => window.swissgeoOlMap?.getLayers().getArray().length ?? null,
+        ),
+      { timeout: HYDRATION_TIMEOUT },
+    )
+    .toBe(0);
+
+  await expect(page.getByTestId("background-selector-void")).toBeVisible();
+}
+
+async function expectNoBackgroundStatePersisted(page: Page) {
+  await expect
+    .poll(
+      async () =>
+        page.evaluate((storageKey) => {
+          const storedState = sessionStorage.getItem(storageKey);
+          if (!storedState) {
+            return false;
+          }
+          return JSON.parse(storedState)?.state?.bg_layer === null;
+        }, STORAGE_KEY),
+      { timeout: HYDRATION_TIMEOUT },
+    )
+    .toBe(true);
+}
+
 test.describe("state loading", () => {
+  // The assertions use HYDRATION_TIMEOUT, so the test timeout must outlive it.
+  // Otherwise Playwright can fail before the app hydration wait finishes.
+  test.describe.configure({ timeout: HYDRATION_TIMEOUT * 2 });
+
   test.beforeEach(async ({ page }) => {
     await mockExternalRequests(page).mockAll();
   });
@@ -18,32 +68,22 @@ test.describe("state loading", () => {
   });
 
   test("loads no background if the state demands it", async ({ page }) => {
-    const stateStr = btoa(
-      JSON.stringify({
-        version: "1.0",
-        state: {
-          layers: [],
-        },
-      }),
-    );
-    await page.goto(`/de/map?statestr=${stateStr}`);
+    await page.goto("/de/map?state=" + noBackgroundStateStr);
 
-    await expect(page.getByTestId("ol-map")).toBeVisible({
-      timeout: HYDRATION_TIMEOUT,
-    });
+    await expectNoBackground(page);
+  });
 
-    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
-    const layers = await page.evaluate((map) => {
-      const arr = map.getLayers().getArray();
-      return arr.map((layer: BaseLayer) => ({
-        name: layer.get("id"),
-        opacity: layer.getOpacity(),
-        visible: layer.getVisible(),
-      }));
-    }, mapRef);
+  test("restores persisted session state after navigation", async ({
+    page,
+  }) => {
+    await page.goto("/de/map?state=" + noBackgroundStateStr);
+    await expectNoBackground(page);
+    await expectNoBackgroundStatePersisted(page);
 
-    expect(layers).toHaveLength(0);
-    const backgroundSelector = page.getByTestId("background-selector-void");
-    await expect(backgroundSelector).toBeVisible();
+    // Drop state so the second restore can only come from sessionStorage.
+    // Otherwise the URL import would hide a broken session restore.
+    await page.goto("/de/map");
+
+    await expectNoBackground(page);
   });
 });
