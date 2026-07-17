@@ -7,14 +7,17 @@ import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
+import { mount } from "@vue/test-utils";
 import {
   isBackgroundLayer,
   layersToStateConfig,
   layerToStateConfig,
+  useCustomStateConfig,
   useStateConfig,
 } from "~/composables/useStateConfig";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { defineComponent, h, nextTick } from "vue";
 
 const mockMapLayers: MapLayer[] = [];
 
@@ -339,7 +342,7 @@ describe("useStateConfig > importState", () => {
     expect(layerStore.layers.length).to.eq(0);
   });
 
-  it("useCustomStateConfig", () => {
+  it("builds custom state from current layers and background after mount", async () => {
     const layerStore = useLayerStore();
     mockMapLayers.push(backgroundLayer);
     mockMapLayers.push(...mockedMapLayers);
@@ -349,7 +352,17 @@ describe("useStateConfig > importState", () => {
     positionStore.center = [2660000, 1120000];
     positionStore.zoom = 5;
     positionStore.rotation = Math.PI;
-    const customState = useCustomStateConfig();
+    let customState!: ReturnType<typeof useCustomStateConfig>;
+
+    const wrapper = mount(
+      defineComponent({
+        setup() {
+          customState = useCustomStateConfig();
+          return () => h("div");
+        },
+      }),
+    );
+    await nextTick();
 
     expect(customState.customStateConfig.value.version).to.eq(
       APP_STATE_CONFIG_VERSION,
@@ -357,6 +370,14 @@ describe("useStateConfig > importState", () => {
     expect(customState.customStateMapCenter.value).toEqual([0, 0]);
     expect(customState.customStateMapRotation.value).to.eq(0);
     expect(customState.customStateMapZoom.value).to.eq(0);
+    expect(customState.customStateConfig.value.state.layers).toEqual(
+      expectedStatesConfig,
+    );
+    expect(customState.customStateConfig.value.state.bg_layer).toEqual(
+      expectedBackgroundState,
+    );
+
+    wrapper.unmount();
   });
 });
 //describe("useStateConfig > exportState", () => {});

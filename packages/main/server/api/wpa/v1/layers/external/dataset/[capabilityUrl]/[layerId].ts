@@ -6,6 +6,8 @@ import {
   getRouterParam,
 } from "h3";
 
+import { decodeCapabilityUrl } from "../../../../../../../utils/externalLayerUrl";
+
 type CapabilitiesType = "WMS" | "WMTS";
 
 enum TagNames {
@@ -104,7 +106,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const capabilityUrl = decodeURIComponent(capabilityUrlParam);
+  const capabilityUrl = decodeCapabilityUrl(capabilityUrlParam);
   const selfUrl = `/api/wpa/v1/layers/external/dataset/${capabilityUrlParam}/${layerId}`;
   const distributionsUrl = `/api/wpa/v1/layers/external/${capabilityUrlParam}/${layerId}`;
 

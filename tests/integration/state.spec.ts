@@ -68,7 +68,7 @@ test.describe("state loading", () => {
   });
 
   test("loads no background if the state demands it", async ({ page }) => {
-    await page.goto("/de/map?statestr=" + noBackgroundStateStr);
+    await page.goto("/de/map?state=" + noBackgroundStateStr);
 
     await expectNoBackground(page);
   });
@@ -76,11 +76,11 @@ test.describe("state loading", () => {
   test("restores persisted session state after navigation", async ({
     page,
   }) => {
-    await page.goto("/de/map?statestr=" + noBackgroundStateStr);
+    await page.goto("/de/map?state=" + noBackgroundStateStr);
     await expectNoBackground(page);
     await expectNoBackgroundStatePersisted(page);
 
-    // Drop statestr so the second restore can only come from sessionStorage.
+    // Drop state so the second restore can only come from sessionStorage.
     // Otherwise the URL import would hide a broken session restore.
     await page.goto("/de/map");
 

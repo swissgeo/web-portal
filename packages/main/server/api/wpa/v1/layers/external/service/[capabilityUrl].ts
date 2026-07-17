@@ -1,5 +1,7 @@
 import { appendResponseHeader, createError, getRouterParam } from "h3";
 
+import { decodeCapabilityUrl } from "../../../../../../utils/externalLayerUrl";
+
 export default defineEventHandler((event) => {
   const capabilityUrlParam = getRouterParam(event, "capabilityUrl");
 
@@ -11,7 +13,7 @@ export default defineEventHandler((event) => {
     });
   }
 
-  const capabilityUrl = decodeURIComponent(capabilityUrlParam);
+  const capabilityUrl = decodeCapabilityUrl(capabilityUrlParam);
 
   appendResponseHeader(event, "Content-Type", "application/json");
   appendResponseHeader(event, "Cache-Control", `max-age=${60 * 60}`);
