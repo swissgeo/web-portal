@@ -84,7 +84,7 @@ catalog:
   nuxt: ^4.4.8
   ol: ^10.9.0
   ol-mapbox-style: ^13.4.1
-  pinia: ^3.0.4
+  pinia: ^4.0.0
   playwright-core: ^1.58.2
   postcss-html: ^1.8.0
   prettier: ^3.8.3
