@@ -34,8 +34,8 @@ catalogs:
       specifier: ^11.4.0
       version: 11.4.5
     '@intlify/utils':
-      specifier: ^0.14.1
-      version: 0.14.1
+      specifier: ^1.0.0
+      version: 1.0.1
     '@lucide/vue':
       specifier: ^1.18.0
       version: 1.18.0
@@ -900,7 +900,7 @@ importers:
         version: 11.4.5
       '@intlify/utils':
         specifier: 'catalog:'
-        version: 0.14.1
+        version: 1.0.1
       '@lucide/vue':
         specifier: 'catalog:'
         version: 1.18.0(vue@3.5.38(typescript@6.0.3))
@@ -2494,6 +2494,10 @@ packages:
 
   '@intlify/utils@0.14.1':
     resolution: {integrity: sha512-/NVDhX6sG87h0PXIwUCTW9DeHbKeqlni6qVV8xzMULQRHE9azIETldBlTKaBji7z6ostyDIH4s6SWI3AAI4uFg==}
+    engines: {node: '>= 20'}
+
+  '@intlify/utils@1.0.1':
+    resolution: {integrity: sha512-1ErRU0yOK0f6aZnIg4I5/O6BqWYf9r3uA5KNEkwvmCi9TCPgtOmiz1EwcAijl8UYB60Rkgcc7pErfoFGEZoyeQ==}
     engines: {node: '>= 20'}
 
   '@intlify/vue-i18n-extensions@8.0.0':
@@ -11982,6 +11986,8 @@ snapshots:
   '@intlify/utils@0.13.0': {}
 
   '@intlify/utils@0.14.1': {}
+
+  '@intlify/utils@1.0.1': {}
 
   '@intlify/vue-i18n-extensions@8.0.0(@intlify/shared@11.4.5)(@vue/compiler-dom@3.5.38)(vue-i18n@11.4.5(vue@3.5.38(typescript@6.0.3)))(vue@3.5.38(typescript@6.0.3))':
     dependencies:
