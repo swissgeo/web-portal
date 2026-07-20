@@ -31,6 +31,28 @@ const fetchMock = vi.fn();
 
 vi.stubGlobal("$fetch", fetchMock);
 
+const { setCenterMock, setZoomMock, setRotationMock } = vi.hoisted(() => ({
+  setCenterMock: vi.fn(),
+  setZoomMock: vi.fn(),
+  setRotationMock: vi.fn(),
+}));
+
+vi.mock("@swissgeo/map", async (importOriginal) => {
+  const original = await importOriginal();
+
+  return {
+    // @ts-expect-error Spreading this actually works and is foreseen by the docs
+    ...original,
+    usePositionStore: () => ({
+      // @ts-expect-error Spreading this actually works and is foreseen by the docs
+      ...original.usePositionStore(),
+      setCenter: setCenterMock,
+      setZoom: setZoomMock,
+      setRotation: setRotationMock,
+    }),
+  };
+});
+
 vi.mock("@swissgeo/layers", async (importOriginal) => {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   const actual = await importOriginal<typeof import("@swissgeo/layers")>();
@@ -279,16 +301,67 @@ describe("useStateConfig manages to import a State with importState", () => {
     mockMapLayers.length = 0;
   });
 
+  it("Does not change the app state when the importe state has no information", async () => {
+    const state = {};
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state,
+    };
+
+    await useStateConfig().importState(payload);
+    expect(setCenterMock).not.toHaveBeenCalled();
+    expect(setZoomMock).not.toHaveBeenCalled();
+    expect(setRotationMock).not.toHaveBeenCalled();
+  });
+
+  it("When map center is within bounds, the state has the correct center", async () => {
+    const state = { map: { center: [2660000, 1120000] as [number, number] } };
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state,
+    };
+
+    await useStateConfig().importState(payload);
+    expect(setCenterMock).toHaveBeenCalledWith([2660000, 1120000], {
+      name: "state-config",
+    });
+  });
+
+  it("When zoom is set correctly in the payload, we find it again in the state", async () => {
+    const state = { map: { zoom: 5 } };
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state,
+    };
+
+    await useStateConfig().importState(payload);
+    expect(setZoomMock).toHaveBeenCalledWith(5, { name: "state-config" });
+  });
+
+  it.each([
+    [Math.PI, Math.PI],
+    [Math.PI * 3, Math.PI],
+    [-Math.PI, Math.PI],
+  ])("Rotation is working correctly", async (rotation, expectedRotation) => {
+    const state = { map: { rotation } };
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state,
+    };
+
+    await useStateConfig().importState(payload);
+    expect(setRotationMock).toHaveBeenCalledWith(expectedRotation, {
+      name: "state-config",
+    });
+  });
+
   it.each`
-    description                                                                   | state                                                                                            | center                | zoom | rotation   | bg_layer       | layers
-    ${"Load a default state when if has no information"}                          | ${{}}                                                                                            | ${[2660000, 1190000]} | ${1} | ${0}       | ${null}        | ${[]}
-    ${"When map center is out of the bounding box, we have the default center"}   | ${{ map: { center: [0, 0] } }}                                                                   | ${[2660000, 1190000]} | ${1} | ${0}       | ${null}        | ${[]}
-    ${"When map center is within bounds, the state has the correct center"}       | ${{ map: { center: [2660000, 1120000] } }}                                                       | ${[2660000, 1120000]} | ${1} | ${0}       | ${null}        | ${[]}
-    ${"When zoom is set correctly in the payload, we find it again in the state"} | ${{ map: { zoom: 5 } }}                                                                          | ${[2660000, 1190000]} | ${5} | ${0}       | ${null}        | ${[]}
-    ${"Rotation is set up correctly"}                                             | ${{ map: { rotation: Math.PI } }}                                                                | ${[2660000, 1190000]} | ${1} | ${Math.PI} | ${null}        | ${[]}
-    ${"Rotation loop back to avoid angles greater than 2 times pi"}               | ${{ map: { rotation: Math.PI * 3 } }}                                                            | ${[2660000, 1190000]} | ${1} | ${Math.PI} | ${null}        | ${[]}
-    ${"Roation loop back to avoid angles lower than 0"}                           | ${{ map: { rotation: -Math.PI } }}                                                               | ${[2660000, 1190000]} | ${1} | ${Math.PI} | ${null}        | ${[]}
-    ${"Background Layer is set up correctly"}                                     | ${{ bg_layer: { layerUrl: "https://perdu.com", type: "dataset", isVisible: true, opacity: 1 } }} | ${[2660000, 1190000]} | ${1} | ${0}       | ${mockedLayer} | ${[]}
+    description                               | state                                                                                            | bg_layer       | layers
+    ${"Background Layer is set up correctly"} | ${{ bg_layer: { layerUrl: "https://perdu.com", type: "dataset", isVisible: true, opacity: 1 } }} | ${mockedLayer} | ${[]}
     ${"Layers are set up correctly"} | ${{
   layers: [
     {
@@ -304,30 +377,23 @@ describe("useStateConfig manages to import a State with importState", () => {
       opacity: 1,
     },
   ],
-}} | ${[2660000, 1190000]} | ${1} | ${0} | ${null} | ${[mockedLayer, mockedLayer]}
-  `(
-    "$description",
-    async ({ _, state, center, zoom, rotation, bg_layer, layers }) => {
-      const payload: AppStatePayload = {
-        version: APP_STATE_CONFIG_VERSION,
-        state,
-      };
-      console.log(state);
-      console.log(bg_layer);
-      const positionStore = usePositionStore();
-      const layerStore = useLayerStore();
-      await useStateConfig().importState(payload);
-      console.log(layerStore.backgroundLayer);
-      expect(positionStore.center).to.eql(center);
-      expect(positionStore.zoom).to.eql(zoom);
-      expect(positionStore.rotation).to.eql(rotation);
-      expect(layerStore.backgroundLayer).to.eql(bg_layer);
-      expect(layerStore.layers).to.eql(layers);
-      if (layerStore.layers.length > 0) {
-        expect(layerStore.isThereImportOptions()).to.eq(true);
-      }
-    },
-  );
+}} | ${null} | ${[mockedLayer, mockedLayer]}
+  `("$description", async ({ _, state, bg_layer, layers }) => {
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state,
+    };
+
+    const layerStore = useLayerStore();
+    await useStateConfig().importState(payload);
+
+    expect(layerStore.backgroundLayer).to.eql(bg_layer);
+    expect(layerStore.layers).to.eql(layers);
+
+    if (layerStore.layers.length > 0) {
+      expect(layerStore.isThereImportOptions()).to.eq(true);
+    }
+  });
 
   it("empty the current state when importing a new state", async () => {
     const layerStore = useLayerStore();

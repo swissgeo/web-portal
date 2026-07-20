@@ -2,14 +2,11 @@
 import type { Map as OlMapType } from "ol";
 import type { Ref } from "vue";
 
-import { registerProj4 } from "@swissgeo/coordinates";
 import { platformModifierKeyOnly } from "ol/events/condition.js";
 import { defaults } from "ol/interaction/defaults.js";
 import DragPan from "ol/interaction/DragPan.js";
 import MouseWheelZoom from "ol/interaction/MouseWheelZoom.js";
 import Map from "ol/Map";
-import { register } from "ol/proj/proj4";
-import proj4 from "proj4";
 import { onMounted, provide, shallowRef, useTemplateRef } from "vue";
 
 import type { MapLayerRenderer } from "@/types";
@@ -38,11 +35,6 @@ onMounted(() => {
   (window as Window & { swissgeoOlMap?: OlMapType }).swissgeoOlMap =
     olMap.value;
 });
-
-function registerCustomProjection() {
-  registerProj4(proj4);
-  register(proj4);
-}
 
 function createOlMap(zoomOnlyCtrl = false) {
   const map = new Map({
@@ -84,7 +76,6 @@ function mountOlMap() {
   }
 }
 
-registerCustomProjection();
 createOlMap(zoomOnlyCtrl);
 </script>
 

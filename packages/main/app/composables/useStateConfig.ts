@@ -122,12 +122,15 @@ export function useStateConfig() {
     });
 
     const map = payload.state.map;
+
     if (map?.center !== null && map?.center !== undefined) {
       positionStore.setCenter(map.center, DISPATCHER);
     }
+
     if (map?.zoom !== null && map?.zoom !== undefined) {
       positionStore.setZoom(map.zoom, DISPATCHER);
     }
+
     if (map?.rotation !== null && map?.rotation !== undefined) {
       positionStore.setRotation(map.rotation, DISPATCHER);
     }
@@ -136,11 +139,13 @@ export function useStateConfig() {
       dimensionsStore.clearLayerDimensions(layer.uuid);
       layerStore.removeLayer(layer.uuid);
     }
+
     for (const layer of [...mapviewStore.mapLayers]) {
       mapviewStore.removeLayer(layer.uuid);
     }
 
     layerStore.setBackground(null);
+
     const stateLayers = payload.state.layers ?? [];
     const layers = await Promise.all(
       stateLayers.map((lc: LayerState) => stateConfigToLayer(lc)),

@@ -1,8 +1,9 @@
 import type { SingleCoordinate } from "@swissgeo/coordinates";
 
 import { WGS84, LV03, WEBMERCATOR, constants } from "@swissgeo/coordinates";
+import { flushPromises } from "@vue/test-utils";
 import { setActivePinia, createPinia } from "pinia";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 
 import usePositionStore, {
   DEFAULT_FORMAT,
@@ -13,6 +14,42 @@ import { LV95Format, LV03Format } from "@/utils/coordinates/coordinateFormat";
 const MIN_ZOOM = constants.SWISSTOPO_MIN_ZOOM_LEVEL;
 const MAX_ZOOM = constants.SWISSTOPO_MAX_ZOOM_LEVEL;
 
+const { animateMock, centerMock, zoomMock, rotationMock, getViewMock } =
+  await vi.hoisted(async () => {
+    const { ref } = await import("vue");
+
+    return {
+      animateMock: vi.fn(),
+      centerMock: ref([2660000, 1190000]),
+      zoomMock: ref(1),
+      rotationMock: ref(0),
+      getViewMock: vi.fn(() => ({
+        animate: animateMock,
+        getCenter: vi.fn(() => [2660000, 1190000]),
+        getZoom: vi.fn(() => 1),
+        getRotation: vi.fn(() => 1),
+        on: vi.fn(() => true),
+      })),
+    };
+  });
+
+vi.mock("@/stores/map", () => ({
+  useMapStore: () => ({
+    olMap: {
+      getView: getViewMock,
+      on: vi.fn(() => true),
+    },
+  }),
+}));
+
+vi.mock("@/composables/useOlMapPosition", () => ({
+  useOlMapPosition: () => ({
+    zoom: zoomMock,
+    center: centerMock,
+    rotation: rotationMock,
+  }),
+}));
+
 describe("position store", () => {
   const mockDispatcher = { name: "test" };
   let store: ReturnType<typeof usePositionStore>;
@@ -20,6 +57,8 @@ describe("position store", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     store = usePositionStore();
+
+    animateMock.mockClear();
   });
 
   describe("initial state", () => {
@@ -34,24 +73,35 @@ describe("position store", () => {
   });
 
   describe("setZoom", () => {
-    it("should set zoom to a valid value", () => {
-      store.setZoom(5, mockDispatcher);
-      expect(store.zoom).toEqual(5);
+    it("should set openlayers zoom to a valid value", () => {
+      const result = store.setZoom(5, mockDispatcher);
+      expect(result).toBe(true);
+      expect(animateMock).toHaveBeenCalledWith({ zoom: 5, duration: 200 });
     });
 
-    it("should not set zoom to an invalid value", () => {
-      store.setZoom(-1, mockDispatcher);
+    it("should not set openlayers zoom to an invalid value", () => {
+      const result = store.setZoom(-1, mockDispatcher);
+      expect(result).toBe(false);
       expect(store.zoom).not.toEqual(-1);
     });
 
     it("should not set zoom to a value greater than MAX_ZOOM", () => {
-      store.setZoom(MAX_ZOOM + 1, mockDispatcher);
+      const result = store.setZoom(MAX_ZOOM + 1, mockDispatcher);
+      expect(result).toBe(false);
       expect(store.zoom).not.toEqual(MAX_ZOOM + 1);
     });
 
     it("should not set zoom to a value less than MIN_ZOOM", () => {
-      store.setZoom(MIN_ZOOM - 1, mockDispatcher);
+      const result = store.setZoom(MIN_ZOOM - 1, mockDispatcher);
+      expect(result).toBe(false);
       expect(store.zoom).not.toEqual(MIN_ZOOM - 1);
+    });
+
+    it("should return immediately when there is no view available", () => {
+      getViewMock.mockReturnValueOnce(null);
+      const result = store.setZoom(5, mockDispatcher);
+      expect(result).toBe(false);
+      expect(animateMock).not.toHaveBeenCalled();
     });
   });
 
@@ -59,69 +109,108 @@ describe("position store", () => {
     it("should increase the zoom level by 1", () => {
       const initialZoom = store.zoom;
       store.increaseZoom(mockDispatcher);
-      expect(store.zoom).toBe(initialZoom + 1);
+      expect(animateMock).toHaveBeenCalledWith({
+        zoom: initialZoom + 1,
+        duration: 200,
+      });
     });
 
     it("should not be able to set zoom above MAX_ZOOM", () => {
-      store.setZoom(MAX_ZOOM, mockDispatcher);
+      zoomMock.value = MAX_ZOOM;
       store.increaseZoom(mockDispatcher);
-      expect(store.zoom).toBe(MAX_ZOOM);
+      // it does not go above MAX_ZOOM
+      expect(animateMock).toHaveBeenCalledWith({
+        zoom: MAX_ZOOM,
+        duration: 200,
+      });
+    });
+
+    it("It should not increase zoom when zoom isn't initialized", () => {
+      zoomMock.value = undefined;
+      store.increaseZoom(mockDispatcher);
+      // it does not go above MAX_ZOOM
+      expect(animateMock).not.toHaveBeenCalled();
     });
   });
 
   describe("decreaseZoom", () => {
     it("should decrease the zoom level by 1", () => {
-      store.setZoom(5, mockDispatcher);
-      const initialZoom = store.zoom;
+      zoomMock.value = 5;
       store.decreaseZoom(mockDispatcher);
-      expect(store.zoom).toBe(initialZoom - 1);
+      expect(animateMock).toHaveBeenCalledWith({ zoom: 4, duration: 200 });
     });
 
     it("should not be able to set zoom below MIN_ZOOM", () => {
-      store.setZoom(MIN_ZOOM, mockDispatcher);
+      zoomMock.value = MIN_ZOOM;
       store.decreaseZoom(mockDispatcher);
-      expect(store.zoom).toBe(MIN_ZOOM);
+      expect(animateMock).toHaveBeenCalledWith({
+        zoom: MIN_ZOOM,
+        duration: 200,
+      });
+    });
+
+    it("It should not decrease zoom when zoom isn't initialized", () => {
+      zoomMock.value = undefined;
+      store.decreaseZoom(mockDispatcher);
+      // it does not go above MAX_ZOOM
+      expect(animateMock).not.toHaveBeenCalled();
     });
   });
 
   describe("canIncreaseZoom", () => {
     it("should return true if zoom is less than MAX_ZOOM", () => {
-      store.setZoom(MAX_ZOOM - 1, mockDispatcher);
+      zoomMock.value = MAX_ZOOM - 1;
       expect(store.canIncreaseZoom()).toBe(true);
     });
 
     it("should return false if zoom is equal to MAX_ZOOM", () => {
-      store.setZoom(MAX_ZOOM, mockDispatcher);
+      zoomMock.value = MAX_ZOOM;
       expect(store.canIncreaseZoom()).toBe(false);
     });
   });
 
   describe("canDecreaseZoom", () => {
     it("should return true if zoom is greater than MIN_ZOOM", () => {
-      store.setZoom(MIN_ZOOM + 1, mockDispatcher);
+      zoomMock.value = MIN_ZOOM + 1;
       expect(store.canDecreaseZoom()).toBe(true);
     });
 
     it("should return false if zoom is equal to MIN_ZOOM", () => {
-      store.setZoom(MIN_ZOOM, mockDispatcher);
+      zoomMock.value = MIN_ZOOM;
       expect(store.canDecreaseZoom()).toBe(false);
     });
   });
 
   describe("setRotation", () => {
     it("should set rotation to a valid angle", () => {
-      store.setRotation(Math.PI / 4, mockDispatcher);
-      expect(store.rotation).toEqual(Math.PI / 4);
+      const result = store.setRotation(Math.PI / 4, mockDispatcher);
+      expect(result).toBe(true);
+      expect(animateMock).toHaveBeenCalledWith({
+        rotation: Math.PI / 4,
+        duration: 200,
+      });
     });
 
     it("should normalize rotation when it exceeds the valid range", () => {
-      store.setRotation(10 * Math.PI, mockDispatcher);
-      expect(store.rotation).toEqual(0);
+      const result = store.setRotation(10 * Math.PI, mockDispatcher);
+      expect(result).toBe(true);
+      expect(animateMock).toHaveBeenCalledWith({
+        rotation: 0,
+        duration: 200,
+      });
     });
 
     it("should not set rotation to NaN", () => {
-      store.setRotation(NaN, mockDispatcher);
-      expect(store.rotation).toEqual(0);
+      const result = store.setRotation(NaN, mockDispatcher);
+      expect(result).toBe(false);
+      expect(animateMock).not.toHaveBeenCalled();
+    });
+
+    it("should not set rotation to OL if view isn't available", () => {
+      getViewMock.mockReturnValueOnce(null);
+      const result = store.setRotation(Math.PI / 4, mockDispatcher);
+      expect(result).toBe(false);
+      expect(animateMock).not.toHaveBeenCalled();
     });
   });
 
@@ -139,18 +228,34 @@ describe("position store", () => {
 
   describe("setCenter", () => {
     it("should set center to a valid LV95 coordinate", () => {
-      store.setCenter([2600000, 1200000], mockDispatcher);
-      expect(store.center).toEqual([2600000, 1200000]);
+      const result = store.setCenter([2600000, 1200000], mockDispatcher);
+      expect(result).toBe(true);
+      expect(animateMock).toHaveBeenCalledWith({
+        center: [2600000, 1200000],
+        duration: 200,
+      });
     });
 
     it("should not set center to an invalid LV95 coordinate", () => {
-      store.setCenter([Infinity, -Infinity], mockDispatcher);
-      expect(store.center).toEqual(DEFAULT_PROJECTION.bounds.center);
+      const result = store.setCenter([Infinity, -Infinity], mockDispatcher);
+      expect(result).toBe(false);
+      expect(animateMock).not.toHaveBeenCalled();
     });
 
     it("should not set center to an invalid format", () => {
-      store.setCenter([6] as unknown as SingleCoordinate, mockDispatcher);
-      expect(store.center).toEqual(DEFAULT_PROJECTION.bounds.center);
+      const result = store.setCenter(
+        [6] as unknown as SingleCoordinate,
+        mockDispatcher,
+      );
+      expect(result).toBe(false);
+      expect(animateMock).not.toHaveBeenCalled();
+    });
+
+    it("should not set center to OL if view isn't available", () => {
+      getViewMock.mockReturnValueOnce(null);
+      const result = store.setCenter([2600000, 1200000], mockDispatcher);
+      expect(result).toBe(false);
+      expect(animateMock).not.toHaveBeenCalled();
     });
   });
 
@@ -200,28 +305,37 @@ describe("position store", () => {
       expect(result[0]).toBeCloseTo(expected[0], 6);
       expect(result[1]).toBeCloseTo(expected[1], 6);
     });
+
+    it("should return undefined if center is undefined", () => {
+      store.$patch({ center: undefined });
+      const result = store.centerEpsg4326;
+      expect(result).toBe(undefined);
+    });
   });
 
   describe("$reset", () => {
-    it("should reset the store to its initial state", () => {
-      store.$patch({
-        center: [600000, 200000],
-        zoom: 5,
-        rotation: 45,
-        displayFormat: LV03Format,
-      });
+    it("should reset the store to its initial state", async () => {
+      centerMock.value = [600000, 200000];
+      zoomMock.value = 5;
+      rotationMock.value = 45;
+
+      await flushPromises();
 
       expect(store.center).toEqual([600000, 200000]);
       expect(store.zoom).toBe(5);
       expect(store.rotation).toBe(45);
-      expect(store.displayFormat.id).toBe("LV03");
 
       store.$reset(mockDispatcher);
 
-      expect(store.center).toEqual(DEFAULT_PROJECTION.bounds.center);
-      expect(store.zoom).toBe(DEFAULT_PROJECTION.getDefaultZoom());
-      expect(store.rotation).toBe(0);
-      expect(store.displayFormat.id).toBe(DEFAULT_FORMAT.id);
+      expect(animateMock).toHaveBeenCalledWith({
+        center: DEFAULT_PROJECTION.bounds.center,
+        duration: 200,
+      });
+      expect(animateMock).toHaveBeenCalledWith({
+        zoom: DEFAULT_PROJECTION.getDefaultZoom(),
+        duration: 200,
+      });
+      expect(animateMock).toHaveBeenCalledWith({ rotation: 0, duration: 200 });
     });
   });
 
@@ -230,22 +344,29 @@ describe("position store", () => {
       store.$patch({ zoom: 3, center: [0, 0] });
       expect(store.resolution).toBe(100);
     });
+
+    it("should return undefined if zoom is undefined", () => {
+      store.$patch({ zoom: undefined });
+      expect(store.resolution).toBe(undefined);
+    });
+
+    it("should return undefined if center is undefined", () => {
+      store.$patch({ center: undefined });
+      expect(store.resolution).toBe(undefined);
+    });
   });
 
   describe("non-SwissCoordinateSystem projections", () => {
     it("should increase zoom level by 1 for non-SwissCoordinateSystem projections", () => {
-      store.$patch({ projection: WGS84 });
-      const initialZoom = store.zoom;
+      store.$patch({ projection: WGS84, zoom: 8 });
       store.increaseZoom(mockDispatcher);
-      expect(store.zoom).toBe(initialZoom + 1);
+      expect(animateMock).toHaveBeenCalledWith({ zoom: 9, duration: 200 });
     });
 
     it("should decrease zoom level by 1 for non-SwissCoordinateSystem projections", () => {
-      store.$patch({ projection: WGS84 });
-      store.setZoom(5, mockDispatcher); // So that we are not at the minimum zoom level (which is the default zoom level)
-      const initialZoom = store.zoom;
+      store.$patch({ projection: WGS84, zoom: 5 });
       store.decreaseZoom(mockDispatcher);
-      expect(store.zoom).toBe(initialZoom - 1);
+      expect(animateMock).toHaveBeenCalledWith({ zoom: 4, duration: 200 });
     });
   });
 });
