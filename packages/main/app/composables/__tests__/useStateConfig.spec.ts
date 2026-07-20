@@ -345,6 +345,101 @@ describe("useStateConfig manages to import a State with importState", () => {
     expect(layerStore.layers.length).to.eq(0);
   });
 
+  it("clears existing layer dimensions when importing a new state", async () => {
+    const layerStore = useLayerStore();
+    const dimensionsStore = useDimensionsStore();
+    const existingLayer = datasetsForStore[0]!;
+    layerStore.addLayer(existingLayer);
+    dimensionsStore.setDimension(existingLayer.uuid, "time", {
+      currentValue: "2024",
+      availableValues: ["2024"],
+    });
+    expect(
+      dimensionsStore.getDimensions(existingLayer.uuid)?.time,
+    ).toBeTruthy();
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {},
+    };
+    await useStateConfig().importState(payload);
+
+    expect(dimensionsStore.getDimensions(existingLayer.uuid)).toBeUndefined();
+  });
+
+  it("writes time dimensions from the incoming state into the dimensions store", async () => {
+    const dimensionsStore = useDimensionsStore();
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            layerUrl: "https://perdu.com",
+            type: "dataset",
+            isVisible: true,
+            opacity: 1,
+            dimensions: {
+              time: { currentValue: "20240101" },
+            },
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    const uuid = mockedLayer.uuid;
+    const timeDimension = dimensionsStore.getDimensions(uuid)?.time;
+    expect(timeDimension).toEqual({
+      currentValue: "20240101",
+      availableValues: [],
+    });
+  });
+
+  it("does not set a time dimension when the incoming layer has no time dimension", async () => {
+    const dimensionsStore = useDimensionsStore();
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            layerUrl: "https://perdu.com",
+            type: "dataset",
+            isVisible: true,
+            opacity: 1,
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(
+      dimensionsStore.getDimensions(mockedLayer.uuid)?.time,
+    ).toBeUndefined();
+  });
+
+  it("drops incoming layers that have no layerUrl", async () => {
+    const layerStore = useLayerStore();
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            layerUrl: "",
+            type: "dataset",
+            isVisible: true,
+            opacity: 1,
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(layerStore.layers).toEqual([]);
+  });
+
   it("builds custom state from current layers and background after mount", async () => {
     const layerStore = useLayerStore();
     mockMapLayers.push(backgroundLayer);
