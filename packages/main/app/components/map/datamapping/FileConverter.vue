@@ -21,7 +21,8 @@ const FORMAT_BY_TYPE: Record<string, LayerFormat> = {
 const layerData = computed((): MapLayer => {
   const base = {
     ...layer,
-    format: FORMAT_BY_TYPE[layer.type] ?? (layer.type.toUpperCase() as LayerFormat),
+    format:
+      FORMAT_BY_TYPE[layer.type] ?? (layer.type.toUpperCase() as LayerFormat),
     layerId: layer.humanId,
     displayName: layer.info?.displayName ?? layer.humanId,
     opacity: 1,

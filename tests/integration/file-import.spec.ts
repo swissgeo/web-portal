@@ -13,9 +13,7 @@ const fixturePath = (filename: string) =>
   fileURLToPath(new URL(`../fixtures/${filename}`, import.meta.url));
 
 const getLayerCount = (page: Page) =>
-  page.evaluate(
-    () => window.swissgeoOlMap?.getLayers().getArray().length ?? 0,
-  );
+  page.evaluate(() => window.swissgeoOlMap?.getLayers().getArray().length ?? 0);
 
 const getVectorFeatureCounts = (page: Page) =>
   page.evaluate(() =>
@@ -52,7 +50,9 @@ test.describe("file import", () => {
     await page.getByTestId("debug-open-import-local-panel").click();
     await page.getByTestId("file-input").setInputFiles(fixturePath(filename));
     await page.getByTestId("file-import-button").click();
-    await expect(page.getByText(`Successfully imported ${filename}`)).toBeVisible();
+    await expect(
+      page.getByText(`Successfully imported ${filename}`),
+    ).toBeVisible();
   };
 
   // Both fixtures hold a Point and a LineString.
