@@ -36,6 +36,12 @@ export function useFileImport() {
     } else if (filename.endsWith(".geojson") || filename.endsWith(".json")) {
       layerType = "geojson";
       fileData = await file.text();
+      // Fail here rather than let the map renderer throw on unparseable data.
+      try {
+        JSON.parse(fileData);
+      } catch {
+        throw new Error(`Invalid GeoJSON file: ${file.name}`);
+      }
     } else {
       throw new Error(`Unsupported file type: ${filename}`);
     }
