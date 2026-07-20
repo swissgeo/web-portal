@@ -48,6 +48,31 @@ describe("FileConverter", () => {
     expect(updateEvents).toHaveLength(3);
   });
 
+  it("maps a GeoJSON file to the GeoJSON format with parsed data", () => {
+    const featureCollection = {
+      type: "FeatureCollection",
+      features: [],
+    };
+    const wrapper = mount(FileConverter, {
+      props: {
+        layer: {
+          data: JSON.stringify(featureCollection),
+          type: "geojson" as const,
+          uuid: "geojson-uuid",
+          humanId: "my-drawing.geojson",
+          isLoading: false,
+        },
+      },
+    });
+
+    const emitted = wrapper.emitted("update")![0]![0] as Record<
+      string,
+      unknown
+    >;
+    expect(emitted.format).toBe("GeoJSON");
+    expect(emitted.geoJsonData).toEqual(featureCollection);
+  });
+
   it("emits the remove signal when unmounted", () => {
     const layerData = {
       data: `<xml>KML data here</xml>`,

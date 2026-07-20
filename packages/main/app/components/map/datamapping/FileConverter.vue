@@ -11,21 +11,32 @@ const emit = defineEmits<{
   remove: [void];
 }>();
 
-const layerFormat = computed(
-  (): LayerFormat => layer.type.toUpperCase() as LayerFormat,
-);
+const FORMAT_BY_TYPE: Record<string, LayerFormat> = {
+  kml: "KML",
+  kmz: "KMZ",
+  gpx: "GPX",
+  geojson: "GeoJSON",
+};
 
-const layerData = computed(
-  (): MapLayer => ({
+const layerData = computed((): MapLayer => {
+  const base = {
     ...layer,
-    format: layerFormat.value,
+    format: FORMAT_BY_TYPE[layer.type] ?? (layer.type.toUpperCase() as LayerFormat),
     layerId: layer.humanId,
-    //type: layer.type.toUpperCase(),
     displayName: layer.info?.displayName ?? layer.humanId,
     opacity: 1,
     isVisible: true,
-  }),
-);
+  };
+  // GeoJSON is rendered from a parsed FeatureCollection, whereas KML/KMZ/GPX
+  // are consumed as raw string data.
+  if (base.format === "GeoJSON") {
+    return {
+      ...base,
+      geoJsonData: JSON.parse(layer.data as string),
+    } as MapLayer;
+  }
+  return base;
+});
 
 watch(layerData, () => emit("update", layerData.value), {
   immediate: true,
