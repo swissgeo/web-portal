@@ -308,6 +308,41 @@ describe("background handling", () => {
     );
   });
 
+  it("places an imported file layer at slot 0 when there is no background", () => {
+    const layerStore = useLayerStore();
+    const fileLayer = {
+      uuid: "file",
+      humanId: "drawing.kml",
+      type: "kml" as const,
+      isLoading: false,
+      data: "<kml/>",
+    };
+    layerStore.addLayer(fileLayer);
+
+    const wrapper = mount(SourceToMapDataConverter, {
+      props: {
+        sourceBgLayer: null,
+        sourceData: [fileLayer],
+      },
+      global: {
+        stubs: {
+          MapDatamappingOgcDatasetConverter: OgcConverterStub,
+          MapDatamappingFileConverter: FileConverterStub,
+        },
+      },
+    });
+
+    wrapper
+      .findComponent(FileConverterStub)
+      .vm.$emit("update", makeMapLayer("file"));
+
+    expect(updateLayerData).toHaveBeenCalledWith(
+      0,
+      expect.objectContaining({ uuid: "file" }),
+      true,
+    );
+  });
+
   it("removes the background when remove is emitted", () => {
     mockMapLayers.push(makeMapLayer("bg"));
     mockMapLayers.push(makeMapLayer("overlay"));
