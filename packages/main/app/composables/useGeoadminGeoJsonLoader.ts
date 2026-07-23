@@ -6,6 +6,7 @@ import {
   geoadminToMapLibreConversionNotes,
   geoadminToMapLibreStyle,
 } from "@swissgeo/map";
+import geoadminLayers from "~/assets/poc/geoadminLayers.json";
 import { useMapViewStore } from "~/stores/mapView";
 
 /**
@@ -171,8 +172,49 @@ export function useGeoadminGeoJsonLoader() {
     return { geoadminStyle, mapLibreStyle: style, conversionNotes };
   }
 
+  // Convert every geoadmin layer's style to MapLibre in one batch, so the whole
+  // catalog can be inspected/exported at once. Fetches are chunked to avoid firing
+  // 60 requests through the proxy simultaneously. onProgress reports completions.
+  async function convertAllStyles(
+    onProgress?: (done: number, total: number) => void,
+  ): Promise<Record<string, unknown>> {
+    const options = {
+      resolutionToZoom: (resolution: number) =>
+        LV95.getZoomForResolution(resolution),
+    };
+    const bundle: Record<string, unknown> = {};
+    let done = 0;
+    const chunkSize = 5;
+    for (let start = 0; start < geoadminLayers.length; start += chunkSize) {
+      const chunk = geoadminLayers.slice(start, start + chunkSize);
+      await Promise.all(
+        chunk.map(async (layerId) => {
+          try {
+            const { styleUrl } = await resolveUrls(layerId);
+            const geoadminStyle = await fetch(PROXIED(styleUrl)).then((res) =>
+              res.json(),
+            );
+            const { style, icons } = geoadminToMapLibreStyle(
+              geoadminStyle as GeoadminStyle,
+              layerId,
+              options,
+            );
+            bundle[layerId] = { style, icons };
+          } catch (error) {
+            bundle[layerId] = { error: String(error) };
+          } finally {
+            done += 1;
+            onProgress?.(done, geoadminLayers.length);
+          }
+        }),
+      );
+    }
+    return bundle;
+  }
+
   return {
     loadLayer,
     fetchStyles,
+    convertAllStyles,
   };
 }
