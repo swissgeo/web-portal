@@ -139,3 +139,9 @@ Playwright auto-starts the Nuxt dev server on `http://localhost:3000`. If you al
 > **Note:** The first page load in dev mode can take 30–45s while Vite compiles modules on demand. Subsequent test runs in the same session are fast thanks to HMR.
 
 **In CI** (AWS CodeBuild) the tests run against a production preview (`pnpm --filter main preview`) after a full `pnpm build`, which avoids the dev-mode cold-start delay. The Playwright config switches automatically when `CI=true` is set.
+
+## Renovate
+
+This repository is monitored by a [Renovate Bot](https://docs.renovatebot.com/). This means it will periodically receive pull requests on github wanting to update certain dependencies.
+
+The basic workflow would be to approve the PR if we want to integrate the suggested updated and merge it; however most often there are some manual steps needed. Renovate only changes the required version in the `pnpm-workspace.yml` but doesn't update `pnpm-lock.yml`. So we need to check out the renovate branch, run `pnpm install`, `git commit --amend` and force push (and often rebase with develop).
