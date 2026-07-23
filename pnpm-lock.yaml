@@ -816,6 +816,55 @@ importers:
         specifier: 'catalog:'
         version: 3.3.5(typescript@6.0.3)
 
+  packages/feature:
+    dependencies:
+      '@swissgeo/log':
+        specifier: workspace:*
+        version: link:../log
+      '@swissgeo/shared':
+        specifier: workspace:*
+        version: link:../shared
+    devDependencies:
+      '@microsoft/api-extractor':
+        specifier: 'catalog:'
+        version: 7.58.9(@types/node@25.9.3)
+      '@pinia/testing':
+        specifier: 'catalog:'
+        version: 2.0.1(pinia@4.0.2(@vue/devtools-api@8.1.3)(typescript@6.0.3)(vue@3.5.38(typescript@6.0.3)))
+      '@swissgeo/config-eslint':
+        specifier: workspace:*
+        version: link:../config/eslint
+      '@swissgeo/config-typescript':
+        specifier: workspace:*
+        version: link:../config/typescript
+      '@types/geojson':
+        specifier: 'catalog:'
+        version: 7946.0.16
+      es-toolkit:
+        specifier: 'catalog:'
+        version: 1.47.1
+      eslint:
+        specifier: 'catalog:'
+        version: 10.5.0(jiti@2.7.0)
+      pinia:
+        specifier: 'catalog:'
+        version: 4.0.2(@vue/devtools-api@8.1.3)(typescript@6.0.3)(vue@3.5.38(typescript@6.0.3))
+      rolldown:
+        specifier: 'catalog:'
+        version: 1.1.3
+      rolldown-plugin-dts:
+        specifier: 'catalog:'
+        version: 0.26.0(rolldown@1.1.3)(typescript@6.0.3)(vue-tsc@3.3.5(typescript@6.0.3))
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@25.9.3)(@vitest/coverage-v8@4.1.9)(happy-dom@20.10.6)(msw@2.14.6(@types/node@25.9.3)(typescript@6.0.3))(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+      vue-tsc:
+        specifier: 'catalog:'
+        version: 3.3.5(typescript@6.0.3)
+
   packages/layers:
     dependencies:
       '@swissgeo/log':
