@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { Dimension } from "@swissgeo/dimension";
 import type { DatasetLayer, LayerInfo } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
-import type { Dimension } from "@swissgeo/timeslider";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 
-import { useDimensionsStore } from "@swissgeo/timeslider";
+import { useDimensionsStore } from "@swissgeo/dimension";
 
 /**
  * Dataset Layer Converter Container

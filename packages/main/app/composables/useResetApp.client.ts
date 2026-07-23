@@ -1,6 +1,6 @@
+import { useDimensionsStore } from "@swissgeo/dimension";
 import { useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
-import { useDimensionsStore } from "@swissgeo/timeslider";
 
 export function useResetApp() {
   // we only want this on the client side

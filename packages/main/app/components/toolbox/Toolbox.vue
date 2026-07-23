@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useDimensionsStore } from "@swissgeo/dimension";
 import { useDrawing } from "@swissgeo/drawing";
 // import { useDrawingStore } from "@swissgeo/drawing";
 /**
@@ -9,7 +10,6 @@ import { useDrawing } from "@swissgeo/drawing";
  * logic behind the available buttons, it should become a computed value instead.
  */
 import { useLayerStore } from "@swissgeo/layers";
-import { useDimensionsStore } from "@swissgeo/timeslider";
 import { displayModeKey } from "~/types/injectionKeys";
 import { inject } from "vue";
 

@@ -4,10 +4,10 @@ import type { LayerState } from "@swissgeo/statesharing";
 import type { AppStatePayload } from "~/composables/useStateConfig";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { useDimensionsStore } from "@swissgeo/dimension";
 import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
-import { useDimensionsStore } from "@swissgeo/timeslider";
 import { mount } from "@vue/test-utils";
 import {
   isBackgroundLayer,

@@ -1,7 +1,7 @@
 import type { Layer } from "@swissgeo/layers";
 
+import { useDimensionsStore } from "@swissgeo/dimension";
 import { useLayerStore } from "@swissgeo/layers";
-import { useDimensionsStore } from "@swissgeo/timeslider";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -71,7 +71,7 @@ describe("Toolbox.vue - showTimeSliderButton reads from dimensionsStore", () => 
     const wrapper = mountToolbox();
     await wrapper.vm.$nextTick();
 
-    expect(dimensionsStore.layersWithDimension("time")).toEqual([]);
+    expect(dimensionsStore.getLayersWithDimension("time")).toEqual([]);
     expect(wrapper.findComponent({ name: "TimeSliderButton" }).exists()).toBe(
       false,
     );

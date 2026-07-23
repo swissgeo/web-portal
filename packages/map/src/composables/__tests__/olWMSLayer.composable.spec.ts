@@ -75,7 +75,7 @@ vi.mock("@swissgeo/log", () => ({
   default: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
   LogPreDefinedColor: new Proxy({}, { get: (_t, p) => String(p) }),
 }));
-vi.mock("@swissgeo/timeslider", () => ({
+vi.mock("@swissgeo/dimension", () => ({
   ALL_YEARS_TIMESTAMP: "9999",
 }));
 

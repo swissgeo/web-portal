@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Dimension } from "@swissgeo/dimension";
 import type {
   DatasetLayer,
   LayerInfo,
@@ -6,14 +7,13 @@ import type {
 } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
-import type { Dimension } from "@swissgeo/timeslider";
 
-import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import {
   convertYearToTimestamp,
   getYearFromGeoadminValue,
   useDimensionsStore,
-} from "@swissgeo/timeslider";
+} from "@swissgeo/dimension";
+import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";

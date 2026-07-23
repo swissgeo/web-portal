@@ -12,7 +12,7 @@ export const useDimensionsStore = defineStore("dimensions", () => {
     return dimensionsByLayer.value[uuid];
   }
 
-  function layersWithDimension(id: DimensionId): string[] {
+  function getLayersWithDimension(id: DimensionId): string[] {
     return Object.entries(dimensionsByLayer.value)
       .filter(([, record]) => record[id] !== undefined)
       .map(([uuid]) => uuid);
@@ -60,7 +60,7 @@ export const useDimensionsStore = defineStore("dimensions", () => {
     dimensionsByLayer,
     // getters
     getDimensions,
-    layersWithDimension,
+    getLayersWithDimension,
     // actions
     setDimension,
     setLayerDimensions,

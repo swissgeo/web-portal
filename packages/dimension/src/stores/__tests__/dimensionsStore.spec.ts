@@ -22,7 +22,7 @@ describe("useDimensionsStore", () => {
         availableValues: ["1981", "2024"],
         currentValue: "2024",
       });
-      expect(store.layersWithDimension("time")).toEqual(["uuid-a"]);
+      expect(store.getLayersWithDimension("time")).toEqual(["uuid-a"]);
     });
 
     it("merges a partial over an existing dimension", () => {
@@ -96,11 +96,11 @@ describe("useDimensionsStore", () => {
 
       expect(store.getDimensions("uuid-a")?.time).toBeUndefined();
       expect(store.getDimensions("uuid-a")).toBeUndefined();
-      expect(store.layersWithDimension("time")).not.toContain("uuid-a");
+      expect(store.getLayersWithDimension("time")).not.toContain("uuid-a");
     });
   });
 
-  describe("ensure layersWithDimension lists all layers with the given dimension", () => {
+  describe("ensure getLayersWithDimension lists all layers with the given dimension", () => {
     it("lists only layers that possess the specified dimension", () => {
       const store = useDimensionsStore();
       store.setDimension("a", "time", {
@@ -112,7 +112,7 @@ describe("useDimensionsStore", () => {
         currentValue: "2024",
       });
 
-      expect(store.layersWithDimension("time")).toEqual(["a", "b"]);
+      expect(store.getLayersWithDimension("time")).toEqual(["a", "b"]);
     });
   });
 
@@ -140,7 +140,7 @@ describe("useDimensionsStore", () => {
       store.$reset();
 
       expect(store.dimensionsByLayer).toEqual({});
-      expect(store.layersWithDimension("time")).toEqual([]);
+      expect(store.getLayersWithDimension("time")).toEqual([]);
     });
   });
 

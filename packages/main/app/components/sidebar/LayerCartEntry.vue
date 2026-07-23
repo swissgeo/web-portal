@@ -2,12 +2,12 @@
 // TODO : map view store alterations
 import type { Layer as MapLayer } from "@swissgeo/map";
 
-import { useLayerStore } from "@swissgeo/layers";
-import { useDatasetPanelStore, IconButton } from "@swissgeo/skeleton";
 import {
   getDisplayNameFromTimestamp,
   useDimensionsStore,
-} from "@swissgeo/timeslider";
+} from "@swissgeo/dimension";
+import { useLayerStore } from "@swissgeo/layers";
+import { useDatasetPanelStore, IconButton } from "@swissgeo/skeleton";
 import { computed } from "vue";
 
 const { layer, layerIndex } = defineProps<{

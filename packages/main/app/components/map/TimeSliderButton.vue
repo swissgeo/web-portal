@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { TimeSlider } from "@swissgeo/dimension";
 import { useSidebarStore } from "@swissgeo/skeleton";
-import { TimeSlider } from "@swissgeo/timeslider";
 
 const mapViewStore = useMapViewStore();
 const sidebarStore = useSidebarStore();

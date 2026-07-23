@@ -10,7 +10,7 @@ export default defineConfig({
       provider: "v8",
       reportsDirectory: path.resolve(
         __dirname,
-        "../../coverage/unit/timeslider",
+        "../../coverage/unit/dimension",
       ),
       reporter: ["lcov", "cobertura"],
       include: ["src/**/*.ts", "src/**/*.vue"],

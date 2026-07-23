@@ -1,10 +1,10 @@
-import type { Dimension } from "@swissgeo/timeslider";
+import type { Dimension } from "@swissgeo/dimension";
 
-import log, { LogPreDefinedColor } from "@swissgeo/log";
 import {
   convertYearToTimestamp,
   getYearFromGeoadminValue,
-} from "@swissgeo/timeslider";
+} from "@swissgeo/dimension";
+import log, { LogPreDefinedColor } from "@swissgeo/log";
 
 /**
  * Process the dimensions and turn the into a time info that is being passed to the dimensions store

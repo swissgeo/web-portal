@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { Dimension } from "@swissgeo/dimension";
 import type { Distribution, Service } from "@swissgeo/ogc";
-import type { Dimension } from "@swissgeo/timeslider";
 
 import type { WMSLayerData } from "@/components/map/datamapping/useOgcWmsData";
 

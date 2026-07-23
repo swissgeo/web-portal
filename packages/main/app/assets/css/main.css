@@ -1,12 +1,12 @@
 @import "tailwindcss";
 @import "@swissgeo/map/stylesheet";
 @import "@fontsource/inter";
-@import "@swissgeo/timeslider/stylesheet";
+@import "@swissgeo/dimension/stylesheet";
 
 @source "../../../../skeleton/";
 @source "../../../../content/";
 @source "../../../../map/";
-@source "../../../../timeslider/";
+@source "../../../../dimension/";
 
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
 @import "@nuxt/ui";

@@ -2,8 +2,8 @@ import type { ResolutionStep } from "@swissgeo/coordinates";
 import type { Map } from "ol";
 import type { Ref } from "vue";
 
+import { ALL_YEARS_TIMESTAMP } from "@swissgeo/dimension";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import { ALL_YEARS_TIMESTAMP } from "@swissgeo/timeslider";
 import ImageLayer from "ol/layer/Image";
 import TileLayer from "ol/layer/Tile";
 import { ImageWMS, TileWMS } from "ol/source";

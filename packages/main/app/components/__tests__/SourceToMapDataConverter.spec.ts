@@ -1,11 +1,11 @@
+import type { Dimension } from "@swissgeo/dimension";
 import type { DatasetLayer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
-import type { Dimension } from "@swissgeo/timeslider";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { useDimensionsStore } from "@swissgeo/dimension";
 import { useLayerStore } from "@swissgeo/layers";
-import { useDimensionsStore } from "@swissgeo/timeslider";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";

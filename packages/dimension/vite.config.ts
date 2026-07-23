@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
       ...getBaseBuildConfig(mode),
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
-        name: "@swissgeo/timeslider",
+        name: "@swissgeo/dimension",
         formats: ["es"],
       },
       rollupOptions: {

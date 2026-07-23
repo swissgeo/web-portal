@@ -37,7 +37,7 @@ useResizeObserver(sliderContainer, (entries) => {
 });
 
 const layerTimeDimensions = computed(() =>
-  dimensionsStore.layersWithDimension("time").map((uuid) => ({
+  dimensionsStore.getLayersWithDimension("time").map((uuid) => ({
     uuid,
     timeDimension: dimensionsStore.getDimensions(uuid)?.time,
   })),

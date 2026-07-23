@@ -1,14 +1,14 @@
+import type { Dimension, DimensionId } from "@swissgeo/dimension";
 import type { Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 import type { LayerState, AppState } from "@swissgeo/statesharing";
-import type { Dimension, DimensionId } from "@swissgeo/timeslider";
 
+import { useDimensionsStore } from "@swissgeo/dimension";
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
-import { useDimensionsStore } from "@swissgeo/timeslider";
 import { AVAILABLE_BACKGROUNDS } from "~/components/map/constants";
 
 export type AppStatePayload = {

@@ -1,18 +1,18 @@
 {
-  "name": "@swissgeo/timeslider",
+  "name": "@swissgeo/dimension",
   "version": "1.0.0",
-  "description": "",
+  "description": "Dimension state and time-slider UI for SWISSGEO projects.",
   "keywords": [],
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "author": "",
   "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/timeslider.js"
+      "import": "./dist/dimension.js"
     },
     "./stylesheet": [
-      "./dist/timeslider.css"
+      "./dist/dimension.css"
     ]
   },
   "scripts": {
@@ -31,7 +31,6 @@
   "dependencies": {
     "@swissgeo/log": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
-    "@swissgeo/shared": "workspace:*",
     "@swissgeo/skeleton": "workspace:*"
   },
   "devDependencies": {
