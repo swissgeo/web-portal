@@ -10,7 +10,8 @@ import { ref } from "vue";
 
 defineEmits<{ close: [] }>();
 
-const { loadLayer, fetchStyles } = useGeoadminGeoJsonLoader();
+const { loadLayer, fetchStyles, convertAllStyles } =
+  useGeoadminGeoJsonLoader();
 const mapViewStore = useMapViewStore();
 const layerStore = useLayerStore();
 const selectedLayerId = ref<string>(geoadminLayers[0] ?? "");
@@ -76,6 +77,46 @@ async function addBothStyles(): Promise<void> {
   await loadLayer(selectedLayerId.value, { legacy: true });
 }
 
+const convertAllLabel = ref("Convert all → JSON");
+const isConvertingAll = ref(false);
+
+// Trigger a browser download of `data` as a pretty-printed JSON file.
+function downloadJson(data: unknown, filename: string): void {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+// Convert the selected layer's style and download just its MapLibre style JSON.
+async function downloadStyle(): Promise<void> {
+  const { mapLibreStyle } = await fetchStyles(selectedLayerId.value);
+  downloadJson(mapLibreStyle, `${selectedLayerId.value}.maplibre.json`);
+}
+
+// Convert every geoadmin style to MapLibre and download the whole bundle as one
+// JSON file, keyed by layer id.
+async function convertAll(): Promise<void> {
+  if (isConvertingAll.value) {
+    return;
+  }
+  isConvertingAll.value = true;
+  try {
+    const bundle = await convertAllStyles((done, total) => {
+      convertAllLabel.value = `Converting ${done}/${total}…`;
+    });
+    downloadJson(bundle, "maplibre-styles.json");
+  } finally {
+    convertAllLabel.value = "Convert all → JSON";
+    isConvertingAll.value = false;
+  }
+}
+
 // Remove all overlay layers but keep the background layer (matched by uuid).
 function clearAllLayers(): void {
   const backgroundUuid = layerStore.backgroundLayer?.uuid;
@@ -117,8 +158,19 @@ function clearAllLayers(): void {
       <UButton color="neutral" variant="outline" @click="showStyle">
         Show style
       </UButton>
+      <UButton color="neutral" variant="outline" @click="downloadStyle">
+        Download style
+      </UButton>
       <UButton color="neutral" variant="outline" @click="copyId">
         {{ copyLabel }}
+      </UButton>
+      <UButton
+        color="neutral"
+        variant="outline"
+        :loading="isConvertingAll"
+        @click="convertAll"
+      >
+        {{ convertAllLabel }}
       </UButton>
       <UButton color="error" variant="outline" @click="clearAllLayers">
         Clear all layers
