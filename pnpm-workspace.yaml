@@ -40,7 +40,7 @@ catalog:
   "@opentelemetry/sdk-node": "^0.219.0"
   "@opentelemetry/sdk-trace-base": "^2.8.0"
   "@opentelemetry/semantic-conventions": "^1.41.1"
-  "@pinia/nuxt": ^0.11.2
+  "@pinia/nuxt": ^1.0.0
   "@pinia/testing": ^2.0.0
   "@playwright/test": ^1.60.0
   "@prettier/plugin-xml": ^3.4.2
