@@ -6,6 +6,7 @@ import { IconButton } from "@swissgeo/skeleton";
 import geoadminLayers from "~/assets/poc/geoadminLayers.json";
 import { useGeoadminGeoJsonLoader } from "~/composables/useGeoadminGeoJsonLoader";
 import { useMapViewStore } from "~/stores/mapView";
+import { zipSync, strToU8 } from "fflate";
 import { ref } from "vue";
 
 defineEmits<{ close: [] }>();
@@ -77,14 +78,12 @@ async function addBothStyles(): Promise<void> {
   await loadLayer(selectedLayerId.value, { legacy: true });
 }
 
-const convertAllLabel = ref("Convert all → JSON");
+const convertAllLabel = ref("Convert all → ZIP");
 const isConvertingAll = ref(false);
 
-// Trigger a browser download of `data` as a pretty-printed JSON file.
-function downloadJson(data: unknown, filename: string): void {
-  const blob = new Blob([JSON.stringify(data, null, 2)], {
-    type: "application/json",
-  });
+// Trigger a browser download of the given bytes/string as a file.
+function download(data: Uint8Array | string, filename: string): void {
+  const blob = new Blob([data as BlobPart]);
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
@@ -96,11 +95,14 @@ function downloadJson(data: unknown, filename: string): void {
 // Convert the selected layer's style and download just its MapLibre style JSON.
 async function downloadStyle(): Promise<void> {
   const { mapLibreStyle } = await fetchStyles(selectedLayerId.value);
-  downloadJson(mapLibreStyle, `${selectedLayerId.value}.maplibre.json`);
+  download(
+    JSON.stringify(mapLibreStyle, null, 2),
+    `${selectedLayerId.value}.maplibre.json`,
+  );
 }
 
-// Convert every geoadmin style to MapLibre and download the whole bundle as one
-// JSON file, keyed by layer id.
+// Convert every geoadmin style to MapLibre and download a zip with one JSON file
+// per layer.
 async function convertAll(): Promise<void> {
   if (isConvertingAll.value) {
     return;
@@ -110,9 +112,15 @@ async function convertAll(): Promise<void> {
     const bundle = await convertAllStyles((done, total) => {
       convertAllLabel.value = `Converting ${done}/${total}…`;
     });
-    downloadJson(bundle, "maplibre-styles.json");
+    const files: Record<string, Uint8Array> = {};
+    for (const [layerId, result] of Object.entries(bundle)) {
+      files[`${layerId}.maplibre.json`] = strToU8(
+        JSON.stringify(result, null, 2),
+      );
+    }
+    download(zipSync(files), "maplibre-styles.zip");
   } finally {
-    convertAllLabel.value = "Convert all → JSON";
+    convertAllLabel.value = "Convert all → ZIP";
     isConvertingAll.value = false;
   }
 }
