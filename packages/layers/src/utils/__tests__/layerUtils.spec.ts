@@ -46,6 +46,7 @@ describe("Testing the information gathering from datasets", () => {
         title: "Layer Title",
         type: "Dataset",
       },
+      type: "Feature",
     };
 
     const result = getInfoFromDataset(dataset);
@@ -64,6 +65,7 @@ describe("Testing the information gathering from datasets", () => {
         attribution: "SwissGeo",
         type: "Dataset",
       },
+      type: "Feature",
     };
 
     const result = getInfoFromDataset(dataset);
@@ -92,6 +94,7 @@ describe("Testing the information gathering from datasets", () => {
         ],
         type: "Dataset",
       },
+      type: "Feature",
     };
 
     const result = getInfoFromDataset(dataset);
@@ -120,6 +123,7 @@ describe("Testing the information gathering from datasets", () => {
         ],
         type: "Dataset",
       },
+      type: "Feature",
     };
 
     const result = getInfoFromDataset(dataset);
@@ -141,6 +145,7 @@ describe("Testing the information gathering from datasets", () => {
         description: "Layer description",
         type: "Dataset",
       },
+      type: "Feature",
     };
 
     const result = getInfoFromDataset(dataset);
@@ -160,6 +165,7 @@ describe("Testing the information gathering from datasets", () => {
         description: "Layer description",
         type: "Dataset",
       },
+      type: "Feature",
     };
 
     const result = getInfoFromDataset(dataset);
@@ -197,6 +203,7 @@ describe("testing the makeServerLayer function", () => {
         href: "link-to-self",
       },
     ],
+    type: "Feature",
   };
 
   // I would've like to add a "non valid type" but the function assume we get
@@ -251,6 +258,7 @@ describe("validateDataset", () => {
         href: "link-to-self",
       },
     ],
+    type: "Feature",
   };
 
   it("accepts a well-formed dataset", () => {

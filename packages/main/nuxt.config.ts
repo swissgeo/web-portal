@@ -125,6 +125,8 @@ export default defineNuxtConfig({
       buildTime,
       wantedLogLevels: "error,warn",
       printServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/print/jobs",
+      availableBackgrounds:
+        "ch.swisstopo.pixelkarte-grau,ch.swisstopo.pixelkarte-farbe,ch.swisstopo.swissimage",
     },
   },
   nitro: {

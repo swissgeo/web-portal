@@ -40,6 +40,7 @@ describe("useDatasetRefresh", () => {
           href: "http://swissgeo.ch/distributions",
         },
       ],
+      type: "Feature" as const,
       id: "external-layer",
       properties: {
         type: "Dataset" as const,
@@ -63,6 +64,7 @@ describe("useDatasetRefresh", () => {
         type: "Dataset" as const,
         title: "Keusches Nonnenkraut",
       },
+      type: "Feature" as const,
     },
   };
 
@@ -124,6 +126,7 @@ describe("useDatasetRefresh", () => {
           type: "Dataset" as const,
           title: "Imported",
         },
+        type: "Feature" as const,
       },
     };
     const { newUrlString } = useDatasetLocaleRefresh(

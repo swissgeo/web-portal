@@ -11,6 +11,7 @@ import type {
 } from "@swissgeo/ogc";
 import type { ComputedRef, ShallowRef } from "vue";
 
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
 import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import { ref } from "vue";
@@ -37,6 +38,7 @@ const layerMockData: Ref<DatasetLayerType> = ref({
       title: "Fancy McLayer",
       type: "Dataset",
     },
+    type: "Feature" as const,
   },
 });
 
@@ -81,6 +83,7 @@ const {
     (): ReturnType<typeof useDistributionCollectionOriginal> => ({
       distributionUrl: computed(() => distributionUrlMockData.value),
       distributionCollection: distributionCollectionMockData,
+      error: computed(() => null),
     }),
   );
 
@@ -128,6 +131,7 @@ const {
     (): ReturnType<typeof useServiceOriginal> => ({
       serviceData: serviceMockData,
       serviceUrl: computed(() => serviceUrlMockData.value),
+      error: computed(() => null),
     }),
   );
 
@@ -153,6 +157,16 @@ vi.mock("@swissgeo/ogc", () => ({
   useDistributionCollection: useDistributionCollectionMock,
   useDistribution: useDistributionMock,
   useService: useServiceMock,
+}));
+
+mockNuxtImport("useToaster", () => () => ({
+  showError: () => {},
+}));
+
+mockNuxtImport("useNuxtApp", () => () => ({
+  $i18n: {
+    localeCodes: { value: ["de", "fr", "it", "en", "rm"] },
+  },
 }));
 
 describe("useGenericOgcData ", () => {
@@ -211,6 +225,7 @@ describe("useGenericOgcData ", () => {
       id: "grossspuriges-heuchlerkraut:wms",
       links: [{ href: "link-to-service", rel: "service" }],
       properties: { protocol: "ogc:wms", title: "wms", type: "Distribution" },
+      type: "Feature",
     };
     preferredDistributionIdMockData.value = "grossspuriges-heuchlerkraut:wms";
     await flushPromises();

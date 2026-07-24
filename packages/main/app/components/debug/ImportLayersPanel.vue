@@ -112,6 +112,7 @@ function addLayer(layer: string) {
         type: "application/json",
       },
     ],
+    type: "Feature",
     properties: {
       title: `${layer} on ${capaUrl.hostname}`,
       type: "Dataset" as const,

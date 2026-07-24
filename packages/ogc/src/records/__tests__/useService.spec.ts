@@ -44,7 +44,7 @@ describe("useService fetching the service data from the OGC records", () => {
     await flushPromises();
     expect(serviceData.value).toEqual(ChGeoadminWmts);
 
-    expect(error).toBeNull();
+    expect(error.value).toBeNull();
   });
 });
 

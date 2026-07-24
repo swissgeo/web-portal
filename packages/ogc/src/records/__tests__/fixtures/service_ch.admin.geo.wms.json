@@ -16,6 +16,7 @@
       }
     }
   ],
+  "type": "Feature",
   "properties": {
     "title": "WMS geo.admin.ch",
     "type": "ogc:wms"

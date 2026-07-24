@@ -58,6 +58,7 @@ declare global {
       wantedLogLevels: string;
       version: string;
       buildTime: string;
+      availableBackgrounds: string;
     };
   };
 }

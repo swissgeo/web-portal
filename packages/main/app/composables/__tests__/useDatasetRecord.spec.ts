@@ -65,6 +65,7 @@ const mockDataset: Dataset = {
     },
     { rel: "distributions", href: "https://api.example.com/distributions" },
   ],
+  type: "Feature" as const,
 };
 
 const mockDistributions: DistributionCollection = {
@@ -74,6 +75,7 @@ const mockDistributions: DistributionCollection = {
       id: "wms",
       properties: { type: "Distribution", title: "WMS" },
       links: [{ rel: "enclosure", href: "https://wms.example.com" }],
+      type: "Feature" as const,
     },
   ],
   links: [],

@@ -60,7 +60,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
   it("fetches the distribution correctly after the dataset becomes available", async () => {
     const dataset = ref<Dataset | null>(null);
 
-    const { distributionCollection, distributionUrl } =
+    const { distributionCollection, distributionUrl, error } =
       useDistributionCollection(dataset);
 
     expect(distributionUrl.value).toBe(null);
@@ -80,7 +80,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
       links: [],
     } as unknown as Dataset);
 
-    const { distributionCollection, distributionUrl } =
+    const { distributionCollection, distributionUrl, error } =
       useDistributionCollection(dataset);
 
     expect(distributionUrl.value).toBe(null);
@@ -100,14 +100,14 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
       ],
     } as unknown as Dataset);
 
-    const { distributionCollection, distributionUrl } =
+    const { distributionCollection, distributionUrl, error } =
       useDistributionCollection(dataset);
     await flushPromises();
     expect(distributionUrl.value).toEqual(
       "http://services.dev.sgdi.tech/api/oar",
     );
     expect(distributionCollection.value).toBe(null);
-    expect(error.value).toBeNull();
+    expect(error.value).toEqual("Failed to fetch");
   });
 });
 
