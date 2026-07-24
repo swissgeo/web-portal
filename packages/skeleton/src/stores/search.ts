@@ -17,17 +17,21 @@ export const useSearchStore = defineStore("search", () => {
   const query = ref("");
   const results = ref<SearchResult[]>([]);
   const isSearching = ref(false);
+  // True when a search request failed, so the UI can tell an error apart from
+  // an empty result set.
+  const hasError = ref(false);
 
   let abortController: AbortController | undefined;
 
   // Build the OGC API Records `/items` endpoint used to search layers.
-  const catalogItemsUrl = () =>
+  const catalogItemsUrl = computed(() =>
     joinURL(
       runtimeConfig.public.ogcApiEndpoint as string,
       "collections",
       runtimeConfig.public.ogcCatalogCollection as string,
       "items",
-    );
+    ),
+  );
 
   // Getters
   const hasResults = computed(() => results.value.length > 0);
@@ -47,6 +51,7 @@ export const useSearchStore = defineStore("search", () => {
   // Actions
   async function setSearchQuery(newQuery: string, lang: string = "de") {
     query.value = newQuery;
+    hasError.value = false;
 
     // Clear results if query too short
     if (newQuery.trim().length < 2) {
@@ -83,7 +88,12 @@ export const useSearchStore = defineStore("search", () => {
       // through the OGC API Records catalog, alongside locations and features.
       const searchPromises: Promise<SearchResult[]>[] = [
         searchLocation(newQuery, lang, abortController.signal),
-        searchLayers(newQuery, catalogItemsUrl(), lang, abortController.signal),
+        searchLayers(
+          newQuery,
+          catalogItemsUrl.value,
+          lang,
+          abortController.signal,
+        ),
       ];
 
       // Add feature search for each searchable layer
@@ -113,6 +123,7 @@ export const useSearchStore = defineStore("search", () => {
             // Log failed searches but don't block other results
             const error = result.reason;
             if (!(error instanceof Error && error.name === "AbortError")) {
+              hasError.value = true;
               log.error({
                 title: "SearchStore/setSearchQuery",
                 titleColor: LogPreDefinedColor.Red,
@@ -128,6 +139,7 @@ export const useSearchStore = defineStore("search", () => {
       if (error instanceof Error && error.name === "AbortError") {
         return;
       }
+      hasError.value = true;
       log.error({
         title: "SearchStore/setSearchQuery",
         titleColor: LogPreDefinedColor.Red,
@@ -161,6 +173,7 @@ export const useSearchStore = defineStore("search", () => {
   function clearSearch() {
     query.value = "";
     results.value = [];
+    hasError.value = false;
   }
 
   return {
@@ -168,6 +181,7 @@ export const useSearchStore = defineStore("search", () => {
     query,
     results,
     isSearching,
+    hasError,
     // Getters
     hasResults,
     locationResults,

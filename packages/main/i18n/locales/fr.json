@@ -17,7 +17,8 @@
     "locations_results_header": "Lieux",
     "features_results_header": "Objets",
     "layers_results_header": "Couches",
-    "no_results": "Aucun résultat trouvé"
+    "no_results": "Aucun résultat trouvé",
+    "error": "La recherche a échoué. Certains résultats sont peut-être manquants."
   },
   "footer": {
     "copyRightData": "© Données: "

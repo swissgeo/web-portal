@@ -163,9 +163,11 @@ export async function searchLocation(
  * Search for layers in the OGC records catalog (PyGeoAPI).
  *
  * The matching is performed server-side through the OGC API Records `q`
- * full-text parameter, so this issues a network request rather than filtering a
- * pre-loaded catalog. The catalog `/items` endpoint is expected to return a
+ * full-text parameter. The catalog `/items` endpoint is expected to return a
  * GeoJSON FeatureCollection.
+ *
+ * Errors (including a non-ok response) are propagated so callers can
+ * distinguish a failed request from an empty result set.
  *
  * @param queryString - Search query text
  * @param catalogUrl - The catalog `/items` endpoint (without query parameters)
@@ -181,50 +183,31 @@ export async function searchLayers(
   abortSignal?: AbortSignal,
   limit: number = 10,
 ): Promise<LayerSearchResult[]> {
-  const trimmedQuery = queryString.trim();
-
-  if (trimmedQuery.length < 2) {
-    return [];
-  }
-
   const url = new URL(catalogUrl);
   url.searchParams.set("f", "json");
-  url.searchParams.set("q", trimmedQuery);
+  url.searchParams.set("q", queryString);
   url.searchParams.set("language", lang);
   url.searchParams.set("limit", String(limit));
 
-  try {
-    const response = await fetch(url.toString(), { signal: abortSignal });
+  const response = await fetch(url.toString(), { signal: abortSignal });
 
-    if (!response.ok) {
-      throw new Error(`Layer search API error: ${response.status}`);
-    }
-
-    const data: { features?: CatalogRecord[] } = await response.json();
-
-    return (data.features ?? []).map((record) => {
-      const title = record.properties?.title || record.id;
-      return {
-        resultType: "LAYER" as const,
-        id: record.id,
-        layerId: record.id,
-        title,
-        sanitizedTitle: sanitizeTitle(title),
-        description: record.properties?.description || "",
-      };
-    });
-  } catch (error) {
-    // Re-throw abort errors so they can be handled separately
-    if (error instanceof Error && error.name === "AbortError") {
-      throw error;
-    }
-    log.error({
-      title: "searchLayers",
-      titleColor: LogPreDefinedColor.Red,
-      messages: ["Failed to search layers:", error],
-    });
-    return [];
+  if (!response.ok) {
+    throw new Error(`Layer search API error: ${response.status}`);
   }
+
+  const data: { features?: CatalogRecord[] } = await response.json();
+
+  return (data.features ?? []).map((record) => {
+    const title = record.properties?.title || record.id;
+    return {
+      resultType: "LAYER" as const,
+      id: record.id,
+      layerId: record.id,
+      title,
+      sanitizedTitle: sanitizeTitle(title),
+      description: record.properties?.description || "",
+    };
+  });
 }
 
 /**

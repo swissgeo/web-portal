@@ -17,7 +17,8 @@
     "locations_results_header": "Orte",
     "features_results_header": "Features",
     "layers_results_header": "Layer",
-    "no_results": "Keine Ergebnisse gefunden"
+    "no_results": "Keine Ergebnisse gefunden",
+    "error": "Suche fehlgeschlagen. Einige Ergebnisse fehlen möglicherweise."
   },
   "footer": {
     "copyRightData": "© Daten: "

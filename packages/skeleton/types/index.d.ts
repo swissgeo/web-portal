@@ -26,6 +26,7 @@ export declare const useSearchStore: () => {
   query: string;
   results: SearchResult[];
   isSearching: boolean;
+  hasError: boolean;
   hasResults: ComputedRef<boolean>;
   locationResults: ComputedRef<SearchResult[]>;
   layerResults: ComputedRef<SearchResult[]>;

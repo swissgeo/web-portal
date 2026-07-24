@@ -17,7 +17,8 @@
     "locations_results_header": "Places",
     "features_results_header": "Features",
     "layers_results_header": "Layers",
-    "no_results": "No results found"
+    "no_results": "No results found",
+    "error": "Search failed. Some results may be missing."
   },
   "footer": {
     "copyRightData": "© Data: "

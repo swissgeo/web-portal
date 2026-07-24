@@ -225,12 +225,6 @@ describe("searchLayers function", () => {
     vi.restoreAllMocks();
   });
 
-  it("returns empty array for short query without calling the API", async () => {
-    const result = await searchLayers("a", catalogUrl, "de");
-    expect(result).toEqual([]);
-    expect(fetch).not.toHaveBeenCalled();
-  });
-
   it("queries the catalog items endpoint with q, language and format", async () => {
     (fetch as Mock).mockResolvedValue({
       ok: true,
@@ -302,14 +296,15 @@ describe("searchLayers function", () => {
     );
   });
 
-  it("returns empty array on API error response", async () => {
+  it("rejects on API error response", async () => {
     (fetch as Mock).mockResolvedValue({
       ok: false,
       status: 500,
     });
 
-    const result = await searchLayers("test", catalogUrl, "de");
-    expect(result).toEqual([]);
+    await expect(searchLayers("test", catalogUrl, "de")).rejects.toThrow(
+      "Layer search API error: 500",
+    );
   });
 });
 
