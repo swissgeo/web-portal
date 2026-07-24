@@ -6,13 +6,25 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { useSearchStore } from "@swissgeo/skeleton";
 import { useDebounceFn } from "@vueuse/core";
+import { watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import SearchBar from "./SearchBar.vue";
 import SearchResults from "./SearchResults.vue";
 
 const searchStore = useSearchStore();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
+const toaster = useToaster();
+
+// Surface search failures so the user can tell an error from an empty result.
+watch(
+  () => searchStore.hasError,
+  (hasError) => {
+    if (hasError) {
+      toaster.showError(t("search.error"));
+    }
+  },
+);
 
 // Debounced search (100ms delay)
 const debouncedSearch = useDebounceFn((query: string) => {
