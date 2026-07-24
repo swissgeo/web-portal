@@ -2,9 +2,12 @@
 // TODO : map view store alterations
 import type { Layer as MapLayer } from "@swissgeo/map";
 
+import {
+  getDisplayNameFromTimestamp,
+  useDimensionsStore,
+} from "@swissgeo/dimension";
 import { useLayerStore } from "@swissgeo/layers";
 import { useDatasetPanelStore, IconButton } from "@swissgeo/skeleton";
-import { getDisplayNameFromTimestamp } from "@swissgeo/timeslider";
 import { computed } from "vue";
 
 const { layer, layerIndex } = defineProps<{
@@ -13,6 +16,7 @@ const { layer, layerIndex } = defineProps<{
 }>();
 
 const layerStore = useLayerStore();
+const dimensionsStore = useDimensionsStore();
 // const drawingStore = useDrawingStore();
 const datasetPanelStore = useDatasetPanelStore();
 const mapViewStore = useMapViewStore();
@@ -21,21 +25,18 @@ const bgLayerModifier = computed(() => (layerStore.backgroundLayer ? 1 : 0));
 const layersLength = computed(() => mapViewStore.mapLayers.length);
 
 const currentTime = computed({
-  // we should get this from the layer store
   get() {
     return (
-      layerStore.getLayer(layer.uuid)?.dimensions?.time?.currentValue ?? null
+      dimensionsStore.getDimensions(layer.uuid)?.time?.currentValue ?? null
     );
   },
   set(value) {
-    layerStore.setDimension("time", layer.uuid, { currentValue: value });
+    dimensionsStore.setDimension(layer.uuid, "time", { currentValue: value });
   },
 });
 
 const availableTimes = computed(() => {
-  return (
-    layerStore.getLayer(layer.uuid)?.dimensions?.time?.availableValues ?? []
-  );
+  return dimensionsStore.getDimensions(layer.uuid)?.time?.availableValues ?? [];
 });
 
 const getTimestampName = (time: string) => {
@@ -67,6 +68,7 @@ function moveDown() {
 }
 
 function removeLayer() {
+  dimensionsStore.clearLayerDimensions(layer.uuid);
   layerStore.removeLayer(layer.uuid);
   mapViewStore.removeLayer(layerIndex);
 }

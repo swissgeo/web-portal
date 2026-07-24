@@ -4,7 +4,7 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { defineStore } from "pinia";
 import { ref, markRaw } from "vue";
 
-import type { Dimension, DimensionId, Layer, LayerInfo } from "@/index";
+import type { Layer, LayerInfo } from "@/index";
 
 /**
  * Quick explanation on this interface:
@@ -114,37 +114,7 @@ export const useLayerStore = defineStore("layers", () => {
   function replaceLayer(uuid: string, replacement: Layer) {
     const index = _getIndexFromIdentifier(uuid);
     if ((index || index === 0) && layers.value[index]) {
-      layers.value.splice(_getIndexFromIdentifier(uuid)!, 1, replacement);
-    }
-  }
-
-  function setDimension(
-    id: DimensionId,
-    uuid: string,
-    dimension: Partial<Dimension>,
-  ) {
-    const layer = getLayer(uuid);
-
-    if (layer) {
-      if (!layer.dimensions) {
-        layer.dimensions = {};
-      }
-
-      log.debug({
-        title: "layer Store",
-        titleColor: LogPreDefinedColor.Cyan,
-        messages: [
-          `Updating ${layer.humanId} with dimension ${JSON.stringify(dimension)}`,
-        ],
-      });
-
-      const existingDimension = layer.dimensions[id];
-
-      layer.dimensions[id] = {
-        availableValues: existingDimension?.availableValues ?? [],
-        currentValue: existingDimension?.currentValue ?? null,
-        ...dimension,
-      };
+      layers.value.splice(index, 1, replacement);
     }
   }
 
@@ -188,7 +158,6 @@ export const useLayerStore = defineStore("layers", () => {
     setBackground,
     replaceLayer,
     setLayerInfo,
-    setDimension,
     removeLayer,
     setLayerData,
     addImportOption,

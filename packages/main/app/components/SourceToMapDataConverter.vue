@@ -1,18 +1,19 @@
 <script setup lang="ts">
+import type { Dimension } from "@swissgeo/dimension";
 import type {
   DatasetLayer,
-  Dimension,
   LayerInfo,
   Layer as SourceData,
 } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 
-import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import {
   convertYearToTimestamp,
   getYearFromGeoadminValue,
-} from "@swissgeo/timeslider";
+  useDimensionsStore,
+} from "@swissgeo/dimension";
+import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";
@@ -24,6 +25,7 @@ const { sourceBgLayer, sourceData } = defineProps<{
 
 const mapViewStore = useMapViewStore();
 const layerStore = useLayerStore();
+const dimensionsStore = useDimensionsStore();
 
 // there can be multiple calls to this function, and the options consumes themselves
 // on call, so we consume the options first, then we give it the current data if there is
@@ -70,12 +72,9 @@ function updateStoreLayerData(uuid: string, dataset: Dataset) {
   layerStore.setLayerData(uuid, dataset);
 }
 
-function updateTimeDimension(
-  identifier: string,
-  dimension: Partial<Dimension>,
-) {
+function updateTimeDimension(uuid: string, dimension: Partial<Dimension>) {
   const existingCurrentValue =
-    layerStore.getLayer(identifier)?.dimensions?.time?.currentValue;
+    dimensionsStore.getDimensions(uuid)?.time?.currentValue;
   const existingYear = existingCurrentValue
     ? getYearFromGeoadminValue(existingCurrentValue)
     : undefined;
@@ -92,7 +91,7 @@ function updateTimeDimension(
   // its year and find the matching entry in the new availableValues so the
   // user's previously-selected year is preserved across capability refreshes.
   // matchedValue intentionally overrides dimension.currentValue when found.
-  layerStore.setDimension("time", identifier, {
+  dimensionsStore.setDimension(uuid, "time", {
     ...dimension,
     ...(matchedValue ? { currentValue: matchedValue } : {}),
   });

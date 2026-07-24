@@ -1,6 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises, mount } from "@vue/test-utils";
-import { describe, expect, it, vi } from "vitest";
+import { createPinia, setActivePinia } from "pinia";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import OgcDatasetConverter from "../OgcDatasetConverter.vue";
 
@@ -46,6 +47,10 @@ vi.mock("@/components/map/datamapping/useDatasetLocaleRefresh", () => ({
 }));
 
 describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
   it("emits the basic data regardless of the OGC travelling", () => {
     const wrapper = mount(OgcDatasetConverter, {
       shallow: true,
@@ -74,7 +79,7 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     ]);
   });
 
-  it("emits the update if the data if the basic data is updated", async () => {
+  it("emits the update if the basic data is updated", async () => {
     const layerData = {
       isLoading: false,
       type: "dataset" as const,

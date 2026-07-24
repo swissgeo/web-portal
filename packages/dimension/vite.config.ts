@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
       ...getBaseBuildConfig(mode),
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
-        name: "@swissgeo/timeslider",
+        name: "@swissgeo/dimension",
         formats: ["es"],
       },
       rollupOptions: {
@@ -20,11 +20,11 @@ export default defineConfig(({ mode }) => {
           "vue",
           "lucide-vue-next",
           "@swissgeo/log",
-          "@swissgeo/layers",
           "@swissgeo/numbers",
           "@swissgeo/skeleton",
           "@swissgeo/shared",
           "@vueuse/core",
+          "pinia",
           "vue-i18n",
           "@lucide/vue",
         ],

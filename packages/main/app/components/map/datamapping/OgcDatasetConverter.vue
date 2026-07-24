@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import type { DatasetLayer, Dimension, LayerInfo } from "@swissgeo/layers";
+import type { Dimension } from "@swissgeo/dimension";
+import type { DatasetLayer, LayerInfo } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
+
+import { useDimensionsStore } from "@swissgeo/dimension";
 
 /**
  * Dataset Layer Converter Container
@@ -21,14 +24,16 @@ import type { Options as WMTSOptions } from "ol/source/WMTS";
  * - The data from the sub-converter as well as some incoming data are together being merged into one object
  *   and the parent is informed about the changes
  */
-import type { WMSLayerData } from "./useOgcWmsData";
+import type { WMSLayerData } from "@/components/map/datamapping/useOgcWmsData";
 
-import useDatasetLocaleRefresh from "./useDatasetLocaleRefresh";
-import { useGenericOgcData } from "./useGenericOgcData";
+import useDatasetLocaleRefresh from "@/components/map/datamapping/useDatasetLocaleRefresh";
+import { useGenericOgcData } from "@/components/map/datamapping/useGenericOgcData";
 
 const { layer } = defineProps<{
   layer: DatasetLayer;
 }>();
+
+const dimensionsStore = useDimensionsStore();
 
 const emit = defineEmits<{
   update: [layer: MapLayer];
@@ -74,7 +79,7 @@ const layerData = computed((): MapLayer => {
 
     // some data we pass directly from the original, so when it's updated
     // the change will be reflected in the data that the map receives
-    dimensions: layer.dimensions ?? null,
+    dimensions: dimensionsStore.getDimensions(layer.uuid) ?? null,
     displayName: layer.info?.displayName ?? layer.humanId,
   };
 });
