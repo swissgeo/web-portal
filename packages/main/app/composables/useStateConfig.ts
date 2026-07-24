@@ -164,16 +164,7 @@ export function useStateConfig() {
           isVisible: stateLayers[i]?.isVisible ?? true,
         };
         layerStore.addImportOption(uuid, mapLayerData);
-      }
-    }
-    // here we add the background layer back
-    for (let i = 0; i < layers.length; i++) {
-      if (layers[i]) {
-        if (isBackgroundLayer(layers[i]!)) {
-          layerStore.setBackground(layers[i]!);
-        } else {
-          layerStore.addLayer(layers[i]!);
-        }
+        layerStore.addLayer(layers[i]!);
       }
     }
   }
