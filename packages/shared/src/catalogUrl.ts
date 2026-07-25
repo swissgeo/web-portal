@@ -14,7 +14,12 @@ export function buildCatalogItemsUrl(
   collection: string,
   id?: string,
 ): string {
-  const parts = [trimSlashes(endpoint), "collections", trimSlashes(collection), "items"];
+  const parts = [
+    trimSlashes(endpoint),
+    "collections",
+    trimSlashes(collection),
+    "items",
+  ];
   if (id) {
     parts.push(trimSlashes(id));
   }

@@ -11,7 +11,11 @@ describe("buildCatalogItemsUrl", () => {
 
   it("targets a single record when an id is given", () => {
     expect(
-      buildCatalogItemsUrl("https://x/api/oar/rc1", "swissgeo-catalog", "ch.foo.bar"),
+      buildCatalogItemsUrl(
+        "https://x/api/oar/rc1",
+        "swissgeo-catalog",
+        "ch.foo.bar",
+      ),
     ).toBe(
       "https://x/api/oar/rc1/collections/swissgeo-catalog/items/ch.foo.bar",
     );
@@ -19,7 +23,11 @@ describe("buildCatalogItemsUrl", () => {
 
   it("normalizes surrounding slashes on segments", () => {
     expect(
-      buildCatalogItemsUrl("https://x/api/oar/rc1/", "/swissgeo-catalog/", "/id/"),
+      buildCatalogItemsUrl(
+        "https://x/api/oar/rc1/",
+        "/swissgeo-catalog/",
+        "/id/",
+      ),
     ).toBe("https://x/api/oar/rc1/collections/swissgeo-catalog/items/id");
   });
 });
