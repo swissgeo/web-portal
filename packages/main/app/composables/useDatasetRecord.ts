@@ -1,7 +1,6 @@
 import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
 import type { MaybeRefOrGetter } from "vue";
 
-import { joinURL } from "ufo";
 import { toValue } from "vue";
 
 export interface DatasetRecord {
@@ -10,7 +9,7 @@ export interface DatasetRecord {
 }
 
 export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
-  const runtimeConfig = useRuntimeConfig();
+  const catalogItemsUrl = useCatalogItemsUrl();
   const { locale } = useI18n();
 
   const asyncData = useAsyncData<DatasetRecord>(
@@ -21,21 +20,13 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
         return { dataset: null, distributionCollection: null };
       }
 
-      const url = new URL(
-        joinURL(
-          runtimeConfig.public.ogcApiEndpoint,
-          "collections",
-          runtimeConfig.public.ogcCatalogCollection,
-          "items",
-          resolvedId,
-        ),
-      );
+      const url = new URL(catalogItemsUrl(resolvedId));
       url.searchParams.set("language", locale.value);
 
       const dataset = await $fetch<Dataset>(url.toString());
 
       const distributionsLink = dataset.links?.find(
-        (l) => l.rel === "distributions",
+        (l) => l.rel?.toLowerCase() === "distributions",
       );
       if (!distributionsLink?.href) {
         return { dataset, distributionCollection: null };
