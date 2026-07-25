@@ -16,7 +16,7 @@
       "hreflang": "en"
     },
     {
-      "href": "http://mock-oar.org/api/oar/collections/ch.swisstopo.pixelkarte-farbe.distributions/items",
+      "href": "http://mock-oar.org/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe",
       "rel": "distributions",
       "title": "Distributions",
       "type": "application/json"

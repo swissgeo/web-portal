@@ -2,14 +2,14 @@
   "id": "ch.bafu.schutzgebiete-luftfahrt:wmts",
   "links": [
     {
-      "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/swissgeo.catalog/items/ch.bafu.schutzgebiete-luftfahrt?language=en",
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-catalog/items/ch.bafu.schutzgebiete-luftfahrt?language=en",
       "hreflang": "en",
       "rel": "dataset",
       "title": "Dataset Record",
       "type": "application/json"
     },
     {
-      "href": "https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wmts",
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/geoadmin.services/items/ch.admin.geo.wmts",
       "rel": "dataservice"
     },
     {
