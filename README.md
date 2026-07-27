@@ -139,3 +139,27 @@ Playwright auto-starts the Nuxt dev server on `http://localhost:3000`. If you al
 > **Note:** The first page load in dev mode can take 30–45s while Vite compiles modules on demand. Subsequent test runs in the same session are fast thanks to HMR.
 
 **In CI** (AWS CodeBuild) the tests run against a production preview (`pnpm --filter main preview`) after a full `pnpm build`, which avoids the dev-mode cold-start delay. The Playwright config switches automatically when `CI=true` is set.
+
+## Renovate
+
+This repository is monitored by a [Renovate Bot](https://docs.renovatebot.com/). This means it will periodically receive pull requests on github wanting to update certain dependencies.
+
+Basic workflow:
+
+1. Renovate creates a branch with updated `pnpm-workspace.yml` and `pnpm-lock.yml`
+2. All tests succeed: approve the PR and merge it
+3. Some tests fail:
+  - check out the branch and fix
+  - close the PR (renovate will ignore this package until a new version is released)
+
+### Advanced configurations
+
+If you want to exclude a specific package from renovate scans, you can exclude that package in the `renovate.json` config. Add the package name to the `ignoreDeps` array:
+
+```json
+{
+  "ignoreDeps": ["ol", "@nuxt/ui"]
+}
+```
+
+Use the exact package name as it appears in the `catalog:` block of `pnpm-workspace.yaml`. Renovate will stop opening update PRs for those packages entirely, so add a comment to the PR or a note here explaining why a package is pinned — otherwise it is easy to forget that it is being held back.
