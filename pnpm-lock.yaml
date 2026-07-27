@@ -555,6 +555,9 @@ importers:
       '@swissgeo/numbers':
         specifier: workspace:*
         version: link:../numbers
+      '@swissgeo/shared':
+        specifier: workspace:*
+        version: link:../shared
       es-toolkit:
         specifier: 'catalog:'
         version: 1.47.1
