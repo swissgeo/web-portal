@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
 import ToolBoxButton from "@/components/toolbox/toolboxButtons/ToolBoxButton.vue";
 
+const { t } = useI18n();
 const mapViewStore = useMapViewStore();
 
 function toggleFullScreen() {
@@ -32,10 +35,10 @@ function handleKeydown(event: KeyboardEvent) {
 <template>
   <ToolBoxButton
     data-testid="fullscreen-toggle"
-    title="Toggle full screen button"
+    :title="t('toolbox.fullscreen.buttonTitle')"
     :is-disabled="false"
     :is-active="mapViewStore.isFullscreenModeActive"
-    iconName="Expand"
+    iconName="maximize-2"
     @click="toggleFullScreen()"
   />
 </template>

@@ -28,7 +28,7 @@ function toggle3d() {
 
 <template>
   <ToolBoxButton
-    title="3D toggle button"
+    title="3D"
     :is-disabled="isDisabled()"
     :is-active="isActive()"
     iconName="Box"

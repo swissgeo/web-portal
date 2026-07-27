@@ -10,10 +10,10 @@ const mapViewStore = useMapViewStore();
 <template>
   <div>
     <ToolBoxButton
-      :title="t('compareSlider.toggleButtonTitle')"
+      :title="t('toolbox.compare.buttonTitle')"
       :is-active="mapViewStore.isCompareSliderActive"
       :is-disabled="false"
-      iconName="Columns-2"
+      iconName="square-split-horizontal"
       @click="mapViewStore.toggleCompareSlider()"
     />
   </div>

@@ -37,7 +37,7 @@ const showGelocationButton = ref(true);
 const showRecenterButton = computed(
   () => geolocationStore.active && geolocationStore.position !== undefined,
 );
-const showCompassButton = ref(true);
+const showCompassButton = ref(false);
 
 const showZoomButtons = ref(true);
 const show3dButton = ref(true);
@@ -64,19 +64,29 @@ const isEmbedMode = computed(() => displayMode === "embed");
 </script>
 
 <template>
-  <div
-    class="toolbox-right absolute top-[1rem] right-[1rem] w-[40px] space-y-1"
-    data-testid="toolbox-right"
-  >
-    <FullScreenButton v-if="isWebMode && showFullScreeButton" />
-    <GeolocButton v-if="isWebMode && showGelocationButton" />
-    <CompassButton v-if="isWebMode && showCompassButton" />
-    <RecenterButton v-if="isWebMode && showRecenterButton" />
-    <ZoomButtons v-if="(isWebMode || isEmbedMode) && showZoomButtons" />
-    <Toggle3dButton v-if="isWebMode && show3dButton" />
-    <TimeSliderButton v-if="isWebMode && showTimeSliderButton" />
-    <CompareSliderButton v-if="isWebMode && showCompareSliderButton" />
-    <slot />
+  <div class="absolute top-4 right-4" data-testid="toolbox-right">
+    <UCard
+      class="mb-4"
+      :ui="{
+        body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
+      }"
+    >
+      <FullScreenButton v-if="isWebMode && showFullScreeButton" />
+      <GeolocButton v-if="isWebMode && showGelocationButton" />
+      <Toggle3dButton v-if="isWebMode && show3dButton" />
+      <CompassButton v-if="isWebMode && showCompassButton" />
+      <RecenterButton v-if="isWebMode && showRecenterButton" />
+      <slot />
+    </UCard>
+    <UCard
+      :ui="{
+        body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
+      }"
+    >
+      <ZoomButtons v-if="isEmbedMode && showZoomButtons" />
+      <TimeSliderButton v-if="isWebMode && showTimeSliderButton" />
+      <CompareSliderButton v-if="isWebMode && showCompareSliderButton" />
+    </UCard>
   </div>
 </template>
 
