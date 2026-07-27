@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+
 import type { FeatureData } from "@/types";
 
 export const useFeaturesStore = defineStore("features", () => {

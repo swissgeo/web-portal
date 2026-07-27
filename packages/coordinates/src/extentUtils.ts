@@ -1,3 +1,4 @@
+import type { FlatExtent, NormalizedExtent } from "@swissgeo/shared";
 import type { Extent } from "ol/extent";
 
 import { round } from "@swissgeo/numbers";
@@ -9,9 +10,6 @@ import type { SingleCoordinate } from "@/coordinatesUtils";
 import type { CoordinateSystem } from "@/proj";
 
 import { WGS84 } from "@/proj";
-
-export type FlatExtent = [number, number, number, number];
-export type NormalizedExtent = [[number, number], [number, number]];
 
 /**
  * @param fromProj Current projection used to describe the extent
