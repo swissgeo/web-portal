@@ -84,7 +84,13 @@ function processStyle(messages: SwissGeoLogInput[]): SwissGeoLogInput[] {
 }
 
 /*
- * Emit the log to OpenTelemetry
+ * Emit the log to OpenTelemetry.
+ * When no OTEL SDK is registered (e.g. client-side or tests), the logger is a no-op.
+ * Normalizes SwissGeoLogInput[] into a flat body string + attributes for the emit() call.
+ * Handles three input shapes:
+ *   - SwissGeoLogMessage (object with `messages` array + optional `title`)
+ *   - Message objects (with `msg` and optional `params`)
+ *   - Primitives (string, number, boolean)
  */
 function emitOtelLog(level: LogLevel, messages: SwissGeoLogInput[]) {
   const parts: string[] = [];
@@ -158,6 +164,7 @@ function logToConsole(level: LogLevel, messages: SwissGeoLogInput[]) {
   }
   /* eslint-enable no-console */
 
+  // Does nothing when OTEL SDK is not registered
   emitOtelLog(level, messages);
 }
 
