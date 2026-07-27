@@ -130,6 +130,38 @@
     "startGeolocation": "Start geolocation",
     "recenterMap": "Re-center map"
   },
+  "toolbox": {
+    "geolocation": {
+      "buttonTitle": "Geolocation"
+    },
+    "fullscreen": {
+      "buttonTitle": "Fullscreen"
+    },
+    "3d": {
+      "buttonTitle": "3D"
+    },
+    "drawing": {
+      "buttonTitle": "Drawing"
+    },
+    "measure": {
+      "buttonTitle": "Measure"
+    },
+    "compare": {
+      "buttonTitle": "Compare"
+    },
+    "timeSlider": {
+      "buttonTitle": "Time Slider"
+    },
+    "import": {
+      "buttonTitle": "Import"
+    },
+    "share": {
+      "buttonTitle": "Share"
+    },
+    "print": {
+      "buttonTitle": "Print"
+    }
+  },
   "backgroundLayers": {
     "title": "Displayed maps",
     "voidMap": "Void map",

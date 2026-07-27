@@ -130,6 +130,38 @@
     "startGeolocation": "Standortbestimmung starten",
     "recenterMap": "Karte neu zentrieren"
   },
+  "toolbox": {
+    "geolocation": {
+      "buttonTitle": "Standort"
+    },
+    "fullscreen": {
+      "buttonTitle": "Vollbild"
+    },
+    "3d": {
+      "buttonTitle": "3D"
+    },
+    "drawing": {
+      "buttonTitle": "Zeichnen"
+    },
+    "measure": {
+      "buttonTitle": "Messen"
+    },
+    "compare": {
+      "buttonTitle": "Vergleichen"
+    },
+    "timeSlider": {
+      "buttonTitle": "Zeitschieberegler"
+    },
+    "import": {
+      "buttonTitle": "Importieren"
+    },
+    "share": {
+      "buttonTitle": "Teilen"
+    },
+    "print": {
+      "buttonTitle": "Drucken"
+    }
+  },
   "backgroundLayers": {
     "title": "Angezeigte Karten",
     "voidMap": "Leere Karte",
