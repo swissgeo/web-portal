@@ -15,9 +15,14 @@ import { inject } from "vue";
 
 import CompareSliderButton from "@/components/toolbox/toolboxButtons/CompareSliderButton.vue";
 import CompassButton from "@/components/toolbox/toolboxButtons/CompassButton.vue";
+import DrawButton from "@/components/toolbox/toolboxButtons/DrawButton.vue";
 import FullScreenButton from "@/components/toolbox/toolboxButtons/FullScreenButton.vue";
 import GeolocButton from "@/components/toolbox/toolboxButtons/GeolocButton.vue";
+import ImportButton from "@/components/toolbox/toolboxButtons/ImportButton.vue";
+import MeasureButton from "@/components/toolbox/toolboxButtons/MeasureButton.vue";
+import PrintButton from "@/components/toolbox/toolboxButtons/PrintButton.vue";
 import RecenterButton from "@/components/toolbox/toolboxButtons/RecenterButton.vue";
+import ShareButton from "@/components/toolbox/toolboxButtons/ShareButton.vue";
 import TimeSliderButton from "@/components/toolbox/toolboxButtons/TimeSliderButton.vue";
 import Toggle3dButton from "@/components/toolbox/toolboxButtons/Toggle3dButton.vue";
 import ZoomButtons from "@/components/toolbox/toolboxButtons/ZoomButtons.vue";
@@ -84,8 +89,13 @@ const isEmbedMode = computed(() => displayMode === "embed");
       }"
     >
       <ZoomButtons v-if="isEmbedMode && showZoomButtons" />
-      <TimeSliderButton v-if="isWebMode && showTimeSliderButton" />
+      <DrawButton v-if="isWebMode" />
+      <MeasureButton v-if="isWebMode" />
       <CompareSliderButton v-if="isWebMode && showCompareSliderButton" />
+      <TimeSliderButton v-if="isWebMode && showTimeSliderButton" />
+      <ImportButton v-if="isWebMode" />
+      <ShareButton v-if="isWebMode" />
+      <PrintButton v-if="isWebMode" />
     </UCard>
   </div>
 </template>
