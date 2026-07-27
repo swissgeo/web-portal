@@ -144,4 +144,22 @@ Playwright auto-starts the Nuxt dev server on `http://localhost:3000`. If you al
 
 This repository is monitored by a [Renovate Bot](https://docs.renovatebot.com/). This means it will periodically receive pull requests on github wanting to update certain dependencies.
 
-The basic workflow would be to approve the PR if we want to integrate the suggested updated and merge it; however most often there are some manual steps needed. Renovate only changes the required version in the `pnpm-workspace.yml` but doesn't update `pnpm-lock.yml`. So we need to check out the renovate branch, run `pnpm install`, `git commit --amend` and force push (and often rebase with develop).
+Basic workflow:
+
+1. Renovate creates a branch with updated `pnpm-workspace.yml` and `pnpm-lock.yml`
+2. All tests succeed: approve the PR and merge it
+3. Some tests fail:
+  - check out the branch and fix
+  - close the PR (renovate will ignore this package until a new version is released)
+
+### Advanced configurations
+
+If you want to exclude a specific package from renovate scans, you can exclude that package in the `renovate.json` config. Add the package name to the `ignoreDeps` array:
+
+```json
+{
+  "ignoreDeps": ["ol", "@nuxt/ui"]
+}
+```
+
+Use the exact package name as it appears in the `catalog:` block of `pnpm-workspace.yaml`. Renovate will stop opening update PRs for those packages entirely, so add a comment to the PR or a note here explaining why a package is pinned — otherwise it is easy to forget that it is being held back.

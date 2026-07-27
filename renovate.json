@@ -4,8 +4,8 @@
   "reviewers": ["schtibe", "keetraxx"],
   "baseBranchPatterns": ["develop"],
   "postUpgradeTasks": {
-    "commands": ["pnpm update {{{depName}}}"],
+    "commands": ["pnpm install --lockfile-only"],
     "fileFilters": ["pnpm-lock.yaml"],
-    "executionMode": "update"
+    "executionMode": "branch"
   }
 }
