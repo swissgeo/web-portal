@@ -18,7 +18,8 @@
     "features_results_header": "Features",
     "layers_results_header": "Layers",
     "no_results": "No results found",
-    "error": "Search failed. Some results may be missing."
+    "error": "Search failed. Some results may be missing.",
+    "viewDataset": "View dataset"
   },
   "footer": {
     "copyRightData": "© Data: "

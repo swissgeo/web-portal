@@ -18,7 +18,8 @@
     "features_results_header": "Features",
     "layers_results_header": "Layer",
     "no_results": "Keine Ergebnisse gefunden",
-    "error": "Suche fehlgeschlagen. Einige Ergebnisse fehlen möglicherweise."
+    "error": "Suche fehlgeschlagen. Einige Ergebnisse fehlen möglicherweise.",
+    "viewDataset": "Datensatz anzeigen"
   },
   "footer": {
     "copyRightData": "© Daten: "

@@ -18,7 +18,8 @@
     "features_results_header": "Objets",
     "layers_results_header": "Couches",
     "no_results": "Aucun résultat trouvé",
-    "error": "La recherche a échoué. Certains résultats sont peut-être manquants."
+    "error": "La recherche a échoué. Certains résultats sont peut-être manquants.",
+    "viewDataset": "Afficher le jeu de données"
   },
   "footer": {
     "copyRightData": "© Données: "
