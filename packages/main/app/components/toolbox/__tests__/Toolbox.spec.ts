@@ -54,7 +54,16 @@ function makeLayer(uuid: string): Layer {
 }
 
 function mountToolbox() {
-  return mount(Toolbox, { shallow: true });
+  return mount(Toolbox, {
+    shallow: true,
+    global: {
+      stubs: {
+        UCard: {
+          template: "<div><slot /></div>",
+        },
+      },
+    },
+  });
 }
 
 describe("Toolbox.vue - showTimeSliderButton reads from dimensionsStore", () => {
