@@ -12,7 +12,7 @@ const { title } = defineProps<{
 <template>
   <button
     :title="title"
-    class="text-foreground/80 flex w-20 flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 transition-colors hover:bg-primary/10 disabled:pointer-events-none disabled:opacity-50"
+    class="text-foreground/80 flex w-14 flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 transition-colors hover:bg-primary/10 disabled:pointer-events-none disabled:opacity-50"
     :class="{
       'cursor-pointer': !isDisabled,
       'bg-primary/10 text-primary': isActive,
