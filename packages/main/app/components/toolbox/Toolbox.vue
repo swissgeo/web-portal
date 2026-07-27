@@ -84,11 +84,18 @@ const isEmbedMode = computed(() => displayMode === "embed");
       <slot />
     </UCard>
     <UCard
+      class="mb-4"
       :ui="{
         body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
       }"
     >
-      <ZoomButtons v-if="isEmbedMode && showZoomButtons" />
+      <ZoomButtons v-if="(isWebMode || isEmbedMode) && showZoomButtons" />
+    </UCard>
+    <UCard
+      :ui="{
+        body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
+      }"
+    >
       <DrawButton v-if="isWebMode" />
       <MeasureButton v-if="isWebMode" />
       <CompareSliderButton v-if="isWebMode && showCompareSliderButton" />
