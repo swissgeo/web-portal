@@ -19,7 +19,7 @@
           "hreflang": "en"
         },
         {
-          "href": "http://mock-oar.org/api/oar/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
+          "href": "http://mock-oar.org/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
           "rel": "dataset",
           "title": "Link to parent dataset ch.swisstopo.pixelkarte-farbe",
           "type": "application/json",
@@ -58,7 +58,7 @@
           "hreflang": "en"
         },
         {
-          "href": "http://mock-oar.org/api/oar/collections/swissgeo.catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
+          "href": "http://mock-oar.org/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
           "rel": "dataset",
           "title": "Link to parent dataset ch.swisstopo.pixelkarte-farbe",
           "type": "application/json",

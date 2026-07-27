@@ -214,54 +214,97 @@ describe("searchLocation function", () => {
 });
 
 describe("searchLayers function", () => {
-  const mockCatalog = [
-    {
+  const catalogUrl =
+    "http://mock-oar.test/api/oar/collections/swissgeo-catalog/items";
+
+  beforeEach(() => {
+    globalThis.fetch = vi.fn();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("queries the catalog items endpoint with q, language and format", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: true,
+      json: () => ({ features: [] as { id: string }[] }),
+    });
+
+    await searchLayers("voyageurs", catalogUrl, "fr", undefined, 5);
+
+    const calledWith = (fetch as Mock).mock.calls[0][0] as string;
+    const url = new URL(calledWith);
+    expect(url.origin + url.pathname).toBe(catalogUrl);
+    expect(url.searchParams.get("f")).toBe("json");
+    expect(url.searchParams.get("q")).toBe("voyageurs");
+    expect(url.searchParams.get("language")).toBe("fr");
+    expect(url.searchParams.get("limit")).toBe("5");
+  });
+
+  it("maps returned features to layer search results", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: true,
+      json: () => ({
+        features: [
+          {
+            id: "layer-1",
+            properties: {
+              title: "<b>Test Layer</b>",
+              description: "Layer description",
+            },
+          },
+        ],
+      }),
+    });
+
+    const result = await searchLayers("test", catalogUrl, "de");
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      resultType: "LAYER",
       id: "layer-1",
-      properties: {
-        title: "<b>Test Layer</b>",
-        description: "Layer description",
-        keywords: ["map", "geo", "cadaster"],
-      },
-    },
-  ];
-  it.each`
-    description                                                             | searchQuery                                              | expectedLength
-    ${"returns an empty array when the search query is too small"}          | ${"a"}                                                   | ${0}
-    ${"returns an empty result when there is nothing valid to be searched"} | ${"Elle m'a dit d'aller siffler là haut sur la colline"} | ${0}
-    ${"matches partial titles"}                                             | ${"test"}                                                | ${1}
-    ${"matches complete titles"}                                            | ${"TEST LAYER"}                                          | ${1}
-    ${"matches partial keywords"}                                           | ${"cada"}                                                | ${1}
-    ${"matches complete keywords"}                                          | ${"geo"}                                                 | ${1}
-  `("$description", ({ _, searchQuery, expectedLength }) => {
-    const result = searchLayers(searchQuery, mockCatalog);
-    expect(result).toHaveLength(expectedLength);
-    if (expectedLength === 0) {
-      expect(result).toEqual([]);
-    } else {
-      expect(result[0]).toMatchObject({
-        resultType: "LAYER",
-        id: "layer-1",
-        sanitizedTitle: "Test Layer",
-      });
-    }
+      layerId: "layer-1",
+      sanitizedTitle: "Test Layer",
+      description: "Layer description",
+    });
   });
-  it("respects limits when explicitly given", () => {
-    const many = Array.from({ length: 20 }, (_, i) => ({
-      id: `layer-${i}`,
-      properties: { title: `Layer ${i}` },
-    }));
 
-    const result = searchLayers("layer", many, 5);
-    expect(result).toHaveLength(5);
+  it("falls back to the id when a feature has no title", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: true,
+      json: () => ({ features: [{ id: "layer-42" }] }),
+    });
+
+    const result = await searchLayers("layer", catalogUrl, "de");
+
+    expect(result[0]).toMatchObject({
+      id: "layer-42",
+      title: "layer-42",
+      sanitizedTitle: "layer-42",
+      description: "",
+    });
   });
-  it("has a default limit of 10 and respects it", () => {
-    const many = Array.from({ length: 20 }, (_, i) => ({
-      id: `layer-${i}`,
-      properties: { title: `Layer ${i}` },
-    }));
 
-    const result = searchLayers("layer", many);
-    expect(result).toHaveLength(10);
+  it("rethrows AbortError", async () => {
+    const abortError = new Error("Aborted");
+    abortError.name = "AbortError";
+    (fetch as Mock).mockRejectedValue(abortError);
+
+    await expect(searchLayers("test", catalogUrl, "de")).rejects.toThrow(
+      "Aborted",
+    );
+  });
+
+  it("rejects on API error response", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: false,
+      status: 500,
+    });
+
+    await expect(searchLayers("test", catalogUrl, "de")).rejects.toThrow(
+      "Layer search API error: 500",
+    );
   });
 });
 

@@ -55,7 +55,7 @@ test.describe("map page", () => {
 
     // we let all the backgrounds to return the data for pixelkarte-farbe
     await page.route(
-      "http://mock-oar.org/api/oar/collections/swissgeo.catalog/items/ch.swisstopo.*",
+      "http://mock-oar.org/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.*",
       mockBackgroundResponse,
     );
 

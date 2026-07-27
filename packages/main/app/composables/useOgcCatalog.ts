@@ -25,6 +25,7 @@ export function useOgcCatalog(language: Ref<string>) {
   const { data: recordData } = useFetch<DatasetCollection>(catalogLink.value, {
     query: {
       language: language.value,
+      limit: 2000,
     },
   });
 

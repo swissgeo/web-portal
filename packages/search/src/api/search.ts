@@ -10,23 +10,22 @@ import type {
   SearchResponseResult,
 } from "@/types/search";
 
-/**
- * Catalog record structure as used in layer search. This extends the base OGCRecord with the
- * specific property structure used by the swissgeo catalog.
- */
-
 export enum SearchResultTypesEnum {
   layer = "LAYER",
   location = "LOCATION",
   feature = "FEATURE",
 }
 
+/**
+ * Catalog record structure as returned by the OGC API Records `/items` endpoint
+ * and consumed by the layer search. Only the fields we map to a search result
+ * are declared here.
+ */
 export interface CatalogRecord {
   id: string;
   properties?: {
     title?: string;
     description?: string;
-    keywords?: string[];
   };
 }
 
@@ -161,71 +160,54 @@ export async function searchLocation(
 }
 
 /**
- * Search for layers in the local OGC catalog
+ * Search for layers in the OGC records catalog (PyGeoAPI).
+ *
+ * The matching is performed server-side through the OGC API Records `q`
+ * full-text parameter. The catalog `/items` endpoint is expected to return a
+ * GeoJSON FeatureCollection.
+ *
+ * Errors (including a non-ok response) are propagated so callers can
+ * distinguish a failed request from an empty result set.
  *
  * @param queryString - Search query text
+ * @param catalogUrl - The catalog `/items` endpoint (without query parameters)
  * @param lang - Language code (de, fr, etc.)
- * @param catalogRecords - Array of OGC catalog records
+ * @param abortSignal - Optional abort signal for cancellation
  * @param limit - Maximum number of results (default: 10)
- * @returns the layer search results
+ * @returns Promise with the layer search results
  */
-export function searchLayers(
+export async function searchLayers(
   queryString: string,
-  catalogRecords: CatalogRecord[],
+  catalogUrl: string,
+  lang: string,
+  abortSignal?: AbortSignal,
   limit: number = 10,
-): LayerSearchResult[] {
-  const query = queryString.toLowerCase().trim();
+): Promise<LayerSearchResult[]> {
+  const url = new URL(catalogUrl);
+  url.searchParams.set("f", "json");
+  url.searchParams.set("q", queryString);
+  url.searchParams.set("language", lang);
+  url.searchParams.set("limit", String(limit));
 
-  if (query.length < 2) {
-    return [];
+  const response = await fetch(url.toString(), { signal: abortSignal });
+
+  if (!response.ok) {
+    throw new Error(`Layer search API error: ${response.status}`);
   }
 
-  try {
-    const matches = catalogRecords
-      .filter(
-        (
-          record,
-        ): record is CatalogRecord & {
-          properties: NonNullable<CatalogRecord["properties"]>;
-        } => {
-          if (!record.properties) {
-            return false;
-          }
+  const data: { features?: CatalogRecord[] } = await response.json();
 
-          const title = record.properties.title || "";
-          const description = record.properties.description || "";
-          const keywords = record.properties.keywords || [];
-
-          return (
-            record.id.toLowerCase().includes(query) ||
-            title.toLowerCase().includes(query) ||
-            description.toLowerCase().includes(query) ||
-            keywords.some((k: string) => k.toLowerCase().includes(query))
-          );
-        },
-      )
-      .slice(0, limit)
-      .map((record) => {
-        const title = record.properties.title || record.id;
-        return {
-          resultType: "LAYER" as const,
-          id: record.id,
-          layerId: record.id,
-          title,
-          sanitizedTitle: sanitizeTitle(title),
-          description: record.properties.description || "",
-        };
-      });
-
-    return matches;
-  } catch (error) {
-    log.error({
-      title: "searchLayers",
-      titleColor: LogPreDefinedColor.Red,
-      messages: ["Failed to search layers:", error],
-    });
-    return [];
-  }
+  return (data.features ?? []).map((record) => {
+    const title = record.properties?.title || record.id;
+    return {
+      resultType: "LAYER" as const,
+      id: record.id,
+      layerId: record.id,
+      title,
+      sanitizedTitle: sanitizeTitle(title),
+      description: record.properties?.description || "",
+    };
+  });
 }
 
 /**
