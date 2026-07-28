@@ -162,8 +162,6 @@ test.describe("import external layers", () => {
     await cleanupExternalRequestMocks(page);
   });
 
-  // Navigates to the German locale, so the assertions below rely on German UI
-  // labels (e.g. "Aktive Ebenen").
   async function openMap(page: Page) {
     await page.goto("/de/map");
     await expect(page.getByTestId("ol-map")).toBeVisible({
@@ -191,7 +189,7 @@ test.describe("import external layers", () => {
 
     // The imported layer shows up in the "Aktive Ebenen" sidebar (the cart
     // entry's displayName contains the layer id).
-    await page.getByRole("button", { name: "Aktive Ebenen" }).click();
+    await page.getByTestId("button-layer-cart-panel").click();
     await expect(
       page.getByTestId("layer-cart").getByText(WMTS_LAYER),
     ).toBeVisible();
@@ -212,7 +210,7 @@ test.describe("import external layers", () => {
     await expect(layerButton).toBeVisible();
     await layerButton.click();
 
-    await page.getByRole("button", { name: "Aktive Ebenen" }).click();
+    await page.getByTestId("button-layer-cart-panel").click();
     await expect(
       page.getByTestId("layer-cart").getByText(WMS_LAYER),
     ).toBeVisible();
