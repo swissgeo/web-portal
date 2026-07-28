@@ -153,10 +153,13 @@
       "buttonTitle": "Curseur temporel"
     },
     "import": {
-      "buttonTitle": "Importer"
+      "buttonTitle": "Importer",
+      "title": "Importer un fichier local",
+      "description": "Types de fichiers acceptés : {types}"
     },
     "share": {
-      "buttonTitle": "Partager"
+      "buttonTitle": "Partager",
+      "title": "Partager"
     },
     "print": {
       "buttonTitle": "Imprimer"

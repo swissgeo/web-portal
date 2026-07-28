@@ -153,10 +153,13 @@
       "buttonTitle": "Time Slider"
     },
     "import": {
-      "buttonTitle": "Import"
+      "buttonTitle": "Import",
+      "title": "Import Local File",
+      "description": "Accepted file types: {types}"
     },
     "share": {
-      "buttonTitle": "Share"
+      "buttonTitle": "Share",
+      "title": "Share"
     },
     "print": {
       "buttonTitle": "Print"

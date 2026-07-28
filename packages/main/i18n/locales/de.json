@@ -153,10 +153,13 @@
       "buttonTitle": "Zeitschieberegler"
     },
     "import": {
-      "buttonTitle": "Importieren"
+      "buttonTitle": "Importieren",
+      "title": "Lokale Datei importieren",
+      "description": "Akzeptierte Dateitypen: {types}"
     },
     "share": {
-      "buttonTitle": "Teilen"
+      "buttonTitle": "Teilen",
+      "title": "Teilen"
     },
     "print": {
       "buttonTitle": "Drucken"

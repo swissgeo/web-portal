@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { IconButton } from "@swissgeo/skeleton";
 import { useFileImport } from "~/composables/useFileImport";
+import { useToolboxStore } from "~/stores/toolbox";
 import { ref, useTemplateRef } from "vue";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
+const toolboxStore = useToolboxStore();
 const { importFile } = useFileImport();
 
 const inputLocalFile = useTemplateRef<HTMLInputElement>("inputLocalFile");
@@ -53,10 +57,31 @@ function onFileSelected(evt: Event): void {
 </script>
 
 <template>
-  <UCard
-    title="Import Local File"
-    :description="`Accepted file types: ${acceptedFileTypes.join(', ')}`"
-  >
+  <UCard>
+    <template #header>
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="font-semibold text-highlighted">
+            {{ t("toolbox.import.title") }}
+          </div>
+          <div class="mt-1 text-sm text-muted">
+            {{
+              t("toolbox.import.description", {
+                types: acceptedFileTypes.join(", "),
+              })
+            }}
+          </div>
+        </div>
+        <UButton
+          color="neutral"
+          variant="ghost"
+          icon="i-lucide-x"
+          size="sm"
+          aria-label="Close"
+          @click="toolboxStore.closeDetailPanel()"
+        />
+      </div>
+    </template>
     <div class="flex flex-wrap items-center gap-2">
       <input
         ref="inputLocalFile"

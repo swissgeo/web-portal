@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { useClipboard } from "@vueuse/core";
+import { useToolboxStore } from "~/stores/toolbox";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
+const toolboxStore = useToolboxStore();
 const zoomOnlyCtrl = ref(false);
 
 const { copy: copyLink, copied: copiedLink } = useClipboard();
@@ -16,7 +20,27 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
 </script>
 
 <template>
-  <UCard :ui="{ body: 'flex h-auto w-full flex-col gap-3 px-2 py-5' }">
+  <UCard
+    title="Lorem"
+    :ui="{ body: 'flex h-auto w-full flex-col gap-3 px-2 py-5' }"
+  >
+    <template #header>
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="font-semibold text-highlighted">
+            {{ t("toolbox.share.title") }}
+          </div>
+        </div>
+        <UButton
+          color="neutral"
+          variant="ghost"
+          icon="i-lucide-x"
+          size="sm"
+          aria-label="Close"
+          @click="toolboxStore.closeDetailPanel()"
+        />
+      </div>
+    </template>
     <div>Share Link:</div>
     <UInput
       class="w-full"
