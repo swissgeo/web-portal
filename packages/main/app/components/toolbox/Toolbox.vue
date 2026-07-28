@@ -45,12 +45,17 @@ const showRecenterButton = computed(
 const showCompassButton = ref(false);
 
 const showZoomButtons = ref(true);
-const show3dButton = ref(true);
+const show3dButton = ref(false);
 const showTimeSliderButton = computed(() => {
   return layerStore.layers.some(
     (layer) => !!dimensionsStore.getDimensions(layer.uuid)?.time,
   );
 });
+const showDrawButton = ref(true);
+const showMeasureButton = ref(true);
+const showImportButton = ref(true);
+const showShareButton = ref(true);
+const showPrintButton = ref(true);
 
 watch(showTimeSliderButton, (hasTimeLayers) => {
   if (!hasTimeLayers) {
@@ -96,13 +101,13 @@ const isEmbedMode = computed(() => displayMode === "embed");
         body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
       }"
     >
-      <DrawButton v-if="isWebMode" />
-      <MeasureButton v-if="isWebMode" />
+      <DrawButton v-if="isWebMode && showDrawButton" />
+      <MeasureButton v-if="isWebMode && showMeasureButton" />
       <CompareSliderButton v-if="isWebMode && showCompareSliderButton" />
       <TimeSliderButton v-if="isWebMode && showTimeSliderButton" />
-      <ImportButton v-if="isWebMode" />
-      <ShareButton v-if="isWebMode" />
-      <PrintButton v-if="isWebMode" />
+      <ImportButton v-if="isWebMode && showImportButton" />
+      <ShareButton v-if="isWebMode && showShareButton" />
+      <PrintButton v-if="isWebMode && showPrintButton" />
     </UCard>
   </div>
 </template>
