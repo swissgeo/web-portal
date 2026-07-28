@@ -50,7 +50,7 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
       v-model="zoomOnlyCtrl"
       label="Enable zoom only with Ctrl/Cmd key"
     />
-    <UInput class="w-full" v-model="embedCode">
+    <UInput class="w-full" v-model="embedCode" readonly v-if="!needToRefresh">
       <template v-if="embedCode?.length" #trailing>
         <UButton
           :color="copiedEmbed ? 'success' : 'neutral'"
@@ -63,5 +63,14 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
         />
       </template>
     </UInput>
+    <UButton
+      v-else
+      variant="subtle"
+      icon="i-lucide-refresh-cw"
+      aria-label="Refresh embed code"
+      @click="refresh()"
+    >
+      Generate embed code
+    </UButton>
   </UCard>
 </template>
