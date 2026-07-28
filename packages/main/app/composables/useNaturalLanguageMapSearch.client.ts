@@ -29,6 +29,7 @@ import {
 } from "@/utils/naturalLanguageMapSearchWorker.client";
 
 const MINIMUM_LAYER_SCORE = 0.4;
+const CATALOG_PAGE_SIZE = 100;
 const DISPATCHER = { name: "natural-language-map-search-poc" };
 
 const catalogPromises = new Map<
@@ -45,9 +46,21 @@ export interface NaturalLanguageLayerSuggestion {
 type PlaceResult = { place?: string } | { error: unknown };
 export type SemanticModelLoadState = "error" | "idle" | "loading" | "ready";
 
-function readCatalogRecords(
-  value: unknown,
-): readonly NaturalLanguageCatalogRecord[] {
+function isNextLink(value: unknown): value is { href: string; rel: "next" } {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "href" in value &&
+    typeof value.href === "string" &&
+    "rel" in value &&
+    value.rel === "next"
+  );
+}
+
+function readCatalogPage(value: unknown): {
+  nextUrl?: string;
+  records: readonly NaturalLanguageCatalogRecord[];
+} {
   if (
     value === null ||
     typeof value !== "object" ||
@@ -56,10 +69,46 @@ function readCatalogRecords(
   ) {
     throw new Error("The catalog returned an invalid feature collection");
   }
-  return value.features.filter(isCatalogRecord);
+
+  const nextLink =
+    "links" in value && Array.isArray(value.links)
+      ? value.links.find(isNextLink)
+      : undefined;
+  return {
+    nextUrl: nextLink?.href,
+    records: value.features.filter(isCatalogRecord),
+  };
 }
 
-function loadCatalog(
+async function fetchCatalogPages(
+  initialUrl: string,
+): Promise<readonly NaturalLanguageCatalogRecord[]> {
+  const records: NaturalLanguageCatalogRecord[] = [];
+  const visitedUrls = new Set<string>();
+  let nextUrl: string | undefined = initialUrl;
+
+  while (nextUrl) {
+    if (visitedUrls.has(nextUrl)) {
+      throw new Error("The catalog returned a pagination cycle");
+    }
+    visitedUrls.add(nextUrl);
+
+    const response = await fetch(nextUrl);
+    if (!response.ok) {
+      throw new Error("Catalog request failed with " + response.status);
+    }
+
+    const page = readCatalogPage(await response.json());
+    records.push(...page.records);
+    nextUrl = page.nextUrl
+      ? new URL(page.nextUrl, nextUrl).toString()
+      : undefined;
+  }
+
+  return records;
+}
+
+export function loadCatalog(
   catalogItemsUrl: string,
   locale: string,
 ): Promise<readonly NaturalLanguageCatalogRecord[]> {
@@ -68,11 +117,10 @@ function loadCatalog(
   if (!request) {
     const url = new URL(catalogItemsUrl);
     url.searchParams.set("language", locale);
-    request = fetch(url).then(async (response) => {
-      if (!response.ok) {
-        throw new Error("Catalog request failed with " + response.status);
-      }
-      return readCatalogRecords(await response.json());
+    url.searchParams.set("limit", String(CATALOG_PAGE_SIZE));
+    request = fetchCatalogPages(url.toString()).catch((error: unknown) => {
+      catalogPromises.delete(cacheKey);
+      throw error;
     });
     catalogPromises.set(cacheKey, request);
   }

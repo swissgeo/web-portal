@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { NaturalLanguageCatalogRecord } from "../naturalLanguageMapSearch";
 
+import { loadCatalog } from "../../composables/useNaturalLanguageMapSearch.client";
 import {
   expandLayerQuery,
   extractPlaceQuery,
@@ -160,5 +161,82 @@ describe("natural-language map search", () => {
     expect(
       rankCandidateEmbeddings(new Float32Array([1, 0, 0, 1]), 2, ["one"], 0),
     ).toEqual([]);
+  });
+});
+
+function jsonResponse(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    headers: { "Content-Type": "application/json" },
+    status,
+  });
+}
+
+describe("natural-language catalog pagination", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("loads every catalog page and caches the combined records", async () => {
+    const endpoint = "https://api.example.test/catalog-pagination/items";
+    const firstUrl = endpoint + "?language=en&limit=100";
+    const nextUrl = endpoint + "?offset=100&language=en&limit=100";
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        jsonResponse({
+          features: [{ id: "first" }],
+          links: [{ href: nextUrl, rel: "next" }],
+        }),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({ features: [{ id: "second" }], links: [] }),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadCatalog(endpoint, "en")).resolves.toEqual([
+      { id: "first" },
+      { id: "second" },
+    ]);
+    await loadCatalog(endpoint, "en");
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenNthCalledWith(1, firstUrl);
+    expect(fetchMock).toHaveBeenNthCalledWith(2, nextUrl);
+  });
+
+  it("allows retry after a catalog page request fails", async () => {
+    const endpoint = "https://api.example.test/catalog-retry/items";
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse({}, 503))
+      .mockResolvedValueOnce(
+        jsonResponse({ features: [{ id: "recovered" }], links: [] }),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadCatalog(endpoint, "fr")).rejects.toThrow(
+      "Catalog request failed with 503",
+    );
+    await expect(loadCatalog(endpoint, "fr")).resolves.toEqual([
+      { id: "recovered" },
+    ]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("rejects a pagination cycle", async () => {
+    const endpoint = "https://api.example.test/catalog-cycle/items";
+    const firstUrl = endpoint + "?language=de&limit=100";
+    const fetchMock = vi.fn().mockResolvedValue(
+      jsonResponse({
+        features: [{ id: "first" }],
+        links: [{ href: firstUrl, rel: "next" }],
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadCatalog(endpoint, "de")).rejects.toThrow(
+      "The catalog returned a pagination cycle",
+    );
+    expect(fetchMock).toHaveBeenCalledOnce();
   });
 });
