@@ -3,7 +3,9 @@ import { useClipboard } from "@vueuse/core";
 
 const zoomOnlyCtrl = ref(false);
 
-const { copy, copied } = useClipboard();
+const { copy: copyLink, copied: copiedLink } = useClipboard();
+const { copy: copyEmbed, copied: copiedEmbed } = useClipboard();
+
 const { exportState } = useStateConfig();
 const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
   exportState,
@@ -24,13 +26,13 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     >
       <template v-if="shareLink?.length" #trailing>
         <UButton
-          :color="copied ? 'success' : 'neutral'"
+          :color="copiedLink ? 'success' : 'neutral'"
           class="bg-white"
           variant="link"
           size="sm"
-          :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+          :icon="copiedLink ? 'i-lucide-copy-check' : 'i-lucide-copy'"
           aria-label="Copy to clipboard"
-          @click="copy(shareLink)"
+          @click="copyLink(shareLink)"
         />
       </template>
     </UInput>
@@ -51,13 +53,13 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     <UInput class="w-full" v-model="embedCode">
       <template v-if="embedCode?.length" #trailing>
         <UButton
-          :color="copied ? 'success' : 'neutral'"
+          :color="copiedEmbed ? 'success' : 'neutral'"
           class="bg-white"
           variant="link"
           size="sm"
-          :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+          :icon="copiedEmbed ? 'i-lucide-copy-check' : 'i-lucide-copy'"
           aria-label="Copy to clipboard"
-          @click="copy(embedCode)"
+          @click="copyEmbed(embedCode)"
         />
       </template>
     </UInput>
