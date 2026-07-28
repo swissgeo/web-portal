@@ -22,7 +22,7 @@ const sortedLayers = computed(() => {
 </script>
 
 <template>
-  <ul class="mt-8 flex flex-col gap-4">
+  <ul data-testid="layer-cart" class="mt-8 flex flex-col gap-4">
     <LayerCartEntry
       v-for="(layer, index) in sortedLayers"
       class="flex items-center gap-2"
