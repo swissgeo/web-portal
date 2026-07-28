@@ -9,7 +9,7 @@ export const useFeaturesStore = defineStore("features", () => {
   // extract all geometries from features to give to the viewer for highlighting
   const getSelectedGeometries = computed(() =>
     Object.values(selectedFeaturesByUuid.value).flatMap((features) =>
-      features.map((f) => f.geometry),
+      features.map((feature) => feature.geometry),
     ),
   );
 
