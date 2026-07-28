@@ -34,6 +34,10 @@ vi.mock("@/stores/geolocation", () => ({
   useGeolocationStore: mockUseGeolocationStore,
 }));
 
+vi.mock("~/stores/mapView", () => ({
+  useMapViewStore: mockUseMapViewStore,
+}));
+
 mockUseMapViewStore.mockImplementation(() => ({
   closeTimeSlider: closeTimeSliderMock,
   visibleLayers: computed(() => []),

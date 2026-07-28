@@ -1,15 +1,4 @@
 <script setup lang="ts">
-import { useDimensionsStore } from "@swissgeo/dimension";
-import { useDrawing } from "@swissgeo/drawing";
-// import { useDrawingStore } from "@swissgeo/drawing";
-/**
- * The Toolbox contains buttons to be used on the map. It is responsible for deciding which buttons
- * should show up and which shouldn't.
- *
- * 05.02.2026 ; for now, for each button, this is a "static" ref value, but when we implement the
- * logic behind the available buttons, it should become a computed value instead.
- */
-import { useLayerStore } from "@swissgeo/layers";
 import { displayModeKey } from "~/types/injectionKeys";
 import { inject } from "vue";
 
@@ -26,47 +15,10 @@ import ShareButton from "@/components/toolbox/toolboxButtons/ShareButton.vue";
 import TimeSliderButton from "@/components/toolbox/toolboxButtons/TimeSliderButton.vue";
 import Toggle3dButton from "@/components/toolbox/toolboxButtons/Toggle3dButton.vue";
 import ZoomButtons from "@/components/toolbox/toolboxButtons/ZoomButtons.vue";
-import { useGeolocationStore } from "@/stores/geolocation";
+import { useToolboxStore } from "@/stores/toolbox";
 
-const { focusMode } = useDrawing();
+const toolboxStore = useToolboxStore();
 
-const layerStore = useLayerStore();
-const dimensionsStore = useDimensionsStore();
-// const drawingStore = useDrawingStore();
-const mapViewStore = useMapViewStore();
-const geolocationStore = useGeolocationStore();
-
-const showFullScreeButton = computed(() => focusMode.value === "none");
-// Buttons related to the geolocation function
-const showGelocationButton = ref(true);
-const showRecenterButton = computed(
-  () => geolocationStore.active && geolocationStore.position !== undefined,
-);
-const showCompassButton = ref(false);
-
-const showZoomButtons = ref(true);
-const show3dButton = ref(false);
-const showTimeSliderButton = computed(() => {
-  return layerStore.layers.some(
-    (layer) => !!dimensionsStore.getDimensions(layer.uuid)?.time,
-  );
-});
-const showDrawButton = ref(true);
-const showMeasureButton = ref(true);
-const showImportButton = ref(true);
-const showShareButton = ref(true);
-const showPrintButton = ref(true);
-
-watch(showTimeSliderButton, (hasTimeLayers) => {
-  if (!hasTimeLayers) {
-    mapViewStore.closeTimeSlider();
-  }
-});
-
-// the slider needs at least one visible overlay to compare against
-const showCompareSliderButton = computed(
-  () => mapViewStore.visibleLayers.length > 0,
-);
 const displayMode = inject(displayModeKey, "web");
 
 const isWebMode = computed(() => displayMode === "web");
@@ -81,11 +33,11 @@ const isEmbedMode = computed(() => displayMode === "embed");
         body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
       }"
     >
-      <FullScreenButton v-if="isWebMode && showFullScreeButton" />
-      <GeolocButton v-if="isWebMode && showGelocationButton" />
-      <Toggle3dButton v-if="isWebMode && show3dButton" />
-      <CompassButton v-if="isWebMode && showCompassButton" />
-      <RecenterButton v-if="isWebMode && showRecenterButton" />
+      <FullScreenButton v-if="isWebMode && toolboxStore.showFullScreeButton" />
+      <GeolocButton v-if="isWebMode && toolboxStore.showGelocationButton" />
+      <Toggle3dButton v-if="isWebMode && toolboxStore.show3dButton" />
+      <CompassButton v-if="isWebMode && toolboxStore.showCompassButton" />
+      <RecenterButton v-if="isWebMode && toolboxStore.showRecenterButton" />
       <slot />
     </UCard>
     <UCard
@@ -94,20 +46,24 @@ const isEmbedMode = computed(() => displayMode === "embed");
         body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
       }"
     >
-      <ZoomButtons v-if="(isWebMode || isEmbedMode) && showZoomButtons" />
+      <ZoomButtons
+        v-if="(isWebMode || isEmbedMode) && toolboxStore.showZoomButtons"
+      />
     </UCard>
     <UCard
       :ui="{
         body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
       }"
     >
-      <DrawButton v-if="isWebMode && showDrawButton" />
-      <MeasureButton v-if="isWebMode && showMeasureButton" />
-      <CompareSliderButton v-if="isWebMode && showCompareSliderButton" />
-      <TimeSliderButton v-if="isWebMode && showTimeSliderButton" />
-      <ImportButton v-if="isWebMode && showImportButton" />
-      <ShareButton v-if="isWebMode && showShareButton" />
-      <PrintButton v-if="isWebMode && showPrintButton" />
+      <DrawButton v-if="isWebMode && toolboxStore.showDrawButton" />
+      <MeasureButton v-if="isWebMode && toolboxStore.showMeasureButton" />
+      <CompareSliderButton
+        v-if="isWebMode && toolboxStore.showCompareSliderButton"
+      />
+      <TimeSliderButton v-if="isWebMode && toolboxStore.showTimeSliderButton" />
+      <ImportButton v-if="isWebMode && toolboxStore.showImportButton" />
+      <ShareButton v-if="isWebMode && toolboxStore.showShareButton" />
+      <PrintButton v-if="isWebMode && toolboxStore.showPrintButton" />
     </UCard>
   </div>
 </template>
