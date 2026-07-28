@@ -5,7 +5,6 @@ import {
 } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
 import { searchLocation } from "@swissgeo/search";
-import { joinURL } from "ufo";
 
 import type {
   LayerMatch,
@@ -61,15 +60,13 @@ function readCatalogRecords(
 }
 
 function loadCatalog(
-  endpoint: string,
+  catalogItemsUrl: string,
   locale: string,
 ): Promise<readonly NaturalLanguageCatalogRecord[]> {
-  const cacheKey = endpoint + "|" + locale;
+  const cacheKey = catalogItemsUrl + "|" + locale;
   let request = catalogPromises.get(cacheKey);
   if (!request) {
-    const url = new URL(
-      joinURL(endpoint, "collections", "swissgeo.catalog", "items"),
-    );
+    const url = new URL(catalogItemsUrl);
     url.searchParams.set("language", locale);
     request = fetch(url).then(async (response) => {
       if (!response.ok) {
@@ -129,7 +126,7 @@ function placeFrom(result: PlaceResult): string | undefined {
 }
 
 export function useNaturalLanguageMapSearch() {
-  const runtimeConfig = useRuntimeConfig();
+  const catalogItemsUrl = useCatalogItemsUrl();
   const layerStore = useLayerStore();
   const positionStore = usePositionStore();
   const geolocationStore = useGeolocationStore();
@@ -187,15 +184,7 @@ export function useNaturalLanguageMapSearch() {
       return;
     }
 
-    const url = new URL(
-      joinURL(
-        runtimeConfig.public.ogcApiEndpoint,
-        "collections",
-        "swissgeo.catalog",
-        "items",
-        datasetId,
-      ),
-    );
+    const url = new URL(catalogItemsUrl(datasetId));
     url.searchParams.set("language", locale);
 
     const response = await fetch(url);
@@ -268,10 +257,7 @@ export function useNaturalLanguageMapSearch() {
 
     try {
       status.value = "Searching the full catalog…";
-      const catalog = await loadCatalog(
-        runtimeConfig.public.ogcApiEndpoint,
-        locale,
-      );
+      const catalog = await loadCatalog(catalogItemsUrl(), locale);
       const layerQuery = expandLayerQuery(trimmedQuery);
       const candidates = findCatalogCandidates(layerQuery, catalog);
       if (candidates.length === 0) {
