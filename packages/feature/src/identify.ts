@@ -43,8 +43,9 @@ export async function identify(
   useFeaturesStore().setSelection(storePayload);
 }
 
+// only exported for testing purpose, we only use identify outside this file
 // eslint-disable-next-line @typescript-eslint/require-await
-async function getFeaturesForOneLayer(
+export async function getFeaturesForOneLayer(
   layerRequest: LayerRequest,
   extent: FlatExtent | NormalizedExtent,
   epsgNumber: number,
