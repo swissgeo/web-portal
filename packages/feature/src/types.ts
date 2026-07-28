@@ -1,7 +1,11 @@
-import type { Geometry, Feature as geojsonFeature } from "geojson";
+import type {
+  Geometry,
+  GeometryCollection,
+  Feature as geojsonFeature,
+} from "geojson";
 export interface FeatureData {
   featureId: string;
-  geometry: Geometry; // for @swissgeo/map's :highlighted-features
+  geometry: Exclude<Geometry, GeometryCollection>;
   content:
     | { kind: "html"; html: string; trusted: boolean }
     | { kind: "json"; properties: Record<string, unknown> };
