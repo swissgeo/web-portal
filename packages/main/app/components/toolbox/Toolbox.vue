@@ -15,6 +15,7 @@ import ShareButton from "@/components/toolbox/toolboxButtons/ShareButton.vue";
 import TimeSliderButton from "@/components/toolbox/toolboxButtons/TimeSliderButton.vue";
 import Toggle3dButton from "@/components/toolbox/toolboxButtons/Toggle3dButton.vue";
 import ZoomButtons from "@/components/toolbox/toolboxButtons/ZoomButtons.vue";
+import ToolboxDetail from "@/components/toolbox/ToolboxDetail.vue";
 import { useToolboxStore } from "@/stores/toolbox";
 
 const toolboxStore = useToolboxStore();
@@ -65,6 +66,8 @@ const isEmbedMode = computed(() => displayMode === "embed");
       <ShareButton v-if="isWebMode && toolboxStore.showShareButton" />
       <PrintButton v-if="isWebMode && toolboxStore.showPrintButton" />
     </UCard>
+
+    <ToolboxDetail />
   </div>
 </template>
 

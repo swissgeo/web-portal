@@ -43,6 +43,21 @@ export const useToolboxStore = defineStore("toolbox", () => {
     }
   });
 
+  const activeDetailPanel: Ref<string | null> = ref(null);
+
+  function toggleDetailPanel(panelId: string) {
+    activeDetailPanel.value =
+      activeDetailPanel.value === panelId ? null : panelId;
+  }
+
+  function closeDetailPanel() {
+    activeDetailPanel.value = null;
+  }
+
+  function isPanelActive(panelId: string) {
+    return activeDetailPanel.value === panelId;
+  }
+
   return {
     showFullScreeButton,
     showGelocationButton,
@@ -58,5 +73,9 @@ export const useToolboxStore = defineStore("toolbox", () => {
     showTimeSliderButton,
     showCompareSliderButton,
     focusModeNone,
+    activeDetailPanel,
+    toggleDetailPanel,
+    closeDetailPanel,
+    isPanelActive,
   };
 });
