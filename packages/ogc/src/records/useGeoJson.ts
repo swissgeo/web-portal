@@ -6,6 +6,7 @@ import { computed, watchEffect } from "vue";
 import type { Distribution } from "@/types";
 
 import { useConditionalFetch } from "./useConditionalFetch";
+import { getLinksByRel } from "./utils";
 
 export function useGeoJson(distribution: Ref<Distribution>) {
   const dataUrl = computed(() => extractGeoJsonDataUrl(distribution.value));
@@ -47,7 +48,7 @@ function extractGeoJsonDataUrl(
     return null;
   }
 
-  const datasetLinks = distribution.links.filter((link) => link.rel === "data");
+  const datasetLinks = getLinksByRel(distribution.links, "data");
 
   if (datasetLinks.length && datasetLinks[0]) {
     return datasetLinks[0].href;
@@ -64,9 +65,7 @@ function extractGeoJsonStyleUrl(
     return null;
   }
 
-  const datasetLinks = distribution.links.filter(
-    (link) => link.rel === "styledby",
-  );
+  const datasetLinks = getLinksByRel(distribution.links, "styledby");
 
   if (datasetLinks.length && datasetLinks[0]) {
     return datasetLinks[0].href;

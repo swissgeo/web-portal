@@ -16,7 +16,7 @@ import ChBafuSchutzgebieteLuftfahrtDistributions from "./fixtures/distribution-c
 describe("useDistributionCollection fetching the data distribution from the OGC records", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.bafu.schutzgebiete-luftfahrt",
       () => {
         return HttpResponse.json(ChBafuSchutzgebieteLuftfahrtDistributions);
       },
@@ -39,7 +39,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
     );
 
     expect(distributionLink).toBe(
-      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.bafu.schutzgebiete-luftfahrt",
     );
   });
 
@@ -109,7 +109,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
 describe("useDistributionCollection 404", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.bafu.schutzgebiete-luftfahrt",
       () => {
         return HttpResponse.json("Not Found", { status: 404 });
       },
@@ -137,7 +137,7 @@ describe("useDistributionCollection 404", () => {
 describe("useDistributionCollection 5xx", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.bafu.schutzgebiete-luftfahrt",
       () => {
         return HttpResponse.error();
       },

@@ -2,14 +2,14 @@
   "id": "wmts-geoadminch",
   "links": [
     {
-      "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/geoadmin.services/items/wmts-geoadminch?language=en",
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/geoadmin.services/items/wmts-geoadminch?language=en",
       "rel": "self",
       "title": "This Record",
       "type": "application/json",
       "hreflang": "en"
     },
     {
-      "href": "https://services.dev.sgdi.tech/api/oar/staticv2/collections/geoadmin.services?language=en",
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/geoadmin.services?language=en",
       "rel": "collection",
       "title": "Link to the collection this item belongs to",
       "type": "application/json",

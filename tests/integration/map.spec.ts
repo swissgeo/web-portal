@@ -44,7 +44,7 @@ test.describe("map page", () => {
     );
 
     await page.route(
-      "http://mock-oar.org/api/oar/collections/ch.swisstopo.pixelkarte-farbe.distributions/items",
+      "http://mock-oar.org/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe",
       (route) => {
         return route.fulfill({
           status: 200,

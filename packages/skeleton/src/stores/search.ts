@@ -2,13 +2,13 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { useLayerStore } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { buildCatalogItemsUrl } from "@swissgeo/ogc";
 import {
   searchLayers,
   searchLocation,
   searchLayerFeatures,
 } from "@swissgeo/search";
 import { defineStore } from "pinia";
-import { joinURL } from "ufo";
 import { ref, computed } from "vue";
 
 export const useSearchStore = defineStore("search", () => {
@@ -25,11 +25,9 @@ export const useSearchStore = defineStore("search", () => {
 
   // Build the OGC API Records `/items` endpoint used to search layers.
   const catalogItemsUrl = computed(() =>
-    joinURL(
+    buildCatalogItemsUrl(
       runtimeConfig.public.ogcApiEndpoint as string,
-      "collections",
       runtimeConfig.public.ogcCatalogCollection as string,
-      "items",
     ),
   );
 

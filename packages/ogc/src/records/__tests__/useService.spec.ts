@@ -13,7 +13,7 @@ import ChGeoadminWmts from "./fixtures/service_ch.admin.geo.wmts.json";
 describe("useService fetching the service data from the OGC records", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wmts",
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/geoadmin.services/items/ch.admin.geo.wmts",
       () => {
         return HttpResponse.json(ChGeoadminWmts);
       },
@@ -51,7 +51,7 @@ describe("extract service URL", () => {
     const distribution = ChBafuSchutzgebieteLuftfahrtWmts as Distribution;
     const url = extractServiceUrl(distribution);
     expect(url).toEqual(
-      "https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wmts",
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/geoadmin.services/items/ch.admin.geo.wmts",
     );
   });
 
@@ -65,7 +65,7 @@ describe("extract service URL", () => {
     const distribution = {
       links: [
         {
-          href: "https://services.dev.sgdi.tech/api/oar/v0/collections/geoadmin.services/items/ch.admin.geo.wmts",
+          href: "https://services.dev.sgdi.tech/api/oar/rc1/collections/geoadmin.services/items/ch.admin.geo.wmts",
         },
       ],
     };

@@ -6,7 +6,7 @@
   "scripts": {
     ".compile-otel": "rolldown -c rolldown.otel.config.mjs",
     "build": "nuxt build && pnpm run .compile-otel",
-    "build:dev": "DEVELOPMENT_BUILD=1 nuxt build && pnpm run .compile-otel",
+    "build:dev": "NODE_OPTIONS=--max-old-space-size=8192 DEVELOPMENT_BUILD=1 nuxt build && pnpm run .compile-otel",
     "build:prod": "nuxt build && pnpm run .compile-otel",
     "dev": "DEVELOPMENT_BUILD=1 nuxt dev",
     "format": "prettier --check --ignore-path ../../.prettierignore .",
