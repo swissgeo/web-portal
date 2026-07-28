@@ -13,7 +13,7 @@
       "rel": "dataservice"
     },
     {
-      "href": "https://services.dev.sgdi.tech/api/oas/v0/styles/ch.bafu.schutzgebiete-luftfahrt:wmts:style",
+      "href": "https://services.dev.sgdi.tech/api/oas/rc1/styles/ch.bafu.schutzgebiete-luftfahrt:wmts:style",
       "rel": "styledby",
       "title": "Style Hints for WMTS Raster Layer (Maplibre Style Spec)",
       "type": "application/json"

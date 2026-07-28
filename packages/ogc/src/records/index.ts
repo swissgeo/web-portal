@@ -1,3 +1,4 @@
+export { buildCatalogItemsUrl } from "./catalogUrl";
 export { useDistribution } from "./useDistribution";
 export { useWmtsCapabilities } from "./useWmtsCapabilities";
 export { useWmsCapabilities } from "./useWmsCapabilities";

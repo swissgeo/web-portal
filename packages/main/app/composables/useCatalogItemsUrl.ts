@@ -1,4 +1,4 @@
-import { buildCatalogItemsUrl } from "@swissgeo/shared";
+import { buildCatalogItemsUrl } from "@swissgeo/ogc";
 
 /**
  * Returns a builder for the OGC API Records catalog `/items` URL, reading the

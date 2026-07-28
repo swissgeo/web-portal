@@ -2,12 +2,12 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { useLayerStore } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { buildCatalogItemsUrl } from "@swissgeo/ogc";
 import {
   searchLayers,
   searchLocation,
   searchLayerFeatures,
 } from "@swissgeo/search";
-import { buildCatalogItemsUrl } from "@swissgeo/shared";
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
