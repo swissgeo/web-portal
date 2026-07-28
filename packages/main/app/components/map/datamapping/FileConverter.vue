@@ -11,18 +11,13 @@ const emit = defineEmits<{
   remove: [void];
 }>();
 
-const FORMAT_BY_TYPE: Record<string, LayerFormat> = {
-  kml: "KML",
-  kmz: "KMZ",
-  gpx: "GPX",
-  geojson: "GeoJSON",
-};
-
 const layerData = computed((): MapLayer => {
   const base = {
     ...layer,
-    format:
-      FORMAT_BY_TYPE[layer.type] ?? (layer.type.toUpperCase() as LayerFormat),
+    // "geojson" is the only type whose LayerFormat isn't its uppercase form.
+    format: (layer.type === "geojson"
+      ? "GeoJSON"
+      : layer.type.toUpperCase()) as LayerFormat,
     layerId: layer.humanId,
     displayName: layer.info?.displayName ?? layer.humanId,
     opacity: 1,
