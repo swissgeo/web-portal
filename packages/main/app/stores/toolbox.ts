@@ -13,8 +13,8 @@ export const useToolboxStore = defineStore("toolbox", () => {
   const mapViewStore = useMapViewStore();
   const geolocationStore = useGeolocationStore();
 
-  const showFullScreeButton = ref(true);
-  const showGelocationButton = ref(true);
+  const showFullScreenButton = ref(true);
+  const showGeolocationButton = ref(true);
   const showCompassButton = ref(false);
   const showZoomButtons = ref(true);
   const show3dButton = ref(false);
@@ -59,8 +59,8 @@ export const useToolboxStore = defineStore("toolbox", () => {
   }
 
   return {
-    showFullScreeButton,
-    showGelocationButton,
+    showFullScreenButton,
+    showGeolocationButton,
     showCompassButton,
     showZoomButtons,
     show3dButton,

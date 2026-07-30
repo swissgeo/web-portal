@@ -189,8 +189,8 @@ describe("useToolboxStore", () => {
   describe("visibility flags", () => {
     it("has correct defaults", () => {
       const store = useToolboxStore();
-      expect(store.showFullScreeButton).toBe(true);
-      expect(store.showGelocationButton).toBe(true);
+      expect(store.showFullScreenButton).toBe(true);
+      expect(store.showGeolocationButton).toBe(true);
       expect(store.showCompassButton).toBe(false);
       expect(store.showZoomButtons).toBe(true);
       expect(store.show3dButton).toBe(false);

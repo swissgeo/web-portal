@@ -34,8 +34,8 @@ const isEmbedMode = computed(() => displayMode === "embed");
         body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
       }"
     >
-      <FullScreenButton v-if="isWebMode && toolboxStore.showFullScreeButton" />
-      <GeolocButton v-if="isWebMode && toolboxStore.showGelocationButton" />
+      <FullScreenButton v-if="isWebMode && toolboxStore.showFullScreenButton" />
+      <GeolocButton v-if="isWebMode && toolboxStore.showGeolocationButton" />
       <Toggle3dButton v-if="isWebMode && toolboxStore.show3dButton" />
       <CompassButton v-if="isWebMode && toolboxStore.showCompassButton" />
       <RecenterButton v-if="isWebMode && toolboxStore.showRecenterButton" />
