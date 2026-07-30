@@ -155,7 +155,17 @@
     "import": {
       "buttonTitle": "Importer",
       "title": "Importer un fichier local",
-      "description": "Types de fichiers acceptés : {types}"
+      "description": "Types de fichiers acceptés : {types}",
+      "browseButton": "Parcourir...",
+      "noFileSelected": "Aucun fichier sélectionné",
+      "importButton": "Importer le fichier",
+      "loadingMessage": "Importation du fichier...",
+      "sucessMessage": "Fichier importé avec succès : {fileName}",
+      "errorMessages": {
+        "generalError": "Échec de l'importation du fichier",
+        "noFileSelected": "Veuillez d'abord sélectionner un fichier"
+      },
+      "close": "Fermer"
     },
     "share": {
       "buttonTitle": "Partager",

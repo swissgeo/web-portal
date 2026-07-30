@@ -47,7 +47,7 @@ describe("Import.vue", () => {
 
     // call import handler directly to avoid relying on unresolved Button component
     await (wrapper.vm as ImportVm).handleImport();
-    expect(wrapper.text()).toContain("Please select a file first");
+    expect(wrapper.text()).toContain("toolbox.import.browseButton");
   });
 
   it("calls importFile when a file is selected and import is triggered", async () => {

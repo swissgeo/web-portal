@@ -20,7 +20,7 @@ const acceptedFileTypes = [".kml", ".kmz", ".gpx", ".geojson", ".json"];
 
 async function handleImport() {
   if (!selectedFile.value) {
-    errorMessage.value = "Please select a file first";
+    errorMessage.value = t("toolbox.import.errorMessages.noFileSelected");
     return;
   }
 
@@ -30,7 +30,9 @@ async function handleImport() {
 
   try {
     await importFile(selectedFile.value);
-    successMessage.value = `Successfully imported ${selectedFile.value.name}`;
+    successMessage.value = t("toolbox.import.sucessMessage", {
+      fileName: selectedFile.value.name,
+    });
     // Clear the file input after successful import
     selectedFile.value = undefined;
     filePathInfo.value = "";
@@ -39,7 +41,9 @@ async function handleImport() {
     }
   } catch (error) {
     errorMessage.value =
-      error instanceof Error ? error.message : "Failed to import file";
+      error instanceof Error
+        ? error.message
+        : t("toolbox.import.errorMessages.generalError");
   } finally {
     isLoading.value = false;
   }
@@ -77,7 +81,7 @@ function onFileSelected(evt: Event): void {
           variant="ghost"
           icon="i-lucide-x"
           size="sm"
-          aria-label="Close"
+          :aria-label="t('toolbox.import.close')"
           @click="toolboxStore.closeDetailPanel()"
         />
       </div>
@@ -99,13 +103,13 @@ function onFileSelected(evt: Event): void {
         :disabled="isLoading"
         @click="inputLocalFile?.click()"
       >
-        Browse...
+        {{ t("toolbox.import.browseButton") }}
       </UButton>
       <input
         type="text"
         class="rounded border border-gray-300"
         :value="filePathInfo"
-        placeholder="No file selected"
+        :placeholder="t('toolbox.import.noFileSelected')"
         readonly
         tabindex="-1"
         data-testid="file-input-text"
@@ -115,7 +119,7 @@ function onFileSelected(evt: Event): void {
         :disabled="!selectedFile || isLoading"
         @click="handleImport"
         iconName="Upload"
-        title="Import file"
+        :title="t('toolbox.import.importButton')"
         class="grow justify-center"
       />
     </div>
@@ -142,7 +146,7 @@ function onFileSelected(evt: Event): void {
       class="mt-3 flex items-center gap-2 text-sm text-gray-600"
     >
       <span class="animate-spin">⏳</span>
-      <span>Importing file...</span>
+      <span>{{ t("toolbox.import.loadingMessage") }}</span>
     </div>
   </UCard>
 </template>

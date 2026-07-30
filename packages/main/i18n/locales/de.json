@@ -155,7 +155,17 @@
     "import": {
       "buttonTitle": "Importieren",
       "title": "Lokale Datei importieren",
-      "description": "Akzeptierte Dateitypen: {types}"
+      "description": "Akzeptierte Dateitypen: {types}",
+      "browseButton": "Durchsuchen...",
+      "noFileSelected": "Keine Datei ausgewählt",
+      "importButton": "Datei importieren",
+      "loadingMessage": "Datei wird importiert...",
+      "sucessMessage": "Datei erfolgreich importiert: {fileName}",
+      "errorMessages": {
+        "generalError": "Datei konnte nicht importiert werden",
+        "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus"
+      },
+      "close": "Schließen"
     },
     "share": {
       "buttonTitle": "Teilen",

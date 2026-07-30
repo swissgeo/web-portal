@@ -155,7 +155,17 @@
     "import": {
       "buttonTitle": "Import",
       "title": "Import Local File",
-      "description": "Accepted file types: {types}"
+      "description": "Accepted file types: {types}",
+      "browseButton": "Browse...",
+      "noFileSelected": "No file selected",
+      "importButton": "Import file",
+      "loadingMessage": "Importing file...",
+      "sucessMessage": "Successfully imported {fileName}",
+      "errorMessages": {
+        "generalError": "Failed to import file",
+        "noFileSelected": "Please select a file first"
+      },
+      "close": "Close"
     },
     "share": {
       "buttonTitle": "Share",
