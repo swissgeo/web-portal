@@ -130,6 +130,66 @@
     "startGeolocation": "Démarrer la géolocalisation",
     "recenterMap": "Recentrer la carte"
   },
+  "toolbox": {
+    "geolocation": {
+      "buttonTitle": "Géolocalisation"
+    },
+    "fullscreen": {
+      "buttonTitle": "Plein écran"
+    },
+    "3d": {
+      "buttonTitle": "3D"
+    },
+    "drawing": {
+      "buttonTitle": "Dessiner"
+    },
+    "measure": {
+      "buttonTitle": "Mesurer"
+    },
+    "compare": {
+      "buttonTitle": "Comparer"
+    },
+    "timeSlider": {
+      "buttonTitle": "Curseur temporel"
+    },
+    "import": {
+      "buttonTitle": "Importer",
+      "title": "Importer un fichier local",
+      "description": "Types de fichiers acceptés : {types}",
+      "browseButton": "Parcourir...",
+      "noFileSelected": "Aucun fichier sélectionné",
+      "importButton": "Importer le fichier",
+      "loadingMessage": "Importation du fichier...",
+      "sucessMessage": "Fichier importé avec succès : {fileName}",
+      "errorMessages": {
+        "generalError": "Échec de l'importation du fichier",
+        "noFileSelected": "Veuillez d'abord sélectionner un fichier"
+      },
+      "close": "Fermer"
+    },
+    "share": {
+      "buttonTitle": "Partager",
+      "title": "Partager",
+      "link": {
+        "title": "Lien de partage",
+        "generateButton": "Générer le lien de partage"
+      },
+      "embed": {
+        "title": "Intégration",
+        "generateButton": "Générer le code d'intégration",
+        "zoomOnlyCtrlLabel": "Activer le zoom uniquement avec la touche Ctrl/Cmd"
+      },
+      "ariaLabel": {
+        "close": "Fermer",
+        "copyToClipboard": "Copier dans le presse-papiers",
+        "refreshLink": "Rafraîchir le lien de partage",
+        "refreshEmbed": "Rafraîchir le code d'intégration"
+      }
+    },
+    "print": {
+      "buttonTitle": "Imprimer"
+    }
+  },
   "backgroundLayers": {
     "title": "Cartes affichées",
     "voidMap": "Carte vide",

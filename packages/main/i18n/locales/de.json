@@ -130,6 +130,66 @@
     "startGeolocation": "Standortbestimmung starten",
     "recenterMap": "Karte neu zentrieren"
   },
+  "toolbox": {
+    "geolocation": {
+      "buttonTitle": "Standort"
+    },
+    "fullscreen": {
+      "buttonTitle": "Vollbild"
+    },
+    "3d": {
+      "buttonTitle": "3D"
+    },
+    "drawing": {
+      "buttonTitle": "Zeichnen"
+    },
+    "measure": {
+      "buttonTitle": "Messen"
+    },
+    "compare": {
+      "buttonTitle": "Vergleichen"
+    },
+    "timeSlider": {
+      "buttonTitle": "Zeitschieberegler"
+    },
+    "import": {
+      "buttonTitle": "Importieren",
+      "title": "Lokale Datei importieren",
+      "description": "Akzeptierte Dateitypen: {types}",
+      "browseButton": "Durchsuchen...",
+      "noFileSelected": "Keine Datei ausgewählt",
+      "importButton": "Datei importieren",
+      "loadingMessage": "Datei wird importiert...",
+      "sucessMessage": "Datei erfolgreich importiert: {fileName}",
+      "errorMessages": {
+        "generalError": "Datei konnte nicht importiert werden",
+        "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus"
+      },
+      "close": "Schließen"
+    },
+    "share": {
+      "buttonTitle": "Teilen",
+      "title": "Teilen",
+      "link": {
+        "title": "Freigabelink",
+        "generateButton": "Freigabelink generieren"
+      },
+      "embed": {
+        "title": "Einbetten",
+        "generateButton": "Einbettungscode generieren",
+        "zoomOnlyCtrlLabel": "Zoom nur mit Strg/Cmd-Taste aktivieren"
+      },
+      "ariaLabel": {
+        "close": "Schließen",
+        "copyToClipboard": "In die Zwischenablage kopieren",
+        "refreshLink": "Freigabelink aktualisieren",
+        "refreshEmbed": "Einbettungscode aktualisieren"
+      }
+    },
+    "print": {
+      "buttonTitle": "Drucken"
+    }
+  },
   "backgroundLayers": {
     "title": "Angezeigte Karten",
     "voidMap": "Leere Karte",

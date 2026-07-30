@@ -130,6 +130,66 @@
     "startGeolocation": "Start geolocation",
     "recenterMap": "Re-center map"
   },
+  "toolbox": {
+    "geolocation": {
+      "buttonTitle": "Geolocation"
+    },
+    "fullscreen": {
+      "buttonTitle": "Fullscreen"
+    },
+    "3d": {
+      "buttonTitle": "3D"
+    },
+    "drawing": {
+      "buttonTitle": "Drawing"
+    },
+    "measure": {
+      "buttonTitle": "Measure"
+    },
+    "compare": {
+      "buttonTitle": "Compare"
+    },
+    "timeSlider": {
+      "buttonTitle": "Time Slider"
+    },
+    "import": {
+      "buttonTitle": "Import",
+      "title": "Import Local File",
+      "description": "Accepted file types: {types}",
+      "browseButton": "Browse...",
+      "noFileSelected": "No file selected",
+      "importButton": "Import file",
+      "loadingMessage": "Importing file...",
+      "sucessMessage": "Successfully imported {fileName}",
+      "errorMessages": {
+        "generalError": "Failed to import file",
+        "noFileSelected": "Please select a file first"
+      },
+      "close": "Close"
+    },
+    "share": {
+      "buttonTitle": "Share",
+      "title": "Share",
+      "link": {
+        "title": "Share link",
+        "generateButton": "Generate share link"
+      },
+      "embed": {
+        "title": "Embedding",
+        "generateButton": "Generate embed code",
+        "zoomOnlyCtrlLabel": "Enable zoom only with Ctrl/Cmd key"
+      },
+      "ariaLabel": {
+        "close": "Close",
+        "copyToClipboard": "Copy to clipboard",
+        "refreshLink": "Refresh share link",
+        "refreshEmbed": "Refresh embed code"
+      }
+    },
+    "print": {
+      "buttonTitle": "Print"
+    }
+  },
   "backgroundLayers": {
     "title": "Displayed maps",
     "voidMap": "Void map",

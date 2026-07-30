@@ -1,0 +1,152 @@
+<script setup lang="ts">
+import { IconButton } from "@swissgeo/skeleton";
+import { useFileImport } from "~/composables/useFileImport";
+import { useToolboxStore } from "~/stores/toolbox";
+import { ref, useTemplateRef } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+const toolboxStore = useToolboxStore();
+const { importFile } = useFileImport();
+
+const inputLocalFile = useTemplateRef<HTMLInputElement>("inputLocalFile");
+const filePathInfo = ref("");
+const selectedFile = ref<File | undefined>();
+const isLoading = ref(false);
+const errorMessage = ref("");
+const successMessage = ref("");
+
+const acceptedFileTypes = [".kml", ".kmz", ".gpx", ".geojson", ".json"];
+
+async function handleImport() {
+  if (!selectedFile.value) {
+    errorMessage.value = t("toolbox.import.errorMessages.noFileSelected");
+    return;
+  }
+
+  isLoading.value = true;
+  errorMessage.value = "";
+  successMessage.value = "";
+
+  try {
+    await importFile(selectedFile.value);
+    successMessage.value = t("toolbox.import.sucessMessage", {
+      fileName: selectedFile.value.name,
+    });
+    // Clear the file input after successful import
+    selectedFile.value = undefined;
+    filePathInfo.value = "";
+    if (inputLocalFile.value) {
+      inputLocalFile.value.value = "";
+    }
+  } catch (error) {
+    errorMessage.value =
+      error instanceof Error
+        ? error.message
+        : t("toolbox.import.errorMessages.generalError");
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+function onFileSelected(evt: Event): void {
+  const target = evt.target as HTMLInputElement;
+  const file = target?.files?.[0] ?? undefined;
+  selectedFile.value = file;
+  filePathInfo.value = file ? file.name : "";
+  // Clear previous messages
+  errorMessage.value = "";
+  successMessage.value = "";
+}
+</script>
+
+<template>
+  <UCard data-testid="toolbox-import-card">
+    <template #header>
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="font-semibold text-highlighted">
+            {{ t("toolbox.import.title") }}
+          </div>
+          <div class="mt-1 text-sm text-muted">
+            {{
+              t("toolbox.import.description", {
+                types: acceptedFileTypes.join(", "),
+              })
+            }}
+          </div>
+        </div>
+        <UButton
+          color="neutral"
+          variant="ghost"
+          icon="i-lucide-x"
+          size="sm"
+          :aria-label="t('toolbox.import.close')"
+          @click="toolboxStore.closeDetailPanel()"
+        />
+      </div>
+    </template>
+    <div class="flex flex-wrap items-center gap-2">
+      <input
+        ref="inputLocalFile"
+        type="file"
+        :accept="acceptedFileTypes.join(',')"
+        hidden
+        data-testid="file-input"
+        @change="onFileSelected"
+      />
+      <UButton
+        color="neutral"
+        variant="outline"
+        type="button"
+        data-testid="file-input-browse-button"
+        :disabled="isLoading"
+        @click="inputLocalFile?.click()"
+      >
+        {{ t("toolbox.import.browseButton") }}
+      </UButton>
+      <input
+        type="text"
+        class="rounded border border-gray-300"
+        :value="filePathInfo"
+        :placeholder="t('toolbox.import.noFileSelected')"
+        readonly
+        tabindex="-1"
+        data-testid="file-input-text"
+        @click="inputLocalFile?.click()"
+      />
+      <IconButton
+        :disabled="!selectedFile || isLoading"
+        @click="handleImport"
+        iconName="Upload"
+        :title="t('toolbox.import.importButton')"
+        class="grow justify-center"
+      />
+    </div>
+
+    <!-- Success message -->
+    <div
+      v-if="successMessage"
+      class="mt-3 rounded bg-green-100 p-2 text-sm text-green-800"
+    >
+      ✓ {{ successMessage }}
+    </div>
+
+    <!-- Error message -->
+    <div
+      v-if="errorMessage"
+      class="mt-3 rounded bg-red-100 p-2 text-sm text-red-800"
+    >
+      ✗ {{ errorMessage }}
+    </div>
+
+    <!-- Loading indicator -->
+    <div
+      v-if="isLoading"
+      class="mt-3 flex items-center gap-2 text-sm text-gray-600"
+    >
+      <span class="animate-spin">⏳</span>
+      <span>{{ t("toolbox.import.loadingMessage") }}</span>
+    </div>
+  </UCard>
+</template>

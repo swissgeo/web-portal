@@ -34,6 +34,10 @@ vi.mock("@/stores/geolocation", () => ({
   useGeolocationStore: mockUseGeolocationStore,
 }));
 
+vi.mock("~/stores/mapView", () => ({
+  useMapViewStore: mockUseMapViewStore,
+}));
+
 mockUseMapViewStore.mockImplementation(() => ({
   closeTimeSlider: closeTimeSliderMock,
   visibleLayers: computed(() => []),
@@ -54,7 +58,16 @@ function makeLayer(uuid: string): Layer {
 }
 
 function mountToolbox() {
-  return mount(Toolbox, { shallow: true });
+  return mount(Toolbox, {
+    shallow: true,
+    global: {
+      stubs: {
+        UCard: {
+          template: "<div><slot /></div>",
+        },
+      },
+    },
+  });
 }
 
 describe("Toolbox.vue - showTimeSliderButton reads from dimensionsStore", () => {
