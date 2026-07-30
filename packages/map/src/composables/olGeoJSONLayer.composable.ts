@@ -137,6 +137,11 @@ export default function useOlGeoJSONLayer(
     if (!olLayer.value) {
       return;
     }
+    // Data may not have loaded yet (e.g. an async fetch still in flight); leave the
+    // layer without a source until real GeoJSON data arrives.
+    if (!geoJsonData.value || Object.keys(geoJsonData.value).length === 0) {
+      return;
+    }
 
     log.debug({
       title: "useOlGeoJSONLayer",
