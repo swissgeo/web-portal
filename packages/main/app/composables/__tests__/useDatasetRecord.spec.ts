@@ -97,7 +97,7 @@ describe("useDatasetRecord", () => {
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.example.com/collections/catalog/collections/swissgeo-catalog/items/ch.swisstopo.test?language=de",
+      "https://api.example.com/collections/catalog/collections/swissgeo-catalog/items/ch.swisstopo.test?lang=de",
     );
     expect(dataset.value?.id).toBe("ch.swisstopo.test");
   });
@@ -111,7 +111,7 @@ describe("useDatasetRecord", () => {
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.example.com/distributions?language=de",
+      "https://api.example.com/distributions?lang=de",
     );
     expect(distributionCollection.value?.features).toHaveLength(1);
   });
@@ -122,7 +122,7 @@ describe("useDatasetRecord", () => {
       links: [
         {
           rel: "distributions",
-          href: "https://api.example.com/distributions?language=en",
+          href: "https://api.example.com/distributions?lang=en",
         },
       ],
     };
@@ -134,7 +134,7 @@ describe("useDatasetRecord", () => {
     await flushPromises();
 
     expect(fetchMock).toHaveBeenLastCalledWith(
-      "https://api.example.com/distributions?language=de",
+      "https://api.example.com/distributions?lang=de",
     );
   });
 
@@ -219,7 +219,7 @@ describe("useDatasetRecord", () => {
     const { pathname } = new URL(calledUrl);
     expect(pathname).not.toContain("//");
     expect(calledUrl).toBe(
-      "https://api.example.com/collections/catalog/collections/swissgeo-catalog/items/ch.swisstopo.test?language=de",
+      "https://api.example.com/collections/catalog/collections/swissgeo-catalog/items/ch.swisstopo.test?lang=de",
     );
   });
 });
