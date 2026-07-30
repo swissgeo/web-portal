@@ -8,15 +8,14 @@ const mapViewStore = useMapViewStore();
 </script>
 
 <template>
-  <div>
-    <ToolBoxButton
-      :title="t('toolbox.timeSlider.buttonTitle')"
-      :is-disabled="false"
-      :is-active="mapViewStore.isTimeSliderVisible"
-      iconName="Timer-Reset"
-      @click="mapViewStore.toggleTimeSlider()"
-    />
-  </div>
+  <ToolBoxButton
+    data-testid="toolbox-time-slider-button"
+    :title="t('toolbox.timeSlider.buttonTitle')"
+    :is-disabled="false"
+    :is-active="mapViewStore.isTimeSliderVisible"
+    iconName="Timer-Reset"
+    @click="mapViewStore.toggleTimeSlider()"
+  />
 </template>
 
 <style scoped></style>

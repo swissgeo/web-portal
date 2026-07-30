@@ -8,13 +8,12 @@ const mapViewStore = useMapViewStore();
 </script>
 
 <template>
-  <div>
-    <ToolBoxButton
-      :title="t('toolbox.compare.buttonTitle')"
-      :is-active="mapViewStore.isCompareSliderActive"
-      :is-disabled="false"
-      iconName="square-split-horizontal"
-      @click="mapViewStore.toggleCompareSlider()"
-    />
-  </div>
+  <ToolBoxButton
+    data-testid="toolbox-compare-slider-button"
+    :title="t('toolbox.compare.buttonTitle')"
+    :is-active="mapViewStore.isCompareSliderActive"
+    :is-disabled="false"
+    iconName="square-split-horizontal"
+    @click="mapViewStore.toggleCompareSlider()"
+  />
 </template>

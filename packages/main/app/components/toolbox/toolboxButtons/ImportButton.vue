@@ -10,6 +10,7 @@ const toolboxStore = useToolboxStore();
 
 <template>
   <ToolBoxButton
+    data-testid="toolbox-import-button"
     :title="t('toolbox.import.buttonTitle')"
     :is-disabled="false"
     :is-active="toolboxStore.isPanelActive('import')"

@@ -26,13 +26,15 @@ describe("FullScreenButton.vue", () => {
 
   it("emits click event when button is clicked", async () => {
     const wrapper = mountButton();
-    await wrapper.find('[data-testid="fullscreen-toggle"]').trigger("click");
+    await wrapper
+      .find('[data-testid="toolbox-fullscreen-button"]')
+      .trigger("click");
     expect(wrapper.emitted()).toHaveProperty("click");
   });
 
   it("toggles fullscreen state when button is clicked", async () => {
     const wrapper = mountButton();
-    const button = wrapper.find('[data-testid="fullscreen-toggle"]');
+    const button = wrapper.find('[data-testid="toolbox-fullscreen-button"]');
 
     const mapViewStore = useMapViewStore();
 

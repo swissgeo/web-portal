@@ -17,15 +17,14 @@ function toggleGeolocation(): void {
 </script>
 
 <template>
-  <div ref="geolocationButton" class="geoloc-button-div">
-    <ToolBoxButton
-      :title="t('toolbox.geolocation.buttonTitle')"
-      :is-disabled="geolocationStore.denied"
-      :is-active="geolocationStore.active"
-      iconName="locate-fixed"
-      @click="toggleGeolocation()"
-    />
-  </div>
+  <ToolBoxButton
+    data-testid="toolbox-geoloc-button"
+    :title="t('toolbox.geolocation.buttonTitle')"
+    :is-disabled="geolocationStore.denied"
+    :is-active="geolocationStore.active"
+    iconName="locate-fixed"
+    @click="toggleGeolocation()"
+  />
 </template>
 
 <style scoped></style>

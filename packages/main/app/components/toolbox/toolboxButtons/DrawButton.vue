@@ -7,14 +7,13 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div>
-    <ToolBoxButton
-      :title="t('toolbox.drawing.buttonTitle')"
-      :is-disabled="false"
-      :is-active="false"
-      iconName="pencil"
-    />
-  </div>
+  <ToolBoxButton
+    data-testid="toolbox-drawing-button"
+    :title="t('toolbox.drawing.buttonTitle')"
+    :is-disabled="false"
+    :is-active="false"
+    iconName="pencil"
+  />
 </template>
 
 <style scoped></style>

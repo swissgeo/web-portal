@@ -33,6 +33,7 @@ function toggle3d() {
 
 <template>
   <ToolBoxButton
+    data-testid="toolbox-3d-button"
     :title="t('toolbox.3d.buttonTitle')"
     :is-disabled="isDisabled()"
     :is-active="isActive()"

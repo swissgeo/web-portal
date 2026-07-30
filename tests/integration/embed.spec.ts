@@ -103,7 +103,9 @@ test.describe("embed map page", () => {
   });
 
   test("does not displays the fullscreen button", async ({ page }) => {
-    await expect(page.getByTestId("fullscreen-toggle")).not.toBeVisible();
+    await expect(
+      page.getByTestId("toolbox-fullscreen-button"),
+    ).not.toBeVisible();
   });
 
   test("displays the map with the defaults", async ({ page }) => {
@@ -187,7 +189,7 @@ test.describe("embed map in iframe", () => {
       timeout: HYDRATION_TIMEOUT,
     });
     await expect(
-      iframeElement.getByTestId("fullscreen-toggle"),
+      iframeElement.getByTestId("toolbox-fullscreen-button"),
     ).not.toBeVisible();
   });
 

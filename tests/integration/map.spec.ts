@@ -105,7 +105,7 @@ test.describe("map page", () => {
   });
 
   test("displays the fullscreen button", async ({ page }) => {
-    await expect(page.getByTestId("fullscreen-toggle")).toBeVisible();
+    await expect(page.getByTestId("toolbox-fullscreen-button")).toBeVisible();
   });
 
   test("displays the map with the defaults", async ({ page }) => {

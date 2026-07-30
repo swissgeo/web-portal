@@ -61,7 +61,7 @@ function onFileSelected(evt: Event): void {
 </script>
 
 <template>
-  <UCard>
+  <UCard data-testid="toolbox-import-card">
     <template #header>
       <div class="flex items-start justify-between">
         <div>

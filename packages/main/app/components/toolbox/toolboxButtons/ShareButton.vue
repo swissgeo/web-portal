@@ -10,6 +10,7 @@ const toolboxStore = useToolboxStore();
 
 <template>
   <ToolBoxButton
+    data-testid="toolbox-share-button"
     :title="t('toolbox.share.buttonTitle')"
     :is-disabled="false"
     :is-active="toolboxStore.isPanelActive('share')"

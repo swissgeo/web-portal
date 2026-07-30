@@ -21,7 +21,7 @@ describe("ImportButton.vue", () => {
         stubs: {
           ToolBoxButton: {
             template:
-              '<button data-testid="tool-box-btn" :disabled="isDisabled" @click="$emit(\'click\')"><span class="title">{{ title }}</span><span class="active">{{ isActive }}</span></button>',
+              '<button :disabled="isDisabled" @click="$emit(\'click\')"><span class="title">{{ title }}</span><span class="active">{{ isActive }}</span></button>',
             props: ["title", "isActive", "isDisabled", "iconName"],
             emits: ["click"],
           },
@@ -53,7 +53,9 @@ describe("ImportButton.vue", () => {
     const toggleSpy = vi.spyOn(toolboxStore, "toggleDetailPanel");
 
     const wrapper = mountButton();
-    await wrapper.find('[data-testid="tool-box-btn"]').trigger("click");
+    await wrapper
+      .find('[data-testid="toolbox-import-button"]')
+      .trigger("click");
 
     expect(toggleSpy).toHaveBeenCalledWith("import");
   });

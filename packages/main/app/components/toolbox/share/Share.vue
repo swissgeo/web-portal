@@ -20,7 +20,10 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
 </script>
 
 <template>
-  <UCard :ui="{ body: 'flex h-auto w-full flex-col gap-3 px-2 py-5' }">
+  <UCard
+    data-testid="toolbox-share-card"
+    :ui="{ body: 'flex h-auto w-full flex-col gap-3 px-2 py-5' }"
+  >
     <template #header>
       <div class="flex items-start justify-between">
         <div>
