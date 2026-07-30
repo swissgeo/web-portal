@@ -78,7 +78,7 @@ export function useSearchSelection() {
         result.layerId,
       ),
     );
-    url.searchParams.set("language", locale.value);
+    url.searchParams.set("lang", locale.value);
 
     try {
       const dataset = await $fetch<Dataset>(url.toString());

@@ -186,7 +186,7 @@ export async function searchLayers(
   const url = new URL(catalogUrl);
   url.searchParams.set("f", "json");
   url.searchParams.set("q", queryString);
-  url.searchParams.set("language", lang);
+  url.searchParams.set("lang", lang);
   url.searchParams.set("limit", String(limit));
 
   const response = await fetch(url.toString(), { signal: abortSignal });
