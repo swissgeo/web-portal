@@ -21,7 +21,7 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
       }
 
       const url = new URL(catalogItemsUrl(resolvedId));
-      url.searchParams.set("language", locale.value);
+      url.searchParams.set("lang", locale.value);
 
       const dataset = await $fetch<Dataset>(url.toString());
 
@@ -33,7 +33,7 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
       }
 
       const distributionsUrl = new URL(distributionsLink.href);
-      distributionsUrl.searchParams.set("language", locale.value);
+      distributionsUrl.searchParams.set("lang", locale.value);
       const distributionCollection = await $fetch<DistributionCollection>(
         distributionsUrl.toString(),
       );
