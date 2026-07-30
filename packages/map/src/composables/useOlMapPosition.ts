@@ -1,14 +1,18 @@
 import type { CoordinateSystem, SingleCoordinate } from "@swissgeo/coordinates";
 import type { View } from "ol";
-import type { EventsKey } from "ol/events";
 import type Map from "ol/Map";
 import type { Ref } from "vue";
 
-import { unByKey } from "ol/Observable";
+import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { shallowRef, watch } from "vue";
 
 import { useMapStore } from "@/stores/map";
 
+/**
+ * Expose the internal OpenLayers position values to the reactive world of vue
+ * by listening to a moveend event and setting those values to the reactive
+ * state here
+ */
 export function useOlMapPosition(
   autoRotation: Ref<boolean>,
   projection: Ref<Pick<CoordinateSystem, "bounds" | "getDefaultZoom">>,
@@ -23,12 +27,6 @@ export function useOlMapPosition(
   );
   const rotation = shallowRef<number>(0);
 
-  // Following code is needed to make the zoom/rotation/center of olMap reactively
-  // available in the store and outside
-  // It's keeping the olMap's value in sync with above refs
-  let _viewListenerKeys: EventsKey[] = [];
-  let _viewChangeKey: EventsKey;
-
   const _syncCenter = (view: View): void => {
     center.value = view.getCenter() as SingleCoordinate | undefined;
   };
@@ -41,40 +39,20 @@ export function useOlMapPosition(
     rotation.value = view.getRotation() ?? 0;
   };
 
-  function _unsubscribeFromView(): void {
-    _viewListenerKeys.forEach(unByKey);
-    unByKey(_viewChangeKey);
-    _viewListenerKeys = [];
-  }
-
   function subscribeToMap(map: Map): void {
-    _subscribeToView(map.getView());
-    _viewChangeKey = map.on("change:view", () => {
-      _subscribeToView(map.getView());
+    // after moving ended, let's sync the values, which is soon enough
+    // for the case we need them. We don't need to track the steps *while* dragging
+    // and zooming and rotating
+    map.on("moveend", () => {
+      log.debug({
+        title: "useOlMapPosition",
+        titleColor: LogPreDefinedColor.Yellow,
+        messages: ["Syncing the ol map position to olMapPosition reactivity"],
+      });
+      _syncCenter(map.getView());
+      _syncZoom(map.getView());
+      _syncRotation(map.getView());
     });
-  }
-
-  function _subscribeToView(view: View): void {
-    _unsubscribeFromView();
-    _syncCenter(view);
-    _syncRotation(view);
-    _syncZoom(view);
-
-    _viewListenerKeys = [
-      view.on("change:center", () => {
-        _syncCenter(view);
-      }),
-
-      view.on("change:resolution", () => {
-        _syncZoom(view);
-      }),
-
-      view.on("change:rotation", () => {
-        if (!autoRotation.value) {
-          _syncRotation(view);
-        }
-      }),
-    ];
   }
 
   watch(
@@ -82,8 +60,6 @@ export function useOlMapPosition(
     (map) => {
       if (map) {
         subscribeToMap(map);
-      } else {
-        _unsubscribeFromView();
       }
     },
     { immediate: true },
