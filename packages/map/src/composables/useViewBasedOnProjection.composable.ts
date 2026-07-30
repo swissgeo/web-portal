@@ -12,6 +12,7 @@ import usePositionStore, { DEFAULT_PROJECTION } from "@/stores/position";
 
 const createDoubleClickEvent = () => {
   if (import.meta.env?.VITEST) {
+    // when testing, the duration is set to 0 to avoid having to wait for the default duration
     return new DoubleClickZoom({ duration: 0 });
   } else {
     return new DoubleClickZoom();

@@ -446,7 +446,7 @@ describe("position store", () => {
       });
     });
 
-    it.only("should cache the position when map is alread available but without view", async () => {
+    it("should cache the position when map is already available but without view", async () => {
       // @ts-expect-error Using an extended version of the olMapMock interface that still
       // mocks the olMap interface but adds a `setView` method
       olMapMock.value = new (class {
