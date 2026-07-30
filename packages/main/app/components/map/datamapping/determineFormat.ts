@@ -10,12 +10,15 @@ export function determineFormat(
 
   const protocol = distribution.properties.protocol;
 
-  // the protocol is at the moment OGC:(WMTS|WMS)
+  // WMTS/WMS carry an "ogc:" prefix in the catalog; GeoJSON distributions use the
+  // bare "geojson" protocol.
   switch (protocol?.toLowerCase()) {
     case "ogc:wmts":
       return "WMTS";
     case "ogc:wms":
       return "WMS";
+    case "geojson":
+      return "GeoJSON";
     default:
       return null;
   }

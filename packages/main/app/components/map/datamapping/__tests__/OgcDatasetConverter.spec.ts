@@ -134,6 +134,9 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
           MapDatamappingOgcWmsLayerConverter: {
             template: "<div>WMS converter</div>",
           },
+          MapDatamappingGeoJsonConverter: {
+            template: "<div>GeoJSON converter</div>",
+          },
         },
       },
     });
@@ -146,6 +149,10 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     // see if it reactively reacts to the change in the data
     await flushPromises();
     expect(wrapper.text()).toEqual("WMS converter");
+
+    layerFormat.value = "GeoJSON";
+    await flushPromises();
+    expect(wrapper.text()).toEqual("GeoJSON converter");
   });
 
   it("emit update contains the layerSpecificData ", async () => {

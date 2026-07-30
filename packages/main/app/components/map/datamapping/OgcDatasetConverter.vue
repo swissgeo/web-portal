@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Dimension } from "@swissgeo/dimension";
 import type { DatasetLayer, LayerInfo } from "@swissgeo/layers";
-import type { Layer as MapLayer } from "@swissgeo/map";
+import type { GeoJSONLayer, Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 
@@ -25,6 +25,11 @@ import { useDimensionsStore } from "@swissgeo/dimension";
  *   and the parent is informed about the changes
  */
 import type { WMSLayerData } from "@/components/map/datamapping/useOgcWmsData";
+
+type GeoJsonLayerData = Pick<
+  GeoJSONLayer,
+  "geoJsonData" | "geoJsonStyle" | "mapLibreStyle" | "mapLibreIcons"
+>;
 
 import useDatasetLocaleRefresh from "@/components/map/datamapping/useDatasetLocaleRefresh";
 import { useGenericOgcData } from "@/components/map/datamapping/useGenericOgcData";
@@ -115,4 +120,10 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
     @updateData="pushLayerSpecificData<WMSLayerData>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
   ></MapDatamappingOgcWmsLayerConverter>
+  <MapDatamappingGeoJsonConverter
+    v-if="layerFormat === 'GeoJSON'"
+    :distribution
+    :layerId
+    @updateData="pushLayerSpecificData<GeoJsonLayerData>"
+  ></MapDatamappingGeoJsonConverter>
 </template>

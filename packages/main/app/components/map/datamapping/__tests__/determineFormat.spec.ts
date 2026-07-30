@@ -10,6 +10,8 @@ describe("determineFormat", () => {
     ["OGC:WMS" as const, "WMS"],
     ["OGC:wmts" as const, "WMTS"],
     ["Ogc:wMs" as const, "WMS"],
+    ["geojson" as const, "GeoJSON"],
+    ["GeoJSON" as const, "GeoJSON"],
   ])("returns the correct format", (protocol: string, expected: string) => {
     const dataset = {
       properties: {
