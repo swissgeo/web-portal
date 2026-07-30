@@ -6,6 +6,8 @@ import { useMapViewStore } from "~/stores/mapView";
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 
+export type ToolboxPanelIds = "import" | "share";
+
 export const useToolboxStore = defineStore("toolbox", () => {
   const { focusMode } = useDrawing();
   const layerStore = useLayerStore();
@@ -43,9 +45,9 @@ export const useToolboxStore = defineStore("toolbox", () => {
     }
   });
 
-  const activeDetailPanel: Ref<string | null> = ref(null);
+  const activeDetailPanel: Ref<ToolboxPanelIds | null> = ref(null);
 
-  function toggleDetailPanel(panelId: string) {
+  function toggleDetailPanel(panelId: ToolboxPanelIds) {
     activeDetailPanel.value =
       activeDetailPanel.value === panelId ? null : panelId;
   }
@@ -54,7 +56,7 @@ export const useToolboxStore = defineStore("toolbox", () => {
     activeDetailPanel.value = null;
   }
 
-  function isPanelActive(panelId: string) {
+  function isPanelActive(panelId: ToolboxPanelIds) {
     return activeDetailPanel.value === panelId;
   }
 
