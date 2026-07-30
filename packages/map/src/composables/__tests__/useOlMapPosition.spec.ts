@@ -13,13 +13,21 @@ import { useOlMapPosition } from "../useOlMapPosition";
 const olMapRef = ref<Map | undefined>(undefined);
 
 const createMap = () => {
-  return new Map({
+  const container = document.createElement("div");
+  document.body.appendChild(container);
+
+  const map = new Map({
+    target: container,
     interactions: defaults(),
     view: new View({
       center: [0, 0],
       zoom: 1,
     }),
   });
+
+  map.setSize([800, 600]);
+
+  return map;
 };
 
 const { useMapStore } = vi.hoisted(() => ({
@@ -91,6 +99,7 @@ describe("useOlMapPosition", () => {
 
     expect(zoom.value).toEqual(1);
     olMapRef.value.getView().setZoom(13);
+    olMapRef.value.dispatchEvent("moveend");
     expect(zoom.value).toEqual(13);
   });
 
@@ -99,6 +108,7 @@ describe("useOlMapPosition", () => {
 
     expect(center.value).toEqual([0, 0]);
     olMapRef.value.getView().setCenter([46.927652279098595, 7.451517157238107]);
+    olMapRef.value.dispatchEvent("moveend");
     expect(center.value).toEqual([46.927652279098595, 7.451517157238107]);
   });
 
@@ -107,6 +117,7 @@ describe("useOlMapPosition", () => {
 
     expect(rotation.value).toEqual(0);
     olMapRef.value.getView().setRotation(Math.PI);
+    olMapRef.value.dispatchEvent("moveend");
     expect(rotation.value).toEqual(Math.PI);
   });
 
@@ -129,5 +140,35 @@ describe("useOlMapPosition", () => {
     expect(center.value).toEqual([49.60080394469794, 6.1279069383788585]);
     expect(zoom.value).toEqual(12);
     expect(rotation.value).toEqual(13);
+  });
+
+  it("Returns the ol values after we register a new map", async () => {
+    const olMapRef = ref<Map | null>(
+      new Map({
+        view: new View({
+          center: [13, 37],
+          zoom: 3,
+        }),
+      }),
+    );
+
+    useMapStore.mockReturnValueOnce(
+      reactive({
+        olMap: olMapRef,
+      }),
+    );
+
+    // cross checking again
+    const { zoom, center, rotation } = useOlMapPosition(ref(false), projection);
+    expect(center.value).toEqual([13, 37]);
+    expect(zoom.value).toEqual(3);
+    expect(rotation.value).toEqual(0);
+
+    olMapRef.value = createMap();
+    await flushPromises();
+
+    expect(center.value).toEqual([0, 0]);
+    expect(zoom.value).toEqual(1);
+    expect(rotation.value).toEqual(0);
   });
 });

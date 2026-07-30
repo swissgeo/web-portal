@@ -1,5 +1,6 @@
 import type { CoordinateSystem, SingleCoordinate } from "@swissgeo/coordinates";
 import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
+import type Map from "ol/Map";
 
 import {
   LV95,
@@ -11,7 +12,7 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { isNumber } from "@swissgeo/numbers";
 import { defineStore } from "pinia";
 import proj4 from "proj4";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 import type { CoordinateFormat } from "@/utils/coordinates/coordinateFormat";
 
@@ -33,6 +34,13 @@ const usePositionStore = defineStore("position", () => {
   const displayFormat = ref<CoordinateFormat>(DEFAULT_FORMAT);
   const autoRotation = ref(false);
   const projection = ref<CoordinateSystem>(DEFAULT_PROJECTION);
+
+  // when importing a state, the view might not be initialized yet
+  // so we store the values here and then apply them as soon as the
+  // view becomes available
+  const _zoomCache = ref([]);
+  const _rotationCache = ref([]);
+  const _centerCache = ref([]);
 
   const { zoom, rotation, center } = useOlMapPosition(autoRotation, projection);
 
@@ -73,13 +81,17 @@ const usePositionStore = defineStore("position", () => {
       });
       return false;
     }
+
     const view = mapStore.olMap?.getView();
+
     if (!view) {
       log.error({
         title: "Position store / setZoom",
         titleColor: LogPreDefinedColor.Red,
-        messages: ["No view available", dispatcher],
+        messages: ["No view available (yet)", dispatcher],
       });
+
+      _zoomCache.value.push(newZoom);
       return false;
     }
     view.animate({
@@ -152,6 +164,8 @@ const usePositionStore = defineStore("position", () => {
         titleColor: LogPreDefinedColor.Red,
         messages: ["No view available", dispatcher],
       });
+
+      _rotationCache.value.push(newRotation);
       return false;
     }
 
@@ -190,6 +204,7 @@ const usePositionStore = defineStore("position", () => {
           dispatcher,
         ],
       });
+
       return false;
     }
 
@@ -201,6 +216,8 @@ const usePositionStore = defineStore("position", () => {
         titleColor: LogPreDefinedColor.Red,
         messages: ["No view available", dispatcher],
       });
+
+      _centerCache.value.push(newCenter);
       return false;
     }
 
@@ -214,6 +231,62 @@ const usePositionStore = defineStore("position", () => {
     setRotation(0, dispatcher);
     setDisplayedFormat(DEFAULT_FORMAT, dispatcher);
   }
+
+  const applyCache = () => {
+    const dispatcher = { name: "PositionStore.applyCache" };
+
+    if (_zoomCache.value.length) {
+      log.debug({
+        title: "position store",
+        titleColor: LogPreDefinedColor.Red,
+        messages: ["Applying cached zoom", _zoomCache.value],
+      });
+      setZoom(_zoomCache.value.pop(), dispatcher);
+    }
+
+    if (_rotationCache.value.length) {
+      log.debug({
+        title: "position store",
+        titleColor: LogPreDefinedColor.Red,
+        messages: ["Applying cached rotation", _rotationCache.value],
+      });
+      setRotation(_rotationCache.value.pop(), dispatcher);
+    }
+
+    if (_centerCache.value.length) {
+      log.debug({
+        title: "position store",
+        titleColor: LogPreDefinedColor.Red,
+        messages: ["Applying cached center", _centerCache.value],
+      });
+      setCenter(_centerCache.value.pop(), dispatcher);
+    }
+  };
+
+  // If the view becomes available, we apply the cached position values
+  // for now we assume only the last pushed value is the one to be applied,
+  // the others could be skipped, but that might be wrong
+  // This fixes the problem that the state import already sets values
+  // before openlayers is even available
+  const subscribeToMap = (olMap: Map) => {
+    if (olMap.getView()) {
+      // view already available, apply cache immediately
+      applyCache();
+    }
+    olMap.on("change:view", () => {
+      applyCache();
+    });
+  };
+
+  watch(
+    () => mapStore.olMap,
+    (olMap: Map) => {
+      if (olMap) {
+        subscribeToMap(olMap);
+      }
+    },
+    { immediate: true },
+  );
 
   return {
     displayFormat,

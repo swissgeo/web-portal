@@ -14,30 +14,44 @@ import { LV95Format, LV03Format } from "@/utils/coordinates/coordinateFormat";
 const MIN_ZOOM = constants.SWISSTOPO_MIN_ZOOM_LEVEL;
 const MAX_ZOOM = constants.SWISSTOPO_MAX_ZOOM_LEVEL;
 
-const { animateMock, centerMock, zoomMock, rotationMock, getViewMock } =
-  await vi.hoisted(async () => {
-    const { ref } = await import("vue");
+const {
+  animateMock,
+  centerMock,
+  zoomMock,
+  rotationMock,
+  getViewMock,
+  olMapMock,
+} = await vi.hoisted(async () => {
+  const { ref } = await import("vue");
 
-    return {
-      animateMock: vi.fn(),
-      centerMock: ref([2660000, 1190000]),
-      zoomMock: ref(1),
-      rotationMock: ref(0),
-      getViewMock: vi.fn(() => ({
-        animate: animateMock,
-        getCenter: vi.fn(() => [2660000, 1190000]),
-        getZoom: vi.fn(() => 1),
-        getRotation: vi.fn(() => 1),
-        on: vi.fn(() => true),
-      })),
-    };
+  const getViewMock = vi.fn(() => ({
+    animate: animateMock,
+    getCenter: vi.fn(() => [2660000, 1190000]),
+    getZoom: vi.fn(() => 1),
+    getRotation: vi.fn(() => 1),
+    on: vi.fn(() => true),
+  }));
+
+  const olMapMock = ref({
+    getView: getViewMock,
+    setView: vi.fn(),
+    on: (_: string, callback: () => boolean) => callback(),
   });
+
+  return {
+    olMapMock: olMapMock,
+    animateMock: vi.fn(),
+    centerMock: ref([2660000, 1190000]),
+    zoomMock: ref(1),
+    rotationMock: ref(0),
+    getViewMock,
+  };
+});
 
 vi.mock("@/stores/map", () => ({
   useMapStore: () => ({
-    olMap: {
-      getView: getViewMock,
-      on: vi.fn(() => true),
+    get olMap() {
+      return olMapMock.value;
     },
   }),
 }));
@@ -367,6 +381,113 @@ describe("position store", () => {
       store.$patch({ projection: WGS84, zoom: 5 });
       store.decreaseZoom(mockDispatcher);
       expect(animateMock).toHaveBeenCalledWith({ zoom: 4, duration: 200 });
+    });
+  });
+
+  describe("zoom/rotation/center caching before map is available", () => {
+    it("should cache the zoom when map isn't available and apply it when it becomes available", async () => {
+      olMapMock.value = null; // simulate map not available
+      zoomMock.value = 1; // initialise the default
+
+      const result = store.setZoom(7.2, mockDispatcher);
+      expect(result).toBe(false);
+      expect(store.zoom).toEqual(1); // still the default
+
+      olMapMock.value = {
+        getView: getViewMock,
+        setView: vi.fn(() => {}),
+        on: (_, callback) => callback(),
+      };
+      await flushPromises();
+
+      expect(animateMock).toHaveBeenCalledWith({ zoom: 7.2, duration: 200 });
+    });
+
+    it("should cache the center when map isn't available and apply it when it becomes available", async () => {
+      olMapMock.value = null; // simulate map not available
+      centerMock.value = [2660000, 1190000]; // initialise the default
+
+      // operating on wgs84 here since we're using defaults
+      const result = store.setCenter([46.935449, 7.399938], mockDispatcher);
+      expect(result).toBe(false);
+      expect(store.center).toEqual([2660000, 1190000]); // still the default
+
+      olMapMock.value = {
+        getView: getViewMock,
+        setView: vi.fn(() => {}),
+        on: (_, callback) => callback(),
+      };
+      await flushPromises();
+
+      expect(animateMock).toHaveBeenCalledWith({
+        center: [46.935449, 7.399938],
+        duration: 200,
+      });
+    });
+
+    it("should cache the rotation when map isn't available and apply it when it becomes available", async () => {
+      olMapMock.value = null; // simulate map not available
+      rotationMock.value = 0; // initialise the default
+
+      const result = store.setRotation(Math.PI / 4, mockDispatcher);
+      expect(result).toBe(false);
+      expect(store.rotation).toEqual(0); // still the default
+
+      olMapMock.value = {
+        getView: getViewMock,
+        setView: vi.fn(() => {}),
+        on: (_, callback) => callback(),
+      };
+      await flushPromises();
+
+      expect(animateMock).toHaveBeenCalledWith({
+        rotation: Math.PI / 4,
+        duration: 200,
+      });
+    });
+
+    it.only("should cache the position when map is alread available but without view", async () => {
+      // @ts-expect-error Using an extended version of the olMapMock interface that still
+      // mocks the olMap interface but adds a `setView` method
+      olMapMock.value = new (class {
+        changeViewCallback: null | (() => boolean) = null;
+        view: ReturnType<typeof getViewMock> = null;
+        getView() {
+          return this.view;
+        }
+        setView(view: ReturnType<typeof getViewMock>) {
+          this.view = view;
+          this.changeViewCallback();
+        }
+        on(_: string, callback: () => boolean) {
+          this.changeViewCallback = callback;
+        }
+      })(); // simulate view not available
+
+      zoomMock.value = 1; // initialise the default
+      await flushPromises();
+
+      store.setZoom(7.2, mockDispatcher);
+      store.setCenter([46.967583, 7.359163], mockDispatcher);
+      store.setRotation(0.2, mockDispatcher);
+
+      // we're still on the defaults of useOlMapPosition
+      expect(store.zoom).toEqual(1);
+      expect(store.center).toEqual([2660000, 1190000]);
+      expect(store.rotation).toEqual(0);
+
+      olMapMock.value.setView(getViewMock());
+      await flushPromises();
+
+      expect(animateMock).toHaveBeenCalledWith({ zoom: 7.2, duration: 200 });
+      expect(animateMock).toHaveBeenCalledWith({
+        center: [46.967583, 7.359163],
+        duration: 200,
+      });
+      expect(animateMock).toHaveBeenCalledWith({
+        rotation: 0.2,
+        duration: 200,
+      });
     });
   });
 });
