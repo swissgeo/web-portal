@@ -29,6 +29,7 @@ const isEmbedMode = computed(() => displayMode === "embed");
 <template>
   <div class="absolute top-4 right-4" data-testid="toolbox-right">
     <UCard
+      v-if="isWebMode"
       class="mb-4"
       :ui="{
         body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
@@ -52,6 +53,7 @@ const isEmbedMode = computed(() => displayMode === "embed");
       />
     </UCard>
     <UCard
+      v-if="isWebMode"
       :ui="{
         body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
       }"
