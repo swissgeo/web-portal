@@ -21,14 +21,14 @@ function decreaseZoom() {
 <template>
   <ToolBoxButton
     data-testid="zoom-in"
-    title=""
+    title="Zoom in"
     :is-disabled="!positionStore.canIncreaseZoom()"
     :is-active="false"
     iconName="Plus"
     @click="increaseZoom()"
   /><ToolBoxButton
     data-testid="zoom-out"
-    title=""
+    title="Zoom out"
     :is-disabled="!positionStore.canDecreaseZoom()"
     :is-active="false"
     iconName="Minus"
