@@ -30,7 +30,7 @@ export default function useDatasetLocaleRefresh(
   const requestUrl = useRequestURL();
   const newUrlString = computed((): string => {
     const datasetUrl = new URL(selfHref, requestUrl.href);
-    datasetUrl.searchParams.set("language", locale.value);
+    datasetUrl.searchParams.set("lang", locale.value);
     return datasetUrl.toString();
   });
 

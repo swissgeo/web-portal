@@ -27,7 +27,7 @@ const backgroundRecords = computed(async () => {
   for (const backgroundId of AVAILABLE_BACKGROUNDS) {
     const url = new URL(catalogItemsUrl(backgroundId));
 
-    url.searchParams.set("language", locale.value);
+    url.searchParams.set("lang", locale.value);
 
     promises.push($fetch(url.toString()));
   }

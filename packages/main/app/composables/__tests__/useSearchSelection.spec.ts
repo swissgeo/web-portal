@@ -62,7 +62,7 @@ describe("useSearchSelection", () => {
     await handleResultSelection(layerResult);
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.example.com/collections/swissgeo-catalog/items/ch.layer.one?language=de",
+      "https://api.example.com/collections/swissgeo-catalog/items/ch.layer.one?lang=de",
     );
     expect(layerStore.addLayer).toHaveBeenCalledWith({
       humanId: "ch.layer.one",

@@ -225,7 +225,7 @@ describe("searchLayers function", () => {
     vi.restoreAllMocks();
   });
 
-  it("queries the catalog items endpoint with q, language and format", async () => {
+  it("queries the catalog items endpoint with q, lang and format", async () => {
     (fetch as Mock).mockResolvedValue({
       ok: true,
       json: () => ({ features: [] as { id: string }[] }),
@@ -238,7 +238,7 @@ describe("searchLayers function", () => {
     expect(url.origin + url.pathname).toBe(catalogUrl);
     expect(url.searchParams.get("f")).toBe("json");
     expect(url.searchParams.get("q")).toBe("voyageurs");
-    expect(url.searchParams.get("language")).toBe("fr");
+    expect(url.searchParams.get("lang")).toBe("fr");
     expect(url.searchParams.get("limit")).toBe("5");
   });
 
