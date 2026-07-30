@@ -10,6 +10,14 @@ import { onBeforeUnmount, onMounted } from "vue";
 
 import usePositionStore, { DEFAULT_PROJECTION } from "@/stores/position";
 
+const createDoubleClickEvent = () => {
+  if (import.meta.env?.VITEST) {
+    return new DoubleClickZoom({ duration: 0 });
+  } else {
+    return new DoubleClickZoom();
+  }
+};
+
 /**
  * Map view's minimal resolution Currently set so that OL scalebar displays 10 meters Scalebar about
  * 1" on screen, hence about 100px. So, 10 meters/100px = 0.1 Caveat: setting resolution (minimum
@@ -36,7 +44,7 @@ export default function useViewBasedOnProjection(map: Map): void {
     center: DEFAULT_PROJECTION.bounds.center,
   });
 
-  const roundedDoubleClickZoom = new DoubleClickZoom();
+  const roundedDoubleClickZoom = createDoubleClickEvent();
 
   roundedDoubleClickZoom.handleEvent = function (
     event: MapBrowserEvent<PointerEvent>,

@@ -70,8 +70,6 @@ async function doubleClick(olMap: Map): Promise<void> {
   viewport.dispatchEvent(new PointerEvent("pointerdown", pointerEventInit));
   viewport.dispatchEvent(new PointerEvent("pointerup", pointerEventInit));
   await flushPromises();
-  // waiting for the ol animation to finish
-  return await new Promise((resolve) => setTimeout(resolve, 300));
 }
 
 describe("useViewBasedOnProjection", () => {
