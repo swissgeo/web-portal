@@ -29,6 +29,7 @@ export default defineVitestConfig({
       reportsDirectory: path.resolve(__dirname, "../../coverage/unit/main"),
       reporter: ["lcov", "cobertura"],
       include: ["app/**/*.ts", "app/**/*.vue", "server/**/*.ts"],
+      exclude: ["app/components/debug/**"],
     },
   },
   resolve: {
