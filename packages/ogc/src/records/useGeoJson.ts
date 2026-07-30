@@ -6,9 +6,8 @@ import { computed, watchEffect } from "vue";
 import type { Distribution } from "@/types";
 
 import { useConditionalFetch } from "./useConditionalFetch";
-import { getLinksByRel } from "./utils";
 
-export function useGeoJson(distribution: Ref<Distribution>) {
+export function useGeoJson(distribution: Ref<Distribution | null>) {
   const dataUrl = computed(() => extractGeoJsonDataUrl(distribution.value));
   const styleUrl = computed(() => extractGeoJsonStyleUrl(distribution.value));
 
@@ -48,13 +47,24 @@ function extractGeoJsonDataUrl(
     return null;
   }
 
-  const datasetLinks = getLinksByRel(distribution.links, "data");
+  // The GeoJSON data file is the link advertising the geo+json media type
+  // (catalog uses rel="about" for it).
+  const dataLinks = distribution.links.filter(
+    (link) => link.type === "application/geo+json",
+  );
 
-  if (datasetLinks.length && datasetLinks[0]) {
-    return datasetLinks[0].href;
+  if (dataLinks.length && dataLinks[0]) {
+    return dataLinks[0].href;
   }
 
-  // TODO warn
+  log.warn({
+    title: "useGeoJson",
+    titleColor: LogPreDefinedColor.Amber,
+    messages: [
+      "Unable to find a GeoJSON data link (type=application/geo+json) in distribution",
+      distribution,
+    ],
+  });
   return null;
 }
 
@@ -65,12 +75,21 @@ function extractGeoJsonStyleUrl(
     return null;
   }
 
-  const datasetLinks = getLinksByRel(distribution.links, "styledby");
+  const styleLinks = distribution.links.filter(
+    (link) => link.rel === "styled-by",
+  );
 
-  if (datasetLinks.length && datasetLinks[0]) {
-    return datasetLinks[0].href;
+  if (styleLinks.length && styleLinks[0]) {
+    return styleLinks[0].href;
   }
 
-  // TODO warn
+  log.warn({
+    title: "useGeoJson",
+    titleColor: LogPreDefinedColor.Amber,
+    messages: [
+      'Unable to find a GeoJSON style link (rel="styled-by") in distribution',
+      distribution,
+    ],
+  });
   return null;
 }
