@@ -20,10 +20,7 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
 </script>
 
 <template>
-  <UCard
-    title="Lorem"
-    :ui="{ body: 'flex h-auto w-full flex-col gap-3 px-2 py-5' }"
-  >
+  <UCard :ui="{ body: 'flex h-auto w-full flex-col gap-3 px-2 py-5' }">
     <template #header>
       <div class="flex items-start justify-between">
         <div>
@@ -36,12 +33,12 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
           variant="ghost"
           icon="i-lucide-x"
           size="sm"
-          aria-label="Close"
+          :aria-label="t('toolbox.share.ariaLabel.close')"
           @click="toolboxStore.closeDetailPanel()"
         />
       </div>
     </template>
-    <div>Share Link:</div>
+    <div>{{ t("toolbox.share.link.title") }}</div>
     <UInput
       class="w-full"
       :model-value="shareLink"
@@ -55,7 +52,7 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
           variant="link"
           size="sm"
           :icon="copiedLink ? 'i-lucide-copy-check' : 'i-lucide-copy'"
-          aria-label="Copy to clipboard"
+          :aria-label="t('toolbox.share.ariaLabel.copyToClipboard')"
           @click="copyLink(shareLink)"
         />
       </template>
@@ -64,15 +61,15 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
       v-else
       variant="subtle"
       icon="i-lucide-refresh-cw"
-      aria-label="Refresh share link"
+      :aria-label="t('toolbox.share.ariaLabel.refreshLink')"
       @click="refresh()"
     >
-      Generate share link
+      {{ t("toolbox.share.link.generateButton") }}
     </UButton>
-    <div>Embedding:</div>
+    <div>{{ t("toolbox.share.embed.title") }}</div>
     <UCheckbox
       v-model="zoomOnlyCtrl"
-      label="Enable zoom only with Ctrl/Cmd key"
+      :label="t('toolbox.share.embed.zoomOnlyCtrlLabel')"
     />
     <UInput class="w-full" v-model="embedCode" readonly v-if="!needToRefresh">
       <template v-if="embedCode?.length" #trailing>
@@ -82,7 +79,7 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
           variant="link"
           size="sm"
           :icon="copiedEmbed ? 'i-lucide-copy-check' : 'i-lucide-copy'"
-          aria-label="Copy to clipboard"
+          :aria-label="t('toolbox.share.ariaLabel.copyToClipboard')"
           @click="copyEmbed(embedCode)"
         />
       </template>
@@ -91,10 +88,10 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
       v-else
       variant="subtle"
       icon="i-lucide-refresh-cw"
-      aria-label="Refresh embed code"
+      :aria-label="t('toolbox.share.ariaLabel.refreshEmbed')"
       @click="refresh()"
     >
-      Generate embed code
+      {{ t("toolbox.share.embed.generateButton") }}
     </UButton>
   </UCard>
 </template>

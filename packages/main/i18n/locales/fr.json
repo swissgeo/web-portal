@@ -169,7 +169,22 @@
     },
     "share": {
       "buttonTitle": "Partager",
-      "title": "Partager"
+      "title": "Partager",
+      "link": {
+        "title": "Lien de partage",
+        "generateButton": "Générer le lien de partage"
+      },
+      "embed": {
+        "title": "Intégration",
+        "generateButton": "Générer le code d'intégration",
+        "zoomOnlyCtrlLabel": "Activer le zoom uniquement avec la touche Ctrl/Cmd"
+      },
+      "ariaLabel": {
+        "close": "Fermer",
+        "copyToClipboard": "Copier dans le presse-papiers",
+        "refreshLink": "Rafraîchir le lien de partage",
+        "refreshEmbed": "Rafraîchir le code d'intégration"
+      }
     },
     "print": {
       "buttonTitle": "Imprimer"

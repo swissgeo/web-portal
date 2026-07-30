@@ -169,7 +169,22 @@
     },
     "share": {
       "buttonTitle": "Teilen",
-      "title": "Teilen"
+      "title": "Teilen",
+      "link": {
+        "title": "Freigabelink",
+        "generateButton": "Freigabelink generieren"
+      },
+      "embed": {
+        "title": "Einbetten",
+        "generateButton": "Einbettungscode generieren",
+        "zoomOnlyCtrlLabel": "Zoom nur mit Strg/Cmd-Taste aktivieren"
+      },
+      "ariaLabel": {
+        "close": "Schließen",
+        "copyToClipboard": "In die Zwischenablage kopieren",
+        "refreshLink": "Freigabelink aktualisieren",
+        "refreshEmbed": "Einbettungscode aktualisieren"
+      }
     },
     "print": {
       "buttonTitle": "Drucken"

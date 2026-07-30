@@ -169,7 +169,22 @@
     },
     "share": {
       "buttonTitle": "Share",
-      "title": "Share"
+      "title": "Share",
+      "link": {
+        "title": "Share link",
+        "generateButton": "Generate share link"
+      },
+      "embed": {
+        "title": "Embedding",
+        "generateButton": "Generate embed code",
+        "zoomOnlyCtrlLabel": "Enable zoom only with Ctrl/Cmd key"
+      },
+      "ariaLabel": {
+        "close": "Close",
+        "copyToClipboard": "Copy to clipboard",
+        "refreshLink": "Refresh share link",
+        "refreshEmbed": "Refresh embed code"
+      }
     },
     "print": {
       "buttonTitle": "Print"
