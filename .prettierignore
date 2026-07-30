@@ -6,3 +6,6 @@ node_modules
 dist
 .nuxt
 .output
+
+# geoadmin style snapshots used as test fixtures (external data, not our code)
+packages/map/src/__tests__/fixtures/geoadmin-styles/
