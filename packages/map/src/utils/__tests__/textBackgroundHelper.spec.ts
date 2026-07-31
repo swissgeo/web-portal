@@ -65,8 +65,8 @@ describe("applyOlTextBackground", () => {
     );
 
     const wrapped = layer.getStyle() as (
-      feature: unknown,
-      resolution: number,
+      _feature: unknown,
+      _resolution: number,
     ) => unknown;
     const result = wrapped({}, 1);
 
@@ -90,8 +90,8 @@ describe("applyOlTextBackground", () => {
     );
 
     const wrapped = layer.getStyle() as (
-      feature: unknown,
-      resolution: number,
+      _feature: unknown,
+      _resolution: number,
     ) => unknown;
 
     expect(() => wrapped({}, 1)).not.toThrow();
@@ -108,8 +108,8 @@ describe("applyOlTextBackground", () => {
     );
 
     const wrapped = layer.getStyle() as (
-      feature: unknown,
-      resolution: number,
+      _feature: unknown,
+      _resolution: number,
     ) => unknown;
 
     expect(wrapped({}, 1)).toBeUndefined();
@@ -130,8 +130,8 @@ describe("applyOlTextBackground", () => {
     );
 
     const wrapped = layer.getStyle() as (
-      feature: unknown,
-      resolution: number,
+      _feature: unknown,
+      _resolution: number,
     ) => unknown;
     wrapped({}, 1);
 
