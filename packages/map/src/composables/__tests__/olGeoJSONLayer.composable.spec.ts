@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick, ref } from "vue";
 
 import type { GeoJSONLayer } from "@/types";
+import type { MapLibreStyle } from "@/utils/geoadminToMapLibreStyle";
 
 import {
   clearAddLayerToMapMocks,
@@ -78,6 +79,21 @@ vi.mock("../../utils/geoJsonStyleFromLiterals", () => ({
   }),
 }));
 
+const stylefunctionMock = vi.fn();
+vi.mock("ol-mapbox-style", () => ({
+  stylefunction: stylefunctionMock,
+}));
+
+const makeGetImageMock = vi.fn(() => vi.fn());
+vi.mock("@/utils/maplibreShapeIcons", () => ({
+  makeGetImage: makeGetImageMock,
+}));
+
+const applyOlTextBackgroundMock = vi.fn();
+vi.mock("@/utils/textBackgroundHelper", () => ({
+  applyOlTextBackground: applyOlTextBackgroundMock,
+}));
+
 import useOlGeoJSONLayer from "../olGeoJSONLayer.composable";
 
 function makeGeoJSONLayer(overrides: Partial<GeoJSONLayer> = {}): GeoJSONLayer {
@@ -99,6 +115,9 @@ function makeGeoJSONLayer(overrides: Partial<GeoJSONLayer> = {}): GeoJSONLayer {
 describe("useOlGeoJSONLayer", () => {
   beforeEach(() => {
     clearAddLayerToMapMocks();
+    stylefunctionMock.mockClear();
+    makeGetImageMock.mockClear();
+    applyOlTextBackgroundMock.mockClear();
   });
   it("creates a VectorLayer and initializes with GeoJSON data", async () => {
     const layer = ref(makeGeoJSONLayer());
@@ -180,5 +199,92 @@ describe("useOlGeoJSONLayer", () => {
     await nextTick();
 
     expect(register).toHaveBeenCalled();
+  });
+
+  it("applies a MapLibre style via ol-mapbox-style when mapLibreStyle is set", async () => {
+    const mapLibreStyle: MapLibreStyle = {
+      version: 8,
+      sources: { "test-geojson": { type: "geojson", data: {} } },
+      layers: [],
+    };
+    const layer = ref(
+      makeGeoJSONLayer({
+        mapLibreStyle,
+        mapLibreIcons: [{ name: "icon", shape: "circle", radius: 5 }],
+      }),
+    );
+    const olMap = ref(undefined);
+
+    const TestComponent = defineComponent({
+      setup() {
+        useOlGeoJSONLayer(layer, olMap);
+      },
+      template: "<div />",
+    });
+
+    mount(TestComponent);
+    await nextTick();
+
+    expect(makeGetImageMock).toHaveBeenCalledWith(layer.value.mapLibreIcons);
+    expect(stylefunctionMock).toHaveBeenCalledWith(
+      expect.anything(),
+      mapLibreStyle,
+      "test-geojson",
+      expect.anything(),
+      undefined,
+      undefined,
+      undefined,
+      expect.any(Function),
+    );
+    expect(applyOlTextBackgroundMock).toHaveBeenCalledWith(
+      expect.anything(),
+      mapLibreStyle,
+    );
+  });
+
+  it("logs an error and skips styling when the MapLibre style has no source", async () => {
+    const { default: log } = await import("@swissgeo/log");
+    const mapLibreStyle: MapLibreStyle = {
+      version: 8,
+      sources: {},
+      layers: [],
+    };
+    const layer = ref(makeGeoJSONLayer({ mapLibreStyle }));
+    const olMap = ref(undefined);
+
+    const TestComponent = defineComponent({
+      setup() {
+        useOlGeoJSONLayer(layer, olMap);
+      },
+      template: "<div />",
+    });
+
+    mount(TestComponent);
+    await nextTick();
+
+    expect(stylefunctionMock).not.toHaveBeenCalled();
+    expect(log.error).toHaveBeenCalled();
+  });
+
+  it("leaves the layer without a source when geoJsonData is empty", async () => {
+    mockReadFeatures.mockClear();
+    const layer = ref(
+      makeGeoJSONLayer({
+        geoJsonData: {} as GeoJSONLayer["geoJsonData"],
+      }),
+    );
+    const olMap = ref(undefined);
+
+    const TestComponent = defineComponent({
+      setup() {
+        useOlGeoJSONLayer(layer, olMap);
+      },
+      template: "<div />",
+    });
+
+    mount(TestComponent);
+    await nextTick();
+
+    expect(mockReadFeatures).not.toHaveBeenCalled();
   });
 });

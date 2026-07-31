@@ -1,4 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+
+vi.mock("@swissgeo/log", () => ({
+  default: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
+  LogPreDefinedColor: new Proxy({}, { get: (_t, p) => String(p) }),
+}));
+
+import log from "@swissgeo/log";
 
 import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 
@@ -546,5 +553,341 @@ describe("geoadminToMapLibreStyle - icon + label + resolution (doc reference)", 
       fill: "rgba(14,80,114,0.9)",
       padding: [2, 2, 2, 2],
     });
+  });
+});
+
+describe("geoadminToMapLibreStyle - unsupported vectorOptions.type", () => {
+  const UNSUPPORTED: GeoAdminGeoJSONStyleDefinition = {
+    type: "single",
+    property: "n/a",
+    geomType: "point",
+    vectorOptions: { type: "diamond" } as never,
+  };
+
+  it("logs a warning and emits no layer for the entry", () => {
+    vi.mocked(log.warn).mockClear();
+    const { style } = geoadminToMapLibreStyle(UNSUPPORTED, "src");
+    expect(style.layers).toHaveLength(0);
+    expect(log.warn).toHaveBeenCalledOnce();
+  });
+});
+
+describe("geoadminToMapLibreStyle - unsupported geomType", () => {
+  const UNSUPPORTED: GeoAdminGeoJSONStyleDefinition = {
+    type: "single",
+    property: "n/a",
+    geomType: "multipolygon" as never,
+    vectorOptions: {
+      type: "circle",
+      radius: 4,
+      fill: { color: "#fff" },
+      stroke: { color: "#000", width: 1 },
+    },
+  };
+
+  it("logs a warning and emits no layer", () => {
+    vi.mocked(log.warn).mockClear();
+    const { style } = geoadminToMapLibreStyle(UNSUPPORTED, "src");
+    expect(style.layers).toHaveLength(0);
+    expect(log.warn).toHaveBeenCalledOnce();
+  });
+});
+
+describe("geoadminToMapLibreStyle - single-type root-level rotation", () => {
+  // For `single`, `rotation` is a sibling of `vectorOptions` on the style root
+  // itself, not on `vectorOptions` (mirrors web-mapviewer's imageRotationProperty).
+  const SINGLE_ROOT_ROTATION = {
+    type: "single",
+    property: "n/a",
+    geomType: "point",
+    rotation: "bearing",
+    vectorOptions: {
+      type: "icon",
+      src: "https://data.geo.admin.ch/arrow.png",
+    },
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+
+  it("applies the root-level rotation as a data-driven icon-rotate expression", () => {
+    const { style } = geoadminToMapLibreStyle(SINGLE_ROOT_ROTATION, "src");
+    expect(style.layers[0]!.layout!["icon-rotate"]).toEqual([
+      "*",
+      ["to-number", ["get", "bearing"]],
+      180 / Math.PI,
+    ]);
+  });
+});
+
+describe("geoadminToMapLibreStyle - circle without fill or stroke", () => {
+  const CIRCLE_BARE = {
+    type: "single",
+    property: "n/a",
+    geomType: "point",
+    vectorOptions: { type: "circle", radius: 5 },
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+
+  it("omits circle-color and circle-stroke paint keys", () => {
+    const { style } = geoadminToMapLibreStyle(CIRCLE_BARE, "src");
+    const circle = style.layers[0]!;
+    expect(circle.paint).toEqual({ "circle-radius": 5 });
+  });
+});
+
+describe("geoadminToMapLibreStyle - icon with scale", () => {
+  const ICON_SCALED = {
+    type: "single",
+    property: "n/a",
+    geomType: "point",
+    vectorOptions: {
+      type: "icon",
+      src: "https://data.geo.admin.ch/pin.png",
+      scale: 0.5,
+    },
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+
+  it("maps scale to icon-size", () => {
+    const { style } = geoadminToMapLibreStyle(ICON_SCALED, "src");
+    expect(style.layers[0]!.layout!["icon-size"]).toBe(0.5);
+  });
+});
+
+describe("geoadminToMapLibreStyle - shape icon with default radius", () => {
+  const SHAPE_NO_RADIUS = {
+    type: "single",
+    property: "n/a",
+    geomType: "point",
+    vectorOptions: {
+      type: "hexagon",
+      fill: { color: "#fff" },
+      stroke: { color: "#000", width: 1 },
+    },
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+
+  it("defaults radius to 8 when the shape doesn't declare one", () => {
+    const { icons } = geoadminToMapLibreStyle(SHAPE_NO_RADIUS, "src");
+    expect(icons[0]!.radius).toBe(8);
+  });
+});
+
+describe("geoadminToMapLibreStyle - stroke width default", () => {
+  const NO_WIDTH: GeoAdminGeoJSONStyleDefinition = {
+    type: "single",
+    property: "n/a",
+    geomType: "polygon",
+    vectorOptions: {
+      type: "square",
+      fill: { color: "#ff0000" },
+      stroke: { color: "#000000" } as never,
+    },
+  };
+
+  it("defaults line-width to 1 when stroke.width is omitted", () => {
+    const { style } = geoadminToMapLibreStyle(NO_WIDTH, "src");
+    const stroke = style.layers.find((l) => l.type === "line")!;
+    expect(stroke.paint!["line-width"]).toBe(1);
+  });
+});
+
+describe("geoadminToMapLibreStyle - label without a background box", () => {
+  const LABEL_NO_BG = {
+    type: "single",
+    property: "n/a",
+    geomType: "point",
+    vectorOptions: {
+      type: "circle",
+      radius: 4,
+      fill: { color: "#000" },
+      label: {
+        template: "${name}",
+        text: { fill: { color: "white" } },
+      },
+    },
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+
+  it("emits no metadata when there is no background", () => {
+    const { style } = geoadminToMapLibreStyle(LABEL_NO_BG, "src");
+    const label = style.layers.find((l) => l.type === "symbol")!;
+    expect(label.metadata).toBeUndefined();
+  });
+});
+
+describe("geoadminToMapLibreStyle - label backgroundStroke without backgroundFill", () => {
+  const LABEL_BG_STROKE_ONLY = {
+    type: "single",
+    property: "n/a",
+    geomType: "point",
+    vectorOptions: {
+      type: "circle",
+      radius: 4,
+      fill: { color: "#000" },
+      label: {
+        template: "${name}",
+        text: {
+          fill: { color: "white" },
+          backgroundStroke: { color: "#123456", width: 2 },
+        },
+      },
+    },
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+
+  it("carries the stroke without a fill key", () => {
+    const { style } = geoadminToMapLibreStyle(LABEL_BG_STROKE_ONLY, "src");
+    const label = style.layers.find((l) => l.type === "symbol")!;
+    expect(label.metadata!["ol:text-background"]).toMatchObject({
+      stroke: { color: "#123456", width: 2 },
+    });
+    expect(
+      (label.metadata!["ol:text-background"] as Record<string, unknown>).fill,
+    ).toBeUndefined();
+  });
+});
+
+describe("geoadminToMapLibreStyle - polygon with fill only (no stroke declared)", () => {
+  const FILL_ONLY: GeoAdminGeoJSONStyleDefinition = {
+    type: "single",
+    property: "n/a",
+    geomType: "polygon",
+    vectorOptions: { type: "square", fill: { color: "#ff0000" } } as never,
+  };
+
+  it("emits a fill layer but no line layer", () => {
+    const { style } = geoadminToMapLibreStyle(FILL_ONLY, "src");
+    expect(style.layers.some((l) => l.type === "fill")).toBe(true);
+    expect(style.layers.some((l) => l.type === "line")).toBe(false);
+  });
+});
+
+describe("geoadminToMapLibreStyle - polygon with stroke only (no fill declared)", () => {
+  const STROKE_ONLY: GeoAdminGeoJSONStyleDefinition = {
+    type: "single",
+    property: "n/a",
+    geomType: "polygon",
+    vectorOptions: {
+      type: "square",
+      stroke: { color: "#000000", width: 2 },
+    } as never,
+  };
+
+  it("emits a line layer but no fill layer", () => {
+    const { style } = geoadminToMapLibreStyle(STROKE_ONLY, "src");
+    expect(style.layers.some((l) => l.type === "fill")).toBe(false);
+    expect(style.layers.some((l) => l.type === "line")).toBe(true);
+  });
+});
+
+describe("geoadminToMapLibreStyle - polygon/line entries split across zoom bands", () => {
+  const MULTI_BAND = {
+    type: "unique",
+    property: "cls",
+    values: [
+      {
+        geomType: "polygon",
+        value: 0,
+        maxResolution: 100,
+        vectorOptions: { fill: { color: "#ff0000" } },
+      },
+      {
+        geomType: "polygon",
+        value: 1,
+        minResolution: 100,
+        vectorOptions: { fill: { color: "#00ff00" } },
+      },
+    ],
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+  const resolutionToZoom = (res: number) => 20 - Math.log2(res);
+
+  it("emits one suffixed fill layer per zoom band", () => {
+    const { style } = geoadminToMapLibreStyle(MULTI_BAND, "src", {
+      resolutionToZoom,
+    });
+    const fills = style.layers.filter((l) => l.type === "fill");
+    expect(fills).toHaveLength(2);
+    expect(fills[0]!.id).toBe("src-fill-0");
+    expect(fills[1]!.id).toBe("src-fill-1");
+  });
+});
+
+describe("geoadminToMapLibreStyle - label on a polygon entry", () => {
+  const POLYGON_WITH_LABEL = {
+    type: "single",
+    property: "n/a",
+    geomType: "polygon",
+    vectorOptions: {
+      type: "square",
+      fill: { color: "#ff0000" },
+      stroke: { color: "#000000", width: 1 },
+      label: { template: "${name}", text: { fill: { color: "white" } } },
+    },
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+
+  it("emits a separate symbol label layer alongside the fill/line layers", () => {
+    const { style } = geoadminToMapLibreStyle(POLYGON_WITH_LABEL, "src");
+    expect(style.layers.map((l) => l.type)).toEqual(["fill", "line", "symbol"]);
+    expect(style.layers[2]!.layout!["text-field"]).toEqual(["get", "name"]);
+  });
+});
+
+describe("parseCssFont - edge cases", () => {
+  it("returns an empty object when there's no px size", () => {
+    expect(parseCssFont("sans-serif")).toEqual({});
+  });
+
+  it("strips quotes from quoted family names", () => {
+    expect(parseCssFont('12px "Comic Sans MS", sans-serif')).toEqual({
+      size: 12,
+      families: ["Comic Sans MS", "sans-serif"],
+    });
+  });
+});
+
+describe("geoadminToMapLibreStyle - text-anchor combinations", () => {
+  const LABEL_TOP_LEFT = {
+    type: "single",
+    property: "n/a",
+    geomType: "point",
+    vectorOptions: {
+      type: "circle",
+      radius: 4,
+      fill: { color: "#000" },
+      label: {
+        template: "${name}",
+        text: {
+          textBaseline: "top",
+          textAlign: "left",
+          fill: { color: "white" },
+        },
+      },
+    },
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+  const LABEL_BOTTOM_START = {
+    type: "single",
+    property: "n/a",
+    geomType: "point",
+    vectorOptions: {
+      type: "circle",
+      radius: 4,
+      fill: { color: "#000" },
+      label: {
+        template: "${name}",
+        text: {
+          textBaseline: "bottom",
+          textAlign: "start",
+          fill: { color: "white" },
+        },
+      },
+    },
+  } as unknown as GeoAdminGeoJSONStyleDefinition;
+
+  it("maps top/left to text-anchor top-left and sets text-justify", () => {
+    const { style } = geoadminToMapLibreStyle(LABEL_TOP_LEFT, "src");
+    const label = style.layers.find((l) => l.type === "symbol")!;
+    expect(label.layout!["text-anchor"]).toBe("top-left");
+    expect(label.layout!["text-justify"]).toBe("left");
+  });
+
+  it("maps bottom/start to text-anchor bottom-left without text-justify", () => {
+    const { style } = geoadminToMapLibreStyle(LABEL_BOTTOM_START, "src");
+    const label = style.layers.find((l) => l.type === "symbol")!;
+    expect(label.layout!["text-anchor"]).toBe("bottom-left");
+    expect(label.layout!["text-justify"]).toBeUndefined();
   });
 });

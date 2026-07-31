@@ -113,4 +113,34 @@ describe("GeoJsonConverter", () => {
 
     expect(wrapper.emitted("updateData")).toBeUndefined();
   });
+
+  it("does not emit when the features are null", async () => {
+    geoJsonDataRef.value = { geoJsonData: null, geoJsonStyle: {} };
+
+    const wrapper = mountConverter();
+    await flushPromises();
+
+    expect(wrapper.emitted("updateData")).toBeUndefined();
+  });
+
+  it("falls back to 'geojson' as the source id when layerId is null", async () => {
+    isMapLibreStyleMock.mockReturnValue(false);
+    geoadminToMapLibreStyleMock.mockReturnValue({
+      style: { version: 8, sources: {}, layers: [] },
+      icons: [],
+    });
+    geoJsonDataRef.value = {
+      geoJsonData: FEATURES,
+      geoJsonStyle: { type: "unique", property: "symbol", values: [] },
+    };
+
+    mount(GeoJsonConverter, {
+      shallow: true,
+      propsData: { distribution: null, layerId: null },
+    });
+    await flushPromises();
+
+    const [, sourceId] = geoadminToMapLibreStyleMock.mock.calls[0]!;
+    expect(sourceId).toBe("geojson");
+  });
 });
