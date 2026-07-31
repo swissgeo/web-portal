@@ -79,17 +79,21 @@ vi.mock("../../utils/geoJsonStyleFromLiterals", () => ({
   }),
 }));
 
-const stylefunctionMock = vi.fn();
+const { applyOlTextBackgroundMock, makeGetImageMock, stylefunctionMock } =
+  vi.hoisted(() => ({
+    applyOlTextBackgroundMock: vi.fn(),
+    makeGetImageMock: vi.fn(() => vi.fn()),
+    stylefunctionMock: vi.fn(),
+  }));
+
 vi.mock("ol-mapbox-style", () => ({
   stylefunction: stylefunctionMock,
 }));
 
-const makeGetImageMock = vi.fn(() => vi.fn());
 vi.mock("@/utils/maplibreShapeIcons", () => ({
   makeGetImage: makeGetImageMock,
 }));
 
-const applyOlTextBackgroundMock = vi.fn();
 vi.mock("@/utils/textBackgroundHelper", () => ({
   applyOlTextBackground: applyOlTextBackgroundMock,
 }));

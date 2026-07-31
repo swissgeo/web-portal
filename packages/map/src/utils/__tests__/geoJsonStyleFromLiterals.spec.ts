@@ -431,9 +431,7 @@ describe("OlStyleForPropertyValue", () => {
         extra: { a: 1 },
       });
       const style = olStyle.getFeatureStyle(feature, 1);
-      expect(style.getText()?.getText()).toBe(
-        'null-undefined-{"a":1}',
-      );
+      expect(style.getText()?.getText()).toBe('null-undefined-{"a":1}');
     });
 
     it("applies a label background fill and stroke when configured", () => {

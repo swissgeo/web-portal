@@ -6,32 +6,35 @@ import { computed, watchEffect } from "vue";
 import type { Distribution } from "@/types";
 
 import { useConditionalFetch } from "./useConditionalFetch";
+import { getLinksByRel } from "./utils";
 
 export function useGeoJson(distribution: Ref<Distribution | null>) {
   const dataUrl = computed(() => extractGeoJsonDataUrl(distribution.value));
   const styleUrl = computed(() => extractGeoJsonStyleUrl(distribution.value));
 
-  const { data: geoJsonData } = useConditionalFetch<string>(dataUrl);
-  const { data: geoJsonStyle } = useConditionalFetch<string>(styleUrl);
+  const { data: rawData } = useConditionalFetch<string>(dataUrl);
+  const { data: rawStyle } = useConditionalFetch<string>(styleUrl);
+
+  // Parsed separately so the (potentially multi-MB) feature collection is not
+  // re-parsed when only the style arrives, and vice-versa.
+  const parsedData = computed(() => JSON.parse(rawData.value || "{}"));
+  const parsedStyle = computed(() => JSON.parse(rawStyle.value || "{}"));
 
   const data = computed(() => ({
-    geoJsonData: JSON.parse(geoJsonData.value || "{}"),
-    geoJsonStyle: JSON.parse(geoJsonStyle.value || "{}"),
+    geoJsonData: parsedData.value,
+    geoJsonStyle: parsedStyle.value,
   }));
 
   watchEffect(() => {
     log.debug({
       title: "useGeoJson",
       titleColor: LogPreDefinedColor.Indigo,
-      messages: ["Loaded geoJsonData", data.value.geoJsonData],
-    });
-  });
-
-  watchEffect(() => {
-    log.debug({
-      title: "useGeoJson",
-      titleColor: LogPreDefinedColor.Indigo,
-      messages: ["Loaded geoJsonStyle", data.value.geoJsonStyle],
+      messages: [
+        "Loaded GeoJSON",
+        `${parsedData.value?.features?.length ?? 0} feature(s)`,
+        "style",
+        parsedStyle.value,
+      ],
     });
   });
 
@@ -49,12 +52,12 @@ function extractGeoJsonDataUrl(
 
   // The GeoJSON data file is the link advertising the geo+json media type
   // (catalog uses rel="about" for it).
-  const dataLinks = distribution.links.filter(
+  const dataLink = distribution.links.find(
     (link) => link.type === "application/geo+json",
   );
 
-  if (dataLinks.length && dataLinks[0]) {
-    return dataLinks[0].href;
+  if (dataLink) {
+    return dataLink.href;
   }
 
   log.warn({
@@ -75,12 +78,10 @@ function extractGeoJsonStyleUrl(
     return null;
   }
 
-  const styleLinks = distribution.links.filter(
-    (link) => link.rel === "styled-by",
-  );
+  const styleLink = getLinksByRel(distribution.links, "styled-by")[0];
 
-  if (styleLinks.length && styleLinks[0]) {
-    return styleLinks[0].href;
+  if (styleLink) {
+    return styleLink.href;
   }
 
   log.warn({

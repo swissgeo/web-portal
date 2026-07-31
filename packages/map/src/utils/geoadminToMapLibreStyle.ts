@@ -6,9 +6,9 @@ import type {
   GeoAdminGeoJSONVectorOptions,
 } from "@/utils/geojson";
 
-import type { ShapeIconSpec, ShapeIconType } from "./maplibreShapeIcons";
+import type { ShapeIconSpec } from "./maplibreShapeIcons";
 
-import { shapeIconName } from "./maplibreShapeIcons";
+import { isShapeIconType, shapeIconName } from "./maplibreShapeIcons";
 
 // `GeoAdminGeoJSONLabel` is not exported from @/utils/geojson, so we derive
 // it from the vector options type.
@@ -357,26 +357,14 @@ function labelBackgroundMetadata(
 
 // --- Per-entry layer building -------------------------------------------------
 
-const NON_CIRCLE_SHAPES: ShapeIconType[] = [
-  "square",
-  "triangle",
-  "pentagon",
-  "star",
-  "cross",
-  "hexagon",
-];
-
-function isShapeIconType(type: string): type is ShapeIconType {
-  return type === "circle" || NON_CIRCLE_SHAPES.includes(type as ShapeIconType);
-}
-
 interface BuildContext {
   sourceId: string;
-  baseId: string;
   options: GeoadminToMapLibreOptions;
-  icons: ShapeIconSpec[];
+  /** Generated point-shape icons, keyed by name so identical shapes are emitted once. */
+  icons: Map<string, ShapeIconSpec>;
 }
 
+/** Applies an entry's filter and its resolution band (see {@link entryZoomBand}). */
 function applyCommon(
   layer: MapLibreLayer,
   entry: NormalizedEntry,
@@ -385,38 +373,10 @@ function applyCommon(
   if (entry.filter) {
     layer.filter = entry.filter;
   }
-  const toZoom = ctx.options.resolutionToZoom;
-  if (toZoom) {
-    // Zoom is inverse to resolution: the smallest resolution (minResolution) is the
-    // most zoomed-in level (maxzoom), and vice-versa.
-    //
-    // geoadmin bands are half-open with the LOWER (minResolution) bound inclusive:
-    // an entry applies when `minResolution <= resolution < maxResolution`. MapLibre's
-    // zoom window is the mirror image — `minzoom <= zoom < maxzoom`, with maxzoom
-    // EXCLUSIVE. `resolutionToZoom` snaps to an integer grid level, so a band edge
-    // lands exactly on a rest zoom level; we add 1 to both bounds to keep that edge
-    // level on the same side as the legacy renderer. Without it the next entry takes
-    // over one zoom level too early (e.g. messnetz-beobachtungen rendering its larger
-    // labelled circle already at zoom 1 instead of zoom 2). Assumes grid-aligned band
-    // resolutions, which all production geoadmin styles use.
-    if (entry.minResolution !== undefined && entry.minResolution > 0) {
-      layer.maxzoom = toZoom(entry.minResolution) + 1;
-    }
-    if (entry.maxResolution !== undefined && entry.maxResolution !== Infinity) {
-      layer.minzoom = toZoom(entry.maxResolution) + 1;
-    }
-  }
-  return layer;
+  return applyZoomBand(layer, entryZoomBand(entry, ctx));
 }
 
 // --- Merged polygon/line layers (data-driven paint) ---------------------------
-//
-// Polygon and line features are drawn through as few MapLibre layers as possible —
-// one `fill` layer for every polygon fill, one `line` layer for every stroke (polygon
-// outline + line geometry) — with the per-value differences carried in data-driven
-// paint expressions. This is what makes their draw order match the legacy renderer:
-// `ol-mapbox-style` sets one z-index per MapLibre layer, so features that share a
-// layer are painted by OpenLayers in source order rather than grouped per style entry.
 
 const TRANSPARENT_COLOR = "rgba(0, 0, 0, 0)";
 
@@ -486,17 +446,11 @@ function buildDataDrivenValue<T>(
   const arms: unknown[] = [];
   for (const entry of entries) {
     const paint = getPaint(entry);
-    if (paint === undefined || !entry.range) {
+    if (paint === undefined || !entry.filter) {
       continue;
     }
-    arms.push(
-      [
-        "all",
-        [">=", ["to-number", ["get", geoadmin.property]], entry.range[0]],
-        ["<", ["to-number", ["get", geoadmin.property]], entry.range[1]],
-      ],
-      paint,
-    );
+    // `entry.filter` already is the half-open range predicate built in normalizeEntries.
+    arms.push(entry.filter, paint);
   }
   if (arms.length === 0) {
     return undefined;
@@ -509,7 +463,22 @@ interface ZoomBand {
   maxzoom?: number;
 }
 
-/** Computes an entry's MapLibre zoom window from its resolution band (see applyCommon). */
+/**
+ * Computes an entry's MapLibre zoom window from its resolution band.
+ *
+ * Zoom is inverse to resolution: the smallest resolution (minResolution) is the most
+ * zoomed-in level (maxzoom), and vice-versa.
+ *
+ * geoadmin bands are half-open with the LOWER (minResolution) bound inclusive: an entry
+ * applies when `minResolution <= resolution < maxResolution`. MapLibre's zoom window is
+ * the mirror image — `minzoom <= zoom < maxzoom`, with maxzoom EXCLUSIVE.
+ * `resolutionToZoom` snaps to an integer grid level, so a band edge lands exactly on a
+ * rest zoom level; we add 1 to both bounds to keep that edge level on the same side as
+ * the legacy renderer. Without it the next entry takes over one zoom level too early
+ * (e.g. messnetz-beobachtungen rendering its larger labelled circle already at zoom 1
+ * instead of zoom 2). Assumes grid-aligned band resolutions, which all production
+ * geoadmin styles use.
+ */
 function entryZoomBand(entry: NormalizedEntry, ctx: BuildContext): ZoomBand {
   const toZoom = ctx.options.resolutionToZoom;
   const band: ZoomBand = {};
@@ -590,10 +559,10 @@ function buildFillLayers(
     }
     const suffix = groups.length > 1 ? `-${i}` : "";
     const fill: MapLibreLayer = {
-      id: `${ctx.baseId}-fill${suffix}`,
+      id: `${ctx.sourceId}-fill${suffix}`,
       type: "fill",
       source: ctx.sourceId,
-      paint: { "fill-color": fillColor as unknown },
+      paint: { "fill-color": fillColor },
     };
     layers.push(applyZoomBand(fill, group.band));
   });
@@ -708,7 +677,7 @@ function buildStrokeLayers(
 
     const suffix = multiBand ? `-${i}` : "";
     const stroke: MapLibreLayer = {
-      id: `${ctx.baseId}-stroke${suffix}`,
+      id: `${ctx.sourceId}-stroke${suffix}`,
       type: "line",
       source: ctx.sourceId,
       paint: { "line-color": color, "line-width": width },
@@ -731,16 +700,24 @@ function buildPointOrLabelLayers(
   ctx: BuildContext,
 ): MapLibreLayer[] {
   const { vectorOptions, geomType } = entry;
-  const idPrefix = `${ctx.baseId}-${entry.index}`;
+  const idPrefix = `${ctx.sourceId}-${entry.index}`;
 
   if (geomType === "point" && vectorOptions) {
     return buildPointLayers(entry, vectorOptions, ctx, idPrefix);
   }
-
-  // A label on a polygon/line entry needs its own symbol layer (its fill/stroke paint
-  // is already merged into the shared fill/line layers above).
-  if (geomType !== "point" && vectorOptions?.label) {
-    return [buildLabelLayer(entry, vectorOptions.label, ctx, idPrefix)];
+  if (geomType === "polygon" || geomType === "line") {
+    // A label on a polygon/line entry needs its own symbol layer (its fill/stroke paint
+    // is already merged into the shared fill/line layers above).
+    return vectorOptions?.label
+      ? [buildLabelLayer(entry, vectorOptions.label, ctx, idPrefix)]
+      : [];
+  }
+  if (vectorOptions) {
+    log.warn({
+      title: "geoadminToMapLibreStyle",
+      titleColor: LogPreDefinedColor.Orange,
+      messages: ["Unsupported geomType, skipping entry", geomType],
+    });
   }
   return [];
 }
@@ -843,23 +820,15 @@ function buildPointLayers(
   } else if (isShapeIconType(vectorOptions.type)) {
     // Non-circle shapes: generate a canvas icon and reference it from a symbol layer.
     const radius = "radius" in vectorOptions ? vectorOptions.radius : 8;
-    const spec: ShapeIconSpec = {
-      name: shapeIconName({
-        shape: vectorOptions.type,
-        radius,
-        fillColor: vectorOptions.fill?.color,
-        strokeColor: vectorOptions.stroke?.color,
-        strokeWidth: vectorOptions.stroke?.width,
-      }),
+    const shape: Omit<ShapeIconSpec, "name"> = {
       shape: vectorOptions.type,
       radius,
       fillColor: vectorOptions.fill?.color,
       strokeColor: vectorOptions.stroke?.color,
       strokeWidth: vectorOptions.stroke?.width,
     };
-    if (!ctx.icons.some((icon) => icon.name === spec.name)) {
-      ctx.icons.push(spec);
-    }
+    const spec: ShapeIconSpec = { name: shapeIconName(shape), ...shape };
+    ctx.icons.set(spec.name, spec);
 
     const symbol: MapLibreLayer = {
       id: `${idPrefix}-symbol`,
@@ -1122,12 +1091,10 @@ export function geoadminToMapLibreStyle(
   sourceId: string,
   options: GeoadminToMapLibreOptions = {},
 ): GeoadminToMapLibreResult {
-  const icons: ShapeIconSpec[] = [];
   const ctx: BuildContext = {
     sourceId,
-    baseId: sourceId,
     options,
-    icons,
+    icons: new Map(),
   };
 
   const entries = normalizeEntries(geoadmin);
@@ -1136,25 +1103,8 @@ export function geoadminToMapLibreStyle(
   );
   const lineEntries = entries.filter((entry) => entry.geomType === "line");
 
-  for (const entry of entries) {
-    if (
-      entry.vectorOptions &&
-      entry.geomType !== "polygon" &&
-      entry.geomType !== "line" &&
-      entry.geomType !== "point"
-    ) {
-      log.warn({
-        title: "geoadminToMapLibreStyle",
-        titleColor: LogPreDefinedColor.Orange,
-        messages: ["Unsupported geomType, skipping entry", entry.geomType],
-      });
-    }
-  }
-
   // Order matters: MapLibre paints layers in array order. Polygon fills (bottom), then
-  // all strokes (polygon outlines + lines), then point/label symbols (top). Polygon and
-  // line features are merged into shared data-driven layers so OpenLayers draws them in
-  // source order — matching the legacy renderer (see the file header's draw-order note).
+  // all strokes (polygon outlines + lines), then point/label symbols (top).
   const layers: MapLibreLayer[] = [
     ...buildFillLayers(geoadmin, polygonEntries, ctx),
     ...buildStrokeLayers(geoadmin, polygonEntries, lineEntries, ctx),
@@ -1177,5 +1127,5 @@ export function geoadminToMapLibreStyle(
     layers,
   };
 
-  return { style, icons };
+  return { style, icons: [...ctx.icons.values()] };
 }

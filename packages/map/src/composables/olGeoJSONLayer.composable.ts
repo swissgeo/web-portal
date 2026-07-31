@@ -24,6 +24,10 @@ import { applyOlTextBackground } from "@/utils/textBackgroundHelper";
 
 import OlStyleForPropertyValue from "../utils/geoJsonStyleFromLiterals";
 
+// Global, idempotent registration of the proj4 projections OpenLayers needs to
+// reproject the fetched GeoJSON.
+register(proj4);
+
 export default function useOlGeoJSONLayer(
   layer: Ref<GeoJSONLayer>,
   olMap: Ref<Map | undefined> | undefined,
@@ -146,7 +150,10 @@ export default function useOlGeoJSONLayer(
     log.debug({
       title: "useOlGeoJSONLayer",
       titleColor: LogPreDefinedColor.Yellow,
-      messages: ["Setting geoJSON source", geoJsonData.value],
+      messages: [
+        "Setting geoJSON source",
+        `${geoJsonData.value.features?.length ?? 0} feature(s)`,
+      ],
     });
 
     olLayer.value.setSource(
@@ -162,7 +169,6 @@ export default function useOlGeoJSONLayer(
   }
 
   function initialize(): void {
-    register(proj4);
     // Features first, then style: ol-mapbox-style's stylefunction reads the source's
     // features at render time, and the legacy path is unaffected by ordering.
     setFeatures();

@@ -41,34 +41,38 @@ export function applyOlTextBackground(
   olLayer: VectorLayer,
   glStyle: MapLibreStyle,
 ): void {
-  const configs = (glStyle.layers ?? [])
+  const cfg = glStyle.layers
     .map(
       (layer) =>
         layer.metadata?.["ol:text-background"] as OlTextBackground | undefined,
     )
-    .filter((cfg): cfg is OlTextBackground => Boolean(cfg));
-  if (configs.length === 0) {
+    .find(Boolean);
+  if (!cfg) {
     return;
   }
-  const cfg = configs[0];
 
   const base = olLayer.getStyleFunction();
   if (!base) {
     return;
   }
+  // The config is constant for the layer, so build the OpenLayers instances once
+  // instead of per feature per frame.
+  const backgroundFill = cfg.fill ? new Fill({ color: cfg.fill }) : undefined;
+  const backgroundStroke = cfg.stroke ? new Stroke(cfg.stroke) : undefined;
+
   olLayer.setStyle((feature: FeatureLike, resolution: number) => {
     const styles = base(feature, resolution);
-    const arr = Array.isArray(styles) ? styles : styles ? [styles] : [];
-    for (const style of arr) {
+    const styleList = Array.isArray(styles) ? styles : styles ? [styles] : [];
+    for (const style of styleList) {
       const text = style.getText();
       if (!text) {
         continue;
       }
-      if (cfg.fill) {
-        text.setBackgroundFill(new Fill({ color: cfg.fill }));
+      if (backgroundFill) {
+        text.setBackgroundFill(backgroundFill);
       }
-      if (cfg.stroke) {
-        text.setBackgroundStroke(new Stroke(cfg.stroke));
+      if (backgroundStroke) {
+        text.setBackgroundStroke(backgroundStroke);
       }
       if (cfg.padding) {
         text.setPadding(cfg.padding);

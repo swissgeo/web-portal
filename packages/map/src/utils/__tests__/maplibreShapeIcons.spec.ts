@@ -54,10 +54,7 @@ describe("createShapeIcon", () => {
   });
 
   it("logs and returns an empty canvas when the 2d context is unavailable", () => {
-    vi.spyOn(
-      HTMLCanvasElement.prototype,
-      "getContext",
-    ).mockReturnValue(null);
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
 
     const canvas = createShapeIcon({ name: "n", shape: "circle", radius: 5 });
 
@@ -175,14 +172,8 @@ describe("makeGetImage", () => {
       { name: "sg-circle-5-none-none-0", shape: "circle", radius: 5 },
     ]);
 
-    const first = getImage(
-      {} as never,
-      "sg-circle-5-none-none-0",
-    );
-    const second = getImage(
-      {} as never,
-      "sg-circle-5-none-none-0",
-    );
+    const first = getImage({} as never, "sg-circle-5-none-none-0");
+    const second = getImage({} as never, "sg-circle-5-none-none-0");
 
     expect(first).toBeInstanceOf(HTMLCanvasElement);
     expect(first).toBe(second);

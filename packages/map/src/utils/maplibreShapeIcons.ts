@@ -3,16 +3,32 @@ import type VectorTileLayer from "ol/layer/VectorTile";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 
+interface RegularShapeGeometry {
+  points: number;
+  angle: number;
+  /** Inner radius as a fraction of the outer one (OpenLayers `radius2`). */
+  radius2Ratio?: number;
+}
+
 /**
  * Point shapes that MapLibre cannot render natively (it only supports circles via
  * the `circle` layer type). geoadmin's literals use these extra shapes, so we render
  * them faithfully by generating a small canvas icon per shape and drawing it through
  * a `symbol` layer (`icon-image`).
  *
- * The geometry below mirrors {@link getOlImageStyleForShape} in
- * `geoJsonStyleFromLiterals.ts` (points count, angles, `radius2` for star/cross) so
- * the output stays visually equivalent to the legacy OpenLayers styling.
+ * This is the single source of truth for the shape geometry: it drives both the
+ * canvas icons here and the legacy OpenLayers `RegularShape` styling in
+ * `geoJsonStyleFromLiterals.ts`, so the two stay visually equivalent.
  */
+export const SHAPE_GEOMETRY: Record<string, RegularShapeGeometry> = {
+  square: { points: 4, angle: Math.PI / 4 },
+  triangle: { points: 3, angle: 0 },
+  pentagon: { points: 5, angle: 0 },
+  hexagon: { points: 6, angle: 0 },
+  star: { points: 5, angle: 0, radius2Ratio: 0.5 },
+  cross: { points: 4, angle: 0, radius2Ratio: 0 },
+};
+
 export type ShapeIconType =
   | "circle"
   | "square"
@@ -21,6 +37,10 @@ export type ShapeIconType =
   | "star"
   | "cross"
   | "hexagon";
+
+export function isShapeIconType(type: string): type is ShapeIconType {
+  return type === "circle" || type in SHAPE_GEOMETRY;
+}
 
 export interface ShapeIconSpec {
   /** Deterministic name referenced by the MapLibre layer's `icon-image`. */
@@ -42,35 +62,6 @@ export function shapeIconName(spec: Omit<ShapeIconSpec, "name">): string {
   const stroke = spec.strokeColor ?? "none";
   const width = spec.strokeWidth ?? 0;
   return `sg-${spec.shape}-${spec.radius}-${fill}-${stroke}-${width}`;
-}
-
-interface RegularShapeGeometry {
-  points: number;
-  angle: number;
-  /** Inner radius for star/cross (as in OpenLayers `RegularShape`). */
-  radius2?: number;
-}
-
-function geometryForShape(
-  shape: ShapeIconType,
-  radius: number,
-): RegularShapeGeometry | undefined {
-  switch (shape) {
-    case "square":
-      return { points: 4, angle: Math.PI / 4 };
-    case "triangle":
-      return { points: 3, angle: 0 };
-    case "pentagon":
-      return { points: 5, angle: 0 };
-    case "hexagon":
-      return { points: 6, angle: 0 };
-    case "star":
-      return { points: 5, angle: 0, radius2: radius / 2 };
-    case "cross":
-      return { points: 4, angle: 0, radius2: 0 };
-    case "circle":
-      return undefined;
-  }
 }
 
 /**
@@ -99,18 +90,21 @@ export function createShapeIcon(spec: ShapeIconSpec): HTMLCanvasElement {
 
   const cx = size / 2;
   const cy = size / 2;
-  const geometry = geometryForShape(spec.shape, spec.radius);
+  const geometry = SHAPE_GEOMETRY[spec.shape];
 
   ctx.beginPath();
-  if (spec.shape === "circle" || !geometry) {
+  if (!geometry) {
     ctx.arc(cx, cy, spec.radius, 0, 2 * Math.PI);
   } else {
     // RegularShape draws `points` vertices alternating outer/inner radius (radius2).
-    const hasInner = geometry.radius2 !== undefined;
-    const steps = hasInner ? geometry.points * 2 : geometry.points;
+    const inner =
+      geometry.radius2Ratio !== undefined
+        ? spec.radius * geometry.radius2Ratio
+        : undefined;
+    const steps = inner !== undefined ? geometry.points * 2 : geometry.points;
     for (let i = 0; i < steps; i++) {
-      const isOuter = !hasInner || i % 2 === 0;
-      const r = isOuter ? spec.radius : (geometry.radius2 ?? spec.radius);
+      const isOuter = inner === undefined || i % 2 === 0;
+      const r = isOuter ? spec.radius : inner;
       // Start at the top (-PI/2) and add the shape's base angle, like OpenLayers.
       const angle = (i / steps) * 2 * Math.PI - Math.PI / 2 + geometry.angle;
       const x = cx + r * Math.cos(angle);
@@ -137,6 +131,10 @@ export function createShapeIcon(spec: ShapeIconSpec): HTMLCanvasElement {
   return canvas;
 }
 
+// Icon names are content-addressed (see shapeIconName), so identical shapes share one
+// canvas across layers and across re-styles of the same layer.
+const canvasCache = new Map<string, HTMLCanvasElement>();
+
 /**
  * Builds the `getImage` callback passed to `ol-mapbox-style`'s `stylefunction`. It
  * resolves icon names produced by the converter to generated canvases, caching each
@@ -149,10 +147,9 @@ export function makeGetImage(
   name: string,
 ) => HTMLCanvasElement | string | undefined {
   const specByName = new Map(icons.map((icon) => [icon.name, icon]));
-  const cache = new Map<string, HTMLCanvasElement>();
 
   return (_layer: VectorLayer | VectorTileLayer, name: string) => {
-    const cached = cache.get(name);
+    const cached = canvasCache.get(name);
     if (cached) {
       return cached;
     }
@@ -166,7 +163,7 @@ export function makeGetImage(
       return undefined;
     }
     const canvas = createShapeIcon(spec);
-    cache.set(name, canvas);
+    canvasCache.set(name, canvas);
     return canvas;
   };
 }

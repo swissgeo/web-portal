@@ -18,7 +18,9 @@ describe("geoadminToMapLibreConversionNotes - top-level selection model", () => 
     };
     const notes = geoadminToMapLibreConversionNotes(def);
     expect(notes).toContainEqual(
-      expect.objectContaining({ geoadmin: expect.stringContaining('type "single"') }),
+      expect.objectContaining({
+        geoadmin: expect.stringContaining('type "single"'),
+      }),
     );
     expect(notes).toContainEqual(
       expect.objectContaining({ geoadmin: "polygon fill color" }),
@@ -33,7 +35,11 @@ describe("geoadminToMapLibreConversionNotes - top-level selection model", () => 
       type: "unique",
       property: "cls",
       values: [
-        { geomType: "line", value: 0, vectorOptions: { stroke: { color: "#000", width: 1 } } },
+        {
+          geomType: "line",
+          value: 0,
+          vectorOptions: { stroke: { color: "#000", width: 1 } },
+        },
       ],
     } as unknown as GeoAdminGeoJSONStyleDefinition;
     const notes = geoadminToMapLibreConversionNotes(def);
@@ -83,7 +89,9 @@ describe("geoadminToMapLibreConversionNotes - point shapes", () => {
     };
     const notes = geoadminToMapLibreConversionNotes(def);
     expect(notes).toContainEqual(
-      expect.objectContaining({ geoadmin: 'point "circle" (radius/fill/stroke)' }),
+      expect.objectContaining({
+        geoadmin: 'point "circle" (radius/fill/stroke)',
+      }),
     );
   });
 
@@ -96,7 +104,9 @@ describe("geoadminToMapLibreConversionNotes - point shapes", () => {
     };
     const notes = geoadminToMapLibreConversionNotes(def);
     expect(notes).toContainEqual(
-      expect.objectContaining({ geoadmin: 'point "icon" (external src image)' }),
+      expect.objectContaining({
+        geoadmin: 'point "icon" (external src image)',
+      }),
     );
   });
 
@@ -150,7 +160,9 @@ describe("geoadminToMapLibreConversionNotes - labels", () => {
     "label fill color",
     "label stroke",
   ])("notes %s", (geoadminText) => {
-    expect(notes).toContainEqual(expect.objectContaining({ geoadmin: geoadminText }));
+    expect(notes).toContainEqual(
+      expect.objectContaining({ geoadmin: geoadminText }),
+    );
   });
 });
 
@@ -254,7 +266,9 @@ describe("geoadminToMapLibreConversionNotes - draw order", () => {
 
   it("mentions point entries staying grouped when points are present", () => {
     const notes = geoadminToMapLibreConversionNotes(MULTI);
-    const note = notes.find((n) => n.geoadmin.includes("interleaved per feature"))!;
+    const note = notes.find((n) =>
+      n.geoadmin.includes("interleaved per feature"),
+    )!;
     expect(note.maplibre).toContain("points are still grouped by entry");
   });
 

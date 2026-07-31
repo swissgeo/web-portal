@@ -30,6 +30,8 @@ import type {
   GeoAdminGeoJSONStyleSingle,
 } from "./geojson";
 
+import { SHAPE_GEOMETRY } from "./maplibreShapeIcons";
+
 // TODO I don't know enough about styles to do this right now...
 
 // copied and adapted from https://github.com/geoadmin/mf-geoadmin3/blob/master/src/components/StylesFromLiteralsService.js
@@ -55,27 +57,15 @@ export function getOlImageStyleForShape(
   } else if (vectorOptions.type === "icon") {
     return new Icon(style as unknown as ConstructorParameters<typeof Icon>[0]);
   } else {
-    if (vectorOptions.type === "square") {
-      style.points = 4;
-      style.angle = Math.PI / 4;
-    } else if (vectorOptions.type === "triangle") {
-      style.points = 3;
-      style.angle = 0;
-    } else if (vectorOptions.type === "pentagon") {
-      style.points = 5;
-      style.angle = 0;
-    } else if (vectorOptions.type === "star") {
-      style.points = 5;
-      style.angle = 0;
-      style.radius2 =
-        typeof style.radius === "number" ? style.radius / 2 : undefined;
-    } else if (vectorOptions.type === "cross") {
-      style.points = 4;
-      style.angle = 0;
-      style.radius2 = 0;
-    } else if (vectorOptions.type === "hexagon") {
-      style.points = 6;
-      style.angle = 0;
+    const geometry = SHAPE_GEOMETRY[vectorOptions.type];
+    if (geometry) {
+      style.points = geometry.points;
+      style.angle = geometry.angle;
+      if (geometry.radius2Ratio !== undefined) {
+        style.radius2 =
+          (typeof style.radius === "number" ? style.radius : 0) *
+          geometry.radius2Ratio;
+      }
     } else {
       log.error({
         title: "getOlImageStyleForShape",

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { Dimension } from "@swissgeo/dimension";
 import type { DatasetLayer, LayerInfo } from "@swissgeo/layers";
-import type { GeoJSONLayer, Layer as MapLayer } from "@swissgeo/map";
+import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
 
+import type { GeoJsonLayerData } from "@/components/map/datamapping/useGeoJsonData";
 /**
  * Dataset Layer Converter Container
  *
@@ -25,11 +26,6 @@ import { useDimensionsStore } from "@swissgeo/dimension";
  *   and the parent is informed about the changes
  */
 import type { WMSLayerData } from "@/components/map/datamapping/useOgcWmsData";
-
-type GeoJsonLayerData = Pick<
-  GeoJSONLayer,
-  "geoJsonData" | "geoJsonStyle" | "mapLibreStyle" | "mapLibreIcons"
->;
 
 import useDatasetLocaleRefresh from "@/components/map/datamapping/useDatasetLocaleRefresh";
 import { useGenericOgcData } from "@/components/map/datamapping/useGenericOgcData";
