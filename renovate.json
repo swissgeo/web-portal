@@ -3,6 +3,13 @@
   "extends": ["github>swissgeo/.github:renovate-preset"],
   "reviewers": ["schtibe", "keetraxx"],
   "baseBranchPatterns": ["develop"],
+  "packageRules": [
+    {
+      "description": "Do not update the packageManager field in package.json files",
+      "matchDepTypes": ["packageManager"],
+      "enabled": false
+    }
+  ],
   "postUpgradeTasks": {
     "commands": ["pnpm install --lockfile-only"],
     "fileFilters": ["pnpm-lock.yaml"],
