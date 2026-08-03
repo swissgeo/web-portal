@@ -39,7 +39,9 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH;
 </script>
 
 <template>
-  <div class="absolute top-0 left-0 flex h-screen w-auto min-w-12 shadow-lg">
+  <div
+    class="absolute top-0 left-0 flex h-[calc(100vh-var(--ui-header-height))] w-auto min-w-12 shadow-lg"
+  >
     <div class="flex flex-col">
       <div class="flex shrink-0 justify-center bg-white">
         <LogoPic

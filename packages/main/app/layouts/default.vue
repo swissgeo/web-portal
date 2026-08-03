@@ -49,31 +49,34 @@ async function onSearchResultSelected(result: SearchResult) {
 </script>
 
 <template>
-  <main ref="main" class="h-screen font-sans">
-    <div class="relative h-full">
-      <SideBar
-        v-if="!isMapFullscreenMode"
-        class="z-2"
-        @search-result-selected="onSearchResultSelected"
-        @reset-app="resetApp"
-        :mapLayers="mapLayers"
-      >
-        <template #bottom-controls>
-          <div class="pointer-events-auto" v-if="!isMapFullscreenMode">
-            <SidebarLanguageSwitcherButton />
-          </div>
-        </template>
-      </SideBar>
-      <div
-        class="h-full w-full"
-        :class="isMapFullscreenMode ? 'pl-0' : 'pl-20'"
-      >
-        <slot />
+  <Topbar v-if="!isMapFullscreenMode" />
+  <UMain>
+    <main ref="main" class="h-full font-sans">
+      <div class="relative h-full">
+        <SideBar
+          v-if="!isMapFullscreenMode"
+          class="z-2"
+          @search-result-selected="onSearchResultSelected"
+          @reset-app="resetApp"
+          :mapLayers="mapLayers"
+        >
+          <template #bottom-controls>
+            <div class="pointer-events-auto" v-if="!isMapFullscreenMode">
+              <SidebarLanguageSwitcherButton />
+            </div>
+          </template>
+        </SideBar>
+        <div
+          class="h-full w-full"
+          :class="isMapFullscreenMode ? 'pl-0' : 'pl-20'"
+        >
+          <slot />
+        </div>
+        <DatasetPanel
+          v-if="!isMapFullscreenMode"
+          :detail-page-path="datasetDetailPath"
+        />
       </div>
-      <DatasetPanel
-        v-if="!isMapFullscreenMode"
-        :detail-page-path="datasetDetailPath"
-      />
-    </div>
-  </main>
+    </main>
+  </UMain>
 </template>
