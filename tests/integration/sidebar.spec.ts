@@ -6,7 +6,7 @@ import {
   cleanupExternalRequestMocks,
 } from "./setup";
 
-test.describe("sidebar", () => {
+test.describe("topbar search", () => {
   test.beforeEach(async ({ page }) => {
     await mockExternalRequests(page).mockAll();
     await page.goto("/de/map");
@@ -19,29 +19,26 @@ test.describe("sidebar", () => {
     await cleanupExternalRequestMocks(page);
   });
 
-  test("clicking the search tab reveals the search input", async ({ page }) => {
-    const searchTab = page.getByRole("button", { name: "Suche" });
-    await searchTab.click();
-
-    const searchInput = page.getByPlaceholder(
-      "Ort, Layer oder Koordinaten suchen...",
-    );
+  test("search input is visible in the topbar", async ({ page }) => {
+    const searchInput = page.getByTestId("topbar-search-input");
     await expect(searchInput).toBeVisible();
-    await searchInput.fill("Bern");
-    await expect(searchInput).toHaveValue("Bern");
   });
 
-  test("sidebar tabs switch between search and layers", async ({ page }) => {
-    const searchTab = page.getByRole("button", { name: "Suche" });
-    const layerTab = page.getByRole("button", { name: "Aktive Ebenen" });
-    const searchInput = page.getByPlaceholder(
-      "Ort, Layer oder Koordinaten suchen...",
-    );
+  test("typing in search input opens popover with results", async ({ page }) => {
+    const searchInput = page.getByTestId("topbar-search-input").locator("input");
+    await searchInput.fill("Bern");
 
-    await searchTab.click();
-    await expect(searchInput).toBeVisible();
+    const results = page.getByTestId("search-results");
+    await expect(results).toBeVisible({ timeout: 10_000 });
+  });
 
-    await layerTab.click();
-    await expect(searchInput).not.toBeVisible();
+  test("clear button clears the search", async ({ page }) => {
+    const searchInput = page.getByTestId("topbar-search-input").locator("input");
+    await searchInput.fill("Bern");
+
+    const clearButton = page.getByRole("button", { name: "Clear search" });
+    await clearButton.click();
+
+    await expect(searchInput).toHaveValue("");
   });
 });

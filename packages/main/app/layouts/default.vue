@@ -50,14 +50,17 @@ async function onSearchResultSelected(result: SearchResult) {
 
 <template>
   <div class="flex h-screen flex-col">
-    <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
+    <Topbar
+      v-if="!isMapFullscreenMode"
+      @reset-app="resetApp"
+      @search-result-selected="onSearchResultSelected"
+    />
     <UMain as="div" class="min-h-0 flex-1">
       <main ref="main" class="h-full font-sans">
         <div class="relative h-full">
           <SideBar
             v-if="!isMapFullscreenMode"
             class="z-2"
-            @search-result-selected="onSearchResultSelected"
             :mapLayers="mapLayers"
           >
           </SideBar>

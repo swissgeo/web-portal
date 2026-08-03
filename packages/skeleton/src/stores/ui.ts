@@ -8,7 +8,6 @@ export const SIDEBAR_CONTENT_WIDTH = 400;
 export enum SidebarType {
   LAYER_CART = "layerCart",
   GEOCATALOG_TREE = "geocatalogTree",
-  SEARCH = "search",
   CONTENT = "content",
 }
 
@@ -24,10 +23,6 @@ export const useSidebarStore = defineStore("sidebar", () => {
     isSidebarOpen.value
       ? SIDEBAR_ICON_WIDTH + SIDEBAR_CONTENT_WIDTH
       : SIDEBAR_ICON_WIDTH,
-  );
-
-  const isSearchVisible = computed(
-    () => currentSidebar.value === SidebarType.SEARCH,
   );
 
   const isContentSidebarVisible = computed(
@@ -56,7 +51,6 @@ export const useSidebarStore = defineStore("sidebar", () => {
     isWelcomeOverlayVisible,
     isSidebarOpen,
     sidebarWidth,
-    isSearchVisible,
     isLayerCartVisible,
     isContentSidebarVisible,
 

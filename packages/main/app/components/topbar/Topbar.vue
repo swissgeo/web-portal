@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
+import type { SearchResult } from "@swissgeo/search";
 
 import { LogoPic } from "@swissgeo/skeleton";
 
 const emit = defineEmits<{
   "reset-app": [void];
+  "search-result-selected": [result: SearchResult];
 }>();
 
 const items = computed<NavigationMenuItem[]>(() => [
@@ -105,12 +107,7 @@ function resetApp() {
   <UHeader :ui="{ container: 'max-w-full' }">
     <template #left>
       <LogoPic class="h-6 w-auto" @logo-click="resetApp" />
-      <UInput
-        icon="i-lucide-search"
-        size="md"
-        variant="outline"
-        placeholder="Search..."
-      />
+      <TopbarSearch @result-selected="emit('search-result-selected', $event)" />
     </template>
 
     <template #right>

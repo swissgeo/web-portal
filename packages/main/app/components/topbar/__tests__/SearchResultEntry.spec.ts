@@ -74,7 +74,6 @@ describe("Search Result Entries", () => {
     await items[initialIndex]!.trigger("keydown", { key: keyPressed });
     expect(document.activeElement).toBe(items[finalIndex]!.element);
   });
-  //                 :data-testid="`icon-${entry.resultType}`"
 
   it.skip.each`
     description                                              | indexTested | searchResultTypeExpected                        | searchResultTypesNotExpected
