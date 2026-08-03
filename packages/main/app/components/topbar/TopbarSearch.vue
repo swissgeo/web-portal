@@ -140,7 +140,9 @@ function clearSearch() {
             />
           </div>
           <div
-            v-else-if="searchStore.query.length >= 2 && !searchStore.isSearching"
+            v-else-if="
+              searchStore.query.length >= 2 && !searchStore.isSearching
+            "
             class="text-surface-500 p-4 text-center"
           >
             {{ $t("search.no_results", "No results found") }}

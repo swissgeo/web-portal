@@ -24,8 +24,12 @@ test.describe("topbar search", () => {
     await expect(searchInput).toBeVisible();
   });
 
-  test("typing in search input opens popover with results", async ({ page }) => {
-    const searchInput = page.getByTestId("topbar-search-input").locator("input");
+  test("typing in search input opens popover with results", async ({
+    page,
+  }) => {
+    const searchInput = page
+      .getByTestId("topbar-search-input")
+      .locator("input");
     await searchInput.fill("Bern");
 
     const results = page.getByTestId("search-results");
@@ -33,7 +37,9 @@ test.describe("topbar search", () => {
   });
 
   test("clear button clears the search", async ({ page }) => {
-    const searchInput = page.getByTestId("topbar-search-input").locator("input");
+    const searchInput = page
+      .getByTestId("topbar-search-input")
+      .locator("input");
     await searchInput.fill("Bern");
 
     const clearButton = page.getByRole("button", { name: "Clear search" });
