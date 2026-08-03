@@ -6,8 +6,10 @@ import type { SearchResult } from "@swissgeo/search";
 import { SearchResultTypesEnum } from "@swissgeo/search";
 import { useDatasetPanelStore } from "@swissgeo/skeleton";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 const datasetPanelStore = useDatasetPanelStore();
+const { t } = useI18n();
 
 const { index, entry } = defineProps<{
   index: number;
@@ -117,8 +119,8 @@ defineExpose({
     <UButton
       v-if="entry.resultType === SearchResultTypesEnum.layer"
       :data-testid="`search-result-info-${index}`"
-      :aria-label="$t('search.viewDataset')"
-      :title="$t('search.viewDataset')"
+      :aria-label="t('search.viewDataset')"
+      :title="t('search.viewDataset')"
       icon="i-lucide-info"
       color="neutral"
       variant="ghost"

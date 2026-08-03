@@ -1,109 +1,185 @@
 import type { SearchResult } from "@swissgeo/search";
 
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { SearchResultTypesEnum } from "@swissgeo/search";
 import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import SearchResultEntry from "../SearchResultEntry.vue";
 
-describe("Search Result Entries", () => {
+mockNuxtImport("useI18n", () => {
+  return () => ({
+    t: vi.fn((key: string) => key),
+  });
+});
+
+vi.mock("@swissgeo/skeleton", () => ({
+  useDatasetPanelStore: vi.fn(() => ({
+    openDatasetPanel: vi.fn(),
+  })),
+}));
+
+const UIconStub = {
+  template: "<span :data-testid=\"$attrs['data-testid']\" />",
+  inheritAttrs: false,
+};
+
+const UButtonStub = {
+  template: "<button :data-testid=\"$attrs['data-testid']\" />",
+  inheritAttrs: false,
+};
+
+describe("SearchResultEntry", () => {
   const entries: SearchResult[] = [
     {
       resultType: SearchResultTypesEnum.location,
       id: "id-0",
-      title: "Title 0",
+      title: "Location Title",
+      description: "Location Description",
       sanitizedTitle: "Sanitized 0",
-      description: "Description 0",
     },
     {
       resultType: SearchResultTypesEnum.feature,
       id: "id-1",
-      title: "Title 1",
+      title: "Feature Title",
+      description: "Feature Description",
       sanitizedTitle: "Sanitized 1",
-      description: "Description 1",
     },
     {
       resultType: SearchResultTypesEnum.layer,
       id: "id-2",
-      title: "Title 2",
+      title: "Layer Title",
+      description: "Layer Description",
       sanitizedTitle: "Sanitized 2",
-      description: "Description 2",
     },
   ];
 
-  function mountAndCreateList() {
-    return mount(
-      {
-        components: { SearchResultEntry },
-        template: `
-          <ul>
-            <SearchResultEntry
-              v-for="(entry, index) in entries"
-              :key="entry.id"
-              :entry="entry"
-              :index="index"
-            />
-          </ul>
-        `,
-        data() {
-          return { entries };
-        },
+  function mountEntry(entry: SearchResult, index = 0) {
+    return mount(SearchResultEntry, {
+      props: { entry, index },
+      global: {
+        stubs: { UIcon: UIconStub, UButton: UButtonStub },
       },
-      { attachTo: document.body },
-    );
+      attachTo: document.body,
+    });
   }
 
-  it.skip.each`
-    description                                                                                       | initialIndex | finalIndex | keyPressed
-    ${'Navigate to the top of the list when in focus and the "home" key is pressed'}                  | ${2}         | ${0}       | ${"Home"}
-    ${'Navigate to the bottom of the list when in focus and the "end" key is pressed'}                | ${0}         | ${2}       | ${"End"}
-    ${'Navigate to the previous element of the list when in focus and the "arrow up" key is pressed'} | ${2}         | ${1}       | ${"ArrowUp"}
-    ${'Navigate to the next element of the list when in focus and the "arrow down" key is pressed'}   | ${1}         | ${2}       | ${"ArrowDown"}
-    ${'Stays at the bottom of the list when in focus and the "arrow down" key is pressed'}            | ${2}         | ${2}       | ${"ArrowDown"}
-    ${'Stays at the top of the list when in focus and the "arrow up" key is pressed'}                 | ${0}         | ${0}       | ${"ArrowUp"}
-  `("$description", async ({ _, initialIndex, finalIndex, keyPressed }) => {
-    const wrapper = mountAndCreateList();
-
-    const items = wrapper.findAll('[data-testid^="search-result-entry"]');
-    expect(items).to.have.length(3);
-    expect(items[0]!.exists()).toBe(true);
-    expect(items[1]!.exists()).toBe(true);
-    expect(items[2]!.exists()).toBe(true);
-    (items[initialIndex]!.element as HTMLElement).focus();
-
-    await items[initialIndex]!.trigger("keydown", { key: keyPressed });
-    expect(document.activeElement).toBe(items[finalIndex]!.element);
-  });
-
-  it.skip.each`
-    description                                              | indexTested | searchResultTypeExpected                        | searchResultTypesNotExpected
-    ${"In a location entry, we only find the location icon"} | ${0}        | ${SearchResultTypesEnum.location.toLowerCase()} | ${[SearchResultTypesEnum.feature.toLowerCase(), SearchResultTypesEnum.layer.toLowerCase()]}
-    ${"In a feature entry, we only find the feature icon"}   | ${1}        | ${SearchResultTypesEnum.feature.toLowerCase()}  | ${[SearchResultTypesEnum.location.toLowerCase(), SearchResultTypesEnum.layer.toLowerCase()]}
-    ${"In a layer entry, we only find the layers icon"}      | ${2}        | ${SearchResultTypesEnum.layer.toLowerCase()}    | ${[SearchResultTypesEnum.feature.toLowerCase(), SearchResultTypesEnum.location.toLowerCase()]}
-  `(
-    "$description",
-    ({
-      _,
-      indexTested,
-      searchResultTypeExpected,
-      searchResultTypesNotExpected,
-    }) => {
-      const wrapper = mountAndCreateList();
+  describe("rendering", () => {
+    it("renders location entry with correct icon", () => {
+      const wrapper = mountEntry(entries[0]!);
 
       const item = wrapper.find(
-        `[data-testid^="search-result-entry-${searchResultTypeExpected}-${indexTested}"`,
+        '[data-testid="search-result-entry-location-0"]',
       );
       expect(item.exists()).toBe(true);
-      const icon = item.find(
-        `[data-testid^="icon-${searchResultTypeExpected}"`,
-      );
-      expect(icon.exists()).toBe(true);
-      searchResultTypesNotExpected.forEach((nonPresentType: string) => {
-        const nonExist = item.find(`[data-testid^="icon-${nonPresentType}"`);
-        expect(nonExist.exists()).toBe(false);
-      });
-    },
-  );
-});
 
-describe.skip("Visible elements", () => {});
+      const icon = wrapper.find('[data-testid="icon-location"]');
+      expect(icon.exists()).toBe(true);
+
+      wrapper.unmount();
+    });
+
+    it("renders feature entry with correct icon", () => {
+      const wrapper = mountEntry(entries[1]!, 1);
+
+      const icon = wrapper.find('[data-testid="icon-feature"]');
+      expect(icon.exists()).toBe(true);
+
+      wrapper.unmount();
+    });
+
+    it("renders layer entry with info button", () => {
+      const wrapper = mountEntry(entries[2]!, 2);
+
+      const icon = wrapper.find('[data-testid="icon-layer"]');
+      expect(icon.exists()).toBe(true);
+
+      const infoButton = wrapper.find('[data-testid="search-result-info-2"]');
+      expect(infoButton.exists()).toBe(true);
+
+      wrapper.unmount();
+    });
+
+    it("does not show info button for location entries", () => {
+      const wrapper = mountEntry(entries[0]!);
+
+      const infoButton = wrapper.find('[data-testid^="search-result-info-"]');
+      expect(infoButton.exists()).toBe(false);
+
+      wrapper.unmount();
+    });
+
+    it("renders title as HTML", () => {
+      const wrapper = mountEntry(entries[0]!);
+
+      const title = wrapper.find(".min-w-0");
+      expect(title.html()).toContain("Location Title");
+
+      wrapper.unmount();
+    });
+  });
+
+  describe("click handling", () => {
+    it("emits select event when clicked", async () => {
+      const wrapper = mountEntry(entries[0]!);
+
+      await wrapper.find("li").trigger("click");
+
+      expect(wrapper.emitted("select")).toHaveLength(1);
+
+      wrapper.unmount();
+    });
+
+    it("emits select event on enter keyup", async () => {
+      const wrapper = mountEntry(entries[0]!);
+
+      await wrapper.find("li").trigger("keyup.enter");
+
+      expect(wrapper.emitted("select")).toHaveLength(1);
+
+      wrapper.unmount();
+    });
+  });
+
+  describe("keyboard navigation", () => {
+    it("emits firstEntryReached when arrow up on first item", async () => {
+      const wrapper = mountEntry(entries[0]!, 0);
+
+      await wrapper.find("li").trigger("keydown.up");
+
+      expect(wrapper.emitted("firstEntryReached")).toHaveLength(1);
+
+      wrapper.unmount();
+    });
+
+    it("emits lastEntryReached when arrow down on last item", async () => {
+      const wrapper = mountEntry(entries[2]!, 2);
+
+      await wrapper.find("li").trigger("keydown.down");
+
+      expect(wrapper.emitted("lastEntryReached")).toHaveLength(1);
+
+      wrapper.unmount();
+    });
+  });
+
+  describe("tabindex", () => {
+    it("has tabindex 0 for first item", () => {
+      const wrapper = mountEntry(entries[0]!, 0);
+
+      const li = wrapper.find("li");
+      expect(li.attributes("tabindex")).toBe("0");
+
+      wrapper.unmount();
+    });
+
+    it("has tabindex -1 for non-first items", () => {
+      const wrapper = mountEntry(entries[1]!, 1);
+
+      const li = wrapper.find("li");
+      expect(li.attributes("tabindex")).toBe("-1");
+
+      wrapper.unmount();
+    });
+  });
+});
