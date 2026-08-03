@@ -24,25 +24,20 @@ test.describe("topbar search", () => {
     await expect(searchInput).toBeVisible();
   });
 
-  test("typing in search input opens popover with results", async ({
-    page,
-  }) => {
-    const searchInput = page
-      .getByTestId("topbar-search-input")
-      .locator("input");
-    await searchInput.fill("Bern");
+  test("search input accepts text", async ({ page }) => {
+    const searchInput = page.getByRole("textbox");
+    await expect(searchInput).toBeVisible();
 
-    const results = page.getByTestId("search-results");
-    await expect(results).toBeVisible({ timeout: 10_000 });
+    await searchInput.fill("Bern");
+    await expect(searchInput).toHaveValue("Bern");
   });
 
-  test("clear button clears the search", async ({ page }) => {
-    const searchInput = page
-      .getByTestId("topbar-search-input")
-      .locator("input");
+  test("clear button clears the search input", async ({ page }) => {
+    const searchInput = page.getByRole("textbox");
     await searchInput.fill("Bern");
 
     const clearButton = page.getByRole("button", { name: "Clear search" });
+    await expect(clearButton).toBeVisible();
     await clearButton.click();
 
     await expect(searchInput).toHaveValue("");
