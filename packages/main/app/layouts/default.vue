@@ -50,7 +50,7 @@ async function onSearchResultSelected(result: SearchResult) {
 
 <template>
   <Topbar v-if="!isMapFullscreenMode" />
-  <UMain>
+  <UMain as="div">
     <main ref="main" class="h-full font-sans">
       <div class="relative h-full">
         <SideBar
