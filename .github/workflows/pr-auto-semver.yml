@@ -1,3 +1,5 @@
+# WARNING this file is managed by terraform and cannot be edited manually, see
+# swissgeo/infra-terraform//github/swissgeo/modules/github-workflows-semver/main.tf
 name: on-pr
 
 on:
@@ -7,7 +9,9 @@ on:
       - reopened
       - synchronize
       - edited
+      - labeled
+      - unlabeled
 
 jobs:
-  pr-edit:
+  semver:
     uses: swissgeo/.github/.github/workflows/pr-auto-semver.yml@main
