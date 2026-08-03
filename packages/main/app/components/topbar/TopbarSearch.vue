@@ -27,14 +27,14 @@ const query = computed({
 
 const tabs = computed(() => [
   {
-    label: t("search.karte_tab", "Karte"),
+    label: t("search.map_tab"),
     badge: searchStore.results.length || undefined,
-    slot: "karte" as const,
+    slot: "map" as const,
   },
   {
-    label: t("search.inhaltsseiten_tab", "Inhaltsseiten"),
+    label: t("search.content_pages_tab"),
     badge: 0,
-    slot: "inhaltsseiten" as const,
+    slot: "contentPages" as const,
   },
 ]);
 
@@ -124,7 +124,7 @@ function clearSearch() {
 
     <template #content>
       <UTabs :items="tabs" size="sm">
-        <template #karte>
+        <template #map>
           <div
             v-if="searchStore.hasResults"
             class="max-h-96 overflow-y-auto"
@@ -150,7 +150,7 @@ function clearSearch() {
           </div>
         </template>
 
-        <template #inhaltsseiten>
+        <template #contentPages>
           <div class="text-surface-500 p-4 text-center">
             {{ $t("search.no_results", "No results found") }}
           </div>
