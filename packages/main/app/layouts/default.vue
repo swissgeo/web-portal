@@ -60,11 +60,6 @@ async function onSearchResultSelected(result: SearchResult) {
           @reset-app="resetApp"
           :mapLayers="mapLayers"
         >
-          <template #bottom-controls>
-            <div class="pointer-events-auto" v-if="!isMapFullscreenMode">
-              <SidebarLanguageSwitcherButton />
-            </div>
-          </template>
         </SideBar>
         <div
           class="h-full w-full"

@@ -108,6 +108,11 @@ const items = computed<NavigationMenuItem[]>(() => [
     <template #right>
       <UNavigationMenu :items="items" content-orientation="vertical" />
       <UButton to="/map"> Karte </UButton>
+      <USeparator class="mx-4 h-8" orientation="vertical" />
+      <UButton icon="i-lucide-log-in" color="neutral" variant="outline"
+        >Anmelden</UButton
+      >
+      <TopbarLanguageSwitcherButton />
     </template>
   </UHeader>
 </template>
