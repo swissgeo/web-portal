@@ -3,6 +3,10 @@ import type { NavigationMenuItem } from "@nuxt/ui";
 
 import { LogoPic } from "@swissgeo/skeleton";
 
+const emit = defineEmits<{
+  "reset-app": [void];
+}>();
+
 const items = computed<NavigationMenuItem[]>(() => [
   {
     label: "Startseite",
@@ -91,12 +95,16 @@ const items = computed<NavigationMenuItem[]>(() => [
     ],
   },
 ]);
+
+function resetApp() {
+  emit("reset-app");
+}
 </script>
 
 <template>
   <UHeader :ui="{ container: 'max-w-full' }">
     <template #left>
-      <LogoPic class="h-6 w-auto" />
+      <LogoPic class="h-6 w-auto" @logo-click="resetApp" />
       <UInput
         icon="i-lucide-search"
         size="md"

@@ -49,7 +49,7 @@ async function onSearchResultSelected(result: SearchResult) {
 </script>
 
 <template>
-  <Topbar v-if="!isMapFullscreenMode" />
+  <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
   <UMain as="div">
     <main ref="main" class="h-full font-sans">
       <div class="relative h-full">
@@ -57,7 +57,6 @@ async function onSearchResultSelected(result: SearchResult) {
           v-if="!isMapFullscreenMode"
           class="z-2"
           @search-result-selected="onSearchResultSelected"
-          @reset-app="resetApp"
           :mapLayers="mapLayers"
         >
         </SideBar>

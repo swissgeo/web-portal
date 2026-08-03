@@ -3,7 +3,6 @@ import type { Layer as MapLayer } from "@swissgeo/map";
 import type { SearchResult } from "@swissgeo/search";
 
 import {
-  LogoPic,
   useSidebarStore,
   SidebarType,
   SIDEBAR_CONTENT_WIDTH,
@@ -26,10 +25,6 @@ defineSlots<{
   "bottom-controls"?: () => unknown;
 }>();
 
-function resetApp() {
-  emit("reset-app");
-}
-
 function handleSearchResultSelected(result: SearchResult) {
   emit("search-result-selected", result);
 }
@@ -43,16 +38,7 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH;
     class="absolute top-0 left-0 flex h-[calc(100vh-var(--ui-header-height))] w-auto min-w-12 shadow-lg"
   >
     <div class="flex flex-col">
-      <div class="flex shrink-0 justify-center bg-white">
-        <LogoPic
-          class="h-12"
-          @logo-click="resetApp"
-          :condensed="!uiStore.isSidebarOpen"
-        />
-      </div>
-      <div
-        class="flex min-h-0 w-full flex-1 flex-row border-t border-neutral-100 p-0"
-      >
+      <div class="flex min-h-0 w-full flex-1 flex-row border-neutral-100 p-0">
         <!-- First column -->
         <div
           class="flex h-full min-w-16 flex-col items-center justify-between pt-4"
