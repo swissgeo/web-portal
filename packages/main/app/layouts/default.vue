@@ -49,28 +49,30 @@ async function onSearchResultSelected(result: SearchResult) {
 </script>
 
 <template>
-  <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
-  <UMain as="div">
-    <main ref="main" class="h-full font-sans">
-      <div class="relative h-full">
-        <SideBar
-          v-if="!isMapFullscreenMode"
-          class="z-2"
-          @search-result-selected="onSearchResultSelected"
-          :mapLayers="mapLayers"
-        >
-        </SideBar>
-        <div
-          class="h-full w-full"
-          :class="isMapFullscreenMode ? 'pl-0' : 'pl-20'"
-        >
-          <slot />
+  <div class="flex h-screen flex-col">
+    <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
+    <UMain as="div" class="min-h-0 flex-1">
+      <main ref="main" class="h-full font-sans">
+        <div class="relative h-full">
+          <SideBar
+            v-if="!isMapFullscreenMode"
+            class="z-2"
+            @search-result-selected="onSearchResultSelected"
+            :mapLayers="mapLayers"
+          >
+          </SideBar>
+          <div
+            class="h-full w-full"
+            :class="isMapFullscreenMode ? 'pl-0' : 'pl-20'"
+          >
+            <slot />
+          </div>
+          <DatasetPanel
+            v-if="!isMapFullscreenMode"
+            :detail-page-path="datasetDetailPath"
+          />
         </div>
-        <DatasetPanel
-          v-if="!isMapFullscreenMode"
-          :detail-page-path="datasetDetailPath"
-        />
-      </div>
-    </main>
-  </UMain>
+      </main>
+    </UMain>
+  </div>
 </template>
