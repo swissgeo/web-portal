@@ -1,6 +1,8 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import profileFixture from "./fixtures/profile.json";
+
 const readBodyMock = vi.fn();
 const fetchMock = vi.fn();
 
@@ -27,34 +29,14 @@ afterAll(() => {
 describe("elevation profile request handling", () => {
   it("formats upstream data as profile points and metadata", async () => {
     const coordinates = [
-      [2_600_000, 1_200_000],
-      [2_600_100, 1_200_000],
-      [2_600_220, 1_200_000],
+      [2_704_280.989, 1_170_235.988],
+      [2_704_285.137, 1_170_234.128],
     ];
     readBodyMock.mockResolvedValue({
       geojson: { type: "LineString", coordinates },
       sr: 2056,
     });
-    fetchMock.mockResolvedValue([
-      {
-        alts: { COMB: 500 },
-        dist: 0,
-        easting: 2_600_000,
-        northing: 1_200_000,
-      },
-      {
-        alts: { COMB: 520 },
-        dist: 100,
-        easting: 2_600_100,
-        northing: 1_200_000,
-      },
-      {
-        alts: { COMB: 510 },
-        dist: 220,
-        easting: 2_600_220,
-        northing: 1_200_000,
-      },
-    ]);
+    fetchMock.mockResolvedValue(profileFixture);
 
     const handler = await handlerPromise;
     const result = await handler({} as Parameters<typeof handler>[0]);
@@ -71,34 +53,40 @@ describe("elevation profile request handling", () => {
     expect(result.points).toEqual([
       {
         dist: 0,
-        coordinate: [2_600_000, 1_200_000],
-        elevation: 500,
+        coordinate: [2_704_280.989, 1_170_235.988],
+        elevation: 1341.7,
         hasElevationData: true,
       },
       {
-        dist: 100,
-        coordinate: [2_600_100, 1_200_000],
-        elevation: 520,
+        dist: 2.5,
+        coordinate: [2_704_283.24, 1_170_234.979],
+        elevation: 1341.8,
         hasElevationData: true,
       },
       {
-        dist: 220,
-        coordinate: [2_600_220, 1_200_000],
-        elevation: 510,
+        dist: 3,
+        coordinate: [2_704_283.769, 1_170_234.741],
+        elevation: 1341.8,
+        hasElevationData: true,
+      },
+      {
+        dist: 4.5,
+        coordinate: [2_704_285.137, 1_170_234.128],
+        elevation: 1341.7,
         hasElevationData: true,
       },
     ]);
     expect(result.metadata).toMatchObject({
-      totalLinearDist: 220,
-      minElevation: 500,
-      maxElevation: 520,
-      elevationDifference: 10,
-      totalAscent: 20,
-      totalDescent: 10,
+      totalLinearDist: 4.5,
+      minElevation: 1341.7,
+      maxElevation: 1341.8,
+      elevationDifference: 0,
       hasElevationData: true,
       hasDistanceData: true,
       dataModel: "swissALTI3D/COMB",
     });
-    expect(result.metadata.slopeDistance).toBeCloseTo(222.396336, 6);
+    expect(result.metadata.totalAscent).toBeCloseTo(0.1, 6);
+    expect(result.metadata.totalDescent).toBeCloseTo(0.1, 6);
+    expect(result.metadata.slopeDistance).toBeCloseTo(4.505329, 6);
   });
 });
