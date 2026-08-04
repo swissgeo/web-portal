@@ -1,8 +1,8 @@
-import { LV95, registerProj4, constants } from "@swissgeo/coordinates";
+import type { default as olMap } from "ol/Map";
+
+import { LV95, registerProj4 } from "@swissgeo/coordinates";
 import { flushPromises } from "@vue/test-utils";
 import { View } from "ol";
-import { defaults } from "ol/interaction";
-import Map from "ol/Map";
 import { register } from "ol/proj/proj4";
 import proj4 from "proj4";
 import { describe, expect, it, vi } from "vitest";
@@ -10,9 +10,7 @@ import { createApp } from "vue";
 
 import { DEFAULT_PROJECTION } from "@/stores/position";
 
-import useViewBasedOnProjection, {
-  VIEW_MIN_RESOLUTION,
-} from "../useViewBasedOnProjection.composable";
+import createOlMap from "../createOlMap";
 
 registerProj4(proj4);
 register(proj4);
@@ -52,7 +50,7 @@ function withSetup<T>(composable: () => T): [T, ReturnType<typeof createApp>] {
   return [result, app];
 }
 
-async function doubleClick(olMap: Map): Promise<void> {
+async function doubleClick(olMap: olMap): Promise<void> {
   const viewport = olMap.getViewport();
   // simulating a double click
   const pointerEventInit = {
@@ -72,18 +70,25 @@ async function doubleClick(olMap: Map): Promise<void> {
   await flushPromises();
 }
 
-describe("useViewBasedOnProjection", () => {
-  it("sets a view to the given openlayers map", async () => {
-    const olMap: Map = new Map();
-    expect(olMap.getView().getCenter()).toBe(undefined);
-
-    const [, app] = withSetup(() => useViewBasedOnProjection(olMap));
+describe("createOlMap", () => {
+  it("creates a map with a view", async () => {
+    const [result, app] = withSetup(() => createOlMap());
     await flushPromises();
-    olMap.getView();
-    expect(olMap.getView()).toBeInstanceOf(View);
-    expect(olMap.getView().getCenter()).toEqual(
+
+    expect(result.map.getView()).toBeInstanceOf(View);
+    expect(result.map.getView().getCenter()).toEqual(
       DEFAULT_PROJECTION.bounds.center,
     );
+
+    app.unmount();
+  });
+
+  it("creates a map with zoomOnlyCtrl interactions", async () => {
+    const [result, app] = withSetup(() => createOlMap({ zoomOnlyCtrl: true }));
+    await flushPromises();
+
+    expect(result.map.getView()).toBeInstanceOf(View);
+    expect(result.map.getInteractions().getLength()).toBeGreaterThan(0);
 
     app.unmount();
   });
@@ -93,24 +98,15 @@ describe("useViewBasedOnProjection", () => {
     const container = document.createElement("div");
     document.body.appendChild(container);
 
-    const olMap: Map = new Map({
-      target: container,
-      interactions: defaults(),
-      view: new View({
-        zoom: DEFAULT_PROJECTION.getDefaultZoom(),
-        minResolution: VIEW_MIN_RESOLUTION,
-        rotation: 0,
-        resolutions: constants.LV95_RESOLUTIONS,
-        projection: LV95.epsg,
-        extent: LV95.bounds.flatten,
-        constrainOnlyCenter: true,
-        center: DEFAULT_PROJECTION.bounds.center,
-      }),
+    const [result, app] = withSetup(() => {
+      const { map } = createOlMap();
+      map.setTarget(container);
+      map.setSize([800, 600]);
+      return { map };
     });
-    olMap.setSize([800, 600]);
-
-    const [, app] = withSetup(() => useViewBasedOnProjection(olMap));
     await flushPromises();
+
+    const olMap = result.map;
 
     expect(olMap.getView().getZoom()).toBe(1);
 
@@ -134,5 +130,20 @@ describe("useViewBasedOnProjection", () => {
 
     app.unmount();
     document.body.removeChild(container);
+  });
+
+  it("returns a cleanup function", async () => {
+    const [result, app] = withSetup(() => createOlMap());
+    await flushPromises();
+
+    expect(result.cleanup).toBeInstanceOf(Function);
+
+    const interactionsBefore = result.map.getInteractions().getLength();
+    result.cleanup();
+    const interactionsAfter = result.map.getInteractions().getLength();
+
+    expect(interactionsAfter).toBeLessThan(interactionsBefore);
+
+    app.unmount();
   });
 });

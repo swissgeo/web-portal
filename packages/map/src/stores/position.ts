@@ -1,6 +1,7 @@
 import type { CoordinateSystem, SingleCoordinate } from "@swissgeo/coordinates";
 import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
-import type Map from "ol/Map";
+import type { EventsKey } from "ol/events";
+import type { default as olMap } from "ol/Map";
 
 import {
   LV95,
@@ -10,6 +11,7 @@ import {
 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { isNumber } from "@swissgeo/numbers";
+import { unByKey } from "ol/Observable";
 import { defineStore } from "pinia";
 import proj4 from "proj4";
 import { computed, ref, watch } from "vue";
@@ -30,6 +32,9 @@ const MAX_ZOOM = constants.SWISSTOPO_MAX_ZOOM_LEVEL;
 
 const usePositionStore = defineStore("position", () => {
   const mapStore = useMapStore();
+
+  // Store event listener keys indexed by map's ol_uid
+  const listenerRegistry = new Map<number, EventsKey[]>();
 
   const displayFormat = ref<CoordinateFormat>(DEFAULT_FORMAT);
   const autoRotation = ref(false);
@@ -239,7 +244,7 @@ const usePositionStore = defineStore("position", () => {
       log.debug({
         title: "position store",
         titleColor: LogPreDefinedColor.Red,
-        messages: ["Applying cached zoom", _zoomCache.value],
+        messages: ["Applying cached zoom", [..._zoomCache.value]],
       });
       setZoom(_zoomCache.value.pop(), dispatcher);
     }
@@ -248,7 +253,7 @@ const usePositionStore = defineStore("position", () => {
       log.debug({
         title: "position store",
         titleColor: LogPreDefinedColor.Red,
-        messages: ["Applying cached rotation", _rotationCache.value],
+        messages: ["Applying cached rotation", [..._rotationCache.value]],
       });
       setRotation(_rotationCache.value.pop(), dispatcher);
     }
@@ -257,7 +262,7 @@ const usePositionStore = defineStore("position", () => {
       log.debug({
         title: "position store",
         titleColor: LogPreDefinedColor.Red,
-        messages: ["Applying cached center", _centerCache.value],
+        messages: ["Applying cached center", [..._centerCache.value]],
       });
       setCenter(_centerCache.value.pop(), dispatcher);
     }
@@ -268,21 +273,55 @@ const usePositionStore = defineStore("position", () => {
   // the others could be skipped, but that might be wrong
   // This fixes the problem that the state import already sets values
   // before openlayers is even available
-  const subscribeToMap = (olMap: Map) => {
+  const subscribeToMap = (olMap: olMap) => {
+    // @ts-expect-error ol_uid is not typed in ol/Map.d.ts
+    const mapId = olMap.ol_uid;
+    const listeners: EventsKey[] = [];
+
     if (olMap.getView()) {
       // view already available, apply cache immediately
+      log.debug({
+        title: "position store",
+        titleColor: LogPreDefinedColor.Red,
+        messages: ["View already available, applying cache"],
+      });
       applyCache();
     }
-    olMap.on("change:view", () => {
-      applyCache();
-    });
+
+    listeners.push(
+      olMap.on("change:view", () => {
+        log.debug({
+          title: "position store",
+          titleColor: LogPreDefinedColor.Red,
+          messages: ["View becomes available, applying cache"],
+        });
+        applyCache();
+      }),
+    );
+
+    listenerRegistry.set(mapId, listeners);
+  };
+
+  const unsubscribeFromMap = (olMap: olMap) => {
+    // @ts-expect-error ol_uid is not typed in ol/Map.d.ts
+    const mapId = olMap.ol_uid;
+    const listeners = listenerRegistry.get(mapId);
+
+    if (listeners) {
+      // Remove all listeners using unByKey
+      unByKey(listeners);
+      // Clean up registry
+      listenerRegistry.delete(mapId);
+    }
   };
 
   watch(
     () => mapStore.olMap,
-    (olMap: Map) => {
+    (olMap: olMap, oldMap: olMap | undefined) => {
       if (olMap) {
         subscribeToMap(olMap);
+      } else if (oldMap) {
+        unsubscribeFromMap(oldMap);
       }
     },
     { immediate: true },

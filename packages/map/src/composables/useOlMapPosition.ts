@@ -10,9 +10,6 @@ import { shallowRef, watch } from "vue";
 
 import { useMapStore } from "@/stores/map";
 
-// Store event listener keys indexed by map's ol_uid
-const listenerRegistry = new Map<number, EventsKey[]>();
-
 /**
  * Expose the internal OpenLayers position values to the reactive world of vue
  * by listening to a moveend event and setting those values to the reactive
@@ -23,6 +20,9 @@ export function useOlMapPosition(
   projection: Ref<Pick<CoordinateSystem, "bounds" | "getDefaultZoom">>,
 ) {
   const mapStore = useMapStore();
+
+  // Store event listener keys indexed by map's ol_uid
+  const listenerRegistry = new Map<number, EventsKey[]>();
 
   const center = shallowRef<SingleCoordinate | undefined>(
     projection.value.bounds.center,
