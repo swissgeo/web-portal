@@ -22,7 +22,10 @@ const sortedLayers = computed(() => {
 </script>
 
 <template>
-  <ul data-testid="layer-cart" class="mt-8 flex flex-col gap-4">
+  <ul
+    data-testid="layer-cart"
+    class="mt-8 flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-2"
+  >
     <LayerCartEntry
       v-for="(layer, index) in sortedLayers"
       :key="layer.uuid"

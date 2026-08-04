@@ -93,16 +93,17 @@ function isFromDataSet() {
 </script>
 
 <template>
-  <li class="flex flex-col gap-2">
-    <div class="flex items-center gap-2">
+  <li class="flex min-w-0 flex-col gap-2">
+    <div class="flex min-w-0 items-center gap-1">
       <IconButton
         data-testid="layer-expand-toggle"
+        class="shrink-0"
         :iconName="isExpanded ? 'Chevron-Down' : 'Chevron-Right'"
         :title="isExpanded ? t('layers.collapse') : t('layers.expand')"
         severity="secondary"
         @click="isExpanded = !isExpanded"
       />
-      <div class="flex">
+      <div class="flex shrink-0">
         <IconButton
           :iconName="layer.isVisible ? 'Eye' : 'Eye-Off'"
           @click="toggleVisibility()"
@@ -126,18 +127,18 @@ function isFromDataSet() {
         </div>
       </div>
       <div
-        class="flex-1 overflow-x-hidden text-nowrap"
+        class="min-w-0 flex-1 truncate"
         :title="layer.displayName"
         :class="{ 'text-gray-300': !layer.isVisible }"
       >
         {{ layer.displayName }}
       </div>
-      <div class="flex items-center">
+      <div class="flex shrink-0 items-center">
         <div>
           <select
             v-if="(availableTimes?.length || 0) > 1"
             v-model="currentTime"
-            class="bg-zinc-300"
+            class="max-w-24 bg-zinc-300"
           >
             <option v-for="time in availableTimes" :value="time" :key="time">
               {{ getTimestampName(time) }}
@@ -154,7 +155,7 @@ function isFromDataSet() {
       </div>
     </div>
 
-    <div v-if="isExpanded" class="flex flex-col gap-3 pl-8">
+    <div v-if="isExpanded" class="flex min-w-0 flex-col gap-3 pl-8">
       <div class="flex flex-col gap-1">
         <span class="text-xs font-medium text-gray-600 uppercase">
           {{ t("layers.transparency") }}
