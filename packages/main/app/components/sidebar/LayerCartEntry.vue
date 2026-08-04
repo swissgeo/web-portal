@@ -8,13 +8,17 @@ import {
 } from "@swissgeo/dimension";
 import { useLayerStore } from "@swissgeo/layers";
 import { useDatasetPanelStore, IconButton } from "@swissgeo/skeleton";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
+
+import LayerLegend from "./LayerLegend.vue";
 
 const { layer, layerIndex } = defineProps<{
   layer: MapLayer;
   layerIndex: number;
 }>();
 
+const { t } = useI18n();
 const layerStore = useLayerStore();
 const dimensionsStore = useDimensionsStore();
 // const drawingStore = useDrawingStore();
@@ -23,6 +27,9 @@ const mapViewStore = useMapViewStore();
 const bgLayerModifier = computed(() => (layerStore.backgroundLayer ? 1 : 0));
 
 const layersLength = computed(() => mapViewStore.mapLayers.length);
+
+const isExpanded = ref(false);
+const legends = computed(() => layerStore.getLayerLegends(layer.uuid));
 
 const currentTime = computed({
   get() {
@@ -86,69 +93,84 @@ function isFromDataSet() {
 </script>
 
 <template>
-  <li>
-    <div class="flex">
+  <li class="flex flex-col gap-2">
+    <div class="flex items-center gap-2">
       <IconButton
-        :iconName="layer.isVisible ? 'Eye' : 'Eye-Off'"
-        @click="toggleVisibility()"
+        data-testid="layer-expand-toggle"
+        :iconName="isExpanded ? 'Chevron-Down' : 'Chevron-Right'"
+        :title="isExpanded ? t('layers.collapse') : t('layers.expand')"
         severity="secondary"
+        @click="isExpanded = !isExpanded"
       />
-      <div class="flex flex-col justify-between">
+      <div class="flex">
         <IconButton
-          :disabled="layerIndex === layersLength - bgLayerModifier"
-          iconName="Chevron-Up"
+          :iconName="layer.isVisible ? 'Eye' : 'Eye-Off'"
+          @click="toggleVisibility()"
           severity="secondary"
-          class="h-0.5"
-          @click="moveUp()"
-        ></IconButton>
-        <IconButton
-          :disabled="layerIndex === bgLayerModifier"
-          iconName="Chevron-Down"
-          severity="secondary"
-          class="h-0.5"
-          @click="moveDown()"
-        ></IconButton>
+        />
+        <div class="flex flex-col justify-between">
+          <IconButton
+            :disabled="layerIndex === layersLength - bgLayerModifier"
+            iconName="Chevron-Up"
+            severity="secondary"
+            class="h-0.5"
+            @click="moveUp()"
+          ></IconButton>
+          <IconButton
+            :disabled="layerIndex === bgLayerModifier"
+            iconName="Chevron-Down"
+            severity="secondary"
+            class="h-0.5"
+            @click="moveDown()"
+          ></IconButton>
+        </div>
       </div>
-    </div>
-    <div class="flex-1">
       <div
-        class="overflow-x-hidden text-nowrap"
+        class="flex-1 overflow-x-hidden text-nowrap"
         :title="layer.displayName"
         :class="{ 'text-gray-300': !layer.isVisible }"
       >
         {{ layer.displayName }}
       </div>
-      <div class="mt-2 flex items-center gap-2">
-        <span class="text-xs text-gray-600">Opacity:</span>
-        <USlider
-          :model-value="opacityPercent"
-          @update:model-value="handleOpacityChange"
-          :min="0"
-          :max="100"
-          class="flex-1"
+      <div class="flex items-center">
+        <div>
+          <select
+            v-if="(availableTimes?.length || 0) > 1"
+            v-model="currentTime"
+            class="bg-zinc-300"
+          >
+            <option v-for="time in availableTimes" :value="time" :key="time">
+              {{ getTimestampName(time) }}
+            </option>
+          </select>
+        </div>
+        <IconButton
+          v-if="isFromDataSet()"
+          iconName="Info"
+          severity="secondary"
+          @click="openDatasetPanel"
         />
-        <span class="w-8 text-xs text-gray-600">{{ opacityPercent }}%</span>
+        <IconButton iconName="Trash" @click="removeLayer" />
       </div>
     </div>
-    <div class="flex items-center">
-      <div>
-        <select
-          v-if="(availableTimes?.length || 0) > 1"
-          v-model="currentTime"
-          class="bg-zinc-300"
-        >
-          <option v-for="time in availableTimes" :value="time" :key="time">
-            {{ getTimestampName(time) }}
-          </option>
-        </select>
+
+    <div v-if="isExpanded" class="flex flex-col gap-3 pl-8">
+      <div class="flex flex-col gap-1">
+        <span class="text-xs font-medium text-gray-600 uppercase">
+          {{ t("layers.transparency") }}
+        </span>
+        <div class="flex items-center gap-2">
+          <USlider
+            :model-value="opacityPercent"
+            @update:model-value="handleOpacityChange"
+            :min="0"
+            :max="100"
+            class="flex-1"
+          />
+          <span class="w-8 text-xs text-gray-600">{{ opacityPercent }}%</span>
+        </div>
       </div>
-      <IconButton
-        v-if="isFromDataSet()"
-        iconName="Info"
-        severity="secondary"
-        @click="openDatasetPanel"
-      />
-      <IconButton iconName="Trash" @click="removeLayer" />
+      <LayerLegend :legends="legends" />
     </div>
   </li>
 </template>

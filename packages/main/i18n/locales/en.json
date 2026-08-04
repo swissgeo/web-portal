@@ -299,5 +299,15 @@
     "warningPrintExtentBeyondViewport": "You can lock the center and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.",
     "orientationPortrait": "portrait",
     "orientationLandscape": "landscape"
+  },
+  "layers": {
+    "expand": "Show layer details",
+    "collapse": "Hide layer details",
+    "transparency": "Transparency",
+    "legend": {
+      "title": "Legend",
+      "notAvailable": "No legend available.",
+      "openDocument": "Open legend as document"
+    }
   }
 }

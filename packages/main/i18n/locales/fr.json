@@ -299,5 +299,15 @@
     "warningPrintExtentBeyondViewport": "Vous pouvez verrouiller le centre et le niveau de zoom pour empêcher l'emprise d'impression de sortir du viewport lors des interactions avec la carte.",
     "orientationPortrait": "portrait",
     "orientationLandscape": "paysage"
+  },
+  "layers": {
+    "expand": "Afficher les détails de la couche",
+    "collapse": "Masquer les détails de la couche",
+    "transparency": "Transparence",
+    "legend": {
+      "title": "Légende",
+      "notAvailable": "Aucune légende disponible.",
+      "openDocument": "Ouvrir la légende comme document"
+    }
   }
 }

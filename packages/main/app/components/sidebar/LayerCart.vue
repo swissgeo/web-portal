@@ -25,7 +25,6 @@ const sortedLayers = computed(() => {
   <ul data-testid="layer-cart" class="mt-8 flex flex-col gap-4">
     <LayerCartEntry
       v-for="(layer, index) in sortedLayers"
-      class="flex items-center gap-2"
       :key="layer.uuid"
       :layerIndex="mapLayers.value.length - 1 - index"
       :layer="layer"

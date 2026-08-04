@@ -329,5 +329,15 @@
     "mediaInformation": "Medieninformationen",
     "map": "Karte",
     "login": "Anmelden"
+  },
+  "layers": {
+    "expand": "Ebenendetails anzeigen",
+    "collapse": "Ebenendetails ausblenden",
+    "transparency": "Transparenz",
+    "legend": {
+      "title": "Legende",
+      "notAvailable": "Keine Legende verfügbar.",
+      "openDocument": "Legende als Dokument öffnen"
+    }
   }
 }
