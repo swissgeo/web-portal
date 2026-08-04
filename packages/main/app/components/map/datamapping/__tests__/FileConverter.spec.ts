@@ -108,6 +108,10 @@ describe("FileConverter", () => {
     ["malformed", "{ not valid json"],
     ["not GeoJSON", '{"title":"un JSON standard"}'],
     ["a FeatureCollection without features", '{"type":"FeatureCollection"}'],
+    [
+      "a feature with an unsupported geometry",
+      '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Banana","coordinates":[1,2]}}]}',
+    ],
   ])("emits no update when the GeoJSON data is %s", (_label, data) => {
     const wrapper = mount(FileConverter, {
       props: {

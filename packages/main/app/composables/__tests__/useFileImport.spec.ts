@@ -80,6 +80,10 @@ describe("useFileImport", () => {
       "a FeatureCollection holding non-features",
       '{"type":"FeatureCollection","features":[{"type":"Point"}]}',
     ],
+    [
+      "a feature with an unsupported geometry",
+      '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Banana","coordinates":[1,2]}}]}',
+    ],
   ])("throws on %s and adds no layer", async (_label, content) => {
     const { importFile } = useFileImport();
     const store = useLayerStore();
