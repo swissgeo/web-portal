@@ -24,8 +24,8 @@ afterAll(() => {
   vi.unstubAllGlobals();
 });
 
-describe("POST /api/wpa/v1/elevation/profile", () => {
-  it("returns the elevation profile and its metadata", async () => {
+describe("elevation profile request handling", () => {
+  it("formats upstream data as profile points and metadata", async () => {
     const coordinates = [
       [2_600_000, 1_200_000],
       [2_600_100, 1_200_000],

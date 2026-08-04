@@ -3,7 +3,7 @@ import type { Extent } from "ol/extent";
 
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
 
 import { useMap } from "@/composables/useMap.composable";
@@ -18,8 +18,6 @@ interface ViewState {
 }
 
 async function mountHarness() {
-  setActivePinia(createPinia());
-
   const state: ViewState = {
     center: [2600000, 1200000],
     extent: [2590000, 1190000, 2610000, 1210000],
@@ -60,6 +58,10 @@ async function mountHarness() {
 }
 
 describe("useMap", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
   it("reads the initial view state when the map becomes available", async () => {
     const { mapState, state, view, wrapper } = await mountHarness();
 
