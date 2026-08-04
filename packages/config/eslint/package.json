@@ -26,6 +26,7 @@
     "@eslint/js": "catalog:",
     "@eslint/markdown": "catalog:",
     "@typescript-eslint/utils": "catalog:",
+    "@vitest/eslint-plugin": "catalog:",
     "@vue/eslint-config-prettier": "catalog:",
     "@vue/eslint-config-typescript": "catalog:",
     "eslint-plugin-import": "catalog:",

@@ -2,6 +2,7 @@ import type { FlatConfig } from "@typescript-eslint/utils/ts-eslint";
 
 import jsESLint from "@eslint/js";
 import markdown from "@eslint/markdown";
+import vitest from "@vitest/eslint-plugin";
 import skipFormatting from "@vue/eslint-config-prettier/skip-formatting";
 import {
   defineConfigWithVueTs,
@@ -117,9 +118,13 @@ export const vueConfig: FlatConfig.ConfigArray = defineConfigWithVueTs(
 export const unitTestsConfig: FlatConfig.ConfigArray = [
   {
     files: ["**/*.spec.{js,ts}", "scripts/**.{js,ts}"],
+    plugins: {
+      vitest,
+    },
     rules: {
       "no-console": "off",
       "no-prototype-builtins": "off",
+      "vitest/no-focused-tests": "error",
       ...noUnusedVarsRules,
     },
   },
