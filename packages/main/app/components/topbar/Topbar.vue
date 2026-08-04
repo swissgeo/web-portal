@@ -9,6 +9,8 @@ const emit = defineEmits<{
   "search-result-selected": [result: SearchResult];
 }>();
 
+const localePath = useLocalePath();
+
 const items = computed<NavigationMenuItem[]>(() => [
   {
     label: "Startseite",
@@ -118,7 +120,7 @@ function resetApp() {
           content: 'w-fit',
         }"
       />
-      <UButton to="/map"> Karte </UButton>
+      <UButton :to="localePath('/map')"> Karte </UButton>
       <USeparator class="mx-4 h-8" orientation="vertical" />
       <UButton icon="i-lucide-log-in" color="neutral" variant="outline"
         >Anmelden</UButton
