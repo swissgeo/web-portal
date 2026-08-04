@@ -42,4 +42,37 @@ test.describe("topbar search", () => {
 
     await expect(searchInput).toHaveValue("");
   });
+
+  test("clicking input reopens popover after clicking outside", async ({
+    page,
+  }) => {
+    await page.route("**/search**", (route) =>
+      route.fulfill({
+        status: 200,
+        json: {
+          results: [
+            {
+              id: "bern",
+              title: "Bern",
+              resultType: "LOCATION",
+              coordinate: [2660000, 1190000],
+              zoom: 10,
+            },
+          ],
+        },
+      }),
+    );
+
+    const searchInput = page.getByRole("textbox");
+    await searchInput.fill("Bern");
+
+    const results = page.getByTestId("search-results");
+    await expect(results).toBeVisible({ timeout: 10_000 });
+
+    await page.click("body");
+    await expect(results).not.toBeVisible();
+
+    await searchInput.click();
+    await expect(results).toBeVisible();
+  });
 });

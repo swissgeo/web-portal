@@ -84,6 +84,12 @@ function handleSelect(result: SearchResult) {
   isOpen.value = false;
 }
 
+function handleClick() {
+  if (query.value.length >= 2 && searchStore.hasResults) {
+    isOpen.value = true;
+  }
+}
+
 function clearSearch() {
   searchStore.clearSearch();
   isOpen.value = false;
@@ -99,6 +105,7 @@ function clearSearch() {
   >
     <template #anchor>
       <UInput
+        ref="inputRef"
         v-model="query"
         icon="i-lucide-search"
         :placeholder="$t('search.placeholder')"
@@ -108,6 +115,7 @@ function clearSearch() {
         color="secondary"
         class="w-72"
         data-testid="topbar-search-input"
+        @click="handleClick"
       >
         <template v-if="query" #trailing>
           <UButton
