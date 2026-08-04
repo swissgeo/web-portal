@@ -1,0 +1,37 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "EPSG:2056"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2683304, 1247926]
+      },
+      "properties": {
+        "name": "Test Point",
+        "description": "The same Zurich point as test-drawing.geojson, in LV95"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [2683304, 1247926],
+          [2684043, 1249048],
+          [2684814, 1247947]
+        ]
+      },
+      "properties": {
+        "name": "Test Line",
+        "description": "A test line"
+      }
+    }
+  ]
+}

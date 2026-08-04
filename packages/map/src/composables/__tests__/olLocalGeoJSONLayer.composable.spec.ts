@@ -1,3 +1,5 @@
+import type { FeatureCollection, Point } from "geojson";
+
 import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick, ref } from "vue";
@@ -22,7 +24,7 @@ vi.mock("@swissgeo/log", () => ({
 }));
 
 const { MockGeoJSON, mockReadFeatures } = vi.hoisted(() => {
-  const mockReadFeatures = vi.fn(() => []);
+  const mockReadFeatures = vi.fn((_data: unknown) => []);
   class MockGeoJSON {
     readFeatures = mockReadFeatures;
   }
@@ -81,6 +83,7 @@ function makeGeoJSONLayer(overrides: Partial<GeoJSONLayer> = {}): GeoJSONLayer {
 describe("useOlLocalGeoJSONLayer", () => {
   beforeEach(() => {
     clearAddLayerToMapMocks();
+    mockReadFeatures.mockClear();
   });
   it("creates a VectorLayer with red styling and initializes", async () => {
     const layer = ref(makeGeoJSONLayer());
@@ -97,11 +100,7 @@ describe("useOlLocalGeoJSONLayer", () => {
     await nextTick();
 
     expect(mockReadFeatures).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        dataProjection: "EPSG:4326",
-        featureProjection: "EPSG:2056",
-      }),
+      expect.objectContaining({ type: "FeatureCollection" }),
     );
     expect(useAddLayerToMapSpy).toHaveBeenCalled();
   });
@@ -148,26 +147,53 @@ describe("useOlLocalGeoJSONLayer", () => {
     expect(error).toHaveBeenCalled();
   });
 
-  it("calls readFeatures with correct projection", async () => {
-    const layer = ref(makeGeoJSONLayer());
+  function makePoint(coordinates: number[]) {
+    return {
+      type: "Feature" as const,
+      properties: {},
+      geometry: { type: "Point" as const, coordinates },
+    };
+  }
+
+  function mountWith(geoJsonData: GeoJSONLayer["geoJsonData"]) {
+    const layer = ref(makeGeoJSONLayer({ geoJsonData }));
     const olMap = ref(undefined);
 
-    const TestComponent = defineComponent({
-      setup() {
-        useOlLocalGeoJSONLayer(layer, olMap);
-      },
-      template: "<div />",
-    });
-
-    mount(TestComponent);
-    await nextTick();
-
-    expect(mockReadFeatures).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        dataProjection: "EPSG:4326",
-        featureProjection: "EPSG:2056",
+    mount(
+      defineComponent({
+        setup() {
+          useOlLocalGeoJSONLayer(layer, olMap);
+        },
+        template: "<div />",
       }),
     );
+    return nextTick();
+  }
+
+  function firstReadCoordinates(): number[] {
+    const collection = mockReadFeatures.mock.calls[0]![0] as FeatureCollection;
+    return (collection.features[0]!.geometry as Point).coordinates;
+  }
+
+  it("reprojects WGS84 data to the map projection when no crs is given", async () => {
+    await mountWith({
+      type: "FeatureCollection",
+      features: [makePoint([7.4474, 46.9481])],
+    });
+
+    const [east, north] = firstReadCoordinates();
+    expect(east).toBeCloseTo(2600667, -1);
+    expect(north).toBeCloseTo(1199668, -1);
+  });
+
+  it("honours the obsolete crs property and skips reprojection when it already matches", async () => {
+    const coordinates = [2600000, 1200000];
+    await mountWith({
+      type: "FeatureCollection",
+      crs: { type: "name", properties: { name: "EPSG:2056" } },
+      features: [makePoint(coordinates)],
+    });
+
+    expect(firstReadCoordinates()).toEqual(coordinates);
   });
 });

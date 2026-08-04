@@ -20,4 +20,5 @@ export {
   MGRSFormat,
 } from "./utils/coordinates/coordinateFormat";
 export type { CoordinateFormat } from "./utils/coordinates/coordinateFormat";
+export type { FeatureCollectionWithCRS } from "./utils/geoJsonUtils";
 export { MapModule, usePositionStore, useAddLayerToMap, PROJECTION_EPSG };

@@ -30,6 +30,22 @@ const getVectorFeatureCounts = (page: Page) =>
       }),
   );
 
+const getVectorExtents = (page: Page) =>
+  page.evaluate(
+    () =>
+      window.swissgeoOlMap
+        ?.getLayers()
+        .getArray()
+        .map((layer) => {
+          const source = (
+            layer as unknown as {
+              getSource?: () => { getExtent?: () => number[] } | undefined;
+            }
+          ).getSource?.();
+          return source?.getExtent ? source.getExtent() : null;
+        }) ?? [],
+  );
+
 test.describe("file import", () => {
   test.beforeEach(async ({ page }) => {
     // Cold-boot compile of /de/map plus first map paint can exceed the 30s
@@ -61,7 +77,11 @@ test.describe("file import", () => {
   // Both fixtures hold a Point and a LineString.
   const EXPECTED_FEATURES = 2;
 
-  for (const filename of ["test-drawing.kml", "test-drawing.geojson"]) {
+  for (const filename of [
+    "test-drawing.kml",
+    "test-drawing.geojson",
+    "test-drawing-lv95.geojson",
+  ]) {
     test(`imports ${filename} and adds it as a layer on the map`, async ({
       page,
     }) => {
@@ -82,6 +102,49 @@ test.describe("file import", () => {
       expect(featureCounts).toContain(EXPECTED_FEATURES);
     });
   }
+
+  // The `crs` property is obsolete per RFC 7946, but a lot of our internal
+  // GeoJSON still carries it, so both fixtures must land on the same spot.
+  test("honours the crs property of a GeoJSON file", async ({ page }) => {
+    const extentOf = async (filename: string) => {
+      const before = await getLayerCount(page);
+      await importFixture(page, filename);
+      await page.waitForFunction(
+        (count) =>
+          (window.swissgeoOlMap?.getLayers().getArray().length ?? 0) > count,
+        before,
+        { timeout: 20_000 },
+      );
+      const extents = await getVectorExtents(page);
+      return extents.filter((extent) => extent !== null).at(-1)!;
+    };
+
+    const wgs84Extent = await extentOf("test-drawing.geojson");
+    const lv95Extent = await extentOf("test-drawing-lv95.geojson");
+
+    // The LV95 fixture holds the same points rounded to metres, hence the
+    // few-metres tolerance.
+    lv95Extent.forEach((value, index) => {
+      expect(value).toBeCloseTo(wgs84Extent[index]!, -1);
+    });
+  });
+
+  test("rejects a JSON file that is not GeoJSON", async ({ page }) => {
+    const before = await getLayerCount(page);
+
+    await page.getByTestId("debug-open-import-local-panel").click();
+    await page.getByTestId("file-input").setInputFiles({
+      name: "plain.json",
+      mimeType: "application/json",
+      buffer: Buffer.from('{"title": "un JSON standard"}'),
+    });
+    await page.getByTestId("file-import-button").click();
+
+    await expect(
+      page.getByText("Invalid GeoJSON file: plain.json"),
+    ).toBeVisible();
+    expect(await getLayerCount(page)).toBe(before);
+  });
 
   test("rejects an unsupported file type", async ({ page }) => {
     const before = await getLayerCount(page);
