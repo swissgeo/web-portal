@@ -1,3 +1,3 @@
 export type { LayerRequest, FeatureData } from "@/types";
-export { identify } from "@/identify";
+export { selectFeatures } from "@/selectFeatures";
 export { useFeaturesStore } from "@/stores/feature";
