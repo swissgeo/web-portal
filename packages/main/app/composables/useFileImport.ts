@@ -2,6 +2,7 @@ import type { LayerType } from "@swissgeo/layers";
 
 import { useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
+import { parseGeoJson } from "~/utils/geoJson";
 
 /**
  * Composable for importing local files as layers
@@ -36,10 +37,9 @@ export function useFileImport() {
     } else if (filename.endsWith(".geojson") || filename.endsWith(".json")) {
       layerType = "geojson";
       fileData = await file.text();
-      // Fail here rather than let the map renderer throw on unparseable data.
-      try {
-        JSON.parse(fileData);
-      } catch {
+      // Fail here rather than let the map renderer silently drop data that is
+      // unparseable, or parseable JSON that isn't a GeoJSON FeatureCollection.
+      if (!parseGeoJson(fileData)) {
         throw new Error(`Invalid GeoJSON file: ${file.name}`);
       }
     } else {

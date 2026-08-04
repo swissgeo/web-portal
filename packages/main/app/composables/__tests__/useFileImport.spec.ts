@@ -12,12 +12,25 @@ describe("useFileImport", () => {
   });
 
   const geoJson = '{"type":"FeatureCollection","features":[]}';
+  // Obsolete per RFC 7946, but a lot of our internal GeoJSON still carries it.
+  const geoJsonWithCrs = JSON.stringify({
+    type: "FeatureCollection",
+    crs: { type: "name", properties: { name: "EPSG:2056" } },
+    features: [
+      {
+        type: "Feature",
+        properties: {},
+        geometry: { type: "Point", coordinates: [2600000, 1200000] },
+      },
+    ],
+  });
 
   it.each([
     ["drawing.kml", "kml", "<kml/>"],
     ["drawing.gpx", "gpx", "<gpx/>"],
     ["drawing.geojson", "geojson", geoJson],
     ["drawing.json", "geojson", geoJson],
+    ["lufttemperatur.geojson", "geojson", geoJsonWithCrs],
     // extension detection is case-insensitive
     ["DRAWING.KML", "kml", "<kml/>"],
   ])(
@@ -59,12 +72,20 @@ describe("useFileImport", () => {
     expect(store.layers).toHaveLength(0);
   });
 
-  it("throws on unparseable GeoJSON and adds no layer", async () => {
+  it.each([
+    ["unparseable JSON", "{ not valid json"],
+    ["JSON that is not GeoJSON", '{"title":"un JSON standard"}'],
+    ["a FeatureCollection without features", '{"type":"FeatureCollection"}'],
+    [
+      "a FeatureCollection holding non-features",
+      '{"type":"FeatureCollection","features":[{"type":"Point"}]}',
+    ],
+  ])("throws on %s and adds no layer", async (_label, content) => {
     const { importFile } = useFileImport();
     const store = useLayerStore();
 
     await expect(
-      importFile(makeFile("broken.geojson", "{ not valid json")),
+      importFile(makeFile("broken.geojson", content)),
     ).rejects.toThrow("Invalid GeoJSON file: broken.geojson");
     expect(store.layers).toHaveLength(0);
   });
