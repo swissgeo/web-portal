@@ -27,18 +27,18 @@ async function mountHarness() {
   const viewHandlers = new Map<string, EventHandler>();
   const view = {
     calculateExtent: vi.fn(() => state.extent),
-    getCenter: vi.fn(() => state.center),
-    getZoom: vi.fn(() => state.zoom),
-    on: vi.fn((event: string, handler: EventHandler) => {
+    getCenter: () => state.center,
+    getZoom: () => state.zoom,
+    on: (event: string, handler: EventHandler) => {
       viewHandlers.set(event, handler);
-    }),
+    },
   };
   const map = {
-    getSize: vi.fn(() => [800, 600]),
-    getView: vi.fn(() => view),
-    on: vi.fn((event: string, handler: EventHandler) => {
+    getSize: () => [800, 600],
+    getView: () => view,
+    on: (event: string, handler: EventHandler) => {
       mapHandlers.set(event, handler);
-    }),
+    },
   };
 
   let mapState!: ReturnType<typeof useMap>;
