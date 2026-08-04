@@ -30,21 +30,21 @@ const getVectorFeatureCounts = (page: Page) =>
       }),
   );
 
-const getVectorExtents = (page: Page) =>
-  page.evaluate(
-    () =>
-      window.swissgeoOlMap
-        ?.getLayers()
-        .getArray()
-        .map((layer) => {
-          const source = (
-            layer as unknown as {
-              getSource?: () => { getExtent?: () => number[] } | undefined;
-            }
-          ).getSource?.();
-          return source?.getExtent ? source.getExtent() : null;
-        }) ?? [],
-  );
+// Keyed by the layer id, which useOlLocalGeoJSONLayer sets to the filename, so
+// the lookup doesn't depend on where OpenLayers ordered the layer.
+const getVectorExtentById = (page: Page, layerId: string) =>
+  page.evaluate((id) => {
+    const layer = window.swissgeoOlMap
+      ?.getLayers()
+      .getArray()
+      .find((candidate) => candidate.get("id") === id);
+    const source = (
+      layer as unknown as {
+        getSource?: () => { getExtent?: () => number[] } | undefined;
+      }
+    )?.getSource?.();
+    return source?.getExtent ? source.getExtent() : null;
+  }, layerId);
 
 test.describe("file import", () => {
   test.beforeEach(async ({ page }) => {
@@ -65,8 +65,13 @@ test.describe("file import", () => {
     await cleanupExternalRequestMocks(page);
   });
 
-  const importFixture = async (page: Page, filename: string) => {
-    await page.getByTestId("debug-open-import-local-panel").click();
+  // The panel toggle sits behind the open panel, so it can only be clicked
+  // while the panel is closed. Tests importing twice open it once and then
+  // call importSelected repeatedly.
+  const openImportPanel = (page: Page) =>
+    page.getByTestId("debug-open-import-local-panel").click();
+
+  const importSelected = async (page: Page, filename: string) => {
     await page.getByTestId("file-input").setInputFiles(fixturePath(filename));
     await page.getByTestId("file-import-button").click();
     await expect(
@@ -87,7 +92,8 @@ test.describe("file import", () => {
     }) => {
       const before = await getLayerCount(page);
 
-      await importFixture(page, filename);
+      await openImportPanel(page);
+      await importSelected(page, filename);
 
       await page.waitForFunction(
         (count) =>
@@ -107,18 +113,20 @@ test.describe("file import", () => {
   // GeoJSON still carries it, so both fixtures must land on the same spot.
   test("honours the crs property of a GeoJSON file", async ({ page }) => {
     const extentOf = async (filename: string) => {
-      const before = await getLayerCount(page);
-      await importFixture(page, filename);
+      await importSelected(page, filename);
       await page.waitForFunction(
-        (count) =>
-          (window.swissgeoOlMap?.getLayers().getArray().length ?? 0) > count,
-        before,
+        (id) =>
+          window.swissgeoOlMap
+            ?.getLayers()
+            .getArray()
+            .some((layer) => layer.get("id") === id) ?? false,
+        filename,
         { timeout: 20_000 },
       );
-      const extents = await getVectorExtents(page);
-      return extents.filter((extent) => extent !== null).at(-1)!;
+      return (await getVectorExtentById(page, filename))!;
     };
 
+    await openImportPanel(page);
     const wgs84Extent = await extentOf("test-drawing.geojson");
     const lv95Extent = await extentOf("test-drawing-lv95.geojson");
 
