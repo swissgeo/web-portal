@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Dimension } from "@swissgeo/dimension";
-import type { Distribution, Service } from "@swissgeo/ogc";
+import type { Distribution, Legend, Service } from "@swissgeo/ogc";
 
 import type { WMSLayerData } from "@/components/map/datamapping/useOgcWmsData";
 
@@ -17,13 +17,14 @@ const props = defineProps<{
 const emit = defineEmits<{
   updateData: [opacity: number | null, WMSLayerData];
   updateTimeDimension: [dimension: Partial<Dimension>];
+  updateLegends: [legends: Legend[]];
 }>();
 
 const distribution = computed(() => props.distribution);
 const serviceData = computed(() => props.serviceData);
 const layerId = computed(() => props.layerId);
 
-const { defaultOpacity, wmsDataForOl, timeInfo } = useOgcWmsData(
+const { defaultOpacity, wmsDataForOl, timeInfo, legends } = useOgcWmsData(
   distribution,
   serviceData,
   layerId,
@@ -32,6 +33,10 @@ const { defaultOpacity, wmsDataForOl, timeInfo } = useOgcWmsData(
 watch(timeInfo, () => {
   const dimension = processTimeInfo(timeInfo);
   emit("updateTimeDimension", dimension);
+});
+
+watch(legends, () => emit("updateLegends", legends.value), {
+  immediate: true,
 });
 
 watch(

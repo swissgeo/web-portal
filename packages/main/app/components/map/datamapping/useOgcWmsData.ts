@@ -24,6 +24,7 @@ export function useOgcWmsData(
   const { styleData } = useStyle(distribution);
   const { wmsData } = useWmsCapabilities(service, layerId);
   const dimensions = computed(() => wmsData.value?.dimensions || null);
+  const legends = computed(() => wmsData.value?.legends ?? []);
   const timeInfo = computed(() =>
     getTimeInfoFromWMSCapabilities(dimensions.value),
   );
@@ -60,5 +61,6 @@ export function useOgcWmsData(
     defaultOpacity,
     wmsDataForOl,
     timeInfo,
+    legends,
   };
 }
