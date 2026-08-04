@@ -111,7 +111,13 @@ function resetApp() {
     </template>
 
     <template #right>
-      <UNavigationMenu :items="items" content-orientation="vertical" />
+      <UNavigationMenu
+        :items="items"
+        content-orientation="vertical"
+        :ui="{
+          content: 'w-fit',
+        }"
+      />
       <UButton to="/map"> Karte </UButton>
       <USeparator class="mx-4 h-8" orientation="vertical" />
       <UButton icon="i-lucide-log-in" color="neutral" variant="outline"
