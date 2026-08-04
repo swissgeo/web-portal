@@ -67,6 +67,7 @@ function createOlMap(zoomOnlyCtrl = false) {
           ]),
         }
       : {}),
+    view: null,
   });
   olMap.value = map;
 
