@@ -93,7 +93,7 @@ describe("extractStyleUrl", () => {
   });
 });
 
-describe("useStyle", () => {
+describe("loading Mapbox style data from a distribution", () => {
   it("fetches Mapbox style data when the distribution becomes available", async () => {
     const distribution = ref<Distribution | null>(null);
     const { styleData, styleDataUrl } = useStyle(distribution);
