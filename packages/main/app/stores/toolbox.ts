@@ -30,9 +30,12 @@ export const useToolboxStore = defineStore("toolbox", () => {
     () => geolocationStore.active && geolocationStore.position !== undefined,
   );
   const showTimeSliderButton = computed(() =>
-    layerStore.layers.some(
-      (layer) => !!dimensionsStore.getDimensions(layer.uuid)?.time,
-    ),
+    layerStore.layers.some((layer) => {
+      return (
+        (dimensionsStore.getDimensions(layer.uuid)?.time?.availableValues
+          ?.length ?? 0) > 1
+      );
+    }),
   );
   const showCompareSliderButton = computed(
     () => mapViewStore.visibleLayers.length > 0,
