@@ -96,7 +96,7 @@ describe("Toolbox.vue - showTimeSliderButton reads from dimensionsStore", () => 
     layerStore.addLayer(makeLayer("with-time"));
     dimensionsStore.setDimension("with-time", "time", {
       currentValue: "2024",
-      availableValues: ["2024"],
+      availableValues: ["2023", "2024"],
     });
 
     const wrapper = mountToolbox();
@@ -113,7 +113,7 @@ describe("Toolbox.vue - showTimeSliderButton reads from dimensionsStore", () => 
     layerStore.addLayer(makeLayer("with-time"));
     dimensionsStore.setDimension("with-time", "time", {
       currentValue: "2024",
-      availableValues: ["2024"],
+      availableValues: ["2023", "2024"],
     });
 
     const wrapper = mountToolbox();
