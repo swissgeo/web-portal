@@ -48,9 +48,6 @@ const dimensionsStore = useDimensionsStore();
 // const drawingStore = useDrawingStore();
 const datasetPanelStore = useDatasetPanelStore();
 const mapViewStore = useMapViewStore();
-const bgLayerModifier = computed(() => (layerStore.backgroundLayer ? 1 : 0));
-
-const layersLength = computed(() => mapViewStore.mapLayers.length);
 
 const isExpanded = ref(false);
 const legends = computed(() => layerStore.getLayerLegends(layer.uuid));
@@ -91,15 +88,11 @@ function toggleVisibility() {
 }
 
 function moveUp() {
-  if (layerIndex < layersLength.value - bgLayerModifier.value) {
-    mapViewStore.moveLayerUp(layerIndex);
-  }
+  mapViewStore.moveLayerUp(layerIndex);
 }
 
 function moveDown() {
-  if (layerIndex > bgLayerModifier.value) {
-    mapViewStore.moveLayerDown(layerIndex);
-  }
+  mapViewStore.moveLayerDown(layerIndex);
 }
 
 function removeLayer() {
@@ -115,9 +108,12 @@ function openDatasetPanel() {
   }
 }
 
-function isFromDataSet() {
-  return layerStore.getLayer(layer.uuid)?.type === "dataset";
-}
+const isFromDataSet = computed(
+  () => layerStore.getLayer(layer.uuid)?.type === "dataset",
+);
+
+// Shared look of the buttons on the entry row
+const rowButton = { size: "sm", severity: "secondary", text: true };
 </script>
 
 <template>
@@ -138,9 +134,7 @@ function isFromDataSet() {
         data-testid="layer-reorder-handle"
         class="shrink-0 cursor-grab text-gray-400"
         iconName="Grip-Vertical"
-        size="sm"
-        severity="secondary"
-        :text="true"
+        v-bind="rowButton"
         :title="t('layers.reorder')"
         @pointerdown="isDraggable = true"
         @keydown.up.prevent="moveUp()"
@@ -151,9 +145,7 @@ function isFromDataSet() {
         class="shrink-0"
         :iconName="isExpanded ? 'Chevron-Down' : 'Chevron-Right'"
         :title="isExpanded ? t('layers.collapse') : t('layers.expand')"
-        size="sm"
-        severity="secondary"
-        :text="true"
+        v-bind="rowButton"
         @click="isExpanded = !isExpanded"
       />
       <div
@@ -176,26 +168,20 @@ function isFromDataSet() {
         <IconButton
           :iconName="layer.isVisible ? 'Eye' : 'Eye-Off'"
           :title="layer.isVisible ? t('layers.hide') : t('layers.show')"
-          size="sm"
-          severity="secondary"
-          :text="true"
+          v-bind="rowButton"
           @click="toggleVisibility()"
         />
         <IconButton
-          v-if="isFromDataSet()"
+          v-if="isFromDataSet"
           iconName="Info"
           :title="t('layers.info')"
-          size="sm"
-          severity="secondary"
-          :text="true"
+          v-bind="rowButton"
           @click="openDatasetPanel"
         />
         <IconButton
           iconName="Trash-2"
           :title="t('layers.remove')"
-          size="sm"
-          severity="secondary"
-          :text="true"
+          v-bind="rowButton"
           @click="removeLayer"
         />
       </div>

@@ -25,10 +25,15 @@ export const useMapViewStore = defineStore("mapView", () => {
 
   const layerStore = useLayerStore();
 
+  /** Index of the lowest overlay layer: 0, or 1 when a background layer sits below. */
+  const firstOverlayIndex = computed(() =>
+    Number(!!layerStore.backgroundLayer),
+  );
+
   /** Visible overlay layers, ordered bottom-to-top (background excluded). */
   const visibleLayers = computed(() =>
     mapLayers.value
-      .slice(Number(!!layerStore.backgroundLayer))
+      .slice(firstOverlayIndex.value)
       .filter((layer) => layer.isVisible),
   );
 
@@ -88,12 +93,11 @@ export const useMapViewStore = defineStore("mapView", () => {
   ): void {
     const currentIndex = _getIndexFromIdentifier(identifier);
 
-    // Validate: current index must be found, target must be in valid range, and must be different
+    // Validate: current index must be found, target must be an overlay position, and must be different
     if (
       currentIndex !== undefined &&
-      currentIndex >= 0 &&
       targetIndex < mapLayers.value.length &&
-      targetIndex >= 0 &&
+      targetIndex >= firstOverlayIndex.value &&
       currentIndex !== targetIndex
     ) {
       const [layer] = mapLayers.value.splice(currentIndex, 1) as [MapLayer];
@@ -104,7 +108,7 @@ export const useMapViewStore = defineStore("mapView", () => {
   /** Move a layer one step up in the visual stack (toward top, higher index). */
   function moveLayerUp(identifier: string | number): void {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       setLayerIndex(index, index + 1);
     }
   }
@@ -112,7 +116,7 @@ export const useMapViewStore = defineStore("mapView", () => {
   /** Move a layer one step down in the visual stack (toward bottom, lower index). */
   function moveLayerDown(identifier: string | number): void {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       setLayerIndex(index, index - 1);
     }
   }

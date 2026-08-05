@@ -6,23 +6,34 @@ import { computed, ref } from "vue";
 
 import LayerCartEntry from "./LayerCartEntry.vue";
 const layerStore = useLayerStore();
+const mapViewStore = useMapViewStore();
 const { mapLayers } = defineProps<{
   mapLayers: Ref<MapLayer[]>;
 }>();
 
-// slice() creates a copy, which allows us to avoid mutating the original
+// The store keeps the layers bottom-to-top, the panel shows them top-to-bottom,
+// so each entry carries the index it has in the store
 const sortedLayers = computed(() => {
-  const sortedLayers = mapLayers.value.slice().reverse();
+  const entries = mapLayers.value
+    .map((layer, layerIndex) => ({ layer, layerIndex }))
+    .reverse();
   if (layerStore.backgroundLayer) {
-    sortedLayers.splice(sortedLayers.length - 1, 1);
+    entries.pop();
   }
 
-  return sortedLayers;
+  return entries;
 });
 
-const mapViewStore = useMapViewStore();
 const draggedIndex = ref<number | null>(null);
 const dropTargetIndex = ref<number | null>(null);
+
+function isDropTarget(layerIndex: number) {
+  return (
+    draggedIndex.value !== null &&
+    dropTargetIndex.value === layerIndex &&
+    draggedIndex.value !== layerIndex
+  );
+}
 
 function onDrop(layerIndex: number) {
   if (draggedIndex.value !== null) {
@@ -43,16 +54,12 @@ function onDragEnd() {
     class="mt-8 flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-2"
   >
     <LayerCartEntry
-      v-for="(layer, index) in sortedLayers"
+      v-for="{ layer, layerIndex } in sortedLayers"
       :key="layer.uuid"
-      :layerIndex="mapLayers.value.length - 1 - index"
+      :layerIndex="layerIndex"
       :layer="layer"
-      :isDragged="draggedIndex === mapLayers.value.length - 1 - index"
-      :isDropTarget="
-        draggedIndex !== null &&
-        dropTargetIndex === mapLayers.value.length - 1 - index &&
-        dropTargetIndex !== draggedIndex
-      "
+      :isDragged="draggedIndex === layerIndex"
+      :isDropTarget="isDropTarget(layerIndex)"
       @dragStart="draggedIndex = $event"
       @dragOver="dropTargetIndex = $event"
       @drop="onDrop"

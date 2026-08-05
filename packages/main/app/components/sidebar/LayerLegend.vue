@@ -32,25 +32,29 @@ function isPdf(legend: Legend) {
   );
 }
 
-function documentLabel(legend: Legend) {
+function documentLink(legend: Legend) {
   if (isPdf(legend)) {
-    return t("layers.legend.openPdf");
+    return { icon: "i-lucide-file-text", label: t("layers.legend.openPdf") };
   }
   if (legend.format?.startsWith("text/")) {
-    return t("layers.legend.openPage");
+    return {
+      icon: "i-lucide-external-link",
+      label: t("layers.legend.openPage"),
+    };
   }
-  return t("layers.legend.openDocument");
+  return {
+    icon: "i-lucide-external-link",
+    label: t("layers.legend.openDocument"),
+  };
 }
 
 // Legends that cannot be displayed inline (typically PDFs) are offered as a
 // link instead
 const imageLegends = computed(() => legends.filter(isDisplayableImage));
-const documentLegends = computed(() =>
-  legends.filter((legend) => !isDisplayableImage(legend)),
-);
-
-const hasLegend = computed(
-  () => imageLegends.value.length > 0 || documentLegends.value.length > 0,
+const documentLinks = computed(() =>
+  legends
+    .filter((legend) => !isDisplayableImage(legend))
+    .map((legend) => ({ href: legend.href, ...documentLink(legend) })),
 );
 </script>
 
@@ -75,21 +79,18 @@ const hasLegend = computed(
     </div>
 
     <ULink
-      v-for="legend in documentLegends"
-      :key="legend.href"
-      :to="legend.href"
+      v-for="link in documentLinks"
+      :key="link.href"
+      :to="link.href"
       target="_blank"
       raw
       class="flex items-center gap-1 text-sm"
     >
-      <UIcon
-        :name="isPdf(legend) ? 'i-lucide-file-text' : 'i-lucide-external-link'"
-        class="size-3 shrink-0"
-      />
-      {{ documentLabel(legend) }}
+      <UIcon :name="link.icon" class="size-3 shrink-0" />
+      {{ link.label }}
     </ULink>
 
-    <span v-if="!hasLegend" class="text-sm text-gray-600">
+    <span v-if="!legends.length" class="text-sm text-gray-600">
       {{ t("layers.legend.notAvailable") }}
     </span>
   </div>
