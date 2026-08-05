@@ -302,6 +302,11 @@
   },
   "layers": {
     "expand": "Show layer details",
+    "reorder": "Reorder layer (arrow up/down)",
+    "show": "Show layer",
+    "hide": "Hide layer",
+    "info": "Layer information",
+    "remove": "Remove layer",
     "collapse": "Hide layer details",
     "transparency": "Transparency",
     "legend": {

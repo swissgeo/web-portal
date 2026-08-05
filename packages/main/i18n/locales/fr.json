@@ -302,6 +302,11 @@
   },
   "layers": {
     "expand": "Afficher les détails de la couche",
+    "reorder": "Déplacer la couche (flèche haut/bas)",
+    "show": "Afficher la couche",
+    "hide": "Masquer la couche",
+    "info": "Informations sur la couche",
+    "remove": "Supprimer la couche",
     "collapse": "Masquer les détails de la couche",
     "transparency": "Transparence",
     "legend": {

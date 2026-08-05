@@ -67,11 +67,15 @@ function toggleVisibility() {
 }
 
 function moveUp() {
-  mapViewStore.moveLayerUp(layerIndex);
+  if (layerIndex < layersLength.value - bgLayerModifier.value) {
+    mapViewStore.moveLayerUp(layerIndex);
+  }
 }
 
 function moveDown() {
-  mapViewStore.moveLayerDown(layerIndex);
+  if (layerIndex > bgLayerModifier.value) {
+    mapViewStore.moveLayerDown(layerIndex);
+  }
 }
 
 function removeLayer() {
@@ -94,64 +98,70 @@ function isFromDataSet() {
 
 <template>
   <li class="flex min-w-0 flex-col gap-2">
-    <div class="flex min-w-0 items-center gap-1">
+    <div class="flex min-w-0 items-center">
+      <IconButton
+        data-testid="layer-reorder-handle"
+        class="shrink-0 cursor-grab text-gray-400"
+        iconName="Grip-Vertical"
+        size="sm"
+        severity="secondary"
+        :text="true"
+        :title="t('layers.reorder')"
+        @keydown.up.prevent="moveUp()"
+        @keydown.down.prevent="moveDown()"
+      />
       <IconButton
         data-testid="layer-expand-toggle"
         class="shrink-0"
         :iconName="isExpanded ? 'Chevron-Down' : 'Chevron-Right'"
         :title="isExpanded ? t('layers.collapse') : t('layers.expand')"
+        size="sm"
         severity="secondary"
+        :text="true"
         @click="isExpanded = !isExpanded"
       />
-      <div class="flex shrink-0">
-        <IconButton
-          :iconName="layer.isVisible ? 'Eye' : 'Eye-Off'"
-          @click="toggleVisibility()"
-          severity="secondary"
-        />
-        <div class="flex flex-col justify-between">
-          <IconButton
-            :disabled="layerIndex === layersLength - bgLayerModifier"
-            iconName="Chevron-Up"
-            severity="secondary"
-            class="h-0.5"
-            @click="moveUp()"
-          ></IconButton>
-          <IconButton
-            :disabled="layerIndex === bgLayerModifier"
-            iconName="Chevron-Down"
-            severity="secondary"
-            class="h-0.5"
-            @click="moveDown()"
-          ></IconButton>
-        </div>
-      </div>
       <div
-        class="min-w-0 flex-1 truncate"
+        class="min-w-0 flex-1 truncate px-1"
         :title="layer.displayName"
         :class="{ 'text-gray-300': !layer.isVisible }"
       >
         {{ layer.displayName }}
       </div>
       <div class="flex shrink-0 items-center">
-        <div>
-          <select
-            v-if="(availableTimes?.length || 0) > 1"
-            v-model="currentTime"
-            class="max-w-24 bg-zinc-300"
-          >
-            <option v-for="time in availableTimes" :value="time" :key="time">
-              {{ getTimestampName(time) }}
-            </option>
-          </select>
-        </div>
+        <select
+          v-if="(availableTimes?.length || 0) > 1"
+          v-model="currentTime"
+          class="max-w-24 bg-zinc-300"
+        >
+          <option v-for="time in availableTimes" :value="time" :key="time">
+            {{ getTimestampName(time) }}
+          </option>
+        </select>
+        <IconButton
+          :iconName="layer.isVisible ? 'Eye' : 'Eye-Off'"
+          :title="layer.isVisible ? t('layers.hide') : t('layers.show')"
+          size="sm"
+          severity="secondary"
+          :text="true"
+          @click="toggleVisibility()"
+        />
         <IconButton
           v-if="isFromDataSet()"
           iconName="Info"
+          :title="t('layers.info')"
+          size="sm"
           severity="secondary"
+          :text="true"
           @click="openDatasetPanel"
         />
-        <IconButton iconName="Trash" @click="removeLayer" />
+        <IconButton
+          iconName="Trash-2"
+          :title="t('layers.remove')"
+          size="sm"
+          severity="secondary"
+          :text="true"
+          @click="removeLayer"
+        />
       </div>
     </div>
 

@@ -332,6 +332,11 @@
   },
   "layers": {
     "expand": "Ebenendetails anzeigen",
+    "reorder": "Ebene verschieben (Pfeil oben/unten)",
+    "show": "Ebene anzeigen",
+    "hide": "Ebene ausblenden",
+    "info": "Ebeneninformationen",
+    "remove": "Ebene entfernen",
     "collapse": "Ebenendetails ausblenden",
     "transparency": "Transparenz",
     "legend": {
