@@ -2,7 +2,7 @@
 import type { Layer as MapLayer } from "@swissgeo/map";
 
 import { useLayerStore } from "@swissgeo/layers";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 import LayerCartEntry from "./LayerCartEntry.vue";
 const layerStore = useLayerStore();
@@ -19,6 +19,22 @@ const sortedLayers = computed(() => {
 
   return sortedLayers;
 });
+
+const mapViewStore = useMapViewStore();
+const draggedIndex = ref<number | null>(null);
+const dropTargetIndex = ref<number | null>(null);
+
+function onDrop(layerIndex: number) {
+  if (draggedIndex.value !== null) {
+    mapViewStore.setLayerIndex(draggedIndex.value, layerIndex);
+  }
+  onDragEnd();
+}
+
+function onDragEnd() {
+  draggedIndex.value = null;
+  dropTargetIndex.value = null;
+}
 </script>
 
 <template>
@@ -31,6 +47,16 @@ const sortedLayers = computed(() => {
       :key="layer.uuid"
       :layerIndex="mapLayers.value.length - 1 - index"
       :layer="layer"
+      :isDragged="draggedIndex === mapLayers.value.length - 1 - index"
+      :isDropTarget="
+        draggedIndex !== null &&
+        dropTargetIndex === mapLayers.value.length - 1 - index &&
+        dropTargetIndex !== draggedIndex
+      "
+      @dragStart="draggedIndex = $event"
+      @dragOver="dropTargetIndex = $event"
+      @drop="onDrop"
+      @dragEnd="onDragEnd"
     />
   </ul>
 </template>

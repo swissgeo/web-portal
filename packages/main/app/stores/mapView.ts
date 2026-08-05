@@ -90,7 +90,7 @@ export const useMapViewStore = defineStore("mapView", () => {
 
     // Validate: current index must be found, target must be in valid range, and must be different
     if (
-      currentIndex &&
+      currentIndex !== undefined &&
       currentIndex >= 0 &&
       targetIndex < mapLayers.value.length &&
       targetIndex >= 0 &&
@@ -233,5 +233,6 @@ export const useMapViewStore = defineStore("mapView", () => {
     toggleVisibility,
     moveLayerUp,
     moveLayerDown,
+    setLayerIndex,
   };
 });
