@@ -312,7 +312,9 @@
     "legend": {
       "title": "Legend",
       "notAvailable": "No legend available.",
-      "openDocument": "Open legend as document"
+      "openDocument": "Open legend as document",
+      "openPdf": "Open legend as PDF",
+      "openPage": "Open legend page"
     }
   }
 }

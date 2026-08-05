@@ -42,6 +42,16 @@ describe("LayerLegend.vue", () => {
     expect(wrapper.find("a").attributes("href")).toBe(
       "https://example.com/legend.pdf",
     );
+    expect(wrapper.text()).toContain("layers.legend.openPdf");
+  });
+
+  it("labels legends by type", () => {
+    const wrapper = mountLegend([
+      { href: "https://example.com/legend", format: "text/html" },
+      { href: "https://example.com/legend.zip", format: "application/zip" },
+    ]);
+
+    expect(wrapper.text()).toContain("layers.legend.openPage");
     expect(wrapper.text()).toContain("layers.legend.openDocument");
   });
 
@@ -58,7 +68,7 @@ describe("LayerLegend.vue", () => {
     expect(wrapper.text()).toContain("layers.legend.notAvailable");
   });
 
-  it("tells the user when the legend image fails to load", async () => {
+  it("links to the legend when the image fails to load", async () => {
     const wrapper = mountLegend([
       { href: "https://example.com/legend.png", format: "image/png" },
     ]);
@@ -66,6 +76,9 @@ describe("LayerLegend.vue", () => {
     await wrapper.find("img").trigger("error");
 
     expect(wrapper.find("img").exists()).toBe(false);
-    expect(wrapper.text()).toContain("layers.legend.notAvailable");
+    expect(wrapper.find("a").attributes("href")).toBe(
+      "https://example.com/legend.png",
+    );
+    expect(wrapper.text()).not.toContain("layers.legend.notAvailable");
   });
 });

@@ -20,14 +20,34 @@ function isImage(legend: Legend) {
   return /\.(png|jpe?g|gif|svg|webp)(\?|$)/i.test(legend.href);
 }
 
-// Legends that are not images (typically PDFs) cannot be displayed inline,
-// they are offered as a link instead
-const imageLegends = computed(() =>
-  legends.filter(
-    (legend) => isImage(legend) && !failedHrefs.value.includes(legend.href),
-  ),
+// Services do lie about the format, so an image that fails to load is treated
+// as a document from then on rather than being dropped altogether
+function isDisplayableImage(legend: Legend) {
+  return isImage(legend) && !failedHrefs.value.includes(legend.href);
+}
+
+function isPdf(legend: Legend) {
+  return (
+    legend.format === "application/pdf" || /\.pdf(\?|$)/i.test(legend.href)
+  );
+}
+
+function documentLabel(legend: Legend) {
+  if (isPdf(legend)) {
+    return t("layers.legend.openPdf");
+  }
+  if (legend.format?.startsWith("text/")) {
+    return t("layers.legend.openPage");
+  }
+  return t("layers.legend.openDocument");
+}
+
+// Legends that cannot be displayed inline (typically PDFs) are offered as a
+// link instead
+const imageLegends = computed(() => legends.filter(isDisplayableImage));
+const documentLegends = computed(() =>
+  legends.filter((legend) => !isDisplayableImage(legend)),
 );
-const documentLegends = computed(() => legends.filter((l) => !isImage(l)));
 
 const hasLegend = computed(
   () => imageLegends.value.length > 0 || documentLegends.value.length > 0,
@@ -62,8 +82,11 @@ const hasLegend = computed(
       raw
       class="flex items-center gap-1 text-sm"
     >
-      <UIcon name="i-lucide-external-link" class="size-3 shrink-0" />
-      {{ t("layers.legend.openDocument") }}
+      <UIcon
+        :name="isPdf(legend) ? 'i-lucide-file-text' : 'i-lucide-external-link'"
+        class="size-3 shrink-0"
+      />
+      {{ documentLabel(legend) }}
     </ULink>
 
     <span v-if="!hasLegend" class="text-sm text-gray-600">

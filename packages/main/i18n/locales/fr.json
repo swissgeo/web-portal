@@ -312,7 +312,9 @@
     "legend": {
       "title": "Légende",
       "notAvailable": "Aucune légende disponible.",
-      "openDocument": "Ouvrir la légende comme document"
+      "openDocument": "Ouvrir la légende comme document",
+      "openPdf": "Ouvrir la légende en PDF",
+      "openPage": "Ouvrir la page de la légende"
     }
   }
 }
