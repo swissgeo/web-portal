@@ -27,7 +27,7 @@ export const SWISS_ZOOM_LEVEL_1_25000_MAP: number = 8;
  * @see https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Resolution_and_Scale
  * @see https://wiki.openstreetmap.org/wiki/Zoom_levels
  */
-export const PIXEL_LENGTH_IN_KM_AT_ZOOM_ZERO_WITH_256PX_TILES: number =
+export const PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES: number =
   (2 * Math.PI * earthRadius) / 256;
 
 export interface CoordinateSystemProps {
@@ -301,7 +301,7 @@ export default abstract class CoordinateSystem {
       return [];
     }
     const zoom0PixelSizeInMeters =
-      PIXEL_LENGTH_IN_KM_AT_ZOOM_ZERO_WITH_256PX_TILES;
+      PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES;
     const resolutions: ResolutionStep[] = [];
     const latInRad = ((latitude ?? 0) * Math.PI) / 180.0;
     for (let z = 0; z < 21; ++z) {

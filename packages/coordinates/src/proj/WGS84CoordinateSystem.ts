@@ -2,7 +2,7 @@ import { round } from "@swissgeo/numbers";
 
 import type { SingleCoordinate } from "@/coordinatesUtils";
 
-import { PIXEL_LENGTH_IN_KM_AT_ZOOM_ZERO_WITH_256PX_TILES } from "@/proj/CoordinateSystem";
+import { PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES } from "@/proj/CoordinateSystem";
 import CoordinateSystemBounds from "@/proj/CoordinateSystemBounds";
 import StandardCoordinateSystem from "@/proj/StandardCoordinateSystem";
 
@@ -41,7 +41,7 @@ export default class WGS84CoordinateSystem extends StandardCoordinateSystem {
   getResolutionForZoom(zoom: number, center: SingleCoordinate): number {
     return round(
       Math.abs(
-        (PIXEL_LENGTH_IN_KM_AT_ZOOM_ZERO_WITH_256PX_TILES *
+        (PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES *
           Math.cos((center[1] * Math.PI) / 180.0)) /
           Math.pow(2, zoom),
       ),
@@ -92,7 +92,7 @@ export default class WGS84CoordinateSystem extends StandardCoordinateSystem {
     return Math.abs(
       Math.log2(
         resolution /
-          PIXEL_LENGTH_IN_KM_AT_ZOOM_ZERO_WITH_256PX_TILES /
+          PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES /
           Math.cos((center[1] * Math.PI) / 180.0),
       ),
     );

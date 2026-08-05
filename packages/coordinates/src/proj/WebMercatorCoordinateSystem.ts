@@ -4,7 +4,7 @@ import proj4 from "proj4";
 import type { SingleCoordinate } from "@/coordinatesUtils";
 
 import { WGS84 } from "@/proj";
-import { PIXEL_LENGTH_IN_KM_AT_ZOOM_ZERO_WITH_256PX_TILES } from "@/proj/CoordinateSystem";
+import { PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES } from "@/proj/CoordinateSystem";
 import CoordinateSystemBounds from "@/proj/CoordinateSystemBounds";
 import StandardCoordinateSystem from "@/proj/StandardCoordinateSystem";
 
@@ -48,7 +48,7 @@ export default class WebMercatorCoordinateSystem extends StandardCoordinateSyste
     }
     return round(
       Math.abs(
-        (PIXEL_LENGTH_IN_KM_AT_ZOOM_ZERO_WITH_256PX_TILES *
+        (PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES *
           Math.cos(centerInRad[1])) /
           Math.pow(2, zoom),
       ),
@@ -82,7 +82,7 @@ export default class WebMercatorCoordinateSystem extends StandardCoordinateSyste
     return Math.abs(
       Math.log2(
         resolution /
-          PIXEL_LENGTH_IN_KM_AT_ZOOM_ZERO_WITH_256PX_TILES /
+          PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES /
           Math.cos(centerInRad[1]),
       ),
     );
