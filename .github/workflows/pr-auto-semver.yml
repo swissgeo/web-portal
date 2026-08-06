@@ -1,3 +1,4 @@
+---
 # WARNING this file is managed by terraform and cannot be edited manually, see
 # swissgeo/infra-terraform//github/swissgeo/modules/github-workflows-semver/main.tf
 name: on-pr
