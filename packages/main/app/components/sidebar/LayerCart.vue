@@ -2,7 +2,8 @@
 import type { Layer as MapLayer } from "@swissgeo/map";
 
 import { useLayerStore } from "@swissgeo/layers";
-import { computed, ref } from "vue";
+import { useSortable } from "@vueuse/integrations/useSortable";
+import { computed, useTemplateRef } from "vue";
 
 import LayerCartEntry from "./LayerCartEntry.vue";
 const layerStore = useLayerStore();
@@ -24,32 +25,32 @@ const sortedLayers = computed(() => {
   return entries;
 });
 
-const draggedIndex = ref<number | null>(null);
-const dropTargetIndex = ref<number | null>(null);
+const layerCartRef = useTemplateRef<HTMLUListElement>("layerCartRef");
 
-function isDropTarget(layerIndex: number) {
-  return (
-    draggedIndex.value !== null &&
-    dropTargetIndex.value === layerIndex &&
-    draggedIndex.value !== layerIndex
-  );
-}
+// The list is reordered through the store, not by letting Sortable mutate
+// sortedLayers directly (it is a computed, and its display order does not map
+// 1:1 to the store's), so the default onUpdate is replaced entirely.
+useSortable(layerCartRef, sortedLayers, {
+  handle: ".layer-reorder-handle",
+  animation: 150,
+  ghostClass: "opacity-40",
+  onUpdate({ oldIndex, newIndex }) {
+    if (oldIndex === undefined || newIndex === undefined) {
+      return;
+    }
 
-function onDrop(layerIndex: number) {
-  if (draggedIndex.value !== null) {
-    mapViewStore.setLayerIndex(draggedIndex.value, layerIndex);
-  }
-  onDragEnd();
-}
-
-function onDragEnd() {
-  draggedIndex.value = null;
-  dropTargetIndex.value = null;
-}
+    const draggedLayer = sortedLayers.value[oldIndex]?.layer;
+    const targetLayerIndex = sortedLayers.value[newIndex]?.layerIndex;
+    if (draggedLayer && targetLayerIndex !== undefined) {
+      mapViewStore.setLayerIndex(draggedLayer.uuid, targetLayerIndex);
+    }
+  },
+});
 </script>
 
 <template>
   <ul
+    ref="layerCartRef"
     data-testid="layer-cart"
     class="mt-8 flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-2"
   >
@@ -58,12 +59,6 @@ function onDragEnd() {
       :key="layer.uuid"
       :layerIndex="layerIndex"
       :layer="layer"
-      :isDragged="draggedIndex === layerIndex"
-      :isDropTarget="isDropTarget(layerIndex)"
-      @dragStart="draggedIndex = $event"
-      @dragOver="dropTargetIndex = $event"
-      @drop="onDrop"
-      @dragEnd="onDragEnd"
     />
   </ul>
 </template>

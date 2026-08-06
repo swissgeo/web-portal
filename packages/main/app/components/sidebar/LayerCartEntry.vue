@@ -13,34 +13,10 @@ import { useI18n } from "vue-i18n";
 
 import LayerLegend from "./LayerLegend.vue";
 
-const { layer, layerIndex, isDragged, isDropTarget } = defineProps<{
+const { layer, layerIndex } = defineProps<{
   layer: MapLayer;
   layerIndex: number;
-  isDragged?: boolean;
-  isDropTarget?: boolean;
 }>();
-
-const emit = defineEmits<{
-  dragStart: [layerIndex: number];
-  dragOver: [layerIndex: number];
-  drop: [layerIndex: number];
-  dragEnd: [];
-}>();
-
-const isDraggable = ref(false);
-
-function onDragStart(event: DragEvent) {
-  if (event.dataTransfer) {
-    event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", layer.uuid);
-  }
-  emit("dragStart", layerIndex);
-}
-
-function onDragEnd() {
-  isDraggable.value = false;
-  emit("dragEnd");
-}
 
 const { t } = useI18n();
 const layerStore = useLayerStore();
@@ -117,28 +93,14 @@ const rowButton = { size: "sm", severity: "secondary", text: true };
 </script>
 
 <template>
-  <li
-    class="flex min-w-0 flex-col gap-2 rounded"
-    :class="{
-      'opacity-40': isDragged,
-      'ring-2 ring-cyan-500': isDropTarget,
-    }"
-    :draggable="isDraggable"
-    @dragstart="onDragStart"
-    @dragover.prevent="emit('dragOver', layerIndex)"
-    @drop.prevent="emit('drop', layerIndex)"
-    @dragend="onDragEnd"
-  >
+  <li class="flex min-w-0 flex-col gap-2 rounded">
     <div class="flex min-w-0 items-center">
       <IconButton
         data-testid="layer-reorder-handle"
-        class="shrink-0 cursor-grab text-gray-400"
+        class="layer-reorder-handle shrink-0 cursor-grab text-gray-400"
         iconName="Grip-Vertical"
         v-bind="rowButton"
         :title="t('layers.reorder')"
-        @pointerdown="isDraggable = true"
-        @pointerup="isDraggable = false"
-        @pointercancel="isDraggable = false"
         @keydown.up.prevent="moveUp()"
         @keydown.down.prevent="moveDown()"
       />
