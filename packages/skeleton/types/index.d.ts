@@ -6,7 +6,6 @@ import type { ComputedRef, DefineComponent } from "vue";
 export enum SidebarType {
   LAYER_CART = "layerCart",
   GEOCATALOG_TREE = "geocatalogTree",
-  SEARCH = "search",
   CONTENT = "content",
 }
 
@@ -15,7 +14,6 @@ export declare const useUiStore: () => {
   helpOverlayContentId: number | null;
   isWelcomeOverlayVisible: boolean;
   isSidebarOpen: ComputedRef<boolean>;
-  isSearchVisible: ComputedRef<boolean>;
   isLayerCartVisible: ComputedRef<boolean>;
   isContentSidebarVisible: ComputedRef<boolean>;
   setSidebar: (type: SidebarType) => void;
@@ -38,7 +36,6 @@ export declare const useSearchStore: () => {
 
 export declare const IconButton: DefineComponent<any, any, any>;
 export declare const ContentButton: DefineComponent<any, any, any>;
-export declare const SearchButton: DefineComponent<any, any, any>;
 export declare const SideBar: DefineComponent<any, any, any>;
 
 declare global {

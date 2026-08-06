@@ -1,6 +1,6 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount, flushPromises } from "@vue/test-utils";
-import SidebarLanguageSwitcherButton from "~/components/sidebar/SidebarLanguageSwitcherButton.vue";
+import TopbarLanguageSwitcherButton from "~/components/topbar/TopbarLanguageSwitcherButton.vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { locale, locales, mockApplyLocale } = await vi.hoisted(async () => {
@@ -42,12 +42,12 @@ const USelectMenuStub = {
 };
 
 function mountComponent() {
-  return mount(SidebarLanguageSwitcherButton, {
+  return mount(TopbarLanguageSwitcherButton, {
     global: { stubs: { USelectMenu: USelectMenuStub } },
   });
 }
 
-describe("SidebarLanguageSwitcherButton", () => {
+describe("TopbarLanguageSwitcherButton", () => {
   beforeEach(() => {
     locale.value = "de";
     vi.clearAllMocks();

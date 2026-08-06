@@ -28,7 +28,7 @@ watch(selectedLocale, async (value) => {
       await appStore.applyLocale(value);
     } catch (err) {
       log.error({
-        title: "SidebarLanguageSwitcherButton",
+        title: "TopbarLanguageSwitcherButton",
         titleColor: LogPreDefinedColor.Rose,
         messages: [
           `Error while switching the language from ${locale.value} to ${value}`,
@@ -47,19 +47,18 @@ watch(selectedLocale, async (value) => {
       :items="localeItems"
       value-key="code"
       label-key="name"
-      :highlight="true"
-      :highlight-on-hover="true"
       :arrow="false"
       size="md"
-      variant="ghost"
+      variant="outline"
       :trailing="false"
       :searchInput="false"
       aria-label="Language switcher"
       :ui="{
         content: '!w-auto min-w-[150px] !max-w-none',
-        base: 'p-5 !shadow-none !ring-0',
+        base: 'p-4',
         trailingIcon: 'hidden',
         value: 'hidden',
+        leading: 'ps-2 pe-2',
       }"
     >
       <template #leading>

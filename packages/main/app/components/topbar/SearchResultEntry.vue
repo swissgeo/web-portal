@@ -6,8 +6,10 @@ import type { SearchResult } from "@swissgeo/search";
 import { SearchResultTypesEnum } from "@swissgeo/search";
 import { useDatasetPanelStore } from "@swissgeo/skeleton";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 const datasetPanelStore = useDatasetPanelStore();
+const { t } = useI18n();
 
 const { index, entry } = defineProps<{
   index: number;
@@ -78,7 +80,7 @@ defineExpose({
   <!-- List item with keyboard navigation -->
   <li
     ref="item"
-    class="border-surface-100 hover:bg-surface-50 focus:bg-surface-100 flex cursor-pointer items-start gap-3 border-b px-4 py-3 transition-colors focus:outline-none"
+    class="hover:bg-surface-50 focus:bg-surface-100 flex cursor-pointer items-center gap-2 px-3 py-2 transition-colors focus:outline-none"
     :data-testid="`search-result-entry-${entry.resultType.toLowerCase()}-${index}`"
     :tabindex="index === 0 ? 0 : -1"
     @keydown.up.prevent="goToPrevious"
@@ -89,58 +91,40 @@ defineExpose({
     @click="selectItem"
   >
     <!-- Icon based on result type -->
-    <div class="text-surface-400 mt-1 flex-shrink-0">
-      <UIcon
-        v-if="entry.resultType === SearchResultTypesEnum.location"
-        :data-testid="`icon-${entry.resultType.toLowerCase()}`"
-        name="i-lucide-map-pin"
-        class="size-10"
-      />
-      <UIcon
-        v-else-if="entry.resultType === SearchResultTypesEnum.layer"
-        name="i-lucide-layers"
-        :data-testid="`icon-${entry.resultType.toLowerCase()}`"
-        class="size-10"
-      />
-      <UIcon
-        v-else-if="entry.resultType === SearchResultTypesEnum.feature"
-        name="i-lucide-map-pinned"
-        :data-testid="`icon-${entry.resultType.toLowerCase()}`"
-        class="size-10"
-      />
-      <!--IF we are here, something is very wrong, but at least we'll know it-->
-      <UIcon
-        v-else
-        :data-testid="`icon-${entry.resultType}`"
-        name="i-lucide-bug"
-        class="size-10"
-      />
-    </div>
+    <UIcon
+      v-if="entry.resultType === SearchResultTypesEnum.location"
+      :data-testid="`icon-${entry.resultType.toLowerCase()}`"
+      name="i-lucide-map-pin"
+    />
+    <UIcon
+      v-else-if="entry.resultType === SearchResultTypesEnum.layer"
+      :data-testid="`icon-${entry.resultType.toLowerCase()}`"
+      name="i-lucide-layers"
+    />
+    <UIcon
+      v-else-if="entry.resultType === SearchResultTypesEnum.feature"
+      :data-testid="`icon-${entry.resultType.toLowerCase()}`"
+      name="i-lucide-map-pinned"
+    />
+    <UIcon
+      v-else
+      :data-testid="`icon-${entry.resultType}`"
+      name="i-lucide-bug"
+    />
 
-    <!-- Title and description -->
-    <div class="min-w-0 flex-1">
-      <!-- Title with HTML support for search highlighting -->
-      <div class="text-surface-900 font-medium" v-html="entry.title" />
+    <!-- Title -->
+    <div class="min-w-0 flex-1 truncate" v-html="entry.title" />
 
-      <!-- Description (optional) -->
-      <div
-        v-if="entry.description"
-        class="text-surface-600 mt-1 truncate text-sm"
-      >
-        {{ entry.description }}
-      </div>
-    </div>
-
-    <!-- Layer results are added to the map on click; this opens the dataset instead -->
+    <!-- Layer results info button -->
     <UButton
       v-if="entry.resultType === SearchResultTypesEnum.layer"
       :data-testid="`search-result-info-${index}`"
-      :aria-label="$t('search.viewDataset')"
-      :title="$t('search.viewDataset')"
+      :aria-label="t('search.viewDataset')"
+      :title="t('search.viewDataset')"
       icon="i-lucide-info"
       color="neutral"
       variant="ghost"
-      class="flex-shrink-0"
+      size="sm"
       @click.stop="datasetPanelStore.openDatasetPanel(entry.id)"
     />
   </li>

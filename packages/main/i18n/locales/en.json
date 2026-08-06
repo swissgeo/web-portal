@@ -14,6 +14,8 @@
   },
   "search": {
     "placeholder": "Search for a place, layer or coordinates...",
+    "map_tab": "Map",
+    "content_pages_tab": "Content pages",
     "locations_results_header": "Places",
     "features_results_header": "Features",
     "layers_results_header": "Layers",
