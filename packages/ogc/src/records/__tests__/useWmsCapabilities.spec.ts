@@ -168,5 +168,6 @@ describe("useWmsCapabilities 404", () => {
     const { wmsData } = useWmsCapabilities(service, layerId);
     await flushPromises();
     expect(wmsData.value.capabilities).toBe(null);
+    expect(wmsData.value.dimensions).toBe(null);
   });
 });
