@@ -46,8 +46,7 @@ watch(selectedLocale, async (value) => {
       v-model="selectedLocale"
       :items="localeItems"
       value-key="code"
-      label-key="name"
-      :arrow="false"
+      label-key="code"
       size="md"
       variant="outline"
       :trailing="false"
@@ -55,16 +54,11 @@ watch(selectedLocale, async (value) => {
       aria-label="Language switcher"
       :ui="{
         content: '!w-auto min-w-[150px] !max-w-none',
-        base: 'p-4',
-        trailingIcon: 'hidden',
-        value: 'hidden',
-        leading: 'ps-2 pe-2',
+        value: 'uppercase',
       }"
     >
-      <template #leading>
-        <span class="text-sm font-medium uppercase">
-          {{ selectedLocale }}
-        </span>
+      <template #item-label="{ item }">
+        {{ item.name }}
       </template>
     </USelectMenu>
   </ClientOnly>
