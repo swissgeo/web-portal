@@ -108,7 +108,7 @@ function clearSearch() {
         ref="inputRef"
         v-model="query"
         icon="i-lucide-search"
-        :placeholder="$t('search.placeholder')"
+        :placeholder="t('search.placeholder')"
         :loading="searchStore.isSearching"
         size="md"
         variant="outline"
@@ -153,16 +153,16 @@ function clearSearch() {
             "
             class="text-surface-500 p-4 text-center"
           >
-            {{ $t("search.no_results", "No results found") }}
+            {{ t("search.no_results") }}
           </div>
           <div v-else class="text-surface-500 p-4">
-            {{ $t("search.placeholder") }}
+            {{ t("search.placeholder") }}
           </div>
         </template>
 
         <template #contentPages>
           <div class="text-surface-500 p-4 text-center">
-            {{ $t("search.no_results", "No results found") }}
+            {{ t("search.no_results") }}
           </div>
         </template>
       </UTabs>
