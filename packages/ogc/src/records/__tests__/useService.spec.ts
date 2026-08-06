@@ -6,7 +6,11 @@ import { ref } from "vue";
 
 import type { Distribution } from "@/types/Records";
 
-import { useService, extractServiceUrl } from "../useService";
+import {
+  useService,
+  extractServiceUrl,
+  getDataServiceLinks,
+} from "../useService";
 import ChBafuSchutzgebieteLuftfahrtWmts from "./fixtures/distribution_ch.bafu.schutzgebiete-luftfahrt_wmts.json";
 import ChGeoadminWmts from "./fixtures/service_ch.admin.geo.wmts.json";
 
@@ -43,6 +47,20 @@ describe("useService fetching the service data from the OGC records", () => {
     distribution.value = ChBafuSchutzgebieteLuftfahrtWmts as Distribution;
     await flushPromises();
     expect(serviceData.value).toEqual(ChGeoadminWmts);
+  });
+
+  it("returns null serviceUrl when distribution is null", () => {
+    const distribution = ref<Distribution | null>(null);
+    const { serviceUrl } = useService(distribution);
+    expect(serviceUrl.value).toBe(null);
+  });
+
+  it("returns correct serviceUrl for a valid distribution", () => {
+    const distribution = ref(ChBafuSchutzgebieteLuftfahrtWmts as Distribution);
+    const { serviceUrl } = useService(distribution);
+    expect(serviceUrl.value).toEqual(
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/geoadmin.services/items/ch.admin.geo.wmts",
+    );
   });
 });
 
@@ -90,4 +108,45 @@ describe("extract service URL", () => {
       expect(link).toEqual("my-link");
     },
   );
+
+  it("throws when links is undefined", () => {
+    // @ts-expect-error Intentionally breaking the type
+    const distribution = { links: undefined };
+    expect(() => extractServiceUrl(distribution)).toThrow(
+      "Unable to extract service URL",
+    );
+  });
+
+  it("throws when dataservice link has no href", () => {
+    const distribution = {
+      links: [{ rel: "dataservice" }],
+    };
+    // @ts-expect-error Intentionally missing href
+    expect(() => extractServiceUrl(distribution)).toThrow("Faulty wmts record");
+  });
+});
+
+describe("getDataServiceLinks", () => {
+  it("filters links by dataservice rel", () => {
+    const links = [
+      { href: "a", rel: "dataset" },
+      { href: "b", rel: "dataservice" },
+      { href: "c", rel: "styledby" },
+      { href: "d", rel: "dataservice" },
+    ];
+    const result = getDataServiceLinks(links);
+    expect(result).toEqual([
+      { href: "b", rel: "dataservice" },
+      { href: "d", rel: "dataservice" },
+    ]);
+  });
+
+  it("returns empty array when no dataservice links", () => {
+    const links = [
+      { href: "a", rel: "dataset" },
+      { href: "c", rel: "styledby" },
+    ];
+    const result = getDataServiceLinks(links);
+    expect(result).toEqual([]);
+  });
 });
