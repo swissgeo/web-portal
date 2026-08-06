@@ -5,7 +5,7 @@ import { registerProj4 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computedAsync } from "@vueuse/core";
 import proj4 from "proj4";
-import { watchEffect } from "vue";
+import { computed, watchEffect } from "vue";
 
 import type { Service } from "@/types/Records";
 
@@ -28,10 +28,29 @@ export function useWmtsCapabilities(
 ) {
   const { capabilityUrl } = useCapabilities(serviceData);
 
-  const wmtsData = computedAsync(
-    () => parseWmtsCapabilities(capabilityUrl.value, layerId.value),
+  // Keyed only on `capabilityUrl` so switching layers on the same service
+  // reuses the already-fetched/parsed endpoint instead of re-fetching it.
+  const endpoint = computedAsync(
+    () =>
+      capabilityUrl.value
+        ? new WmtsEndpoint(capabilityUrl.value).isReady()
+        : null,
     null,
   );
+
+  const wmtsData = computed(() => {
+    if (!endpoint.value || !layerId.value) {
+      return null;
+    }
+    const layer = endpoint.value.getLayerByName(layerId.value);
+    return {
+      // The parsed endpoint is passed to `map`, which builds the OpenLayers
+      // WMTS source options from it (see `buildWmtsOptions`). This keeps
+      // OpenLayers out of `@swissgeo/ogc`.
+      endpoint: endpoint.value,
+      dimensions: layer?.dimensions ?? null,
+    };
+  });
 
   watchEffect(() => {
     log.debug({
@@ -44,25 +63,5 @@ export function useWmtsCapabilities(
   return {
     capabilityUrl,
     wmtsData,
-  };
-}
-
-export async function parseWmtsCapabilities(
-  capabilityUrl: string | null,
-  layerId: string | null,
-) {
-  if (!capabilityUrl || !layerId) {
-    return null;
-  }
-
-  const endpoint = await new WmtsEndpoint(capabilityUrl).isReady();
-  const layer = endpoint.getLayerByName(layerId);
-
-  return {
-    // The parsed endpoint is passed to `map`, which builds the OpenLayers WMTS
-    // source options from it (see `buildWmtsOptions`). This keeps OpenLayers out
-    // of `@swissgeo/ogc`.
-    endpoint,
-    dimensions: layer?.dimensions ?? null,
   };
 }

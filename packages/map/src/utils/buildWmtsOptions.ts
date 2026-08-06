@@ -41,9 +41,8 @@ export async function buildWmtsOptions(
   }
 
   const matrixSetLink =
-    (config.matrixSet
-      ? layer.matrixSets.find((set) => set.identifier === config.matrixSet)
-      : layer.matrixSets[0]) ?? layer.matrixSets[0];
+    layer.matrixSets.find((set) => set.identifier === config.matrixSet) ??
+    layer.matrixSets[0];
   if (!matrixSetLink) {
     return null;
   }
