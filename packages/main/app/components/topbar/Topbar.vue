@@ -4,6 +4,8 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { LogoPic } from "@swissgeo/skeleton";
 
+const { t } = useI18n();
+
 const emit = defineEmits<{
   "reset-app": [void];
   "search-result-selected": [result: SearchResult];
@@ -13,88 +15,88 @@ const localePath = useLocalePath();
 
 const items = computed<NavigationMenuItem[]>(() => [
   {
-    label: "Startseite",
+    label: t("topbar.home"),
   },
   {
-    label: "Geodaten und Karten",
+    label: t("topbar.geoDataAndMaps"),
     children: [
       {
-        label: "Wie kann ich Geodaten nutzen?",
+        label: t("topbar.howToUseGeodata"),
       },
       {
-        label: "Geodaten im Kartenviewer anschauen",
+        label: t("topbar.viewGeodataInMapViewer"),
       },
       {
-        label: "Themen und Daten entdecken",
+        label: t("topbar.discoverTopicsAndData"),
       },
       {
-        label: "Geodienste: Daten beziehen und einbinden",
+        label: t("topbar.geoservices"),
       },
       {
-        label: "Geodaten suchen",
+        label: t("topbar.searchGeodata"),
       },
       {
-        label: "Neue Daten und Updates",
+        label: t("topbar.newDataAndUpdates"),
       },
     ],
   },
   {
-    label: "Tutorials und Hilfe",
+    label: t("topbar.tutorialsAndHelp"),
     children: [
       {
-        label: "Erste Schritte im Kartenviewer",
+        label: t("topbar.gettingStarted"),
       },
       {
-        label: "Navigation im Kartenviewer",
+        label: t("topbar.mapViewerNavigation"),
       },
       {
-        label: "Metadatenkatalog",
+        label: t("topbar.metadataCatalog"),
       },
       {
-        label: "Weitere Funktionen",
+        label: t("topbar.moreFeatures"),
       },
     ],
   },
   {
-    label: "Fachinformationen",
+    label: t("topbar.specialistInfo"),
     children: [
       {
-        label: "Nationale Geodaten-Infrastruktur (NGDI)",
+        label: t("topbar.ngdi"),
       },
       {
-        label: "Geobasisdaten, Geodatenmodelle und Standards",
+        label: t("topbar.geobaseData"),
       },
       {
-        label: "Katalog der geografischen Metadaten der Schweiz",
+        label: t("topbar.metadataCatalogSwitzerland"),
       },
       {
-        label: "Filme über Geoinformationen",
+        label: t("topbar.geoInformationFilms"),
       },
     ],
   },
   {
-    label: "Über uns",
+    label: t("topbar.aboutUs"),
     children: [
       {
-        label: "Was ist SWISSGEO?",
+        label: t("topbar.whatIsSwissgeo"),
       },
       {
-        label: "Vision",
+        label: t("topbar.vision"),
       },
       {
-        label: "Strategie Geoinformation Schweiz",
+        label: t("topbar.strategy"),
       },
       {
-        label: "Kennzahlen",
+        label: t("topbar.keyFigures"),
       },
       {
-        label: "Organisation",
+        label: t("topbar.organisation"),
       },
       {
-        label: "Rechtliche Grundlagen",
+        label: t("topbar.legalBasis"),
       },
       {
-        label: "Medieninformationen",
+        label: t("topbar.mediaInformation"),
       },
     ],
   },
@@ -120,11 +122,11 @@ function resetApp() {
           content: 'w-fit',
         }"
       />
-      <UButton :to="localePath('/map')"> Karte </UButton>
+      <UButton :to="localePath('/map')"> {{ t("topbar.map") }} </UButton>
       <USeparator class="mx-4 h-8" orientation="vertical" />
-      <UButton icon="i-lucide-log-in" color="neutral" variant="outline"
-        >Anmelden</UButton
-      >
+      <UButton icon="i-lucide-log-in" color="neutral" variant="outline">{{
+        t("topbar.login")
+      }}</UButton>
       <TopbarLanguageSwitcherButton />
     </template>
   </UHeader>
