@@ -120,17 +120,32 @@ export function getDimensions(
   return dimensions.length ? dimensions : null;
 }
 
-/** Legends of the requested layer, one per style that advertises one. */
+/**
+ * Legends of the requested layer, one per style that advertises one. Styles are
+ * inherited from the enclosing groups, as the WMS spec prescribes, so a layer
+ * nested in a group also carries the legends the group publishes. The layer's
+ * own legends come first.
+ */
 export function getLegends(doc: Document, layerId: string): Legend[] {
   const layer = findLayer(doc, layerId);
   if (!layer) {
     return [];
   }
 
-  return directChildren(layer, "Style")
-    .flatMap((style) => directChildren(style, "LegendURL"))
-    .map(parseLegend)
-    .filter((legend): legend is Legend => !!legend);
+  const legends: Legend[] = [];
+  for (
+    let candidate: Element | null = layer;
+    candidate?.localName === "Layer";
+    candidate = candidate.parentElement
+  ) {
+    legends.push(
+      ...directChildren(candidate, "Style")
+        .flatMap((style) => directChildren(style, "LegendURL"))
+        .map(parseLegend)
+        .filter((legend): legend is Legend => !!legend),
+    );
+  }
+  return legends;
 }
 
 function parseLegend(element: Element): Legend | undefined {

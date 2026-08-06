@@ -20,8 +20,9 @@ function isImage(legend: Legend) {
   return /\.(png|jpe?g|gif|svg|webp)(\?|$)/i.test(legend.href);
 }
 
-// Services do lie about the format, so an image that fails to load is treated
-// as a document from then on rather than being dropped altogether
+// A legend that fails to load (missing file, blocked request, or a format the
+// service got wrong) is offered as a link rather than dropped, so the user
+// still has a way to reach it
 function isDisplayableImage(legend: Legend) {
   return isImage(legend) && !failedHrefs.value.includes(legend.href);
 }

@@ -40,6 +40,30 @@ describe("legend extraction from WMS capabilities", () => {
     ]);
   });
 
+  // Layers are not always direct children of the root layer, and a layer can
+  // advertise one legend per style
+  it("extracts the legends of a layer nested in a group", () => {
+    const { legends } = parseWmsCapabilities(
+      wmsCapabilitiesXML,
+      "ch.swisstopo.geologie-geomol_hoehe_top_dogger_legend",
+    );
+
+    expect(legends).toEqual([
+      {
+        href: "https://wms.geo.admin.ch/de/?version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=ch.swisstopo.geologie-geomol_hoehe_top_dogger_legend&format=image/png&STYLE=default",
+        format: "image/png",
+        width: 257,
+        height: 39,
+      },
+      {
+        href: "https://wms.geo.admin.ch/de/?version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=ch.swisstopo.geologie-geomol_hoehe_top_dogger&format=image/png&STYLE=default",
+        format: "image/png",
+        width: 257,
+        height: 39,
+      },
+    ]);
+  });
+
   it("returns no legend for an unknown layer", () => {
     const { legends } = parseWmsCapabilities(wmsCapabilitiesXML, "not.a.layer");
 

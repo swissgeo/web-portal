@@ -137,6 +137,8 @@ const rowButton = { size: "sm", severity: "secondary", text: true };
         v-bind="rowButton"
         :title="t('layers.reorder')"
         @pointerdown="isDraggable = true"
+        @pointerup="isDraggable = false"
+        @pointercancel="isDraggable = false"
         @keydown.up.prevent="moveUp()"
         @keydown.down.prevent="moveDown()"
       />
