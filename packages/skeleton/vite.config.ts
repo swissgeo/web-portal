@@ -16,6 +16,7 @@ export default defineConfig(({ mode }) => {
         provider: "v8",
         reportsDirectory: resolve(__dirname, "../../coverage/unit/skeleton"),
         reporter: ["lcov", "cobertura"],
+        include: ["src/**/*.ts", "src/**/*.vue"],
       },
     },
     build: {

@@ -29,6 +29,8 @@
     "lint": "eslint",
     "lint:write": "eslint --fix",
     "prepare": "pnpm run build",
+    "test:unit": "vitest run",
+    "test:unit:coverage": "vitest run --coverage",
     "type-check": "tsc -p tsconfig.json"
   },
   "dependencies": {

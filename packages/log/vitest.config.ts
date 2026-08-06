@@ -3,12 +3,13 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    environment: "happy-dom",
+    environment: "node",
+    passWithNoTests: true,
     coverage: {
       provider: "v8",
-      reportsDirectory: path.resolve(__dirname, "../../coverage/unit/ogc"),
+      reportsDirectory: path.resolve(__dirname, "../../coverage/unit/log"),
       reporter: ["lcov", "cobertura"],
-      include: ["src/**/*.ts", "src/**/*.vue"],
+      include: ["src/**/*.ts"],
     },
   },
 });

@@ -1,7 +1,7 @@
 import vue from "@vitejs/plugin-vue";
 import path from "path";
 import { fileURLToPath, URL } from "url";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
@@ -13,6 +13,8 @@ export default defineConfig({
         "../../coverage/unit/statesharing",
       ),
       reporter: ["lcov", "cobertura"],
+      include: ["src/**/*.ts", "src/**/*.vue"],
+      exclude: [...(configDefaults.coverage.exclude ?? []), "src/hey-api/**"],
     },
   },
   resolve: {
