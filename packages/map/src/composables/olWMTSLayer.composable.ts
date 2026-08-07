@@ -4,7 +4,7 @@ import type { Ref } from "vue";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { Tile as TileLayer } from "ol/layer";
 import WMTS from "ol/source/WMTS";
-import { computed, ref, watch, watchEffect } from "vue";
+import { computed, ref, toRaw, watch, watchEffect } from "vue";
 
 import type { WMTSLayer } from "@/types/layers";
 
@@ -49,7 +49,11 @@ export default function useOlWmtsLayer(
       });
 
       const definitiveOptions = {
-        ...layer.value.options,
+        // we need to break reactivity here
+        // otherwise, every pan/zoom will update the Layer, which will
+        // somehow change the options, and they're reactive back to the mapViewStore,
+        // resulting in a LOT of untraceable store mutations, slowing the app down
+        ...toRaw(layer.value.options),
         ...wmtsTimeConfig.value,
       };
 

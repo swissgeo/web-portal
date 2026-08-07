@@ -2,20 +2,12 @@
 import type { Map as OlMapType } from "ol";
 import type { Ref } from "vue";
 
-import { registerProj4 } from "@swissgeo/coordinates";
-import { platformModifierKeyOnly } from "ol/events/condition.js";
-import { defaults } from "ol/interaction/defaults.js";
-import DragPan from "ol/interaction/DragPan.js";
-import MouseWheelZoom from "ol/interaction/MouseWheelZoom.js";
-import Map from "ol/Map";
-import { register } from "ol/proj/proj4";
-import proj4 from "proj4";
 import { onMounted, provide, shallowRef, useTemplateRef } from "vue";
 
 import type { MapLayerRenderer } from "@/types";
 import type { Layer } from "@/types/layers";
 
-import useViewBasedOnProjection from "@/composables/useViewBasedOnProjection.composable";
+import createOlMap from "@/composables/createOlMap";
 
 import { useMapStore } from "../stores/map";
 import OpenLayersVisibleLayer from "./OpenLayersVisibleLayer.vue";
@@ -39,38 +31,10 @@ onMounted(() => {
     olMap.value;
 });
 
-function registerCustomProjection() {
-  registerProj4(proj4);
-  register(proj4);
-}
+function initializeOlMap(zoomOnlyCtrl = false) {
+  const { map } = createOlMap({ zoomOnlyCtrl });
 
-function createOlMap(zoomOnlyCtrl = false) {
-  const map = new Map({
-    controls: [],
-    ...(zoomOnlyCtrl
-      ? {
-          interactions: defaults({
-            dragPan: false,
-            mouseWheelZoom: false,
-          }).extend([
-            new DragPan({
-              condition: function (event) {
-                return (
-                  (this as DragPan).getPointerCount() === 2 ||
-                  platformModifierKeyOnly(event)
-                );
-              },
-            }),
-            new MouseWheelZoom({
-              condition: platformModifierKeyOnly,
-            }),
-          ]),
-        }
-      : {}),
-  });
   olMap.value = map;
-
-  useViewBasedOnProjection(olMap.value);
   mapStore.setOlMap(map);
 
   map.once("loadend", () => {
@@ -84,8 +48,7 @@ function mountOlMap() {
   }
 }
 
-registerCustomProjection();
-createOlMap(zoomOnlyCtrl);
+initializeOlMap(zoomOnlyCtrl);
 </script>
 
 <template>
