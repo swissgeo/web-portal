@@ -10,6 +10,7 @@ import type { Service } from "@/types";
 
 import {
   /*parseWmtsCapabilities,*/ useWmtsCapabilities,
+  getDimensions,
 } from "../useWmtsCapabilities";
 import WmtsCapabilities from "./fixtures/capabilities_wmts.geo.admin.ch.json";
 import ChGeoadminWmts from "./fixtures/service_ch.admin.geo.wmts.json";
@@ -60,5 +61,54 @@ describe("useWmtsCapabilities fetching and parsing WMTS capabilities", () => {
     const capabilities = wmtsData.value?.capabilities;
     expect(capabilities).toEqual(WmtsCapabilities);
     // TODO test options
+  });
+});
+
+describe("useWmtsCapabilities getDimensions", () => {
+  it("returns the dimensions of a WMTS layer that has dimensions", () => {
+    const capabilities = WmtsCapabilities;
+    const layerId = "ch.bafu.landesforstinventar-vegetationshoehenmodell";
+    const dimensions = getDimensions(capabilities, layerId);
+    expect(dimensions).toBeDefined();
+    expect(dimensions).toEqual([
+      {
+        Identifier: "Time",
+        Default: "current",
+        Value: [
+          "current",
+          "2023",
+          "2022",
+          "2021",
+          "2020",
+          "2019",
+          "2018",
+          "2017",
+          "2016",
+          "2015",
+          "2014",
+          "2013",
+          "2012",
+          "2011",
+          "2010",
+          "2009",
+          "2008",
+          "2007",
+        ],
+      },
+    ]);
+  });
+
+  it("returns undefined for a WMTS layer that has no dimensions", () => {
+    const capabilities = WmtsCapabilities;
+    const layerId = "ch.bafu.radonkarte";
+    const dimensions = getDimensions(capabilities, layerId);
+    expect(dimensions).toBeUndefined();
+  });
+
+  it("returns null if no capabilities are provided", () => {
+    const capabilities: null = null;
+    const layerId = "ch.bafu.radonkarte";
+    const dimensions = getDimensions(capabilities, layerId);
+    expect(dimensions).toBeNull();
   });
 });
