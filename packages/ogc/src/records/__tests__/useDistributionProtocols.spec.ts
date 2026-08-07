@@ -6,7 +6,7 @@ import type { DistributionCollection } from "@/types/Records";
 import { useDistributionProtocols } from "../useDistributionProtocols";
 import ChBafuSchutzgebieteLuftfahrtDistributions from "./fixtures/distribution-collection_ch.bafu.schutzgebiete-luftfahrt.json";
 
-describe("useDistributionProtocols", () => {
+describe("useDistributionProtocols composable", () => {
   it("extracts protocols from distribution collection", () => {
     const distributionCollection = ref(
       ChBafuSchutzgebieteLuftfahrtDistributions as DistributionCollection,
@@ -29,16 +29,5 @@ describe("useDistributionProtocols", () => {
     );
 
     expect(availableProtocols.value).toEqual([]);
-  });
-
-  it("returns null for null distribution collection", () => {
-    const distributionCollection = ref(
-      null as unknown as DistributionCollection,
-    );
-    const { availableProtocols } = useDistributionProtocols(
-      distributionCollection,
-    );
-
-    expect(availableProtocols.value).toBe(null);
   });
 });

@@ -110,8 +110,7 @@ describe("extract service URL", () => {
   );
 
   it("throws when links is undefined", () => {
-    // @ts-expect-error Intentionally breaking the type
-    const distribution = { links: undefined };
+    const distribution = {};
     expect(() => extractServiceUrl(distribution)).toThrow(
       "Unable to extract service URL",
     );

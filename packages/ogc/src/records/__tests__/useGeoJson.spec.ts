@@ -11,7 +11,7 @@ import { useGeoJson } from "../useGeoJson";
 const DATA_URL = "https://example.com/data.geojson";
 const STYLE_URL = "https://example.com/style.json";
 
-const sampleGeoJson = { type: "FeatureCollection", features: [] as any[] }; // eslint-disable-line @typescript-eslint/no-explicit-any
+const sampleGeoJson = { type: "FeatureCollection", features: [] as unknown[] };
 const sampleStyle = { version: 8, sources: {} };
 
 const handlers = [
@@ -29,11 +29,10 @@ beforeAll(() => server.listen());
 afterAll(() => server.close());
 afterEach(() => server.resetHandlers());
 
-describe("useGeoJson", () => {
+describe("useGeoJson composable", () => {
   it("returns empty parsed objects when distribution has no links", async () => {
     const distribution = ref<Distribution>({
       id: "test",
-      links: [],
       properties: { type: "Distribution", title: "Test" },
     });
     const { geoJsonData } = useGeoJson(distribution);
@@ -45,7 +44,7 @@ describe("useGeoJson", () => {
     });
   });
 
-  it("returns null URLs when no matching rel links", async () => {
+  it("returns empty objects when no matching rel links", async () => {
     const distribution = ref<Distribution>({
       id: "test",
       links: [
