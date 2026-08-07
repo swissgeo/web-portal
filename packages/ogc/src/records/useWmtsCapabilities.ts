@@ -11,12 +11,6 @@ import type { Service } from "@/types/Records";
 
 import { useCapabilities } from "./useCapabilities";
 
-// Note: ogc-client parses capabilities in a Web Worker in the browser, and in a
-// self-contained main-thread fallback in Node (SSR / unit tests). We do NOT call
-// enableFallbackWithoutWorker() in the browser: its main-thread fallback is
-// broken in 1.3.0 (requester and handler use different EventTarget instances),
-// which hangs the parse. The Worker path works with real requests.
-
 // ogc-client resolves coordinate systems via proj4; make sure the custom Swiss
 // projections are registered. This is a proj4 concern (not OpenLayers), so it
 // stays here. The OpenLayers-side `register(proj4)` now lives in `map`.
