@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "@swissgeo/map/stylesheet";
-@import "@fontsource/inter";
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-ext-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-ext-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-ext-600.css";
+@import "@fontsource/inter/latin-700.css";
+@import "@fontsource/inter/latin-ext-700.css";
 @import "@swissgeo/dimension/stylesheet";
 
 @source "../../../../skeleton/";
@@ -8,7 +15,6 @@
 @source "../../../../map/";
 @source "../../../../dimension/";
 
-@custom-variant dark (&:where(.dark-mode, .dark-mode *));
 @import "@nuxt/ui";
 @source "../../../../skeleton/src/**/*.{vue,ts,js,tsx,jsx}";
 
@@ -231,16 +237,13 @@ body {
 @layer theme {
   :root,
   .light {
-    --ui-neutral: var(--color-black);
     --ui-btn-default: var(--ui-color-primary-500);
     --ui-btn-hover: var(--ui-color-primary-600);
     --ui-btn-disabled: var(--ui-color-primary-300);
   }
 
-  .dark,
-  .dark-mode {
+  .dark {
     --ui-primary: var(--ui-color-primary-500);
-    --ui-neutral: var(--color-white);
     --ui-text-dimmed: var(--ui-color-neutral-300);
     --ui-text-muted: var(--ui-color-neutral-200);
     --ui-text-toned: var(--ui-color-neutral-100);
