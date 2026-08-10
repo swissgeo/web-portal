@@ -8,7 +8,10 @@ import RegularShape from "ol/style/RegularShape";
 import Style from "ol/style/Style";
 import { describe, expect, it, vi } from "vitest";
 
-import type { GeoAdminGeoJSONStyleDefinition } from "../geojson";
+import type {
+  GeoAdminGeoJSONStyleDefinition,
+  GeoAdminGeoJSONStyleSingle,
+} from "../geojson";
 
 import OlStyleForPropertyValue, {
   getOlImageStyleForShape,
@@ -242,6 +245,18 @@ describe("OlStyleForPropertyValue", () => {
       const style = olStyle.getFeatureStyle(feature, 1);
       expect(style).toBeInstanceOf(Style);
     });
+
+    it("returns default style and logs when the property value is an array or object", () => {
+      const olStyle = new OlStyleForPropertyValue(config);
+      const arrayFeature = makeFeature("point", { category: ["A", "B"] });
+      const objectFeature = makeFeature("point", { category: { a: 1 } });
+      expect(olStyle.getFeatureStyle(arrayFeature, 1)).toBe(
+        olStyle.defaultStyle,
+      );
+      expect(olStyle.getFeatureStyle(objectFeature, 1)).toBe(
+        olStyle.defaultStyle,
+      );
+    });
   });
 
   describe("range style type", () => {
@@ -363,7 +378,7 @@ describe("OlStyleForPropertyValue", () => {
   });
 
   describe("label template", () => {
-    const config: GeoAdminGeoJSONStyleDefinition = {
+    const config: GeoAdminGeoJSONStyleSingle = {
       type: "single",
       property: "name",
       geomType: "point",
@@ -395,6 +410,50 @@ describe("OlStyleForPropertyValue", () => {
       });
       const style = olStyle.getFeatureStyle(feature, 1);
       expect(style).toBeInstanceOf(Style);
+      expect(style.getText()?.getText()).toBe("Station A (hydro)");
+    });
+
+    it("substitutes null, undefined and object property values in the template", () => {
+      const nullishConfig: GeoAdminGeoJSONStyleDefinition = {
+        ...config,
+        vectorOptions: {
+          ...config.vectorOptions,
+          label: {
+            ...config.vectorOptions!.label,
+            template: "${name}-${missing}-${extra}",
+          },
+        },
+      } as GeoAdminGeoJSONStyleDefinition;
+      const olStyle = new OlStyleForPropertyValue(nullishConfig);
+      const feature = makeFeature("point", {
+        name: null,
+        missing: undefined,
+        extra: { a: 1 },
+      });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style.getText()?.getText()).toBe('null-undefined-{"a":1}');
+    });
+
+    it("applies a label background fill and stroke when configured", () => {
+      const backgroundConfig: GeoAdminGeoJSONStyleDefinition = {
+        ...config,
+        vectorOptions: {
+          ...config.vectorOptions,
+          label: {
+            ...config.vectorOptions!.label,
+            text: {
+              ...config.vectorOptions!.label!.text,
+              backgroundFill: { color: "white" },
+              backgroundStroke: { color: "black", width: 1 },
+            },
+          },
+        },
+      } as GeoAdminGeoJSONStyleDefinition;
+      const olStyle = new OlStyleForPropertyValue(backgroundConfig);
+      const feature = makeFeature("point", { name: "A", type: "b" });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style.getText()?.getBackgroundFill()).toBeTruthy();
+      expect(style.getText()?.getBackgroundStroke()).toBeTruthy();
     });
   });
 
@@ -415,6 +474,14 @@ describe("OlStyleForPropertyValue", () => {
       const feature = makeFeature("point", { heading: 1.57 });
       const style = olStyle.getFeatureStyle(feature, 1);
       expect(style).toBeInstanceOf(Style);
+      expect(style.getImage()?.getRotation()).toBe(1.57);
+    });
+
+    it("leaves rotation unset when the property value is not numeric", () => {
+      const olStyle = new OlStyleForPropertyValue(config);
+      const feature = makeFeature("point", { heading: "not-a-number" });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style.getImage()?.getRotation()).toBe(0);
     });
   });
 });

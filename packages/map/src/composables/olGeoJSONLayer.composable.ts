@@ -2,8 +2,10 @@ import type { Map } from "ol";
 import type { FeatureLike } from "ol/Feature";
 import type { Ref } from "vue";
 
+import { constants as coordinateConstants } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { Feature } from "ol";
+import { stylefunction } from "ol-mapbox-style";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import { register } from "ol/proj/proj4";
@@ -17,8 +19,14 @@ import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
 import * as geoJsonUtils from "@/utils/geoJsonUtils";
+import { makeGetImage } from "@/utils/maplibreShapeIcons";
+import { applyOlTextBackground } from "@/utils/textBackgroundHelper";
 
 import OlStyleForPropertyValue from "../utils/geoJsonStyleFromLiterals";
+
+// Global, idempotent registration of the proj4 projections OpenLayers needs to
+// reproject the fetched GeoJSON.
+register(proj4);
 
 export default function useOlGeoJSONLayer(
   layer: Ref<GeoJSONLayer>,
@@ -31,13 +39,18 @@ export default function useOlGeoJSONLayer(
   const opacity = computed(() => layer.value.opacity);
   const geoJsonData = computed(() => layer.value.geoJsonData);
   const geoJsonStyle = computed(() => layer.value.geoJsonStyle);
+  const mapLibreStyle = computed(() => layer.value.mapLibreStyle);
 
   const projection = computed(() => positionStore.projection);
 
   const olLayer = ref<VectorLayer>();
 
   watch(
-    [() => geoJsonStyle.value, () => geoJsonData.value],
+    [
+      () => geoJsonStyle.value,
+      () => mapLibreStyle.value,
+      () => geoJsonData.value,
+    ],
     () => {
       olLayer.value = new VectorLayer({
         properties: {
@@ -53,6 +66,14 @@ export default function useOlGeoJSONLayer(
   );
 
   function setGeoJsonStyle(): void {
+    if (!olLayer.value) {
+      return;
+    }
+    // Prefer the standard MapLibre style (rendered via ol-mapbox-style) when present.
+    if (mapLibreStyle.value) {
+      setMapLibreStyle();
+      return;
+    }
     if (!geoJsonStyle.value) {
       return;
     }
@@ -65,28 +86,74 @@ export default function useOlGeoJSONLayer(
       geoJsonStyle.value as GeoAdminGeoJSONStyleDefinition,
     );
 
-    if (olLayer.value) {
-      olLayer.value.setStyle((feature: FeatureLike, res) => {
-        // OpenLayers passes FeatureLike, but our style function expects Feature
-        // RenderFeature doesn't have the same methods as Feature, so we need to handle this
-        if (feature instanceof Feature) {
-          return styleFunction.getFeatureStyle(feature, res);
-        }
-        // For RenderFeature, return a default style or handle differently
-        return styleFunction.defaultStyle;
-      });
+    olLayer.value.setStyle((feature: FeatureLike, res) => {
+      // OpenLayers passes FeatureLike, but our style function expects Feature
+      // RenderFeature doesn't have the same methods as Feature, so we need to handle this
+      if (feature instanceof Feature) {
+        return styleFunction.getFeatureStyle(feature, res);
+      }
+      // For RenderFeature, return a default style or handle differently
+      return styleFunction.defaultStyle;
+    });
+  }
+
+  function setMapLibreStyle(): void {
+    if (!olLayer.value || !mapLibreStyle.value) {
+      return;
     }
+    const style = mapLibreStyle.value;
+    // The converter emits a single geojson source; its key is what ties the style
+    // layers to our OpenLayers VectorSource.
+    const sourceId = Object.keys(style.sources)[0];
+    if (!sourceId) {
+      log.error({
+        title: "useOlGeoJSONLayer",
+        titleColor: LogPreDefinedColor.Yellow,
+        messages: ["MapLibre style has no source", style],
+      });
+      return;
+    }
+    log.debug({
+      title: "useOlGeoJSONLayer",
+      titleColor: LogPreDefinedColor.Yellow,
+      messages: ["Applying MapLibre style via ol-mapbox-style", style],
+    });
+    const getImage = makeGetImage(layer.value.mapLibreIcons ?? []);
+    // Pass the LV95 view resolutions so ol-mapbox-style maps the current map
+    // resolution to the same zoom levels the converter used for minzoom/maxzoom.
+    stylefunction(
+      olLayer.value,
+      style,
+      sourceId,
+      coordinateConstants.LV95_RESOLUTIONS,
+      undefined,
+      undefined,
+      undefined,
+      getImage,
+    );
+    // ol-mapbox-style can't render a label background box; re-apply the geoadmin
+    // label background (carried in layer metadata by the converter) using
+    // OpenLayers' native Text backgroundFill.
+    applyOlTextBackground(olLayer.value, style);
   }
 
   function setFeatures(): void {
     if (!olLayer.value) {
       return;
     }
+    // Data may not have loaded yet (e.g. an async fetch still in flight); leave the
+    // layer without a source until real GeoJSON data arrives.
+    if (!geoJsonData.value || Object.keys(geoJsonData.value).length === 0) {
+      return;
+    }
 
     log.debug({
       title: "useOlGeoJSONLayer",
       titleColor: LogPreDefinedColor.Yellow,
-      messages: ["Setting geoJSON source", geoJsonData.value],
+      messages: [
+        "Setting geoJSON source",
+        `${geoJsonData.value.features?.length ?? 0} feature(s)`,
+      ],
     });
 
     olLayer.value.setSource(
@@ -102,9 +169,10 @@ export default function useOlGeoJSONLayer(
   }
 
   function initialize(): void {
-    register(proj4);
-    setGeoJsonStyle();
+    // Features first, then style: ol-mapbox-style's stylefunction reads the source's
+    // features at render time, and the legacy path is unaffected by ordering.
     setFeatures();
+    setGeoJsonStyle();
   }
 
   const { addLayerToMap } = useAddLayerToMap(

@@ -30,6 +30,8 @@ import type {
   GeoAdminGeoJSONStyleSingle,
 } from "./geojson";
 
+import { SHAPE_GEOMETRY } from "./maplibreShapeIcons";
+
 // TODO I don't know enough about styles to do this right now...
 
 // copied and adapted from https://github.com/geoadmin/mf-geoadmin3/blob/master/src/components/StylesFromLiteralsService.js
@@ -37,58 +39,44 @@ import type {
 export function getOlImageStyleForShape(
   vectorOptions: GeoAdminGeoJSONVectorOptions,
 ): Circle | Icon | RegularShape {
-  const basicStyles: OLBasicStyles = getOlBasicStyles(vectorOptions);
+  // Mirrors web-mapviewer's styleFromLiterals: spread the raw vectorOptions
+  // (radius, rotation, scale, src, …) then override fill/stroke/text with their
+  // OpenLayers instances. The OL shape constructors accept `radius` and the
+  // static `rotation` natively, so both flow through.
+  const style = {
+    ...vectorOptions,
+    ...getOlBasicStyles(vectorOptions),
+    // Necessary for Cesium
+    crossOrigin: "anonymous",
+  } as Record<string, unknown>;
+
   if (vectorOptions.type === "circle") {
-    return new Circle({
-      ...basicStyles,
-      radius: vectorOptions.radius,
-    });
+    return new Circle(
+      style as unknown as ConstructorParameters<typeof Circle>[0],
+    );
   } else if (vectorOptions.type === "icon") {
-    return new Icon({
-      ...basicStyles,
-      src: vectorOptions.src,
-      scale: vectorOptions.scale,
-      anchor: vectorOptions.anchor,
-      // Necessary for Cesium
-      crossOrigin: "anonymous",
-    });
+    return new Icon(style as unknown as ConstructorParameters<typeof Icon>[0]);
   } else {
-    const regularShapeOptions: Partial<RegularShapeOptions> = {
-      ...basicStyles,
-    };
-    if (vectorOptions.type === "square") {
-      regularShapeOptions.points = 4;
-      regularShapeOptions.angle = Math.PI / 4;
-    } else if (vectorOptions.type === "triangle") {
-      regularShapeOptions.points = 3;
-      regularShapeOptions.angle = 0;
-    } else if (vectorOptions.type === "pentagon") {
-      regularShapeOptions.points = 5;
-      regularShapeOptions.angle = 0;
-    } else if (vectorOptions.type === "star") {
-      regularShapeOptions.points = 5;
-      regularShapeOptions.angle = 0;
-      regularShapeOptions.radius2 = regularShapeOptions.radius
-        ? regularShapeOptions.radius / 2
-        : undefined;
-    } else if (vectorOptions.type === "cross") {
-      regularShapeOptions.points = 4;
-      regularShapeOptions.angle = 0;
-      regularShapeOptions.radius2 = 0;
-    } else if (vectorOptions.type === "hexagon") {
-      regularShapeOptions.points = 6;
-      regularShapeOptions.angle = 0;
+    const geometry = SHAPE_GEOMETRY[vectorOptions.type];
+    if (geometry) {
+      style.points = geometry.points;
+      style.angle = geometry.angle;
+      if (geometry.radius2Ratio !== undefined) {
+        style.radius2 =
+          (typeof style.radius === "number" ? style.radius : 0) *
+          geometry.radius2Ratio;
+      }
     } else {
       log.error({
         title: "getOlImageStyleForShape",
         titleColor: LogPreDefinedColor.Orange,
         messages: ["Unsupported shape type", vectorOptions],
       });
-      regularShapeOptions.points = 0;
-      regularShapeOptions.angle = 0;
-      regularShapeOptions.radius = 0;
+      style.points = 0;
+      style.angle = 0;
+      style.radius = 0;
     }
-    return new RegularShape(regularShapeOptions as RegularShapeOptions);
+    return new RegularShape(style as unknown as RegularShapeOptions);
   }
 }
 
@@ -105,7 +93,9 @@ interface StyleSpec extends OLBasicStyles {
   olStyle?: Style;
   labelProperty?: string | undefined;
   labelTemplate?: string | undefined;
-  imageRotationProperty?: string;
+  // A number is a static rotation angle (radians); a string is the name of the
+  // feature property holding the angle.
+  imageRotationProperty?: string | number;
 }
 
 function getOlBasicStyles(
@@ -113,16 +103,16 @@ function getOlBasicStyles(
 ): OLBasicStyles {
   const olStyles: OLBasicStyles = {};
 
-  if (vectorOptions.type === "icon") {
-    // nothing to do, the icon styles itself already
-    return olStyles;
-  }
-
-  if (vectorOptions.fill) {
-    olStyles.fill = new Fill(vectorOptions.fill);
-  }
-  if (vectorOptions.stroke) {
-    olStyles.stroke = new Stroke(vectorOptions.stroke);
+  // An icon paints its own fill/stroke, so those are skipped for icons — but a
+  // label can still sit on top of an icon (e.g. the meteoschweiz measurement
+  // layers label each station icon), so the label block below still applies.
+  if (vectorOptions.type !== "icon") {
+    if (vectorOptions.fill) {
+      olStyles.fill = new Fill(vectorOptions.fill);
+    }
+    if (vectorOptions.stroke) {
+      olStyles.stroke = new Stroke(vectorOptions.stroke);
+    }
   }
   if (vectorOptions.label) {
     let backgroundFill: Fill | undefined;
@@ -204,7 +194,9 @@ function getLabelTemplate(
 
 function getStyleSpec(value: GeoAdminGeoJSONRangeDefinition): StyleSpec {
   const rotation =
-    "rotation" in value ? (value as { rotation: string }).rotation : undefined;
+    "rotation" in value
+      ? (value as { rotation: string | number }).rotation
+      : undefined;
   return {
     olStyle: getOlStyleFromLiterals(value),
     minResolution: getMinResolution(value),
@@ -240,7 +232,7 @@ class OlStyleForPropertyValue {
         olStyle?: Style;
         labelProperty?: string | undefined;
         labelTemplate?: string | undefined;
-        imageRotationProperty?: string;
+        imageRotationProperty?: string | number;
       }
     | undefined;
   defaultVal: string;
@@ -280,7 +272,7 @@ class OlStyleForPropertyValue {
         labelTemplate: getLabelTemplate(geoadminStyleJson.vectorOptions?.label),
         imageRotationProperty:
           "rotation" in geoadminStyleJson
-            ? (geoadminStyleJson as { rotation?: string }).rotation
+            ? (geoadminStyleJson as { rotation?: string | number }).rotation
             : undefined,
       };
     } else if (geoadminStyleJson.type === "unique") {
@@ -409,9 +401,12 @@ class OlStyleForPropertyValue {
 
   setOlRotation_(
     olStyle: Style,
-    imageRotationProperty: string | undefined,
+    imageRotationProperty: string | number | undefined,
     properties: Record<string, unknown>,
   ): Style {
+    // Property-driven rotation only (matches web-mapviewer): the value names a
+    // feature property holding the angle. A static numeric rotation is applied
+    // at construction via the vectorOptions spread in getOlImageStyleForShape.
     if (imageRotationProperty) {
       const rotation = properties[imageRotationProperty];
       const parsedRotation = parseNumeric(rotation);

@@ -7,6 +7,7 @@ import type { Options as WMTSOptions } from "ol/source/WMTS";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
 
+import type { GeoJsonLayerData } from "@/components/map/datamapping/useGeoJsonData";
 /**
  * Dataset Layer Converter Container
  *
@@ -115,4 +116,10 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
     @updateData="pushLayerSpecificData<WMSLayerData>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
   ></MapDatamappingOgcWmsLayerConverter>
+  <MapDatamappingGeoJsonConverter
+    v-if="layerFormat === 'GeoJSON'"
+    :distribution
+    :layerId
+    @updateData="pushLayerSpecificData<GeoJsonLayerData>"
+  ></MapDatamappingGeoJsonConverter>
 </template>
