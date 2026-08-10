@@ -22,8 +22,8 @@ export interface Layer {
   isLoading: boolean;
   info?: LayerInfo;
   // data is either the dataset or the file data, depending on whether
-  // this is used a file layer or dataset layer
-  data?: Dataset | string;
+  // this is used a file layer or dataset layer. In the case of kmz (gzip folder), the data is binary, hence also allowing Uint8Array.
+  data?: Dataset | string | Uint8Array;
   // Url to the dataset or the file
   layerUrl?: string;
 }
