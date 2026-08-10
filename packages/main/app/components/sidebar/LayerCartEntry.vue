@@ -91,20 +91,20 @@ function isFromDataSet() {
       <IconButton
         :iconName="layer.isVisible ? 'Eye' : 'Eye-Off'"
         @click="toggleVisibility()"
-        severity="secondary"
+        severity="neutral"
       />
       <div class="flex flex-col justify-between">
         <IconButton
           :disabled="layerIndex === layersLength - bgLayerModifier"
           iconName="Chevron-Up"
-          severity="secondary"
+          severity="neutral"
           class="h-0.5"
           @click="moveUp()"
         ></IconButton>
         <IconButton
           :disabled="layerIndex === bgLayerModifier"
           iconName="Chevron-Down"
-          severity="secondary"
+          severity="neutral"
           class="h-0.5"
           @click="moveDown()"
         ></IconButton>
@@ -145,7 +145,7 @@ function isFromDataSet() {
       <IconButton
         v-if="isFromDataSet()"
         iconName="Info"
-        severity="secondary"
+        severity="neutral"
         @click="openDatasetPanel"
       />
       <IconButton iconName="Trash" @click="removeLayer" />

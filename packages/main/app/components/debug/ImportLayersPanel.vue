@@ -167,8 +167,10 @@ function addLayer(layer: string) {
         data-testid="import-load-capabilities"
         @click="loadCapabilities"
         iconName="Send"
+        severity="primary"
       ></IconButton>
-      <IconButton @click="$emit('close')" iconName="X"> </IconButton>
+      <IconButton @click="$emit('close')" iconName="X" variant="ghost">
+      </IconButton>
     </div>
     <div class="mt-12 h-[300px] overflow-scroll pb-18">
       <input

@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "@swissgeo/map/stylesheet";
-@import "@fontsource/inter";
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-ext-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-ext-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-ext-600.css";
+@import "@fontsource/inter/latin-700.css";
+@import "@fontsource/inter/latin-ext-700.css";
 @import "@swissgeo/dimension/stylesheet";
 
 @source "../../../../skeleton/";
@@ -8,12 +15,35 @@
 @source "../../../../map/";
 @source "../../../../dimension/";
 
-@custom-variant dark (&:where(.dark-mode, .dark-mode *));
 @import "@nuxt/ui";
 @source "../../../../skeleton/src/**/*.{vue,ts,js,tsx,jsx}";
 
 @theme static {
   --font-sans: "Inter", system-ui, sans-serif;
+
+  --color-petrol-50: #e0ecf1;
+  --color-petrol-100: #c1dde6;
+  --color-petrol-200: #97c4d3;
+  --color-petrol-300: #64a6bb;
+  --color-petrol-400: #448ea7;
+  --color-petrol-500: #1c6b85;
+  --color-petrol-600: #18576c;
+  --color-petrol-700: #084255;
+  --color-petrol-800: #0c2d38;
+  --color-petrol-900: #0c1c21;
+  --color-petrol-950: #091316;
+
+  --color-salmon-50: #f7ebe4;
+  --color-salmon-100: #f5e0d6;
+  --color-salmon-200: #f6d5c6;
+  --color-salmon-300: #f3c8b4;
+  --color-salmon-400: #ecab8d;
+  --color-salmon-500: #e28054;
+  --color-salmon-600: #c56033;
+  --color-salmon-700: #90411d;
+  --color-salmon-800: #652f16;
+  --color-salmon-900: #461e0c;
+  --color-salmon-950: #271107;
 
   --color-brown-50: #f4f3f2;
   --color-brown-100: #e4e1dd;
@@ -75,18 +105,6 @@
   --color-neutral-900: #3b3d3e;
   --color-neutral-950: #0e0f0f;
 
-  --color-red-50: #fef3f2;
-  --color-red-100: #fee5e2;
-  --color-red-200: #ffcec9;
-  --color-red-300: #fdaca4;
-  --color-red-400: #fa7c6f;
-  --color-red-500: #f25241;
-  --color-red-600: #d4301f;
-  --color-red-700: #bb291a;
-  --color-red-800: #9b2519;
-  --color-red-900: #81251b;
-  --color-red-950: #460f09;
-
   --color-orange-50: #fdf5ef;
   --color-orange-100: #fae7da;
   --color-orange-200: #f3cdb5;
@@ -111,18 +129,6 @@
   --color-light-brown-900: #59322a;
   --color-light-brown-950: #331915;
 
-  --color-yellow-50: #fef9ec;
-  --color-yellow-100: #fbeeca;
-  --color-yellow-200: #f7dc90;
-  --color-yellow-300: #f4ca64;
-  --color-yellow-400: #f0af2f;
-  --color-yellow-500: #e98f17;
-  --color-yellow-600: #ce6b11;
-  --color-yellow-700: #ab4b12;
-  --color-yellow-800: #8b3b15;
-  --color-yellow-900: #733114;
-  --color-yellow-950: #421806;
-
   --color-lime-50: #f7fee7;
   --color-lime-100: #ecfccb;
   --color-lime-200: #d9f99d;
@@ -134,18 +140,6 @@
   --color-lime-800: #3f6212;
   --color-lime-900: #365314;
   --color-lime-950: #1a2e05;
-
-  --color-green-50: #f2f7f3;
-  --color-green-100: #e0ebe0;
-  --color-green-200: #c3d7c4;
-  --color-green-300: #9bba9f;
-  --color-green-400: #6b9571;
-  --color-green-500: #4f7a57;
-  --color-green-600: #3b6043;
-  --color-green-700: #3e5860;
-  --color-green-800: #384b52;
-  --color-green-900: #324047;
-  --color-green-950: #1e282e;
 
   --color-green-pastel-50: #f3f8f8;
   --color-green-pastel-100: #e0eced;
@@ -170,18 +164,6 @@
   --color-cyan-800: #1f576b;
   --color-cyan-900: #1e485b;
   --color-cyan-950: #0e2e3e;
-
-  --color-blue-50: #eff6ff;
-  --color-blue-100: #dbeafe;
-  --color-blue-200: #bfdbfe;
-  --color-blue-300: #93c5fd;
-  --color-blue-400: #60a5fa;
-  --color-blue-500: #3b82f6;
-  --color-blue-600: #2563eb;
-  --color-blue-700: #1d4ed8;
-  --color-blue-800: #1e40af;
-  --color-blue-900: #1e3a8a;
-  --color-blue-950: #172554;
 
   --color-violet-50: #f5f3ff;
   --color-violet-100: #ede9fe;
@@ -252,36 +234,23 @@ body {
   --breakpoint-2xl: var(--breakpoint-2xl);
 }
 
-:root {
-  --ui-color-primary-50: var(--color-cyan-50);
-  --ui-color-primary-100: var(--color-cyan-100);
-  --ui-color-primary-200: var(--color-cyan-200);
-  --ui-color-primary-300: var(--color-cyan-300);
-  --ui-color-primary-400: var(--color-cyan-400);
-  --ui-color-primary-500: var(--color-cyan-500);
-  --ui-color-primary-600: var(--color-cyan-600);
-  --ui-color-primary-700: var(--color-cyan-700);
-  --ui-color-primary-800: var(--color-cyan-800);
-  --ui-color-primary-900: var(--color-cyan-900);
-  --ui-color-primary-950: var(--color-cyan-950);
+@layer theme {
+  :root,
+  .light {
+    --ui-btn-default: var(--ui-color-primary-500);
+    --ui-btn-hover: var(--ui-color-primary-600);
+    --ui-btn-disabled: var(--ui-color-primary-300);
+  }
 
-  --ui-color-secondary-50: var(--color-green-pastel-50);
-  --ui-color-secondary-100: var(--color-green-pastel-100);
-  --ui-color-secondary-200: var(--color-green-pastel-200);
-  --ui-color-secondary-300: var(--color-green-pastel-300);
-  --ui-color-secondary-400: var(--color-green-pastel-400);
-  --ui-color-secondary-500: var(--color-green-pastel-500);
-  --ui-color-secondary-600: var(--color-green-pastel-600);
-  --ui-color-secondary-700: var(--color-green-pastel-700);
-  --ui-color-secondary-800: var(--color-green-pastel-800);
-  --ui-color-secondary-900: var(--color-green-pastel-900);
-  --ui-color-secondary-950: var(--color-green-pastel-950);
-
-  --ui-radius: 8px;
-  --ui-primary: var(--ui-color-primary-700);
-  --ui-primary-hover: var(--ui-color-primary-800);
-  --ui-primary-active: var(--ui-color-primary-900);
-  --ui-secondary: var(--ui-color-secondary-50);
-  --ui-secondary-hover: var(--ui-color-secondary-100);
-  --ui-secondary-active: var(--ui-color-secondary-200);
+  .dark {
+    --ui-primary: var(--ui-color-primary-500);
+    --ui-text-dimmed: var(--ui-color-neutral-300);
+    --ui-text-muted: var(--ui-color-neutral-200);
+    --ui-text-toned: var(--ui-color-neutral-100);
+    --ui-text: var(--ui-color-neutral-50);
+    --ui-bg: var(--ui-color-primary-500);
+    --ui-btn-default: var(--ui-color-primary-100);
+    --ui-btn-hover: var(--ui-color-primary-300);
+    --ui-btn-disabled: var(--ui-color-primary-600);
+  }
 }
