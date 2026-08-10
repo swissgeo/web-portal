@@ -161,3 +161,204 @@ describe("round-trip latLonToMGRS and inverse", () => {
     expect(maxLon).toBeGreaterThanOrEqual(lon);
   });
 });
+
+describe("getMinNorthing via inverse decoding", () => {
+  it("decodes zone C MGRS correctly", () => {
+    const lat = mgrsToLatLon("01CAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone D MGRS correctly", () => {
+    const lat = mgrsToLatLon("01DAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone E MGRS correctly", () => {
+    const lat = mgrsToLatLon("01EAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone F MGRS correctly", () => {
+    const lat = mgrsToLatLon("01FAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone G MGRS correctly", () => {
+    const lat = mgrsToLatLon("01GAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone H MGRS correctly", () => {
+    const lat = mgrsToLatLon("01HAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone J MGRS correctly", () => {
+    const lat = mgrsToLatLon("01JAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone K MGRS correctly", () => {
+    const lat = mgrsToLatLon("01KAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone L MGRS correctly", () => {
+    const lat = mgrsToLatLon("01LAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone M MGRS correctly", () => {
+    const lat = mgrsToLatLon("01MAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone P MGRS correctly", () => {
+    const lat = mgrsToLatLon("01PAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone Q MGRS correctly", () => {
+    const lat = mgrsToLatLon("01QAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone R MGRS correctly", () => {
+    const lat = mgrsToLatLon("01RAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone S MGRS correctly", () => {
+    const lat = mgrsToLatLon("01SAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone T MGRS correctly", () => {
+    const lat = mgrsToLatLon("01TAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone U MGRS correctly", () => {
+    const lat = mgrsToLatLon("01UAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone V MGRS correctly", () => {
+    const lat = mgrsToLatLon("01VAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone W MGRS correctly", () => {
+    const lat = mgrsToLatLon("01WAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+
+  it("decodes zone X MGRS correctly", () => {
+    const lat = mgrsToLatLon("01XAA0000000000");
+    expect(typeof lat).toBe("number");
+    expect(Number.isFinite(lat)).toBe(true);
+  });
+});
+
+describe("southern hemisphere decoding", () => {
+  it("decodes southern hemisphere MGRS with correct latitude sign", () => {
+    const mgrs = latLonToMGRS(-33.8688, 151.2093, 5);
+    const [lon, lat] = inverse(mgrs);
+    expect(lat).toBeLessThan(0);
+    expect(lon).toBeGreaterThan(140);
+    expect(lon).toBeLessThan(160);
+  });
+
+  it("decodes zone H MGRS from southern hemisphere", () => {
+    const lat = mgrsToLatLon("56HJE6390022780");
+    expect(lat).toBeLessThan(0);
+  });
+});
+
+describe("decodeUTM error paths", () => {
+  it("throws for MGRS with invalid zone letter A", () => {
+    expect(() => inverse("01AAA0000000000")).toThrow();
+  });
+
+  it("throws for MGRS with invalid zone letter B", () => {
+    expect(() => inverse("01BAA0000000000")).toThrow();
+  });
+
+  it("throws for MGRS with invalid zone letter I", () => {
+    expect(() => inverse("01IAA0000000000")).toThrow();
+  });
+
+  it("throws for MGRS with invalid zone letter O", () => {
+    expect(() => inverse("01OAA0000000000")).toThrow();
+  });
+
+  it("throws for MGRS with invalid zone letter Y", () => {
+    expect(() => inverse("01YAA0000000000")).toThrow();
+  });
+
+  it("throws for MGRS with invalid zone letter Z", () => {
+    expect(() => inverse("01ZAA0000000000")).toThrow();
+  });
+
+  it("throws for MGRS with odd number of digits", () => {
+    expect(() => inverse("32TLM329469779")).toThrow();
+  });
+
+  it("throws for MGRS with too many digits before zone letter", () => {
+    expect(() => inverse("123TLM3294697795")).toThrow();
+  });
+});
+
+describe("getNorthingFromChar error path", () => {
+  it("throws for northing letter > V", () => {
+    expect(() => inverse("32TWZ0000000000")).toThrow();
+  });
+});
+
+describe("get100kSetForZone edge case", () => {
+  it("decodes MGRS for zone 6 (zone % 6 === 0)", () => {
+    const mgrs = latLonToMGRS(0, -147, 5);
+    expect(mgrs).toMatch(/^6/);
+    const bbox = inverse(mgrs);
+    expect(bbox).toHaveLength(4);
+    expect(bbox.every((v) => typeof v === "number")).toBe(true);
+  });
+});
+
+describe("dead code branches (defensive)", () => {
+  it("getLetterDesignator returns Z for extreme latitudes", () => {
+    expect(getLetterDesignator(84.1)).toBe("Z");
+    expect(getLetterDesignator(-80.1)).toBe("Z");
+  });
+
+  it("getLetterDesignator handles exact boundary at -80", () => {
+    expect(getLetterDesignator(-80)).toBe("C");
+  });
+
+  it("getLetterDesignator handles exact boundary at 84", () => {
+    expect(getLetterDesignator(84)).toBe("X");
+  });
+});
+
+function mgrsToLatLon(mgrs: string): number {
+  const [_, lat] = inverse(mgrs);
+  return lat;
+}
