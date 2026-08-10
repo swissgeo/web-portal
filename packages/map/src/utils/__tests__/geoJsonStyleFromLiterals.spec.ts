@@ -1,11 +1,17 @@
 import { Feature } from "ol";
 import LineString from "ol/geom/LineString";
+import MultiLineString from "ol/geom/MultiLineString";
+import MultiPolygon from "ol/geom/MultiPolygon";
 import Point from "ol/geom/Point";
 import Polygon from "ol/geom/Polygon";
-import CircleStyle from "ol/style/Circle";
-import Icon from "ol/style/Icon";
-import RegularShape from "ol/style/RegularShape";
-import Style from "ol/style/Style";
+import {
+  Circle as CircleStyle,
+  Fill,
+  Icon,
+  RegularShape,
+  Style,
+  Text,
+} from "ol/style";
 import { describe, expect, it, vi } from "vitest";
 
 import type { GeoAdminGeoJSONStyleDefinition } from "../geojson";
@@ -108,7 +114,12 @@ describe("getOlImageStyleForShape", () => {
 });
 
 function makeFeature(
-  geometryType: "point" | "line" | "polygon",
+  geometryType:
+    | "point"
+    | "line"
+    | "polygon"
+    | "multilinestring"
+    | "multipolygon",
   properties: Record<string, unknown> = {},
 ): Feature {
   let geometry;
@@ -130,6 +141,31 @@ function makeFeature(
           [1, 1],
           [0, 1],
           [0, 0],
+        ],
+      ]);
+      break;
+    case "multilinestring":
+      geometry = new MultiLineString([
+        [
+          [0, 0],
+          [1, 1],
+        ],
+        [
+          [2, 2],
+          [3, 3],
+        ],
+      ]);
+      break;
+    case "multipolygon":
+      geometry = new MultiPolygon([
+        [
+          [
+            [0, 0],
+            [1, 0],
+            [1, 1],
+            [0, 1],
+            [0, 0],
+          ],
         ],
       ]);
       break;
@@ -415,6 +451,328 @@ describe("OlStyleForPropertyValue", () => {
       const feature = makeFeature("point", { heading: 1.57 });
       const style = olStyle.getFeatureStyle(feature, 1);
       expect(style).toBeInstanceOf(Style);
+    });
+  });
+
+  describe("label background styles", () => {
+    it("creates style with backgroundFill and backgroundStroke", () => {
+      const config: GeoAdminGeoJSONStyleDefinition = {
+        type: "single",
+        property: "name",
+        geomType: "point",
+        vectorOptions: {
+          type: "circle",
+          radius: 5,
+          fill: { color: "blue" },
+          stroke: { color: "navy", width: 2 },
+          label: {
+            template: "${name}",
+            text: {
+              textAlign: "center",
+              textBaseline: "middle",
+              font: "12px sans-serif",
+              scale: 1,
+              padding: [0, 0, 0, 0],
+              fill: { color: "black" },
+              stroke: { color: "white", width: 2 },
+              backgroundFill: { color: "rgba(255,255,255,0.8)" },
+              backgroundStroke: { color: "gray", width: 1 },
+            },
+          },
+        },
+      };
+      const olStyle = new OlStyleForPropertyValue(config);
+      const feature = makeFeature("point", { name: "Test" });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style).toBeInstanceOf(Style);
+    });
+  });
+
+  describe("MultiLineString geometry", () => {
+    it("returns correct style for MultiLineString", () => {
+      const config: GeoAdminGeoJSONStyleDefinition = {
+        type: "unique",
+        property: "category",
+        values: [
+          {
+            geomType: "line",
+            value: "road",
+            vectorOptions: {
+              type: "square",
+              fill: { color: "yellow" },
+              stroke: { color: "black", width: 1 },
+            },
+          },
+        ],
+      };
+      const olStyle = new OlStyleForPropertyValue(config);
+      const feature = makeFeature("multilinestring", { category: "road" });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style).toBeInstanceOf(Style);
+      expect(style).not.toBe(olStyle.defaultStyle);
+    });
+  });
+
+  describe("Polygon geometry", () => {
+    it("returns correct style for Polygon via unique config", () => {
+      const config: GeoAdminGeoJSONStyleDefinition = {
+        type: "unique",
+        property: "category",
+        values: [
+          {
+            geomType: "polygon",
+            value: "zone",
+            vectorOptions: {
+              type: "square",
+              fill: { color: "cyan" },
+              stroke: { color: "blue", width: 1 },
+            },
+          },
+        ],
+      };
+      const olStyle = new OlStyleForPropertyValue(config);
+      const feature = makeFeature("polygon", { category: "zone" });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style).toBeInstanceOf(Style);
+      expect(style).not.toBe(olStyle.defaultStyle);
+    });
+  });
+
+  describe("MultiPolygon geometry", () => {
+    it("returns correct style for MultiPolygon", () => {
+      const config: GeoAdminGeoJSONStyleDefinition = {
+        type: "unique",
+        property: "category",
+        values: [
+          {
+            geomType: "polygon",
+            value: "area",
+            vectorOptions: {
+              type: "square",
+              fill: { color: "magenta" },
+              stroke: { color: "purple", width: 1 },
+            },
+          },
+        ],
+      };
+      const olStyle = new OlStyleForPropertyValue(config);
+      const feature = makeFeature("multipolygon", { category: "area" });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style).toBeInstanceOf(Style);
+      expect(style).not.toBe(olStyle.defaultStyle);
+    });
+  });
+
+  describe("fallback value logging", () => {
+    it("returns default style for null property value", () => {
+      const config: GeoAdminGeoJSONStyleDefinition = {
+        type: "unique",
+        property: "status",
+        values: [
+          {
+            geomType: "point",
+            value: "active",
+            vectorOptions: {
+              type: "circle",
+              radius: 5,
+              fill: { color: "green" },
+              stroke: { color: "darkgreen", width: 1 },
+            },
+          },
+        ],
+      };
+      const olStyle = new OlStyleForPropertyValue(config);
+      const feature = makeFeature("point", { status: null });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style).toBeInstanceOf(Style);
+      expect(style).toBe(olStyle.defaultStyle);
+    });
+
+    it("returns default style for array property value", () => {
+      const config: GeoAdminGeoJSONStyleDefinition = {
+        type: "unique",
+        property: "tags",
+        values: [
+          {
+            geomType: "point",
+            value: "active",
+            vectorOptions: {
+              type: "circle",
+              radius: 5,
+              fill: { color: "green" },
+              stroke: { color: "darkgreen", width: 1 },
+            },
+          },
+        ],
+      };
+      const olStyle = new OlStyleForPropertyValue(config);
+      const feature = makeFeature("point", { tags: ["a", "b"] });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style).toBeInstanceOf(Style);
+      expect(style).toBe(olStyle.defaultStyle);
+    });
+  });
+
+  describe("resolution mismatch", () => {
+    it("returns default style when no resolution matches", () => {
+      const config: GeoAdminGeoJSONStyleDefinition = {
+        type: "unique",
+        property: "status",
+        values: [
+          {
+            geomType: "point",
+            value: "active",
+            minResolution: 100,
+            maxResolution: 200,
+            vectorOptions: {
+              type: "circle",
+              radius: 5,
+              fill: { color: "green" },
+              stroke: { color: "darkgreen", width: 1 },
+            },
+          },
+        ],
+      };
+      const olStyle = new OlStyleForPropertyValue(config);
+      const feature = makeFeature("point", { status: "active" });
+      const style = olStyle.getFeatureStyle(feature, 50);
+      expect(style).toBeInstanceOf(Style);
+      expect(style).toBe(olStyle.defaultStyle);
+    });
+  });
+
+  describe("findOlStyleInRange_ defensive branches", () => {
+    it("skips malformed range key without comma", () => {
+      const baseConfig: GeoAdminGeoJSONStyleDefinition = {
+        type: "range",
+        property: "value",
+        ranges: [
+          {
+            geomType: "point",
+            range: [0, 100],
+            vectorOptions: {
+              type: "circle",
+              radius: 5,
+              fill: { color: "green" },
+              stroke: { color: "darkgreen", width: 1 },
+            },
+          },
+        ],
+      };
+      const olStyle = new OlStyleForPropertyValue(baseConfig);
+      olStyle.styles["point"]["bad"] = [
+        {
+          olStyle: new Style(),
+          minResolution: 0,
+          maxResolution: Infinity,
+        },
+      ];
+      const feature = makeFeature("point", { value: 50 });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style).toBeInstanceOf(Style);
+    });
+
+    it("skips range with unparseable min/max", () => {
+      const baseConfig: GeoAdminGeoJSONStyleDefinition = {
+        type: "range",
+        property: "value",
+        ranges: [
+          {
+            geomType: "point",
+            range: [0, 100],
+            vectorOptions: {
+              type: "circle",
+              radius: 5,
+              fill: { color: "green" },
+              stroke: { color: "darkgreen", width: 1 },
+            },
+          },
+        ],
+      };
+      const olStyle = new OlStyleForPropertyValue(baseConfig);
+      olStyle.styles["point"]["foo,bar"] = [
+        {
+          olStyle: new Style(),
+          minResolution: 0,
+          maxResolution: Infinity,
+        },
+      ];
+      const feature = makeFeature("point", { value: 50 });
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style).toBeInstanceOf(Style);
+    });
+  });
+
+  describe("setOlText_ labelProperty branch", () => {
+    it("reads text from feature property when labelProperty is set", () => {
+      const config: GeoAdminGeoJSONStyleDefinition = {
+        type: "single",
+        property: "name",
+        geomType: "point",
+        vectorOptions: {
+          type: "circle",
+          radius: 5,
+          fill: { color: "blue" },
+          stroke: { color: "navy", width: 2 },
+          label: {
+            template: "${name}",
+            text: {
+              textAlign: "center",
+              textBaseline: "middle",
+              font: "12px sans-serif",
+              scale: 1,
+              padding: [0, 0, 0, 0],
+              fill: { color: "black" },
+              stroke: { color: "white", width: 2 },
+            },
+          },
+        },
+      };
+      const olStyle = new OlStyleForPropertyValue(config);
+      const style = new Style({
+        text: new Text({
+          fill: new Fill({ color: "black" }),
+        }),
+      });
+      const result = olStyle.setOlText_(style, "myLabel", undefined, {
+        myLabel: "hello",
+      });
+      expect(result).toBeInstanceOf(Style);
+    });
+  });
+
+  describe("getFeatureStyle defensive branches", () => {
+    it("returns default style when singleStyle has no olStyle", () => {
+      const config: GeoAdminGeoJSONStyleDefinition = {
+        type: "single",
+        property: "status",
+        geomType: "point",
+        vectorOptions: {
+          type: "circle",
+          radius: 5,
+          fill: { color: "blue" },
+          stroke: { color: "navy", width: 2 },
+        },
+      };
+      const olStyle = new OlStyleForPropertyValue(config);
+      olStyle.singleStyle!.olStyle = undefined;
+      const feature = makeFeature("point");
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style).toBeInstanceOf(Style);
+      expect(style).toBe(olStyle.defaultStyle);
+    });
+
+    it("returns default style for unrecognized type", () => {
+      const config = {
+        type: "gradient",
+        property: "x",
+        geomType: "point",
+      } as unknown as GeoAdminGeoJSONStyleDefinition;
+      const olStyle = new OlStyleForPropertyValue(config);
+      const feature = makeFeature("point");
+      const style = olStyle.getFeatureStyle(feature, 1);
+      expect(style).toBeInstanceOf(Style);
+      expect(style).toBe(olStyle.defaultStyle);
     });
   });
 });
