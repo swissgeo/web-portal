@@ -4,6 +4,17 @@ packages:
   - support/service-shortlink-mock/
   - tests/integration
 
+overrides:
+  # ol-mapbox-style declares `ol: '*'` and reproject declares `proj4: ^2.6.2`,
+  # so without these both resolve to their own newer copies. Two copies of the
+  # same library make TypeScript treat their types as unrelated and type-check
+  # fails. Keep these in sync with the catalog entries below.
+  ol: 10.9.0
+  proj4: 2.20.9
+  # vue and @vue/server-renderer depend on each other, so two copies of vue in
+  # the tree give Nitro a symlink cycle to walk and the build dies with ELOOP.
+  vue: 3.5.41
+
 allowBuilds:
   "@parcel/watcher": false
   esbuild: false
@@ -81,9 +92,9 @@ catalog:
   fflate: ^0.8.3
   geojson: ^0.5.0
   globals: ^17.6.0
-  happy-dom: 20.11.1
+  happy-dom: 20.11.2
   h3: ^1.15.11
-  mapbox-gl: ~3.27.0
+  mapbox-gl: ~3.28.0
   msw: ^2.14.6
   nuxt: ^4.4.8
   ol: ^10.9.0
@@ -91,14 +102,14 @@ catalog:
   pinia: ^4.0.0
   playwright-core: ^1.58.2
   postcss-html: ^2.0.0
-  prettier: ^3.8.3
+  prettier: ~3.8.5
   prettier-plugin-jsdoc: ^1.8.1
   prettier-plugin-packagejson: ^3.0.2
   prettier-plugin-tailwindcss: ^0.8.0
   proj4: ^2.20.9
   reproject: ^1.2.7
   rolldown: ^1.1.2
-  rolldown-plugin-dts: ^0.27.0
+  rolldown-plugin-dts: ^0.28.0
   semver: ^7.7.4
   stylelint: 16.26.1
   stylelint-config-recommended-scss: ^17.0.1
