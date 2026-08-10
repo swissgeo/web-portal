@@ -76,7 +76,7 @@ onUnmounted(() => {
       <IconButton
         iconName="X"
         @click="handleClose"
-        severity="secondary"
+        severity="neutral"
         data-testid="drawing-panel-close"
       />
     </div>

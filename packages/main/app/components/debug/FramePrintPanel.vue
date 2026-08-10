@@ -57,7 +57,7 @@ function handleClose() {
 <template>
   <div class="z-10 h-fit min-h-[100px] w-fit min-w-[100px] bg-white p-[10px]">
     <div>
-      <IconButton @click="handleClose" iconName="X" severity="secondary">
+      <IconButton @click="handleClose" iconName="X" severity="neutral">
       </IconButton>
     </div>
     <div class="flex flex-col gap-4">

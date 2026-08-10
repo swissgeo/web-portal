@@ -21,7 +21,7 @@ const color = computed(() => {
   if (attrs.severity && severities.includes(attrs.severity as string)) {
     return attrs.severity;
   }
-  return "secondary";
+  return "neutral";
 });
 
 // Compute variant - if 'text' prop is true, use 'ghost'

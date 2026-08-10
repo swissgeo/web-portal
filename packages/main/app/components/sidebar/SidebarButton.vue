@@ -12,7 +12,7 @@ const { title } = defineProps<{
 
 <template>
   <IconButton
-    :severity="isActive ? 'primary' : 'secondary'"
+    :severity="isActive ? 'primary' : 'neutral'"
     class="h-10"
     :icon-class="{ 'text-white': isActive, 'w-5 text-cyan-900': true }"
     :text="!isActive"

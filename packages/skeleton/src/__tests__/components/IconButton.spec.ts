@@ -55,8 +55,8 @@ describe("Functionality of buttons with a LucideIcon within", () => {
     ${"Handle info severity regarding style"}      | ${"info"}      | ${"info"}      | ${["text-default"]}
     ${"Handle neutral severity regarding style"}   | ${"neutral"}   | ${"neutral"}   | ${["text-default"]}
     ${"Handle secondary severity regarding style"} | ${"secondary"} | ${"secondary"} | ${["text-default"]}
-    ${"Handle fantasy severity regarding style"}   | ${"anvil"}     | ${"secondary"} | ${["text-default"]}
-    ${"Handle nullis severity regarding style"}    | ${undefined}   | ${"secondary"} | ${["text-default"]}
+    ${"Handle fantasy severity regarding style"}   | ${"anvil"}     | ${"neutral"}   | ${["text-default"]}
+    ${"Handle nullis severity regarding style"}    | ${undefined}   | ${"neutral"}   | ${["text-default"]}
   `("$description", ({ _, severity, color, classes }) => {
     const wrapper = mount(IconButton, {
       attrs: {
@@ -68,7 +68,7 @@ describe("Functionality of buttons with a LucideIcon within", () => {
     const iconButton = wrapper.find(`[data-testid="${testId}"]`);
     // we should find the button
     expect(iconButton.exists()).toBe(true);
-    // color should be either the severity, or secondary by default
+    // color should be either the severity, or neutral by default
     expect(iconButton.attributes().color).to.eql(color);
     // the text is dependant on color
     for (const cls of classes) {
