@@ -119,6 +119,7 @@ function onFileSelected(evt: Event): void {
         :disabled="!selectedFile || isLoading"
         @click="handleImport"
         iconName="Upload"
+        severity="primary"
         :title="t('toolbox.import.importButton')"
         class="grow justify-center"
       />

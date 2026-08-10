@@ -95,9 +95,15 @@ function onFileSelected(evt: Event): void {
         :disabled="!selectedFile || isLoading"
         @click="handleImport"
         iconName="Upload"
+        severity="primary"
         title="Import file"
       />
-      <IconButton @click="$emit('close')" iconName="X" title="Close" />
+      <IconButton
+        @click="$emit('close')"
+        iconName="X"
+        variant="ghost"
+        title="Close"
+      />
     </div>
 
     <!-- Success message -->

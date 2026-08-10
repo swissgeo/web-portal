@@ -8,7 +8,6 @@ describe("Functionality of buttons with a LucideIcon within", () => {
   const expectedIcon = "i-lucide-a-beautiful-circle";
   const testId = `button-icon-${expectedIcon}`;
 
-  // ensuring icon name is handled correctly to produce an 'icon' property and the test id
   it.each`
     description                                        | name         | icon
     ${"ensure icon name is used correctly as an icon"} | ${iconName}  | ${expectedIcon}
@@ -25,17 +24,20 @@ describe("Functionality of buttons with a LucideIcon within", () => {
     expect(iconButton.attributes().icon).to.eql(icon);
   });
 
-  // ensuring text boolean attribute is handled properly to produce a variant attribute
   it.each`
-    description                                                                | text         | variant
-    ${"If the text attribute is true, the variant used is the ghost variant"}  | ${true}      | ${"ghost"}
-    ${"If the text attribute is false, the variant used is the solid variant"} | ${false}     | ${"solid"}
-    ${"If the text attribute is nullish, we resort to the solid variant"}      | ${undefined} | ${"solid"}
-  `("$description", ({ _, text, variant }) => {
+    description                                                      | text         | severity     | requestedVariant | variant
+    ${"Use an explicit variant"}                                     | ${true}      | ${"neutral"} | ${"outline"}     | ${"outline"}
+    ${"Use ghost for the legacy text attribute"}                     | ${true}      | ${"neutral"} | ${undefined}     | ${"ghost"}
+    ${"Use soft for ordinary neutral actions"}                       | ${undefined} | ${"neutral"} | ${undefined}     | ${"soft"}
+    ${"Use solid for primary actions"}                               | ${undefined} | ${"primary"} | ${undefined}     | ${"solid"}
+    ${"Use the neutral default for an unsupported explicit variant"} | ${undefined} | ${undefined} | ${"fantasy"}     | ${"soft"}
+  `("$description", ({ _, text, severity, requestedVariant, variant }) => {
     const wrapper = mount(IconButton, {
       attrs: {
         iconName,
         text,
+        severity,
+        variant: requestedVariant,
         "data-testid": testId,
       },
     });
@@ -45,19 +47,19 @@ describe("Functionality of buttons with a LucideIcon within", () => {
     expect(iconButton.attributes().variant).to.eql(variant);
   });
 
-  // ensuring styling (color and text color) are dependent on the severity
   it.each`
-    description                                    | severity       | color          | classes
-    ${"Handle primary severity regarding style"}   | ${"primary"}   | ${"primary"}   | ${["text-inverted"]}
-    ${"Handle danger severity regarding style"}    | ${"danger"}    | ${"danger"}    | ${["text-inverted"]}
-    ${"Handle success severity regarding style"}   | ${"success"}   | ${"success"}   | ${["text-inverted"]}
-    ${"Handle warning severity regarding style"}   | ${"warning"}   | ${"warning"}   | ${["text-default"]}
-    ${"Handle info severity regarding style"}      | ${"info"}      | ${"info"}      | ${["text-default"]}
-    ${"Handle neutral severity regarding style"}   | ${"neutral"}   | ${"neutral"}   | ${["text-default"]}
-    ${"Handle secondary severity regarding style"} | ${"secondary"} | ${"secondary"} | ${["text-default"]}
-    ${"Handle fantasy severity regarding style"}   | ${"anvil"}     | ${"neutral"}   | ${["text-default"]}
-    ${"Handle nullis severity regarding style"}    | ${undefined}   | ${"neutral"}   | ${["text-default"]}
-  `("$description", ({ _, severity, color, classes }) => {
+    description                                    | severity       | color
+    ${"Handle primary severity regarding style"}   | ${"primary"}   | ${"primary"}
+    ${"Map danger severity to the Nuxt UI error"}  | ${"danger"}    | ${"error"}
+    ${"Handle error severity regarding style"}     | ${"error"}     | ${"error"}
+    ${"Handle success severity regarding style"}   | ${"success"}   | ${"success"}
+    ${"Handle warning severity regarding style"}   | ${"warning"}   | ${"warning"}
+    ${"Handle info severity regarding style"}      | ${"info"}      | ${"info"}
+    ${"Handle neutral severity regarding style"}   | ${"neutral"}   | ${"neutral"}
+    ${"Handle secondary severity regarding style"} | ${"secondary"} | ${"secondary"}
+    ${"Handle fantasy severity regarding style"}   | ${"anvil"}     | ${"neutral"}
+    ${"Handle nullis severity regarding style"}    | ${undefined}   | ${"neutral"}
+  `("$description", ({ _, severity, color }) => {
     const wrapper = mount(IconButton, {
       attrs: {
         iconName,
@@ -66,14 +68,8 @@ describe("Functionality of buttons with a LucideIcon within", () => {
       },
     });
     const iconButton = wrapper.find(`[data-testid="${testId}"]`);
-    // we should find the button
     expect(iconButton.exists()).toBe(true);
-    // color should be either the severity, or neutral by default
     expect(iconButton.attributes().color).to.eql(color);
-    // the text is dependant on color
-    for (const cls of classes) {
-      expect(iconButton.classes()).toContain(cls);
-    }
   });
 
   it("passes other attributes to the iconButton directly, in lowercase form", () => {
@@ -90,7 +86,7 @@ describe("Functionality of buttons with a LucideIcon within", () => {
     expect(iconButton.attributes().customattribute).to.eql(customattribute);
   });
 
-  it('does not overwrite any "protected" attributes', () => {
+  it("keeps the severity and generated icon while allowing a variant", () => {
     const wrapper = mount(IconButton, {
       attrs: {
         iconName,
@@ -105,7 +101,7 @@ describe("Functionality of buttons with a LucideIcon within", () => {
     const iconButton = wrapper.find(`[data-testid="${testId}"]`);
     expect(iconButton.exists()).toBe(true);
     expect(iconButton.attributes().icon).to.eql(expectedIcon);
-    expect(iconButton.attributes().variant).to.eql("ghost");
+    expect(iconButton.attributes().variant).to.eql("solid");
     expect(iconButton.attributes().color).to.eql("primary");
   });
 });

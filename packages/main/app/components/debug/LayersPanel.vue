@@ -36,7 +36,8 @@ const filteredAvailableLayers = computed((): Dataset[] => {
         placeholder="Filter"
         autofocus
       />
-      <IconButton @click="$emit('close')" iconName="X"> </IconButton>
+      <IconButton @click="$emit('close')" iconName="X" variant="ghost">
+      </IconButton>
     </div>
     <div class="mt-12 h-75 overflow-scroll pb-18">
       <table class="">
