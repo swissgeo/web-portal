@@ -12,12 +12,48 @@ catalogs:
     '@eslint/js':
       specifier: ^10.0.0
       version: 10.0.1
+    '@eslint/markdown':
+      specifier: ^8.0.0
+      version: 8.0.3
+    '@fontsource/inter':
+      specifier: ^5.2.6
+      version: 5.3.0
     '@hey-api/openapi-ts':
       specifier: ^0.99.0
       version: 0.99.0
+    '@intlify/core':
+      specifier: ^11.4.0
+      version: 11.4.8
+    '@intlify/core-base':
+      specifier: ^11.4.0
+      version: 11.4.8
+    '@intlify/message-compiler':
+      specifier: ^11.4.0
+      version: 11.4.8
+    '@intlify/shared':
+      specifier: ^11.4.0
+      version: 11.4.8
     '@intlify/utils':
       specifier: ^1.0.0
       version: 1.0.1
+    '@lucide/vue':
+      specifier: ^1.18.0
+      version: 1.30.0
+    '@microsoft/api-extractor':
+      specifier: ^7.56.0
+      version: 7.58.12
+    '@nuxt/eslint':
+      specifier: ^1.9.0
+      version: 1.17.0
+    '@nuxt/test-utils':
+      specifier: ^4.0.3
+      version: 4.1.0
+    '@nuxt/ui':
+      specifier: ^4.8.2
+      version: 4.10.0
+    '@nuxtjs/i18n':
+      specifier: ^10.4.0
+      version: 10.6.0
     '@opentelemetry/api':
       specifier: ^1.9.1
       version: 1.9.1
@@ -45,39 +81,72 @@ catalogs:
     '@opentelemetry/sdk-logs':
       specifier: 0.221.0
       version: 0.221.0
-    '@opentelemetry/sdk-metrics':
-      specifier: ^2.8.0
-      version: 2.10.0
     '@opentelemetry/sdk-node':
       specifier: ^0.221.0
       version: 0.221.0
     '@opentelemetry/sdk-trace-base':
       specifier: ^2.8.0
       version: 2.10.0
+    '@opentelemetry/semantic-conventions':
+      specifier: ^1.41.1
+      version: 1.43.0
     '@pinia/nuxt':
       specifier: ^1.0.0
       version: 1.0.1
     '@pinia/testing':
       specifier: ^2.0.0
       version: 2.0.1
+    '@playwright/test':
+      specifier: ^1.60.0
+      version: 1.62.1
     '@prettier/plugin-xml':
       specifier: ^3.4.2
       version: 3.4.2
+    '@tailwindcss/vite':
+      specifier: ^4.3.0
+      version: 4.3.3
+    '@turf/turf':
+      specifier: ^7.3.5
+      version: 7.4.0
     '@types/geojson':
       specifier: ^7946.0.16
       version: 7946.0.16
+    '@types/node':
+      specifier: ^24.13.2
+      version: 24.13.3
+    '@typescript-eslint/utils':
+      specifier: ^8.61.0
+      version: 8.66.0
+    '@vitejs/plugin-vue':
+      specifier: ^6.0.7
+      version: 6.0.8
+    '@vitest/coverage-v8':
+      specifier: ^4.1.3
+      version: 4.1.10
     '@vitest/eslint-plugin':
       specifier: ^1.6.26
       version: 1.6.26
+    '@vitest/ui':
+      specifier: ^4.1.2
+      version: 4.1.10
     '@vue/eslint-config-prettier':
       specifier: ^10.2.0
       version: 10.2.0
+    '@vue/eslint-config-typescript':
+      specifier: ^14.8.0
+      version: 14.9.0
+    '@vue/language-core':
+      specifier: ^3.3.5
+      version: 3.3.9
     '@vue/test-utils':
       specifier: ^2.4.11
       version: 2.4.11
     '@vue/tsconfig':
       specifier: ^0.9.0
       version: 0.9.1
+    '@vueuse/core':
+      specifier: ^14.2.1
+      version: 14.4.0
     '@xmldom/xmldom':
       specifier: ^0.9.0
       version: 0.9.10
@@ -87,18 +156,36 @@ catalogs:
     chartjs-plugin-zoom:
       specifier: ^2.2.0
       version: 2.2.0
+    es-toolkit:
+      specifier: ^1.44.0
+      version: 1.50.0
+    eslint:
+      specifier: ^10.5.0
+      version: 10.8.1
     eslint-plugin-import:
       specifier: ^2.32.0
       version: 2.32.0
+    eslint-plugin-mocha:
+      specifier: ^12.0.0
+      version: 12.0.2
+    eslint-plugin-perfectionist:
+      specifier: ^5.9.0
+      version: 5.10.1
     eslint-plugin-prettier:
       specifier: ^5.5.6
       version: 5.5.6
+    eslint-plugin-vue:
+      specifier: ^10.7.2
+      version: 10.10.0
     fflate:
       specifier: ^0.8.3
       version: 0.8.3
     geojson:
       specifier: ^0.5.0
       version: 0.5.0
+    globals:
+      specifier: ^17.6.0
+      version: 17.9.0
     h3:
       specifier: ^1.15.11
       version: 1.15.11
@@ -108,24 +195,45 @@ catalogs:
     mapbox-gl:
       specifier: ~3.28.0
       version: 3.28.1
+    msw:
+      specifier: ^2.14.6
+      version: 2.15.0
     nuxt:
       specifier: ^4.4.8
       version: 4.4.8
+    ol:
+      specifier: ^10.9.0
+      version: 10.10.0
+    ol-mapbox-style:
+      specifier: ^13.4.1
+      version: 13.4.2
     pinia:
       specifier: ^4.0.0
       version: 4.0.2
     postcss-html:
       specifier: ^2.0.0
       version: 2.0.0
+    prettier:
+      specifier: 3.8.4
+      version: 3.8.4
     prettier-plugin-jsdoc:
       specifier: ^1.8.1
       version: 1.8.1
     prettier-plugin-packagejson:
       specifier: ^3.0.2
       version: 3.0.2
+    prettier-plugin-tailwindcss:
+      specifier: ^0.8.0
+      version: 0.8.1
+    proj4:
+      specifier: ^2.20.9
+      version: 2.21.0
     reproject:
       specifier: ^1.2.7
       version: 1.2.7
+    rolldown:
+      specifier: ^1.1.2
+      version: 1.2.3
     rolldown-plugin-dts:
       specifier: ^0.28.0
       version: 0.28.0
@@ -144,18 +252,51 @@ catalogs:
     stylelint-scss:
       specifier: ^7.0.0
       version: 7.2.0
+    tailwindcss:
+      specifier: ^4.3.1
+      version: 4.3.3
+    turbo:
+      specifier: ^2.9.18
+      version: 2.10.9
     typescript:
       specifier: ^6.0.0
       version: 6.0.3
+    typescript-eslint:
+      specifier: ^8.61.0
+      version: 8.66.0
     ufo:
       specifier: ^1.6.4
       version: 1.6.4
     unplugin-dts:
       specifier: 1.0.3
       version: 1.0.3
+    vite:
+      specifier: ^8.0.0
+      version: 8.2.1
+    vite-plugin-vue-devtools:
+      specifier: ^8.1.3
+      version: 8.2.1
+    vitest:
+      specifier: ^4.1.8
+      version: 4.1.10
     vitest-environment-nuxt:
       specifier: ^2.0.0
       version: 2.0.0
+    vue:
+      specifier: ^3.5.38
+      version: 3.5.41
+    vue-chartjs:
+      specifier: ^5.3.3
+      version: 5.3.4
+    vue-i18n:
+      specifier: ^11.3.1
+      version: 11.4.8
+    vue-router:
+      specifier: ^5.1.0
+      version: 5.2.0
+    vue-tsc:
+      specifier: ^3.3.5
+      version: 3.3.9
     zod:
       specifier: ^4.4.3
       version: 4.4.3
@@ -179,7 +320,7 @@ importers:
         version: 1.62.1
       '@prettier/plugin-xml':
         specifier: 'catalog:'
-        version: 3.4.2(prettier@3.9.6)
+        version: 3.4.2(prettier@3.8.4)
       '@swissgeo/config-prettier':
         specifier: workspace:*
         version: link:packages/config/prettier
@@ -197,16 +338,16 @@ importers:
         version: 2.4.11(@vue/compiler-dom@3.5.41)(@vue/server-renderer@3.5.41)(vue@3.5.41(typescript@6.0.3))
       prettier:
         specifier: 'catalog:'
-        version: 3.9.6
+        version: 3.8.4
       prettier-plugin-jsdoc:
         specifier: 'catalog:'
-        version: 1.8.1(prettier@3.9.6)
+        version: 1.8.1(prettier@3.8.4)
       prettier-plugin-packagejson:
         specifier: 'catalog:'
-        version: 3.0.2(prettier@3.9.6)
+        version: 3.0.2(prettier@3.8.4)
       prettier-plugin-tailwindcss:
         specifier: 'catalog:'
-        version: 0.8.1(prettier-plugin-jsdoc@1.8.1(prettier@3.9.6))(prettier@3.9.6)
+        version: 0.8.1(prettier-plugin-jsdoc@1.8.1(prettier@3.8.4))(prettier@3.8.4)
       turbo:
         specifier: 'catalog:'
         version: 2.10.9
@@ -233,7 +374,7 @@ importers:
         version: 1.6.26(@typescript-eslint/eslint-plugin@8.66.0(@typescript-eslint/parser@8.66.0(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3)(vitest@4.1.10)
       '@vue/eslint-config-prettier':
         specifier: 'catalog:'
-        version: 10.2.0(eslint@10.8.1(jiti@2.7.0))(prettier@3.9.6)
+        version: 10.2.0(eslint@10.8.1(jiti@2.7.0))(prettier@3.8.4)
       '@vue/eslint-config-typescript':
         specifier: 'catalog:'
         version: 14.9.0(eslint-plugin-vue@10.10.0(@stylistic/eslint-plugin@5.10.0(eslint@10.8.1(jiti@2.7.0)))(@typescript-eslint/parser@8.66.0(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.8.1(jiti@2.7.0))(vue-eslint-parser@10.4.1(eslint@10.8.1(jiti@2.7.0))))(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3)
@@ -251,7 +392,7 @@ importers:
         version: 5.10.1(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3)
       eslint-plugin-prettier:
         specifier: 'catalog:'
-        version: 5.5.6(eslint-config-prettier@10.1.8(eslint@10.8.1(jiti@2.7.0)))(eslint@10.8.1(jiti@2.7.0))(prettier@3.9.6)
+        version: 5.5.6(eslint-config-prettier@10.1.8(eslint@10.8.1(jiti@2.7.0)))(eslint@10.8.1(jiti@2.7.0))(prettier@3.8.4)
       eslint-plugin-vue:
         specifier: 'catalog:'
         version: 10.10.0(@stylistic/eslint-plugin@5.10.0(eslint@10.8.1(jiti@2.7.0)))(@typescript-eslint/parser@8.66.0(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.8.1(jiti@2.7.0))(vue-eslint-parser@10.4.1(eslint@10.8.1(jiti@2.7.0)))
@@ -282,7 +423,7 @@ importers:
     dependencies:
       prettier:
         specifier: 'catalog:'
-        version: 3.9.6
+        version: 3.8.4
     devDependencies:
       '@microsoft/api-extractor':
         specifier: 'catalog:'
@@ -302,16 +443,16 @@ importers:
     optionalDependencies:
       '@prettier/plugin-xml':
         specifier: 'catalog:'
-        version: 3.4.2(prettier@3.9.6)
+        version: 3.4.2(prettier@3.8.4)
       prettier-plugin-jsdoc:
         specifier: 'catalog:'
-        version: 1.8.1(prettier@3.9.6)
+        version: 1.8.1(prettier@3.8.4)
       prettier-plugin-packagejson:
         specifier: 'catalog:'
-        version: 3.0.2(prettier@3.9.6)
+        version: 3.0.2(prettier@3.8.4)
       prettier-plugin-tailwindcss:
         specifier: 'catalog:'
-        version: 0.8.1(prettier-plugin-jsdoc@1.8.1(prettier@3.9.6))(prettier@3.9.6)
+        version: 0.8.1(prettier-plugin-jsdoc@1.8.1(prettier@3.8.4))(prettier@3.8.4)
 
   packages/config/stylelint:
     dependencies:
@@ -1351,7 +1492,7 @@ importers:
         version: 10.10.0
       prettier:
         specifier: 'catalog:'
-        version: 3.9.6
+        version: 3.8.4
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -10051,8 +10192,8 @@ packages:
       prettier-plugin-svelte:
         optional: true
 
-  prettier@3.9.6:
-    resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
+  prettier@3.8.4:
+    resolution: {integrity: sha512-N2MylSdi48+5N/6S5j+maeHbUSIzzZ5uOcX5Hm4QpV8Dkb1HFjfAKTKX6yNPJQD9AhcT3ifHNB66tWTTJDi11Q==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -16189,10 +16330,10 @@ snapshots:
 
   '@poppinss/exception@1.2.3': {}
 
-  '@prettier/plugin-xml@3.4.2(prettier@3.9.6)':
+  '@prettier/plugin-xml@3.4.2(prettier@3.8.4)':
     dependencies:
       '@xml-tools/parser': 1.0.11
-      prettier: 3.9.6
+      prettier: 3.8.4
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -18964,12 +19105,12 @@ snapshots:
 
   '@vue/devtools-shared@8.2.1': {}
 
-  '@vue/eslint-config-prettier@10.2.0(eslint@10.8.1(jiti@2.7.0))(prettier@3.9.6)':
+  '@vue/eslint-config-prettier@10.2.0(eslint@10.8.1(jiti@2.7.0))(prettier@3.8.4)':
     dependencies:
       eslint: 10.8.1(jiti@2.7.0)
       eslint-config-prettier: 10.1.8(eslint@10.8.1(jiti@2.7.0))
-      eslint-plugin-prettier: 5.5.6(eslint-config-prettier@10.1.8(eslint@10.8.1(jiti@2.7.0)))(eslint@10.8.1(jiti@2.7.0))(prettier@3.9.6)
-      prettier: 3.9.6
+      eslint-plugin-prettier: 5.5.6(eslint-config-prettier@10.1.8(eslint@10.8.1(jiti@2.7.0)))(eslint@10.8.1(jiti@2.7.0))(prettier@3.8.4)
+      prettier: 3.8.4
     transitivePeerDependencies:
       - '@types/eslint'
 
@@ -20536,10 +20677,10 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-prettier@5.5.6(eslint-config-prettier@10.1.8(eslint@10.8.1(jiti@2.7.0)))(eslint@10.8.1(jiti@2.7.0))(prettier@3.9.6):
+  eslint-plugin-prettier@5.5.6(eslint-config-prettier@10.1.8(eslint@10.8.1(jiti@2.7.0)))(eslint@10.8.1(jiti@2.7.0))(prettier@3.8.4):
     dependencies:
       eslint: 10.8.1(jiti@2.7.0)
-      prettier: 3.9.6
+      prettier: 3.8.4
       prettier-linter-helpers: 1.0.1
       synckit: 0.11.13
     optionalDependencies:
@@ -23998,28 +24139,28 @@ snapshots:
     dependencies:
       fast-diff: 1.3.0
 
-  prettier-plugin-jsdoc@1.8.1(prettier@3.9.6):
+  prettier-plugin-jsdoc@1.8.1(prettier@3.8.4):
     dependencies:
       binary-searching: 2.0.5
       comment-parser: 1.4.7
       mdast-util-from-markdown: 2.0.2
-      prettier: 3.9.6
+      prettier: 3.8.4
     transitivePeerDependencies:
       - supports-color
 
-  prettier-plugin-packagejson@3.0.2(prettier@3.9.6):
+  prettier-plugin-packagejson@3.0.2(prettier@3.8.4):
     dependencies:
       sort-package-json: 3.6.0
     optionalDependencies:
-      prettier: 3.9.6
+      prettier: 3.8.4
 
-  prettier-plugin-tailwindcss@0.8.1(prettier-plugin-jsdoc@1.8.1(prettier@3.9.6))(prettier@3.9.6):
+  prettier-plugin-tailwindcss@0.8.1(prettier-plugin-jsdoc@1.8.1(prettier@3.8.4))(prettier@3.8.4):
     dependencies:
-      prettier: 3.9.6
+      prettier: 3.8.4
     optionalDependencies:
-      prettier-plugin-jsdoc: 1.8.1(prettier@3.9.6)
+      prettier-plugin-jsdoc: 1.8.1(prettier@3.8.4)
 
-  prettier@3.9.6: {}
+  prettier@3.8.4: {}
 
   pretty-bytes@7.1.0: {}
 
