@@ -11,6 +11,9 @@ overrides:
   # fails. Keep these in sync with the catalog entries below.
   ol: 10.9.0
   proj4: 2.20.9
+  # vue and @vue/server-renderer depend on each other, so two copies of vue in
+  # the tree give Nitro a symlink cycle to walk and the build dies with ELOOP.
+  vue: 3.5.41
 
 allowBuilds:
   "@parcel/watcher": false
