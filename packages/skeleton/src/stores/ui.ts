@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
-export const SIDEBAR_ICON_WIDTH = 64; // min-w-16 = 4rem = 64px
 export const SIDEBAR_CONTENT_WIDTH = 400;
+/** Width of the tab left over on the map once the sidebar is collapsed */
+export const SIDEBAR_HANDLE_WIDTH = 24;
 
 // Sidebar types enum
 export enum SidebarType {
@@ -20,9 +21,7 @@ export const useSidebarStore = defineStore("sidebar", () => {
   const isSidebarOpen = computed(() => currentSidebar.value !== null);
 
   const sidebarWidth = computed(() =>
-    isSidebarOpen.value
-      ? SIDEBAR_ICON_WIDTH + SIDEBAR_CONTENT_WIDTH
-      : SIDEBAR_ICON_WIDTH,
+    isSidebarOpen.value ? SIDEBAR_CONTENT_WIDTH : SIDEBAR_HANDLE_WIDTH,
   );
 
   const isContentSidebarVisible = computed(

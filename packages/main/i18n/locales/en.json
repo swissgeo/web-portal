@@ -10,7 +10,12 @@
   },
   "menu": {
     "search": "Search",
-    "layerCart": "Active layers"
+    "layerCart": "Active layers",
+    "map": "Map",
+    "collapse": "Collapse the side panel",
+    "expand": "Expand the side panel",
+    "addLayer": "Add layer",
+    "addLayerComingSoon": "The layer catalog is not available yet."
   },
   "search": {
     "placeholder": "Search for a place, layer or coordinates...",
