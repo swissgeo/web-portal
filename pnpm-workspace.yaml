@@ -4,6 +4,14 @@ packages:
   - support/service-shortlink-mock/
   - tests/integration
 
+overrides:
+  # ol-mapbox-style declares `ol: '*'` and reproject declares `proj4: ^2.6.2`,
+  # so without these both resolve to their own newer copies. Two copies of the
+  # same library make TypeScript treat their types as unrelated and type-check
+  # fails. Keep these in sync with the catalog entries below.
+  ol: 10.9.0
+  proj4: 2.20.9
+
 allowBuilds:
   "@parcel/watcher": false
   esbuild: false
