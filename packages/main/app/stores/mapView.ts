@@ -1,4 +1,5 @@
 import type { Layer as MapLayer } from "@swissgeo/map";
+import type { Legend } from "@swissgeo/ogc";
 
 import { useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
@@ -22,6 +23,13 @@ export const useMapViewStore = defineStore("mapView", () => {
   const compareRatio = ref(0.5);
   const stateId = ref("");
   const mapLayers: Ref<MapLayer[]> = ref([]);
+
+  /**
+   * Legends advertised by the services, per layer uuid. They are kept aside from
+   * the layer because the service capabilities they come from are re-fetched,
+   * and thus re-emitted, independently of the layer, notably on a locale change.
+   */
+  const legends = ref<Record<string, Legend[]>>({});
 
   const layerStore = useLayerStore();
 
@@ -127,9 +135,18 @@ export const useMapViewStore = defineStore("mapView", () => {
     }
   }
 
+  function setLayerLegends(uuid: string, layerLegends: Legend[]): void {
+    legends.value[uuid] = layerLegends;
+  }
+
+  function getLayerLegends(uuid: string): Legend[] {
+    return legends.value[uuid] ?? [];
+  }
+
   function removeLayer(identifier: string | number) {
     const index = _getIndexFromIdentifier(identifier);
     if (index || index === 0) {
+      delete legends.value[mapLayers.value[index]!.uuid];
       mapLayers.value.splice(index, 1);
     }
   }
@@ -217,6 +234,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     visibleLayers,
     getMapLayers,
     getMapLayerFromUuid,
+    getLayerLegends,
     // actions
     toggleTimeSlider,
     closeTimeSlider,
@@ -230,6 +248,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     setStateId,
     updateLayerData,
     updateLayerOpacity,
+    setLayerLegends,
     removeLayer,
     addLayerToBottom,
     addLayerToTop,

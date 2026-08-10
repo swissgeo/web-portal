@@ -1,4 +1,4 @@
-import type { Dataset, Legend } from "@swissgeo/ogc";
+import type { Dataset } from "@swissgeo/ogc";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { defineStore } from "pinia";
@@ -34,14 +34,6 @@ export const useLayerStore = defineStore("layers", () => {
   const backgroundLayer = ref<Layer | null | undefined>(undefined);
 
   const importOptions = markRaw<Record<string, importOption>>({});
-
-  /**
-   * Legends advertised by the services, per layer uuid. They are not part of the
-   * layer itself because they come from the service capabilities, which are
-   * re-fetched (and thus re-emitted) independently of the layer, notably on a
-   * locale change.
-   */
-  const legends = ref<Record<string, Legend[]>>({});
 
   function addImportOption(uuid: string, option: importOption) {
     importOptions[uuid] = option;
@@ -137,17 +129,7 @@ export const useLayerStore = defineStore("layers", () => {
     }
   }
 
-  function setLayerLegends(uuid: string, layerLegends: Legend[]): void {
-    legends.value[uuid] = layerLegends;
-  }
-
-  function getLayerLegends(uuid: string): Legend[] {
-    return legends.value[uuid] ?? [];
-  }
-
   function removeLayer(uuid: string) {
-    delete legends.value[uuid];
-
     const index = _getIndexFromIdentifier(uuid);
     if ((index || index === 0) && layers.value[index]) {
       layers.value.splice(index, 1);
@@ -163,7 +145,6 @@ export const useLayerStore = defineStore("layers", () => {
 
   function $reset() {
     layers.value = [];
-    legends.value = {};
   }
 
   return {
@@ -171,14 +152,12 @@ export const useLayerStore = defineStore("layers", () => {
     backgroundLayer,
     // getters
     getLayer,
-    getLayerLegends,
     isThereImportOptions,
     // actions
     addLayer,
     setBackground,
     replaceLayer,
     setLayerInfo,
-    setLayerLegends,
     removeLayer,
     setLayerData,
     addImportOption,

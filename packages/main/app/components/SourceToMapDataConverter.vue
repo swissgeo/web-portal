@@ -69,7 +69,7 @@ function updateLayerInfo(uuid: string, info: LayerInfo) {
 }
 
 function updateLegends(uuid: string, legends: Legend[]) {
-  layerStore.setLayerLegends(uuid, legends);
+  mapViewStore.setLayerLegends(uuid, legends);
 }
 
 function updateStoreLayerData(uuid: string, dataset: Dataset) {

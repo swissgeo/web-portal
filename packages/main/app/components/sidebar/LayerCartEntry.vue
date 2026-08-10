@@ -26,7 +26,7 @@ const datasetPanelStore = useDatasetPanelStore();
 const mapViewStore = useMapViewStore();
 
 const isExpanded = ref(false);
-const legends = computed(() => layerStore.getLayerLegends(layer.uuid));
+const legends = computed(() => mapViewStore.getLayerLegends(layer.uuid));
 
 const currentTime = computed({
   get() {
