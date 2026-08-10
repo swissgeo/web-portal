@@ -60,8 +60,10 @@ test.describe("locale routing", () => {
     page,
   }) => {
     await page.goto("/fr/map");
+    // The sidebar starts collapsed, so its localized label is the one on the
+    // tab that expands it
     await expect(
-      page.getByRole("button", { name: "Couches actives" }),
+      page.getByRole("button", { name: "Ouvrir le panneau latéral" }),
     ).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
@@ -72,7 +74,7 @@ test.describe("locale routing", () => {
   }) => {
     await page.goto("/en/map");
     await expect(
-      page.getByRole("button", { name: "Active layers" }),
+      page.getByRole("button", { name: "Expand the side panel" }),
     ).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
