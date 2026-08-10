@@ -66,6 +66,7 @@ const displayMode = inject(displayModeKey, "web");
       <LazyMapElevationWindow v-if="showAdditionalMapUi" />
     </template>
     <template #after>
+      <NaturalLanguageMapSearch />
       <DebugPanel
         v-if="showAdditionalMapUi && displayMode === 'web'"
         class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"
