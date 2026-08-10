@@ -125,6 +125,10 @@ export const unitTestsConfig: FlatConfig.ConfigArray = [
       "no-console": "off",
       "no-prototype-builtins": "off",
       "vitest/no-focused-tests": "error",
+      // the vitest variant is aware of assertions, so referencing a method inside
+      // expect() is allowed while genuine unbound usages are still reported
+      "@typescript-eslint/unbound-method": "off",
+      "vitest/unbound-method": "error",
       ...noUnusedVarsRules,
     },
   },
