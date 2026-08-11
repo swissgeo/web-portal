@@ -52,7 +52,7 @@ export default function useOlKMZLayer(
     { immediate: true },
   );
 
-  async function unzippKMZ(): Promise<Record<string, Uint8Array>> {
+  async function unzipKMZ(): Promise<Record<string, Uint8Array>> {
     return await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
       unzip(
         kmzDataBuffer.value,
@@ -163,7 +163,7 @@ export default function useOlKMZLayer(
     const positionStore = usePositionStore();
 
     try {
-      const unzipped = await unzippKMZ();
+      const unzipped = await unzipKMZ();
       const { kmlContent, iconFiles } = extractKMLAndIcons(unzipped);
 
       const modifiedKML = replaceIconReferences(kmlContent, iconFiles);
