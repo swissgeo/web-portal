@@ -9,6 +9,10 @@ import type { Service } from "@/types/Records";
 import { useCapabilities } from "./useCapabilities";
 import { useConditionalFetch } from "./useConditionalFetch";
 
+// XLink namespace URI, fixed by the W3C XLink spec and required by the WMS
+// schema for `OnlineResource`. Only the prefix bound to it can vary between
+// servers, so we read the attribute by namespace when the usual `xlink:href`
+// literal name isn't found.
 const XLINK_NS = "http://www.w3.org/1999/xlink";
 
 export interface WmsCapabilitiesData {
