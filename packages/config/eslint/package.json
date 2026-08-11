@@ -25,6 +25,7 @@
   "dependencies": {
     "@eslint/js": "catalog:",
     "@eslint/markdown": "catalog:",
+    "@typescript-eslint/scope-manager": "catalog:",
     "@typescript-eslint/utils": "catalog:",
     "@vitest/eslint-plugin": "catalog:",
     "@vue/eslint-config-prettier": "catalog:",
