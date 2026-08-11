@@ -9,8 +9,8 @@ overrides:
   # so without these both resolve to their own newer copies. Two copies of the
   # same library make TypeScript treat their types as unrelated and type-check
   # fails. Keep these in sync with the catalog entries below.
-  ol: 10.9.0
-  proj4: 2.20.9
+  ol: 10.10.0
+  proj4: 2.21.0
   # vue and @vue/server-renderer depend on each other, so two copies of vue in
   # the tree give Nitro a symlink cycle to walk and the build dies with ELOOP.
   vue: 3.5.41
