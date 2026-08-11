@@ -130,4 +130,175 @@ describe("TimeSlider.vue - store integration", () => {
       wrapper.unmount();
     });
   });
+
+  describe("togglePlayYearsWithData", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    function setupLayersWithYears(
+      layerUuid: string,
+      availableValues: string[],
+      currentValue: string,
+    ) {
+      const store = useDimensionsStore();
+      store.setLayerDimensions(layerUuid, {
+        time: { currentValue, availableValues },
+      });
+      return store;
+    }
+
+    it("starts playback from the first year when currentYear is not in yearsWithData", async () => {
+      setupLayersWithYears("layer-a", ["2020", "2022", "2024"], "2025");
+      const wrapper = mountTimeSlider();
+      await nextTick();
+
+      await wrapper
+        .find("[data-test='time-slider-play-button']")
+        .trigger("click");
+      vi.advanceTimersByTime(0);
+
+      const store = useDimensionsStore();
+      expect(store.getDimensions("layer-a")?.time?.currentValue).toBe("2020");
+
+      wrapper.unmount();
+    });
+
+    it("starts playback from the first year when currentYear is the last year with data", async () => {
+      setupLayersWithYears("layer-b", ["2020", "2022", "2024"], "2024");
+      const wrapper = mountTimeSlider();
+      await nextTick();
+
+      await wrapper
+        .find("[data-test='time-slider-play-button']")
+        .trigger("click");
+      vi.advanceTimersByTime(0);
+
+      const store = useDimensionsStore();
+      expect(store.getDimensions("layer-b")?.time?.currentValue).toBe("2020");
+
+      wrapper.unmount();
+    });
+
+    it("continues from the current year when it is in the middle of yearsWithData", async () => {
+      setupLayersWithYears("layer-c", ["2020", "2022", "2024"], "2022");
+      const wrapper = mountTimeSlider();
+      await nextTick();
+
+      await wrapper
+        .find("[data-test='time-slider-play-button']")
+        .trigger("click");
+      vi.advanceTimersByTime(0);
+
+      const store = useDimensionsStore();
+      expect(store.getDimensions("layer-c")?.time?.currentValue).toBe("2022");
+
+      wrapper.unmount();
+    });
+
+    it("advances to the next year after 1 second", async () => {
+      setupLayersWithYears("layer-d", ["2020", "2022", "2024"], "2020");
+      const wrapper = mountTimeSlider();
+      await nextTick();
+
+      await wrapper
+        .find("[data-test='time-slider-play-button']")
+        .trigger("click");
+      vi.advanceTimersByTime(1000);
+      await nextTick();
+
+      const store = useDimensionsStore();
+      expect(store.getDimensions("layer-d")?.time?.currentValue).toBe("2022");
+
+      wrapper.unmount();
+    });
+
+    it("stops playback after reaching the last year", async () => {
+      setupLayersWithYears("layer-e", ["2020", "2022", "2024"], "2022");
+      const wrapper = mountTimeSlider();
+      await nextTick();
+
+      await wrapper
+        .find("[data-test='time-slider-play-button']")
+        .trigger("click");
+      vi.advanceTimersByTime(1000);
+      await nextTick();
+      vi.advanceTimersByTime(1000);
+      await nextTick();
+
+      const store = useDimensionsStore();
+      expect(store.getDimensions("layer-e")?.time?.currentValue).toBe("2024");
+
+      vi.advanceTimersByTime(1000);
+      await nextTick();
+      expect(store.getDimensions("layer-e")?.time?.currentValue).toBe("2024");
+
+      wrapper.unmount();
+    });
+
+    it("stops playback when toggled off mid-playback", async () => {
+      setupLayersWithYears("layer-f", ["2020", "2022", "2024"], "2020");
+      const wrapper = mountTimeSlider();
+      await nextTick();
+
+      await wrapper
+        .find("[data-test='time-slider-play-button']")
+        .trigger("click");
+      vi.advanceTimersByTime(500);
+      await wrapper
+        .find("[data-test='time-slider-play-button']")
+        .trigger("click");
+
+      const store = useDimensionsStore();
+      const valueAtStop = store.getDimensions("layer-f")?.time?.currentValue;
+      vi.advanceTimersByTime(2000);
+      expect(store.getDimensions("layer-f")?.time?.currentValue).toBe(
+        valueAtStop,
+      );
+
+      wrapper.unmount();
+    });
+
+    it("does not start playback when there are no years with data", async () => {
+      setupLayersWithYears("layer-g", ["ALL_YEARS"], "ALL_YEARS");
+      const wrapper = mountTimeSlider();
+      await nextTick();
+
+      await wrapper
+        .find("[data-test='time-slider-play-button']")
+        .trigger("click");
+      vi.advanceTimersByTime(0);
+
+      const store = useDimensionsStore();
+      expect(store.getDimensions("layer-g")?.time?.currentValue).toBe(
+        "ALL_YEARS",
+      );
+
+      wrapper.unmount();
+    });
+
+    it("does not advance when toggled back off quickly", async () => {
+      setupLayersWithYears("layer-i", ["2020", "2022", "2024"], "2020");
+      const wrapper = mountTimeSlider();
+      await nextTick();
+
+      await wrapper
+        .find("[data-test='time-slider-play-button']")
+        .trigger("click");
+      vi.advanceTimersByTime(300);
+      await wrapper
+        .find("[data-test='time-slider-play-button']")
+        .trigger("click");
+      vi.advanceTimersByTime(2000);
+
+      const store = useDimensionsStore();
+      expect(store.getDimensions("layer-i")?.time?.currentValue).toBe("2020");
+
+      wrapper.unmount();
+    });
+  });
 });
