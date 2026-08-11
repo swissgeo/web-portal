@@ -1,19 +1,9 @@
 <script lang="ts" setup>
-import { round } from "@swissgeo/numbers";
-import { computed, ref, useTemplateRef } from "vue";
+import { useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
+import useTimeSliderBar from "./composables/useTimeSliderBar";
 import TimeSliderBarSteps from "./TimeSliderBarSteps.vue";
-
-const PLAY_BUTTON_SIZE = 54;
-const STEP_BAR_LEFT = 48; // matches pl-12 on root element
-
-const LABEL_WIDTH = 32;
-const MARGIN_BETWEEN_LABELS = 50;
-
-let cursorX = 0;
-
-const { t } = useI18n();
 
 const { allYears, modelValue, yearsWithData, containerWidth } = defineProps<{
   allYears: number[];
@@ -27,154 +17,31 @@ const { allYears, modelValue, yearsWithData, containerWidth } = defineProps<{
 
 const emit = defineEmits(["update:modelValue", "grabbing"]);
 
-const falseYear = ref<number | string | undefined>(undefined);
-const isInputYearValid = ref(true);
+const { t } = useI18n();
 
 const yearCursor = useTemplateRef<HTMLDivElement>("yearCursor");
 const yearCursorInput = useTemplateRef<HTMLInputElement>("yearCursorInput");
 
-const tooltipYearOutsideRangeContent = computed(
-  () =>
-    `${t("timeSlider.outsideValidYearRange")} ${allYears[0]}-${allYears[allYears.length - 1]}`,
-);
-
-const currentYear = computed({
-  get() {
-    return modelValue;
-  },
-  set(newValue: number) {
-    emit("update:modelValue", newValue);
-    isInputYearValid.value = true;
-  },
+const {
+  inputYear,
+  isInputYearValid,
+  tooltipYearOutsideRangeContent,
+  cursorPosition,
+  cursorArrowPosition,
+  yearsShownAsLabel,
+  sliderWidth,
+  grabCursor,
+  setCurrentYear,
+  positionNodeLabel,
+} = useTimeSliderBar({
+  allYears: () => allYears,
+  modelValue: () => modelValue,
+  yearsWithData: () => yearsWithData,
+  containerWidth: () => containerWidth,
+  getCursorElement: () => yearCursor.value,
+  onUpdateModelValue: (year) => emit("update:modelValue", year),
+  onGrabbing: (isGrabbing) => emit("grabbing", isGrabbing),
 });
-
-const inputYear = computed({
-  get() {
-    if (falseYear.value !== undefined) {
-      return falseYear.value;
-    }
-    return currentYear.value;
-  },
-  set(value: string | number) {
-    const parsedValue = parseInt(value.toString());
-    if (!allYears.includes(parsedValue)) {
-      isInputYearValid.value = false;
-      // || '' enables the value to be cleared
-      falseYear.value = parsedValue || "";
-    } else {
-      isInputYearValid.value = true;
-      currentYear.value = parsedValue;
-      falseYear.value = undefined;
-    }
-  },
-});
-
-const cursorArrowPosition = computed(() => ({
-  left: `${yearPositionOnSlider.value - 4.5}px`,
-}));
-const distanceBetweenLabels = computed(
-  () => sliderWidth.value / allYears.length,
-);
-
-const yearsShownAsLabel = computed(() => {
-  const amountOfLabelsOnScreen = round(
-    sliderWidth.value / (LABEL_WIDTH + MARGIN_BETWEEN_LABELS),
-  );
-
-  let yearThreshold = 10;
-  if (amountOfLabelsOnScreen < 5) {
-    yearThreshold = 50;
-  } else if (amountOfLabelsOnScreen < 8) {
-    yearThreshold = 25;
-  }
-  return allYears.filter((year) => year % yearThreshold === 0);
-});
-
-// yearPositionOnSlider is 4.5px left of the tick; both cursorArrowPosition
-// and cursorPosition add 4.5 back to derive the final position aligned with the tick.
-const yearPositionOnSlider = computed(() => {
-  if (!currentYear.value) {
-    return STEP_BAR_LEFT;
-  }
-  return (
-    STEP_BAR_LEFT +
-    allYears.indexOf(currentYear.value) * distanceBetweenLabels.value -
-    4.5
-  );
-});
-
-const cursorPosition = computed(() => {
-  const yearCursorWidth = yearCursor.value?.clientWidth || 0;
-  return `${Math.max(yearPositionOnSlider.value - yearCursorWidth / 2 + 4.5, 0)}px`;
-});
-
-function grabCursor(event: MouseEvent | TouchEvent) {
-  emit("grabbing", true);
-  if ("touches" in event) {
-    cursorX = event.touches[0].screenX;
-  } else {
-    cursorX = event.screenX;
-  }
-  window.addEventListener("mousemove", listenToMouseMove, { passive: true });
-  window.addEventListener("touchmove", listenToMouseMove, { passive: true });
-  window.addEventListener("mouseup", releaseCursor, { passive: true });
-  window.addEventListener("touchend", releaseCursor, { passive: true });
-}
-
-function listenToMouseMove(event: MouseEvent | TouchEvent) {
-  const currentPosition =
-    "touches" in event ? event.touches[0].screenX : event.screenX;
-  const deltaX = cursorX - currentPosition;
-  if (Math.abs(deltaX) >= distanceBetweenLabels.value && currentYear.value) {
-    let futureYearIndex = allYears.indexOf(currentYear.value);
-
-    const absoluteDeltaIndex = Math.floor(
-      Math.abs(deltaX) / distanceBetweenLabels.value,
-    );
-    if (deltaX < 0) {
-      if (allYears.length > futureYearIndex + absoluteDeltaIndex) {
-        futureYearIndex += absoluteDeltaIndex;
-      } else if (allYears.length > futureYearIndex + 1) {
-        futureYearIndex++;
-      }
-    } else if (deltaX > 0) {
-      if (futureYearIndex > absoluteDeltaIndex) {
-        futureYearIndex -= absoluteDeltaIndex;
-      } else if (futureYearIndex > 0) {
-        futureYearIndex--;
-      }
-    }
-    const futureYear = allYears[futureYearIndex];
-    cursorX = currentPosition;
-    currentYear.value = futureYear!;
-  }
-}
-
-function releaseCursor() {
-  emit("grabbing", false);
-  window.removeEventListener("mousemove", listenToMouseMove);
-  window.removeEventListener("touchmove", listenToMouseMove);
-  window.removeEventListener("mouseup", releaseCursor);
-  window.removeEventListener("touchend", releaseCursor);
-}
-
-function positionNodeLabel(year: number) {
-  const timestampIndex = allYears.indexOf(year);
-  const tickPosition = timestampIndex * distanceBetweenLabels.value;
-  const leftPosition = Math.max(
-    LABEL_WIDTH / 2,
-    Math.min(tickPosition, sliderWidth.value - LABEL_WIDTH / 2),
-  );
-  return {
-    left: `${leftPosition}px`,
-  };
-}
-
-const GAP_SIZE = 16; // gap-4 = 16px
-const padding = 52; // pl-12 (48px) + pr-1 (4px)
-const sliderWidth = computed(
-  () => containerWidth - padding - PLAY_BUTTON_SIZE - GAP_SIZE,
-);
 </script>
 
 <template>
@@ -236,7 +103,7 @@ const sliderWidth = computed(
         :years-joint="yearsWithData.yearsJoint"
         :years-separate="yearsWithData.yearsSeparate"
         ref="timeSliderBar"
-        @select="currentYear = $event"
+        @select="setCurrentYear($event)"
         :sliderWidth="sliderWidth"
       />
       <template #content>
