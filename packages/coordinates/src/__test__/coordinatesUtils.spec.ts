@@ -207,4 +207,20 @@ describe("Unit test for coordinatesUtils", () => {
       expect(coordinatesUtils.removeZValues([[1, 2, 3]])).to.eql([[1, 2]]);
     });
   });
+
+  describe("parseCRS", () => {
+    it("returns undefined if no CRS is given", () => {
+      expect(coordinatesUtils.parseCRS()).toBe(undefined);
+    });
+
+    it("returns undefined if an invalid CRS is given", () => {
+      expect(coordinatesUtils.parseCRS("EPSG:123456789")).toBe(undefined);
+    });
+
+    it("returns a CoordinateSystem if a valid CRS is given", () => {
+      expect(coordinatesUtils.parseCRS("EPSG:4326")).toEqual(WGS84);
+      expect(coordinatesUtils.parseCRS("EPSG:3857")).toEqual(WEBMERCATOR);
+      expect(coordinatesUtils.parseCRS("EPSG:2056")).toEqual(LV95);
+    });
+  });
 });
