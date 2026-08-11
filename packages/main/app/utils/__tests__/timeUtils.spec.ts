@@ -27,9 +27,9 @@ describe("getTimeInfoFromWMTSCapabilities", () => {
   it("returns the values and default from the first dimension", () => {
     const dimensions: WMTSCapabilityDimension[] = [
       {
-        Identifier: "Time",
-        Default: "2023",
-        Value: ["2021", "2022", "2023"],
+        identifier: "Time",
+        defaultValue: "2023",
+        values: ["2021", "2022", "2023"],
       },
     ];
 
