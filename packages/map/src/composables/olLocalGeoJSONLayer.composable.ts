@@ -4,14 +4,17 @@ import type { Ref } from "vue";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
+import { register } from "ol/proj/proj4";
 import VectorSource from "ol/source/Vector";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
+import proj4 from "proj4";
 import { computed, ref, watch } from "vue";
 
 import type { GeoJSONLayer } from "@/types";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
+import { reprojectGeoJsonData } from "@/utils/geoJsonUtils";
 
 export default function useOlLocalGeoJSONLayer(
   layer: Ref<GeoJSONLayer>,
@@ -69,10 +72,11 @@ export default function useOlLocalGeoJSONLayer(
     }
 
     try {
-      const features = new GeoJSON().readFeatures(geoJsonData, {
-        dataProjection: "EPSG:4326",
-        featureProjection: positionStore.projection.epsg,
-      });
+      // Honours the (obsolete but still widespread) `crs` property; falls back
+      // to WGS84 as per RFC 7946.
+      const features = new GeoJSON().readFeatures(
+        reprojectGeoJsonData(geoJsonData.value, positionStore.projection),
+      );
 
       if (olLayer.value) {
         olLayer.value.setSource(
@@ -100,6 +104,7 @@ export default function useOlLocalGeoJSONLayer(
   }
 
   function initialize(): void {
+    register(proj4);
     setFeatures();
   }
 

@@ -48,6 +48,86 @@ describe("FileConverter", () => {
     expect(updateEvents).toHaveLength(3);
   });
 
+  it("maps a GeoJSON file to the GeoJSON format with parsed data", () => {
+    const featureCollection = {
+      type: "FeatureCollection",
+      features: [],
+    };
+    const wrapper = mount(FileConverter, {
+      props: {
+        layer: {
+          data: JSON.stringify(featureCollection),
+          type: "geojson" as const,
+          uuid: "geojson-uuid",
+          humanId: "my-drawing.geojson",
+          isLoading: false,
+        },
+      },
+    });
+
+    const emitted = wrapper.emitted("update")![0]![0] as Record<
+      string,
+      unknown
+    >;
+    expect(emitted.format).toBe("GeoJSON");
+    expect(emitted.geoJsonData).toEqual(featureCollection);
+  });
+
+  it("keeps the crs property of a GeoJSON file", () => {
+    const featureCollection = {
+      type: "FeatureCollection",
+      crs: { type: "name", properties: { name: "EPSG:2056" } },
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: { type: "Point", coordinates: [2600000, 1200000] },
+        },
+      ],
+    };
+    const wrapper = mount(FileConverter, {
+      props: {
+        layer: {
+          data: JSON.stringify(featureCollection),
+          type: "geojson" as const,
+          uuid: "geojson-crs-uuid",
+          humanId: "lufttemperatur.geojson",
+          isLoading: false,
+        },
+      },
+    });
+
+    const emitted = wrapper.emitted("update")![0]![0] as Record<
+      string,
+      unknown
+    >;
+    expect(emitted.geoJsonData).toEqual(featureCollection);
+  });
+
+  it.each([
+    ["malformed", "{ not valid json"],
+    ["not GeoJSON", '{"title":"un JSON standard"}'],
+    ["a FeatureCollection without features", '{"type":"FeatureCollection"}'],
+    [
+      "a feature with an unsupported geometry",
+      '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Banana","coordinates":[1,2]}}]}',
+    ],
+  ])("emits no update when the GeoJSON data is %s", (_label, data) => {
+    const wrapper = mount(FileConverter, {
+      props: {
+        layer: {
+          data,
+          type: "geojson" as const,
+          uuid: "geojson-uuid",
+          humanId: "broken.geojson",
+          isLoading: false,
+        },
+      },
+    });
+
+    expect(wrapper.emitted("update")).toBeUndefined();
+  });
+
   it("emits the remove signal when unmounted", () => {
     const layerData = {
       data: `<xml>KML data here</xml>`,

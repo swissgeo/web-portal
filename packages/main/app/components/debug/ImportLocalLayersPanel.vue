@@ -96,8 +96,14 @@ function onFileSelected(evt: Event): void {
         @click="handleImport"
         iconName="Upload"
         title="Import file"
+        data-testid="file-import-button"
       />
-      <IconButton @click="$emit('close')" iconName="X" title="Close" />
+      <IconButton
+        @click="$emit('close')"
+        iconName="X"
+        title="Close"
+        data-testid="file-import-close-button"
+      />
     </div>
 
     <!-- Success message -->
