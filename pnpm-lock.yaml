@@ -1046,6 +1046,9 @@ importers:
       '@swissgeo/elevation-profile':
         specifier: workspace:*
         version: link:../elevation-profile
+      '@swissgeo/feature':
+        specifier: workspace:*
+        version: link:../feature
       '@swissgeo/layers':
         specifier: workspace:*
         version: link:../layers

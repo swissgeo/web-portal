@@ -51,6 +51,7 @@
     "@swissgeo/dimension": "workspace:*",
     "@swissgeo/drawing": "workspace:*",
     "@swissgeo/elevation-profile": "workspace:*",
+    "@swissgeo/feature": "workspace:*",
     "@swissgeo/layers": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@swissgeo/map": "workspace:*",
