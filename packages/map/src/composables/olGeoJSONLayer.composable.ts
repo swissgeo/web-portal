@@ -8,6 +8,7 @@ import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import { register } from "ol/proj/proj4";
 import VectorSource from "ol/source/Vector";
+import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import proj4 from "proj4";
 import { computed, shallowRef, watch } from "vue";
 
@@ -52,7 +53,29 @@ export default function useOlGeoJSONLayer(
   );
 
   function setGeoJsonStyle(): void {
+    if (!olLayer.value) {
+      return;
+    }
+
+    // If no style is provided, use a default style (but not the OL default)
     if (!geoJsonStyle.value) {
+      olLayer.value.setStyle(
+        new Style({
+          fill: new Fill({
+            color: "rgba(255, 0, 0, 0.2)",
+          }),
+          stroke: new Stroke({
+            color: "#ff0000",
+            width: 2,
+          }),
+          image: new CircleStyle({
+            radius: 7,
+            fill: new Fill({
+              color: "#ff0000",
+            }),
+          }),
+        }),
+      );
       return;
     }
     log.debug({

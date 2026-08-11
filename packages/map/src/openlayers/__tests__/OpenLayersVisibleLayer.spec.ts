@@ -7,67 +7,55 @@ import OpenLayersVisibleLayer from "../OpenLayersVisibleLayer.vue";
 
 const stubs = {
   OpenLayersGeoJSONLayer: {
-    template: '<div data-testid="remote-geojson" />',
-  },
-  OpenLayersLocalGeoJSONLayer: {
-    template: '<div data-testid="local-geojson" />',
+    template: '<div data-testid="geojson" />',
   },
 };
 
-describe("OpenLayersVisibleLayer", () => {
-  it("renders local GeoJSON file layers with the local GeoJSON renderer", () => {
-    const localGeoJsonLayer = {
+const geoJsonData = {
+  type: "FeatureCollection",
+  features: [] as const,
+};
+
+const geoJsonLayers = [
+  {
+    source: "local",
+    layer: {
       format: "GeoJSON",
       layerId: "local.geojson",
       uuid: "local-geojson",
       opacity: 1,
       isVisible: true,
-      data: JSON.stringify({
-        type: "FeatureCollection",
-        features: [],
-      }),
-      geoJsonData: {
-        type: "FeatureCollection",
-        features: [],
-      },
-    } as unknown as Layer;
-
-    const wrapper = mount(OpenLayersVisibleLayer, {
-      props: {
-        layer: localGeoJsonLayer,
-      },
-      global: {
-        stubs,
-      },
-    });
-
-    expect(wrapper.find('[data-testid="local-geojson"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="remote-geojson"]').exists()).toBe(false);
-  });
-
-  it("renders GeoJSON layers without local file data with the remote GeoJSON renderer", () => {
-    const remoteGeoJsonLayer = {
+      data: JSON.stringify(geoJsonData),
+      geoJsonData,
+    } as unknown as Layer,
+  },
+  {
+    source: "remote",
+    layer: {
       format: "GeoJSON",
       layerId: "remote.geojson",
       uuid: "remote-geojson",
       opacity: 1,
       isVisible: true,
-      geoJsonData: {
-        type: "FeatureCollection",
-        features: [],
-      },
-    } as Layer;
+      geoJsonData,
+    } as Layer,
+  },
+];
 
-    const wrapper = mount(OpenLayersVisibleLayer, {
-      props: {
-        layer: remoteGeoJsonLayer,
-      },
-      global: {
-        stubs,
-      },
-    });
+describe("OpenLayersVisibleLayer", () => {
+  it.each(geoJsonLayers)(
+    "renders a $source GeoJSON layer with the GeoJSON renderer",
+    ({ layer }) => {
+      const wrapper = mount(OpenLayersVisibleLayer, {
+        props: {
+          layer,
+        },
+        global: {
+          stubs,
+        },
+      });
 
-    expect(wrapper.find('[data-testid="remote-geojson"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="local-geojson"]').exists()).toBe(false);
-  });
+      expect(wrapper.find('[data-testid="geojson"]').exists()).toBe(true);
+    },
+  );
 });

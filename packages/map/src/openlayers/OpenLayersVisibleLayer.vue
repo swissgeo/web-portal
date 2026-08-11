@@ -16,7 +16,6 @@ import OpenLayersGeoJSONLayer from "./OpenLayersGeoJSONLayer.vue";
 import OpenLayersGPXLayer from "./OpenLayersGPXLayer.vue";
 import OpenLayersKMLLayer from "./OpenLayersKMLLayer.vue";
 import OpenLayersKMZLayer from "./OpenLayersKMZLayer.vue";
-import OpenLayersLocalGeoJSONLayer from "./OpenLayersLocalGeoJSONLayer.vue";
 import OpenLayersWMSLayer from "./OpenLayersWMSLayer.vue";
 import OpenLayersWMTSLayer from "./OpenLayersWMTSLayer.vue";
 
@@ -24,11 +23,6 @@ const { layer, customLayerRenderers } = defineProps<{
   layer: Layer;
   customLayerRenderers?: MapLayerRenderer[];
 }>();
-
-// Check if layer has a dataset (is DatasetLayer) or is a local file (FileLayer)
-const isLocalFile = computed(
-  () => "data" in layer && typeof layer.data === "string",
-);
 
 const customLayerRenderer = computed(() =>
   customLayerRenderers?.find((renderer) => renderer.matches(layer)),
@@ -46,12 +40,5 @@ const customLayerRenderer = computed(() =>
   <OpenLayersKMLLayer :layer="layer" v-else-if="isKML(layer)" />
   <OpenLayersKMZLayer :layer="layer" v-else-if="isKMZ(layer)" />
   <OpenLayersGPXLayer :layer="layer" v-else-if="isGPX(layer)" />
-  <OpenLayersLocalGeoJSONLayer
-    :layer="layer"
-    v-else-if="isGeoJSON(layer) && isLocalFile"
-  />
-  <OpenLayersGeoJSONLayer
-    :layer="layer"
-    v-else-if="isGeoJSON(layer) && !isLocalFile"
-  />
+  <OpenLayersGeoJSONLayer :layer="layer" v-else-if="isGeoJSON(layer)" />
 </template>

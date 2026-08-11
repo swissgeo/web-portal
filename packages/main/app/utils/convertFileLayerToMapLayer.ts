@@ -49,8 +49,8 @@ function parseGeoJsonData(
  * Converts a FileLayer into a MapLayer, including geojson conversion when necessary
  */
 export function convertFileLayerToMapLayer(layer: SourceLayer): MapLayer {
-  const baseLayer = {
-    ...layer,
+  const baseLayer: MapLayer = {
+    uuid: layer.uuid,
     format: getFileLayerFormat(layer.type),
     layerId: layer.humanId,
     displayName: layer.info?.displayName ?? layer.humanId,
@@ -65,5 +65,8 @@ export function convertFileLayerToMapLayer(layer: SourceLayer): MapLayer {
     } as GeoJSONLayer;
   }
 
-  return baseLayer;
+  return {
+    ...baseLayer,
+    data: layer.data,
+  } as MapLayer;
 }

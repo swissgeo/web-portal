@@ -18,12 +18,13 @@ describe("convertFileLayerToMapLayer", () => {
     };
 
     expect(convertFileLayerToMapLayer(layerData)).toEqual({
-      ...layerData,
+      data: `<xml>KML data here</xml>`,
       displayName: "Display KML",
       format: "KML",
       isVisible: true,
       layerId: "K to the M to the L",
       opacity: 1,
+      uuid: "kml-is-a-snowflake",
     });
   });
 
@@ -50,13 +51,13 @@ describe("convertFileLayerToMapLayer", () => {
     };
 
     expect(convertFileLayerToMapLayer(layerData)).toEqual({
-      ...layerData,
       displayName: "Local GeoJSON",
       format: "GeoJSON",
       geoJsonData,
       isVisible: true,
       layerId: "Local GeoJSON",
       opacity: 1,
+      uuid: "geojson-is-a-snowflake",
     });
   });
 
