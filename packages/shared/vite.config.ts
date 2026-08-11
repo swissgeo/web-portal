@@ -36,10 +36,7 @@ export default defineConfig(({ mode }) => {
           };
         },
         copyDtsFiles: true,
-        include: [
-          fileURLToPath(new URL("./src", import.meta.url)),
-          fileURLToPath(new URL("./types", import.meta.url)),
-        ],
+        include: [fileURLToPath(new URL("./src", import.meta.url))],
       }),
     ],
   };

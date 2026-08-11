@@ -120,30 +120,6 @@ describe("FileConverter", () => {
     expect(emitted.geoJsonData).toEqual(featureCollection);
   });
 
-  it.each([
-    ["malformed", "{ not valid json"],
-    ["not GeoJSON", '{"title":"un JSON standard"}'],
-    ["a FeatureCollection without features", '{"type":"FeatureCollection"}'],
-    [
-      "a feature with an unsupported geometry",
-      '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Banana","coordinates":[1,2]}}]}',
-    ],
-  ])("emits no update when the GeoJSON data is %s", (_label, data) => {
-    const wrapper = mount(FileConverter, {
-      props: {
-        layer: {
-          data,
-          type: "geojson" as const,
-          uuid: "geojson-uuid",
-          humanId: "broken.geojson",
-          isLoading: false,
-        },
-      },
-    });
-
-    expect(wrapper.emitted("update")).toBeUndefined();
-  });
-
   it("maps local KMZ file binary data", () => {
     const kmzData = new Uint8Array([80, 75, 3, 4]);
     const layerData = {

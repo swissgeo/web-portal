@@ -21,16 +21,6 @@ watch(layerData, () => emit("update", layerData.value), {
   immediate: true,
 });
 
-watch(
-  layerData,
-  () => {
-    if (layerData.value) {
-      emit("update", layerData.value);
-    }
-  },
-  { immediate: true },
-);
-
 onBeforeUnmount(() => {
   emit("remove");
 });
