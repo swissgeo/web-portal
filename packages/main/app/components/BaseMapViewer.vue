@@ -6,10 +6,13 @@ import type { DisplayMode } from "~/types/injectionKeys";
 import { useDimensionsStore } from "@swissgeo/dimension";
 import { useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
-import { MapModule } from "@swissgeo/map";
+import { MapModule, usePositionStore } from "@swissgeo/map";
 import { cloneDeep } from "es-toolkit";
 
 import SourceToMapDataConverter from "../components/SourceToMapDataConverter.vue";
+import type { LayerSource, OgcDistribution } from "@swissgeo/feature";
+import type { MapClickEvent } from "@swissgeo/map";
+import { selectFeatures } from "@swissgeo/feature";
 
 const {
   displayMode = "web",
@@ -35,8 +38,9 @@ const emit = defineEmits<{
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
 const dimensionsStore = useDimensionsStore();
+const positionStore = usePositionStore();
 const toaster = useToaster();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const sourceLayers = computed(() => layerStore.layers);
 const backgroundLayer = computed(() => layerStore.backgroundLayer);
@@ -69,7 +73,6 @@ const layersForMap = computed(() => {
   });
   return layers;
 });
-
 const customLayerRenderers: MapLayerRenderer[] = [];
 
 function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
@@ -90,6 +93,69 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
   } else {
     layerStore.removeLayer(uuid);
   }
+}
+
+let abortController: AbortController | null = null;
+
+async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
+  abortController?.abort();
+  abortController = new AbortController();
+  const { signal } = abortController;
+
+  const layersSources: LayerSource[] = [];
+  const results = await Promise.allSettled(
+    sourceLayers.value.map(async (sourceLayer) => {
+      const preResolvedFeatures =
+        mapClickEvent.vectorFeaturesPerLayer[sourceLayer.uuid];
+      let distribution: OgcDistribution | undefined;
+      if (typeof sourceLayer.data === "object") {
+        const url = (sourceLayer.data.links ?? []).find(
+          (link) => link.rel?.toLowerCase() === "distributions",
+        )?.href;
+        try {
+          if (url) {
+            const result = await fetch(url, {
+              signal,
+            });
+            distribution = result.ok
+              ? ((await result.json()) as OgcDistribution)
+              : undefined;
+          }
+        } catch {
+          distribution = undefined;
+        }
+      }
+
+      const layerSource: LayerSource = {
+        layerUuid: sourceLayer.uuid,
+        kind: "geoadmin",
+        layerId:
+          typeof sourceLayer.data === "object"
+            ? sourceLayer.data.id
+            : sourceLayer.humanId,
+        distribution,
+        preResolvedFeatures,
+      };
+      return layerSource;
+    }),
+  );
+
+  results.forEach((result) => {
+    if (result.status === "fulfilled") {
+      layersSources.push(result.value);
+    }
+  });
+  if (signal.aborted) {
+    return;
+  }
+  selectFeatures(
+    mapClickEvent.extent,
+    positionStore.projection.epsgNumber,
+    locale.value.toLowerCase(),
+    layersSources,
+    10, // WHAT IS THIS HARD CODED VALUE ? THE NUMBER OF FEATURES PER LAYER MAX WE FETCH :3
+    signal,
+  );
 }
 </script>
 
@@ -112,6 +178,7 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
       class="h-full w-full"
       @layer-error="handleLayerError"
       @update:compare-ratio="emit('update:compareRatio', $event)"
+      @map-click="handleMapClickEvent"
     >
       <template
         v-if="$slots['context-menu-popup']"
