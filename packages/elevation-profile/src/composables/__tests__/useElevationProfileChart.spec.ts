@@ -3,8 +3,8 @@ import { ref } from "vue";
 
 import type { ElevationProfileResponse } from "@/types";
 
+import { makeProfile } from "@/__tests__/fixtures";
 import { useElevationProfileChart } from "@/composables/useElevationProfileChart";
-import { makeProfile } from "@/test/fixtures";
 
 function setupComposable(profile: ElevationProfileResponse) {
   return useElevationProfileChart(profile, ref(null), ref(null), ref(null), {
