@@ -121,22 +121,34 @@ describe(
     });
 
     it("returns null dimensions for a layer with no dimensions", () => {
-      const { url, version, dimensions } = parseWmsCapabilities(
+      const { layerFound, url, version, dimensions } = parseWmsCapabilities(
         capabilitiesXML,
         "ch.bafu.alpweiden-herdenschutzhunde",
       );
+      expect(layerFound).toBe(true);
       expect(version).toEqual("1.3.0");
       expect(url).toEqual(SERVICE_URL);
       expect(dimensions).toEqual(null);
     });
 
+    it("reports a missing requested layer", () => {
+      const { layerFound, dimensions } = parseWmsCapabilities(
+        capabilitiesXML,
+        "missing-layer",
+      );
+      expect(layerFound).toBe(false);
+      expect(dimensions).toBe(null);
+    });
+
     it("returns nulls for empty input", () => {
       expect(parseWmsCapabilities(null, "some-layer")).toEqual({
+        layerFound: false,
         url: null,
         version: null,
         dimensions: null,
       });
       expect(parseWmsCapabilities(capabilitiesXML, null)).toEqual({
+        layerFound: false,
         url: null,
         version: null,
         dimensions: null,

@@ -16,6 +16,8 @@ import { useConditionalFetch } from "./useConditionalFetch";
 const XLINK_NS = "http://www.w3.org/1999/xlink";
 
 export interface WmsCapabilitiesData {
+  /** Whether the capabilities document contains the requested layer. */
+  layerFound: boolean;
   /** Service `OnlineResource` (GetMap base URL). */
   url: string | null;
   /** Advertised WMS version, e.g. `1.3.0`. */
@@ -30,8 +32,11 @@ export function useWmsCapabilities(
 ) {
   const { capabilityUrl } = useCapabilities(serviceData);
 
-  const { data: wmsCapabilityData } =
-    useConditionalFetch<string>(capabilityUrl);
+  const {
+    data: wmsCapabilityData,
+    onFetchResponse: onCapabilitiesResponse,
+    onRequestError: onCapabilitiesError,
+  } = useConditionalFetch<string>(capabilityUrl);
 
   const wmsData = computed(() =>
     parseWmsCapabilities(wmsCapabilityData.value, layerId.value),
@@ -45,6 +50,9 @@ export function useWmsCapabilities(
     });
   });
   return {
+    capabilityUrl,
+    onCapabilitiesError,
+    onCapabilitiesResponse,
     wmsData,
   };
 }
@@ -62,6 +70,7 @@ export function parseWmsCapabilities(
 ): WmsCapabilitiesData {
   if (!capabilityData || !layerId) {
     return {
+      layerFound: false,
       url: null,
       version: null,
       dimensions: null,
@@ -69,11 +78,13 @@ export function parseWmsCapabilities(
   }
 
   const doc = new DOMParser().parseFromString(capabilityData, "text/xml");
+  const layer = getLayer(doc, layerId);
 
   return {
+    layerFound: !!layer,
     version: doc.documentElement?.getAttribute("version") ?? null,
     url: getServiceUrl(doc),
-    dimensions: getDimensions(doc, layerId),
+    dimensions: getLayerDimensions(layer),
   };
 }
 
@@ -92,14 +103,23 @@ function getServiceUrl(doc: Document): string | null {
   );
 }
 
+function getLayer(doc: Document, layerId: string): Element | undefined {
+  return Array.from(doc.getElementsByTagName("Layer")).find(
+    (candidate) =>
+      firstDirectChild(candidate, "Name")?.textContent?.trim() === layerId,
+  );
+}
+
 export function getDimensions(
   doc: Document,
   layerId: string,
 ): WMSCapabilityDimension[] | null {
-  const layer = Array.from(doc.getElementsByTagName("Layer")).find(
-    (candidate) =>
-      firstDirectChild(candidate, "Name")?.textContent?.trim() === layerId,
-  );
+  return getLayerDimensions(getLayer(doc, layerId));
+}
+
+function getLayerDimensions(
+  layer: Element | undefined,
+): WMSCapabilityDimension[] | null {
   if (!layer) {
     return null;
   }

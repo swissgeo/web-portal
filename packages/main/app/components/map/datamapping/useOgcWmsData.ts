@@ -18,11 +18,17 @@ export function useOgcWmsData(
   distribution: Ref<Distribution | null>,
   service: Ref<Service | null>,
   layerId: Ref<string | null>,
+  onError: (error: unknown) => void,
 ) {
   const { locale } = useI18n();
 
   const { styleData } = useStyle(distribution);
-  const { wmsData } = useWmsCapabilities(service, layerId);
+  const {
+    capabilityUrl,
+    onCapabilitiesError,
+    onCapabilitiesResponse,
+    wmsData,
+  } = useWmsCapabilities(service, layerId);
   const dimensions = computed(() => wmsData.value?.dimensions || null);
   const timeInfo = computed(() =>
     getTimeInfoFromWMSCapabilities(dimensions.value),
@@ -53,6 +59,27 @@ export function useOgcWmsData(
       return defaultOpacityFromStyle(styleData.value);
     } else {
       return null;
+    }
+  });
+
+  // The service can become available after setup, so validate its URL reactively.
+  watchEffect(() => {
+    if (service.value && layerId.value && !capabilityUrl.value) {
+      onError(new Error("Required WMS capabilities URL is missing"));
+    }
+  });
+  onCapabilitiesError((error) =>
+    onError(
+      new Error("Unable to load required WMS capabilities", { cause: error }),
+    ),
+  );
+  onCapabilitiesResponse(() => {
+    if (
+      !wmsData.value.layerFound ||
+      !wmsData.value.url ||
+      !wmsData.value.version
+    ) {
+      onError(new Error("WMS capabilities contain no usable layer data"));
     }
   });
 
