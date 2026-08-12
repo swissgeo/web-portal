@@ -12,3 +12,7 @@ export {
   getFeatureTitle,
   getFeatureDescription,
 } from "@/utils/drawingMetadata";
+export * from "@/utils/drawingStyleCommon";
+export { useIconsStore } from "@/stores/icons.store";
+export { Icon } from "@/core/Icon";
+export { IconSet } from "@/core/IconSet";

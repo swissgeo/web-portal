@@ -118,6 +118,7 @@ export default defineNuxtConfig({
     geoadminApiBaseUrl: "",
     public: {
       ogcApiEndpoint: "",
+      iconServiceEndpoint: "",
       shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
       ogcCatalogCollection: "swissgeo-catalog",
       gitCommit: getGitCommit(),
