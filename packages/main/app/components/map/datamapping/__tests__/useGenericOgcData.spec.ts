@@ -4,7 +4,6 @@ import type {
   useDistributionCollection as useDistributionCollectionOriginal,
   useDistribution as useDistributionOriginal,
   usePreferredDistribution as usePreferredDistributionOriginal,
-  useService as useServiceOriginal,
   Service,
   Distribution,
   DistributionCollection,
@@ -46,12 +45,21 @@ const layerMockData: Ref<DatasetLayerType> = ref({
 // we mock and return the data as well as the composables themselves. The data
 // is returned so that we can change the behaviour for the tests
 const {
+  onDistributionErrorMock,
+  onDistributionResponseMock,
+  onServiceErrorMock,
+  onServiceResponseMock,
+  distributionCollectionMockData,
+  distributionUrlMockData,
   useDistributionCollectionMock,
   usePreferredDistributionMock,
   distributionMockData,
   useDistributionMock,
   useServiceMock,
+  layerIdMockData,
   preferredDistributionIdMockData,
+  serviceMockData,
+  serviceUrlMockData,
 } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
 
@@ -71,7 +79,9 @@ const {
   //
   //  useDistributionCollection
   //
-  const distributionUrlMockData = ref("");
+  const distributionUrlMockData = ref("distribution-url");
+  const onDistributionErrorMock = vi.fn();
+  const onDistributionResponseMock = vi.fn();
   const distributionCollectionMockData = ref({
     features: [distributionMockData.value],
     type: "FeatureCollection" as const,
@@ -81,6 +91,8 @@ const {
     (): ReturnType<typeof useDistributionCollectionOriginal> => ({
       distributionUrl: computed(() => distributionUrlMockData.value),
       distributionCollection: distributionCollectionMockData,
+      onDistributionError: onDistributionErrorMock,
+      onDistributionResponse: onDistributionResponseMock,
     }),
   );
 
@@ -114,7 +126,7 @@ const {
   //
   //  useService
   //
-  const serviceMockData = ref({
+  const serviceMockData = ref<Service | null>({
     linkTemplates: [
       {
         uriTemplate: "uri is a canton in the heart of switzerland",
@@ -123,15 +135,21 @@ const {
     ],
   } as Service);
   const serviceUrlMockData = ref("http://servizi.it");
+  const onServiceErrorMock = vi.fn();
+  const onServiceResponseMock = vi.fn();
 
-  const useServiceMock = vi.fn(
-    (): ReturnType<typeof useServiceOriginal> => ({
-      serviceData: serviceMockData,
-      serviceUrl: computed(() => serviceUrlMockData.value),
-    }),
-  );
+  const useServiceMock = vi.fn(() => ({
+    serviceData: serviceMockData,
+    serviceUrl: computed(() => serviceUrlMockData.value),
+    onServiceError: onServiceErrorMock,
+    onServiceResponse: onServiceResponseMock,
+  }));
 
   return {
+    onDistributionErrorMock,
+    onDistributionResponseMock,
+    onServiceErrorMock,
+    onServiceResponseMock,
     distributionMockData,
     distributionUrlMockData,
     useDistributionCollectionMock,
@@ -140,6 +158,7 @@ const {
     preferredDistributionIdMockData,
     usePreferredDistributionMock,
 
+    layerIdMockData,
     useDistributionMock,
 
     serviceMockData,
@@ -158,6 +177,80 @@ vi.mock("@swissgeo/ogc", () => ({
 describe("useGenericOgcData ", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    distributionUrlMockData.value = "distribution-url";
+    distributionMockData.value = {
+      id: "grossspuriges-heuchlerkraut:wmts",
+      links: [{ href: "link-to-service", rel: "service" }],
+      properties: { protocol: "ogc:wmts" },
+    } as Distribution;
+    distributionCollectionMockData.value.features = [
+      distributionMockData.value,
+    ];
+    preferredDistributionIdMockData.value = "grossspuriges-heuchlerkraut:wmts";
+    layerIdMockData.value = "my-fancy-layer";
+    serviceUrlMockData.value = "http://servizi.it";
+    serviceMockData.value = {
+      linkTemplates: [{ uriTemplate: "uri", rel: "about" }],
+    } as Service;
+  });
+
+  it("reports a missing distribution URL", () => {
+    distributionUrlMockData.value = "";
+
+    expect(() => useGenericOgcData(layerMockData, vi.fn())).toThrow(
+      "Required distribution URL is missing",
+    );
+  });
+
+  it.each([
+    [
+      "distribution",
+      onDistributionErrorMock,
+      "Unable to load required distribution",
+    ],
+    ["service", onServiceErrorMock, "Unable to load required OGC service"],
+  ])("reports a %s request failure with its cause", (_, register, message) => {
+    const onError = vi.fn();
+    const cause = new Error("request failed");
+
+    useGenericOgcData(layerMockData, onError);
+    register.mock.calls[0]![0](cause);
+
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({ message, cause }),
+    );
+  });
+
+  it.each([
+    {
+      message: "Dataset has no usable OGC distribution",
+      prepare: () => {
+        layerIdMockData.value = "";
+      },
+      register: onDistributionResponseMock,
+    },
+    {
+      message: "Required OGC service URL is missing",
+      prepare: () => {
+        serviceUrlMockData.value = "";
+      },
+      register: onDistributionResponseMock,
+    },
+    {
+      message: "Required OGC service result is unusable",
+      prepare: () => {
+        serviceMockData.value = null;
+      },
+      register: onServiceResponseMock,
+    },
+  ])("reports when $message", ({ message, prepare, register }) => {
+    const onError = vi.fn();
+    prepare();
+
+    useGenericOgcData(layerMockData, onError);
+    register.mock.calls[0]![0]();
+
+    expect(onError).toHaveBeenCalledWith(expect.objectContaining({ message }));
   });
 
   it("calls the composables and returns data", async () => {
@@ -167,7 +260,7 @@ describe("useGenericOgcData ", () => {
       serviceData,
       layerFormat,
       layerId,
-    } = useGenericOgcData(layerMockData);
+    } = useGenericOgcData(layerMockData, vi.fn());
 
     await flushPromises();
 
@@ -199,7 +292,7 @@ describe("useGenericOgcData ", () => {
 
   it("updates the distribution when preferredDistributionId changes", async () => {
     // this is a use case where we test if the reactivity cascades
-    const { distribution } = useGenericOgcData(layerMockData);
+    const { distribution } = useGenericOgcData(layerMockData, vi.fn());
     await flushPromises();
 
     expect(distribution.value).toHaveProperty(

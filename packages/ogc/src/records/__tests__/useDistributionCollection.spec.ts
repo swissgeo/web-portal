@@ -1,7 +1,15 @@
 import { flushPromises } from "@vue/test-utils";
-import { http, HttpResponse } from "msw";
+import { delay, http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { ref } from "vue";
 
 import type { Dataset } from "@/types/Records";
@@ -23,6 +31,13 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
     ),
     http.get("http://services.dev.sgdi.tech/api/oar", () => {
       return HttpResponse.error();
+    }),
+    http.get("http://services.dev.sgdi.tech/slow", async () => {
+      await delay(100);
+      return HttpResponse.json(ChBafuSchutzgebieteLuftfahrtDistributions);
+    }),
+    http.get("http://services.dev.sgdi.tech/fast", () => {
+      return HttpResponse.json(ChBafuSchutzgebieteLuftfahrtDistributions);
     }),
   ];
   const server = setupServer(...handlers);
@@ -96,13 +111,37 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
       ],
     } as unknown as Dataset);
 
-    const { distributionCollection, distributionUrl } =
+    const { distributionCollection, distributionUrl, onDistributionError } =
       useDistributionCollection(dataset);
+    const reportError = vi.fn();
+    onDistributionError(reportError);
     await flushPromises();
     expect(distributionUrl.value).toEqual(
       "http://services.dev.sgdi.tech/api/oar",
     );
     expect(distributionCollection.value).toBe(null);
+    expect(reportError).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  it("does not report a cancelled stale request", async () => {
+    const dataset = ref<Dataset | null>({
+      links: [
+        { href: "http://services.dev.sgdi.tech/slow", rel: "distributions" },
+      ],
+    } as Dataset);
+    const { onDistributionError } = useDistributionCollection(dataset);
+    const reportError = vi.fn();
+    onDistributionError(reportError);
+
+    await delay(10);
+    dataset.value = {
+      links: [
+        { href: "http://services.dev.sgdi.tech/fast", rel: "distributions" },
+      ],
+    } as Dataset;
+    await flushPromises();
+
+    expect(reportError).not.toHaveBeenCalled();
   });
 });
 

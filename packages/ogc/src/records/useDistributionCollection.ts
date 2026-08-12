@@ -14,10 +14,8 @@ export function useDistributionCollection(dataset: Ref<Dataset | null>) {
 
   const {
     data: distributionCollection,
-    /*
-        isFetching,
-        error,
-         */
+    onFetchResponse: onDistributionResponse,
+    onRequestError: onDistributionError,
   } = useConditionalFetch<DistributionCollection>(distributionUrl, [
     "get",
     "json",
@@ -46,10 +44,8 @@ export function useDistributionCollection(dataset: Ref<Dataset | null>) {
   return {
     distributionUrl,
     distributionCollection,
-    /*
-        isFetching,
-        error,
-        */
+    onDistributionError,
+    onDistributionResponse,
   };
 }
 

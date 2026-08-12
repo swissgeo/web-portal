@@ -36,6 +36,7 @@ const { layer } = defineProps<{
 const dimensionsStore = useDimensionsStore();
 
 const emit = defineEmits<{
+  error: [error: unknown];
   update: [layer: MapLayer];
   updateTimeDimension: [layerUuid: string, dimension: Partial<Dimension>];
   remove: [layerUuid: string];
@@ -45,6 +46,7 @@ const emit = defineEmits<{
 
 const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(
   computed(() => layer),
+  (error) => emit("error", error),
 );
 
 // Registering composable that will ensure that a dataset is refreshed when the locale changes.

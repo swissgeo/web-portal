@@ -1,6 +1,5 @@
 <script setup lang="ts">
-// Stops rendering a failed layer converter and reports only its first error.
-// The parent owns logging, user feedback, and layer cleanup.
+// Stops the failed converter after its first error; the parent owns all effects.
 const failed = ref(false);
 
 const emit = defineEmits<{
