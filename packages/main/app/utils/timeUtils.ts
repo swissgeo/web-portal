@@ -20,7 +20,7 @@ export type TimeInfo = {
 };
 
 export const getTimeInfoFromWMTSCapabilities = (
-  dimensions: WMTSCapabilityDimension[],
+  dimensions: WMTSCapabilityDimension[] | null,
 ): TimeInfo => {
   // Guard against missing or invalid dimensions
   if (!Array.isArray(dimensions) || dimensions.length === 0) {
@@ -34,8 +34,8 @@ export const getTimeInfoFromWMTSCapabilities = (
     return { availableTimes: null, defaultTime: null };
   }
 
-  const availableTimes = timeDimension.Value || ["current"];
-  const defaultTime = timeDimension.Default;
+  const availableTimes = timeDimension.values || ["current"];
+  const defaultTime = timeDimension.defaultValue;
 
   return {
     defaultTime,
@@ -46,7 +46,7 @@ export const getTimeInfoFromWMTSCapabilities = (
 /** @param dimensions Dimensions of the WMS capabilities */
 
 export const getTimeInfoFromWMSCapabilities = (
-  dimensions: WMSCapabilityDimension[],
+  dimensions: WMSCapabilityDimension[] | null,
 ): TimeInfo => {
   const getTimeDimension = () => {
     if (!dimensions) {

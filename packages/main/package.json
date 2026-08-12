@@ -21,6 +21,7 @@
     "type-check": "nuxt typecheck"
   },
   "dependencies": {
+    "@camptocamp/ogc-client": "catalog:",
     "@chenfengyuan/vue-qrcode": "catalog:",
     "@fontsource/inter": "catalog:",
     "@intlify/core": "catalog:",

@@ -59,8 +59,10 @@ test.describe("map page", () => {
       mockBackgroundResponse,
     );
 
+    // Trailing `*` also matches ogc-client's query params
+    // (`?SERVICE=WMTS&REQUEST=GetCapabilities`) appended to the capabilities URL.
     await page.route(
-      "https://wmts.geo.admin.ch/**/WMTSCapabilities.xml",
+      "https://wmts.geo.admin.ch/**/WMTSCapabilities.xml*",
       (route) =>
         route.fulfill({
           status: 200,
@@ -127,6 +129,14 @@ test.describe("map page", () => {
       timeout: 20000,
     });
     const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
+    // The WMTS background source is built asynchronously (ogc-client parses the
+    // capabilities, then the OL tile grid is created), so wait for the layer to
+    // be added before sampling.
+    await page.waitForFunction(
+      (map) => map.getLayers().getArray().length >= 1,
+      mapRef,
+      { timeout: 20000 },
+    );
     const layers = await page.evaluate((map) => {
       const arr = map.getLayers().getArray();
       return arr.map((layer: BaseLayer) => ({

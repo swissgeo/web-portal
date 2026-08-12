@@ -20,138 +20,136 @@ const wmsPath = resolve(
 );
 const capabilitiesXML = fs.readFileSync(wmsPath, "utf-8");
 
-describe("useWmsCapabilities fetching and parsing WMS capabilities", () => {
-  const handlers = [
-    http.get(
-      "https://wms.geo.admin.ch/",
-      // MSW doesn't allow query params in the request handler. Adding them here for reference:
-      // ?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&FORMAT=text%2Fxml&lang=de
-      () => {
-        return HttpResponse.xml(capabilitiesXML);
-      },
-    ),
-  ];
-  const server = setupServer(...handlers);
+const SERVICE_URL = "https://wms.geo.admin.ch/de/?";
 
-  beforeAll(() => server.listen());
+// Parsing the multi-MB capabilities fixture can exceed the default 5s timeout
+// when the whole monorepo suite runs in parallel.
+const FIXTURE_PARSING_TIMEOUT = 30_000;
 
-  afterAll(() => server.close());
+describe(
+  "useWmsCapabilities fetching and parsing WMS capabilities",
+  { timeout: FIXTURE_PARSING_TIMEOUT },
+  () => {
+    const handlers = [
+      http.get(
+        "https://wms.geo.admin.ch/",
+        // MSW doesn't allow query params in the request handler. Adding them here for reference:
+        // ?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&FORMAT=text%2Fxml&lang=de
+        () => {
+          return HttpResponse.xml(capabilitiesXML);
+        },
+      ),
+    ];
+    const server = setupServer(...handlers);
 
-  afterEach(() => server.resetHandlers());
+    beforeAll(() => server.listen());
 
-  it("fetches the WMS capabilities", async () => {
-    const service = ref<Service>(ChGeoadminWms as Service);
-    const layerId = ref("ch.bafu.alpweiden-herdenschutzhunde");
+    afterAll(() => server.close());
 
-    const { wmsData } = useWmsCapabilities(service, layerId);
-    await flushPromises();
-    expect(wmsData.value).toBeDefined();
-    expect(wmsData.value?.capabilities).toBeDefined();
+    afterEach(() => server.resetHandlers());
 
-    const capabilities = wmsData.value?.capabilities;
-    // test a few samples
-    expect(capabilities.version).toEqual("1.3.0");
-    expect(capabilities.Service.Name).toEqual("WMS");
-    expect(capabilities.Capability).toBeDefined();
-    expect(capabilities.Capability.Layer).toBeDefined();
-  });
+    it("fetches the WMS capabilities", async () => {
+      const service = ref<Service>(ChGeoadminWms as Service);
+      const layerId = ref("ch.bafu.alpweiden-herdenschutzhunde");
 
-  it("fetches the WMS capabilities after the service data becomes available late", async () => {
-    const service = ref<Service | null>(null);
-    const layerId = ref("ch.bafu.gewaesserschutz-biologischer_zustand_fische");
-    const { wmsData } = useWmsCapabilities(service, layerId);
+      const { wmsData } = useWmsCapabilities(service, layerId);
+      await flushPromises();
+      expect(wmsData.value).toBeDefined();
+      expect(wmsData.value.version).toEqual("1.3.0");
+      expect(wmsData.value.url).toEqual(SERVICE_URL);
+    });
 
-    expect(wmsData.value).toBeDefined();
-    expect(wmsData.value.capabilities).toBe(null);
-    expect(wmsData.value.dimensions).toBe(null);
+    it("fetches the WMS capabilities after the service data becomes available late", async () => {
+      const service = ref<Service | null>(null);
+      const layerId = ref(
+        "ch.bafu.gewaesserschutz-biologischer_zustand_fische",
+      );
+      const { wmsData } = useWmsCapabilities(service, layerId);
 
-    service.value = ChGeoadminWms as Service;
+      expect(wmsData.value).toBeDefined();
+      expect(wmsData.value.url).toBe(null);
+      expect(wmsData.value.version).toBe(null);
+      expect(wmsData.value.dimensions).toBe(null);
 
-    await flushPromises();
-    expect(wmsData.value).toBeDefined();
-    expect(wmsData.value?.capabilities).toBeDefined();
+      service.value = ChGeoadminWms as Service;
 
-    const capabilities = wmsData.value?.capabilities;
-    // test a few samples
-    expect(capabilities.version).toEqual("1.3.0");
-    expect(capabilities.Service.Name).toEqual("WMS");
-    expect(capabilities.Capability).toBeDefined();
-    expect(capabilities.Capability.Layer).toBeDefined();
-  });
+      await flushPromises();
+      expect(wmsData.value.version).toEqual("1.3.0");
+      expect(wmsData.value.url).toEqual(SERVICE_URL);
+    });
 
-  it("fetches the WMS capabilities after the layer ID becomes available late", async () => {
-    const service = ref<Service | null>(ChGeoadminWms as Service);
-    const layerId = ref<string | null>(null);
-    const { wmsData } = useWmsCapabilities(service, layerId);
+    it("fetches the WMS capabilities after the layer ID becomes available late", async () => {
+      const service = ref<Service | null>(ChGeoadminWms as Service);
+      const layerId = ref<string | null>(null);
+      const { wmsData } = useWmsCapabilities(service, layerId);
 
-    expect(wmsData.value).toBeDefined();
-    expect(wmsData.value.capabilities).toBe(null);
-    expect(wmsData.value.dimensions).toBe(null);
+      expect(wmsData.value).toBeDefined();
+      expect(wmsData.value.url).toBe(null);
+      expect(wmsData.value.version).toBe(null);
+      expect(wmsData.value.dimensions).toBe(null);
 
-    layerId.value = "ch.bafu.gewaesserschutz-biologischer_zustand_fische";
+      layerId.value = "ch.bafu.gewaesserschutz-biologischer_zustand_fische";
 
-    await flushPromises();
-    expect(wmsData.value).toBeDefined();
-    expect(wmsData.value?.capabilities).toBeDefined();
+      await flushPromises();
+      expect(wmsData.value.version).toEqual("1.3.0");
+      expect(wmsData.value.url).toEqual(SERVICE_URL);
+    });
+  },
+);
 
-    const capabilities = wmsData.value?.capabilities;
-    // test a few samples
-    expect(capabilities.version).toEqual("1.3.0");
-    expect(capabilities.Service.Name).toEqual("WMS");
-    expect(capabilities.Capability).toBeDefined();
-    expect(capabilities.Capability.Layer).toBeDefined();
-  });
-});
+describe(
+  "useWmsCapabilities parseWmsCapabilities",
+  { timeout: FIXTURE_PARSING_TIMEOUT },
+  () => {
+    it("extracts url, version and the time dimension", () => {
+      const { url, version, dimensions } = parseWmsCapabilities(
+        capabilitiesXML,
+        "ch.bafu.gewaesserschutz-biologischer_zustand_fische",
+      );
+      expect(version).toEqual("1.3.0");
+      expect(url).toEqual(SERVICE_URL);
+      expect(dimensions).toEqual([
+        {
+          name: "time",
+          units: "ISO8601",
+          unitSymbol: undefined,
+          default: undefined,
+          multipleValues: undefined,
+          values: "2012/2023",
+        },
+      ]);
+    });
 
-describe("useWmsCapabilities parseWmsCapabilities", () => {
-  it("extracts the capabilities", () => {
-    const { capabilities, dimensions } = parseWmsCapabilities(
-      capabilitiesXML,
-      "ch.bafu.gewaesserschutz-biologischer_zustand_fische",
-    );
-    expect(capabilities.version).toEqual("1.3.0");
-    expect(capabilities.Service.Name).toEqual("WMS");
-    expect(capabilities.Capability).toBeDefined();
-    expect(capabilities.Capability.Layer).toBeDefined();
+    it("returns null dimensions for a layer with no dimensions", () => {
+      const { url, version, dimensions } = parseWmsCapabilities(
+        capabilitiesXML,
+        "ch.bafu.alpweiden-herdenschutzhunde",
+      );
+      expect(version).toEqual("1.3.0");
+      expect(url).toEqual(SERVICE_URL);
+      expect(dimensions).toEqual(null);
+    });
 
-    expect(dimensions).toEqual([
-      {
-        name: "time",
-        units: "ISO8601",
-        unitSymbol: null,
-        default: null,
-        multipleValues: undefined,
-        nearestValue: false,
-        current: undefined,
-        values: "2012/2023",
-      },
-    ]);
-  });
-
-  it("extracts the capabilities with a layer with no dimensions", () => {
-    const { capabilities, dimensions } = parseWmsCapabilities(
-      capabilitiesXML,
-      "ch.bafu.alpweiden-herdenschutzhunde",
-    );
-    expect(capabilities.version).toEqual("1.3.0");
-    expect(capabilities.Service.Name).toEqual("WMS");
-    expect(capabilities.Capability).toBeDefined();
-    expect(capabilities.Capability.Layer).toBeDefined();
-
-    expect(dimensions).toEqual(null);
-  });
-});
+    it("returns nulls for empty input", () => {
+      expect(parseWmsCapabilities(null, "some-layer")).toEqual({
+        url: null,
+        version: null,
+        dimensions: null,
+      });
+      expect(parseWmsCapabilities(capabilitiesXML, null)).toEqual({
+        url: null,
+        version: null,
+        dimensions: null,
+      });
+    });
+  },
+);
 
 describe("useWmsCapabilities 404", () => {
   const handlers = [
-    http.get(
-      "https://wms.geo.admin.ch/",
-      // MSW doesn't allow query params in the request handler. Adding them here for reference:
-      // ?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&FORMAT=text%2Fxml&lang=de
-      () => {
-        return HttpResponse.json("Not Found", { status: 404 });
-      },
-    ),
+    http.get("https://wms.geo.admin.ch/", () => {
+      return HttpResponse.json("Not Found", { status: 404 });
+    }),
   ];
   const server = setupServer(...handlers);
 
@@ -167,7 +165,7 @@ describe("useWmsCapabilities 404", () => {
 
     const { wmsData } = useWmsCapabilities(service, layerId);
     await flushPromises();
-    expect(wmsData.value.capabilities).toBe(null);
+    expect(wmsData.value.url).toBe(null);
     expect(wmsData.value.dimensions).toBe(null);
   });
 });

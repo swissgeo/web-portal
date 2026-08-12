@@ -25,6 +25,7 @@ allowBuilds:
   vue-demi: false
 
 catalog:
+  "@camptocamp/ogc-client": ^1.3.0
   "@chenfengyuan/vue-qrcode": "^2.0.0"
   "@eslint/js": ^10.0.0
   "@eslint/markdown": ^8.0.0

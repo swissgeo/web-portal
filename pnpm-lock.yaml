@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@camptocamp/ogc-client':
+      specifier: ^1.3.0
+      version: 1.3.0
     '@chenfengyuan/vue-qrcode':
       specifier: ^2.0.0
       version: 2.0.0
@@ -894,6 +897,9 @@ importers:
 
   packages/main:
     dependencies:
+      '@camptocamp/ogc-client':
+        specifier: 'catalog:'
+        version: 1.3.0(ol@10.10.0)(proj4@2.21.0(geotiff@3.0.5))
       '@chenfengyuan/vue-qrcode':
         specifier: 'catalog:'
         version: 2.0.0(qrcode@1.5.4)(vue@3.5.41(typescript@6.0.3))
@@ -1108,6 +1114,9 @@ importers:
 
   packages/map:
     dependencies:
+      '@camptocamp/ogc-client':
+        specifier: 'catalog:'
+        version: 1.3.0(ol@10.10.0)(proj4@2.21.0(geotiff@3.0.5))
       '@swissgeo/coordinates':
         specifier: workspace:*
         version: link:../coordinates
@@ -1223,6 +1232,9 @@ importers:
 
   packages/ogc:
     dependencies:
+      '@camptocamp/ogc-client':
+        specifier: 'catalog:'
+        version: 1.3.0(ol@10.10.0)(proj4@2.21.0(geotiff@3.0.5))
       '@swissgeo/coordinates':
         specifier: workspace:*
         version: link:../coordinates
@@ -1232,9 +1244,6 @@ importers:
       '@vueuse/core':
         specifier: 'catalog:'
         version: 14.4.0(vue@3.5.41(typescript@6.0.3))
-      ol:
-        specifier: 10.10.0
-        version: 10.10.0
       proj4:
         specifier: 2.21.0
         version: 2.21.0(geotiff@3.0.5)
@@ -1703,6 +1712,17 @@ packages:
 
   '@cacheable/utils@2.5.0':
     resolution: {integrity: sha512-buipgOVDkkPXNR5+xBpDw7Zk2n1EvU7qBJCNUcL7rhQ//kfpOXPAvQ511Os0vpLYJ1pZnvudNytkQt2hst3wqA==}
+
+  '@camptocamp/ogc-client@1.3.0':
+    resolution: {integrity: sha512-E1g11pBbVyWRudlWMVJrHtSfwK6nvCP0bLy8+RyCWLjlEEg92BICKep1Eg/daS/0d2Gjxlpnr1/aXowvvnosMA==}
+    peerDependencies:
+      ol: 10.10.0
+      proj4: 2.21.0
+    peerDependenciesMeta:
+      ol:
+        optional: true
+      proj4:
+        optional: true
 
   '@capsizecss/unpack@4.0.1':
     resolution: {integrity: sha512-CuNiSqg7+e1cO/GjffyMOm5Tt2jUF9CWHHnvQ/UkqvtkGfHdgwEC0wpmq7fkN3gxwpRnrAN0WzO3vREKmNolMQ==}
@@ -4327,6 +4347,10 @@ packages:
 
   '@protobufjs/utf8@1.1.1':
     resolution: {integrity: sha512-oOAWABowe8EAbMyWKM0tYDKi8Yaox52D+HWZhAIJqQXbqe0xI/GV7FhLWqlEKreMkfDjshR5FKgi3mnle0h6Eg==}
+
+  '@rgrove/parse-xml@4.2.3':
+    resolution: {integrity: sha512-Jhlb+0zYez1T1yXUQs3F1qAtFuJljBVNdy9TKmLDauAXkxsOXopKYOyQ5Wm6SvP3fycav0GviX4Y15WWhGetMw==}
+    engines: {node: '>=14.0.0'}
 
   '@rolldown/binding-android-arm64@1.2.3':
     resolution: {integrity: sha512-zrJtHDcaZJ1Fp7xf4hNl+7seH9Cn/N5TwLYkhgXREtBwAd/jaqW3uqeHxpDugJLVICWg4eW44kOQEGJ1r6jCGw==}
@@ -12010,6 +12034,14 @@ snapshots:
       hashery: 1.5.1
       keyv: 5.6.0
 
+  '@camptocamp/ogc-client@1.3.0(ol@10.10.0)(proj4@2.21.0(geotiff@3.0.5))':
+    dependencies:
+      '@rgrove/parse-xml': 4.2.3
+      node-fetch: 3.3.2
+    optionalDependencies:
+      ol: 10.10.0
+      proj4: 2.21.0(geotiff@3.0.5)
+
   '@capsizecss/unpack@4.0.1':
     dependencies:
       fontkitten: 1.0.3
@@ -15852,6 +15884,8 @@ snapshots:
   '@protobufjs/pool@1.1.0': {}
 
   '@protobufjs/utf8@1.1.1': {}
+
+  '@rgrove/parse-xml@4.2.3': {}
 
   '@rolldown/binding-android-arm64@1.2.3':
     optional: true

@@ -88,12 +88,8 @@ describe("useOgcWmsData", () => {
     const layerId = ref("");
 
     wmsDataMock.value = {
-      capabilities: {
-        Service: {
-          OnlineResource: "http://swissgeo.ch",
-        },
-        version: "1.3.0",
-      },
+      url: "http://swissgeo.ch",
+      version: "1.3.0",
     };
 
     // @ts-expect-error Intentionally not caring about the types
@@ -112,12 +108,8 @@ describe("useOgcWmsData", () => {
     const layerId = ref("");
 
     wmsDataMock.value = {
-      capabilities: {
-        Service: {
-          OnlineResource: "http://swissgeo.ch",
-        },
-        version: "1.3.0",
-      },
+      url: "http://swissgeo.ch",
+      version: "1.3.0",
     };
 
     // @ts-expect-error Intentionally not caring about the types
@@ -130,12 +122,8 @@ describe("useOgcWmsData", () => {
     });
 
     wmsDataMock.value = {
-      capabilities: {
-        Service: {
-          OnlineResource: "http://geo.admin.ch",
-        },
-        version: "1.3.0",
-      },
+      url: "http://geo.admin.ch",
+      version: "1.3.0",
     };
 
     // no need to re-use the composable, the data itself is reactive!
@@ -167,12 +155,8 @@ describe("useOgcWmsData", () => {
     };
 
     wmsDataMock.value = {
-      capabilities: {
-        Service: {
-          OnlineResource: "http://swissgeo.ch",
-        },
-        version: "1.3.0",
-      },
+      url: "http://swissgeo.ch",
+      version: "1.3.0",
     };
 
     // @ts-expect-error Intentionally not caring about the types

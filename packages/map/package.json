@@ -27,6 +27,7 @@
     "type-check": "vue-tsc"
   },
   "dependencies": {
+    "@camptocamp/ogc-client": "catalog:",
     "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/dimension": "workspace:*",
     "@swissgeo/drawing": "workspace:*",

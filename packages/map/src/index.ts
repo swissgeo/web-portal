@@ -20,5 +20,7 @@ export {
   MGRSFormat,
 } from "./utils/coordinates/coordinateFormat";
 export type { CoordinateFormat } from "./utils/coordinates/coordinateFormat";
+export { buildWmtsOptions } from "./utils/buildWmtsOptions";
+export type { BuildWmtsOptionsConfig } from "./utils/buildWmtsOptions";
 export type { FeatureCollectionWithCRS } from "./utils/geoJsonUtils";
 export { MapModule, usePositionStore, useAddLayerToMap, PROJECTION_EPSG };
