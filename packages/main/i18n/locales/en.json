@@ -222,6 +222,7 @@
   "error": {
     "notFound": "{resource} could not be found.",
     "generic": "An unexpected error occurred.",
+    "layerLoad": "The layer could not be loaded.",
     "backToMap": "Back to map",
     "resources": {
       "dataset": "This dataset"
