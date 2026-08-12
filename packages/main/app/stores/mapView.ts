@@ -33,15 +33,15 @@ export const useMapViewStore = defineStore("mapView", () => {
 
   const layerStore = useLayerStore();
 
-  /** Index of the lowest overlay layer: 0, or 1 when a background layer sits below. */
-  const firstOverlayIndex = computed(() =>
+  /** 0, or 1 when a background layer sits at the bottom of the stack. */
+  const indexOfFirstNonBackgroundLayer = computed(() =>
     Number(!!layerStore.backgroundLayer),
   );
 
-  /** Visible overlay layers, ordered bottom-to-top (background excluded). */
+  /** Visible layers, ordered bottom-to-top (background excluded). */
   const visibleLayers = computed(() =>
     mapLayers.value
-      .slice(firstOverlayIndex.value)
+      .slice(indexOfFirstNonBackgroundLayer.value)
       .filter((layer) => layer.isVisible),
   );
 
@@ -77,7 +77,7 @@ export const useMapViewStore = defineStore("mapView", () => {
   function getMapLayerFromUuid(uuid: string): MapLayer | undefined {
     const index = _getIndexFromIdentifier(uuid);
 
-    if (index) {
+    if (index !== undefined) {
       return mapLayers.value[index];
     }
     return;
@@ -101,15 +101,18 @@ export const useMapViewStore = defineStore("mapView", () => {
   ): void {
     const currentIndex = _getIndexFromIdentifier(identifier);
 
-    // Validate: current index must be found, target must be an overlay position, and must be different
+    // Validate: current index must be found, target must sit above the
+    // background layer, and must be different
     if (
       currentIndex !== undefined &&
       targetIndex < mapLayers.value.length &&
-      targetIndex >= firstOverlayIndex.value &&
+      targetIndex >= indexOfFirstNonBackgroundLayer.value &&
       currentIndex !== targetIndex
     ) {
-      const [layer] = mapLayers.value.splice(currentIndex, 1) as [MapLayer];
-      mapLayers.value.splice(targetIndex, 0, layer);
+      const [layer] = mapLayers.value.splice(currentIndex, 1);
+      if (layer) {
+        mapLayers.value.splice(targetIndex, 0, layer);
+      }
     }
   }
 
@@ -130,7 +133,7 @@ export const useMapViewStore = defineStore("mapView", () => {
   }
   function updateLayerOpacity(identifier: string | number, opacity: number) {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       mapLayers.value[index]!.opacity = opacity;
     }
   }
@@ -145,7 +148,7 @@ export const useMapViewStore = defineStore("mapView", () => {
 
   function removeLayer(identifier: string | number) {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       delete legends.value[mapLayers.value[index]!.uuid];
       mapLayers.value.splice(index, 1);
     }
@@ -157,7 +160,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     canCreateLayer: boolean,
   ) {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       mapLayers.value[index] = mapLayer;
     } else if (canCreateLayer && typeof identifier === "number") {
       mapLayers.value[identifier] = mapLayer;
@@ -211,14 +214,14 @@ export const useMapViewStore = defineStore("mapView", () => {
 
   function toggleVisibility(identifier: string | number) {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       mapLayers.value[index]!.isVisible = !mapLayers.value[index]!.isVisible;
     }
   }
 
   function setVisibility(identifier: string | number, visibility: boolean) {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       mapLayers.value[index]!.isVisible = visibility;
     }
   }

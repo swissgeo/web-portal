@@ -94,6 +94,17 @@ describe("mapView store", () => {
     expect(mapViewStore.compareRatio).toBe(1);
   });
 
+  it("finds the bottom-most layer by uuid", () => {
+    const mapViewStore = useMapViewStore();
+    mapViewStore.addLayerToTop(makeLayer("bottom"));
+    mapViewStore.addLayerToTop(makeLayer("top"));
+
+    // index 0 is falsy, which used to make the lookup report the layer missing
+    expect(mapViewStore.getMapLayerFromUuid("bottom")?.uuid).toBe("bottom");
+    expect(mapViewStore.getMapLayerFromUuid("top")?.uuid).toBe("top");
+    expect(mapViewStore.getMapLayerFromUuid("nope")).toBeUndefined();
+  });
+
   describe("layer ordering", () => {
     it("moves the bottom-most layer, which used to be mistaken for a missing one", () => {
       const mapViewStore = useMapViewStore();
