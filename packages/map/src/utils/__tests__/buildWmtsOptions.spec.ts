@@ -93,7 +93,7 @@ describe("buildWmtsOptions", () => {
     expect(options?.projection).toBe("EPSG:21781");
     expect(options?.dimensions).toEqual({ Time: "2020" });
     expect(options?.crossOrigin).toBe("anonymous");
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- asserting on a vi.fn mock, not invoking it
+
     expect(endpoint.getLayerResourceLink).toHaveBeenCalledWith(
       "layer",
       "image/jpeg",
