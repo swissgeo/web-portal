@@ -67,6 +67,7 @@ mockNuxtImport("useMapViewStore", () => () => ({
 const OgcConverterStub = defineComponent({
   name: "MapDatamappingOgcDatasetConverter",
   emits: [
+    "error",
     "update",
     "updateDataset",
     "updateLayerInfo",
@@ -506,9 +507,11 @@ describe("layer load errors", () => {
           },
         },
       });
-      await wrapper
-        .findComponent(LayerLoadErrorBoundary)
-        .vm.$emit("error", failure);
+      const errorSource =
+        kind === "dataset"
+          ? wrapper.findComponent(OgcConverterStub)
+          : wrapper.findComponent(LayerLoadErrorBoundary);
+      await errorSource.vm.$emit("error", failure);
 
       expect(logErrorMock).toHaveBeenCalledWith({
         title: "Layer load failed",

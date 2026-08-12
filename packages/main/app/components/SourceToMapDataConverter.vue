@@ -141,6 +141,7 @@ function handleLayerError(layer: SourceData, error: unknown) {
   >
     <MapDatamappingOgcDatasetConverter
       :layer="sourceBgLayer as DatasetLayer"
+      @error="handleLayerError(sourceBgLayer, $event)"
       @update="updateBgLayer($event)"
       @updateDataset="updateStoreLayerData"
       @updateLayerInfo="updateLayerInfo"
@@ -156,6 +157,7 @@ function handleLayerError(layer: SourceData, error: unknown) {
     <MapDatamappingOgcDatasetConverter
       v-if="isDatasetLayer(data)"
       :layer="data"
+      @error="handleLayerError(data, $event)"
       @update="updateMapLayerData(index + Number(!!sourceBgLayer), $event)"
       @updateTimeDimension="updateTimeDimension"
       @updateDataset="updateStoreLayerData"
