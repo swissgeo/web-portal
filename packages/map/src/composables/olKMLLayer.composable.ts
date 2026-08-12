@@ -19,7 +19,7 @@ import { register } from "ol/proj/proj4";
 import VectorSource from "ol/source/Vector";
 import { Icon, Style } from "ol/style";
 import proj4 from "proj4";
-import { computed, ref, watch } from "vue";
+import { computed, shallowRef, watch } from "vue";
 
 import type { KMLLayer } from "@/types";
 
@@ -50,7 +50,7 @@ export default function useOlKMLLayer(
 
   const positionStore = usePositionStore();
 
-  const olLayer = ref<VectorLayer>();
+  const olLayer = shallowRef<VectorLayer>();
 
   watch(
     () => kmlData.value,
@@ -61,7 +61,7 @@ export default function useOlKMLLayer(
       } else {
         olLayer.value = new VectorLayer({
           properties: {
-            id: layerId,
+            id: layerId.value,
             uuid: layer.value.uuid,
           },
           opacity: opacity.value,

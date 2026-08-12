@@ -11,7 +11,6 @@ import useOlGeoJSONLayer from "../composables/olGeoJSONLayer.composable";
 const { layer } = defineProps<{
   layer: GeoJSONLayer;
 }>();
-
 const layerRef = computed(() => layer);
 
 const olMap = inject<Ref<Map | undefined>>("olMap");

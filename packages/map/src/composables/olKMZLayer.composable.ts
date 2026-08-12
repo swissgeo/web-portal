@@ -17,7 +17,7 @@ import VectorLayer from "ol/layer/Vector";
 import { register } from "ol/proj/proj4";
 import VectorSource from "ol/source/Vector";
 import proj4 from "proj4";
-import { computed, ref, watch } from "vue";
+import { computed, shallowRef, watch } from "vue";
 
 import type { KMZLayer } from "@/types";
 
@@ -32,16 +32,16 @@ export default function useOlKMZLayer(
   const zIndex = computed(() => layer.value.zIndex);
   const isVisible = computed(() => layer.value.isVisible);
   const opacity = computed(() => layer.value.opacity);
-  const kmzDataBase64 = computed(() => layer.value.data);
+  const kmzDataBuffer = computed(() => layer.value.data);
 
-  const olLayer = ref<VectorLayer>();
+  const olLayer = shallowRef<VectorLayer>();
 
   watch(
-    () => kmzDataBase64.value,
+    () => kmzDataBuffer.value,
     () => {
       olLayer.value = new VectorLayer({
         properties: {
-          id: layerId,
+          id: layerId.value,
           uuid: layer.value.uuid,
         },
         opacity: opacity.value,
@@ -52,19 +52,10 @@ export default function useOlKMZLayer(
     { immediate: true },
   );
 
-  async function unzippKMZ(): Promise<
-    Record<string, Uint8Array<ArrayBufferLike>>
-  > {
-    // Decode base64 to binary
-    const binaryString = atob(kmzDataBase64.value);
-    const uint8Array = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      uint8Array[i] = binaryString.charCodeAt(i);
-    }
-
+  async function unzipKMZ(): Promise<Record<string, Uint8Array>> {
     return await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
       unzip(
-        uint8Array,
+        kmzDataBuffer.value,
         (err: Error | null, data: Record<string, Uint8Array>) => {
           if (err) {
             reject(new Error(err.message));
@@ -172,8 +163,9 @@ export default function useOlKMZLayer(
     const positionStore = usePositionStore();
 
     try {
-      const unzipped = await unzippKMZ();
+      const unzipped = await unzipKMZ();
       const { kmlContent, iconFiles } = extractKMLAndIcons(unzipped);
+
       const modifiedKML = replaceIconReferences(kmlContent, iconFiles);
       const features = parseKMLFeatures(
         modifiedKML,

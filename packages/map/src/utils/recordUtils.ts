@@ -11,14 +11,14 @@ import type {
 // maybe this belongs to shared?
 
 export const isWMTS = (layer: Layer): layer is WMTSLayer =>
-  layer.format === "WMTS";
+  layer.format?.toUpperCase() === "WMTS";
 export const isWMS = (layer: Layer): layer is WMSLayer =>
-  layer.format === "WMS";
+  layer.format?.toUpperCase() === "WMS";
 export const isKML = (layer: Layer): layer is KMLLayer =>
-  layer.format === "KML";
+  layer.format?.toUpperCase() === "KML";
 export const isKMZ = (layer: Layer): layer is KMZLayer =>
-  layer.format === "KMZ";
+  layer.format?.toUpperCase() === "KMZ";
 export const isGPX = (layer: Layer): layer is GPXLayer =>
-  layer.format === "GPX";
+  layer.format?.toUpperCase() === "GPX";
 export const isGeoJSON = (layer: Layer): layer is GeoJSONLayer =>
-  layer.format === "GeoJSON";
+  layer.format?.toUpperCase() === "GEOJSON";

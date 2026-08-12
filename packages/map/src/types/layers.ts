@@ -52,7 +52,7 @@ export interface KMLLayer extends Layer {
 
 export interface KMZLayer extends Layer {
   format: "KMZ";
-  data: string;
+  data: Uint8Array;
 }
 
 export interface GPXLayer extends Layer {

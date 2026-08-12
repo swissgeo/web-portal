@@ -1,14 +1,32 @@
 import { useLayerStore } from "@swissgeo/layers";
-import { useFileImport } from "~/composables/useFileImport";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { useFileImport } from "../useFileImport";
 
 const makeFile = (name: string, content = "<data/>") =>
   new File([content], name);
 
+function makeBytePattern(size: number): Uint8Array {
+  const bytes = new Uint8Array(size);
+
+  for (let index = 0; index < bytes.length; index++) {
+    bytes[index] = index % 256;
+  }
+
+  return bytes;
+}
+
 describe("useFileImport", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    vi.spyOn(globalThis.crypto, "randomUUID").mockReturnValue(
+      "00000000-0000-4000-8000-000000000000",
+    );
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   const geoJson = '{"type":"FeatureCollection","features":[]}';
@@ -47,19 +65,26 @@ describe("useFileImport", () => {
       expect(layer.humanId).toBe(name);
       expect(layer.info?.displayName).toBe(name);
       expect(layer.data).toBe(content);
-      expect(layer.uuid).toEqual(expect.any(String));
+      expect(layer.uuid).toBe("00000000-0000-4000-8000-000000000000");
     },
   );
 
-  it("stores KMZ data as base64", async () => {
-    const { importFile } = useFileImport();
-    const store = useLayerStore();
+  it("imports KMZ files as binary data", async () => {
+    const bytes = makeBytePattern(200_000);
+    const file = new File([bytes.buffer as ArrayBuffer], "large.kmz", {
+      type: "application/vnd.google-earth.kmz",
+    });
 
-    await importFile(makeFile("drawing.kmz", "kmz-bytes"));
+    await useFileImport().importFile(file);
 
-    const layer = store.layers[0]!;
-    expect(layer.type).toBe("kmz");
-    expect(layer.data).toBe(btoa("kmz-bytes"));
+    expect(useLayerStore().layers).toEqual([
+      expect.objectContaining({
+        data: bytes,
+        humanId: "large.kmz",
+        type: "kmz",
+        uuid: "00000000-0000-4000-8000-000000000000",
+      }),
+    ]);
   });
 
   it("throws on an unsupported file type and adds no layer", async () => {
