@@ -1,8 +1,8 @@
 import type { Feature } from "ol";
 import type { Geometry } from "ol/geom";
 
-export const TITLE_KEY = "title";
-export const DESCRIPTION_KEY = "description";
+export const TITLE_KEY = "sg_title";
+export const DESCRIPTION_KEY = "sg_description";
 
 /**
  * This counter is only used to generate a default title for each feature,
@@ -14,7 +14,12 @@ let counter_drawing_features = 0;
 /**
  * Initializes the metadata properties of a feature with default values.
  */
-export function initializeMetadataProperties(feature: Feature<Geometry>) {
+export function initializeMetadataProperties(
+  feature: Feature<Geometry> | null,
+) {
+  if (!feature) {
+    return;
+  }
   feature.setProperties({
     [TITLE_KEY]: `Feature ${++counter_drawing_features}`,
     [DESCRIPTION_KEY]: "",

@@ -129,6 +129,7 @@ export default defineNuxtConfig({
     reportIssueServiceUrl: "https://sys-map.dev.bgdi.ch/api/feedback",
     public: {
       ogcApiEndpoint: "",
+      iconServiceEndpoint: "",
       shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
       ogcCatalogCollection: "swissgeo-catalog",
       gitCommit: getGitCommit(),

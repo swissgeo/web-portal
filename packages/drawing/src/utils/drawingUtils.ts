@@ -78,7 +78,7 @@ export function getLinearRingLength(linearRing: LinearRing): number {
  * Compute the metrics related to the focused feature, depending on its geometry type.
  */
 export function computeFocusedFeatureMetrics(
-  feature: Feature<Geometry>,
+  feature: Feature<Geometry> | null,
 ): FocusedFeatureMetrics {
   if (!feature) {
     return null;
@@ -86,7 +86,11 @@ export function computeFocusedFeatureMetrics(
 
   const geometry = feature?.getGeometry();
 
-  switch (geometry?.getType()) {
+  if (!geometry) {
+    return null;
+  }
+
+  switch (geometry.getType()) {
     case "Point": {
       const coordinates = (geometry as Point).getCoordinates();
       const coordinatesWgs84 = proj4(LV95.epsg, WGS84.epsg, coordinates);
@@ -100,9 +104,8 @@ export function computeFocusedFeatureMetrics(
 
     case "Polygon": {
       const areaSquareMeters = (geometry as Polygon).getArea();
-      const perimeterMeters = getLinearRingLength(
-        (geometry as Polygon).getLinearRing(0),
-      );
+      const linearRing = (geometry as Polygon).getLinearRing(0);
+      const perimeterMeters = linearRing ? getLinearRingLength(linearRing) : 0;
 
       return { areaSquareMeters, perimeterMeters };
     }

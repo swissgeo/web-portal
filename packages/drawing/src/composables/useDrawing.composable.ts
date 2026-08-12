@@ -5,6 +5,12 @@ import KML from "ol/format/KML";
 import { storeToRefs } from "pinia";
 import { computed, readonly, watch, triggerRef } from "vue";
 
+import type {
+  IconSize,
+  RelativePlacement,
+  TextSize,
+} from "../utils/drawingStyleCommon";
+
 import { useDrawingStore } from "../stores/drawing.store";
 import {
   getFeatureDescription,
@@ -29,7 +35,37 @@ import {
   setFeatureStrokeWidthStyleProperty,
   setFeaturePointRadiusStyleProperty,
   setFeaturePointColorStyleProperty,
-} from "../utils/drawingStyle";
+  getIconUrlStyleProperty,
+  setIconUrlStyleProperty,
+  getShowTitleStyleProperty,
+  setShowTitleStyleProperty,
+  getShowDescriptionStyleProperty,
+  setShowDescriptionStyleProperty,
+  getShowIconStyleProperty,
+  setShowIconStyleProperty,
+  setIconSizeStyleProperty,
+  getIconSizeStyleProperty,
+  getIconAnchorStyleProperty,
+  setIconAnchorStyleProperty,
+  getTextBaselineStyleProperty,
+  setTextBaselineStyleProperty,
+  setTextAlignStyleProperty,
+  getTextAlignStyleProperty,
+  getTextColorStyleProperty,
+  setTextColorStyleProperty,
+  setTextHaloColorStyleProperty,
+  getTextHaloColorStyleProperty,
+  setTextSizeStyleProperty,
+  getTextSizeStyleProperty,
+  setTextPlacementStyleProperty,
+  getTextPlacementStyleProperty,
+  getIconSetNameStyleProperty,
+  setIconSetNameStyleProperty,
+  setIconColorStyleProperty,
+  getIconColorStyleProperty,
+  setIconNameStyleProperty,
+  getIconNameStyleProperty,
+} from "../utils/drawingStyleCommon";
 import {
   olFeatureToGeoJSON,
   olFeatureToKML,
@@ -151,6 +187,217 @@ export function useDrawing() {
       }
       setFeatureDescription(focusedFeature.value, newDescription);
       // Since the description is a property, we need to trigger the ref to ensure that the change is reactive and updates any watchers or computed properties that depend on it.
+      triggerRef(focusedFeature);
+    },
+  });
+
+  /**
+   * Updates the icon URL of the focused feature and triggers a reactivity update.
+   * (Currently only for Point features)
+   */
+  const iconUrl = computed({
+    get() {
+      return getIconUrlStyleProperty(focusedFeature.value);
+    },
+
+    set(newUrl: string) {
+      setIconUrlStyleProperty(focusedFeature.value, newUrl);
+      // If a icon URL is set, we want to ensure that the icon is shown.
+      setShowIconStyleProperty(focusedFeature.value, !!newUrl);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  const iconSetName = computed({
+    get() {
+      return getIconSetNameStyleProperty(focusedFeature.value);
+    },
+
+    set(newName: string) {
+      setIconSetNameStyleProperty(focusedFeature.value, newName);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  const iconName = computed({
+    get() {
+      return getIconNameStyleProperty(focusedFeature.value);
+    },
+
+    set(newName: string) {
+      setIconNameStyleProperty(focusedFeature.value, newName);
+      // Associating a a new icon from the Icon Service automatically resets the icon URL that may come from a hardcoded URL within a KML file.
+      setIconUrlStyleProperty(focusedFeature.value, "");
+      triggerRef(focusedFeature);
+    },
+  });
+
+  /**
+   * Getters and setters for the visibility of the title.
+   * (Currently only for Point features)
+   */
+  const showTitle = computed({
+    get() {
+      return getShowTitleStyleProperty(focusedFeature.value);
+    },
+
+    set(show: boolean) {
+      setShowTitleStyleProperty(focusedFeature.value, show);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  /**
+   * Getters and setters for the visibility of the description.
+   * (Currently only for Point features)
+   */
+  const showDescription = computed({
+    get() {
+      return getShowDescriptionStyleProperty(focusedFeature.value);
+    },
+
+    set(show: boolean) {
+      setShowDescriptionStyleProperty(focusedFeature.value, show);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  /**
+   * Getters and setters for the visibility of the icon.
+   * (Currently only for Point features)
+   */
+  const showIcon = computed({
+    get() {
+      return getShowIconStyleProperty(focusedFeature.value);
+    },
+
+    set(show: boolean) {
+      setShowIconStyleProperty(focusedFeature.value, show);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  /**
+   * Getters and setters for the size of the icon.
+   * (Currently only for Point features)
+   */
+  const iconSize = computed({
+    get() {
+      return getIconSizeStyleProperty(focusedFeature.value);
+    },
+
+    set(size: IconSize) {
+      setIconSizeStyleProperty(focusedFeature.value, size);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  /**
+   * Color of the icon, when the icon set supports colorization.
+   */
+  const iconColor = computed({
+    get() {
+      return getIconColorStyleProperty(focusedFeature.value);
+    },
+
+    set(color: string) {
+      setIconColorStyleProperty(focusedFeature.value, color);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  /**
+   * Getters and setters for the anchor point of the icon.
+   * (Currently only for Point features)
+   */
+  const iconAnchor = computed({
+    get() {
+      return getIconAnchorStyleProperty(focusedFeature.value);
+    },
+
+    set(anchor: [number, number]) {
+      setIconAnchorStyleProperty(focusedFeature.value, anchor);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  const textSize = computed({
+    get() {
+      return getTextSizeStyleProperty(focusedFeature.value);
+    },
+
+    set(size: TextSize) {
+      setTextSizeStyleProperty(focusedFeature.value, size);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  const textColor = computed({
+    get() {
+      return getTextColorStyleProperty(focusedFeature.value);
+    },
+
+    set(newColor: string) {
+      setTextColorStyleProperty(focusedFeature.value, newColor);
+      // Since the text color is a style property, we need to trigger the ref to ensure that the change is reactive and updates any watchers or computed properties that depend on it.
+      triggerRef(focusedFeature);
+    },
+  });
+
+  const textHaloColor = computed({
+    get() {
+      return getTextHaloColorStyleProperty(focusedFeature.value);
+    },
+
+    set(newColor: string) {
+      setTextHaloColorStyleProperty(focusedFeature.value, newColor);
+      // Since the text halo color is a style property, we need to trigger the ref to ensure that the change is reactive and updates any watchers or computed properties that depend on it.
+      triggerRef(focusedFeature);
+    },
+  });
+
+  /**
+   * Getters and setters for the text baseline of the focused feature.
+   * (Currently only for Point features)
+   */
+  const textBaseline = computed({
+    get() {
+      return getTextBaselineStyleProperty(focusedFeature.value);
+    },
+
+    set(baseline: "top" | "middle" | "bottom") {
+      setTextBaselineStyleProperty(focusedFeature.value, baseline);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  /**
+   * Getters and setters for the text alignment of the focused feature.
+   * (Currently only for Point features)
+   */
+  const textAlign = computed({
+    get() {
+      return getTextAlignStyleProperty(focusedFeature.value);
+    },
+
+    set(align: "left" | "center" | "right") {
+      setTextAlignStyleProperty(focusedFeature.value, align);
+      triggerRef(focusedFeature);
+    },
+  });
+
+  /**
+   * Getters and setters for the text placement of the focused feature.
+   * (Currently only for Point features)
+   * The text placement determines where the text is placed relative to the point feature.
+   */
+  const textPlacement = computed({
+    get() {
+      return getTextPlacementStyleProperty(focusedFeature.value);
+    },
+
+    set(placement: RelativePlacement) {
+      setTextPlacementStyleProperty(focusedFeature.value, placement);
       triggerRef(focusedFeature);
     },
   });
@@ -321,11 +568,26 @@ export function useDrawing() {
       dataProjection: EPSG_4326_WGS84,
     });
     for (const feature of features) {
-      mapKmlStylesToFeatureProperties(feature);
+      // Adds Swissgeo metadata properties for drawing features with their default values
       initializeMetadataProperties(feature);
+      initializeStyleProperties(feature);
+      mapKmlStylesToFeatureProperties(feature);
       applyIdleStyle(feature);
+
+      // In case a feature has already been imported, it is needed to first remove the previous version
+      // and only then add the new version
+      const featureId = feature.getId();
+      if (featureId) {
+        const featureAlreadyInSource =
+          drawingStore.drawingVectorSource.getFeatureById(featureId);
+        if (featureAlreadyInSource) {
+          drawingStore.drawingVectorSource.removeFeature(
+            featureAlreadyInSource,
+          );
+        }
+      }
+      drawingStore.drawingVectorSource.addFeature(feature);
     }
-    drawingStore.drawingVectorSource.addFeatures(features);
   }
 
   return {
@@ -353,6 +615,21 @@ export function useDrawing() {
     pointColor,
     title,
     description,
+    iconUrl,
+    showTitle,
+    showDescription,
+    showIcon,
+    iconSize,
+    iconAnchor,
+    textBaseline,
+    textAlign,
+    textColor,
+    textHaloColor,
+    textSize,
+    textPlacement,
+    iconSetName,
+    iconName,
+    iconColor,
     DRAWING_LAYER_UUID: drawingStore.DRAWING_LAYER_UUID,
     serializeFocusedFeature,
     serializeFocusedFeatureAsBlob,
