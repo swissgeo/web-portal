@@ -212,6 +212,7 @@ test.describe("embed map in iframe", () => {
     await expect(button).toHaveAttribute(
       "href",
       "http://localhost:3000/map?state=dummyStateForTesting",
+      { timeout: HYDRATION_TIMEOUT },
     );
   });
 });
