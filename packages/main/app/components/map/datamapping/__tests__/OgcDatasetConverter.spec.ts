@@ -194,6 +194,6 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     wrapper.unmount();
     await flushPromises();
 
-    expect(wrapper.emitted()).toHaveProperty("remove");
+    expect(wrapper.emitted("remove")).toEqual([["some-fancy-uuid"]]);
   });
 });

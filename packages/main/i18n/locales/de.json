@@ -240,6 +240,7 @@
   "error": {
     "notFound": "{resource} konnte nicht gefunden werden.",
     "generic": "Ein unerwarteter Fehler ist aufgetreten.",
+    "layerLoad": "Die Ebene konnte nicht geladen werden.",
     "backToMap": "Zurück zur Karte",
     "resources": {
       "dataset": "Dieser Datensatz"

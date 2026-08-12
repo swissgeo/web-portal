@@ -38,7 +38,7 @@ const dimensionsStore = useDimensionsStore();
 const emit = defineEmits<{
   update: [layer: MapLayer];
   updateTimeDimension: [layerUuid: string, dimension: Partial<Dimension>];
-  remove: [void];
+  remove: [layerUuid: string];
   updateDataset: [layerUuid: string, dataset: Dataset];
   updateLayerInfo: [layerUuid: string, info: LayerInfo];
   updateLegends: [layerUuid: string, legends: Legend[]];
@@ -89,7 +89,7 @@ const layerData = computed((): MapLayer => {
 watch(layerData, () => emit("update", layerData.value), { immediate: true });
 
 onBeforeUnmount(() => {
-  emit("remove");
+  emit("remove", layer.uuid);
 });
 
 // receive the layer specific data from the subconverters
