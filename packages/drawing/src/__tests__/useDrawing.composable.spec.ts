@@ -30,6 +30,7 @@ import {
   STROKE_COLOR_KEY,
   STROKE_WIDTH_KEY,
 } from "@/utils/drawingStyle";
+import { exportFormatToMimeType } from "@/utils/exportUtils";
 
 import type {
   CircleMetrics,
@@ -206,6 +207,114 @@ describe("useDrawing", () => {
     drawing.clearDrawingLayer();
 
     expect(drawingStore.drawingVectorSource.getFeatures()).toEqual([]);
+
+    wrapper.unmount();
+  });
+
+  it("serializes the focused feature in supported formats", async () => {
+    const { drawing, drawingStore, wrapper } = mountHarness();
+    const feature = makeFeature(
+      new LineString([
+        [2600000, 1200000],
+        [2600010, 1200010],
+      ]),
+    );
+
+    await focusFeature(drawingStore, feature);
+
+    const geoJson = JSON.parse(
+      drawing.serializeFocusedFeature("geojson") as string,
+    );
+
+    expect(geoJson.features).toHaveLength(1);
+    expect(geoJson.features[0].geometry.type).toBe("LineString");
+    expect(drawing.serializeFocusedFeature()).toBe(
+      drawing.serializeFocusedFeature("geojson"),
+    );
+    expect(drawing.serializeFocusedFeature("gpx-track")).toContain("<trk>");
+    expect(drawing.serializeFocusedFeature("gpx-route")).toContain("<rte>");
+    expect(drawing.serializeFocusedFeature("kml")).toContain("<kml");
+    expect(drawing.serializeFocusedFeature("kmz")).toBeInstanceOf(ArrayBuffer);
+
+    wrapper.unmount();
+  });
+
+  it("returns null when serializing a missing focused feature", () => {
+    const { drawing, wrapper } = mountHarness();
+
+    expect(drawing.serializeFocusedFeature()).toBeNull();
+    expect(drawing.serializeFocusedFeatureAsBlob()).toBeNull();
+
+    wrapper.unmount();
+  });
+
+  it("wraps the focused feature serialization in a typed Blob", async () => {
+    const { drawing, drawingStore, wrapper } = mountHarness();
+    const feature = makeFeature(new Point([2600000, 1200000]));
+
+    await focusFeature(drawingStore, feature);
+
+    const geoJsonBlob = drawing.serializeFocusedFeatureAsBlob("geojson");
+    const kmzBlob = drawing.serializeFocusedFeatureAsBlob("kmz");
+
+    expect(geoJsonBlob).toBeInstanceOf(Blob);
+    expect(geoJsonBlob?.type).toBe(exportFormatToMimeType.geojson);
+    expect(await geoJsonBlob?.text()).toContain("FeatureCollection");
+    expect(kmzBlob).toBeInstanceOf(Blob);
+    expect(kmzBlob?.type).toBe(exportFormatToMimeType.kmz);
+    expect(kmzBlob?.size).toBeGreaterThan(0);
+
+    wrapper.unmount();
+  });
+
+  it("serializes all drawing source features in supported formats", () => {
+    const { drawing, drawingStore, wrapper } = mountHarness();
+    const pointFeature = makeFeature(new Point([2600000, 1200000]));
+    const lineFeature = makeFeature(
+      new LineString([
+        [2600000, 1200000],
+        [2600010, 1200010],
+      ]),
+    );
+
+    drawingStore.drawingVectorSource.addFeatures([pointFeature, lineFeature]);
+
+    const geoJson = JSON.parse(
+      drawing.serializeAllFeatures("geojson") as string,
+    );
+
+    expect(geoJson.features).toHaveLength(2);
+    expect(drawing.serializeAllFeatures()).toBe(
+      drawing.serializeAllFeatures("geojson"),
+    );
+    expect(drawing.serializeAllFeatures("gpx-track")).toContain("<trk>");
+    expect(drawing.serializeAllFeatures("gpx-route")).toContain("<rte>");
+    expect(drawing.serializeAllFeatures("kml")).toContain("<kml");
+    expect(drawing.serializeAllFeatures("kmz")).toBeInstanceOf(ArrayBuffer);
+
+    wrapper.unmount();
+  });
+
+  it("wraps all-feature serialization in a typed Blob", async () => {
+    const { drawing, drawingStore, wrapper } = mountHarness();
+    const feature = makeFeature(
+      new LineString([
+        [2600000, 1200000],
+        [2600010, 1200010],
+      ]),
+    );
+
+    drawingStore.drawingVectorSource.addFeature(feature);
+
+    const gpxBlob = drawing.serializeAllFeaturesAsBlob("gpx-route");
+    const geoJsonBlob = drawing.serializeAllFeaturesAsBlob("geojson");
+
+    expect(gpxBlob).toBeInstanceOf(Blob);
+    expect(gpxBlob?.type).toBe(exportFormatToMimeType["gpx-route"]);
+    expect(await gpxBlob?.text()).toContain("<rte>");
+    expect(geoJsonBlob).toBeInstanceOf(Blob);
+    expect(geoJsonBlob?.type).toBe(exportFormatToMimeType.geojson);
+    expect(await geoJsonBlob?.text()).toContain("FeatureCollection");
 
     wrapper.unmount();
   });
