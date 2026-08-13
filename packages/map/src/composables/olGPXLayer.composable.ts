@@ -13,6 +13,7 @@ import type { GPXLayer } from "@/types";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
+import { sanitizeXml } from "@/utils/sanitizeXml";
 
 export default function useOlGPXLayer(
   layer: Ref<GPXLayer>,
@@ -51,8 +52,9 @@ export default function useOlGPXLayer(
     });
 
     const format = new GPX();
+    const sanitized = sanitizeXml(gpxData.value);
 
-    const features = format.readFeatures(gpxData.value, {
+    const features = format.readFeatures(sanitized, {
       featureProjection: positionStore.projection.epsg, // CH1903+ / LV95 / EPSG:2056
       dataProjection: EPSG_4326_WGS84, // WGS84
     });

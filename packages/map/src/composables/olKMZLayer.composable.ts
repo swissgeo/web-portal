@@ -23,6 +23,7 @@ import type { KMZLayer } from "@/types";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
+import { sanitizeXml } from "@/utils/sanitizeXml";
 
 export default function useOlKMZLayer(
   layer: Ref<KMZLayer>,
@@ -113,8 +114,9 @@ export default function useOlKMZLayer(
       extractStyles: true,
     });
     register(proj4);
+    const sanitized = sanitizeXml(kmlContent);
 
-    return format.readFeatures(kmlContent, {
+    return format.readFeatures(sanitized, {
       featureProjection: projection,
       dataProjection: EPSG_4326_WGS84,
     });
