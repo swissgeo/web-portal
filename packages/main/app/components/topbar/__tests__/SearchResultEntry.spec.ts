@@ -3,7 +3,7 @@ import type { SearchResult } from "@swissgeo/search";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { SearchResultTypesEnum } from "@swissgeo/search";
 import { mount } from "@vue/test-utils";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import SearchResultEntry from "../SearchResultEntry.vue";
 
@@ -17,6 +17,14 @@ vi.mock("@swissgeo/skeleton", () => ({
   useDatasetPanelStore: vi.fn(() => ({
     openDatasetPanel: vi.fn(),
   })),
+}));
+
+const { sanitizeHtmlMock } = vi.hoisted(() => ({
+  sanitizeHtmlMock: vi.fn((input: string) => input),
+}));
+
+vi.mock("~/utils/sanitizeHtml", () => ({
+  sanitizeHtml: sanitizeHtmlMock,
 }));
 
 const UIconStub = {
@@ -65,6 +73,10 @@ describe("SearchResultEntry", () => {
   }
 
   describe("rendering", () => {
+    beforeEach(() => {
+      sanitizeHtmlMock.mockImplementation((input: string) => input);
+    });
+
     it("renders location entry with correct icon", () => {
       const wrapper = mountEntry(entries[0]!);
 
@@ -114,6 +126,63 @@ describe("SearchResultEntry", () => {
 
       const title = wrapper.find(".min-w-0");
       expect(title.html()).toContain("Location Title");
+
+      wrapper.unmount();
+    });
+
+    it("calls sanitizeHtml with entry title", () => {
+      const wrapper = mountEntry(entries[0]!);
+
+      expect(sanitizeHtmlMock).toHaveBeenCalledWith("Location Title");
+
+      wrapper.unmount();
+    });
+
+    it("passes malicious title through sanitizeHtml", () => {
+      const maliciousInput =
+        'safe<img src=x onerror=alert(1)><script>alert("xss")</script>';
+      const maliciousEntry: SearchResult = {
+        resultType: SearchResultTypesEnum.location,
+        id: "id-malicious",
+        title: maliciousInput,
+        description: "",
+        sanitizedTitle: "safe",
+      };
+      const wrapper = mountEntry(maliciousEntry);
+
+      expect(sanitizeHtmlMock).toHaveBeenCalledWith(maliciousInput);
+
+      wrapper.unmount();
+    });
+
+    it("passes title with javascript: protocol through sanitizeHtml", () => {
+      const maliciousInput = '<a href="javascript:alert(1)">click</a>';
+      const maliciousEntry: SearchResult = {
+        resultType: SearchResultTypesEnum.location,
+        id: "id-malicious",
+        title: maliciousInput,
+        description: "",
+        sanitizedTitle: "click",
+      };
+      const wrapper = mountEntry(maliciousEntry);
+
+      expect(sanitizeHtmlMock).toHaveBeenCalledWith(maliciousInput);
+
+      wrapper.unmount();
+    });
+
+    it("passes safe HTML title through sanitizeHtml", () => {
+      const safeInput = "<strong>Layer Name</strong><br/>Feature Label";
+      const safeEntry: SearchResult = {
+        resultType: SearchResultTypesEnum.feature,
+        id: "id-safe",
+        title: safeInput,
+        description: "",
+        sanitizedTitle: "Layer Name - Feature Label",
+      };
+      const wrapper = mountEntry(safeEntry);
+
+      expect(sanitizeHtmlMock).toHaveBeenCalledWith(safeInput);
 
       wrapper.unmount();
     });
