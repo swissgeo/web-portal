@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import { computed, toValue, watchEffect } from "vue";
+import { computed, toValue, watch, watchEffect } from "vue";
 
 import type { Dataset, DistributionCollection } from "@/types/Records";
 
@@ -15,11 +15,30 @@ export function useDistributionCollection(dataset: Ref<Dataset | null>) {
   const {
     data: distributionCollection,
     onFetchResponse: onDistributionResponse,
-    onRequestError: onDistributionError,
+    onRequestError,
   } = useConditionalFetch<DistributionCollection>(distributionUrl, [
     "get",
     "json",
   ]);
+
+  const onDistributionError = (handler: (error: unknown) => void) => {
+    const requestErrorSubscription = onRequestError(handler);
+    const stopMissingUrlWatcher = watch(
+      [dataset, distributionUrl],
+      ([currentDataset, currentDistributionUrl]) => {
+        if (currentDataset && !currentDistributionUrl) {
+          handler(new Error("Required distribution URL is missing"));
+        }
+      },
+      { immediate: true },
+    );
+    return {
+      off: () => {
+        requestErrorSubscription.off();
+        stopMissingUrlWatcher();
+      },
+    };
+  };
 
   // Debug watchers
   watchEffect(() => {
@@ -42,7 +61,6 @@ export function useDistributionCollection(dataset: Ref<Dataset | null>) {
   );
 
   return {
-    distributionUrl,
     distributionCollection,
     onDistributionError,
     onDistributionResponse,

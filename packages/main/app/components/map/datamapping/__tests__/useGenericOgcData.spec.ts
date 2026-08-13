@@ -50,7 +50,6 @@ const {
   onServiceErrorMock,
   onServiceResponseMock,
   distributionCollectionMockData,
-  distributionUrlMockData,
   useDistributionCollectionMock,
   usePreferredDistributionMock,
   distributionMockData,
@@ -79,7 +78,6 @@ const {
   //
   //  useDistributionCollection
   //
-  const distributionUrlMockData = ref("distribution-url");
   const onDistributionErrorMock = vi.fn();
   const onDistributionResponseMock = vi.fn();
   const distributionCollectionMockData = ref({
@@ -89,7 +87,6 @@ const {
   });
   const useDistributionCollectionMock = vi.fn(
     (): ReturnType<typeof useDistributionCollectionOriginal> => ({
-      distributionUrl: computed(() => distributionUrlMockData.value),
       distributionCollection: distributionCollectionMockData,
       onDistributionError: onDistributionErrorMock,
       onDistributionResponse: onDistributionResponseMock,
@@ -151,7 +148,6 @@ const {
     onServiceErrorMock,
     onServiceResponseMock,
     distributionMockData,
-    distributionUrlMockData,
     useDistributionCollectionMock,
     distributionCollectionMockData,
 
@@ -177,7 +173,6 @@ vi.mock("@swissgeo/ogc", () => ({
 describe("useGenericOgcData ", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    distributionUrlMockData.value = "distribution-url";
     distributionMockData.value = {
       id: "grossspuriges-heuchlerkraut:wmts",
       links: [{ href: "link-to-service", rel: "service" }],
@@ -192,14 +187,6 @@ describe("useGenericOgcData ", () => {
     serviceMockData.value = {
       linkTemplates: [{ uriTemplate: "uri", rel: "about" }],
     } as Service;
-  });
-
-  it("reports a missing distribution URL", () => {
-    distributionUrlMockData.value = "";
-
-    expect(() => useGenericOgcData(layerMockData, vi.fn())).toThrow(
-      "Required distribution URL is missing",
-    );
   });
 
   it.each([
