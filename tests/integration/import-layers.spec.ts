@@ -61,7 +61,8 @@ async function mockExternalLayerApi(
   // be registered BEFORE the more specific `/dataset/` and `/service/` routes
   // (`/service/<url>` also matches `*/*`), or it would shadow them.
   await page.route("**/api/wpa/v1/layers/external/*/*", (route, request) => {
-    const parts = request.url().split("/");
+    const requestUrl = new URL(request.url());
+    const parts = requestUrl.pathname.split("/");
     const layerId = parts.pop() ?? "";
     const encodedUrl = parts.pop() ?? "";
     // The distribution's `dataservice` link points at the `/service/<url>`
@@ -96,7 +97,7 @@ async function mockExternalLayerApi(
   await page.route(
     "**/api/wpa/v1/layers/external/dataset/**",
     (route, request) => {
-      const layerId = request.url().split("/").pop() ?? "";
+      const layerId = new URL(request.url()).pathname.split("/").pop() ?? "";
       return route.fulfill({
         status: 200,
         json: {
@@ -260,7 +261,7 @@ test.describe("import external layers", () => {
     await page.getByTestId(`import-layer-${WMTS_LAYER}`).click();
 
     await expect(
-      page.getByText("Die Ebene konnte nicht geladen werden."),
+      page.getByText("Die Ebene konnte nicht geladen werden.", { exact: true }),
     ).toBeVisible();
     await page.getByTestId("button-layer-cart-panel").click();
     const layerCart = page.getByTestId("layer-cart");
