@@ -3,7 +3,8 @@ import { inject } from "vue";
 
 defineEmits(["logoClick"]);
 
-const { condensed = false } = defineProps<{
+const { bare = false, condensed = false } = defineProps<{
+  bare?: boolean;
   condensed?: boolean;
 }>();
 
@@ -11,9 +12,27 @@ const isDesktop = inject<boolean>("isDesktop", true);
 </script>
 
 <template>
+  <button
+    v-if="bare"
+    type="button"
+    class="flex items-center"
+    data-testid="sidebar-logo-pic-bare"
+    @click="$emit('logoClick')"
+  >
+    <img
+      src="@/assets/images/swissgeo_rgb_sek.svg"
+      class="w-full dark:hidden"
+      data-testid="sidebar-logo-pic-image-bare"
+    />
+    <img
+      src="@/assets/images/swissgeo_neg_sek.svg"
+      class="hidden w-full dark:block"
+      data-testid="sidebar-logo-pic-image-bare-dark"
+    />
+  </button>
   <!-- the desktop icon in the sidebar -->
   <div
-    v-if="condensed"
+    v-else-if="condensed"
     class="flex h-14 w-full cursor-pointer items-center justify-center"
     data-testid="sidebar-logo-pic-condensed"
     @click="$emit('logoClick')"

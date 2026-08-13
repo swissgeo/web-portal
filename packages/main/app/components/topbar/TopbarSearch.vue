@@ -110,10 +110,14 @@ function clearSearch() {
         icon="i-lucide-search"
         :placeholder="t('search.placeholder')"
         :loading="searchStore.isSearching"
-        size="md"
-        variant="outline"
-        color="secondary"
-        class="w-72"
+        size="xl"
+        variant="soft"
+        color="neutral"
+        class="w-full 2xl:w-[472px]"
+        :ui="{
+          base: 'bg-elevated hover:bg-accented focus:bg-accented',
+          leadingIcon: 'text-muted',
+        }"
         data-testid="topbar-search-input"
         @click="handleClick"
       >
@@ -151,17 +155,17 @@ function clearSearch() {
             v-else-if="
               searchStore.query.length >= 2 && !searchStore.isSearching
             "
-            class="text-surface-500 p-4 text-center"
+            class="p-4 text-center text-muted"
           >
             {{ t("search.no_results") }}
           </div>
-          <div v-else class="text-surface-500 p-4">
+          <div v-else class="p-4 text-muted">
             {{ t("search.placeholder") }}
           </div>
         </template>
 
         <template #contentPages>
-          <div class="text-surface-500 p-4 text-center">
+          <div class="p-4 text-center text-muted">
             {{ t("search.no_results") }}
           </div>
         </template>

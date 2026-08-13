@@ -48,21 +48,22 @@ watch(selectedLocale, async (value) => {
       value-key="code"
       label-key="name"
       :arrow="false"
-      size="md"
-      variant="outline"
-      :trailing="false"
+      size="sm"
+      variant="ghost"
+      color="neutral"
+      trailing-icon="i-lucide-chevron-down"
       :searchInput="false"
       aria-label="Language switcher"
       :ui="{
         content: '!w-auto min-w-[150px] !max-w-none',
-        base: 'p-4',
-        trailingIcon: 'hidden',
+        base: 'text-muted hover:bg-primary/10 hover:text-primary',
+        trailingIcon: 'size-5 text-muted',
         value: 'hidden',
-        leading: 'ps-2 pe-2',
+        leading: 'static',
       }"
     >
       <template #leading>
-        <span class="text-sm font-medium uppercase">
+        <span class="text-sm/5 font-medium uppercase">
           {{ selectedLocale }}
         </span>
       </template>

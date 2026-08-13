@@ -13,7 +13,7 @@
     "layerCart": "Aktive Ebenen"
   },
   "search": {
-    "placeholder": "Ort, Layer oder Koordinaten suchen...",
+    "placeholder": "Orte, Adressen, Ebenen & Website-Inhalte durchsuchen",
     "map_tab": "Karte",
     "content_pages_tab": "Inhaltsseiten",
     "locations_results_header": "Orte",
@@ -302,6 +302,8 @@
   },
   "topbar": {
     "home": "Startseite",
+    "services": "Services",
+    "fundamentalsAndStandards": "Grundlagen & Standards",
     "geoDataAndMaps": "Geodaten und Karten",
     "howToUseGeodata": "Wie kann ich Geodaten nutzen?",
     "viewGeodataInMapViewer": "Geodaten im Kartenviewer anschauen",
@@ -328,6 +330,7 @@
     "legalBasis": "Rechtliche Grundlagen",
     "mediaInformation": "Medieninformationen",
     "map": "Karte",
-    "login": "Anmelden"
+    "login": "Anmelden",
+    "modeSwitch": "Mode switch"
   }
 }

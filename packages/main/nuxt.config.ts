@@ -55,7 +55,6 @@ export default defineNuxtConfig({
     experimental: {
       componentDetection: ["LocaleSelect"],
     },
-    colorMode: false,
   },
   sourcemap: {
     // Enable in dev, disable in prod (unless you have a private uploader)

@@ -50,4 +50,28 @@ describe("LogoPic behavior", () => {
     expect(extendedLogoPic.exists()).toBe(!condensedExist);
     expect(separator.exists()).toBe(separatorExist);
   });
+
+  it("renders the reusable bare logo and emits logoClick", async () => {
+    const wrapper = mount(LogoPic, {
+      props: {
+        bare: true,
+      },
+    });
+
+    await wrapper.get('[data-testid="sidebar-logo-pic-bare"]').trigger("click");
+
+    expect(
+      wrapper.find('[data-testid="sidebar-logo-pic-condensed"]').exists(),
+    ).toBe(false);
+    expect(
+      wrapper.find('[data-testid="sidebar-logo-pic-extended"]').exists(),
+    ).toBe(false);
+    expect(
+      wrapper.find('[data-testid="sidebar-logo-pic-image-bare"]').exists(),
+    ).toBe(true);
+    expect(
+      wrapper.find('[data-testid="sidebar-logo-pic-image-bare-dark"]').exists(),
+    ).toBe(true);
+    expect(wrapper.emitted("logoClick")).toHaveLength(1);
+  });
 });

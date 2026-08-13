@@ -94,9 +94,13 @@ an approved semantic role.
 Figma contains Light and Dark semantic-token modes. It also contains frames named
 Hero dark and Hero light.
 
-These facts do not define a global application color-mode requirement. Do not
-enable runtime color mode until the product defines the theme behavior and the
-agency supplies complete component evidence for the dark mode.
+The product supports a manual light and dark mode switch. Nuxt UI owns the
+runtime mode, persistence, and semantic component colors.
+
+Figma does not define complete dark variants for the current application
+components. The draft dark mode uses the Nuxt UI dark semantic defaults until
+the agency supplies exact dark component evidence. Do not describe these dark
+component values as verified Figma values.
 
 Dark-named Keypage frames still resolve the page background to white. Do not use
 these frame names as evidence for a dark application background.
