@@ -122,7 +122,7 @@ function handleLayerError(layer: SourceData, error: unknown) {
   toaster.showError(t("error.layerLoad"));
 
   dimensionsStore.clearLayerDimensions(layer.uuid);
-  layerStore.consumeImportOptions(layer.uuid);
+  layerStore.clearImportOptions(layer.uuid);
   removeMapLayer(layer.uuid);
 
   if (layerStore.backgroundLayer?.uuid === layer.uuid) {

@@ -39,11 +39,15 @@ export const useLayerStore = defineStore("layers", () => {
     importOptions[uuid] = option;
   }
 
+  function clearImportOptions(uuid: string) {
+    delete importOptions[uuid];
+  }
+
   function consumeImportOptions(uuid: string) {
     const options = importOptions[uuid];
     if (options) {
       const deepClonedOptions = structuredClone(options);
-      delete importOptions[uuid];
+      clearImportOptions(uuid);
       return deepClonedOptions;
     }
   }
@@ -161,6 +165,7 @@ export const useLayerStore = defineStore("layers", () => {
     removeLayer,
     setLayerData,
     addImportOption,
+    clearImportOptions,
     consumeImportOptions,
     $reset,
   };
