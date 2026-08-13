@@ -2,6 +2,7 @@ import type { Page } from "@playwright/test";
 
 import { expect, test } from "@playwright/test";
 import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
 
 import {
   HYDRATION_TIMEOUT,
@@ -214,6 +215,67 @@ test.describe("import external layers", () => {
     await expect(
       page.getByTestId("layer-cart").getByText(WMS_LAYER),
     ).toBeVisible();
+  });
+
+  test("removes a layer when its distribution cannot be loaded", async ({
+    page,
+  }) => {
+    const workingLayer = "test-drawing.geojson";
+    await openMap(page);
+    await page.getByTestId("debug-open-import-local-panel").click();
+    await page
+      .getByTestId("file-input")
+      .setInputFiles(
+        fileURLToPath(new URL(`../fixtures/${workingLayer}`, import.meta.url)),
+      );
+    await page.getByTestId("file-import-button").click();
+    await page.waitForFunction(
+      (layerId) =>
+        window.swissgeoOlMap
+          ?.getLayers()
+          .getArray()
+          .some((layer) => layer.get("id") === layerId) ?? false,
+      workingLayer,
+    );
+    await page.getByTestId("file-import-close-button").click();
+    await page.getByTestId("debug-open-import-layers-panel").click();
+
+    await mockExternalLayerApi(page, {
+      protocol: "WMTS",
+      capabilityUrl: WMTS_URL,
+    });
+    let failedRequests = 0;
+    await page.route(
+      `**/api/wpa/v1/layers/external/*/${WMTS_LAYER}`,
+      (route, request) => {
+        if (request.url().includes("/dataset/")) {
+          return route.fallback();
+        }
+        failedRequests += 1;
+        return route.fulfill({ status: 500 });
+      },
+    );
+    await page.getByTestId("import-capability-url").fill(WMTS_URL);
+    await page.getByTestId("import-load-capabilities").click();
+    await page.getByTestId(`import-layer-${WMTS_LAYER}`).click();
+
+    await expect(
+      page.getByText("Die Ebene konnte nicht geladen werden."),
+    ).toBeVisible();
+    await page.getByTestId("button-layer-cart-panel").click();
+    const layerCart = page.getByTestId("layer-cart");
+    await expect(layerCart.getByText(workingLayer)).toBeVisible();
+    await expect(layerCart.getByText(WMTS_LAYER)).toHaveCount(0);
+    const workingLayerRemains = await page.evaluate(
+      (layerId) =>
+        window.swissgeoOlMap
+          ?.getLayers()
+          .getArray()
+          .some((layer) => layer.get("id") === layerId) ?? false,
+      workingLayer,
+    );
+    expect(workingLayerRemains).toBe(true);
+    expect(failedRequests).toBe(1);
   });
 
   test("preset dropdown loads the layer list", async ({ page }) => {
