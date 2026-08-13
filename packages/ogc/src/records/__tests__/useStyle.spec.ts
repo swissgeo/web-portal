@@ -1,9 +1,18 @@
 import type { Style } from "mapbox-gl";
 
+import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { flushPromises } from "@vue/test-utils";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { ref } from "vue";
 
 import type { Distribution } from "@/types";
@@ -34,7 +43,10 @@ const server = setupServer(
 
 beforeAll(() => server.listen());
 afterAll(() => server.close());
-afterEach(() => server.resetHandlers());
+afterEach(() => {
+  server.resetHandlers();
+  vi.restoreAllMocks();
+});
 
 describe("extractStyleUrl", () => {
   it.each([
@@ -105,5 +117,24 @@ describe("loading Mapbox style data from a distribution", () => {
 
     expect(styleDataUrl.value).toBe(mockStyleUrl);
     expect(styleData.value).toEqual(style);
+  });
+
+  it("logs a failed optional style request without style data", async () => {
+    const requestError = new Error("style request failed");
+    const warn = vi.spyOn(log, "warn").mockImplementation(() => {});
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(requestError);
+    const distribution = ref<Distribution | null>(null);
+
+    const { styleData } = useStyle(distribution);
+    distribution.value = fetchDistributionFixture;
+    await flushPromises();
+
+    expect(styleData.value).toBe(null);
+    expect(warn).toHaveBeenCalledOnce();
+    expect(warn).toHaveBeenCalledWith({
+      title: "useStyle",
+      titleColor: LogPreDefinedColor.Pink,
+      messages: ["Unable to load optional style", mockStyleUrl, requestError],
+    });
   });
 });
