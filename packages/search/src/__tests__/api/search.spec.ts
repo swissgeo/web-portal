@@ -1,3 +1,5 @@
+// @vitest-environment jsdom
+
 import type { Mock } from "vitest";
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";

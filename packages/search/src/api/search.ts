@@ -1,6 +1,7 @@
 // Search API for web-poc-portal
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { sanitizeHtml } from "@swissgeo/shared";
 
 import type {
   FeatureSearchResult,
@@ -29,8 +30,6 @@ export interface CatalogRecord {
   };
 }
 
-// Regex to detect and strip HTML tags
-const REGEX_DETECT_HTML_TAGS = /<\/?[^>]+(>|$)/g;
 const REGEX_BOUNDING_BOX = /BOX\(([0-9.]+)\s+([0-9.]+),([0-9.]+)\s+([0-9.]+)\)/;
 /** Escape HTML special characters to prevent XSS
  * Only exported for unit tests
@@ -48,7 +47,7 @@ export function escapeHtml(text: string): string {
  * Only exported for unit tests
  */
 export function sanitizeTitle(title: string = ""): string {
-  return title.replace(REGEX_DETECT_HTML_TAGS, "");
+  return sanitizeHtml(title, { USE_PROFILES: { html: false } });
 }
 
 /**
