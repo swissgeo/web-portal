@@ -14,6 +14,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
+  error: [error: unknown];
   updateOptions: [opacity: number | null, { options: Options }];
   updateTimeDimension: [dimension: Partial<Dimension>];
   updateLegends: [legends: Legend[]];
@@ -26,6 +27,7 @@ const { timeInfo, options, defaultOpacity, legends } = useOgcWmtsData(
   distribution,
   serviceData,
   layerId,
+  (error) => emit("error", error),
 );
 
 watch(timeInfo, () => {

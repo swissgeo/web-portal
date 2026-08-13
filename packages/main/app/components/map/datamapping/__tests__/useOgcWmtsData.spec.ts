@@ -24,22 +24,19 @@ const {
   const styleDataMock = ref({});
   const wmtsDataMock = ref<unknown>(null);
 
-  const useWmtsCapabilitiesMock = vi.fn((service, layer) => {
-    // for some tests we want the composable to react to its inputs, so we
-    // synthesize an endpoint carrying the service url / layer for assertions.
-    if (service.value && layer.value) {
-      return {
-        wmtsData: computed(() => ({
-          endpoint: { serviceUrl: service.value.url },
-          dimensions: null,
-        })),
-      };
-    } else {
-      return {
-        wmtsData: wmtsDataMock,
-      };
-    }
-  });
+  const useWmtsCapabilitiesMock = vi.fn(
+    (service, layer, _onError: (_error: unknown) => void) => ({
+      capabilityUrl: computed(() => service.value?.url ?? null),
+      // Some tests need the endpoint to react to service and layer changes.
+      wmtsData:
+        service.value && layer.value
+          ? computed(() => ({
+              endpoint: { serviceUrl: service.value.url },
+              dimensions: null,
+            }))
+          : wmtsDataMock,
+    }),
+  );
 
   return {
     useStyleMock: vi.fn(() => ({
@@ -56,7 +53,10 @@ const {
     // stands in for map's buildWmtsOptions: echoes back the endpoint + layer so
     // tests can assert the async options wiring without OpenLayers.
     buildWmtsOptionsMock: vi.fn(
-      (endpoint: { serviceUrl?: string }, layerName: string) =>
+      (
+        endpoint: { serviceUrl?: string },
+        layerName: string,
+      ): Promise<{ url: string | undefined; layerId: string } | null> =>
         Promise.resolve({
           url: endpoint?.serviceUrl,
           layerId: layerName,
@@ -97,7 +97,29 @@ describe("useOgcWmtsData", () => {
 
     expect(useStyleMock).toHaveBeenCalledTimes(1);
     expect(useStyleMock).toHaveBeenCalledWith(distribution);
-    expect(useWmtsCapabilitiesMock).toHaveBeenCalledWith(service, layerId);
+    expect(useWmtsCapabilitiesMock).toHaveBeenCalledWith(
+      service,
+      layerId,
+      expect.any(Function),
+    );
+  });
+
+  it("preserves the WMTS capabilities request error", () => {
+    const requestError = new Error("request failed");
+    const onError = vi.fn();
+
+    // @ts-expect-error Not caring about the types here
+    useOgcWmtsData(ref({}), ref({}), ref(null), onError);
+    const reportCapabilitiesError = useWmtsCapabilitiesMock.mock.calls[0]?.[2];
+    expect(reportCapabilitiesError).toBeDefined();
+    reportCapabilitiesError?.(requestError);
+
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        cause: requestError,
+        message: "Unable to load required WMTS capabilities",
+      }),
+    );
   });
 
   it("extracts the timeInfo correctly", () => {
@@ -196,6 +218,46 @@ describe("useOgcWmtsData", () => {
 
     expect(options.value).toHaveProperty("url", "http://wmts.swissgeo.ch");
     expect(options.value).toHaveProperty("layerId", "second-layer");
+  });
+
+  it("preserves an options builder error", async () => {
+    const optionsError = new Error("options failed");
+    const onError = vi.fn();
+    buildWmtsOptionsMock.mockRejectedValueOnce(optionsError);
+
+    const distribution = ref({});
+    const service = ref({ url: "http://wmts.geo.admin.ch" });
+    const layerId = ref("broken-layer");
+
+    // @ts-expect-error Not caring about the types here
+    useOgcWmtsData(distribution, service, layerId, onError);
+    await flushPromises();
+
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        cause: optionsError,
+        message: "Unable to build required WMTS layer options",
+      }),
+    );
+  });
+
+  it("reports unusable final WMTS options", async () => {
+    const onError = vi.fn();
+    buildWmtsOptionsMock.mockResolvedValueOnce(null);
+
+    const distribution = ref({});
+    const service = ref({ url: "http://wmts.geo.admin.ch" });
+    const layerId = ref("missing-layer");
+
+    // @ts-expect-error Not caring about the types here
+    useOgcWmtsData(distribution, service, layerId, onError);
+    await flushPromises();
+
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "WMTS capabilities contain no usable layer options",
+      }),
+    );
   });
 });
 
