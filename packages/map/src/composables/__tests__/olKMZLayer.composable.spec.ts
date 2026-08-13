@@ -28,6 +28,14 @@ vi.mock("@swissgeo/shared", () => ({
   parseBoolean: vi.fn((val: unknown) => val === "true" || val === true),
 }));
 
+const { sanitizeXmlMock } = vi.hoisted(() => ({
+  sanitizeXmlMock: vi.fn((input: string) => input),
+}));
+
+vi.mock("@/utils/sanitizeXml", () => ({
+  sanitizeXml: sanitizeXmlMock,
+}));
+
 vi.mock("fflate", () => ({
   unzip: vi.fn(
     (
@@ -182,5 +190,52 @@ describe("useOlKMZLayer", () => {
     expect(createObjectURLSpy).toHaveBeenCalled();
 
     createObjectURLSpy.mockRestore();
+  });
+
+  it("sanitizes extracted KML before parsing", async () => {
+    const layer = ref(makeKMZLayer());
+
+    const TestComponent = defineComponent({
+      setup() {
+        useOlKMZLayer(layer, ref(undefined));
+      },
+      template: "<div />",
+    });
+
+    mount(TestComponent);
+    await nextTick();
+
+    expect(sanitizeXmlMock).toHaveBeenCalled();
+  });
+
+  it("strips malicious content from KMZ-extracted KML", async () => {
+    const maliciousKml =
+      '<kml><Placemark><name><script>alert("xss")</script></name></Placemark></kml>';
+    const { unzip } = await import("fflate");
+    vi.mocked(unzip).mockImplementationOnce(((
+      _data: Uint8Array,
+      callback: (..._args: never[]) => void,
+    ) => {
+      (callback as (_err: null, _result: Record<string, Uint8Array>) => void)(
+        null,
+        {
+          "doc.kml": new TextEncoder().encode(maliciousKml),
+        },
+      );
+    }) as never);
+
+    const layer = ref(makeKMZLayer());
+
+    const TestComponent = defineComponent({
+      setup() {
+        useOlKMZLayer(layer, ref(undefined));
+      },
+      template: "<div />",
+    });
+
+    mount(TestComponent);
+    await nextTick();
+
+    expect(sanitizeXmlMock).toHaveBeenCalledWith(maliciousKml);
   });
 });
