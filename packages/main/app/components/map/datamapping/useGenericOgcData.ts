@@ -17,13 +17,9 @@ export function useGenericOgcData(
 
   const {
     distributionCollection,
-    distributionUrl,
     onDistributionError,
     onDistributionResponse,
   } = useDistributionCollection(dataset);
-  if (!distributionUrl.value) {
-    throw new Error("Required distribution URL is missing");
-  }
   const { preferredDistributionId } = usePreferredDistribution(dataset);
 
   // if there's a preferred distribution, let's get that one, otherwise the first one

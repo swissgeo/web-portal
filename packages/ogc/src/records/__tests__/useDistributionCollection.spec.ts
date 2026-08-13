@@ -73,10 +73,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
   it("fetches the distribution correctly after the dataset becomes available", async () => {
     const dataset = ref<Dataset | null>(null);
 
-    const { distributionCollection, distributionUrl } =
-      useDistributionCollection(dataset);
-
-    expect(distributionUrl.value).toBe(null);
+    const { distributionCollection } = useDistributionCollection(dataset);
 
     dataset.value = ChBafuSchutzgebieteLuftfahrt as Dataset;
 
@@ -86,17 +83,23 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
     );
   });
 
-  it("doesn't trip with an invalid dataset", () => {
+  it("reports a missing distribution URL", () => {
     const dataset = ref<Dataset | null>({
       id: "some-dataset",
       links: [],
     } as unknown as Dataset);
 
-    const { distributionCollection, distributionUrl } =
+    const { distributionCollection, onDistributionError } =
       useDistributionCollection(dataset);
+    const reportError = vi.fn();
+    onDistributionError(reportError);
 
-    expect(distributionUrl.value).toBe(null);
     expect(distributionCollection.value).toBe(null);
+    expect(reportError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "Required distribution URL is missing",
+      }),
+    );
   });
 
   it("doesn't trip with an unreachable URL", async () => {
@@ -111,14 +114,11 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
       ],
     } as unknown as Dataset);
 
-    const { distributionCollection, distributionUrl, onDistributionError } =
+    const { distributionCollection, onDistributionError } =
       useDistributionCollection(dataset);
     const reportError = vi.fn();
     onDistributionError(reportError);
     await flushPromises();
-    expect(distributionUrl.value).toEqual(
-      "http://services.dev.sgdi.tech/api/oar",
-    );
     expect(distributionCollection.value).toBe(null);
     expect(reportError).toHaveBeenCalledWith(expect.any(Error));
   });

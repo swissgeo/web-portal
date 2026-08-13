@@ -29,6 +29,7 @@ const WMS_URL =
   "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
 const WMTS_LAYER = "ch.swisstopo.pixelkarte-farbe";
 const WMS_LAYER = "ch.swisstopo.test-wms";
+const STORAGE_KEY = "swissgeo_app_state";
 
 /**
  * Mock the external-layer import pipeline so the test stays offline. Only the
@@ -222,7 +223,43 @@ test.describe("import external layers", () => {
     page,
   }) => {
     const workingLayer = "test-drawing.geojson";
-    await openMap(page);
+    const failedLayerUrl = "http://mock-oar.org/dataset-without-distributions";
+    const state = btoa(
+      JSON.stringify({
+        version: "1.0",
+        state: {
+          layers: [
+            {
+              layerUrl: failedLayerUrl,
+              type: "dataset",
+              isVisible: false,
+              opacity: 0.4,
+            },
+          ],
+          bg_layer: null,
+        },
+      }),
+    );
+    await page.route(failedLayerUrl, (route) =>
+      route.fulfill({
+        status: 200,
+        json: {
+          id: WMTS_LAYER,
+          links: [{ href: failedLayerUrl, rel: "self" }],
+          properties: { title: WMTS_LAYER, type: "Dataset" },
+        },
+      }),
+    );
+    await page.goto(`/de/map?state=${encodeURIComponent(state)}`);
+
+    await expect(
+      page.getByText("Die Ebene konnte nicht geladen werden.", { exact: true }),
+    ).toBeVisible();
+    await page.getByTestId("button-layer-cart-panel").click();
+    const layerCart = page.getByTestId("layer-cart");
+    await expect(layerCart.getByText(WMTS_LAYER)).toHaveCount(0);
+    await page.getByTestId("button-layer-cart-panel").click();
+
     await page.getByTestId("debug-open-import-local-panel").click();
     await page
       .getByTestId("file-input")
@@ -230,43 +267,20 @@ test.describe("import external layers", () => {
         fileURLToPath(new URL(`../fixtures/${workingLayer}`, import.meta.url)),
       );
     await page.getByTestId("file-import-button").click();
-    await page.waitForFunction(
-      (layerId) =>
-        window.swissgeoOlMap
-          ?.getLayers()
-          .getArray()
-          .some((layer) => layer.get("id") === layerId) ?? false,
-      workingLayer,
-    );
     await page.getByTestId("file-import-close-button").click();
-    await page.getByTestId("debug-open-import-layers-panel").click();
 
-    await mockExternalLayerApi(page, {
-      protocol: "WMTS",
-      capabilityUrl: WMTS_URL,
-    });
-    let failedRequests = 0;
-    await page.route(
-      `**/api/wpa/v1/layers/external/*/${WMTS_LAYER}`,
-      (route, request) => {
-        if (request.url().includes("/dataset/")) {
-          return route.fallback();
-        }
-        failedRequests += 1;
-        return route.fulfill({ status: 500 });
-      },
-    );
-    await page.getByTestId("import-capability-url").fill(WMTS_URL);
-    await page.getByTestId("import-load-capabilities").click();
-    await page.getByTestId(`import-layer-${WMTS_LAYER}`).click();
-
-    await expect(
-      page.getByText("Die Ebene konnte nicht geladen werden.", { exact: true }),
-    ).toBeVisible();
-    await page.getByTestId("button-layer-cart-panel").click();
-    const layerCart = page.getByTestId("layer-cart");
-    await expect(layerCart.getByText(workingLayer)).toBeVisible();
-    await expect(layerCart.getByText(WMTS_LAYER)).toHaveCount(0);
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            (storageKey) =>
+              JSON.parse(sessionStorage.getItem(storageKey) ?? "null")?.state
+                ?.layers?.[0]?.type ?? null,
+            STORAGE_KEY,
+          ),
+        { timeout: HYDRATION_TIMEOUT },
+      )
+      .toBe("geojson");
     const workingLayerRemains = await page.evaluate(
       (layerId) =>
         window.swissgeoOlMap
@@ -276,7 +290,6 @@ test.describe("import external layers", () => {
       workingLayer,
     );
     expect(workingLayerRemains).toBe(true);
-    expect(failedRequests).toBe(1);
   });
 
   test("preset dropdown loads the layer list", async ({ page }) => {
