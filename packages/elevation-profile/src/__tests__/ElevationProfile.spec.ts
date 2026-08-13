@@ -4,8 +4,8 @@ import { defineComponent, h } from "vue";
 
 import type { ElevationProfileResponse } from "@/types";
 
+import { makeProfile } from "@/__tests__/fixtures";
 import ElevationProfile from "@/ElevationProfile.vue";
-import { makeProfile } from "@/test/fixtures";
 
 const makeLabels = () => ({
   plot: { xAxis: "Distance", yAxis: "Altitude", noData: "No data" },
