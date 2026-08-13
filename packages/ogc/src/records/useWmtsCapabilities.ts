@@ -19,18 +19,32 @@ registerProj4(proj4);
 export function useWmtsCapabilities(
   serviceData: Ref<Service | null>,
   layerId: Ref<string | null>,
+  onError: (error: unknown) => void = () => {},
 ) {
   const { capabilityUrl } = useCapabilities(serviceData);
 
   // Keyed only on `capabilityUrl` so switching layers on the same service
   // reuses the already-fetched/parsed endpoint instead of re-fetching it.
-  const endpoint = computedAsync(
-    () =>
-      capabilityUrl.value
-        ? new WmtsEndpoint(capabilityUrl.value).isReady()
-        : null,
-    null,
-  );
+  const endpoint = computedAsync(async (onCancel) => {
+    const url = capabilityUrl.value;
+    if (!url) {
+      return null;
+    }
+
+    let cancelled = false;
+    onCancel(() => {
+      cancelled = true;
+    });
+
+    try {
+      return await new WmtsEndpoint(url).isReady();
+    } catch (error) {
+      if (!cancelled) {
+        onError(error);
+      }
+      return null;
+    }
+  }, null);
 
   const wmtsData = computed(() => {
     if (!endpoint.value || !layerId.value) {

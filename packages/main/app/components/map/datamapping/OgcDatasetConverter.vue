@@ -106,6 +106,7 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
     :distribution
     :serviceData
     :layerId
+    @error="emit('error', $event)"
     @updateOptions="pushLayerSpecificData<{ options: WMTSOptions }>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
   ></MapDatamappingOgcWmtsLayerConverter>
