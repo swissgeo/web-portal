@@ -5,7 +5,8 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { SearchResultTypesEnum } from "@swissgeo/search";
 import { useDatasetPanelStore } from "@swissgeo/skeleton";
-import { ref } from "vue";
+import { sanitizeHtml } from "~/utils/sanitizeHtml";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 const datasetPanelStore = useDatasetPanelStore();
@@ -23,6 +24,8 @@ const emit = defineEmits<{
 }>();
 
 const item = ref<HTMLLIElement>();
+
+const sanitizedTitle = computed(() => sanitizeHtml(entry.title));
 
 // Keyboard navigation
 function goToFirst() {
@@ -113,7 +116,7 @@ defineExpose({
     />
 
     <!-- Title -->
-    <div class="min-w-0 flex-1 truncate" v-html="entry.title" />
+    <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
 
     <!-- Layer results info button -->
     <UButton
