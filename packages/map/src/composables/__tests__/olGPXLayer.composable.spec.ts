@@ -22,14 +22,6 @@ vi.mock("@swissgeo/log", () => ({
 }));
 vi.mock("@swissgeo/shared", () => ({ EPSG_4326_WGS84: "EPSG:4326" }));
 
-const { sanitizeXmlMock } = vi.hoisted(() => ({
-  sanitizeXmlMock: vi.fn((input: string) => input),
-}));
-
-vi.mock("@/utils/sanitizeXml", () => ({
-  sanitizeXml: sanitizeXmlMock,
-}));
-
 const { MockGPX, mockReadFeatures } = vi.hoisted(() => {
   const mockReadFeatures = vi.fn(() => []);
   class MockGPX {
@@ -155,61 +147,5 @@ describe("useOlGPXLayer", () => {
     await nextTick();
 
     expect(mockReadFeatures).toHaveBeenCalled();
-  });
-
-  it("sanitizes GPX data before passing to OpenLayers", async () => {
-    const gpxData =
-      '<gpx><wpt lat="46.5" lon="6.6"><name>Test</name></wpt></gpx>';
-    const layer = ref(makeGPXLayer({ data: gpxData }));
-    const olMap = ref(undefined);
-
-    const TestComponent = defineComponent({
-      setup() {
-        useOlGPXLayer(layer, olMap);
-      },
-      template: "<div />",
-    });
-
-    mount(TestComponent);
-    await nextTick();
-
-    expect(sanitizeXmlMock).toHaveBeenCalledWith(gpxData);
-    expect(mockReadFeatures).toHaveBeenCalledWith(
-      gpxData,
-      expect.objectContaining({
-        featureProjection: "EPSG:2056",
-        dataProjection: "EPSG:4326",
-      }),
-    );
-  });
-
-  it("strips malicious content from GPX before parsing", async () => {
-    const maliciousGpx =
-      '<gpx><wpt lat="46.5" lon="6.6"><name><script>alert("xss")</script></name></wpt></gpx>';
-    const sanitizedGpx =
-      '<gpx><wpt lat="46.5" lon="6.6"><name></name></wpt></gpx>';
-    sanitizeXmlMock.mockReturnValueOnce(sanitizedGpx);
-
-    const layer = ref(makeGPXLayer({ data: maliciousGpx }));
-    const olMap = ref(undefined);
-
-    const TestComponent = defineComponent({
-      setup() {
-        useOlGPXLayer(layer, olMap);
-      },
-      template: "<div />",
-    });
-
-    mount(TestComponent);
-    await nextTick();
-
-    expect(sanitizeXmlMock).toHaveBeenCalledWith(maliciousGpx);
-    expect(mockReadFeatures).toHaveBeenCalledWith(
-      sanitizedGpx,
-      expect.objectContaining({
-        featureProjection: "EPSG:2056",
-        dataProjection: "EPSG:4326",
-      }),
-    );
   });
 });

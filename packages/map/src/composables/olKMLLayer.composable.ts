@@ -25,7 +25,6 @@ import type { KMLLayer } from "@/types";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
-import { sanitizeXml } from "@/utils/sanitizeXml";
 
 export default function useOlKMLLayer(
   layer: Ref<KMLLayer>,
@@ -84,8 +83,7 @@ export default function useOlKMLLayer(
       extractStyles: true, // Extract styles from KML for non-text features
     });
     register(proj4);
-    const sanitized = sanitizeXml(kmlData.value);
-    const features = format.readFeatures(sanitized, {
+    const features = format.readFeatures(kmlData.value, {
       featureProjection: positionStore.projection.epsg, // CH1903+ / LV95 / EPSG:2056
       dataProjection: EPSG_4326_WGS84, // WGS84
     });

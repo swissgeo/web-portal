@@ -39,14 +39,6 @@ vi.mock("@swissgeo/drawing", () => ({
   })),
 }));
 
-const { sanitizeXmlMock } = vi.hoisted(() => ({
-  sanitizeXmlMock: vi.fn((input: string) => input),
-}));
-
-vi.mock("@/utils/sanitizeXml", () => ({
-  sanitizeXml: sanitizeXmlMock,
-}));
-
 vi.mock("ol/proj/proj4", () => ({
   register: vi.fn(),
 }));
@@ -218,59 +210,5 @@ describe("useOlKMLLayer", () => {
     await nextTick();
 
     expect(mockFeature.unset).toHaveBeenCalledWith("__isSelected", true);
-  });
-
-  it("sanitizes KML data before passing to OpenLayers", async () => {
-    const kmlData = "<kml><Placemark><name>Test</name></Placemark></kml>";
-    const layer = ref(makeKMLLayer({ data: kmlData }));
-    const olMap = ref(undefined);
-
-    const TestComponent = defineComponent({
-      setup() {
-        useOlKMLLayer(layer, olMap);
-      },
-      template: "<div />",
-    });
-
-    mount(TestComponent);
-    await nextTick();
-
-    expect(sanitizeXmlMock).toHaveBeenCalledWith(kmlData);
-    expect(mockReadFeatures).toHaveBeenCalledWith(
-      kmlData,
-      expect.objectContaining({
-        featureProjection: "EPSG:2056",
-        dataProjection: "EPSG:4326",
-      }),
-    );
-  });
-
-  it("strips malicious content from KML before parsing", async () => {
-    const maliciousKml =
-      '<kml><Placemark><name><script>alert("xss")</script></name></Placemark></kml>';
-    const sanitizedKml = "<kml><Placemark><name></name></Placemark></kml>";
-    sanitizeXmlMock.mockReturnValueOnce(sanitizedKml);
-
-    const layer = ref(makeKMLLayer({ data: maliciousKml }));
-    const olMap = ref(undefined);
-
-    const TestComponent = defineComponent({
-      setup() {
-        useOlKMLLayer(layer, olMap);
-      },
-      template: "<div />",
-    });
-
-    mount(TestComponent);
-    await nextTick();
-
-    expect(sanitizeXmlMock).toHaveBeenCalledWith(maliciousKml);
-    expect(mockReadFeatures).toHaveBeenCalledWith(
-      sanitizedKml,
-      expect.objectContaining({
-        featureProjection: "EPSG:2056",
-        dataProjection: "EPSG:4326",
-      }),
-    );
   });
 });
