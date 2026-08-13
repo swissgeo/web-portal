@@ -1,10 +1,27 @@
-import { describe, expect, it } from "vitest";
-import { ref } from "vue";
+import { mount } from "@vue/test-utils";
+import { describe, expect, it, vi } from "vitest";
+import { defineComponent, h, ref } from "vue";
 
 import type { ElevationProfileResponse } from "@/types";
 
+vi.mock("chartjs-plugin-zoom", () => ({
+  resetZoom: vi.fn(),
+}));
+
+import { resetZoom } from "chartjs-plugin-zoom";
+
 import { defaultLabels, makeProfile } from "@/__tests__/fixtures";
 import { useElevationProfileChart } from "@/composables/useElevationProfileChart";
+
+type ExternalTooltipFn = (_model: {
+  chart: { canvas: { getBoundingClientRect: () => DOMRect } };
+  tooltip: {
+    dataPoints?: Array<{
+      raw: unknown;
+      element: { x: number; y: number };
+    }>;
+  };
+}) => void;
 
 function setupComposable(profile: ElevationProfileResponse) {
   return useElevationProfileChart(
@@ -14,6 +31,43 @@ function setupComposable(profile: ElevationProfileResponse) {
     ref(null),
     defaultLabels,
   );
+}
+
+function makeTooltipRef(opacity: string) {
+  const el = document.createElement("div");
+  Object.defineProperty(el.style, "opacity", { value: opacity });
+  return ref<HTMLDivElement | null>(el);
+}
+
+function makeChartRect(overrides: Partial<DOMRect> = {}): DOMRect {
+  return {
+    left: 0,
+    right: 400,
+    top: 0,
+    bottom: 300,
+    width: 400,
+    height: 300,
+    x: 0,
+    y: 0,
+    toJSON: () => {},
+    ...overrides,
+  };
+}
+
+function makeExternalCallback(
+  profile: ElevationProfileResponse,
+  tooltipRef?: ReturnType<typeof ref<HTMLDivElement | null>>,
+) {
+  const { chartJsOptions, ...rest } = useElevationProfileChart(
+    profile,
+    ref(null),
+    ref(null),
+    tooltipRef ?? ref(null),
+    defaultLabels,
+  );
+  const tooltip = (chartJsOptions.value?.plugins as Record<string, unknown>)
+    ?.tooltip as { external: ExternalTooltipFn };
+  return { externalCallback: tooltip.external, ...rest };
 }
 
 describe("unitUsedOnDistanceAxis", () => {
@@ -133,17 +187,14 @@ describe("y-axis bounds (via chartJsOptions)", () => {
   }
 
   it("sets y min to floor(minElevation) minus 10% delta padding", () => {
-    // min=400, max=500, delta=100, 10%=10, padding=max(10,5)=10 → yMin=390
     expect(getYScale(makeProfile()).y?.min).toBe(390);
   });
 
   it("sets y max to ceil(maxElevation) plus 10% delta padding", () => {
-    // min=400, max=500, delta=100, 10%=10, padding=max(10,5)=10 → yMax=510
     expect(getYScale(makeProfile()).y?.max).toBe(510);
   });
 
   it("uses minimum padding of 5 when 10% delta is smaller", () => {
-    // min=400, max=402, delta=2, 10%=0 (rounded), padding=max(0,5)=5 → yMin=395, yMax=407
     const profile = makeProfile({
       metadata: {
         ...makeProfile().metadata,
@@ -157,7 +208,6 @@ describe("y-axis bounds (via chartJsOptions)", () => {
   });
 
   it("clamps y min to 0 when calculation would go negative", () => {
-    // min=2, max=4, delta=2, 10%=0, padding=5 → yMin=max(2-5,0)=0
     const profile = makeProfile({
       metadata: { ...makeProfile().metadata, minElevation: 2, maxElevation: 4 },
     });
@@ -165,7 +215,6 @@ describe("y-axis bounds (via chartJsOptions)", () => {
   });
 
   it("applies 10% of elevation delta as padding for large ranges", () => {
-    // min=0, max=1000, delta=1000, 10%=100, padding=100 → yMin=0, yMax=1100
     const profile = makeProfile({
       metadata: {
         ...makeProfile().metadata,
@@ -461,5 +510,296 @@ describe("line fill configuration", () => {
       above: "rgba(255, 99, 132, 0.7)",
       below: "rgba(255, 99, 132, 0.7)",
     });
+  });
+});
+
+describe("tooltipStyle clamping", () => {
+  it("clamps tooltip to right edge when it would overflow", () => {
+    const tooltipEl = document.createElement("div");
+    Object.defineProperty(tooltipEl, "clientWidth", { value: 200 });
+    const tooltipRef = ref<HTMLDivElement | null>(tooltipEl);
+
+    const chartEl = document.createElement("div");
+    vi.spyOn(chartEl, "getBoundingClientRect").mockReturnValue(
+      makeChartRect({ right: 400 }),
+    );
+    const chartContainerRef = ref<HTMLDivElement | null>(chartEl);
+
+    const { tooltipStyle, pointBeingHovered } = useElevationProfileChart(
+      makeProfile(),
+      ref(null),
+      chartContainerRef,
+      tooltipRef,
+      defaultLabels,
+    );
+
+    pointBeingHovered.value = {
+      dist: 500,
+      elevation: 450,
+      coordinate: [2600500, 1200000],
+      screenPosition: [350, 150],
+      hasElevationData: true,
+    };
+
+    const left = Number.parseInt(tooltipStyle.value.left ?? "0", 10);
+    expect(left).toBeLessThanOrEqual(400 - 200);
+  });
+
+  it("clamps tooltip to left edge when it would overflow", () => {
+    const tooltipEl = document.createElement("div");
+    Object.defineProperty(tooltipEl, "clientWidth", { value: 200 });
+    const tooltipRef = ref<HTMLDivElement | null>(tooltipEl);
+
+    const chartEl = document.createElement("div");
+    vi.spyOn(chartEl, "getBoundingClientRect").mockReturnValue(
+      makeChartRect({ left: 100, right: 500, x: 100 }),
+    );
+    const chartContainerRef = ref<HTMLDivElement | null>(chartEl);
+
+    const { tooltipStyle, pointBeingHovered } = useElevationProfileChart(
+      makeProfile(),
+      ref(null),
+      chartContainerRef,
+      tooltipRef,
+      defaultLabels,
+    );
+
+    pointBeingHovered.value = {
+      dist: 500,
+      elevation: 450,
+      coordinate: [2600500, 1200000],
+      screenPosition: [50, 150],
+      hasElevationData: true,
+    };
+
+    const left = Number.parseInt(tooltipStyle.value.left ?? "0", 10);
+    expect(left).toBeGreaterThanOrEqual(155);
+  });
+});
+
+describe("chartJsTooltipConfiguration", () => {
+  it("returns early when tooltip.dataPoints is undefined", () => {
+    const { externalCallback } = makeExternalCallback(makeProfile());
+
+    expect(() =>
+      externalCallback({
+        chart: {
+          canvas: {
+            getBoundingClientRect: () => makeChartRect(),
+          },
+        },
+        tooltip: { dataPoints: undefined },
+      }),
+    ).not.toThrow();
+  });
+
+  it("returns early when tooltipElement is null", () => {
+    const { externalCallback } = makeExternalCallback(makeProfile());
+
+    expect(() =>
+      externalCallback({
+        chart: {
+          canvas: {
+            getBoundingClientRect: () => makeChartRect(),
+          },
+        },
+        tooltip: { dataPoints: [{ raw: {}, element: { x: 0, y: 0 } }] },
+      }),
+    ).not.toThrow();
+  });
+
+  it("calls clearHoverPosition when tooltip element opacity is 0", () => {
+    const tooltipRef = makeTooltipRef("0");
+    const { externalCallback, pointBeingHovered } = makeExternalCallback(
+      makeProfile(),
+      tooltipRef,
+    );
+
+    pointBeingHovered.value = {
+      dist: 100,
+      elevation: 400,
+      coordinate: [2600100, 1200000],
+      screenPosition: [50, 50],
+      hasElevationData: true,
+    };
+
+    externalCallback({
+      chart: {
+        canvas: {
+          getBoundingClientRect: () => makeChartRect(),
+        },
+      },
+      tooltip: { dataPoints: [{ raw: {}, element: { x: 0, y: 0 } }] },
+    });
+
+    expect(pointBeingHovered.value).toBeUndefined();
+  });
+
+  it("sets pointBeingHovered when tracking is enabled and dataPoints exist", () => {
+    const tooltipRef = makeTooltipRef("1");
+    const { externalCallback, pointBeingHovered, startPositionTracking } =
+      makeExternalCallback(makeProfile(), tooltipRef);
+
+    startPositionTracking();
+
+    externalCallback({
+      chart: {
+        canvas: {
+          getBoundingClientRect: () => makeChartRect({ left: 100, top: 50 }),
+        },
+      },
+      tooltip: {
+        dataPoints: [
+          {
+            raw: {
+              dist: 300,
+              elevation: 450,
+              coordinate: [2600300, 1200000],
+              hasElevationData: true,
+            },
+            element: { x: 200, y: 100 },
+          },
+        ],
+      },
+    });
+
+    expect(pointBeingHovered.value).toBeDefined();
+    expect(pointBeingHovered.value?.elevation).toBe(450);
+    expect(pointBeingHovered.value?.dist).toBe(300);
+    expect(pointBeingHovered.value?.coordinate).toEqual([2600300, 1200000]);
+  });
+
+  it("calls clearHoverPosition when tracking is disabled", () => {
+    const tooltipRef = makeTooltipRef("1");
+    const { externalCallback, pointBeingHovered } = makeExternalCallback(
+      makeProfile(),
+      tooltipRef,
+    );
+
+    pointBeingHovered.value = {
+      dist: 100,
+      elevation: 400,
+      coordinate: [2600100, 1200000],
+      screenPosition: [50, 50],
+      hasElevationData: true,
+    };
+
+    externalCallback({
+      chart: {
+        canvas: {
+          getBoundingClientRect: () => makeChartRect(),
+        },
+      },
+      tooltip: {
+        dataPoints: [
+          {
+            raw: {
+              dist: 300,
+              elevation: 450,
+              coordinate: [2600300, 1200000],
+              hasElevationData: true,
+            },
+            element: { x: 200, y: 100 },
+          },
+        ],
+      },
+    });
+
+    expect(pointBeingHovered.value).toBeUndefined();
+  });
+});
+
+describe("chartJsZoomOptions early return", () => {
+  it("returns undefined when metadata is missing", () => {
+    const { chartJsOptions } = setupComposable(
+      makeProfile({
+        metadata: undefined as unknown as ElevationProfileResponse["metadata"],
+      }),
+    );
+    const zoom = (chartJsOptions.value?.plugins as Record<string, unknown>)
+      ?.zoom;
+    expect(zoom).toBeUndefined();
+  });
+});
+
+describe("resetZoomToBaseValue with valid chart", () => {
+  it("calls resetZoom on the chart when chartRef has a chart", () => {
+    const chartMock = { reset: vi.fn() };
+    const chartRef = ref({ chart: chartMock });
+    const { resetZoomToBaseValue } = useElevationProfileChart(
+      makeProfile(),
+      chartRef as never,
+      ref(null),
+      ref(null),
+      defaultLabels,
+    );
+    resetZoomToBaseValue();
+    expect(resetZoom).toHaveBeenCalledWith(chartMock, "none");
+  });
+});
+
+describe("lifecycle hooks", () => {
+  it("registers and cleans up window event listeners", () => {
+    const addSpy = vi.spyOn(window, "addEventListener");
+    const removeSpy = vi.spyOn(window, "removeEventListener");
+
+    const Wrapper = defineComponent({
+      setup() {
+        useElevationProfileChart(
+          makeProfile(),
+          ref(null),
+          ref(null),
+          ref(null),
+          defaultLabels,
+        );
+        return () => h("div");
+      },
+    });
+
+    const wrapper = mount(Wrapper);
+    expect(addSpy).toHaveBeenCalledWith("beforeprint", expect.any(Function));
+    expect(addSpy).toHaveBeenCalledWith("afterprint", expect.any(Function));
+
+    wrapper.unmount();
+
+    expect(removeSpy).toHaveBeenCalledWith("beforeprint", expect.any(Function));
+    expect(removeSpy).toHaveBeenCalledWith("afterprint", expect.any(Function));
+
+    addSpy.mockRestore();
+    removeSpy.mockRestore();
+  });
+
+  it("creates ResizeObserver when container ref is available", () => {
+    const observeSpy = vi.fn();
+    const disconnectSpy = vi.fn();
+    class MockResizeObserver {
+      observe = observeSpy;
+      disconnect = disconnectSpy;
+    }
+    vi.stubGlobal("ResizeObserver", MockResizeObserver);
+
+    const containerEl = document.createElement("div");
+    const containerRef = ref<HTMLDivElement | null>(containerEl);
+
+    const Wrapper = defineComponent({
+      setup() {
+        useElevationProfileChart(
+          makeProfile(),
+          ref(null),
+          containerRef,
+          ref(null),
+          defaultLabels,
+        );
+        return () => h("div");
+      },
+    });
+
+    const wrapper = mount(Wrapper);
+    expect(observeSpy).toHaveBeenCalledWith(containerEl);
+
+    wrapper.unmount();
+    expect(disconnectSpy).toHaveBeenCalled();
+
+    vi.unstubAllGlobals();
   });
 });
