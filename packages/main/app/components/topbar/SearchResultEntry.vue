@@ -4,8 +4,8 @@
 import type { SearchResult } from "@swissgeo/search";
 
 import { SearchResultTypesEnum } from "@swissgeo/search";
+import { sanitizeHtml } from "@swissgeo/shared";
 import { useDatasetPanelStore } from "@swissgeo/skeleton";
-import { sanitizeHtml } from "~/utils/sanitizeHtml";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 

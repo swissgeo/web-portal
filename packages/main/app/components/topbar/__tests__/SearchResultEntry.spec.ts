@@ -23,7 +23,7 @@ const { sanitizeHtmlMock } = vi.hoisted(() => ({
   sanitizeHtmlMock: vi.fn((input: string) => input),
 }));
 
-vi.mock("~/utils/sanitizeHtml", () => ({
+vi.mock("@swissgeo/shared", () => ({
   sanitizeHtml: sanitizeHtmlMock,
 }));
 
