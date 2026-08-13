@@ -15,6 +15,9 @@ catalogs:
     '@eslint/markdown':
       specifier: ^8.0.0
       version: 8.0.2
+    '@fontsource/dm-sans':
+      specifier: ^5.2.6
+      version: 5.3.0
     '@fontsource/inter':
       specifier: ^5.2.6
       version: 5.2.8
@@ -907,6 +910,9 @@ importers:
       '@chenfengyuan/vue-qrcode':
         specifier: 'catalog:'
         version: 2.0.0(qrcode@1.5.4)(vue@3.5.38(typescript@6.0.3))
+      '@fontsource/dm-sans':
+        specifier: 'catalog:'
+        version: 5.3.0
       '@fontsource/inter':
         specifier: 'catalog:'
         version: 5.2.8
@@ -2359,6 +2365,9 @@ packages:
 
   '@floating-ui/vue@1.1.10':
     resolution: {integrity: sha512-vdf8f6rHnFPPLRsmL4p12wYl+Ux4mOJOkjzKEMYVnwdf7UFdvBtHlLvQyx8iKG5vhPRbDRgZxdtpmyigDPjzYg==}
+
+  '@fontsource/dm-sans@5.3.0':
+    resolution: {integrity: sha512-lYJtMXXO28q1z+yz+z8XKd0s4hXaa9QdkETzkyD760sidCv5heI86weYA0sx0Nc4pAMAQTUuyf4gO44cYKKS9g==}
 
   '@fontsource/inter@5.2.8':
     resolution: {integrity: sha512-P6r5WnJoKiNVV+zvW2xM13gNdFhAEpQ9dQJHt3naLvfg+LkF2ldgSLiF4T41lf1SQCM9QmkqPTn4TH568IRagg==}
@@ -6206,6 +6215,7 @@ packages:
   '@xmldom/xmldom@0.9.10':
     resolution: {integrity: sha512-A9gOqLdi6cV4ibazAjcQufGj0B1y/vDqYrcuP6d/6x8P27gRS8643Dj9o1dEKtB6O7fwxb2FgBmJS2mX7gpvdw==}
     engines: {node: '>=14.6'}
+    deprecated: this version has critical issues, please update to the latest version
 
   '@yuku-codegen/binding-darwin-arm64@0.8.0':
     resolution: {integrity: sha512-7cSJH6PaKLRBdCfiB4pM6EukvgOk5xV4tyuLOIOEqrHsbnV7brtyff7CjhZbeGozdIHoOnKOi5R7rrmCWN3QSw==}
@@ -11904,6 +11914,8 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
+
+  '@fontsource/dm-sans@5.3.0': {}
 
   '@fontsource/inter@5.2.8': {}
 

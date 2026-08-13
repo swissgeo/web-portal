@@ -1,5 +1,13 @@
 @import "tailwindcss";
 @import "@swissgeo/map/stylesheet";
+@import "@fontsource/dm-sans/latin-400.css";
+@import "@fontsource/dm-sans/latin-ext-400.css";
+@import "@fontsource/dm-sans/latin-500.css";
+@import "@fontsource/dm-sans/latin-ext-500.css";
+@import "@fontsource/dm-sans/latin-600.css";
+@import "@fontsource/dm-sans/latin-ext-600.css";
+@import "@fontsource/dm-sans/latin-700.css";
+@import "@fontsource/dm-sans/latin-ext-700.css";
 @import "@fontsource/inter/latin-400.css";
 @import "@fontsource/inter/latin-ext-400.css";
 @import "@fontsource/inter/latin-500.css";
@@ -19,7 +27,8 @@
 @source "../../../../skeleton/src/**/*.{vue,ts,js,tsx,jsx}";
 
 @theme static {
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-editorial: "Inter", system-ui, sans-serif;
 
   --color-petrol-50: #e0ecf1;
   --color-petrol-100: #c1dde6;
@@ -204,7 +213,7 @@ h2 {
     --p-button-outlined-secondary-color: var(--color-black);
     --p-button-text-secondary-color: var(--color-cyan-800);
 
-    --font-sans: "Inter";
+    --font-sans: "DM Sans";
   }
 
   .p-panel {
@@ -232,25 +241,4 @@ body {
   --breakpoint-lg: var(--breakpoint-lg);
   --breakpoint-xl: var(--breakpoint-xl);
   --breakpoint-2xl: var(--breakpoint-2xl);
-}
-
-@layer theme {
-  :root,
-  .light {
-    --ui-btn-default: var(--ui-color-primary-500);
-    --ui-btn-hover: var(--ui-color-primary-600);
-    --ui-btn-disabled: var(--ui-color-primary-300);
-  }
-
-  .dark {
-    --ui-primary: var(--ui-color-primary-500);
-    --ui-text-dimmed: var(--ui-color-neutral-300);
-    --ui-text-muted: var(--ui-color-neutral-200);
-    --ui-text-toned: var(--ui-color-neutral-100);
-    --ui-text: var(--ui-color-neutral-50);
-    --ui-bg: var(--ui-color-primary-500);
-    --ui-btn-default: var(--ui-color-primary-100);
-    --ui-btn-hover: var(--ui-color-primary-300);
-    --ui-btn-disabled: var(--ui-color-primary-600);
-  }
 }
