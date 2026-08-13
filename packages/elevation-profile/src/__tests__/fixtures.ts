@@ -1,5 +1,11 @@
 import type { ElevationProfileResponse } from "@/types";
 
+export const defaultLabels = {
+  xAxis: "Distance",
+  yAxis: "Altitude",
+  noData: "No data",
+};
+
 export const makeProfile = (
   overrides: Partial<ElevationProfileResponse> = {},
 ): ElevationProfileResponse => ({
