@@ -33,7 +33,9 @@
     "test:unit:coverage": "vitest run --coverage",
     "type-check": "tsc"
   },
-  "dependencies": {},
+  "dependencies": {
+    "dompurify": "catalog:"
+  },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
