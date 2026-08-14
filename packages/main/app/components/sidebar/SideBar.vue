@@ -1,25 +1,47 @@
 <script lang="ts" setup>
 import type { Layer as MapLayer } from "@swissgeo/map";
 
+import { useLayerStore } from "@swissgeo/layers";
 import {
   useSidebarStore,
   SidebarType,
   SIDEBAR_CONTENT_WIDTH,
+  SIDEBAR_HANDLE_WIDTH,
+  SIDEBAR_PANEL_WIDTH,
 } from "@swissgeo/skeleton";
+import { computed, toRef } from "vue";
 
 import LayerCart from "@/components/sidebar/LayerCart.vue";
 import SidebarIcons from "@/components/sidebar/SidebarIcons.vue";
+import { useBackgroundLayers } from "@/composables/useBackgroundLayers";
 
 const uiStore = useSidebarStore();
+const layerStore = useLayerStore();
 
-const { mapLayers } = defineProps<{
+const { mapLayers, showMapControls = false } = defineProps<{
   mapLayers: Ref<MapLayer[]>;
+  showMapControls?: boolean;
 }>();
 defineSlots<{
   "bottom-controls"?: () => unknown;
 }>();
 
 const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH;
+const sidebarPanelWidth = SIDEBAR_PANEL_WIDTH;
+const sidebarHandleWidth = SIDEBAR_HANDLE_WIDTH;
+const currentBackground = computed(() => layerStore.backgroundLayer);
+
+function selectBackground(
+  backgroundLayer: Parameters<typeof layerStore.setBackground>[0],
+) {
+  layerStore.setBackground(backgroundLayer);
+}
+
+const { backgroundLayers } = useBackgroundLayers(
+  currentBackground,
+  toRef(() => showMapControls),
+  selectBackground,
+);
 </script>
 
 <template>
@@ -46,12 +68,36 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH;
           class="relative flex h-full min-w-0 bg-default shadow-lg transition-[width] duration-75 ease-out"
           data-testid="sidebar-panel"
         >
-          <LayerCart
-            v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
-            :mapLayers="mapLayers"
-          ></LayerCart>
+          <div
+            :style="{ width: sidebarPanelWidth + 'px' }"
+            class="h-full min-w-0 shrink-0"
+            data-testid="sidebar-panel-content"
+          >
+            <LayerCart
+              v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
+              :mapLayers="mapLayers"
+              :background-layers="backgroundLayers"
+              :current-background="currentBackground"
+              @set-background="selectBackground"
+            ></LayerCart>
+          </div>
+          <div
+            :style="{ width: sidebarHandleWidth + 'px' }"
+            class="flex h-full shrink-0 items-center justify-center bg-default"
+            data-testid="sidebar-panel-handle"
+            aria-hidden="true"
+          >
+            <span class="h-12 w-1.5 rounded-full bg-accented"></span>
+          </div>
         </div>
       </div>
     </div>
+    <MapBackgroundSelectorRounded
+      v-if="showMapControls"
+      :background-layers="backgroundLayers"
+      :current-background-layer="currentBackground"
+      class="sm:hidden"
+      @select-background="selectBackground"
+    />
   </div>
 </template>

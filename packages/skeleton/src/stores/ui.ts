@@ -3,6 +3,8 @@ import { ref, computed } from "vue";
 
 export const SIDEBAR_ICON_WIDTH = 64; // min-w-16 = 4rem = 64px
 export const SIDEBAR_CONTENT_WIDTH = 347;
+export const SIDEBAR_HANDLE_WIDTH = 32;
+export const SIDEBAR_PANEL_WIDTH = SIDEBAR_CONTENT_WIDTH - SIDEBAR_HANDLE_WIDTH;
 
 // Sidebar types enum
 export enum SidebarType {

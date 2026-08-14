@@ -62,6 +62,7 @@ async function onSearchResultSelected(result: SearchResult) {
             v-if="!isMapFullscreenMode"
             class="z-2"
             :mapLayers="mapLayers"
+            :show-map-controls="isMapPage"
           >
           </SideBar>
           <div

@@ -301,6 +301,7 @@
     "orientationLandscape": "paysage"
   },
   "layerPanel": {
+    "background": "Arrière-plan",
     "reorder": "Réorganiser la couche",
     "moveUp": "Monter la couche",
     "moveDown": "Descendre la couche",

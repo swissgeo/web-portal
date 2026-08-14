@@ -336,6 +336,7 @@
     "modeSwitch": "Mode switch"
   },
   "layerPanel": {
+    "background": "Hintergrund",
     "reorder": "Ebene neu anordnen",
     "moveUp": "Ebene nach oben verschieben",
     "moveDown": "Ebene nach unten verschieben",

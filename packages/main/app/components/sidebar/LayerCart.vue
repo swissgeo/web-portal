@@ -1,15 +1,28 @@
 <script lang="ts" setup>
+import type { Layer as SourceLayer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 
 import { useLayerStore } from "@swissgeo/layers";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
+import { getBackgroundLayerTranslationKey } from "@/composables/useBackgroundLayers";
+
 import LayerCartEntry from "./LayerCartEntry.vue";
 const layerStore = useLayerStore();
 const { t } = useI18n();
-const { mapLayers } = defineProps<{
+const {
+  mapLayers,
+  backgroundLayers = [],
+  currentBackground,
+} = defineProps<{
   mapLayers: Ref<MapLayer[]>;
+  backgroundLayers?: (SourceLayer | null)[];
+  currentBackground?: SourceLayer | null;
+}>();
+
+const emit = defineEmits<{
+  setBackground: [backgroundLayer: SourceLayer | null];
 }>();
 
 // slice() creates a copy, which allows us to avoid mutating the original
@@ -21,6 +34,28 @@ const sortedLayers = computed(() => {
 
   return sortedLayers;
 });
+
+function backgroundKey(backgroundLayer?: SourceLayer | null) {
+  return backgroundLayer?.uuid ?? "void";
+}
+
+const backgroundItems = computed(() =>
+  backgroundLayers.map((backgroundLayer) => ({
+    label: t(getBackgroundLayerTranslationKey(backgroundLayer)),
+    value: backgroundKey(backgroundLayer),
+  })),
+);
+
+const currentBackgroundKey = computed(() => backgroundKey(currentBackground));
+
+function selectBackground(value: string | undefined) {
+  const backgroundLayer = backgroundLayers.find(
+    (candidate) => backgroundKey(candidate) === value,
+  );
+  if (backgroundLayer !== undefined) {
+    emit("setBackground", backgroundLayer);
+  }
+}
 </script>
 
 <template>
@@ -28,17 +63,18 @@ const sortedLayers = computed(() => {
     class="flex h-full min-w-0 flex-1 flex-col bg-default"
     aria-labelledby="layer-cart-title"
   >
-    <header class="shrink-0 px-4 pt-4">
+    <header class="shrink-0 px-4 py-4">
       <h2
         id="layer-cart-title"
         class="p-0! font-editorial text-[18px]/[27px]! font-semibold text-highlighted"
       >
         {{ t("menu.map") }}
       </h2>
-      <USeparator class="mt-4" />
     </header>
 
-    <div class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-5">
+    <div
+      class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto border-t border-default px-4 py-4"
+    >
       <ul data-testid="layer-cart" class="flex min-w-0 flex-col gap-2">
         <LayerCartEntry
           v-for="(layer, index) in sortedLayers"
@@ -48,5 +84,26 @@ const sortedLayers = computed(() => {
         />
       </ul>
     </div>
+
+    <footer
+      v-if="backgroundItems.length"
+      class="shrink-0 border-t border-default px-4 py-4"
+    >
+      <label
+        for="layer-cart-background"
+        class="block font-sans text-xs/4 font-medium text-default"
+      >
+        {{ t("layerPanel.background") }}
+      </label>
+      <USelect
+        id="layer-cart-background"
+        :model-value="currentBackgroundKey"
+        :items="backgroundItems"
+        size="md"
+        variant="soft"
+        class="mt-1 w-full font-sans font-medium"
+        @update:model-value="selectBackground"
+      />
+    </footer>
   </section>
 </template>

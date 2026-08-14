@@ -301,6 +301,7 @@
     "orientationLandscape": "landscape"
   },
   "layerPanel": {
+    "background": "Background",
     "reorder": "Reorder layer",
     "moveUp": "Move layer up",
     "moveDown": "Move layer down",
