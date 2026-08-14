@@ -1,5 +1,5 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockFetch } = vi.hoisted(() => ({
   mockFetch: vi.fn(),
@@ -17,6 +17,10 @@ const response = {
 };
 
 describe("fetchStateFromStateId", () => {
+  beforeEach(() => {
+    mockFetch.mockReset();
+  });
+
   it("calls the state service directly", async () => {
     mockFetch.mockResolvedValue(response);
 
@@ -26,5 +30,11 @@ describe("fetchStateFromStateId", () => {
       "https://state.example.test/state/stateid",
     );
     expect(config).toEqual(response);
+  });
+
+  it("returns null when the state service fails", async () => {
+    mockFetch.mockRejectedValue(new Error("boom"));
+
+    expect(await fetchStateFromStateId("stateid")).toBeNull();
   });
 });
