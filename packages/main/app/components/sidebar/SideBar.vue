@@ -24,13 +24,13 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH;
 
 <template>
   <div
-    class="absolute top-0 left-0 flex h-[calc(100vh-var(--ui-header-height))] w-auto min-w-12 shadow-lg"
+    class="absolute top-0 left-0 flex h-[calc(100vh-var(--ui-header-height))] w-auto min-w-16"
   >
     <div class="flex flex-col">
       <div class="flex min-h-0 w-full flex-1 flex-row border-neutral-100 p-0">
         <!-- First column -->
         <div
-          class="flex h-full min-w-16 flex-col items-center justify-between pt-4"
+          class="flex h-full w-16 flex-col items-center justify-between border-r border-default bg-default pt-4"
         >
           <div class="flex flex-col items-center gap-2">
             <SidebarIcons></SidebarIcons>
@@ -43,7 +43,8 @@ const sidebarSecondColumnWidth = SIDEBAR_CONTENT_WIDTH;
         <div
           v-show="uiStore.isSidebarOpen"
           :style="{ width: sidebarSecondColumnWidth + 'px' }"
-          class="relative flex h-full bg-white transition-[width] duration-75 ease-out"
+          class="relative flex h-full min-w-0 bg-default shadow-lg transition-[width] duration-75 ease-out"
+          data-testid="sidebar-panel"
         >
           <LayerCart
             v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"

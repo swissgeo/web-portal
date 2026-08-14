@@ -71,6 +71,12 @@ describe("BackgroundSelectorRounded.vue", () => {
     expect(wrapper.find('[data-testid="void"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="uuid-grau"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="uuid-farbe"]').exists()).toBe(true);
+    const optionButtons = wrapper.findAll(
+      '[data-testid="void"], [data-testid="uuid-grau"], [data-testid="uuid-farbe"]',
+    );
+    expect(
+      optionButtons.every((button) => button.attributes("style") === undefined),
+    ).toBe(true);
   });
 
   it("does not emit selectBackground when the current layer is re-selected", async () => {

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO : map view store alterations
 import type { Layer as MapLayer } from "@swissgeo/map";
 
 import {
@@ -7,31 +6,44 @@ import {
   useDimensionsStore,
 } from "@swissgeo/dimension";
 import { useLayerStore } from "@swissgeo/layers";
-import { useDatasetPanelStore, IconButton } from "@swissgeo/skeleton";
-import { computed } from "vue";
+import { useDatasetPanelStore } from "@swissgeo/skeleton";
+import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
+
+import LayerCartIconButton from "./LayerCartIconButton.vue";
 
 const { layer, layerIndex } = defineProps<{
   layer: MapLayer;
   layerIndex: number;
 }>();
 
+const { t } = useI18n();
 const layerStore = useLayerStore();
 const dimensionsStore = useDimensionsStore();
-// const drawingStore = useDrawingStore();
 const datasetPanelStore = useDatasetPanelStore();
 const mapViewStore = useMapViewStore();
-const bgLayerModifier = computed(() => (layerStore.backgroundLayer ? 1 : 0));
+const isExpanded = ref(true);
 
-const layersLength = computed(() => mapViewStore.mapLayers.length);
+const backgroundLayerOffset = computed(() =>
+  layerStore.backgroundLayer ? 1 : 0,
+);
+const canMoveUp = computed(
+  () => layerIndex < mapViewStore.mapLayers.length - 1,
+);
+const canMoveDown = computed(() => layerIndex > backgroundLayerOffset.value);
+const detailsId = computed(() => "layer-details-" + layer.uuid);
+const displayName = computed(() => layer.displayName || layer.layerId);
 
-const currentTime = computed({
+const currentTime = computed<string | undefined>({
   get() {
     return (
-      dimensionsStore.getDimensions(layer.uuid)?.time?.currentValue ?? null
+      dimensionsStore.getDimensions(layer.uuid)?.time?.currentValue ?? undefined
     );
   },
   set(value) {
-    dimensionsStore.setDimension(layer.uuid, "time", { currentValue: value });
+    dimensionsStore.setDimension(layer.uuid, "time", {
+      currentValue: value ?? null,
+    });
   },
 });
 
@@ -39,17 +51,29 @@ const availableTimes = computed(() => {
   return dimensionsStore.getDimensions(layer.uuid)?.time?.availableValues ?? [];
 });
 
-const getTimestampName = (time: string) => {
-  return getDisplayNameFromTimestamp(time);
-};
+const timeItems = computed(() =>
+  availableTimes.value.map((value) => ({
+    label: String(getDisplayNameFromTimestamp(value)),
+    value,
+  })),
+);
 
-// Opacity as percentage (0-100) for the slider
-const opacityPercent = computed({
-  get: () => Math.round((layer.opacity ?? 1) * 100),
-  set: (value: number) => {
-    handleOpacityChange(value / 100);
+const opacityPercent = computed(() => Math.round((layer.opacity ?? 1) * 100));
+
+const reorderItems = computed(() => [
+  {
+    label: t("layerPanel.moveUp"),
+    icon: "i-lucide-arrow-up",
+    disabled: !canMoveUp.value,
+    onSelect: moveUp,
   },
-});
+  {
+    label: t("layerPanel.moveDown"),
+    icon: "i-lucide-arrow-down",
+    disabled: !canMoveDown.value,
+    onSelect: moveDown,
+  },
+]);
 
 function handleOpacityChange(value: number | undefined) {
   mapViewStore.updateLayerOpacity(layerIndex, (value ?? 0) / 100);
@@ -80,75 +104,106 @@ function openDatasetPanel() {
   }
 }
 
-function isFromDataSet() {
+function isFromDataset() {
   return layerStore.getLayer(layer.uuid)?.type === "dataset";
 }
 </script>
 
 <template>
-  <li>
-    <div class="flex">
-      <IconButton
-        :iconName="layer.isVisible ? 'Eye' : 'Eye-Off'"
-        @click="toggleVisibility()"
-        severity="neutral"
-      />
-      <div class="flex flex-col justify-between">
-        <IconButton
-          :disabled="layerIndex === layersLength - bgLayerModifier"
-          iconName="Chevron-Up"
-          severity="neutral"
-          class="h-0.5"
-          @click="moveUp()"
-        ></IconButton>
-        <IconButton
-          :disabled="layerIndex === bgLayerModifier"
-          iconName="Chevron-Down"
-          severity="neutral"
-          class="h-0.5"
-          @click="moveDown()"
-        ></IconButton>
-      </div>
-    </div>
-    <div class="flex-1">
-      <div
-        class="overflow-x-hidden text-nowrap"
-        :title="layer.displayName"
-        :class="{ 'text-gray-300': !layer.isVisible }"
-      >
-        {{ layer.displayName }}
-      </div>
-      <div class="mt-2 flex items-center gap-2">
-        <span class="text-xs text-gray-600">Opacity:</span>
-        <USlider
-          :model-value="opacityPercent"
-          @update:model-value="handleOpacityChange"
-          :min="0"
-          :max="100"
-          class="flex-1"
+  <li class="w-full min-w-0">
+    <article
+      class="flex w-full min-w-0 flex-col gap-1.5 rounded-md py-1 pr-2 pl-1"
+      :class="isExpanded && 'bg-elevated'"
+    >
+      <div class="flex h-5 min-w-0 items-center gap-1.5">
+        <UDropdownMenu :items="reorderItems">
+          <LayerCartIconButton
+            :disabled="!canMoveUp && !canMoveDown"
+            icon="i-lucide-grip-vertical"
+            :label="t('layerPanel.reorder')"
+            size="medium"
+          />
+        </UDropdownMenu>
+
+        <LayerCartIconButton
+          :aria-controls="detailsId"
+          :aria-expanded="isExpanded"
+          :icon="
+            isExpanded ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'
+          "
+          :label="
+            t(isExpanded ? 'layerPanel.collapse' : 'layerPanel.expand', {
+              name: displayName,
+            })
+          "
+          size="medium"
+          tone="highlighted"
+          @click="isExpanded = !isExpanded"
         />
-        <span class="w-8 text-xs text-gray-600">{{ opacityPercent }}%</span>
-      </div>
-    </div>
-    <div class="flex items-center">
-      <div>
-        <select
-          v-if="(availableTimes?.length || 0) > 1"
-          v-model="currentTime"
-          class="bg-zinc-300"
+
+        <span
+          class="min-w-0 flex-1 truncate font-editorial text-sm/5 font-medium"
+          :class="layer.isVisible ? 'text-highlighted' : 'text-muted'"
+          :title="displayName"
         >
-          <option v-for="time in availableTimes" :value="time" :key="time">
-            {{ getTimestampName(time) }}
-          </option>
-        </select>
+          {{ displayName }}
+        </span>
+
+        <LayerCartIconButton
+          :icon="layer.isVisible ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+          :label="
+            t(layer.isVisible ? 'layerPanel.hide' : 'layerPanel.show', {
+              name: displayName,
+            })
+          "
+          @click="toggleVisibility"
+        />
+        <LayerCartIconButton
+          v-if="isFromDataset()"
+          icon="i-lucide-info"
+          :label="t('layerPanel.information', { name: displayName })"
+          @click="openDatasetPanel"
+        />
+        <LayerCartIconButton
+          icon="i-lucide-trash-2"
+          :label="t('layerPanel.remove', { name: displayName })"
+          tone="danger"
+          @click="removeLayer"
+        />
       </div>
-      <IconButton
-        v-if="isFromDataSet()"
-        iconName="Info"
-        severity="neutral"
-        @click="openDatasetPanel"
-      />
-      <IconButton iconName="Trash" @click="removeLayer" />
-    </div>
+
+      <div
+        v-if="isExpanded"
+        :id="detailsId"
+        class="flex min-w-0 flex-col gap-2 pl-[26px]"
+      >
+        <label
+          v-if="timeItems.length > 1"
+          class="flex min-w-0 flex-col gap-1 text-[10px]/[18px] font-medium text-default"
+        >
+          {{ t("layerPanel.time") }}
+          <USelect
+            v-model="currentTime"
+            :items="timeItems"
+            class="w-full"
+            size="xs"
+          />
+        </label>
+
+        <label
+          class="flex min-w-0 flex-col gap-1 text-[10px]/[18px] font-medium text-default"
+        >
+          <span>{{ t("layerPanel.opacity") }}</span>
+          <USlider
+            :model-value="opacityPercent"
+            :min="0"
+            :max="100"
+            size="xs"
+            :ui="{ thumb: 'ring-1' }"
+            @update:model-value="handleOpacityChange"
+          />
+        </label>
+      </div>
+    </article>
   </li>
 </template>

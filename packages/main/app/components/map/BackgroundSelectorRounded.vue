@@ -60,12 +60,8 @@ const {
       class="flex flex-col gap-2"
     >
       <button
-        v-for="(backgroundLayer, index) in selectorOpen ? backgroundLayers : []"
+        v-for="backgroundLayer in selectorOpen ? backgroundLayers : []"
         :key="layerKey(backgroundLayer)"
-        :style="{
-          '--reverse-index': backgroundLayers.length - 1 - index,
-          '--max-index': backgroundLayers.length - 1,
-        }"
         class="bg-round-btn cursor-pointer overflow-hidden rounded-full border-4 border-solid border-[#343a40]"
         :class="{ active: isCurrent(backgroundLayer) }"
         type="button"
@@ -121,35 +117,13 @@ const {
   border-color: #dc2626;
 }
 
-/*
- * Spread upward: each button starts at the trigger position (positive translateY = below)
- * and slides up to its natural slot.
- * Closest button (--reverse-index: 0) moves the least and appears first.
- */
-.bg-round-option-enter-active {
-  transition:
-    opacity 0.4s ease,
-    transform 0.4s ease;
-  transition-delay: calc(var(--reverse-index, 0) * 0.05s);
-}
-
+.bg-round-option-enter-active,
 .bg-round-option-leave-active {
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
-  /* Reverse stagger on close: farthest button collapses first */
-  transition-delay: calc(
-    (var(--max-index, 3) - var(--reverse-index, 0)) * 0.03s
-  );
+  transition: opacity 0.15s ease;
 }
 
-.bg-round-option-enter-from {
-  opacity: 0;
-  transform: translateY(calc((var(--reverse-index, 0) + 1) * 58px));
-}
-
+.bg-round-option-enter-from,
 .bg-round-option-leave-to {
   opacity: 0;
-  transform: translateY(calc((var(--reverse-index, 0) + 1) * 58px));
 }
 </style>

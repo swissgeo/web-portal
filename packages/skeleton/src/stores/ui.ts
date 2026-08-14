@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
 export const SIDEBAR_ICON_WIDTH = 64; // min-w-16 = 4rem = 64px
-export const SIDEBAR_CONTENT_WIDTH = 400;
+export const SIDEBAR_CONTENT_WIDTH = 347;
 
 // Sidebar types enum
 export enum SidebarType {

@@ -84,6 +84,12 @@ describe("BackgroundSelectorSquared.vue", () => {
     expect(wrapper.findAll("map-background-selector-entry-stub").length).toBe(
       defaultProps.backgroundLayers.length + 1,
     );
+    const optionEntries = wrapper
+      .findAll("map-background-selector-entry-stub")
+      .slice(0, defaultProps.backgroundLayers.length);
+    expect(
+      optionEntries.every((entry) => entry.attributes("style") === undefined),
+    ).toBe(true);
   });
 
   it("does not emit selectBackground when the current layer is re-selected", async () => {

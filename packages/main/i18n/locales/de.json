@@ -10,7 +10,9 @@
   },
   "menu": {
     "search": "Suche",
-    "layerCart": "Aktive Ebenen"
+    "layerCart": "Aktive Ebenen",
+    "map": "Karte",
+    "mapNavigation": "Kartennavigation"
   },
   "search": {
     "placeholder": "Orte, Adressen, Ebenen & Website-Inhalte durchsuchen",
@@ -332,5 +334,18 @@
     "map": "Karte",
     "login": "Anmelden",
     "modeSwitch": "Mode switch"
+  },
+  "layerPanel": {
+    "reorder": "Ebene neu anordnen",
+    "moveUp": "Ebene nach oben verschieben",
+    "moveDown": "Ebene nach unten verschieben",
+    "collapse": "Details für {name} schließen",
+    "expand": "Details für {name} öffnen",
+    "hide": "{name} ausblenden",
+    "show": "{name} anzeigen",
+    "information": "Informationen für {name} öffnen",
+    "remove": "{name} entfernen",
+    "opacity": "Transparenz",
+    "time": "Zeitstand"
   }
 }

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { IconButton } from "@swissgeo/skeleton";
+const emit = defineEmits<{
+  click: [event: MouseEvent];
+}>();
 
-const emit = defineEmits(["click"]);
-
-const { title } = defineProps<{
+defineProps<{
   title: string;
   isActive: boolean;
   iconName: string;
@@ -11,12 +11,15 @@ const { title } = defineProps<{
 </script>
 
 <template>
-  <IconButton
-    :severity="isActive ? 'primary' : 'neutral'"
+  <UButton
+    :aria-label="title"
+    :color="isActive ? 'primary' : 'neutral'"
+    :icon="'i-lucide-' + iconName.toLowerCase()"
     :variant="isActive ? 'solid' : 'ghost'"
-    class="h-10"
+    square
+    class="size-12 rounded-md"
     :title="title"
-    :iconName="iconName"
-    @click="emit('click')"
-  ></IconButton>
+    :ui="{ leadingIcon: 'size-6' }"
+    @click="emit('click', $event)"
+  />
 </template>

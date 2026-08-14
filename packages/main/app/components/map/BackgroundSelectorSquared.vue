@@ -51,12 +51,8 @@ const { selectorOpen, toggleShowSelector, onSelectBackground } =
         -->
     <TransitionGroup name="bg-option" tag="div" class="flex gap-2">
       <MapBackgroundSelectorEntry
-        v-for="(backgroundLayer, index) in selectorOpen ? backgroundLayers : []"
+        v-for="backgroundLayer in selectorOpen ? backgroundLayers : []"
         :key="layerKey(backgroundLayer)"
-        :style="{
-          '--reverse-index': backgroundLayers.length - 1 - index,
-          '--max-index': backgroundLayers.length - 1,
-        }"
         :background-layer="backgroundLayer"
         :is-current="isCurrent(backgroundLayer)"
         @click="onSelectBackground(backgroundLayer)"
@@ -83,40 +79,14 @@ const { selectorOpen, toggleShowSelector, onSelectBackground } =
 </template>
 
 <style scoped>
-/*
- * Spread animation: each button starts stacked at the trigger position and
- * flies out to its own slot. The button closest to the trigger (--reverse-index: 0)
- * moves the shortest distance and appears first; further buttons follow with a
- * small staggered delay — matching the "burst" feel of the original.
- *
- * Button step = 98px (width) + 8px (gap) = 106px.
- */
-.bg-option-enter-active {
-  transition:
-    opacity 0.4s ease,
-    transform 0.4s ease;
-  transition-delay: calc(var(--reverse-index, 0) * 0.05s);
-}
-
+.bg-option-enter-active,
 .bg-option-leave-active {
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
-  /* Reverse stagger on close: furthest button collapses first */
-  transition-delay: calc(
-    (var(--max-index, 3) - var(--reverse-index, 0)) * 0.03s
-  );
+  transition: opacity 0.15s ease;
 }
 
-.bg-option-enter-from {
-  opacity: 0;
-  /* Start offset by the button's distance from the trigger */
-  transform: translateX(calc((var(--reverse-index, 0) + 1) * 106px));
-}
-
+.bg-option-enter-from,
 .bg-option-leave-to {
   opacity: 0;
-  transform: translateX(calc((var(--reverse-index, 0) + 1) * 106px));
 }
 
 /* Fade the close-chevron overlay on the trigger button */
