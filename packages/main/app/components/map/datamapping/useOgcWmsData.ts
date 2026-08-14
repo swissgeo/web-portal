@@ -75,12 +75,12 @@ export function useOgcWmsData(
     ),
   );
   onCapabilitiesResponse(() => {
-    if (
-      !wmsData.value.layerFound ||
-      !wmsData.value.url ||
-      !wmsData.value.version
-    ) {
-      onError(new Error("WMS capabilities contain no usable layer data"));
+    try {
+      if (!wmsData.value.url || !wmsData.value.version) {
+        onError(new Error("WMS capabilities contain no usable layer data"));
+      }
+    } catch (error) {
+      onError(error);
     }
   });
 

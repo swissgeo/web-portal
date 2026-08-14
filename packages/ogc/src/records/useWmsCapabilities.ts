@@ -16,8 +16,6 @@ import { useConditionalFetch } from "./useConditionalFetch";
 const XLINK_NS = "http://www.w3.org/1999/xlink";
 
 export interface WmsCapabilitiesData {
-  /** Whether the capabilities document contains the requested layer. */
-  layerFound: boolean;
   /** Service `OnlineResource` (GetMap base URL). */
   url: string | null;
   /** Advertised WMS version, e.g. `1.3.0`. */
@@ -72,7 +70,6 @@ export function parseWmsCapabilities(
 ): WmsCapabilitiesData {
   if (!capabilityData || !layerId) {
     return {
-      layerFound: false,
       url: null,
       version: null,
       dimensions: null,
@@ -82,9 +79,11 @@ export function parseWmsCapabilities(
 
   const doc = new DOMParser().parseFromString(capabilityData, "text/xml");
   const layer = getLayer(doc, layerId);
+  if (!layer) {
+    throw new Error(`WMS capabilities do not contain layer "${layerId}"`);
+  }
 
   return {
-    layerFound: !!layer,
     version: doc.documentElement?.getAttribute("version") ?? null,
     url: getServiceUrl(doc),
     dimensions: getLayerDimensions(layer),

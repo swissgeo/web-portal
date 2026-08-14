@@ -187,11 +187,10 @@ describe("useOgcWmsData", () => {
     expect(wmsDataForOl.value?.gutter).toEqual(25);
   });
 
-  it("reports a missing requested layer", () => {
+  it("reports unusable capabilities", () => {
     const onError = vi.fn();
     wmsDataMock.value = {
-      layerFound: false,
-      url: "url",
+      url: null,
       version: "1.3.0",
       dimensions: null,
     };
@@ -205,5 +204,22 @@ describe("useOgcWmsData", () => {
         message: "WMS capabilities contain no usable layer data",
       }),
     );
+  });
+
+  it("reports a capabilities parsing exception", () => {
+    const onError = vi.fn();
+    const parseError = new Error("missing WMS layer");
+    const valueSpy = vi
+      .spyOn(wmsDataMock, "value", "get")
+      .mockImplementationOnce(() => {
+        throw parseError;
+      });
+
+    // @ts-expect-error Intentionally not caring about the input types
+    useOgcWmsData(ref({}), ref({}), ref("layer"), onError);
+    onCapabilitiesResponseMock.mock.calls[0]![0]();
+
+    expect(onError).toHaveBeenCalledWith(parseError);
+    valueSpy.mockRestore();
   });
 });
