@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-import type { Layer as MapLayer, MapLayerRenderer } from "@swissgeo/map";
+import type { LayerSource, OgcDistribution } from "@swissgeo/feature";
+import type {
+  Layer as MapLayer,
+  MapClickEvent,
+  MapLayerRenderer,
+} from "@swissgeo/map";
 import type { DisplayMode } from "~/types/injectionKeys";
 
+import { selectFeatures } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
 import { MapModule, usePositionStore } from "@swissgeo/map";
 import { cloneDeep } from "es-toolkit";
 
-import SourceToMapDataConverter from "../components/SourceToMapDataConverter.vue";
-import type { LayerSource, OgcDistribution } from "@swissgeo/feature";
-import type { MapClickEvent } from "@swissgeo/map";
-import { selectFeatures } from "@swissgeo/feature";
+import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
 
 const {
   displayMode = "web",
@@ -122,7 +125,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
-  selectFeatures(
+  await selectFeatures(
     mapClickEvent.extent,
     positionStore.projection.epsgNumber,
     locale.value.toLowerCase(),

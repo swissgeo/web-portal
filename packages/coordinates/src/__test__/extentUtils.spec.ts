@@ -1,7 +1,8 @@
+import type { FlatExtent } from "@swissgeo/shared";
+
 import { describe, expect, it } from "vitest";
 
 import type { SingleCoordinate } from "@/coordinatesUtils";
-import type { FlatExtent } from "@/extentUtils";
 
 import coordinatesUtils from "@/coordinatesUtils";
 import {

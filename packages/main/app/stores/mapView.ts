@@ -96,8 +96,8 @@ export const useMapViewStore = defineStore("mapView", () => {
       targetIndex >= 0 &&
       currentIndex !== targetIndex
     ) {
-      const [layer] = mapLayers.value.splice(currentIndex, 1) as [MapLayer];
-      mapLayers.value.splice(targetIndex, 0, layer);
+      const [layer] = mapLayers.value.splice(currentIndex, 1);
+      mapLayers.value.splice(targetIndex, 0, layer!);
     }
   }
 
