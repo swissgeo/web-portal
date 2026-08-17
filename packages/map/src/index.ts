@@ -8,7 +8,7 @@ export * from "./composables/useMap.composable";
 // importing as "type" doesn't work with the DTS bundler somehow
 // eslint-disable-next-line @typescript-eslint/consistent-type-exports
 export * from "@/types/layers";
-export * from "@/types/clickHandling";
+export type * from "@/types/clickHandling";
 import * as PROJECTION_EPSG from "./composables/types.d";
 
 export {
