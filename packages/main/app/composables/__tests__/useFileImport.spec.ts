@@ -4,6 +4,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useFileImport } from "../useFileImport";
 
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({
+    t: (key: string, params?: Record<string, unknown>) => {
+      if (key === "toolbox.import.errorMessages.fileTooLarge") {
+        return `File too large: ${String(params?.fileName)} (max ${String(params?.maxSize)}MB)`;
+      }
+      return key;
+    },
+  }),
+}));
+
 const makeFile = (name: string, content = "<data/>") =>
   new File([content], name);
 
@@ -117,5 +128,42 @@ describe("useFileImport", () => {
       importFile(makeFile("broken.geojson", content)),
     ).rejects.toThrow("Invalid GeoJSON file: broken.geojson");
     expect(store.layers).toHaveLength(0);
+  });
+
+  it("rejects files exceeding the size limit", async () => {
+    const { importFile } = useFileImport();
+    const store = useLayerStore();
+
+    const file = makeFile("huge.kml", "<kml/>");
+    Object.defineProperty(file, "size", { value: 51 * 1024 * 1024 });
+
+    await expect(importFile(file)).rejects.toThrow("File too large");
+    expect(store.layers).toHaveLength(0);
+  });
+
+  it("accepts files at exactly the size limit", async () => {
+    const { importFile } = useFileImport();
+    const store = useLayerStore();
+
+    const file = makeFile("limit.kml", "<kml/>");
+    Object.defineProperty(file, "size", { value: 50 * 1024 * 1024 });
+
+    await importFile(file);
+
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("kml");
+  });
+
+  it("accepts files below the size limit", async () => {
+    const { importFile } = useFileImport();
+    const store = useLayerStore();
+
+    const file = makeFile("small.kml", "<kml/>");
+    Object.defineProperty(file, "size", { value: 1024 });
+
+    await importFile(file);
+
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("kml");
   });
 });
