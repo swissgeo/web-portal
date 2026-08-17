@@ -66,7 +66,13 @@ describe("SearchResultEntry", () => {
     return mount(SearchResultEntry, {
       props: { entry, index },
       global: {
-        stubs: { UIcon: UIconStub, UButton: UButtonStub },
+        stubs: {
+          ClientOnly: {
+            template: "<div><slot /></div>",
+          },
+          UIcon: UIconStub,
+          UButton: UButtonStub,
+        },
       },
       attachTo: document.body,
     });
