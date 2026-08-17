@@ -22,6 +22,7 @@ import type {
   OgcDistribution,
 } from "@/types";
 
+import { FEATURE_LIMIT } from "@/constants";
 import { getFeaturesForOneLayer, selectFeatures } from "@/selectFeatures";
 import { useFeaturesStore } from "@/stores/feature";
 
@@ -292,6 +293,160 @@ describe("Feature Selection from layers and extent", () => {
     });
   });
 
+  describe("abort signal handling", () => {
+    function identifyLayer(): LayerRequest {
+      return {
+        layerUuid: "uuid-identify",
+        layerId: LAYER_ID,
+        urlTemplate: URL_TEMPLATE,
+      };
+    }
+
+    it("threads the signal into the identify fetch and every htmlPopup fetch", async () => {
+      fetchSpy.mockImplementation((url: string) =>
+        url.includes("/identify")
+          ? Promise.resolve(mockResponse(identifyResponse))
+          : Promise.resolve(mockResponse(htmlPopup)),
+      );
+      const controller = new AbortController();
+
+      await getFeaturesForOneLayer(
+        identifyLayer(),
+        EXTENT,
+        EPSG,
+        LANG,
+        10,
+        controller.signal,
+      );
+
+      expect(fetchSpy).toHaveBeenCalledTimes(
+        1 + identifyResponse.results.length,
+      );
+      for (const call of fetchSpy.mock.calls) {
+        expect(call[1]).toEqual({ signal: controller.signal });
+      }
+    });
+
+    it("rejects the identify fetch when the signal is already aborted, logs it and keeps the other layers intact", async () => {
+      const controller = new AbortController();
+      const abortError = new DOMException(
+        "The operation was aborted.",
+        "AbortError",
+      );
+      // mirrors real fetch semantics: an already-aborted signal rejects immediately
+      fetchSpy.mockImplementation((_url: string, init?: RequestInit) =>
+        init?.signal?.aborted
+          ? Promise.reject(abortError)
+          : Promise.resolve(mockResponse(identifyResponse)),
+      );
+      controller.abort();
+
+      await selectFeatures(
+        EXTENT,
+        EPSG,
+        LANG,
+        [
+          {
+            kind: "geoadmin",
+            layerUuid: "uuid-aborted",
+            layerId: LAYER_ID,
+            distribution: distributionCollection,
+          },
+          {
+            kind: "geoadmin",
+            layerUuid: "uuid-ok",
+            layerId: LAYER_ID,
+            preResolvedFeatures: vectorFeatures.features,
+          },
+        ],
+        FEATURE_LIMIT,
+        controller.signal,
+      );
+
+      expect(log.error).toHaveBeenCalledWith(abortError);
+      const store = useFeaturesStore();
+      expect(store.selectedFeaturesByUuid["uuid-aborted"]).toBeUndefined();
+      expect(store.selectedFeaturesByUuid["uuid-ok"]).toHaveLength(
+        vectorFeatures.features.length,
+      );
+    });
+
+    it("contains a mid-flight abort of the identify request: no unhandled rejection, selection is reset", async () => {
+      const store = useFeaturesStore();
+      store.setSelection({ "uuid-preexisting": [featureData("old")] });
+
+      const controller = new AbortController();
+      const abortError = new DOMException("signal aborted", "AbortError");
+      fetchSpy.mockImplementation(
+        () =>
+          new Promise((_resolve, reject) => {
+            controller.signal.addEventListener("abort", () =>
+              reject(abortError),
+            );
+          }),
+      );
+
+      const selection = selectFeatures(
+        EXTENT,
+        EPSG,
+        LANG,
+        [
+          {
+            kind: "geoadmin",
+            layerUuid: "uuid-abort",
+            layerId: LAYER_ID,
+            distribution: distributionCollection,
+          },
+        ],
+        FEATURE_LIMIT,
+        controller.signal,
+      );
+
+      controller.abort();
+      await expect(selection).resolves.toBeUndefined();
+      expect(log.error).toHaveBeenCalledWith(abortError);
+      expect(store.selectedFeaturesByUuid).toEqual({});
+      expect(store.hasSelectedFeatures).toBe(false);
+    });
+
+    it("keeps popup fetches that resolved and drops the ones aborted mid-flight (per-feature resilience)", async () => {
+      const controller = new AbortController();
+      const abortError = new DOMException("signal aborted", "AbortError");
+      const firstFeatureId = String(identifyResponse.results[0]!.id);
+      fetchSpy.mockImplementation((url: string) => {
+        if (url.includes("/identify")) {
+          return Promise.resolve(mockResponse(identifyResponse));
+        }
+        if (url.includes(`/${firstFeatureId}/htmlPopup`)) {
+          return Promise.resolve(mockResponse(htmlPopup));
+        }
+        return new Promise((_resolve, reject) => {
+          controller.signal.addEventListener("abort", () => reject(abortError));
+        });
+      });
+
+      const selection = getFeaturesForOneLayer(
+        identifyLayer(),
+        EXTENT,
+        EPSG,
+        LANG,
+        10,
+        controller.signal,
+      );
+      await vi.waitFor(() =>
+        expect(fetchSpy).toHaveBeenCalledTimes(
+          1 + identifyResponse.results.length,
+        ),
+      );
+
+      controller.abort();
+      const result = await selection;
+
+      expect(result).toHaveLength(1);
+      expect(result[0]!.featureId).toBe(firstFeatureId);
+    });
+  });
+
   describe("getFeaturesForOneLayer without explicit uri template nor present data", () => {
     it("returns an empty array without fetching when the layer has no information on how to retrieve features", async () => {
       const layer: LayerRequest = {
@@ -316,11 +471,15 @@ describe("Feature Selection from layers and extent", () => {
     it("stores fulfilled results in the feature store keyed by layerUuid", async () => {
       const layers: LayerSource[] = [
         {
+          kind: "geoadmin",
           layerUuid: "uuid-a",
+          layerId: LAYER_ID,
           preResolvedFeatures: [vectorFeatures.features[0]!],
         },
         {
+          kind: "geoadmin",
           layerUuid: "uuid-b",
+          layerId: LAYER_ID,
           preResolvedFeatures: [vectorFeatures.features[1]!],
         },
       ];
@@ -343,10 +502,17 @@ describe("Feature Selection from layers and extent", () => {
     it("does not store entries for layers that produced no features", async () => {
       const layers: LayerSource[] = [
         {
+          kind: "geoadmin",
           layerUuid: "uuid-a",
+          layerId: LAYER_ID,
           preResolvedFeatures: [vectorFeatures.features[0]!],
         },
-        { layerUuid: "uuid-empty", preResolvedFeatures: [] },
+        {
+          kind: "geoadmin",
+          layerUuid: "uuid-empty",
+          layerId: LAYER_ID,
+          preResolvedFeatures: [],
+        },
       ];
 
       await selectFeatures(EXTENT, EPSG, LANG, layers);
@@ -364,9 +530,16 @@ describe("Feature Selection from layers and extent", () => {
       });
 
       const layers: LayerSource[] = [
-        { layerUuid: "uuid-fail", distribution: distributionCollection },
         {
+          kind: "geoadmin",
+          layerUuid: "uuid-fail",
+          layerId: LAYER_ID,
+          distribution: distributionCollection,
+        },
+        {
+          kind: "geoadmin",
           layerUuid: "uuid-ok",
+          layerId: LAYER_ID,
           preResolvedFeatures: vectorFeatures.features,
         },
       ];
@@ -388,7 +561,12 @@ describe("Feature Selection from layers and extent", () => {
       expect(store.hasSelectedFeatures).toBe(true);
 
       await selectFeatures(EXTENT, EPSG, LANG, [
-        { layerUuid: "uuid-empty", preResolvedFeatures: [] },
+        {
+          kind: "geoadmin",
+          layerUuid: "uuid-empty",
+          layerId: LAYER_ID,
+          preResolvedFeatures: [],
+        },
       ]);
 
       expect(store.selectedFeaturesByUuid).toEqual({});
@@ -404,7 +582,12 @@ describe("Feature Selection from layers and extent", () => {
       });
 
       await selectFeatures(EXTENT, EPSG, LANG, [
-        { layerUuid: "uuid-ogc", distribution: distributionCollection },
+        {
+          kind: "geoadmin",
+          layerUuid: "uuid-ogc",
+          layerId: LAYER_ID,
+          distribution: distributionCollection,
+        },
       ]);
 
       const identifyUrl = fetchSpy.mock.calls[0]![0] as string;
