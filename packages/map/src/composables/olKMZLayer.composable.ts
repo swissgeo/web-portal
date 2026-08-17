@@ -24,7 +24,8 @@ import type { KMZLayer } from "@/types";
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
 
-const DEFAULT_MAX_DECOMPRESSED_SIZE_MB = 100;
+// exported for testing purposes
+export const DEFAULT_MAX_DECOMPRESSED_SIZE_MB = 250;
 
 export default function useOlKMZLayer(
   layer: Ref<KMZLayer>,
