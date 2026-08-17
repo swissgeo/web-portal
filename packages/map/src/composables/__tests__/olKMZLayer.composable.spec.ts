@@ -52,11 +52,17 @@ vi.mock("proj4", () => ({
   default: vi.fn(),
 }));
 
-vi.mock("ol/format/KML", () => ({
-  default: class MockKML {
-    readFeatures = vi.fn(() => []);
+const { MockKML, mockReadFeatures } = vi.hoisted(() => {
+  const mockReadFeatures = vi.fn(() => []);
+  class MockKML {
+    readFeatures = mockReadFeatures;
     constructor(_config?: unknown) {}
-  },
+  }
+  return { MockKML, mockReadFeatures };
+});
+
+vi.mock("ol/format/KML", () => ({
+  default: MockKML,
 }));
 
 vi.mock("ol/layer/Vector", () => ({
@@ -76,7 +82,9 @@ vi.mock("ol/source/Vector", () => ({
   }),
 }));
 
-import useOlKMZLayer from "../olKMZLayer.composable";
+import useOlKMZLayer, {
+  DEFAULT_MAX_DECOMPRESSED_SIZE_MB,
+} from "../olKMZLayer.composable";
 
 function makeKMZLayer(overrides: Partial<KMZLayer> = {}): KMZLayer {
   // Simple binary placeholder; unzip is mocked in these tests.
@@ -95,6 +103,7 @@ function makeKMZLayer(overrides: Partial<KMZLayer> = {}): KMZLayer {
 describe("useOlKMZLayer", () => {
   beforeEach(() => {
     clearAddLayerToMapMocks();
+    mockReadFeatures.mockClear();
   });
   it("creates a VectorLayer and calls addLayerToMap", async () => {
     const layer = ref(makeKMZLayer());
@@ -184,9 +193,10 @@ describe("useOlKMZLayer", () => {
     createObjectURLSpy.mockRestore();
   });
 
-  it("rejects KMZ with excessively large decompressed content", async () => {
+  it("rejects KMZ exceeding decompression limit", async () => {
     const { unzip } = await import("fflate");
-    const largeKml = "<kml>" + "x".repeat(101 * 1024 * 1024) + "</kml>";
+    const maxBytes = DEFAULT_MAX_DECOMPRESSED_SIZE_MB * 1024 * 1024;
+    const oversized = "<kml>" + "x".repeat(maxBytes + 1) + "</kml>";
     vi.mocked(unzip).mockImplementationOnce(((
       _data: Uint8Array,
       callback: (..._args: never[]) => void,
@@ -194,7 +204,7 @@ describe("useOlKMZLayer", () => {
       (callback as (_err: null, _result: Record<string, Uint8Array>) => void)(
         null,
         {
-          "doc.kml": new TextEncoder().encode(largeKml),
+          "doc.kml": new TextEncoder().encode(oversized),
         },
       );
     }) as never);
@@ -208,8 +218,9 @@ describe("useOlKMZLayer", () => {
       template: "<div />",
     });
 
-    // Should not throw — the error is caught and logged internally
     mount(TestComponent);
     await nextTick();
+
+    expect(mockReadFeatures).not.toHaveBeenCalled();
   });
 });
