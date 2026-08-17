@@ -170,7 +170,8 @@
       "sucessMessage": "Successfully imported {fileName}",
       "errorMessages": {
         "generalError": "Failed to import file",
-        "noFileSelected": "Please select a file first"
+        "noFileSelected": "Please select a file first",
+        "fileTooLarge": "File is too large: {fileName} (maximum {maxSize}MB)"
       },
       "close": "Close"
     },
