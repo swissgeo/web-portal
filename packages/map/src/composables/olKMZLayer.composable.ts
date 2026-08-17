@@ -24,6 +24,8 @@ import type { KMZLayer } from "@/types";
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
 
+const MAX_DECOMPRESSED_SIZE = 100 * 1024 * 1024; // 100MB
+
 export default function useOlKMZLayer(
   layer: Ref<KMZLayer>,
   olMap: Ref<Map | undefined> | undefined,
@@ -60,7 +62,19 @@ export default function useOlKMZLayer(
           if (err) {
             reject(new Error(err.message));
           } else {
-            resolve(data);
+            const totalSize = Object.values(data).reduce(
+              (sum, chunk) => sum + chunk.length,
+              0,
+            );
+            if (totalSize > MAX_DECOMPRESSED_SIZE) {
+              reject(
+                new Error(
+                  `KMZ archive too large after decompression: ${(totalSize / 1024 / 1024).toFixed(1)}MB (max ${MAX_DECOMPRESSED_SIZE / 1024 / 1024}MB)`,
+                ),
+              );
+            } else {
+              resolve(data);
+            }
           }
         },
       );
@@ -192,7 +206,6 @@ export default function useOlKMZLayer(
         titleColor: LogPreDefinedColor.Rose,
         messages: [`Failed to initialize KMZ layer ${layerId.value}`, error],
       });
-      throw error;
     }
   }
 

@@ -183,4 +183,33 @@ describe("useOlKMZLayer", () => {
 
     createObjectURLSpy.mockRestore();
   });
+
+  it("rejects KMZ with excessively large decompressed content", async () => {
+    const { unzip } = await import("fflate");
+    const largeKml = "<kml>" + "x".repeat(101 * 1024 * 1024) + "</kml>";
+    vi.mocked(unzip).mockImplementationOnce(((
+      _data: Uint8Array,
+      callback: (..._args: never[]) => void,
+    ) => {
+      (callback as (_err: null, _result: Record<string, Uint8Array>) => void)(
+        null,
+        {
+          "doc.kml": new TextEncoder().encode(largeKml),
+        },
+      );
+    }) as never);
+
+    const layer = ref(makeKMZLayer());
+
+    const TestComponent = defineComponent({
+      setup() {
+        useOlKMZLayer(layer, ref(undefined));
+      },
+      template: "<div />",
+    });
+
+    // Should not throw — the error is caught and logged internally
+    mount(TestComponent);
+    await nextTick();
+  });
 });
