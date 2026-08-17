@@ -8,7 +8,6 @@ import {
   searchLocation,
   searchLayerFeatures,
 } from "@swissgeo/search";
-import { sanitizeHtml } from "@swissgeo/shared";
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
@@ -50,11 +49,10 @@ export const useSearchStore = defineStore("search", () => {
   // Actions
   async function setSearchQuery(newQuery: string, lang: string = "de") {
     query.value = newQuery;
-    const sanitizedQuery = sanitizeHtml(newQuery);
     hasError.value = false;
 
     // Clear results if query too short
-    if (sanitizedQuery.trim().length < 2) {
+    if (newQuery.trim().length < 2) {
       results.value = [];
       return;
     }
@@ -87,9 +85,9 @@ export const useSearchStore = defineStore("search", () => {
       // Build search promises array. Layers are now searched server-side
       // through the OGC API Records catalog, alongside locations and features.
       const searchPromises: Promise<SearchResult[]>[] = [
-        searchLocation(sanitizedQuery, lang, abortController.signal),
+        searchLocation(newQuery, lang, abortController.signal),
         searchLayers(
-          sanitizedQuery,
+          newQuery,
           catalogItemsUrl.value,
           lang,
           abortController.signal,
@@ -100,7 +98,7 @@ export const useSearchStore = defineStore("search", () => {
       for (const layer of searchableLayers) {
         searchPromises.push(
           searchLayerFeatures(
-            sanitizedQuery,
+            newQuery,
             lang,
             layer.humanId,
             layer.info?.displayName || layer.humanId,

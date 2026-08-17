@@ -116,7 +116,9 @@ defineExpose({
     />
 
     <!-- Title -->
-    <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
+    <ClientOnly>
+      <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
+    </ClientOnly>
 
     <!-- Layer results info button -->
     <UButton
