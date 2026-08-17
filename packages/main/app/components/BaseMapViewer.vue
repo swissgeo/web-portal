@@ -1,18 +1,21 @@
 <script lang="ts" setup>
+import type { LayerSource, OgcDistribution } from "@swissgeo/feature";
 import type { Layer as SourceLayer } from "@swissgeo/layers";
-import type { Layer as MapLayer, MapLayerRenderer } from "@swissgeo/map";
+import type {
+  Layer as MapLayer,
+  MapClickEvent,
+  MapLayerRenderer,
+} from "@swissgeo/map";
 import type { DisplayMode } from "~/types/injectionKeys";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
-import { useLayerStore } from "@swissgeo/layers";
+import { selectFeatures } from "@swissgeo/feature";
+import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { MapModule, usePositionStore } from "@swissgeo/map";
 import { cloneDeep } from "es-toolkit";
 
-import SourceToMapDataConverter from "../components/SourceToMapDataConverter.vue";
-import type { LayerSource, OgcDistribution } from "@swissgeo/feature";
-import type { MapClickEvent } from "@swissgeo/map";
-import { selectFeatures } from "@swissgeo/feature";
+import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
 
 const {
   displayMode = "web",
@@ -108,7 +111,9 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       const preResolvedFeatures =
         mapClickEvent.vectorFeaturesPerLayer[sourceLayer.uuid];
       let distribution: OgcDistribution | undefined;
-      if (typeof sourceLayer.data === "object") {
+      // only dataset layers carry OGC links; file layers' data is a string
+      // (kml/gpx/geojson) or binary (kmz) — never an object with .links
+      if (isDatasetLayer(sourceLayer)) {
         const url = (sourceLayer.data.links ?? []).find(
           (link) => link.rel?.toLowerCase() === "distributions",
         )?.href;
@@ -129,10 +134,9 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       const layerSource: LayerSource = {
         layerUuid: sourceLayer.uuid,
         kind: "geoadmin",
-        layerId:
-          typeof sourceLayer.data === "object"
-            ? sourceLayer.data.id
-            : sourceLayer.humanId,
+        layerId: isDatasetLayer(sourceLayer)
+          ? sourceLayer.data.id
+          : sourceLayer.humanId,
         distribution,
         preResolvedFeatures,
       };
@@ -148,7 +152,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
-  selectFeatures(
+  await selectFeatures(
     mapClickEvent.extent,
     positionStore.projection.epsgNumber,
     locale.value.toLowerCase(),
