@@ -5,25 +5,25 @@ import log from "@swissgeo/log";
 import { parseGeoJson } from "~/utils/geoJson";
 import { useI18n } from "vue-i18n";
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
-const MAX_FILE_SIZE_MB = MAX_FILE_SIZE / 1024 / 1024;
-
 /**
  * Composable for importing local files as layers
  */
 export function useFileImport() {
   const layerStore = useLayerStore();
   const { t } = useI18n();
+  const runtimeConfig = useRuntimeConfig();
+  const maxSizeMB = runtimeConfig.public.maxFileSizeMB;
+  const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
   /**
    * Import a file and add it to the layer store
    */
   async function importFile(file: File): Promise<void> {
-    if (file.size > MAX_FILE_SIZE) {
+    if (file.size > maxSizeBytes) {
       throw new Error(
         t("toolbox.import.errorMessages.fileTooLarge", {
           fileName: file.name,
-          maxSize: MAX_FILE_SIZE_MB,
+          maxSize: maxSizeMB,
         }),
       );
     }

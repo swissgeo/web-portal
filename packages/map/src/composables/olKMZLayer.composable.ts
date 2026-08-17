@@ -24,12 +24,14 @@ import type { KMZLayer } from "@/types";
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
 
-const MAX_DECOMPRESSED_SIZE = 100 * 1024 * 1024; // 100MB
+const DEFAULT_MAX_DECOMPRESSED_SIZE_MB = 100;
 
 export default function useOlKMZLayer(
   layer: Ref<KMZLayer>,
   olMap: Ref<Map | undefined> | undefined,
+  maxDecompressedSizeMB: number = DEFAULT_MAX_DECOMPRESSED_SIZE_MB,
 ) {
+  const maxDecompressedSize = maxDecompressedSizeMB * 1024 * 1024;
   const layerId = computed(() => layer.value.layerId);
   const zIndex = computed(() => layer.value.zIndex);
   const isVisible = computed(() => layer.value.isVisible);
@@ -66,10 +68,10 @@ export default function useOlKMZLayer(
               (sum, chunk) => sum + chunk.length,
               0,
             );
-            if (totalSize > MAX_DECOMPRESSED_SIZE) {
+            if (totalSize > maxDecompressedSize) {
               reject(
                 new Error(
-                  `KMZ archive too large after decompression: ${(totalSize / 1024 / 1024).toFixed(1)}MB (max ${MAX_DECOMPRESSED_SIZE / 1024 / 1024}MB)`,
+                  `KMZ archive too large after decompression: ${(totalSize / 1024 / 1024).toFixed(1)}MB (max ${maxDecompressedSizeMB}MB)`,
                 ),
               );
             } else {

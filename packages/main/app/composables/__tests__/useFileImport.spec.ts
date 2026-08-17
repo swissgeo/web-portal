@@ -1,3 +1,4 @@
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useLayerStore } from "@swissgeo/layers";
 import { createPinia, setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -13,6 +14,13 @@ vi.mock("vue-i18n", () => ({
       return key;
     },
   }),
+}));
+
+mockNuxtImport("useRuntimeConfig", () => () => ({
+  public: {
+    maxFileSizeMB: 50,
+    maxKmzDecompressedSizeMB: 100,
+  },
 }));
 
 const makeFile = (name: string, content = "<data/>") =>
