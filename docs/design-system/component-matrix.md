@@ -46,6 +46,29 @@ The agency file does not contain complete Input, Select, Search, Textarea,
 Checkbox, Radio, Switch, or Form atom sets. Header contains an InputMenu instance.
 This instance does not define a complete input-state matrix.
 
+## Header language switcher
+
+The desktop Header instance at Figma node `7621:45982` defines the closed
+language switcher.
+
+| Property           | Figma value                         | Nuxt UI mapping                             | Status   |
+| ------------------ | ----------------------------------- | ------------------------------------------- | -------- |
+| Trigger label      | Uppercase language code             | `label-key="code"` and uppercase value slot | Verified |
+| Text               | 14 px, medium, muted                | `size="md"` and `text-muted`                | Verified |
+| Horizontal padding | 10 px                               | `size="md"`                                 | Verified |
+| Vertical padding   | 6 px                                | `size="md"`                                 | Verified |
+| Content gap        | 6 px                                | `size="md"`                                 | Verified |
+| Surface            | Transparent and without a border    | `variant="ghost"`                           | Verified |
+| Trailing icon      | 20 px down chevron                  | `i-lucide-chevron-down`                     | Verified |
+| Radius             | 6 px                                | Nuxt UI `rounded-md`                        | Verified |
+| Menu item label    | Full language name                  | Existing product behavior                   | Inferred |
+| Hover and focus    | Shared Header interaction treatment | Existing Header mapping                     | Inferred |
+
+Keep the native Nuxt UI value slot. Do not create a custom leading slot for the
+language code. Do not use the incoming `develop` outline variant. Do not remove
+the trailing chevron. Both incoming visual changes conflict with the verified
+Header instance.
+
 ## Mapping rule
 
 Map Figma component properties to Nuxt UI properties when their meaning matches.

@@ -46,9 +46,9 @@ watch(selectedLocale, async (value) => {
       v-model="selectedLocale"
       :items="localeItems"
       value-key="code"
-      label-key="name"
+      label-key="code"
       :arrow="false"
-      size="sm"
+      size="md"
       variant="ghost"
       color="neutral"
       trailing-icon="i-lucide-chevron-down"
@@ -58,14 +58,11 @@ watch(selectedLocale, async (value) => {
         content: '!w-auto min-w-[150px] !max-w-none',
         base: 'text-muted hover:bg-primary/10 hover:text-primary',
         trailingIcon: 'size-5 text-muted',
-        value: 'hidden',
-        leading: 'static',
+        value: 'font-medium uppercase',
       }"
     >
-      <template #leading>
-        <span class="text-sm/5 font-medium uppercase">
-          {{ selectedLocale }}
-        </span>
+      <template #item-label="{ item }">
+        {{ item.name }}
       </template>
     </USelectMenu>
   </ClientOnly>
