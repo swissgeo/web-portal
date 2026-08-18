@@ -53,6 +53,7 @@ declare global {
       wantedLogLevels: string;
       version: string;
       buildTime: string;
+      maxFileSizeMB: number;
     };
   };
 }

@@ -19,7 +19,6 @@ vi.mock("vue-i18n", () => ({
 mockNuxtImport("useRuntimeConfig", () => () => ({
   public: {
     maxFileSizeMB: 50,
-    maxKmzDecompressedSizeMB: 100,
   },
 }));
 
