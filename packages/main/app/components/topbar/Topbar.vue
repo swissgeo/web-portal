@@ -101,7 +101,7 @@ function resetApp() {
     />
 
     <template #right>
-      <div class="hidden w-24 justify-center 2xl:flex">
+      <div class="hidden w-24 justify-center xl:flex">
         <TopbarColorModeButton />
       </div>
       <UButton

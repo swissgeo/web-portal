@@ -86,6 +86,25 @@ Apply these roles as global heading defaults. A local Tailwind utility can
 override a role. Nuxt UI configuration owns exceptions rendered by a Nuxt UI
 component.
 
+### Editorial text roles
+
+| Role            | Tailwind utility       | Family | Weight |  Size | Line height | Status   |
+| --------------- | ---------------------- | ------ | -----: | ----: | ----------: | -------- |
+| Lead            | `type-lead`            | Inter  |    400 | 24 px |        150% | Verified |
+| Paragraph       | `type-paragraph`       | Inter  |    500 | 18 px |        150% | Verified |
+| Paragraph Bold  | `type-paragraph-bold`  | Inter  |    600 | 18 px |        150% | Verified |
+| Text Big        | `type-text-big`        | Inter  |    400 | 16 px |        150% | Verified |
+| Text Small      | `type-text-small`      | Inter  |    400 | 14 px |        130% | Verified |
+| Text Small Bold | `type-text-small-bold` | Inter  |    700 | 14 px |        130% | Verified |
+
+Nuxt UI Prose maps paragraphs and list items to `type-paragraph`. Strong text
+uses the Paragraph Bold weight. The Tailwind utilities own the remaining roles.
+A local Tailwind utility overrides a semantic role when a component needs an exception.
+
+The Figma helper row labeled `Lead` renders the named `Text Big` style. The
+helper row labeled `Text Big` renders the named `Lead` style. Use the named
+rendered styles as the source of truth.
+
 A component can contain both families. Do not assign one family to a component
 area from an aggregate variable response. Read the exact text style or text node.
 

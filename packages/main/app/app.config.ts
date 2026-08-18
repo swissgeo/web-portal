@@ -9,6 +9,17 @@ export default defineAppConfig({
       error: "red",
       neutral: "neutral",
     },
+    prose: {
+      p: {
+        base: "type-paragraph my-0 leading-normal",
+      },
+      strong: {
+        base: "font-semibold",
+      },
+      li: {
+        base: "type-paragraph leading-normal",
+      },
+    },
     button: {
       slots: {
         base: "font-sans",
