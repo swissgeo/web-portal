@@ -21,6 +21,9 @@ catalogs:
     '@fontsource/inter':
       specifier: ^5.2.6
       version: 5.2.8
+    '@fontsource/source-serif-pro':
+      specifier: ^5.2.6
+      version: 5.3.0
     '@hey-api/openapi-ts':
       specifier: ^0.99.0
       version: 0.99.0
@@ -916,6 +919,9 @@ importers:
       '@fontsource/inter':
         specifier: 'catalog:'
         version: 5.2.8
+      '@fontsource/source-serif-pro':
+        specifier: 'catalog:'
+        version: 5.3.0
       '@intlify/core':
         specifier: 'catalog:'
         version: 11.4.5
@@ -2371,6 +2377,9 @@ packages:
 
   '@fontsource/inter@5.2.8':
     resolution: {integrity: sha512-P6r5WnJoKiNVV+zvW2xM13gNdFhAEpQ9dQJHt3naLvfg+LkF2ldgSLiF4T41lf1SQCM9QmkqPTn4TH568IRagg==}
+
+  '@fontsource/source-serif-pro@5.3.0':
+    resolution: {integrity: sha512-YFHaHYBYSgjh2TFvK6r5Rj1B+BQ3GW3VTlS/FyWT5K44OlJTNU2kGjVh66c2nUqIUxPtgJEt+JJNMMaMShtM+A==}
 
   '@grpc/grpc-js@1.14.4':
     resolution: {integrity: sha512-k9Dj3DV/itK9D06Y8f190Qgop7/Ui+D0njFV3LHMPwPT75DpXLQohE9Wmz0QElrJnzsjB7KPWiKJbOl7IPDArQ==}
@@ -11918,6 +11927,8 @@ snapshots:
   '@fontsource/dm-sans@5.3.0': {}
 
   '@fontsource/inter@5.2.8': {}
+
+  '@fontsource/source-serif-pro@5.3.0': {}
 
   '@grpc/grpc-js@1.14.4':
     dependencies:
