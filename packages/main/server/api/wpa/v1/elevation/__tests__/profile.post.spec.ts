@@ -4,14 +4,15 @@ import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import profileFixture from "./fixtures/profile.json";
 
 const readBodyMock = vi.fn();
-const fetchMock = vi.fn();
 
 vi.stubGlobal("defineEventHandler", (handler: unknown) => handler);
 vi.stubGlobal("readBody", readBodyMock);
 mockNuxtImport("useRuntimeConfig", () => () => ({
   geoadminApiBaseUrl: "https://api.example.test",
 }));
-vi.stubGlobal("$fetch", fetchMock);
+
+const { fetchMock } = vi.hoisted(() => ({ fetchMock: vi.fn() }));
+mockNuxtImport("$fetch", () => fetchMock);
 
 const handlerPromise = import("../profile.post").then(
   ({ default: handler }) => handler,

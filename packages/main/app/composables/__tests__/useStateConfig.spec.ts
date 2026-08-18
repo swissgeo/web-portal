@@ -27,15 +27,17 @@ mockNuxtImport("useMapViewStore", () => () => ({
   backgroundLayer: null,
   addLayerToTop: (layer: MapLayer) => mockMapLayers.push(layer),
 }));
-const fetchMock = vi.fn();
 
-vi.stubGlobal("$fetch", fetchMock);
+const { setCenterMock, setZoomMock, setRotationMock, fetchMock } = vi.hoisted(
+  () => ({
+    setCenterMock: vi.fn(),
+    setZoomMock: vi.fn(),
+    setRotationMock: vi.fn(),
+    fetchMock: vi.fn(),
+  }),
+);
 
-const { setCenterMock, setZoomMock, setRotationMock } = vi.hoisted(() => ({
-  setCenterMock: vi.fn(),
-  setZoomMock: vi.fn(),
-  setRotationMock: vi.fn(),
-}));
+mockNuxtImport("$fetch", () => fetchMock);
 
 vi.mock("@swissgeo/map", async (importOriginal) => {
   const original = await importOriginal();

@@ -99,7 +99,7 @@ catalog:
   h3: ^1.15.11
   mapbox-gl: ~3.28.0
   msw: ^2.14.6
-  nuxt: ^4.4.8
+  nuxt: ^4.5.2
   ol: ^10.9.0
   ol-mapbox-style: ^13.4.1
   pinia: ^4.0.0

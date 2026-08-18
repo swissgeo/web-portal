@@ -20,8 +20,10 @@ const wmtsCapabilities = `<?xml version="1.0" encoding="UTF-8"?>
     </Contents>
 </Capabilities>`;
 
-const fetchSpy = vi.fn(() => Promise.resolve(wmtsCapabilities));
-(globalThis as Record<string, unknown>).$fetch = fetchSpy;
+const { fetchMock } = vi.hoisted(() => ({
+  fetchMock: vi.fn(() => Promise.resolve(wmtsCapabilities)),
+}));
+mockNuxtImport("$fetch", () => fetchMock);
 
 const addLayerSpy = vi.fn();
 const makeServerLayerSpy = vi.fn((_layer: Dataset) => ({
@@ -55,7 +57,7 @@ describe("ImportLayersPanel.vue", () => {
 
     await vm.loadCapabilities();
 
-    expect(fetchSpy).toHaveBeenCalledWith(vm.importUrl);
+    expect(fetchMock).toHaveBeenCalledWith(vm.importUrl);
     expect(vm.layers).toEqual(["layer-a", "layer-b"]);
   });
 
