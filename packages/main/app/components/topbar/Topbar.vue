@@ -105,10 +105,10 @@ function resetApp() {
       </div>
       <UButton
         icon="i-lucide-log-in"
-        color="neutral"
+        color="primary"
         variant="ghost"
-        size="sm"
-        class="hidden text-primary hover:bg-primary/10 hover:text-primary 2xl:inline-flex"
+        size="md"
+        class="hidden 2xl:inline-flex"
       >
         {{ t("topbar.login") }}
       </UButton>
@@ -154,10 +154,9 @@ function resetApp() {
         <div class="flex items-center gap-2">
           <UButton
             icon="i-lucide-log-in"
-            color="neutral"
+            color="primary"
             variant="ghost"
-            size="sm"
-            class="text-primary hover:bg-primary/10 hover:text-primary"
+            size="md"
           >
             {{ t("topbar.login") }}
           </UButton>

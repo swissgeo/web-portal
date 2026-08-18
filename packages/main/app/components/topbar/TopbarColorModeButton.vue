@@ -5,9 +5,8 @@ const { t } = useI18n();
 <template>
   <UColorModeButton
     :label="t('topbar.modeSwitch')"
-    color="neutral"
+    color="primary"
     variant="ghost"
-    size="sm"
-    class="text-primary hover:bg-primary/10 hover:text-primary"
+    size="md"
   />
 </template>
