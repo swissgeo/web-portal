@@ -9,6 +9,17 @@ export default defineAppConfig({
       error: "red",
       neutral: "neutral",
     },
+    blogPost: {
+      slots: {
+        root: "h-full rounded-lg bg-default font-sans ring ring-default",
+        body: "p-6",
+        image: "object-cover object-center",
+        title: "text-xl font-bold leading-7 text-highlighted",
+        description: "mt-1 text-base leading-6 text-muted",
+        meta: "mb-0 pb-0.5",
+        badge: "bg-transparent p-0 text-sm font-semibold text-highlighted",
+      },
+    },
     prose: {
       p: {
         base: "type-paragraph my-0 leading-normal",

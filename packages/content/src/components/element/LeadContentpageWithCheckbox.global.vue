@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import type { LeadContentPageWithCheckbox } from "@content/types";
+
 import { computed } from "vue";
 
 /* Passing data through */
-import type { LeadContentPageWithCheckbox } from "@/types";
-
 const { data } = defineProps<{
   data: LeadContentPageWithCheckbox;
 }>();

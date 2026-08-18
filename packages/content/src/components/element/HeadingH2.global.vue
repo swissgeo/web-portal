@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { TitleComponent } from "@/types";
+import type { TitleComponent } from "@content/types";
 
 const { data } = defineProps<{ data: TitleComponent }>();
 </script>

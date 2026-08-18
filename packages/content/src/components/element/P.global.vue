@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { Paragraph } from "@/types";
+import type { Paragraph } from "@content/types";
 
 const { data } = defineProps<{ data: Paragraph }>();
 </script>
 
 <template>
-  <ProseP class="mb-4">
+  <p class="mb-4">
     {{ data.content?.text }}
-  </ProseP>
+  </p>
 </template>

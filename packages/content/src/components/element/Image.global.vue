@@ -1,9 +1,8 @@
 <script lang="ts" setup>
+import type { Image } from "@content/types";
+
+import { isImage } from "@content/utils";
 import { computed } from "vue";
-
-import type { Image } from "@/types";
-
-import { isImage } from "@/utils";
 
 const { data } = defineProps<{ data: Image }>();
 const imageUrl = computed(() => {

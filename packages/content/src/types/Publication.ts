@@ -48,6 +48,7 @@ export interface ContentPageMetadata {
   twitterDescription: string;
   openGraphDescription: string;
   metaDescription: string;
+  teaserImage?: TeaserImage;
 }
 
 export interface MenuMetadata {
@@ -64,18 +65,83 @@ export interface Image {
   };
 }
 
+export interface TeaserImageSource {
+  width: number;
+  url: string;
+}
+
+export interface TeaserImageCrop {
+  name: string;
+  url: string;
+  srcSet?: TeaserImageSource[];
+}
+
+export interface TeaserImage {
+  url: string;
+  crops?: TeaserImageCrop[];
+}
+
+export interface ResolvedTeaser {
+  documentId: number;
+  title: string;
+  description: string;
+  href: string;
+  image?: TeaserImageCrop;
+}
+
 export interface Section {
-  content: {
+  component: "section";
+  identifier: string;
+  id: string;
+  containers: {
     section: ContentItem[];
   };
 }
 
 export type ContentItem =
+  | TeaserContainer
+  | TeaserItem
   | LeadContentPageWithCheckbox
   | Paragraph
   | Image
   | TitleComponent
   | Section;
+
+export interface TeaserItem {
+  component: "teaser-item";
+  identifier: string;
+  id: string;
+  content: {
+    teaser: {
+      service: string;
+      params: {
+        teaser: {
+          $ref: "document";
+          reference: {
+            id: string;
+          };
+        };
+      };
+    };
+    resolvedTeaser?: ResolvedTeaser;
+  };
+}
+
+export interface TeaserContainer {
+  component: "teaser-container";
+  identifier: string;
+  id: string;
+  styles?: {
+    pageCardPresentation?: string;
+  };
+  content: {
+    teaserTitle?: string;
+  };
+  containers: {
+    teaserItems?: TeaserItem[];
+    showAllLink?: ContentItem[];
+  };
+}
 
 export interface LeadContentPageWithCheckbox {
   component: "lead-contentpage-with-checkbox";

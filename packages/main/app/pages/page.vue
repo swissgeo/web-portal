@@ -4,6 +4,10 @@ import type { RouteLocationNormalizedLoadedGeneric } from "vue-router";
 
 import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 
+const props = defineProps<{
+  documentId?: string;
+}>();
+
 const route = useRoute();
 const { locale } = useI18n();
 
@@ -14,7 +18,17 @@ const menuStore = useMenuStore();
 const livingDocsPageData = useLivingdocsPageData();
 
 const documentId = computed<string>(() => {
-  return route.meta.documentId as string;
+  if (props.documentId) {
+    return props.documentId;
+  }
+
+  const routeDocumentId = route.params.documentId;
+  if (typeof routeDocumentId === "string") {
+    return routeDocumentId;
+  }
+
+  const metaDocumentId = route.meta.documentId;
+  return typeof metaDocumentId === "string" ? metaDocumentId : "";
 });
 
 const { data } = await useFetch<Page>(

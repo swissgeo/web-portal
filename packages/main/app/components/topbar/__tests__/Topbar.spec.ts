@@ -24,6 +24,14 @@ mockNuxtImport("useLocalePath", () => {
   return () => (path: string) => `/de${path}`;
 });
 
+const { navigateTo } = vi.hoisted(() => ({
+  navigateTo: vi.fn(),
+}));
+
+mockNuxtImport("navigateTo", () => {
+  return navigateTo;
+});
+
 vi.mock("@swissgeo/skeleton", () => ({
   LogoPic: {
     name: "LogoPic",
@@ -111,6 +119,8 @@ describe("Topbar", () => {
       "Grundlagen & Standards",
       "Über uns",
     ]);
+    expect(items[0]).toMatchObject({ to: "/de/home" });
+    expect(items[2]).toMatchObject({ to: "/de/services" });
     expect(items[1]).toMatchObject({
       to: "/de/map",
       ui: {
@@ -121,12 +131,12 @@ describe("Topbar", () => {
     });
   });
 
-  it("emits reset-app when the user activates the logo", async () => {
+  it("opens Map when the user activates the logo", async () => {
     const wrapper = mountComponent();
 
     await wrapper.get('[data-testid="topbar-logo"]').trigger("click");
 
-    expect(wrapper.emitted("reset-app")).toHaveLength(1);
+    expect(navigateTo).toHaveBeenCalledWith("/de/map");
   });
 
   it("forwards search selections", async () => {

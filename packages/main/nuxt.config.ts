@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { execSync } from "node:child_process";
+import { fileURLToPath, URL } from "node:url";
 
 import "./server/instrumentation";
 
@@ -27,6 +28,9 @@ const isCoverage = process.env.COVERAGE === "1";
 process.env.NODE_ENV = isDevelopment ? "dev" : process.env.NODE_ENV;
 
 export default defineNuxtConfig({
+  alias: {
+    "@content": fileURLToPath(new URL("../content/src", import.meta.url)),
+  },
   app: {
     buildAssetsDir: "/_nxt/",
     keepalive: true,
@@ -49,6 +53,13 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxtjs/i18n",
     "@nuxt/ui",
+  ],
+  components: [
+    { path: "~/components" },
+    {
+      path: "../../content/src/components",
+      prefix: "Content",
+    },
   ],
   css: ["~/assets/css/main.css"],
   ui: {
@@ -115,6 +126,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     what3wordsApiKey: "",
     geoadminApiBaseUrl: "",
+    livingdocsApiEndpoint: "",
+    livingdocsAuthToken: "",
     shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
     public: {
       ogcApiEndpoint: "",

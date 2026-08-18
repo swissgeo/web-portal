@@ -7,25 +7,29 @@ import { LogoPic } from "@swissgeo/skeleton";
 const { t } = useI18n();
 
 const emit = defineEmits<{
-  "reset-app": [void];
   "search-result-selected": [result: SearchResult];
 }>();
 
 const localePath = useLocalePath();
+const homePath = computed(() => localePath("/home"));
+const mapPath = computed(() => localePath("/map"));
+const servicesPath = computed(() => localePath("/services"));
 
 const items = computed<NavigationMenuItem[]>(() => [
   {
     label: t("topbar.home"),
+    to: homePath.value,
   },
   {
     label: t("topbar.map"),
-    to: localePath("/map"),
+    to: mapPath.value,
     ui: {
       link: "aria-[current=page]:text-primary aria-[current=page]:before:bg-primary/10",
     },
   },
   {
     label: t("topbar.services"),
+    to: servicesPath.value,
   },
   {
     label: t("topbar.fundamentalsAndStandards"),
@@ -58,8 +62,8 @@ const items = computed<NavigationMenuItem[]>(() => [
   },
 ]);
 
-function resetApp() {
-  emit("reset-app");
+function goToMap() {
+  void navigateTo(mapPath.value);
 }
 </script>
 
@@ -83,7 +87,7 @@ function resetApp() {
         class="flex h-8 w-[122.4px] items-center focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 2xl:w-[209.896px]"
         aria-label="SWISSGEO"
         data-testid="topbar-logo"
-        @logo-click="resetApp"
+        @logo-click="goToMap"
       />
     </template>
 

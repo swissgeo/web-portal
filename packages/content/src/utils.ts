@@ -19,9 +19,9 @@ export function isParagraph(item: ContentItem): item is Paragraph {
 }
 
 export function isImage(item: ContentItem): item is Image {
-  return "image" in item.content;
+  return "content" in item && "image" in item.content;
 }
 
 export function isTitle(item: ContentItem): item is TitleComponent {
-  return "title" in item.content;
+  return "content" in item && "title" in item.content;
 }

@@ -16,8 +16,6 @@ const { containers } = defineProps<{ containers: unknown[] }>();
 //     return
 // }
 
-const COMPONENT_EXCLUDES = ["TeaserContainer"];
-
 const components = computed(() => {
   if (!containers) {
     return [];
@@ -46,17 +44,6 @@ const components = computed(() => {
       const name = pascalCase(contentItem.component);
 
       let componentName;
-
-      if (COMPONENT_EXCLUDES.includes(name)) {
-        return {
-          ...contentItem,
-          componentName: null,
-          _key:
-            typeof contentItem.identifier === "string"
-              ? contentItem.identifier
-              : `content-${index}`,
-        };
-      }
 
       try {
         componentName = resolveComponent(`ContentElement${name}`);

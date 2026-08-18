@@ -1,19 +1,12 @@
 <script lang="ts" setup>
+import type { Section } from "@content/types";
+
 import { computed } from "vue";
 
-import type { LeadContentPageWithCheckbox } from "@/types";
-
-const { data } = defineProps<{
-  data: Record<string, LeadContentPageWithCheckbox>;
-}>();
+const { data } = defineProps<{ data: Section }>();
 
 const containers = computed(() => {
-  if (!data.containers) {
-    return [];
-  }
-  return data.containers?.containers?.section
-    ? [data.containers.containers.section]
-    : [];
+  return data.containers?.section ?? [];
 });
 </script>
 

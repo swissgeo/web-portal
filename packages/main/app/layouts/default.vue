@@ -9,7 +9,6 @@ import DatasetPanel from "@/components/sidebar/DatasetPanel.vue";
 import SideBar from "@/components/sidebar/SideBar.vue";
 import { useSearchSelection } from "@/composables/useSearchSelection";
 
-const { resetApp } = useResetApp();
 const route = useRoute();
 const mapViewStore = useMapViewStore();
 const localePath = useLocalePath();
@@ -52,7 +51,6 @@ async function onSearchResultSelected(result: SearchResult) {
   <div class="flex h-screen flex-col">
     <Topbar
       v-if="!isMapFullscreenMode"
-      @reset-app="resetApp"
       @search-result-selected="onSearchResultSelected"
     />
     <UMain as="div" class="min-h-0 flex-1">
