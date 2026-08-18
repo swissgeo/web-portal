@@ -12,6 +12,7 @@ Remove the `Draft` marker after the team reviews these records.
 - Recorded the agency component-property matrix.
 - Recorded verified interaction forms and marked unresolved role mappings as open.
 - Recorded exact Inter and DM Sans text-style evidence.
+- Applied the verified Heading Content roles as global heading defaults.
 - Recorded the mixed brand-adapted and default Nuxt UI component aliases.
 - Recorded verified button-state bindings and rendered disabled behavior.
 - Recorded the responsive grid and spacing values.

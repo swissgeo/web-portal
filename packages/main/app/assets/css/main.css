@@ -29,6 +29,7 @@
 @theme static {
   --font-sans: "DM Sans", system-ui, sans-serif;
   --font-editorial: "Inter", system-ui, sans-serif;
+  --leading-heading: 1.2;
 
   --color-petrol-50: #e0ecf1;
   --color-petrol-100: #c1dde6;
@@ -178,15 +179,26 @@
   --color-white: #ffffff;
 }
 
-h1 {
-  @apply text-4xl;
-  @apply pb-8;
-  @apply text-primary;
-}
+@layer base {
+  h1 {
+    @apply pb-8 font-editorial text-7xl leading-heading font-semibold text-primary;
+  }
 
-h2 {
-  @apply text-2xl;
-  @apply pt-12 pb-8 first-of-type:pt-2;
+  h2 {
+    @apply pt-12 pb-8 font-editorial text-5xl leading-heading font-semibold first-of-type:pt-2;
+  }
+
+  h3 {
+    @apply font-editorial text-3xl leading-heading font-semibold;
+  }
+
+  h4 {
+    @apply font-editorial text-xl leading-heading font-semibold;
+  }
+
+  h5 {
+    @apply font-editorial text-lg leading-normal font-semibold;
+  }
 }
 
 @layer custom {

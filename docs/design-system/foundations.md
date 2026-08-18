@@ -68,6 +68,24 @@ Figma uses Inter and DM Sans. Map each text style separately.
 | Blogposts section heading                | Inter             | Verified |
 | Text inside the Blogposts card instances | Inter and DM Sans | Verified |
 
+### Heading Content roles
+
+| Role | Family | Weight |  Size | Line height | Status   |
+| ---- | ------ | -----: | ----: | ----------: | -------- |
+| h1   | Inter  |    600 | 72 px |        120% | Verified |
+| h2   | Inter  |    600 | 48 px |        120% | Verified |
+| h3   | Inter  |    600 | 30 px |        120% | Verified |
+| h4   | Inter  |    600 | 20 px |        120% | Verified |
+| h5   | Inter  |    600 | 18 px |        150% | Verified |
+
+The rendered Figma styles are the source of truth for these roles. The helper
+labels for h1 to h4 contain old weight values. The h4 helper label also says
+24 px, but the rendered style uses 20 px.
+
+Apply these roles as global heading defaults. A local Tailwind utility can
+override a role. Nuxt UI configuration owns exceptions rendered by a Nuxt UI
+component.
+
 A component can contain both families. Do not assign one family to a component
 area from an aggregate variable response. Read the exact text style or text node.
 
