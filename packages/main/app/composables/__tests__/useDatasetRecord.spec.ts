@@ -8,9 +8,9 @@ import type { DatasetRecord } from "../useDatasetRecord";
 
 import { useDatasetRecord } from "../useDatasetRecord";
 
-const { locale, asyncDataRef } = await vi.hoisted(async () => {
+const { locale, asyncDataRef, fetchMock } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
-  return { locale: ref("de"), asyncDataRef: ref };
+  return { locale: ref("de"), asyncDataRef: ref, fetchMock: vi.fn() };
 });
 
 mockNuxtImport("useI18n", () => () => ({ locale }));
@@ -22,8 +22,7 @@ mockNuxtImport("useRuntimeConfig", () => () => ({
   },
 }));
 
-const fetchMock = vi.fn();
-vi.stubGlobal("$fetch", fetchMock);
+mockNuxtImport("$fetch", () => fetchMock);
 
 // Mock useAsyncData: immediately call the handler and wrap the result in
 // reactive refs, bypassing all Nuxt SSR/hydration machinery.

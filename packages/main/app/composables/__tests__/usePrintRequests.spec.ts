@@ -9,9 +9,11 @@ import { usePrintRequests } from "~/composables/usePrintRequests";
 import { createPinia, setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockFetch } = vi.hoisted(() => ({
-  mockFetch: vi.fn(),
+const { fetchMock } = vi.hoisted(() => ({
+  fetchMock: vi.fn(),
 }));
+
+mockNuxtImport("$fetch", () => fetchMock);
 
 mockNuxtImport("useRuntimeConfig", () => () => ({
   public: { printServiceUrl: "https://print.example.test/jobs" },
@@ -61,8 +63,7 @@ describe("usePrintRequests", () => {
     localStorage.clear();
     setActivePinia(createPinia());
     vi.useFakeTimers();
-    vi.stubGlobal("$fetch", mockFetch);
-    mockFetch.mockReset();
+    fetchMock.mockReset();
   });
 
   afterEach(() => {
@@ -93,12 +94,12 @@ describe("usePrintRequests", () => {
 
   it("sends a print request and stores the service response", async () => {
     const response = makeResponse("open", "2026-07-03T10:00:00.000Z");
-    mockFetch.mockResolvedValueOnce(response);
+    fetchMock.mockResolvedValueOnce(response);
     const { requestCollection, sendCustomPrintRequest } = usePrintRequests();
 
     await sendCustomPrintRequest(requestBody);
 
-    expect(mockFetch).toHaveBeenCalledWith("https://print.example.test/jobs", {
+    expect(fetchMock).toHaveBeenCalledWith("https://print.example.test/jobs", {
       method: "POST",
       body: requestBody,
     });
@@ -114,7 +115,7 @@ describe("usePrintRequests", () => {
   });
 
   it("leaves the collection unchanged when sending fails", async () => {
-    mockFetch.mockRejectedValueOnce(new Error("service unavailable"));
+    fetchMock.mockRejectedValueOnce(new Error("service unavailable"));
     const { requestCollection, sendCustomPrintRequest } = usePrintRequests();
 
     await expect(sendCustomPrintRequest(requestBody)).resolves.toBeUndefined();
@@ -135,7 +136,7 @@ describe("usePrintRequests", () => {
       "2026-07-03T10:00:00.000Z",
       "/reports/1",
     );
-    mockFetch.mockResolvedValueOnce(updated);
+    fetchMock.mockResolvedValueOnce(updated);
     const { requestCollection } = usePrintRequests();
     const request = makeRequest("open", "2026-07-03T10:00:00.000Z", {
       lastResponse: makeResponse(
@@ -148,7 +149,7 @@ describe("usePrintRequests", () => {
 
     await vi.advanceTimersByTimeAsync(2000);
 
-    expect(mockFetch).toHaveBeenCalledWith("/reports/1");
+    expect(fetchMock).toHaveBeenCalledWith("/reports/1");
     expect(request.lastResponse).toEqual(updated);
     expect(request.isPolling).toBe(false);
   });
@@ -167,11 +168,11 @@ describe("usePrintRequests", () => {
 
     await vi.advanceTimersByTimeAsync(2000);
 
-    expect(mockFetch).not.toHaveBeenCalled();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("resets the polling flag after a temporary status error", async () => {
-    mockFetch.mockRejectedValueOnce(new Error("temporary error"));
+    fetchMock.mockRejectedValueOnce(new Error("temporary error"));
     const { requestCollection } = usePrintRequests();
     const request = makeRequest("started", "2026-07-03T10:00:00.000Z");
     requestCollection.value.push(request);

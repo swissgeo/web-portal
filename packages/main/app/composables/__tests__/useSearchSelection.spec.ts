@@ -3,13 +3,18 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useSearchSelection } from "../useSearchSelection";
 
-const { layerStore, makeServerLayerMock, toastAddMock } = vi.hoisted(() => ({
-  layerStore: { layers: [] as { humanId: string }[], addLayer: vi.fn() },
-  makeServerLayerMock: vi.fn((dataset: { id: string }) => ({
-    humanId: dataset.id,
-  })),
-  toastAddMock: vi.fn(),
-}));
+const { fetchMock, layerStore, makeServerLayerMock, toastAddMock } = vi.hoisted(
+  () => ({
+    fetchMock: vi.fn(),
+    layerStore: { layers: [] as { humanId: string }[], addLayer: vi.fn() },
+    makeServerLayerMock: vi.fn((dataset: { id: string }) => ({
+      humanId: dataset.id,
+    })),
+    toastAddMock: vi.fn(),
+  }),
+);
+
+mockNuxtImport("$fetch", () => fetchMock);
 
 mockNuxtImport("useI18n", () => () => ({
   locale: { value: "de" },
@@ -36,9 +41,6 @@ vi.mock("@swissgeo/map", () => ({
     setZoom: vi.fn(),
   }),
 }));
-
-const fetchMock = vi.fn();
-vi.stubGlobal("$fetch", fetchMock);
 
 const layerResult = {
   resultType: "LAYER",

@@ -1,10 +1,13 @@
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { describe, expect, it, vi } from "vitest";
 
-vi.stubGlobal("$fetch", () => ({
-  state: {},
-  deprecated: false,
-  warning: "",
-}));
+mockNuxtImport("$fetch", () =>
+  vi.fn(() => ({
+    state: {},
+    deprecated: false,
+    warning: "",
+  })),
+);
 
 describe("fetchStateFromStateId", () => {
   it("makes the call to the state proxy route", async () => {
