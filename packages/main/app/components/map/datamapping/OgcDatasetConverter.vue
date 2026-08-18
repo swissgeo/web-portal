@@ -2,7 +2,7 @@
 import type { Dimension } from "@swissgeo/dimension";
 import type { DatasetLayer, LayerInfo } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
-import type { Dataset } from "@swissgeo/ogc";
+import type { Dataset, Legend } from "@swissgeo/ogc";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
@@ -41,6 +41,7 @@ const emit = defineEmits<{
   remove: [void];
   updateDataset: [layerUuid: string, dataset: Dataset];
   updateLayerInfo: [layerUuid: string, info: LayerInfo];
+  updateLegends: [layerUuid: string, legends: Legend[]];
 }>();
 
 const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(
@@ -106,6 +107,7 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
     :layerId
     @updateOptions="pushLayerSpecificData<{ options: WMTSOptions }>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
+    @updateLegends="emit('updateLegends', layer.uuid, $event)"
   ></MapDatamappingOgcWmtsLayerConverter>
   <MapDatamappingOgcWmsLayerConverter
     v-if="layerFormat === 'WMS'"
@@ -114,5 +116,6 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
     :layerId
     @updateData="pushLayerSpecificData<WMSLayerData>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
+    @updateLegends="emit('updateLegends', layer.uuid, $event)"
   ></MapDatamappingOgcWmsLayerConverter>
 </template>

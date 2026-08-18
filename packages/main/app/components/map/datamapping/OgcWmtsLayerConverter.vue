@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Dimension } from "@swissgeo/dimension";
-import type { Distribution, Service } from "@swissgeo/ogc";
+import type { Distribution, Legend, Service } from "@swissgeo/ogc";
 import type { Options } from "ol/source/WMTS";
 
 import { processTimeInfo } from "@/components/map/datamapping/processTimeInfo";
@@ -16,12 +16,13 @@ const props = defineProps<{
 const emit = defineEmits<{
   updateOptions: [opacity: number | null, { options: Options }];
   updateTimeDimension: [dimension: Partial<Dimension>];
+  updateLegends: [legends: Legend[]];
 }>();
 
 const distribution = computed(() => props.distribution);
 const serviceData = computed(() => props.serviceData);
 const layerId = computed(() => props.layerId);
-const { timeInfo, options, defaultOpacity } = useOgcWmtsData(
+const { timeInfo, options, defaultOpacity, legends } = useOgcWmtsData(
   distribution,
   serviceData,
   layerId,
@@ -30,6 +31,10 @@ const { timeInfo, options, defaultOpacity } = useOgcWmtsData(
 watch(timeInfo, () => {
   const dimension = processTimeInfo(timeInfo);
   emit("updateTimeDimension", dimension);
+});
+
+watch(legends, () => emit("updateLegends", legends.value), {
+  immediate: true,
 });
 
 watch(

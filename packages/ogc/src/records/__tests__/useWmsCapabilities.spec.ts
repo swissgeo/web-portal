@@ -135,11 +135,13 @@ describe(
         url: null,
         version: null,
         dimensions: null,
+        legends: [],
       });
       expect(parseWmsCapabilities(capabilitiesXML, null)).toEqual({
         url: null,
         version: null,
         dimensions: null,
+        legends: [],
       });
     });
   },

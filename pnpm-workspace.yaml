@@ -64,6 +64,7 @@ catalog:
   "@types/geojson": ^7946.0.16
   "@types/node": ^24.13.2
   "@types/semver": ^7.7.1
+  "@types/sortablejs": ^1.15.9
   "@typescript-eslint/scope-manager": ^8.61.0
   "@typescript-eslint/utils": ^8.61.0
   "@vitejs/plugin-vue": ^6.0.7
@@ -79,6 +80,7 @@ catalog:
   "@vue/tsconfig": ^0.9.0
   "@vue/language-core": ^3.3.5
   "@vueuse/core": ^14.2.1
+  "@vueuse/integrations": ^14.2.1
   "@xmldom/xmldom": ^0.9.0
   chart.js: ^4.5.1
   chartjs-plugin-zoom: ^2.2.0
@@ -112,6 +114,7 @@ catalog:
   rolldown: ^1.1.2
   rolldown-plugin-dts: ^0.28.0
   semver: ^7.7.4
+  sortablejs: ^1.15.6
   stylelint: 17.14.1
   stylelint-config-recommended-scss: ^17.0.1
   stylelint-config-recommended-vue: 2.0.0

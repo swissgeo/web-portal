@@ -27,6 +27,7 @@ export function useOgcWmtsData(
   const dimensions = computed(() => {
     return wmtsData.value?.dimensions || null;
   });
+  const legends = computed(() => wmtsData.value?.legends ?? []);
 
   const timeInfo = computed(() => {
     return getTimeInfoFromWMTSCapabilities(dimensions.value);
@@ -44,5 +45,6 @@ export function useOgcWmtsData(
     options,
     timeInfo,
     defaultOpacity,
+    legends,
   };
 }

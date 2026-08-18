@@ -64,10 +64,9 @@ async function onSearchResultSelected(result: SearchResult) {
             :mapLayers="mapLayers"
           >
           </SideBar>
-          <div
-            class="h-full w-full"
-            :class="isMapFullscreenMode ? 'pl-0' : 'pl-20'"
-          >
+          <!-- The sidebar floats over the map, so the map keeps its full width
+               and does not shift when the sidebar opens or closes -->
+          <div class="h-full w-full">
             <slot />
           </div>
           <DatasetPanel

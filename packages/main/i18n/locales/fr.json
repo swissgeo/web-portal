@@ -10,7 +10,12 @@
   },
   "menu": {
     "search": "Recherche",
-    "layerCart": "Couches actives"
+    "layerCart": "Couches actives",
+    "map": "Carte",
+    "collapse": "Réduire le panneau latéral",
+    "expand": "Ouvrir le panneau latéral",
+    "addLayer": "Ajouter une couche",
+    "addLayerComingSoon": "Le catalogue de couches n'est pas encore disponible."
   },
   "search": {
     "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",
@@ -299,5 +304,22 @@
     "warningPrintExtentBeyondViewport": "Vous pouvez verrouiller le centre et le niveau de zoom pour empêcher l'emprise d'impression de sortir du viewport lors des interactions avec la carte.",
     "orientationPortrait": "portrait",
     "orientationLandscape": "paysage"
+  },
+  "layers": {
+    "expand": "Afficher les détails de la couche",
+    "reorder": "Déplacer la couche (flèche haut/bas)",
+    "show": "Afficher la couche",
+    "hide": "Masquer la couche",
+    "info": "Informations sur la couche",
+    "remove": "Supprimer la couche",
+    "collapse": "Masquer les détails de la couche",
+    "transparency": "Transparence",
+    "legend": {
+      "title": "Légende",
+      "notAvailable": "Aucune légende disponible.",
+      "openDocument": "Ouvrir la légende comme document",
+      "openPdf": "Ouvrir la légende en PDF",
+      "openPage": "Ouvrir la page de la légende"
+    }
   }
 }

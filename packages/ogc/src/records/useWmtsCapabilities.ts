@@ -1,3 +1,4 @@
+import type { WmtsLayer } from "@camptocamp/ogc-client";
 import type { Ref } from "vue";
 
 import { WmtsEndpoint } from "@camptocamp/ogc-client";
@@ -7,6 +8,7 @@ import { computedAsync } from "@vueuse/core";
 import proj4 from "proj4";
 import { computed, watchEffect } from "vue";
 
+import type { Legend } from "@/types/Capabilities";
 import type { Service } from "@/types/Records";
 
 import { useCapabilities } from "./useCapabilities";
@@ -43,6 +45,7 @@ export function useWmtsCapabilities(
       // OpenLayers out of `@swissgeo/ogc`.
       endpoint: endpoint.value,
       dimensions: layer?.dimensions ?? null,
+      legends: getLegends(layer),
     };
   });
 
@@ -58,4 +61,15 @@ export function useWmtsCapabilities(
     capabilityUrl,
     wmtsData,
   };
+}
+
+/**
+ * Legends of a WMTS layer, one per style that advertises one. WMTS capabilities
+ * carry the URL alone, so the format and the size are left undefined and the
+ * consumer falls back on the URL extension.
+ */
+export function getLegends(layer: WmtsLayer | undefined): Legend[] {
+  return (layer?.styles ?? [])
+    .filter((style) => !!style.legendUrl)
+    .map((style) => ({ href: style.legendUrl! }));
 }

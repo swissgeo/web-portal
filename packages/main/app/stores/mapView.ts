@@ -1,4 +1,5 @@
 import type { Layer as MapLayer } from "@swissgeo/map";
+import type { Legend } from "@swissgeo/ogc";
 
 import { useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
@@ -23,12 +24,24 @@ export const useMapViewStore = defineStore("mapView", () => {
   const stateId = ref("");
   const mapLayers: Ref<MapLayer[]> = ref([]);
 
+  /**
+   * Legends advertised by the services, per layer uuid. They are kept aside from
+   * the layer because the service capabilities they come from are re-fetched,
+   * and thus re-emitted, independently of the layer, notably on a locale change.
+   */
+  const legends = ref<Record<string, Legend[]>>({});
+
   const layerStore = useLayerStore();
 
-  /** Visible overlay layers, ordered bottom-to-top (background excluded). */
+  /** 0, or 1 when a background layer sits at the bottom of the stack. */
+  const indexOfFirstNonBackgroundLayer = computed(() =>
+    Number(!!layerStore.backgroundLayer),
+  );
+
+  /** Visible layers, ordered bottom-to-top (background excluded). */
   const visibleLayers = computed(() =>
     mapLayers.value
-      .slice(Number(!!layerStore.backgroundLayer))
+      .slice(indexOfFirstNonBackgroundLayer.value)
       .filter((layer) => layer.isVisible),
   );
 
@@ -64,7 +77,7 @@ export const useMapViewStore = defineStore("mapView", () => {
   function getMapLayerFromUuid(uuid: string): MapLayer | undefined {
     const index = _getIndexFromIdentifier(uuid);
 
-    if (index) {
+    if (index !== undefined) {
       return mapLayers.value[index];
     }
     return;
@@ -88,23 +101,25 @@ export const useMapViewStore = defineStore("mapView", () => {
   ): void {
     const currentIndex = _getIndexFromIdentifier(identifier);
 
-    // Validate: current index must be found, target must be in valid range, and must be different
+    // Validate: current index must be found, target must sit above the
+    // background layer, and must be different
     if (
-      currentIndex &&
-      currentIndex >= 0 &&
+      currentIndex !== undefined &&
       targetIndex < mapLayers.value.length &&
-      targetIndex >= 0 &&
+      targetIndex >= indexOfFirstNonBackgroundLayer.value &&
       currentIndex !== targetIndex
     ) {
-      const [layer] = mapLayers.value.splice(currentIndex, 1) as [MapLayer];
-      mapLayers.value.splice(targetIndex, 0, layer);
+      const [layer] = mapLayers.value.splice(currentIndex, 1);
+      if (layer) {
+        mapLayers.value.splice(targetIndex, 0, layer);
+      }
     }
   }
 
   /** Move a layer one step up in the visual stack (toward top, higher index). */
   function moveLayerUp(identifier: string | number): void {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       setLayerIndex(index, index + 1);
     }
   }
@@ -112,20 +127,29 @@ export const useMapViewStore = defineStore("mapView", () => {
   /** Move a layer one step down in the visual stack (toward bottom, lower index). */
   function moveLayerDown(identifier: string | number): void {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       setLayerIndex(index, index - 1);
     }
   }
   function updateLayerOpacity(identifier: string | number, opacity: number) {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       mapLayers.value[index]!.opacity = opacity;
     }
   }
 
+  function setLayerLegends(uuid: string, layerLegends: Legend[]): void {
+    legends.value[uuid] = layerLegends;
+  }
+
+  function getLayerLegends(uuid: string): Legend[] {
+    return legends.value[uuid] ?? [];
+  }
+
   function removeLayer(identifier: string | number) {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
+      delete legends.value[mapLayers.value[index]!.uuid];
       mapLayers.value.splice(index, 1);
     }
   }
@@ -136,7 +160,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     canCreateLayer: boolean,
   ) {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       mapLayers.value[index] = mapLayer;
     } else if (canCreateLayer && typeof identifier === "number") {
       mapLayers.value[identifier] = mapLayer;
@@ -190,14 +214,14 @@ export const useMapViewStore = defineStore("mapView", () => {
 
   function toggleVisibility(identifier: string | number) {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       mapLayers.value[index]!.isVisible = !mapLayers.value[index]!.isVisible;
     }
   }
 
   function setVisibility(identifier: string | number, visibility: boolean) {
     const index = _getIndexFromIdentifier(identifier);
-    if (index || index === 0) {
+    if (index !== undefined) {
       mapLayers.value[index]!.isVisible = visibility;
     }
   }
@@ -213,6 +237,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     visibleLayers,
     getMapLayers,
     getMapLayerFromUuid,
+    getLayerLegends,
     // actions
     toggleTimeSlider,
     closeTimeSlider,
@@ -226,6 +251,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     setStateId,
     updateLayerData,
     updateLayerOpacity,
+    setLayerLegends,
     removeLayer,
     addLayerToBottom,
     addLayerToTop,
@@ -233,5 +259,6 @@ export const useMapViewStore = defineStore("mapView", () => {
     toggleVisibility,
     moveLayerUp,
     moveLayerDown,
+    setLayerIndex,
   };
 });

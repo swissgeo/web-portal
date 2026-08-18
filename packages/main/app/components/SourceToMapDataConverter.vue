@@ -6,7 +6,7 @@ import type {
   Layer as SourceData,
 } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
-import type { Dataset } from "@swissgeo/ogc";
+import type { Dataset, Legend } from "@swissgeo/ogc";
 
 import {
   convertYearToTimestamp,
@@ -68,6 +68,10 @@ function updateLayerInfo(uuid: string, info: LayerInfo) {
   layerStore.setLayerInfo(uuid, info);
 }
 
+function updateLegends(uuid: string, legends: Legend[]) {
+  mapViewStore.setLayerLegends(uuid, legends);
+}
+
 function updateStoreLayerData(uuid: string, dataset: Dataset) {
   layerStore.setLayerData(uuid, dataset);
 }
@@ -123,6 +127,7 @@ function removeBgLayer() {
       @updateTimeDimension="updateTimeDimension"
       @updateDataset="updateStoreLayerData"
       @updateLayerInfo="updateLayerInfo"
+      @updateLegends="updateLegends"
     />
     <MapDatamappingFileConverter
       v-else

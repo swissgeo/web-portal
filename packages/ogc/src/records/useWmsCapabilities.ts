@@ -3,7 +3,7 @@ import type { Ref } from "vue";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computed, watchEffect } from "vue";
 
-import type { WMSCapabilityDimension } from "@/types/Capabilities";
+import type { Legend, WMSCapabilityDimension } from "@/types/Capabilities";
 import type { Service } from "@/types/Records";
 
 import { useCapabilities } from "./useCapabilities";
@@ -22,6 +22,8 @@ export interface WmsCapabilitiesData {
   version: string | null;
   /** Time (and other) dimensions of the requested layer, if any. */
   dimensions: WMSCapabilityDimension[] | null;
+  /** Legends advertised by the requested layer's styles. */
+  legends: Legend[];
 }
 
 export function useWmsCapabilities(
@@ -52,9 +54,9 @@ export function useWmsCapabilities(
 /**
  * Parses the relevant bits of a WMS GetCapabilities document without depending
  * on OpenLayers. ogc-client (1.3.0) does not expose WMS layer dimensions, so we
- * read the service URL, version and the requested layer's dimensions directly
- * from the XML. This is intentionally a small, local parser (see GPS-804); it
- * can later be replaced by upstream ogc-client support.
+ * read the service URL, version and the requested layer's dimensions and
+ * legends directly from the XML. This is intentionally a small, local parser
+ * (see GPS-804); it can later be replaced by upstream ogc-client support.
  */
 export function parseWmsCapabilities(
   capabilityData: string | null,
@@ -65,6 +67,7 @@ export function parseWmsCapabilities(
       url: null,
       version: null,
       dimensions: null,
+      legends: [],
     };
   }
 
@@ -74,6 +77,7 @@ export function parseWmsCapabilities(
     version: doc.documentElement?.getAttribute("version") ?? null,
     url: getServiceUrl(doc),
     dimensions: getDimensions(doc, layerId),
+    legends: getLegends(doc, layerId),
   };
 }
 
@@ -92,20 +96,75 @@ function getServiceUrl(doc: Document): string | null {
   );
 }
 
+/**
+ * The requested layer, wherever it sits: a layer is not always a direct child of
+ * the root one, it can be nested in any number of groups.
+ */
+function findLayer(doc: Document, layerId: string): Element | undefined {
+  return Array.from(doc.getElementsByTagName("Layer")).find(
+    (candidate) =>
+      firstDirectChild(candidate, "Name")?.textContent?.trim() === layerId,
+  );
+}
+
 export function getDimensions(
   doc: Document,
   layerId: string,
 ): WMSCapabilityDimension[] | null {
-  const layer = Array.from(doc.getElementsByTagName("Layer")).find(
-    (candidate) =>
-      firstDirectChild(candidate, "Name")?.textContent?.trim() === layerId,
-  );
+  const layer = findLayer(doc, layerId);
   if (!layer) {
     return null;
   }
 
   const dimensions = directChildren(layer, "Dimension").map(parseDimension);
   return dimensions.length ? dimensions : null;
+}
+
+/**
+ * Legends of the requested layer, one per style that advertises one. Styles are
+ * inherited from the enclosing groups, as the WMS spec prescribes, so a layer
+ * nested in a group also carries the legends the group publishes. The layer's
+ * own legends come first.
+ */
+export function getLegends(doc: Document, layerId: string): Legend[] {
+  const layer = findLayer(doc, layerId);
+  if (!layer) {
+    return [];
+  }
+
+  const legends: Legend[] = [];
+  for (
+    let candidate: Element | null = layer;
+    candidate?.localName === "Layer";
+    candidate = candidate.parentElement
+  ) {
+    legends.push(
+      ...directChildren(candidate, "Style")
+        .flatMap((style) => directChildren(style, "LegendURL"))
+        .map(parseLegend)
+        .filter((legend): legend is Legend => !!legend),
+    );
+  }
+  return legends;
+}
+
+function parseLegend(element: Element): Legend | undefined {
+  const onlineResource = firstDirectChild(element, "OnlineResource");
+  const href =
+    onlineResource?.getAttribute("xlink:href") ??
+    onlineResource?.getAttributeNS(XLINK_NS, "href");
+  if (!href) {
+    return;
+  }
+
+  const width = element.getAttribute("width");
+  const height = element.getAttribute("height");
+  return {
+    href,
+    format: firstDirectChild(element, "Format")?.textContent?.trim(),
+    width: width ? Number(width) : undefined,
+    height: height ? Number(height) : undefined,
+  };
 }
 
 function parseDimension(element: Element): WMSCapabilityDimension {

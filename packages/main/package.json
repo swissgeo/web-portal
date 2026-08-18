@@ -63,6 +63,7 @@
     "@tailwindcss/vite": "catalog:",
     "@types/geojson": "catalog:",
     "@vueuse/core": "catalog:",
+    "@vueuse/integrations": "catalog:",
     "@xmldom/xmldom": "catalog:",
     "es-toolkit": "catalog:",
     "eslint": "catalog:",
@@ -72,6 +73,7 @@
     "ol": "catalog:",
     "pinia": "catalog:",
     "proj4": "catalog:",
+    "sortablejs": "catalog:",
     "ufo": "catalog:",
     "vue": "catalog:",
     "vue-i18n": "catalog:"
@@ -81,6 +83,7 @@
     "@nuxt/test-utils": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@types/node": "catalog:",
+    "@types/sortablejs": "catalog:",
     "@vitest/ui": "catalog:",
     "@vue/test-utils": "catalog:",
     "eslint-plugin-perfectionist": "catalog:",

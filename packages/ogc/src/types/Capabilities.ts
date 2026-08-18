@@ -5,6 +5,18 @@
 
 import type { WmtsLayer } from "@camptocamp/ogc-client";
 
+/**
+ * A legend as it is advertised by a service, normalised over the WMS and WMTS
+ * capability shapes. Only WMS advertises the format and the size; WMTS gives a
+ * bare URL.
+ */
+export interface Legend {
+  href: string;
+  format?: string;
+  width?: number;
+  height?: number;
+}
+
 export interface WMSCapabilityDimension {
   name: string;
   units: string;

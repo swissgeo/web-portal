@@ -10,7 +10,12 @@
   },
   "menu": {
     "search": "Search",
-    "layerCart": "Active layers"
+    "layerCart": "Active layers",
+    "map": "Map",
+    "collapse": "Collapse the side panel",
+    "expand": "Expand the side panel",
+    "addLayer": "Add layer",
+    "addLayerComingSoon": "The layer catalog is not available yet."
   },
   "search": {
     "placeholder": "Search for a place, layer or coordinates...",
@@ -299,5 +304,22 @@
     "warningPrintExtentBeyondViewport": "You can lock the center and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.",
     "orientationPortrait": "portrait",
     "orientationLandscape": "landscape"
+  },
+  "layers": {
+    "expand": "Show layer details",
+    "reorder": "Reorder layer (arrow up/down)",
+    "show": "Show layer",
+    "hide": "Hide layer",
+    "info": "Layer information",
+    "remove": "Remove layer",
+    "collapse": "Hide layer details",
+    "transparency": "Transparency",
+    "legend": {
+      "title": "Legend",
+      "notAvailable": "No legend available.",
+      "openDocument": "Open legend as document",
+      "openPdf": "Open legend as PDF",
+      "openPage": "Open legend page"
+    }
   }
 }

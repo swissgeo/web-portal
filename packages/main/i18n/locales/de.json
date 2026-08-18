@@ -10,7 +10,12 @@
   },
   "menu": {
     "search": "Suche",
-    "layerCart": "Aktive Ebenen"
+    "layerCart": "Aktive Ebenen",
+    "map": "Karte",
+    "collapse": "Seitenleiste einklappen",
+    "expand": "Seitenleiste ausklappen",
+    "addLayer": "Ebene hinzufügen",
+    "addLayerComingSoon": "Der Ebenenkatalog ist noch nicht verfügbar."
   },
   "search": {
     "placeholder": "Ort, Layer oder Koordinaten suchen...",
@@ -329,5 +334,22 @@
     "mediaInformation": "Medieninformationen",
     "map": "Karte",
     "login": "Anmelden"
+  },
+  "layers": {
+    "expand": "Ebenendetails anzeigen",
+    "reorder": "Ebene verschieben (Pfeil oben/unten)",
+    "show": "Ebene anzeigen",
+    "hide": "Ebene ausblenden",
+    "info": "Ebeneninformationen",
+    "remove": "Ebene entfernen",
+    "collapse": "Ebenendetails ausblenden",
+    "transparency": "Transparenz",
+    "legend": {
+      "title": "Legende",
+      "notAvailable": "Keine Legende verfügbar.",
+      "openDocument": "Legende als Dokument öffnen",
+      "openPdf": "Legende als PDF öffnen",
+      "openPage": "Legendenseite öffnen"
+    }
   }
 }

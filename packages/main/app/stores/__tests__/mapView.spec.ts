@@ -1,6 +1,24 @@
+import type { Layer as MapLayer } from "@swissgeo/map";
+
+import { useLayerStore } from "@swissgeo/layers";
 import { useMapViewStore } from "~/stores/mapView";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
+
+function makeLayer(uuid: string): MapLayer {
+  return {
+    format: "WMTS",
+    layerId: uuid,
+    uuid,
+    opacity: 1,
+    isVisible: true,
+  };
+}
+
+/** Layer uuids from bottom to top, as they are kept in the store */
+function stack(mapLayers: MapLayer[]) {
+  return mapLayers.map((layer) => layer.uuid);
+}
 
 describe("mapView store", () => {
   beforeEach(() => {
@@ -74,5 +92,70 @@ describe("mapView store", () => {
     // non-finite input is ignored, keeping the previous ratio
     mapViewStore.setCompareRatio(Number.NaN);
     expect(mapViewStore.compareRatio).toBe(1);
+  });
+
+  it("finds the bottom-most layer by uuid", () => {
+    const mapViewStore = useMapViewStore();
+    mapViewStore.addLayerToTop(makeLayer("bottom"));
+    mapViewStore.addLayerToTop(makeLayer("top"));
+
+    // index 0 is falsy, which used to make the lookup report the layer missing
+    expect(mapViewStore.getMapLayerFromUuid("bottom")?.uuid).toBe("bottom");
+    expect(mapViewStore.getMapLayerFromUuid("top")?.uuid).toBe("top");
+    expect(mapViewStore.getMapLayerFromUuid("nope")).toBeUndefined();
+  });
+
+  describe("layer ordering", () => {
+    it("moves the bottom-most layer, which used to be mistaken for a missing one", () => {
+      const mapViewStore = useMapViewStore();
+      mapViewStore.mapLayers = [makeLayer("a"), makeLayer("b")];
+
+      mapViewStore.moveLayerUp(0);
+
+      expect(stack(mapViewStore.mapLayers)).toEqual(["b", "a"]);
+    });
+
+    it("moves a layer to an arbitrary position", () => {
+      const mapViewStore = useMapViewStore();
+      mapViewStore.mapLayers = [makeLayer("a"), makeLayer("b"), makeLayer("c")];
+
+      mapViewStore.setLayerIndex("a", 2);
+      expect(stack(mapViewStore.mapLayers)).toEqual(["b", "c", "a"]);
+
+      mapViewStore.setLayerIndex("a", 0);
+      expect(stack(mapViewStore.mapLayers)).toEqual(["a", "b", "c"]);
+    });
+
+    it("keeps a layer within the stack", () => {
+      const mapViewStore = useMapViewStore();
+      mapViewStore.mapLayers = [makeLayer("a"), makeLayer("b")];
+
+      mapViewStore.moveLayerUp(1);
+      mapViewStore.moveLayerDown(0);
+
+      expect(stack(mapViewStore.mapLayers)).toEqual(["a", "b"]);
+    });
+
+    it("keeps the layers above the background layer", () => {
+      const layerStore = useLayerStore();
+      const mapViewStore = useMapViewStore();
+      layerStore.backgroundLayer = { uuid: "bg" } as never;
+      mapViewStore.mapLayers = [
+        makeLayer("bg"),
+        makeLayer("a"),
+        makeLayer("b"),
+      ];
+
+      // the layer sitting right above the background cannot sink below it
+      mapViewStore.moveLayerDown(1);
+      expect(stack(mapViewStore.mapLayers)).toEqual(["bg", "a", "b"]);
+
+      // and neither can a drag drop it there
+      mapViewStore.setLayerIndex("b", 0);
+      expect(stack(mapViewStore.mapLayers)).toEqual(["bg", "a", "b"]);
+
+      mapViewStore.setLayerIndex("b", 1);
+      expect(stack(mapViewStore.mapLayers)).toEqual(["bg", "b", "a"]);
+    });
   });
 });
