@@ -7,7 +7,7 @@ export default defineAppConfig({
       info: "blue",
       warning: "yellow",
       error: "red",
-      neutral: "slate",
+      neutral: "neutral",
     },
     button: {
       slots: {
