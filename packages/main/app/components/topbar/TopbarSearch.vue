@@ -113,7 +113,7 @@ function clearSearch() {
         size="xl"
         variant="soft"
         color="neutral"
-        class="w-full 2xl:w-[472px]"
+        class="w-full xl:w-[280px] 2xl:w-[472px]"
         :ui="{
           base: 'bg-elevated hover:bg-accented focus:bg-accented',
           leadingIcon: 'text-muted',

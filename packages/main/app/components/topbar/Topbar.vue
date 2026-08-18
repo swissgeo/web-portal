@@ -68,11 +68,12 @@ function resetApp() {
     :ui="{
       root: 'bg-default backdrop-blur-none',
       container: 'max-w-none gap-0 px-[15px] lg:px-8',
-      left: 'shrink-0 gap-0 2xl:flex-none 2xl:pe-5',
-      center: 'lg:hidden 2xl:flex 2xl:flex-1 2xl:items-center 2xl:gap-10',
-      right: 'shrink-0 gap-1.5 2xl:flex-none 2xl:gap-10',
-      content: 'lg:block 2xl:hidden',
-      overlay: 'lg:block 2xl:hidden',
+      left: 'shrink-0 gap-0 xl:flex-none xl:pe-4 2xl:pe-5',
+      center:
+        'lg:hidden xl:flex xl:min-w-0 xl:flex-1 xl:items-center xl:gap-4 2xl:gap-10',
+      right: 'shrink-0 gap-1.5 xl:flex-none xl:gap-4 2xl:gap-10',
+      content: 'lg:block xl:hidden',
+      overlay: 'lg:block xl:hidden',
       body: 'flex flex-col gap-6',
     }"
   >
@@ -108,17 +109,17 @@ function resetApp() {
         color="primary"
         variant="ghost"
         size="md"
-        class="hidden 2xl:inline-flex"
+        class="hidden xl:inline-flex"
       >
         {{ t("topbar.login") }}
       </UButton>
-      <div class="hidden 2xl:block">
+      <div class="hidden xl:block">
         <TopbarLanguageSwitcherButton />
       </div>
     </template>
 
     <template #toggle="{ open, toggle }">
-      <div class="flex items-center gap-1.5 2xl:hidden">
+      <div class="flex items-center gap-1.5 xl:hidden">
         <UButton
           icon="i-lucide-search"
           color="neutral"
