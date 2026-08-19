@@ -1,10 +1,14 @@
 <script lang="ts" setup>
+import type { Layer as BaseLayer } from "@swissgeo/layers";
+
 import { useLayerStore } from "@swissgeo/layers";
 import { displayModeKey } from "~/types/injectionKeys";
 
 const geolocationStore = useGeolocationStore();
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
+
+const backgroundLayer = computed(() => layerStore.backgroundLayer);
 
 const { sources: attributionSources } = useAttributionSources(
   computed(() => layerStore.layers),
@@ -24,6 +28,10 @@ watch(topVisibleLayer, (layer) => {
 const showAdditionalMapUi = computed(
   () => !mapViewStore.isFullscreenModeActive,
 );
+
+function changeBackground(layer: BaseLayer | null) {
+  layerStore.setBackground(layer);
+}
 
 const displayMode = inject(displayModeKey, "web");
 </script>
@@ -62,6 +70,11 @@ const displayMode = inject(displayModeKey, "web");
         v-if="showAdditionalMapUi && displayMode === 'web'"
         class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"
       ></DebugPanel>
+      <!-- DO NOT MERGE: Temporary preview fallback for the legacy background selector tests. -->
+      <MapBackgroundSelector
+        :currentBackground="backgroundLayer"
+        @setBackground="changeBackground"
+      />
       <MapTimeSliderButton />
     </template>
   </BaseMapViewer>
