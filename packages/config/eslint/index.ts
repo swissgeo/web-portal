@@ -111,6 +111,7 @@ export const vueConfig: FlatConfig.ConfigArray = defineConfigWithVueTs(
       ...commonTsAndJsRules,
       "vue/block-lang": "error",
       ...noUnusedVarsRules,
+      "vue/no-v-html": "error",
     },
   },
 );
