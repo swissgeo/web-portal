@@ -42,6 +42,7 @@
     "@swissgeo/config-typescript": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
     "eslint": "catalog:",
+    "jsdom": "catalog:",
     "nuxt": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",

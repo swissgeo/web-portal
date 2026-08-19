@@ -32,6 +32,7 @@
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "eslint": "catalog:",
+    "jsdom": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:"
   },
