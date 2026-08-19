@@ -82,9 +82,7 @@ vi.mock("ol/source/Vector", () => ({
   }),
 }));
 
-import useOlKMZLayer, {
-  DEFAULT_MAX_DECOMPRESSED_SIZE_MB,
-} from "../olKMZLayer.composable";
+import useOlKMZLayer from "../olKMZLayer.composable";
 
 function makeKMZLayer(overrides: Partial<KMZLayer> = {}): KMZLayer {
   // Simple binary placeholder; unzip is mocked in these tests.
@@ -195,7 +193,7 @@ describe("useOlKMZLayer", () => {
 
   it("rejects KMZ exceeding decompression limit", async () => {
     const { unzip } = await import("fflate");
-    const maxBytes = DEFAULT_MAX_DECOMPRESSED_SIZE_MB * 1024 * 1024;
+    const maxBytes = 1 * 1024 * 1024;
     const oversized = "<kml>" + "x".repeat(maxBytes + 1) + "</kml>";
     vi.mocked(unzip).mockImplementationOnce(((
       _data: Uint8Array,
@@ -213,7 +211,7 @@ describe("useOlKMZLayer", () => {
 
     const TestComponent = defineComponent({
       setup() {
-        useOlKMZLayer(layer, ref(undefined));
+        useOlKMZLayer(layer, ref(undefined), 1);
       },
       template: "<div />",
     });
