@@ -57,7 +57,7 @@ async function onSearchResultSelected(result: SearchResult) {
       <main ref="main" class="h-full font-sans">
         <div class="relative h-full">
           <SideBar
-            v-if="!isMapFullscreenMode"
+            v-if="isMapPage && !isMapFullscreenMode"
             class="z-2"
             :mapLayers="mapLayers"
             :show-map-controls="isMapPage"
@@ -65,7 +65,7 @@ async function onSearchResultSelected(result: SearchResult) {
           </SideBar>
           <div
             class="h-full w-full"
-            :class="isMapFullscreenMode ? 'pl-0' : 'pl-20'"
+            :class="isMapPage && !isMapFullscreenMode ? 'pl-20' : 'pl-0'"
           >
             <slot />
           </div>
