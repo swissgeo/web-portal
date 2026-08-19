@@ -75,4 +75,19 @@ test.describe("topbar search", () => {
     await searchInput.click();
     await expect(results).toBeVisible();
   });
+
+  test("CMS results are listed in the content pages tab", async ({ page }) => {
+    await mockExternalRequests(page).mockContentSearch([
+      { documentId: "42", title: "Über uns" },
+    ]);
+
+    await page.getByRole("textbox").fill("uns");
+
+    const contentTab = page.getByRole("tab", { name: "Inhaltsseiten" });
+    await expect(contentTab).toBeVisible({ timeout: 10_000 });
+    await contentTab.click();
+
+    const contentResults = page.getByTestId("content-search-results");
+    await expect(contentResults).toContainText("Über uns");
+  });
 });

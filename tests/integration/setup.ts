@@ -41,6 +41,24 @@ export function mockExternalRequests(page: Page) {
   };
 
   /**
+   * Mock the CMS content search, which the browser reaches through our own
+   * Nitro proxy rather than calling Livingdocs directly
+   */
+  const mockContentSearch = async (
+    results: {
+      documentId: string;
+      title: string;
+      description?: string;
+      slug?: string;
+      locale?: string;
+    }[] = [],
+  ) => {
+    await page.route("**/api/wpa/v1/content/search**", (route) =>
+      route.fulfill({ status: 200, json: { results } }),
+    );
+  };
+
+  /**
    * This is a catch-all route to warn about unmocked routes
    * It should only be triggered by fetch/xhr requests, all the asset loading should
    * of course not be warned about
@@ -68,12 +86,14 @@ export function mockExternalRequests(page: Page) {
     await mockCatchAll();
     await mockOar();
     await mockLivingdocs();
+    await mockContentSearch();
   };
 
   return {
     mockAll,
     mockOar,
     mockLivingdocs,
+    mockContentSearch,
     mockCatchAll,
   };
 }

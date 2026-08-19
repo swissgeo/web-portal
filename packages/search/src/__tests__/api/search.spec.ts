@@ -16,6 +16,7 @@ import {
   searchLocation,
   searchLayers,
   searchLayerFeatures,
+  searchContentPages,
   parseLocationResult,
 } from "../../api/search"; // for some reason, the @/api/search doesn't find anything
 
@@ -526,5 +527,105 @@ describe("searchLayerFeatures", () => {
     await expect(
       searchLayerFeatures("Feature", "de", "layer", "LayerName"),
     ).rejects.toThrow("Aborted");
+  });
+});
+
+describe("searchContentPages function", () => {
+  const hit = {
+    documentId: "42",
+    title: "Über uns",
+    description: "A description",
+    slug: "ueber-uns",
+    locale: "de",
+  };
+
+  beforeEach(() => {
+    globalThis.fetch = vi.fn();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("queries the content proxy with q, lang and limit", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: true,
+      json: () => ({ results: [] as (typeof hit)[] }),
+    });
+
+    await searchContentPages("  uns  ", "fr", undefined, 5);
+
+    const calledWith = (fetch as Mock).mock.calls[0][0] as string;
+    const url = new URL(calledWith, "http://localhost");
+    expect(url.pathname).toBe("/api/wpa/v1/content/search");
+    expect(url.searchParams.get("q")).toBe("uns");
+    expect(url.searchParams.get("lang")).toBe("fr");
+    expect(url.searchParams.get("limit")).toBe("5");
+  });
+
+  it("maps the proxy results to content search results", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: true,
+      json: () => ({ results: [hit] }),
+    });
+
+    await expect(searchContentPages("uns", "de")).resolves.toEqual([
+      {
+        resultType: "CONTENT",
+        id: "content-42",
+        documentId: "42",
+        slug: "ueber-uns",
+        locale: "de",
+        title: "Über uns",
+        sanitizedTitle: "Über uns",
+        description: "A description",
+      },
+    ]);
+  });
+
+  it("escapes the title, which the result entry renders as HTML", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: true,
+      json: () => ({
+        results: [{ ...hit, title: "<img src=x onerror=alert(1)>" }],
+      }),
+    });
+
+    const [result] = await searchContentPages("img", "de");
+    expect(result.title).toBe("&lt;img src=x onerror=alert(1)&gt;");
+    expect(result.sanitizedTitle).toBe("");
+  });
+
+  it("skips results without a document ID or a title", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: true,
+      json: () => ({
+        results: [hit, { ...hit, documentId: "" }, { ...hit, title: "" }],
+      }),
+    });
+
+    await expect(searchContentPages("uns", "de")).resolves.toHaveLength(1);
+  });
+
+  it.each(["", " a "])(
+    "does not call the proxy for a query shorter than two characters (%s)",
+    async (query) => {
+      await expect(searchContentPages(query, "de")).resolves.toEqual([]);
+      expect(fetch).not.toHaveBeenCalled();
+    },
+  );
+
+  it("returns no results when the CMS is unavailable, so the search bar keeps working", async () => {
+    (fetch as Mock).mockResolvedValue({ ok: false, status: 503 });
+
+    await expect(searchContentPages("uns", "de")).resolves.toEqual([]);
+  });
+
+  it("re-throws abort errors so superseded requests stay silent", async () => {
+    const abortError = new Error("aborted");
+    abortError.name = "AbortError";
+    (fetch as Mock).mockRejectedValue(abortError);
+
+    await expect(searchContentPages("uns", "de")).rejects.toThrow(abortError);
   });
 });
