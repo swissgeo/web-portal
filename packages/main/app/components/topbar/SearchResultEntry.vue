@@ -117,6 +117,7 @@ defineExpose({
 
     <!-- Title -->
     <ClientOnly>
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
     </ClientOnly>
 
