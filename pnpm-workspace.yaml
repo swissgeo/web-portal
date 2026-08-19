@@ -84,6 +84,7 @@ catalog:
   "@xmldom/xmldom": ^0.9.0
   chart.js: ^4.5.1
   chartjs-plugin-zoom: ^2.2.0
+  dompurify: ^3.4.13
   es-toolkit: ^1.44.0
   eslint: ^10.5.0
   eslint-import-resolver-typescript: ^4.4.4
@@ -97,6 +98,7 @@ catalog:
   globals: ^17.6.0
   happy-dom: 20.11.2
   h3: ^1.15.11
+  jsdom: ^30.0.1
   mapbox-gl: ~3.28.0
   msw: ^2.14.6
   nuxt: ^4.5.2

@@ -52,11 +52,17 @@ vi.mock("proj4", () => ({
   default: vi.fn(),
 }));
 
-vi.mock("ol/format/KML", () => ({
-  default: class MockKML {
-    readFeatures = vi.fn(() => []);
+const { MockKML, mockReadFeatures } = vi.hoisted(() => {
+  const mockReadFeatures = vi.fn(() => []);
+  class MockKML {
+    readFeatures = mockReadFeatures;
     constructor(_config?: unknown) {}
-  },
+  }
+  return { MockKML, mockReadFeatures };
+});
+
+vi.mock("ol/format/KML", () => ({
+  default: MockKML,
 }));
 
 vi.mock("ol/layer/Vector", () => ({
@@ -95,6 +101,7 @@ function makeKMZLayer(overrides: Partial<KMZLayer> = {}): KMZLayer {
 describe("useOlKMZLayer", () => {
   beforeEach(() => {
     clearAddLayerToMapMocks();
+    mockReadFeatures.mockClear();
   });
   it("creates a VectorLayer and calls addLayerToMap", async () => {
     const layer = ref(makeKMZLayer());
@@ -182,5 +189,36 @@ describe("useOlKMZLayer", () => {
     expect(createObjectURLSpy).toHaveBeenCalled();
 
     createObjectURLSpy.mockRestore();
+  });
+
+  it("rejects KMZ exceeding decompression limit", async () => {
+    const { unzip } = await import("fflate");
+    const maxBytes = 1 * 1024 * 1024;
+    const oversized = "<kml>" + "x".repeat(maxBytes + 1) + "</kml>";
+    vi.mocked(unzip).mockImplementationOnce(((
+      _data: Uint8Array,
+      callback: (..._args: never[]) => void,
+    ) => {
+      (callback as (_err: null, _result: Record<string, Uint8Array>) => void)(
+        null,
+        {
+          "doc.kml": new TextEncoder().encode(oversized),
+        },
+      );
+    }) as never);
+
+    const layer = ref(makeKMZLayer());
+
+    const TestComponent = defineComponent({
+      setup() {
+        useOlKMZLayer(layer, ref(undefined), 1);
+      },
+      template: "<div />",
+    });
+
+    mount(TestComponent);
+    await nextTick();
+
+    expect(mockReadFeatures).not.toHaveBeenCalled();
   });
 });

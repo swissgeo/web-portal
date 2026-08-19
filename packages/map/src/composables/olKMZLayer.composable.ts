@@ -24,10 +24,15 @@ import type { KMZLayer } from "@/types";
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
 
+// exported for testing purposes
+export const DEFAULT_MAX_DECOMPRESSED_SIZE_MB = 250;
+
 export default function useOlKMZLayer(
   layer: Ref<KMZLayer>,
   olMap: Ref<Map | undefined> | undefined,
+  maxDecompressedSizeMB: number = DEFAULT_MAX_DECOMPRESSED_SIZE_MB,
 ) {
+  const maxDecompressedSize = maxDecompressedSizeMB * 1024 * 1024;
   const layerId = computed(() => layer.value.layerId);
   const zIndex = computed(() => layer.value.zIndex);
   const isVisible = computed(() => layer.value.isVisible);
@@ -60,7 +65,19 @@ export default function useOlKMZLayer(
           if (err) {
             reject(new Error(err.message));
           } else {
-            resolve(data);
+            const totalSize = Object.values(data).reduce(
+              (sum, chunk) => sum + chunk.length,
+              0,
+            );
+            if (totalSize > maxDecompressedSize) {
+              reject(
+                new Error(
+                  `KMZ archive too large after decompression: ${(totalSize / 1024 / 1024).toFixed(1)}MB (max ${maxDecompressedSizeMB}MB)`,
+                ),
+              );
+            } else {
+              resolve(data);
+            }
           }
         },
       );
@@ -192,7 +209,6 @@ export default function useOlKMZLayer(
         titleColor: LogPreDefinedColor.Rose,
         messages: [`Failed to initialize KMZ layer ${layerId.value}`, error],
       });
-      throw error;
     }
   }
 

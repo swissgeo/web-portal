@@ -170,7 +170,8 @@
       "sucessMessage": "Fichier importé avec succès : {fileName}",
       "errorMessages": {
         "generalError": "Échec de l'importation du fichier",
-        "noFileSelected": "Veuillez d'abord sélectionner un fichier"
+        "noFileSelected": "Veuillez d'abord sélectionner un fichier",
+        "fileTooLarge": "Le fichier est trop volumineux : {fileName} (maximum {maxSize}Mo)"
       },
       "close": "Fermer"
     },

@@ -125,6 +125,7 @@ export default defineNuxtConfig({
       buildTime,
       wantedLogLevels: "error,warn",
       printServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/print/jobs",
+      maxFileSizeMB: 250,
     },
   },
   nitro: {
