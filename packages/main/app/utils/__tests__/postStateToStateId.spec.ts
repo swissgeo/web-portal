@@ -7,6 +7,7 @@ const { mockFetch } = vi.hoisted(() => ({
   mockFetch: vi.fn(),
 }));
 
+mockNuxtImport("$fetch", () => mockFetch);
 mockNuxtImport("useRuntimeConfig", () => () => ({
   public: { shareServiceUrl: "https://state.example.test/state" },
 }));
@@ -15,7 +16,6 @@ const state: AppState = { map: { center: [1, 1], zoom: 1 }, layers: [] };
 
 describe("postStateToStateId", () => {
   beforeEach(() => {
-    vi.stubGlobal("$fetch", mockFetch);
     mockFetch.mockReset();
   });
 
