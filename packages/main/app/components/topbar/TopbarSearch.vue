@@ -7,6 +7,7 @@ import { computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import SearchCategory from "./SearchCategory.vue";
+import SearchResultEntry from "./SearchResultEntry.vue";
 
 const { t, locale } = useI18n();
 const searchStore = useSearchStore();
@@ -25,19 +26,6 @@ const query = computed({
   },
 });
 
-const tabs = computed(() => [
-  {
-    label: t("search.map_tab"),
-    badge: searchStore.results.length || undefined,
-    slot: "map" as const,
-  },
-  {
-    label: t("search.content_pages_tab"),
-    badge: 0,
-    slot: "contentPages" as const,
-  },
-]);
-
 const locationResults = computed(() =>
   searchStore.results.filter((r) => r.resultType === "LOCATION"),
 );
@@ -54,6 +42,28 @@ const karteResults = computed(() => [
   { id: "locations", results: locationResults.value },
   { id: "features", results: featureResults.value },
   { id: "layers", results: layerResults.value },
+]);
+
+const contentResults = computed(() =>
+  searchStore.results.filter((r) => r.resultType === "CONTENT"),
+);
+
+// The CMS results live in their own tab, so the map tab must not count them.
+const mapResultsCount = computed(() =>
+  karteResults.value.reduce((total, { results }) => total + results.length, 0),
+);
+
+const tabs = computed(() => [
+  {
+    label: t("search.map_tab"),
+    badge: mapResultsCount.value || undefined,
+    slot: "map" as const,
+  },
+  {
+    label: t("search.content_pages_tab"),
+    badge: contentResults.value.length || undefined,
+    slot: "contentPages" as const,
+  },
 ]);
 
 const debouncedSearch = useDebounceFn((value: string) => {
@@ -134,7 +144,7 @@ function clearSearch() {
       <UTabs :items="tabs" size="sm">
         <template #map>
           <div
-            v-if="searchStore.hasResults"
+            v-if="mapResultsCount > 0"
             class="max-h-96 overflow-y-auto"
             data-testid="search-results"
           >
@@ -161,8 +171,31 @@ function clearSearch() {
         </template>
 
         <template #contentPages>
-          <div class="text-surface-500 p-4 text-center">
+          <!-- No category header here: the tab label already names it. -->
+          <ul
+            v-if="contentResults.length > 0"
+            class="max-h-96 list-none overflow-y-auto"
+            data-testid="content-search-results"
+            tabindex="-1"
+          >
+            <SearchResultEntry
+              v-for="(entry, index) in contentResults"
+              :key="entry.id"
+              :index="index"
+              :entry="entry"
+              @select="handleSelect(entry)"
+            />
+          </ul>
+          <div
+            v-else-if="
+              searchStore.query.length >= 2 && !searchStore.isSearching
+            "
+            class="text-surface-500 p-4 text-center"
+          >
             {{ t("search.no_results") }}
+          </div>
+          <div v-else class="text-surface-500 p-4">
+            {{ t("search.placeholder") }}
           </div>
         </template>
       </UTabs>
