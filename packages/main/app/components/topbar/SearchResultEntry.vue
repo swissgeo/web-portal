@@ -110,6 +110,11 @@ defineExpose({
       name="i-lucide-map-pinned"
     />
     <UIcon
+      v-else-if="entry.resultType === SearchResultTypesEnum.content"
+      :data-testid="`icon-${entry.resultType.toLowerCase()}`"
+      name="i-lucide-file-text"
+    />
+    <UIcon
       v-else
       :data-testid="`icon-${entry.resultType}`"
       name="i-lucide-bug"

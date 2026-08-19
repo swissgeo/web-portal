@@ -9,6 +9,7 @@ import {
   searchLayers,
   searchLocation,
   searchLayerFeatures,
+  searchContentPages,
 } from "@swissgeo/search";
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
@@ -52,6 +53,10 @@ export const useSearchStore = defineStore("search", () => {
 
   const featureResults = computed(() =>
     results.value.filter((r: SearchResult) => r.resultType === "FEATURE"),
+  );
+
+  const contentResults = computed(() =>
+    results.value.filter((r: SearchResult) => r.resultType === "CONTENT"),
   );
 
   // Actions
@@ -103,6 +108,7 @@ export const useSearchStore = defineStore("search", () => {
           lang,
           abortController.signal,
         ),
+        searchContentPages(newQuery, lang, abortController.signal),
       ];
 
       // Add feature search for each searchable layer
@@ -207,6 +213,7 @@ export const useSearchStore = defineStore("search", () => {
     locationResults,
     layerResults,
     featureResults,
+    contentResults,
     // Actions
     setSearchQuery,
     selectResult,
