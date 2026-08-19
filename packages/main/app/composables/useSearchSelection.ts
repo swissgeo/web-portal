@@ -7,6 +7,7 @@
 
 import type { Dataset } from "@swissgeo/ogc";
 import type {
+  ContentSearchResult,
   SearchResult,
   CoordinateSearchResult,
   LocationSearchResult,
@@ -37,6 +38,8 @@ export function useSearchSelection() {
       handleFeatureSelection(result as FeatureSearchResult);
     } else if (result.resultType === "LAYER") {
       await handleLayerSelection(result as LayerSearchResult);
+    } else if (result.resultType === "CONTENT") {
+      await handleContentSelection(result as ContentSearchResult);
     }
   }
 
@@ -47,6 +50,13 @@ export function useSearchSelection() {
     positionStore.setCenter(result.coordinate, dispatcher);
     positionStore.setZoom(result.zoom, dispatcher);
     searchStore.setPinnedCoordinate(result.coordinate);
+  }
+
+  // A CMS result opens its content page; the map is left untouched.
+  async function handleContentSelection(result: ContentSearchResult) {
+    await navigateTo(
+      `/${result.locale || locale.value}/cms/${result.documentId}`,
+    );
   }
 
   function handleLocationSelection(result: LocationSearchResult) {
