@@ -18,9 +18,12 @@ export default [
         // Server routes and utils are not included in the Nuxt-generated tsconfig,
         // so we allow them to be linted with a default project.
         projectService: {
+          // The list below is past typescript-eslint's default cap of 8.
+          maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 16,
           allowDefaultProject: [
             "server/utils/__tests__/*.ts",
             "server/routes/__tests__/*.ts",
+            "server/api/wpa/v1/content/__tests__/*.ts",
             "server/api/wpa/v1/elevation/__tests__/*.ts",
             "server/api/wpa/v1/layers/external/dataset/?capabilityUrl?/__tests__/*.ts",
             "server/api/wpa/v1/layers/external/?capabilityUrl?/__tests__/*.ts",

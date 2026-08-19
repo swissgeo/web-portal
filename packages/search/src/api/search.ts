@@ -3,6 +3,8 @@
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 
 import type {
+  ContentPageSearchResponse,
+  ContentSearchResult,
   FeatureSearchResult,
   LayerSearchResult,
   LocationSearchResult,
@@ -14,6 +16,7 @@ export enum SearchResultTypesEnum {
   layer = "LAYER",
   location = "LOCATION",
   feature = "FEATURE",
+  content = "CONTENT",
 }
 
 /**
@@ -293,6 +296,85 @@ export async function searchLayerFeatures(
       title: "searchLayerFeatures",
       titleColor: LogPreDefinedColor.Red,
       messages: ["Failed to search layer features:", error],
+    });
+    return [];
+  }
+}
+
+/**
+ * Search CMS content pages through the `/api/wpa/v1/content/search` Nitro
+ * proxy — the Livingdocs token is server-only, so the CMS cannot be queried
+ * from the browser.
+ *
+ * Failures are logged and swallowed rather than propagated: the CMS is an
+ * optional source, and an unconfigured or rate-limited Livingdocs must not put
+ * the whole search bar in an error state.
+ *
+ * @param queryString - Search query text
+ * @param lang - Language code (de, fr, etc.); the proxy falls back to `de` for
+ *   locales the CMS tenant does not hold
+ * @param abortSignal - Optional abort signal for cancellation
+ * @param limit - Maximum number of results (default: 10)
+ * @returns Promise with the content page search results
+ */
+export async function searchContentPages(
+  queryString: string,
+  lang: string,
+  abortSignal?: AbortSignal,
+  limit: number = 10,
+): Promise<ContentSearchResult[]> {
+  const trimmedQuery = queryString.trim();
+  if (trimmedQuery.length < 2) {
+    return [];
+  }
+
+  const params = new URLSearchParams({
+    q: trimmedQuery,
+    lang,
+    limit: String(limit),
+  });
+
+  try {
+    const response = await fetch(
+      `/api/wpa/v1/content/search?${params.toString()}`,
+      { signal: abortSignal },
+    );
+
+    if (!response.ok) {
+      throw new Error(`Content search API error: ${response.status}`);
+    }
+
+    const data: ContentPageSearchResponse = await response.json();
+
+    return (data.results ?? []).flatMap((hit) => {
+      if (!hit.documentId || !hit.title) {
+        return [];
+      }
+
+      return [
+        {
+          resultType: "CONTENT" as const,
+          id: `content-${hit.documentId}`,
+          documentId: hit.documentId,
+          slug: hit.slug ?? "",
+          locale: hit.locale ?? "",
+          // The CMS gives plain text, but the entry renders the title with
+          // `v-html` - escape it like the feature results do.
+          title: escapeHtml(hit.title),
+          sanitizedTitle: sanitizeTitle(hit.title),
+          description: hit.description ?? "",
+        },
+      ];
+    });
+  } catch (error) {
+    // Re-throw abort errors so they can be handled separately
+    if (error instanceof Error && error.name === "AbortError") {
+      throw error;
+    }
+    log.error({
+      title: "searchContentPages",
+      titleColor: LogPreDefinedColor.Red,
+      messages: ["Failed to search content pages:", error],
     });
     return [];
   }
