@@ -4,7 +4,7 @@
 
 Provides types, Zod validators and the version constant for the app state sharing API. The HTTP client is generated from the OpenAPI spec via [Hey API](https://heyapi.dev), see `openapi-ts.config.ts`.
 
-All HTTP calls go through Nuxt server proxy routes (`packages/main/server/api/wpa/v1/state/`) to avoid CORS. The generated client itself is not called directly from the browser.
+The frontend calls the state service directly from the browser, in `packages/main/app/utils/fetchStateFromStateId.ts` and `postStateToStateId.ts`, using the exported validators. There is no server proxy; the service sends CORS headers for the portal origins. The generated HTTP client itself is not used — only the types and validators are.
 
 ## Regenerating the types and validators
 
