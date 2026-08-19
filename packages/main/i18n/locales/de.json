@@ -171,7 +171,7 @@
       "errorMessages": {
         "generalError": "Datei konnte nicht importiert werden",
         "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus",
-        "fileTooLarge": "Datei ist zu groß: {fileName} (maximal {maxSize}MB)"
+        "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize}MB)"
       },
       "close": "Schließen"
     },
