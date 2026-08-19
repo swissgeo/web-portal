@@ -126,7 +126,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     what3wordsApiKey: "",
     geoadminApiBaseUrl: "",
-    livingdocsApiEndpoint: "",
+    livingdocsApiEndpoint:
+      "https://prod-swissgeoch-hcms.scs.scs-sdweb.ch/api/2025-03",
     livingdocsAuthToken: "",
     shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
     public: {
