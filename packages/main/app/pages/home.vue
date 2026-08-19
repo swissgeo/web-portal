@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { getCmsDocumentId } from "~/utils/cmsPages";
-
 import LivingdocsPage from "~/pages/page.vue";
+import { getCmsDocumentId } from "~/utils/cmsPages";
 
 const { locale } = useI18n();
 const documentId = computed(() => getCmsDocumentId("home", locale.value));
