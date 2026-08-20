@@ -2,7 +2,7 @@
 // Adapted from web-mapviewer
 // Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/api/src/types/search.ts
 
-export type SearchResultTypes = "LAYER" | "LOCATION" | "FEATURE";
+export type SearchResultTypes = "LAYER" | "LOCATION" | "FEATURE" | "COORDINATE";
 
 /**
  * Base interface for all search results
@@ -42,6 +42,17 @@ export interface LocationSearchResult extends SearchResult {
   /**
    * The zoom level at which the map should be zoomed when showing the location
    */
+  zoom: number;
+}
+
+/**
+ * Search result for a coordinate the user typed in the search bar
+ */
+export interface CoordinateSearchResult extends SearchResult {
+  resultType: "COORDINATE";
+  /** Coordinate in LV95 projection [x, y] */
+  coordinate: [number, number];
+  /** The zoom level at which the map should be zoomed when showing the coordinate */
   zoom: number;
 }
 
