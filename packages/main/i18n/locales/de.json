@@ -1,4 +1,12 @@
 {
+  "servicesPage": {
+    "home": "Startseite",
+    "geodataAndMaps": "Geodaten und Karten",
+    "geoservices": "Geodienste",
+    "useData": "Daten verwenden",
+    "previous": "Vorherige Karte",
+    "next": "Nächste Karte"
+  },
   "menuTitles": {
     "knowledge": "Wissen",
     "about": "Über Swissgeo"

@@ -6,6 +6,7 @@ import { computed, ref, watch } from "vue";
 
 const { locale, locales } = useI18n();
 const appStore = useAppStore();
+const { inverted = false } = defineProps<{ inverted?: boolean }>();
 
 const localeItems = computed(() => {
   return locales.value.map((item) => ({
@@ -56,8 +57,10 @@ watch(selectedLocale, async (value) => {
       aria-label="Language switcher"
       :ui="{
         content: '!w-auto min-w-[150px] !max-w-none',
-        base: 'text-muted hover:bg-primary/10 hover:text-primary',
-        trailingIcon: 'size-5 text-muted',
+        base: inverted
+          ? 'text-petrol-100 hover:bg-petrol-700 hover:text-white'
+          : 'text-muted hover:bg-primary/10 hover:text-primary',
+        trailingIcon: inverted ? 'size-5 text-petrol-100' : 'size-5 text-muted',
         value: 'font-medium uppercase',
       }"
     >

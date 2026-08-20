@@ -3,9 +3,14 @@ import { inject } from "vue";
 
 defineEmits(["logoClick"]);
 
-const { bare = false, condensed = false } = defineProps<{
+const {
+  bare = false,
+  condensed = false,
+  negative = false,
+} = defineProps<{
   bare?: boolean;
   condensed?: boolean;
+  negative?: boolean;
 }>();
 
 const isDesktop = inject<boolean>("isDesktop", true);
@@ -23,11 +28,13 @@ const isDesktop = inject<boolean>("isDesktop", true);
       src="@/assets/images/swissgeo_rgb_sek.svg"
       class="w-full dark:hidden"
       data-testid="sidebar-logo-pic-image-bare"
+      :class="negative ? 'hidden!' : ''"
     />
     <img
       src="@/assets/images/swissgeo_neg_sek.svg"
       class="hidden w-full dark:block"
       data-testid="sidebar-logo-pic-image-bare-dark"
+      :class="negative ? 'block!' : ''"
     />
   </button>
   <!-- the desktop icon in the sidebar -->

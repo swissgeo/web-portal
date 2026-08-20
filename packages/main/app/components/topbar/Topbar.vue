@@ -5,6 +5,8 @@ import type { SearchResult } from "@swissgeo/search";
 import { LogoPic } from "@swissgeo/skeleton";
 
 const { t } = useI18n();
+const route = useRoute();
+const isDarkHeader = computed(() => route.meta.headerVariant === "dark");
 
 const emit = defineEmits<{
   "search-result-selected": [result: SearchResult];
@@ -70,7 +72,9 @@ function goToMap() {
 <template>
   <UHeader
     :ui="{
-      root: 'bg-default backdrop-blur-none',
+      root: isDarkHeader
+        ? 'border-petrol-900 bg-petrol-800 backdrop-blur-none'
+        : 'bg-default backdrop-blur-none',
       container: 'max-w-none gap-0 px-[15px] lg:px-8',
       left: 'shrink-0 gap-0 xl:flex-none xl:pe-4 2xl:pe-5',
       center:
@@ -85,27 +89,33 @@ function goToMap() {
       <LogoPic
         bare
         class="flex h-8 w-[122.4px] items-center focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary 2xl:w-[209.896px]"
+        :negative="isDarkHeader"
         aria-label="SWISSGEO"
         data-testid="topbar-logo"
         @logo-click="goToMap"
       />
     </template>
 
-    <TopbarSearch @result-selected="emit('search-result-selected', $event)" />
+    <TopbarSearch
+      :inverted="isDarkHeader"
+      @result-selected="emit('search-result-selected', $event)"
+    />
 
     <UNavigationMenu
       :items="items"
       content-orientation="vertical"
       :ui="{
         root: 'shrink-0',
-        link: 'font-sans text-muted hover:text-primary hover:before:bg-primary/10',
+        link: isDarkHeader
+          ? 'font-sans text-petrol-100 hover:text-white hover:before:bg-petrol-700 aria-[current=page]:text-white aria-[current=page]:before:bg-petrol-700'
+          : 'font-sans text-muted hover:text-primary hover:before:bg-primary/10',
         linkLabel: 'whitespace-nowrap',
         content: 'w-fit',
       }"
     />
 
     <template #right>
-      <div class="hidden w-24 justify-center xl:flex">
+      <div v-if="!isDarkHeader" class="hidden w-24 justify-center xl:flex">
         <TopbarColorModeButton />
       </div>
       <UButton
@@ -114,11 +124,16 @@ function goToMap() {
         variant="ghost"
         size="md"
         class="hidden xl:inline-flex"
+        :class="
+          isDarkHeader
+            ? 'text-petrol-100 hover:bg-petrol-700 hover:text-white'
+            : undefined
+        "
       >
         {{ t("topbar.login") }}
       </UButton>
       <div class="hidden xl:block">
-        <TopbarLanguageSwitcherButton />
+        <TopbarLanguageSwitcherButton :inverted="isDarkHeader" />
       </div>
     </template>
 
@@ -130,6 +145,11 @@ function goToMap() {
           variant="ghost"
           size="sm"
           :aria-label="t('search.placeholder')"
+          :class="
+            isDarkHeader
+              ? 'text-petrol-100 hover:bg-petrol-700 hover:text-white'
+              : undefined
+          "
           @click="toggle"
         />
         <UButton
@@ -138,24 +158,34 @@ function goToMap() {
           variant="ghost"
           size="sm"
           :aria-label="open ? 'Menü schliessen' : 'Menü öffnen'"
+          :class="
+            isDarkHeader
+              ? 'text-petrol-100 hover:bg-petrol-700 hover:text-white'
+              : undefined
+          "
           @click="toggle"
         />
       </div>
     </template>
 
     <template #body>
-      <TopbarSearch @result-selected="emit('search-result-selected', $event)" />
+      <TopbarSearch
+        :inverted="isDarkHeader"
+        @result-selected="emit('search-result-selected', $event)"
+      />
       <UNavigationMenu
         :items="items"
         orientation="vertical"
         :ui="{
-          link: 'font-sans text-muted hover:text-primary hover:before:bg-primary/10',
+          link: isDarkHeader
+            ? 'font-sans text-petrol-100 hover:text-white hover:before:bg-petrol-700'
+            : 'font-sans text-muted hover:text-primary hover:before:bg-primary/10',
         }"
       />
       <div
         class="flex items-center justify-between border-t border-default pt-4"
       >
-        <TopbarColorModeButton />
+        <TopbarColorModeButton v-if="!isDarkHeader" />
         <div class="flex items-center gap-2">
           <UButton
             icon="i-lucide-log-in"
@@ -165,7 +195,7 @@ function goToMap() {
           >
             {{ t("topbar.login") }}
           </UButton>
-          <TopbarLanguageSwitcherButton />
+          <TopbarLanguageSwitcherButton :inverted="isDarkHeader" />
         </div>
       </div>
     </template>

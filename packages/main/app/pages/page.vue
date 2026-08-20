@@ -4,9 +4,12 @@ import type { RouteLocationNormalizedLoadedGeneric } from "vue-router";
 
 import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 
-const props = defineProps<{
+const { documentId: documentIdProp, contentClass = "py-10" } = defineProps<{
   documentId?: string;
+  contentClass?: string;
 }>();
+
+defineSlots<{ content(_props: { containers: unknown[] }): unknown }>();
 
 const route = useRoute();
 const { locale } = useI18n();
@@ -18,8 +21,8 @@ const menuStore = useMenuStore();
 const livingDocsPageData = useLivingdocsPageData();
 
 const documentId = computed<string>(() => {
-  if (props.documentId) {
-    return props.documentId;
+  if (documentIdProp) {
+    return documentIdProp;
   }
 
   const routeDocumentId = route.params.documentId;
@@ -98,9 +101,12 @@ onMounted(() => {
 <template>
   <NuxtLayout>
     <div
-      class="h-full overflow-x-hidden overflow-y-auto px-[15px] py-10 font-editorial md:px-8"
+      class="h-full overflow-x-hidden overflow-y-auto px-[15px] font-editorial md:px-8"
+      :class="contentClass"
     >
-      <ContentRenderer :containers="containers" />
+      <slot name="content" :containers="containers">
+        <ContentRenderer :containers="containers" />
+      </slot>
     </div>
   </NuxtLayout>
 </template>
