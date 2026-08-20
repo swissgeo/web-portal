@@ -124,9 +124,13 @@ function resetApp() {
       />
       <UButton :to="localePath('/map')"> {{ t("topbar.map") }} </UButton>
       <USeparator class="mx-4 h-8" orientation="vertical" />
-      <UButton icon="i-lucide-log-in" color="neutral" variant="outline">{{
-        t("topbar.login")
-      }}</UButton>
+      <UButton
+        icon="i-lucide-log-in"
+        color="neutral"
+        variant="outline"
+        class="whitespace-nowrap"
+        >{{ t("topbar.login") }}</UButton
+      >
       <TopbarLanguageSwitcherButton />
     </template>
   </UHeader>
