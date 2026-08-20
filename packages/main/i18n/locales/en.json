@@ -163,7 +163,7 @@
     },
     "import": {
       "buttonTitle": "Import",
-      "title": "Import Local File",
+      "title": "Import a file or URL",
       "description": "Accepted file types: {types}",
       "tabFile": "File",
       "tabUrl": "URL",
