@@ -88,7 +88,7 @@ describe("useSearchStore", () => {
     expect(store.hasError).toBe(false);
   });
 
-  it("keeps the coordinate result alongside the results of the other sources", async () => {
+  it("keeps the coordinate out of the listed results", async () => {
     const coordinate = {
       resultType: "COORDINATE",
       id: "coordinate-2600000,1200000",
@@ -99,19 +99,23 @@ describe("useSearchStore", () => {
     const store = useSearchStore();
     await store.setSearchQuery("2600000 1200000");
 
-    expect(store.coordinateResults).toEqual([coordinate]);
-    expect(store.layerResults).toHaveLength(1);
+    expect(store.coordinateResult).toEqual(coordinate);
+    expect(store.results).toEqual([layer("l1")]);
   });
 
-  it("keeps the coordinate result when every other source fails", async () => {
-    const coordinate = { resultType: "COORDINATE", id: "c" } as SearchResult;
-    searchMocks.searchCoordinate.mockReturnValue(coordinate);
-    searchMocks.searchLayers.mockRejectedValue(new Error("catalog down"));
+  it("forgets the coordinate as soon as the query is not one anymore", async () => {
+    searchMocks.searchCoordinate.mockReturnValue({
+      resultType: "COORDINATE",
+      id: "c",
+    } as SearchResult);
 
     const store = useSearchStore();
     await store.setSearchQuery("2600000 1200000");
+    expect(store.coordinateResult).toBeDefined();
 
-    expect(store.coordinateResults).toEqual([coordinate]);
+    searchMocks.searchCoordinate.mockReturnValue(undefined);
+    await store.setSearchQuery("Bern");
+    expect(store.coordinateResult).toBeUndefined();
   });
 
   it("keeps the pinned coordinate until it is explicitly cleared", () => {
