@@ -66,6 +66,7 @@ describe("GET /api/wpa/v1/content/search", () => {
       search: "uns",
       languages: "de",
       limit: 10,
+      contentTypes: "content-page",
       fields: "systemdata,metadata",
     });
   });
