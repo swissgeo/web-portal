@@ -23,6 +23,48 @@ const { isNuxtEnv } = vi.hoisted(() => {
   return { isNuxtEnv };
 });
 
+/**
+ * happy-dom defines the nodeName on the Element tag prototype rather than the Node Prototype.
+ * Node.prototype base getter in happy-dom returns "".
+ * This conflicts with DOMPurify in test environment, as it caches the base getter
+ * at module load, and will always see elements as not present in the allowed tags.
+ * This effectively means all markups are systematically stripped.
+ *
+ * This patch makes the base getter fall through to the closest subclass descriptor.
+ * It won't interfere on real DOMs and on happy-dom versions that implement
+ * nodeName on Node.prototype.
+ *
+ * Needed by every test that runs DOMPurify in happy-dom and in the nuxt env (components rendering
+ * sanitized v-html). setupFiles run before test-file imports, so the patch
+ * always precedes dompurify's module init.
+ */
+function shimHappyDomNodeName(): void {
+  const nodePrototype = Node.prototype;
+  const descriptor = Object.getOwnPropertyDescriptor(nodePrototype, "nodeName");
+  if (
+    !descriptor?.get ||
+    descriptor.get.call(document.createElement("p")) !== ""
+  ) {
+    return;
+  }
+  Object.defineProperty(nodePrototype, "nodeName", {
+    ...descriptor,
+    get() {
+      let prototype: object | null = Object.getPrototypeOf(this);
+      while (prototype && prototype !== nodePrototype) {
+        const own = Object.getOwnPropertyDescriptor(prototype, "nodeName");
+        if (own?.get) {
+          return own.get.call(this);
+        }
+        prototype = Object.getPrototypeOf(prototype);
+      }
+      return descriptor.get!.call(this);
+    },
+  });
+}
+
+shimHappyDomNodeName();
+
 // neutralise the stateConfigSync plugin if in nuxt env,
 // otherwise the app created hook will run this and potentially interfere with the tests
 vi.mock("~/composables/useRestoreState", async (importOriginal) => {
