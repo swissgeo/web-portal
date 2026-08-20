@@ -54,6 +54,8 @@ NUXT_PUBLIC_WANTED_LOG_LEVELS=  # String of log levels wanted (error|warn|info|d
 NUXT_PUBLIC_SHARE_SERVICE_URL=  # The URL to the share service
 NUXT_WHAT3WORDS_API_KEY=        # what3words API key (server-only)
 NUXT_GEOADMIN_API_BASE_URL=     # Base URL for legacy geo.admin.ch API (server-only)
+NUXT_LIVINGDOCS_API_ENDPOINT=   # Livingdocs CMS public API, incl. version (server-only)
+NUXT_LIVINGDOCS_AUTH_TOKEN=     # Livingdocs project-scoped API token (server-only)
 ```
 
 ## Monorepo setup
