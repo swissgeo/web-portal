@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useFileImport } from "~/composables/useFileImport";
 import { useToolboxStore } from "~/stores/toolbox";
-import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -24,6 +23,20 @@ const successMessage = ref("");
 
 const acceptedFileTypes = [".kml", ".kmz", ".gpx", ".geojson", ".json"];
 
+const items = [
+  { label: t("toolbox.import.tabFile"), slot: "file" },
+  { label: t("toolbox.import.tabUrl"), slot: "url" },
+];
+
+function showToast(color: "error" | "success", message: string) {
+  toast.add({ color, title: message });
+}
+
+watch(errorMessage, (v) => v && showToast("error", v));
+watch(successMessage, (v) => v && showToast("success", v));
+watch(importDrawingErrorMessage, (v) => v && showToast("error", v));
+watch(importDrawingSuccessMessage, (v) => v && showToast("success", v));
+
 async function handleImport() {
   if (!selectedFile.value) {
     errorMessage.value = t("toolbox.import.errorMessages.noFileSelected");
@@ -36,10 +49,9 @@ async function handleImport() {
 
   try {
     await importFile(selectedFile.value);
-    successMessage.value = t("toolbox.import.sucessMessage", {
+    successMessage.value = t("toolbox.import.successMessage", {
       fileName: selectedFile.value.name,
     });
-    // Clear the file input after successful import
     selectedFile.value = undefined;
     filePathInfo.value = "";
   } catch (error) {
@@ -51,65 +63,6 @@ async function handleImport() {
     isLoading.value = false;
   }
 }
-
-const items = [
-  {
-    label: "File",
-    slot: "file",
-  },
-  {
-    label: "URL",
-    slot: "url",
-  },
-];
-
-watch(
-  () => errorMessage.value,
-  (newValue) => {
-    if (newValue) {
-      toast.add({
-        color: "error",
-        title: newValue,
-      });
-    }
-  },
-);
-
-watch(
-  () => successMessage.value,
-  (newValue) => {
-    if (newValue) {
-      toast.add({
-        color: "success",
-        title: newValue,
-      });
-    }
-  },
-);
-
-watch(
-  () => importDrawingErrorMessage.value,
-  (newValue) => {
-    if (newValue) {
-      toast.add({
-        color: "error",
-        title: newValue,
-      });
-    }
-  },
-);
-
-watch(
-  () => importDrawingSuccessMessage.value,
-  (newValue) => {
-    if (newValue) {
-      toast.add({
-        color: "success",
-        title: newValue,
-      });
-    }
-  },
-);
 </script>
 
 <template>
@@ -154,7 +107,7 @@ watch(
           @click="handleImport"
           class="mt-3 w-full place-content-center"
         >
-          {{ t("toolbox.import.importButton") }}
+          {{ t("toolbox.import.importFileButton") }}
         </UButton>
       </template>
       <template #url>
@@ -162,7 +115,7 @@ watch(
           v-model="urlImportDrawing"
           type="text"
           class="mt-2 w-full"
-          placeholder="https://s.geo.admin.ch/8gzh9bzzmef5"
+          :placeholder="t('toolbox.import.urlPlaceholder')"
           :disabled="isImportDrawingLoading"
           data-testid="drawing-url-input"
         />
@@ -173,7 +126,7 @@ watch(
           @click="importDrawing"
           data-testid="drawing-import-button"
         >
-          {{ t("toolbox.import.importButton") }}
+          {{ t("toolbox.import.importUrlButton") }}
         </UButton>
       </template>
     </UTabs>
