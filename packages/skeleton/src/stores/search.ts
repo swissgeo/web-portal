@@ -1,9 +1,11 @@
+import type { SingleCoordinate } from "@swissgeo/coordinates";
 import type { SearchResult } from "@swissgeo/search";
 
 import { useLayerStore } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { buildCatalogItemsUrl } from "@swissgeo/ogc";
 import {
+  searchCoordinate,
   searchLayers,
   searchLocation,
   searchLayerFeatures,
@@ -20,6 +22,8 @@ export const useSearchStore = defineStore("search", () => {
   // True when a search request failed, so the UI can tell an error apart from
   // an empty result set.
   const hasError = ref(false);
+  // Coordinate the map marks with a marker, set when a coordinate result is selected.
+  const pinnedCoordinate = ref<SingleCoordinate | undefined>();
 
   let abortController: AbortController | undefined;
 
@@ -46,6 +50,10 @@ export const useSearchStore = defineStore("search", () => {
     results.value.filter((r: SearchResult) => r.resultType === "FEATURE"),
   );
 
+  const coordinateResults = computed(() =>
+    results.value.filter((r: SearchResult) => r.resultType === "COORDINATE"),
+  );
+
   // Actions
   async function setSearchQuery(newQuery: string, lang: string = "de") {
     query.value = newQuery;
@@ -65,6 +73,12 @@ export const useSearchStore = defineStore("search", () => {
     const currentController = abortController;
 
     isSearching.value = true;
+
+    // a coordinate is recognized locally, so we can show it before any request comes back
+    const coordinateResult = searchCoordinate(newQuery);
+    if (coordinateResult) {
+      results.value = [coordinateResult];
+    }
 
     try {
       // Get searchable layers from layer store
@@ -113,7 +127,9 @@ export const useSearchStore = defineStore("search", () => {
       // Only update results if this request hasn't been superseded
       if (currentController === abortController) {
         // Extract successful results and log any failures
-        const successfulResults: SearchResult[] = [];
+        const successfulResults: SearchResult[] = coordinateResult
+          ? [coordinateResult]
+          : [];
         for (const result of allResults) {
           if (result.status === "fulfilled") {
             successfulResults.push(...result.value);
@@ -143,7 +159,7 @@ export const useSearchStore = defineStore("search", () => {
         titleColor: LogPreDefinedColor.Red,
         messages: ["Search error:", error],
       });
-      results.value = [];
+      results.value = coordinateResult ? [coordinateResult] : [];
     } finally {
       if (currentController === abortController) {
         isSearching.value = false;
@@ -174,20 +190,32 @@ export const useSearchStore = defineStore("search", () => {
     hasError.value = false;
   }
 
+  function setPinnedCoordinate(coordinate: SingleCoordinate) {
+    pinnedCoordinate.value = coordinate;
+  }
+
+  function clearPinnedCoordinate() {
+    pinnedCoordinate.value = undefined;
+  }
+
   return {
     // State
     query,
     results,
     isSearching,
     hasError,
+    pinnedCoordinate,
     // Getters
     hasResults,
     locationResults,
     layerResults,
     featureResults,
+    coordinateResults,
     // Actions
     setSearchQuery,
     selectResult,
     clearSearch,
+    setPinnedCoordinate,
+    clearPinnedCoordinate,
   };
 });
