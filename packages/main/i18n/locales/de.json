@@ -33,10 +33,12 @@
   },
   "debug": {
     "openImportLocalLayersPanel": "Import Lokale Layer Panel öffnen",
+    "openImportDrawingPanel": "Zeichenimport-Panel öffnen",
     "openDrawingPanel": "Zeichenpanel öffnen",
     "openImportLayersPanel": "Import Layer Panel öffnen",
     "openLayersPanel": "Layer Panel öffnen",
     "drawingPanelTitle": "Zeichenwerkzeuge",
+    "importDrawingPanelTitle": "Zeichnung aus URL importieren",
     "drawingNameLabel": "Zeichnungsname",
     "drawingToolSelectLabel": "Zeichenwerkzeug auswählen:",
     "drawingToolPoint": "Punkt",
