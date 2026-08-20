@@ -17,7 +17,7 @@ defineProps<{
     :icon="'i-lucide-' + iconName.toLowerCase()"
     :variant="isActive ? 'solid' : 'ghost'"
     square
-    class="size-12 rounded-md"
+    class="size-12 justify-center rounded-md"
     :title="title"
     :ui="{ leadingIcon: 'size-6' }"
     @click="emit('click', $event)"
