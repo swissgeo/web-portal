@@ -3,10 +3,7 @@ import type { TeaserItem } from "@content/types";
 
 import { computed } from "vue";
 
-const { data, badge } = defineProps<{
-  data: TeaserItem;
-  badge?: string;
-}>();
+const { data } = defineProps<{ data: TeaserItem }>();
 
 const teaser = computed(() => data.content?.resolvedTeaser);
 const image = computed(() => {
@@ -30,7 +27,6 @@ const image = computed(() => {
     :title="teaser.title"
     :description="teaser.description"
     :image="image"
-    :badge="badge"
     :to="teaser.href"
     variant="outline"
   />

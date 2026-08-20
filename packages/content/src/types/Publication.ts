@@ -153,7 +153,7 @@ export interface LeadContentPageWithCheckbox {
     };
   };
   containers: {
-    "lead-contentpage-with-checkbox": TitleComponent[];
+    "lead-contentpage-with-checkbox": (Paragraph | TitleComponent)[];
     section?: Section;
   };
 }

@@ -11,7 +11,7 @@ const text = computed(() => {
 </script>
 
 <template>
-  <p v-if="text" class="mr-auto mb-4 max-w-[912px]">
+  <p v-if="text" class="mb-4 max-w-[912px]">
     {{ text }}
   </p>
 </template>

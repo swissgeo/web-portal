@@ -17,5 +17,7 @@ const containers = computed(() => {
 </script>
 
 <template>
-  <ContentRenderer :containers="containers" />
+  <div class="mx-auto max-w-[1227px]">
+    <ContentRenderer :containers="containers" />
+  </div>
 </template>

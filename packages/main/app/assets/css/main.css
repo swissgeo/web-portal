@@ -16,8 +16,6 @@
 @import "@fontsource/inter/latin-ext-600.css";
 @import "@fontsource/inter/latin-700.css";
 @import "@fontsource/inter/latin-ext-700.css";
-@import "@fontsource/source-serif-pro/latin-600.css";
-@import "@fontsource/source-serif-pro/latin-ext-600.css";
 @import "@swissgeo/dimension/stylesheet";
 
 @source "../../../../skeleton/";
@@ -31,7 +29,6 @@
 @theme static {
   --font-sans: "DM Sans", system-ui, sans-serif;
   --font-editorial: "Inter", system-ui, sans-serif;
-  --font-stage: "Source Serif Pro", Georgia, serif;
   --leading-heading: 1.2;
   --leading-small-text: 1.3;
 
