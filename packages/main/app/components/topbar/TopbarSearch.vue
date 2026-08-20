@@ -11,7 +11,6 @@ import SearchCategory from "./SearchCategory.vue";
 const { t, locale } = useI18n();
 const searchStore = useSearchStore();
 const toaster = useToaster();
-const { inverted = false } = defineProps<{ inverted?: boolean }>();
 
 const isOpen = defineModel<boolean>("open", { default: false });
 
@@ -116,10 +115,8 @@ function clearSearch() {
         color="neutral"
         class="w-full xl:w-[280px] 2xl:w-[472px]"
         :ui="{
-          base: inverted
-            ? 'bg-petrol-950 text-petrol-50 placeholder:text-petrol-200 hover:bg-petrol-950 focus:bg-petrol-950'
-            : 'bg-elevated hover:bg-accented focus:bg-accented',
-          leadingIcon: inverted ? 'text-petrol-200' : 'text-muted',
+          base: 'bg-elevated hover:bg-accented focus:bg-accented',
+          leadingIcon: 'text-muted',
         }"
         data-testid="topbar-search-input"
         @click="handleClick"

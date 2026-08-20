@@ -8,10 +8,6 @@ const props = defineProps<{
   documentId?: string;
 }>();
 
-definePageMeta({
-  headerVariant: "dark",
-});
-
 const route = useRoute();
 const { locale } = useI18n();
 
