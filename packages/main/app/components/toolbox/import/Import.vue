@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import { IconButton } from "@swissgeo/skeleton";
 import { useFileImport } from "~/composables/useFileImport";
 import { useToolboxStore } from "~/stores/toolbox";
-import { ref, useTemplateRef } from "vue";
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
+const toast = useToast();
 const toolboxStore = useToolboxStore();
 const { importFile } = useFileImport();
+const {
+  url: urlImportDrawing,
+  isLoading: isImportDrawingLoading,
+  errorMessage: importDrawingErrorMessage,
+  successMessage: importDrawingSuccessMessage,
+  importDrawing,
+} = useImportDrawing();
 
-const inputLocalFile = useTemplateRef<HTMLInputElement>("inputLocalFile");
 const filePathInfo = ref("");
 const selectedFile = ref<File | undefined>();
 const isLoading = ref(false);
@@ -36,9 +42,6 @@ async function handleImport() {
     // Clear the file input after successful import
     selectedFile.value = undefined;
     filePathInfo.value = "";
-    if (inputLocalFile.value) {
-      inputLocalFile.value.value = "";
-    }
   } catch (error) {
     errorMessage.value =
       error instanceof Error
@@ -49,15 +52,64 @@ async function handleImport() {
   }
 }
 
-function onFileSelected(evt: Event): void {
-  const target = evt.target as HTMLInputElement;
-  const file = target?.files?.[0] ?? undefined;
-  selectedFile.value = file;
-  filePathInfo.value = file ? file.name : "";
-  // Clear previous messages
-  errorMessage.value = "";
-  successMessage.value = "";
-}
+const items = [
+  {
+    label: "File",
+    slot: "file",
+  },
+  {
+    label: "URL",
+    slot: "url",
+  },
+];
+
+watch(
+  () => errorMessage.value,
+  (newValue) => {
+    if (newValue) {
+      toast.add({
+        color: "error",
+        title: newValue,
+      });
+    }
+  },
+);
+
+watch(
+  () => successMessage.value,
+  (newValue) => {
+    if (newValue) {
+      toast.add({
+        color: "success",
+        title: newValue,
+      });
+    }
+  },
+);
+
+watch(
+  () => importDrawingErrorMessage.value,
+  (newValue) => {
+    if (newValue) {
+      toast.add({
+        color: "error",
+        title: newValue,
+      });
+    }
+  },
+);
+
+watch(
+  () => importDrawingSuccessMessage.value,
+  (newValue) => {
+    if (newValue) {
+      toast.add({
+        color: "success",
+        title: newValue,
+      });
+    }
+  },
+);
 </script>
 
 <template>
@@ -86,67 +138,44 @@ function onFileSelected(evt: Event): void {
         />
       </div>
     </template>
-    <div class="flex flex-wrap items-center gap-2">
-      <input
-        ref="inputLocalFile"
-        type="file"
-        :accept="acceptedFileTypes.join(',')"
-        hidden
-        data-testid="file-input"
-        @change="onFileSelected"
-      />
-      <UButton
-        color="neutral"
-        variant="outline"
-        type="button"
-        data-testid="file-input-browse-button"
-        :disabled="isLoading"
-        @click="inputLocalFile?.click()"
-      >
-        {{ t("toolbox.import.browseButton") }}
-      </UButton>
-      <input
-        type="text"
-        class="rounded border border-gray-300"
-        :value="filePathInfo"
-        :placeholder="t('toolbox.import.noFileSelected')"
-        readonly
-        tabindex="-1"
-        data-testid="file-input-text"
-        @click="inputLocalFile?.click()"
-      />
-      <IconButton
-        :disabled="!selectedFile || isLoading"
-        @click="handleImport"
-        iconName="Upload"
-        :title="t('toolbox.import.importButton')"
-        class="grow justify-center"
-      />
-    </div>
-
-    <!-- Success message -->
-    <div
-      v-if="successMessage"
-      class="mt-3 rounded bg-green-100 p-2 text-sm text-green-800"
-    >
-      ✓ {{ successMessage }}
-    </div>
-
-    <!-- Error message -->
-    <div
-      v-if="errorMessage"
-      class="mt-3 rounded bg-red-100 p-2 text-sm text-red-800"
-    >
-      ✗ {{ errorMessage }}
-    </div>
-
-    <!-- Loading indicator -->
-    <div
-      v-if="isLoading"
-      class="mt-3 flex items-center gap-2 text-sm text-gray-600"
-    >
-      <span class="animate-spin">⏳</span>
-      <span>{{ t("toolbox.import.loadingMessage") }}</span>
-    </div>
+    <UTabs :items="items" :unmount-on-hide="false">
+      <template #file>
+        <UFileUpload
+          v-model="selectedFile"
+          color="neutral"
+          highlight
+          :disabled="isLoading"
+          :description="acceptedFileTypes.join(', ')"
+          :accept="acceptedFileTypes.join(',')"
+        />
+        <UButton
+          :disabled="!selectedFile || isLoading"
+          :loading="isLoading"
+          @click="handleImport"
+          class="mt-3 w-full place-content-center"
+        >
+          {{ t("toolbox.import.importButton") }}
+        </UButton>
+      </template>
+      <template #url>
+        <UInput
+          v-model="urlImportDrawing"
+          type="text"
+          class="mt-2 w-full"
+          placeholder="https://s.geo.admin.ch/8gzh9bzzmef5"
+          :disabled="isImportDrawingLoading"
+          data-testid="drawing-url-input"
+        />
+        <UButton
+          class="mt-3 w-full place-content-center"
+          :disabled="!urlImportDrawing.trim() || isImportDrawingLoading"
+          :loading="isImportDrawingLoading"
+          @click="importDrawing"
+          data-testid="drawing-import-button"
+        >
+          {{ t("toolbox.import.importButton") }}
+        </UButton>
+      </template>
+    </UTabs>
   </UCard>
 </template>
