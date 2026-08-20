@@ -165,6 +165,8 @@
       "buttonTitle": "Import",
       "title": "Import Local File",
       "description": "Accepted file types: {types}",
+      "tabFile": "File",
+      "tabUrl": "URL",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Browse...",
       "noFileSelected": "No file selected",
