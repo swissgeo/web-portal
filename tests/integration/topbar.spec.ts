@@ -75,4 +75,40 @@ test.describe("topbar search", () => {
     await searchInput.click();
     await expect(results).toBeVisible();
   });
+
+  test("keeps the focus in the input while a coordinate is typed", async ({
+    page,
+  }) => {
+    // the results open as soon as the coordinate is complete, and must not
+    // steal the focus while the user is still typing
+    await page.route("**/SearchServer**", (route) =>
+      route.fulfill({ status: 200, json: { results: [] } }),
+    );
+
+    const searchInput = page.getByTestId("topbar-search-input");
+    await searchInput.click();
+    await page.keyboard.type("2600000 1200000", { delay: 50 });
+
+    await expect(page.getByTestId("search-results")).toBeVisible();
+    await expect(searchInput).toBeFocused();
+    await expect(searchInput).toHaveValue("2600000 1200000");
+  });
+
+  test("arrow down moves the focus from the input to the first result", async ({
+    page,
+  }) => {
+    await page.route("**/SearchServer**", (route) =>
+      route.fulfill({ status: 200, json: { results: [] } }),
+    );
+
+    const searchInput = page.getByTestId("topbar-search-input");
+    await searchInput.click();
+    await page.keyboard.type("2600000 1200000", { delay: 50 });
+    await expect(page.getByTestId("search-results")).toBeVisible();
+
+    await page.keyboard.press("ArrowDown");
+    await expect(
+      page.getByTestId("search-result-entry-coordinate-0"),
+    ).toBeFocused();
+  });
 });
