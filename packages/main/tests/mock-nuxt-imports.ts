@@ -22,7 +22,7 @@
 import { vi } from "vitest";
 
 export const nuxtMocks = {
-  useRoute: () => () => ({ query: {} }),
+  useRoute: () => () => ({ meta: {}, query: {} }),
   useRouter: () => () => ({ replace: vi.fn(), afterEach: vi.fn() }),
   onNuxtReady: () => vi.fn(),
   useToaster: () => () => ({ showWarning: vi.fn(), showError: vi.fn() }),

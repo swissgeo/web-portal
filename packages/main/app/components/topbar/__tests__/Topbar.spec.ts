@@ -14,6 +14,14 @@ const messages: Record<string, string> = {
   "topbar.modeSwitch": "Mode switch",
 };
 
+const { mocks, navigateTo } = await vi.hoisted(async () => {
+  const { nuxtMocks } = await import("../../../../tests/mock-nuxt-imports");
+  return {
+    mocks: nuxtMocks,
+    navigateTo: vi.fn(),
+  };
+});
+
 mockNuxtImport("useI18n", () => {
   return () => ({
     t: (key: string) => messages[key] ?? key,
@@ -24,9 +32,7 @@ mockNuxtImport("useLocalePath", () => {
   return () => (path: string) => `/de${path}`;
 });
 
-const { navigateTo } = vi.hoisted(() => ({
-  navigateTo: vi.fn(),
-}));
+mockNuxtImport("useRoute", () => mocks.useRoute());
 
 mockNuxtImport("navigateTo", () => {
   return navigateTo;

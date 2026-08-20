@@ -33,6 +33,7 @@
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@vitejs/plugin-vue": "catalog:",
+    "@vue/test-utils": "catalog:",
     "eslint": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",
