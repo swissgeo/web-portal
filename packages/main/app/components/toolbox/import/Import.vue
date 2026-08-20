@@ -23,10 +23,10 @@ const successMessage = ref("");
 
 const acceptedFileTypes = [".kml", ".kmz", ".gpx", ".geojson", ".json"];
 
-const items = [
+const items = computed(() => [
   { label: t("toolbox.import.tabFile"), slot: "file" },
   { label: t("toolbox.import.tabUrl"), slot: "url" },
-];
+]);
 
 function showToast(color: "error" | "success", message: string) {
   toast.add({ color, title: message });
