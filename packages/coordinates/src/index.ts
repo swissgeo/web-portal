@@ -15,6 +15,7 @@ export * from "@/proj";
 export * from "@/registerProj4";
 export * from "@/coordinatesUtils";
 export * from "@/extentUtils";
+export * from "@/militaryGridProjection";
 
 // registering local instance of proj4, needed for some @swissgeo/coordinates functions
 registerProj4(proj4);

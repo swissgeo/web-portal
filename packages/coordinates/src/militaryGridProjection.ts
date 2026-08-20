@@ -7,7 +7,8 @@
 //
 //     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import type { FlatExtent, SingleCoordinate } from "@swissgeo/coordinates";
+import type { SingleCoordinate } from "@/coordinatesUtils";
+import type { FlatExtent } from "@/extentUtils";
 
 /** UTM zones are grouped, and assigned to one of a group of 6 sets. */
 const NUM_100K_SETS: number = 6;
@@ -99,6 +100,18 @@ export function toPoint(mgrs: string): SingleCoordinate {
     const _bbox = bbox as Bbox;
     return [(_bbox.left + _bbox.right) / 2, (_bbox.top + _bbox.bottom) / 2];
   }
+}
+
+/**
+ * Convert UTM coordinates to WGS84.
+ *
+ * @param utm The UTM coordinates (any accuracy is ignored, the exact point is returned)
+ * @returns The coordinates in WGS84, as [lon, lat]
+ */
+export function utmToLonLat(utm: UTM): SingleCoordinate {
+  const [latLon] = UTMtoLatLon({ ...utm, accuracy: undefined });
+  const { lat, lon } = latLon as LatLon;
+  return [lon, lat];
 }
 
 /**
