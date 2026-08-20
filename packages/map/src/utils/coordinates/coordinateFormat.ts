@@ -1,7 +1,13 @@
-import type { CoordinateSystem, SingleCoordinate } from "@swissgeo/coordinates";
+import type {
+  CoordinateSystem,
+  SingleCoordinate,
+  UTM,
+} from "@swissgeo/coordinates";
 
 import {
   coordinatesUtils,
+  latLonToMGRS,
+  latLonToUTM,
   LV03,
   LV95,
   WEBMERCATOR,
@@ -10,10 +16,6 @@ import {
 import { formatThousand } from "@swissgeo/numbers";
 import { format as formatCoordinate, toStringHDMS } from "ol/coordinate";
 import proj4 from "proj4";
-
-import type { UTM } from "@/utils/militaryGridProjection";
-
-import { latLonToMGRS, latLonToUTM } from "@/utils/militaryGridProjection";
 
 type CoordinateFormatCallback = (
   coordinates: SingleCoordinate,
