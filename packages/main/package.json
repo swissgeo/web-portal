@@ -66,6 +66,7 @@
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
     "@xmldom/xmldom": "catalog:",
+    "dompurify": "catalog:",
     "es-toolkit": "catalog:",
     "eslint": "catalog:",
     "fflate": "catalog:",
