@@ -60,7 +60,9 @@ export function useImportDrawing() {
         },
       );
 
-      const kmlUrl = extractKmlUrl(resolveResponse.redirectUrl);
+      const kmlUrl = extractKmlUrl(resolveResponse.redirectUrl)
+        .split("@adminId=")
+        .at(0)!;
 
       const kmlResponse = await fetch(kmlUrl);
       if (!kmlResponse.ok) {
