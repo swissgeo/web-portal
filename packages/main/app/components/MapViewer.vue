@@ -2,10 +2,12 @@
 import type { Layer as BaseLayer } from "@swissgeo/layers";
 
 import { useLayerStore } from "@swissgeo/layers";
+import { useSearchStore } from "@swissgeo/skeleton";
 import { displayModeKey } from "~/types/injectionKeys";
 
 const geolocationStore = useGeolocationStore();
 const layerStore = useLayerStore();
+const searchStore = useSearchStore();
 const mapViewStore = useMapViewStore();
 
 const backgroundLayer = computed(() => layerStore.backgroundLayer);
@@ -58,6 +60,9 @@ const displayMode = inject(displayModeKey, "web");
           geolocationStore.position &&
           displayMode === 'web'
         "
+      />
+      <LazyMapOpenLayersSearchMarker
+        v-if="searchStore.pinnedCoordinate && displayMode === 'web'"
       />
       <MapAttributionList
         v-if="displayMode === 'web'"
