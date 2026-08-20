@@ -11,6 +11,13 @@ const MIN_QUERY_LENGTH = 2;
 const DEFAULT_LIMIT = 10;
 // Hard cap imposed by the Livingdocs publications search endpoint.
 const MAX_LIMIT = 100;
+/**
+ * Only actual pages are searched. The tenant also publishes `glossary-entry`
+ * and `link` documents, which have no slug and no route of their own - without
+ * this filter they drown the pages out (86 of the first 100 hits for "geo").
+ * Passing the parameter empty returns nothing at all, so it is always set.
+ */
+const CONTENT_TYPE = "content-page";
 
 interface LivingdocsPublicationSummary {
   systemdata?: { documentId?: number };
@@ -56,6 +63,7 @@ export default defineEventHandler(
           typeof lang === "string" ? lang : undefined,
         ),
         limit: clampedLimit,
+        contentTypes: CONTENT_TYPE,
         fields: "systemdata,metadata",
       },
     );
