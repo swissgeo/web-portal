@@ -182,6 +182,27 @@ export const jsConfig: FlatConfig.ConfigArray = [
   skipFormatting,
 ];
 
+export const domPurifyConfig: FlatConfig.ConfigArray = [
+  {
+    files: ["**/*.{ts,mts,vue}"],
+    ignores: ["**/utils/sanitize.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "dompurify",
+              message:
+                "Sanitization must go through your package's utils/sanitize module.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+];
+
 const defaultConfig: FlatConfig.ConfigArray = tsESLint.config(
   pluginImport.flatConfigs.recommended,
   pluginImport.flatConfigs.typescript,
@@ -189,6 +210,7 @@ const defaultConfig: FlatConfig.ConfigArray = tsESLint.config(
   tsESLint.configs.recommended,
   ...markdownConfig,
   ...vueConfig,
+  ...domPurifyConfig,
   {
     ignores: allIgnores,
   },

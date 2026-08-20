@@ -64,6 +64,7 @@
     "@types/geojson": "catalog:",
     "@vueuse/core": "catalog:",
     "@xmldom/xmldom": "catalog:",
+    "dompurify": "catalog:",
     "es-toolkit": "catalog:",
     "eslint": "catalog:",
     "fflate": "catalog:",
