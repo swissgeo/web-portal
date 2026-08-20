@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import DrawingPanel from "~/components/debug/DrawingPanel.vue";
+import ImportDrawingPanel from "~/components/debug/ImportDrawingPanel.vue";
 
 const isLayersPanelOpen = ref(false);
 const isImportPanelOpen = ref(false);
 const isImportLocalPanelOpen = ref(false);
+const isImportDrawingOpen = ref(false);
 const isDrawingOpen = ref(false);
 const isSharePanelOpen = ref(false);
 const isPrintPanelOpen = ref(false);
@@ -17,6 +19,9 @@ function toggleImportPanel() {
 }
 function toggleLocalImportPanel() {
   isImportLocalPanelOpen.value = !isImportLocalPanelOpen.value;
+}
+function toggleImportDrawing() {
+  isImportDrawingOpen.value = !isImportDrawingOpen.value;
 }
 function toggleDrawing() {
   isDrawingOpen.value = !isDrawingOpen.value;
@@ -57,6 +62,13 @@ function togglePrintPanel() {
     >
     </DrawingPanel>
 
+    <ImportDrawingPanel
+      class="relative h-[200px] w-[800px] overflow-hidden bg-white shadow"
+      v-if="isImportDrawingOpen"
+      @close="toggleImportDrawing"
+    >
+    </ImportDrawingPanel>
+
     <DebugSharePanel v-if="isSharePanelOpen" @close="toggleStateConfig" />
     <DebugFramePrintPanel v-if="isPrintPanelOpen" @close="togglePrintPanel" />
     <div
@@ -65,6 +77,7 @@ function togglePrintPanel() {
         !isLayersPanelOpen &&
         !isImportPanelOpen &&
         !isImportLocalPanelOpen &&
+        !isImportDrawingOpen &&
         !isDrawingOpen &&
         !isSharePanelOpen &&
         !isPrintPanelOpen
@@ -86,6 +99,13 @@ function togglePrintPanel() {
         class="cursor-pointer"
       >
         {{ $t("debug.openImportLocalLayersPanel") }}
+      </UButton>
+      <UButton
+        data-testid="debug-open-import-drawing-panel"
+        @click="toggleImportDrawing"
+        class="cursor-pointer"
+      >
+        {{ $t("debug.openImportDrawingPanel") }}
       </UButton>
       <UButton data-testid="debug-open-drawing-panel" @click="toggleDrawing">
         {{ $t("debug.openDrawingPanel") }}
