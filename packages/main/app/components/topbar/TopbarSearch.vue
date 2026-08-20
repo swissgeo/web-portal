@@ -50,12 +50,7 @@ const featureResults = computed(() =>
   searchStore.results.filter((r) => r.resultType === "FEATURE"),
 );
 
-const coordinateResults = computed(() =>
-  searchStore.results.filter((r) => r.resultType === "COORDINATE"),
-);
-
 const karteResults = computed(() => [
-  { id: "coordinates", results: coordinateResults.value },
   { id: "locations", results: locationResults.value },
   { id: "features", results: featureResults.value },
   { id: "layers", results: layerResults.value },
@@ -64,6 +59,17 @@ const karteResults = computed(() => [
 const debouncedSearch = useDebounceFn((value: string) => {
   void searchStore.setSearchQuery(value, locale.value);
 }, 100);
+
+// a coordinate needs no confirmation: as in map.geo.admin.ch, the map goes
+// there as soon as the query is recognized as one
+watch(
+  () => searchStore.coordinateResult,
+  (result) => {
+    if (result) {
+      emit("result-selected", result);
+    }
+  },
+);
 
 watch(
   () => searchStore.hasResults,
