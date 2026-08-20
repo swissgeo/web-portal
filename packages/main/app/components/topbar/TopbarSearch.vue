@@ -50,7 +50,12 @@ const featureResults = computed(() =>
   searchStore.results.filter((r) => r.resultType === "FEATURE"),
 );
 
+const coordinateResults = computed(() =>
+  searchStore.results.filter((r) => r.resultType === "COORDINATE"),
+);
+
 const karteResults = computed(() => [
+  { id: "coordinates", results: coordinateResults.value },
   { id: "locations", results: locationResults.value },
   { id: "features", results: featureResults.value },
   { id: "layers", results: layerResults.value },
@@ -90,8 +95,11 @@ function handleClick() {
   }
 }
 
+// the marker of a previously selected coordinate is only removed when the user
+// explicitly clears the search, not when a result is selected
 function clearSearch() {
   searchStore.clearSearch();
+  searchStore.clearPinnedCoordinate();
   isOpen.value = false;
 }
 </script>

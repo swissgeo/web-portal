@@ -110,6 +110,11 @@ defineExpose({
       name="i-lucide-map-pinned"
     />
     <UIcon
+      v-else-if="entry.resultType === SearchResultTypesEnum.coordinate"
+      :data-testid="`icon-${entry.resultType.toLowerCase()}`"
+      name="i-lucide-crosshair"
+    />
+    <UIcon
       v-else
       :data-testid="`icon-${entry.resultType}`"
       name="i-lucide-bug"
