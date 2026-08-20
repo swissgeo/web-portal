@@ -135,7 +135,7 @@ function clearSearch() {
       onOpenAutoFocus: (event: Event) => event.preventDefault(),
     }"
     :dismissible="true"
-    :ui="{ content: 'w-96' }"
+    :ui="{ content: 'w-(--reka-popper-anchor-width) min-w-96' }"
   >
     <template #anchor>
       <UInput
@@ -147,7 +147,7 @@ function clearSearch() {
         size="md"
         variant="outline"
         color="secondary"
-        class="w-72"
+        class="min-w-0 flex-1"
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
