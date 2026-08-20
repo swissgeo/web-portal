@@ -1,5 +1,7 @@
 import type {
   LeadContentPageWithCheckbox,
+  Link,
+  List,
   Paragraph,
   TeaserContainer,
   TeaserItem,
@@ -11,6 +13,9 @@ import { describe, expect, it } from "vitest";
 import { defineComponent } from "vue";
 
 import LeadContentpageWithCheckbox from "../LeadContentpageWithCheckbox.global.vue";
+import LinkElement from "../Link.global.vue";
+import ListElement from "../List.global.vue";
+import ListItemElement from "../ListItem.global.vue";
 import ParagraphElement from "../P.global.vue";
 import TeaserContainerElement from "../TeaserContainer.global.vue";
 import TitleElement from "../Title.global.vue";
@@ -86,6 +91,35 @@ const CarouselStub = defineComponent({
   `,
 });
 
+const ProseAStub = defineComponent({
+  name: "ProseA",
+  inheritAttrs: false,
+  props: {
+    href: String,
+    rel: String,
+    target: String,
+  },
+  template: '<a :href="href" :rel="rel" :target="target"><slot /></a>',
+});
+
+const ProseLiStub = defineComponent({
+  name: "ProseLi",
+  template: "<li><slot /></li>",
+});
+
+const ProseUlStub = defineComponent({
+  name: "ProseUl",
+  template: "<ul><slot /></ul>",
+});
+
+const proseStubs = {
+  ContentElementList: ListElement,
+  ContentElementListItem: ListItemElement,
+  ProseA: ProseAStub,
+  ProseLi: ProseLiStub,
+  ProseUl: ProseUlStub,
+};
+
 const makeTeaserContainer = (
   presentation: "teaser-carousel" | "teaser-grid",
 ): TeaserContainer => ({
@@ -160,5 +194,83 @@ describe("publication elements", () => {
     expect(carousel.text()).toContain("2/2");
     expect(grid.find('[data-testid="carousel"]').exists()).toBe(false);
     expect(grid.findAll('[data-testid="teaser-item"]')).toHaveLength(2);
+  });
+
+  it("renders rich nested lists without passing CMS HTML to v-html", () => {
+    const nestedList: List = {
+      component: "list",
+      containers: {
+        list: [
+          {
+            component: "list-item",
+            content: { text: '<a href="https://example.com">Nested link</a>' },
+            id: "nested-item",
+            identifier: "nested-item",
+          },
+        ],
+      },
+      id: "nested-list",
+      identifier: "nested-list",
+    };
+    const list: List = {
+      component: "list",
+      containers: {
+        list: [
+          {
+            component: "list-item",
+            content: { text: "<strong>Parent</strong><br>item" },
+            id: "parent-item",
+            identifier: "parent-item",
+          },
+          nestedList,
+        ],
+      },
+      id: "list",
+      identifier: "list",
+    };
+
+    const wrapper = mount(ListElement, {
+      props: { data: list },
+      global: { components: proseStubs },
+    });
+
+    expect(wrapper.findAll("ul")).toHaveLength(2);
+    expect(wrapper.findAll("li")).toHaveLength(2);
+    expect(wrapper.get("strong").text()).toBe("Parent");
+    expect(wrapper.get("a").attributes()).toMatchObject({
+      href: "https://example.com",
+    });
+    expect(wrapper.html()).not.toContain("v-html");
+  });
+
+  it("renders CMS links without changing the target and rejects unsafe URLs", () => {
+    const link: Link = {
+      component: "link",
+      content: {
+        link: { href: "https://example.com/maps" },
+        text: "Open maps",
+      },
+      id: "link",
+      identifier: "link",
+    };
+    const external = mount(LinkElement, {
+      props: { data: link },
+      global: { components: proseStubs },
+    });
+    const unsafe = mount(LinkElement, {
+      props: {
+        data: {
+          ...link,
+          content: { link: { href: "javascript:alert(1)" }, text: "Unsafe" },
+        },
+      },
+      global: { components: proseStubs },
+    });
+
+    expect(external.get("a").attributes("href")).toBe(
+      "https://example.com/maps",
+    );
+    expect(external.get("a").attributes("target")).toBeUndefined();
+    expect(unsafe.find("a").exists()).toBe(false);
   });
 });

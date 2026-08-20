@@ -65,6 +65,36 @@ export interface Image {
   };
 }
 
+export interface Link {
+  component: "link";
+  identifier: string;
+  id: string;
+  content?: {
+    link?: {
+      href?: string;
+    };
+    text?: string;
+  };
+}
+
+export interface ListItem {
+  component: "list-item";
+  identifier: string;
+  id: string;
+  content: {
+    text: string;
+  };
+}
+
+export interface List {
+  component: "list";
+  identifier: string;
+  id: string;
+  containers: {
+    list: (List | ListItem)[];
+  };
+}
+
 export interface TeaserImageSource {
   width: number;
   url: string;
@@ -99,6 +129,9 @@ export interface Section {
 }
 
 export type ContentItem =
+  | Link
+  | List
+  | ListItem
   | TeaserContainer
   | TeaserItem
   | LeadContentPageWithCheckbox

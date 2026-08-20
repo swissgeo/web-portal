@@ -63,6 +63,7 @@ export default defineNuxtConfig({
   ],
   css: ["~/assets/css/main.css"],
   ui: {
+    prose: true,
     experimental: {
       componentDetection: ["LocaleSelect"],
     },
