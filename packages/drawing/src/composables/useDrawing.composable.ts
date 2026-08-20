@@ -1,5 +1,7 @@
 import type VectorLayer from "ol/layer/Vector";
 
+import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from "@swissgeo/shared";
+import KML from "ol/format/KML";
 import { storeToRefs } from "pinia";
 import { computed, readonly, watch, triggerRef } from "vue";
 
@@ -311,6 +313,15 @@ export function useDrawing() {
     return blob;
   }
 
+  function importKml(kmlString: string): void {
+    const kmlFormat = new KML();
+    const features = kmlFormat.readFeatures(kmlString, {
+      featureProjection: EPSG_2056_CH1903,
+      dataProjection: EPSG_4326_WGS84,
+    });
+    drawingStore.drawingVectorSource.addFeatures(features);
+  }
+
   return {
     disableAllInteractions: drawingStore.disableAllInteractions,
     enableSelectInteraction: drawingStore.enableSelectInteraction,
@@ -341,5 +352,6 @@ export function useDrawing() {
     serializeFocusedFeatureAsBlob,
     serializeAllFeatures,
     serializeAllFeaturesAsBlob,
+    importKml,
   };
 }
