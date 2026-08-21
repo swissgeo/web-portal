@@ -29,7 +29,7 @@ watch(featureDataByUuid, () => {
 });
 </script>
 <template>
-  <UTabs v-model="active" :items="tabs">
+  <UTabs v-model="active" :items="tabs" data-testid="feature-info-tabs">
     <template #default="{ item }">
       <UTooltip :text="item.label">
         <span class="max-w-40 truncate">{{ item.label }}</span>
