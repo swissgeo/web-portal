@@ -8,6 +8,7 @@ import {
   SwissCoordinateSystem,
   WGS84,
   constants,
+  getCoordinateSystemByEpsg,
 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { isNumber } from "@swissgeo/numbers";
@@ -19,7 +20,10 @@ import { computed, ref, watch } from "vue";
 import type { CoordinateFormat } from "@/utils/coordinates/coordinateFormat";
 
 import { useMapStore } from "@/stores/map";
-import { LV95Format } from "@/utils/coordinates/coordinateFormat";
+import {
+  getFormatById,
+  LV95Format,
+} from "@/utils/coordinates/coordinateFormat";
 import { normalizeAngle } from "@/utils/normalizeAngle";
 
 import { useOlMapPosition } from "../composables/useOlMapPosition";
@@ -36,9 +40,15 @@ const usePositionStore = defineStore("position", () => {
   // Store event listener keys indexed by map's ol_uid
   const listenerRegistry = new Map<number, EventsKey[]>();
 
-  const displayFormat = ref<CoordinateFormat>(DEFAULT_FORMAT);
+  const projectionEpsg = ref(DEFAULT_PROJECTION.epsg);
+  const displayFormatId = ref(DEFAULT_FORMAT.id);
+  const displayFormat = computed(
+    () => getFormatById(displayFormatId.value) ?? DEFAULT_FORMAT,
+  );
   const autoRotation = ref(false);
-  const projection = ref<CoordinateSystem>(DEFAULT_PROJECTION);
+  const projection = computed(
+    () => getCoordinateSystemByEpsg(projectionEpsg.value) ?? DEFAULT_PROJECTION,
+  );
 
   // when importing a state, the view might not be initialized yet
   // so we store the values here and then apply them as soon as the
@@ -74,7 +84,7 @@ const usePositionStore = defineStore("position", () => {
     newFormat: CoordinateFormat,
     dispatcher: ActionDispatcher,
   ): void {
-    displayFormat.value = newFormat;
+    displayFormatId.value = newFormat.id;
   }
 
   function setZoom(newZoom: number, dispatcher: ActionDispatcher): boolean {
@@ -329,6 +339,8 @@ const usePositionStore = defineStore("position", () => {
 
   return {
     displayFormat,
+    projectionEpsg,
+    displayFormatId,
     zoom,
     rotation,
     autoRotation,

@@ -335,5 +335,10 @@
       "openPdf": "Ouvrir la légende en PDF",
       "openPage": "Ouvrir la page de la légende"
     }
+  },
+  "featureInfo": {
+    "blockedContent": "To Translate - Feature Info Blocked Content",
+    "noInformation": "To Translate - Feature Info No Information",
+    "popupTitle": "To Translate - Feature Info Popup Title"
   }
 }

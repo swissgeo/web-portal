@@ -365,5 +365,10 @@
       "openPdf": "Legende als PDF öffnen",
       "openPage": "Legendenseite öffnen"
     }
+  },
+  "featureInfo": {
+    "blockedContent": "To Translate - Feature Info Blocked Content",
+    "noInformation": "To Translate - Feature Info No Information",
+    "popupTitle": "To Translate - Feature Info Popup Title"
   }
 }

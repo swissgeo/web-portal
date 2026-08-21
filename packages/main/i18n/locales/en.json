@@ -335,5 +335,10 @@
       "openPdf": "Open legend as PDF",
       "openPage": "Open legend page"
     }
+  },
+  "featureInfo": {
+    "blockedContent": "To Translate - Feature Info Blocked Content",
+    "noInformation": "To Translate - Feature Info No Information",
+    "popupTitle": "To Translate - Feature Info Popup Title"
   }
 }

@@ -113,6 +113,10 @@ export const allFormats: CoordinateFormat[] = [
   MGRSFormat,
 ];
 
+export function getFormatById(id: string): CoordinateFormat | undefined {
+  return allFormats.find((format) => format.id === id);
+}
+
 /**
  * Format the given coordinates (represented in the given projection) to a human-readable string
  *
