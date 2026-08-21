@@ -43,7 +43,7 @@ vi.mock("@swissgeo/skeleton", async () => {
 function markerCoordinates(): number[] {
   const source = layerUnderTest!.value.getSource() as VectorSource;
   const [feature] = source.getFeatures();
-  return (feature.getGeometry() as Point).getCoordinates();
+  return (feature!.getGeometry() as Point).getCoordinates();
 }
 
 function mountMarker() {
