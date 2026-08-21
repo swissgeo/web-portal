@@ -75,6 +75,23 @@ describe("coordinateFromString", () => {
   });
 
   describe("WGS84", () => {
+    it("reads the value above 90 as the longitude", () => {
+      // no hemisphere to tell us, so the bounds decide: 170 can only be a longitude
+      expectCoordinate("170.5 45.2", [170.5, 45.2], WGS84.epsg);
+    });
+
+    it("ignores comma decimals that are no pair of numbers", () => {
+      expect(coordinateFromString("1 2 3,5 4 5 6,7")).toBeUndefined();
+    });
+
+    it("ignores a small pair that is no latitude and longitude", () => {
+      expect(coordinateFromString("100 100")).toBeUndefined();
+    });
+
+    it("ignores degrees outside of the world", () => {
+      expect(coordinateFromString("200° 100°")).toBeUndefined();
+    });
+
     it.each([
       "46.9479 7.4386",
       "46.9479, 7.4386",
@@ -116,6 +133,10 @@ describe("coordinateFromString", () => {
       expectCoordinate(input, BERN_WGS84, WGS84.epsg, 2);
     });
 
+    it("returns undefined for an impossible UTM zone", () => {
+      expect(coordinateFromString("99X 381179 5200557")).toBeUndefined();
+    });
+
     it("does not read a plain pair as UTM", () => {
       const result = coordinateFromString("381179 5200557");
       expect(result?.coordinateSystem.epsg).toBe(WEBMERCATOR.epsg);
@@ -130,8 +151,11 @@ describe("coordinateFromString", () => {
       },
     );
 
-    it("returns undefined for an invalid MGRS string", () => {
-      expect(coordinateFromString("99ZZZ0000000000")).toBeUndefined();
-    });
+    it.each(["99ZZZ0000000000", "99XZZ0000"])(
+      "returns undefined for the invalid MGRS string %s",
+      (input) => {
+        expect(coordinateFromString(input)).toBeUndefined();
+      },
+    );
   });
 });
