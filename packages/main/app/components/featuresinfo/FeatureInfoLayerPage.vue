@@ -22,7 +22,11 @@ const accordionItems: Ref<AccordionItem[]> = computed(() =>
 </script>
 
 <template>
-  <UAccordion :items="accordionItems" type="multiple">
+  <UAccordion
+    :items="accordionItems"
+    type="multiple"
+    data-testid="feature-info-layer-page"
+  >
     <template #body="{ item }">
       <FeatureInfoContent :feature-data="item.featureData"></FeatureInfoContent>
     </template>

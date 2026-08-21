@@ -26,10 +26,19 @@ function toggleContent() {
 }
 </script>
 <template>
-  <div ref="container" class="fixed z-50" :style="style">
+  <div
+    ref="container"
+    class="fixed z-50"
+    :style="style"
+    data-testid="feature-info-popover"
+  >
     <UCard :ui="{ header: 'cursor-grab active:cursor-grabbing select-none' }">
       <template #header>
-        <div ref="dragHandle" class="flex items-center justify-between">
+        <div
+          ref="dragHandle"
+          class="flex items-center justify-between"
+          data-testid="feature-info-popover-header"
+        >
           <span class="font-semibold text-highlighted">{{
             t("featureInfo.popupTitle")
           }}</span>
@@ -41,6 +50,7 @@ function toggleContent() {
             variant="ghost"
             square
             size="xs"
+            data-testid="feature-info-popover-collapse"
             @click="toggleContent"
           /><UButton
             icon="i-lucide-x"
@@ -48,6 +58,7 @@ function toggleContent() {
             variant="ghost"
             square
             size="xs"
+            data-testid="feature-info-popover-close"
             @click="emit('close')"
           />
         </div>

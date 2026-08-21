@@ -28,26 +28,30 @@ const UTabsStub = defineComponent({
         | undefined;
     return () => {
       tabsItemsSeen = props.items as TabItem[];
-      return h("div", { class: "tabs-stub" }, [
-        ...(props.items as TabItem[]).map((item) =>
-          h(
-            "button",
-            {
-              class: "tab-trigger",
-              "data-value": item.value,
-              type: "button",
-            },
-            slots.default?.({ item }) ?? item.label ?? "",
+      return h(
+        "div",
+        { class: "tabs-stub", "data-testid": "feature-info-tabs" },
+        [
+          ...(props.items as TabItem[]).map((item) =>
+            h(
+              "button",
+              {
+                class: "tab-trigger",
+                "data-value": item.value,
+                type: "button",
+              },
+              slots.default?.({ item }) ?? item.label ?? "",
+            ),
           ),
-        ),
-        h(
-          "div",
-          { class: "tab-content" },
-          props.items
-            .filter((item) => (item as TabItem).value === active())
-            .map((item) => slots.content?.({ item }) ?? []),
-        ),
-      ]);
+          h(
+            "div",
+            { class: "tab-content" },
+            props.items
+              .filter((item) => (item as TabItem).value === active())
+              .map((item) => slots.content?.({ item }) ?? []),
+          ),
+        ],
+      );
     };
   },
 });
@@ -59,9 +63,13 @@ const FeatureInfoLayerPageStub = defineComponent({
     return () =>
       h(
         "div",
-        { class: "layer-page-stub" },
+        { class: "layer-page-stub", "data-testid": "feature-info-layer-page" },
         (props.featuresData as FeatureData[]).map((featureData) =>
-          h("div", { class: "feature" }, featureData.featureId),
+          h(
+            "div",
+            { class: "feature", "data-testid": "feature-info-feature" },
+            featureData.featureId,
+          ),
         ),
       );
   },
@@ -158,7 +166,7 @@ describe("FeatureInfo.vue", () => {
     });
     await wrapper.vm.$nextTick();
 
-    const features = wrapper.findAll(".feature");
+    const features = wrapper.findAll("[data-testid='feature-info-feature']");
     expect(features).toHaveLength(2);
     expect(features[0]!.text()).toBe("a1");
     expect(features[1]!.text()).toBe("a2");
@@ -184,9 +192,13 @@ describe("FeatureInfo.vue", () => {
   it("renders nothing when the selection is empty", async () => {
     const { wrapper } = await mountShell();
 
-    expect(wrapper.find(".tabs-stub").exists()).toBe(true); // UTabs always rendered
+    expect(wrapper.find("[data-testid='feature-info-tabs']").exists()).toBe(
+      true,
+    ); // UTabs always rendered
     expect(tabsItemsSeen).toHaveLength(0);
-    expect(wrapper.findAll(".feature")).toHaveLength(0);
+    expect(
+      wrapper.findAll("[data-testid='feature-info-feature']"),
+    ).toHaveLength(0);
   });
 
   it("resets to the first tab when a new selection replaces the old one", async () => {
@@ -207,7 +219,9 @@ describe("FeatureInfo.vue", () => {
     store.setSelection({ "uuid-a": [makeFeatureData("a2")] });
     await wrapper.vm.$nextTick();
 
-    const renderedFeatures = wrapper.findAll(".feature");
+    const renderedFeatures = wrapper.findAll(
+      "[data-testid='feature-info-feature']",
+    );
     expect(renderedFeatures).toHaveLength(1);
     expect(renderedFeatures[0]!.text()).toBe("a2");
   });
