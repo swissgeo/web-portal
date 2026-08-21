@@ -4,10 +4,6 @@ import { computed, defineComponent } from "vue";
 
 import BaseMapViewer from "../BaseMapViewer.vue";
 
-// -----------------------------------------------------------------------------
-// Mocks
-// -----------------------------------------------------------------------------
-
 const mockLayers = [
   {
     uuid: "layer-1",
@@ -61,10 +57,6 @@ vi.mock("~/stores/mapViewStore", () => ({
   }),
 }));
 
-// -----------------------------------------------------------------------------
-// Stubs
-// -----------------------------------------------------------------------------
-
 const SourceToMapDataConverterStub = defineComponent({
   name: "SourceToMapDataConverter",
   props: ["sourceBgLayer", "sourceData"],
@@ -99,10 +91,6 @@ const MapModuleStub = defineComponent({
     </div>
   `,
 });
-
-// -----------------------------------------------------------------------------
-// Tests
-// -----------------------------------------------------------------------------
 
 describe("BaseMapViewer", () => {
   beforeEach(() => {
