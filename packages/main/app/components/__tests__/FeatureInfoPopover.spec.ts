@@ -30,7 +30,8 @@ vi.mock("@vueuse/core", async (importOriginal) => {
 const FeatureInfoStub = defineComponent({
   name: "FeatureInfo",
   setup() {
-    return () => h("div", { class: "feature-info-stub" });
+    return () =>
+      h("div", { class: "feature-info-stub", "data-testid": "feature-info" });
   },
 });
 
@@ -55,11 +56,18 @@ const UButtonStub = defineComponent({
 
 const UCardStub = defineComponent({
   name: "UCard",
-  setup(_, { slots }) {
+  setup(_, { slots, attrs }) {
     return () =>
       h("div", { class: "card-stub" }, [
-        h("div", { class: "card-header" }, slots.header?.() ?? []),
-        h("div", { class: "card-body" }, slots.default?.() ?? []),
+        h(
+          "div",
+          {
+            class: "card-header",
+            "data-testid": "feature-info-popover-header",
+          },
+          slots.header?.() ?? [],
+        ),
+        h("div", { class: "card-body", ...attrs }, slots.default?.() ?? []),
       ]);
   },
 });
@@ -78,7 +86,7 @@ function mountPopover() {
 }
 
 function contentDisplay(wrapper: ReturnType<typeof mountPopover>): string {
-  const stub = wrapper.find(".feature-info-stub").element;
+  const stub = wrapper.find("[data-testid='feature-info']").element;
   const wrapperDiv = stub.parentElement as HTMLElement | null;
   return wrapperDiv?.style.display ?? "";
 }
@@ -91,21 +99,25 @@ describe("FeatureInfoPopover.vue", () => {
   it("renders the shell inside the card body", () => {
     const wrapper = mountPopover();
 
-    expect(wrapper.find(".card-body .feature-info-stub").exists()).toBe(true);
+    expect(
+      wrapper.find(".card-body [data-testid='feature-info']").exists(),
+    ).toBe(true);
   });
 
   it("shows the translated title in the header", () => {
     const wrapper = mountPopover();
 
-    expect(wrapper.find(".card-header").text()).toContain(
-      "t:featureInfo.popupTitle",
-    );
+    expect(
+      wrapper.find("[data-testid='feature-info-popover-header']").text(),
+    ).toContain("t:featureInfo.popupTitle");
   });
 
   it("emits close when the close button is clicked", async () => {
     const wrapper = mountPopover();
 
-    const closeButton = wrapper.find('[data-icon="i-lucide-x"]');
+    const closeButton = wrapper.find(
+      "[data-testid='feature-info-popover-close']",
+    );
     expect(closeButton.exists()).toBe(true);
     await closeButton.trigger("click");
 
@@ -117,12 +129,14 @@ describe("FeatureInfoPopover.vue", () => {
 
     expect(contentDisplay(wrapper)).toBe("");
 
-    const collapseButton = wrapper.find('[data-icon="i-lucide-chevron-up"]');
+    const collapseButton = wrapper.find(
+      "[data-testid='feature-info-popover-collapse']",
+    );
     await collapseButton.trigger("click");
     expect(contentDisplay(wrapper)).toBe("none");
 
-    const expandButton = wrapper.find('[data-icon="i-lucide-chevron-down"]');
-    await expandButton.trigger("click");
+    // a second click on the same toggle restores the content
+    await collapseButton.trigger("click");
     expect(contentDisplay(wrapper)).toBe("");
   });
 

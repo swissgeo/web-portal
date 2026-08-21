@@ -24,18 +24,21 @@ const jsonEntries = computed(() =>
 );
 </script>
 <template>
-  <div v-if="sanitizedHtml" v-html="sanitizedHtml" />
-  <div v-else-if="featureData.content.kind === 'json'">
-    <div v-for="[key, value] in jsonEntries" :key="key">
-      <div>{{ key }}</div>
-      <div
-        v-if="key === 'description' && typeof value === 'string'"
-        v-html="sanitizeHtml(value, t('featureInfo.blockedContent'))"
-      />
-      <div v-else>{{ value }}</div>
-    </div>
-    <div v-if="jsonEntries.length === 0">
-      {{ t("featureInfo.noInformation") }}
+  <!-- single root wrapper so the data-testid anchor survives the v-if branches -->
+  <div data-testid="feature-info-content">
+    <div v-if="sanitizedHtml" v-html="sanitizedHtml" />
+    <div v-else-if="featureData.content.kind === 'json'">
+      <div v-for="[key, value] in jsonEntries" :key="key">
+        <div>{{ key }}</div>
+        <div
+          v-if="key === 'description' && typeof value === 'string'"
+          v-html="sanitizeHtml(value, t('featureInfo.blockedContent'))"
+        />
+        <div v-else>{{ value }}</div>
+      </div>
+      <div v-if="jsonEntries.length === 0">
+        {{ t("featureInfo.noInformation") }}
+      </div>
     </div>
   </div>
 </template>
