@@ -59,6 +59,10 @@ function markedCoordinates(page: Page) {
 }
 
 test.describe("topbar search", () => {
+  // a realistic desktop: at the 1280 default the header is too full for the
+  // whole navigation and a usable search field, and they overlap
+  test.use({ viewport: { width: 1600, height: 900 } });
+
   test.beforeEach(async ({ page }) => {
     await mockExternalRequests(page).mockAll();
     await page.goto("/de/map");
@@ -98,25 +102,10 @@ test.describe("topbar search", () => {
   test("clicking input reopens popover after clicking outside", async ({
     page,
   }) => {
-    await page.route("**/search**", (route) =>
-      route.fulfill({
-        status: 200,
-        json: {
-          results: [
-            {
-              id: "bern",
-              title: "Bern",
-              resultType: "LOCATION",
-              coordinate: [2660000, 1190000],
-              zoom: 10,
-            },
-          ],
-        },
-      }),
-    );
+    await mockLocationSearch(page);
 
-    const searchInput = page.getByRole("textbox");
-    await searchInput.fill("Bern");
+    const searchInput = page.getByTestId("topbar-search-input");
+    await searchInput.fill("Biel");
 
     const results = page.getByTestId("search-results");
     await expect(results).toBeVisible({ timeout: 10_000 });
@@ -149,13 +138,14 @@ test.describe("topbar search", () => {
 
     const searchInput = page.getByTestId("topbar-search-input");
     await searchInput.click();
-    await page.keyboard.type("2600 Biel", { delay: 50 });
-    await expect(page.getByTestId("search-results")).toBeVisible();
+    await searchInput.fill("Biel");
+    // wait for the entry itself: the list is rebuilt whenever results come in,
+    // which would drop the focus we are about to move there
+    const firstResult = page.getByTestId("search-result-entry-location-0");
+    await expect(firstResult).toBeVisible();
 
     await page.keyboard.press("ArrowDown");
-    await expect(
-      page.getByTestId("search-result-entry-location-0"),
-    ).toBeFocused();
+    await expect(firstResult).toBeFocused();
   });
 
   test("a typed coordinate moves the map without any result to select", async ({

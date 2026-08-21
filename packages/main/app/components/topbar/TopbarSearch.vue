@@ -147,7 +147,7 @@ function clearSearch() {
         size="md"
         variant="outline"
         color="secondary"
-        class="min-w-0 flex-1"
+        class="min-w-72 flex-1"
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
