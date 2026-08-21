@@ -116,7 +116,7 @@ function resetApp() {
     toggle-side="left"
   >
     <template #left>
-      <LogoPic class="h-6 w-auto" @logo-click="resetApp" />
+      <LogoPic class="h-6 w-auto shrink-0" @logo-click="resetApp" />
       <TopbarSearch @result-selected="emit('search-result-selected', $event)" />
     </template>
 
