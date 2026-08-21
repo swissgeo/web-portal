@@ -6,10 +6,6 @@ import { computed, defineComponent } from "vue";
 
 import BaseMapViewer from "../BaseMapViewer.vue";
 
-// -----------------------------------------------------------------------------
-// Mocks
-// -----------------------------------------------------------------------------
-
 const DISTRIBUTION_URL = "https://example.test/distributions";
 
 const mockLayers = [
@@ -67,10 +63,6 @@ import { selectFeatures } from "@swissgeo/feature";
 
 const selectFeaturesSpy = vi.mocked(selectFeatures);
 
-// -----------------------------------------------------------------------------
-// Stubs
-// -----------------------------------------------------------------------------
-
 const SourceToMapDataConverterStub = defineComponent({
   name: "SourceToMapDataConverter",
   props: ["sourceBgLayer", "sourceData"],
@@ -96,10 +88,6 @@ const MapModuleStub = defineComponent({
   emits: ["update:compare-ratio", "map-click"],
   template: '<div data-testid="map-module"><slot name="map-ui" /></div>',
 });
-
-// -----------------------------------------------------------------------------
-// Tests
-// -----------------------------------------------------------------------------
 
 const fetchSpy = vi.fn();
 
