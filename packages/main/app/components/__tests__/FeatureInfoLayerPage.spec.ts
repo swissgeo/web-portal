@@ -25,11 +25,22 @@ const UAccordionStub = defineComponent({
     return () => {
       itemsSeen = props.items as ItemWithPayload[];
       return h("div", { class: "accordion-stub" }, [
-        h("div", { class: "accordion-type" }, String(props.type)),
+        h(
+          "div",
+          {
+            class: "accordion-type",
+            "data-testid": "feature-info-accordion-type",
+          },
+          String(props.type),
+        ),
         ...(props.items as Array<{ label?: string }>).map((item, index) =>
           h(
             "div",
-            { key: item.label ?? index, class: "accordion-item" },
+            {
+              key: item.label ?? index,
+              class: "accordion-item",
+              "data-testid": "feature-info-accordion-item",
+            },
             slots.body?.({ item, index }) ?? [],
           ),
         ),
@@ -43,7 +54,11 @@ const FeatureInfoContentStub = defineComponent({
   props: { featureData: { type: Object, required: true } },
   setup(props) {
     return () =>
-      h("div", { class: "content-stub" }, props.featureData.featureId);
+      h(
+        "div",
+        { class: "content-stub", "data-testid": "feature-info-content" },
+        props.featureData.featureId,
+      );
   },
 });
 
@@ -100,7 +115,9 @@ describe("FeatureInfoLayerPage.vue", () => {
   it("allows multiple items open at once (type=multiple)", () => {
     const wrapper = mountPage([makeFeatureData("a")]);
 
-    expect(wrapper.find(".accordion-type").text()).toBe("multiple");
+    expect(
+      wrapper.find("[data-testid='feature-info-accordion-type']").text(),
+    ).toBe("multiple");
   });
 
   it("renders one FeatureInfoContent per item, fed with the right feature", () => {
@@ -109,7 +126,7 @@ describe("FeatureInfoLayerPage.vue", () => {
       makeFeatureData("second"),
     ]);
 
-    const contents = wrapper.findAll(".content-stub");
+    const contents = wrapper.findAll("[data-testid='feature-info-content']");
     expect(contents).toHaveLength(2);
     expect(contents[0]!.text()).toBe("first");
     expect(contents[1]!.text()).toBe("second");
@@ -131,7 +148,11 @@ describe("FeatureInfoLayerPage.vue", () => {
   it("renders no items for an empty feature list", () => {
     const wrapper = mountPage([]);
 
-    expect(wrapper.findAll(".accordion-item")).toHaveLength(0);
-    expect(wrapper.findAll(".content-stub")).toHaveLength(0);
+    expect(
+      wrapper.findAll("[data-testid='feature-info-accordion-item']"),
+    ).toHaveLength(0);
+    expect(
+      wrapper.findAll("[data-testid='feature-info-content']"),
+    ).toHaveLength(0);
   });
 });
