@@ -135,7 +135,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
     positionStore.projection.epsgNumber,
     locale.value.toLowerCase(),
     layersSources,
-    FEATURE_LIMIT, // WHAT IS THIS HARD CODED VALUE ? THE NUMBER OF FEATURES PER LAYER MAX WE FETCH :3
+    FEATURE_LIMIT,
     signal,
   );
 }

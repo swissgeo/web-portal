@@ -45,6 +45,12 @@ vi.mock("~/stores/mapView", () => ({
 
 vi.mock("@swissgeo/feature", () => ({
   selectFeatures: vi.fn(),
+  FEATURE_LIMIT: 10,
+
+  useFeaturesStore: () => ({
+    hasSelectedFeatures: false,
+    $reset: vi.fn(),
+  }),
 }));
 
 vi.mock("@swissgeo/map", async (importOriginal) => {
@@ -70,6 +76,11 @@ const SourceToMapDataConverterStub = defineComponent({
 const ToolboxStub = defineComponent({
   name: "Toolbox",
   template: "<div data-testid='toolbox' />",
+});
+
+const FeatureInfoPopoverStub = defineComponent({
+  name: "FeaturesinfoFeatureInfoPopover",
+  template: "<div data-testid='feature-info-popover' />",
 });
 
 const MapModuleStub = defineComponent({
@@ -118,6 +129,7 @@ describe("BaseMapViewer — map click abort handling", () => {
           MapModule: MapModuleStub,
           SourceToMapDataConverter: SourceToMapDataConverterStub,
           Toolbox: ToolboxStub,
+          FeaturesinfoFeatureInfoPopover: FeatureInfoPopoverStub,
         },
       },
     });
@@ -142,7 +154,7 @@ describe("BaseMapViewer — map click abort handling", () => {
     expect(firstSignal.aborted).toBe(false);
 
     mapModule.vm.$emit("map-click", clickEvent());
-    // the new click aborts the previous signal synchronously
+
     expect(firstSignal.aborted).toBe(true);
 
     await vi.waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(2));
@@ -164,8 +176,6 @@ describe("BaseMapViewer — map click abort handling", () => {
       layerId: "ch.test.dataset",
     });
 
-    // the aborted click's fetch resolves late: the signal.aborted guard must
-    // prevent it from triggering a second (stale) identify
     resolveFirstFetch({
       ok: true,
       json: () => Promise.resolve({}),

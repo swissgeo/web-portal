@@ -1,8 +1,41 @@
+import type { Mock } from "vitest";
+
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, nextTick } from "vue";
 
 import BaseMapViewer from "../BaseMapViewer.vue";
+
+type FeatureStoreState = {
+  hasSelectedFeatures: boolean;
+  $reset: Mock;
+};
+
+const { getFeatureStoreState, setFeatureStoreState } = vi.hoisted(() => {
+  let state: FeatureStoreState | null = null;
+  return {
+    getFeatureStoreState: () => state!,
+    setFeatureStoreState: (built: FeatureStoreState) => {
+      state = built;
+    },
+  };
+});
+
+vi.mock("@swissgeo/feature", async () => {
+  const { reactive } = await import("vue");
+  const state: FeatureStoreState = reactive({
+    hasSelectedFeatures: false,
+    $reset: vi.fn(() => {
+      state.hasSelectedFeatures = false;
+    }),
+  });
+  setFeatureStoreState(state);
+  return {
+    selectFeatures: vi.fn(),
+    FEATURE_LIMIT: 10,
+    useFeaturesStore: () => state,
+  };
+});
 
 const mockLayers = [
   {
@@ -68,6 +101,12 @@ const ToolboxStub = defineComponent({
   template: "<div data-testid='toolbox' />",
 });
 
+const FeatureInfoPopoverStub = defineComponent({
+  name: "FeaturesinfoFeatureInfoPopover",
+  emits: ["close"],
+  template: "<div data-testid='feature-info-popover' />",
+});
+
 const MapModuleStub = defineComponent({
   name: "MapModule",
   props: [
@@ -100,6 +139,8 @@ describe("BaseMapViewer", () => {
     mockLayers[1]!.opacity = 0.5;
     mockLayers[2]!.opacity = null;
     mockLayers[3]!.opacity = 1;
+
+    getFeatureStoreState().hasSelectedFeatures = false;
   });
 
   async function createWrapper(props = {}) {
@@ -113,6 +154,7 @@ describe("BaseMapViewer", () => {
           MapModule: MapModuleStub,
           SourceToMapDataConverter: SourceToMapDataConverterStub,
           Toolbox: ToolboxStub,
+          FeaturesinfoFeatureInfoPopover: FeatureInfoPopoverStub,
         },
       },
     });
@@ -132,6 +174,53 @@ describe("BaseMapViewer", () => {
     });
 
     expect(wrapper.find("[data-testid='toolbox']").exists()).toBe(false);
+  });
+
+  describe("feature info popover", () => {
+    it("is not rendered without a selection", async () => {
+      const wrapper = await createWrapper();
+
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(false);
+    });
+
+    it("is rendered when the feature store has a selection", async () => {
+      const wrapper = await createWrapper();
+      getFeatureStoreState().hasSelectedFeatures = true;
+      await nextTick();
+
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(true);
+    });
+
+    it("is not rendered in print mode even with a selection", async () => {
+      getFeatureStoreState().hasSelectedFeatures = true;
+
+      const wrapper = await createWrapper({ displayMode: "print" });
+
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(false);
+    });
+
+    it("resets the feature store and unmounts when the popover emits close", async () => {
+      getFeatureStoreState().hasSelectedFeatures = true;
+      const wrapper = await createWrapper();
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(true);
+
+      wrapper.getComponent(FeatureInfoPopoverStub).vm.$emit("close");
+      await nextTick();
+
+      expect(getFeatureStoreState().$reset).toHaveBeenCalledOnce();
+      expect(getFeatureStoreState().hasSelectedFeatures).toBe(false);
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(false);
+    });
   });
 
   it("passes source data to SourceToMapDataConverter", async () => {
