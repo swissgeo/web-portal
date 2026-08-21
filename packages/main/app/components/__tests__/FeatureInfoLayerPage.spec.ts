@@ -7,10 +7,6 @@ import { defineComponent, h } from "vue";
 
 import FeatureInfoLayerPage from "../featuresinfo/FeatureInfoLayerPage.vue";
 
-// -----------------------------------------------------------------------------
-// Stubs
-// -----------------------------------------------------------------------------
-
 type ItemWithPayload = AccordionItem & { featureData?: FeatureData };
 
 /**
