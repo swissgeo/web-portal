@@ -93,10 +93,6 @@ vi.mock("~/stores/mapViewStore", () => ({
   }),
 }));
 
-// -----------------------------------------------------------------------------
-// Stubs
-// -----------------------------------------------------------------------------
-
 const SourceToMapDataConverterStub = defineComponent({
   name: "SourceToMapDataConverter",
   props: ["sourceBgLayer", "sourceData"],
@@ -132,10 +128,6 @@ const MapModuleStub = defineComponent({
     </div>
   `,
 });
-
-// -----------------------------------------------------------------------------
-// Tests
-// -----------------------------------------------------------------------------
 
 describe("BaseMapViewer", () => {
   beforeEach(() => {
