@@ -4,18 +4,18 @@
 
 Provides types, Zod validators and the version constant for the app state sharing API. The HTTP client is generated from the OpenAPI spec via [Hey API](https://heyapi.dev), see `openapi-ts.config.ts`.
 
-All HTTP calls go through Nuxt server proxy routes (`packages/main/server/api/wpa/v1/state/`) to avoid CORS. The generated client itself is not called directly from the browser.
+The frontend calls the state service directly from the browser, in `packages/main/app/utils/fetchStateFromStateId.ts` and `postStateToStateId.ts`, using the exported validators. There is no server proxy; the service sends CORS headers for the portal origins. The generated HTTP client itself is not used — only the types and validators are.
 
 ## Regenerating the types and validators
 
-The types and validators (zod) are generated from the OpenAPI spec served by the state service. The URL is read from `NUXT_SHARE_SERVICE_URL` (falling back to the dev endpoint), so it stays in sync with the runtime config:
+The types and validators (zod) are generated from the OpenAPI spec served by the state service. The URL is read from `NUXT_PUBLIC_SHARE_SERVICE_URL` (falling back to the dev endpoint), so it stays in sync with the runtime config:
 
 ```sh
 # defaults to https://www.dev.sgdi.tech/api/wps/v1/state
 pnpm --filter @swissgeo/statesharing generate-types
 
 # target a different environment
-NUXT_SHARE_SERVICE_URL=https://www.prod.sgdi.tech/api/wps/v1/state pnpm --filter @swissgeo/statesharing generate-types
+NUXT_PUBLIC_SHARE_SERVICE_URL=https://www.prod.sgdi.tech/api/wps/v1/state pnpm --filter @swissgeo/statesharing generate-types
 
 pnpm --filter @swissgeo/statesharing build
 ```
