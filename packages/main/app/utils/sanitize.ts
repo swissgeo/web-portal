@@ -38,7 +38,10 @@ DOMPurify.addHook("afterSanitizeAttributes", (node) => {
     }
   } catch (error) {
     // Fail-closed: malformed URI will land here
-    log.error("Error while handling node for sanitizing HTML", error);
+    log.error(
+      "Error while handling node for sanitizing HTML",
+      error instanceof Error ? error.message : String(error),
+    );
     node.outerHTML = blockedContentMessage;
   }
 });

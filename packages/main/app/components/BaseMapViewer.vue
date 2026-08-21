@@ -9,9 +9,13 @@ import type {
 import type { DisplayMode } from "~/types/injectionKeys";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
-import { selectFeatures } from "@swissgeo/feature";
-import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
+import {
+  selectFeatures,
+  useFeaturesStore,
+  FEATURE_LIMIT,
+} from "@swissgeo/feature";
+import { useLayerStore } from "@swissgeo/layers";
 import { MapModule, usePositionStore } from "@swissgeo/map";
 import { cloneDeep } from "es-toolkit";
 
@@ -44,6 +48,7 @@ const dimensionsStore = useDimensionsStore();
 const positionStore = usePositionStore();
 const toaster = useToaster();
 const { t, locale } = useI18n();
+const featureStore = useFeaturesStore();
 
 const sourceLayers = computed(() => layerStore.layers);
 const backgroundLayer = computed(() => layerStore.backgroundLayer);
@@ -157,7 +162,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
     positionStore.projection.epsgNumber,
     locale.value.toLowerCase(),
     layersSources,
-    10, // WHAT IS THIS HARD CODED VALUE ? THE NUMBER OF FEATURES PER LAYER MAX WE FETCH :3
+    FEATURE_LIMIT, // WHAT IS THIS HARD CODED VALUE ? THE NUMBER OF FEATURES PER LAYER MAX WE FETCH :3
     signal,
   );
 }
@@ -192,6 +197,10 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       </template>
       <slot name="map-ui" />
     </MapModule>
+    <FeaturesinfoFeatureInfoPopover
+      v-if="displayMode !== 'print' && featureStore.hasSelectedFeatures"
+      @close="featureStore.$reset()"
+    />
     <Toolbox v-if="displayMode !== 'print'" />
     <slot name="after" />
   </ClientOnly>
