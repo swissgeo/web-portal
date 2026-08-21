@@ -36,6 +36,23 @@ watch(route, (value) => {
     mapViewStore.exitFullscreenMode();
   }
 });
+
+// Handle search result selection
+const { handleResultSelection, selectedContentPage } = useSearchSelection();
+
+async function onSearchResultSelected(result: SearchResult) {
+  await handleResultSelection(result);
+}
+
+// Closing the modal is the only way it changes, so discard the selection.
+const isContentPageOpen = computed({
+  get: () => selectedContentPage.value !== null,
+  set: (open: boolean) => {
+    if (!open) {
+      selectedContentPage.value = null;
+    }
+  },
+});
 </script>
 
 <template>
@@ -59,6 +76,17 @@ watch(route, (value) => {
             v-if="!isMapFullscreenMode"
             :detail-page-path="datasetDetailPath"
           />
+          <UModal
+            v-model:open="isContentPageOpen"
+            :title="selectedContentPage?.sanitizedTitle"
+            data-testid="content-page-modal"
+          >
+            <template #body>
+              <p class="text-sm">
+                {{ selectedContentPage?.description }}
+              </p>
+            </template>
+          </UModal>
         </div>
       </main>
     </UMain>
