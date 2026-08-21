@@ -32,6 +32,14 @@ export const allCoordinateSystems: CoordinateSystem[] = [
   WEBMERCATOR,
 ];
 
+export function getCoordinateSystemByEpsg(
+  epsg: string,
+): CoordinateSystem | undefined {
+  return allCoordinateSystems.find(
+    (coordinateSystem) => coordinateSystem.epsg === epsg,
+  );
+}
+
 interface SwissGeoCoordinateConstants {
   STANDARD_ZOOM_LEVEL_1_25000_MAP: number;
   SWISS_ZOOM_LEVEL_1_25000_MAP: number;

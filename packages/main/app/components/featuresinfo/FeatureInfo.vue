@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import type { TabsItem } from "@nuxt/ui";
+
 import { useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
+
 import FeatureInfoLayerPage from "./FeatureInfoLayerPage.vue";
 
 const featureStore = useFeaturesStore();

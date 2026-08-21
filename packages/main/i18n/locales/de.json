@@ -297,5 +297,10 @@
     "warningPrintExtentBeyondViewport": "Sie können das Zentrum und die Zoomstufe sperren, damit der Druckbereich beim Verschieben und Zoomen der Karte nicht aus dem Ansichtsbereich gerät.",
     "orientationPortrait": "Hochformat",
     "orientationLandscape": "Querformat"
+  },
+  "featureInfo": {
+    "blockedContent": "To Translate - Feature Info Blocked Content",
+    "noInformation": "To Translate - Feature Info No Information",
+    "popupTitle": "To Translate - Feature Info Popup Title"
   }
 }

@@ -6,6 +6,7 @@ import {
   SwissCoordinateSystem,
   WGS84,
   constants,
+  getCoordinateSystemByEpsg,
 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { isNumber } from "@swissgeo/numbers";
@@ -15,7 +16,10 @@ import { computed, ref } from "vue";
 
 import type { CoordinateFormat } from "@/utils/coordinates/coordinateFormat";
 
-import { LV95Format } from "@/utils/coordinates/coordinateFormat";
+import {
+  getFormatById,
+  LV95Format,
+} from "@/utils/coordinates/coordinateFormat";
 import { normalizeAngle } from "@/utils/normalizeAngle";
 
 export const DEFAULT_PROJECTION: CoordinateSystem = LV95;
@@ -25,12 +29,18 @@ const MIN_ZOOM = constants.SWISSTOPO_MIN_ZOOM_LEVEL;
 const MAX_ZOOM = constants.SWISSTOPO_MAX_ZOOM_LEVEL;
 
 const usePositionStore = defineStore("position", () => {
-  const displayFormat = ref<CoordinateFormat>(DEFAULT_FORMAT);
+  const projectionEpsg = ref(DEFAULT_PROJECTION.epsg);
+  const displayFormatId = ref(DEFAULT_FORMAT.id);
+  const displayFormat = computed(
+    () => getFormatById(displayFormatId.value) ?? DEFAULT_FORMAT,
+  );
   const zoom = ref(DEFAULT_PROJECTION.getDefaultZoom());
   const rotation = ref(0);
   const autoRotation = ref(false);
   const center = ref<SingleCoordinate>(DEFAULT_PROJECTION.bounds.center);
-  const projection = ref<CoordinateSystem>(DEFAULT_PROJECTION);
+  const projection = computed(
+    () => getCoordinateSystemByEpsg(projectionEpsg.value) ?? DEFAULT_PROJECTION,
+  );
 
   const centerEpsg4326 = computed<SingleCoordinate>(() => {
     const centerEpsg4326Unrounded = proj4(
@@ -52,7 +62,7 @@ const usePositionStore = defineStore("position", () => {
     newFormat: CoordinateFormat,
     dispatcher: ActionDispatcher,
   ): void {
-    displayFormat.value = newFormat;
+    displayFormatId.value = newFormat.id;
   }
 
   function setZoom(newZoom: number, dispatcher: ActionDispatcher): void {
@@ -153,6 +163,8 @@ const usePositionStore = defineStore("position", () => {
 
   return {
     displayFormat,
+    projectionEpsg,
+    displayFormatId,
     zoom,
     rotation,
     autoRotation,
