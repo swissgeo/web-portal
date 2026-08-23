@@ -46,7 +46,7 @@ test.describe("topbar search", () => {
   test("clicking input reopens popover after clicking outside", async ({
     page,
   }) => {
-    await page.route("**/SearchServer**", (route) =>
+    await page.route(/SearchServer/, (route) =>
       route.fulfill({
         status: 200,
         json: {
