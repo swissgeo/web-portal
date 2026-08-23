@@ -23,7 +23,8 @@ export const useSearchStore = defineStore("search", () => {
   // an empty result set.
   const hasError = ref(false);
   // Set as soon as the query is a coordinate. It is not part of the results:
-  // a coordinate needs no confirmation, the map goes there directly.
+  // as in map.geo.admin.ch, a coordinate needs no confirmation and the map
+  // goes there directly.
   const coordinateResult = ref<CoordinateSearchResult | undefined>();
   // Coordinate the map marks with a marker, set when a coordinate result is selected.
   const pinnedCoordinate = ref<SingleCoordinate | undefined>();

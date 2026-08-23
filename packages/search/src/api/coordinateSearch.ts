@@ -9,7 +9,9 @@ import {
 
 import type { CoordinateSearchResult } from "@/types/search";
 
-/** Coordinates are precise, so we zoom on a 1:25'000 map when going there */
+/**
+ * Coordinates are precise, so we zoom on a 1:25'000 map when going there, as map.geo.admin.ch does
+ */
 const COORDINATE_ZOOM = constants.SWISS_ZOOM_LEVEL_1_25000_MAP;
 
 /**

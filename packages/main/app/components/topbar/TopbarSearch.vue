@@ -61,7 +61,7 @@ const debouncedSearch = useDebounceFn((value: string) => {
 }, 100);
 
 // a coordinate needs no confirmation: as in map.geo.admin.ch, the map goes
-// there as soon as the query is recognized as one
+// there as soon as the query is recognized as one, no entry to select
 watch(
   () => searchStore.coordinateResult,
   (result) => {

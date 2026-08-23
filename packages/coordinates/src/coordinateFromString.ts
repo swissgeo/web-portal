@@ -1,3 +1,7 @@
+// The accepted notations follow web-mapviewer coordinateExtractors.js, so that everything
+// map.geo.admin.ch understands is understood here too. What3words is the exception, it needs an
+// API call and cannot be resolved by this parser.
+
 import type { SingleCoordinate } from "@/coordinatesUtils";
 import type CoordinateSystem from "@/proj/CoordinateSystem";
 
@@ -35,6 +39,7 @@ const CARDINAL = `[NSEW]`;
 /**
  * One value of a pair, in degrees, degrees/minutes or degrees/minutes/seconds. As soon as there are
  * minutes the symbols become optional, which is how Google writes them: "46 58.79" for "46° 58.79'".
+ * Same notations as web-mapviewer REGEX_WGS_84*.
  */
 function degreesPattern(index: 1 | 2, precision: 1 | 2 | 3): string {
   const degrees = String.raw`(?<deg${index}>${DEGREES})`;
