@@ -38,6 +38,7 @@ describe("coordinateFromString", () => {
       "2600389/1199726",
       "2'600'389 1'199'726",
       "2 600 389 1 199 726",
+      "2`600`389 1`199`726",
       "2600389.00, 1199726.00",
       "2600389,00 1199726,00",
     ])("extracts %s", (input) => {
@@ -81,7 +82,7 @@ describe("coordinateFromString", () => {
     });
 
     it("ignores comma decimals that are no pair of numbers", () => {
-      expect(coordinateFromString("1 2 3,5 4 5 6,7")).toBeUndefined();
+      expect(coordinateFromString("1234 5,6 7890 1,2")).toBeUndefined();
     });
 
     it("ignores a small pair that is no latitude and longitude", () => {
@@ -102,6 +103,19 @@ describe("coordinateFromString", () => {
     });
 
     it.each([
+      // degrees and minutes, as swisstopo and google write them
+      `46° 56.874' 7° 26.316'`,
+      `46° 56.874' N 7° 26.316' E`,
+      "46 56.874 7 26.316",
+      // degrees, minutes and seconds without any symbol, the google notation
+      "46 56 52.44 7 26 18.96",
+      "46 56 52.44 N 7 26 18.96 E",
+      "N 46 56 52.44 E 7 26 18.96",
+      // the typographic variants of the minute and second symbols
+      `46° 56‘ 52.44“ 7° 26‘ 18.96“`,
+      `46° 56′ 52.44′′ 7° 26′ 18.96′′`,
+      `46° 56' 52.44'' 7° 26' 18.96''`,
+      // and the ones we print ourselves
       `46° 56' 52.4" 7° 26' 19"`,
       `46° 56' 52.4" N 7° 26' 19" E`,
       `N 46° 56' 52.4" E 7° 26' 19"`,
