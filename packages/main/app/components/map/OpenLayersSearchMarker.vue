@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /**
- * Renders a crosshair on the map at the coordinate the user searched for.
+ * Renders a crosshair on the map at the coordinate the user searched for, the way
+ * map.geo.admin.ch marks a searched coordinate.
  */
 import type { Map } from "ol";
 import type { Ref } from "vue";

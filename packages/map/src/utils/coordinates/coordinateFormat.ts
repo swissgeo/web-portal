@@ -1,3 +1,6 @@
+// Adapted from web-mapviewer coordinateFormat.js. Its counterpart, reading a coordinate out of a
+// text, lives in @swissgeo/coordinates as coordinateFromString.
+
 import type {
   CoordinateSystem,
   SingleCoordinate,

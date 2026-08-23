@@ -38,8 +38,8 @@ export function useSearchSelection() {
     }
   }
 
-  // a coordinate is precise, so we also mark it on the map, the center alone
-  // would not tell the user where the point exactly is
+  // as map.geo.admin.ch does, we zoom on the coordinate and mark it: the center
+  // alone would not tell the user where the point exactly is
   function handleCoordinateSelection(result: CoordinateSearchResult) {
     const dispatcher = { name: "search-coordinate-selection" };
     const positionStore = usePositionStore();

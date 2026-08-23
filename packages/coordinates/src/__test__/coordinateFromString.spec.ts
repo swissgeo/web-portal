@@ -1,3 +1,6 @@
+// The notations under test are the ones web-mapviewer coordinateExtractors.spec.js covers, so that
+// what works in map.geo.admin.ch works here too.
+
 import { describe, expect, it } from "vitest";
 
 import { coordinateFromString } from "@/coordinateFromString";
