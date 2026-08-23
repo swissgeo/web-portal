@@ -48,6 +48,17 @@ const layerResult = {
   layerId: "ch.layer.one",
 } as never;
 
+const contentResult = {
+  resultType: "CONTENT",
+  id: "content-373",
+  documentId: "373",
+  slug: "daten-beziehen-download-dienst",
+  locale: "de",
+  title: "Daten beziehen: Download-Dienst",
+  sanitizedTitle: "Daten beziehen: Download-Dienst",
+  description: "Laden Sie Geodaten als Dateien herunter.",
+} as never;
+
 describe("useSearchSelection", () => {
   beforeEach(() => {
     (process as { client?: boolean }).client = true;
@@ -76,6 +87,27 @@ describe("useSearchSelection", () => {
 
     const { handleResultSelection } = useSearchSelection();
     await handleResultSelection(layerResult);
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(layerStore.addLayer).not.toHaveBeenCalled();
+  });
+
+  it("holds a selected content page so the layout can show it in a modal", async () => {
+    const { handleResultSelection, selectedContentPage } = useSearchSelection();
+    expect(selectedContentPage.value).toBeNull();
+
+    await handleResultSelection(contentResult);
+
+    expect(selectedContentPage.value).toMatchObject({
+      documentId: "373",
+      sanitizedTitle: "Daten beziehen: Download-Dienst",
+      description: "Laden Sie Geodaten als Dateien herunter.",
+    });
+  });
+
+  it("leaves the map alone when a content page is selected", async () => {
+    const { handleResultSelection } = useSearchSelection();
+    await handleResultSelection(contentResult);
 
     expect(fetchMock).not.toHaveBeenCalled();
     expect(layerStore.addLayer).not.toHaveBeenCalled();
