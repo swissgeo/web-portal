@@ -10,22 +10,60 @@ export interface ExtractedCoordinate {
   coordinateSystem: CoordinateSystem;
 }
 
-/** A number, optionally using an apostrophe or a space as thousand separator */
-const NUMBER = String.raw`-?\d{1,3}(?:['’ ]\d{3})*(?:\.\d+)?|-?\d+(?:\.\d+)?`;
+/** What people use as thousand separator, e.g. in "2'600'000" */
+const THOUSAND_SEPARATOR = String.raw`['’\`´ ]`;
+/** What separates the two values of a pair */
+const SEPARATOR = String.raw`\s*[ \t,;/]\s*`;
+/** A number, optionally using a thousand separator */
+const NUMBER = String.raw`-?\d{1,3}(?:${THOUSAND_SEPARATOR}\d{3})*(?:\.\d+)?|-?\d+(?:\.\d+)?`;
 /** Two numbers, separated by a comma, a semicolon, a slash or a whitespace */
 const NUMBER_PAIR = new RegExp(
-  String.raw`^(${NUMBER})\s*(?:[,;/]|\s)\s*(${NUMBER})$`,
+  String.raw`^(${NUMBER})${SEPARATOR}(${NUMBER})$`,
 );
 /** Two numbers using a comma as decimal separator, e.g. "46,95 7,44" */
-const COMMA_DECIMALS = /^(-?[\d'’ ]+,\d+)[;/\s]+(-?[\d'’ ]+,\d+)$/;
-/**
- * A degree/minute/second value, with the hemisphere either in front or behind, e.g. "47° 22' 12.5"
- * N". Minutes and seconds are optional, so "47.5°N" is matched too.
- */
-const DMS_PART = new RegExp(
-  String.raw`([NSEW])?\s*(\d+(?:\.\d+)?)\s*°\s*(?:(\d+(?:\.\d+)?)\s*['′’]\s*)?(?:(\d+(?:\.\d+)?)\s*(?:["″”]|''|′′)\s*)?([NSEW])?`,
-  "gi",
+const COMMA_DECIMALS = new RegExp(
+  String.raw`^(-?[\d'’\`´ ]+,\d+)[;/\s]+(-?[\d'’\`´ ]+,\d+)$`,
 );
+
+const DEGREE_SYMBOL = String.raw`\s*°\s*`;
+const MINUTE_SYMBOL = String.raw`\s*['‘’‛′]\s*`;
+const SECOND_SYMBOL = String.raw`\s*(?:["“”‟″]|['‘’‛′]{2})\s*`;
+const DEGREES = String.raw`\d{1,3}(?:[.,]\d+)?`;
+const MINUTES_OR_SECONDS = String.raw`\d{1,2}(?:[.,]\d+)?`;
+const CARDINAL = `[NSEW]`;
+
+/**
+ * One value of a pair, in degrees, degrees/minutes or degrees/minutes/seconds. As soon as there are
+ * minutes the symbols become optional, which is how Google writes them: "46 58.79" for "46° 58.79'".
+ */
+function degreesPattern(index: 1 | 2, precision: 1 | 2 | 3): string {
+  const degrees = String.raw`(?<deg${index}>${DEGREES})`;
+  if (precision === 1) {
+    return `${degrees}${DEGREE_SYMBOL}`;
+  }
+  const minutes = String.raw`${degrees}(?:${DEGREE_SYMBOL}|\s+)(?<min${index}>${MINUTES_OR_SECONDS})`;
+  if (precision === 2) {
+    return `${minutes}(?:${MINUTE_SYMBOL})?`;
+  }
+  return String.raw`${minutes}(?:${MINUTE_SYMBOL}|\s+)(?<sec${index}>${MINUTES_OR_SECONDS})(?:${SECOND_SYMBOL})?`;
+}
+
+function degreesRegex(precision: 1 | 2 | 3, cardinalFirst: boolean): RegExp {
+  const value = (index: 1 | 2) =>
+    cardinalFirst
+      ? String.raw`(?<card${index}>${CARDINAL})\s*${degreesPattern(index, precision)}`
+      : String.raw`${degreesPattern(index, precision)}\s*(?<card${index}>${CARDINAL})?`;
+  return new RegExp(`^${value(1)}${SEPARATOR}${value(2)}$`, "i");
+}
+
+/**
+ * Every notation of a WGS84 pair we accept, the most precise first so that the minutes of
+ * "46 58.79 6 36.45" are not read as a second pair of degrees.
+ */
+const DEGREES_REGEXES = ([3, 2, 1] as const).flatMap((precision) => [
+  degreesRegex(precision, false),
+  degreesRegex(precision, true),
+]);
 /** UTM coordinates, with the zone either in front or behind, e.g. "32T 425215 5087009" */
 const UTM_REGEX =
   /^(?:(\d{1,2})\s*([C-HJ-NP-X])[\s,;/]*)?(\d+(?:\.\d+)?)\s*(?:[,;/]|\s)\s*(\d+(?:\.\d+)?)(?:[\s,;/]*\(?\s*(\d{1,2})\s*([C-HJ-NP-X])\s*\)?)?$/i;
@@ -35,19 +73,14 @@ const MGRS_REGEX = /^\d{1,2}[C-HJ-NP-X][A-HJ-NP-Z]{2}(?:\d\d)*$/i;
 const MAX_LONGITUDE = 180;
 
 function removeThousandSeparators(text: string): string {
-  return text.replace(/['’ ](?=\d{3}\b)/g, "");
+  return text.replace(
+    new RegExp(String.raw`${THOUSAND_SEPARATOR}(?=\d{3}\b)`, "g"),
+    "",
+  );
 }
 
-function toDecimalDegrees(
-  degrees: string,
-  minutes?: string,
-  seconds?: string,
-): number {
-  return (
-    parseFloat(degrees) +
-    parseFloat(minutes ?? "0") / 60 +
-    parseFloat(seconds ?? "0") / 3600
-  );
+function toNumber(value: string = "0"): number {
+  return parseFloat(value.replace(",", "."));
 }
 
 /**
@@ -93,22 +126,28 @@ function extractNumberPair(text: string): ExtractedCoordinate | undefined {
   }
 }
 
-function extractDegreesMinutesSeconds(
-  text: string,
-): ExtractedCoordinate | undefined {
-  const parts = [...text.matchAll(DMS_PART)].map((match) => ({
-    value: toDecimalDegrees(match[2], match[3], match[4]),
-    hemisphere: (match[1] ?? match[5])?.toUpperCase(),
-  }));
-  if (parts.length !== 2) {
+function extractDegrees(text: string): ExtractedCoordinate | undefined {
+  const groups = DEGREES_REGEXES.map((regex) => regex.exec(text)).find(
+    Boolean,
+  )?.groups;
+  if (!groups) {
     return;
   }
 
-  const signed = parts.map(({ value, hemisphere }) =>
-    hemisphere === "S" || hemisphere === "W" ? -value : value,
+  const values = ([1, 2] as const).map(
+    (index) =>
+      toNumber(groups[`deg${index}`]) +
+      toNumber(groups[`min${index}`]) / 60 +
+      toNumber(groups[`sec${index}`]) / 3600,
+  );
+  const cardinals = ([1, 2] as const).map((index) =>
+    groups[`card${index}`]?.toUpperCase(),
+  );
+  const signed = values.map((value, index) =>
+    cardinals[index] === "S" || cardinals[index] === "W" ? -value : value,
   );
   // the first value is a latitude, unless the hemispheres say otherwise
-  const latitudeFirst = !["E", "W"].includes(parts[0].hemisphere ?? "");
+  const latitudeFirst = !["E", "W"].includes(cardinals[0] ?? "");
   const coordinate: SingleCoordinate = latitudeFirst
     ? [signed[1], signed[0]]
     : [signed[0], signed[1]];
@@ -158,8 +197,9 @@ function extractMGRS(text: string): ExtractedCoordinate | undefined {
 /**
  * Extracts a coordinate out of a user input, e.g. what was typed in the search bar.
  *
- * Recognized are LV95, LV03 and WebMercator pairs, WGS84 in decimal or degrees/minutes/seconds
- * notation, UTM and MGRS. UTM and MGRS coordinates are returned in WGS84.
+ * Recognized are LV95, LV03 and WebMercator pairs, WGS84 in decimal, degrees/minutes or
+ * degrees/minutes/seconds notation (with or without the °'" symbols), UTM and MGRS. UTM and MGRS
+ * coordinates are returned in WGS84.
  *
  * @param text The user input
  * @returns The coordinate and the system it is expressed in, or undefined if nothing was recognized
@@ -173,7 +213,7 @@ export function coordinateFromString(
   }
   return (
     extractMGRS(trimmed) ??
-    extractDegreesMinutesSeconds(trimmed) ??
+    extractDegrees(trimmed) ??
     extractUTM(trimmed) ??
     extractNumberPair(trimmed)
   );
