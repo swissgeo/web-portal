@@ -13,7 +13,7 @@ defineProps<{
 <template>
   <UButton
     :aria-label="title"
-    :color="isActive ? 'primary' : 'neutral'"
+    color="primary"
     :icon="'i-lucide-' + iconName.toLowerCase()"
     :variant="isActive ? 'solid' : 'ghost'"
     square

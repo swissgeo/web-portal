@@ -72,7 +72,7 @@ function onFileSelected(evt: Event): void {
         @change="onFileSelected"
       />
       <UButton
-        color="neutral"
+        color="primary"
         variant="outline"
         type="button"
         data-testid="file-input-browse-button"
@@ -95,7 +95,8 @@ function onFileSelected(evt: Event): void {
         :disabled="!selectedFile || isLoading"
         @click="handleImport"
         iconName="Upload"
-        severity="primary"
+        color="primary"
+        variant="solid"
         title="Import file"
       />
       <IconButton

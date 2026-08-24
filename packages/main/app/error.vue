@@ -36,8 +36,8 @@ function handleError() {
     </p>
     <UButton
       icon="i-lucide-arrow-left"
-      color="neutral"
-      variant="subtle"
+      color="primary"
+      variant="ghost"
       @click="handleError"
     >
       {{ $t("error.backToMap") }}

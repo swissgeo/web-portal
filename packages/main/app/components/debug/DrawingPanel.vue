@@ -76,8 +76,6 @@ onUnmounted(() => {
       <IconButton
         iconName="X"
         @click="handleClose"
-        severity="neutral"
-        variant="ghost"
         data-testid="drawing-panel-close"
       />
     </div>
@@ -92,8 +90,8 @@ onUnmounted(() => {
         />
         <UButton
           v-if="focusMode === 'none'"
-          color="neutral"
-          variant="soft"
+          color="primary"
+          variant="ghost"
           data-testid="drawing-tool-polyline"
           @click="enableDrawInteraction('LineString')"
         >
@@ -101,8 +99,8 @@ onUnmounted(() => {
         </UButton>
         <UButton
           v-if="focusMode === 'none'"
-          color="neutral"
-          variant="soft"
+          color="primary"
+          variant="ghost"
           data-testid="drawing-tool-polygon"
           @click="enableDrawInteraction('Polygon')"
         >
@@ -110,8 +108,8 @@ onUnmounted(() => {
         </UButton>
         <UButton
           v-if="focusMode === 'none'"
-          color="neutral"
-          variant="soft"
+          color="primary"
+          variant="ghost"
           data-testid="drawing-tool-circle"
           @click="enableDrawInteraction('Circle')"
         >
@@ -119,8 +117,8 @@ onUnmounted(() => {
         </UButton>
         <UButton
           v-if="focusMode === 'none'"
-          color="neutral"
-          variant="soft"
+          color="primary"
+          variant="ghost"
           data-testid="drawing-tool-point"
           @click="enableDrawInteraction('Point')"
         >
@@ -129,8 +127,8 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'none' && numberOfFeatures > 0"
-          color="neutral"
-          variant="soft"
+          color="primary"
+          variant="outline"
           data-testid="select-feature-tool"
           @click="enableSelectInteraction"
         >
@@ -149,8 +147,8 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'select' && focusedFeature"
-          color="neutral"
-          variant="soft"
+          color="primary"
+          variant="ghost"
           data-testid="deselect-feature-tool"
           @click="terminateModification"
         >

@@ -57,13 +57,7 @@ function handleClose() {
 <template>
   <div class="z-10 h-fit min-h-[100px] w-fit min-w-[100px] bg-white p-[10px]">
     <div>
-      <IconButton
-        @click="handleClose"
-        iconName="X"
-        severity="neutral"
-        variant="ghost"
-      >
-      </IconButton>
+      <IconButton @click="handleClose" iconName="X"> </IconButton>
     </div>
     <div class="flex flex-col gap-4">
       <h3 class="mb-4 text-lg font-bold">Print Framing</h3>
@@ -133,12 +127,18 @@ function handleClose() {
       </UFormField>
       <UButton
         v-if="isCenterLocked || isZoomLocked"
+        color="primary"
+        variant="outline"
         @click="adjustToLockedView"
         >{{ t("print.zoomToLockedZoomLevel") }}</UButton
       >
-      <UButton v-if="!isPrintExtentOutOfBounds" @click="updatePrintState">{{
-        t("print.sendPrintRequest")
-      }}</UButton>
+      <UButton
+        v-if="!isPrintExtentOutOfBounds"
+        color="primary"
+        variant="solid"
+        @click="updatePrintState"
+        >{{ t("print.sendPrintRequest") }}</UButton
+      >
       <PrintJobListing />
     </div>
   </div>

@@ -70,43 +70,37 @@ function togglePrintPanel() {
         !isPrintPanelOpen
       "
     >
-      <UButton
-        color="neutral"
-        variant="soft"
-        @click="toggleLayersPanel"
-        class="cursor-pointer"
-      >
+      <UButton color="primary" variant="outline" @click="toggleLayersPanel">
         {{ $t("debug.openLayersPanel") }}
       </UButton>
       <UButton
         data-testid="debug-open-import-layers-panel"
-        color="neutral"
-        variant="soft"
+        color="primary"
+        variant="outline"
         @click="toggleImportPanel"
-        class="cursor-pointer"
       >
         {{ $t("debug.openImportLayersPanel") }}
       </UButton>
       <UButton
-        color="neutral"
-        variant="soft"
+        data-testid="debug-open-import-local-panel"
+        color="primary"
+        variant="outline"
         @click="toggleLocalImportPanel"
-        class="cursor-pointer"
       >
         {{ $t("debug.openImportLocalLayersPanel") }}
       </UButton>
       <UButton
         data-testid="debug-open-drawing-panel"
-        color="neutral"
-        variant="soft"
+        color="primary"
+        variant="outline"
         @click="toggleDrawing"
       >
         {{ $t("debug.openDrawingPanel") }}
       </UButton>
-      <UButton color="neutral" variant="soft" @click="toggleStateConfig">
+      <UButton color="primary" variant="outline" @click="toggleStateConfig">
         {{ $t("debug.openStateConfigPanel") }}
       </UButton>
-      <UButton color="neutral" variant="soft" @click="togglePrintPanel">
+      <UButton color="primary" variant="outline" @click="togglePrintPanel">
         {{ $t("debug.openPrintPanel") }}
       </UButton>
     </div>

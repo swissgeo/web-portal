@@ -126,7 +126,7 @@ function goToMap() {
       <div class="flex items-center gap-1.5 xl:hidden">
         <UButton
           icon="i-lucide-search"
-          color="neutral"
+          color="primary"
           variant="ghost"
           size="sm"
           :aria-label="t('search.placeholder')"
@@ -134,7 +134,7 @@ function goToMap() {
         />
         <UButton
           :icon="open ? 'i-lucide-x' : 'i-lucide-menu'"
-          color="neutral"
+          color="primary"
           variant="ghost"
           size="sm"
           :aria-label="open ? 'Menü schliessen' : 'Menü öffnen'"

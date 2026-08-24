@@ -77,10 +77,10 @@ function onFileSelected(evt: Event): void {
           </div>
         </div>
         <UButton
-          color="neutral"
+          color="primary"
           variant="ghost"
           icon="i-lucide-x"
-          size="sm"
+          size="xs"
           :aria-label="t('toolbox.import.close')"
           @click="toolboxStore.closeDetailPanel()"
         />
@@ -96,7 +96,7 @@ function onFileSelected(evt: Event): void {
         @change="onFileSelected"
       />
       <UButton
-        color="neutral"
+        color="primary"
         variant="outline"
         type="button"
         data-testid="file-input-browse-button"
@@ -119,7 +119,8 @@ function onFileSelected(evt: Event): void {
         :disabled="!selectedFile || isLoading"
         @click="handleImport"
         iconName="Upload"
-        severity="primary"
+        color="primary"
+        variant="solid"
         :title="t('toolbox.import.importButton')"
         class="grow justify-center"
       />
