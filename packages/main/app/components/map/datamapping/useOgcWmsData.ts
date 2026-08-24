@@ -77,7 +77,7 @@ export function useOgcWmsData(
   onCapabilitiesResponse(() => {
     try {
       if (!wmsData.value.url || !wmsData.value.version) {
-        onError(new Error("WMS capabilities contain no usable layer data"));
+        throw new Error("WMS capabilities contain no usable layer data");
       }
     } catch (error) {
       onError(error);
