@@ -3,6 +3,7 @@
 
 import type { Dataset } from "@swissgeo/ogc";
 import type {
+  ContentSearchResult,
   SearchResult,
   LocationSearchResult,
   LayerSearchResult,
@@ -19,6 +20,9 @@ export function useSearchSelection() {
   const toast = useToast();
   const { locale, t } = useI18n();
 
+  // The content page a search result opened, or null when the modal is closed.
+  const selectedContentPage = ref<ContentSearchResult | null>(null);
+
   async function handleResultSelection(result: SearchResult) {
     // Only run on client side to avoid SSR serialization issues
     if (!process.client) {
@@ -31,7 +35,16 @@ export function useSearchSelection() {
       handleFeatureSelection(result as FeatureSearchResult);
     } else if (result.resultType === "LAYER") {
       await handleLayerSelection(result as LayerSearchResult);
+    } else if (result.resultType === "CONTENT") {
+      handleContentSelection(result as ContentSearchResult);
     }
+  }
+
+  // A CMS result shows what the search returned in a modal and leaves the map
+  // untouched. It cannot open the page itself yet: the CMS is headless and the
+  // route that renders a document is still unmerged (PR #328).
+  function handleContentSelection(result: ContentSearchResult) {
+    selectedContentPage.value = result;
   }
 
   function handleLocationSelection(result: LocationSearchResult) {
@@ -94,5 +107,6 @@ export function useSearchSelection() {
 
   return {
     handleResultSelection,
+    selectedContentPage,
   };
 }
