@@ -165,15 +165,23 @@
       "buttonTitle": "Importieren",
       "title": "Lokale Datei importieren",
       "description": "Akzeptierte Dateitypen: {types}",
+      "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Durchsuchen...",
       "noFileSelected": "Keine Datei ausgewählt",
-      "importButton": "Datei importieren",
+      "importFileButton": "Datei importieren",
+      "importUrlButton": "Import from URL",
       "loadingMessage": "Datei wird importiert...",
-      "sucessMessage": "Datei erfolgreich importiert: {fileName}",
+      "successMessage": "Datei erfolgreich importiert: {fileName}",
+      "drawingSuccessMessage": "Zeichnung erfolgreich importiert",
       "errorMessages": {
         "generalError": "Datei konnte nicht importiert werden",
         "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus",
-        "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize}MB)"
+        "noUrlEntered": "Bitte geben Sie eine URL ein",
+        "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize}MB)",
+        "drawingImportFailed": "Zeichnung konnte nicht importiert werden",
+        "kmlFetchFailed": "KML konnte nicht geladen werden: {status}",
+        "noKmlFound": "Keine KML-Zeichnung in der angegebenen URL gefunden",
+        "domainNotAllowed": "Das Abrufen von {domain} ist nicht erlaubt"
       },
       "close": "Schließen"
     },

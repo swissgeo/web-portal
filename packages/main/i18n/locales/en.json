@@ -165,15 +165,23 @@
       "buttonTitle": "Import",
       "title": "Import Local File",
       "description": "Accepted file types: {types}",
+      "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Browse...",
       "noFileSelected": "No file selected",
-      "importButton": "Import file",
+      "importFileButton": "Import file",
+      "importUrlButton": "Import from URL",
       "loadingMessage": "Importing file...",
-      "sucessMessage": "Successfully imported {fileName}",
+      "successMessage": "Successfully imported {fileName}",
+      "drawingSuccessMessage": "Drawing imported successfully",
       "errorMessages": {
         "generalError": "Failed to import file",
         "noFileSelected": "Please select a file first",
-        "fileTooLarge": "File is too large: {fileName} (maximum {maxSize}MB)"
+        "noUrlEntered": "Please enter a URL",
+        "fileTooLarge": "File is too large: {fileName} (maximum {maxSize}MB)",
+        "drawingImportFailed": "Failed to import drawing",
+        "kmlFetchFailed": "Failed to fetch KML: {status}",
+        "noKmlFound": "No KML drawing found in the provided URL",
+        "domainNotAllowed": "Fetching from {domain} is not allowed"
       },
       "close": "Close"
     },
