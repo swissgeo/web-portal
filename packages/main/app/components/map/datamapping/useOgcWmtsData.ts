@@ -40,8 +40,8 @@ export function useOgcWmtsData(
 
     try {
       const result = await buildWmtsOptions(endpoint, currentLayerId);
-      if (!result && !cancelled) {
-        onError(new Error("WMTS capabilities contain no usable layer options"));
+      if (!result) {
+        throw new Error("WMTS capabilities contain no usable layer options");
       }
       return result;
     } catch (error) {

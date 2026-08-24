@@ -255,7 +255,10 @@ describe("useOgcWmtsData", () => {
 
     expect(onError).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: "WMTS capabilities contain no usable layer options",
+        cause: expect.objectContaining({
+          message: "WMTS capabilities contain no usable layer options",
+        }),
+        message: "Unable to build required WMTS layer options",
       }),
     );
   });
