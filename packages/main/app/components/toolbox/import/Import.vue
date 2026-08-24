@@ -69,17 +69,8 @@ async function handleImport() {
   <UCard data-testid="toolbox-import-card">
     <template #header>
       <div class="flex items-start justify-between">
-        <div>
-          <div class="font-semibold text-highlighted">
-            {{ t("toolbox.import.title") }}
-          </div>
-          <div class="mt-1 text-sm text-muted">
-            {{
-              t("toolbox.import.description", {
-                types: acceptedFileTypes.join(", "),
-              })
-            }}
-          </div>
+        <div class="font-semibold text-highlighted">
+          {{ t("toolbox.import.title") }}
         </div>
         <UButton
           color="neutral"
@@ -93,6 +84,13 @@ async function handleImport() {
     </template>
     <UTabs :items="items" :unmount-on-hide="false">
       <template #file>
+        <div class="mt-1 mb-3 text-sm text-muted">
+          {{
+            t("toolbox.import.description", {
+              types: acceptedFileTypes.join(", "),
+            })
+          }}
+        </div>
         <UFileUpload
           v-model="selectedFile"
           color="neutral"
