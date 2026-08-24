@@ -126,6 +126,13 @@ export default defineNuxtConfig({
       wantedLogLevels: "error,warn",
       printServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/print/jobs",
       maxFileSizeMB: 250,
+      drawingAllowedDomains: [
+        "map.geo.admin.ch",
+        "s.geo.admin.ch",
+        "public.geo.admin.ch",
+        "sys-s.dev.bgdi.ch",
+        "sys-public.dev.bgdi.ch",
+      ],
     },
   },
   nitro: {

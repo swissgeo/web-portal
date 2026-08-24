@@ -12,6 +12,29 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  const config = useRuntimeConfig();
+  const allowedDomains = config.public.drawingAllowedDomains;
+
+  try {
+    const parsedUrl = new URL(url);
+    if (!allowedDomains.includes(parsedUrl.hostname)) {
+      throw createError({
+        status: 403,
+        statusMessage: "Forbidden",
+        message: "Fetching from this domain is not allowed",
+      });
+    }
+  } catch (error) {
+    if (error && typeof error === "object" && "status" in error) {
+      throw error;
+    }
+    throw createError({
+      status: 400,
+      statusMessage: "Bad Request",
+      message: "Invalid URL",
+    });
+  }
+
   try {
     const response = await fetch(url, {
       redirect: "manual",

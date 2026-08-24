@@ -1,6 +1,8 @@
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 let queryParams: Record<string, string | undefined> = {};
+let runtimeConfig: Record<string, unknown> = {};
 
 (globalThis as Record<string, unknown>).defineEventHandler = (
   fn: (_event: unknown) => unknown,
@@ -23,12 +25,25 @@ vi.mock("h3", () => ({
   },
 }));
 
+mockNuxtImport("useRuntimeConfig", () => () => runtimeConfig);
+
 const handler = (await import("../resolve-url")).default as (
   _event: unknown,
 ) => Promise<unknown>;
 
 beforeEach(() => {
   queryParams = {};
+  runtimeConfig = {
+    public: {
+      drawingAllowedDomains: [
+        "s.geo.admin.ch",
+        "public.geo.admin.ch",
+        "map.geo.admin.ch",
+        "sys-s.dev.bgdi.ch",
+        "sys-public.dev.bgdi.ch",
+      ],
+    },
+  };
 });
 
 afterEach(() => {
@@ -90,7 +105,7 @@ describe("GET /api/wpa/v1/drawing/resolve-url", () => {
   });
 
   it("throws 404 when no redirect is found", async () => {
-    queryParams = { url: "https://example.com/no-redirect" };
+    queryParams = { url: "https://s.geo.admin.ch/no-redirect" };
 
     vi.stubGlobal(
       "fetch",
@@ -133,5 +148,55 @@ describe("GET /api/wpa/v1/drawing/resolve-url", () => {
     const result = (await handler({})) as { redirectUrl: string };
 
     expect(result.redirectUrl).toBe("https://example.com/final");
+  });
+
+  it("throws 403 when URL domain is not in whitelist", async () => {
+    queryParams = { url: "https://evil.com/malicious" };
+
+    await expect(handler({})).rejects.toThrow(
+      /Fetching from this domain is not allowed/,
+    );
+  });
+
+  it("allows URLs from whitelisted domains", async () => {
+    queryParams = { url: "https://s.geo.admin.ch/test123" };
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        status: 301,
+        headers: {
+          get: (name: string) =>
+            name === "Location" ? "https://example.com/final" : null,
+        },
+      }),
+    );
+
+    const result = (await handler({})) as { redirectUrl: string };
+
+    expect(result.redirectUrl).toBe("https://example.com/final");
+  });
+
+  it("allows URLs from dev domains", async () => {
+    queryParams = { url: "https://sys-s.dev.bgdi.ch/test123" };
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        status: 301,
+        headers: {
+          get: (name: string) =>
+            name === "Location"
+              ? "https://sys-public.dev.bgdi.ch/api/kml/files/abc"
+              : null,
+        },
+      }),
+    );
+
+    const result = (await handler({})) as { redirectUrl: string };
+
+    expect(result.redirectUrl).toBe(
+      "https://sys-public.dev.bgdi.ch/api/kml/files/abc",
+    );
   });
 });
