@@ -1,12 +1,19 @@
 <script lang="ts" setup>
-import { useAttrs, computed } from "vue";
+import { computed } from "vue";
 
-// we need to de-activate the automatic attribute passing to stop the computed values to be overriden by the attrs.
 defineOptions({ inheritAttrs: false });
 
-const attrs = useAttrs();
+type ButtonColor =
+  | "primary"
+  | "secondary"
+  | "success"
+  | "info"
+  | "warning"
+  | "error"
+  | "neutral";
+type LegacySeverity = ButtonColor | "danger";
 
-const severities = [
+const legacySeverities = new Set<string>([
   "primary",
   "secondary",
   "success",
@@ -14,55 +21,67 @@ const severities = [
   "warning",
   "danger",
   "neutral",
-];
+]);
 
-// Compute color from severity prop, default to gray
-const color = computed(() => {
-  if (attrs.severity && severities.includes(attrs.severity as string)) {
-    return attrs.severity;
+type ButtonVariant = "solid" | "outline" | "soft" | "subtle" | "ghost" | "link";
+
+const {
+  color,
+  icon: explicitIcon,
+  iconName,
+  severity,
+  text = false,
+  variant,
+} = defineProps<{
+  color?: ButtonColor;
+  icon?: string;
+  iconName?: string;
+  severity?: LegacySeverity;
+  text?: boolean;
+  variant?: ButtonVariant;
+}>();
+
+const resolvedColor = computed<ButtonColor>(() => {
+  if (color) {
+    return color;
   }
-  return "secondary";
+  if (severity && !legacySeverities.has(severity)) {
+    return "primary";
+  }
+  if (severity === "danger") {
+    return "error";
+  }
+  if (severity && !["secondary", "neutral"].includes(severity)) {
+    return severity;
+  }
+  return "primary";
 });
 
-// Compute variant - if 'text' prop is true, use 'ghost'
-const variant = computed(() => {
-  return attrs.text ? "ghost" : "solid";
+const resolvedVariant = computed<ButtonVariant>(() => {
+  if (variant) {
+    return variant;
+  }
+  if (
+    text ||
+    !severity ||
+    !legacySeverities.has(severity) ||
+    ["secondary", "neutral"].includes(severity)
+  ) {
+    return "ghost";
+  }
+  return "solid";
 });
 
-const icon = computed(() => {
-  // If needed : there is a "trailing-icon" property, that behaves like icon.
-  // but puts the icon at the end of the button instead of the beginning if
-  // we have text within the icon at some point.
-  return attrs.iconName
-    ? `i-lucide-${attrs.iconName as string}`.toLowerCase()
-    : "";
-});
-// Get other attrs excluding the ones we're handling specially
-const buttonAttrs = computed(() => {
-  const rest = { ...attrs };
-  delete rest.icon;
-  delete rest.variant;
-  delete rest.color;
-
-  return rest;
-});
-//        v-bind="buttonAttrs"
+const icon = computed(() =>
+  iconName ? `i-lucide-${iconName.toLowerCase()}` : (explicitIcon ?? ""),
+);
 </script>
 
 <template>
   <UButton
-    :class="{
-      'text-default': ['secondary', 'info', 'warning', 'neutral'].includes(
-        color as string,
-      ),
-      'text-inverted': ['primary', 'danger', 'success'].includes(
-        color as string,
-      ),
-      'cursor-pointer': true,
-    }"
-    :color="color"
-    :variant="variant"
+    :color="resolvedColor"
+    :variant="resolvedVariant"
     :icon="icon"
-    v-bind="buttonAttrs"
+    v-bind="$attrs"
   />
 </template>

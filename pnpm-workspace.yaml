@@ -29,6 +29,7 @@ catalog:
   "@chenfengyuan/vue-qrcode": "^2.0.0"
   "@eslint/js": ^10.0.0
   "@eslint/markdown": ^8.0.0
+  "@fontsource/dm-sans": ^5.2.6
   "@fontsource/inter": ^5.2.6
   "@hey-api/openapi-ts": ^0.99.0
   "@intlify/core": ^11.4.0
