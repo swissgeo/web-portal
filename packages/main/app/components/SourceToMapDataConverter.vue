@@ -103,6 +103,16 @@ function updateTimeDimension(uuid: string, dimension: Partial<Dimension>) {
 }
 
 function removeMapLayer(uuidToRemove: string) {
+  // A source is active while the layer store contains its UUID as the background
+  // or an overlay. Converter unmount must then keep its map-view data.
+  const sourceIsActive =
+    layerStore.backgroundLayer?.uuid === uuidToRemove ||
+    layerStore.layers.some((layer) => layer.uuid === uuidToRemove);
+
+  if (sourceIsActive) {
+    return;
+  }
+
   if (mapViewStore.mapLayers.some((layer) => layer.uuid === uuidToRemove)) {
     mapViewStore.removeLayer(uuidToRemove);
   }
@@ -119,7 +129,6 @@ function handleLayerError(layer: SourceData, error: unknown) {
 
   dimensionsStore.clearLayerDimensions(layer.uuid);
   layerStore.clearImportOptions(layer.uuid);
-  removeMapLayer(layer.uuid);
 
   if (layerStore.backgroundLayer?.uuid === layer.uuid) {
     layerStore.setBackground(null);
@@ -158,11 +167,13 @@ function handleLayerError(layer: SourceData, error: unknown) {
       @updateTimeDimension="updateTimeDimension"
       @updateDataset="updateStoreLayerData"
       @updateLayerInfo="updateLayerInfo"
+      @remove="removeMapLayer"
     />
     <MapDatamappingFileConverter
       v-else
       :layer="data"
       @update="updateMapLayerData(index + Number(!!sourceBgLayer), $event)"
+      @remove="removeMapLayer"
     />
   </LayerLoadErrorBoundary>
 </template>

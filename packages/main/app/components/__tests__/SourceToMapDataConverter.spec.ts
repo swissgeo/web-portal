@@ -79,7 +79,7 @@ const OgcConverterStub = defineComponent({
 
 const FileConverterStub = defineComponent({
   name: "MapDatamappingFileConverter",
-  emits: ["update"],
+  emits: ["remove", "update"],
   template: "<div />",
 });
 
@@ -276,6 +276,30 @@ describe("background handling", () => {
     wrapper.findComponent(OgcConverterStub).vm.$emit("update", layer);
 
     expect(layer.opacity).toBe(1);
+  });
+
+  it("keeps map data when the converter unmounts while its source remains active", () => {
+    const background = makeDatasetLayer("bg");
+    const layerStore = useLayerStore();
+    layerStore.setBackground(background);
+    mockMapLayers.push(makeMapLayer(background.uuid));
+
+    const wrapper = mount(SourceToMapDataConverter, {
+      props: {
+        sourceBgLayer: background,
+        sourceData: [],
+      },
+      global: {
+        stubs: {
+          MapDatamappingOgcDatasetConverter: OgcConverterStub,
+          MapDatamappingFileConverter: FileConverterStub,
+        },
+      },
+    });
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", background.uuid);
+
+    expect(mockMapLayers).toEqual([makeMapLayer(background.uuid)]);
   });
 
   it("inserts the background at the beginning when there is no current background", () => {
@@ -513,6 +537,14 @@ describe("layer load errors", () => {
           : wrapper.findComponent(LayerLoadErrorBoundary);
       await errorSource.vm.$emit("error", failure);
 
+      expect(removeLayer).not.toHaveBeenCalled();
+
+      const converter =
+        kind === "dataset"
+          ? wrapper.findComponent(OgcConverterStub)
+          : wrapper.findComponent(FileConverterStub);
+      converter.vm.$emit("remove", failedLayer.uuid);
+
       expect(logErrorMock).toHaveBeenCalledWith({
         title: "Layer load failed",
         messages: [failedLayer.uuid, failure, cause],
@@ -532,7 +564,10 @@ describe("layer load errors", () => {
     const layerStore = useLayerStore();
     layerStore.setBackground(background);
     layerStore.addLayer(overlay);
-    mockMapLayers.push(makeMapLayer(overlay.uuid));
+    mockMapLayers.push(
+      makeMapLayer(background.uuid),
+      makeMapLayer(overlay.uuid),
+    );
 
     const wrapper = mount(SourceToMapDataConverter, {
       props: { sourceBgLayer: background, sourceData: [overlay] },
@@ -546,6 +581,10 @@ describe("layer load errors", () => {
     await wrapper
       .findComponent(LayerLoadErrorBoundary)
       .vm.$emit("error", failure);
+
+    expect(removeLayer).not.toHaveBeenCalled();
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", background.uuid);
 
     expect(layerStore.backgroundLayer).toBeNull();
     expect(layerStore.layers).toEqual([overlay]);
