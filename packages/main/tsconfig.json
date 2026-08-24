@@ -2,7 +2,7 @@
   // https://nuxt.com/docs/guide/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
   "files": [
-    "app.config.ts",
+    "app/app.config.ts",
     "nuxt.config.ts",
     "server/plugins/gather-sourcemaps.ts",
     "server/plugins/loglevels.ts",
