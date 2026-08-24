@@ -46,7 +46,10 @@ function extractKmlUrls(url: string): string[] {
   }
 }
 
-function validateDomain(url: string, allowedDomains: string[]): string | null {
+function validateDomain(
+  url: string,
+  allowedDomains: string[],
+): string | null {
   try {
     const hostname = new URL(url).hostname;
     if (!allowedDomains.includes(hostname)) {
