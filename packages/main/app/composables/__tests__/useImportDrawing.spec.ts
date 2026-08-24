@@ -13,8 +13,23 @@ const { fetchMock } = vi.hoisted(() => ({
 
 const { resolveUrlMock } = vi.hoisted(() => ({
   resolveUrlMock: vi.fn().mockResolvedValue({
-    redirectUrl: "https://example.com/kml/test.kml",
+    redirectUrl:
+      "https://sys-map.dev.bgdi.ch/#/map?layers=KML%7Chttps://sys-public.dev.bgdi.ch/api/kml/files/abc123",
   }),
+}));
+
+const { runtimeConfigMock } = vi.hoisted(() => ({
+  runtimeConfigMock: {
+    public: {
+      drawingAllowedDomains: [
+        "s.geo.admin.ch",
+        "public.geo.admin.ch",
+        "map.geo.admin.ch",
+        "sys-s.dev.bgdi.ch",
+        "sys-public.dev.bgdi.ch",
+      ],
+    },
+  },
 }));
 
 mockNuxtImport("useI18n", () => () => ({
@@ -23,6 +38,7 @@ mockNuxtImport("useI18n", () => () => ({
 }));
 
 mockNuxtImport("$fetch", () => resolveUrlMock);
+mockNuxtImport("useRuntimeConfig", () => () => runtimeConfigMock);
 
 vi.stubGlobal("fetch", fetchMock);
 
@@ -45,6 +61,10 @@ describe("useImportDrawing", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    resolveUrlMock.mockResolvedValue({
+      redirectUrl:
+        "https://sys-map.dev.bgdi.ch/#/map?layers=KML%7Chttps://sys-public.dev.bgdi.ch/api/kml/files/abc123",
+    });
   });
 
   it("returns reactive state and importDrawing function", () => {
@@ -63,10 +83,12 @@ describe("useImportDrawing", () => {
 
     await importDrawing();
 
-    expect(errorMessage.value).toBe("Please enter a URL");
+    expect(errorMessage.value).toBe(
+      "toolbox.import.errorMessages.noUrlEntered",
+    );
   });
 
-  it("resolves redirect, fetches KML, and imports", async () => {
+  it("resolves short URL, extracts KML, and imports", async () => {
     const { url, importDrawing, successMessage } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
@@ -76,27 +98,88 @@ describe("useImportDrawing", () => {
       "/api/wpa/v1/drawing/resolve-url",
       { params: { url: "https://s.geo.admin.ch/test123" } },
     );
-    expect(fetchMock).toHaveBeenCalledWith("https://example.com/kml/test.kml");
-    expect(mountDrawingLayerSpy).toHaveBeenCalled();
-    expect(importKmlSpy).toHaveBeenCalled();
-    expect(successMessage.value).toBe("Drawing imported successfully");
-  });
-
-  it("parses KML URL from viewer URL with KML in layers", async () => {
-    resolveUrlMock.mockResolvedValueOnce({
-      redirectUrl:
-        "https://sys-map.dev.bgdi.ch/#/map?layers=ch.test;KML%7Chttps://sys-public.dev.bgdi.ch/api/kml/files/abc123",
-    });
-
-    const { url, importDrawing } = useImportDrawing();
-    url.value = "https://s.geo.admin.ch/test123";
-
-    await importDrawing();
-
     expect(fetchMock).toHaveBeenCalledWith(
       "https://sys-public.dev.bgdi.ch/api/kml/files/abc123",
     );
+    expect(mountDrawingLayerSpy).toHaveBeenCalled();
     expect(importKmlSpy).toHaveBeenCalled();
+    expect(successMessage.value).toBe("toolbox.import.drawingSuccessMessage");
+  });
+
+  it("handles viewer URL directly without server redirect", async () => {
+    const { url, importDrawing } = useImportDrawing();
+    url.value =
+      "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/test123";
+
+    await importDrawing();
+
+    expect(resolveUrlMock).not.toHaveBeenCalled();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://public.geo.admin.ch/api/kml/files/test123",
+    );
+    expect(importKmlSpy).toHaveBeenCalled();
+  });
+
+  it("handles direct KML URL without server redirect", async () => {
+    const { url, importDrawing } = useImportDrawing();
+    url.value = "https://public.geo.admin.ch/api/kml/files/test123";
+
+    await importDrawing();
+
+    expect(resolveUrlMock).not.toHaveBeenCalled();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://public.geo.admin.ch/api/kml/files/test123",
+    );
+    expect(importKmlSpy).toHaveBeenCalled();
+  });
+
+  it("imports multiple KML drawings from viewer URL", async () => {
+    const { url, importDrawing } = useImportDrawing();
+    url.value =
+      "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/abc;KML%7Chttps://public.geo.admin.ch/api/kml/files/def";
+
+    await importDrawing();
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://public.geo.admin.ch/api/kml/files/abc",
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://public.geo.admin.ch/api/kml/files/def",
+    );
+    expect(importKmlSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it("sets error when no KML URL found in viewer URL", async () => {
+    const { url, importDrawing, errorMessage } = useImportDrawing();
+    url.value = "https://map.geo.admin.ch/#/map?layers=ch.test";
+
+    await importDrawing();
+
+    expect(errorMessage.value).toBe("toolbox.import.errorMessages.noKmlFound");
+  });
+
+  it("sets error when domain is not allowed (server-side)", async () => {
+    resolveUrlMock.mockRejectedValueOnce(
+      new Error("Fetching from this domain is not allowed"),
+    );
+
+    const { url, importDrawing, errorMessage } = useImportDrawing();
+    url.value = "https://evil.com/malicious.kml";
+
+    await importDrawing();
+
+    expect(errorMessage.value).toBe("Fetching from this domain is not allowed");
+  });
+
+  it("sets error when KML URL domain is not allowed (client-side)", async () => {
+    const { url, importDrawing, errorMessage } = useImportDrawing();
+    url.value =
+      "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://evil.com/malicious.kml";
+
+    await importDrawing();
+
+    expect(errorMessage.value).toContain("domainNotAllowed");
   });
 
   it("clears URL on success", async () => {
@@ -141,7 +224,9 @@ describe("useImportDrawing", () => {
 
     await importDrawing();
 
-    expect(errorMessage.value).toBe("Failed to fetch KML: Not Found");
+    expect(errorMessage.value).toBe(
+      "toolbox.import.errorMessages.kmlFetchFailed",
+    );
   });
 
   it("sets isLoading during import and resets after", async () => {
