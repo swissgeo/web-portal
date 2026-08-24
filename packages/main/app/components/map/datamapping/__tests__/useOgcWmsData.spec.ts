@@ -201,7 +201,10 @@ describe("useOgcWmsData", () => {
 
     expect(onError).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: "WMS capabilities contain no usable layer data",
+        message: "Unable to process required WMS capabilities",
+        cause: expect.objectContaining({
+          message: "WMS capabilities contain no usable layer data",
+        }),
       }),
     );
   });
@@ -219,7 +222,12 @@ describe("useOgcWmsData", () => {
     useOgcWmsData(ref({}), ref({}), ref("layer"), onError);
     onCapabilitiesResponseMock.mock.calls[0]![0]();
 
-    expect(onError).toHaveBeenCalledWith(parseError);
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "Unable to process required WMS capabilities",
+        cause: parseError,
+      }),
+    );
     valueSpy.mockRestore();
   });
 });

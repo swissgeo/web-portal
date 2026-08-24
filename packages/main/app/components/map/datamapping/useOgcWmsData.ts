@@ -80,7 +80,11 @@ export function useOgcWmsData(
         throw new Error("WMS capabilities contain no usable layer data");
       }
     } catch (error) {
-      onError(error);
+      onError(
+        new Error("Unable to process required WMS capabilities", {
+          cause: error,
+        }),
+      );
     }
   });
 
