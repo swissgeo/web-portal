@@ -156,9 +156,7 @@ describe("useImportDrawing", () => {
 
     await importDrawing();
 
-    expect(errorMessage.value).toBe(
-      "toolbox.import.errorMessages.noKmlFound",
-    );
+    expect(errorMessage.value).toBe("toolbox.import.errorMessages.noKmlFound");
   });
 
   it("sets error when domain is not allowed (server-side)", async () => {
@@ -171,9 +169,7 @@ describe("useImportDrawing", () => {
 
     await importDrawing();
 
-    expect(errorMessage.value).toBe(
-      "Fetching from this domain is not allowed",
-    );
+    expect(errorMessage.value).toBe("Fetching from this domain is not allowed");
   });
 
   it("sets error when KML URL domain is not allowed (client-side)", async () => {
