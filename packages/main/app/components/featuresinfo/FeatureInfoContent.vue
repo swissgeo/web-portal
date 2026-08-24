@@ -29,12 +29,11 @@ const jsonEntries = computed(() =>
     <div v-if="sanitizedHtml" v-html="sanitizedHtml" />
     <div v-else-if="featureData.content.kind === 'json'">
       <div v-for="[key, value] in jsonEntries" :key="key">
-        <div>{{ key }}</div>
         <div
           v-if="key === 'description' && typeof value === 'string'"
           v-html="sanitizeHtml(value, t('featureInfo.blockedContent'))"
         />
-        <div v-else>{{ value }}</div>
+        <div v-else>{{ key }} : {{ value }}</div>
       </div>
       <div v-if="jsonEntries.length === 0">
         {{ t("featureInfo.noInformation") }}
@@ -42,3 +41,30 @@ const jsonEntries = computed(() =>
     </div>
   </div>
 </template>
+
+<style lang="css">
+/**
+  this is the html popup styling from mapviewer
+*/
+.htmlpopup-container {
+  width: 100%;
+  font-size: 11px;
+  text-align: start;
+}
+.htmlpopup-header {
+  display: none;
+}
+.htmlpopup-content {
+  padding: 7px;
+}
+/* fix for layer HTML containing table, such as ch.bafu.gefahren-aktuelle_erdbeben*/
+.htmlpopup-container .t_list {
+  width: 100%;
+}
+.htmlpopup-container td {
+  vertical-align: top;
+}
+.htmlpopup-container td.cell-left {
+  padding-right: 10px;
+}
+</style>
