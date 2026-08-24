@@ -1,88 +1,87 @@
 <script lang="ts" setup>
-import { useAttrs, computed } from "vue";
+import { computed } from "vue";
 
-// Prevent automatic forwarding because this wrapper owns the mapped attributes.
 defineOptions({ inheritAttrs: false });
 
-const attrs = useAttrs();
+type ButtonColor =
+  | "primary"
+  | "secondary"
+  | "success"
+  | "info"
+  | "warning"
+  | "error"
+  | "neutral";
+type LegacySeverity = ButtonColor | "danger";
 
-const colors = [
+const legacySeverities = new Set<string>([
   "primary",
   "secondary",
   "success",
   "info",
   "warning",
-  "error",
+  "danger",
   "neutral",
-] as const;
+]);
 
-type ButtonColor = (typeof colors)[number];
+type ButtonVariant = "solid" | "outline" | "soft" | "subtle" | "ghost" | "link";
 
-const variants = [
-  "solid",
-  "outline",
-  "soft",
-  "subtle",
-  "ghost",
-  "link",
-] as const;
+const {
+  color,
+  icon: explicitIcon,
+  iconName,
+  severity,
+  text = false,
+  variant,
+} = defineProps<{
+  color?: ButtonColor;
+  icon?: string;
+  iconName?: string;
+  severity?: LegacySeverity;
+  text?: boolean;
+  variant?: ButtonVariant;
+}>();
 
-type ButtonVariant = (typeof variants)[number];
-
-function isButtonColor(value: unknown): value is ButtonColor {
-  return colors.some((color) => color === value);
-}
-
-function isButtonVariant(value: unknown): value is ButtonVariant {
-  return variants.some((variant) => variant === value);
-}
-
-const color = computed(() => {
-  if (attrs.severity === "danger") {
+const resolvedColor = computed<ButtonColor>(() => {
+  if (color) {
+    return color;
+  }
+  if (severity && !legacySeverities.has(severity)) {
+    return "primary";
+  }
+  if (severity === "danger") {
     return "error";
   }
-  if (isButtonColor(attrs.severity)) {
-    return attrs.severity;
+  if (severity && !["secondary", "neutral"].includes(severity)) {
+    return severity;
   }
-  return "neutral";
+  return "primary";
 });
 
-const variant = computed(() => {
-  if (isButtonVariant(attrs.variant)) {
-    return attrs.variant;
+const resolvedVariant = computed<ButtonVariant>(() => {
+  if (variant) {
+    return variant;
   }
-  if (attrs.text) {
+  if (
+    text ||
+    !severity ||
+    !legacySeverities.has(severity) ||
+    ["secondary", "neutral"].includes(severity)
+  ) {
     return "ghost";
   }
-  return color.value === "neutral" ? "soft" : "solid";
+  return "solid";
 });
 
-const icon = computed(() => {
-  return attrs.iconName
-    ? `i-lucide-${attrs.iconName as string}`.toLowerCase()
-    : "";
-});
-const buttonAttrs = computed(() => {
-  const rest = { ...attrs };
-  delete rest.icon;
-  delete rest.variant;
-  delete rest.color;
-  delete rest.severity;
-  delete rest.text;
-  delete rest.iconName;
-
-  return rest;
-});
+const icon = computed(() =>
+  iconName ? `i-lucide-${iconName.toLowerCase()}` : (explicitIcon ?? ""),
+);
 </script>
 
 <template>
   <UButton
-    :class="{
-      'cursor-pointer': true,
-    }"
-    :color="color"
-    :variant="variant"
+    :color="resolvedColor"
+    :variant="resolvedVariant"
     :icon="icon"
-    v-bind="buttonAttrs"
+    v-bind="$attrs"
   />
 </template>
