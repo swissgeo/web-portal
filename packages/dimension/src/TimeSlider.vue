@@ -251,7 +251,8 @@ function handleKeyDownEvent(event: KeyboardEvent) {
         id="timeSliderPlayButton"
         data-test="time-slider-play-button"
         class="flex-shrink-0"
-        severity="primary"
+        color="primary"
+        variant="solid"
         :iconName="playYearsWithData ? 'Pause' : 'Play'"
         @click="togglePlayYearsWithData"
       />

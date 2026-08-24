@@ -73,10 +73,10 @@ async function handleImport() {
           {{ t("toolbox.import.title") }}
         </div>
         <UButton
-          color="neutral"
+          color="primary"
           variant="ghost"
           icon="i-lucide-x"
-          size="sm"
+          size="xs"
           :aria-label="t('toolbox.import.close')"
           @click="toolboxStore.closeDetailPanel()"
         />
@@ -100,6 +100,8 @@ async function handleImport() {
           :accept="acceptedFileTypes.join(',')"
         />
         <UButton
+          color="primary"
+          variant="solid"
           :disabled="!selectedFile || isLoading"
           :loading="isLoading"
           @click="handleImport"
@@ -118,6 +120,8 @@ async function handleImport() {
           data-testid="drawing-url-input"
         />
         <UButton
+          color="primary"
+          variant="solid"
           class="mt-3 w-full place-content-center"
           :disabled="!urlImportDrawing.trim() || isImportDrawingLoading"
           :loading="isImportDrawingLoading"

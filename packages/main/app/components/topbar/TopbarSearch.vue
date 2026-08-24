@@ -120,9 +120,9 @@ function clearSearch() {
         <template v-if="query" #trailing>
           <UButton
             icon="i-lucide-circle-x"
-            color="neutral"
-            variant="link"
-            size="sm"
+            color="primary"
+            variant="ghost"
+            size="xs"
             aria-label="Clear search"
             @click="clearSearch"
           />

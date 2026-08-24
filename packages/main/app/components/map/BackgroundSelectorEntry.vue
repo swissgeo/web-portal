@@ -53,7 +53,7 @@ function mapBackgroundLayerToTranslationKey(
 
 <template>
   <button
-    class="bg-entry relative cursor-pointer overflow-hidden rounded-lg border-4 border-solid border-[#343a40]"
+    class="bg-entry relative overflow-hidden rounded-lg border-4 border-solid border-[#343a40]"
     :class="{ active: isCurrent, folded }"
     type="button"
     :data-testid="testId"

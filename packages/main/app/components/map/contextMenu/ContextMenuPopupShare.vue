@@ -14,11 +14,10 @@ const { copy, copied } = useClipboard();
     <UButton
       :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
       :class="copied ? 'text-green-500' : ''"
-      class="cursor-pointer"
-      color="neutral"
+      color="primary"
       variant="ghost"
       square
-      size="sm"
+      size="xs"
       @click="copy(SHARE_URL)"
     />
   </div>

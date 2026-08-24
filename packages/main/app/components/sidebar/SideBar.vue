@@ -50,7 +50,7 @@ function toggleSidebar() {
     <!-- Collapses the sidebar down to this tab, and brings it back -->
     <button
       data-testid="button-layer-cart-panel"
-      class="my-auto flex h-16 w-6 cursor-pointer items-center justify-center rounded-r border border-l-0 border-gray-200 bg-white text-gray-500 shadow-md hover:text-gray-900"
+      class="my-auto flex h-16 w-6 items-center justify-center rounded-r border border-l-0 border-gray-200 bg-white text-gray-500 shadow-md hover:text-gray-900"
       :title="uiStore.isSidebarOpen ? t('menu.collapse') : t('menu.expand')"
       @click="toggleSidebar"
     >

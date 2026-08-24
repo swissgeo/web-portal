@@ -30,7 +30,6 @@ const items = computed(() => [
         <IconButton
           class="ml-2"
           @click="$emit('close')"
-          severity="primary"
           iconName="X"
           title="Close"
         />
