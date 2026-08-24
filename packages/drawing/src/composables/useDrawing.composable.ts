@@ -18,6 +18,7 @@ import {
   applyEditingStyle,
   applySelectedStyle,
   initializeStyleProperties,
+  mapKmlStylesToFeatureProperties,
   setFeatureFillColorStyleProperty,
   setFeatureStrokeColorStyleProperty,
   getFeatureFillColorStyleProperty,
@@ -319,6 +320,11 @@ export function useDrawing() {
       featureProjection: EPSG_2056_CH1903,
       dataProjection: EPSG_4326_WGS84,
     });
+    for (const feature of features) {
+      mapKmlStylesToFeatureProperties(feature);
+      initializeMetadataProperties(feature);
+      applyIdleStyle(feature);
+    }
     drawingStore.drawingVectorSource.addFeatures(features);
   }
 
