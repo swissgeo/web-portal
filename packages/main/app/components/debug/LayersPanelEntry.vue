@@ -46,9 +46,14 @@ function addLayerToMap() {
 <template>
   <tr class="hover:bg-cyan-300">
     <td class="border-b pb-2">
-      <button class="cursor-pointer" @click="addLayerToMap()">
+      <UButton
+        color="primary"
+        variant="ghost"
+        size="xs"
+        @click="addLayerToMap()"
+      >
         {{ dataset.id }}
-      </button>
+      </UButton>
     </td>
     <td class="border-b pb-2 hover:bg-inherit" :class="layerBg">
       <em>{{ type }}</em>

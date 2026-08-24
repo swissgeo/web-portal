@@ -64,8 +64,8 @@ useSortable(layerCartRef, sortedLayers, {
       data-testid="add-layer"
       icon="i-lucide-plus"
       color="primary"
-      size="sm"
-      class="cursor-pointer rounded-full"
+      size="xs"
+      class="rounded-full"
       @click="isAddLayerOpen = true"
     >
       {{ t("menu.addLayer") }}

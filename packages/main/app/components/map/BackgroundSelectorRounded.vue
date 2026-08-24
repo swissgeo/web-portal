@@ -66,7 +66,7 @@ const {
           '--reverse-index': backgroundLayers.length - 1 - index,
           '--max-index': backgroundLayers.length - 1,
         }"
-        class="bg-round-btn cursor-pointer overflow-hidden rounded-full border-4 border-solid border-[#343a40]"
+        class="bg-round-btn overflow-hidden rounded-full border-4 border-solid border-[#343a40]"
         :class="{ active: isCurrent(backgroundLayer) }"
         type="button"
         :data-testid="layerKey(backgroundLayer)"
@@ -82,7 +82,7 @@ const {
 
     <!-- Trigger: shows the current background; thicker border when open -->
     <button
-      class="bg-round-btn bg-round-trigger cursor-pointer overflow-hidden rounded-full border-solid border-[#343a40]"
+      class="bg-round-btn bg-round-trigger overflow-hidden rounded-full border-solid border-[#343a40]"
       :class="{ open: selectorOpen }"
       type="button"
       data-testid="background-selector-trigger"

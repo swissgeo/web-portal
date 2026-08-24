@@ -30,7 +30,7 @@ function stepClasses(year: number) {
       v-for="year in allYears"
       :key="year"
       type="button"
-      class="h-3 min-w-0 flex-1 cursor-pointer border-0 p-0"
+      class="h-3 min-w-0 flex-1 border-0 p-0"
       :data-testid="`time-slider-bar-${year}`"
       :class="stepClasses(year)"
       @click="emit('select', year)"

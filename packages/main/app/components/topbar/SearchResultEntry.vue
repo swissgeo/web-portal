@@ -128,9 +128,9 @@ defineExpose({
       :aria-label="t('search.viewDataset')"
       :title="t('search.viewDataset')"
       icon="i-lucide-info"
-      color="neutral"
+      color="primary"
       variant="ghost"
-      size="sm"
+      size="xs"
       @click.stop="datasetPanelStore.openDatasetPanel(entry.id)"
     />
   </li>

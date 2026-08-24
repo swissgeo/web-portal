@@ -55,6 +55,14 @@ describe("LayersPanelEntry.vue locale-aware behavior", () => {
 
     const wrapper = mount(LayersPanelEntry, {
       props: { dataset },
+      global: {
+        stubs: {
+          UButton: {
+            inheritAttrs: false,
+            template: "<button v-bind='$attrs'><slot /></button>",
+          },
+        },
+      },
     });
 
     await wrapper.find("button").trigger("click");
