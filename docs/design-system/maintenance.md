@@ -64,6 +64,36 @@ Update this documentation only with reviewed rules.
 
 Add one entry to `CHANGELOG.md` for each approved design-system change.
 
+## Implementation plan after the foundation
+
+Keep each item in a separate pull request unless one item requires another item.
+
+1. Header.
+   Reconcile the desktop and mobile variants, the responsive transition, and all
+   interaction states with Figma. Use desktop node `7960:20950` and mobile node
+   `7847:83047` as the current targets. Do not use frames marked `alt` as the
+   target. Keep the product color-mode control as an intentional product
+   extension. Reconcile its placement with the Header without removing it.
+2. Map sidebar.
+   Reconcile the rail, layer panel, layer rows, background selector, icons, and
+   collapse handle with Figma.
+3. Map toolbox.
+   Reconcile both tool groups, tool buttons, separators, icons, labels, and
+   selected states with Figma.
+4. Typography.
+   Complete the verified interface and editorial roles. Keep incomplete mobile
+   and tablet roles open.
+5. Content elements.
+   Complete the verified Livingdocs renderers and key-page composition. Keep
+   components without a complete Figma contract open.
+6. Data-catalog interaction flow.
+   Implement catalog opening, all-layer selection, topic selection, nested
+   topics, suggested-layer states, and empty suggested-layer states after the
+   application contract is available.
+
+Do not include the data-catalog flow in a foundation or component pull request.
+Its product behavior and destination are not available yet.
+
 ## Pre-review cleanup for the initial design-system branch
 
 Complete this cleanup before the draft pull request enters team review.
