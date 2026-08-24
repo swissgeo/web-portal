@@ -23,6 +23,7 @@
   "dependencies": {
     "@camptocamp/ogc-client": "catalog:",
     "@chenfengyuan/vue-qrcode": "catalog:",
+    "@fontsource/dm-sans": "catalog:",
     "@fontsource/inter": "catalog:",
     "@intlify/core": "catalog:",
     "@intlify/core-base": "catalog:",

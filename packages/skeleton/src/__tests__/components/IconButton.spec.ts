@@ -1,111 +1,99 @@
 import { mount } from "@vue/test-utils";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import IconButton from "@/components/IconButton.vue";
 
-describe("Functionality of buttons with a LucideIcon within", () => {
-  const iconName = "a-beAutifUl-cirCle";
-  const expectedIcon = "i-lucide-a-beautiful-circle";
-  const testId = `button-icon-${expectedIcon}`;
+function mountButton(attrs: Record<string, unknown> = {}) {
+  return mount(IconButton, {
+    attrs: {
+      "data-testid": "icon-button",
+      ...attrs,
+    },
+  }).get('[data-testid="icon-button"]');
+}
 
-  // ensuring icon name is handled correctly to produce an 'icon' property and the test id
+describe("IconButton", () => {
+  it("maps the icon name to a Lucide icon", () => {
+    const button = mountButton({ iconName: "Circle-Check" });
+
+    expect(button.attributes("icon")).toBe("i-lucide-circle-check");
+  });
+
+  it("accepts an undefined icon name", () => {
+    const button = mountButton({ iconName: undefined });
+
+    expect(button.attributes("icon")).toBe("");
+  });
+
+  it("keeps the icon name authoritative", () => {
+    const button = mountButton({
+      icon: "i-lucide-x",
+      iconName: "Circle-Check",
+    });
+
+    expect(button.attributes("icon")).toBe("i-lucide-circle-check");
+  });
+
+  it("uses the transparent Figma button mapping by default", () => {
+    const button = mountButton();
+
+    expect(button.attributes("color")).toBe("primary");
+    expect(button.attributes("variant")).toBe("ghost");
+  });
+
+  it("keeps an explicit false text flag on the default mapping", () => {
+    const button = mountButton({ text: false });
+
+    expect(button.attributes("color")).toBe("primary");
+    expect(button.attributes("variant")).toBe("ghost");
+  });
+
   it.each`
-    description                                        | name         | icon
-    ${"ensure icon name is used correctly as an icon"} | ${iconName}  | ${expectedIcon}
-    ${"we can give an undefined icon name too"}        | ${undefined} | ${""}
-  `("$description", ({ _, name, icon }) => {
-    const wrapper = mount(IconButton, {
-      attrs: {
-        iconName: name,
-        "data-testid": testId,
-      },
-    });
-    const iconButton = wrapper.find(`[data-testid="${testId}"]`);
-    expect(iconButton.exists()).toBe(true);
-    expect(iconButton.attributes().icon).to.eql(icon);
+    severity       | color        | variant
+    ${"primary"}   | ${"primary"} | ${"solid"}
+    ${"secondary"} | ${"primary"} | ${"ghost"}
+    ${"neutral"}   | ${"primary"} | ${"ghost"}
+    ${"danger"}    | ${"error"}   | ${"solid"}
+    ${"success"}   | ${"success"} | ${"solid"}
+    ${"info"}      | ${"info"}    | ${"solid"}
+    ${"warning"}   | ${"warning"} | ${"solid"}
+  `("maps $severity to $color + $variant", ({ severity, color, variant }) => {
+    const button = mountButton({ severity });
+
+    expect(button.attributes("color")).toBe(color);
+    expect(button.attributes("variant")).toBe(variant);
   });
 
-  // ensuring text boolean attribute is handled properly to produce a variant attribute
-  it.each`
-    description                                                                | text         | variant
-    ${"If the text attribute is true, the variant used is the ghost variant"}  | ${true}      | ${"ghost"}
-    ${"If the text attribute is false, the variant used is the solid variant"} | ${false}     | ${"solid"}
-    ${"If the text attribute is nullish, we resort to the solid variant"}      | ${undefined} | ${"solid"}
-  `("$description", ({ _, text, variant }) => {
-    const wrapper = mount(IconButton, {
-      attrs: {
-        iconName,
-        text,
-        "data-testid": testId,
-      },
-    });
-    const iconButton = wrapper.find(`[data-testid="${testId}"]`);
-    expect(iconButton.exists()).toBe(true);
-    expect(iconButton.attributes().icon).to.eql(expectedIcon);
-    expect(iconButton.attributes().variant).to.eql(variant);
+  it("uses the default mapping for an unsupported legacy severity", () => {
+    const button = mountButton({ severity: "anvil" });
+
+    expect(button.attributes("color")).toBe("primary");
+    expect(button.attributes("variant")).toBe("ghost");
   });
 
-  // ensuring styling (color and text color) are dependent on the severity
-  it.each`
-    description                                    | severity       | color          | classes
-    ${"Handle primary severity regarding style"}   | ${"primary"}   | ${"primary"}   | ${["text-inverted"]}
-    ${"Handle danger severity regarding style"}    | ${"danger"}    | ${"danger"}    | ${["text-inverted"]}
-    ${"Handle success severity regarding style"}   | ${"success"}   | ${"success"}   | ${["text-inverted"]}
-    ${"Handle warning severity regarding style"}   | ${"warning"}   | ${"warning"}   | ${["text-default"]}
-    ${"Handle info severity regarding style"}      | ${"info"}      | ${"info"}      | ${["text-default"]}
-    ${"Handle neutral severity regarding style"}   | ${"neutral"}   | ${"neutral"}   | ${["text-default"]}
-    ${"Handle secondary severity regarding style"} | ${"secondary"} | ${"secondary"} | ${["text-default"]}
-    ${"Handle fantasy severity regarding style"}   | ${"anvil"}     | ${"secondary"} | ${["text-default"]}
-    ${"Handle nullis severity regarding style"}    | ${undefined}   | ${"secondary"} | ${["text-default"]}
-  `("$description", ({ _, severity, color, classes }) => {
-    const wrapper = mount(IconButton, {
-      attrs: {
-        iconName,
-        severity,
-        "data-testid": testId,
-      },
-    });
-    const iconButton = wrapper.find(`[data-testid="${testId}"]`);
-    // we should find the button
-    expect(iconButton.exists()).toBe(true);
-    // color should be either the severity, or secondary by default
-    expect(iconButton.attributes().color).to.eql(color);
-    // the text is dependant on color
-    for (const cls of classes) {
-      expect(iconButton.classes()).toContain(cls);
-    }
+  it("keeps the legacy text mode transparent", () => {
+    const button = mountButton({ severity: "primary", text: true });
+
+    expect(button.attributes("color")).toBe("primary");
+    expect(button.attributes("variant")).toBe("ghost");
   });
 
-  it("passes other attributes to the iconButton directly, in lowercase form", () => {
-    const customattribute = "a custom attribute";
-    const wrapper = mount(IconButton, {
-      attrs: {
-        iconName,
-        customAttribute: customattribute,
-        "data-testid": testId,
-      },
-    });
-    const iconButton = wrapper.find(`[data-testid="${testId}"]`);
-    expect(iconButton.exists()).toBe(true);
-    expect(iconButton.attributes().customattribute).to.eql(customattribute);
+  it("accepts explicit Nuxt UI color and variant values", () => {
+    const button = mountButton({ color: "error", variant: "outline" });
+
+    expect(button.attributes("color")).toBe("error");
+    expect(button.attributes("variant")).toBe("outline");
   });
 
-  it('does not overwrite any "protected" attributes', () => {
-    const wrapper = mount(IconButton, {
-      attrs: {
-        iconName,
-        severity: "primary",
-        text: true,
-        color: "success",
-        variant: "solid",
-        icon: "i-lucide-not-the-good-one",
-        "data-testid": testId,
-      },
+  it("forwards native button attributes", () => {
+    const button = mountButton({
+      customAttribute: "custom value",
+      disabled: true,
+      title: "Unavailable",
     });
-    const iconButton = wrapper.find(`[data-testid="${testId}"]`);
-    expect(iconButton.exists()).toBe(true);
-    expect(iconButton.attributes().icon).to.eql(expectedIcon);
-    expect(iconButton.attributes().variant).to.eql("ghost");
-    expect(iconButton.attributes().color).to.eql("primary");
+
+    expect(button.attributes("customattribute")).toBe("custom value");
+    expect(button.attributes("disabled")).toBeDefined();
+    expect(button.attributes("title")).toBe("Unavailable");
   });
 });
