@@ -74,7 +74,6 @@ function moveDown() {
 function removeLayer() {
   dimensionsStore.clearLayerDimensions(layer.uuid);
   layerStore.removeLayer(layer.uuid);
-  mapViewStore.removeLayer(layerIndex);
 }
 
 function openDatasetPanel() {

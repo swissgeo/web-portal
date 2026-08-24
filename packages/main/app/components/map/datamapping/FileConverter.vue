@@ -10,7 +10,7 @@ const { layer } = defineProps<{
 
 const emit = defineEmits<{
   update: [layer: MapLayer];
-  remove: [void];
+  remove: [layerUuid: string];
 }>();
 
 const layerData = computed((): MapLayer => {
@@ -22,7 +22,7 @@ watch(layerData, () => emit("update", layerData.value), {
 });
 
 onBeforeUnmount(() => {
-  emit("remove");
+  emit("remove", layer.uuid);
 });
 </script>
 
