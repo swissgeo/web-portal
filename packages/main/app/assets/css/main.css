@@ -211,6 +211,16 @@
 }
 
 @layer base {
+  button:enabled,
+  [role="button"]:not([aria-disabled="true"]) {
+    @apply cursor-pointer;
+  }
+
+  button:disabled,
+  [role="button"][aria-disabled="true"] {
+    @apply cursor-not-allowed;
+  }
+
   h1 {
     @apply pb-8 font-editorial text-7xl leading-heading font-semibold text-primary;
   }
