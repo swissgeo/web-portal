@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { IconButton } from "@swissgeo/skeleton";
 import { useFileImport } from "~/composables/useFileImport";
 import { useToolboxStore } from "~/stores/toolbox";
-import { ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
+const toast = useToast();
 const toolboxStore = useToolboxStore();
 const { importFile } = useFileImport();
+const {
+  url: urlImportDrawing,
+  isLoading: isImportDrawingLoading,
+  errorMessage: importDrawingErrorMessage,
+  successMessage: importDrawingSuccessMessage,
+  importDrawing,
+} = useImportDrawing();
 
-const inputLocalFile = useTemplateRef<HTMLInputElement>("inputLocalFile");
 const filePathInfo = ref("");
 const selectedFile = ref<File | undefined>();
 const isLoading = ref(false);
@@ -17,6 +22,20 @@ const errorMessage = ref("");
 const successMessage = ref("");
 
 const acceptedFileTypes = [".kml", ".kmz", ".gpx", ".geojson", ".json"];
+
+const items = computed(() => [
+  { label: t("toolbox.import.tabFile"), slot: "file" },
+  { label: t("toolbox.import.tabUrl"), slot: "url" },
+]);
+
+function showToast(color: "error" | "success", message: string) {
+  toast.add({ color, title: message });
+}
+
+watch(errorMessage, (v) => v && showToast("error", v));
+watch(successMessage, (v) => v && showToast("success", v));
+watch(importDrawingErrorMessage, (v) => v && showToast("error", v));
+watch(importDrawingSuccessMessage, (v) => v && showToast("success", v));
 
 async function handleImport() {
   if (!selectedFile.value) {
@@ -30,15 +49,11 @@ async function handleImport() {
 
   try {
     await importFile(selectedFile.value);
-    successMessage.value = t("toolbox.import.sucessMessage", {
+    successMessage.value = t("toolbox.import.successMessage", {
       fileName: selectedFile.value.name,
     });
-    // Clear the file input after successful import
     selectedFile.value = undefined;
     filePathInfo.value = "";
-    if (inputLocalFile.value) {
-      inputLocalFile.value.value = "";
-    }
   } catch (error) {
     errorMessage.value =
       error instanceof Error
@@ -48,33 +63,14 @@ async function handleImport() {
     isLoading.value = false;
   }
 }
-
-function onFileSelected(evt: Event): void {
-  const target = evt.target as HTMLInputElement;
-  const file = target?.files?.[0] ?? undefined;
-  selectedFile.value = file;
-  filePathInfo.value = file ? file.name : "";
-  // Clear previous messages
-  errorMessage.value = "";
-  successMessage.value = "";
-}
 </script>
 
 <template>
   <UCard data-testid="toolbox-import-card">
     <template #header>
       <div class="flex items-start justify-between">
-        <div>
-          <div class="font-semibold text-highlighted">
-            {{ t("toolbox.import.title") }}
-          </div>
-          <div class="mt-1 text-sm text-muted">
-            {{
-              t("toolbox.import.description", {
-                types: acceptedFileTypes.join(", "),
-              })
-            }}
-          </div>
+        <div class="font-semibold text-highlighted">
+          {{ t("toolbox.import.title") }}
         </div>
         <UButton
           color="neutral"
@@ -86,67 +82,51 @@ function onFileSelected(evt: Event): void {
         />
       </div>
     </template>
-    <div class="flex flex-wrap items-center gap-2">
-      <input
-        ref="inputLocalFile"
-        type="file"
-        :accept="acceptedFileTypes.join(',')"
-        hidden
-        data-testid="file-input"
-        @change="onFileSelected"
-      />
-      <UButton
-        color="neutral"
-        variant="outline"
-        type="button"
-        data-testid="file-input-browse-button"
-        :disabled="isLoading"
-        @click="inputLocalFile?.click()"
-      >
-        {{ t("toolbox.import.browseButton") }}
-      </UButton>
-      <input
-        type="text"
-        class="rounded border border-gray-300"
-        :value="filePathInfo"
-        :placeholder="t('toolbox.import.noFileSelected')"
-        readonly
-        tabindex="-1"
-        data-testid="file-input-text"
-        @click="inputLocalFile?.click()"
-      />
-      <IconButton
-        :disabled="!selectedFile || isLoading"
-        @click="handleImport"
-        iconName="Upload"
-        :title="t('toolbox.import.importButton')"
-        class="grow justify-center"
-      />
-    </div>
-
-    <!-- Success message -->
-    <div
-      v-if="successMessage"
-      class="mt-3 rounded bg-green-100 p-2 text-sm text-green-800"
-    >
-      ✓ {{ successMessage }}
-    </div>
-
-    <!-- Error message -->
-    <div
-      v-if="errorMessage"
-      class="mt-3 rounded bg-red-100 p-2 text-sm text-red-800"
-    >
-      ✗ {{ errorMessage }}
-    </div>
-
-    <!-- Loading indicator -->
-    <div
-      v-if="isLoading"
-      class="mt-3 flex items-center gap-2 text-sm text-gray-600"
-    >
-      <span class="animate-spin">⏳</span>
-      <span>{{ t("toolbox.import.loadingMessage") }}</span>
-    </div>
+    <UTabs :items="items" :unmount-on-hide="false">
+      <template #file>
+        <div class="mt-1 mb-3 text-sm text-muted">
+          {{
+            t("toolbox.import.description", {
+              types: acceptedFileTypes.join(", "),
+            })
+          }}
+        </div>
+        <UFileUpload
+          v-model="selectedFile"
+          color="neutral"
+          highlight
+          :disabled="isLoading"
+          :description="acceptedFileTypes.join(', ')"
+          :accept="acceptedFileTypes.join(',')"
+        />
+        <UButton
+          :disabled="!selectedFile || isLoading"
+          :loading="isLoading"
+          @click="handleImport"
+          class="mt-3 w-full place-content-center"
+        >
+          {{ t("toolbox.import.importFileButton") }}
+        </UButton>
+      </template>
+      <template #url>
+        <UInput
+          v-model="urlImportDrawing"
+          type="text"
+          class="mt-2 w-full"
+          :placeholder="t('toolbox.import.urlPlaceholder')"
+          :disabled="isImportDrawingLoading"
+          data-testid="drawing-url-input"
+        />
+        <UButton
+          class="mt-3 w-full place-content-center"
+          :disabled="!urlImportDrawing.trim() || isImportDrawingLoading"
+          :loading="isImportDrawingLoading"
+          @click="importDrawing"
+          data-testid="drawing-import-button"
+        >
+          {{ t("toolbox.import.importUrlButton") }}
+        </UButton>
+      </template>
+    </UTabs>
   </UCard>
 </template>

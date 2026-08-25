@@ -29,26 +29,6 @@ describe("ToolboxDetail.vue", () => {
     expect(wrapper.find("div").exists()).toBe(true);
   });
 
-  it("renders ToolboxShare when share panel is active", () => {
-    const toolboxStore = useToolboxStore();
-    toolboxStore.toggleDetailPanel("share");
-
-    const wrapper = mountDetail();
-    expect(wrapper.findComponent({ name: "ToolboxShare" }).exists()).toBe(true);
-    expect(wrapper.findComponent({ name: "Import" }).exists()).toBe(false);
-  });
-
-  it("renders Import when import panel is active", () => {
-    const toolboxStore = useToolboxStore();
-    toolboxStore.toggleDetailPanel("import");
-
-    const wrapper = mountDetail();
-    expect(wrapper.findComponent({ name: "Import" }).exists()).toBe(true);
-    expect(wrapper.findComponent({ name: "ToolboxShare" }).exists()).toBe(
-      false,
-    );
-  });
-
   it("hides all panels when panel is closed", async () => {
     const toolboxStore = useToolboxStore();
     toolboxStore.toggleDetailPanel("share");

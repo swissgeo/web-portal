@@ -1,19 +1,30 @@
 import type { ComponentPublicInstance } from "vue";
 
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { shallowMount } from "@vue/test-utils";
 import { describe, it, expect, vi } from "vitest";
 
 import Import from "@/components/toolbox/import/Import.vue";
-import { useFileImport } from "@/composables/useFileImport";
 
 type ImportVm = ComponentPublicInstance & {
   handleImport: () => Promise<void>;
+  selectedFile: File | undefined;
 };
 
 const importFileSpy = vi.fn();
 vi.mock("@/composables/useFileImport", () => ({
   useFileImport: vi.fn(() => ({
     importFile: importFileSpy,
+  })),
+}));
+
+vi.mock("@/composables/useImportDrawing", () => ({
+  useImportDrawing: vi.fn(() => ({
+    url: { value: "" },
+    isLoading: { value: false },
+    errorMessage: { value: "" },
+    successMessage: { value: "" },
+    importDrawing: vi.fn(),
   })),
 }));
 
@@ -31,9 +42,15 @@ vi.mock("~/stores/toolbox", () => ({
   })),
 }));
 
+const toastAdd = vi.fn();
+mockNuxtImport("useToast", () => () => ({ add: toastAdd }));
+
 const globalStubs = {
   UCard: { template: "<div><slot /></div>" },
   UButton: { template: "<button><slot /></button>" },
+  UFileUpload: { template: "<div><slot /></div>" },
+  UInput: { template: "<input />" },
+  UTabs: { template: "<div><slot /></div>" },
 };
 
 describe("Import.vue", () => {
@@ -42,12 +59,17 @@ describe("Import.vue", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("shows error message when no file is selected", async () => {
+  it("shows error toast when no file is selected", async () => {
     const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
 
-    // call import handler directly to avoid relying on unresolved Button component
     await (wrapper.vm as ImportVm).handleImport();
-    expect(wrapper.text()).toContain("toolbox.import.browseButton");
+
+    expect(toastAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        color: "error",
+        title: "toolbox.import.errorMessages.noFileSelected",
+      }),
+    );
   });
 
   it("calls importFile when a file is selected and import is triggered", async () => {
@@ -56,16 +78,11 @@ describe("Import.vue", () => {
       type: "application/vnd.google-earth.kml+xml",
     });
 
-    const inputWrapper = wrapper.find('input[type="file"]');
-    const inputEl = inputWrapper.element as HTMLInputElement;
-    // define files property on the input element
-    Object.defineProperty(inputEl, "files", { value: [file] });
-    await inputWrapper.trigger("change");
+    (wrapper.vm as ImportVm).selectedFile = file;
+    await wrapper.vm.$nextTick();
 
-    // call import handler directly
     await (wrapper.vm as ImportVm).handleImport();
 
-    const { importFile } = useFileImport();
-    expect(importFile).toHaveBeenCalledWith(file);
+    expect(importFileSpy).toHaveBeenCalledWith(file);
   });
 });

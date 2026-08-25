@@ -163,8 +163,10 @@
     },
     "import": {
       "buttonTitle": "Import",
-      "title": "Import Local File",
+      "title": "Import a file or URL",
       "description": "Accepted file types: {types}",
+      "tabFile": "File",
+      "tabUrl": "URL",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Browse...",
       "noFileSelected": "No file selected",
