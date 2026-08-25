@@ -20,13 +20,26 @@ const mockLayers = [
       links: [{ rel: "distributions", href: DISTRIBUTION_URL }],
     },
   },
+  {
+    uuid: "layer-2",
+    layerId: "2",
+    displayName: "Layer 2",
+    opacity: 1,
+  },
 ];
 
 const getMapLayers = vi.fn(() => computed(() => mockLayers));
+// the click handler checks visibility, this allows us to set it per test
+const layerVisibility: Record<
+  string,
+  { isVisible: boolean; opacity: number } | undefined
+> = {};
+const getMapLayerFromUuid = vi.fn((uuid: string) => layerVisibility[uuid]);
 
 mockNuxtImport("useMapViewStore", () => {
   return () => ({
     getMapLayers,
+    getMapLayerFromUuid,
   });
 });
 vi.mock("@swissgeo/layers", () => {
@@ -42,6 +55,7 @@ vi.mock("@swissgeo/layers", () => {
 vi.mock("~/stores/mapView", () => ({
   useMapViewStore: () => ({
     getMapLayers,
+    getMapLayerFromUuid,
   }),
 }));
 
@@ -104,14 +118,20 @@ const fetchSpy = vi.fn();
 
 function clickEvent(
   vectorFeaturesPerLayer: MapClickEvent["vectorFeaturesPerLayer"] = {},
+  pixel: MapClickEvent["pixel"] = [10, 10],
 ): MapClickEvent {
   return {
     coordinate: [2600000, 1200000],
-    pixel: [10, 10],
+    pixel,
     extent: [2599000, 1199000, 2601000, 1201000],
     viewportSize: [800, 600],
     vectorFeaturesPerLayer,
   };
+}
+
+function setAllLayersVisible(): void {
+  layerVisibility["layer-1"] = { isVisible: true, opacity: 1 };
+  layerVisibility["layer-2"] = { isVisible: true, opacity: 1 };
 }
 
 describe("BaseMapViewer — map click abort handling", () => {
@@ -119,6 +139,7 @@ describe("BaseMapViewer — map click abort handling", () => {
     vi.clearAllMocks();
     fetchSpy.mockReset();
     vi.stubGlobal("fetch", fetchSpy);
+    setAllLayersVisible();
   });
 
   async function createWrapper() {
@@ -171,7 +192,8 @@ describe("BaseMapViewer — map click abort handling", () => {
     expect(epsgNumber).toBe(2056);
     expect(limit).toBe(10);
     expect(signal).toBe(secondSignal);
-    expect(sources).toHaveLength(1);
+    // layer-1 (distributions-fetched) and layer-2 (no link) both pass the filter
+    expect(sources).toHaveLength(2);
     expect(sources[0]).toMatchObject({
       kind: "geoadmin",
       layerUuid: "layer-1",
@@ -242,5 +264,146 @@ describe("BaseMapViewer — map click abort handling", () => {
       throw new Error("expected a geoadmin source");
     }
     expect(source.preResolvedFeatures).toEqual([vectorFeature]);
+  });
+});
+
+describe("BaseMapViewer — identify-source filtering", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    fetchSpy.mockReset();
+    vi.stubGlobal("fetch", fetchSpy);
+    setAllLayersVisible();
+  });
+
+  async function createWrapper(props: Record<string, unknown> = {}) {
+    return await mountSuspended(BaseMapViewer, {
+      props,
+      global: {
+        stubs: {
+          ClientOnly: {
+            template: "<div><slot /></div>",
+          },
+          MapModule: MapModuleStub,
+          SourceToMapDataConverter: SourceToMapDataConverterStub,
+          Toolbox: ToolboxStub,
+          FeaturesinfoFeatureInfoPopover: FeatureInfoPopoverStub,
+        },
+      },
+    });
+  }
+
+  async function sourceUuidsAfterClick(
+    wrapper: Awaited<ReturnType<typeof createWrapper>>,
+    event: MapClickEvent,
+  ): Promise<string[]> {
+    wrapper.getComponent(MapModuleStub).vm.$emit("map-click", event);
+    await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledOnce());
+    const sources = selectFeaturesSpy.mock.calls[0]![3] as Array<{
+      layerUuid: string;
+    }>;
+    return sources.map((source) => source.layerUuid);
+  }
+
+  it("filters out hidden layers (isVisible === false)", async () => {
+    layerVisibility["layer-2"] = { isVisible: false, opacity: 1 };
+
+    const wrapper = await createWrapper();
+    const uuids = await sourceUuidsAfterClick(wrapper, clickEvent());
+
+    expect(uuids).toEqual(["layer-1"]);
+  });
+
+  it("filters out layers with an opacity of 0", async () => {
+    layerVisibility["layer-2"] = { isVisible: true, opacity: 0 };
+
+    const wrapper = await createWrapper();
+    const uuids = await sourceUuidsAfterClick(wrapper, clickEvent());
+
+    expect(uuids).toEqual(["layer-1"]);
+  });
+
+  it("drops layers that have no converted map layer yet", async () => {
+    // allowlist semantics: pending conversion = not identifiable
+    delete layerVisibility["layer-2"];
+
+    const wrapper = await createWrapper();
+    const uuids = await sourceUuidsAfterClick(wrapper, clickEvent());
+
+    expect(uuids).toEqual(["layer-1"]);
+  });
+
+  it("drops the compare-clipped layer when the click is right of the slider", async () => {
+    const wrapper = await createWrapper({
+      compareSliderActive: true,
+      compareRatio: 0.5,
+      compareSliderClippedLayer: {
+        uuid: "layer-1",
+        layerId: "1",
+        displayName: "Layer 1",
+      },
+    });
+
+    // pixel[0]=700 > 0.5 * 800 → right of the bar
+    const uuids = await sourceUuidsAfterClick(
+      wrapper,
+      clickEvent({}, [700, 10]),
+    );
+
+    expect(uuids).toEqual(["layer-2"]);
+  });
+
+  it("keeps the compare-clipped layer when the click is left of the slider", async () => {
+    const wrapper = await createWrapper({
+      compareSliderActive: true,
+      compareRatio: 0.5,
+      compareSliderClippedLayer: {
+        uuid: "layer-1",
+        layerId: "1",
+        displayName: "Layer 1",
+      },
+    });
+
+    // pixel[0]=100 < 0.5 * 800 → left of the bar, clipped layer visible there
+    const uuids = await sourceUuidsAfterClick(
+      wrapper,
+      clickEvent({}, [100, 10]),
+    );
+
+    expect(uuids).toEqual(["layer-1", "layer-2"]);
+  });
+
+  it("keeps the clipped layer on right-side clicks when the slider is inactive", async () => {
+    const wrapper = await createWrapper({
+      compareSliderClippedLayer: {
+        uuid: "layer-1",
+        layerId: "1",
+        displayName: "Layer 1",
+      },
+    });
+
+    const uuids = await sourceUuidsAfterClick(
+      wrapper,
+      clickEvent({}, [700, 10]),
+    );
+
+    expect(uuids).toEqual(["layer-1", "layer-2"]);
+  });
+
+  // Small remark here: in production, if we have
+  // layers, an active compare slider, a compare ratio, and no cut layer,
+  // it should be an error (or a transitory state, but unlikely). This test is mainly
+  // here to fully test the guard in front of the filter.
+  it("keeps the clipped layer when no clipped layer is set", async () => {
+    const wrapper = await createWrapper({
+      compareSliderActive: true,
+      compareRatio: 0.5,
+    });
+
+    const uuids = await sourceUuidsAfterClick(
+      wrapper,
+      clickEvent({}, [700, 10]),
+    );
+
+    expect(uuids).toEqual(["layer-1", "layer-2"]);
   });
 });
