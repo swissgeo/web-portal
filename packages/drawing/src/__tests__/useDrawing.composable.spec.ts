@@ -635,4 +635,28 @@ describe("useDrawing", () => {
 
     wrapper.unmount();
   });
+
+  it("imports features from a KML string into the drawing source", () => {
+    const { drawing, drawingStore, wrapper } = mountHarness();
+
+    const kml = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <Placemark>
+      <name>Test Point</name>
+      <Point>
+        <coordinates>8.2,46.8,0</coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>`;
+
+    drawing.importKml(kml);
+
+    const features = drawingStore.drawingVectorSource.getFeatures();
+    expect(features).toHaveLength(1);
+    expect(features[0].getGeometry()?.getType()).toBe("Point");
+
+    wrapper.unmount();
+  });
 });

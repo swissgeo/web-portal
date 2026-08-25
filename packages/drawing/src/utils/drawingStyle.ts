@@ -395,3 +395,110 @@ export function getFeaturePointColorStyleProperty(
   const color = getFeatureStyleProperty(feature, POINT_COLOR_KEY);
   return typeof color === "string" ? color : null;
 }
+
+/**
+ * Convert an OL RGBA color array [r, g, b, a] to a hex string #RRGGBB.
+ * Alpha is dropped — the app manages opacity separately at render time.
+ */
+export function rgbaToHex(color: number[]): string {
+  const r = Math.round(color[0]);
+  const g = Math.round(color[1]);
+  const b = Math.round(color[2]);
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
+/**
+ * Read the OL style set by the KML parser on a feature and map it
+ * to the app's style properties (fillColor, strokeColor, strokeWidth, etc.).
+ *
+ * After mapping, the OL-parsed style is cleared so the app's own
+ * style functions (IDLE_STYLE, SELECTED_STYLE, etc.) take over.
+ */
+export function mapKmlStylesToFeatureProperties(
+  feature: Feature<Geometry>,
+): void {
+  const rawStyle = feature.getStyle();
+  if (!rawStyle) {
+    initializeStyleProperties(feature);
+    return;
+  }
+
+  // OL's KML parser sets a StyleFunction, not a Style object.
+  // Call it to resolve the actual styles.
+  let styles: Style[];
+  if (typeof rawStyle === "function") {
+    const resolved = rawStyle(feature, 1);
+    styles = Array.isArray(resolved) ? resolved : [resolved];
+  } else {
+    styles = Array.isArray(rawStyle) ? rawStyle : [rawStyle];
+  }
+
+  let style: (typeof styles)[number] = null;
+  for (const s of styles) {
+    if (s && typeof s !== "function" && typeof s.getFill === "function") {
+      style = s;
+      break;
+    }
+  }
+  if (!style) {
+    for (const s of styles) {
+      if (s && typeof s !== "function" && typeof s.getStroke === "function") {
+        style = s;
+        break;
+      }
+    }
+  }
+  if (!style) {
+    initializeStyleProperties(feature);
+    return;
+  }
+
+  const geomType = feature.getGeometry()?.getType();
+
+  if (geomType === "Point") {
+    const image =
+      typeof style.getImage === "function" ? style.getImage() : null;
+    if (image instanceof CircleStyle) {
+      const fill = image.getFill();
+      if (fill) {
+        const fillColor = fill.getColor();
+        if (Array.isArray(fillColor)) {
+          feature.set(POINT_COLOR_KEY, rgbaToHex(fillColor));
+        }
+      }
+      feature.set(POINT_RADIUS_KEY, image.getRadius());
+    } else {
+      initializeStyleProperties(feature);
+    }
+  } else {
+    const fill = style.getFill();
+    if (fill) {
+      const fillColor = fill.getColor();
+      if (Array.isArray(fillColor)) {
+        feature.set(FILL_COLOR_KEY, rgbaToHex(fillColor));
+      }
+    }
+
+    const stroke = style.getStroke();
+    if (stroke) {
+      const strokeColor = stroke.getColor();
+      if (Array.isArray(strokeColor)) {
+        feature.set(STROKE_COLOR_KEY, rgbaToHex(strokeColor));
+      }
+      if (typeof stroke.getWidth === "function") {
+        feature.set(STROKE_WIDTH_KEY, stroke.getWidth());
+      }
+    }
+
+    const fillColor = feature.get(FILL_COLOR_KEY);
+    const strokeColor = feature.get(STROKE_COLOR_KEY);
+    if (
+      (fillColor === undefined || fillColor === null) &&
+      (strokeColor === undefined || strokeColor === null)
+    ) {
+      initializeStyleProperties(feature);
+    }
+  }
+
+  feature.setStyle(null);
+}

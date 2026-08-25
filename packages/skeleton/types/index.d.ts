@@ -53,6 +53,7 @@ declare global {
       version: string;
       buildTime: string;
       maxFileSizeMB: number;
+      drawingAllowedDomains: string[];
     };
   };
 }

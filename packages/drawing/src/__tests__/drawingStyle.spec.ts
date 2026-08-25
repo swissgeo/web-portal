@@ -3,7 +3,7 @@ import type { StyleFunction } from "ol/style/Style";
 
 import Feature from "ol/Feature";
 import { Circle, LineString, Point, Polygon } from "ol/geom";
-import { Style } from "ol/style";
+import { Fill, Stroke, Style } from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import { describe, expect, it } from "vitest";
 
@@ -35,6 +35,8 @@ import {
   STROKE_WIDTH_KEY,
   applyIdleStyle,
   applySelectedStyle,
+  rgbaToHex,
+  mapKmlStylesToFeatureProperties,
 } from "@/utils/drawingStyle";
 
 function makeFeature(geometry: Geometry) {
@@ -253,5 +255,174 @@ describe("feature style functions", () => {
     );
     expect(innerStyle.getStroke()?.getColor()).toBe("#654321");
     expect(innerStyle.getStroke()?.getWidth()).toBe(6);
+  });
+});
+
+describe("rgbaToHex", () => {
+  it("converts opaque red", () => {
+    expect(rgbaToHex([255, 0, 0, 1])).toBe("#ff0000");
+  });
+
+  it("converts opaque blue", () => {
+    expect(rgbaToHex([0, 0, 255, 1])).toBe("#0000ff");
+  });
+
+  it("converts semi-transparent green", () => {
+    expect(rgbaToHex([0, 128, 0, 0.5])).toBe("#008000");
+  });
+
+  it("converts black", () => {
+    expect(rgbaToHex([0, 0, 0, 1])).toBe("#000000");
+  });
+
+  it("converts white", () => {
+    expect(rgbaToHex([255, 255, 255, 1])).toBe("#ffffff");
+  });
+});
+
+describe("mapKmlStylesToFeatureProperties", () => {
+  it("maps polygon fill and stroke from OL styles", () => {
+    const feature = makeFeature(
+      new Polygon([
+        [
+          [0, 0],
+          [1, 0],
+          [1, 1],
+          [0, 0],
+        ],
+      ]),
+    );
+    feature.setStyle(
+      new Style({
+        fill: new Fill({ color: [0, 128, 255, 0.6] }),
+        stroke: new Stroke({ color: [255, 0, 0, 1], width: 3 }),
+      }),
+    );
+
+    mapKmlStylesToFeatureProperties(feature);
+
+    expect(getFeatureFillColorStyleProperty(feature)).toBe("#0080ff");
+    expect(getFeatureStrokeColorStyleProperty(feature)).toBe("#ff0000");
+    expect(getFeatureStrokeWidthStyleProperty(feature)).toBe(3);
+  });
+
+  it("maps linestring stroke from OL styles", () => {
+    const feature = makeFeature(
+      new LineString([
+        [0, 0],
+        [1, 1],
+      ]),
+    );
+    feature.setStyle(
+      new Style({
+        stroke: new Stroke({ color: [0, 255, 0, 1], width: 5 }),
+      }),
+    );
+
+    mapKmlStylesToFeatureProperties(feature);
+
+    expect(getFeatureStrokeColorStyleProperty(feature)).toBe("#00ff00");
+    expect(getFeatureStrokeWidthStyleProperty(feature)).toBe(5);
+  });
+
+  it("maps point color from OL circle style", () => {
+    const feature = makeFeature(new Point([0, 0]));
+    feature.setStyle(
+      new Style({
+        image: new CircleStyle({
+          radius: 10,
+          fill: new Fill({ color: [255, 165, 0, 1] }),
+        }),
+      }),
+    );
+
+    mapKmlStylesToFeatureProperties(feature);
+
+    expect(getFeaturePointColorStyleProperty(feature)).toBe("#ffa500");
+    expect(getFeaturePointRadiusStyleProperty(feature)).toBe(10);
+  });
+
+  it("falls back to defaults when no OL style is set", () => {
+    const feature = makeFeature(
+      new Polygon([
+        [
+          [0, 0],
+          [1, 0],
+          [1, 1],
+          [0, 0],
+        ],
+      ]),
+    );
+
+    mapKmlStylesToFeatureProperties(feature);
+
+    expect(getFeatureFillColorStyleProperty(feature)).toBe(DEFAULT_FILL_COLOR);
+    expect(getFeatureStrokeColorStyleProperty(feature)).toBe(
+      DEFAULT_STROKE_COLOR,
+    );
+    expect(getFeatureStrokeWidthStyleProperty(feature)).toBe(
+      DEFAULT_STROKE_WIDTH,
+    );
+  });
+
+  it("falls back to defaults when OL style has no fill or stroke (nameStyle wrapping)", () => {
+    const feature = makeFeature(
+      new Polygon([
+        [
+          [0, 0],
+          [1, 0],
+          [1, 1],
+          [0, 0],
+        ],
+      ]),
+    );
+    // Simulate OL's nameStyle which only has text, no fill/stroke
+    feature.setStyle(new Style({ text: undefined }));
+
+    mapKmlStylesToFeatureProperties(feature);
+
+    expect(getFeatureFillColorStyleProperty(feature)).toBe(DEFAULT_FILL_COLOR);
+    expect(getFeatureStrokeColorStyleProperty(feature)).toBe(
+      DEFAULT_STROKE_COLOR,
+    );
+    expect(getFeatureStrokeWidthStyleProperty(feature)).toBe(
+      DEFAULT_STROKE_WIDTH,
+    );
+  });
+
+  it("falls back to defaults for point when no OL style is set", () => {
+    const feature = makeFeature(new Point([0, 0]));
+
+    mapKmlStylesToFeatureProperties(feature);
+
+    expect(getFeaturePointColorStyleProperty(feature)).toBe(
+      DEFAULT_POINT_COLOR,
+    );
+    expect(getFeaturePointRadiusStyleProperty(feature)).toBe(
+      DEFAULT_POINT_RADIUS,
+    );
+  });
+
+  it("clears OL-parsed style after mapping", () => {
+    const feature = makeFeature(
+      new Polygon([
+        [
+          [0, 0],
+          [1, 0],
+          [1, 1],
+          [0, 0],
+        ],
+      ]),
+    );
+    feature.setStyle(
+      new Style({
+        fill: new Fill({ color: [0, 128, 255, 0.6] }),
+        stroke: new Stroke({ color: [255, 0, 0, 1], width: 3 }),
+      }),
+    );
+
+    mapKmlStylesToFeatureProperties(feature);
+
+    expect(feature.getStyle()).toBeNull();
   });
 });
