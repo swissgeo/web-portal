@@ -3,11 +3,20 @@ import { shallowMount } from "@vue/test-utils";
 import ImportDrawingPanel from "~/components/debug/ImportDrawingPanel.vue";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { importDrawingMock, urlRef } = await vi.hoisted(async () => {
+const {
+  importDrawingMock,
+  urlRef,
+  isLoadingRef,
+  errorMessageRef,
+  successMessageRef,
+} = await vi.hoisted(async () => {
   const { ref } = await import("vue");
   return {
     importDrawingMock: vi.fn(),
     urlRef: ref(""),
+    isLoadingRef: ref(false),
+    errorMessageRef: ref(""),
+    successMessageRef: ref(""),
   };
 });
 
@@ -19,38 +28,54 @@ mockNuxtImport("useI18n", () => () => ({
 vi.mock("~/composables/useImportDrawing", () => ({
   useImportDrawing: vi.fn(() => ({
     url: urlRef,
-    isLoading: { value: false },
-    errorMessage: { value: "" },
-    successMessage: { value: "" },
+    isLoading: isLoadingRef,
+    errorMessage: errorMessageRef,
+    successMessage: successMessageRef,
     importDrawing: importDrawingMock,
   })),
 }));
 
-vi.mock("@swissgeo/skeleton", () => ({
-  IconButton: { template: "<button><slot /></button>" },
-}));
+function mountPanel() {
+  return shallowMount(ImportDrawingPanel, {
+    global: {
+      stubs: {
+        UButton: {
+          inheritAttrs: false,
+          template: "<button v-bind='$attrs'><slot /></button>",
+        },
+      },
+    },
+  });
+}
 
 describe("ImportDrawingPanel.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     urlRef.value = "";
+    isLoadingRef.value = false;
+    errorMessageRef.value = "";
+    successMessageRef.value = "";
   });
 
   it("renders correctly", () => {
-    const wrapper = shallowMount(ImportDrawingPanel);
+    const wrapper = mountPanel();
     expect(wrapper.exists()).toBe(true);
   });
 
   it("calls importDrawing when import button is clicked", async () => {
-    const wrapper = shallowMount(ImportDrawingPanel);
+    const wrapper = mountPanel();
+    await wrapper
+      .get('[data-testid="drawing-url-input"]')
+      .setValue("https://s.geo.admin.ch/example");
     const button = wrapper.find('[data-testid="drawing-import-button"]');
+    expect(button.attributes("disabled")).toBeUndefined();
     await button.trigger("click");
 
     expect(importDrawingMock).toHaveBeenCalled();
   });
 
   it("emits close when close button is clicked", async () => {
-    const wrapper = shallowMount(ImportDrawingPanel);
+    const wrapper = mountPanel();
     const button = wrapper.find('[data-testid="drawing-import-close-button"]');
     await button.trigger("click");
 
