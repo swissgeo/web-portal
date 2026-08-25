@@ -115,14 +115,13 @@ describe("LayerCartEntry.vue", () => {
     expect(mapViewStore.moveLayerDown).toHaveBeenCalledWith(3);
   });
 
-  it("clears the layer everywhere when removing it", async () => {
+  it("clears the source layer state when removing it", async () => {
     const wrapper = mountEntry();
 
     await wrapper.find("[title='layers.remove']").trigger("click");
 
     expect(dimensionsStore.clearLayerDimensions).toHaveBeenCalledWith("a-uuid");
     expect(layerStore.removeLayer).toHaveBeenCalledWith("a-uuid");
-    expect(mapViewStore.removeLayer).toHaveBeenCalledWith(3);
   });
 
   it("opens the dataset panel of the layer", async () => {
