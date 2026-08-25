@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { IconButton } from "@swissgeo/skeleton";
-
 const emit = defineEmits(["click"]);
 
 const { title } = defineProps<{
@@ -11,12 +9,12 @@ const { title } = defineProps<{
 </script>
 
 <template>
-  <IconButton
+  <UButton
     color="primary"
     :variant="isActive ? 'solid' : 'ghost'"
     class="h-10"
     :title="title"
-    :iconName="iconName"
+    :icon="`i-lucide-${iconName.toLowerCase()}`"
     @click="emit('click')"
-  ></IconButton>
+  />
 </template>

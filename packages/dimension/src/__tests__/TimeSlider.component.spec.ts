@@ -13,15 +13,6 @@ vi.mock("@swissgeo/log", () => ({
   LogPreDefinedColor: { Blue: "blue" },
 }));
 
-vi.mock("@swissgeo/skeleton", () => ({
-  IconButton: defineComponent({
-    name: "IconButton",
-    props: ["iconName", "id"],
-    emits: ["click"],
-    template: '<button :id="id" @click="$emit(\'click\')"><slot /></button>',
-  }),
-}));
-
 vi.mock("@vueuse/core", () => ({
   useDebounceFn: (fn: () => void) => fn,
   useResizeObserver: () => ({}),
@@ -37,7 +28,17 @@ vi.mock("@/TimeSliderBar.vue", () => ({
 }));
 
 function mountTimeSlider() {
-  return mount(TimeSlider);
+  return mount(TimeSlider, {
+    global: {
+      stubs: {
+        UButton: defineComponent({
+          inheritAttrs: false,
+          emits: ["click"],
+          template: '<button v-bind="$attrs" @click="$emit(\'click\')" />',
+        }),
+      },
+    },
+  });
 }
 
 describe("TimeSlider.vue - store integration", () => {

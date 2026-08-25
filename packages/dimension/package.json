@@ -30,8 +30,7 @@
   },
   "dependencies": {
     "@swissgeo/log": "workspace:*",
-    "@swissgeo/numbers": "workspace:*",
-    "@swissgeo/skeleton": "workspace:*"
+    "@swissgeo/numbers": "workspace:*"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
@@ -48,6 +47,7 @@
   },
   "peerDependencies": {
     "@lucide/vue": "catalog:",
+    "@nuxt/ui": "catalog:",
     "@vueuse/core": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",

@@ -1,7 +1,5 @@
 @import "tailwindcss";
 @import "@swissgeo/map/stylesheet";
-@import "@fontsource/dm-sans/latin-500.css";
-@import "@fontsource/dm-sans/latin-ext-500.css";
 @import "@fontsource/inter";
 @import "@swissgeo/dimension/stylesheet";
 
@@ -16,7 +14,6 @@
 
 @theme static {
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-interface: "DM Sans", system-ui, sans-serif;
 
   --color-petrol-50: #e0ecf1;
   --color-petrol-100: #c1dde6;
@@ -167,11 +164,6 @@
 }
 
 @layer base {
-  button,
-  [role="button"] {
-    @apply font-interface;
-  }
-
   button:enabled,
   [role="button"]:not([aria-disabled="true"]) {
     @apply cursor-pointer;

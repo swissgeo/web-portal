@@ -28,12 +28,6 @@ vi.mock("@swissgeo/layers", () => ({
   makeServerLayer: vi.fn(),
 }));
 
-vi.mock("@swissgeo/skeleton", () => ({
-  IconButton: {
-    template: "<button><slot /></button>",
-  },
-}));
-
 describe("LayersPanel.vue locale-aware records loading", () => {
   it("loads records from shared dataset collection composable", async () => {
     shallowMount(LayersPanel);

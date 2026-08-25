@@ -10,9 +10,6 @@ export default defineAppConfig({
       neutral: "neutral",
     },
     button: {
-      slots: {
-        base: "font-interface",
-      },
       compoundVariants: [
         {
           color: "primary",
