@@ -107,16 +107,6 @@ function updateTimeDimension(uuid: string, dimension: Partial<Dimension>) {
 }
 
 function removeMapLayer(uuidToRemove: string) {
-  // A source is active while the layer store contains its UUID as the background
-  // or an overlay. Converter unmount must then keep its map-view data.
-  const sourceIsActive =
-    layerStore.backgroundLayer?.uuid === uuidToRemove ||
-    layerStore.layers.some((layer) => layer.uuid === uuidToRemove);
-
-  if (sourceIsActive) {
-    return;
-  }
-
   if (mapViewStore.mapLayers.some((layer) => layer.uuid === uuidToRemove)) {
     mapViewStore.removeLayer(uuidToRemove);
   }

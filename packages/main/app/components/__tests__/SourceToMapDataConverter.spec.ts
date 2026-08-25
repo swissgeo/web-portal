@@ -278,30 +278,6 @@ describe("background handling", () => {
     expect(layer.opacity).toBe(1);
   });
 
-  it("keeps map data when the converter unmounts while its source remains active", () => {
-    const background = makeDatasetLayer("bg");
-    const layerStore = useLayerStore();
-    layerStore.setBackground(background);
-    mockMapLayers.push(makeMapLayer(background.uuid));
-
-    const wrapper = mount(SourceToMapDataConverter, {
-      props: {
-        sourceBgLayer: background,
-        sourceData: [],
-      },
-      global: {
-        stubs: {
-          MapDatamappingOgcDatasetConverter: OgcConverterStub,
-          MapDatamappingFileConverter: FileConverterStub,
-        },
-      },
-    });
-
-    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", background.uuid);
-
-    expect(mockMapLayers).toEqual([makeMapLayer(background.uuid)]);
-  });
-
   it("inserts the background at the beginning when there is no current background", () => {
     const layerStore = useLayerStore();
 
