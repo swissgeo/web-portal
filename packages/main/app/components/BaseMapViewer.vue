@@ -111,42 +111,60 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   const { signal } = abortController;
 
   const layersSources: LayerSource[] = [];
-  const results = await Promise.allSettled(
-    sourceLayers.value.map(async (sourceLayer) => {
-      const preResolvedFeatures =
-        mapClickEvent.vectorFeaturesPerLayer[sourceLayer.uuid];
-      let distribution: OgcDistribution | undefined;
-      // only dataset layers carry OGC links; file layers' data is a string
-      // (kml/gpx/geojson) or binary (kmz) — never an object with .links
-      if (isDatasetLayer(sourceLayer)) {
-        const url = (sourceLayer.data.links ?? []).find(
-          (link) => link.rel?.toLowerCase() === "distributions",
-        )?.href;
-        try {
-          if (url) {
-            const result = await fetch(url, {
-              signal,
-            });
-            distribution = result.ok
-              ? ((await result.json()) as OgcDistribution)
-              : undefined;
-          }
-        } catch {
-          distribution = undefined;
-        }
-      }
 
-      const layerSource: LayerSource = {
-        layerUuid: sourceLayer.uuid,
-        kind: "geoadmin",
-        layerId: isDatasetLayer(sourceLayer)
-          ? sourceLayer.data.id
-          : sourceLayer.humanId,
-        distribution,
-        preResolvedFeatures,
-      };
-      return layerSource;
-    }),
+  const filterOutCutLayer =
+    compareSliderActive &&
+    mapClickEvent.pixel[0] >
+      (compareRatio ?? 0) * mapClickEvent.viewportSize[0];
+
+  const results = await Promise.allSettled(
+    sourceLayers.value
+      .filter(
+        (sourceLayer) =>
+          // first we filter out hidden layers
+          mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)?.isVisible &&
+          mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)!.opacity > 0 &&
+          // we also filter the compare slider clipped layer if the click happened
+          // on the right of the slider
+          !(
+            filterOutCutLayer &&
+            compareSliderClippedLayer?.uuid === sourceLayer.uuid
+          ),
+      )
+      .map(async (sourceLayer) => {
+        const preResolvedFeatures =
+          mapClickEvent.vectorFeaturesPerLayer[sourceLayer.uuid];
+        let distribution: OgcDistribution | undefined;
+
+        if (isDatasetLayer(sourceLayer)) {
+          const url = (sourceLayer.data.links ?? []).find(
+            (link) => link.rel?.toLowerCase() === "distributions",
+          )?.href;
+          try {
+            if (url) {
+              const result = await fetch(url, {
+                signal,
+              });
+              distribution = result.ok
+                ? ((await result.json()) as OgcDistribution)
+                : undefined;
+            }
+          } catch {
+            distribution = undefined;
+          }
+        }
+
+        const layerSource: LayerSource = {
+          layerUuid: sourceLayer.uuid,
+          kind: "geoadmin",
+          layerId: isDatasetLayer(sourceLayer)
+            ? sourceLayer.data.id
+            : sourceLayer.humanId,
+          distribution,
+          preResolvedFeatures,
+        };
+        return layerSource;
+      }),
   );
 
   results.forEach((result) => {
