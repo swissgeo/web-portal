@@ -1,5 +1,6 @@
 // Main exports for @swissgeo/search package
 
+export { searchCoordinate } from "./api/coordinateSearch";
 export {
   searchLayers,
   searchLocation,
@@ -9,6 +10,7 @@ export {
 } from "./api/search";
 export type {
   SearchResult,
+  CoordinateSearchResult,
   SearchResultTypes,
   LayerSearchResult,
   LocationSearchResult,

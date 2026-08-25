@@ -110,7 +110,7 @@ function resetApp() {
 <template>
   <UHeader :ui="{ container: 'max-w-full' }">
     <template #left>
-      <LogoPic class="h-6 w-auto" @logo-click="resetApp" />
+      <LogoPic class="h-6 w-auto shrink-0" @logo-click="resetApp" />
       <TopbarSearch @result-selected="emit('search-result-selected', $event)" />
     </template>
 
@@ -124,9 +124,13 @@ function resetApp() {
       />
       <UButton :to="localePath('/map')"> {{ t("topbar.map") }} </UButton>
       <USeparator class="mx-4 h-8" orientation="vertical" />
-      <UButton icon="i-lucide-log-in" color="neutral" variant="outline">{{
-        t("topbar.login")
-      }}</UButton>
+      <UButton
+        icon="i-lucide-log-in"
+        color="neutral"
+        variant="outline"
+        class="whitespace-nowrap"
+        >{{ t("topbar.login") }}</UButton
+      >
       <TopbarLanguageSwitcherButton />
     </template>
   </UHeader>

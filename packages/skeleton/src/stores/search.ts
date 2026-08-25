@@ -1,9 +1,11 @@
-import type { SearchResult } from "@swissgeo/search";
+import type { SingleCoordinate } from "@swissgeo/coordinates";
+import type { CoordinateSearchResult, SearchResult } from "@swissgeo/search";
 
 import { useLayerStore } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { buildCatalogItemsUrl } from "@swissgeo/ogc";
 import {
+  searchCoordinate,
   searchLayers,
   searchLocation,
   searchLayerFeatures,
@@ -20,6 +22,12 @@ export const useSearchStore = defineStore("search", () => {
   // True when a search request failed, so the UI can tell an error apart from
   // an empty result set.
   const hasError = ref(false);
+  // Set as soon as the query is a coordinate. It is not part of the results:
+  // as in map.geo.admin.ch, a coordinate needs no confirmation and the map
+  // goes there directly.
+  const coordinateResult = ref<CoordinateSearchResult | undefined>();
+  // Coordinate the map marks with a marker, set when a coordinate result is selected.
+  const pinnedCoordinate = ref<SingleCoordinate | undefined>();
 
   let abortController: AbortController | undefined;
 
@@ -54,8 +62,11 @@ export const useSearchStore = defineStore("search", () => {
     // Clear results if query too short
     if (newQuery.trim().length < 2) {
       results.value = [];
+      coordinateResult.value = undefined;
       return;
     }
+
+    coordinateResult.value = searchCoordinate(newQuery);
 
     // Cancel previous request
     if (abortController) {
@@ -171,7 +182,16 @@ export const useSearchStore = defineStore("search", () => {
   function clearSearch() {
     query.value = "";
     results.value = [];
+    coordinateResult.value = undefined;
     hasError.value = false;
+  }
+
+  function setPinnedCoordinate(coordinate: SingleCoordinate) {
+    pinnedCoordinate.value = coordinate;
+  }
+
+  function clearPinnedCoordinate() {
+    pinnedCoordinate.value = undefined;
   }
 
   return {
@@ -180,6 +200,8 @@ export const useSearchStore = defineStore("search", () => {
     results,
     isSearching,
     hasError,
+    coordinateResult,
+    pinnedCoordinate,
     // Getters
     hasResults,
     locationResults,
@@ -189,5 +211,7 @@ export const useSearchStore = defineStore("search", () => {
     setSearchQuery,
     selectResult,
     clearSearch,
+    setPinnedCoordinate,
+    clearPinnedCoordinate,
   };
 });

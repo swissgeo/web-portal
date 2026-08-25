@@ -4,6 +4,7 @@
 import type { Dataset } from "@swissgeo/ogc";
 import type {
   SearchResult,
+  CoordinateSearchResult,
   LocationSearchResult,
   LayerSearchResult,
   FeatureSearchResult,
@@ -12,6 +13,7 @@ import type {
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
+import { useSearchStore } from "@swissgeo/skeleton";
 import { joinURL } from "ufo";
 
 export function useSearchSelection() {
@@ -25,13 +27,25 @@ export function useSearchSelection() {
       return;
     }
 
-    if (result.resultType === "LOCATION") {
+    if (result.resultType === "COORDINATE") {
+      handleCoordinateSelection(result as CoordinateSearchResult);
+    } else if (result.resultType === "LOCATION") {
       handleLocationSelection(result as LocationSearchResult);
     } else if (result.resultType === "FEATURE") {
       handleFeatureSelection(result as FeatureSearchResult);
     } else if (result.resultType === "LAYER") {
       await handleLayerSelection(result as LayerSearchResult);
     }
+  }
+
+  // as map.geo.admin.ch does, we zoom on the coordinate and mark it: the center
+  // alone would not tell the user where the point exactly is
+  function handleCoordinateSelection(result: CoordinateSearchResult) {
+    const dispatcher = { name: "search-coordinate-selection" };
+    const positionStore = usePositionStore();
+    positionStore.setCenter(result.coordinate, dispatcher);
+    positionStore.setZoom(result.zoom, dispatcher);
+    useSearchStore().setPinnedCoordinate(result.coordinate);
   }
 
   function handleLocationSelection(result: LocationSearchResult) {

@@ -3,7 +3,7 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { useSearchStore } from "@swissgeo/skeleton";
 import { useDebounceFn } from "@vueuse/core";
-import { computed, watch } from "vue";
+import { computed, nextTick, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import SearchCategory from "./SearchCategory.vue";
@@ -60,6 +60,17 @@ const debouncedSearch = useDebounceFn((value: string) => {
   void searchStore.setSearchQuery(value, locale.value);
 }, 100);
 
+// a coordinate needs no confirmation: as in map.geo.admin.ch, the map goes
+// there as soon as the query is recognized as one, no entry to select
+watch(
+  () => searchStore.coordinateResult,
+  (result) => {
+    if (result) {
+      emit("result-selected", result);
+    }
+  },
+);
+
 watch(
   () => searchStore.hasResults,
   (hasResults) => {
@@ -90,8 +101,25 @@ function handleClick() {
   }
 }
 
+// the results are rendered in a portal, outside of this component, so they are
+// reached through the DOM rather than through a template ref
+function focusFirstResult() {
+  if (!searchStore.hasResults) {
+    return;
+  }
+  isOpen.value = true;
+  void nextTick(() => {
+    document
+      .querySelector<HTMLElement>('[data-testid="search-results"] li')
+      ?.focus();
+  });
+}
+
+// the marker of a previously selected coordinate is only removed when the user
+// explicitly clears the search, not when a result is selected
 function clearSearch() {
   searchStore.clearSearch();
+  searchStore.clearPinnedCoordinate();
   isOpen.value = false;
 }
 </script>
@@ -99,9 +127,15 @@ function clearSearch() {
 <template>
   <UPopover
     v-model:open="isOpen"
-    :content="{ align: 'start', sideOffset: 8 }"
+    :content="{
+      align: 'start',
+      sideOffset: 8,
+      // the results open while the user is still typing, so the focus has to
+      // stay in the input, arrow down is what moves it to the results
+      onOpenAutoFocus: (event: Event) => event.preventDefault(),
+    }"
     :dismissible="true"
-    :ui="{ content: 'w-96' }"
+    :ui="{ content: 'w-(--reka-popper-anchor-width) min-w-96' }"
   >
     <template #anchor>
       <UInput
@@ -113,9 +147,10 @@ function clearSearch() {
         size="md"
         variant="outline"
         color="secondary"
-        class="w-72"
+        class="min-w-72 flex-1"
         data-testid="topbar-search-input"
         @click="handleClick"
+        @keydown.down.prevent="focusFirstResult"
       >
         <template v-if="query" #trailing>
           <UButton

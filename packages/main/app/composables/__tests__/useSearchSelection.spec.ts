@@ -3,16 +3,23 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useSearchSelection } from "../useSearchSelection";
 
-const { fetchMock, layerStore, makeServerLayerMock, toastAddMock } = vi.hoisted(
-  () => ({
-    fetchMock: vi.fn(),
-    layerStore: { layers: [] as { humanId: string }[], addLayer: vi.fn() },
-    makeServerLayerMock: vi.fn((dataset: { id: string }) => ({
-      humanId: dataset.id,
-    })),
-    toastAddMock: vi.fn(),
-  }),
-);
+const {
+  fetchMock,
+  layerStore,
+  makeServerLayerMock,
+  positionStore,
+  searchStore,
+  toastAddMock,
+} = vi.hoisted(() => ({
+  fetchMock: vi.fn(),
+  layerStore: { layers: [] as { humanId: string }[], addLayer: vi.fn() },
+  makeServerLayerMock: vi.fn((dataset: { id: string }) => ({
+    humanId: dataset.id,
+  })),
+  positionStore: { setCenter: vi.fn(), setZoom: vi.fn() },
+  searchStore: { setPinnedCoordinate: vi.fn() },
+  toastAddMock: vi.fn(),
+}));
 
 mockNuxtImport("$fetch", () => fetchMock);
 
@@ -36,10 +43,11 @@ vi.mock("@swissgeo/layers", () => ({
 }));
 
 vi.mock("@swissgeo/map", () => ({
-  usePositionStore: () => ({
-    setCenter: vi.fn(),
-    setZoom: vi.fn(),
-  }),
+  usePositionStore: () => positionStore,
+}));
+
+vi.mock("@swissgeo/skeleton", () => ({
+  useSearchStore: () => searchStore,
 }));
 
 const layerResult = {
@@ -55,6 +63,29 @@ describe("useSearchSelection", () => {
     layerStore.addLayer.mockReset();
     toastAddMock.mockReset();
     fetchMock.mockReset();
+    positionStore.setCenter.mockReset();
+    positionStore.setZoom.mockReset();
+    searchStore.setPinnedCoordinate.mockReset();
+  });
+
+  it("goes to a coordinate result and marks it on the map", async () => {
+    const { handleResultSelection } = useSearchSelection();
+    await handleResultSelection({
+      resultType: "COORDINATE",
+      id: "coordinate-2600000,1200000",
+      coordinate: [2600000, 1200000],
+      zoom: 8,
+    } as never);
+
+    const dispatcher = { name: "search-coordinate-selection" };
+    expect(positionStore.setCenter).toHaveBeenCalledWith(
+      [2600000, 1200000],
+      dispatcher,
+    );
+    expect(positionStore.setZoom).toHaveBeenCalledWith(8, dispatcher);
+    expect(searchStore.setPinnedCoordinate).toHaveBeenCalledWith([
+      2600000, 1200000,
+    ]);
   });
 
   it("fetches the dataset and adds it to the map when a layer result is selected", async () => {
