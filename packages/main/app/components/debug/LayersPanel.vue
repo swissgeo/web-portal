@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { Dataset } from "@swissgeo/ogc";
 
-import { IconButton } from "@swissgeo/skeleton";
-
 const { locale } = useI18n();
 
 const filterTerm = ref<string>("");
@@ -36,7 +34,12 @@ const filteredAvailableLayers = computed((): Dataset[] => {
         placeholder="Filter"
         autofocus
       />
-      <IconButton @click="$emit('close')" iconName="X"> </IconButton>
+      <UButton
+        color="primary"
+        variant="ghost"
+        icon="i-lucide-x"
+        @click="$emit('close')"
+      />
     </div>
     <div class="mt-12 h-75 overflow-scroll pb-18">
       <table class="">

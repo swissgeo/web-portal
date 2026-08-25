@@ -36,16 +36,15 @@ vi.mock("@swissgeo/dimension", () => ({
 }));
 vi.mock("@swissgeo/skeleton", () => ({
   useDatasetPanelStore: () => datasetPanelStore,
-  IconButton: {
-    name: "IconButton",
-    inheritAttrs: false,
-    template: "<button v-bind='$attrs' />",
-  },
 }));
 mockNuxtImport("useMapViewStore", () => () => mapViewStore);
 
 const stubs = {
   LayerLegend: { template: "<div data-testid='legend-stub' />" },
+  UButton: {
+    inheritAttrs: false,
+    template: "<button v-bind='$attrs' />",
+  },
   USlider: { template: "<div />" },
 };
 
