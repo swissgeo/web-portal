@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { IconButton } from "@swissgeo/skeleton";
 import { useFileImport } from "~/composables/useFileImport";
 import { useToolboxStore } from "~/stores/toolbox";
 import { ref, useTemplateRef } from "vue";
@@ -115,10 +114,10 @@ function onFileSelected(evt: Event): void {
         data-testid="file-input-text"
         @click="inputLocalFile?.click()"
       />
-      <IconButton
+      <UButton
         :disabled="!selectedFile || isLoading"
         @click="handleImport"
-        iconName="Upload"
+        icon="i-lucide-upload"
         color="primary"
         variant="solid"
         :title="t('toolbox.import.importButton')"

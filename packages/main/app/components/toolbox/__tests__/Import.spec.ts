@@ -17,10 +17,15 @@ vi.mock("@/composables/useFileImport", () => ({
   })),
 }));
 
-vi.mock("@swissgeo/skeleton", () => ({
-  IconButton: { template: "<button><slot /></button>" },
+vi.mock("@/composables/useImportDrawing", () => ({
+  useImportDrawing: vi.fn(() => ({
+    url: { value: "" },
+    isLoading: { value: false },
+    errorMessage: { value: "" },
+    successMessage: { value: "" },
+    importDrawing: vi.fn(),
+  })),
 }));
-
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));

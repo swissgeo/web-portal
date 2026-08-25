@@ -19,24 +19,25 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <button
+  <UButton
     type="button"
+    color="neutral"
+    variant="ghost"
+    square
+    :icon="icon"
     :aria-label="label"
     :disabled="disabled"
     :title="label"
-    class="inline-flex shrink-0 items-center justify-center rounded-sm bg-transparent transition-colors outline-none hover:text-primary focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-40"
+    class="shrink-0 justify-center rounded-sm bg-transparent p-0 transition-colors outline-none hover:bg-transparent hover:text-primary focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-40"
     :class="[
       size === 'medium' ? 'size-5' : 'size-4',
       tone === 'highlighted' && 'text-highlighted',
       tone === 'muted' && 'text-muted',
       tone === 'danger' && 'text-muted hover:text-error',
     ]"
+    :ui="{
+      leadingIcon: size === 'medium' ? 'size-5' : 'size-4',
+    }"
     @click="emit('click', $event)"
-  >
-    <UIcon
-      :name="icon"
-      aria-hidden="true"
-      :class="size === 'medium' ? 'size-5' : 'size-4'"
-    />
-  </button>
+  />
 </template>

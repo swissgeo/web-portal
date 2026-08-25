@@ -2,7 +2,6 @@
 import type { Dataset } from "@swissgeo/ogc";
 
 import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
-import { IconButton } from "@swissgeo/skeleton";
 import WMSCapabilities from "ol/format/WMSCapabilities";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 
@@ -170,15 +169,19 @@ function addLayer(layer: string) {
           </li>
         </ul>
       </div>
-      <IconButton
+      <UButton
         data-testid="import-load-capabilities"
         @click="loadCapabilities"
-        iconName="Send"
+        icon="i-lucide-send"
         color="primary"
         variant="solid"
-      ></IconButton>
-      <IconButton @click="$emit('close')" iconName="X" variant="ghost">
-      </IconButton>
+      />
+      <UButton
+        color="primary"
+        variant="ghost"
+        icon="i-lucide-x"
+        @click="$emit('close')"
+      />
     </div>
     <div class="mt-12 h-[300px] overflow-scroll pb-18">
       <input

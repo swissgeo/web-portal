@@ -80,11 +80,10 @@ play/pause animation that steps through the years that actually have data.
 
 Internal SWISSGEO workspace packages this package builds on:
 
-| module               | provides                                                          |
-| -------------------- | ----------------------------------------------------------------- |
-| `@swissgeo/log`      | Structured logging (the store logs through it, never `console.*`) |
-| `@swissgeo/numbers`  | `round` (slider label spacing) and `isTimestampYYYYMMDD`          |
-| `@swissgeo/skeleton` | `IconButton` used by the `TimeSlider`                             |
+| module              | provides                                                          |
+| ------------------- | ----------------------------------------------------------------- |
+| `@swissgeo/log`     | Structured logging (the store logs through it, never `console.*`) |
+| `@swissgeo/numbers` | `round` (slider label spacing) and `isTimestampYYYYMMDD`          |
 
 ## Peer Dependencies
 
@@ -95,6 +94,7 @@ This package requires the host to provide:
 - `vue-i18n` — the slider bar uses `useI18n()` for labels and tooltips.
 - `@vueuse/core` — `useDebounceFn` and `useResizeObserver` in `TimeSlider.vue`.
 - `@lucide/vue` — icons referenced via Nuxt UI / `UIcon`.
+- `@nuxt/ui` — `UButton` provides the time-slider control.
 
 ## License
 

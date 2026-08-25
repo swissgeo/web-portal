@@ -34,10 +34,6 @@ vi.mock("@swissgeo/layers", () => ({
   useLayerStore: () => ({ addLayer: addLayerSpy }),
 }));
 
-vi.mock("@swissgeo/skeleton", () => ({
-  IconButton: { template: "<button><slot /></button>" },
-}));
-
 mockNuxtImport("useRequestURL", () => () => new URL("http://localhost:3000/"));
 
 interface PanelVm {

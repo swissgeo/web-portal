@@ -1,13 +1,5 @@
 @import "tailwindcss";
 @import "@swissgeo/map/stylesheet";
-@import "@fontsource/dm-sans/latin-400.css";
-@import "@fontsource/dm-sans/latin-ext-400.css";
-@import "@fontsource/dm-sans/latin-500.css";
-@import "@fontsource/dm-sans/latin-ext-500.css";
-@import "@fontsource/dm-sans/latin-600.css";
-@import "@fontsource/dm-sans/latin-ext-600.css";
-@import "@fontsource/dm-sans/latin-700.css";
-@import "@fontsource/dm-sans/latin-ext-700.css";
 @import "@fontsource/inter/latin-400.css";
 @import "@fontsource/inter/latin-ext-400.css";
 @import "@fontsource/inter/latin-500.css";
@@ -27,8 +19,8 @@
 @source "../../../../skeleton/src/**/*.{vue,ts,js,tsx,jsx}";
 
 @theme static {
-  --font-sans: "DM Sans", system-ui, sans-serif;
-  --font-interface: "DM Sans", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-interface: "Inter", system-ui, sans-serif;
   --font-editorial: "Inter", system-ui, sans-serif;
   --leading-heading: 1.2;
   --leading-small-text: 1.3;
@@ -212,11 +204,6 @@
 }
 
 @layer base {
-  button,
-  [role="button"] {
-    @apply font-interface;
-  }
-
   button:enabled,
   [role="button"]:not([aria-disabled="true"]) {
     @apply cursor-pointer;
@@ -265,7 +252,7 @@
     --p-button-outlined-secondary-color: var(--color-black);
     --p-button-text-secondary-color: var(--color-cyan-800);
 
-    --font-sans: "DM Sans";
+    --font-sans: "Inter";
   }
 
   .p-panel {

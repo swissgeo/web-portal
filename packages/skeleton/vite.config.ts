@@ -21,6 +21,8 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       ...getBaseBuildConfig(mode),
+      // The Rolldown minifier can create duplicate identifiers in the SVG-heavy logo bundle.
+      minify: mode === "development" ? false : "esbuild",
       lib: {
         entry: resolve(__dirname, "src/index.ts"),
         name: "@swissgeo/skeleton",

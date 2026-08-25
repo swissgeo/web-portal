@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { IconButton } from "@swissgeo/skeleton";
 import { useFileImport } from "~/composables/useFileImport";
 import { ref, useTemplateRef } from "vue";
 
@@ -91,18 +90,19 @@ function onFileSelected(evt: Event): void {
         data-testid="file-input-text"
         @click="inputLocalFile?.click()"
       />
-      <IconButton
+      <UButton
         :disabled="!selectedFile || isLoading"
         @click="handleImport"
-        iconName="Upload"
+        icon="i-lucide-upload"
         color="primary"
         variant="solid"
         title="Import file"
       />
-      <IconButton
-        @click="$emit('close')"
-        iconName="X"
+      <UButton
+        color="primary"
         variant="ghost"
+        @click="$emit('close')"
+        icon="i-lucide-x"
         title="Close"
       />
     </div>

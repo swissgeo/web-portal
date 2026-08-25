@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
-import { IconButton } from "@swissgeo/skeleton";
 
 import DrawingFeaturePropertyPanel from "./DrawingFeaturePropertyPanel.vue";
 
@@ -73,8 +72,10 @@ onUnmounted(() => {
   >
     <div class="mb-4 flex items-center justify-between">
       <h3 class="text-lg font-semibold">{{ t("debug.drawingPanelTitle") }}</h3>
-      <IconButton
-        iconName="X"
+      <UButton
+        color="primary"
+        variant="ghost"
+        icon="i-lucide-x"
         @click="handleClose"
         data-testid="drawing-panel-close"
       />

@@ -72,9 +72,10 @@ const UDropdownMenuStub = {
   template: '<div data-testid="reorder-menu"><slot /></div>',
 };
 
-const UIconStub = {
-  props: ["name"],
-  template: '<span :data-icon="name" />',
+const UButtonStub = {
+  inheritAttrs: false,
+  props: ["icon"],
+  template: '<button v-bind="$attrs"><span :data-icon="icon" /></button>',
 };
 
 function mountEntry() {
@@ -85,8 +86,8 @@ function mountEntry() {
     },
     global: {
       stubs: {
+        UButton: UButtonStub,
         UDropdownMenu: UDropdownMenuStub,
-        UIcon: UIconStub,
         USelect: true,
         USlider: true,
       },

@@ -32,9 +32,6 @@ export default defineAppConfig({
       },
     },
     button: {
-      slots: {
-        base: "font-interface",
-      },
       compoundVariants: [
         {
           color: "primary",

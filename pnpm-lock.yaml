@@ -15,9 +15,6 @@ catalogs:
     '@eslint/markdown':
       specifier: ^8.0.0
       version: 8.0.2
-    '@fontsource/dm-sans':
-      specifier: ^5.2.6
-      version: 5.3.0
     '@fontsource/inter':
       specifier: ^5.2.6
       version: 5.2.8
@@ -626,15 +623,15 @@ importers:
       '@lucide/vue':
         specifier: 'catalog:'
         version: 1.18.0(vue@3.5.38(typescript@6.0.3))
+      '@nuxt/ui':
+        specifier: 'catalog:'
+        version: 4.8.2(@internationalized/date@3.11.0)(@internationalized/number@3.6.5)(@tiptap/extensions@3.25.0(@tiptap/core@3.25.0(@tiptap/pm@3.25.0))(@tiptap/pm@3.25.0))(@tiptap/y-tiptap@3.0.7(prosemirror-model@1.25.7)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(change-case@5.4.4)(db0@0.3.4)(embla-carousel@8.6.0)(ioredis@5.11.1)(magicast@0.5.3)(qrcode@1.5.4)(tailwindcss@4.3.1)(typescript@6.0.3)(valibot@1.4.1(typescript@6.0.3))(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))(vue-router@5.1.0(@vue/compiler-sfc@3.5.38)(pinia@4.0.2(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.38(typescript@6.0.3)))(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))(vue@3.5.38(typescript@6.0.3)))(vue@3.5.38(typescript@6.0.3))(yjs@13.6.29)(zod@4.4.3)
       '@swissgeo/log':
         specifier: workspace:*
         version: link:../log
       '@swissgeo/numbers':
         specifier: workspace:*
         version: link:../numbers
-      '@swissgeo/skeleton':
-        specifier: workspace:*
-        version: link:../skeleton
       '@vueuse/core':
         specifier: 'catalog:'
         version: 14.3.0(vue@3.5.38(typescript@6.0.3))
@@ -913,9 +910,6 @@ importers:
       '@chenfengyuan/vue-qrcode':
         specifier: 'catalog:'
         version: 2.0.0(qrcode@1.5.4)(vue@3.5.38(typescript@6.0.3))
-      '@fontsource/dm-sans':
-        specifier: 'catalog:'
-        version: 5.3.0
       '@fontsource/inter':
         specifier: 'catalog:'
         version: 5.2.8
@@ -2368,9 +2362,6 @@ packages:
 
   '@floating-ui/vue@1.1.10':
     resolution: {integrity: sha512-vdf8f6rHnFPPLRsmL4p12wYl+Ux4mOJOkjzKEMYVnwdf7UFdvBtHlLvQyx8iKG5vhPRbDRgZxdtpmyigDPjzYg==}
-
-  '@fontsource/dm-sans@5.3.0':
-    resolution: {integrity: sha512-lYJtMXXO28q1z+yz+z8XKd0s4hXaa9QdkETzkyD760sidCv5heI86weYA0sx0Nc4pAMAQTUuyf4gO44cYKKS9g==}
 
   '@fontsource/inter@5.2.8':
     resolution: {integrity: sha512-P6r5WnJoKiNVV+zvW2xM13gNdFhAEpQ9dQJHt3naLvfg+LkF2ldgSLiF4T41lf1SQCM9QmkqPTn4TH568IRagg==}
@@ -11917,8 +11908,6 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
-
-  '@fontsource/dm-sans@5.3.0': {}
 
   '@fontsource/inter@5.2.8': {}
 
