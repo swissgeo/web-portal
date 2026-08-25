@@ -11,8 +11,6 @@ const emit = defineEmits<{
   "search-result-selected": [result: SearchResult];
 }>();
 
-const localePath = useLocalePath();
-
 const items = computed<NavigationMenuItem[]>(() => [
   {
     label: t("topbar.home"),
@@ -108,26 +106,34 @@ function resetApp() {
 </script>
 
 <template>
-  <UHeader :ui="{ container: 'max-w-full' }">
+  <UHeader
+    :ui="{
+      container: 'max-w-full',
+      center: 'lg:hidden xl:flex',
+      toggle: 'lg:inline-flex xl:hidden',
+      content: 'lg:flex xl:hidden',
+    }"
+    toggle-side="left"
+  >
     <template #left>
       <LogoPic class="h-6 w-auto" @logo-click="resetApp" />
       <TopbarSearch @result-selected="emit('search-result-selected', $event)" />
     </template>
 
+    <UNavigationMenu
+      :items="items"
+      content-orientation="vertical"
+      :ui="{
+        content: 'w-fit',
+      }"
+    />
+
     <template #right>
-      <UNavigationMenu
-        :items="items"
-        content-orientation="vertical"
-        :ui="{
-          content: 'w-fit',
-        }"
-      />
-      <UButton :to="localePath('/map')"> {{ t("topbar.map") }} </UButton>
-      <USeparator class="mx-4 h-8" orientation="vertical" />
-      <UButton icon="i-lucide-log-in" color="neutral" variant="outline">{{
-        t("topbar.login")
-      }}</UButton>
       <TopbarLanguageSwitcherButton />
+    </template>
+
+    <template #body>
+      <UNavigationMenu :items="items" orientation="vertical" />
     </template>
   </UHeader>
 </template>
