@@ -33,21 +33,25 @@ const ACCEPTED_FILE_TYPES = [
 ];
 
 const schema = z.object({
-  subject: z.string("Subject is required"),
-  feedback: z.string("Feedback is required"),
-  category: z.string("Category is required"),
-  version: z.string("Version is required"),
-  ua: z.string("User agent is required"),
-  permalink: z.string("Permalink is required"),
-  email: z.optional(z.email("Email must be a valid email address")),
+  subject: z.string(t("toolbox.reportIssue.validation.subjectRequired")),
+  feedback: z.string(t("toolbox.reportIssue.validation.feedbackRequired")),
+  category: z.string(t("toolbox.reportIssue.validation.categoryRequired")),
+  version: z.string(t("toolbox.reportIssue.validation.versionRequired")),
+  ua: z.string(t("toolbox.reportIssue.validation.userAgentRequired")),
+  permalink: z.string(t("toolbox.reportIssue.validation.permalinkRequired")),
+  email: z.optional(
+    z.email(t("toolbox.reportIssue.validation.emailInvalid")),
+  ),
   attachment: z.optional(
     z
-      .file("Attachment must be a file")
+      .file(t("toolbox.reportIssue.validation.fileRequired"))
       .max(
         runtimeConfig.public.maxFileSizeMB * 1024 * 1024,
-        `File is too large (max ${runtimeConfig.public.maxFileSizeMB} MB)`,
+        t("toolbox.reportIssue.validation.fileTooLarge", {
+          max: runtimeConfig.public.maxFileSizeMB,
+        }),
       )
-      .mime(ACCEPTED_FILE_TYPES, "File type not supported"),
+      .mime(ACCEPTED_FILE_TYPES, t("toolbox.reportIssue.validation.fileTypeNotSupported")),
   ),
 });
 
@@ -66,8 +70,7 @@ const state = reactive<Partial<Schema>>({
 
 function onSubmit(event: FormSubmitEvent<Schema>) {
   toast.add({
-    title: "Success",
-    description: "The form has been submitted.",
+    title: t("toolbox.reportIssue.successMessage"),
     color: "success",
   });
   state.subject = event.data.subject;
