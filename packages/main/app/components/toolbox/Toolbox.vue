@@ -11,12 +11,12 @@ import ImportButton from "@/components/toolbox/toolboxButtons/ImportButton.vue";
 import MeasureButton from "@/components/toolbox/toolboxButtons/MeasureButton.vue";
 import PrintButton from "@/components/toolbox/toolboxButtons/PrintButton.vue";
 import RecenterButton from "@/components/toolbox/toolboxButtons/RecenterButton.vue";
+import ReportIssueButton from "@/components/toolbox/toolboxButtons/ReportIssueButton.vue";
 import ShareButton from "@/components/toolbox/toolboxButtons/ShareButton.vue";
 import TimeSliderButton from "@/components/toolbox/toolboxButtons/TimeSliderButton.vue";
 import Toggle3dButton from "@/components/toolbox/toolboxButtons/Toggle3dButton.vue";
 import ZoomButtons from "@/components/toolbox/toolboxButtons/ZoomButtons.vue";
 import ToolboxDetail from "@/components/toolbox/ToolboxDetail.vue";
-import ReportIssueButton from "@/components/toolbox/toolboxButtons/ReportIssueButton.vue";
 import { useToolboxStore } from "@/stores/toolbox";
 
 const toolboxStore = useToolboxStore();
