@@ -14,7 +14,7 @@ const { title } = defineProps<{
     :title="title"
     color="primary"
     variant="ghost"
-    class="text-foreground/80 w-14 flex-col gap-0.5 px-1 py-1.5"
+    class="w-14 flex-col gap-0.5 px-1 py-1.5"
     :class="{
       'bg-primary/10 text-primary': isActive,
     }"
