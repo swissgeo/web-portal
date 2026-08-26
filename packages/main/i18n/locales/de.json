@@ -346,7 +346,8 @@
     "legalBasis": "Rechtliche Grundlagen",
     "mediaInformation": "Medieninformationen",
     "map": "Karte",
-    "login": "Anmelden"
+    "login": "Anmelden",
+    "modeSwitch": "Mode switch"
   },
   "layers": {
     "expand": "Ebenendetails anzeigen",

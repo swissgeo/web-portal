@@ -129,11 +129,18 @@ function resetApp() {
     />
 
     <template #right>
+      <TopbarColorModeButton />
       <TopbarLanguageSwitcherButton />
     </template>
 
     <template #body>
       <UNavigationMenu :items="items" orientation="vertical" />
+      <div
+        class="flex items-center justify-between border-t border-default pt-4"
+      >
+        <TopbarColorModeButton />
+        <TopbarLanguageSwitcherButton />
+      </div>
     </template>
   </UHeader>
 </template>
