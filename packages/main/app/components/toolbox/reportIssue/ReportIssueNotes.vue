@@ -11,12 +11,9 @@ defineProps<{
 <template>
   <div class="mt-2 text-sm text-muted">
     {{ t("toolbox.reportIssue.notes.link.label") }}
-    <UButton
-      :to="permalink"
-      variant="link"
-      class="p-0"
-      target="_blank"
-      >{{ t("toolbox.reportIssue.notes.link.permalink") }}</UButton
+    <UButton :to="permalink" variant="link" class="p-0" target="_blank">{{
+      t("toolbox.reportIssue.notes.link.permalink")
+    }}</UButton
     >.
   </div>
   <div class="mt-2 text-sm text-muted">

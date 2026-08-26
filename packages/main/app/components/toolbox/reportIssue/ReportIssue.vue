@@ -39,9 +39,7 @@ const schema = z.object({
   version: z.string(t("toolbox.reportIssue.validation.versionRequired")),
   ua: z.string(t("toolbox.reportIssue.validation.userAgentRequired")),
   permalink: z.string(t("toolbox.reportIssue.validation.permalinkRequired")),
-  email: z.optional(
-    z.email(t("toolbox.reportIssue.validation.emailInvalid")),
-  ),
+  email: z.optional(z.email(t("toolbox.reportIssue.validation.emailInvalid"))),
   attachment: z.optional(
     z
       .file(t("toolbox.reportIssue.validation.fileRequired"))
@@ -51,7 +49,10 @@ const schema = z.object({
           max: runtimeConfig.public.maxFileSizeMB,
         }),
       )
-      .mime(ACCEPTED_FILE_TYPES, t("toolbox.reportIssue.validation.fileTypeNotSupported")),
+      .mime(
+        ACCEPTED_FILE_TYPES,
+        t("toolbox.reportIssue.validation.fileTypeNotSupported"),
+      ),
   ),
 });
 

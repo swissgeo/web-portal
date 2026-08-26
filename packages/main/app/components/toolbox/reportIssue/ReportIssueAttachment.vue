@@ -49,7 +49,9 @@ const fileTypesLabels = computed(() => {
       :label="t('toolbox.reportIssue.steps.step5.buttonLabel')"
       :description="fileTypesLabels.join(', ')"
       :accept="ACCEPTED_FILE_TYPES.join(',')"
-      @update:model-value="$emit('update:modelValue', $event as File | undefined)"
+      @update:model-value="
+        $emit('update:modelValue', $event as File | undefined)
+      "
     />
   </UFormField>
 </template>
