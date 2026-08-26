@@ -8,6 +8,24 @@ import BaseMapViewer from "../BaseMapViewer.vue";
 // Mocks
 // -----------------------------------------------------------------------------
 
+const {
+  clearImportOptions,
+  clearLayerDimensions,
+  logError,
+  removeMapLayer,
+  removeSourceLayer,
+  setBackground,
+  showError,
+} = vi.hoisted(() => ({
+  clearImportOptions: vi.fn(),
+  clearLayerDimensions: vi.fn(),
+  logError: vi.fn(),
+  removeMapLayer: vi.fn(),
+  removeSourceLayer: vi.fn(),
+  setBackground: vi.fn(),
+  showError: vi.fn(),
+}));
+
 const mockLayers = [
   {
     uuid: "layer-1",
@@ -44,16 +62,30 @@ const getMapLayers = vi.fn(() => computed(() => mockLayers));
 mockNuxtImport("useMapViewStore", () => {
   return () => ({
     getMapLayers,
+    removeLayer: removeMapLayer,
   });
 });
+mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
+mockNuxtImport("useToaster", () => () => ({ showError }));
+
+vi.mock("@swissgeo/dimension", () => ({
+  useDimensionsStore: () => ({ clearLayerDimensions }),
+}));
 vi.mock("@swissgeo/layers", () => {
   return {
     useLayerStore: () => ({
       layers: mockLayers,
       backgroundLayer: mockBackgroundLayer,
+      clearImportOptions,
+      removeLayer: removeSourceLayer,
+      setBackground,
     }),
   };
 });
+
+vi.mock("@swissgeo/log", () => ({
+  default: { error: logError },
+}));
 
 vi.mock("~/stores/mapViewStore", () => ({
   useMapViewStore: () => ({
@@ -68,6 +100,7 @@ vi.mock("~/stores/mapViewStore", () => ({
 const SourceToMapDataConverterStub = defineComponent({
   name: "SourceToMapDataConverter",
   props: ["sourceBgLayer", "sourceData"],
+  emits: ["layerError"],
   template: "<div data-testid='converter' />",
 });
 
@@ -87,7 +120,7 @@ const MapModuleStub = defineComponent({
     "compareSliderClippedLayer",
     "zoomOnlyCtrl",
   ],
-  emits: ["update:compare-ratio"],
+  emits: ["layerError", "update:compare-ratio"],
   template: `
     <div data-testid="map-module">
       <slot />
@@ -185,6 +218,52 @@ describe("BaseMapViewer", () => {
     wrapper.getComponent(MapModuleStub).vm.$emit("update:compare-ratio", 42);
 
     expect(wrapper.emitted("update:compareRatio")).toEqual([[42]]);
+  });
+
+  it("removes a failed rendered layer with the shared cleanup", async () => {
+    const cause = new Error("Archive is too large");
+    const failure = new Error("KMZ initialization failed", { cause });
+    const wrapper = await createWrapper();
+
+    wrapper
+      .getComponent(MapModuleStub)
+      .vm.$emit("layerError", "layer-2", failure);
+
+    expect(logError).toHaveBeenCalledWith({
+      title: "Layer load failed",
+      messages: ["layer-2", failure, cause],
+    });
+    expect(showError).toHaveBeenCalledWith("error.layerLoad");
+    expect(clearLayerDimensions).toHaveBeenCalledWith("layer-2");
+    expect(clearImportOptions).toHaveBeenCalledWith("layer-2");
+    expect(removeMapLayer).toHaveBeenCalledWith("layer-2");
+    expect(removeSourceLayer).toHaveBeenCalledWith("layer-2");
+    expect(setBackground).not.toHaveBeenCalled();
+  });
+
+  it("logs a converter failure without a cause", async () => {
+    const failure = new Error("Invalid KMZ");
+    const wrapper = await createWrapper();
+
+    wrapper
+      .getComponent(SourceToMapDataConverterStub)
+      .vm.$emit("layerError", "layer-2", failure);
+
+    expect(logError).toHaveBeenCalledWith({
+      title: "Layer load failed",
+      messages: ["layer-2", failure],
+    });
+  });
+
+  it("clears a failed rendered background", async () => {
+    const wrapper = await createWrapper();
+
+    wrapper
+      .getComponent(MapModuleStub)
+      .vm.$emit("layerError", "layer-1", new Error("Invalid background"));
+
+    expect(setBackground).toHaveBeenCalledWith(null);
+    expect(removeSourceLayer).not.toHaveBeenCalled();
   });
 
   it("passes compare slider props", async () => {

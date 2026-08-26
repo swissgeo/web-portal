@@ -1,5 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
+import { defineComponent } from "vue";
 
 import type { Layer } from "@/types/layers";
 
@@ -9,6 +10,12 @@ const stubs = {
   OpenLayersGeoJSONLayer: {
     template: '<div data-testid="geojson" />',
   },
+  OpenLayersKMZLayer: defineComponent({
+    name: "OpenLayersKMZLayer",
+    props: ["layer"],
+    emits: ["error"],
+    template: '<div data-testid="kmz" />',
+  }),
 };
 
 const geoJsonData = {
@@ -58,4 +65,24 @@ describe("OpenLayersVisibleLayer", () => {
       expect(wrapper.find('[data-testid="geojson"]').exists()).toBe(true);
     },
   );
+
+  it("adds the layer UUID to KMZ renderer errors", () => {
+    const layer = {
+      format: "KMZ",
+      layerId: "local.kmz",
+      uuid: "local-kmz",
+      opacity: 1,
+      isVisible: true,
+      data: new Uint8Array([1, 2, 3]),
+    } as Layer;
+    const failure = new Error("Invalid KMZ");
+    const wrapper = mount(OpenLayersVisibleLayer, {
+      props: { layer },
+      global: { stubs },
+    });
+
+    wrapper.getComponent(stubs.OpenLayersKMZLayer).vm.$emit("error", failure);
+
+    expect(wrapper.emitted("layerError")).toEqual([[layer.uuid, failure]]);
+  });
 });

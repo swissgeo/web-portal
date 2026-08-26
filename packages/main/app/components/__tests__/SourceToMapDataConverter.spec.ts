@@ -1,6 +1,5 @@
 import type { Dimension } from "@swissgeo/dimension";
 import type { DatasetLayer } from "@swissgeo/layers";
-import type * as LogModule from "@swissgeo/log";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 
@@ -13,22 +12,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
-
-const { logErrorMock, showErrorMock } = vi.hoisted(() => ({
-  logErrorMock: vi.fn(),
-  showErrorMock: vi.fn(),
-}));
-
-mockNuxtImport("useToaster", () => () => ({ showError: showErrorMock }));
-mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
-
-vi.mock("@swissgeo/log", async (importOriginal) => {
-  const original = await importOriginal<typeof LogModule>();
-  return {
-    ...original,
-    default: { ...original.default, error: logErrorMock },
-  };
-});
 
 const mockMapLayers: MapLayer[] = [];
 
@@ -471,12 +454,10 @@ describe("layer load errors", () => {
     setActivePinia(createPinia());
     mockMapLayers.length = 0;
     removeLayer.mockClear();
-    logErrorMock.mockClear();
-    showErrorMock.mockClear();
   });
 
   it.each(["dataset", "file"] as const)(
-    "cleans up only the failed %s layer and logs the original cause",
+    "forwards the failed %s layer UUID and error",
     async (kind) => {
       const cause = new Error("network request failed");
       const failure = new Error("conversion failed", { cause });
@@ -484,19 +465,6 @@ describe("layer load errors", () => {
         kind === "dataset"
           ? makeDatasetLayer("failed-layer")
           : makeFileLayer("failed-layer");
-      const workingLayer = makeFileLayer("working-layer");
-      const layerStore = useLayerStore();
-      const dimensionsStore = useDimensionsStore();
-      layerStore.addLayer(failedLayer);
-      layerStore.addLayer(workingLayer);
-      layerStore.addImportOption(failedLayer.uuid, { opacity: 0.4 });
-      dimensionsStore.setDimension(failedLayer.uuid, "time", {
-        currentValue: "2024",
-      });
-      mockMapLayers.push(
-        makeMapLayer(failedLayer.uuid),
-        makeMapLayer(workingLayer.uuid),
-      );
 
       const wrapper = mount(SourceToMapDataConverter, {
         props: { sourceBgLayer: null, sourceData: [failedLayer] },
@@ -513,40 +481,18 @@ describe("layer load errors", () => {
           : wrapper.findComponent(LayerLoadErrorBoundary);
       await errorSource.vm.$emit("error", failure);
 
-      expect(removeLayer).not.toHaveBeenCalled();
-
-      const converter =
-        kind === "dataset"
-          ? wrapper.findComponent(OgcConverterStub)
-          : wrapper.findComponent(FileConverterStub);
-      converter.vm.$emit("remove", failedLayer.uuid);
-
-      expect(logErrorMock).toHaveBeenCalledWith({
-        title: "Layer load failed",
-        messages: [failedLayer.uuid, failure, cause],
-      });
-      expect(showErrorMock).toHaveBeenCalledWith("error.layerLoad");
-      expect(layerStore.layers).toEqual([workingLayer]);
-      expect(mockMapLayers).toEqual([makeMapLayer(workingLayer.uuid)]);
-      expect(dimensionsStore.getDimensions(failedLayer.uuid)).toBeUndefined();
-      expect(layerStore.isThereImportOptions()).toBe(false);
+      expect(wrapper.emitted("layerError")).toEqual([
+        [failedLayer.uuid, failure],
+      ]);
     },
   );
 
-  it("clears a failed background without removing the first overlay", async () => {
+  it("forwards a failed background UUID and error", async () => {
     const failure = new Error("background conversion failed");
     const background = makeDatasetLayer("background");
-    const overlay = makeFileLayer("overlay");
-    const layerStore = useLayerStore();
-    layerStore.setBackground(background);
-    layerStore.addLayer(overlay);
-    mockMapLayers.push(
-      makeMapLayer(background.uuid),
-      makeMapLayer(overlay.uuid),
-    );
 
     const wrapper = mount(SourceToMapDataConverter, {
-      props: { sourceBgLayer: background, sourceData: [overlay] },
+      props: { sourceBgLayer: background, sourceData: [] },
       global: {
         stubs: {
           MapDatamappingOgcDatasetConverter: OgcConverterStub,
@@ -558,12 +504,43 @@ describe("layer load errors", () => {
       .findComponent(LayerLoadErrorBoundary)
       .vm.$emit("error", failure);
 
-    expect(removeLayer).not.toHaveBeenCalled();
+    expect(wrapper.emitted("layerError")).toEqual([[background.uuid, failure]]);
+  });
 
-    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", background.uuid);
+  it("forwards a direct background converter error", () => {
+    const failure = new Error("background conversion failed");
+    const background = makeDatasetLayer("background");
+    const wrapper = mount(SourceToMapDataConverter, {
+      props: { sourceBgLayer: background, sourceData: [] },
+      global: {
+        stubs: {
+          MapDatamappingOgcDatasetConverter: OgcConverterStub,
+          MapDatamappingFileConverter: FileConverterStub,
+        },
+      },
+    });
 
-    expect(layerStore.backgroundLayer).toBeNull();
-    expect(layerStore.layers).toEqual([overlay]);
-    expect(mockMapLayers).toEqual([makeMapLayer(overlay.uuid)]);
+    wrapper.findComponent(OgcConverterStub).vm.$emit("error", failure);
+
+    expect(wrapper.emitted("layerError")).toEqual([[background.uuid, failure]]);
+  });
+
+  it("converts a non-Error failure before forwarding it", () => {
+    const failedLayer = makeDatasetLayer("failed-layer");
+    const wrapper = mount(SourceToMapDataConverter, {
+      props: { sourceBgLayer: null, sourceData: [failedLayer] },
+      global: {
+        stubs: {
+          MapDatamappingOgcDatasetConverter: OgcConverterStub,
+          MapDatamappingFileConverter: FileConverterStub,
+        },
+      },
+    });
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("error", "failure");
+
+    expect(wrapper.emitted("layerError")).toEqual([
+      [failedLayer.uuid, new Error("failure")],
+    ]);
   });
 });

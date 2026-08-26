@@ -36,8 +36,13 @@ const {
 }>();
 
 const emit = defineEmits<{
+  layerError: [uuid: string, error: Error];
   "update:compareRatio": [ratio: number];
 }>();
+
+function emitLayerError(uuid: string, error: Error) {
+  emit("layerError", uuid, error);
+}
 
 const layersWithZIndex = computed(() => {
   // openlayers require a Zindex param. We set it to the layer orders here
@@ -56,6 +61,7 @@ const layersWithZIndex = computed(() => {
       :custom-layer-renderers="customLayerRenderers"
       :layers="layersWithZIndex"
       :zoom-only-ctrl="zoomOnlyCtrl"
+      @layer-error="emitLayerError"
     >
       <slot />
 

@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import type { Layer as SourceLayer } from "@swissgeo/layers";
 import type { Layer as MapLayer, MapLayerRenderer } from "@swissgeo/map";
 import type { DisplayMode } from "~/types/injectionKeys";
 
+import { useDimensionsStore } from "@swissgeo/dimension";
 import { useLayerStore } from "@swissgeo/layers";
+import log from "@swissgeo/log";
 import { MapModule } from "@swissgeo/map";
 import { cloneDeep } from "es-toolkit";
 
@@ -31,6 +34,9 @@ const emit = defineEmits<{
 
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
+const dimensionsStore = useDimensionsStore();
+const toaster = useToaster();
+const { t } = useI18n();
 
 const sourceLayers = computed(() => layerStore.layers);
 const backgroundLayer = computed(() => layerStore.backgroundLayer);
@@ -65,6 +71,26 @@ const layersForMap = computed(() => {
 });
 
 const customLayerRenderers: MapLayerRenderer[] = [];
+
+function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
+  const { cause } = error;
+  log.error({
+    title: "Layer load failed",
+    messages: cause === undefined ? [uuid, error] : [uuid, error, cause],
+  });
+  toaster.showError(t("error.layerLoad"));
+
+  dimensionsStore.clearLayerDimensions(uuid);
+  layerStore.clearImportOptions(uuid);
+
+  mapViewStore.removeLayer(uuid);
+
+  if (layerStore.backgroundLayer?.uuid === uuid) {
+    layerStore.setBackground(null);
+  } else {
+    layerStore.removeLayer(uuid);
+  }
+}
 </script>
 
 <template>
@@ -73,6 +99,7 @@ const customLayerRenderers: MapLayerRenderer[] = [];
     <SourceToMapDataConverter
       :source-bg-layer="backgroundLayer"
       :source-data="sourceLayers"
+      @layer-error="handleLayerError"
     />
     <MapModule
       :layers="layersForMap"
@@ -83,6 +110,7 @@ const customLayerRenderers: MapLayerRenderer[] = [];
       :compare-slider-clipped-layer="compareSliderClippedLayer"
       :zoom-only-ctrl="zoomOnlyCtrl"
       class="h-full w-full"
+      @layer-error="handleLayerError"
       @update:compare-ratio="emit('update:compareRatio', $event)"
     >
       <template
