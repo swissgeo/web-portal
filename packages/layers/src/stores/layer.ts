@@ -89,17 +89,10 @@ export const useLayerStore = defineStore("layers", () => {
    *          (an error is logged only in that case)
    */
   function getLayer(uuid: string): Layer | undefined {
-    const layer =
+    return (
       layers.value.find((candidate) => candidate.uuid === uuid) ??
-      (backgroundLayer.value?.uuid === uuid
-        ? backgroundLayer.value
-        : undefined);
-
-    if (!layer) {
-      log.error(`Incorrect uuid given : ${uuid}`);
-      return;
-    }
-    return layer;
+      (backgroundLayer.value?.uuid === uuid ? backgroundLayer.value : undefined)
+    );
   }
 
   function setBackground(layer: Layer | null) {

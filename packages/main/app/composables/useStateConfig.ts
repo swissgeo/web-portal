@@ -30,10 +30,13 @@ export function layersToStateConfig(layers: MapLayer[]): LayerState[] {
 
   const startIndex =
     useMapViewStore().mapLayers.length - useLayerStore().layers.length;
-  return layers.slice(startIndex).map(layerToStateConfig);
+  return layers
+    .slice(startIndex)
+    .map(layerToStateConfig)
+    .filter((state): state is LayerState => state !== null);
 }
 // exported only for testing purpose. Do not use this outside this file
-export function layerToStateConfig(layer: MapLayer): LayerState {
+export function layerToStateConfig(layer: MapLayer): LayerState | null {
   const layerStore = useLayerStore();
   const dimensionsStore = useDimensionsStore();
   let sourceData: Layer | undefined | null = layerStore.getLayer(layer.uuid);
@@ -41,16 +44,8 @@ export function layerToStateConfig(layer: MapLayer): LayerState {
   if (!sourceData) {
     sourceData = layerStore.backgroundLayer;
     if (!sourceData || sourceData.uuid !== layer.uuid) {
-      log.error(
-        `A layer with uuid ${layer?.uuid} couldn't be transformed to a Layer State Config. Most probable reason is a difference between the source Data and the map Layers`,
-      );
+      return null;
     }
-  }
-
-  if (!sourceData) {
-    throw new Error(
-      `Cannot serialize layer ${layer.uuid}: no source data found`,
-    );
   }
   const config: LayerState = {
     layerUrl: sourceData.layerUrl as string,
