@@ -56,13 +56,18 @@ export const useMapViewStore = defineStore("mapView", () => {
    */
   function _getIndexFromIdentifier(
     identifier: string | number,
+    { canCreateLayer = false } = {},
   ): number | undefined {
     const index =
       typeof identifier === "number"
         ? identifier
         : mapLayers.value.findIndex((layer) => layer.uuid === identifier);
 
-    if (index < 0 || index >= mapLayers.value.length) {
+    if (
+      index < 0 ||
+      (index >= mapLayers.value.length &&
+        !(canCreateLayer && typeof identifier === "number"))
+    ) {
       log.warn(`Incorrect identifier given : ${identifier}`);
       return;
     }
@@ -159,7 +164,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     mapLayer: MapLayer,
     canCreateLayer: boolean,
   ) {
-    const index = _getIndexFromIdentifier(identifier);
+    const index = _getIndexFromIdentifier(identifier, { canCreateLayer });
     if (index !== undefined) {
       mapLayers.value[index] = mapLayer;
     } else if (canCreateLayer && typeof identifier === "number") {
