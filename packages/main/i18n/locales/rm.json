@@ -7,5 +7,8 @@
   },
   "compareSlider": {
     "toggleButtonTitle": "Activar/deactivar il cursur da cumparegliaziun"
+  },
+  "error": {
+    "layerLoad": "Il nivel n'ha betg pudì vegnir chargià."
   }
 }

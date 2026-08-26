@@ -9,8 +9,10 @@ import MapModule from "../MapModule.vue";
 
 vi.mock("../openlayers/OpenLayersMap.vue", () => ({
   default: {
+    name: "OpenLayersMap",
     template: `<div class="ol-map"><slot /></div>`,
     props: ["customLayerRenderers", "layers", "zoomOnlyCtrl"],
+    emits: ["layerError"],
   },
 }));
 
@@ -152,6 +154,17 @@ describe("MapModule", () => {
       slider.vm.$emit("update:compareRatio", 0.75);
       expect(wrapper.emitted("update:compareRatio")).toEqual([[0.75]]);
     });
+  });
+
+  it("forwards layer errors from the map renderer", () => {
+    const failure = new Error("Invalid layer data");
+    const wrapper = mount(MapModule, { props: defaultProps() });
+
+    wrapper
+      .getComponent({ name: "OpenLayersMap" })
+      .vm.$emit("layerError", "uuid-1", failure);
+
+    expect(wrapper.emitted("layerError")).toEqual([["uuid-1", failure]]);
   });
 
   describe("slots", () => {

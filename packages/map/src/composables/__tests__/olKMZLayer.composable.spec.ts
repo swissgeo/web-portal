@@ -84,6 +84,8 @@ vi.mock("ol/source/Vector", () => ({
 
 import useOlKMZLayer from "../olKMZLayer.composable";
 
+const onError = vi.fn();
+
 function makeKMZLayer(overrides: Partial<KMZLayer> = {}): KMZLayer {
   // Simple binary placeholder; unzip is mocked in these tests.
   return {
@@ -102,6 +104,7 @@ describe("useOlKMZLayer", () => {
   beforeEach(() => {
     clearAddLayerToMapMocks();
     mockReadFeatures.mockClear();
+    onError.mockClear();
   });
   it("creates a VectorLayer and calls addLayerToMap", async () => {
     const layer = ref(makeKMZLayer());
@@ -109,7 +112,7 @@ describe("useOlKMZLayer", () => {
 
     const TestComponent = defineComponent({
       setup() {
-        useOlKMZLayer(layer, olMap);
+        useOlKMZLayer(layer, olMap, onError);
       },
       template: "<div />",
     });
@@ -126,7 +129,7 @@ describe("useOlKMZLayer", () => {
 
     const TestComponent = defineComponent({
       setup() {
-        useOlKMZLayer(layer, ref(undefined));
+        useOlKMZLayer(layer, ref(undefined), onError);
       },
       template: "<div />",
     });
@@ -143,7 +146,7 @@ describe("useOlKMZLayer", () => {
 
     const TestComponent = defineComponent({
       setup() {
-        useOlKMZLayer(layer, ref(undefined));
+        useOlKMZLayer(layer, ref(undefined), onError);
       },
       template: "<div />",
     });
@@ -178,7 +181,7 @@ describe("useOlKMZLayer", () => {
 
     const TestComponent = defineComponent({
       setup() {
-        useOlKMZLayer(layer, ref(undefined));
+        useOlKMZLayer(layer, ref(undefined), onError);
       },
       template: "<div />",
     });
@@ -208,10 +211,9 @@ describe("useOlKMZLayer", () => {
     }) as never);
 
     const layer = ref(makeKMZLayer());
-
     const TestComponent = defineComponent({
       setup() {
-        useOlKMZLayer(layer, ref(undefined), 1);
+        useOlKMZLayer(layer, ref(undefined), onError, 1);
       },
       template: "<div />",
     });
@@ -220,5 +222,10 @@ describe("useOlKMZLayer", () => {
     await nextTick();
 
     expect(mockReadFeatures).not.toHaveBeenCalled();
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.stringContaining("KMZ archive too large"),
+      }),
+    );
   });
 });

@@ -30,6 +30,7 @@ export const DEFAULT_MAX_DECOMPRESSED_SIZE_MB = 250;
 export default function useOlKMZLayer(
   layer: Ref<KMZLayer>,
   olMap: Ref<Map | undefined> | undefined,
+  onError: (error: unknown) => void,
   maxDecompressedSizeMB: number = DEFAULT_MAX_DECOMPRESSED_SIZE_MB,
 ) {
   const maxDecompressedSize = maxDecompressedSizeMB * 1024 * 1024;
@@ -209,6 +210,7 @@ export default function useOlKMZLayer(
         titleColor: LogPreDefinedColor.Rose,
         messages: [`Failed to initialize KMZ layer ${layerId.value}`, error],
       });
+      onError(error);
     }
   }
 

@@ -18,6 +18,14 @@ const { layers, customLayerRenderers, zoomOnlyCtrl } = defineProps<{
   zoomOnlyCtrl?: boolean;
 }>();
 
+const emit = defineEmits<{
+  layerError: [uuid: string, error: unknown];
+}>();
+
+function emitLayerError(uuid: string, error: unknown) {
+  emit("layerError", uuid, error);
+}
+
 const mapElement = useTemplateRef("mapElement");
 const olMap = shallowRef<OlMapType>();
 const mapStore = useMapStore();
@@ -58,6 +66,7 @@ initializeOlMap(zoomOnlyCtrl);
       :custom-layer-renderers="customLayerRenderers"
       :key="layer.uuid"
       v-for="layer in layers"
+      @layer-error="emitLayerError"
     />
   </div>
   <!-- So that external modules can have access to the map instance through the provided 'olMap' -->

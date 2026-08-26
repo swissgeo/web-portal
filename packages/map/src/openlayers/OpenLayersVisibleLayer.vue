@@ -24,6 +24,10 @@ const { layer, customLayerRenderers } = defineProps<{
   customLayerRenderers?: MapLayerRenderer[];
 }>();
 
+const emit = defineEmits<{
+  layerError: [uuid: string, error: unknown];
+}>();
+
 const customLayerRenderer = computed(() =>
   customLayerRenderers?.find((renderer) => renderer.matches(layer)),
 );
@@ -38,7 +42,11 @@ const customLayerRenderer = computed(() =>
   <OpenLayersWMTSLayer :layer="layer" v-else-if="isWMTS(layer)" />
   <OpenLayersWMSLayer :layer="layer" v-else-if="isWMS(layer)" />
   <OpenLayersKMLLayer :layer="layer" v-else-if="isKML(layer)" />
-  <OpenLayersKMZLayer :layer="layer" v-else-if="isKMZ(layer)" />
+  <OpenLayersKMZLayer
+    :layer="layer"
+    v-else-if="isKMZ(layer)"
+    @error="emit('layerError', layer.uuid, $event)"
+  />
   <OpenLayersGPXLayer :layer="layer" v-else-if="isGPX(layer)" />
   <OpenLayersGeoJSONLayer :layer="layer" v-else-if="isGeoJSON(layer)" />
 </template>

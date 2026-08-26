@@ -1,61 +1,58 @@
 import { mount } from "@vue/test-utils";
-import { describe, it, expect, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { shallowRef } from "vue";
+
+import type { KMZLayer } from "@/types";
 
 import useOlKMZLayer from "../../composables/olKMZLayer.composable";
 import OpenLayersKMZLayer from "../OpenLayersKMZLayer.vue";
 
-const initialize = vi.fn();
-const setVisibility = vi.fn();
-const setZIndex = vi.fn();
-
 vi.mock("../../composables/olKMZLayer.composable", () => ({
-  default: vi.fn(() => ({
-    initialize,
-    setVisibility,
-    setZIndex,
-  })),
+  default: vi.fn(),
 }));
 
-vi.mock("@/stores/position", () => ({
-  default: vi.fn(() => ({
-    projection: { epsg: "EPSG:3857" },
-  })),
-}));
+const layer: KMZLayer = {
+  format: "KMZ",
+  layerId: "test-layer",
+  uuid: "1234",
+  data: new Uint8Array([1, 2, 3]),
+  opacity: 1,
+  isVisible: true,
+  zIndex: 0,
+};
 
-describe.skip("OpenLayersKMZLayer.vue", () => {
-  it("renders correctly", () => {
-    const wrapper = mount(OpenLayersKMZLayer, {
-      props: {
-        layer: {
-          format: "KMZ",
-          layerId: "test-layer",
-          uuid: "1234",
-          data: new Uint8Array([1, 2, 3]),
-          opacity: 1,
-          isVisible: true,
-          zIndex: 0,
-        },
-      },
-    });
-    expect(wrapper.exists()).toBe(true);
+describe("OpenLayersKMZLayer.vue", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it("calls initialize on mount", () => {
+  it("passes the layer and map to the KMZ composable", () => {
+    const olMap = shallowRef();
+
     mount(OpenLayersKMZLayer, {
-      props: {
-        layer: {
-          format: "KMZ",
-          layerId: "test-layer",
-          uuid: "1234",
-          data: new Uint8Array([1, 2, 3]),
-          opacity: 1,
-          isVisible: true,
-          zIndex: 0,
-        },
+      props: { layer },
+      global: {
+        provide: { olMap },
       },
     });
-    // @ts-expect-error useOlKMZLayer not fully typed
-    const { initialize } = useOlKMZLayer();
-    expect(initialize).toHaveBeenCalled();
+
+    const [layerRef, mapRef] = vi.mocked(useOlKMZLayer).mock.calls[0]!;
+    expect(layerRef.value).toStrictEqual(layer);
+    expect(mapRef).toBe(olMap);
+  });
+
+  it("forwards composable errors", () => {
+    const wrapper = mount(OpenLayersKMZLayer, {
+      props: { layer },
+      global: {
+        provide: { olMap: shallowRef() },
+      },
+    });
+    const error = new Error("KMZ initialization failed");
+    const onError = vi.mocked(useOlKMZLayer).mock.calls[0]![2];
+
+    onError(error);
+
+    expect(wrapper.emitted("error")).toEqual([[error]]);
   });
 });
