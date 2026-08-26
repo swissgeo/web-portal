@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import type { SelectItem, FormSubmitEvent } from "@nuxt/ui";
+import type { FormSubmitEvent } from "@nuxt/ui";
 
 import { useI18n } from "vue-i18n";
 import * as z from "zod";
 
 import { useToolboxStore } from "@/stores/toolbox";
+
+import ReportIssueAttachment from "./ReportIssueAttachment.vue";
+import ReportIssueCategory from "./ReportIssueCategory.vue";
+import ReportIssueDrawOnMap from "./ReportIssueDrawOnMap.vue";
+import ReportIssueEmail from "./ReportIssueEmail.vue";
+import ReportIssueFeedback from "./ReportIssueFeedback.vue";
+import ReportIssueNotes from "./ReportIssueNotes.vue";
 
 const { t } = useI18n();
 const toast = useToast();
@@ -15,25 +22,6 @@ const { shareLink } = useCreateShareLink(exportState, {
   autoRefresh: true,
 });
 
-const items = ref<SelectItem[]>([
-  {
-    label: t("toolbox.reportIssue.steps.step1.select.options.background"),
-    value: "background",
-  },
-  {
-    label: t("toolbox.reportIssue.steps.step1.select.options.thematic"),
-    value: "thematic",
-  },
-  {
-    label: t("toolbox.reportIssue.steps.step1.select.options.application"),
-    value: "application",
-  },
-  {
-    label: t("toolbox.reportIssue.steps.step1.select.options.other"),
-    value: "other",
-  },
-]);
-
 const ACCEPTED_FILE_TYPES = [
   "application/pdf",
   "application/zip",
@@ -43,28 +31,6 @@ const ACCEPTED_FILE_TYPES = [
   "application/vnd.google-earth.kmz",
   "application/gpx+xml",
 ];
-const fileTypesLabels = computed(() => {
-  return ACCEPTED_FILE_TYPES.map((type) => {
-    switch (type) {
-      case "application/pdf":
-        return "PDF";
-      case "application/zip":
-        return "ZIP";
-      case "image/jpeg":
-        return "JPG";
-      case "image/png":
-        return "PNG";
-      case "application/vnd.google-earth.kml+xml":
-        return "KML";
-      case "application/vnd.google-earth.kmz":
-        return "KMZ";
-      case "application/gpx+xml":
-        return "GPX";
-      default:
-        return type;
-    }
-  });
-});
 
 const schema = z.object({
   subject: z.string("Subject is required"),
@@ -74,7 +40,15 @@ const schema = z.object({
   ua: z.string("User agent is required"),
   permalink: z.string("Permalink is required"),
   email: z.optional(z.email("Email must be a valid email address")),
-  attachment: z.optional(z.file("Attachment must be a file")),
+  attachment: z.optional(
+    z
+      .file("Attachment must be a file")
+      .max(
+        runtimeConfig.public.maxFileSizeMB * 1024 * 1024,
+        `File is too large (max ${runtimeConfig.public.maxFileSizeMB} MB)`,
+      )
+      .mime(ACCEPTED_FILE_TYPES, "File type not supported"),
+  ),
 });
 
 type Schema = z.output<typeof schema>;
@@ -90,13 +64,13 @@ const state = reactive<Partial<Schema>>({
   attachment: undefined,
 });
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+function onSubmit(event: FormSubmitEvent<Schema>) {
   toast.add({
     title: "Success",
     description: "The form has been submitted.",
     color: "success",
   });
-  console.log(event.data);
+  state.subject = event.data.subject;
 }
 
 onMounted(() => {
@@ -132,95 +106,17 @@ watch(shareLink, (newLink) => {
       </div>
     </template>
     <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-      <UFormField
-        :label="t('toolbox.reportIssue.steps.step1.title')"
-        name="category"
-        required
-      >
-        <USelect
-          v-model="state.category"
-          :items="items"
-          :placeholder="t('toolbox.reportIssue.steps.step1.select.placeholder')"
-          :ui="{
-            content: 'w-full',
-            base: 'w-full',
-          }"
-        />
-      </UFormField>
-      <UButton
-        :to="t('toolbox.reportIssue.steps.step1.moreInfo.url')"
-        target="_blank"
-        variant="link"
-        class="pl-0"
-        >{{ t("toolbox.reportIssue.steps.step1.moreInfo.label") }}</UButton
-      >
+      <ReportIssueCategory v-model="state.category!" />
 
-      <UFormField
-        :label="t('toolbox.reportIssue.steps.step2.title')"
-        name="feedback"
-        required
-      >
-        <UTextarea
-          v-model="state.feedback"
-          :ui="{
-            root: 'w-full',
-          }"
-        />
-      </UFormField>
+      <ReportIssueFeedback v-model="state.feedback!" />
 
-      <UFormField
-        :label="t('toolbox.reportIssue.steps.step3.title')"
-        name="drawOnMap"
-      >
-        <UButton disabled>{{
-          t("toolbox.reportIssue.steps.step3.button")
-        }}</UButton>
-      </UFormField>
+      <ReportIssueDrawOnMap />
 
-      <UFormField
-        :label="t('toolbox.reportIssue.steps.step4.title')"
-        name="email"
-        :help="t('toolbox.reportIssue.steps.step4.info')"
-      >
-        <UInput
-          v-model="state.email"
-          :ui="{ root: 'w-full' }"
-          :placeholder="t('toolbox.reportIssue.steps.step4.placeholder')"
-        />
-      </UFormField>
+      <ReportIssueEmail v-model="state.email" />
 
-      <UFormField
-        :label="t('toolbox.reportIssue.steps.step5.title')"
-        name="attachment"
-      >
-        <UFileUpload
-          v-model="state.attachment"
-          :label="t('toolbox.reportIssue.steps.step5.buttonLabel')"
-          :description="fileTypesLabels.join(', ')"
-          :accept="ACCEPTED_FILE_TYPES.join(',')"
-        />
-      </UFormField>
+      <ReportIssueAttachment v-model="state.attachment" />
 
-      <div class="mt-2 text-sm text-muted">
-        {{ t("toolbox.reportIssue.notes.link.label") }}
-        <UButton
-          :to="state.permalink"
-          variant="link"
-          class="p-0"
-          target="_blank"
-          >{{ t("toolbox.reportIssue.notes.link.permalink") }}</UButton
-        >.
-      </div>
-      <div class="mt-2 text-sm text-muted">
-        {{ t("toolbox.reportIssue.notes.tos.label") }}
-        <UButton
-          :to="t('toolbox.reportIssue.notes.tos.url')"
-          variant="link"
-          class="p-0"
-          target="_blank"
-          >{{ t("toolbox.reportIssue.notes.tos.link") }}</UButton
-        >.
-      </div>
+      <ReportIssueNotes :permalink="state.permalink ?? ''" />
 
       <UButton type="reset" color="error" variant="outline" class="mr-2">
         {{ t("toolbox.reportIssue.cancelButton") }}
@@ -231,5 +127,3 @@ watch(shareLink, (newLink) => {
     </UForm>
   </UCard>
 </template>
-
-<style scoped></style>
