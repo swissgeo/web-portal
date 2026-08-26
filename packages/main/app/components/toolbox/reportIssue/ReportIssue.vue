@@ -110,7 +110,12 @@ watch(shareLink, (newLink) => {
 </script>
 
 <template>
-  <UCard data-testid="toolbox-report-issue-card">
+  <UCard
+    data-testid="toolbox-report-issue-card"
+    :ui="{
+      body: 'md:max-h-[75vh] md:overflow-x-scroll',
+    }"
+  >
     <template #header>
       <div class="flex items-start justify-between">
         <div class="font-semibold text-highlighted">
