@@ -96,7 +96,7 @@ const { backgroundLayers } = useBackgroundLayers(
       v-if="showMapControls"
       :background-layers="backgroundLayers"
       :current-background-layer="currentBackground"
-      class="sm:hidden"
+      class="tablet:hidden"
       @select-background="selectBackground"
     />
   </div>

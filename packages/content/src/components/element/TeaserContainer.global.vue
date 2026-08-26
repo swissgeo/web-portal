@@ -42,7 +42,7 @@ const selectedIndex = ref(0);
         prev: 'rounded-full',
         next: 'rounded-full',
         container: 'items-stretch gap-8',
-        item: 'basis-full ps-0 sm:basis-[calc(50%-16px)] xl:basis-[calc(33.333%-21.333px)] 2xl:basis-[calc(25%-24px)]',
+        item: 'basis-full ps-0 tablet:basis-[calc(50%-16px)] desktop:basis-[calc(33.333%-21.333px)] 2xl:basis-[calc(25%-24px)]',
       }"
       @select="selectedIndex = $event"
     >
@@ -53,7 +53,7 @@ const selectedIndex = ref(0);
 
     <div
       v-else
-      class="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+      class="grid grid-cols-1 gap-8 tablet:grid-cols-2 desktop:grid-cols-3 2xl:grid-cols-4"
     >
       <ContentElementTeaserItem
         v-for="item in teaserItems"

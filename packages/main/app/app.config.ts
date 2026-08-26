@@ -69,9 +69,15 @@ export default defineAppConfig({
         },
       ],
     },
+    slider: {
+      slots: {
+        thumb: "ring-1",
+      },
+    },
     tabs: {
       slots: {
-        trigger: "font-sans",
+        trigger:
+          "font-sans focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-secondary!",
       },
     },
   },

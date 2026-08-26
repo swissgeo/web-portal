@@ -44,7 +44,7 @@ function addLayerToMap() {
 </script>
 
 <template>
-  <tr class="hover:bg-cyan-300">
+  <tr class="hover:bg-primary-300">
     <td class="border-b pb-2">
       <UButton
         color="primary"

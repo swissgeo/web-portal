@@ -98,7 +98,7 @@ onMounted(() => {
 <template>
   <NuxtLayout>
     <div
-      class="h-full overflow-x-hidden overflow-y-auto px-[15px] py-10 font-editorial md:px-8"
+      class="h-full overflow-x-hidden overflow-y-auto px-[15px] py-10 font-editorial desktop:px-8"
     >
       <ContentRenderer :containers="containers" />
     </div>

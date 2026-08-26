@@ -41,7 +41,7 @@ const { selectorOpen, toggleShowSelector, onSelectBackground } =
 
 <template>
   <div
-    class="bg-selector fixed right-4 bottom-4 flex items-end gap-2 max-sm:hidden"
+    class="bg-selector fixed right-4 bottom-4 flex items-end gap-2 max-tablet:hidden"
   >
     <!--
             Each entry is animated individually so it can fly out from the trigger position.

@@ -71,7 +71,7 @@ function goToMap() {
   <UHeader
     :ui="{
       root: 'bg-default backdrop-blur-none',
-      container: 'max-w-none gap-0 px-[15px] lg:px-8',
+      container: 'max-w-none gap-0 px-[15px] desktop:px-8',
       left: 'shrink-0 gap-0 xl:flex-none xl:pe-4 2xl:pe-5',
       center:
         'lg:hidden xl:flex xl:min-w-0 xl:flex-1 xl:items-center xl:gap-4 2xl:gap-10',

@@ -45,7 +45,7 @@ const {
         the options container grows upward above it when open.
     -->
   <div
-    class="fixed bottom-4 left-4 z-50 flex flex-col items-start gap-2 sm:hidden"
+    class="fixed bottom-4 left-4 z-50 flex flex-col items-start gap-2 tablet:hidden"
   >
     <!--
             Buttons spread upward from the trigger position.

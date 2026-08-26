@@ -53,20 +53,30 @@ The file contains 665 variables in total.
 The Figma collection mode names `Green` and `Blue` do not describe the current
 Petrol and Salmon values. Use the semantic role, not the mode name, in code.
 
+Figma also contains individual secondary brand primitives. These values do not
+define complete color scales or approved semantic roles. Keep them in the design
+inventory until a component or semantic role requires them. Do not generate full
+Tailwind scales from one Figma value.
+
+The legacy black override remains while map and attribution consumers use literal
+black utilities. Replace those utilities with an approved semantic role before
+removing the override.
+
 ## Typography and effects
 
 The agency file contains 103 text styles, 13 effect styles, and one grid style.
 
-Figma uses Inter and DM Sans. Map each text style separately.
+The approved typeface is Inter. Some Figma helper data still exposes obsolete
+DM Sans bindings. Do not implement those bindings.
 
-| Exact evidence                           | Bound family      | Status   |
-| ---------------------------------------- | ----------------- | -------- |
-| Title Text heading                       | Inter             | Verified |
-| Header text                              | DM Sans           | Verified |
-| Button label                             | DM Sans           | Verified |
-| Tab label                                | DM Sans           | Verified |
-| Blogposts section heading                | Inter             | Verified |
-| Text inside the Blogposts card instances | Inter and DM Sans | Verified |
+| Exact evidence                           | Bound family | Status   |
+| ---------------------------------------- | ------------ | -------- |
+| Title Text heading                       | Inter        | Verified |
+| Header text                              | Inter        | Verified |
+| Button label                             | Inter        | Verified |
+| Tab label                                | Inter        | Verified |
+| Blogposts section heading                | Inter        | Verified |
+| Text inside the Blogposts card instances | Inter        | Verified |
 
 ### Heading Content roles
 
@@ -105,11 +115,8 @@ The Figma helper row labeled `Lead` renders the named `Text Big` style. The
 helper row labeled `Text Big` renders the named `Lead` style. Use the named
 rendered styles as the source of truth.
 
-A component can contain both families. Do not assign one family to a component
-area from an aggregate variable response. Read the exact text style or text node.
-
-Use `font-sans` for DM Sans interface text. Use `font-editorial` only when an exact
-Figma text style binds Inter.
+Use `font-sans` for interface text. Use `font-editorial` for documented content
+roles. Both semantic font families resolve to Inter.
 
 Map a text style to a documented typography role before use. Do not select a font
 size only because it looks close.

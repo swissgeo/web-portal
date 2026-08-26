@@ -100,26 +100,30 @@ Complete this cleanup before the draft pull request enters team review.
 
 ### Tailwind foundation
 
-- [ ] Keep only custom primitive values that Tailwind does not provide.
-- [ ] Remove the unused Brown, Turquoise, Red Pastel, Zinc, Orange, Light
-      Brown, Lime, Green Pastel, and Violet palette families.
-- [ ] Migrate the remaining custom Cyan and custom Neutral consumers.
-- [ ] Remove or rename the custom Neutral family so it cannot conflict with
+- [x] Keep only implemented custom primitive scales that Tailwind does not
+      provide.
+- [x] Remove the unused Brown, Turquoise, Red Pastel, Zinc, Orange, Light
+      Brown, Lime, Green Pastel, and Violet generated palette families. Keep
+      exact secondary brand primitives in the inventory until their roles are
+      approved.
+- [x] Migrate the remaining custom Cyan and custom Neutral consumers.
+- [x] Remove or rename the custom Neutral family so it cannot conflict with
       the Nuxt UI Slate neutral alias.
-- [ ] Remove the duplicate Skeleton `@source` declaration.
-- [ ] Remove the duplicate `--font-sans` declaration.
-- [ ] Remove unused PrimeVue variables and panel rules.
+- [ ] Migrate literal black map and attribution consumers to an approved
+      semantic role before removing the legacy black override.
+- [x] Remove the duplicate Skeleton `@source` declaration.
+- [x] Remove the duplicate `--font-sans` declaration.
+- [x] Remove unused PrimeVue variables and panel rules.
 - [ ] Scope editorial heading rules so application controls do not need
       important overrides.
-- [ ] Apply DM Sans once at the application root. Keep `font-editorial` only
-      on elements with verified Inter evidence.
+- [x] Apply the approved Inter family at the application root.
 
 ### Nuxt UI component configuration
 
-- [ ] Keep the verified Primary solid Button states in `app.config.ts`.
-- [ ] Add the verified Primary outline Button states to `app.config.ts`.
-- [ ] Add the verified Salmon Tab focus state to `app.config.ts`.
-- [ ] Move the Slider thumb ring into Nuxt UI configuration if the value is
+- [x] Keep the verified Primary solid Button states in `app.config.ts`.
+- [x] Add the verified Primary outline Button states to `app.config.ts`.
+- [x] Add the verified Salmon Tab focus state to `app.config.ts`.
+- [x] Move the Slider thumb ring into Nuxt UI configuration if the value is
       valid for every Figma Slider size.
 - [ ] Replace the rejected `neutral + soft` default in the shared
       `IconButton` adapter.

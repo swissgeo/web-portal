@@ -32,7 +32,7 @@ const isEmbedMode = computed(() => displayMode === "embed");
       v-if="isWebMode"
       class="mb-4"
       :ui="{
-        body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
+        body: 'flex flex-col items-center gap-2 p-1 tablet:p-2',
       }"
     >
       <FullScreenButton v-if="isWebMode && toolboxStore.showFullScreenButton" />
@@ -45,7 +45,7 @@ const isEmbedMode = computed(() => displayMode === "embed");
     <UCard
       class="mb-4"
       :ui="{
-        body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
+        body: 'flex flex-col items-center gap-2 p-1 tablet:p-2',
       }"
     >
       <ZoomButtons
@@ -55,7 +55,7 @@ const isEmbedMode = computed(() => displayMode === "embed");
     <UCard
       v-if="isWebMode"
       :ui="{
-        body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
+        body: 'flex flex-col items-center gap-2 p-1 tablet:p-2',
       }"
     >
       <DrawButton v-if="isWebMode && toolboxStore.showDrawButton" />

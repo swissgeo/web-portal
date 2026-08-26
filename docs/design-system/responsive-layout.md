@@ -7,8 +7,8 @@ Figma defines responsive ranges that do not match the Tailwind defaults.
 | Range   | Figma width        | Columns | Verified applied values                        |
 | ------- | ------------------ | ------: | ---------------------------------------------- |
 | Mobile  | 320 px to 719 px   |       4 | 375 px viewport, 15 px padding, 15 px gutter   |
-| Tablet  | 720 px to 1024 px  |       6 | Padding and gutter remain open                 |
-| Desktop | 1025 px to 1920 px |      12 | 1920 px viewport, 150 px padding, 30 px gutter |
+| Tablet  | 720 px to 1023 px  |       6 | Padding and gutter remain open                 |
+| Desktop | 1024 px to 1920 px |      12 | 1920 px viewport, 150 px padding, 30 px gutter |
 
 ## Verified responsive spacing
 
@@ -27,11 +27,18 @@ team confirms which source has priority.
 The installed Tailwind 4.3.1 defaults are 640 px, 768 px, 1024 px, 1280 px, and
 1536 px.
 
-The Figma boundaries are 720 px and 1025 px. Do not treat Tailwind sm, md, or lg as
+The Figma boundaries are 720 px and 1025 px. The implementation normalizes the
+desktop boundary to the Tailwind 64 rem value, which is 1024 px at the default
+root font size. Do not treat Tailwind sm, md, or lg as
 equivalent design names.
 
 Custom breakpoints, spacing values, viewport padding, gutters, and column counts
 belong in the Tailwind theme layer. They do not belong in Nuxt UI component
 configuration.
 
-Do not add the custom breakpoint tokens until the team approves the Figma ranges.
+The approved Tailwind breakpoint names are `tablet` at 720 px and `desktop` at
+1024 px. Tablet padding and gutter values remain open.
+
+The Header has verified mobile and 1920 px desktop frames. Figma does not define
+the intermediate Header transition. Keep its current component-specific
+transition until the Header pull request resolves this gap.

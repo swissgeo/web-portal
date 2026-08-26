@@ -199,7 +199,6 @@ function isFromDataset() {
             :min="0"
             :max="100"
             size="xs"
-            :ui="{ thumb: 'ring-1' }"
             @update:model-value="handleOpacityChange"
           />
         </label>
