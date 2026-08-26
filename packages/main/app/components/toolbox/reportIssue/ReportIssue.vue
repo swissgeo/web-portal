@@ -10,6 +10,10 @@ const { t } = useI18n();
 const toast = useToast();
 const runtimeConfig = useRuntimeConfig();
 const toolboxStore = useToolboxStore();
+const { exportState } = useStateConfig();
+const { shareLink } = useCreateShareLink(exportState, {
+  autoRefresh: true,
+});
 
 const items = ref<SelectItem[]>([
   {
@@ -98,6 +102,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 onMounted(() => {
   state.ua = navigator.userAgent;
   state.version = runtimeConfig.public.version;
+});
+
+watch(shareLink, (newLink) => {
+  state.permalink = newLink || state.permalink;
 });
 </script>
 
