@@ -13,7 +13,7 @@ const { layer } = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  error: [error: unknown];
+  error: [error: Error];
 }>();
 
 const olMap = inject<ShallowRef<Map | undefined>>("olMap");

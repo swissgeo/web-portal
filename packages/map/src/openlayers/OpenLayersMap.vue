@@ -19,10 +19,10 @@ const { layers, customLayerRenderers, zoomOnlyCtrl } = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  layerError: [uuid: string, error: unknown];
+  layerError: [uuid: string, error: Error];
 }>();
 
-function emitLayerError(uuid: string, error: unknown) {
+function emitLayerError(uuid: string, error: Error) {
   emit("layerError", uuid, error);
 }
 

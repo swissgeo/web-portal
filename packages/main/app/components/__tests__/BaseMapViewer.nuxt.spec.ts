@@ -241,16 +241,17 @@ describe("BaseMapViewer", () => {
     expect(setBackground).not.toHaveBeenCalled();
   });
 
-  it("logs a non-Error converter failure without a cause", async () => {
+  it("logs a converter failure without a cause", async () => {
+    const failure = new Error("Invalid KMZ");
     const wrapper = await createWrapper();
 
     wrapper
       .getComponent(SourceToMapDataConverterStub)
-      .vm.$emit("layerError", "layer-2", "Invalid KMZ");
+      .vm.$emit("layerError", "layer-2", failure);
 
     expect(logError).toHaveBeenCalledWith({
       title: "Layer load failed",
-      messages: ["layer-2", "Invalid KMZ"],
+      messages: ["layer-2", failure],
     });
   });
 

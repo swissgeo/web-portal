@@ -7,8 +7,5 @@
   },
   "compareSlider": {
     "toggleButtonTitle": "Attiva/disattiva il cursore di confronto"
-  },
-  "error": {
-    "layerLoad": "Non è stato possibile caricare il livello."
   }
 }

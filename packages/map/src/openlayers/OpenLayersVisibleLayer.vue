@@ -25,7 +25,7 @@ const { layer, customLayerRenderers } = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  layerError: [uuid: string, error: unknown];
+  layerError: [uuid: string, error: Error];
 }>();
 
 const customLayerRenderer = computed(() =>

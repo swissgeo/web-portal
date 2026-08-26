@@ -72,8 +72,8 @@ const layersForMap = computed(() => {
 
 const customLayerRenderers: MapLayerRenderer[] = [];
 
-function handleLayerError(uuid: SourceLayer["uuid"], error: unknown) {
-  const cause = error instanceof Error ? error.cause : undefined;
+function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
+  const { cause } = error;
   log.error({
     title: "Layer load failed",
     messages: cause === undefined ? [uuid, error] : [uuid, error, cause],

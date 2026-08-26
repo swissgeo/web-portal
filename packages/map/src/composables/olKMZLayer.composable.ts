@@ -10,6 +10,7 @@ import {
   EPSG_4326_WGS84,
   isDrawingFeature,
   parseBoolean,
+  toError,
 } from "@swissgeo/shared";
 import { unzip } from "fflate";
 import KML from "ol/format/KML";
@@ -30,7 +31,7 @@ export const DEFAULT_MAX_DECOMPRESSED_SIZE_MB = 250;
 export default function useOlKMZLayer(
   layer: Ref<KMZLayer>,
   olMap: Ref<Map | undefined> | undefined,
-  onError: (error: unknown) => void,
+  onError: (error: Error) => void,
   maxDecompressedSizeMB: number = DEFAULT_MAX_DECOMPRESSED_SIZE_MB,
 ) {
   const maxDecompressedSize = maxDecompressedSizeMB * 1024 * 1024;
@@ -205,12 +206,13 @@ export default function useOlKMZLayer(
         ],
       });
     } catch (error) {
+      const kmzError = toError(error);
       log.error({
         title: "useOlKMZLayer",
         titleColor: LogPreDefinedColor.Rose,
-        messages: [`Failed to initialize KMZ layer ${layerId.value}`, error],
+        messages: [`Failed to initialize KMZ layer ${layerId.value}`, kmzError],
       });
-      onError(error);
+      onError(kmzError);
     }
   }
 

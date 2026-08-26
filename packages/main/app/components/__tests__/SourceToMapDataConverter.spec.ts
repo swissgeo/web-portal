@@ -506,4 +506,41 @@ describe("layer load errors", () => {
 
     expect(wrapper.emitted("layerError")).toEqual([[background.uuid, failure]]);
   });
+
+  it("forwards a direct background converter error", () => {
+    const failure = new Error("background conversion failed");
+    const background = makeDatasetLayer("background");
+    const wrapper = mount(SourceToMapDataConverter, {
+      props: { sourceBgLayer: background, sourceData: [] },
+      global: {
+        stubs: {
+          MapDatamappingOgcDatasetConverter: OgcConverterStub,
+          MapDatamappingFileConverter: FileConverterStub,
+        },
+      },
+    });
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("error", failure);
+
+    expect(wrapper.emitted("layerError")).toEqual([[background.uuid, failure]]);
+  });
+
+  it("converts a non-Error failure before forwarding it", () => {
+    const failedLayer = makeDatasetLayer("failed-layer");
+    const wrapper = mount(SourceToMapDataConverter, {
+      props: { sourceBgLayer: null, sourceData: [failedLayer] },
+      global: {
+        stubs: {
+          MapDatamappingOgcDatasetConverter: OgcConverterStub,
+          MapDatamappingFileConverter: FileConverterStub,
+        },
+      },
+    });
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("error", "failure");
+
+    expect(wrapper.emitted("layerError")).toEqual([
+      [failedLayer.uuid, new Error("failure")],
+    ]);
+  });
 });

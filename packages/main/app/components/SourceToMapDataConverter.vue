@@ -14,6 +14,7 @@ import {
   useDimensionsStore,
 } from "@swissgeo/dimension";
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
+import { toError } from "@swissgeo/shared";
 
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
 import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
@@ -25,12 +26,16 @@ const { sourceBgLayer, sourceData } = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  layerError: [uuid: string, error: unknown];
+  layerError: [uuid: string, error: Error];
 }>();
 
 const mapViewStore = useMapViewStore();
 const layerStore = useLayerStore();
 const dimensionsStore = useDimensionsStore();
+
+function emitLayerError(uuid: SourceData["uuid"], error: unknown) {
+  emit("layerError", uuid, toError(error));
+}
 
 // there can be multiple calls to this function, and the options consumes themselves
 // on call, so we consume the options first, then we give it the current data if there is
@@ -118,11 +123,11 @@ function removeMapLayer(uuidToRemove: string) {
   <LayerLoadErrorBoundary
     v-if="sourceBgLayer && isDatasetLayer(sourceBgLayer)"
     :key="sourceBgLayer.uuid"
-    @error="emit('layerError', sourceBgLayer.uuid, $event)"
+    @error="emitLayerError(sourceBgLayer.uuid, $event)"
   >
     <MapDatamappingOgcDatasetConverter
       :layer="sourceBgLayer as DatasetLayer"
-      @error="emit('layerError', sourceBgLayer.uuid, $event)"
+      @error="emitLayerError(sourceBgLayer.uuid, $event)"
       @update="updateBgLayer($event)"
       @updateDataset="updateStoreLayerData"
       @updateLayerInfo="updateLayerInfo"
@@ -133,12 +138,12 @@ function removeMapLayer(uuidToRemove: string) {
   <LayerLoadErrorBoundary
     v-for="(data, index) in sourceData.filter((data) => !!data)"
     :key="data.uuid"
-    @error="emit('layerError', data.uuid, $event)"
+    @error="emitLayerError(data.uuid, $event)"
   >
     <MapDatamappingOgcDatasetConverter
       v-if="isDatasetLayer(data)"
       :layer="data"
-      @error="emit('layerError', data.uuid, $event)"
+      @error="emitLayerError(data.uuid, $event)"
       @update="updateMapLayerData(index + Number(!!sourceBgLayer), $event)"
       @updateTimeDimension="updateTimeDimension"
       @updateDataset="updateStoreLayerData"

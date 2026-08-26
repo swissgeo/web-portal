@@ -20,7 +20,8 @@ vi.mock("@swissgeo/log", () => ({
   default: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
   LogPreDefinedColor: new Proxy({}, { get: (_t, p) => String(p) }),
 }));
-vi.mock("@swissgeo/shared", () => ({
+vi.mock("@swissgeo/shared", async (importOriginal) => ({
+  ...(await importOriginal()),
   createDrawingFeatureStyleFunction: vi.fn((style: unknown) => style),
   createTextFeatureStyle: vi.fn(() => ({})),
   EPSG_4326_WGS84: "EPSG:4326",
@@ -192,6 +193,26 @@ describe("useOlKMZLayer", () => {
     expect(createObjectURLSpy).toHaveBeenCalled();
 
     createObjectURLSpy.mockRestore();
+  });
+
+  it("converts a non-Error initialization failure", async () => {
+    mockReadFeatures.mockImplementationOnce(() => {
+      // External libraries can throw values that are not Error objects.
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
+      throw "Invalid KML";
+    });
+    const layer = ref(makeKMZLayer());
+    const TestComponent = defineComponent({
+      setup() {
+        useOlKMZLayer(layer, ref(undefined), onError);
+      },
+      template: "<div />",
+    });
+
+    mount(TestComponent);
+    await vi.waitFor(() => {
+      expect(onError).toHaveBeenCalledWith(new Error("Invalid KML"));
+    });
   });
 
   it("rejects KMZ exceeding decompression limit", async () => {
