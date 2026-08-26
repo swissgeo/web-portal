@@ -208,6 +208,71 @@
     },
     "print": {
       "buttonTitle": "Drucken"
+    },
+    "reportIssue": {
+      "buttonTitle": "Problem melden",
+      "title": "Problem melden",
+      "steps": {
+        "step1": {
+          "title": "1. Betreff Ihrer Nachricht (Pflichtfeld):",
+          "select": {
+            "placeholder": "Kategorie auswählen",
+            "options": {
+              "background": "Änderung des Hintergrundplans",
+              "thematic": "Thematische Karte",
+              "application": "Eine Anwendung oder ein Dienst",
+              "other": "Sonstiges"
+            }
+          },
+          "moreInfo": {
+            "label": "Weitere Informationen zu den Kategorien",
+            "url": "https://www.geo.admin.ch/de/kartenviewer-navigation-und-orientierung#Problem-melden"
+          }
+        },
+        "step2": {
+          "title": "2. Teilen Sie uns Kartenänderungen, Datenverbesserungen mit oder stellen Sie Fragen zu dieser Webseite in diesem Feld (Pflichtfeld):"
+        },
+        "step3": {
+          "title": "3. Geben Sie den betroffenen Ort auf der Karte an:",
+          "button": "Auf der Karte zeichnen"
+        },
+        "step4": {
+          "title": "4. Ihre E-Mail-Adresse:",
+          "placeholder": "Ihre E-Mail-Adresse",
+          "info": "Ohne Angabe einer E-Mail-Adresse erhalten Sie keine Antwort"
+        },
+        "step5": {
+          "title": "5. Datei anhängen:",
+          "buttonLabel": "Anhängen"
+        }
+      },
+      "notes": {
+        "link": {
+          "label": "Der folgende Link wird übermittelt:",
+          "permalink": "Permalink"
+        },
+        "tos": {
+          "label": "Mit dem Absenden Ihrer Nachricht akzeptieren Sie die",
+          "link": "Nutzungsbedingungen",
+          "url": "https://www.geo.admin.ch/de/allgemeine-nutzungsbedingungen-bgdi#feedback"
+        }
+      },
+      "cancelButton": "Abbrechen",
+      "submitButton": "Absenden",
+      "successMessage": "Vielen Dank für Ihre Nachricht. Wir werden Ihnen so bald wie möglich antworten.",
+      "errorMessage": "Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+      "validation": {
+        "subjectRequired": "Betreff ist erforderlich",
+        "feedbackRequired": "Nachricht ist erforderlich",
+        "categoryRequired": "Kategorie ist erforderlich",
+        "versionRequired": "Version ist erforderlich",
+        "userAgentRequired": "User Agent ist erforderlich",
+        "permalinkRequired": "Permalink ist erforderlich",
+        "emailInvalid": "E-Mail muss eine gültige E-Mail-Adresse sein",
+        "fileRequired": "Anhang muss eine Datei sein",
+        "fileTooLarge": "Datei ist zu gross (max. {max} MB)",
+        "fileTypeNotSupported": "Dateityp wird nicht unterstützt"
+      }
     }
   },
   "backgroundLayers": {

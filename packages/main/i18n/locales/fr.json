@@ -208,6 +208,71 @@
     },
     "print": {
       "buttonTitle": "Imprimer"
+    },
+    "reportIssue": {
+      "buttonTitle": "Signaler un problème",
+      "title": "Signaler un problème",
+      "steps": {
+        "step1": {
+          "title": "1. Sujet de votre message (obligatoire) :",
+          "select": {
+            "placeholder": "Sélectionner une catégorie",
+            "options": {
+              "background": "Une révision du fond de plan",
+              "thematic": "Une carte thématique",
+              "application": "DUne application ou un service",
+              "other": "Autre chose"
+            }
+          },
+          "moreInfo": {
+            "label": "Plus d'information sur les catégories",
+            "url": "https://www.geo.admin.ch/fr/visualiseur-de-cartes-navigation-et-orientiation#Signaler-un-probl%C3%A8me"
+          }
+        },
+        "step2": {
+          "title": "2. Faites-nous part de modifications de la carte, d’amélioration des données ou posez des questions sur ce site dans ce champ (obligatoire) :"
+        },
+        "step3": {
+          "title": "3. Indiquez le lieu concerné dans la carte :",
+          "button": "Dessiner sur la carte"
+        },
+        "step4": {
+          "title": "4. Votre email :",
+          "placeholder": "Votre adresse e-mail",
+          "info": "Sans indiquer une adresse e-mail, vous ne recevrez pas de réponse"
+        },
+        "step5": {
+          "title": "5. Joindre un fichier :",
+          "buttonLabel": "Joindre"
+        }
+      },
+      "notes": {
+        "link": {
+          "label": "Le lien suivant sera transféré:",
+          "permalink": "Permalien"
+        },
+        "tos": {
+          "label": "En envoyant votre message, vous acceptez les",
+          "link": "conditions d'utilisation",
+          "url": "https://www.geo.admin.ch/fr/conditions-generales-utilisation-ifdg#feedback"
+        }
+      },
+      "cancelButton": "Annuler",
+      "submitButton": "Envoyer",
+      "successMessage": "Merci pour votre message. Nous vous répondrons dès que possible.",
+      "errorMessage": "Une erreur s'est produite lors de l'envoi de votre message. Veuillez réessayer plus tard.",
+      "validation": {
+        "subjectRequired": "L'objet est obligatoire",
+        "feedbackRequired": "Le message est obligatoire",
+        "categoryRequired": "La catégorie est obligatoire",
+        "versionRequired": "La version est obligatoire",
+        "userAgentRequired": "L'agent utilisateur est obligatoire",
+        "permalinkRequired": "Le permalien est obligatoire",
+        "emailInvalid": "L'adresse e-mail doit être valide",
+        "fileRequired": "La pièce jointe doit être un fichier",
+        "fileTooLarge": "Le fichier est trop volumineux (max. {max} MB)",
+        "fileTypeNotSupported": "Le type de fichier n'est pas pris en charge"
+      }
     }
   },
   "backgroundLayers": {
