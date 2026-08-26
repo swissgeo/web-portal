@@ -2,6 +2,7 @@
 import { createReusableTemplate, useMediaQuery } from "@vueuse/core";
 
 import Import from "@/components/toolbox/import/Import.vue";
+import ReportIssue from "@/components/toolbox/reportIssue/ReportIssue.vue";
 import ToolboxShare from "@/components/toolbox/share/Share.vue";
 import { useToolboxStore } from "@/stores/toolbox";
 
@@ -15,6 +16,7 @@ const isDesktop = useMediaQuery("(min-width: 768px)");
   <RegisterTemplate>
     <ToolboxShare v-if="toolboxStore.isPanelActive('share')" />
     <Import v-if="toolboxStore.isPanelActive('import')" />
+    <ReportIssue v-if="toolboxStore.isPanelActive('reportIssue')" />
   </RegisterTemplate>
 
   <div

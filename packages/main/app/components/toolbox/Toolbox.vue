@@ -16,6 +16,7 @@ import TimeSliderButton from "@/components/toolbox/toolboxButtons/TimeSliderButt
 import Toggle3dButton from "@/components/toolbox/toolboxButtons/Toggle3dButton.vue";
 import ZoomButtons from "@/components/toolbox/toolboxButtons/ZoomButtons.vue";
 import ToolboxDetail from "@/components/toolbox/ToolboxDetail.vue";
+import ReportIssueButton from "@/components/toolbox/toolboxButtons/ReportIssueButton.vue";
 import { useToolboxStore } from "@/stores/toolbox";
 
 const toolboxStore = useToolboxStore();
@@ -54,6 +55,7 @@ const isEmbedMode = computed(() => displayMode === "embed");
     </UCard>
     <UCard
       v-if="isWebMode"
+      class="mb-4"
       :ui="{
         body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
       }"
@@ -67,6 +69,16 @@ const isEmbedMode = computed(() => displayMode === "embed");
       <ImportButton v-if="isWebMode && toolboxStore.showImportButton" />
       <ShareButton v-if="isWebMode && toolboxStore.showShareButton" />
       <PrintButton v-if="isWebMode && toolboxStore.showPrintButton" />
+    </UCard>
+    <UCard
+      v-if="isWebMode"
+      :ui="{
+        body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
+      }"
+    >
+      <ReportIssueButton
+        v-if="isWebMode && toolboxStore.showReportIssueButton"
+      />
     </UCard>
 
     <ToolboxDetail />
