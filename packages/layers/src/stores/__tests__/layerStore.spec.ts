@@ -54,15 +54,13 @@ describe("Layer store helpers", () => {
       expect(errorSpy).not.toHaveBeenCalled();
     });
 
-    it("still logs an error for a uuid that matches no layer", () => {
+    it("returns undefined for a uuid that matches no layer without logging", () => {
       const store = useLayerStore();
       store.addLayer(makeLayer("overlay"));
       store.setBackground(makeLayer("bg"));
 
       expect(store.getLayer("does-not-exist")).toBeUndefined();
-      expect(errorSpy).toHaveBeenCalledWith(
-        "Incorrect uuid given : does-not-exist",
-      );
+      expect(errorSpy).not.toHaveBeenCalled();
     });
   });
 
