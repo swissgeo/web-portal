@@ -61,7 +61,8 @@ function updateBgLayer(mapLayerData: MapLayer | null) {
    */
   const currentDataUuid = mapViewStore.mapLayers[0]?.uuid;
   if (
-    layerStore.getLayer(`${currentDataUuid}`) &&
+    currentDataUuid &&
+    layerStore.getLayer(currentDataUuid) &&
     layerStore.backgroundLayer?.uuid !== currentDataUuid
   ) {
     mapViewStore.mapLayers.unshift(mapLayerData);
