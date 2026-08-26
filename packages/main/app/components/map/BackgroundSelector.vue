@@ -18,11 +18,11 @@ const { currentBackground } = defineProps<{
   currentBackground: Layer | null | undefined;
 }>();
 
+const { locale } = useI18n();
+
 const catalogItemsUrl = useCatalogItemsUrl();
 
 const backgroundRecords = computed(async () => {
-  const { locale } = useI18n();
-
   const promises: Promise<Dataset>[] = [];
   for (const backgroundId of AVAILABLE_BACKGROUNDS) {
     const url = new URL(catalogItemsUrl(backgroundId));
