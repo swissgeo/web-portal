@@ -240,6 +240,7 @@
   "error": {
     "notFound": "{resource} est introuvable.",
     "generic": "Une erreur inattendue s'est produite.",
+    "layerLoad": "La couche n'a pas pu être chargée.",
     "backToMap": "Retour à la carte",
     "resources": {
       "dataset": "Ce jeu de données"

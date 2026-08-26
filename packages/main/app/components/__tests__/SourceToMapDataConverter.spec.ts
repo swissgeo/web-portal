@@ -1,5 +1,6 @@
 import type { Dimension } from "@swissgeo/dimension";
 import type { DatasetLayer } from "@swissgeo/layers";
+import type * as LogModule from "@swissgeo/log";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 
@@ -10,7 +11,24 @@ import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
+
+const { logErrorMock, showErrorMock } = vi.hoisted(() => ({
+  logErrorMock: vi.fn(),
+  showErrorMock: vi.fn(),
+}));
+
+mockNuxtImport("useToaster", () => () => ({ showError: showErrorMock }));
+mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
+
+vi.mock("@swissgeo/log", async (importOriginal) => {
+  const original = await importOriginal<typeof LogModule>();
+  return {
+    ...original,
+    default: { ...original.default, error: logErrorMock },
+  };
+});
 
 const mockMapLayers: MapLayer[] = [];
 
@@ -49,6 +67,7 @@ mockNuxtImport("useMapViewStore", () => () => ({
 const OgcConverterStub = defineComponent({
   name: "MapDatamappingOgcDatasetConverter",
   emits: [
+    "error",
     "update",
     "updateDataset",
     "updateLayerInfo",
@@ -60,9 +79,10 @@ const OgcConverterStub = defineComponent({
 
 const FileConverterStub = defineComponent({
   name: "MapDatamappingFileConverter",
-  emits: ["update"],
+  emits: ["remove", "update"],
   template: "<div />",
 });
+
 function makeSourceLayer(uuid: string) {
   return {
     uuid,
@@ -91,6 +111,16 @@ function makeMapLayer(uuid: string): MapLayer {
     format: "WMS",
     opacity: 0.5,
     isVisible: true,
+  };
+}
+
+function makeFileLayer(uuid: string) {
+  return {
+    uuid,
+    humanId: `${uuid}.kml`,
+    type: "kml" as const,
+    isLoading: false,
+    data: "<kml/>",
   };
 }
 
@@ -123,6 +153,7 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
         sourceBgLayer: null,
         sourceData: [makeSourceLayer("test-uuid")],
       },
+      global: { stubs: { LayerLoadErrorBoundary: false } },
     });
 
     // The store already holds "2024-01-01T00:00:00Z"; the incoming dimension
@@ -154,6 +185,7 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
         sourceBgLayer: null,
         sourceData: [makeSourceLayer("test-uuid")],
       },
+      global: { stubs: { LayerLoadErrorBoundary: false } },
     });
 
     await emitUpdateTimeDimension(wrapper, {
@@ -176,6 +208,7 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
         sourceBgLayer: null,
         sourceData: [makeSourceLayer("test-uuid")],
       },
+      global: { stubs: { LayerLoadErrorBoundary: false } },
     });
 
     await emitUpdateTimeDimension(wrapper, {
@@ -343,7 +376,7 @@ describe("background handling", () => {
     );
   });
 
-  it("removes the background when remove is emitted", () => {
+  it("removes the background by its emitted UUID", () => {
     mockMapLayers.push(makeMapLayer("bg"));
     mockMapLayers.push(makeMapLayer("overlay"));
 
@@ -360,7 +393,7 @@ describe("background handling", () => {
       },
     });
 
-    wrapper.findComponent(OgcConverterStub).vm.$emit("remove");
+    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", "bg");
 
     expect(mockMapLayers).toHaveLength(1);
     expect(mockMapLayers[0]?.uuid).toBe("overlay");
@@ -430,5 +463,107 @@ describe("event forwarding", () => {
       .vm.$emit("updateDataset", "layer-1", dataset);
 
     expect(layerStore.setLayerData).toHaveBeenCalledWith("layer-1", dataset);
+  });
+});
+
+describe("layer load errors", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    mockMapLayers.length = 0;
+    removeLayer.mockClear();
+    logErrorMock.mockClear();
+    showErrorMock.mockClear();
+  });
+
+  it.each(["dataset", "file"] as const)(
+    "cleans up only the failed %s layer and logs the original cause",
+    async (kind) => {
+      const cause = new Error("network request failed");
+      const failure = new Error("conversion failed", { cause });
+      const failedLayer =
+        kind === "dataset"
+          ? makeDatasetLayer("failed-layer")
+          : makeFileLayer("failed-layer");
+      const workingLayer = makeFileLayer("working-layer");
+      const layerStore = useLayerStore();
+      const dimensionsStore = useDimensionsStore();
+      layerStore.addLayer(failedLayer);
+      layerStore.addLayer(workingLayer);
+      layerStore.addImportOption(failedLayer.uuid, { opacity: 0.4 });
+      dimensionsStore.setDimension(failedLayer.uuid, "time", {
+        currentValue: "2024",
+      });
+      mockMapLayers.push(
+        makeMapLayer(failedLayer.uuid),
+        makeMapLayer(workingLayer.uuid),
+      );
+
+      const wrapper = mount(SourceToMapDataConverter, {
+        props: { sourceBgLayer: null, sourceData: [failedLayer] },
+        global: {
+          stubs: {
+            MapDatamappingOgcDatasetConverter: OgcConverterStub,
+            MapDatamappingFileConverter: FileConverterStub,
+          },
+        },
+      });
+      const errorSource =
+        kind === "dataset"
+          ? wrapper.findComponent(OgcConverterStub)
+          : wrapper.findComponent(LayerLoadErrorBoundary);
+      await errorSource.vm.$emit("error", failure);
+
+      expect(removeLayer).not.toHaveBeenCalled();
+
+      const converter =
+        kind === "dataset"
+          ? wrapper.findComponent(OgcConverterStub)
+          : wrapper.findComponent(FileConverterStub);
+      converter.vm.$emit("remove", failedLayer.uuid);
+
+      expect(logErrorMock).toHaveBeenCalledWith({
+        title: "Layer load failed",
+        messages: [failedLayer.uuid, failure, cause],
+      });
+      expect(showErrorMock).toHaveBeenCalledWith("error.layerLoad");
+      expect(layerStore.layers).toEqual([workingLayer]);
+      expect(mockMapLayers).toEqual([makeMapLayer(workingLayer.uuid)]);
+      expect(dimensionsStore.getDimensions(failedLayer.uuid)).toBeUndefined();
+      expect(layerStore.isThereImportOptions()).toBe(false);
+    },
+  );
+
+  it("clears a failed background without removing the first overlay", async () => {
+    const failure = new Error("background conversion failed");
+    const background = makeDatasetLayer("background");
+    const overlay = makeFileLayer("overlay");
+    const layerStore = useLayerStore();
+    layerStore.setBackground(background);
+    layerStore.addLayer(overlay);
+    mockMapLayers.push(
+      makeMapLayer(background.uuid),
+      makeMapLayer(overlay.uuid),
+    );
+
+    const wrapper = mount(SourceToMapDataConverter, {
+      props: { sourceBgLayer: background, sourceData: [overlay] },
+      global: {
+        stubs: {
+          MapDatamappingOgcDatasetConverter: OgcConverterStub,
+          MapDatamappingFileConverter: FileConverterStub,
+        },
+      },
+    });
+    await wrapper
+      .findComponent(LayerLoadErrorBoundary)
+      .vm.$emit("error", failure);
+
+    expect(removeLayer).not.toHaveBeenCalled();
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", background.uuid);
+
+    expect(layerStore.backgroundLayer).toBeNull();
+    expect(layerStore.layers).toEqual([overlay]);
+    expect(mockMapLayers).toEqual([makeMapLayer(overlay.uuid)]);
   });
 });

@@ -9,31 +9,58 @@ import {
 
 import { determineFormat } from "./determineFormat";
 
-export function useGenericOgcData(layer: Ref<DatasetLayer>) {
+export function useGenericOgcData(
+  layer: Ref<DatasetLayer>,
+  onError: (error: unknown) => void,
+) {
   const dataset = computed(() => layer.value.data);
 
-  const { distributionCollection } = useDistributionCollection(dataset);
+  const {
+    distributionCollection,
+    onDistributionError,
+    onDistributionResponse,
+  } = useDistributionCollection(dataset);
   const { preferredDistributionId } = usePreferredDistribution(dataset);
 
   // if there's a preferred distribution, let's get that one, otherwise the first one
-  const distributionId = computed(() => {
-    if (!distributionCollection.value?.features?.length) {
-      // If any of these is null-ish, then there's no point in returning the preferredDistributionId
-      return null;
-    }
-    return (
+  const distributionId = computed(
+    () =>
       preferredDistributionId.value ??
-      distributionCollection.value.features[0]!.id
-    );
-  });
+      distributionCollection.value?.features.at(0)?.id ??
+      null,
+  );
 
   const { distribution, layerId } = useDistribution(
     distributionCollection,
     distributionId,
   );
-  const { serviceData } = useService(distribution);
+  const { onServiceError, onServiceResponse, serviceData, serviceUrl } =
+    useService(distribution);
 
   const layerFormat = computed(() => determineFormat(distribution.value));
+
+  onDistributionError((error) =>
+    onError(
+      new Error("Unable to load required distribution", { cause: error }),
+    ),
+  );
+  onServiceError((error) =>
+    onError(new Error("Unable to load required OGC service", { cause: error })),
+  );
+  onDistributionResponse(() => {
+    if (!distribution.value || !layerFormat.value || !layerId.value) {
+      onError(new Error("Dataset has no usable OGC distribution"));
+      return;
+    }
+    if (!serviceUrl.value) {
+      onError(new Error("Required OGC service URL is missing"));
+    }
+  });
+  onServiceResponse(() => {
+    if (!serviceData.value) {
+      onError(new Error("Required OGC service result is unusable"));
+    }
+  });
 
   return {
     distributionCollection,

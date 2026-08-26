@@ -73,8 +73,9 @@ function moveDown() {
 
 function removeLayer() {
   dimensionsStore.clearLayerDimensions(layer.uuid);
+  // Removing the source layer unmounts its converter. The converter then removes
+  // the matching layer from the map-view store.
   layerStore.removeLayer(layer.uuid);
-  mapViewStore.removeLayer(layerIndex);
 }
 
 function openDatasetPanel() {

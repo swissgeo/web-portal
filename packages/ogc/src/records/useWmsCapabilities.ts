@@ -32,8 +32,11 @@ export function useWmsCapabilities(
 ) {
   const { capabilityUrl } = useCapabilities(serviceData);
 
-  const { data: wmsCapabilityData } =
-    useConditionalFetch<string>(capabilityUrl);
+  const {
+    data: wmsCapabilityData,
+    onFetchResponse: onCapabilitiesResponse,
+    onRequestError: onCapabilitiesError,
+  } = useConditionalFetch<string>(capabilityUrl);
 
   const wmsData = computed(() =>
     parseWmsCapabilities(wmsCapabilityData.value, layerId.value),
@@ -47,6 +50,9 @@ export function useWmsCapabilities(
     });
   });
   return {
+    capabilityUrl,
+    onCapabilitiesError,
+    onCapabilitiesResponse,
     wmsData,
   };
 }
@@ -72,11 +78,15 @@ export function parseWmsCapabilities(
   }
 
   const doc = new DOMParser().parseFromString(capabilityData, "text/xml");
+  const layer = getLayer(doc, layerId);
+  if (!layer) {
+    throw new Error(`WMS capabilities do not contain layer "${layerId}"`);
+  }
 
   return {
     version: doc.documentElement?.getAttribute("version") ?? null,
     url: getServiceUrl(doc),
-    dimensions: getDimensions(doc, layerId),
+    dimensions: getLayerDimensions(layer),
     legends: getLegends(doc, layerId),
   };
 }
@@ -100,7 +110,7 @@ function getServiceUrl(doc: Document): string | null {
  * The requested layer, wherever it sits: a layer is not always a direct child of
  * the root one, it can be nested in any number of groups.
  */
-function findLayer(doc: Document, layerId: string): Element | undefined {
+function getLayer(doc: Document, layerId: string): Element | undefined {
   return Array.from(doc.getElementsByTagName("Layer")).find(
     (candidate) =>
       firstDirectChild(candidate, "Name")?.textContent?.trim() === layerId,
@@ -111,7 +121,12 @@ export function getDimensions(
   doc: Document,
   layerId: string,
 ): WMSCapabilityDimension[] | null {
-  const layer = findLayer(doc, layerId);
+  return getLayerDimensions(getLayer(doc, layerId));
+}
+
+function getLayerDimensions(
+  layer: Element | undefined,
+): WMSCapabilityDimension[] | null {
   if (!layer) {
     return null;
   }
@@ -127,7 +142,7 @@ export function getDimensions(
  * own legends come first.
  */
 export function getLegends(doc: Document, layerId: string): Legend[] {
-  const layer = findLayer(doc, layerId);
+  const layer = getLayer(doc, layerId);
   if (!layer) {
     return [];
   }

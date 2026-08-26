@@ -168,6 +168,6 @@ describe("FileConverter", () => {
     });
 
     wrapper.unmount();
-    expect(wrapper.emitted("remove")).toHaveLength(1);
+    expect(wrapper.emitted("remove")).toEqual([[layerData.uuid]]);
   });
 });

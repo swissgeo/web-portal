@@ -19,6 +19,7 @@ const {
   serviceData,
   layerFormat,
   layerId,
+  ogcErrorCallbacks,
 } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
   return {
@@ -28,18 +29,24 @@ const {
     serviceData: ref(null),
     layerFormat: ref("WMTS"),
     layerId: ref("layer-id"),
+    ogcErrorCallbacks: [] as ((_error: unknown) => void)[],
   };
 });
 
 vi.mock("@/components/map/datamapping/useGenericOgcData", () => ({
-  useGenericOgcData: vi.fn(() => ({
-    distributionCollection,
-    layerSpecificData,
-    distribution,
-    serviceData,
-    layerFormat,
-    layerId,
-  })),
+  useGenericOgcData: vi.fn(
+    (_layer: unknown, onError: (_error: unknown) => void) => {
+      ogcErrorCallbacks.push(onError);
+      return {
+        distributionCollection,
+        layerSpecificData,
+        distribution,
+        serviceData,
+        layerFormat,
+        layerId,
+      };
+    },
+  ),
 }));
 
 vi.mock("@/components/map/datamapping/useDatasetLocaleRefresh", () => ({
@@ -49,6 +56,7 @@ vi.mock("@/components/map/datamapping/useDatasetLocaleRefresh", () => ({
 describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    ogcErrorCallbacks.length = 0;
   });
 
   it("emits the basic data regardless of the OGC travelling", () => {
@@ -77,6 +85,10 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
         displayName: "human-id",
       },
     ]);
+
+    const error = new Error("request failed");
+    ogcErrorCallbacks[0]!(error);
+    expect(wrapper.emitted("error")).toEqual([[error]]);
   });
 
   it("emits the update if the basic data is updated", async () => {
@@ -194,6 +206,6 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     wrapper.unmount();
     await flushPromises();
 
-    expect(wrapper.emitted()).toHaveProperty("remove");
+    expect(wrapper.emitted("remove")).toEqual([["some-fancy-uuid"]]);
   });
 });

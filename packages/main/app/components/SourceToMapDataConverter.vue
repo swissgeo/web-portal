@@ -14,9 +14,14 @@ import {
   useDimensionsStore,
 } from "@swissgeo/dimension";
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
+import log from "@swissgeo/log";
 
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
+import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";
+
+const { t } = useI18n();
+const toaster = useToaster();
 
 const { sourceBgLayer, sourceData } = defineProps<{
   sourceBgLayer: SourceData | null | undefined;
@@ -101,38 +106,69 @@ function updateTimeDimension(uuid: string, dimension: Partial<Dimension>) {
   });
 }
 
-function removeBgLayer() {
-  mapViewStore.mapLayers.shift();
+function removeMapLayer(uuidToRemove: string) {
+  if (mapViewStore.mapLayers.some((layer) => layer.uuid === uuidToRemove)) {
+    mapViewStore.removeLayer(uuidToRemove);
+  }
+}
+
+function handleLayerError(layer: SourceData, error: unknown) {
+  const cause = error instanceof Error ? error.cause : undefined;
+  log.error({
+    title: "Layer load failed",
+    messages:
+      cause === undefined ? [layer.uuid, error] : [layer.uuid, error, cause],
+  });
+  toaster.showError(t("error.layerLoad"));
+
+  dimensionsStore.clearLayerDimensions(layer.uuid);
+  layerStore.clearImportOptions(layer.uuid);
+
+  if (layerStore.backgroundLayer?.uuid === layer.uuid) {
+    layerStore.setBackground(null);
+  } else {
+    layerStore.removeLayer(layer.uuid);
+  }
 }
 </script>
 
 <template>
-  <MapDatamappingOgcDatasetConverter
+  <LayerLoadErrorBoundary
     v-if="sourceBgLayer && isDatasetLayer(sourceBgLayer)"
-    :layer="sourceBgLayer as DatasetLayer"
-    @update="updateBgLayer($event)"
-    @updateDataset="updateStoreLayerData"
-    @updateLayerInfo="updateLayerInfo"
-    @remove="removeBgLayer"
-  />
+    :key="sourceBgLayer.uuid"
+    @error="handleLayerError(sourceBgLayer, $event)"
+  >
+    <MapDatamappingOgcDatasetConverter
+      :layer="sourceBgLayer as DatasetLayer"
+      @error="handleLayerError(sourceBgLayer, $event)"
+      @update="updateBgLayer($event)"
+      @updateDataset="updateStoreLayerData"
+      @updateLayerInfo="updateLayerInfo"
+      @remove="removeMapLayer"
+    />
+  </LayerLoadErrorBoundary>
 
-  <div
+  <LayerLoadErrorBoundary
     v-for="(data, index) in sourceData.filter((data) => !!data)"
-    v-bind:key="data.uuid"
+    :key="data.uuid"
+    @error="handleLayerError(data, $event)"
   >
     <MapDatamappingOgcDatasetConverter
       v-if="isDatasetLayer(data)"
       :layer="data"
+      @error="handleLayerError(data, $event)"
       @update="updateMapLayerData(index + Number(!!sourceBgLayer), $event)"
       @updateTimeDimension="updateTimeDimension"
       @updateDataset="updateStoreLayerData"
       @updateLayerInfo="updateLayerInfo"
       @updateLegends="updateLegends"
+      @remove="removeMapLayer"
     />
     <MapDatamappingFileConverter
       v-else
       :layer="data"
       @update="updateMapLayerData(index + Number(!!sourceBgLayer), $event)"
+      @remove="removeMapLayer"
     />
-  </div>
+  </LayerLoadErrorBoundary>
 </template>

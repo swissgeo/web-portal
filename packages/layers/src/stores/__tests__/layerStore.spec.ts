@@ -80,4 +80,17 @@ describe("Layer store helpers", () => {
     store.replaceLayer("missing", makeLayer("c"));
     expect(store.layers.map((l) => l.uuid)).toEqual(["replacement", "b"]);
   });
+
+  it("clears import options without consuming them", () => {
+    const store = useLayerStore();
+    store.addImportOption("failed-layer", { opacity: 0.4 });
+    store.addImportOption("working-layer", { isVisible: false });
+
+    store.clearImportOptions("failed-layer");
+
+    expect(store.consumeImportOptions("failed-layer")).toBeUndefined();
+    expect(store.consumeImportOptions("working-layer")).toEqual({
+      isVisible: false,
+    });
+  });
 });

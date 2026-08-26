@@ -36,9 +36,10 @@ const { layer } = defineProps<{
 const dimensionsStore = useDimensionsStore();
 
 const emit = defineEmits<{
+  error: [error: unknown];
   update: [layer: MapLayer];
   updateTimeDimension: [layerUuid: string, dimension: Partial<Dimension>];
-  remove: [void];
+  remove: [layerUuid: string];
   updateDataset: [layerUuid: string, dataset: Dataset];
   updateLayerInfo: [layerUuid: string, info: LayerInfo];
   updateLegends: [layerUuid: string, legends: Legend[]];
@@ -46,6 +47,7 @@ const emit = defineEmits<{
 
 const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(
   computed(() => layer),
+  (error) => emit("error", error),
 );
 
 // Registering composable that will ensure that a dataset is refreshed when the locale changes.
@@ -89,7 +91,7 @@ const layerData = computed((): MapLayer => {
 watch(layerData, () => emit("update", layerData.value), { immediate: true });
 
 onBeforeUnmount(() => {
-  emit("remove");
+  emit("remove", layer.uuid);
 });
 
 // receive the layer specific data from the subconverters
@@ -105,6 +107,7 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
     :distribution
     :serviceData
     :layerId
+    @error="emit('error', $event)"
     @updateOptions="pushLayerSpecificData<{ options: WMTSOptions }>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
     @updateLegends="emit('updateLegends', layer.uuid, $event)"
@@ -114,6 +117,7 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
     :distribution
     :serviceData
     :layerId
+    @error="emit('error', $event)"
     @updateData="pushLayerSpecificData<WMSLayerData>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
     @updateLegends="emit('updateLegends', layer.uuid, $event)"

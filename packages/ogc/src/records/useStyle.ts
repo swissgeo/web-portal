@@ -15,7 +15,20 @@ export function useStyle(distribution: Ref<Distribution | null>) {
     data: styleData,
     isFetching,
     error,
+    onRequestError,
   } = useConditionalFetch<Style>(styleDataUrl, ["get", "json"]);
+
+  onRequestError((requestError) =>
+    log.warn({
+      title: "useStyle",
+      titleColor: LogPreDefinedColor.Pink,
+      messages: [
+        "Unable to load optional style",
+        styleDataUrl.value,
+        requestError,
+      ],
+    }),
+  );
 
   watchEffect(() => {
     log.debug({

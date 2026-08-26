@@ -2,6 +2,7 @@ import type { Page } from "@playwright/test";
 
 import { expect, test } from "@playwright/test";
 import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
 
 import {
   HYDRATION_TIMEOUT,
@@ -28,6 +29,7 @@ const WMS_URL =
   "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
 const WMTS_LAYER = "ch.swisstopo.pixelkarte-farbe";
 const WMS_LAYER = "ch.swisstopo.test-wms";
+const STORAGE_KEY = "swissgeo_app_state";
 
 /**
  * Mock the external-layer import pipeline so the test stays offline. Only the
@@ -60,7 +62,8 @@ async function mockExternalLayerApi(
   // be registered BEFORE the more specific `/dataset/` and `/service/` routes
   // (`/service/<url>` also matches `*/*`), or it would shadow them.
   await page.route("**/api/wpa/v1/layers/external/*/*", (route, request) => {
-    const parts = request.url().split("/");
+    const requestUrl = new URL(request.url());
+    const parts = requestUrl.pathname.split("/");
     const layerId = parts.pop() ?? "";
     const encodedUrl = parts.pop() ?? "";
     // The distribution's `dataservice` link points at the `/service/<url>`
@@ -95,7 +98,7 @@ async function mockExternalLayerApi(
   await page.route(
     "**/api/wpa/v1/layers/external/dataset/**",
     (route, request) => {
-      const layerId = request.url().split("/").pop() ?? "";
+      const layerId = new URL(request.url()).pathname.split("/").pop() ?? "";
       return route.fulfill({
         status: 200,
         json: {
@@ -214,6 +217,79 @@ test.describe("import external layers", () => {
     await expect(
       page.getByTestId("layer-cart").getByText(WMS_LAYER),
     ).toBeVisible();
+  });
+
+  test("removes a layer when its distribution cannot be loaded", async ({
+    page,
+  }) => {
+    const workingLayer = "test-drawing.geojson";
+    const failedLayerUrl = "http://mock-oar.org/dataset-without-distributions";
+    const state = btoa(
+      JSON.stringify({
+        version: "1.0",
+        state: {
+          layers: [
+            {
+              layerUrl: failedLayerUrl,
+              type: "dataset",
+              isVisible: false,
+              opacity: 0.4,
+            },
+          ],
+          bg_layer: null,
+        },
+      }),
+    );
+    await page.route(failedLayerUrl, (route) =>
+      route.fulfill({
+        status: 200,
+        json: {
+          id: WMTS_LAYER,
+          links: [{ href: failedLayerUrl, rel: "self" }],
+          properties: { title: WMTS_LAYER, type: "Dataset" },
+        },
+      }),
+    );
+    await page.goto(`/de/map?state=${encodeURIComponent(state)}`);
+
+    await expect(
+      page.getByText("Die Ebene konnte nicht geladen werden.", { exact: true }),
+    ).toBeVisible();
+    await page.getByTestId("button-layer-cart-panel").click();
+    const layerCart = page.getByTestId("layer-cart");
+    await expect(layerCart.getByText(WMTS_LAYER)).toHaveCount(0);
+    await page.getByTestId("button-layer-cart-panel").click();
+
+    await page.getByTestId("debug-open-import-local-panel").click();
+    await page
+      .getByTestId("file-input")
+      .setInputFiles(
+        fileURLToPath(new URL(`../fixtures/${workingLayer}`, import.meta.url)),
+      );
+    await page.getByTestId("file-import-button").click();
+    await page.getByTestId("file-import-close-button").click();
+
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            (storageKey) =>
+              JSON.parse(sessionStorage.getItem(storageKey) ?? "null")?.state
+                ?.layers?.[0]?.type ?? null,
+            STORAGE_KEY,
+          ),
+        { timeout: HYDRATION_TIMEOUT },
+      )
+      .toBe("geojson");
+    const workingLayerRemains = await page.evaluate(
+      (layerId) =>
+        window.swissgeoOlMap
+          ?.getLayers()
+          .getArray()
+          .some((layer) => layer.get("id") === layerId) ?? false,
+      workingLayer,
+    );
+    expect(workingLayerRemains).toBe(true);
   });
 
   test("preset dropdown loads the layer list", async ({ page }) => {
