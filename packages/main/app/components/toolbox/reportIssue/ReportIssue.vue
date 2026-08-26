@@ -196,6 +196,27 @@ watch(shareLink, (newLink) => {
         />
       </UFormField>
 
+      <div class="mt-2 text-sm text-muted">
+        {{ t("toolbox.reportIssue.notes.link.label") }}
+        <UButton
+          :to="state.permalink"
+          variant="link"
+          class="p-0"
+          target="_blank"
+          >{{ t("toolbox.reportIssue.notes.link.permalink") }}</UButton
+        >.
+      </div>
+      <div class="mt-2 text-sm text-muted">
+        {{ t("toolbox.reportIssue.notes.tos.label") }}
+        <UButton
+          :to="t('toolbox.reportIssue.notes.tos.url')"
+          variant="link"
+          class="p-0"
+          target="_blank"
+          >{{ t("toolbox.reportIssue.notes.tos.link") }}</UButton
+        >.
+      </div>
+
       <UButton type="reset" color="error" variant="outline" class="mr-2">
         {{ t("toolbox.reportIssue.cancelButton") }}
       </UButton>
