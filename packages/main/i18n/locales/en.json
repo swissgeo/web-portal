@@ -14,8 +14,7 @@
     "map": "Map",
     "collapse": "Collapse the side panel",
     "expand": "Expand the side panel",
-    "addLayer": "Add layer",
-    "addLayerComingSoon": "The layer catalog is not available yet."
+    "addLayer": "Add layer"
   },
   "search": {
     "placeholder": "Search for a place, layer or coordinates...",
@@ -335,5 +334,9 @@
       "openPdf": "Open legend as PDF",
       "openPage": "Open legend page"
     }
+  },
+  "layerCatalog": {
+    "titleLoading": "Loading...",
+    "titleError": "Title unavailable"
   }
 }

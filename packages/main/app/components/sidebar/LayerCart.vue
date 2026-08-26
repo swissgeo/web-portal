@@ -7,6 +7,7 @@ import { computed, ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerCartEntry from "./LayerCartEntry.vue";
+import LayerCatalog from "./LayerCatalog.vue";
 const { t } = useI18n();
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
@@ -74,7 +75,7 @@ useSortable(layerCartRef, sortedLayers, {
 
   <UModal v-model:open="isAddLayerOpen" :title="t('menu.addLayer')">
     <template #body>
-      <p class="text-sm text-gray-600">{{ t("menu.addLayerComingSoon") }}</p>
+      <LayerCatalog />
     </template>
   </UModal>
 

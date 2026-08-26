@@ -1,0 +1,26 @@
+# The layer catalog, served by `server/api/wpa/v1/layers/catalog.ts`
+# and validated there against the schema in `app/types/layerCatalog.ts`.
+items:
+  - type: group
+    label: Basiskarten
+    children:
+      - type: group
+        label: Verschachteltes Duplikat
+        children:
+          - type: layer
+            layerId: ch.swisstopo.pixelkarte-farbe-pk1000.noscale
+      - type: layer
+        layerId: ch.swisstopo.pixelkarte-farbe-pk1000.noscale
+      - type: layer
+        layerId: ch.swisstopo.pixelkarte-farbe-pk500.noscale
+      - type: layer
+        layerId: ch.swisstopo.pixelkarte-farbe-pk200.noscale
+  - type: group
+    label: Bodenbedeckung, Bodennutzung
+    children:
+      - type: layer
+        layerId: ch.bafu.biogeographische_regionen
+      - type: layer
+        layerId: ch.bfs.landschaftswandel
+      - type: layer
+        layerId: ch.blw.hanglagen-abschwemmung
