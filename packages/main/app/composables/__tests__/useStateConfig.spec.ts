@@ -187,7 +187,7 @@ describe("useStateConfig - Helper functions are functional", () => {
     const layerStore = useLayerStore();
     layerStore.addLayer(datasetsForStore[0]!);
     const layer: MapLayer = mockedMapLayers[0]!;
-    const layerStateConfig = layerToStateConfig(layer);
+    const layerStateConfig = layerToStateConfig(layer)!;
     const expectedLayerStateConfig = expectedStatesConfig[0]!;
     expect(layerStateConfig.layerUrl).to.eql(expectedLayerStateConfig.layerUrl);
     expect(layerStateConfig.type).to.eql(expectedLayerStateConfig.type);
@@ -204,7 +204,7 @@ describe("useStateConfig - Helper functions are functional", () => {
     const layerStore = useLayerStore();
     layerStore.setBackground(backgroundDataset);
 
-    const layerStateConfig = layerToStateConfig(backgroundLayer);
+    const layerStateConfig = layerToStateConfig(backgroundLayer)!;
     const expectedLayerStateConfig = expectedBackgroundState;
     expect(layerStateConfig.layerUrl).to.eql(expectedLayerStateConfig.layerUrl);
     expect(layerStateConfig.type).to.eql(expectedLayerStateConfig.type);
