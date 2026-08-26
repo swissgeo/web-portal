@@ -21,13 +21,13 @@ export default defineAppConfig({
           color: "primary",
           variant: "outline",
           class:
-            "bg-transparent text-primary ring-primary hover:bg-transparent hover:text-primary-600 hover:ring-primary-600 active:bg-transparent disabled:bg-transparent disabled:text-primary-300 disabled:ring-primary-300 disabled:hover:bg-transparent aria-disabled:bg-transparent aria-disabled:text-primary-300 aria-disabled:ring-primary-300 aria-disabled:hover:bg-transparent focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-secondary!",
+            "bg-transparent text-primary ring-primary hover:bg-transparent hover:text-primary-600 hover:ring-primary-600 disabled:bg-transparent disabled:text-primary-300 disabled:ring-primary-300 disabled:hover:bg-transparent aria-disabled:bg-transparent aria-disabled:text-primary-300 aria-disabled:ring-primary-300 aria-disabled:hover:bg-transparent focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-secondary!",
         },
         {
           color: "primary",
           variant: "ghost",
           class:
-            "bg-transparent text-primary hover:bg-transparent hover:text-primary-600 active:bg-transparent active:text-primary disabled:bg-transparent disabled:text-primary-300 disabled:hover:bg-transparent aria-disabled:bg-transparent aria-disabled:text-primary-300 aria-disabled:hover:bg-transparent focus-visible:bg-transparent focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-secondary!",
+            "bg-transparent text-primary hover:bg-transparent hover:text-primary-600 disabled:bg-transparent disabled:text-primary-300 disabled:hover:bg-transparent aria-disabled:bg-transparent aria-disabled:text-primary-300 aria-disabled:hover:bg-transparent focus-visible:bg-transparent focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-secondary!",
         },
         {
           color: "primary",
