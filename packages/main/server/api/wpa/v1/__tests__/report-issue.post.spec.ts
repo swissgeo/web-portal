@@ -35,7 +35,9 @@ vi.mock("h3", async () => {
   };
 });
 
-vi.mock("@swissgeo/log", () => ({ default: { error: vi.fn(), info: vi.fn() } }));
+vi.mock("@swissgeo/log", () => ({
+  default: { error: vi.fn(), info: vi.fn() },
+}));
 
 mockNuxtImport("$fetch", () => fetchMock);
 
@@ -148,9 +150,7 @@ describe("report issue proxy", () => {
     expect(body.get("category")).toBe("thematic_map");
     expect(body.get("version")).toBe("abc1234");
     expect(body.get("ua")).toBe("Mozilla/5.0");
-    expect(body.get("permalink")).toBe(
-      "https://map.geo.admin.ch/?state=abc",
-    );
+    expect(body.get("permalink")).toBe("https://map.geo.admin.ch/?state=abc");
     expect(body.get("email")).toBe("test@example.com");
 
     expect(result).toEqual({ ok: true });
