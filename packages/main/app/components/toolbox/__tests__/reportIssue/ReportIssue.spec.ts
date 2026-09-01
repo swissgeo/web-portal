@@ -1,3 +1,5 @@
+import type { ComponentPublicInstance } from "vue";
+
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { shallowMount } from "@vue/test-utils";
 import { describe, expect, it, vi, beforeEach } from "vitest";
@@ -99,6 +101,17 @@ function mountReportIssue() {
   });
 }
 
+type ReportIssueVm = ComponentPublicInstance & {
+  state: {
+    category: string;
+    feedback: string;
+    email: string | undefined;
+    attachment: File | undefined;
+  };
+  pending: { value: boolean };
+  onSubmit: (_event: never) => Promise<void>;
+};
+
 describe("ReportIssue.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -113,11 +126,11 @@ describe("ReportIssue.vue", () => {
     fetchMock.mockResolvedValue({ feedback_id: "123", success: true });
 
     const wrapper = mountReportIssue();
-    const vm = wrapper.vm as Record<string, unknown>;
+    const vm = wrapper.vm as unknown as ReportIssueVm;
 
-    (vm.state as Record<string, unknown>).category = "thematic";
-    (vm.state as Record<string, unknown>).feedback = "Test feedback";
-    (vm.state as Record<string, unknown>).email = "test@example.com";
+    vm.state.category = "thematic";
+    vm.state.feedback = "Test feedback";
+    vm.state.email = "test@example.com";
 
     await vm.onSubmit({} as never);
 
@@ -140,18 +153,18 @@ describe("ReportIssue.vue", () => {
     fetchMock.mockResolvedValue({ ok: true });
 
     const wrapper = mountReportIssue();
-    const vm = wrapper.vm as Record<string, unknown>;
+    const vm = wrapper.vm as unknown as ReportIssueVm;
 
     const file = new File(["test"], "test.kml", {
       type: "application/vnd.google-earth.kml+xml",
     });
-    (vm.state as Record<string, unknown>).feedback = "with file";
-    (vm.state as Record<string, unknown>).category = "other";
-    (vm.state as Record<string, unknown>).attachment = file;
+    vm.state.feedback = "with file";
+    vm.state.category = "other";
+    vm.state.attachment = file;
 
     await vm.onSubmit({} as never);
 
-    const body = fetchMock.mock.calls[0][1].body as FormData;
+    const body = fetchMock.mock.calls[0]![1].body as FormData;
     expect(body.get("attachment")).toBeInstanceOf(Blob);
   });
 
@@ -159,15 +172,15 @@ describe("ReportIssue.vue", () => {
     fetchMock.mockResolvedValue({ ok: true });
 
     const wrapper = mountReportIssue();
-    const vm = wrapper.vm as Record<string, unknown>;
+    const vm = wrapper.vm as unknown as ReportIssueVm;
 
-    (vm.state as Record<string, unknown>).feedback = "no email";
-    (vm.state as Record<string, unknown>).category = "application";
-    (vm.state as Record<string, unknown>).email = undefined;
+    vm.state.feedback = "no email";
+    vm.state.category = "application";
+    vm.state.email = undefined;
 
     await vm.onSubmit({} as never);
 
-    const body = fetchMock.mock.calls[0][1].body as FormData;
+    const body = fetchMock.mock.calls[0]![1].body as FormData;
     expect(body.has("email")).toBe(false);
   });
 
@@ -175,10 +188,10 @@ describe("ReportIssue.vue", () => {
     fetchMock.mockResolvedValue({ ok: true });
 
     const wrapper = mountReportIssue();
-    const vm = wrapper.vm as Record<string, unknown>;
+    const vm = wrapper.vm as unknown as ReportIssueVm;
 
-    (vm.state as Record<string, unknown>).feedback = "ok";
-    (vm.state as Record<string, unknown>).category = "other";
+    vm.state.feedback = "ok";
+    vm.state.category = "other";
 
     await vm.onSubmit({} as never);
 
@@ -191,27 +204,27 @@ describe("ReportIssue.vue", () => {
     fetchMock.mockResolvedValue({ ok: true });
 
     const wrapper = mountReportIssue();
-    const vm = wrapper.vm as Record<string, unknown>;
+    const vm = wrapper.vm as unknown as ReportIssueVm;
 
-    (vm.state as Record<string, unknown>).feedback = "to reset";
-    (vm.state as Record<string, unknown>).category = "thematic";
-    (vm.state as Record<string, unknown>).email = "reset@test.com";
+    vm.state.feedback = "to reset";
+    vm.state.category = "thematic";
+    vm.state.email = "reset@test.com";
 
     await vm.onSubmit({} as never);
 
-    expect((vm.state as Record<string, unknown>).feedback).toBe("");
-    expect((vm.state as Record<string, unknown>).category).toBe("");
-    expect((vm.state as Record<string, unknown>).email).toBeUndefined();
+    expect(vm.state.feedback).toBe("");
+    expect(vm.state.category).toBe("");
+    expect(vm.state.email).toBeUndefined();
   });
 
   it("shows error toast with message on Error", async () => {
     fetchMock.mockRejectedValue(new Error("Network failure"));
 
     const wrapper = mountReportIssue();
-    const vm = wrapper.vm as Record<string, unknown>;
+    const vm = wrapper.vm as unknown as ReportIssueVm;
 
-    (vm.state as Record<string, unknown>).feedback = "err";
-    (vm.state as Record<string, unknown>).category = "other";
+    vm.state.feedback = "err";
+    vm.state.category = "other";
 
     await vm.onSubmit({} as never);
 
@@ -227,10 +240,10 @@ describe("ReportIssue.vue", () => {
     fetchMock.mockRejectedValue("something");
 
     const wrapper = mountReportIssue();
-    const vm = wrapper.vm as Record<string, unknown>;
+    const vm = wrapper.vm as unknown as ReportIssueVm;
 
-    (vm.state as Record<string, unknown>).feedback = "err";
-    (vm.state as Record<string, unknown>).category = "other";
+    vm.state.feedback = "err";
+    vm.state.category = "other";
 
     await vm.onSubmit({} as never);
 
@@ -243,7 +256,7 @@ describe("ReportIssue.vue", () => {
   });
 
   it("disables submit button during pending state", async () => {
-    let resolveFetch!: (value: unknown) => void;
+    let resolveFetch!: (_value: unknown) => void;
     fetchMock.mockReturnValue(
       new Promise((resolve) => {
         resolveFetch = resolve;
@@ -251,10 +264,10 @@ describe("ReportIssue.vue", () => {
     );
 
     const wrapper = mountReportIssue();
-    const vm = wrapper.vm as Record<string, unknown>;
+    const vm = wrapper.vm as unknown as ReportIssueVm;
 
-    (vm.state as Record<string, unknown>).feedback = "pending test";
-    (vm.state as Record<string, unknown>).category = "other";
+    vm.state.feedback = "pending test";
+    vm.state.category = "other";
 
     const submitPromise = vm.onSubmit({} as never);
     await wrapper.vm.$nextTick();

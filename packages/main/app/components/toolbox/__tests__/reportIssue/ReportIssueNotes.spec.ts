@@ -22,7 +22,8 @@ describe("ReportIssueNotes.vue", () => {
       global: { stubs },
     });
     const links = wrapper.findAll(".link");
-    expect(links[0].attributes("href")).toBe(
+    expect(links).toHaveLength(2);
+    expect(links[0]!.attributes("href")).toBe(
       "https://map.geo.admin.ch/?state=abc",
     );
   });
@@ -43,7 +44,8 @@ describe("ReportIssueNotes.vue", () => {
       global: { stubs },
     });
     const links = wrapper.findAll(".link");
-    expect(links[1].attributes("href")).toBe(
+    expect(links).toHaveLength(2);
+    expect(links[1]!.attributes("href")).toBe(
       "toolbox.reportIssue.notes.tos.url",
     );
   });
@@ -54,7 +56,8 @@ describe("ReportIssueNotes.vue", () => {
       global: { stubs },
     });
     const links = wrapper.findAll(".link");
-    expect(links[0].attributes("target")).toBe("_blank");
-    expect(links[1].attributes("target")).toBe("_blank");
+    expect(links).toHaveLength(2);
+    expect(links[0]!.attributes("target")).toBe("_blank");
+    expect(links[1]!.attributes("target")).toBe("_blank");
   });
 });
