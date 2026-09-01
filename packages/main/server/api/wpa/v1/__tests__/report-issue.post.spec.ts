@@ -24,7 +24,6 @@ let runtimeConfig: { reportIssueServiceUrl: string } = {
 mockNuxtImport("useRuntimeConfig", () => () => runtimeConfig);
 
 const { fetchMock } = vi.hoisted(() => ({ fetchMock: vi.fn() }));
-mockNuxtImport("$fetch", () => fetchMock);
 
 vi.mock("h3", async () => {
   const actual = await vi.importActual("h3");
@@ -36,7 +35,9 @@ vi.mock("h3", async () => {
   };
 });
 
-vi.mock("@swissgeo/log", () => ({ default: { error: vi.fn() } }));
+vi.mock("@swissgeo/log", () => ({ default: { error: vi.fn(), info: vi.fn() } }));
+
+mockNuxtImport("$fetch", () => fetchMock);
 
 const handlerPromise = import("../report-issue.post").then(
   ({ default: handler }) => handler,
@@ -131,16 +132,20 @@ describe("report issue proxy", () => {
     const result = await handler({} as never);
 
     expect(fetchMock).toHaveBeenCalledOnce();
-    const [, options] = fetchMock.mock.calls[0] as [
+    const [url, options] = fetchMock.mock.calls[0] as [
       string,
-      { body: FormData },
+      { method: string; headers: Record<string, string>; body: FormData },
     ];
+    expect(url).toBe("https://report.example.test/submit");
     expect(options.method).toBe("POST");
+    expect(options.headers.accept).toBe("application/json");
+    expect(options.headers.origin).toBe("https://report.example.test");
+    expect(options.headers.referer).toBe("https://report.example.test/");
 
     const body = options.body as FormData;
     expect(body.get("subject")).toBe("[Problem Report]");
     expect(body.get("feedback")).toBe("Broken layer");
-    expect(body.get("category")).toBe("thematic");
+    expect(body.get("category")).toBe("thematic_map");
     expect(body.get("version")).toBe("abc1234");
     expect(body.get("ua")).toBe("Mozilla/5.0");
     expect(body.get("permalink")).toBe(
@@ -149,6 +154,41 @@ describe("report issue proxy", () => {
     expect(body.get("email")).toBe("test@example.com");
 
     expect(result).toEqual({ ok: true });
+  });
+
+  it("maps all category values to service format", async () => {
+    const categories: Array<[string, string]> = [
+      ["background", "background_map"],
+      ["thematic", "thematic_map"],
+      ["application", "application_service"],
+      ["other", "other"],
+    ];
+
+    for (const [frontend, service] of categories) {
+      readMultipartFormDataMock.mockResolvedValue([
+        textPart("category", frontend),
+      ]);
+      fetchMock.mockResolvedValue({ ok: true });
+
+      const handler = await handlerPromise;
+      await handler({} as never);
+
+      const body = fetchMock.mock.calls.at(-1)![1].body as FormData;
+      expect(body.get("category")).toBe(service);
+    }
+  });
+
+  it("passes through unmapped category values unchanged", async () => {
+    readMultipartFormDataMock.mockResolvedValue([
+      textPart("category", "new_future_category"),
+    ]);
+    fetchMock.mockResolvedValue({ ok: true });
+
+    const handler = await handlerPromise;
+    await handler({} as never);
+
+    const body = fetchMock.mock.calls[0][1].body as FormData;
+    expect(body.get("category")).toBe("new_future_category");
   });
 
   it("forwards file attachment as a Blob", async () => {
