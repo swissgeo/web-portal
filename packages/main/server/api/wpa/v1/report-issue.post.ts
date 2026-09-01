@@ -1,15 +1,22 @@
 import log from "@swissgeo/log";
 import { createError, readMultipartFormData } from "h3";
 
-const REPORT_ISSUE_FIELDS = [
-  "subject",
-  "feedback",
-  "category",
-  "version",
-  "ua",
-  "permalink",
-  "email",
-] as const;
+const FIELD_MAP: Record<string, string> = {
+  subject: "subject",
+  feedback: "feedback",
+  category: "category",
+  version: "version",
+  ua: "ua",
+  permalink: "permalink",
+  email: "email",
+};
+
+const CATEGORY_MAP: Record<string, string> = {
+  background: "background_map",
+  thematic: "thematic_map",
+  application: "application_service",
+  other: "other",
+};
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
@@ -43,20 +50,30 @@ export default defineEventHandler(async (event) => {
         new Blob([new Uint8Array(part.data)], { type: part.type }),
         part.filename,
       );
-    } else if (
-      REPORT_ISSUE_FIELDS.includes(
-        part.name as (typeof REPORT_ISSUE_FIELDS)[number],
-      )
-    ) {
-      formData.append(part.name, new TextDecoder().decode(part.data));
+    } else if (part.name in FIELD_MAP) {
+      const serviceName = FIELD_MAP[part.name]!;
+      const value = new TextDecoder().decode(part.data);
+      const finalValue =
+        part.name === "category" ? (CATEGORY_MAP[value] ?? value) : value;
+      formData.append(serviceName, finalValue);
     }
   }
 
   try {
+    const serviceUrl = new URL(config.reportIssueServiceUrl);
+    const origin = `${serviceUrl.protocol}//${serviceUrl.host}`;
+
     const response = await $fetch(config.reportIssueServiceUrl, {
       method: "POST",
+      headers: {
+        accept: "application/json",
+        origin,
+        referer: `${origin}/`,
+      },
       body: formData,
     });
+
+    log.info(`Report issue upstream response: ${JSON.stringify(response)}`);
 
     return response;
   } catch (error) {
