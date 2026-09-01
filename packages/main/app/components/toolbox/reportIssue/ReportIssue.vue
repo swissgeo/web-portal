@@ -103,7 +103,9 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
     resetForm();
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : t("toolbox.reportIssue.errorMessage");
+      error instanceof Error
+        ? error.message
+        : t("toolbox.reportIssue.errorMessage");
     toast.add({
       title: message,
       color: "error",
