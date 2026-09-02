@@ -37,11 +37,14 @@ export const useIconsStore = defineStore("icons", () => {
         throw new Error(`Failed to fetch icon set: ${response.statusText}`);
       }
       const data: IconServiceResponse = await response.json();
-      for (const iconSetItem of data.items) {
+
+      const promises = data.items.map(async (iconSetItem) => {
         const newIconSet = new IconSet(iconSetItem);
         await newIconSet.loadIcons(); // Load icons for the new icon set
         tmpIconSet.push(newIconSet);
-      }
+      });
+
+      await Promise.all(promises);
     } catch (_err) {
       log.error("Error loading icon set");
     }

@@ -1,7 +1,6 @@
 import type { FeatureLike } from "ol/Feature";
 import type { StyleFunction } from "ol/style/Style";
 
-// import { Text } from "ol/style";
 import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import CircleStyle from "ol/style/Circle";
 
