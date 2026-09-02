@@ -64,7 +64,7 @@ function onColorSelected(color: string) {
           <label class="mb-1 block text-sm font-medium text-gray-900"
             >Display title</label
           >
-          <UCheckbox v-model="showTitle" />
+          <UCheckbox v-model="showTitle" data-testid="point-show-title" />
           <div class="flex gap-2"></div>
         </div>
 
@@ -73,7 +73,10 @@ function onColorSelected(color: string) {
           <label class="mb-1 block text-sm font-medium text-gray-900"
             >Display description</label
           >
-          <UCheckbox v-model="showDescription" />
+          <UCheckbox
+            v-model="showDescription"
+            data-testid="point-show-description"
+          />
           <div class="flex gap-2"></div>
         </div>
 
@@ -85,7 +88,11 @@ function onColorSelected(color: string) {
           <label class="mb-1 block text-sm font-medium text-gray-900"
             >Text Size</label
           >
-          <USelect v-model="textSize" :items="textSizesItems" />
+          <USelect
+            v-model="textSize"
+            :items="textSizesItems"
+            data-testid="point-text-size"
+          />
         </div>
 
         <!-- Text placement -->
@@ -96,6 +103,7 @@ function onColorSelected(color: string) {
           <PlacementSelector
             class="mx-auto w-1/3"
             :placement="textPlacement"
+            data-testid="point-text-placement"
             @placement-selected="textPlacement = $event"
           />
         </div>
@@ -113,7 +121,7 @@ function onColorSelected(color: string) {
               type="color"
               v-model="textColor"
               class="h-8 w-12 cursor-pointer rounded border border-gray-300"
-              data-testid="point-color"
+              data-testid="point-text-color"
             />
           </div>
         </div>
@@ -131,7 +139,7 @@ function onColorSelected(color: string) {
               type="color"
               v-model="textHaloColor"
               class="h-8 w-12 cursor-pointer rounded border border-gray-300"
-              data-testid="point-color"
+              data-testid="point-text-halo-color"
             />
           </div>
         </div>
@@ -143,7 +151,7 @@ function onColorSelected(color: string) {
           <label class="mb-1 block text-sm font-medium text-gray-900"
             >Display icon</label
           >
-          <UCheckbox v-model="showIcon" />
+          <UCheckbox v-model="showIcon" data-testid="point-show-icon" />
           <div class="flex gap-2"></div>
         </div>
 
@@ -152,7 +160,11 @@ function onColorSelected(color: string) {
           <label class="mb-1 block text-sm font-medium text-gray-900"
             >Icon Size</label
           >
-          <USelect v-model="iconSize" :items="iconSizesItems" />
+          <USelect
+            v-model="iconSize"
+            :items="iconSizesItems"
+            data-testid="point-icon-size"
+          />
         </div>
 
         <!-- Icon picker -->
@@ -161,6 +173,7 @@ function onColorSelected(color: string) {
             :icon-set-name="iconSetName"
             :icon-name="iconName"
             :icon-color="iconColor"
+            data-testid="point-icon-picker"
             @icon-selected="onIconSelected"
             @color-selected="onColorSelected"
           />

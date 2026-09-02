@@ -226,7 +226,7 @@ export function useDrawing() {
 
     set(newName: string) {
       setIconNameStyleProperty(focusedFeature.value, newName);
-      // Associating a a new icon from the Icon Service automatically resets the icon URL that may come from a hardcoded URL within a KML file.
+      // Associating a new icon from the Icon Service automatically resets the icon URL that may come from a hardcoded URL within a KML file.
       setIconUrlStyleProperty(focusedFeature.value, "");
       triggerRef(focusedFeature);
     },

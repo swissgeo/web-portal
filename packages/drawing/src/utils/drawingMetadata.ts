@@ -20,9 +20,12 @@ export function initializeMetadataProperties(
   if (!feature) {
     return;
   }
+
+  // The properties "name" and "description" are often used in KML files, so we use them to initialize our own metadata properties.
+  // If not, then we use the default values.
   feature.setProperties({
-    [TITLE_KEY]: `Feature ${++counter_drawing_features}`,
-    [DESCRIPTION_KEY]: "",
+    [TITLE_KEY]: feature.get("name") ?? `Feature ${++counter_drawing_features}`,
+    [DESCRIPTION_KEY]: feature.get("description") ?? "",
   });
 }
 

@@ -12,7 +12,6 @@ import {
   CIRCLE_IDLE_STYLE,
   CIRCLE_SELECTED_STYLE,
 } from "./circleStyle";
-import { DESCRIPTION_KEY, TITLE_KEY } from "./drawingMetadata";
 import {
   LINESTRING_EDITING_STYLE,
   LINESTRING_IDLE_STYLE,
@@ -68,7 +67,7 @@ export const RELATIVE_PLACEMENT = [
   "north-west",
   "south-east",
   "south-west",
-];
+] as const;
 
 export type RelativePlacement = (typeof RELATIVE_PLACEMENT)[number];
 
@@ -676,9 +675,6 @@ export function mapKmlStylesToFeatureProperties(
   if (!style) {
     return;
   }
-
-  feature.set(TITLE_KEY, feature.get("name") ?? null);
-  feature.set(DESCRIPTION_KEY, feature.get("description") ?? null);
 
   const geomType = feature.getGeometry()?.getType();
 

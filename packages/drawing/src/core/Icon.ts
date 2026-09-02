@@ -63,12 +63,12 @@ export class Icon {
     const scale = `${options.scale || 1}x`;
 
     return this.templateUrl
-      .replace("{icon_set_name}", this.iconSet)
-      .replace("{icon_name}", this.name)
-      .replace("{icon_scale}", scale)
-      .replace("{r}", color[0].toString())
-      .replace("{g}", color[1].toString())
-      .replace("{b}", color[2].toString());
+      .replaceAll("{icon_set_name}", this.iconSet)
+      .replaceAll("{icon_name}", this.name)
+      .replaceAll("{icon_scale}", scale)
+      .replaceAll("{r}", color[0].toString())
+      .replaceAll("{g}", color[1].toString())
+      .replaceAll("{b}", color[2].toString());
   }
 
   getDescription(): { de: string; fr: string; it: string } | null {
