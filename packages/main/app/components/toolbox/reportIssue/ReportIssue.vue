@@ -36,20 +36,22 @@ const schema = z.object({
   feedback: z.string(t("toolbox.reportIssue.validation.feedbackRequired")),
   category: z.string(t("toolbox.reportIssue.validation.categoryRequired")),
   email: z.optional(z.email(t("toolbox.reportIssue.validation.emailInvalid"))),
-  attachment: z.optional(
-    z
-      .file(t("toolbox.reportIssue.validation.fileRequired"))
-      .max(
-        runtimeConfig.public.maxFileSizeMB * 1024 * 1024,
-        t("toolbox.reportIssue.validation.fileTooLarge", {
-          max: runtimeConfig.public.maxFileSizeMB,
-        }),
-      )
-      .mime(
-        ACCEPTED_FILE_TYPES,
-        t("toolbox.reportIssue.validation.fileTypeNotSupported"),
-      ),
-  ),
+  attachment: z
+    .nullable(
+      z
+        .file(t("toolbox.reportIssue.validation.fileRequired"))
+        .max(
+          runtimeConfig.public.maxFileSizeMB * 1024 * 1024,
+          t("toolbox.reportIssue.validation.fileTooLarge", {
+            max: runtimeConfig.public.maxFileSizeMB,
+          }),
+        )
+        .mime(
+          ACCEPTED_FILE_TYPES,
+          t("toolbox.reportIssue.validation.fileTypeNotSupported"),
+        ),
+    )
+    .optional(),
 });
 
 type Schema = z.output<typeof schema>;
