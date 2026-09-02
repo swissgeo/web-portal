@@ -36,9 +36,9 @@ const fileTypesLabels = computed(() => {
       case "application/gpx+xml":
         return "GPX";
       default:
-        return type;
+        return type.startsWith(".") ? null : type;
     }
-  });
+  }).filter((type) => type !== null);
 });
 </script>
 
