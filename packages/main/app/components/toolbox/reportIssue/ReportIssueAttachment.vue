@@ -13,6 +13,9 @@ const ACCEPTED_FILE_TYPES = [
   "application/vnd.google-earth.kml+xml",
   "application/vnd.google-earth.kmz",
   "application/gpx+xml",
+  ".kml",
+  ".kmz",
+  ".gpx",
 ];
 
 const fileTypesLabels = computed(() => {
