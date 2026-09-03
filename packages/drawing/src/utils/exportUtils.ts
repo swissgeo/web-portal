@@ -10,7 +10,21 @@ import KML from "ol/format/KML";
 import { LineString, MultiLineString, Point } from "ol/geom";
 import { fromCircle } from "ol/geom/Polygon";
 import { register } from "ol/proj/proj4";
+import { Fill, Icon, Style, Text } from "ol/style";
 import proj4 from "proj4";
+
+import type { TextSize } from "./drawingStyleCommon";
+
+import { DESCRIPTION_KEY, TITLE_KEY } from "./drawingMetadata";
+import {
+  SHOW_DESCRIPTION_KEY,
+  SHOW_ICON_KEY,
+  SHOW_TITLE_KEY,
+  TEXT_COLOR_KEY,
+  TEXT_PLACEMENT_KEY,
+  TEXT_SIZE,
+  TEXT_SIZE_KEY,
+} from "./drawingStyleCommon";
 
 registerProj4(proj4);
 register(proj4);
@@ -22,6 +36,322 @@ export const exportFormatToMimeType: Record<string, string> = {
   kml: "application/vnd.google-earth.kml+xml",
   kmz: "application/vnd.google-earth.kmz",
 };
+
+// OpenLayers renders KML labels with a 16 px default font. KML only supports a
+// relative label scale, so use that default to preserve the effective OL size.
+const KML_DEFAULT_LABEL_FONT_SIZE = 16;
+const KML_NO_ICON_PLACEHOLDER = "swissgeo-kml-no-icon";
+
+const TEXT_PLACEMENT_OFFSET = {
+  north: [0, -1],
+  center: [0, 0],
+  south: [0, 1],
+  east: [1, 0],
+  west: [-1, 0],
+  "north-east": [1, -1],
+  "north-west": [-1, -1],
+  "south-east": [1, 1],
+  "south-west": [-1, 1],
+} as const;
+
+function isEnabled(value: unknown): boolean {
+  return value === true || value === "true";
+}
+
+function textContentToString(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) {
+    // Rich OL text is an array of text/font pairs. KML cannot retain the
+    // different fonts, but it can retain their complete textual content.
+    return value.filter((_, index) => index % 2 === 0).join("");
+  }
+  return value ?? "";
+}
+
+function resolvePointTextStyles(feature: Feature<Geometry>): Text[] {
+  const styleFunction = feature.getStyleFunction();
+  if (!styleFunction) {
+    return [];
+  }
+
+  const resolvedStyle = styleFunction(feature, 0);
+  const styles = Array.isArray(resolvedStyle)
+    ? resolvedStyle
+    : resolvedStyle
+      ? [resolvedStyle]
+      : [];
+
+  return styles
+    .map((style) => style.getText())
+    .filter((text): text is Text => Boolean(text));
+}
+
+function resolvePointIconStyle(feature: Feature<Geometry>): Icon | undefined {
+  const styleFunction = feature.getStyleFunction();
+  if (!styleFunction) {
+    return undefined;
+  }
+
+  const resolvedStyle = styleFunction(feature, 0);
+  const styles = Array.isArray(resolvedStyle)
+    ? resolvedStyle
+    : resolvedStyle
+      ? [resolvedStyle]
+      : [];
+
+  return styles
+    .map((style) => style.getImage())
+    .find((image): image is Icon => "getSrc" in image);
+}
+
+function getFontSize(font: string | undefined): number | undefined {
+  const match = font?.match(/(?:^|\s)(\d+(?:\.\d+)?)px(?:\s|\/|$)/);
+  if (!match) {
+    return undefined;
+  }
+
+  const fontSize = Number(match[1]);
+  return Number.isFinite(fontSize) ? fontSize : undefined;
+}
+
+function getKmlLabelScale(
+  textStyle: Text | undefined,
+  fallbackFontSize: number,
+): number {
+  const fontSize = getFontSize(textStyle?.getFont()) ?? fallbackFontSize;
+  const olScale = textStyle?.getScale();
+  const horizontalScale = Array.isArray(olScale)
+    ? (olScale[0] ?? 1)
+    : (olScale ?? 1);
+
+  return (fontSize * horizontalScale) / KML_DEFAULT_LABEL_FONT_SIZE;
+}
+
+function getKmlTextOffset(
+  feature: Feature<Geometry>,
+  textStyle: Text | undefined,
+): [number, number] {
+  const existingOffset = feature.get("textOffset");
+  if (typeof existingOffset === "string") {
+    const parsedOffset = existingOffset.split(",").map(Number);
+    if (
+      parsedOffset.length === 2 &&
+      parsedOffset.every((value) => Number.isFinite(value))
+    ) {
+      return [parsedOffset[0]!, parsedOffset[1]!];
+    }
+  }
+
+  const placement = feature.get(TEXT_PLACEMENT_KEY);
+  if (typeof placement === "string" && placement in TEXT_PLACEMENT_OFFSET) {
+    return [
+      ...TEXT_PLACEMENT_OFFSET[placement as keyof typeof TEXT_PLACEMENT_OFFSET],
+    ];
+  }
+
+  return textStyle ? [textStyle.getOffsetX(), textStyle.getOffsetY()] : [0, 0];
+}
+
+/**
+ * Adapt a point's OL text styles to the subset supported by KML.
+ *
+ * A KML Placemark has a single label and LabelStyle, so visible OL text blocks
+ * are joined into one multiline label and styled like the first block. The
+ * description also remains available through the standard description field.
+ * An existing offset, or the configured placement direction, is stored in
+ * textOffset because standard KML has no label-placement property.
+ */
+function applyPointKmlStyle(
+  feature: Feature<Geometry>,
+  visibleIcon?: Icon,
+): void {
+  if (feature.getGeometry()?.getType() !== "Point") {
+    return;
+  }
+
+  const textStyles = resolvePointTextStyles(feature);
+  const hasVisibilityProperties =
+    feature.get(SHOW_TITLE_KEY) !== undefined ||
+    feature.get(SHOW_DESCRIPTION_KEY) !== undefined;
+  const title = String(feature.get(TITLE_KEY) ?? "");
+  const description = String(feature.get(DESCRIPTION_KEY) ?? "");
+  const label = hasVisibilityProperties
+    ? [
+        isEnabled(feature.get(SHOW_TITLE_KEY)) ? title : "",
+        isEnabled(feature.get(SHOW_DESCRIPTION_KEY)) ? description : "",
+      ]
+        .filter((value) => value.length > 0)
+        .join("\n")
+    : (textStyles
+        .map((textStyle) => textContentToString(textStyle.getText()))
+        .find((value) => value.length > 0) ?? "");
+
+  if (feature.get(DESCRIPTION_KEY) !== undefined) {
+    feature.set("description", description, true);
+  }
+
+  if (hasVisibilityProperties) {
+    if (label) {
+      feature.set("name", label, true);
+    } else {
+      feature.unset("name", true);
+    }
+    feature.set(
+      "showDescriptionOnMap",
+      isEnabled(feature.get(SHOW_DESCRIPTION_KEY)),
+      true,
+    );
+  } else if (label) {
+    feature.set("name", label, true);
+  }
+
+  const showIcon = feature.get(SHOW_ICON_KEY);
+  if (showIcon !== undefined) {
+    feature.set("type", isEnabled(showIcon) ? "marker" : "annotation", true);
+  }
+
+  const primaryTextStyle =
+    textStyles.find(
+      (textStyle) => textContentToString(textStyle.getText()) === label,
+    ) ?? textStyles[0];
+  const fallbackTextSize =
+    TEXT_SIZE[feature.get(TEXT_SIZE_KEY) as TextSize] ??
+    KML_DEFAULT_LABEL_FONT_SIZE;
+  const fallbackFontSize =
+    !isEnabled(feature.get(SHOW_TITLE_KEY)) &&
+    isEnabled(feature.get(SHOW_DESCRIPTION_KEY))
+      ? fallbackTextSize * 0.75
+      : fallbackTextSize;
+  const [offsetX, offsetY] = getKmlTextOffset(feature, primaryTextStyle);
+
+  if (label || hasVisibilityProperties) {
+    feature.set("textOffset", `${offsetX},${offsetY}`, true);
+  }
+
+  const hiddenIcon = showIcon !== undefined && !isEnabled(showIcon);
+  if (!label && !hiddenIcon && !visibleIcon) {
+    feature.setStyle();
+    return;
+  }
+
+  const kmlTextStyle = primaryTextStyle
+    ? primaryTextStyle.clone()
+    : new Text({
+        fill: new Fill({ color: feature.get(TEXT_COLOR_KEY) ?? "#333333" }),
+      });
+  kmlTextStyle.setText(label);
+  kmlTextStyle.setScale(
+    label ? getKmlLabelScale(primaryTextStyle, fallbackFontSize) : 0,
+  );
+
+  feature.setStyle(
+    new Style({
+      image: hiddenIcon
+        ? new Icon({ src: KML_NO_ICON_PLACEHOLDER, scale: 0 })
+        : visibleIcon,
+      text: label ? kmlTextStyle : undefined,
+    }),
+  );
+}
+
+function writeKmlFeatures(features: Feature<Geometry>[]): string {
+  const olKML = new KML();
+
+  return olKML
+    .writeFeatures(features, {
+      featureProjection: EPSG_2056_CH1903,
+      dataProjection: EPSG_4326_WGS84,
+    })
+    .replace(
+      new RegExp(
+        `<Icon>\\s*<href>${KML_NO_ICON_PLACEHOLDER}</href>\\s*</Icon>`,
+        "g",
+      ),
+      "<Icon/>",
+    );
+}
+
+function escapeXmlText(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function replaceIconHrefs(
+  kml: string,
+  archiveHrefBySourceHref: Map<string, string>,
+): string {
+  let result = kml;
+  for (const [sourceHref, archiveHref] of archiveHrefBySourceHref) {
+    result = result.replaceAll(
+      `<href>${escapeXmlText(sourceHref)}</href>`,
+      `<href>${escapeXmlText(archiveHref)}</href>`,
+    );
+  }
+  return result;
+}
+
+const ICON_FILE_EXTENSION_BY_CONTENT_TYPE: Record<string, string> = {
+  "image/bmp": "bmp",
+  "image/gif": "gif",
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/svg+xml": "svg",
+  "image/webp": "webp",
+};
+
+function getIconFileExtension(response: Response, sourceHref: string): string {
+  const contentType = response.headers
+    .get("content-type")
+    ?.split(";", 1)[0]
+    ?.trim()
+    .toLowerCase();
+  if (contentType && ICON_FILE_EXTENSION_BY_CONTENT_TYPE[contentType]) {
+    return ICON_FILE_EXTENSION_BY_CONTENT_TYPE[contentType];
+  }
+
+  try {
+    const extension = new URL(sourceHref).pathname.match(
+      /\.([a-zA-Z0-9]{2,5})$/,
+    )?.[1];
+    if (extension) {
+      return extension.toLowerCase();
+    }
+  } catch {
+    // A relative URL can still be fetched and embedded. Use a neutral fallback
+    // extension if neither the response nor the URL identifies the image type.
+  }
+
+  return "img";
+}
+
+type KmzIconAsset = {
+  archiveHref: string;
+  bytes: Uint8Array;
+  sourceHref: string;
+};
+
+async function fetchKmzIconAssets(
+  sourceHrefs: string[],
+): Promise<KmzIconAsset[]> {
+  return Promise.all(
+    sourceHrefs.map(async (sourceHref, index) => {
+      const response = await fetch(sourceHref);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch KMZ icon ${sourceHref}: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      const extension = getIconFileExtension(response, sourceHref);
+      return {
+        archiveHref: `files/icon-${index + 1}.${extension}`,
+        bytes: new Uint8Array(await response.arrayBuffer()),
+        sourceHref,
+      };
+    }),
+  );
+}
 
 /**
  * Export one or multiple OpenLayers features to GeoJSON format.
@@ -43,19 +373,55 @@ export function olFeatureToGeoJSON(
   return olGeoJSON.writeFeatures(features);
 }
 
-export function olFeatureToKMZ(
+/**
+ * Export one or multiple OpenLayers features to KMZ. Visible point icons are
+ * downloaded from their resolved OL Icon styles, deduplicated, and embedded in
+ * the archive. The KML document references those local files while retaining
+ * the icon scale and anchor serialized by OpenLayers.
+ */
+export async function olFeatureToKMZ(
   feature: Feature<Geometry> | Feature<Geometry>[],
-): ArrayBuffer {
-  const kmlString = olFeatureToKML(feature);
-
-  const zipBuf = zipSync(
+): Promise<ArrayBuffer> {
+  const features = cloneToSerializationCompatibleFeatures(
+    Array.isArray(feature) ? feature : [feature],
     {
-      "doc.kml": strToU8(kmlString),
-    },
-    {
-      level: 6,
+      circlesTo: "Polygon",
+      copyPointStyle: true,
     },
   );
+  const iconStyleByFeature = new Map<Feature<Geometry>, Icon>();
+  const uniqueSourceHrefs = new Set<string>();
+
+  for (const currentFeature of features) {
+    const iconStyle = resolvePointIconStyle(currentFeature);
+    const sourceHref = iconStyle?.getSrc();
+    if (iconStyle && sourceHref) {
+      iconStyleByFeature.set(currentFeature, iconStyle.clone());
+      uniqueSourceHrefs.add(sourceHref);
+    }
+  }
+
+  const iconAssets = await fetchKmzIconAssets([...uniqueSourceHrefs]);
+  const archiveHrefBySourceHref = new Map(
+    iconAssets.map(({ archiveHref, sourceHref }) => [sourceHref, archiveHref]),
+  );
+
+  for (const currentFeature of features) {
+    applyPointKmlStyle(currentFeature, iconStyleByFeature.get(currentFeature));
+  }
+
+  const kmlString = replaceIconHrefs(
+    writeKmlFeatures(features),
+    archiveHrefBySourceHref,
+  );
+  const entries: Record<string, Uint8Array> = {
+    "doc.kml": strToU8(kmlString),
+  };
+  for (const { archiveHref, bytes } of iconAssets) {
+    entries[archiveHref] = bytes;
+  }
+
+  const zipBuf = zipSync(entries, { level: 6 });
 
   return zipBuf.buffer;
 }
@@ -85,23 +451,22 @@ export function olFeatureToGPX(
 }
 
 /**
- * Export one or multiple OpenLayers features to KML format.
+ * Export one or multiple OpenLayers features to KML format. Point label styles
+ * are adapted to KML, while custom point icon assets are intentionally omitted.
  */
 export function olFeatureToKML(
   feature: Feature<Geometry> | Feature<Geometry>[],
 ): string {
-  const olKML = new KML();
   const features = cloneToSerializationCompatibleFeatures(
     Array.isArray(feature) ? feature : [feature],
     {
       circlesTo: "Polygon",
+      copyPointStyle: true,
     },
   );
 
-  return olKML.writeFeatures(features, {
-    featureProjection: EPSG_2056_CH1903,
-    dataProjection: EPSG_4326_WGS84,
-  });
+  features.forEach((currentFeature) => applyPointKmlStyle(currentFeature));
+  return writeKmlFeatures(features);
 }
 
 /**
@@ -273,6 +638,7 @@ export function cloneToSerializationCompatibleFeatures(
     circlesTo?: "Polygon" | "LineString" | "MultiLineString";
     polygonsTo?: "LineString" | "MultiLineString";
     lineStringsTo?: "LineString" | "MultiLineString";
+    copyPointStyle?: boolean;
   } = {},
 ): Feature<Geometry>[] {
   const clonedFeatures: Feature<Geometry>[] = [];
@@ -342,6 +708,9 @@ export function cloneToSerializationCompatibleFeatures(
     const properties = feature.getProperties();
     delete properties.geometry;
     clonedFeature.setProperties(properties);
+    if (geometry.getType() === "Point" && options.copyPointStyle) {
+      clonedFeature.setStyle(feature.getStyle());
+    }
     clonedFeatures.push(clonedFeature);
   }
 

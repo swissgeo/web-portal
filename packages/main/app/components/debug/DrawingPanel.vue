@@ -94,14 +94,14 @@ const exportAllFeaturesItems = ref<DropdownMenuItem[]>([
 /**
  * Triggers a download of the currently focused feature in the specified format.
  */
-function exportFocusedFeature(
+async function exportFocusedFeature(
   format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
 ) {
   if (!focusedFeature.value) {
     return;
   }
 
-  const blob = serializeFocusedFeatureAsBlob(format);
+  const blob = await serializeFocusedFeatureAsBlob(format);
   if (blob) {
     const featureTitle =
       getFeatureTitle(focusedFeature.value as Feature<Geometry>) || "feature";
@@ -125,10 +125,10 @@ function exportFocusedFeature(
 /**
  * Triggers a download of all features in the drawing layer in the specified format.
  */
-function exportAllFeatures(
+async function exportAllFeatures(
   format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
 ) {
-  const blob = serializeAllFeaturesAsBlob(format);
+  const blob = await serializeAllFeaturesAsBlob(format);
   if (blob) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
