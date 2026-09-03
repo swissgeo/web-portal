@@ -97,9 +97,14 @@ export default function useOlKMZLayer(
     for (const [filename, content] of Object.entries(unzipped)) {
       if (filename.toLowerCase().endsWith(".kml")) {
         kmlContent = decoder.decode(content);
-      } else if (filename.startsWith("icons/")) {
+      } else if (filename.endsWith(".png")) {
         const blob = new Blob([content as BlobPart], {
-          type: filename.endsWith(".svg") ? "image/svg+xml" : "image/png",
+          type: "image/png",
+        });
+        iconFiles[filename] = blob;
+      } else if (filename.endsWith(".svg")) {
+        const blob = new Blob([content as BlobPart], {
+          type: "image/svg+xml",
         });
         iconFiles[filename] = blob;
       }
