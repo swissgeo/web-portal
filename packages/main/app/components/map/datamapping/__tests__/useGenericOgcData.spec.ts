@@ -127,7 +127,7 @@ const {
     linkTemplates: [
       {
         uriTemplate: "uri is a canton in the heart of switzerland",
-        rel: "about",
+        rel: "describedby",
       },
     ],
   } as Service);
@@ -185,7 +185,7 @@ describe("useGenericOgcData ", () => {
     layerIdMockData.value = "my-fancy-layer";
     serviceUrlMockData.value = "http://servizi.it";
     serviceMockData.value = {
-      linkTemplates: [{ uriTemplate: "uri", rel: "about" }],
+      linkTemplates: [{ uriTemplate: "uri", rel: "describedby" }],
     } as Service;
   });
 

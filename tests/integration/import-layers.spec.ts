@@ -126,7 +126,7 @@ async function mockExternalLayerApi(
         links: [
           {
             href: capabilityUrl,
-            rel: "about",
+            rel: "describedby",
             type: "application/xml",
             title: "Capability",
           },

@@ -7,7 +7,7 @@ describe("replace link template utility", () => {
     const linkTemplate = {
       uriTemplate:
         "https://wmts.geo.admin.ch/EPSG/{epsg}/1.0.0/WMTSCapabilities.xml",
-      rel: "about",
+      rel: "describedby",
       title: "WMTS Capabilities File",
       type: "application/xml",
       variables: {
@@ -30,7 +30,7 @@ describe("replace link template utility", () => {
     const linkTemplate = {
       uriTemplate:
         "https://wmts.geo.admin.ch/EPSG/{epsg}/1.0.0/WMTSCapabilities.xml",
-      rel: "about",
+      rel: "describedby",
       title: "WMTS Capabilities File",
       type: "application/xml",
       variables: {
@@ -52,7 +52,7 @@ describe("replace link template utility", () => {
     const linkTemplate = {
       uriTemplate:
         "https://wmts.geo.admin.ch/EPSG/{epsg}/1.0.0/WMTSCapabilities.xml",
-      rel: "about",
+      rel: "describedby",
       title: "WMTS Capabilities File",
       type: "application/xml",
       variables: {
@@ -71,7 +71,7 @@ describe("replace link template utility", () => {
     const linkTemplate = {
       uriTemplate:
         "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION={version}&FORMAT={format}&lang={lang}",
-      rel: "about",
+      rel: "describedby",
       type: "application/xml",
       title: "WMS Capabilities File",
       variables: {

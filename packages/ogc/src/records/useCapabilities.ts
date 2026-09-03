@@ -32,7 +32,7 @@ export function extractCapabilityUrl(
 
   if ("links" in serviceData && serviceData.links && serviceData.links.length) {
     for (const link of serviceData.links) {
-      if (link.rel.toLowerCase() === "about") {
+      if (link.rel.toLowerCase() === "describedby") {
         const uri = link.href ?? null;
         return uri;
       }
@@ -46,7 +46,7 @@ export function extractCapabilityUrl(
     // if there are links and linkTemplates, we want links to take precedence
     // it's the simpler version
     for (const link of serviceData.linkTemplates) {
-      if (link.rel.toLowerCase() === "about") {
+      if (link.rel.toLowerCase() === "describedby") {
         return replaceTemplateVarsWithDefaults(link);
       }
     }

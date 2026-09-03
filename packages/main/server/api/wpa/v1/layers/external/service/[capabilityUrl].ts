@@ -22,7 +22,7 @@ export default defineEventHandler((event) => {
     links: [
       {
         href: capabilityUrl,
-        rel: "about",
+        rel: "describedby",
         type: "application/xml",
         title: "Capability",
       },
