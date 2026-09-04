@@ -22,6 +22,7 @@ export default [
           allowDefaultProject: [
             "server/utils/__tests__/*.ts",
             "server/routes/__tests__/*.ts",
+            "server/api/wpa/v1/__tests__/*.ts",
             "server/api/wpa/v1/drawing/__tests__/*.ts",
             "server/api/wpa/v1/elevation/__tests__/*.ts",
             "server/api/wpa/v1/layers/external/dataset/?capabilityUrl?/__tests__/*.ts",
