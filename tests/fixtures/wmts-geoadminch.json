@@ -11,7 +11,7 @@
   "linkTemplates": [
     {
       "uriTemplate": "https://wmts.geo.admin.ch/EPSG/{epsg}/1.0.0/WMTSCapabilities.xml",
-      "rel": "about",
+      "rel": "describedby",
       "title": "WMTS Capabilities File",
       "type": "application/xml",
       "variables": {

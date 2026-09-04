@@ -60,7 +60,7 @@ describe("extractCapabilitUrl", () => {
     const service = {
       links: [
         {
-          rel: "about",
+          rel: "describedby",
           // href is missing
         },
       ],
@@ -75,7 +75,7 @@ describe("extractCapabilitUrl", () => {
     const service = {
       linksTemplates: [
         {
-          rel: "about",
+          rel: "describedby",
           // uriTemplate is missing
         },
       ],
@@ -94,20 +94,20 @@ describe("extractCapabilitUrl", () => {
     );
   });
 
-  it.each(["about", "ABOUT", "aBout", "About"])(
-    "can handle all cases of rel about",
+  it.each(["describedby", "DESCRIBEDBY", "dEscribedby", "Describedby"])(
+    "can handle all casings of rel describedby",
     (rel) => {
       const service = {
         links: [
           {
             rel,
-            href: "http://about",
+            href: "http://describedby.example.com",
           },
         ],
       };
 
       const capabilitUrl = extractCapabilityUrl(service);
-      expect(capabilitUrl).toEqual("http://about");
+      expect(capabilitUrl).toEqual("http://describedby.example.com");
     },
   );
 
