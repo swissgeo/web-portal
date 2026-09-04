@@ -7,6 +7,7 @@ import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { DESCRIPTION_KEY, TITLE_KEY } from "@/utils/drawingMetadata";
+import { initializeMetadataProperties } from "@/utils/drawingMetadata";
 import {
   ICON_ANCHOR_KEY,
   ICON_SIZE_KEY,
@@ -31,6 +32,7 @@ function makePointFeature(
   properties: Record<string, unknown> = {},
 ): Feature<Geometry> {
   const feature = new Feature<Geometry>(new Point([0, 0]));
+  initializeMetadataProperties(feature);
   initializeStyleProperties(feature);
   feature.setProperties(properties);
   return feature;
@@ -73,6 +75,7 @@ describe("Geo Admin point style matching", () => {
     });
     feature.setStyle(makeGeoAdminStyle());
 
+    initializeMetadataProperties(feature);
     mapKmlStylesToFeatureProperties(feature);
 
     expect(feature.get(TITLE_KEY)).toBe("Imported title");
@@ -103,6 +106,7 @@ describe("Geo Admin point style matching", () => {
     const feature = makePointFeature({ type: "marker" });
     feature.setStyle(makeGeoAdminStyle({ iconScale: scale }));
 
+    initializeMetadataProperties(feature);
     mapKmlStylesToFeatureProperties(feature);
 
     expect(feature.get(ICON_SIZE_KEY)).toBe(expectedSize);
@@ -121,6 +125,7 @@ describe("Geo Admin point style matching", () => {
     const feature = makePointFeature({ type: "marker" });
     feature.setStyle(makeGeoAdminStyle({ textScale: scale }));
 
+    initializeMetadataProperties(feature);
     mapKmlStylesToFeatureProperties(feature);
 
     expect(feature.get(TEXT_SIZE_KEY)).toBe(expectedSize);
@@ -143,6 +148,7 @@ describe("Geo Admin point style matching", () => {
     const feature = makePointFeature({ textOffset: offset, type: "marker" });
     feature.setStyle(makeGeoAdminStyle());
 
+    initializeMetadataProperties(feature);
     mapKmlStylesToFeatureProperties(feature);
 
     expect(feature.get(TEXT_PLACEMENT_KEY)).toBe(expectedPlacement);
@@ -155,6 +161,7 @@ describe("Geo Admin point style matching", () => {
     });
     feature.setStyle(makeGeoAdminStyle());
 
+    initializeMetadataProperties(feature);
     mapKmlStylesToFeatureProperties(feature);
 
     expect(feature.get(SHOW_ICON_KEY)).toBe(false);
@@ -176,6 +183,7 @@ describe("Geo Admin point style matching", () => {
       });
       feature.setStyle(makeGeoAdminStyle());
 
+      initializeMetadataProperties(feature);
       mapKmlStylesToFeatureProperties(feature);
 
       expect(feature.get(SHOW_DESCRIPTION_KEY)).toBe(expected);
@@ -187,6 +195,7 @@ describe("Geo Admin point style matching", () => {
     const style = makeGeoAdminStyle();
     feature.setStyle(() => [style]);
 
+    initializeMetadataProperties(feature);
     mapKmlStylesToFeatureProperties(feature);
 
     expect(feature.get(ICON_URL_KEY)).toBe("https://geo.admin.test/marker.png");
@@ -206,6 +215,7 @@ describe("Geo Admin point style matching", () => {
       }),
     );
 
+    initializeMetadataProperties(feature);
     mapKmlStylesToFeatureProperties(feature);
 
     expect(feature.get(TEXT_COLOR_KEY)).toBe("#000000");
