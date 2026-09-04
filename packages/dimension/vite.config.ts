@@ -19,9 +19,9 @@ export default defineConfig(({ mode }) => {
         external: [
           "vue",
           "lucide-vue-next",
+          "@nuxt/ui",
           "@swissgeo/log",
           "@swissgeo/numbers",
-          "@swissgeo/skeleton",
           "@swissgeo/shared",
           "@vueuse/core",
           "pinia",

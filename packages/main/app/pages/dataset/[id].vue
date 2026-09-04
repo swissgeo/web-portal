@@ -76,8 +76,8 @@ function addToMap() {
           <UButton
             :to="localePath('/map')"
             icon="i-lucide-arrow-left"
-            color="neutral"
-            variant="subtle"
+            color="primary"
+            variant="ghost"
           >
             {{ $t("dataset.backToMap") }}
           </UButton>

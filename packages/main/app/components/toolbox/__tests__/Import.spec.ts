@@ -27,11 +27,6 @@ vi.mock("@/composables/useImportDrawing", () => ({
     importDrawing: vi.fn(),
   })),
 }));
-
-vi.mock("@swissgeo/skeleton", () => ({
-  IconButton: { template: "<button><slot /></button>" },
-}));
-
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));

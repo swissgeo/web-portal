@@ -7,7 +7,7 @@ import {
   useDimensionsStore,
 } from "@swissgeo/dimension";
 import { useLayerStore } from "@swissgeo/layers";
-import { useDatasetPanelStore, IconButton } from "@swissgeo/skeleton";
+import { useDatasetPanelStore } from "@swissgeo/skeleton";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -90,25 +90,25 @@ const isFromDataSet = computed(
 );
 
 // Shared look of the buttons on the entry row
-const rowButton = { size: "sm", severity: "secondary", text: true };
+const rowButton = { size: "xs", color: "primary", variant: "ghost" } as const;
 </script>
 
 <template>
   <li class="flex min-w-0 flex-col gap-2 rounded">
     <div class="flex min-w-0 items-center">
-      <IconButton
+      <UButton
         data-testid="layer-reorder-handle"
         class="layer-reorder-handle shrink-0 cursor-grab text-gray-400"
-        iconName="Grip-Vertical"
+        icon="i-lucide-grip-vertical"
         v-bind="rowButton"
         :title="t('layers.reorder')"
         @keydown.up.prevent="moveUp()"
         @keydown.down.prevent="moveDown()"
       />
-      <IconButton
+      <UButton
         data-testid="layer-expand-toggle"
         class="shrink-0"
-        :iconName="isExpanded ? 'Chevron-Down' : 'Chevron-Right'"
+        :icon="isExpanded ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'"
         :title="isExpanded ? t('layers.collapse') : t('layers.expand')"
         v-bind="rowButton"
         @click="isExpanded = !isExpanded"
@@ -130,21 +130,21 @@ const rowButton = { size: "sm", severity: "secondary", text: true };
             {{ getTimestampName(time) }}
           </option>
         </select>
-        <IconButton
-          :iconName="layer.isVisible ? 'Eye' : 'Eye-Off'"
+        <UButton
+          :icon="layer.isVisible ? 'i-lucide-eye' : 'i-lucide-eye-off'"
           :title="layer.isVisible ? t('layers.hide') : t('layers.show')"
           v-bind="rowButton"
           @click="toggleVisibility()"
         />
-        <IconButton
+        <UButton
           v-if="isFromDataSet"
-          iconName="Info"
+          icon="i-lucide-info"
           :title="t('layers.info')"
           v-bind="rowButton"
           @click="openDatasetPanel"
         />
-        <IconButton
-          iconName="Trash-2"
+        <UButton
+          icon="i-lucide-trash-2"
           :title="t('layers.remove')"
           v-bind="rowButton"
           @click="removeLayer"

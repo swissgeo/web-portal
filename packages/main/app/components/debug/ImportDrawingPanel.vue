@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { IconButton } from "@swissgeo/skeleton";
 import { useImportDrawing } from "~/composables/useImportDrawing";
 
 const { t } = useI18n();
@@ -28,16 +27,20 @@ defineEmits<{
         :disabled="isLoading"
         data-testid="drawing-url-input"
       />
-      <IconButton
+      <UButton
         :disabled="!url.trim() || isLoading"
         @click="importDrawing"
-        iconName="Upload"
+        icon="i-lucide-upload"
+        color="primary"
+        variant="solid"
         title="Import drawing"
         data-testid="drawing-import-button"
       />
-      <IconButton
+      <UButton
         @click="$emit('close')"
-        iconName="X"
+        icon="i-lucide-x"
+        color="primary"
+        variant="ghost"
         title="Close"
         data-testid="drawing-import-close-button"
       />
