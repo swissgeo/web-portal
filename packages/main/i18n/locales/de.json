@@ -14,8 +14,7 @@
     "map": "Karte",
     "collapse": "Seitenleiste einklappen",
     "expand": "Seitenleiste ausklappen",
-    "addLayer": "Ebene hinzufügen",
-    "addLayerComingSoon": "Der Ebenenkatalog ist noch nicht verfügbar."
+    "addLayer": "Ebene hinzufügen"
   },
   "search": {
     "placeholder": "Ort, Layer oder Koordinaten suchen...",

@@ -76,7 +76,9 @@
     "sortablejs": "catalog:",
     "ufo": "catalog:",
     "vue": "catalog:",
-    "vue-i18n": "catalog:"
+    "vue-i18n": "catalog:",
+    "yaml": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@eslint/markdown": "catalog:",
