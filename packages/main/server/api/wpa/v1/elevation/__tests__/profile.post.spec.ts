@@ -28,6 +28,39 @@ afterAll(() => {
 });
 
 describe("elevation profile request handling", () => {
+  it("accepts 3D coordinates and strips elevation before calling the upstream service", async () => {
+    readBodyMock.mockResolvedValue({
+      geojson: {
+        type: "LineString",
+        coordinates: [
+          [2_704_280.989, 1_170_235.988, 1_341.7],
+          [2_704_285.137, 1_170_234.128, 1_341.8],
+        ],
+      },
+      sr: 2056,
+    });
+    fetchMock.mockResolvedValue(profileFixture);
+
+    const handler = await handlerPromise;
+    await handler({} as Parameters<typeof handler>[0]);
+
+    expect(fetchMock).toHaveBeenCalledOnce();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.example.test/profile.json",
+      {
+        method: "POST",
+        query: { offset: 0, sr: 2056, distinct_points: true },
+        body: {
+          type: "LineString",
+          coordinates: [
+            [2_704_280.989, 1_170_235.988],
+            [2_704_285.137, 1_170_234.128],
+          ],
+        },
+      },
+    );
+  });
+
   it("formats upstream data as profile points and metadata", async () => {
     const coordinates = [
       [2_704_280.989, 1_170_235.988],

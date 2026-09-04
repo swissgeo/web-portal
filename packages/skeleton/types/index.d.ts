@@ -46,6 +46,7 @@ declare global {
     geoadminApiBaseUrl: string;
     public: {
       ogcApiEndpoint: string;
+      iconServiceEndpoint: string;
       printServiceUrl: string;
       ogcCatalogCollection: string;
       shareServiceUrl: string;
