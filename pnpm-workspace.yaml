@@ -10,10 +10,10 @@ overrides:
   # same library make TypeScript treat their types as unrelated and type-check
   # fails. Keep these in sync with the catalog entries below.
   ol: 10.10.0
-  proj4: 2.21.0
+  proj4: 2.22.0
   # vue and @vue/server-renderer depend on each other, so two copies of vue in
   # the tree give Nitro a symlink cycle to walk and the build dies with ELOOP.
-  vue: 3.5.41
+  vue: 3.5.42
 
 allowBuilds:
   "@parcel/watcher": false
@@ -43,16 +43,16 @@ catalog:
   "@nuxt/ui": ^4.8.2
   "@nuxtjs/i18n": ^10.4.0
   "@opentelemetry/api": "^1.9.1"
-  "@opentelemetry/api-logs": "0.221.0"
-  "@opentelemetry/auto-instrumentations-node": "^0.79.0"
+  "@opentelemetry/api-logs": "0.222.0"
+  "@opentelemetry/auto-instrumentations-node": "^0.80.0"
   "@opentelemetry/core": "^2.8.0"
-  "@opentelemetry/exporter-logs-otlp-grpc": "^0.221.0"
-  "@opentelemetry/exporter-metrics-otlp-grpc": "^0.221.0"
-  "@opentelemetry/exporter-trace-otlp-grpc": "^0.221.0"
+  "@opentelemetry/exporter-logs-otlp-grpc": "^0.222.0"
+  "@opentelemetry/exporter-metrics-otlp-grpc": "^0.222.0"
+  "@opentelemetry/exporter-trace-otlp-grpc": "^0.222.0"
   "@opentelemetry/resources": "^2.8.0"
-  "@opentelemetry/sdk-logs": "0.221.0"
+  "@opentelemetry/sdk-logs": "0.222.0"
   "@opentelemetry/sdk-metrics": "^2.8.0"
-  "@opentelemetry/sdk-node": "^0.221.0"
+  "@opentelemetry/sdk-node": "^0.222.0"
   "@opentelemetry/sdk-trace-base": "^2.8.0"
   "@opentelemetry/semantic-conventions": "^1.41.1"
   "@pinia/nuxt": ^1.0.0
@@ -96,10 +96,10 @@ catalog:
   fflate: ^0.8.3
   geojson: ^0.5.0
   globals: ^17.6.0
-  happy-dom: 20.11.6
+  happy-dom: 20.13.2
   h3: ^1.15.11
   jsdom: ^30.0.1
-  mapbox-gl: ~3.29.0
+  mapbox-gl: ~3.30.0
   msw: ^2.14.6
   nuxt: ^4.5.2
   ol: ^10.9.0
@@ -127,7 +127,7 @@ catalog:
   typescript: ^6.0.0
   typescript-eslint: ^8.61.0
   ufo: ^1.6.4
-  unplugin-dts: 1.0.3
+  unplugin-dts: 1.1.0
   vite: ^8.0.0
   vite-plugin-vue-devtools: ^8.1.3
   vitest: ^4.1.8
