@@ -1,8 +1,9 @@
+import type { ComputedRef } from "vue";
+
 import { defineStore } from "pinia";
-import { computed, ref, type ComputedRef } from "vue";
+import { computed, ref } from "vue";
 
 import type { FeatureData } from "@/types";
-import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
 
 export const useFeaturesStore = defineStore("features", () => {
   const selectedFeaturesByUuid = ref<Record<string, FeatureData[]>>({});
