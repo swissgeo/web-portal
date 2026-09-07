@@ -60,7 +60,11 @@ export function useMapClickEvent(onClick: (evt: MapClickEvent) => void): void {
 
     const vectorFeaturesPerLayer: Record<string, GeoJSON.Feature[]> = {};
 
-    for (const layer of map.getAllLayers()) {
+    // we filter out system layers. For example Highlight layers, but if someday
+    // we want to have a coordinate grids layer, this would go here too.
+    for (const layer of map
+      .getAllLayers()
+      .filter((layer) => !layer.get("isSystemLayer") as boolean)) {
       // groups and mock layers don't expose getSource()
       if (typeof layer.getSource === "function") {
         const uuid = layer.get("uuid") as string | undefined;

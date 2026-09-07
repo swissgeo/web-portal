@@ -4,6 +4,9 @@ import type { Component } from "vue";
 import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 import type { FeatureCollectionWithCRS } from "@/utils/geoJsonUtils";
 
+export type { GeoAdminGeoJSONStyleDefinition };
+import type { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
+
 /**
  * At the moment, these 3 types are sort of like a duplicate of layers.
  * Maybe we'll figure out a way to share these types, but maybe it also makes
@@ -13,7 +16,6 @@ export interface Dimension {
   currentValue: string | null;
   availableValues: string[];
 }
-
 export type DimensionId = "time";
 
 export type DimensionRecord = Partial<Record<DimensionId, Dimension>>;
@@ -28,6 +30,7 @@ export interface Layer {
   isVisible: boolean;
   zIndex?: number;
   displayName?: string;
+  isSystemLayer?: boolean;
 }
 
 export interface WMTSLayer extends Layer {
@@ -64,6 +67,11 @@ export interface GeoJSONLayer extends Layer {
   format: "GeoJSON";
   geoJsonData: FeatureCollectionWithCRS;
   geoJsonStyle?: GeoAdminGeoJSONStyleDefinition;
+}
+
+export interface HighLightLayer extends GeoJSONLayer {
+  uuid: typeof HIGHLIGHT_LAYER_ID;
+  isSystemLayer: true;
 }
 
 export interface MapLayerRenderer {

@@ -27,8 +27,18 @@ const {
   setBackground: vi.fn(),
   showError: vi.fn(),
 }));
+type SelectedFeatureGeoJson = {
+  type: "Feature";
+  properties: Record<string, string>;
+  geometry: unknown;
+};
+
 type FeatureStoreState = {
   hasSelectedFeatures: boolean;
+  getFeaturesGeoJSON: {
+    type: "FeatureCollection";
+    features: SelectedFeatureGeoJson[];
+  };
   $reset: Mock;
 };
 
@@ -46,15 +56,28 @@ vi.mock("@swissgeo/feature", async () => {
   const { reactive } = await import("vue");
   const state: FeatureStoreState = reactive({
     hasSelectedFeatures: false,
+    getFeaturesGeoJSON: { type: "FeatureCollection", features: [] },
     $reset: vi.fn(() => {
       state.hasSelectedFeatures = false;
+      state.getFeaturesGeoJSON = { type: "FeatureCollection", features: [] };
     }),
   });
+  // mirror the real store surface with live (reactive) reads — spreading the
+  // reactive state would snapshot the values and break v-if reactivity
+  const store = {
+    get hasSelectedFeatures() {
+      return state.hasSelectedFeatures;
+    },
+    get getFeaturesGeoJSON() {
+      return state.getFeaturesGeoJSON;
+    },
+    $reset: state.$reset,
+  };
   setFeatureStoreState(state);
   return {
     selectFeatures: vi.fn(),
     FEATURE_LIMIT: 10,
-    useFeaturesStore: () => state,
+    useFeaturesStore: () => store,
   };
 });
 
@@ -256,6 +279,73 @@ describe("BaseMapViewer", () => {
       expect(
         wrapper.find("[data-testid='feature-info-popover']").exists(),
       ).toBe(false);
+    });
+  });
+
+  describe("selected-features highlight layer", () => {
+    const selectedFeature = {
+      type: "Feature" as const,
+      properties: { featureId: "feat-1", layerUuid: "layer-1" },
+      geometry: { type: "Point", coordinates: [2600000, 1200000] },
+    };
+
+    function seedSelection(): void {
+      getFeatureStoreState().hasSelectedFeatures = true;
+      getFeatureStoreState().getFeaturesGeoJSON = {
+        type: "FeatureCollection",
+        features: [selectedFeature],
+      };
+    }
+
+    function getMapLayersProp(
+      wrapper: Awaited<ReturnType<typeof createWrapper>>,
+    ) {
+      return wrapper.getComponent(MapModuleStub).props("layers") as Array<{
+        uuid: string;
+        format: string;
+        isSystemLayer?: boolean;
+        [key: string]: unknown;
+      }>;
+    }
+
+    it("appends a marked GeoJSON highlight layer (last) when a selection exists", async () => {
+      seedSelection();
+
+      const wrapper = await createWrapper();
+      const layers = getMapLayersProp(wrapper);
+
+      expect(layers).toHaveLength(5);
+      const highlight = layers.at(-1)!;
+      expect(highlight.format).toBe("GeoJSON");
+      expect(highlight.isSystemLayer).toBe(true);
+
+      const geoJsonData = highlight.geoJsonData as {
+        type: string;
+        features: unknown[];
+        crs?: { properties: { name: string } };
+      };
+      expect(geoJsonData.type).toBe("FeatureCollection");
+      expect(geoJsonData.features).toEqual([selectedFeature]);
+      // the collection declares its capture projection so the GeoJSON
+      // pipeline can reproject if the view projection differs
+      expect(geoJsonData.crs?.properties?.name).toBeDefined();
+
+      // styling is defined (values resolved from the design tokens)
+      expect(highlight.geoJsonStyle).toBeDefined();
+    });
+
+    it("adds no highlight layer without a selection", async () => {
+      const wrapper = await createWrapper();
+
+      expect(getMapLayersProp(wrapper)).toHaveLength(4);
+    });
+
+    it("adds no highlight layer in print mode", async () => {
+      seedSelection();
+
+      const wrapper = await createWrapper({ displayMode: "print" });
+
+      expect(getMapLayersProp(wrapper)).toHaveLength(4);
     });
   });
 

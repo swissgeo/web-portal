@@ -1,12 +1,14 @@
-import type {
-  GeoJSONLayer,
-  GPXLayer,
-  KMLLayer,
-  KMZLayer,
-  Layer,
-  WMSLayer,
-  WMTSLayer,
+import {
+  type GeoJSONLayer,
+  type GPXLayer,
+  type HighLightLayer,
+  type KMLLayer,
+  type KMZLayer,
+  type Layer,
+  type WMSLayer,
+  type WMTSLayer,
 } from "@/types";
+import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
 
 // maybe this belongs to shared?
 
@@ -22,3 +24,7 @@ export const isGPX = (layer: Layer): layer is GPXLayer =>
   layer.format?.toUpperCase() === "GPX";
 export const isGeoJSON = (layer: Layer): layer is GeoJSONLayer =>
   layer.format?.toUpperCase() === "GEOJSON";
+export const isHighlightedLayer = (layer: Layer): layer is HighLightLayer =>
+  layer?.format.toUpperCase() === "GEOJSON" &&
+  layer.isSystemLayer &&
+  layer.uuid === HIGHLIGHT_LAYER_ID;

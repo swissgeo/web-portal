@@ -2,6 +2,8 @@
 import type { LayerSource, OgcDistribution } from "@swissgeo/feature";
 import type { Layer as SourceLayer } from "@swissgeo/layers";
 import type {
+  GeoAdminGeoJSONStyleDefinition,
+  HighLightLayer,
   Layer as MapLayer,
   MapClickEvent,
   MapLayerRenderer,
@@ -17,9 +19,11 @@ import {
 } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
 import { MapModule, usePositionStore } from "@swissgeo/map";
+import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
 import { cloneDeep } from "es-toolkit";
 
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
+import { readThemeToken } from "@/utils/themeTokens";
 
 const {
   displayMode = "web",
@@ -52,6 +56,52 @@ const featureStore = useFeaturesStore();
 
 const sourceLayers = computed(() => layerStore.layers);
 const backgroundLayer = computed(() => layerStore.backgroundLayer);
+
+// Highlight colors come from the design tokens
+// Fallbacks mirror the current pallet at time of implementation.
+
+// If we ever need the `readThemeToken` function elsewhere, we could create a small function
+// which takes a decimal percentage as input, and append the corresponding alpha channel to the
+// color
+const highlightStroke = readThemeToken("--ui-color-primary-600", "#06999b");
+// we're adding an alpha channel at the end
+const highlightFill = `${readThemeToken("--ui-color-secondary-500", "#06999b")}59`;
+
+const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
+  const geoJsonStyle: GeoAdminGeoJSONStyleDefinition = {
+    type: "single",
+    property: "featureId",
+    geomType: "polygon",
+    vectorOptions: {
+      type: "circle",
+      fill: {
+        color: highlightFill,
+      },
+      stroke: {
+        color: highlightStroke,
+        width: 3,
+      },
+    },
+  };
+  return {
+    uuid: HIGHLIGHT_LAYER_ID,
+    opacity: 1,
+    isVisible: true,
+    layerId: HIGHLIGHT_LAYER_ID,
+    format: "GeoJSON",
+    isSystemLayer: true,
+    geoJsonData: {
+      ...featureStore.getFeaturesGeoJSON,
+      crs: {
+        type: "name",
+        properties: {
+          name: positionStore.projectionEpsg,
+        },
+      },
+    },
+    geoJsonStyle,
+  };
+});
 const layersForMap = computed(() => {
   const layers = mapViewStore.getMapLayers().value.map((layer) => {
     /**
@@ -79,6 +129,10 @@ const layersForMap = computed(() => {
     }
     return layer;
   });
+  // here: appends highlight layer
+  if (featureStore.hasSelectedFeatures && displayMode !== "print") {
+    layers.push(highlightGeoJSONLayer.value);
+  }
   return layers;
 });
 const customLayerRenderers: MapLayerRenderer[] = [];
