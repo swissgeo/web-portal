@@ -286,5 +286,52 @@ describe("useMapClickEvent", () => {
       const event = onClick.mock.calls[0]![0] as MapClickEvent;
       expect(event.vectorFeaturesPerLayer).toEqual({});
     });
+
+    describe("system layers handling)", () => {
+      it("skips layers flagged with the isSystemLayer marker", () => {
+        // e.g. the selected-features highlight layer: real features inside the
+        // extent, but app-internal — must not be identifiable
+        const systemLayer = makeVectorLayer({
+          uuid: "uuid-system",
+          features: [makePointFeature(2600000, 1200000)],
+        });
+        systemLayer.set("isSystemLayer", true);
+
+        const { onClick, fireClick } = setup({
+          layers: [
+            systemLayer,
+            makeVectorLayer({
+              uuid: "uuid-normal",
+              features: [makePointFeature(2600005, 1200005)],
+            }),
+          ],
+        });
+
+        fireClick();
+
+        const event = onClick.mock.calls[0]![0] as MapClickEvent;
+        expect(event.vectorFeaturesPerLayer).not.toHaveProperty("uuid-system");
+        expect(Object.keys(event.vectorFeaturesPerLayer)).toEqual([
+          "uuid-normal",
+        ]);
+      });
+
+      it("explicitly unmarked layers are never skipped (isSystemLayer === false)", () => {
+        const layer = makeVectorLayer({
+          uuid: "uuid-explicit-false",
+          features: [makePointFeature(2600000, 1200000)],
+        });
+        layer.set("isSystemLayer", false);
+
+        const { onClick, fireClick } = setup({ layers: [layer] });
+
+        fireClick();
+
+        const event = onClick.mock.calls[0]![0] as MapClickEvent;
+        expect(Object.keys(event.vectorFeaturesPerLayer)).toEqual([
+          "uuid-explicit-false",
+        ]);
+      });
+    });
   });
 });
