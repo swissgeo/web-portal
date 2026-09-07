@@ -32,7 +32,7 @@ export function useFileImport() {
 
     const filename = file.name.toLowerCase();
     let layerType: LayerType;
-    let fileData: string | Uint8Array | undefined;
+    let fileData: string | Uint8Array | File | undefined;
 
     // Determine layer type based on file extension
     if (filename.endsWith(".kmz")) {
@@ -54,6 +54,10 @@ export function useFileImport() {
       if (!parseGeoJson(fileData)) {
         throw new Error(`Invalid GeoJSON file: ${file.name}`);
       }
+    } else if (filename.endsWith(".tif") || filename.endsWith(".tiff")) {
+      layerType = "cog";
+      // Store the File object directly for OpenLayers GeoTIFF source
+      fileData = file;
     } else {
       throw new Error(`Unsupported file type: ${filename}`);
     }
@@ -70,14 +74,39 @@ export function useFileImport() {
         displayName: file.name,
         abstract: `Imported from local file: ${file.name}`,
       },
-      // Store the raw file data for KML/KMZ/GPX
+      // Store the raw file data for KML/KMZ/GPX/COG
       data: fileData,
     };
     layerStore.addLayer(layer);
     log.info(`Successfully imported file: ${file.name}`);
   }
 
+  /**
+   * Import a COG layer from a URL
+   */
+  async function importCogUrl(url: string): Promise<void> {
+    log.debug(`Importing COG from URL: ${url}`);
+
+    const layer = {
+      uuid: crypto.randomUUID(),
+      humanId: url,
+      opacity: 1,
+      isVisible: true,
+      type: "cog" as LayerType,
+      isLoading: false,
+      info: {
+        displayName: url.split("/").pop() ?? url,
+        abstract: `Imported from URL: ${url}`,
+      },
+      // Store the URL for OpenLayers GeoTIFF source
+      data: url,
+    };
+    layerStore.addLayer(layer);
+    log.info(`Successfully imported COG from URL: ${url}`);
+  }
+
   return {
     importFile,
+    importCogUrl,
   };
 }
