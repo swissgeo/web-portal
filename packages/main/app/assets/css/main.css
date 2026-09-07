@@ -15,6 +15,17 @@
 @theme static {
   --font-sans: "Inter", system-ui, sans-serif;
 
+  --spacing-space-3xs: 0.125rem;
+  --spacing-space-2xs: 0.25rem;
+  --spacing-space-xs: 0.5rem;
+  --spacing-space-s: 0.75rem;
+  --spacing-space-m: 1.5rem;
+  --spacing-space-l: 2.25rem;
+  --spacing-space-xl: 3rem;
+  --spacing-space-2xl: 4rem;
+  --spacing-space-3xl: 6rem;
+  --spacing-space-gutter: 0.9375rem;
+
   --color-petrol-50: #e0ecf1;
   --color-petrol-100: #c1dde6;
   --color-petrol-200: #97c4d3;
@@ -65,6 +76,26 @@
 
   --color-black: #0e0f0f;
   --color-white: #ffffff;
+}
+
+@layer theme {
+  /* The Setup spacing scale changes at 720 px and 1025 px. */
+  @media (min-width: 720px) {
+    :root {
+      --spacing-space-l: 3rem;
+      --spacing-space-xl: 3.5rem;
+      --spacing-space-2xl: 6rem;
+      --spacing-space-3xl: 7rem;
+      --spacing-space-gutter: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    :root {
+      --spacing-space-3xl: 9rem;
+      --spacing-space-gutter: 1.875rem;
+    }
+  }
 }
 
 @layer base {

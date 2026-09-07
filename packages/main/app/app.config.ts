@@ -33,7 +33,7 @@ export default defineAppConfig({
         {
           color: "primary",
           size: "md",
-          class: "gap-2 px-2 py-1 leading-[1.3]",
+          class: "gap-space-xs px-space-xs py-space-2xs leading-[1.3]",
         },
         {
           color: "primary",
@@ -51,7 +51,7 @@ export default defineAppConfig({
           variant: "ghost",
           size: "xl",
           class: {
-            base: "gap-2 px-2 py-1 text-sm leading-[1.3]",
+            base: "gap-space-xs px-space-xs py-space-2xs text-sm leading-[1.3]",
             leadingIcon: "size-5",
             trailingIcon: "size-5",
           },
@@ -61,7 +61,7 @@ export default defineAppConfig({
           variant: "ghost",
           size: "xl",
           class: {
-            base: "gap-2 px-2 py-1 text-sm leading-[1.3]",
+            base: "gap-space-xs px-space-xs py-space-2xs text-sm leading-[1.3]",
             leadingIcon: "size-5",
             trailingIcon: "size-5",
           },
