@@ -23,7 +23,15 @@ const successMessage = ref("");
 const fileUrl = ref("");
 const isFileUrlLoading = ref(false);
 
-const acceptedFileTypes = [".kml", ".kmz", ".gpx", ".geojson", ".json", ".tif", ".tiff"];
+const acceptedFileTypes = [
+  ".kml",
+  ".kmz",
+  ".gpx",
+  ".geojson",
+  ".json",
+  ".tif",
+  ".tiff",
+];
 
 const items = computed(() => [
   { label: t("toolbox.import.tabData"), slot: "file" },
@@ -138,8 +146,8 @@ async function handleFileUrlImport() {
         >
           {{ t("toolbox.import.importFileButton") }}
         </UButton>
-        <div class="mt-4 pt-4 border-t border-neutral">
-          <div class="text-sm text-muted mb-2">
+        <div class="border-neutral mt-4 border-t pt-4">
+          <div class="mb-2 text-sm text-muted">
             {{ t("toolbox.import.fileUrlDescription") }}
           </div>
           <UInput

@@ -11,7 +11,15 @@ const isLoading = ref(false);
 const errorMessage = ref("");
 const successMessage = ref("");
 
-const acceptedFileTypes = [".kml", ".kmz", ".gpx", ".geojson", ".json", ".tif", ".tiff"];
+const acceptedFileTypes = [
+  ".kml",
+  ".kmz",
+  ".gpx",
+  ".geojson",
+  ".json",
+  ".tif",
+  ".tiff",
+];
 
 async function handleImport() {
   if (!selectedFile.value) {

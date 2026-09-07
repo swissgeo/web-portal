@@ -18,7 +18,14 @@ export type DimensionId = "time";
 
 export type DimensionRecord = Partial<Record<DimensionId, Dimension>>;
 
-export type LayerFormat = "WMTS" | "WMS" | "GeoJSON" | "KML" | "KMZ" | "GPX" | "COG";
+export type LayerFormat =
+  | "WMTS"
+  | "WMS"
+  | "GeoJSON"
+  | "KML"
+  | "KMZ"
+  | "GPX"
+  | "COG";
 
 export interface Layer {
   format: LayerFormat;

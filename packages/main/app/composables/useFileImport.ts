@@ -5,7 +5,14 @@ import log from "@swissgeo/log";
 import { parseGeoJson } from "~/utils/geoJson";
 import { useI18n } from "vue-i18n";
 
-type FileUrlExtension = "gpx" | "kml" | "kmz" | "geojson" | "json" | "tif" | "tiff";
+type FileUrlExtension =
+  | "gpx"
+  | "kml"
+  | "kmz"
+  | "geojson"
+  | "json"
+  | "tif"
+  | "tiff";
 
 const FILE_URL_EXTENSIONS: Record<FileUrlExtension, LayerType> = {
   gpx: "gpx",
@@ -118,9 +125,7 @@ export function useFileImport() {
   async function importFileUrl(url: string): Promise<void> {
     const ext = getUrlExtension(url);
     if (!ext) {
-      throw new Error(
-        t("toolbox.import.errorMessages.unsupportedUrlType"),
-      );
+      throw new Error(t("toolbox.import.errorMessages.unsupportedUrlType"));
     }
 
     const layerType = FILE_URL_EXTENSIONS[ext];
@@ -168,7 +173,11 @@ export function useFileImport() {
     }
 
     // Validate GeoJSON content
-    if (layerType === "geojson" && typeof fileData === "string" && !parseGeoJson(fileData)) {
+    if (
+      layerType === "geojson" &&
+      typeof fileData === "string" &&
+      !parseGeoJson(fileData)
+    ) {
       throw new Error(`Invalid GeoJSON content from: ${url}`);
     }
 
