@@ -8,6 +8,7 @@ import { useToolboxStore } from "@/stores/toolbox";
 
 import ReportIssueAttachment from "./ReportIssueAttachment.vue";
 import ReportIssueCategory from "./ReportIssueCategory.vue";
+import { ACCEPTED_MIME_TYPES } from "./reportIssueConstants";
 import ReportIssueDrawOnMap from "./ReportIssueDrawOnMap.vue";
 import ReportIssueEmail from "./ReportIssueEmail.vue";
 import ReportIssueFeedback from "./ReportIssueFeedback.vue";
@@ -21,16 +22,6 @@ const { exportState } = useStateConfig();
 const { shareLink } = useCreateShareLink(exportState, {
   autoRefresh: true,
 });
-
-const ACCEPTED_FILE_TYPES = [
-  "application/pdf",
-  "application/zip",
-  "image/jpeg",
-  "image/png",
-  "application/vnd.google-earth.kml+xml",
-  "application/vnd.google-earth.kmz",
-  "application/gpx+xml",
-];
 
 const schema = z.object({
   feedback: z.string(t("toolbox.reportIssue.validation.feedbackRequired")),
@@ -47,7 +38,7 @@ const schema = z.object({
           }),
         )
         .mime(
-          ACCEPTED_FILE_TYPES,
+          ACCEPTED_MIME_TYPES,
           t("toolbox.reportIssue.validation.fileTypeNotSupported"),
         ),
     )
