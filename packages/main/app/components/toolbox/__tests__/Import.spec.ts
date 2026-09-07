@@ -8,15 +8,17 @@ import Import from "@/components/toolbox/import/Import.vue";
 
 type ImportVm = ComponentPublicInstance & {
   handleImport: () => Promise<void>;
+  handleFileUrlImport: () => Promise<void>;
   selectedFile: File | undefined;
+  fileUrl: string;
 };
 
 const importFileSpy = vi.fn();
-const importCogUrlSpy = vi.fn();
+const importFileUrlSpy = vi.fn();
 vi.mock("@/composables/useFileImport", () => ({
   useFileImport: vi.fn(() => ({
     importFile: importFileSpy,
-    importCogUrl: importCogUrlSpy,
+    importFileUrl: importFileUrlSpy,
   })),
 }));
 
@@ -81,5 +83,32 @@ describe("Import.vue", () => {
     await (wrapper.vm as ImportVm).handleImport();
 
     expect(importFileSpy).toHaveBeenCalledWith(file);
+  });
+
+  it("shows error toast when no URL is entered for file URL import", async () => {
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+
+    (wrapper.vm as ImportVm).fileUrl = "";
+    await (wrapper.vm as ImportVm).handleFileUrlImport();
+
+    expect(toastAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        color: "error",
+        title: "toolbox.import.errorMessages.noUrlEntered",
+      }),
+    );
+  });
+
+  it("calls importFileUrl when a URL is entered and import is triggered", async () => {
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+
+    (wrapper.vm as ImportVm).fileUrl = "https://example.com/data.kml";
+    await wrapper.vm.$nextTick();
+
+    await (wrapper.vm as ImportVm).handleFileUrlImport();
+
+    expect(importFileUrlSpy).toHaveBeenCalledWith(
+      "https://example.com/data.kml",
+    );
   });
 });
