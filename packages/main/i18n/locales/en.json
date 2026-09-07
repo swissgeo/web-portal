@@ -208,6 +208,71 @@
     },
     "print": {
       "buttonTitle": "Print"
+    },
+    "reportIssue": {
+      "buttonTitle": "Report Issue",
+      "title": "Report an issue",
+      "steps": {
+        "step1": {
+          "title": "1. Subject of your message (required):",
+          "select": {
+            "placeholder": "Select a category",
+            "options": {
+              "background": "A revision of the background map",
+              "thematic": "A thematic map",
+              "application": "An application or service",
+              "other": "Something else"
+            }
+          },
+          "moreInfo": {
+            "label": "More information about the categories",
+            "url": "https://www.geo.admin.ch/en/map-viewer-help-navigation-and-orientation#Report-a-problem"
+          }
+        },
+        "step2": {
+          "title": "2. Tell us about map changes, data improvements, or ask questions about this website in this field (required):"
+        },
+        "step3": {
+          "title": "3. Indicate the affected location on the map:",
+          "button": "Draw on the map"
+        },
+        "step4": {
+          "title": "4. Your email:",
+          "placeholder": "Your email address",
+          "info": "Without providing an email address, you will not receive a response"
+        },
+        "step5": {
+          "title": "5. Attach a file:",
+          "buttonLabel": "Attach"
+        }
+      },
+      "notes": {
+        "link": {
+          "label": "The following link will be transferred:",
+          "permalink": "Permalink"
+        },
+        "tos": {
+          "label": "By sending your message, you accept the",
+          "link": "terms of use",
+          "url": "https://www.geo.admin.ch/en/general-terms-of-use-fsdi#feedback"
+        }
+      },
+      "cancelButton": "Cancel",
+      "submitButton": "Send",
+      "successMessage": "Thank you for your message. We will respond as soon as possible.",
+      "errorMessage": "An error occurred while sending your message. Please try again later.",
+      "validation": {
+        "subjectRequired": "Subject is required",
+        "feedbackRequired": "Feedback is required",
+        "categoryRequired": "Category is required",
+        "versionRequired": "Version is required",
+        "userAgentRequired": "User agent is required",
+        "permalinkRequired": "Permalink is required",
+        "emailInvalid": "Email must be a valid email address",
+        "fileRequired": "Attachment must be a file",
+        "fileTooLarge": "File is too large (max {max} MB)",
+        "fileTypeNotSupported": "File type not supported"
+      }
     }
   },
   "backgroundLayers": {
