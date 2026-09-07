@@ -64,6 +64,17 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   ui: {
     prose: true,
+    theme: {
+      colors: [
+        "primary",
+        "secondary",
+        "success",
+        "info",
+        "warning",
+        "error",
+        "accent",
+      ],
+    },
     experimental: {
       componentDetection: ["LocaleSelect"],
     },

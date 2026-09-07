@@ -4,6 +4,14 @@ This file records approved changes that affect implementation.
 
 Raw Figma extraction differences do not belong here.
 
+## Draft: 2026-09-07
+
+- Added the responsive `space-*` spacing scale to Tailwind.
+- Applied the spacing tokens to shared Button dimensions in Nuxt UI.
+- Added the verified accent ghost Button role with Slate interaction colors.
+- Removed inferred primary active overrides. Nuxt UI retains the default behavior.
+- Preserved the existing content, Slider, and Tab configuration.
+
 ## Draft: 2026-08-12
 
 Remove the `Draft` marker after the team reviews these records.

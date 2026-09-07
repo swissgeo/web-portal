@@ -66,6 +66,23 @@ Add one entry to `CHANGELOG.md` for each approved design-system change.
 
 ## Implementation plan after the foundation
 
+The 7 September PoC update adds the responsive spacing scale and current Button
+configuration. It does not complete the component work below. The private capture
+`2026-09-07-agency-refresh` records coverage limits and the new mobile catalog
+frames. Recheck each target against that capture before implementation.
+
+Keep shared interaction rules in Nuxt UI configuration. Keep feature-specific
+layout local. In particular, do not use the Toolbox Card body as a global Card
+default. Keep CMS fetching and map behavior outside the design configuration.
+
+The spacing scale changes at 720 px and 1025 px. Existing layout consumers still
+use the approved 1024 px desktop breakpoint. Resolve that one-pixel boundary
+during the responsive consumer pass. Do not round token values.
+
+Typography labels and bound text styles still disagree in the Setup examples.
+Resolve those differences before changing global weights. Inter remains the
+approved font.
+
 Keep each item in a separate pull request unless one item requires another item.
 
 1. Header.
