@@ -15,6 +15,7 @@ export const useToolboxStore = defineStore("toolbox", () => {
   const mapViewStore = useMapViewStore();
   const geolocationStore = useGeolocationStore();
 
+  // showing buttons
   const showFullScreenButton = ref(true);
   const showGeolocationButton = ref(true);
   const showCompassButton = ref(false);
@@ -26,6 +27,9 @@ export const useToolboxStore = defineStore("toolbox", () => {
   const showShareButton = ref(true);
   const showPrintButton = ref(true);
   const showReportIssueButton = ref(true);
+
+  // state of the application
+  const isDrawPanelOpen = ref(false);
 
   const showRecenterButton = computed(
     () => geolocationStore.active && geolocationStore.position !== undefined,
@@ -64,6 +68,14 @@ export const useToolboxStore = defineStore("toolbox", () => {
     return activeDetailPanel.value === panelId;
   }
 
+  function isDrawingActive() {
+    return isDrawPanelOpen.value;
+  }
+
+  function toggleDrawingPanel() {
+    isDrawPanelOpen.value = !isDrawPanelOpen.value;
+  }
+
   return {
     showFullScreenButton,
     showGeolocationButton,
@@ -81,6 +93,8 @@ export const useToolboxStore = defineStore("toolbox", () => {
     showReportIssueButton,
     focusModeNone,
     activeDetailPanel,
+    isDrawingActive,
+    toggleDrawingPanel,
     toggleDetailPanel,
     closeDetailPanel,
     isPanelActive,
