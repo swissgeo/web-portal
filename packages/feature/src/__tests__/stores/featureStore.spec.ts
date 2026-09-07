@@ -53,11 +53,14 @@ describe("identify functionalities of the feature module", () => {
     expect(featureStore.selectedFeaturesByUuid).toEqual({});
     expect(featureStore.getFeaturesIdsByUuid).toEqual({});
     expect(featureStore.getPopupsByUuid).toEqual({});
-    expect(featureStore.getSelectedGeometries).toEqual([]);
+    expect(featureStore.getFeaturesGeoJSON).toEqual({
+      type: "FeatureCollection",
+      features: [],
+    });
     expect(featureStore.hasSelectedFeatures).toEqual(false);
   });
 
-  it("retrieves a list of all geometries when using getSelectedGeometries", () => {
+  it("wraps all selected geometries as a GeoJSON FeatureCollection when using getFeaturesGeoJSON", () => {
     const featureStore = useFeaturesStore();
     featureStore.selectedFeaturesByUuid["uuid-a"] = [mockFeatureData[0]];
     featureStore.selectedFeaturesByUuid["uuid-b"] = [
@@ -65,18 +68,27 @@ describe("identify functionalities of the feature module", () => {
       mockFeatureData[2],
     ];
 
-    const geometries = featureStore.getSelectedGeometries;
-    expect(geometries.length).toEqual(3);
-    expect(geometries.map((geometry) => geometry.type)).toEqual([
-      "Point",
-      "Point",
-      "Point",
+    const collection = featureStore.getFeaturesGeoJSON;
+    expect(collection.type).toBe("FeatureCollection");
+    expect(collection.features).toHaveLength(3);
+
+    // every entry is a GeoJSON Feature carrying its featureId and layerUuid
+    // (needed by the highlight layer for per-feature styling later)
+    expect(
+      collection.features.map((feature) => feature.properties?.featureId),
+    ).toEqual([
+      mockFeatureData[0].featureId,
+      mockFeatureData[1].featureId,
+      mockFeatureData[2].featureId,
     ]);
-    expect(geometries.map((geometry) => geometry.coordinates)).toEqual([
-      [0, 0],
-      [9, 4],
-      [12, 12],
-    ]);
+    expect(
+      collection.features.map((feature) => feature.properties?.layerUuid),
+    ).toEqual(["uuid-a", "uuid-b", "uuid-b"]);
+
+    // the geometry itself is passed through untouched
+    expect(collection.features[0]!.geometry).toEqual(
+      mockFeatureData[0].geometry,
+    );
   });
 
   it("retrieves a dict of popups content arrays by uuid when using getPopupsByUuid", () => {
