@@ -90,7 +90,12 @@ const isFromDataSet = computed(
 );
 
 // Shared look of the buttons on the entry row
-const rowButton = { size: "xs", color: "primary", variant: "ghost" } as const;
+const rowButton = {
+  size: "xs",
+  color: "primary",
+  variant: "ghost",
+  ui: { base: "hover:text-primary-400 dark:hover:text-primary-200" },
+} as const;
 </script>
 
 <template>
