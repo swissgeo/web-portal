@@ -165,7 +165,7 @@
       "buttonTitle": "Importer",
       "title": "Importer un fichier ou une URL",
       "description": "Types de fichiers acceptés : {types}",
-      "tabFile": "Fichier",
+      "tabData": "Données",
       "tabUrl": "URL",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Parcourir...",
@@ -175,6 +175,9 @@
       "loadingMessage": "Importation du fichier...",
       "successMessage": "Fichier importé avec succès : {fileName}",
       "drawingSuccessMessage": "Dessin importé avec succès",
+      "fileUrlDescription": "Ou importer un fichier depuis une URL ({types}) :",
+      "fileUrlPlaceholder": "https://example.com/data.gpx",
+      "importFileUrlButton": "Importer depuis l'URL",
       "errorMessages": {
         "generalError": "Échec de l'importation du fichier",
         "noFileSelected": "Veuillez d'abord sélectionner un fichier",
@@ -183,7 +186,9 @@
         "drawingImportFailed": "Échec de l'importation du dessin",
         "kmlFetchFailed": "Échec de la récupération du KML : {status}",
         "noKmlFound": "Aucun dessin KML trouvé dans l'URL fournie",
-        "domainNotAllowed": "La récupération depuis {domain} n'est pas autorisée"
+        "domainNotAllowed": "La récupération depuis {domain} n'est pas autorisée",
+        "unsupportedUrlType": "Type de fichier non supporté. L'URL doit se terminer par {types}",
+        "fetchFailed": "Échec de la récupération du fichier depuis l'URL (HTTP {status})"
       },
       "close": "Fermer"
     },

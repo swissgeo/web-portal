@@ -163,10 +163,10 @@
     },
     "import": {
       "buttonTitle": "Import",
-      "title": "Import a file or URL",
+      "title": "Import data",
       "description": "Accepted file types: {types}",
-      "tabFile": "File",
-      "tabUrl": "URL",
+      "tabData": "Data",
+      "tabDrawing": "Drawing",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Browse...",
       "noFileSelected": "No file selected",
@@ -175,6 +175,9 @@
       "loadingMessage": "Importing file...",
       "successMessage": "Successfully imported {fileName}",
       "drawingSuccessMessage": "Drawing imported successfully",
+      "fileUrlDescription": "Or import a file from URL ({types}):",
+      "fileUrlPlaceholder": "https://example.com/data.gpx",
+      "importFileUrlButton": "Import from URL",
       "errorMessages": {
         "generalError": "Failed to import file",
         "noFileSelected": "Please select a file first",
@@ -183,7 +186,9 @@
         "drawingImportFailed": "Failed to import drawing",
         "kmlFetchFailed": "Failed to fetch KML: {status}",
         "noKmlFound": "No KML drawing found in the provided URL",
-        "domainNotAllowed": "Fetching from {domain} is not allowed"
+        "domainNotAllowed": "Fetching from {domain} is not allowed",
+        "unsupportedUrlType": "Unsupported file type. URL must end with {types}",
+        "fetchFailed": "Failed to fetch file from URL (HTTP {status})"
       },
       "close": "Close"
     },
