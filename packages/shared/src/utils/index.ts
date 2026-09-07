@@ -1,2 +1,2 @@
-export { sanitizeHtml } from "./sanitizeHtml";
+export { sanitizeHtml } from "./sanitize";
 export { toError } from "./toError";

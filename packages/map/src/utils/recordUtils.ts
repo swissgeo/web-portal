@@ -1,14 +1,15 @@
-import {
-  type GeoJSONLayer,
-  type GPXLayer,
-  type HighLightLayer,
-  type KMLLayer,
-  type KMZLayer,
-  type Layer,
-  type WMSLayer,
-  type WMTSLayer,
-} from "@/types";
 import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
+
+import type {
+  GeoJSONLayer,
+  GPXLayer,
+  HighLightLayer,
+  KMLLayer,
+  KMZLayer,
+  Layer,
+  WMSLayer,
+  WMTSLayer,
+} from "@/types";
 
 // maybe this belongs to shared?
 
