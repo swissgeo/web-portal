@@ -5,8 +5,36 @@ import log from "@swissgeo/log";
 import { parseGeoJson } from "~/utils/geoJson";
 import { useI18n } from "vue-i18n";
 
+type FileUrlExtension = "gpx" | "kml" | "kmz" | "geojson" | "json" | "tif" | "tiff";
+
+const FILE_URL_EXTENSIONS: Record<FileUrlExtension, LayerType> = {
+  gpx: "gpx",
+  kml: "kml",
+  kmz: "kmz",
+  geojson: "geojson",
+  json: "geojson",
+  tif: "cog",
+  tiff: "cog",
+};
+
 /**
- * Composable for importing local files as layers
+ * Extract file extension from a URL path. Returns null if not recognized.
+ */
+function getUrlExtension(url: string): FileUrlExtension | null {
+  try {
+    const pathname = new URL(url).pathname.toLowerCase();
+    const ext = pathname.split(".").pop();
+    if (ext && ext in FILE_URL_EXTENSIONS) {
+      return ext as FileUrlExtension;
+    }
+  } catch {
+    // Invalid URL
+  }
+  return null;
+}
+
+/**
+ * Composable for importing local files and remote file URLs as layers
  */
 export function useFileImport() {
   const layerStore = useLayerStore();
@@ -16,7 +44,7 @@ export function useFileImport() {
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
   /**
-   * Import a file and add it to the layer store
+   * Import a local file and add it to the layer store
    */
   async function importFile(file: File): Promise<void> {
     if (file.size > maxSizeBytes) {
@@ -82,31 +110,87 @@ export function useFileImport() {
   }
 
   /**
-   * Import a COG layer from a URL
+   * Import a file from a URL and add it to the layer store.
+   * Detects file type from URL extension (.gpx, .kml, .kmz, .geojson, .json, .tif, .tiff).
+   * For COG (.tif/.tiff), the URL is stored directly for OpenLayers to stream.
+   * For other types, the file content is fetched and stored.
    */
-  async function importCogUrl(url: string): Promise<void> {
-    log.debug(`Importing COG from URL: ${url}`);
+  async function importFileUrl(url: string): Promise<void> {
+    const ext = getUrlExtension(url);
+    if (!ext) {
+      throw new Error(
+        t("toolbox.import.errorMessages.unsupportedUrlType"),
+      );
+    }
+
+    const layerType = FILE_URL_EXTENSIONS[ext];
+    const displayName = url.split("/").pop() ?? url;
+
+    log.debug(`Importing file from URL: ${url} (type: ${layerType})`);
+
+    // For COG, store the URL directly — OpenLayers streams tiles on demand
+    if (layerType === "cog") {
+      const layer = {
+        uuid: crypto.randomUUID(),
+        humanId: url,
+        opacity: 1,
+        isVisible: true,
+        type: layerType,
+        isLoading: false,
+        info: {
+          displayName,
+          abstract: `Imported from URL: ${url}`,
+        },
+        data: url,
+      };
+      layerStore.addLayer(layer);
+      log.info(`Successfully imported COG from URL: ${url}`);
+      return;
+    }
+
+    // For all other types, fetch the content
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(
+        t("toolbox.import.errorMessages.fetchFailed", {
+          status: response.status,
+        }),
+      );
+    }
+
+    let fileData: string | Uint8Array;
+
+    if (ext === "kmz") {
+      const arrayBuffer = await response.arrayBuffer();
+      fileData = new Uint8Array(arrayBuffer);
+    } else {
+      fileData = await response.text();
+    }
+
+    // Validate GeoJSON content
+    if (layerType === "geojson" && typeof fileData === "string" && !parseGeoJson(fileData)) {
+      throw new Error(`Invalid GeoJSON content from: ${url}`);
+    }
 
     const layer = {
       uuid: crypto.randomUUID(),
       humanId: url,
       opacity: 1,
       isVisible: true,
-      type: "cog" as LayerType,
+      type: layerType,
       isLoading: false,
       info: {
-        displayName: url.split("/").pop() ?? url,
+        displayName,
         abstract: `Imported from URL: ${url}`,
       },
-      // Store the URL for OpenLayers GeoTIFF source
-      data: url,
+      data: fileData,
     };
     layerStore.addLayer(layer);
-    log.info(`Successfully imported COG from URL: ${url}`);
+    log.info(`Successfully imported ${layerType} from URL: ${url}`);
   }
 
   return {
     importFile,
-    importCogUrl,
+    importFileUrl,
   };
 }
