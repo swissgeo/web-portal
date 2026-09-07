@@ -21,7 +21,8 @@
     "lint": "eslint",
     "lint:write": "eslint --fix",
     "test:unit": "vitest run",
-    "test:unit:coverage": "vitest run --coverage"
+    "test:unit:coverage": "vitest run --coverage",
+    "type-check": "vue-tsc"
   },
   "dependencies": {
     "@swissgeo/coordinates": "workspace:*",

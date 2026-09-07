@@ -70,25 +70,6 @@ export const CIRCLE_EDITING_STYLE: StyleFunction = (_feature: FeatureLike) => {
 export const CIRCLE_SELECTED_STYLE = (feature: FeatureLike) => {
   const props = feature.getProperties();
 
-  if (feature.getGeometry()?.getType() === "Point") {
-    return [
-      new Style({
-        image: new CircleStyle({
-          // Only half of the outline width is added to the radius because
-          // the outline is drawn on both sides of the circle's edge.
-          radius: props[POINT_RADIUS_KEY] + SELECTED_OUTLINE_WIDTH / 2,
-          fill: new Fill({
-            color: props[POINT_COLOR_KEY],
-          }),
-          stroke: new Stroke({
-            color: SELECTED_OUTLINE_COLOR,
-            width: SELECTED_OUTLINE_WIDTH,
-          }),
-        }),
-      }),
-    ];
-  }
-
   return [
     new Style({
       stroke: new Stroke({

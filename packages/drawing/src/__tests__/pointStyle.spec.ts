@@ -60,6 +60,7 @@ function installIconSet() {
   const icon = new Icon(iconPayload);
   icon.setIconSetInstance(iconSet);
   iconSet.icons.push(icon);
+  iconSet.iconMap.set(icon.name, icon);
   useIconsStore().iconSets.push(iconSet);
 }
 

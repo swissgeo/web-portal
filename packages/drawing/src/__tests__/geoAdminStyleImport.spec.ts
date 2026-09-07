@@ -6,8 +6,11 @@ import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { DESCRIPTION_KEY, TITLE_KEY } from "@/utils/drawingMetadata";
-import { initializeMetadataProperties } from "@/utils/drawingMetadata";
+import {
+  DESCRIPTION_KEY,
+  TITLE_KEY,
+  initializeMetadataProperties,
+} from "@/utils/drawingMetadata";
 import {
   ICON_ANCHOR_KEY,
   ICON_SIZE_KEY,

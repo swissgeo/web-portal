@@ -32,6 +32,7 @@ export class IconSet {
   public name: string;
   public templateUrl: string;
   public icons: Icon[] = [];
+  public iconMap: Map<string, Icon>;
 
   constructor(payload: IconSetApiDescription) {
     this.colorable = payload.colorable;
@@ -40,6 +41,7 @@ export class IconSet {
     this.language = payload.language;
     this.name = payload.name;
     this.templateUrl = payload.template_url;
+    this.iconMap = new Map<string, Icon>();
   }
 
   async loadIcons(): Promise<void> {
@@ -55,6 +57,7 @@ export class IconSet {
         const newIcon = new Icon(iconItem);
         newIcon.setIconSetInstance(this);
         this.icons.push(newIcon);
+        this.iconMap.set(newIcon.name, newIcon);
       }
     } catch (_error) {
       log.error("Error loading icons");
@@ -66,6 +69,6 @@ export class IconSet {
   }
 
   getIconByName(iconName: string): Icon | undefined {
-    return this.icons.find((icon) => icon.name === iconName);
+    return this.iconMap.get(iconName);
   }
 }

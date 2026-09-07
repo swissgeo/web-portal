@@ -18,6 +18,13 @@ export const DEFAULT_ICON_SET_NAME = "default";
 
 export const useIconsStore = defineStore("icons", () => {
   const iconSets = ref<IconSet[]>([]);
+  const iconSetMap = computed(() => {
+    const map = new Map<string, IconSet>();
+    for (const iconSet of iconSets.value) {
+      map.set(iconSet.name, iconSet);
+    }
+    return map;
+  });
   const isLoading = ref(false);
   const isReady = ref(false);
   const defaultIconName = computed(() => {
@@ -54,10 +61,10 @@ export const useIconsStore = defineStore("icons", () => {
   }
 
   function getIconSetByName(name: string): IconSet | undefined {
-    return (
-      iconSets.value.find((iconSet) => iconSet.name === name) ??
-      getDefaultIconSet()
-    );
+    if (iconSetMap.value.has(name)) {
+      return iconSetMap.value.get(name);
+    }
+    return getDefaultIconSet();
   }
 
   function getDefaultIconSet(): IconSet | undefined {
