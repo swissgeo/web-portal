@@ -4,6 +4,7 @@ import type {
   Layer as SourceLayer,
 } from "@swissgeo/layers";
 import type {
+  COGLayer,
   GeoJSONLayer,
   LayerFormat,
   Layer as MapLayer,
@@ -14,6 +15,7 @@ const fileLayerFormatByType = {
   gpx: "GPX",
   kml: "KML",
   kmz: "KMZ",
+  cog: "COG",
 } satisfies Record<FileLayerType, LayerFormat>;
 
 /**
@@ -63,6 +65,24 @@ export function convertFileLayerToMapLayer(layer: SourceLayer): MapLayer {
       ...baseLayer,
       geoJsonData: parseGeoJsonData(layer.data),
     } as GeoJSONLayer;
+  }
+
+  if (layer.type === "cog") {
+    // For COG, data can be a File (local) or a string (URL)
+    const cogData = layer.data;
+    if (cogData instanceof File) {
+      return {
+        ...baseLayer,
+        blob: cogData,
+      } as COGLayer;
+    }
+    if (typeof cogData === "string") {
+      return {
+        ...baseLayer,
+        url: cogData,
+      } as COGLayer;
+    }
+    throw new Error("COG layer is missing file data or URL");
   }
 
   return {
