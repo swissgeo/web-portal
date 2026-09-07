@@ -24,6 +24,9 @@ const jsonEntries = computed(() =>
 );
 </script>
 <template>
+  <!-- eslint-disable vue/no-v-html -->
+  <!-- We are receiving html that need to be formated and sanitized from our providers -->
+
   <!-- single root wrapper so the data-testid anchor survives the v-if branches -->
   <div data-testid="feature-info-content">
     <div v-if="sanitizedHtml" v-html="sanitizedHtml" />

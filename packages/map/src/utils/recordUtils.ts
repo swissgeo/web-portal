@@ -3,8 +3,8 @@ import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
 import type {
   COGLayer,
   GeoJSONLayer,
-  HighLightLayer,
   GPXLayer,
+  HighLightLayer,
   KMLLayer,
   KMZLayer,
   Layer,

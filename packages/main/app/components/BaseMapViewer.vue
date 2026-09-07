@@ -11,13 +11,13 @@ import type {
 import type { DisplayMode } from "~/types/injectionKeys";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
-import log from "@swissgeo/log";
 import {
   selectFeatures,
   useFeaturesStore,
   FEATURE_LIMIT,
 } from "@swissgeo/feature";
-import { useLayerStore } from "@swissgeo/layers";
+import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
+import log from "@swissgeo/log";
 import { MapModule, usePositionStore } from "@swissgeo/map";
 import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
 import { cloneDeep } from "es-toolkit";
@@ -50,6 +50,7 @@ const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
 const dimensionsStore = useDimensionsStore();
 const positionStore = usePositionStore();
+const toolboxStore = useToolboxStore();
 const toaster = useToaster();
 const { t, locale } = useI18n();
 const featureStore = useFeaturesStore();
@@ -129,7 +130,6 @@ const layersForMap = computed(() => {
     }
     return layer;
   });
-  // here: appends highlight layer
   if (featureStore.hasSelectedFeatures && displayMode !== "print") {
     layers.push(highlightGeoJSONLayer.value);
   }
@@ -160,6 +160,10 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
 let abortController: AbortController | null = null;
 
 async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
+  if (toolboxStore.isDrawingActive()) {
+    // TODO: if there are features selected, should we de-select them ?
+    return;
+  }
   abortController?.abort();
   abortController = new AbortController();
   const { signal } = abortController;
