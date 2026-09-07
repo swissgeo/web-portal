@@ -98,7 +98,7 @@ const rowButton = { size: "xs", color: "primary", variant: "ghost" } as const;
     <div class="flex min-w-0 items-center">
       <UButton
         data-testid="layer-reorder-handle"
-        class="layer-reorder-handle shrink-0 cursor-grab text-gray-400"
+        class="layer-reorder-handle shrink-0 cursor-grab text-dimmed"
         icon="i-lucide-grip-vertical"
         v-bind="rowButton"
         :title="t('layers.reorder')"
@@ -116,7 +116,7 @@ const rowButton = { size: "xs", color: "primary", variant: "ghost" } as const;
       <div
         class="min-w-0 flex-1 truncate px-1"
         :title="layer.displayName"
-        :class="{ 'text-gray-300': !layer.isVisible }"
+        :class="{ 'text-dimmed': !layer.isVisible }"
       >
         {{ layer.displayName }}
       </div>
@@ -154,7 +154,7 @@ const rowButton = { size: "xs", color: "primary", variant: "ghost" } as const;
 
     <div v-if="isExpanded" class="flex min-w-0 flex-col gap-3 pl-8">
       <div class="flex flex-col gap-1">
-        <span class="text-xs font-medium text-gray-600 uppercase">
+        <span class="text-xs font-medium text-toned uppercase">
           {{ t("layers.transparency") }}
         </span>
         <div class="flex items-center gap-2">
@@ -165,7 +165,7 @@ const rowButton = { size: "xs", color: "primary", variant: "ghost" } as const;
             :max="100"
             class="flex-1"
           />
-          <span class="w-8 text-xs text-gray-600">{{ opacityPercent }}%</span>
+          <span class="w-8 text-xs text-toned">{{ opacityPercent }}%</span>
         </div>
       </div>
       <LayerLegend :legends="legends" />

@@ -36,7 +36,7 @@ function toggleSidebar() {
     <div
       v-show="uiStore.isSidebarOpen"
       :style="{ width: SIDEBAR_CONTENT_WIDTH + 'px' }"
-      class="flex h-full flex-col bg-white shadow-lg"
+      class="flex h-full flex-col bg-default text-default shadow-lg"
     >
       <LayerCart
         v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
@@ -57,7 +57,7 @@ function toggleSidebar() {
           ? 'i-lucide-chevron-left'
           : 'i-lucide-chevron-right'
       "
-      class="my-auto h-16 w-6 justify-center rounded-l-none rounded-r border border-l-0 border-gray-200 bg-white px-0 py-0 text-gray-500 shadow-md hover:bg-white hover:text-gray-900"
+      class="my-auto h-16 w-6 justify-center rounded-l-none rounded-r border border-l-0 border-default bg-default px-0 py-0 text-muted shadow-md hover:bg-elevated hover:text-highlighted"
       :title="uiStore.isSidebarOpen ? t('menu.collapse') : t('menu.expand')"
       :aria-label="
         uiStore.isSidebarOpen ? t('menu.collapse') : t('menu.expand')

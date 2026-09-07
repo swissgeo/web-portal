@@ -44,7 +44,7 @@ function addLayerToMap() {
 </script>
 
 <template>
-  <tr class="hover:bg-cyan-300">
+  <tr class="hover:bg-elevated">
     <td class="border-b pb-2">
       <UButton
         color="primary"
@@ -55,7 +55,10 @@ function addLayerToMap() {
         {{ dataset.id }}
       </UButton>
     </td>
-    <td class="border-b pb-2 hover:bg-inherit" :class="layerBg">
+    <td
+      class="border-b pb-2"
+      :class="[layerBg, { 'text-neutral-900': layerBg }]"
+    >
       <em>{{ type }}</em>
     </td>
   </tr>

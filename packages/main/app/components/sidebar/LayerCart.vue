@@ -55,11 +55,11 @@ useSortable(layerCartRef, sortedLayers, {
 
 <template>
   <div
-    class="flex min-h-14 items-center justify-between gap-2 border-b border-gray-200 px-4"
+    class="flex min-h-14 items-center justify-between gap-2 border-b border-default px-4"
   >
     <!-- h2 carries global heading styles (see main.css), which do not fit a
          panel header, hence the h3 -->
-    <h3 class="text-sm font-bold text-gray-900">{{ t("menu.map") }}</h3>
+    <h3 class="text-sm font-bold text-highlighted">{{ t("menu.map") }}</h3>
     <UButton
       data-testid="add-layer"
       icon="i-lucide-plus"
@@ -74,7 +74,7 @@ useSortable(layerCartRef, sortedLayers, {
 
   <UModal v-model:open="isAddLayerOpen" :title="t('menu.addLayer')">
     <template #body>
-      <p class="text-sm text-gray-600">{{ t("menu.addLayerComingSoon") }}</p>
+      <p class="text-sm text-toned">{{ t("menu.addLayerComingSoon") }}</p>
     </template>
   </UModal>
 

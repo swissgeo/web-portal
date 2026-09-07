@@ -38,7 +38,7 @@ function togglePrintPanel() {
 <template>
   <div>
     <DebugLayersPanel
-      class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
+      class="relative h-[300px] w-[800px] overflow-hidden bg-default text-default shadow"
       v-if="isLayersPanelOpen"
       @close="toggleLayersPanel"
     ></DebugLayersPanel>

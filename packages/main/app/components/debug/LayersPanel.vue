@@ -30,7 +30,7 @@ const filteredAvailableLayers = computed((): Dataset[] => {
     <div class="absolute flex w-full items-center justify-between gap-4 px-2">
       <input
         v-model="filterTerm"
-        class="w-full border border-gray-200 px-2 py-1"
+        class="w-full border border-default bg-default px-2 py-1 text-default placeholder:text-muted"
         placeholder="Filter"
         autofocus
       />
