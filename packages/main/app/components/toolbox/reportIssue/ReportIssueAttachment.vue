@@ -5,41 +5,24 @@ const { t } = useI18n();
 
 defineModel<File | undefined>({ required: true });
 
+const FILE_TYPE_LABELS: Record<string, string> = {
+  "application/pdf": "PDF",
+  "application/zip": "ZIP",
+  "image/jpeg": "JPG",
+  "image/png": "PNG",
+  "application/vnd.google-earth.kml+xml": "KML",
+  "application/vnd.google-earth.kmz": "KMZ",
+  "application/gpx+xml": "GPX",
+};
+
 const ACCEPTED_FILE_TYPES = [
-  "application/pdf",
-  "application/zip",
-  "image/jpeg",
-  "image/png",
-  "application/vnd.google-earth.kml+xml",
-  "application/vnd.google-earth.kmz",
-  "application/gpx+xml",
+  ...Object.keys(FILE_TYPE_LABELS),
   ".kml",
   ".kmz",
   ".gpx",
 ];
 
-const fileTypesLabels = computed(() => {
-  return ACCEPTED_FILE_TYPES.map((type) => {
-    switch (type) {
-      case "application/pdf":
-        return "PDF";
-      case "application/zip":
-        return "ZIP";
-      case "image/jpeg":
-        return "JPG";
-      case "image/png":
-        return "PNG";
-      case "application/vnd.google-earth.kml+xml":
-        return "KML";
-      case "application/vnd.google-earth.kmz":
-        return "KMZ";
-      case "application/gpx+xml":
-        return "GPX";
-      default:
-        return type.startsWith(".") ? null : type;
-    }
-  }).filter((type) => type !== null);
-});
+const fileTypesLabels = Object.values(FILE_TYPE_LABELS);
 </script>
 
 <template>
