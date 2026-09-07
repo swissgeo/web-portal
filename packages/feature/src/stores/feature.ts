@@ -1,16 +1,32 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, type ComputedRef } from "vue";
 
 import type { FeatureData } from "@/types";
+import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
 
 export const useFeaturesStore = defineStore("features", () => {
   const selectedFeaturesByUuid = ref<Record<string, FeatureData[]>>({});
 
-  // extract all geometries from features to give to the viewer for highlighting
-  const getSelectedGeometries = computed(() =>
-    Object.values(selectedFeaturesByUuid.value).flatMap((features) =>
-      features.map((feature) => feature.geometry),
-    ),
+  // wrap geometries in a geoJSON for the viewer to render as a geoJSON
+  const getFeaturesGeoJSON: ComputedRef<GeoJSON.FeatureCollection> = computed(
+    () => {
+      return {
+        type: "FeatureCollection",
+        features: Object.entries(selectedFeaturesByUuid.value).flatMap(
+          ([layerUuid, features]) =>
+            features.map((feature) => {
+              return {
+                type: "Feature",
+                geometry: feature.geometry,
+                properties: {
+                  layerUuid,
+                  featureId: feature.featureId,
+                },
+              };
+            }),
+        ),
+      };
+    },
   );
 
   const getPopupsByUuid = computed(() =>
@@ -50,7 +66,7 @@ export const useFeaturesStore = defineStore("features", () => {
   return {
     selectedFeaturesByUuid,
     // GETTERS
-    getSelectedGeometries,
+    getFeaturesGeoJSON,
     getPopupsByUuid,
     getFeaturesIdsByUuid,
     hasSelectedFeatures,
