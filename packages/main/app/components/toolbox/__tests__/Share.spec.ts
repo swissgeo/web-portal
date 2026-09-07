@@ -66,12 +66,10 @@ describe("Share", () => {
 
   it("copies the link and embed code with independent confirmation states", async () => {
     const wrapper = mountShare();
-    const buttons = wrapper.findAll(
-      'button[aria-label="toolbox.share.ariaLabel.copyToClipboard"]',
-    );
+    const copyLinkButton = wrapper.get('[data-testid="share-copy-link"]');
+    const copyEmbedButton = wrapper.get('[data-testid="share-copy-embed"]');
 
-    expect(buttons).toHaveLength(2);
-    await buttons[0]!.trigger("click");
+    await copyLinkButton.trigger("click");
     expect(linkClipboard.copy).toHaveBeenCalledExactlyOnceWith(
       sharing.shareLink.value,
     );
@@ -79,37 +77,32 @@ describe("Share", () => {
 
     linkClipboard.copied.value = true;
     await wrapper.vm.$nextTick();
-    expect(buttons[0]!.classes()).toContain("text-success");
-    expect(buttons[1]!.classes()).not.toContain("text-success");
+    expect(copyLinkButton.classes()).toContain("text-success");
+    expect(copyEmbedButton.classes()).not.toContain("text-success");
 
-    await buttons[1]!.trigger("click");
+    await copyEmbedButton.trigger("click");
     expect(embedClipboard.copy).toHaveBeenCalledExactlyOnceWith(
       sharing.embedCode.value,
     );
     embedClipboard.copied.value = true;
     await wrapper.vm.$nextTick();
-    expect(buttons[1]!.classes()).toContain("text-success");
+    expect(copyEmbedButton.classes()).toContain("text-success");
   });
 
   it("refreshes expired share data and closes the panel", async () => {
     sharing.needToRefresh.value = true;
     const wrapper = mountShare();
 
-    expect(
-      wrapper
-        .find('button[aria-label="toolbox.share.ariaLabel.copyToClipboard"]')
-        .exists(),
-    ).toBe(false);
-    await wrapper
-      .get('button[aria-label="toolbox.share.ariaLabel.refreshLink"]')
-      .trigger("click");
-    await wrapper
-      .get('button[aria-label="toolbox.share.ariaLabel.refreshEmbed"]')
-      .trigger("click");
+    expect(wrapper.find('[data-testid="share-copy-link"]').exists()).toBe(
+      false,
+    );
+    expect(wrapper.find('[data-testid="share-copy-embed"]').exists()).toBe(
+      false,
+    );
+    await wrapper.get('[data-testid="share-refresh-link"]').trigger("click");
+    await wrapper.get('[data-testid="share-refresh-embed"]').trigger("click");
     expect(sharing.refresh).toHaveBeenCalledTimes(2);
-    await wrapper
-      .get('button[aria-label="toolbox.share.ariaLabel.close"]')
-      .trigger("click");
+    await wrapper.get('[data-testid="share-close"]').trigger("click");
     expect(closeDetailPanel).toHaveBeenCalledOnce();
   });
 });

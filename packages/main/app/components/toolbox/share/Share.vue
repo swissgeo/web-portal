@@ -32,6 +32,7 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
           </div>
         </div>
         <UButton
+          data-testid="share-close"
           color="primary"
           variant="ghost"
           icon="i-lucide-x"
@@ -50,6 +51,7 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     >
       <template v-if="shareLink?.length" #trailing>
         <UButton
+          data-testid="share-copy-link"
           color="primary"
           :class="copiedLink ? 'text-success' : ''"
           variant="ghost"
@@ -62,6 +64,7 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     </UInput>
     <UButton
       v-else
+      data-testid="share-refresh-link"
       color="primary"
       variant="solid"
       icon="i-lucide-refresh-cw"
@@ -78,6 +81,7 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     <UInput class="w-full" v-model="embedCode" readonly v-if="!needToRefresh">
       <template v-if="embedCode?.length" #trailing>
         <UButton
+          data-testid="share-copy-embed"
           color="primary"
           :class="copiedEmbed ? 'text-success' : ''"
           variant="ghost"
@@ -94,6 +98,7 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
       variant="solid"
       icon="i-lucide-refresh-cw"
       :aria-label="t('toolbox.share.ariaLabel.refreshEmbed')"
+      data-testid="share-refresh-embed"
       @click="refresh()"
     >
       {{ t("toolbox.share.embed.generateButton") }}
