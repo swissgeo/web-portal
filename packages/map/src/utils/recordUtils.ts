@@ -1,4 +1,5 @@
 import type {
+  COGLayer,
   GeoJSONLayer,
   GPXLayer,
   KMLLayer,
@@ -22,3 +23,5 @@ export const isGPX = (layer: Layer): layer is GPXLayer =>
   layer.format?.toUpperCase() === "GPX";
 export const isGeoJSON = (layer: Layer): layer is GeoJSONLayer =>
   layer.format?.toUpperCase() === "GEOJSON";
+export const isCOG = (layer: Layer): layer is COGLayer =>
+  layer.format?.toUpperCase() === "COG";
