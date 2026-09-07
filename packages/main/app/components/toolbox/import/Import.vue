@@ -6,7 +6,7 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 const toast = useToast();
 const toolboxStore = useToolboxStore();
-const { importFile } = useFileImport();
+const { importFile, importCogUrl } = useFileImport();
 const {
   url: urlImportDrawing,
   isLoading: isImportDrawingLoading,
@@ -20,8 +20,10 @@ const selectedFile = ref<File | undefined>();
 const isLoading = ref(false);
 const errorMessage = ref("");
 const successMessage = ref("");
+const cogUrl = ref("");
+const isCogUrlLoading = ref(false);
 
-const acceptedFileTypes = [".kml", ".kmz", ".gpx", ".geojson", ".json"];
+const acceptedFileTypes = [".kml", ".kmz", ".gpx", ".geojson", ".json", ".tif", ".tiff"];
 
 const items = computed(() => [
   { label: t("toolbox.import.tabFile"), slot: "file" },
@@ -61,6 +63,33 @@ async function handleImport() {
         : t("toolbox.import.errorMessages.generalError");
   } finally {
     isLoading.value = false;
+  }
+}
+
+async function handleCogUrlImport() {
+  const url = cogUrl.value.trim();
+  if (!url) {
+    errorMessage.value = t("toolbox.import.errorMessages.noUrlEntered");
+    return;
+  }
+
+  isCogUrlLoading.value = true;
+  errorMessage.value = "";
+  successMessage.value = "";
+
+  try {
+    await importCogUrl(url);
+    successMessage.value = t("toolbox.import.successMessage", {
+      fileName: url.split("/").pop() ?? url,
+    });
+    cogUrl.value = "";
+  } catch (error) {
+    errorMessage.value =
+      error instanceof Error
+        ? error.message
+        : t("toolbox.import.errorMessages.generalError");
+  } finally {
+    isCogUrlLoading.value = false;
   }
 }
 </script>
@@ -109,6 +138,28 @@ async function handleImport() {
         >
           {{ t("toolbox.import.importFileButton") }}
         </UButton>
+        <div class="mt-4 pt-4 border-t border-neutral">
+          <div class="text-sm text-muted mb-2">
+            {{ t("toolbox.import.cogUrlDescription") }}
+          </div>
+          <UInput
+            v-model="cogUrl"
+            type="url"
+            class="w-full"
+            :placeholder="t('toolbox.import.cogUrlPlaceholder')"
+            :disabled="isCogUrlLoading"
+            data-testid="cog-url-input"
+          />
+          <UButton
+            class="mt-2 w-full place-content-center"
+            :disabled="!cogUrl.trim() || isCogUrlLoading"
+            :loading="isCogUrlLoading"
+            @click="handleCogUrlImport"
+            data-testid="cog-import-button"
+          >
+            {{ t("toolbox.import.importCogUrlButton") }}
+          </UButton>
+        </div>
       </template>
       <template #url>
         <UInput

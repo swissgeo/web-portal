@@ -12,9 +12,11 @@ type ImportVm = ComponentPublicInstance & {
 };
 
 const importFileSpy = vi.fn();
+const importCogUrlSpy = vi.fn();
 vi.mock("@/composables/useFileImport", () => ({
   useFileImport: vi.fn(() => ({
     importFile: importFileSpy,
+    importCogUrl: importCogUrlSpy,
   })),
 }));
 
