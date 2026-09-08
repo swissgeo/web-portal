@@ -60,10 +60,7 @@ function installIconSet() {
   const icon = new Icon(iconPayload);
   icon.setIconSetInstance(iconSet);
   iconSet.icons.push(icon);
-<<<<<<< HEAD
   iconSet.iconMap.set(icon.name, icon);
-=======
->>>>>>> f3ce1086 (GPS-883: WIP adding more features to points)
   useIconsStore().iconSets.push(iconSet);
 }
 
