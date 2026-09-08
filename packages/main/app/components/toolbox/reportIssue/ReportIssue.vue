@@ -24,8 +24,14 @@ const { shareLink } = useCreateShareLink(exportState, {
 });
 
 const schema = z.object({
-  feedback: z.string(t("toolbox.reportIssue.validation.feedbackRequired")),
-  category: z.string(t("toolbox.reportIssue.validation.categoryRequired")),
+  feedback: z
+    .string()
+    .trim()
+    .min(1, t("toolbox.reportIssue.validation.feedbackRequired")),
+  category: z
+    .string()
+    .trim()
+    .min(1, t("toolbox.reportIssue.validation.categoryRequired")),
   email: z.optional(z.email(t("toolbox.reportIssue.validation.emailInvalid"))),
   attachment: z
     .nullable(
@@ -74,6 +80,7 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
   formData.append("version", runtimeConfig.public.version);
   formData.append("ua", navigator.userAgent);
   formData.append("permalink", permalink.value);
+  formData.append("state", JSON.stringify(exportState.value));
 
   if (state.email) {
     formData.append("email", state.email);

@@ -127,6 +127,7 @@ describe("report issue proxy", () => {
       textPart("ua", "Mozilla/5.0"),
       textPart("permalink", "https://map.geo.admin.ch/?state=abc"),
       textPart("email", "test@example.com"),
+      textPart("state", '{"key": "value"}'),
     ]);
     fetchMock.mockResolvedValue({ ok: true });
 
@@ -152,6 +153,7 @@ describe("report issue proxy", () => {
     expect(body.get("ua")).toBe("Mozilla/5.0");
     expect(body.get("permalink")).toBe("https://map.geo.admin.ch/?state=abc");
     expect(body.get("email")).toBe("test@example.com");
+    expect(body.get("state")).toBe('{"key": "value"}');
 
     expect(result).toEqual({ ok: true });
   });
