@@ -38,8 +38,6 @@ function makePointFeature(
   initializeMetadataProperties(feature);
   initializeStyleProperties(feature);
   feature.setProperties(properties);
-  initializeMetadataProperties(feature);
-  initializeStyleProperties(feature);
   return feature;
 }
 

@@ -4,6 +4,7 @@ import type Feature from "ol/Feature";
 import type { Geometry } from "ol/geom";
 
 import { useDrawing, getFeatureTitle } from "@swissgeo/drawing";
+import log from "@swissgeo/log";
 import { useMap } from "@swissgeo/map";
 
 import DrawingFeaturePropertyPanel from "./DrawingFeaturePropertyPanel.vue";
@@ -100,24 +101,28 @@ async function exportFocusedFeature(
     return;
   }
 
-  const blob = await serializeFocusedFeatureAsBlob(format);
-  if (blob) {
-    const featureTitle =
-      getFeatureTitle(focusedFeature.value as Feature<Geometry>) || "feature";
-    // make a filename that is safe for the filesystem by removing all characters that are not
-    // letters, numbers, underscores, or hyphens, and replacing spaces with underscores
-    const fileBasename = featureTitle
-      .replace(/\s+/g, "_")
-      .replace(/[^\p{L}\p{N}_-]/gu, "");
+  try {
+    const blob = await serializeFocusedFeatureAsBlob(format);
+    if (blob) {
+      const featureTitle =
+        getFeatureTitle(focusedFeature.value as Feature<Geometry>) || "feature";
+      // make a filename that is safe for the filesystem by removing all characters that are not
+      // letters, numbers, underscores, or hyphens, and replacing spaces with underscores
+      const fileBasename = featureTitle
+        .replace(/\s+/g, "_")
+        .replace(/[^\p{L}\p{N}_-]/gu, "");
 
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${fileBasename}.${format.split("-")[0]}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${fileBasename}.${format.split("-")[0]}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  } catch (_error) {
+    log.error("Failed to export focused feature");
   }
 }
 
@@ -127,16 +132,20 @@ async function exportFocusedFeature(
 async function exportAllFeatures(
   format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
 ) {
-  const blob = await serializeAllFeaturesAsBlob(format);
-  if (blob) {
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `scene.${format.split("-")[0]}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  try {
+    const blob = await serializeAllFeaturesAsBlob(format);
+    if (blob) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `scene.${format.split("-")[0]}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  } catch (_error) {
+    log.error("Failed to export all features");
   }
 }
 
