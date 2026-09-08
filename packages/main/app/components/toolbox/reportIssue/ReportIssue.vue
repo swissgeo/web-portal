@@ -74,6 +74,7 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
   formData.append("version", runtimeConfig.public.version);
   formData.append("ua", navigator.userAgent);
   formData.append("permalink", permalink.value);
+  formData.append("state", JSON.stringify(exportState.value));
 
   if (state.email) {
     formData.append("email", state.email);

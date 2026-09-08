@@ -8,6 +8,7 @@ const FIELD_MAP: Record<string, string> = {
   version: "version",
   ua: "ua",
   permalink: "permalink",
+  state: "state",
   email: "email",
 };
 
