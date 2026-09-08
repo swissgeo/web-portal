@@ -32,7 +32,9 @@ const schema = z.object({
     .string()
     .trim()
     .min(1, t("toolbox.reportIssue.validation.categoryRequired")),
-  email: z.optional(z.email(t("toolbox.reportIssue.validation.emailInvalid"))),
+  email: z
+    .optional(z.email(t("toolbox.reportIssue.validation.emailInvalid")))
+    .or(z.literal("")),
   attachment: z
     .nullable(
       z
