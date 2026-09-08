@@ -100,7 +100,7 @@ const rowButton = {
 
 <template>
   <li class="flex min-w-0 flex-col gap-2 rounded">
-    <div class="flex min-w-0 items-center">
+    <div class="flex min-w-0 items-start">
       <UButton
         data-testid="layer-reorder-handle"
         class="layer-reorder-handle shrink-0 cursor-grab text-dimmed"
@@ -119,13 +119,13 @@ const rowButton = {
         @click="isExpanded = !isExpanded"
       />
       <div
-        class="min-w-0 flex-1 truncate px-1"
+        class="min-w-0 flex-1 px-1 text-sm leading-5 wrap-anywhere"
         :title="layer.displayName"
         :class="{ 'text-dimmed': !layer.isVisible }"
       >
         {{ layer.displayName }}
       </div>
-      <div class="flex shrink-0 items-center">
+      <div class="flex shrink-0 items-start">
         <select
           v-if="(availableTimes?.length || 0) > 1"
           v-model="currentTime"
