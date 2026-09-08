@@ -3,10 +3,12 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <UColorModeButton
-    :label="t('topbar.modeSwitch')"
-    color="primary"
-    variant="ghost"
-    size="md"
-  />
+  <ClientOnly>
+    <UColorModeButton
+      :label="t('topbar.modeSwitch', 'Mode switch')"
+      color="primary"
+      variant="ghost"
+      size="md"
+    />
+  </ClientOnly>
 </template>

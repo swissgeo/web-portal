@@ -27,6 +27,7 @@ describe("TopbarColorModeButton", () => {
     const wrapper = mount(TopbarColorModeButton, {
       global: {
         stubs: {
+          ClientOnly: { template: "<slot />" },
           UColorModeButton: UColorModeButtonStub,
         },
       },
