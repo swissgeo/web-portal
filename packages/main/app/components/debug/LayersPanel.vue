@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { Dataset } from "@swissgeo/ogc";
 
-import { IconButton } from "@swissgeo/skeleton";
-
 const { locale } = useI18n();
 
 const filterTerm = ref<string>("");
@@ -32,11 +30,16 @@ const filteredAvailableLayers = computed((): Dataset[] => {
     <div class="absolute flex w-full items-center justify-between gap-4 px-2">
       <input
         v-model="filterTerm"
-        class="w-full border border-gray-200 px-2 py-1"
+        class="w-full border border-default bg-default px-2 py-1 text-default placeholder:text-muted"
         placeholder="Filter"
         autofocus
       />
-      <IconButton @click="$emit('close')" iconName="X"> </IconButton>
+      <UButton
+        color="primary"
+        variant="ghost"
+        icon="i-lucide-x"
+        @click="$emit('close')"
+      />
     </div>
     <div class="mt-12 h-75 overflow-scroll pb-18">
       <table class="">

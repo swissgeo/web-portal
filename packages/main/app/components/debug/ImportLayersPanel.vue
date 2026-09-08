@@ -2,7 +2,6 @@
 import type { Dataset } from "@swissgeo/ogc";
 
 import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
-import { IconButton } from "@swissgeo/skeleton";
 import WMSCapabilities from "ol/format/WMSCapabilities";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 
@@ -139,36 +138,49 @@ function addLayer(layer: string) {
           placeholder="Capability URL (type or pick a preset)"
           @keydown.enter="loadCapabilities"
         />
-        <button
-          type="button"
+        <UButton
           data-testid="import-preset-toggle"
-          class="absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer px-1 text-gray-500"
+          class="absolute top-1/2 right-1 -translate-y-1/2"
+          color="primary"
+          variant="ghost"
+          size="xs"
+          square
+          icon="i-lucide-chevron-down"
           title="Preset capability URLs"
+          aria-label="Preset capability URLs"
           @click="showPresets = !showPresets"
-        >
-          ▾
-        </button>
+        />
         <ul
           v-if="showPresets"
           class="absolute top-full right-0 left-0 z-20 max-h-60 overflow-auto border border-gray-200 bg-white shadow"
         >
           <li v-for="preset in presetUrls" :key="preset.url">
-            <button
+            <UButton
               type="button"
-              class="block w-full cursor-pointer px-2 py-1 text-left hover:bg-cyan-200"
+              class="w-full justify-start"
+              color="primary"
+              variant="ghost"
+              size="xs"
               @click="applyPreset(preset.url)"
             >
               {{ preset.label }}
-            </button>
+            </UButton>
           </li>
         </ul>
       </div>
-      <IconButton
+      <UButton
         data-testid="import-load-capabilities"
         @click="loadCapabilities"
-        iconName="Send"
-      ></IconButton>
-      <IconButton @click="$emit('close')" iconName="X"> </IconButton>
+        icon="i-lucide-send"
+        color="primary"
+        variant="solid"
+      />
+      <UButton
+        color="primary"
+        variant="ghost"
+        icon="i-lucide-x"
+        @click="$emit('close')"
+      />
     </div>
     <div class="mt-12 h-[300px] overflow-scroll pb-18">
       <input
@@ -179,13 +191,15 @@ function addLayer(layer: string) {
       />
       <ul>
         <li v-for="layer in filteredLayers" :key="layer" class="py-2">
-          <button
+          <UButton
             :data-testid="`import-layer-${layer}`"
-            class="cursor-pointer hover:bg-cyan-200"
+            color="primary"
+            variant="ghost"
+            size="xs"
             @click="addLayer(layer)"
           >
             {{ layer }}
-          </button>
+          </UButton>
         </li>
         <li
           v-if="layers.length && !filteredLayers.length"

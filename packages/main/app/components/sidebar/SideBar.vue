@@ -36,7 +36,7 @@ function toggleSidebar() {
     <div
       v-show="uiStore.isSidebarOpen"
       :style="{ width: SIDEBAR_CONTENT_WIDTH + 'px' }"
-      class="flex h-full flex-col bg-white shadow-lg"
+      class="flex h-full flex-col bg-default text-default shadow-lg"
     >
       <LayerCart
         v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
@@ -48,20 +48,21 @@ function toggleSidebar() {
     </div>
 
     <!-- Collapses the sidebar down to this tab, and brings it back -->
-    <button
+    <UButton
       data-testid="button-layer-cart-panel"
-      class="my-auto flex h-16 w-6 cursor-pointer items-center justify-center rounded-r border border-l-0 border-gray-200 bg-white text-gray-500 shadow-md hover:text-gray-900"
+      color="neutral"
+      variant="ghost"
+      :icon="
+        uiStore.isSidebarOpen
+          ? 'i-lucide-chevron-left'
+          : 'i-lucide-chevron-right'
+      "
+      class="my-auto h-16 w-6 justify-center rounded-l-none rounded-r border border-l-0 border-default bg-default px-0 py-0 text-muted shadow-md hover:bg-elevated hover:text-highlighted"
       :title="uiStore.isSidebarOpen ? t('menu.collapse') : t('menu.expand')"
+      :aria-label="
+        uiStore.isSidebarOpen ? t('menu.collapse') : t('menu.expand')
+      "
       @click="toggleSidebar"
-    >
-      <UIcon
-        :name="
-          uiStore.isSidebarOpen
-            ? 'i-lucide-chevron-left'
-            : 'i-lucide-chevron-right'
-        "
-        class="size-4"
-      />
-    </button>
+    />
   </div>
 </template>

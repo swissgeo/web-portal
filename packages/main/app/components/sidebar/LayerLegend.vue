@@ -61,13 +61,14 @@ const documentLinks = computed(() =>
 
 <template>
   <div data-testid="layer-legend" class="flex flex-col gap-2">
-    <span class="text-xs font-medium text-gray-600 uppercase">
+    <span class="text-xs font-medium text-toned uppercase">
       {{ t("layers.legend.title") }}
     </span>
 
+    <!-- External PNG legends contain fixed text and symbol colors that we cannot control hence white bg -->
     <div
       v-if="imageLegends.length"
-      class="max-h-64 overflow-auto rounded border border-gray-200 p-2"
+      class="max-h-64 overflow-auto rounded border border-default bg-white p-2"
     >
       <img
         v-for="legend in imageLegends"
@@ -91,7 +92,7 @@ const documentLinks = computed(() =>
       {{ link.label }}
     </ULink>
 
-    <span v-if="!legends.length" class="text-sm text-gray-600">
+    <span v-if="!legends.length" class="text-sm text-toned">
       {{ t("layers.legend.notAvailable") }}
     </span>
   </div>

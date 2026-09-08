@@ -32,10 +32,11 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
           </div>
         </div>
         <UButton
-          color="neutral"
+          data-testid="share-close"
+          color="primary"
           variant="ghost"
           icon="i-lucide-x"
-          size="sm"
+          size="xs"
           :aria-label="t('toolbox.share.ariaLabel.close')"
           @click="toolboxStore.closeDetailPanel()"
         />
@@ -50,10 +51,11 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     >
       <template v-if="shareLink?.length" #trailing>
         <UButton
-          :color="copiedLink ? 'success' : 'neutral'"
-          class="bg-white"
-          variant="link"
-          size="sm"
+          data-testid="share-copy-link"
+          color="primary"
+          :class="copiedLink ? 'text-success' : ''"
+          variant="ghost"
+          size="xs"
           :icon="copiedLink ? 'i-lucide-copy-check' : 'i-lucide-copy'"
           :aria-label="t('toolbox.share.ariaLabel.copyToClipboard')"
           @click="copyLink(shareLink)"
@@ -62,7 +64,9 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     </UInput>
     <UButton
       v-else
-      variant="subtle"
+      data-testid="share-refresh-link"
+      color="primary"
+      variant="solid"
       icon="i-lucide-refresh-cw"
       :aria-label="t('toolbox.share.ariaLabel.refreshLink')"
       @click="refresh()"
@@ -77,10 +81,11 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     <UInput class="w-full" v-model="embedCode" readonly v-if="!needToRefresh">
       <template v-if="embedCode?.length" #trailing>
         <UButton
-          :color="copiedEmbed ? 'success' : 'neutral'"
-          class="bg-white"
-          variant="link"
-          size="sm"
+          data-testid="share-copy-embed"
+          color="primary"
+          :class="copiedEmbed ? 'text-success' : ''"
+          variant="ghost"
+          size="xs"
           :icon="copiedEmbed ? 'i-lucide-copy-check' : 'i-lucide-copy'"
           :aria-label="t('toolbox.share.ariaLabel.copyToClipboard')"
           @click="copyEmbed(embedCode)"
@@ -89,9 +94,11 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     </UInput>
     <UButton
       v-else
-      variant="subtle"
+      color="primary"
+      variant="solid"
       icon="i-lucide-refresh-cw"
       :aria-label="t('toolbox.share.ariaLabel.refreshEmbed')"
+      data-testid="share-refresh-embed"
       @click="refresh()"
     >
       {{ t("toolbox.share.embed.generateButton") }}

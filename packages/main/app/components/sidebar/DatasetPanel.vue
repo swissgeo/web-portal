@@ -101,8 +101,8 @@ function addToMap() {
         v-if="dataset && props.detailPagePath"
         :to="props.detailPagePath"
         icon="i-lucide-external-link"
-        color="neutral"
-        variant="subtle"
+        color="primary"
+        variant="ghost"
         class="w-full justify-center"
         @click="datasetPanelStore.closeDatasetPanel()"
       >

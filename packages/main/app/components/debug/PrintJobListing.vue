@@ -58,7 +58,12 @@ function statusColor(
     }"
   >
     <!-- Trigger button showing a compact summary of all print job statuses -->
-    <UButton :label="t('print.openPrintJobs')" icon="i-lucide-printer">
+    <UButton
+      :label="t('print.openPrintJobs')"
+      icon="i-lucide-printer"
+      color="primary"
+      variant="outline"
+    >
       <template v-if="totalCount > 0" #trailing>
         <UBadge
           color="neutral"
@@ -129,7 +134,7 @@ function statusColor(
               :label="t('print.clearAll')"
               color="error"
               variant="outline"
-              size="sm"
+              size="xs"
               :disabled="totalCount === 0"
               @click="clearRequestCollection"
             />
@@ -181,9 +186,9 @@ function statusColor(
             rel="noopener"
             :label="t('print.download')"
             icon="i-lucide-download"
-            color="success"
-            variant="subtle"
-            size="sm"
+            color="primary"
+            variant="outline"
+            size="xs"
             external
           />
           <UIcon

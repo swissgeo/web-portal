@@ -5,7 +5,6 @@ import type { Geometry } from "ol/geom";
 
 import { useDrawing, getFeatureTitle } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
-import { IconButton } from "@swissgeo/skeleton";
 
 import DrawingFeaturePropertyPanel from "./DrawingFeaturePropertyPanel.vue";
 
@@ -181,10 +180,11 @@ onUnmounted(() => {
   >
     <div class="mb-4 flex items-center justify-between">
       <h3 class="text-lg font-semibold">{{ t("debug.drawingPanelTitle") }}</h3>
-      <IconButton
-        iconName="X"
+      <UButton
+        color="primary"
+        variant="ghost"
+        icon="i-lucide-x"
         @click="handleClose"
-        severity="secondary"
         data-testid="drawing-panel-close"
       />
     </div>
@@ -199,8 +199,8 @@ onUnmounted(() => {
         />
         <UButton
           v-if="focusMode === 'none' && numberOfFeatures > 0"
-          color="neutral"
-          variant="solid"
+          color="primary"
+          variant="outline"
           data-testid="select-feature-tool"
           @click="enableSelectInteraction"
         >
@@ -209,8 +209,8 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'none'"
-          color="info"
-          variant="solid"
+          color="primary"
+          variant="ghost"
           data-testid="drawing-tool-polyline"
           @click="enableDrawInteraction('LineString')"
         >
@@ -218,8 +218,8 @@ onUnmounted(() => {
         </UButton>
         <UButton
           v-if="focusMode === 'none'"
-          color="info"
-          variant="solid"
+          color="primary"
+          variant="ghost"
           data-testid="drawing-tool-polygon"
           @click="enableDrawInteraction('Polygon')"
         >
@@ -227,8 +227,8 @@ onUnmounted(() => {
         </UButton>
         <UButton
           v-if="focusMode === 'none'"
-          color="info"
-          variant="solid"
+          color="primary"
+          variant="ghost"
           data-testid="drawing-tool-circle"
           @click="enableDrawInteraction('Circle')"
         >
@@ -236,8 +236,8 @@ onUnmounted(() => {
         </UButton>
         <UButton
           v-if="focusMode === 'none'"
-          color="info"
-          variant="solid"
+          color="primary"
+          variant="ghost"
           data-testid="drawing-tool-point"
           @click="enableDrawInteraction('Point')"
         >
@@ -247,7 +247,7 @@ onUnmounted(() => {
         <UButton
           v-if="focusMode === 'create'"
           color="error"
-          variant="solid"
+          variant="outline"
           data-testid="cancel-drawing-tool"
           @click="cancelDrawing"
         >
@@ -256,8 +256,8 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'select' && focusedFeature"
-          color="neutral"
-          variant="solid"
+          color="primary"
+          variant="ghost"
           data-testid="deselect-feature-tool"
           @click="terminateModification"
         >
@@ -266,7 +266,7 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'select' && focusedFeature"
-          color="info"
+          color="primary"
           variant="solid"
           data-testid="modify-geometry-tool"
           @click="enableModifyInteraction"
@@ -276,7 +276,7 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'edit' && focusedFeature"
-          color="info"
+          color="primary"
           variant="solid"
           data-testid="finish-modification-tool"
           @click="terminateModification"
@@ -327,8 +327,8 @@ onUnmounted(() => {
           <UButton
             label="Export feature"
             icon="i-lucide-save"
-            color="info"
-            variant="solid"
+            color="primary"
+            variant="outline"
           />
         </UDropdownMenu>
 
@@ -343,8 +343,8 @@ onUnmounted(() => {
           <UButton
             label="Export all features"
             icon="i-lucide-save"
-            color="info"
-            variant="solid"
+            color="primary"
+            variant="outline"
           />
         </UDropdownMenu>
       </div>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import { IconButton } from "@swissgeo/skeleton";
 import { useDebounceFn, useResizeObserver } from "@vueuse/core";
 import {
   computed,
@@ -247,12 +246,13 @@ function handleKeyDownEvent(event: KeyboardEvent) {
         @grabbing="yearCursorIsGrabbed = $event"
       />
 
-      <IconButton
+      <UButton
         id="timeSliderPlayButton"
         data-test="time-slider-play-button"
         class="flex-shrink-0"
-        severity="primary"
-        :iconName="playYearsWithData ? 'Pause' : 'Play'"
+        color="primary"
+        variant="solid"
+        :icon="playYearsWithData ? 'i-lucide-pause' : 'i-lucide-play'"
         @click="togglePlayYearsWithData"
       />
     </div>

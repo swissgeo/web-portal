@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { IconButton } from "@swissgeo/skeleton";
-
 const { t } = useI18n();
 
 const items = computed(() => [
@@ -27,11 +25,12 @@ const items = computed(() => [
         <DebugStateConfigPanel class="relative overflow-hidden" />
       </template>
       <template #list-trailing>
-        <IconButton
+        <UButton
+          color="primary"
+          variant="ghost"
           class="ml-2"
           @click="$emit('close')"
-          severity="primary"
-          iconName="X"
+          icon="i-lucide-x"
           title="Close"
         />
       </template>

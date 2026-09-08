@@ -640,15 +640,15 @@ importers:
       '@lucide/vue':
         specifier: 'catalog:'
         version: 1.33.0(vue@3.5.41(typescript@6.0.3))
+      '@nuxt/ui':
+        specifier: 'catalog:'
+        version: 4.11.0(521dc60e96d4483715ffbac6168700b8)
       '@swissgeo/log':
         specifier: workspace:*
         version: link:../log
       '@swissgeo/numbers':
         specifier: workspace:*
         version: link:../numbers
-      '@swissgeo/skeleton':
-        specifier: workspace:*
-        version: link:../skeleton
       '@vueuse/core':
         specifier: 'catalog:'
         version: 14.4.0(vue@3.5.41(typescript@6.0.3))

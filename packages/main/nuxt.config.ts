@@ -52,10 +52,20 @@ export default defineNuxtConfig({
   ],
   css: ["~/assets/css/main.css"],
   ui: {
+    theme: {
+      colors: [
+        "primary",
+        "secondary",
+        "success",
+        "info",
+        "warning",
+        "error",
+        "accent",
+      ],
+    },
     experimental: {
       componentDetection: ["LocaleSelect"],
     },
-    colorMode: false,
   },
   sourcemap: {
     // Enable in dev, disable in prod (unless you have a private uploader)
