@@ -117,7 +117,7 @@ watch(shareLink, (newLink) => {
   <UCard
     data-testid="toolbox-report-issue-card"
     :ui="{
-      body: 'md:max-h-[75vh] md:overflow-x-scroll',
+      body: 'md:max-h-[75vh] md:overflow-y-scroll',
     }"
   >
     <template #header>

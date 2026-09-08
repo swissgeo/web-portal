@@ -31,7 +31,7 @@ watch(
 <template>
   <div
     v-show="isVisible"
-    class="overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-200"
+    class="light overflow-hidden rounded-md bg-default text-default shadow-lg ring-1 ring-default"
     @click.stop
   >
     <div

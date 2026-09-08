@@ -129,8 +129,10 @@ function resetApp() {
     />
 
     <template #right>
-      <TopbarColorModeButton />
-      <TopbarLanguageSwitcherButton />
+      <div class="hidden items-center gap-1.5 xl:flex">
+        <TopbarColorModeButton />
+        <TopbarLanguageSwitcherButton />
+      </div>
     </template>
 
     <template #body>

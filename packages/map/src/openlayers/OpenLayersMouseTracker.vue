@@ -90,7 +90,9 @@ function setDisplayedFormatWithId(): void {
 </script>
 
 <template>
-  <div class="fixed bottom-[8rem] left-[5rem] bg-[rgba(255,255,255,0.7)]">
+  <div
+    class="fixed bottom-[8rem] left-[5rem] bg-[rgba(255,255,255,0.7)] text-black"
+  >
     <select
       v-model="displayedFormatId"
       class="map-projection form-control-xs"
