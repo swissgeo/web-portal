@@ -58,7 +58,6 @@ const layerResult = {
 
 describe("useSearchSelection", () => {
   beforeEach(() => {
-    (process as { client?: boolean }).client = true;
     layerStore.layers = [];
     layerStore.addLayer.mockReset();
     toastAddMock.mockReset();
