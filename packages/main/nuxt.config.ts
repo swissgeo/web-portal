@@ -131,6 +131,7 @@ export default defineNuxtConfig({
     livingdocsAuthToken: "",
     public: {
       ogcApiEndpoint: "",
+      cmsBaseUrl: "https://prod-swissgeoch.scs.scs-sdweb.ch",
       iconServiceEndpoint: "https://map.geo.admin.ch/api/icons/sets",
       shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
       ogcCatalogCollection: "swissgeo-catalog",

@@ -20,9 +20,6 @@ export function useSearchSelection() {
   const toast = useToast();
   const { locale, t } = useI18n();
 
-  // The content page a search result opened, or null when the modal is closed.
-  const selectedContentPage = ref<ContentSearchResult | null>(null);
-
   async function handleResultSelection(result: SearchResult) {
     // Only run on client side to avoid SSR serialization issues
     if (!process.client) {
@@ -40,11 +37,17 @@ export function useSearchSelection() {
     }
   }
 
-  // A CMS result shows what the search returned in a modal and leaves the map
-  // untouched. It cannot open the page itself yet: the CMS is headless and the
-  // route that renders a document is still unmerged (PR #328).
+  // The CMS is headless and this portal does not render its pages yet, so a
+  // content result opens the published page in a new tab. The map is left
+  // untouched, and so is the tab the user searched from.
   function handleContentSelection(result: ContentSearchResult) {
-    selectedContentPage.value = result;
+    if (!result.slug) {
+      return;
+    }
+
+    const base = runtimeConfig.public.cmsBaseUrl;
+    const locale_ = result.locale || locale.value;
+    window.open(`${base}/${locale_}/${result.slug}`, "_blank", "noopener");
   }
 
   function handleLocationSelection(result: LocationSearchResult) {
@@ -107,6 +110,5 @@ export function useSearchSelection() {
 
   return {
     handleResultSelection,
-    selectedContentPage,
   };
 }
