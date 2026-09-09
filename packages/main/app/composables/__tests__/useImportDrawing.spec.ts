@@ -239,4 +239,16 @@ describe("useImportDrawing", () => {
     await promise;
     expect(isLoading.value).toBe(false);
   });
+
+  it("clean up the @adminId part of the URL before fetching", async () => {
+    const { url, importDrawing } = useImportDrawing();
+    url.value =
+      "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/test123@adminId=987";
+
+    await importDrawing();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://public.geo.admin.ch/api/kml/files/test123",
+    );
+  });
 });
