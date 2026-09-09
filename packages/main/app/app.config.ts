@@ -30,6 +30,25 @@ export default defineAppConfig({
       error: "red",
       neutral: "neutral",
     },
+    // Prose headings use the shared native heading styles.
+    prose: {
+      h1: {
+        slots: { base: () => "" },
+      },
+      h2: {
+        slots: { base: () => "relative" },
+      },
+      h3: {
+        slots: { base: () => "relative" },
+      },
+      h4: {
+        slots: { base: () => "relative" },
+      },
+      p: {
+        base: () =>
+          "font-sans text-lg leading-normal font-medium tracking-normal",
+      },
+    },
     button: {
       compoundVariants: [
         {

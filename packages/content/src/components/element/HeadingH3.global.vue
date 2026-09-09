@@ -5,5 +5,5 @@ const { data } = defineProps<{ data: TitleComponent }>();
 </script>
 
 <template>
-  <h3>{{ data.content.title || "" }}</h3>
+  <ProseH3>{{ data.content.title || "" }}</ProseH3>
 </template>

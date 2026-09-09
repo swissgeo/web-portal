@@ -41,7 +41,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
 <template>
   <div class="flex flex-col gap-6">
     <section v-if="dataset.properties.description">
-      <h3 class="mb-2">
+      <h3 class="mb-2 text-base font-normal">
         {{ $t("dataset.abstract") }}
       </h3>
       <p class="text-sm leading-relaxed" data-testid="dataset-description">
@@ -53,7 +53,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
       v-if="dataset.properties.contacts?.length"
       data-testid="dataset-contacts"
     >
-      <h3 class="mb-2">
+      <h3 class="mb-2 text-base font-normal">
         {{ $t("dataset.contacts") }}
       </h3>
       <ul class="flex flex-col gap-3">
@@ -64,14 +64,14 @@ const serviceDistributions = computed<Distribution[]>(() => {
     </section>
 
     <section v-if="displayLinks.length">
-      <h3 class="mb-2">
+      <h3 class="mb-2 text-base font-normal">
         {{ $t("dataset.links") }}
       </h3>
       <DatasetLinkList :links="displayLinks" />
     </section>
 
     <section v-if="serviceDistributions.length">
-      <h3 class="mb-2">
+      <h3 class="mb-2 text-base font-normal">
         {{ $t("dataset.services") }}
       </h3>
       <DatasetServiceList :distributions="serviceDistributions" />
