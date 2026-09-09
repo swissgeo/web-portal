@@ -39,7 +39,7 @@ const items = computed(() => [
   { label: t("toolbox.import.tabDrawing"), slot: "drawing" },
 ]);
 
-function showToast(color: "error" | "success", message: string) {
+function showToast(color: "error" | "success" | "warning", message: string) {
   toast.add({ color, title: message });
 }
 
@@ -47,6 +47,20 @@ watch(errorMessage, (v) => v && showToast("error", v));
 watch(successMessage, (v) => v && showToast("success", v));
 watch(importDrawingErrorMessage, (v) => v && showToast("error", v));
 watch(importDrawingSuccessMessage, (v) => v && showToast("success", v));
+watch(
+  selectedFile,
+  (file) =>
+    file &&
+    (file.size > 500 * 1024 * 1024 // trigger a warning if the file size is greater than 500MB
+      ? showToast(
+          "warning",
+          t("toolbox.import.errorMessages.fileSizeWarning", {
+            fileSize: (file.size / (1024 * 1024)).toFixed(2),
+            maxSize: 500,
+          }),
+        )
+      : null),
+);
 
 async function handleImport() {
   if (!selectedFile.value) {

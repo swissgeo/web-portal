@@ -182,6 +182,7 @@
         "generalError": "Failed to import file",
         "noFileSelected": "Please select a file first",
         "noUrlEntered": "Please enter a URL",
+        "fileSizeWarning": "File size is {fileSize}MB, which exceeds the recommended maximum of {maxSize}MB",
         "fileTooLarge": "File is too large: {fileName} (maximum {maxSize}MB)",
         "drawingImportFailed": "Failed to import drawing",
         "kmlFetchFailed": "Failed to fetch KML: {status}",

@@ -182,6 +182,7 @@
         "generalError": "Datei konnte nicht importiert werden",
         "noFileSelected": "Bitte w\u00e4hlen Sie zuerst eine Datei aus",
         "noUrlEntered": "Bitte geben Sie eine URL ein",
+        "fileSizeWarning": "Dateigröße ist {fileSize}MB, was die empfohlene maximale Größe von {maxSize}MB überschreitet",
         "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize}MB)",
         "drawingImportFailed": "Zeichnung konnte nicht importiert werden",
         "kmlFetchFailed": "KML konnte nicht geladen werden: {status}",

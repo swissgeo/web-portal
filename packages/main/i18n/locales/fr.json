@@ -182,6 +182,7 @@
         "generalError": "Échec de l'importation du fichier",
         "noFileSelected": "Veuillez d'abord sélectionner un fichier",
         "noUrlEntered": "Veuillez entrer une URL",
+        "fileSizeWarning": "Le fichier est volumineux : {fileSize}MB, ce qui dépasse la limite recommandée de {maxSize}MB.",
         "fileTooLarge": "Le fichier est trop volumineux : {fileName} (maximum {maxSize}Mo)",
         "drawingImportFailed": "Échec de l'importation du dessin",
         "kmlFetchFailed": "Échec de la récupération du KML : {status}",
