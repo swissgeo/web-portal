@@ -11,6 +11,12 @@ vi.mock("vue-i18n", () => ({
       if (key === "toolbox.import.errorMessages.fileTooLarge") {
         return `File too large: ${String(params?.fileName)} (max ${String(params?.maxSize)}MB)`;
       }
+      if (key === "toolbox.import.errorMessages.unsupportedUrlType") {
+        return "Unsupported file type. URL must end with .gpx, .kml, .kmz, .geojson, .json, .tif, or .tiff";
+      }
+      if (key === "toolbox.import.errorMessages.fetchFailed") {
+        return `Failed to fetch file from URL (HTTP ${String(params?.status)})`;
+      }
       return key;
     },
   }),
@@ -172,5 +178,213 @@ describe("useFileImport", () => {
 
     expect(store.layers).toHaveLength(1);
     expect(store.layers[0]!.type).toBe("kml");
+  });
+
+  it("imports .tif files as COG with File object", async () => {
+    const file = makeFile("satellite.tif", "fake-tif-data");
+    const { importFile } = useFileImport();
+    const store = useLayerStore();
+
+    await importFile(file);
+
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("cog");
+    expect(store.layers[0]!.data).toBeInstanceOf(File);
+  });
+
+  it("imports .tiff files as COG", async () => {
+    const file = makeFile("satellite.tiff", "fake-tif-data");
+    const { importFile } = useFileImport();
+    const store = useLayerStore();
+
+    await importFile(file);
+
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("cog");
+  });
+});
+
+describe("useFileImport - importFileUrl", () => {
+  const fetchMock = vi.fn();
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    vi.spyOn(globalThis.crypto, "randomUUID").mockReturnValue(
+      "00000000-0000-4000-8000-000000000000",
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    fetchMock.mockReset();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("imports a KML file from URL", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve("<kml/>"),
+    });
+
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await importFileUrl("https://example.com/data.kml");
+
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("kml");
+    expect(store.layers[0]!.data).toBe("<kml/>");
+    expect(store.layers[0]!.info?.displayName).toBe("data.kml");
+  });
+
+  it("imports a GPX file from URL", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve("<gpx/>"),
+    });
+
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await importFileUrl("https://example.com/track.gpx");
+
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("gpx");
+    expect(store.layers[0]!.data).toBe("<gpx/>");
+  });
+
+  it("imports a GeoJSON file from URL", async () => {
+    const geoJson = '{"type":"FeatureCollection","features":[]}';
+    fetchMock.mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve(geoJson),
+    });
+
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await importFileUrl("https://example.com/data.geojson");
+
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("geojson");
+    expect(store.layers[0]!.data).toBe(geoJson);
+  });
+
+  it("imports a KMZ file from URL as Uint8Array", async () => {
+    const bytes = new Uint8Array([80, 75, 3, 4]);
+    fetchMock.mockResolvedValue({
+      ok: true,
+      arrayBuffer: () => Promise.resolve(bytes.buffer),
+    });
+
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await importFileUrl("https://example.com/data.kmz");
+
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("kmz");
+    expect(store.layers[0]!.data).toBeInstanceOf(Uint8Array);
+  });
+
+  it("stores URL directly for COG (.tif) without fetching", async () => {
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await importFileUrl("https://example.com/satellite.tif");
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("cog");
+    expect(store.layers[0]!.data).toBe("https://example.com/satellite.tif");
+  });
+
+  it("stores URL directly for COG (.tiff) without fetching", async () => {
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await importFileUrl("https://example.com/satellite.tiff");
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("cog");
+  });
+
+  it("throws for URL with no recognized extension", async () => {
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await expect(importFileUrl("https://example.com/data.bin")).rejects.toThrow(
+      "Unsupported file type",
+    );
+
+    expect(store.layers).toHaveLength(0);
+  });
+
+  it("throws for invalid URL", async () => {
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await expect(importFileUrl("not-a-url")).rejects.toThrow(
+      "Unsupported file type",
+    );
+    expect(store.layers).toHaveLength(0);
+  });
+
+  it("throws on HTTP error response", async () => {
+    fetchMock.mockResolvedValue({ ok: false, status: 404 });
+
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await expect(importFileUrl("https://example.com/data.kml")).rejects.toThrow(
+      "Failed to fetch file from URL (HTTP 404)",
+    );
+    expect(store.layers).toHaveLength(0);
+  });
+
+  it("throws on invalid GeoJSON content from URL", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve("not valid geojson"),
+    });
+
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await expect(
+      importFileUrl("https://example.com/data.geojson"),
+    ).rejects.toThrow("Invalid GeoJSON content from");
+    expect(store.layers).toHaveLength(0);
+  });
+
+  it("handles .json extension as GeoJSON", async () => {
+    const geoJson = '{"type":"FeatureCollection","features":[]}';
+    fetchMock.mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve(geoJson),
+    });
+
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await importFileUrl("https://example.com/data.json");
+
+    expect(store.layers).toHaveLength(1);
+    expect(store.layers[0]!.type).toBe("geojson");
+  });
+
+  it("extracts display name from URL path", async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve("<kml/>"),
+    });
+
+    const { importFileUrl } = useFileImport();
+    const store = useLayerStore();
+
+    await importFileUrl("https://example.com/path/to/my-map.kml");
+
+    expect(store.layers[0]!.info?.displayName).toBe("my-map.kml");
   });
 });
