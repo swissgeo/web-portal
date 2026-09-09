@@ -117,13 +117,13 @@ describe("convertFileLayerToMapLayer", () => {
     });
   });
 
-  it("converts COG layer with URL string", () => {
+  it("converts COG layer with sourceUrl", () => {
     const layerData: SourceLayer = {
-      data: "https://example.com/data.tif",
       humanId: "https://example.com/data.tif",
       isLoading: false,
       type: "cog",
       uuid: "cog-url-uuid",
+      sourceUrl: "https://example.com/data.tif",
     };
 
     const result = convertFileLayerToMapLayer(layerData);
@@ -147,7 +147,7 @@ describe("convertFileLayerToMapLayer", () => {
     };
 
     expect(() => convertFileLayerToMapLayer(layerData)).toThrow(
-      "COG layer is missing file data or URL",
+      "COG layer data must be a File (local import) or have a sourceUrl (URL import)",
     );
   });
 

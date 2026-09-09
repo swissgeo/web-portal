@@ -68,21 +68,23 @@ export function convertFileLayerToMapLayer(layer: SourceLayer): MapLayer {
   }
 
   if (layer.type === "cog") {
-    // For COG, data can be a File (local) or a string (URL)
-    const cogData = layer.data;
-    if (cogData instanceof File) {
+    // COG via URL: sourceUrl is set, data is empty
+    if (layer.sourceUrl) {
       return {
         ...baseLayer,
-        blob: cogData,
+        url: layer.sourceUrl,
       } as COGLayer;
     }
-    if (typeof cogData === "string") {
+    // COG via local file: data is a File object
+    if (layer.data instanceof File) {
       return {
         ...baseLayer,
-        url: cogData,
+        blob: layer.data,
       } as COGLayer;
     }
-    throw new Error("COG layer is missing file data or URL");
+    throw new Error(
+      "COG layer data must be a File (local import) or have a sourceUrl (URL import)",
+    );
   }
 
   return {
