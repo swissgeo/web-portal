@@ -46,6 +46,14 @@ function extractKmlUrls(url: string): string[] {
   }
 }
 
+function removeAdminIdFromUrl(url: string): string {
+  const adminIdIndex = url.indexOf("@adminId=");
+  if (adminIdIndex !== -1) {
+    return url.substring(0, adminIdIndex);
+  }
+  return url;
+}
+
 function validateDomain(url: string, allowedDomains: string[]): string | null {
   try {
     const hostname = new URL(url).hostname;
@@ -118,7 +126,7 @@ export function useImportDrawing() {
       mountDrawingLayer(olMap.value);
 
       for (const kmlUrl of kmlUrls) {
-        const kmlResponse = await fetch(kmlUrl);
+        const kmlResponse = await fetch(removeAdminIdFromUrl(kmlUrl));
         if (!kmlResponse.ok) {
           throw new Error(
             t("toolbox.import.errorMessages.kmlFetchFailed", {
