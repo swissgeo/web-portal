@@ -106,7 +106,9 @@ function resetApp() {
 <template>
   <UHeader
     :ui="{
-      container: 'max-w-full',
+      container: 'max-w-full gap-8',
+      left: 'gap-6',
+      right: 'lg:flex-none',
       center: 'lg:hidden xl:flex',
       toggle: 'lg:inline-flex xl:hidden',
       content: 'lg:flex xl:hidden',
