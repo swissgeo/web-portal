@@ -1,13 +1,10 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
-import type { SearchResult } from "@swissgeo/search";
-
 import log from "@swissgeo/log";
 import { useDatasetPanelStore } from "@swissgeo/skeleton";
 
 import DatasetPanel from "@/components/sidebar/DatasetPanel.vue";
 import SideBar from "@/components/sidebar/SideBar.vue";
-import { useSearchSelection } from "@/composables/useSearchSelection";
 
 const { resetApp } = useResetApp();
 const route = useRoute();
@@ -39,22 +36,11 @@ watch(route, (value) => {
     mapViewStore.exitFullscreenMode();
   }
 });
-
-// Handle search result selection
-const { handleResultSelection } = useSearchSelection();
-
-async function onSearchResultSelected(result: SearchResult) {
-  await handleResultSelection(result);
-}
 </script>
 
 <template>
   <div class="flex h-screen flex-col">
-    <Topbar
-      v-if="!isMapFullscreenMode"
-      @reset-app="resetApp"
-      @search-result-selected="onSearchResultSelected"
-    />
+    <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
     <UMain as="div" class="min-h-0 flex-1">
       <main ref="main" class="h-full font-sans">
         <div class="relative h-full">

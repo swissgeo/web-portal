@@ -6,19 +6,18 @@ import { useDebounceFn } from "@vueuse/core";
 import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
+import { useSearchSelection } from "@/composables/useSearchSelection";
+
 import SearchCategory from "./SearchCategory.vue";
 
 const { t, locale } = useI18n();
 const searchStore = useSearchStore();
 const toaster = useToaster();
+const { handleResultSelection } = useSearchSelection();
 
 const isOpen = defineModel<boolean>("open", { default: false });
 
 const resultsRef = ref<HTMLElement | null>(null);
-
-const emit = defineEmits<{
-  "result-selected": [result: SearchResult];
-}>();
 
 const query = computed({
   get: () => searchStore.query,
@@ -68,7 +67,7 @@ watch(
   () => searchStore.coordinateResult,
   (result) => {
     if (result) {
-      emit("result-selected", result);
+      void handleResultSelection(result);
     }
   },
 );
@@ -92,7 +91,7 @@ watch(
 );
 
 function handleSelect(result: SearchResult) {
-  emit("result-selected", result);
+  void handleResultSelection(result);
   searchStore.clearSearch();
   isOpen.value = false;
 }

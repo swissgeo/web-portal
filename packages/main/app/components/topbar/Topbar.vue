@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
-import type { SearchResult } from "@swissgeo/search";
 
 import { LogoPic } from "@swissgeo/skeleton";
 
@@ -8,7 +7,6 @@ const { t } = useI18n();
 
 const emit = defineEmits<{
   "reset-app": [void];
-  "search-result-selected": [result: SearchResult];
 }>();
 
 const items = computed<NavigationMenuItem[]>(() => [
@@ -117,7 +115,14 @@ function resetApp() {
   >
     <template #left>
       <LogoPic class="h-6 w-auto shrink-0" @logo-click="resetApp" />
-      <TopbarSearch @result-selected="emit('search-result-selected', $event)" />
+      <!-- the search drives the map, so it cannot be server rendered; the
+           fallback holds the field's place to avoid a layout shift -->
+      <ClientOnly>
+        <TopbarSearch />
+        <template #fallback>
+          <div class="h-8 w-72 grow rounded-md border border-default" />
+        </template>
+      </ClientOnly>
     </template>
 
     <UNavigationMenu
