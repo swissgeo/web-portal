@@ -476,11 +476,12 @@ export function useDrawing() {
   );
 
   /**
-   * Get the currently focused feature as a string in the specified format.
+   * Serialize the currently focused feature in the specified format. KMZ is
+   * asynchronous because its point icons are downloaded into the archive.
    */
   function serializeFocusedFeature(
     format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
-  ): string | ArrayBuffer | null {
+  ): string | Promise<ArrayBuffer> | null {
     if (!focusedFeature.value) {
       return null;
     }
@@ -503,10 +504,10 @@ export function useDrawing() {
   /**
    * Get the currently focused feature as a Blob in the specified format.
    */
-  function serializeFocusedFeatureAsBlob(
+  async function serializeFocusedFeatureAsBlob(
     format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
-  ): Blob | null {
-    const serializedFeature = serializeFocusedFeature(format);
+  ): Promise<Blob | null> {
+    const serializedFeature = await serializeFocusedFeature(format);
     if (!serializedFeature) {
       return null;
     }
@@ -518,11 +519,12 @@ export function useDrawing() {
   }
 
   /**
-   * Get all features in the drawing layer as a string in the specified format.
+   * Serialize all features in the drawing layer in the specified format. KMZ
+   * is asynchronous because its point icons are downloaded into the archive.
    */
   function serializeAllFeatures(
     format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
-  ): string | ArrayBuffer | null {
+  ): string | Promise<ArrayBuffer> | null {
     if (!drawingStore.drawingVectorSource) {
       return null;
     }
@@ -547,10 +549,10 @@ export function useDrawing() {
   /**
    * Export all features in the drawing layer as a Blob in the specified format.
    */
-  function serializeAllFeaturesAsBlob(
+  async function serializeAllFeaturesAsBlob(
     format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
-  ): Blob | null {
-    const serializedFeatures = serializeAllFeatures(format);
+  ): Promise<Blob | null> {
+    const serializedFeatures = await serializeAllFeatures(format);
     if (!serializedFeatures) {
       return null;
     }
