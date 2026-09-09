@@ -3,42 +3,12 @@ import type { LayerType } from "@swissgeo/layers";
 import { useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { parseGeoJson } from "~/utils/geoJson";
+import {
+  getLayerTypeForExtension,
+  getUrlExtension,
+  SUPPORTED_URL_EXTENSIONS,
+} from "~/utils/urlDetection";
 import { useI18n } from "vue-i18n";
-
-type FileUrlExtension =
-  | "gpx"
-  | "kml"
-  | "kmz"
-  | "geojson"
-  | "json"
-  | "tif"
-  | "tiff";
-
-const FILE_URL_EXTENSIONS: Record<FileUrlExtension, LayerType> = {
-  gpx: "gpx",
-  kml: "kml",
-  kmz: "kmz",
-  geojson: "geojson",
-  json: "geojson",
-  tif: "cog",
-  tiff: "cog",
-};
-
-/**
- * Extract file extension from a URL path. Returns null if not recognized.
- */
-function getUrlExtension(url: string): FileUrlExtension | null {
-  try {
-    const pathname = new URL(url).pathname.toLowerCase();
-    const ext = pathname.split(".").pop();
-    if (ext && ext in FILE_URL_EXTENSIONS) {
-      return ext as FileUrlExtension;
-    }
-  } catch {
-    // Invalid URL
-  }
-  return null;
-}
 
 /**
  * Composable for importing local files and remote file URLs as layers
@@ -49,6 +19,25 @@ export function useFileImport() {
   const runtimeConfig = useRuntimeConfig();
   const maxSizeMB = runtimeConfig.public.maxFileSizeMB;
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+  function addLayer(
+    layerType: LayerType,
+    humanId: string,
+    displayName: string,
+    abstract: string,
+    data?: string | Uint8Array | File,
+    sourceUrl?: string,
+  ) {
+    layerStore.addLayer({
+      uuid: crypto.randomUUID(),
+      humanId,
+      type: layerType,
+      isLoading: false,
+      info: { displayName, abstract },
+      data,
+      sourceUrl,
+    });
+  }
 
   /**
    * Import a local file and add it to the layer store
@@ -91,64 +80,52 @@ export function useFileImport() {
       }
     } else if (filename.endsWith(".tif") || filename.endsWith(".tiff")) {
       layerType = "cog";
-      // Store the File object directly for OpenLayers GeoTIFF source
       fileData = file;
     } else {
       throw new Error(`Unsupported file type: ${filename}`);
     }
 
-    // Create and add the layer
-    const layer = {
-      uuid: crypto.randomUUID(),
-      humanId: file.name,
-      opacity: 1,
-      isVisible: true,
-      type: layerType,
-      isLoading: false,
-      info: {
-        displayName: file.name,
-        abstract: `Imported from local file: ${file.name}`,
-      },
-      // Store the raw file data for KML/KMZ/GPX/COG
-      data: fileData,
-    };
-    layerStore.addLayer(layer);
+    addLayer(
+      layerType,
+      file.name,
+      file.name,
+      `Imported from local file: ${file.name}`,
+      fileData,
+    );
     log.info(`Successfully imported file: ${file.name}`);
   }
 
   /**
    * Import a file from a URL and add it to the layer store.
    * Detects file type from URL extension (.gpx, .kml, .kmz, .geojson, .json, .tif, .tiff).
-   * For COG (.tif/.tiff), the URL is stored directly for OpenLayers to stream.
+   * For COG (.tif/.tiff), the URL is stored as sourceUrl for OpenLayers to stream.
    * For other types, the file content is fetched and stored.
    */
   async function importFileUrl(url: string): Promise<void> {
     const ext = getUrlExtension(url);
     if (!ext) {
-      throw new Error(t("toolbox.import.errorMessages.unsupportedUrlType"));
+      throw new Error(
+        t("toolbox.import.errorMessages.unsupportedUrlType", {
+          types: SUPPORTED_URL_EXTENSIONS.join(", "),
+        }),
+      );
     }
 
-    const layerType = FILE_URL_EXTENSIONS[ext];
+    const layerType = getLayerTypeForExtension(ext);
     const displayName = url.split("/").pop() ?? url;
 
     log.debug(`Importing file from URL: ${url} (type: ${layerType})`);
 
-    // For COG, store the URL directly — OpenLayers streams tiles on demand
+    // For COG, store the URL as sourceUrl — OpenLayers streams tiles on demand
     if (layerType === "cog") {
-      const layer = {
-        uuid: crypto.randomUUID(),
-        humanId: url,
-        opacity: 1,
-        isVisible: true,
-        type: layerType,
-        isLoading: false,
-        info: {
-          displayName,
-          abstract: `Imported from URL: ${url}`,
-        },
-        data: url,
-      };
-      layerStore.addLayer(layer);
+      addLayer(
+        layerType,
+        url,
+        displayName,
+        `Imported from URL: ${url}`,
+        undefined,
+        url,
+      );
       log.info(`Successfully imported COG from URL: ${url}`);
       return;
     }
@@ -181,20 +158,13 @@ export function useFileImport() {
       throw new Error(`Invalid GeoJSON content from: ${url}`);
     }
 
-    const layer = {
-      uuid: crypto.randomUUID(),
-      humanId: url,
-      opacity: 1,
-      isVisible: true,
-      type: layerType,
-      isLoading: false,
-      info: {
-        displayName,
-        abstract: `Imported from URL: ${url}`,
-      },
-      data: fileData,
-    };
-    layerStore.addLayer(layer);
+    addLayer(
+      layerType,
+      url,
+      displayName,
+      `Imported from URL: ${url}`,
+      fileData,
+    );
     log.info(`Successfully imported ${layerType} from URL: ${url}`);
   }
 
