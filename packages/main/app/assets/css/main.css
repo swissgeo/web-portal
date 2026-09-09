@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "@swissgeo/map/stylesheet";
 @import "@fontsource/inter";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
 @import "@swissgeo/dimension/stylesheet";
 
 @source "../../../../skeleton/";
@@ -14,6 +17,8 @@
 
 @theme static {
   --font-sans: "Inter", system-ui, sans-serif;
+  --leading-heading: 1.2;
+  --leading-small-text: 1.3;
 
   --spacing-space-3xs: 0.125rem;
   --spacing-space-2xs: 0.25rem;
@@ -115,15 +120,63 @@
   }
 }
 
-h1 {
-  @apply text-4xl;
-  @apply pb-8;
-  @apply text-primary;
+@layer components {
+  :where(.type-lead) {
+    @apply font-sans text-2xl font-normal tracking-normal;
+    line-height: var(--leading-normal);
+  }
+
+  :where(.type-paragraph) {
+    @apply font-sans text-lg font-medium tracking-normal;
+    line-height: var(--leading-normal);
+  }
+
+  :where(.type-paragraph-bold) {
+    @apply font-sans text-lg font-semibold tracking-normal;
+    line-height: var(--leading-normal);
+  }
+
+  :where(.type-text-medium) {
+    @apply font-sans text-base font-medium tracking-normal;
+    line-height: var(--leading-normal);
+  }
+
+  :where(.type-text-small) {
+    @apply font-sans text-sm font-medium tracking-normal;
+    line-height: var(--leading-small-text);
+  }
+
+  :where(.type-text-small-bold) {
+    @apply font-sans text-sm font-bold tracking-normal;
+    line-height: var(--leading-small-text);
+  }
 }
 
-h2 {
-  @apply text-2xl;
-  @apply pt-12 pb-8 first-of-type:pt-2;
+@layer base {
+  h1 {
+    @apply pb-8 font-sans text-7xl font-semibold tracking-normal text-primary;
+    line-height: var(--leading-heading);
+  }
+
+  h2 {
+    @apply pt-12 pb-8 font-sans text-5xl font-semibold tracking-normal first-of-type:pt-2;
+    line-height: var(--leading-heading);
+  }
+
+  h3 {
+    @apply font-sans text-3xl font-semibold tracking-normal;
+    line-height: var(--leading-heading);
+  }
+
+  h4 {
+    @apply font-sans text-xl font-semibold tracking-normal;
+    line-height: var(--leading-heading);
+  }
+
+  h5 {
+    @apply font-sans text-lg font-semibold tracking-normal;
+    line-height: var(--leading-normal);
+  }
 }
 
 body {
