@@ -1,3 +1,5 @@
+import type { ContentSearchResult } from "@swissgeo/search";
+
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -54,7 +56,7 @@ const layerResult = {
   layerId: "ch.layer.one",
 } as never;
 
-const contentResult = {
+const contentResult: ContentSearchResult = {
   resultType: "CONTENT",
   id: "content-373",
   documentId: "373",
@@ -63,7 +65,7 @@ const contentResult = {
   title: "Daten beziehen: Download-Dienst",
   sanitizedTitle: "Daten beziehen: Download-Dienst",
   description: "Laden Sie Geodaten als Dateien herunter.",
-} as never;
+};
 
 describe("useSearchSelection", () => {
   beforeEach(() => {
@@ -113,11 +115,12 @@ describe("useSearchSelection", () => {
 
   it("uses the locale of the page rather than the interface locale", async () => {
     const { handleResultSelection } = useSearchSelection();
-    await handleResultSelection({
+    const frenchPage: ContentSearchResult = {
       ...contentResult,
       locale: "fr",
       slug: "theme-neige",
-    } as never);
+    };
+    await handleResultSelection(frenchPage);
 
     expect(windowOpenMock).toHaveBeenCalledWith(
       "https://cms.example.test/fr/theme-neige",
@@ -128,7 +131,8 @@ describe("useSearchSelection", () => {
 
   it("does nothing when the page has no slug to link to", async () => {
     const { handleResultSelection } = useSearchSelection();
-    await handleResultSelection({ ...contentResult, slug: "" } as never);
+    const withoutSlug: ContentSearchResult = { ...contentResult, slug: "" };
+    await handleResultSelection(withoutSlug);
 
     expect(windowOpenMock).not.toHaveBeenCalled();
   });
