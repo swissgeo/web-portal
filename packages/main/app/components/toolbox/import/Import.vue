@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useFileImport } from "~/composables/useFileImport";
 import { useToolboxStore } from "~/stores/toolbox";
+import { SUPPORTED_URL_EXTENSIONS } from "~/utils/urlDetection";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -148,7 +149,11 @@ async function handleFileUrlImport() {
         </UButton>
         <div class="border-neutral mt-4 border-t pt-4">
           <div class="mb-2 text-sm text-muted">
-            {{ t("toolbox.import.fileUrlDescription") }}
+            {{
+              t("toolbox.import.fileUrlDescription", {
+                types: SUPPORTED_URL_EXTENSIONS.join(", "),
+              })
+            }}
           </div>
           <UInput
             v-model="fileUrl"
