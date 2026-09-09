@@ -12,7 +12,7 @@ vi.mock("vue-i18n", () => ({
         return `File too large: ${String(params?.fileName)} (max ${String(params?.maxSize)}MB)`;
       }
       if (key === "toolbox.import.errorMessages.unsupportedUrlType") {
-        return "Unsupported file type. URL must end with .gpx, .kml, .kmz, .geojson, .json, .tif, or .tiff";
+        return `Unsupported file type. URL must end with ${String(params?.types)}`;
       }
       if (key === "toolbox.import.errorMessages.fetchFailed") {
         return `Failed to fetch file from URL (HTTP ${String(params?.status)})`;
@@ -287,7 +287,7 @@ describe("useFileImport - importFileUrl", () => {
     expect(store.layers[0]!.data).toBeInstanceOf(Uint8Array);
   });
 
-  it("stores URL directly for COG (.tif) without fetching", async () => {
+  it("stores URL as sourceUrl for COG (.tif) without fetching", async () => {
     const { importFileUrl } = useFileImport();
     const store = useLayerStore();
 
@@ -296,7 +296,10 @@ describe("useFileImport - importFileUrl", () => {
     expect(fetchMock).not.toHaveBeenCalled();
     expect(store.layers).toHaveLength(1);
     expect(store.layers[0]!.type).toBe("cog");
-    expect(store.layers[0]!.data).toBe("https://example.com/satellite.tif");
+    expect(store.layers[0]!.sourceUrl).toBe(
+      "https://example.com/satellite.tif",
+    );
+    expect(store.layers[0]!.data).toBeUndefined();
   });
 
   it("stores URL directly for COG (.tiff) without fetching", async () => {
