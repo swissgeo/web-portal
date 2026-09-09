@@ -217,6 +217,21 @@ test.describe("import external layers", () => {
     await expect(
       page.getByTestId("layer-cart").getByText(WMS_LAYER),
     ).toBeVisible();
+
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            (layerId) =>
+              window.swissgeoOlMap
+                .getLayers()
+                .getArray()
+                .some((layer) => layer.get("id") === layerId),
+            WMS_LAYER,
+          ),
+        { timeout: HYDRATION_TIMEOUT },
+      )
+      .toBe(true);
   });
 
   test("removes a layer when its distribution cannot be loaded", async ({
