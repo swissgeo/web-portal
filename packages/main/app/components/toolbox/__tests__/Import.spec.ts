@@ -111,4 +111,86 @@ describe("Import.vue", () => {
       "https://example.com/data.kml",
     );
   });
+
+  it("shows success toast after successful file import", async () => {
+    importFileSpy.mockResolvedValueOnce(undefined);
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+    const file = new File(["test"], "test.kml");
+
+    (wrapper.vm as ImportVm).selectedFile = file;
+    await wrapper.vm.$nextTick();
+
+    await (wrapper.vm as ImportVm).handleImport();
+
+    expect(toastAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        color: "success",
+        title: "toolbox.import.successMessage",
+      }),
+    );
+  });
+
+  it("shows error toast when file import throws", async () => {
+    importFileSpy.mockRejectedValueOnce(new Error("Import failed"));
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+    const file = new File(["test"], "test.kml");
+
+    (wrapper.vm as ImportVm).selectedFile = file;
+    await wrapper.vm.$nextTick();
+
+    await (wrapper.vm as ImportVm).handleImport();
+
+    expect(toastAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        color: "error",
+        title: "Import failed",
+      }),
+    );
+  });
+
+  it("shows success toast after successful URL import", async () => {
+    importFileUrlSpy.mockResolvedValueOnce(undefined);
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+
+    (wrapper.vm as ImportVm).fileUrl = "https://example.com/data.kml";
+    await wrapper.vm.$nextTick();
+
+    await (wrapper.vm as ImportVm).handleFileUrlImport();
+
+    expect(toastAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        color: "success",
+        title: "toolbox.import.successMessage",
+      }),
+    );
+  });
+
+  it("shows error toast when URL import throws", async () => {
+    importFileUrlSpy.mockRejectedValueOnce(new Error("Fetch failed"));
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+
+    (wrapper.vm as ImportVm).fileUrl = "https://example.com/data.kml";
+    await wrapper.vm.$nextTick();
+
+    await (wrapper.vm as ImportVm).handleFileUrlImport();
+
+    expect(toastAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        color: "error",
+        title: "Fetch failed",
+      }),
+    );
+  });
+
+  it("clears fileUrl after successful URL import", async () => {
+    importFileUrlSpy.mockResolvedValueOnce(undefined);
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+
+    (wrapper.vm as ImportVm).fileUrl = "https://example.com/data.kml";
+    await wrapper.vm.$nextTick();
+
+    await (wrapper.vm as ImportVm).handleFileUrlImport();
+
+    expect((wrapper.vm as ImportVm).fileUrl).toBe("");
+  });
 });
