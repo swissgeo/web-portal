@@ -21,6 +21,13 @@ export function useSearchSelection() {
   const toast = useToast();
   const { locale, t } = useI18n();
 
+  // the stores are instantiated in the handlers, not here: this composable is
+  // created in the layout setup, so it also runs during SSR, and instantiating
+  // the position store on the server puts its state into the Nuxt payload,
+  // where the class-based coordinate systems it holds cannot be serialized
+  // ("Cannot stringify arbitrary non-POJOs"). The handlers only run on the
+  // client.
+
   async function handleResultSelection(result: SearchResult) {
     // Only run on client side to avoid SSR serialization issues
     if (!process.client) {

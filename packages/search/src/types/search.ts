@@ -1,6 +1,6 @@
 // Search types for web-poc-portal
 // Adapted from web-mapviewer
-// Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/api/src/types/search.ts
+// Original: packages/api/src/types/search.ts
 
 export type SearchResultTypes = "LAYER" | "LOCATION" | "FEATURE" | "COORDINATE";
 

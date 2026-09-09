@@ -3,7 +3,7 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { useSearchStore } from "@swissgeo/skeleton";
 import { useDebounceFn } from "@vueuse/core";
-import { computed, nextTick, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import SearchCategory from "./SearchCategory.vue";
@@ -13,6 +13,8 @@ const searchStore = useSearchStore();
 const toaster = useToaster();
 
 const isOpen = defineModel<boolean>("open", { default: false });
+
+const resultsRef = ref<HTMLElement | null>(null);
 
 const emit = defineEmits<{
   "result-selected": [result: SearchResult];
@@ -101,17 +103,13 @@ function handleClick() {
   }
 }
 
-// the results are rendered in a portal, outside of this component, so they are
-// reached through the DOM rather than through a template ref
 function focusFirstResult() {
   if (!searchStore.hasResults) {
     return;
   }
   isOpen.value = true;
   void nextTick(() => {
-    document
-      .querySelector<HTMLElement>('[data-testid="search-results"] li')
-      ?.focus();
+    resultsRef.value?.querySelector<HTMLElement>("li")?.focus();
   });
 }
 
@@ -147,7 +145,7 @@ function clearSearch() {
         size="md"
         variant="outline"
         color="secondary"
-        class="min-w-72 flex-1"
+        class="w-72 grow"
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
@@ -170,6 +168,7 @@ function clearSearch() {
         <template #map>
           <div
             v-if="searchStore.hasResults"
+            ref="resultsRef"
             class="max-h-96 overflow-y-auto"
             data-testid="search-results"
           >
