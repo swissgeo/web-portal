@@ -10,7 +10,9 @@ const {
   positionStore,
   searchStore,
   toastAddMock,
+  windowOpenMock,
 } = vi.hoisted(() => ({
+  windowOpenMock: vi.fn(),
   fetchMock: vi.fn(),
   layerStore: { layers: [] as { humanId: string }[], addLayer: vi.fn() },
   makeServerLayerMock: vi.fn((dataset: { id: string }) => ({
@@ -34,6 +36,7 @@ mockNuxtImport("useRuntimeConfig", () => () => ({
   public: {
     ogcApiEndpoint: "https://api.example.com",
     ogcCatalogCollection: "swissgeo-catalog",
+    cmsBaseUrl: "https://cms.example.test",
   },
 }));
 
@@ -76,6 +79,8 @@ describe("useSearchSelection", () => {
     positionStore.setCenter.mockReset();
     positionStore.setZoom.mockReset();
     searchStore.setPinnedCoordinate.mockReset();
+    windowOpenMock.mockReset();
+    vi.stubGlobal("open", windowOpenMock);
   });
 
   it("goes to a coordinate result and marks it on the map", async () => {
@@ -122,17 +127,37 @@ describe("useSearchSelection", () => {
     expect(layerStore.addLayer).not.toHaveBeenCalled();
   });
 
-  it("holds a selected content page so the layout can show it in a modal", async () => {
-    const { handleResultSelection, selectedContentPage } = useSearchSelection();
-    expect(selectedContentPage.value).toBeNull();
-
+  it("opens the published CMS page in a new tab", async () => {
+    const { handleResultSelection } = useSearchSelection();
     await handleResultSelection(contentResult);
 
-    expect(selectedContentPage.value).toMatchObject({
-      documentId: "373",
-      sanitizedTitle: "Daten beziehen: Download-Dienst",
-      description: "Laden Sie Geodaten als Dateien herunter.",
-    });
+    expect(windowOpenMock).toHaveBeenCalledWith(
+      "https://cms.example.test/de/daten-beziehen-download-dienst",
+      "_blank",
+      "noopener",
+    );
+  });
+
+  it("uses the locale of the page rather than the interface locale", async () => {
+    const { handleResultSelection } = useSearchSelection();
+    await handleResultSelection({
+      ...contentResult,
+      locale: "fr",
+      slug: "theme-neige",
+    } as never);
+
+    expect(windowOpenMock).toHaveBeenCalledWith(
+      "https://cms.example.test/fr/theme-neige",
+      "_blank",
+      "noopener",
+    );
+  });
+
+  it("does nothing when the page has no slug to link to", async () => {
+    const { handleResultSelection } = useSearchSelection();
+    await handleResultSelection({ ...contentResult, slug: "" } as never);
+
+    expect(windowOpenMock).not.toHaveBeenCalled();
   });
 
   it("leaves the map alone when a content page is selected", async () => {
