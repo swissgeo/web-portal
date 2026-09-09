@@ -2,7 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import type { Layer } from "@/types";
 
-import { isGeoJSON, isGPX, isKML, isKMZ, isWMS, isWMTS } from "../recordUtils";
+import {
+  isCOG,
+  isGeoJSON,
+  isGPX,
+  isKML,
+  isKMZ,
+  isWMS,
+  isWMTS,
+} from "../recordUtils";
 
 function makeLayer(format: Layer["format"]): Layer {
   return {
@@ -77,5 +85,17 @@ describe("isGeoJSON", () => {
   it("returns false for other formats", () => {
     expect(isGeoJSON(makeLayer("WMTS"))).toBe(false);
     expect(isGeoJSON(makeLayer("KML"))).toBe(false);
+  });
+});
+
+describe("isCOG", () => {
+  it("returns true for COG format", () => {
+    expect(isCOG(makeLayer("COG"))).toBe(true);
+  });
+
+  it("returns false for other formats", () => {
+    expect(isCOG(makeLayer("WMTS"))).toBe(false);
+    expect(isCOG(makeLayer("KML"))).toBe(false);
+    expect(isCOG(makeLayer("GeoJSON"))).toBe(false);
   });
 });

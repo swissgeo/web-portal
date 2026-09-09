@@ -74,4 +74,136 @@ describe("convertFileLayerToMapLayer", () => {
       "GeoJSON file layer is missing file data",
     );
   });
+
+  it("throws for dataset layers", () => {
+    const layerData: SourceLayer = {
+      data: {
+        id: "ds",
+        type: "Collection",
+        records: [],
+        itemType: "Dataset",
+        title: "Test",
+      } as unknown as SourceLayer["data"],
+      humanId: "dataset-layer",
+      isLoading: false,
+      type: "dataset",
+      uuid: "dataset-uuid",
+    };
+
+    expect(() => convertFileLayerToMapLayer(layerData)).toThrow(
+      "Dataset layers cannot be converted as file layers",
+    );
+  });
+
+  it("converts COG layer with local File blob", () => {
+    const file = new File(["fake-tif-data"], "map.tif", { type: "image/tiff" });
+    const layerData: SourceLayer = {
+      data: file,
+      humanId: "map.tif",
+      isLoading: false,
+      type: "cog",
+      uuid: "cog-uuid",
+    };
+
+    const result = convertFileLayerToMapLayer(layerData);
+    expect(result).toEqual({
+      blob: file,
+      format: "COG",
+      displayName: "map.tif",
+      isVisible: true,
+      layerId: "map.tif",
+      opacity: 1,
+      uuid: "cog-uuid",
+    });
+  });
+
+  it("converts COG layer with sourceUrl", () => {
+    const layerData: SourceLayer = {
+      humanId: "https://example.com/data.tif",
+      isLoading: false,
+      type: "cog",
+      uuid: "cog-url-uuid",
+      sourceUrl: "https://example.com/data.tif",
+    };
+
+    const result = convertFileLayerToMapLayer(layerData);
+    expect(result).toEqual({
+      url: "https://example.com/data.tif",
+      format: "COG",
+      displayName: "https://example.com/data.tif",
+      isVisible: true,
+      layerId: "https://example.com/data.tif",
+      opacity: 1,
+      uuid: "cog-url-uuid",
+    });
+  });
+
+  it("throws for COG layer with invalid data", () => {
+    const layerData: SourceLayer = {
+      humanId: "bad-cog",
+      isLoading: false,
+      type: "cog",
+      uuid: "bad-cog-uuid",
+    };
+
+    expect(() => convertFileLayerToMapLayer(layerData)).toThrow(
+      "COG layer data must be a File (local import) or have a sourceUrl (URL import)",
+    );
+  });
+
+  it("passes KMZ binary data through", () => {
+    const bytes = new Uint8Array([80, 75, 3, 4]);
+    const layerData: SourceLayer = {
+      data: bytes,
+      humanId: "archive.kmz",
+      isLoading: false,
+      type: "kmz",
+      uuid: "kmz-uuid",
+    };
+
+    const result = convertFileLayerToMapLayer(layerData);
+    expect(result).toEqual({
+      data: bytes,
+      format: "KMZ",
+      displayName: "archive.kmz",
+      isVisible: true,
+      layerId: "archive.kmz",
+      opacity: 1,
+      uuid: "kmz-uuid",
+    });
+  });
+
+  it("passes GPX data through", () => {
+    const layerData: SourceLayer = {
+      data: "<gpx/>",
+      humanId: "track.gpx",
+      isLoading: false,
+      type: "gpx",
+      uuid: "gpx-uuid",
+    };
+
+    const result = convertFileLayerToMapLayer(layerData);
+    expect(result).toEqual({
+      data: "<gpx/>",
+      format: "GPX",
+      displayName: "track.gpx",
+      isVisible: true,
+      layerId: "track.gpx",
+      opacity: 1,
+      uuid: "gpx-uuid",
+    });
+  });
+
+  it("uses humanId as displayName fallback", () => {
+    const layerData: SourceLayer = {
+      data: "<kml/>",
+      humanId: "fallback-name",
+      isLoading: false,
+      type: "kml",
+      uuid: "kml-uuid",
+    };
+
+    const result = convertFileLayerToMapLayer(layerData);
+    expect(result.displayName).toBe("fallback-name");
+  });
 });

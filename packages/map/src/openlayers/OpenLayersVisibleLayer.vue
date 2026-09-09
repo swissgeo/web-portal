@@ -10,8 +10,10 @@ import {
   isKMZ,
   isGPX,
   isGeoJSON,
+  isCOG,
 } from "@/utils/recordUtils";
 
+import OpenLayersCOGLayer from "./OpenLayersCOGLayer.vue";
 import OpenLayersGeoJSONLayer from "./OpenLayersGeoJSONLayer.vue";
 import OpenLayersGPXLayer from "./OpenLayersGPXLayer.vue";
 import OpenLayersKMLLayer from "./OpenLayersKMLLayer.vue";
@@ -49,4 +51,5 @@ const customLayerRenderer = computed(() =>
   />
   <OpenLayersGPXLayer :layer="layer" v-else-if="isGPX(layer)" />
   <OpenLayersGeoJSONLayer :layer="layer" v-else-if="isGeoJSON(layer)" />
+  <OpenLayersCOGLayer :layer="layer" v-else-if="isCOG(layer)" />
 </template>

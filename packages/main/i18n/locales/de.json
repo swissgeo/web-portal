@@ -165,7 +165,7 @@
       "buttonTitle": "Importieren",
       "title": "Eine Datei oder URL importieren",
       "description": "Akzeptierte Dateitypen: {types}",
-      "tabFile": "Datei",
+      "tabData": "Daten",
       "tabUrl": "URL",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Durchsuchen...",
@@ -175,15 +175,21 @@
       "loadingMessage": "Datei wird importiert...",
       "successMessage": "Datei erfolgreich importiert: {fileName}",
       "drawingSuccessMessage": "Zeichnung erfolgreich importiert",
+      "fileUrlDescription": "Oder eine Datei von einer URL importieren ({types}):",
+      "fileUrlPlaceholder": "https://example.com/data.gpx",
+      "importFileUrlButton": "Von URL importieren",
       "errorMessages": {
         "generalError": "Datei konnte nicht importiert werden",
-        "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus",
+        "noFileSelected": "Bitte w\u00e4hlen Sie zuerst eine Datei aus",
         "noUrlEntered": "Bitte geben Sie eine URL ein",
+        "fileSizeWarning": "Dateigröße ist {fileSize}MB, was die empfohlene maximale Größe von {maxSize}MB überschreitet",
         "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize}MB)",
         "drawingImportFailed": "Zeichnung konnte nicht importiert werden",
         "kmlFetchFailed": "KML konnte nicht geladen werden: {status}",
         "noKmlFound": "Keine KML-Zeichnung in der angegebenen URL gefunden",
-        "domainNotAllowed": "Das Abrufen von {domain} ist nicht erlaubt"
+        "domainNotAllowed": "Das Abrufen von {domain} ist nicht erlaubt",
+        "unsupportedUrlType": "Nicht unterst\u00fctzter Dateityp. Die URL muss auf {types} enden",
+        "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})"
       },
       "close": "Schließen"
     },

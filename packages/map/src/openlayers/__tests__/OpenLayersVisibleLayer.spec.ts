@@ -16,6 +16,9 @@ const stubs = {
     emits: ["error"],
     template: '<div data-testid="kmz" />',
   }),
+  OpenLayersCOGLayer: {
+    template: '<div data-testid="cog" />',
+  },
 };
 
 const geoJsonData = {
@@ -84,5 +87,41 @@ describe("OpenLayersVisibleLayer", () => {
     wrapper.getComponent(stubs.OpenLayersKMZLayer).vm.$emit("error", failure);
 
     expect(wrapper.emitted("layerError")).toEqual([[layer.uuid, failure]]);
+  });
+
+  it("renders a COG layer with the COG renderer", () => {
+    const layer = {
+      format: "COG",
+      layerId: "satellite.tif",
+      uuid: "cog-uuid",
+      opacity: 1,
+      isVisible: true,
+      url: "https://example.com/data.tif",
+    } as Layer;
+
+    const wrapper = mount(OpenLayersVisibleLayer, {
+      props: { layer },
+      global: { stubs },
+    });
+
+    expect(wrapper.find('[data-testid="cog"]').exists()).toBe(true);
+  });
+
+  it("renders a COG layer with blob source", () => {
+    const layer = {
+      format: "COG",
+      layerId: "local.tif",
+      uuid: "cog-blob-uuid",
+      opacity: 1,
+      isVisible: true,
+      blob: new File(["data"], "test.tif"),
+    } as Layer;
+
+    const wrapper = mount(OpenLayersVisibleLayer, {
+      props: { layer },
+      global: { stubs },
+    });
+
+    expect(wrapper.find('[data-testid="cog"]').exists()).toBe(true);
   });
 });
