@@ -11,6 +11,7 @@ declare global {
       ogcApiEndpoint: string;
       cmsBaseUrl: string;
       iconServiceEndpoint: string;
+      drawingServiceEndpoint: string;
       printServiceUrl: string;
       ogcCatalogCollection: string;
       shareServiceUrl: string;

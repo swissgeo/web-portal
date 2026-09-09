@@ -195,11 +195,8 @@ function applyPointKmlStyle(
     } else {
       feature.unset("name", true);
     }
-    feature.set(
-      "showDescriptionOnMap",
-      isEnabled(feature.get(SHOW_DESCRIPTION_KEY)),
-      true,
-    );
+    // Unset the showDescriptionOnMap property as it is no longer needed
+    feature.unset("showDescriptionOnMap", true);
   } else if (label) {
     feature.set("name", label, true);
   }
