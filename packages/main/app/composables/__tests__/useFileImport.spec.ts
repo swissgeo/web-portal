@@ -1,4 +1,3 @@
-import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useLayerStore } from "@swissgeo/layers";
 import { createPinia, setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -20,12 +19,6 @@ vi.mock("vue-i18n", () => ({
       return key;
     },
   }),
-}));
-
-mockNuxtImport("useRuntimeConfig", () => () => ({
-  public: {
-    maxFileSizeMB: 50,
-  },
 }));
 
 const makeFile = (name: string, content = "<data/>") =>
@@ -140,17 +133,6 @@ describe("useFileImport", () => {
     await expect(
       importFile(makeFile("broken.geojson", content)),
     ).rejects.toThrow("Invalid GeoJSON file: broken.geojson");
-    expect(store.layers).toHaveLength(0);
-  });
-
-  it("rejects files exceeding the size limit", async () => {
-    const { importFile } = useFileImport();
-    const store = useLayerStore();
-
-    const file = makeFile("huge.kml", "<kml/>");
-    Object.defineProperty(file, "size", { value: 51 * 1024 * 1024 });
-
-    await expect(importFile(file)).rejects.toThrow("File too large");
     expect(store.layers).toHaveLength(0);
   });
 

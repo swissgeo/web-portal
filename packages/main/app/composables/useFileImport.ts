@@ -16,9 +16,6 @@ import { useI18n } from "vue-i18n";
 export function useFileImport() {
   const layerStore = useLayerStore();
   const { t } = useI18n();
-  const runtimeConfig = useRuntimeConfig();
-  const maxSizeMB = runtimeConfig.public.maxFileSizeMB;
-  const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
   function addLayer(
     layerType: LayerType,
@@ -43,15 +40,6 @@ export function useFileImport() {
    * Import a local file and add it to the layer store
    */
   async function importFile(file: File): Promise<void> {
-    if (file.size > maxSizeBytes) {
-      throw new Error(
-        t("toolbox.import.errorMessages.fileTooLarge", {
-          fileName: file.name,
-          maxSize: maxSizeMB,
-        }),
-      );
-    }
-
     log.debug(`Importing file: ${file.name}`);
 
     const filename = file.name.toLowerCase();
