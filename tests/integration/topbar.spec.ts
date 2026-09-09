@@ -59,10 +59,6 @@ function markedCoordinates(page: Page) {
 }
 
 test.describe("topbar search", () => {
-  // a realistic desktop: at the 1280 default the header is too full for the
-  // whole navigation and a usable search field, and they overlap
-  test.use({ viewport: { width: 1600, height: 900 } });
-
   test.beforeEach(async ({ page }) => {
     await mockExternalRequests(page).mockAll();
     await page.goto("/de/map");

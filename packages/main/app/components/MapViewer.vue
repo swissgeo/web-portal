@@ -61,6 +61,9 @@ const displayMode = inject(displayModeKey, "web");
           displayMode === 'web'
         "
       />
+      <!-- lazy on purpose: a static import would pull its ol modules into the
+           server bundle even while the v-if is false, and they cannot be
+           evaluated during SSR -->
       <LazyMapOpenLayersSearchMarker
         v-if="searchStore.pinnedCoordinate && displayMode === 'web'"
       />
