@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from "@nuxt/ui";
 import type Feature from "ol/Feature";
-import type { Geometry } from "ol/geom";
 
 import { useDrawing, getFeatureTitle } from "@swissgeo/drawing";
 import log from "@swissgeo/log";
 import { useMap } from "@swissgeo/map";
+import { ref } from "vue";
+
+import { useShareDrawings } from "@/composables/useShareDrawings";
 
 import DrawingFeaturePropertyPanel from "./DrawingFeaturePropertyPanel.vue";
 
@@ -30,6 +32,8 @@ const {
   serializeFocusedFeatureAsBlob,
   serializeAllFeaturesAsBlob,
 } = useDrawing();
+
+const { shareDrawings, isSharing } = useShareDrawings();
 
 const emit = defineEmits<{
   close: [];
@@ -161,6 +165,10 @@ watch(
   },
 );
 
+watch(focusMode, (newFocusMode, oldFocusMode) => {
+  console.log("Focus mode changed from", oldFocusMode, "to", newFocusMode);
+});
+
 function terminateModification() {
   disableAllInteractions();
   removeFocus();
@@ -170,6 +178,10 @@ function cancelDrawing() {
   disableAllInteractions();
   removeFocusedFeature();
   removeFocus();
+}
+
+async function onShareDrawings() {
+  await shareDrawings();
 }
 
 onMounted(() => {
@@ -326,7 +338,7 @@ onUnmounted(() => {
         </UButton>
 
         <UDropdownMenu
-          v-if="focusedFeature"
+          v-if="focusedFeature && focusMode === 'select'"
           arrow
           :items="exportFocusedFeatureItems"
           :ui="{
@@ -342,7 +354,10 @@ onUnmounted(() => {
         </UDropdownMenu>
 
         <UDropdownMenu
-          v-if="numberOfFeatures > 0"
+          v-if="
+            numberOfFeatures > 0 &&
+            (focusMode === 'none' || focusMode === 'select')
+          "
           arrow
           :items="exportAllFeaturesItems"
           :ui="{
@@ -356,6 +371,17 @@ onUnmounted(() => {
             variant="outline"
           />
         </UDropdownMenu>
+
+        <UButton
+          v-if="true"
+          color="primary"
+          variant="solid"
+          :loading="isSharing"
+          data-testid="sharing-tool-clear"
+          @click="onShareDrawings"
+        >
+          Share drawings
+        </UButton>
       </div>
     </div>
   </div>

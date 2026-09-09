@@ -130,6 +130,7 @@ export default defineNuxtConfig({
     public: {
       ogcApiEndpoint: "",
       iconServiceEndpoint: "https://map.geo.admin.ch/api/icons/sets",
+      drawingServiceEndpoint: "https://www.dev.sgdi.tech/api/wps/v1/drawings",
       shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
       ogcCatalogCollection: "swissgeo-catalog",
       gitCommit: getGitCommit(),
@@ -144,6 +145,7 @@ export default defineNuxtConfig({
         "public.geo.admin.ch",
         "sys-s.dev.bgdi.ch",
         "sys-public.dev.bgdi.ch",
+        "www.dev.sgdi.tech",
       ],
     },
   },
