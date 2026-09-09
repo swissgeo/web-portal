@@ -286,7 +286,7 @@ describe("OpenLayers feature serializers", () => {
       0,
     );
     expect(getExtendedDataValue(doc, "textOffset")).toBe("1,-1");
-    expect(getExtendedDataValue(doc, "showDescriptionOnMap")).toBe("true");
+    expect(getExtendedDataValue(doc, "showDescriptionOnMap")).toBe(null);
     expect(getExtendedDataValue(doc, "type")).toBe("annotation");
   });
 

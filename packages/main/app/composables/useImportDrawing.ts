@@ -11,6 +11,14 @@ function isDirectKmlUrl(url: string): boolean {
   }
 }
 
+function isSwissgeoServiceDrawingsUrl(url: string): boolean {
+  const drawingServiceWithoutScheme = useRuntimeConfig()
+    .public.drawingServiceEndpoint.split("//")
+    .pop() as string;
+  const urlWithoutScheme = url.split("//").pop();
+  return urlWithoutScheme?.startsWith(drawingServiceWithoutScheme) ?? false;
+}
+
 function isViewerUrl(url: string): boolean {
   return url.includes("#/map") || url.includes("layers=KML");
 }
@@ -98,6 +106,8 @@ export function useImportDrawing() {
         kmlUrls = [inputUrl];
       } else if (isViewerUrl(inputUrl)) {
         kmlUrls = extractKmlUrls(inputUrl);
+      } else if (isSwissgeoServiceDrawingsUrl(inputUrl)) {
+        kmlUrls = [inputUrl];
       } else {
         const resolveResponse = await $fetch<{ redirectUrl: string }>(
           "/api/wpa/v1/drawing/resolve-url",
