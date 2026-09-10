@@ -46,13 +46,20 @@ export function useOgcCatalog(
         ],
       });
 
+      const query = {
+        lang: language.value,
+        limit: PAGE_SIZE,
+        offset,
+      };
+
+      if (term) {
+        query.q = term;
+      } else {
+        query.sortby = "title";
+      }
+
       const page = await $fetch<DatasetCollection>(catalogItemsUrl(), {
-        query: {
-          lang: language.value,
-          limit: PAGE_SIZE,
-          offset,
-          ...(term ? { q: term } : {}),
-        },
+        query,
       });
 
       // Requests are not cancelled, so a superseded language or search term can

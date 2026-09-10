@@ -407,15 +407,16 @@
     }
   },
   "layerCatalog": {
-    "titleLoading": "Loading...",
-    "titleError": "Title unavailable",
     "table": {
       "onMap": "On map",
       "title": "Title",
       "id": "Identifier",
       "description": "Description",
       "dataOwner": "Data owner",
-      "empty": "Select a group to list its layers."
-    }
+      "empty": "No layers found."
+    },
+    "loading": "Loading...",
+    "error": "The catalog could not be loaded.",
+    "loadMore": "Load more"
   }
 }

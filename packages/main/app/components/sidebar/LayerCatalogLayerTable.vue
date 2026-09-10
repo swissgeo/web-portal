@@ -6,28 +6,14 @@ import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { useI18n } from "vue-i18n";
 
-import type { LayerRecord } from "@/components/sidebar/useLayerRecords";
-
-/**
- * The records to list. Props are shallow, so the records keep the state refs
- * they were built with rather than having them unwrapped by deep reactivity.
- */
-const props = defineProps<{ layers: LayerRecord[] }>();
-
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const toast = useToast();
 const layerStore = useLayerStore();
 const dimensionsStore = useDimensionsStore();
 
-type LayerRow = {
-  layerId: string;
-  title: string;
-  description?: string;
-  /** The dataset the layer is made from, missing until its record has landed. */
-  dataset?: Dataset;
-  /** The organization the record names as its point of contact. */
-  dataOwner?: string;
-};
+const { data, hasMore, status, error, loadMore } = useOgcCatalog(locale);
+
+const datasets = computed<Dataset[]>(() => data.value?.features ?? []);
 
 /**
  * The organization of the contact holding the `pointOfContact` role, which is
@@ -38,31 +24,6 @@ function dataOwnerOf(dataset: Dataset): string | undefined {
     (contact) => contact.role === "pointOfContact",
   )?.organization;
 }
-
-/**
- * A row per selected layer: a record only knows its title once it has been
- * fetched, so the title stands in for it while it is on its way or has failed.
- */
-const rows = computed<LayerRow[]>(() =>
-  props.layers.map(({ layerId, state }) => {
-    const recordState = state.value;
-    switch (recordState.status) {
-      case "success":
-        return {
-          layerId,
-          title: recordState.dataset.properties.title,
-          description: recordState.dataset.properties.description,
-          dataset: recordState.dataset,
-          dataOwner: dataOwnerOf(recordState.dataset),
-        };
-      case "error":
-        return { layerId, title: t("layerCatalog.titleError") };
-      case "idle":
-      case "pending":
-        return { layerId, title: t("layerCatalog.titleLoading") };
-    }
-  }),
-);
 
 /**
  * The layer a row stands for once it is on the map. Layers are matched on the
@@ -78,9 +39,9 @@ function mapLayerOf(layerId: string) {
  * TODO: check whether this can be shared with LayerCartEntry.vue, which adds
  * and removes the very same layers from the cart side.
  */
-function setOnMap(row: LayerRow, onMap: boolean): void {
+function setOnMap(dataset: Dataset, onMap: boolean): void {
   if (!onMap) {
-    const layer = mapLayerOf(row.layerId);
+    const layer = mapLayerOf(dataset.id);
     if (layer) {
       dimensionsStore.clearLayerDimensions(layer.uuid);
       // Removing the source layer unmounts its converter. The converter then
@@ -89,11 +50,8 @@ function setOnMap(row: LayerRow, onMap: boolean): void {
     }
     return;
   }
-  if (!row.dataset) {
-    return;
-  }
   try {
-    layerStore.addLayer(makeServerLayer(row.dataset));
+    layerStore.addLayer(makeServerLayer(dataset));
   } catch (e) {
     log.error(
       "Failed to add catalog layer to map",
@@ -106,7 +64,13 @@ function setOnMap(row: LayerRow, onMap: boolean): void {
 
 <template>
   <div class="min-w-0 flex-1 overflow-y-auto p-4">
-    <p v-if="rows.length === 0" class="text-sm text-muted">
+    <p v-if="error" class="text-sm text-error">
+      {{ t("layerCatalog.error") }}
+    </p>
+    <p
+      v-else-if="datasets.length === 0 && status !== 'pending'"
+      class="text-sm text-muted"
+    >
       {{ t("layerCatalog.table.empty") }}
     </p>
     <table v-else class="w-full text-left text-sm">
@@ -125,28 +89,40 @@ function setOnMap(row: LayerRow, onMap: boolean): void {
       </thead>
       <tbody>
         <tr
-          v-for="row in rows"
-          :key="row.layerId"
+          v-for="dataset in datasets"
+          :key="dataset.id"
           class="border-b border-gray-100"
         >
           <td class="px-3 py-2">
-            <!-- A layer can only be put on the map once its record is there -->
             <USwitch
               data-testid="catalog-layer-on-map"
-              :model-value="!!mapLayerOf(row.layerId)"
-              :disabled="!row.dataset"
+              :model-value="!!mapLayerOf(dataset.id)"
               :aria-label="
-                mapLayerOf(row.layerId)
+                mapLayerOf(dataset.id)
                   ? t('layers.remove')
                   : t('dataset.addToMap')
               "
-              @update:model-value="setOnMap(row, $event)"
+              @update:model-value="setOnMap(dataset, $event)"
             />
           </td>
-          <td class="px-3 py-2">{{ row.title }}</td>
-          <td class="px-3 py-2">{{ row.dataOwner }}</td>
+          <td class="px-3 py-2">{{ dataset.properties.title }}</td>
+          <td class="px-3 py-2">{{ dataOwnerOf(dataset) }}</td>
         </tr>
       </tbody>
     </table>
+
+    <p v-if="status === 'pending'" class="px-3 py-2 text-sm text-muted">
+      {{ t("layerCatalog.loading") }}
+    </p>
+    <UButton
+      v-else-if="hasMore"
+      color="neutral"
+      variant="subtle"
+      size="sm"
+      class="mt-2 cursor-pointer"
+      @click="loadMore"
+    >
+      {{ t("layerCatalog.loadMore") }}
+    </UButton>
   </div>
 </template>

@@ -2,19 +2,10 @@
 import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 import { useI18n } from "vue-i18n";
 
-import type { LayerRecord } from "@/components/sidebar/useLayerRecords";
-
 import LayerCatalogLayerTable from "./LayerCatalogLayerTable.vue";
 
 const uiStore = useSidebarStore();
 const { t } = useI18n();
-
-/**
- * The records of the group selected in the tree. A shallow ref, so that the
- * records keep the state refs they were built with rather than having them
- * unwrapped by deep reactivity.
- */
-const selectedLayers = shallowRef<LayerRecord[]>([]);
 
 function closeLayerCatalog() {
   uiStore.setSidebar(SidebarType.LAYER_CART);
@@ -38,7 +29,7 @@ function closeLayerCatalog() {
     </div>
     <div class="flex min-h-0 flex-1">
       <div class="w-75 border-r border-gray-200 bg-muted/30 px-2 py-3"></div>
-      <LayerCatalogLayerTable :layers="selectedLayers" />
+      <LayerCatalogLayerTable />
     </div>
   </div>
 </template>
