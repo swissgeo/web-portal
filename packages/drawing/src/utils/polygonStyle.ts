@@ -69,6 +69,7 @@ export const POLYGON_EDITING_STYLE: StyleFunction = (_feature: FeatureLike) => {
 
 export const POLYGON_SELECTED_STYLE = (feature: FeatureLike) => {
   const props = feature.getProperties();
+  console.log("SELECTED STYLE");
 
   return [
     new Style({

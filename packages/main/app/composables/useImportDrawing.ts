@@ -75,7 +75,7 @@ function validateDomain(url: string, allowedDomains: string[]): string | null {
 }
 
 export function useImportDrawing() {
-  const { importKml, mountDrawingLayer } = useDrawing();
+  const { importKml, importKmz, mountDrawingLayer } = useDrawing();
   const { olMap } = useMap();
   const { t } = useI18n();
   const runtimeConfig = useRuntimeConfig();
@@ -96,18 +96,21 @@ export function useImportDrawing() {
     successMessage.value = "";
 
     try {
+      let format: "kml" | "kmz" = "kml";
       const inputUrl = url.value.trim();
       const allowedDomains = runtimeConfig.public
         .drawingAllowedDomains as string[];
 
-      let kmlUrls: string[] = [];
+      let datasetUrls: string[] = [];
 
       if (isDirectKmlUrl(inputUrl)) {
-        kmlUrls = [inputUrl];
+        datasetUrls = [inputUrl];
       } else if (isViewerUrl(inputUrl)) {
-        kmlUrls = extractKmlUrls(inputUrl);
+        datasetUrls = extractKmlUrls(inputUrl);
       } else if (isSwissgeoServiceDrawingsUrl(inputUrl)) {
-        kmlUrls = [inputUrl];
+        // The imports from the Swissgeo service are always KMZ files
+        datasetUrls = [inputUrl];
+        format = "kmz";
       } else {
         const resolveResponse = await $fetch<{ redirectUrl: string }>(
           "/api/wpa/v1/drawing/resolve-url",
@@ -115,14 +118,14 @@ export function useImportDrawing() {
             params: { url: inputUrl },
           },
         );
-        kmlUrls = extractKmlUrls(resolveResponse.redirectUrl);
+        datasetUrls = extractKmlUrls(resolveResponse.redirectUrl);
       }
 
-      if (kmlUrls.length === 0) {
+      if (datasetUrls.length === 0) {
         throw new Error(t("toolbox.import.errorMessages.noKmlFound"));
       }
 
-      for (const kmlUrl of kmlUrls) {
+      for (const kmlUrl of datasetUrls) {
         const disallowedDomain = validateDomain(kmlUrl, allowedDomains);
         if (disallowedDomain) {
           throw new Error(
@@ -135,7 +138,7 @@ export function useImportDrawing() {
 
       mountDrawingLayer(olMap.value);
 
-      for (const kmlUrl of kmlUrls) {
+      for (const kmlUrl of datasetUrls) {
         const kmlResponse = await fetch(removeAdminIdFromUrl(kmlUrl));
         if (!kmlResponse.ok) {
           throw new Error(
@@ -145,8 +148,18 @@ export function useImportDrawing() {
           );
         }
 
-        const kmlText = await kmlResponse.text();
-        importKml(kmlText);
+        switch (format) {
+          case "kml": {
+            const kmlText = await kmlResponse.text();
+            importKml(kmlText);
+            break;
+          }
+          case "kmz": {
+            const kmzBuffer = await kmlResponse.arrayBuffer();
+            await importKmz(kmzBuffer);
+            break;
+          }
+        }
       }
 
       successMessage.value = t("toolbox.import.drawingSuccessMessage");
