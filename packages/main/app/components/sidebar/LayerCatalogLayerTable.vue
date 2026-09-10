@@ -11,7 +11,9 @@ const toast = useToast();
 const layerStore = useLayerStore();
 const dimensionsStore = useDimensionsStore();
 
-const { data, hasMore, status, error, loadMore } = useOgcCatalog(locale);
+const query = ref("");
+
+const { data, hasMore, status, error, loadMore } = useOgcCatalog(locale, query);
 
 const datasets = computed<Dataset[]>(() => data.value?.features ?? []);
 
@@ -64,6 +66,15 @@ function setOnMap(dataset: Dataset, onMap: boolean): void {
 
 <template>
   <div class="min-w-0 flex-1 overflow-y-auto p-4">
+    <UInput
+      v-model="query"
+      icon="i-lucide-search"
+      :placeholder="t('layerCatalog.searchPlaceholder')"
+      size="sm"
+      variant="outline"
+      class="mb-3 w-full"
+      data-testid="catalog-search-input"
+    />
     <p v-if="error" class="text-sm text-error">
       {{ t("layerCatalog.error") }}
     </p>

@@ -46,12 +46,14 @@ export function useOgcCatalog(
         ],
       });
 
-      const query = {
+      const query: Record<string, string | number> = {
         lang: language.value,
         limit: PAGE_SIZE,
         offset,
       };
 
+      // Relevance orders the hits of a search, only an unfiltered list needs a
+      // sort of its own to page through in a stable order.
       if (term) {
         query.q = term;
       } else {

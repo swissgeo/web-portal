@@ -417,6 +417,7 @@
     },
     "loading": "Loading...",
     "error": "The catalog could not be loaded.",
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "searchPlaceholder": "Search layers"
   }
 }
