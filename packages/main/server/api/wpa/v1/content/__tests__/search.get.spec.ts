@@ -20,7 +20,7 @@ vi.mock("h3", () => ({
 vi.mock("../../../../../utils/livingdocs", () => ({
   livingdocsFetch,
   resolveLivingdocsLanguage: (lang?: string) =>
-    lang === "fr" ? "fr" : "de" /* mirrors the de/fr-only tenant */,
+    lang === "rm" || !lang ? "de" : lang /* Romansh is the only fallback */,
 }));
 
 const handler = (await import("../search.get")).default as (
@@ -119,10 +119,10 @@ describe("GET /api/wpa/v1/content/search", () => {
     );
   });
 
-  it("falls back to German for a locale the CMS tenant does not hold", async () => {
+  it("falls back to German for a locale the CMS does not hold", async () => {
     livingdocsFetch.mockResolvedValue({ results: [] });
 
-    await call({ q: "test", lang: "it" });
+    await call({ q: "test", lang: "rm" });
 
     expect(livingdocsFetch).toHaveBeenCalledWith(
       "publications/search",
