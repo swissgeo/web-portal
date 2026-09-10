@@ -7,6 +7,7 @@ const searchMocks = vi.hoisted(() => ({
   searchLocation: vi.fn(),
   searchLayers: vi.fn(),
   searchLayerFeatures: vi.fn(),
+  searchContentPages: vi.fn(),
 }));
 
 vi.mock("@swissgeo/search", () => searchMocks);
@@ -42,6 +43,7 @@ describe("useSearchStore", () => {
     searchMocks.searchLocation.mockResolvedValue([]);
     searchMocks.searchLayers.mockResolvedValue([]);
     searchMocks.searchLayerFeatures.mockResolvedValue([]);
+    searchMocks.searchContentPages.mockResolvedValue([]);
   });
 
   it("clears results without searching for a query shorter than 2 chars", async () => {
@@ -60,6 +62,19 @@ describe("useSearchStore", () => {
 
     expect(store.layerResults).toHaveLength(2);
     expect(store.hasError).toBe(false);
+  });
+
+  it("keeps the CMS results apart from the map ones", async () => {
+    searchMocks.searchLayers.mockResolvedValue([layer("l1")]);
+    searchMocks.searchContentPages.mockResolvedValue([
+      { resultType: "CONTENT", id: "content-42" } as SearchResult,
+    ]);
+
+    const store = useSearchStore();
+    await store.setSearchQuery("forest");
+
+    expect(store.layerResults).toHaveLength(1);
+    expect(store.contentResults).toHaveLength(1);
   });
 
   it("sets hasError when a source fails but keeps the other results", async () => {

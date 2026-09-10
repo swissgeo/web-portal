@@ -127,8 +127,11 @@ export default defineNuxtConfig({
     what3wordsApiKey: "",
     geoadminApiBaseUrl: "",
     reportIssueServiceUrl: "https://sys-map.dev.bgdi.ch/api/feedback",
+    livingdocsApiEndpoint: "",
+    livingdocsAuthToken: "",
     public: {
       ogcApiEndpoint: "",
+      cmsBaseUrl: "https://prod-swissgeoch.scs.scs-sdweb.ch",
       iconServiceEndpoint: "https://map.geo.admin.ch/api/icons/sets",
       shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
       ogcCatalogCollection: "swissgeo-catalog",

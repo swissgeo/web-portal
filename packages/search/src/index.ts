@@ -4,6 +4,7 @@ export {
   searchLayers,
   searchLocation,
   searchLayerFeatures,
+  searchContentPages,
   sanitizeTitle,
   SearchResultTypesEnum,
 } from "./api/search";
@@ -13,6 +14,8 @@ export type {
   LayerSearchResult,
   LocationSearchResult,
   FeatureSearchResult,
+  ContentSearchResult,
+  ContentPageSearchResponse,
   SearchResponse,
   SearchResponseResult,
 } from "./types/search";

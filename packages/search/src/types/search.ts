@@ -2,7 +2,7 @@
 // Adapted from web-mapviewer
 // Original: /home/ismailsunni/dev/c2c/web-mapviewer/packages/api/src/types/search.ts
 
-export type SearchResultTypes = "LAYER" | "LOCATION" | "FEATURE";
+export type SearchResultTypes = "LAYER" | "LOCATION" | "FEATURE" | "CONTENT";
 
 /**
  * Base interface for all search results
@@ -61,6 +61,33 @@ export interface FeatureSearchResult extends SearchResult {
   coordinate?: [number, number];
   /** The zoom level at which the map should be zoomed when showing the feature */
   zoom: number;
+}
+
+/**
+ * Search result for a CMS (Livingdocs) content page
+ */
+export interface ContentSearchResult extends SearchResult {
+  resultType: "CONTENT";
+  /** Livingdocs document ID, used to build the CMS page route */
+  documentId: string;
+  /** Slug of the published page */
+  slug: string;
+  /** Locale the page was published in (the tenant only holds `de` and `fr`) */
+  locale: string;
+}
+
+/**
+ * Response of the `/api/wpa/v1/content/search` Nitro proxy. Declared here
+ * because both the proxy and `searchContentPages` are typed against it.
+ */
+export interface ContentPageSearchResponse {
+  results: {
+    documentId: string;
+    title: string;
+    description: string;
+    slug: string;
+    locale: string;
+  }[];
 }
 
 // Backend API response types (from map.geo.admin.ch API)
