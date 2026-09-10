@@ -52,6 +52,7 @@ export default defineNuxtConfig({
   ],
   css: ["~/assets/css/main.css"],
   ui: {
+    prose: true,
     theme: {
       colors: [
         "primary",

@@ -30,6 +30,35 @@ export default defineAppConfig({
       error: "red",
       neutral: "neutral",
     },
+    modal: {
+      slots: {
+        title: "text-3xl leading-heading font-semibold",
+      },
+    },
+    slideover: {
+      slots: {
+        title: "text-3xl leading-heading font-semibold",
+      },
+    },
+    // Prose headings use the shared native heading styles.
+    prose: {
+      h1: {
+        slots: { base: () => "" },
+      },
+      h2: {
+        slots: { base: () => "relative" },
+      },
+      h3: {
+        slots: { base: () => "relative" },
+      },
+      h4: {
+        slots: { base: () => "relative" },
+      },
+      p: {
+        base: () =>
+          "font-sans text-lg leading-normal font-medium tracking-normal",
+      },
+    },
     button: {
       compoundVariants: [
         {

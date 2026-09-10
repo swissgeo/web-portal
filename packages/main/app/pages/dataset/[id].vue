@@ -101,7 +101,10 @@ function addToMap() {
         </nav>
 
         <template v-if="dataset">
-          <h1 class="mb-8 text-2xl font-bold" data-testid="dataset-title">
+          <h1
+            class="mb-8 pb-8 text-2xl font-bold text-primary"
+            data-testid="dataset-title"
+          >
             {{ dataset.properties.title }}
           </h1>
 
@@ -111,7 +114,7 @@ function addToMap() {
           />
 
           <section v-if="dataset.properties.languages?.length" class="mt-6">
-            <h3 class="mb-2">
+            <h3 class="mb-2 text-base font-normal">
               {{ $t("dataset.languages") }}
             </h3>
             <DatasetLanguages :languages="dataset.properties.languages" />

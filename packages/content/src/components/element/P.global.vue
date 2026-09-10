@@ -5,7 +5,7 @@ const { data } = defineProps<{ data: Paragraph }>();
 </script>
 
 <template>
-  <p class="mb-4">
+  <ProseP class="mb-4">
     {{ data.content?.text }}
-  </p>
+  </ProseP>
 </template>

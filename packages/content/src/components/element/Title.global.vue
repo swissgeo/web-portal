@@ -6,6 +6,6 @@ const { data } = defineProps<{ data: TitleComponent }>();
 
 <template>
   <div>
-    <h1>{{ data.content.title || "" }}</h1>
+    <ProseH1 class="pb-8 text-primary">{{ data.content.title || "" }}</ProseH1>
   </div>
 </template>
