@@ -13,9 +13,12 @@ import { register } from "ol/proj/proj4";
 import { Fill, Icon, Style, Text } from "ol/style";
 import proj4 from "proj4";
 
-import type { TextSize } from "./drawingStyleCommon";
+import type {
+  TextSize,
+  DESCRIPTION_KEY,
+  TITLE_KEY,
+} from "./drawingStyleCommon";
 
-import { DESCRIPTION_KEY, TITLE_KEY } from "./drawingMetadata";
 import {
   SHOW_DESCRIPTION_KEY,
   SHOW_ICON_KEY,

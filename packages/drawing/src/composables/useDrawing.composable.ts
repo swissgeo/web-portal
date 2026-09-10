@@ -12,13 +12,13 @@ import type {
 } from "../utils/drawingStyleCommon";
 
 import { useDrawingStore } from "../stores/drawing.store";
-import {
-  getFeatureDescription,
-  getFeatureTitle,
-  initializeMetadataProperties,
-  setFeatureDescription,
-  setFeatureTitle,
-} from "../utils/drawingMetadata";
+// import {
+//   getFeatureDescription,
+//   getFeatureTitle,
+//   initializeMetadataProperties,
+//   setFeatureDescription,
+//   setFeatureTitle,
+// } from "../utils/drawingMetadata";
 import {
   applyIdleStyle,
   applyEditingStyle,
@@ -65,6 +65,13 @@ import {
   getIconColorStyleProperty,
   setIconNameStyleProperty,
   getIconNameStyleProperty,
+  getFeatureDescription,
+  getFeatureTitle,
+  initializeMetadataProperties,
+  setFeatureDescription,
+  setFeatureTitle,
+  wasCreatedBySwissgeo,
+  ensurePropertyTypes,
 } from "../utils/drawingStyleCommon";
 import {
   olFeatureToGeoJSON,
@@ -73,6 +80,7 @@ import {
   olFeatureToKMZ,
   exportFormatToMimeType,
 } from "../utils/exportUtils";
+import { unzipKmzBuffer } from "../utils/importUtils";
 
 export function useDrawing() {
   const drawingStore = useDrawingStore();
@@ -570,10 +578,14 @@ export function useDrawing() {
       dataProjection: EPSG_4326_WGS84,
     });
     for (const feature of features) {
-      // Adds Swissgeo metadata properties for drawing features with their default values
-      initializeMetadataProperties(feature);
-      initializeStyleProperties(feature);
-      mapKmlStylesToFeatureProperties(feature);
+      ensurePropertyTypes(feature);
+      if (!wasCreatedBySwissgeo(feature)) {
+        // Adds Swissgeo metadata properties for drawing features with their default values
+        initializeMetadataProperties(feature);
+        initializeStyleProperties(feature);
+        mapKmlStylesToFeatureProperties(feature);
+      }
+
       applyIdleStyle(feature);
 
       // In case a feature has already been imported, it is needed to first remove the previous version
@@ -590,6 +602,13 @@ export function useDrawing() {
       }
       drawingStore.drawingVectorSource.addFeature(feature);
     }
+  }
+
+  async function importKmz(kmzBuffer: ArrayBuffer): Promise<void> {
+    const kmzContent = await unzipKmzBuffer(kmzBuffer);
+    console.log("KMZ contents:", kmzContent);
+
+    importKml(kmzContent.kmlContent);
   }
 
   return {
@@ -638,5 +657,6 @@ export function useDrawing() {
     serializeAllFeatures,
     serializeAllFeaturesAsBlob,
     importKml,
+    importKmz,
   };
 }
