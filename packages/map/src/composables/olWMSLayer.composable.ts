@@ -146,7 +146,7 @@ export default function useOlWmsLayer(
       source.value = createTileWMSSource();
       olLayer.value = new TileLayer<TileWMS>({
         properties: {
-          id: layerId,
+          id: layerId.value,
           uuid: layer.value.uuid,
         },
         opacity: opacity.value,
@@ -156,7 +156,7 @@ export default function useOlWmsLayer(
       source.value = createImageWMSSource();
       olLayer.value = new ImageLayer<ImageWMS>({
         properties: {
-          id: layerId,
+          id: layerId.value,
           uuid: layer.value.uuid,
         },
         opacity: opacity.value,
