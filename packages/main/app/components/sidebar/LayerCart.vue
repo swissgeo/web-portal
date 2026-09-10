@@ -8,7 +8,6 @@ import { computed, ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerCartEntry from "./LayerCartEntry.vue";
-import LayerCatalog from "./LayerCatalog.vue";
 
 const { t } = useI18n();
 const layerStore = useLayerStore();

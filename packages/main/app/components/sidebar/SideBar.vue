@@ -5,7 +5,8 @@ import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
 import { useI18n } from "vue-i18n";
 
 import LayerCart from "@/components/sidebar/LayerCart.vue";
-import LayerCatalog2 from "./LayerCatalog2.vue";
+
+import LayerCatalog from "./LayerCatalog.vue";
 
 const uiStore = useSidebarStore();
 const { t } = useI18n();
@@ -39,7 +40,7 @@ function toggleSidebar() {
         v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
         :mapLayers="mapLayers"
       />
-      <LayerCatalog2
+      <LayerCatalog
         v-else-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
       />
       <div class="flex flex-col items-center gap-2">
