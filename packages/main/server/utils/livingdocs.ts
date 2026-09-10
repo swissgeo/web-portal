@@ -3,11 +3,11 @@ import { createError } from "h3";
 import { joinURL } from "ufo";
 
 /**
- * Languages the Livingdocs tenant on geoinformation.ch is set up for. The
- * portal ships five locales, so anything else falls back to German instead of
- * silently returning nothing.
+ * Languages the CMS publishes content pages in. Romansh is the only portal
+ * locale it does not cover, and falls back to German rather than showing an
+ * empty tab.
  */
-export const LIVINGDOCS_LANGUAGES = ["de", "fr"];
+export const LIVINGDOCS_LANGUAGES = ["de", "fr", "it", "en"];
 
 export const LIVINGDOCS_FALLBACK_LANGUAGE = "de";
 

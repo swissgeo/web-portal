@@ -26,12 +26,12 @@ describe("resolveLivingdocsLanguage", () => {
     lang         | expected
     ${"de"}      | ${"de"}
     ${"fr"}      | ${"fr"}
-    ${"en"}      | ${"de"}
-    ${"it"}      | ${"de"}
+    ${"it"}      | ${"it"}
+    ${"en"}      | ${"en"}
     ${"rm"}      | ${"de"}
     ${undefined} | ${"de"}
   `(
-    "resolves $lang to $expected, the tenant only holding de and fr",
+    "resolves $lang to $expected, the CMS covering every locale but Romansh",
     ({ lang, expected }) => {
       expect(resolveLivingdocsLanguage(lang)).toBe(expected);
     },
