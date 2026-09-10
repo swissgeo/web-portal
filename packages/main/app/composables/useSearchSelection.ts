@@ -1,9 +1,14 @@
 // Composable to handle search result selection
 // Connects search results to map actions (center, zoom, add layers)
+//
+// Client only: the position store it instantiates holds class-based coordinate
+// systems, which cannot go through the Nuxt SSR payload. Its caller therefore
+// has to sit inside a <ClientOnly> boundary.
 
 import type { Dataset } from "@swissgeo/ogc";
 import type {
   SearchResult,
+  CoordinateSearchResult,
   LocationSearchResult,
   LayerSearchResult,
   FeatureSearchResult,
@@ -12,20 +17,21 @@ import type {
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
+import { useSearchStore } from "@swissgeo/skeleton";
 import { joinURL } from "ufo";
 
 export function useSearchSelection() {
   const runtimeConfig = useRuntimeConfig();
   const toast = useToast();
   const { locale, t } = useI18n();
+  const positionStore = usePositionStore();
+  const searchStore = useSearchStore();
+  const layerStore = useLayerStore();
 
   async function handleResultSelection(result: SearchResult) {
-    // Only run on client side to avoid SSR serialization issues
-    if (!process.client) {
-      return;
-    }
-
-    if (result.resultType === "LOCATION") {
+    if (result.resultType === "COORDINATE") {
+      handleCoordinateSelection(result as CoordinateSearchResult);
+    } else if (result.resultType === "LOCATION") {
       handleLocationSelection(result as LocationSearchResult);
     } else if (result.resultType === "FEATURE") {
       handleFeatureSelection(result as FeatureSearchResult);
@@ -34,12 +40,20 @@ export function useSearchSelection() {
     }
   }
 
+  // as map.geo.admin.ch does, we zoom on the coordinate and mark it: the center
+  // alone would not tell the user where the point exactly is
+  function handleCoordinateSelection(result: CoordinateSearchResult) {
+    const dispatcher = { name: "search-coordinate-selection" };
+    positionStore.setCenter(result.coordinate, dispatcher);
+    positionStore.setZoom(result.zoom, dispatcher);
+    searchStore.setPinnedCoordinate(result.coordinate);
+  }
+
   function handleLocationSelection(result: LocationSearchResult) {
     if (!result.coordinate) {
       return;
     }
 
-    const positionStore = usePositionStore();
     positionStore.setCenter(result.coordinate, {
       name: "search-result-selection",
     });
@@ -51,7 +65,6 @@ export function useSearchSelection() {
       return;
     }
 
-    const positionStore = usePositionStore();
     positionStore.setCenter(result.coordinate, {
       name: "search-feature-selection",
     });
@@ -64,7 +77,6 @@ export function useSearchSelection() {
   // Selecting a layer adds it to the map; the (i) button in the result entry
   // opens the dataset panel instead.
   async function handleLayerSelection(result: LayerSearchResult) {
-    const layerStore = useLayerStore();
     if (layerStore.layers.some((l) => l.humanId === result.layerId)) {
       return;
     }

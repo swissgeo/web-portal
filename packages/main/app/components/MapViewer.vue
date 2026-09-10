@@ -2,10 +2,12 @@
 import type { Layer as BaseLayer } from "@swissgeo/layers";
 
 import { useLayerStore } from "@swissgeo/layers";
+import { useSearchStore } from "@swissgeo/skeleton";
 import { displayModeKey } from "~/types/injectionKeys";
 
 const geolocationStore = useGeolocationStore();
 const layerStore = useLayerStore();
+const searchStore = useSearchStore();
 const mapViewStore = useMapViewStore();
 
 const backgroundLayer = computed(() => layerStore.backgroundLayer);
@@ -58,6 +60,12 @@ const displayMode = inject(displayModeKey, "web");
           geolocationStore.position &&
           displayMode === 'web'
         "
+      />
+      <!-- lazy on purpose: a static import would pull its ol modules into the
+           server bundle even while the v-if is false, and they cannot be
+           evaluated during SSR -->
+      <LazyMapOpenLayersSearchMarker
+        v-if="searchStore.pinnedCoordinate && displayMode === 'web'"
       />
       <MapAttributionList
         v-if="displayMode === 'web'"

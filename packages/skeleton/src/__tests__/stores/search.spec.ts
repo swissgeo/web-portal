@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const searchMocks = vi.hoisted(() => ({
+  searchCoordinate: vi.fn(),
   searchLocation: vi.fn(),
   searchLayers: vi.fn(),
   searchLayerFeatures: vi.fn(),
@@ -39,6 +40,7 @@ const layer = (id: string): LayerSearchResult => ({
 describe("useSearchStore", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    searchMocks.searchCoordinate.mockReturnValue(undefined);
     searchMocks.searchLocation.mockResolvedValue([]);
     searchMocks.searchLayers.mockResolvedValue([]);
     searchMocks.searchLayerFeatures.mockResolvedValue([]);
@@ -84,6 +86,46 @@ describe("useSearchStore", () => {
     await store.setSearchQuery("bern");
 
     expect(store.hasError).toBe(false);
+  });
+
+  it("keeps the coordinate out of the listed results", async () => {
+    const coordinate = {
+      resultType: "COORDINATE",
+      id: "coordinate-2600000,1200000",
+    } as SearchResult;
+    searchMocks.searchCoordinate.mockReturnValue(coordinate);
+    searchMocks.searchLayers.mockResolvedValue([layer("l1")]);
+
+    const store = useSearchStore();
+    await store.setSearchQuery("2600000 1200000");
+
+    expect(store.coordinateResult).toEqual(coordinate);
+    expect(store.results).toEqual([layer("l1")]);
+  });
+
+  it("forgets the coordinate as soon as the query is not one anymore", async () => {
+    searchMocks.searchCoordinate.mockReturnValue({
+      resultType: "COORDINATE",
+      id: "c",
+    } as SearchResult);
+
+    const store = useSearchStore();
+    await store.setSearchQuery("2600000 1200000");
+    expect(store.coordinateResult).toBeDefined();
+
+    searchMocks.searchCoordinate.mockReturnValue(undefined);
+    await store.setSearchQuery("Bern");
+    expect(store.coordinateResult).toBeUndefined();
+  });
+
+  it("keeps the pinned coordinate until it is explicitly cleared", () => {
+    const store = useSearchStore();
+    store.setPinnedCoordinate([2600000, 1200000]);
+    store.clearSearch();
+    expect(store.pinnedCoordinate).toEqual([2600000, 1200000]);
+
+    store.clearPinnedCoordinate();
+    expect(store.pinnedCoordinate).toBeUndefined();
   });
 
   it("resets hasError on clearSearch", async () => {

@@ -3,20 +3,21 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { useSearchStore } from "@swissgeo/skeleton";
 import { useDebounceFn } from "@vueuse/core";
-import { computed, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+
+import { useSearchSelection } from "@/composables/useSearchSelection";
 
 import SearchCategory from "./SearchCategory.vue";
 
 const { t, locale } = useI18n();
 const searchStore = useSearchStore();
 const toaster = useToaster();
+const { handleResultSelection } = useSearchSelection();
 
 const isOpen = defineModel<boolean>("open", { default: false });
 
-const emit = defineEmits<{
-  "result-selected": [result: SearchResult];
-}>();
+const resultsRef = ref<HTMLElement | null>(null);
 
 const query = computed({
   get: () => searchStore.query,
@@ -60,6 +61,17 @@ const debouncedSearch = useDebounceFn((value: string) => {
   void searchStore.setSearchQuery(value, locale.value);
 }, 100);
 
+// a coordinate needs no confirmation: as in map.geo.admin.ch, the map goes
+// there as soon as the query is recognized as one, no entry to select
+watch(
+  () => searchStore.coordinateResult,
+  (result) => {
+    if (result) {
+      void handleResultSelection(result);
+    }
+  },
+);
+
 watch(
   () => searchStore.hasResults,
   (hasResults) => {
@@ -79,7 +91,7 @@ watch(
 );
 
 function handleSelect(result: SearchResult) {
-  emit("result-selected", result);
+  void handleResultSelection(result);
   searchStore.clearSearch();
   isOpen.value = false;
 }
@@ -90,8 +102,21 @@ function handleClick() {
   }
 }
 
+function focusFirstResult() {
+  if (!searchStore.hasResults) {
+    return;
+  }
+  isOpen.value = true;
+  void nextTick(() => {
+    resultsRef.value?.querySelector<HTMLElement>("li")?.focus();
+  });
+}
+
+// the marker of a previously selected coordinate is only removed when the user
+// explicitly clears the search, not when a result is selected
 function clearSearch() {
   searchStore.clearSearch();
+  searchStore.clearPinnedCoordinate();
   isOpen.value = false;
 }
 </script>
@@ -99,9 +124,15 @@ function clearSearch() {
 <template>
   <UPopover
     v-model:open="isOpen"
-    :content="{ align: 'start', sideOffset: 8 }"
+    :content="{
+      align: 'start',
+      sideOffset: 8,
+      // the results open while the user is still typing, so the focus has to
+      // stay in the input, arrow down is what moves it to the results
+      onOpenAutoFocus: (event: Event) => event.preventDefault(),
+    }"
     :dismissible="true"
-    :ui="{ content: 'w-96' }"
+    :ui="{ content: 'w-(--reka-popper-anchor-width) min-w-96' }"
   >
     <template #anchor>
       <UInput
@@ -113,9 +144,10 @@ function clearSearch() {
         size="md"
         variant="outline"
         color="secondary"
-        class="w-72"
+        class="w-72 grow"
         data-testid="topbar-search-input"
         @click="handleClick"
+        @keydown.down.prevent="focusFirstResult"
       >
         <template v-if="query" #trailing>
           <UButton
@@ -135,6 +167,7 @@ function clearSearch() {
         <template #map>
           <div
             v-if="searchStore.hasResults"
+            ref="resultsRef"
             class="max-h-96 overflow-y-auto"
             data-testid="search-results"
           >
