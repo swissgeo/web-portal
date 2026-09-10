@@ -29,6 +29,13 @@ import {
 } from "./polygonStyle";
 
 /**
+ * General metadata keys for features.
+ */
+export const TITLE_KEY = "sg_title";
+export const DESCRIPTION_KEY = "sg_description";
+export const CREATED_BY_SWISSGEO = "sg_createdBySwissgeo";
+
+/**
  * names of the properties used to store the style information in the feature's properties
  */
 export const FILL_COLOR_KEY = "sg_fillColor";
@@ -72,6 +79,13 @@ export const RELATIVE_PLACEMENT = [
 export type RelativePlacement = (typeof RELATIVE_PLACEMENT)[number];
 
 export const FEATURE_FONT = "Helvetica";
+
+/**
+ * This counter is only used to generate a default title for each feature,
+ * so it is not critical that it restarts on page load.
+ * (aka. this is never used to generate a unique identifier for a feature, just a default title)
+ */
+let counter_drawing_features = 0;
 
 /**
  * Properties specific to icon/label styling, initially only used for point geometries,
@@ -847,4 +861,120 @@ function offsetStringToRelativePlacement(
   }
 
   return "center";
+}
+
+/**
+ * Tell whether a feature was created by Swissgeo.
+ */
+export function wasCreatedBySwissgeo(feature: Feature<Geometry>): boolean {
+  return feature?.get(CREATED_BY_SWISSGEO) === true;
+}
+
+/**
+ * Initializes the metadata properties of a feature with default values.
+ */
+export function initializeMetadataProperties(
+  feature: Feature<Geometry> | null,
+) {
+  if (!feature) {
+    return;
+  }
+
+  // The properties "name" and "description" are often used in KML files, so we use them to initialize our own metadata properties.
+  // If not, then we use the default values.
+  feature.setProperties({
+    [TITLE_KEY]: feature.get("name") ?? `Feature ${++counter_drawing_features}`,
+    [DESCRIPTION_KEY]: feature.get("description") ?? "",
+    [CREATED_BY_SWISSGEO]: true,
+  });
+}
+
+/**
+ * Sets the title of a feature.
+ */
+export function setFeatureTitle(feature: Feature<Geometry>, title: string) {
+  if (!feature) {
+    return;
+  }
+  feature.set(TITLE_KEY, title);
+}
+
+/**
+ * Get the title of a feature.
+ */
+export function getFeatureTitle(feature: Feature<Geometry>): string {
+  return feature?.get(TITLE_KEY) ?? "";
+}
+
+/**
+ * Get the description of a feature.
+ */
+export function getFeatureDescription(feature: Feature<Geometry>): string {
+  return feature?.get(DESCRIPTION_KEY) ?? "";
+}
+
+/**
+ * Set the description of a feature.
+ */
+export function setFeatureDescription(
+  feature: Feature<Geometry>,
+  description: string,
+) {
+  if (!feature) {
+    return;
+  }
+  feature.set(DESCRIPTION_KEY, description);
+}
+
+/**
+ * If a feature is imported from a KML/KMZ, its metadata are often stored as strings,
+ * so this function ensures they have the correct types.
+ * This is particularly important for style rendering, since many aspect of the Swissgeo
+ * styles rely on these metadata properties having the correct types.
+ */
+export function ensurePropertyTypes(feature: Feature<Geometry>): void {
+  if (!feature) {
+    return;
+  }
+
+  const props = feature.getProperties();
+
+  if (
+    CREATED_BY_SWISSGEO in props &&
+    typeof props[CREATED_BY_SWISSGEO] !== "boolean"
+  ) {
+    feature.set(CREATED_BY_SWISSGEO, props[CREATED_BY_SWISSGEO] === "true");
+  }
+
+  if (
+    STROKE_WIDTH_KEY in props &&
+    typeof props[STROKE_WIDTH_KEY] !== "number"
+  ) {
+    feature.set(STROKE_WIDTH_KEY, Number(props[STROKE_WIDTH_KEY]));
+  }
+
+  if (
+    POINT_RADIUS_KEY in props &&
+    typeof props[POINT_RADIUS_KEY] !== "number"
+  ) {
+    feature.set(POINT_RADIUS_KEY, Number(props[POINT_RADIUS_KEY]));
+  }
+
+  if (SHOW_TITLE_KEY in props && typeof props[SHOW_TITLE_KEY] !== "boolean") {
+    feature.set(SHOW_TITLE_KEY, props[SHOW_TITLE_KEY] === "true");
+  }
+  if (
+    SHOW_DESCRIPTION_KEY in props &&
+    typeof props[SHOW_DESCRIPTION_KEY] !== "boolean"
+  ) {
+    feature.set(SHOW_DESCRIPTION_KEY, props[SHOW_DESCRIPTION_KEY] === "true");
+  }
+
+  if (SHOW_ICON_KEY in props && typeof props[SHOW_ICON_KEY] !== "boolean") {
+    feature.set(SHOW_ICON_KEY, props[SHOW_ICON_KEY] === "true");
+  }
+
+  if (ICON_SIZE_KEY in props && typeof props[ICON_SIZE_KEY] !== "number") {
+    feature.set(ICON_SIZE_KEY, Number(props[ICON_SIZE_KEY]));
+  }
 }

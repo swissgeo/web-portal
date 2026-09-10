@@ -12,11 +12,10 @@ export {
   type LineStringMetrics,
   type PolygonMetrics,
 } from "@/utils/drawingUtils";
+
 export {
   getFeatureTitle,
   getFeatureDescription,
-} from "@/utils/drawingMetadata";
-export {
   type RelativePlacement,
   ICON_SIZE,
   TEXT_SIZE,
