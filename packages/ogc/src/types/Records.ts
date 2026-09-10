@@ -6,6 +6,10 @@ export interface Collection<record extends Feature<string>> {
   type: "FeatureCollection";
   features: record[];
   links: Link[];
+  /** Total number of records matching the query, across all pages */
+  numberMatched?: number;
+  /** Number of records in this page */
+  numberReturned?: number;
 }
 
 export type DatasetCollection = Collection<Dataset>;
