@@ -2,11 +2,14 @@
 import type { Layer as MapLayer } from "@swissgeo/map";
 
 import { useLayerStore } from "@swissgeo/layers";
+import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
 import { useSortable } from "@vueuse/integrations/useSortable";
 import { computed, ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerCartEntry from "./LayerCartEntry.vue";
+import LayerCatalog from "./LayerCatalog.vue";
+
 const { t } = useI18n();
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
@@ -51,6 +54,12 @@ useSortable(layerCartRef, sortedLayers, {
     }
   },
 });
+
+const uiStore = useSidebarStore();
+
+function openLayerCatalog() {
+  uiStore.setSidebar(SidebarType.GEOCATALOG_TREE);
+}
 </script>
 
 <template>
@@ -66,17 +75,11 @@ useSortable(layerCartRef, sortedLayers, {
       color="primary"
       size="xs"
       class="rounded-full"
-      @click="isAddLayerOpen = true"
+      @click="openLayerCatalog"
     >
       {{ t("menu.addLayer") }}
     </UButton>
   </div>
-
-  <UModal v-model:open="isAddLayerOpen" :title="t('menu.addLayer')">
-    <template #body>
-      <p class="text-sm text-toned">{{ t("menu.addLayerComingSoon") }}</p>
-    </template>
-  </UModal>
 
   <ul
     ref="layerCartRef"

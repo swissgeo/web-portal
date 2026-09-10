@@ -15,7 +15,8 @@
     "collapse": "Seitenleiste einklappen",
     "expand": "Seitenleiste ausklappen",
     "addLayer": "Ebene hinzufügen",
-    "addLayerComingSoon": "Der Ebenenkatalog ist noch nicht verfügbar."
+    "catalog": "Daten-Katalog",
+    "closeCatalog": "Schliessen"
   },
   "search": {
     "placeholder": "Ort, Layer oder Koordinaten suchen...",

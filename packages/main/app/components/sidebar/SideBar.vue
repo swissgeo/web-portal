@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 import type { Layer as MapLayer } from "@swissgeo/map";
 
-import {
-  useSidebarStore,
-  SidebarType,
-  SIDEBAR_CONTENT_WIDTH,
-} from "@swissgeo/skeleton";
+import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
 import { useI18n } from "vue-i18n";
 
 import LayerCart from "@/components/sidebar/LayerCart.vue";
+import LayerCatalog2 from "./LayerCatalog2.vue";
 
 const uiStore = useSidebarStore();
 const { t } = useI18n();
@@ -35,13 +32,16 @@ function toggleSidebar() {
   >
     <div
       v-show="uiStore.isSidebarOpen"
-      :style="{ width: SIDEBAR_CONTENT_WIDTH + 'px' }"
+      :style="{ width: uiStore.sidebarContentWidth + 'px' }"
       class="flex h-full flex-col bg-default text-default shadow-lg"
     >
       <LayerCart
         v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
         :mapLayers="mapLayers"
-      ></LayerCart>
+      />
+      <LayerCatalog2
+        v-else-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
+      />
       <div class="flex flex-col items-center gap-2">
         <slot name="bottom-controls" />
       </div>
