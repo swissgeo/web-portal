@@ -118,7 +118,7 @@ function statusColor(
     <template #header>
       <div class="flex w-full items-start justify-between gap-4">
         <div class="w-full">
-          <h2 class="pt-12 pb-8 text-base font-semibold first-of-type:pt-2">
+          <h2 class="text-base font-semibold">
             {{ t("print.printJobsWindowTitle") }}
           </h2>
           <div class="mt-1 flex w-full items-center gap-4">
