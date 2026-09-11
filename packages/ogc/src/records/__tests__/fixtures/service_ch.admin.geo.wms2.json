@@ -3,7 +3,7 @@
   "linkTemplates": [
     {
       "uriTemplate": "unwanted-url",
-      "rel": "aboutsomethingelse",
+      "rel": "describedbysomethingelse",
       "type": "application/xml",
       "title": "WMS Capabilities File",
       "variables": {
@@ -17,7 +17,7 @@
     },
     {
       "uriTemplate": "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&FORMAT=text/xml&lang={lang}",
-      "rel": "about",
+      "rel": "describedby",
       "type": "application/xml",
       "title": "WMS Capabilities File",
       "variables": {

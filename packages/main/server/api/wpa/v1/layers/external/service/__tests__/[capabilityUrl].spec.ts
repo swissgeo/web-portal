@@ -44,16 +44,16 @@ afterEach(() => {
 });
 
 describe("GET /api/wpa/v1/layers/external/service/[capabilityUrl]", () => {
-  it("decodes the capability URL and returns it as an `about` link", async () => {
+  it("decodes the capability URL and returns it as an `describedby` link", async () => {
     const capabilityUrl = "https://wmts.example.com/1.0.0/WMTSCapabilities.xml";
     routerParams.capabilityUrl = encodeCapabilityUrl(capabilityUrl);
 
     const result = (await handler({})) as ServiceResponse;
 
     expect(result.id).toBe(capabilityUrl);
-    const aboutLink = result.links.find((l) => l.rel === "about");
-    expect(aboutLink?.href).toBe(capabilityUrl);
-    expect(aboutLink?.type).toBe("application/xml");
+    const describedbyLink = result.links.find((l) => l.rel === "describedby");
+    expect(describedbyLink?.href).toBe(capabilityUrl);
+    expect(describedbyLink?.type).toBe("application/xml");
   });
 
   it("throws 400 when the capability URL is missing", () => {

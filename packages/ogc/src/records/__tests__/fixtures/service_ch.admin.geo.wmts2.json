@@ -23,7 +23,7 @@
     },
     {
       "href": "https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilitiesLink.xml",
-      "rel": "about",
+      "rel": "describedby",
       "title": "WMTS Capabilities File",
       "type": "application/xml"
     }
@@ -31,7 +31,7 @@
   "linkTemplates": [
     {
       "uriTemplate": "https://wmts.geo.admin.ch/EPSG/{epsg}/1.0.0/WMTSCapabilities.xml",
-      "rel": "about",
+      "rel": "describedby",
       "title": "WMTS Capabilities File",
       "type": "application/xml",
       "variables": {

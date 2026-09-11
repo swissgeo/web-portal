@@ -118,7 +118,7 @@ const {
     linkTemplates: [
       {
         uriTemplate: "uri is a canton in the heart of switzerland",
-        rel: "about",
+        rel: "describedby",
       },
     ],
   } as Service);
