@@ -6,7 +6,11 @@ import type {
 
 export interface FeatureData {
   featureId: string;
-  geometry: Exclude<Geometry, GeometryCollection>;
+  /**
+   * There is a probability that a feature, once fetched, doesn't return a geometry.
+   * This would most likely mean there is an issue with the data.
+   */
+  geometry: Exclude<Geometry, GeometryCollection> | null;
   content:
     | { kind: "html"; html: string; trusted: boolean }
     | { kind: "json"; properties: Record<string, unknown> };
@@ -16,11 +20,39 @@ export interface LayerRequest {
   layerUuid: string;
   layerId: string;
 
-  urlTemplate?: string;
+  // priority 1: already existing features
   preResolvedFeatures?: geojsonFeature[];
+
+  // priority 2: identify is present
+  urlTemplate?: string;
 }
 
-export type LayerSource = GeoAdminSource | ExternalWMSSource;
+// priority 3: wms feature info available
+export interface WMSLayerRequest extends LayerRequest {
+  wmsGetFeatureInfo: {
+    baseUrl: string;
+    method: "GET" | "POST";
+    formats: string[];
+  };
+  wmsVersion?: string;
+  availableCrs: string[];
+}
+
+/**
+ * For a given WMS layer, the information needed to run a GetFeatureInfo
+ * query on the server. queryable is not present, as it is used to decide wether or
+ * not those information are stored or not (basically, non queryable layers have
+ * no existence within the feature store.)
+ */
+export interface WmsFeatureInfoCapability {
+  getFeatureInfoCapability: {
+    baseUrl: string;
+    method: "GET" | "POST";
+    formats: string[];
+  };
+  wmsVersion?: string;
+  availableCrs: string[];
+}
 
 export interface OgcDistribution {
   type: "FeatureCollection";
@@ -28,24 +60,21 @@ export interface OgcDistribution {
   links?: OgcLink[];
 }
 
-export interface GeoAdminSource {
-  kind: "geoadmin";
+export type LayerSource = {
   layerUuid: string;
   layerId: string;
+};
+export interface GeoAdminSource extends LayerSource {
+  kind: "geoadmin";
   distribution?: OgcDistribution;
   preResolvedFeatures?: geojsonFeature[];
 }
-export interface ExternalWMSSource {
-  kind: "externalWms";
-  layerUuid: string;
-  layerId: string;
-  getFeatureInfoCapability: {
-    baseUrl: string;
-    method: "GET" | "POST";
-    formats: string[];
-  };
-  wmsVersion?: string;
-}
+
+export const isGeoAdminSource = (
+  layerSource: LayerSource,
+): layerSource is GeoAdminSource =>
+  (layerSource as GeoAdminSource).kind === "geoadmin";
+
 interface OgcDistributionFeature {
   id: string;
   links?: OgcLink[];

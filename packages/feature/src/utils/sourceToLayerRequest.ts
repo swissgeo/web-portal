@@ -1,15 +1,29 @@
-import type { LayerRequest, LayerSource } from "@/types";
+import type {
+  LayerRequest,
+  LayerSource,
+  WMSLayerRequest,
+  WmsFeatureInfoCapability,
+} from "@/types";
 
-export function sourcesToLayerRequests(layerSources: LayerSource[]) {
+import { isGeoAdminSource } from "@/types";
+
+export function sourcesToLayerRequests(
+  layerSources: LayerSource[],
+  wmsCapabilities?: Record<string, WmsFeatureInfoCapability>,
+): Array<LayerRequest | WMSLayerRequest> {
   return layerSources.map((layerSource: LayerSource) =>
-    sourceToLayerRequest(layerSource),
+    sourceToLayerRequest(layerSource, wmsCapabilities),
   );
 }
 
-export function sourceToLayerRequest(layerSource: LayerSource): LayerRequest {
-  // First case: geojson / KML / KMZ layers most likely will have features as part of the source data.
+export function sourceToLayerRequest(
+  layerSource: LayerSource,
+  wmsCapabilities?: Record<string, WmsFeatureInfoCapability>,
+): LayerRequest | WMSLayerRequest {
+  // priority 1: geojson / KML / KMZ layers most likely will have features as
+  // part of the source data.
   if (
-    layerSource.kind === "geoadmin" &&
+    isGeoAdminSource(layerSource) &&
     layerSource.preResolvedFeatures?.length > 0
   ) {
     return {
@@ -19,9 +33,11 @@ export function sourceToLayerRequest(layerSource: LayerSource): LayerRequest {
     };
   }
 
-  if (layerSource.kind === "geoadmin") {
+  // priority 2: identify is present
+  if (isGeoAdminSource(layerSource) && layerSource.distribution) {
     const dist = layerSource.distribution?.features.filter(
-      (ogcFeature) => ogcFeature.properties.protocol === "geoadmin:features",
+      (ogcFeature) =>
+        ogcFeature.properties.protocol.toLowerCase() === "geoadmin:features",
     )[0];
     if (dist) {
       const template = dist.linkTemplates?.find(
@@ -36,6 +52,19 @@ export function sourceToLayerRequest(layerSource: LayerSource): LayerRequest {
     }
   }
 
-  // For now, we return an "empty" layer request. We'll need to check if there is a WMS getFeature endpoint (for example: external layers)
+  // priority 3: WMS GetFeatureInfo: Using the stored capabilities
+  const capability: WmsFeatureInfoCapability | undefined =
+    wmsCapabilities?.[layerSource.layerUuid];
+  if (capability?.getFeatureInfoCapability && capability.availableCrs) {
+    return {
+      layerUuid: layerSource.layerUuid,
+      layerId: layerSource.layerId,
+      wmsGetFeatureInfo: capability.getFeatureInfoCapability,
+      wmsVersion: capability.wmsVersion ?? "1.3.0",
+      availableCrs: capability.availableCrs,
+    };
+  }
+
+  // unsupported cases end up with an "empty" layerRequest
   return { layerUuid: layerSource.layerUuid, layerId: layerSource.layerId };
 }
