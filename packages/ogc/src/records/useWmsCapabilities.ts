@@ -24,6 +24,16 @@ export interface WmsCapabilitiesData {
   dimensions: WMSCapabilityDimension[] | null;
   /** Legends advertised by the requested layer's styles. */
   legends: Legend[];
+  /** A list of supported CRS */
+  availableCrs: string[];
+  /**  Are the layer features queryable ? */
+  queryable: boolean;
+  /**  information on how to reach features from a WMS server approach*/
+  getFeatureInfoCapability: {
+    baseUrl: string;
+    method: "GET" | "POST";
+    formats: string[];
+  } | null;
 }
 
 export function useWmsCapabilities(
@@ -74,6 +84,9 @@ export function parseWmsCapabilities(
       version: null,
       dimensions: null,
       legends: [],
+      availableCrs: [],
+      queryable: false,
+      getFeatureInfoCapability: null,
     };
   }
 
@@ -87,7 +100,10 @@ export function parseWmsCapabilities(
     version: doc.documentElement?.getAttribute("version") ?? null,
     url: getServiceUrl(doc),
     dimensions: getLayerDimensions(layer),
-    legends: getLegends(doc, layerId),
+    legends: getLegends(layer),
+    availableCrs: getAvailableCrs(layer),
+    queryable: isQueryable(layer),
+    getFeatureInfoCapability: getFeatureInfoCapability(doc),
   };
 }
 
@@ -100,17 +116,16 @@ function getServiceUrl(doc: Document): string | null {
   if (!onlineResource) {
     return null;
   }
-  return (
-    onlineResource.getAttribute("xlink:href") ??
-    onlineResource.getAttributeNS(XLINK_NS, "href")
-  );
+  return getXlinkHref(onlineResource);
 }
 
 /**
  * The requested layer, wherever it sits: a layer is not always a direct child of
  * the root one, it can be nested in any number of groups.
+ *
+ * Exported for tests (resolving a layer element to feed `getLegends`).
  */
-function getLayer(doc: Document, layerId: string): Element | undefined {
+export function getLayer(doc: Document, layerId: string): Element | undefined {
   return Array.from(doc.getElementsByTagName("Layer")).find(
     (candidate) =>
       firstDirectChild(candidate, "Name")?.textContent?.trim() === layerId,
@@ -141,15 +156,14 @@ function getLayerDimensions(
  * nested in a group also carries the legends the group publishes. The layer's
  * own legends come first.
  */
-export function getLegends(doc: Document, layerId: string): Legend[] {
-  const layer = getLayer(doc, layerId);
-  if (!layer) {
+export function getLegends(layerElement: Element): Legend[] {
+  if (!layerElement) {
     return [];
   }
 
   const legends: Legend[] = [];
   for (
-    let candidate: Element | null = layer;
+    let candidate: Element | null = layerElement;
     candidate?.localName === "Layer";
     candidate = candidate.parentElement
   ) {
@@ -165,9 +179,7 @@ export function getLegends(doc: Document, layerId: string): Legend[] {
 
 function parseLegend(element: Element): Legend | undefined {
   const onlineResource = firstDirectChild(element, "OnlineResource");
-  const href =
-    onlineResource?.getAttribute("xlink:href") ??
-    onlineResource?.getAttributeNS(XLINK_NS, "href");
+  const href = getXlinkHref(onlineResource);
   if (!href) {
     return;
   }
@@ -197,10 +209,87 @@ function parseDimension(element: Element): WMSCapabilityDimension {
   };
 }
 
+function getFeatureInfoCapability(doc: Document): {
+  baseUrl: string;
+  method: "GET" | "POST";
+  formats: string[];
+} {
+  const capability = doc.getElementsByTagName("Capability")[0];
+  if (!capability) {
+    return null;
+  }
+
+  const requestNode = firstDirectChild(capability, "Request");
+
+  if (!requestNode) {
+    return null;
+  }
+
+  const getFeatureInfoNode = firstDirectChild(requestNode, "GetFeatureInfo");
+
+  if (!getFeatureInfoNode) {
+    return null;
+  }
+
+  const formats = directChildren(getFeatureInfoNode, "Format")
+    .map((format) => format.textContent?.trim() ?? "")
+    .filter((format) => Boolean(format));
+
+  if (formats.length < 1) {
+    return null;
+  }
+
+  for (const verb of ["Get", "Post"] as const) {
+    for (const dcp of directChildren(getFeatureInfoNode, "DCPType")) {
+      const httpElement = firstDirectChild(dcp, "HTTP");
+      const verbNode = firstDirectChild(httpElement, verb);
+      if (verbNode) {
+        const baseUrl = getXlinkHref(
+          firstDirectChild(verbNode, "OnlineResource"),
+        );
+        if (baseUrl) {
+          return {
+            baseUrl,
+            method: verb.toUpperCase() as "POST" | "GET",
+            formats,
+          };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function isQueryable(layerElement: Element) {
+  const queryable = layerElement.getAttribute("queryable");
+  // WMS 1.3.0 returns "1" or "0", some servers return a stringified boolean
+  return queryable === "1" || queryable === "true";
+}
+
 function directChildren(parent: Element, localName: string): Element[] {
   return Array.from(parent.children).filter(
     (child) => child.localName === localName,
   );
+}
+
+function getAvailableCrs(layerElement: Element) {
+  for (
+    let candidate: Element | null = layerElement;
+    candidate?.localName === "Layer";
+    candidate = candidate.parentElement
+  ) {
+    const supportedCrs = [
+      ...directChildren(candidate, "CRS"),
+      ...directChildren(candidate, "SRS"),
+    ]
+      .map((el) => el.textContent?.trim())
+      .filter((code): code is string => !!code);
+    if (supportedCrs.length > 0) {
+      return supportedCrs;
+    }
+  }
+
+  return ["EPSG:4326"];
 }
 
 function firstDirectChild(
@@ -208,4 +297,13 @@ function firstDirectChild(
   localName: string,
 ): Element | undefined {
   return directChildren(parent, localName)[0];
+}
+
+// retrieve the xlink attribute from an element
+function getXlinkHref(element: Element | undefined): string | null {
+  return (
+    element?.getAttribute("xlink:href") ??
+    element?.getAttributeNS(XLINK_NS, "href") ??
+    null
+  );
 }
