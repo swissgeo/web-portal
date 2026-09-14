@@ -142,16 +142,190 @@ describe(
         version: null,
         dimensions: null,
         legends: [],
+        availableCrs: [],
+        queryable: false,
+        getFeatureInfoCapability: null,
       });
       expect(parseWmsCapabilities(capabilitiesXML, null)).toEqual({
         url: null,
         version: null,
         dimensions: null,
         legends: [],
+        availableCrs: [],
+        queryable: false,
+        getFeatureInfoCapability: null,
       });
     });
   },
 );
+
+const XLINK_DECL = 'xmlns:xlink="http://www.w3.org/1999/xlink"';
+
+/**
+ * Minimal synthetic WMS capabilities around a `target.layer` nested in a
+ * `parent.group`
+ */
+function makeSyntheticCapabilitiesXml(options: {
+  version?: string;
+  gfiFormats?: string[];
+  gfiVerbs?: Array<"Get" | "Post">;
+  omitGetFeatureInfo?: boolean;
+  parentCrs?: string[];
+  layerCrs?: string[];
+  useSrs?: boolean;
+  queryable?: string;
+}): string {
+  const crsTag = options.useSrs ? "SRS" : "CRS";
+  const crsEntries = (codes: string[] = []) =>
+    codes.map((code) => `<${crsTag}>${code}</${crsTag}>`).join("");
+  const getFeatureInfo = options.omitGetFeatureInfo
+    ? ""
+    : `<GetFeatureInfo>${(options.gfiFormats ?? ["application/json"])
+        .map((format) => `<Format>${format}</Format>`)
+        .join("")}<DCPType><HTTP>${(options.gfiVerbs ?? ["Get"])
+        .map(
+          (verb) =>
+            `<${verb}><OnlineResource ${XLINK_DECL} xlink:href="https://example.test/wms?"/></${verb}>`,
+        )
+        .join("")}</HTTP></DCPType></GetFeatureInfo>`;
+  const queryableAttr =
+    options.queryable === undefined ? "" : ` queryable="${options.queryable}"`;
+  return `<?xml version="1.0"?>
+<WMS_Capabilities version="${options.version ?? "1.3.0"}" ${XLINK_DECL}>
+  <Service>
+    <OnlineResource xlink:href="https://example.test/service?"/>
+  </Service>
+  <Capability>
+    <Request>${getFeatureInfo}</Request>
+    <Layer>
+      <Name>parent.group</Name>
+      ${crsEntries(options.parentCrs)}
+      <Layer${queryableAttr}>
+        <Name>target.layer</Name>
+        ${crsEntries(options.layerCrs)}
+      </Layer>
+    </Layer>
+  </Capability>
+</WMS_Capabilities>`;
+}
+
+describe("parseWmsCapabilities to retrieve GetFeatureInfo / queryable / CRS harvest", () => {
+  describe("on the real geoadmin fixture", () => {
+    it(
+      "extracts the service-level GetFeatureInfo capability, GET preferred",
+      { timeout: FIXTURE_PARSING_TIMEOUT },
+      () => {
+        const { getFeatureInfoCapability } = parseWmsCapabilities(
+          capabilitiesXML,
+          "ch.vbs.armee-kriegsdenkmaeler",
+        );
+
+        expect(getFeatureInfoCapability).toEqual({
+          baseUrl: "https://wms.geo.admin.ch/de/?",
+          method: "GET",
+          formats: [
+            "application/json",
+            "application/json; subtype=geojson",
+            "application/vnd.ogc.gml",
+            "text/plain",
+            "text/xml",
+            "text/xml; subtype=gml/3.1.1",
+            "text/xml; subtype=gml/3.2.1",
+          ],
+        });
+      },
+    );
+
+    it(
+      "reports the layer as queryable and lists its own CRS entries",
+      { timeout: FIXTURE_PARSING_TIMEOUT },
+      () => {
+        const { queryable, availableCrs } = parseWmsCapabilities(
+          capabilitiesXML,
+          "ch.vbs.armee-kriegsdenkmaeler",
+        );
+
+        expect(queryable).toBe(true);
+        expect(availableCrs[0]).toBe("EPSG:2056");
+        expect(availableCrs).toContain("EPSG:3857");
+      },
+    );
+  });
+
+  describe("on synthetic capabilities", () => {
+    const parse = (xml: string) => parseWmsCapabilities(xml, "target.layer");
+
+    it("inherits the CRS list from the enclosing group when the layer declares none", () => {
+      const { availableCrs } = parse(
+        makeSyntheticCapabilitiesXml({
+          parentCrs: ["EPSG:2056", "EPSG:21781"],
+        }),
+      );
+
+      expect(availableCrs).toEqual(["EPSG:2056", "EPSG:21781"]);
+    });
+
+    it("keeps the layer's own CRS list over the parent's (nearest wins)", () => {
+      const { availableCrs } = parse(
+        makeSyntheticCapabilitiesXml({
+          parentCrs: ["EPSG:2056"],
+          layerCrs: ["EPSG:4326"],
+        }),
+      );
+
+      expect(availableCrs).toEqual(["EPSG:4326"]);
+    });
+
+    it("defaults to WGS84 when no layer in the chain declares any CRS", () => {
+      const { availableCrs } = parse(makeSyntheticCapabilitiesXml({}));
+
+      expect(availableCrs).toEqual(["EPSG:4326"]);
+    });
+
+    it("reads <SRS> entries on pre-1.3.0 capabilities", () => {
+      const { version, availableCrs } = parse(
+        makeSyntheticCapabilitiesXml({
+          version: "1.1.1",
+          layerCrs: ["EPSG:21781"],
+          useSrs: true,
+        }),
+      );
+
+      expect(version).toBe("1.1.1");
+      expect(availableCrs).toEqual(["EPSG:21781"]);
+    });
+
+    it("falls back to the POST endpoint when no GET OnlineResource is advertised", () => {
+      const { getFeatureInfoCapability } = parse(
+        makeSyntheticCapabilitiesXml({ gfiVerbs: ["Post"] }),
+      );
+
+      expect(getFeatureInfoCapability?.method).toBe("POST");
+    });
+
+    it("returns a null capability when GetFeatureInfo is not advertised", () => {
+      const { getFeatureInfoCapability } = parse(
+        makeSyntheticCapabilitiesXml({ omitGetFeatureInfo: true }),
+      );
+
+      expect(getFeatureInfoCapability).toBeNull();
+    });
+
+    it("returns a null capability when no format is advertised", () => {
+      const { getFeatureInfoCapability } = parse(
+        makeSyntheticCapabilitiesXml({ gfiFormats: [] }),
+      );
+
+      expect(getFeatureInfoCapability).toBeNull();
+    });
+
+    it("reports a layer without the queryable attribute as not queryable", () => {
+      const { queryable } = parse(makeSyntheticCapabilitiesXml({}));
+
+      expect(queryable).toBe(false);
+    });
+  });
+});
 
 describe("useWmsCapabilities 404", () => {
   const handlers = [

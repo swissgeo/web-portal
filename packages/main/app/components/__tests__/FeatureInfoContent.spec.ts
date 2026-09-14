@@ -45,6 +45,7 @@ describe("FeatureInfoContent.vue", () => {
             kind: "html",
             html: "<p>popup</p>",
             trusted: true,
+            shareable: true,
           }),
         },
       });
@@ -60,6 +61,7 @@ describe("FeatureInfoContent.vue", () => {
             kind: "html",
             html: "<p>external</p>",
             trusted: false,
+            shareable: true,
           }),
         },
       });
@@ -202,6 +204,7 @@ describe("FeatureInfoContent.vue", () => {
             kind: "html",
             html: "<p>first</p>",
             trusted: true,
+            shareable: true,
           }),
         },
       });
