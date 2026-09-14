@@ -5,6 +5,7 @@ import type { Dataset } from "@swissgeo/ogc";
 import type { LayerState, AppState } from "@swissgeo/statesharing";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
@@ -90,6 +91,7 @@ export function useStateConfig() {
   const layerStore = useLayerStore();
   const dimensionsStore = useDimensionsStore();
   const mapviewStore = useMapViewStore();
+  const featureStore = useFeaturesStore();
 
   const exportState = computed((): AppStatePayload => {
     return {
@@ -132,6 +134,7 @@ export function useStateConfig() {
 
     for (const layer of [...layerStore.layers]) {
       dimensionsStore.clearLayerDimensions(layer.uuid);
+      featureStore.clearWmsCapability(layer.uuid);
       layerStore.removeLayer(layer.uuid);
     }
 
