@@ -5,10 +5,10 @@ const { locale } = useI18n();
 
 const filterTerm = ref<string>("");
 // the composable will update the data if the locale changes
-const { data: recordLayers } = useOgcCatalog(locale);
+const { state } = useOgcCatalog(locale);
 
 const availableLayers = computed(() => {
-  return recordLayers.value;
+  return state.value.data;
 });
 
 const filteredAvailableLayers = computed((): Dataset[] => {

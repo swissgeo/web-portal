@@ -6,6 +6,8 @@ export interface Collection<record extends Feature<string>> {
   type: "FeatureCollection";
   features: record[];
   links: Link[];
+  numberMatched?: number;
+  numberReturned?: number;
 }
 
 export type DatasetCollection = Collection<Dataset>;
