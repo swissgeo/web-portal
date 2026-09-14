@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Dimension } from "@swissgeo/dimension";
+import type { WmsFeatureInfoCapability } from "@swissgeo/feature";
 import type { Distribution, Legend, Service } from "@swissgeo/ogc";
 
 import type { WMSLayerData } from "@/components/map/datamapping/useOgcWmsData";
@@ -19,17 +20,23 @@ const emit = defineEmits<{
   updateData: [opacity: number | null, WMSLayerData];
   updateTimeDimension: [dimension: Partial<Dimension>];
   updateLegends: [legends: Legend[]];
+  setWmsCapability: [capability: WmsFeatureInfoCapability];
 }>();
 
 const distribution = computed(() => props.distribution);
 const serviceData = computed(() => props.serviceData);
 const layerId = computed(() => props.layerId);
 
-const { defaultOpacity, wmsDataForOl, timeInfo, legends } = useOgcWmsData(
-  distribution,
-  serviceData,
-  layerId,
-  (error) => emit("error", error),
+const {
+  defaultOpacity,
+  wmsDataForOl,
+  timeInfo,
+  legends,
+  availableCrs,
+  getFeatureInfo,
+  queryable,
+} = useOgcWmsData(distribution, serviceData, layerId, (error) =>
+  emit("error", error),
 );
 
 watch(timeInfo, () => {
@@ -39,6 +46,21 @@ watch(timeInfo, () => {
 
 watch(legends, () => emit("updateLegends", legends.value), {
   immediate: true,
+});
+
+watch([queryable, getFeatureInfo, availableCrs, wmsDataForOl], () => {
+  if (
+    queryable.value &&
+    getFeatureInfo.value &&
+    availableCrs.value.length > 0
+  ) {
+    const capability: WmsFeatureInfoCapability = {
+      availableCrs: availableCrs.value,
+      getFeatureInfoCapability: getFeatureInfo.value,
+      wmsVersion: wmsDataForOl.value?.version,
+    };
+    emit("setWmsCapability", capability);
+  }
 });
 
 watch(
