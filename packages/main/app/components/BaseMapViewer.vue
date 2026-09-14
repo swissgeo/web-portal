@@ -56,7 +56,7 @@ const layersForMap = computed(() => {
      * generating unnecessary objects (also, this was creating some flickering)
      *
      */
-    if (layer && !layer.opacity) {
+    if (layer && (layer.opacity === null || layer.opacity === undefined)) {
       if (layer.uuid === backgroundLayer.value?.uuid) {
         layer.opacity = 1;
         return layer;
