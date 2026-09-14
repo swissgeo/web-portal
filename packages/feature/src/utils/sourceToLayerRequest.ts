@@ -5,8 +5,6 @@ import type {
   WmsFeatureInfoCapability,
 } from "@/types";
 
-import { isGeoAdminSource } from "@/types";
-
 export function sourcesToLayerRequests(
   layerSources: LayerSource[],
   wmsCapabilities?: Record<string, WmsFeatureInfoCapability>,
@@ -22,10 +20,7 @@ export function sourceToLayerRequest(
 ): LayerRequest | WMSLayerRequest {
   // priority 1: geojson / KML / KMZ layers most likely will have features as
   // part of the source data.
-  if (
-    isGeoAdminSource(layerSource) &&
-    layerSource.preResolvedFeatures?.length > 0
-  ) {
+  if (layerSource.preResolvedFeatures?.length > 0) {
     return {
       layerUuid: layerSource.layerUuid,
       layerId: layerSource.layerId,
@@ -33,8 +28,8 @@ export function sourceToLayerRequest(
     };
   }
 
-  // priority 2: identify is present
-  if (isGeoAdminSource(layerSource) && layerSource.distribution) {
+  // priority 2: try to see if there is an identify available
+  if (layerSource.distribution) {
     const dist = layerSource.distribution?.features.filter(
       (ogcFeature) =>
         ogcFeature.properties.protocol.toLowerCase() === "geoadmin:features",
@@ -55,7 +50,7 @@ export function sourceToLayerRequest(
   // priority 3: WMS GetFeatureInfo: Using the stored capabilities
   const capability: WmsFeatureInfoCapability | undefined =
     wmsCapabilities?.[layerSource.layerUuid];
-  if (capability?.getFeatureInfoCapability && capability.availableCrs) {
+  if (capability) {
     return {
       layerUuid: layerSource.layerUuid,
       layerId: layerSource.layerId,

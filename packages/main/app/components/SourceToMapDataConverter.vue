@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Dimension } from "@swissgeo/dimension";
+import type { WmsFeatureInfoCapability } from "@swissgeo/feature";
 import type {
   DatasetLayer,
   LayerInfo,
@@ -13,6 +14,7 @@ import {
   getYearFromGeoadminValue,
   useDimensionsStore,
 } from "@swissgeo/dimension";
+import { useFeaturesStore } from "@swissgeo/feature";
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import { toError } from "@swissgeo/shared";
 
@@ -32,6 +34,7 @@ const emit = defineEmits<{
 const mapViewStore = useMapViewStore();
 const layerStore = useLayerStore();
 const dimensionsStore = useDimensionsStore();
+const featureStore = useFeaturesStore();
 
 function emitLayerError(uuid: SourceData["uuid"], error: unknown) {
   emit("layerError", uuid, toError(error));
@@ -47,7 +50,6 @@ function updateMapLayerData(index: number, mapLayerData: MapLayer) {
   mapLayerData.opacity =
     options?.opacity ?? currentData?.opacity ?? mapLayerData.opacity;
   mapLayerData.isVisible = options?.isVisible ?? currentData?.isVisible ?? true;
-
   mapViewStore.updateLayerData(index, mapLayerData, true);
 }
 
@@ -112,6 +114,10 @@ function updateTimeDimension(uuid: string, dimension: Partial<Dimension>) {
   });
 }
 
+function setWmsCapability(uuid: string, capability: WmsFeatureInfoCapability) {
+  featureStore.setWmsCapability(uuid, capability);
+}
+
 function removeMapLayer(uuidToRemove: string) {
   if (mapViewStore.mapLayers.some((layer) => layer.uuid === uuidToRemove)) {
     mapViewStore.removeLayer(uuidToRemove);
@@ -150,6 +156,7 @@ function removeMapLayer(uuidToRemove: string) {
       @updateLayerInfo="updateLayerInfo"
       @updateLegends="updateLegends"
       @remove="removeMapLayer"
+      @setWmsCapability="setWmsCapability"
     />
     <MapDatamappingFileConverter
       v-else

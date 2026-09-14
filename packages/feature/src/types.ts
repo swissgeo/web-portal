@@ -63,17 +63,9 @@ export interface OgcDistribution {
 export type LayerSource = {
   layerUuid: string;
   layerId: string;
-};
-export interface GeoAdminSource extends LayerSource {
-  kind: "geoadmin";
-  distribution?: OgcDistribution;
   preResolvedFeatures?: geojsonFeature[];
-}
-
-export const isGeoAdminSource = (
-  layerSource: LayerSource,
-): layerSource is GeoAdminSource =>
-  (layerSource as GeoAdminSource).kind === "geoadmin";
+  distribution?: OgcDistribution;
+};
 
 interface OgcDistributionFeature {
   id: string;
