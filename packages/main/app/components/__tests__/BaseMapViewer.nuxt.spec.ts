@@ -51,6 +51,12 @@ const mockLayers = [
     displayName: "Layer 4",
     opacity: 1,
   },
+  {
+    uuid: "layer-5",
+    layerId: "5",
+    displayName: "Layer 5",
+    opacity: 0,
+  },
 ];
 
 const mockBackgroundLayer = {
@@ -145,6 +151,7 @@ describe("BaseMapViewer", () => {
     mockLayers[1]!.opacity = 0.5;
     mockLayers[2]!.opacity = null;
     mockLayers[3]!.opacity = 1;
+    mockLayers[4]!.opacity = 0;
   });
 
   async function createWrapper(props = {}) {
@@ -193,12 +200,13 @@ describe("BaseMapViewer", () => {
 
     const map = wrapper.getComponent(MapModuleStub);
     const layers = map.props("layers");
-    expect(layers).toHaveLength(4);
+    expect(layers).toHaveLength(5);
 
     expect(layers[0].opacity).toBe(1);
     expect(layers[1].opacity).toBe(0.5);
     expect(layers[2].opacity).toBe(1);
     expect(layers[3].opacity).toBe(1);
+    expect(layers[4].opacity).toBe(0);
   });
 
   it("sets opacity directly on background layer", async () => {

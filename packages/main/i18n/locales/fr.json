@@ -398,7 +398,7 @@
     "info": "Informations sur la couche",
     "remove": "Supprimer la couche",
     "collapse": "Masquer les détails de la couche",
-    "transparency": "Transparence",
+    "opacity": "Opacité",
     "legend": {
       "title": "Légende",
       "notAvailable": "Aucune légende disponible.",
