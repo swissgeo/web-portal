@@ -1,7 +1,7 @@
 import { setActivePinia, createPinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import type { FeatureData } from "@/types";
+import type { FeatureData, WmsFeatureInfoCapability } from "@/types";
 
 import { useFeaturesStore } from "@/stores/feature";
 
@@ -16,6 +16,7 @@ const mockFeatureData: FeatureData[] = [
       kind: "html",
       trusted: true,
       html: "test-1",
+      shareable: true,
     },
   },
   {
@@ -28,6 +29,7 @@ const mockFeatureData: FeatureData[] = [
       kind: "html",
       trusted: true,
       html: "test-2",
+      shareable: true,
     },
   },
   {
@@ -40,6 +42,7 @@ const mockFeatureData: FeatureData[] = [
       kind: "html",
       trusted: false,
       html: "test-3",
+      shareable: true,
     },
   },
 ];
@@ -210,5 +213,57 @@ describe("identify functionalities of the feature module", () => {
     featureStore.$reset();
 
     expect(featureStore.selectedFeaturesByUuid).toEqual({});
+  });
+});
+
+describe("WMS capability registrations", () => {
+  beforeEach(() => setActivePinia(createPinia()));
+
+  const capability: WmsFeatureInfoCapability = {
+    getFeatureInfoCapability: {
+      baseUrl: "https://example.test/wms?",
+      method: "GET",
+      formats: ["application/json"],
+    },
+    wmsVersion: "1.3.0",
+    availableCrs: ["EPSG:2056", "EPSG:4326"],
+  };
+
+  it("starts with no registration, and getWmsCapability returns undefined", () => {
+    const featureStore = useFeaturesStore();
+
+    expect(featureStore.wmsCapabilitiesByUuid).toEqual({});
+    expect(featureStore.getWmsCapability("uuid-a")).toBeUndefined();
+  });
+
+  it("round-trips set / get / clear", () => {
+    const featureStore = useFeaturesStore();
+
+    featureStore.setWmsCapability("uuid-a", capability);
+    expect(featureStore.getWmsCapability("uuid-a")).toEqual(capability);
+
+    featureStore.clearWmsCapability("uuid-a");
+    expect(featureStore.getWmsCapability("uuid-a")).toBeUndefined();
+    expect(featureStore.wmsCapabilitiesByUuid).toEqual({});
+  });
+
+  it("clearing an unregistered layer is a no-op", () => {
+    const featureStore = useFeaturesStore();
+    featureStore.setWmsCapability("uuid-a", capability);
+
+    featureStore.clearWmsCapability("uuid-not-registered");
+
+    expect(featureStore.getWmsCapability("uuid-a")).toEqual(capability);
+  });
+
+  it("$reset clears the selection but NEVER the capability registrations (binding invariant)", () => {
+    const featureStore = useFeaturesStore();
+    featureStore.setSelection({ "uuid-a": mockFeatureData });
+    featureStore.setWmsCapability("uuid-a", capability);
+
+    featureStore.$reset();
+
+    expect(featureStore.selectedFeaturesByUuid).toEqual({});
+    expect(featureStore.getWmsCapability("uuid-a")).toEqual(capability);
   });
 });
