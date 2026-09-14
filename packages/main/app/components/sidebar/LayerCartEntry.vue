@@ -160,7 +160,7 @@ const rowButton = {
     <div v-if="isExpanded" class="flex min-w-0 flex-col gap-3 pl-8">
       <div class="flex flex-col gap-1">
         <span class="text-xs font-medium text-toned uppercase">
-          {{ t("layers.transparency") }}
+          {{ t("layers.opacity") }}
         </span>
         <div class="flex items-center gap-2">
           <USlider

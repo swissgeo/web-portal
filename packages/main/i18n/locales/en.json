@@ -398,7 +398,7 @@
     "info": "Layer information",
     "remove": "Remove layer",
     "collapse": "Hide layer details",
-    "transparency": "Transparency",
+    "opacity": "Opacity",
     "legend": {
       "title": "Legend",
       "notAvailable": "No legend available.",

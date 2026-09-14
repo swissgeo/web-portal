@@ -429,7 +429,7 @@
     "info": "Ebeneninformationen",
     "remove": "Ebene entfernen",
     "collapse": "Ebenendetails ausblenden",
-    "transparency": "Transparenz",
+    "opacity": "Opazität",
     "legend": {
       "title": "Legende",
       "notAvailable": "Keine Legende verfügbar.",
