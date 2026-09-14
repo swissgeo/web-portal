@@ -67,6 +67,11 @@ export function layerToStateConfig(layer: MapLayer): LayerState | null {
     }
   }
 
+  const features = useFeaturesStore().getShareableFeaturesIdsByUuid(layer.uuid);
+  if (features) {
+    config.features = features;
+  }
+
   return config;
 }
 
