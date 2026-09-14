@@ -1,6 +1,6 @@
-// The accepted notations follow web-mapviewer coordinateExtractors.js, so that everything
-// map.geo.admin.ch understands is understood here too. What3words is the exception, it needs an
-// API call and cannot be resolved by this parser.
+// The accepted notations follow the ones of web-mapviewer:
+// https://github.com/geoadmin/web-mapviewer/blob/v1.62.0-beta.10/packages/mapviewer/src/utils/coordinates/coordinateExtractors.js
+// What3words is the exception, it needs an API call and cannot be resolved by this parser.
 
 import type { SingleCoordinate } from "@/coordinatesUtils";
 import type CoordinateSystem from "@/proj/CoordinateSystem";
@@ -39,7 +39,6 @@ const CARDINAL = `[NSEW]`;
 /**
  * One value of a pair, in degrees, degrees/minutes or degrees/minutes/seconds. As soon as there are
  * minutes the symbols become optional, which is how Google writes them: "46 58.79" for "46° 58.79'".
- * Same notations as web-mapviewer REGEX_WGS_84*.
  */
 function degreesPattern(index: 1 | 2, precision: 1 | 2 | 3): string {
   const degrees = String.raw`(?<deg${index}>${DEGREES})`;
@@ -76,6 +75,14 @@ const UTM_REGEX =
 const MGRS_REGEX = /^\d{1,2}[C-HJ-NP-X][A-HJ-NP-Z]{2}(?:\d\d)*$/i;
 
 const MAX_LONGITUDE = 180;
+/** Switzerland in WGS84, computed on first use as proj4 has to be registered before */
+let swissBoundsInWGS84: ReturnType<typeof LV95.getBoundsAs> | undefined;
+
+/** Switzerland is small enough for its bounds to tell a "lat lon" pair from a "lon lat" one */
+function isInSwitzerland(coordinate: SingleCoordinate): boolean {
+  swissBoundsInWGS84 ??= LV95.getBoundsAs(WGS84);
+  return swissBoundsInWGS84?.isInBounds(coordinate) ?? false;
+}
 
 function removeThousandSeparators(text: string): string {
   return text.replace(
@@ -110,15 +117,17 @@ function extractNumberPair(text: string): ExtractedCoordinate | undefined {
   const first = parseFloat(removeThousandSeparators(match[1]));
   const second = parseFloat(removeThousandSeparators(match[2]));
 
-  // small values can only be WGS84, and are expected in the "lat, lon" order swisstopo displays
+  // small values can only be WGS84, in the "lat, lon" order swisstopo displays unless only the
+  // other order lands in Switzerland
   if (Math.abs(first) <= MAX_LONGITUDE && Math.abs(second) <= MAX_LONGITUDE) {
-    if (WGS84.isInBounds(second, first)) {
-      return { coordinate: [second, first], coordinateSystem: WGS84 };
-    }
-    if (WGS84.isInBounds(first, second)) {
-      return { coordinate: [first, second], coordinateSystem: WGS84 };
-    }
-    return;
+    const candidates: SingleCoordinate[] = [
+      [second, first],
+      [first, second],
+    ];
+    const coordinate =
+      candidates.find(isInSwitzerland) ??
+      candidates.find((candidate) => WGS84.isInBounds(candidate));
+    return coordinate ? { coordinate, coordinateSystem: WGS84 } : undefined;
   }
 
   for (const coordinateSystem of [LV95, LV03, WEBMERCATOR]) {
