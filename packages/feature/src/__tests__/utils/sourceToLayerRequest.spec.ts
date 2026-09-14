@@ -2,7 +2,11 @@ import type { Feature as GeoJsonFeature } from "geojson";
 
 import { describe, expect, it } from "vitest";
 
-import type { LayerSource, OgcDistribution } from "@/types";
+import type {
+  LayerSource,
+  OgcDistribution,
+  WmsFeatureInfoCapability,
+} from "@/types";
 
 import {
   sourceToLayerRequest,
@@ -47,24 +51,33 @@ const geoadminDistribution = (): OgcDistribution =>
     },
   ]);
 
-function makeGeoadminSource(
-  overrides: Partial<Extract<LayerSource, { kind: "geoadmin" }>> = {},
-): LayerSource {
+function makeSource(overrides: Partial<LayerSource> = {}): LayerSource {
   return {
-    kind: "geoadmin",
     layerUuid: UUID,
     layerId: LAYER_ID,
     ...overrides,
   };
 }
 
+const wmsCapability = (
+  overrides: Partial<WmsFeatureInfoCapability> = {},
+): WmsFeatureInfoCapability => ({
+  getFeatureInfoCapability: {
+    baseUrl: "https://example.test/wms?",
+    method: "GET",
+    formats: ["application/vnd.ogc.gml", "application/json"],
+  },
+  availableCrs: ["EPSG:4326", "EPSG:2056"],
+  ...overrides,
+});
+
 describe("sourceToLayerRequest", () => {
-  describe("handling sources with pre-existing features", () => {
-    it("returns a pre-resolved request when preResolvedFeatures is non-empty, even if a geoadmin:features distribution is present", () => {
+  describe("priority 1 — pre-resolved features", () => {
+    it("returns a pre-resolved request, even if a geoadmin:features distribution is present", () => {
       const features = [makeFeature(1), makeFeature(2)];
 
       const request = sourceToLayerRequest(
-        makeGeoadminSource({
+        makeSource({
           distribution: geoadminDistribution(),
           preResolvedFeatures: features,
         }),
@@ -77,12 +90,56 @@ describe("sourceToLayerRequest", () => {
       });
       expect(request).not.toHaveProperty("urlTemplate");
     });
+
+    it("returns a pre-resolved request without any distribution", () => {
+      const features = [makeFeature(1)];
+
+      const request = sourceToLayerRequest(
+        makeSource({ preResolvedFeatures: features }),
+      );
+
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        preResolvedFeatures: features,
+      });
+    });
+
+    it("keeps pre-resolved features winning over a registered WMS capability", () => {
+      const features = [makeFeature(1)];
+
+      const request = sourceToLayerRequest(
+        makeSource({ preResolvedFeatures: features }),
+        { [UUID]: wmsCapability() },
+      );
+
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        preResolvedFeatures: features,
+      });
+    });
+
+    it("falls back to the distribution when preResolvedFeatures is an empty array", () => {
+      const request = sourceToLayerRequest(
+        makeSource({
+          distribution: geoadminDistribution(),
+          preResolvedFeatures: [],
+        }),
+      );
+
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        urlTemplate: TEMPLATE,
+      });
+    });
   });
 
-  describe("handling sources with a geoadmin:features distribution", () => {
+  describe("priority 2 — geoadmin:features distribution", () => {
     it("extracts the preview uriTemplate as urlTemplate", () => {
       const request = sourceToLayerRequest(
-        makeGeoadminSource({ distribution: geoadminDistribution() }),
+        makeSource({ distribution: geoadminDistribution() }),
       );
 
       expect(request).toEqual({
@@ -105,32 +162,19 @@ describe("sourceToLayerRequest", () => {
         },
       ]);
 
-      const request = sourceToLayerRequest(
-        makeGeoadminSource({ distribution }),
-      );
+      const request = sourceToLayerRequest(makeSource({ distribution }));
 
-      expect(request.urlTemplate).toBe(TEMPLATE);
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        urlTemplate: TEMPLATE,
+      });
     });
 
-    it("ignores ogc:wmts and ogc:wms distributions", () => {
-      const distribution = makeDistribution([
-        { protocol: "ogc:wmts" },
-        { protocol: "ogc:wms" },
-      ]);
-
+    it("keeps the identify urlTemplate winning over a registered WMS capability", () => {
       const request = sourceToLayerRequest(
-        makeGeoadminSource({ distribution }),
-      );
-
-      expect(request).toEqual({ layerUuid: UUID, layerId: LAYER_ID });
-    });
-
-    it("falls back to the distribution when preResolvedFeatures is an empty array", () => {
-      const request = sourceToLayerRequest(
-        makeGeoadminSource({
-          distribution: geoadminDistribution(),
-          preResolvedFeatures: [],
-        }),
+        makeSource({ distribution: geoadminDistribution() }),
+        { [UUID]: wmsCapability() },
       );
 
       expect(request).toEqual({
@@ -139,26 +183,74 @@ describe("sourceToLayerRequest", () => {
         urlTemplate: TEMPLATE,
       });
     });
+
+    it("returns an empty request for wmts/wms-only distributions when no capability is registered", () => {
+      const distribution = makeDistribution([
+        { protocol: "ogc:wmts" },
+        { protocol: "ogc:wms" },
+      ]);
+
+      const request = sourceToLayerRequest(makeSource({ distribution }));
+
+      expect(request).toEqual({ layerUuid: UUID, layerId: LAYER_ID });
+    });
   });
 
-  describe("handling sources with no usable data", () => {
-    it("returns an empty request for a geoadmin source without distribution nor features", () => {
-      const request = sourceToLayerRequest(makeGeoadminSource());
+  describe("registered WMS capability", () => {
+    it("builds a WMSLayerRequest from the dict entry, version defaulted", () => {
+      const request = sourceToLayerRequest(makeSource(), {
+        [UUID]: wmsCapability({
+          getFeatureInfoCapability: {
+            baseUrl: "https://example.test/wms?",
+            method: "GET",
+            formats: ["application/json"],
+          },
+        }),
+      });
+
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        wmsGetFeatureInfo: {
+          baseUrl: "https://example.test/wms?",
+          method: "GET",
+          formats: ["application/json"],
+        },
+        wmsVersion: "1.3.0",
+        availableCrs: ["EPSG:4326", "EPSG:2056"],
+      });
+    });
+
+    it("passes the wmsVersion through when present", () => {
+      const request = sourceToLayerRequest(makeSource(), {
+        [UUID]: wmsCapability({ wmsVersion: "1.1.1" }),
+      });
+
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
+        wmsVersion: "1.1.1",
+        availableCrs: ["EPSG:4326", "EPSG:2056"],
+      });
+    });
+
+    it("returns an empty request when the layer has no dict entry", () => {
+      const request = sourceToLayerRequest(makeSource());
 
       expect(request).toEqual({ layerUuid: UUID, layerId: LAYER_ID });
     });
 
-    it("returns an empty request for an external WMS source (getFeatureInfo not implemented yet)", () => {
-      const request = sourceToLayerRequest({
-        kind: "externalWms",
-        layerUuid: UUID,
-        layerId: LAYER_ID,
-        getFeatureInfoCapability: {
-          baseUrl: "https://example.test/wms",
-          method: "GET",
-          formats: ["application/json"],
-        },
+    it("ignores dict entries of other layers", () => {
+      const request = sourceToLayerRequest(makeSource(), {
+        "another-uuid": wmsCapability(),
       });
+
+      expect(request).toEqual({ layerUuid: UUID, layerId: LAYER_ID });
+    });
+
+    it("returns an empty request for a bare source with neither distribution, features nor entry", () => {
+      const request = sourceToLayerRequest(makeSource());
 
       expect(request).toEqual({ layerUuid: UUID, layerId: LAYER_ID });
     });
@@ -166,20 +258,24 @@ describe("sourceToLayerRequest", () => {
 });
 
 describe("sourcesToLayerRequests", () => {
-  it("maps each LayerSource to a LayerRequest, preserving order", () => {
+  it("maps each source to a request, preserving order, with the dict injected", () => {
+    const capability = wmsCapability();
     const sources: LayerSource[] = [
-      makeGeoadminSource({
+      makeSource({
         layerUuid: "uuid-preresolved",
         preResolvedFeatures: [makeFeature(1)],
       }),
-      makeGeoadminSource({
+      makeSource({
         layerUuid: "uuid-identify",
         distribution: geoadminDistribution(),
       }),
-      makeGeoadminSource({ layerUuid: "uuid-empty" }),
+      makeSource({ layerUuid: "uuid-wms" }),
+      makeSource({ layerUuid: "uuid-empty" }),
     ];
 
-    const requests = sourcesToLayerRequests(sources);
+    const requests = sourcesToLayerRequests(sources, {
+      "uuid-wms": capability,
+    });
 
     expect(requests).toEqual([
       {
@@ -188,6 +284,13 @@ describe("sourcesToLayerRequests", () => {
         preResolvedFeatures: [makeFeature(1)],
       },
       { layerUuid: "uuid-identify", layerId: LAYER_ID, urlTemplate: TEMPLATE },
+      {
+        layerUuid: "uuid-wms",
+        layerId: LAYER_ID,
+        wmsGetFeatureInfo: capability.getFeatureInfoCapability,
+        wmsVersion: "1.3.0",
+        availableCrs: capability.availableCrs,
+      },
       { layerUuid: "uuid-empty", layerId: LAYER_ID },
     ]);
   });

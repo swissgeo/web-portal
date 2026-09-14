@@ -13,6 +13,7 @@ import BaseMapViewer from "../BaseMapViewer.vue";
 const {
   clearImportOptions,
   clearLayerDimensions,
+  clearWmsCapability,
   logError,
   removeMapLayer,
   removeSourceLayer,
@@ -21,6 +22,7 @@ const {
 } = vi.hoisted(() => ({
   clearImportOptions: vi.fn(),
   clearLayerDimensions: vi.fn(),
+  clearWmsCapability: vi.fn(),
   logError: vi.fn(),
   removeMapLayer: vi.fn(),
   removeSourceLayer: vi.fn(),
@@ -72,6 +74,7 @@ vi.mock("@swissgeo/feature", async () => {
       return state.getFeaturesGeoJSON;
     },
     $reset: state.$reset,
+    clearWmsCapability,
   };
   setFeatureStoreState(state);
   return {
@@ -413,6 +416,7 @@ describe("BaseMapViewer", () => {
     });
     expect(showError).toHaveBeenCalledWith("error.layerLoad");
     expect(clearLayerDimensions).toHaveBeenCalledWith("layer-2");
+    expect(clearWmsCapability).toHaveBeenCalledWith("layer-2");
     expect(clearImportOptions).toHaveBeenCalledWith("layer-2");
     expect(removeMapLayer).toHaveBeenCalledWith("layer-2");
     expect(removeSourceLayer).toHaveBeenCalledWith("layer-2");

@@ -5,6 +5,7 @@ import type { AppStatePayload } from "~/composables/useStateConfig";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { useFeaturesStore } from "@swissgeo/feature";
 import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
@@ -433,6 +434,30 @@ describe("useStateConfig manages to import a State with importState", () => {
     await useStateConfig().importState(payload);
 
     expect(dimensionsStore.getDimensions(existingLayer.uuid)).toBeUndefined();
+  });
+
+  it("clears WMS capability registrations when importing a new state", async () => {
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const existingLayer = datasetsForStore[0]!;
+    layerStore.addLayer(existingLayer);
+    featureStore.setWmsCapability(existingLayer.uuid, {
+      getFeatureInfoCapability: {
+        baseUrl: "https://example.test/wms?",
+        method: "GET",
+        formats: ["application/json"],
+      },
+      availableCrs: ["EPSG:2056"],
+    });
+    expect(featureStore.getWmsCapability(existingLayer.uuid)).toBeDefined();
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {},
+    };
+    await useStateConfig().importState(payload);
+
+    expect(featureStore.getWmsCapability(existingLayer.uuid)).toBeUndefined();
   });
 
   it("writes time dimensions from the incoming state into the dimensions store", async () => {
