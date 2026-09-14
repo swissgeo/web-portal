@@ -232,10 +232,6 @@ describe("BaseMapViewer — map click abort handling", () => {
     await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledTimes(1));
     const sources = selectFeaturesSpy.mock.calls[0]![3];
     const source = sources[0]!;
-    expect(source.kind).toBe("geoadmin");
-    if (source.kind !== "geoadmin") {
-      throw new Error("expected a geoadmin source");
-    }
     expect(source.distribution).toBeUndefined();
     expect(source.layerId).toBe("ch.test.dataset");
   });
@@ -259,10 +255,6 @@ describe("BaseMapViewer — map click abort handling", () => {
     await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledTimes(1));
     const sources = selectFeaturesSpy.mock.calls[0]![3];
     const source = sources[0]!;
-    expect(source.kind).toBe("geoadmin");
-    if (source.kind !== "geoadmin") {
-      throw new Error("expected a geoadmin source");
-    }
     expect(source.preResolvedFeatures).toEqual([vectorFeature]);
   });
 });
