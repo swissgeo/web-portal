@@ -59,6 +59,22 @@ function handleOpacityChange(value: number | undefined) {
   mapViewStore.updateLayerOpacity(layerIndex, (value ?? 0) / 100);
 }
 
+function handleWheel(event: WheelEvent) {
+  let newOpacity = 0;
+
+  if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+    const delta = event.deltaX > 0 ? -1 : 1;
+    newOpacity = Math.min(Math.max(opacityPercent.value + delta, 0), 100);
+  }
+
+  if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+    const delta = event.deltaY > 0 ? -1 : 1;
+    newOpacity = Math.min(Math.max(opacityPercent.value + delta, 0), 100);
+  }
+
+  handleOpacityChange(newOpacity);
+}
+
 function toggleVisibility() {
   mapViewStore.toggleVisibility(layerIndex);
 }
@@ -166,6 +182,7 @@ const rowButton = {
           <USlider
             :model-value="opacityPercent"
             @update:model-value="handleOpacityChange"
+            @wheel.prevent="handleWheel"
             :min="0"
             :max="100"
             class="flex-1"
