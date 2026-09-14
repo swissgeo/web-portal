@@ -1,5 +1,3 @@
 <template>
-  <NuxtLayout>
-    <MapViewer />
-  </NuxtLayout>
+  <MapViewer />
 </template>
