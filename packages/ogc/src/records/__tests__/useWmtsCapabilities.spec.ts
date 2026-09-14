@@ -1,3 +1,5 @@
+import type { WmtsLayer } from "@camptocamp/ogc-client";
+
 import { flushPromises } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
@@ -8,7 +10,7 @@ import { useWmtsCapabilities } from "../useWmtsCapabilities";
 import ChGeoadminWmts from "./fixtures/service_ch.admin.geo.wmts.json";
 
 vi.mock("@camptocamp/ogc-client", () => {
-  function getLayerByName(name: string) {
+  function getLayerByName(name: string): WmtsLayer | undefined {
     if (name === "ch.bafu.landesforstinventar-vegetationshoehenmodell") {
       return {
         name,
@@ -16,7 +18,9 @@ vi.mock("@camptocamp/ogc-client", () => {
         styles: [],
         defaultStyle: "",
         matrixSets: [],
-        dimensions: [{ identifier: "Time", defaultValue: "current", values: [] }],
+        dimensions: [
+          { identifier: "Time", defaultValue: "current", values: [] },
+        ],
       };
     }
     return {
@@ -45,7 +49,6 @@ describe(
   "useWmtsCapabilities fetching and parsing WMTS capabilities",
   { timeout: 30_000 },
   () => {
-
     it("parses the WMTS capabilities into an ogc-client endpoint", async () => {
       const service = ref<Service>(ChGeoadminWmts as Service);
       const layerId = ref("ch.bafu.radonkarte");
