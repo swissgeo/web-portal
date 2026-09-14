@@ -23,6 +23,7 @@ import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
 import { cloneDeep } from "es-toolkit";
 
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
+import { getOgcDistribution } from "@/utils/stateToFeatureSelectionUtils";
 import { readThemeToken } from "@/utils/themeTokens";
 
 const {
@@ -193,25 +194,9 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       .map(async (sourceLayer) => {
         const preResolvedFeatures =
           mapClickEvent.vectorFeaturesPerLayer[sourceLayer.uuid];
-        let distribution: OgcDistribution | undefined;
+        const distribution: OgcDistribution | undefined =
+          await getOgcDistribution(sourceLayer);
 
-        if (isDatasetLayer(sourceLayer)) {
-          const url = (sourceLayer.data.links ?? []).find(
-            (link) => link.rel?.toLowerCase() === "distributions",
-          )?.href;
-          try {
-            if (url) {
-              const result = await fetch(url, {
-                signal,
-              });
-              distribution = result.ok
-                ? ((await result.json()) as OgcDistribution)
-                : undefined;
-            }
-          } catch {
-            distribution = undefined;
-          }
-        }
         if (distribution) {
           const layerSource: LayerSource = {
             layerUuid: sourceLayer.uuid,

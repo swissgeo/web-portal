@@ -5,6 +5,7 @@ import log from "@swissgeo/log";
 
 import type {
   FeatureData,
+  IdentifyFeature,
   LayerRequest,
   LayerSource,
   WMSLayerRequest,
@@ -105,7 +106,7 @@ export async function getFeaturesForOneLayer(
     const identifyFeatures =
       ((await identifyResult.json()) as IdentifyResponse).results ?? [];
 
-    return getFeaturesFromIds(
+    return getPopupFromIdentifyFeature(
       identifyFeatures,
       layerRequest.urlTemplate,
       lang,
@@ -205,11 +206,8 @@ function buildWmsGetFeatureInfoUrl(
   return url.toString();
 }
 
-function getFeaturesFromIds(
-  identifyFeatures: Array<{
-    id: string | number;
-    geometry: Exclude<Geometry, GeometryCollection>;
-  }>,
+export function getPopupFromIdentifyFeature(
+  identifyFeatures: IdentifyFeature[],
   urlTemplate: string,
   lang: string,
   abortSignal?: AbortSignal,
@@ -237,6 +235,30 @@ function getFeaturesFromIds(
           result.status === "fulfilled",
       )
       .map((result) => result.value),
+  );
+}
+
+// This is used by the state import, to create an identify response from the state's
+// stored ids. This allows us to not have to store geometries in the state at the cost of one
+// query per layer on startup.
+
+export async function createIdentifyResponse(
+  featureIds: string[],
+  layerId: string,
+): Promise<IdentifyFeature[]> {
+  const apiBaseUrl = process.env.NUXT_GEOADMIN_API_BASE_URL;
+  const getFeaturesUrl = `${apiBaseUrl}/rest/services/ech/MapServer/${layerId}/${featureIds.join(",")}`;
+  const result = await fetch(getFeaturesUrl);
+  if (result.status !== 200) {
+    log.warn(
+      `Couldn't reach the getFeatures server for layer ${layerId}. Either the server is down, or the layer doesn't exist.`,
+    );
+    return [];
+  }
+  return (((await result.json()) as IdentifyResponse).results ?? []).map(
+    (feature) => {
+      return { id: feature.id, geometry: feature.geometry };
+    },
   );
 }
 
