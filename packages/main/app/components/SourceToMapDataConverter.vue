@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Dimension } from "@swissgeo/dimension";
-import type { WmsFeatureInfoCapability } from "@swissgeo/feature";
+import type { LayerSource, WmsFeatureInfoCapability } from "@swissgeo/feature";
 import type {
   DatasetLayer,
   LayerInfo,
@@ -14,13 +14,20 @@ import {
   getYearFromGeoadminValue,
   useDimensionsStore,
 } from "@swissgeo/dimension";
-import { useFeaturesStore } from "@swissgeo/feature";
+import {
+  getPopupFromIdentifyFeature,
+  useFeaturesStore,
+} from "@swissgeo/feature";
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import { toError } from "@swissgeo/shared";
 
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
 import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";
+import {
+  getOgcDistribution,
+  getUrlTemplate,
+} from "@/utils/stateToFeatureSelectionUtils";
 
 const { sourceBgLayer, sourceData } = defineProps<{
   sourceBgLayer: SourceData | null | undefined;
@@ -36,6 +43,8 @@ const layerStore = useLayerStore();
 const dimensionsStore = useDimensionsStore();
 const featureStore = useFeaturesStore();
 
+const { locale } = useI18n();
+
 function emitLayerError(uuid: SourceData["uuid"], error: unknown) {
   emit("layerError", uuid, toError(error));
 }
@@ -43,7 +52,7 @@ function emitLayerError(uuid: SourceData["uuid"], error: unknown) {
 // there can be multiple calls to this function, and the options consumes themselves
 // on call, so we consume the options first, then we give it the current data if there is
 // some, and at last we revert to the default value only if there is no data and no options
-function updateMapLayerData(index: number, mapLayerData: MapLayer) {
+async function updateMapLayerData(index: number, mapLayerData: MapLayer) {
   const options = layerStore.consumeImportOptions(mapLayerData.uuid);
   const currentData = mapViewStore.getMapLayers().value[index];
 
@@ -51,9 +60,35 @@ function updateMapLayerData(index: number, mapLayerData: MapLayer) {
     options?.opacity ?? currentData?.opacity ?? mapLayerData.opacity;
   mapLayerData.isVisible = options?.isVisible ?? currentData?.isVisible ?? true;
   mapViewStore.updateLayerData(index, mapLayerData, true);
+
+  const featuresSelected = featureStore.consumeFeaturePreselection(
+    mapLayerData.uuid,
+  );
+  if (featuresSelected) {
+    const distribution = await getOgcDistribution(
+      layerStore.getLayer(mapLayerData.uuid),
+    );
+    if (distribution) {
+      const layerSource: LayerSource = {
+        layerUuid: mapLayerData.uuid,
+        layerId: mapLayerData.layerId,
+        distribution,
+      };
+      const urlTemplate = getUrlTemplate(layerSource);
+      if (urlTemplate) {
+        const features = await getPopupFromIdentifyFeature(
+          featuresSelected,
+          urlTemplate,
+          locale.value,
+        );
+
+        featureStore.addSelection(mapLayerData.uuid, features);
+      }
+    }
+  }
 }
 
-function updateBgLayer(mapLayerData: MapLayer | null) {
+async function updateBgLayer(mapLayerData: MapLayer | null) {
   if (!mapLayerData) {
     return;
   }
@@ -74,7 +109,7 @@ function updateBgLayer(mapLayerData: MapLayer | null) {
   ) {
     mapViewStore.mapLayers.unshift(mapLayerData);
   } else {
-    updateMapLayerData(0, mapLayerData);
+    await updateMapLayerData(0, mapLayerData);
   }
 }
 function updateLayerInfo(uuid: string, info: LayerInfo) {

@@ -6,5 +6,10 @@ export type {
   WmsFeatureInfoCapability,
 } from "@/types";
 export * from "@/constants";
-export { selectFeatures } from "@/selectFeatures";
+export { sourceToLayerRequest } from "@/utils/sourceToLayerRequest";
+export {
+  selectFeatures,
+  createIdentifyResponse,
+  getPopupFromIdentifyFeature,
+} from "@/selectFeatures";
 export { useFeaturesStore } from "@/stores/feature";
