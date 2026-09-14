@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Dimension } from "@swissgeo/dimension";
+import type { WmsFeatureInfoCapability } from "@swissgeo/feature";
 import type { DatasetLayer, LayerInfo } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset, Legend } from "@swissgeo/ogc";
@@ -43,6 +44,7 @@ const emit = defineEmits<{
   updateDataset: [layerUuid: string, dataset: Dataset];
   updateLayerInfo: [layerUuid: string, info: LayerInfo];
   updateLegends: [layerUuid: string, legends: Legend[]];
+  setWmsCapability: [layerUuid: string, capability: WmsFeatureInfoCapability];
 }>();
 
 const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(
@@ -121,5 +123,6 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
     @updateData="pushLayerSpecificData<WMSLayerData>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
     @updateLegends="emit('updateLegends', layer.uuid, $event)"
+    @setWmsCapability="emit('setWmsCapability', layer.uuid, $event)"
   ></MapDatamappingOgcWmsLayerConverter>
 </template>

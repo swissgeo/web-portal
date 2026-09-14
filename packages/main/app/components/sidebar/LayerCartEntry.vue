@@ -6,6 +6,7 @@ import {
   getDisplayNameFromTimestamp,
   useDimensionsStore,
 } from "@swissgeo/dimension";
+import { useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
 import { useDatasetPanelStore } from "@swissgeo/skeleton";
 import { computed, ref } from "vue";
@@ -24,6 +25,7 @@ const dimensionsStore = useDimensionsStore();
 // const drawingStore = useDrawingStore();
 const datasetPanelStore = useDatasetPanelStore();
 const mapViewStore = useMapViewStore();
+const featureStore = useFeaturesStore();
 
 const isExpanded = ref(false);
 const legends = computed(() => mapViewStore.getLayerLegends(layer.uuid));
@@ -89,6 +91,7 @@ function moveDown() {
 
 function removeLayer() {
   dimensionsStore.clearLayerDimensions(layer.uuid);
+  featureStore.clearWmsCapability(layer.uuid);
   // Removing the source layer unmounts its converter. The converter then removes
   // the matching layer from the map-view store.
   layerStore.removeLayer(layer.uuid);

@@ -146,6 +146,7 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
   toaster.showError(t("error.layerLoad"));
 
   dimensionsStore.clearLayerDimensions(uuid);
+  featureStore.clearWmsCapability(uuid);
   layerStore.clearImportOptions(uuid);
 
   mapViewStore.removeLayer(uuid);
@@ -211,17 +212,24 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
             distribution = undefined;
           }
         }
-
-        const layerSource: LayerSource = {
+        if (distribution) {
+          const layerSource: LayerSource = {
+            layerUuid: sourceLayer.uuid,
+            layerId: isDatasetLayer(sourceLayer)
+              ? sourceLayer.data.id
+              : sourceLayer.humanId,
+            distribution,
+            preResolvedFeatures,
+          };
+          return layerSource;
+        }
+        return {
           layerUuid: sourceLayer.uuid,
-          kind: "geoadmin",
           layerId: isDatasetLayer(sourceLayer)
             ? sourceLayer.data.id
             : sourceLayer.humanId,
-          distribution,
           preResolvedFeatures,
         };
-        return layerSource;
       }),
   );
 
