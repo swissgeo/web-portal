@@ -163,6 +163,17 @@ describe("OpenLayers feature serializers", () => {
     expect(strFromU8(kmzEntries["doc.kml"])).toContain("<kml");
   });
 
+  it("serializes the feature ID as the KML Placemark ID", () => {
+    const feature = makeFeature(new Point([2600000, 1200000]));
+    feature.setId("drawing-feature-42");
+
+    const doc = parseXml(olFeatureToKML(feature));
+
+    expect(doc.querySelector("Placemark")?.getAttribute("id")).toBe(
+      "drawing-feature-42",
+    );
+  });
+
   it("embeds unique point icons in KMZ and uses archive-relative hrefs", async () => {
     const iconBytes = new Uint8Array([137, 80, 78, 71]);
     const iconUrl = "https://icons.test/default/star/1x/46/165/3.png";

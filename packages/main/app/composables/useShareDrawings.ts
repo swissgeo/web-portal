@@ -3,14 +3,22 @@
 import { useDrawing } from "@swissgeo/drawing";
 import { ref } from "vue";
 
+type DrawingServiceResponse = {
+  id: string;
+  admin_id: string;
+  s3_url: string;
+};
+
 export function useShareDrawings() {
   const runtimeConfig = useRuntimeConfig();
-  const { serializeAllFeaturesAsBlob } = useDrawing();
+  const { serializeAllFeaturesAsBlob, drawingAdminId, drawingId } =
+    useDrawing();
   const isSharing = ref(false);
 
   async function shareDrawings() {
     isSharing.value = true;
-    const drawingServiceEndpoint = runtimeConfig.public.drawingServiceEndpoint;
+    const drawingServiceEndpoint = runtimeConfig.public
+      .drawingServiceEndpoint as string;
     const drawingBlob = await serializeAllFeaturesAsBlob("kmz");
 
     if (!drawingBlob) {
@@ -33,13 +41,40 @@ export function useShareDrawings() {
     formData.append("file", drawingFile);
     formData.append("sha256", sha256);
 
-    const response = await fetch(drawingServiceEndpoint, {
-      method: "POST",
+    let requestUrl = drawingServiceEndpoint;
+    let method = "POST";
+
+    // If the drawing Id is already available, it is included
+    if (drawingAdminId.value && drawingId.value) {
+      formData.append("admin_id", drawingAdminId.value);
+      requestUrl = `${drawingServiceEndpoint}/${drawingId.value}`;
+      method = "PUT";
+      console.log(
+        "Updating existing drawing with admin ID:",
+        drawingAdminId.value,
+      );
+    } else {
+      console.log("Creating new drawing");
+    }
+
+    const response = await fetch(requestUrl, {
+      method: method,
       body: formData,
     });
-    console.log("Response from sharing drawings:", response);
 
     isSharing.value = false;
+
+    console.log("Response from sharing drawings:", response);
+
+    if (!response.ok) {
+      throw new Error(`Failed to share drawings: ${response.statusText}`);
+    }
+
+    const responseData = (await response.json()) as DrawingServiceResponse;
+    console.log("Response data:", responseData);
+
+    drawingId.value = responseData.id;
+    drawingAdminId.value = responseData.admin_id;
   }
 
   return {

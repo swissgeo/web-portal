@@ -90,6 +90,8 @@ export function useDrawing() {
     numberOfFeatures,
     focusedFeatureMetrics,
     isDrawingLayerInLayerStore,
+    drawingAdminId,
+    drawingId,
   } = storeToRefs(drawingStore);
 
   /**
@@ -621,6 +623,8 @@ export function useDrawing() {
     mountDrawingLayer: drawingStore.mountDrawingLayer,
     unmountDrawingLayer: drawingStore.unmountDrawingLayer,
     clearDrawingLayer: drawingStore.clearDrawingLayer,
+    drawingAdminId: drawingAdminId,
+    drawingId: drawingId,
     isDrawingLayerInLayerStore: readonly(isDrawingLayerInLayerStore),
     focusedFeature: readonly(focusedFeature),
     numberOfFeatures: readonly(numberOfFeatures),

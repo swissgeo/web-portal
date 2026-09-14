@@ -13,11 +13,7 @@ import { register } from "ol/proj/proj4";
 import { Fill, Icon, Style, Text } from "ol/style";
 import proj4 from "proj4";
 
-import type {
-  TextSize,
-  DESCRIPTION_KEY,
-  TITLE_KEY,
-} from "./drawingStyleCommon";
+import type { TextSize } from "./drawingStyleCommon";
 
 import {
   SHOW_DESCRIPTION_KEY,
@@ -27,6 +23,8 @@ import {
   TEXT_PLACEMENT_KEY,
   TEXT_SIZE,
   TEXT_SIZE_KEY,
+  DESCRIPTION_KEY,
+  TITLE_KEY,
 } from "./drawingStyleCommon";
 
 registerProj4(proj4);
@@ -256,6 +254,8 @@ function applyPointKmlStyle(
 function writeKmlFeatures(features: Feature<Geometry>[]): string {
   const olKML = new KML();
 
+  // OpenLayers serializes each feature ID as the corresponding Placemark's
+  // `id` attribute.
   return olKML
     .writeFeatures(features, {
       featureProjection: EPSG_2056_CH1903,
@@ -469,6 +469,16 @@ export function olFeatureToKML(
   return writeKmlFeatures(features);
 }
 
+function copyFeatureId(
+  source: Feature<Geometry>,
+  target: Feature<Geometry>,
+): void {
+  const featureId = source.getId();
+  if (featureId !== undefined) {
+    target.setId(featureId);
+  }
+}
+
 /**
  * Converts OL circle features to polygon features.
  * This is useful for exporting circle features to formats that do not support circles, such as GeoJSON, GPX, or KML.
@@ -494,6 +504,7 @@ export function convertCircleToPolygon(
   // Copy properties from the original circle feature to the new polygon feature
   polygonFeature.setProperties(properties);
   centerFeature.setProperties(properties);
+  copyFeatureId(circle, polygonFeature);
 
   return [polygonFeature, centerFeature];
 }
@@ -525,6 +536,7 @@ export function convertCircleToLineString(
   // Copy properties from the original circle feature to the new line string feature
   lineStringFeature.setProperties(properties);
   centerFeature.setProperties(properties);
+  copyFeatureId(circle, lineStringFeature);
 
   return [lineStringFeature, centerFeature];
 }
@@ -554,6 +566,7 @@ export function convertCircleToMultiLineString(
   // Copy properties from the original circle feature to the new line string feature
   lineStringFeature.setProperties(properties);
   centerFeature.setProperties(properties);
+  copyFeatureId(circle, lineStringFeature);
 
   return [lineStringFeature, centerFeature];
 }
@@ -579,6 +592,7 @@ export function convertPolygonToLineString(
 
   // Copy properties from the original polygon feature to the new line string feature
   lineStringFeature.setProperties(properties);
+  copyFeatureId(polygon, lineStringFeature);
 
   return lineStringFeature;
 }
@@ -602,6 +616,7 @@ export function convertPolygonToMultiLineString(
 
   // Copy properties from the original polygon feature to the new line string feature
   lineStringFeature.setProperties(properties);
+  copyFeatureId(polygon, lineStringFeature);
 
   return lineStringFeature;
 }
@@ -623,6 +638,7 @@ export function convertLineStringToMultiLineString(
 
   // Copy properties from the original line string feature to the new multi-line string feature
   multiLineStringFeature.setProperties(properties);
+  copyFeatureId(lineString, multiLineStringFeature);
 
   return multiLineStringFeature;
 }
@@ -708,6 +724,7 @@ export function cloneToSerializationCompatibleFeatures(
     const properties = feature.getProperties();
     delete properties.geometry;
     clonedFeature.setProperties(properties);
+    copyFeatureId(feature, clonedFeature);
     if (geometry.getType() === "Point" && options.copyPointStyle) {
       clonedFeature.setStyle(feature.getStyle());
     }
