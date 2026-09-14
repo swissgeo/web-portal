@@ -1,4 +1,6 @@
 <script setup lang="ts">
+definePageMeta({ layout: "embed" });
+
 const route = useRoute();
 const stateId = useState(
   "embedStateId",
@@ -11,7 +13,5 @@ const zoomOnlyCtrl = useState(
 </script>
 
 <template>
-  <NuxtLayout name="embed">
-    <EmbedMapViewer :state-id="stateId" :zoom-only-ctrl="zoomOnlyCtrl" />
-  </NuxtLayout>
+  <EmbedMapViewer :state-id="stateId" :zoom-only-ctrl="zoomOnlyCtrl" />
 </template>
