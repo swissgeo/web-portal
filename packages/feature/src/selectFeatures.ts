@@ -225,6 +225,7 @@ export function getPopupFromIdentifyFeature(
           kind: "html",
           html: await response.text(),
           trusted: true,
+          shareable: true,
         },
       };
     }),

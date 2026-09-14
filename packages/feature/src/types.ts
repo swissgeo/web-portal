@@ -12,7 +12,7 @@ export interface FeatureData {
    */
   geometry: Exclude<Geometry, GeometryCollection> | null;
   content:
-    | { kind: "html"; html: string; trusted: boolean }
+    | { kind: "html"; html: string; trusted: boolean; shareable: boolean }
     | { kind: "json"; properties: Record<string, unknown> };
 }
 

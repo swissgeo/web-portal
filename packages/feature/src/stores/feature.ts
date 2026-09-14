@@ -60,6 +60,22 @@ export const useFeaturesStore = defineStore("features", () => {
     ),
   );
 
+  const getShareableFeaturesIdsByUuid = computed(() =>
+    Object.fromEntries(
+      Object.entries(selectedFeaturesByUuid.value)
+        .filter(([_, features]) =>
+          features.filter(
+            (feature) =>
+              feature.content.kind === "html" && feature.content.shareable,
+          ),
+        )
+        .map(([uuid, features]) => [
+          uuid,
+          features.map((feature) => feature.featureId),
+        ]),
+    ),
+  );
+
   const hasSelectedFeatures = computed(
     () => Object.keys(selectedFeaturesByUuid.value).length > 0,
   );
@@ -125,6 +141,7 @@ export const useFeaturesStore = defineStore("features", () => {
     getFeaturesGeoJSON,
     getPopupsByUuid,
     getFeaturesIdsByUuid,
+    getShareableFeaturesIdsByUuid,
     hasSelectedFeatures,
     // ACTIONS
     addSelection,
