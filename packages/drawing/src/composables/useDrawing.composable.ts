@@ -1,3 +1,5 @@
+import type { Point, Polygon } from "ol/geom";
+import Circle from "ol/geom/Circle";
 import type VectorLayer from "ol/layer/Vector";
 
 import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from "@swissgeo/shared";
@@ -72,6 +74,9 @@ import {
   setFeatureTitle,
   wasCreatedBySwissgeo,
   ensurePropertyTypes,
+  IS_CIRCLE_KEY,
+  IS_CIRCLE_CENTER_KEY,
+  CIRCLE_CENTER_POINT_ID_KEY,
 } from "../utils/drawingStyleCommon";
 import {
   olFeatureToGeoJSON,
@@ -586,6 +591,44 @@ export function useDrawing() {
         initializeMetadataProperties(feature);
         initializeStyleProperties(feature);
         mapKmlStylesToFeatureProperties(feature);
+      }
+
+      // The feature being the center of a circle is not to be imported as is
+      // Skip importing the center point of a circle
+      if (feature.get(IS_CIRCLE_CENTER_KEY)) {
+        continue;
+      }
+
+      if (feature.get(IS_CIRCLE_KEY)) {
+        // The circles that have been serialized as polygon (for proper use in other applications)
+        // contains a property referencing the feature that represents its center point.
+        const centerFeatureId = feature.get(CIRCLE_CENTER_POINT_ID_KEY);
+        if (!centerFeatureId) {
+          continue;
+        }
+
+        // Finding this feature within the imported ones
+        const centerFeature = features.find(
+          (f) => f.getId && f.getId() === centerFeatureId,
+        );
+        if (!centerFeature) {
+          continue;
+        }
+
+        // Create a cirlce geometry using the center feature and the first point of the current feature.
+        const centerCoordinates = (
+          centerFeature.getGeometry() as Point
+        ).getCoordinates();
+        const firstPointCoordinates = (
+          feature.getGeometry() as Polygon
+        ).getCoordinates()[0][0];
+        const circleRadius = Math.sqrt(
+          Math.pow(firstPointCoordinates[0] - centerCoordinates[0], 2) +
+            Math.pow(firstPointCoordinates[1] - centerCoordinates[1], 2),
+        );
+        const circleGeometry = new Circle(centerCoordinates, circleRadius);
+        // Replacing the polygon geometry with the newly created circle geometry
+        feature.setGeometry(circleGeometry);
       }
 
       applyIdleStyle(feature);

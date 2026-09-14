@@ -25,6 +25,9 @@ import {
   TEXT_SIZE_KEY,
   DESCRIPTION_KEY,
   TITLE_KEY,
+  CIRCLE_CENTER_POINT_ID_KEY,
+  IS_CIRCLE_CENTER_KEY,
+  IS_CIRCLE_KEY,
 } from "./drawingStyleCommon";
 
 registerProj4(proj4);
@@ -503,7 +506,11 @@ export function convertCircleToPolygon(
 
   // Copy properties from the original circle feature to the new polygon feature
   polygonFeature.setProperties(properties);
-  centerFeature.setProperties(properties);
+  polygonFeature.set(IS_CIRCLE_KEY, true);
+  centerFeature.set(IS_CIRCLE_CENTER_KEY, true);
+  const centerId = `${polygonFeature.getId()}_center`;
+  polygonFeature.set(CIRCLE_CENTER_POINT_ID_KEY, centerId);
+  centerFeature.setId(centerId);
   copyFeatureId(circle, polygonFeature);
 
   return [polygonFeature, centerFeature];
