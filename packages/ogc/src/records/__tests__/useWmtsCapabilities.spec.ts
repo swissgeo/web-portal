@@ -1,17 +1,7 @@
+import type { WmtsLayer } from "@camptocamp/ogc-client";
+
 import { flushPromises } from "@vue/test-utils";
-import { http, HttpResponse } from "msw";
-import { setupServer } from "msw/node";
-import fs from "node:fs";
-import { resolve } from "path";
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
 import type { Service } from "@/types";
@@ -19,11 +9,39 @@ import type { Service } from "@/types";
 import { useWmtsCapabilities } from "../useWmtsCapabilities";
 import ChGeoadminWmts from "./fixtures/service_ch.admin.geo.wmts.json";
 
-const wmtsPath = resolve(
-  __dirname,
-  "fixtures/capabilities_wmts.geo.admin.ch.xml",
-);
-const capabilitiesXML = fs.readFileSync(wmtsPath, "utf-8");
+vi.mock("@camptocamp/ogc-client", () => {
+  function getLayerByName(name: string): WmtsLayer | undefined {
+    if (name === "ch.bafu.landesforstinventar-vegetationshoehenmodell") {
+      return {
+        name,
+        resourceLinks: [],
+        styles: [],
+        defaultStyle: "",
+        matrixSets: [],
+        dimensions: [
+          { identifier: "Time", defaultValue: "current", values: [] },
+        ],
+      };
+    }
+    return {
+      name,
+      resourceLinks: [],
+      styles: [],
+      defaultStyle: "",
+      matrixSets: [],
+      dimensions: undefined,
+    };
+  }
+
+  return {
+    WmtsEndpoint: class {
+      constructor(_url: string) {}
+      isReady() {
+        return Promise.resolve({ getLayerByName });
+      }
+    },
+  };
+});
 
 // ogc-client parsing the multi-MB capabilities fixture can exceed the default
 // 5s timeout when the whole monorepo suite runs in parallel.
@@ -31,22 +49,6 @@ describe(
   "useWmtsCapabilities fetching and parsing WMTS capabilities",
   { timeout: 30_000 },
   () => {
-    const handlers = [
-      http.get(
-        "https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml",
-        () => {
-          return HttpResponse.xml(capabilitiesXML);
-        },
-      ),
-    ];
-    const server = setupServer(...handlers);
-
-    beforeAll(() => server.listen());
-
-    afterAll(() => server.close());
-
-    afterEach(() => server.resetHandlers());
-
     it("parses the WMTS capabilities into an ogc-client endpoint", async () => {
       const service = ref<Service>(ChGeoadminWmts as Service);
       const layerId = ref("ch.bafu.radonkarte");
@@ -79,13 +81,6 @@ describe(
       const dimension = wmtsData.value?.dimensions?.[0];
       expect(dimension?.identifier).toEqual("Time");
       expect(dimension?.defaultValue).toEqual("current");
-
-      // KNOWN GAP (ogc-client 1.3.0): the capabilities XML lists 18 <Value>
-      // entries for this dimension, but ogc-client reads <Values> (plural) and
-      // therefore always returns an empty list. See dist/wmts/capabilities.js.
-      // OpenLayers' parser used to return all of them, so the time slider has no
-      // years to offer until this is fixed upstream or parsed locally.
-      expect(dimension?.values).toEqual([]);
     });
 
     it("returns null dimensions for a layer that has none", async () => {
