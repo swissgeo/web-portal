@@ -95,3 +95,8 @@ export interface OgcLink {
   type?: string;
   title?: string;
 }
+
+export type IdentifyFeature = {
+  id: string | number;
+  geometry: Exclude<Geometry, GeometryCollection>;
+};
