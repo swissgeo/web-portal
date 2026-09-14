@@ -5,7 +5,7 @@ import type { Dataset } from "@swissgeo/ogc";
 import type { LayerState, AppState } from "@swissgeo/statesharing";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
-import { useFeaturesStore } from "@swissgeo/feature";
+import { createIdentifyResponse, useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
@@ -163,6 +163,14 @@ export function useStateConfig() {
           opacity: stateLayers[i]?.opacity ?? 1,
           isVisible: stateLayers[i]?.isVisible ?? true,
         };
+        const preSelectedFeaturesIds = stateLayers[i]?.features;
+        if (preSelectedFeaturesIds) {
+          const identifyFeatures = await createIdentifyResponse(
+            preSelectedFeaturesIds,
+            layers[i]!.humanId,
+          );
+          featureStore.addFeaturePreselection(uuid, identifyFeatures);
+        }
         layerStore.addImportOption(uuid, mapLayerData);
 
         if (stateLayers[i]?.dimensions?.time) {

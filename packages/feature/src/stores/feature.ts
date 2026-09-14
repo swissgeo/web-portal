@@ -3,11 +3,15 @@ import type { ComputedRef } from "vue";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import type { FeatureData, WmsFeatureInfoCapability } from "@/types";
+import type {
+  FeatureData,
+  IdentifyFeature,
+  WmsFeatureInfoCapability,
+} from "@/types";
 
 export const useFeaturesStore = defineStore("features", () => {
   const selectedFeaturesByUuid = ref<Record<string, FeatureData[]>>({});
-
+  const preSelectedFeaturesByUuid = ref<Record<string, IdentifyFeature[]>>({});
   /**
    * For each layer, its feature info capabilities. Only populated by queryable
    * WMS layers.
@@ -68,10 +72,6 @@ export const useFeaturesStore = defineStore("features", () => {
     );
   }
 
-  function $reset(): void {
-    selectedFeaturesByUuid.value = {};
-  }
-
   function getWmsCapability(
     uuid: string,
   ): WmsFeatureInfoCapability | undefined {
@@ -89,6 +89,35 @@ export const useFeaturesStore = defineStore("features", () => {
     delete wmsCapabilitiesByUuid.value[uuid];
   }
 
+  // The following functions are used by the state sharing
+
+  function addSelection(layerUuid: string, features: FeatureData[]): void {
+    if (features.length) {
+      selectedFeaturesByUuid.value[layerUuid] = features;
+    }
+  }
+
+  function addFeaturePreselection(
+    uuid: string,
+    identifyFeatures: IdentifyFeature[],
+  ) {
+    preSelectedFeaturesByUuid.value[uuid] = identifyFeatures;
+  }
+  function consumeFeaturePreselection(
+    uuid: string,
+  ): IdentifyFeature[] | undefined {
+    if (preSelectedFeaturesByUuid.value[uuid]) {
+      const featuresPreselection = preSelectedFeaturesByUuid.value[uuid];
+      delete preSelectedFeaturesByUuid.value[uuid];
+      return featuresPreselection;
+    }
+    return;
+  }
+
+  function $reset(): void {
+    selectedFeaturesByUuid.value = {};
+  }
+
   return {
     selectedFeaturesByUuid,
     wmsCapabilitiesByUuid,
@@ -98,6 +127,9 @@ export const useFeaturesStore = defineStore("features", () => {
     getFeaturesIdsByUuid,
     hasSelectedFeatures,
     // ACTIONS
+    addSelection,
+    addFeaturePreselection,
+    consumeFeaturePreselection,
     setSelection,
     $reset,
     getWmsCapability,
