@@ -7,15 +7,25 @@ import { reactive } from "vue";
 
 import TopbarSearch from "../TopbarSearch.vue";
 
+const handleResultSelection = vi.fn();
+
 const searchStore = reactive({
   query: "",
   results: [] as SearchResult[],
+  coordinateResult: null,
   isSearching: false,
   hasError: false,
   hasResults: false,
   setSearchQuery: vi.fn(),
   clearSearch: vi.fn(),
+  clearPinnedCoordinate: vi.fn(),
 });
+
+// the selection itself is covered by the composable's own test, and it needs a
+// Nuxt app this component test does not boot
+vi.mock("@/composables/useSearchSelection", () => ({
+  useSearchSelection: () => ({ handleResultSelection }),
+}));
 
 mockNuxtImport("useToaster", () => () => ({ showError: vi.fn() }));
 
@@ -80,6 +90,8 @@ describe("TopbarSearch", () => {
     searchStore.query = "";
     searchStore.results = [];
     searchStore.isSearching = false;
+    handleResultSelection.mockClear();
+    searchStore.clearSearch.mockClear();
   });
 
   it("lists the CMS results in the content pages tab", () => {
@@ -128,7 +140,7 @@ describe("TopbarSearch", () => {
     expect(wrapper.text()).toContain("search.no_results");
   });
 
-  it("emits the selected CMS result", async () => {
+  it("selects the CMS result that was clicked", async () => {
     searchStore.query = "uns";
     const entry = content("42", "Über uns");
     searchStore.results = [entry];
@@ -138,7 +150,7 @@ describe("TopbarSearch", () => {
       .find("[data-testid='content-search-results'] li")
       .trigger("click");
 
-    expect(wrapper.emitted("result-selected")?.[0]).toEqual([entry]);
+    expect(handleResultSelection).toHaveBeenCalledWith(entry);
     expect(searchStore.clearSearch).toHaveBeenCalled();
   });
 });
