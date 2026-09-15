@@ -13,9 +13,7 @@
     "layerCart": "Active layers",
     "map": "Map",
     "collapse": "Collapse the side panel",
-    "expand": "Expand the side panel",
-    "addLayer": "Add layer",
-    "addLayerComingSoon": "The layer catalog is not available yet."
+    "expand": "Expand the side panel"
   },
   "search": {
     "placeholder": "Search for a place, layer or coordinates...",

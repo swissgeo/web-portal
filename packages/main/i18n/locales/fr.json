@@ -13,9 +13,7 @@
     "layerCart": "Couches actives",
     "map": "Carte",
     "collapse": "Réduire le panneau latéral",
-    "expand": "Ouvrir le panneau latéral",
-    "addLayer": "Ajouter une couche",
-    "addLayerComingSoon": "Le catalogue de couches n'est pas encore disponible."
+    "expand": "Ouvrir le panneau latéral"
   },
   "search": {
     "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",

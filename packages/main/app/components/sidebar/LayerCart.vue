@@ -2,11 +2,13 @@
 import type { Layer as MapLayer } from "@swissgeo/map";
 
 import { useLayerStore } from "@swissgeo/layers";
+import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
 import { useSortable } from "@vueuse/integrations/useSortable";
-import { computed, ref, useTemplateRef } from "vue";
+import { computed, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerCartEntry from "./LayerCartEntry.vue";
+
 const { t } = useI18n();
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
@@ -29,9 +31,6 @@ const sortedLayers = computed(() => {
 
 const layerCartRef = useTemplateRef<HTMLUListElement>("layerCartRef");
 
-// Placeholder until there is a catalog to pick layers from
-const isAddLayerOpen = ref(false);
-
 // The list is reordered through the store, not by letting Sortable mutate
 // sortedLayers directly (it is a computed, and its display order does not map
 // 1:1 to the store's), so the default onUpdate is replaced entirely.
@@ -51,6 +50,12 @@ useSortable(layerCartRef, sortedLayers, {
     }
   },
 });
+
+const uiStore = useSidebarStore();
+
+function openLayerCatalog() {
+  uiStore.setSidebar(SidebarType.GEOCATALOG_TREE);
+}
 </script>
 
 <template>
@@ -61,22 +66,16 @@ useSortable(layerCartRef, sortedLayers, {
          panel header, hence the h3 -->
     <h3 class="text-sm font-bold text-highlighted">{{ t("menu.map") }}</h3>
     <UButton
-      data-testid="add-layer"
-      icon="i-lucide-plus"
+      data-testid="open-layer-catalog"
       color="primary"
+      variant="outline"
       size="xs"
-      class="rounded-full"
-      @click="isAddLayerOpen = true"
+      class="cursor-pointer"
+      @click="openLayerCatalog"
     >
-      {{ t("menu.addLayer") }}
+      {{ t("menu.openLayerCatalog") }}
     </UButton>
   </div>
-
-  <UModal v-model:open="isAddLayerOpen" :title="t('menu.addLayer')">
-    <template #body>
-      <p class="text-sm text-toned">{{ t("menu.addLayerComingSoon") }}</p>
-    </template>
-  </UModal>
 
   <ul
     ref="layerCartRef"
