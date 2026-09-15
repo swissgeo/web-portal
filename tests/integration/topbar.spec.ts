@@ -167,4 +167,19 @@ test.describe("topbar search", () => {
     // and the coordinate is not offered as a result, the map went there already
     await expect(page.getByTestId("search-results")).not.toBeVisible();
   });
+
+  test("CMS results are listed in the content pages tab", async ({ page }) => {
+    await mockExternalRequests(page).mockContentSearch([
+      { documentId: "42", title: "Über uns" },
+    ]);
+
+    await page.getByRole("textbox").fill("uns");
+
+    const contentTab = page.getByRole("tab", { name: "Inhaltsseiten" });
+    await expect(contentTab).toBeVisible({ timeout: 10_000 });
+    await contentTab.click();
+
+    const contentResults = page.getByTestId("content-search-results");
+    await expect(contentResults).toContainText("Über uns");
+  });
 });

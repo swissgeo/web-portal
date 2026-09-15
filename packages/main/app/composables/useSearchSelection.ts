@@ -7,6 +7,7 @@
 
 import type { Dataset } from "@swissgeo/ogc";
 import type {
+  ContentSearchResult,
   SearchResult,
   CoordinateSearchResult,
   LocationSearchResult,
@@ -37,6 +38,8 @@ export function useSearchSelection() {
       handleFeatureSelection(result as FeatureSearchResult);
     } else if (result.resultType === "LAYER") {
       await handleLayerSelection(result as LayerSearchResult);
+    } else if (result.resultType === "CONTENT") {
+      handleContentSelection(result as ContentSearchResult);
     }
   }
 
@@ -47,6 +50,19 @@ export function useSearchSelection() {
     positionStore.setCenter(result.coordinate, dispatcher);
     positionStore.setZoom(result.zoom, dispatcher);
     searchStore.setPinnedCoordinate(result.coordinate);
+  }
+
+  // The CMS is headless and this portal does not render its pages yet, so a
+  // content result opens the published page in a new tab. The map is left
+  // untouched, and so is the tab the user searched from.
+  function handleContentSelection(result: ContentSearchResult) {
+    if (!result.slug) {
+      return;
+    }
+
+    const base = runtimeConfig.public.cmsBaseUrl;
+    const locale_ = result.locale || locale.value;
+    window.open(`${base}/${locale_}/${result.slug}`, "_blank", "noopener");
   }
 
   function handleLocationSelection(result: LocationSearchResult) {
