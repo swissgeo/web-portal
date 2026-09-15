@@ -44,7 +44,7 @@ describe("BaseMapViewer — drawing feature click pipeline", () => {
       humanId: "bg-test",
       displayName: "Background",
       format: "GEOJSON",
-      data: { type: "FeatureCollection", features: [] },
+      geoJsonData: { type: "FeatureCollection", features: [] },
       isVisible: true,
       opacity: 1,
     } as never);

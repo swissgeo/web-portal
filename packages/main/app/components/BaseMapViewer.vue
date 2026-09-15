@@ -176,14 +176,17 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
     compareSliderActive &&
     mapClickEvent.pixel[0] >
       (compareRatio ?? 0) * mapClickEvent.viewportSize[0];
-
   const results = await Promise.allSettled(
     sourceLayers.value
       .filter(
         (sourceLayer) =>
           // first we filter out hidden layers
           mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)?.isVisible &&
-          mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)!.opacity > 0 &&
+          // at startup, some layers will have a `null` opacity, which is interpreted
+          // as `1` in the mapviewer (by default, we want to see the map).
+          (mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)!.opacity ===
+            null ||
+            mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)!.opacity > 0) &&
           // we also filter the compare slider clipped layer if the click happened
           // on the right of the slider
           !(
@@ -195,8 +198,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
         const preResolvedFeatures =
           mapClickEvent.vectorFeaturesPerLayer[sourceLayer.uuid];
         const distribution: OgcDistribution | undefined =
-          await getOgcDistribution(sourceLayer);
-
+          await getOgcDistribution(sourceLayer, signal);
         if (distribution) {
           const layerSource: LayerSource = {
             layerUuid: sourceLayer.uuid,
