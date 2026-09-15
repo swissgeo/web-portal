@@ -133,17 +133,32 @@ mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
 mockNuxtImport("useToaster", () => () => ({ showError }));
 
 vi.mock("@swissgeo/dimension", () => ({
-  useDimensionsStore: () => ({ clearLayerDimensions }),
+  // getDimensions: the toolbox store's showTimeSliderButton computed reads it
+  // per layer — the mock must return undefined (no time dimensions) rather
+  // than explode.
+  useDimensionsStore: () => ({
+    clearLayerDimensions,
+    getDimensions: () => undefined,
+  }),
 }));
-vi.mock("@swissgeo/layers", () => {
+vi.mock("@swissgeo/layers", async () => {
+  // refs inside reactive(...): the reactive wrapper auto-unwraps for normal
+  // consumers (`layerStore.layers`), while pinia's storeToRefs — which
+  // toRaw()s the store and only keeps isRef/isReactive values — still finds
+  // the refs. Without this, the drawing store's
+  // `const { layers } = storeToRefs(useLayerStore())` destructured undefined
+  // and crashed its isDrawingLayerInLayerStore computed, aborting
+  // BaseMapViewer's setup mid-way.
+  const { reactive, ref } = await import("vue");
   return {
-    useLayerStore: () => ({
-      layers: mockLayers,
-      backgroundLayer: mockBackgroundLayer,
-      clearImportOptions,
-      removeLayer: removeSourceLayer,
-      setBackground,
-    }),
+    useLayerStore: () =>
+      reactive({
+        layers: ref(mockLayers),
+        backgroundLayer: ref(mockBackgroundLayer),
+        clearImportOptions,
+        removeLayer: removeSourceLayer,
+        setBackground,
+      }),
   };
 });
 
@@ -324,7 +339,7 @@ describe("BaseMapViewer", () => {
       const wrapper = await createWrapper();
       const layers = getMapLayersProp(wrapper);
 
-      expect(layers).toHaveLength(5);
+      expect(layers).toHaveLength(6);
       const highlight = layers.at(-1)!;
       expect(highlight.format).toBe("GeoJSON");
       expect(highlight.isSystemLayer).toBe(true);
@@ -347,7 +362,7 @@ describe("BaseMapViewer", () => {
     it("adds no highlight layer without a selection", async () => {
       const wrapper = await createWrapper();
 
-      expect(getMapLayersProp(wrapper)).toHaveLength(4);
+      expect(getMapLayersProp(wrapper)).toHaveLength(5);
     });
 
     it("adds no highlight layer in print mode", async () => {
@@ -355,7 +370,7 @@ describe("BaseMapViewer", () => {
 
       const wrapper = await createWrapper({ displayMode: "print" });
 
-      expect(getMapLayersProp(wrapper)).toHaveLength(4);
+      expect(getMapLayersProp(wrapper)).toHaveLength(5);
     });
   });
 
