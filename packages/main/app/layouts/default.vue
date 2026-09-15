@@ -59,9 +59,7 @@ watch(route, (value) => {
             v-if="!isMapFullscreenMode"
             :detail-page-path="datasetDetailPath"
           />
-          <ClientOnly>
-            <Footer v-if="!isMapFullscreenMode" class="z-999999" />
-          </ClientOnly>
+          <Footer v-if="!isMapFullscreenMode" class="z-999999" />
         </div>
       </main>
     </UMain>
