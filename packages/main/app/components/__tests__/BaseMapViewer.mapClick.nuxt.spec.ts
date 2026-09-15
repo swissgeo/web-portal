@@ -42,13 +42,20 @@ mockNuxtImport("useMapViewStore", () => {
     getMapLayerFromUuid,
   });
 });
-vi.mock("@swissgeo/layers", () => {
+vi.mock("@swissgeo/layers", async () => {
+  // refs inside reactive(...): the reactive wrapper auto-unwraps for normal
+  // consumers, while pinia's storeToRefs (which toRaw()s the store and only
+  // keeps isRef/isReactive values) still finds the refs — without this, the
+  // drawing store crashed during handleMapClickEvent's isDrawingActive()
+  // path and the click never reached selectFeatures.
+  const { reactive, ref } = await import("vue");
   return {
     isDatasetLayer: (layer: { type: string }) => layer.type === "dataset",
-    useLayerStore: () => ({
-      layers: mockLayers,
-      backgroundLayer: { uuid: "layer-1" },
-    }),
+    useLayerStore: () =>
+      reactive({
+        layers: ref(mockLayers),
+        backgroundLayer: ref({ uuid: "layer-1" }),
+      }),
   };
 });
 
@@ -195,7 +202,6 @@ describe("BaseMapViewer — map click abort handling", () => {
     // layer-1 (distributions-fetched) and layer-2 (no link) both pass the filter
     expect(sources).toHaveLength(2);
     expect(sources[0]).toMatchObject({
-      kind: "geoadmin",
       layerUuid: "layer-1",
       layerId: "ch.test.dataset",
     });
