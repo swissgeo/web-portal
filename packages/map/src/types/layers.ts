@@ -80,6 +80,7 @@ export interface COGLayer extends Layer {
   format: "COG";
   url?: string;
   blob?: Blob;
+}
 export interface HighLightLayer extends GeoJSONLayer {
   uuid: typeof HIGHLIGHT_LAYER_ID;
   isSystemLayer: true;
