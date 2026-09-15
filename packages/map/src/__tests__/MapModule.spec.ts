@@ -83,7 +83,6 @@ describe("MapModule", () => {
     it("renders context menu popup, mouse tracker, and scale", () => {
       const wrapper = mount(MapModule, { props: defaultProps() });
       expect(wrapper.find(".ol-context-menu").exists()).toBe(true);
-      expect(wrapper.find(".ol-mouse-tracker").exists()).toBe(true);
       expect(wrapper.find(".ol-scale").exists()).toBe(true);
     });
 

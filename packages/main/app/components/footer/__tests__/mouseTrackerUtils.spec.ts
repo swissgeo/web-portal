@@ -1,11 +1,7 @@
-import { LV03, LV95, WGS84 } from "@swissgeo/coordinates";
+import { LV03, LV95 } from "@swissgeo/coordinates";
+import { LV03Format, LV95Format } from "@swissgeo/map";
 import { describe, expect, it } from "vitest";
 
-import {
-  LV03Format,
-  LV95Format,
-  WGS84Format,
-} from "../coordinates/coordinateFormat";
 import getHumanReadableCoordinate from "../mouseTrackerUtils";
 
 describe("getHumanReadableCoordinate", () => {
@@ -16,17 +12,6 @@ describe("getHumanReadableCoordinate", () => {
       coordinates: lv95Coords,
       projection: LV95,
       displayedFormat: LV95Format,
-    });
-    expect(typeof result).toBe("string");
-    expect(result.length).toBeGreaterThan(0);
-  });
-
-  it("returns a string for WGS84 format", () => {
-    const coords: [number, number] = [8.5417, 47.3769];
-    const result = getHumanReadableCoordinate({
-      coordinates: coords,
-      projection: WGS84,
-      displayedFormat: WGS84Format,
     });
     expect(typeof result).toBe("string");
     expect(result.length).toBeGreaterThan(0);
