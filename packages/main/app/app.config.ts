@@ -1,5 +1,25 @@
 export default defineAppConfig({
   ui: {
+    tv: {
+      twMergeConfig: {
+        extend: {
+          theme: {
+            spacing: [
+              "space-3xs",
+              "space-2xs",
+              "space-xs",
+              "space-s",
+              "space-m",
+              "space-l",
+              "space-xl",
+              "space-2xl",
+              "space-3xl",
+              "space-gutter",
+            ],
+          },
+        },
+      },
+    },
     colors: {
       primary: "petrol",
       secondary: "salmon",
@@ -22,14 +42,27 @@ export default defineAppConfig({
       },
     },
     prose: {
+      h1: {
+        slots: { base: () => "" },
+      },
+      h2: {
+        slots: { base: () => "relative" },
+      },
+      h3: {
+        slots: { base: () => "relative" },
+      },
+      h4: {
+        slots: { base: () => "relative" },
+      },
       p: {
-        base: "type-paragraph my-0 leading-normal",
+        base: () =>
+          "font-sans text-lg leading-normal font-medium tracking-normal",
       },
       strong: {
-        base: "font-semibold",
+        base: "font-bold",
       },
       li: {
-        base: "type-paragraph leading-normal",
+        base: "font-sans text-lg leading-normal font-medium tracking-normal",
       },
     },
     button: {
@@ -53,8 +86,8 @@ export default defineAppConfig({
             "bg-transparent text-primary hover:bg-transparent hover:text-primary-600 disabled:bg-transparent disabled:text-primary-300 disabled:hover:bg-transparent aria-disabled:bg-transparent aria-disabled:text-primary-300 aria-disabled:hover:bg-transparent focus-visible:bg-transparent focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-secondary!",
         },
         {
-          color: "primary",
           size: "md",
+          square: false,
           class: "gap-space-xs px-space-xs py-space-2xs leading-[1.3]",
         },
         {

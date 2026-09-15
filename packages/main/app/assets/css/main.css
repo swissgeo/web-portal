@@ -86,27 +86,27 @@
 
 @layer components {
   :where(.type-lead) {
-    @apply font-editorial text-2xl leading-normal font-normal;
+    @apply font-sans text-2xl leading-normal font-medium tracking-normal;
   }
 
   :where(.type-paragraph) {
-    @apply font-editorial text-lg leading-normal font-medium;
+    @apply font-sans text-lg leading-normal font-medium tracking-normal;
   }
 
   :where(.type-paragraph-bold) {
-    @apply font-editorial text-lg leading-normal font-semibold;
+    @apply font-sans text-lg leading-normal font-bold tracking-normal;
   }
 
   :where(.type-text-big) {
-    @apply font-editorial text-base leading-normal font-normal;
+    @apply font-sans text-base leading-small-text font-medium tracking-normal;
   }
 
   :where(.type-text-small) {
-    @apply font-editorial text-sm leading-small-text font-normal;
+    @apply font-sans text-sm leading-small-text font-medium tracking-normal;
   }
 
   :where(.type-text-small-bold) {
-    @apply font-editorial text-sm leading-small-text font-bold;
+    @apply font-sans text-sm leading-small-text font-bold tracking-normal;
   }
 
   .type-content-hero-title {
@@ -131,23 +131,23 @@
   }
 
   h1 {
-    @apply pb-8 font-editorial text-7xl leading-heading font-semibold text-primary;
+    @apply font-sans text-7xl leading-heading font-semibold tracking-normal;
   }
 
   h2 {
-    @apply pt-12 pb-8 font-editorial text-5xl leading-heading font-semibold first-of-type:pt-2;
+    @apply font-sans text-5xl leading-heading font-semibold tracking-normal;
   }
 
   h3 {
-    @apply font-editorial text-3xl leading-heading font-semibold;
+    @apply font-sans text-3xl leading-heading font-semibold tracking-normal;
   }
 
   h4 {
-    @apply font-editorial text-xl leading-heading font-semibold;
+    @apply font-sans text-xl leading-heading font-semibold tracking-normal;
   }
 
   h5 {
-    @apply font-editorial text-lg leading-normal font-semibold;
+    @apply font-sans text-lg leading-normal font-semibold tracking-normal;
   }
 }
 
