@@ -1329,6 +1329,9 @@ importers:
 
   packages/search:
     dependencies:
+      '@swissgeo/coordinates':
+        specifier: workspace:*
+        version: link:../coordinates
       '@swissgeo/log':
         specifier: workspace:*
         version: link:../log
@@ -1418,6 +1421,9 @@ importers:
       '@nuxt/ui':
         specifier: 'catalog:'
         version: 4.11.0(521dc60e96d4483715ffbac6168700b8)
+      '@swissgeo/coordinates':
+        specifier: workspace:*
+        version: link:../coordinates
       '@swissgeo/layers':
         specifier: workspace:*
         version: link:../layers

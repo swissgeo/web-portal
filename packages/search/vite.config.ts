@@ -14,7 +14,11 @@ export default defineConfig(({ mode }) => {
         name: "@swissgeo/search",
       },
       rollupOptions: {
-        external: ["@swissgeo/shared", "@swissgeo/log"],
+        external: [
+          "@swissgeo/shared",
+          "@swissgeo/log",
+          "@swissgeo/coordinates",
+        ],
       },
     },
     plugins: [

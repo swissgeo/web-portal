@@ -7,7 +7,7 @@ import {
   latLonToMGRS,
   latLonToUTM,
   toPoint,
-} from "../militaryGridProjection";
+} from "@/militaryGridProjection";
 
 describe("latLonToUTM", () => {
   it("converts a point in the northern hemisphere", () => {

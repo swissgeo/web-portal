@@ -35,16 +35,11 @@ describe("Topbar", () => {
     },
   );
 
-  it("forwards logo and search actions", () => {
+  it("forwards the logo action", () => {
     const wrapper = mountTopbar();
-    const result = { id: "selected-result" };
 
     wrapper.getComponent({ name: "LogoPic" }).vm.$emit("logo-click");
-    wrapper
-      .getComponent({ name: "TopbarSearch" })
-      .vm.$emit("result-selected", result);
 
     expect(wrapper.emitted("reset-app")).toHaveLength(1);
-    expect(wrapper.emitted("search-result-selected")).toEqual([[result]]);
   });
 });

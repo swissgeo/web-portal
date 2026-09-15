@@ -15,6 +15,7 @@ export enum SearchResultTypesEnum {
   layer = "LAYER",
   location = "LOCATION",
   feature = "FEATURE",
+  coordinate = "COORDINATE",
 }
 
 /**

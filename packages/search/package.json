@@ -23,6 +23,7 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@swissgeo/shared": "workspace:*",
     "typescript": "catalog:"
