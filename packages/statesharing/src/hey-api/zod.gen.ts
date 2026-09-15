@@ -57,6 +57,7 @@ export const zLayerState = z.object({
   isVisible: z.boolean().nullish(),
   opacity: z.number().gte(0).lte(1).nullish(),
   dimensions: zLayerDimensionsState.optional(),
+  features: z.array(z.string().max(20)).max(50).nullish(),
 });
 
 /**
