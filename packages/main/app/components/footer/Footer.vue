@@ -12,7 +12,7 @@ import {
   MGRSFormat,
 } from "@swissgeo/map";
 
-import { getHumanReadableCoordinate } from "./mouseTrackerUtils";
+import getHumanReadableCoordinate from "./mouseTrackerUtils";
 
 const ALL_FORMATS = [
   LV95Format,
