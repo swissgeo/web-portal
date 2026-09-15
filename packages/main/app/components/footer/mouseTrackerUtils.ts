@@ -31,7 +31,7 @@ export interface HumanReadableCoordinateParams {
   displayedFormat: CoordinateFormat;
 }
 
-export function getHumanReadableCoordinate({
+export default function getHumanReadableCoordinate({
   coordinates,
   projection,
   displayedFormat,
