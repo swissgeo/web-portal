@@ -7,7 +7,6 @@ import type { Layer as MapLayer } from "@/types/layers";
 import OpenLayersCompareSlider from "./openlayers/OpenLayersCompareSlider.vue";
 import OpenLayersContextMenuPopup from "./openlayers/OpenLayersContextMenuPopup.vue";
 import OpenLayersMap from "./openlayers/OpenLayersMap.vue";
-import OpenLayersMouseTracker from "./openlayers/OpenLayersMouseTracker.vue";
 import OpenLayersScale from "./openlayers/OpenLayersScale.vue";
 import OpenLayersScalePrint from "./openlayers/OpenLayersScalePrint.vue";
 
@@ -69,7 +68,6 @@ const layersWithZIndex = computed(() => {
         <OpenLayersContextMenuPopup v-slot="slotProps">
           <slot name="context-menu-popup" v-bind="slotProps" />
         </OpenLayersContextMenuPopup>
-        <OpenLayersMouseTracker />
         <OpenLayersScale />
         <OpenLayersCompareSlider
           v-if="compareSliderActive && compareSliderClippedLayer"
