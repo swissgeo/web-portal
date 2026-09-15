@@ -36,13 +36,6 @@ watch(route, (value) => {
     mapViewStore.exitFullscreenMode();
   }
 });
-
-// Handle search result selection
-const { handleResultSelection } = useSearchSelection();
-
-async function onSearchResultSelected(result: SearchResult) {
-  await handleResultSelection(result);
-}
 </script>
 
 <template>

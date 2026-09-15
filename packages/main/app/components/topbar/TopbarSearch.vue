@@ -112,8 +112,9 @@ function handleClick() {
   }
 }
 
+// only the map tab holds the focusable list, the CMS results have their own tab
 function focusFirstResult() {
-  if (!searchStore.hasResults) {
+  if (mapResultsCount.value === 0) {
     return;
   }
   isOpen.value = true;
@@ -192,7 +193,9 @@ function clearSearch() {
           </div>
           <div
             v-else-if="
-              searchStore.query.length >= 2 && !searchStore.isSearching
+              mapResultsCount === 0 &&
+              searchStore.query.length >= 2 &&
+              !searchStore.isSearching
             "
             class="text-surface-500 p-4 text-center"
           >
@@ -221,7 +224,9 @@ function clearSearch() {
           </ul>
           <div
             v-else-if="
-              searchStore.query.length >= 2 && !searchStore.isSearching
+              contentResults.length === 0 &&
+              searchStore.query.length >= 2 &&
+              !searchStore.isSearching
             "
             class="text-surface-500 p-4 text-center"
           >
