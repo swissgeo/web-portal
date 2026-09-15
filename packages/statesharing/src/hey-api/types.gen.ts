@@ -97,6 +97,12 @@ export type LayerState = {
    * Dimensions of the layer (e.g. time dimension with current value)
    */
   dimensions?: LayerDimensionsState;
+  /**
+   * Features
+   *
+   * Features currently selected through identify in this layer
+   */
+  features?: Array<string> | null;
 };
 
 /**
