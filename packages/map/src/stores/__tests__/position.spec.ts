@@ -297,14 +297,14 @@ describe("position store", () => {
     });
 
     it("should return the center in EPSG:4326 for LV03 (EPSG:21781)", () => {
-      store.$patch({ projection: LV03, center: [600000, 200000] });
+      store.$patch({ projectionEpsg: LV03.epsg, center: [600000, 200000] });
       const result = store.centerEpsg4326;
       expect(result[0]).toBeCloseTo(expected[0], 6);
       expect(result[1]).toBeCloseTo(expected[1], 6);
     });
 
     it("should return the center in EPSG:4326 for WGS84 (EPSG:4326)", () => {
-      store.$patch({ projection: WGS84, center: expected });
+      store.$patch({ projectionEpsg: WGS84.epsg, center: expected });
       const result = store.centerEpsg4326;
       expect(result[0]).toBeCloseTo(expected[0], 6);
       expect(result[1]).toBeCloseTo(expected[1], 6);
@@ -312,7 +312,7 @@ describe("position store", () => {
 
     it("should return the center in EPSG:4326 for WebMercator (EPSG:3857)", () => {
       store.$patch({
-        projection: WEBMERCATOR,
+        projectionEpsg: WEBMERCATOR.epsg,
         center: [828064.72, 5934093.22],
       });
       const result = store.centerEpsg4326;
@@ -372,13 +372,13 @@ describe("position store", () => {
 
   describe("non-SwissCoordinateSystem projections", () => {
     it("should increase zoom level by 1 for non-SwissCoordinateSystem projections", () => {
-      store.$patch({ projection: WGS84, zoom: 8 });
+      store.$patch({ projectionEpsg: WGS84.epsg, zoom: 8 });
       store.increaseZoom(mockDispatcher);
       expect(animateMock).toHaveBeenCalledWith({ zoom: 9, duration: 200 });
     });
 
     it("should decrease zoom level by 1 for non-SwissCoordinateSystem projections", () => {
-      store.$patch({ projection: WGS84, zoom: 5 });
+      store.$patch({ projectionEpsg: WGS84.epsg, zoom: 5 });
       store.decreaseZoom(mockDispatcher);
       expect(animateMock).toHaveBeenCalledWith({ zoom: 4, duration: 200 });
     });
@@ -488,6 +488,39 @@ describe("position store", () => {
         rotation: 0.2,
         duration: 200,
       });
+    });
+  });
+
+  describe("SSR payload safety", () => {
+    const isPlainValue = (value: unknown): boolean => {
+      if (
+        value === null ||
+        ["string", "number", "boolean", "undefined", "bigint"].includes(
+          typeof value,
+        )
+      ) {
+        return true;
+      }
+      if (Array.isArray(value)) {
+        return value.every(isPlainValue);
+      }
+      if (typeof value === "object") {
+        const proto = Object.getPrototypeOf(value);
+        if (proto !== Object.prototype && proto !== null) {
+          return false;
+        }
+        return Object.values(value).every(isPlainValue);
+      }
+      return false;
+    };
+
+    it("should only keep plain values in $state (devalue/Nuxt payload safety)", () => {
+      expect(isPlainValue(store.$state)).toBe(true);
+    });
+
+    it("should not expose projection or displayFormat as state", () => {
+      expect(store.$state).not.toHaveProperty("projection");
+      expect(store.$state).not.toHaveProperty("displayFormat");
     });
   });
 });

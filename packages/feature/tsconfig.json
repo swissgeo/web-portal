@@ -1,0 +1,11 @@
+{
+  "extends": "@swissgeo/config-typescript/tsconfig.base.json",
+  "include": ["src/**/*.ts", "vitest.config.ts", "rolldown.config.ts"],
+  "compilerOptions": {
+    "types": ["pinia"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "rootDir": "../.."
+  }
+}

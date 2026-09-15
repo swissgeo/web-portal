@@ -13,6 +13,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
 
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({ t: (key: string) => key }),
+}));
+
 const mockMapLayers: MapLayer[] = [];
 
 const updateLayerData = vi.fn(
@@ -207,6 +211,7 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
 
 describe("background handling", () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     mockMapLayers.length = 0;
 
     updateLayerData.mockClear();
@@ -385,6 +390,7 @@ describe("background handling", () => {
 
 describe("event forwarding", () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     mockMapLayers.length = 0;
 
     const layerStore = useLayerStore();
