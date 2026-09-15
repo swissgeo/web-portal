@@ -4,14 +4,17 @@ import type { Layer as SourceLayer } from "@swissgeo/layers";
 import { sourceToLayerRequest } from "@swissgeo/feature";
 import { isDatasetLayer } from "@swissgeo/layers";
 
-export async function getOgcDistribution(sourceLayer?: SourceLayer) {
+export async function getOgcDistribution(
+  sourceLayer?: SourceLayer,
+  signal?: AbortSignal,
+) {
   if (sourceLayer && isDatasetLayer(sourceLayer)) {
     const url = (sourceLayer.data.links ?? []).find(
       (link) => link.rel?.toLowerCase() === "distributions",
     )?.href;
     try {
       if (url) {
-        const result = await fetch(url);
+        const result = signal ? await fetch(url, { signal }) : await fetch(url);
         return result.ok
           ? ((await result.json()) as OgcDistribution)
           : undefined;
