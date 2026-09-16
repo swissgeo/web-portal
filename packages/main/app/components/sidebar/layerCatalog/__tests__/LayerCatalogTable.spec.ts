@@ -98,28 +98,53 @@ describe("LayerCatalogTable.vue", () => {
     expect(useOgcCatalogMock.mock.calls[0]![0]).toBe(locale);
   });
 
-  it("searches the catalog for what is typed", async () => {
-    const wrapper = mountTable();
-    const query = useOgcCatalogMock.mock.calls[0]![1] as Ref<string>;
-    expect(isRef(query)).toBe(true);
-    expect(query.value).toBe("");
+  describe("search", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+      return () => vi.useRealTimers();
+    });
 
-    await wrapper.get("input").setValue("forest");
+    it("searches the catalog for what is typed, once the typing pauses", async () => {
+      const wrapper = mountTable();
+      const query = useOgcCatalogMock.mock.calls[0]![1] as Ref<string>;
+      expect(isRef(query)).toBe(true);
+      expect(query.value).toBe("");
 
-    expect(query.value).toBe("forest");
-  });
+      await wrapper.get("input").setValue("forest");
+      expect(query.value).toBe("");
 
-  it("clears the search", async () => {
-    const wrapper = mountTable();
-    const query = useOgcCatalogMock.mock.calls[0]![1] as Ref<string>;
-    expect(clearButton(wrapper).exists()).toBe(false);
+      await vi.advanceTimersByTimeAsync(100);
+      expect(query.value).toBe("forest");
+    });
 
-    await wrapper.get("input").setValue("forest");
-    await clearButton(wrapper).trigger("click");
+    it("clears the search", async () => {
+      const wrapper = mountTable();
+      const query = useOgcCatalogMock.mock.calls[0]![1] as Ref<string>;
+      expect(clearButton(wrapper).exists()).toBe(false);
 
-    expect(query.value).toBe("");
-    expect(wrapper.get("input").element.value).toBe("");
-    expect(clearButton(wrapper).exists()).toBe(false);
+      await wrapper.get("input").setValue("forest");
+      await vi.advanceTimersByTimeAsync(100);
+      expect(query.value).toBe("forest");
+
+      await clearButton(wrapper).trigger("click");
+
+      expect(wrapper.get("input").element.value).toBe("");
+      expect(clearButton(wrapper).exists()).toBe(false);
+
+      await vi.advanceTimersByTimeAsync(100);
+      expect(query.value).toBe("");
+    });
+
+    it("does not search for a query cleared before the typing paused", async () => {
+      const wrapper = mountTable();
+      const query = useOgcCatalogMock.mock.calls[0]![1] as Ref<string>;
+
+      await wrapper.get("input").setValue("forest");
+      await clearButton(wrapper).trigger("click");
+      await vi.advanceTimersByTimeAsync(100);
+
+      expect(query.value).toBe("");
+    });
   });
 
   it("shows a row per loaded layer", () => {

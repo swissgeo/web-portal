@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Dataset } from "@swissgeo/ogc";
 
-import { useInfiniteScroll } from "@vueuse/core";
+import { refDebounced, useInfiniteScroll } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 
 import LayerCatalogRow from "./LayerCatalogRow.vue";
@@ -9,8 +9,12 @@ import LayerCatalogRow from "./LayerCatalogRow.vue";
 const { t, locale } = useI18n();
 
 const query = ref("");
+const debouncedQuery = refDebounced(query, 100);
 
-const { state, hasMore, loadMore, retry } = useOgcCatalog(locale, query);
+const { state, hasMore, loadMore, retry } = useOgcCatalog(
+  locale,
+  debouncedQuery,
+);
 
 const datasets = computed<Dataset[]>(() => state.value.data?.features ?? []);
 
