@@ -65,29 +65,31 @@ watch(
 </script>
 
 <template>
-  <div class="flex w-fit flex-row items-center gap-8">
-    <div class="w-60">
+  <div class="flex w-fit flex-col items-center gap-2 sm:flex-row sm:gap-8">
+    <div class="w-60 justify-items-center">
       <OLMapScale :olMap="olMap" class="footerMapScale" />
     </div>
-    <USelect
-      size="xs"
-      variant="ghost"
-      :ui="{
-        content: 'min-w-fit',
-        base: 'min-w-fit',
-      }"
-      :items="
-        ALL_FORMATS.map((format) => ({
-          label: format.label,
-          value: format.id,
-        }))
-      "
-      v-model="displayedFormatId"
-      @update:modelValue="setDisplayedFormatWithId"
-      class="w-32"
-    />
-    <div class="font-mono">
-      {{ mousePosition }}
+    <div class="flex flex-row items-center gap-2">
+      <USelect
+        size="xs"
+        variant="ghost"
+        :ui="{
+          content: 'min-w-fit',
+          base: 'min-w-fit',
+        }"
+        :items="
+          ALL_FORMATS.map((format) => ({
+            label: format.label,
+            value: format.id,
+          }))
+        "
+        v-model="displayedFormatId"
+        @update:modelValue="setDisplayedFormatWithId"
+        class="w-32"
+      />
+      <div class="font-mono">
+        {{ mousePosition }}
+      </div>
     </div>
   </div>
 </template>

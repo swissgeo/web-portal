@@ -2,12 +2,12 @@
 
 <template>
   <div
-    class="text-accent absolute bottom-0 left-0 flex w-full flex-row items-center justify-between bg-muted p-1 text-xs"
+    class="text-accent absolute bottom-0 left-0 flex w-full items-center justify-center bg-muted p-1 text-xs md:text-sm xl:justify-between"
   >
     <ClientOnly>
       <FooterMapInfos />
     </ClientOnly>
-    <FooterLinks />
+    <FooterLinks class="hidden xl:flex" />
   </div>
 </template>
 
