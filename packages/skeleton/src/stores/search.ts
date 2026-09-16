@@ -59,6 +59,14 @@ export const useSearchStore = defineStore("search", () => {
     results.value.filter((r: SearchResult) => r.resultType === "CONTENT"),
   );
 
+  // the CMS pages have a tab of their own, so what the map tab shows is
+  // everything else
+  const mapResults = computed(() =>
+    results.value.filter((r: SearchResult) => r.resultType !== "CONTENT"),
+  );
+
+  const hasMapResults = computed(() => mapResults.value.length > 0);
+
   // Actions
   async function setSearchQuery(newQuery: string, lang: string = "de") {
     query.value = newQuery;
@@ -214,6 +222,8 @@ export const useSearchStore = defineStore("search", () => {
     layerResults,
     featureResults,
     contentResults,
+    mapResults,
+    hasMapResults,
     // Actions
     setSearchQuery,
     selectResult,

@@ -9,7 +9,6 @@ import { useI18n } from "vue-i18n";
 import { useSearchSelection } from "@/composables/useSearchSelection";
 
 import SearchCategory from "./SearchCategory.vue";
-import SearchResultEntry from "./SearchResultEntry.vue";
 
 const { t, locale } = useI18n();
 const searchStore = useSearchStore();
@@ -46,15 +45,10 @@ const karteResults = computed(() => [
   { id: "layers", results: layerResults.value },
 ]);
 
-// The CMS results live in their own tab, so the map tab must not count them.
-const mapResultsCount = computed(() =>
-  karteResults.value.reduce((total, { results }) => total + results.length, 0),
-);
-
 const tabs = computed(() => [
   {
     label: t("search.map_tab"),
-    badge: mapResultsCount.value || undefined,
+    badge: searchStore.mapResults.length || undefined,
     slot: "map" as const,
     value: "map",
   },
@@ -108,7 +102,7 @@ function handleSelect(result: SearchResult) {
 // the map tab is the default one, and would claim there is nothing when the
 // hits are all CMS pages
 function openResults() {
-  if (mapResultsCount.value === 0 && searchStore.contentResults.length > 0) {
+  if (!searchStore.hasMapResults && searchStore.contentResults.length > 0) {
     activeTab.value = "content";
   }
   isOpen.value = true;
@@ -122,7 +116,7 @@ function handleClick() {
 
 // only the map tab holds the focusable list, the CMS results have their own tab
 function focusFirstResult() {
-  if (mapResultsCount.value === 0) {
+  if (!searchStore.hasMapResults) {
     return;
   }
   activeTab.value = "map";
@@ -186,7 +180,7 @@ function clearSearch() {
       <UTabs v-model="activeTab" :items="tabs" size="sm">
         <template #map>
           <div
-            v-if="mapResultsCount > 0"
+            v-if="searchStore.hasMapResults"
             ref="resultsRef"
             class="max-h-96 overflow-y-auto"
             data-testid="search-results"
@@ -202,7 +196,7 @@ function clearSearch() {
           </div>
           <div
             v-else-if="
-              mapResultsCount === 0 &&
+              !searchStore.hasMapResults &&
               searchStore.query.length >= 2 &&
               !searchStore.isSearching
             "
@@ -217,20 +211,13 @@ function clearSearch() {
 
         <template #contentPages>
           <!-- No category header here: the tab label already names it. -->
-          <ul
+          <SearchCategory
             v-if="searchStore.contentResults.length > 0"
-            class="max-h-96 list-none overflow-y-auto"
+            class="max-h-96 overflow-y-auto"
             data-testid="content-search-results"
-            tabindex="-1"
-          >
-            <SearchResultEntry
-              v-for="(entry, index) in searchStore.contentResults"
-              :key="entry.id"
-              :index="index"
-              :entry="entry"
-              @select="handleSelect(entry)"
-            />
-          </ul>
+            :results="searchStore.contentResults"
+            @select="handleSelect"
+          />
           <div
             v-else-if="
               searchStore.contentResults.length === 0 &&

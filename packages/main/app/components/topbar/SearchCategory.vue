@@ -8,7 +8,8 @@ import { ref } from "vue";
 import SearchResultEntry from "./SearchResultEntry.vue";
 
 defineProps<{
-  title: string;
+  /** Left out where the surrounding tab already names the category */
+  title?: string;
   results: SearchResult[];
 }>();
 
@@ -44,7 +45,10 @@ defineExpose({
   <!-- Category container -->
   <div class="search-category">
     <!-- Category header -->
-    <div class="bg-surface-50 text-surface-700 px-4 py-2 text-sm font-semibold">
+    <div
+      v-if="title"
+      class="bg-surface-50 text-surface-700 px-4 py-2 text-sm font-semibold"
+    >
       {{ title }}
     </div>
 

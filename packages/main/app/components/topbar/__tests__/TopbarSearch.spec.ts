@@ -21,6 +21,12 @@ const searchStore = reactive({
   get contentResults() {
     return this.results.filter((r) => r.resultType === "CONTENT");
   },
+  get mapResults() {
+    return this.results.filter((r) => r.resultType !== "CONTENT");
+  },
+  get hasMapResults() {
+    return this.mapResults.length > 0;
+  },
   setSearchQuery: vi.fn(),
   clearSearch: vi.fn(),
   clearPinnedCoordinate: vi.fn(),
