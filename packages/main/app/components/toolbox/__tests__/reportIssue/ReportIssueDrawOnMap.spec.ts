@@ -25,7 +25,7 @@ describe("ReportIssueDrawOnMap.vue", () => {
     const wrapper = mount(ReportIssueDrawOnMap, {
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step3.title");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step3.title");
   });
 
   it("renders a disabled button", () => {
@@ -40,6 +40,6 @@ describe("ReportIssueDrawOnMap.vue", () => {
     const wrapper = mount(ReportIssueDrawOnMap, {
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step3.button");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step3.button");
   });
 });
