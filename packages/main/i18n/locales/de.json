@@ -447,6 +447,7 @@
     "loading": "Wird geladen...",
     "error": "Der Katalog konnte nicht geladen werden.",
     "retry": "Erneut versuchen",
+    "searchLabel": "Ebenen durchsuchen",
     "searchPlaceholder": "Suchen",
     "close": "Schliessen"
   }

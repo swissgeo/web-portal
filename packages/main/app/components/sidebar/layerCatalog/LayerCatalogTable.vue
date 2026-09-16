@@ -8,6 +8,7 @@ import LayerCatalogRow from "./LayerCatalogRow.vue";
 
 const { t, locale } = useI18n();
 
+const searchInputId = useId();
 const query = ref("");
 const debouncedQuery = refDebounced(query, 100);
 
@@ -46,13 +47,16 @@ useInfiniteScroll(scroller, loadMore, {
           </tr>
           <tr class="border-b border-accented">
             <td colspan="3" class="p-3">
+              <label :for="searchInputId" class="sr-only">
+                {{ t("layerCatalog.searchLabel") }}
+              </label>
               <UInput
+                :id="searchInputId"
                 v-model="query"
                 icon="i-lucide-search"
                 :placeholder="t('layerCatalog.searchPlaceholder')"
                 variant="outline"
                 class="w-full"
-                data-testid="catalog-search-input"
               >
                 <template v-if="query" #trailing>
                   <UButton
