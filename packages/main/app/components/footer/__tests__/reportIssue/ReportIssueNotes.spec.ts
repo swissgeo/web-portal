@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 
-import ReportIssueNotes from "@/components/toolbox/reportIssue/ReportIssueNotes.vue";
+import ReportIssueNotes from "@/components/footer/reportIssue/ReportIssueNotes.vue";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),

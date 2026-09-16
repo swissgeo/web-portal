@@ -5,7 +5,7 @@ import { shallowMount } from "@vue/test-utils";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { ref } from "vue";
 
-import ReportIssue from "@/components/toolbox/reportIssue/ReportIssue.vue";
+import ReportIssue from "@/components/footer/reportIssue/ReportIssue.vue";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
