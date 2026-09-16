@@ -3,29 +3,10 @@ import type { CoordinateFormat } from "@swissgeo/map";
 
 import { LV03 } from "@swissgeo/coordinates";
 import { LV03Format, LV95Format } from "@swissgeo/map";
+import { round } from "@swissgeo/numbers";
 import proj4 from "proj4";
 
-function isNumber(value: unknown): boolean {
-  return (
-    value !== null &&
-    value !== undefined &&
-    !Number.isNaN(Number(value)) &&
-    (typeof value !== "string" || value.length !== 0)
-  );
-}
-
-function round(value: number, decimals: number = 0): number {
-  if (!isNumber(value)) {
-    return Number.NaN;
-  }
-  if (decimals === 0) {
-    return Math.round(value);
-  }
-  const pow = Math.pow(10, decimals);
-  return Math.round(value * pow) / pow;
-}
-
-export interface HumanReadableCoordinateParams {
+interface HumanReadableCoordinateParams {
   coordinates: SingleCoordinate;
   projection: CoordinateSystem;
   displayedFormat: CoordinateFormat;
