@@ -43,9 +43,10 @@ export const STROKE_COLOR_KEY = "sg_strokeColor";
 export const STROKE_WIDTH_KEY = "sg_strokeWidth";
 export const POINT_RADIUS_KEY = "sg_pointRadius";
 export const POINT_COLOR_KEY = "sg_pointColor";
-export const IS_CIRCLE_KEY = "sg_isCircle";
+export const IS_POLYGONIZED_CIRCLE_KEY = "sg_isPolygonizedCircle";
 export const IS_CIRCLE_CENTER_KEY = "sg_isCircleCenter";
-export const CIRCLE_CENTER_POINT_ID_KEY = "sg_circleCenterPointId";
+export const CIRCLE_RADIUS_METER_KEY = "sg_circleRadiusMeter";
+export const POLYGONIZED_CIRCLE_ID_KEY = "sg_polygonizedCircleId";
 
 export const ICON_SIZE = {
   xsmall: 8,
@@ -981,8 +982,14 @@ export function ensurePropertyTypes(feature: Feature<Geometry>): void {
     feature.set(ICON_SIZE_KEY, Number(props[ICON_SIZE_KEY]));
   }
 
-  if (IS_CIRCLE_KEY in props && typeof props[IS_CIRCLE_KEY] !== "boolean") {
-    feature.set(IS_CIRCLE_KEY, props[IS_CIRCLE_KEY] === "true");
+  if (
+    IS_POLYGONIZED_CIRCLE_KEY in props &&
+    typeof props[IS_POLYGONIZED_CIRCLE_KEY] !== "boolean"
+  ) {
+    feature.set(
+      IS_POLYGONIZED_CIRCLE_KEY,
+      props[IS_POLYGONIZED_CIRCLE_KEY] === "true",
+    );
   }
 
   if (
@@ -990,5 +997,15 @@ export function ensurePropertyTypes(feature: Feature<Geometry>): void {
     typeof props[IS_CIRCLE_CENTER_KEY] !== "boolean"
   ) {
     feature.set(IS_CIRCLE_CENTER_KEY, props[IS_CIRCLE_CENTER_KEY] === "true");
+  }
+
+  if (
+    CIRCLE_RADIUS_METER_KEY in props &&
+    typeof props[CIRCLE_RADIUS_METER_KEY] !== "number"
+  ) {
+    feature.set(
+      CIRCLE_RADIUS_METER_KEY,
+      Number(props[CIRCLE_RADIUS_METER_KEY]),
+    );
   }
 }

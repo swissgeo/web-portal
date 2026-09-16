@@ -46,6 +46,7 @@ export const useDrawingStore = defineStore("drawing", () => {
   // update the drawing on the backend (generaly not shared with other users)
   const drawingId = ref<string | null>(null);
   const drawingAdminId = ref<string | null>(null);
+  const drawingS3Url = ref<string | null>(null);
 
   const layerStore = useLayerStore();
   const { layers: layersInLayerStore } = storeToRefs(useLayerStore());
@@ -519,5 +520,6 @@ export const useDrawingStore = defineStore("drawing", () => {
     isDrawingLayerInLayerStore,
     drawingAdminId,
     drawingId,
+    drawingS3Url,
   };
 });
