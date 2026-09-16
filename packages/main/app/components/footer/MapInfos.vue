@@ -71,9 +71,10 @@ watch(
     </div>
     <USelect
       size="xs"
+      variant="ghost"
       :ui="{
-        content: 'w-full',
-        base: 'w-full',
+        content: 'min-w-fit',
+        base: 'min-w-fit',
       }"
       :items="
         ALL_FORMATS.map((format) => ({
