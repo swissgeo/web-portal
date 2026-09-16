@@ -4,6 +4,7 @@ import type MapBrowserEvent from "ol/MapBrowserEvent";
 
 import log from "@swissgeo/log";
 import {
+  OLMapScale,
   useMapStore,
   usePositionStore,
   LV95Format,
@@ -65,7 +66,9 @@ watch(
 
 <template>
   <div class="flex w-fit flex-row items-center gap-8">
-    <div>Scale</div>
+    <div class="w-60">
+      <OLMapScale :olMap="olMap" class="footerMapScale" />
+    </div>
     <USelect
       size="xs"
       :ui="{
@@ -88,4 +91,8 @@ watch(
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.footerMapScale {
+  position: initial;
+}
+</style>
