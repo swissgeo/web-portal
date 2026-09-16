@@ -52,7 +52,7 @@ watch(
     if (!map) {
       return;
     }
-    const handler = (event: MapBrowserEvent<PointerEvent>) => {
+    const handler = (event: MapBrowserEvent) => {
       coordinates.value = event.coordinate as SingleCoordinate;
       setDisplayedFormatWithId();
     };
