@@ -172,12 +172,15 @@
       "noFileSelected": "No file selected",
       "importFileButton": "Import file",
       "importUrlButton": "Import from URL",
+      "importUrlAsAdmin": "Import URL as admin",
       "loadingMessage": "Importing file...",
       "successMessage": "Successfully imported {fileName}",
       "drawingSuccessMessage": "Drawing imported successfully",
       "fileUrlDescription": "Or import a file from URL ({types}):",
       "fileUrlPlaceholder": "https://example.com/data.gpx",
       "importFileUrlButton": "Import from URL",
+      "cancelImport": "Cancel import",
+      "clearAndImportAsAdmin": "Clear and import as admin",
       "errorMessages": {
         "generalError": "Failed to import file",
         "noFileSelected": "Please select a file first",
@@ -189,7 +192,12 @@
         "noKmlFound": "No KML drawing found in the provided URL",
         "domainNotAllowed": "Fetching from {domain} is not allowed",
         "unsupportedUrlType": "Unsupported file type. URL must end with {types}",
-        "fetchFailed": "Failed to fetch file from URL (HTTP {status})"
+        "fetchFailed": "Failed to fetch file from URL (HTTP {status})",
+        "adminRequired": "Admin privileges are required to import this drawing"
+      },
+      "infoMessages": {
+        "adminImportPart1": "Importing a Swissgeo drawing as an administrator will clear all prior drawings.",
+        "adminImportPart2": "You will then be able to further edit the drawing and synchronize it with the Swissgeo database."
       },
       "close": "Close"
     },

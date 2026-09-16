@@ -25,9 +25,10 @@ import {
   TEXT_SIZE_KEY,
   DESCRIPTION_KEY,
   TITLE_KEY,
-  CIRCLE_CENTER_POINT_ID_KEY,
   IS_CIRCLE_CENTER_KEY,
-  IS_CIRCLE_KEY,
+  IS_POLYGONIZED_CIRCLE_KEY,
+  CIRCLE_RADIUS_METER_KEY,
+  POLYGONIZED_CIRCLE_ID_KEY,
 } from "./drawingStyleCommon";
 
 registerProj4(proj4);
@@ -505,12 +506,18 @@ export function convertCircleToPolygon(
   delete properties.geometry; // Remove the geometry property to avoid conflicts
 
   // Copy properties from the original circle feature to the new polygon feature
+  // Note: the polygons created as a drawing cannot be serialized as a KML/KMZ/GeoJSON because the circle geometry
+  // do not exist in these formats. As a result, a circle is converted into 2 separate features:
+  // - a polygon approximating the circle with line segments, to be imported on other applications
+  // - a point representing the center, that contains the radius of the original circle (in meters) as a property
+  // The center point feature is the one being used when the KML/KMZ is imported back to Swissgeo to form the original circle.
   polygonFeature.setProperties(properties);
-  polygonFeature.set(IS_CIRCLE_KEY, true);
+  polygonFeature.set(CIRCLE_RADIUS_METER_KEY, circleGeometry.getRadius());
+  polygonFeature.set(IS_POLYGONIZED_CIRCLE_KEY, true);
+  centerFeature.setProperties(properties);
   centerFeature.set(IS_CIRCLE_CENTER_KEY, true);
-  const centerId = `${polygonFeature.getId()}_center`;
-  polygonFeature.set(CIRCLE_CENTER_POINT_ID_KEY, centerId);
-  centerFeature.setId(centerId);
+  centerFeature.set(CIRCLE_RADIUS_METER_KEY, circleGeometry.getRadius());
+  centerFeature.set(POLYGONIZED_CIRCLE_ID_KEY, polygonFeature.getId());
   copyFeatureId(circle, polygonFeature);
 
   return [polygonFeature, centerFeature];

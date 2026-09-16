@@ -5,6 +5,7 @@ import type Feature from "ol/Feature";
 import { useDrawing, getFeatureTitle } from "@swissgeo/drawing";
 import log from "@swissgeo/log";
 import { useMap } from "@swissgeo/map";
+import { useClipboard } from "@vueuse/core";
 import { ref } from "vue";
 
 import { useShareDrawings } from "@/composables/useShareDrawings";
@@ -14,6 +15,8 @@ import DrawingFeaturePropertyPanel from "./DrawingFeaturePropertyPanel.vue";
 const { t } = useI18n();
 
 const { olMap } = useMap();
+
+const { copy, copied } = useClipboard();
 
 const {
   disableAllInteractions,
@@ -31,7 +34,26 @@ const {
   isDrawingLayerInLayerStore,
   serializeFocusedFeatureAsBlob,
   serializeAllFeaturesAsBlob,
+  drawingId,
+  drawingAdminId,
+  drawingS3Url,
 } = useDrawing();
+
+const shareDrawingAsAdmin = ref(false);
+
+const drawingShareableString = computed(() => {
+  if (!drawingS3Url.value || !drawingAdminId.value) {
+    return "";
+  }
+
+  const shareUrl = new URL(drawingS3Url.value);
+
+  if (shareDrawingAsAdmin.value) {
+    shareUrl.searchParams.set("admin_id", drawingAdminId.value);
+  }
+
+  return shareUrl.toString();
+});
 
 const { shareDrawings, isSharing } = useShareDrawings();
 
@@ -42,32 +64,6 @@ const emit = defineEmits<{
 function handleClose() {
   emit("close");
 }
-
-/**
- * Dropdown elements for exporting the currently focused feature in various formats.
- */
-const exportFocusedFeatureItems = ref<DropdownMenuItem[]>([
-  {
-    label: "GeoJSON",
-    onClick: () => exportFocusedFeature("geojson"),
-  },
-  {
-    label: "GPX Track",
-    onClick: () => exportFocusedFeature("gpx-track"),
-  },
-  {
-    label: "GPX Route",
-    onClick: () => exportFocusedFeature("gpx-route"),
-  },
-  {
-    label: "KML",
-    onClick: () => exportFocusedFeature("kml"),
-  },
-  {
-    label: "KMZ",
-    onClick: () => exportFocusedFeature("kmz"),
-  },
-]);
 
 /**
  * Drops down elements for exporting all features in the drawing layer in various formats.
@@ -165,8 +161,18 @@ watch(
   },
 );
 
-watch(focusMode, (newFocusMode, oldFocusMode) => {
-  console.log("Focus mode changed from", oldFocusMode, "to", newFocusMode);
+// Watch for changes in focus mode and share drawings when focus mode is set to 'none'.
+watch(focusMode, async (newFocusMode) => {
+  if (newFocusMode !== "none") {
+    return;
+  }
+
+  // If the drawing has never been shared explicitely by the user, it is not synced automatically.
+  if (!drawingId && !drawingAdminId) {
+    return;
+  }
+
+  await shareDrawings();
 });
 
 function terminateModification() {
@@ -182,6 +188,7 @@ function cancelDrawing() {
 
 async function onShareDrawings() {
   await shareDrawings();
+  await copy(drawingShareableString.value);
 }
 
 onMounted(() => {
@@ -337,7 +344,7 @@ onUnmounted(() => {
           Clear drawing layer
         </UButton>
 
-        <UDropdownMenu
+        <!-- <UDropdownMenu
           v-if="focusedFeature && focusMode === 'select'"
           arrow
           :items="exportFocusedFeatureItems"
@@ -351,7 +358,7 @@ onUnmounted(() => {
             color="primary"
             variant="outline"
           />
-        </UDropdownMenu>
+        </UDropdownMenu> -->
 
         <UDropdownMenu
           v-if="
@@ -372,16 +379,28 @@ onUnmounted(() => {
           />
         </UDropdownMenu>
 
-        <UButton
-          v-if="true"
-          color="primary"
-          variant="solid"
-          :loading="isSharing"
-          data-testid="sharing-tool-clear"
-          @click="onShareDrawings"
+        <div
+          v-if="['none', 'select'].includes(focusMode)"
+          class="flex items-center gap-3"
         >
-          Share drawings
-        </UButton>
+          <UTooltip text="Copy to clipboard" :content="{ side: 'right' }">
+            <UButton
+              :color="copied ? 'success' : 'primary'"
+              variant="solid"
+              :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+              aria-label="Copy drawing link"
+              @click="onShareDrawings"
+            >
+              Copy drawing link
+            </UButton>
+          </UTooltip>
+          <USwitch
+            v-model="shareDrawingAsAdmin"
+            label="as editable"
+            unchecked-icon="i-lucide-x"
+            checked-icon="i-lucide-check"
+          />
+        </div>
       </div>
     </div>
   </div>
