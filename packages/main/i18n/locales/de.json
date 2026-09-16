@@ -14,8 +14,7 @@
     "map": "Karte",
     "collapse": "Seitenleiste einklappen",
     "expand": "Seitenleiste ausklappen",
-    "addLayer": "Ebene hinzufügen",
-    "addLayerComingSoon": "Der Ebenenkatalog ist noch nicht verfügbar."
+    "openLayerCatalog": "Daten-Katalog öffnen"
   },
   "search": {
     "placeholder": "Ort, Layer oder Koordinaten suchen...",
@@ -437,5 +436,19 @@
       "openPdf": "Legende als PDF öffnen",
       "openPage": "Legendenseite öffnen"
     }
+  },
+  "layerCatalog": {
+    "title": "Daten-Katalog",
+    "table": {
+      "title": "Bezeichnung",
+      "dataOwner": "Anbieter",
+      "empty": "Keine Ebenen gefunden."
+    },
+    "loading": "Wird geladen...",
+    "error": "Der Katalog konnte nicht geladen werden.",
+    "retry": "Erneut versuchen",
+    "searchLabel": "Ebenen durchsuchen",
+    "searchPlaceholder": "Suchen",
+    "close": "Schliessen"
   }
 }

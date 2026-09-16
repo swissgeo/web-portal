@@ -46,7 +46,7 @@ watch(route, (value) => {
         <div class="relative h-full">
           <SideBar
             v-if="!isMapFullscreenMode"
-            class="z-2"
+            class="z-10"
             :mapLayers="mapLayers"
           >
           </SideBar>

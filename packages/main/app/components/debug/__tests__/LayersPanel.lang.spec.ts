@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 
 const { useOgcCatalogSpy, locale } = vi.hoisted(() => ({
   useOgcCatalogSpy: vi.fn(() => ({
-    data: [],
+    state: { value: { status: "pending" } },
   })),
   locale: "de",
 }));

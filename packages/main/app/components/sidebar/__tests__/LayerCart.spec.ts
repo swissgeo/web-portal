@@ -15,6 +15,7 @@ const layerStore = vi.hoisted(() => ({
   backgroundLayer: null as { uuid: string } | null,
 }));
 const mapViewStore = vi.hoisted(() => ({ setLayerIndex: vi.fn() }));
+const sidebarStore = vi.hoisted(() => ({ setSidebar: vi.fn() }));
 // Captures the options LayerCart hands to useSortable, so the drop handling can
 // be exercised without a real drag
 const sortableOptions = vi.hoisted(
@@ -22,6 +23,10 @@ const sortableOptions = vi.hoisted(
 );
 
 vi.mock("@swissgeo/layers", () => ({ useLayerStore: () => layerStore }));
+vi.mock("@swissgeo/skeleton", () => ({
+  useSidebarStore: () => sidebarStore,
+  SidebarType: { GEOCATALOG_TREE: "geocatalogTree" },
+}));
 vi.mock("@vueuse/integrations/useSortable", () => ({
   useSortable: (_el: unknown, _list: unknown, options: object) => {
     Object.assign(sortableOptions, options);
@@ -35,10 +40,9 @@ const stubs = {
     props: ["layer", "layerIndex"],
     template: "<li :data-uuid='layer.uuid' :data-index='layerIndex' />",
   },
-  UButton: { inheritAttrs: false, template: "<button v-bind='$attrs' />" },
-  UModal: {
-    props: ["open"],
-    template: "<div v-if='open'><slot name='body' /></div>",
+  UButton: {
+    inheritAttrs: false,
+    template: "<button v-bind='$attrs'><slot /></button>",
   },
 };
 
@@ -116,13 +120,16 @@ describe("LayerCart.vue", () => {
     expect(mapViewStore.setLayerIndex).toHaveBeenCalledWith("b", 1);
   });
 
-  it("tells the user that adding a layer is not possible yet", async () => {
+  it("opens the layer catalog", async () => {
     const wrapper = mountCart();
-    expect(wrapper.text()).not.toContain("menu.addLayerComingSoon");
+    const button = wrapper.get("[data-testid='open-layer-catalog']");
+    expect(button.text()).toBe("menu.openLayerCatalog");
 
-    await wrapper.find("[data-testid='add-layer']").trigger("click");
+    await button.trigger("click");
 
-    expect(wrapper.text()).toContain("menu.addLayerComingSoon");
+    expect(sidebarStore.setSidebar).toHaveBeenCalledExactlyOnceWith(
+      "geocatalogTree",
+    );
   });
 
   it("ignores a drop that reports no position", () => {
