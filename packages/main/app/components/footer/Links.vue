@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ReportIssueLink from "./ReportIssueLink.vue";
 const runtimeConfig = useRuntimeConfig();
+const { t } = useI18n();
 </script>
 <template>
   <div class="flex w-fit flex-row items-center gap-8 pr-3">
@@ -23,10 +24,10 @@ const runtimeConfig = useRuntimeConfig();
       geo.admin.ch
     </ULink>
     <ULink target="_blank" raw class="hidden items-center gap-1 xl:flex">
-      Nutzungsbedingungen
+      {{ t("footer.termsOfUse") }}
     </ULink>
     <ULink target="_blank" raw class="hidden items-center gap-1 xl:flex">
-      Impressum
+      {{ t("footer.impressum") }}
     </ULink>
   </div>
 </template>
