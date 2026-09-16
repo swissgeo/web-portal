@@ -1,6 +1,7 @@
 import "./stylesheet.css";
 import useAddLayerToMap from "./composables/useAddLayerToMap.composable";
 import MapModule from "./MapModule.vue";
+import OpenLayersMouseTracker from "./openlayers/OpenLayersMouseTracker.vue";
 import OpenLayersScale from "./openlayers/OpenLayersScale.vue";
 import usePositionStore from "./stores/position";
 
@@ -27,6 +28,7 @@ export type { FeatureCollectionWithCRS } from "./utils/geoJsonUtils";
 export {
   MapModule,
   OpenLayersScale as OLMapScale,
+  OpenLayersMouseTracker as OLMapMouseTracker,
   usePositionStore,
   useAddLayerToMap,
   PROJECTION_EPSG,
