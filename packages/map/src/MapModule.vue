@@ -68,7 +68,6 @@ const layersWithZIndex = computed(() => {
         <OpenLayersContextMenuPopup v-slot="slotProps">
           <slot name="context-menu-popup" v-bind="slotProps" />
         </OpenLayersContextMenuPopup>
-        <OpenLayersScale />
         <OpenLayersCompareSlider
           v-if="compareSliderActive && compareSliderClippedLayer"
           :compare-ratio="compareRatio"
