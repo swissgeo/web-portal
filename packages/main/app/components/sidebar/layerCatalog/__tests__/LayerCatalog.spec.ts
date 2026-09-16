@@ -1,6 +1,6 @@
-import { mount } from "@vue/test-utils";
+import { enableAutoUnmount, mount } from "@vue/test-utils";
 import LayerCatalog from "~/components/sidebar/layerCatalog/LayerCatalog.vue";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const sidebarStore = vi.hoisted(() => ({ setSidebar: vi.fn() }));
 
@@ -25,6 +25,8 @@ function mountCatalog() {
 }
 
 describe("LayerCatalog.vue", () => {
+  enableAutoUnmount(afterEach);
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -46,5 +48,23 @@ describe("LayerCatalog.vue", () => {
     expect(sidebarStore.setSidebar).toHaveBeenCalledExactlyOnceWith(
       "layerCart",
     );
+  });
+
+  it("goes back to the layer cart when Escape is pressed", () => {
+    mountCatalog();
+
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+
+    expect(sidebarStore.setSidebar).toHaveBeenCalledExactlyOnceWith(
+      "layerCart",
+    );
+  });
+
+  it("stops listening for Escape once unmounted", () => {
+    mountCatalog().unmount();
+
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+
+    expect(sidebarStore.setSidebar).not.toHaveBeenCalled();
   });
 });

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
+import { onKeyStroke } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 
 import LayerCatalogTable from "./LayerCatalogTable.vue";
@@ -10,6 +11,8 @@ const { t } = useI18n();
 function closeLayerCatalog() {
   uiStore.setSidebar(SidebarType.LAYER_CART);
 }
+
+onKeyStroke("Escape", closeLayerCatalog);
 </script>
 
 <template>
