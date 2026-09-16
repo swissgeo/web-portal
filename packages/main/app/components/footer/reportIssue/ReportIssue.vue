@@ -21,7 +21,7 @@ const { shareLink } = useCreateShareLink(exportState, {
 });
 
 const emit = defineEmits<{
-  close: void;
+  close: [];
 }>();
 
 const schema = z.object({
