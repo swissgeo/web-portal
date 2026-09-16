@@ -106,7 +106,9 @@ describe("GET /api/wpa/v1/content/search", () => {
     ${undefined} | ${10}
     ${"25"}      | ${25}
     ${"500"}     | ${100}
-    ${"0"}       | ${1}
+    ${"0"}       | ${10}
+    ${"-5"}      | ${10}
+    ${""}        | ${10}
     ${"abc"}     | ${10}
   `("clamps a limit of $limit to $expected", async ({ limit, expected }) => {
     livingdocsFetch.mockResolvedValue({ results: [] });
@@ -117,6 +119,12 @@ describe("GET /api/wpa/v1/content/search", () => {
       "publications/search",
       expect.objectContaining({ limit: expected }),
     );
+  });
+
+  it("returns no result when the CMS answers with an empty body", async () => {
+    livingdocsFetch.mockResolvedValue(null);
+
+    await expect(call({ q: "test" })).resolves.toEqual({ results: [] });
   });
 
   it("falls back to German for a locale the CMS does not hold", async () => {

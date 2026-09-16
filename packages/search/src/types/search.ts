@@ -88,7 +88,10 @@ export interface ContentSearchResult extends SearchResult {
   documentId: string;
   /** Slug of the published page */
   slug: string;
-  /** Locale the page was published in (the tenant only holds `de` and `fr`) */
+  /**
+   * Locale the page was published in. The tenant publishes `de`, `fr`, `it` and
+   * `en`; `rm` searches fall back to German.
+   */
   locale: string;
 }
 

@@ -1,3 +1,4 @@
+import log from "@swissgeo/log";
 import { useRuntimeConfig } from "#imports";
 import { createError } from "h3";
 import { joinURL } from "ufo";
@@ -44,7 +45,10 @@ export const livingdocsFetch = async <T>(
       },
       query,
     });
-  } catch {
+  } catch (error) {
+    // the client turns the 502 into an empty tab, so this log is the only
+    // place an expired token or a wrong endpoint shows up
+    log.error(`Livingdocs request failed for ${path}: ${String(error)}`);
     throw createError({
       statusCode: 502,
       statusMessage: "Livingdocs request failed",

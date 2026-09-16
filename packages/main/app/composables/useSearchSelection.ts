@@ -60,9 +60,12 @@ export function useSearchSelection() {
       return;
     }
 
-    const base = runtimeConfig.public.cmsBaseUrl;
-    const locale_ = result.locale || locale.value;
-    window.open(`${base}/${locale_}/${result.slug}`, "_blank", "noopener");
+    const url = joinURL(
+      runtimeConfig.public.cmsBaseUrl,
+      result.locale || locale.value,
+      result.slug,
+    );
+    window.open(url, "_blank", "noopener");
   }
 
   function handleLocationSelection(result: LocationSearchResult) {

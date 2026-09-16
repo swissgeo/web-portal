@@ -36,7 +36,8 @@ interface LivingdocsPublicationSummary {
  */
 type LivingdocsSearchResponse =
   | LivingdocsPublicationSummary[]
-  | { results?: LivingdocsPublicationSummary[] };
+  | { results?: LivingdocsPublicationSummary[] }
+  | null;
 
 export default defineEventHandler(
   async (event): Promise<ContentPageSearchResponse> => {
@@ -50,10 +51,13 @@ export default defineEventHandler(
       });
     }
 
-    const parsedLimit = Number(limit ?? DEFAULT_LIMIT);
-    const clampedLimit = Number.isFinite(parsedLimit)
-      ? Math.min(Math.max(Math.trunc(parsedLimit), 1), MAX_LIMIT)
-      : DEFAULT_LIMIT;
+    // an empty `?limit=` parses as 0, which would clamp to 1 rather than fall
+    // back to the default
+    const parsedLimit = Number(limit);
+    const clampedLimit =
+      Number.isFinite(parsedLimit) && parsedLimit > 0
+        ? Math.min(Math.trunc(parsedLimit), MAX_LIMIT)
+        : DEFAULT_LIMIT;
 
     const response = await livingdocsFetch<LivingdocsSearchResponse>(
       "publications/search",
@@ -68,9 +72,11 @@ export default defineEventHandler(
       },
     );
 
+    // $fetch resolves null for an empty body, which the CMS answers with when
+    // it has nothing to say
     const publications = Array.isArray(response)
       ? response
-      : (response.results ?? []);
+      : (response?.results ?? []);
 
     return {
       results: publications.flatMap((publication) => {

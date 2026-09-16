@@ -19,6 +19,7 @@ const { handleResultSelection } = useSearchSelection();
 const isOpen = defineModel<boolean>("open", { default: false });
 
 const resultsRef = ref<HTMLElement | null>(null);
+const activeTab = ref("map");
 
 const query = computed({
   get: () => searchStore.query,
@@ -45,10 +46,6 @@ const karteResults = computed(() => [
   { id: "layers", results: layerResults.value },
 ]);
 
-const contentResults = computed(() =>
-  searchStore.results.filter((r) => r.resultType === "CONTENT"),
-);
-
 // The CMS results live in their own tab, so the map tab must not count them.
 const mapResultsCount = computed(() =>
   karteResults.value.reduce((total, { results }) => total + results.length, 0),
@@ -59,11 +56,13 @@ const tabs = computed(() => [
     label: t("search.map_tab"),
     badge: mapResultsCount.value || undefined,
     slot: "map" as const,
+    value: "map",
   },
   {
     label: t("search.content_pages_tab"),
-    badge: contentResults.value.length || undefined,
+    badge: searchStore.contentResults.length || undefined,
     slot: "contentPages" as const,
+    value: "content",
   },
 ]);
 
@@ -86,7 +85,7 @@ watch(
   () => searchStore.hasResults,
   (hasResults) => {
     if (hasResults && query.value.length >= 2) {
-      isOpen.value = true;
+      openResults();
     }
   },
 );
@@ -106,9 +105,18 @@ function handleSelect(result: SearchResult) {
   isOpen.value = false;
 }
 
+// the map tab is the default one, and would claim there is nothing when the
+// hits are all CMS pages
+function openResults() {
+  if (mapResultsCount.value === 0 && searchStore.contentResults.length > 0) {
+    activeTab.value = "content";
+  }
+  isOpen.value = true;
+}
+
 function handleClick() {
   if (query.value.length >= 2 && searchStore.hasResults) {
-    isOpen.value = true;
+    openResults();
   }
 }
 
@@ -117,6 +125,7 @@ function focusFirstResult() {
   if (mapResultsCount.value === 0) {
     return;
   }
+  activeTab.value = "map";
   isOpen.value = true;
   void nextTick(() => {
     resultsRef.value?.querySelector<HTMLElement>("li")?.focus();
@@ -174,7 +183,7 @@ function clearSearch() {
     </template>
 
     <template #content>
-      <UTabs :items="tabs" size="sm">
+      <UTabs v-model="activeTab" :items="tabs" size="sm">
         <template #map>
           <div
             v-if="mapResultsCount > 0"
@@ -209,13 +218,13 @@ function clearSearch() {
         <template #contentPages>
           <!-- No category header here: the tab label already names it. -->
           <ul
-            v-if="contentResults.length > 0"
+            v-if="searchStore.contentResults.length > 0"
             class="max-h-96 list-none overflow-y-auto"
             data-testid="content-search-results"
             tabindex="-1"
           >
             <SearchResultEntry
-              v-for="(entry, index) in contentResults"
+              v-for="(entry, index) in searchStore.contentResults"
               :key="entry.id"
               :index="index"
               :entry="entry"
@@ -224,7 +233,7 @@ function clearSearch() {
           </ul>
           <div
             v-else-if="
-              contentResults.length === 0 &&
+              searchStore.contentResults.length === 0 &&
               searchStore.query.length >= 2 &&
               !searchStore.isSearching
             "

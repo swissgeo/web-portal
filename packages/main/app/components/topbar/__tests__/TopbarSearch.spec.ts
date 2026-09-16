@@ -3,7 +3,7 @@ import type { SearchResult } from "@swissgeo/search";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { reactive } from "vue";
+import { nextTick, reactive } from "vue";
 
 import TopbarSearch from "../TopbarSearch.vue";
 
@@ -15,7 +15,12 @@ const searchStore = reactive({
   coordinateResult: null,
   isSearching: false,
   hasError: false,
-  hasResults: false,
+  get hasResults() {
+    return this.results.length > 0;
+  },
+  get contentResults() {
+    return this.results.filter((r) => r.resultType === "CONTENT");
+  },
   setSearchQuery: vi.fn(),
   clearSearch: vi.fn(),
   clearPinnedCoordinate: vi.fn(),
@@ -49,7 +54,7 @@ const stubs = {
     template: "<div><slot name='anchor' /><slot name='content' /></div>",
   },
   UTabs: {
-    props: ["items"],
+    props: ["items", "modelValue"],
     template: "<div><slot name='map' /><slot name='contentPages' /></div>",
   },
   UInput: { template: "<input />" },
@@ -76,6 +81,10 @@ const content = (documentId: string, title: string): SearchResult => ({
 
 function render() {
   return mount(TopbarSearch, { global: { stubs } });
+}
+
+function activeTab(wrapper: ReturnType<typeof render>) {
+  return wrapper.findComponent(stubs.UTabs).props("modelValue") as string;
 }
 
 function tabs(wrapper: ReturnType<typeof render>) {
@@ -138,6 +147,27 @@ describe("TopbarSearch", () => {
       wrapper.find("[data-testid='content-search-results']").exists(),
     ).toBe(false);
     expect(wrapper.text()).toContain("search.no_results");
+  });
+
+  it("opens on the content tab when every hit is a CMS page", async () => {
+    const wrapper = render();
+    expect(activeTab(wrapper)).toBe("map");
+
+    searchStore.query = "zecken";
+    searchStore.results = [content("42", "Zecken")];
+    await nextTick();
+
+    expect(activeTab(wrapper)).toBe("content");
+  });
+
+  it("stays on the map tab when the map has hits of its own", async () => {
+    const wrapper = render();
+
+    searchStore.query = "bern";
+    searchStore.results = [location("bern"), content("42", "Bern")];
+    await nextTick();
+
+    expect(activeTab(wrapper)).toBe("map");
   });
 
   it("selects the CMS result that was clicked", async () => {

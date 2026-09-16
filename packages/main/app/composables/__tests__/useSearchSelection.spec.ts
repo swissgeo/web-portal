@@ -38,7 +38,9 @@ mockNuxtImport("useRuntimeConfig", () => () => ({
   public: {
     ogcApiEndpoint: "https://api.example.com",
     ogcCatalogCollection: "swissgeo-catalog",
-    cmsBaseUrl: "https://cms.example.test",
+    // deliberately trailing: the CMS links must not come out with a double
+    // slash when the base URL is written this way
+    cmsBaseUrl: "https://cms.example.test/",
   },
 }));
 
