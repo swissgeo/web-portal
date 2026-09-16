@@ -19,10 +19,12 @@ const {
   scaleType = "line",
   minWidth = 100,
   withRelativeSize = false,
+  olMap = toValue(inject<Map>("olMap")),
 } = defineProps<{
   scaleType?: "line" | "bar";
   minWidth?: number;
   withRelativeSize?: boolean;
+  olMap?: Map;
 }>();
 
 const scaleLineElement = useTemplateRef<HTMLElement>("scaleLineElement");
@@ -39,7 +41,6 @@ const scaleLine = new ScaleLine({
   minWidth: minWidth,
 });
 
-const olMap = toValue(inject<Map>("olMap"));
 if (!olMap) {
   log.error("OpenLayersMap is not available");
   throw new Error("OpenLayersMap is not available");
