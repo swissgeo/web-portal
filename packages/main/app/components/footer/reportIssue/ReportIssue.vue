@@ -4,8 +4,6 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 import { useI18n } from "vue-i18n";
 import * as z from "zod";
 
-import { useToolboxStore } from "@/stores/toolbox";
-
 import ReportIssueAttachment from "./ReportIssueAttachment.vue";
 import ReportIssueCategory from "./ReportIssueCategory.vue";
 import { ACCEPTED_MIME_TYPES } from "./reportIssueConstants";
@@ -17,11 +15,14 @@ import ReportIssueNotes from "./ReportIssueNotes.vue";
 const { t } = useI18n();
 const toast = useToast();
 const runtimeConfig = useRuntimeConfig();
-const toolboxStore = useToolboxStore();
 const { exportState } = useStateConfig();
 const { shareLink } = useCreateShareLink(exportState, {
   autoRefresh: true,
 });
+
+const emit = defineEmits<{
+  close: void;
+}>();
 
 const schema = z.object({
   feedback: z
@@ -124,7 +125,7 @@ watch(shareLink, (newLink) => {
 
 <template>
   <UCard
-    data-testid="toolbox-report-issue-card"
+    data-testid="footer-report-issue-card"
     :ui="{
       body: 'md:max-h-[75vh] md:overflow-y-scroll',
     }"
@@ -140,7 +141,7 @@ watch(shareLink, (newLink) => {
           icon="i-lucide-x"
           size="sm"
           :aria-label="t('toolbox.reportIssue.close')"
-          @click="toolboxStore.closeDetailPanel()"
+          @click="emit('close')"
         />
       </div>
     </template>
