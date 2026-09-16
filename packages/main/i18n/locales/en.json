@@ -30,6 +30,8 @@
   },
   "footer": {
     "copyRightData": "© Data: ",
+    "termsOfUse": "Terms of use",
+    "impressum": "Impressum",
     "reportIssue": {
       "buttonTitle": "Report Issue",
       "title": "Report an issue",

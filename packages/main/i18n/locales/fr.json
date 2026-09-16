@@ -30,6 +30,8 @@
   },
   "footer": {
     "copyRightData": "© Données: ",
+    "termsOfUse": "Conditions d'utilisation",
+    "impressum": "Mentions légales",
     "reportIssue": {
       "buttonTitle": "Signaler un problème",
       "title": "Signaler un problème",
