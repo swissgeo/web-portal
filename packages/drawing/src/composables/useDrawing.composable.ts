@@ -1,9 +1,9 @@
-import type { Point, Polygon } from "ol/geom";
-import Circle from "ol/geom/Circle";
+import type { Point } from "ol/geom";
 import type VectorLayer from "ol/layer/Vector";
 
 import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from "@swissgeo/shared";
 import KML from "ol/format/KML";
+import Circle from "ol/geom/Circle";
 import { storeToRefs } from "pinia";
 import { computed, readonly, watch, triggerRef } from "vue";
 
@@ -14,13 +14,6 @@ import type {
 } from "../utils/drawingStyleCommon";
 
 import { useDrawingStore } from "../stores/drawing.store";
-// import {
-//   getFeatureDescription,
-//   getFeatureTitle,
-//   initializeMetadataProperties,
-//   setFeatureDescription,
-//   setFeatureTitle,
-// } from "../utils/drawingMetadata";
 import {
   applyIdleStyle,
   applyEditingStyle,
@@ -74,9 +67,10 @@ import {
   setFeatureTitle,
   wasCreatedBySwissgeo,
   ensurePropertyTypes,
-  IS_CIRCLE_KEY,
   IS_CIRCLE_CENTER_KEY,
-  CIRCLE_CENTER_POINT_ID_KEY,
+  IS_POLYGONIZED_CIRCLE_KEY,
+  CIRCLE_RADIUS_METER_KEY,
+  POLYGONIZED_CIRCLE_ID_KEY,
 } from "../utils/drawingStyleCommon";
 import {
   olFeatureToGeoJSON,
@@ -97,6 +91,8 @@ export function useDrawing() {
     isDrawingLayerInLayerStore,
     drawingAdminId,
     drawingId,
+    drawingS3Url,
+    creatingOrEditingIterations,
   } = storeToRefs(drawingStore);
 
   /**
@@ -593,42 +589,31 @@ export function useDrawing() {
         mapKmlStylesToFeatureProperties(feature);
       }
 
-      // The feature being the center of a circle is not to be imported as is
-      // Skip importing the center point of a circle
-      if (feature.get(IS_CIRCLE_CENTER_KEY)) {
+      // Circles are serialized as one point (center) and one polygon approximating the circle.
+      // The polygon being only an approximation of the circle, it should not be imported as a standalone feature.
+      if (feature.get(IS_POLYGONIZED_CIRCLE_KEY)) {
         continue;
       }
 
-      if (feature.get(IS_CIRCLE_KEY)) {
-        // The circles that have been serialized as polygon (for proper use in other applications)
-        // contains a property referencing the feature that represents its center point.
-        const centerFeatureId = feature.get(CIRCLE_CENTER_POINT_ID_KEY);
-        if (!centerFeatureId) {
-          continue;
-        }
-
-        // Finding this feature within the imported ones
-        const centerFeature = features.find(
-          (f) => f.getId && f.getId() === centerFeatureId,
-        );
-        if (!centerFeature) {
-          continue;
-        }
-
+      // The center point of a circle is imported, using it's radius property to reconstruct the original circle geometry.
+      if (feature.get(IS_CIRCLE_CENTER_KEY)) {
         // Create a cirlce geometry using the center feature and the first point of the current feature.
         const centerCoordinates = (
-          centerFeature.getGeometry() as Point
+          feature.getGeometry() as Point
         ).getCoordinates();
-        const firstPointCoordinates = (
-          feature.getGeometry() as Polygon
-        ).getCoordinates()[0][0];
-        const circleRadius = Math.sqrt(
-          Math.pow(firstPointCoordinates[0] - centerCoordinates[0], 2) +
-            Math.pow(firstPointCoordinates[1] - centerCoordinates[1], 2),
-        );
+
+        const circleRadius = feature.get(CIRCLE_RADIUS_METER_KEY);
         const circleGeometry = new Circle(centerCoordinates, circleRadius);
         // Replacing the polygon geometry with the newly created circle geometry
         feature.setGeometry(circleGeometry);
+
+        // Set the id from the poligonized circle feature
+        feature.setId(POLYGONIZED_CIRCLE_ID_KEY);
+
+        // Removing the center-point related properties
+        feature.unset(IS_CIRCLE_CENTER_KEY);
+        feature.unset(CIRCLE_RADIUS_METER_KEY);
+        feature.unset(POLYGONIZED_CIRCLE_ID_KEY);
       }
 
       applyIdleStyle(feature);
@@ -651,8 +636,6 @@ export function useDrawing() {
 
   async function importKmz(kmzBuffer: ArrayBuffer): Promise<void> {
     const kmzContent = await unzipKmzBuffer(kmzBuffer);
-    console.log("KMZ contents:", kmzContent);
-
     importKml(kmzContent.kmlContent);
   }
 
@@ -666,8 +649,9 @@ export function useDrawing() {
     mountDrawingLayer: drawingStore.mountDrawingLayer,
     unmountDrawingLayer: drawingStore.unmountDrawingLayer,
     clearDrawingLayer: drawingStore.clearDrawingLayer,
-    drawingAdminId: drawingAdminId,
-    drawingId: drawingId,
+    drawingAdminId,
+    drawingId,
+    drawingS3Url,
     isDrawingLayerInLayerStore: readonly(isDrawingLayerInLayerStore),
     focusedFeature: readonly(focusedFeature),
     numberOfFeatures: readonly(numberOfFeatures),
@@ -705,5 +689,6 @@ export function useDrawing() {
     serializeAllFeaturesAsBlob,
     importKml,
     importKmz,
+    creatingOrEditingIterations: readonly(creatingOrEditingIterations),
   };
 }

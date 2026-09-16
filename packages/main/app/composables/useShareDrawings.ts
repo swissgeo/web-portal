@@ -11,8 +11,12 @@ type DrawingServiceResponse = {
 
 export function useShareDrawings() {
   const runtimeConfig = useRuntimeConfig();
-  const { serializeAllFeaturesAsBlob, drawingAdminId, drawingId } =
-    useDrawing();
+  const {
+    serializeAllFeaturesAsBlob,
+    drawingAdminId,
+    drawingId,
+    drawingS3Url,
+  } = useDrawing();
   const isSharing = ref(false);
 
   async function shareDrawings() {
@@ -49,12 +53,6 @@ export function useShareDrawings() {
       formData.append("admin_id", drawingAdminId.value);
       requestUrl = `${drawingServiceEndpoint}/${drawingId.value}`;
       method = "PUT";
-      console.log(
-        "Updating existing drawing with admin ID:",
-        drawingAdminId.value,
-      );
-    } else {
-      console.log("Creating new drawing");
     }
 
     const response = await fetch(requestUrl, {
@@ -64,17 +62,15 @@ export function useShareDrawings() {
 
     isSharing.value = false;
 
-    console.log("Response from sharing drawings:", response);
-
     if (!response.ok) {
       throw new Error(`Failed to share drawings: ${response.statusText}`);
     }
 
     const responseData = (await response.json()) as DrawingServiceResponse;
-    console.log("Response data:", responseData);
 
     drawingId.value = responseData.id;
     drawingAdminId.value = responseData.admin_id;
+    drawingS3Url.value = responseData.s3_url;
   }
 
   return {
