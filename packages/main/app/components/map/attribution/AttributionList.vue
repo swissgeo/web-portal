@@ -11,7 +11,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <!-- z-1 keeps it above the map but behind the side panel (z-2) -->
+  <!-- z-1 keeps it above the map but behind the side panel (z-10) -->
   <div
     v-if="sources.length > 0"
     class="fixed bottom-12 left-20 z-1 max-w-50 bg-white px-1 text-sm text-black"
