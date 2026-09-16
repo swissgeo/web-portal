@@ -28,27 +28,27 @@ const schema = z.object({
   feedback: z
     .string()
     .trim()
-    .min(1, t("toolbox.reportIssue.validation.feedbackRequired")),
+    .min(1, t("footer.reportIssue.validation.feedbackRequired")),
   category: z
     .string()
     .trim()
-    .min(1, t("toolbox.reportIssue.validation.categoryRequired")),
+    .min(1, t("footer.reportIssue.validation.categoryRequired")),
   email: z
-    .optional(z.email(t("toolbox.reportIssue.validation.emailInvalid")))
+    .optional(z.email(t("footer.reportIssue.validation.emailInvalid")))
     .or(z.literal("")),
   attachment: z
     .nullable(
       z
-        .file(t("toolbox.reportIssue.validation.fileRequired"))
+        .file(t("footer.reportIssue.validation.fileRequired"))
         .max(
           runtimeConfig.public.maxFileSizeMB * 1024 * 1024,
-          t("toolbox.reportIssue.validation.fileTooLarge", {
+          t("footer.reportIssue.validation.fileTooLarge", {
             max: runtimeConfig.public.maxFileSizeMB,
           }),
         )
         .mime(
           ACCEPTED_MIME_TYPES,
-          t("toolbox.reportIssue.validation.fileTypeNotSupported"),
+          t("footer.reportIssue.validation.fileTypeNotSupported"),
         ),
     )
     .optional(),
@@ -100,7 +100,7 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
     });
 
     toast.add({
-      title: t("toolbox.reportIssue.successMessage"),
+      title: t("footer.reportIssue.successMessage"),
       color: "success",
     });
     resetForm();
@@ -108,7 +108,7 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
     const message =
       error instanceof Error
         ? error.message
-        : t("toolbox.reportIssue.errorMessage");
+        : t("footer.reportIssue.errorMessage");
     toast.add({
       title: message,
       color: "error",
@@ -133,14 +133,14 @@ watch(shareLink, (newLink) => {
     <template #header>
       <div class="flex items-start justify-between">
         <div class="font-semibold text-highlighted">
-          {{ t("toolbox.reportIssue.title") }}
+          {{ t("footer.reportIssue.title") }}
         </div>
         <UButton
           color="neutral"
           variant="ghost"
           icon="i-lucide-x"
           size="sm"
-          :aria-label="t('toolbox.reportIssue.close')"
+          :aria-label="t('footer.reportIssue.close')"
           @click="emit('close')"
         />
       </div>
@@ -159,10 +159,10 @@ watch(shareLink, (newLink) => {
       <ReportIssueNotes :permalink="permalink" />
 
       <UButton type="reset" color="error" variant="outline" class="mr-2">
-        {{ t("toolbox.reportIssue.cancelButton") }}
+        {{ t("footer.reportIssue.cancelButton") }}
       </UButton>
       <UButton type="submit" :disabled="pending">
-        {{ t("toolbox.reportIssue.submitButton") }}
+        {{ t("footer.reportIssue.submitButton") }}
       </UButton>
     </UForm>
   </UCard>

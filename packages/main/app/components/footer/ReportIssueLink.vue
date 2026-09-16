@@ -39,7 +39,7 @@ const displayReportIssueForm = ref(false);
       @click="displayReportIssueForm = true"
     >
       <UIcon name="i-lucide-triangle-alert" class="size-3 shrink-0" />
-      {{ t("toolbox.reportIssue.buttonTitle") }}
+      {{ t("footer.reportIssue.buttonTitle") }}
     </ULink>
   </ClientOnly>
 </template>

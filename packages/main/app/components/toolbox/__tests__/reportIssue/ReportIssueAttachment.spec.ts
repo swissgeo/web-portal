@@ -27,7 +27,7 @@ describe("ReportIssueAttachment.vue", () => {
       props: { modelValue: undefined },
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step5.title");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step5.title");
   });
 
   it("passes the correct accept prop with all MIME types", () => {

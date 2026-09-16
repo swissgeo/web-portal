@@ -27,7 +27,7 @@ describe("ReportIssueEmail.vue", () => {
       props: { modelValue: undefined },
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step4.title");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step4.title");
   });
 
   it("renders the help text", () => {
@@ -35,7 +35,7 @@ describe("ReportIssueEmail.vue", () => {
       props: { modelValue: undefined },
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step4.info");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step4.info");
   });
 
   it("passes modelValue to the input", () => {

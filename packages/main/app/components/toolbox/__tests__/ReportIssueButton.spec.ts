@@ -33,7 +33,7 @@ describe("ReportIssueButton.vue", () => {
   it("renders with the correct title", () => {
     const wrapper = mountButton();
     expect(wrapper.find(".title").text()).toBe(
-      "toolbox.reportIssue.buttonTitle",
+      "footer.reportIssue.buttonTitle",
     );
   });
 

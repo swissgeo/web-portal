@@ -27,7 +27,7 @@ describe("ReportIssueFeedback.vue", () => {
       props: { modelValue: "" },
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step2.title");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step2.title");
   });
 
   it("passes modelValue to the textarea", () => {

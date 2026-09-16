@@ -9,19 +9,19 @@ defineModel<string>({ required: true });
 
 const items = ref<SelectItem[]>([
   {
-    label: t("toolbox.reportIssue.steps.step1.select.options.background"),
+    label: t("footer.reportIssue.steps.step1.select.options.background"),
     value: "background",
   },
   {
-    label: t("toolbox.reportIssue.steps.step1.select.options.thematic"),
+    label: t("footer.reportIssue.steps.step1.select.options.thematic"),
     value: "thematic",
   },
   {
-    label: t("toolbox.reportIssue.steps.step1.select.options.application"),
+    label: t("footer.reportIssue.steps.step1.select.options.application"),
     value: "application",
   },
   {
-    label: t("toolbox.reportIssue.steps.step1.select.options.other"),
+    label: t("footer.reportIssue.steps.step1.select.options.other"),
     value: "other",
   },
 ]);
@@ -29,14 +29,14 @@ const items = ref<SelectItem[]>([
 
 <template>
   <UFormField
-    :label="t('toolbox.reportIssue.steps.step1.title')"
+    :label="t('footer.reportIssue.steps.step1.title')"
     name="category"
     required
   >
     <USelect
       :model-value="modelValue"
       :items="items"
-      :placeholder="t('toolbox.reportIssue.steps.step1.select.placeholder')"
+      :placeholder="t('footer.reportIssue.steps.step1.select.placeholder')"
       :ui="{
         content: 'w-full',
         base: 'w-full',
@@ -45,10 +45,10 @@ const items = ref<SelectItem[]>([
     />
   </UFormField>
   <UButton
-    :to="t('toolbox.reportIssue.steps.step1.moreInfo.url')"
+    :to="t('footer.reportIssue.steps.step1.moreInfo.url')"
     target="_blank"
     variant="link"
     class="pl-0"
-    >{{ t("toolbox.reportIssue.steps.step1.moreInfo.label") }}</UButton
+    >{{ t("footer.reportIssue.steps.step1.moreInfo.label") }}</UButton
   >
 </template>

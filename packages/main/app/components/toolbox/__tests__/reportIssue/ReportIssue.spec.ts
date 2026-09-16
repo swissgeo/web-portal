@@ -119,7 +119,7 @@ describe("ReportIssue.vue", () => {
 
   it("renders the card with title", () => {
     const wrapper = mountReportIssue();
-    expect(wrapper.text()).toContain("toolbox.reportIssue.title");
+    expect(wrapper.text()).toContain("footer.reportIssue.title");
   });
 
   it("submits form and calls $fetch with correct FormData", async () => {
@@ -250,7 +250,7 @@ describe("ReportIssue.vue", () => {
     expect(toastAdd).toHaveBeenCalledWith(
       expect.objectContaining({
         color: "error",
-        title: "toolbox.reportIssue.errorMessage",
+        title: "footer.reportIssue.errorMessage",
       }),
     );
   });
@@ -274,7 +274,7 @@ describe("ReportIssue.vue", () => {
 
     const submitButton = wrapper
       .findAll("button")
-      .find((b) => b.text() === "toolbox.reportIssue.submitButton");
+      .find((b) => b.text() === "footer.reportIssue.submitButton");
     expect(submitButton?.attributes("disabled")).toBeDefined();
 
     resolveFetch({ ok: true });
