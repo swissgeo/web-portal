@@ -608,7 +608,9 @@ export function useDrawing() {
         feature.setGeometry(circleGeometry);
 
         // Set the id from the poligonized circle feature
-        feature.setId(POLYGONIZED_CIRCLE_ID_KEY);
+        feature.setId(feature.get(POLYGONIZED_CIRCLE_ID_KEY));
+
+        console.log("<<<<<<<< POLYGONIZED_CIRCLE_ID_KEY", feature.getId());
 
         // Removing the center-point related properties
         feature.unset(IS_CIRCLE_CENTER_KEY);

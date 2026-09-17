@@ -234,7 +234,7 @@ export function useImportDrawing() {
       throw new Error(t("toolbox.import.errorMessages.generalError"));
     }
 
-    if (!asAdmin && swissGeoUrlValidation.value.adminId) {
+    if (asAdmin && !swissGeoUrlValidation.value.adminId) {
       throw new Error(t("toolbox.import.errorMessages.adminRequired"));
     }
 
