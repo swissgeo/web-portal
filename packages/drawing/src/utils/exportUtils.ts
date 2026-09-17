@@ -512,12 +512,13 @@ export function convertCircleToPolygon(
   // - a point representing the center, that contains the radius of the original circle (in meters) as a property
   // The center point feature is the one being used when the KML/KMZ is imported back to Swissgeo to form the original circle.
   polygonFeature.setProperties(properties);
+  polygonFeature.setId(circle.getId());
   polygonFeature.set(CIRCLE_RADIUS_METER_KEY, circleGeometry.getRadius());
   polygonFeature.set(IS_POLYGONIZED_CIRCLE_KEY, true);
   centerFeature.setProperties(properties);
   centerFeature.set(IS_CIRCLE_CENTER_KEY, true);
   centerFeature.set(CIRCLE_RADIUS_METER_KEY, circleGeometry.getRadius());
-  centerFeature.set(POLYGONIZED_CIRCLE_ID_KEY, polygonFeature.getId());
+  centerFeature.set(POLYGONIZED_CIRCLE_ID_KEY, circle.getId());
   copyFeatureId(circle, polygonFeature);
 
   return [polygonFeature, centerFeature];
