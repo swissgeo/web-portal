@@ -35,7 +35,7 @@ function setupComposable(profile: ElevationProfileResponse) {
 
 function makeTooltipRef(opacity: string) {
   const el = document.createElement("div");
-  Object.defineProperty(el.style, "opacity", { value: opacity });
+  el.style.opacity = opacity;
   return ref<HTMLDivElement | null>(el);
 }
 
