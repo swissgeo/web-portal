@@ -73,7 +73,7 @@ const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
   const geoJsonStyle: GeoAdminGeoJSONStyleDefinition = {
     type: "single",
     property: "featureId",
-    geomType: "polygon",
+    geomType: "point",
     vectorOptions: {
       type: "circle",
       fill: {
@@ -83,6 +83,7 @@ const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
         color: highlightStroke,
         width: 3,
       },
+      radius: 7,
     },
   };
   return {
