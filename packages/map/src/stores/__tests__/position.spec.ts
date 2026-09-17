@@ -407,8 +407,8 @@ describe("position store", () => {
       olMapMock.value = null; // simulate map not available
       centerMock.value = [2660000, 1190000]; // initialise the default
 
-      // operating on wgs84 here since we're using defaults
-      const result = store.setCenter([46.935449, 7.399938], mockDispatcher);
+      // operating on LV95
+      const result = store.setCenter([2650000, 1180000], mockDispatcher);
       expect(result).toBe(false);
       expect(store.center).toEqual([2660000, 1190000]); // still the default
 
@@ -420,7 +420,7 @@ describe("position store", () => {
       await flushPromises();
 
       expect(animateMock).toHaveBeenCalledWith({
-        center: [46.935449, 7.399938],
+        center: [2650000, 1180000],
         duration: 200,
       });
     });
@@ -468,7 +468,7 @@ describe("position store", () => {
       await flushPromises();
 
       store.setZoom(7.2, mockDispatcher);
-      store.setCenter([46.967583, 7.359163], mockDispatcher);
+      store.setCenter([2640000, 1200000], mockDispatcher);
       store.setRotation(0.2, mockDispatcher);
 
       // we're still on the defaults of useOlMapPosition
@@ -481,7 +481,7 @@ describe("position store", () => {
 
       expect(animateMock).toHaveBeenCalledWith({ zoom: 7.2, duration: 200 });
       expect(animateMock).toHaveBeenCalledWith({
-        center: [46.967583, 7.359163],
+        center: [2640000, 1200000],
         duration: 200,
       });
       expect(animateMock).toHaveBeenCalledWith({
