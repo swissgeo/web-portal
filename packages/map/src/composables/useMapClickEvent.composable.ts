@@ -1,15 +1,34 @@
 import type { FlatExtent } from "@swissgeo/shared";
 import type { Feature as OlFeature, Map as OlMap } from "ol";
-import type { Geometry } from "ol/geom";
+import type { Circle as OlCircle, Geometry } from "ol/geom";
 import type VectorSource from "ol/source/Vector";
 import type { Ref } from "vue";
 
 import { GeoJSON } from "ol/format";
+import { fromCircle } from "ol/geom/Polygon";
 import { inject, onUnmounted, watch } from "vue";
 
 import type { MapClickEvent } from "@/types";
 
 const IDENTIFY_TOLERANCE_PX = 10;
+const CIRCLE_POLYGON_SEGMENTS = 64;
+
+// exported only for testing purposes. If we need this somewhere else, we'll make an
+// util outside this file instead.
+export function circleToPolygon(feature: OlFeature<Geometry>) {
+  // this returns the initial feature if we don't need to transform it.
+  // it is necessary, as the OL geoJson writer silently turns circles into
+  // empty geometries
+  const geometry = feature.getGeometry();
+  let serializable = feature;
+  if (geometry && geometry.getType() === "Circle") {
+    serializable = feature.clone();
+    serializable.setGeometry(
+      fromCircle(geometry as OlCircle, CIRCLE_POLYGON_SEGMENTS),
+    );
+  }
+  return serializable;
+}
 
 /**
  * Narrows a layer source to one that can be queried for features by extent.
@@ -80,7 +99,7 @@ export function useMapClickEvent(onClick: (evt: MapClickEvent) => void): void {
           source.forEachFeatureInExtent(
             extent,
             (feature: OlFeature<Geometry>) => {
-              const json = format.writeFeatureObject(feature);
+              const json = format.writeFeatureObject(circleToPolygon(feature));
               if (json) {
                 featuresFoundInExtent.push(json);
               }
