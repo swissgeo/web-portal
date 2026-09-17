@@ -64,7 +64,7 @@ export const useFeaturesStore = defineStore("features", () => {
     Object.fromEntries(
       Object.entries(selectedFeaturesByUuid.value)
         .filter(([_, features]) =>
-          features.filter(
+          features.some(
             (feature) =>
               feature.content.kind === "html" && feature.content.shareable,
           ),

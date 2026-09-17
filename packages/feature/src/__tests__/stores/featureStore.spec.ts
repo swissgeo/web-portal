@@ -267,3 +267,98 @@ describe("WMS capability registrations", () => {
     expect(featureStore.getWmsCapability("uuid-a")).toEqual(capability);
   });
 });
+
+describe("state sharing functions of the feature store", () => {
+  beforeEach(() => setActivePinia(createPinia()));
+
+  const jsonFeature: FeatureData = {
+    featureId: "feature-json",
+    geometry: { type: "Point", coordinates: [1, 1] },
+    content: { kind: "json", properties: {} },
+  };
+  const nonShareableHtmlFeature: FeatureData = {
+    featureId: "feature-html-private",
+    geometry: { type: "Point", coordinates: [2, 2] },
+    content: {
+      kind: "html",
+      html: "not shareable",
+      trusted: true,
+      shareable: false,
+    },
+  };
+
+  it("addSelection stores the features of a layer when the array is not empty", () => {
+    const featureStore = useFeaturesStore();
+
+    featureStore.addSelection("uuid-a", [mockFeatureData[0]!]);
+
+    expect(featureStore.selectedFeaturesByUuid["uuid-a"]).toEqual([
+      mockFeatureData[0],
+    ]);
+  });
+
+  it("addSelection ignores an empty feature array", () => {
+    const featureStore = useFeaturesStore();
+
+    featureStore.addSelection("uuid-a", []);
+
+    expect(featureStore.selectedFeaturesByUuid).toEqual({});
+    expect(featureStore.hasSelectedFeatures).toBe(false);
+  });
+
+  it("consumeFeaturePreselection returns the stored features and clears them", () => {
+    const featureStore = useFeaturesStore();
+    const identifyFeatures = [
+      { id: 1, geometry: { type: "Point" as const, coordinates: [0, 0] } },
+    ];
+    featureStore.addFeaturePreselection("uuid-a", identifyFeatures);
+
+    expect(featureStore.consumeFeaturePreselection("uuid-a")).toEqual(
+      identifyFeatures,
+    );
+    // the preselection is consumed exactly once
+    expect(featureStore.consumeFeaturePreselection("uuid-a")).toBeUndefined();
+  });
+
+  it("consumeFeaturePreselection returns undefined for unknown layer uuids", () => {
+    const featureStore = useFeaturesStore();
+
+    expect(featureStore.consumeFeaturePreselection("uuid-unknown")).toBe(
+      undefined,
+    );
+  });
+
+  it("getShareableFeaturesIdsByUuid keeps only layers holding shareable html features", () => {
+    const featureStore = useFeaturesStore();
+    featureStore.selectedFeaturesByUuid["uuid-shareable"] = [
+      mockFeatureData[0]!,
+    ];
+    featureStore.selectedFeaturesByUuid["uuid-json"] = [jsonFeature];
+    featureStore.selectedFeaturesByUuid["uuid-html-private"] = [
+      nonShareableHtmlFeature,
+    ];
+
+    const shareableIds = featureStore.getShareableFeaturesIdsByUuid;
+
+    expect(Object.keys(shareableIds)).toEqual(["uuid-shareable"]);
+    expect(shareableIds["uuid-shareable"]).toEqual(["feature-id-1"]);
+  });
+
+  it("getShareableFeaturesIdsByUuid keeps a layer as soon as one of its features is shareable", () => {
+    const featureStore = useFeaturesStore();
+    featureStore.selectedFeaturesByUuid["uuid-mixed"] = [
+      mockFeatureData[0]!,
+      jsonFeature,
+    ];
+
+    expect(Object.keys(featureStore.getShareableFeaturesIdsByUuid)).toEqual([
+      "uuid-mixed",
+    ]);
+  });
+
+  it("getShareableFeaturesIdsByUuid is empty when nothing is selected", () => {
+    const featureStore = useFeaturesStore();
+
+    expect(featureStore.getShareableFeaturesIdsByUuid).toEqual({});
+  });
+});

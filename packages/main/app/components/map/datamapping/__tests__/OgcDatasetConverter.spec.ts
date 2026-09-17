@@ -53,10 +53,22 @@ vi.mock("@/components/map/datamapping/useDatasetLocaleRefresh", () => ({
   default: vi.fn(() => ({})),
 }));
 
+const WmtsConverterStub = defineComponent({
+  name: "MapDatamappingOgcWmtsLayerConverter",
+  template: "<div>WMTS converter</div>",
+});
+
+const WmsConverterStub = defineComponent({
+  name: "MapDatamappingOgcWmsLayerConverter",
+  emits: ["setWmsCapability"],
+  template: "<div>WMS converter</div>",
+});
+
 describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     ogcErrorCallbacks.length = 0;
+    layerFormat.value = "WMTS";
   });
 
   it("emits the basic data regardless of the OGC travelling", () => {
@@ -158,6 +170,45 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     // see if it reactively reacts to the change in the data
     await flushPromises();
     expect(wrapper.text()).toEqual("WMS converter");
+  });
+
+  it("forwards the WMS sub-converter's capability together with the layer uuid", async () => {
+    layerFormat.value = "WMS";
+    const capability = {
+      getFeatureInfoCapability: {
+        baseUrl: "https://example.test/wms?",
+        method: "GET",
+        formats: ["application/json"],
+      },
+      availableCrs: ["EPSG:2056"],
+    };
+    const wrapper = mount(OgcDatasetConverter, {
+      propsData: {
+        layer: {
+          isLoading: false,
+          type: "dataset",
+          humanId: "human-id",
+          uuid: "some-fancy-uuid",
+          // @ts-expect-error intentionally not giving a dataset
+          data: null,
+        },
+      },
+      global: {
+        stubs: {
+          MapDatamappingOgcWmtsLayerConverter: WmtsConverterStub,
+          MapDatamappingOgcWmsLayerConverter: WmsConverterStub,
+        },
+      },
+    });
+    await flushPromises();
+
+    wrapper
+      .findComponent(WmsConverterStub)
+      .vm.$emit("setWmsCapability", capability);
+
+    expect(wrapper.emitted("setWmsCapability")).toEqual([
+      ["some-fancy-uuid", capability],
+    ]);
   });
 
   it("emit update contains the layerSpecificData ", async () => {
