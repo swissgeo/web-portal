@@ -1,25 +1,47 @@
 import type { Map as OlMap } from "ol";
+import type { Polygon as OlPolygon } from "ol/geom";
+import type * as OlPolygonModule from "ol/geom/Polygon";
 
 import { mount } from "@vue/test-utils";
 import { Feature } from "ol";
-import { Point } from "ol/geom";
+import { Circle, Point } from "ol/geom";
+import { fromCircle } from "ol/geom/Polygon";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick, ref } from "vue";
 
 import type { MapClickEvent } from "@/types";
 
-import { useMapClickEvent } from "../useMapClickEvent.composable";
+import {
+  circleToPolygon,
+  useMapClickEvent,
+} from "../useMapClickEvent.composable";
 import { createFakeOlMap } from "./__mocks__/composables";
 
+// Partial mock: keep OL's real fromCircle implementation (so conversion
+// behavior stays intact) but wrap it in a spy to assert we delegate to it.
+vi.mock("ol/geom/Polygon", async (importOriginal) => {
+  const actual = await importOriginal<typeof OlPolygonModule>();
+  return { ...actual, fromCircle: vi.fn(actual.fromCircle) };
+});
+
 const IDENTIFY_TOLERANCE_PX = 10;
+const CIRCLE_POLYGON_SEGMENTS = 64;
 
 const CLICK_COORDINATE: [number, number] = [2600000, 1200000];
 const CLICK_PIXEL: [number, number] = [100, 200];
 
 function makePointFeature(x: number, y: number): Feature {
   return new Feature({ geometry: new Point([x, y]) });
+}
+
+function makeCircleFeature(
+  centerX: number,
+  centerY: number,
+  radius: number,
+): Feature {
+  return new Feature({ geometry: new Circle([centerX, centerY], radius) });
 }
 
 function makeVectorLayer(
@@ -226,6 +248,90 @@ describe("useMapClickEvent", () => {
     });
   });
 
+  describe("circleToPolygon", () => {
+    const CIRCLE_RADIUS = 500;
+
+    beforeEach(() => {
+      vi.mocked(fromCircle).mockClear();
+    });
+
+    it("returns non-circle features untouched (same instance)", () => {
+      const point = makePointFeature(2600000, 1200000);
+
+      expect(circleToPolygon(point)).toBe(point);
+      expect(fromCircle).not.toHaveBeenCalled();
+    });
+
+    it("converts a circle geometry into a closed 64-sided polygon approximation", () => {
+      const circle = makeCircleFeature(
+        CLICK_COORDINATE[0],
+        CLICK_COORDINATE[1],
+        CIRCLE_RADIUS,
+      );
+
+      const converted = circleToPolygon(circle);
+
+      const geometry = converted.getGeometry();
+      expect(geometry?.getType()).toBe("Polygon");
+
+      const ring = (geometry as OlPolygon).getCoordinates()[0] as [
+        number,
+        number,
+      ][];
+      expect(ring).toHaveLength(CIRCLE_POLYGON_SEGMENTS + 1);
+      // closed ring: last vertex repeats the first
+      expect(ring.at(-1)).toEqual(ring[0]);
+      // every vertex sits on the original circle
+      for (const [x, y] of ring) {
+        expect(
+          Math.hypot(x - CLICK_COORDINATE[0], y - CLICK_COORDINATE[1]),
+        ).toBeCloseTo(CIRCLE_RADIUS, 6);
+      }
+    });
+
+    it("delegates to ol's fromCircle with the circle geometry and segment count", () => {
+      const circle = makeCircleFeature(
+        CLICK_COORDINATE[0],
+        CLICK_COORDINATE[1],
+        CIRCLE_RADIUS,
+      );
+
+      circleToPolygon(circle);
+
+      expect(fromCircle).toHaveBeenCalledTimes(1);
+      expect(fromCircle).toHaveBeenCalledWith(
+        circle.getGeometry(),
+        CIRCLE_POLYGON_SEGMENTS,
+      );
+    });
+
+    it("does not mutate the original circle feature", () => {
+      const circle = makeCircleFeature(
+        CLICK_COORDINATE[0],
+        CLICK_COORDINATE[1],
+        CIRCLE_RADIUS,
+      );
+
+      circleToPolygon(circle);
+
+      expect(circle.getGeometry()?.getType()).toBe("Circle");
+    });
+
+    it("preserves the feature's properties on the converted clone", () => {
+      const circle = makeCircleFeature(
+        CLICK_COORDINATE[0],
+        CLICK_COORDINATE[1],
+        CIRCLE_RADIUS,
+      );
+      circle.setProperties({ sg_title: "test zone" });
+
+      const converted = circleToPolygon(circle);
+
+      expect(converted).not.toBe(circle);
+      expect(converted.get("sg_title")).toBe("test zone");
+    });
+  });
+
   describe("vector hit-test", () => {
     it("collects features within the extent as GeoJSON, keyed by layer uuid", () => {
       const inside = makePointFeature(2600000, 1200000);
@@ -285,6 +391,51 @@ describe("useMapClickEvent", () => {
 
       const event = onClick.mock.calls[0]![0] as MapClickEvent;
       expect(event.vectorFeaturesPerLayer).toEqual({});
+    });
+
+    it("serializes clicked circle features as polygons, not empty geometry collections", () => {
+      // regression guard: OL's GeoJSON writer silently turns ol.geom.Circle
+      // into { type: "GeometryCollection", geometries: [] }, which rendered
+      // no highlight at all
+      const circle = makeCircleFeature(
+        CLICK_COORDINATE[0],
+        CLICK_COORDINATE[1],
+        100,
+      );
+      const { onClick, fireClick } = setup({
+        layers: [makeVectorLayer({ uuid: "uuid-circle", features: [circle] })],
+      });
+      vi.mocked(fromCircle).mockClear();
+
+      fireClick();
+
+      const event = onClick.mock.calls[0]![0] as MapClickEvent;
+      const geometry = event.vectorFeaturesPerLayer["uuid-circle"]![0]!
+        .geometry as unknown as { type: string; coordinates: number[][][] };
+      expect(geometry.type).toBe("Polygon");
+      const ring = geometry.coordinates[0]!;
+      expect(ring).toHaveLength(CIRCLE_POLYGON_SEGMENTS + 1);
+      expect(ring.at(-1)).toEqual(ring[0]);
+    });
+
+    it("routes clicked circle features through fromCircle", () => {
+      const circle = makeCircleFeature(
+        CLICK_COORDINATE[0],
+        CLICK_COORDINATE[1],
+        100,
+      );
+      const { fireClick } = setup({
+        layers: [makeVectorLayer({ uuid: "uuid-circle", features: [circle] })],
+      });
+      vi.mocked(fromCircle).mockClear();
+
+      fireClick();
+
+      expect(fromCircle).toHaveBeenCalledTimes(1);
+      expect(fromCircle).toHaveBeenCalledWith(
+        circle.getGeometry(),
+        CIRCLE_POLYGON_SEGMENTS,
+      );
     });
 
     describe("system layers handling)", () => {
