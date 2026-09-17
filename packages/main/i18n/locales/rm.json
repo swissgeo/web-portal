@@ -7,5 +7,20 @@
   },
   "compareSlider": {
     "toggleButtonTitle": "Activar/deactivar il cursur da cumparegliaziun"
+  },
+  "toolbox": {
+    "import": {
+      "tabDrawing": "Dissegn",
+      "importUrlAsAdmin": "Importar l'URL sco administratur",
+      "cancelImport": "Interrumper l'import",
+      "clearAndImportAsAdmin": "Stizzar ed importar sco administratur",
+      "errorMessages": {
+        "adminRequired": "Per importar quest dissegn èn necessaris dretgs d'administratur"
+      },
+      "infoMessages": {
+        "adminImportPart1": "L'import d'in dissegn da Swissgeo sco administratur stizza tut ils dissegns existents.",
+        "adminImportPart2": "Suenter pudais Vus elavurar vinavant il dissegn e sincronisar el cun la banca da datas da Swissgeo."
+      }
+    }
   }
 }

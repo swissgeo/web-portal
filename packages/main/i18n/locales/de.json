@@ -166,21 +166,25 @@
       "title": "Eine Datei oder URL importieren",
       "description": "Akzeptierte Dateitypen: {types}",
       "tabData": "Daten",
+      "tabDrawing": "Zeichnung",
       "tabUrl": "URL",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Durchsuchen...",
       "noFileSelected": "Keine Datei ausgewählt",
       "importFileButton": "Datei importieren",
       "importUrlButton": "Von URL importieren",
+      "importUrlAsAdmin": "URL als Administrator importieren",
       "loadingMessage": "Datei wird importiert...",
       "successMessage": "Datei erfolgreich importiert: {fileName}",
       "drawingSuccessMessage": "Zeichnung erfolgreich importiert",
       "fileUrlDescription": "Oder eine Datei von einer URL importieren ({types}):",
       "fileUrlPlaceholder": "https://example.com/data.gpx",
       "importFileUrlButton": "Von URL importieren",
+      "cancelImport": "Import abbrechen",
+      "clearAndImportAsAdmin": "Löschen und als Administrator importieren",
       "errorMessages": {
         "generalError": "Datei konnte nicht importiert werden",
-        "noFileSelected": "Bitte w\u00e4hlen Sie zuerst eine Datei aus",
+        "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus",
         "noUrlEntered": "Bitte geben Sie eine URL ein",
         "fileSizeWarning": "Dateigröße ist {fileSize}MB, was die empfohlene maximale Größe von {maxSize}MB überschreitet",
         "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize}MB)",
@@ -188,8 +192,13 @@
         "kmlFetchFailed": "KML konnte nicht geladen werden: {status}",
         "noKmlFound": "Keine KML-Zeichnung in der angegebenen URL gefunden",
         "domainNotAllowed": "Das Abrufen von {domain} ist nicht erlaubt",
-        "unsupportedUrlType": "Nicht unterst\u00fctzter Dateityp. Die URL muss auf {types} enden",
-        "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})"
+        "unsupportedUrlType": "Nicht unterstützter Dateityp. Die URL muss auf {types} enden",
+        "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})",
+        "adminRequired": "Zum Importieren dieser Zeichnung sind Administratorrechte erforderlich"
+      },
+      "infoMessages": {
+        "adminImportPart1": "Beim Importieren einer Swissgeo-Zeichnung als Administrator werden alle bisherigen Zeichnungen gelöscht.",
+        "adminImportPart2": "Anschliessend können Sie die Zeichnung weiter bearbeiten und mit der Swissgeo-Datenbank synchronisieren."
       },
       "close": "Schließen"
     },

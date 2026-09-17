@@ -7,5 +7,20 @@
   },
   "compareSlider": {
     "toggleButtonTitle": "Attiva/disattiva il cursore di confronto"
+  },
+  "toolbox": {
+    "import": {
+      "tabDrawing": "Disegno",
+      "importUrlAsAdmin": "Importa l'URL come amministratore",
+      "cancelImport": "Annulla l'importazione",
+      "clearAndImportAsAdmin": "Cancella e importa come amministratore",
+      "errorMessages": {
+        "adminRequired": "Per importare questo disegno sono necessari i privilegi di amministratore"
+      },
+      "infoMessages": {
+        "adminImportPart1": "L'importazione di un disegno Swissgeo come amministratore cancellerà tutti i disegni esistenti.",
+        "adminImportPart2": "Sarà quindi possibile continuare a modificare il disegno e sincronizzarlo con la banca dati Swissgeo."
+      }
+    }
   }
 }
