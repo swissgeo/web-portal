@@ -1,5 +1,5 @@
 import { setActivePinia, createPinia } from "pinia";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@swissgeo/log", () => ({
   default: {
@@ -24,7 +24,11 @@ import type {
 } from "@/types";
 
 import { FEATURE_LIMIT } from "@/constants";
-import { getFeaturesForOneLayer, selectFeatures } from "@/selectFeatures";
+import {
+  createIdentifyResponse,
+  getFeaturesForOneLayer,
+  selectFeatures,
+} from "@/selectFeatures";
 import { useFeaturesStore } from "@/stores/feature";
 
 import distributionCollectionJson from "./fixtures/distributionCollection_ch.astra.json";
@@ -1019,6 +1023,55 @@ describe("Feature Selection from layers and extent", () => {
       expect(store.selectedFeaturesByUuid["uuid-file"]).toHaveLength(
         vectorFeatures.features.length,
       );
+    });
+  });
+
+  describe("createIdentifyResponse — restoring feature ids from the state import", () => {
+    beforeEach(() => {
+      vi.stubEnv("NUXT_GEOADMIN_API_BASE_URL", "https://api.example.test");
+    });
+
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it("queries the getFeatures endpoint with the joined ids and maps the results", async () => {
+      fetchSpy.mockImplementation(() =>
+        Promise.resolve(mockResponse(identifyResponse)),
+      );
+
+      const features = await createIdentifyResponse(
+        ["id-1", "id-2"],
+        "ch.test.layer",
+      );
+
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(String(fetchSpy.mock.calls[0]![0])).toBe(
+        "https://api.example.test/rest/services/ech/MapServer/ch.test.layer/id-1,id-2",
+      );
+      expect(features).toEqual(
+        identifyResponse.results.map((result) => ({
+          id: result.id,
+          geometry: result.geometry,
+        })),
+      );
+    });
+
+    it("warns and returns an empty array when the server answers a non-200", async () => {
+      fetchSpy.mockImplementation(() => Promise.resolve(mockResponse({}, 500)));
+
+      const features = await createIdentifyResponse(["id-1"], "ch.test.layer");
+
+      expect(features).toEqual([]);
+      expect(log.warn).toHaveBeenCalled();
+    });
+
+    it("returns an empty array when the payload has no results field", async () => {
+      fetchSpy.mockImplementation(() => Promise.resolve(mockResponse({})));
+
+      const features = await createIdentifyResponse(["id-1"], "ch.test.layer");
+
+      expect(features).toEqual([]);
     });
   });
 });
