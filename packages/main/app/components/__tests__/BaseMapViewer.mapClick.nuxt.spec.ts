@@ -238,7 +238,7 @@ describe("BaseMapViewer — map click abort handling", () => {
     await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledTimes(1));
     const sources = selectFeaturesSpy.mock.calls[0]![3];
     const source = sources[0]!;
-    expect(source.distribution).toBeUndefined();
+    expect(source.distributionFeature).toBeUndefined();
     expect(source.layerId).toBe("ch.test.dataset");
   });
 

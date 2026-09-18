@@ -64,10 +64,10 @@ export type LayerSource = {
   layerUuid: string;
   layerId: string;
   preResolvedFeatures?: geojsonFeature[];
-  distribution?: OgcDistribution;
+  distributionFeature?: OgcDistributionFeature;
 };
 
-interface OgcDistributionFeature {
+export interface OgcDistributionFeature {
   id: string;
   links?: OgcLink[];
   linkTemplates?: OgcLinkTemplate[];

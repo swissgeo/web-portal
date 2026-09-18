@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { LayerSource, OgcDistribution } from "@swissgeo/feature";
+import type { LayerSource } from "@swissgeo/feature";
 import type { Layer as SourceLayer } from "@swissgeo/layers";
 import type {
   GeoAdminGeoJSONStyleDefinition,
@@ -23,7 +23,7 @@ import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
 import { cloneDeep } from "es-toolkit";
 
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
-import { getOgcDistribution } from "@/utils/stateToFeatureSelectionUtils";
+import { getOgcFeatureInfo } from "@/utils/getOgcLinksForFeatures";
 import { readThemeToken } from "@/utils/themeTokens";
 
 const {
@@ -105,6 +105,7 @@ const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
     geoJsonStyle,
   };
 });
+
 const layersForMap = computed(() => {
   const layers = mapViewStore.getMapLayers().value.map((layer) => {
     /**
@@ -198,15 +199,17 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       .map(async (sourceLayer) => {
         const preResolvedFeatures =
           mapClickEvent.vectorFeaturesPerLayer[sourceLayer.uuid];
-        const distribution: OgcDistribution | undefined =
-          await getOgcDistribution(sourceLayer, signal);
-        if (distribution) {
+        // we spare some fetches if the features are already there
+        const distributionFeature = preResolvedFeatures
+          ? undefined
+          : await getOgcFeatureInfo(sourceLayer, signal);
+        if (distributionFeature) {
           const layerSource: LayerSource = {
             layerUuid: sourceLayer.uuid,
             layerId: isDatasetLayer(sourceLayer)
               ? sourceLayer.data.id
               : sourceLayer.humanId,
-            distribution,
+            distributionFeature,
             preResolvedFeatures,
           };
           return layerSource;
