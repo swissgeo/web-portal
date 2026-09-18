@@ -134,8 +134,8 @@ function focusFirstResult() {
   });
 }
 
-// the marker of a previously selected coordinate is only removed when the user
-// explicitly clears the search, not when a result is selected
+// clearing the field removes the marker of the selected result: selecting
+// another one moves it, but nothing else would ever take it off the map
 function clearSearch() {
   searchStore.clearSearch();
   searchStore.clearPinnedCoordinate();
