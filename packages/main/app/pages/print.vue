@@ -4,6 +4,8 @@ import { SwissGeoLogoRgbPrio } from "@swissgeo/skeleton";
 import northArrowUrl from "~/assets/images/north_arrow.png";
 import { onMounted } from "vue";
 
+definePageMeta({ layout: "print" });
+
 // Margin in millimeters to add around the print (internal to the page)
 const PRINT_MARGIN_MM = 4;
 
@@ -41,130 +43,128 @@ onMounted(() => {
 </script>
 
 <template>
-  <NuxtLayout name="print">
-    <Suspense @resolve="setPageReady">
-      <div
-        class="flex flex-col"
-        :style="{
-          width: containerWidth,
-          height: containerHeight,
-          margin: containerMargin,
-          fontSize: `${pixelPerMm * 2.5}px`,
-        }"
-      >
-        <div class="relative top-0 left-0 h-full w-full">
-          <MapViewer />
+  <Suspense @resolve="setPageReady">
+    <div
+      class="flex flex-col"
+      :style="{
+        width: containerWidth,
+        height: containerHeight,
+        margin: containerMargin,
+        fontSize: `${pixelPerMm * 2.5}px`,
+      }"
+    >
+      <div class="relative top-0 left-0 h-full w-full">
+        <MapViewer />
 
-          <div
-            class="absolute"
-            :style="{
-              width: `${pixelPerMm * 10}px`,
-              top: `${pixelPerMm * 10}px`,
-              right: `${pixelPerMm * 10}px`,
-              filter: `drop-shadow(0px 0px ${pixelPerMm * 2}px #000) contrast(2)`,
-            }"
-          >
-            <img class="w-full" :src="northArrowUrl" alt="north arrow" />
-          </div>
-          <div
-            v-if="shareLink"
-            class="absolute right-0 bottom-0 z-[2] flex flex-row"
-          >
-            <div
-              v-if="shareLink"
-              class="self-end bg-white px-[10px] py-[2px] text-[#1c6b85]"
-            >
-              Visit this map at
-              <a
-                v-if="shareLink.length < 50"
-                class="bg-white text-[#1c6b85] underline"
-                :href="shareLink"
-                print-link
-                >{{ shareLink }}</a
-              >
-              <span v-else class="bg-white text-[#1c6b85]" print-link
-                >the following link</span
-              >
-            </div>
-
-            <vue-qrcode
-              :style="{
-                width: `${pixelPerMm * 20}px`,
-                height: `${pixelPerMm * 20}px`,
-              }"
-              :value="shareLink"
-              :options="{
-                width: `${pixelPerMm * 20}px`,
-                height: `${pixelPerMm * 20}px`,
-                color: {
-                  dark: '#1c6b85',
-                },
-              }"
-            ></vue-qrcode>
-          </div>
-        </div>
-
-        <!-- This is the footer of the printed document -->
         <div
-          class="flex flex-row p-1"
+          class="absolute"
           :style="{
-            marginTop: `${pixelPerMm * 4}px`,
-            gap: `${pixelPerMm * 16}px`,
+            width: `${pixelPerMm * 10}px`,
+            top: `${pixelPerMm * 10}px`,
+            right: `${pixelPerMm * 10}px`,
+            filter: `drop-shadow(0px 0px ${pixelPerMm * 2}px #000) contrast(2)`,
           }"
         >
-          <!-- Footer left part: Swisstopo logo -->
+          <img class="w-full" :src="northArrowUrl" alt="north arrow" />
+        </div>
+        <div
+          v-if="shareLink"
+          class="absolute right-0 bottom-0 z-[2] flex flex-row"
+        >
           <div
-            class="flex flex-row whitespace-nowrap"
-            :style="{
-              gap: `${pixelPerMm * 4}px`,
-            }"
+            v-if="shareLink"
+            class="self-end bg-white px-[10px] py-[2px] text-[#1c6b85]"
           >
-            <div
-              :style="{
-                width: `${pixelPerMm * 20}px`,
-              }"
+            Visit this map at
+            <a
+              v-if="shareLink.length < 50"
+              class="bg-white text-[#1c6b85] underline"
+              :href="shareLink"
+              print-link
+              >{{ shareLink }}</a
             >
-              <img
-                :src="SwissGeoLogoRgbPrio"
-                alt="Swissgeo logo"
-                class="w-full"
-              />
-            </div>
-
-            <!-- This section will possibly contain names of contributing organization, or possibly be removed -->
-            <!-- <div>
-                            <p class="mb-[0.25em]">Lorem ipsum (DE)</p>
-                            <p class="mb-[0.25em]">Lorem ipsum (FR)</p>
-                            <p class="mb-[0.25em]">Lorem ipsum (IT)</p>
-                            <p class="mb-[0.25em]">Lorem ipsum (RM)</p>
-                            <p>Lorem ipsum</p>
-                        </div> -->
+            <span v-else class="bg-white text-[#1c6b85]" print-link
+              >the following link</span
+            >
           </div>
 
-          <!-- Footer right part: disclaimer -->
-          <div class="text-justify">
-            <p class="mb-[0.25em]">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nisl
-              tellus, placerat eget luctus pulvinar, vehicula nec velit. Integer
-              eu pharetra libero. Phasellus eu pretium orci. Nullam quis lacus
-              mauris. Morbi tellus dui, faucibus vel mi a, faucibus luctus ex.
-              Aenean vel ligula fermentum, dictum nunc et, sollicitudin eros.
-              Aliquam erat volutpat. Phasellus pharetra lacus sit amet arcu
-              elementum vulputate. Etiam lacus nunc, varius vel laoreet eu,
-              commodo commodo nisi. Ut efficitur aliquam volutpat. Fusce euismod
-              consectetur fringilla. Nulla ac ultricies ipsum.
-            </p>
-            <p class="mb-[0.25em]">
-              Nam vel auctor nunc. Maecenas malesuada velit non massa
-              condimentum tristique feugiat et ex. Proin commodo nibh mi, a
-              auctor justo tincidunt ac. Praesent et aliquam turpis. In
-              elementum lorem vel felis venenatis, quis ullamcorper velit
-              accumsan. Curabitur sit amet magna non sapien bibendum laoreet.
-            </p>
-            <p>© Lorem Ipsum</p>
-          </div>
+          <vue-qrcode
+            :style="{
+              width: `${pixelPerMm * 20}px`,
+              height: `${pixelPerMm * 20}px`,
+            }"
+            :value="shareLink"
+            :options="{
+              width: `${pixelPerMm * 20}px`,
+              height: `${pixelPerMm * 20}px`,
+              color: {
+                dark: '#1c6b85',
+              },
+            }"
+          ></vue-qrcode>
         </div>
       </div>
-    </Suspense>
-  </NuxtLayout>
+
+      <!-- This is the footer of the printed document -->
+      <div
+        class="flex flex-row p-1"
+        :style="{
+          marginTop: `${pixelPerMm * 4}px`,
+          gap: `${pixelPerMm * 16}px`,
+        }"
+      >
+        <!-- Footer left part: Swisstopo logo -->
+        <div
+          class="flex flex-row whitespace-nowrap"
+          :style="{
+            gap: `${pixelPerMm * 4}px`,
+          }"
+        >
+          <div
+            :style="{
+              width: `${pixelPerMm * 20}px`,
+            }"
+          >
+            <img
+              :src="SwissGeoLogoRgbPrio"
+              alt="Swissgeo logo"
+              class="w-full"
+            />
+          </div>
+
+          <!-- This section will possibly contain names of contributing organization, or possibly be removed -->
+          <!-- <div>
+                          <p class="mb-[0.25em]">Lorem ipsum (DE)</p>
+                          <p class="mb-[0.25em]">Lorem ipsum (FR)</p>
+                          <p class="mb-[0.25em]">Lorem ipsum (IT)</p>
+                          <p class="mb-[0.25em]">Lorem ipsum (RM)</p>
+                          <p>Lorem ipsum</p>
+                      </div> -->
+        </div>
+
+        <!-- Footer right part: disclaimer -->
+        <div class="text-justify">
+          <p class="mb-[0.25em]">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nisl
+            tellus, placerat eget luctus pulvinar, vehicula nec velit. Integer
+            eu pharetra libero. Phasellus eu pretium orci. Nullam quis lacus
+            mauris. Morbi tellus dui, faucibus vel mi a, faucibus luctus ex.
+            Aenean vel ligula fermentum, dictum nunc et, sollicitudin eros.
+            Aliquam erat volutpat. Phasellus pharetra lacus sit amet arcu
+            elementum vulputate. Etiam lacus nunc, varius vel laoreet eu,
+            commodo commodo nisi. Ut efficitur aliquam volutpat. Fusce euismod
+            consectetur fringilla. Nulla ac ultricies ipsum.
+          </p>
+          <p class="mb-[0.25em]">
+            Nam vel auctor nunc. Maecenas malesuada velit non massa condimentum
+            tristique feugiat et ex. Proin commodo nibh mi, a auctor justo
+            tincidunt ac. Praesent et aliquam turpis. In elementum lorem vel
+            felis venenatis, quis ullamcorper velit accumsan. Curabitur sit amet
+            magna non sapien bibendum laoreet.
+          </p>
+          <p>© Lorem Ipsum</p>
+        </div>
+      </div>
+    </div>
+  </Suspense>
 </template>
