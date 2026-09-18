@@ -29,22 +29,23 @@ export function sourceToLayerRequest(
   }
 
   // priority 2: try to see if there is an identify available
-  if (layerSource.distribution) {
-    const dist = layerSource.distribution?.features.filter(
-      (ogcFeature) =>
-        ogcFeature.properties.protocol.toLowerCase() === "geoadmin:features",
-    )[0];
-    if (dist) {
-      const template = dist.linkTemplates?.find(
-        (linkTemplate) => linkTemplate.rel === "preview",
-      )?.uriTemplate;
 
+  if (
+    layerSource.distributionFeature?.properties.protocol === "geoadmin:features"
+  ) {
+    const template = layerSource.distributionFeature.linkTemplates?.find(
+      (linkTemplate) => linkTemplate.rel === "preview",
+    )?.uriTemplate;
+    if (template) {
       return {
         layerUuid: layerSource.layerUuid,
         layerId: layerSource.layerId,
         urlTemplate: template,
       };
     }
+    // In the future, we might have a distribution feature which gives us a template and the available crs for
+    // the ogc:wms protocol. Until then --> we use the pre-parsed capabilities and that's too bad for
+    // wmts layers with wms get Features capabilities
   }
 
   // priority 3: WMS GetFeatureInfo: Using the stored capabilities

@@ -1,5 +1,9 @@
 import type { Dimension } from "@swissgeo/dimension";
-import type { FeatureData, OgcDistribution } from "@swissgeo/feature";
+import type {
+  FeatureData,
+  OgcDistribution,
+  OgcDistributionFeature,
+} from "@swissgeo/feature";
 import type { DatasetLayer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
@@ -571,6 +575,7 @@ describe("layer load errors", () => {
 
 describe("state import feature selection", () => {
   const DISTRIBUTIONS_URL = "https://example.test/test-uuid/distributions";
+  const FEATUREINFO_URL = "https://example.test/test-uuid:distribution";
   const URL_TEMPLATE = "https://example.test/popup/{featureId}?lang={lang}";
 
   const identifyFeatures: {
@@ -590,16 +595,22 @@ describe("state import feature selection", () => {
     },
   ];
 
+  // the distributions collection: its only feature exposes the featureinfo link
   const identifyDistribution = {
     type: "FeatureCollection",
     features: [
       {
         id: "dist-1",
+        links: [{ href: FEATUREINFO_URL, rel: "featureinfo" }],
         properties: { type: "ogc", protocol: "geoadmin:features" },
         linkTemplates: [{ rel: "preview", uriTemplate: URL_TEMPLATE }],
       },
     ],
   } as unknown as OgcDistribution;
+
+  // what the featureinfo link resolves to: the featureinfo distribution itself
+  const identifyFeatureInfoFeature = identifyDistribution
+    .features[0] as unknown as OgcDistributionFeature;
 
   const fetchSpy = vi.fn();
 
@@ -642,12 +653,18 @@ describe("state import feature selection", () => {
     getPopupFromIdentifyFeatureMock.mockResolvedValue([...popupFeatures]);
 
     fetchSpy.mockReset();
-    fetchSpy.mockImplementation(() =>
-      Promise.resolve({
+    fetchSpy.mockImplementation((url: RequestInfo | URL) => {
+      if (String(url) === FEATUREINFO_URL) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(identifyFeatureInfoFeature),
+        } as Response);
+      }
+      return Promise.resolve({
         ok: true,
         json: () => Promise.resolve(identifyDistribution),
-      } as Response),
-    );
+      } as Response);
+    });
     vi.stubGlobal("fetch", fetchSpy);
   });
 
@@ -665,8 +682,9 @@ describe("state import feature selection", () => {
     const wrapper = mountConverter([layer]);
     await emitLayerUpdate(wrapper);
 
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
     expect(fetchSpy.mock.calls[0]![0]).toBe(DISTRIBUTIONS_URL);
+    expect(fetchSpy.mock.calls[1]![0]).toBe(FEATUREINFO_URL);
     expect(getPopupFromIdentifyFeatureMock).toHaveBeenCalledWith(
       identifyFeatures,
       URL_TEMPLATE,
@@ -704,7 +722,7 @@ describe("state import feature selection", () => {
     expect(featureStore.selectedFeaturesByUuid).toEqual({});
   });
 
-  it("does not select when the distribution carries no identify template", async () => {
+  it("does not select when the distribution carries no featureinfo link", async () => {
     fetchSpy.mockImplementation(() =>
       Promise.resolve({
         ok: true,
@@ -712,7 +730,10 @@ describe("state import feature selection", () => {
           Promise.resolve({
             type: "FeatureCollection",
             features: [
-              { id: "dist-1", properties: { type: "ogc", protocol: "wms" } },
+              {
+                id: "dist-1",
+                properties: { type: "ogc", protocol: "geoadmin:features" },
+              },
             ],
           }),
       } as Response),

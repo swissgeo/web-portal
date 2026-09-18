@@ -3,6 +3,7 @@ export type {
   LayerSource,
   FeatureData,
   OgcDistribution,
+  OgcDistributionFeature,
   WmsFeatureInfoCapability,
 } from "@/types";
 export * from "@/constants";
