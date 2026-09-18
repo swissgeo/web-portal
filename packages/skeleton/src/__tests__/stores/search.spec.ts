@@ -162,7 +162,7 @@ describe("useSearchStore", () => {
     expect(store.pinnedCoordinate).toEqual([2600000, 1200000]);
   });
 
-  it("cancels a request still on its way when a result is selected", async () => {
+  it("cancels a request still on its way when a result is selected", () => {
     let signal: AbortSignal | undefined;
     searchMocks.searchLayers.mockImplementation(
       (_query: string, _url: string, _lang: string, abortSignal: AbortSignal) =>
