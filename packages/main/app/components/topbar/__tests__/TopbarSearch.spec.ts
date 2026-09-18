@@ -88,8 +88,8 @@ const content = (documentId: string, title: string): SearchResult => ({
   description: "",
 });
 
-function render(props: { open?: boolean } = {}) {
-  return mount(TopbarSearch, { props, global: { stubs } });
+function render() {
+  return mount(TopbarSearch, { global: { stubs } });
 }
 
 function activeTab(wrapper: ReturnType<typeof render>) {
@@ -188,7 +188,8 @@ describe("TopbarSearch", () => {
 
   it("runs the query again when the interface language changes", async () => {
     searchStore.query = "ticks";
-    render({ open: true });
+    searchStore.results = [location("ticks")];
+    render();
 
     locale.value = "en";
     await nextTick();
@@ -198,7 +199,8 @@ describe("TopbarSearch", () => {
 
   it("leaves a query too short to search alone on a language change", async () => {
     searchStore.query = "t";
-    render({ open: true });
+    searchStore.results = [location("ticks")];
+    render();
 
     locale.value = "en";
     await nextTick();
@@ -206,10 +208,11 @@ describe("TopbarSearch", () => {
     expect(searchStore.setSearchQuery).not.toHaveBeenCalled();
   });
 
-  // the field keeps the name of the selected result, searching it again on a
-  // language change would pop the panel back open
-  it("leaves the query alone on a language change while the panel is closed", async () => {
+  // the field keeps the name of the selected result, searching it again would
+  // pop the panel back open on top of the map the user just moved to
+  it("leaves the query alone on a language change once a result was selected", async () => {
     searchStore.query = "Bern";
+    searchStore.results = [];
     render();
 
     locale.value = "en";
@@ -240,5 +243,17 @@ describe("TopbarSearch", () => {
 
     expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("Bern");
     expect(searchStore.clearSearch).not.toHaveBeenCalled();
+  });
+
+  // it would empty the field and take the clear button, the only way left of
+  // removing the pin, away with it
+  it("falls back to the typed query when the name sanitizes to nothing", async () => {
+    searchStore.query = "ber";
+    searchStore.results = [{ ...location("Bern"), sanitizedTitle: "" }];
+
+    const wrapper = render();
+    await wrapper.find("[data-testid='search-results'] li").trigger("click");
+
+    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("ber");
   });
 });
