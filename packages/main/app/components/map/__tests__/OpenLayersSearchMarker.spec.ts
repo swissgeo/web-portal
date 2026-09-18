@@ -26,25 +26,16 @@ vi.mock("@swissgeo/map", () => ({
 vi.mock("@swissgeo/skeleton", async () => {
   const { ref: vueRef } = await import("vue");
   const pinnedCoordinate = vueRef<[number, number] | undefined>();
-  const pinnedMarkerType = vueRef<"crosshair" | "balloon">("crosshair");
   return {
     useSearchStore: () => ({
       get pinnedCoordinate() {
         return pinnedCoordinate.value;
       },
-      get pinnedMarkerType() {
-        return pinnedMarkerType.value;
-      },
-      setPinnedCoordinate: (
-        coordinate: [number, number],
-        type: "crosshair" | "balloon" = "crosshair",
-      ) => {
+      setPinnedCoordinate: (coordinate: [number, number]) => {
         pinnedCoordinate.value = coordinate;
-        pinnedMarkerType.value = type;
       },
       clearPinnedCoordinate: () => {
         pinnedCoordinate.value = undefined;
-        pinnedMarkerType.value = "crosshair";
       },
     }),
   };
@@ -60,12 +51,9 @@ function markerCoordinates(): number[] {
   return (markerFeature().getGeometry() as Point).getCoordinates();
 }
 
-// the crosshair is drawn by two styles, the balloon pin by a single icon
-function markerImages(): string[] {
-  const style = markerFeature().getStyle() as Style | Style[];
-  return (Array.isArray(style) ? style : [style]).map(
-    (one) => one.getImage()!.constructor.name,
-  );
+function markerImage(): string {
+  const style = markerFeature().getStyle() as Style;
+  return style.getImage()!.constructor.name;
 }
 
 function mountMarker() {
@@ -106,21 +94,10 @@ describe("OpenLayersSearchMarker", () => {
     expect(markerCoordinates()).toEqual([0, 0]);
   });
 
-  it("draws the crosshair of a typed coordinate", () => {
+  it("draws the balloon pin", () => {
     useSearchStore().setPinnedCoordinate([2600000, 1200000]);
     mountMarker();
 
-    expect(markerImages()).toEqual(["CircleStyle", "RegularShape"]);
-  });
-
-  it("draws the balloon pin of a place", async () => {
-    const searchStore = useSearchStore();
-    searchStore.setPinnedCoordinate([2600000, 1200000]);
-    mountMarker();
-
-    searchStore.setPinnedCoordinate([2617000, 1091000], "balloon");
-    await nextTick();
-
-    expect(markerImages()).toEqual(["Icon"]);
+    expect(markerImage()).toBe("Icon");
   });
 });

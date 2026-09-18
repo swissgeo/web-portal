@@ -68,8 +68,7 @@ export function useSearchSelection() {
     window.open(url, "_blank", "noopener");
   }
 
-  // a place or an address gets the balloon pin: it marks a named thing, not the
-  // exact spot a coordinate stands for. The marker follows the map either way,
+  // a place or an address is pinned like a coordinate: the pin follows the map,
   // it never stays on a previous result
   function handleLocationSelection(result: LocationSearchResult) {
     if (!result.coordinate) {
@@ -80,7 +79,7 @@ export function useSearchSelection() {
       name: "search-result-selection",
     });
     positionStore.setZoom(result.zoom, { name: "search-result-selection" });
-    searchStore.setPinnedCoordinate(result.coordinate, "balloon");
+    searchStore.setPinnedCoordinate(result.coordinate);
   }
 
   function handleFeatureSelection(result: FeatureSearchResult) {
@@ -95,7 +94,7 @@ export function useSearchSelection() {
     const featureZoom =
       result.zoom && result.zoom > 0 && result.zoom < 20 ? result.zoom : 10;
     positionStore.setZoom(featureZoom, { name: "search-feature-selection" });
-    searchStore.setPinnedCoordinate(result.coordinate, "balloon");
+    searchStore.setPinnedCoordinate(result.coordinate);
   }
 
   // Selecting a layer adds it to the map; the (i) button in the result entry
