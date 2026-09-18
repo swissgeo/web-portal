@@ -3,7 +3,7 @@ import type { SearchResult } from "@swissgeo/search";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { nextTick, reactive } from "vue";
+import { nextTick, reactive, ref } from "vue";
 
 import TopbarSearch from "../TopbarSearch.vue";
 
@@ -40,8 +40,10 @@ vi.mock("@/composables/useSearchSelection", () => ({
 
 mockNuxtImport("useToaster", () => () => ({ showError: vi.fn() }));
 
+const locale = ref("de");
+
 vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (key: string) => key, locale: { value: "de" } }),
+  useI18n: () => ({ t: (key: string) => key, locale }),
 }));
 
 vi.mock("@swissgeo/skeleton", () => ({
@@ -105,7 +107,9 @@ describe("TopbarSearch", () => {
     searchStore.query = "";
     searchStore.results = [];
     searchStore.isSearching = false;
+    locale.value = "de";
     handleResultSelection.mockClear();
+    searchStore.setSearchQuery.mockClear();
     searchStore.clearSearch.mockClear();
   });
 
@@ -174,6 +178,26 @@ describe("TopbarSearch", () => {
     await nextTick();
 
     expect(activeTab(wrapper)).toBe("map");
+  });
+
+  it("runs the query again when the interface language changes", async () => {
+    searchStore.query = "ticks";
+    render();
+
+    locale.value = "en";
+    await nextTick();
+
+    expect(searchStore.setSearchQuery).toHaveBeenCalledWith("ticks", "en");
+  });
+
+  it("leaves a query too short to search alone on a language change", async () => {
+    searchStore.query = "t";
+    render();
+
+    locale.value = "en";
+    await nextTick();
+
+    expect(searchStore.setSearchQuery).not.toHaveBeenCalled();
   });
 
   it("selects the CMS result that was clicked", async () => {

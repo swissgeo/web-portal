@@ -64,6 +64,14 @@ const debouncedSearch = useDebounceFn((value: string) => {
   void searchStore.setSearchQuery(value, locale.value);
 }, 100);
 
+// every source searches in one language, so a locale change leaves the
+// results of the previous one behind until the query is run again
+watch(locale, (value) => {
+  if (searchStore.query.length >= 2) {
+    void searchStore.setSearchQuery(searchStore.query, value);
+  }
+});
+
 // a coordinate needs no confirmation: the map goes there as soon as the query
 // is recognized as one, there is no entry to select
 watch(
