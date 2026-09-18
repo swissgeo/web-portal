@@ -2,11 +2,13 @@
 import DrawingPanel from "~/components/debug/DrawingPanel.vue";
 import ImportDrawingPanel from "~/components/debug/ImportDrawingPanel.vue";
 
+const toolboxStore = useToolboxStore();
+
 const isLayersPanelOpen = ref(false);
 const isImportPanelOpen = ref(false);
 const isImportLocalPanelOpen = ref(false);
 const isImportDrawingOpen = ref(false);
-const isDrawingOpen = ref(false);
+const isDrawingOpen = computed(() => toolboxStore.isDrawingActive);
 const isSharePanelOpen = ref(false);
 const isPrintPanelOpen = ref(false);
 
@@ -24,7 +26,7 @@ function toggleImportDrawing() {
   isImportDrawingOpen.value = !isImportDrawingOpen.value;
 }
 function toggleDrawing() {
-  isDrawingOpen.value = !isDrawingOpen.value;
+  toolboxStore.toggleDrawingPanel();
 }
 function toggleStateConfig() {
   isSharePanelOpen.value = !isSharePanelOpen.value;
@@ -57,7 +59,7 @@ function togglePrintPanel() {
 
     <DrawingPanel
       class="relative h-[400px] w-[350px] overflow-hidden bg-white shadow"
-      v-if="isDrawingOpen"
+      v-if="isDrawingOpen()"
       @close="toggleDrawing"
     >
     </DrawingPanel>
@@ -78,7 +80,7 @@ function togglePrintPanel() {
         !isImportPanelOpen &&
         !isImportLocalPanelOpen &&
         !isImportDrawingOpen &&
-        !isDrawingOpen &&
+        !isDrawingOpen() &&
         !isSharePanelOpen &&
         !isPrintPanelOpen
       "

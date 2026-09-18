@@ -1,3 +1,4 @@
+import type { FeatureData } from "@swissgeo/feature";
 import type { Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { LayerState } from "@swissgeo/statesharing";
@@ -5,6 +6,7 @@ import type { AppStatePayload } from "~/composables/useStateConfig";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { useFeaturesStore } from "@swissgeo/feature";
 import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
@@ -62,6 +64,22 @@ vi.mock("@swissgeo/layers", async (importOriginal) => {
   return {
     ...actual,
     makeServerLayer: vi.fn(),
+  };
+});
+
+const { createIdentifyResponseMock } = vi.hoisted(() => ({
+  createIdentifyResponseMock: vi.fn(),
+}));
+
+vi.mock("@swissgeo/feature", async (importOriginal) => {
+  // the store itself stays real; only the network-touching identify helper is
+  // mocked, so assertions can read the resulting preselection back from the store
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const actual = await importOriginal<typeof import("@swissgeo/feature")>();
+
+  return {
+    ...actual,
+    createIdentifyResponse: createIdentifyResponseMock,
   };
 });
 function makeMapLayer(uuid: string): MapLayer {
@@ -301,6 +319,7 @@ describe("useStateConfig manages to import a State with importState", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     mockMapLayers.length = 0;
+    createIdentifyResponseMock.mockReset();
   });
 
   it("Does not change the app state when the importe state has no information", async () => {
@@ -435,6 +454,30 @@ describe("useStateConfig manages to import a State with importState", () => {
     expect(dimensionsStore.getDimensions(existingLayer.uuid)).toBeUndefined();
   });
 
+  it("clears WMS capability registrations when importing a new state", async () => {
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const existingLayer = datasetsForStore[0]!;
+    layerStore.addLayer(existingLayer);
+    featureStore.setWmsCapability(existingLayer.uuid, {
+      getFeatureInfoCapability: {
+        baseUrl: "https://example.test/wms?",
+        method: "GET",
+        formats: ["application/json"],
+      },
+      availableCrs: ["EPSG:2056"],
+    });
+    expect(featureStore.getWmsCapability(existingLayer.uuid)).toBeDefined();
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {},
+    };
+    await useStateConfig().importState(payload);
+
+    expect(featureStore.getWmsCapability(existingLayer.uuid)).toBeUndefined();
+  });
+
   it("writes time dimensions from the incoming state into the dimensions store", async () => {
     const dimensionsStore = useDimensionsStore();
     const payload: AppStatePayload = {
@@ -508,6 +551,59 @@ describe("useStateConfig manages to import a State with importState", () => {
     expect(layerStore.layers).toEqual([]);
   });
 
+  it("restores the incoming feature ids as a preselection on the feature store", async () => {
+    createIdentifyResponseMock.mockReturnValue([
+      { id: "id-1", geometry: { type: "Point", coordinates: [0, 0] } },
+      { id: "id-2", geometry: { type: "Point", coordinates: [1, 1] } },
+    ]);
+    const featureStore = useFeaturesStore();
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            layerUrl: "https://perdu.com",
+            type: "dataset",
+            isVisible: true,
+            opacity: 1,
+            features: ["id-1", "id-2"],
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(createIdentifyResponseMock).toHaveBeenCalledWith(
+      ["id-1", "id-2"],
+      mockedLayer.humanId,
+    );
+    expect(featureStore.consumeFeaturePreselection(mockedLayer.uuid)).toEqual([
+      { id: "id-1", geometry: { type: "Point", coordinates: [0, 0] } },
+      { id: "id-2", geometry: { type: "Point", coordinates: [1, 1] } },
+    ]);
+  });
+
+  it("does not query identify features when the incoming layer has none", async () => {
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            layerUrl: "https://perdu.com",
+            type: "dataset",
+            isVisible: true,
+            opacity: 1,
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(createIdentifyResponseMock).not.toHaveBeenCalled();
+  });
+
   it("builds custom state from current layers and background after mount", async () => {
     const layerStore = useLayerStore();
     mockMapLayers.push(backgroundLayer);
@@ -547,3 +643,43 @@ describe("useStateConfig manages to import a State with importState", () => {
   });
 });
 //describe("useStateConfig > exportState", () => {});
+
+describe("useStateConfig exports selected shareable features", () => {
+  const shareableFeature: FeatureData = {
+    featureId: "feature-shareable",
+    geometry: { type: "Point", coordinates: [0, 0] },
+    content: {
+      kind: "html",
+      html: "<p>popup</p>",
+      trusted: true,
+      shareable: true,
+    },
+  };
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    mockMapLayers.length = 0;
+  });
+
+  it("writes the shareable feature ids of a layer into its state config", () => {
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    layerStore.addLayer(datasetsForStore[0]!);
+    featureStore.setSelection({ "uuid-0": [shareableFeature] });
+    mockMapLayers.push(mockedMapLayers[0]!);
+
+    const layerStateConfig = layerToStateConfig(mockedMapLayers[0]!)!;
+
+    expect(layerStateConfig.features).toEqual(["feature-shareable"]);
+  });
+
+  it("omits the features key when the layer has no selected feature", () => {
+    const layerStore = useLayerStore();
+    layerStore.addLayer(datasetsForStore[0]!);
+    mockMapLayers.push(mockedMapLayers[0]!);
+
+    const layerStateConfig = layerToStateConfig(mockedMapLayers[0]!)!;
+
+    expect(layerStateConfig).not.toHaveProperty("features");
+  });
+});

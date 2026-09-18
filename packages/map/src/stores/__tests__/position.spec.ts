@@ -297,14 +297,14 @@ describe("position store", () => {
     });
 
     it("should return the center in EPSG:4326 for LV03 (EPSG:21781)", () => {
-      store.$patch({ projection: LV03, center: [600000, 200000] });
+      store.$patch({ projectionEpsg: LV03.epsg, center: [600000, 200000] });
       const result = store.centerEpsg4326;
       expect(result[0]).toBeCloseTo(expected[0], 6);
       expect(result[1]).toBeCloseTo(expected[1], 6);
     });
 
     it("should return the center in EPSG:4326 for WGS84 (EPSG:4326)", () => {
-      store.$patch({ projection: WGS84, center: expected });
+      store.$patch({ projectionEpsg: WGS84.epsg, center: expected });
       const result = store.centerEpsg4326;
       expect(result[0]).toBeCloseTo(expected[0], 6);
       expect(result[1]).toBeCloseTo(expected[1], 6);
@@ -312,7 +312,7 @@ describe("position store", () => {
 
     it("should return the center in EPSG:4326 for WebMercator (EPSG:3857)", () => {
       store.$patch({
-        projection: WEBMERCATOR,
+        projectionEpsg: WEBMERCATOR.epsg,
         center: [828064.72, 5934093.22],
       });
       const result = store.centerEpsg4326;
@@ -372,13 +372,13 @@ describe("position store", () => {
 
   describe("non-SwissCoordinateSystem projections", () => {
     it("should increase zoom level by 1 for non-SwissCoordinateSystem projections", () => {
-      store.$patch({ projection: WGS84, zoom: 8 });
+      store.$patch({ projectionEpsg: WGS84.epsg, zoom: 8 });
       store.increaseZoom(mockDispatcher);
       expect(animateMock).toHaveBeenCalledWith({ zoom: 9, duration: 200 });
     });
 
     it("should decrease zoom level by 1 for non-SwissCoordinateSystem projections", () => {
-      store.$patch({ projection: WGS84, zoom: 5 });
+      store.$patch({ projectionEpsg: WGS84.epsg, zoom: 5 });
       store.decreaseZoom(mockDispatcher);
       expect(animateMock).toHaveBeenCalledWith({ zoom: 4, duration: 200 });
     });
@@ -407,8 +407,8 @@ describe("position store", () => {
       olMapMock.value = null; // simulate map not available
       centerMock.value = [2660000, 1190000]; // initialise the default
 
-      // operating on wgs84 here since we're using defaults
-      const result = store.setCenter([46.935449, 7.399938], mockDispatcher);
+      // operating on LV95
+      const result = store.setCenter([2650000, 1180000], mockDispatcher);
       expect(result).toBe(false);
       expect(store.center).toEqual([2660000, 1190000]); // still the default
 
@@ -420,7 +420,7 @@ describe("position store", () => {
       await flushPromises();
 
       expect(animateMock).toHaveBeenCalledWith({
-        center: [46.935449, 7.399938],
+        center: [2650000, 1180000],
         duration: 200,
       });
     });
@@ -468,7 +468,7 @@ describe("position store", () => {
       await flushPromises();
 
       store.setZoom(7.2, mockDispatcher);
-      store.setCenter([46.967583, 7.359163], mockDispatcher);
+      store.setCenter([2640000, 1200000], mockDispatcher);
       store.setRotation(0.2, mockDispatcher);
 
       // we're still on the defaults of useOlMapPosition
@@ -481,13 +481,46 @@ describe("position store", () => {
 
       expect(animateMock).toHaveBeenCalledWith({ zoom: 7.2, duration: 200 });
       expect(animateMock).toHaveBeenCalledWith({
-        center: [46.967583, 7.359163],
+        center: [2640000, 1200000],
         duration: 200,
       });
       expect(animateMock).toHaveBeenCalledWith({
         rotation: 0.2,
         duration: 200,
       });
+    });
+  });
+
+  describe("SSR payload safety", () => {
+    const isPlainValue = (value: unknown): boolean => {
+      if (
+        value === null ||
+        ["string", "number", "boolean", "undefined", "bigint"].includes(
+          typeof value,
+        )
+      ) {
+        return true;
+      }
+      if (Array.isArray(value)) {
+        return value.every(isPlainValue);
+      }
+      if (typeof value === "object") {
+        const proto = Object.getPrototypeOf(value);
+        if (proto !== Object.prototype && proto !== null) {
+          return false;
+        }
+        return Object.values(value).every(isPlainValue);
+      }
+      return false;
+    };
+
+    it("should only keep plain values in $state (devalue/Nuxt payload safety)", () => {
+      expect(isPlainValue(store.$state)).toBe(true);
+    });
+
+    it("should not expose projection or displayFormat as state", () => {
+      expect(store.$state).not.toHaveProperty("projection");
+      expect(store.$state).not.toHaveProperty("displayFormat");
     });
   });
 });

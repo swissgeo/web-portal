@@ -5,6 +5,7 @@ import type { Dataset } from "@swissgeo/ogc";
 import type { LayerState, AppState } from "@swissgeo/statesharing";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { createIdentifyResponse, useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
@@ -66,6 +67,11 @@ export function layerToStateConfig(layer: MapLayer): LayerState | null {
     }
   }
 
+  const features = useFeaturesStore().getShareableFeaturesIdsByUuid[layer.uuid];
+  if (features) {
+    config.features = features;
+  }
+
   return config;
 }
 
@@ -90,6 +96,7 @@ export function useStateConfig() {
   const layerStore = useLayerStore();
   const dimensionsStore = useDimensionsStore();
   const mapviewStore = useMapViewStore();
+  const featureStore = useFeaturesStore();
 
   const exportState = computed((): AppStatePayload => {
     return {
@@ -132,6 +139,7 @@ export function useStateConfig() {
 
     for (const layer of [...layerStore.layers]) {
       dimensionsStore.clearLayerDimensions(layer.uuid);
+      featureStore.clearWmsCapability(layer.uuid);
       layerStore.removeLayer(layer.uuid);
     }
 
@@ -160,6 +168,14 @@ export function useStateConfig() {
           opacity: stateLayers[i]?.opacity ?? 1,
           isVisible: stateLayers[i]?.isVisible ?? true,
         };
+        const preSelectedFeaturesIds = stateLayers[i]?.features;
+        if (preSelectedFeaturesIds) {
+          const identifyFeatures = await createIdentifyResponse(
+            preSelectedFeaturesIds,
+            layers[i]!.humanId,
+          );
+          featureStore.addFeaturePreselection(uuid, identifyFeatures);
+        }
         layerStore.addImportOption(uuid, mapLayerData);
 
         if (stateLayers[i]?.dimensions?.time) {

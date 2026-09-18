@@ -3,6 +3,7 @@ import type { Lang } from "@/language";
 // System Constants
 export const ALLOWED_LANGUAGES: Lang[] = ["de", "fr", "en", "it", "rm"];
 export const DRAWING_LAYER_ID = "user-drawing-layer";
+export const HIGHLIGHT_LAYER_ID = "selected-features-highlight-layer";
 
 // Projection constants
 export const EPSG_4326_WGS84: string = "EPSG:4326";

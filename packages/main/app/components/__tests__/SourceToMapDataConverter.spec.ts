@@ -1,17 +1,43 @@
 import type { Dimension } from "@swissgeo/dimension";
+import type {
+  FeatureData,
+  OgcDistribution,
+  OgcDistributionFeature,
+} from "@swissgeo/feature";
 import type { DatasetLayer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
-import { mount } from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
+
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({ t: (key: string) => key, locale: { value: "en" } }),
+}));
+
+const { getPopupFromIdentifyFeatureMock } = vi.hoisted(() => ({
+  getPopupFromIdentifyFeatureMock: vi.fn(),
+}));
+
+vi.mock("@swissgeo/feature", async (importOriginal) => {
+  // the store stays real so the preselection can be set up and the resulting
+  // selection read back from it; only the popup fetching is mocked
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const actual = await importOriginal<typeof import("@swissgeo/feature")>();
+
+  return {
+    ...actual,
+    getPopupFromIdentifyFeature: getPopupFromIdentifyFeatureMock,
+  };
+});
 
 const mockMapLayers: MapLayer[] = [];
 
@@ -207,6 +233,7 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
 
 describe("background handling", () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     mockMapLayers.length = 0;
 
     updateLayerData.mockClear();
@@ -385,6 +412,7 @@ describe("background handling", () => {
 
 describe("event forwarding", () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     mockMapLayers.length = 0;
 
     const layerStore = useLayerStore();
@@ -542,5 +570,203 @@ describe("layer load errors", () => {
     expect(wrapper.emitted("layerError")).toEqual([
       [failedLayer.uuid, new Error("failure")],
     ]);
+  });
+});
+
+describe("state import feature selection", () => {
+  const DISTRIBUTIONS_URL = "https://example.test/test-uuid/distributions";
+  const FEATUREINFO_URL = "https://example.test/test-uuid:distribution";
+  const URL_TEMPLATE = "https://example.test/popup/{featureId}?lang={lang}";
+
+  const identifyFeatures: {
+    id: string;
+    geometry: { type: "Point"; coordinates: [number, number] };
+  }[] = [{ id: "42", geometry: { type: "Point", coordinates: [0, 0] } }];
+  const popupFeatures: FeatureData[] = [
+    {
+      featureId: "42",
+      geometry: { type: "Point", coordinates: [0, 0] },
+      content: {
+        kind: "html",
+        html: "<p>popup</p>",
+        trusted: true,
+        shareable: true,
+      },
+    },
+  ];
+
+  // the distributions collection: its only feature exposes the featureinfo link
+  const identifyDistribution = {
+    type: "FeatureCollection",
+    features: [
+      {
+        id: "dist-1",
+        links: [{ href: FEATUREINFO_URL, rel: "featureinfo" }],
+        properties: { type: "ogc", protocol: "geoadmin:features" },
+        linkTemplates: [{ rel: "preview", uriTemplate: URL_TEMPLATE }],
+      },
+    ],
+  } as unknown as OgcDistribution;
+
+  // what the featureinfo link resolves to: the featureinfo distribution itself
+  const identifyFeatureInfoFeature = identifyDistribution
+    .features[0] as unknown as OgcDistributionFeature;
+
+  const fetchSpy = vi.fn();
+
+  function makeDatasetLayerWithDistributions(uuid: string): DatasetLayer {
+    return {
+      ...makeDatasetLayer(uuid),
+      data: {
+        id: `ch.test.${uuid}`,
+        links: [{ rel: "distributions", href: DISTRIBUTIONS_URL }],
+      } as unknown as Dataset,
+    };
+  }
+
+  function mountConverter(sourceData: DatasetLayer[]) {
+    return mount(SourceToMapDataConverter, {
+      props: { sourceBgLayer: null, sourceData },
+      global: {
+        stubs: {
+          MapDatamappingOgcDatasetConverter: OgcConverterStub,
+          MapDatamappingFileConverter: FileConverterStub,
+        },
+      },
+    });
+  }
+
+  async function emitLayerUpdate(
+    wrapper: ReturnType<typeof mountConverter>,
+  ): Promise<void> {
+    wrapper
+      .findComponent(OgcConverterStub)
+      .vm.$emit("update", makeMapLayer("test-uuid"));
+    await flushPromises();
+  }
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    mockMapLayers.length = 0;
+
+    getPopupFromIdentifyFeatureMock.mockReset();
+    getPopupFromIdentifyFeatureMock.mockResolvedValue([...popupFeatures]);
+
+    fetchSpy.mockReset();
+    fetchSpy.mockImplementation((url: RequestInfo | URL) => {
+      if (String(url) === FEATUREINFO_URL) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(identifyFeatureInfoFeature),
+        } as Response);
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(identifyDistribution),
+      } as Response);
+    });
+    vi.stubGlobal("fetch", fetchSpy);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("applies a stored preselection by fetching the popup of each identified feature", async () => {
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const layer = makeDatasetLayerWithDistributions("test-uuid");
+    layerStore.addLayer(layer);
+    featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    expect(fetchSpy.mock.calls[0]![0]).toBe(DISTRIBUTIONS_URL);
+    expect(fetchSpy.mock.calls[1]![0]).toBe(FEATUREINFO_URL);
+    expect(getPopupFromIdentifyFeatureMock).toHaveBeenCalledWith(
+      identifyFeatures,
+      URL_TEMPLATE,
+      "en",
+    );
+    expect(featureStore.selectedFeaturesByUuid["test-uuid"]).toEqual(
+      popupFeatures,
+    );
+  });
+
+  it("does not fetch anything when no preselection is stored for the layer", async () => {
+    const layerStore = useLayerStore();
+    const layer = makeDatasetLayerWithDistributions("test-uuid");
+    layerStore.addLayer(layer);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
+    expect(useFeaturesStore().selectedFeaturesByUuid).toEqual({});
+  });
+
+  it("does not select when the layer exposes no distributions link", async () => {
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const layer = makeDatasetLayer("test-uuid");
+    layerStore.addLayer(layer);
+    featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(featureStore.selectedFeaturesByUuid).toEqual({});
+  });
+
+  it("does not select when the distribution carries no featureinfo link", async () => {
+    fetchSpy.mockImplementation(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            type: "FeatureCollection",
+            features: [
+              {
+                id: "dist-1",
+                properties: { type: "ogc", protocol: "geoadmin:features" },
+              },
+            ],
+          }),
+      } as Response),
+    );
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const layer = makeDatasetLayerWithDistributions("test-uuid");
+    layerStore.addLayer(layer);
+    featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
+    expect(featureStore.selectedFeaturesByUuid).toEqual({});
+  });
+
+  it("does not select when the distributions fetch answers not-ok", async () => {
+    fetchSpy.mockImplementation(() =>
+      Promise.resolve({ ok: false } as Response),
+    );
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const layer = makeDatasetLayerWithDistributions("test-uuid");
+    layerStore.addLayer(layer);
+    featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
+    expect(featureStore.selectedFeaturesByUuid).toEqual({});
   });
 });
