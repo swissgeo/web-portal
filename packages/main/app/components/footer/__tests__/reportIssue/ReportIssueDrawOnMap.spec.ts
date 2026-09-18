@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 
-import ReportIssueDrawOnMap from "@/components/toolbox/reportIssue/ReportIssueDrawOnMap.vue";
+import ReportIssueDrawOnMap from "@/components/footer/reportIssue/ReportIssueDrawOnMap.vue";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
@@ -25,7 +25,7 @@ describe("ReportIssueDrawOnMap.vue", () => {
     const wrapper = mount(ReportIssueDrawOnMap, {
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step3.title");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step3.title");
   });
 
   it("renders a disabled button", () => {
@@ -40,6 +40,6 @@ describe("ReportIssueDrawOnMap.vue", () => {
     const wrapper = mount(ReportIssueDrawOnMap, {
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step3.button");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step3.button");
   });
 });

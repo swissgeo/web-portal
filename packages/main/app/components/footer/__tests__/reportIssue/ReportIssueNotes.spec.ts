@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 
-import ReportIssueNotes from "@/components/toolbox/reportIssue/ReportIssueNotes.vue";
+import ReportIssueNotes from "@/components/footer/reportIssue/ReportIssueNotes.vue";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
@@ -33,9 +33,7 @@ describe("ReportIssueNotes.vue", () => {
       props: { permalink: "https://example.com" },
       global: { stubs },
     });
-    expect(wrapper.text()).toContain(
-      "toolbox.reportIssue.notes.link.permalink",
-    );
+    expect(wrapper.text()).toContain("footer.reportIssue.notes.link.permalink");
   });
 
   it("renders the TOS link with correct URL", () => {
@@ -46,7 +44,7 @@ describe("ReportIssueNotes.vue", () => {
     const links = wrapper.findAll(".link");
     expect(links).toHaveLength(2);
     expect(links[1]!.attributes("href")).toBe(
-      "toolbox.reportIssue.notes.tos.url",
+      "footer.reportIssue.notes.tos.url",
     );
   });
 

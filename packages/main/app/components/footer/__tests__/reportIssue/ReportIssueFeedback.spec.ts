@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 
-import ReportIssueFeedback from "@/components/toolbox/reportIssue/ReportIssueFeedback.vue";
+import ReportIssueFeedback from "@/components/footer/reportIssue/ReportIssueFeedback.vue";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
@@ -27,7 +27,7 @@ describe("ReportIssueFeedback.vue", () => {
       props: { modelValue: "" },
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step2.title");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step2.title");
   });
 
   it("passes modelValue to the textarea", () => {
