@@ -199,6 +199,18 @@ export const useSearchStore = defineStore("search", () => {
 
   function clearSearch() {
     query.value = "";
+    dropResults();
+  }
+
+  // Selecting a result keeps its name in the field rather than emptying it: it
+  // is what the user is now looking at, and clearing the field is what takes
+  // the marker off the map.
+  function keepSelectedQuery(title: string) {
+    query.value = title;
+    dropResults();
+  }
+
+  function dropResults() {
     results.value = [];
     coordinateResult.value = undefined;
     hasError.value = false;
@@ -232,6 +244,7 @@ export const useSearchStore = defineStore("search", () => {
     setSearchQuery,
     selectResult,
     clearSearch,
+    keepSelectedQuery,
     setPinnedCoordinate,
     clearPinnedCoordinate,
   };

@@ -65,9 +65,11 @@ const debouncedSearch = useDebounceFn((value: string) => {
 }, 100);
 
 // every source searches in one language, so a locale change leaves the
-// results of the previous one behind until the query is run again
+// results of the previous one behind until the query is run again. Only while
+// the panel is open: the field also holds the name of an already selected
+// result, and searching it again would pop the results back up.
 watch(locale, (value) => {
-  if (searchStore.query.length >= 2) {
+  if (isOpen.value && searchStore.query.length >= 2) {
     void searchStore.setSearchQuery(searchStore.query, value);
   }
 });
@@ -103,7 +105,7 @@ watch(
 
 function handleSelect(result: SearchResult) {
   void handleResultSelection(result);
-  searchStore.clearSearch();
+  searchStore.keepSelectedQuery(result.sanitizedTitle);
   isOpen.value = false;
 }
 
