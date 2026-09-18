@@ -74,12 +74,17 @@ export const useSearchStore = defineStore("search", () => {
     query.value = newQuery;
     hasError.value = false;
 
-    // Clear results if query too short. Emptying the field also drops the pin,
-    // otherwise the user is left with a marker they cannot remove.
+    // Emptying the field takes the pin off the map, otherwise the user is left
+    // with a marker they cannot remove. Shortening the query does not: the map
+    // still shows the place they are retyping the name of.
+    if (newQuery.trim().length === 0) {
+      pinnedCoordinate.value = undefined;
+    }
+
+    // Clear results if query too short
     if (newQuery.trim().length < 2) {
       results.value = [];
       coordinateResult.value = undefined;
-      pinnedCoordinate.value = undefined;
       return;
     }
 
@@ -211,6 +216,11 @@ export const useSearchStore = defineStore("search", () => {
   }
 
   function dropResults() {
+    // a request still on its way would otherwise land afterwards and put the
+    // results back, on top of a panel the user has already left
+    abortController?.abort();
+    abortController = undefined;
+    isSearching.value = false;
     results.value = [];
     coordinateResult.value = undefined;
     hasError.value = false;
