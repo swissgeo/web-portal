@@ -107,7 +107,7 @@ describe("useSearchSelection", () => {
     ]);
   });
 
-  it("marks a place result, so the marker follows the map", async () => {
+  it("marks a place result with the balloon pin", async () => {
     const { handleResultSelection } = useSearchSelection();
     await handleResultSelection({
       resultType: "LOCATION",
@@ -120,12 +120,13 @@ describe("useSearchSelection", () => {
     expect(positionStore.setCenter).toHaveBeenCalledWith([2617000, 1091000], {
       name: "search-result-selection",
     });
-    expect(searchStore.setPinnedCoordinate).toHaveBeenCalledWith([
-      2617000, 1091000,
-    ]);
+    expect(searchStore.setPinnedCoordinate).toHaveBeenCalledWith(
+      [2617000, 1091000],
+      "balloon",
+    );
   });
 
-  it("marks a feature result too", async () => {
+  it("marks a feature result with the balloon pin too", async () => {
     const { handleResultSelection } = useSearchSelection();
     await handleResultSelection({
       resultType: "FEATURE",
@@ -137,9 +138,10 @@ describe("useSearchSelection", () => {
       zoom: 12,
     } as never);
 
-    expect(searchStore.setPinnedCoordinate).toHaveBeenCalledWith([
-      2650000, 1200000,
-    ]);
+    expect(searchStore.setPinnedCoordinate).toHaveBeenCalledWith(
+      [2650000, 1200000],
+      "balloon",
+    );
   });
 
   it("leaves the marker where it is when a result carries no coordinate", async () => {

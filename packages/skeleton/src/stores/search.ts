@@ -14,6 +14,10 @@ import {
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
+// A typed coordinate gets the crosshair, a place or a feature the balloon pin,
+// the way the old map.geo.admin.ch tells the two apart.
+export type SearchMarkerType = "crosshair" | "balloon";
+
 export const useSearchStore = defineStore("search", () => {
   const runtimeConfig = useRuntimeConfig();
   // State
@@ -31,6 +35,7 @@ export const useSearchStore = defineStore("search", () => {
   // result is selected. Only one location is ever marked, so re-centering the
   // map on another result moves the marker there instead of leaving a stale one.
   const pinnedCoordinate = ref<SingleCoordinate | undefined>();
+  const pinnedMarkerType = ref<SearchMarkerType>("crosshair");
 
   let abortController: AbortController | undefined;
 
@@ -216,8 +221,12 @@ export const useSearchStore = defineStore("search", () => {
     hasError.value = false;
   }
 
-  function setPinnedCoordinate(coordinate: SingleCoordinate) {
+  function setPinnedCoordinate(
+    coordinate: SingleCoordinate,
+    type: SearchMarkerType = "crosshair",
+  ) {
     pinnedCoordinate.value = coordinate;
+    pinnedMarkerType.value = type;
   }
 
   function clearPinnedCoordinate() {
@@ -232,6 +241,7 @@ export const useSearchStore = defineStore("search", () => {
     hasError,
     coordinateResult,
     pinnedCoordinate,
+    pinnedMarkerType,
     // Getters
     hasResults,
     locationResults,
