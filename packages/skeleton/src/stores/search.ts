@@ -14,10 +14,6 @@ import {
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
-// A typed coordinate gets the crosshair, a place or a feature the balloon pin,
-// the way the old map.geo.admin.ch tells the two apart.
-export type SearchMarkerType = "crosshair" | "balloon";
-
 export const useSearchStore = defineStore("search", () => {
   const runtimeConfig = useRuntimeConfig();
   // State
@@ -31,11 +27,10 @@ export const useSearchStore = defineStore("search", () => {
   // as in map.geo.admin.ch, a coordinate needs no confirmation and the map
   // goes there directly.
   const coordinateResult = ref<CoordinateSearchResult | undefined>();
-  // Coordinate the map marks with a marker, set when a coordinate or a place
-  // result is selected. Only one location is ever marked, so re-centering the
-  // map on another result moves the marker there instead of leaving a stale one.
+  // Coordinate the map marks with the balloon pin, set when a coordinate or a
+  // place result is selected. Only one location is ever marked, so re-centering
+  // the map on another result moves the pin instead of leaving a stale one.
   const pinnedCoordinate = ref<SingleCoordinate | undefined>();
-  const pinnedMarkerType = ref<SearchMarkerType>("crosshair");
 
   let abortController: AbortController | undefined;
 
@@ -79,8 +74,8 @@ export const useSearchStore = defineStore("search", () => {
     query.value = newQuery;
     hasError.value = false;
 
-    // Clear results if query too short. Emptying the field also drops the
-    // marker, otherwise the user is left with a crosshair they cannot remove.
+    // Clear results if query too short. Emptying the field also drops the pin,
+    // otherwise the user is left with a marker they cannot remove.
     if (newQuery.trim().length < 2) {
       results.value = [];
       coordinateResult.value = undefined;
@@ -221,12 +216,8 @@ export const useSearchStore = defineStore("search", () => {
     hasError.value = false;
   }
 
-  function setPinnedCoordinate(
-    coordinate: SingleCoordinate,
-    type: SearchMarkerType = "crosshair",
-  ) {
+  function setPinnedCoordinate(coordinate: SingleCoordinate) {
     pinnedCoordinate.value = coordinate;
-    pinnedMarkerType.value = type;
   }
 
   function clearPinnedCoordinate() {
@@ -241,7 +232,6 @@ export const useSearchStore = defineStore("search", () => {
     hasError,
     coordinateResult,
     pinnedCoordinate,
-    pinnedMarkerType,
     // Getters
     hasResults,
     locationResults,
