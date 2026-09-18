@@ -1,8 +1,8 @@
 import type { SearchResult } from "@swissgeo/search";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { mount } from "@vue/test-utils";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { enableAutoUnmount, mount } from "@vue/test-utils";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, reactive, ref } from "vue";
 
 import TopbarSearch from "../TopbarSearch.vue";
@@ -29,6 +29,7 @@ const searchStore = reactive({
   },
   setSearchQuery: vi.fn(),
   clearSearch: vi.fn(),
+  keepSelectedQuery: vi.fn(),
   clearPinnedCoordinate: vi.fn(),
 });
 
@@ -87,8 +88,8 @@ const content = (documentId: string, title: string): SearchResult => ({
   description: "",
 });
 
-function render() {
-  return mount(TopbarSearch, { global: { stubs } });
+function render(props: { open?: boolean } = {}) {
+  return mount(TopbarSearch, { props, global: { stubs } });
 }
 
 function activeTab(wrapper: ReturnType<typeof render>) {
@@ -103,6 +104,10 @@ function tabs(wrapper: ReturnType<typeof render>) {
 }
 
 describe("TopbarSearch", () => {
+  // the mounted components all watch the same locale ref, a leftover one would
+  // answer a language change on behalf of the component under test
+  enableAutoUnmount(afterEach);
+
   beforeEach(() => {
     searchStore.query = "";
     searchStore.results = [];
@@ -111,6 +116,7 @@ describe("TopbarSearch", () => {
     handleResultSelection.mockClear();
     searchStore.setSearchQuery.mockClear();
     searchStore.clearSearch.mockClear();
+    searchStore.keepSelectedQuery.mockClear();
   });
 
   it("lists the CMS results in the content pages tab", () => {
@@ -182,7 +188,7 @@ describe("TopbarSearch", () => {
 
   it("runs the query again when the interface language changes", async () => {
     searchStore.query = "ticks";
-    render();
+    render({ open: true });
 
     locale.value = "en";
     await nextTick();
@@ -192,6 +198,18 @@ describe("TopbarSearch", () => {
 
   it("leaves a query too short to search alone on a language change", async () => {
     searchStore.query = "t";
+    render({ open: true });
+
+    locale.value = "en";
+    await nextTick();
+
+    expect(searchStore.setSearchQuery).not.toHaveBeenCalled();
+  });
+
+  // the field keeps the name of the selected result, searching it again on a
+  // language change would pop the panel back open
+  it("leaves the query alone on a language change while the panel is closed", async () => {
+    searchStore.query = "Bern";
     render();
 
     locale.value = "en";
@@ -211,6 +229,16 @@ describe("TopbarSearch", () => {
       .trigger("click");
 
     expect(handleResultSelection).toHaveBeenCalledWith(entry);
-    expect(searchStore.clearSearch).toHaveBeenCalled();
+  });
+
+  it("keeps the name of the selected result in the field", async () => {
+    searchStore.query = "ber";
+    searchStore.results = [location("Bern")];
+
+    const wrapper = render();
+    await wrapper.find("[data-testid='search-results'] li").trigger("click");
+
+    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("Bern");
+    expect(searchStore.clearSearch).not.toHaveBeenCalled();
   });
 });

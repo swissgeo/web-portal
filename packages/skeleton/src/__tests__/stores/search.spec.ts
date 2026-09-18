@@ -152,6 +152,20 @@ describe("useSearchStore", () => {
     expect(store.pinnedCoordinate).toBeUndefined();
   });
 
+  it("keeps the selected name in the query but drops the results", async () => {
+    searchMocks.searchLayers.mockResolvedValue([layer("l1")]);
+
+    const store = useSearchStore();
+    await store.setSearchQuery("bern");
+    expect(store.results).not.toEqual([]);
+
+    store.keepSelectedQuery("Bern");
+
+    expect(store.query).toBe("Bern");
+    expect(store.results).toEqual([]);
+    expect(store.coordinateResult).toBeUndefined();
+  });
+
   it("resets hasError on clearSearch", async () => {
     searchMocks.searchLayers.mockRejectedValue(new Error("catalog down"));
 
