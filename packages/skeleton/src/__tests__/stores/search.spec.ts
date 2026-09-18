@@ -133,6 +133,15 @@ describe("useSearchStore", () => {
     expect(store.coordinateResult).toBeUndefined();
   });
 
+  it("marks a place with the balloon pin and a coordinate with the crosshair", () => {
+    const store = useSearchStore();
+    store.setPinnedCoordinate([2600000, 1200000], "balloon");
+    expect(store.pinnedMarkerType).toBe("balloon");
+
+    store.setPinnedCoordinate([2675947, 1247654]);
+    expect(store.pinnedMarkerType).toBe("crosshair");
+  });
+
   it("keeps the pinned coordinate when a result is selected", () => {
     const store = useSearchStore();
     store.setPinnedCoordinate([2600000, 1200000]);
