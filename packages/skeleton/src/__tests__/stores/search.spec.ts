@@ -133,13 +133,22 @@ describe("useSearchStore", () => {
     expect(store.coordinateResult).toBeUndefined();
   });
 
-  it("keeps the pinned coordinate until it is explicitly cleared", () => {
+  it("keeps the pinned coordinate when a result is selected", () => {
     const store = useSearchStore();
     store.setPinnedCoordinate([2600000, 1200000]);
     store.clearSearch();
     expect(store.pinnedCoordinate).toEqual([2600000, 1200000]);
 
     store.clearPinnedCoordinate();
+    expect(store.pinnedCoordinate).toBeUndefined();
+  });
+
+  it("drops the pinned coordinate when the field is emptied", async () => {
+    const store = useSearchStore();
+    store.setPinnedCoordinate([2600000, 1200000]);
+
+    await store.setSearchQuery("");
+
     expect(store.pinnedCoordinate).toBeUndefined();
   });
 

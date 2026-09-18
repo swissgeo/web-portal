@@ -27,7 +27,9 @@ export const useSearchStore = defineStore("search", () => {
   // as in map.geo.admin.ch, a coordinate needs no confirmation and the map
   // goes there directly.
   const coordinateResult = ref<CoordinateSearchResult | undefined>();
-  // Coordinate the map marks with a marker, set when a coordinate result is selected.
+  // Coordinate the map marks with a marker, set when a coordinate or a place
+  // result is selected. Only one location is ever marked, so re-centering the
+  // map on another result moves the marker there instead of leaving a stale one.
   const pinnedCoordinate = ref<SingleCoordinate | undefined>();
 
   let abortController: AbortController | undefined;
@@ -72,10 +74,12 @@ export const useSearchStore = defineStore("search", () => {
     query.value = newQuery;
     hasError.value = false;
 
-    // Clear results if query too short
+    // Clear results if query too short. Emptying the field also drops the
+    // marker, otherwise the user is left with a crosshair they cannot remove.
     if (newQuery.trim().length < 2) {
       results.value = [];
       coordinateResult.value = undefined;
+      pinnedCoordinate.value = undefined;
       return;
     }
 
