@@ -1,6 +1,7 @@
 import type { Point } from "ol/geom";
 import type { Vector as VectorLayer } from "ol/layer";
 import type { Vector as VectorSource } from "ol/source";
+import type { Style } from "ol/style";
 
 import { useSearchStore } from "@swissgeo/skeleton";
 import { mount } from "@vue/test-utils";
@@ -40,10 +41,19 @@ vi.mock("@swissgeo/skeleton", async () => {
   };
 });
 
-function markerCoordinates(): number[] {
+function markerFeature() {
   const source = layerUnderTest!.value.getSource() as VectorSource;
   const [feature] = source.getFeatures();
-  return (feature!.getGeometry() as Point).getCoordinates();
+  return feature!;
+}
+
+function markerCoordinates(): number[] {
+  return (markerFeature().getGeometry() as Point).getCoordinates();
+}
+
+function markerImage(): string {
+  const style = markerFeature().getStyle() as Style;
+  return style.getImage()!.constructor.name;
 }
 
 function mountMarker() {
@@ -82,5 +92,12 @@ describe("OpenLayersSearchMarker", () => {
     mountMarker();
 
     expect(markerCoordinates()).toEqual([0, 0]);
+  });
+
+  it("draws the balloon pin", () => {
+    useSearchStore().setPinnedCoordinate([2600000, 1200000]);
+    mountMarker();
+
+    expect(markerImage()).toBe("Icon");
   });
 });

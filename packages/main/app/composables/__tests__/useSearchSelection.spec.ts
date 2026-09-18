@@ -107,6 +107,54 @@ describe("useSearchSelection", () => {
     ]);
   });
 
+  it("pins a place result, so the pin follows the map", async () => {
+    const { handleResultSelection } = useSearchSelection();
+    await handleResultSelection({
+      resultType: "LOCATION",
+      id: "location-matterhorn",
+      featureId: "matterhorn",
+      coordinate: [2617000, 1091000],
+      zoom: 9,
+    } as never);
+
+    expect(positionStore.setCenter).toHaveBeenCalledWith([2617000, 1091000], {
+      name: "search-result-selection",
+    });
+    expect(searchStore.setPinnedCoordinate).toHaveBeenCalledWith([
+      2617000, 1091000,
+    ]);
+  });
+
+  it("pins a feature result too", async () => {
+    const { handleResultSelection } = useSearchSelection();
+    await handleResultSelection({
+      resultType: "FEATURE",
+      id: "feature-1",
+      featureId: "1",
+      layerId: "ch.layer.one",
+      layerName: "Layer one",
+      coordinate: [2650000, 1200000],
+      zoom: 12,
+    } as never);
+
+    expect(searchStore.setPinnedCoordinate).toHaveBeenCalledWith([
+      2650000, 1200000,
+    ]);
+  });
+
+  it("leaves the pin where it is when a result carries no coordinate", async () => {
+    const { handleResultSelection } = useSearchSelection();
+    await handleResultSelection({
+      resultType: "LOCATION",
+      id: "location-nowhere",
+      featureId: "nowhere",
+      zoom: 9,
+    } as never);
+
+    expect(positionStore.setCenter).not.toHaveBeenCalled();
+    expect(searchStore.setPinnedCoordinate).not.toHaveBeenCalled();
+  });
+
   it("fetches the dataset and adds it to the map when a layer result is selected", async () => {
     fetchMock.mockResolvedValue({ id: "ch.layer.one" });
 
