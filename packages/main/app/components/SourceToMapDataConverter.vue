@@ -25,9 +25,9 @@ import MapDatamappingFileConverter from "@/components/map/datamapping/FileConver
 import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";
 import {
-  getOgcDistribution,
+  getOgcFeatureInfo,
   getUrlTemplate,
-} from "@/utils/stateToFeatureSelectionUtils";
+} from "@/utils/getOgcLinksForFeatures";
 
 const { sourceBgLayer, sourceData } = defineProps<{
   sourceBgLayer: SourceData | null | undefined;
@@ -65,14 +65,14 @@ async function updateMapLayerData(index: number, mapLayerData: MapLayer) {
     mapLayerData.uuid,
   );
   if (featuresSelected) {
-    const distribution = await getOgcDistribution(
+    const distributionFeature = await getOgcFeatureInfo(
       layerStore.getLayer(mapLayerData.uuid),
     );
-    if (distribution) {
+    if (distributionFeature) {
       const layerSource: LayerSource = {
         layerUuid: mapLayerData.uuid,
         layerId: mapLayerData.layerId,
-        distribution,
+        distributionFeature,
       };
       const urlTemplate = getUrlTemplate(layerSource);
       if (urlTemplate) {

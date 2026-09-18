@@ -19,7 +19,6 @@ import type {
   FeatureData,
   LayerRequest,
   LayerSource,
-  OgcDistribution,
   WMSLayerRequest,
 } from "@/types";
 
@@ -37,8 +36,6 @@ import identifyResponse from "./fixtures/identifyResponse_ch.astra.json";
 import identifyResponseEmpty from "./fixtures/identifyResponse_empty.json";
 import vectorFeaturesJson from "./fixtures/vectorFeatures.json";
 
-const distributionCollection =
-  distributionCollectionJson as unknown as OgcDistribution;
 const vectorFeatures = vectorFeaturesJson as unknown as {
   features: geojsonFeature[];
 };
@@ -359,7 +356,7 @@ describe("Feature Selection from layers and extent", () => {
           {
             layerUuid: "uuid-aborted",
             layerId: LAYER_ID,
-            distribution: distributionCollection,
+            distributionFeature: geoadminFeaturesDistribution,
           },
           {
             layerUuid: "uuid-ok",
@@ -402,7 +399,7 @@ describe("Feature Selection from layers and extent", () => {
           {
             layerUuid: "uuid-abort",
             layerId: LAYER_ID,
-            distribution: distributionCollection,
+            distributionFeature: geoadminFeaturesDistribution,
           },
         ],
         FEATURE_LIMIT,
@@ -536,7 +533,7 @@ describe("Feature Selection from layers and extent", () => {
         {
           layerUuid: "uuid-fail",
           layerId: LAYER_ID,
-          distribution: distributionCollection,
+          distributionFeature: geoadminFeaturesDistribution,
         },
         {
           layerUuid: "uuid-ok",
@@ -573,7 +570,7 @@ describe("Feature Selection from layers and extent", () => {
       expect(store.hasSelectedFeatures).toBe(false);
     });
 
-    it("parses a real OGC distribution end-to-end (ignores wmts/wms distributions)", async () => {
+    it("parses a real geoadmin:features distribution feature end-to-end", async () => {
       fetchSpy.mockImplementation((url: string) => {
         if (url.includes("/identify")) {
           return Promise.resolve(mockResponse(identifyResponse));
@@ -585,7 +582,7 @@ describe("Feature Selection from layers and extent", () => {
         {
           layerUuid: "uuid-ogc",
           layerId: LAYER_ID,
-          distribution: distributionCollection,
+          distributionFeature: geoadminFeaturesDistribution,
         },
       ]);
 
@@ -998,7 +995,7 @@ describe("Feature Selection from layers and extent", () => {
         {
           layerUuid: "uuid-dual",
           layerId: LAYER_ID,
-          distribution: distributionCollection,
+          distributionFeature: geoadminFeaturesDistribution,
         },
       ]);
 
