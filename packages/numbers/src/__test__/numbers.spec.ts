@@ -87,19 +87,26 @@ describe("Unit test functions from numbers utils", () => {
     it("returns 0 when invalid start and end are provided", () => {
       expect(randomIntBetween(2, 1)).to.be.eq(0);
     });
+    // the draws are asserted through their bounds: one assertion over all of
+    // them says the same as one per draw, and does not cost a matcher each time
+    const draw = (start: number, end: number, times: number) =>
+      Array.from({ length: times }, () => randomIntBetween(start, end));
+
     it("returns random value according to the given range", () => {
       const start = 0;
       const end = 1000;
-      for (let i = 0; i < 1000; i += 1) {
-        expect(randomIntBetween(start, end)).to.be.within(start, end);
-      }
+      const values = draw(start, end, 1000);
+
+      expect(Math.min(...values)).to.be.at.least(start);
+      expect(Math.max(...values)).to.be.at.most(end);
     });
     it("returns random value according to the given range when starting elsewhere than 0", () => {
       const start = 2165123;
       const end = 2565228;
-      for (let i = 0; i < 10000; i += 1) {
-        expect(randomIntBetween(start, end)).to.be.within(start, end);
-      }
+      const values = draw(start, end, 10000);
+
+      expect(Math.min(...values)).to.be.at.least(start);
+      expect(Math.max(...values)).to.be.at.most(end);
     });
   });
 

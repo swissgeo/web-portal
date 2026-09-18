@@ -18,6 +18,7 @@ const { handleResultSelection } = useSearchSelection();
 const isOpen = defineModel<boolean>("open", { default: false });
 
 const resultsRef = ref<HTMLElement | null>(null);
+const activeTab = ref("map");
 
 const query = computed({
   get: () => searchStore.query,
@@ -25,19 +26,6 @@ const query = computed({
     void debouncedSearch(value);
   },
 });
-
-const tabs = computed(() => [
-  {
-    label: t("search.map_tab"),
-    badge: searchStore.results.length || undefined,
-    slot: "map" as const,
-  },
-  {
-    label: t("search.content_pages_tab"),
-    badge: 0,
-    slot: "contentPages" as const,
-  },
-]);
 
 const locationResults = computed(() =>
   searchStore.results.filter((r) => r.resultType === "LOCATION"),
@@ -57,9 +45,32 @@ const karteResults = computed(() => [
   { id: "layers", results: layerResults.value },
 ]);
 
+const tabs = computed(() => [
+  {
+    label: t("search.map_tab"),
+    badge: searchStore.mapResults.length || undefined,
+    slot: "map" as const,
+    value: "map",
+  },
+  {
+    label: t("search.content_pages_tab"),
+    badge: searchStore.contentResults.length || undefined,
+    slot: "contentPages" as const,
+    value: "content",
+  },
+]);
+
 const debouncedSearch = useDebounceFn((value: string) => {
   void searchStore.setSearchQuery(value, locale.value);
 }, 100);
+
+// every source searches in one language, so a locale change leaves the
+// results of the previous one behind until the query is run again
+watch(locale, (value) => {
+  if (searchStore.query.length >= 2) {
+    void searchStore.setSearchQuery(searchStore.query, value);
+  }
+});
 
 // a coordinate needs no confirmation: the map goes there as soon as the query
 // is recognized as one, there is no entry to select
@@ -76,7 +87,7 @@ watch(
   () => searchStore.hasResults,
   (hasResults) => {
     if (hasResults && query.value.length >= 2) {
-      isOpen.value = true;
+      openResults();
     }
   },
 );
@@ -96,16 +107,27 @@ function handleSelect(result: SearchResult) {
   isOpen.value = false;
 }
 
+// the map tab is the default one, and would claim there is nothing when the
+// hits are all CMS pages
+function openResults() {
+  if (!searchStore.hasMapResults && searchStore.contentResults.length > 0) {
+    activeTab.value = "content";
+  }
+  isOpen.value = true;
+}
+
 function handleClick() {
   if (query.value.length >= 2 && searchStore.hasResults) {
-    isOpen.value = true;
+    openResults();
   }
 }
 
+// only the map tab holds the focusable list, the CMS results have their own tab
 function focusFirstResult() {
-  if (!searchStore.hasResults) {
+  if (!searchStore.hasMapResults) {
     return;
   }
+  activeTab.value = "map";
   isOpen.value = true;
   void nextTick(() => {
     resultsRef.value?.querySelector<HTMLElement>("li")?.focus();
@@ -163,10 +185,10 @@ function clearSearch() {
     </template>
 
     <template #content>
-      <UTabs :items="tabs" size="sm">
+      <UTabs v-model="activeTab" :items="tabs" size="sm">
         <template #map>
           <div
-            v-if="searchStore.hasResults"
+            v-if="searchStore.hasMapResults"
             ref="resultsRef"
             class="max-h-96 overflow-y-auto"
             data-testid="search-results"
@@ -182,7 +204,9 @@ function clearSearch() {
           </div>
           <div
             v-else-if="
-              searchStore.query.length >= 2 && !searchStore.isSearching
+              !searchStore.hasMapResults &&
+              searchStore.query.length >= 2 &&
+              !searchStore.isSearching
             "
             class="text-surface-500 p-4 text-center"
           >
@@ -194,8 +218,26 @@ function clearSearch() {
         </template>
 
         <template #contentPages>
-          <div class="text-surface-500 p-4 text-center">
+          <!-- No category header here: the tab label already names it. -->
+          <SearchCategory
+            v-if="searchStore.contentResults.length > 0"
+            class="max-h-96 overflow-y-auto"
+            data-testid="content-search-results"
+            :results="searchStore.contentResults"
+            @select="handleSelect"
+          />
+          <div
+            v-else-if="
+              searchStore.contentResults.length === 0 &&
+              searchStore.query.length >= 2 &&
+              !searchStore.isSearching
+            "
+            class="text-surface-500 p-4 text-center"
+          >
             {{ t("search.no_results") }}
+          </div>
+          <div v-else class="text-surface-500 p-4">
+            {{ t("search.placeholder") }}
           </div>
         </template>
       </UTabs>
