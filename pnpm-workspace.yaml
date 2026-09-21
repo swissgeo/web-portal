@@ -13,7 +13,7 @@ overrides:
   proj4: 2.22.0
   # vue and @vue/server-renderer depend on each other, so two copies of vue in
   # the tree give Nitro a symlink cycle to walk and the build dies with ELOOP.
-  vue: 3.5.42
+  vue: 3.5.43
 
 allowBuilds:
   "@parcel/watcher": false
@@ -99,7 +99,7 @@ catalog:
   happy-dom: 20.14.5
   h3: ^1.15.11
   jsdom: ^30.0.1
-  mapbox-gl: ~3.30.0
+  mapbox-gl: ~3.31.0
   msw: ^2.14.6
   nuxt: ^4.5.2
   ol: ^10.9.0
