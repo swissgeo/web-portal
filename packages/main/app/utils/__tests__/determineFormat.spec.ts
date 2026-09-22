@@ -5,6 +5,18 @@ import { describe, expect, it } from "vitest";
 import { determineFormat } from "../determineFormat";
 
 describe("determineFormat", () => {
+  it("returns no map format for STAC", () => {
+    expect(
+      determineFormat({
+        properties: { type: "Distribution", protocol: "ogcapi:stac" },
+      }),
+    ).toBeNull();
+  });
+
+  it("returns no format without a distribution", () => {
+    expect(determineFormat(null)).toBeNull();
+  });
+
   it.each([
     ["OGC:WMTS" as const, "WMTS"],
     ["OGC:WMS" as const, "WMS"],

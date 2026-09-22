@@ -6,8 +6,7 @@ import {
   useDistributionCollection,
   useService,
 } from "@swissgeo/ogc";
-
-import { determineFormat } from "./determineFormat";
+import { determineFormat } from "~/utils/determineFormat";
 
 export function useGenericOgcData(
   layer: Ref<DatasetLayer>,
