@@ -1,8 +1,7 @@
 <script setup lang="ts">
 /**
  * Marks the location the user searched for with a balloon pin, the way
- * map.geo.admin.ch marks its pinned location. The crosshair it also knows is a
- * different feature there, driven by the `crosshair` URL parameter.
+ * map.geo.admin.ch marks its pinned location.
  */
 import type { Map } from "ol";
 import type { Ref } from "vue";
