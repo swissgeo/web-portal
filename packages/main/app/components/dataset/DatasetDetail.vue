@@ -17,6 +17,15 @@ const props = defineProps<{
   distributionCollection: DistributionCollection | null;
 }>();
 
+const contacts = computed(() =>
+  (props.dataset.properties.contacts ?? []).filter(
+    (contact) =>
+      contact.organization?.trim() ||
+      contact.role?.trim() ||
+      contact.country?.trim(),
+  ),
+);
+
 const EXCLUDED_LINK_RELS = new Set(["self", "collection", "distributions"]);
 
 const displayLinks = computed<Link[]>(() => {
@@ -39,29 +48,37 @@ const serviceDistributions = computed<Distribution[]>(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
-    <section v-if="dataset.properties.description">
-      <h3 class="mb-2 text-base font-normal">
-        {{ $t("dataset.abstract") }}
-      </h3>
-      <p class="text-sm leading-relaxed" data-testid="dataset-description">
-        {{ dataset.properties.description }}
-      </p>
-    </section>
-
-    <section
-      v-if="dataset.properties.contacts?.length"
-      data-testid="dataset-contacts"
+  <div class="@container flex flex-col gap-6">
+    <div
+      v-if="dataset.properties.description || contacts.length"
+      class="grid gap-space-m"
+      :class="{
+        '@xl:grid-cols-2': dataset.properties.description && contacts.length,
+      }"
     >
-      <h3 class="mb-2 text-base font-normal">
-        {{ $t("dataset.contacts") }}
-      </h3>
-      <ul class="flex flex-col gap-3">
-        <li v-for="(contact, i) in dataset.properties.contacts" :key="i">
-          <DatasetContact :contact="contact" />
-        </li>
-      </ul>
-    </section>
+      <section v-if="dataset.properties.description">
+        <h3 class="mb-space-s text-base font-semibold text-highlighted">
+          {{ $t("dataset.abstract") }}
+        </h3>
+        <p
+          class="text-base leading-normal wrap-anywhere whitespace-pre-line text-default"
+          data-testid="dataset-description"
+        >
+          {{ dataset.properties.description }}
+        </p>
+      </section>
+
+      <section v-if="contacts.length" data-testid="dataset-contacts">
+        <h3 class="mb-space-s text-base font-semibold text-highlighted">
+          {{ $t("dataset.contacts") }}
+        </h3>
+        <ul class="flex flex-col gap-space-s">
+          <li v-for="(contact, i) in contacts" :key="i">
+            <DatasetContact :contact="contact" />
+          </li>
+        </ul>
+      </section>
+    </div>
 
     <section v-if="displayLinks.length">
       <h3 class="mb-2 text-base font-normal">
