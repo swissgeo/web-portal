@@ -41,9 +41,13 @@ const serviceDistributions = computed<Distribution[]>(() => {
   if (!props.distributionCollection?.features) {
     return [];
   }
-  return props.distributionCollection.features.filter(
-    (d) => d.properties.protocol?.toLowerCase() !== "ogc:geojson",
-  );
+  return props.distributionCollection.features.filter((distribution) => {
+    const protocol = distribution.properties.protocol?.toLowerCase();
+    return (
+      distribution.properties.metaInformation !== true &&
+      (protocol === "ogc:wms" || protocol === "ogc:wmts")
+    );
+  });
 });
 </script>
 
