@@ -71,7 +71,7 @@ function addToMap() {
 <template>
   <NuxtLayout>
     <div class="h-full overflow-y-auto">
-      <article class="mx-auto max-w-3xl px-4 py-8">
+      <article class="mx-auto max-w-3xl px-4 py-8 lg:max-w-6xl">
         <nav class="mb-6 flex items-center justify-between">
           <UButton
             :to="localePath('/map')"
