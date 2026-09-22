@@ -1,4 +1,9 @@
-import type { Contact, Dataset, DistributionCollection } from "@swissgeo/ogc";
+import type {
+  Contact,
+  Dataset,
+  Distribution,
+  DistributionCollection,
+} from "@swissgeo/ogc";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
@@ -82,6 +87,83 @@ describe("DatasetDetail Overview", () => {
 
     expect(wrapper.findComponent(DatasetContact).exists()).toBe(false);
     expect(wrapper.text()).toContain("New description");
+  });
+
+  it.each<{ properties: Distribution["properties"]; visible: boolean }>([
+    {
+      properties: {
+        type: "Distribution",
+        title: "Data",
+        protocol: "ogc:wms",
+        metaInformation: false,
+      },
+      visible: true,
+    },
+    {
+      properties: { type: "Distribution", title: "Data", protocol: "ogc:wmts" },
+      visible: true,
+    },
+    {
+      properties: {
+        type: "Distribution",
+        title: "Availability",
+        protocol: "ogc:wms",
+        metaInformation: true,
+      },
+      visible: false,
+    },
+    {
+      properties: {
+        type: "Distribution",
+        title: "Availability",
+        protocol: "ogc:wmts",
+        metaInformation: true,
+      },
+      visible: false,
+    },
+    {
+      properties: {
+        type: "Distribution",
+        title: "GeoJSON",
+        protocol: "ogc:geojson",
+      },
+      visible: false,
+    },
+    { properties: { type: "Distribution", title: "Unknown" }, visible: false },
+  ])("shows only data services: $properties", ({ properties, visible }) => {
+    const distribution: Distribution = { id: "service", properties };
+    const wrapper = mountDetail(makeDataset(), {
+      type: "FeatureCollection",
+      links: [],
+      features: [distribution],
+    });
+
+    const services = wrapper.findComponent(DatasetServiceList);
+    expect(services.exists()).toBe(visible);
+    if (visible) {
+      expect(services.props("distributions")).toEqual([distribution]);
+    }
+  });
+
+  it("keeps distinct data layers that use the same service", () => {
+    const features: Distribution[] = ["first-layer", "second-layer"].map(
+      (id) => ({
+        id,
+        properties: { type: "Distribution", title: id, protocol: "ogc:wms" },
+        links: [
+          { rel: "dataservice", href: "https://example.com/shared-service" },
+        ],
+      }),
+    );
+    const wrapper = mountDetail(makeDataset(), {
+      type: "FeatureCollection",
+      links: [],
+      features,
+    });
+
+    expect(
+      wrapper.getComponent(DatasetServiceList).props("distributions"),
+    ).toEqual(features);
   });
 
   it("preserves the existing link and service inputs", () => {
