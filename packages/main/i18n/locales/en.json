@@ -325,6 +325,11 @@
     }
   },
   "dataset": {
+    "legendLoading": "Loading legend…",
+    "legendError": "The legend could not be loaded.",
+    "overview": "Overview",
+    "dataAccess": "Data access",
+    "metadata": "Metadata",
     "serviceLoading": "Loading service address…",
     "serviceError": "The service address could not be loaded.",
     "abstract": "Abstract",

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { TabsItem } from "@nuxt/ui";
 import type {
   Dataset,
   DistributionCollection,
@@ -6,16 +7,41 @@ import type {
   Link,
 } from "@swissgeo/ogc";
 
+import { resolveWebUrl } from "~/utils/resolveWebUrl";
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 
 import DatasetContact from "./DatasetContact.vue";
+import DatasetLegend from "./DatasetLegend.vue";
 import DatasetLinkList from "./DatasetLinkList.vue";
 import DatasetServiceList from "./DatasetServiceList.vue";
+
+const GEOCAT_HOSTNAMES = ["geocat.ch", "www.geocat.ch"];
 
 const props = defineProps<{
   dataset: Dataset;
   distributionCollection: DistributionCollection | null;
 }>();
+
+const { t } = useI18n();
+const tabs = computed<TabsItem[]>(() => [
+  {
+    label: t("dataset.overview"),
+    value: "overview",
+    slot: "overview",
+  },
+  { label: t("layers.legend.title"), value: "legend", slot: "legend" },
+  {
+    label: t("dataset.dataAccess"),
+    value: "data-access",
+    slot: "data-access",
+  },
+  {
+    label: t("dataset.metadata"),
+    value: "metadata",
+    slot: "metadata",
+  },
+]);
 
 const contacts = computed(() =>
   (props.dataset.properties.contacts ?? []).filter(
@@ -26,15 +52,15 @@ const contacts = computed(() =>
   ),
 );
 
-const EXCLUDED_LINK_RELS = new Set(["self", "collection", "distributions"]);
-
-const displayLinks = computed<Link[]>(() => {
-  if (!props.dataset.links) {
-    return [];
-  }
-  return props.dataset.links.filter(
-    (l) => !EXCLUDED_LINK_RELS.has(l.rel?.toLowerCase() ?? ""),
-  );
+const metadataLinks = computed<Link[]>(() => {
+  return (props.dataset.links ?? []).filter((link) => {
+    const href = resolveWebUrl(link.href);
+    if (!href) {
+      return false;
+    }
+    const { hostname } = new URL(href);
+    return GEOCAT_HOSTNAMES.includes(hostname);
+  });
 });
 
 const serviceDistributions = computed<Distribution[]>(() => {
@@ -54,50 +80,63 @@ const serviceDistributions = computed<Distribution[]>(() => {
 </script>
 
 <template>
-  <div class="@container flex flex-col gap-6">
-    <div
-      v-if="dataset.properties.description || contacts.length"
-      class="grid gap-space-m"
-      :class="{
-        '@xl:grid-cols-2': dataset.properties.description && contacts.length,
-      }"
-    >
-      <section v-if="dataset.properties.description">
-        <h3 class="mb-space-s text-base font-semibold text-highlighted">
-          {{ $t("dataset.abstract") }}
-        </h3>
-        <p
-          class="text-base leading-normal wrap-anywhere whitespace-pre-line text-default"
-          data-testid="dataset-description"
-        >
-          {{ dataset.properties.description }}
-        </p>
-      </section>
+  <UTabs
+    :key="dataset.id"
+    :items="tabs"
+    default-value="overview"
+    :unmount-on-hide="false"
+    :ui="{ list: 'overflow-x-auto overflow-y-hidden', trigger: 'shrink-0' }"
+    class="@container w-full gap-space-m"
+  >
+    <template #overview>
+      <div
+        v-if="dataset.properties.description || contacts.length"
+        class="grid gap-space-m"
+        :class="{
+          '@xl:grid-cols-2': dataset.properties.description && contacts.length,
+        }"
+      >
+        <section v-if="dataset.properties.description">
+          <h3 class="mb-space-s text-base font-semibold text-highlighted">
+            {{ $t("dataset.abstract") }}
+          </h3>
+          <p
+            class="text-base leading-normal wrap-anywhere whitespace-pre-line text-default"
+            data-testid="dataset-description"
+          >
+            {{ dataset.properties.description }}
+          </p>
+        </section>
 
-      <section v-if="contacts.length" data-testid="dataset-contacts">
-        <h3 class="mb-space-s text-base font-semibold text-highlighted">
-          {{ $t("dataset.contacts") }}
-        </h3>
-        <ul class="flex flex-col gap-space-s">
-          <li v-for="(contact, i) in contacts" :key="i">
-            <DatasetContact :contact="contact" />
-          </li>
-        </ul>
-      </section>
-    </div>
+        <section v-if="contacts.length" data-testid="dataset-contacts">
+          <h3 class="mb-space-s text-base font-semibold text-highlighted">
+            {{ $t("dataset.contacts") }}
+          </h3>
+          <ul class="flex flex-col gap-space-s">
+            <li v-for="(contact, i) in contacts" :key="i">
+              <DatasetContact :contact="contact" />
+            </li>
+          </ul>
+        </section>
+      </div>
+    </template>
 
-    <section v-if="displayLinks.length">
-      <h3 class="mb-2 text-base font-normal">
-        {{ $t("dataset.links") }}
-      </h3>
-      <DatasetLinkList :links="displayLinks" />
-    </section>
+    <template #legend>
+      <DatasetLegend
+        :dataset="dataset"
+        :distribution-collection="distributionCollection"
+      />
+    </template>
 
-    <section v-if="serviceDistributions.length">
-      <h3 class="mb-2 text-base font-normal">
-        {{ $t("dataset.services") }}
-      </h3>
-      <DatasetServiceList :distributions="serviceDistributions" />
-    </section>
-  </div>
+    <template #data-access>
+      <DatasetServiceList
+        v-if="serviceDistributions.length"
+        :distributions="serviceDistributions"
+      />
+    </template>
+
+    <template #metadata>
+      <DatasetLinkList v-if="metadataLinks.length" :links="metadataLinks" />
+    </template>
+  </UTabs>
 </template>

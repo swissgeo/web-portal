@@ -326,6 +326,11 @@
     }
   },
   "dataset": {
+    "legendLoading": "Legende wird geladen…",
+    "legendError": "Die Legende konnte nicht geladen werden.",
+    "overview": "Überblick",
+    "dataAccess": "Datenbezug",
+    "metadata": "Metadaten",
     "serviceLoading": "Dienstadresse wird geladen…",
     "serviceError": "Die Dienstadresse konnte nicht geladen werden.",
     "abstract": "Beschreibung",

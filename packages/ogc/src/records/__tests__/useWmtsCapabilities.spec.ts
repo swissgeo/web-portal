@@ -1,13 +1,16 @@
 import type { WmtsLayer } from "@camptocamp/ogc-client";
 
 import { flushPromises } from "@vue/test-utils";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
 import type { Service } from "@/types";
 
 import { useWmtsCapabilities } from "../useWmtsCapabilities";
 import ChGeoadminWmts from "./fixtures/service_ch.admin.geo.wmts.json";
+
+const { readiness } = vi.hoisted(() => ({ readiness: vi.fn() }));
+beforeEach(() => readiness.mockReset());
 
 vi.mock("@camptocamp/ogc-client", () => {
   function getLayerByName(name: string): WmtsLayer | undefined {
@@ -37,7 +40,7 @@ vi.mock("@camptocamp/ogc-client", () => {
     WmtsEndpoint: class {
       constructor(_url: string) {}
       isReady() {
-        return Promise.resolve({ getLayerByName });
+        return readiness() ?? Promise.resolve({ getLayerByName });
       }
     },
   };
@@ -49,6 +52,30 @@ describe(
   "useWmtsCapabilities fetching and parsing WMTS capabilities",
   { timeout: 30_000 },
   () => {
+    it("reports a pending request and its failure", async () => {
+      let rejectRequest!: (reason: Error) => void;
+      readiness.mockReturnValueOnce(
+        new Promise((_resolve, reject) => {
+          rejectRequest = reject;
+        }),
+      );
+      const failure = new Error("Unavailable capabilities");
+      const onError = vi.fn();
+      const result = useWmtsCapabilities(
+        ref<Service>(ChGeoadminWmts as Service),
+        ref("layer"),
+        onError,
+      );
+      await flushPromises();
+      expect(result.isFetching.value).toBe(true);
+      expect(result.error.value).toBeNull();
+      rejectRequest(failure);
+      await flushPromises();
+      expect(result.isFetching.value).toBe(false);
+      expect(result.error.value).toBe(failure);
+      expect(onError).toHaveBeenCalledWith(failure);
+    });
+
     it("parses the WMTS capabilities into an ogc-client endpoint", async () => {
       const service = ref<Service>(ChGeoadminWmts as Service);
       const layerId = ref("ch.bafu.radonkarte");

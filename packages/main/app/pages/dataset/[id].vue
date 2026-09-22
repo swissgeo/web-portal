@@ -102,7 +102,7 @@ function addToMap() {
 
         <template v-if="dataset">
           <h1
-            class="mb-8 pb-8 text-2xl font-bold text-primary"
+            class="mb-space-m text-2xl font-bold text-primary"
             data-testid="dataset-title"
           >
             {{ dataset.properties.title }}
