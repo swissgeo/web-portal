@@ -93,6 +93,14 @@ describe("DatasetDetail Overview", () => {
     {
       properties: {
         type: "Distribution",
+        title: "Downloads",
+        protocol: "ogcapi:stac",
+      },
+      visible: true,
+    },
+    {
+      properties: {
+        type: "Distribution",
         title: "Data",
         protocol: "ogc:wms",
         metaInformation: false,

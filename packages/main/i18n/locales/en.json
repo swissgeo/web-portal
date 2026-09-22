@@ -325,6 +325,8 @@
     }
   },
   "dataset": {
+    "serviceLoading": "Loading service address…",
+    "serviceError": "The service address could not be loaded.",
     "abstract": "Abstract",
     "contacts": "Contacts",
     "links": "Links",

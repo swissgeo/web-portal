@@ -90,4 +90,8 @@ export interface Contact {
   organization: string;
 }
 
-export type ServiceProtocol = "ogc:wmts" | "ogc:wms" | "ogc:geojson";
+export type ServiceProtocol =
+  | "ogc:wmts"
+  | "ogc:wms"
+  | "ogc:geojson"
+  | "ogcapi:stac";
