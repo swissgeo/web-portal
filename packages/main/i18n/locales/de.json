@@ -342,6 +342,8 @@
     "alreadyOnMap": "Bereits auf der Karte",
     "viewDetailPage": "Detailseite anzeigen",
     "showOnMap": "Auf der Karte anzeigen",
+    "backToCatalog": "Zurück zum Datenkatalog",
+    "close": "Datensatzdetails schliessen",
     "backToMap": "Zurück zur Karte",
     "addToMapError": "Ebene konnte nicht zur Karte hinzugefügt werden"
   },

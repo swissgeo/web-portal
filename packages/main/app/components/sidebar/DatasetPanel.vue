@@ -6,7 +6,10 @@ import { computed } from "vue";
 
 const props = defineProps<{
   detailPagePath?: string;
+  backToCatalog?: boolean;
 }>();
+
+const emit = defineEmits<{ back: []; close: [] }>();
 
 const datasetPanelStore = useDatasetPanelStore();
 const layerStore = useLayerStore();
@@ -24,6 +27,13 @@ const isAlreadyOnMap = computed(() => {
 
 const toast = useToaster();
 const { t } = useI18n();
+
+const backLabel = computed(() => {
+  if (props.backToCatalog) {
+    return t("dataset.backToCatalog");
+  }
+  return t("dataset.backToMap");
+});
 
 function addToMap() {
   if (!dataset.value || isAlreadyOnMap.value) {
@@ -45,20 +55,33 @@ function addToMap() {
 </script>
 
 <template>
-  <USlideover
-    v-model:open="datasetPanelStore.isOpen"
-    :modal="false"
-    :overlay="false"
-    :dismissible="false"
-    :title="dataset?.properties.title ?? ''"
-    side="right"
-    @update:open="
-      (v) => {
-        if (!v) datasetPanelStore.closeDatasetPanel();
-      }
-    "
+  <section
+    class="flex h-full min-h-0 flex-col border-r border-default bg-default"
+    aria-labelledby="dataset-panel-title"
+    data-testid="dataset-panel"
   >
-    <template #body>
+    <header class="flex flex-col gap-space-m p-space-m">
+      <div class="flex items-center justify-between gap-space-s">
+        <UButton
+          icon="i-lucide-arrow-left"
+          variant="ghost"
+          @click="emit('back')"
+        >
+          {{ backLabel }}
+        </UButton>
+        <UButton
+          icon="i-lucide-x"
+          color="neutral"
+          variant="ghost"
+          :aria-label="$t('dataset.close')"
+          @click="emit('close')"
+        />
+      </div>
+      <h1 id="dataset-panel-title" class="text-2xl font-bold text-primary">
+        {{ dataset?.properties.title }}
+      </h1>
+    </header>
+    <div class="min-h-0 flex-1 overflow-y-auto px-space-m pb-space-m">
       <div v-if="isLoading" class="flex h-full items-center justify-center">
         <UIcon
           name="i-lucide-loader-circle"
@@ -78,9 +101,11 @@ function addToMap() {
         :dataset="dataset"
         :distribution-collection="distributionCollection ?? null"
       />
-    </template>
+    </div>
 
-    <template #footer>
+    <footer
+      class="flex flex-wrap gap-space-s border-t border-default p-space-m"
+    >
       <UButton
         v-if="dataset && !isAlreadyOnMap"
         icon="i-lucide-map"
@@ -108,6 +133,6 @@ function addToMap() {
       >
         {{ $t("dataset.viewDetailPage") }}
       </UButton>
-    </template>
-  </USlideover>
+    </footer>
+  </section>
 </template>
