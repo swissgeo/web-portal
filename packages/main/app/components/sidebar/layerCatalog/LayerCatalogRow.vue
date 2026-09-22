@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { Dataset } from "@swissgeo/ogc";
 
-import { useDatasetPanelStore } from "@swissgeo/skeleton";
 import { useI18n } from "vue-i18n";
 
 const { dataset } = defineProps<{
@@ -9,7 +8,8 @@ const { dataset } = defineProps<{
 }>();
 
 const { t } = useI18n();
-const datasetPanelStore = useDatasetPanelStore();
+const localePath = useLocalePath();
+const detailPath = computed(() => localePath(`/dataset/${dataset.id}`));
 
 const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
 
@@ -74,7 +74,7 @@ function setOnMap(onMap: boolean): void {
         class="flex cursor-pointer p-0"
         :title="t('layers.info')"
         :aria-label="t('layers.info')"
-        @click="datasetPanelStore.openDatasetPanel(dataset.id)"
+        :to="detailPath"
       />
     </td>
   </tr>

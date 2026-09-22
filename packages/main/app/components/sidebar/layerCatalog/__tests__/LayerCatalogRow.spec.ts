@@ -1,30 +1,22 @@
 import type { Contact, Dataset } from "@swissgeo/ogc";
 
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import LayerCatalogRow from "~/components/sidebar/layerCatalog/LayerCatalogRow.vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 
-const { datasetLayer, useDatasetLayerMock, datasetPanelStore } =
-  await vi.hoisted(async () => {
-    const { ref } = await import("vue");
-    const datasetLayer = {
-      isOnMap: ref(false),
-      addToMap: vi.fn(),
-      removeFromMap: vi.fn(),
-    };
-    return {
-      datasetLayer,
-      useDatasetLayerMock: vi.fn((_dataset: () => unknown) => datasetLayer),
-      datasetPanelStore: { openDatasetPanel: vi.fn() },
-    };
-  });
+const useDatasetLayerMock = vi.hoisted(() => vi.fn());
+const datasetLayer = {
+  isOnMap: ref(false),
+  addToMap: vi.fn(),
+  removeFromMap: vi.fn(),
+};
 
 vi.mock("~/composables/useDatasetLayer", () => ({
   useDatasetLayer: useDatasetLayerMock,
 }));
-vi.mock("@swissgeo/skeleton", () => ({
-  useDatasetPanelStore: () => datasetPanelStore,
-}));
+mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
@@ -36,7 +28,11 @@ const stubs = {
     emits: ["update:modelValue"],
     template: `<button role="switch" v-bind="$attrs" :aria-checked="String(modelValue)" @click="$emit('update:modelValue', !modelValue)" /><label>{{ label }}</label>`,
   },
-  UButton: { inheritAttrs: false, template: "<button v-bind='$attrs' />" },
+  UButton: {
+    inheritAttrs: false,
+    props: ["to"],
+    template: "<a :href='to' v-bind='$attrs' />",
+  },
 };
 
 function makeDataset(id = "ch.a", contacts?: Contact[]): Dataset {
@@ -61,6 +57,7 @@ function dataOwnerCell(wrapper: ReturnType<typeof mountRow>) {
 describe("LayerCatalogRow.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    useDatasetLayerMock.mockReturnValue(datasetLayer);
     datasetLayer.isOnMap.value = false;
   });
 
@@ -157,11 +154,12 @@ describe("LayerCatalogRow.vue", () => {
     expect(currentDataset()).toEqual(makeDataset("ch.b"));
   });
 
-  it("opens the info panel of the layer", async () => {
+  it("links to the localized dataset URL and follows dataset changes", async () => {
     const wrapper = mountRow();
-
-    await wrapper.get("[data-testid='catalog-layer-info']").trigger("click");
-
-    expect(datasetPanelStore.openDatasetPanel).toHaveBeenCalledWith("ch.a");
+    const info = () => wrapper.get("[data-testid='catalog-layer-info']");
+    expect(info().attributes("href")).toBe("/de/dataset/ch.a");
+    await wrapper.setProps({ dataset: makeDataset("ch.b") });
+    expect(info().attributes("href")).toBe("/de/dataset/ch.b");
+    expect(datasetLayer.addToMap).not.toHaveBeenCalled();
   });
 });
