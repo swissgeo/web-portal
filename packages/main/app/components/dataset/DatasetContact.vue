@@ -17,10 +17,11 @@ const description = computed(() => {
   <UUser
     :name="contact.organization"
     :description="description"
-    :avatar="{
-      src: '',
-      alt: contact.organization,
-    }"
     size="xl"
+    class="rounded-lg border border-default bg-default p-space-m wrap-anywhere"
+    :ui="{
+      name: 'font-semibold',
+      description: 'mt-space-xs leading-small-text',
+    }"
   />
 </template>
