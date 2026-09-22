@@ -34,4 +34,28 @@ describe("icons client plugin", () => {
       "https://icons.test/sets.json",
     );
   });
+
+  it("allows startup to finish while icon loading is pending", async () => {
+    let finishLoading!: () => void;
+    loadIconSetsMock.mockReturnValue(
+      new Promise<void>((resolve) => {
+        finishLoading = resolve;
+      }),
+    );
+
+    let startupFinished = false;
+    const startup = Promise.resolve(iconsPlugin.setup?.({} as never)).then(
+      () => {
+        startupFinished = true;
+      },
+    );
+
+    await Promise.resolve();
+    try {
+      expect(startupFinished).toBe(true);
+    } finally {
+      finishLoading();
+      await startup;
+    }
+  });
 });
