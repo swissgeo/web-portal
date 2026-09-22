@@ -43,29 +43,42 @@ function setOnMap(onMap: boolean): void {
 </script>
 
 <template>
-  <tr
-    class="hover:bg-accent-50 dark:hover:bg-accent-800 border-b border-accented align-top last:border-b-0"
+  <div
+    role="row"
+    class="hover:bg-accent-50 dark:hover:bg-accent-800 col-span-full grid grid-cols-subgrid border-b border-accented last:border-b-0"
     :class="isOnMap ? 'text-highlighted' : 'text-toned'"
   >
-    <td class="px-2 py-4" :title="dataset.properties.title">
+    <div
+      role="cell"
+      class="min-w-0 px-2 py-4"
+      :title="dataset.properties.title"
+    >
       <USwitch
         data-testid="catalog-layer-on-map"
         size="xs"
         color="accent"
         checked-icon="i-lucide-check"
         :label="dataset.properties.title"
+        :description="provider?.organization"
         :ui="{
           wrapper: 'ms-4 min-w-0 text-sm',
-          label: 'cursor-pointer truncate font-bold text-inherit',
+          label:
+            'cursor-pointer font-bold text-inherit max-md:line-clamp-2 md:truncate',
+          // Description is used instead of the `owner` column on mobile, so hidden on desktop
+          description: 'line-clamp-2 font-medium text-inherit md:hidden',
         }"
         :model-value="isOnMap"
         @update:model-value="setOnMap"
       />
-    </td>
-    <td class="truncate px-2 py-4 font-medium" :title="providerTitleText">
+    </div>
+    <div
+      role="cell"
+      class="hidden truncate px-2 py-4 font-medium md:block"
+      :title="providerTitleText"
+    >
       {{ provider?.organization }}
-    </td>
-    <td class="py-4 pr-2">
+    </div>
+    <div role="cell" class="py-4 pr-2">
       <UButton
         data-testid="catalog-layer-info"
         icon="i-lucide-info"
@@ -76,6 +89,6 @@ function setOnMap(onMap: boolean): void {
         :aria-label="t('layers.info')"
         @click="datasetPanelStore.openDatasetPanel(dataset.id)"
       />
-    </td>
-  </tr>
+    </div>
+  </div>
 </template>
