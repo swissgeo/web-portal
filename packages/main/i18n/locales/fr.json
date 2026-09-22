@@ -325,6 +325,8 @@
     }
   },
   "dataset": {
+    "serviceLoading": "Chargement de l’adresse du service…",
+    "serviceError": "L’adresse du service n’a pas pu être chargée.",
     "abstract": "Résumé",
     "contacts": "Contacts",
     "links": "Liens",

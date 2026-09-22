@@ -13,10 +13,10 @@ defineProps<{
         :to="link.href"
         target="_blank"
         raw
-        class="flex items-center gap-1"
+        class="inline-flex max-w-full items-baseline gap-1"
       >
         <UIcon name="i-lucide-external-link" class="size-3 shrink-0" />
-        {{ link.title ?? link.href }}
+        <span class="wrap-anywhere">{{ link.title ?? link.href }}</span>
       </ULink>
     </li>
   </ul>

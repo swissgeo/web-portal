@@ -326,6 +326,8 @@
     }
   },
   "dataset": {
+    "serviceLoading": "Dienstadresse wird geladen…",
+    "serviceError": "Die Dienstadresse konnte nicht geladen werden.",
     "abstract": "Beschreibung",
     "contacts": "Kontakte",
     "links": "Links",

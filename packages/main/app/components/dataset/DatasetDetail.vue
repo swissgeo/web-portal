@@ -45,7 +45,9 @@ const serviceDistributions = computed<Distribution[]>(() => {
     const protocol = distribution.properties.protocol?.toLowerCase();
     return (
       distribution.properties.metaInformation !== true &&
-      (protocol === "ogc:wms" || protocol === "ogc:wmts")
+      (protocol === "ogc:wms" ||
+        protocol === "ogc:wmts" ||
+        protocol === "ogcapi:stac")
     );
   });
 });
