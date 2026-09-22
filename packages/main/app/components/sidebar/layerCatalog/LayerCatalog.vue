@@ -1,41 +1,23 @@
 <script lang="ts" setup>
-import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
-import { onKeyStroke } from "@vueuse/core";
-import { useI18n } from "vue-i18n";
-
 import LayerCatalogTable from "./LayerCatalogTable.vue";
 
-const uiStore = useSidebarStore();
-const { t } = useI18n();
-
-function closeLayerCatalog() {
-  uiStore.setSidebar(SidebarType.LAYER_CART);
-}
-
-onKeyStroke("Escape", closeLayerCatalog);
+const isDesktop = useIsDesktop();
+const panelScroller = usePanelScroller();
+const tableColumn = useTemplateRef<HTMLElement>("tableColumn");
+provide(
+  panelScrollerKey,
+  computed(() => (isDesktop.value ? tableColumn.value : panelScroller.value)),
+);
 </script>
 
 <template>
-  <div class="flex min-h-0 flex-1 flex-col">
+  <div class="flex min-h-full flex-col md:h-full md:flex-row">
     <div
-      class="flex items-center justify-between border-b border-default px-4 py-3"
+      class="mx-4 border-y border-default py-3 md:mx-0 md:w-75 md:shrink-0 md:overflow-y-auto md:border-y-0 md:border-r md:px-4"
     >
-      <h3 class="text-sm text-highlighted uppercase">
-        {{ t("layerCatalog.title") }}
-      </h3>
-      <UButton
-        color="primary"
-        variant="outline"
-        size="xs"
-        trailing-icon="i-lucide-x"
-        class="cursor-pointer"
-        @click="closeLayerCatalog"
-      >
-        {{ t("layerCatalog.close") }}
-      </UButton>
+      <!-- TODO: Add catalog tree here -->
     </div>
-    <div class="flex min-h-0 flex-1">
-      <div class="w-75 border-r border-default px-2 py-3"></div>
+    <div ref="tableColumn" class="min-w-0 flex-1 md:overflow-y-auto">
       <LayerCatalogTable />
     </div>
   </div>

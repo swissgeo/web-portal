@@ -19,7 +19,7 @@ const { state, hasMore, loadMore, retry } = useOgcCatalog(
 
 const datasets = computed<Dataset[]>(() => state.value.data?.features ?? []);
 
-const scroller = useTemplateRef("scroller");
+const scroller = usePanelScroller();
 
 useInfiniteScroll(scroller, loadMore, {
   distance: 200,
@@ -28,84 +28,87 @@ useInfiniteScroll(scroller, loadMore, {
 </script>
 
 <template>
-  <div ref="scroller" class="min-w-0 flex-1 overflow-y-auto p-4">
-    <div class="overflow-hidden rounded-md border border-accented bg-default">
-      <table class="w-full table-fixed text-left text-sm leading-small-text">
-        <colgroup>
-          <col />
-          <col />
-          <col class="w-9" />
-        </colgroup>
-        <thead>
-          <tr class="border-b border-accented">
-            <th class="h-12 px-3 font-bold text-highlighted">
-              {{ t("layerCatalog.table.title") }}
-            </th>
-            <th colspan="2" class="h-12 px-2 font-bold text-highlighted">
-              {{ t("layerCatalog.table.dataOwner") }}
-            </th>
-          </tr>
-          <tr class="border-b border-accented">
-            <td colspan="3" class="p-3">
-              <label :for="searchInputId" class="sr-only">
-                {{ t("layerCatalog.searchLabel") }}
-              </label>
-              <UInput
-                :id="searchInputId"
-                v-model="query"
-                icon="i-lucide-search"
-                :placeholder="t('layerCatalog.searchPlaceholder')"
-                variant="outline"
-                class="w-full"
-              >
-                <template v-if="query" #trailing>
-                  <UButton
-                    icon="i-lucide-circle-x"
-                    color="primary"
-                    variant="ghost"
-                    size="xs"
-                    aria-label="Clear search"
-                    @click="query = ''"
-                  />
-                </template>
-              </UInput>
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-          <LayerCatalogRow
-            v-for="dataset in datasets"
-            :key="dataset.id"
-            :dataset
-          />
-          <tr v-if="state.status === 'pending'">
-            <td colspan="3" class="px-3 py-4 text-muted">
-              {{ t("layerCatalog.loading") }}
-            </td>
-          </tr>
-          <tr v-else-if="state.status === 'error'">
-            <td colspan="3" class="px-3 py-4">
-              <div class="flex items-center gap-3">
-                <span class="text-error">{{ t("layerCatalog.error") }}</span>
-                <UButton
-                  color="primary"
-                  variant="outline"
-                  size="xs"
-                  class="cursor-pointer"
-                  @click="retry"
-                >
-                  {{ t("layerCatalog.retry") }}
-                </UButton>
-              </div>
-            </td>
-          </tr>
-          <tr v-else-if="datasets.length === 0">
-            <td colspan="3" class="px-3 py-4 text-muted">
-              {{ t("layerCatalog.table.empty") }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="min-w-0 flex-1 p-4">
+    <div
+      role="table"
+      class="grid grid-cols-[minmax(0,1fr)_--spacing(9)] overflow-hidden rounded-md border border-accented bg-default text-sm leading-small-text md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_--spacing(9)]"
+    >
+      <div
+        role="row"
+        class="col-span-full hidden grid-cols-subgrid border-b border-accented font-bold text-highlighted md:grid"
+      >
+        <div role="columnheader" class="flex h-12 items-center px-3">
+          {{ t("layerCatalog.table.title") }}
+        </div>
+        <div
+          role="columnheader"
+          aria-colspan="2"
+          class="col-span-2 flex h-12 items-center px-2"
+        >
+          {{ t("layerCatalog.table.dataOwner") }}
+        </div>
+      </div>
+      <div role="row" class="col-span-full border-b border-accented">
+        <div role="cell" class="p-3">
+          <label :for="searchInputId" class="sr-only">
+            {{ t("layerCatalog.searchLabel") }}
+          </label>
+          <UInput
+            :id="searchInputId"
+            v-model="query"
+            icon="i-lucide-search"
+            :placeholder="t('layerCatalog.searchPlaceholder')"
+            variant="outline"
+            class="w-full"
+          >
+            <template v-if="query" #trailing>
+              <UButton
+                icon="i-lucide-circle-x"
+                color="primary"
+                variant="ghost"
+                size="xs"
+                aria-label="Clear search"
+                @click="query = ''"
+              />
+            </template>
+          </UInput>
+        </div>
+      </div>
+      <div role="rowgroup" class="col-span-full grid grid-cols-subgrid">
+        <LayerCatalogRow
+          v-for="dataset in datasets"
+          :key="dataset.id"
+          :dataset
+        />
+        <div v-if="state.status === 'pending'" role="row" class="col-span-full">
+          <div role="cell" class="px-3 py-4 text-muted">
+            {{ t("layerCatalog.loading") }}
+          </div>
+        </div>
+        <div
+          v-else-if="state.status === 'error'"
+          role="row"
+          class="col-span-full"
+        >
+          <div role="cell" class="flex items-center gap-3 px-3 py-4">
+            <span class="text-error">{{ t("layerCatalog.error") }}</span>
+            <UButton
+              color="primary"
+              variant="outline"
+              size="xs"
+              class="cursor-pointer"
+              @click="retry"
+            >
+              {{ t("layerCatalog.retry") }}
+            </UButton>
+          </div>
+        </div>
+        <div v-else-if="datasets.length === 0" role="row" class="col-span-full">
+          <div role="cell" class="px-3 py-4 text-muted">
+            {{ t("layerCatalog.table.empty") }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

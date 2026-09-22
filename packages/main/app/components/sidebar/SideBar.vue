@@ -2,11 +2,13 @@
 import type { Layer as MapLayer } from "@swissgeo/map";
 
 import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerCart from "@/components/sidebar/LayerCart.vue";
 
 import LayerCatalog from "./layerCatalog/LayerCatalog.vue";
+import ResponsivePanel from "./ResponsivePanel.vue";
 
 const uiStore = useSidebarStore();
 const { t } = useI18n();
@@ -17,6 +19,19 @@ const { mapLayers } = defineProps<{
 defineSlots<{
   "bottom-controls"?: () => unknown;
 }>();
+
+const isDesktop = useIsDesktop();
+// The catalog only renders inside the sidebar on desktop. On mobile it is a
+// bottom sheet, so we hide the sidebar content in that case.
+const isSidebarContentVisible = computed(
+  () =>
+    uiStore.isSidebarOpen &&
+    (uiStore.currentSidebar !== SidebarType.GEOCATALOG_TREE || isDesktop.value),
+);
+
+function closeLayerCatalog() {
+  uiStore.setSidebar(SidebarType.LAYER_CART);
+}
 
 function toggleSidebar() {
   if (uiStore.isSidebarOpen) {
@@ -32,7 +47,7 @@ function toggleSidebar() {
     class="absolute top-0 left-0 flex h-[calc(100vh-var(--ui-header-height))]"
   >
     <div
-      v-show="uiStore.isSidebarOpen"
+      v-show="isSidebarContentVisible"
       :style="{ width: uiStore.sidebarContentWidth + 'px' }"
       class="flex h-full flex-col bg-default text-default shadow-lg"
     >
@@ -40,9 +55,14 @@ function toggleSidebar() {
         v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
         :mapLayers="mapLayers"
       />
-      <LayerCatalog
+      <ResponsivePanel
         v-else-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
-      />
+        :title="t('layerCatalog.title')"
+        :closeLabel="t('layerCatalog.close')"
+        @close="closeLayerCatalog"
+      >
+        <LayerCatalog />
+      </ResponsivePanel>
       <div class="flex flex-col items-center gap-2">
         <slot name="bottom-controls" />
       </div>
