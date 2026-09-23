@@ -29,7 +29,7 @@ watch(route, (value) => {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col">
+  <div class="flex h-dvh flex-col">
     <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
     <UMain as="div" class="min-h-0 flex-1">
       <main ref="main" class="h-full font-sans">
@@ -51,7 +51,7 @@ watch(route, (value) => {
                here can block navigation while detailsOpen waits for the new route. -->
           <div
             v-show="detailsOpen && !isMapFullscreenMode"
-            class="absolute inset-y-0 left-0 z-20 w-full lg:w-1/2"
+            class="absolute top-[min(300px,30dvh)] bottom-0 left-0 z-20 w-full overflow-hidden rounded-t-lg border-t border-default lg:top-0 lg:w-1/2 lg:rounded-none lg:border-t-0"
           >
             <slot name="details" />
           </div>
