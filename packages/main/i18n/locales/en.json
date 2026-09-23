@@ -171,16 +171,17 @@
       "browseButton": "Browse...",
       "noFileSelected": "No file selected",
       "importFileButton": "Import file",
-      "importUrlButton": "Import from URL",
-      "importUrlAsAdmin": "Import URL as admin",
+      "importUrlButton": "Add drawing",
+      "importUrlAsAdmin": "Add drawing as admin",
       "loadingMessage": "Importing file...",
       "successMessage": "Successfully imported {fileName}",
       "drawingSuccessMessage": "Drawing imported successfully",
       "fileUrlDescription": "Or import a file from URL ({types}):",
       "fileUrlPlaceholder": "https://example.com/data.gpx",
       "importFileUrlButton": "Import from URL",
-      "cancelImport": "Cancel import",
+      "cancelImport": "Cancel",
       "clearAndImportAsAdmin": "Clear and import as admin",
+      "clearAndImportAsNonAdmin": "Clear and import",
       "errorMessages": {
         "generalError": "Failed to import file",
         "noFileSelected": "Please select a file first",
@@ -196,8 +197,9 @@
         "adminRequired": "Admin privileges are required to import this drawing"
       },
       "infoMessages": {
-        "adminImportPart1": "Importing a Swissgeo drawing as an administrator will clear all prior drawings.",
-        "adminImportPart2": "You will then be able to further edit the drawing and synchronize it with the Swissgeo database."
+        "importPart1": "Importing a Swissgeo drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
+        "adminImportPart2": "If imported as an admin, you will be able to synchronize it with the Swissgeo database under the same ID as imported and other users will see your changes.",
+        "nonAdminImportPart2": "Sharing the drawing will then be possible with other users, but under a different drawing ID than the imported one."
       },
       "close": "Close"
     },

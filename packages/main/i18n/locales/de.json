@@ -172,16 +172,17 @@
       "browseButton": "Durchsuchen...",
       "noFileSelected": "Keine Datei ausgewählt",
       "importFileButton": "Datei importieren",
-      "importUrlButton": "Von URL importieren",
-      "importUrlAsAdmin": "URL als Administrator importieren",
+      "importUrlButton": "Zeichnung hinzufügen",
+      "importUrlAsAdmin": "Zeichnung als Administrator von URL hinzufügen",
       "loadingMessage": "Datei wird importiert...",
       "successMessage": "Datei erfolgreich importiert: {fileName}",
       "drawingSuccessMessage": "Zeichnung erfolgreich importiert",
       "fileUrlDescription": "Oder eine Datei von einer URL importieren ({types}):",
       "fileUrlPlaceholder": "https://example.com/data.gpx",
       "importFileUrlButton": "Von URL importieren",
-      "cancelImport": "Import abbrechen",
+      "cancelImport": "Abbrechen",
       "clearAndImportAsAdmin": "Löschen und als Administrator importieren",
+      "clearAndImportAsNonAdmin": "Löschen und importieren",
       "errorMessages": {
         "generalError": "Datei konnte nicht importiert werden",
         "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus",
@@ -197,8 +198,10 @@
         "adminRequired": "Zum Importieren dieser Zeichnung sind Administratorrechte erforderlich"
       },
       "infoMessages": {
-        "adminImportPart1": "Beim Importieren einer Swissgeo-Zeichnung als Administrator werden alle bisherigen Zeichnungen gelöscht.",
-        "adminImportPart2": "Anschliessend können Sie die Zeichnung weiter bearbeiten und mit der Swissgeo-Datenbank synchronisieren."
+        "adminImportPart1": "Beim Importieren einer Swissgeo-Zeichnung müssen die vorhandenen Zeichnungen gelöscht werden.",
+        "adminImportPart2": "Anschliessend können Sie die Zeichnung weiter bearbeiten und mit der Swissgeo-Datenbank synchronisieren.",
+        "nonAdminImportPart1": "Beim Importieren einer Swissgeo-Zeichnung müssen die vorhandenen Zeichnungen gelöscht werden.",
+        "nonAdminImportPart2": "Anschliessend können Sie die Zeichnung bearbeiten und mit anderen Benutzern teilen."
       },
       "close": "Schließen"
     },

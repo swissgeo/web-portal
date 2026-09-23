@@ -172,15 +172,15 @@
       "browseButton": "Parcourir...",
       "noFileSelected": "Aucun fichier sélectionné",
       "importFileButton": "Importer le fichier",
-      "importUrlButton": "Importer depuis l'URL",
-      "importUrlAsAdmin": "Importer l'URL en tant qu'administrateur",
+      "importUrlButton": "Ajouter le dessin",
+      "importUrlAsAdmin": "Ajouter le dessin en tant qu'administrateur",
       "loadingMessage": "Importation du fichier...",
       "successMessage": "Fichier importé avec succès : {fileName}",
       "drawingSuccessMessage": "Dessin importé avec succès",
       "fileUrlDescription": "Ou importer un fichier depuis une URL ({types}) :",
       "fileUrlPlaceholder": "https://example.com/data.gpx",
       "importFileUrlButton": "Importer depuis l'URL",
-      "cancelImport": "Annuler l'importation",
+      "cancelImport": "Annuler",
       "clearAndImportAsAdmin": "Effacer et importer en tant qu'administrateur",
       "errorMessages": {
         "generalError": "Échec de l'importation du fichier",
@@ -197,8 +197,10 @@
         "adminRequired": "Des droits d'administrateur sont nécessaires pour importer ce dessin"
       },
       "infoMessages": {
-        "adminImportPart1": "L'importation d'un dessin Swissgeo en tant qu'administrateur effacera tous les dessins existants.",
-        "adminImportPart2": "Vous pourrez ensuite continuer à modifier le dessin et le synchroniser avec la base de données Swissgeo."
+        "adminImportPart1": "L'importation d'un dessin Swissgeo nécessite de supprimer les dessins existants.",
+        "adminImportPart2": "Vous pourrez ensuite continuer à modifier le dessin et le synchroniser avec la base de données Swissgeo.",
+        "nonAdminImportPart1": "L'importation d'un dessin Swissgeo nécessite de supprimer les dessins existants.",
+        "nonAdminImportPart2": "Vous pourrez ensuite modifier le dessin et le partager avec d'autres utilisateurs."
       },
       "close": "Fermer"
     },
