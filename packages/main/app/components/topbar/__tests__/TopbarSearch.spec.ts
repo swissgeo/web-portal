@@ -40,6 +40,7 @@ vi.mock("@/composables/useSearchSelection", () => ({
 }));
 
 mockNuxtImport("useToaster", () => () => ({ showError: vi.fn() }));
+mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 
 const locale = ref("de");
 
