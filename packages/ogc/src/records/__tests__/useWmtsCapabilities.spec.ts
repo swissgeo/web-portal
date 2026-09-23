@@ -53,7 +53,7 @@ describe(
   { timeout: 30_000 },
   () => {
     it("reports a pending request and its failure", async () => {
-      let rejectRequest!: (reason: Error) => void;
+      let rejectRequest!: (_reason: Error) => void;
       readiness.mockReturnValueOnce(
         new Promise((_resolve, reject) => {
           rejectRequest = reject;
