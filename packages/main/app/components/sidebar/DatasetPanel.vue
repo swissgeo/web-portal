@@ -1,28 +1,31 @@
 <script lang="ts" setup>
+import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
+
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log from "@swissgeo/log";
-import { useDatasetPanelStore } from "@swissgeo/skeleton";
+import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
+import DatasetFooter from "~/components/dataset/DatasetFooter.vue";
+import DatasetLanguageSection from "~/components/dataset/DatasetLanguageSection.vue";
 import { computed } from "vue";
 
 const props = defineProps<{
-  detailPagePath?: string;
+  dataset: Dataset | null;
+  detailUrl: string;
+  distributionCollection: DistributionCollection | null;
+  isLoading: boolean;
+  error?: { message: string } | null;
   backToCatalog?: boolean;
 }>();
 
 const emit = defineEmits<{ back: []; close: [] }>();
 
-const datasetPanelStore = useDatasetPanelStore();
 const layerStore = useLayerStore();
 
-const { dataset, distributionCollection, isLoading, error } = useDatasetRecord(
-  () => datasetPanelStore.activeDatasetId,
-);
-
 const isAlreadyOnMap = computed(() => {
-  if (!dataset.value) {
+  if (!props.dataset) {
     return false;
   }
-  return layerStore.layers.some((l) => l.humanId === dataset.value!.id);
+  return layerStore.layers.some((l) => l.humanId === props.dataset!.id);
 });
 
 const toast = useToaster();
@@ -36,11 +39,11 @@ const backLabel = computed(() => {
 });
 
 function addToMap() {
-  if (!dataset.value || isAlreadyOnMap.value) {
+  if (!props.dataset || isAlreadyOnMap.value) {
     return;
   }
   try {
-    layerStore.addLayer(makeServerLayer(dataset.value));
+    layerStore.addLayer(makeServerLayer(props.dataset));
   } catch (e) {
     log.error(
       "Failed to add dataset to map",
@@ -69,13 +72,16 @@ function addToMap() {
         >
           {{ backLabel }}
         </UButton>
-        <UButton
-          icon="i-lucide-x"
-          color="neutral"
-          variant="ghost"
-          :aria-label="$t('dataset.close')"
-          @click="emit('close')"
-        />
+        <div class="flex items-center gap-space-xs">
+          <DatasetCopyLink :url="detailUrl" />
+          <UButton
+            icon="i-lucide-x"
+            color="neutral"
+            variant="ghost"
+            :aria-label="$t('dataset.close')"
+            @click="emit('close')"
+          />
+        </div>
       </div>
       <h1 id="dataset-panel-title" class="text-2xl font-bold text-primary">
         {{ dataset?.properties.title }}
@@ -101,38 +107,13 @@ function addToMap() {
         :dataset="dataset"
         :distribution-collection="distributionCollection ?? null"
       />
+      <DatasetLanguageSection :languages="dataset?.properties.languages" />
     </div>
 
-    <footer
-      class="flex flex-wrap gap-space-s border-t border-default p-space-m"
-    >
-      <UButton
-        v-if="dataset && !isAlreadyOnMap"
-        icon="i-lucide-map"
-        color="primary"
-        class="w-full justify-center"
-        @click="addToMap"
-      >
-        {{ $t("dataset.addToMap") }}
-      </UButton>
-      <div
-        v-else-if="dataset && isAlreadyOnMap"
-        class="flex w-full items-center justify-center gap-2 text-sm text-muted"
-      >
-        <UIcon name="i-lucide-check" class="size-4" />
-        {{ $t("dataset.alreadyOnMap") }}
-      </div>
-      <UButton
-        v-if="dataset && props.detailPagePath"
-        :to="props.detailPagePath"
-        icon="i-lucide-external-link"
-        color="primary"
-        variant="ghost"
-        class="w-full justify-center"
-        @click="datasetPanelStore.closeDatasetPanel()"
-      >
-        {{ $t("dataset.viewDetailPage") }}
-      </UButton>
-    </footer>
+    <DatasetFooter
+      :has-dataset="Boolean(dataset)"
+      :is-already-on-map="isAlreadyOnMap"
+      @add-to-map="addToMap"
+    />
   </section>
 </template>
