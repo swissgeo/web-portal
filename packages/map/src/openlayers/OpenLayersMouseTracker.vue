@@ -14,7 +14,7 @@ import getHumanReadableCoordinate from "@/utils/mouseTrackerUtils";
 const { olMap } = storeToRefs(useMapStore());
 const { projection } = storeToRefs(usePositionStore());
 
-const mousePosition = ref();
+const mousePosition = ref<string>();
 const coordinates = ref<SingleCoordinate>([0, 0]);
 const displayedFormatId = ref(LV95Format.id);
 
@@ -76,4 +76,3 @@ watch(
   </div>
 </template>
 
-<style scoped></style>
