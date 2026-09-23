@@ -75,4 +75,3 @@ watch(
     </div>
   </div>
 </template>
-

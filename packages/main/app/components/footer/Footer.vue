@@ -8,8 +8,16 @@ const isDesktop = useMediaQuery("(min-width: 768px)");
 
 const mobileNavButtons = computed(() => [
   { icon: Map, label: t("footer.mobileNav.map"), variant: "solid" as const },
-  { icon: Layers3, label: t("footer.mobileNav.catalog"), variant: "ghost" as const },
-  { icon: Wrench, label: t("footer.mobileNav.tools"), variant: "ghost" as const },
+  {
+    icon: Layers3,
+    label: t("footer.mobileNav.catalog"),
+    variant: "ghost" as const,
+  },
+  {
+    icon: Wrench,
+    label: t("footer.mobileNav.tools"),
+    variant: "ghost" as const,
+  },
 ]);
 
 const wrapperClasses = computed(() => {
