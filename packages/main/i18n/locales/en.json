@@ -30,9 +30,16 @@
     "copyRightData": "© Data: ",
     "termsOfUse": "Terms of use",
     "impressum": "Impressum",
+    "mobileNav": {
+      "map": "Map",
+      "catalog": "Data Catalog",
+      "tools": "Tools",
+      "mapInfo": "Map Info"
+    },
     "reportIssue": {
       "buttonTitle": "Report Issue",
       "title": "Report an issue",
+      "close": "Close report issue form",
       "steps": {
         "step1": {
           "title": "1. Subject of your message (required):",

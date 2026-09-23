@@ -3,13 +3,14 @@ import { Map, Layers3, Wrench } from "@lucide/vue";
 import { OLMapScale, useMapStore } from "@swissgeo/map";
 import { useMediaQuery } from "@vueuse/core";
 const { olMap } = storeToRefs(useMapStore());
+const { t } = useI18n();
 const isDesktop = useMediaQuery("(min-width: 768px)");
 
-const mobileNavButtons = [
-  { icon: Map, label: "Karte", variant: "solid" as const },
-  { icon: Layers3, label: "Daten-Katalog", variant: "ghost" as const },
-  { icon: Wrench, label: "Tools", variant: "ghost" as const },
-];
+const mobileNavButtons = computed(() => [
+  { icon: Map, label: t("footer.mobileNav.map"), variant: "solid" as const },
+  { icon: Layers3, label: t("footer.mobileNav.catalog"), variant: "ghost" as const },
+  { icon: Wrench, label: t("footer.mobileNav.tools"), variant: "ghost" as const },
+]);
 
 const wrapperClasses = computed(() => {
   return isDesktop.value
@@ -37,7 +38,7 @@ const wrapperClasses = computed(() => {
             :ui="{ content: 'mb-[73px] inset-x-0' }"
           >
             <UButton
-              label="Karteninfo"
+              :label="t('footer.mobileNav.mapInfo')"
               color="neutral"
               variant="subtle"
               trailing-icon="i-lucide-chevron-down"

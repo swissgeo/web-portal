@@ -30,9 +30,16 @@
     "copyRightData": "© Données: ",
     "termsOfUse": "Conditions d'utilisation",
     "impressum": "Mentions légales",
+    "mobileNav": {
+      "map": "Carte",
+      "catalog": "Catalogue de données",
+      "tools": "Outils",
+      "mapInfo": "Info carte"
+    },
     "reportIssue": {
       "buttonTitle": "Signaler un problème",
       "title": "Signaler un problème",
+      "close": "Fermer le formulaire de signalement",
       "steps": {
         "step1": {
           "title": "1. Sujet de votre message (obligatoire) :",
