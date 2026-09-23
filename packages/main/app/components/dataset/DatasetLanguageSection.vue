@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <section v-if="languages?.length" class="mt-space-m">
+  <section v-if="languages?.length" class="mt-auto shrink-0 pt-space-m">
     <h3 class="mb-space-xs text-base font-normal">
       {{ $t("dataset.languages") }}
     </h3>

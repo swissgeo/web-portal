@@ -29,7 +29,7 @@ watch(route, (value) => {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col">
+  <div class="flex h-dvh flex-col">
     <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
     <UMain as="div" class="min-h-0 flex-1">
       <main ref="main" class="h-full font-sans">

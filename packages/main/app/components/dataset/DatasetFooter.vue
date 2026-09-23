@@ -8,7 +8,9 @@ const emit = defineEmits<{ "add-to-map": [] }>();
 </script>
 
 <template>
-  <footer class="flex flex-wrap gap-space-s border-t border-default p-space-m">
+  <footer
+    class="flex shrink-0 flex-wrap gap-space-s border-t border-default p-4 lg:p-space-m"
+  >
     <UButton
       v-if="hasDataset && !isAlreadyOnMap"
       icon="i-lucide-map"

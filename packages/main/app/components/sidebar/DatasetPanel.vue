@@ -63,7 +63,7 @@ function addToMap() {
     aria-labelledby="dataset-panel-title"
     data-testid="dataset-panel"
   >
-    <header class="flex flex-col gap-space-m p-space-m">
+    <header class="flex shrink-0 flex-col gap-space-m p-4 lg:p-space-m">
       <div class="flex items-center justify-between gap-space-s">
         <UButton
           icon="i-lucide-arrow-left"
@@ -87,7 +87,9 @@ function addToMap() {
         {{ dataset?.properties.title }}
       </h1>
     </header>
-    <div class="min-h-0 flex-1 overflow-y-auto px-space-m pb-space-m">
+    <div
+      class="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 lg:px-space-m lg:pb-space-m"
+    >
       <div v-if="isLoading" class="flex h-full items-center justify-center">
         <UIcon
           name="i-lucide-loader-circle"
@@ -104,6 +106,7 @@ function addToMap() {
 
       <DatasetDetail
         v-else-if="dataset"
+        class="shrink-0"
         :dataset="dataset"
         :distribution-collection="distributionCollection ?? null"
       />
