@@ -230,7 +230,13 @@ async function handleFileUrlImport() {
             <template #content="{ close }">
               <div>
                 <p class="m-4">
-                  {{ t("toolbox.import.infoMessages.importPart1") }}
+                  {{
+                    t("toolbox.import.infoMessages.importPart1", {
+                      provenance: swissGeoUrlValidation.isValid
+                        ? "Swissgeo"
+                        : "Map Geo Admin",
+                    })
+                  }}
                 </p>
                 <p class="m-4">
                   {{ t("toolbox.import.infoMessages.nonAdminImportPart2") }}
