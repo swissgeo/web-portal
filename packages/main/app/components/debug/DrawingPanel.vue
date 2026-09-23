@@ -49,7 +49,7 @@ const drawingShareableString = computed(() => {
   const shareUrl = new URL(drawingS3Url.value);
 
   if (shareDrawingAsAdmin.value) {
-    shareUrl.searchParams.set("admin_id", drawingAdminId.value);
+    shareUrl.hash = drawingAdminId.value;
   }
 
   return shareUrl.toString();
