@@ -35,7 +35,7 @@ const displayReportIssueForm = ref(false);
     <ULink
       target="_blank"
       raw
-      class="flex items-center gap-1"
+      class="flex items-center gap-1 text-error"
       @click="displayReportIssueForm = true"
     >
       <UIcon name="i-lucide-triangle-alert" class="size-3 shrink-0" />
