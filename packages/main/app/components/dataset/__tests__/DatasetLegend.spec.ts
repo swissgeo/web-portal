@@ -14,6 +14,7 @@ const wms: Distribution = {
   id: "wms",
   properties: {
     type: "Distribution",
+    title: "Test distribution",
     protocol: "ogc:wms",
     externalIds: ["wms-layer"],
   },
@@ -22,6 +23,7 @@ const wmts: Distribution = {
   id: "wmts",
   properties: {
     type: "Distribution",
+    title: "Test distribution",
     protocol: "ogc:wmts",
     externalIds: ["wmts-layer"],
   },
@@ -30,7 +32,11 @@ const wmts: Distribution = {
 function render(features: Distribution[], preferredDistributionId?: string) {
   const dataset: Dataset = {
     id: "dataset",
-    properties: { type: "Dataset", preferredDistributionId },
+    properties: {
+      type: "Dataset",
+      title: "Test dataset",
+      preferredDistributionId,
+    },
   };
   const distributionCollection: DistributionCollection = {
     type: "FeatureCollection",
@@ -75,6 +81,7 @@ describe("DatasetLegend selection", () => {
       id: "stac",
       properties: {
         type: "Distribution",
+        title: "Test distribution",
         protocol: "ogcapi:stac",
         externalIds: ["collection"],
       },

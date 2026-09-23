@@ -8,7 +8,11 @@ describe("determineFormat", () => {
   it("returns no map format for STAC", () => {
     expect(
       determineFormat({
-        properties: { type: "Distribution", protocol: "ogcapi:stac" },
+        properties: {
+          type: "Distribution",
+          title: "STAC",
+          protocol: "ogcapi:stac",
+        },
       }),
     ).toBeNull();
   });

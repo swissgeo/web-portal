@@ -5,11 +5,10 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { SearchResultTypesEnum } from "@swissgeo/search";
 import { sanitizeHtml } from "@swissgeo/shared";
-import { useDatasetPanelStore } from "@swissgeo/skeleton";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
-const datasetPanelStore = useDatasetPanelStore();
+const localePath = useLocalePath();
 const { t } = useI18n();
 
 const { index, entry } = defineProps<{
@@ -26,6 +25,7 @@ const emit = defineEmits<{
 const item = ref<HTMLLIElement>();
 
 const sanitizedTitle = computed(() => sanitizeHtml(entry.title));
+const detailPath = computed(() => localePath(`/dataset/${entry.id}`));
 
 // Keyboard navigation
 function goToFirst() {
@@ -136,7 +136,9 @@ defineExpose({
       color="primary"
       variant="ghost"
       size="xs"
-      @click.stop="datasetPanelStore.openDatasetPanel(entry.id)"
+      :to="detailPath"
+      @click.stop
+      @keyup.enter.stop
     />
   </li>
 </template>
