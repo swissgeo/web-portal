@@ -55,8 +55,10 @@ function validateSwissgeoServiceDrawingsUrl(
       return { isValid: false, drawingId: null, adminId: null };
     }
 
+    const hash = parsed.hash.trim().slice(1);
+
     // The admin ID must be validated
-    let adminId = parsed.searchParams.get("admin_id");
+    let adminId: string | null = hash || null;
     if (adminId && !isUuid(adminId)) {
       adminId = null;
     }
