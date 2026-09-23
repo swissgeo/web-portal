@@ -32,14 +32,15 @@ const displayReportIssueForm = ref(false);
         <ReuseTemplate />
       </template>
     </UDrawer>
-    <ULink
-      target="_blank"
-      raw
-      class="flex items-center gap-1 text-error"
+    <UButton
+      variant="link"
+      color="error"
+      size="sm"
+      class="gap-1 px-0"
       @click="displayReportIssueForm = true"
     >
       <UIcon name="i-lucide-triangle-alert" class="size-3 shrink-0" />
       {{ t("footer.reportIssue.buttonTitle") }}
-    </ULink>
+    </UButton>
   </ClientOnly>
 </template>
