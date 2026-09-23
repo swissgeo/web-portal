@@ -76,7 +76,7 @@ const displayMode = inject(displayModeKey, "web");
     <template #after>
       <DebugPanel
         v-if="showAdditionalMapUi && displayMode === 'web'"
-        class="fixed right-[50%] bottom-0 z-3 translate-x-[50%]"
+        class="fixed right-4 bottom-0 z-3"
       ></DebugPanel>
       <MapBackgroundSelector
         :currentBackground="backgroundLayer"
