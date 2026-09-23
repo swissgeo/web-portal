@@ -64,10 +64,12 @@ const debouncedSearch = useDebounceFn((value: string) => {
   void searchStore.setSearchQuery(value, locale.value);
 }, 100);
 
-// every source searches in one language, so a locale change leaves the
-// results of the previous one behind until the query is run again
+// every source searches in one language, so a locale change leaves the results
+// of the previous one behind until the query is run again. Only while there are
+// results: the field also holds the name of an already selected result, and
+// searching that again would pop the panel back up.
 watch(locale, (value) => {
-  if (searchStore.query.length >= 2) {
+  if (searchStore.hasResults && searchStore.query.length >= 2) {
     void searchStore.setSearchQuery(searchStore.query, value);
   }
 });
@@ -103,7 +105,9 @@ watch(
 
 function handleSelect(result: SearchResult) {
   void handleResultSelection(result);
-  searchStore.clearSearch();
+  // a title made of nothing but markup sanitizes to an empty string, which
+  // would empty the field and take its clear button away with it
+  searchStore.keepSelectedQuery(result.sanitizedTitle || searchStore.query);
   isOpen.value = false;
 }
 
@@ -134,8 +138,8 @@ function focusFirstResult() {
   });
 }
 
-// the marker of a previously selected coordinate is only removed when the user
-// explicitly clears the search, not when a result is selected
+// clearing the field removes the marker of the selected result: selecting
+// another one moves it, but nothing else would ever take it off the map
 function clearSearch() {
   searchStore.clearSearch();
   searchStore.clearPinnedCoordinate();

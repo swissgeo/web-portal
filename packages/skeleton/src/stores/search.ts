@@ -27,7 +27,9 @@ export const useSearchStore = defineStore("search", () => {
   // as in map.geo.admin.ch, a coordinate needs no confirmation and the map
   // goes there directly.
   const coordinateResult = ref<CoordinateSearchResult | undefined>();
-  // Coordinate the map marks with a marker, set when a coordinate result is selected.
+  // Coordinate the map marks with the balloon pin, set when a coordinate or a
+  // place result is selected. Only one location is ever marked, so re-centering
+  // the map on another result moves the pin instead of leaving a stale one.
   const pinnedCoordinate = ref<SingleCoordinate | undefined>();
 
   let abortController: AbortController | undefined;
@@ -71,6 +73,13 @@ export const useSearchStore = defineStore("search", () => {
   async function setSearchQuery(newQuery: string, lang: string = "de") {
     query.value = newQuery;
     hasError.value = false;
+
+    // Emptying the field takes the pin off the map, otherwise the user is left
+    // with a marker they cannot remove. Shortening the query does not: the map
+    // still shows the place they are retyping the name of.
+    if (newQuery.trim().length === 0) {
+      pinnedCoordinate.value = undefined;
+    }
 
     // Clear results if query too short
     if (newQuery.trim().length < 2) {
@@ -195,6 +204,23 @@ export const useSearchStore = defineStore("search", () => {
 
   function clearSearch() {
     query.value = "";
+    resetSearchState();
+  }
+
+  // Selecting a result keeps its name in the field rather than emptying it: it
+  // is what the user is now looking at, and clearing the field is what takes
+  // the marker off the map.
+  function keepSelectedQuery(title: string) {
+    query.value = title;
+    resetSearchState();
+  }
+
+  function resetSearchState() {
+    // a request still on its way would otherwise land afterwards and put the
+    // results back, on top of a panel the user has already left
+    abortController?.abort();
+    abortController = undefined;
+    isSearching.value = false;
     results.value = [];
     coordinateResult.value = undefined;
     hasError.value = false;
@@ -228,6 +254,7 @@ export const useSearchStore = defineStore("search", () => {
     setSearchQuery,
     selectResult,
     clearSearch,
+    keepSelectedQuery,
     setPinnedCoordinate,
     clearPinnedCoordinate,
   };

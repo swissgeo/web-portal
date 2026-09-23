@@ -133,7 +133,7 @@ describe("useSearchStore", () => {
     expect(store.coordinateResult).toBeUndefined();
   });
 
-  it("keeps the pinned coordinate until it is explicitly cleared", () => {
+  it("keeps the pinned coordinate when a result is selected", () => {
     const store = useSearchStore();
     store.setPinnedCoordinate([2600000, 1200000]);
     store.clearSearch();
@@ -141,6 +141,58 @@ describe("useSearchStore", () => {
 
     store.clearPinnedCoordinate();
     expect(store.pinnedCoordinate).toBeUndefined();
+  });
+
+  it("drops the pinned coordinate when the field is emptied", async () => {
+    const store = useSearchStore();
+    store.setPinnedCoordinate([2600000, 1200000]);
+
+    await store.setSearchQuery("");
+
+    expect(store.pinnedCoordinate).toBeUndefined();
+  });
+
+  // the map still shows the place whose name is being retyped
+  it("keeps the pinned coordinate when the query is only shortened", async () => {
+    const store = useSearchStore();
+    store.setPinnedCoordinate([2600000, 1200000]);
+
+    await store.setSearchQuery("B");
+
+    expect(store.pinnedCoordinate).toEqual([2600000, 1200000]);
+  });
+
+  it("cancels a request still on its way when a result is selected", () => {
+    let signal: AbortSignal | undefined;
+    searchMocks.searchLayers.mockImplementation(
+      (_query: string, _url: string, _lang: string, abortSignal: AbortSignal) =>
+        new Promise(() => {
+          signal = abortSignal;
+        }),
+    );
+
+    const store = useSearchStore();
+    void store.setSearchQuery("bern");
+    expect(store.isSearching).toBe(true);
+
+    store.keepSelectedQuery("Bern");
+
+    expect(signal?.aborted).toBe(true);
+    expect(store.isSearching).toBe(false);
+  });
+
+  it("keeps the selected name in the query but drops the results", async () => {
+    searchMocks.searchLayers.mockResolvedValue([layer("l1")]);
+
+    const store = useSearchStore();
+    await store.setSearchQuery("bern");
+    expect(store.results).not.toEqual([]);
+
+    store.keepSelectedQuery("Bern");
+
+    expect(store.query).toBe("Bern");
+    expect(store.results).toEqual([]);
+    expect(store.coordinateResult).toBeUndefined();
   });
 
   it("resets hasError on clearSearch", async () => {

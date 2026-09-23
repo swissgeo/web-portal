@@ -1,8 +1,8 @@
 import type { SearchResult } from "@swissgeo/search";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { mount } from "@vue/test-utils";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { enableAutoUnmount, mount } from "@vue/test-utils";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, reactive, ref } from "vue";
 
 import TopbarSearch from "../TopbarSearch.vue";
@@ -29,6 +29,7 @@ const searchStore = reactive({
   },
   setSearchQuery: vi.fn(),
   clearSearch: vi.fn(),
+  keepSelectedQuery: vi.fn(),
   clearPinnedCoordinate: vi.fn(),
 });
 
@@ -103,6 +104,10 @@ function tabs(wrapper: ReturnType<typeof render>) {
 }
 
 describe("TopbarSearch", () => {
+  // the mounted components all watch the same locale ref, a leftover one would
+  // answer a language change on behalf of the component under test
+  enableAutoUnmount(afterEach);
+
   beforeEach(() => {
     searchStore.query = "";
     searchStore.results = [];
@@ -111,6 +116,7 @@ describe("TopbarSearch", () => {
     handleResultSelection.mockClear();
     searchStore.setSearchQuery.mockClear();
     searchStore.clearSearch.mockClear();
+    searchStore.keepSelectedQuery.mockClear();
   });
 
   it("lists the CMS results in the content pages tab", () => {
@@ -182,6 +188,7 @@ describe("TopbarSearch", () => {
 
   it("runs the query again when the interface language changes", async () => {
     searchStore.query = "ticks";
+    searchStore.results = [location("ticks")];
     render();
 
     locale.value = "en";
@@ -192,6 +199,20 @@ describe("TopbarSearch", () => {
 
   it("leaves a query too short to search alone on a language change", async () => {
     searchStore.query = "t";
+    searchStore.results = [location("ticks")];
+    render();
+
+    locale.value = "en";
+    await nextTick();
+
+    expect(searchStore.setSearchQuery).not.toHaveBeenCalled();
+  });
+
+  // the field keeps the name of the selected result, searching it again would
+  // pop the panel back open on top of the map the user just moved to
+  it("leaves the query alone on a language change once a result was selected", async () => {
+    searchStore.query = "Bern";
+    searchStore.results = [];
     render();
 
     locale.value = "en";
@@ -211,6 +232,28 @@ describe("TopbarSearch", () => {
       .trigger("click");
 
     expect(handleResultSelection).toHaveBeenCalledWith(entry);
-    expect(searchStore.clearSearch).toHaveBeenCalled();
+  });
+
+  it("keeps the name of the selected result in the field", async () => {
+    searchStore.query = "ber";
+    searchStore.results = [location("Bern")];
+
+    const wrapper = render();
+    await wrapper.find("[data-testid='search-results'] li").trigger("click");
+
+    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("Bern");
+    expect(searchStore.clearSearch).not.toHaveBeenCalled();
+  });
+
+  // it would empty the field and take the clear button, the only way left of
+  // removing the pin, away with it
+  it("falls back to the typed query when the name sanitizes to nothing", async () => {
+    searchStore.query = "ber";
+    searchStore.results = [{ ...location("Bern"), sanitizedTitle: "" }];
+
+    const wrapper = render();
+    await wrapper.find("[data-testid='search-results'] li").trigger("click");
+
+    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("ber");
   });
 });
