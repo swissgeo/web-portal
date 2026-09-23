@@ -197,7 +197,7 @@
         "adminRequired": "Admin privileges are required to import this drawing"
       },
       "infoMessages": {
-        "importPart1": "Importing a Swissgeo drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
+        "importPart1": "Importing a {provenance} drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
         "adminImportPart2": "If imported as an admin, you will be able to synchronize it with the Swissgeo database under the same ID as imported and other users will see your changes.",
         "nonAdminImportPart2": "Sharing the drawing will then be possible with other users, but under a different drawing ID than the imported one."
       },
