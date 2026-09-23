@@ -188,7 +188,6 @@ function cancelDrawing() {
 
 async function onShareDrawings() {
   await shareDrawings();
-  await copy(drawingShareableString.value);
 }
 
 onMounted(() => {
@@ -383,23 +382,51 @@ onUnmounted(() => {
           v-if="['none', 'select'].includes(focusMode)"
           class="flex items-center gap-3"
         >
-          <UTooltip text="Copy to clipboard" :content="{ side: 'right' }">
-            <UButton
-              :color="copied ? 'success' : 'primary'"
-              variant="solid"
-              :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
-              aria-label="Copy drawing link"
-              @click="onShareDrawings"
-            >
-              Copy drawing link
-            </UButton>
+          <UButton
+            color="primary"
+            variant="solid"
+            aria-label="Sync drawing"
+            class="w-full"
+            @click="onShareDrawings"
+          >
+            Sync drawing
+          </UButton>
+        </div>
+        <div
+          v-if="
+            ['none', 'select'].includes(focusMode) && drawingShareableString
+          "
+          class="flex w-full min-w-0 items-center gap-3"
+        >
+          <UInput
+            v-model="drawingShareableString"
+            class="min-w-0 flex-1"
+            :highlight="!isSharing"
+            :disabled="isSharing"
+            readonly="true"
+            :ui="{ trailing: 'pr-0.5' }"
+          >
+            <template v-if="drawingShareableString?.length" #trailing>
+              <UTooltip text="Copy to clipboard" :content="{ side: 'top' }">
+                <UButton
+                  :color="copied ? 'success' : 'neutral'"
+                  variant="link"
+                  size="sm"
+                  :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+                  aria-label="Copy to clipboard"
+                  @click="copy(drawingShareableString)"
+                />
+              </UTooltip>
+            </template>
+          </UInput>
+          <UTooltip text="As editable" :content="{ side: 'top' }">
+            <USwitch
+              v-model="shareDrawingAsAdmin"
+              class="shrink-0"
+              unchecked-icon="i-lucide-x"
+              checked-icon="i-lucide-check"
+            />
           </UTooltip>
-          <USwitch
-            v-model="shareDrawingAsAdmin"
-            label="as editable"
-            unchecked-icon="i-lucide-x"
-            checked-icon="i-lucide-check"
-          />
         </div>
       </div>
     </div>
