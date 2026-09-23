@@ -204,7 +204,7 @@ export const useSearchStore = defineStore("search", () => {
 
   function clearSearch() {
     query.value = "";
-    dropResults();
+    resetSearchState();
   }
 
   // Selecting a result keeps its name in the field rather than emptying it: it
@@ -212,10 +212,10 @@ export const useSearchStore = defineStore("search", () => {
   // the marker off the map.
   function keepSelectedQuery(title: string) {
     query.value = title;
-    dropResults();
+    resetSearchState();
   }
 
-  function dropResults() {
+  function resetSearchState() {
     // a request still on its way would otherwise land afterwards and put the
     // results back, on top of a panel the user has already left
     abortController?.abort();
