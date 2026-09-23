@@ -213,42 +213,35 @@ async function handleFileUrlImport() {
           data-testid="drawing-url-input"
         />
 
-        <div class="">
-          <UButton
-            color="primary"
-            variant="solid"
-            class="mt-3 w-full place-content-center"
-            :disabled="!urlImportDrawing.trim() || isImportDrawingLoading"
-            :loading="isImportDrawingLoading"
-            @click="() => onImportDrawing(false)"
-            data-testid="drawing-import-button"
-          >
-            {{ t("toolbox.import.importUrlButton") }}
-          </UButton>
-
-          <UModal
-            v-if="
-              swissGeoUrlValidation.isValid && swissGeoUrlValidation.adminId
-            "
-          >
+        <div>
+          <UModal>
             <UButton
-              v-if="
-                swissGeoUrlValidation.isValid && swissGeoUrlValidation.adminId
-              "
               color="primary"
               variant="solid"
               class="mt-3 w-full place-content-center"
-              data-testid="drawing-import-swissgeo-button"
+              :disabled="!urlImportDrawing.trim() || isImportDrawingLoading"
+              :loading="isImportDrawingLoading"
+              data-testid="drawing-import-button"
+              trailing-icon="i-lucide-plus"
             >
-              {{ t("toolbox.import.importUrlAsAdmin") }}
+              {{ t("toolbox.import.importUrlButton") }}
             </UButton>
 
             <template #content="{ close }">
               <div>
                 <p class="m-4">
-                  {{ t("toolbox.import.infoMessages.adminImportPart1") }}
+                  {{ t("toolbox.import.infoMessages.importPart1") }}
                 </p>
                 <p class="m-4">
+                  {{ t("toolbox.import.infoMessages.nonAdminImportPart2") }}
+                </p>
+                <p
+                  v-if="
+                    swissGeoUrlValidation.isValid &&
+                    swissGeoUrlValidation.adminId
+                  "
+                  class="m-4"
+                >
                   {{ t("toolbox.import.infoMessages.adminImportPart2") }}
                 </p>
               </div>
@@ -256,11 +249,29 @@ async function handleFileUrlImport() {
                 <UButton color="neutral" variant="outline" @click="close()">
                   {{ t("toolbox.import.cancelImport") }}
                 </UButton>
+
                 <UButton
                   color="primary"
                   variant="solid"
                   :disabled="isImportDrawingLoading"
-                  :loading="isImportDrawingLoading"
+                  @click="
+                    async () => {
+                      await onImportDrawing(false);
+                      close();
+                    }
+                  "
+                >
+                  {{ t("toolbox.import.clearAndImportAsNonAdmin") }}
+                </UButton>
+
+                <UButton
+                  v-if="
+                    swissGeoUrlValidation.isValid &&
+                    swissGeoUrlValidation.adminId
+                  "
+                  color="primary"
+                  variant="solid"
+                  :disabled="isImportDrawingLoading"
                   @click="
                     async () => {
                       await onImportDrawing(true);

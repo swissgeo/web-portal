@@ -162,18 +162,18 @@ watch(
 );
 
 // Watch for changes in focus mode and share drawings when focus mode is set to 'none'.
-watch(focusMode, async (newFocusMode) => {
-  if (newFocusMode !== "none") {
-    return;
-  }
+// watch(focusMode, async (newFocusMode) => {
+//   if (newFocusMode !== "none") {
+//     return;
+//   }
 
-  // If the drawing has never been shared explicitely by the user, it is not synced automatically.
-  if (!drawingId && !drawingAdminId) {
-    return;
-  }
+//   // If the drawing has never been shared explicitely by the user, it is not synced automatically.
+//   if (!drawingId && !drawingAdminId) {
+//     return;
+//   }
 
-  await shareDrawings();
-});
+//   await shareDrawings();
+// });
 
 function terminateModification() {
   disableAllInteractions();

@@ -253,6 +253,8 @@ export function useImportDrawing() {
       );
     }
 
+    clearDrawingLayer();
+
     mountDrawingLayer(olMap.value);
 
     // If the user decides to imports a Swissgeo drawing as an admin,
@@ -260,7 +262,6 @@ export function useImportDrawing() {
     // In addition, the user is now using the drawing ID and admin ID of the imported drawing,
     // which makes them futher editable
     if (swissGeoUrlValidation.value.adminId && asAdmin) {
-      clearDrawingLayer();
       drawingAdminId.value = swissGeoUrlValidation.value.adminId;
       drawingId.value = swissGeoUrlValidation.value.drawingId;
       drawingS3Url.value = drawingIdUrlObj.href;
