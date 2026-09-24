@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { TabsItem } from "@nuxt/ui";
 import type {
   Dataset,
   DistributionCollection,
@@ -6,75 +7,177 @@ import type {
   Link,
 } from "@swissgeo/ogc";
 
+import { determineFormat } from "~/utils/determineFormat";
+import { isStacDistribution } from "~/utils/isStacDistribution";
+import { resolveWebUrl } from "~/utils/resolveWebUrl";
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 
 import DatasetContact from "./DatasetContact.vue";
+import DatasetLegend from "./DatasetLegend.vue";
 import DatasetLinkList from "./DatasetLinkList.vue";
 import DatasetServiceList from "./DatasetServiceList.vue";
+
+const GEOCAT_HOSTNAMES = ["geocat.ch", "www.geocat.ch"];
 
 const props = defineProps<{
   dataset: Dataset;
   distributionCollection: DistributionCollection | null;
+  distributionError?: boolean;
 }>();
 
-const EXCLUDED_LINK_RELS = new Set(["self", "collection", "distributions"]);
+const { t } = useI18n();
+const tabs = computed<TabsItem[]>(() => [
+  {
+    label: t("dataset.overview"),
+    value: "overview",
+    slot: "overview",
+  },
+  { label: t("layers.legend.title"), value: "legend", slot: "legend" },
+  {
+    label: t("dataset.dataAccess"),
+    value: "data-access",
+    slot: "data-access",
+  },
+  {
+    label: t("dataset.metadata"),
+    value: "metadata",
+    slot: "metadata",
+  },
+]);
 
-const displayLinks = computed<Link[]>(() => {
-  if (!props.dataset.links) {
-    return [];
-  }
-  return props.dataset.links.filter(
-    (l) => !EXCLUDED_LINK_RELS.has(l.rel?.toLowerCase() ?? ""),
-  );
+const contacts = computed(() =>
+  (props.dataset.properties.contacts ?? []).filter(
+    (contact) =>
+      contact.role === "pointOfContact" &&
+      (contact.organization?.trim() || contact.country?.trim()),
+  ),
+);
+
+const metadataLinks = computed<Link[]>(() => {
+  return (props.dataset.links ?? []).filter((link) => {
+    const href = resolveWebUrl(link.href);
+    if (!href) {
+      return false;
+    }
+    const { hostname } = new URL(href);
+    return GEOCAT_HOSTNAMES.includes(hostname);
+  });
 });
 
 const serviceDistributions = computed<Distribution[]>(() => {
   if (!props.distributionCollection?.features) {
     return [];
   }
-  return props.distributionCollection.features.filter(
-    (d) => d.properties.protocol?.toLowerCase() !== "ogc:geojson",
-  );
+  return props.distributionCollection.features.filter((distribution) => {
+    return (
+      distribution.properties.metaInformation !== true &&
+      (determineFormat(distribution) !== null ||
+        isStacDistribution(distribution))
+    );
+  });
 });
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
-    <section v-if="dataset.properties.description">
-      <h3 class="mb-2 text-base font-normal">
-        {{ $t("dataset.abstract") }}
-      </h3>
-      <p class="text-sm leading-relaxed" data-testid="dataset-description">
-        {{ dataset.properties.description }}
-      </p>
-    </section>
+  <UTabs
+    :key="dataset.id"
+    :items="tabs"
+    default-value="overview"
+    variant="link"
+    color="neutral"
+    :unmount-on-hide="false"
+    :ui="{
+      list: 'overflow-x-auto overflow-y-hidden p-0',
+      trigger:
+        'shrink-0 grow-0 px-2 pt-1 pb-2 leading-small-text data-[state=active]:text-highlighted data-[state=inactive]:text-primary dark:data-[state=inactive]:text-petrol-300',
+      indicator: 'bottom-0',
+    }"
+    class="@container w-full gap-4 lg:gap-8"
+  >
+    <template #overview>
+      <div
+        v-if="dataset.properties.description || contacts.length"
+        class="flex flex-col gap-space-m"
+      >
+        <section
+          v-if="dataset.properties.description"
+          class="max-w-[37.3125rem]"
+        >
+          <h3 class="mb-4 text-base font-semibold text-highlighted">
+            {{ $t("dataset.abstract") }}
+          </h3>
+          <p
+            class="text-base leading-small-text wrap-anywhere whitespace-pre-line text-default"
+            data-testid="dataset-description"
+          >
+            {{ dataset.properties.description }}
+          </p>
+        </section>
 
-    <section
-      v-if="dataset.properties.contacts?.length"
-      data-testid="dataset-contacts"
-    >
-      <h3 class="mb-2 text-base font-normal">
-        {{ $t("dataset.contacts") }}
-      </h3>
-      <ul class="flex flex-col gap-3">
-        <li v-for="(contact, i) in dataset.properties.contacts" :key="i">
-          <DatasetContact :contact="contact" />
-        </li>
-      </ul>
-    </section>
+        <section
+          v-if="contacts.length"
+          class="border-y border-default py-space-s"
+          data-testid="dataset-contacts"
+        >
+          <h3
+            class="mb-space-xs text-xs font-medium tracking-wide text-muted uppercase"
+          >
+            {{ $t("dataset.contacts") }}
+          </h3>
+          <ul class="flex flex-col gap-space-s">
+            <li v-for="(contact, i) in contacts" :key="i">
+              <DatasetContact :contact="contact" />
+            </li>
+          </ul>
+        </section>
+      </div>
+    </template>
 
-    <section v-if="displayLinks.length">
-      <h3 class="mb-2 text-base font-normal">
-        {{ $t("dataset.links") }}
-      </h3>
-      <DatasetLinkList :links="displayLinks" />
-    </section>
+    <template #legend>
+      <section>
+        <h3
+          class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
+        >
+          {{ $t("layers.legend.title") }}
+        </h3>
+        <p v-if="distributionError" role="status" class="text-sm text-error">
+          {{ $t("dataset.legendError") }}
+        </p>
+        <DatasetLegend
+          v-else
+          :dataset="dataset"
+          :distribution-collection="distributionCollection"
+        />
+      </section>
+    </template>
 
-    <section v-if="serviceDistributions.length">
-      <h3 class="mb-2 text-base font-normal">
-        {{ $t("dataset.services") }}
-      </h3>
-      <DatasetServiceList :distributions="serviceDistributions" />
-    </section>
-  </div>
+    <template #data-access>
+      <section v-if="distributionError || serviceDistributions.length">
+        <h3
+          class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
+        >
+          {{ $t("dataset.dataAccess") }}
+        </h3>
+        <p v-if="distributionError" role="status" class="text-sm text-error">
+          {{ $t("error.generic") }}
+        </p>
+        <DatasetServiceList v-else :distributions="serviceDistributions" />
+      </section>
+    </template>
+
+    <template #metadata>
+      <section v-if="metadataLinks.length">
+        <h3
+          class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
+        >
+          {{ $t("dataset.metadata") }}
+        </h3>
+        <DatasetLinkList
+          :links="metadataLinks"
+          :label="$t('dataset.viewGeocat')"
+        />
+      </section>
+    </template>
+  </UTabs>
 </template>

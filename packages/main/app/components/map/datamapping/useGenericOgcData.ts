@@ -1,13 +1,8 @@
 import type { DatasetLayer } from "@swissgeo/layers";
 
-import {
-  usePreferredDistribution,
-  useDistribution,
-  useDistributionCollection,
-  useService,
-} from "@swissgeo/ogc";
-
-import { determineFormat } from "./determineFormat";
+import { useDistributionCollection, useService } from "@swissgeo/ogc";
+import { useSelectedDistribution } from "~/composables/useSelectedDistribution";
+import { determineFormat } from "~/utils/determineFormat";
 
 export function useGenericOgcData(
   layer: Ref<DatasetLayer>,
@@ -20,19 +15,9 @@ export function useGenericOgcData(
     onDistributionError,
     onDistributionResponse,
   } = useDistributionCollection(dataset);
-  const { preferredDistributionId } = usePreferredDistribution(dataset);
-
-  // if there's a preferred distribution, let's get that one, otherwise the first one
-  const distributionId = computed(
-    () =>
-      preferredDistributionId.value ??
-      distributionCollection.value?.features.at(0)?.id ??
-      null,
-  );
-
-  const { distribution, layerId } = useDistribution(
+  const { distribution, layerId } = useSelectedDistribution(
+    dataset,
     distributionCollection,
-    distributionId,
   );
   const { onServiceError, onServiceResponse, serviceData, serviceUrl } =
     useService(distribution);

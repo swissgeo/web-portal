@@ -173,6 +173,7 @@ test.describe("import external layers", () => {
     await page.waitForFunction(() => window.swissgeoOlMap !== undefined, null, {
       timeout: 20_000,
     });
+    await page.getByRole("button", { name: "Debug", exact: true }).click();
   }
 
   test("imports a geoadmin WMTS layer", async ({ page }) => {
@@ -260,6 +261,7 @@ test.describe("import external layers", () => {
     await expect(layerCart.getByText(WMTS_LAYER)).toHaveCount(0);
     await page.getByTestId("button-layer-cart-panel").click();
 
+    await page.getByRole("button", { name: "Debug", exact: true }).click();
     await page.getByTestId("debug-open-import-local-panel").click();
     await page
       .getByTestId("file-input")

@@ -1,44 +1,64 @@
 <script lang="ts" setup>
 import type { Distribution } from "@swissgeo/ogc";
 
-defineProps<{
+import { isStacDistribution } from "~/utils/isStacDistribution";
+
+import DatasetService from "./DatasetService.vue";
+
+const { distributions } = defineProps<{
   distributions: Distribution[];
 }>();
 
-const protocolLabels: Record<string, string> = {
-  "OGC:WMS": "WMS",
-  "OGC:WMTS": "WMTS",
-  "OGC:STAC": "STAC",
-};
+const visibility = ref<Record<string, boolean>>({});
 
-function getServiceLink(distribution: Distribution): string | null {
-  return distribution.links?.find((l) => l.rel === "service")?.href ?? null;
+function isVisible(distribution: Distribution) {
+  return visibility.value[distribution.id] !== false;
 }
 
-function getProtocolLabel(distribution: Distribution): string {
-  const protocol = distribution.properties.protocol ?? "";
-  return protocolLabels[protocol] ?? protocol;
-}
+const mapServices = computed(() =>
+  distributions.filter((distribution) => !isStacDistribution(distribution)),
+);
+const downloadServices = computed(() =>
+  distributions.filter(isStacDistribution),
+);
+const groups = computed(() => [
+  { label: "dataset.mapServices", distributions: mapServices.value },
+  { label: "dataset.otherAccess", distributions: downloadServices.value },
+]);
 </script>
 
 <template>
-  <ul class="flex flex-col gap-2">
-    <li v-for="dist in distributions" :key="dist.id">
-      <ULink
-        v-if="getServiceLink(dist)"
-        :to="getServiceLink(dist)!"
-        target="_blank"
-        raw
-        class="flex items-center gap-2"
+  <div class="flex flex-col gap-space-m">
+    <template v-for="group in groups" :key="group.label">
+      <section
+        v-if="group.distributions.length"
+        v-show="group.distributions.some(isVisible)"
       >
-        <UIcon name="i-lucide-server" class="size-3 shrink-0" />
-        <span class="font-medium">{{ getProtocolLabel(dist) }}</span>
-        <span v-if="dist.properties.title">— {{ dist.properties.title }}</span>
-      </ULink>
-      <span v-else class="flex items-center gap-2 text-sm">
-        <UIcon name="i-lucide-server" class="size-3 shrink-0" />
-        <span class="font-medium">{{ getProtocolLabel(dist) }}</span>
-      </span>
-    </li>
-  </ul>
+        <h4 class="mb-space-xs text-sm font-semibold text-highlighted">
+          {{ $t(group.label) }}
+        </h4>
+        <div class="rounded-md border border-default">
+          <div
+            class="hidden grid-cols-[7rem_1fr] gap-space-xs border-b border-default p-space-s text-xs font-semibold @2xl:grid"
+            aria-hidden="true"
+          >
+            <span>{{ $t("dataset.format") }}</span>
+            <span>{{ $t("dataset.serviceUrl") }}</span>
+          </div>
+          <ul class="divide-y divide-default">
+            <li
+              v-for="distribution in group.distributions"
+              :key="distribution.id"
+              v-show="isVisible(distribution)"
+            >
+              <DatasetService
+                :distribution="distribution"
+                @visibility="visibility[distribution.id] = $event"
+              />
+            </li>
+          </ul>
+        </div>
+      </section>
+    </template>
+  </div>
 </template>

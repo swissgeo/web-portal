@@ -59,6 +59,7 @@ test.describe("file import", () => {
     await page.waitForFunction(() => window.swissgeoOlMap !== undefined, null, {
       timeout: HYDRATION_TIMEOUT,
     });
+    await page.getByRole("button", { name: "Debug", exact: true }).click();
   });
 
   test.afterEach(async ({ page }) => {
