@@ -31,7 +31,7 @@ const isDesktop = inject<boolean>("isDesktop", true);
     data-testid="sidebar-logo-pic-extended"
   >
     <div
-      class="ml-3.5 flex translate-x-[0.5px] cursor-pointer items-center justify-center p-2"
+      class="flex cursor-pointer items-center justify-center py-2"
       @click="$emit('logoClick')"
     >
       <img

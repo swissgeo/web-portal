@@ -123,21 +123,26 @@ function resetApp() {
 </script>
 
 <template>
+  <!-- UHeader switches to its mobile layout below lg and has no prop to change
+       that; most of the ui classes below move the switch to xl by undoing the
+       default lg: rules and re-applying them at xl: -->
   <UHeader
     v-model:open="menuOpen"
     :auto-close="false"
     :ui="{
       container: 'max-w-full gap-8',
-      left: 'gap-6',
-      right: 'lg:flex-none',
+      left: 'min-w-0 gap-4 flex-1',
+      right: 'hidden xl:flex-none xl:flex',
       center: 'lg:hidden xl:flex',
       toggle: 'lg:inline-flex xl:hidden',
       content: 'lg:flex xl:hidden',
+      header: 'lg:px-8',
+      body: 'lg:px-8',
     }"
     toggle-side="left"
   >
     <template #left>
-      <LogoPic class="h-6 w-auto shrink-0" @logo-click="resetApp" />
+      <LogoPic class="shrink-0" @logo-click="resetApp" />
       <!-- the search drives the map, so it cannot be server rendered; the
            fallback holds the field's place to avoid a layout shift -->
       <ClientOnly>
