@@ -44,8 +44,9 @@ const wrapperClasses = computed(() => {
             :handle="false"
             :overlay="false"
             inset
+            close
             :ui="{
-              content: 'mb-[70px] inset-x-0',
+              content: 'mb-[70px] inset-x-0 rounded-none',
               title: 'text-base',
             }"
             :title="t('footer.mobileNav.mapInfo')"
