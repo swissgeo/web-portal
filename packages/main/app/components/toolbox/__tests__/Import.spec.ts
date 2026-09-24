@@ -42,7 +42,7 @@ vi.mock("~/stores/toolbox", () => ({
 }));
 
 const toastAdd = vi.fn();
-mockNuxtImport("useToast", () => () => ({ add: toastAdd }));
+mockNuxtImport("useToaster", () => () => ({ add: toastAdd }));
 
 const globalStubs = {
   UCard: { template: "<div><slot /></div>" },

@@ -32,7 +32,7 @@ mockNuxtImport("useI18n", () => () => ({
   t: (key: string) => key,
 }));
 
-mockNuxtImport("useToast", () => () => ({ add: toastAddMock }));
+mockNuxtImport("useToaster", () => () => ({ add: toastAddMock }));
 
 mockNuxtImport("useRuntimeConfig", () => () => ({
   public: {

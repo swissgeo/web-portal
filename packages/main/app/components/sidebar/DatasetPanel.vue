@@ -22,7 +22,7 @@ const isAlreadyOnMap = computed(() => {
   return layerStore.layers.some((l) => l.humanId === dataset.value!.id);
 });
 
-const toast = useToast();
+const toast = useToaster();
 const { t } = useI18n();
 
 function addToMap() {

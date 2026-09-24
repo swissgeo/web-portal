@@ -38,7 +38,7 @@ mockNuxtImport("useRuntimeConfig", () => () => ({
   public: { version: "test-v1.0", maxFileSizeMB: 250 },
 }));
 
-mockNuxtImport("useToast", () => () => ({ add: toastAdd }));
+mockNuxtImport("useToaster", () => () => ({ add: toastAdd }));
 
 mockNuxtImport("$fetch", () => fetchMock);
 

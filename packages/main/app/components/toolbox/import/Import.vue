@@ -5,7 +5,7 @@ import { SUPPORTED_URL_EXTENSIONS } from "~/utils/urlDetection";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
-const toast = useToast();
+const toast = useToaster();
 const toolboxStore = useToolboxStore();
 const { importFile, importFileUrl } = useFileImport();
 const {

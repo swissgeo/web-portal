@@ -31,7 +31,7 @@ const {
 });
 
 mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
-mockNuxtImport("useToast", () => () => ({ add: toastAddMock }));
+mockNuxtImport("useToaster", () => () => ({ add: toastAddMock }));
 
 vi.mock("@swissgeo/layers", () => ({
   useLayerStore: () => layerStore,

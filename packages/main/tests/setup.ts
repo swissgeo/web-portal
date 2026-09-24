@@ -16,6 +16,16 @@
 
 import { vi } from "vitest";
 
+vi.mock("~/composables/useToaster", () => ({
+  useToaster: () => ({
+    add: vi.fn(),
+    remove: vi.fn(),
+    showWarning: vi.fn(),
+    showError: vi.fn(),
+    showSuccess: vi.fn(),
+  }),
+}));
+
 const { isNuxtEnv } = vi.hoisted(() => {
   const isNuxtEnv =
     typeof window !== "undefined" &&
