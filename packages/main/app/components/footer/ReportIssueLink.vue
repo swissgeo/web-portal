@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { createReusableTemplate, useMediaQuery } from "@vueuse/core";
+import { createReusableTemplate } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 
 import ReportIssue from "./reportIssue/ReportIssue.vue";
 
 const { t } = useI18n();
-const isDesktop = useMediaQuery("(min-width: 768px)");
+const isDesktop = useIsDesktop();
 const [RegisterTemplate, ReuseTemplate] = createReusableTemplate();
 
 const displayReportIssueForm = ref(false);

@@ -42,7 +42,7 @@ watch(route, (value) => {
   <div class="flex h-screen flex-col">
     <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
     <UMain as="div" class="min-h-0 flex-1">
-      <main ref="main" class="h-full font-sans">
+      <main id="main" ref="main" class="h-full font-sans">
         <div class="relative h-full">
           <SideBar
             v-if="!isMapFullscreenMode"
