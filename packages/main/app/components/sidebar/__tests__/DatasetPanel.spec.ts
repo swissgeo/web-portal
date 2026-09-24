@@ -30,7 +30,7 @@ vi.mock("@swissgeo/dimension", () => ({
   }),
 }));
 vi.mock("@swissgeo/log", () => ({ default: { error: mocks.logError } }));
-mockNuxtImport("useToast", () => () => ({ add: mocks.toast }));
+mockNuxtImport("useToaster", () => () => ({ add: mocks.toast }));
 mockNuxtImport("useI18n", () => () => ({
   t: (key: string) => key,
   locale: ref("de"),

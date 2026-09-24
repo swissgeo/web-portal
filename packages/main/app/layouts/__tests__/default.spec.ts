@@ -29,6 +29,7 @@ function render() {
       stubs: {
         ClientOnly: { template: "<slot />" },
         Topbar: true,
+        Footer: true,
         UDrawer: { template: '<div><slot name="content" /></div>' },
         UMain: { template: "<div><slot /></div>" },
         SideBar: {
