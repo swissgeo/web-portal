@@ -46,9 +46,8 @@ const tabs = computed<TabsItem[]>(() => [
 const contacts = computed(() =>
   (props.dataset.properties.contacts ?? []).filter(
     (contact) =>
-      contact.organization?.trim() ||
-      contact.role?.trim() ||
-      contact.country?.trim(),
+      contact.role === "pointOfContact" &&
+      (contact.organization?.trim() || contact.country?.trim()),
   ),
 );
 
@@ -98,12 +97,9 @@ const serviceDistributions = computed<Distribution[]>(() => {
     <template #overview>
       <div
         v-if="dataset.properties.description || contacts.length"
-        class="grid gap-space-m"
-        :class="{
-          '@xl:grid-cols-2': dataset.properties.description && contacts.length,
-        }"
+        class="flex flex-col gap-space-m"
       >
-        <section v-if="dataset.properties.description">
+        <section v-if="dataset.properties.description" class="max-w-prose">
           <h3 class="mb-space-s text-base font-semibold text-highlighted">
             {{ $t("dataset.abstract") }}
           </h3>
@@ -115,8 +111,14 @@ const serviceDistributions = computed<Distribution[]>(() => {
           </p>
         </section>
 
-        <section v-if="contacts.length" data-testid="dataset-contacts">
-          <h3 class="mb-space-s text-base font-semibold text-highlighted">
+        <section
+          v-if="contacts.length"
+          class="border-y border-default py-space-s"
+          data-testid="dataset-contacts"
+        >
+          <h3
+            class="mb-space-xs text-xs font-medium tracking-wide text-muted uppercase"
+          >
             {{ $t("dataset.contacts") }}
           </h3>
           <ul class="flex flex-col gap-space-s">

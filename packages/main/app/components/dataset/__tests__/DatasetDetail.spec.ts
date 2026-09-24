@@ -57,11 +57,13 @@ async function selectTab(
 }
 
 describe("DatasetDetail Overview", () => {
-  it("shows the full description and all supplied contacts", () => {
+  it("shows the full description and only pointOfContact contacts", () => {
     const description = "A long description.\n".repeat(40).trim();
     const contacts = [
-      { organization: "First office", role: "owner" },
-      { organization: "Second office", country: "CH" },
+      { organization: "First office", role: "pointOfContact" },
+      { organization: "Second office", role: "pointOfContact", country: "CH" },
+      { organization: "Owner office", role: "owner" },
+      { organization: "Custodian office", role: "custodian" },
     ];
     const wrapper = mountDetail(makeDataset(contacts, description));
 
@@ -71,10 +73,19 @@ describe("DatasetDetail Overview", () => {
     expect(wrapper.findAllComponents(DatasetContact)).toHaveLength(2);
     expect(wrapper.text()).toContain("First office");
     expect(wrapper.text()).toContain("Second office");
+    expect(wrapper.text()).not.toContain("Owner office");
+    expect(wrapper.text()).not.toContain("Custodian office");
     expect(wrapper.findAll('[role="tab"]')).toHaveLength(4);
   });
 
-  it.each([undefined, [], [{ organization: "  ", role: "", country: "" }]])(
+  it.each([
+    undefined,
+    [],
+    [{ organization: "  ", role: "pointOfContact", country: "" }],
+    [{ organization: "Owner office", role: "owner" }],
+    [{ organization: "Custodian office", role: "custodian" }],
+    [{ organization: "Office without role" }],
+  ])(
     "omits the contact section when there is no contact content: %j",
     (contacts) => {
       const wrapper = mountDetail(makeDataset(contacts, "Description"));
@@ -90,7 +101,9 @@ describe("DatasetDetail Overview", () => {
   );
 
   it("shows contacts without requiring a description", () => {
-    const wrapper = mountDetail(makeDataset([{ organization: "Office" }]));
+    const wrapper = mountDetail(
+      makeDataset([{ organization: "Office", role: "pointOfContact" }]),
+    );
 
     expect(wrapper.find('[data-testid="dataset-description"]').exists()).toBe(
       false,
@@ -101,7 +114,9 @@ describe("DatasetDetail Overview", () => {
   });
 
   it("removes old contacts when the dataset changes", async () => {
-    const wrapper = mountDetail(makeDataset([{ organization: "Office" }]));
+    const wrapper = mountDetail(
+      makeDataset([{ organization: "Office", role: "pointOfContact" }]),
+    );
 
     await wrapper.setProps({ dataset: makeDataset([], "New description") });
 
