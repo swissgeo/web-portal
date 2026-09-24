@@ -15,18 +15,18 @@ describe("DatasetContact", () => {
     { contact: { organization }, description: null },
     {
       contact: { organization, role: "owner" },
-      description: "owner",
+      description: null,
     },
     {
       contact: { organization, country: "CH" },
-      description: "(CH)",
+      description: "CH",
     },
     {
       contact: { organization, role: "owner", country: "CH" },
-      description: "owner (CH)",
+      description: "CH",
     },
   ])(
-    "shows supplied contact fields: $description",
+    "shows organization and country without the technical role: $description",
     ({ contact, description }) => {
       const wrapper = mount(DatasetContact, { props: { contact } });
 
