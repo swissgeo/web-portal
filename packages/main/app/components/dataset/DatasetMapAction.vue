@@ -8,24 +8,22 @@ const emit = defineEmits<{ "add-to-map": [] }>();
 </script>
 
 <template>
-  <footer
-    class="flex shrink-0 flex-wrap gap-space-s border-t border-default p-4 lg:p-space-m"
-  >
+  <div class="shrink-0" data-testid="dataset-map-action">
     <UButton
       v-if="hasDataset && !isAlreadyOnMap"
-      icon="i-lucide-map"
+      icon="i-lucide-check"
       color="primary"
-      class="w-full justify-center"
+      variant="outline"
       @click="emit('add-to-map')"
     >
       {{ $t("dataset.addToMap") }}
     </UButton>
     <div
       v-else-if="hasDataset && isAlreadyOnMap"
-      class="flex w-full items-center justify-center gap-2 text-sm text-muted"
+      class="flex items-center gap-2 text-sm text-muted"
     >
       <UIcon name="i-lucide-check" class="size-4" />
       {{ $t("dataset.alreadyOnMap") }}
     </div>
-  </footer>
+  </div>
 </template>

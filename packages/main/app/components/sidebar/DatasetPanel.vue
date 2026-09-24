@@ -4,8 +4,8 @@ import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
-import DatasetFooter from "~/components/dataset/DatasetFooter.vue";
 import DatasetLanguageSection from "~/components/dataset/DatasetLanguageSection.vue";
+import DatasetMapAction from "~/components/dataset/DatasetMapAction.vue";
 import { computed } from "vue";
 
 const props = defineProps<{
@@ -59,7 +59,7 @@ function addToMap() {
 
 <template>
   <section
-    class="flex h-full min-h-0 flex-col border-r border-default bg-default"
+    class="@container flex h-full min-h-0 flex-col border-r border-default bg-default"
     aria-labelledby="dataset-panel-title"
     data-testid="dataset-panel"
   >
@@ -73,7 +73,6 @@ function addToMap() {
           {{ backLabel }}
         </UButton>
         <div class="flex items-center gap-space-xs">
-          <DatasetCopyLink :url="detailUrl" />
           <UButton
             icon="i-lucide-x"
             color="neutral"
@@ -83,9 +82,24 @@ function addToMap() {
           />
         </div>
       </div>
-      <h1 id="dataset-panel-title" class="text-2xl font-bold text-primary">
-        {{ dataset?.properties.title }}
-      </h1>
+      <div
+        class="flex flex-col items-start gap-space-s @2xl:flex-row @2xl:items-center @2xl:justify-between"
+      >
+        <div class="flex min-w-0 items-center gap-space-xs">
+          <h1
+            id="dataset-panel-title"
+            class="text-xl leading-heading font-semibold wrap-anywhere text-highlighted @2xl:text-3xl"
+          >
+            {{ dataset?.properties.title }}
+          </h1>
+          <DatasetCopyLink class="shrink-0" :url="detailUrl" />
+        </div>
+        <DatasetMapAction
+          :has-dataset="Boolean(dataset)"
+          :is-already-on-map="isAlreadyOnMap"
+          @add-to-map="addToMap"
+        />
+      </div>
     </header>
     <div
       class="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 lg:px-space-m lg:pb-space-m"
@@ -112,11 +126,5 @@ function addToMap() {
       />
       <DatasetLanguageSection :languages="dataset?.properties.languages" />
     </div>
-
-    <DatasetFooter
-      :has-dataset="Boolean(dataset)"
-      :is-already-on-map="isAlreadyOnMap"
-      @add-to-map="addToMap"
-    />
   </section>
 </template>

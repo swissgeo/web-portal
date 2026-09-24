@@ -67,20 +67,28 @@ beforeEach(() => {
 describe("DatasetPanel", () => {
   it("adds the displayed dataset and reflects its presence on the map", async () => {
     const wrapper = render();
-    await wrapper.get("footer button").trigger("click");
+    await wrapper
+      .get('[data-testid="dataset-map-action"] button')
+      .trigger("click");
     expect(mocks.makeServerLayer).toHaveBeenCalledWith(dataset);
     expect(mocks.addLayer).toHaveBeenCalledWith({ humanId: dataset.id });
 
     layers.push({ humanId: dataset.id });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find("footer button").exists()).toBe(false);
-    expect(wrapper.get("footer").text()).toBe("dataset.alreadyOnMap");
+    expect(
+      wrapper.find('[data-testid="dataset-map-action"] button').exists(),
+    ).toBe(false);
+    expect(wrapper.get('[data-testid="dataset-map-action"]').text()).toBe(
+      "dataset.alreadyOnMap",
+    );
   });
 
   it("does not offer to add a duplicate dataset", () => {
     layers.push({ humanId: dataset.id });
     const wrapper = render();
-    expect(wrapper.find("footer button").exists()).toBe(false);
+    expect(
+      wrapper.find('[data-testid="dataset-map-action"] button').exists(),
+    ).toBe(false);
     expect(mocks.addLayer).not.toHaveBeenCalled();
   });
 
@@ -88,7 +96,9 @@ describe("DatasetPanel", () => {
     layers.push({ humanId: dataset.id });
     const wrapper = render();
     await wrapper.setProps({ dataset: { ...dataset, id: "another.dataset" } });
-    expect(wrapper.get("footer button").text()).toBe("dataset.addToMap");
+    expect(
+      wrapper.get('[data-testid="dataset-map-action"] button').text(),
+    ).toBe("dataset.addToMap");
   });
 
   it("reports a layer creation failure", async () => {
@@ -96,7 +106,9 @@ describe("DatasetPanel", () => {
       throw new Error("Unsupported dataset");
     });
     const wrapper = render();
-    await wrapper.get("footer button").trigger("click");
+    await wrapper
+      .get('[data-testid="dataset-map-action"] button')
+      .trigger("click");
     expect(mocks.addLayer).not.toHaveBeenCalled();
     expect(mocks.toast).toHaveBeenCalledWith({
       color: "error",
@@ -109,7 +121,9 @@ describe("DatasetPanel", () => {
       throw new Error("Store unavailable");
     });
     const wrapper = render();
-    await wrapper.get("footer button").trigger("click");
+    await wrapper
+      .get('[data-testid="dataset-map-action"] button')
+      .trigger("click");
     expect(mocks.logError).toHaveBeenCalledWith(
       "Failed to add dataset to map",
       new Error("Store unavailable"),
@@ -134,7 +148,9 @@ describe("DatasetPanel", () => {
 
   it("omits languages and the map action while no dataset is available", () => {
     const wrapper = render({ dataset: null, isLoading: true });
-    expect(wrapper.find("footer button").exists()).toBe(false);
+    expect(
+      wrapper.find('[data-testid="dataset-map-action"] button').exists(),
+    ).toBe(false);
     expect(wrapper.text()).not.toContain("dataset.languages");
     expect(wrapper.findComponent({ name: "DatasetDetail" }).exists()).toBe(
       false,
@@ -147,7 +163,9 @@ describe("DatasetPanel", () => {
       error: { message: "Dataset unavailable" },
     });
     expect(wrapper.text()).toContain("Dataset unavailable");
-    expect(wrapper.find("footer button").exists()).toBe(false);
+    expect(
+      wrapper.find('[data-testid="dataset-map-action"] button').exists(),
+    ).toBe(false);
   });
 
   it("shows supplied languages and removes the section when they are absent", async () => {

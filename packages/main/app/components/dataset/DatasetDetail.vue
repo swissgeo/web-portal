@@ -84,8 +84,15 @@ const serviceDistributions = computed<Distribution[]>(() => {
     :key="dataset.id"
     :items="tabs"
     default-value="overview"
+    variant="link"
+    color="neutral"
     :unmount-on-hide="false"
-    :ui="{ list: 'overflow-x-auto overflow-y-hidden', trigger: 'shrink-0' }"
+    :ui="{
+      list: 'overflow-x-auto overflow-y-hidden px-0',
+      trigger:
+        'shrink-0 grow-0 px-2 text-primary data-[state=active]:text-highlighted',
+      indicator: 'bottom-0',
+    }"
     class="@container w-full gap-space-m"
   >
     <template #overview>
