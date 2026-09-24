@@ -41,9 +41,14 @@ const wrapperClasses = computed(() => {
       <ClientOnly>
         <div class="absolute bottom-24 left-4 z-10">
           <UDrawer
+            :handle="false"
             :overlay="false"
             inset
-            :ui="{ content: 'mb-[73px] inset-x-0' }"
+            :ui="{
+              content: 'mb-[70px] inset-x-0',
+              title: 'text-base',
+            }"
+            :title="t('footer.mobileNav.mapInfo')"
           >
             <UButton
               :label="t('footer.mobileNav.mapInfo')"
@@ -52,7 +57,7 @@ const wrapperClasses = computed(() => {
               trailing-icon="i-lucide-chevron-down"
             />
 
-            <template #content>
+            <template #body>
               <FooterLinks mobile />
             </template>
           </UDrawer>

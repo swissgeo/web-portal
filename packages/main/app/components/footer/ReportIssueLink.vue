@@ -35,7 +35,7 @@ const displayReportIssueForm = ref(false);
     <UButton
       variant="link"
       color="error"
-      size="sm"
+      :size="isDesktop ? 'sm' : 'sm'"
       class="gap-1 px-0"
       @click="displayReportIssueForm = true"
     >
