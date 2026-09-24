@@ -44,10 +44,10 @@ watch(route, (value) => {
           </SideBar>
           <div class="relative isolate h-full w-full">
             <slot />
+            <ClientOnly>
+              <Footer v-if="!isMapFullscreenMode" />
+            </ClientOnly>
           </div>
-          <ClientOnly>
-            <Footer v-if="!isMapFullscreenMode" />
-          </ClientOnly>
           <DatasetPanelFrame :visible="detailsOpen && !isMapFullscreenMode">
             <slot name="details" />
           </DatasetPanelFrame>
