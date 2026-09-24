@@ -87,6 +87,8 @@ How the scale is kept exact:
   level are drawn (for example level 22, 2.5 m/px, for 1:25'000). Layers without
   that level are not changed, and the normal map is not affected.
 
+To try printing locally without deploying, see [Running the print stack locally](docs/print-local-stack.md).
+
 ## Monorepo setup
 
 This project is structed as a monorepo. There are several sub-packages, each with
