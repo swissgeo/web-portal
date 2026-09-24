@@ -117,6 +117,12 @@ export default defineAppConfig({
         },
       ],
     },
+    formField: {
+      slots: {
+        hint: "text-tiny",
+        help: "text-tiny",
+      },
+    },
     toast: {
       slots: {},
       variants: {
