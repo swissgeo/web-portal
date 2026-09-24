@@ -84,7 +84,7 @@ async function stateConfigToLayer(
 
   if (config.layerUrl) {
     const data = await $fetch<Dataset>(config.layerUrl);
-    const layer = makeServerLayer(data);
+    const layer = await makeServerLayer(data);
 
     return layer;
   }

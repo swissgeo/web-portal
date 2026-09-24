@@ -25,6 +25,8 @@ export interface LayerRequest {
 
   // priority 2: identify is present
   urlTemplate?: string;
+  baseUrl?: string;
+  layerName: string | null;
 }
 
 // priority 3: wms feature info available
@@ -50,8 +52,9 @@ export interface WmsFeatureInfoCapability {
     method: "GET" | "POST";
     formats: string[];
   };
-  wmsVersion?: string;
+  wmsVersion?: string | null;
   availableCrs: string[];
+  layerName: string | null;
 }
 
 export interface OgcDistribution {
@@ -64,7 +67,11 @@ export type LayerSource = {
   layerUuid: string;
   layerId: string;
   preResolvedFeatures?: geojsonFeature[];
-  distributionFeature?: OgcDistributionFeature;
+  getFeatureInfoInformation?: {
+    protocol?: string;
+    baseUrl?: string;
+  };
+  layerName: string | null;
 };
 
 export interface OgcDistributionFeature {

@@ -7,6 +7,7 @@ import type { Dataset, Legend } from "@swissgeo/ogc";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { useWmsFeatureInfoCapabilities } from "@swissgeo/ogc";
 
 /**
  * Dataset Layer Converter Container
@@ -87,6 +88,32 @@ const layerData = computed((): MapLayer => {
     dimensions: dimensionsStore.getDimensions(layer.uuid) ?? null,
     displayName: layer.info?.displayName ?? layer.humanId,
   };
+});
+
+const layerFeatureInfoProtocol = computed(
+  () => layer.info?.featureInfoInformation?.protocol ?? null,
+);
+const layerFeatureInfoBaseUrl = computed(
+  () => layer.info?.featureInfoInformation?.baseUrl ?? null,
+);
+
+const wmsFeatureInfoUrl = computed(() =>
+  layerFormat.value === "WMTS" &&
+  layerFeatureInfoProtocol.value === "ogc:wms" &&
+  layerFeatureInfoBaseUrl.value
+    ? layerFeatureInfoBaseUrl.value
+    : null,
+);
+
+const wmsFeatureInfoCapability = useWmsFeatureInfoCapabilities(
+  layer.humanId,
+  wmsFeatureInfoUrl,
+);
+
+watch(wmsFeatureInfoCapability, (wmsFeatureInfoCapability) => {
+  if (wmsFeatureInfoCapability) {
+    emit("setWmsCapability", layer.uuid, { ...wmsFeatureInfoCapability });
+  }
 });
 
 // trigger the update to the parent

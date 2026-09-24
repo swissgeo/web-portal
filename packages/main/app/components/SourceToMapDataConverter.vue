@@ -24,10 +24,7 @@ import { toError } from "@swissgeo/shared";
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
 import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";
-import {
-  getOgcFeatureInfo,
-  getUrlTemplate,
-} from "@/utils/getOgcLinksForFeatures";
+import { getUrlTemplate } from "@/utils/featureInfoUtils";
 
 const { sourceBgLayer, sourceData } = defineProps<{
   sourceBgLayer: SourceData | null | undefined;
@@ -65,14 +62,22 @@ async function updateMapLayerData(index: number, mapLayerData: MapLayer) {
     mapLayerData.uuid,
   );
   if (featuresSelected) {
-    const distributionFeature = await getOgcFeatureInfo(
-      layerStore.getLayer(mapLayerData.uuid),
-    );
-    if (distributionFeature) {
+    const sourceLayer = layerStore.getLayer(mapLayerData.uuid);
+    const featureInfo =
+      sourceLayer && isDatasetLayer(sourceLayer)
+        ? sourceLayer.info?.featureInfoInformation
+        : undefined;
+    if (
+      featureInfo &&
+      (featureInfo.protocol === "geoadmin:features" ||
+        featureInfo.protocol === "ogc:api3features")
+    ) {
       const layerSource: LayerSource = {
         layerUuid: mapLayerData.uuid,
         layerId: mapLayerData.layerId,
-        distributionFeature,
+        getFeatureInfoInformation: featureInfo,
+        layerName:
+          featureStore.getWmsCapability(mapLayerData.uuid)?.layerName ?? null,
       };
       const urlTemplate = getUrlTemplate(layerSource);
       if (urlTemplate) {

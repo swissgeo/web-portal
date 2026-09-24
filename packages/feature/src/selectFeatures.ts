@@ -92,9 +92,11 @@ export async function getFeaturesForOneLayer(
     }));
 
     // this means we've an identify url, we use an Identify here
-  } else if (layerRequest.urlTemplate) {
-    const baseUrl = `${layerRequest.urlTemplate.split("MapServer")[0]}MapServer/`;
-    const identifyUrl = `${baseUrl}identify?layers=all:${layerRequest.layerId}&sr=${epsgNumber}&geometry=${extent.join(",")}&geometryFormat=geojson&geometryType=esriGeometryEnvelope&limit=${limit}&tolerance=0&returnGeometry=true&lang=${lang}`;
+  } else if (layerRequest.urlTemplate && layerRequest.baseUrl) {
+    // the baseUrl may or may not carry a trailing slash, depending on the
+    // service's `describes` href — normalize before joining with `identify`
+    const identifyBase = layerRequest.baseUrl.replace(/\/+$/, "");
+    const identifyUrl = `${identifyBase}/identify?layers=all:${layerRequest.layerId}&sr=${epsgNumber}&geometry=${extent.join(",")}&geometryFormat=geojson&geometryType=esriGeometryEnvelope&limit=${limit}&tolerance=0&returnGeometry=true&lang=${lang}`;
     const identifyResult = await fetch(identifyUrl, { signal: abortSignal });
     if (identifyResult.status !== 200) {
       log.warn(
@@ -130,7 +132,11 @@ export async function getFeaturesForOneLayer(
 function pickFormat(formats: string[]): string | undefined {
   return formats.filter(
     (format) =>
-      format === "application/json" || format.startsWith("application/json;"),
+      format === "application/json" ||
+      format.startsWith("application/json;") ||
+      // We have wms layers with nothing more than html popups
+      format === "text/html" ||
+      format === "text/plain",
   )[0];
 }
 
@@ -181,8 +187,8 @@ function buildWmsGetFeatureInfoUrl(
     VERSION: versionPatterns.test(wmsRequest.wmsVersion)
       ? wmsRequest.wmsVersion
       : "1.3.0",
-    LAYERS: wmsRequest.layerId,
-    QUERY_LAYERS: wmsRequest.layerId,
+    LAYERS: wmsRequest.layerName ?? wmsRequest.layerId,
+    QUERY_LAYERS: wmsRequest.layerName ?? wmsRequest.layerId,
     BBOX: extent.join(","),
     FEATURE_COUNT: String(featureLimit),
     LANG: lang,
@@ -311,32 +317,48 @@ async function getFeaturesFromWmsServer(
     );
     return [];
   }
-  const body = (await featureInfoResult.json()) as WmsGetFeatureInfoResponse;
-  // Only the GeoJSON FeatureCollection shape is supported. An unrecognized
-  // shape is a warn + drop, an empty FeatureCollection is a normal silent [].
-  if (!Array.isArray(body.features)) {
-    log.warn(
-      `[GetFeatureInfo Request]: unexpected response shape for layer ${wmsRequest.layerId} (expected a GeoJSON FeatureCollection)`,
-    );
-    return [];
-  }
-  const wmsFeatures: FeatureData[] = body.features.map((feature) => {
-    const properties = feature.properties ?? {};
-    return {
-      featureId: String(
-        feature.id ??
-          properties.id ??
-          properties.identifier ??
-          properties.name ??
-          properties.label ??
-          crypto.randomUUID(),
-      ),
-      geometry: feature.geometry ?? null,
-      content: {
-        kind: "json",
-        properties,
+  if (format.startsWith("application/json")) {
+    const body = (await featureInfoResult.json()) as WmsGetFeatureInfoResponse;
+    // Only the GeoJSON FeatureCollection shape is supported. An unrecognized
+    // shape is a warn + drop, an empty FeatureCollection is a normal silent [].
+    if (!Array.isArray(body.features)) {
+      log.warn(
+        `[GetFeatureInfo Request]: unexpected response shape for layer ${wmsRequest.layerId} (expected a GeoJSON FeatureCollection)`,
+      );
+      return [];
+    }
+    const wmsFeatures: FeatureData[] = body.features.map((feature) => {
+      const properties = feature.properties ?? {};
+      return {
+        featureId: String(
+          feature.id ??
+            properties.id ??
+            properties.identifier ??
+            properties.name ??
+            properties.label ??
+            crypto.randomUUID(),
+        ),
+        geometry: feature.geometry ?? null,
+        content: {
+          kind: "json" as const,
+          properties,
+        },
+      };
+    });
+    return wmsFeatures;
+  } else {
+    const body = await featureInfoResult.text();
+    return [
+      {
+        featureId: crypto.randomUUID(),
+        geometry: null,
+        content: {
+          kind: "html" as const,
+          trusted: true,
+          shareable: false,
+          html: body,
+        },
       },
-    };
-  });
-  return wmsFeatures;
+    ];
+  }
 }
