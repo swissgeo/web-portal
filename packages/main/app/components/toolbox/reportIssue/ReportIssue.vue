@@ -15,7 +15,7 @@ import ReportIssueFeedback from "./ReportIssueFeedback.vue";
 import ReportIssueNotes from "./ReportIssueNotes.vue";
 
 const { t } = useI18n();
-const toast = useToast();
+const toast = useToaster();
 const runtimeConfig = useRuntimeConfig();
 const toolboxStore = useToolboxStore();
 const { exportState } = useStateConfig();

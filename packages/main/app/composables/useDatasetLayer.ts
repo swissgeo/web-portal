@@ -16,7 +16,7 @@ import { toValue } from "vue";
  */
 export function useDatasetLayer(dataset: MaybeRefOrGetter<Dataset>) {
   const { t } = useI18n();
-  const toast = useToast();
+  const toast = useToaster();
   const layerStore = useLayerStore();
   const dimensionsStore = useDimensionsStore();
 

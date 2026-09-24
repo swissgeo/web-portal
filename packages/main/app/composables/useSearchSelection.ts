@@ -23,7 +23,7 @@ import { joinURL } from "ufo";
 
 export function useSearchSelection() {
   const runtimeConfig = useRuntimeConfig();
-  const toast = useToast();
+  const toast = useToaster();
   const { locale, t } = useI18n();
   const positionStore = usePositionStore();
   const searchStore = useSearchStore();

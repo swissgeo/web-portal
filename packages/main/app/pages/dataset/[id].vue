@@ -39,7 +39,7 @@ useSeoMeta({
 });
 
 const layerStore = useLayerStore();
-const toast = useToast();
+const toast = useToaster();
 const { t } = useI18n();
 
 const isAlreadyOnMap = computed(() => {
