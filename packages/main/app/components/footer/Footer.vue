@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { Map, Layers3, Wrench } from "@lucide/vue";
 import { OLMapScale, useMapStore } from "@swissgeo/map";
+import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 const { olMap } = storeToRefs(useMapStore());
+const sidebarStore = useSidebarStore();
 const { t } = useI18n();
 const isDesktop = useIsDesktop();
 
@@ -9,12 +11,18 @@ const mobileNavButtons = computed(() => [
   {
     icon: Map,
     label: t("footer.mobileNav.map"),
-    variant: "solid-inverted" as const,
+    variant:
+      sidebarStore.isLayerCartVisible && !sidebarStore.isGeocatalogTreeVisible
+        ? ("solid-inverted" as const)
+        : ("ghost-inverted" as const),
   },
   {
     icon: Layers3,
     label: t("footer.mobileNav.catalog"),
-    variant: "ghost-inverted" as const,
+    variant: sidebarStore.isGeocatalogTreeVisible
+      ? ("solid-inverted" as const)
+      : ("ghost-inverted" as const),
+    onClick: () => sidebarStore.setSidebar(SidebarType.GEOCATALOG_TREE),
   },
   {
     icon: Wrench,
