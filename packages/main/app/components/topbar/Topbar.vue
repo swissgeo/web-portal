@@ -117,14 +117,18 @@ function resetApp() {
   >
     <template #left>
       <LogoPic class="h-6 w-auto shrink-0" @logo-click="resetApp" />
-      <!-- the search drives the map, so it cannot be server rendered; the
-           fallback holds the field's place to avoid a layout shift -->
-      <ClientOnly>
-        <TopbarSearch />
-        <template #fallback>
-          <div class="h-8 w-72 grow rounded-md border border-default" />
-        </template>
-      </ClientOnly>
+      <!-- TODO bring the search back on mobile once it has a mobile layout;
+           below `md` the field is too wide and overflows the page -->
+      <div class="hidden md:contents">
+        <!-- the search drives the map, so it cannot be server rendered; the
+             fallback holds the field's place to avoid a layout shift -->
+        <ClientOnly>
+          <TopbarSearch />
+          <template #fallback>
+            <div class="h-8 w-72 grow rounded-md border border-default" />
+          </template>
+        </ClientOnly>
+      </div>
     </template>
 
     <UNavigationMenu
