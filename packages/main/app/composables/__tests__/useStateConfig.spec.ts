@@ -315,7 +315,7 @@ describe("useStateConfig manages to import a State with importState", () => {
     layerUrl: "https://test.ch",
     isLoading: false,
   };
-  mockedMakeServerLayer.mockReturnValue(mockedLayer);
+  mockedMakeServerLayer.mockResolvedValue(mockedLayer);
   beforeEach(() => {
     setActivePinia(createPinia());
     mockMapLayers.length = 0;
@@ -466,6 +466,7 @@ describe("useStateConfig manages to import a State with importState", () => {
         formats: ["application/json"],
       },
       availableCrs: ["EPSG:2056"],
+      layerName: null,
     });
     expect(featureStore.getWmsCapability(existingLayer.uuid)).toBeDefined();
 

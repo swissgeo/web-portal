@@ -113,7 +113,7 @@ export function useSearchSelection() {
 
     try {
       const dataset = await $fetch<Dataset>(url.toString());
-      layerStore.addLayer(makeServerLayer(dataset));
+      layerStore.addLayer(await makeServerLayer(dataset));
     } catch (e) {
       log.error(
         "Failed to add search result to map",

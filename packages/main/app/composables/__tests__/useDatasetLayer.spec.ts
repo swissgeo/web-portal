@@ -73,10 +73,10 @@ describe("useDatasetLayer", () => {
     expect(isOnMap.value).toBe(true);
   });
 
-  it("adds a layer made from the dataset to the map", () => {
+  it("adds a layer made from the dataset to the map", async () => {
     const dataset = makeDataset("ch.a");
 
-    useDatasetLayer(() => dataset).addToMap();
+    await useDatasetLayer(() => dataset).addToMap();
 
     expect(makeServerLayerMock).toHaveBeenCalledWith(dataset);
     expect(layerStore.addLayer).toHaveBeenCalledWith({
@@ -85,13 +85,13 @@ describe("useDatasetLayer", () => {
     });
   });
 
-  it("tells the user when the layer cannot be made from the dataset", () => {
+  it("tells the user when the layer cannot be made from the dataset", async () => {
     const error = new Error("unsupported distribution");
     makeServerLayerMock.mockImplementationOnce(() => {
       throw error;
     });
 
-    useDatasetLayer(makeDataset("ch.a")).addToMap();
+    await useDatasetLayer(makeDataset("ch.a")).addToMap();
 
     expect(layerStore.addLayer).not.toHaveBeenCalled();
     expect(logErrorMock).toHaveBeenCalledWith(

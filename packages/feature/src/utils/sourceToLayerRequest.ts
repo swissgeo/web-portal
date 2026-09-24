@@ -25,27 +25,22 @@ export function sourceToLayerRequest(
       layerUuid: layerSource.layerUuid,
       layerId: layerSource.layerId,
       preResolvedFeatures: layerSource.preResolvedFeatures,
+      layerName: layerSource.layerName ?? layerSource.layerId,
     };
   }
-
   // priority 2: try to see if there is an identify available
-
   if (
-    layerSource.distributionFeature?.properties.protocol === "geoadmin:features"
+    layerSource.getFeatureInfoInformation?.baseUrl &&
+    (layerSource.getFeatureInfoInformation?.protocol === "geoadmin:features" ||
+      layerSource.getFeatureInfoInformation?.protocol === "ogc:api3features")
   ) {
-    const template = layerSource.distributionFeature.linkTemplates?.find(
-      (linkTemplate) => linkTemplate.rel === "preview",
-    )?.uriTemplate;
-    if (template) {
-      return {
-        layerUuid: layerSource.layerUuid,
-        layerId: layerSource.layerId,
-        urlTemplate: template,
-      };
-    }
-    // In the future, we might have a distribution feature which gives us a template and the available crs for
-    // the ogc:wms protocol. Until then --> we use the pre-parsed capabilities and that's too bad for
-    // wmts layers with wms get Features capabilities
+    return {
+      layerUuid: layerSource.layerUuid,
+      layerId: layerSource.layerId,
+      baseUrl: layerSource.getFeatureInfoInformation.baseUrl,
+      urlTemplate: `${layerSource.getFeatureInfoInformation.baseUrl}/${layerSource.layerId}/{featureId}/htmlPopup?lang={lang}`,
+      layerName: layerSource.layerName ?? layerSource.layerId,
+    };
   }
 
   // priority 3: WMS GetFeatureInfo: Using the stored capabilities
@@ -58,9 +53,14 @@ export function sourceToLayerRequest(
       wmsGetFeatureInfo: capability.getFeatureInfoCapability,
       wmsVersion: capability.wmsVersion ?? "1.3.0",
       availableCrs: capability.availableCrs,
+      layerName: capability.layerName,
     };
   }
 
   // unsupported cases end up with an "empty" layerRequest
-  return { layerUuid: layerSource.layerUuid, layerId: layerSource.layerId };
+  return {
+    layerUuid: layerSource.layerUuid,
+    layerId: layerSource.layerId,
+    layerName: layerSource.layerName ?? layerSource.layerId,
+  };
 }

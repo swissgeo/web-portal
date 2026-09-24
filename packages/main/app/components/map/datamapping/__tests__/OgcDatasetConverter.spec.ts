@@ -1,3 +1,5 @@
+import type { DatasetLayer } from "@swissgeo/layers";
+
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
@@ -53,6 +55,35 @@ vi.mock("@/components/map/datamapping/useDatasetLocaleRefresh", () => ({
   default: vi.fn(() => ({})),
 }));
 
+const { wmsFeatureInfoCapability, useWmsFeatureInfoCapabilitiesMock } =
+  await vi.hoisted(async () => {
+    const { ref } = await import("vue");
+    const wmsFeatureInfoCapability = ref<{
+      availableCrs: string[];
+      getFeatureInfoCapability: {
+        baseUrl: string;
+        method: "GET" | "POST";
+        formats: string[];
+      };
+      wmsVersion: string | null;
+      layerName: string | null;
+    } | null>(null);
+    const useWmsFeatureInfoCapabilitiesMock = vi.fn(
+      (_layerId: string | null, _capabilityUrl: { value: string | null }) =>
+        wmsFeatureInfoCapability,
+    );
+    return { wmsFeatureInfoCapability, useWmsFeatureInfoCapabilitiesMock };
+  });
+
+vi.mock("@swissgeo/ogc", async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const actual = await importOriginal<typeof import("@swissgeo/ogc")>();
+  return {
+    ...actual,
+    useWmsFeatureInfoCapabilities: useWmsFeatureInfoCapabilitiesMock,
+  };
+});
+
 const WmtsConverterStub = defineComponent({
   name: "MapDatamappingOgcWmtsLayerConverter",
   template: "<div>WMTS converter</div>",
@@ -69,6 +100,8 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     setActivePinia(createPinia());
     ogcErrorCallbacks.length = 0;
     layerFormat.value = "WMTS";
+    wmsFeatureInfoCapability.value = null;
+    useWmsFeatureInfoCapabilitiesMock.mockClear();
   });
 
   it("emits the basic data regardless of the OGC travelling", () => {
@@ -258,5 +291,98 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     await flushPromises();
 
     expect(wrapper.emitted("remove")).toEqual([["some-fancy-uuid"]]);
+  });
+
+  describe("WMTS-side WMS feature info gate", () => {
+    const ogcWmsLayer = (): DatasetLayer =>
+      ({
+        isLoading: false,
+        type: "dataset",
+        humanId: "human-id",
+        uuid: "some-fancy-uuid",
+        info: {
+          displayName: "Human",
+          featureInfoInformation: {
+            protocol: "ogc:wms",
+            baseUrl: "https://example.test/wms-capabilities",
+          },
+        },
+        data: null,
+      }) as unknown as DatasetLayer;
+
+    const mountConverter = (layer: DatasetLayer) =>
+      mount(OgcDatasetConverter, {
+        propsData: { layer },
+        global: {
+          stubs: {
+            MapDatamappingOgcWmtsLayerConverter: WmtsConverterStub,
+            MapDatamappingOgcWmsLayerConverter: WmsConverterStub,
+          },
+        },
+      });
+
+    it("feeds the feature info baseUrl to the composable for a WMTS layer with an ogc:wms protocol", () => {
+      mountConverter(ogcWmsLayer());
+
+      expect(useWmsFeatureInfoCapabilitiesMock).toHaveBeenCalledTimes(1);
+      const [layerId, capabilityUrl] =
+        useWmsFeatureInfoCapabilitiesMock.mock.calls[0]!;
+      expect(layerId).toBe("human-id");
+      expect(capabilityUrl.value).toBe("https://example.test/wms-capabilities");
+    });
+
+    it("keeps the gate closed (null URL) for non-ogc:wms protocols", () => {
+      const layer = ogcWmsLayer();
+      layer.info!.featureInfoInformation = {
+        protocol: "geoadmin:features",
+        baseUrl: "https://example.test/MapServer",
+      };
+
+      mountConverter(layer);
+
+      const [, capabilityUrl] =
+        useWmsFeatureInfoCapabilitiesMock.mock.calls[0]!;
+      expect(capabilityUrl.value).toBeNull();
+    });
+
+    it("keeps the gate closed when the layer is rendered as WMS", () => {
+      layerFormat.value = "WMS";
+
+      mountConverter(ogcWmsLayer());
+
+      const [, capabilityUrl] =
+        useWmsFeatureInfoCapabilitiesMock.mock.calls[0]!;
+      expect(capabilityUrl.value).toBeNull();
+    });
+
+    it("emits the parsed capability under the layer uuid once it resolves", async () => {
+      const parts = {
+        availableCrs: ["EPSG:2056"],
+        getFeatureInfoCapability: {
+          baseUrl: "https://example.test/wms?",
+          method: "GET" as const,
+          formats: ["application/json"],
+        },
+        wmsVersion: "1.3.0",
+        layerName: "wms.layer.name",
+      };
+
+      const wrapper = mountConverter(ogcWmsLayer());
+      expect(wrapper.emitted("setWmsCapability")).toBeUndefined();
+
+      wmsFeatureInfoCapability.value = parts;
+      await flushPromises();
+
+      expect(wrapper.emitted("setWmsCapability")).toEqual([
+        ["some-fancy-uuid", parts],
+      ]);
+    });
+
+    it("stays silent while the composable yields null", async () => {
+      const wrapper = mountConverter(ogcWmsLayer());
+      await flushPromises();
+
+      expect(wrapper.emitted("setWmsCapability")).toBeUndefined();
+    });
   });
 });

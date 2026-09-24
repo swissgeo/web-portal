@@ -18,6 +18,7 @@ const {
   queryable,
   getFeatureInfo,
   availableCrs,
+  layerName,
   wmsDataForOl,
   defaultOpacity,
   timeInfo,
@@ -30,6 +31,7 @@ const {
       WmsFeatureInfoCapability["getFeatureInfoCapability"] | null
     >(null),
     availableCrs: ref<string[]>([]),
+    layerName: ref<string | null>(null),
     wmsDataForOl: ref<{
       url: string;
       gutter: number;
@@ -51,6 +53,7 @@ vi.mock("@/components/map/datamapping/useOgcWmsData", () => ({
     availableCrs,
     getFeatureInfo,
     queryable,
+    layerName,
   })),
 }));
 
@@ -83,14 +86,16 @@ describe("OgcWmsLayerConverter WMS capability registration", () => {
     queryable.value = false;
     getFeatureInfo.value = null;
     availableCrs.value = [];
+    layerName.value = null;
     wmsDataForOl.value = null;
   });
 
-  it("emits setWmsCapability when every parameter is set, with wmsVersion from the OL data", async () => {
+  it("emits setWmsCapability when every parameter is set, with wmsVersion and layerName", async () => {
     const wrapper = mountConverter();
 
     getFeatureInfo.value = GFI_CAPABILITY;
     availableCrs.value = ["EPSG:4326", "EPSG:2056"];
+    layerName.value = "ch.test.wms-layer";
     wmsDataForOl.value = OL_LAYER_DATA;
     queryable.value = true;
     await flushPromises();
@@ -102,6 +107,7 @@ describe("OgcWmsLayerConverter WMS capability registration", () => {
         availableCrs: ["EPSG:4326", "EPSG:2056"],
         getFeatureInfoCapability: GFI_CAPABILITY,
         wmsVersion: "1.3.0",
+        layerName: "ch.test.wms-layer",
       },
     ]);
   });
@@ -119,6 +125,7 @@ describe("OgcWmsLayerConverter WMS capability registration", () => {
     expect(
       (emitted![0]![0] as WmsFeatureInfoCapability).wmsVersion,
     ).toBeUndefined();
+    expect((emitted![0]![0] as WmsFeatureInfoCapability).layerName).toBeNull();
   });
 
   it("does not emit when the layer is not queryable", async () => {

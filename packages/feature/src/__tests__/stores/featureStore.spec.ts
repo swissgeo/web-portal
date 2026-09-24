@@ -227,6 +227,7 @@ describe("WMS capability registrations", () => {
     },
     wmsVersion: "1.3.0",
     availableCrs: ["EPSG:2056", "EPSG:4326"],
+    layerName: null,
   };
 
   it("starts with no registration, and getWmsCapability returns undefined", () => {

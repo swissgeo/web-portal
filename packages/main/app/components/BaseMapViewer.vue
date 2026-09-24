@@ -23,7 +23,6 @@ import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
 import { cloneDeep } from "es-toolkit";
 
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
-import { getOgcFeatureInfo } from "@/utils/getOgcLinksForFeatures";
 import { readThemeToken } from "@/utils/themeTokens";
 
 const {
@@ -178,57 +177,45 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
     compareSliderActive &&
     mapClickEvent.pixel[0] >
       (compareRatio ?? 0) * mapClickEvent.viewportSize[0];
-  const results = await Promise.allSettled(
-    sourceLayers.value
-      .filter(
-        (sourceLayer) =>
-          // first we filter out hidden layers
-          mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)?.isVisible &&
-          // at startup, some layers will have a `null` opacity, which is interpreted
-          // as `1` in the mapviewer (by default, we want to see the map).
-          (mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)!.opacity ===
-            null ||
-            mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)!.opacity > 0) &&
-          // we also filter the compare slider clipped layer if the click happened
-          // on the right of the slider
-          !(
-            filterOutCutLayer &&
-            compareSliderClippedLayer?.uuid === sourceLayer.uuid
-          ),
-      )
-      .map(async (sourceLayer) => {
-        const preResolvedFeatures =
-          mapClickEvent.vectorFeaturesPerLayer[sourceLayer.uuid];
-        // we spare some fetches if the features are already there
-        const distributionFeature = preResolvedFeatures
-          ? undefined
-          : await getOgcFeatureInfo(sourceLayer, signal);
-        if (distributionFeature) {
-          const layerSource: LayerSource = {
-            layerUuid: sourceLayer.uuid,
-            layerId: isDatasetLayer(sourceLayer)
-              ? sourceLayer.data.id
-              : sourceLayer.humanId,
-            distributionFeature,
-            preResolvedFeatures,
-          };
-          return layerSource;
-        }
-        return {
-          layerUuid: sourceLayer.uuid,
-          layerId: isDatasetLayer(sourceLayer)
-            ? sourceLayer.data.id
-            : sourceLayer.humanId,
-          preResolvedFeatures,
-        };
-      }),
-  );
+  const results: LayerSource[] = sourceLayers.value
+    .filter(
+      (sourceLayer) =>
+        // first we filter out hidden layers
+        mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)?.isVisible &&
+        // at startup, some layers will have a `null` opacity, which is interpreted
+        // as `1` in the mapviewer (by default, we want to see the map).
+        (mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)!.opacity === null ||
+          mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)!.opacity > 0) &&
+        // we also filter the compare slider clipped layer if the click happened
+        // on the right of the slider
+        !(
+          filterOutCutLayer &&
+          compareSliderClippedLayer?.uuid === sourceLayer.uuid
+        ),
+    )
+    .map((sourceLayer) => {
+      const preResolvedFeatures =
+        mapClickEvent.vectorFeaturesPerLayer[sourceLayer.uuid];
+      // we spare some fetches if the features are already there
+      const layerSource: LayerSource = {
+        layerUuid: sourceLayer.uuid,
+        layerId: isDatasetLayer(sourceLayer)
+          ? sourceLayer.data.id
+          : sourceLayer.humanId,
+        getFeatureInfoInformation: isDatasetLayer(sourceLayer)
+          ? sourceLayer.info?.featureInfoInformation
+          : undefined,
+        preResolvedFeatures,
+        layerName:
+          featureStore.getWmsCapability(sourceLayer.uuid)?.layerName ?? null,
+      };
+      return layerSource;
+    });
 
   results.forEach((result) => {
-    if (result.status === "fulfilled") {
-      layersSources.push(result.value);
-    }
+    layersSources.push(result);
   });
+
   if (signal.aborted) {
     return;
   }

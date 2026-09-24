@@ -8,6 +8,11 @@ import BaseMapViewer from "../BaseMapViewer.vue";
 
 const DISTRIBUTION_URL = "https://example.test/distributions";
 
+const LAYER_1_FEATURE_INFO = {
+  protocol: "geoadmin:features",
+  baseUrl: "https://example.test/MapServer",
+};
+
 const mockLayers = [
   {
     uuid: "layer-1",
@@ -15,6 +20,10 @@ const mockLayers = [
     type: "dataset",
     displayName: "Layer 1",
     opacity: 1,
+    info: {
+      displayName: "Layer 1",
+      featureInfoInformation: LAYER_1_FEATURE_INFO,
+    },
     data: {
       id: "ch.test.dataset",
       links: [{ rel: "distributions", href: DISTRIBUTION_URL }],
@@ -73,6 +82,7 @@ vi.mock("@swissgeo/feature", () => ({
   useFeaturesStore: () => ({
     hasSelectedFeatures: false,
     $reset: vi.fn(),
+    getWmsCapability: vi.fn(() => undefined),
   }),
 }));
 
@@ -165,85 +175,64 @@ describe("BaseMapViewer — map click abort handling", () => {
     });
   }
 
-  it("aborts the previous click's in-flight request and identifies only for the latest click", async () => {
-    let resolveFirstFetch!: (_value: Response) => void;
-    fetchSpy.mockImplementationOnce(
-      () =>
-        new Promise<Response>((resolve) => {
-          resolveFirstFetch = resolve;
-        }),
-    );
-    fetchSpy.mockResolvedValueOnce({ ok: false } as Response);
-
+  it("aborts the previous click's signal and identifies only for the latest click", async () => {
     const wrapper = await createWrapper();
     const mapModule = wrapper.getComponent(MapModuleStub);
 
     mapModule.vm.$emit("map-click", clickEvent());
-    await vi.waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(1));
-    const firstSignal = fetchSpy.mock.calls[0]![1]!.signal as AbortSignal;
+    await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledTimes(1));
+    const firstSignal = selectFeaturesSpy.mock.calls[0]![5] as AbortSignal;
     expect(firstSignal.aborted).toBe(false);
 
     mapModule.vm.$emit("map-click", clickEvent());
 
     expect(firstSignal.aborted).toBe(true);
 
-    await vi.waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(2));
-    const secondSignal = fetchSpy.mock.calls[1]![1]!.signal as AbortSignal;
-    expect(secondSignal).not.toBe(firstSignal);
-    expect(secondSignal.aborted).toBe(false);
-
-    await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledTimes(1));
-    const [extent, epsgNumber, , sources, limit, signal] =
-      selectFeaturesSpy.mock.calls[0]!;
+    await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledTimes(2));
+    const secondCall = selectFeaturesSpy.mock.calls[1]!;
+    const extent = secondCall[0];
+    const epsgNumber = secondCall[1];
+    const sources = secondCall[3];
+    const limit = secondCall[4];
+    const secondSignal = secondCall[5] as AbortSignal;
     expect(extent).toEqual(clickEvent().extent);
     expect(epsgNumber).toBe(2056);
     expect(limit).toBe(10);
-    expect(signal).toBe(secondSignal);
-    // layer-1 (distributions-fetched) and layer-2 (no link) both pass the filter
+    expect(secondSignal).not.toBe(firstSignal);
+    expect(secondSignal.aborted).toBe(false);
+    // layer-1 and layer-2 both pass the filter
     expect(sources).toHaveLength(2);
     expect(sources[0]).toMatchObject({
       layerUuid: "layer-1",
       layerId: "ch.test.dataset",
     });
-
-    resolveFirstFetch({
-      ok: true,
-      json: () => Promise.resolve({}),
-    } as unknown as Response);
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(selectFeaturesSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("threads the click's signal into the distributions fetch", async () => {
-    fetchSpy.mockResolvedValue({ ok: false } as Response);
-
-    const wrapper = await createWrapper();
-    wrapper.getComponent(MapModuleStub).vm.$emit("map-click", clickEvent());
-
-    await vi.waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(1));
-    const signal = fetchSpy.mock.calls[0]![1]!.signal as AbortSignal;
-    expect(signal).toBeInstanceOf(AbortSignal);
-    expect(signal.aborted).toBe(false);
-    expect(fetchSpy.mock.calls[0]![0]).toBe(DISTRIBUTION_URL);
-  });
-
-  it("swallows a rejecting distributions fetch (as a real aborted fetch would) and still identifies", async () => {
-    fetchSpy.mockRejectedValueOnce(
-      new DOMException("The operation was aborted.", "AbortError"),
-    );
-
+  it("passes a fresh, non-aborted AbortSignal to selectFeatures", async () => {
     const wrapper = await createWrapper();
     wrapper.getComponent(MapModuleStub).vm.$emit("map-click", clickEvent());
 
     await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledTimes(1));
+    const signal = selectFeaturesSpy.mock.calls[0]![5] as AbortSignal;
+    expect(signal).toBeInstanceOf(AbortSignal);
+    expect(signal.aborted).toBe(false);
+  });
+
+  it("builds the sources from the stored layer info without any fetching", async () => {
+    const wrapper = await createWrapper();
+    wrapper.getComponent(MapModuleStub).vm.$emit("map-click", clickEvent());
+
+    await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledTimes(1));
+    // the click path never fetches anymore: everything comes from the stores
+    expect(fetchSpy).not.toHaveBeenCalled();
     const sources = selectFeaturesSpy.mock.calls[0]![3];
     const source = sources[0]!;
-    expect(source.distributionFeature).toBeUndefined();
+    expect(source.getFeatureInfoInformation).toEqual(LAYER_1_FEATURE_INFO);
+    expect(source.layerName).toBeNull();
     expect(source.layerId).toBe("ch.test.dataset");
   });
 
   it("passes the click's pre-resolved vector features through to selectFeatures", async () => {
-    fetchSpy.mockResolvedValue({ ok: false } as Response);
     const vectorFeature = {
       type: "Feature" as const,
       geometry: {

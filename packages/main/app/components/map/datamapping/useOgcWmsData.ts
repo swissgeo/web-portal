@@ -40,6 +40,8 @@ export function useOgcWmsData(
   );
   const availableCrs = computed(() => wmsData.value?.availableCrs);
 
+  const layerName = computed(() => wmsData.value?.layerName);
+
   const currentLang = computed(() => locale.value.toLowerCase());
 
   const url = computed(() => wmsData.value?.url ?? undefined);
@@ -101,5 +103,6 @@ export function useOgcWmsData(
     availableCrs,
     getFeatureInfo,
     queryable,
+    layerName,
   };
 }

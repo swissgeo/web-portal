@@ -33,9 +33,9 @@ const providerTitleText = computed(() => {
   return role ? `${role}: ${organization}` : organization;
 });
 
-function setOnMap(onMap: boolean): void {
+async function setOnMap(onMap: boolean): Promise<void> {
   if (onMap) {
-    addToMap();
+    await addToMap();
   } else {
     removeFromMap();
   }

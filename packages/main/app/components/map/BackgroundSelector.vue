@@ -33,9 +33,11 @@ const backgroundRecords = computed(async () => {
   }
 
   const values = await Promise.all(promises);
-  return values.map((record: Dataset) => {
-    return makeServerLayer(record);
-  });
+  return Promise.all(
+    values.map(async (record: Dataset) => {
+      return await makeServerLayer(record);
+    }),
+  );
 });
 
 const sortedBackgroundLayersWithNull = computedAsync<(Layer | null)[]>(

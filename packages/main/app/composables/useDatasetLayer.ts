@@ -30,9 +30,9 @@ export function useDatasetLayer(dataset: MaybeRefOrGetter<Dataset>) {
 
   const isOnMap = computed(() => !!mapLayer.value);
 
-  function addToMap(): void {
+  async function addToMap(): Promise<void> {
     try {
-      layerStore.addLayer(makeServerLayer(toValue(dataset)));
+      layerStore.addLayer(await makeServerLayer(toValue(dataset)));
     } catch (e) {
       log.error("Failed to add catalog layer to map", toError(e));
       toast.add({ color: "error", title: t("dataset.addToMapError") });

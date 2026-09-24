@@ -49,12 +49,12 @@ const isAlreadyOnMap = computed(() => {
   return layerStore.layers.some((l) => l.humanId === dataset.value!.id);
 });
 
-function addToMap() {
+async function addToMap() {
   if (!dataset.value || isAlreadyOnMap.value) {
     return;
   }
   try {
-    layerStore.addLayer(makeServerLayer(dataset.value));
+    layerStore.addLayer(await makeServerLayer(dataset.value));
   } catch (e) {
     log.error(
       "Failed to add dataset to map",

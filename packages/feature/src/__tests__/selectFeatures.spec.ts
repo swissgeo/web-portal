@@ -49,6 +49,15 @@ const previewLinkTemplate = geoadminFeaturesDistribution.linkTemplates.find(
 const URL_TEMPLATE = previewLinkTemplate.uriTemplate!;
 const LAYER_ID = distributionCollectionJson.id;
 
+const BASE_URL = URL_TEMPLATE.replace(
+  `/${LAYER_ID}/{featureId}/htmlPopup?lang={lang}`,
+  "",
+);
+const geoadminInfo = {
+  protocol: "geoadmin:features" as const,
+  baseUrl: BASE_URL,
+};
+
 const EXTENT: FlatExtent = [2599000, 1199000, 2601000, 1201000];
 const EPSG = 2056;
 const LANG = "de";
@@ -86,6 +95,7 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-preresolved",
         layerId: LAYER_ID,
         preResolvedFeatures: vectorFeatures.features,
+        layerName: null,
       };
 
       const result = await getFeaturesForOneLayer(
@@ -113,6 +123,7 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-preresolved",
         layerId: LAYER_ID,
         preResolvedFeatures: vectorFeatures.features,
+        layerName: null,
       };
 
       const result = await getFeaturesForOneLayer(layer, EXTENT, EPSG, LANG, 1);
@@ -128,6 +139,8 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        baseUrl: BASE_URL,
+        layerName: null,
       };
       fetchSpy.mockImplementation((url: string) => {
         if (url.includes("/identify")) {
@@ -185,6 +198,8 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        baseUrl: BASE_URL,
+        layerName: null,
       };
       fetchSpy.mockImplementation((url: string) =>
         url.includes("/identify")
@@ -208,6 +223,8 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        baseUrl: BASE_URL,
+        layerName: null,
       };
       fetchSpy.mockResolvedValue(mockResponse("", 500));
 
@@ -230,6 +247,8 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        baseUrl: BASE_URL,
+        layerName: null,
       };
       fetchSpy.mockResolvedValue(mockResponse(identifyResponseEmpty));
 
@@ -250,6 +269,8 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        baseUrl: BASE_URL,
+        layerName: null,
       };
       const firstFeatureId = String(identifyResponse.results[0]!.id);
 
@@ -280,6 +301,8 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        baseUrl: BASE_URL,
+        layerName: null,
       };
       const controller = new AbortController();
       fetchSpy.mockResolvedValue(mockResponse(identifyResponseEmpty));
@@ -306,6 +329,8 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        baseUrl: BASE_URL,
+        layerName: null,
       };
     }
 
@@ -356,12 +381,14 @@ describe("Feature Selection from layers and extent", () => {
           {
             layerUuid: "uuid-aborted",
             layerId: LAYER_ID,
-            distributionFeature: geoadminFeaturesDistribution,
+            getFeatureInfoInformation: geoadminInfo,
+            layerName: null,
           },
           {
             layerUuid: "uuid-ok",
             layerId: LAYER_ID,
             preResolvedFeatures: vectorFeatures.features,
+            layerName: null,
           },
         ],
         FEATURE_LIMIT,
@@ -399,7 +426,8 @@ describe("Feature Selection from layers and extent", () => {
           {
             layerUuid: "uuid-abort",
             layerId: LAYER_ID,
-            distributionFeature: geoadminFeaturesDistribution,
+            getFeatureInfoInformation: geoadminInfo,
+            layerName: null,
           },
         ],
         FEATURE_LIMIT,
@@ -456,6 +484,7 @@ describe("Feature Selection from layers and extent", () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-empty",
         layerId: LAYER_ID,
+        layerName: null,
       };
 
       const result = await getFeaturesForOneLayer(
@@ -478,11 +507,13 @@ describe("Feature Selection from layers and extent", () => {
           layerUuid: "uuid-a",
           layerId: LAYER_ID,
           preResolvedFeatures: [vectorFeatures.features[0]!],
+          layerName: null,
         },
         {
           layerUuid: "uuid-b",
           layerId: LAYER_ID,
           preResolvedFeatures: [vectorFeatures.features[1]!],
+          layerName: null,
         },
       ];
 
@@ -507,11 +538,13 @@ describe("Feature Selection from layers and extent", () => {
           layerUuid: "uuid-a",
           layerId: LAYER_ID,
           preResolvedFeatures: [vectorFeatures.features[0]!],
+          layerName: null,
         },
         {
           layerUuid: "uuid-empty",
           layerId: LAYER_ID,
           preResolvedFeatures: [],
+          layerName: null,
         },
       ];
 
@@ -533,12 +566,14 @@ describe("Feature Selection from layers and extent", () => {
         {
           layerUuid: "uuid-fail",
           layerId: LAYER_ID,
-          distributionFeature: geoadminFeaturesDistribution,
+          getFeatureInfoInformation: geoadminInfo,
+          layerName: null,
         },
         {
           layerUuid: "uuid-ok",
           layerId: LAYER_ID,
           preResolvedFeatures: vectorFeatures.features,
+          layerName: null,
         },
       ];
 
@@ -563,6 +598,7 @@ describe("Feature Selection from layers and extent", () => {
           layerUuid: "uuid-empty",
           layerId: LAYER_ID,
           preResolvedFeatures: [],
+          layerName: null,
         },
       ]);
 
@@ -582,7 +618,8 @@ describe("Feature Selection from layers and extent", () => {
         {
           layerUuid: "uuid-ogc",
           layerId: LAYER_ID,
-          distributionFeature: geoadminFeaturesDistribution,
+          getFeatureInfoInformation: geoadminInfo,
+          layerName: null,
         },
       ]);
 
@@ -615,6 +652,7 @@ describe("Feature Selection from layers and extent", () => {
       return {
         layerUuid: "uuid-wms",
         layerId: "ch.test.wms-layer",
+        layerName: null,
         wmsGetFeatureInfo: {
           baseUrl: WMS_BASE_URL,
           method: "GET",
@@ -663,6 +701,42 @@ describe("Feature Selection from layers and extent", () => {
       expect(params.get("SRS")).toBeNull();
       expect(params.get("X")).toBeNull();
       expect(params.get("Y")).toBeNull();
+    });
+
+    it("queries with the stored layerName instead of the layerId when present", async () => {
+      fetchSpy.mockImplementation(() =>
+        Promise.resolve(mockResponse({ features: [] })),
+      );
+
+      await getFeaturesForOneLayer(
+        makeWmsRequest({ layerName: "wms.layer.name" }),
+        EXTENT,
+        EPSG,
+        LANG,
+        10,
+      );
+
+      const params = fetchedUrl().searchParams;
+      expect(params.get("LAYERS")).toBe("wms.layer.name");
+      expect(params.get("QUERY_LAYERS")).toBe("wms.layer.name");
+    });
+
+    it("falls back to the layerId for LAYERS/QUERY_LAYERS when no layerName is stored", async () => {
+      fetchSpy.mockImplementation(() =>
+        Promise.resolve(mockResponse({ features: [] })),
+      );
+
+      await getFeaturesForOneLayer(
+        makeWmsRequest({ layerName: null }),
+        EXTENT,
+        EPSG,
+        LANG,
+        10,
+      );
+
+      const params = fetchedUrl().searchParams;
+      expect(params.get("LAYERS")).toBe("ch.test.wms-layer");
+      expect(params.get("QUERY_LAYERS")).toBe("ch.test.wms-layer");
     });
 
     it("uses the legacy SRS/X/Y params for pre-1.3.0 versions", async () => {
@@ -740,13 +814,13 @@ describe("Feature Selection from layers and extent", () => {
       expect(fetchSpy).not.toHaveBeenCalled();
     });
 
-    it("skips the layer without any request when no JSON format is negotiable", async () => {
+    it("skips the layer without any request when no format is negotiable", async () => {
       const result = await getFeaturesForOneLayer(
         makeWmsRequest({
           wmsGetFeatureInfo: {
             baseUrl: WMS_BASE_URL,
             method: "GET",
-            formats: ["text/plain", "application/vnd.ogc.gml"],
+            formats: ["application/vnd.ogc.gml", "image/png"],
           },
         }),
         EXTENT,
@@ -782,6 +856,47 @@ describe("Feature Selection from layers and extent", () => {
       expect(fetchedUrl().searchParams.get("INFO_FORMAT")).toBe(
         "application/json; subtype=geojson",
       );
+    });
+
+    it("wraps a text/html response as a single unshareable html feature, passed through untouched", async () => {
+      // Some WMS services answer with several concatenated "full"
+      // html documents in one body. We deliberately do not handle these in
+      // a specific manner (for example: no splitting): the blob is passed
+      // through byte-identical as one feature.
+      const htmlBlob =
+        "<html><body><p>first feature popup</p></body></html>" +
+        "<html><body><p>second feature popup</p></body></html>";
+      fetchSpy.mockImplementation(() =>
+        Promise.resolve(mockResponse(htmlBlob)),
+      );
+
+      const result = await getFeaturesForOneLayer(
+        makeWmsRequest({
+          wmsGetFeatureInfo: {
+            baseUrl: WMS_BASE_URL,
+            method: "GET",
+            formats: ["text/html"],
+          },
+        }),
+        EXTENT,
+        EPSG,
+        LANG,
+        10,
+      );
+
+      expect(fetchedUrl().searchParams.get("INFO_FORMAT")).toBe("text/html");
+      expect(result).toEqual([
+        {
+          featureId: expect.any(String),
+          geometry: null,
+          content: {
+            kind: "html",
+            html: htmlBlob,
+            trusted: true,
+            shareable: false,
+          },
+        },
+      ]);
     });
 
     it("maps response features to FeatureData, resolving ids and tolerating null properties/geometry", async () => {
@@ -921,6 +1036,7 @@ describe("Feature Selection from layers and extent", () => {
           formats: ["application/json"],
         },
         availableCrs: ["EPSG:2056"],
+        layerName: null,
       });
       store.setWmsCapability("uuid-wms-b", {
         getFeatureInfoCapability: {
@@ -929,6 +1045,7 @@ describe("Feature Selection from layers and extent", () => {
           formats: ["application/json"],
         },
         availableCrs: ["EPSG:4326"],
+        layerName: null,
       });
       fetchSpy.mockImplementation((url: string) => {
         if (String(url).includes("wms-a")) {
@@ -949,8 +1066,8 @@ describe("Feature Selection from layers and extent", () => {
       });
 
       await selectFeatures(EXTENT, EPSG, LANG, [
-        { layerUuid: "uuid-wms-a", layerId: "layer-a" },
-        { layerUuid: "uuid-wms-b", layerId: "layer-b" },
+        { layerUuid: "uuid-wms-a", layerId: "layer-a", layerName: null },
+        { layerUuid: "uuid-wms-b", layerId: "layer-b", layerName: null },
       ]);
 
       expect(Object.keys(store.selectedFeaturesByUuid)).toEqual(["uuid-wms-a"]);
@@ -972,6 +1089,7 @@ describe("Feature Selection from layers and extent", () => {
           formats: ["application/json"],
         },
         availableCrs: ["EPSG:2056"],
+        layerName: null,
       });
       fetchSpy.mockImplementation((url: string) => {
         if (String(url).includes("/identify")) {
@@ -995,7 +1113,8 @@ describe("Feature Selection from layers and extent", () => {
         {
           layerUuid: "uuid-dual",
           layerId: LAYER_ID,
-          distributionFeature: geoadminFeaturesDistribution,
+          getFeatureInfoInformation: geoadminInfo,
+          layerName: null,
         },
       ]);
 
@@ -1013,6 +1132,7 @@ describe("Feature Selection from layers and extent", () => {
           layerUuid: "uuid-file",
           layerId: "some.kml.file",
           preResolvedFeatures: vectorFeatures.features,
+          layerName: null,
         },
       ]);
 

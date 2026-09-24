@@ -33,12 +33,12 @@ const type = computed((): "wmts" | "wms" | "UNKNOWN" => {
   return "UNKNOWN";
 });
 
-function addLayerToMap() {
+async function addLayerToMap() {
   if (!type.value) {
     throw Error("Neither OGC:WMS nor OGC:WMTS found in the definition");
   }
   if (type.value !== "UNKNOWN") {
-    layerStore.addLayer(makeServerLayer(dataset));
+    layerStore.addLayer(await makeServerLayer(dataset));
   }
 }
 </script>

@@ -2,11 +2,7 @@ import type { Feature as GeoJsonFeature } from "geojson";
 
 import { describe, expect, it } from "vitest";
 
-import type {
-  LayerSource,
-  OgcDistributionFeature,
-  WmsFeatureInfoCapability,
-} from "@/types";
+import type { LayerSource, WmsFeatureInfoCapability } from "@/types";
 
 import {
   sourceToLayerRequest,
@@ -15,7 +11,8 @@ import {
 
 const UUID = "uuid-test";
 const LAYER_ID = "ch.test.layer";
-const TEMPLATE = `https://example.test/MapServer/${LAYER_ID}/{featureId}/htmlPopup?lang={lang}`;
+const BASE_URL = "https://example.test/MapServer";
+const TEMPLATE = `${BASE_URL}/${LAYER_ID}/{featureId}/htmlPopup?lang={lang}`;
 
 function makeFeature(id: string | number = 1): GeoJsonFeature {
   return {
@@ -26,27 +23,19 @@ function makeFeature(id: string | number = 1): GeoJsonFeature {
   };
 }
 
-function makeDistributionFeature(
-  overrides: Partial<OgcDistributionFeature> = {},
-): OgcDistributionFeature {
-  return {
-    id: "distribution-test",
-    links: [],
-    linkTemplates: [],
-    properties: { type: "distribution", protocol: "geoadmin:features" },
-    ...overrides,
-  };
-}
-
-const geoadminFeature = (): OgcDistributionFeature =>
-  makeDistributionFeature({
-    linkTemplates: [{ rel: "preview", uriTemplate: TEMPLATE }],
-  });
+const geoadminInfo = (
+  overrides: Partial<LayerSource["getFeatureInfoInformation"]> = {},
+) => ({
+  protocol: "geoadmin:features",
+  baseUrl: BASE_URL,
+  ...overrides,
+});
 
 function makeSource(overrides: Partial<LayerSource> = {}): LayerSource {
   return {
     layerUuid: UUID,
     layerId: LAYER_ID,
+    layerName: null,
     ...overrides,
   };
 }
@@ -60,17 +49,18 @@ const wmsCapability = (
     formats: ["application/vnd.ogc.gml", "application/json"],
   },
   availableCrs: ["EPSG:4326", "EPSG:2056"],
+  layerName: null,
   ...overrides,
 });
 
 describe("sourceToLayerRequest", () => {
   describe("priority 1 — pre-resolved features", () => {
-    it("returns a pre-resolved request, even if a geoadmin:features distribution feature is present", () => {
+    it("returns a pre-resolved request, even if geoadmin:features feature info is present", () => {
       const features = [makeFeature(1), makeFeature(2)];
 
       const request = sourceToLayerRequest(
         makeSource({
-          distributionFeature: geoadminFeature(),
+          getFeatureInfoInformation: geoadminInfo(),
           preResolvedFeatures: features,
         }),
       );
@@ -79,11 +69,12 @@ describe("sourceToLayerRequest", () => {
         layerUuid: UUID,
         layerId: LAYER_ID,
         preResolvedFeatures: features,
+        layerName: LAYER_ID,
       });
       expect(request).not.toHaveProperty("urlTemplate");
     });
 
-    it("returns a pre-resolved request without any distribution feature", () => {
+    it("returns a pre-resolved request without any feature info", () => {
       const features = [makeFeature(1)];
 
       const request = sourceToLayerRequest(
@@ -94,6 +85,25 @@ describe("sourceToLayerRequest", () => {
         layerUuid: UUID,
         layerId: LAYER_ID,
         preResolvedFeatures: features,
+        layerName: LAYER_ID,
+      });
+    });
+
+    it("keeps a stored layerName over the layerId fallback", () => {
+      const features = [makeFeature(1)];
+
+      const request = sourceToLayerRequest(
+        makeSource({
+          preResolvedFeatures: features,
+          layerName: "wms.layer.name",
+        }),
+      );
+
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        preResolvedFeatures: features,
+        layerName: "wms.layer.name",
       });
     });
 
@@ -109,13 +119,14 @@ describe("sourceToLayerRequest", () => {
         layerUuid: UUID,
         layerId: LAYER_ID,
         preResolvedFeatures: features,
+        layerName: LAYER_ID,
       });
     });
 
-    it("falls back to the distribution feature when preResolvedFeatures is an empty array", () => {
+    it("falls back to the feature info when preResolvedFeatures is an empty array", () => {
       const request = sourceToLayerRequest(
         makeSource({
-          distributionFeature: geoadminFeature(),
+          getFeatureInfoInformation: geoadminInfo(),
           preResolvedFeatures: [],
         }),
       );
@@ -123,60 +134,66 @@ describe("sourceToLayerRequest", () => {
       expect(request).toEqual({
         layerUuid: UUID,
         layerId: LAYER_ID,
+        baseUrl: BASE_URL,
         urlTemplate: TEMPLATE,
+        layerName: LAYER_ID,
       });
     });
   });
 
-  describe("priority 2 — geoadmin:features distribution feature", () => {
-    it("extracts the preview uriTemplate as urlTemplate", () => {
+  describe("priority 2 — identify feature info", () => {
+    it("builds the urlTemplate from the geoadmin:features baseUrl and the layerId", () => {
       const request = sourceToLayerRequest(
-        makeSource({ distributionFeature: geoadminFeature() }),
+        makeSource({ getFeatureInfoInformation: geoadminInfo() }),
       );
 
       expect(request).toEqual({
         layerUuid: UUID,
         layerId: LAYER_ID,
+        baseUrl: BASE_URL,
         urlTemplate: TEMPLATE,
+        layerName: LAYER_ID,
       });
       expect(request).not.toHaveProperty("preResolvedFeatures");
     });
 
-    it("selects the preview rel when several linkTemplates are present", () => {
-      const distributionFeature = makeDistributionFeature({
-        linkTemplates: [
-          { rel: "self", uriTemplate: "https://example.test/self" },
-          { rel: "preview", uriTemplate: TEMPLATE },
-          { rel: "alternate", uriTemplate: "https://example.test/alt" },
-        ],
-      });
-
-      const request = sourceToLayerRequest(makeSource({ distributionFeature }));
+    it("accepts the ogc:api3features protocol (ticket-mandated safeguard)", () => {
+      const request = sourceToLayerRequest(
+        makeSource({
+          getFeatureInfoInformation: geoadminInfo({
+            protocol: "ogc:api3features",
+          }),
+        }),
+      );
 
       expect(request).toEqual({
         layerUuid: UUID,
         layerId: LAYER_ID,
+        baseUrl: BASE_URL,
         urlTemplate: TEMPLATE,
+        layerName: LAYER_ID,
       });
     });
 
     it("keeps the identify urlTemplate winning over a registered WMS capability", () => {
       const request = sourceToLayerRequest(
-        makeSource({ distributionFeature: geoadminFeature() }),
+        makeSource({ getFeatureInfoInformation: geoadminInfo() }),
         { [UUID]: wmsCapability() },
       );
 
       expect(request).toEqual({
         layerUuid: UUID,
         layerId: LAYER_ID,
+        baseUrl: BASE_URL,
         urlTemplate: TEMPLATE,
+        layerName: LAYER_ID,
       });
     });
 
-    it("falls through to the WMS capability when the geoadmin feature has no preview template", () => {
+    it("falls through to the WMS capability when the protocol is not identify-capable", () => {
       const request = sourceToLayerRequest(
         makeSource({
-          distributionFeature: makeDistributionFeature(),
+          getFeatureInfoInformation: geoadminInfo({ protocol: "ogc:wms" }),
         }),
         { [UUID]: wmsCapability() },
       );
@@ -187,23 +204,43 @@ describe("sourceToLayerRequest", () => {
         wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
         wmsVersion: "1.3.0",
         availableCrs: ["EPSG:4326", "EPSG:2056"],
+        layerName: null,
       });
     });
 
-    it("returns an empty request for non-geoadmin distribution features when no capability is registered", () => {
-      const wmsFeature = makeDistributionFeature({
-        properties: { type: "distribution", protocol: "ogc:wms" },
-      });
-      const wmtsFeature = makeDistributionFeature({
-        properties: { type: "distribution", protocol: "ogc:wmts" },
-      });
+    it("falls through to the WMS capability when there is no baseUrl", () => {
+      const request = sourceToLayerRequest(
+        makeSource({
+          getFeatureInfoInformation: geoadminInfo({ baseUrl: undefined }),
+        }),
+        { [UUID]: wmsCapability() },
+      );
 
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
+        wmsVersion: "1.3.0",
+        availableCrs: ["EPSG:4326", "EPSG:2056"],
+        layerName: null,
+      });
+    });
+
+    it("returns an empty request for unsupported protocols when no capability is registered", () => {
       expect(
-        sourceToLayerRequest(makeSource({ distributionFeature: wmsFeature })),
-      ).toEqual({ layerUuid: UUID, layerId: LAYER_ID });
+        sourceToLayerRequest(
+          makeSource({
+            getFeatureInfoInformation: geoadminInfo({ protocol: "ogc:wms" }),
+          }),
+        ),
+      ).toEqual({ layerUuid: UUID, layerId: LAYER_ID, layerName: LAYER_ID });
       expect(
-        sourceToLayerRequest(makeSource({ distributionFeature: wmtsFeature })),
-      ).toEqual({ layerUuid: UUID, layerId: LAYER_ID });
+        sourceToLayerRequest(
+          makeSource({
+            getFeatureInfoInformation: geoadminInfo({ protocol: "ogc:wmts" }),
+          }),
+        ),
+      ).toEqual({ layerUuid: UUID, layerId: LAYER_ID, layerName: LAYER_ID });
     });
   });
 
@@ -229,6 +266,7 @@ describe("sourceToLayerRequest", () => {
         },
         wmsVersion: "1.3.0",
         availableCrs: ["EPSG:4326", "EPSG:2056"],
+        layerName: null,
       });
     });
 
@@ -243,13 +281,33 @@ describe("sourceToLayerRequest", () => {
         wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
         wmsVersion: "1.1.1",
         availableCrs: ["EPSG:4326", "EPSG:2056"],
+        layerName: null,
+      });
+    });
+
+    it("passes the capability's layerName through (WMS <Name>, not the dataset id)", () => {
+      const request = sourceToLayerRequest(makeSource(), {
+        [UUID]: wmsCapability({ layerName: "wms.layer.name" }),
+      });
+
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
+        wmsVersion: "1.3.0",
+        availableCrs: ["EPSG:4326", "EPSG:2056"],
+        layerName: "wms.layer.name",
       });
     });
 
     it("returns an empty request when the layer has no dict entry", () => {
       const request = sourceToLayerRequest(makeSource());
 
-      expect(request).toEqual({ layerUuid: UUID, layerId: LAYER_ID });
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        layerName: LAYER_ID,
+      });
     });
 
     it("ignores dict entries of other layers", () => {
@@ -257,13 +315,21 @@ describe("sourceToLayerRequest", () => {
         "another-uuid": wmsCapability(),
       });
 
-      expect(request).toEqual({ layerUuid: UUID, layerId: LAYER_ID });
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        layerName: LAYER_ID,
+      });
     });
 
-    it("returns an empty request for a bare source with neither distribution feature, features nor entry", () => {
+    it("returns an empty request for a bare source with neither feature info, features nor entry", () => {
       const request = sourceToLayerRequest(makeSource());
 
-      expect(request).toEqual({ layerUuid: UUID, layerId: LAYER_ID });
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        layerName: LAYER_ID,
+      });
     });
   });
 });
@@ -278,7 +344,7 @@ describe("sourcesToLayerRequests", () => {
       }),
       makeSource({
         layerUuid: "uuid-identify",
-        distributionFeature: geoadminFeature(),
+        getFeatureInfoInformation: geoadminInfo(),
       }),
       makeSource({ layerUuid: "uuid-wms" }),
       makeSource({ layerUuid: "uuid-empty" }),
@@ -293,16 +359,24 @@ describe("sourcesToLayerRequests", () => {
         layerUuid: "uuid-preresolved",
         layerId: LAYER_ID,
         preResolvedFeatures: [makeFeature(1)],
+        layerName: LAYER_ID,
       },
-      { layerUuid: "uuid-identify", layerId: LAYER_ID, urlTemplate: TEMPLATE },
+      {
+        layerUuid: "uuid-identify",
+        layerId: LAYER_ID,
+        baseUrl: BASE_URL,
+        urlTemplate: TEMPLATE,
+        layerName: LAYER_ID,
+      },
       {
         layerUuid: "uuid-wms",
         layerId: LAYER_ID,
         wmsGetFeatureInfo: capability.getFeatureInfoCapability,
         wmsVersion: "1.3.0",
         availableCrs: capability.availableCrs,
+        layerName: null,
       },
-      { layerUuid: "uuid-empty", layerId: LAYER_ID },
+      { layerUuid: "uuid-empty", layerId: LAYER_ID, layerName: LAYER_ID },
     ]);
   });
 
