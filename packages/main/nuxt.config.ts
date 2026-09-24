@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { execSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
 
 import "./server/instrumentation";
 
@@ -27,6 +28,13 @@ const isCoverage = process.env.COVERAGE === "1";
 process.env.NODE_ENV = isDevelopment ? "dev" : process.env.NODE_ENV;
 
 export default defineNuxtConfig({
+  $production: {
+    app: {
+      // Cached assets can outlive a deployment and mix old CSS with new pages.
+      // Give each build its own asset directory to prevent cache reuse across builds.
+      buildAssetsDir: `/_nxt/${randomUUID()}/`,
+    },
+  },
   app: {
     buildAssetsDir: "/_nxt/",
     keepalive: true,
