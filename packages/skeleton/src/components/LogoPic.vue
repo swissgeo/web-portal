@@ -27,7 +27,7 @@ const isDesktop = inject<boolean>("isDesktop", true);
   <!-- the mobile one and when the sidebar is extended -->
   <div
     v-else
-    class="flex h-10 items-center gap-2 bg-white"
+    class="flex h-10 items-center gap-2"
     data-testid="sidebar-logo-pic-extended"
   >
     <div

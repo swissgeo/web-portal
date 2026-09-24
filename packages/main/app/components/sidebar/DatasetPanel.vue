@@ -22,7 +22,7 @@ const isAlreadyOnMap = computed(() => {
   return layerStore.layers.some((l) => l.humanId === dataset.value!.id);
 });
 
-const toast = useToast();
+const toast = useToaster();
 const { t } = useI18n();
 
 function addToMap() {
@@ -101,8 +101,8 @@ function addToMap() {
         v-if="dataset && props.detailPagePath"
         :to="props.detailPagePath"
         icon="i-lucide-external-link"
-        color="neutral"
-        variant="subtle"
+        color="primary"
+        variant="ghost"
         class="w-full justify-center"
         @click="datasetPanelStore.closeDatasetPanel()"
       >

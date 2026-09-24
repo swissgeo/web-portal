@@ -8,31 +8,37 @@ import { defaultOpacityFromStyle } from "./defaultFromOpacity";
 import { defaultGutterFromStyle } from "./defaultGutterFromStyle";
 
 export type WMSLayerData = {
-  url: Ref<string>;
+  url: string | undefined;
   gutter: number;
-  version: Ref<string>;
-  lang: string; // TODO also ref?
+  version: string | undefined;
+  lang: string;
 };
 
 export function useOgcWmsData(
   distribution: Ref<Distribution | null>,
   service: Ref<Service | null>,
   layerId: Ref<string | null>,
+  onError: (error: unknown) => void,
 ) {
   const { locale } = useI18n();
 
   const { styleData } = useStyle(distribution);
-  const { wmsData } = useWmsCapabilities(service, layerId);
+  const {
+    capabilityUrl,
+    onCapabilitiesError,
+    onCapabilitiesResponse,
+    wmsData,
+  } = useWmsCapabilities(service, layerId);
   const dimensions = computed(() => wmsData.value?.dimensions || null);
+  const legends = computed(() => wmsData.value?.legends ?? []);
   const timeInfo = computed(() =>
     getTimeInfoFromWMSCapabilities(dimensions.value),
   );
 
-  const capabilities = computed(() => wmsData?.value?.capabilities);
   const currentLang = computed(() => locale.value.toLowerCase());
 
-  const url = computed(() => capabilities.value?.Service.OnlineResource);
-  const version = computed(() => capabilities.value?.version);
+  const url = computed(() => wmsData.value?.url ?? undefined);
+  const version = computed(() => wmsData.value?.version ?? undefined);
 
   const defaultGutter = computed(() => {
     if (styleData.value) {
@@ -57,9 +63,35 @@ export function useOgcWmsData(
     }
   });
 
+  // The service can become available after setup, so validate its URL reactively.
+  watchEffect(() => {
+    if (service.value && layerId.value && !capabilityUrl.value) {
+      onError(new Error("Required WMS capabilities URL is missing"));
+    }
+  });
+  onCapabilitiesError((error) =>
+    onError(
+      new Error("Unable to load required WMS capabilities", { cause: error }),
+    ),
+  );
+  onCapabilitiesResponse(() => {
+    try {
+      if (!wmsData.value.url || !wmsData.value.version) {
+        throw new Error("WMS capabilities contain no usable layer data");
+      }
+    } catch (error) {
+      onError(
+        new Error("Unable to process required WMS capabilities", {
+          cause: error,
+        }),
+      );
+    }
+  });
+
   return {
     defaultOpacity,
     wmsDataForOl,
     timeInfo,
+    legends,
   };
 }

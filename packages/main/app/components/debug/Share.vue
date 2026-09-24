@@ -24,10 +24,10 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     >
       <template v-if="shareLink?.length" #trailing>
         <UButton
-          :color="copied ? 'success' : 'neutral'"
-          class="bg-white"
-          variant="link"
-          size="sm"
+          color="primary"
+          :class="copied ? 'text-success' : ''"
+          variant="ghost"
+          size="xs"
           :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
           aria-label="Copy to clipboard"
           @click="copy(shareLink)"
@@ -36,7 +36,8 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     </UInput>
     <UButton
       v-else
-      variant="subtle"
+      color="primary"
+      variant="solid"
       icon="i-lucide-refresh-cw"
       aria-label="Refresh share link"
       @click="refresh()"
@@ -51,10 +52,10 @@ const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
     <UInput class="w-full" v-model="embedCode">
       <template v-if="embedCode?.length" #trailing>
         <UButton
-          :color="copied ? 'success' : 'neutral'"
-          class="bg-white"
-          variant="link"
-          size="sm"
+          color="primary"
+          :class="copied ? 'text-success' : ''"
+          variant="ghost"
+          size="xs"
           :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
           aria-label="Copy to clipboard"
           @click="copy(embedCode)"

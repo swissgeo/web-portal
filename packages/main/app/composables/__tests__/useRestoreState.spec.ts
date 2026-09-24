@@ -1,20 +1,35 @@
-import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import type * as VueUseCore from "@vueuse/core";
 
-const { watcherCallbackRef } = vi.hoisted(() => {
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { useLayerStore } from "@swissgeo/layers";
+import { createPinia, setActivePinia } from "pinia";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const {
+  importStateFromBase64Mock,
+  importStateFromServiceMock,
+  watcherCallbackRef,
+  watcherOptionsRef,
+} = vi.hoisted(() => {
   return {
+    importStateFromBase64Mock: vi.fn(),
+    importStateFromServiceMock: vi.fn(),
     watcherCallbackRef: { fn: null as ((_state: unknown) => void) | null },
+    watcherOptionsRef: { value: null as unknown },
   };
 });
 
 vi.mock("@vueuse/core", async (importOriginal) => {
-  const original = await importOriginal();
+  const original = await importOriginal<typeof VueUseCore>();
   return {
-    // @ts-expect-error It works and this is a test
     ...original,
-    watchDebounced: (_getter: unknown, callback: (_state: unknown) => void) => {
+    watchDebounced: (
+      _getter: unknown,
+      callback: (_state: unknown) => void,
+      options: unknown,
+    ) => {
       watcherCallbackRef.fn = callback;
+      watcherOptionsRef.value = options;
     },
   };
 });
@@ -33,6 +48,14 @@ const mockExportState = ref({
   layers: [],
 });
 
+const storedState = {
+  version: "1.0",
+  state: {
+    map: { center: [2420001, 1030001], zoom: 10, rotation: 0 },
+    layers: [],
+  },
+};
+
 mockNuxtImport("useNuxtApp", mocks.useNuxtApp);
 mockNuxtImport("useToaster", mocks.useToaster);
 mockNuxtImport("useRoute", mocks.useRoute);
@@ -46,11 +69,35 @@ vi.mock("~/composables/useStateConfig", () => ({
   }),
 }));
 
+vi.mock("~/composables/stateImport/importStateFromBase64", () => ({
+  importStateFromBase64: importStateFromBase64Mock,
+}));
+
+vi.mock("~/composables/stateImport/importStateFromService", () => ({
+  importStateFromService: importStateFromServiceMock,
+}));
+
 describe("useRestoreState", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     sessionStorage.clear();
+    localStorage.clear();
+    watcherCallbackRef.fn = null;
+    watcherOptionsRef.value = null;
     vi.clearAllMocks();
+    mockImportState.mockReset();
+    importStateFromBase64Mock.mockReset();
+    importStateFromServiceMock.mockReset();
+    importStateFromBase64Mock.mockResolvedValue(false);
+    importStateFromServiceMock.mockResolvedValue(false);
+  });
+
+  afterEach(() => {
+    try {
+      expect(localStorage.length).toBe(0);
+    } finally {
+      localStorage.clear();
+    }
   });
 
   describe("state restoration on load", () => {
@@ -60,39 +107,36 @@ describe("useRestoreState", () => {
       expect(mockImportState).not.toHaveBeenCalled();
     });
 
-    it("calls importState with the stored JSON string when state is present in sessionStorage", async () => {
-      const state = {
-        version: "1.0",
-        state: {
-          map: { center: [2420001, 1030001], zoom: 10, rotation: 0 },
-          layers: [],
-        },
-      };
-      const stored = JSON.stringify(state);
-      sessionStorage.setItem(STORAGE_KEY, stored);
+    it("restores state from sessionStorage", async () => {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(storedState));
 
       const { restore } = useRestoreState();
-      await restore();
 
-      expect(mockImportState).toHaveBeenCalledWith(state);
+      await expect(restore()).resolves.toBe(true);
+      expect(mockImportState).toHaveBeenCalledOnce();
+      expect(mockImportState).toHaveBeenCalledWith(storedState);
     });
 
-    it("calls importState with the stored JSON string when state is present", async () => {
-      const state = {
-        version: "1.0",
-        state: {
-          map: { center: [2420001, 1030001], zoom: 10, rotation: 0 },
-          layers: [],
-        },
-      };
-      const stored = JSON.stringify(state);
-      sessionStorage.setItem(STORAGE_KEY, stored);
+    it.each([
+      { source: "base64", base64Restored: true, serviceRestored: false },
+      { source: "state service", base64Restored: false, serviceRestored: true },
+    ])(
+      "restores $source state before sessionStorage",
+      async ({ base64Restored, serviceRestored }) => {
+        importStateFromBase64Mock.mockResolvedValue(base64Restored);
+        importStateFromServiceMock.mockResolvedValue(serviceRestored);
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(storedState));
 
-      const { restore } = useRestoreState();
-      await restore();
+        const { restore } = useRestoreState();
 
-      expect(mockImportState).toHaveBeenCalledWith(state);
-    });
+        await expect(restore()).resolves.toBe(true);
+        expect(importStateFromBase64Mock).toHaveBeenCalledOnce();
+        expect(importStateFromServiceMock).toHaveBeenCalledTimes(
+          base64Restored ? 0 : 1,
+        );
+        expect(mockImportState).not.toHaveBeenCalled();
+      },
+    );
 
     it("removes the corrupt key and does not throw when importState fails", async () => {
       sessionStorage.setItem(STORAGE_KEY, "not-valid-json");
@@ -106,7 +150,7 @@ describe("useRestoreState", () => {
   });
 
   describe("useRestoreState reactive persistence", () => {
-    it("does not set up a watcher automatically after the hook runs", async () => {
+    it("does not set up a watcher when only restore is called", async () => {
       const { restore } = useRestoreState();
       await restore();
       expect(watcherCallbackRef.fn).toBeNull();
@@ -118,9 +162,20 @@ describe("useRestoreState", () => {
       expect(watcherCallbackRef.fn).not.toBeNull();
     });
 
-    it("writes state to sessionStorage when the watcher fires", async () => {
-      const { restore } = useRestoreState();
-      await restore();
+    it("sets up the watcher without immediate persistence", () => {
+      const { listenToChange } = useRestoreState();
+      listenToChange();
+
+      expect(watcherOptionsRef.value).toEqual({
+        deep: true,
+        debounce: 500,
+        immediate: false,
+      });
+    });
+
+    it("writes state to sessionStorage when the watcher fires", () => {
+      const { listenToChange } = useRestoreState();
+      listenToChange();
       const state = mockExportState.value;
 
       watcherCallbackRef.fn!(state);
@@ -128,13 +183,39 @@ describe("useRestoreState", () => {
       expect(sessionStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(state));
     });
 
-    it("saves the restored state to the session storage", async () => {
-      const { restore } = useRestoreState();
-      await restore(); // no stored state → isImporting stays false
+    it("does not write persisted state to localStorage", () => {
+      const { listenToChange } = useRestoreState();
+      listenToChange();
 
       watcherCallbackRef.fn!(mockExportState.value);
 
-      expect(sessionStorage.getItem(STORAGE_KEY)).not.toBeNull();
+      expect(sessionStorage.getItem(STORAGE_KEY)).toBe(
+        JSON.stringify(mockExportState.value),
+      );
+      expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+    });
+
+    it("does not persist while layer import options are pending", () => {
+      const layerStore = useLayerStore();
+      layerStore.addImportOption("importing-layer", { isVisible: true });
+      const { listenToChange } = useRestoreState();
+      listenToChange();
+
+      watcherCallbackRef.fn!(mockExportState.value);
+
+      expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull();
+    });
+
+    it("persists after restore when listening is started", async () => {
+      const { restore, listenToChange } = useRestoreState();
+      await restore();
+      listenToChange();
+
+      watcherCallbackRef.fn!(mockExportState.value);
+
+      expect(sessionStorage.getItem(STORAGE_KEY)).toBe(
+        JSON.stringify(mockExportState.value),
+      );
     });
   });
 });

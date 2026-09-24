@@ -26,7 +26,7 @@ export default function useBackgroundSelector(
 
     const layerData = backgroundLayer.data;
 
-    const backgroundId = layerData.id;
+    const backgroundId = "id" in layerData ? layerData.id : undefined;
     switch (backgroundId) {
       case "ch.swisstopo.pixelkarte-farbe":
         return pixelkarteFarbeUrl;

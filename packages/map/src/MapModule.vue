@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import log, { LogLevel } from "@swissgeo/log";
 import { computed } from "vue";
 
 import type { MapLayerRenderer } from "@/types";
@@ -8,16 +7,8 @@ import type { Layer as MapLayer } from "@/types/layers";
 import OpenLayersCompareSlider from "./openlayers/OpenLayersCompareSlider.vue";
 import OpenLayersContextMenuPopup from "./openlayers/OpenLayersContextMenuPopup.vue";
 import OpenLayersMap from "./openlayers/OpenLayersMap.vue";
-import OpenLayersMouseTracker from "./openlayers/OpenLayersMouseTracker.vue";
 import OpenLayersScale from "./openlayers/OpenLayersScale.vue";
 import OpenLayersScalePrint from "./openlayers/OpenLayersScalePrint.vue";
-
-log.wantedLevels = [
-  LogLevel.Debug,
-  LogLevel.Info,
-  LogLevel.Warn,
-  LogLevel.Error,
-];
 
 const {
   layers,
@@ -44,8 +35,13 @@ const {
 }>();
 
 const emit = defineEmits<{
+  layerError: [uuid: string, error: Error];
   "update:compareRatio": [ratio: number];
 }>();
+
+function emitLayerError(uuid: string, error: Error) {
+  emit("layerError", uuid, error);
+}
 
 const layersWithZIndex = computed(() => {
   // openlayers require a Zindex param. We set it to the layer orders here
@@ -64,6 +60,7 @@ const layersWithZIndex = computed(() => {
       :custom-layer-renderers="customLayerRenderers"
       :layers="layersWithZIndex"
       :zoom-only-ctrl="zoomOnlyCtrl"
+      @layer-error="emitLayerError"
     >
       <slot />
 
@@ -71,8 +68,6 @@ const layersWithZIndex = computed(() => {
         <OpenLayersContextMenuPopup v-slot="slotProps">
           <slot name="context-menu-popup" v-bind="slotProps" />
         </OpenLayersContextMenuPopup>
-        <OpenLayersMouseTracker />
-        <OpenLayersScale />
         <OpenLayersCompareSlider
           v-if="compareSliderActive && compareSliderClippedLayer"
           :compare-ratio="compareRatio"

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { Dimension } from "@swissgeo/layers";
-import type { Distribution, Service } from "@swissgeo/ogc";
+import type { Dimension } from "@swissgeo/dimension";
+import type { Distribution, Legend, Service } from "@swissgeo/ogc";
 
-import type { WMSLayerData } from "./useOgcWmsData";
+import type { WMSLayerData } from "@/components/map/datamapping/useOgcWmsData";
 
-import { processTimeInfo } from "./processTimeInfo";
-import { useOgcWmsData } from "./useOgcWmsData";
+import { processTimeInfo } from "@/components/map/datamapping/processTimeInfo";
+import { useOgcWmsData } from "@/components/map/datamapping/useOgcWmsData";
 
 // not destructuring these to keep the reactivity
 const props = defineProps<{
@@ -15,19 +15,21 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  updateData: [WMSLayerData];
+  error: [error: unknown];
+  updateData: [opacity: number | null, WMSLayerData];
   updateTimeDimension: [dimension: Partial<Dimension>];
-  updateOpacity: [opacity: number];
+  updateLegends: [legends: Legend[]];
 }>();
 
 const distribution = computed(() => props.distribution);
 const serviceData = computed(() => props.serviceData);
 const layerId = computed(() => props.layerId);
 
-const { defaultOpacity, wmsDataForOl, timeInfo } = useOgcWmsData(
+const { defaultOpacity, wmsDataForOl, timeInfo, legends } = useOgcWmsData(
   distribution,
   serviceData,
   layerId,
+  (error) => emit("error", error),
 );
 
 watch(timeInfo, () => {
@@ -35,21 +37,22 @@ watch(timeInfo, () => {
   emit("updateTimeDimension", dimension);
 });
 
+watch(legends, () => emit("updateLegends", legends.value), {
+  immediate: true,
+});
+
 watch(
-  defaultOpacity,
-  () => {
-    if (defaultOpacity.value !== null) {
-      emit("updateOpacity", defaultOpacity.value);
+  [wmsDataForOl, defaultOpacity],
+  ([_new_options, new_opacity], [_old_options, old_opacity]) => {
+    if (
+      wmsDataForOl.value &&
+      (defaultOpacity.value || old_opacity === new_opacity)
+    ) {
+      emit("updateData", defaultOpacity.value, wmsDataForOl.value);
     }
   },
   { immediate: true },
 );
-
-watch(wmsDataForOl, () => {
-  if (wmsDataForOl.value) {
-    emit("updateData", wmsDataForOl.value);
-  }
-});
 </script>
 
 <template><slot /></template>

@@ -9,7 +9,7 @@ import {
 import CustomCoordinateSystem from "@/proj/CustomCoordinateSystem";
 
 /**
- * Resolutions for each LV95 zoom level, from 0 to 14
+ * Resolutions for each LV95 zoom level, from 0 to 13
  *
  * @see https://docs.geo.admin.ch/visualize-data/wmts.html#gettile
  */
@@ -74,8 +74,7 @@ export const SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX: number[] = [
   16.7, // 10
   17.75, // 11
   18.75, // 12
-  20, // 13
-  21, // max: 14
+  20, // max: 13
 ];
 
 const SWISSTOPO_ZOOM_TO_PRODUCT_SCALE: string[] = [
@@ -92,12 +91,22 @@ const SWISSTOPO_ZOOM_TO_PRODUCT_SCALE: string[] = [
   "1:10'000", // 10
   "1:10'000", // 11
   "1:10'000", // 12
-  "1:10'000", // 13
-  "1:10'000", // max zoom: 14
+  "1:10'000", // max zoom: 13
 ];
 
 const swisstopoZoomLevels: number[] =
   SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX.map((_, index) => index);
+
+/**
+ * Min level of zoom for swisstopo zoom levels, as defined in {@link SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX}
+ */
+export const SWISSTOPO_MIN_ZOOM_LEVEL: number = 0;
+
+/**
+ * Max level of zoom for swisstopo zoom levels, as defined in {@link SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX}
+ */
+export const SWISSTOPO_MAX_ZOOM_LEVEL: number =
+  SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX.length - 1;
 
 /**
  * This specialization will be used to represent LV95 and LV03, that use a custom zoom/resolution
@@ -137,26 +146,46 @@ export default class SwissCoordinateSystem extends CustomCoordinateSystem {
   transformStandardZoomLevelToCustom(standardZoomLevel: number): number {
     // checking first if the standard zoom level is within range of swiss zooms we have available
     if (
-      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[0] === "number" &&
-      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[14] === "number" &&
-      standardZoomLevel >= SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[0] &&
-      standardZoomLevel <= SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[14]
+      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
+        SWISSTOPO_MIN_ZOOM_LEVEL
+      ] === "number" &&
+      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
+        SWISSTOPO_MAX_ZOOM_LEVEL
+      ] === "number" &&
+      standardZoomLevel >=
+        SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
+          SWISSTOPO_MIN_ZOOM_LEVEL
+        ] &&
+      standardZoomLevel <=
+        SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
+          SWISSTOPO_MAX_ZOOM_LEVEL
+        ]
     ) {
       return SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX.filter(
         (zoom) => zoom < standardZoomLevel,
       ).length;
     }
     if (
-      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[0] === "number" &&
-      standardZoomLevel < SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[0]
+      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
+        SWISSTOPO_MIN_ZOOM_LEVEL
+      ] === "number" &&
+      standardZoomLevel <
+        SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
+          SWISSTOPO_MIN_ZOOM_LEVEL
+        ]
     ) {
-      return 0;
+      return SWISSTOPO_MIN_ZOOM_LEVEL;
     }
     if (
-      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[14] === "number" &&
-      standardZoomLevel > SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[14]
+      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
+        SWISSTOPO_MAX_ZOOM_LEVEL
+      ] === "number" &&
+      standardZoomLevel >
+        SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
+          SWISSTOPO_MAX_ZOOM_LEVEL
+        ]
     ) {
-      return 14;
+      return SWISSTOPO_MAX_ZOOM_LEVEL;
     }
     // if no matching zoom level was found, we return the one for the 1:25'000 map
     return this.get1_25000ZoomLevel();

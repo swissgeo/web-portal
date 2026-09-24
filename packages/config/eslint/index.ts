@@ -2,6 +2,7 @@ import type { FlatConfig } from "@typescript-eslint/utils/ts-eslint";
 
 import jsESLint from "@eslint/js";
 import markdown from "@eslint/markdown";
+import vitest from "@vitest/eslint-plugin";
 import skipFormatting from "@vue/eslint-config-prettier/skip-formatting";
 import {
   defineConfigWithVueTs,
@@ -110,6 +111,7 @@ export const vueConfig: FlatConfig.ConfigArray = defineConfigWithVueTs(
       ...commonTsAndJsRules,
       "vue/block-lang": "error",
       ...noUnusedVarsRules,
+      "vue/no-v-html": "error",
     },
   },
 );
@@ -117,9 +119,17 @@ export const vueConfig: FlatConfig.ConfigArray = defineConfigWithVueTs(
 export const unitTestsConfig: FlatConfig.ConfigArray = [
   {
     files: ["**/*.spec.{js,ts}", "scripts/**.{js,ts}"],
+    plugins: {
+      vitest,
+    },
     rules: {
       "no-console": "off",
       "no-prototype-builtins": "off",
+      "vitest/no-focused-tests": "error",
+      // the vitest variant is aware of assertions, so referencing a method inside
+      // expect() is allowed while genuine unbound usages are still reported
+      "@typescript-eslint/unbound-method": "off",
+      "vitest/unbound-method": "error",
       ...noUnusedVarsRules,
     },
   },

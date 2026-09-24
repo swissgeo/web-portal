@@ -12,11 +12,15 @@ const { layer } = defineProps<{
   layer: KMZLayer;
 }>();
 
+const emit = defineEmits<{
+  error: [error: Error];
+}>();
+
 const olMap = inject<ShallowRef<Map | undefined>>("olMap");
 
 const layerRef = computed(() => layer);
 
-useOlKMZLayer(layerRef, olMap);
+useOlKMZLayer(layerRef, olMap, (error) => emit("error", error));
 </script>
 
 <template>

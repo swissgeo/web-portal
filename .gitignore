@@ -37,6 +37,7 @@ logs
 # Claude Code
 CLAUDE.md
 .claude/
+.opencode/
 
 # git rebase conflict
 *.orig
@@ -51,3 +52,6 @@ blob-report/
 
 # Coverage reports
 coverage/
+
+# pnpm cache
+.pnpm-store

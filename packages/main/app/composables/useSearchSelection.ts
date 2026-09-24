@@ -1,41 +1,85 @@
 // Composable to handle search result selection
 // Connects search results to map actions (center, zoom, add layers)
+//
+// Client only: the position store it instantiates holds class-based coordinate
+// systems, which cannot go through the Nuxt SSR payload. Its caller therefore
+// has to sit inside a <ClientOnly> boundary.
 
+import type { Dataset } from "@swissgeo/ogc";
 import type {
+  ContentSearchResult,
   SearchResult,
+  CoordinateSearchResult,
   LocationSearchResult,
   LayerSearchResult,
   FeatureSearchResult,
 } from "@swissgeo/search";
 
+import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
+import log from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
+import { useSearchStore } from "@swissgeo/skeleton";
+import { joinURL } from "ufo";
 
 export function useSearchSelection() {
-  async function handleResultSelection(result: SearchResult) {
-    // Only run on client side to avoid SSR serialization issues
-    if (!process.client) {
-      return;
-    }
+  const runtimeConfig = useRuntimeConfig();
+  const toast = useToaster();
+  const { locale, t } = useI18n();
+  const positionStore = usePositionStore();
+  const searchStore = useSearchStore();
+  const layerStore = useLayerStore();
 
-    if (result.resultType === "LOCATION") {
+  async function handleResultSelection(result: SearchResult) {
+    if (result.resultType === "COORDINATE") {
+      handleCoordinateSelection(result as CoordinateSearchResult);
+    } else if (result.resultType === "LOCATION") {
       handleLocationSelection(result as LocationSearchResult);
     } else if (result.resultType === "FEATURE") {
       handleFeatureSelection(result as FeatureSearchResult);
     } else if (result.resultType === "LAYER") {
       await handleLayerSelection(result as LayerSearchResult);
+    } else if (result.resultType === "CONTENT") {
+      handleContentSelection(result as ContentSearchResult);
     }
   }
 
+  // we zoom on the coordinate and mark it: the center alone would not tell the
+  // user where the point exactly is
+  function handleCoordinateSelection(result: CoordinateSearchResult) {
+    const dispatcher = { name: "search-coordinate-selection" };
+    positionStore.setCenter(result.coordinate, dispatcher);
+    positionStore.setZoom(result.zoom, dispatcher);
+    searchStore.setPinnedCoordinate(result.coordinate);
+  }
+
+  // The CMS is headless and this portal does not render its pages yet, so a
+  // content result opens the published page in a new tab. The map is left
+  // untouched, and so is the tab the user searched from.
+  function handleContentSelection(result: ContentSearchResult) {
+    if (!result.slug) {
+      return;
+    }
+
+    const url = joinURL(
+      runtimeConfig.public.cmsBaseUrl,
+      result.locale || locale.value,
+      result.slug,
+    );
+    window.open(url, "_blank", "noopener");
+  }
+
+  // a place or an address is pinned like a coordinate: the pin follows the map,
+  // it never stays on a previous result
   function handleLocationSelection(result: LocationSearchResult) {
     if (!result.coordinate) {
       return;
     }
 
-    const positionStore = usePositionStore();
     positionStore.setCenter(result.coordinate, {
       name: "search-result-selection",
     });
     positionStore.setZoom(result.zoom, { name: "search-result-selection" });
+    searchStore.setPinnedCoordinate(result.coordinate);
   }
 
   function handleFeatureSelection(result: FeatureSearchResult) {
@@ -43,7 +87,6 @@ export function useSearchSelection() {
       return;
     }
 
-    const positionStore = usePositionStore();
     positionStore.setCenter(result.coordinate, {
       name: "search-feature-selection",
     });
@@ -51,12 +94,37 @@ export function useSearchSelection() {
     const featureZoom =
       result.zoom && result.zoom > 0 && result.zoom < 20 ? result.zoom : 10;
     positionStore.setZoom(featureZoom, { name: "search-feature-selection" });
+    searchStore.setPinnedCoordinate(result.coordinate);
   }
 
+  // Selecting a layer adds it to the map; the (i) button in the result entry
+  // opens the dataset panel instead.
   async function handleLayerSelection(result: LayerSearchResult) {
-    const localePath = useLocalePath();
+    if (layerStore.layers.some((l) => l.humanId === result.layerId)) {
+      return;
+    }
 
-    await navigateTo(localePath(`/dataset/${result.layerId}`));
+    const url = new URL(
+      joinURL(
+        runtimeConfig.public.ogcApiEndpoint,
+        "collections",
+        runtimeConfig.public.ogcCatalogCollection,
+        "items",
+        result.layerId,
+      ),
+    );
+    url.searchParams.set("lang", locale.value);
+
+    try {
+      const dataset = await $fetch<Dataset>(url.toString());
+      layerStore.addLayer(makeServerLayer(dataset));
+    } catch (e) {
+      log.error(
+        "Failed to add search result to map",
+        e instanceof Error ? e : new Error(String(e)),
+      );
+      toast.add({ color: "error", title: t("dataset.addToMapError") });
+    }
   }
 
   return {

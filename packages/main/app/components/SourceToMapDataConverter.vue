@@ -1,28 +1,41 @@
 <script setup lang="ts">
+import type { Dimension } from "@swissgeo/dimension";
 import type {
-  Dimension,
+  DatasetLayer,
   LayerInfo,
   Layer as SourceData,
 } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
-import type { Dataset } from "@swissgeo/ogc";
+import type { Dataset, Legend } from "@swissgeo/ogc";
 
-import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import {
   convertYearToTimestamp,
   getYearFromGeoadminValue,
-} from "@swissgeo/timeslider";
+  useDimensionsStore,
+} from "@swissgeo/dimension";
+import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
+import { toError } from "@swissgeo/shared";
 
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
+import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
 import MapDatamappingOgcDatasetConverter from "@/components/map/datamapping/OgcDatasetConverter.vue";
 
 const { sourceBgLayer, sourceData } = defineProps<{
-  sourceBgLayer: SourceData | null;
+  sourceBgLayer: SourceData | null | undefined;
   sourceData: SourceData[];
+}>();
+
+const emit = defineEmits<{
+  layerError: [uuid: string, error: Error];
 }>();
 
 const mapViewStore = useMapViewStore();
 const layerStore = useLayerStore();
+const dimensionsStore = useDimensionsStore();
+
+function emitLayerError(uuid: SourceData["uuid"], error: unknown) {
+  emit("layerError", uuid, toError(error));
+}
 
 // there can be multiple calls to this function, and the options consumes themselves
 // on call, so we consume the options first, then we give it the current data if there is
@@ -30,25 +43,53 @@ const layerStore = useLayerStore();
 function updateMapLayerData(index: number, mapLayerData: MapLayer) {
   const options = layerStore.consumeImportOptions(mapLayerData.uuid);
   const currentData = mapViewStore.getMapLayers().value[index];
-  mapLayerData.opacity = options?.opacity ?? currentData?.opacity ?? 1;
+
+  mapLayerData.opacity =
+    options?.opacity ?? currentData?.opacity ?? mapLayerData.opacity;
   mapLayerData.isVisible = options?.isVisible ?? currentData?.isVisible ?? true;
 
   mapViewStore.updateLayerData(index, mapLayerData, true);
 }
+
+function updateBgLayer(mapLayerData: MapLayer | null) {
+  if (!mapLayerData) {
+    return;
+  }
+
+  mapLayerData.opacity = 1;
+  /**
+   * If the first layer in the map view store can be found in the source layers,
+   * this means this is not a background layer, which means the previous background layer
+   * is null, and thus we can simply unshift the background layer
+   *
+   * Otherwise, we replace the background layer
+   */
+  const currentDataUuid = mapViewStore.mapLayers[0]?.uuid;
+  if (
+    currentDataUuid &&
+    layerStore.getLayer(currentDataUuid) &&
+    layerStore.backgroundLayer?.uuid !== currentDataUuid
+  ) {
+    mapViewStore.mapLayers.unshift(mapLayerData);
+  } else {
+    updateMapLayerData(0, mapLayerData);
+  }
+}
 function updateLayerInfo(uuid: string, info: LayerInfo) {
   layerStore.setLayerInfo(uuid, info);
+}
+
+function updateLegends(uuid: string, legends: Legend[]) {
+  mapViewStore.setLayerLegends(uuid, legends);
 }
 
 function updateStoreLayerData(uuid: string, dataset: Dataset) {
   layerStore.setLayerData(uuid, dataset);
 }
 
-function updateTimeDimension(
-  identifier: string,
-  dimension: Partial<Dimension>,
-) {
+function updateTimeDimension(uuid: string, dimension: Partial<Dimension>) {
   const existingCurrentValue =
-    layerStore.getLayer(identifier)?.dimensions?.time?.currentValue;
+    dimensionsStore.getDimensions(uuid)?.time?.currentValue;
   const existingYear = existingCurrentValue
     ? getYearFromGeoadminValue(existingCurrentValue)
     : undefined;
@@ -65,36 +106,56 @@ function updateTimeDimension(
   // its year and find the matching entry in the new availableValues so the
   // user's previously-selected year is preserved across capability refreshes.
   // matchedValue intentionally overrides dimension.currentValue when found.
-  layerStore.setDimension("time", identifier, {
+  dimensionsStore.setDimension(uuid, "time", {
     ...dimension,
     ...(matchedValue ? { currentValue: matchedValue } : {}),
   });
 }
-function updateOpacity(identifier: number | string, opacity: number) {
-  mapViewStore.updateLayerOpacity(identifier, opacity);
+
+function removeMapLayer(uuidToRemove: string) {
+  if (mapViewStore.mapLayers.some((layer) => layer.uuid === uuidToRemove)) {
+    mapViewStore.removeLayer(uuidToRemove);
+  }
 }
 </script>
 
 <template>
-  <div
-    v-for="(data, index) in [sourceBgLayer, ...sourceData].filter(
-      (data) => !!data,
-    )"
-    v-bind:key="data.uuid"
+  <LayerLoadErrorBoundary
+    v-if="sourceBgLayer && isDatasetLayer(sourceBgLayer)"
+    :key="sourceBgLayer.uuid"
+    @error="emitLayerError(sourceBgLayer.uuid, $event)"
+  >
+    <MapDatamappingOgcDatasetConverter
+      :layer="sourceBgLayer as DatasetLayer"
+      @error="emitLayerError(sourceBgLayer.uuid, $event)"
+      @update="updateBgLayer($event)"
+      @updateDataset="updateStoreLayerData"
+      @updateLayerInfo="updateLayerInfo"
+      @remove="removeMapLayer"
+    />
+  </LayerLoadErrorBoundary>
+
+  <LayerLoadErrorBoundary
+    v-for="(data, index) in sourceData.filter((data) => !!data)"
+    :key="data.uuid"
+    @error="emitLayerError(data.uuid, $event)"
   >
     <MapDatamappingOgcDatasetConverter
       v-if="isDatasetLayer(data)"
       :layer="data"
-      @update="updateMapLayerData(index, $event)"
-      @updateOpacity="updateOpacity"
+      @error="emitLayerError(data.uuid, $event)"
+      @update="updateMapLayerData(index + Number(!!sourceBgLayer), $event)"
       @updateTimeDimension="updateTimeDimension"
       @updateDataset="updateStoreLayerData"
       @updateLayerInfo="updateLayerInfo"
+      @updateLegends="updateLegends"
+      @remove="removeMapLayer"
     />
     <MapDatamappingFileConverter
       v-else
       :layer="data"
-      @update="updateMapLayerData(index, $event)"
+      @update="updateMapLayerData(index + Number(!!sourceBgLayer), $event)"
+      @remove="removeMapLayer"
     />
-  </div>
+  </LayerLoadErrorBoundary>
 </template>

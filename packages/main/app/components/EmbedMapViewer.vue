@@ -18,6 +18,7 @@ const { stateId, zoomOnlyCtrl } = defineProps<{
         class="fixed top-4 left-4 z-9999"
         :to="`${url.origin}/map?state=${stateId}`"
         target="_blank"
+        color="primary"
         variant="solid"
         data-testid="embed-map-viewer-view-on-swissgeo-button"
       >

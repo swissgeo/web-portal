@@ -60,24 +60,24 @@ test.describe("locale routing", () => {
     page,
   }) => {
     await page.goto("/fr/map");
-    await expect(page.getByRole("button", { name: "Recherche" })).toBeVisible({
+    // The sidebar starts collapsed, so its localized label is the one on the
+    // tab that expands it
+    await expect(
+      page.getByRole("button", { name: "Ouvrir le panneau latéral" }),
+    ).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
-    await expect(
-      page.getByRole("button", { name: "Couches actives" }),
-    ).toBeVisible();
   });
 
   test("navigating to /en/map shows English sidebar labels", async ({
     page,
   }) => {
     await page.goto("/en/map");
-    await expect(page.getByRole("button", { name: "Search" })).toBeVisible({
+    await expect(
+      page.getByRole("button", { name: "Expand the side panel" }),
+    ).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
-    await expect(
-      page.getByRole("button", { name: "Active layers" }),
-    ).toBeVisible();
   });
 });
 

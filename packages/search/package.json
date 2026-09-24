@@ -23,6 +23,7 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@swissgeo/shared": "workspace:*",
     "typescript": "catalog:"
@@ -32,6 +33,7 @@
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "eslint": "catalog:",
+    "jsdom": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:"
   },

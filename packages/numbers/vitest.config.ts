@@ -13,6 +13,7 @@ export default defineConfig({
       provider: "v8",
       reportsDirectory: path.resolve(__dirname, "../../coverage/unit/numbers"),
       reporter: ["lcov", "cobertura"],
+      include: ["src/**/*.ts", "src/**/*.vue"],
     },
     environment: "node",
   },

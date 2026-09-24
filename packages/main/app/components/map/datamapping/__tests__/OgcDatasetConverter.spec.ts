@@ -1,6 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises, mount } from "@vue/test-utils";
-import { describe, expect, it, vi } from "vitest";
+import { createPinia, setActivePinia } from "pinia";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import OgcDatasetConverter from "../OgcDatasetConverter.vue";
 
@@ -18,6 +19,7 @@ const {
   serviceData,
   layerFormat,
   layerId,
+  ogcErrorCallbacks,
 } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
   return {
@@ -27,18 +29,24 @@ const {
     serviceData: ref(null),
     layerFormat: ref("WMTS"),
     layerId: ref("layer-id"),
+    ogcErrorCallbacks: [] as ((_error: unknown) => void)[],
   };
 });
 
 vi.mock("@/components/map/datamapping/useGenericOgcData", () => ({
-  useGenericOgcData: vi.fn(() => ({
-    distributionCollection,
-    layerSpecificData,
-    distribution,
-    serviceData,
-    layerFormat,
-    layerId,
-  })),
+  useGenericOgcData: vi.fn(
+    (_layer: unknown, onError: (_error: unknown) => void) => {
+      ogcErrorCallbacks.push(onError);
+      return {
+        distributionCollection,
+        layerSpecificData,
+        distribution,
+        serviceData,
+        layerFormat,
+        layerId,
+      };
+    },
+  ),
 }));
 
 vi.mock("@/components/map/datamapping/useDatasetLocaleRefresh", () => ({
@@ -46,6 +54,11 @@ vi.mock("@/components/map/datamapping/useDatasetLocaleRefresh", () => ({
 }));
 
 describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    ogcErrorCallbacks.length = 0;
+  });
+
   it("emits the basic data regardless of the OGC travelling", () => {
     const wrapper = mount(OgcDatasetConverter, {
       shallow: true,
@@ -72,9 +85,13 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
         displayName: "human-id",
       },
     ]);
+
+    const error = new Error("request failed");
+    ogcErrorCallbacks[0]!(error);
+    expect(wrapper.emitted("error")).toEqual([[error]]);
   });
 
-  it("emits the update if the data if the basic data is updated", async () => {
+  it("emits the update if the basic data is updated", async () => {
     const layerData = {
       isLoading: false,
       type: "dataset" as const,
@@ -159,12 +176,13 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     });
     // @ts-expect-error Type-checker can't deduce that this method actually exists
     // but isn't really exposed
-    wrapper.vm.pushLayerSpecificData({
+    wrapper.vm.pushLayerSpecificData(1, {
       options: {
         url: "http://swissgeo.ch",
       },
     });
     await flushPromises();
+
     expect(wrapper.emitted("update")).toHaveLength(2);
     expect(wrapper.emitted("update")!.pop()!.pop()).toHaveProperty("options", {
       url: "http://swissgeo.ch",
@@ -188,6 +206,6 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
     wrapper.unmount();
     await flushPromises();
 
-    expect(wrapper.emitted()).toHaveProperty("remove");
+    expect(wrapper.emitted("remove")).toEqual([["some-fancy-uuid"]]);
   });
 });

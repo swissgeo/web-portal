@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
 import ToolBoxButton from "@/components/toolbox/toolboxButtons/ToolBoxButton.vue";
+
+const { t } = useI18n();
+
 const webGlIsSupported = ref(false);
 
 onMounted(() => {
@@ -28,7 +33,8 @@ function toggle3d() {
 
 <template>
   <ToolBoxButton
-    title="3D toggle button"
+    data-testid="toolbox-3d-button"
+    :title="t('toolbox.3d.buttonTitle')"
     :is-disabled="isDisabled()"
     :is-active="isActive()"
     iconName="Box"

@@ -1,8 +1,11 @@
 // Search API for web-poc-portal
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { sanitizeHtml } from "@swissgeo/shared";
 
 import type {
+  ContentPageSearchResponse,
+  ContentSearchResult,
   FeatureSearchResult,
   LayerSearchResult,
   LocationSearchResult,
@@ -10,28 +13,27 @@ import type {
   SearchResponseResult,
 } from "@/types/search";
 
-/**
- * Catalog record structure as used in layer search. This extends the base OGCRecord with the
- * specific property structure used by the swissgeo catalog.
- */
-
 export enum SearchResultTypesEnum {
   layer = "LAYER",
   location = "LOCATION",
   feature = "FEATURE",
+  coordinate = "COORDINATE",
+  content = "CONTENT",
 }
 
+/**
+ * Catalog record structure as returned by the OGC API Records `/items` endpoint
+ * and consumed by the layer search. Only the fields we map to a search result
+ * are declared here.
+ */
 export interface CatalogRecord {
   id: string;
   properties?: {
     title?: string;
     description?: string;
-    keywords?: string[];
   };
 }
 
-// Regex to detect and strip HTML tags
-const REGEX_DETECT_HTML_TAGS = /<\/?[^>]+(>|$)/g;
 const REGEX_BOUNDING_BOX = /BOX\(([0-9.]+)\s+([0-9.]+),([0-9.]+)\s+([0-9.]+)\)/;
 /** Escape HTML special characters to prevent XSS
  * Only exported for unit tests
@@ -49,7 +51,7 @@ export function escapeHtml(text: string): string {
  * Only exported for unit tests
  */
 export function sanitizeTitle(title: string = ""): string {
-  return title.replace(REGEX_DETECT_HTML_TAGS, "");
+  return sanitizeHtml(title, { USE_PROFILES: { html: false } });
 }
 
 /**
@@ -161,71 +163,54 @@ export async function searchLocation(
 }
 
 /**
- * Search for layers in the local OGC catalog
+ * Search for layers in the OGC records catalog (PyGeoAPI).
+ *
+ * The matching is performed server-side through the OGC API Records `q`
+ * full-text parameter. The catalog `/items` endpoint is expected to return a
+ * GeoJSON FeatureCollection.
+ *
+ * Errors (including a non-ok response) are propagated so callers can
+ * distinguish a failed request from an empty result set.
  *
  * @param queryString - Search query text
+ * @param catalogUrl - The catalog `/items` endpoint (without query parameters)
  * @param lang - Language code (de, fr, etc.)
- * @param catalogRecords - Array of OGC catalog records
+ * @param abortSignal - Optional abort signal for cancellation
  * @param limit - Maximum number of results (default: 10)
- * @returns the layer search results
+ * @returns Promise with the layer search results
  */
-export function searchLayers(
+export async function searchLayers(
   queryString: string,
-  catalogRecords: CatalogRecord[],
+  catalogUrl: string,
+  lang: string,
+  abortSignal?: AbortSignal,
   limit: number = 10,
-): LayerSearchResult[] {
-  const query = queryString.toLowerCase().trim();
+): Promise<LayerSearchResult[]> {
+  const url = new URL(catalogUrl);
+  url.searchParams.set("f", "json");
+  url.searchParams.set("q", queryString);
+  url.searchParams.set("lang", lang);
+  url.searchParams.set("limit", String(limit));
 
-  if (query.length < 2) {
-    return [];
+  const response = await fetch(url.toString(), { signal: abortSignal });
+
+  if (!response.ok) {
+    throw new Error(`Layer search API error: ${response.status}`);
   }
 
-  try {
-    const matches = catalogRecords
-      .filter(
-        (
-          record,
-        ): record is CatalogRecord & {
-          properties: NonNullable<CatalogRecord["properties"]>;
-        } => {
-          if (!record.properties) {
-            return false;
-          }
+  const data: { features?: CatalogRecord[] } = await response.json();
 
-          const title = record.properties.title || "";
-          const description = record.properties.description || "";
-          const keywords = record.properties.keywords || [];
-
-          return (
-            record.id.toLowerCase().includes(query) ||
-            title.toLowerCase().includes(query) ||
-            description.toLowerCase().includes(query) ||
-            keywords.some((k: string) => k.toLowerCase().includes(query))
-          );
-        },
-      )
-      .slice(0, limit)
-      .map((record) => {
-        const title = record.properties.title || record.id;
-        return {
-          resultType: "LAYER" as const,
-          id: record.id,
-          layerId: record.id,
-          title,
-          sanitizedTitle: sanitizeTitle(title),
-          description: record.properties.description || "",
-        };
-      });
-
-    return matches;
-  } catch (error) {
-    log.error({
-      title: "searchLayers",
-      titleColor: LogPreDefinedColor.Red,
-      messages: ["Failed to search layers:", error],
-    });
-    return [];
-  }
+  return (data.features ?? []).map((record) => {
+    const title = record.properties?.title || record.id;
+    return {
+      resultType: "LAYER" as const,
+      id: record.id,
+      layerId: record.id,
+      title,
+      sanitizedTitle: sanitizeTitle(title),
+      description: record.properties?.description || "",
+    };
+  });
 }
 
 /**
@@ -311,6 +296,85 @@ export async function searchLayerFeatures(
       title: "searchLayerFeatures",
       titleColor: LogPreDefinedColor.Red,
       messages: ["Failed to search layer features:", error],
+    });
+    return [];
+  }
+}
+
+/**
+ * Search CMS content pages through the `/api/wpa/v1/content/search` Nitro
+ * proxy — the Livingdocs token is server-only, so the CMS cannot be queried
+ * from the browser.
+ *
+ * Failures are logged and swallowed rather than propagated: the CMS is an
+ * optional source, and an unconfigured or rate-limited Livingdocs must not put
+ * the whole search bar in an error state.
+ *
+ * @param queryString - Search query text
+ * @param lang - Language code (de, fr, etc.); the proxy falls back to `de` for
+ *   locales the CMS tenant does not hold
+ * @param abortSignal - Optional abort signal for cancellation
+ * @param limit - Maximum number of results (default: 10)
+ * @returns Promise with the content page search results
+ */
+export async function searchContentPages(
+  queryString: string,
+  lang: string,
+  abortSignal?: AbortSignal,
+  limit: number = 10,
+): Promise<ContentSearchResult[]> {
+  const trimmedQuery = queryString.trim();
+  if (trimmedQuery.length < 2) {
+    return [];
+  }
+
+  const params = new URLSearchParams({
+    q: trimmedQuery,
+    lang,
+    limit: String(limit),
+  });
+
+  try {
+    const response = await fetch(
+      `/api/wpa/v1/content/search?${params.toString()}`,
+      { signal: abortSignal },
+    );
+
+    if (!response.ok) {
+      throw new Error(`Content search API error: ${response.status}`);
+    }
+
+    const data: ContentPageSearchResponse = await response.json();
+
+    return (data.results ?? []).flatMap((hit) => {
+      if (!hit.documentId || !hit.title) {
+        return [];
+      }
+
+      return [
+        {
+          resultType: "CONTENT" as const,
+          id: `content-${hit.documentId}`,
+          documentId: hit.documentId,
+          slug: hit.slug ?? "",
+          locale: hit.locale ?? "",
+          // The CMS gives plain text, but the entry renders the title with
+          // `v-html` - escape it like the feature results do.
+          title: escapeHtml(hit.title),
+          sanitizedTitle: sanitizeTitle(hit.title),
+          description: hit.description ?? "",
+        },
+      ];
+    });
+  } catch (error) {
+    // Re-throw abort errors so they can be handled separately
+    if (error instanceof Error && error.name === "AbortError") {
+      throw error;
+    }
+    log.error({
+      title: "searchContentPages",
+      titleColor: LogPreDefinedColor.Red,
+      messages: ["Failed to search content pages:", error],
     });
     return [];
   }

@@ -10,13 +10,14 @@ import {
   isKMZ,
   isGPX,
   isGeoJSON,
+  isCOG,
 } from "@/utils/recordUtils";
 
+import OpenLayersCOGLayer from "./OpenLayersCOGLayer.vue";
 import OpenLayersGeoJSONLayer from "./OpenLayersGeoJSONLayer.vue";
 import OpenLayersGPXLayer from "./OpenLayersGPXLayer.vue";
 import OpenLayersKMLLayer from "./OpenLayersKMLLayer.vue";
 import OpenLayersKMZLayer from "./OpenLayersKMZLayer.vue";
-import OpenLayersLocalGeoJSONLayer from "./OpenLayersLocalGeoJSONLayer.vue";
 import OpenLayersWMSLayer from "./OpenLayersWMSLayer.vue";
 import OpenLayersWMTSLayer from "./OpenLayersWMTSLayer.vue";
 
@@ -25,13 +26,9 @@ const { layer, customLayerRenderers } = defineProps<{
   customLayerRenderers?: MapLayerRenderer[];
 }>();
 
-// Check if layer has a dataset (is DatasetLayer) or is a local file (FileLayer)
-const isLocalFile = computed(
-  () =>
-    !("dataset" in layer) &&
-    "fileData" in layer &&
-    layer.fileData !== undefined,
-);
+const emit = defineEmits<{
+  layerError: [uuid: string, error: Error];
+}>();
 
 const customLayerRenderer = computed(() =>
   customLayerRenderers?.find((renderer) => renderer.matches(layer)),
@@ -47,14 +44,12 @@ const customLayerRenderer = computed(() =>
   <OpenLayersWMTSLayer :layer="layer" v-else-if="isWMTS(layer)" />
   <OpenLayersWMSLayer :layer="layer" v-else-if="isWMS(layer)" />
   <OpenLayersKMLLayer :layer="layer" v-else-if="isKML(layer)" />
-  <OpenLayersKMZLayer :layer="layer" v-else-if="isKMZ(layer)" />
+  <OpenLayersKMZLayer
+    :layer="layer"
+    v-else-if="isKMZ(layer)"
+    @error="emit('layerError', layer.uuid, $event)"
+  />
   <OpenLayersGPXLayer :layer="layer" v-else-if="isGPX(layer)" />
-  <OpenLayersLocalGeoJSONLayer
-    :layer="layer"
-    v-else-if="isGeoJSON(layer) && isLocalFile"
-  />
-  <OpenLayersGeoJSONLayer
-    :layer="layer"
-    v-else-if="isGeoJSON(layer) && !isLocalFile"
-  />
+  <OpenLayersGeoJSONLayer :layer="layer" v-else-if="isGeoJSON(layer)" />
+  <OpenLayersCOGLayer :layer="layer" v-else-if="isCOG(layer)" />
 </template>

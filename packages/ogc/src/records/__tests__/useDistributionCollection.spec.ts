@@ -1,7 +1,15 @@
 import { flushPromises } from "@vue/test-utils";
-import { http, HttpResponse } from "msw";
+import { delay, http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { ref } from "vue";
 
 import type { Dataset } from "@/types/Records";
@@ -16,13 +24,20 @@ import ChBafuSchutzgebieteLuftfahrtDistributions from "./fixtures/distribution-c
 describe("useDistributionCollection fetching the data distribution from the OGC records", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.bafu.schutzgebiete-luftfahrt",
       () => {
         return HttpResponse.json(ChBafuSchutzgebieteLuftfahrtDistributions);
       },
     ),
     http.get("http://services.dev.sgdi.tech/api/oar", () => {
       return HttpResponse.error();
+    }),
+    http.get("http://services.dev.sgdi.tech/slow", async () => {
+      await delay(100);
+      return HttpResponse.json(ChBafuSchutzgebieteLuftfahrtDistributions);
+    }),
+    http.get("http://services.dev.sgdi.tech/fast", () => {
+      return HttpResponse.json(ChBafuSchutzgebieteLuftfahrtDistributions);
     }),
   ];
   const server = setupServer(...handlers);
@@ -39,7 +54,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
     );
 
     expect(distributionLink).toBe(
-      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.bafu.schutzgebiete-luftfahrt",
     );
   });
 
@@ -58,10 +73,7 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
   it("fetches the distribution correctly after the dataset becomes available", async () => {
     const dataset = ref<Dataset | null>(null);
 
-    const { distributionCollection, distributionUrl } =
-      useDistributionCollection(dataset);
-
-    expect(distributionUrl.value).toBe(null);
+    const { distributionCollection } = useDistributionCollection(dataset);
 
     dataset.value = ChBafuSchutzgebieteLuftfahrt as Dataset;
 
@@ -71,17 +83,23 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
     );
   });
 
-  it("doesn't trip with an invalid dataset", () => {
+  it("reports a missing distribution URL", () => {
     const dataset = ref<Dataset | null>({
       id: "some-dataset",
       links: [],
     } as unknown as Dataset);
 
-    const { distributionCollection, distributionUrl } =
+    const { distributionCollection, onDistributionError } =
       useDistributionCollection(dataset);
+    const reportError = vi.fn();
+    onDistributionError(reportError);
 
-    expect(distributionUrl.value).toBe(null);
     expect(distributionCollection.value).toBe(null);
+    expect(reportError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "Required distribution URL is missing",
+      }),
+    );
   });
 
   it("doesn't trip with an unreachable URL", async () => {
@@ -96,20 +114,41 @@ describe("useDistributionCollection fetching the data distribution from the OGC 
       ],
     } as unknown as Dataset);
 
-    const { distributionCollection, distributionUrl } =
+    const { distributionCollection, onDistributionError } =
       useDistributionCollection(dataset);
+    const reportError = vi.fn();
+    onDistributionError(reportError);
     await flushPromises();
-    expect(distributionUrl.value).toEqual(
-      "http://services.dev.sgdi.tech/api/oar",
-    );
     expect(distributionCollection.value).toBe(null);
+    expect(reportError).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  it("does not report a cancelled stale request", async () => {
+    const dataset = ref<Dataset | null>({
+      links: [
+        { href: "http://services.dev.sgdi.tech/slow", rel: "distributions" },
+      ],
+    } as Dataset);
+    const { onDistributionError } = useDistributionCollection(dataset);
+    const reportError = vi.fn();
+    onDistributionError(reportError);
+
+    await delay(10);
+    dataset.value = {
+      links: [
+        { href: "http://services.dev.sgdi.tech/fast", rel: "distributions" },
+      ],
+    } as Dataset;
+    await flushPromises();
+
+    expect(reportError).not.toHaveBeenCalled();
   });
 });
 
 describe("useDistributionCollection 404", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.bafu.schutzgebiete-luftfahrt",
       () => {
         return HttpResponse.json("Not Found", { status: 404 });
       },
@@ -137,7 +176,7 @@ describe("useDistributionCollection 404", () => {
 describe("useDistributionCollection 5xx", () => {
   const handlers = [
     http.get(
-      "https://services.dev.sgdi.tech/api/oar/staticv2/collections/ch.bafu.schutzgebiete-luftfahrt.distributions/items",
+      "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.bafu.schutzgebiete-luftfahrt",
       () => {
         return HttpResponse.error();
       },

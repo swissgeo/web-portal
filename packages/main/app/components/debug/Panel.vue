@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import DrawingPanel from "~/components/debug/DrawingPanel.vue";
+import ImportDrawingPanel from "~/components/debug/ImportDrawingPanel.vue";
 
 const isLayersPanelOpen = ref(false);
 const isImportPanelOpen = ref(false);
 const isImportLocalPanelOpen = ref(false);
+const isImportDrawingOpen = ref(false);
 const isDrawingOpen = ref(false);
 const isSharePanelOpen = ref(false);
 const isPrintPanelOpen = ref(false);
@@ -17,6 +19,9 @@ function toggleImportPanel() {
 }
 function toggleLocalImportPanel() {
   isImportLocalPanelOpen.value = !isImportLocalPanelOpen.value;
+}
+function toggleImportDrawing() {
+  isImportDrawingOpen.value = !isImportDrawingOpen.value;
 }
 function toggleDrawing() {
   isDrawingOpen.value = !isDrawingOpen.value;
@@ -33,7 +38,7 @@ function togglePrintPanel() {
 <template>
   <div>
     <DebugLayersPanel
-      class="relative h-[300px] w-[800px] overflow-hidden bg-white shadow"
+      class="relative h-[300px] w-[800px] overflow-hidden bg-default text-default shadow"
       v-if="isLayersPanelOpen"
       @close="toggleLayersPanel"
     ></DebugLayersPanel>
@@ -57,6 +62,13 @@ function togglePrintPanel() {
     >
     </DrawingPanel>
 
+    <ImportDrawingPanel
+      class="relative h-[200px] w-[800px] overflow-hidden bg-white shadow"
+      v-if="isImportDrawingOpen"
+      @close="toggleImportDrawing"
+    >
+    </ImportDrawingPanel>
+
     <DebugSharePanel v-if="isSharePanelOpen" @close="toggleStateConfig" />
     <DebugFramePrintPanel v-if="isPrintPanelOpen" @close="togglePrintPanel" />
     <div
@@ -65,27 +77,51 @@ function togglePrintPanel() {
         !isLayersPanelOpen &&
         !isImportPanelOpen &&
         !isImportLocalPanelOpen &&
+        !isImportDrawingOpen &&
         !isDrawingOpen &&
         !isSharePanelOpen &&
         !isPrintPanelOpen
       "
     >
-      <UButton @click="toggleLayersPanel" class="cursor-pointer">
+      <UButton color="primary" variant="outline" @click="toggleLayersPanel">
         {{ $t("debug.openLayersPanel") }}
       </UButton>
-      <UButton @click="toggleImportPanel" class="cursor-pointer">
+      <UButton
+        data-testid="debug-open-import-layers-panel"
+        color="primary"
+        variant="outline"
+        @click="toggleImportPanel"
+      >
         {{ $t("debug.openImportLayersPanel") }}
       </UButton>
-      <UButton @click="toggleLocalImportPanel" class="cursor-pointer">
+      <UButton
+        data-testid="debug-open-import-local-panel"
+        color="primary"
+        variant="outline"
+        @click="toggleLocalImportPanel"
+      >
         {{ $t("debug.openImportLocalLayersPanel") }}
       </UButton>
-      <UButton data-testid="debug-open-drawing-panel" @click="toggleDrawing">
+      <UButton
+        data-testid="debug-open-import-drawing-panel"
+        color="primary"
+        variant="outline"
+        @click="toggleImportDrawing"
+      >
+        {{ $t("debug.openImportDrawingPanel") }}
+      </UButton>
+      <UButton
+        data-testid="debug-open-drawing-panel"
+        color="primary"
+        variant="outline"
+        @click="toggleDrawing"
+      >
         {{ $t("debug.openDrawingPanel") }}
       </UButton>
-      <UButton @click="toggleStateConfig">
+      <UButton color="primary" variant="outline" @click="toggleStateConfig">
         {{ $t("debug.openStateConfigPanel") }}
       </UButton>
-      <UButton @click="togglePrintPanel">
+      <UButton color="primary" variant="outline" @click="togglePrintPanel">
         {{ $t("debug.openPrintPanel") }}
       </UButton>
     </div>

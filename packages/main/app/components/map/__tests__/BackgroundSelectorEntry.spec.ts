@@ -10,6 +10,7 @@ import { describe, it, expect, vi } from "vitest";
 const voidLayer = null;
 const mockLayer = {
   uuid: "test-uuid",
+  humanId: "ch.swisstopo.pixelkarte-farbe",
   data: { id: "ch.swisstopo.pixelkarte-farbe" },
 } as unknown as Layer;
 
@@ -25,15 +26,17 @@ describe("BackgroundSelectorEntry.vue", () => {
       const wrapper = mount(BackgroundSelectorEntry, {
         props: { backgroundLayer: voidLayer, isCurrent: false },
       });
-      expect(wrapper.find("button").attributes("data-testid")).toBe("void");
+      expect(wrapper.find("button").attributes("data-testid")).toBe(
+        "background-selector-void",
+      );
     });
 
-    it("is the layer uuid for a real layer", () => {
+    it("is the layer name for a real layer", () => {
       const wrapper = mount(BackgroundSelectorEntry, {
         props: { backgroundLayer: mockLayer, isCurrent: false },
       });
       expect(wrapper.find("button").attributes("data-testid")).toBe(
-        "test-uuid",
+        "background-selector-ch.swisstopo.pixelkarte-farbe",
       );
     });
   });

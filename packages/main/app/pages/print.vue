@@ -22,6 +22,7 @@ const pixelPerMm = ref(0);
 // the document to be printed and the dpi
 function adjustToPrintResolution() {
   pixelPerMm.value = computeNumberOfPixelsForPrint(1, printConfig.resolution);
+
   // We want the padding to be internal to the page
   const margin = pixelPerMm.value * PRINT_MARGIN_MM;
   const { width, height } = getPageSizeInPixels(
@@ -75,16 +76,26 @@ onMounted(() => {
             >
               Visit this map at
               <a
+                v-if="shareLink.length < 50"
                 class="bg-white text-[#1c6b85] underline"
                 :href="shareLink"
                 print-link
                 >{{ shareLink }}</a
               >
+              <span v-else class="bg-white text-[#1c6b85]" print-link
+                >the following link</span
+              >
             </div>
+
             <vue-qrcode
+              :style="{
+                width: `${pixelPerMm * 20}px`,
+                height: `${pixelPerMm * 20}px`,
+              }"
               :value="shareLink"
               :options="{
-                width: pixelPerMm * 20,
+                width: `${pixelPerMm * 20}px`,
+                height: `${pixelPerMm * 20}px`,
                 color: {
                   dark: '#1c6b85',
                 },

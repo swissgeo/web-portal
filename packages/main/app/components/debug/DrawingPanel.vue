@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { useDrawing } from "@swissgeo/drawing";
+import type { DropdownMenuItem } from "@nuxt/ui";
+import type Feature from "ol/Feature";
+import type { Geometry } from "ol/geom";
+
+import { useDrawing, getFeatureTitle } from "@swissgeo/drawing";
+import log from "@swissgeo/log";
 import { useMap } from "@swissgeo/map";
-import { IconButton } from "@swissgeo/skeleton";
 
 import DrawingFeaturePropertyPanel from "./DrawingFeaturePropertyPanel.vue";
 
@@ -23,6 +27,8 @@ const {
   mountDrawingLayer,
   clearDrawingLayer,
   isDrawingLayerInLayerStore,
+  serializeFocusedFeatureAsBlob,
+  serializeAllFeaturesAsBlob,
 } = useDrawing();
 
 const emit = defineEmits<{
@@ -31,6 +37,116 @@ const emit = defineEmits<{
 
 function handleClose() {
   emit("close");
+}
+
+/**
+ * Dropdown elements for exporting the currently focused feature in various formats.
+ */
+const exportFocusedFeatureItems = ref<DropdownMenuItem[]>([
+  {
+    label: "GeoJSON",
+    onClick: () => exportFocusedFeature("geojson"),
+  },
+  {
+    label: "GPX Track",
+    onClick: () => exportFocusedFeature("gpx-track"),
+  },
+  {
+    label: "GPX Route",
+    onClick: () => exportFocusedFeature("gpx-route"),
+  },
+  {
+    label: "KML",
+    onClick: () => exportFocusedFeature("kml"),
+  },
+  {
+    label: "KMZ",
+    onClick: () => exportFocusedFeature("kmz"),
+  },
+]);
+
+/**
+ * Drops down elements for exporting all features in the drawing layer in various formats.
+ */
+const exportAllFeaturesItems = ref<DropdownMenuItem[]>([
+  {
+    label: "GeoJSON",
+    onClick: () => exportAllFeatures("geojson"),
+  },
+  {
+    label: "GPX Track",
+    onClick: () => exportAllFeatures("gpx-track"),
+  },
+  {
+    label: "GPX Route",
+    onClick: () => exportAllFeatures("gpx-route"),
+  },
+  {
+    label: "KML",
+    onClick: () => exportAllFeatures("kml"),
+  },
+  {
+    label: "KMZ",
+    onClick: () => exportAllFeatures("kmz"),
+  },
+]);
+
+/**
+ * Triggers a download of the currently focused feature in the specified format.
+ */
+async function exportFocusedFeature(
+  format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
+) {
+  if (!focusedFeature.value) {
+    return;
+  }
+
+  try {
+    const blob = await serializeFocusedFeatureAsBlob(format);
+    if (blob) {
+      const featureTitle =
+        getFeatureTitle(focusedFeature.value as Feature<Geometry>) || "feature";
+      // make a filename that is safe for the filesystem by removing all characters that are not
+      // letters, numbers, underscores, or hyphens, and replacing spaces with underscores
+      const fileBasename = featureTitle
+        .replace(/\s+/g, "_")
+        .replace(/[^\p{L}\p{N}_-]/gu, "");
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${fileBasename}.${format.split("-")[0]}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  } catch (_error) {
+    log.error("Failed to export focused feature");
+  }
+}
+
+/**
+ * Triggers a download of all features in the drawing layer in the specified format.
+ */
+async function exportAllFeatures(
+  format: "geojson" | "gpx-track" | "gpx-route" | "kml" | "kmz" = "geojson",
+) {
+  try {
+    const blob = await serializeAllFeaturesAsBlob(format);
+    if (blob) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `scene.${format.split("-")[0]}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  } catch (_error) {
+    log.error("Failed to export all features");
+  }
 }
 
 /**
@@ -73,10 +189,11 @@ onUnmounted(() => {
   >
     <div class="mb-4 flex items-center justify-between">
       <h3 class="text-lg font-semibold">{{ t("debug.drawingPanelTitle") }}</h3>
-      <IconButton
-        iconName="X"
+      <UButton
+        color="primary"
+        variant="ghost"
+        icon="i-lucide-x"
         @click="handleClose"
-        severity="secondary"
         data-testid="drawing-panel-close"
       />
     </div>
@@ -90,46 +207,9 @@ onUnmounted(() => {
           v-if="focusedFeature && focusMode === 'select'"
         />
         <UButton
-          v-if="focusMode === 'none'"
-          color="info"
-          variant="solid"
-          data-testid="drawing-tool-polyline"
-          @click="enableDrawInteraction('LineString')"
-        >
-          Create polyline
-        </UButton>
-        <UButton
-          v-if="focusMode === 'none'"
-          color="info"
-          variant="solid"
-          data-testid="drawing-tool-polygon"
-          @click="enableDrawInteraction('Polygon')"
-        >
-          Create polygon
-        </UButton>
-        <UButton
-          v-if="focusMode === 'none'"
-          color="info"
-          variant="solid"
-          data-testid="drawing-tool-circle"
-          @click="enableDrawInteraction('Circle')"
-        >
-          Create circle
-        </UButton>
-        <UButton
-          v-if="focusMode === 'none'"
-          color="info"
-          variant="solid"
-          data-testid="drawing-tool-point"
-          @click="enableDrawInteraction('Point')"
-        >
-          Create point
-        </UButton>
-
-        <UButton
           v-if="focusMode === 'none' && numberOfFeatures > 0"
-          color="info"
-          variant="solid"
+          color="primary"
+          variant="outline"
           data-testid="select-feature-tool"
           @click="enableSelectInteraction"
         >
@@ -137,9 +217,46 @@ onUnmounted(() => {
         </UButton>
 
         <UButton
+          v-if="focusMode === 'none'"
+          color="primary"
+          variant="ghost"
+          data-testid="drawing-tool-polyline"
+          @click="enableDrawInteraction('LineString')"
+        >
+          Create polyline
+        </UButton>
+        <UButton
+          v-if="focusMode === 'none'"
+          color="primary"
+          variant="ghost"
+          data-testid="drawing-tool-polygon"
+          @click="enableDrawInteraction('Polygon')"
+        >
+          Create polygon
+        </UButton>
+        <UButton
+          v-if="focusMode === 'none'"
+          color="primary"
+          variant="ghost"
+          data-testid="drawing-tool-circle"
+          @click="enableDrawInteraction('Circle')"
+        >
+          Create circle
+        </UButton>
+        <UButton
+          v-if="focusMode === 'none'"
+          color="primary"
+          variant="ghost"
+          data-testid="drawing-tool-point"
+          @click="enableDrawInteraction('Point')"
+        >
+          Create point
+        </UButton>
+
+        <UButton
           v-if="focusMode === 'create'"
           color="error"
-          variant="solid"
+          variant="outline"
           data-testid="cancel-drawing-tool"
           @click="cancelDrawing"
         >
@@ -148,8 +265,8 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'select' && focusedFeature"
-          color="neutral"
-          variant="solid"
+          color="primary"
+          variant="ghost"
           data-testid="deselect-feature-tool"
           @click="terminateModification"
         >
@@ -158,7 +275,7 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'select' && focusedFeature"
-          color="info"
+          color="primary"
           variant="solid"
           data-testid="modify-geometry-tool"
           @click="enableModifyInteraction"
@@ -168,7 +285,7 @@ onUnmounted(() => {
 
         <UButton
           v-if="focusMode === 'edit' && focusedFeature"
-          color="info"
+          color="primary"
           variant="solid"
           data-testid="finish-modification-tool"
           @click="terminateModification"
@@ -207,6 +324,38 @@ onUnmounted(() => {
         >
           Clear drawing layer
         </UButton>
+
+        <UDropdownMenu
+          v-if="focusedFeature"
+          arrow
+          :items="exportFocusedFeatureItems"
+          :ui="{
+            content: 'w-48',
+          }"
+        >
+          <UButton
+            label="Export feature"
+            icon="i-lucide-save"
+            color="primary"
+            variant="outline"
+          />
+        </UDropdownMenu>
+
+        <UDropdownMenu
+          v-if="numberOfFeatures > 0"
+          arrow
+          :items="exportAllFeaturesItems"
+          :ui="{
+            content: 'w-48',
+          }"
+        >
+          <UButton
+            label="Export all features"
+            icon="i-lucide-save"
+            color="primary"
+            variant="outline"
+          />
+        </UDropdownMenu>
       </div>
     </div>
   </div>

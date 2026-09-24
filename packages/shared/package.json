@@ -33,13 +33,16 @@
     "test:unit:coverage": "vitest run --coverage",
     "type-check": "tsc"
   },
-  "dependencies": {},
+  "dependencies": {
+    "dompurify": "catalog:"
+  },
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@swissgeo/numbers": "workspace:*",
     "eslint": "catalog:",
+    "jsdom": "catalog:",
     "nuxt": "catalog:",
     "stylelint": "catalog:",
     "typescript": "catalog:",

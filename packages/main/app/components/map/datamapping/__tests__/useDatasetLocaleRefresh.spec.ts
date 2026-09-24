@@ -55,7 +55,7 @@ describe("useDatasetRefresh", () => {
       links: [
         {
           rel: "self",
-          href: "http://swissgeo.ch?language=de",
+          href: "http://swissgeo.ch?lang=de",
         },
       ],
       id: "keusches-nonnenkraut",
@@ -92,7 +92,7 @@ describe("useDatasetRefresh", () => {
 
     locale.value = "fr";
     await flushPromises();
-    expect(newUrlString.value).toEqual("http://swissgeo.ch/?language=fr");
+    expect(newUrlString.value).toEqual("http://swissgeo.ch/?lang=fr");
   });
 
   it("updates the URL when the locale changes without previously having the query param", async () => {
@@ -105,7 +105,7 @@ describe("useDatasetRefresh", () => {
     );
     locale.value = "fr";
     await flushPromises();
-    expect(newUrlString.value).toEqual("http://swissgeo.ch/?language=fr");
+    expect(newUrlString.value).toEqual("http://swissgeo.ch/?lang=fr");
   });
 
   it("resolves a relative self link against the current request URL", async () => {
@@ -134,7 +134,7 @@ describe("useDatasetRefresh", () => {
     locale.value = "fr";
     await flushPromises();
     expect(newUrlString.value).toEqual(
-      "http://localhost:3000/api/wpa/v1/layers/external/dataset/abc/my-layer?language=fr",
+      "http://localhost:3000/api/wpa/v1/layers/external/dataset/abc/my-layer?lang=fr",
     );
   });
 

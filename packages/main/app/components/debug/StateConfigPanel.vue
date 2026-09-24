@@ -43,10 +43,10 @@ async function handleImport() {
 <template>
   <div class="h-87.5 w-150 bg-white p-4 shadow">
     <div class="mb-2 flex gap-2">
-      <UButton color="neutral" variant="outline" @click="handleExport">
+      <UButton color="primary" variant="outline" @click="handleExport">
         Export
       </UButton>
-      <UButton color="neutral" variant="outline" @click="handleImport">
+      <UButton color="primary" variant="outline" @click="handleImport">
         Import
       </UButton>
     </div>

@@ -37,6 +37,7 @@ function toggleTracking(): void {
 
 <template>
   <ToolBoxButton
+    data-testid="toolbox-recenter-button"
     :title="title"
     :is-disabled="false"
     :is-active="geolocationStore.tracking"

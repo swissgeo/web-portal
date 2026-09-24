@@ -25,6 +25,7 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@camptocamp/ogc-client": "catalog:",
     "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/log": "workspace:*",
     "@vueuse/core": "catalog:",
@@ -45,7 +46,6 @@
     "typescript": "catalog:"
   },
   "peerDependencies": {
-    "ol": "catalog:",
     "vue": "catalog:"
   },
   "packageManager": "pnpm@11.8.0"

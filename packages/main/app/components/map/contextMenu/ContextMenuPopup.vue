@@ -31,7 +31,7 @@ watch(
 <template>
   <div
     v-show="isVisible"
-    class="overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-200"
+    class="light overflow-hidden rounded-md bg-default text-default shadow-lg ring-1 ring-default"
     @click.stop
   >
     <div
@@ -43,7 +43,7 @@ watch(
       <div class="flex items-center gap-1">
         <UButton
           :icon="isCollapsed ? 'i-lucide-chevron-down' : 'i-lucide-chevron-up'"
-          color="neutral"
+          color="primary"
           variant="ghost"
           square
           size="xs"
@@ -51,7 +51,7 @@ watch(
         />
         <UButton
           icon="i-lucide-x"
-          color="neutral"
+          color="primary"
           variant="ghost"
           square
           size="xs"

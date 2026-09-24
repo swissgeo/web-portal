@@ -1,11 +1,30 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>swissgeo/.github:renovate-preset"],
-  "reviewers": ["schtibe", "keetraxx"],
+  "reviewers": ["keetraxx", "romankaravia", "ltkum", "rotwurstesser"],
   "baseBranchPatterns": ["develop"],
+  "packageRules": [
+    {
+      "description": "Do not update the packageManager field in package.json files",
+      "matchDepTypes": ["packageManager"],
+      "enabled": false
+    },
+    {
+      "description": "Update typescript major updates manually",
+      "matchPackageNames": ["typescript"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Update prettier manually, prettier introduces breaking changes in minor updates",
+      "matchPackageNames": ["prettier"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false
+    }
+  ],
   "postUpgradeTasks": {
-    "commands": ["pnpm update {{{depName}}}"],
+    "commands": ["pnpm install --lockfile-only"],
     "fileFilters": ["pnpm-lock.yaml"],
-    "executionMode": "update"
+    "executionMode": "branch"
   }
 }

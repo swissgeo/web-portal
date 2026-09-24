@@ -4,7 +4,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 
 import type { Layer } from "@/index";
 
-import { useLayerStore } from "../layer";
+import { useLayerStore } from "@/stores/layer";
 
 function makeLayer(id: string): Layer {
   return {
@@ -18,41 +18,6 @@ function makeLayer(id: string): Layer {
 describe("Layer store helpers", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
-  });
-
-  describe("setDimension", () => {
-    it("sets availableValues and currentValue on a layer with no existing dimension", () => {
-      const store = useLayerStore();
-      store.addLayer(makeLayer("a"));
-
-      store.setDimension("time", "a", {
-        availableValues: ["1981", "2024"],
-        currentValue: "2024",
-      });
-
-      expect(store.layers[0].dimensions?.time).toEqual({
-        availableValues: ["1981", "2024"],
-        currentValue: "2024",
-      });
-    });
-
-    it("overwrites currentValue when explicitly set via setDimension", () => {
-      const store = useLayerStore();
-      store.addLayer({
-        ...makeLayer("a"),
-        dimensions: { time: { availableValues: [], currentValue: "1981" } },
-      });
-
-      store.setDimension("time", "a", {
-        availableValues: ["1981", "2024"],
-        currentValue: "2024",
-      });
-
-      expect(store.layers[0].dimensions?.time).toEqual({
-        availableValues: ["1981", "2024"],
-        currentValue: "2024",
-      });
-    });
   });
 
   describe("background layer resolution (GPS-792)", () => {
@@ -74,18 +39,10 @@ describe("Layer store helpers", () => {
       const info = { displayName: "Background", abstract: "abstract" };
       store.setLayerInfo("bg", info);
       store.setLayerData("bg", { id: "dataset" } as never);
-      store.setDimension("time", "bg", {
-        availableValues: ["1981", "2024"],
-        currentValue: "2024",
-      });
 
       expect(errorSpy).not.toHaveBeenCalled();
       expect(store.backgroundLayer?.info).toEqual(info);
       expect(store.backgroundLayer?.data).toEqual({ id: "dataset" });
-      expect(store.backgroundLayer?.dimensions?.time).toEqual({
-        availableValues: ["1981", "2024"],
-        currentValue: "2024",
-      });
     });
 
     it("getLayer resolves the background layer by uuid", () => {
@@ -97,15 +54,13 @@ describe("Layer store helpers", () => {
       expect(errorSpy).not.toHaveBeenCalled();
     });
 
-    it("still logs an error for a uuid that matches no layer", () => {
+    it("returns undefined for a uuid that matches no layer without logging", () => {
       const store = useLayerStore();
       store.addLayer(makeLayer("overlay"));
       store.setBackground(makeLayer("bg"));
 
       expect(store.getLayer("does-not-exist")).toBeUndefined();
-      expect(errorSpy).toHaveBeenCalledWith(
-        "Incorrect uuid given : does-not-exist",
-      );
+      expect(errorSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -122,5 +77,18 @@ describe("Layer store helpers", () => {
     // unknown uuid: no-op
     store.replaceLayer("missing", makeLayer("c"));
     expect(store.layers.map((l) => l.uuid)).toEqual(["replacement", "b"]);
+  });
+
+  it("clears import options without consuming them", () => {
+    const store = useLayerStore();
+    store.addImportOption("failed-layer", { opacity: 0.4 });
+    store.addImportOption("working-layer", { isVisible: false });
+
+    store.clearImportOptions("failed-layer");
+
+    expect(store.consumeImportOptions("failed-layer")).toBeUndefined();
+    expect(store.consumeImportOptions("working-layer")).toEqual({
+      isVisible: false,
+    });
   });
 });

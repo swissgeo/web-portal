@@ -2,8 +2,8 @@ import type { ResolutionStep } from "@swissgeo/coordinates";
 import type { Map } from "ol";
 import type { Ref } from "vue";
 
+import { ALL_YEARS_TIMESTAMP } from "@swissgeo/dimension";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import { ALL_YEARS_TIMESTAMP } from "@swissgeo/timeslider";
 import ImageLayer from "ol/layer/Image";
 import TileLayer from "ol/layer/Tile";
 import { ImageWMS, TileWMS } from "ol/source";
@@ -146,7 +146,7 @@ export default function useOlWmsLayer(
       source.value = createTileWMSSource();
       olLayer.value = new TileLayer<TileWMS>({
         properties: {
-          id: layerId,
+          id: layerId.value,
           uuid: layer.value.uuid,
         },
         opacity: opacity.value,
@@ -156,7 +156,7 @@ export default function useOlWmsLayer(
       source.value = createImageWMSSource();
       olLayer.value = new ImageLayer<ImageWMS>({
         properties: {
-          id: layerId,
+          id: layerId.value,
           uuid: layer.value.uuid,
         },
         opacity: opacity.value,

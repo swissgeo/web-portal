@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { Dimension } from "@swissgeo/layers";
-import type { Distribution, Service } from "@swissgeo/ogc";
+import type { Dimension } from "@swissgeo/dimension";
+import type { Distribution, Legend, Service } from "@swissgeo/ogc";
 import type { Options } from "ol/source/WMTS";
 
-import { processTimeInfo } from "./processTimeInfo";
-import { useOgcWmtsData } from "./useOgcWmtsData";
+import { processTimeInfo } from "@/components/map/datamapping/processTimeInfo";
+import { useOgcWmtsData } from "@/components/map/datamapping/useOgcWmtsData";
 
 // not destructuring these to keep the reactivity
 const props = defineProps<{
@@ -14,18 +14,20 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  updateOptions: [{ options: Options }];
+  error: [error: unknown];
+  updateOptions: [opacity: number | null, { options: Options }];
   updateTimeDimension: [dimension: Partial<Dimension>];
-  updateOpacity: [opacity: number];
+  updateLegends: [legends: Legend[]];
 }>();
 
 const distribution = computed(() => props.distribution);
 const serviceData = computed(() => props.serviceData);
 const layerId = computed(() => props.layerId);
-const { timeInfo, options, defaultOpacity } = useOgcWmtsData(
+const { timeInfo, options, defaultOpacity, legends } = useOgcWmtsData(
   distribution,
   serviceData,
   layerId,
+  (error) => emit("error", error),
 );
 
 watch(timeInfo, () => {
@@ -33,21 +35,20 @@ watch(timeInfo, () => {
   emit("updateTimeDimension", dimension);
 });
 
-watch(
-  defaultOpacity,
-  () => {
-    if (defaultOpacity.value !== null) {
-      emit("updateOpacity", defaultOpacity.value);
-    }
-  },
-  { immediate: true },
-);
+watch(legends, () => emit("updateLegends", legends.value), {
+  immediate: true,
+});
 
 watch(
-  options,
-  () => {
-    if (options.value) {
-      emit("updateOptions", { options: options.value });
+  [options, defaultOpacity],
+  ([_new_options, new_opacity], [_old_options, old_opacity]) => {
+    if (
+      options.value &&
+      (defaultOpacity.value || old_opacity === new_opacity)
+    ) {
+      emit("updateOptions", defaultOpacity.value, {
+        options: options.value,
+      });
     }
   },
   { immediate: true },

@@ -10,24 +10,107 @@
   },
   "menu": {
     "search": "Recherche",
-    "layerCart": "Couches actives"
+    "layerCart": "Couches actives",
+    "map": "Carte",
+    "collapse": "Réduire le panneau latéral",
+    "expand": "Ouvrir le panneau latéral"
   },
   "search": {
     "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",
+    "map_tab": "Carte",
+    "content_pages_tab": "Pages de contenu",
     "locations_results_header": "Lieux",
     "features_results_header": "Objets",
     "layers_results_header": "Couches",
-    "no_results": "Aucun résultat trouvé"
+    "no_results": "Aucun résultat trouvé",
+    "error": "La recherche a échoué. Certains résultats sont peut-être manquants.",
+    "viewDataset": "Afficher le jeu de données"
   },
   "footer": {
-    "copyRightData": "© Données: "
+    "copyRightData": "© Données: ",
+    "termsOfUse": "Conditions d'utilisation",
+    "impressum": "Mentions légales",
+    "mobileNav": {
+      "map": "Carte",
+      "catalog": "Catalogue de données",
+      "tools": "Outils",
+      "mapInfo": "Info carte"
+    },
+    "reportIssue": {
+      "buttonTitle": "Signaler un problème",
+      "title": "Signaler un problème",
+      "close": "Fermer le formulaire de signalement",
+      "steps": {
+        "step1": {
+          "title": "1. Sujet de votre message (obligatoire) :",
+          "select": {
+            "placeholder": "Sélectionner une catégorie",
+            "options": {
+              "background": "Une révision du fond de plan",
+              "thematic": "Une carte thématique",
+              "application": "DUne application ou un service",
+              "other": "Autre chose"
+            }
+          },
+          "moreInfo": {
+            "label": "Plus d'information sur les catégories",
+            "url": "https://www.geo.admin.ch/fr/visualiseur-de-cartes-navigation-et-orientiation#Signaler-un-probl%C3%A8me"
+          }
+        },
+        "step2": {
+          "title": "2. Faites-nous part de modifications de la carte, d’amélioration des données ou posez des questions sur ce site dans ce champ (obligatoire) :"
+        },
+        "step3": {
+          "title": "3. Indiquez le lieu concerné dans la carte :",
+          "button": "Dessiner sur la carte"
+        },
+        "step4": {
+          "title": "4. Votre email :",
+          "placeholder": "Votre adresse e-mail",
+          "info": "Sans indiquer une adresse e-mail, vous ne recevrez pas de réponse"
+        },
+        "step5": {
+          "title": "5. Joindre un fichier :",
+          "buttonLabel": "Joindre"
+        }
+      },
+      "notes": {
+        "link": {
+          "label": "Le lien suivant sera transféré:",
+          "permalink": "Permalien"
+        },
+        "tos": {
+          "label": "En envoyant votre message, vous acceptez les",
+          "link": "conditions d'utilisation",
+          "url": "https://www.geo.admin.ch/fr/conditions-generales-utilisation-ifdg#feedback"
+        }
+      },
+      "cancelButton": "Annuler",
+      "submitButton": "Envoyer",
+      "successMessage": "Merci pour votre message. Nous vous répondrons dès que possible.",
+      "errorMessage": "Une erreur s'est produite lors de l'envoi de votre message. Veuillez réessayer plus tard.",
+      "validation": {
+        "subjectRequired": "L'objet est obligatoire",
+        "feedbackRequired": "Le message est obligatoire",
+        "categoryRequired": "La catégorie est obligatoire",
+        "versionRequired": "La version est obligatoire",
+        "userAgentRequired": "L'agent utilisateur est obligatoire",
+        "permalinkRequired": "Le permalien est obligatoire",
+        "emailInvalid": "L'adresse e-mail doit être valide",
+        "fileRequired": "La pièce jointe doit être un fichier",
+        "fileTooLarge": "Le fichier est trop volumineux (max. {max} MB)",
+        "fileTypeNotSupported": "Le type de fichier n'est pas pris en charge"
+      }
+    }
   },
   "debug": {
     "openImportLocalLayersPanel": "Ouvrir le panneau d'importation des couches locales",
+    "openImportDrawingPanel": "Ouvrir le panneau d'importation de dessin",
     "openDrawingPanel": "Ouvrir le panneau de dessin",
     "openImportLayersPanel": "Ouvrir le panneau d'importation des couches",
     "openLayersPanel": "Ouvrir le panneau des couches",
     "drawingPanelTitle": "Outils de dessin",
+    "importDrawingPanelTitle": "Importer un dessin depuis une URL",
     "drawingNameLabel": "Nom du dessin",
     "drawingToolSelectLabel": "Sélectionner un outil de dessin :",
     "drawingToolPoint": "Point",
@@ -128,6 +211,83 @@
     "startGeolocation": "Démarrer la géolocalisation",
     "recenterMap": "Recentrer la carte"
   },
+  "toolbox": {
+    "geolocation": {
+      "buttonTitle": "Géolocalisation"
+    },
+    "fullscreen": {
+      "buttonTitle": "Plein écran"
+    },
+    "3d": {
+      "buttonTitle": "3D"
+    },
+    "drawing": {
+      "buttonTitle": "Dessiner"
+    },
+    "measure": {
+      "buttonTitle": "Mesurer"
+    },
+    "compare": {
+      "buttonTitle": "Comparer"
+    },
+    "timeSlider": {
+      "buttonTitle": "Curseur temporel"
+    },
+    "import": {
+      "buttonTitle": "Importer",
+      "title": "Importer un fichier ou une URL",
+      "description": "Types de fichiers acceptés : {types}",
+      "tabData": "Données",
+      "tabUrl": "URL",
+      "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
+      "browseButton": "Parcourir...",
+      "noFileSelected": "Aucun fichier sélectionné",
+      "importFileButton": "Importer le fichier",
+      "importUrlButton": "Importer depuis l'URL",
+      "loadingMessage": "Importation du fichier...",
+      "successMessage": "Fichier importé avec succès : {fileName}",
+      "drawingSuccessMessage": "Dessin importé avec succès",
+      "fileUrlDescription": "Ou importer un fichier depuis une URL ({types}) :",
+      "fileUrlPlaceholder": "https://example.com/data.gpx",
+      "importFileUrlButton": "Importer depuis l'URL",
+      "errorMessages": {
+        "generalError": "Échec de l'importation du fichier",
+        "noFileSelected": "Veuillez d'abord sélectionner un fichier",
+        "noUrlEntered": "Veuillez entrer une URL",
+        "fileSizeWarning": "Le fichier est volumineux : {fileSize}MB, ce qui dépasse la limite recommandée de {maxSize}MB.",
+        "fileTooLarge": "Le fichier est trop volumineux : {fileName} (maximum {maxSize}Mo)",
+        "drawingImportFailed": "Échec de l'importation du dessin",
+        "kmlFetchFailed": "Échec de la récupération du KML : {status}",
+        "noKmlFound": "Aucun dessin KML trouvé dans l'URL fournie",
+        "domainNotAllowed": "La récupération depuis {domain} n'est pas autorisée",
+        "unsupportedUrlType": "Type de fichier non supporté. L'URL doit se terminer par {types}",
+        "fetchFailed": "Échec de la récupération du fichier depuis l'URL (HTTP {status})"
+      },
+      "close": "Fermer"
+    },
+    "share": {
+      "buttonTitle": "Partager",
+      "title": "Partager",
+      "link": {
+        "title": "Lien de partage",
+        "generateButton": "Générer le lien de partage"
+      },
+      "embed": {
+        "title": "Intégration",
+        "generateButton": "Générer le code d'intégration",
+        "zoomOnlyCtrlLabel": "Activer le zoom uniquement avec la touche Ctrl/Cmd"
+      },
+      "ariaLabel": {
+        "close": "Fermer",
+        "copyToClipboard": "Copier dans le presse-papiers",
+        "refreshLink": "Rafraîchir le lien de partage",
+        "refreshEmbed": "Rafraîchir le code d'intégration"
+      }
+    },
+    "print": {
+      "buttonTitle": "Imprimer"
+    }
+  },
   "backgroundLayers": {
     "title": "Cartes affichées",
     "voidMap": "Carte vide",
@@ -158,6 +318,7 @@
   "error": {
     "notFound": "{resource} est introuvable.",
     "generic": "Une erreur inattendue s'est produite.",
+    "layerLoad": "La couche n'a pas pu être chargée.",
     "backToMap": "Retour à la carte",
     "resources": {
       "dataset": "Ce jeu de données"
@@ -203,5 +364,54 @@
   },
   "embed": {
     "viewOn": "Voir sur {platform}"
+  },
+  "print": {
+    "warningOutsideSwitzerland": "Emprise d'impression hors de Suisse",
+    "warningOutsideSwitzerlandTitle": "Hors des limites de la Suisse",
+    "warningZoomOutOfSync": "Le niveau de zoom à l'écran ne correspond pas au niveau de zoom verrouillé pour l'impression.",
+    "warningZoomOutOfSyncTitle": "Le niveau de zoom n'est pas au niveau de zoom verrouillé",
+    "statusProcessing": "en cours",
+    "statusQueued": "en attente",
+    "statusError": "erreur",
+    "statusFailed": "échoué",
+    "statusReady": "prêt",
+    "clearAll": "Tout effacer",
+    "noPrintJobsYet": "Aucun travail d'impression pour le moment.",
+    "created": "Créé",
+    "download": "Télécharger",
+    "zoomLevel": "Niveau de zoom",
+    "zoomLevelForPrint": "Niveau de zoom pour l'impression",
+    "warningOutsideViewportLabel": "L'emprise est-elle hors du viewport",
+    "printScale": "Échelle d'impression",
+    "enableStrictZoomStepsLabel": "Niveau de zoom ajusté aux arrondis",
+    "lockCenterToViewLabel": "Verrouiller le centre sur la vue actuelle",
+    "lockZoomToViewLabel": "Verrouiller le zoom sur la vue actuelle",
+    "printSizeLabel": "Format d'impression",
+    "printResolutionLabel": "Résolution d'impression",
+    "printOrientationLabel": "Orientation d'impression",
+    "zoomToLockedZoomLevel": "Zoom au niveau de zoom verrouillé",
+    "sendPrintRequest": "Envoyer la demande d'impression",
+    "openPrintJobs": "Ouvrir les requêtes d'impression",
+    "printJobsWindowTitle": "Requêtes d'impression",
+    "warningPrintExtentBeyondViewport": "Vous pouvez verrouiller le centre et le niveau de zoom pour empêcher l'emprise d'impression de sortir du viewport lors des interactions avec la carte.",
+    "orientationPortrait": "portrait",
+    "orientationLandscape": "paysage"
+  },
+  "layers": {
+    "expand": "Afficher les détails de la couche",
+    "reorder": "Déplacer la couche (flèche haut/bas)",
+    "show": "Afficher la couche",
+    "hide": "Masquer la couche",
+    "info": "Informations sur la couche",
+    "remove": "Supprimer la couche",
+    "collapse": "Masquer les détails de la couche",
+    "opacity": "Opacité",
+    "legend": {
+      "title": "Légende",
+      "notAvailable": "Aucune légende disponible.",
+      "openDocument": "Ouvrir la légende comme document",
+      "openPdf": "Ouvrir la légende en PDF",
+      "openPage": "Ouvrir la page de la légende"
+    }
   }
 }

@@ -13,10 +13,8 @@ export function useService(distribution: Ref<Distribution | null>) {
 
   const {
     data: serviceData,
-    /*
-        isFetching,
-        error,
-        */
+    onFetchResponse: onServiceResponse,
+    onRequestError: onServiceError,
   } = useConditionalFetch<Service>(serviceUrl, ["get", "json"]);
 
   watchEffect(() => {
@@ -46,10 +44,8 @@ export function useService(distribution: Ref<Distribution | null>) {
   return {
     serviceUrl,
     serviceData,
-    /*
-        isFetching,
-        error,
-        */
+    onServiceError,
+    onServiceResponse,
   };
 }
 

@@ -1,13 +1,10 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
-import type { SearchResult } from "@swissgeo/search";
-
 import log from "@swissgeo/log";
 import { useDatasetPanelStore } from "@swissgeo/skeleton";
 
 import DatasetPanel from "@/components/sidebar/DatasetPanel.vue";
 import SideBar from "@/components/sidebar/SideBar.vue";
-import { useSearchSelection } from "@/composables/useSearchSelection";
 
 const { resetApp } = useResetApp();
 const route = useRoute();
@@ -39,41 +36,34 @@ watch(route, (value) => {
     mapViewStore.exitFullscreenMode();
   }
 });
-
-// Handle search result selection
-const { handleResultSelection } = useSearchSelection();
-
-async function onSearchResultSelected(result: SearchResult) {
-  await handleResultSelection(result);
-}
 </script>
 
 <template>
-  <main ref="main" class="h-screen font-sans">
-    <div class="relative h-full">
-      <SideBar
-        v-if="!isMapFullscreenMode"
-        class="z-2"
-        @search-result-selected="onSearchResultSelected"
-        @reset-app="resetApp"
-        :mapLayers="mapLayers"
-      >
-        <template #bottom-controls>
-          <div class="pointer-events-auto" v-if="!isMapFullscreenMode">
-            <SidebarLanguageSwitcherButton />
+  <div class="flex h-screen flex-col">
+    <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
+    <UMain as="div" class="min-h-0 flex-1">
+      <main ref="main" class="h-full font-sans">
+        <div class="relative h-full">
+          <SideBar
+            v-if="!isMapFullscreenMode"
+            class="z-10"
+            :mapLayers="mapLayers"
+          >
+          </SideBar>
+          <!-- The sidebar floats over the map, so the map keeps its full width
+               and does not shift when the sidebar opens or closes -->
+          <div class="h-full w-full">
+            <slot />
           </div>
-        </template>
-      </SideBar>
-      <div
-        class="h-full w-full"
-        :class="isMapFullscreenMode ? 'pl-0' : 'pl-20'"
-      >
-        <slot />
-      </div>
-      <DatasetPanel
-        v-if="!isMapFullscreenMode"
-        :detail-page-path="datasetDetailPath"
-      />
-    </div>
-  </main>
+          <DatasetPanel
+            v-if="!isMapFullscreenMode"
+            :detail-page-path="datasetDetailPath"
+          />
+          <ClientOnly>
+            <Footer v-if="!isMapFullscreenMode" />
+          </ClientOnly>
+        </div>
+      </main>
+    </UMain>
+  </div>
 </template>

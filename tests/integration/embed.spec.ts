@@ -38,12 +38,12 @@ test.describe("embed map page", () => {
 
     // The actual mocks
     await page.route(
-      "http://mock-oar.org/api/oar/v0/collections/geoadmin.services/items/wmts-geoadminch",
+      "http://mock-oar.org/api/oar/collections/geoadmin.services/items/wmts-geoadminch",
       mockWmtsResponse,
     );
 
     await page.route(
-      "http://mock-oar.org/api/oar/v0/collections/ch.swisstopo.pixelkarte-farbe*",
+      "http://mock-oar.org/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe*",
       (route) =>
         route.fulfill({
           status: 200,
@@ -53,7 +53,7 @@ test.describe("embed map page", () => {
 
     // we let all the backgrounds to return the data for pixelkarte-farbe
     await page.route(
-      "http://mock-oar.org/api/oar/items/ch.swisstopo.*",
+      "http://mock-oar.org/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.*",
       mockBackgroundResponse,
     );
 
@@ -103,7 +103,9 @@ test.describe("embed map page", () => {
   });
 
   test("does not displays the fullscreen button", async ({ page }) => {
-    await expect(page.getByTestId("fullscreen-toggle")).not.toBeVisible();
+    await expect(
+      page.getByTestId("toolbox-fullscreen-button"),
+    ).not.toBeVisible();
   });
 
   test("displays the map with the defaults", async ({ page }) => {
@@ -121,28 +123,31 @@ test.describe("embed map page", () => {
   });
 
   test("zoom buttons work", async ({ page }) => {
-    await page.evaluateHandle(() => window.swissgeoOlMap);
-
     await test.step("Check simple zooming", async () => {
+      await page.getByTestId("zoom-in").click();
+      await waitForZoom(page);
+
+      expect(await getZoom(page)).toEqual(2);
+
       await page.getByTestId("zoom-out").click();
       await waitForZoom(page);
 
-      expect(await getZoom(page)).toEqual(0);
-
-      await page.getByTestId("zoom-out").click();
-
-      // second zoom-out click doesn't change the state
-      // also not waiting here
-      expect(await getZoom(page)).toEqual(0);
+      expect(await getZoom(page)).toEqual(1);
     });
 
     await test.step("Zoom all the way in", async () => {
+      while ((await getZoom(page)) !== 0) {
+        await page.getByTestId("zoom-out").click();
+        await waitForZoom(page);
+      }
+
       // now let's zoom all the way in
       for (let zoom = 1; zoom <= 13; zoom++) {
         await page.getByTestId("zoom-in").click();
         await waitForZoom(page);
         expect(await getZoom(page)).toEqual(zoom);
       }
+      await expect(page.getByTestId("zoom-in")).toBeDisabled();
     });
   });
 });
@@ -184,7 +189,7 @@ test.describe("embed map in iframe", () => {
       timeout: HYDRATION_TIMEOUT,
     });
     await expect(
-      iframeElement.getByTestId("fullscreen-toggle"),
+      iframeElement.getByTestId("toolbox-fullscreen-button"),
     ).not.toBeVisible();
   });
 
@@ -207,6 +212,7 @@ test.describe("embed map in iframe", () => {
     await expect(button).toHaveAttribute(
       "href",
       "http://localhost:3000/map?state=dummyStateForTesting",
+      { timeout: HYDRATION_TIMEOUT },
     );
   });
 });

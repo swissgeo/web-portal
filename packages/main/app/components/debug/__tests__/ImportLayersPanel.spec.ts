@@ -3,6 +3,7 @@ import type { Dataset } from "@swissgeo/ogc";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { shallowMount } from "@vue/test-utils";
 import ImportLayersPanel from "~/components/debug/ImportLayersPanel.vue";
+import { encodeCapabilityUrl } from "~/utils/externalLayerUrl";
 import { describe, expect, it, vi } from "vitest";
 
 const wmtsCapabilities = `<?xml version="1.0" encoding="UTF-8"?>
@@ -19,8 +20,10 @@ const wmtsCapabilities = `<?xml version="1.0" encoding="UTF-8"?>
     </Contents>
 </Capabilities>`;
 
-const fetchSpy = vi.fn(() => Promise.resolve(wmtsCapabilities));
-(globalThis as Record<string, unknown>).$fetch = fetchSpy;
+const { fetchMock } = vi.hoisted(() => ({
+  fetchMock: vi.fn(() => Promise.resolve(wmtsCapabilities)),
+}));
+mockNuxtImport("$fetch", () => fetchMock);
 
 const addLayerSpy = vi.fn();
 const makeServerLayerSpy = vi.fn((_layer: Dataset) => ({
@@ -31,10 +34,6 @@ const makeServerLayerSpy = vi.fn((_layer: Dataset) => ({
 vi.mock("@swissgeo/layers", () => ({
   makeServerLayer: (_dataset: Dataset) => makeServerLayerSpy(_dataset),
   useLayerStore: () => ({ addLayer: addLayerSpy }),
-}));
-
-vi.mock("@swissgeo/skeleton", () => ({
-  IconButton: { template: "<button><slot /></button>" },
 }));
 
 mockNuxtImport("useRequestURL", () => () => new URL("http://localhost:3000/"));
@@ -54,7 +53,7 @@ describe("ImportLayersPanel.vue", () => {
 
     await vm.loadCapabilities();
 
-    expect(fetchSpy).toHaveBeenCalledWith(vm.importUrl);
+    expect(fetchMock).toHaveBeenCalledWith(vm.importUrl);
     expect(vm.layers).toEqual(["layer-a", "layer-b"]);
   });
 
@@ -73,7 +72,7 @@ describe("ImportLayersPanel.vue", () => {
     const dataset = makeServerLayerSpy.mock.calls[0]![0];
     const links = dataset.links ?? [];
 
-    const expectedEncoded = encodeURIComponent(vm.importUrl);
+    const expectedEncoded = encodeCapabilityUrl(vm.importUrl);
     const selfLink = links.find((l) => l.rel === "self");
     expect(selfLink?.href).toBe(
       `/api/wpa/v1/layers/external/dataset/${expectedEncoded}/layer-a`,

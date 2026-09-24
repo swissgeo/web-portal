@@ -77,6 +77,14 @@ describe("LayersPanelEntry.vue", () => {
           },
         } as never,
       },
+      global: {
+        stubs: {
+          UButton: {
+            inheritAttrs: false,
+            template: "<button v-bind='$attrs'><slot /></button>",
+          },
+        },
+      },
     });
 
     await wrapper.find("button").trigger("click");

@@ -8,19 +8,21 @@ import type { DatasetRecord } from "../useDatasetRecord";
 
 import { useDatasetRecord } from "../useDatasetRecord";
 
-const { locale, asyncDataRef } = await vi.hoisted(async () => {
+const { locale, asyncDataRef, fetchMock } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
-  return { locale: ref("de"), asyncDataRef: ref };
+  return { locale: ref("de"), asyncDataRef: ref, fetchMock: vi.fn() };
 });
 
 mockNuxtImport("useI18n", () => () => ({ locale }));
 
 mockNuxtImport("useRuntimeConfig", () => () => ({
-  public: { ogcApiEndpoint: "https://api.example.com/collections/catalog" },
+  public: {
+    ogcApiEndpoint: "https://api.example.com/collections/catalog",
+    ogcCatalogCollection: "swissgeo-catalog",
+  },
 }));
 
-const fetchMock = vi.fn();
-vi.stubGlobal("$fetch", fetchMock);
+mockNuxtImport("$fetch", () => fetchMock);
 
 // Mock useAsyncData: immediately call the handler and wrap the result in
 // reactive refs, bypassing all Nuxt SSR/hydration machinery.
@@ -94,7 +96,7 @@ describe("useDatasetRecord", () => {
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.example.com/collections/catalog/collections/swissgeo.catalog/items/ch.swisstopo.test?language=de",
+      "https://api.example.com/collections/catalog/collections/swissgeo-catalog/items/ch.swisstopo.test?lang=de",
     );
     expect(dataset.value?.id).toBe("ch.swisstopo.test");
   });
@@ -108,7 +110,7 @@ describe("useDatasetRecord", () => {
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.example.com/distributions?language=de",
+      "https://api.example.com/distributions?lang=de",
     );
     expect(distributionCollection.value?.features).toHaveLength(1);
   });
@@ -119,7 +121,7 @@ describe("useDatasetRecord", () => {
       links: [
         {
           rel: "distributions",
-          href: "https://api.example.com/distributions?language=en",
+          href: "https://api.example.com/distributions?lang=en",
         },
       ],
     };
@@ -131,7 +133,7 @@ describe("useDatasetRecord", () => {
     await flushPromises();
 
     expect(fetchMock).toHaveBeenLastCalledWith(
-      "https://api.example.com/distributions?language=de",
+      "https://api.example.com/distributions?lang=de",
     );
   });
 
@@ -193,7 +195,7 @@ describe("useDatasetRecord", () => {
     const calledUrl = new URL(fetchMock.mock.calls[0]![0] as string);
     expect(calledUrl.origin).toBe("https://api.example.com");
     expect(calledUrl.pathname).toBe(
-      "/collections/catalog/collections/swissgeo.catalog/items/ch.swisstopo.test",
+      "/collections/catalog/collections/swissgeo-catalog/items/ch.swisstopo.test",
     );
   });
 
@@ -201,6 +203,7 @@ describe("useDatasetRecord", () => {
     mockNuxtImport("useRuntimeConfig", () => () => ({
       public: {
         ogcApiEndpoint: "https://api.example.com/collections/catalog/",
+        ogcCatalogCollection: "swissgeo-catalog",
       },
     }));
 
@@ -215,7 +218,7 @@ describe("useDatasetRecord", () => {
     const { pathname } = new URL(calledUrl);
     expect(pathname).not.toContain("//");
     expect(calledUrl).toBe(
-      "https://api.example.com/collections/catalog/collections/swissgeo.catalog/items/ch.swisstopo.test?language=de",
+      "https://api.example.com/collections/catalog/collections/swissgeo-catalog/items/ch.swisstopo.test?lang=de",
     );
   });
 });

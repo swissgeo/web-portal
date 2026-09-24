@@ -10,6 +10,8 @@ import StandardCoordinateSystem from "@/proj/StandardCoordinateSystem";
 import SwissCoordinateSystem, {
   LV95_RESOLUTIONS,
   SWISSTOPO_TILEGRID_RESOLUTIONS,
+  SWISSTOPO_MIN_ZOOM_LEVEL,
+  SWISSTOPO_MAX_ZOOM_LEVEL,
 } from "@/proj/SwissCoordinateSystem";
 import WebMercatorCoordinateSystem from "@/proj/WebMercatorCoordinateSystem";
 import WGS84CoordinateSystem from "@/proj/WGS84CoordinateSystem";
@@ -35,6 +37,8 @@ interface SwissGeoCoordinateConstants {
   SWISS_ZOOM_LEVEL_1_25000_MAP: number;
   LV95_RESOLUTIONS: number[];
   SWISSTOPO_TILEGRID_RESOLUTIONS: number[];
+  SWISSTOPO_MIN_ZOOM_LEVEL: number;
+  SWISSTOPO_MAX_ZOOM_LEVEL: number;
 }
 
 const constants: SwissGeoCoordinateConstants = {
@@ -42,6 +46,8 @@ const constants: SwissGeoCoordinateConstants = {
   SWISS_ZOOM_LEVEL_1_25000_MAP,
   LV95_RESOLUTIONS,
   SWISSTOPO_TILEGRID_RESOLUTIONS,
+  SWISSTOPO_MIN_ZOOM_LEVEL,
+  SWISSTOPO_MAX_ZOOM_LEVEL,
 };
 
 export interface SwissGeoCoordinateCRS {

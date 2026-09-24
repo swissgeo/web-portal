@@ -1,6 +1,6 @@
 import type { Dataset } from "@swissgeo/ogc";
 
-export type FileLayerType = "geojson" | "kml" | "kmz" | "gpx";
+export type FileLayerType = "geojson" | "kml" | "kmz" | "gpx" | "cog";
 export type LayerType = "dataset" | FileLayerType;
 
 export interface LayerAttribution {
@@ -15,20 +15,6 @@ export interface LayerInfo {
   attribution?: LayerAttribution;
 }
 
-export interface Dimension {
-  currentValue: string | null;
-  availableValues: string[];
-}
-
-/**
- * Keeping the time as a general Dimension. This should make future dimension implementation
- * possible. Still using the identifier 'time' somewhat hardcoded. This would of course mean we can
- * only have one time dimension, but this probably makes sense
- */
-export type DimensionId = "time";
-
-export type DimensionRecord = Partial<Record<DimensionId, Dimension>>;
-
 export interface Layer {
   type: LayerType;
   uuid: string;
@@ -36,9 +22,11 @@ export interface Layer {
   isLoading: boolean;
   info?: LayerInfo;
   // data is either the dataset or the file data, depending on whether
-  // this is used a file layer or dataset layer
-  data?: Dataset | string;
-  dimensions?: DimensionRecord;
+  // this is used a file layer or dataset layer. In the case of kmz (gzip folder), the data is binary, hence also allowing Uint8Array.
+  data?: Dataset | string | Uint8Array | File;
+  // URL to a remote resource (e.g. COG URL). Set instead of data when the
+  // content is streamed on demand rather than stored locally.
+  sourceUrl?: string;
   // Url to the dataset or the file
   layerUrl?: string;
 }

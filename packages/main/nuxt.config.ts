@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { execSync } from "node:child_process";
 
+import "./server/instrumentation";
+
 function getGitCommit() {
   try {
     return (
@@ -50,10 +52,21 @@ export default defineNuxtConfig({
   ],
   css: ["~/assets/css/main.css"],
   ui: {
+    prose: true,
+    theme: {
+      colors: [
+        "primary",
+        "secondary",
+        "success",
+        "info",
+        "warning",
+        "error",
+        "accent",
+      ],
+    },
     experimental: {
       componentDetection: ["LocaleSelect"],
     },
-    colorMode: false,
   },
   sourcemap: {
     // Enable in dev, disable in prod (unless you have a private uploader)
@@ -114,14 +127,28 @@ export default defineNuxtConfig({
   runtimeConfig: {
     what3wordsApiKey: "",
     geoadminApiBaseUrl: "",
-    shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
+    reportIssueServiceUrl: "https://sys-map.dev.bgdi.ch/api/feedback",
+    livingdocsApiEndpoint: "",
+    livingdocsAuthToken: "",
     public: {
       ogcApiEndpoint: "",
-      ogcCatalogCollection: "swissgeo.catalog",
+      cmsBaseUrl: "https://prod-swissgeoch.scs.scs-sdweb.ch",
+      iconServiceEndpoint: "https://map.geo.admin.ch/api/icons/sets",
+      shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
+      ogcCatalogCollection: "swissgeo-catalog",
       gitCommit: getGitCommit(),
       version: getVersion(),
       buildTime,
       wantedLogLevels: "error,warn",
+      printServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/print/jobs",
+      maxFileSizeMB: 250,
+      drawingAllowedDomains: [
+        "map.geo.admin.ch",
+        "s.geo.admin.ch",
+        "public.geo.admin.ch",
+        "sys-s.dev.bgdi.ch",
+        "sys-public.dev.bgdi.ch",
+      ],
     },
   },
   nitro: {

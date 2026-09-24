@@ -39,7 +39,8 @@ function isValidLineString(
     (g["coordinates"] as unknown[]).every(
       (coord) =>
         Array.isArray(coord) &&
-        coord.length === 2 &&
+        // The coordinates can be either 2D or 3D, but we only care about the first two dimensions (easting and northing).
+        (coord.length === 2 || coord.length === 3) &&
         typeof coord[0] === "number" &&
         typeof coord[1] === "number" &&
         !isNaN(coord[0]) &&
@@ -61,7 +62,12 @@ function reprojectCoordinatesToLV95(
 function chunkCoordinates(coordinates: Position[]): Position[][] {
   const chunks: Position[][] = [];
   for (let i = 0; i < coordinates.length; i += MAX_POINTS_PER_CHUNK) {
-    chunks.push(coordinates.slice(i, i + MAX_POINTS_PER_CHUNK));
+    chunks.push(
+      // Only take the first two dimensions (easting and northing) for the elevation profile request, as the API does not support 3D coordinates.
+      coordinates
+        .slice(i, i + MAX_POINTS_PER_CHUNK)
+        .map((coord) => [coord[0], coord[1]] as Position),
+    );
   }
   return chunks;
 }

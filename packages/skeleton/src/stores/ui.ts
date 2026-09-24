@@ -1,14 +1,16 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
-export const SIDEBAR_ICON_WIDTH = 64; // min-w-16 = 4rem = 64px
-export const SIDEBAR_CONTENT_WIDTH = 400;
+const LAYER_CART_WIDTH = 320;
+const GEOCATALOG_TREE_WIDTH = 1280;
+
+/** Width of the tab left over on the map once the sidebar is collapsed */
+export const SIDEBAR_HANDLE_WIDTH = 24;
 
 // Sidebar types enum
 export enum SidebarType {
   LAYER_CART = "layerCart",
   GEOCATALOG_TREE = "geocatalogTree",
-  SEARCH = "search",
   CONTENT = "content",
 }
 
@@ -20,22 +22,24 @@ export const useSidebarStore = defineStore("sidebar", () => {
   // #region: getters
   const isSidebarOpen = computed(() => currentSidebar.value !== null);
 
-  const sidebarWidth = computed(() =>
-    isSidebarOpen.value
-      ? SIDEBAR_ICON_WIDTH + SIDEBAR_CONTENT_WIDTH
-      : SIDEBAR_ICON_WIDTH,
-  );
-
-  const isSearchVisible = computed(
-    () => currentSidebar.value === SidebarType.SEARCH,
-  );
-
   const isContentSidebarVisible = computed(
     () => currentSidebar.value === SidebarType.CONTENT,
   );
 
   const isLayerCartVisible = computed(
     () => currentSidebar.value === SidebarType.LAYER_CART,
+  );
+
+  const isGeocatalogTreeVisible = computed(
+    () => currentSidebar.value === SidebarType.GEOCATALOG_TREE,
+  );
+
+  const sidebarContentWidth = computed(() =>
+    isGeocatalogTreeVisible.value ? GEOCATALOG_TREE_WIDTH : LAYER_CART_WIDTH,
+  );
+
+  const sidebarWidth = computed(() =>
+    isSidebarOpen.value ? LAYER_CART_WIDTH : SIDEBAR_HANDLE_WIDTH,
   );
 
   // #endregion
@@ -55,10 +59,11 @@ export const useSidebarStore = defineStore("sidebar", () => {
     // getters
     isWelcomeOverlayVisible,
     isSidebarOpen,
-    sidebarWidth,
-    isSearchVisible,
     isLayerCartVisible,
     isContentSidebarVisible,
+    isGeocatalogTreeVisible,
+    sidebarContentWidth,
+    sidebarWidth,
 
     // actions
     setSidebar,

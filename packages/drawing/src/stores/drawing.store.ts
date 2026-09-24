@@ -326,6 +326,14 @@ export const useDrawingStore = defineStore("drawing", () => {
     creatingOrEditingIterations.value++;
   });
 
+  drawingVectorSource.on("addfeature", () => {
+    creatingOrEditingIterations.value++;
+  });
+
+  drawingVectorSource.on("removefeature", () => {
+    creatingOrEditingIterations.value++;
+  });
+
   /**
    * When a feature is selected, set it as the focused feature and update the focus mode to "read".
    * When the selection is cleared, reset the focused feature and set the focus mode to "none".

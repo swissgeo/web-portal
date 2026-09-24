@@ -1,18 +1,40 @@
-import { describe, expect, it, vi } from "vitest";
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.stubGlobal("$fetch", () => ({
-  state: {},
-  deprecated: false,
-  warning: "",
+const { mockFetch } = vi.hoisted(() => ({
+  mockFetch: vi.fn(),
 }));
 
+mockNuxtImport("$fetch", () => mockFetch);
+mockNuxtImport("useRuntimeConfig", () => () => ({
+  public: { shareServiceUrl: "https://state.example.test/state" },
+}));
+
+const response = {
+  state: { map: { center: [1, 1], zoom: 1 }, layers: [] },
+  deprecated: false,
+  warning: "",
+};
+
 describe("fetchStateFromStateId", () => {
-  it("makes the call to the state proxy route", async () => {
+  beforeEach(() => {
+    mockFetch.mockReset();
+  });
+
+  it("calls the state service directly", async () => {
+    mockFetch.mockResolvedValue(response);
+
     const config = await fetchStateFromStateId("stateid");
-    expect(config).toEqual({
-      state: {},
-      deprecated: false,
-      warning: "",
-    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://state.example.test/state/stateid",
+    );
+    expect(config).toEqual(response);
+  });
+
+  it("returns null when the state service fails", async () => {
+    mockFetch.mockRejectedValue(new Error("boom"));
+
+    expect(await fetchStateFromStateId("stateid")).toBeNull();
   });
 });

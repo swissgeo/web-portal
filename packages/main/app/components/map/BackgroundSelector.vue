@@ -5,7 +5,6 @@ import type { Dataset } from "@swissgeo/ogc";
 import { makeServerLayer } from "@swissgeo/layers";
 import { computedAsync } from "@vueuse/core";
 import { displayModeKey } from "~/types/injectionKeys";
-import { joinURL } from "ufo";
 
 import { AVAILABLE_BACKGROUNDS } from "./constants";
 
@@ -16,27 +15,19 @@ const emit = defineEmits<{
 }>();
 
 const { currentBackground } = defineProps<{
-  currentBackground: Layer | null;
+  currentBackground: Layer | null | undefined;
 }>();
 
-const runtimeConfig = useRuntimeConfig();
+const { locale } = useI18n();
+
+const catalogItemsUrl = useCatalogItemsUrl();
 
 const backgroundRecords = computed(async () => {
-  const { locale } = useI18n();
-
   const promises: Promise<Dataset>[] = [];
   for (const backgroundId of AVAILABLE_BACKGROUNDS) {
-    const url = new URL(
-      joinURL(
-        runtimeConfig.public.ogcApiEndpoint,
-        "/collections/",
-        runtimeConfig.public.ogcCatalogCollection,
-        "/items/",
-        backgroundId,
-      ),
-    );
+    const url = new URL(catalogItemsUrl(backgroundId));
 
-    url.searchParams.set("language", locale.value);
+    url.searchParams.set("lang", locale.value);
 
     promises.push($fetch(url.toString()));
   }
@@ -52,18 +43,11 @@ const sortedBackgroundLayersWithNull = computedAsync<(Layer | null)[]>(
   [null],
 );
 
-onMounted(() => {
-  // Don't reset if a background was already restored (e.g. from sessionStorage)
-  if (!currentBackground) {
-    emit("setBackground", null);
-  }
-});
-
 watch(
   sortedBackgroundLayersWithNull,
   (backgrounds) => {
     // Don't override a background that was already restored (e.g. from sessionStorage)
-    if (currentBackground) {
+    if (currentBackground !== undefined) {
       return;
     }
     // as soon as the layer data is ready for the backgrounds, select
@@ -74,6 +58,7 @@ watch(
         background &&
         background.data &&
         typeof background.data === "object" &&
+        "id" in background.data &&
         background?.data?.id === defaultBackgroundId
       );
     });

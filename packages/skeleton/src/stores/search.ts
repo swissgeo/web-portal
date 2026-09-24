@@ -1,12 +1,15 @@
-import type { DatasetCollection } from "@swissgeo/ogc";
-import type { SearchResult } from "@swissgeo/search";
+import type { SingleCoordinate } from "@swissgeo/coordinates";
+import type { CoordinateSearchResult, SearchResult } from "@swissgeo/search";
 
 import { useLayerStore } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { buildCatalogItemsUrl } from "@swissgeo/ogc";
 import {
+  searchCoordinate,
   searchLayers,
   searchLocation,
   searchLayerFeatures,
+  searchContentPages,
 } from "@swissgeo/search";
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
@@ -17,44 +20,27 @@ export const useSearchStore = defineStore("search", () => {
   const query = ref("");
   const results = ref<SearchResult[]>([]);
   const isSearching = ref(false);
-  const catalog = ref<DatasetCollection>();
-  const catalogLanguage = ref<string>();
+  // True when a search request failed, so the UI can tell an error apart from
+  // an empty result set.
+  const hasError = ref(false);
+  // Set as soon as the query is a coordinate. It is not part of the results:
+  // as in map.geo.admin.ch, a coordinate needs no confirmation and the map
+  // goes there directly.
+  const coordinateResult = ref<CoordinateSearchResult | undefined>();
+  // Coordinate the map marks with the balloon pin, set when a coordinate or a
+  // place result is selected. Only one location is ever marked, so re-centering
+  // the map on another result moves the pin instead of leaving a stale one.
+  const pinnedCoordinate = ref<SingleCoordinate | undefined>();
 
   let abortController: AbortController | undefined;
 
-  // Load catalog data with language support
-  const loadCatalog = async (lang?: string) => {
-    // If catalog exists and language hasn't changed, don't reload
-    if (catalog.value && catalogLanguage.value === lang) {
-      return;
-    }
-
-    try {
-      const baseUrl = runtimeConfig.public.ogcApiEndpoint as string;
-
-      // Build URL with language parameter
-      const url = new URL(baseUrl);
-      if (lang) {
-        url.searchParams.set("language", lang);
-      }
-
-      const response = await fetch(url.toString());
-      if (!response.ok) {
-        throw new Error(
-          `Failed to load catalog: ${response.status} ${response.statusText}`,
-        );
-      }
-
-      catalog.value = await response.json();
-      catalogLanguage.value = lang;
-    } catch (error) {
-      log.error({
-        title: "SearchStore/loadCatalog",
-        titleColor: LogPreDefinedColor.Red,
-        messages: ["Failed to load catalog:", error],
-      });
-    }
-  };
+  // Build the OGC API Records `/items` endpoint used to search layers.
+  const catalogItemsUrl = computed(() =>
+    buildCatalogItemsUrl(
+      runtimeConfig.public.ogcApiEndpoint as string,
+      runtimeConfig.public.ogcCatalogCollection as string,
+    ),
+  );
 
   // Getters
   const hasResults = computed(() => results.value.length > 0);
@@ -71,15 +57,38 @@ export const useSearchStore = defineStore("search", () => {
     results.value.filter((r: SearchResult) => r.resultType === "FEATURE"),
   );
 
+  const contentResults = computed(() =>
+    results.value.filter((r: SearchResult) => r.resultType === "CONTENT"),
+  );
+
+  // the CMS pages have a tab of their own, so what the map tab shows is
+  // everything else
+  const mapResults = computed(() =>
+    results.value.filter((r: SearchResult) => r.resultType !== "CONTENT"),
+  );
+
+  const hasMapResults = computed(() => mapResults.value.length > 0);
+
   // Actions
   async function setSearchQuery(newQuery: string, lang: string = "de") {
     query.value = newQuery;
+    hasError.value = false;
+
+    // Emptying the field takes the pin off the map, otherwise the user is left
+    // with a marker they cannot remove. Shortening the query does not: the map
+    // still shows the place they are retyping the name of.
+    if (newQuery.trim().length === 0) {
+      pinnedCoordinate.value = undefined;
+    }
 
     // Clear results if query too short
     if (newQuery.trim().length < 2) {
       results.value = [];
+      coordinateResult.value = undefined;
       return;
     }
+
+    coordinateResult.value = searchCoordinate(newQuery);
 
     // Cancel previous request
     if (abortController) {
@@ -91,9 +100,6 @@ export const useSearchStore = defineStore("search", () => {
     isSearching.value = true;
 
     try {
-      // Load catalog with current language
-      await loadCatalog(lang);
-
       // Get searchable layers from layer store
       // For now, enable feature search for ALL visible layers
       const layerStore = useLayerStore();
@@ -109,17 +115,18 @@ export const useSearchStore = defineStore("search", () => {
        */
       const searchableLayers = layerStore.layers;
 
-      // Build search promises array
+      // Build search promises array. Layers are now searched server-side
+      // through the OGC API Records catalog, alongside locations and features.
       const searchPromises: Promise<SearchResult[]>[] = [
         searchLocation(newQuery, lang, abortController.signal),
+        searchLayers(
+          newQuery,
+          catalogItemsUrl.value,
+          lang,
+          abortController.signal,
+        ),
+        searchContentPages(newQuery, lang, abortController.signal),
       ];
-
-      if (!catalog.value?.features) {
-        return;
-      }
-      // the layers are searched through a local catalog, it's not an async operation
-      const searchedLayers =
-        searchLayers(newQuery, catalog.value?.features ?? []) ?? [];
 
       // Add feature search for each searchable layer
       for (const layer of searchableLayers) {
@@ -148,6 +155,7 @@ export const useSearchStore = defineStore("search", () => {
             // Log failed searches but don't block other results
             const error = result.reason;
             if (!(error instanceof Error && error.name === "AbortError")) {
+              hasError.value = true;
               log.error({
                 title: "SearchStore/setSearchQuery",
                 titleColor: LogPreDefinedColor.Red,
@@ -156,7 +164,6 @@ export const useSearchStore = defineStore("search", () => {
             }
           }
         }
-        searchedLayers.forEach((result) => successfulResults.push(result));
         results.value = successfulResults;
       }
     } catch (error) {
@@ -164,6 +171,7 @@ export const useSearchStore = defineStore("search", () => {
       if (error instanceof Error && error.name === "AbortError") {
         return;
       }
+      hasError.value = true;
       log.error({
         title: "SearchStore/setSearchQuery",
         titleColor: LogPreDefinedColor.Red,
@@ -196,7 +204,34 @@ export const useSearchStore = defineStore("search", () => {
 
   function clearSearch() {
     query.value = "";
+    resetSearchState();
+  }
+
+  // Selecting a result keeps its name in the field rather than emptying it: it
+  // is what the user is now looking at, and clearing the field is what takes
+  // the marker off the map.
+  function keepSelectedQuery(title: string) {
+    query.value = title;
+    resetSearchState();
+  }
+
+  function resetSearchState() {
+    // a request still on its way would otherwise land afterwards and put the
+    // results back, on top of a panel the user has already left
+    abortController?.abort();
+    abortController = undefined;
+    isSearching.value = false;
     results.value = [];
+    coordinateResult.value = undefined;
+    hasError.value = false;
+  }
+
+  function setPinnedCoordinate(coordinate: SingleCoordinate) {
+    pinnedCoordinate.value = coordinate;
+  }
+
+  function clearPinnedCoordinate() {
+    pinnedCoordinate.value = undefined;
   }
 
   return {
@@ -204,16 +239,23 @@ export const useSearchStore = defineStore("search", () => {
     query,
     results,
     isSearching,
-    catalog,
+    hasError,
+    coordinateResult,
+    pinnedCoordinate,
     // Getters
     hasResults,
     locationResults,
     layerResults,
     featureResults,
+    contentResults,
+    mapResults,
+    hasMapResults,
     // Actions
     setSearchQuery,
     selectResult,
     clearSearch,
-    loadCatalog,
+    keepSelectedQuery,
+    setPinnedCoordinate,
+    clearPinnedCoordinate,
   };
 });

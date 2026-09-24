@@ -18,7 +18,14 @@ export type DimensionId = "time";
 
 export type DimensionRecord = Partial<Record<DimensionId, Dimension>>;
 
-export type LayerFormat = "WMTS" | "WMS" | "GeoJSON" | "KML" | "KMZ" | "GPX";
+export type LayerFormat =
+  | "WMTS"
+  | "WMS"
+  | "GeoJSON"
+  | "KML"
+  | "KMZ"
+  | "GPX"
+  | "COG";
 
 export interface Layer {
   format: LayerFormat;
@@ -52,7 +59,7 @@ export interface KMLLayer extends Layer {
 
 export interface KMZLayer extends Layer {
   format: "KMZ";
-  data: string;
+  data: Uint8Array;
 }
 
 export interface GPXLayer extends Layer {
@@ -64,6 +71,12 @@ export interface GeoJSONLayer extends Layer {
   format: "GeoJSON";
   geoJsonData: FeatureCollectionWithCRS;
   geoJsonStyle?: GeoAdminGeoJSONStyleDefinition;
+}
+
+export interface COGLayer extends Layer {
+  format: "COG";
+  url?: string;
+  blob?: Blob;
 }
 
 export interface MapLayerRenderer {

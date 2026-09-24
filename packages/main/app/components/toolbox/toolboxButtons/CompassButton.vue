@@ -84,6 +84,7 @@ function onRotate(mapEvent: MapEvent): void {
     north -->
 
   <ToolBoxButton
+    data-testid="toolbox-compass-button"
     title="compass button"
     :is-disabled="isDisabled()"
     :is-active="isActive()"

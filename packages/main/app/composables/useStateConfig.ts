@@ -1,8 +1,10 @@
-import type { Dimension, DimensionId, Layer } from "@swissgeo/layers";
+import type { Dimension, DimensionId } from "@swissgeo/dimension";
+import type { Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
-import type { AppState, LayerStateInput } from "@swissgeo/statesharing";
+import type { LayerState, AppState } from "@swissgeo/statesharing";
 
+import { useDimensionsStore } from "@swissgeo/dimension";
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
@@ -16,49 +18,49 @@ export type AppStatePayload = {
 
 const DISPATCHER = { name: "state-config" };
 
-function isBackgroundLayer(layer: Layer): boolean {
+// exported only for testing purpose. Do not use this outside this file
+export function isBackgroundLayer(layer: Layer): boolean {
   return AVAILABLE_BACKGROUNDS.includes(layer.humanId);
 }
-
-function layersToStateConfig(layers: MapLayer[]): LayerStateInput[] {
+// exported only for testing purpose. Do not use this outside this file
+export function layersToStateConfig(layers: MapLayer[]): LayerState[] {
   if (layers.length === 0) {
     return [];
   }
-  return layers.map(layerToStateConfig);
-}
 
-function layerToStateConfig(layer: MapLayer): LayerStateInput {
+  const startIndex =
+    useMapViewStore().mapLayers.length - useLayerStore().layers.length;
+  return layers
+    .slice(startIndex)
+    .map(layerToStateConfig)
+    .filter((state): state is LayerState => state !== null);
+}
+// exported only for testing purpose. Do not use this outside this file
+export function layerToStateConfig(layer: MapLayer): LayerState | null {
   const layerStore = useLayerStore();
+  const dimensionsStore = useDimensionsStore();
   let sourceData: Layer | undefined | null = layerStore.getLayer(layer.uuid);
 
   if (!sourceData) {
     sourceData = layerStore.backgroundLayer;
     if (!sourceData || sourceData.uuid !== layer.uuid) {
-      log.error(
-        `A layer with uuid ${layer?.uuid} couldn't be transformed to a Layer State Config. Most probable reason is a difference between the source Data and the map Layers`,
-      );
+      return null;
     }
   }
-
-  if (!sourceData) {
-    throw new Error(
-      `Cannot serialize layer ${layer.uuid}: no source data found`,
-    );
-  }
-
-  const config: LayerStateInput = {
+  const config: LayerState = {
     layerUrl: sourceData.layerUrl as string,
-    type: sourceData.type as LayerStateInput["type"],
+    type: sourceData.type as LayerState["type"],
     isVisible: layer.isVisible,
     opacity: layer.opacity,
   };
 
-  if (sourceData.dimensions) {
+  const dimensions = dimensionsStore.getDimensions(sourceData.uuid);
+  if (dimensions) {
     config.dimensions = {};
-    for (const [key, dim] of Object.entries(sourceData.dimensions)) {
-      if (dim) {
+    for (const [key, dimension] of Object.entries(dimensions)) {
+      if (dimension) {
         config.dimensions[key as DimensionId] = {
-          currentValue: dim.currentValue,
+          currentValue: dimension.currentValue,
         };
       }
     }
@@ -68,24 +70,17 @@ function layerToStateConfig(layer: MapLayer): LayerStateInput {
 }
 
 async function stateConfigToLayer(
-  config: LayerStateInput,
+  config: LayerState | null,
 ): Promise<Layer | null> {
-  const layerOptions: Partial<Layer> = {};
-
-  if (config.dimensions) {
-    const dims: Partial<Record<DimensionId, Dimension>> = {};
-    if (config.dimensions.time) {
-      dims.time = {
-        currentValue: config.dimensions.time.currentValue ?? null,
-        availableValues: [],
-      };
-    }
-    layerOptions.dimensions = dims;
+  if (!config) {
+    return null;
   }
 
   if (config.layerUrl) {
     const data = await $fetch<Dataset>(config.layerUrl);
-    return makeServerLayer(data, layerOptions);
+    const layer = makeServerLayer(data);
+
+    return layer;
   }
   return null;
 }
@@ -93,6 +88,7 @@ async function stateConfigToLayer(
 export function useStateConfig() {
   const positionStore = usePositionStore();
   const layerStore = useLayerStore();
+  const dimensionsStore = useDimensionsStore();
   const mapviewStore = useMapViewStore();
 
   const exportState = computed((): AppStatePayload => {
@@ -105,6 +101,10 @@ export function useStateConfig() {
           rotation: positionStore.rotation,
         },
         layers: layersToStateConfig(mapviewStore.mapLayers),
+        bg_layer:
+          layerStore.backgroundLayer && mapviewStore.mapLayers[0]
+            ? layerToStateConfig(mapviewStore.mapLayers[0])
+            : null,
       },
     };
   });
@@ -117,19 +117,24 @@ export function useStateConfig() {
     });
 
     const map = payload.state.map;
+
     if (map?.center !== null && map?.center !== undefined) {
       positionStore.setCenter(map.center, DISPATCHER);
     }
+
     if (map?.zoom !== null && map?.zoom !== undefined) {
       positionStore.setZoom(map.zoom, DISPATCHER);
     }
+
     if (map?.rotation !== null && map?.rotation !== undefined) {
       positionStore.setRotation(map.rotation, DISPATCHER);
     }
 
     for (const layer of [...layerStore.layers]) {
+      dimensionsStore.clearLayerDimensions(layer.uuid);
       layerStore.removeLayer(layer.uuid);
     }
+
     for (const layer of [...mapviewStore.mapLayers]) {
       mapviewStore.removeLayer(layer.uuid);
     }
@@ -138,8 +143,13 @@ export function useStateConfig() {
 
     const stateLayers = payload.state.layers ?? [];
     const layers = await Promise.all(
-      stateLayers.map((lc: LayerStateInput) => stateConfigToLayer(lc)),
+      stateLayers.map((lc: LayerState) => stateConfigToLayer(lc)),
     );
+    const bgLayer: Layer | null = await stateConfigToLayer(
+      payload.state.bg_layer ?? null,
+    );
+
+    layerStore.setBackground(bgLayer);
 
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
@@ -151,8 +161,19 @@ export function useStateConfig() {
           isVisible: stateLayers[i]?.isVisible ?? true,
         };
         layerStore.addImportOption(uuid, mapLayerData);
+
+        if (stateLayers[i]?.dimensions?.time) {
+          const dimensions: Partial<Record<DimensionId, Dimension>> = {};
+          dimensions.time = {
+            currentValue:
+              stateLayers[i]!.dimensions!.time!.currentValue ?? null,
+            availableValues: [],
+          };
+          useDimensionsStore().setLayerDimensions(uuid, dimensions);
+        }
       }
     }
+    // here we add the background layer back
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
         if (isBackgroundLayer(layers[i]!)) {
@@ -176,13 +197,22 @@ export function useStateConfig() {
  */
 export function useCustomStateConfig() {
   const mapviewStore = useMapViewStore();
+  const layerStore = useLayerStore();
   const customStateMapCenter = ref<[number, number]>([0, 0]);
   const customStateMapZoom = ref(0);
   const customStateMapRotation = ref(0);
-  const layerStateConfig = ref<LayerStateInput[]>([]);
-
+  const layerStateConfig = ref<LayerState[]>([]);
+  const backgroundLayerStateConfig = ref<LayerState | null>(null);
+  const backgroundLayerState = () => {
+    if (layerStore.backgroundLayer && mapviewStore.mapLayers[0]) {
+      return layerToStateConfig(mapviewStore.mapLayers[0]);
+    } else {
+      return null;
+    }
+  };
   const makeUseOfCurrentLayers = () => {
     layerStateConfig.value = layersToStateConfig(mapviewStore.mapLayers);
+    backgroundLayerStateConfig.value = backgroundLayerState();
   };
 
   const customStateConfig = computed((): AppStatePayload => {
@@ -195,12 +225,12 @@ export function useCustomStateConfig() {
           rotation: customStateMapRotation.value,
         },
         layers: layerStateConfig.value,
+        bg_layer: backgroundLayerStateConfig.value,
       },
     };
   });
 
   onMounted(makeUseOfCurrentLayers);
-
   return {
     customStateConfig,
     customStateMapCenter,

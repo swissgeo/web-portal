@@ -197,7 +197,7 @@ function onPostRender(event: RenderEvent) {
     </div>
     <div
       v-if="showLayerName && clippedLayer?.displayName"
-      class="absolute right-8 bottom-24 w-32 rounded bg-default px-2 py-1 text-xs break-words shadow"
+      class="absolute right-8 bottom-24 w-32 rounded bg-default px-2 py-1 text-xs wrap-break-word shadow"
       data-testid="compared-layer-name"
     >
       {{ clippedLayer.displayName }}

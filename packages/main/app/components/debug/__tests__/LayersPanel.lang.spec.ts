@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 
 const { useOgcCatalogSpy, locale } = vi.hoisted(() => ({
   useOgcCatalogSpy: vi.fn(() => ({
-    data: [],
+    state: { value: { status: "pending" } },
   })),
   locale: "de",
 }));
@@ -26,12 +26,6 @@ vi.mock("@swissgeo/layers", () => ({
     addLayer: vi.fn(),
   }),
   makeServerLayer: vi.fn(),
-}));
-
-vi.mock("@swissgeo/skeleton", () => ({
-  IconButton: {
-    template: "<button><slot /></button>",
-  },
 }));
 
 describe("LayersPanel.vue locale-aware records loading", () => {

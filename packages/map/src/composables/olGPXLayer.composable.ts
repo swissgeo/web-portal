@@ -7,7 +7,7 @@ import GPX from "ol/format/GPX";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
-import { computed, ref, watch } from "vue";
+import { computed, shallowRef, watch } from "vue";
 
 import type { GPXLayer } from "@/types";
 
@@ -25,7 +25,7 @@ export default function useOlGPXLayer(
   const opacity = computed(() => layer.value.opacity);
   const gpxData = computed(() => layer.value.data);
 
-  const olLayer = ref<VectorLayer>();
+  const olLayer = shallowRef<VectorLayer>();
 
   watch(
     () => gpxData.value,

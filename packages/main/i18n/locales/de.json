@@ -10,24 +10,108 @@
   },
   "menu": {
     "search": "Suche",
-    "layerCart": "Aktive Ebenen"
+    "layerCart": "Aktive Ebenen",
+    "map": "Karte",
+    "collapse": "Seitenleiste einklappen",
+    "expand": "Seitenleiste ausklappen",
+    "openLayerCatalog": "Daten-Katalog öffnen"
   },
   "search": {
     "placeholder": "Ort, Layer oder Koordinaten suchen...",
+    "map_tab": "Karte",
+    "content_pages_tab": "Inhaltsseiten",
     "locations_results_header": "Orte",
     "features_results_header": "Features",
     "layers_results_header": "Layer",
-    "no_results": "Keine Ergebnisse gefunden"
+    "no_results": "Keine Ergebnisse gefunden",
+    "error": "Suche fehlgeschlagen. Einige Ergebnisse fehlen möglicherweise.",
+    "viewDataset": "Datensatz anzeigen"
   },
   "footer": {
-    "copyRightData": "© Daten: "
+    "copyRightData": "© Daten: ",
+    "termsOfUse": "Nutzungsbedingungen",
+    "impressum": "Impressum",
+    "mobileNav": {
+      "map": "Karte",
+      "catalog": "Daten-Katalog",
+      "tools": "Tools",
+      "mapInfo": "Karteninfo"
+    },
+    "reportIssue": {
+      "buttonTitle": "Problem melden",
+      "title": "Problem melden",
+      "close": "Problem-Meldungsformular schließen",
+      "steps": {
+        "step1": {
+          "title": "1. Betreff Ihrer Nachricht (Pflichtfeld):",
+          "select": {
+            "placeholder": "Kategorie auswählen",
+            "options": {
+              "background": "Änderung des Hintergrundplans",
+              "thematic": "Thematische Karte",
+              "application": "Eine Anwendung oder ein Dienst",
+              "other": "Sonstiges"
+            }
+          },
+          "moreInfo": {
+            "label": "Weitere Informationen zu den Kategorien",
+            "url": "https://www.geo.admin.ch/de/kartenviewer-navigation-und-orientierung#Problem-melden"
+          }
+        },
+        "step2": {
+          "title": "2. Teilen Sie uns Kartenänderungen, Datenverbesserungen mit oder stellen Sie Fragen zu dieser Webseite in diesem Feld (Pflichtfeld):"
+        },
+        "step3": {
+          "title": "3. Geben Sie den betroffenen Ort auf der Karte an:",
+          "button": "Auf der Karte zeichnen"
+        },
+        "step4": {
+          "title": "4. Ihre E-Mail-Adresse:",
+          "placeholder": "Ihre E-Mail-Adresse",
+          "info": "Ohne Angabe einer E-Mail-Adresse erhalten Sie keine Antwort"
+        },
+        "step5": {
+          "title": "5. Datei anhängen:",
+          "buttonLabel": "Anhängen"
+        }
+      },
+      "notes": {
+        "link": {
+          "label": "Der folgende Link wird übermittelt:",
+          "permalink": "Permalink"
+        },
+        "tos": {
+          "label": "Mit dem Absenden Ihrer Nachricht akzeptieren Sie die",
+          "link": "Nutzungsbedingungen",
+          "url": "https://www.geo.admin.ch/de/allgemeine-nutzungsbedingungen-bgdi#feedback"
+        }
+      },
+      "cancelButton": "Abbrechen",
+      "submitButton": "Absenden",
+      "successMessage": "Vielen Dank für Ihre Nachricht. Wir werden Ihnen so bald wie möglich antworten.",
+      "errorMessage": "Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+      "validation": {
+        "subjectRequired": "Betreff ist erforderlich",
+        "feedbackRequired": "Nachricht ist erforderlich",
+        "categoryRequired": "Kategorie ist erforderlich",
+        "versionRequired": "Version ist erforderlich",
+        "userAgentRequired": "User Agent ist erforderlich",
+        "permalinkRequired": "Permalink ist erforderlich",
+        "emailInvalid": "E-Mail muss eine gültige E-Mail-Adresse sein",
+        "fileRequired": "Anhang muss eine Datei sein",
+        "fileTooLarge": "Datei ist zu gross (max. {max} MB)",
+        "fileTypeNotSupported": "Dateityp wird nicht unterstützt"
+      }
+    }
   },
   "debug": {
     "openImportLocalLayersPanel": "Import Lokale Layer Panel öffnen",
+    "openImportDrawingPanel": "Zeichenimport-Panel öffnen",
     "openDrawingPanel": "Zeichenpanel öffnen",
     "openImportLayersPanel": "Import Layer Panel öffnen",
     "openLayersPanel": "Layer Panel öffnen",
     "drawingPanelTitle": "Zeichenwerkzeuge",
+    "importDrawingPanelTitle": "Zeichnung aus URL importieren",
     "drawingNameLabel": "Zeichnungsname",
     "drawingToolSelectLabel": "Zeichenwerkzeug auswählen:",
     "drawingToolPoint": "Punkt",
@@ -128,6 +212,83 @@
     "startGeolocation": "Standortbestimmung starten",
     "recenterMap": "Karte neu zentrieren"
   },
+  "toolbox": {
+    "geolocation": {
+      "buttonTitle": "Standort"
+    },
+    "fullscreen": {
+      "buttonTitle": "Vollbild"
+    },
+    "3d": {
+      "buttonTitle": "3D"
+    },
+    "drawing": {
+      "buttonTitle": "Zeichnen"
+    },
+    "measure": {
+      "buttonTitle": "Messen"
+    },
+    "compare": {
+      "buttonTitle": "Vergleichen"
+    },
+    "timeSlider": {
+      "buttonTitle": "Zeitschieberegler"
+    },
+    "import": {
+      "buttonTitle": "Importieren",
+      "title": "Eine Datei oder URL importieren",
+      "description": "Akzeptierte Dateitypen: {types}",
+      "tabData": "Daten",
+      "tabUrl": "URL",
+      "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
+      "browseButton": "Durchsuchen...",
+      "noFileSelected": "Keine Datei ausgewählt",
+      "importFileButton": "Datei importieren",
+      "importUrlButton": "Von URL importieren",
+      "loadingMessage": "Datei wird importiert...",
+      "successMessage": "Datei erfolgreich importiert: {fileName}",
+      "drawingSuccessMessage": "Zeichnung erfolgreich importiert",
+      "fileUrlDescription": "Oder eine Datei von einer URL importieren ({types}):",
+      "fileUrlPlaceholder": "https://example.com/data.gpx",
+      "importFileUrlButton": "Von URL importieren",
+      "errorMessages": {
+        "generalError": "Datei konnte nicht importiert werden",
+        "noFileSelected": "Bitte w\u00e4hlen Sie zuerst eine Datei aus",
+        "noUrlEntered": "Bitte geben Sie eine URL ein",
+        "fileSizeWarning": "Dateigröße ist {fileSize}MB, was die empfohlene maximale Größe von {maxSize}MB überschreitet",
+        "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize}MB)",
+        "drawingImportFailed": "Zeichnung konnte nicht importiert werden",
+        "kmlFetchFailed": "KML konnte nicht geladen werden: {status}",
+        "noKmlFound": "Keine KML-Zeichnung in der angegebenen URL gefunden",
+        "domainNotAllowed": "Das Abrufen von {domain} ist nicht erlaubt",
+        "unsupportedUrlType": "Nicht unterst\u00fctzter Dateityp. Die URL muss auf {types} enden",
+        "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})"
+      },
+      "close": "Schließen"
+    },
+    "share": {
+      "buttonTitle": "Teilen",
+      "title": "Teilen",
+      "link": {
+        "title": "Freigabelink",
+        "generateButton": "Freigabelink generieren"
+      },
+      "embed": {
+        "title": "Einbetten",
+        "generateButton": "Einbettungscode generieren",
+        "zoomOnlyCtrlLabel": "Zoom nur mit Strg/Cmd-Taste aktivieren"
+      },
+      "ariaLabel": {
+        "close": "Schließen",
+        "copyToClipboard": "In die Zwischenablage kopieren",
+        "refreshLink": "Freigabelink aktualisieren",
+        "refreshEmbed": "Einbettungscode aktualisieren"
+      }
+    },
+    "print": {
+      "buttonTitle": "Drucken"
+    }
+  },
   "backgroundLayers": {
     "title": "Angezeigte Karten",
     "voidMap": "Leere Karte",
@@ -158,6 +319,7 @@
   "error": {
     "notFound": "{resource} konnte nicht gefunden werden.",
     "generic": "Ein unerwarteter Fehler ist aufgetreten.",
+    "layerLoad": "Die Ebene konnte nicht geladen werden.",
     "backToMap": "Zurück zur Karte",
     "resources": {
       "dataset": "Dieser Datensatz"
@@ -203,5 +365,99 @@
   },
   "embed": {
     "viewOn": "Auf {platform} anzeigen"
+  },
+  "print": {
+    "warningOutsideSwitzerland": "Außerhalb CH",
+    "warningOutsideSwitzerlandTitle": "Außerhalb der Schweiz",
+    "warningZoomOutOfSync": "Die Zoomstufe auf dem Bildschirm entspricht nicht der gesperrten Zoomstufe für den Druck.",
+    "warningZoomOutOfSyncTitle": "Zoomstufe entspricht nicht der gesperrten Zoomstufe",
+    "statusProcessing": "in Bearbeitung",
+    "statusQueued": "in Warteschlange",
+    "statusError": "Fehler",
+    "statusFailed": "fehlgeschlagen",
+    "statusReady": "bereit",
+    "clearAll": "Alle löschen",
+    "noPrintJobsYet": "Noch keine Druckaufträge.",
+    "created": "Erstellt",
+    "download": "Herunterladen",
+    "zoomLevel": "Zoomstufe",
+    "zoomLevelForPrint": "Zoomstufe für den Druck",
+    "warningOutsideViewportLabel": "Druckrahmen außerhalb der Ansicht",
+    "printScale": "Druckmaßstab",
+    "enableStrictZoomStepsLabel": "Feste Zoomstufen aktivieren",
+    "lockCenterToViewLabel": "Zentrum auf aktuelle Ansicht sperren",
+    "lockZoomToViewLabel": "Zoom auf aktuelle Ansicht sperren",
+    "printSizeLabel": "Druckformat",
+    "printResolutionLabel": "Druckauflösung",
+    "printOrientationLabel": "Druckausrichtung",
+    "zoomToLockedZoomLevel": "Zur gesperrten Zoomstufe zoomen",
+    "sendPrintRequest": "Druckauftrag senden",
+    "openPrintJobs": "Druckaufträge öffnen",
+    "printJobsWindowTitle": "Druckaufträge",
+    "warningPrintExtentBeyondViewport": "Sie können das Zentrum und die Zoomstufe sperren, damit der Druckbereich beim Verschieben und Zoomen der Karte nicht aus dem Ansichtsbereich gerät.",
+    "orientationPortrait": "Hochformat",
+    "orientationLandscape": "Querformat"
+  },
+  "topbar": {
+    "home": "Startseite",
+    "geoDataAndMaps": "Geodaten und Karten",
+    "howToUseGeodata": "Wie kann ich Geodaten nutzen?",
+    "viewGeodataInMapViewer": "Geodaten im Kartenviewer anschauen",
+    "discoverTopicsAndData": "Themen und Daten entdecken",
+    "geoservices": "Geodienste: Daten beziehen und einbinden",
+    "searchGeodata": "Geodaten suchen",
+    "newDataAndUpdates": "Neue Daten und Updates",
+    "tutorialsAndHelp": "Tutorials und Hilfe",
+    "gettingStarted": "Erste Schritte im Kartenviewer",
+    "mapViewerNavigation": "Navigation im Kartenviewer",
+    "metadataCatalog": "Metadatenkatalog",
+    "moreFeatures": "Weitere Funktionen",
+    "specialistInfo": "Fachinformationen",
+    "ngdi": "Nationale Geodaten-Infrastruktur (NGDI)",
+    "geobaseData": "Geobasisdaten, Geodatenmodelle und Standards",
+    "metadataCatalogSwitzerland": "Katalog der geografischen Metadaten der Schweiz",
+    "geoInformationFilms": "Filme über Geoinformationen",
+    "aboutUs": "Über uns",
+    "whatIsSwissgeo": "Was ist SWISSGEO?",
+    "vision": "Vision",
+    "strategy": "Strategie Geoinformation Schweiz",
+    "keyFigures": "Kennzahlen",
+    "organisation": "Organisation",
+    "legalBasis": "Rechtliche Grundlagen",
+    "mediaInformation": "Medieninformationen",
+    "map": "Karte",
+    "login": "Anmelden",
+    "modeSwitch": "Mode switch"
+  },
+  "layers": {
+    "expand": "Ebenendetails anzeigen",
+    "reorder": "Ebene verschieben (Pfeil oben/unten)",
+    "show": "Ebene anzeigen",
+    "hide": "Ebene ausblenden",
+    "info": "Ebeneninformationen",
+    "remove": "Ebene entfernen",
+    "collapse": "Ebenendetails ausblenden",
+    "opacity": "Opazität",
+    "legend": {
+      "title": "Legende",
+      "notAvailable": "Keine Legende verfügbar.",
+      "openDocument": "Legende als Dokument öffnen",
+      "openPdf": "Legende als PDF öffnen",
+      "openPage": "Legendenseite öffnen"
+    }
+  },
+  "layerCatalog": {
+    "title": "Daten-Katalog",
+    "table": {
+      "title": "Bezeichnung",
+      "dataOwner": "Anbieter",
+      "empty": "Keine Ebenen gefunden."
+    },
+    "loading": "Wird geladen...",
+    "error": "Der Katalog konnte nicht geladen werden.",
+    "retry": "Erneut versuchen",
+    "searchLabel": "Ebenen durchsuchen",
+    "searchPlaceholder": "Suchen",
+    "close": "Schliessen"
   }
 }

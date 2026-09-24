@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { IconButton } from "@swissgeo/skeleton";
-
 const emit = defineEmits(["click"]);
 
 const { title } = defineProps<{
@@ -12,15 +10,22 @@ const { title } = defineProps<{
 </script>
 
 <template>
-  <IconButton
-    :severity="isDisabled ? 'secondary' : isActive ? 'primary' : 'info'"
-    :iconName="iconName"
+  <UButton
     :title="title"
+    color="primary"
+    variant="ghost"
+    class="w-14 flex-col gap-0.5 px-1 py-1.5 hover:bg-primary-50/50 dark:hover:bg-primary-950 dark:hover:text-primary"
+    :class="{
+      'bg-primary-50 text-primary dark:bg-primary-950': isActive,
+    }"
     :disabled="isDisabled"
-    size="xl"
     @click="emit('click')"
-    v-bind="$attrs"
-  ></IconButton>
+  >
+    <UIcon
+      v-if="iconName"
+      :name="`i-lucide-${iconName.toLowerCase()}`"
+      :size="20"
+    />
+    <span class="text-[10px] leading-tight font-medium">{{ title }}</span>
+  </UButton>
 </template>
-
-<style scoped></style>

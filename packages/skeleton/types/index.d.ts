@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { DatasetCollection } from "@swissgeo/ogc";
 import type { SearchResult } from "@swissgeo/search";
 import type { ComputedRef, DefineComponent } from "vue";
 
 export enum SidebarType {
   LAYER_CART = "layerCart",
   GEOCATALOG_TREE = "geocatalogTree",
-  SEARCH = "search",
   CONTENT = "content",
 }
 
@@ -16,7 +14,6 @@ export declare const useUiStore: () => {
   helpOverlayContentId: number | null;
   isWelcomeOverlayVisible: boolean;
   isSidebarOpen: ComputedRef<boolean>;
-  isSearchVisible: ComputedRef<boolean>;
   isLayerCartVisible: ComputedRef<boolean>;
   isContentSidebarVisible: ComputedRef<boolean>;
   setSidebar: (type: SidebarType) => void;
@@ -27,7 +24,7 @@ export declare const useSearchStore: () => {
   query: string;
   results: SearchResult[];
   isSearching: boolean;
-  catalog: DatasetCollection | undefined;
+  hasError: boolean;
   hasResults: ComputedRef<boolean>;
   locationResults: ComputedRef<SearchResult[]>;
   layerResults: ComputedRef<SearchResult[]>;
@@ -35,12 +32,9 @@ export declare const useSearchStore: () => {
   setSearchQuery: (newQuery: string, lang?: string) => Promise<void>;
   selectResult: (result: SearchResult) => SearchResult;
   clearSearch: () => void;
-  loadCatalog: () => Promise<void>;
 };
 
-export declare const IconButton: DefineComponent<any, any, any>;
 export declare const ContentButton: DefineComponent<any, any, any>;
-export declare const SearchButton: DefineComponent<any, any, any>;
 export declare const SideBar: DefineComponent<any, any, any>;
 
 declare global {
@@ -49,14 +43,19 @@ declare global {
   const useRuntimeConfig: () => {
     what3wordsApiKey: string;
     geoadminApiBaseUrl: string;
-    shareServiceUrl: string;
+    reportIssueServiceUrl: string;
     public: {
       ogcApiEndpoint: string;
+      cmsBaseUrl: string;
+      iconServiceEndpoint: string;
+      printServiceUrl: string;
       ogcCatalogCollection: string;
       shareServiceUrl: string;
       wantedLogLevels: string;
       version: string;
       buildTime: string;
+      maxFileSizeMB: number;
+      drawingAllowedDomains: string[];
     };
   };
 }

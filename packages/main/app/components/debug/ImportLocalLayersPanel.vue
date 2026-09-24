@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { IconButton } from "@swissgeo/skeleton";
 import { useFileImport } from "~/composables/useFileImport";
 import { ref, useTemplateRef } from "vue";
 
@@ -12,7 +11,15 @@ const isLoading = ref(false);
 const errorMessage = ref("");
 const successMessage = ref("");
 
-const acceptedFileTypes = [".kml", ".kmz", ".gpx", ".geojson", ".json"];
+const acceptedFileTypes = [
+  ".kml",
+  ".kmz",
+  ".gpx",
+  ".geojson",
+  ".json",
+  ".tif",
+  ".tiff",
+];
 
 async function handleImport() {
   if (!selectedFile.value) {
@@ -57,8 +64,8 @@ function onFileSelected(evt: Event): void {
     <div class="mb-4">
       <h3 class="mb-2 text-lg font-semibold">Import Local File</h3>
       <p class="text-sm text-gray-600">
-        Supported formats: KML, KMZ, GPX, GeoJSON (.kml, .kmz, .gpx, .geojson,
-        .json)
+        Supported formats: KML, KMZ, GPX, GeoJSON, COG/TIFF (.kml, .kmz, .gpx,
+        .geojson, .json, .tif, .tiff)
       </p>
     </div>
 
@@ -72,7 +79,7 @@ function onFileSelected(evt: Event): void {
         @change="onFileSelected"
       />
       <UButton
-        color="neutral"
+        color="primary"
         variant="outline"
         type="button"
         data-testid="file-input-browse-button"
@@ -91,13 +98,23 @@ function onFileSelected(evt: Event): void {
         data-testid="file-input-text"
         @click="inputLocalFile?.click()"
       />
-      <IconButton
+      <UButton
         :disabled="!selectedFile || isLoading"
         @click="handleImport"
-        iconName="Upload"
+        icon="i-lucide-upload"
+        color="primary"
+        variant="solid"
         title="Import file"
+        data-testid="file-import-button"
       />
-      <IconButton @click="$emit('close')" iconName="X" title="Close" />
+      <UButton
+        color="primary"
+        variant="ghost"
+        @click="$emit('close')"
+        icon="i-lucide-x"
+        title="Close"
+        data-testid="file-import-close-button"
+      />
     </div>
 
     <!-- Success message -->

@@ -20,6 +20,13 @@ export function useConditionalFetch<T>(
     immediate: false,
   });
 
+  const onRequestError = (handler: (error: unknown) => void) =>
+    fetchRef.onFetchError((error) => {
+      if (!(error instanceof Error && error.name === "AbortError")) {
+        handler(error);
+      }
+    });
+
   if (builderFunctions) {
     for (const fn of builderFunctions) {
       // for instance to invoke .get() and .json() on the fetchRef
@@ -53,5 +60,5 @@ export function useConditionalFetch<T>(
     { immediate: true },
   );
 
-  return fetchRef;
+  return Object.assign(fetchRef, { onRequestError });
 }

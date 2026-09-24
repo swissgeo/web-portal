@@ -10,6 +10,7 @@ import {
   EPSG_4326_WGS84,
   isDrawingFeature,
   parseBoolean,
+  toError,
 } from "@swissgeo/shared";
 import { unzip } from "fflate";
 import KML from "ol/format/KML";
@@ -17,31 +18,37 @@ import VectorLayer from "ol/layer/Vector";
 import { register } from "ol/proj/proj4";
 import VectorSource from "ol/source/Vector";
 import proj4 from "proj4";
-import { computed, ref, watch } from "vue";
+import { computed, shallowRef, watch } from "vue";
 
 import type { KMZLayer } from "@/types";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
 
+// exported for testing purposes
+export const DEFAULT_MAX_DECOMPRESSED_SIZE_MB = 250;
+
 export default function useOlKMZLayer(
   layer: Ref<KMZLayer>,
   olMap: Ref<Map | undefined> | undefined,
+  onError: (error: Error) => void,
+  maxDecompressedSizeMB: number = DEFAULT_MAX_DECOMPRESSED_SIZE_MB,
 ) {
+  const maxDecompressedSize = maxDecompressedSizeMB * 1024 * 1024;
   const layerId = computed(() => layer.value.layerId);
   const zIndex = computed(() => layer.value.zIndex);
   const isVisible = computed(() => layer.value.isVisible);
   const opacity = computed(() => layer.value.opacity);
-  const kmzDataBase64 = computed(() => layer.value.data);
+  const kmzDataBuffer = computed(() => layer.value.data);
 
-  const olLayer = ref<VectorLayer>();
+  const olLayer = shallowRef<VectorLayer>();
 
   watch(
-    () => kmzDataBase64.value,
+    () => kmzDataBuffer.value,
     () => {
       olLayer.value = new VectorLayer({
         properties: {
-          id: layerId,
+          id: layerId.value,
           uuid: layer.value.uuid,
         },
         opacity: opacity.value,
@@ -52,24 +59,27 @@ export default function useOlKMZLayer(
     { immediate: true },
   );
 
-  async function unzippKMZ(): Promise<
-    Record<string, Uint8Array<ArrayBufferLike>>
-  > {
-    // Decode base64 to binary
-    const binaryString = atob(kmzDataBase64.value);
-    const uint8Array = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      uint8Array[i] = binaryString.charCodeAt(i);
-    }
-
+  async function unzipKMZ(): Promise<Record<string, Uint8Array>> {
     return await new Promise<Record<string, Uint8Array>>((resolve, reject) => {
       unzip(
-        uint8Array,
+        kmzDataBuffer.value,
         (err: Error | null, data: Record<string, Uint8Array>) => {
           if (err) {
             reject(new Error(err.message));
           } else {
-            resolve(data);
+            const totalSize = Object.values(data).reduce(
+              (sum, chunk) => sum + chunk.length,
+              0,
+            );
+            if (totalSize > maxDecompressedSize) {
+              reject(
+                new Error(
+                  `KMZ archive too large after decompression: ${(totalSize / 1024 / 1024).toFixed(1)}MB (max ${maxDecompressedSizeMB}MB)`,
+                ),
+              );
+            } else {
+              resolve(data);
+            }
           }
         },
       );
@@ -87,9 +97,14 @@ export default function useOlKMZLayer(
     for (const [filename, content] of Object.entries(unzipped)) {
       if (filename.toLowerCase().endsWith(".kml")) {
         kmlContent = decoder.decode(content);
-      } else if (filename.startsWith("icons/")) {
+      } else if (filename.endsWith(".png")) {
         const blob = new Blob([content as BlobPart], {
-          type: filename.endsWith(".svg") ? "image/svg+xml" : "image/png",
+          type: "image/png",
+        });
+        iconFiles[filename] = blob;
+      } else if (filename.endsWith(".svg")) {
+        const blob = new Blob([content as BlobPart], {
+          type: "image/svg+xml",
         });
         iconFiles[filename] = blob;
       }
@@ -172,8 +187,9 @@ export default function useOlKMZLayer(
     const positionStore = usePositionStore();
 
     try {
-      const unzipped = await unzippKMZ();
+      const unzipped = await unzipKMZ();
       const { kmlContent, iconFiles } = extractKMLAndIcons(unzipped);
+
       const modifiedKML = replaceIconReferences(kmlContent, iconFiles);
       const features = parseKMLFeatures(
         modifiedKML,
@@ -195,12 +211,13 @@ export default function useOlKMZLayer(
         ],
       });
     } catch (error) {
+      const kmzError = toError(error);
       log.error({
         title: "useOlKMZLayer",
         titleColor: LogPreDefinedColor.Rose,
-        messages: [`Failed to initialize KMZ layer ${layerId.value}`, error],
+        messages: [`Failed to initialize KMZ layer ${layerId.value}`, kmzError],
       });
-      throw error;
+      onError(kmzError);
     }
   }
 

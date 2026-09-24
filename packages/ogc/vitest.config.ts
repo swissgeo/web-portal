@@ -8,6 +8,7 @@ export default defineConfig({
       provider: "v8",
       reportsDirectory: path.resolve(__dirname, "../../coverage/unit/ogc"),
       reporter: ["lcov", "cobertura"],
+      include: ["src/**/*.ts", "src/**/*.vue"],
     },
   },
 });

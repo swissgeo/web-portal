@@ -44,7 +44,7 @@ test.describe("map page", () => {
     );
 
     await page.route(
-      "http://mock-oar.org/api/oar/collections/ch.swisstopo.pixelkarte-farbe.distributions/items",
+      "http://mock-oar.org/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe",
       (route) => {
         return route.fulfill({
           status: 200,
@@ -55,12 +55,14 @@ test.describe("map page", () => {
 
     // we let all the backgrounds to return the data for pixelkarte-farbe
     await page.route(
-      "http://mock-oar.org/api/oar/collections/swissgeo.catalog/items/ch.swisstopo.*",
+      "http://mock-oar.org/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.*",
       mockBackgroundResponse,
     );
 
+    // Trailing `*` also matches ogc-client's query params
+    // (`?SERVICE=WMTS&REQUEST=GetCapabilities`) appended to the capabilities URL.
     await page.route(
-      "https://wmts.geo.admin.ch/**/WMTSCapabilities.xml",
+      "https://wmts.geo.admin.ch/**/WMTSCapabilities.xml*",
       (route) =>
         route.fulfill({
           status: 200,
@@ -105,7 +107,7 @@ test.describe("map page", () => {
   });
 
   test("displays the fullscreen button", async ({ page }) => {
-    await expect(page.getByTestId("fullscreen-toggle")).toBeVisible();
+    await expect(page.getByTestId("toolbox-fullscreen-button")).toBeVisible();
   });
 
   test("displays the map with the defaults", async ({ page }) => {
@@ -127,6 +129,14 @@ test.describe("map page", () => {
       timeout: 20000,
     });
     const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
+    // The WMTS background source is built asynchronously (ogc-client parses the
+    // capabilities, then the OL tile grid is created), so wait for the layer to
+    // be added before sampling.
+    await page.waitForFunction(
+      (map) => map.getLayers().getArray().length >= 1,
+      mapRef,
+      { timeout: 20000 },
+    );
     const layers = await page.evaluate((map) => {
       const arr = map.getLayers().getArray();
       return arr.map((layer: BaseLayer) => ({
@@ -140,31 +150,41 @@ test.describe("map page", () => {
     expect(layers[0].name).toEqual("ch.swisstopo.pixelkarte-farbe");
     expect(layers[0].opacity).toBe(1);
     expect(layers[0].visible).toBe(true);
+
+    const backgroundSelector = page.getByTestId(
+      "background-selector-ch.swisstopo.pixelkarte-farbe",
+    );
+    await expect(backgroundSelector).toBeVisible();
   });
 
   test("zoom buttons work", async ({ page }) => {
     await page.evaluateHandle(() => window.swissgeoOlMap);
 
     await test.step("Check simple zooming", async () => {
+      await page.getByTestId("zoom-in").click();
+      await waitForZoom(page);
+
+      expect(await getZoom(page)).toEqual(2);
+
       await page.getByTestId("zoom-out").click();
       await waitForZoom(page);
 
-      expect(await getZoom(page)).toEqual(0);
-
-      await page.getByTestId("zoom-out").click();
-
-      // second zoom-out click doesn't change the state
-      // also not waiting here
-      expect(await getZoom(page)).toEqual(0);
+      expect(await getZoom(page)).toEqual(1);
     });
 
     await test.step("Zoom all the way in", async () => {
       // now let's zoom all the way in
+      while ((await getZoom(page)) !== 0) {
+        await page.getByTestId("zoom-out").click();
+        await waitForZoom(page);
+      }
+
       for (let zoom = 1; zoom <= 13; zoom++) {
         await page.getByTestId("zoom-in").click();
         await waitForZoom(page);
         expect(await getZoom(page)).toEqual(zoom);
       }
+      await expect(page.getByTestId("zoom-in")).toBeDisabled();
     });
   });
 });

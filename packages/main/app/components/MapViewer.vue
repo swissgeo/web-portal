@@ -2,10 +2,12 @@
 import type { Layer as BaseLayer } from "@swissgeo/layers";
 
 import { useLayerStore } from "@swissgeo/layers";
+import { useSearchStore } from "@swissgeo/skeleton";
 import { displayModeKey } from "~/types/injectionKeys";
 
 const geolocationStore = useGeolocationStore();
 const layerStore = useLayerStore();
+const searchStore = useSearchStore();
 const mapViewStore = useMapViewStore();
 
 const backgroundLayer = computed(() => layerStore.backgroundLayer);
@@ -15,6 +17,8 @@ const { sources: attributionSources } = useAttributionSources(
   computed(() => layerStore.backgroundLayer),
 );
 
+// the layer the compare slider clips: the topmost visible overlay (the
+// background/basemap is excluded by the store getter and never clipped)
 const topVisibleLayer = computed(() => mapViewStore.visibleLayers.at(-1));
 
 watch(topVisibleLayer, (layer) => {
@@ -56,6 +60,12 @@ const displayMode = inject(displayModeKey, "web");
           geolocationStore.position &&
           displayMode === 'web'
         "
+      />
+      <!-- lazy on purpose: a static import would pull its ol modules into the
+           server bundle even while the v-if is false, and they cannot be
+           evaluated during SSR -->
+      <LazyMapOpenLayersSearchMarker
+        v-if="searchStore.pinnedCoordinate && displayMode === 'web'"
       />
       <MapAttributionList
         v-if="displayMode === 'web'"

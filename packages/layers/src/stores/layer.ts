@@ -4,7 +4,7 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { defineStore } from "pinia";
 import { ref, markRaw } from "vue";
 
-import type { Dimension, DimensionId, Layer, LayerInfo } from "@/index";
+import type { Layer, LayerInfo } from "@/index";
 
 /**
  * Quick explanation on this interface:
@@ -27,8 +27,11 @@ export const useLayerStore = defineStore("layers", () => {
   /** List of layers added to the map. Index 0 = bottom of stack, last index = top. */
   const layers = ref<Layer[]>([]);
 
-  /** The active background layer, or null if none is selected. */
-  const backgroundLayer = ref<Layer | null>(null);
+  /**
+   * The active background layer, or null if none is selected. Initialising to undefined to
+   * be able to distinguish the unitialized state from setting none
+   */
+  const backgroundLayer = ref<Layer | null | undefined>(undefined);
 
   const importOptions = markRaw<Record<string, importOption>>({});
 
@@ -36,11 +39,15 @@ export const useLayerStore = defineStore("layers", () => {
     importOptions[uuid] = option;
   }
 
+  function clearImportOptions(uuid: string) {
+    delete importOptions[uuid];
+  }
+
   function consumeImportOptions(uuid: string) {
     const options = importOptions[uuid];
     if (options) {
       const deepClonedOptions = structuredClone(options);
-      delete importOptions[uuid];
+      clearImportOptions(uuid);
       return deepClonedOptions;
     }
   }
@@ -63,6 +70,10 @@ export const useLayerStore = defineStore("layers", () => {
     const index = layers.value.findIndex((layer) => layer.uuid === uuid);
 
     if (index < 0) {
+      if (uuid === backgroundLayer.value?.uuid) {
+        // background layer errors are a false positive, so we don't log them
+        return;
+      }
       log.error(`Incorrect uuid given : ${uuid}`);
       return;
     }
@@ -78,19 +89,18 @@ export const useLayerStore = defineStore("layers", () => {
    *          (an error is logged only in that case)
    */
   function getLayer(uuid: string): Layer | undefined {
-    const layer =
+    return (
       layers.value.find((candidate) => candidate.uuid === uuid) ??
-      (backgroundLayer.value?.uuid === uuid
-        ? backgroundLayer.value
-        : undefined);
-
-    if (!layer) {
-      log.error(`Incorrect uuid given : ${uuid}`);
-      return;
-    }
-    return layer;
+      (backgroundLayer.value?.uuid === uuid ? backgroundLayer.value : undefined)
+    );
   }
+
   function setBackground(layer: Layer | null) {
+    log.debug({
+      title: "layer store",
+      titleColor: LogPreDefinedColor.Cyan,
+      messages: ["Changing background in the store to", layer],
+    });
     backgroundLayer.value = layer;
   }
 
@@ -101,37 +111,7 @@ export const useLayerStore = defineStore("layers", () => {
   function replaceLayer(uuid: string, replacement: Layer) {
     const index = _getIndexFromIdentifier(uuid);
     if ((index || index === 0) && layers.value[index]) {
-      layers.value.splice(_getIndexFromIdentifier(uuid)!, 1, replacement);
-    }
-  }
-
-  function setDimension(
-    id: DimensionId,
-    uuid: string,
-    dimension: Partial<Dimension>,
-  ) {
-    const layer = getLayer(uuid);
-
-    if (layer) {
-      if (!layer.dimensions) {
-        layer.dimensions = {};
-      }
-
-      log.debug({
-        title: "layer Store",
-        titleColor: LogPreDefinedColor.Cyan,
-        messages: [
-          `Updating ${layer.humanId} with dimension ${JSON.stringify(dimension)}`,
-        ],
-      });
-
-      const existingDimension = layer.dimensions[id];
-
-      layer.dimensions[id] = {
-        availableValues: existingDimension?.availableValues ?? [],
-        currentValue: existingDimension?.currentValue ?? null,
-        ...dimension,
-      };
+      layers.value.splice(index, 1, replacement);
     }
   }
 
@@ -175,10 +155,10 @@ export const useLayerStore = defineStore("layers", () => {
     setBackground,
     replaceLayer,
     setLayerInfo,
-    setDimension,
     removeLayer,
     setLayerData,
     addImportOption,
+    clearImportOptions,
     consumeImportOptions,
     $reset,
   };

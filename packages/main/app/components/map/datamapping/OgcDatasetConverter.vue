@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import type { DatasetLayer, Dimension, LayerInfo } from "@swissgeo/layers";
+import type { Dimension } from "@swissgeo/dimension";
+import type { DatasetLayer, LayerInfo } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
-import type { Dataset } from "@swissgeo/ogc";
+import type { Dataset, Legend } from "@swissgeo/ogc";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
+
+import { useDimensionsStore } from "@swissgeo/dimension";
 
 /**
  * Dataset Layer Converter Container
@@ -21,26 +24,30 @@ import type { Options as WMTSOptions } from "ol/source/WMTS";
  * - The data from the sub-converter as well as some incoming data are together being merged into one object
  *   and the parent is informed about the changes
  */
-import type { WMSLayerData } from "./useOgcWmsData";
+import type { WMSLayerData } from "@/components/map/datamapping/useOgcWmsData";
 
-import useDatasetLocaleRefresh from "./useDatasetLocaleRefresh";
-import { useGenericOgcData } from "./useGenericOgcData";
+import useDatasetLocaleRefresh from "@/components/map/datamapping/useDatasetLocaleRefresh";
+import { useGenericOgcData } from "@/components/map/datamapping/useGenericOgcData";
 
 const { layer } = defineProps<{
   layer: DatasetLayer;
 }>();
 
+const dimensionsStore = useDimensionsStore();
+
 const emit = defineEmits<{
+  error: [error: unknown];
   update: [layer: MapLayer];
   updateTimeDimension: [layerUuid: string, dimension: Partial<Dimension>];
-  updateOpacity: [layerUuid: string, opacity: number];
-  remove: [void];
+  remove: [layerUuid: string];
   updateDataset: [layerUuid: string, dataset: Dataset];
   updateLayerInfo: [layerUuid: string, info: LayerInfo];
+  updateLegends: [layerUuid: string, legends: Legend[]];
 }>();
 
 const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(
   computed(() => layer),
+  (error) => emit("error", error),
 );
 
 // Registering composable that will ensure that a dataset is refreshed when the locale changes.
@@ -75,7 +82,7 @@ const layerData = computed((): MapLayer => {
 
     // some data we pass directly from the original, so when it's updated
     // the change will be reflected in the data that the map receives
-    dimensions: layer.dimensions ?? null,
+    dimensions: dimensionsStore.getDimensions(layer.uuid) ?? null,
     displayName: layer.info?.displayName ?? layer.humanId,
   };
 });
@@ -84,12 +91,13 @@ const layerData = computed((): MapLayer => {
 watch(layerData, () => emit("update", layerData.value), { immediate: true });
 
 onBeforeUnmount(() => {
-  emit("remove");
+  emit("remove", layer.uuid);
 });
 
 // receive the layer specific data from the subconverters
-function pushLayerSpecificData<T>(data: T) {
+function pushLayerSpecificData<T>(opacity: number, data: T) {
   layerSpecificData.value = data;
+  layerData.value.opacity = opacity;
 }
 </script>
 
@@ -99,17 +107,19 @@ function pushLayerSpecificData<T>(data: T) {
     :distribution
     :serviceData
     :layerId
+    @error="emit('error', $event)"
     @updateOptions="pushLayerSpecificData<{ options: WMTSOptions }>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
-    @updateOpacity="emit('updateOpacity', layer.uuid, $event)"
+    @updateLegends="emit('updateLegends', layer.uuid, $event)"
   ></MapDatamappingOgcWmtsLayerConverter>
   <MapDatamappingOgcWmsLayerConverter
     v-if="layerFormat === 'WMS'"
     :distribution
     :serviceData
     :layerId
+    @error="emit('error', $event)"
     @updateData="pushLayerSpecificData<WMSLayerData>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
-    @updateOpacity="emit('updateOpacity', layer.uuid, $event)"
+    @updateLegends="emit('updateLegends', layer.uuid, $event)"
   ></MapDatamappingOgcWmsLayerConverter>
 </template>

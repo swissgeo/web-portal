@@ -19,9 +19,6 @@ const A0_LONG_SIDE_MM = 1189;
 
 // Ratios between A0 and the smaller Ax page size
 const formatRatiosToA0: Record<PrintFormat, number> = {
-  a0: SQRT_2 ** 0,
-  a1: SQRT_2 ** 1,
-  a2: SQRT_2 ** 2,
   a3: SQRT_2 ** 3,
   a4: SQRT_2 ** 4,
   a5: SQRT_2 ** 5,
@@ -124,10 +121,6 @@ export function validatePrintConfig(
     maybePrintProps.resolution <= 0
   ) {
     throw new Error("The print resolution must be greater than 0");
-  }
-
-  if (maybePrintProps.zoom === undefined || maybePrintProps.zoom <= 0) {
-    throw new Error("The zoom must be greater or equal to 0");
   }
 }
 

@@ -11,23 +11,38 @@ mockNuxtImport("useI18n", () => {
   });
 });
 
-const { useStyleMock, useWmsCapabilitiesMock, styleDataMock, wmsDataMock } =
-  await vi.hoisted(async () => {
-    const { ref } = await import("vue");
-    const styleDataMock = ref({});
-    const wmsDataMock = ref({});
+const {
+  capabilityUrlMock,
+  onCapabilitiesResponseMock,
+  useStyleMock,
+  useWmsCapabilitiesMock,
+  styleDataMock,
+  wmsDataMock,
+} = await vi.hoisted(async () => {
+  const { ref } = await import("vue");
+  const styleDataMock = ref({});
+  const wmsDataMock = ref({});
+  const capabilityUrlMock = ref("capabilities-url");
+  const onCapabilitiesErrorMock = vi.fn();
+  const onCapabilitiesResponseMock = vi.fn();
 
-    return {
-      useStyleMock: vi.fn(() => ({
-        styleData: styleDataMock,
-      })),
-      useWmsCapabilitiesMock: vi.fn(() => ({
-        wmsData: wmsDataMock,
-      })),
-      styleDataMock,
-      wmsDataMock,
-    };
-  });
+  return {
+    capabilityUrlMock,
+    onCapabilitiesErrorMock,
+    onCapabilitiesResponseMock,
+    useStyleMock: vi.fn(() => ({
+      styleData: styleDataMock,
+    })),
+    useWmsCapabilitiesMock: vi.fn(() => ({
+      capabilityUrl: capabilityUrlMock,
+      onCapabilitiesError: onCapabilitiesErrorMock,
+      onCapabilitiesResponse: onCapabilitiesResponseMock,
+      wmsData: wmsDataMock,
+    })),
+    styleDataMock,
+    wmsDataMock,
+  };
+});
 
 vi.mock("@swissgeo/ogc", () => ({
   useStyle: useStyleMock,
@@ -43,6 +58,8 @@ vi.mock("@/utils/timeUtils", () => ({
 
 describe("useOgcWmsData", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
+    capabilityUrlMock.value = "capabilities-url";
     styleDataMock.value = {};
     wmsDataMock.value = {};
   });
@@ -52,7 +69,7 @@ describe("useOgcWmsData", () => {
     const service = ref({});
     const layerId = ref("");
     // @ts-expect-error Not caring about the types here
-    useOgcWmsData(distribution, service, layerId);
+    useOgcWmsData(distribution, service, layerId, vi.fn());
 
     expect(useStyleMock).toHaveBeenCalledTimes(1);
     expect(useStyleMock).toHaveBeenCalledWith(distribution);
@@ -75,7 +92,7 @@ describe("useOgcWmsData", () => {
     const service = ref({});
     const layerId = ref("");
     // @ts-expect-error Intentionally not caring about the types
-    const { timeInfo } = useOgcWmsData(distribution, service, layerId);
+    const { timeInfo } = useOgcWmsData(distribution, service, layerId, vi.fn());
     expect(timeInfo.value).toEqual({
       defaultTime: 2022,
       availableTimes: [2021, 2022],
@@ -86,18 +103,16 @@ describe("useOgcWmsData", () => {
     const distribution = ref({});
     const service = ref({});
     const layerId = ref("");
+    const onError = vi.fn();
 
     wmsDataMock.value = {
-      capabilities: {
-        Service: {
-          OnlineResource: "http://swissgeo.ch",
-        },
-        version: "1.3.0",
-      },
+      url: "http://swissgeo.ch",
+      version: "1.3.0",
     };
 
     // @ts-expect-error Intentionally not caring about the types
-    const { wmsDataForOl } = useOgcWmsData(distribution, service, layerId);
+    const result = useOgcWmsData(distribution, service, layerId, onError);
+    const { wmsDataForOl } = result;
     expect(wmsDataForOl.value).toEqual({
       url: "http://swissgeo.ch",
       version: "1.3.0",
@@ -110,18 +125,16 @@ describe("useOgcWmsData", () => {
     const distribution = ref({});
     const service = ref({});
     const layerId = ref("");
+    const onError = vi.fn();
 
     wmsDataMock.value = {
-      capabilities: {
-        Service: {
-          OnlineResource: "http://swissgeo.ch",
-        },
-        version: "1.3.0",
-      },
+      url: "http://swissgeo.ch",
+      version: "1.3.0",
     };
 
     // @ts-expect-error Intentionally not caring about the types
-    const { wmsDataForOl } = useOgcWmsData(distribution, service, layerId);
+    const result = useOgcWmsData(distribution, service, layerId, onError);
+    const { wmsDataForOl } = result;
     expect(wmsDataForOl.value).toEqual({
       url: "http://swissgeo.ch",
       version: "1.3.0",
@@ -130,12 +143,8 @@ describe("useOgcWmsData", () => {
     });
 
     wmsDataMock.value = {
-      capabilities: {
-        Service: {
-          OnlineResource: "http://geo.admin.ch",
-        },
-        version: "1.3.0",
-      },
+      url: "http://geo.admin.ch",
+      version: "1.3.0",
     };
 
     // no need to re-use the composable, the data itself is reactive!
@@ -151,6 +160,7 @@ describe("useOgcWmsData", () => {
     const distribution = ref({});
     const service = ref({});
     const layerId = ref("");
+    const onError = vi.fn();
 
     styleDataMock.value = {
       id: "ch.bafu.gefahren-aktuelle_erdbeben:wms:style",
@@ -167,16 +177,57 @@ describe("useOgcWmsData", () => {
     };
 
     wmsDataMock.value = {
-      capabilities: {
-        Service: {
-          OnlineResource: "http://swissgeo.ch",
-        },
-        version: "1.3.0",
-      },
+      url: "http://swissgeo.ch",
+      version: "1.3.0",
     };
 
     // @ts-expect-error Intentionally not caring about the types
-    const { wmsDataForOl } = useOgcWmsData(distribution, service, layerId);
+    const result = useOgcWmsData(distribution, service, layerId, onError);
+    const { wmsDataForOl } = result;
     expect(wmsDataForOl.value?.gutter).toEqual(25);
+  });
+
+  it("reports unusable capabilities", () => {
+    const onError = vi.fn();
+    wmsDataMock.value = {
+      url: null,
+      version: "1.3.0",
+      dimensions: null,
+    };
+
+    // @ts-expect-error Intentionally not caring about the input types
+    useOgcWmsData(ref({}), ref({}), ref("layer"), onError);
+    onCapabilitiesResponseMock.mock.calls[0]![0]();
+
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "Unable to process required WMS capabilities",
+        cause: expect.objectContaining({
+          message: "WMS capabilities contain no usable layer data",
+        }),
+      }),
+    );
+  });
+
+  it("reports a capabilities parsing exception", () => {
+    const onError = vi.fn();
+    const parseError = new Error("missing WMS layer");
+    const valueSpy = vi
+      .spyOn(wmsDataMock, "value", "get")
+      .mockImplementationOnce(() => {
+        throw parseError;
+      });
+
+    // @ts-expect-error Intentionally not caring about the input types
+    useOgcWmsData(ref({}), ref({}), ref("layer"), onError);
+    onCapabilitiesResponseMock.mock.calls[0]![0]();
+
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "Unable to process required WMS capabilities",
+        cause: parseError,
+      }),
+    );
+    valueSpy.mockRestore();
   });
 });
