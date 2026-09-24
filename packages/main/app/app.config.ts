@@ -60,6 +60,14 @@ export default defineAppConfig({
       },
     },
     button: {
+      variants: {
+        variant: {
+          "solid-inverted":
+            "bg-primary-900 dark:bg-primary-100 text-primary-100 dark:text-primary-800 hover:bg-primary-800 dark:hover:bg-primary-200 disabled:bg-primary-900 disabled:text-primary-100 aria-disabled:bg-primary-900 aria-disabled:text-primary-100 focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-secondary!",
+          "ghost-inverted":
+            "bg-transparent text-primary-800 dark:text-primary-100 hover:bg-primary-800/10 dark:hover:bg-primary-100/10 hover:text-primary-600 dark:hover:text-primary-200 disabled:bg-transparent disabled:text-primary-300 disabled:hover:bg-transparent aria-disabled:bg-transparent aria-disabled:text-primary-300 aria-disabled:hover:bg-transparent focus-visible:bg-transparent focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-secondary!",
+        },
+      },
       compoundVariants: [
         {
           color: "primary",
