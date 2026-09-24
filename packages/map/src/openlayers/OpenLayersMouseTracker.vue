@@ -3,8 +3,9 @@ import type { SingleCoordinate } from "@swissgeo/coordinates";
 import type MapBrowserEvent from "ol/MapBrowserEvent";
 
 import log from "@swissgeo/log";
+import { watchDebounced } from "@vueuse/core";
 import { storeToRefs } from "pinia";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 
 import { useMapStore } from "@/stores/map";
 import usePositionStore from "@/stores/position";
@@ -34,7 +35,7 @@ function setDisplayedFormatWithId(): void {
   }
 }
 
-watch(
+watchDebounced(
   olMap,
   (map, _oldMap, onCleanup) => {
     if (!map) {
@@ -47,7 +48,7 @@ watch(
     map.on("pointermove", handler);
     onCleanup(() => map.un("pointermove", handler));
   },
-  { immediate: true },
+  { immediate: true, debounce: 250 },
 );
 </script>
 
