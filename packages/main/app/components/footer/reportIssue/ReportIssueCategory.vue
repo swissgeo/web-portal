@@ -48,7 +48,7 @@ const items = ref<SelectItem[]>([
     :to="t('footer.reportIssue.steps.step1.moreInfo.url')"
     target="_blank"
     variant="link"
-    class="pl-0"
+    class="pl-0 text-xs"
     >{{ t("footer.reportIssue.steps.step1.moreInfo.label") }}</UButton
   >
 </template>

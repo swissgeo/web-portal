@@ -128,12 +128,20 @@ watch(shareLink, (newLink) => {
     data-testid="footer-report-issue-card"
     :ui="{
       body: 'md:max-h-[75vh] md:overflow-y-scroll',
+      root: 'ring-0',
+      header: 'border-0',
     }"
   >
     <template #header>
-      <div class="flex items-start justify-between">
-        <div class="font-semibold text-highlighted">
-          {{ t("footer.reportIssue.title") }}
+      <div class="flex items-center items-start justify-between">
+        <div class="flex items-center gap-2">
+          <UIcon
+            name="i-lucide-triangle-alert"
+            class="size-5 text-highlighted"
+          />
+          <div class="text-base font-semibold text-highlighted">
+            {{ t("footer.reportIssue.title") }}
+          </div>
         </div>
         <UButton
           color="neutral"
@@ -158,12 +166,14 @@ watch(shareLink, (newLink) => {
 
       <ReportIssueNotes :permalink="permalink" />
 
-      <UButton type="reset" color="error" variant="outline" class="mr-2">
-        {{ t("footer.reportIssue.cancelButton") }}
-      </UButton>
-      <UButton type="submit" :disabled="pending">
-        {{ t("footer.reportIssue.submitButton") }}
-      </UButton>
+      <div class="flex flex-row justify-between">
+        <UButton size="xl" type="reset" variant="ghost" class="mr-2">
+          {{ t("footer.reportIssue.cancelButton") }}
+        </UButton>
+        <UButton size="xl" type="submit" :disabled="pending">
+          {{ t("footer.reportIssue.submitButton") }}
+        </UButton>
+      </div>
     </UForm>
   </UCard>
 </template>
