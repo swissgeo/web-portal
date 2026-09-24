@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onKeyStroke } from "@vueuse/core";
+import { onKeyStroke, useEventListener } from "@vueuse/core";
 
 defineProps<{
   title: string;
@@ -33,11 +33,39 @@ provide(panelScrollerKey, scroller);
 //   extends the panel to cover (almost) the entire screen, so we shouldn't
 //   show scrollbars in that case because it is not scrollable.
 const scrollerClass = computed(() => [
-  "min-h-0 flex-1",
+  "min-h-0 flex-1 overscroll-y-contain",
   isDesktop.value || isFullyExtended.value
     ? "overflow-y-auto"
     : "overflow-hidden",
 ]);
+
+// vaul-vue (built on Reka UI) lacks the touchmove guard that React vaul gets
+// from Radix's react-remove-scroll. Without it, swiping down on the list while
+// it is scrolled to the top starts a native scroll (or pull-to-refresh), which
+// cancels vaul's pointer drag, so the drawer can't be swiped down.
+let touchStartY = 0;
+useEventListener(
+  scroller,
+  "touchstart",
+  (e: TouchEvent) => {
+    touchStartY = e.touches[0]!.clientY;
+  },
+  { passive: true },
+);
+useEventListener(
+  scroller,
+  "touchmove",
+  (e: TouchEvent) => {
+    if (isDesktop.value || !scroller.value) {
+      return;
+    }
+    const isPullingDown = e.touches[0]!.clientY > touchStartY;
+    if (isPullingDown && scroller.value.scrollTop <= 0 && e.cancelable) {
+      e.preventDefault();
+    }
+  },
+  { passive: false },
+);
 
 onKeyStroke("Escape", () => {
   // The drawer already handles close on Escape press, so this is only required on desktop
