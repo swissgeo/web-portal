@@ -3,6 +3,7 @@ import type { Link } from "@swissgeo/ogc";
 
 defineProps<{
   links: Link[];
+  label?: string;
 }>();
 </script>
 
@@ -13,10 +14,15 @@ defineProps<{
         :to="link.href"
         target="_blank"
         raw
-        class="inline-flex max-w-full items-baseline gap-1"
+        class="flex w-full items-center justify-between gap-space-s rounded-md border border-default p-space-s text-sm font-semibold text-highlighted"
       >
-        <UIcon name="i-lucide-external-link" class="size-3 shrink-0" />
-        <span class="wrap-anywhere">{{ link.title ?? link.href }}</span>
+        <span class="wrap-anywhere">{{
+          label ?? link.title ?? link.href
+        }}</span>
+        <UIcon
+          name="i-lucide-external-link"
+          class="size-4 shrink-0 text-primary"
+        />
       </ULink>
     </li>
   </ul>

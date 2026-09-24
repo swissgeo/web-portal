@@ -2,14 +2,17 @@
 import { useClipboard } from "@vueuse/core";
 import { computed } from "vue";
 
-defineProps<{ url: string }>();
+const { defaultIcon = "i-lucide-link" } = defineProps<{
+  url: string;
+  defaultIcon?: string;
+}>();
 
 const { copy, copied } = useClipboard();
 const icon = computed(() => {
   if (copied.value) {
     return "i-lucide-copy-check";
   }
-  return "i-lucide-link";
+  return defaultIcon;
 });
 </script>
 
