@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { Map, Layers3, Wrench } from "@lucide/vue";
 import { OLMapScale, useMapStore } from "@swissgeo/map";
-import { useMediaQuery } from "@vueuse/core";
 const { olMap } = storeToRefs(useMapStore());
 const { t } = useI18n();
-const isDesktop = useMediaQuery("(min-width: 768px)");
+const isDesktop = useIsDesktop();
 
 const mobileNavButtons = computed(() => [
   { icon: Map, label: t("footer.mobileNav.map"), variant: "solid" as const },
@@ -23,7 +22,7 @@ const mobileNavButtons = computed(() => [
 const wrapperClasses = computed(() => {
   return isDesktop.value
     ? "text-accent absolute bottom-0 left-0 z-50 flex w-full items-center justify-between bg-muted p-1 text-xs"
-    : "text-accent absolute bottom-0 left-0 z-50 flex w-full items-center justify-center gap-1.5 bg-default p-1 pb-7";
+    : "text-accent absolute bottom-0 left-0 z-50 flex w-full items-center justify-center gap-1.5 bg-default p-1";
 });
 </script>
 

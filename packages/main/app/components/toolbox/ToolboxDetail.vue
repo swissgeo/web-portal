@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createReusableTemplate, useMediaQuery } from "@vueuse/core";
+import { createReusableTemplate } from "@vueuse/core";
 
 import Import from "@/components/toolbox/import/Import.vue";
 import ToolboxShare from "@/components/toolbox/share/Share.vue";
@@ -8,7 +8,7 @@ import { useToolboxStore } from "@/stores/toolbox";
 const toolboxStore = useToolboxStore();
 
 const [RegisterTemplate, ReuseTemplate] = createReusableTemplate();
-const isDesktop = useMediaQuery("(min-width: 768px)");
+const isDesktop = useIsDesktop();
 </script>
 
 <template>
