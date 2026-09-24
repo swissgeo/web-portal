@@ -10,6 +10,8 @@ export type PrintPostRequestBody = {
   print_format: PrintFormat;
   print_orientation: PrintOrientation;
   print_resolution: number;
+  /** Scale denominator (25000 for 1:25'000). Without it, the print page draws the zoom of the state */
+  print_scale?: number;
   print_legend: boolean;
   print_grid: boolean;
   print_lang: string;

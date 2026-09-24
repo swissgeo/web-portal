@@ -52,12 +52,40 @@ The available variables are:
 NUXT_PUBLIC_OGC_API_ENDPOINT=   # OGC API endpoint (exposed to client)
 NUXT_PUBLIC_WANTED_LOG_LEVELS=  # String of log levels wanted (error|warn|info|debug)
 NUXT_PUBLIC_SHARE_SERVICE_URL=  # The URL to the share service
+NUXT_PUBLIC_PRINT_SERVICE_URL=  # The URL to the print service jobs endpoint (exposed to client)
 NUXT_WHAT3WORDS_API_KEY=        # what3words API key (server-only)
 NUXT_GEOADMIN_API_BASE_URL=     # Base URL for legacy geo.admin.ch API (server-only)
 NUXT_PUBLIC_CMS_BASE_URL=        # Published CMS site, for linking search results (exposed to client)
 NUXT_LIVINGDOCS_API_ENDPOINT=   # Livingdocs CMS public API, incl. version (server-only)
 NUXT_LIVINGDOCS_AUTH_TOKEN=     # Livingdocs project-scoped API token (server-only)
 ```
+
+## Printing
+
+The portal saves the map state, sends a print job to the print service (`NUXT_PUBLIC_PRINT_SERVICE_URL`)
+and polls it until the PDF is ready. The service opens `/<lang>/print?state=...&print_*=...` in a
+headless browser and prints that page.
+
+The print panel has two modes. Both print the layers that are currently active, at 96 dpi (the
+resolution of CSS pixels, 1 in = 96 px):
+
+- **Current view (WYSIWYG):** prints the map as on screen, at the zoom level of the state.
+- **Fixed scale:** prints at a round scale (1:10'000 to 1:1'000'000), like a paper map. On paper,
+  1 cm is exactly scale / 100'000 km (1:25'000: 1 cm = 250 m).
+
+Switching between the modes changes the print frame as little as possible. Fixed scale starts at the
+round scale closest to the current view. Leaving it, the current view starts with the fixed frame,
+until the user zooms.
+
+How the scale is kept exact:
+
+- For a fixed scale, the job and the print page carry `print_scale`. The print page draws the map at the exact
+  resolution of that scale before it is ready (`usePrintStatus`).
+- Tiled layers request the tile level listed for that scale in `printFixedScales`
+  (`types/print.ts`, with the sources of the pairing and the table of the swisstopo
+  [WMTS docs](https://docs.geo.admin.ch/visualize-data/wmts.html#gettile)), so the tiles of that
+  level are drawn (for example level 22, 2.5 m/px, for 1:25'000). Layers without
+  that level are not changed, and the normal map is not affected.
 
 ## Monorepo setup
 

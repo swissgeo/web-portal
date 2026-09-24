@@ -5,6 +5,11 @@ import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises, mount } from "@vue/test-utils";
 import { usePrintFraming } from "~/composables/usePrintFraming";
 import { URL_PARAM_STATE } from "~/composables/useUrlParams";
+import { PRINT_DPI } from "~/types/print";
+import {
+  getResolutionForScale,
+  getScaleForResolution,
+} from "~/utils/printUtils";
 import Polygon from "ol/geom/Polygon";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick, ref } from "vue";
@@ -16,10 +21,10 @@ const {
   mockRenderSync,
   mockSendCustomPrintRequest,
   mockSetCenter,
-  mockSetConstrainResolution,
   mockSetZoom,
   mockShowWarning,
   mockToasterRemove,
+  mockMakeUseOfCurrentLayers,
   mockUseCreateShareLinkForCustomState,
   mockUseCustomStateConfig,
   mockUseI18n,
@@ -32,10 +37,10 @@ const {
   mockRenderSync: vi.fn(),
   mockSendCustomPrintRequest: vi.fn(),
   mockSetCenter: vi.fn(),
-  mockSetConstrainResolution: vi.fn(),
   mockSetZoom: vi.fn(),
   mockShowWarning: vi.fn(),
   mockToasterRemove: vi.fn(),
+  mockMakeUseOfCurrentLayers: vi.fn(),
   mockUseCreateShareLinkForCustomState: vi.fn(),
   mockUseCustomStateConfig: vi.fn(),
   mockUseI18n: vi.fn(),
@@ -79,11 +84,21 @@ function makeState(): AppStatePayload {
   };
 }
 
+const zoomOfScale = (scale: number) =>
+  8 - Math.log2(getResolutionForScale(scale, PRINT_DPI));
+
+// width in map units of the frame that was drawn last
+const lastFrameWidth = () => {
+  const extent = mockCreateCutoutGeometry.mock.calls.at(-1)?.[1] as number[];
+  return (extent[2] as number) - (extent[0] as number);
+};
+
 describe("usePrintFraming", () => {
   let center: Ref<[number, number]>;
   let customStateConfig: Ref<AppStatePayload>;
   let customStateMapCenter: Ref<[number, number]>;
   let customStateMapZoom: Ref<number>;
+  let backgroundLayerStateConfig: Ref<object | null>;
   let hash: Ref<string | null>;
   let olMap: Ref<object | null>;
   let portableState: Ref<AppStatePayload | null>;
@@ -92,10 +107,12 @@ describe("usePrintFraming", () => {
 
   const view = {
     getCenter: vi.fn(() => center.value),
-    getResolutionForZoom: vi.fn(() => 1),
+    getResolutionForZoom: vi.fn((zoom: number) => 2 ** (8 - zoom)),
+    getZoomForResolution: vi.fn(
+      (resolution: number) => 8 - Math.log2(resolution),
+    ),
     getZoom: vi.fn(() => 8),
     setCenter: mockSetCenter,
-    setConstrainResolution: mockSetConstrainResolution,
     setZoom: mockSetZoom,
   };
 
@@ -116,6 +133,7 @@ describe("usePrintFraming", () => {
     customStateConfig = ref(makeState());
     customStateMapCenter = ref([0, 0]);
     customStateMapZoom = ref(0);
+    backgroundLayerStateConfig = ref(null);
     hash = ref(null);
     portableState = ref(null);
 
@@ -142,6 +160,8 @@ describe("usePrintFraming", () => {
       customStateConfig,
       customStateMapCenter,
       customStateMapZoom,
+      backgroundLayerStateConfig,
+      makeUseOfCurrentLayers: mockMakeUseOfCurrentLayers,
     });
     mockUseCreateShareLinkForCustomState.mockReturnValue({
       hash,
@@ -178,8 +198,9 @@ describe("usePrintFraming", () => {
     });
     expect(framing.centerForPrint.value).toEqual([2_600_000, 1_200_000]);
     expect(framing.zoomLevelForPrint.value).toBe(8);
-    expect(framing.scaleOfPrint.value).toBeCloseTo(1123 / 0.297);
-    expect(framing.scaleOfPrintFormatted.value).toBe("1:3781");
+    // a screen at 96 dpi showing 1 m per pixel is at 1:3'780
+    expect(framing.scaleOfPrint.value).toBeCloseTo(96 / 0.0254);
+    expect(framing.scaleOfPrintFormatted.value).toBe("1:3780");
     expect(customStateMapCenter.value).toEqual([2_600_000, 1_200_000]);
     expect(customStateMapZoom.value).toBe(8);
     expect(mockCreateCutoutGeometry).toHaveBeenCalled();
@@ -189,7 +210,6 @@ describe("usePrintFraming", () => {
     wrapper.unmount();
 
     expect(mockRemoveLayer).toHaveBeenCalledOnce();
-    expect(mockSetConstrainResolution).toHaveBeenLastCalledWith(false);
   });
 
   it("locks framing coordinates and adjusts the live map back to them", async () => {
@@ -210,14 +230,6 @@ describe("usePrintFraming", () => {
     expect(mockSetCenter).toHaveBeenCalledWith([2_600_000, 1_200_000]);
     expect(mockSetZoom).toHaveBeenCalledWith(8);
 
-    framing.isZoomStepEnabled.value = true;
-    await nextTick();
-    expect(mockSetConstrainResolution).toHaveBeenLastCalledWith(true);
-
-    framing.isZoomStepEnabled.value = false;
-    await nextTick();
-    expect(mockSetConstrainResolution).toHaveBeenLastCalledWith(false);
-
     wrapper.unmount();
   });
 
@@ -226,7 +238,6 @@ describe("usePrintFraming", () => {
 
     framing.selectedPrintFormat.value = "a3";
     framing.selectedPrintOrientation.value = "portrait";
-    framing.selectedPrintResolution.value = 192;
     framing.updatePrintState();
 
     expect(portableState.value).toEqual(customStateConfig.value);
@@ -242,12 +253,14 @@ describe("usePrintFraming", () => {
     expect(previewUrl.searchParams.get(URL_PARAM_STATE)).toBe("print-state");
     expect(previewUrl.searchParams.get("print_format")).toBe("a3");
     expect(previewUrl.searchParams.get("print_orientation")).toBe("portrait");
-    expect(previewUrl.searchParams.get("print_resolution")).toBe("192");
+    expect(previewUrl.searchParams.get("print_resolution")).toBe("96");
+    // wysiwyg prints the zoom of the state, without a scale
+    expect(previewUrl.searchParams.has("print_scale")).toBe(false);
     expect(mockSendCustomPrintRequest).toHaveBeenCalledWith({
       state_id: "print-state",
       print_format: "a3",
       print_orientation: "portrait",
-      print_resolution: 192,
+      print_resolution: 96,
       print_legend: false,
       print_grid: false,
       print_lang: "en",
@@ -281,5 +294,175 @@ describe("usePrintFraming", () => {
     );
 
     wrapper.unmount();
+  });
+
+  describe("fixed-scale mode", () => {
+    it("frames the exact real-world size of the scale, whatever the screen zoom", async () => {
+      const { framing } = mountComposable();
+      framing.selectedPrintMode.value = "fixed-scale";
+      await nextTick();
+      framing.selectedPrintScale.value = 25000;
+      await nextTick();
+
+      // A4 landscape is 297 mm wide, so 1:25'000 covers 7'425 m
+      expect(framing.scaleOfPrint.value).toBeCloseTo(25000, -1);
+      expect(framing.isAtLockedZoomLevel.value).toBe(true);
+      // the state keeps a whole zoom level, the print page draws print_scale exactly
+      expect(customStateMapZoom.value).toBe(Math.round(zoomOfScale(25000)));
+
+      zoomLevel.value = 12;
+      await nextTick();
+      expect(framing.scaleOfPrint.value).toBeCloseTo(25000, -1);
+    });
+
+    it("prints the layers currently active, and sends the scale", async () => {
+      const activeBackground = { layerUrl: "catalog/whatever-is-active" };
+      backgroundLayerStateConfig.value = activeBackground;
+      const { framing } = mountComposable();
+      framing.selectedPrintMode.value = "fixed-scale";
+      await nextTick();
+      framing.selectedPrintScale.value = 50000;
+      await nextTick();
+
+      // the background of the state is the one on screen, not one picked for the mode
+      expect(backgroundLayerStateConfig.value).toEqual(activeBackground);
+
+      hash.value = "abcdefghijklmnop";
+      framing.updatePrintState();
+      await flushPromises();
+
+      expect(mockSendCustomPrintRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          print_scale: 50000,
+          print_resolution: 96,
+        }),
+      );
+      const url = new URL(framing.printPreviewUrl.value as string);
+      expect(url.searchParams.get("print_scale")).toBe("50000");
+    });
+
+    it("leaves the layers alone when switching modes back and forth", async () => {
+      const { framing } = mountComposable();
+      framing.selectedPrintMode.value = "fixed-scale";
+      await nextTick();
+      framing.selectedPrintMode.value = "wysiwyg";
+      await nextTick();
+
+      expect(mockMakeUseOfCurrentLayers).not.toHaveBeenCalled();
+      expect(backgroundLayerStateConfig.value).toBeNull();
+      hash.value = "abcdefghijklmnop";
+      framing.updatePrintState();
+      await flushPromises();
+    });
+  });
+
+  describe("switching mode", () => {
+    /** Enters fixed-scale mode, picks the scale and goes back to wysiwyg */
+    async function leaveFixedScale(
+      framing: ReturnType<typeof usePrintFraming>,
+      scale: number,
+    ) {
+      framing.selectedPrintMode.value = "fixed-scale";
+      await nextTick();
+      framing.selectedPrintScale.value = scale;
+      await nextTick();
+      mockSetZoom.mockClear();
+      framing.selectedPrintMode.value = "wysiwyg";
+      await nextTick();
+    }
+
+    it("starts wysiwyg with the fixed frame and zooms the map to it", async () => {
+      const { framing } = mountComposable();
+      framing.selectedPrintMode.value = "fixed-scale";
+      await nextTick();
+      framing.selectedPrintScale.value = 25000;
+      await nextTick();
+      const fixedFrameWidth = lastFrameWidth();
+      mockSetZoom.mockClear();
+
+      framing.selectedPrintMode.value = "wysiwyg";
+      await nextTick();
+      // the map has moved to the fixed scale
+      zoomLevel.value = zoomOfScale(25000);
+      await nextTick();
+
+      expect(mockSetZoom).toHaveBeenCalledWith(
+        expect.closeTo(zoomOfScale(25000), 9),
+      );
+      expect(lastFrameWidth()).toBeCloseTo(fixedFrameWidth, 3);
+      // the print page has to draw that scale, the zoom of the state is a whole level
+      expect(framing.scaleOfPrint.value).toBeCloseTo(25000, 3);
+      expect(customStateMapZoom.value).toBe(Math.round(zoomOfScale(25000)));
+
+      hash.value = "abcdefghijklmnop";
+      framing.updatePrintState();
+      await flushPromises();
+      expect(mockSendCustomPrintRequest).toHaveBeenCalledWith(
+        expect.objectContaining({ print_scale: 25000 }),
+      );
+    });
+
+    it("prints the rounded zoom of the screen again once the user zooms", async () => {
+      const { framing } = mountComposable();
+      await leaveFixedScale(framing, 25000);
+      zoomLevel.value = zoomOfScale(25000);
+      await nextTick();
+
+      zoomLevel.value = 7.4;
+      await nextTick();
+
+      expect(framing.zoomLevelForPrint.value).toBe(7);
+      expect(framing.scaleOfPrint.value).toBeCloseTo(
+        getScaleForResolution(2, PRINT_DPI),
+      );
+      hash.value = "abcdefghijklmnop";
+      framing.updatePrintState();
+      await flushPromises();
+      expect(mockSendCustomPrintRequest.mock.calls[0]?.[0]).not.toHaveProperty(
+        "print_scale",
+      );
+    });
+
+    it("keeps the fixed frame while the zoom is locked", async () => {
+      const { framing } = mountComposable();
+      framing.isZoomLocked.value = true;
+      await leaveFixedScale(framing, 25000);
+
+      expect(mockSetZoom).not.toHaveBeenCalled();
+      zoomLevel.value = 5;
+      await nextTick();
+
+      expect(framing.scaleOfPrint.value).toBeCloseTo(25000, 3);
+    });
+
+    it.each([
+      // 1 m/px on a 96 dpi screen is 1:3'780, closest to 1:10'000
+      [8, 10000],
+      // 32 m/px is 1:120'945, closer to 1:100'000 than to 1:200'000
+      [3, 100000],
+    ])(
+      "starts fixed-scale mode at the round scale closest to wysiwyg (zoom %s)",
+      async (zoom, expected) => {
+        const { framing } = mountComposable();
+        zoomLevel.value = zoom;
+        await nextTick();
+        framing.selectedPrintMode.value = "fixed-scale";
+        await nextTick();
+
+        expect(framing.selectedPrintScale.value).toBe(expected);
+      },
+    );
+
+    it("starts fixed-scale mode at the round scale closest to the start scale of wysiwyg", async () => {
+      const { framing } = mountComposable();
+      await leaveFixedScale(framing, 200000);
+      zoomLevel.value = zoomOfScale(200000);
+      await nextTick();
+
+      framing.selectedPrintMode.value = "fixed-scale";
+      await nextTick();
+
+      expect(framing.selectedPrintScale.value).toBe(200000);
+    });
   });
 });

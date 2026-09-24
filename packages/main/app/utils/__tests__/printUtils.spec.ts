@@ -1,26 +1,17 @@
 import {
   computeNumberOfPixelsForPrint,
-  getPageSizeInMeters,
   getPageSizeInPixels,
-  getPrintExtent,
+  getClosestScale,
+  getPrintExtentForResolution,
+  getResolutionForScale,
+  getScaleForResolution,
   isObject,
   validatePrintConfig,
 } from "~/utils/printUtils";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("printUtils", () => {
   describe("page size conversions", () => {
-    it("returns the expected A4 dimensions for both orientations", () => {
-      expect(getPageSizeInMeters("a4", "landscape")).toEqual({
-        width: 297,
-        height: 210,
-      });
-      expect(getPageSizeInMeters("a4", "portrait")).toEqual({
-        width: 210,
-        height: 297,
-      });
-    });
-
     it("converts millimetres to pixels at the requested resolution", () => {
       expect(computeNumberOfPixelsForPrint(25.4, 300)).toBe(300);
       expect(getPageSizeInPixels("a4", "landscape", 254)).toEqual({
@@ -76,28 +67,6 @@ describe("printUtils", () => {
     });
   });
 
-  describe("getPrintExtent", () => {
-    it("centres the extent and scales it with the zoom resolution", () => {
-      const getResolutionForZoom = vi.fn().mockReturnValue(2);
-      const map = {
-        getView: () => ({ getResolutionForZoom }),
-      };
-
-      expect(
-        getPrintExtent(map as never, 8, 100, 50, [2_600_000, 1_200_000]),
-      ).toEqual([2_599_900, 1_199_950, 2_600_100, 1_200_050]);
-      expect(getResolutionForZoom).toHaveBeenCalledWith(8);
-    });
-
-    it("returns null when the view has no resolution for the zoom", () => {
-      const map = {
-        getView: () => ({ getResolutionForZoom: () => undefined }),
-      };
-
-      expect(getPrintExtent(map as never, 8, 100, 50, [0, 0])).toBeNull();
-    });
-  });
-
   it.each([
     [{}, true],
     [new Date(), true],
@@ -106,5 +75,79 @@ describe("printUtils", () => {
     ["object", false],
   ])("identifies objects (%#)", (value, expected) => {
     expect(isObject(value)).toBe(expected);
+  });
+
+  describe("fixed scale", () => {
+    // All rows of the table at https://docs.geo.admin.ch/visualize-data/wmts.html#gettile that have
+    // a scale (the coarser levels have none, and level 24 is not served). The two coarsest rows are
+    // about 1 above the exact value, the docs do not say why.
+    it.each([
+      [650, 2456694],
+      [500, 1889765],
+      [250, 944882],
+      [100, 377953],
+      [50, 188976],
+      [20, 75591],
+      [10, 37795],
+      [5, 18898],
+      [2.5, 9449],
+      [2, 7559],
+      [1, 3780],
+      [0.5, 1890],
+      [0.25, 945],
+      [0.1, 378],
+    ])(
+      "gives the scale of the docs table at 96 dpi for %s m/px",
+      (resolution, scale) => {
+        expect(
+          Math.abs(getScaleForResolution(resolution, 96) - scale),
+        ).toBeLessThan(1.5);
+      },
+    );
+
+    it("finds the closest round scale by ratio", () => {
+      const scales = [10000, 25000, 50000, 100000];
+      expect(getClosestScale(9449, scales)).toBe(10000);
+      expect(getClosestScale(16000, scales)).toBe(25000);
+      expect(getClosestScale(1000000, scales)).toBe(100000);
+      expect(getClosestScale(1, scales)).toBe(10000);
+    });
+
+    // scales of the same docs table give back their resolution
+    it.each([
+      [9449, 2.5],
+      [18898, 5],
+      [3780, 1],
+    ])("gives the resolution of 1:%s at 96 dpi", (scale, resolution) => {
+      expect(getResolutionForScale(scale, 96)).toBeCloseTo(resolution, 2);
+    });
+
+    it("covers exactly the real-world size of the page at that scale", () => {
+      const { width, height } = getPageSizeInPixels("a4", "landscape", 96);
+      const [minX, minY, maxX, maxY] = getPrintExtentForResolution(
+        getResolutionForScale(25000, 96),
+        width,
+        height,
+        [2600000, 1200000],
+      ) as [number, number, number, number];
+
+      // A4 landscape is 297 x 210 mm
+      expect(maxX - minX).toBeCloseTo(0.297 * 25000, -1);
+      expect(maxY - minY).toBeCloseTo(0.21 * 25000, -1);
+      expect((minX + maxX) / 2).toBe(2600000);
+    });
+
+    it("accepts the print scales the map can show, and only them", () => {
+      const config = { format: "a4", orientation: "landscape", resolution: 96 };
+      // at 96 dpi the map shows 0.1 to 650 m/px, which is 1:378 to 1:2'456'692
+      for (const scale of [378, 25000, 2456692]) {
+        expect(() => validatePrintConfig({ ...config, scale })).not.toThrow();
+      }
+      for (const scale of [377, 2456693, 3000000, 0, -1, Number.NaN]) {
+        expect(() => validatePrintConfig({ ...config, scale })).toThrow(
+          "the scales the map can show",
+        );
+      }
+    });
   });
 });

@@ -142,3 +142,26 @@ describe("useUrlParam base64 state extraction", () => {
     expect(useRouterMock.replace).toHaveBeenCalledWith({ query: {} });
   });
 });
+
+describe("useUrlParams print config", () => {
+  const printQuery = {
+    print_format: "a4",
+    print_orientation: "landscape",
+    print_resolution: "96",
+  };
+
+  it("reads the print scale", () => {
+    useRouteMock.query = { ...printQuery, print_scale: "25000" } as never;
+
+    expect(useUrlParams().getPrintConfigFromUrl().scale).toBe(25000);
+  });
+
+  it.each([undefined, "None"])(
+    "has no scale when print_scale is %s, as sent for a print without a fixed scale",
+    (printScale) => {
+      useRouteMock.query = { ...printQuery, print_scale: printScale } as never;
+
+      expect(useUrlParams().getPrintConfigFromUrl().scale).toBeUndefined();
+    },
+  );
+});
