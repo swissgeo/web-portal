@@ -117,5 +117,16 @@ export default defineAppConfig({
         },
       ],
     },
+    toast: {
+      slots: {},
+      variants: {
+        color: {
+          success: { root: "bg-success", icon: "text-highlighted" },
+          info: { root: "bg-info", icon: "text-highlighted" },
+          warning: { root: "bg-warning", icon: "text-highlighted" },
+          error: { root: "bg-error", icon: "text-highlighted" },
+        },
+      },
+    },
   },
 });
