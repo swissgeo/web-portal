@@ -7,6 +7,15 @@ export function useToaster() {
   const { $i18n } = useNuxtApp();
   const toast = useToast();
 
+  const icons: Record<string, string> = {
+    success: "i-lucide-circle-check",
+    error: "i-lucide-octagon-alert",
+    warning: "i-lucide-triangle-alert",
+    info: "i-lucide-info",
+    primary: "i-lucide-bell",
+    neutral: "i-lucide-bell",
+  };
+
   function showWarning(
     message: string,
     overrides?: Parameters<typeof toast.add>[0],
@@ -15,7 +24,7 @@ export function useToaster() {
       title: $i18n.t("toaster.warningTitle"),
       description: message,
       color: "warning",
-      icon: "i-lucide-circle-alert",
+      icon: icons.warning,
       ...overrides,
     });
   }
@@ -28,7 +37,7 @@ export function useToaster() {
       title: $i18n.t("toaster.errorTitle"),
       description: message,
       color: "error",
-      icon: "i-lucide-circle-x",
+      icon: icons.error,
       ...overrides,
     });
   }
@@ -41,8 +50,15 @@ export function useToaster() {
       title: $i18n.t("toaster.successTitle"),
       description: message,
       color: "success",
-      icon: "i-lucide-circle-check",
+      icon: icons.success,
       ...overrides,
+    });
+  }
+
+  function add(toastOptions: Parameters<typeof toast.add>[0]) {
+    return toast.add({
+      icon: toastOptions.color ? icons[toastOptions.color] : icons.neutral,
+      ...toastOptions,
     });
   }
 
@@ -51,6 +67,8 @@ export function useToaster() {
   }
 
   return {
+    ...toast,
+    add,
     showWarning,
     showError,
     showSuccess,
