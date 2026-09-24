@@ -423,6 +423,44 @@ describe("usePrintFraming", () => {
       );
     });
 
+    it("changes nothing when there is no map to zoom", async () => {
+      olMap.value = null;
+      const { framing } = mountComposable();
+      framing.selectedPrintMode.value = "fixed-scale";
+      await nextTick();
+      framing.selectedPrintMode.value = "wysiwyg";
+      await nextTick();
+
+      expect(framing.selectedPrintScale.value).toBe(25000);
+      expect(mockSetZoom).not.toHaveBeenCalled();
+    });
+
+    it("keeps the selected scale when the view has no scale to start from", async () => {
+      const { framing } = mountComposable();
+      framing.selectedPrintScale.value = 50000;
+      view.getResolutionForZoom.mockReturnValue(0);
+      framing.selectedPrintMode.value = "fixed-scale";
+      await nextTick();
+      view.getResolutionForZoom.mockImplementation(
+        (zoom: number) => 2 ** (8 - zoom),
+      );
+
+      expect(framing.selectedPrintScale.value).toBe(50000);
+    });
+
+    it("has no scale of print without a map, and falls back to the screen zoom for the state", async () => {
+      olMap.value = null;
+      zoomLevel.value = 5.4;
+      const { framing } = mountComposable();
+
+      expect(framing.scaleOfPrint.value).toBeNull();
+
+      framing.selectedPrintMode.value = "fixed-scale";
+      await nextTick();
+
+      expect(framing.zoomLevelForPrint.value).toBe(5);
+    });
+
     it("keeps the fixed frame while the zoom is locked", async () => {
       const { framing } = mountComposable();
       framing.isZoomLocked.value = true;

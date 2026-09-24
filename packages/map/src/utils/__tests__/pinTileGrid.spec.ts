@@ -56,6 +56,12 @@ describe("pinTileGrid", () => {
     expect(pinTileGrid(grid, 2.6)).toBe(grid);
   });
 
+  it("leaves a grid as it is when it does not know the tile range of the level", () => {
+    const grid = new WMTSTileGrid({ origin, resolutions, matrixIds });
+
+    expect(pinTileGrid(grid, 2.5)).toBe(grid);
+  });
+
   it("does nothing without a resolution to pin or without a grid", () => {
     const grid = makeWmtsGrid();
 
