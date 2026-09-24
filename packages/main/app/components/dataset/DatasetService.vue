@@ -2,6 +2,8 @@
 import type { Distribution } from "@swissgeo/ogc";
 
 import { useDatasetService } from "~/composables/useDatasetService";
+import { determineFormat } from "~/utils/determineFormat";
+import { isStacDistribution } from "~/utils/isStacDistribution";
 
 import DatasetCopyLink from "./DatasetCopyLink.vue";
 
@@ -15,14 +17,15 @@ const isVisible = computed(() => {
   return Boolean(address.value);
 });
 watch(isVisible, (visible) => emit("visibility", visible), { immediate: true });
-const protocolLabels: Record<string, string> = {
-  "ogc:wms": "WMS",
-  "ogc:wmts": "WMTS",
-  "ogcapi:stac": "STAC Browser",
-};
 const protocol = computed(() => {
-  const value = distribution.properties.protocol?.toLowerCase() ?? "";
-  return protocolLabels[value] ?? value;
+  if (isStacDistribution(distribution)) {
+    return "STAC Browser";
+  }
+  return (
+    determineFormat(distribution) ??
+    distribution.properties.protocol?.toLowerCase() ??
+    ""
+  );
 });
 </script>
 
