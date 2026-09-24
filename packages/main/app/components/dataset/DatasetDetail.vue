@@ -138,14 +138,24 @@ const serviceDistributions = computed<Distribution[]>(() => {
     </template>
 
     <template #data-access>
-      <DatasetServiceList
-        v-if="serviceDistributions.length"
-        :distributions="serviceDistributions"
-      />
+      <section v-if="serviceDistributions.length">
+        <h3 class="mb-space-m text-base font-semibold text-highlighted">
+          {{ $t("dataset.dataAccess") }}
+        </h3>
+        <DatasetServiceList :distributions="serviceDistributions" />
+      </section>
     </template>
 
     <template #metadata>
-      <DatasetLinkList v-if="metadataLinks.length" :links="metadataLinks" />
+      <section v-if="metadataLinks.length">
+        <h3 class="mb-space-m text-base font-semibold text-highlighted">
+          {{ $t("dataset.metadata") }}
+        </h3>
+        <DatasetLinkList
+          :links="metadataLinks"
+          :label="$t('dataset.viewGeocat')"
+        />
+      </section>
     </template>
   </UTabs>
 </template>

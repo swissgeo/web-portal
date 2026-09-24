@@ -344,7 +344,14 @@
     "backToCatalog": "Back to catalog",
     "close": "Close dataset details",
     "backToMap": "Back to map",
-    "addToMapError": "Failed to add layer to map"
+    "addToMapError": "Failed to add layer to map",
+    "openService": "Open service in a new tab",
+    "identifier": "Identifier",
+    "mapServices": "WMS / WMTS",
+    "otherAccess": "Other access options",
+    "format": "Format",
+    "serviceUrl": "URL / Service",
+    "viewGeocat": "View on geocat.ch"
   },
   "elevationProfile": {
     "windowTitle": "Elevation Profile",

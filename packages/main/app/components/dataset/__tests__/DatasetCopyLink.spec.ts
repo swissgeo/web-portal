@@ -31,6 +31,11 @@ it("copies the current dataset URL and shows successful copy feedback", async ()
     "https://example.test/fr/dataset/second",
   );
 
+  await wrapper.setProps({ defaultIcon: "i-lucide-copy" });
+  expect(wrapper.getComponent({ name: "UButton" }).props("icon")).toBe(
+    "i-lucide-copy",
+  );
+
   copied.value = true;
   await wrapper.vm.$nextTick();
   expect(wrapper.getComponent({ name: "UButton" }).props("icon")).toBe(

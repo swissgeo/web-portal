@@ -2,6 +2,7 @@ import type { Distribution, Service } from "@swissgeo/ogc";
 import type { MaybeRefOrGetter } from "vue";
 
 import { extractCapabilityUrl, extractServiceUrl } from "@swissgeo/ogc";
+import { isStacDistribution } from "~/utils/isStacDistribution";
 import { resolveWebUrl } from "~/utils/resolveWebUrl";
 import { computed, toValue } from "vue";
 
@@ -47,11 +48,7 @@ export function useDatasetService(
     }
   });
 
-  const isStac = computed(
-    () =>
-      toValue(distribution).properties.protocol?.toLowerCase() ===
-      "ogcapi:stac",
-  );
+  const isStac = computed(() => isStacDistribution(toValue(distribution)));
   const collectionId = computed(() => {
     const ids = toValue(distribution).properties.externalIds ?? [];
     return ids.length === 1 ? (ids[0] ?? null) : null;

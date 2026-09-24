@@ -4,6 +4,7 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import DatasetCopyLink from "../DatasetCopyLink.vue";
 import DatasetService from "../DatasetService.vue";
 import DatasetServiceList from "../DatasetServiceList.vue";
 
@@ -79,6 +80,9 @@ describe("dataset service addresses", () => {
     expect(wrapper.get("a").attributes("href")).toBe(
       "https://browser.example.test/collections/different.collection",
     );
+    expect(wrapper.getComponent(DatasetCopyLink).props("url")).toBe(
+      wrapper.get("a").attributes("href"),
+    );
     expect(wrapper.text()).toContain("STAC");
     expect(
       fetchMock.mock.calls.every(([, options]) => options.retry === 0),
@@ -105,6 +109,7 @@ describe("dataset service addresses", () => {
     const wrapper = await mountRow(record);
 
     expect(wrapper.find("a").exists()).toBe(false);
+    expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
     expect(wrapper.find('[role="status"]').exists()).toBe(false);
   });
 
@@ -121,6 +126,7 @@ describe("dataset service addresses", () => {
 
     expect(wrapper.get('[role="status"]').classes()).toContain("text-error");
     expect(wrapper.find("a").exists()).toBe(false);
+    expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 
@@ -134,6 +140,7 @@ describe("dataset service addresses", () => {
       const wrapper = await mountRow(record);
 
       expect(wrapper.find("a").exists()).toBe(false);
+      expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
       expect(fetchMock).toHaveBeenCalledTimes(1);
     },
   );
@@ -146,6 +153,10 @@ describe("dataset service addresses", () => {
     const wrapper = await mountRow(record);
 
     expect(wrapper.get("a").attributes("href")).toBe(address);
+    expect(wrapper.getComponent(DatasetCopyLink).props("url")).toBe(address);
+    expect(wrapper.getComponent(DatasetCopyLink).props("defaultIcon")).toBe(
+      "i-lucide-copy",
+    );
     expect(wrapper.get("a").attributes("target")).toBe("_blank");
     expect(wrapper.text()).toContain("WMS");
     expect(wrapper.text()).toContain("provider.layer");
@@ -204,6 +215,7 @@ describe("dataset service addresses", () => {
     await wrapper.setProps({ distribution: missing });
     await flushPromises();
     expect(wrapper.find("a").exists()).toBe(false);
+    expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
@@ -211,6 +223,7 @@ describe("dataset service addresses", () => {
     fetchMock.mockResolvedValue(service("javascript:alert(1)"));
     const wrapper = await mountRow(distribution());
     expect(wrapper.find("a").exists()).toBe(false);
+    expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
   });
 
   it("uses supplied template defaults for the capabilities address", async () => {
@@ -242,12 +255,14 @@ describe("dataset service addresses", () => {
     const wrapper = await mountRow(distribution());
     expect(wrapper.get('[role="status"]').classes()).toContain("text-error");
     expect(wrapper.find("a").exists()).toBe(false);
+    expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
   });
 
   it("omits an address when the service supplies no capabilities link", async () => {
     fetchMock.mockResolvedValue({ links: [] });
     const wrapper = await mountRow(distribution());
     expect(wrapper.find("a").exists()).toBe(false);
+    expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
     expect(wrapper.find('[role="status"]').exists()).toBe(false);
   });
 
@@ -257,6 +272,7 @@ describe("dataset service addresses", () => {
 
     expect(wrapper.get('[role="status"]').text()).not.toBe("");
     expect(wrapper.find("a").exists()).toBe(false);
+    expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
     expect(wrapper.find("button").exists()).toBe(false);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
@@ -294,6 +310,7 @@ describe("dataset service addresses", () => {
     );
     const wrapper = await mountRow(distribution());
     expect(wrapper.find("a").exists()).toBe(false);
+    expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
 
     fetchMock.mockResolvedValueOnce(
       service("https://example.test/new-capabilities"),
