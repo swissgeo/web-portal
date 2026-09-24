@@ -56,10 +56,12 @@ onKeyStroke("Escape", () => {
     :snapPoints="snapPoints"
     :modal="false"
     :overlay="false"
+    portal="#main"
     :ui="{
       // For 'full' extension of the panel, stop 'a bit below the topbar' (half the topbar height),
-      // so a bit of the map remains visible
-      content: 'h-[calc(100%-1.5*var(--ui-header-height))]',
+      // so a bit of the map remains visible.
+      // Leave 4rem space below for the footer.
+      content: 'bottom-16 z-20 h-[calc(100%-1.5*var(--ui-header-height)-4rem)]',
       container: 'min-h-0 flex-1 gap-0 overflow-hidden p-0',
       // The theme spaces the handle for a padded container, which this is not
       handle: 'my-2',
