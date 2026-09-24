@@ -6,7 +6,15 @@ import { useDatasetService } from "~/composables/useDatasetService";
 import DatasetCopyLink from "./DatasetCopyLink.vue";
 
 const { distribution } = defineProps<{ distribution: Distribution }>();
+const emit = defineEmits<{ visibility: [visible: boolean] }>();
 const { address, isLoading, error } = useDatasetService(() => distribution);
+const isVisible = computed(() => {
+  if (isLoading.value || error.value) {
+    return true;
+  }
+  return Boolean(address.value);
+});
+watch(isVisible, (visible) => emit("visibility", visible), { immediate: true });
 const protocolLabels: Record<string, string> = {
   "ogc:wms": "WMS",
   "ogc:wmts": "WMTS",

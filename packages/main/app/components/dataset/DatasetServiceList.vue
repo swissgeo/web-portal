@@ -9,6 +9,12 @@ const { distributions } = defineProps<{
   distributions: Distribution[];
 }>();
 
+const visibility = ref<Record<string, boolean>>({});
+
+function isVisible(distribution: Distribution) {
+  return visibility.value[distribution.id] !== false;
+}
+
 const mapServices = computed(() =>
   distributions.filter((distribution) => !isStacDistribution(distribution)),
 );
@@ -24,7 +30,10 @@ const groups = computed(() => [
 <template>
   <div class="flex flex-col gap-space-m">
     <template v-for="group in groups" :key="group.label">
-      <section v-if="group.distributions.length">
+      <section
+        v-if="group.distributions.length"
+        v-show="group.distributions.some(isVisible)"
+      >
         <h4 class="mb-space-xs text-sm font-semibold text-highlighted">
           {{ $t(group.label) }}
         </h4>
@@ -40,8 +49,12 @@ const groups = computed(() => [
             <li
               v-for="distribution in group.distributions"
               :key="distribution.id"
+              v-show="isVisible(distribution)"
             >
-              <DatasetService :distribution="distribution" />
+              <DatasetService
+                :distribution="distribution"
+                @visibility="visibility[distribution.id] = $event"
+              />
             </li>
           </ul>
         </div>
