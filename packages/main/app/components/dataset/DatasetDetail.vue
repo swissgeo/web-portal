@@ -7,6 +7,8 @@ import type {
   Link,
 } from "@swissgeo/ogc";
 
+import { determineFormat } from "~/utils/determineFormat";
+import { isStacDistribution } from "~/utils/isStacDistribution";
 import { resolveWebUrl } from "~/utils/resolveWebUrl";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
@@ -68,12 +70,10 @@ const serviceDistributions = computed<Distribution[]>(() => {
     return [];
   }
   return props.distributionCollection.features.filter((distribution) => {
-    const protocol = distribution.properties.protocol?.toLowerCase();
     return (
       distribution.properties.metaInformation !== true &&
-      (protocol === "ogc:wms" ||
-        protocol === "ogc:wmts" ||
-        protocol === "ogcapi:stac")
+      (determineFormat(distribution) !== null ||
+        isStacDistribution(distribution))
     );
   });
 });

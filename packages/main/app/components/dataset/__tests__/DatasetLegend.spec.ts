@@ -76,6 +76,32 @@ describe("DatasetLegend selection", () => {
     });
   });
 
+  it("updates the selection when the dataset preference changes", async () => {
+    const wrapper = render([wms, wmts]);
+    const dataset = wrapper.props("dataset");
+
+    await wrapper.setProps({
+      dataset: {
+        ...dataset,
+        properties: { ...dataset.properties, preferredDistributionId: "wmts" },
+      },
+    });
+
+    expect(
+      wrapper.getComponent(DatasetDistributionLegend).props(),
+    ).toMatchObject({
+      distribution: wmts,
+      layerId: "wmts-layer",
+    });
+  });
+
+  it("does not substitute the first distribution when the preferred ID is missing", () => {
+    const wrapper = render([wms], "missing");
+    expect(wrapper.findComponent(DatasetDistributionLegend).exists()).toBe(
+      false,
+    );
+  });
+
   it("does not substitute another distribution for a preferred STAC record", () => {
     const stac: Distribution = {
       id: "stac",
