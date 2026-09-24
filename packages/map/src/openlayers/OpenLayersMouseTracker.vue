@@ -1,126 +1,78 @@
 <script setup lang="ts">
 import type { SingleCoordinate } from "@swissgeo/coordinates";
-import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
-import type { Map } from "ol";
+import type MapBrowserEvent from "ol/MapBrowserEvent";
 
 import log from "@swissgeo/log";
-import MousePosition from "ol/control/MousePosition";
-import {
-  computed,
-  inject,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  toValue,
-  useTemplateRef,
-} from "vue";
+import { watchDebounced } from "@vueuse/core";
+import { storeToRefs } from "pinia";
+import { ref } from "vue";
 
+import { useMapStore } from "@/stores/map";
 import usePositionStore from "@/stores/position";
-import { allFormats, LV95Format } from "@/utils/coordinates/coordinateFormat";
+import { LV95Format, allFormats } from "@/utils/coordinates/coordinateFormat";
 import getHumanReadableCoordinate from "@/utils/mouseTrackerUtils";
 
-const dispatcher: ActionDispatcher = { name: "OpenLayersMouseTracker.vue" };
+const { olMap } = storeToRefs(useMapStore());
+const { projection } = storeToRefs(usePositionStore());
 
-const mousePosition = useTemplateRef<HTMLElement>("mousePosition");
+const mousePosition = ref<string>();
+const coordinates = ref<SingleCoordinate>([0, 0]);
 const displayedFormatId = ref(LV95Format.id);
-
-const positionStore = usePositionStore();
-const projection = computed(() => positionStore.projection);
-
-const olMap = toValue(inject<Map>("olMap"));
-checkOlMapInjection();
-
-let mousePositionControl: MousePosition | undefined;
-
-function checkOlMapInjection() {
-  if (!olMap) {
-    log.error("OpenLayersMap is not available");
-    throw new Error("OpenLayersMap is not available");
-  }
-}
-
-function setMouseTracking() {
-  mousePositionControl = new MousePosition({
-    className: "mouse-position-inner",
-  });
-  mousePositionControl.setTarget(mousePosition.value);
-  olMap.addControl(mousePositionControl);
-  // we wait for the next cycle to set the projection, otherwise the info can
-  // sometimes be lost (and we end up with a different projection in the position display)
-  void nextTick(() => {
-    setDisplayedFormatWithId();
-  });
-}
-
-function removeMouseTracking() {
-  if (mousePositionControl) {
-    olMap.removeControl(mousePositionControl);
-  }
-}
-
-onMounted(() => {
-  checkOlMapInjection();
-  setMouseTracking();
-});
-
-onBeforeUnmount(() => {
-  removeMouseTracking();
-});
 
 function setDisplayedFormatWithId(): void {
   const displayedFormat = allFormats.find(
     (format) => format.id === displayedFormatId.value,
   );
+
   if (displayedFormat) {
-    positionStore.setDisplayedFormat(displayedFormat, dispatcher);
-  }
-  if (displayedFormat && mousePositionControl) {
-    mousePositionControl.setCoordinateFormat((coordinates) => {
-      return getHumanReadableCoordinate({
-        coordinates: coordinates as SingleCoordinate,
-        displayedFormat,
-        projection: projection.value,
-      });
+    mousePosition.value = getHumanReadableCoordinate({
+      coordinates: coordinates.value,
+      displayedFormat,
+      projection: projection.value,
     });
   } else {
     log.error("Unknown coordinates display format", displayedFormatId.value);
   }
 }
+
+watchDebounced(
+  olMap,
+  (map, _oldMap, onCleanup) => {
+    if (!map) {
+      return;
+    }
+    const handler = (event: MapBrowserEvent) => {
+      coordinates.value = event.coordinate as SingleCoordinate;
+      setDisplayedFormatWithId();
+    };
+    map.on("pointermove", handler);
+    onCleanup(() => map.un("pointermove", handler));
+  },
+  { immediate: true, debounce: 250 },
+);
 </script>
 
 <template>
-  <div
-    class="fixed bottom-[8rem] left-[5rem] bg-[rgba(255,255,255,0.7)] text-black"
-  >
-    <select
+  <div class="flex flex-row items-center gap-2">
+    <USelect
+      size="xs"
+      variant="ghost"
+      :ui="{
+        content: 'min-w-fit',
+        base: 'min-w-fit',
+      }"
+      :items="
+        allFormats.map((format) => ({
+          label: format.label,
+          value: format.id,
+        }))
+      "
       v-model="displayedFormatId"
-      class="map-projection form-control-xs"
-      data-testid="mouse-position-select"
-      @change="setDisplayedFormatWithId"
-    >
-      <option v-for="format in allFormats" :key="format.id" :value="format.id">
-        {{ format.label }}
-      </option>
-    </select>
-    <div
-      ref="mousePosition"
-      class="mouse-position"
-      data-testid="mouse-position"
+      @update:modelValue="setDisplayedFormatWithId"
+      class="w-32"
     />
+    <div class="font-mono">
+      {{ mousePosition }}
+    </div>
   </div>
 </template>
-
-<style scoped>
-.mouse-position {
-  display: none;
-  min-width: 10em;
-  text-align: left;
-  white-space: nowrap;
-}
-@media (any-hover: hover) {
-  .mouse-position {
-    display: block;
-  }
-}
-</style>

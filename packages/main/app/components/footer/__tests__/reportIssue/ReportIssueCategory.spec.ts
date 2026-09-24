@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 
-import ReportIssueCategory from "@/components/toolbox/reportIssue/ReportIssueCategory.vue";
+import ReportIssueCategory from "@/components/footer/reportIssue/ReportIssueCategory.vue";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
@@ -32,7 +32,7 @@ describe("ReportIssueCategory.vue", () => {
       props: { modelValue: "" },
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step1.title");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step1.title");
   });
 
   it("passes the correct items to the select", () => {
@@ -44,19 +44,19 @@ describe("ReportIssueCategory.vue", () => {
     expect(select.props("items")).toHaveLength(4);
     expect(select.props("items")).toEqual([
       {
-        label: "toolbox.reportIssue.steps.step1.select.options.background",
+        label: "footer.reportIssue.steps.step1.select.options.background",
         value: "background",
       },
       {
-        label: "toolbox.reportIssue.steps.step1.select.options.thematic",
+        label: "footer.reportIssue.steps.step1.select.options.thematic",
         value: "thematic",
       },
       {
-        label: "toolbox.reportIssue.steps.step1.select.options.application",
+        label: "footer.reportIssue.steps.step1.select.options.application",
         value: "application",
       },
       {
-        label: "toolbox.reportIssue.steps.step1.select.options.other",
+        label: "footer.reportIssue.steps.step1.select.options.other",
         value: "other",
       },
     ]);
@@ -79,6 +79,6 @@ describe("ReportIssueCategory.vue", () => {
     });
     const link = wrapper.find(".link");
     expect(link.exists()).toBe(true);
-    expect(link.text()).toBe("toolbox.reportIssue.steps.step1.moreInfo.label");
+    expect(link.text()).toBe("footer.reportIssue.steps.step1.moreInfo.label");
   });
 });

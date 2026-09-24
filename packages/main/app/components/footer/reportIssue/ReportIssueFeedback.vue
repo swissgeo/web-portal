@@ -8,7 +8,7 @@ defineModel<string>({ required: true });
 
 <template>
   <UFormField
-    :label="t('toolbox.reportIssue.steps.step2.title')"
+    :label="t('footer.reportIssue.steps.step2.title')"
     name="feedback"
     required
   >

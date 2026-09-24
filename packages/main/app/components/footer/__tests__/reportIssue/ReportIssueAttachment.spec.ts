@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 
-import ReportIssueAttachment from "@/components/toolbox/reportIssue/ReportIssueAttachment.vue";
+import ReportIssueAttachment from "@/components/footer/reportIssue/ReportIssueAttachment.vue";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
@@ -27,7 +27,7 @@ describe("ReportIssueAttachment.vue", () => {
       props: { modelValue: undefined },
       global: { stubs },
     });
-    expect(wrapper.text()).toContain("toolbox.reportIssue.steps.step5.title");
+    expect(wrapper.text()).toContain("footer.reportIssue.steps.step5.title");
   });
 
   it("passes the correct accept prop with all MIME types", () => {

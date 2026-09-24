@@ -1,6 +1,8 @@
 import "./stylesheet.css";
 import useAddLayerToMap from "./composables/useAddLayerToMap.composable";
 import MapModule from "./MapModule.vue";
+import OpenLayersMouseTracker from "./openlayers/OpenLayersMouseTracker.vue";
+import OpenLayersScale from "./openlayers/OpenLayersScale.vue";
 import usePositionStore from "./stores/position";
 
 export * from "./stores/map";
@@ -23,4 +25,11 @@ export type { CoordinateFormat } from "./utils/coordinates/coordinateFormat";
 export { buildWmtsOptions } from "./utils/buildWmtsOptions";
 export type { BuildWmtsOptionsConfig } from "./utils/buildWmtsOptions";
 export type { FeatureCollectionWithCRS } from "./utils/geoJsonUtils";
-export { MapModule, usePositionStore, useAddLayerToMap, PROJECTION_EPSG };
+export {
+  MapModule,
+  OpenLayersScale as OLMapScale,
+  OpenLayersMouseTracker as OLMapMouseTracker,
+  usePositionStore,
+  useAddLayerToMap,
+  PROJECTION_EPSG,
+};

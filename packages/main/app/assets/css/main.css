@@ -82,6 +82,8 @@
 
   --color-black: #0e0f0f;
   --color-white: #ffffff;
+
+  --text-tiny: 0.625rem;
 }
 
 @layer theme {

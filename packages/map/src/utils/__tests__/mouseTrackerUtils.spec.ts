@@ -1,11 +1,7 @@
 import { LV03, LV95, WGS84 } from "@swissgeo/coordinates";
+import { LV03Format, LV95Format, WGS84Format } from "@swissgeo/map";
 import { describe, expect, it } from "vitest";
 
-import {
-  LV03Format,
-  LV95Format,
-  WGS84Format,
-} from "../coordinates/coordinateFormat";
 import getHumanReadableCoordinate from "../mouseTrackerUtils";
 
 describe("getHumanReadableCoordinate", () => {

@@ -14,6 +14,7 @@ import {
   USlideover,
   UUser,
   UTooltip,
+  USelect,
 } from "#components";
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -27,6 +28,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component("USlideover", USlideover as Component);
   nuxtApp.vueApp.component("UUser", UUser as Component);
   nuxtApp.vueApp.component("UTooltip", UTooltip as Component);
+  nuxtApp.vueApp.component("USelect", USelect as Component);
 
   // UInput is typed as a generic/callable component by @nuxt/ui —
   // TS doesn't consider that a `Component`, so we cast via `unknown`.
