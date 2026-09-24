@@ -89,7 +89,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
     :ui="{
       list: 'overflow-x-auto overflow-y-hidden px-0',
       trigger:
-        'shrink-0 grow-0 px-2 text-primary data-[state=active]:text-highlighted',
+        'shrink-0 grow-0 px-2 data-[state=active]:text-highlighted data-[state=inactive]:text-primary',
       indicator: 'bottom-0',
     }"
     class="@container w-full gap-space-m"
@@ -131,15 +131,20 @@ const serviceDistributions = computed<Distribution[]>(() => {
     </template>
 
     <template #legend>
-      <DatasetLegend
-        :dataset="dataset"
-        :distribution-collection="distributionCollection"
-      />
+      <section>
+        <h3 class="mb-space-m text-xl font-semibold text-highlighted">
+          {{ $t("layers.legend.title") }}
+        </h3>
+        <DatasetLegend
+          :dataset="dataset"
+          :distribution-collection="distributionCollection"
+        />
+      </section>
     </template>
 
     <template #data-access>
       <section v-if="serviceDistributions.length">
-        <h3 class="mb-space-m text-base font-semibold text-highlighted">
+        <h3 class="mb-space-m text-xl font-semibold text-highlighted">
           {{ $t("dataset.dataAccess") }}
         </h3>
         <DatasetServiceList :distributions="serviceDistributions" />
@@ -148,7 +153,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
 
     <template #metadata>
       <section v-if="metadataLinks.length">
-        <h3 class="mb-space-m text-base font-semibold text-highlighted">
+        <h3 class="mb-space-m text-xl font-semibold text-highlighted">
           {{ $t("dataset.metadata") }}
         </h3>
         <DatasetLinkList

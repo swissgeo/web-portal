@@ -1,6 +1,7 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
 import log from "@swissgeo/log";
+import DatasetPanelFrame from "~/components/dataset/DatasetPanelFrame.vue";
 
 import SideBar from "@/components/sidebar/SideBar.vue";
 
@@ -47,14 +48,9 @@ watch(route, (value) => {
           <ClientOnly>
             <Footer v-if="!isMapFullscreenMode" />
           </ClientOnly>
-          <!-- Nuxt needs the child-route outlet to complete navigation. Using v-if
-               here can block navigation while detailsOpen waits for the new route. -->
-          <div
-            v-show="detailsOpen && !isMapFullscreenMode"
-            class="absolute top-[min(300px,30dvh)] bottom-0 left-0 z-20 w-full overflow-hidden rounded-t-lg border-t border-default lg:top-0 lg:w-1/2 lg:rounded-none lg:border-t-0"
-          >
+          <DatasetPanelFrame :visible="detailsOpen && !isMapFullscreenMode">
             <slot name="details" />
-          </div>
+          </DatasetPanelFrame>
         </div>
       </main>
     </UMain>

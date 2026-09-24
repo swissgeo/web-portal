@@ -38,6 +38,6 @@ const format = computed(() => determineFormat(distribution.value));
       :distribution="distribution"
       :layer-id="layerId"
     />
-    <LayerLegend v-else :legends="[]" />
+    <LayerLegend v-else :legends="[]" presentation="detail" />
   </ClientOnly>
 </template>

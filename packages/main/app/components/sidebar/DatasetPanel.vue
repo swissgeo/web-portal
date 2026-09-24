@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
 
-import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
-import log from "@swissgeo/log";
 import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
 import DatasetLanguageSection from "~/components/dataset/DatasetLanguageSection.vue";
 import DatasetMapAction from "~/components/dataset/DatasetMapAction.vue";
@@ -19,16 +17,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{ back: []; close: [] }>();
 
-const layerStore = useLayerStore();
-
-const isAlreadyOnMap = computed(() => {
-  if (!props.dataset) {
-    return false;
-  }
-  return layerStore.layers.some((l) => l.humanId === props.dataset!.id);
-});
-
-const toast = useToaster();
 const { t } = useI18n();
 
 const backLabel = computed(() => {
@@ -37,24 +25,6 @@ const backLabel = computed(() => {
   }
   return t("dataset.backToMap");
 });
-
-function addToMap() {
-  if (!props.dataset || isAlreadyOnMap.value) {
-    return;
-  }
-  try {
-    layerStore.addLayer(makeServerLayer(props.dataset));
-  } catch (e) {
-    log.error(
-      "Failed to add dataset to map",
-      e instanceof Error ? e : new Error(String(e)),
-    );
-    toast.add({
-      color: "error",
-      title: t("dataset.addToMapError"),
-    });
-  }
-}
 </script>
 
 <template>
@@ -63,7 +33,7 @@ function addToMap() {
     aria-labelledby="dataset-panel-title"
     data-testid="dataset-panel"
   >
-    <header class="flex shrink-0 flex-col gap-space-m p-4 lg:p-space-m">
+    <header class="flex shrink-0 flex-col gap-space-m p-4 lg:gap-8 lg:p-8">
       <div class="flex items-center justify-between gap-space-s">
         <UButton
           icon="i-lucide-arrow-left"
@@ -94,15 +64,11 @@ function addToMap() {
           </h1>
           <DatasetCopyLink class="shrink-0" :url="detailUrl" />
         </div>
-        <DatasetMapAction
-          :has-dataset="Boolean(dataset)"
-          :is-already-on-map="isAlreadyOnMap"
-          @add-to-map="addToMap"
-        />
+        <DatasetMapAction v-if="dataset" :dataset="dataset" />
       </div>
     </header>
     <div
-      class="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 lg:px-space-m lg:pb-space-m"
+      class="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 lg:px-8 lg:pb-8"
     >
       <div v-if="isLoading" class="flex h-full items-center justify-center">
         <UIcon
