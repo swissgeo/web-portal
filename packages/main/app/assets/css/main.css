@@ -18,6 +18,8 @@
 @theme static {
   --font-sans: "Inter", system-ui, sans-serif;
 
+  --container-dataset-panel: 61rem;
+
   --leading-heading: 1.2;
   --leading-small-text: 1.3;
 

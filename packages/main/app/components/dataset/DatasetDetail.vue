@@ -88,24 +88,27 @@ const serviceDistributions = computed<Distribution[]>(() => {
     color="neutral"
     :unmount-on-hide="false"
     :ui="{
-      list: 'overflow-x-auto overflow-y-hidden px-0',
+      list: 'overflow-x-auto overflow-y-hidden p-0',
       trigger:
-        'shrink-0 grow-0 px-2 data-[state=active]:text-highlighted data-[state=inactive]:text-primary',
+        'shrink-0 grow-0 px-2 pt-1 pb-2 leading-small-text data-[state=active]:text-highlighted data-[state=inactive]:text-primary dark:data-[state=inactive]:text-petrol-300',
       indicator: 'bottom-0',
     }"
-    class="@container w-full gap-space-m"
+    class="@container w-full gap-4 lg:gap-8"
   >
     <template #overview>
       <div
         v-if="dataset.properties.description || contacts.length"
         class="flex flex-col gap-space-m"
       >
-        <section v-if="dataset.properties.description" class="max-w-prose">
-          <h3 class="mb-space-s text-base font-semibold text-highlighted">
+        <section
+          v-if="dataset.properties.description"
+          class="max-w-[37.3125rem]"
+        >
+          <h3 class="mb-4 text-base font-semibold text-highlighted">
             {{ $t("dataset.abstract") }}
           </h3>
           <p
-            class="text-base leading-normal wrap-anywhere whitespace-pre-line text-default"
+            class="text-base leading-small-text wrap-anywhere whitespace-pre-line text-default"
             data-testid="dataset-description"
           >
             {{ dataset.properties.description }}
@@ -133,7 +136,9 @@ const serviceDistributions = computed<Distribution[]>(() => {
 
     <template #legend>
       <section>
-        <h3 class="mb-space-m text-xl font-semibold text-highlighted">
+        <h3
+          class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
+        >
           {{ $t("layers.legend.title") }}
         </h3>
         <p v-if="distributionError" role="status" class="text-sm text-error">
@@ -149,7 +154,9 @@ const serviceDistributions = computed<Distribution[]>(() => {
 
     <template #data-access>
       <section v-if="distributionError || serviceDistributions.length">
-        <h3 class="mb-space-m text-xl font-semibold text-highlighted">
+        <h3
+          class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
+        >
           {{ $t("dataset.dataAccess") }}
         </h3>
         <p v-if="distributionError" role="status" class="text-sm text-error">
@@ -161,7 +168,9 @@ const serviceDistributions = computed<Distribution[]>(() => {
 
     <template #metadata>
       <section v-if="metadataLinks.length">
-        <h3 class="mb-space-m text-xl font-semibold text-highlighted">
+        <h3
+          class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
+        >
           {{ $t("dataset.metadata") }}
         </h3>
         <DatasetLinkList
