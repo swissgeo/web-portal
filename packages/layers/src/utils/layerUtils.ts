@@ -1,4 +1,4 @@
-import type { Dataset } from "@swissgeo/ogc";
+import type { Dataset, DistributionCollection, Feature } from "@swissgeo/ogc";
 
 import log from "@swissgeo/log";
 
@@ -61,7 +61,9 @@ export const validateDataset: (value: unknown) => asserts value is Dataset = (
 };
 
 // only exported for testing purpose.
-export const getInfoFromDataset = (dataset: Dataset): LayerInfo => {
+export const getInfoFromDataset = async (
+  dataset: Dataset,
+): Promise<LayerInfo> => {
   const properties = dataset.properties;
   const displayName = properties?.title;
 
@@ -86,19 +88,81 @@ export const getInfoFromDataset = (dataset: Dataset): LayerInfo => {
 
   const abstract = properties.description;
 
+  const featureInfoInformation = await grabFeatureInfoInformation(dataset);
   return {
     // only add those if they're not undefined
     ...{ displayName },
     ...{ attribution },
+    ...{ featureInfoInformation },
     abstract,
   };
 };
 
+export async function grabFeatureInfoInformation(dataset: Dataset) {
+  const distributionLink = dataset.links?.find(
+    (link) => link.rel.toLowerCase() === "distributions",
+  )?.href;
+  if (!distributionLink) {
+    return;
+  }
+  const distributionRelResult = await fetch(distributionLink);
+  if (distributionRelResult.status !== 200) {
+    return;
+  }
+
+  const distributionCollection =
+    (await distributionRelResult.json()) as DistributionCollection;
+
+  const distributionRelJson =
+    distributionCollection.features.find(
+      (distribution) =>
+        distribution.id === dataset.properties.preferredDistributionId,
+    ) ?? distributionCollection.features[0];
+  const featureInfoLink = distributionRelJson?.links?.find(
+    (link) => link.rel.toLowerCase() === "featureinfo",
+  )?.href;
+  if (!featureInfoLink) {
+    return;
+  }
+  const featureInfoRelResult = await fetch(featureInfoLink);
+  if (featureInfoRelResult.status !== 200) {
+    return;
+  }
+  const featureInfoRelJson =
+    (await featureInfoRelResult.json()) as Feature<"featureinfo">;
+  const protocol = featureInfoRelJson.properties?.protocol;
+  const dataServiceLink = featureInfoRelJson.links.find(
+    (link) => link.rel.toLowerCase() === "dataservice",
+  )?.href;
+  if (!dataServiceLink) {
+    return;
+  }
+  const dataServiceRelResult = await fetch(dataServiceLink);
+  if (dataServiceRelResult.status !== 200) {
+    return;
+  }
+  const dataServiceRelJson =
+    (await dataServiceRelResult.json()) as Feature<"dataservice">;
+  const featureInfoBaseUrl =
+    dataServiceRelJson.links?.find(
+      (link) => link.rel.toLowerCase() === "describes",
+    )?.href ??
+    dataServiceRelJson.links.find(
+      (link) => link.rel.toLowerCase() === "describedby",
+    )?.href ??
+    dataServiceRelJson.links.find((link) => link.rel.toLowerCase() === "about")
+      ?.href;
+  return {
+    protocol,
+    baseUrl: featureInfoBaseUrl,
+  };
+}
+
 // Server layer fills properties like the Dataset
-export const makeServerLayer = (
+export const makeServerLayer = async (
   dataset: Dataset,
   options?: Partial<Layer>,
-): Layer => {
+): Promise<Layer> => {
   log.debug(`Creating store layer from ${JSON.stringify(dataset)}`);
 
   validateDataset(dataset);
@@ -113,7 +177,7 @@ export const makeServerLayer = (
     humanId: dataset.id,
     data: dataset,
     isLoading: false,
-    info: getInfoFromDataset(dataset),
+    info: await getInfoFromDataset(dataset),
     ...options,
   };
 };

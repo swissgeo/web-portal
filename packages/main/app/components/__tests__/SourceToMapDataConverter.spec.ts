@@ -1,9 +1,5 @@
 import type { Dimension } from "@swissgeo/dimension";
-import type {
-  FeatureData,
-  OgcDistribution,
-  OgcDistributionFeature,
-} from "@swissgeo/feature";
+import type { FeatureData } from "@swissgeo/feature";
 import type { DatasetLayer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
@@ -574,9 +570,9 @@ describe("layer load errors", () => {
 });
 
 describe("state import feature selection", () => {
-  const DISTRIBUTIONS_URL = "https://example.test/test-uuid/distributions";
-  const FEATUREINFO_URL = "https://example.test/test-uuid:distribution";
-  const URL_TEMPLATE = "https://example.test/popup/{featureId}?lang={lang}";
+  const BASE_URL = "https://example.test/MapServer";
+  // mapLayerData.layerId is the uuid ("test-uuid") in this suite's stubs
+  const URL_TEMPLATE = `${BASE_URL}/test-uuid/{featureId}/htmlPopup?lang={lang}`;
 
   const identifyFeatures: {
     id: string;
@@ -595,32 +591,29 @@ describe("state import feature selection", () => {
     },
   ];
 
-  // the distributions collection: its only feature exposes the featureinfo link
-  const identifyDistribution = {
-    type: "FeatureCollection",
-    features: [
-      {
-        id: "dist-1",
-        links: [{ href: FEATUREINFO_URL, rel: "featureinfo" }],
-        properties: { type: "ogc", protocol: "geoadmin:features" },
-        linkTemplates: [{ rel: "preview", uriTemplate: URL_TEMPLATE }],
-      },
-    ],
-  } as unknown as OgcDistribution;
-
-  // what the featureinfo link resolves to: the featureinfo distribution itself
-  const identifyFeatureInfoFeature = identifyDistribution
-    .features[0] as unknown as OgcDistributionFeature;
-
   const fetchSpy = vi.fn();
 
-  function makeDatasetLayerWithDistributions(uuid: string): DatasetLayer {
+  /**
+   * A dataset layer whose store info carries harvested feature-info
+   * information ({protocol, baseUrl}), as makeServerLayer leaves it after
+   * the featureinfo chain walk.
+   */
+  function makeDatasetLayerWithFeatureInfo(
+    uuid: string,
+    featureInfoInformation?: {
+      protocol?: string;
+      baseUrl?: string;
+    },
+  ): DatasetLayer {
     return {
       ...makeDatasetLayer(uuid),
-      data: {
-        id: `ch.test.${uuid}`,
-        links: [{ rel: "distributions", href: DISTRIBUTIONS_URL }],
-      } as unknown as Dataset,
+      info: {
+        displayName: uuid,
+        featureInfoInformation: featureInfoInformation ?? {
+          protocol: "geoadmin:features",
+          baseUrl: BASE_URL,
+        },
+      },
     };
   }
 
@@ -653,18 +646,6 @@ describe("state import feature selection", () => {
     getPopupFromIdentifyFeatureMock.mockResolvedValue([...popupFeatures]);
 
     fetchSpy.mockReset();
-    fetchSpy.mockImplementation((url: RequestInfo | URL) => {
-      if (String(url) === FEATUREINFO_URL) {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(identifyFeatureInfoFeature),
-        } as Response);
-      }
-      return Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(identifyDistribution),
-      } as Response);
-    });
     vi.stubGlobal("fetch", fetchSpy);
   });
 
@@ -672,19 +653,18 @@ describe("state import feature selection", () => {
     vi.unstubAllGlobals();
   });
 
-  it("applies a stored preselection by fetching the popup of each identified feature", async () => {
+  it("applies a stored preselection by building the popup template from the stored feature info", async () => {
     const layerStore = useLayerStore();
     const featureStore = useFeaturesStore();
-    const layer = makeDatasetLayerWithDistributions("test-uuid");
+    const layer = makeDatasetLayerWithFeatureInfo("test-uuid");
     layerStore.addLayer(layer);
     featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
 
     const wrapper = mountConverter([layer]);
     await emitLayerUpdate(wrapper);
 
-    expect(fetchSpy).toHaveBeenCalledTimes(2);
-    expect(fetchSpy.mock.calls[0]![0]).toBe(DISTRIBUTIONS_URL);
-    expect(fetchSpy.mock.calls[1]![0]).toBe(FEATUREINFO_URL);
+    // the preselection reads the already-harvested info: no fetching anymore
+    expect(fetchSpy).not.toHaveBeenCalled();
     expect(getPopupFromIdentifyFeatureMock).toHaveBeenCalledWith(
       identifyFeatures,
       URL_TEMPLATE,
@@ -697,7 +677,7 @@ describe("state import feature selection", () => {
 
   it("does not fetch anything when no preselection is stored for the layer", async () => {
     const layerStore = useLayerStore();
-    const layer = makeDatasetLayerWithDistributions("test-uuid");
+    const layer = makeDatasetLayerWithFeatureInfo("test-uuid");
     layerStore.addLayer(layer);
 
     const wrapper = mountConverter([layer]);
@@ -708,7 +688,7 @@ describe("state import feature selection", () => {
     expect(useFeaturesStore().selectedFeaturesByUuid).toEqual({});
   });
 
-  it("does not select when the layer exposes no distributions link", async () => {
+  it("does not select when the layer info carries no feature info", async () => {
     const layerStore = useLayerStore();
     const featureStore = useFeaturesStore();
     const layer = makeDatasetLayer("test-uuid");
@@ -718,54 +698,39 @@ describe("state import feature selection", () => {
     const wrapper = mountConverter([layer]);
     await emitLayerUpdate(wrapper);
 
-    expect(fetchSpy).not.toHaveBeenCalled();
-    expect(featureStore.selectedFeaturesByUuid).toEqual({});
-  });
-
-  it("does not select when the distribution carries no featureinfo link", async () => {
-    fetchSpy.mockImplementation(() =>
-      Promise.resolve({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            type: "FeatureCollection",
-            features: [
-              {
-                id: "dist-1",
-                properties: { type: "ogc", protocol: "geoadmin:features" },
-              },
-            ],
-          }),
-      } as Response),
-    );
-    const layerStore = useLayerStore();
-    const featureStore = useFeaturesStore();
-    const layer = makeDatasetLayerWithDistributions("test-uuid");
-    layerStore.addLayer(layer);
-    featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
-
-    const wrapper = mountConverter([layer]);
-    await emitLayerUpdate(wrapper);
-
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
     expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
     expect(featureStore.selectedFeaturesByUuid).toEqual({});
   });
 
-  it("does not select when the distributions fetch answers not-ok", async () => {
-    fetchSpy.mockImplementation(() =>
-      Promise.resolve({ ok: false } as Response),
-    );
+  it("does not select when the protocol is not identify-capable", async () => {
     const layerStore = useLayerStore();
     const featureStore = useFeaturesStore();
-    const layer = makeDatasetLayerWithDistributions("test-uuid");
+    const layer = makeDatasetLayerWithFeatureInfo("test-uuid", {
+      protocol: "ogc:wms",
+      baseUrl: BASE_URL,
+    });
     layerStore.addLayer(layer);
     featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
 
     const wrapper = mountConverter([layer]);
     await emitLayerUpdate(wrapper);
 
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
+    expect(featureStore.selectedFeaturesByUuid).toEqual({});
+  });
+
+  it("does not select when the info has no baseUrl to build the template from", async () => {
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const layer = makeDatasetLayerWithFeatureInfo("test-uuid", {
+      protocol: "geoadmin:features",
+    });
+    layerStore.addLayer(layer);
+    featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
     expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
     expect(featureStore.selectedFeaturesByUuid).toEqual({});
   });

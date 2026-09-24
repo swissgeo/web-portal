@@ -35,6 +35,7 @@ const {
   availableCrs,
   getFeatureInfo,
   queryable,
+  layerName,
 } = useOgcWmsData(distribution, serviceData, layerId, (error) =>
   emit("error", error),
 );
@@ -48,20 +49,25 @@ watch(legends, () => emit("updateLegends", legends.value), {
   immediate: true,
 });
 
-watch([queryable, getFeatureInfo, availableCrs, wmsDataForOl], () => {
-  if (
-    queryable.value &&
-    getFeatureInfo.value &&
-    availableCrs.value.length > 0
-  ) {
-    const capability: WmsFeatureInfoCapability = {
-      availableCrs: availableCrs.value,
-      getFeatureInfoCapability: getFeatureInfo.value,
-      wmsVersion: wmsDataForOl.value?.version,
-    };
-    emit("setWmsCapability", capability);
-  }
-});
+watch(
+  [queryable, getFeatureInfo, availableCrs, wmsDataForOl, layerName],
+  () => {
+    if (
+      queryable.value &&
+      getFeatureInfo.value &&
+      availableCrs.value.length > 0 &&
+      layerName.value !== undefined
+    ) {
+      const capability: WmsFeatureInfoCapability = {
+        availableCrs: availableCrs.value,
+        getFeatureInfoCapability: getFeatureInfo.value,
+        wmsVersion: wmsDataForOl.value?.version,
+        layerName: layerName.value,
+      };
+      emit("setWmsCapability", capability);
+    }
+  },
+);
 
 watch(
   [wmsDataForOl, defaultOpacity],
