@@ -25,9 +25,10 @@ vi.mock("ol/proj/proj4", () => ({
   register: vi.fn(),
 }));
 
-vi.mock("proj4", () => ({
-  default: vi.fn(),
-}));
+vi.mock("proj4", () => {
+  const proj4Mock = Object.assign(vi.fn(), { defs: vi.fn() });
+  return { default: proj4Mock };
+});
 
 const { MockGeoJSON, mockReadFeatures } = vi.hoisted(() => {
   const mockReadFeatures = vi.fn(() => []);
