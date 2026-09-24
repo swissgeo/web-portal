@@ -36,33 +36,33 @@ const wrapperClasses = computed(() => {
     </div>
   </template>
   <template v-else>
-    <div :class="wrapperClasses">
-      <ClientOnly>
-        <div class="absolute bottom-24 left-4 z-10">
-          <UDrawer
-            :handle="false"
-            :overlay="false"
-            inset
-            :ui="{
-              content: 'mb-[70px] inset-x-0',
-              title: 'text-base',
-            }"
-            :title="t('footer.mobileNav.mapInfo')"
-          >
-            <UButton
-              :label="t('footer.mobileNav.mapInfo')"
-              color="neutral"
-              variant="subtle"
-              trailing-icon="i-lucide-chevron-down"
-            />
+    <ClientOnly>
+      <div class="absolute bottom-24 left-4 z-10">
+        <UDrawer
+          :handle="false"
+          :overlay="false"
+          inset
+          :ui="{
+            content: 'mb-[70px] inset-x-0',
+            title: 'text-base',
+          }"
+          :title="t('footer.mobileNav.mapInfo')"
+        >
+          <UButton
+            :label="t('footer.mobileNav.mapInfo')"
+            color="neutral"
+            variant="subtle"
+            trailing-icon="i-lucide-chevron-down"
+          />
 
-            <template #body>
-              <FooterLinks mobile />
-            </template>
-          </UDrawer>
-          <OLMapScale :olMap="olMap" class="footerMapScale mt-2" />
-        </div>
-      </ClientOnly>
+          <template #body>
+            <FooterLinks mobile />
+          </template>
+        </UDrawer>
+        <OLMapScale :olMap="olMap" class="footerMapScale mt-2" />
+      </div>
+    </ClientOnly>
+    <div :class="wrapperClasses">
       <UButton
         v-for="btn in mobileNavButtons"
         :key="btn.label"
