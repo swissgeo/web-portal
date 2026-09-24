@@ -46,10 +46,11 @@ mockNuxtImport("useAsyncData", () => {
       });
 
     const result = { data, error, status };
-    return Object.assign(result, {
+    return {
+      ...result,
       then: (resolve: (_v: typeof result) => void) =>
         promise.then(() => resolve(result)),
-    });
+    };
   };
 });
 
@@ -106,13 +107,15 @@ describe("useDatasetRecord", () => {
       .mockResolvedValueOnce(mockDataset)
       .mockResolvedValueOnce(mockDistributions);
 
-    const { distributionCollection } = useDatasetRecord("ch.swisstopo.test");
+    const { distributionCollection, distributionError } =
+      useDatasetRecord("ch.swisstopo.test");
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledWith(
       "https://api.example.com/distributions?lang=de",
     );
     expect(distributionCollection.value?.features).toHaveLength(1);
+    expect(distributionError.value).toBe(false);
   });
 
   it("overwrites existing language param in distributions URL without duplicating it", async () => {
@@ -149,10 +152,12 @@ describe("useDatasetRecord", () => {
     };
     fetchMock.mockResolvedValueOnce(datasetWithoutDistLink);
 
-    const { distributionCollection } = useDatasetRecord("ch.swisstopo.test");
+    const { distributionCollection, distributionError } =
+      useDatasetRecord("ch.swisstopo.test");
     await flushPromises();
 
     expect(distributionCollection.value).toBeNull();
+    expect(distributionError.value).toBe(false);
   });
 
   it("returns null dataset and does not fetch when id is null", async () => {
@@ -182,6 +187,37 @@ describe("useDatasetRecord", () => {
     await flushPromises();
 
     expect(error.value).toBeTruthy();
+  });
+
+  it("preserves the dataset when distributions fail", async () => {
+    fetchMock
+      .mockResolvedValueOnce(mockDataset)
+      .mockRejectedValueOnce(new Error("Service unavailable"));
+
+    const record = useDatasetRecord("ch.swisstopo.test");
+    await record.promise;
+
+    expect(record.dataset.value).toEqual(mockDataset);
+    expect(record.distributionCollection.value).toBeNull();
+    expect(record.distributionError.value).toBe(true);
+    expect(record.error.value).toBeNull();
+    expect(record.isLoading.value).toBe(false);
+  });
+
+  it("preserves the dataset when its distributions URL is invalid", async () => {
+    const dataset = {
+      ...mockDataset,
+      links: [{ rel: "distributions", href: "invalid-url" }],
+    };
+    fetchMock.mockResolvedValueOnce(dataset);
+
+    const record = useDatasetRecord("ch.swisstopo.test");
+    await record.promise;
+
+    expect(record.dataset.value).toEqual(dataset);
+    expect(record.distributionError.value).toBe(true);
+    expect(record.error.value).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("builds dataset URL from ogcApiEndpoint base with correct path", async () => {

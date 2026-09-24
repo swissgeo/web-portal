@@ -18,8 +18,14 @@ const id = computed(() => {
   return typeof value === "string" ? value : null;
 });
 
-const { dataset, distributionCollection, isLoading, error, promise } =
-  useDatasetRecord(id);
+const {
+  dataset,
+  distributionCollection,
+  distributionError,
+  isLoading,
+  error,
+  promise,
+} = useDatasetRecord(id);
 
 function maybeShowError(e: NuxtError | undefined) {
   if (!e) {
@@ -60,6 +66,7 @@ function closeDetails() {
     :detail-url="detailUrl"
     :dataset="dataset"
     :distribution-collection="distributionCollection"
+    :distribution-error="distributionError"
     :is-loading="isLoading"
     :error="error"
     :back-to-catalog="sidebarStore.isGeocatalogTreeVisible"

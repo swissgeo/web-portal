@@ -10,6 +10,7 @@ const props = defineProps<{
   dataset: Dataset | null;
   detailUrl: string;
   distributionCollection: DistributionCollection | null;
+  distributionError?: boolean;
   isLoading: boolean;
   error?: { message: string } | null;
   backToCatalog?: boolean;
@@ -89,6 +90,7 @@ const backLabel = computed(() => {
         class="shrink-0"
         :dataset="dataset"
         :distribution-collection="distributionCollection ?? null"
+        :distribution-error="distributionError"
       />
       <DatasetLanguageSection :languages="dataset?.properties.languages" />
     </div>

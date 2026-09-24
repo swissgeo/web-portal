@@ -21,6 +21,7 @@ const GEOCAT_HOSTNAMES = ["geocat.ch", "www.geocat.ch"];
 const props = defineProps<{
   dataset: Dataset;
   distributionCollection: DistributionCollection | null;
+  distributionError?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -135,7 +136,11 @@ const serviceDistributions = computed<Distribution[]>(() => {
         <h3 class="mb-space-m text-xl font-semibold text-highlighted">
           {{ $t("layers.legend.title") }}
         </h3>
+        <p v-if="distributionError" role="status" class="text-sm text-error">
+          {{ $t("dataset.legendError") }}
+        </p>
         <DatasetLegend
+          v-else
           :dataset="dataset"
           :distribution-collection="distributionCollection"
         />
@@ -143,11 +148,14 @@ const serviceDistributions = computed<Distribution[]>(() => {
     </template>
 
     <template #data-access>
-      <section v-if="serviceDistributions.length">
+      <section v-if="distributionError || serviceDistributions.length">
         <h3 class="mb-space-m text-xl font-semibold text-highlighted">
           {{ $t("dataset.dataAccess") }}
         </h3>
-        <DatasetServiceList :distributions="serviceDistributions" />
+        <p v-if="distributionError" role="status" class="text-sm text-error">
+          {{ $t("error.generic") }}
+        </p>
+        <DatasetServiceList v-else :distributions="serviceDistributions" />
       </section>
     </template>
 

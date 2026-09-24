@@ -298,6 +298,44 @@ describe("DatasetDetail Overview", () => {
     expect(wrapper.findAll('[role="tab"]')).toHaveLength(4);
   });
 
+  it("keeps Overview and Metadata available when distributions fail", async () => {
+    const dataset = makeDataset(
+      [{ organization: "Contact office", role: "pointOfContact" }],
+      "Available description",
+    );
+    dataset.links = [
+      { rel: "alternate", href: "https://www.geocat.ch/metadata/id" },
+    ];
+    const wrapper = mountDetail(dataset);
+    await wrapper.setProps({ distributionError: true });
+
+    expect(wrapper.get('[data-testid="dataset-description"]').isVisible()).toBe(
+      true,
+    );
+    expect(wrapper.get('[data-testid="dataset-contacts"]').text()).toContain(
+      "Contact office",
+    );
+    expect(wrapper.find('[data-testid="legend-stub"]').exists()).toBe(false);
+
+    await selectTab(wrapper, "layers.legend.title");
+    expect(
+      wrapper.get('[role="tabpanel"][data-state="active"]').text(),
+    ).toContain("dataset.legendError");
+    await selectTab(wrapper, "dataset.dataAccess");
+    expect(
+      wrapper.get('[role="tabpanel"][data-state="active"]').text(),
+    ).toContain("error.generic");
+    expect(wrapper.findComponent(DatasetServiceList).exists()).toBe(false);
+    await selectTab(wrapper, "dataset.metadata");
+    expect(wrapper.findComponent(DatasetLinkList).props("links")).toEqual(
+      dataset.links,
+    );
+
+    await wrapper.setProps({ distributionError: false });
+    expect(wrapper.find('[data-testid="legend-stub"]').exists()).toBe(true);
+    expect(wrapper.findAll('[role="status"]')).toHaveLength(0);
+  });
+
   it("keeps the legend mounted across tab changes", async () => {
     const wrapper = mountDetail(makeDataset());
     const legend = wrapper.get('[data-testid="legend-stub"]').element;
