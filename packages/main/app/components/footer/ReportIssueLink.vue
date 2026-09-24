@@ -27,6 +27,9 @@ const displayReportIssueForm = ref(false);
       :default-open="true"
       :modal="false"
       @close="displayReportIssueForm = false"
+      :ui="{
+        content: !isDesktop ? 'rounded-none' : '',
+      }"
     >
       <template #body>
         <ReuseTemplate />
