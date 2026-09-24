@@ -6,7 +6,7 @@ const { t } = useI18n();
 // Reserve that space so the scroll area still ends at the screen edge.
 const contentClass = computed(() => {
   const base =
-    "z-50 mt-0 h-dvh max-h-dvh overflow-hidden lg:absolute lg:inset-y-0 lg:right-auto lg:z-20 lg:h-full lg:w-3/4 lg:max-w-dataset-panel lg:rounded-none lg:pb-0 lg:transform-none! lg:transition-none";
+    "z-60 mt-0 h-dvh max-h-dvh overflow-hidden lg:absolute lg:inset-y-0 lg:right-auto lg:h-full lg:w-3/4 lg:max-w-dataset-panel lg:rounded-none lg:pb-0 lg:transform-none! lg:transition-none";
   if (snapPoint.value === 1) {
     return base;
   }
@@ -65,7 +65,7 @@ watch(
       </UDrawer>
       <template #fallback>
         <div
-          class="absolute inset-y-0 left-0 z-20 w-full bg-default lg:w-3/4 lg:max-w-dataset-panel"
+          class="absolute inset-y-0 left-0 z-60 w-full bg-default lg:w-3/4 lg:max-w-dataset-panel"
         >
           <slot />
         </div>
