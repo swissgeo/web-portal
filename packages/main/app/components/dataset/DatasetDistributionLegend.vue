@@ -22,5 +22,5 @@ const { legends, isLoading, error } = useDistributionLegend(
   <p v-else-if="isLoading" role="status" class="text-sm text-muted">
     {{ $t("dataset.legendLoading") }}
   </p>
-  <LayerLegend v-else :legends="legends" />
+  <LayerLegend v-else :legends="legends" presentation="detail" />
 </template>

@@ -4,8 +4,9 @@ import type { Legend } from "@swissgeo/ogc";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
-const { legends } = defineProps<{
+const { legends, presentation = "sidebar" } = defineProps<{
   legends: Legend[];
+  presentation?: "sidebar" | "detail";
 }>();
 
 const { t } = useI18n();
@@ -61,14 +62,21 @@ const documentLinks = computed(() =>
 
 <template>
   <div data-testid="layer-legend" class="flex flex-col gap-2">
-    <span class="text-xs font-medium text-toned uppercase">
+    <span
+      v-if="presentation === 'sidebar'"
+      class="text-xs font-medium text-toned uppercase"
+    >
       {{ t("layers.legend.title") }}
     </span>
 
     <!-- External PNG legends contain fixed text and symbol colors that we cannot control hence white bg -->
     <div
       v-if="imageLegends.length"
-      class="max-h-64 overflow-auto rounded border border-default bg-white p-2"
+      class="rounded border border-default bg-white p-2"
+      :class="{
+        'max-h-64 overflow-auto': presentation === 'sidebar',
+        'w-fit max-w-full': presentation === 'detail',
+      }"
     >
       <img
         v-for="legend in imageLegends"

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import DatasetPanelFrame from "~/components/dataset/DatasetPanelFrame.vue";
+
 // page key so map component persists when routings happen (like data detail)
 definePageMeta({ key: "map" });
 
@@ -17,12 +19,10 @@ watch(detailsOpen, (isOpen) => {
 <template>
   <div class="relative h-full">
     <MapViewer />
-    <!-- The child-route outlet must stay mounted while navigation resolves. -->
-    <div
-      v-show="detailsOpen && !mapViewStore.isFullscreenModeActive"
-      class="absolute top-[min(300px,30dvh)] bottom-0 left-0 z-60 w-full overflow-hidden rounded-t-lg border-t border-default lg:top-0 lg:w-1/2 lg:rounded-none lg:border-t-0"
+    <DatasetPanelFrame
+      :visible="detailsOpen && !mapViewStore.isFullscreenModeActive"
     >
       <NuxtPage :keepalive="false" />
-    </div>
+    </DatasetPanelFrame>
   </div>
 </template>

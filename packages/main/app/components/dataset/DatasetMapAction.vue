@@ -1,29 +1,31 @@
 <script setup lang="ts">
-defineProps<{
-  hasDataset: boolean;
-  isAlreadyOnMap: boolean;
-}>();
+import type { Dataset } from "@swissgeo/ogc";
 
-const emit = defineEmits<{ "add-to-map": [] }>();
+import { useDatasetLayer } from "~/composables/useDatasetLayer";
+
+const { dataset } = defineProps<{ dataset: Dataset }>();
+const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
 </script>
 
 <template>
   <div class="shrink-0" data-testid="dataset-map-action">
     <UButton
-      v-if="hasDataset && !isAlreadyOnMap"
+      v-if="isOnMap"
+      icon="i-lucide-trash-2"
+      color="neutral"
+      variant="outline"
+      @click="removeFromMap"
+    >
+      {{ $t("dataset.removeFromMap") }}
+    </UButton>
+    <UButton
+      v-else
       icon="i-lucide-check"
       color="primary"
       variant="outline"
-      @click="emit('add-to-map')"
+      @click="addToMap"
     >
       {{ $t("dataset.addToMap") }}
     </UButton>
-    <div
-      v-else-if="hasDataset && isAlreadyOnMap"
-      class="flex items-center gap-2 text-sm text-muted"
-    >
-      <UIcon name="i-lucide-check" class="size-4" />
-      {{ $t("dataset.alreadyOnMap") }}
-    </div>
   </div>
 </template>

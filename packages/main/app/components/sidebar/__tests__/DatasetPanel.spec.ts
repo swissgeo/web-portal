@@ -9,14 +9,25 @@ import DatasetPanel from "../DatasetPanel.vue";
 
 const mocks = vi.hoisted(() => ({
   addLayer: vi.fn(),
+  removeLayer: vi.fn(),
+  clearLayerDimensions: vi.fn(),
   makeServerLayer: vi.fn(),
   toast: vi.fn(),
   logError: vi.fn(),
 }));
-const layers = reactive<{ humanId: string }[]>([]);
+const layers = reactive<{ humanId: string; uuid?: string }[]>([]);
 vi.mock("@swissgeo/layers", () => ({
-  useLayerStore: () => ({ layers, addLayer: mocks.addLayer }),
+  useLayerStore: () => ({
+    layers,
+    addLayer: mocks.addLayer,
+    removeLayer: mocks.removeLayer,
+  }),
   makeServerLayer: mocks.makeServerLayer,
+}));
+vi.mock("@swissgeo/dimension", () => ({
+  useDimensionsStore: () => ({
+    clearLayerDimensions: mocks.clearLayerDimensions,
+  }),
 }));
 vi.mock("@swissgeo/log", () => ({ default: { error: mocks.logError } }));
 mockNuxtImport("useToast", () => () => ({ add: mocks.toast }));
@@ -51,7 +62,10 @@ function render(
         UButton: { template: "<button><slot /></button>" },
         UIcon: true,
         UBadge: { template: "<span><slot /></span>" },
-        DatasetDetail: true,
+        DatasetDetail: {
+          props: ["dataset", "distributionCollection"],
+          template: "<div />",
+        },
         DatasetCopyLink: true,
       },
     },
@@ -76,20 +90,24 @@ describe("DatasetPanel", () => {
     layers.push({ humanId: dataset.id });
     await wrapper.vm.$nextTick();
     expect(
-      wrapper.find('[data-testid="dataset-map-action"] button').exists(),
-    ).toBe(false);
-    expect(wrapper.get('[data-testid="dataset-map-action"]').text()).toBe(
-      "dataset.alreadyOnMap",
-    );
+      wrapper.get('[data-testid="dataset-map-action"] button').text(),
+    ).toBe("dataset.removeFromMap");
   });
 
-  it("does not offer to add a duplicate dataset", () => {
-    layers.push({ humanId: dataset.id });
+  it("removes the displayed dataset and clears its dimensions", async () => {
+    layers.push({ humanId: dataset.id, uuid: "dataset-layer" });
     const wrapper = render();
-    expect(
-      wrapper.find('[data-testid="dataset-map-action"] button').exists(),
-    ).toBe(false);
+    const button = wrapper.get('[data-testid="dataset-map-action"] button');
+    expect(button.text()).toBe("dataset.removeFromMap");
+    await button.trigger("click");
+    expect(mocks.clearLayerDimensions).toHaveBeenCalledWith("dataset-layer");
+    expect(mocks.removeLayer).toHaveBeenCalledWith("dataset-layer");
     expect(mocks.addLayer).not.toHaveBeenCalled();
+    layers.splice(0);
+    await wrapper.vm.$nextTick();
+    expect(
+      wrapper.get('[data-testid="dataset-map-action"] button').text(),
+    ).toBe("dataset.addToMap");
   });
 
   it("updates the action when a different dataset opens", async () => {
@@ -125,7 +143,7 @@ describe("DatasetPanel", () => {
       .get('[data-testid="dataset-map-action"] button')
       .trigger("click");
     expect(mocks.logError).toHaveBeenCalledWith(
-      "Failed to add dataset to map",
+      "Failed to add catalog layer to map",
       new Error("Store unavailable"),
     );
     expect(mocks.toast).toHaveBeenCalledOnce();

@@ -12,6 +12,7 @@ const mapView = reactive({
   getMapLayers: () => [],
   exitFullscreenMode: vi.fn(),
 });
+mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
 mockNuxtImport("useRoute", () => mocks.route);
 mockNuxtImport("useResetApp", () => () => ({ resetApp: vi.fn() }));
 mockNuxtImport("useMapViewStore", () => mocks.mapView);
@@ -23,8 +24,11 @@ function render() {
       default: '<div data-testid="map-instance" />',
     },
     global: {
+      mocks: { $t: (key: string) => key },
       stubs: {
+        ClientOnly: { template: "<slot />" },
         Topbar: true,
+        UDrawer: { template: '<div><slot name="content" /></div>' },
         UMain: { template: "<div><slot /></div>" },
         SideBar: {
           template:
