@@ -61,51 +61,63 @@ const iconSetsItems = computed(() =>
 </script>
 
 <template>
-  <div>
-    <div
-      v-if="numberOfIconSets > 0"
-      class="mb-3 flex w-full items-center gap-3"
-    >
+  <div class="w-full space-y-3">
+    <UFormField v-if="numberOfIconSets > 0" label="Symbol collection" size="sm">
       <USelect
         v-model="selectedIconSetName"
         :items="iconSetsItems"
         class="w-full"
       />
-    </div>
-
-    <!-- Symbol color -->
-    <div v-if="isSetColorable" class="mb-3 flex items-center gap-3">
-      <label class="mb-1 block text-sm font-medium text-gray-900">Color</label>
-      <div class="flex gap-2">
-        <input
-          v-model="selectedIconColor"
-          type="color"
-          class="h-8 w-12 cursor-pointer rounded border border-gray-300"
-          data-testid="icon-color"
-        />
-      </div>
-    </div>
-
-    <div
-      class="grid h-[170px] w-full grid-cols-6 content-start gap-2 overflow-y-auto"
+    </UFormField>
+    <label
+      v-if="isSetColorable"
+      class="flex items-center justify-between gap-3 text-sm text-toned"
     >
-      <div
+      Symbol color
+      <input
+        v-model="selectedIconColor"
+        type="color"
+        class="size-8 shrink-0 cursor-pointer rounded-md border border-default bg-default p-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        data-testid="icon-color"
+      />
+    </label>
+    <div
+      class="grid max-h-48 grid-cols-6 content-start gap-1.5 overflow-y-auto rounded-lg border border-default bg-elevated/50 p-2"
+      role="group"
+      aria-label="Marker symbols"
+    >
+      <button
         v-for="icon in iconsFromSet"
         :key="icon.getName()"
-        class="flex aspect-square w-full items-center justify-center"
+        type="button"
+        class="flex aspect-square min-w-0 items-center justify-center rounded-md p-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        :class="
+          icon.getName() === props.iconName &&
+          selectedIconSet?.name === props.iconSetName
+            ? 'bg-primary/10 ring-1 ring-primary/40'
+            : 'hover:bg-default'
+        "
+        :aria-label="icon.getDefaultDescription() || icon.getName()"
+        :title="icon.getDefaultDescription() || icon.getName()"
+        :aria-pressed="
+          icon.getName() === props.iconName &&
+          selectedIconSet?.name === props.iconSetName
+        "
+        @click="emit('icon-selected', icon)"
       >
         <img
           :src="icon.getUrl({ color: selectedIconColor })"
-          :alt="icon.getDefaultDescription() || icon.getName()"
-          class="max-h-full max-w-full cursor-pointer rounded"
-          :class="{
-            'bg-gray-300':
-              icon.getName() === props.iconName &&
-              selectedIconSet?.name === props.iconSetName,
-          }"
-          @click="emit('icon-selected', icon)"
+          alt=""
+          class="max-h-7 max-w-full object-contain"
+          loading="lazy"
         />
-      </div>
+      </button>
+      <p
+        v-if="iconsFromSet.length === 0"
+        class="col-span-6 py-6 text-center text-xs text-muted"
+      >
+        No symbols available.
+      </p>
     </div>
   </div>
 </template>
