@@ -33,6 +33,11 @@ export function useElevationProfile(
         toaster.showError(t("elevationProfile.fetchError"));
       },
       onRequestError: ({ error }) => {
+        // Updating the drawing cancels requests for earlier geometries.
+        // These cancellations are expected; the latest request supplies the profile.
+        if (error?.name === "AbortError") {
+          return;
+        }
         log.error(`Error fetching elevation profile: ${String(error)}`);
         toaster.showError(t("elevationProfile.fetchError"));
       },
