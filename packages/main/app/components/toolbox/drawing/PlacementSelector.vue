@@ -8,80 +8,49 @@ const props = defineProps<{
 const emit = defineEmits<{
   "placement-selected": [placement: RelativePlacement];
 }>();
+const placements = [
+  { value: "north-west", label: "Top left", icon: "i-lucide-arrow-up-left" },
+  { value: "north", label: "Top", icon: "i-lucide-arrow-up" },
+  { value: "north-east", label: "Top right", icon: "i-lucide-arrow-up-right" },
+  { value: "west", label: "Left", icon: "i-lucide-arrow-left" },
+  { value: "center", label: "Center", icon: "i-lucide-dot" },
+  { value: "east", label: "Right", icon: "i-lucide-arrow-right" },
+  {
+    value: "south-west",
+    label: "Bottom left",
+    icon: "i-lucide-arrow-down-left",
+  },
+  { value: "south", label: "Bottom", icon: "i-lucide-arrow-down" },
+  {
+    value: "south-east",
+    label: "Bottom right",
+    icon: "i-lucide-arrow-down-right",
+  },
+] as const;
 </script>
 
 <template>
-  <div class="mb-3 grid grid-cols-3 gap-2">
-    <div
-      class="flex aspect-square w-full items-center justify-center bg-gray-200"
-      :class="{
-        'bg-gray-400': props.placement === 'north-west',
-      }"
-      @click="emit('placement-selected', 'north-west')"
-    ></div>
-
-    <div
-      class="flex aspect-square w-full items-center justify-center bg-gray-200"
-      :class="{
-        'bg-gray-400': props.placement === 'north',
-      }"
-      @click="emit('placement-selected', 'north')"
-    ></div>
-
-    <div
-      class="flex aspect-square w-full items-center justify-center bg-gray-200"
-      :class="{
-        'bg-gray-400': props.placement === 'north-east',
-      }"
-      @click="emit('placement-selected', 'north-east')"
-    ></div>
-
-    <div
-      class="flex aspect-square w-full items-center justify-center bg-gray-200"
-      :class="{
-        'bg-gray-400': props.placement === 'west',
-      }"
-      @click="emit('placement-selected', 'west')"
-    ></div>
-
-    <div
-      class="flex aspect-square w-full items-center justify-center bg-gray-200"
-      :class="{
-        'bg-gray-400': props.placement === 'center',
-      }"
-      @click="emit('placement-selected', 'center')"
-    ></div>
-
-    <div
-      class="flex aspect-square w-full items-center justify-center bg-gray-200"
-      :class="{
-        'bg-gray-400': props.placement === 'east',
-      }"
-      @click="emit('placement-selected', 'east')"
-    ></div>
-
-    <div
-      class="flex aspect-square w-full items-center justify-center bg-gray-200"
-      :class="{
-        'bg-gray-400': props.placement === 'south-west',
-      }"
-      @click="emit('placement-selected', 'south-west')"
-    ></div>
-
-    <div
-      class="flex aspect-square w-full items-center justify-center bg-gray-200"
-      :class="{
-        'bg-gray-400': props.placement === 'south',
-      }"
-      @click="emit('placement-selected', 'south')"
-    ></div>
-
-    <div
-      class="flex aspect-square w-full items-center justify-center bg-gray-200"
-      :class="{
-        'bg-gray-400': props.placement === 'south-east',
-      }"
-      @click="emit('placement-selected', 'south-east')"
-    ></div>
+  <div
+    class="grid grid-cols-3 gap-1 rounded-lg border border-default bg-elevated/50 p-1"
+    role="group"
+    aria-label="Text placement"
+  >
+    <button
+      v-for="position in placements"
+      :key="position.value"
+      type="button"
+      class="flex aspect-square items-center justify-center rounded transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      :class="
+        props.placement === position.value
+          ? 'bg-primary/10 text-primary ring-1 ring-primary/30'
+          : 'text-muted hover:bg-default hover:text-highlighted'
+      "
+      :aria-label="position.label"
+      :title="position.label"
+      :aria-pressed="props.placement === position.value"
+      @click="emit('placement-selected', position.value)"
+    >
+      <UIcon :name="position.icon" class="size-4" />
+    </button>
   </div>
 </template>

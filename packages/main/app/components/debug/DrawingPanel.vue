@@ -34,7 +34,6 @@ const {
   isDrawingLayerInLayerStore,
   serializeFocusedFeatureAsBlob,
   serializeAllFeaturesAsBlob,
-  drawingId,
   drawingAdminId,
   drawingS3Url,
 } = useDrawing();

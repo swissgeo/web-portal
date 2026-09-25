@@ -28,7 +28,7 @@ const isEmbedMode = computed(() => displayMode === "embed");
 </script>
 
 <template>
-  <div class="absolute top-4 right-4" data-testid="toolbox-right">
+  <div class="absolute top-4 right-4 bottom-4" data-testid="toolbox-right">
     <UCard
       v-if="isWebMode"
       class="mb-4"

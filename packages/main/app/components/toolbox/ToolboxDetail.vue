@@ -24,6 +24,9 @@ const isDesktop = useMediaQuery("(min-width: 768px)");
   <div
     v-if="toolboxStore.activeDetailPanel && isDesktop"
     class="absolute top-0 right-24 w-96"
+    :class="
+      toolboxStore.isPanelActive('drawing') ? 'flex max-h-full flex-col' : ''
+    "
   >
     <ReuseTemplate />
   </div>
@@ -32,6 +35,14 @@ const isDesktop = useMediaQuery("(min-width: 768px)");
     v-if="toolboxStore.activeDetailPanel && !isDesktop"
     :default-open="true"
     :modal="false"
+    :ui="
+      toolboxStore.isPanelActive('drawing')
+        ? {
+            container: 'min-h-0 overflow-hidden',
+            body: 'flex min-h-0 flex-col',
+          }
+        : undefined
+    "
     @close="toolboxStore.closeDetailPanel()"
   >
     <template #body>
