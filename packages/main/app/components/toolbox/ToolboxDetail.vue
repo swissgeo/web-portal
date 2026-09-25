@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { createReusableTemplate } from "@vueuse/core";
 
+import Drawing from "@/components/toolbox/drawing/drawing.vue";
 import Import from "@/components/toolbox/import/Import.vue";
 import ToolboxShare from "@/components/toolbox/share/Share.vue";
 import { useToolboxStore } from "@/stores/toolbox";
@@ -15,6 +16,8 @@ const isDesktop = useIsDesktop();
   <RegisterTemplate>
     <ToolboxShare v-if="toolboxStore.isPanelActive('share')" />
     <Import v-if="toolboxStore.isPanelActive('import')" />
+    <Drawing v-if="toolboxStore.isPanelActive('drawing')" />
+    <ReportIssue v-if="toolboxStore.isPanelActive('reportIssue')" />
   </RegisterTemplate>
 
   <div
