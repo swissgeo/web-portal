@@ -23,6 +23,7 @@ const { title } = defineProps<{
   >
     <UIcon
       v-if="iconName"
+      mode="svg"
       :name="`i-lucide-${iconName.toLowerCase()}`"
       :size="20"
     />

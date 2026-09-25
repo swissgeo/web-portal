@@ -1,6 +1,23 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from "@nuxt/ui";
 
+import {
+  Check as CheckIcon,
+  ChevronDown as ChevronDownIcon,
+  Circle as CircleIcon,
+  CloudUpload as CloudUploadIcon,
+  Copy as CopyIcon,
+  CopyCheck as CopyCheckIcon,
+  Download as DownloadIcon,
+  MapPin as MapPinIcon,
+  MousePointer2 as MousePointer2Icon,
+  Pentagon as PentagonIcon,
+  Scan as ScanIcon,
+  Spline as SplineIcon,
+  Trash2 as Trash2Icon,
+  Type as TypeIcon,
+  X as XIcon,
+} from "@lucide/vue";
 import { useDrawing } from "@swissgeo/drawing";
 import log from "@swissgeo/log";
 import { useMap } from "@swissgeo/map";
@@ -38,6 +55,7 @@ const {
   serializeAllFeaturesAsBlob,
   drawingAdminId,
   drawingS3Url,
+  drawingId,
 } = useDrawing();
 
 const shareDrawingAsAdmin = ref(false);
@@ -66,26 +84,26 @@ const drawingTools = [
   {
     id: "polyline",
     label: "Line",
-    icon: "i-lucide-spline",
+    icon: SplineIcon,
     geometry: "LineString",
   },
   {
     id: "polygon",
     label: "Polygon",
-    icon: "i-lucide-pentagon",
+    icon: PentagonIcon,
     geometry: "Polygon",
   },
   {
     id: "circle",
     label: "Circle",
-    icon: "i-lucide-circle",
+    icon: CircleIcon,
     geometry: "Circle",
   },
-  { id: "text", label: "Text", icon: "i-lucide-type", geometry: "Point" },
+  { id: "text", label: "Text", icon: TypeIcon, geometry: "Point" },
   {
     id: "marker",
     label: "Marker",
-    icon: "i-lucide-map-pin",
+    icon: MapPinIcon,
     geometry: "Point",
   },
 ] as const;
@@ -189,18 +207,18 @@ watch(
 );
 
 // Watch for changes in focus mode and share drawings when focus mode is set to 'none'.
-// watch(focusMode, async (newFocusMode) => {
-//   if (newFocusMode !== "none") {
-//     return;
-//   }
+watch(focusMode, async (newFocusMode) => {
+  if (newFocusMode !== "none") {
+    return;
+  }
 
-//   // If the drawing has never been shared explicitely by the user, it is not synced automatically.
-//   if (!drawingId && !drawingAdminId) {
-//     return;
-//   }
+  // If the drawing has never been shared explicitely by the user, it is not synced automatically.
+  if (!drawingId && !drawingAdminId) {
+    return;
+  }
 
-//   await shareDrawings();
-// });
+  await shareDrawings();
+});
 
 function terminateModification() {
   disableAllInteractions();
@@ -228,7 +246,15 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <UCard data-testid="toolbox-drawing-card">
+  <UCard
+    data-testid="toolbox-drawing-card"
+    class="flex max-h-full min-h-0 flex-col overflow-hidden"
+    :ui="{
+      header: 'shrink-0',
+      body: 'min-h-0 overflow-y-auto overscroll-contain',
+      footer: 'shrink-0',
+    }"
+  >
     <template #header>
       <div class="flex items-start justify-between">
         <div class="flex items-baseline gap-2">
@@ -244,7 +270,7 @@ onUnmounted(() => {
         <UButton
           color="primary"
           variant="ghost"
-          icon="i-lucide-x"
+          :icon="XIcon"
           size="xs"
           :aria-label="t('toolbox.drawing.close')"
           @click="toolboxStore.closeDetailPanel()"
@@ -262,7 +288,7 @@ onUnmounted(() => {
           <UButton
             color="neutral"
             variant="ghost"
-            icon="i-lucide-mouse-pointer-2"
+            :icon="MousePointer2Icon"
             class="min-h-18 flex-col justify-center gap-2 rounded-lg text-xs transition-colors"
             :class="
               activeTool === 'select'
@@ -284,13 +310,12 @@ onUnmounted(() => {
             :icon="tool.icon"
             class="min-h-18 flex-col justify-center gap-2 rounded-lg text-xs transition-colors"
             :class="
-              focusMode === 'create' && activeTool === tool.id
+              activeTool === tool.id
                 ? 'bg-primary/10 text-primary ring-1 ring-primary/30'
                 : 'text-toned'
             "
             :ui="{ leadingIcon: 'size-5' }"
-            :aria-pressed="focusMode === 'create' && activeTool === tool.id"
-            :disabled="focusMode === 'create' || focusMode === 'edit'"
+            :aria-pressed="activeTool === tool.id"
             :data-testid="`drawing-tool-${tool.id}`"
             @click="startDrawing(tool)"
             >{{ tool.label }}</UButton
@@ -301,7 +326,11 @@ onUnmounted(() => {
           class="flex items-start gap-2 text-xs leading-relaxed text-muted"
           role="status"
         >
-          <UIcon name="i-lucide-info" class="mt-0.5 size-3.5 shrink-0" />
+          <UIcon
+            name="i-lucide-info"
+            mode="svg"
+            class="mt-0.5 size-3.5 shrink-0"
+          />
           {{ toolHint }}
         </p>
       </template>
@@ -313,7 +342,7 @@ onUnmounted(() => {
         <UButton
           color="neutral"
           variant="outline"
-          icon="i-lucide-x"
+          :icon="XIcon"
           block
           data-testid="cancel-drawing-tool"
           @click="cancelDrawing"
@@ -332,7 +361,7 @@ onUnmounted(() => {
               color="primary"
               variant="soft"
               size="xs"
-              icon="i-lucide-check"
+              :icon="CheckIcon"
               data-testid="deselect-feature-tool"
               @click="terminateModification"
               >Done</UButton
@@ -343,7 +372,7 @@ onUnmounted(() => {
             <UButton
               color="neutral"
               variant="outline"
-              icon="i-lucide-scan"
+              :icon="ScanIcon"
               class="flex-1 justify-center"
               data-testid="modify-geometry-tool"
               @click="enableModifyInteraction"
@@ -352,7 +381,7 @@ onUnmounted(() => {
             <UButton
               color="error"
               variant="soft"
-              icon="i-lucide-trash-2"
+              :icon="Trash2Icon"
               data-testid="delete-feature-tool"
               @click="removeFocusedFeature"
               >Delete</UButton
@@ -365,7 +394,7 @@ onUnmounted(() => {
         <UButton
           color="primary"
           variant="solid"
-          icon="i-lucide-check"
+          :icon="CheckIcon"
           block
           data-testid="finish-modification-tool"
           @click="terminateModification"
@@ -394,8 +423,8 @@ onUnmounted(() => {
           >
             <UButton
               label="Export"
-              icon="i-lucide-download"
-              trailing-icon="i-lucide-chevron-down"
+              :icon="DownloadIcon"
+              :trailing-icon="ChevronDownIcon"
               color="neutral"
               variant="outline"
               size="sm"
@@ -404,7 +433,7 @@ onUnmounted(() => {
           <UButton
             color="primary"
             variant="soft"
-            icon="i-lucide-cloud-upload"
+            :icon="CloudUploadIcon"
             size="sm"
             :loading="isSharing"
             @click="onShareDrawings"
@@ -417,7 +446,7 @@ onUnmounted(() => {
             <UButton
               color="error"
               variant="ghost"
-              icon="i-lucide-trash-2"
+              :icon="Trash2Icon"
               size="sm"
               class="ml-auto"
               aria-label="Clear drawing layer"
@@ -447,7 +476,7 @@ onUnmounted(() => {
                   :color="copied ? 'success' : 'neutral'"
                   variant="link"
                   size="sm"
-                  :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+                  :icon="copied ? CopyCheckIcon : CopyIcon"
                   aria-label="Copy to clipboard"
                   @click="copy(drawingShareableString)"
                 />

@@ -12,19 +12,40 @@ const { focusedFeature, focusedFeatureType, title, description } = useDrawing();
   <div
     v-if="focusedFeature"
     :key="focusedFeature?.getId()"
-    class="flex flex-col gap-2 rounded border border-gray-300 bg-gray-50 p-4"
+    class="space-y-4"
     data-testid="drawing-feature-property-panel"
   >
-    <div data-testid="drawing-feature-type">{{ focusedFeatureType }}</div>
-    <UInput v-model="title" data-testid="drawing-feature-title" />
-    <UTextarea
-      size="xl"
-      placeholder="Description..."
-      :rows="4"
-      class="w-full"
-      v-model="description"
-      data-testid="drawing-feature-description"
-    ></UTextarea>
+    <div class="flex items-center gap-2 text-xs text-muted">
+      <UIcon name="i-lucide-sliders-horizontal" class="size-3.5" />
+      <span data-testid="drawing-feature-type"
+        >{{
+          focusedFeatureType === "LineString"
+            ? "Line"
+            : focusedFeatureType === "Point"
+              ? "Text & marker"
+              : focusedFeatureType
+        }}
+        properties</span
+      >
+    </div>
+    <UFormField label="Title" size="sm">
+      <UInput
+        v-model="title"
+        placeholder="Add a title"
+        class="w-full"
+        data-testid="drawing-feature-title"
+      />
+    </UFormField>
+    <UFormField label="Description" hint="Optional" size="sm">
+      <UTextarea
+        v-model="description"
+        placeholder="Add a description"
+        :rows="2"
+        autoresize
+        class="w-full"
+        data-testid="drawing-feature-description"
+      />
+    </UFormField>
     <PolygonStyleEditor v-if="focusedFeatureType === 'Polygon'" />
     <CircleStyleEditor v-if="focusedFeatureType === 'Circle'" />
     <LinestringStyleEditor v-if="focusedFeatureType === 'LineString'" />

@@ -8,44 +8,62 @@ const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing();
 
 <template>
   <div
-    class="rounded border border-gray-300 bg-gray-50 p-4"
+    class="space-y-4 border-t border-default pt-4"
     data-testid="linestring-style-editor"
   >
-    <h3 class="mb-4 text-base font-semibold">Linestring Style</h3>
-    <!-- Stroke Color -->
-    <div class="mb-3 flex items-center gap-3">
-      <label class="mb-1 block text-sm font-medium text-gray-900"
-        >Stroke Color</label
+    <h4 class="text-xs font-semibold tracking-wide text-muted uppercase">
+      Appearance
+    </h4>
+    <div class="space-y-3">
+      <label class="flex items-center justify-between gap-3 text-sm text-toned">
+        Line color
+        <span class="flex items-center gap-2">
+          <span
+            class="font-mono text-xs text-muted uppercase"
+            aria-hidden="true"
+            >{{ strokeColor }}</span
+          >
+          <input
+            v-model="strokeColor"
+            type="color"
+            class="size-8 shrink-0 cursor-pointer rounded-md border border-default bg-default p-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            data-testid="linestring-stroke-color"
+          />
+        </span>
+      </label>
+      <label class="flex items-center justify-between gap-3 text-sm text-toned">
+        Line width
+        <span class="flex items-center gap-2">
+          <input
+            v-model.number="strokeWidth"
+            type="number"
+            min="0"
+            step="1"
+            class="w-20 rounded-md border border-default bg-default px-2.5 py-1.5 text-right text-sm text-highlighted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            data-testid="linestring-stroke-width"
+          />
+          <span class="text-xs text-muted">px</span>
+        </span>
+      </label>
+    </div>
+    <dl
+      v-if="focusedFeatureMetrics"
+      class="space-y-2 rounded-lg bg-elevated/50 p-3 text-xs"
+    >
+      <div
+        class="flex items-center justify-between gap-3"
+        data-testid="linestring-length"
       >
-      <div class="flex gap-2">
-        <input
-          type="color"
-          v-model="strokeColor"
-          class="h-8 w-12 cursor-pointer rounded border border-gray-300"
-          data-testid="linestring-stroke-color"
-        />
+        <dt class="text-muted">Length</dt>
+        <dd class="font-medium text-toned tabular-nums">
+          {{
+            Math.round(
+              (focusedFeatureMetrics as LineStringMetrics).lengthMeters,
+            ).toLocaleString()
+          }}
+          m
+        </dd>
       </div>
-    </div>
-    <!-- Stroke Width -->
-    <div class="mb-3 flex items-center gap-3">
-      <label class="mb-1 block text-sm font-medium text-gray-900"
-        >Stroke Width</label
-      >
-      <input
-        type="number"
-        v-model.number="strokeWidth"
-        class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm"
-        min="0"
-        step="1"
-        data-testid="linestring-stroke-width"
-      />
-    </div>
-    <div v-if="focusedFeatureMetrics" data-testid="linestring-length">
-      Length:
-      {{
-        Math.round((focusedFeatureMetrics as LineStringMetrics).lengthMeters)
-      }}
-      m
-    </div>
+    </dl>
   </div>
 </template>
