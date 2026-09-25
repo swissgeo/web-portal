@@ -48,7 +48,8 @@ export default defineNuxtConfig({
   devtools: { enabled: isDevelopment },
   dev: isDevelopment,
   build: {
-    transpile: [],
+    // Agentation ships Vue source files that the Nuxt test runtime must compile.
+    transpile: ["agentation-vue"],
   },
   modules: [
     "@nuxt/eslint",
