@@ -1056,6 +1056,9 @@ importers:
       '@xmldom/xmldom':
         specifier: 'catalog:'
         version: 0.9.12
+      agentation-vue:
+        specifier: 0.3.0
+        version: 0.3.0(vue@3.5.43(typescript@6.0.3))
       es-toolkit:
         specifier: 'catalog:'
         version: 1.52.0
@@ -5969,6 +5972,11 @@ packages:
     resolution: {integrity: sha512-lGq+9yr1/GuAWaVYIHRjvvySG5/4VfKIvC8EWxStPdcDh/Ka7FG3twP6v4d5BkravUilhIAsG4Qj83t02LWUPQ==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  agentation-vue@0.3.0:
+    resolution: {integrity: sha512-FA72/nublKoZCTtS5HrU2gj+iuySVONlb7TkF9tS0CsxfScLO9+QcX30/VwwqvyO4oGBKGwnmYmanJkyhiagwA==}
+    peerDependencies:
+      vue: 3.5.43
 
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
@@ -17793,6 +17801,13 @@ snapshots:
       acorn: 8.18.0
 
   acorn@8.18.0: {}
+
+  agentation-vue@0.3.0(vue@3.5.43(typescript@6.0.3)):
+    dependencies:
+      vue: 3.5.43(typescript@6.0.3)
+      vue-demi: 0.14.10(vue@3.5.43(typescript@6.0.3))
+    transitivePeerDependencies:
+      - '@vue/composition-api'
 
   agent-base@7.1.4: {}
 
