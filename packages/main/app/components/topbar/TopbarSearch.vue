@@ -105,9 +105,15 @@ watch(
 
 function handleSelect(result: SearchResult) {
   void handleResultSelection(result);
-  // a title made of nothing but markup sanitizes to an empty string, which
-  // would empty the field and take its clear button away with it
-  searchStore.keepSelectedQuery(result.sanitizedTitle || searchStore.query);
+  // a layer leaves nothing on the map for the field to stand for, unlike a
+  // place whose pin the field's clear button removes
+  if (result.resultType === "LAYER") {
+    searchStore.clearSearch();
+  } else {
+    // a title made of nothing but markup sanitizes to an empty string, which
+    // would empty the field and take its clear button away with it
+    searchStore.keepSelectedQuery(result.sanitizedTitle || searchStore.query);
+  }
   isOpen.value = false;
 }
 
