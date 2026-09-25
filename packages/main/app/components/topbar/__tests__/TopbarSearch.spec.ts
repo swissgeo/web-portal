@@ -256,4 +256,24 @@ describe("TopbarSearch", () => {
 
     expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("ber");
   });
+
+  it("empties the field when a layer is selected", async () => {
+    searchStore.query = "wald";
+    searchStore.results = [
+      {
+        resultType: "LAYER",
+        id: "waldgrenzen",
+        title: "Statische Waldgrenzen",
+        sanitizedTitle: "Statische Waldgrenzen",
+        description: "",
+        layerId: "waldgrenzen",
+      } as SearchResult,
+    ];
+
+    const wrapper = render();
+    await wrapper.find("[data-testid='search-results'] li").trigger("click");
+
+    expect(searchStore.clearSearch).toHaveBeenCalled();
+    expect(searchStore.keepSelectedQuery).not.toHaveBeenCalled();
+  });
 });
