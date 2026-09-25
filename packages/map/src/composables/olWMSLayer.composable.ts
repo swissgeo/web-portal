@@ -13,7 +13,9 @@ import { computed, ref, watch, watchEffect } from "vue";
 import type { WMSLayer } from "@/types/layers";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
+import { useMapStore } from "@/stores/map";
 import usePositionStore from "@/stores/position";
+import { pinTileGrid } from "@/utils/pinTileGrid";
 
 /**
  * Default tile size to use when requesting WMS tiles with our internal WMSs (512px)
@@ -125,6 +127,10 @@ export default function useOlWmsLayer(
           })
         : undefined,
     };
+    config.tileGrid = pinTileGrid(
+      config.tileGrid,
+      useMapStore().pinnedTileResolution,
+    );
     log.debug({
       title: "useOlWmsLayer",
       titleColor: LogPreDefinedColor.Pink,

@@ -10,6 +10,7 @@ export const URL_PARAM_STATE = "state";
 export const URL_PARAM_PRINT_FORMAT = "print_format";
 export const URL_PARAM_PRINT_ORIENTATION = "print_orientation";
 export const URL_PARAM_PRINT_RESOLUTION = "print_resolution";
+export const URL_PARAM_PRINT_SCALE = "print_scale";
 
 export function useUrlParams() {
   const route = useRoute();
@@ -87,10 +88,15 @@ export function useUrlParams() {
 
   /**
    * Get the print config from the URL
-   * ?print_format=a4&print_orientation=landscape&print_resolution=96&z=8
+   * ?print_format=a4&print_orientation=landscape&print_resolution=96&print_scale=25000
    */
   function getPrintConfigFromUrl(): PrintConfig {
+    // The print service passes an absent scale on as the text "None": no number, no scale
+    const scale = Number.parseFloat(
+      route.query[URL_PARAM_PRINT_SCALE] as string,
+    );
     const printConfig = {
+      scale: Number.isNaN(scale) ? undefined : scale,
       format: route.query[URL_PARAM_PRINT_FORMAT],
       orientation: route.query[URL_PARAM_PRINT_ORIENTATION],
       resolution: Number.parseFloat(

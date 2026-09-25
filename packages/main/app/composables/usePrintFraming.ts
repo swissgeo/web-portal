@@ -11,14 +11,16 @@ import { Fill, Style } from "ol/style";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import type { PrintPostRequestBody } from "../stores/printRequest";
-import type { PrintFormat, PrintOrientation } from "../types/print";
+import type { PrintFormat, PrintMode, PrintOrientation } from "../types/print";
 
+import { PRINT_DPI, printFixedScales } from "../types/print";
 import { usePrintRequests } from "./usePrintRequests";
 import {
   URL_PARAM_STATE,
   URL_PARAM_PRINT_ORIENTATION,
   URL_PARAM_PRINT_FORMAT,
   URL_PARAM_PRINT_RESOLUTION,
+  URL_PARAM_PRINT_SCALE,
 } from "./useUrlParams";
 
 /**
@@ -62,10 +64,33 @@ export function usePrintFraming() {
   const { hash, state } = useCreateShareLinkForCustomState();
   const { zoomLevel, olMap, center, viewportExtent } = useMap();
   const currentLang = computed(() => locale.value.toLowerCase());
-  const isZoomStepEnabled = ref(false);
   const selectedPrintFormat = ref<PrintFormat>("a4");
-  const selectedPrintResolution = ref(96);
   const selectedPrintOrientation = ref<PrintOrientation>("landscape");
+
+  /**
+   * The mode only decides the scale of the print, both modes print the layers currently active:
+   * - wysiwyg: what is on screen, at the zoom level for print
+   * - fixed-scale: a round scale picked by the user, like a paper map
+   */
+  const selectedPrintMode = ref<PrintMode>("wysiwyg");
+  const selectedPrintScale = ref(25000);
+  const isFixedScale = computed(
+    () => selectedPrintMode.value === "fixed-scale",
+  );
+
+  /**
+   * Scale wysiwyg starts with after leaving fixed-scale mode, so the print frame does not change.
+   * It is dropped as soon as the user zooms, and wysiwyg then prints the zoom level for print again.
+   */
+  const startScale = ref<number | null>(null);
+
+  /**
+   * The scale asked from the print service: the fixed scale, or the start scale of wysiwyg.
+   * Without it, the print page draws the zoom level of the state.
+   */
+  const exactScale = computed(() =>
+    isFixedScale.value ? selectedPrintScale.value : startScale.value,
+  );
 
   /**
    * The URL to the print preview page is only used for debbugging purposes
@@ -82,10 +107,10 @@ export function usePrintFraming() {
       URL_PARAM_PRINT_ORIENTATION,
       selectedPrintOrientation.value,
     );
-    url.searchParams.set(
-      URL_PARAM_PRINT_RESOLUTION,
-      selectedPrintResolution.value.toString(),
-    );
+    url.searchParams.set(URL_PARAM_PRINT_RESOLUTION, PRINT_DPI.toString());
+    if (exactScale.value !== null) {
+      url.searchParams.set(URL_PARAM_PRINT_SCALE, exactScale.value.toString());
+    }
     return url.toString();
   });
 
@@ -115,7 +140,8 @@ export function usePrintFraming() {
       state_id: hash.value,
       print_format: selectedPrintFormat.value,
       print_orientation: selectedPrintOrientation.value,
-      print_resolution: selectedPrintResolution.value,
+      print_resolution: PRINT_DPI,
+      ...(exactScale.value !== null && { print_scale: exactScale.value }),
       print_legend: false, // this is not used yet
       print_grid: false, // this is not used yet
       print_lang: currentLang.value,
@@ -130,7 +156,7 @@ export function usePrintFraming() {
     return getPageSizeInPixels(
       selectedPrintFormat.value,
       selectedPrintOrientation.value,
-      selectedPrintResolution.value,
+      PRINT_DPI,
     );
   });
 
@@ -155,7 +181,18 @@ export function usePrintFraming() {
    */
   const isZoomLocked = ref(false);
   const lastUnlockedZoomLevel = ref(zoomLevel.value);
+
+  /** Zoom of the map (not a whole level) at which the print has the given scale */
+  const zoomOfScale = (scale: number) =>
+    olMap.value
+      ?.getView()
+      .getZoomForResolution(getResolutionForScale(scale, PRINT_DPI));
+
   const zoomLevelForPrint = computed(() => {
+    if (exactScale.value !== null) {
+      // the frame ignores the screen zoom, this zoom only feeds the state
+      return Math.round(zoomOfScale(exactScale.value) ?? zoomLevel.value);
+    }
     if (!isZoomLocked.value) {
       lastUnlockedZoomLevel.value = Math.round(zoomLevel.value);
     }
@@ -163,44 +200,33 @@ export function usePrintFraming() {
   });
 
   /**
-   * The print extent is computed based on the current map center, zoom level, print format, orientation and resolution.
+   * The scale denominator of the print (e.g. 25000 for 1:25000): the scale sent to the print
+   * service, or else the scale of the zoom level for print.
+   */
+  const scaleOfPrint = computed(() => {
+    if (exactScale.value !== null) {
+      return exactScale.value;
+    }
+    const resolution = olMap.value
+      ?.getView()
+      .getResolutionForZoom(zoomLevelForPrint.value);
+    return resolution ? getScaleForResolution(resolution, PRINT_DPI) : null;
+  });
+
+  /**
+   * The print extent is computed from the center, the scale, and the print format and orientation.
    */
   const printExtent = computed(() => {
-    if (!olMap.value) {
+    if (!olMap.value || scaleOfPrint.value === null) {
       return null;
     }
 
-    return getPrintExtent(
-      olMap.value,
-      zoomLevelForPrint.value,
+    return getPrintExtentForResolution(
+      getResolutionForScale(scaleOfPrint.value, PRINT_DPI),
       pageSizeInPixels.value.width,
       pageSizeInPixels.value.height,
       centerForPrint.value,
     );
-  });
-
-  /**
-   * The scale of the map is ratio between the size of the page in real world (e.g. A4 is 210mm x 297mm)
-   * and the size of the geographic area in real world (in meters), e.g. 1:25000
-   * As a consequence, the scale of the map is recomputed whenever a new print framing is computed
-   * (i.e. when the user pans or zooms the map, or changes the print format, orientation or resolution).
-   */
-  const scaleOfPrint = computed(() => {
-    if (
-      !olMap.value ||
-      !Array.isArray(printExtent.value) ||
-      printExtent.value.length !== 4
-    ) {
-      return null;
-    }
-    const extentWidthMeter =
-      (printExtent.value[2] as number) - (printExtent.value[0] as number);
-    const pageWidthMeter =
-      getPageSizeInMeters(
-        selectedPrintFormat.value,
-        selectedPrintOrientation.value,
-      ).width / 1000; // convert from mm to meter
-    return extentWidthMeter / pageWidthMeter;
   });
 
   /**
@@ -239,7 +265,9 @@ export function usePrintFraming() {
    * The print extent is considered at the locked zoom level if the current zoom level of the map is equal to the locked zoom level for print.
    */
   const isAtLockedZoomLevel = computed(() => {
-    return zoomLevelForPrint.value === zoomLevel.value;
+    return (
+      exactScale.value !== null || zoomLevelForPrint.value === zoomLevel.value
+    );
   });
 
   /**
@@ -267,6 +295,50 @@ export function usePrintFraming() {
 
     view.setZoom(zoomLevelForPrint.value);
   }
+
+  /**
+   * Switching mode changes the print frame as little as possible:
+   * - entering fixed-scale mode starts at the round scale closest to what wysiwyg prints
+   * - leaving it starts wysiwyg with the fixed frame, and the map zooms to it unless the zoom is locked
+   */
+  watch(isFixedScale, (fixed) => {
+    const view = olMap.value?.getView();
+    if (!view) {
+      return;
+    }
+    if (fixed) {
+      const resolution = view.getResolutionForZoom(lastUnlockedZoomLevel.value);
+      const scale =
+        startScale.value ??
+        (resolution && getScaleForResolution(resolution, PRINT_DPI));
+      if (scale) {
+        selectedPrintScale.value = getClosestScale(
+          scale,
+          printFixedScales.map((fixed) => fixed.scale),
+        );
+      }
+      startScale.value = null;
+    } else {
+      startScale.value = selectedPrintScale.value;
+      const zoom = zoomOfScale(selectedPrintScale.value);
+      if (zoom !== undefined && !isZoomLocked.value) {
+        view.setZoom(zoom);
+      }
+    }
+  });
+
+  /**
+   * The start scale of wysiwyg ends when the user zooms away from it, unless the zoom is locked
+   */
+  watch([zoomLevel, isZoomLocked], () => {
+    if (startScale.value === null || isZoomLocked.value) {
+      return;
+    }
+    const startZoom = zoomOfScale(startScale.value) ?? zoomLevel.value;
+    if (Math.abs(zoomLevel.value - startZoom) > 1e-3) {
+      startScale.value = null;
+    }
+  });
 
   /**
    * Update the zoom part of the custom state config whenever the zoom level for print changes.
@@ -315,19 +387,6 @@ export function usePrintFraming() {
     },
     { immediate: true },
   );
-
-  /**
-   * Enable or disable the zoom step (i.e. the ability to zoom in and out in discrete steps) based on the value of isZoomStepEnabled.
-   * This is usefull for printing because the print zoom level sent to the service is alwas integer, so it gives a more acccurate
-   * visual representation of the print extent on the map if the user can only zoom in and out in discrete steps.
-   */
-  watch(isZoomStepEnabled, (enabled) => {
-    if (enabled) {
-      enableZoomStep();
-    } else {
-      disableZoomStep();
-    }
-  });
 
   /**
    * Update the color of the frame polygon to red if outside of Swiss boundaries
@@ -405,31 +464,6 @@ export function usePrintFraming() {
   });
 
   /**
-   * Makes the map view zoom to stick to integer zoom levels, which is useful for printing,
-   * as it ensures that the print extent is always at a fixed scale.
-   */
-  function enableZoomStep() {
-    if (!olMap.value) {
-      return;
-    }
-
-    const view = olMap.value.getView();
-    view.setConstrainResolution(true);
-  }
-
-  /**
-   * Disables the zoom step, which allows the user to zoom in and out of the map in a continuous manner.
-   */
-  function disableZoomStep() {
-    if (!olMap.value) {
-      return;
-    }
-
-    const view = olMap.value.getView();
-    view.setConstrainResolution(false);
-  }
-
-  /**
    * Adds the print extent layer to the map, which contains the print extent feature.
    */
   function mountPrintExtentLayer() {
@@ -458,14 +492,14 @@ export function usePrintFraming() {
 
   onBeforeUnmount(() => {
     unmountPrintExtentLayer();
-    disableZoomStep();
   });
 
   return {
-    isZoomStepEnabled,
     selectedPrintFormat,
-    selectedPrintResolution,
     selectedPrintOrientation,
+    selectedPrintMode,
+    selectedPrintScale,
+    isFixedScale,
     pageSizeInPixels,
     isCenterLocked,
     centerForPrint,
