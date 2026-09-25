@@ -150,7 +150,8 @@
       "buttonTitle": "3D"
     },
     "drawing": {
-      "buttonTitle": "Drawing"
+      "buttonTitle": "Drawing",
+      "title": "Drawing"
     },
     "measure": {
       "buttonTitle": "Measure"

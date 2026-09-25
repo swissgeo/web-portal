@@ -6,7 +6,7 @@ import { useMapViewStore } from "~/stores/mapView";
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 
-export type ToolboxPanelIds = "import" | "share" | "reportIssue";
+export type ToolboxPanelIds = "import" | "share" | "reportIssue" | "drawing";
 
 export const useToolboxStore = defineStore("toolbox", () => {
   const { focusMode } = useDrawing();
