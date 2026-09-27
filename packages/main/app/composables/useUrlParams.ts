@@ -88,7 +88,7 @@ export function useUrlParams() {
 
   /**
    * Get the print config from the URL
-   * ?print_format=a4&print_orientation=landscape&print_resolution=96&print_scale=25000
+   * ?print_format=a4&print_orientation=landscape&print_resolution=192&print_scale=25000
    */
   function getPrintConfigFromUrl(): PrintConfig {
     // The print service passes an absent scale on as the text "None": no number, no scale

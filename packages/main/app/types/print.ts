@@ -17,7 +17,7 @@ export type PrintMode = (typeof printModes)[number];
  *   e.g. level 22 is 2.5 m/px.
  * - The pairing of a scale with a level is the one of the print of map.geo.admin.ch (MapFish Print 3),
  *   which can be recomputed by hand:
- *   1. That print runs at 254 dpi (our print at 96 dpi does not matter for this table):
+ *   1. That print runs at 254 dpi (our own print DPI does not matter for this table):
  *      https://github.com/geoadmin/service-print3/blob/970d78a1d7d35deaafc0b388954a173261f98707/print-apps/mapviewer/config.yaml#L28-L29
  *   2. Its scales, from which ours are selected:
  *      https://github.com/geoadmin/service-print3/blob/970d78a1d7d35deaafc0b388954a173261f98707/print-apps/mapviewer/config.yaml#L33
@@ -39,7 +39,7 @@ export const printFixedScales: readonly { scale: number; level: number }[] = [
   { scale: 1000000, level: 17 },
 ];
 
-export const PRINT_DPI = 96;
+export const PRINT_DPI = 192;
 
 export interface PrintConfig {
   /**
@@ -47,7 +47,7 @@ export interface PrintConfig {
    */
   format: PrintFormat;
   /**
-   * Resolution of the print in dip per inch, DPI (eg. 96)
+   * Resolution of the print in dip per inch, DPI (eg. 192)
    */
   resolution: number;
   /**

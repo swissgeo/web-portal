@@ -66,8 +66,8 @@ The portal saves the map state, sends a print job to the print service (`NUXT_PU
 and polls it until the PDF is ready. The service opens `/<lang>/print?state=...&print_*=...` in a
 headless browser and prints that page.
 
-The print panel has two modes. Both print the layers that are currently active, at 96 dpi (the
-resolution of CSS pixels, 1 in = 96 px):
+The print panel has two modes. Both print the layers that are currently active, at 192 dpi (twice
+the resolution of CSS pixels, 1 in = 96 px, for a sharper PDF):
 
 - **Current view (WYSIWYG):** prints the map as on screen, at the zoom level of the state.
 - **Fixed scale:** prints at a round scale (1:10'000 to 1:1'000'000), like a paper map. On paper,

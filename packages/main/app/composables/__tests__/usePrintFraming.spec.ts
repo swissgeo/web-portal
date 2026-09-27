@@ -193,14 +193,14 @@ describe("usePrintFraming", () => {
     const { framing, wrapper } = mountComposable();
 
     expect(framing.pageSizeInPixels.value).toEqual({
-      width: 1123,
-      height: 794,
+      width: 2245,
+      height: 1587,
     });
     expect(framing.centerForPrint.value).toEqual([2_600_000, 1_200_000]);
     expect(framing.zoomLevelForPrint.value).toBe(8);
-    // a screen at 96 dpi showing 1 m per pixel is at 1:3'780
-    expect(framing.scaleOfPrint.value).toBeCloseTo(96 / 0.0254);
-    expect(framing.scaleOfPrintFormatted.value).toBe("1:3780");
+    // a screen at 192 dpi showing 1 m per pixel is at 1:7'559
+    expect(framing.scaleOfPrint.value).toBeCloseTo(PRINT_DPI / 0.0254);
+    expect(framing.scaleOfPrintFormatted.value).toBe("1:7559");
     expect(customStateMapCenter.value).toEqual([2_600_000, 1_200_000]);
     expect(customStateMapZoom.value).toBe(8);
     expect(mockCreateCutoutGeometry).toHaveBeenCalled();
@@ -253,14 +253,16 @@ describe("usePrintFraming", () => {
     expect(previewUrl.searchParams.get(URL_PARAM_STATE)).toBe("print-state");
     expect(previewUrl.searchParams.get("print_format")).toBe("a3");
     expect(previewUrl.searchParams.get("print_orientation")).toBe("portrait");
-    expect(previewUrl.searchParams.get("print_resolution")).toBe("96");
+    expect(previewUrl.searchParams.get("print_resolution")).toBe(
+      PRINT_DPI.toString(),
+    );
     // wysiwyg prints the zoom of the state, without a scale
     expect(previewUrl.searchParams.has("print_scale")).toBe(false);
     expect(mockSendCustomPrintRequest).toHaveBeenCalledWith({
       state_id: "print-state",
       print_format: "a3",
       print_orientation: "portrait",
-      print_resolution: 96,
+      print_resolution: PRINT_DPI,
       print_legend: false,
       print_grid: false,
       print_lang: "en",
@@ -334,7 +336,7 @@ describe("usePrintFraming", () => {
       expect(mockSendCustomPrintRequest).toHaveBeenCalledWith(
         expect.objectContaining({
           print_scale: 50000,
-          print_resolution: 96,
+          print_resolution: PRINT_DPI,
         }),
       );
       const url = new URL(framing.printPreviewUrl.value as string);
@@ -474,10 +476,10 @@ describe("usePrintFraming", () => {
     });
 
     it.each([
-      // 1 m/px on a 96 dpi screen is 1:3'780, closest to 1:10'000
+      // 1 m/px on a 192 dpi screen is 1:7'559, closest to 1:10'000
       [8, 10000],
-      // 32 m/px is 1:120'945, closer to 1:100'000 than to 1:200'000
-      [3, 100000],
+      // 32 m/px is 1:241'890, closer to 1:200'000 than to 1:100'000
+      [3, 200000],
     ])(
       "starts fixed-scale mode at the round scale closest to wysiwyg (zoom %s)",
       async (zoom, expected) => {
