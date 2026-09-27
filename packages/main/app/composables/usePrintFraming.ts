@@ -314,7 +314,7 @@ export function usePrintFraming() {
       if (scale) {
         selectedPrintScale.value = getClosestScale(
           scale,
-          printFixedScales.map((fixed) => fixed.scale),
+          printFixedScales.map((entry) => entry.scale),
         );
       }
       startScale.value = null;

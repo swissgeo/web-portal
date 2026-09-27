@@ -34,6 +34,7 @@ export default function useOlWmsLayer(
   const source = ref<TileWMS | ImageWMS>();
 
   const positionStore = usePositionStore();
+  const mapStore = useMapStore();
 
   const layerId = computed(() => layer.value.layerId);
   const zIndex = computed(() => layer.value.zIndex);
@@ -129,7 +130,7 @@ export default function useOlWmsLayer(
     };
     config.tileGrid = pinTileGrid(
       config.tileGrid,
-      useMapStore().pinnedTileResolution,
+      mapStore.pinnedTileResolution,
     );
     log.debug({
       title: "useOlWmsLayer",
