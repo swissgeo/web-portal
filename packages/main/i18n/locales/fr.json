@@ -150,7 +150,117 @@
       "buttonTitle": "3D"
     },
     "drawing": {
-      "buttonTitle": "Dessiner"
+      "buttonTitle": "Dessiner",
+      "close": "Fermer le panneau de dessin",
+      "featureCount": "Aucun objet sur la carte | {count} objet sur la carte | {count} objets sur la carte",
+      "tools": {
+        "label": "Outils de dessin",
+        "select": "Sélectionner",
+        "polyline": "Ligne",
+        "polygon": "Polygone",
+        "circle": "Cercle",
+        "text": "Texte",
+        "marker": "Symbole"
+      },
+      "hints": {
+        "edit": "Déplacez les poignées pour modifier la forme de l’objet.",
+        "select": "Sélectionnez un objet sur la carte pour modifier son style.",
+        "chooseTool": "Choisissez un outil pour commencer à dessiner sur la carte.",
+        "place": "Cliquez sur la carte pour placer votre objet.",
+        "circle": "Cliquez pour définir le centre, puis cliquez pour définir le rayon.",
+        "addPoints": "Cliquez pour ajouter des points. Double-cliquez pour terminer.",
+        "drawing": "Vous dessinez un nouvel objet.",
+        "deletePoint": "Maj + clic sur un point pour le supprimer."
+      },
+      "cancel": "Annuler le dessin",
+      "selection": "Sélection",
+      "done": "Terminé",
+      "editGeometry": "Modifier la géométrie",
+      "delete": "Supprimer",
+      "finishEditing": "Terminer la modification",
+      "export": "Exporter",
+      "sync": "Synchroniser le dessin",
+      "clear": "Vider la couche de dessin",
+      "shareLink": "Lien de partage",
+      "copy": "Copier dans le presse-papiers",
+      "allowEditing": "Autoriser la modification",
+      "formats": {
+        "geojson": "GeoJSON",
+        "gpxTrack": "Trace GPX",
+        "gpxRoute": "Itinéraire GPX",
+        "kml": "KML",
+        "kmz": "KMZ"
+      },
+      "properties": {
+        "generic": "Propriétés de l’objet",
+        "LineString": "Propriétés de la ligne",
+        "Polygon": "Propriétés du polygone",
+        "Circle": "Propriétés du cercle",
+        "Point": "Propriétés du texte et du repère"
+      },
+      "fields": {
+        "title": "Titre",
+        "titlePlaceholder": "Ajouter un titre",
+        "description": "Description",
+        "descriptionPlaceholder": "Ajouter une description",
+        "optional": "Facultatif"
+      },
+      "style": {
+        "appearance": "Apparence",
+        "fillColor": "Couleur de remplissage",
+        "outlineColor": "Couleur du contour",
+        "outlineWidth": "Épaisseur du contour",
+        "lineColor": "Couleur de la ligne",
+        "lineWidth": "Épaisseur de la ligne",
+        "showTitle": "Afficher le titre",
+        "showDescription": "Afficher la description",
+        "textSize": "Taille du texte",
+        "placement": "Position",
+        "relativeToMarker": "Par rapport au repère",
+        "textColor": "Couleur du texte",
+        "textHaloColor": "Couleur du halo du texte",
+        "showMarker": "Afficher le repère",
+        "markerSize": "Taille du repère"
+      },
+      "metrics": {
+        "length": "Longueur",
+        "perimeter": "Périmètre",
+        "radius": "Rayon",
+        "area": "Surface"
+      },
+      "placement": {
+        "label": "Position du texte",
+        "north-west": "En haut à gauche",
+        "north": "En haut",
+        "north-east": "En haut à droite",
+        "west": "À gauche",
+        "center": "Au centre",
+        "east": "À droite",
+        "south-west": "En bas à gauche",
+        "south": "En bas",
+        "south-east": "En bas à droite"
+      },
+      "sizes": {
+        "xsmall": "Très petit",
+        "small": "Petit",
+        "medium": "Moyen",
+        "large": "Grand",
+        "xlarge": "Très grand"
+      },
+      "symbols": {
+        "collection": "Collection de symboles",
+        "color": "Couleur du symbole",
+        "label": "Symboles de repère",
+        "empty": "Aucun symbole disponible.",
+        "select": "Sélectionner le symbole : {name}",
+        "collections": {
+          "default": "Symboles par défaut",
+          "babs-v2-de": "Signes conventionnels civils (allemand)",
+          "babs-v2-fr": "Signes conventionnels civils (français)",
+          "babs-v2-it": "Signes conventionnels civils (italien)"
+        }
+      },
+      "title": "Dessin"
     },
     "measure": {
       "buttonTitle": "Mesurer"

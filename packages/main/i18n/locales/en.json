@@ -151,7 +151,116 @@
     },
     "drawing": {
       "buttonTitle": "Drawing",
-      "title": "Drawing"
+      "title": "Drawing",
+      "close": "Close drawing panel",
+      "featureCount": "No features on the map | {count} feature on the map | {count} features on the map",
+      "tools": {
+        "label": "Drawing tools",
+        "select": "Select",
+        "polyline": "Line",
+        "polygon": "Polygon",
+        "circle": "Circle",
+        "text": "Text",
+        "marker": "Marker"
+      },
+      "hints": {
+        "edit": "Drag the handles to reshape your feature.",
+        "select": "Select a feature on the map to edit its style.",
+        "chooseTool": "Choose a tool to start drawing on the map.",
+        "place": "Click on the map to place your feature.",
+        "circle": "Click to set the centre, then click to set the radius.",
+        "addPoints": "Click to add points. Double-click to finish.",
+        "drawing": "You are currently drawing a new feature.",
+        "deletePoint": "Shift + click a point to delete it."
+      },
+      "cancel": "Cancel drawing",
+      "selection": "Selection",
+      "done": "Done",
+      "editGeometry": "Edit geometry",
+      "delete": "Delete",
+      "finishEditing": "Finish editing",
+      "export": "Export",
+      "sync": "Sync drawing",
+      "clear": "Clear drawing layer",
+      "shareLink": "Share link",
+      "copy": "Copy to clipboard",
+      "allowEditing": "Allow editing",
+      "formats": {
+        "geojson": "GeoJSON",
+        "gpxTrack": "GPX Track",
+        "gpxRoute": "GPX Route",
+        "kml": "KML",
+        "kmz": "KMZ"
+      },
+      "properties": {
+        "generic": "Feature properties",
+        "LineString": "Line properties",
+        "Polygon": "Polygon properties",
+        "Circle": "Circle properties",
+        "Point": "Text & marker properties"
+      },
+      "fields": {
+        "title": "Title",
+        "titlePlaceholder": "Add a title",
+        "description": "Description",
+        "descriptionPlaceholder": "Add a description",
+        "optional": "Optional"
+      },
+      "style": {
+        "appearance": "Appearance",
+        "fillColor": "Fill color",
+        "outlineColor": "Outline color",
+        "outlineWidth": "Outline width",
+        "lineColor": "Line color",
+        "lineWidth": "Line width",
+        "showTitle": "Show title",
+        "showDescription": "Show description",
+        "textSize": "Text size",
+        "placement": "Placement",
+        "relativeToMarker": "Relative to the marker",
+        "textColor": "Text color",
+        "textHaloColor": "Text halo color",
+        "showMarker": "Show marker",
+        "markerSize": "Marker size"
+      },
+      "metrics": {
+        "length": "Length",
+        "perimeter": "Perimeter",
+        "radius": "Radius",
+        "area": "Area"
+      },
+      "placement": {
+        "label": "Text placement",
+        "north-west": "Top left",
+        "north": "Top",
+        "north-east": "Top right",
+        "west": "Left",
+        "center": "Center",
+        "east": "Right",
+        "south-west": "Bottom left",
+        "south": "Bottom",
+        "south-east": "Bottom right"
+      },
+      "sizes": {
+        "xsmall": "Extra small",
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large",
+        "xlarge": "Extra large"
+      },
+      "symbols": {
+        "collection": "Symbol collection",
+        "color": "Symbol color",
+        "label": "Marker symbols",
+        "empty": "No symbols available.",
+        "select": "Select symbol: {name}",
+        "collections": {
+          "default": "Default symbols",
+          "babs-v2-de": "Civil protection symbols (German)",
+          "babs-v2-fr": "Civil protection symbols (French)",
+          "babs-v2-it": "Civil protection symbols (Italian)"
+        }
+      }
     },
     "measure": {
       "buttonTitle": "Measure"
