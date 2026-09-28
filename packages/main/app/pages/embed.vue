@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ layout: "embed" });
+definePageMeta({ key: "embed", layout: "embed" });
 
 const route = useRoute();
 const stateId = useState(
