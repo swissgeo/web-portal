@@ -2,8 +2,11 @@
 import type { Distribution } from "@swissgeo/ogc";
 
 import { isStacDistribution } from "~/utils/isStacDistribution";
+import { useI18n } from "vue-i18n";
 
 import DatasetService from "./DatasetService.vue";
+
+const { t } = useI18n();
 
 const { distributions } = defineProps<{
   distributions: Distribution[];
@@ -35,15 +38,15 @@ const groups = computed(() => [
         v-show="group.distributions.some(isVisible)"
       >
         <h4 class="mb-space-xs text-sm font-semibold text-highlighted">
-          {{ $t(group.label) }}
+          {{ t(group.label) }}
         </h4>
         <div class="rounded-md border border-default">
           <div
             class="hidden grid-cols-[7rem_1fr] gap-space-xs border-b border-default p-space-s text-xs font-semibold @2xl:grid"
             aria-hidden="true"
           >
-            <span>{{ $t("dataset.format") }}</span>
-            <span>{{ $t("dataset.serviceUrl") }}</span>
+            <span>{{ t("dataset.format") }}</span>
+            <span>{{ t("dataset.serviceUrl") }}</span>
           </div>
           <ul class="divide-y divide-default">
             <li

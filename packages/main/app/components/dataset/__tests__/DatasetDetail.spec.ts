@@ -31,7 +31,6 @@ function mountDetail(
   return mount(DatasetDetail, {
     props: { dataset, distributionCollection },
     global: {
-      mocks: { $t: (key: string) => key },
       stubs: {
         DatasetLinkList: true,
         DatasetServiceList: true,

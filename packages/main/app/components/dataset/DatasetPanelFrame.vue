@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
 const { visible } = defineProps<{ visible: boolean }>();
 const snapPoint = ref<number | string | null>(0.7);
 const { t } = useI18n();
@@ -44,7 +46,7 @@ watch(
         :snap-points="[0.7, 1]"
         handle-only
         no-body-styles
-        :title="$t('dataset.details')"
+        :title="t('dataset.details')"
         :ui="{
           content: contentClass,
           handle: 'my-2 lg:hidden!',

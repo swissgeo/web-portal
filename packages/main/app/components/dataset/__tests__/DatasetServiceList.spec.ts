@@ -1,10 +1,12 @@
 import type { Distribution } from "@swissgeo/ogc";
 
 import { mount } from "@vue/test-utils";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 
 import DatasetService from "../DatasetService.vue";
 import DatasetServiceList from "../DatasetServiceList.vue";
+
+vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (key: string) => key }) }));
 
 it("groups downloads separately and removes empty groups when data changes", async () => {
   const protocols: NonNullable<Distribution["properties"]["protocol"]>[] = [
@@ -19,7 +21,6 @@ it("groups downloads separately and removes empty groups when data changes", asy
   const wrapper = mount(DatasetServiceList, {
     props: { distributions },
     global: {
-      mocks: { $t: (key: string) => key },
       stubs: { DatasetService: true },
     },
   });

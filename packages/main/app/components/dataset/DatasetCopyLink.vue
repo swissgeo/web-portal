@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useClipboard } from "@vueuse/core";
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const { defaultIcon = "i-lucide-link" } = defineProps<{
   url: string;
@@ -22,7 +25,7 @@ const icon = computed(() => {
     :class="{ 'text-success': copied }"
     color="primary"
     variant="ghost"
-    :aria-label="$t('toolbox.share.ariaLabel.copyToClipboard')"
+    :aria-label="t('toolbox.share.ariaLabel.copyToClipboard')"
     data-testid="dataset-copy-link"
     @click="copy(url)"
   />
