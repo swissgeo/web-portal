@@ -7,6 +7,8 @@ const { t } = useI18n();
 // The drawer moves below the viewport at the lower snap point.
 // Reserve that space so the scroll area still ends at the screen edge.
 const contentClass = computed(() => {
+  // The drawer sets an inline transform for mobile snap points.
+  // On desktop, !important keeps the panel below the header.
   const base =
     "z-60 mt-0 h-dvh max-h-dvh overflow-hidden lg:absolute lg:inset-y-0 lg:right-auto lg:h-full lg:w-3/4 lg:max-w-dataset-panel lg:rounded-none lg:pb-0 lg:transform-none! lg:transition-none";
   if (snapPoint.value === 1) {
