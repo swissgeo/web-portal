@@ -7,23 +7,27 @@ const { t } = useI18n();
 const isDesktop = useMediaQuery("(min-width: 768px)");
 
 const mobileNavButtons = computed(() => [
-  { icon: Map, label: t("footer.mobileNav.map"), variant: "solid" as const },
+  {
+    icon: Map,
+    label: t("footer.mobileNav.map"),
+    variant: "solid-inverted" as const,
+  },
   {
     icon: Layers3,
     label: t("footer.mobileNav.catalog"),
-    variant: "ghost" as const,
+    variant: "ghost-inverted" as const,
   },
   {
     icon: Wrench,
     label: t("footer.mobileNav.tools"),
-    variant: "ghost" as const,
+    variant: "ghost-inverted" as const,
   },
 ]);
 
 const wrapperClasses = computed(() => {
   return isDesktop.value
     ? "text-accent absolute bottom-0 left-0 z-50 flex w-full items-center justify-between bg-muted p-1 text-xs"
-    : "text-accent absolute bottom-0 left-0 z-50 flex w-full items-center justify-center gap-1.5 bg-default p-1 pb-7";
+    : "text-accent absolute bottom-0 left-0 z-50 flex w-full items-center justify-center gap-2 bg-primary-50 dark:bg-primary-800 p-1 pb-7";
 });
 </script>
 
@@ -44,8 +48,9 @@ const wrapperClasses = computed(() => {
             :handle="false"
             :overlay="false"
             inset
+            close
             :ui="{
-              content: 'mb-[70px] inset-x-0',
+              content: 'mb-[70px] inset-x-0 rounded-none',
               title: 'text-base',
             }"
             :title="t('footer.mobileNav.mapInfo')"
@@ -68,6 +73,7 @@ const wrapperClasses = computed(() => {
         v-for="btn in mobileNavButtons"
         :key="btn.label"
         v-bind="btn"
+        color="primary"
         class="h-14 w-28"
         :ui="{ base: 'flex flex-col' }"
       />
