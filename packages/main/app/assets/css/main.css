@@ -85,27 +85,16 @@
   --color-black: #0e0f0f;
   --color-white: #ffffff;
 
-  --color-success: #00dc82;
-  --color-error: #e7000b;
-  --color-warning: #fcc800;
-  --color-info: #155dfc;
-  --color-success-on-accent: #052e16;
-  --color-error-on-accent: #ffffff;
-  --color-warning-on-accent: #432004;
-  --color-info-on-accent: #ffffff;
+  --color-success: light-dark(#00dc82, #75edae);
+  --color-error: light-dark(#e7000b, #ff6467);
+  --color-warning: light-dark(#fcc800, #ffdf20);
+  --color-info: light-dark(#155dfc, #8ec5ff);
+  --color-success-on-accent: light-dark(#052e16, #052e16);
+  --color-error-on-accent: light-dark(#ffffff, #460809);
+  --color-warning-on-accent: light-dark(#432004, #432004);
+  --color-info-on-accent: light-dark(#ffffff, #162456);
 
   --text-tiny: 0.625rem;
-}
-
-@theme dark {
-  --color-success: #75edae;
-  --color-error: #ff6467;
-  --color-warning: #ffdf20;
-  --color-info: #8ec5ff;
-  --color-success-on-accent: #052e16;
-  --color-error-on-accent: #460809;
-  --color-warning-on-accent: #432004;
-  --color-info-on-accent: #162456;
 }
 
 @layer theme {
