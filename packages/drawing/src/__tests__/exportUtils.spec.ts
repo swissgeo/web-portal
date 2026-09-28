@@ -3,11 +3,16 @@ import type { Geometry } from "ol/geom";
 import { strFromU8, unzipSync } from "fflate";
 import Feature from "ol/Feature";
 import { Circle, LineString, Point, Polygon } from "ol/geom";
-import { Fill, Icon, Style, Text } from "ol/style";
+import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import { registerDocument } from "ol/xml";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import {
+  FILL_COLOR_KEY,
+  STROKE_COLOR_KEY,
+  STROKE_WIDTH_KEY,
+  IS_POLYGONIZED_CIRCLE_KEY,
+  IS_CIRCLE_CENTER_KEY,
   SHOW_DESCRIPTION_KEY,
   SHOW_ICON_KEY,
   SHOW_TITLE_KEY,
@@ -352,6 +357,101 @@ describe("OpenLayers feature serializers", () => {
     expect(feature.get("textOffset")).toBeUndefined();
     expect(feature.get("type")).toBeUndefined();
     expect(feature.getStyle()).toBeNull();
+  });
+});
+
+describe.each(["kml", "kmz"] as const)("%s shape styles", (format) => {
+  async function exportDocument(feature: Feature<Geometry>) {
+    if (format === "kml") {
+      return parseXml(olFeatureToKML(feature));
+    }
+    const entries = unzipSync(new Uint8Array(await olFeatureToKMZ(feature)));
+    return parseXml(strFromU8(entries["doc.kml"]!));
+  }
+
+  it.each(["LineString", "Polygon", "Circle"] as const)(
+    "exports saved %s styling and metadata without mutating the source",
+    async (type) => {
+      const geometry =
+        type === "Circle"
+          ? new Circle([2600000, 1200000], 100)
+          : type === "Polygon"
+            ? new Polygon([
+                [
+                  [2600000, 1200000],
+                  [2600100, 1200000],
+                  [2600000, 1200100],
+                  [2600000, 1200000],
+                ],
+              ])
+            : new LineString([
+                [2600000, 1200000],
+                [2600100, 1200100],
+              ]);
+      const feature = makeFeature(geometry, {
+        [TITLE_KEY]: "Survey shape",
+        [DESCRIPTION_KEY]: "Exported description",
+        [STROKE_COLOR_KEY]: "#123456",
+        [STROKE_WIDTH_KEY]: 3.5,
+        [FILL_COLOR_KEY]: "#abcdef",
+      });
+      feature.setId("shape-1");
+      // The active selection style must not leak into the saved drawing.
+      const selectedStyle = new Style({
+        stroke: new Stroke({ color: "#ffffff", width: 12 }),
+      });
+      feature.setStyle(selectedStyle);
+      const originalProperties = feature.getProperties();
+      const doc = await exportDocument(feature);
+      const placemark = doc.querySelector('Placemark[id="shape-1"]')!;
+
+      expect(getElementText(placemark, "name")).toBe("Survey shape");
+      expect(getElementText(placemark, "description")).toBe(
+        "Exported description",
+      );
+      expect(getElementText(placemark, "LineStyle > color")).toBe("ff563412");
+      expect(getElementText(placemark, "LineStyle > width")).toBe("3.5");
+      if (type === "LineString") {
+        expect(placemark.querySelector("LineString")).not.toBeNull();
+        expect(placemark.querySelector("PolyStyle")).toBeNull();
+      } else {
+        expect(placemark.querySelector("Polygon")).not.toBeNull();
+        expect(getElementText(placemark, "PolyStyle > color")).toBe("4defcdab");
+      }
+      if (type === "Circle") {
+        expect(doc.querySelectorAll("Placemark")).toHaveLength(2);
+        expect(doc.querySelectorAll("Point")).toHaveLength(1);
+        expect(getExtendedDataValue(doc, IS_POLYGONIZED_CIRCLE_KEY)).toBe(
+          "true",
+        );
+        expect(getExtendedDataValue(doc, IS_CIRCLE_CENTER_KEY)).toBe("true");
+      }
+      expect(feature.getStyle()).toBe(selectedStyle);
+      expect(feature.getGeometry()).toBe(geometry);
+      expect(feature.getProperties()).toEqual(originalProperties);
+    },
+  );
+
+  it("keeps zero-width outlines invisible", async () => {
+    const doc = await exportDocument(
+      makeFeature(makePolygon(), {
+        [STROKE_COLOR_KEY]: "#123456",
+        [STROKE_WIDTH_KEY]: 0,
+        [FILL_COLOR_KEY]: "#abcdef",
+      }),
+    );
+    expect(getElementText(doc, "LineStyle > color")).toBe("00000000");
+    expect(getElementText(doc, "PolyStyle > color")).toBe("4defcdab");
+  });
+
+  it("uses drawing defaults when style properties are absent", async () => {
+    const doc = await exportDocument(
+      makeFeature(makePolygon(), { name: "Existing name" }),
+    );
+    expect(getElementText(doc, "Placemark > name")).toBe("Existing name");
+    expect(getElementText(doc, "LineStyle > color")).toBe("ff0000ff");
+    expect(getElementText(doc, "LineStyle > width")).toBe("2");
+    expect(getElementText(doc, "PolyStyle > color")).toBe("4d0000ff");
   });
 });
 
