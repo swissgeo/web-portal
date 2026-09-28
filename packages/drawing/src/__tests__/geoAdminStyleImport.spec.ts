@@ -10,8 +10,6 @@ import {
   DESCRIPTION_KEY,
   TITLE_KEY,
   initializeMetadataProperties,
-} from "@/utils/drawingMetadata";
-import {
   ICON_ANCHOR_KEY,
   ICON_SIZE_KEY,
   ICON_URL_KEY,
