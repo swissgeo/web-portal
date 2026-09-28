@@ -22,7 +22,13 @@ export function useGenericOgcData(
   const { onServiceError, onServiceResponse, serviceData, serviceUrl } =
     useService(distribution);
 
-  const layerFormat = computed(() => determineFormat(distribution.value));
+  const layerFormat = computed(() => {
+    const format = determineFormat(distribution.value);
+    if (format === "WMS" || format === "WMTS") {
+      return format;
+    }
+    return null;
+  });
 
   onDistributionError((error) =>
     onError(

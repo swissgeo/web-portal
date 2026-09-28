@@ -5,18 +5,6 @@ import { describe, expect, it } from "vitest";
 import { determineFormat } from "../determineFormat";
 
 describe("determineFormat", () => {
-  it("returns no map format for STAC", () => {
-    expect(
-      determineFormat({
-        properties: {
-          type: "Distribution",
-          title: "STAC",
-          protocol: "ogcapi:stac",
-        },
-      }),
-    ).toBeNull();
-  });
-
   it("returns no format without a distribution", () => {
     expect(determineFormat(null)).toBeNull();
   });
@@ -26,6 +14,8 @@ describe("determineFormat", () => {
     ["OGC:WMS" as const, "WMS"],
     ["OGC:wmts" as const, "WMTS"],
     ["Ogc:wMs" as const, "WMS"],
+    ["ogcapi:stac" as const, "STAC"],
+    ["OGCAPI:STAC" as const, "STAC"],
   ])("returns the correct format", (protocol: string, expected: string) => {
     const dataset = {
       properties: {

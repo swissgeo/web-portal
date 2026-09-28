@@ -2,7 +2,7 @@ import type { Distribution } from "@swissgeo/ogc";
 
 export function determineFormat(
   distribution: Pick<Distribution, "properties"> | null,
-): "WMS" | "WMTS" | null {
+): "WMS" | "WMTS" | "STAC" | null {
   if (!distribution?.properties) {
     return null;
   }
@@ -14,6 +14,8 @@ export function determineFormat(
       return "WMTS";
     case "ogc:wms":
       return "WMS";
+    case "ogcapi:stac":
+      return "STAC";
     default:
       return null;
   }

@@ -8,7 +8,6 @@ import type {
 } from "@swissgeo/ogc";
 
 import { determineFormat } from "~/utils/determineFormat";
-import { isStacDistribution } from "~/utils/isStacDistribution";
 import { resolveWebUrl } from "~/utils/resolveWebUrl";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
@@ -72,8 +71,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
   return props.distributionCollection.features.filter((distribution) => {
     return (
       distribution.properties.metaInformation !== true &&
-      (determineFormat(distribution) !== null ||
-        isStacDistribution(distribution))
+      determineFormat(distribution) !== null
     );
   });
 });

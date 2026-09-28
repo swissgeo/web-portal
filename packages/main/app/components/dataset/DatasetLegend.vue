@@ -17,13 +17,16 @@ const { distribution, layerId } = useSelectedDistribution(
   computed(() => props.dataset),
   computed(() => props.distributionCollection),
 );
-const format = computed(() => determineFormat(distribution.value));
+const supportsLegend = computed(() => {
+  const format = determineFormat(distribution.value);
+  return format === "WMS" || format === "WMTS";
+});
 </script>
 
 <template>
   <ClientOnly>
     <DatasetDistributionLegend
-      v-if="distribution && layerId && format"
+      v-if="distribution && layerId && supportsLegend"
       :key="distribution.id"
       :distribution="distribution"
       :layer-id="layerId"
