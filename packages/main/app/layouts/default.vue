@@ -41,7 +41,7 @@ watch(route, (value) => {
             :mapLayers="mapLayers"
           >
           </SideBar>
-          <div class="relative isolate h-full w-full">
+          <div class="relative h-full w-full">
             <slot />
             <ClientOnly>
               <Footer v-if="!isMapFullscreenMode" />

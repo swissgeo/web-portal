@@ -6,7 +6,11 @@ import { reactive } from "vue";
 import DefaultLayout from "../default.vue";
 
 const mocks = vi.hoisted(() => ({ route: vi.fn(), mapView: vi.fn() }));
-const route = reactive({ path: "/de/map", name: "map___de", meta: { datasetDetail: false } });
+const route = reactive({
+  path: "/de/map",
+  name: "map___de",
+  meta: { datasetDetail: false },
+});
 const mapView = reactive({
   isFullscreenModeActive: false,
   getMapLayers: () => [],
@@ -29,7 +33,6 @@ function render() {
         ClientOnly: { template: "<slot />" },
         Topbar: true,
         Footer: true,
-        UDrawer: { template: '<div><slot name="content" /></div>' },
         UMain: { template: "<div><slot /></div>" },
         SideBar: {
           template:
