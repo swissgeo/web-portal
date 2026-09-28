@@ -301,6 +301,7 @@ describe("useStateConfig manages to import a State with importState", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     mockMapLayers.length = 0;
+    vi.clearAllMocks();
   });
 
   it("Does not change the app state when the importe state has no information", async () => {
@@ -343,23 +344,22 @@ describe("useStateConfig manages to import a State with importState", () => {
     expect(setZoomMock).toHaveBeenCalledWith(5, { name: "state-config" });
   });
 
-  it.each([
-    [Math.PI, Math.PI],
-    [Math.PI * 3, Math.PI],
-    [-Math.PI, Math.PI],
-  ])("Rotation is working correctly", async (rotation, expectedRotation) => {
-    const state = { map: { rotation } };
+  it.each([Math.PI, Math.PI * 3, -Math.PI])(
+    "passes rotation %s through to the position store unchanged",
+    async (rotation) => {
+      const state = { map: { rotation } };
 
-    const payload: AppStatePayload = {
-      version: APP_STATE_CONFIG_VERSION,
-      state,
-    };
+      const payload: AppStatePayload = {
+        version: APP_STATE_CONFIG_VERSION,
+        state,
+      };
 
-    await useStateConfig().importState(payload);
-    expect(setRotationMock).toHaveBeenCalledWith(expectedRotation, {
-      name: "state-config",
-    });
-  });
+      await useStateConfig().importState(payload);
+      expect(setRotationMock).toHaveBeenCalledWith(rotation, {
+        name: "state-config",
+      });
+    },
+  );
 
   it.each`
     description                               | state                                                                                            | bg_layer       | layers
