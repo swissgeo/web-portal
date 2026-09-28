@@ -223,7 +223,117 @@
       "buttonTitle": "3D"
     },
     "drawing": {
-      "buttonTitle": "Zeichnen"
+      "buttonTitle": "Zeichnen",
+      "close": "Zeichenfenster schliessen",
+      "featureCount": "Keine Objekte auf der Karte | {count} Objekt auf der Karte | {count} Objekte auf der Karte",
+      "tools": {
+        "label": "Zeichenwerkzeuge",
+        "select": "Auswählen",
+        "polyline": "Linie",
+        "polygon": "Polygon",
+        "circle": "Kreis",
+        "text": "Text",
+        "marker": "Symbol"
+      },
+      "hints": {
+        "edit": "Ziehe die Griffe, um die Form des Objekts zu ändern.",
+        "select": "Wähle ein Objekt auf der Karte aus, um seinen Stil zu bearbeiten.",
+        "chooseTool": "Wähle ein Werkzeug, um auf der Karte zu zeichnen.",
+        "place": "Klicke auf die Karte, um dein Objekt zu platzieren.",
+        "circle": "Klicke, um den Mittelpunkt festzulegen, und dann erneut, um den Radius festzulegen.",
+        "addPoints": "Klicke, um Punkte hinzuzufügen. Doppelklicke zum Abschliessen.",
+        "drawing": "Du zeichnest gerade ein neues Objekt.",
+        "deletePoint": "Umschalt + Klick auf einen Punkt, um ihn zu löschen."
+      },
+      "cancel": "Zeichnen abbrechen",
+      "selection": "Auswahl",
+      "done": "Fertig",
+      "editGeometry": "Geometrie bearbeiten",
+      "delete": "Löschen",
+      "finishEditing": "Bearbeitung abschliessen",
+      "export": "Exportieren",
+      "sync": "Zeichnung synchronisieren",
+      "clear": "Zeichenebene leeren",
+      "shareLink": "Freigabelink",
+      "copy": "In die Zwischenablage kopieren",
+      "allowEditing": "Bearbeitung erlauben",
+      "formats": {
+        "geojson": "GeoJSON",
+        "gpxTrack": "GPX-Track",
+        "gpxRoute": "GPX-Route",
+        "kml": "KML",
+        "kmz": "KMZ"
+      },
+      "properties": {
+        "generic": "Objekteigenschaften",
+        "LineString": "Linieneigenschaften",
+        "Polygon": "Polygoneigenschaften",
+        "Circle": "Kreiseigenschaften",
+        "Point": "Text- und Markierungseigenschaften"
+      },
+      "fields": {
+        "title": "Titel",
+        "titlePlaceholder": "Titel hinzufügen",
+        "description": "Beschreibung",
+        "descriptionPlaceholder": "Beschreibung hinzufügen",
+        "optional": "Optional"
+      },
+      "style": {
+        "appearance": "Darstellung",
+        "fillColor": "Füllfarbe",
+        "outlineColor": "Umrissfarbe",
+        "outlineWidth": "Umrissbreite",
+        "lineColor": "Linienfarbe",
+        "lineWidth": "Linienbreite",
+        "showTitle": "Titel anzeigen",
+        "showDescription": "Beschreibung anzeigen",
+        "textSize": "Textgrösse",
+        "placement": "Platzierung",
+        "relativeToMarker": "Relativ zur Markierung",
+        "textColor": "Textfarbe",
+        "textHaloColor": "Farbe des Texthalos",
+        "showMarker": "Markierung anzeigen",
+        "markerSize": "Markierungsgrösse"
+      },
+      "metrics": {
+        "length": "Länge",
+        "perimeter": "Umfang",
+        "radius": "Radius",
+        "area": "Fläche"
+      },
+      "placement": {
+        "label": "Textplatzierung",
+        "north-west": "Oben links",
+        "north": "Oben",
+        "north-east": "Oben rechts",
+        "west": "Links",
+        "center": "Mitte",
+        "east": "Rechts",
+        "south-west": "Unten links",
+        "south": "Unten",
+        "south-east": "Unten rechts"
+      },
+      "sizes": {
+        "xsmall": "Sehr klein",
+        "small": "Klein",
+        "medium": "Mittel",
+        "large": "Gross",
+        "xlarge": "Sehr gross"
+      },
+      "symbols": {
+        "collection": "Symbolsammlung",
+        "color": "Symbolfarbe",
+        "label": "Markierungssymbole",
+        "empty": "Keine Symbole verfügbar.",
+        "select": "Symbol auswählen: {name}",
+        "collections": {
+          "default": "Standardsymbole",
+          "babs-v2-de": "Zivile Signaturen (Deutsch)",
+          "babs-v2-fr": "Zivile Signaturen (Französisch)",
+          "babs-v2-it": "Zivile Signaturen (Italienisch)"
+        }
+      },
+      "title": "Zeichnen"
     },
     "measure": {
       "buttonTitle": "Messen"

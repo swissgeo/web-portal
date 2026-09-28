@@ -26,6 +26,119 @@
         "adminImportPart1": "L'importazione di un disegno Swissgeo come amministratore cancellerà tutti i disegni esistenti.",
         "adminImportPart2": "Sarà quindi possibile continuare a modificare il disegno e sincronizzarlo con la banca dati Swissgeo."
       }
+    },
+    "drawing": {
+      "close": "Chiudi il pannello di disegno",
+      "featureCount": "Nessun oggetto sulla mappa | {count} oggetto sulla mappa | {count} oggetti sulla mappa",
+      "tools": {
+        "label": "Strumenti di disegno",
+        "select": "Seleziona",
+        "polyline": "Linea",
+        "polygon": "Poligono",
+        "circle": "Cerchio",
+        "text": "Testo",
+        "marker": "Simbolo"
+      },
+      "hints": {
+        "edit": "Trascina le maniglie per modificare la forma dell’oggetto.",
+        "select": "Seleziona un oggetto sulla mappa per modificarne lo stile.",
+        "chooseTool": "Scegli uno strumento per iniziare a disegnare sulla mappa.",
+        "place": "Fai clic sulla mappa per posizionare l’oggetto.",
+        "circle": "Fai clic per definire il centro, poi fai clic per definire il raggio.",
+        "addPoints": "Fai clic per aggiungere punti. Fai doppio clic per terminare.",
+        "drawing": "Stai disegnando un nuovo oggetto.",
+        "deletePoint": "Maiusc + clic su un punto per eliminarlo."
+      },
+      "cancel": "Annulla il disegno",
+      "selection": "Selezione",
+      "done": "Fine",
+      "editGeometry": "Modifica geometria",
+      "delete": "Elimina",
+      "finishEditing": "Termina la modifica",
+      "export": "Esporta",
+      "sync": "Sincronizza il disegno",
+      "clear": "Svuota il livello di disegno",
+      "shareLink": "Link di condivisione",
+      "copy": "Copia negli appunti",
+      "allowEditing": "Consenti la modifica",
+      "formats": {
+        "geojson": "GeoJSON",
+        "gpxTrack": "Traccia GPX",
+        "gpxRoute": "Itinerario GPX",
+        "kml": "KML",
+        "kmz": "KMZ"
+      },
+      "properties": {
+        "generic": "Proprietà dell’oggetto",
+        "LineString": "Proprietà della linea",
+        "Polygon": "Proprietà del poligono",
+        "Circle": "Proprietà del cerchio",
+        "Point": "Proprietà del testo e dell’indicatore"
+      },
+      "fields": {
+        "title": "Titolo",
+        "titlePlaceholder": "Aggiungi un titolo",
+        "description": "Descrizione",
+        "descriptionPlaceholder": "Aggiungi una descrizione",
+        "optional": "Facoltativo"
+      },
+      "style": {
+        "appearance": "Aspetto",
+        "fillColor": "Colore di riempimento",
+        "outlineColor": "Colore del contorno",
+        "outlineWidth": "Spessore del contorno",
+        "lineColor": "Colore della linea",
+        "lineWidth": "Spessore della linea",
+        "showTitle": "Mostra titolo",
+        "showDescription": "Mostra descrizione",
+        "textSize": "Dimensione del testo",
+        "placement": "Posizione",
+        "relativeToMarker": "Rispetto all’indicatore",
+        "textColor": "Colore del testo",
+        "textHaloColor": "Colore dell’alone del testo",
+        "showMarker": "Mostra indicatore",
+        "markerSize": "Dimensione dell’indicatore"
+      },
+      "metrics": {
+        "length": "Lunghezza",
+        "perimeter": "Perimetro",
+        "radius": "Raggio",
+        "area": "Area"
+      },
+      "placement": {
+        "label": "Posizione del testo",
+        "north-west": "In alto a sinistra",
+        "north": "In alto",
+        "north-east": "In alto a destra",
+        "west": "A sinistra",
+        "center": "Al centro",
+        "east": "A destra",
+        "south-west": "In basso a sinistra",
+        "south": "In basso",
+        "south-east": "In basso a destra"
+      },
+      "sizes": {
+        "xsmall": "Molto piccolo",
+        "small": "Piccolo",
+        "medium": "Medio",
+        "large": "Grande",
+        "xlarge": "Molto grande"
+      },
+      "symbols": {
+        "collection": "Raccolta di simboli",
+        "color": "Colore del simbolo",
+        "label": "Simboli degli indicatori",
+        "empty": "Nessun simbolo disponibile.",
+        "select": "Seleziona simbolo: {name}",
+        "collections": {
+          "default": "Simboli predefiniti",
+          "babs-v2-de": "Segni convenzionali civili (tedesco)",
+          "babs-v2-fr": "Segni convenzionali civili (francese)",
+          "babs-v2-it": "Segni convenzionali civili (italiano)"
+        }
+      },
+      "buttonTitle": "Disegno",
+      "title": "Disegno"
     }
   }
 }
