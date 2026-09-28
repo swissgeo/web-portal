@@ -4,6 +4,8 @@ import { SwissGeoLogoRgbPrio } from "@swissgeo/skeleton";
 import northArrowUrl from "~/assets/images/north_arrow.png";
 import { onMounted } from "vue";
 
+definePageMeta({ key: "print" });
+
 // Margin in millimeters to add around the print (internal to the page)
 const PRINT_MARGIN_MM = 4;
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+definePageMeta({ key: "embed" });
+
 const route = useRoute();
 const stateId = useState(
   "embedStateId",

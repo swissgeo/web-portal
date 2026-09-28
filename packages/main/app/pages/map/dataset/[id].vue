@@ -4,7 +4,14 @@ import type { NuxtError } from "#app";
 import { useSidebarStore } from "@swissgeo/skeleton";
 import DatasetPanel from "~/components/sidebar/DatasetPanel.vue";
 
-definePageMeta({ path: "/dataset/:id", datasetDetail: true });
+definePageMeta({
+  path: "/dataset/:id",
+  datasetDetail: true,
+  key: (route) => {
+    const { id } = route.params;
+    return typeof id === "string" ? id : "dataset";
+  },
+});
 
 const sidebarStore = useSidebarStore();
 
