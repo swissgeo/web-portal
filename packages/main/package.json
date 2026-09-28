@@ -65,6 +65,7 @@
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
     "@xmldom/xmldom": "catalog:",
+    "agentation-vue": "0.3.0",
     "es-toolkit": "catalog:",
     "eslint": "catalog:",
     "fflate": "catalog:",

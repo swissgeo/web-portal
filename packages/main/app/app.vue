@@ -11,5 +11,6 @@ provide(displayModeKey, "web");
 <template>
   <UApp :toaster="toaster">
     <NuxtPage />
+    <DesignFeedback />
   </UApp>
 </template>
