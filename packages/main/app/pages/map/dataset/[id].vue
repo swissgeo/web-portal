@@ -69,15 +69,18 @@ function closeDetails() {
 </script>
 
 <template>
-  <DatasetPanel
-    :detail-url="detailUrl"
-    :dataset="dataset"
-    :distribution-collection="distributionCollection"
-    :distribution-error="distributionError"
-    :is-loading="isLoading"
-    :error="error"
-    :back-to-catalog="sidebarStore.isGeocatalogTreeVisible"
-    @back="backToMap"
-    @close="closeDetails"
-  />
+  <!-- UDrawer does not support SSR in the installed version. -->
+  <ClientOnly>
+    <DatasetPanel
+      :detail-url="detailUrl"
+      :dataset="dataset"
+      :distribution-collection="distributionCollection"
+      :distribution-error="distributionError"
+      :is-loading="isLoading"
+      :error="error"
+      :back-to-catalog="sidebarStore.isGeocatalogTreeVisible"
+      @back="backToMap"
+      @close="closeDetails"
+    />
+  </ClientOnly>
 </template>
