@@ -85,7 +85,27 @@
   --color-black: #0e0f0f;
   --color-white: #ffffff;
 
+  --color-success: #00dc82;
+  --color-error: #e7000b;
+  --color-warning: #fcc800;
+  --color-info: #155dfc;
+  --color-success-on-accent: #052e16;
+  --color-error-on-accent: #ffffff;
+  --color-warning-on-accent: #432004;
+  --color-info-on-accent: #ffffff;
+
   --text-tiny: 0.625rem;
+}
+
+@theme dark {
+  --color-success: #75edae;
+  --color-error: #ff6467;
+  --color-warning: #ffdf20;
+  --color-info: #8ec5ff;
+  --color-success-on-accent: #052e16;
+  --color-error-on-accent: #460809;
+  --color-warning-on-accent: #432004;
+  --color-info-on-accent: #162456;
 }
 
 @layer theme {
