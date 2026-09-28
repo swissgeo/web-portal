@@ -7,7 +7,6 @@ import { Fill, Icon, Style, Text } from "ol/style";
 import { registerDocument } from "ol/xml";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { DESCRIPTION_KEY, TITLE_KEY } from "@/utils/drawingMetadata";
 import {
   SHOW_DESCRIPTION_KEY,
   SHOW_ICON_KEY,
@@ -15,6 +14,8 @@ import {
   TEXT_COLOR_KEY,
   TEXT_PLACEMENT_KEY,
   TEXT_SIZE_KEY,
+  DESCRIPTION_KEY,
+  TITLE_KEY,
 } from "@/utils/drawingStyleCommon";
 import {
   cloneToSerializationCompatibleFeatures,

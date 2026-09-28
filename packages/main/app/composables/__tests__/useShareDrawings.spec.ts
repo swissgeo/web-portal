@@ -3,10 +3,28 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useShareDrawings } from "@/composables/useShareDrawings";
 
-const { fetchMock, serializeAllFeaturesAsBlobMock } = vi.hoisted(() => ({
-  fetchMock: vi.fn().mockResolvedValue({ ok: true }),
-  serializeAllFeaturesAsBlobMock: vi.fn(),
-}));
+const {
+  fetchMock,
+  serializeAllFeaturesAsBlobMock,
+  drawingId,
+  drawingAdminId,
+  drawingS3Url,
+} = await vi.hoisted(async () => {
+  const { ref } = await import("vue");
+  return {
+    fetchMock: vi.fn(),
+    serializeAllFeaturesAsBlobMock: vi.fn(),
+    drawingId: ref<string | null>(null),
+    drawingAdminId: ref<string | null>(null),
+    drawingS3Url: ref<string | null>(null),
+  };
+});
+
+const serviceResponse = {
+  id: "drawing-123",
+  admin_id: "admin-456",
+  s3_url: "https://example.com/drawing-123.kmz",
+};
 
 mockNuxtImport("useRuntimeConfig", () => () => ({
   public: {
@@ -17,6 +35,9 @@ mockNuxtImport("useRuntimeConfig", () => () => ({
 vi.mock("@swissgeo/drawing", () => ({
   useDrawing: () => ({
     serializeAllFeaturesAsBlob: serializeAllFeaturesAsBlobMock,
+    drawingId,
+    drawingAdminId,
+    drawingS3Url,
   }),
 }));
 
@@ -24,14 +45,21 @@ vi.stubGlobal("fetch", fetchMock);
 
 describe("useShareDrawings", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    drawingId.value = null;
+    drawingAdminId.value = null;
+    drawingS3Url.value = null;
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(serviceResponse),
+    });
     serializeAllFeaturesAsBlobMock.mockResolvedValue(
       new Blob(["hello"], { type: "application/vnd.google-earth.kmz" }),
     );
   });
 
   it("uploads the KMZ and its SHA-256 digest as multipart form data", async () => {
-    const { shareDrawings } = useShareDrawings();
+    const { shareDrawings, isSharing } = useShareDrawings();
 
     await shareDrawings();
 
@@ -49,6 +77,32 @@ describe("useShareDrawings", () => {
     expect(file.name).toBe("drawing.kmz");
     expect(file.type).toBe("application/vnd.google-earth.kmz");
     expect(await file.text()).toBe("hello");
+    expect(body.get("sha256")).toBe(
+      "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+    );
+    expect(body.has("admin_id")).toBe(false);
+    expect(drawingId.value).toBe(serviceResponse.id);
+    expect(drawingAdminId.value).toBe(serviceResponse.admin_id);
+    expect(drawingS3Url.value).toBe(serviceResponse.s3_url);
+    expect(isSharing.value).toBe(false);
+  });
+
+  it("updates an uploaded drawing using its returned ID and admin ID", async () => {
+    const { shareDrawings } = useShareDrawings();
+
+    await shareDrawings();
+    await shareDrawings();
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      `https://example.com/drawings/${serviceResponse.id}`,
+      expect.objectContaining({ method: "PUT" }),
+    );
+    const request = fetchMock.mock.calls[1]![1] as RequestInit;
+    const body = request.body as FormData;
+    expect(body.get("admin_id")).toBe(serviceResponse.admin_id);
+    expect(body.get("file")).toBeInstanceOf(File);
     expect(body.get("sha256")).toBe(
       "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
     );

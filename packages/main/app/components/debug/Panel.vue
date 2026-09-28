@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import DrawingPanel from "~/components/debug/DrawingPanel.vue";
 import ImportDrawingPanel from "~/components/debug/ImportDrawingPanel.vue";
 
 const isLayersPanelOpen = ref(false);
@@ -54,13 +53,6 @@ function togglePrintPanel() {
       @close="toggleLocalImportPanel"
     >
     </DebugImportLocalLayersPanel>
-
-    <DrawingPanel
-      class="relative h-[400px] w-[350px] overflow-hidden bg-white shadow"
-      v-if="isDrawingOpen"
-      @close="toggleDrawing"
-    >
-    </DrawingPanel>
 
     <ImportDrawingPanel
       class="relative h-[200px] w-[800px] overflow-hidden bg-white shadow"

@@ -51,7 +51,7 @@ export function useShareDrawings() {
     // If the drawing Id is already available, it is included
     if (drawingAdminId.value && drawingId.value) {
       formData.append("admin_id", drawingAdminId.value);
-      requestUrl = `${drawingServiceEndpoint}/${drawingId.value}`;
+      requestUrl = `${drawingServiceEndpoint}/${drawingId.value.toString()}`;
       method = "PUT";
     }
 
