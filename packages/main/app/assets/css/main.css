@@ -93,6 +93,10 @@
   --color-error-on-accent: light-dark(#ffffff, #460809);
   --color-warning-on-accent: light-dark(#432004, #432004);
   --color-info-on-accent: light-dark(#ffffff, #162456);
+  --color-success-muted-on-accent: light-dark(#016538, #016538);
+  --color-error-muted-on-accent: light-dark(#ffc9c9, #9f0712);
+  --color-warning-muted-on-accent: light-dark(#894b00, #894b00);
+  --color-info-muted-on-accent: light-dark(#bedbff, #193cb8);
 
   --text-tiny: 0.625rem;
 }
