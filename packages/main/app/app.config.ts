@@ -132,7 +132,9 @@ export default defineAppConfig({
       },
     },
     toast: {
-      slots: {},
+      slots: {
+        root: "ring-0",
+      },
       variants: {
         color: {
           success: {
