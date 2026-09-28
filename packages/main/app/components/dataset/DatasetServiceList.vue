@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Distribution } from "@swissgeo/ogc";
 
-import { isStacDistribution } from "~/utils/isStacDistribution";
+import { determineFormat } from "~/utils/determineFormat";
 import { useI18n } from "vue-i18n";
 
 import DatasetService from "./DatasetService.vue";
@@ -19,10 +19,14 @@ function isVisible(distribution: Distribution) {
 }
 
 const mapServices = computed(() =>
-  distributions.filter((distribution) => !isStacDistribution(distribution)),
+  distributions.filter(
+    (distribution) => determineFormat(distribution) !== "STAC",
+  ),
 );
 const downloadServices = computed(() =>
-  distributions.filter(isStacDistribution),
+  distributions.filter(
+    (distribution) => determineFormat(distribution) === "STAC",
+  ),
 );
 const groups = computed(() => [
   { label: "dataset.mapServices", distributions: mapServices.value },

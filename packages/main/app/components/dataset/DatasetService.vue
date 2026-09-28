@@ -3,7 +3,6 @@ import type { Distribution } from "@swissgeo/ogc";
 
 import { useDatasetService } from "~/composables/useDatasetService";
 import { determineFormat } from "~/utils/determineFormat";
-import { isStacDistribution } from "~/utils/isStacDistribution";
 import { useI18n } from "vue-i18n";
 
 import DatasetCopyLink from "./DatasetCopyLink.vue";
@@ -21,14 +20,11 @@ const isVisible = computed(() => {
 });
 watch(isVisible, (visible) => emit("visibility", visible), { immediate: true });
 const protocol = computed(() => {
-  if (isStacDistribution(distribution)) {
+  const format = determineFormat(distribution);
+  if (format === "STAC") {
     return "STAC Browser";
   }
-  return (
-    determineFormat(distribution) ??
-    distribution.properties.protocol?.toLowerCase() ??
-    ""
-  );
+  return format ?? distribution.properties.protocol?.toLowerCase() ?? "";
 });
 </script>
 
