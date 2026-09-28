@@ -2,6 +2,9 @@
 import type { Dataset } from "@swissgeo/ogc";
 
 import { useDatasetLayer } from "~/composables/useDatasetLayer";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const { dataset } = defineProps<{ dataset: Dataset }>();
 const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
@@ -16,7 +19,7 @@ const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
       variant="outline"
       @click="removeFromMap"
     >
-      {{ $t("dataset.removeFromMap") }}
+      {{ t("dataset.removeFromMap") }}
     </UButton>
     <UButton
       v-else
@@ -25,7 +28,7 @@ const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
       variant="outline"
       @click="addToMap"
     >
-      {{ $t("dataset.addToMap") }}
+      {{ t("dataset.addToMap") }}
     </UButton>
   </div>
 </template>

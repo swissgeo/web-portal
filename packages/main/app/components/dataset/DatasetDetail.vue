@@ -105,7 +105,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
           class="max-w-[37.3125rem]"
         >
           <h3 class="mb-4 text-base font-semibold text-highlighted">
-            {{ $t("dataset.abstract") }}
+            {{ t("dataset.abstract") }}
           </h3>
           <p
             class="text-base leading-small-text wrap-anywhere whitespace-pre-line text-default"
@@ -123,7 +123,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
           <h3
             class="mb-space-xs text-xs font-medium tracking-wide text-muted uppercase"
           >
-            {{ $t("dataset.contacts") }}
+            {{ t("dataset.contacts") }}
           </h3>
           <ul class="flex flex-col gap-space-s">
             <li v-for="(contact, i) in contacts" :key="i">
@@ -139,10 +139,10 @@ const serviceDistributions = computed<Distribution[]>(() => {
         <h3
           class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
         >
-          {{ $t("layers.legend.title") }}
+          {{ t("layers.legend.title") }}
         </h3>
         <p v-if="distributionError" role="status" class="text-sm text-error">
-          {{ $t("dataset.legendError") }}
+          {{ t("dataset.legendError") }}
         </p>
         <DatasetLegend
           v-else
@@ -157,10 +157,10 @@ const serviceDistributions = computed<Distribution[]>(() => {
         <h3
           class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
         >
-          {{ $t("dataset.dataAccess") }}
+          {{ t("dataset.dataAccess") }}
         </h3>
         <p v-if="distributionError" role="status" class="text-sm text-error">
-          {{ $t("error.generic") }}
+          {{ t("error.generic") }}
         </p>
         <DatasetServiceList v-else :distributions="serviceDistributions" />
       </section>
@@ -171,11 +171,11 @@ const serviceDistributions = computed<Distribution[]>(() => {
         <h3
           class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
         >
-          {{ $t("dataset.metadata") }}
+          {{ t("dataset.metadata") }}
         </h3>
         <DatasetLinkList
           :links="metadataLinks"
-          :label="$t('dataset.viewGeocat')"
+          :label="t('dataset.viewGeocat')"
         />
       </section>
     </template>

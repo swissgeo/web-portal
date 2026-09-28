@@ -6,6 +6,8 @@ import { computed, reactive, toValue } from "vue";
 
 import DatasetServiceList from "../DatasetServiceList.vue";
 
+vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (key: string) => key }) }));
+
 const states = reactive<
   Record<
     string,
@@ -53,7 +55,6 @@ function render() {
     attachTo: document.body,
     props: { distributions },
     global: {
-      mocks: { $t: (key: string) => key },
       stubs: {
         ClientOnly: { template: "<slot />" },
         DatasetCopyLink: true,

@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import DrawingPanel from "~/components/debug/DrawingPanel.vue";
 import ImportDrawingPanel from "~/components/debug/ImportDrawingPanel.vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const isExpanded = ref(false);
 const toggleIcon = computed(() =>
@@ -105,7 +108,7 @@ function togglePrintPanel() {
         "
       >
         <UButton color="primary" variant="outline" @click="toggleLayersPanel">
-          {{ $t("debug.openLayersPanel") }}
+          {{ t("debug.openLayersPanel") }}
         </UButton>
         <UButton
           data-testid="debug-open-import-layers-panel"
@@ -113,7 +116,7 @@ function togglePrintPanel() {
           variant="outline"
           @click="toggleImportPanel"
         >
-          {{ $t("debug.openImportLayersPanel") }}
+          {{ t("debug.openImportLayersPanel") }}
         </UButton>
         <UButton
           data-testid="debug-open-import-local-panel"
@@ -121,7 +124,7 @@ function togglePrintPanel() {
           variant="outline"
           @click="toggleLocalImportPanel"
         >
-          {{ $t("debug.openImportLocalLayersPanel") }}
+          {{ t("debug.openImportLocalLayersPanel") }}
         </UButton>
         <UButton
           data-testid="debug-open-import-drawing-panel"
@@ -129,7 +132,7 @@ function togglePrintPanel() {
           variant="outline"
           @click="toggleImportDrawing"
         >
-          {{ $t("debug.openImportDrawingPanel") }}
+          {{ t("debug.openImportDrawingPanel") }}
         </UButton>
         <UButton
           data-testid="debug-open-drawing-panel"
@@ -137,13 +140,13 @@ function togglePrintPanel() {
           variant="outline"
           @click="toggleDrawing"
         >
-          {{ $t("debug.openDrawingPanel") }}
+          {{ t("debug.openDrawingPanel") }}
         </UButton>
         <UButton color="primary" variant="outline" @click="toggleStateConfig">
-          {{ $t("debug.openStateConfigPanel") }}
+          {{ t("debug.openStateConfigPanel") }}
         </UButton>
         <UButton color="primary" variant="outline" @click="togglePrintPanel">
-          {{ $t("debug.openPrintPanel") }}
+          {{ t("debug.openPrintPanel") }}
         </UButton>
       </div>
     </div>

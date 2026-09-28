@@ -5,6 +5,7 @@ import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
 import DatasetLanguageSection from "~/components/dataset/DatasetLanguageSection.vue";
 import DatasetMapAction from "~/components/dataset/DatasetMapAction.vue";
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   dataset: Dataset | null;
@@ -48,7 +49,7 @@ const backLabel = computed(() => {
             icon="i-lucide-x"
             color="neutral"
             variant="ghost"
-            :aria-label="$t('dataset.close')"
+            :aria-label="t('dataset.close')"
             @click="emit('close')"
           />
         </div>

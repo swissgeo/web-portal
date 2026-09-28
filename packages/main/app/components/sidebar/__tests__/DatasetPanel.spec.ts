@@ -57,7 +57,6 @@ function render(
       ...overrides,
     },
     global: {
-      mocks: { $t: (key: string) => key },
       stubs: {
         UButton: { template: "<button><slot /></button>" },
         UIcon: true,

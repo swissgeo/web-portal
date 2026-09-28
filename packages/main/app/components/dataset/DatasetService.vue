@@ -4,8 +4,11 @@ import type { Distribution } from "@swissgeo/ogc";
 import { useDatasetService } from "~/composables/useDatasetService";
 import { determineFormat } from "~/utils/determineFormat";
 import { isStacDistribution } from "~/utils/isStacDistribution";
+import { useI18n } from "vue-i18n";
 
 import DatasetCopyLink from "./DatasetCopyLink.vue";
+
+const { t } = useI18n();
 
 const { distribution } = defineProps<{ distribution: Distribution }>();
 const emit = defineEmits<{ visibility: [visible: boolean] }>();
@@ -38,10 +41,10 @@ const protocol = computed(() => {
       <div class="min-w-0 flex-1 wrap-anywhere">
         <ClientOnly>
           <p v-if="isLoading" role="status" class="text-muted">
-            {{ $t("dataset.serviceLoading") }}
+            {{ t("dataset.serviceLoading") }}
           </p>
           <p v-else-if="error" role="status" class="text-error">
-            {{ $t("dataset.serviceError") }}
+            {{ t("dataset.serviceError") }}
           </p>
           <p v-else-if="address" class="font-semibold @2xl:font-normal">
             {{ address }}
@@ -61,7 +64,7 @@ const protocol = computed(() => {
             icon="i-lucide-external-link"
             color="primary"
             variant="ghost"
-            :aria-label="$t('dataset.openService')"
+            :aria-label="t('dataset.openService')"
             data-testid="dataset-service-open"
           />
         </div>
@@ -72,7 +75,7 @@ const protocol = computed(() => {
       class="order-3 min-w-0 wrap-anywhere text-muted @2xl:col-start-2"
     >
       <p v-for="id in distribution.properties.externalIds" :key="id">
-        {{ $t("dataset.identifier") }}: {{ id }}
+        {{ t("dataset.identifier") }}: {{ id }}
       </p>
     </div>
   </div>

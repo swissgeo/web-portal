@@ -25,6 +25,8 @@ vi.mock("@swissgeo/ogc", () => ({
 
 import DatasetDistributionLegend from "../DatasetDistributionLegend.vue";
 
+vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (key: string) => key }) }));
+
 function render(protocol: Distribution["properties"]["protocol"] = "ogc:wms") {
   return mount(DatasetDistributionLegend, {
     props: {
@@ -35,7 +37,6 @@ function render(protocol: Distribution["properties"]["protocol"] = "ogc:wms") {
       layerId: "layer",
     },
     global: {
-      mocks: { $t: (key: string) => key },
       stubs: { LayerLegend: true },
     },
   });

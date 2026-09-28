@@ -12,7 +12,6 @@ it("offers keyboard resizing and preserves content when closed", async () => {
     props: { visible: true },
     slots: { default: '<input value="retained" />' },
     global: {
-      mocks: { $t: (key: string) => key },
       stubs: {
         ClientOnly: { template: "<slot />" },
         UDrawer: {

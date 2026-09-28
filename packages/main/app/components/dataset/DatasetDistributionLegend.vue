@@ -3,6 +3,9 @@ import type { Distribution } from "@swissgeo/ogc";
 
 import LayerLegend from "~/components/sidebar/LayerLegend.vue";
 import { useDistributionLegend } from "~/composables/useDistributionLegend";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const { distribution, layerId } = defineProps<{
   distribution: Distribution;
@@ -17,10 +20,10 @@ const { legends, isLoading, error } = useDistributionLegend(
 
 <template>
   <p v-if="error" role="status" class="text-sm text-error">
-    {{ $t("dataset.legendError") }}
+    {{ t("dataset.legendError") }}
   </p>
   <p v-else-if="isLoading" role="status" class="text-sm text-muted">
-    {{ $t("dataset.legendLoading") }}
+    {{ t("dataset.legendLoading") }}
   </p>
   <LayerLegend v-else :legends="legends" presentation="detail" />
 </template>

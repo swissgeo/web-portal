@@ -4,6 +4,8 @@ import { ref } from "vue";
 
 import DatasetCopyLink from "../DatasetCopyLink.vue";
 
+vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (key: string) => key }) }));
+
 const { useClipboard } = vi.hoisted(() => ({ useClipboard: vi.fn() }));
 vi.mock("@vueuse/core", () => ({ useClipboard }));
 
@@ -14,7 +16,6 @@ it("copies the current dataset URL and shows successful copy feedback", async ()
   const wrapper = mount(DatasetCopyLink, {
     props: { url: "https://example.test/de/dataset/first" },
     global: {
-      mocks: { $t: (key: string) => key },
       stubs: {
         UButton: { name: "UButton", props: ["icon"], template: "<button />" },
       },
