@@ -44,7 +44,7 @@ function toggleSidebar() {
 
 <template>
   <div
-    class="absolute top-0 left-0 flex h-[calc(100vh-var(--ui-header-height))]"
+    class="absolute top-0 left-0 flex h-[calc(100dvh-var(--ui-header-height))]"
   >
     <div
       v-show="isSidebarContentVisible"
