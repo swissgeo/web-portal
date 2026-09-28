@@ -17,8 +17,9 @@ import type { useDrawing } from "@/composables/useDrawing.composable";
 
 import { useDrawing as createDrawingComposable } from "@/composables/useDrawing.composable";
 import { useDrawingStore } from "@/stores/drawing.store";
-import { DESCRIPTION_KEY, TITLE_KEY } from "@/utils/drawingMetadata";
 import {
+  DESCRIPTION_KEY,
+  TITLE_KEY,
   DEFAULT_FILL_COLOR,
   DEFAULT_POINT_COLOR,
   DEFAULT_POINT_RADIUS,

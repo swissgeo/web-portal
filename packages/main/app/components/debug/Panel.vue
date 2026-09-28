@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import DrawingPanel from "~/components/debug/DrawingPanel.vue";
 import ImportDrawingPanel from "~/components/debug/ImportDrawingPanel.vue";
 import { useI18n } from "vue-i18n";
 

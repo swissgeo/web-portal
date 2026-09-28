@@ -17,8 +17,6 @@ import {
   DESCRIPTION_KEY,
   initializeMetadataProperties,
   TITLE_KEY,
-} from "@/utils/drawingMetadata";
-import {
   FEATURE_FONT,
   ICON_ANCHOR_KEY,
   ICON_COLOR_KEY,
