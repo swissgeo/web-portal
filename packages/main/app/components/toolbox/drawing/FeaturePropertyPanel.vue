@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { useDrawing } from "@swissgeo/drawing";
+import { useI18n } from "vue-i18n";
 
 import CircleStyleEditor from "./CircleStyleEditor.vue";
 import LinestringStyleEditor from "./LinestringStyleEditor.vue";
 import PointStyleEditor from "./PointStyleEditor.vue";
 import PolygonStyleEditor from "./PolygonStyleEditor.vue";
+
+const { t } = useI18n();
 const { focusedFeature, focusedFeatureType, title, description } = useDrawing();
 </script>
 
@@ -17,29 +20,26 @@ const { focusedFeature, focusedFeatureType, title, description } = useDrawing();
   >
     <div class="flex items-center gap-2 text-xs text-muted">
       <UIcon name="i-lucide-sliders-horizontal" class="size-3.5" />
-      <span data-testid="drawing-feature-type"
-        >{{
-          focusedFeatureType === "LineString"
-            ? "Line"
-            : focusedFeatureType === "Point"
-              ? "Text & marker"
-              : focusedFeatureType
-        }}
-        properties</span
-      >
+      <span data-testid="drawing-feature-type">{{
+        t(`toolbox.drawing.properties.${focusedFeatureType || "generic"}`)
+      }}</span>
     </div>
-    <UFormField label="Title" size="sm">
+    <UFormField :label="t('toolbox.drawing.fields.title')" size="sm">
       <UInput
         v-model="title"
-        placeholder="Add a title"
+        :placeholder="t('toolbox.drawing.fields.titlePlaceholder')"
         class="w-full"
         data-testid="drawing-feature-title"
       />
     </UFormField>
-    <UFormField label="Description" hint="Optional" size="sm">
+    <UFormField
+      :label="t('toolbox.drawing.fields.description')"
+      :hint="t('toolbox.drawing.fields.optional')"
+      size="sm"
+    >
       <UTextarea
         v-model="description"
-        placeholder="Add a description"
+        :placeholder="t('toolbox.drawing.fields.descriptionPlaceholder')"
         :rows="2"
         autoresize
         class="w-full"

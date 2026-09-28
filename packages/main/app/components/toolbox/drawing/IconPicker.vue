@@ -5,6 +5,9 @@ import { useIconsStore } from "@swissgeo/drawing";
 import { useDebounceFn } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t, locale } = useI18n();
 
 const props = defineProps<{
   iconSetName: string;
@@ -54,15 +57,34 @@ watch(
 
 const iconSetsItems = computed(() =>
   iconSets.value.map((iconSet) => ({
-    label: iconSet.getHumanReadableName(),
+    label: ["default", "babs-v2-de", "babs-v2-fr", "babs-v2-it"].includes(
+      iconSet.name,
+    )
+      ? t(`toolbox.drawing.symbols.collections.${iconSet.name}`)
+      : iconSet.getHumanReadableName(),
     value: iconSet.name,
   })),
 );
+
+function symbolLabel(icon: Icon) {
+  const descriptions = icon.getDescription();
+  const language = locale.value;
+  const name =
+    descriptions &&
+    (language === "fr" || language === "de" || language === "it")
+      ? descriptions[language]
+      : icon.getDefaultDescription();
+  return t("toolbox.drawing.symbols.select", { name: name || icon.getName() });
+}
 </script>
 
 <template>
   <div class="w-full space-y-3">
-    <UFormField v-if="numberOfIconSets > 0" label="Symbol collection" size="sm">
+    <UFormField
+      v-if="numberOfIconSets > 0"
+      :label="t('toolbox.drawing.symbols.collection')"
+      size="sm"
+    >
       <USelect
         v-model="selectedIconSetName"
         :items="iconSetsItems"
@@ -73,7 +95,7 @@ const iconSetsItems = computed(() =>
       v-if="isSetColorable"
       class="flex items-center justify-between gap-3 text-sm text-toned"
     >
-      Symbol color
+      {{ t("toolbox.drawing.symbols.color") }}
       <input
         v-model="selectedIconColor"
         type="color"
@@ -84,7 +106,7 @@ const iconSetsItems = computed(() =>
     <div
       class="grid max-h-48 grid-cols-6 content-start gap-1.5 overflow-y-auto rounded-lg border border-default bg-elevated/50 p-2"
       role="group"
-      aria-label="Marker symbols"
+      :aria-label="t('toolbox.drawing.symbols.label')"
     >
       <button
         v-for="icon in iconsFromSet"
@@ -97,8 +119,8 @@ const iconSetsItems = computed(() =>
             ? 'bg-primary/10 ring-1 ring-primary/40'
             : 'hover:bg-default'
         "
-        :aria-label="icon.getDefaultDescription() || icon.getName()"
-        :title="icon.getDefaultDescription() || icon.getName()"
+        :aria-label="symbolLabel(icon)"
+        :title="symbolLabel(icon)"
         :aria-pressed="
           icon.getName() === props.iconName &&
           selectedIconSet?.name === props.iconSetName
@@ -116,7 +138,7 @@ const iconSetsItems = computed(() =>
         v-if="iconsFromSet.length === 0"
         class="col-span-6 py-6 text-center text-xs text-muted"
       >
-        No symbols available.
+        {{ t("toolbox.drawing.symbols.empty") }}
       </p>
     </div>
   </div>

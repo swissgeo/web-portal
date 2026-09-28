@@ -83,26 +83,31 @@ const emit = defineEmits<{
 const drawingTools = [
   {
     id: "polyline",
-    label: "Line",
+    label: "toolbox.drawing.tools.polyline",
     icon: SplineIcon,
     geometry: "LineString",
   },
   {
     id: "polygon",
-    label: "Polygon",
+    label: "toolbox.drawing.tools.polygon",
     icon: PentagonIcon,
     geometry: "Polygon",
   },
   {
     id: "circle",
-    label: "Circle",
+    label: "toolbox.drawing.tools.circle",
     icon: CircleIcon,
     geometry: "Circle",
   },
-  { id: "text", label: "Text", icon: TypeIcon, geometry: "Point" },
+  {
+    id: "text",
+    label: "toolbox.drawing.tools.text",
+    icon: TypeIcon,
+    geometry: "Point",
+  },
   {
     id: "marker",
-    label: "Marker",
+    label: "toolbox.drawing.tools.marker",
     icon: MapPinIcon,
     geometry: "Point",
   },
@@ -128,45 +133,45 @@ watch(focusMode, (mode) => {
 
 const toolHint = computed(() => {
   if (focusMode.value === "edit") {
-    return "Drag the handles to reshape your feature.";
+    return t("toolbox.drawing.hints.edit");
   }
   if (focusMode.value === "select" || activeTool.value === "select") {
-    return "Select a feature on the map to edit its style.";
+    return t("toolbox.drawing.hints.select");
   }
   if (focusMode.value !== "create") {
-    return "Choose a tool to start drawing on the map.";
+    return t("toolbox.drawing.hints.chooseTool");
   }
   if (activeTool.value === "text" || activeTool.value === "marker") {
-    return "Click on the map to place your feature.";
+    return t("toolbox.drawing.hints.place");
   }
   if (activeTool.value === "circle") {
-    return "Click to set the centre, then click to set the radius.";
+    return t("toolbox.drawing.hints.circle");
   }
-  return "Click to add points. Double-click to finish.";
+  return t("toolbox.drawing.hints.addPoints");
 });
 
 /**
  * Drops down elements for exporting all features in the drawing layer in various formats.
  */
-const exportAllFeaturesItems = ref<DropdownMenuItem[]>([
+const exportAllFeaturesItems = computed<DropdownMenuItem[]>(() => [
   {
-    label: "GeoJSON",
+    label: t("toolbox.drawing.formats.geojson"),
     onClick: () => exportAllFeatures("geojson"),
   },
   {
-    label: "GPX Track",
+    label: t("toolbox.drawing.formats.gpxTrack"),
     onClick: () => exportAllFeatures("gpx-track"),
   },
   {
-    label: "GPX Route",
+    label: t("toolbox.drawing.formats.gpxRoute"),
     onClick: () => exportAllFeatures("gpx-route"),
   },
   {
-    label: "KML",
+    label: t("toolbox.drawing.formats.kml"),
     onClick: () => exportAllFeatures("kml"),
   },
   {
-    label: "KMZ",
+    label: t("toolbox.drawing.formats.kmz"),
     onClick: () => exportAllFeatures("kmz"),
   },
 ]);
@@ -262,8 +267,7 @@ onUnmounted(() => {
             {{ t("toolbox.drawing.title") }}
           </div>
           <span class="text-xs text-muted" data-testid="drawing-feature-count">
-            {{ numberOfFeatures }}
-            {{ numberOfFeatures === 1 ? "feature" : "features" }} on the map
+            {{ t("toolbox.drawing.featureCount", numberOfFeatures) }}
           </span>
         </div>
 
@@ -283,7 +287,7 @@ onUnmounted(() => {
         <div
           class="grid grid-cols-3 gap-1.5 rounded-lg border border-default bg-elevated/50 p-1.5"
           role="group"
-          aria-label="Drawing tools"
+          :aria-label="t('toolbox.drawing.tools.label')"
         >
           <UButton
             color="neutral"
@@ -300,7 +304,7 @@ onUnmounted(() => {
             :disabled="numberOfFeatures === 0"
             data-testid="select-feature-tool"
             @click="selectTool"
-            >Select</UButton
+            >{{ t("toolbox.drawing.tools.select") }}</UButton
           >
           <UButton
             v-for="tool in drawingTools"
@@ -318,7 +322,7 @@ onUnmounted(() => {
             :aria-pressed="activeTool === tool.id"
             :data-testid="`drawing-tool-${tool.id}`"
             @click="startDrawing(tool)"
-            >{{ tool.label }}</UButton
+            >{{ t(tool.label) }}</UButton
           >
         </div>
 
@@ -337,7 +341,7 @@ onUnmounted(() => {
 
       <template v-if="focusMode === 'create'">
         <p class="text-center text-xs text-muted">
-          You are currently drawing a new feature.
+          {{ t("toolbox.drawing.hints.drawing") }}
         </p>
         <UButton
           color="neutral"
@@ -346,7 +350,7 @@ onUnmounted(() => {
           block
           data-testid="cancel-drawing-tool"
           @click="cancelDrawing"
-          >Cancel drawing</UButton
+          >{{ t("toolbox.drawing.cancel") }}</UButton
         >
       </template>
 
@@ -355,7 +359,7 @@ onUnmounted(() => {
           <div class="flex items-center justify-between">
             <span
               class="text-xs font-semibold tracking-wide text-muted uppercase"
-              >Selection</span
+              >{{ t("toolbox.drawing.selection") }}</span
             >
             <UButton
               color="primary"
@@ -364,7 +368,7 @@ onUnmounted(() => {
               :icon="CheckIcon"
               data-testid="deselect-feature-tool"
               @click="terminateModification"
-              >Done</UButton
+              >{{ t("toolbox.drawing.done") }}</UButton
             >
           </div>
           <FeaturePropertyPanel />
@@ -376,7 +380,7 @@ onUnmounted(() => {
               class="flex-1 justify-center"
               data-testid="modify-geometry-tool"
               @click="enableModifyInteraction"
-              >Edit geometry</UButton
+              >{{ t("toolbox.drawing.editGeometry") }}</UButton
             >
             <UButton
               color="error"
@@ -384,7 +388,7 @@ onUnmounted(() => {
               :icon="Trash2Icon"
               data-testid="delete-feature-tool"
               @click="removeFocusedFeature"
-              >Delete</UButton
+              >{{ t("toolbox.drawing.delete") }}</UButton
             >
           </div>
         </div>
@@ -398,7 +402,7 @@ onUnmounted(() => {
           block
           data-testid="finish-modification-tool"
           @click="terminateModification"
-          >Finish editing</UButton
+          >{{ t("toolbox.drawing.finishEditing") }}</UButton
         >
         <p
           v-if="
@@ -407,7 +411,7 @@ onUnmounted(() => {
           "
           class="text-xs text-muted"
         >
-          Shift + click a point to delete it.
+          {{ t("toolbox.drawing.hints.deletePoint") }}
         </p>
       </template>
     </div>
@@ -422,7 +426,7 @@ onUnmounted(() => {
             :ui="{ content: 'w-48' }"
           >
             <UButton
-              label="Export"
+              :label="t('toolbox.drawing.export')"
               :icon="DownloadIcon"
               :trailing-icon="ChevronDownIcon"
               color="neutral"
@@ -437,11 +441,11 @@ onUnmounted(() => {
             size="sm"
             :loading="isSharing"
             @click="onShareDrawings"
-            >Sync drawing</UButton
+            >{{ t("toolbox.drawing.sync") }}</UButton
           >
           <UTooltip
             v-if="focusMode === 'none' && numberOfFeatures > 0"
-            text="Clear drawing layer"
+            :text="t('toolbox.drawing.clear')"
           >
             <UButton
               color="error"
@@ -449,7 +453,7 @@ onUnmounted(() => {
               :icon="Trash2Icon"
               size="sm"
               class="ml-auto"
-              aria-label="Clear drawing layer"
+              :aria-label="t('toolbox.drawing.clear')"
               data-testid="drawing-tool-clear"
               @click="clearDrawingLayer"
             />
@@ -459,8 +463,10 @@ onUnmounted(() => {
           v-if="drawingShareableString"
           class="space-y-2 border-t border-default pt-3"
         >
-          <label for="drawing-share-link" class="text-xs font-medium text-toned"
-            >Share link</label
+          <label
+            for="drawing-share-link"
+            class="text-xs font-medium text-toned"
+            >{{ t("toolbox.drawing.shareLink") }}</label
           >
           <UInput
             id="drawing-share-link"
@@ -471,13 +477,16 @@ onUnmounted(() => {
             :ui="{ trailing: 'pr-0.5' }"
           >
             <template #trailing>
-              <UTooltip text="Copy to clipboard" :content="{ side: 'top' }">
+              <UTooltip
+                :text="t('toolbox.drawing.copy')"
+                :content="{ side: 'top' }"
+              >
                 <UButton
                   :color="copied ? 'success' : 'neutral'"
                   variant="link"
                   size="sm"
                   :icon="copied ? CopyCheckIcon : CopyIcon"
-                  aria-label="Copy to clipboard"
+                  :aria-label="t('toolbox.drawing.copy')"
                   @click="copy(drawingShareableString)"
                 />
               </UTooltip>
@@ -486,7 +495,7 @@ onUnmounted(() => {
           <USwitch
             v-model="shareDrawingAsAdmin"
             size="sm"
-            label="Allow editing"
+            :label="t('toolbox.drawing.allowEditing')"
           />
         </div>
       </div>

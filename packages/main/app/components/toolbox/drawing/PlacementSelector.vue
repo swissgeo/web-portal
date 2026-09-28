@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { RelativePlacement } from "@swissgeo/drawing";
 
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+
 const props = defineProps<{
   placement: RelativePlacement;
 }>();
@@ -9,21 +13,19 @@ const emit = defineEmits<{
   "placement-selected": [placement: RelativePlacement];
 }>();
 const placements = [
-  { value: "north-west", label: "Top left", icon: "i-lucide-arrow-up-left" },
-  { value: "north", label: "Top", icon: "i-lucide-arrow-up" },
-  { value: "north-east", label: "Top right", icon: "i-lucide-arrow-up-right" },
-  { value: "west", label: "Left", icon: "i-lucide-arrow-left" },
-  { value: "center", label: "Center", icon: "i-lucide-dot" },
-  { value: "east", label: "Right", icon: "i-lucide-arrow-right" },
+  { value: "north-west", icon: "i-lucide-arrow-up-left" },
+  { value: "north", icon: "i-lucide-arrow-up" },
+  { value: "north-east", icon: "i-lucide-arrow-up-right" },
+  { value: "west", icon: "i-lucide-arrow-left" },
+  { value: "center", icon: "i-lucide-dot" },
+  { value: "east", icon: "i-lucide-arrow-right" },
   {
     value: "south-west",
-    label: "Bottom left",
     icon: "i-lucide-arrow-down-left",
   },
-  { value: "south", label: "Bottom", icon: "i-lucide-arrow-down" },
+  { value: "south", icon: "i-lucide-arrow-down" },
   {
     value: "south-east",
-    label: "Bottom right",
     icon: "i-lucide-arrow-down-right",
   },
 ] as const;
@@ -33,7 +35,7 @@ const placements = [
   <div
     class="grid grid-cols-3 gap-1 rounded-lg border border-default bg-elevated/50 p-1"
     role="group"
-    aria-label="Text placement"
+    :aria-label="t('toolbox.drawing.placement.label')"
   >
     <button
       v-for="position in placements"
@@ -45,8 +47,8 @@ const placements = [
           ? 'bg-primary/10 text-primary ring-1 ring-primary/30'
           : 'text-muted hover:bg-default hover:text-highlighted'
       "
-      :aria-label="position.label"
-      :title="position.label"
+      :aria-label="t(`toolbox.drawing.placement.${position.value}`)"
+      :title="t(`toolbox.drawing.placement.${position.value}`)"
       :aria-pressed="props.placement === position.value"
       @click="emit('placement-selected', position.value)"
     >

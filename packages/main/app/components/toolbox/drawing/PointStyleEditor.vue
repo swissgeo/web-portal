@@ -3,9 +3,12 @@ import type { AccordionItem } from "@nuxt/ui";
 import type { Icon } from "@swissgeo/drawing";
 
 import { ICON_SIZE, TEXT_SIZE, useDrawing } from "@swissgeo/drawing";
+import { useI18n } from "vue-i18n";
 
 import IconPicker from "./IconPicker.vue";
 import PlacementSelector from "./PlacementSelector.vue";
+
+const { t } = useI18n();
 
 const {
   textColor,
@@ -22,24 +25,34 @@ const {
   showIcon,
 } = useDrawing();
 
-const iconSizesItems = ref(
+const iconSizesItems = computed(() =>
   Object.keys(ICON_SIZE).map((size) => ({
-    label: size,
+    label: t(`toolbox.drawing.sizes.${size}`),
     value: size,
   })),
 );
 
-const textSizesItems = ref(
+const textSizesItems = computed(() =>
   Object.keys(TEXT_SIZE).map((size) => ({
-    label: size,
+    label: t(`toolbox.drawing.sizes.${size}`),
     value: size,
   })),
 );
 
-const accordionItems: AccordionItem[] = [
-  { label: "Text", icon: "i-lucide-type", value: "text", slot: "text" },
-  { label: "Marker", icon: "i-lucide-map-pin", value: "icon", slot: "icon" },
-];
+const accordionItems = computed<AccordionItem[]>(() => [
+  {
+    label: t("toolbox.drawing.tools.text"),
+    icon: "i-lucide-type",
+    value: "text",
+    slot: "text",
+  },
+  {
+    label: t("toolbox.drawing.tools.marker"),
+    icon: "i-lucide-map-pin",
+    value: "icon",
+    slot: "icon",
+  },
+]);
 
 function onIconSelected(icon: Icon) {
   iconAnchor.value = icon.anchor;
@@ -63,17 +76,17 @@ function onColorSelected(color: string) {
           <div class="space-y-3">
             <UCheckbox
               v-model="showTitle"
-              label="Show title"
+              :label="t('toolbox.drawing.style.showTitle')"
               data-testid="point-show-title"
             />
             <UCheckbox
               v-model="showDescription"
-              label="Show description"
+              :label="t('toolbox.drawing.style.showDescription')"
               data-testid="point-show-description"
             />
           </div>
           <template v-if="showTitle || showDescription">
-            <UFormField label="Text size" size="sm">
+            <UFormField :label="t('toolbox.drawing.style.textSize')" size="sm">
               <USelect
                 v-model="textSize"
                 :items="textSizesItems"
@@ -83,8 +96,12 @@ function onColorSelected(color: string) {
             </UFormField>
             <div class="flex items-center justify-between gap-4">
               <div class="space-y-1">
-                <p class="text-sm text-toned">Placement</p>
-                <p class="text-xs text-muted">Relative to the marker</p>
+                <p class="text-sm text-toned">
+                  {{ t("toolbox.drawing.style.placement") }}
+                </p>
+                <p class="text-xs text-muted">
+                  {{ t("toolbox.drawing.style.relativeToMarker") }}
+                </p>
               </div>
               <PlacementSelector
                 class="w-28 shrink-0"
@@ -96,7 +113,7 @@ function onColorSelected(color: string) {
             <label
               class="flex items-center justify-between gap-3 text-sm text-toned"
             >
-              Text color
+              {{ t("toolbox.drawing.style.textColor") }}
               <input
                 v-model="textColor"
                 type="color"
@@ -107,7 +124,7 @@ function onColorSelected(color: string) {
             <label
               class="flex items-center justify-between gap-3 text-sm text-toned"
             >
-              Text halo color
+              {{ t("toolbox.drawing.style.textHaloColor") }}
               <input
                 v-model="textHaloColor"
                 type="color"
@@ -122,11 +139,14 @@ function onColorSelected(color: string) {
         <div class="space-y-4">
           <UCheckbox
             v-model="showIcon"
-            label="Show marker"
+            :label="t('toolbox.drawing.style.showMarker')"
             data-testid="point-show-icon"
           />
           <template v-if="showIcon">
-            <UFormField label="Marker size" size="sm">
+            <UFormField
+              :label="t('toolbox.drawing.style.markerSize')"
+              size="sm"
+            >
               <USelect
                 v-model="iconSize"
                 :items="iconSizesItems"

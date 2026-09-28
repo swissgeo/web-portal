@@ -2,6 +2,9 @@
 import type { PolygonMetrics } from "@swissgeo/drawing";
 
 import { useDrawing } from "@swissgeo/drawing";
+import { useI18n } from "vue-i18n";
+
+const { t, locale } = useI18n();
 
 const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
   useDrawing();
@@ -13,11 +16,11 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
     data-testid="polygon-style-editor"
   >
     <h4 class="text-xs font-semibold tracking-wide text-muted uppercase">
-      Appearance
+      {{ t("toolbox.drawing.style.appearance") }}
     </h4>
     <div class="space-y-3">
       <label class="flex items-center justify-between gap-3 text-sm text-toned">
-        Fill color
+        {{ t("toolbox.drawing.style.fillColor") }}
         <span class="flex items-center gap-2">
           <span
             class="font-mono text-xs text-muted uppercase"
@@ -33,7 +36,7 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
         </span>
       </label>
       <label class="flex items-center justify-between gap-3 text-sm text-toned">
-        Outline color
+        {{ t("toolbox.drawing.style.outlineColor") }}
         <span class="flex items-center gap-2">
           <span
             class="font-mono text-xs text-muted uppercase"
@@ -49,7 +52,7 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
         </span>
       </label>
       <label class="flex items-center justify-between gap-3 text-sm text-toned">
-        Outline width
+        {{ t("toolbox.drawing.style.outlineWidth") }}
         <span class="flex items-center gap-2">
           <input
             v-model.number="strokeWidth"
@@ -71,12 +74,12 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
         class="flex items-center justify-between gap-3"
         data-testid="polygon-perimeter"
       >
-        <dt class="text-muted">Perimeter</dt>
+        <dt class="text-muted">{{ t("toolbox.drawing.metrics.perimeter") }}</dt>
         <dd class="font-medium text-toned tabular-nums">
           {{
             Math.round(
               (focusedFeatureMetrics as PolygonMetrics).perimeterMeters,
-            ).toLocaleString()
+            ).toLocaleString(locale)
           }}
           m
         </dd>
@@ -85,12 +88,12 @@ const { fillColor, strokeColor, strokeWidth, focusedFeatureMetrics } =
         class="flex items-center justify-between gap-3"
         data-testid="polygon-area"
       >
-        <dt class="text-muted">Area</dt>
+        <dt class="text-muted">{{ t("toolbox.drawing.metrics.area") }}</dt>
         <dd class="font-medium text-toned tabular-nums">
           {{
             Math.round(
               (focusedFeatureMetrics as PolygonMetrics).areaSquareMeters,
-            ).toLocaleString()
+            ).toLocaleString(locale)
           }}
           m²
         </dd>

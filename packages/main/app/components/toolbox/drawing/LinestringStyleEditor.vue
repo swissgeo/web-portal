@@ -2,6 +2,9 @@
 import type { LineStringMetrics } from "@swissgeo/drawing";
 
 import { useDrawing } from "@swissgeo/drawing";
+import { useI18n } from "vue-i18n";
+
+const { t, locale } = useI18n();
 
 const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing();
 </script>
@@ -12,11 +15,11 @@ const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing();
     data-testid="linestring-style-editor"
   >
     <h4 class="text-xs font-semibold tracking-wide text-muted uppercase">
-      Appearance
+      {{ t("toolbox.drawing.style.appearance") }}
     </h4>
     <div class="space-y-3">
       <label class="flex items-center justify-between gap-3 text-sm text-toned">
-        Line color
+        {{ t("toolbox.drawing.style.lineColor") }}
         <span class="flex items-center gap-2">
           <span
             class="font-mono text-xs text-muted uppercase"
@@ -32,7 +35,7 @@ const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing();
         </span>
       </label>
       <label class="flex items-center justify-between gap-3 text-sm text-toned">
-        Line width
+        {{ t("toolbox.drawing.style.lineWidth") }}
         <span class="flex items-center gap-2">
           <input
             v-model.number="strokeWidth"
@@ -54,12 +57,12 @@ const { strokeColor, strokeWidth, focusedFeatureMetrics } = useDrawing();
         class="flex items-center justify-between gap-3"
         data-testid="linestring-length"
       >
-        <dt class="text-muted">Length</dt>
+        <dt class="text-muted">{{ t("toolbox.drawing.metrics.length") }}</dt>
         <dd class="font-medium text-toned tabular-nums">
           {{
             Math.round(
               (focusedFeatureMetrics as LineStringMetrics).lengthMeters,
-            ).toLocaleString()
+            ).toLocaleString(locale)
           }}
           m
         </dd>
