@@ -133,6 +133,10 @@
   html:root.light {
     color-scheme: light;
 
+    --ui-error: var(--ui-color-error-600);
+    --ui-info: var(--ui-color-info-600);
+    --ui-warning: var(--ui-color-warning-400);
+
     --ui-success-on-accent: #052e16;
     --ui-error-on-accent: #ffffff;
     --ui-warning-on-accent: #432004;
@@ -146,6 +150,9 @@
 
   html:root.dark {
     color-scheme: dark !important;
+
+    --ui-info: var(--ui-color-info-300);
+    --ui-warning: var(--ui-color-warning-300);
 
     --ui-success-on-accent: #052e16;
     --ui-error-on-accent: #460809;
