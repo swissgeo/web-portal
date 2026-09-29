@@ -29,11 +29,7 @@ export function sourceToLayerRequest(
     };
   }
   // priority 2: try to see if there is an identify available
-  if (
-    layerSource.getFeatureInfoInformation?.baseUrl &&
-    (layerSource.getFeatureInfoInformation?.protocol === "geoadmin:features" ||
-      layerSource.getFeatureInfoInformation?.protocol === "ogc:api3features")
-  ) {
+  if (isIdentifyFeatureInfo(layerSource.getFeatureInfoInformation)) {
     return {
       layerUuid: layerSource.layerUuid,
       layerId: layerSource.layerId,
@@ -63,4 +59,15 @@ export function sourceToLayerRequest(
     layerId: layerSource.layerId,
     layerName: layerSource.layerName ?? layerSource.layerId,
   };
+}
+
+export function isIdentifyFeatureInfo(featureInfo?: {
+  protocol?: string;
+  baseUrl?: string;
+}): boolean {
+  return (
+    featureInfo?.baseUrl &&
+    (featureInfo.protocol === "geoadmin:features" ||
+      featureInfo.protocol === "ogc:api3features")
+  );
 }

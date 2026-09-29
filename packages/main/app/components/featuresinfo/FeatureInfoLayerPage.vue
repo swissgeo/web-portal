@@ -13,7 +13,7 @@ const { featuresData } = defineProps<{
 const accordionItems: Ref<AccordionItem[]> = computed(() =>
   featuresData.map((featureData, index) => {
     return {
-      label: featureData.featureId,
+      label: featureData.label ?? featureData.featureId,
       featureData,
       defaultOpen: index === 0,
     };

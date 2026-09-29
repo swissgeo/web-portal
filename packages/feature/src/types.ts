@@ -11,6 +11,7 @@ export interface FeatureData {
    * This would most likely mean there is an issue with the data.
    */
   geometry: Exclude<Geometry, GeometryCollection> | null;
+  label?: string;
   content:
     | { kind: "html"; html: string; trusted: boolean; shareable: boolean }
     | { kind: "json"; properties: Record<string, unknown> };
@@ -106,4 +107,8 @@ export interface OgcLink {
 export type IdentifyFeature = {
   id: string | number;
   geometry: Exclude<Geometry, GeometryCollection>;
+  properties?: {
+    label?: string;
+    name?: string;
+  };
 };

@@ -41,7 +41,7 @@ const getMapLayers = vi.fn(() => computed(() => mockLayers));
 // the click handler checks visibility, this allows us to set it per test
 const layerVisibility: Record<
   string,
-  { isVisible: boolean; opacity: number | null } | undefined
+  { isVisible: boolean; opacity: number | null | undefined } | undefined
 > = {};
 const getMapLayerFromUuid = vi.fn((uuid: string) => layerVisibility[uuid]);
 
@@ -313,6 +313,18 @@ describe("BaseMapViewer — identify-source filtering", () => {
     // at startup, map layers can carry a `null` opacity, which the mapviewer
     // interprets as `1`
     layerVisibility["layer-2"] = { isVisible: true, opacity: null };
+
+    const wrapper = await createWrapper();
+    const uuids = await sourceUuidsAfterClick(wrapper, clickEvent());
+
+    expect(uuids).toEqual(["layer-1", "layer-2"]);
+  });
+
+  it("keeps layers with an undefined opacity (undefined is interpreted as fully visible)", async () => {
+    // layers freshly added through the conversion pipeline can carry an
+    // `undefined` opacity (no import options and no style-defined default,
+    // the mapviewer interprets it as `1`
+    layerVisibility["layer-2"] = { isVisible: true, opacity: undefined };
 
     const wrapper = await createWrapper();
     const uuids = await sourceUuidsAfterClick(wrapper, clickEvent());

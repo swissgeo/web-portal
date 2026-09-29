@@ -99,63 +99,71 @@ export const getInfoFromDataset = async (
 };
 
 export async function grabFeatureInfoInformation(dataset: Dataset) {
-  const distributionLink = dataset.links?.find(
-    (link) => link.rel.toLowerCase() === "distributions",
-  )?.href;
-  if (!distributionLink) {
-    return;
-  }
-  const distributionRelResult = await fetch(distributionLink);
-  if (distributionRelResult.status !== 200) {
-    return;
-  }
+  try {
+    const distributionLink = dataset.links?.find(
+      (link) => link.rel.toLowerCase() === "distributions",
+    )?.href;
+    if (!distributionLink) {
+      return;
+    }
+    const distributionRelResult = await fetch(distributionLink);
+    if (distributionRelResult.status !== 200) {
+      return;
+    }
 
-  const distributionCollection =
-    (await distributionRelResult.json()) as DistributionCollection;
+    const distributionCollection =
+      (await distributionRelResult.json()) as DistributionCollection;
 
-  const distributionRelJson =
-    distributionCollection.features.find(
-      (distribution) =>
-        distribution.id === dataset.properties.preferredDistributionId,
-    ) ?? distributionCollection.features[0];
-  const featureInfoLink = distributionRelJson?.links?.find(
-    (link) => link.rel.toLowerCase() === "featureinfo",
-  )?.href;
-  if (!featureInfoLink) {
-    return;
+    const distributionRelJson =
+      distributionCollection.features.find(
+        (distribution) =>
+          distribution.id === dataset.properties.preferredDistributionId,
+      ) ?? distributionCollection.features[0];
+    const featureInfoLink = distributionRelJson?.links?.find(
+      (link) => link.rel.toLowerCase() === "featureinfo",
+    )?.href;
+    if (!featureInfoLink) {
+      return;
+    }
+    const featureInfoRelResult = await fetch(featureInfoLink);
+    if (featureInfoRelResult.status !== 200) {
+      return;
+    }
+    const featureInfoRelJson =
+      (await featureInfoRelResult.json()) as Feature<"featureinfo">;
+    const protocol = featureInfoRelJson.properties?.protocol;
+    const dataServiceLink = featureInfoRelJson.links.find(
+      (link) => link.rel.toLowerCase() === "dataservice",
+    )?.href;
+    if (!dataServiceLink) {
+      return;
+    }
+    const dataServiceRelResult = await fetch(dataServiceLink);
+    if (dataServiceRelResult.status !== 200) {
+      return;
+    }
+    const dataServiceRelJson =
+      (await dataServiceRelResult.json()) as Feature<"dataservice">;
+    const featureInfoBaseUrl =
+      dataServiceRelJson.links?.find(
+        (link) => link.rel.toLowerCase() === "describes",
+      )?.href ??
+      dataServiceRelJson.links.find(
+        (link) => link.rel.toLowerCase() === "describedby",
+      )?.href ??
+      dataServiceRelJson.links.find(
+        (link) => link.rel.toLowerCase() === "about",
+      )?.href;
+    return {
+      protocol,
+      baseUrl: featureInfoBaseUrl,
+    };
+  } catch (error) {
+    log.error(
+      `[Grab FeatureInfo information] Unexpected error (${error.toString()}) happened while trying to navigate the ogc records for the following dataset: ${dataset.id}`,
+    );
   }
-  const featureInfoRelResult = await fetch(featureInfoLink);
-  if (featureInfoRelResult.status !== 200) {
-    return;
-  }
-  const featureInfoRelJson =
-    (await featureInfoRelResult.json()) as Feature<"featureinfo">;
-  const protocol = featureInfoRelJson.properties?.protocol;
-  const dataServiceLink = featureInfoRelJson.links.find(
-    (link) => link.rel.toLowerCase() === "dataservice",
-  )?.href;
-  if (!dataServiceLink) {
-    return;
-  }
-  const dataServiceRelResult = await fetch(dataServiceLink);
-  if (dataServiceRelResult.status !== 200) {
-    return;
-  }
-  const dataServiceRelJson =
-    (await dataServiceRelResult.json()) as Feature<"dataservice">;
-  const featureInfoBaseUrl =
-    dataServiceRelJson.links?.find(
-      (link) => link.rel.toLowerCase() === "describes",
-    )?.href ??
-    dataServiceRelJson.links.find(
-      (link) => link.rel.toLowerCase() === "describedby",
-    )?.href ??
-    dataServiceRelJson.links.find((link) => link.rel.toLowerCase() === "about")
-      ?.href;
-  return {
-    protocol,
-    baseUrl: featureInfoBaseUrl,
-  };
+  return;
 }
 
 // Server layer fills properties like the Dataset
