@@ -11,7 +11,7 @@
 @source "../../../../map/";
 @source "../../../../dimension/";
 
-@custom-variant dark (&:where(.dark-mode, .dark-mode *));
+@custom-variant dark (&:where(.dark, .dark *));
 @import "@nuxt/ui";
 @source "../../../../skeleton/src/**/*.{vue,ts,js,tsx,jsx}";
 
