@@ -85,26 +85,30 @@
   --color-black: #0e0f0f;
   --color-white: #ffffff;
 
-  --color-success: var(--custom-success);
-  --color-error: var(--custom-error);
-  --color-warning: var(--custom-warning);
-  --color-info: var(--custom-info);
+  --color-success: var(--ui-color-success-500);
+  --color-error: var(--ui-color-error-500);
+  --color-warning: var(--ui-color-warning-500);
+  --color-info: var(--ui-color-info-500);
 
-  --color-success-on-accent: var(--custom-success-on-accent);
-  --color-error-on-accent: var(--custom-error-on-accent);
-  --color-warning-on-accent: var(--custom-warning-on-accent);
-  --color-info-on-accent: var(--custom-info-on-accent);
+  --color-success: var(--ui-success);
+  --color-error: var(--ui-error);
+  --color-warning: var(--ui-warning);
+  --color-info: var(--ui-info);
 
-  --color-success-muted-on-accent: var(--custom-success-muted-on-accent);
-  --color-error-muted-on-accent: var(--custom-error-muted-on-accent);
-  --color-warning-muted-on-accent: var(--custom-warning-muted-on-accent);
-  --color-info-muted-on-accent: var(--custom-info-muted-on-accent);
+  --color-success-on-accent: var(--ui-success-on-accent);
+  --color-error-on-accent: var(--ui-error-on-accent);
+  --color-warning-on-accent: var(--ui-warning-on-accent);
+  --color-info-on-accent: var(--ui-info-on-accent);
+
+  --color-success-muted-on-accent: var(--ui-success-muted-on-accent);
+  --color-error-muted-on-accent: var(--ui-error-muted-on-accent);
+  --color-warning-muted-on-accent: var(--ui-warning-muted-on-accent);
+  --color-info-muted-on-accent: var(--ui-info-muted-on-accent);
 
   --text-tiny: 0.625rem;
 }
 
 @layer theme {
-  /* The Setup spacing scale changes at 720 px and 1025 px. */
   @media (min-width: 720px) {
     :root {
       --spacing-space-l: 3rem;
@@ -123,7 +127,7 @@
   }
 }
 
-@layer base {
+@layer theme {
   :root {
     color-scheme: light dark;
   }
@@ -136,29 +140,52 @@
     color-scheme: dark !important;
   }
 
-  :root,
-  :host,
-  .light,
-  .dark {
-    --custom-success: light-dark(#00dc82, #75edae);
-    --custom-error: light-dark(#e7000b, #ff6467);
-    --custom-warning: light-dark(#fcc800, #ffdf20);
-    --custom-info: light-dark(#155dfc, #8ec5ff);
+  html:root.light {
+    color-scheme: light;
 
-    --custom-success-on-accent: light-dark(#052e16, #052e16);
-    --custom-error-on-accent: light-dark(#ffffff, #460809);
-    --custom-warning-on-accent: light-dark(#432004, #432004);
-    --custom-info-on-accent: light-dark(#ffffff, #162456);
+    --ui-color-success-500: #00dc82;
+    --ui-color-error-500: #e7000b;
+    --ui-color-warning-500: #fcc800;
+    --ui-color-info-500: #155dfc;
 
-    --custom-success-muted-on-accent: light-dark(#016538, #016538);
-    --custom-error-muted-on-accent: light-dark(#ffc9c9, #9f0712);
-    --custom-warning-muted-on-accent: light-dark(#894b00, #894b00);
-    --custom-info-muted-on-accent: light-dark(#bedbff, #193cb8);
+    --ui-success: #00dc82;
+    --ui-error: #e7000b;
+    --ui-warning: #fcc800;
+    --ui-info: #155dfc;
 
-    --ui-success: var(--custom-success);
-    --ui-error: var(--custom-error);
-    --ui-warning: var(--custom-warning);
-    --ui-info: var(--custom-info);
+    --ui-success-on-accent: #052e16;
+    --ui-error-on-accent: #ffffff;
+    --ui-warning-on-accent: #432004;
+    --ui-info-on-accent: #ffffff;
+
+    --ui-success-muted-on-accent: #016538;
+    --ui-error-muted-on-accent: #ffc9c9;
+    --ui-warning-muted-on-accent: #894b00;
+    --ui-info-muted-on-accent: #bedbff;
+  }
+
+  html:root.dark {
+    color-scheme: dark !important;
+
+    --ui-color-success-500: #75edae;
+    --ui-color-error-500: #ff6467;
+    --ui-color-warning-500: #ffdf20;
+    --ui-color-info-500: #8ec5ff;
+
+    --ui-success: #75edae;
+    --ui-error: #ff6467;
+    --ui-warning: #ffdf20;
+    --ui-info: #8ec5ff;
+
+    --ui-success-on-accent: #052e16;
+    --ui-error-on-accent: #460809;
+    --ui-warning-on-accent: #432004;
+    --ui-info-on-accent: #162456;
+
+    --ui-success-muted-on-accent: #016538;
+    --ui-error-muted-on-accent: #9f0712;
+    --ui-warning-muted-on-accent: #894b00;
+    --ui-info-muted-on-accent: #193cb8;
   }
 }
 
@@ -202,11 +229,6 @@
 }
 
 body {
-  /* We have to reset these variables here again. I don't quite know why
-    but it seems that tailwind removes them if they're not referenced anywhere.
-    They're probably only used to create the variants, then dropped.
-    But for our in-JS desktop/mobile switch we need access to those, hence
-    the explicit resetting here */
   --breakpoint-sm: var(--breakpoint-sm);
   --breakpoint-md: var(--breakpoint-md);
   --breakpoint-lg: var(--breakpoint-lg);
