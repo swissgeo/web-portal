@@ -24,9 +24,9 @@ vi.mock("vue-i18n", () => ({
 const stubs = {
   USwitch: {
     inheritAttrs: false,
-    props: ["modelValue", "label"],
+    props: ["modelValue", "label", "description"],
     emits: ["update:modelValue"],
-    template: `<button role="switch" v-bind="$attrs" :aria-checked="String(modelValue)" @click="$emit('update:modelValue', !modelValue)" /><label>{{ label }}</label>`,
+    template: `<button role="switch" v-bind="$attrs" :aria-checked="String(modelValue)" @click="$emit('update:modelValue', !modelValue)" /><label>{{ label }}</label><p v-if="description" data-testid="switch-description">{{ description }}</p>`,
   },
   UButton: {
     inheritAttrs: false,
@@ -50,8 +50,17 @@ function mountRow(dataset = makeDataset()) {
   });
 }
 
+function cells(wrapper: ReturnType<typeof mountRow>) {
+  return wrapper.findAll("[role='cell']");
+}
+
 function dataOwnerCell(wrapper: ReturnType<typeof mountRow>) {
-  return wrapper.findAll("td")[1]!;
+  return cells(wrapper)[1]!;
+}
+
+// On mobile, the data owner is shown below the title instead of in its own column
+function mobileDataOwner(wrapper: ReturnType<typeof mountRow>) {
+  return wrapper.find("[data-testid='switch-description']");
 }
 
 describe("LayerCatalogRow.vue", () => {
@@ -63,9 +72,10 @@ describe("LayerCatalogRow.vue", () => {
 
   it("shows the layer title as the label of the switch, in one column", () => {
     const wrapper = mountRow();
-    const cell = wrapper.findAll("td")[0]!;
+    const cell = cells(wrapper)[0]!;
 
-    expect(wrapper.findAll("td")).toHaveLength(3);
+    expect(wrapper.attributes("role")).toBe("row");
+    expect(cells(wrapper)).toHaveLength(3);
     expect(cell.find("[data-testid='catalog-layer-on-map']").exists()).toBe(
       true,
     );
@@ -74,16 +84,16 @@ describe("LayerCatalogRow.vue", () => {
   });
 
   it("shows the resource provider as data owner, wherever it is listed", () => {
-    const cell = dataOwnerCell(
-      mountRow(
-        makeDataset("ch.a", [
-          { role: "pointOfContact", organization: "Contact AG" },
-          { role: "resourceProvider", organization: "swisstopo" },
-        ]),
-      ),
+    const wrapper = mountRow(
+      makeDataset("ch.a", [
+        { role: "pointOfContact", organization: "Contact AG" },
+        { role: "resourceProvider", organization: "swisstopo" },
+      ]),
     );
+    const cell = dataOwnerCell(wrapper);
 
     expect(cell.text()).toBe("swisstopo");
+    expect(mobileDataOwner(wrapper).text()).toBe("swisstopo");
     expect(cell.attributes("title")).toBe("resourceProvider: swisstopo");
   });
 
@@ -110,9 +120,21 @@ describe("LayerCatalogRow.vue", () => {
     expect(cell.attributes("title")).toBe("BAFU");
   });
 
-  it("leaves the data owner empty without contacts", () => {
-    const cell = dataOwnerCell(mountRow());
+  it("hides the data owner column on mobile", () => {
+    const cell = dataOwnerCell(
+      mountRow(makeDataset("ch.a", [{ role: "owner", organization: "BAFU" }])),
+    );
 
+    expect(cell.classes()).toEqual(
+      expect.arrayContaining(["hidden", "md:block"]),
+    );
+  });
+
+  it("leaves the data owner empty without contacts", () => {
+    const wrapper = mountRow();
+    const cell = dataOwnerCell(wrapper);
+
+    expect(mobileDataOwner(wrapper).exists()).toBe(false);
     expect(cell.text()).toBe("");
     expect(cell.attributes("title")).toBeUndefined();
   });
