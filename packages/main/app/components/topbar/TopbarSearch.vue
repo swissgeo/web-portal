@@ -126,6 +126,10 @@ function openResults() {
   isOpen.value = true;
 }
 
+function closeResults() {
+  isOpen.value = false;
+}
+
 function handleClick() {
   if (query.value.length >= 2 && searchStore.hasResults) {
     openResults();
@@ -210,6 +214,7 @@ function clearSearch() {
               :title="t(`search.${category.id}_results_header`)"
               :results="category.results"
               @select="handleSelect"
+              @view-details="closeResults"
             />
           </div>
           <div

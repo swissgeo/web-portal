@@ -15,6 +15,7 @@ defineProps<{
 
 const emit = defineEmits<{
   select: [result: SearchResult];
+  viewDetails: [];
   firstEntryReached: [];
   lastEntryReached: [];
 }>();
@@ -61,6 +62,7 @@ defineExpose({
         :index="index"
         :entry="entry"
         @select="emit('select', entry)"
+        @view-details="emit('viewDetails')"
         @first-entry-reached="emit('firstEntryReached')"
         @last-entry-reached="emit('lastEntryReached')"
       />

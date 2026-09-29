@@ -276,4 +276,23 @@ describe("TopbarSearch", () => {
     expect(searchStore.clearSearch).toHaveBeenCalled();
     expect(searchStore.keepSelectedQuery).not.toHaveBeenCalled();
   });
+
+  it("closes results when opening dataset details and keeps the search available", async () => {
+    const wrapper = render();
+    searchStore.query = "wald";
+    searchStore.results = [{ ...location("waldgrenzen"), resultType: "LAYER" }];
+    await nextTick();
+    expect(wrapper.emitted("update:open")?.at(-1)).toEqual([true]);
+
+    await wrapper.get("[data-testid='search-result-info-0']").trigger("click");
+
+    expect(wrapper.emitted("update:open")?.at(-1)).toEqual([false]);
+    expect(handleResultSelection).not.toHaveBeenCalled();
+    expect(searchStore.clearSearch).not.toHaveBeenCalled();
+    expect(searchStore.keepSelectedQuery).not.toHaveBeenCalled();
+    expect(searchStore.query).toBe("wald");
+
+    await wrapper.get("input").trigger("click");
+    expect(wrapper.emitted("update:open")?.at(-1)).toEqual([true]);
+  });
 });
