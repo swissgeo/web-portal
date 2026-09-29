@@ -85,16 +85,6 @@
   --color-black: #0e0f0f;
   --color-white: #ffffff;
 
-  --color-success: var(--ui-color-success-500);
-  --color-error: var(--ui-color-error-500);
-  --color-warning: var(--ui-color-warning-500);
-  --color-info: var(--ui-color-info-500);
-
-  --color-success: var(--ui-success);
-  --color-error: var(--ui-error);
-  --color-warning: var(--ui-warning);
-  --color-info: var(--ui-info);
-
   --color-success-on-accent: var(--ui-success-on-accent);
   --color-error-on-accent: var(--ui-error-on-accent);
   --color-warning-on-accent: var(--ui-warning-on-accent);
@@ -143,16 +133,6 @@
   html:root.light {
     color-scheme: light;
 
-    --ui-color-success-500: #00dc82;
-    --ui-color-error-500: #e7000b;
-    --ui-color-warning-500: #fcc800;
-    --ui-color-info-500: #155dfc;
-
-    --ui-success: #00dc82;
-    --ui-error: #e7000b;
-    --ui-warning: #fcc800;
-    --ui-info: #155dfc;
-
     --ui-success-on-accent: #052e16;
     --ui-error-on-accent: #ffffff;
     --ui-warning-on-accent: #432004;
@@ -166,16 +146,6 @@
 
   html:root.dark {
     color-scheme: dark !important;
-
-    --ui-color-success-500: #75edae;
-    --ui-color-error-500: #ff6467;
-    --ui-color-warning-500: #ffdf20;
-    --ui-color-info-500: #8ec5ff;
-
-    --ui-success: #75edae;
-    --ui-error: #ff6467;
-    --ui-warning: #ffdf20;
-    --ui-info: #8ec5ff;
 
     --ui-success-on-accent: #052e16;
     --ui-error-on-accent: #460809;
