@@ -24,13 +24,11 @@ const supportsLegend = computed(() => {
 </script>
 
 <template>
-  <ClientOnly>
-    <DatasetDistributionLegend
-      v-if="distribution && layerId && supportsLegend"
-      :key="distribution.id"
-      :distribution="distribution"
-      :layer-id="layerId"
-    />
-    <LayerLegend v-else :legends="[]" presentation="detail" />
-  </ClientOnly>
+  <DatasetDistributionLegend
+    v-if="distribution && layerId && supportsLegend"
+    :key="distribution.id"
+    :distribution="distribution"
+    :layer-id="layerId"
+  />
+  <LayerLegend v-else :legends="[]" presentation="detail" />
 </template>
