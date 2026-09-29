@@ -66,7 +66,7 @@ const wrapperClasses = computed(() => {
               <FooterLinks mobile />
             </template>
           </UDrawer>
-          <OLMapScale :olMap="olMap" class="footerMapScale mt-2" />
+          <OLMapScale v-if="olMap" :olMap="olMap" class="footerMapScale mt-2" />
         </div>
       </ClientOnly>
       <UButton
