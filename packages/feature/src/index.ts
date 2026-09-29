@@ -7,7 +7,10 @@ export type {
   WmsFeatureInfoCapability,
 } from "@/types";
 export * from "@/constants";
-export { sourceToLayerRequest } from "@/utils/sourceToLayerRequest";
+export {
+  sourceToLayerRequest,
+  isIdentifyFeatureInfo,
+} from "@/utils/sourceToLayerRequest";
 export {
   selectFeatures,
   createIdentifyResponse,

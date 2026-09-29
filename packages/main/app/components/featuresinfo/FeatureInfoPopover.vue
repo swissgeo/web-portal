@@ -32,7 +32,12 @@ function toggleContent() {
     :style="style"
     data-testid="feature-info-popover"
   >
-    <UCard :ui="{ header: 'cursor-grab active:cursor-grabbing select-none' }">
+    <UCard
+      :ui="{
+        header: 'cursor-grab active:cursor-grabbing select-none',
+        body: 'max-h-[40vh]',
+      }"
+    >
       <template #header>
         <div
           ref="dragHandle"

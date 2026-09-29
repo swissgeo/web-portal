@@ -16,6 +16,7 @@ import {
 } from "@swissgeo/dimension";
 import {
   getPopupFromIdentifyFeature,
+  isIdentifyFeatureInfo,
   useFeaturesStore,
 } from "@swissgeo/feature";
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
@@ -67,11 +68,7 @@ async function updateMapLayerData(index: number, mapLayerData: MapLayer) {
       sourceLayer && isDatasetLayer(sourceLayer)
         ? sourceLayer.info?.featureInfoInformation
         : undefined;
-    if (
-      featureInfo &&
-      (featureInfo.protocol === "geoadmin:features" ||
-        featureInfo.protocol === "ogc:api3features")
-    ) {
+    if (isIdentifyFeatureInfo(featureInfo)) {
       const layerSource: LayerSource = {
         layerUuid: mapLayerData.uuid,
         layerId: mapLayerData.layerId,

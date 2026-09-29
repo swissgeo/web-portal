@@ -42,24 +42,6 @@ export const useFeaturesStore = defineStore("features", () => {
     },
   );
 
-  const getPopupsByUuid = computed(() =>
-    Object.fromEntries(
-      Object.entries(selectedFeaturesByUuid.value).map(([uuid, features]) => [
-        uuid,
-        features.map((feature) => feature.content),
-      ]),
-    ),
-  );
-
-  const getFeaturesIdsByUuid = computed(() =>
-    Object.fromEntries(
-      Object.entries(selectedFeaturesByUuid.value).map(([uuid, features]) => [
-        uuid,
-        features.map((feature) => feature.featureId),
-      ]),
-    ),
-  );
-
   const getShareableFeaturesIdsByUuid = computed(() =>
     Object.fromEntries(
       Object.entries(selectedFeaturesByUuid.value)
@@ -139,8 +121,6 @@ export const useFeaturesStore = defineStore("features", () => {
     wmsCapabilitiesByUuid,
     // GETTERS
     getFeaturesGeoJSON,
-    getPopupsByUuid,
-    getFeaturesIdsByUuid,
     getShareableFeaturesIdsByUuid,
     hasSelectedFeatures,
     // ACTIONS

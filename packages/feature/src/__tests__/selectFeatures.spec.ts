@@ -184,6 +184,7 @@ describe("Feature Selection from layers and extent", () => {
       expect(result[0]).toEqual({
         featureId: firstFeatureId,
         geometry: identifyResponse.results[0]!.geometry,
+        label: identifyResponse.results[0]!.properties.label,
         content: {
           kind: "html",
           html: htmlPopup,
@@ -633,6 +634,7 @@ describe("Feature Selection from layers and extent", () => {
       expect(store.selectedFeaturesByUuid["uuid-ogc"]![0]).toEqual({
         featureId: String(identifyResponse.results[0]!.id),
         geometry: identifyResponse.results[0]!.geometry,
+        label: identifyResponse.results[0]!.properties.label,
         content: {
           kind: "html",
           html: htmlPopup,

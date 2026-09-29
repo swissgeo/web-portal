@@ -5,13 +5,14 @@ import { sanitizeHtml } from "@/utils/sanitize";
 const { t } = useI18n();
 const { featureData } = defineProps<{ featureData: FeatureData }>();
 
-const sanitizedHtml = computed(() =>
-  featureData.content.kind !== "html"
-    ? undefined
-    : featureData.content.trusted
-      ? featureData.content.html
-      : sanitizeHtml(featureData.content.html, t("featureInfo.blockedContent")),
-);
+const sanitizedHtml = computed(() => {
+  if (featureData.content.kind !== "html") {
+    return;
+  }
+  return featureData.content.trusted
+    ? featureData.content.html
+    : sanitizeHtml(featureData.content.html, t("featureInfo.blockedContent"));
+});
 
 const jsonEntries = computed(() =>
   featureData.content.kind === "json"

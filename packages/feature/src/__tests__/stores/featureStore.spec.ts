@@ -54,8 +54,6 @@ describe("identify functionalities of the feature module", () => {
     const featureStore = useFeaturesStore();
 
     expect(featureStore.selectedFeaturesByUuid).toEqual({});
-    expect(featureStore.getFeaturesIdsByUuid).toEqual({});
-    expect(featureStore.getPopupsByUuid).toEqual({});
     expect(featureStore.getFeaturesGeoJSON).toEqual({
       type: "FeatureCollection",
       features: [],
@@ -92,41 +90,6 @@ describe("identify functionalities of the feature module", () => {
     expect(collection.features[0]!.geometry).toEqual(
       mockFeatureData[0].geometry,
     );
-  });
-
-  it("retrieves a dict of popups content arrays by uuid when using getPopupsByUuid", () => {
-    const featureStore = useFeaturesStore();
-    featureStore.selectedFeaturesByUuid["uuid-a"] = [mockFeatureData[0]];
-    featureStore.selectedFeaturesByUuid["uuid-b"] = [
-      mockFeatureData[1],
-      mockFeatureData[2],
-    ];
-    const popups = featureStore.getPopupsByUuid;
-    expect(Object.keys(popups)).toEqual(["uuid-a", "uuid-b"]);
-    expect(popups["uuid-a"].length).toEqual(1);
-    expect(popups["uuid-a"]).toEqual([mockFeatureData[0].content]);
-    expect(popups["uuid-b"].length).toEqual(2);
-    expect(popups["uuid-b"]).toEqual([
-      mockFeatureData[1].content,
-      mockFeatureData[2].content,
-    ]);
-  });
-
-  it("retrieves a dict of feature id arrays by uuid when using getFeaturesIdsByUuid", () => {
-    const featureStore = useFeaturesStore();
-    featureStore.selectedFeaturesByUuid["uuid-a"] = [
-      mockFeatureData[0],
-      mockFeatureData[1],
-    ];
-    featureStore.selectedFeaturesByUuid["uuid-b"] = [mockFeatureData[2]];
-
-    const ids = featureStore.getFeaturesIdsByUuid;
-    expect(Object.keys(ids)).toEqual(["uuid-a", "uuid-b"]);
-
-    expect(ids["uuid-a"].length).toEqual(2);
-    expect(ids["uuid-a"]).toEqual(["feature-id-1", "feature-id-2"]);
-    expect(ids["uuid-b"].length).toEqual(1);
-    expect(ids["uuid-b"]).toEqual(["feature-id-3"]);
   });
 
   it("tells us correctly if there are features in the store using hasSelectedFeatures", () => {

@@ -19,7 +19,7 @@ import {
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { MapModule, usePositionStore } from "@swissgeo/map";
-import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
+import { HIGHLIGHT_LAYER_ID, toRgbaColor } from "@swissgeo/shared";
 import { cloneDeep } from "es-toolkit";
 
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
@@ -64,9 +64,15 @@ const backgroundLayer = computed(() => layerStore.backgroundLayer);
 // If we ever need the `readThemeToken` function elsewhere, we could create a small function
 // which takes a decimal percentage as input, and append the corresponding alpha channel to the
 // color
-const highlightStroke = readThemeToken("--ui-color-primary-600", "#06999b");
+const highlightStroke = toRgbaColor(
+  readThemeToken("--ui-color-primary-600", "#06999b"),
+  1,
+);
 // we're adding an alpha channel at the end
-const highlightFill = `${readThemeToken("--ui-color-secondary-500", "#06999b")}59`;
+const highlightFill = toRgbaColor(
+  readThemeToken("--ui-color-secondary-500", "#06999b"),
+  0.59,
+);
 
 const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
   const geoJsonStyle: GeoAdminGeoJSONStyleDefinition = {
@@ -163,8 +169,8 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
 let abortController: AbortController | null = null;
 
 async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
+  featureStore.$reset();
   if (toolboxStore.isDrawingActive()) {
-    // TODO: if there are features selected, should we de-select them ?
     return;
   }
   abortController?.abort();
@@ -178,21 +184,22 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
     mapClickEvent.pixel[0] >
       (compareRatio ?? 0) * mapClickEvent.viewportSize[0];
   const results: LayerSource[] = sourceLayers.value
-    .filter(
-      (sourceLayer) =>
+    .filter((sourceLayer) => {
+      const mapLayer = mapViewStore.getMapLayerFromUuid(sourceLayer.uuid);
+      return (
         // first we filter out hidden layers
-        mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)?.isVisible &&
-        // at startup, some layers will have a `null` opacity, which is interpreted
+        mapLayer?.isVisible &&
+        // at startup, some layers will have a nullish opacity, which is interpreted
         // as `1` in the mapviewer (by default, we want to see the map).
-        (mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)!.opacity === null ||
-          mapViewStore.getMapLayerFromUuid(sourceLayer.uuid)!.opacity > 0) &&
+        (mapLayer.opacity ?? 1) > 0 &&
         // we also filter the compare slider clipped layer if the click happened
         // on the right of the slider
         !(
           filterOutCutLayer &&
           compareSliderClippedLayer?.uuid === sourceLayer.uuid
-        ),
-    )
+        )
+      );
+    })
     .map((sourceLayer) => {
       const preResolvedFeatures =
         mapClickEvent.vectorFeaturesPerLayer[sourceLayer.uuid];

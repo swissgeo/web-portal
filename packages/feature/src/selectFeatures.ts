@@ -227,6 +227,10 @@ export function getPopupFromIdentifyFeature(
       return {
         featureId: String(feature.id),
         geometry: feature.geometry,
+        label:
+          feature.properties.label ??
+          feature.properties.name ??
+          String(feature.id),
         content: {
           kind: "html",
           html: await response.text(),
@@ -253,20 +257,27 @@ export async function createIdentifyResponse(
   featureIds: string[],
   layerId: string,
 ): Promise<IdentifyFeature[]> {
-  const apiBaseUrl = process.env.NUXT_GEOADMIN_API_BASE_URL;
-  const getFeaturesUrl = `${apiBaseUrl}/rest/services/ech/MapServer/${layerId}/${featureIds.join(",")}`;
-  const result = await fetch(getFeaturesUrl);
-  if (result.status !== 200) {
-    log.warn(
-      `Couldn't reach the getFeatures server for layer ${layerId}. Either the server is down, or the layer doesn't exist.`,
+  try {
+    const apiBaseUrl = process.env.NUXT_GEOADMIN_API_BASE_URL;
+    const getFeaturesUrl = `${apiBaseUrl}/rest/services/ech/MapServer/${layerId}/${featureIds.join(",")}`;
+    const result = await fetch(getFeaturesUrl);
+    if (result.status !== 200) {
+      log.warn(
+        `Couldn't reach the getFeatures server for layer ${layerId}. Either the server is down, or the layer doesn't exist.`,
+      );
+      return [];
+    }
+    return (((await result.json()) as IdentifyResponse).results ?? []).map(
+      (feature) => {
+        return { id: feature.id, geometry: feature.geometry };
+      },
     );
-    return [];
+  } catch (error) {
+    log.error(
+      `[create identify response] unexpected error ${error.toString()} while attempting to create an identify response`,
+    );
   }
-  return (((await result.json()) as IdentifyResponse).results ?? []).map(
-    (feature) => {
-      return { id: feature.id, geometry: feature.geometry };
-    },
-  );
+  return [];
 }
 
 async function getFeaturesFromWmsServer(
