@@ -57,14 +57,15 @@ const backLabel = computed(() => {
       <div
         class="flex flex-col items-start gap-space-s @2xl:flex-row @2xl:items-center @2xl:justify-between"
       >
-        <div class="flex min-w-0 items-center gap-space-xs">
+        <!-- Reserve space on the last title line for the share button. -->
+        <div class="min-w-0">
           <h1
             id="dataset-panel-title"
-            class="text-xl leading-heading font-semibold wrap-anywhere text-highlighted @2xl:text-3xl"
+            class="inline pr-10 text-xl leading-heading font-semibold wrap-anywhere text-highlighted @2xl:text-3xl"
           >
             {{ dataset?.properties.title }}
           </h1>
-          <DatasetCopyLink class="shrink-0" :url="detailUrl" />
+          <DatasetCopyLink class="-ml-8 align-baseline" :url="detailUrl" />
         </div>
         <DatasetMapAction v-if="dataset" :dataset="dataset" />
       </div>
