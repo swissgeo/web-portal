@@ -7,7 +7,7 @@ const { olMap } = storeToRefs(useMapStore());
 <template>
   <div class="flex w-fit flex-row items-center gap-8">
     <div class="ml-2 w-60">
-      <OLMapScale :olMap="olMap" class="footerMapScale" />
+      <OLMapScale v-if="olMap" :olMap="olMap" class="footerMapScale" />
     </div>
     <OLMapMouseTracker />
   </div>
