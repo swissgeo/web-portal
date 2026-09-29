@@ -61,6 +61,7 @@ const backLabel = computed(() => {
         <div class="min-w-0">
           <h1
             id="dataset-panel-title"
+            data-testid="dataset-title"
             class="inline pr-10 text-xl leading-heading font-semibold wrap-anywhere text-highlighted @2xl:text-3xl"
           >
             {{ dataset?.properties.title }}
