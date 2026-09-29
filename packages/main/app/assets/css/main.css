@@ -122,6 +122,20 @@
 }
 
 @layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  html.light {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark !important;
+  }
+}
+
+@layer base {
   button:enabled,
   [role="button"]:not([aria-disabled="true"]) {
     @apply cursor-pointer;
