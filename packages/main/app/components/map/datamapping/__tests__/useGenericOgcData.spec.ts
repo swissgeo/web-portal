@@ -240,6 +240,21 @@ describe("useGenericOgcData ", () => {
     expect(onError).toHaveBeenCalledWith(expect.objectContaining({ message }));
   });
 
+  it("rejects STAC as a map format", () => {
+    distributionMockData.value.properties.protocol = "ogcapi:stac";
+    const onError = vi.fn();
+
+    const { layerFormat } = useGenericOgcData(layerMockData, onError);
+    onDistributionResponseMock.mock.calls[0]![0]();
+
+    expect(layerFormat.value).toBeNull();
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "Dataset has no usable OGC distribution",
+      }),
+    );
+  });
+
   it("calls the composables and returns data", async () => {
     const {
       distributionCollection,

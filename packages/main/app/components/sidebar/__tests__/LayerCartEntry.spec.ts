@@ -19,7 +19,6 @@ const dimensionsStore = vi.hoisted(() => ({
   setDimension: vi.fn(),
   clearLayerDimensions: vi.fn(),
 }));
-const datasetPanelStore = vi.hoisted(() => ({ openDatasetPanel: vi.fn() }));
 const mapViewStore = vi.hoisted(() => ({
   getLayerLegends: vi.fn(() => []),
   updateLayerOpacity: vi.fn(),
@@ -34,16 +33,16 @@ vi.mock("@swissgeo/dimension", () => ({
   useDimensionsStore: () => dimensionsStore,
   getDisplayNameFromTimestamp: (time: string) => time,
 }));
-vi.mock("@swissgeo/skeleton", () => ({
-  useDatasetPanelStore: () => datasetPanelStore,
-}));
+mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 mockNuxtImport("useMapViewStore", () => () => mapViewStore);
 
 const stubs = {
   LayerLegend: { template: "<div data-testid='legend-stub' />" },
   UButton: {
     inheritAttrs: false,
-    template: "<button v-bind='$attrs' />",
+    props: ["to"],
+    template:
+      "<a v-if='to' :href='to' v-bind='$attrs' /><button v-else v-bind='$attrs' />",
   },
   USlider: { template: "<div />" },
 };
@@ -123,13 +122,10 @@ describe("LayerCartEntry.vue", () => {
     expect(layerStore.removeLayer).toHaveBeenCalledWith("a-uuid");
   });
 
-  it("opens the dataset panel of the layer", async () => {
+  it("links to the source dataset rather than the renderer layer ID", () => {
     const wrapper = mountEntry();
-
-    await wrapper.find("[title='layers.info']").trigger("click");
-
-    expect(datasetPanelStore.openDatasetPanel).toHaveBeenCalledWith(
-      "a-human-id",
+    expect(wrapper.get("[title='layers.info']").attributes("href")).toBe(
+      "/de/dataset/a-human-id",
     );
   });
 

@@ -11,9 +11,7 @@ provide(displayModeKey, "web");
 <template>
   <UApp :toaster="toaster">
     <NuxtLayout>
-      <NuxtPage
-        :page-key="(route) => route.path.replace(/^\/(de|fr|en|it|rm)/, '')"
-      />
+      <NuxtPage />
     </NuxtLayout>
   </UApp>
 </template>

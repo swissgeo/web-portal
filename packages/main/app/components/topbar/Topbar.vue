@@ -2,8 +2,27 @@
 import type { NavigationMenuItem } from "@nuxt/ui";
 
 import { LogoPic } from "@swissgeo/skeleton";
+import { isEqual } from "es-toolkit";
 
 const { t } = useI18n();
+const route = useRoute();
+const routeBaseName = useRouteBaseName();
+const menuOpen = ref(false);
+
+// Language changes translate the open menu without closing it.
+watch(
+  () => ({
+    name: routeBaseName(route) ?? route.path,
+    params: route.params,
+    query: route.query,
+    hash: route.hash,
+  }),
+  (destination, previous) => {
+    if (!isEqual(destination, previous)) {
+      menuOpen.value = false;
+    }
+  },
+);
 
 const emit = defineEmits<{
   "reset-app": [void];
@@ -105,6 +124,8 @@ function resetApp() {
 
 <template>
   <UHeader
+    v-model:open="menuOpen"
+    :auto-close="false"
     :ui="{
       container: 'max-w-full gap-8',
       left: 'gap-6',

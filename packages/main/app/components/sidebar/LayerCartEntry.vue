@@ -7,7 +7,6 @@ import {
   useDimensionsStore,
 } from "@swissgeo/dimension";
 import { useLayerStore } from "@swissgeo/layers";
-import { useDatasetPanelStore } from "@swissgeo/skeleton";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -22,7 +21,7 @@ const { t } = useI18n();
 const layerStore = useLayerStore();
 const dimensionsStore = useDimensionsStore();
 // const drawingStore = useDrawingStore();
-const datasetPanelStore = useDatasetPanelStore();
+const localePath = useLocalePath();
 const mapViewStore = useMapViewStore();
 
 const isExpanded = ref(false);
@@ -94,16 +93,20 @@ function removeLayer() {
   layerStore.removeLayer(layer.uuid);
 }
 
-function openDatasetPanel() {
+const datasetId = computed(() => {
   const source = layerStore.getLayer(layer.uuid);
-  if (source) {
-    datasetPanelStore.openDatasetPanel(source.humanId);
+  if (source?.type !== "dataset") {
+    return undefined;
   }
-}
+  return source.humanId;
+});
 
-const isFromDataSet = computed(
-  () => layerStore.getLayer(layer.uuid)?.type === "dataset",
-);
+const detailPath = computed(() => {
+  if (!datasetId.value) {
+    return undefined;
+  }
+  return localePath(`/dataset/${datasetId.value}`);
+});
 
 // Shared look of the buttons on the entry row
 const rowButton = {
@@ -158,11 +161,11 @@ const rowButton = {
           @click="toggleVisibility()"
         />
         <UButton
-          v-if="isFromDataSet"
+          v-if="detailPath"
           icon="i-lucide-info"
           :title="t('layers.info')"
           v-bind="rowButton"
-          @click="openDatasetPanel"
+          :to="detailPath"
         />
         <UButton
           icon="i-lucide-trash-2"

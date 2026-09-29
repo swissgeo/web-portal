@@ -34,6 +34,8 @@ export function useWmsCapabilities(
 
   const {
     data: wmsCapabilityData,
+    isFetching,
+    error,
     onFetchResponse: onCapabilitiesResponse,
     onRequestError: onCapabilitiesError,
   } = useConditionalFetch<string>(capabilityUrl);
@@ -51,6 +53,8 @@ export function useWmsCapabilities(
   });
   return {
     capabilityUrl,
+    isFetching,
+    error,
     onCapabilitiesError,
     onCapabilitiesResponse,
     wmsData,

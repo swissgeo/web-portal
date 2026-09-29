@@ -4,6 +4,13 @@ import type { RouteLocationNormalizedLoadedGeneric } from "vue-router";
 
 import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 
+definePageMeta({
+  key: (route) => {
+    const { documentId } = route.meta;
+    return typeof documentId === "string" ? documentId : "page";
+  },
+});
+
 const route = useRoute();
 const { locale } = useI18n();
 

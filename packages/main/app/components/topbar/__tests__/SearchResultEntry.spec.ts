@@ -13,11 +13,7 @@ mockNuxtImport("useI18n", () => {
   });
 });
 
-vi.mock("@swissgeo/skeleton", () => ({
-  useDatasetPanelStore: vi.fn(() => ({
-    openDatasetPanel: vi.fn(),
-  })),
-}));
+mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 
 const { sanitizeHtmlMock } = vi.hoisted(() => ({
   sanitizeHtmlMock: vi.fn((input: string) => input),
@@ -33,7 +29,8 @@ const UIconStub = {
 };
 
 const UButtonStub = {
-  template: "<button :data-testid=\"$attrs['data-testid']\" />",
+  props: ["to"],
+  template: "<a :href='to' v-bind='$attrs' />",
   inheritAttrs: false,
 };
 
@@ -81,6 +78,15 @@ describe("SearchResultEntry", () => {
   describe("rendering", () => {
     beforeEach(() => {
       sanitizeHtmlMock.mockImplementation((input: string) => input);
+    });
+
+    it("links layer information without selecting the search result", async () => {
+      const wrapper = mountEntry(entries[2]!);
+      const info = wrapper.get("[data-testid='search-result-info-0']");
+      expect(info.attributes("href")).toBe("/de/dataset/id-2");
+      await info.trigger("click");
+      await info.trigger("keyup", { key: "Enter" });
+      expect(wrapper.emitted("select")).toBeUndefined();
     });
 
     it("renders location entry with correct icon", () => {

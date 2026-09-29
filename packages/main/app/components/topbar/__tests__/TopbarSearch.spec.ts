@@ -40,6 +40,7 @@ vi.mock("@/composables/useSearchSelection", () => ({
 }));
 
 mockNuxtImport("useToaster", () => () => ({ showError: vi.fn() }));
+mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 
 const locale = ref("de");
 
@@ -49,7 +50,6 @@ vi.mock("vue-i18n", () => ({
 
 vi.mock("@swissgeo/skeleton", () => ({
   useSearchStore: () => searchStore,
-  useDatasetPanelStore: () => ({ openDatasetPanel: vi.fn() }),
 }));
 
 vi.mock("@swissgeo/shared", () => ({

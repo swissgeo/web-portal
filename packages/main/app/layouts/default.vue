@@ -1,23 +1,13 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
 import log from "@swissgeo/log";
-import { useDatasetPanelStore } from "@swissgeo/skeleton";
 
-import DatasetPanel from "@/components/sidebar/DatasetPanel.vue";
 import SideBar from "@/components/sidebar/SideBar.vue";
 
 const { resetApp } = useResetApp();
 const route = useRoute();
 const mapViewStore = useMapViewStore();
-const localePath = useLocalePath();
-const datasetPanelStore = useDatasetPanelStore();
-
-const datasetDetailPath = computed(() => {
-  if (!datasetPanelStore.activeDatasetId) {
-    return undefined;
-  }
-  return localePath(`/dataset/${datasetPanelStore.activeDatasetId}`);
-});
+const detailsOpen = computed(() => route.meta.datasetDetail === true);
 
 const mapLayers = computed(() => mapViewStore.getMapLayers());
 const isMapPage = computed(() => {
@@ -39,29 +29,24 @@ watch(route, (value) => {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col">
+  <div class="flex h-dvh flex-col">
     <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
     <UMain as="div" class="min-h-0 flex-1">
       <main ref="main" class="h-full font-sans">
         <div class="relative h-full">
           <SideBar
             v-if="!isMapFullscreenMode"
+            v-show="!detailsOpen"
             class="z-99"
             :mapLayers="mapLayers"
           >
           </SideBar>
-          <!-- The sidebar floats over the map, so the map keeps its full width
-               and does not shift when the sidebar opens or closes -->
-          <div class="h-full w-full">
+          <div class="relative h-full w-full">
             <slot />
+            <ClientOnly>
+              <Footer v-if="!isMapFullscreenMode" />
+            </ClientOnly>
           </div>
-          <DatasetPanel
-            v-if="!isMapFullscreenMode"
-            :detail-page-path="datasetDetailPath"
-          />
-          <ClientOnly>
-            <Footer v-if="!isMapFullscreenMode" />
-          </ClientOnly>
         </div>
       </main>
     </UMain>

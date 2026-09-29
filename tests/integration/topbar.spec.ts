@@ -76,6 +76,34 @@ test.describe("topbar search", () => {
     await expect(searchInput).toBeVisible();
   });
 
+  test("language changes preserve the open mobile menu and map", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const map = await page.getByTestId("ol-map").elementHandle();
+
+    await page.getByRole("button", { name: "Open menu" }).click();
+    await page.getByRole("button", { name: "Language switcher" }).click();
+    await page.getByRole("option", { name: "Français", exact: true }).click();
+
+    await expect(page).toHaveURL(/\/fr\/map$/);
+    await expect(
+      page.getByRole("button", { name: "Close menu" }),
+    ).toBeVisible();
+    const menu = page.getByRole("dialog").filter({
+      has: page.getByRole("button", { name: "Close menu" }),
+    });
+    await expect(
+      menu.getByPlaceholder(
+        "Rechercher un lieu, une couche ou des coordonnées...",
+      ),
+    ).toBeVisible();
+    expect(await map?.evaluate((element) => element.isConnected)).toBe(true);
+
+    await page.getByRole("button", { name: "Close menu" }).click();
+    await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
+  });
+
   test("search input accepts text", async ({ page }) => {
     const searchInput = page.getByRole("textbox");
     await expect(searchInput).toBeVisible();
