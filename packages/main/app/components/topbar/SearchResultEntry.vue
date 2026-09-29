@@ -18,6 +18,7 @@ const { index, entry } = defineProps<{
 
 const emit = defineEmits<{
   select: [];
+  viewDetails: [];
   firstEntryReached: [];
   lastEntryReached: [];
 }>();
@@ -137,7 +138,7 @@ defineExpose({
       variant="ghost"
       size="xs"
       :to="detailPath"
-      @click.stop
+      @click.stop="emit('viewDetails')"
       @keyup.enter.stop
     />
   </li>

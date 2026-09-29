@@ -66,13 +66,5 @@ const protocol = computed(() => {
         </div>
       </ClientOnly>
     </div>
-    <div
-      v-if="distribution.properties.externalIds?.length"
-      class="order-3 min-w-0 wrap-anywhere text-muted @2xl:col-start-2"
-    >
-      <p v-for="id in distribution.properties.externalIds" :key="id">
-        {{ t("dataset.identifier") }}: {{ id }}
-      </p>
-    </div>
   </div>
 </template>

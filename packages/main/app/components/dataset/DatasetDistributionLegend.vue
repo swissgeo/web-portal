@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Distribution } from "@swissgeo/ogc";
 
+import ErrorPill from "~/components/ErrorPill.vue";
 import LayerLegend from "~/components/sidebar/LayerLegend.vue";
 import { useDistributionLegend } from "~/composables/useDistributionLegend";
 import { useI18n } from "vue-i18n";
@@ -19,9 +20,9 @@ const { legends, isLoading, error } = useDistributionLegend(
 </script>
 
 <template>
-  <p v-if="error" role="status" class="text-sm text-error">
+  <ErrorPill v-if="error">
     {{ t("dataset.legendError") }}
-  </p>
+  </ErrorPill>
   <p v-else-if="isLoading" role="status" class="text-sm text-muted">
     {{ t("dataset.legendLoading") }}
   </p>

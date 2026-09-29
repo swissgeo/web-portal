@@ -7,6 +7,7 @@ import type {
   Link,
 } from "@swissgeo/ogc";
 
+import ErrorPill from "~/components/ErrorPill.vue";
 import { determineFormat } from "~/utils/determineFormat";
 import { resolveWebUrl } from "~/utils/resolveWebUrl";
 import { computed } from "vue";
@@ -139,9 +140,9 @@ const serviceDistributions = computed<Distribution[]>(() => {
         >
           {{ t("layers.legend.title") }}
         </h3>
-        <p v-if="distributionError" role="status" class="text-sm text-error">
+        <ErrorPill v-if="distributionError">
           {{ t("dataset.legendError") }}
-        </p>
+        </ErrorPill>
         <DatasetLegend
           v-else
           :dataset="dataset"

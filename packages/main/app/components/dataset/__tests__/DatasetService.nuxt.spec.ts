@@ -145,7 +145,7 @@ describe("dataset service addresses", () => {
     },
   );
 
-  it("opens the complete capabilities address and shows the provider layer ID", async () => {
+  it("opens the complete capabilities address without displaying the provider layer ID", async () => {
     const address =
       "https://example.test/wms?SERVICE=WMS&REQUEST=GetCapabilities&lang=fr#capabilities";
     fetchMock.mockResolvedValue(service(address));
@@ -159,7 +159,7 @@ describe("dataset service addresses", () => {
     );
     expect(wrapper.get("a").attributes("target")).toBe("_blank");
     expect(wrapper.text()).toContain("WMS");
-    expect(wrapper.text()).toContain("provider.layer");
+    expect(wrapper.text()).not.toContain("provider.layer");
     expect(fetchMock).toHaveBeenCalledWith(
       record.links?.[0]?.href,
       expect.objectContaining({ retry: 0 }),

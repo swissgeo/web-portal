@@ -87,6 +87,8 @@ describe("SearchResultEntry", () => {
       await info.trigger("click");
       await info.trigger("keyup", { key: "Enter" });
       expect(wrapper.emitted("select")).toBeUndefined();
+      expect(wrapper.emitted("viewDetails")).toEqual([[]]);
+      wrapper.unmount();
     });
 
     it("renders location entry with correct icon", () => {
