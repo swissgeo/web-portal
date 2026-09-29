@@ -1,5 +1,6 @@
-import type { Map as OlMapType } from "ol";
 import type { Extent } from "ol/extent";
+
+import { constants } from "@swissgeo/coordinates";
 
 import type {
   PrintFormat,
@@ -10,6 +11,7 @@ import type {
 import { printFormats, printOrientations } from "../types/print";
 
 const MM_PER_INCH = 25.4;
+const METERS_PER_INCH = MM_PER_INCH / 1000;
 const SQRT_2 = 2 ** 0.5;
 
 // Length in millimeter of the short side of the page
@@ -23,23 +25,6 @@ const formatRatiosToA0: Record<PrintFormat, number> = {
   a4: SQRT_2 ** 4,
   a5: SQRT_2 ** 5,
 };
-
-/**
- * Get the print page size in meter for a given format (eg. 'a4') and an orientation (eg. 'landscape')
- */
-export function getPageSizeInMeters(
-  format: PrintFormat,
-  orientation: PrintOrientation,
-) {
-  const longSide = ~~(A0_LONG_SIDE_MM / formatRatiosToA0[format]);
-  const shortSide = ~~(A0_SHORT_SIDE_MM / formatRatiosToA0[format]);
-
-  if (orientation === "landscape") {
-    return { width: longSide, height: shortSide };
-  } else {
-    return { width: shortSide, height: longSide };
-  }
-}
 
 /**
  * Get the print page size in pixels from a given format (eg. 'a4'), an orientation (eg. 'landscape') and a resolution in DPI (eg. 192)
@@ -122,22 +107,73 @@ export function validatePrintConfig(
   ) {
     throw new Error("The print resolution must be greater than 0");
   }
+
+  if (maybePrintProps.scale !== undefined) {
+    // The map cannot zoom beyond its resolutions, so a page waiting for a scale outside of them
+    // would never be ready. Failing here says why.
+    const { scale, resolution } = maybePrintProps;
+    const { LV95_RESOLUTIONS } = constants;
+    const minScale = Math.ceil(
+      getScaleForResolution(Math.min(...LV95_RESOLUTIONS), resolution),
+    );
+    const maxScale = Math.floor(
+      getScaleForResolution(Math.max(...LV95_RESOLUTIONS), resolution),
+    );
+    if (!(scale >= minScale && scale <= maxScale)) {
+      throw new Error(
+        `The print scale must be between 1:${minScale} and 1:${maxScale}, the scales the map can show`,
+      );
+    }
+  }
 }
 
-export function getPrintExtent(
-  map: OlMapType,
-  printZoom: number,
+/**
+ * Map resolution (m/px) at which a page printed at the given DPI has the given scale,
+ * e.g. 1:25'000 is 250 m per cm on paper. Inverse of {@link getScaleForResolution}.
+ */
+export function getResolutionForScale(
+  scale: number,
+  resolutionDpi: number,
+): number {
+  return (scale * METERS_PER_INCH) / resolutionDpi;
+}
+
+/**
+ * The scale of the list closest to the given one. Scales are compared by ratio,
+ * so 1:20'000 is closer to 1:25'000 than to 1:10'000.
+ */
+export function getClosestScale(
+  scale: number,
+  scales: readonly number[],
+): number {
+  return scales.reduce((closest, candidate) =>
+    Math.abs(Math.log(candidate / scale)) < Math.abs(Math.log(closest / scale))
+      ? candidate
+      : closest,
+  );
+}
+
+/**
+ * Scale denominator (25'000 for 1:25'000) of a page printed at the given DPI when the map is at
+ * the given resolution (m/px). At 96 dpi this is the column "Approx. scale at 96 dpi per zoom level"
+ * of https://docs.geo.admin.ch/visualize-data/wmts.html#gettile (2.5 m/px is 1:9'449).
+ */
+export function getScaleForResolution(
+  resolution: number,
+  resolutionDpi: number,
+): number {
+  return (resolution * resolutionDpi) / METERS_PER_INCH;
+}
+
+/**
+ * Extent (in map units) of a page of widthPx x heightPx pixels drawn at the given resolution
+ */
+export function getPrintExtentForResolution(
+  resolution: number,
   widthPx: number,
   heightPx: number,
   mapCenter: [number, number],
-): Extent | null {
-  const view = map.getView();
-
-  const resolution = view.getResolutionForZoom(printZoom);
-  if (!resolution) {
-    return null;
-  }
-
+): Extent {
   const halfWidth = (widthPx * resolution) / 2;
   const halfHeight = (heightPx * resolution) / 2;
 

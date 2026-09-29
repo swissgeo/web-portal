@@ -2,7 +2,12 @@
 import { useMap } from "@swissgeo/map";
 import PrintJobListing from "~/components/debug/PrintJobListing.vue";
 import { usePrintFraming } from "~/composables/usePrintFraming";
-import { printFormats, printOrientations } from "~/types/print";
+import {
+  printFixedScales,
+  printFormats,
+  printModes,
+  printOrientations,
+} from "~/types/print";
 
 const emit = defineEmits<{
   close: [];
@@ -11,10 +16,11 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const { zoomLevel } = useMap();
 const {
-  isZoomStepEnabled,
   selectedPrintFormat,
-  selectedPrintResolution,
   selectedPrintOrientation,
+  selectedPrintMode,
+  selectedPrintScale,
+  isFixedScale,
   isCenterLocked,
   isZoomLocked,
   zoomLevelForPrint,
@@ -32,11 +38,16 @@ const printFormatItems = ref(
   })),
 );
 
-const printResolutionItems = ref([
-  { label: "96 dpi", value: 96 },
-  { label: "192 dpi", value: 192 },
-  { label: "288 dpi", value: 288 },
-]);
+const printModeItems = printModes.map((mode) => ({
+  label:
+    mode === "wysiwyg" ? t("print.modeWysiwyg") : t("print.modeFixedScale"),
+  value: mode,
+}));
+
+const printScaleItems = printFixedScales.map(({ scale }) => ({
+  label: `1:${scale.toLocaleString("de-CH")}`,
+  value: scale,
+}));
 
 const printOrientationItems = ref(
   printOrientations.map((orientation) => ({
@@ -78,10 +89,19 @@ function handleClose() {
       <div>{{ t("print.printScale") }}: {{ scaleOfPrintFormatted }}</div>
       <UFormField
         orientation="horizontal"
-        :label="t('print.enableStrictZoomStepsLabel')"
+        :label="t('print.printModeLabel')"
         class="w-72"
       >
-        <USwitch id="enable-zoom-step-checkbox" v-model="isZoomStepEnabled" />
+        <USelect v-model="selectedPrintMode" :items="printModeItems" />
+      </UFormField>
+
+      <UFormField
+        v-if="isFixedScale"
+        orientation="horizontal"
+        :label="t('print.printScaleLabel')"
+        class="w-72"
+      >
+        <USelect v-model="selectedPrintScale" :items="printScaleItems" />
       </UFormField>
 
       <UFormField
@@ -93,6 +113,7 @@ function handleClose() {
       </UFormField>
 
       <UFormField
+        v-if="!isFixedScale"
         orientation="horizontal"
         :label="t('print.lockZoomToViewLabel')"
         class="w-72"
@@ -106,17 +127,6 @@ function handleClose() {
         class="w-72"
       >
         <USelect v-model="selectedPrintFormat" :items="printFormatItems" />
-      </UFormField>
-
-      <UFormField
-        orientation="horizontal"
-        :label="t('print.printResolutionLabel')"
-        class="w-72"
-      >
-        <USelect
-          v-model="selectedPrintResolution"
-          :items="printResolutionItems"
-        />
       </UFormField>
 
       <UFormField
