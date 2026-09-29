@@ -11,7 +11,7 @@
 @source "../../../../map/";
 @source "../../../../dimension/";
 
-@custom-variant dark (&:where(.dark-mode, .dark-mode *));
+@custom-variant dark (&:where(.dark, .dark *));
 @import "@nuxt/ui";
 @source "../../../../skeleton/src/**/*.{vue,ts,js,tsx,jsx}";
 
@@ -85,11 +85,20 @@
   --color-black: #0e0f0f;
   --color-white: #ffffff;
 
+  --color-success-on-accent: var(--ui-success-on-accent);
+  --color-error-on-accent: var(--ui-error-on-accent);
+  --color-warning-on-accent: var(--ui-warning-on-accent);
+  --color-info-on-accent: var(--ui-info-on-accent);
+
+  --color-success-muted-on-accent: var(--ui-success-muted-on-accent);
+  --color-error-muted-on-accent: var(--ui-error-muted-on-accent);
+  --color-warning-muted-on-accent: var(--ui-warning-muted-on-accent);
+  --color-info-muted-on-accent: var(--ui-info-muted-on-accent);
+
   --text-tiny: 0.625rem;
 }
 
 @layer theme {
-  /* The Setup spacing scale changes at 720 px and 1025 px. */
   @media (min-width: 720px) {
     :root {
       --spacing-space-l: 3rem;
@@ -105,6 +114,55 @@
       --spacing-space-3xl: 9rem;
       --spacing-space-gutter: 1.875rem;
     }
+  }
+}
+
+@layer theme {
+  :root {
+    color-scheme: light dark;
+  }
+
+  html.light {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark !important;
+  }
+
+  html:root.light {
+    color-scheme: light;
+
+    --ui-error: var(--ui-color-error-600);
+    --ui-info: var(--ui-color-info-600);
+    --ui-warning: var(--ui-color-warning-400);
+
+    --ui-success-on-accent: #052e16;
+    --ui-error-on-accent: #ffffff;
+    --ui-warning-on-accent: #432004;
+    --ui-info-on-accent: #ffffff;
+
+    --ui-success-muted-on-accent: #016538;
+    --ui-error-muted-on-accent: #ffc9c9;
+    --ui-warning-muted-on-accent: #894b00;
+    --ui-info-muted-on-accent: #bedbff;
+  }
+
+  html:root.dark {
+    color-scheme: dark !important;
+
+    --ui-info: var(--ui-color-info-300);
+    --ui-warning: var(--ui-color-warning-300);
+
+    --ui-success-on-accent: #052e16;
+    --ui-error-on-accent: #460809;
+    --ui-warning-on-accent: #432004;
+    --ui-info-on-accent: #162456;
+
+    --ui-success-muted-on-accent: #016538;
+    --ui-error-muted-on-accent: #9f0712;
+    --ui-warning-muted-on-accent: #894b00;
+    --ui-info-muted-on-accent: #193cb8;
   }
 }
 
@@ -148,11 +206,6 @@
 }
 
 body {
-  /* We have to reset these variables here again. I don't quite know why
-    but it seems that tailwind removes them if they're not referenced anywhere.
-    They're probably only used to create the variants, then dropped.
-    But for our in-JS desktop/mobile switch we need access to those, hence
-    the explicit resetting here */
   --breakpoint-sm: var(--breakpoint-sm);
   --breakpoint-md: var(--breakpoint-md);
   --breakpoint-lg: var(--breakpoint-lg);

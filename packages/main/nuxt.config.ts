@@ -59,6 +59,9 @@ export default defineNuxtConfig({
     "@nuxt/ui",
   ],
   css: ["~/assets/css/main.css"],
+  colorMode: {
+    classSuffix: "",
+  },
   ui: {
     prose: true,
     theme: {
