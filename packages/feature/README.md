@@ -57,20 +57,20 @@ from the `store`
 
 ```typescript
 return {
-    selectedFeaturesByUuid,
-    wmsCapabilitiesByUuid,
-    // GETTERS
-    getFeaturesGeoJSON,
-    getShareableFeaturesIdsByUuid,
-    hasSelectedFeatures,
-    // ACTIONS
-    addSelection,
-    addFeaturePreselection,
-    consumeFeaturePreselection,
-    setSelection,
-    $reset,
-    getWmsCapability,
-    setWmsCapability,
-    clearWmsCapability,
-  }
+  selectedFeaturesByUuid,
+  wmsCapabilitiesByUuid,
+  // GETTERS
+  getFeaturesGeoJSON,
+  getShareableFeaturesIdsByUuid,
+  hasSelectedFeatures,
+  // ACTIONS
+  addSelection,
+  addFeaturePreselection,
+  consumeFeaturePreselection,
+  setSelection,
+  $reset,
+  getWmsCapability,
+  setWmsCapability,
+  clearWmsCapability,
+};
 ```
