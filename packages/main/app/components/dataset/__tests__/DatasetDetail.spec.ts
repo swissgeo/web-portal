@@ -32,6 +32,7 @@ function mountDetail(
     props: { dataset, distributionCollection },
     global: {
       stubs: {
+        UBadge: { template: "<span><slot /></span>" },
         DatasetLinkList: true,
         DatasetServiceList: true,
         DatasetLegend: {

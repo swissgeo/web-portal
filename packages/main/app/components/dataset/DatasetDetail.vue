@@ -139,9 +139,16 @@ const serviceDistributions = computed<Distribution[]>(() => {
         >
           {{ t("layers.legend.title") }}
         </h3>
-        <p v-if="distributionError" role="status" class="text-sm text-error">
+        <UBadge
+          v-if="distributionError"
+          role="status"
+          color="error"
+          size="sm"
+          icon="i-lucide-octagon-alert"
+          class="rounded-full bg-red-600 px-1 py-0.5 leading-small-text text-white dark:bg-error dark:text-red-950"
+        >
           {{ t("dataset.legendError") }}
-        </p>
+        </UBadge>
         <DatasetLegend
           v-else
           :dataset="dataset"

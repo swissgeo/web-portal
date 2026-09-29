@@ -37,7 +37,10 @@ function render(protocol: Distribution["properties"]["protocol"] = "ogc:wms") {
       layerId: "layer",
     },
     global: {
-      stubs: { LayerLegend: true },
+      stubs: {
+        LayerLegend: true,
+        UBadge: { template: "<span><slot /></span>" },
+      },
     },
   });
 }

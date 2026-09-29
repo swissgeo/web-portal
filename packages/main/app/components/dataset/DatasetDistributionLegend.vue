@@ -19,9 +19,16 @@ const { legends, isLoading, error } = useDistributionLegend(
 </script>
 
 <template>
-  <p v-if="error" role="status" class="text-sm text-error">
+  <UBadge
+    v-if="error"
+    role="status"
+    color="error"
+    size="sm"
+    icon="i-lucide-octagon-alert"
+    class="rounded-full bg-red-600 px-1 py-0.5 leading-small-text text-white dark:bg-error dark:text-red-950"
+  >
     {{ t("dataset.legendError") }}
-  </p>
+  </UBadge>
   <p v-else-if="isLoading" role="status" class="text-sm text-muted">
     {{ t("dataset.legendLoading") }}
   </p>
