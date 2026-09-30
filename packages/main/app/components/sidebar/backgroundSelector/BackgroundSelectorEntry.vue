@@ -48,7 +48,7 @@ function mapBackgroundLayerToTranslationKey(
 
 <template>
   <button
-    class="group border-accent-active relative rounded-lg border-2"
+    class="group relative rounded-lg border-2 border-accent-active"
     type="button"
     :data-testid="testId"
     @click="emit('click')"
@@ -62,7 +62,7 @@ function mapBackgroundLayerToTranslationKey(
       />
     </div>
     <div
-      class="bg-opacity-50 bg-accent group-hover:bg-accent-hover absolute right-0 bottom-0 left-0 mx-1 mb-1 h-6 content-center rounded-sm px-2 text-left text-xs font-medium text-inverted"
+      class="bg-opacity-50 bg-accent absolute right-0 bottom-0 left-0 mx-1 mb-1 h-6 content-center rounded-sm px-2 text-left text-xs font-medium text-inverted group-hover:bg-accent-hover"
       :class="{ 'bg-accent-active': isCurrent }"
     >
       {{ layerTranslationKey }}
