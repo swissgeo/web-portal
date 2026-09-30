@@ -9,7 +9,8 @@ import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
-import { AVAILABLE_BACKGROUNDS } from "~/components/map/constants";
+
+import { AVAILABLE_BACKGROUNDS } from "@/components/sidebar/backgroundSelector/constants";
 
 export type AppStatePayload = {
   version: string;
@@ -20,7 +21,7 @@ const DISPATCHER = { name: "state-config" };
 
 // exported only for testing purpose. Do not use this outside this file
 export function isBackgroundLayer(layer: Layer): boolean {
-  return AVAILABLE_BACKGROUNDS.includes(layer.humanId);
+  return Object.values(AVAILABLE_BACKGROUNDS).includes(layer.humanId);
 }
 // exported only for testing purpose. Do not use this outside this file
 export function layersToStateConfig(layers: MapLayer[]): LayerState[] {
