@@ -43,42 +43,33 @@ describe("BackgroundSelectorEntry.vue", () => {
   });
 
   describe("active class", () => {
-    it("is present when isCurrent is true", () => {
+    it("is present on the label when isCurrent is true", () => {
       const wrapper = mount(BackgroundSelectorEntry, {
         props: { backgroundLayer: voidLayer, isCurrent: true },
       });
-      expect(wrapper.find("button").classes()).toContain("active");
+      expect(wrapper.find(".bg-accent-active").exists()).toBe(true);
     });
 
     it("is absent when isCurrent is false", () => {
       const wrapper = mount(BackgroundSelectorEntry, {
         props: { backgroundLayer: voidLayer, isCurrent: false },
       });
-      expect(wrapper.find("button").classes()).not.toContain("active");
+      expect(wrapper.find(".bg-accent-active").exists()).toBe(false);
     });
   });
 
-  describe("folded class", () => {
-    it("is present when folded prop is true", () => {
-      const wrapper = mount(BackgroundSelectorEntry, {
-        props: { backgroundLayer: voidLayer, isCurrent: false, folded: true },
-      });
-      expect(wrapper.find("button").classes()).toContain("folded");
+  it("renders a thumbnail image for a real layer", () => {
+    const wrapper = mount(BackgroundSelectorEntry, {
+      props: { backgroundLayer: mockLayer, isCurrent: false },
     });
-
-    it("is absent by default", () => {
-      const wrapper = mount(BackgroundSelectorEntry, {
-        props: { backgroundLayer: voidLayer, isCurrent: false },
-      });
-      expect(wrapper.find("button").classes()).not.toContain("folded");
-    });
+    expect(wrapper.find("img").exists()).toBe(true);
   });
 
-  it("renders a thumbnail image", () => {
+  it("does not render a thumbnail image for the void layer", () => {
     const wrapper = mount(BackgroundSelectorEntry, {
       props: { backgroundLayer: voidLayer, isCurrent: false },
     });
-    expect(wrapper.find("img").exists()).toBe(true);
+    expect(wrapper.find("img").exists()).toBe(false);
   });
 
   it("emits click when the button is clicked", async () => {
