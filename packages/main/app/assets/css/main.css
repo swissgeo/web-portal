@@ -95,6 +95,9 @@
   --color-warning-muted-on-accent: var(--ui-warning-muted-on-accent);
   --color-info-muted-on-accent: var(--ui-info-muted-on-accent);
 
+  --color-accent-active: var(--ui-accent-active);
+  --color-accent-hover: var(--ui-accent-hover);
+
   --text-tiny: 0.625rem;
 }
 
@@ -146,6 +149,9 @@
     --ui-error-muted-on-accent: #ffc9c9;
     --ui-warning-muted-on-accent: #894b00;
     --ui-info-muted-on-accent: #bedbff;
+
+    --ui-accent-active: var(--ui-color-accent-900);
+    --ui-accent-hover: var(--ui-color-accent-700);
   }
 
   html:root.dark {
@@ -163,6 +169,9 @@
     --ui-error-muted-on-accent: #9f0712;
     --ui-warning-muted-on-accent: #894b00;
     --ui-info-muted-on-accent: #193cb8;
+
+    --ui-accent-active: var(--ui-color-accent-50);
+    --ui-accent-hover: var(--ui-color-accent-200);
   }
 }
 
