@@ -5,6 +5,7 @@ import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
+import BackgroundSelector from "@/components/sidebar/backgroundSelector/BackgroundSelector.vue";
 import LayerCart from "@/components/sidebar/LayerCart.vue";
 
 import LayerCatalog from "./layerCatalog/LayerCatalog.vue";
@@ -63,8 +64,11 @@ function toggleSidebar() {
       >
         <LayerCatalog />
       </ResponsivePanel>
-      <div class="flex flex-col items-center gap-2">
-        <slot name="bottom-controls" />
+      <div class="px-2">
+        <USeparator />
+        <div class="my-4">
+          <BackgroundSelector />
+        </div>
       </div>
     </div>
 
