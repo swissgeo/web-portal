@@ -32,6 +32,8 @@ function mountSideBar() {
         LayerCart: true,
         LayerCatalog: true,
         UButton: { name: "UButton", props: ["icon"], template: "<button />" },
+        USeparator: true,
+        BackgroundSelector: true,
       },
     },
   });
