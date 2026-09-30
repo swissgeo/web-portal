@@ -5,8 +5,9 @@ import type { Ref } from "vue";
 import { mount } from "@vue/test-utils";
 import { useInfiniteScroll } from "@vueuse/core";
 import LayerCatalogTable from "~/components/sidebar/layerCatalog/LayerCatalogTable.vue";
+import { panelScrollerKey } from "~/composables/usePanelScroller";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { isRef, nextTick, unref } from "vue";
+import { isRef, nextTick, shallowRef, unref } from "vue";
 
 const { catalog, locale, useOgcCatalogMock } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
@@ -37,7 +38,7 @@ vi.mock("vue-i18n", () => ({
 const stubs = {
   LayerCatalogRow: {
     props: ["dataset"],
-    template: "<tr data-testid='row-stub' :data-id='dataset.id' />",
+    template: "<div role='row' data-testid='row-stub' :data-id='dataset.id' />",
   },
   UInput: {
     props: ["modelValue"],
@@ -65,8 +66,12 @@ function makeCollection(ids: string[]): DatasetCollection {
   };
 }
 
+const panelScroller = shallowRef<HTMLElement | null>(null);
+
 function mountTable() {
-  return mount(LayerCatalogTable, { global: { stubs } });
+  return mount(LayerCatalogTable, {
+    global: { stubs, provide: { [panelScrollerKey]: panelScroller } },
+  });
 }
 
 function renderedIds(wrapper: ReturnType<typeof mountTable>) {
@@ -207,11 +212,12 @@ describe("LayerCatalogTable.vue", () => {
     expect(wrapper.text()).not.toContain("layerCatalog.table.empty");
   });
 
-  it("loads more layers when scrolling close to the bottom", () => {
-    const wrapper = mountTable();
+  it("loads more layers when scrolling the surrounding panel close to the bottom", () => {
+    panelScroller.value = document.createElement("div");
+    mountTable();
 
     const { target, onLoadMore, options } = infiniteScrollCall();
-    expect(unref(target)).toBe(wrapper.element);
+    expect(unref(target)).toBe(panelScroller.value);
     expect(onLoadMore).toBe(catalog.loadMore);
     expect(options.distance).toBe(200);
   });

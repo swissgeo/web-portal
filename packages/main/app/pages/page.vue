@@ -89,7 +89,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="h-screen overflow-y-auto pt-10 pr-8 pb-10 pl-8">
+  <div class="h-dvh overflow-y-auto pt-10 pr-8 pb-10 pl-8">
     <ContentRenderer :containers="containers" />
   </div>
 </template>
