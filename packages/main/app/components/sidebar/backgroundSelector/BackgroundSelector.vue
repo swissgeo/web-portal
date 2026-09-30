@@ -2,29 +2,21 @@
 import type { Layer } from "@swissgeo/layers";
 import type { Dataset } from "@swissgeo/ogc";
 
-import { makeServerLayer } from "@swissgeo/layers";
+import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import { computedAsync } from "@vueuse/core";
-import { displayModeKey } from "~/types/injectionKeys";
 
+import BackgroundSelectorEntry from "./BackgroundSelectorEntry.vue";
 import { AVAILABLE_BACKGROUNDS } from "./constants";
 
-const displayMode = inject(displayModeKey);
-
-const emit = defineEmits<{
-  setBackground: [backgroundLayer: Layer | null];
-}>();
-
-const { currentBackground } = defineProps<{
-  currentBackground: Layer | null | undefined;
-}>();
-
 const { locale } = useI18n();
+const layerStore = useLayerStore();
+const currentBackground = computed(() => layerStore.backgroundLayer);
 
 const catalogItemsUrl = useCatalogItemsUrl();
 
 const backgroundRecords = computed(async () => {
   const promises: Promise<Dataset>[] = [];
-  for (const backgroundId of AVAILABLE_BACKGROUNDS) {
+  for (const backgroundId of Object.values(AVAILABLE_BACKGROUNDS)) {
     const url = new URL(catalogItemsUrl(backgroundId));
 
     url.searchParams.set("lang", locale.value);
@@ -39,7 +31,7 @@ const backgroundRecords = computed(async () => {
 });
 
 const sortedBackgroundLayersWithNull = computedAsync<(Layer | null)[]>(
-  async () => [null, ...(await backgroundRecords.value)],
+  async () => [...(await backgroundRecords.value), null],
   [null],
 );
 
@@ -52,7 +44,7 @@ watch(
     }
     // as soon as the layer data is ready for the backgrounds, select
     // pixelkarte-farbe
-    const defaultBackgroundId = AVAILABLE_BACKGROUNDS[1];
+    const defaultBackgroundId = AVAILABLE_BACKGROUNDS.colorMap;
     const defaultBackground = backgrounds.find((background) => {
       return (
         background &&
@@ -68,29 +60,50 @@ watch(
         return background !== null;
       },
     );
-    emit("setBackground", defaultBackground ?? fallbackBackground ?? null);
+    layerStore.setBackground(defaultBackground ?? fallbackBackground ?? null);
   },
   { once: true },
 );
 
 function selectBackground(backgroundLayer: Layer | null) {
-  emit("setBackground", backgroundLayer);
+  layerStore.setBackground(backgroundLayer);
 }
 </script>
 
 <template>
-  <!-- Desktop (sm+): rectangular buttons spread to the left, fixed bottom-right -->
-  <MapBackgroundSelectorSquared
-    v-if="displayMode === 'web'"
-    :background-layers="sortedBackgroundLayersWithNull"
-    :current-background-layer="currentBackground"
-    @select-background="selectBackground"
-  />
-  <!-- Mobile (below sm): circular buttons spread upward, fixed bottom-left -->
-  <MapBackgroundSelectorRounded
-    v-if="displayMode === 'web'"
-    :background-layers="sortedBackgroundLayersWithNull"
-    :current-background-layer="currentBackground"
-    @select-background="selectBackground"
-  />
+  <UCollapsible
+    class="flex w-full flex-col-reverse gap-4 rounded-lg bg-elevated p-2"
+  >
+    <UFormField
+      class="group"
+      label="Hintergrund"
+      :ui="{
+        label: 'text-xs',
+      }"
+    >
+      <UButton
+        label="Karte farbig"
+        color="neutral"
+        variant="subtle"
+        trailing-icon="i-lucide-chevron-down"
+        :ui="{
+          trailingIcon:
+            'group-data-[state=open]:rotate-180 transition-transform duration-200',
+          base: 'bg-accented',
+        }"
+        block
+      />
+    </UFormField>
+    <template #content>
+      <div class="grid h-56 grid-cols-2 gap-2">
+        <BackgroundSelectorEntry
+          v-for="(backgroundLayer, idx) in sortedBackgroundLayersWithNull"
+          :key="idx"
+          :backgroundLayer="backgroundLayer"
+          :isCurrent="backgroundLayer?.layerUrl === currentBackground?.layerUrl"
+          @click="selectBackground(backgroundLayer)"
+        />
+      </div>
+    </template>
+  </UCollapsible>
 </template>

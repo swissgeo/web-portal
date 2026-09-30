@@ -4,6 +4,7 @@ import type { Layer as MapLayer } from "@swissgeo/map";
 import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
 import { useI18n } from "vue-i18n";
 
+import BackgroundSelector from "@/components/sidebar/backgroundSelector/BackgroundSelector.vue";
 import LayerCart from "@/components/sidebar/LayerCart.vue";
 
 import LayerCatalog from "./layerCatalog/LayerCatalog.vue";
@@ -43,8 +44,11 @@ function toggleSidebar() {
       <LayerCatalog
         v-else-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
       />
-      <div class="flex flex-col items-center gap-2">
-        <slot name="bottom-controls" />
+      <div class="px-2">
+        <USeparator />
+        <div class="my-4">
+          <BackgroundSelector />
+        </div>
       </div>
     </div>
 
