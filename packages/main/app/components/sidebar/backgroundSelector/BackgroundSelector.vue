@@ -39,7 +39,7 @@ watch(
   sortedBackgroundLayersWithNull,
   (backgrounds) => {
     // Don't override a background that was already restored (e.g. from sessionStorage)
-    if (currentBackground !== undefined) {
+    if (currentBackground.value !== undefined) {
       return;
     }
     // as soon as the layer data is ready for the backgrounds, select
@@ -82,6 +82,7 @@ function selectBackground(backgroundLayer: Layer | null) {
       }"
     >
       <UButton
+        data-testid="background-selector-toggle"
         label="Karte farbig"
         color="neutral"
         variant="subtle"
