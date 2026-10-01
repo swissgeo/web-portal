@@ -218,7 +218,7 @@ watch(focusMode, async (newFocusMode) => {
   }
 
   // If the drawing has never been shared explicitely by the user, it is not synced automatically.
-  if (!drawingId && !drawingAdminId) {
+  if (!drawingId.value && !drawingAdminId.value) {
     return;
   }
 
@@ -417,51 +417,10 @@ onUnmounted(() => {
     </div>
 
     <template v-if="focusMode === 'none'" #footer>
-      <div class="space-y-3">
-        <div class="flex items-center gap-2">
-          <UDropdownMenu
-            v-if="numberOfFeatures > 0"
-            arrow
-            :items="exportAllFeaturesItems"
-            :ui="{ content: 'w-48' }"
-          >
-            <UButton
-              :label="t('toolbox.drawing.export')"
-              :icon="DownloadIcon"
-              :trailing-icon="ChevronDownIcon"
-              color="neutral"
-              variant="outline"
-              size="sm"
-            />
-          </UDropdownMenu>
-          <UButton
-            color="primary"
-            variant="soft"
-            :icon="CloudUploadIcon"
-            size="sm"
-            :loading="isSharing"
-            @click="onShareDrawings"
-            >{{ t("toolbox.drawing.sync") }}</UButton
-          >
-          <UTooltip
-            v-if="focusMode === 'none' && numberOfFeatures > 0"
-            :text="t('toolbox.drawing.clear')"
-          >
-            <UButton
-              color="error"
-              variant="ghost"
-              :icon="Trash2Icon"
-              size="sm"
-              class="ml-auto"
-              :aria-label="t('toolbox.drawing.clear')"
-              data-testid="drawing-tool-clear"
-              @click="clearDrawingLayer"
-            />
-          </UTooltip>
-        </div>
+      <div class="flex flex-col gap-2">
         <div
           v-if="drawingShareableString"
-          class="space-y-2 border-t border-default pt-3"
+          class="space-y-2 border-b border-default pb-3"
         >
           <label
             for="drawing-share-link"
@@ -498,6 +457,44 @@ onUnmounted(() => {
             :label="t('toolbox.drawing.allowEditing')"
           />
         </div>
+        <UButton
+          v-else
+          class="w-full justify-center"
+          color="primary"
+          variant="soft"
+          :icon="CloudUploadIcon"
+          size="sm"
+          :loading="isSharing"
+          @click="onShareDrawings"
+          >{{ t("toolbox.drawing.sync") }}</UButton
+        >
+        <UDropdownMenu
+          :disabled="numberOfFeatures === 0"
+          arrow
+          :items="exportAllFeaturesItems"
+        >
+          <UButton
+            :label="t('toolbox.drawing.export')"
+            :icon="DownloadIcon"
+            :trailing-icon="ChevronDownIcon"
+            color="primary"
+            variant="soft"
+            size="sm"
+            class="w-full justify-center whitespace-nowrap"
+          />
+        </UDropdownMenu>
+        <UButton
+          color="error"
+          :disabled="numberOfFeatures === 0"
+          variant="soft"
+          :icon="Trash2Icon"
+          size="sm"
+          class="ml-auto w-full justify-center whitespace-nowrap"
+          :aria-label="t('toolbox.drawing.clear')"
+          data-testid="drawing-tool-clear"
+          @click="clearDrawingLayer"
+          >{{ t("toolbox.drawing.clear") }}</UButton
+        >
       </div>
     </template>
   </UCard>

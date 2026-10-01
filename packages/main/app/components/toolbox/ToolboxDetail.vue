@@ -17,7 +17,6 @@ const isDesktop = useIsDesktop();
     <ToolboxShare v-if="toolboxStore.isPanelActive('share')" />
     <Import v-if="toolboxStore.isPanelActive('import')" />
     <Drawing v-if="toolboxStore.isPanelActive('drawing')" />
-    <ReportIssue v-if="toolboxStore.isPanelActive('reportIssue')" />
   </RegisterTemplate>
 
   <div

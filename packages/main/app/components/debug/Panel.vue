@@ -80,13 +80,6 @@ function togglePrintPanel() {
       >
       </DebugImportLocalLayersPanel>
 
-      <DrawingPanel
-        class="relative h-[400px] w-[350px] overflow-hidden bg-white shadow"
-        v-if="isDrawingOpen()"
-        @close="toggleDrawing"
-      >
-      </DrawingPanel>
-
       <ImportDrawingPanel
         class="relative h-[200px] w-[800px] overflow-hidden bg-white shadow"
         v-if="isImportDrawingOpen"
