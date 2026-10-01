@@ -6,6 +6,14 @@ export type SwissgeoUrlValidationResult = {
   isValid: boolean;
   drawingId: string | null;
   adminId: string | null;
+  adminIdProvided: boolean;
+};
+
+export type DrawingMetadata = {
+  id: string;
+  original_filename: string;
+  created_at: string;
+  modified_at: string;
 };
 
 function isDirectKmlUrl(url: string): boolean {
@@ -35,27 +43,42 @@ function isUuid(value: string): boolean {
  * Verify if the given URL is a valid Swissgeo service drawings URL and extract the drawing and admin IDs.
  * Note: the admin ID, when provided, allows the user to further modify the drawing.
  */
-function validateSwissgeoServiceDrawingsUrl(
+async function validateSwissgeoServiceDrawingsUrl(
   url: string,
-): SwissgeoUrlValidationResult {
+): Promise<SwissgeoUrlValidationResult> {
   if (!url.trim()) {
-    return { isValid: false, drawingId: null, adminId: null };
+    return {
+      isValid: false,
+      drawingId: null,
+      adminId: null,
+      adminIdProvided: false,
+    };
   }
 
   if (!isSwissgeoServiceDrawingsUrl(url)) {
-    return { isValid: false, drawingId: null, adminId: null };
+    return {
+      isValid: false,
+      drawingId: null,
+      adminId: null,
+      adminIdProvided: false,
+    };
   }
 
   try {
     const parsed = new URL(url);
     const drawingId = parsed.pathname.split("/").pop();
 
+    const hash = parsed.hash.trim().slice(1);
+
     // The DrawingID is suppoed to be a UUID.
     if (!drawingId || !isUuid(drawingId)) {
-      return { isValid: false, drawingId: null, adminId: null };
+      return {
+        isValid: false,
+        drawingId: null,
+        adminId: null,
+        adminIdProvided: !!hash,
+      };
     }
-
-    const hash = parsed.hash.trim().slice(1);
 
     // The admin ID must be validated
     let adminId: string | null = hash || null;
@@ -63,9 +86,32 @@ function validateSwissgeoServiceDrawingsUrl(
       adminId = null;
     }
 
-    return { isValid: !!drawingId, drawingId, adminId };
+    try {
+      await fetchDrawingMetadata(drawingId);
+    } catch {
+      return {
+        isValid: false,
+        drawingId: null,
+        adminId: null,
+        adminIdProvided: !!hash,
+      };
+    }
+
+    const authStatus = await checkDrawingAuth(drawingId, adminId);
+
+    return {
+      isValid: true,
+      drawingId: drawingId,
+      adminId: authStatus === 204 ? adminId : null,
+      adminIdProvided: !!hash,
+    };
   } catch {
-    return { isValid: false, drawingId: null, adminId: null };
+    return {
+      isValid: false,
+      drawingId: null,
+      adminId: null,
+      adminIdProvided: false,
+    };
   }
 }
 
@@ -124,6 +170,41 @@ function validateDomain(url: string, allowedDomains: string[]): string | null {
   }
 }
 
+async function checkDrawingAuth(
+  drawingId: string,
+  adminId: string | null = null,
+) {
+  const runtimeConfig = useRuntimeConfig();
+  const drawingServiceEndpoint = runtimeConfig.public
+    .drawingServiceEndpoint as string;
+
+  const res = await fetch(`${drawingServiceEndpoint}/${drawingId}/check-auth`, {
+    headers: adminId
+      ? new Headers({
+          Authorization: `Bearer ${adminId}`,
+        })
+      : undefined,
+  });
+
+  return res.status;
+}
+
+async function fetchDrawingMetadata(
+  drawingId: string,
+): Promise<DrawingMetadata> {
+  const runtimeConfig = useRuntimeConfig();
+  const drawingServiceEndpoint = runtimeConfig.public
+    .drawingServiceEndpoint as string;
+
+  const res = await fetch(`${drawingServiceEndpoint}/${drawingId}/metadata`);
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch drawing metadata: ${res.status}`);
+  }
+
+  return res.json();
+}
+
 export function useImportDrawing() {
   const {
     importKml,
@@ -138,14 +219,40 @@ export function useImportDrawing() {
   const { t } = useI18n();
   const runtimeConfig = useRuntimeConfig();
 
+  const isCheckingUrl = ref(false);
   const url = ref("");
   const isLoading = ref(false);
   const errorMessage = ref("");
   const successMessage = ref("");
 
+  const swissGeoUrlValidation = ref<SwissgeoUrlValidationResult>({
+    isValid: false,
+    drawingId: null,
+    adminId: null,
+    adminIdProvided: false,
+  });
+
   // Check if the provided URL is a valid Swissgeo service drawings URL
-  const swissGeoUrlValidation = computed(() => {
-    return validateSwissgeoServiceDrawingsUrl(url.value);
+  watch(url, async (value, _previousValue, onCleanup) => {
+    let stale = false;
+    onCleanup(() => {
+      stale = true;
+    });
+    isCheckingUrl.value = true;
+    swissGeoUrlValidation.value = {
+      isValid: false,
+      drawingId: null,
+      adminId: null,
+      adminIdProvided: false,
+    };
+    errorMessage.value = "";
+    successMessage.value = "";
+
+    const validation = await validateSwissgeoServiceDrawingsUrl(value.trim());
+    if (!stale) {
+      swissGeoUrlValidation.value = validation;
+      isCheckingUrl.value = false;
+    }
   });
 
   async function importDrawing(): Promise<void> {
@@ -229,6 +336,10 @@ export function useImportDrawing() {
    * cleared prior to importing the new drawing.
    */
   async function importSwissgeoDrawing(asAdmin: boolean) {
+    if (!swissGeoUrlValidation.value) {
+      return;
+    }
+
     if (
       !swissGeoUrlValidation.value.isValid ||
       !swissGeoUrlValidation.value.drawingId
@@ -282,5 +393,6 @@ export function useImportDrawing() {
     importDrawing,
     importSwissgeoDrawing,
     swissGeoUrlValidation,
+    isCheckingUrl,
   };
 }

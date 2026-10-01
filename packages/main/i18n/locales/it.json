@@ -20,6 +20,8 @@
       "cancelImport": "Annulla l'importazione",
       "clearAndImportAsAdmin": "Cancella e importa come amministratore",
       "errorMessages": {
+        "invalidDrawingUrl": "L’URL del disegno non è valido",
+        "invalidDrawingAdminId": "L’ID amministratore del disegno non è valido",
         "adminRequired": "Per importare questo disegno sono necessari i privilegi di amministratore"
       },
       "infoMessages": {

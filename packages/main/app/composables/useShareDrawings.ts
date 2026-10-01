@@ -45,20 +45,26 @@ export function useShareDrawings() {
     formData.append("file", drawingFile);
     formData.append("sha256", sha256);
 
-    let requestUrl = drawingServiceEndpoint;
-    let method = "POST";
+    let response;
 
     // If the drawing Id is already available, it is included
     if (drawingAdminId.value && drawingId.value) {
-      formData.append("admin_id", drawingAdminId.value);
-      requestUrl = `${drawingServiceEndpoint}/${drawingId.value.toString()}`;
-      method = "PUT";
+      response = await fetch(
+        `${drawingServiceEndpoint}/${drawingId.value.toString()}`,
+        {
+          method: "PUT",
+          body: formData,
+          headers: new Headers({
+            Authorization: `Bearer ${drawingAdminId.value.toString()}`,
+          }),
+        },
+      );
+    } else {
+      response = await fetch(drawingServiceEndpoint, {
+        method: "POST",
+        body: formData,
+      });
     }
-
-    const response = await fetch(requestUrl, {
-      method: method,
-      body: formData,
-    });
 
     isSharing.value = false;
 
