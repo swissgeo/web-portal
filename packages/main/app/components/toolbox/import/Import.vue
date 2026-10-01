@@ -16,6 +16,7 @@ const {
   importDrawing,
   importSwissgeoDrawing,
   swissGeoUrlValidation,
+  isCheckingUrl,
 } = useImportDrawing();
 
 const filePathInfo = ref("");
@@ -219,7 +220,12 @@ async function handleFileUrlImport() {
               color="primary"
               variant="solid"
               class="mt-3 w-full place-content-center"
-              :disabled="!urlImportDrawing.trim() || isImportDrawingLoading"
+              :disabled="
+                !urlImportDrawing.trim() ||
+                isImportDrawingLoading ||
+                isCheckingUrl ||
+                !swissGeoUrlValidation.isValid
+              "
               :loading="isImportDrawingLoading"
               data-testid="drawing-import-button"
               trailing-icon="i-lucide-plus"
@@ -290,6 +296,36 @@ async function handleFileUrlImport() {
               </div>
             </template>
           </UModal>
+          <div aria-live="polite">
+            <ul
+              v-if="urlImportDrawing.trim() && !isCheckingUrl"
+              class="mt-2 space-y-1 text-sm"
+            >
+              <li
+                v-if="!swissGeoUrlValidation.isValid"
+                class="flex items-center gap-2"
+              >
+                <span
+                  aria-hidden="true"
+                  class="size-2 shrink-0 rounded-full bg-error"
+                />
+                {{ t("toolbox.import.errorMessages.invalidDrawingUrl") }}
+              </li>
+              <li
+                v-else-if="
+                  swissGeoUrlValidation.adminIdProvided &&
+                  !swissGeoUrlValidation.adminId
+                "
+                class="flex items-center gap-2"
+              >
+                <span
+                  aria-hidden="true"
+                  class="size-2 shrink-0 rounded-full bg-orange-500"
+                />
+                {{ t("toolbox.import.errorMessages.invalidDrawingAdminId") }}
+              </li>
+            </ul>
+          </div>
         </div>
       </template>
     </UTabs>

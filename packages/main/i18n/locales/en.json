@@ -365,6 +365,8 @@
       "clearAndImportAsAdmin": "Clear and import as admin",
       "clearAndImportAsNonAdmin": "Clear and import",
       "errorMessages": {
+        "invalidDrawingUrl": "The drawing URL is invalid",
+        "invalidDrawingAdminId": "The drawing admin ID is invalid",
         "generalError": "Failed to import file",
         "noFileSelected": "Please select a file first",
         "noUrlEntered": "Please enter a URL",

@@ -20,6 +20,8 @@
       "cancelImport": "Interrumper l'import",
       "clearAndImportAsAdmin": "Stizzar ed importar sco administratur",
       "errorMessages": {
+        "invalidDrawingUrl": "L’URL dal dissegn n’è betg valid",
+        "invalidDrawingAdminId": "L’ID d’administratur dal dissegn n’è betg valid",
         "adminRequired": "Per importar quest dissegn èn necessaris dretgs d'administratur"
       },
       "infoMessages": {

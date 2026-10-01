@@ -367,6 +367,8 @@
       "clearAndImportAsAdmin": "Löschen und als Administrator importieren",
       "clearAndImportAsNonAdmin": "Löschen und importieren",
       "errorMessages": {
+        "invalidDrawingUrl": "Die Zeichnungs-URL ist ungültig",
+        "invalidDrawingAdminId": "Die Administrator-ID der Zeichnung ist ungültig",
         "generalError": "Datei konnte nicht importiert werden",
         "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus",
         "noUrlEntered": "Bitte geben Sie eine URL ein",

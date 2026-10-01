@@ -365,6 +365,8 @@
       "cancelImport": "Annuler",
       "clearAndImportAsAdmin": "Effacer et importer en tant qu'administrateur",
       "errorMessages": {
+        "invalidDrawingUrl": "L’URL du dessin est invalide",
+        "invalidDrawingAdminId": "L’identifiant administrateur du dessin est invalide",
         "generalError": "Échec de l'importation du fichier",
         "noFileSelected": "Veuillez d'abord sélectionner un fichier",
         "noUrlEntered": "Veuillez entrer une URL",
