@@ -2,6 +2,7 @@ export { buildCatalogItemsUrl } from "./catalogUrl";
 export { useDistribution } from "./useDistribution";
 export { useWmtsCapabilities } from "./useWmtsCapabilities";
 export { useWmsCapabilities } from "./useWmsCapabilities";
+export { useWmsFeatureInfoCapabilities } from "./useWmsFeatureInfoCapabilities";
 export { useService, extractServiceUrl } from "./useService";
 export { useCapabilities, extractCapabilityUrl } from "./useCapabilities";
 export { useDistributionCollection } from "./useDistributionCollection";
