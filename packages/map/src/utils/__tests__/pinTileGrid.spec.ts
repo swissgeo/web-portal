@@ -1,4 +1,3 @@
-import TileGrid from "ol/tilegrid/TileGrid";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
 import { describe, expect, it } from "vitest";
 
@@ -62,26 +61,9 @@ describe("pinTileGrid", () => {
     expect(pinTileGrid(grid, 2.5)).toBe(grid);
   });
 
-  it("does nothing without a resolution to pin or without a grid", () => {
+  it("does nothing without a resolution to pin", () => {
     const grid = makeWmtsGrid();
 
     expect(pinTileGrid(grid, null)).toBe(grid);
-    expect(pinTileGrid(undefined, 2.5)).toBeUndefined();
-  });
-
-  it("also pins a plain tile grid, as the one of the WMS tiles", () => {
-    const grid = new TileGrid({
-      extent: [2420000, 1030000, 2900000, 1350000],
-      origin,
-      resolutions,
-      tileSize: 512,
-    });
-    const pinned = pinTileGrid(grid, 5);
-
-    expect(pinned.getResolutions()).toEqual([5]);
-    expect(pinned.getTileSize(0)).toBe(512);
-    expect(pinned.getOrigin(0)).toEqual(origin);
-    expect(pinned.getExtent()).toEqual(grid.getExtent());
-    expect(pinned.getZForResolution(50)).toBe(0);
   });
 });

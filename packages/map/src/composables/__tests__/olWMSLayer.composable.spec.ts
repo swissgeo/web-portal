@@ -59,9 +59,6 @@ vi.mock("@/composables/useAddLayerToMap.composable", () => ({
   })),
 }));
 
-vi.mock("@/stores/map", () => ({
-  useMapStore: () => ({ pinnedTileResolution: null as number | null }),
-}));
 vi.mock("@/stores/position", () => ({
   default: vi.fn(() => ({
     projection: {

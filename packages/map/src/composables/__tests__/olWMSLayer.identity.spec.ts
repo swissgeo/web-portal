@@ -10,9 +10,6 @@ vi.mock("@/composables/useAddLayerToMap.composable", () => ({
   default: vi.fn(() => ({ addLayerToMap: vi.fn() })),
 }));
 
-vi.mock("@/stores/map", () => ({
-  useMapStore: () => ({ pinnedTileResolution: null as number | null }),
-}));
 vi.mock("@/stores/position", () => ({
   default: () => ({
     projection: { epsg: "EPSG:3857", usesMercatorPyramid: true },
