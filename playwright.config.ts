@@ -32,6 +32,7 @@ export default defineConfig({
       NODE_ENV: "test",
       NUXT_PUBLIC_OGC_API_ENDPOINT: "http://mock-oar.org/api/oar",
       NUXT_PUBLIC_API_ENDPOINT: "http://mock-livingdocs.org/",
+      NUXT_PUBLIC_FEATURE_FLAGS_ENABLE_CMS_SEARCH: "true",
     },
   },
 });
