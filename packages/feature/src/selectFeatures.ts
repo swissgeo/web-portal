@@ -228,8 +228,8 @@ export function getPopupFromIdentifyFeature(
         featureId: String(feature.id),
         geometry: feature.geometry,
         label:
-          feature.properties.label ??
-          feature.properties.name ??
+          feature.properties?.label ??
+          feature.properties?.name ??
           String(feature.id),
         content: {
           kind: "html",
