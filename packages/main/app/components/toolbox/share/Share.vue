@@ -1,7 +1,12 @@
 <script lang="ts" setup>
+import type { TabsItem } from "@nuxt/ui";
+
 import { useClipboard } from "@vueuse/core";
 import { useToolboxStore } from "~/stores/toolbox";
 import { useI18n } from "vue-i18n";
+
+import ShareEmbed from "./ShareEmbed.vue";
+import ShareLink from "./ShareLink.vue";
 
 const { t } = useI18n();
 const toolboxStore = useToolboxStore();
@@ -14,94 +19,58 @@ const { exportState } = useStateConfig();
 const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
   exportState,
   {
+    autoRefresh: true,
     zoomOnlyCtrl,
   },
 );
+
+const items = [
+  {
+    label: "Link teilen",
+    slot: "link" as const,
+  },
+  {
+    label: "Einbetten",
+    slot: "embed" as const,
+  },
+] satisfies TabsItem[];
 </script>
 
 <template>
-  <UCard
+  <UAlert
     data-testid="toolbox-share-card"
-    :ui="{ body: 'flex h-auto w-full flex-col gap-3 px-2 py-5' }"
+    :title="t('toolbox.share.title')"
+    icon="i-lucide-share-2"
+    color="neutral"
+    variant="outline"
+    close
   >
-    <template #header>
-      <div class="flex items-start justify-between">
-        <div>
-          <div class="font-semibold text-highlighted">
-            {{ t("toolbox.share.title") }}
-          </div>
-        </div>
-        <UButton
-          data-testid="share-close"
-          color="primary"
-          variant="ghost"
-          icon="i-lucide-x"
-          size="xs"
-          :aria-label="t('toolbox.share.ariaLabel.close')"
-          @click="toolboxStore.closeDetailPanel()"
-        />
-      </div>
+    <template #description>
+      <UTabs
+        :items="items"
+        variant="link"
+        class="w-full gap-4"
+        :ui="{
+          trigger: 'text-xs',
+        }"
+      >
+        <template #link>
+          <ShareLink
+            :link="shareLink"
+            :copied="copiedLink"
+            @copy="copyLink(shareLink)"
+          />
+        </template>
+
+        <template #embed>
+          <ShareEmbed
+            :embed-code="embedCode"
+            :copied="copiedEmbed"
+            @copy="copyEmbed(embedCode)"
+            v-model:zoom-only-ctrl="zoomOnlyCtrl"
+          />
+        </template>
+      </UTabs>
     </template>
-    <div>{{ t("toolbox.share.link.title") }}</div>
-    <UInput
-      class="w-full"
-      :model-value="shareLink"
-      v-if="!needToRefresh"
-      readonly
-    >
-      <template v-if="shareLink?.length" #trailing>
-        <UButton
-          data-testid="share-copy-link"
-          color="primary"
-          :class="copiedLink ? 'text-success' : ''"
-          variant="ghost"
-          size="xs"
-          :icon="copiedLink ? 'i-lucide-copy-check' : 'i-lucide-copy'"
-          :aria-label="t('toolbox.share.ariaLabel.copyToClipboard')"
-          @click="copyLink(shareLink)"
-        />
-      </template>
-    </UInput>
-    <UButton
-      v-else
-      data-testid="share-refresh-link"
-      color="primary"
-      variant="solid"
-      icon="i-lucide-refresh-cw"
-      :aria-label="t('toolbox.share.ariaLabel.refreshLink')"
-      @click="refresh()"
-    >
-      {{ t("toolbox.share.link.generateButton") }}
-    </UButton>
-    <div>{{ t("toolbox.share.embed.title") }}</div>
-    <UCheckbox
-      v-model="zoomOnlyCtrl"
-      :label="t('toolbox.share.embed.zoomOnlyCtrlLabel')"
-    />
-    <UInput class="w-full" v-model="embedCode" readonly v-if="!needToRefresh">
-      <template v-if="embedCode?.length" #trailing>
-        <UButton
-          data-testid="share-copy-embed"
-          color="primary"
-          :class="copiedEmbed ? 'text-success' : ''"
-          variant="ghost"
-          size="xs"
-          :icon="copiedEmbed ? 'i-lucide-copy-check' : 'i-lucide-copy'"
-          :aria-label="t('toolbox.share.ariaLabel.copyToClipboard')"
-          @click="copyEmbed(embedCode)"
-        />
-      </template>
-    </UInput>
-    <UButton
-      v-else
-      color="primary"
-      variant="solid"
-      icon="i-lucide-refresh-cw"
-      :aria-label="t('toolbox.share.ariaLabel.refreshEmbed')"
-      data-testid="share-refresh-embed"
-      @click="refresh()"
-    >
-      {{ t("toolbox.share.embed.generateButton") }}
-    </UButton>
-  </UCard>
+  </UAlert>
 </template>
