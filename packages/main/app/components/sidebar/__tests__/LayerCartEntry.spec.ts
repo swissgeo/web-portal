@@ -19,6 +19,9 @@ const dimensionsStore = vi.hoisted(() => ({
   setDimension: vi.fn(),
   clearLayerDimensions: vi.fn(),
 }));
+const featureStore = vi.hoisted(() => ({
+  clearWmsCapability: vi.fn(),
+}));
 const mapViewStore = vi.hoisted(() => ({
   getLayerLegends: vi.fn(() => []),
   updateLayerOpacity: vi.fn(),
@@ -29,6 +32,7 @@ const mapViewStore = vi.hoisted(() => ({
 }));
 
 vi.mock("@swissgeo/layers", () => ({ useLayerStore: () => layerStore }));
+vi.mock("@swissgeo/feature", () => ({ useFeaturesStore: () => featureStore }));
 vi.mock("@swissgeo/dimension", () => ({
   useDimensionsStore: () => dimensionsStore,
   getDisplayNameFromTimestamp: (time: string) => time,
@@ -119,6 +123,7 @@ describe("LayerCartEntry.vue", () => {
     await wrapper.find("[title='layers.remove']").trigger("click");
 
     expect(dimensionsStore.clearLayerDimensions).toHaveBeenCalledWith("a-uuid");
+    expect(featureStore.clearWmsCapability).toHaveBeenCalledWith("a-uuid");
     expect(layerStore.removeLayer).toHaveBeenCalledWith("a-uuid");
   });
 

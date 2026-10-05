@@ -8,12 +8,15 @@ import type { Service } from "@/types/Records";
 
 import { useCapabilities } from "./useCapabilities";
 import { useConditionalFetch } from "./useConditionalFetch";
-
-// XLink namespace URI, fixed by the W3C XLink spec and required by the WMS
-// schema for `OnlineResource`. Only the prefix bound to it can vary between
-// servers, so we read the attribute by namespace when the usual `xlink:href`
-// literal name isn't found.
-const XLINK_NS = "http://www.w3.org/1999/xlink";
+import {
+  directChildren,
+  firstDirectChild,
+  getAvailableCrs,
+  getFeatureInfoCapability,
+  getLayerName,
+  getXlinkHref,
+  isQueryable,
+} from "./wmsCapabilitiesUtils";
 
 export interface WmsCapabilitiesData {
   /** Service `OnlineResource` (GetMap base URL). */
@@ -24,6 +27,18 @@ export interface WmsCapabilitiesData {
   dimensions: WMSCapabilityDimension[] | null;
   /** Legends advertised by the requested layer's styles. */
   legends: Legend[];
+  /** A list of supported CRS */
+  availableCrs: string[];
+  /**  Are the layer features queryable ? */
+  queryable: boolean;
+  /**  information on how to reach features from a WMS server approach*/
+  getFeatureInfoCapability: {
+    baseUrl: string;
+    method: "GET" | "POST";
+    formats: string[];
+  } | null;
+  /** needed for ogc:wms getFeatureInfo endpoints */
+  layerName: string | null;
 }
 
 export function useWmsCapabilities(
@@ -78,6 +93,10 @@ export function parseWmsCapabilities(
       version: null,
       dimensions: null,
       legends: [],
+      availableCrs: [],
+      queryable: false,
+      getFeatureInfoCapability: null,
+      layerName: null,
     };
   }
 
@@ -91,7 +110,11 @@ export function parseWmsCapabilities(
     version: doc.documentElement?.getAttribute("version") ?? null,
     url: getServiceUrl(doc),
     dimensions: getLayerDimensions(layer),
-    legends: getLegends(doc, layerId),
+    legends: getLegends(layer),
+    availableCrs: getAvailableCrs(layer),
+    queryable: isQueryable(layer),
+    getFeatureInfoCapability: getFeatureInfoCapability(doc),
+    layerName: getLayerName(layer),
   };
 }
 
@@ -104,17 +127,16 @@ function getServiceUrl(doc: Document): string | null {
   if (!onlineResource) {
     return null;
   }
-  return (
-    onlineResource.getAttribute("xlink:href") ??
-    onlineResource.getAttributeNS(XLINK_NS, "href")
-  );
+  return getXlinkHref(onlineResource);
 }
 
 /**
  * The requested layer, wherever it sits: a layer is not always a direct child of
  * the root one, it can be nested in any number of groups.
+ *
+ * Exported for tests (resolving a layer element to feed `getLegends`).
  */
-function getLayer(doc: Document, layerId: string): Element | undefined {
+export function getLayer(doc: Document, layerId: string): Element | undefined {
   return Array.from(doc.getElementsByTagName("Layer")).find(
     (candidate) =>
       firstDirectChild(candidate, "Name")?.textContent?.trim() === layerId,
@@ -145,15 +167,14 @@ function getLayerDimensions(
  * nested in a group also carries the legends the group publishes. The layer's
  * own legends come first.
  */
-export function getLegends(doc: Document, layerId: string): Legend[] {
-  const layer = getLayer(doc, layerId);
-  if (!layer) {
+export function getLegends(layerElement: Element): Legend[] {
+  if (!layerElement) {
     return [];
   }
 
   const legends: Legend[] = [];
   for (
-    let candidate: Element | null = layer;
+    let candidate: Element | null = layerElement;
     candidate?.localName === "Layer";
     candidate = candidate.parentElement
   ) {
@@ -169,9 +190,7 @@ export function getLegends(doc: Document, layerId: string): Legend[] {
 
 function parseLegend(element: Element): Legend | undefined {
   const onlineResource = firstDirectChild(element, "OnlineResource");
-  const href =
-    onlineResource?.getAttribute("xlink:href") ??
-    onlineResource?.getAttributeNS(XLINK_NS, "href");
+  const href = getXlinkHref(onlineResource);
   if (!href) {
     return;
   }
@@ -199,17 +218,4 @@ function parseDimension(element: Element): WMSCapabilityDimension {
         : multipleValues === "1" || multipleValues === "true",
     values: element.textContent?.trim() || undefined,
   };
-}
-
-function directChildren(parent: Element, localName: string): Element[] {
-  return Array.from(parent.children).filter(
-    (child) => child.localName === localName,
-  );
-}
-
-function firstDirectChild(
-  parent: Element,
-  localName: string,
-): Element | undefined {
-  return directChildren(parent, localName)[0];
 }

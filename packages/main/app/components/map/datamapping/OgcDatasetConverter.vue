@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { Dimension } from "@swissgeo/dimension";
+import type { WmsFeatureInfoCapability } from "@swissgeo/feature";
 import type { DatasetLayer, LayerInfo } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset, Legend } from "@swissgeo/ogc";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { useWmsFeatureInfoCapabilities } from "@swissgeo/ogc";
 
 /**
  * Dataset Layer Converter Container
@@ -43,6 +45,7 @@ const emit = defineEmits<{
   updateDataset: [layerUuid: string, dataset: Dataset];
   updateLayerInfo: [layerUuid: string, info: LayerInfo];
   updateLegends: [layerUuid: string, legends: Legend[]];
+  setWmsCapability: [layerUuid: string, capability: WmsFeatureInfoCapability];
 }>();
 
 const { layerFormat, distribution, serviceData, layerId } = useGenericOgcData(
@@ -87,6 +90,32 @@ const layerData = computed((): MapLayer => {
   };
 });
 
+const layerFeatureInfoProtocol = computed(
+  () => layer.info?.featureInfoInformation?.protocol ?? null,
+);
+const layerFeatureInfoBaseUrl = computed(
+  () => layer.info?.featureInfoInformation?.baseUrl ?? null,
+);
+
+const wmsFeatureInfoUrl = computed(() =>
+  layerFormat.value === "WMTS" &&
+  layerFeatureInfoProtocol.value === "ogc:wms" &&
+  layerFeatureInfoBaseUrl.value
+    ? layerFeatureInfoBaseUrl.value
+    : null,
+);
+
+const wmsFeatureInfoCapability = useWmsFeatureInfoCapabilities(
+  layer.humanId,
+  wmsFeatureInfoUrl,
+);
+
+watch(wmsFeatureInfoCapability, (wmsFeatureInfoCapability) => {
+  if (wmsFeatureInfoCapability) {
+    emit("setWmsCapability", layer.uuid, { ...wmsFeatureInfoCapability });
+  }
+});
+
 // trigger the update to the parent
 watch(layerData, () => emit("update", layerData.value), { immediate: true });
 
@@ -121,5 +150,6 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
     @updateData="pushLayerSpecificData<WMSLayerData>"
     @updateTimeDimension="emit('updateTimeDimension', layer.uuid, $event)"
     @updateLegends="emit('updateLegends', layer.uuid, $event)"
+    @setWmsCapability="emit('setWmsCapability', layer.uuid, $event)"
   ></MapDatamappingOgcWmsLayerConverter>
 </template>

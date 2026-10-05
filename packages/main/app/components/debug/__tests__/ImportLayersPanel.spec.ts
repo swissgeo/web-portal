@@ -42,7 +42,7 @@ interface PanelVm {
   importUrl: string;
   layers: string[];
   loadCapabilities: () => Promise<void>;
-  addLayer: (_layer: string) => void;
+  addLayer: (_layer: string) => Promise<void>;
 }
 
 describe("ImportLayersPanel.vue", () => {
@@ -66,7 +66,7 @@ describe("ImportLayersPanel.vue", () => {
     addLayerSpy.mockClear();
     makeServerLayerSpy.mockClear();
 
-    vm.addLayer("layer-a");
+    await vm.addLayer("layer-a");
 
     expect(makeServerLayerSpy).toHaveBeenCalledTimes(1);
     const dataset = makeServerLayerSpy.mock.calls[0]![0];
@@ -88,11 +88,11 @@ describe("ImportLayersPanel.vue", () => {
     expect(addLayerSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("throws if addLayer is called before a layer type is determined", () => {
+  it("throws if addLayer is called before a layer type is determined", async () => {
     const wrapper = shallowMount(ImportLayersPanel);
     const vm = wrapper.vm as unknown as PanelVm;
 
-    expect(() => vm.addLayer("layer-a")).toThrow(
+    await expect(vm.addLayer("layer-a")).rejects.toThrow(
       /Layer type must be determined before adding a layer/,
     );
   });
