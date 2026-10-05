@@ -160,6 +160,9 @@ export default defineNuxtConfig({
         "sys-s.dev.bgdi.ch",
         "sys-public.dev.bgdi.ch",
       ],
+      featureFlags: {
+        enableCmsSearch: false,
+      },
     },
   },
   nitro: {

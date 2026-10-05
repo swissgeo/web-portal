@@ -29,6 +29,10 @@ export declare const useSearchStore: () => {
   locationResults: ComputedRef<SearchResult[]>;
   layerResults: ComputedRef<SearchResult[]>;
   featureResults: ComputedRef<SearchResult[]>;
+  contentResults: ComputedRef<SearchResult[]>;
+  mapResults: ComputedRef<SearchResult[]>;
+  hasMapResults: ComputedRef<boolean>;
+  enableCmsSearch: boolean;
   setSearchQuery: (newQuery: string, lang?: string) => Promise<void>;
   selectResult: (result: SearchResult) => SearchResult;
   clearSearch: () => void;
@@ -56,6 +60,9 @@ declare global {
       buildTime: string;
       maxFileSizeMB: number;
       drawingAllowedDomains: string[];
+      featureFlags: {
+        enableCmsSearch: boolean;
+      };
     };
   };
 }
