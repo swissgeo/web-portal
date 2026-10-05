@@ -1,3 +1,4 @@
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises, mount } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -54,6 +55,9 @@ vi.mock("@vueuse/core", () => ({
   useClipboard: () => ({ copy, copied: { value: false } }),
 }));
 vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (key: string) => key }) }));
+mockNuxtImport("useRuntimeConfig", () => () => ({
+  public: { drawingServiceEndpoint: "https://drawings.test" },
+}));
 const Button = {
   props: ["disabled", "label"],
   template: '<button :disabled="disabled"><slot />{{ label }}</button>',
@@ -122,7 +126,14 @@ describe("Drawing toolbox", () => {
   ])("starts drawing a %s", async (tool, geometry) => {
     const wrapper = mountDrawing();
     await wrapper.get(`[data-testid="drawing-tool-${tool}"]`).trigger("click");
-    expect(drawing.enableDrawInteraction).toHaveBeenCalledWith(geometry);
+    if (geometry === "Point") {
+      expect(drawing.enableDrawInteraction).toHaveBeenCalledWith(
+        geometry,
+        tool,
+      );
+    } else {
+      expect(drawing.enableDrawInteraction).toHaveBeenCalledWith(geometry);
+    }
     wrapper.unmount();
   });
 
@@ -172,11 +183,12 @@ describe("Drawing toolbox", () => {
     wrapper.unmount();
   });
 
-  it("closes when its layer is removed", async () => {
+  it("closes the detail panel when the close button is clicked", async () => {
     const wrapper = mountDrawing();
-    drawing.isDrawingLayerInLayerStore.value = false;
-    await wrapper.vm.$nextTick();
-    expect(wrapper.emitted("close")).toEqual([[]]);
+    await wrapper
+      .get('button[aria-label="toolbox.drawing.close"]')
+      .trigger("click");
+    expect(closeDetailPanel).toHaveBeenCalledOnce();
     wrapper.unmount();
   });
 
@@ -203,7 +215,8 @@ describe("Drawing toolbox", () => {
       .find((button) => button.text() === "toolbox.drawing.sync")!;
     await sync.trigger("click");
     expect(shareDrawings).toHaveBeenCalledOnce();
-    drawing.drawingS3Url.value = "https://drawings.test/drawing";
+    drawing.drawingId.value = "drawing";
+    drawing.drawingS3Url.value = "https://storage.test/drawing.kmz";
     drawing.drawingAdminId.value = "admin";
     await wrapper.vm.$nextTick();
     expect(

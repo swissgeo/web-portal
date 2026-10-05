@@ -44,9 +44,9 @@ export const useDrawingStore = defineStore("drawing", () => {
   // it is provided by the drawing service (backend), only after the first sharing.
   // The drawingId can be used to share with other users, and the drawingAdminId is used to
   // update the drawing on the backend (generaly not shared with other users)
-  const drawingId = ref<string | null>(null);
-  const drawingAdminId = ref<string | null>(null);
-  const drawingS3Url = ref<string | null>(null);
+  const drawingId = ref<string>("");
+  const drawingAdminId = ref<string>("");
+  const drawingS3Url = ref<string>("");
 
   const layerStore = useLayerStore();
   const { layers: layersInLayerStore } = storeToRefs(useLayerStore());
@@ -152,6 +152,7 @@ export const useDrawingStore = defineStore("drawing", () => {
   // All the features that have been created by the drawing module
   const focusedFeature = shallowRef<Feature<Geometry> | null>(null);
   const focusMode = ref<FocusMode>("none");
+  const pointDrawingTool = ref<"text" | "marker">("marker");
 
   /**
    * Keep tracks of the number of features that are part of the drawing layer/source
@@ -280,6 +281,10 @@ export const useDrawingStore = defineStore("drawing", () => {
 
     clearDrawingLayer();
     mountedMap = null;
+
+    drawingId.value = "";
+    drawingAdminId.value = "";
+    drawingS3Url.value = "";
   }
 
   /**
@@ -447,10 +452,12 @@ export const useDrawingStore = defineStore("drawing", () => {
 
   /**
    * Enables the draw interaction for the specified geometry type, allowing users to draw new features on the map.
+   * The point tool determines the initial visibility of the text and marker.
    * It also enables the snap interaction to snap to existing features while drawing.
    */
   function enableDrawInteraction(
     geometryType: "Point" | "LineString" | "Polygon" | "Circle",
+    pointTool: "text" | "marker" = "marker",
   ) {
     if (!mountedMap) {
       return;
@@ -458,6 +465,7 @@ export const useDrawingStore = defineStore("drawing", () => {
 
     disableAllInteractions();
     removeFocus();
+    pointDrawingTool.value = pointTool;
     focusMode.value = "create";
 
     // Note: the focusedFeature and focus mode will be set in the drawstart event listener of each draw interaction (above)
@@ -496,6 +504,7 @@ export const useDrawingStore = defineStore("drawing", () => {
     DRAWING_LAYER_UUID,
     focusedFeature: focusedFeature,
     focusMode: focusMode,
+    pointDrawingTool,
     drawingVectorSource,
     drawingVectorLayer,
     modifyInteraction,

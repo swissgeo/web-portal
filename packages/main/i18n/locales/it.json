@@ -15,19 +15,24 @@
   },
   "toolbox": {
     "import": {
+      "tabData": "Data",
       "tabDrawing": "Disegno",
       "importUrlAsAdmin": "Importa l'URL come amministratore",
       "cancelImport": "Annulla l'importazione",
       "clearAndImportAsAdmin": "Cancella e importa come amministratore",
+      "importUrlButton": "Importa il disegno",
+      "clearAndImportAsNonAdmin": "Cancella e importa",
       "errorMessages": {
         "invalidDrawingUrl": "L’URL del disegno non è valido",
         "invalidDrawingAdminId": "L’ID amministratore del disegno non è valido",
         "adminRequired": "Per importare questo disegno sono necessari i privilegi di amministratore"
       },
       "infoMessages": {
-        "adminImportPart1": "L'importazione di un disegno Swissgeo come amministratore cancellerà tutti i disegni esistenti.",
-        "adminImportPart2": "Sarà quindi possibile continuare a modificare il disegno e sincronizzarlo con la banca dati Swissgeo."
-      }
+        "importPart1": "L'importazione di un disegno {provenance} richiede la cancellazione di quello esistente. Dopo l'importazione, sarà possibile modificare ulteriormente il disegno.",
+        "adminImportPart2": "Se importato come amministratore, sarà possibile sincronizzarlo con il database Swissgeo sotto lo stesso ID dell'importazione e gli altri utenti vedranno le modifiche.",
+        "nonAdminImportPart2": "La condivisione del disegno sarà quindi possibile con altri utenti, ma sotto un ID del disegno diverso da quello importato."
+      },
+      "close": "Chiudi"
     },
     "drawing": {
       "close": "Chiudi il pannello di disegno",

@@ -423,6 +423,66 @@ describe("useDrawing", () => {
     wrapper.unmount();
   });
 
+  it.each(["text", "marker", undefined] as const)(
+    "initializes %s point defaults and keeps visibility editable",
+    async (pointTool) => {
+      const { drawing, drawingStore, wrapper, fakeMap } = mountHarness();
+      const feature = makeFeature(new Point([2600000, 1200000]));
+
+      drawing.mountDrawingLayer(fakeMap as unknown as OlMap);
+      drawing.enableDrawInteraction("Point", pointTool);
+      drawingStore.drawPointInteraction.dispatchEvent({
+        type: "drawstart",
+        feature,
+      } as never);
+      drawingStore.drawingVectorSource.addFeature(feature);
+      drawingStore.drawPointInteraction.dispatchEvent({
+        type: "drawend",
+        feature,
+      } as never);
+      await flushPromises();
+
+      expect(feature.get(SHOW_TITLE_KEY)).toBe(pointTool === "text");
+      expect(feature.get(SHOW_ICON_KEY)).toBe(pointTool !== "text");
+      expect(feature.get(SHOW_DESCRIPTION_KEY)).toBe(false);
+      expect(feature.get(TEXT_PLACEMENT_KEY)).toBe(
+        pointTool === "text" ? "center" : "north",
+      );
+      expect(feature.get(TITLE_KEY)).toMatch(/^Feature \d+$/);
+
+      drawing.showTitle.value = true;
+      drawing.showDescription.value = true;
+      drawing.showIcon.value = true;
+      await nextTick();
+
+      expect(feature.get(SHOW_TITLE_KEY)).toBe(true);
+      expect(feature.get(SHOW_DESCRIPTION_KEY)).toBe(true);
+      expect(feature.get(SHOW_ICON_KEY)).toBe(true);
+
+      drawing.enableModifyInteraction();
+      await nextTick();
+
+      expect(feature.get(SHOW_TITLE_KEY)).toBe(true);
+      expect(feature.get(SHOW_DESCRIPTION_KEY)).toBe(true);
+      expect(feature.get(SHOW_ICON_KEY)).toBe(true);
+
+      drawing.enableDrawInteraction("Point");
+      const nextFeature = makeFeature(new Point([2600010, 1200010]));
+      drawingStore.drawPointInteraction.dispatchEvent({
+        type: "drawstart",
+        feature: nextFeature,
+      } as never);
+      await nextTick();
+
+      expect(nextFeature.get(SHOW_TITLE_KEY)).toBe(false);
+      expect(nextFeature.get(SHOW_DESCRIPTION_KEY)).toBe(false);
+      expect(nextFeature.get(SHOW_ICON_KEY)).toBe(true);
+      expect(nextFeature.get(TEXT_PLACEMENT_KEY)).toBe("north");
+
+      wrapper.unmount();
+    },
+  );
+
   it("keeps a drawn feature focused after draw end", async () => {
     const { drawing, drawingStore, wrapper, fakeMap } = mountHarness();
     const feature = makeFeature(new Point([2600000, 1200000]));

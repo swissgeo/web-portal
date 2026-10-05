@@ -6,8 +6,8 @@ import { useI18n } from "vue-i18n";
 
 export type SwissgeoUrlValidationResult = {
   isValid: boolean;
-  drawingId: string | null;
-  adminId: string | null;
+  drawingId: string;
+  adminId: string;
   adminIdProvided: boolean;
 };
 
@@ -44,8 +44,8 @@ async function validateSwissgeoServiceDrawingsUrl(
   if (!url.trim()) {
     return {
       isValid: false,
-      drawingId: null,
-      adminId: null,
+      drawingId: "",
+      adminId: "",
       adminIdProvided: false,
     };
   }
@@ -53,8 +53,8 @@ async function validateSwissgeoServiceDrawingsUrl(
   if (!isSwissgeoServiceDrawingsUrl(url)) {
     return {
       isValid: false,
-      drawingId: null,
-      adminId: null,
+      drawingId: "",
+      adminId: "",
       adminIdProvided: false,
     };
   }
@@ -69,16 +69,16 @@ async function validateSwissgeoServiceDrawingsUrl(
     if (!drawingId || !isUuid(drawingId)) {
       return {
         isValid: false,
-        drawingId: null,
-        adminId: null,
+        drawingId: "",
+        adminId: "",
         adminIdProvided: !!hash,
       };
     }
 
     // The admin ID must be validated
-    let adminId: string | null = hash || null;
+    let adminId: string | null = hash || "";
     if (adminId && !isUuid(adminId)) {
-      adminId = null;
+      adminId = "";
     }
 
     try {
@@ -86,8 +86,8 @@ async function validateSwissgeoServiceDrawingsUrl(
     } catch {
       return {
         isValid: false,
-        drawingId: null,
-        adminId: null,
+        drawingId: "",
+        adminId: "",
         adminIdProvided: !!hash,
       };
     }
@@ -97,14 +97,14 @@ async function validateSwissgeoServiceDrawingsUrl(
     return {
       isValid: true,
       drawingId: drawingId,
-      adminId: authStatus === 204 ? adminId : null,
+      adminId: authStatus === 204 ? adminId : "",
       adminIdProvided: !!hash,
     };
   } catch {
     return {
       isValid: false,
-      drawingId: null,
-      adminId: null,
+      drawingId: "",
+      adminId: "",
       adminIdProvided: false,
     };
   }
@@ -165,10 +165,7 @@ function validateDomain(url: string, allowedDomains: string[]): string | null {
   }
 }
 
-async function checkDrawingAuth(
-  drawingId: string,
-  adminId: string | null = null,
-) {
+async function checkDrawingAuth(drawingId: string, adminId: string = "") {
   const runtimeConfig = useRuntimeConfig();
   const drawingServiceEndpoint = runtimeConfig.public
     .drawingServiceEndpoint as string;
@@ -220,10 +217,23 @@ export function useImportDrawing() {
   const errorMessage = ref("");
   const successMessage = ref("");
 
+  const isUrlOnValidLegacyDomain = computed(() => {
+    const allowedDomains = runtimeConfig.public
+      .drawingAllowedDomains as string[];
+    const hostname = (() => {
+      try {
+        return new URL(url.value.trim()).hostname;
+      } catch {
+        return null;
+      }
+    })();
+    return hostname ? allowedDomains.includes(hostname) : false;
+  });
+
   const swissGeoUrlValidation = ref<SwissgeoUrlValidationResult>({
     isValid: false,
-    drawingId: null,
-    adminId: null,
+    drawingId: "",
+    adminId: "",
     adminIdProvided: false,
   });
 
@@ -236,8 +246,8 @@ export function useImportDrawing() {
     isCheckingUrl.value = true;
     swissGeoUrlValidation.value = {
       isValid: false,
-      drawingId: null,
-      adminId: null,
+      drawingId: "",
+      adminId: "",
       adminIdProvided: false,
     };
     if (value.trim()) {
@@ -252,7 +262,7 @@ export function useImportDrawing() {
     }
   });
 
-  async function importDrawing(): Promise<void> {
+  async function importLegacyDrawing(): Promise<void> {
     if (!url.value.trim()) {
       errorMessage.value = t("toolbox.import.errorMessages.noUrlEntered");
       return;
@@ -375,6 +385,10 @@ export function useImportDrawing() {
         drawingAdminId.value = swissGeoUrlValidation.value.adminId;
         drawingId.value = swissGeoUrlValidation.value.drawingId;
         drawingS3Url.value = drawingIdUrlObj.href;
+      } else {
+        drawingAdminId.value = "";
+        drawingId.value = "";
+        drawingS3Url.value = "";
       }
 
       const kmzBuffer = await res.arrayBuffer();
@@ -389,9 +403,10 @@ export function useImportDrawing() {
     isLoading,
     errorMessage,
     successMessage,
-    importDrawing,
+    importLegacyDrawing,
     importSwissgeoDrawing,
     swissGeoUrlValidation,
     isCheckingUrl,
+    isUrlOnValidLegacyDomain,
   };
 }

@@ -19,9 +19,11 @@ export function useShareDrawings() {
   const isSharing = ref(false);
 
   async function shareDrawings() {
+    isSharing.value = true;
     const drawingBlob = await serializeAllFeaturesAsBlob("kmz");
 
     if (!drawingBlob) {
+      isSharing.value = false;
       return;
     }
 
@@ -46,6 +48,7 @@ export function useShareDrawings() {
     } else {
       await createDrawing(formData);
     }
+    isSharing.value = false;
   }
 
   async function createDrawing(formData: FormData) {

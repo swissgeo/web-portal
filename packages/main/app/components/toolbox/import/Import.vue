@@ -13,10 +13,11 @@ const {
   isLoading: isImportDrawingLoading,
   errorMessage: importDrawingErrorMessage,
   successMessage: importDrawingSuccessMessage,
-  importDrawing,
+  importLegacyDrawing,
   importSwissgeoDrawing,
   swissGeoUrlValidation,
   isCheckingUrl,
+  isUrlOnValidLegacyDomain,
 } = useImportDrawing();
 
 const filePathInfo = ref("");
@@ -47,16 +48,25 @@ function showToast(color: "error" | "success" | "warning", message: string) {
 }
 
 async function onImportDrawing(asAdmin = false) {
-  // Opening a link that does not come from SwissGeo should trigger the importDrawing function
+  // Opening a link that does not come from SwissGeo should trigger the importLegacyDrawing function
   if (!swissGeoUrlValidation.value.isValid) {
-    await importDrawing();
-  } else if (swissGeoUrlValidation.value.adminId && asAdmin) {
-    await importSwissgeoDrawing(true);
-  } else {
-    await importSwissgeoDrawing(false);
+    await importLegacyDrawing();
+    return;
   }
 
-  urlImportDrawing.value = "";
+  try {
+    await importSwissgeoDrawing(
+      !!swissGeoUrlValidation.value.adminId && asAdmin,
+    );
+    urlImportDrawing.value = "";
+  } catch (error) {
+    showToast(
+      "error",
+      error instanceof Error
+        ? error.message
+        : t("toolbox.import.errorMessages.generalError"),
+    );
+  }
 }
 
 watch(errorMessage, (v) => v && showToast("error", v));
@@ -224,7 +234,7 @@ async function handleFileUrlImport() {
                 !urlImportDrawing.trim() ||
                 isImportDrawingLoading ||
                 isCheckingUrl ||
-                !swissGeoUrlValidation.isValid
+                (!isUrlOnValidLegacyDomain && !swissGeoUrlValidation.isValid)
               "
               :loading="isImportDrawingLoading"
               data-testid="drawing-import-button"
@@ -302,7 +312,9 @@ async function handleFileUrlImport() {
               class="mt-2 space-y-1 text-sm"
             >
               <li
-                v-if="!swissGeoUrlValidation.isValid"
+                v-if="
+                  !swissGeoUrlValidation.isValid && !isUrlOnValidLegacyDomain
+                "
                 class="flex items-center gap-2"
               >
                 <span
