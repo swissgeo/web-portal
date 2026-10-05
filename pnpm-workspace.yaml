@@ -97,7 +97,7 @@ catalog:
   geojson: ^0.5.0
   globals: ^17.6.0
   happy-dom: 20.14.5
-  h3: ^1.15.11
+  h3: ^2.0.0
   jsdom: ^30.0.1
   mapbox-gl: ~3.32.0
   msw: ^2.14.6
