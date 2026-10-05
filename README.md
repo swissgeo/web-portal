@@ -81,11 +81,10 @@ How the scale is kept exact:
 
 - For a fixed scale, the job and the print page carry `print_scale`. The print page draws the map at the exact
   resolution of that scale before it is ready (`usePrintStatus`).
-- Tiled layers request the tile level listed for that scale in `printFixedScales`
-  (`types/print.ts`, with the sources of the pairing and the table of the swisstopo
-  [WMTS docs](https://docs.geo.admin.ch/visualize-data/wmts.html#gettile)), so the tiles of that
-  level are drawn (for example level 22, 2.5 m/px, for 1:25'000). Layers without
-  that level are not changed, and the normal map is not affected.
+- Tiled layers request the tile level whose resolution is the scale at `TILE_DPI` (254 dpi, one tile
+  pixel is 0.1 mm on paper), for example level 22, 2.5 m/px, for 1:25'000 (see the swisstopo
+  [WMTS docs](https://docs.geo.admin.ch/visualize-data/wmts.html#gettile)). Layers without that
+  level are not changed, and the normal map is not affected.
 
 ## Monorepo setup
 

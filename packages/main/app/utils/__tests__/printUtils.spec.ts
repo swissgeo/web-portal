@@ -1,3 +1,5 @@
+import { constants } from "@swissgeo/coordinates";
+import { printFixedScales, TILE_DPI } from "~/types/print";
 import {
   computeNumberOfPixelsForPrint,
   getPageSizeInPixels,
@@ -78,6 +80,15 @@ describe("printUtils", () => {
   });
 
   describe("fixed scale", () => {
+    it.each(printFixedScales)(
+      "has a tile level for 1:%s at the tile DPI",
+      (scale) => {
+        expect(constants.SWISSTOPO_TILEGRID_RESOLUTIONS).toContain(
+          getResolutionForScale(scale, TILE_DPI),
+        );
+      },
+    );
+
     // All rows of the table at https://docs.geo.admin.ch/visualize-data/wmts.html#gettile that have
     // a scale (the coarser levels have none, and level 24 is not served). The two coarsest rows are
     // about 1 above the exact value, the docs do not say why.
@@ -106,7 +117,7 @@ describe("printUtils", () => {
     );
 
     it("finds the closest round scale by ratio", () => {
-      const scales = [10000, 25000, 50000, 100000];
+      const scales = [10000, 25000, 50000, 100000] as const;
       expect(getClosestScale(9449, scales)).toBe(10000);
       expect(getClosestScale(16000, scales)).toBe(25000);
       expect(getClosestScale(1000000, scales)).toBe(100000);

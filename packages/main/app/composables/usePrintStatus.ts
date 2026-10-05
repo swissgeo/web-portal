@@ -1,7 +1,5 @@
-import { constants } from "@swissgeo/coordinates";
 import { useMapStore } from "@swissgeo/map";
-
-import { printFixedScales } from "../types/print";
+import { TILE_DPI } from "~/types/print";
 
 /**
  * Composable that triggers event sending to the print service when the map is fully loaded
@@ -16,12 +14,9 @@ export function usePrintStatus() {
   const { scale, resolution: dpi } = getPrintConfigFromUrl();
 
   // Has to be set before the layers are created, which happens when the state is imported.
-  // A scale that is not offered in fixed-scale mode has no tile level to pin.
-  const fixedScale = printFixedScales.find((fixed) => fixed.scale === scale);
-  if (fixedScale) {
-    mapStore.setPinnedTileResolution(
-      constants.SWISSTOPO_TILEGRID_RESOLUTIONS[fixedScale.level] ?? null,
-    );
+  // Layers without a tile level of that resolution are left as they are.
+  if (scale !== undefined) {
+    mapStore.setPinnedTileResolution(getResolutionForScale(scale, TILE_DPI));
     onBeforeUnmount(() => mapStore.setPinnedTileResolution(null));
   }
 
@@ -48,7 +43,7 @@ export function usePrintStatus() {
    */
   watch(
     () => mapStore.isMapLoaded && pageReady.value,
-    (readyToApply) => {
+    (readyToApply, _, onCleanup) => {
       const map = mapStore.olMap;
       if (!readyToApply || scale === undefined || !map) {
         return;
@@ -65,13 +60,18 @@ export function usePrintStatus() {
         if (view.getAnimating() || view.getResolution() !== targetResolution) {
           return;
         }
+        unlisten();
+        exactResolutionApplied.value = true;
+      };
+      const unlisten = () => {
         map.un("moveend", ensureResolution);
         map.un("rendercomplete", onRenderComplete);
-        exactResolutionApplied.value = true;
       };
 
       map.on("moveend", ensureResolution);
       map.on("rendercomplete", onRenderComplete);
+      // e.g. the page is left before the map reached the resolution
+      onCleanup(unlisten);
       ensureResolution();
       // Nothing is drawn again when the state already put the view at this resolution
       map.render();

@@ -144,7 +144,7 @@ export function getResolutionForScale(
  */
 export function getClosestScale(
   scale: number,
-  scales: readonly number[],
+  scales: readonly [number, ...number[]],
 ): number {
   return scales.reduce((closest, candidate) =>
     Math.abs(Math.log(candidate / scale)) < Math.abs(Math.log(closest / scale))

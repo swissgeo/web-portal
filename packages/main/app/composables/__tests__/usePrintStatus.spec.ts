@@ -181,22 +181,29 @@ describe("usePrintStatus", () => {
     },
   );
 
+  it("stops listening to the map when the page is left before the resolution is drawn", async () => {
+    mockGetPrintConfigFromUrl.mockReturnValue({ resolution: 96, scale: 25000 });
+    const { map, view } = makeMap(5);
+    mapStore.olMap = map;
+    await mountStatus();
+    mapStore.isMapLoaded = true;
+    await nextTick();
+
+    wrappers.splice(0).forEach((wrapper) => wrapper.unmount());
+    view.resolution = 5;
+    map.emit("moveend");
+    map.emit("rendercomplete");
+
+    expect(view.resolution).toBe(5);
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
   it("lets the tile level go again when the page is left", async () => {
     mockGetPrintConfigFromUrl.mockReturnValue({ resolution: 96, scale: 25000 });
     await mountStatus();
     wrappers.splice(0).forEach((wrapper) => wrapper.unmount());
 
     expect(setPinnedTileResolution).toHaveBeenLastCalledWith(null);
-  });
-
-  it("pins nothing for a scale that is not offered in fixed-scale mode", async () => {
-    mockGetPrintConfigFromUrl.mockReturnValue({
-      resolution: 96,
-      scale: 30000,
-    });
-    await mountStatus();
-
-    expect(setPinnedTileResolution).not.toHaveBeenCalled();
   });
 
   it("pins nothing when the page has no scale", async () => {

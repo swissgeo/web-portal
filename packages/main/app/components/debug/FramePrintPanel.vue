@@ -44,7 +44,7 @@ const printModeItems = printModes.map((mode) => ({
   value: mode,
 }));
 
-const printScaleItems = printFixedScales.map(({ scale }) => ({
+const printScaleItems = printFixedScales.map((scale) => ({
   label: `1:${scale.toLocaleString("de-CH")}`,
   value: scale,
 }));

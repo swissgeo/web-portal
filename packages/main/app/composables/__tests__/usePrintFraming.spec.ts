@@ -480,6 +480,9 @@ describe("usePrintFraming", () => {
       [8, 10000],
       // 32 m/px is 1:241'890, closer to 1:200'000 than to 1:100'000
       [3, 200000],
+      // the zoom is rounded first: 6.4 is zoom 6 (4 m/px, 1:30'236), 6.6 is zoom 7 (2 m/px, 1:15'118)
+      [6.4, 25000],
+      [6.6, 10000],
     ])(
       "starts fixed-scale mode at the round scale closest to wysiwyg (zoom %s)",
       async (zoom, expected) => {

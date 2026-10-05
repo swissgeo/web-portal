@@ -1,8 +1,10 @@
+import type { PrintFormat, PrintMode, PrintOrientation } from "~/types/print";
 import type { Extent } from "ol/extent";
 
 import { createCutoutGeometry } from "@swissgeo/coordinates";
 import { useMap } from "@swissgeo/map";
 import { EPSG_2056_BOUNDING_BOX } from "@swissgeo/shared";
+import { PRINT_DPI, printFixedScales } from "~/types/print";
 import { containsExtent } from "ol/extent";
 import Feature from "ol/Feature";
 import VectorLayer from "ol/layer/Vector";
@@ -11,9 +13,7 @@ import { Fill, Style } from "ol/style";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import type { PrintPostRequestBody } from "../stores/printRequest";
-import type { PrintFormat, PrintMode, PrintOrientation } from "../types/print";
 
-import { PRINT_DPI, printFixedScales } from "../types/print";
 import { usePrintRequests } from "./usePrintRequests";
 import {
   URL_PARAM_STATE,
@@ -69,8 +69,8 @@ export function usePrintFraming() {
 
   /**
    * The mode only decides the scale of the print, both modes print the layers currently active:
-   * - wysiwyg: what is on screen, at the zoom level for print
-   * - fixed-scale: a round scale picked by the user, like a paper map
+   * - wysiwyg: what is on screen, at the current zoom level
+   * - fixed-scale: a round scale, like a paper map
    */
   const selectedPrintMode = ref<PrintMode>("wysiwyg");
   const selectedPrintScale = ref(25000);
@@ -312,10 +312,7 @@ export function usePrintFraming() {
         startScale.value ??
         (resolution && getScaleForResolution(resolution, PRINT_DPI));
       if (scale) {
-        selectedPrintScale.value = getClosestScale(
-          scale,
-          printFixedScales.map((entry) => entry.scale),
-        );
+        selectedPrintScale.value = getClosestScale(scale, printFixedScales);
       }
       startScale.value = null;
     } else {
