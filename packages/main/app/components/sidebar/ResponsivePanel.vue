@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onKeyStroke, useEventListener } from "@vueuse/core";
+import { useEventListener } from "@vueuse/core";
 
 defineProps<{
   title: string;
@@ -47,32 +47,29 @@ let touchStartY = 0;
 useEventListener(
   scroller,
   "touchstart",
-  (e: TouchEvent) => {
-    touchStartY = e.touches[0]!.clientY;
+  (touchEvent: TouchEvent) => {
+    touchStartY = touchEvent.touches[0]!.clientY;
   },
   { passive: true },
 );
 useEventListener(
   scroller,
   "touchmove",
-  (e: TouchEvent) => {
+  (touchEvent: TouchEvent) => {
     if (isDesktop.value || !scroller.value) {
       return;
     }
-    const isPullingDown = e.touches[0]!.clientY > touchStartY;
-    if (isPullingDown && scroller.value.scrollTop <= 0 && e.cancelable) {
-      e.preventDefault();
+    const isPullingDown = touchEvent.touches[0]!.clientY > touchStartY;
+    if (
+      isPullingDown &&
+      scroller.value.scrollTop <= 0 &&
+      touchEvent.cancelable
+    ) {
+      touchEvent.preventDefault();
     }
   },
   { passive: false },
 );
-
-onKeyStroke("Escape", () => {
-  // The drawer already handles close on Escape press, so this is only required on desktop
-  if (isDesktop.value) {
-    emit("close");
-  }
-});
 </script>
 
 <template>
@@ -104,7 +101,7 @@ onKeyStroke("Escape", () => {
     "
   >
     <template #body>
-      <div ref="scroller" :class="scrollerClass">
+      <div ref="scroller" data-testid="panel-scroller" :class="scrollerClass">
         <slot />
       </div>
     </template>
@@ -128,7 +125,7 @@ onKeyStroke("Escape", () => {
         {{ closeLabel }}
       </UButton>
     </div>
-    <div ref="scroller" :class="scrollerClass">
+    <div ref="scroller" data-testid="panel-scroller" :class="scrollerClass">
       <slot />
     </div>
   </div>

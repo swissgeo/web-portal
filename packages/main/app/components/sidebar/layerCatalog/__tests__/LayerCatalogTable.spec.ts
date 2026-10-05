@@ -95,6 +95,7 @@ describe("LayerCatalogTable.vue", () => {
     vi.clearAllMocks();
     catalog.state.value = { status: "pending" };
     catalog.hasMore.value = false;
+    panelScroller.value = null;
   });
 
   it("loads the catalog in the current language", () => {

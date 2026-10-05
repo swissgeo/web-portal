@@ -73,13 +73,16 @@ describe("useIsDesktop", () => {
     [767, false],
     [768, true],
     [1280, true],
-  ])("at a viewport width of %ipx is %s", (width, expected) => {
-    setViewportWidth(width);
+  ])(
+    "at a viewport width of %ipx, useIsDektop() should return %s",
+    (width, expected) => {
+      setViewportWidth(width);
 
-    const isDesktop = scope.run(() => useIsDesktop())!;
+      const isDesktop = scope.run(() => useIsDesktop())!;
 
-    expect(isDesktop.value).toBe(expected);
-  });
+      expect(isDesktop.value).toBe(expected);
+    },
+  );
 
   it("follows the viewport when it is resized", async () => {
     setViewportWidth(1280);

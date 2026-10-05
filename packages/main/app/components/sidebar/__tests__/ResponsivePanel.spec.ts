@@ -47,8 +47,7 @@ function mountPanel() {
 }
 
 function scroller(wrapper: ReturnType<typeof mountPanel>) {
-  return wrapper.get("[data-testid='content']").element
-    .parentElement as HTMLElement;
+  return wrapper.get<HTMLElement>("[data-testid='panel-scroller']").element;
 }
 
 // The touch listeners are attached once the scroller element is rendered
@@ -63,10 +62,6 @@ function touch(target: HTMLElement, type: string, clientY: number) {
   Object.defineProperty(event, "touches", { value: [{ clientY }] });
   target.dispatchEvent(event);
   return event;
-}
-
-function pressEscape() {
-  window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
 }
 
 describe("ResponsivePanel.vue", () => {
@@ -97,23 +92,6 @@ describe("ResponsivePanel.vue", () => {
       await close.trigger("click");
 
       expect(wrapper.emitted("close")).toHaveLength(1);
-    });
-
-    it("closes when Escape is pressed", () => {
-      const wrapper = mountPanel();
-
-      pressEscape();
-
-      expect(wrapper.emitted("close")).toHaveLength(1);
-    });
-
-    it("stops listening for Escape once unmounted", () => {
-      const wrapper = mountPanel();
-      wrapper.unmount();
-
-      pressEscape();
-
-      expect(wrapper.emitted("close")).toBeUndefined();
     });
 
     it("lets the content scroll and provides the scroller to it", () => {
@@ -165,14 +143,6 @@ describe("ResponsivePanel.vue", () => {
 
       drawer.vm.$emit("update:open", false);
       expect(wrapper.emitted("close")).toHaveLength(1);
-    });
-
-    it("leaves closing on Escape to the drawer", () => {
-      const wrapper = mountPanel();
-
-      pressEscape();
-
-      expect(wrapper.emitted("close")).toBeUndefined();
     });
 
     it("only lets the content scroll once the drawer is fully extended", async () => {
