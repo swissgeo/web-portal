@@ -1,3 +1,5 @@
+import type { DrawingsMetadataResponse } from "@swissgeo/drawing-sharing";
+
 import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
 import { useI18n } from "vue-i18n";
@@ -7,13 +9,6 @@ export type SwissgeoUrlValidationResult = {
   drawingId: string | null;
   adminId: string | null;
   adminIdProvided: boolean;
-};
-
-export type DrawingMetadata = {
-  id: string;
-  original_filename: string;
-  created_at: string;
-  modified_at: string;
 };
 
 function isDirectKmlUrl(url: string): boolean {
@@ -191,7 +186,7 @@ async function checkDrawingAuth(
 
 async function fetchDrawingMetadata(
   drawingId: string,
-): Promise<DrawingMetadata> {
+): Promise<DrawingsMetadataResponse> {
   const runtimeConfig = useRuntimeConfig();
   const drawingServiceEndpoint = runtimeConfig.public
     .drawingServiceEndpoint as string;
@@ -202,7 +197,7 @@ async function fetchDrawingMetadata(
     throw new Error(`Failed to fetch drawing metadata: ${res.status}`);
   }
 
-  return res.json();
+  return await res.json();
 }
 
 export function useImportDrawing() {

@@ -39,8 +39,11 @@ catalog:
   "@lucide/vue": ^1.18.0
   "@microsoft/api-extractor": ^7.56.0
   "@nuxt/eslint": ^1.9.0
+  "@nuxt/fonts": ^0.14.0
+  "@nuxt/icon": ^2.5.1
   "@nuxt/test-utils": ^4.0.3
   "@nuxt/ui": ^4.8.2
+  "@nuxtjs/color-mode": ^4.0.1
   "@nuxtjs/i18n": ^10.4.0
   "@opentelemetry/api": "^1.9.1"
   "@opentelemetry/api-logs": "0.222.0"
