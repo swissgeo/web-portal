@@ -4,6 +4,8 @@ import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { shallowMount } from "@vue/test-utils";
 import { beforeEach, describe, it, expect, vi } from "vitest";
 
+import type { SwissgeoUrlValidationResult } from "@/composables/useImportDrawing";
+
 import Import from "@/components/toolbox/import/Import.vue";
 
 type ImportVm = ComponentPublicInstance & {
@@ -31,13 +33,14 @@ const { drawingImport } = await vi.hoisted(async () => {
       isLoading: ref(false),
       errorMessage: ref(""),
       successMessage: ref(""),
-      importDrawing: vi.fn(),
+      importLegacyDrawing: vi.fn(),
       importSwissgeoDrawing: vi.fn(),
       isCheckingUrl: ref(false),
-      swissGeoUrlValidation: ref({
+      isUrlOnValidLegacyDomain: ref(false),
+      swissGeoUrlValidation: ref<SwissgeoUrlValidationResult>({
         isValid: false,
-        drawingId: null as string | null,
-        adminId: null as string | null,
+        drawingId: "",
+        adminId: "",
         adminIdProvided: false,
       }),
     },
@@ -72,10 +75,11 @@ describe("Import.vue", () => {
     vi.resetAllMocks();
     drawingImport.url.value = "";
     drawingImport.isCheckingUrl.value = false;
+    drawingImport.isUrlOnValidLegacyDomain.value = false;
     drawingImport.swissGeoUrlValidation.value = {
       isValid: false,
-      drawingId: null,
-      adminId: null,
+      drawingId: "",
+      adminId: "",
       adminIdProvided: false,
     };
   });
@@ -223,9 +227,8 @@ describe("Import.vue", () => {
     drawingImport.url.value = "https://map.geo.admin.ch/#/map";
     const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
     await (wrapper.vm as ImportVm).onImportDrawing();
-    expect(drawingImport.importDrawing).toHaveBeenCalledOnce();
+    expect(drawingImport.importLegacyDrawing).toHaveBeenCalledOnce();
     expect(drawingImport.importSwissgeoDrawing).not.toHaveBeenCalled();
-    expect(drawingImport.url.value).toBe("");
   });
 
   it.each([false, true])(
@@ -241,7 +244,7 @@ describe("Import.vue", () => {
       const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
       await (wrapper.vm as ImportVm).onImportDrawing(asAdmin);
       expect(drawingImport.importSwissgeoDrawing).toHaveBeenCalledWith(asAdmin);
-      expect(drawingImport.importDrawing).not.toHaveBeenCalled();
+      expect(drawingImport.importLegacyDrawing).not.toHaveBeenCalled();
       expect(drawingImport.url.value).toBe("");
     },
   );
@@ -250,7 +253,7 @@ describe("Import.vue", () => {
     drawingImport.swissGeoUrlValidation.value = {
       isValid: true,
       drawingId: "drawing",
-      adminId: null,
+      adminId: "",
       adminIdProvided: true,
     };
     const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
@@ -258,20 +261,21 @@ describe("Import.vue", () => {
     expect(drawingImport.importSwissgeoDrawing).toHaveBeenCalledWith(false);
   });
 
-  it("retains the URL when the import fails", async () => {
+  it("shows an error toast and retains the URL when the import fails", async () => {
     drawingImport.url.value = "https://drawings.test/drawing";
     drawingImport.swissGeoUrlValidation.value = {
       isValid: true,
       drawingId: "drawing",
-      adminId: null,
+      adminId: "",
       adminIdProvided: false,
     };
     drawingImport.importSwissgeoDrawing.mockRejectedValueOnce(
       new Error("Offline"),
     );
     const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
-    await expect((wrapper.vm as ImportVm).onImportDrawing()).rejects.toThrow(
-      "Offline",
+    await (wrapper.vm as ImportVm).onImportDrawing();
+    expect(toastAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ color: "error", title: "Offline" }),
     );
     expect(drawingImport.url.value).toBe("https://drawings.test/drawing");
   });

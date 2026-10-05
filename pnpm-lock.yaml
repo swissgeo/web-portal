@@ -292,8 +292,8 @@ catalogs:
       specifier: ^1.6.4
       version: 1.6.4
     unplugin-dts:
-      specifier: 1.1.2
-      version: 1.1.2
+      specifier: 1.0.3
+      version: 1.0.3
     vite:
       specifier: ^8.0.0
       version: 8.3.2
@@ -568,7 +568,7 @@ importers:
         version: 6.0.3
       unplugin-dts:
         specifier: 'catalog:'
-        version: 1.1.2(@microsoft/api-extractor@7.59.3(@types/node@26.6.4))(@vue/language-core@3.3.12)(esbuild@0.28.1)(rolldown@1.2.12)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.0.3(@microsoft/api-extractor@7.59.2(@types/node@26.6.3))(@vue/language-core@3.3.11)(esbuild@0.28.1)(rolldown@1.2.11)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       vite:
         specifier: 'catalog:'
         version: 8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
@@ -626,7 +626,7 @@ importers:
         version: 6.0.3
       unplugin-dts:
         specifier: 'catalog:'
-        version: 1.1.2(@microsoft/api-extractor@7.59.3(@types/node@26.6.4))(@vue/language-core@3.3.12)(esbuild@0.28.1)(rolldown@1.2.12)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.0.3(@microsoft/api-extractor@7.59.2(@types/node@26.6.3))(@vue/language-core@3.3.11)(esbuild@0.28.1)(rolldown@1.2.11)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       vite:
         specifier: 'catalog:'
         version: 8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
@@ -694,7 +694,7 @@ importers:
         version: 6.0.3
       unplugin-dts:
         specifier: 'catalog:'
-        version: 1.1.2(@microsoft/api-extractor@7.59.3(@types/node@26.6.4))(@vue/language-core@3.3.12)(esbuild@0.28.1)(rolldown@1.2.12)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.0.3(@microsoft/api-extractor@7.59.2(@types/node@26.6.3))(@vue/language-core@3.3.11)(esbuild@0.28.1)(rolldown@1.2.11)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       vite:
         specifier: 'catalog:'
         version: 8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
@@ -764,7 +764,7 @@ importers:
         version: 6.0.3
       unplugin-dts:
         specifier: 'catalog:'
-        version: 1.1.2(@microsoft/api-extractor@7.59.3(@types/node@26.6.4))(@vue/language-core@3.3.12)(esbuild@0.28.1)(rolldown@1.2.12)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.0.3(@microsoft/api-extractor@7.59.2(@types/node@26.6.3))(@vue/language-core@3.3.11)(esbuild@0.28.1)(rolldown@1.2.11)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       vite:
         specifier: 'catalog:'
         version: 8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
@@ -871,7 +871,7 @@ importers:
         version: 6.0.3
       unplugin-dts:
         specifier: 'catalog:'
-        version: 1.1.2(@microsoft/api-extractor@7.59.3(@types/node@26.6.4))(@vue/language-core@3.3.12)(esbuild@0.28.1)(rolldown@1.2.12)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.0.3(@microsoft/api-extractor@7.59.2(@types/node@26.6.3))(@vue/language-core@3.3.11)(esbuild@0.28.1)(rolldown@1.2.11)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       vite:
         specifier: 'catalog:'
         version: 8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
@@ -1347,7 +1347,7 @@ importers:
         version: 6.0.3
       unplugin-dts:
         specifier: 'catalog:'
-        version: 1.1.2(@microsoft/api-extractor@7.59.3(@types/node@26.6.4))(@vue/language-core@3.3.12)(esbuild@0.28.1)(rolldown@1.2.12)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.0.3(@microsoft/api-extractor@7.59.2(@types/node@26.6.3))(@vue/language-core@3.3.11)(esbuild@0.28.1)(rolldown@1.2.11)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       vite:
         specifier: 'catalog:'
         version: 8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
@@ -1475,7 +1475,7 @@ importers:
         version: 30.1.1
       unplugin-dts:
         specifier: 'catalog:'
-        version: 1.1.2(@microsoft/api-extractor@7.59.3(@types/node@26.6.4))(@vue/language-core@3.3.12)(esbuild@0.28.1)(rolldown@1.2.12)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.0.3(@microsoft/api-extractor@7.59.2(@types/node@26.6.3))(@vue/language-core@3.3.11)(esbuild@0.28.1)(rolldown@1.2.11)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       vite:
         specifier: 'catalog:'
         version: 8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
@@ -1521,7 +1521,7 @@ importers:
         version: 6.0.3
       unplugin-dts:
         specifier: 'catalog:'
-        version: 1.1.2(@microsoft/api-extractor@7.59.3(@types/node@26.6.4))(@vue/language-core@3.3.12)(esbuild@0.28.1)(rolldown@1.2.12)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.0.3(@microsoft/api-extractor@7.59.2(@types/node@26.6.3))(@vue/language-core@3.3.11)(esbuild@0.28.1)(rolldown@1.2.11)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       vite:
         specifier: 'catalog:'
         version: 8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
@@ -1594,7 +1594,7 @@ importers:
         version: 6.0.3
       unplugin-dts:
         specifier: 'catalog:'
-        version: 1.1.2(@microsoft/api-extractor@7.59.3(@types/node@26.6.4))(@vue/language-core@3.3.12)(esbuild@0.28.1)(rolldown@1.2.12)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.0.3(@microsoft/api-extractor@7.59.2(@types/node@26.6.3))(@vue/language-core@3.3.11)(esbuild@0.28.1)(rolldown@1.2.11)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       vite:
         specifier: 'catalog:'
         version: 8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
@@ -7720,9 +7720,6 @@ packages:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
 
-  glob-to-regexp@0.4.1:
-    resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
-
   glob@10.5.0:
     resolution: {integrity: sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==}
     deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
@@ -10675,8 +10672,8 @@ packages:
       '@vueuse/core':
         optional: true
 
-  unplugin-dts@1.1.2:
-    resolution: {integrity: sha512-RDqy90XUmFj6rz4U5YoTMdYdaCJe2ZnQZaWIjkWS4952Gv0zBTQyqWtlGgVMPYHa982dURvyoc+sUOFIcDFv+w==}
+  unplugin-dts@1.0.3:
+    resolution: {integrity: sha512-/GR887wfG4r1cWyt1UZsLRuMIjsmEbGkS9yJrz+0dsToHAYUD5CTyP3JMGVLv25j9K0mJcwAVvZno/aTuSUvNg==}
     peerDependencies:
       '@microsoft/api-extractor': '>=7'
       '@rspack/core': ^1
@@ -19830,8 +19827,6 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  glob-to-regexp@0.4.1: {}
-
   glob@10.5.0:
     dependencies:
       foreground-child: 3.3.1
@@ -24107,13 +24102,12 @@ snapshots:
       - vite
       - webpack
 
-  unplugin-dts@1.1.2(@microsoft/api-extractor@7.59.3(@types/node@26.6.4))(@vue/language-core@3.3.12)(esbuild@0.28.1)(rolldown@1.2.12)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)):
+  unplugin-dts@1.0.3(@microsoft/api-extractor@7.59.2(@types/node@26.6.3))(@vue/language-core@3.3.11)(esbuild@0.28.1)(rolldown@1.2.11)(rollup@4.62.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.62.0)
       '@volar/typescript': 2.4.28
       compare-versions: 6.1.1
       debug: 4.4.3
-      glob-to-regexp: 0.4.1
       kolorist: 1.8.0
       local-pkg: 1.2.1
       magic-string: 0.30.21

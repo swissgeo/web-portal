@@ -85,22 +85,27 @@ describe("useImportDrawing", () => {
     });
   });
 
-  it("returns reactive state and importDrawing function", () => {
-    const { url, isLoading, errorMessage, successMessage, importDrawing } =
-      useImportDrawing();
+  it("returns reactive state and importLegacyDrawing function", () => {
+    const {
+      url,
+      isLoading,
+      errorMessage,
+      successMessage,
+      importLegacyDrawing,
+    } = useImportDrawing();
 
     expect(url.value).toBe("");
     expect(isLoading.value).toBe(false);
     expect(errorMessage.value).toBe("");
     expect(successMessage.value).toBe("");
-    expect(typeof importDrawing).toBe("function");
+    expect(typeof importLegacyDrawing).toBe("function");
   });
 
   it("sets error when URL is empty", async () => {
-    const { errorMessage, importDrawing } = useImportDrawing();
+    const { errorMessage, importLegacyDrawing } = useImportDrawing();
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(errorMessage.value).toBe(
       "toolbox.import.errorMessages.noUrlEntered",
@@ -108,11 +113,11 @@ describe("useImportDrawing", () => {
   });
 
   it("resolves short URL, extracts KML, and imports", async () => {
-    const { url, importDrawing, successMessage } = useImportDrawing();
+    const { url, importLegacyDrawing, successMessage } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(resolveUrlMock).toHaveBeenCalledWith(
       "/api/wpa/v1/drawing/resolve-url",
@@ -127,12 +132,12 @@ describe("useImportDrawing", () => {
   });
 
   it("handles viewer URL directly without server redirect", async () => {
-    const { url, importDrawing } = useImportDrawing();
+    const { url, importLegacyDrawing } = useImportDrawing();
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/test123";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(resolveUrlMock).not.toHaveBeenCalled();
     expect(fetchMock).toHaveBeenCalledWith(
@@ -142,11 +147,11 @@ describe("useImportDrawing", () => {
   });
 
   it("handles direct KML URL without server redirect", async () => {
-    const { url, importDrawing } = useImportDrawing();
+    const { url, importLegacyDrawing } = useImportDrawing();
     url.value = "https://public.geo.admin.ch/api/kml/files/test123";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(resolveUrlMock).not.toHaveBeenCalled();
     expect(fetchMock).toHaveBeenCalledWith(
@@ -156,12 +161,12 @@ describe("useImportDrawing", () => {
   });
 
   it("imports multiple KML drawings from viewer URL", async () => {
-    const { url, importDrawing } = useImportDrawing();
+    const { url, importLegacyDrawing } = useImportDrawing();
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/abc;KML%7Chttps://public.geo.admin.ch/api/kml/files/def";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock).toHaveBeenCalledWith(
@@ -174,11 +179,11 @@ describe("useImportDrawing", () => {
   });
 
   it("sets error when no KML URL found in viewer URL", async () => {
-    const { url, importDrawing, errorMessage } = useImportDrawing();
+    const { url, importLegacyDrawing, errorMessage } = useImportDrawing();
     url.value = "https://map.geo.admin.ch/#/map?layers=ch.test";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(errorMessage.value).toBe("toolbox.import.errorMessages.noKmlFound");
   });
@@ -188,32 +193,32 @@ describe("useImportDrawing", () => {
       new Error("Fetching from this domain is not allowed"),
     );
 
-    const { url, importDrawing, errorMessage } = useImportDrawing();
+    const { url, importLegacyDrawing, errorMessage } = useImportDrawing();
     url.value = "https://evil.com/malicious.kml";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(errorMessage.value).toBe("Fetching from this domain is not allowed");
   });
 
   it("sets error when KML URL domain is not allowed (client-side)", async () => {
-    const { url, importDrawing, errorMessage } = useImportDrawing();
+    const { url, importLegacyDrawing, errorMessage } = useImportDrawing();
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://evil.com/malicious.kml";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(errorMessage.value).toContain("domainNotAllowed");
   });
 
   it("clears URL on success", async () => {
-    const { url, importDrawing } = useImportDrawing();
+    const { url, importLegacyDrawing } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(url.value).toBe("");
   });
@@ -221,11 +226,11 @@ describe("useImportDrawing", () => {
   it("sets error when resolve fails", async () => {
     resolveUrlMock.mockRejectedValueOnce(new Error("Resolve failed"));
 
-    const { url, importDrawing, errorMessage } = useImportDrawing();
+    const { url, importLegacyDrawing, errorMessage } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(errorMessage.value).toBe("Resolve failed");
   });
@@ -233,11 +238,11 @@ describe("useImportDrawing", () => {
   it("sets error when KML fetch fails", async () => {
     fetchMock.mockRejectedValueOnce(new Error("Network error"));
 
-    const { url, importDrawing, errorMessage } = useImportDrawing();
+    const { url, importLegacyDrawing, errorMessage } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(errorMessage.value).toBe("Network error");
   });
@@ -248,11 +253,11 @@ describe("useImportDrawing", () => {
       statusText: "Not Found",
     });
 
-    const { url, importDrawing, errorMessage } = useImportDrawing();
+    const { url, importLegacyDrawing, errorMessage } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(errorMessage.value).toBe(
       "toolbox.import.errorMessages.kmlFetchFailed",
@@ -260,11 +265,11 @@ describe("useImportDrawing", () => {
   });
 
   it("sets isLoading during import and resets after", async () => {
-    const { url, isLoading, importDrawing } = useImportDrawing();
+    const { url, isLoading, importLegacyDrawing } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
     await flushPromises();
-    const promise = importDrawing();
+    const promise = importLegacyDrawing();
     expect(isLoading.value).toBe(true);
 
     await promise;
@@ -272,12 +277,12 @@ describe("useImportDrawing", () => {
   });
 
   it("clean up the @adminId part of the URL before fetching", async () => {
-    const { url, importDrawing } = useImportDrawing();
+    const { url, importLegacyDrawing } = useImportDrawing();
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/test123@adminId=987";
 
     await flushPromises();
-    await importDrawing();
+    await importLegacyDrawing();
 
     expect(fetchMock).toHaveBeenCalledWith(
       "https://public.geo.admin.ch/api/kml/files/test123",
@@ -340,7 +345,7 @@ describe("useImportDrawing", () => {
         expect(drawing.swissGeoUrlValidation.value).toEqual({
           isValid: true,
           drawingId: id,
-          adminId: null,
+          adminId: "",
           adminIdProvided: !!hash,
         });
         if (hash !== `#${admin}`) {
@@ -428,10 +433,10 @@ describe("useImportDrawing", () => {
         expect(clearDrawingLayerSpy).toHaveBeenCalledOnce();
         expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
         expect(importKmzSpy).toHaveBeenCalledWith(buffer);
-        expect(drawingId.value).toBe(asAdmin ? id : null);
-        expect(drawingAdminId.value).toBe(asAdmin ? admin : null);
+        expect(drawingId.value).toBe(asAdmin ? id : "");
+        expect(drawingAdminId.value).toBe(asAdmin ? admin : "");
         expect(drawingS3Url.value).toBe(
-          asAdmin ? `${endpoint}/${id}#${admin}` : null,
+          asAdmin ? `${endpoint}/${id}#${admin}` : "",
         );
         expect(drawing.isLoading.value).toBe(false);
       },

@@ -51,34 +51,27 @@ const {
   focusedFeatureType,
   mountDrawingLayer,
   clearDrawingLayer,
-  isDrawingLayerInLayerStore,
   serializeAllFeaturesAsBlob,
   drawingAdminId,
-  drawingS3Url,
   drawingId,
 } = useDrawing();
 
 const shareDrawingAsAdmin = ref(false);
+const runtimeConfig = useRuntimeConfig();
 
 const drawingShareableString = computed(() => {
-  if (!drawingS3Url.value || !drawingAdminId.value) {
+  if (!drawingId.value || !drawingAdminId.value) {
     return "";
   }
 
-  const shareUrl = new URL(drawingS3Url.value);
-
-  if (shareDrawingAsAdmin.value) {
-    shareUrl.hash = drawingAdminId.value;
-  }
-
+  const shareUrl = new URL(
+    `${runtimeConfig.public.drawingServiceEndpoint}/${drawingId.value}`,
+  );
+  shareUrl.hash = shareDrawingAsAdmin.value ? drawingAdminId.value : "";
   return shareUrl.toString();
 });
 
 const { shareDrawings, isSharing } = useShareDrawings();
-
-const emit = defineEmits<{
-  close: [];
-}>();
 
 const drawingTools = [
   {
@@ -122,6 +115,10 @@ function selectTool() {
 
 function startDrawing(tool: (typeof drawingTools)[number]) {
   activeTool.value = tool.id;
+  if (tool.geometry === "Point") {
+    enableDrawInteraction(tool.geometry, tool.id);
+    return;
+  }
   enableDrawInteraction(tool.geometry);
 }
 
@@ -198,18 +195,6 @@ async function exportAllFeatures(
     log.error("Failed to export all features");
   }
 }
-
-/**
- * If the drawing layer is removed from the layer store, we should close the drawing panel, as it is no longer relevant.
- */
-watch(
-  isDrawingLayerInLayerStore,
-  (isDrawingLayerPresentInStore, wasDrawingLayerPresentInStore) => {
-    if (!isDrawingLayerPresentInStore && wasDrawingLayerPresentInStore) {
-      emit("close");
-    }
-  },
-);
 
 // Watch for changes in focus mode and share drawings when focus mode is set to 'none'.
 watch(focusMode, async (newFocusMode) => {

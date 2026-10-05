@@ -20,6 +20,11 @@
       "matchPackageNames": ["prettier"],
       "matchUpdateTypes": ["major", "minor"],
       "enabled": false
+    },
+    {
+      "description": "Update unplugin-dts manually until the Vite 8 watch rebuild loop is fixed",
+      "matchPackageNames": ["unplugin-dts"],
+      "enabled": false
     }
   ],
   "postUpgradeTasks": {

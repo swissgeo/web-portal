@@ -364,6 +364,7 @@
       "importFileUrlButton": "Importer depuis l'URL",
       "cancelImport": "Annuler",
       "clearAndImportAsAdmin": "Effacer et importer en tant qu'administrateur",
+      "clearAndImportAsNonAdmin": "Effacer et importer",
       "errorMessages": {
         "invalidDrawingUrl": "L’URL du dessin est invalide",
         "invalidDrawingAdminId": "L’identifiant administrateur du dessin est invalide",
@@ -381,10 +382,9 @@
         "adminRequired": "Des droits d'administrateur sont nécessaires pour importer ce dessin"
       },
       "infoMessages": {
-        "adminImportPart1": "L'importation d'un dessin Swissgeo nécessite de supprimer les dessins existants.",
-        "adminImportPart2": "Vous pourrez ensuite continuer à modifier le dessin et le synchroniser avec la base de données Swissgeo.",
-        "nonAdminImportPart1": "L'importation d'un dessin Swissgeo nécessite de supprimer les dessins existants.",
-        "nonAdminImportPart2": "Vous pourrez ensuite modifier le dessin et le partager avec d'autres utilisateurs."
+        "importPart1": "Importer un dessin {provenance} nécessite de supprimer le dessin existant. Après l'importation, vous pourrez continuer à modifier le dessin.",
+        "adminImportPart2": "Si le dessin est importé en tant qu'administrateur, vous pourrez le synchroniser avec la base de données Swissgeo sous le même identifiant que celui importé et les autres utilisateurs verront vos modifications.",
+        "nonAdminImportPart2": "Le partage du dessin sera alors possible avec d'autres utilisateurs, mais sous un identifiant de dessin différent de celui importé."
       },
       "close": "Fermer"
     },

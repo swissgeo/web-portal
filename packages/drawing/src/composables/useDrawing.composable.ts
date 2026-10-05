@@ -471,6 +471,15 @@ export function useDrawing() {
           // (not the creating/editing style, but the style that can later be modified and persisted)
           initializeStyleProperties(focusedFeature.value);
 
+          if (
+            focusedFeatureType.value === "Point" &&
+            drawingStore.pointDrawingTool === "text"
+          ) {
+            setShowTitleStyleProperty(focusedFeature.value, true);
+            setShowIconStyleProperty(focusedFeature.value, false);
+            setTextPlacementStyleProperty(focusedFeature.value, "center");
+          }
+
           // Initialize the non-style metadata properties (title, description) for the new feature
           initializeMetadataProperties(focusedFeature.value);
 

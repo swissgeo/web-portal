@@ -383,10 +383,9 @@
         "adminRequired": "Zum Importieren dieser Zeichnung sind Administratorrechte erforderlich"
       },
       "infoMessages": {
-        "adminImportPart1": "Beim Importieren einer Swissgeo-Zeichnung müssen die vorhandenen Zeichnungen gelöscht werden.",
-        "adminImportPart2": "Anschliessend können Sie die Zeichnung weiter bearbeiten und mit der Swissgeo-Datenbank synchronisieren.",
-        "nonAdminImportPart1": "Beim Importieren einer Swissgeo-Zeichnung müssen die vorhandenen Zeichnungen gelöscht werden.",
-        "nonAdminImportPart2": "Anschliessend können Sie die Zeichnung bearbeiten und mit anderen Benutzern teilen."
+        "importPart1": "Das Importieren einer {provenance}-Zeichnung erfordert das Löschen der vorhandenen Zeichnung. Nach dem Import können Sie die Zeichnung weiter bearbeiten.",
+        "adminImportPart2": "Wenn die Zeichnung als Administrator importiert wird, können Sie sie mit der Swissgeo-Datenbank unter derselben ID wie die importierte synchronisieren, und andere Benutzer sehen Ihre Änderungen.",
+        "nonAdminImportPart2": "Das Teilen der Zeichnung wird dann mit anderen Benutzern möglich sein, jedoch unter einer anderen Zeichen-ID als der importierten."
       },
       "close": "Schließen"
     },
