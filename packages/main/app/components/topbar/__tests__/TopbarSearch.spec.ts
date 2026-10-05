@@ -15,6 +15,7 @@ const searchStore = reactive({
   coordinateResult: null,
   isSearching: false,
   hasError: false,
+  enableCmsSearch: true,
   get hasResults() {
     return this.results.length > 0;
   },
@@ -112,6 +113,7 @@ describe("TopbarSearch", () => {
     searchStore.query = "";
     searchStore.results = [];
     searchStore.isSearching = false;
+    searchStore.enableCmsSearch = true;
     locale.value = "de";
     handleResultSelection.mockClear();
     searchStore.setSearchQuery.mockClear();
@@ -130,6 +132,32 @@ describe("TopbarSearch", () => {
     expect(contentTab.text()).toContain("Über uns");
     // The location result belongs to the map tab, not this one.
     expect(contentTab.text()).not.toContain("bern");
+  });
+
+  it("hides the content pages tab when CMS search is disabled", () => {
+    searchStore.enableCmsSearch = false;
+    searchStore.query = "uns";
+    searchStore.results = [content("42", "Über uns"), location("bern")];
+
+    const wrapper = render();
+    const items = tabs(wrapper);
+
+    expect(items).toHaveLength(1);
+    expect(items[0]?.label).toBe("search.map_tab");
+    expect(
+      wrapper.find("[data-testid='content-search-results']").exists(),
+    ).toBe(false);
+  });
+
+  it("stays on the map tab when CMS search is disabled and only CMS pages hit", async () => {
+    searchStore.enableCmsSearch = false;
+    const wrapper = render();
+
+    searchStore.query = "zecken";
+    searchStore.results = [content("42", "Zecken")];
+    await nextTick();
+
+    expect(activeTab(wrapper)).toBe("map");
   });
 
   it("counts the CMS results on the content tab badge only", () => {
