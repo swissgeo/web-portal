@@ -978,10 +978,6 @@ export function ensurePropertyTypes(feature: Feature<Geometry>): void {
     feature.set(SHOW_ICON_KEY, props[SHOW_ICON_KEY] === "true");
   }
 
-  if (ICON_SIZE_KEY in props && typeof props[ICON_SIZE_KEY] !== "number") {
-    feature.set(ICON_SIZE_KEY, Number(props[ICON_SIZE_KEY]));
-  }
-
   if (
     IS_POLYGONIZED_CIRCLE_KEY in props &&
     typeof props[IS_POLYGONIZED_CIRCLE_KEY] !== "boolean"

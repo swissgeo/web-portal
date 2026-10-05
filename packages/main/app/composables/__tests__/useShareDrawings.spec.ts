@@ -101,7 +101,10 @@ describe("useShareDrawings", () => {
     );
     const request = fetchMock.mock.calls[1]![1] as RequestInit;
     const body = request.body as FormData;
-    expect(body.get("admin_id")).toBe(serviceResponse.admin_id);
+    expect((request.headers as Headers).get("Authorization")).toBe(
+      `Bearer ${serviceResponse.admin_id}`,
+    );
+    expect(body.has("admin_id")).toBe(false);
     expect(body.get("file")).toBeInstanceOf(File);
     expect(body.get("sha256")).toBe(
       "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
@@ -117,4 +120,86 @@ describe("useShareDrawings", () => {
     expect(fetchMock).not.toHaveBeenCalled();
     expect(isSharing.value).toBe(false);
   });
+  it.each(["create", "update"])(
+    "resets sharing after a failed %s response",
+    async (operation) => {
+      if (operation === "update") {
+        drawingId.value = "existing";
+        drawingAdminId.value = "admin";
+      }
+      fetchMock.mockResolvedValueOnce({ ok: false, statusText: "Forbidden" });
+      const { shareDrawings, isSharing } = useShareDrawings();
+
+      await expect(shareDrawings()).rejects.toThrow(
+        operation === "create"
+          ? "Failed to share drawings: Forbidden"
+          : "Failed to update drawing: Forbidden",
+      );
+      expect(isSharing.value).toBe(false);
+      expect(drawingId.value).toBe(operation === "update" ? "existing" : null);
+      expect(drawingS3Url.value).toBeNull();
+    },
+  );
+
+  it.each(["create", "update"])(
+    "resets sharing after a %s network error",
+    async (operation) => {
+      if (operation === "update") {
+        drawingId.value = "existing";
+        drawingAdminId.value = "admin";
+      }
+      fetchMock.mockRejectedValueOnce(new Error("Offline"));
+      const { shareDrawings, isSharing } = useShareDrawings();
+      await expect(shareDrawings()).rejects.toThrow("Offline");
+      expect(isSharing.value).toBe(false);
+    },
+  );
+
+  it.each(["create", "update"])(
+    "resets sharing after an invalid %s response body",
+    async (operation) => {
+      if (operation === "update") {
+        drawingId.value = "existing";
+        drawingAdminId.value = "admin";
+      }
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.reject(new Error("Invalid JSON")),
+      });
+      const { shareDrawings, isSharing } = useShareDrawings();
+      await expect(shareDrawings()).rejects.toThrow("Invalid JSON");
+      expect(isSharing.value).toBe(false);
+      expect(drawingS3Url.value).toBeNull();
+    },
+  );
+
+  it("keeps sharing active until the response is received", async () => {
+    let resolveResponse!: (_value: unknown) => void;
+    fetchMock.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveResponse = resolve;
+      }),
+    );
+    const { shareDrawings, isSharing } = useShareDrawings();
+    const pending = shareDrawings();
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(isSharing.value).toBe(true);
+    resolveResponse({ ok: true, json: () => Promise.resolve(serviceResponse) });
+    await pending;
+    expect(isSharing.value).toBe(false);
+  });
+
+  it.each(["id", "admin"])(
+    "creates a drawing when only the %s is available",
+    async (available) => {
+      drawingId.value = available === "id" ? "existing" : null;
+      drawingAdminId.value = available === "admin" ? "admin" : null;
+      const { shareDrawings } = useShareDrawings();
+      await shareDrawings();
+      expect(fetchMock).toHaveBeenCalledWith(
+        "https://example.com/drawings",
+        expect.objectContaining({ method: "POST" }),
+      );
+    },
+  );
 });
