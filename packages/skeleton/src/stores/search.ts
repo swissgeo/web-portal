@@ -16,6 +16,8 @@ import { ref, computed } from "vue";
 
 export const useSearchStore = defineStore("search", () => {
   const runtimeConfig = useRuntimeConfig();
+  const enableCmsSearch =
+    runtimeConfig.public.featureFlags?.enableCmsSearch === true;
   // State
   const query = ref("");
   const results = ref<SearchResult[]>([]);
@@ -125,8 +127,13 @@ export const useSearchStore = defineStore("search", () => {
           lang,
           abortController.signal,
         ),
-        searchContentPages(newQuery, lang, abortController.signal),
       ];
+
+      if (enableCmsSearch) {
+        searchPromises.push(
+          searchContentPages(newQuery, lang, abortController.signal),
+        );
+      }
 
       // Add feature search for each searchable layer
       for (const layer of searchableLayers) {
@@ -250,6 +257,7 @@ export const useSearchStore = defineStore("search", () => {
     contentResults,
     mapResults,
     hasMapResults,
+    enableCmsSearch,
     // Actions
     setSearchQuery,
     selectResult,

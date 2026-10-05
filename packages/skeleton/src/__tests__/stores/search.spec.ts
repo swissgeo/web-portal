@@ -20,12 +20,17 @@ vi.mock("@swissgeo/log", () => ({
   LogPreDefinedColor: { Red: "red" },
 }));
 
-vi.stubGlobal("useRuntimeConfig", () => ({
+const runtimeConfig = vi.hoisted(() => ({
   public: {
     ogcApiEndpoint: "http://catalog.test/api",
     ogcCatalogCollection: "swissgeo-catalog",
+    featureFlags: {
+      enableCmsSearch: true,
+    },
   },
 }));
+
+vi.stubGlobal("useRuntimeConfig", () => runtimeConfig);
 
 const { useSearchStore } = await import("../../stores/search");
 
@@ -41,11 +46,13 @@ const layer = (id: string): LayerSearchResult => ({
 describe("useSearchStore", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    runtimeConfig.public.featureFlags.enableCmsSearch = true;
     searchMocks.searchCoordinate.mockReturnValue(undefined);
     searchMocks.searchLocation.mockResolvedValue([]);
     searchMocks.searchLayers.mockResolvedValue([]);
     searchMocks.searchLayerFeatures.mockResolvedValue([]);
     searchMocks.searchContentPages.mockResolvedValue([]);
+    vi.clearAllMocks();
   });
 
   it("clears results without searching for a query shorter than 2 chars", async () => {
@@ -77,6 +84,18 @@ describe("useSearchStore", () => {
 
     expect(store.layerResults).toHaveLength(1);
     expect(store.contentResults).toHaveLength(1);
+    expect(searchMocks.searchContentPages).toHaveBeenCalled();
+  });
+
+  it("skips the CMS search when the feature flag is off", async () => {
+    runtimeConfig.public.featureFlags.enableCmsSearch = false;
+    const store = useSearchStore();
+
+    await store.setSearchQuery("forest");
+
+    expect(store.enableCmsSearch).toBe(false);
+    expect(searchMocks.searchContentPages).not.toHaveBeenCalled();
+    expect(store.contentResults).toEqual([]);
   });
 
   it("sets hasError when a source fails but keeps the other results", async () => {
