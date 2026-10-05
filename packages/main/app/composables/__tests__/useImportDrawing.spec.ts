@@ -1,4 +1,5 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { flushPromises } from "@vue/test-utils";
 import { setActivePinia, createPinia } from "pinia";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
@@ -21,6 +22,7 @@ const { resolveUrlMock } = vi.hoisted(() => ({
 const { runtimeConfigMock } = vi.hoisted(() => ({
   runtimeConfigMock: {
     public: {
+      drawingServiceEndpoint: "https://drawings.test/api/drawings",
       drawingAllowedDomains: [
         "s.geo.admin.ch",
         "public.geo.admin.ch",
@@ -32,9 +34,8 @@ const { runtimeConfigMock } = vi.hoisted(() => ({
   },
 }));
 
-mockNuxtImport("useI18n", () => () => ({
-  t: (key: string) => key,
-  te: () => true,
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({ t: (key: string) => key }),
 }));
 
 mockNuxtImport("$fetch", () => resolveUrlMock);
@@ -42,11 +43,21 @@ mockNuxtImport("useRuntimeConfig", () => () => runtimeConfigMock);
 
 vi.stubGlobal("fetch", fetchMock);
 
+const importKmzSpy = vi.fn();
+const clearDrawingLayerSpy = vi.fn();
+const drawingId = { value: null as string | null };
+const drawingAdminId = { value: null as string | null };
+const drawingS3Url = { value: null as string | null };
 const importKmlSpy = vi.fn();
 const mountDrawingLayerSpy = vi.fn();
 vi.mock("@swissgeo/drawing", () => ({
   useDrawing: vi.fn(() => ({
     importKml: importKmlSpy,
+    importKmz: importKmzSpy,
+    clearDrawingLayer: clearDrawingLayerSpy,
+    drawingId,
+    drawingAdminId,
+    drawingS3Url,
     mountDrawingLayer: mountDrawingLayerSpy,
   })),
 }));
@@ -60,7 +71,14 @@ vi.mock("@swissgeo/map", () => ({
 describe("useImportDrawing", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    drawingId.value = null;
+    drawingAdminId.value = null;
+    drawingS3Url.value = null;
+    fetchMock.mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve("<kml></kml>"),
+    });
     resolveUrlMock.mockResolvedValue({
       redirectUrl:
         "https://sys-map.dev.bgdi.ch/#/map?layers=KML%7Chttps://sys-public.dev.bgdi.ch/api/kml/files/abc123",
@@ -81,6 +99,7 @@ describe("useImportDrawing", () => {
   it("sets error when URL is empty", async () => {
     const { errorMessage, importDrawing } = useImportDrawing();
 
+    await flushPromises();
     await importDrawing();
 
     expect(errorMessage.value).toBe(
@@ -92,6 +111,7 @@ describe("useImportDrawing", () => {
     const { url, importDrawing, successMessage } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
+    await flushPromises();
     await importDrawing();
 
     expect(resolveUrlMock).toHaveBeenCalledWith(
@@ -111,6 +131,7 @@ describe("useImportDrawing", () => {
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/test123";
 
+    await flushPromises();
     await importDrawing();
 
     expect(resolveUrlMock).not.toHaveBeenCalled();
@@ -124,6 +145,7 @@ describe("useImportDrawing", () => {
     const { url, importDrawing } = useImportDrawing();
     url.value = "https://public.geo.admin.ch/api/kml/files/test123";
 
+    await flushPromises();
     await importDrawing();
 
     expect(resolveUrlMock).not.toHaveBeenCalled();
@@ -138,6 +160,7 @@ describe("useImportDrawing", () => {
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/abc;KML%7Chttps://public.geo.admin.ch/api/kml/files/def";
 
+    await flushPromises();
     await importDrawing();
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
@@ -154,6 +177,7 @@ describe("useImportDrawing", () => {
     const { url, importDrawing, errorMessage } = useImportDrawing();
     url.value = "https://map.geo.admin.ch/#/map?layers=ch.test";
 
+    await flushPromises();
     await importDrawing();
 
     expect(errorMessage.value).toBe("toolbox.import.errorMessages.noKmlFound");
@@ -167,6 +191,7 @@ describe("useImportDrawing", () => {
     const { url, importDrawing, errorMessage } = useImportDrawing();
     url.value = "https://evil.com/malicious.kml";
 
+    await flushPromises();
     await importDrawing();
 
     expect(errorMessage.value).toBe("Fetching from this domain is not allowed");
@@ -177,6 +202,7 @@ describe("useImportDrawing", () => {
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://evil.com/malicious.kml";
 
+    await flushPromises();
     await importDrawing();
 
     expect(errorMessage.value).toContain("domainNotAllowed");
@@ -186,6 +212,7 @@ describe("useImportDrawing", () => {
     const { url, importDrawing } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
+    await flushPromises();
     await importDrawing();
 
     expect(url.value).toBe("");
@@ -197,6 +224,7 @@ describe("useImportDrawing", () => {
     const { url, importDrawing, errorMessage } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
+    await flushPromises();
     await importDrawing();
 
     expect(errorMessage.value).toBe("Resolve failed");
@@ -208,6 +236,7 @@ describe("useImportDrawing", () => {
     const { url, importDrawing, errorMessage } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
+    await flushPromises();
     await importDrawing();
 
     expect(errorMessage.value).toBe("Network error");
@@ -222,6 +251,7 @@ describe("useImportDrawing", () => {
     const { url, importDrawing, errorMessage } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
+    await flushPromises();
     await importDrawing();
 
     expect(errorMessage.value).toBe(
@@ -233,6 +263,7 @@ describe("useImportDrawing", () => {
     const { url, isLoading, importDrawing } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
+    await flushPromises();
     const promise = importDrawing();
     expect(isLoading.value).toBe(true);
 
@@ -245,10 +276,194 @@ describe("useImportDrawing", () => {
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/test123@adminId=987";
 
+    await flushPromises();
     await importDrawing();
 
     expect(fetchMock).toHaveBeenCalledWith(
       "https://public.geo.admin.ch/api/kml/files/test123",
+    );
+  });
+  describe("Swissgeo service drawings", () => {
+    const id = "12345678-1234-1234-1234-123456789abc";
+    const admin = "abcdef12-1234-1234-1234-123456789abc";
+    const endpoint = runtimeConfigMock.public.drawingServiceEndpoint;
+
+    function mockValidation(status = 204) {
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ id }),
+      });
+      fetchMock.mockResolvedValueOnce({ status });
+    }
+
+    it.each([
+      "",
+      "not a URL",
+      "https://other.test/drawings",
+      `${endpoint}/invalid#admin`,
+    ])("rejects an invalid URL: %s", async (input) => {
+      const drawing = useImportDrawing();
+      drawing.url.value = input;
+      await flushPromises();
+      expect(drawing.swissGeoUrlValidation.value.isValid).toBe(false);
+      expect(drawing.isCheckingUrl.value).toBe(false);
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it("validates metadata and authenticates the admin with a Bearer header", async () => {
+      mockValidation();
+      const drawing = useImportDrawing();
+      drawing.url.value = `  ${endpoint}/${id}#${admin}  `;
+      await flushPromises();
+      expect(drawing.swissGeoUrlValidation.value).toEqual({
+        isValid: true,
+        drawingId: id,
+        adminId: admin,
+        adminIdProvided: true,
+      });
+      expect(fetchMock).toHaveBeenNthCalledWith(
+        1,
+        `${endpoint}/${id}/metadata`,
+      );
+      const [authUrl, options] = fetchMock.mock.calls[1]!;
+      expect(authUrl).toBe(`${endpoint}/${id}/check-auth`);
+      expect(options.headers.get("Authorization")).toBe(`Bearer ${admin}`);
+    });
+
+    it.each(["", "#invalid", `#${admin}`])(
+      "allows a read-only import when admin auth is rejected (%s)",
+      async (hash) => {
+        mockValidation(401);
+        const drawing = useImportDrawing();
+        drawing.url.value = `${endpoint}/${id}${hash}`;
+        await flushPromises();
+        expect(drawing.swissGeoUrlValidation.value).toEqual({
+          isValid: true,
+          drawingId: id,
+          adminId: null,
+          adminIdProvided: !!hash,
+        });
+        if (hash !== `#${admin}`) {
+          expect(fetchMock.mock.calls[1]![1].headers).toBeUndefined();
+        }
+      },
+    );
+
+    it.each(["http", "network", "auth"])(
+      "rejects unavailable drawings after a %s failure",
+      async (failure) => {
+        if (failure === "http") {
+          fetchMock.mockResolvedValueOnce({ ok: false, status: 404 });
+        } else if (failure === "network") {
+          fetchMock.mockRejectedValueOnce(new Error("Offline"));
+        } else {
+          fetchMock.mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ id }),
+          });
+          fetchMock.mockRejectedValueOnce(new Error("Offline"));
+        }
+        const drawing = useImportDrawing();
+        drawing.url.value = `${endpoint}/${id}`;
+        await flushPromises();
+        expect(drawing.swissGeoUrlValidation.value.isValid).toBe(false);
+        expect(drawing.isCheckingUrl.value).toBe(false);
+      },
+    );
+
+    it("ignores validation results for a URL that has since changed", async () => {
+      let resolveMetadata!: (_value: unknown) => void;
+      fetchMock.mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolveMetadata = resolve;
+        }),
+      );
+      const drawing = useImportDrawing();
+      drawing.url.value = `${endpoint}/${id}`;
+      await flushPromises();
+      expect(drawing.isCheckingUrl.value).toBe(true);
+      drawing.url.value = "https://other.test/";
+      await flushPromises();
+      resolveMetadata({ ok: true, json: () => Promise.resolve({ id }) });
+      await flushPromises();
+      expect(drawing.swissGeoUrlValidation.value.isValid).toBe(false);
+      expect(drawing.isCheckingUrl.value).toBe(false);
+    });
+
+    it("rejects an import before validation succeeds", async () => {
+      const drawing = useImportDrawing();
+      await expect(drawing.importSwissgeoDrawing(false)).rejects.toThrow(
+        "toolbox.import.errorMessages.generalError",
+      );
+      expect(clearDrawingLayerSpy).not.toHaveBeenCalled();
+    });
+
+    it("requires a validated admin ID for admin imports", async () => {
+      mockValidation(401);
+      const drawing = useImportDrawing();
+      drawing.url.value = `${endpoint}/${id}`;
+      await flushPromises();
+      await expect(drawing.importSwissgeoDrawing(true)).rejects.toThrow(
+        "toolbox.import.errorMessages.adminRequired",
+      );
+      expect(clearDrawingLayerSpy).not.toHaveBeenCalled();
+    });
+
+    it.each([false, true])(
+      "imports KMZ with admin mode %s",
+      async (asAdmin) => {
+        mockValidation();
+        const drawing = useImportDrawing();
+        drawing.url.value = `${endpoint}/${id}?download=true#${admin}`;
+        await flushPromises();
+        const buffer = new ArrayBuffer(8);
+        fetchMock.mockResolvedValueOnce({
+          ok: true,
+          arrayBuffer: () => Promise.resolve(buffer),
+        });
+        await drawing.importSwissgeoDrawing(asAdmin);
+        expect(fetchMock).toHaveBeenLastCalledWith(
+          `${endpoint}/${id}#${admin}`,
+        );
+        expect(clearDrawingLayerSpy).toHaveBeenCalledOnce();
+        expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
+        expect(importKmzSpy).toHaveBeenCalledWith(buffer);
+        expect(drawingId.value).toBe(asAdmin ? id : null);
+        expect(drawingAdminId.value).toBe(asAdmin ? admin : null);
+        expect(drawingS3Url.value).toBe(
+          asAdmin ? `${endpoint}/${id}#${admin}` : null,
+        );
+        expect(drawing.isLoading.value).toBe(false);
+      },
+    );
+
+    it.each(["http", "network", "kmz"])(
+      "resets loading after a %s import failure",
+      async (failure) => {
+        mockValidation();
+        const drawing = useImportDrawing();
+        drawing.url.value = `${endpoint}/${id}`;
+        await flushPromises();
+        if (failure === "http") {
+          fetchMock.mockResolvedValueOnce({
+            ok: false,
+            statusText: "Not Found",
+          });
+        } else if (failure === "network") {
+          fetchMock.mockRejectedValueOnce(new Error("Offline"));
+        } else {
+          fetchMock.mockResolvedValueOnce({
+            ok: true,
+            arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+          });
+          importKmzSpy.mockRejectedValueOnce(new Error("Invalid KMZ"));
+        }
+        await expect(drawing.importSwissgeoDrawing(false)).rejects.toThrow();
+        expect(drawing.isLoading.value).toBe(false);
+        if (failure !== "kmz") {
+          expect(clearDrawingLayerSpy).not.toHaveBeenCalled();
+        }
+      },
     );
   });
 });

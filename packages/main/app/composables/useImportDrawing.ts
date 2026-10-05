@@ -240,8 +240,10 @@ export function useImportDrawing() {
       adminId: null,
       adminIdProvided: false,
     };
-    errorMessage.value = "";
-    successMessage.value = "";
+    if (value.trim()) {
+      errorMessage.value = "";
+      successMessage.value = "";
+    }
 
     const validation = await validateSwissgeoServiceDrawingsUrl(value.trim());
     if (!stale) {
@@ -351,33 +353,35 @@ export function useImportDrawing() {
 
     isLoading.value = true;
 
-    const res = await fetch(drawingIdUrlObj.href);
-    if (!res.ok) {
+    try {
+      const res = await fetch(drawingIdUrlObj.href);
+      if (!res.ok) {
+        throw new Error(
+          t("toolbox.import.errorMessages.fetchFailed", {
+            status: res.statusText,
+          }),
+        );
+      }
+
+      clearDrawingLayer();
+
+      mountDrawingLayer(olMap.value);
+
+      // If the user decides to imports a Swissgeo drawing as an admin,
+      // their previously existing drawings are cleared automatically before adding the imported ones.
+      // In addition, the user is now using the drawing ID and admin ID of the imported drawing,
+      // which makes them futher editable
+      if (swissGeoUrlValidation.value.adminId && asAdmin) {
+        drawingAdminId.value = swissGeoUrlValidation.value.adminId;
+        drawingId.value = swissGeoUrlValidation.value.drawingId;
+        drawingS3Url.value = drawingIdUrlObj.href;
+      }
+
+      const kmzBuffer = await res.arrayBuffer();
+      await importKmz(kmzBuffer);
+    } finally {
       isLoading.value = false;
-      throw new Error(
-        t("toolbox.import.errorMessages.fetchFailed", {
-          status: res.statusText,
-        }),
-      );
     }
-
-    clearDrawingLayer();
-
-    mountDrawingLayer(olMap.value);
-
-    // If the user decides to imports a Swissgeo drawing as an admin,
-    // their previously existing drawings are cleared automatically before adding the imported ones.
-    // In addition, the user is now using the drawing ID and admin ID of the imported drawing,
-    // which makes them futher editable
-    if (swissGeoUrlValidation.value.adminId && asAdmin) {
-      drawingAdminId.value = swissGeoUrlValidation.value.adminId;
-      drawingId.value = swissGeoUrlValidation.value.drawingId;
-      drawingS3Url.value = drawingIdUrlObj.href;
-    }
-
-    const kmzBuffer = await res.arrayBuffer();
-    await importKmz(kmzBuffer);
-    isLoading.value = false;
   }
 
   return {

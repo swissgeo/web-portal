@@ -54,22 +54,24 @@ export function useShareDrawings() {
 
     isSharing.value = true;
 
-    const response = await fetch(drawingServiceEndpoint, {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const response = await fetch(drawingServiceEndpoint, {
+        method: "POST",
+        body: formData,
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        throw new Error(`Failed to share drawings: ${response.statusText}`);
+      }
+
+      const responseData = (await response.json()) as DrawingsCreateResponse;
+
+      drawingId.value = responseData.id;
+      drawingAdminId.value = responseData.admin_id;
+      drawingS3Url.value = responseData.s3_url;
+    } finally {
       isSharing.value = false;
-      throw new Error(`Failed to share drawings: ${response.statusText}`);
     }
-
-    const responseData = (await response.json()) as DrawingsCreateResponse;
-
-    drawingId.value = responseData.id;
-    drawingAdminId.value = responseData.admin_id;
-    drawingS3Url.value = responseData.s3_url;
-    isSharing.value = false;
   }
 
   async function updateDrawing(formData: FormData) {
@@ -78,28 +80,30 @@ export function useShareDrawings() {
 
     isSharing.value = true;
 
-    const response = await fetch(
-      `${drawingServiceEndpoint}/${drawingId.value.toString()}`,
-      {
-        method: "PUT",
-        body: formData,
-        headers: new Headers({
-          Authorization: `Bearer ${drawingAdminId.value.toString()}`,
-        }),
-      },
-    );
+    try {
+      const response = await fetch(
+        `${drawingServiceEndpoint}/${drawingId.value.toString()}`,
+        {
+          method: "PUT",
+          body: formData,
+          headers: new Headers({
+            Authorization: `Bearer ${drawingAdminId.value.toString()}`,
+          }),
+        },
+      );
 
-    if (!response.ok) {
+      if (!response.ok) {
+        throw new Error(`Failed to update drawing: ${response.statusText}`);
+      }
+
+      const responseData = (await response.json()) as DrawingsUpdateResponse;
+
+      drawingId.value = responseData.id;
+      drawingAdminId.value = responseData.admin_id;
+      drawingS3Url.value = responseData.s3_url;
+    } finally {
       isSharing.value = false;
-      throw new Error(`Failed to update drawing: ${response.statusText}`);
     }
-
-    const responseData = (await response.json()) as DrawingsUpdateResponse;
-
-    drawingId.value = responseData.id;
-    drawingAdminId.value = responseData.admin_id;
-    drawingS3Url.value = responseData.s3_url;
-    isSharing.value = false;
   }
 
   return {
