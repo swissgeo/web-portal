@@ -270,7 +270,21 @@
       "title": "Share",
       "link": {
         "title": "Share link",
-        "generateButton": "Generate share link"
+        "description": "Share the current map view with others or copy the URL.",
+        "generateButton": "Generate share link",
+        "drawingEditableLabel": "Drawing editable",
+        "urlLabel": "URL",
+        "copyButton": "Copy",
+        "socialMediaLabel": "Via social media",
+        "qrCodeLabel": "Link as QR code",
+        "shareText": "Check out this map",
+        "ariaLabel": {
+          "copyToClipboard": "Copy to clipboard",
+          "email": "Share via email",
+          "facebook": "Share on Facebook",
+          "linkedin": "Share on LinkedIn",
+          "whatsapp": "Share on WhatsApp"
+        }
       },
       "embed": {
         "title": "Embedding",

@@ -271,7 +271,21 @@
       "title": "Teilen",
       "link": {
         "title": "Freigabelink",
-        "generateButton": "Freigabelink generieren"
+        "description": "Teilen Sie die aktuelle Kartenansicht mit anderen oder kopieren Sie die URL.",
+        "generateButton": "Freigabelink generieren",
+        "drawingEditableLabel": "Zeichnung editierbar",
+        "urlLabel": "URL",
+        "copyButton": "Kopieren",
+        "socialMediaLabel": "Via Social Media",
+        "qrCodeLabel": "Link als Qr-Code",
+        "shareText": "Schauen Sie sich diese Karte an",
+        "ariaLabel": {
+          "copyToClipboard": "In die Zwischenablage kopieren",
+          "email": "Per E-Mail teilen",
+          "facebook": "Auf Facebook teilen",
+          "linkedin": "Auf LinkedIn teilen",
+          "whatsapp": "Auf WhatsApp teilen"
+        }
       },
       "embed": {
         "title": "Einbetten",

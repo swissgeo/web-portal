@@ -23,16 +23,16 @@ const { shareLink, embedCode, hash } = useCreateShareLink(exportState, {
   resolution,
 });
 
-const items = [
+const items = computed<TabsItem[]>(() => [
   {
-    label: "Link teilen",
+    label: t("toolbox.share.link.title"),
     slot: "link" as const,
   },
   {
-    label: "Einbetten",
+    label: t("toolbox.share.embed.title"),
     slot: "embed" as const,
   },
-] satisfies TabsItem[];
+]);
 </script>
 
 <template>
@@ -50,7 +50,7 @@ const items = [
         variant="link"
         class="w-full gap-4"
         :ui="{
-          trigger: 'text-xs',
+          trigger: 'text-sm',
         }"
       >
         <template #link>
