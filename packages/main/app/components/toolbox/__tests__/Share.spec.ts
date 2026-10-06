@@ -5,21 +5,20 @@ import { mount } from "@vue/test-utils";
 import Share from "~/components/toolbox/share/Share.vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { sharing, linkClipboard, embedClipboard, closeDetailPanel } =
-  await vi.hoisted(async () => {
+const { sharing, linkClipboard, embedClipboard } = await vi.hoisted(
+  async () => {
     const { ref } = await import("vue");
     return {
       sharing: {
         shareLink: ref("https://example.test/share"),
         embedCode: ref('<iframe src="https://example.test/embed"></iframe>'),
-        needToRefresh: ref(false),
-        refresh: vi.fn(),
+        hash: ref("state-id"),
       },
       linkClipboard: { copied: ref(false), copy: vi.fn() },
       embedClipboard: { copied: ref(false), copy: vi.fn() },
-      closeDetailPanel: vi.fn(),
     };
-  });
+  },
+);
 
 let clipboardIndex = 0;
 vi.mock("@vueuse/core", async (importOriginal) => ({
@@ -28,9 +27,6 @@ vi.mock("@vueuse/core", async (importOriginal) => ({
     clipboardIndex += 1;
     return clipboardIndex % 2 === 1 ? linkClipboard : embedClipboard;
   },
-}));
-vi.mock("~/stores/toolbox", () => ({
-  useToolboxStore: () => ({ closeDetailPanel }),
 }));
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
@@ -42,67 +38,102 @@ mockNuxtImport("useCreateShareLink", () => {
   return () => sharing;
 });
 
+const stubs = {
+  UAlert: {
+    name: "UAlert",
+    template: '<div><slot name="description" /><slot /></div>',
+    props: ["title", "icon", "color", "variant", "close"],
+  },
+  UTabs: {
+    name: "UTabs",
+    template: '<div><slot name="link" /><slot name="embed" /></div>',
+    props: ["items", "variant", "ui"],
+  },
+  ShareLink: {
+    name: "ShareLink",
+    props: ["link", "copied"],
+    emits: ["copy"],
+    template: '<div data-testid="share-link-stub" />',
+  },
+  ShareEmbed: {
+    name: "ShareEmbed",
+    props: [
+      "embedCode",
+      "copied",
+      "stateId",
+      "zoomOnlyCtrl",
+      "fullWidth",
+      "resolution",
+    ],
+    emits: [
+      "copy",
+      "update:zoomOnlyCtrl",
+      "update:fullWidth",
+      "update:resolution",
+    ],
+    template: '<div data-testid="share-embed-stub" />',
+  },
+};
+
 function mountShare() {
-  return mount(Share, {
-    global: {
-      stubs: {
-        UCard: { template: '<div><slot name="header" /><slot /></div>' },
-        UInput: { template: '<div><slot name="trailing" /></div>' },
-        UCheckbox: true,
-        UButton: { props: ["icon"], template: "<button><slot /></button>" },
-      },
-    },
-  });
+  return mount(Share, { global: { stubs } });
 }
 
 describe("Share", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    sharing.needToRefresh.value = false;
     linkClipboard.copied.value = false;
     embedClipboard.copied.value = false;
     clipboardIndex = 0;
   });
 
-  it("copies the link and embed code with independent confirmation states", async () => {
+  it("renders both tabs with i18n labels", () => {
     const wrapper = mountShare();
-    const copyLinkButton = wrapper.get('[data-testid="share-copy-link"]');
-    const copyEmbedButton = wrapper.get('[data-testid="share-copy-embed"]');
+    const tabs = wrapper.getComponent({ name: "UTabs" });
 
-    await copyLinkButton.trigger("click");
-    expect(linkClipboard.copy).toHaveBeenCalledExactlyOnceWith(
-      sharing.shareLink.value,
-    );
-    expect(embedClipboard.copy).not.toHaveBeenCalled();
+    expect(tabs.props("items")).toEqual([
+      { label: "toolbox.share.link.title", slot: "link" },
+      { label: "toolbox.share.embed.title", slot: "embed" },
+    ]);
+  });
 
-    linkClipboard.copied.value = true;
-    await wrapper.vm.$nextTick();
-    expect(copyLinkButton.classes()).toContain("text-success");
-    expect(copyEmbedButton.classes()).not.toContain("text-success");
+  it("passes embed state and resolution models to ShareEmbed", () => {
+    const wrapper = mountShare();
+    const embed = wrapper.getComponent({ name: "ShareEmbed" });
 
-    await copyEmbedButton.trigger("click");
+    expect(embed.props("embedCode")).toBe(sharing.embedCode.value);
+    expect(embed.props("stateId")).toBe("state-id");
+    expect(embed.props("zoomOnlyCtrl")).toBe(false);
+    expect(embed.props("fullWidth")).toBe(false);
+    expect(embed.props("resolution")).toEqual({ width: 800, height: 600 });
+  });
+
+  it("copies link and embed code independently on child copy events", async () => {
+    const wrapper = mountShare();
+
+    await wrapper.getComponent({ name: "ShareEmbed" }).vm.$emit("copy");
     expect(embedClipboard.copy).toHaveBeenCalledExactlyOnceWith(
       sharing.embedCode.value,
     );
-    embedClipboard.copied.value = true;
-    await wrapper.vm.$nextTick();
-    expect(copyEmbedButton.classes()).toContain("text-success");
+    expect(linkClipboard.copy).not.toHaveBeenCalled();
+
+    await wrapper.getComponent({ name: "ShareLink" }).vm.$emit("copy");
+    expect(linkClipboard.copy).toHaveBeenCalledExactlyOnceWith(
+      sharing.shareLink.value,
+    );
   });
 
-  it("refreshes expired share data and closes the panel", async () => {
-    sharing.needToRefresh.value = true;
+  it("propagates copied confirmation state to the matching child only", async () => {
     const wrapper = mountShare();
 
-    expect(wrapper.find('[data-testid="share-copy-link"]').exists()).toBe(
+    embedClipboard.copied.value = true;
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.getComponent({ name: "ShareEmbed" }).props("copied")).toBe(
+      true,
+    );
+    expect(wrapper.getComponent({ name: "ShareLink" }).props("copied")).toBe(
       false,
     );
-    expect(wrapper.find('[data-testid="share-copy-embed"]').exists()).toBe(
-      false,
-    );
-    await wrapper.get('[data-testid="share-refresh-link"]').trigger("click");
-    await wrapper.get('[data-testid="share-refresh-embed"]').trigger("click");
-    expect(sharing.refresh).toHaveBeenCalledTimes(2);
-    await wrapper.get('[data-testid="share-close"]').trigger("click");
-    expect(closeDetailPanel).toHaveBeenCalledOnce();
   });
 });

@@ -127,6 +127,53 @@ describe("useCreateShareLink", () => {
     expect(share.hash.value).toBeNull();
   });
 
+  it("builds embed code with the default 800x600 resolution", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const share = useCreateShareLink(ref(makeState()));
+    await share.refresh();
+
+    expect(share.embedCode.value).toContain('width="800" height="600"');
+  });
+
+  it("reflects a custom resolution in the embed code and recomputes on change", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const resolution = ref({ width: 900, height: 500 });
+    const share = useCreateShareLink(ref(makeState()), { resolution });
+    await share.refresh();
+
+    expect(share.embedCode.value).toContain('width="900" height="500"');
+
+    resolution.value = { width: 640, height: 480 };
+    expect(share.embedCode.value).toContain('width="640" height="480"');
+  });
+
+  it("uses 100% width when fullWidth is enabled and restores pixel width after", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const fullWidth = ref(true);
+    const resolution = ref({ width: 800, height: 600 });
+    const share = useCreateShareLink(ref(makeState()), {
+      fullWidth,
+      resolution,
+    });
+    await share.refresh();
+
+    expect(share.embedCode.value).toContain('width="100%" height="600"');
+
+    fullWidth.value = false;
+    expect(share.embedCode.value).toContain('width="800" height="600"');
+  });
+
+  it("keeps height and omits zoomOnlyCtrl by default in embed code", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const share = useCreateShareLink(ref(makeState()), {
+      zoomOnlyCtrl: ref(false),
+    });
+    await share.refresh();
+
+    expect(share.embedCode.value).toContain('height="600"');
+    expect(share.embedCode.value).not.toContain("zoomOnlyCtrl");
+  });
+
   it("derives the print share link from the map view state id", () => {
     const mapViewStore = reactive({ stateId: "" });
     mockUseMapViewStore.mockReturnValue(mapViewStore);

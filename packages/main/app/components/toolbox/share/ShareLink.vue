@@ -76,6 +76,7 @@ function shareOnWhatsApp() {
             :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
             :label="t('toolbox.share.link.copyButton')"
             :aria-label="t('toolbox.share.link.ariaLabel.copyToClipboard')"
+            data-testid="share-link-copy"
             @click="emit('copy')"
           />
         </template>
