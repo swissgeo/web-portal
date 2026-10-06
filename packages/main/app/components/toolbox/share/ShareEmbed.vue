@@ -169,6 +169,7 @@ const iframeStyle = computed(() => ({
         v-model="sizeKey"
         value-key="id"
         :items="items"
+        data-testid="share-embed-size-select"
         :ui="{
           base: 'w-full',
         }"
@@ -176,6 +177,7 @@ const iframeStyle = computed(() => ({
     </UFormField>
     <div
       v-if="sizeKey === 'custom'"
+      data-testid="share-embed-custom-fields"
       class="flex w-full flex-row justify-between gap-4"
     >
       <div class="flex w-full flex-col gap-2">
@@ -191,6 +193,7 @@ const iframeStyle = computed(() => ({
             color="neutral"
             variant="outline"
             :disabled="fullWidth"
+            data-testid="share-embed-width-input"
             @blur="onWidthBlur"
           >
             <template #trailing>
@@ -201,6 +204,7 @@ const iframeStyle = computed(() => ({
         <UCheckbox
           v-model="fullWidth"
           :label="t('toolbox.share.embed.fullWidthLabel')"
+          data-testid="share-embed-full-width"
           :ui="{
             label: 'text-sm',
           }"
@@ -217,6 +221,7 @@ const iframeStyle = computed(() => ({
           size="lg"
           color="neutral"
           variant="outline"
+          data-testid="share-embed-height-input"
           @blur="onHeightBlur"
         >
           <template #trailing>
@@ -232,7 +237,11 @@ const iframeStyle = computed(() => ({
         label: 'text-sm',
       }"
     />
-    <div ref="previewBox" class="relative h-64 w-full overflow-hidden bg-black">
+    <div
+      ref="previewBox"
+      data-testid="share-embed-preview"
+      class="relative h-64 w-full overflow-hidden bg-black"
+    >
       <div
         class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] overflow-hidden"
         :style="scaledBoxStyle"
@@ -243,9 +252,11 @@ const iframeStyle = computed(() => ({
           :style="iframeStyle"
           frameborder="0"
           class="border-0"
+          data-testid="share-embed-preview-iframe"
         />
       </div>
       <div
+        data-testid="share-embed-preview-label"
         class="absolute inset-0 flex items-center justify-center bg-black/30 text-sm font-semibold text-white"
       >
         {{
@@ -274,6 +285,7 @@ const iframeStyle = computed(() => ({
             :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
             label="Kopieren"
             aria-label="Copy to clipboard"
+            data-testid="share-embed-copy"
             @click="emit('copy')"
           />
         </template>
