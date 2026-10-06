@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import type { Layer } from "@swissgeo/layers";
-import type { Dataset } from "@swissgeo/ogc";
 
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
-import { AVAILABLE_BACKGROUNDS } from "./constants";
+import { getBackgroundTranslationKey } from "./constants";
 import useBackgroundSelector from "./useBackgroundSelector";
 
 const { backgroundLayer, isCurrent = true } = defineProps<{
@@ -21,29 +20,8 @@ const testId = computed(
     `background-selector-${backgroundLayer ? backgroundLayer.humanId : "void"}`,
 );
 const layerTranslationKey = computed(() =>
-  mapBackgroundLayerToTranslationKey(backgroundLayer),
+  t(getBackgroundTranslationKey(backgroundLayer)),
 );
-
-function mapBackgroundLayerToTranslationKey(
-  layer: Layer | null | undefined,
-): string {
-  let translationKey = "";
-
-  if (layer === null || layer === undefined) {
-    translationKey = "backgroundLayers.voidMap";
-  } else {
-    const layerData = layer.data as Dataset;
-
-    if (layerData.id === AVAILABLE_BACKGROUNDS.greyMap) {
-      translationKey = `backgroundLayers.greyMap`;
-    } else if (layerData.id === AVAILABLE_BACKGROUNDS.colorMap) {
-      translationKey = `backgroundLayers.colorMap`;
-    } else if (layerData.id === AVAILABLE_BACKGROUNDS.swissimage) {
-      translationKey = `backgroundLayers.swissimage`;
-    }
-  }
-  return t(translationKey);
-}
 </script>
 
 <template>

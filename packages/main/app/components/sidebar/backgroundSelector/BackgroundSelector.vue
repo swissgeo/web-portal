@@ -6,11 +6,18 @@ import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import { computedAsync } from "@vueuse/core";
 
 import BackgroundSelectorEntry from "./BackgroundSelectorEntry.vue";
-import { AVAILABLE_BACKGROUNDS } from "./constants";
+import {
+  AVAILABLE_BACKGROUNDS,
+  getBackgroundTranslationKey,
+} from "./constants";
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const layerStore = useLayerStore();
 const currentBackground = computed(() => layerStore.backgroundLayer);
+
+const currentBackgroundLabel = computed(() =>
+  t(getBackgroundTranslationKey(currentBackground.value)),
+);
 
 const catalogItemsUrl = useCatalogItemsUrl();
 
@@ -25,9 +32,7 @@ const backgroundRecords = computed(async () => {
   }
 
   const values = await Promise.all(promises);
-  return values.map((record: Dataset) => {
-    return makeServerLayer(record);
-  });
+  return Promise.all(values.map((record: Dataset) => makeServerLayer(record)));
 });
 
 const sortedBackgroundLayersWithNull = computedAsync<(Layer | null)[]>(
@@ -76,14 +81,14 @@ function selectBackground(backgroundLayer: Layer | null) {
   >
     <UFormField
       class="group"
-      label="Hintergrund"
+      :label="t('backgroundLayers.label')"
       :ui="{
         label: 'text-xs',
       }"
     >
       <UButton
         data-testid="background-selector-toggle"
-        label="Karte farbig"
+        :label="currentBackgroundLabel"
         color="neutral"
         variant="subtle"
         trailing-icon="i-lucide-chevron-down"
