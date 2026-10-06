@@ -2,27 +2,24 @@
 import type { TabsItem } from "@nuxt/ui";
 
 import { useClipboard } from "@vueuse/core";
-import { useToolboxStore } from "~/stores/toolbox";
 import { useI18n } from "vue-i18n";
 
 import ShareEmbed from "./ShareEmbed.vue";
 import ShareLink from "./ShareLink.vue";
 
 const { t } = useI18n();
-const toolboxStore = useToolboxStore();
 const zoomOnlyCtrl = ref(false);
+const resolution = ref({ width: 800, height: 600 });
 
 const { copy: copyLink, copied: copiedLink } = useClipboard();
 const { copy: copyEmbed, copied: copiedEmbed } = useClipboard();
 
 const { exportState } = useStateConfig();
-const { shareLink, embedCode, refresh, needToRefresh } = useCreateShareLink(
-  exportState,
-  {
-    autoRefresh: true,
-    zoomOnlyCtrl,
-  },
-);
+const { shareLink, embedCode, hash } = useCreateShareLink(exportState, {
+  autoRefresh: true,
+  zoomOnlyCtrl,
+  resolution,
+});
 
 const items = [
   {
@@ -66,8 +63,10 @@ const items = [
           <ShareEmbed
             :embed-code="embedCode"
             :copied="copiedEmbed"
+            :state-id="hash"
             @copy="copyEmbed(embedCode)"
             v-model:zoom-only-ctrl="zoomOnlyCtrl"
+            v-model:resolution="resolution"
           />
         </template>
       </UTabs>

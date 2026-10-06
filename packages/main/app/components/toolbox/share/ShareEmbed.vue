@@ -1,18 +1,30 @@
 <script setup lang="ts">
 import type { SelectItem } from "@nuxt/ui";
-const { embedCode } = defineProps<{
+
+import { useResizeObserver } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
+
+const { embedCode, stateId } = defineProps<{
   embedCode: string;
   copied: boolean;
+  stateId: string | null;
 }>();
 
-const zoomOnlyCtrl = defineModel("zoomOnlyCtrl");
+const zoomOnlyCtrl = defineModel<boolean>("zoomOnlyCtrl", { default: false });
+const resolution = defineModel<{ width: number; height: number }>(
+  "resolution",
+  {
+    default: () => ({ width: 800, height: 600 }),
+  },
+);
 
 const emit = defineEmits<{
   (_e: "copy"): void;
 }>();
 
-const value = ref("small");
-const iframeTarget = useTemplateRef("iframeTarget");
+const { t } = useI18n();
+
+const sizeKey = ref<"small" | "medium" | "large">("medium");
 
 const resolutions = {
   small: { width: 400, height: 300 },
@@ -20,39 +32,84 @@ const resolutions = {
   large: { width: 1200, height: 900 },
 } as const;
 
-const items = computed<SelectItem[]>(() => [
-  {
-    id: "small",
-    label:
-      "Klein " +
-      (resolutions.small.width + " x " + resolutions.small.height + " Pixel"),
-  },
-  {
-    id: "medium",
-    label:
-      "Mittel " +
-      (resolutions.medium.width + " x " + resolutions.medium.height + " Pixel"),
-  },
-  {
-    id: "large",
-    label:
-      "Gross " +
-      (resolutions.large.width + " x " + resolutions.large.height + " Pixel"),
-  },
-]);
+const items = computed<SelectItem[]>(() =>
+  (
+    [
+      ["small", "toolbox.share.embed.sizeSmall"],
+      ["medium", "toolbox.share.embed.sizeMedium"],
+      ["large", "toolbox.share.embed.sizeLarge"],
+    ] as const
+  ).map(([key, labelKey]) => {
+    const { width, height } = resolutions[key];
+    return {
+      id: key,
+      label: `${t(labelKey)} (${width} × ${height})`,
+    };
+  }),
+);
+
+watch(sizeKey, (key) => {
+  resolution.value = { ...resolutions[key] };
+});
+
+const previewBox = useTemplateRef("previewBox");
+const boxSize = reactive({ width: 0, height: 0 });
+
+useResizeObserver(previewBox, (entries) => {
+  const entry = entries[0];
+  if (!entry) {
+    return;
+  }
+  boxSize.width = entry.contentRect.width;
+  boxSize.height = entry.contentRect.height;
+});
+
+const previewSrc = computed(() => {
+  if (!stateId) {
+    return "";
+  }
+  const url = new URL("/embed", location.origin);
+  url.searchParams.set("state", stateId);
+  if (zoomOnlyCtrl.value) {
+    url.searchParams.set("zoomOnlyCtrl", "true");
+  }
+  return url.href;
+});
+
+const scale = computed(() => {
+  const { width, height } = resolution.value;
+  if (!width || !height || !boxSize.width || !boxSize.height) {
+    return 1;
+  }
+  return Math.min(boxSize.width / width, boxSize.height / height, 1);
+});
+
+const scaledBoxStyle = computed(() => ({
+  width: `${resolution.value.width * scale.value}px`,
+  height: `${resolution.value.height * scale.value}px`,
+}));
+
+const iframeStyle = computed(() => ({
+  width: `${resolution.value.width}px`,
+  height: `${resolution.value.height}px`,
+  transform: `scale(${scale.value})`,
+  transformOrigin: "top left",
+}));
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-4 pt-space-xs">
-      <p class="text-sm font-semibold text-highlighted">Karte einbetten</p>
+      <p class="text-sm font-semibold text-highlighted">
+        {{ t("toolbox.share.embed.title") }}
+      </p>
       <p class="text-sm font-medium">
-        Betten Sie die Karte mit dem Link in Ihre eigene Umgebung ein.
+        {{ t("toolbox.share.embed.description") }}
       </p>
     </div>
-    <UFormField label="Grösse" class="w-full">
+    <UFormField :label="t('toolbox.share.embed.sizeLabel')" class="w-full">
       <USelect
-        v-model="value"
+        v-model="sizeKey"
         value-key="id"
         :items="items"
         :ui="{
@@ -61,22 +118,27 @@ const items = computed<SelectItem[]>(() => [
       />
     </UFormField>
     <UCheckbox
-      label="Zoom nur mit der Ctrl/Cmd-Taste zulassen"
-      @update:model-value="(value) => (zoomOnlyCtrl = value)"
+      v-model="zoomOnlyCtrl"
+      :label="t('toolbox.share.embed.zoomOnlyCtrlLabel')"
     />
-    <div class="relative flex h-64 w-full items-center justify-center bg-black">
+    <div ref="previewBox" class="relative h-64 w-full overflow-hidden bg-black">
       <div
-        class="absolute top-0 left-0 flex h-full w-full items-center justify-center bg-black/20 text-sm font-semibold text-white"
+        class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] overflow-hidden"
+        :style="scaledBoxStyle"
       >
-        {{
-          value === "small"
-            ? "400 x 300 Pixel"
-            : value === "medium"
-              ? "800 x 600 Pixel"
-              : "1200 x 900 Pixel"
-        }}
+        <iframe
+          v-if="previewSrc"
+          :src="previewSrc"
+          :style="iframeStyle"
+          frameborder="0"
+          class="border-0"
+        />
       </div>
-      <div ref="iframeTarget"></div>
+      <div
+        class="absolute inset-0 flex items-center justify-center bg-black/30 text-sm font-semibold text-white"
+      >
+        {{ resolution.width }} × {{ resolution.height }}
+      </div>
     </div>
     <UFormField label="Link" size="lg" class="w-full">
       <UInput
