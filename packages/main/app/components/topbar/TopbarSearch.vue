@@ -2,7 +2,7 @@
 import type { SearchResult } from "@swissgeo/search";
 
 import { useSearchStore } from "@swissgeo/skeleton";
-import { useDebounceFn } from "@vueuse/core";
+import { refDebounced } from "@vueuse/core";
 import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -22,12 +22,10 @@ const enableCmsSearch = searchStore.enableCmsSearch;
 const resultsRef = ref<HTMLElement | null>(null);
 const activeTab = ref("map");
 
-const query = computed({
-  get: () => searchStore.query,
-  set: (value: string) => {
-    void debouncedSearch(value);
-  },
-});
+// the field keeps its own text: bound to the store query, which only follows
+// after the debounce, a render in between would put the older query back
+const query = ref(searchStore.query);
+const debouncedQuery = refDebounced(query, 100);
 
 const locationResults = computed(() =>
   searchStore.results.filter((r) => r.resultType === "LOCATION"),
@@ -74,9 +72,13 @@ const tabs = computed(() => {
   return items;
 });
 
-const debouncedSearch = useDebounceFn((value: string) => {
-  void searchStore.setSearchQuery(value, locale.value);
-}, 100);
+// clear and selection write the store as well, so the text they put in the
+// field arrives here equal to the store query and starts no search
+watch(debouncedQuery, (value) => {
+  if (value !== searchStore.query) {
+    void searchStore.setSearchQuery(value, locale.value);
+  }
+});
 
 // every source searches in one language, so a locale change leaves the results
 // of the previous one behind until the query is run again. Only while there are
@@ -102,7 +104,7 @@ watch(
 watch(
   () => searchStore.hasResults,
   (hasResults) => {
-    if (hasResults && query.value.length >= 2) {
+    if (hasResults && searchStore.query.length >= 2) {
       openResults();
     }
   },
@@ -122,11 +124,14 @@ function handleSelect(result: SearchResult) {
   // a layer leaves nothing on the map for the field to stand for, unlike a
   // place whose pin the field's clear button removes
   if (result.resultType === "LAYER") {
+    query.value = "";
     searchStore.clearSearch();
   } else {
     // a title made of nothing but markup sanitizes to an empty string, which
     // would empty the field and take its clear button away with it
-    searchStore.keepSelectedQuery(result.sanitizedTitle || searchStore.query);
+    const title = result.sanitizedTitle || searchStore.query;
+    query.value = title;
+    searchStore.keepSelectedQuery(title);
   }
   isOpen.value = false;
 }
@@ -149,7 +154,7 @@ function closeResults() {
 }
 
 function handleClick() {
-  if (query.value.length >= 2 && searchStore.hasResults) {
+  if (searchStore.query.length >= 2 && searchStore.hasResults) {
     openResults();
   }
 }
@@ -169,6 +174,7 @@ function focusFirstResult() {
 // clearing the field removes the marker of the selected result: selecting
 // another one moves it, but nothing else would ever take it off the map
 function clearSearch() {
+  query.value = "";
   searchStore.clearSearch();
   searchStore.clearPinnedCoordinate();
   isOpen.value = false;
