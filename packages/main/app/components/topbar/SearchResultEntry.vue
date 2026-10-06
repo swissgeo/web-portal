@@ -11,9 +11,14 @@ import { useI18n } from "vue-i18n";
 const localePath = useLocalePath();
 const { t } = useI18n();
 
-const { index, entry } = defineProps<{
+const {
+  index,
+  entry,
+  tabStart = false,
+} = defineProps<{
   index: number;
   entry: SearchResult;
+  tabStart: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -84,9 +89,9 @@ defineExpose({
   <!-- List item with keyboard navigation -->
   <li
     ref="item"
-    class="hover:bg-surface-50 focus:bg-surface-100 flex cursor-pointer items-center gap-2 px-3 py-2 transition-colors focus:outline-none"
+    class="flex cursor-pointer items-center gap-2 px-3 py-2 transition-colors hover:bg-muted focus:outline-none focus-visible:bg-elevated focus-visible:text-highlighted"
     :data-testid="`search-result-entry-${entry.resultType.toLowerCase()}-${index}`"
-    :tabindex="index === 0 ? 0 : -1"
+    :tabindex="tabStart ? 0 : -1"
     @keydown.up.prevent="goToPrevious"
     @keydown.down.prevent="goToNext"
     @keydown.home.prevent="goToFirst"

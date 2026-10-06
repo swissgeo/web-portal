@@ -59,9 +59,9 @@ describe("SearchResultEntry", () => {
     },
   ];
 
-  function mountEntry(entry: SearchResult, index = 0) {
+  function mountEntry(entry: SearchResult, index = 0, tabStart = false) {
     return mount(SearchResultEntry, {
-      props: { entry, index },
+      props: { entry, index, tabStart },
       global: {
         stubs: {
           ClientOnly: {
@@ -247,8 +247,8 @@ describe("SearchResultEntry", () => {
   });
 
   describe("tabindex", () => {
-    it("has tabindex 0 for first item", () => {
-      const wrapper = mountEntry(entries[0]!, 0);
+    it("has tabindex 0 when it is the tab start", () => {
+      const wrapper = mountEntry(entries[0]!, 0, true);
 
       const li = wrapper.find("li");
       expect(li.attributes("tabindex")).toBe("0");
@@ -256,11 +256,33 @@ describe("SearchResultEntry", () => {
       wrapper.unmount();
     });
 
-    it("has tabindex -1 for non-first items", () => {
-      const wrapper = mountEntry(entries[1]!, 1);
+    it("has tabindex -1 when it is not the tab start", () => {
+      const wrapper = mountEntry(entries[0]!, 0, false);
 
       const li = wrapper.find("li");
       expect(li.attributes("tabindex")).toBe("-1");
+
+      wrapper.unmount();
+    });
+
+    it("no longer derives the tab stop from the index", () => {
+      const wrapper = mountEntry(entries[1]!, 1, false);
+
+      const li = wrapper.find("li");
+      expect(li.attributes("tabindex")).toBe("-1");
+
+      wrapper.unmount();
+    });
+  });
+
+  describe("focus styling", () => {
+    // regression guard: surface-* utilities do not exist in this repo, they
+    // rendered as no background at all and hid the keyboard focus
+    it("highlights the focused entry with theme tokens", () => {
+      const wrapper = mountEntry(entries[0]!, 0, true);
+
+      const classes = wrapper.get("li").attributes("class") ?? "";
+      expect(classes).toContain("focus-visible:bg-elevated");
 
       wrapper.unmount();
     });
