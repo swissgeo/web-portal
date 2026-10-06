@@ -34,6 +34,13 @@ export function useOgcWmsData(
   const timeInfo = computed(() =>
     getTimeInfoFromWMSCapabilities(dimensions.value),
   );
+  const queryable = computed(() => wmsData.value?.queryable);
+  const getFeatureInfo = computed(
+    () => wmsData.value?.getFeatureInfoCapability,
+  );
+  const availableCrs = computed(() => wmsData.value?.availableCrs);
+
+  const layerName = computed(() => wmsData.value?.layerName);
 
   const currentLang = computed(() => locale.value.toLowerCase());
 
@@ -93,5 +100,9 @@ export function useOgcWmsData(
     wmsDataForOl,
     timeInfo,
     legends,
+    availableCrs,
+    getFeatureInfo,
+    queryable,
+    layerName,
   };
 }

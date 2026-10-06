@@ -60,6 +60,14 @@ export default defineAppConfig({
       },
     },
     button: {
+      variants: {
+        variant: {
+          "solid-inverted":
+            "bg-primary-900 dark:bg-primary-100 text-primary-100 dark:text-primary-800 hover:bg-primary-800 dark:hover:bg-primary-200 disabled:bg-primary-900 disabled:text-primary-100 aria-disabled:bg-primary-900 aria-disabled:text-primary-100 focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-secondary!",
+          "ghost-inverted":
+            "bg-transparent text-primary-800 dark:text-primary-100 hover:bg-primary-800/10 dark:hover:bg-primary-100/10 hover:text-primary-600 dark:hover:text-primary-200 disabled:bg-transparent disabled:text-primary-300 disabled:hover:bg-transparent aria-disabled:bg-transparent aria-disabled:text-primary-300 aria-disabled:hover:bg-transparent focus-visible:bg-transparent focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-secondary!",
+        },
+      },
       compoundVariants: [
         {
           color: "primary",
@@ -124,13 +132,39 @@ export default defineAppConfig({
       },
     },
     toast: {
-      slots: {},
+      slots: {
+        root: "ring-0",
+      },
       variants: {
         color: {
-          success: { root: "bg-success", icon: "text-highlighted" },
-          info: { root: "bg-info", icon: "text-highlighted" },
-          warning: { root: "bg-warning", icon: "text-highlighted" },
-          error: { root: "bg-error", icon: "text-highlighted" },
+          success: {
+            root: "bg-success",
+            icon: "text-success-on-accent",
+            title: "text-success-on-accent",
+            description: "text-success-on-accent",
+            close: "text-success-muted-on-accent!",
+          },
+          info: {
+            root: "bg-info",
+            icon: "text-info-on-accent",
+            title: "text-info-on-accent",
+            description: "text-info-on-accent",
+            close: "text-info-muted-on-accent!",
+          },
+          warning: {
+            root: "bg-warning",
+            icon: "text-warning-on-accent",
+            title: "text-warning-on-accent",
+            description: "text-warning-on-accent",
+            close: "text-warning-muted-on-accent!",
+          },
+          error: {
+            root: "bg-error",
+            icon: "text-error-on-accent",
+            title: "text-error-on-accent",
+            description: "text-error-on-accent",
+            close: "text-error-muted-on-accent!",
+          },
         },
       },
     },

@@ -4,23 +4,17 @@ import type { Contact } from "@swissgeo/ogc";
 const { contact } = defineProps<{
   contact: Contact;
 }>();
-
-const description = computed(() => {
-  const parts = [contact.role, contact.country ? `(${contact.country})` : ""]
-    .filter(Boolean)
-    .join(" ");
-  return parts || undefined;
-});
 </script>
 
 <template>
   <UUser
     :name="contact.organization"
-    :description="description"
-    :avatar="{
-      src: '',
-      alt: contact.organization,
+    :description="contact.country || undefined"
+    size="md"
+    class="wrap-anywhere"
+    :ui="{
+      name: 'font-semibold',
+      description: 'leading-small-text',
     }"
-    size="xl"
   />
 </template>

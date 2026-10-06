@@ -1,7 +1,10 @@
+import { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
+
 import type {
   COGLayer,
   GeoJSONLayer,
   GPXLayer,
+  HighLightLayer,
   KMLLayer,
   KMZLayer,
   Layer,
@@ -25,3 +28,7 @@ export const isGeoJSON = (layer: Layer): layer is GeoJSONLayer =>
   layer.format?.toUpperCase() === "GEOJSON";
 export const isCOG = (layer: Layer): layer is COGLayer =>
   layer.format?.toUpperCase() === "COG";
+export const isHighlightedLayer = (layer: Layer): layer is HighLightLayer =>
+  layer?.format.toUpperCase() === "GEOJSON" &&
+  layer.isSystemLayer &&
+  layer.uuid === HIGHLIGHT_LAYER_ID;

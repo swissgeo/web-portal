@@ -142,16 +142,27 @@ describe(
         version: null,
         dimensions: null,
         legends: [],
+        availableCrs: [],
+        queryable: false,
+        getFeatureInfoCapability: null,
+        layerName: null,
       });
       expect(parseWmsCapabilities(capabilitiesXML, null)).toEqual({
         url: null,
         version: null,
         dimensions: null,
         legends: [],
+        availableCrs: [],
+        queryable: false,
+        getFeatureInfoCapability: null,
+        layerName: null,
       });
     });
   },
 );
+
+// The GetFeatureInfo / queryable / CRS harvesting tests live in
+// `wmsCapabilitiesUtils.spec.ts`, next to the helpers that implement them.
 
 describe("useWmsCapabilities 404", () => {
   const handlers = [

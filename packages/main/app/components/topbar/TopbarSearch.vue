@@ -17,6 +17,8 @@ const { handleResultSelection } = useSearchSelection();
 
 const isOpen = defineModel<boolean>("open", { default: false });
 
+const enableCmsSearch = searchStore.enableCmsSearch;
+
 const resultsRef = ref<HTMLElement | null>(null);
 const activeTab = ref("map");
 
@@ -45,20 +47,32 @@ const karteResults = computed(() => [
   { id: "layers", results: layerResults.value },
 ]);
 
-const tabs = computed(() => [
-  {
-    label: t("search.map_tab"),
-    badge: searchStore.mapResults.length || undefined,
-    slot: "map" as const,
-    value: "map",
-  },
-  {
-    label: t("search.content_pages_tab"),
-    badge: searchStore.contentResults.length || undefined,
-    slot: "contentPages" as const,
-    value: "content",
-  },
-]);
+const tabs = computed(() => {
+  const items: {
+    label: string;
+    badge: number | undefined;
+    slot: "map" | "contentPages";
+    value: string;
+  }[] = [
+    {
+      label: t("search.map_tab"),
+      badge: searchStore.mapResults.length || undefined,
+      slot: "map",
+      value: "map",
+    },
+  ];
+
+  if (enableCmsSearch) {
+    items.push({
+      label: t("search.content_pages_tab"),
+      badge: searchStore.contentResults.length || undefined,
+      slot: "contentPages",
+      value: "content",
+    });
+  }
+
+  return items;
+});
 
 const debouncedSearch = useDebounceFn((value: string) => {
   void searchStore.setSearchQuery(value, locale.value);
@@ -105,19 +119,33 @@ watch(
 
 function handleSelect(result: SearchResult) {
   void handleResultSelection(result);
-  // a title made of nothing but markup sanitizes to an empty string, which
-  // would empty the field and take its clear button away with it
-  searchStore.keepSelectedQuery(result.sanitizedTitle || searchStore.query);
+  // a layer leaves nothing on the map for the field to stand for, unlike a
+  // place whose pin the field's clear button removes
+  if (result.resultType === "LAYER") {
+    searchStore.clearSearch();
+  } else {
+    // a title made of nothing but markup sanitizes to an empty string, which
+    // would empty the field and take its clear button away with it
+    searchStore.keepSelectedQuery(result.sanitizedTitle || searchStore.query);
+  }
   isOpen.value = false;
 }
 
 // the map tab is the default one, and would claim there is nothing when the
 // hits are all CMS pages
 function openResults() {
-  if (!searchStore.hasMapResults && searchStore.contentResults.length > 0) {
+  if (
+    enableCmsSearch &&
+    !searchStore.hasMapResults &&
+    searchStore.contentResults.length > 0
+  ) {
     activeTab.value = "content";
   }
   isOpen.value = true;
+}
+
+function closeResults() {
+  isOpen.value = false;
 }
 
 function handleClick() {
@@ -204,6 +232,7 @@ function clearSearch() {
               :title="t(`search.${category.id}_results_header`)"
               :results="category.results"
               @select="handleSelect"
+              @view-details="closeResults"
             />
           </div>
           <div
@@ -222,27 +251,29 @@ function clearSearch() {
         </template>
 
         <template #contentPages>
-          <!-- No category header here: the tab label already names it. -->
-          <SearchCategory
-            v-if="searchStore.contentResults.length > 0"
-            class="max-h-96 overflow-y-auto"
-            data-testid="content-search-results"
-            :results="searchStore.contentResults"
-            @select="handleSelect"
-          />
-          <div
-            v-else-if="
-              searchStore.contentResults.length === 0 &&
-              searchStore.query.length >= 2 &&
-              !searchStore.isSearching
-            "
-            class="text-surface-500 p-4 text-center"
-          >
-            {{ t("search.no_results") }}
-          </div>
-          <div v-else class="text-surface-500 p-4">
-            {{ t("search.placeholder") }}
-          </div>
+          <template v-if="enableCmsSearch">
+            <!-- No category header here: the tab label already names it. -->
+            <SearchCategory
+              v-if="searchStore.contentResults.length > 0"
+              class="max-h-96 overflow-y-auto"
+              data-testid="content-search-results"
+              :results="searchStore.contentResults"
+              @select="handleSelect"
+            />
+            <div
+              v-else-if="
+                searchStore.contentResults.length === 0 &&
+                searchStore.query.length >= 2 &&
+                !searchStore.isSearching
+              "
+              class="text-surface-500 p-4 text-center"
+            >
+              {{ t("search.no_results") }}
+            </div>
+            <div v-else class="text-surface-500 p-4">
+              {{ t("search.placeholder") }}
+            </div>
+          </template>
         </template>
       </UTabs>
     </template>

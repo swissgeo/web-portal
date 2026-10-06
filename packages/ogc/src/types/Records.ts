@@ -73,6 +73,7 @@ export interface Property<recordType extends string> {
   type: recordType;
   // TODO maybe we'll have to split this away to a "service property"
   protocol?: ServiceProtocol;
+  metaInformation?: boolean;
   attribution?: string;
   externalIds?: string[];
   contacts?: Contact[];
@@ -89,4 +90,8 @@ export interface Contact {
   organization: string;
 }
 
-export type ServiceProtocol = "ogc:wmts" | "ogc:wms" | "ogc:geojson";
+export type ServiceProtocol =
+  | "ogc:wmts"
+  | "ogc:wms"
+  | "ogc:geojson"
+  | "ogcapi:stac";

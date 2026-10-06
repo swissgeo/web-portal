@@ -1,30 +1,22 @@
 import type { Contact, Dataset } from "@swissgeo/ogc";
 
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import LayerCatalogRow from "~/components/sidebar/layerCatalog/LayerCatalogRow.vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 
-const { datasetLayer, useDatasetLayerMock, datasetPanelStore } =
-  await vi.hoisted(async () => {
-    const { ref } = await import("vue");
-    const datasetLayer = {
-      isOnMap: ref(false),
-      addToMap: vi.fn(),
-      removeFromMap: vi.fn(),
-    };
-    return {
-      datasetLayer,
-      useDatasetLayerMock: vi.fn((_dataset: () => unknown) => datasetLayer),
-      datasetPanelStore: { openDatasetPanel: vi.fn() },
-    };
-  });
+const useDatasetLayerMock = vi.hoisted(() => vi.fn());
+const datasetLayer = {
+  isOnMap: ref(false),
+  addToMap: vi.fn(),
+  removeFromMap: vi.fn(),
+};
 
 vi.mock("~/composables/useDatasetLayer", () => ({
   useDatasetLayer: useDatasetLayerMock,
 }));
-vi.mock("@swissgeo/skeleton", () => ({
-  useDatasetPanelStore: () => datasetPanelStore,
-}));
+mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
@@ -32,11 +24,15 @@ vi.mock("vue-i18n", () => ({
 const stubs = {
   USwitch: {
     inheritAttrs: false,
-    props: ["modelValue", "label"],
+    props: ["modelValue", "label", "description"],
     emits: ["update:modelValue"],
-    template: `<button role="switch" v-bind="$attrs" :aria-checked="String(modelValue)" @click="$emit('update:modelValue', !modelValue)" /><label>{{ label }}</label>`,
+    template: `<button role="switch" v-bind="$attrs" :aria-checked="String(modelValue)" @click="$emit('update:modelValue', !modelValue)" /><label>{{ label }}</label><p v-if="description" data-testid="switch-description">{{ description }}</p>`,
   },
-  UButton: { inheritAttrs: false, template: "<button v-bind='$attrs' />" },
+  UButton: {
+    inheritAttrs: false,
+    props: ["to"],
+    template: "<a :href='to' v-bind='$attrs' />",
+  },
 };
 
 function makeDataset(id = "ch.a", contacts?: Contact[]): Dataset {
@@ -54,21 +50,32 @@ function mountRow(dataset = makeDataset()) {
   });
 }
 
+function cells(wrapper: ReturnType<typeof mountRow>) {
+  return wrapper.findAll("[role='cell']");
+}
+
 function dataOwnerCell(wrapper: ReturnType<typeof mountRow>) {
-  return wrapper.findAll("td")[1]!;
+  return cells(wrapper)[1]!;
+}
+
+// On mobile, the data owner is shown below the title instead of in its own column
+function mobileDataOwner(wrapper: ReturnType<typeof mountRow>) {
+  return wrapper.find("[data-testid='switch-description']");
 }
 
 describe("LayerCatalogRow.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    useDatasetLayerMock.mockReturnValue(datasetLayer);
     datasetLayer.isOnMap.value = false;
   });
 
   it("shows the layer title as the label of the switch, in one column", () => {
     const wrapper = mountRow();
-    const cell = wrapper.findAll("td")[0]!;
+    const cell = cells(wrapper)[0]!;
 
-    expect(wrapper.findAll("td")).toHaveLength(3);
+    expect(wrapper.attributes("role")).toBe("row");
+    expect(cells(wrapper)).toHaveLength(3);
     expect(cell.find("[data-testid='catalog-layer-on-map']").exists()).toBe(
       true,
     );
@@ -77,16 +84,16 @@ describe("LayerCatalogRow.vue", () => {
   });
 
   it("shows the resource provider as data owner, wherever it is listed", () => {
-    const cell = dataOwnerCell(
-      mountRow(
-        makeDataset("ch.a", [
-          { role: "pointOfContact", organization: "Contact AG" },
-          { role: "resourceProvider", organization: "swisstopo" },
-        ]),
-      ),
+    const wrapper = mountRow(
+      makeDataset("ch.a", [
+        { role: "pointOfContact", organization: "Contact AG" },
+        { role: "resourceProvider", organization: "swisstopo" },
+      ]),
     );
+    const cell = dataOwnerCell(wrapper);
 
     expect(cell.text()).toBe("swisstopo");
+    expect(mobileDataOwner(wrapper).text()).toBe("swisstopo");
     expect(cell.attributes("title")).toBe("resourceProvider: swisstopo");
   });
 
@@ -113,9 +120,21 @@ describe("LayerCatalogRow.vue", () => {
     expect(cell.attributes("title")).toBe("BAFU");
   });
 
-  it("leaves the data owner empty without contacts", () => {
-    const cell = dataOwnerCell(mountRow());
+  it("hides the data owner column on mobile", () => {
+    const cell = dataOwnerCell(
+      mountRow(makeDataset("ch.a", [{ role: "owner", organization: "BAFU" }])),
+    );
 
+    expect(cell.classes()).toEqual(
+      expect.arrayContaining(["hidden", "md:block"]),
+    );
+  });
+
+  it("leaves the data owner empty without contacts", () => {
+    const wrapper = mountRow();
+    const cell = dataOwnerCell(wrapper);
+
+    expect(mobileDataOwner(wrapper).exists()).toBe(false);
     expect(cell.text()).toBe("");
     expect(cell.attributes("title")).toBeUndefined();
   });
@@ -157,11 +176,12 @@ describe("LayerCatalogRow.vue", () => {
     expect(currentDataset()).toEqual(makeDataset("ch.b"));
   });
 
-  it("opens the info panel of the layer", async () => {
+  it("links to the localized dataset URL and follows dataset changes", async () => {
     const wrapper = mountRow();
-
-    await wrapper.get("[data-testid='catalog-layer-info']").trigger("click");
-
-    expect(datasetPanelStore.openDatasetPanel).toHaveBeenCalledWith("ch.a");
+    const info = () => wrapper.get("[data-testid='catalog-layer-info']");
+    expect(info().attributes("href")).toBe("/de/dataset/ch.a");
+    await wrapper.setProps({ dataset: makeDataset("ch.b") });
+    expect(info().attributes("href")).toBe("/de/dataset/ch.b");
+    expect(datasetLayer.addToMap).not.toHaveBeenCalled();
   });
 });
