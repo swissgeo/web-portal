@@ -77,7 +77,7 @@ function selectBackground(backgroundLayer: Layer | null) {
 
 <template>
   <UCollapsible
-    class="flex w-full flex-col-reverse gap-4 rounded-lg bg-elevated p-2"
+    class="flex w-full flex-col-reverse gap-4 rounded-lg bg-elevated"
   >
     <UFormField
       class="group"
