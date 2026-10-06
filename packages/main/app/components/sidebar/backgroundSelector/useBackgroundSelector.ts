@@ -6,10 +6,6 @@ import swissImageUrl from "~/assets/backgroundLayersImages/ch.swisstopo.swissima
 import voidUrl from "~/assets/backgroundLayersImages/void.png";
 import { ref } from "vue";
 
-/**
- * Centralisation of the logic behind the background selector. This helps us define two flavors of
- * background selector with the same Vue code basis.
- */
 export default function useBackgroundSelector(
   selectBackgroundCallback: (backgroundLayer: Layer | null) => void,
 ) {
