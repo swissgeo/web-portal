@@ -128,7 +128,7 @@ function useShareLinkState(
 function buildEmbedCode(
   stateId: string | null,
   zoomOnlyCtrl: boolean,
-  resolution: { width: number; height: number } = { width: 600, height: 400 },
+  resolution: { width: number; height: number } = { width: 800, height: 600 },
 ): string {
   if (!stateId) {
     return "";
@@ -157,7 +157,7 @@ export function useCreateShareLink(
   options?: {
     autoRefresh?: boolean;
     zoomOnlyCtrl?: Ref<boolean>;
-    resolution?: { width: number; height: number };
+    resolution?: MaybeRefOrGetter<{ width: number; height: number }>;
   },
 ) {
   const { exportState } = useStateConfig();
@@ -174,7 +174,9 @@ export function useCreateShareLink(
     buildEmbedCode(
       hash.value,
       options?.zoomOnlyCtrl?.value ?? false,
-      options?.resolution ?? { width: 600, height: 400 },
+      options?.resolution
+        ? toValue(options.resolution)
+        : { width: 800, height: 600 },
     ),
   );
 
