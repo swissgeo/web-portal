@@ -9,6 +9,7 @@ import ShareLink from "./ShareLink.vue";
 
 const { t } = useI18n();
 const zoomOnlyCtrl = ref(false);
+const fullWidth = ref(false);
 const resolution = ref({ width: 800, height: 600 });
 
 const { copy: copyLink, copied: copiedLink } = useClipboard();
@@ -18,6 +19,7 @@ const { exportState } = useStateConfig();
 const { shareLink, embedCode, hash } = useCreateShareLink(exportState, {
   autoRefresh: true,
   zoomOnlyCtrl,
+  fullWidth,
   resolution,
 });
 
@@ -66,6 +68,7 @@ const items = [
             :state-id="hash"
             @copy="copyEmbed(embedCode)"
             v-model:zoom-only-ctrl="zoomOnlyCtrl"
+            v-model:full-width="fullWidth"
             v-model:resolution="resolution"
           />
         </template>

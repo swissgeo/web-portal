@@ -280,7 +280,12 @@
         "sizeLabel": "Taille",
         "sizeSmall": "Petit",
         "sizeMedium": "Moyen",
-        "sizeLarge": "Grand"
+        "sizeLarge": "Grand",
+        "sizeCustom": "Personnalisé",
+        "customWidthLabel": "Largeur",
+        "customHeightLabel": "Hauteur",
+        "pixelUnit": "px",
+        "fullWidthLabel": "Largeur complète (100%)"
       },
       "ariaLabel": {
         "close": "Fermer",

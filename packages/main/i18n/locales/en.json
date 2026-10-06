@@ -280,7 +280,12 @@
         "sizeLabel": "Size",
         "sizeSmall": "Small",
         "sizeMedium": "Medium",
-        "sizeLarge": "Large"
+        "sizeLarge": "Large",
+        "sizeCustom": "Custom",
+        "customWidthLabel": "Width",
+        "customHeightLabel": "Height",
+        "pixelUnit": "px",
+        "fullWidthLabel": "Full (100%) width"
       },
       "ariaLabel": {
         "close": "Close",

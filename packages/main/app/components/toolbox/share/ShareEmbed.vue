@@ -11,6 +11,7 @@ const { embedCode, stateId } = defineProps<{
 }>();
 
 const zoomOnlyCtrl = defineModel<boolean>("zoomOnlyCtrl", { default: false });
+const fullWidth = defineModel<boolean>("fullWidth", { default: false });
 const resolution = defineModel<{ width: number; height: number }>(
   "resolution",
   {
@@ -24,7 +25,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const sizeKey = ref<"small" | "medium" | "large">("medium");
+const sizeKey = ref<"small" | "medium" | "large" | "custom">("medium");
 
 const resolutions = {
   small: { width: 400, height: 300 },
@@ -32,25 +33,63 @@ const resolutions = {
   large: { width: 1200, height: 900 },
 } as const;
 
-const items = computed<SelectItem[]>(() =>
-  (
-    [
-      ["small", "toolbox.share.embed.sizeSmall"],
-      ["medium", "toolbox.share.embed.sizeMedium"],
-      ["large", "toolbox.share.embed.sizeLarge"],
-    ] as const
-  ).map(([key, labelKey]) => {
+const MIN_DIMENSION = 200;
+const MAX_DIMENSION = 4000;
+
+const items = computed<SelectItem[]>(() => {
+  const sizeOptions = [
+    ["small", "toolbox.share.embed.sizeSmall"],
+    ["medium", "toolbox.share.embed.sizeMedium"],
+    ["large", "toolbox.share.embed.sizeLarge"],
+    ["custom", "toolbox.share.embed.sizeCustom"],
+  ] as const;
+
+  return sizeOptions.map(([key, labelKey]) => {
+    if (key === "custom") {
+      const widthLabel = fullWidth.value
+        ? "100%"
+        : String(resolution.value.width);
+      return {
+        id: key,
+        label: `${t(labelKey)} (${widthLabel} × ${resolution.value.height})`,
+      };
+    }
     const { width, height } = resolutions[key];
     return {
       id: key,
       label: `${t(labelKey)} (${width} × ${height})`,
     };
-  }),
-);
+  });
+});
 
 watch(sizeKey, (key) => {
+  if (key === "custom") {
+    return;
+  }
+  fullWidth.value = false;
   resolution.value = { ...resolutions[key] };
 });
+
+function clampDimension(value: number): number {
+  if (!Number.isFinite(value)) {
+    return MIN_DIMENSION;
+  }
+  return Math.min(MAX_DIMENSION, Math.max(MIN_DIMENSION, Math.round(value)));
+}
+
+function onWidthBlur() {
+  resolution.value = {
+    ...resolution.value,
+    width: clampDimension(resolution.value.width),
+  };
+}
+
+function onHeightBlur() {
+  resolution.value = {
+    ...resolution.value,
+    height: clampDimension(resolution.value.height),
+  };
+}
 
 const previewBox = useTemplateRef("previewBox");
 const boxSize = reactive({ width: 0, height: 0 });
@@ -76,22 +115,40 @@ const previewSrc = computed(() => {
   return url.href;
 });
 
+const PREVIEW_MARGIN = 16;
+
 const scale = computed(() => {
   const { width, height } = resolution.value;
-  if (!width || !height || !boxSize.width || !boxSize.height) {
+  if (!height || !boxSize.height) {
     return 1;
   }
-  return Math.min(boxSize.width / width, boxSize.height / height, 1);
+  const availableHeight = Math.max(boxSize.height - PREVIEW_MARGIN * 2, 0);
+  if (fullWidth.value) {
+    return Math.min(availableHeight / height, 1);
+  }
+  if (!width || !boxSize.width) {
+    return 1;
+  }
+  const availableWidth = Math.max(boxSize.width - PREVIEW_MARGIN * 2, 0);
+  return Math.min(availableWidth / width, availableHeight / height, 1);
+});
+
+const iframeLogicalSize = computed(() => {
+  const { width, height } = resolution.value;
+  if (fullWidth.value && boxSize.width) {
+    return { width: boxSize.width / scale.value, height };
+  }
+  return { width, height };
 });
 
 const scaledBoxStyle = computed(() => ({
-  width: `${resolution.value.width * scale.value}px`,
-  height: `${resolution.value.height * scale.value}px`,
+  width: `${iframeLogicalSize.value.width * scale.value}px`,
+  height: `${iframeLogicalSize.value.height * scale.value}px`,
 }));
 
 const iframeStyle = computed(() => ({
-  width: `${resolution.value.width}px`,
-  height: `${resolution.value.height}px`,
+  width: `${iframeLogicalSize.value.width}px`,
+  height: `${iframeLogicalSize.value.height}px`,
   transform: `scale(${scale.value})`,
   transformOrigin: "top left",
 }));
@@ -117,9 +174,63 @@ const iframeStyle = computed(() => ({
         }"
       />
     </UFormField>
+    <div
+      v-if="sizeKey === 'custom'"
+      class="flex w-full flex-row justify-between gap-4"
+    >
+      <div class="flex w-full flex-col gap-2">
+        <UFormField
+          :label="t('toolbox.share.embed.customWidthLabel')"
+          size="lg"
+          class="w-full"
+        >
+          <UInput
+            v-model.number="resolution.width"
+            type="number"
+            size="lg"
+            color="neutral"
+            variant="outline"
+            :disabled="fullWidth"
+            @blur="onWidthBlur"
+          >
+            <template #trailing>
+              <span>{{ t("toolbox.share.embed.pixelUnit") }}</span>
+            </template>
+          </UInput>
+        </UFormField>
+        <UCheckbox
+          v-model="fullWidth"
+          :label="t('toolbox.share.embed.fullWidthLabel')"
+          :ui="{
+            label: 'text-sm',
+          }"
+        />
+      </div>
+      <UFormField
+        :label="t('toolbox.share.embed.customHeightLabel')"
+        size="lg"
+        class="w-full"
+      >
+        <UInput
+          v-model.number="resolution.height"
+          type="number"
+          size="lg"
+          color="neutral"
+          variant="outline"
+          @blur="onHeightBlur"
+        >
+          <template #trailing>
+            <span>{{ t("toolbox.share.embed.pixelUnit") }}</span>
+          </template>
+        </UInput>
+      </UFormField>
+    </div>
     <UCheckbox
       v-model="zoomOnlyCtrl"
       :label="t('toolbox.share.embed.zoomOnlyCtrlLabel')"
+      :ui="{
+        label: 'text-sm',
+      }"
     />
     <div ref="previewBox" class="relative h-64 w-full overflow-hidden bg-black">
       <div
@@ -137,7 +248,11 @@ const iframeStyle = computed(() => ({
       <div
         class="absolute inset-0 flex items-center justify-center bg-black/30 text-sm font-semibold text-white"
       >
-        {{ resolution.width }} × {{ resolution.height }}
+        {{
+          fullWidth
+            ? `100% × ${resolution.height}`
+            : `${resolution.width} × ${resolution.height}`
+        }}
       </div>
     </div>
     <UFormField label="Link" size="lg" class="w-full">
