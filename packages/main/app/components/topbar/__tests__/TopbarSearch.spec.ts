@@ -3,7 +3,7 @@ import type { SearchResult } from "@swissgeo/search";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { enableAutoUnmount, mount } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { nextTick, reactive, ref } from "vue";
+import { defineComponent, nextTick, reactive, ref } from "vue";
 
 import TopbarSearch from "../TopbarSearch.vue";
 
@@ -17,6 +17,15 @@ const searchStore = reactive({
   hasError: false,
   get hasResults() {
     return this.results.length > 0;
+  },
+  get locationResults() {
+    return this.results.filter((r) => r.resultType === "LOCATION");
+  },
+  get layerResults() {
+    return this.results.filter((r) => r.resultType === "LAYER");
+  },
+  get featureResults() {
+    return this.results.filter((r) => r.resultType === "FEATURE");
   },
   get contentResults() {
     return this.results.filter((r) => r.resultType === "CONTENT");
@@ -56,6 +65,17 @@ vi.mock("@swissgeo/shared", () => ({
   sanitizeHtml: (input: string) => input,
 }));
 
+// exposes its input element the way UInput does, so the component under test
+// can hand focus back to the search field on arrow up at the very first entry
+const UInputStub = defineComponent({
+  setup(_, { expose }) {
+    const inputRef = ref<HTMLInputElement | null>(null);
+    expose({ inputRef });
+    return { inputRef };
+  },
+  template: "<input ref='inputRef' />",
+});
+
 // Render every tab body, so the content tab can be asserted without driving
 // the real tab interaction.
 const stubs = {
@@ -66,14 +86,31 @@ const stubs = {
     props: ["items", "modelValue"],
     template: "<div><slot name='map' /><slot name='contentPages' /></div>",
   },
-  UInput: { template: "<input />" },
+  UInput: UInputStub,
   UButton: { template: "<button />" },
   UIcon: { template: "<span />" },
+  UScrollArea: { template: "<div><slot /></div>" },
   ClientOnly: { template: "<div><slot /></div>" },
 };
 
 const location = (id: string): SearchResult => ({
   resultType: "LOCATION",
+  id,
+  title: id,
+  sanitizedTitle: id,
+  description: "",
+});
+
+const layer = (id: string): SearchResult => ({
+  resultType: "LAYER",
+  id,
+  title: id,
+  sanitizedTitle: id,
+  description: "",
+});
+
+const feature = (id: string): SearchResult => ({
+  resultType: "FEATURE",
   id,
   title: id,
   sanitizedTitle: id,
@@ -89,7 +126,15 @@ const content = (documentId: string, title: string): SearchResult => ({
 });
 
 function render() {
-  return mount(TopbarSearch, { global: { stubs } });
+  // attached to the document: the keyboard tests assert document.activeElement
+  return mount(TopbarSearch, {
+    global: { stubs },
+    attachTo: document.body,
+  });
+}
+
+function activeTestId() {
+  return (document.activeElement as HTMLElement).dataset.testid;
 }
 
 function activeTab(wrapper: ReturnType<typeof render>) {
@@ -294,5 +339,200 @@ describe("TopbarSearch", () => {
 
     await wrapper.get("input").trigger("click");
     expect(wrapper.emitted("update:open")?.at(-1)).toEqual([true]);
+  });
+
+  describe("result sections", () => {
+    it("renders the three categories in order with their headings", () => {
+      searchStore.query = "wald";
+      searchStore.results = [
+        location("bern"),
+        layer("waldrand"),
+        feature("tannenwald"),
+      ];
+
+      const wrapper = render();
+      const sections = wrapper.findAll("[data-testid^='search-category-']");
+
+      expect(
+        sections.map((section) => section.attributes("data-testid")),
+      ).toEqual([
+        "search-category-locations",
+        "search-category-layers",
+        "search-category-features",
+      ]);
+      expect(sections[0]!.text()).toContain("search.locations_results_header");
+      expect(sections[1]!.text()).toContain("search.layers_results_header");
+      expect(sections[2]!.text()).toContain("search.features_results_header");
+    });
+
+    it("renders no DOM for categories without results", () => {
+      searchStore.query = "bern";
+      searchStore.results = [location("bern"), feature("altstadt")];
+
+      const wrapper = render();
+
+      expect(
+        wrapper.find("[data-testid='search-category-locations']").exists(),
+      ).toBe(true);
+      expect(
+        wrapper.find("[data-testid='search-category-features']").exists(),
+      ).toBe(true);
+      expect(
+        wrapper.find("[data-testid='search-category-layers']").exists(),
+      ).toBe(false);
+    });
+
+    it("gives every category an equal share of one fixed budget", () => {
+      searchStore.query = "wald";
+      searchStore.results = [location("bern"), layer("waldrand")];
+
+      const wrapper = render();
+      const budgetClasses =
+        wrapper.get("[data-testid='search-results']").attributes("class") ?? "";
+
+      // a definite height is what makes the equal split expressible: the
+      // budget container lays the categories out but never scrolls itself
+      expect(budgetClasses).toContain("flex");
+      expect(budgetClasses).toContain("h-[60dvh]");
+      expect(budgetClasses).toContain("sm:h-96");
+      expect(budgetClasses).not.toContain("overflow-y-auto");
+      for (const section of wrapper.findAll(
+        "[data-testid^='search-category-']",
+      )) {
+        // each category claims an equal share (1/3, 1/2, all of it) and
+        // scrolls on its own (the scroll itself needs a layout engine)
+        const sectionClasses = section.attributes("class") ?? "";
+        expect(sectionClasses).toContain("min-h-0");
+        expect(sectionClasses).toContain("flex-1");
+      }
+    });
+  });
+
+  describe("keyboard navigation across categories", () => {
+    it("moves focus to the next category on arrow down at the last entry", async () => {
+      searchStore.query = "wald";
+      searchStore.results = [
+        location("bern"),
+        location("basel"),
+        layer("waldrand"),
+      ];
+
+      const wrapper = render();
+      await wrapper
+        .get("[data-testid='search-result-entry-location-1']")
+        .trigger("keydown.down");
+
+      expect(activeTestId()).toBe("search-result-entry-layer-0");
+    });
+
+    it("moves focus to the previous category on arrow up at the first entry", async () => {
+      searchStore.query = "wald";
+      searchStore.results = [
+        location("bern"),
+        location("basel"),
+        layer("waldrand"),
+      ];
+
+      const wrapper = render();
+      await wrapper
+        .get("[data-testid='search-result-entry-layer-0']")
+        .trigger("keydown.up");
+
+      expect(activeTestId()).toBe("search-result-entry-location-1");
+    });
+
+    it("keeps focus on the very last entry on arrow down", async () => {
+      searchStore.query = "wald";
+      searchStore.results = [layer("waldrand"), feature("tanne")];
+
+      const wrapper = render();
+      const lastEntry = wrapper.get(
+        "[data-testid='search-result-entry-feature-0']",
+      );
+      (lastEntry.element as HTMLElement).focus();
+      await lastEntry.trigger("keydown.down");
+
+      expect(activeTestId()).toBe("search-result-entry-feature-0");
+    });
+
+    it("returns focus to the search input on arrow up at the very first entry", async () => {
+      searchStore.query = "bern";
+      searchStore.results = [location("bern"), layer("wald")];
+
+      const wrapper = render();
+      await wrapper
+        .get("[data-testid='search-result-entry-location-0']")
+        .trigger("keydown.up");
+
+      expect(document.activeElement).toBe(
+        wrapper.get("[data-testid='topbar-search-input']").element,
+      );
+    });
+
+    it("focuses the first result on arrow down from the input", async () => {
+      searchStore.query = "bern";
+      searchStore.results = [location("bern"), layer("wald")];
+
+      const wrapper = render();
+      await wrapper
+        .get("[data-testid='topbar-search-input']")
+        .trigger("keydown.down");
+      await nextTick();
+
+      expect(activeTestId()).toBe("search-result-entry-location-0");
+    });
+  });
+
+  describe("tab stops", () => {
+    it("keeps a single tab stop on the first entry of the first category", () => {
+      searchStore.query = "wald";
+      searchStore.results = [
+        location("bern"),
+        location("basel"),
+        layer("waldrand"),
+        feature("tanne"),
+      ];
+
+      const wrapper = render();
+      const tabStops = wrapper
+        .findAll("[data-testid='search-results'] li")
+        .filter((entry) => entry.attributes("tabindex") === "0");
+
+      expect(tabStops).toHaveLength(1);
+      expect(tabStops[0]!.attributes("data-testid")).toBe(
+        "search-result-entry-location-0",
+      );
+    });
+
+    it("moves the tab stop to the next category when locations are empty", () => {
+      searchStore.query = "wald";
+      searchStore.results = [layer("waldrand"), feature("tanne")];
+
+      const wrapper = render();
+      const tabStops = wrapper
+        .findAll("[data-testid='search-results'] li")
+        .filter((entry) => entry.attributes("tabindex") === "0");
+
+      expect(tabStops).toHaveLength(1);
+      expect(tabStops[0]!.attributes("data-testid")).toBe(
+        "search-result-entry-layer-0",
+      );
+    });
+
+    it("keeps a tab stop on the first entry of the content tab", () => {
+      searchStore.query = "uns";
+      searchStore.results = [
+        content("42", "Über uns"),
+        content("43", "Kontakt"),
+      ];
+
+      const wrapper = render();
+
+      expect(
+        wrapper
+          .get("[data-testid='content-search-results'] li")
+          .attributes("tabindex"),
+      ).toBe("0");
+    });
   });
 });

@@ -11,6 +11,7 @@ defineProps<{
   /** Left out where the surrounding tab already names the category */
   title?: string;
   results: SearchResult[];
+  tabStart: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -44,11 +45,11 @@ defineExpose({
 
 <template>
   <!-- Category container -->
-  <div class="search-category">
+  <UScrollArea>
     <!-- Category header -->
     <div
       v-if="title"
-      class="bg-surface-50 text-surface-700 px-4 py-2 text-sm font-semibold"
+      class="sticky top-0 z-10 border-b border-default bg-default px-4 py-2 text-sm font-semibold text-muted"
     >
       {{ title }}
     </div>
@@ -61,11 +62,12 @@ defineExpose({
         ref="entries"
         :index="index"
         :entry="entry"
+        :tab-start="tabStart && index === 0"
         @select="emit('select', entry)"
         @view-details="emit('viewDetails')"
         @first-entry-reached="emit('firstEntryReached')"
         @last-entry-reached="emit('lastEntryReached')"
       />
     </ul>
-  </div>
+  </UScrollArea>
 </template>

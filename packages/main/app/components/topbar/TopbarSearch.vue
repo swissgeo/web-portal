@@ -17,8 +17,20 @@ const { handleResultSelection } = useSearchSelection();
 
 const isOpen = defineModel<boolean>("open", { default: false });
 
-const resultsRef = ref<HTMLElement | null>(null);
 const activeTab = ref("map");
+
+// the input given by the user is available through the input's `inputRef` member
+const searchInputRef = ref<{ inputRef: HTMLInputElement | null } | null>(null);
+
+const categoryRefs = new Map<string, InstanceType<typeof SearchCategory>>();
+
+function setCategoryRef(id: string, element: unknown) {
+  if (element) {
+    categoryRefs.set(id, element as InstanceType<typeof SearchCategory>);
+  } else {
+    categoryRefs.delete(id); // called with null on unmount
+  }
+}
 
 const query = computed({
   get: () => searchStore.query,
@@ -27,24 +39,27 @@ const query = computed({
   },
 });
 
-const locationResults = computed(() =>
-  searchStore.results.filter((r) => r.resultType === "LOCATION"),
+// v-for and v-ifs are not playing nicely together, so we do the filter here.
+const searchResultsByCategory = computed(() =>
+  [
+    {
+      id: "locations" as const,
+      results: searchStore.locationResults,
+    },
+    {
+      id: "layers" as const,
+      results: searchStore.layerResults,
+    },
+    {
+      id: "features" as const,
+      results: searchStore.featureResults,
+    },
+  ].filter((category) => category.results?.length > 0),
 );
 
-const layerResults = computed(() =>
-  searchStore.results.filter((r) => r.resultType === "LAYER"),
-);
-
-const featureResults = computed(() =>
-  searchStore.results.filter((r) => r.resultType === "FEATURE"),
-);
-
-const karteResults = computed(() => [
-  { id: "locations", results: locationResults.value },
-  { id: "features", results: featureResults.value },
-  { id: "layers", results: layerResults.value },
-]);
-
+const tabStartCategory = computed(() => {
+  return searchResultsByCategory.value[0]?.id ?? null;
+});
 const tabs = computed(() => [
   {
     label: t("search.map_tab"),
@@ -144,8 +159,35 @@ function focusFirstResult() {
   activeTab.value = "map";
   isOpen.value = true;
   void nextTick(() => {
-    resultsRef.value?.querySelector<HTMLElement>("li")?.focus();
+    categoryRefs.get(searchResultsByCategory.value[0]!.id)?.focusFirstEntry();
   });
+}
+
+function onFirstEntryReached(currentCategoryId: string) {
+  const categories = searchResultsByCategory.value;
+  const categoryIndex = categories.findIndex(
+    (category) => category.id === currentCategoryId,
+  );
+  if (categoryIndex <= 0) {
+    focusInput();
+  } else {
+    categoryRefs.get(categories[categoryIndex - 1]!.id)?.focusLastEntry();
+  }
+}
+
+function onLastEntryReached(currentCategoryId: string) {
+  const categories = searchResultsByCategory.value;
+  const nextCategory =
+    categories[
+      categories.findIndex((category) => category.id === currentCategoryId) + 1
+    ];
+  if (nextCategory) {
+    categoryRefs.get(nextCategory.id)?.focusFirstEntry();
+  }
+}
+
+function focusInput() {
+  searchInputRef.value?.inputRef?.focus();
 }
 
 // clearing the field removes the marker of the selected result: selecting
@@ -168,11 +210,11 @@ function clearSearch() {
       onOpenAutoFocus: (event: Event) => event.preventDefault(),
     }"
     :dismissible="true"
-    :ui="{ content: 'w-(--reka-popper-anchor-width) min-w-96' }"
+    :ui="{ content: 'w-(--reka-popper-anchor-width) min-w-96 max-sm:min-w-0' }"
   >
     <template #anchor>
       <UInput
-        ref="inputRef"
+        ref="searchInputRef"
         v-model="query"
         icon="i-lucide-search"
         :placeholder="t('search.placeholder')"
@@ -203,18 +245,22 @@ function clearSearch() {
         <template #map>
           <div
             v-if="searchStore.hasMapResults"
-            ref="resultsRef"
-            class="max-h-96 overflow-y-auto"
+            class="flex h-[60dvh] flex-col sm:h-96"
             data-testid="search-results"
           >
             <SearchCategory
-              v-for="category in karteResults"
-              v-show="category.results.length > 0"
+              v-for="category in searchResultsByCategory"
               :key="category.id"
+              :ref="(element) => setCategoryRef(category.id, element)"
+              class="min-h-0 flex-1"
               :title="t(`search.${category.id}_results_header`)"
               :results="category.results"
+              :tab-start="tabStartCategory === category.id"
+              :data-testid="`search-category-${category.id}`"
               @select="handleSelect"
               @view-details="closeResults"
+              @first-entry-reached="onFirstEntryReached(category.id)"
+              @last-entry-reached="onLastEntryReached(category.id)"
             />
           </div>
           <div
@@ -223,11 +269,11 @@ function clearSearch() {
               searchStore.query.length >= 2 &&
               !searchStore.isSearching
             "
-            class="text-surface-500 p-4 text-center"
+            class="p-4 text-center text-muted"
           >
             {{ t("search.no_results") }}
           </div>
-          <div v-else class="text-surface-500 p-4">
+          <div v-else class="p-4 text-muted">
             {{ t("search.placeholder") }}
           </div>
         </template>
@@ -236,7 +282,8 @@ function clearSearch() {
           <!-- No category header here: the tab label already names it. -->
           <SearchCategory
             v-if="searchStore.contentResults.length > 0"
-            class="max-h-96 overflow-y-auto"
+            :tab-start="true"
+            class="max-h-96"
             data-testid="content-search-results"
             :results="searchStore.contentResults"
             @select="handleSelect"
@@ -247,11 +294,11 @@ function clearSearch() {
               searchStore.query.length >= 2 &&
               !searchStore.isSearching
             "
-            class="text-surface-500 p-4 text-center"
+            class="p-4 text-center text-muted"
           >
             {{ t("search.no_results") }}
           </div>
-          <div v-else class="text-surface-500 p-4">
+          <div v-else class="p-4 text-muted">
             {{ t("search.placeholder") }}
           </div>
         </template>
