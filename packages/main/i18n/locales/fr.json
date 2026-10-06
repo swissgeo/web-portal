@@ -274,8 +274,13 @@
       },
       "embed": {
         "title": "Intégration",
+        "description": "Intégrez la carte avec le lien dans votre propre environnement.",
         "generateButton": "Générer le code d'intégration",
-        "zoomOnlyCtrlLabel": "Activer le zoom uniquement avec la touche Ctrl/Cmd"
+        "zoomOnlyCtrlLabel": "Activer le zoom uniquement avec la touche Ctrl/Cmd",
+        "sizeLabel": "Taille",
+        "sizeSmall": "Petit",
+        "sizeMedium": "Moyen",
+        "sizeLarge": "Grand"
       },
       "ariaLabel": {
         "close": "Fermer",

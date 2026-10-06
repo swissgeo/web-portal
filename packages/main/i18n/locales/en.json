@@ -274,8 +274,13 @@
       },
       "embed": {
         "title": "Embedding",
+        "description": "Embed the map with the link into your own environment.",
         "generateButton": "Generate embed code",
-        "zoomOnlyCtrlLabel": "Enable zoom only with Ctrl/Cmd key"
+        "zoomOnlyCtrlLabel": "Enable zoom only with Ctrl/Cmd key",
+        "sizeLabel": "Size",
+        "sizeSmall": "Small",
+        "sizeMedium": "Medium",
+        "sizeLarge": "Large"
       },
       "ariaLabel": {
         "close": "Close",
