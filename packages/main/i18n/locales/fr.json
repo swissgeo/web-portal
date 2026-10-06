@@ -293,8 +293,8 @@
     "label": "Fond",
     "voidMap": "Carte vide",
     "backgroundMap": "Carte de fond",
-    "colorMap": "Carte en couleur",
-    "greyMap": "Carte en niveaux de gris",
+    "colorMap": "Carte couleur",
+    "greyMap": "Carte noir et blanc",
     "swissimage": "Imagerie aérienne"
   },
   "toaster": {
