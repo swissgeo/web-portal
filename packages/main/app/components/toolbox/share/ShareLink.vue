@@ -37,8 +37,7 @@ function shareOnLinkedIn() {
 
 function shareOnWhatsApp() {
   const url =
-    "https://wa.me/?text=" +
-    encodeURIComponent(shareText.value + "\n" + link);
+    "https://wa.me/?text=" + encodeURIComponent(shareText.value + "\n" + link);
   window.open(url, "_blank");
 }
 </script>
@@ -54,7 +53,11 @@ function shareOnWhatsApp() {
       </p>
     </div>
     <UCheckbox :label="t('toolbox.share.link.drawingEditableLabel')" />
-    <UFormField :label="t('toolbox.share.link.urlLabel')" size="lg" class="w-full">
+    <UFormField
+      :label="t('toolbox.share.link.urlLabel')"
+      size="lg"
+      class="w-full"
+    >
       <UInput
         icon="i-lucide-link"
         size="lg"
@@ -124,11 +127,15 @@ function shareOnWhatsApp() {
         :value="link"
         :size="116"
         :level="'H'"
-        :background="'#ffffff'"
-        :foreground="'#000000'"
+        class="qr-code -translate-x-[15px]"
+        :options="{ color: { dark: '#000000', light: '#00000000' } }"
       />
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+html.dark .qr-code {
+  filter: invert(1);
+}
+</style>
