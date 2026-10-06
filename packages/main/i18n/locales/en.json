@@ -290,6 +290,7 @@
   },
   "backgroundLayers": {
     "title": "Displayed maps",
+    "label": "Background",
     "voidMap": "Void map",
     "backgroundMap": "Background map",
     "colorMap": "Color map",

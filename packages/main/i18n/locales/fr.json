@@ -290,6 +290,7 @@
   },
   "backgroundLayers": {
     "title": "Cartes affichées",
+    "label": "Fond",
     "voidMap": "Carte vide",
     "backgroundMap": "Carte de fond",
     "colorMap": "Carte en couleur",
