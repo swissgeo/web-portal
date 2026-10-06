@@ -263,6 +263,9 @@ const iframeStyle = computed(() => ({
         variant="outline"
         :model-value="embedCode"
         readonly
+        :ui="{
+          trailing: 'pe-2',
+        }"
       >
         <template #trailing>
           <UButton
