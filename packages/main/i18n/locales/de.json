@@ -275,8 +275,13 @@
       },
       "embed": {
         "title": "Einbetten",
+        "description": "Betten Sie die Karte mit dem Link in Ihre eigene Umgebung ein.",
         "generateButton": "Einbettungscode generieren",
-        "zoomOnlyCtrlLabel": "Zoom nur mit Strg/Cmd-Taste aktivieren"
+        "zoomOnlyCtrlLabel": "Zoom nur mit Strg/Cmd-Taste aktivieren",
+        "sizeLabel": "Grösse",
+        "sizeSmall": "Klein",
+        "sizeMedium": "Mittel",
+        "sizeLarge": "Gross"
       },
       "ariaLabel": {
         "close": "Schließen",
