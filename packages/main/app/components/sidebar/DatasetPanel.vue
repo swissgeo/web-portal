@@ -31,12 +31,19 @@ const backLabel = computed(() => {
 
 <template>
   <section
-    class="@container flex h-full min-h-0 flex-col border-r border-default bg-default"
+    class="@container flex min-h-full flex-col border-r border-default bg-default"
     aria-labelledby="dataset-panel-title"
     data-testid="dataset-panel"
   >
-    <header class="flex shrink-0 flex-col gap-space-m p-4 lg:gap-8 lg:p-8">
-      <div class="flex items-center justify-between gap-space-s">
+    <!-- Desktop keeps the whole header in view. Phones keep only the back and close
+         row, so the small drawer has room for the content. The header uses
+         display: contents on phones, because a sticky row only sticks inside its parent. -->
+    <header
+      class="contents md:sticky md:top-0 md:z-10 md:flex md:shrink-0 md:flex-col md:gap-space-m md:bg-default md:p-4 lg:gap-8 lg:p-8"
+    >
+      <div
+        class="sticky top-0 z-10 flex items-center justify-between gap-space-s bg-default px-4 pt-4 pb-space-xs md:static md:p-0"
+      >
         <UButton
           icon="i-lucide-arrow-left"
           variant="ghost"
@@ -55,7 +62,7 @@ const backLabel = computed(() => {
         </div>
       </div>
       <div
-        class="flex flex-col items-start gap-space-s @2xl:flex-row @2xl:items-center @2xl:justify-between"
+        class="flex flex-col items-start gap-space-s p-4 md:p-0 @2xl:flex-row @2xl:items-center @2xl:justify-between"
       >
         <!-- Reserve space on the last title line for the share button. -->
         <div class="min-w-0">
@@ -71,9 +78,7 @@ const backLabel = computed(() => {
         <DatasetMapAction v-if="dataset" :dataset="dataset" />
       </div>
     </header>
-    <div
-      class="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 lg:px-8 lg:pb-8"
-    >
+    <div class="flex flex-1 flex-col px-4 pb-4 lg:px-8 lg:pb-8">
       <div v-if="isLoading" class="flex h-full items-center justify-center">
         <UIcon
           name="i-lucide-loader-circle"
