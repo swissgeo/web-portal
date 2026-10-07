@@ -35,6 +35,8 @@ async function expectNoBackground(page: Page) {
     )
     .toBe(0);
 
+  await page.getByTestId("button-layer-cart-panel").click();
+  await page.getByTestId("background-selector-toggle").click();
   await expect(page.getByTestId("background-selector-void")).toBeVisible();
 }
 

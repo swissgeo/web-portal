@@ -41,6 +41,8 @@ function mountSideBar() {
           template: "<section><slot /></section>",
         },
         UButton: { name: "UButton", props: ["icon"], template: "<button />" },
+        USeparator: true,
+        BackgroundSelector: true,
       },
     },
   });

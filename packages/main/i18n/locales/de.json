@@ -291,11 +291,12 @@
   },
   "backgroundLayers": {
     "title": "Angezeigte Karten",
-    "voidMap": "Leere Karte",
+    "label": "Hintergrund",
+    "voidMap": "Kein Hintergrund",
     "backgroundMap": "Hintergrundkarte",
     "colorMap": "Karte farbig",
-    "greyMap": "Karte SW",
-    "swissimage": "Luftbilder"
+    "greyMap": "Karte schwarzweiss",
+    "swissimage": "Luftbild"
   },
   "toaster": {
     "warningTitle": "Warnung",
