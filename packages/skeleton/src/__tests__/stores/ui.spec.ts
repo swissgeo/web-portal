@@ -7,7 +7,7 @@ import {
   useSidebarStore,
 } from "../../stores/ui";
 
-const LAYER_CART_WIDTH = 320;
+const LAYER_CART_WIDTH = 347;
 const GEOCATALOG_TREE_WIDTH = 1280;
 
 describe("useSidebarStore", () => {

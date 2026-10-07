@@ -78,6 +78,9 @@ function selectBackground(backgroundLayer: Layer | null) {
 <template>
   <UCollapsible
     class="flex w-full flex-col-reverse gap-4 rounded-lg bg-elevated"
+    :ui="{
+      root: 'p-2',
+    }"
   >
     <UFormField
       class="group"
