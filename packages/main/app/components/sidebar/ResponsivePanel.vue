@@ -52,7 +52,10 @@ const activeSnapPoint = computed({
   get: () =>
     hasSharedSnapPoint.value ? sharedSnapPoint.value : partialSnapPoint,
   set: (snapPoint) => {
-    sharedSnapPoint.value = snapPoint;
+    // A hidden panel falls back to partial and must not overwrite the visible one
+    if (isVisible) {
+      sharedSnapPoint.value = snapPoint;
+    }
   },
 });
 

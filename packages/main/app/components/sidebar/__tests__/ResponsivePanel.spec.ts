@@ -238,6 +238,17 @@ describe("ResponsivePanel.vue", () => {
       expect(sharedSnapPoint.value).toBe(0.6);
     });
 
+    it("does not change the shared height while hidden", () => {
+      const sharedSnapPoint = ref<number | string | null>("200px");
+      const drawer = mountPanel(
+        { isVisible: false },
+        sharedSnapPoint,
+      ).getComponent({ name: "UDrawer" });
+
+      drawer.vm.$emit("update:activeSnapPoint", 0.6);
+      expect(sharedSnapPoint.value).toBe("200px");
+    });
+
     it("can be extended and collapsed with a button for keyboard users", async () => {
       const wrapper = mountPanel();
       const drawer = wrapper.getComponent({ name: "UDrawer" });
