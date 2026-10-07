@@ -1,9 +1,12 @@
+import type { Ref } from "vue";
+
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { enableAutoUnmount, flushPromises, mount } from "@vue/test-utils";
 import ResponsivePanel from "~/components/sidebar/ResponsivePanel.vue";
 import { usePanelScroller } from "~/composables/usePanelScroller";
+import { panelSnapPointKey } from "~/types/injectionKeys";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { defineComponent, h, nextTick } from "vue";
+import { defineComponent, h, nextTick, ref } from "vue";
 
 const { isDesktop } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
@@ -46,6 +49,7 @@ function mountPanel(
     isVisible?: boolean;
     isDismissible?: boolean;
   } = {},
+  sharedSnapPoint?: Ref<number | string | null>,
 ) {
   return mount(ResponsivePanel, {
     props: {
@@ -56,7 +60,10 @@ function mountPanel(
       ...props,
     },
     slots: { default: PanelContent },
-    global: { stubs },
+    global: {
+      stubs,
+      provide: sharedSnapPoint ? { [panelSnapPointKey]: sharedSnapPoint } : {},
+    },
   });
 }
 
@@ -220,15 +227,15 @@ describe("ResponsivePanel.vue", () => {
       expect(drawer.props("dismissible")).toBe(true);
     });
 
-    it("starts partially extended again each time it is shown", async () => {
-      const wrapper = mountPanel();
-      const drawer = wrapper.getComponent({ name: "UDrawer" });
-      drawer.vm.$emit("update:activeSnapPoint", 1);
+    it("uses and updates the shared height", () => {
+      const sharedSnapPoint = ref<number | string | null>(1);
+      const drawer = mountPanel({}, sharedSnapPoint).getComponent({
+        name: "UDrawer",
+      });
 
-      await wrapper.setProps({ isVisible: false });
-      await wrapper.setProps({ isVisible: true });
-
-      expect(drawer.props("activeSnapPoint")).toBe(0.6);
+      expect(drawer.props("activeSnapPoint")).toBe(1);
+      drawer.vm.$emit("update:activeSnapPoint", 0.6);
+      expect(sharedSnapPoint.value).toBe(0.6);
     });
 
     it("can be extended and collapsed with a button for keyboard users", async () => {

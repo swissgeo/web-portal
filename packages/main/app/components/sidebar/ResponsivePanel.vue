@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useEventListener } from "@vueuse/core";
+import { panelSnapPointKey } from "~/types/injectionKeys";
 
 const {
   hasHeader = true,
@@ -37,21 +38,28 @@ const snapPoints = computed(() =>
     ? [partialSnapPoint, fullSnapPoint]
     : [minimizedSnapPoint, partialSnapPoint, fullSnapPoint],
 );
-const activeSnapPoint = ref<number | string | null>(partialSnapPoint);
+const sharedSnapPoint = inject(
+  panelSnapPointKey,
+  ref<number | string | null>(null),
+);
+const hasSharedSnapPoint = computed(
+  () =>
+    sharedSnapPoint.value !== null &&
+    snapPoints.value.includes(sharedSnapPoint.value),
+);
+// if snap points can't be inferred, this falls back to partially open
+const activeSnapPoint = computed({
+  get: () =>
+    hasSharedSnapPoint.value ? sharedSnapPoint.value : partialSnapPoint,
+  set: (snapPoint) => {
+    sharedSnapPoint.value = snapPoint;
+  },
+});
 
 const isFullyExtended = computed(() => activeSnapPoint.value === fullSnapPoint);
 
 // A click in another panel counts as outside, so a hidden panel must not close.
 const isCurrentlyDismissible = computed(() => isDismissible && isVisible);
-
-watch(
-  () => isVisible,
-  (isNowVisible) => {
-    if (isNowVisible) {
-      activeSnapPoint.value = partialSnapPoint;
-    }
-  },
-);
 
 const resizeLabel = computed(() =>
   isFullyExtended.value ? collapseLabel : expandLabel,

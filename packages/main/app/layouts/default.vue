@@ -1,6 +1,7 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
 import log from "@swissgeo/log";
+import { panelSnapPointKey } from "~/types/injectionKeys";
 
 import SideBar from "@/components/sidebar/SideBar.vue";
 
@@ -8,6 +9,7 @@ const { resetApp } = useResetApp();
 const route = useRoute();
 const mapViewStore = useMapViewStore();
 const detailsOpen = computed(() => route.meta.datasetDetail === true);
+provide(panelSnapPointKey, ref(null));
 
 const mapLayers = computed(() => mapViewStore.getMapLayers());
 const isMapPage = computed(() => {
