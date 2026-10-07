@@ -464,6 +464,10 @@
       "openPage": "Open legend page"
     }
   },
+  "layerCatalog": {
+    "expand": "Show data catalog",
+    "collapse": "Hide data catalog"
+  },
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",

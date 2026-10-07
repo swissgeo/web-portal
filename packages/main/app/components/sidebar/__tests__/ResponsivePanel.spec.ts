@@ -28,6 +28,8 @@ const stubs = {
       title: String,
       activeSnapPoint: Number,
       snapPoints: Array,
+      dismissible: Boolean,
+      ui: Object,
     },
     emits: ["update:open", "update:activeSnapPoint"],
     template: "<section data-testid='drawer'><slot name='body' /></section>",
@@ -38,9 +40,21 @@ const stubs = {
   },
 };
 
-function mountPanel() {
+function mountPanel(
+  props: {
+    hasHeader?: boolean;
+    isVisible?: boolean;
+    isDismissible?: boolean;
+  } = {},
+) {
   return mount(ResponsivePanel, {
-    props: { title: "Catalog", closeLabel: "Close" },
+    props: {
+      title: "Catalog",
+      closeLabel: "Close",
+      expandLabel: "Expand",
+      collapseLabel: "Collapse",
+      ...props,
+    },
     slots: { default: PanelContent },
     global: { stubs },
   });
@@ -57,9 +71,14 @@ async function mountedScroller() {
   return scroller(wrapper);
 }
 
-function touch(target: HTMLElement, type: string, clientY: number) {
+function touch(
+  target: HTMLElement,
+  type: string,
+  clientY: number,
+  clientX = 0,
+) {
   const event = new Event(type, { cancelable: true });
-  Object.defineProperty(event, "touches", { value: [{ clientY }] });
+  Object.defineProperty(event, "touches", { value: [{ clientX, clientY }] });
   target.dispatchEvent(event);
   return event;
 }
@@ -101,6 +120,14 @@ describe("ResponsivePanel.vue", () => {
       expect(injectedScroller!.value).toBe(scroller(wrapper));
     });
 
+    it("hides its own header for callers that bring their own", () => {
+      const wrapper = mountPanel({ hasHeader: false });
+
+      expect(wrapper.find("h3").exists()).toBe(false);
+      expect(wrapper.find("button").exists()).toBe(false);
+      expect(wrapper.find("[data-testid='content']").exists()).toBe(true);
+    });
+
     it("does not interfere with pulling down on the content", async () => {
       const element = await mountedScroller();
       element.scrollTop = 0;
@@ -134,6 +161,16 @@ describe("ResponsivePanel.vue", () => {
       expect(drawer.props("activeSnapPoint")).toBe(0.6);
     });
 
+    it("shrinks down to its handle instead of closing when not dismissible", () => {
+      const drawer = mountPanel({ isDismissible: false }).getComponent({
+        name: "UDrawer",
+      });
+
+      expect(drawer.props("dismissible")).toBe(false);
+      expect(drawer.props("snapPoints")).toEqual(["200px", 0.6, 1]);
+      expect(drawer.props("activeSnapPoint")).toBe(0.6);
+    });
+
     it("closes when the drawer is dismissed", () => {
       const wrapper = mountPanel();
       const drawer = wrapper.getComponent({ name: "UDrawer" });
@@ -160,6 +197,54 @@ describe("ResponsivePanel.vue", () => {
       expect(scroller(wrapper).classList).not.toContain("overflow-hidden");
     });
 
+    it("keeps the title for screen readers when the caller brings its own header", () => {
+      const drawer = mountPanel({ hasHeader: false }).getComponent({
+        name: "UDrawer",
+      });
+
+      expect(drawer.props("title")).toBe("Catalog");
+      expect(drawer.props("ui")).toMatchObject({ header: "sr-only" });
+    });
+
+    it("hides the teleported drawer and keeps it from closing", async () => {
+      const wrapper = mountPanel({ isVisible: false });
+      const drawer = wrapper.getComponent({ name: "UDrawer" });
+
+      expect(drawer.props("ui").content).toContain("hidden");
+      // A click in another panel counts as outside, so it must not close it
+      expect(drawer.props("dismissible")).toBe(false);
+
+      await wrapper.setProps({ isVisible: true });
+
+      expect(drawer.props("ui").content).not.toContain("hidden");
+      expect(drawer.props("dismissible")).toBe(true);
+    });
+
+    it("starts partially extended again each time it is shown", async () => {
+      const wrapper = mountPanel();
+      const drawer = wrapper.getComponent({ name: "UDrawer" });
+      drawer.vm.$emit("update:activeSnapPoint", 1);
+
+      await wrapper.setProps({ isVisible: false });
+      await wrapper.setProps({ isVisible: true });
+
+      expect(drawer.props("activeSnapPoint")).toBe(0.6);
+    });
+
+    it("can be extended and collapsed with a button for keyboard users", async () => {
+      const wrapper = mountPanel();
+      const drawer = wrapper.getComponent({ name: "UDrawer" });
+      const toggle = drawer.get("button");
+
+      expect(toggle.text()).toBe("Expand");
+      await toggle.trigger("click");
+      expect(drawer.props("activeSnapPoint")).toBe(1);
+      expect(toggle.text()).toBe("Collapse");
+
+      await toggle.trigger("click");
+      expect(drawer.props("activeSnapPoint")).toBe(0.6);
+    });
+
     it("provides the scroller to the content", () => {
       const wrapper = mountPanel();
 
@@ -183,6 +268,16 @@ describe("ResponsivePanel.vue", () => {
 
         touch(element, "touchstart", 100);
         const move = touch(element, "touchmove", 150);
+
+        expect(move.defaultPrevented).toBe(false);
+      });
+
+      it("scrolls sideways when the finger drifts down a little", async () => {
+        const element = await mountedScroller();
+        element.scrollTop = 0;
+
+        touch(element, "touchstart", 100, 300);
+        const move = touch(element, "touchmove", 104, 60);
 
         expect(move.defaultPrevented).toBe(false);
       });

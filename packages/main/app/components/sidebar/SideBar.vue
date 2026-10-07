@@ -60,6 +60,8 @@ function toggleSidebar() {
         v-else-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
         :title="t('layerCatalog.title')"
         :closeLabel="t('layerCatalog.close')"
+        :expandLabel="t('layerCatalog.expand')"
+        :collapseLabel="t('layerCatalog.collapse')"
         @close="closeLayerCatalog"
       >
         <LayerCatalog />
