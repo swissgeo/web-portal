@@ -14,8 +14,9 @@ import ResponsivePanel from "./ResponsivePanel.vue";
 const uiStore = useSidebarStore();
 const { t } = useI18n();
 
-const { mapLayers } = defineProps<{
+const { mapLayers, isVisible = true } = defineProps<{
   mapLayers: Ref<MapLayer[]>;
+  isVisible?: boolean;
 }>();
 defineSlots<{
   "bottom-controls"?: () => unknown;
@@ -45,8 +46,10 @@ function toggleSidebar() {
 
 <template>
   <div
+    v-show="isVisible"
     class="absolute top-0 left-0 flex h-[calc(100dvh-var(--ui-header-height))]"
   >
+    <!-- The catalog drawer teleports out of this element, so it gets isVisible too -->
     <div
       v-show="isSidebarContentVisible"
       :style="{ width: uiStore.sidebarContentWidth + 'px' }"
@@ -62,6 +65,7 @@ function toggleSidebar() {
         :closeLabel="t('layerCatalog.close')"
         :expandLabel="t('layerCatalog.expand')"
         :collapseLabel="t('layerCatalog.collapse')"
+        :isVisible="isVisible"
         @close="closeLayerCatalog"
       >
         <LayerCatalog />

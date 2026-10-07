@@ -27,16 +27,16 @@ vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 
-function mountSideBar() {
+function mountSideBar(isVisible?: boolean) {
   return mount(SideBar, {
-    props: { mapLayers: ref([]) },
+    props: { mapLayers: ref([]), isVisible },
     global: {
       stubs: {
         LayerCart: true,
         LayerCatalog: true,
         ResponsivePanel: {
           name: "ResponsivePanel",
-          props: ["title", "closeLabel"],
+          props: ["title", "closeLabel", "isVisible"],
           emits: ["close"],
           template: "<section><slot /></section>",
         },
@@ -145,6 +145,17 @@ describe("SideBar", () => {
         true,
       );
     });
+  });
+
+  it("hides itself and its teleported catalog panel without removing them", () => {
+    sidebar.currentSidebar = "geocatalogTree";
+
+    const wrapper = mountSideBar(false);
+
+    expect((wrapper.element as HTMLElement).style.display).toBe("none");
+    expect(
+      wrapper.getComponent({ name: "ResponsivePanel" }).props("isVisible"),
+    ).toBe(false);
   });
 
   it("sizes the content to the current sidebar", async () => {
