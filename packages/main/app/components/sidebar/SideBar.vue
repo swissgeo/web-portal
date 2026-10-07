@@ -32,7 +32,12 @@ const isSidebarContentVisible = computed(
 );
 
 function closeLayerCatalog() {
-  uiStore.setSidebar(SidebarType.LAYER_CART);
+  // On mobile the design opens the catalog only through the footer, so closing returns to the map
+  if (isDesktop.value) {
+    uiStore.setSidebar(SidebarType.LAYER_CART);
+  } else {
+    uiStore.closeSidebar();
+  }
 }
 
 function toggleSidebar() {

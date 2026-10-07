@@ -75,6 +75,16 @@ describe("SideBar", () => {
     expect(sidebar.setSidebar).toHaveBeenCalledExactlyOnceWith("layerCart");
   });
 
+  it("closes the sidebar on mobile when the layer catalog is closed", () => {
+    isDesktop.value = false;
+    sidebar.currentSidebar = "geocatalogTree";
+
+    mountSideBar().getComponent({ name: "ResponsivePanel" }).vm.$emit("close");
+
+    expect(sidebar.closeSidebar).toHaveBeenCalledOnce();
+    expect(sidebar.setSidebar).not.toHaveBeenCalled();
+  });
+
   it("shows the layer cart or the layer catalog, depending on the current sidebar", async () => {
     const wrapper = mountSideBar();
     expect(wrapper.findComponent({ name: "LayerCart" }).exists()).toBe(true);
