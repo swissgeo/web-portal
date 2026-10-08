@@ -38,6 +38,11 @@ export default defineNuxtConfig({
   app: {
     buildAssetsDir: "/_nxt/",
     keepalive: true,
+    head: {
+      // Android: fit the page above the keyboard. iOS ignores this.
+      viewport:
+        "width=device-width, initial-scale=1, interactive-widget=resizes-content",
+    },
   },
   typescript: {
     tsConfig: {
