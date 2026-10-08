@@ -85,7 +85,7 @@ function toggleSidebar() {
       >
         <LayerCart :mapLayers="mapLayers" />
         <!-- The side column is hidden on mobile, so the drawer shows its own background selector -->
-        <div v-if="!isDesktop" class="px-2">
+        <div v-if="!isDesktop" class="sticky bottom-0 bg-default px-2">
           <USeparator />
           <div class="my-4">
             <BackgroundSelector @update:open="openPanelFully" />
