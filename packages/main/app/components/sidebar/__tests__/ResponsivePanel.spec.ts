@@ -16,8 +16,10 @@ const { isDesktop } = await vi.hoisted(async () => {
 mockNuxtImport("useIsDesktop", () => () => isDesktop);
 
 let injectedScroller: ReturnType<typeof usePanelScroller> | undefined;
+let contentMounts = 0;
 const PanelContent = defineComponent({
   setup() {
+    contentMounts++;
     injectedScroller = usePanelScroller();
     return () => h("p", { "data-testid": "content" }, "content");
   },
@@ -95,6 +97,24 @@ describe("ResponsivePanel.vue", () => {
 
   beforeEach(() => {
     injectedScroller = undefined;
+    contentMounts = 0;
+  });
+
+  it("keeps the content mounted when the layout switches, like on phone rotation", async () => {
+    isDesktop.value = false;
+    const wrapper = mountPanel();
+    await nextTick();
+
+    isDesktop.value = true;
+    await nextTick();
+    await nextTick();
+
+    expect(contentMounts).toBe(1);
+    expect(
+      scroller(wrapper).contains(
+        wrapper.get("[data-testid='content']").element,
+      ),
+    ).toBe(true);
   });
 
   describe("on desktop", () => {
@@ -151,8 +171,9 @@ describe("ResponsivePanel.vue", () => {
       isDesktop.value = false;
     });
 
-    it("shows the content in an open drawer with the title", () => {
+    it("shows the content in an open drawer with the title", async () => {
       const wrapper = mountPanel();
+      await nextTick();
       const drawer = wrapper.getComponent({ name: "UDrawer" });
 
       expect(wrapper.find("h3").exists()).toBe(false);
@@ -187,6 +208,24 @@ describe("ResponsivePanel.vue", () => {
 
       drawer.vm.$emit("update:open", false);
       expect(wrapper.emitted("close")).toHaveLength(1);
+    });
+
+    it("opens fully when a field in the content gets focus, so the keyboard does not cover it", async () => {
+      const wrapper = mountPanel();
+      await flushPromises();
+      const drawer = wrapper.getComponent({ name: "UDrawer" });
+      const button = document.createElement("button");
+      const field = document.createElement("input");
+      scroller(wrapper).append(button, field);
+
+      button.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+      await nextTick();
+      expect(drawer.props("activeSnapPoint")).toBe(0.6);
+
+      field.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+      await nextTick();
+
+      expect(drawer.props("activeSnapPoint")).toBe(1);
     });
 
     it("only lets the content scroll once the drawer is fully extended", async () => {

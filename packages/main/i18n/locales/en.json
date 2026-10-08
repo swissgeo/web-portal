@@ -13,7 +13,8 @@
     "layerCart": "Active layers",
     "map": "Map",
     "collapse": "Collapse the side panel",
-    "expand": "Expand the side panel"
+    "expand": "Expand the side panel",
+    "openLayerCatalog": "Open data catalog"
   },
   "search": {
     "placeholder": "Search for a place, layer or coordinates...",
@@ -465,6 +466,18 @@
     }
   },
   "layerCatalog": {
+    "title": "Data catalog",
+    "table": {
+      "title": "Name",
+      "dataOwner": "Provider",
+      "empty": "No layers found."
+    },
+    "loading": "Loading...",
+    "error": "The catalog could not be loaded.",
+    "retry": "Try again",
+    "searchLabel": "Search layers",
+    "searchPlaceholder": "Search",
+    "close": "Close",
     "expand": "Show data catalog",
     "collapse": "Hide data catalog"
   },
