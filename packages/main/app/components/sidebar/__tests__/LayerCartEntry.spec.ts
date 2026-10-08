@@ -117,6 +117,16 @@ describe("LayerCartEntry.vue", () => {
     expect(mapViewStore.moveLayerDown).toHaveBeenCalledWith(3);
   });
 
+  it("marks the reorder handle and the opacity slider, so they do not move the mobile drawer", async () => {
+    const wrapper = mountEntry();
+    await wrapper.find("[data-testid='layer-expand-toggle']").trigger("click");
+
+    expect(
+      wrapper.find("[data-testid='layer-reorder-handle']").attributes(),
+    ).toHaveProperty("data-vaul-no-drag");
+    expect(wrapper.find("[data-vaul-no-drag]:not(button)").exists()).toBe(true);
+  });
+
   it("clears the source layer state when removing it", async () => {
     const wrapper = mountEntry();
 

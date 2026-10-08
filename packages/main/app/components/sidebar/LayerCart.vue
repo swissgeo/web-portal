@@ -53,24 +53,39 @@ useSortable(layerCartRef, sortedLayers, {
 
 const uiStore = useSidebarStore();
 
+// The mobile drawer starts its drag on pointerdown. Stopping it here keeps the
+// drawer still while a layer or its opacity is dragged, and Sortable still
+// gets the event, because it listens on this same list.
+function keepDrawerStill(event: PointerEvent) {
+  if (
+    event.target instanceof Element &&
+    event.target.closest("[data-vaul-no-drag]")
+  ) {
+    event.stopPropagation();
+  }
+}
+
 function openLayerCatalog() {
   uiStore.setSidebar(SidebarType.GEOCATALOG_TREE);
 }
 </script>
 
 <template>
+  <!-- In the mobile drawer the whole cart scrolls, so the header sticks like
+       the other panel headers -->
   <div
-    class="flex min-h-14 items-center justify-between gap-2 border-b border-default px-4"
+    class="sticky top-0 z-10 flex min-h-14 items-center justify-between gap-2 border-b border-default bg-default px-4"
   >
     <!-- h2 carries global heading styles (see main.css), which do not fit a
          panel header, hence the h3 -->
-    <h3 class="text-sm font-bold text-highlighted">{{ t("menu.map") }}</h3>
+    <h3 class="text-lg font-semibold text-highlighted">{{ t("menu.map") }}</h3>
+    <!-- On mobile the footer opens the catalog -->
     <UButton
       data-testid="open-layer-catalog"
       color="primary"
       variant="outline"
       size="xs"
-      class="cursor-pointer"
+      class="cursor-pointer max-md:hidden"
       @click="openLayerCatalog"
     >
       {{ t("menu.openLayerCatalog") }}
@@ -79,6 +94,7 @@ function openLayerCatalog() {
 
   <ul
     ref="layerCartRef"
+    @pointerdown="keepDrawerStill"
     data-testid="layer-cart"
     class="mt-4 flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-2"
   >
