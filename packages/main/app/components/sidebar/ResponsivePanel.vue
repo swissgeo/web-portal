@@ -165,9 +165,11 @@ useEventListener(
       >
         {{ resizeLabel }}
       </button>
-      <div ref="scroller" data-testid="panel-scroller" :class="scrollerClass">
-        <slot />
-      </div>
+      <div
+        ref="scroller"
+        data-testid="panel-scroller"
+        :class="scrollerClass"
+      ></div>
     </template>
   </UDrawer>
 
@@ -190,8 +192,16 @@ useEventListener(
         {{ closeLabel }}
       </UButton>
     </div>
-    <div ref="scroller" data-testid="panel-scroller" :class="scrollerClass">
-      <slot />
-    </div>
+    <div
+      ref="scroller"
+      data-testid="panel-scroller"
+      :class="scrollerClass"
+    ></div>
   </div>
+
+  <!-- The content is rendered once and moved into the container on screen,
+       so it keeps its state when the drawer and the sidebar switch. -->
+  <Teleport :to="scroller" :disabled="!scroller">
+    <slot />
+  </Teleport>
 </template>

@@ -16,8 +16,10 @@ const { isDesktop } = await vi.hoisted(async () => {
 mockNuxtImport("useIsDesktop", () => () => isDesktop);
 
 let injectedScroller: ReturnType<typeof usePanelScroller> | undefined;
+let contentMounts = 0;
 const PanelContent = defineComponent({
   setup() {
+    contentMounts++;
     injectedScroller = usePanelScroller();
     return () => h("p", { "data-testid": "content" }, "content");
   },
@@ -95,6 +97,24 @@ describe("ResponsivePanel.vue", () => {
 
   beforeEach(() => {
     injectedScroller = undefined;
+    contentMounts = 0;
+  });
+
+  it("keeps the content mounted when the layout switches, like on phone rotation", async () => {
+    isDesktop.value = false;
+    const wrapper = mountPanel();
+    await nextTick();
+
+    isDesktop.value = true;
+    await nextTick();
+    await nextTick();
+
+    expect(contentMounts).toBe(1);
+    expect(
+      scroller(wrapper).contains(
+        wrapper.get("[data-testid='content']").element,
+      ),
+    ).toBe(true);
   });
 
   describe("on desktop", () => {
@@ -151,8 +171,9 @@ describe("ResponsivePanel.vue", () => {
       isDesktop.value = false;
     });
 
-    it("shows the content in an open drawer with the title", () => {
+    it("shows the content in an open drawer with the title", async () => {
       const wrapper = mountPanel();
+      await nextTick();
       const drawer = wrapper.getComponent({ name: "UDrawer" });
 
       expect(wrapper.find("h3").exists()).toBe(false);
