@@ -53,14 +53,14 @@ describe("fetchCatalogItems", () => {
     expect(result).toEqual(page);
   });
 
-  it("searches by relevance when there is a query", async () => {
+  it("searches by relevance for the records containing the query", async () => {
     await fetchCatalogItems(ITEMS_URL, { lang: "de", limit: 10, q: "forest" });
 
     expect(lastRequest().params).toEqual({
       lang: "de",
       limit: "10",
       offset: "0",
-      q: "forest",
+      q: "*forest*",
     });
   });
 
@@ -71,7 +71,7 @@ describe("fetchCatalogItems", () => {
       q: "  tree of heaven  ",
     });
 
-    expect(lastRequest().params.q).toBe("tree of heaven");
+    expect(lastRequest().params.q).toBe("*tree of heaven*");
   });
 
   it("ignores a query made of whitespace only", async () => {

@@ -239,7 +239,7 @@ describe("searchLayers function", () => {
     const calledWith = (fetch as Mock).mock.calls[0][0] as string;
     const url = new URL(calledWith);
     expect(url.origin + url.pathname).toBe(catalogUrl);
-    expect(url.searchParams.get("q")).toBe("voyageurs");
+    expect(url.searchParams.get("q")).toBe("*voyageurs*");
     expect(url.searchParams.get("lang")).toBe("fr");
     expect(url.searchParams.get("limit")).toBe("5");
   });

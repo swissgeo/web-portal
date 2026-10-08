@@ -5,7 +5,7 @@ export interface CatalogItemsOptions {
   lang: string;
   /** Maximum number of records to return */
   limit: number;
-  /** Search text; surrounding whitespace is ignored */
+  /** Search text, matched as a substring; surrounding whitespace is ignored */
   q?: string;
   /** Number of records to skip (default: 0) */
   offset?: number;
@@ -39,8 +39,10 @@ export async function fetchCatalogItems(
   url.searchParams.set("offset", String(offset));
 
   if (q) {
-    // If a search query is present, use default order (relevance)
-    url.searchParams.set("q", q);
+    // If a search query is present, use default order (relevance). The
+    // wildcards make the catalog match substrings instead of whole words only
+    // (e.g. `ssigba` finds `Essigbaum`).
+    url.searchParams.set("q", `*${q}*`);
   } else {
     // If no search query is present, order by title
     url.searchParams.set("sortby", "title");
