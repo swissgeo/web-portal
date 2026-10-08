@@ -7,6 +7,8 @@ const sidebarStore = useSidebarStore();
 const { t } = useI18n();
 const isDesktop = useIsDesktop();
 const localePath = useLocalePath();
+const route = useRoute();
+const isDatasetOpen = computed(() => route.meta.datasetDetail === true);
 
 const mobileNavButtons = computed(() => [
   {
@@ -16,6 +18,18 @@ const mobileNavButtons = computed(() => [
       sidebarStore.isLayerCartVisible && !sidebarStore.isGeocatalogTreeVisible
         ? ("solid-inverted" as const)
         : ("ghost-inverted" as const),
+    onClick: () => {
+      // sidebar store holds open mobile drawer.
+      // If cart drawer is shown, close it. dataset pages hide cart
+      // but keep it open in store, so it does not count as shown.
+      if (sidebarStore.isLayerCartVisible && !isDatasetOpen.value) {
+        sidebarStore.closeSidebar();
+        return;
+      }
+      // open the cart on the map page where the drawers show
+      sidebarStore.setSidebar(SidebarType.LAYER_CART);
+      return navigateTo(localePath("/map"));
+    },
   },
   {
     icon: Layers3,
