@@ -92,5 +92,15 @@ describe("dataset page", () => {
       );
       wrapper.unmount();
     });
+
+    it("keeps the cart when going back to the map", async () => {
+      useSidebarStore().setSidebar(SidebarType.LAYER_CART);
+      const { wrapper, panel } = await mountPanel();
+
+      panel.vm.$emit("back");
+
+      expect(useSidebarStore().currentSidebar).toBe(SidebarType.LAYER_CART);
+      wrapper.unmount();
+    });
   });
 });
