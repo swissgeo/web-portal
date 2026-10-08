@@ -77,6 +77,15 @@ function toggleExpanded() {
 const scroller = useTemplateRef<HTMLElement>("scroller");
 provide(panelScrollerKey, scroller);
 
+// iOS moves the whole page when the keyboard would cover the focused field
+// (https://bugs.webkit.org/show_bug.cgi?id=176205). A fully open panel keeps
+// the field above the keyboard.
+useEventListener(scroller, "focusin", (focusEvent: FocusEvent) => {
+  if (!isDesktop.value && focusEvent.target instanceof HTMLInputElement) {
+    activeSnapPoint.value = fullSnapPoint;
+  }
+});
+
 // Decide whether the panel is scrollable or not:
 // - It is always scrollable on desktop (in the sidebar)
 // - On mobile, it is only scrollable when fully extended

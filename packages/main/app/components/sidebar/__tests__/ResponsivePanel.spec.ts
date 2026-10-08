@@ -210,6 +210,24 @@ describe("ResponsivePanel.vue", () => {
       expect(wrapper.emitted("close")).toHaveLength(1);
     });
 
+    it("opens fully when a field in the content gets focus, so the keyboard does not cover it", async () => {
+      const wrapper = mountPanel();
+      await flushPromises();
+      const drawer = wrapper.getComponent({ name: "UDrawer" });
+      const button = document.createElement("button");
+      const field = document.createElement("input");
+      scroller(wrapper).append(button, field);
+
+      button.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+      await nextTick();
+      expect(drawer.props("activeSnapPoint")).toBe(0.6);
+
+      field.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+      await nextTick();
+
+      expect(drawer.props("activeSnapPoint")).toBe(1);
+    });
+
     it("only lets the content scroll once the drawer is fully extended", async () => {
       const wrapper = mountPanel();
       const drawer = wrapper.getComponent({ name: "UDrawer" });
