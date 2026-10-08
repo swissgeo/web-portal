@@ -21,5 +21,3 @@ export type {
   SearchResponse,
   SearchResponseResult,
 } from "./types/search";
-
-export type { CatalogRecord } from "./api/search";

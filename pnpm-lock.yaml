@@ -1427,6 +1427,9 @@ importers:
       '@swissgeo/log':
         specifier: workspace:*
         version: link:../log
+      '@swissgeo/ogc':
+        specifier: workspace:*
+        version: link:../ogc
       '@swissgeo/shared':
         specifier: workspace:*
         version: link:../shared

@@ -9,7 +9,10 @@ import { useOgcCatalog } from "../useOgcCatalog";
 
 const { fetchMock } = vi.hoisted(() => ({ fetchMock: vi.fn() }));
 
-mockNuxtImport("$fetch", () => fetchMock);
+vi.mock("@swissgeo/ogc", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  fetchCatalogItems: fetchMock,
+}));
 
 mockNuxtImport("useRuntimeConfig", () => () => ({
   public: {
@@ -51,8 +54,8 @@ function deferred<T>() {
   return { promise, resolve, reject };
 }
 
-function lastQuery() {
-  return fetchMock.mock.lastCall![1].query;
+function lastOptions() {
+  return fetchMock.mock.lastCall![1];
 }
 
 function loadedIds(state: ReturnType<typeof useOgcCatalog>["state"]) {
@@ -64,7 +67,7 @@ describe("useOgcCatalog", () => {
     fetchMock.mockReset();
   });
 
-  it("loads the first page ordered by title in the given language", async () => {
+  it("loads the first page in the given language", async () => {
     fetchMock.mockResolvedValueOnce(makePage(["a", "b"], 2));
 
     const { state } = useOgcCatalog(ref("fr"));
@@ -72,19 +75,22 @@ describe("useOgcCatalog", () => {
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledExactlyOnceWith(ITEMS_URL, {
-      query: { lang: "fr", limit: 100, offset: 0, sortby: "title" },
+      lang: "fr",
+      limit: 100,
+      offset: 0,
+      q: "",
     });
     expect(state.value.status).toBe("success");
     expect(loadedIds(state)).toEqual(["a", "b"]);
   });
 
-  it("searches by relevance when there is a query", async () => {
+  it("searches with the trimmed query", async () => {
     fetchMock.mockResolvedValueOnce(makePage(["a"], 1));
 
     useOgcCatalog(ref("de"), "  forest  ");
     await flushPromises();
 
-    expect(lastQuery()).toEqual({
+    expect(lastOptions()).toEqual({
       lang: "de",
       limit: 100,
       offset: 0,
@@ -98,11 +104,11 @@ describe("useOgcCatalog", () => {
     useOgcCatalog(ref("de"), () => "   ");
     await flushPromises();
 
-    expect(lastQuery()).toEqual({
+    expect(lastOptions()).toEqual({
       lang: "de",
       limit: 100,
       offset: 0,
-      sortby: "title",
+      q: "",
     });
   });
 
@@ -118,7 +124,7 @@ describe("useOgcCatalog", () => {
 
     await loadMore();
 
-    expect(lastQuery()).toMatchObject({ offset: 2 });
+    expect(lastOptions()).toMatchObject({ offset: 2 });
     expect(loadedIds(state)).toEqual(["a", "b", "c"]);
     expect(state.value.data?.numberReturned).toBe(3);
     expect(hasMore.value).toBe(false);
@@ -169,11 +175,11 @@ describe("useOgcCatalog", () => {
     language.value = "en";
     await flushPromises();
 
-    expect(lastQuery()).toEqual({
+    expect(lastOptions()).toEqual({
       lang: "en",
       limit: 100,
       offset: 0,
-      sortby: "title",
+      q: "",
     });
     expect(loadedIds(state)).toEqual(["x"]);
     expect(total.value).toBe(1);
@@ -193,7 +199,7 @@ describe("useOgcCatalog", () => {
     query.value = "forest";
     await flushPromises();
 
-    expect(lastQuery()).toEqual({
+    expect(lastOptions()).toEqual({
       lang: "de",
       limit: 100,
       offset: 0,
@@ -220,7 +226,7 @@ describe("useOgcCatalog", () => {
 
     await retry();
 
-    expect(lastQuery()).toMatchObject({ offset: 1 });
+    expect(lastOptions()).toMatchObject({ offset: 1 });
     expect(state.value.status).toBe("success");
     expect(loadedIds(state)).toEqual(["a", "b"]);
   });

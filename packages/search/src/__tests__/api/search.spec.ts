@@ -228,7 +228,7 @@ describe("searchLayers function", () => {
     vi.restoreAllMocks();
   });
 
-  it("queries the catalog items endpoint with q, lang and format", async () => {
+  it("queries the catalog items endpoint with q, lang and limit", async () => {
     (fetch as Mock).mockResolvedValue({
       ok: true,
       json: () => ({ features: [] as { id: string }[] }),
@@ -239,7 +239,6 @@ describe("searchLayers function", () => {
     const calledWith = (fetch as Mock).mock.calls[0][0] as string;
     const url = new URL(calledWith);
     expect(url.origin + url.pathname).toBe(catalogUrl);
-    expect(url.searchParams.get("f")).toBe("json");
     expect(url.searchParams.get("q")).toBe("voyageurs");
     expect(url.searchParams.get("lang")).toBe("fr");
     expect(url.searchParams.get("limit")).toBe("5");
@@ -306,7 +305,7 @@ describe("searchLayers function", () => {
     });
 
     await expect(searchLayers("test", catalogUrl, "de")).rejects.toThrow(
-      "Layer search API error: 500",
+      "Catalog items API error: 500",
     );
   });
 });
