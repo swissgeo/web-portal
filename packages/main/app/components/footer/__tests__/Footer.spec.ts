@@ -5,12 +5,17 @@ import Footer from "~/components/footer/Footer.vue";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { isDesktop, navigateTo } = await vi.hoisted(async () => {
-  const { ref } = await import("vue");
-  return { isDesktop: ref(true), navigateTo: vi.fn() };
+const { isDesktop, navigateTo, route } = await vi.hoisted(async () => {
+  const { reactive, ref } = await import("vue");
+  return {
+    isDesktop: ref(true),
+    navigateTo: vi.fn(),
+    route: reactive({ meta: { datasetDetail: false } }),
+  };
 });
 
 mockNuxtImport("useIsDesktop", () => () => isDesktop);
+mockNuxtImport("useRoute", () => () => route);
 mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
 mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 mockNuxtImport("navigateTo", () => navigateTo);
@@ -49,6 +54,7 @@ describe("Footer.vue", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     isDesktop.value = true;
+    route.meta.datasetDetail = false;
     navigateTo.mockClear();
   });
 
@@ -118,6 +124,45 @@ describe("Footer.vue", () => {
       await navButton(mountFooter(), "catalog").trigger("click");
 
       expect(navigateTo).toHaveBeenCalledWith("/de/map");
+    });
+
+    it("opens the layer cart on the map", async () => {
+      const sidebarStore = useSidebarStore();
+
+      await navButton(mountFooter(), "map").trigger("click");
+
+      expect(sidebarStore.currentSidebar).toBe(SidebarType.LAYER_CART);
+      expect(navigateTo).toHaveBeenCalledWith("/de/map");
+    });
+
+    it("closes the layer cart when it is already shown", async () => {
+      const sidebarStore = useSidebarStore();
+      sidebarStore.setSidebar(SidebarType.LAYER_CART);
+
+      await navButton(mountFooter(), "map").trigger("click");
+
+      expect(sidebarStore.isSidebarOpen).toBe(false);
+      expect(navigateTo).not.toHaveBeenCalled();
+    });
+
+    it("brings the layer cart back from a dataset page instead of closing it", async () => {
+      const sidebarStore = useSidebarStore();
+      sidebarStore.setSidebar(SidebarType.LAYER_CART);
+      route.meta.datasetDetail = true;
+
+      await navButton(mountFooter(), "map").trigger("click");
+
+      expect(sidebarStore.currentSidebar).toBe(SidebarType.LAYER_CART);
+      expect(navigateTo).toHaveBeenCalledWith("/de/map");
+    });
+
+    it("switches from the catalog to the layer cart", async () => {
+      const sidebarStore = useSidebarStore();
+      sidebarStore.setSidebar(SidebarType.GEOCATALOG_TREE);
+
+      await navButton(mountFooter(), "map").trigger("click");
+
+      expect(sidebarStore.currentSidebar).toBe(SidebarType.LAYER_CART);
     });
 
     it("highlights neither map nor catalog when another sidebar is shown", () => {
