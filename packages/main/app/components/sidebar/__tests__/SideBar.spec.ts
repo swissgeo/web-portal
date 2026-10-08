@@ -9,7 +9,7 @@ const { sidebar, isDesktop } = await vi.hoisted(async () => {
   const { reactive, ref } = await import("vue");
   const sidebar = reactive({
     isSidebarOpen: true,
-    currentSidebar: "layerCart",
+    currentSidebar: "layerCart" as string | null,
     sidebarContentWidth: 320,
     closeSidebar: vi.fn(),
     setSidebar: vi.fn(),
@@ -181,7 +181,7 @@ describe("SideBar", () => {
       isDesktop.value = false;
     });
 
-    it("shows the cart and the only background selector in a panel without its own header", () => {
+    it("shows the cart and a background selector in a panel without its own header", () => {
       const wrapper = mountSideBar();
       const panel = wrapper.getComponent({ name: "ResponsivePanel" });
 
@@ -191,16 +191,22 @@ describe("SideBar", () => {
       expect(panel.findComponent({ name: "BackgroundSelector" }).exists()).toBe(
         true,
       );
+    });
+
+    it("keeps a background selector mounted while no panel is open, so the default background loads", () => {
+      sidebar.isSidebarOpen = false;
+      sidebar.currentSidebar = null;
+
       expect(
-        wrapper.findAllComponents({ name: "BackgroundSelector" }),
-      ).toHaveLength(1);
+        mountSideBar().findComponent({ name: "BackgroundSelector" }).exists(),
+      ).toBe(true);
     });
 
     it("opens the drawer fully when the background list opens", () => {
       const panelSnapPoint = ref<number | string | null>(0.6);
-      const background = mountSideBar(true, panelSnapPoint).getComponent({
-        name: "BackgroundSelector",
-      });
+      const background = mountSideBar(true, panelSnapPoint)
+        .getComponent({ name: "ResponsivePanel" })
+        .getComponent({ name: "BackgroundSelector" });
 
       background.vm.$emit("update:open", false);
       expect(panelSnapPoint.value).toBe(0.6);
