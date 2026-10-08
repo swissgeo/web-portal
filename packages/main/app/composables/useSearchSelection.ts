@@ -23,6 +23,7 @@ import { joinURL } from "ufo";
 
 export function useSearchSelection() {
   const runtimeConfig = useRuntimeConfig();
+  const catalogItemsUrl = useCatalogItemsUrl();
   const toast = useToaster();
   const { locale, t } = useI18n();
   const positionStore = usePositionStore();
@@ -104,15 +105,7 @@ export function useSearchSelection() {
       return;
     }
 
-    const url = new URL(
-      joinURL(
-        runtimeConfig.public.ogcApiEndpoint,
-        "collections",
-        runtimeConfig.public.ogcCatalogCollection,
-        "items",
-        result.layerId,
-      ),
-    );
+    const url = new URL(catalogItemsUrl(result.layerId));
     url.searchParams.set("lang", locale.value);
 
     try {

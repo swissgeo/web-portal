@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
         external: [
           "@swissgeo/shared",
           "@swissgeo/log",
+          "@swissgeo/ogc",
           "@swissgeo/coordinates",
         ],
       },

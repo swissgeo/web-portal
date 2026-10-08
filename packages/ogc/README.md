@@ -20,6 +20,17 @@ This package provides composables that enable the travelling of the OGC Records 
 
 All the composables expose their results as reactive properties and can thus be chained (or actually, composed) together.
 
+### Helpers
+
+The entry point into the records, the catalog of datasets, is not a composable. These are plain functions, so they can also be called outside of a component setup (e.g. from a store action):
+
+| function               | description                                                                       | input                                                                  | output                 |
+| ---------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------- |
+| `buildCatalogItemsUrl` | Builds the URL of the catalog `/items` endpoint, or of a single record            | API endpoint, collection ID, optionally a record ID                    | URL                    |
+| `fetchCatalogItems`    | Fetches a page of datasets from the catalog, optionally filtered by a search text | Catalog `/items` URL, language, limit, optionally search text + offset | Collection of Datasets |
+
+Every search in the catalog goes through `fetchCatalogItems`, so the data catalog and the search bar query it the same way.
+
 ### OGC Background
 
 The OGC Records roughly have this structure (just schematically):
