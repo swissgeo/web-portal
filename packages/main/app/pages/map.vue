@@ -20,7 +20,7 @@ watch(detailsOpen, (isOpen) => {
   <div class="relative h-full">
     <MapViewer />
     <DatasetPanelFrame
-      :visible="detailsOpen && !mapViewStore.isFullscreenModeActive"
+      :isVisible="detailsOpen && !mapViewStore.isFullscreenModeActive"
     >
       <NuxtPage :keepalive="false" />
     </DatasetPanelFrame>

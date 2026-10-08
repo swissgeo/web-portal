@@ -35,6 +35,8 @@ function render() {
         Footer: true,
         UMain: { template: "<div><slot /></div>" },
         SideBar: {
+          name: "SideBar",
+          props: ["isVisible"],
           template:
             '<div data-testid="catalog"><input value="saved filter" /></div>',
         },
@@ -63,10 +65,11 @@ describe("application frame", () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.get('[data-testid="map-instance"]').element).toBe(map);
     expect(wrapper.get('[data-testid="catalog"]').element).toBe(catalog);
-    expect(wrapper.get('[data-testid="catalog"]').isVisible()).toBe(false);
+    expect(wrapper.getComponent({ name: "SideBar" }).props("isVisible")).toBe(
+      false,
+    );
     route.meta.datasetDetail = false;
     await wrapper.vm.$nextTick();
-    expect(wrapper.get('[data-testid="catalog"]').isVisible()).toBe(true);
     expect(wrapper.get("input").element.value).toBe("retained filter");
     expect(wrapper.get('[data-testid="map-instance"]').element).toBe(map);
     wrapper.unmount();

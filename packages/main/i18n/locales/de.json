@@ -479,7 +479,9 @@
     "retry": "Erneut versuchen",
     "searchLabel": "Ebenen durchsuchen",
     "searchPlaceholder": "Suchen",
-    "close": "Schliessen"
+    "close": "Schliessen",
+    "expand": "Daten-Katalog anzeigen",
+    "collapse": "Daten-Katalog ausblenden"
   },
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",

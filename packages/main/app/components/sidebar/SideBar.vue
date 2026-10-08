@@ -14,8 +14,9 @@ import ResponsivePanel from "./ResponsivePanel.vue";
 const uiStore = useSidebarStore();
 const { t } = useI18n();
 
-const { mapLayers } = defineProps<{
+const { mapLayers, isVisible = true } = defineProps<{
   mapLayers: Ref<MapLayer[]>;
+  isVisible?: boolean;
 }>();
 defineSlots<{
   "bottom-controls"?: () => unknown;
@@ -31,7 +32,12 @@ const isSidebarContentVisible = computed(
 );
 
 function closeLayerCatalog() {
-  uiStore.setSidebar(SidebarType.LAYER_CART);
+  // On mobile the design opens the catalog only through the footer, so closing returns to the map
+  if (isDesktop.value) {
+    uiStore.setSidebar(SidebarType.LAYER_CART);
+  } else {
+    uiStore.closeSidebar();
+  }
 }
 
 function toggleSidebar() {
@@ -45,8 +51,10 @@ function toggleSidebar() {
 
 <template>
   <div
+    v-show="isVisible"
     class="absolute top-0 left-0 flex h-[calc(100dvh-var(--ui-header-height))]"
   >
+    <!-- The catalog drawer teleports out of this element, so it gets isVisible too -->
     <div
       v-show="isSidebarContentVisible"
       :style="{ width: uiStore.sidebarContentWidth + 'px' }"
@@ -60,6 +68,9 @@ function toggleSidebar() {
         v-else-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
         :title="t('layerCatalog.title')"
         :closeLabel="t('layerCatalog.close')"
+        :expandLabel="t('layerCatalog.expand')"
+        :collapseLabel="t('layerCatalog.collapse')"
+        :isVisible="isVisible"
         @close="closeLayerCatalog"
       >
         <LayerCatalog />

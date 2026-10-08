@@ -6,6 +6,7 @@ const { olMap } = storeToRefs(useMapStore());
 const sidebarStore = useSidebarStore();
 const { t } = useI18n();
 const isDesktop = useIsDesktop();
+const localePath = useLocalePath();
 
 const mobileNavButtons = computed(() => [
   {
@@ -22,7 +23,11 @@ const mobileNavButtons = computed(() => [
     variant: sidebarStore.isGeocatalogTreeVisible
       ? ("solid-inverted" as const)
       : ("ghost-inverted" as const),
-    onClick: () => sidebarStore.setSidebar(SidebarType.GEOCATALOG_TREE),
+    onClick: () => {
+      sidebarStore.setSidebar(SidebarType.GEOCATALOG_TREE);
+      // Some routes hide the sidebar, so go to the map, where the catalog always shows.
+      return navigateTo(localePath("/map"));
+    },
   },
   {
     icon: Wrench,

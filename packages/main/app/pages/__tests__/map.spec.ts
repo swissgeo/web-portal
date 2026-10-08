@@ -23,8 +23,8 @@ function render() {
       stubs: {
         MapViewer: { template: '<div data-testid="map" />' },
         DatasetPanelFrame: {
-          props: ["visible"],
-          template: '<aside v-show="visible"><slot /></aside>',
+          props: ["isVisible"],
+          template: '<aside v-show="isVisible"><slot /></aside>',
         },
         NuxtPage: { template: '<div data-testid="route-outlet" />' },
       },

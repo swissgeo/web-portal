@@ -5,13 +5,15 @@ import Footer from "~/components/footer/Footer.vue";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { isDesktop } = await vi.hoisted(async () => {
+const { isDesktop, navigateTo } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
-  return { isDesktop: ref(true) };
+  return { isDesktop: ref(true), navigateTo: vi.fn() };
 });
 
 mockNuxtImport("useIsDesktop", () => () => isDesktop);
 mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
+mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
+mockNuxtImport("navigateTo", () => navigateTo);
 
 vi.mock("@swissgeo/map", async () => {
   const { reactive } = await import("vue");
@@ -47,6 +49,7 @@ describe("Footer.vue", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     isDesktop.value = true;
+    navigateTo.mockClear();
   });
 
   it("shows the map infos and links on desktop, without mobile navigation", () => {
@@ -109,6 +112,12 @@ describe("Footer.vue", () => {
         "solid-inverted",
       );
       expect(navButton(wrapper, "map").props("variant")).toBe("ghost-inverted");
+    });
+
+    it("goes to the map to show the catalog", async () => {
+      await navButton(mountFooter(), "catalog").trigger("click");
+
+      expect(navigateTo).toHaveBeenCalledWith("/de/map");
     });
 
     it("highlights neither map nor catalog when another sidebar is shown", () => {
