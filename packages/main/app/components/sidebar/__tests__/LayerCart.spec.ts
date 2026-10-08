@@ -138,6 +138,42 @@ describe("LayerCart.vue", () => {
     ).toContain("max-md:hidden");
   });
 
+  it.each`
+    target                                   | reachesDrawer
+    ${"[data-uuid='a'] [data-vaul-no-drag]"} | ${false}
+    ${"[data-uuid='a']"}                     | ${true}
+  `(
+    "lets a pointerdown on $target reach the drawer: $reachesDrawer",
+    ({ target, reachesDrawer }) => {
+      const drawer = document.createElement("div");
+      document.body.append(drawer);
+      const onDrawerPointerDown = vi.fn();
+      drawer.addEventListener("pointerdown", onDrawerPointerDown);
+      const wrapper = mount(LayerCart, {
+        props: { mapLayers: ref([makeLayer("a")]) },
+        global: {
+          stubs: {
+            ...stubs,
+            LayerCartEntry: {
+              props: ["layer", "layerIndex"],
+              template:
+                "<li :data-uuid='layer.uuid'><button data-vaul-no-drag /></li>",
+            },
+          },
+        },
+        attachTo: drawer,
+      });
+
+      wrapper
+        .get(target)
+        .element.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+
+      expect(onDrawerPointerDown).toHaveBeenCalledTimes(reachesDrawer ? 1 : 0);
+      wrapper.unmount();
+      drawer.remove();
+    },
+  );
+
   it("ignores a drop that reports no position", () => {
     mountCart();
 

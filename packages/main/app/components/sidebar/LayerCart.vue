@@ -53,6 +53,18 @@ useSortable(layerCartRef, sortedLayers, {
 
 const uiStore = useSidebarStore();
 
+// The mobile drawer starts its drag on pointerdown. Stopping it here keeps the
+// drawer still while a layer or its opacity is dragged, and Sortable still
+// gets the event, because it listens on this same list.
+function keepDrawerStill(event: PointerEvent) {
+  if (
+    event.target instanceof Element &&
+    event.target.closest("[data-vaul-no-drag]")
+  ) {
+    event.stopPropagation();
+  }
+}
+
 function openLayerCatalog() {
   uiStore.setSidebar(SidebarType.GEOCATALOG_TREE);
 }
@@ -82,6 +94,7 @@ function openLayerCatalog() {
 
   <ul
     ref="layerCartRef"
+    @pointerdown="keepDrawerStill"
     data-testid="layer-cart"
     class="mt-4 flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-2"
   >
