@@ -138,6 +138,8 @@ useEventListener(
 </script>
 
 <template>
+  <!-- handleOnly: only the handle moves the drawer. On iOS, a drag inside it
+       (reorder, slider) also moved the drawer. -->
   <UDrawer
     v-if="!isDesktop"
     open
@@ -145,6 +147,7 @@ useEventListener(
     v-model:activeSnapPoint="activeSnapPoint"
     :snapPoints="snapPoints"
     :dismissible="isCurrentlyDismissible"
+    handleOnly
     :modal="false"
     :overlay="false"
     portal="#main"

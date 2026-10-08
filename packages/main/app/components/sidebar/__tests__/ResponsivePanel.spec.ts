@@ -34,6 +34,7 @@ const stubs = {
       activeSnapPoint: Number,
       snapPoints: Array,
       dismissible: Boolean,
+      handleOnly: Boolean,
       ui: Object,
     },
     emits: ["update:open", "update:activeSnapPoint"],
@@ -180,6 +181,12 @@ describe("ResponsivePanel.vue", () => {
       expect(drawer.props("open")).toBe(true);
       expect(drawer.props("title")).toBe("Catalog");
       expect(drawer.find("[data-testid='content']").exists()).toBe(true);
+    });
+
+    it("moves only by its handle, so drags inside it stay inside", () => {
+      expect(
+        mountPanel().getComponent({ name: "UDrawer" }).props("handleOnly"),
+      ).toBe(true);
     });
 
     it("starts partially extended and can be fully extended", () => {
