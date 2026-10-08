@@ -158,8 +158,9 @@ useEventListener(
       // The drawer teleports to #main, so a v-show on a parent does not hide it.
       content: `bottom-16 z-20 h-[calc(100%-1.5*var(--ui-header-height)-4rem)] ${isVisible ? '' : 'hidden'}`,
       container: 'min-h-0 flex-1 gap-0 overflow-hidden p-0',
-      // The theme spaces the handle for a padded container, which this is not
-      handle: 'my-2',
+      // The theme spaces the handle for a padded container, which this is not.
+      // Touch area spans the full width. The ! overrides vaul styling.
+      handle: 'my-2 [&>[data-vaul-handle-hitarea]]:w-screen!',
       header: hasHeader ? 'px-4 py-3' : 'sr-only',
       title: 'text-sm font-semibold text-highlighted uppercase',
       body: 'flex min-h-0 flex-1 flex-col',
