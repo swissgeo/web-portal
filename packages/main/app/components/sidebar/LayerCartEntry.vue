@@ -123,10 +123,8 @@ const rowButton = {
 <template>
   <li class="flex min-w-0 flex-col gap-2 rounded">
     <div class="flex min-w-0 items-center">
-      <!-- data-vaul-no-drag tells vaul not to move the drawer when this is dragged -->
       <UButton
         data-testid="layer-reorder-handle"
-        data-vaul-no-drag
         class="layer-reorder-handle shrink-0 cursor-grab text-dimmed"
         icon="i-lucide-grip-vertical"
         v-bind="rowButton"
@@ -188,7 +186,6 @@ const rowButton = {
         </span>
         <div class="flex items-center gap-2">
           <USlider
-            data-vaul-no-drag
             :model-value="opacityPercent"
             @update:model-value="handleOpacityChange"
             @wheel.prevent="handleWheel"
