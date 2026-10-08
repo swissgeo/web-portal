@@ -465,6 +465,11 @@
       "openPage": "Open legend page"
     }
   },
+  "layerCart": {
+    "close": "Close",
+    "expand": "Show active layers",
+    "collapse": "Hide active layers"
+  },
   "layerCatalog": {
     "title": "Data catalog",
     "table": {

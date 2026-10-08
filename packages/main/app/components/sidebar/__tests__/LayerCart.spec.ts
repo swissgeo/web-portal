@@ -132,6 +132,12 @@ describe("LayerCart.vue", () => {
     );
   });
 
+  it("has no catalog button on mobile, where the footer opens the catalog", () => {
+    expect(
+      mountCart().get("[data-testid='open-layer-catalog']").classes(),
+    ).toContain("max-md:hidden");
+  });
+
   it("ignores a drop that reports no position", () => {
     mountCart();
 

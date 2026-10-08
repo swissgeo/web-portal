@@ -59,18 +59,21 @@ function openLayerCatalog() {
 </script>
 
 <template>
+  <!-- In the mobile drawer the whole cart scrolls, so the header sticks like
+       the other panel headers -->
   <div
-    class="flex min-h-14 items-center justify-between gap-2 border-b border-default px-4"
+    class="sticky top-0 z-10 flex min-h-14 items-center justify-between gap-2 border-b border-default bg-default px-4"
   >
     <!-- h2 carries global heading styles (see main.css), which do not fit a
          panel header, hence the h3 -->
-    <h3 class="text-sm font-bold text-highlighted">{{ t("menu.map") }}</h3>
+    <h3 class="text-lg font-semibold text-highlighted">{{ t("menu.map") }}</h3>
+    <!-- On mobile the footer opens the catalog -->
     <UButton
       data-testid="open-layer-catalog"
       color="primary"
       variant="outline"
       size="xs"
-      class="cursor-pointer"
+      class="cursor-pointer max-md:hidden"
       @click="openLayerCatalog"
     >
       {{ t("menu.openLayerCatalog") }}

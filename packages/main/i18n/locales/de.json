@@ -467,6 +467,11 @@
       "openPage": "Legendenseite öffnen"
     }
   },
+  "layerCart": {
+    "close": "Schliessen",
+    "expand": "Aktive Ebenen anzeigen",
+    "collapse": "Aktive Ebenen ausblenden"
+  },
   "layerCatalog": {
     "title": "Daten-Katalog",
     "table": {
