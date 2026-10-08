@@ -84,7 +84,7 @@ function toggleSidebar() {
         @close="uiStore.closeSidebar()"
       >
         <LayerCart :mapLayers="mapLayers" />
-        <!-- Mobile drawers replace the side column, so the background selector moves into this one -->
+        <!-- The side column is hidden on mobile, so the drawer shows its own background selector -->
         <div v-if="!isDesktop" class="px-2">
           <USeparator />
           <div class="my-4">
@@ -103,7 +103,8 @@ function toggleSidebar() {
       >
         <LayerCatalog />
       </ResponsivePanel>
-      <div v-if="isDesktop" class="px-2">
+      <!-- Stays mounted on mobile too, because it picks the default background -->
+      <div class="px-2">
         <USeparator />
         <div class="my-4">
           <BackgroundSelector />
