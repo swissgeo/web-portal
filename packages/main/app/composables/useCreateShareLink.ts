@@ -125,7 +125,12 @@ function useShareLinkState(
   };
 }
 
-function buildEmbedCode(stateId: string | null, zoomOnlyCtrl: boolean): string {
+function buildEmbedCode(
+  stateId: string | null,
+  zoomOnlyCtrl: boolean,
+  resolution: { width: number; height: number } = { width: 800, height: 600 },
+  fullWidth = false,
+): string {
   if (!stateId) {
     return "";
   }
@@ -135,7 +140,8 @@ function buildEmbedCode(stateId: string | null, zoomOnlyCtrl: boolean): string {
   if (zoomOnlyCtrl) {
     url.searchParams.set("zoomOnlyCtrl", "true");
   }
-  return `<iframe src="${url.href}" width="600" height="400" frameborder="0"></iframe>`;
+  const width = fullWidth ? "100%" : String(resolution.width);
+  return `<iframe src="${url.href}" width="${width}" height="${resolution.height}" frameborder="0"></iframe>`;
 }
 
 /**
@@ -150,7 +156,12 @@ function buildEmbedCode(stateId: string | null, zoomOnlyCtrl: boolean): string {
  */
 export function useCreateShareLink(
   state?: MaybeRefOrGetter<AppStatePayload | null>,
-  options?: { autoRefresh?: boolean; zoomOnlyCtrl?: Ref<boolean> },
+  options?: {
+    autoRefresh?: boolean;
+    fullWidth?: Ref<boolean>;
+    resolution?: MaybeRefOrGetter<{ width: number; height: number }>;
+    zoomOnlyCtrl?: Ref<boolean>;
+  },
 ) {
   const { exportState } = useStateConfig();
   const usableState = state ?? exportState;
@@ -163,7 +174,14 @@ export function useCreateShareLink(
   );
   const shareLink = computed(() => buildShareUrl(hash.value));
   const embedCode = computed(() =>
-    buildEmbedCode(hash.value, options?.zoomOnlyCtrl?.value ?? false),
+    buildEmbedCode(
+      hash.value,
+      options?.zoomOnlyCtrl?.value ?? false,
+      options?.resolution
+        ? toValue(options.resolution)
+        : { width: 800, height: 600 },
+      options?.fullWidth?.value ?? false,
+    ),
   );
 
   return {

@@ -271,12 +271,36 @@
       "title": "Teilen",
       "link": {
         "title": "Freigabelink",
-        "generateButton": "Freigabelink generieren"
+        "description": "Teilen Sie die aktuelle Kartenansicht mit anderen oder kopieren Sie die URL.",
+        "generateButton": "Freigabelink generieren",
+        "drawingEditableLabel": "Zeichnung editierbar",
+        "urlLabel": "URL",
+        "copyButton": "Kopieren",
+        "socialMediaLabel": "Via Social Media",
+        "qrCodeLabel": "Link als Qr-Code",
+        "shareText": "Schauen Sie sich diese Karte an",
+        "ariaLabel": {
+          "copyToClipboard": "In die Zwischenablage kopieren",
+          "email": "Per E-Mail teilen",
+          "facebook": "Auf Facebook teilen",
+          "linkedin": "Auf LinkedIn teilen",
+          "whatsapp": "Auf WhatsApp teilen"
+        }
       },
       "embed": {
         "title": "Einbetten",
+        "description": "Betten Sie die Karte mit dem Link in Ihre eigene Umgebung ein.",
         "generateButton": "Einbettungscode generieren",
-        "zoomOnlyCtrlLabel": "Zoom nur mit Strg/Cmd-Taste aktivieren"
+        "zoomOnlyCtrlLabel": "Zoom nur mit Strg/Cmd-Taste aktivieren",
+        "sizeLabel": "Grösse",
+        "sizeSmall": "Klein",
+        "sizeMedium": "Mittel",
+        "sizeLarge": "Gross",
+        "sizeCustom": "Eigene",
+        "customWidthLabel": "Breite",
+        "customHeightLabel": "Höhe",
+        "pixelUnit": "Pixel",
+        "fullWidthLabel": "Volle (100%) Breite"
       },
       "ariaLabel": {
         "close": "Schließen",
