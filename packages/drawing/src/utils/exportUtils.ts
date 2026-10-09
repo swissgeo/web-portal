@@ -10,13 +10,19 @@ import KML from "ol/format/KML";
 import { LineString, MultiLineString, Point } from "ol/geom";
 import { fromCircle } from "ol/geom/Polygon";
 import { register } from "ol/proj/proj4";
-import { Fill, Icon, Style, Text } from "ol/style";
+import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import proj4 from "proj4";
 
 import type { TextSize } from "./drawingStyleCommon";
 
-import { DESCRIPTION_KEY, TITLE_KEY } from "./drawingMetadata";
 import {
+  DEFAULT_FILL_COLOR,
+  DEFAULT_HEX_FILL_ALPHA,
+  DEFAULT_STROKE_COLOR,
+  DEFAULT_STROKE_WIDTH,
+  FILL_COLOR_KEY,
+  STROKE_COLOR_KEY,
+  STROKE_WIDTH_KEY,
   SHOW_DESCRIPTION_KEY,
   SHOW_ICON_KEY,
   SHOW_TITLE_KEY,
@@ -24,6 +30,12 @@ import {
   TEXT_PLACEMENT_KEY,
   TEXT_SIZE,
   TEXT_SIZE_KEY,
+  DESCRIPTION_KEY,
+  TITLE_KEY,
+  IS_CIRCLE_CENTER_KEY,
+  IS_POLYGONIZED_CIRCLE_KEY,
+  CIRCLE_RADIUS_METER_KEY,
+  POLYGONIZED_CIRCLE_ID_KEY,
 } from "./drawingStyleCommon";
 
 registerProj4(proj4);
@@ -195,11 +207,8 @@ function applyPointKmlStyle(
     } else {
       feature.unset("name", true);
     }
-    feature.set(
-      "showDescriptionOnMap",
-      isEnabled(feature.get(SHOW_DESCRIPTION_KEY)),
-      true,
-    );
+    // Unset the showDescriptionOnMap property as it is no longer needed
+    feature.unset("showDescriptionOnMap", true);
   } else if (label) {
     feature.set("name", label, true);
   }
@@ -253,9 +262,62 @@ function applyPointKmlStyle(
   );
 }
 
+/** Copy drawing metadata into the standard KML Placemark fields. */
+function applyShapeKmlMetadata(feature: Feature<Geometry>): void {
+  if (feature.get(TITLE_KEY) !== undefined) {
+    feature.set("name", String(feature.get(TITLE_KEY)), true);
+  }
+  if (feature.get(DESCRIPTION_KEY) !== undefined) {
+    feature.set("description", String(feature.get(DESCRIPTION_KEY)), true);
+  }
+}
+
+function createKmlStroke(feature: Feature<Geometry>): Stroke {
+  const width = feature.get(STROKE_WIDTH_KEY) ?? DEFAULT_STROKE_WIDTH;
+  return new Stroke({
+    // The OL KML writer turns zero widths into 1. Use a transparent stroke
+    // to keep a zero-width line or outline invisible in the exported file.
+    color:
+      Number(width) === 0
+        ? "#00000000"
+        : (feature.get(STROKE_COLOR_KEY) ?? DEFAULT_STROKE_COLOR),
+    width,
+  });
+}
+
+/** Export the saved line style, excluding selection outlines and edit handles. */
+function applyLineStringKmlStyle(feature: Feature<Geometry>): void {
+  if (feature.getGeometry()?.getType() !== "LineString") {
+    return;
+  }
+  applyShapeKmlMetadata(feature);
+  feature.setStyle(new Style({ stroke: createKmlStroke(feature) }));
+}
+
+/**
+ * Export polygon fills and outlines, including circles converted to polygons.
+ * Use the same fill opacity as the idle drawing style on the map.
+ */
+function applyPolygonKmlStyle(feature: Feature<Geometry>): void {
+  if (feature.getGeometry()?.getType() !== "Polygon") {
+    return;
+  }
+  applyShapeKmlMetadata(feature);
+  feature.setStyle(
+    new Style({
+      stroke: createKmlStroke(feature),
+      fill: new Fill({
+        color: `${feature.get(FILL_COLOR_KEY) ?? DEFAULT_FILL_COLOR}${DEFAULT_HEX_FILL_ALPHA}`,
+      }),
+    }),
+  );
+}
+
 function writeKmlFeatures(features: Feature<Geometry>[]): string {
   const olKML = new KML();
 
+  // OpenLayers serializes each feature ID as the corresponding Placemark's
+  // `id` attribute.
   return olKML
     .writeFeatures(features, {
       featureProjection: EPSG_2056_CH1903,
@@ -377,7 +439,8 @@ export function olFeatureToGeoJSON(
  * Export one or multiple OpenLayers features to KMZ. Visible point icons are
  * downloaded from their resolved OL Icon styles, deduplicated, and embedded in
  * the archive. The KML document references those local files while retaining
- * the icon scale and anchor serialized by OpenLayers.
+ * the icon scale and anchor serialized by OpenLayers. Lines and polygons,
+ * including polygonized circles, use their saved drawing colors and widths.
  */
 export async function olFeatureToKMZ(
   feature: Feature<Geometry> | Feature<Geometry>[],
@@ -408,6 +471,8 @@ export async function olFeatureToKMZ(
 
   for (const currentFeature of features) {
     applyPointKmlStyle(currentFeature, iconStyleByFeature.get(currentFeature));
+    applyLineStringKmlStyle(currentFeature);
+    applyPolygonKmlStyle(currentFeature);
   }
 
   const kmlString = replaceIconHrefs(
@@ -451,8 +516,9 @@ export function olFeatureToGPX(
 }
 
 /**
- * Export one or multiple OpenLayers features to KML format. Point label styles
- * are adapted to KML, while custom point icon assets are intentionally omitted.
+ * Export one or multiple OpenLayers features to KML format. Point labels and
+ * saved line/polygon styles are adapted to KML, while custom point icon assets
+ * are intentionally omitted.
  */
 export function olFeatureToKML(
   feature: Feature<Geometry> | Feature<Geometry>[],
@@ -465,8 +531,22 @@ export function olFeatureToKML(
     },
   );
 
-  features.forEach((currentFeature) => applyPointKmlStyle(currentFeature));
+  features.forEach((currentFeature) => {
+    applyPointKmlStyle(currentFeature);
+    applyLineStringKmlStyle(currentFeature);
+    applyPolygonKmlStyle(currentFeature);
+  });
   return writeKmlFeatures(features);
+}
+
+function copyFeatureId(
+  source: Feature<Geometry>,
+  target: Feature<Geometry>,
+): void {
+  const featureId = source.getId();
+  if (featureId !== undefined) {
+    target.setId(featureId);
+  }
 }
 
 /**
@@ -492,8 +572,20 @@ export function convertCircleToPolygon(
   delete properties.geometry; // Remove the geometry property to avoid conflicts
 
   // Copy properties from the original circle feature to the new polygon feature
+  // Note: the polygons created as a drawing cannot be serialized as a KML/KMZ/GeoJSON because the circle geometry
+  // do not exist in these formats. As a result, a circle is converted into 2 separate features:
+  // - a polygon approximating the circle with line segments, to be imported on other applications
+  // - a point representing the center, that contains the radius of the original circle (in meters) as a property
+  // The center point feature is the one being used when the KML/KMZ is imported back to Swissgeo to form the original circle.
   polygonFeature.setProperties(properties);
+  polygonFeature.setId(circle.getId());
+  polygonFeature.set(CIRCLE_RADIUS_METER_KEY, circleGeometry.getRadius());
+  polygonFeature.set(IS_POLYGONIZED_CIRCLE_KEY, true);
   centerFeature.setProperties(properties);
+  centerFeature.set(IS_CIRCLE_CENTER_KEY, true);
+  centerFeature.set(CIRCLE_RADIUS_METER_KEY, circleGeometry.getRadius());
+  centerFeature.set(POLYGONIZED_CIRCLE_ID_KEY, circle.getId());
+  copyFeatureId(circle, polygonFeature);
 
   return [polygonFeature, centerFeature];
 }
@@ -525,6 +617,7 @@ export function convertCircleToLineString(
   // Copy properties from the original circle feature to the new line string feature
   lineStringFeature.setProperties(properties);
   centerFeature.setProperties(properties);
+  copyFeatureId(circle, lineStringFeature);
 
   return [lineStringFeature, centerFeature];
 }
@@ -554,6 +647,7 @@ export function convertCircleToMultiLineString(
   // Copy properties from the original circle feature to the new line string feature
   lineStringFeature.setProperties(properties);
   centerFeature.setProperties(properties);
+  copyFeatureId(circle, lineStringFeature);
 
   return [lineStringFeature, centerFeature];
 }
@@ -579,6 +673,7 @@ export function convertPolygonToLineString(
 
   // Copy properties from the original polygon feature to the new line string feature
   lineStringFeature.setProperties(properties);
+  copyFeatureId(polygon, lineStringFeature);
 
   return lineStringFeature;
 }
@@ -602,6 +697,7 @@ export function convertPolygonToMultiLineString(
 
   // Copy properties from the original polygon feature to the new line string feature
   lineStringFeature.setProperties(properties);
+  copyFeatureId(polygon, lineStringFeature);
 
   return lineStringFeature;
 }
@@ -623,6 +719,7 @@ export function convertLineStringToMultiLineString(
 
   // Copy properties from the original line string feature to the new multi-line string feature
   multiLineStringFeature.setProperties(properties);
+  copyFeatureId(lineString, multiLineStringFeature);
 
   return multiLineStringFeature;
 }
@@ -708,6 +805,7 @@ export function cloneToSerializationCompatibleFeatures(
     const properties = feature.getProperties();
     delete properties.geometry;
     clonedFeature.setProperties(properties);
+    copyFeatureId(feature, clonedFeature);
     if (geometry.getType() === "Point" && options.copyPointStyle) {
       clonedFeature.setStyle(feature.getStyle());
     }

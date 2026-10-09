@@ -11,8 +11,9 @@ import type {
 } from "./drawingStyleCommon";
 
 import { useIconsStore } from "../stores/icons.store";
-import { DESCRIPTION_KEY, TITLE_KEY } from "./drawingMetadata";
 import {
+  DESCRIPTION_KEY,
+  TITLE_KEY,
   EDITING_OUTLINE_COLOR,
   EDITING_OUTLINE_WIDTH,
   EDITING_POINT_COLOR,

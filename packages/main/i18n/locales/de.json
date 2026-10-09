@@ -223,7 +223,117 @@
       "buttonTitle": "3D"
     },
     "drawing": {
-      "buttonTitle": "Zeichnen"
+      "buttonTitle": "Zeichnen",
+      "close": "Zeichenfenster schliessen",
+      "featureCount": "Keine Objekte auf der Karte | {count} Objekt auf der Karte | {count} Objekte auf der Karte",
+      "tools": {
+        "label": "Zeichenwerkzeuge",
+        "select": "Auswählen",
+        "polyline": "Linie",
+        "polygon": "Polygon",
+        "circle": "Kreis",
+        "text": "Text",
+        "marker": "Symbol"
+      },
+      "hints": {
+        "edit": "Ziehe die Griffe, um die Form des Objekts zu ändern.",
+        "select": "Wähle ein Objekt auf der Karte aus, um seinen Stil zu bearbeiten.",
+        "chooseTool": "Wähle ein Werkzeug, um auf der Karte zu zeichnen.",
+        "place": "Klicke auf die Karte, um dein Objekt zu platzieren.",
+        "circle": "Klicke, um den Mittelpunkt festzulegen, und dann erneut, um den Radius festzulegen.",
+        "addPoints": "Klicke, um Punkte hinzuzufügen. Doppelklicke zum Abschliessen.",
+        "drawing": "Du zeichnest gerade ein neues Objekt.",
+        "deletePoint": "Umschalt + Klick auf einen Punkt, um ihn zu löschen."
+      },
+      "cancel": "Zeichnen abbrechen",
+      "selection": "Auswahl",
+      "done": "Fertig",
+      "editGeometry": "Geometrie bearbeiten",
+      "delete": "Löschen",
+      "finishEditing": "Bearbeitung abschliessen",
+      "export": "Exportieren",
+      "sync": "Zeichnung synchronisieren",
+      "clear": "Zeichenebene leeren",
+      "shareLink": "Freigabelink",
+      "copy": "In die Zwischenablage kopieren",
+      "allowEditing": "Bearbeitung erlauben",
+      "formats": {
+        "geojson": "GeoJSON",
+        "gpxTrack": "GPX-Track",
+        "gpxRoute": "GPX-Route",
+        "kml": "KML",
+        "kmz": "KMZ"
+      },
+      "properties": {
+        "generic": "Objekteigenschaften",
+        "LineString": "Linieneigenschaften",
+        "Polygon": "Polygoneigenschaften",
+        "Circle": "Kreiseigenschaften",
+        "Point": "Text- und Markierungseigenschaften"
+      },
+      "fields": {
+        "title": "Titel",
+        "titlePlaceholder": "Titel hinzufügen",
+        "description": "Beschreibung",
+        "descriptionPlaceholder": "Beschreibung hinzufügen",
+        "optional": "Optional"
+      },
+      "style": {
+        "appearance": "Darstellung",
+        "fillColor": "Füllfarbe",
+        "outlineColor": "Umrissfarbe",
+        "outlineWidth": "Umrissbreite",
+        "lineColor": "Linienfarbe",
+        "lineWidth": "Linienbreite",
+        "showTitle": "Titel anzeigen",
+        "showDescription": "Beschreibung anzeigen",
+        "textSize": "Textgrösse",
+        "placement": "Platzierung",
+        "relativeToMarker": "Relativ zur Markierung",
+        "textColor": "Textfarbe",
+        "textHaloColor": "Farbe des Texthalos",
+        "showMarker": "Markierung anzeigen",
+        "markerSize": "Markierungsgrösse"
+      },
+      "metrics": {
+        "length": "Länge",
+        "perimeter": "Umfang",
+        "radius": "Radius",
+        "area": "Fläche"
+      },
+      "placement": {
+        "label": "Textplatzierung",
+        "north-west": "Oben links",
+        "north": "Oben",
+        "north-east": "Oben rechts",
+        "west": "Links",
+        "center": "Mitte",
+        "east": "Rechts",
+        "south-west": "Unten links",
+        "south": "Unten",
+        "south-east": "Unten rechts"
+      },
+      "sizes": {
+        "xsmall": "Sehr klein",
+        "small": "Klein",
+        "medium": "Mittel",
+        "large": "Gross",
+        "xlarge": "Sehr gross"
+      },
+      "symbols": {
+        "collection": "Symbolsammlung",
+        "color": "Symbolfarbe",
+        "label": "Markierungssymbole",
+        "empty": "Keine Symbole verfügbar.",
+        "select": "Symbol auswählen: {name}",
+        "collections": {
+          "default": "Standardsymbole",
+          "babs-v2-de": "Zivile Signaturen (Deutsch)",
+          "babs-v2-fr": "Zivile Signaturen (Französisch)",
+          "babs-v2-it": "Zivile Signaturen (Italienisch)"
+        }
+      },
+      "title": "Zeichnen"
     },
     "measure": {
       "buttonTitle": "Messen"
@@ -239,21 +349,28 @@
       "title": "Eine Datei oder URL importieren",
       "description": "Akzeptierte Dateitypen: {types}",
       "tabData": "Daten",
+      "tabDrawing": "Zeichnung",
       "tabUrl": "URL",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Durchsuchen...",
       "noFileSelected": "Keine Datei ausgewählt",
       "importFileButton": "Datei importieren",
-      "importUrlButton": "Von URL importieren",
+      "importUrlButton": "Zeichnung hinzufügen",
+      "importUrlAsAdmin": "Zeichnung als Administrator von URL hinzufügen",
       "loadingMessage": "Datei wird importiert...",
       "successMessage": "Datei erfolgreich importiert: {fileName}",
       "drawingSuccessMessage": "Zeichnung erfolgreich importiert",
       "fileUrlDescription": "Oder eine Datei von einer URL importieren ({types}):",
       "fileUrlPlaceholder": "https://example.com/data.gpx",
       "importFileUrlButton": "Von URL importieren",
+      "cancelImport": "Abbrechen",
+      "clearAndImportAsAdmin": "Löschen und als Administrator importieren",
+      "clearAndImportAsNonAdmin": "Löschen und importieren",
       "errorMessages": {
+        "invalidDrawingUrl": "Die Zeichnungs-URL ist ungültig",
+        "invalidDrawingAdminId": "Die Administrator-ID der Zeichnung ist ungültig",
         "generalError": "Datei konnte nicht importiert werden",
-        "noFileSelected": "Bitte w\u00e4hlen Sie zuerst eine Datei aus",
+        "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus",
         "noUrlEntered": "Bitte geben Sie eine URL ein",
         "fileSizeWarning": "Dateigröße ist {fileSize}MB, was die empfohlene maximale Größe von {maxSize}MB überschreitet",
         "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize}MB)",
@@ -261,8 +378,14 @@
         "kmlFetchFailed": "KML konnte nicht geladen werden: {status}",
         "noKmlFound": "Keine KML-Zeichnung in der angegebenen URL gefunden",
         "domainNotAllowed": "Das Abrufen von {domain} ist nicht erlaubt",
-        "unsupportedUrlType": "Nicht unterst\u00fctzter Dateityp. Die URL muss auf {types} enden",
-        "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})"
+        "unsupportedUrlType": "Nicht unterstützter Dateityp. Die URL muss auf {types} enden",
+        "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})",
+        "adminRequired": "Zum Importieren dieser Zeichnung sind Administratorrechte erforderlich"
+      },
+      "infoMessages": {
+        "importPart1": "Das Importieren einer {provenance}-Zeichnung erfordert das Löschen der vorhandenen Zeichnung. Nach dem Import können Sie die Zeichnung weiter bearbeiten.",
+        "adminImportPart2": "Wenn die Zeichnung als Administrator importiert wird, können Sie sie mit der Swissgeo-Datenbank unter derselben ID wie die importierte synchronisieren, und andere Benutzer sehen Ihre Änderungen.",
+        "nonAdminImportPart2": "Das Teilen der Zeichnung wird dann mit anderen Benutzern möglich sein, jedoch unter einer anderen Zeichen-ID als der importierten."
       },
       "close": "Schließen"
     },

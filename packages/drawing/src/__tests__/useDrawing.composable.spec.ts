@@ -17,8 +17,11 @@ import type { useDrawing } from "@/composables/useDrawing.composable";
 
 import { useDrawing as createDrawingComposable } from "@/composables/useDrawing.composable";
 import { useDrawingStore } from "@/stores/drawing.store";
-import { DESCRIPTION_KEY, TITLE_KEY } from "@/utils/drawingMetadata";
 import {
+  initializeMetadataProperties,
+  initializeStyleProperties,
+  DESCRIPTION_KEY,
+  TITLE_KEY,
   DEFAULT_FILL_COLOR,
   DEFAULT_POINT_COLOR,
   DEFAULT_POINT_RADIUS,
@@ -420,6 +423,66 @@ describe("useDrawing", () => {
     wrapper.unmount();
   });
 
+  it.each(["text", "marker", undefined] as const)(
+    "initializes %s point defaults and keeps visibility editable",
+    async (pointTool) => {
+      const { drawing, drawingStore, wrapper, fakeMap } = mountHarness();
+      const feature = makeFeature(new Point([2600000, 1200000]));
+
+      drawing.mountDrawingLayer(fakeMap as unknown as OlMap);
+      drawing.enableDrawInteraction("Point", pointTool);
+      drawingStore.drawPointInteraction.dispatchEvent({
+        type: "drawstart",
+        feature,
+      } as never);
+      drawingStore.drawingVectorSource.addFeature(feature);
+      drawingStore.drawPointInteraction.dispatchEvent({
+        type: "drawend",
+        feature,
+      } as never);
+      await flushPromises();
+
+      expect(feature.get(SHOW_TITLE_KEY)).toBe(pointTool === "text");
+      expect(feature.get(SHOW_ICON_KEY)).toBe(pointTool !== "text");
+      expect(feature.get(SHOW_DESCRIPTION_KEY)).toBe(false);
+      expect(feature.get(TEXT_PLACEMENT_KEY)).toBe(
+        pointTool === "text" ? "center" : "north",
+      );
+      expect(feature.get(TITLE_KEY)).toMatch(/^Feature \d+$/);
+
+      drawing.showTitle.value = true;
+      drawing.showDescription.value = true;
+      drawing.showIcon.value = true;
+      await nextTick();
+
+      expect(feature.get(SHOW_TITLE_KEY)).toBe(true);
+      expect(feature.get(SHOW_DESCRIPTION_KEY)).toBe(true);
+      expect(feature.get(SHOW_ICON_KEY)).toBe(true);
+
+      drawing.enableModifyInteraction();
+      await nextTick();
+
+      expect(feature.get(SHOW_TITLE_KEY)).toBe(true);
+      expect(feature.get(SHOW_DESCRIPTION_KEY)).toBe(true);
+      expect(feature.get(SHOW_ICON_KEY)).toBe(true);
+
+      drawing.enableDrawInteraction("Point");
+      const nextFeature = makeFeature(new Point([2600010, 1200010]));
+      drawingStore.drawPointInteraction.dispatchEvent({
+        type: "drawstart",
+        feature: nextFeature,
+      } as never);
+      await nextTick();
+
+      expect(nextFeature.get(SHOW_TITLE_KEY)).toBe(false);
+      expect(nextFeature.get(SHOW_DESCRIPTION_KEY)).toBe(false);
+      expect(nextFeature.get(SHOW_ICON_KEY)).toBe(true);
+      expect(nextFeature.get(TEXT_PLACEMENT_KEY)).toBe("north");
+
+      wrapper.unmount();
+    },
+  );
+
   it("keeps a drawn feature focused after draw end", async () => {
     const { drawing, drawingStore, wrapper, fakeMap } = mountHarness();
     const feature = makeFeature(new Point([2600000, 1200000]));
@@ -752,6 +815,74 @@ describe("useDrawing", () => {
     expect(features[0]).not.toBe(original);
     expect(features[0].getId()).toBe("shared-marker");
 
+    wrapper.unmount();
+  });
+  it.each(["kml", "kmz"] as const)(
+    "round-trips a Swissgeo circle through %s without its polygon approximation",
+    async (format) => {
+      const { drawing, drawingStore, wrapper } = mountHarness();
+      const circle = makeFeature(new Circle([2600000, 1200000], 125.5));
+      circle.setId("shared-circle");
+      initializeMetadataProperties(circle);
+      initializeStyleProperties(circle);
+      circle.set(TITLE_KEY, "Circle title");
+      circle.set(FILL_COLOR_KEY, "#123456");
+      drawingStore.drawingVectorSource.addFeature(circle);
+      const serialized = await drawing.serializeAllFeatures(format);
+      drawing.clearDrawingLayer();
+      if (format === "kmz") {
+        await drawing.importKmz(serialized as ArrayBuffer);
+      } else {
+        drawing.importKml(serialized as string);
+      }
+      const features = drawingStore.drawingVectorSource.getFeatures();
+      expect(features).toHaveLength(1);
+      expect(features[0].getId()).toBe("shared-circle");
+      const geometry = features[0].getGeometry() as Circle;
+      expect(geometry.getType()).toBe("Circle");
+      expect(geometry.getRadius()).toBe(125.5);
+      expect(geometry.getCenter()[0]).toBeCloseTo(2600000, 1);
+      expect(geometry.getCenter()[1]).toBeCloseTo(1200000, 1);
+      expect(features[0].get(TITLE_KEY)).toBe("Circle title");
+      expect(features[0].get(FILL_COLOR_KEY)).toBe("#123456");
+      expect(features[0].get("sg_isCircleCenter")).toBeUndefined();
+      expect(features[0].get("sg_circleRadiusMeter")).toBeUndefined();
+      wrapper.unmount();
+    },
+  );
+
+  it("preserves point style flags and named sizes when importing its own KML", () => {
+    const { drawing, drawingStore, wrapper } = mountHarness();
+    const point = makeFeature(new Point([2600000, 1200000]));
+    initializeMetadataProperties(point);
+    initializeStyleProperties(point);
+    point.setId("shared-point");
+    point.set(SHOW_ICON_KEY, false);
+    point.set(SHOW_TITLE_KEY, true);
+    point.set(SHOW_DESCRIPTION_KEY, false);
+    point.set(ICON_SIZE_KEY, "large");
+    point.set(TEXT_SIZE_KEY, "small");
+    point.set(TITLE_KEY, "My point");
+    drawingStore.drawingVectorSource.addFeature(point);
+    const serialized = drawing.serializeAllFeatures("kml") as string;
+    drawing.clearDrawingLayer();
+    drawing.importKml(serialized);
+    const imported = drawingStore.drawingVectorSource.getFeatures()[0];
+    expect(imported.getId()).toBe("shared-point");
+    expect(imported.get(SHOW_ICON_KEY)).toBe(false);
+    expect(imported.get(SHOW_TITLE_KEY)).toBe(true);
+    expect(imported.get(SHOW_DESCRIPTION_KEY)).toBe(false);
+    expect(imported.get(ICON_SIZE_KEY)).toBe("large");
+    expect(imported.get(TEXT_SIZE_KEY)).toBe("small");
+    wrapper.unmount();
+  });
+
+  it("rejects an invalid KMZ without changing existing features", async () => {
+    const { drawing, drawingStore, wrapper } = mountHarness();
+    const point = makeFeature(new Point([2600000, 1200000]));
+    drawingStore.drawingVectorSource.addFeature(point);
+    await expect(drawing.importKmz(new ArrayBuffer(8))).rejects.toThrow();
+    expect(drawingStore.drawingVectorSource.getFeatures()).toEqual([point]);
     wrapper.unmount();
   });
 });

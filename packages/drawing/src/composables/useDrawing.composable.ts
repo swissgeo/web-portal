@@ -1,7 +1,9 @@
+import type { Point } from "ol/geom";
 import type VectorLayer from "ol/layer/Vector";
 
 import { EPSG_4326_WGS84, EPSG_2056_CH1903 } from "@swissgeo/shared";
 import KML from "ol/format/KML";
+import Circle from "ol/geom/Circle";
 import { storeToRefs } from "pinia";
 import { computed, readonly, watch, triggerRef } from "vue";
 
@@ -12,13 +14,6 @@ import type {
 } from "../utils/drawingStyleCommon";
 
 import { useDrawingStore } from "../stores/drawing.store";
-import {
-  getFeatureDescription,
-  getFeatureTitle,
-  initializeMetadataProperties,
-  setFeatureDescription,
-  setFeatureTitle,
-} from "../utils/drawingMetadata";
 import {
   applyIdleStyle,
   applyEditingStyle,
@@ -65,6 +60,17 @@ import {
   getIconColorStyleProperty,
   setIconNameStyleProperty,
   getIconNameStyleProperty,
+  getFeatureDescription,
+  getFeatureTitle,
+  initializeMetadataProperties,
+  setFeatureDescription,
+  setFeatureTitle,
+  wasCreatedBySwissgeo,
+  ensurePropertyTypes,
+  IS_CIRCLE_CENTER_KEY,
+  IS_POLYGONIZED_CIRCLE_KEY,
+  CIRCLE_RADIUS_METER_KEY,
+  POLYGONIZED_CIRCLE_ID_KEY,
 } from "../utils/drawingStyleCommon";
 import {
   olFeatureToGeoJSON,
@@ -73,6 +79,7 @@ import {
   olFeatureToKMZ,
   exportFormatToMimeType,
 } from "../utils/exportUtils";
+import { unzipKmzBuffer } from "../utils/importUtils";
 
 export function useDrawing() {
   const drawingStore = useDrawingStore();
@@ -82,6 +89,10 @@ export function useDrawing() {
     numberOfFeatures,
     focusedFeatureMetrics,
     isDrawingLayerInLayerStore,
+    drawingAdminId,
+    drawingId,
+    drawingS3Url,
+    creatingOrEditingIterations,
   } = storeToRefs(drawingStore);
 
   /**
@@ -460,6 +471,15 @@ export function useDrawing() {
           // (not the creating/editing style, but the style that can later be modified and persisted)
           initializeStyleProperties(focusedFeature.value);
 
+          if (
+            focusedFeatureType.value === "Point" &&
+            drawingStore.pointDrawingTool === "text"
+          ) {
+            setShowTitleStyleProperty(focusedFeature.value, true);
+            setShowIconStyleProperty(focusedFeature.value, false);
+            setTextPlacementStyleProperty(focusedFeature.value, "center");
+          }
+
           // Initialize the non-style metadata properties (title, description) for the new feature
           initializeMetadataProperties(focusedFeature.value);
 
@@ -570,10 +590,41 @@ export function useDrawing() {
       dataProjection: EPSG_4326_WGS84,
     });
     for (const feature of features) {
-      // Adds Swissgeo metadata properties for drawing features with their default values
-      initializeMetadataProperties(feature);
-      initializeStyleProperties(feature);
-      mapKmlStylesToFeatureProperties(feature);
+      ensurePropertyTypes(feature);
+      if (!wasCreatedBySwissgeo(feature)) {
+        // Adds Swissgeo metadata properties for drawing features with their default values
+        initializeMetadataProperties(feature);
+        initializeStyleProperties(feature);
+        mapKmlStylesToFeatureProperties(feature);
+      }
+
+      // Circles are serialized as one point (center) and one polygon approximating the circle.
+      // The polygon being only an approximation of the circle, it should not be imported as a standalone feature.
+      if (feature.get(IS_POLYGONIZED_CIRCLE_KEY)) {
+        continue;
+      }
+
+      // The center point of a circle is imported, using it's radius property to reconstruct the original circle geometry.
+      if (feature.get(IS_CIRCLE_CENTER_KEY)) {
+        // Create a cirlce geometry using the center feature and the first point of the current feature.
+        const centerCoordinates = (
+          feature.getGeometry() as Point
+        ).getCoordinates();
+
+        const circleRadius = feature.get(CIRCLE_RADIUS_METER_KEY);
+        const circleGeometry = new Circle(centerCoordinates, circleRadius);
+        // Replacing the polygon geometry with the newly created circle geometry
+        feature.setGeometry(circleGeometry);
+
+        // Set the id from the poligonized circle feature
+        feature.setId(feature.get(POLYGONIZED_CIRCLE_ID_KEY));
+
+        // Removing the center-point related properties
+        feature.unset(IS_CIRCLE_CENTER_KEY);
+        feature.unset(CIRCLE_RADIUS_METER_KEY);
+        feature.unset(POLYGONIZED_CIRCLE_ID_KEY);
+      }
+
       applyIdleStyle(feature);
 
       // In case a feature has already been imported, it is needed to first remove the previous version
@@ -592,6 +643,11 @@ export function useDrawing() {
     }
   }
 
+  async function importKmz(kmzBuffer: ArrayBuffer): Promise<void> {
+    const kmzContent = await unzipKmzBuffer(kmzBuffer);
+    importKml(kmzContent.kmlContent);
+  }
+
   return {
     disableAllInteractions: drawingStore.disableAllInteractions,
     enableSelectInteraction: drawingStore.enableSelectInteraction,
@@ -602,6 +658,9 @@ export function useDrawing() {
     mountDrawingLayer: drawingStore.mountDrawingLayer,
     unmountDrawingLayer: drawingStore.unmountDrawingLayer,
     clearDrawingLayer: drawingStore.clearDrawingLayer,
+    drawingAdminId,
+    drawingId,
+    drawingS3Url,
     isDrawingLayerInLayerStore: readonly(isDrawingLayerInLayerStore),
     focusedFeature: readonly(focusedFeature),
     numberOfFeatures: readonly(numberOfFeatures),
@@ -638,5 +697,7 @@ export function useDrawing() {
     serializeAllFeatures,
     serializeAllFeaturesAsBlob,
     importKml,
+    importKmz,
+    creatingOrEditingIterations: readonly(creatingOrEditingIterations),
   };
 }
