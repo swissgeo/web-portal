@@ -9,12 +9,15 @@ import { computed, ref, toRaw, watch, watchEffect } from "vue";
 import type { WMTSLayer } from "@/types/layers";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
+import { useMapStore } from "@/stores/map";
+import { pinTileGrid } from "@/utils/pinTileGrid";
 
 /** Tying a layer object from the app to a openlayers object */
 export default function useOlWmtsLayer(
   layer: Ref<WMTSLayer>,
   olMap: Ref<Map | undefined> | undefined,
 ) {
+  const mapStore = useMapStore();
   const olLayer = ref<TileLayer>();
   const source = ref<WMTS>();
 
@@ -56,6 +59,10 @@ export default function useOlWmtsLayer(
         ...toRaw(layer.value.options),
         ...wmtsTimeConfig.value,
       };
+      definitiveOptions.tileGrid = pinTileGrid(
+        definitiveOptions.tileGrid,
+        mapStore.pinnedTileResolution,
+      );
 
       log.debug({
         title: "olWmtsLayer",
