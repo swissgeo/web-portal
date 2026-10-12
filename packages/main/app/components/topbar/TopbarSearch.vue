@@ -204,7 +204,7 @@ function clearSearch() {
         size="md"
         variant="outline"
         color="secondary"
-        class="w-72 grow"
+        class="hidden w-119.25 grow xl:block"
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
@@ -220,6 +220,12 @@ function clearSearch() {
           />
         </template>
       </UInput>
+      <UButton
+        icon="i-lucide-search"
+        variant="ghost"
+        class="xl:hidden"
+        :ui="{ leadingIcon: 'text-nav-brand' }"
+      />
     </template>
 
     <template #content>
