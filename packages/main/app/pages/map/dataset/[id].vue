@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { NuxtError } from "#app";
 
-import { useSidebarStore } from "@swissgeo/skeleton";
+import { useLayerStore } from "@swissgeo/layers";
+import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 import DatasetPanel from "~/components/sidebar/DatasetPanel.vue";
 
 definePageMeta({
@@ -14,6 +15,7 @@ definePageMeta({
 });
 
 const sidebarStore = useSidebarStore();
+const layerStore = useLayerStore();
 
 const route = useRoute();
 const localePath = useLocalePath();
@@ -58,8 +60,30 @@ useSeoMeta({
   description: () => dataset.value?.properties.description,
 });
 
+// Uses the route id, which is known before the dataset record loads
+const isDatasetOnMap = computed(() =>
+  layerStore.layers.some((layer) => layer.humanId === id.value),
+);
+
+const isBackToCatalog = computed(() => {
+  // Opened from a panel: back returns to that panel
+  if (sidebarStore.isSidebarOpen) {
+    return sidebarStore.isGeocatalogTreeVisible;
+  }
+  // Opened by a link: back goes to the map when the dataset is on it,
+  // otherwise to the catalog, so the user can find more data
+  return !isDatasetOnMap.value;
+});
+
 function backToMap() {
   return navigateTo(localePath("/map"));
+}
+
+function goBack() {
+  if (isBackToCatalog.value) {
+    sidebarStore.setSidebar(SidebarType.GEOCATALOG_TREE);
+  }
+  return backToMap();
 }
 
 function closeDetails() {
@@ -78,8 +102,8 @@ function closeDetails() {
       :distribution-error="distributionError"
       :is-loading="isLoading"
       :error="error"
-      :back-to-catalog="sidebarStore.isGeocatalogTreeVisible"
-      @back="backToMap"
+      :back-to-catalog="isBackToCatalog"
+      @back="goBack"
       @close="closeDetails"
     />
   </ClientOnly>
