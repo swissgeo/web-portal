@@ -31,6 +31,11 @@ vi.mock("@vueuse/core", async (importOriginal) => ({
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
+vi.mock("@/stores/toolbox", () => ({
+  useToolboxStore: () => ({
+    toggleDetailPanel(_string: string) {},
+  }),
+}));
 mockNuxtImport("useStateConfig", () => {
   return () => ({ exportState: () => ({}) });
 });

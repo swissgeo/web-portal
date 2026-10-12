@@ -123,7 +123,7 @@ describe("ShareEmbed", () => {
       label: "toolbox.share.embed.sizeLarge (1200 × 900)",
     });
     expect(items[3].id).toBe("custom");
-    expect(items[3].label).toBe("toolbox.share.embed.sizeCustom (800 × 600)");
+    expect(items[3].label).toBe("toolbox.share.embed.sizeCustom");
   });
 
   it("emits the preset resolution when a preset is selected", async () => {
@@ -205,7 +205,7 @@ describe("ShareEmbed", () => {
     await wrapper.vm.$nextTick();
 
     const items = wrapper.getComponent({ name: "USelect" }).props("items");
-    expect(items[3].label).toBe("toolbox.share.embed.sizeCustom (100% × 600)");
+    expect(items[3].label).toBe("toolbox.share.embed.sizeCustom");
   });
 
   it("scales the preview down with a 1rem margin when not full width", () => {

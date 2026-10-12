@@ -46,12 +46,9 @@ const items = computed<SelectItem[]>(() => {
 
   return sizeOptions.map(([key, labelKey]) => {
     if (key === "custom") {
-      const widthLabel = fullWidth.value
-        ? "100%"
-        : String(resolution.value.width);
       return {
         id: key,
-        label: `${t(labelKey)} (${widthLabel} × ${resolution.value.height})`,
+        label: `${t(labelKey)}`,
       };
     }
     const { width, height } = resolutions[key];
@@ -195,9 +192,12 @@ const iframeStyle = computed(() => ({
             :disabled="fullWidth"
             data-testid="share-embed-width-input"
             @blur="onWidthBlur"
+            :value="fullWidth ? 100 : resolution.width"
           >
             <template #trailing>
-              <span>{{ t("toolbox.share.embed.pixelUnit") }}</span>
+              <span>{{
+                !fullWidth ? t("toolbox.share.embed.pixelUnit") : "%"
+              }}</span>
             </template>
           </UInput>
         </UFormField>
