@@ -4,6 +4,8 @@ import type { TabsItem } from "@nuxt/ui";
 import { useClipboard } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 
+import { useToolboxStore } from "@/stores/toolbox";
+
 import ShareEmbed from "./ShareEmbed.vue";
 import ShareLink from "./ShareLink.vue";
 
@@ -11,6 +13,8 @@ const { t } = useI18n();
 const zoomOnlyCtrl = ref(false);
 const fullWidth = ref(false);
 const resolution = ref({ width: 800, height: 600 });
+
+const toolboxStore = useToolboxStore();
 
 const { copy: copyLink, copied: copiedLink } = useClipboard();
 const { copy: copyEmbed, copied: copiedEmbed } = useClipboard();
@@ -43,6 +47,7 @@ const items = computed<TabsItem[]>(() => [
     color="neutral"
     variant="outline"
     close
+    @update:open="toolboxStore.toggleDetailPanel('share')"
   >
     <template #description>
       <UTabs
