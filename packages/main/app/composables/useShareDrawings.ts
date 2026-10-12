@@ -1,5 +1,3 @@
-//
-
 import type {
   DrawingsCreateResponse,
   DrawingsUpdateResponse,
@@ -8,17 +6,22 @@ import type {
 import { useDrawing } from "@swissgeo/drawing";
 import { ref } from "vue";
 
+import { useDrawingImportStore } from "../stores/drawingImport";
+
 export function useShareDrawings() {
   const runtimeConfig = useRuntimeConfig();
-  const {
-    serializeAllFeaturesAsBlob,
-    drawingAdminId,
-    drawingId,
-    drawingS3Url,
-  } = useDrawing();
+  const { serializeAllFeaturesAsBlob } = useDrawing();
+
+  const importDrawingStore = useDrawingImportStore();
+  const { drawingId, drawingAdminId } = storeToRefs(importDrawingStore);
+
   const isSharing = ref(false);
 
   async function shareDrawings() {
+    // Safeguard in case a sharing operation is already in progress
+    if (isSharing.value) {
+      return;
+    }
     isSharing.value = true;
     const drawingBlob = await serializeAllFeaturesAsBlob("kmz");
 
@@ -71,7 +74,6 @@ export function useShareDrawings() {
 
       drawingId.value = responseData.id;
       drawingAdminId.value = responseData.admin_id;
-      drawingS3Url.value = responseData.s3_url;
     } finally {
       isSharing.value = false;
     }
@@ -103,7 +105,6 @@ export function useShareDrawings() {
 
       drawingId.value = responseData.id;
       drawingAdminId.value = responseData.admin_id;
-      drawingS3Url.value = responseData.s3_url;
     } finally {
       isSharing.value = false;
     }

@@ -15,7 +15,7 @@ const isLayersPanelOpen = ref(false);
 const isImportPanelOpen = ref(false);
 const isImportLocalPanelOpen = ref(false);
 const isImportDrawingOpen = ref(false);
-const isDrawingOpen = computed(() => toolboxStore.isDrawingActive);
+const isDrawingOpen = computed(() => toolboxStore.isPanelActive("drawing"));
 const isSharePanelOpen = ref(false);
 const isPrintPanelOpen = ref(false);
 
@@ -33,7 +33,7 @@ function toggleImportDrawing() {
   isImportDrawingOpen.value = !isImportDrawingOpen.value;
 }
 function toggleDrawing() {
-  toolboxStore.toggleDrawingPanel();
+  toolboxStore.toggleDetailPanel("drawing");
 }
 function toggleStateConfig() {
   isSharePanelOpen.value = !isSharePanelOpen.value;
@@ -96,7 +96,7 @@ function togglePrintPanel() {
           !isImportPanelOpen &&
           !isImportLocalPanelOpen &&
           !isImportDrawingOpen &&
-          !isDrawingOpen() &&
+          !isDrawingOpen &&
           !isSharePanelOpen &&
           !isPrintPanelOpen
         "

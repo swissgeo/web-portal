@@ -89,9 +89,6 @@ export function useDrawing() {
     numberOfFeatures,
     focusedFeatureMetrics,
     isDrawingLayerInLayerStore,
-    drawingAdminId,
-    drawingId,
-    drawingS3Url,
     creatingOrEditingIterations,
   } = storeToRefs(drawingStore);
 
@@ -583,12 +580,24 @@ export function useDrawing() {
     return blob;
   }
 
-  function importKml(kmlString: string): void {
+  /**
+   * Returns `true` if the KML was successfully imported, `false` otherwise.
+   */
+  function importKml(kmlString: string, clearExisting = false): boolean {
     const kmlFormat = new KML();
     const features = kmlFormat.readFeatures(kmlString, {
       featureProjection: EPSG_2056_CH1903,
       dataProjection: EPSG_4326_WGS84,
     });
+
+    if (features.length === 0) {
+      return false;
+    }
+
+    if (clearExisting) {
+      drawingStore.clearDrawingLayer();
+    }
+
     for (const feature of features) {
       ensurePropertyTypes(feature);
       if (!wasCreatedBySwissgeo(feature)) {
@@ -606,17 +615,17 @@ export function useDrawing() {
 
       // The center point of a circle is imported, using it's radius property to reconstruct the original circle geometry.
       if (feature.get(IS_CIRCLE_CENTER_KEY)) {
-        // Create a cirlce geometry using the center feature and the first point of the current feature.
+        // Create a circle geometry using the center feature and the first point of the current feature.
         const centerCoordinates = (
           feature.getGeometry() as Point
         ).getCoordinates();
 
-        const circleRadius = feature.get(CIRCLE_RADIUS_METER_KEY);
+        const circleRadius = feature.get(CIRCLE_RADIUS_METER_KEY) || 1;
         const circleGeometry = new Circle(centerCoordinates, circleRadius);
         // Replacing the polygon geometry with the newly created circle geometry
         feature.setGeometry(circleGeometry);
 
-        // Set the id from the poligonized circle feature
+        // Set the id from the polygonized circle feature
         feature.setId(feature.get(POLYGONIZED_CIRCLE_ID_KEY));
 
         // Removing the center-point related properties
@@ -641,11 +650,20 @@ export function useDrawing() {
       }
       drawingStore.drawingVectorSource.addFeature(feature);
     }
+    return true;
   }
 
-  async function importKmz(kmzBuffer: ArrayBuffer): Promise<void> {
+  /**
+   * If clearExisting is true, the existing drawing layer is cleared before importing the new KMZ content but after
+   * making sure the imported file is valid and can be imported successfully.
+   * Returns `true` if the KMZ was successfully imported, `false` otherwise.
+   */
+  async function importKmz(
+    kmzBuffer: ArrayBuffer,
+    clearExisting = false,
+  ): Promise<boolean> {
     const kmzContent = await unzipKmzBuffer(kmzBuffer);
-    importKml(kmzContent.kmlContent);
+    return importKml(kmzContent.kmlContent, clearExisting);
   }
 
   return {
@@ -658,9 +676,6 @@ export function useDrawing() {
     mountDrawingLayer: drawingStore.mountDrawingLayer,
     unmountDrawingLayer: drawingStore.unmountDrawingLayer,
     clearDrawingLayer: drawingStore.clearDrawingLayer,
-    drawingAdminId,
-    drawingId,
-    drawingS3Url,
     isDrawingLayerInLayerStore: readonly(isDrawingLayerInLayerStore),
     focusedFeature: readonly(focusedFeature),
     numberOfFeatures: readonly(numberOfFeatures),

@@ -356,7 +356,6 @@
       "noFileSelected": "No file selected",
       "importFileButton": "Import file",
       "importUrlButton": "Add drawing",
-      "importUrlAsAdmin": "Add drawing as admin",
       "loadingMessage": "Importing file...",
       "successMessage": "Successfully imported {fileName}",
       "drawingSuccessMessage": "Drawing imported successfully",

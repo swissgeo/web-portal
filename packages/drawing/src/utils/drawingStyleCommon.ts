@@ -954,14 +954,20 @@ export function ensurePropertyTypes(feature: Feature<Geometry>): void {
     STROKE_WIDTH_KEY in props &&
     typeof props[STROKE_WIDTH_KEY] !== "number"
   ) {
-    feature.set(STROKE_WIDTH_KEY, Number(props[STROKE_WIDTH_KEY]));
+    feature.set(
+      STROKE_WIDTH_KEY,
+      Number(props[STROKE_WIDTH_KEY]) || DEFAULT_STROKE_WIDTH,
+    );
   }
 
   if (
     POINT_RADIUS_KEY in props &&
     typeof props[POINT_RADIUS_KEY] !== "number"
   ) {
-    feature.set(POINT_RADIUS_KEY, Number(props[POINT_RADIUS_KEY]));
+    feature.set(
+      POINT_RADIUS_KEY,
+      Number(props[POINT_RADIUS_KEY]) || DEFAULT_POINT_RADIUS,
+    );
   }
 
   if (SHOW_TITLE_KEY in props && typeof props[SHOW_TITLE_KEY] !== "boolean") {
@@ -1001,7 +1007,7 @@ export function ensurePropertyTypes(feature: Feature<Geometry>): void {
   ) {
     feature.set(
       CIRCLE_RADIUS_METER_KEY,
-      Number(props[CIRCLE_RADIUS_METER_KEY]),
+      Number(props[CIRCLE_RADIUS_METER_KEY]) || 0,
     );
   }
 }

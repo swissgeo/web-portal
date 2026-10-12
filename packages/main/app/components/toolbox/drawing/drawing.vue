@@ -22,7 +22,9 @@ import { useDrawing } from "@swissgeo/drawing";
 import log from "@swissgeo/log";
 import { useMap } from "@swissgeo/map";
 import { useClipboard } from "@vueuse/core";
+import { useDrawingImportStore } from "~/stores/drawingImport";
 import { useToolboxStore } from "~/stores/toolbox";
+import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -52,9 +54,10 @@ const {
   mountDrawingLayer,
   clearDrawingLayer,
   serializeAllFeaturesAsBlob,
-  drawingAdminId,
-  drawingId,
 } = useDrawing();
+
+const importDrawingStore = useDrawingImportStore();
+const { drawingId, drawingAdminId } = storeToRefs(importDrawingStore);
 
 const shareDrawingAsAdmin = ref(false);
 const runtimeConfig = useRuntimeConfig();
@@ -202,7 +205,7 @@ watch(focusMode, async (newFocusMode) => {
     return;
   }
 
-  // If the drawing has never been shared explicitely by the user, it is not synced automatically.
+  // If the drawing has never been shared explicitly by the user, it is not synced automatically.
   if (!drawingId.value && !drawingAdminId.value) {
     return;
   }
@@ -286,7 +289,7 @@ onUnmounted(() => {
             "
             :ui="{ leadingIcon: 'size-5' }"
             :aria-pressed="activeTool === 'select'"
-            :disabled="numberOfFeatures === 0"
+            :disabled="numberOfFeatures === 0 || isSharing"
             data-testid="select-feature-tool"
             @click="selectTool"
             >{{ t("toolbox.drawing.tools.select") }}</UButton
@@ -297,6 +300,7 @@ onUnmounted(() => {
             color="neutral"
             variant="ghost"
             :icon="tool.icon"
+            :disabled="isSharing"
             class="min-h-18 flex-col justify-center gap-2 rounded-lg text-xs transition-colors"
             :class="
               activeTool === tool.id
@@ -477,7 +481,12 @@ onUnmounted(() => {
           class="ml-auto w-full justify-center whitespace-nowrap"
           :aria-label="t('toolbox.drawing.clear')"
           data-testid="drawing-tool-clear"
-          @click="clearDrawingLayer"
+          @click="
+            () => {
+              clearDrawingLayer();
+              importDrawingStore.resetDrawingImportInfo();
+            }
+          "
           >{{ t("toolbox.drawing.clear") }}</UButton
         >
       </div>

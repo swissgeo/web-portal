@@ -6,7 +6,7 @@ import { useMapViewStore } from "~/stores/mapView";
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 
-export type ToolboxPanelIds = "import" | "share" | "reportIssue" | "drawing";
+export type ToolboxPanelIds = "import" | "share" | "drawing";
 
 export const useToolboxStore = defineStore("toolbox", () => {
   const { focusMode } = useDrawing();
@@ -26,9 +26,6 @@ export const useToolboxStore = defineStore("toolbox", () => {
   const showImportButton = ref(true);
   const showShareButton = ref(true);
   const showPrintButton = ref(true);
-
-  // state of the application
-  const isDrawPanelOpen = ref(false);
 
   const showRecenterButton = computed(
     () => geolocationStore.active && geolocationStore.position !== undefined,
@@ -68,11 +65,7 @@ export const useToolboxStore = defineStore("toolbox", () => {
   }
 
   function isDrawingActive() {
-    return isDrawPanelOpen.value;
-  }
-
-  function toggleDrawingPanel() {
-    isDrawPanelOpen.value = !isDrawPanelOpen.value;
+    return isPanelActive("drawing");
   }
 
   return {
@@ -92,7 +85,6 @@ export const useToolboxStore = defineStore("toolbox", () => {
     focusModeNone,
     activeDetailPanel,
     isDrawingActive,
-    toggleDrawingPanel,
     toggleDetailPanel,
     closeDetailPanel,
     isPanelActive,

@@ -4,6 +4,8 @@ import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
 import { useI18n } from "vue-i18n";
 
+import { useDrawingImportStore } from "../stores/drawingImport";
+
 export type SwissgeoUrlValidationResult = {
   isValid: boolean;
   drawingId: string;
@@ -65,7 +67,7 @@ async function validateSwissgeoServiceDrawingsUrl(
 
     const hash = parsed.hash.trim().slice(1);
 
-    // The DrawingID is suppoed to be a UUID.
+    // The DrawingID is supposed to be a UUID.
     if (!drawingId || !isUuid(drawingId)) {
       return {
         isValid: false,
@@ -145,14 +147,6 @@ function extractKmlUrls(url: string): string[] {
   }
 }
 
-function removeAdminIdFromUrl(url: string): string {
-  const adminIdIndex = url.indexOf("@adminId=");
-  if (adminIdIndex !== -1) {
-    return url.substring(0, adminIdIndex);
-  }
-  return url;
-}
-
 function validateDomain(url: string, allowedDomains: string[]): string | null {
   try {
     const hostname = new URL(url).hostname;
@@ -198,15 +192,11 @@ async function fetchDrawingMetadata(
 }
 
 export function useImportDrawing() {
-  const {
-    importKml,
-    importKmz,
-    mountDrawingLayer,
-    clearDrawingLayer,
-    drawingAdminId,
-    drawingId,
-    drawingS3Url,
-  } = useDrawing();
+  const { importKml, importKmz, mountDrawingLayer } = useDrawing();
+
+  const importDrawingStore = useDrawingImportStore();
+  const { drawingId, drawingAdminId } = storeToRefs(importDrawingStore);
+
   const { olMap } = useMap();
   const { t } = useI18n();
   const runtimeConfig = useRuntimeConfig();
@@ -311,7 +301,7 @@ export function useImportDrawing() {
       mountDrawingLayer(olMap.value);
 
       for (const kmlUrl of datasetUrls) {
-        const kmlResponse = await fetch(removeAdminIdFromUrl(kmlUrl));
+        const kmlResponse = await fetch(kmlUrl);
         if (!kmlResponse.ok) {
           throw new Error(
             t("toolbox.import.errorMessages.kmlFetchFailed", {
@@ -358,13 +348,10 @@ export function useImportDrawing() {
       throw new Error(t("toolbox.import.errorMessages.adminRequired"));
     }
 
-    const drawingIdUrlObj = new URL(url.value);
-    drawingIdUrlObj.search = "";
-
     isLoading.value = true;
 
     try {
-      const res = await fetch(drawingIdUrlObj.href);
+      const res = await fetch(url.value);
       if (!res.ok) {
         throw new Error(
           t("toolbox.import.errorMessages.fetchFailed", {
@@ -373,26 +360,28 @@ export function useImportDrawing() {
         );
       }
 
-      clearDrawingLayer();
-
       mountDrawingLayer(olMap.value);
+
+      const kmzBuffer = await res.arrayBuffer();
+
+      // Import the KMZ content. The second argument ensures that the existing drawing layer is cleared beforehand,
+      // but only if the import is successful.
+      const success = await importKmz(kmzBuffer, true);
+
+      if (!success) {
+        throw new Error(t("toolbox.import.errorMessages.drawingImportFailed"));
+      }
 
       // If the user decides to imports a Swissgeo drawing as an admin,
       // their previously existing drawings are cleared automatically before adding the imported ones.
       // In addition, the user is now using the drawing ID and admin ID of the imported drawing,
-      // which makes them futher editable
+      // which makes them further editable
       if (swissGeoUrlValidation.value.adminId && asAdmin) {
         drawingAdminId.value = swissGeoUrlValidation.value.adminId;
         drawingId.value = swissGeoUrlValidation.value.drawingId;
-        drawingS3Url.value = drawingIdUrlObj.href;
       } else {
-        drawingAdminId.value = "";
-        drawingId.value = "";
-        drawingS3Url.value = "";
+        importDrawingStore.resetDrawingImportInfo();
       }
-
-      const kmzBuffer = await res.arrayBuffer();
-      await importKmz(kmzBuffer);
     } finally {
       isLoading.value = false;
     }

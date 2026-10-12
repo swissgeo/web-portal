@@ -39,15 +39,6 @@ export type FocusMode = (typeof FOCUS_MODES)[number];
 
 export const useDrawingStore = defineStore("drawing", () => {
   const DRAWING_LAYER_UUID = crypto.randomUUID();
-
-  // The drawing ID is a unique identifier for the current drawing session,
-  // it is provided by the drawing service (backend), only after the first sharing.
-  // The drawingId can be used to share with other users, and the drawingAdminId is used to
-  // update the drawing on the backend (generaly not shared with other users)
-  const drawingId = ref<string>("");
-  const drawingAdminId = ref<string>("");
-  const drawingS3Url = ref<string>("");
-
   const layerStore = useLayerStore();
   const { layers: layersInLayerStore } = storeToRefs(useLayerStore());
   // This particular handler is dealt with separately because it attached only to the geometry of the feature being drawn
@@ -281,10 +272,6 @@ export const useDrawingStore = defineStore("drawing", () => {
 
     clearDrawingLayer();
     mountedMap = null;
-
-    drawingId.value = "";
-    drawingAdminId.value = "";
-    drawingS3Url.value = "";
   }
 
   /**
@@ -315,6 +302,9 @@ export const useDrawingStore = defineStore("drawing", () => {
    * Clear all the features from the drawing layer.
    */
   function clearDrawingLayer() {
+    if (!drawingVectorSource) {
+      return;
+    }
     drawingVectorSource.clear();
   }
 
@@ -374,7 +364,7 @@ export const useDrawingStore = defineStore("drawing", () => {
      */
     interaction.on("drawstart", (event) => {
       focusedFeature.value = event.feature;
-      focusedFeature.value.setId(`drawing_feature_${Date.now()}`);
+      focusedFeature.value.setId(`drawing_feature_${crypto.randomUUID()}`);
 
       const geometry = event.feature.getGeometry();
       if (!geometry) {
@@ -527,8 +517,5 @@ export const useDrawingStore = defineStore("drawing", () => {
     removeFocus,
     creatingOrEditingIterations,
     isDrawingLayerInLayerStore,
-    drawingAdminId,
-    drawingId,
-    drawingS3Url,
   };
 });

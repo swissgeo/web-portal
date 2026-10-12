@@ -357,7 +357,6 @@
       "noFileSelected": "Keine Datei ausgewählt",
       "importFileButton": "Datei importieren",
       "importUrlButton": "Zeichnung hinzufügen",
-      "importUrlAsAdmin": "Zeichnung als Administrator von URL hinzufügen",
       "loadingMessage": "Datei wird importiert...",
       "successMessage": "Datei erfolgreich importiert: {fileName}",
       "drawingSuccessMessage": "Zeichnung erfolgreich importiert",

@@ -17,7 +17,6 @@
     "import": {
       "tabData": "Data",
       "tabDrawing": "Disegno",
-      "importUrlAsAdmin": "Importa l'URL come amministratore",
       "cancelImport": "Annulla l'importazione",
       "clearAndImportAsAdmin": "Cancella e importa come amministratore",
       "importUrlButton": "Importa il disegno",
