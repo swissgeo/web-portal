@@ -174,6 +174,58 @@ describe("useCreateShareLink", () => {
     expect(share.embedCode.value).not.toContain("zoomOnlyCtrl");
   });
 
+  it("returns the embed url for the preview", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const share = useCreateShareLink(ref(makeState()));
+    await share.refresh();
+
+    expect(share.embedUrl.value).toBe(
+      new URL("/embed?state=state-id", location.origin).href,
+    );
+
+    const zoomOnlyShare = useCreateShareLink(ref(makeState()), {
+      zoomOnlyCtrl: ref(true),
+    });
+    mockPostState.mockResolvedValueOnce("zoom-state");
+    await zoomOnlyShare.refresh();
+
+    expect(zoomOnlyShare.embedUrl.value).toContain("zoomOnlyCtrl=true");
+  });
+
+  it("calls onError when the POST fails", async () => {
+    mockPostState.mockRejectedValueOnce(new Error("boom"));
+    const onError = vi.fn();
+    const share = useCreateShareLink(ref(makeState()), { onError });
+
+    await share.refresh();
+
+    expect(onError).toHaveBeenCalledWith(expect.any(Error));
+    expect(share.hash.value).toBeNull();
+  });
+
+  it("debounces automatic refreshes on rapid state changes", async () => {
+    vi.useFakeTimers();
+    mockPostState.mockResolvedValue("state-id");
+    const state = ref<AppStatePayload | null>(makeState());
+    const share = useCreateShareLink(state, {
+      autoRefresh: true,
+      debounce: 500,
+      maxWait: 2000,
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    mockPostState.mockClear();
+
+    state.value = makeState(9);
+    state.value = makeState(10);
+    state.value = makeState(11);
+    await vi.advanceTimersByTimeAsync(499);
+    expect(mockPostState).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(mockPostState).toHaveBeenCalledTimes(1);
+    expect(share.hash.value).toBe("state-id");
+  });
+
   it("derives the print share link from the map view state id", () => {
     const mapViewStore = reactive({ stateId: "" });
     mockUseMapViewStore.mockReturnValue(mapViewStore);
