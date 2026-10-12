@@ -1,24 +1,16 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useShareDrawings } from "@/composables/useShareDrawings";
+import { useDrawingImportStore } from "@/stores/drawingImport";
 
-const {
-  fetchMock,
-  serializeAllFeaturesAsBlobMock,
-  drawingId,
-  drawingAdminId,
-  drawingS3Url,
-} = await vi.hoisted(async () => {
-  const { ref } = await import("vue");
-  return {
-    fetchMock: vi.fn(),
-    serializeAllFeaturesAsBlobMock: vi.fn(),
-    drawingId: ref<string | null>(null),
-    drawingAdminId: ref<string | null>(null),
-    drawingS3Url: ref<string | null>(null),
-  };
-});
+const { fetchMock, serializeAllFeaturesAsBlobMock } = vi.hoisted(() => ({
+  fetchMock: vi.fn(),
+  serializeAllFeaturesAsBlobMock: vi.fn(),
+}));
+
+let importDrawingStore: ReturnType<typeof useDrawingImportStore>;
 
 const serviceResponse = {
   id: "drawing-123",
@@ -35,9 +27,6 @@ mockNuxtImport("useRuntimeConfig", () => () => ({
 vi.mock("@swissgeo/drawing", () => ({
   useDrawing: () => ({
     serializeAllFeaturesAsBlob: serializeAllFeaturesAsBlobMock,
-    drawingId,
-    drawingAdminId,
-    drawingS3Url,
   }),
 }));
 
@@ -46,9 +35,8 @@ vi.stubGlobal("fetch", fetchMock);
 describe("useShareDrawings", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    drawingId.value = null;
-    drawingAdminId.value = null;
-    drawingS3Url.value = null;
+    setActivePinia(createPinia());
+    importDrawingStore = useDrawingImportStore();
     fetchMock.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(serviceResponse),
@@ -81,17 +69,17 @@ describe("useShareDrawings", () => {
       "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
     );
     expect(body.has("admin_id")).toBe(false);
-    expect(drawingId.value).toBe(serviceResponse.id);
-    expect(drawingAdminId.value).toBe(serviceResponse.admin_id);
-    expect(drawingS3Url.value).toBe(serviceResponse.s3_url);
+    expect(importDrawingStore.drawingId).toBe(serviceResponse.id);
+    expect(importDrawingStore.drawingAdminId).toBe(serviceResponse.admin_id);
     expect(isSharing.value).toBe(false);
   });
 
-  it("updates an uploaded drawing using its returned ID and admin ID", async () => {
-    const { shareDrawings } = useShareDrawings();
+  it("updates an uploaded drawing from another composable using the stored IDs", async () => {
+    const first = useShareDrawings();
+    const second = useShareDrawings();
 
-    await shareDrawings();
-    await shareDrawings();
+    await first.shareDrawings();
+    await second.shareDrawings();
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock).toHaveBeenNthCalledWith(
@@ -109,6 +97,8 @@ describe("useShareDrawings", () => {
     expect(body.get("sha256")).toBe(
       "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
     );
+    expect(importDrawingStore.drawingId).toBe(serviceResponse.id);
+    expect(importDrawingStore.drawingAdminId).toBe(serviceResponse.admin_id);
   });
 
   it("does not send a request when there is no drawing blob", async () => {
@@ -124,8 +114,8 @@ describe("useShareDrawings", () => {
     "resets sharing after a failed %s response",
     async (operation) => {
       if (operation === "update") {
-        drawingId.value = "existing";
-        drawingAdminId.value = "admin";
+        importDrawingStore.drawingId = "existing";
+        importDrawingStore.drawingAdminId = "admin";
       }
       fetchMock.mockResolvedValueOnce({ ok: false, statusText: "Forbidden" });
       const { shareDrawings, isSharing } = useShareDrawings();
@@ -136,8 +126,12 @@ describe("useShareDrawings", () => {
           : "Failed to update drawing: Forbidden",
       );
       expect(isSharing.value).toBe(false);
-      expect(drawingId.value).toBe(operation === "update" ? "existing" : null);
-      expect(drawingS3Url.value).toBeNull();
+      expect(importDrawingStore.drawingId).toBe(
+        operation === "update" ? "existing" : "",
+      );
+      expect(importDrawingStore.drawingAdminId).toBe(
+        operation === "update" ? "admin" : "",
+      );
     },
   );
 
@@ -145,8 +139,8 @@ describe("useShareDrawings", () => {
     "resets sharing after a %s network error",
     async (operation) => {
       if (operation === "update") {
-        drawingId.value = "existing";
-        drawingAdminId.value = "admin";
+        importDrawingStore.drawingId = "existing";
+        importDrawingStore.drawingAdminId = "admin";
       }
       fetchMock.mockRejectedValueOnce(new Error("Offline"));
       const { shareDrawings, isSharing } = useShareDrawings();
@@ -159,8 +153,8 @@ describe("useShareDrawings", () => {
     "resets sharing after an invalid %s response body",
     async (operation) => {
       if (operation === "update") {
-        drawingId.value = "existing";
-        drawingAdminId.value = "admin";
+        importDrawingStore.drawingId = "existing";
+        importDrawingStore.drawingAdminId = "admin";
       }
       fetchMock.mockResolvedValueOnce({
         ok: true,
@@ -169,7 +163,12 @@ describe("useShareDrawings", () => {
       const { shareDrawings, isSharing } = useShareDrawings();
       await expect(shareDrawings()).rejects.toThrow("Invalid JSON");
       expect(isSharing.value).toBe(false);
-      expect(drawingS3Url.value).toBeNull();
+      expect(importDrawingStore.drawingId).toBe(
+        operation === "update" ? "existing" : "",
+      );
+      expect(importDrawingStore.drawingAdminId).toBe(
+        operation === "update" ? "admin" : "",
+      );
     },
   );
 
@@ -192,8 +191,8 @@ describe("useShareDrawings", () => {
   it.each(["id", "admin"])(
     "creates a drawing when only the %s is available",
     async (available) => {
-      drawingId.value = available === "id" ? "existing" : null;
-      drawingAdminId.value = available === "admin" ? "admin" : null;
+      importDrawingStore.drawingId = available === "id" ? "existing" : "";
+      importDrawingStore.drawingAdminId = available === "admin" ? "admin" : "";
       const { shareDrawings } = useShareDrawings();
       await shareDrawings();
       expect(fetchMock).toHaveBeenCalledWith(

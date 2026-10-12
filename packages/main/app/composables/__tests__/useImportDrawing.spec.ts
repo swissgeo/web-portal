@@ -4,6 +4,7 @@ import { setActivePinia, createPinia } from "pinia";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 import { useImportDrawing } from "@/composables/useImportDrawing";
+import { useDrawingImportStore } from "@/stores/drawingImport";
 
 const { fetchMock } = vi.hoisted(() => ({
   fetchMock: vi.fn().mockResolvedValue({
@@ -44,20 +45,12 @@ mockNuxtImport("useRuntimeConfig", () => () => runtimeConfigMock);
 vi.stubGlobal("fetch", fetchMock);
 
 const importKmzSpy = vi.fn();
-const clearDrawingLayerSpy = vi.fn();
-const drawingId = { value: null as string | null };
-const drawingAdminId = { value: null as string | null };
-const drawingS3Url = { value: null as string | null };
 const importKmlSpy = vi.fn();
 const mountDrawingLayerSpy = vi.fn();
 vi.mock("@swissgeo/drawing", () => ({
   useDrawing: vi.fn(() => ({
     importKml: importKmlSpy,
     importKmz: importKmzSpy,
-    clearDrawingLayer: clearDrawingLayerSpy,
-    drawingId,
-    drawingAdminId,
-    drawingS3Url,
     mountDrawingLayer: mountDrawingLayerSpy,
   })),
 }));
@@ -72,9 +65,7 @@ describe("useImportDrawing", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.resetAllMocks();
-    drawingId.value = null;
-    drawingAdminId.value = null;
-    drawingS3Url.value = null;
+    importKmzSpy.mockResolvedValue(true);
     fetchMock.mockResolvedValue({
       ok: true,
       text: () => Promise.resolve("<kml></kml>"),
@@ -276,7 +267,7 @@ describe("useImportDrawing", () => {
     expect(isLoading.value).toBe(false);
   });
 
-  it("clean up the @adminId part of the URL before fetching", async () => {
+  it("fetches the legacy KML URL with its admin suffix intact", async () => {
     const { url, importLegacyDrawing } = useImportDrawing();
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/test123@adminId=987";
@@ -285,7 +276,7 @@ describe("useImportDrawing", () => {
     await importLegacyDrawing();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://public.geo.admin.ch/api/kml/files/test123",
+      "https://public.geo.admin.ch/api/kml/files/test123@adminId=987",
     );
   });
   describe("Swissgeo service drawings", () => {
@@ -400,7 +391,7 @@ describe("useImportDrawing", () => {
       await expect(drawing.importSwissgeoDrawing(false)).rejects.toThrow(
         "toolbox.import.errorMessages.generalError",
       );
-      expect(clearDrawingLayerSpy).not.toHaveBeenCalled();
+      expect(importKmzSpy).not.toHaveBeenCalled();
     });
 
     it("requires a validated admin ID for admin imports", async () => {
@@ -411,12 +402,15 @@ describe("useImportDrawing", () => {
       await expect(drawing.importSwissgeoDrawing(true)).rejects.toThrow(
         "toolbox.import.errorMessages.adminRequired",
       );
-      expect(clearDrawingLayerSpy).not.toHaveBeenCalled();
+      expect(importKmzSpy).not.toHaveBeenCalled();
     });
 
     it.each([false, true])(
       "imports KMZ with admin mode %s",
       async (asAdmin) => {
+        const importDrawingStore = useDrawingImportStore();
+        importDrawingStore.drawingId = "previous-drawing";
+        importDrawingStore.drawingAdminId = "previous-admin";
         mockValidation();
         const drawing = useImportDrawing();
         drawing.url.value = `${endpoint}/${id}?download=true#${admin}`;
@@ -428,23 +422,22 @@ describe("useImportDrawing", () => {
         });
         await drawing.importSwissgeoDrawing(asAdmin);
         expect(fetchMock).toHaveBeenLastCalledWith(
-          `${endpoint}/${id}#${admin}`,
+          `${endpoint}/${id}?download=true#${admin}`,
         );
-        expect(clearDrawingLayerSpy).toHaveBeenCalledOnce();
         expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
-        expect(importKmzSpy).toHaveBeenCalledWith(buffer);
-        expect(drawingId.value).toBe(asAdmin ? id : "");
-        expect(drawingAdminId.value).toBe(asAdmin ? admin : "");
-        expect(drawingS3Url.value).toBe(
-          asAdmin ? `${endpoint}/${id}#${admin}` : "",
-        );
+        expect(importKmzSpy).toHaveBeenCalledWith(buffer, true);
+        expect(importDrawingStore.drawingId).toBe(asAdmin ? id : "");
+        expect(importDrawingStore.drawingAdminId).toBe(asAdmin ? admin : "");
         expect(drawing.isLoading.value).toBe(false);
       },
     );
 
-    it.each(["http", "network", "kmz"])(
-      "resets loading after a %s import failure",
+    it.each(["http", "network", "kmz", "empty"])(
+      "preserves drawing credentials and resets loading after a %s import failure",
       async (failure) => {
+        const importDrawingStore = useDrawingImportStore();
+        importDrawingStore.drawingId = "previous-drawing";
+        importDrawingStore.drawingAdminId = "previous-admin";
         mockValidation();
         const drawing = useImportDrawing();
         drawing.url.value = `${endpoint}/${id}`;
@@ -461,12 +454,18 @@ describe("useImportDrawing", () => {
             ok: true,
             arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
           });
-          importKmzSpy.mockRejectedValueOnce(new Error("Invalid KMZ"));
+          if (failure === "kmz") {
+            importKmzSpy.mockRejectedValueOnce(new Error("Invalid KMZ"));
+          } else {
+            importKmzSpy.mockResolvedValueOnce(false);
+          }
         }
         await expect(drawing.importSwissgeoDrawing(false)).rejects.toThrow();
         expect(drawing.isLoading.value).toBe(false);
-        if (failure !== "kmz") {
-          expect(clearDrawingLayerSpy).not.toHaveBeenCalled();
+        expect(importDrawingStore.drawingId).toBe("previous-drawing");
+        expect(importDrawingStore.drawingAdminId).toBe("previous-admin");
+        if (failure === "http" || failure === "network") {
+          expect(importKmzSpy).not.toHaveBeenCalled();
         }
       },
     );

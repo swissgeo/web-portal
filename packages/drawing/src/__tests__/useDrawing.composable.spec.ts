@@ -7,6 +7,7 @@ import type { Ref } from "vue";
 import { useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { flushPromises, mount } from "@vue/test-utils";
+import { strToU8, zipSync } from "fflate";
 import Feature from "ol/Feature";
 import { Circle, LineString, Point, Polygon } from "ol/geom";
 import { setActivePinia, createPinia } from "pinia";
@@ -780,13 +781,72 @@ describe("useDrawing", () => {
   </Document>
 </kml>`;
 
-    drawing.importKml(kml);
+    expect(drawing.importKml(kml)).toBe(true);
 
     const features = drawingStore.drawingVectorSource.getFeatures();
     expect(features).toHaveLength(1);
     expect(features[0].getGeometry()?.getType()).toBe("Point");
 
     wrapper.unmount();
+  });
+
+  describe.each(["kml", "kmz"] as const)("%s imports", (format) => {
+    function importDrawing(
+      drawing: DrawingComposable,
+      kml: string,
+      clearExisting?: boolean,
+    ) {
+      if (format === "kml") {
+        return drawing.importKml(kml, clearExisting);
+      }
+
+      const kmz = zipSync({ "doc.kml": strToU8(kml) });
+      return drawing.importKmz(kmz.buffer as ArrayBuffer, clearExisting);
+    }
+
+    it.each([undefined, true])(
+      "imports new features with clearExisting set to %s",
+      async (clearExisting) => {
+        const { drawing, drawingStore, wrapper } = mountHarness();
+        const existing = makeFeature(new Point([2600000, 1200000]));
+        drawingStore.drawingVectorSource.addFeature(existing);
+        const kml = `<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Placemark id="imported-point">
+    <Point><coordinates>8.2,46.8,0</coordinates></Point>
+  </Placemark>
+</kml>`;
+
+        expect(await importDrawing(drawing, kml, clearExisting)).toBe(true);
+
+        const features = drawingStore.drawingVectorSource.getFeatures();
+        expect(features).toHaveLength(clearExisting ? 1 : 2);
+        expect(features.includes(existing)).toBe(!clearExisting);
+        expect(
+          drawingStore.drawingVectorSource
+            .getFeatureById("imported-point")
+            ?.getGeometry()
+            ?.getType(),
+        ).toBe("Point");
+        wrapper.unmount();
+      },
+    );
+
+    it.each([undefined, true])(
+      "keeps existing features when an empty drawing is imported with clearExisting set to %s",
+      async (clearExisting) => {
+        const { drawing, drawingStore, wrapper } = mountHarness();
+        const existing = makeFeature(new Point([2600000, 1200000]));
+        drawingStore.drawingVectorSource.addFeature(existing);
+        const kml =
+          '<kml xmlns="http://www.opengis.net/kml/2.2"><Document /></kml>';
+
+        expect(await importDrawing(drawing, kml, clearExisting)).toBe(false);
+        expect(drawingStore.drawingVectorSource.getFeatures()).toEqual([
+          existing,
+        ]);
+        wrapper.unmount();
+      },
+    );
   });
 
   it("replaces an already imported feature with the same KML id", () => {
@@ -831,9 +891,9 @@ describe("useDrawing", () => {
       const serialized = await drawing.serializeAllFeatures(format);
       drawing.clearDrawingLayer();
       if (format === "kmz") {
-        await drawing.importKmz(serialized as ArrayBuffer);
+        expect(await drawing.importKmz(serialized as ArrayBuffer)).toBe(true);
       } else {
-        drawing.importKml(serialized as string);
+        expect(drawing.importKml(serialized as string)).toBe(true);
       }
       const features = drawingStore.drawingVectorSource.getFeatures();
       expect(features).toHaveLength(1);
@@ -877,12 +937,17 @@ describe("useDrawing", () => {
     wrapper.unmount();
   });
 
-  it("rejects an invalid KMZ without changing existing features", async () => {
-    const { drawing, drawingStore, wrapper } = mountHarness();
-    const point = makeFeature(new Point([2600000, 1200000]));
-    drawingStore.drawingVectorSource.addFeature(point);
-    await expect(drawing.importKmz(new ArrayBuffer(8))).rejects.toThrow();
-    expect(drawingStore.drawingVectorSource.getFeatures()).toEqual([point]);
-    wrapper.unmount();
-  });
+  it.each([undefined, true])(
+    "rejects an invalid KMZ without changing existing features with clearExisting set to %s",
+    async (clearExisting) => {
+      const { drawing, drawingStore, wrapper } = mountHarness();
+      const point = makeFeature(new Point([2600000, 1200000]));
+      drawingStore.drawingVectorSource.addFeature(point);
+      await expect(
+        drawing.importKmz(new ArrayBuffer(8), clearExisting),
+      ).rejects.toThrow();
+      expect(drawingStore.drawingVectorSource.getFeatures()).toEqual([point]);
+      wrapper.unmount();
+    },
+  );
 });

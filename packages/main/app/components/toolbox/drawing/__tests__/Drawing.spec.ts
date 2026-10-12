@@ -1,8 +1,13 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises, mount } from "@vue/test-utils";
+import { createPinia, setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { useDrawingImportStore } from "@/stores/drawingImport";
+
 import Drawing from "../drawing.vue";
+
+let importDrawingStore: ReturnType<typeof useDrawingImportStore>;
 
 const {
   drawing,
@@ -30,9 +35,6 @@ const {
       focusedFeature: ref<object | null>(null),
       focusedFeatureType: ref("Point"),
       isDrawingLayerInLayerStore: ref(true),
-      drawingId: ref<string | null>(null),
-      drawingAdminId: ref<string | null>(null),
-      drawingS3Url: ref<string | null>(null),
     },
     shareDrawings: vi.fn(),
     isSharing: ref(false),
@@ -96,13 +98,12 @@ function mountDrawing() {
 afterEach(() => vi.restoreAllMocks());
 beforeEach(() => {
   vi.resetAllMocks();
+  setActivePinia(createPinia());
+  importDrawingStore = useDrawingImportStore();
   drawing.numberOfFeatures.value = 0;
   drawing.focusMode.value = "none";
   drawing.focusedFeature.value = null;
   drawing.isDrawingLayerInLayerStore.value = true;
-  drawing.drawingId.value = null;
-  drawing.drawingAdminId.value = null;
-  drawing.drawingS3Url.value = null;
   isSharing.value = false;
 });
 describe("Drawing toolbox", () => {
@@ -139,11 +140,16 @@ describe("Drawing toolbox", () => {
 
   it("selects existing features and clears the scene", async () => {
     drawing.numberOfFeatures.value = 2;
+    importDrawingStore.drawingId = "drawing";
+    importDrawingStore.drawingAdminId = "admin";
     const wrapper = mountDrawing();
     await wrapper.get('[data-testid="select-feature-tool"]').trigger("click");
     expect(drawing.enableSelectInteraction).toHaveBeenCalledOnce();
     await wrapper.get('[data-testid="drawing-tool-clear"]').trigger("click");
     expect(drawing.clearDrawingLayer).toHaveBeenCalledOnce();
+    expect(importDrawingStore.drawingId).toBe("");
+    expect(importDrawingStore.drawingAdminId).toBe("");
+    expect(wrapper.find("#drawing-share-link").exists()).toBe(false);
     wrapper.unmount();
   });
 
@@ -197,8 +203,8 @@ describe("Drawing toolbox", () => {
     async (shared) => {
       drawing.focusMode.value = "edit";
       if (shared) {
-        drawing.drawingId.value = "drawing";
-        drawing.drawingAdminId.value = "admin";
+        importDrawingStore.drawingId = "drawing";
+        importDrawingStore.drawingAdminId = "admin";
       }
       const wrapper = mountDrawing();
       drawing.focusMode.value = "none";
@@ -215,9 +221,8 @@ describe("Drawing toolbox", () => {
       .find((button) => button.text() === "toolbox.drawing.sync")!;
     await sync.trigger("click");
     expect(shareDrawings).toHaveBeenCalledOnce();
-    drawing.drawingId.value = "drawing";
-    drawing.drawingS3Url.value = "https://storage.test/drawing.kmz";
-    drawing.drawingAdminId.value = "admin";
+    importDrawingStore.drawingId = "drawing";
+    importDrawingStore.drawingAdminId = "admin";
     await wrapper.vm.$nextTick();
     expect(
       (wrapper.get('input:not([type="checkbox"])').element as HTMLInputElement)
