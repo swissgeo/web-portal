@@ -127,6 +127,105 @@ describe("useCreateShareLink", () => {
     expect(share.hash.value).toBeNull();
   });
 
+  it("builds embed code with the default 800x600 resolution", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const share = useCreateShareLink(ref(makeState()));
+    await share.refresh();
+
+    expect(share.embedCode.value).toContain('width="800" height="600"');
+  });
+
+  it("reflects a custom resolution in the embed code and recomputes on change", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const resolution = ref({ width: 900, height: 500 });
+    const share = useCreateShareLink(ref(makeState()), { resolution });
+    await share.refresh();
+
+    expect(share.embedCode.value).toContain('width="900" height="500"');
+
+    resolution.value = { width: 640, height: 480 };
+    expect(share.embedCode.value).toContain('width="640" height="480"');
+  });
+
+  it("uses 100% width when fullWidth is enabled and restores pixel width after", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const fullWidth = ref(true);
+    const resolution = ref({ width: 800, height: 600 });
+    const share = useCreateShareLink(ref(makeState()), {
+      fullWidth,
+      resolution,
+    });
+    await share.refresh();
+
+    expect(share.embedCode.value).toContain('width="100%" height="600"');
+
+    fullWidth.value = false;
+    expect(share.embedCode.value).toContain('width="800" height="600"');
+  });
+
+  it("keeps height and omits zoomOnlyCtrl by default in embed code", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const share = useCreateShareLink(ref(makeState()), {
+      zoomOnlyCtrl: ref(false),
+    });
+    await share.refresh();
+
+    expect(share.embedCode.value).toContain('height="600"');
+    expect(share.embedCode.value).not.toContain("zoomOnlyCtrl");
+  });
+
+  it("returns the embed url for the preview", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const share = useCreateShareLink(ref(makeState()));
+    await share.refresh();
+
+    expect(share.embedUrl.value).toBe(
+      new URL("/embed?state=state-id", location.origin).href,
+    );
+
+    const zoomOnlyShare = useCreateShareLink(ref(makeState()), {
+      zoomOnlyCtrl: ref(true),
+    });
+    mockPostState.mockResolvedValueOnce("zoom-state");
+    await zoomOnlyShare.refresh();
+
+    expect(zoomOnlyShare.embedUrl.value).toContain("zoomOnlyCtrl=true");
+  });
+
+  it("calls onError when the POST fails", async () => {
+    mockPostState.mockRejectedValueOnce(new Error("boom"));
+    const onError = vi.fn();
+    const share = useCreateShareLink(ref(makeState()), { onError });
+
+    await share.refresh();
+
+    expect(onError).toHaveBeenCalledWith(expect.any(Error));
+    expect(share.hash.value).toBeNull();
+  });
+
+  it("debounces automatic refreshes on rapid state changes", async () => {
+    vi.useFakeTimers();
+    mockPostState.mockResolvedValue("state-id");
+    const state = ref<AppStatePayload | null>(makeState());
+    const share = useCreateShareLink(state, {
+      autoRefresh: true,
+      debounce: 500,
+      maxWait: 2000,
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    mockPostState.mockClear();
+
+    state.value = makeState(9);
+    state.value = makeState(10);
+    state.value = makeState(11);
+    await vi.advanceTimersByTimeAsync(499);
+    expect(mockPostState).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(mockPostState).toHaveBeenCalledTimes(1);
+    expect(share.hash.value).toBe("state-id");
+  });
+
   it("derives the print share link from the map view state id", () => {
     const mapViewStore = reactive({ stateId: "" });
     mockUseMapViewStore.mockReturnValue(mapViewStore);
