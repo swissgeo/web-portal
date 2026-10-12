@@ -134,6 +134,7 @@ function shareOnWhatsApp() {
           color: { dark: '#000000', light: '#00000000' },
         }"
       />
+      <USkeleton v-else class="h-29 w-29" />
     </div>
   </div>
 </template>
