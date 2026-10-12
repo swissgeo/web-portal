@@ -447,6 +447,7 @@
   },
   "topbar": {
     "home": "Home",
+    "map": "Map",
     "geoDataAndMaps": "Geodata and maps",
     "howToUseGeodata": "How can I use geodata?",
     "viewGeodataInMapViewer": "View geodata in the map viewer",

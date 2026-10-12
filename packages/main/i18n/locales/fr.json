@@ -446,6 +446,7 @@
   },
   "topbar": {
     "home": "Accueil",
+    "map": "Carte",
     "geoDataAndMaps": "Géodonnées et cartes",
     "howToUseGeodata": "Comment utiliser les géodonnées ?",
     "viewGeodataInMapViewer": "Consulter les géodonnées dans le visualiseur de cartes",

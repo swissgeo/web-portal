@@ -447,6 +447,7 @@
   },
   "topbar": {
     "home": "Startseite",
+    "map": "Karte",
     "geoDataAndMaps": "Geodaten und Karten",
     "howToUseGeodata": "Wie kann ich Geodaten nutzen?",
     "viewGeodataInMapViewer": "Geodaten im Kartenviewer anschauen",
@@ -472,7 +473,6 @@
     "organisation": "Organisation",
     "legalBasis": "Rechtliche Grundlagen",
     "mediaInformation": "Medieninformationen",
-    "map": "Karte",
     "login": "Anmelden",
     "modeSwitch": "Mode switch"
   },
