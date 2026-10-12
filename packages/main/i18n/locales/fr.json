@@ -269,6 +269,7 @@
       "buttonTitle": "Partager",
       "title": "Partager",
       "link": {
+        "tabLabel": "Partager le lien",
         "title": "Lien de partage",
         "description": "Partagez la vue cartographique actuelle avec d'autres ou copiez l'URL.",
         "generateButton": "Générer le lien de partage",
@@ -287,7 +288,8 @@
         }
       },
       "embed": {
-        "title": "Intégration",
+        "tabLabel": "Intégrer",
+        "title": "Intégrer la carte",
         "description": "Intégrez la carte avec le lien dans votre propre environnement.",
         "generateButton": "Générer le code d'intégration",
         "zoomOnlyCtrlLabel": "Activer le zoom uniquement avec la touche Ctrl/Cmd",

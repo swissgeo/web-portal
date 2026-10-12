@@ -270,6 +270,7 @@
       "buttonTitle": "Share",
       "title": "Share",
       "link": {
+        "tabLabel": "Share link",
         "title": "Share link",
         "description": "Share the current map view with others or copy the URL.",
         "generateButton": "Generate share link",
@@ -288,7 +289,8 @@
         }
       },
       "embed": {
-        "title": "Embedding",
+        "tabLabel": "Embedding",
+        "title": "Embed map",
         "description": "Embed the map with the link into your own environment.",
         "generateButton": "Generate embed code",
         "zoomOnlyCtrlLabel": "Enable zoom only with Ctrl/Cmd key",

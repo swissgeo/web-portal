@@ -270,6 +270,7 @@
       "buttonTitle": "Teilen",
       "title": "Teilen",
       "link": {
+        "tabLabel": "Link teilen",
         "title": "Freigabelink",
         "description": "Teilen Sie die aktuelle Kartenansicht mit anderen oder kopieren Sie die URL.",
         "generateButton": "Freigabelink generieren",
@@ -288,7 +289,8 @@
         }
       },
       "embed": {
-        "title": "Einbetten",
+        "tabLabel": "Einbetten",
+        "title": "Karte einbetten",
         "description": "Betten Sie die Karte mit dem Link in Ihre eigene Umgebung ein.",
         "generateButton": "Einbettungscode generieren",
         "zoomOnlyCtrlLabel": "Zoom nur mit Strg/Cmd-Taste aktivieren",
@@ -296,7 +298,7 @@
         "sizeSmall": "Klein",
         "sizeMedium": "Mittel",
         "sizeLarge": "Gross",
-        "sizeCustom": "Eigene",
+        "sizeCustom": "Benutzerdefiniert",
         "customWidthLabel": "Breite",
         "customHeightLabel": "Höhe",
         "pixelUnit": "Pixel",
