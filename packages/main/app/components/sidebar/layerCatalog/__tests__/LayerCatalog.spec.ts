@@ -14,6 +14,13 @@ const { isDesktop } = await vi.hoisted(async () => {
 });
 
 mockNuxtImport("useIsDesktop", () => () => isDesktop);
+mockNuxtImport("useThesaurus", () => () => ({
+  concepts: shallowRef([]),
+  status: shallowRef("success"),
+}));
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({ t: (key: string) => key }),
+}));
 
 let tableScroller: ReturnType<typeof usePanelScroller> | undefined;
 const LayerCatalogTable = defineComponent({
@@ -33,7 +40,17 @@ function mountCatalog() {
       return () => h(LayerCatalog);
     },
   });
-  return mount(Panel, { global: { stubs: { LayerCatalogTable } } });
+  return mount(Panel, {
+    global: {
+      stubs: {
+        LayerCatalogTable,
+        LayerCatalogTree: true,
+        LayerCatalogTreeMobile: true,
+        LayerCatalogBreadcrumb: true,
+        UButton: true,
+      },
+    },
+  });
 }
 
 describe("LayerCatalog.vue", () => {
