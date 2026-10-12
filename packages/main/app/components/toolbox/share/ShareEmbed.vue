@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type { SelectItem } from "@nuxt/ui";
 
-import { useResizeObserver } from "@vueuse/core";
+import { DEFAULT_RESOLUTION } from "~/composables/useCreateShareLink";
 import { useI18n } from "vue-i18n";
 
-const { embedCode, stateId } = defineProps<{
+import ShareEmbedPreview from "./ShareEmbedPreview.vue";
+
+const { embedCode, embedUrl } = defineProps<{
   embedCode: string;
+  embedUrl: string;
   copied: boolean;
-  stateId: string | null;
 }>();
 
 const zoomOnlyCtrl = defineModel<boolean>("zoomOnlyCtrl", { default: false });
@@ -15,7 +17,7 @@ const fullWidth = defineModel<boolean>("fullWidth", { default: false });
 const resolution = defineModel<{ width: number; height: number }>(
   "resolution",
   {
-    default: () => ({ width: 800, height: 600 }),
+    default: () => ({ ...DEFAULT_RESOLUTION }),
   },
 );
 
@@ -59,19 +61,31 @@ const items = computed<SelectItem[]>(() => {
   });
 });
 
-watch(sizeKey, (key) => {
-  if (key === "custom") {
+function onSizeSelect(value: string) {
+  sizeKey.value = value as typeof sizeKey.value;
+  if (sizeKey.value === "custom") {
     return;
   }
   fullWidth.value = false;
-  resolution.value = { ...resolutions[key] };
-});
+  resolution.value = { ...resolutions[sizeKey.value] };
+}
 
 function clampDimension(value: number): number {
   if (!Number.isFinite(value)) {
     return MIN_DIMENSION;
   }
   return Math.min(MAX_DIMENSION, Math.max(MIN_DIMENSION, Math.round(value)));
+}
+
+function onWidthInput(value: unknown) {
+  const width = Number(value);
+  if (fullWidth.value || !Number.isFinite(width)) {
+    return;
+  }
+  resolution.value = {
+    ...resolution.value,
+    width,
+  };
 }
 
 function onWidthBlur() {
@@ -81,74 +95,23 @@ function onWidthBlur() {
   };
 }
 
+function onHeightInput(value: unknown) {
+  const height = Number(value);
+  if (!Number.isFinite(height)) {
+    return;
+  }
+  resolution.value = {
+    ...resolution.value,
+    height,
+  };
+}
+
 function onHeightBlur() {
   resolution.value = {
     ...resolution.value,
     height: clampDimension(resolution.value.height),
   };
 }
-
-const previewBox = useTemplateRef("previewBox");
-const boxSize = reactive({ width: 0, height: 0 });
-
-useResizeObserver(previewBox, (entries) => {
-  const entry = entries[0];
-  if (!entry) {
-    return;
-  }
-  boxSize.width = entry.contentRect.width;
-  boxSize.height = entry.contentRect.height;
-});
-
-const previewSrc = computed(() => {
-  if (!stateId) {
-    return "";
-  }
-  const url = new URL("/embed", location.origin);
-  url.searchParams.set("state", stateId);
-  if (zoomOnlyCtrl.value) {
-    url.searchParams.set("zoomOnlyCtrl", "true");
-  }
-  return url.href;
-});
-
-const PREVIEW_MARGIN = 16;
-
-const scale = computed(() => {
-  const { width, height } = resolution.value;
-  if (!height || !boxSize.height) {
-    return 1;
-  }
-  const availableHeight = Math.max(boxSize.height - PREVIEW_MARGIN * 2, 0);
-  if (fullWidth.value) {
-    return Math.min(availableHeight / height, 1);
-  }
-  if (!width || !boxSize.width) {
-    return 1;
-  }
-  const availableWidth = Math.max(boxSize.width - PREVIEW_MARGIN * 2, 0);
-  return Math.min(availableWidth / width, availableHeight / height, 1);
-});
-
-const iframeLogicalSize = computed(() => {
-  const { width, height } = resolution.value;
-  if (fullWidth.value && boxSize.width) {
-    return { width: boxSize.width / scale.value, height };
-  }
-  return { width, height };
-});
-
-const scaledBoxStyle = computed(() => ({
-  width: `${iframeLogicalSize.value.width * scale.value}px`,
-  height: `${iframeLogicalSize.value.height * scale.value}px`,
-}));
-
-const iframeStyle = computed(() => ({
-  width: `${iframeLogicalSize.value.width}px`,
-  height: `${iframeLogicalSize.value.height}px`,
-  transform: `scale(${scale.value})`,
-  transformOrigin: "top left",
-}));
 </script>
 
 <template>
@@ -163,13 +126,14 @@ const iframeStyle = computed(() => ({
     </div>
     <UFormField :label="t('toolbox.share.embed.sizeLabel')" class="w-full">
       <USelect
-        v-model="sizeKey"
+        :model-value="sizeKey"
         value-key="id"
         :items="items"
         data-testid="share-embed-size-select"
         :ui="{
           base: 'w-full',
         }"
+        @update:model-value="onSizeSelect"
       />
     </UFormField>
     <div
@@ -184,15 +148,15 @@ const iframeStyle = computed(() => ({
           class="w-full"
         >
           <UInput
-            v-model.number="resolution.width"
+            :model-value="fullWidth ? 100 : resolution.width"
             type="number"
             size="lg"
             color="neutral"
             variant="outline"
             :disabled="fullWidth"
             data-testid="share-embed-width-input"
+            @update:model-value="onWidthInput"
             @blur="onWidthBlur"
-            :value="fullWidth ? 100 : resolution.width"
           >
             <template #trailing>
               <span>{{
@@ -216,12 +180,13 @@ const iframeStyle = computed(() => ({
         class="w-full"
       >
         <UInput
-          v-model.number="resolution.height"
+          :model-value="resolution.height"
           type="number"
           size="lg"
           color="neutral"
           variant="outline"
           data-testid="share-embed-height-input"
+          @update:model-value="onHeightInput"
           @blur="onHeightBlur"
         >
           <template #trailing>
@@ -237,36 +202,16 @@ const iframeStyle = computed(() => ({
         label: 'text-sm',
       }"
     />
-    <div
-      ref="previewBox"
-      data-testid="share-embed-preview"
-      class="relative h-64 w-full overflow-hidden bg-black"
+    <ShareEmbedPreview
+      :src="embedUrl"
+      :resolution="resolution"
+      :full-width="fullWidth"
+    />
+    <UFormField
+      :label="t('toolbox.share.link.urlLabel')"
+      size="lg"
+      class="w-full"
     >
-      <div
-        class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] overflow-hidden"
-        :style="scaledBoxStyle"
-      >
-        <iframe
-          v-if="previewSrc"
-          :src="previewSrc"
-          :style="iframeStyle"
-          frameborder="0"
-          class="border-0"
-          data-testid="share-embed-preview-iframe"
-        />
-      </div>
-      <div
-        data-testid="share-embed-preview-label"
-        class="absolute inset-0 flex items-center justify-center bg-black/30 text-sm font-semibold text-white"
-      >
-        {{
-          fullWidth
-            ? `100% × ${resolution.height}`
-            : `${resolution.width} × ${resolution.height}`
-        }}
-      </div>
-    </div>
-    <UFormField label="Link" size="lg" class="w-full">
       <UInput
         icon="i-lucide-link"
         size="lg"
@@ -283,8 +228,8 @@ const iframeStyle = computed(() => ({
             :color="copied ? 'success' : 'primary'"
             variant="solid"
             :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
-            label="Kopieren"
-            aria-label="Copy to clipboard"
+            :label="t('toolbox.share.link.copyButton')"
+            :aria-label="t('toolbox.share.link.ariaLabel.copyToClipboard')"
             data-testid="share-embed-copy"
             @click="emit('copy')"
           />
@@ -293,5 +238,3 @@ const iframeStyle = computed(() => ({
     </UFormField>
   </div>
 </template>
-
-<style scoped></style>

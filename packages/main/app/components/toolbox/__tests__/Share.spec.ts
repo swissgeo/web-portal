@@ -5,20 +5,28 @@ import { mount } from "@vue/test-utils";
 import Share from "~/components/toolbox/share/Share.vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { sharing, linkClipboard, embedClipboard } = await vi.hoisted(
-  async () => {
+const { sharing, linkClipboard, embedClipboard, mockShowError } =
+  await vi.hoisted(async () => {
     const { ref } = await import("vue");
     return {
       sharing: {
         shareLink: ref("https://example.test/share"),
         embedCode: ref('<iframe src="https://example.test/embed"></iframe>'),
+        embedUrl: ref("https://example.test/embed?state=state-id"),
         hash: ref("state-id"),
       },
       linkClipboard: { copied: ref(false), copy: vi.fn() },
       embedClipboard: { copied: ref(false), copy: vi.fn() },
+      mockShowError: vi.fn(),
     };
-  },
-);
+  });
+
+const { mockUseCreateShareLink } = vi.hoisted(() => ({
+  mockUseCreateShareLink: vi.fn((_state: unknown, options?: unknown) => ({
+    ...sharing,
+    shareOptions: options,
+  })),
+}));
 
 let clipboardIndex = 0;
 vi.mock("@vueuse/core", async (importOriginal) => ({
@@ -28,19 +36,26 @@ vi.mock("@vueuse/core", async (importOriginal) => ({
     return clipboardIndex % 2 === 1 ? linkClipboard : embedClipboard;
   },
 }));
+const { mockCloseDetailPanel } = vi.hoisted(() => ({
+  mockCloseDetailPanel: vi.fn(),
+}));
+
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 vi.mock("@/stores/toolbox", () => ({
   useToolboxStore: () => ({
-    toggleDetailPanel(_string: string) {},
+    closeDetailPanel: mockCloseDetailPanel,
   }),
 }));
+mockNuxtImport("useToaster", () => {
+  return () => ({ showError: mockShowError });
+});
 mockNuxtImport("useStateConfig", () => {
   return () => ({ exportState: () => ({}) });
 });
 mockNuxtImport("useCreateShareLink", () => {
-  return () => sharing;
+  return mockUseCreateShareLink;
 });
 
 const stubs = {
@@ -64,8 +79,8 @@ const stubs = {
     name: "ShareEmbed",
     props: [
       "embedCode",
+      "embedUrl",
       "copied",
-      "stateId",
       "zoomOnlyCtrl",
       "fullWidth",
       "resolution",
@@ -92,13 +107,13 @@ describe("Share", () => {
     clipboardIndex = 0;
   });
 
-  it("renders both tabs with i18n labels", () => {
+  it("renders both tabs with i18n tab labels", () => {
     const wrapper = mountShare();
     const tabs = wrapper.getComponent({ name: "UTabs" });
 
     expect(tabs.props("items")).toEqual([
-      { label: "toolbox.share.link.title", slot: "link" },
-      { label: "toolbox.share.embed.title", slot: "embed" },
+      { label: "toolbox.share.link.tabLabel", slot: "link" },
+      { label: "toolbox.share.embed.tabLabel", slot: "embed" },
     ]);
   });
 
@@ -107,10 +122,35 @@ describe("Share", () => {
     const embed = wrapper.getComponent({ name: "ShareEmbed" });
 
     expect(embed.props("embedCode")).toBe(sharing.embedCode.value);
-    expect(embed.props("stateId")).toBe("state-id");
+    expect(embed.props("embedUrl")).toBe(sharing.embedUrl.value);
     expect(embed.props("zoomOnlyCtrl")).toBe(false);
     expect(embed.props("fullWidth")).toBe(false);
     expect(embed.props("resolution")).toEqual({ width: 800, height: 600 });
+  });
+
+  it("debounces the automatic refresh and reports errors via toaster", () => {
+    mountShare();
+
+    const options = mockUseCreateShareLink.mock.calls[0]?.[1] as {
+      autoRefresh: boolean;
+      debounce: number;
+      maxWait: number;
+      onError: () => void;
+    };
+    expect(options.autoRefresh).toBe(true);
+    expect(options.debounce).toBe(500);
+    expect(options.maxWait).toBe(2000);
+
+    options.onError();
+    expect(mockShowError).toHaveBeenCalledWith("state.shareLinkError");
+  });
+
+  it("closes the detail panel when the close button is clicked", async () => {
+    const wrapper = mountShare();
+
+    await wrapper.getComponent({ name: "UAlert" }).vm.$emit("update:open");
+
+    expect(mockCloseDetailPanel).toHaveBeenCalledOnce();
   });
 
   it("copies link and embed code independently on child copy events", async () => {

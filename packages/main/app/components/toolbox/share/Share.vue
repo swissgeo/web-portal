@@ -2,6 +2,7 @@
 import type { TabsItem } from "@nuxt/ui";
 
 import { useClipboard } from "@vueuse/core";
+import { DEFAULT_RESOLUTION } from "~/composables/useCreateShareLink";
 import { useI18n } from "vue-i18n";
 
 import { useToolboxStore } from "@/stores/toolbox";
@@ -12,16 +13,20 @@ import ShareLink from "./ShareLink.vue";
 const { t } = useI18n();
 const zoomOnlyCtrl = ref(false);
 const fullWidth = ref(false);
-const resolution = ref({ width: 800, height: 600 });
+const resolution = ref({ ...DEFAULT_RESOLUTION });
 
 const toolboxStore = useToolboxStore();
+const toaster = useToaster();
 
 const { copy: copyLink, copied: copiedLink } = useClipboard();
 const { copy: copyEmbed, copied: copiedEmbed } = useClipboard();
 
 const { exportState } = useStateConfig();
-const { shareLink, embedCode, hash } = useCreateShareLink(exportState, {
+const { shareLink, embedCode, embedUrl } = useCreateShareLink(exportState, {
   autoRefresh: true,
+  debounce: 500,
+  maxWait: 2000,
+  onError: () => toaster.showError(t("state.shareLinkError")),
   zoomOnlyCtrl,
   fullWidth,
   resolution,
@@ -29,11 +34,11 @@ const { shareLink, embedCode, hash } = useCreateShareLink(exportState, {
 
 const items = computed<TabsItem[]>(() => [
   {
-    label: t("toolbox.share.link.title"),
+    label: t("toolbox.share.link.tabLabel"),
     slot: "link" as const,
   },
   {
-    label: t("toolbox.share.embed.title"),
+    label: t("toolbox.share.embed.tabLabel"),
     slot: "embed" as const,
   },
 ]);
@@ -47,7 +52,7 @@ const items = computed<TabsItem[]>(() => [
     color="neutral"
     variant="outline"
     close
-    @update:open="toolboxStore.toggleDetailPanel('share')"
+    @update:open="toolboxStore.closeDetailPanel()"
   >
     <template #description>
       <UTabs
@@ -70,7 +75,7 @@ const items = computed<TabsItem[]>(() => [
           <ShareEmbed
             :embed-code="embedCode"
             :copied="copiedEmbed"
-            :state-id="hash"
+            :embed-url="embedUrl"
             @copy="copyEmbed(embedCode)"
             v-model:zoom-only-ctrl="zoomOnlyCtrl"
             v-model:full-width="fullWidth"

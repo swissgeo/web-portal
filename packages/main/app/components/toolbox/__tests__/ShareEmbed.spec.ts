@@ -66,8 +66,8 @@ function mountShareEmbed(props: Record<string, unknown> = {}) {
   return mount(ShareEmbed, {
     props: {
       embedCode: '<iframe src="https://example.test/embed"></iframe>',
+      embedUrl: "https://example.test/embed?state=abc",
       copied: false,
-      stateId: "abc",
       resolution: { width: 800, height: 600 },
       zoomOnlyCtrl: false,
       fullWidth: false,
@@ -246,27 +246,21 @@ describe("ShareEmbed", () => {
     expect(parseScale((iframe.element as HTMLElement).style.transform)).toBe(1);
   });
 
-  it("renders no preview iframe without a state id", () => {
-    const wrapper = mountShareEmbed({ stateId: null });
+  it("renders no preview iframe without an embed url", () => {
+    const wrapper = mountShareEmbed({ embedUrl: "" });
 
     expect(
       wrapper.find('[data-testid="share-embed-preview-iframe"]').exists(),
     ).toBe(false);
   });
 
-  it("points the preview iframe at the embed route with the state id", () => {
+  it("points the preview iframe at the embed url from the composable", () => {
     const wrapper = mountShareEmbed();
     const iframe = wrapper.get('[data-testid="share-embed-preview-iframe"]');
 
-    expect(iframe.attributes("src")).toContain("/embed?state=abc");
-    expect(iframe.attributes("src")).not.toContain("zoomOnlyCtrl");
-  });
-
-  it("adds zoomOnlyCtrl to the preview iframe url when enabled", () => {
-    const wrapper = mountShareEmbed({ zoomOnlyCtrl: true });
-    const iframe = wrapper.get('[data-testid="share-embed-preview-iframe"]');
-
-    expect(iframe.attributes("src")).toContain("zoomOnlyCtrl=true");
+    expect(iframe.attributes("src")).toBe(
+      "https://example.test/embed?state=abc",
+    );
   });
 
   it("shows the current dimensions in the preview overlay", () => {

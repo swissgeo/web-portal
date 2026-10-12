@@ -9,7 +9,7 @@ vi.mock("vue-i18n", () => ({
 vi.mock("@chenfengyuan/vue-qrcode", () => ({
   default: {
     name: "VueQrcode",
-    props: ["value", "size", "level", "background", "foreground"],
+    props: ["value", "options"],
     template: '<div data-testid="share-link-qr" :data-value="value" />',
   },
 }));
@@ -116,10 +116,23 @@ describe("ShareLink", () => {
     ).toBe(true);
   });
 
-  it("renders the QR code with the share link as value", () => {
+  it("renders the QR code with the share link as value and qr options", () => {
+    const wrapper = mountShareLink();
+
+    const qr = wrapper.getComponent({ name: "VueQrcode" });
+    expect(qr.attributes("data-value")).toBe(LINK);
+    expect(qr.props("options")).toEqual({
+      width: 116,
+      margin: 0,
+      errorCorrectionLevel: "H",
+      color: { dark: "#000000", light: "#00000000" },
+    });
+  });
+
+  it("inverts the QR code in dark mode via a class", () => {
     const wrapper = mountShareLink();
 
     const qr = wrapper.get('[data-testid="share-link-qr"]');
-    expect(qr.attributes("data-value")).toBe(LINK);
+    expect(qr.classes()).toContain("dark:invert");
   });
 });
