@@ -47,14 +47,16 @@ watch(selectedLocale, async (value) => {
       :items="localeItems"
       value-key="code"
       label-key="code"
-      size="md"
-      variant="outline"
-      :trailing="false"
+      size="sm"
+      variant="none"
+      :trailing="true"
       :searchInput="false"
       aria-label="Language switcher"
       :ui="{
         content: '!w-auto min-w-[150px] !max-w-none',
         value: 'uppercase',
+        base: 'text-nav-brand-muted',
+        trailingIcon: 'text-nav-brand-muted',
       }"
     >
       <template #item-label="{ item }">
