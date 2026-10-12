@@ -126,17 +126,14 @@ function shareOnWhatsApp() {
       <VueQrcode
         v-if="link"
         :value="link"
-        :size="116"
-        :level="'H'"
-        class="qr-code -translate-x-[15px]"
-        :options="{ color: { dark: '#000000', light: '#00000000' } }"
+        class="dark:invert"
+        :options="{
+          width: 116,
+          margin: 0,
+          errorCorrectionLevel: 'H',
+          color: { dark: '#000000', light: '#00000000' },
+        }"
       />
     </div>
   </div>
 </template>
-
-<style scoped>
-html.dark .qr-code {
-  filter: invert(1);
-}
-</style>
