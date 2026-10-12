@@ -20,15 +20,18 @@ export type OgcCatalogState =
 
 /**
  * Loads the OGC API Records items, accumulating them in `state.data.features`.
- * Changing the language or the query resets the list.
+ * Only the items of `concept` are loaded, unless it is `null`. Changing the
+ * language, the query or the concept resets the list.
  */
 export function useOgcCatalog(
   language: Ref<string>,
   query?: MaybeRefOrGetter<string>,
+  concept?: MaybeRefOrGetter<string | null>,
 ) {
   const catalogItemsUrl = useCatalogItemsUrl();
 
   const q = computed(() => toValue(query)?.trim() ?? "");
+  const conceptId = computed(() => toValue(concept) ?? undefined);
 
   const state = ref<OgcCatalogState>({ status: "pending" });
 
@@ -45,7 +48,7 @@ export function useOgcCatalog(
       titleColor: LogPreDefinedColor.Yellow,
       messages: [
         "loading catalog page",
-        { lang: language.value, offset, q: q.value },
+        { lang: language.value, offset, q: q.value, concept: conceptId.value },
       ],
     });
 
@@ -57,6 +60,7 @@ export function useOgcCatalog(
         limit: PAGE_SIZE,
         offset,
         q: q.value,
+        concept: conceptId.value,
       });
       if (request !== requestCount) {
         return;
@@ -80,7 +84,7 @@ export function useOgcCatalog(
     }
   }
 
-  watch([language, q], () => load(true), { immediate: true });
+  watch([language, q, conceptId], () => load(true), { immediate: true });
 
   const total = computed(() => state.value.data?.numberMatched ?? 0);
   const hasMore = computed(

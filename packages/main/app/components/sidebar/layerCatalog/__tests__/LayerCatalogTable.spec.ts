@@ -70,6 +70,7 @@ const panelScroller = shallowRef<HTMLElement | null>(null);
 
 function mountTable() {
   return mount(LayerCatalogTable, {
+    props: { conceptId: null },
     global: { stubs, provide: { [panelScrollerKey]: panelScroller } },
   });
 }
