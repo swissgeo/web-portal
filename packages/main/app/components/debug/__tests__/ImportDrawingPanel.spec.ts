@@ -9,6 +9,8 @@ const {
   isLoadingRef,
   errorMessageRef,
   successMessageRef,
+  isConfirmModalOpenRef,
+  hasAdminLinkRef,
 } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
   return {
@@ -17,6 +19,8 @@ const {
     isLoadingRef: ref(false),
     errorMessageRef: ref(""),
     successMessageRef: ref(""),
+    isConfirmModalOpenRef: ref(false),
+    hasAdminLinkRef: ref(false),
   };
 });
 
@@ -25,13 +29,16 @@ mockNuxtImport("useI18n", () => () => ({
   te: () => true,
 }));
 
-vi.mock("~/composables/useImportDrawing", () => ({
+vi.mock("@/composables/useImportDrawing", () => ({
   useImportDrawing: vi.fn(() => ({
     url: urlRef,
     isLoading: isLoadingRef,
     errorMessage: errorMessageRef,
     successMessage: successMessageRef,
     importLegacyDrawing: importLegacyDrawingMock,
+    isConfirmModalOpen: isConfirmModalOpenRef,
+    hasAdminLink: hasAdminLinkRef,
+    resolveConfirm: vi.fn(),
   })),
 }));
 

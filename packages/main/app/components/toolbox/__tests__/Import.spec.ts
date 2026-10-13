@@ -25,30 +25,41 @@ vi.mock("@/composables/useFileImport", () => ({
   })),
 }));
 
-const { drawingImport } = await vi.hoisted(async () => {
-  const { ref } = await import("vue");
-  return {
-    drawingImport: {
-      url: ref(""),
-      isLoading: ref(false),
-      errorMessage: ref(""),
-      successMessage: ref(""),
-      importLegacyDrawing: vi.fn(),
-      importSwissgeoDrawing: vi.fn(),
-      isCheckingUrl: ref(false),
-      isUrlOnValidLegacyDomain: ref(false),
-      swissGeoUrlValidation: ref<SwissgeoUrlValidationResult>({
-        isValid: false,
-        drawingId: "",
-        adminId: "",
-        adminIdProvided: false,
-      }),
-    },
-  };
-});
+const { drawingImport, isConfirmModalOpen, hasAdminLink, resolveConfirmMock } =
+  await vi.hoisted(async () => {
+    const { ref } = await import("vue");
+    const isConfirmModalOpen = ref(false);
+    const hasAdminLink = ref(false);
+    const resolveConfirmMock = vi.fn();
+    return {
+      isConfirmModalOpen,
+      hasAdminLink,
+      resolveConfirmMock,
+      drawingImport: {
+        url: ref(""),
+        isLoading: ref(false),
+        errorMessage: ref(""),
+        successMessage: ref(""),
+        importLegacyDrawing: vi.fn(),
+        importSwissgeoDrawing: vi.fn(),
+        isCheckingUrl: ref(false),
+        isUrlOnValidLegacyDomain: ref(false),
+        swissGeoUrlValidation: ref<SwissgeoUrlValidationResult>({
+          isValid: false,
+          drawingId: "",
+          adminId: "",
+          adminIdProvided: false,
+        }),
+        isConfirmModalOpen,
+        hasAdminLink,
+        resolveConfirm: resolveConfirmMock,
+      },
+    };
+  });
 vi.mock("@/composables/useImportDrawing", () => ({
   useImportDrawing: () => drawingImport,
 }));
+
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
@@ -63,6 +74,20 @@ const toastAdd = vi.fn();
 mockNuxtImport("useToaster", () => () => ({ add: toastAdd }));
 
 const globalStubs = {
+  ConfirmDialog: {
+    name: "ConfirmDialog",
+    props: [
+      "open",
+      "title",
+      "description",
+      "note",
+      "confirmLabel",
+      "cancelLabel",
+    ],
+    emits: ["confirm", "cancel", "update:open"],
+    template:
+      '<div data-testid="confirm-dialog-stub" :title="title" :data-note="note" />',
+  },
   UCard: { template: "<div><slot /></div>" },
   UButton: { template: "<button><slot /></button>" },
   UFileUpload: { template: "<div><slot /></div>" },
@@ -82,6 +107,8 @@ describe("Import.vue", () => {
       adminId: "",
       adminIdProvided: false,
     };
+    isConfirmModalOpen.value = false;
+    hasAdminLink.value = false;
   });
   it("renders correctly", () => {
     const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
@@ -223,6 +250,7 @@ describe("Import.vue", () => {
 
     expect((wrapper.vm as ImportVm).fileUrl).toBe("");
   });
+
   it("imports legacy drawings through the legacy importer", async () => {
     drawingImport.url.value = "https://map.geo.admin.ch/#/map";
     const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
@@ -278,5 +306,50 @@ describe("Import.vue", () => {
       expect.objectContaining({ color: "error", title: "Offline" }),
     );
     expect(drawingImport.url.value).toBe("https://drawings.test/drawing");
+  });
+
+  it("binds the drawing replacement dialog to the import state", () => {
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+
+    const dialog = wrapper.get(
+      '[data-testid="drawing-replace-confirm-dialog"]',
+    );
+    expect(dialog.attributes("title")).toBe(
+      "toolbox.import.drawingReplaceConfirmTitle",
+    );
+    expect(dialog.attributes("data-note")).toBe(
+      "toolbox.import.drawingReplaceConfirmTemporaryNote",
+    );
+  });
+
+  it("adds the admin note to the dialog only for admin links", () => {
+    hasAdminLink.value = true;
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+
+    const note = wrapper
+      .get('[data-testid="drawing-replace-confirm-dialog"]')
+      .attributes("data-note");
+    expect(note).toContain("toolbox.import.drawingReplaceConfirmTemporaryNote");
+    expect(note).toContain("toolbox.import.drawingReplaceConfirmAdminNote");
+  });
+
+  it("omits the admin note for regular links", () => {
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+
+    const note = wrapper
+      .get('[data-testid="drawing-replace-confirm-dialog"]')
+      .attributes("data-note");
+    expect(note).toContain("toolbox.import.drawingReplaceConfirmTemporaryNote");
+    expect(note).not.toContain("toolbox.import.drawingReplaceConfirmAdminNote");
+  });
+
+  it("forwards dialog decisions to resolveConfirm", () => {
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+
+    wrapper.getComponent({ name: "ConfirmDialog" }).vm.$emit("confirm");
+    expect(resolveConfirmMock).toHaveBeenCalledWith(true);
+
+    wrapper.getComponent({ name: "ConfirmDialog" }).vm.$emit("cancel");
+    expect(resolveConfirmMock).toHaveBeenCalledWith(false);
   });
 });

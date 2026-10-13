@@ -5,6 +5,7 @@ import { useMap } from "@swissgeo/map";
 import { useI18n } from "vue-i18n";
 
 import { useConfirmDrawingReplacement } from "@/composables/useConfirmDrawingReplacement";
+
 import { useDrawingImportStore } from "../stores/drawingImport";
 
 export type SwissgeoUrlValidationResult = {
