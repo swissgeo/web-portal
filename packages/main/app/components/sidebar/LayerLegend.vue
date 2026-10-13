@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Legend } from "@swissgeo/ogc";
 
+import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -10,8 +11,11 @@ const { legends, presentation = "sidebar" } = defineProps<{
 }>();
 
 const { t } = useI18n();
+const isMobile = useBreakpoints(breakpointsTailwind).smallerOrEqual("md");
 
 const failedHrefs = ref<string[]>([]);
+const openModal = ref(false);
+const selectedLegend = ref<Legend | null>(null);
 
 function isImage(legend: Legend) {
   if (legend.format) {
@@ -50,6 +54,18 @@ function documentLink(legend: Legend) {
   };
 }
 
+function handleLegendClick(legend: Legend) {
+  if (imageLegends.value.includes(legend)) {
+    selectedLegend.value = legend;
+    openModal.value = true;
+  }
+}
+
+function handleModalClose() {
+  openModal.value = false;
+  selectedLegend.value = null;
+}
+
 // Legends that cannot be displayed inline (typically PDFs) are offered as a
 // link instead
 const imageLegends = computed(() => legends.filter(isDisplayableImage));
@@ -84,8 +100,41 @@ const documentLinks = computed(() =>
         :src="legend.href"
         :alt="t('layers.legend.title')"
         class="max-w-full"
+        :class="{
+          'cursor-pointer': isMobile,
+        }"
         @error="failedHrefs.push(legend.href)"
+        @click="isMobile ? handleLegendClick(legend) : null"
       />
+      <UModal
+        v-if="isMobile"
+        v-model:open="openModal"
+        @close:prevent="handleModalClose"
+        :ui="{
+          content: 'bg-transparent ring-0 shadow-none gap-4',
+          header: 'p-0 sm:p-0 self-end border-b-0',
+          body: 'p-0 sm:p-0',
+        }"
+      >
+        <template #header>
+          <UButton
+            icon="i-lucide-x"
+            variant="solid"
+            color="neutral"
+            class="self-end"
+            @click="handleModalClose"
+          />
+        </template>
+        <template #body>
+          <div class="w-full rounded-md bg-white p-2">
+            <img
+              v-if="selectedLegend"
+              :src="selectedLegend.href"
+              :alt="t('layers.legend.title')"
+            />
+          </div>
+        </template>
+      </UModal>
     </div>
 
     <ULink
