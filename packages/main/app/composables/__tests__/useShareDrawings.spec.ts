@@ -1,6 +1,6 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useShareDrawings } from "@/composables/useShareDrawings";
 import { useDrawingImportStore } from "@/stores/drawingImport";
@@ -24,6 +24,10 @@ mockNuxtImport("useRuntimeConfig", () => () => ({
   },
 }));
 
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({ t: (key: string) => key }),
+}));
+
 vi.mock("@swissgeo/drawing", () => ({
   useDrawing: () => ({
     serializeAllFeaturesAsBlob: serializeAllFeaturesAsBlobMock,
@@ -33,6 +37,8 @@ vi.mock("@swissgeo/drawing", () => ({
 vi.stubGlobal("fetch", fetchMock);
 
 describe("useShareDrawings", () => {
+  afterEach(() => vi.restoreAllMocks());
+
   beforeEach(() => {
     vi.resetAllMocks();
     setActivePinia(createPinia());
@@ -101,15 +107,62 @@ describe("useShareDrawings", () => {
     expect(importDrawingStore.drawingAdminId).toBe(serviceResponse.admin_id);
   });
 
-  it("does not send a request when there is no drawing blob", async () => {
+  it("rejects without sending a request when there is no drawing blob", async () => {
     serializeAllFeaturesAsBlobMock.mockResolvedValueOnce(null);
     const { isSharing, shareDrawings } = useShareDrawings();
 
-    await shareDrawings();
+    await expect(shareDrawings()).rejects.toThrow(
+      "toolbox.drawing.shareErrorNodata",
+    );
 
     expect(fetchMock).not.toHaveBeenCalled();
     expect(isSharing.value).toBe(false);
   });
+
+  it.each(["serialization", "checksum"])(
+    "resets sharing after a %s failure and allows a retry",
+    async (stage) => {
+      const error = new Error("Invalid drawing");
+      if (stage === "serialization") {
+        serializeAllFeaturesAsBlobMock.mockRejectedValueOnce(error);
+      } else {
+        vi.spyOn(crypto.subtle, "digest").mockRejectedValueOnce(error);
+      }
+      const { shareDrawings, isSharing } = useShareDrawings();
+
+      await expect(shareDrawings()).rejects.toThrow("Invalid drawing");
+
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(isSharing.value).toBe(false);
+      await shareDrawings();
+      expect(fetchMock).toHaveBeenCalledOnce();
+      expect(isSharing.value).toBe(false);
+    },
+  );
+
+  it("rejects overlapping shares without interrupting the active operation", async () => {
+    let resolveBlob!: (_value: Blob) => void;
+    serializeAllFeaturesAsBlobMock.mockReturnValueOnce(
+      new Promise<Blob>((resolve) => {
+        resolveBlob = resolve;
+      }),
+    );
+    const { shareDrawings, isSharing } = useShareDrawings();
+    const pending = shareDrawings();
+
+    await expect(shareDrawings()).rejects.toThrow(
+      "toolbox.drawing.shareErrorAlreadyInProgress",
+    );
+
+    expect(serializeAllFeaturesAsBlobMock).toHaveBeenCalledOnce();
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(isSharing.value).toBe(true);
+    resolveBlob(new Blob(["hello"]));
+    await pending;
+    expect(fetchMock).toHaveBeenCalledOnce();
+    expect(isSharing.value).toBe(false);
+  });
+
   it.each(["create", "update"])(
     "resets sharing after a failed %s response",
     async (operation) => {
