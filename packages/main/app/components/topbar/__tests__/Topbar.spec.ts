@@ -15,6 +15,11 @@ mockNuxtImport("useRoute", () => {
   return () => route;
 });
 
+mockNuxtImport("useColorMode", () => {
+  const mode = ref("light");
+  return () => ({ value: mode });
+});
+
 mockNuxtImport("useRouteBaseName", () => {
   return () => (route: { name?: string }) => route.name?.split("___")[0];
 });
@@ -28,6 +33,7 @@ function mountTopbar() {
     shallow: true,
     global: {
       stubs: {
+        ColorScheme: { template: "<span><slot /></span>" },
         UHeader: {
           name: "UHeader",
           props: ["open", "autoClose"],

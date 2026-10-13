@@ -98,6 +98,12 @@
   --color-accent-active: var(--ui-accent-active);
   --color-accent-hover: var(--ui-accent-hover);
 
+  --color-nav-brand: var(--ui-nav-brand);
+  --color-nav-brand-muted: var(--ui-nav-brand-muted);
+  --color-nav-brand-shade: var(--ui-nav-brand-shade);
+  --color-nav-brand-hover: var(--ui-nav-brand-hover);
+  --color-nav-brand-inverted: var(--ui-nav-brand-inverted);
+
   --text-tiny: 0.625rem;
 }
 
@@ -152,6 +158,12 @@
 
     --ui-accent-active: var(--ui-color-accent-900);
     --ui-accent-hover: var(--ui-color-accent-700);
+
+    --ui-nav-brand: var(--color-petrol-800);
+    --ui-nav-brand-muted: var(--color-petrol-700);
+    --ui-nav-brand-shade: #ccd7db;
+    --ui-nav-brand-hover: var(--color-petrol-900);
+    --ui-nav-brand-inverted: var(--color-petrol-900);
   }
 
   html:root.dark {
@@ -172,6 +184,12 @@
 
     --ui-accent-active: var(--ui-color-accent-50);
     --ui-accent-hover: var(--ui-color-accent-200);
+
+    --ui-nav-brand: var(--color-petrol-100);
+    --ui-nav-brand-muted: var(--color-petrol-200);
+    --ui-nav-brand-shade: #24424c;
+    --ui-nav-brand-hover: var(--color-petrol-50);
+    --ui-nav-brand-inverted: var(--color-petrol-100);
   }
 }
 

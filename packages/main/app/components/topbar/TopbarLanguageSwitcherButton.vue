@@ -7,6 +7,10 @@ import { computed, ref, watch } from "vue";
 const { locale, locales } = useI18n();
 const appStore = useAppStore();
 
+const { size = "sm" } = defineProps<{
+  size?: "sm" | "md" | "lg" | "xl";
+}>();
+
 const localeItems = computed(() => {
   return locales.value.map((item) => ({
     code: item.code,
@@ -47,14 +51,16 @@ watch(selectedLocale, async (value) => {
       :items="localeItems"
       value-key="code"
       label-key="code"
-      size="md"
-      variant="outline"
-      :trailing="false"
+      :size="size"
+      variant="none"
+      :trailing="true"
       :searchInput="false"
       aria-label="Language switcher"
       :ui="{
         content: '!w-auto min-w-[150px] !max-w-none',
         value: 'uppercase',
+        base: 'text-accent text-lg xl:text-md xl:text-nav-brand-muted',
+        trailingIcon: 'text-accent text-lg xl:text-md xl:text-nav-brand-muted',
       }"
     >
       <template #item-label="{ item }">

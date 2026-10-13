@@ -18,6 +18,7 @@
   },
   "search": {
     "placeholder": "Ort, Layer oder Koordinaten suchen...",
+    "buttonLabel": "Suchen",
     "map_tab": "Karte",
     "content_pages_tab": "Inhaltsseiten",
     "locations_results_header": "Orte",
@@ -447,6 +448,7 @@
   },
   "topbar": {
     "home": "Startseite",
+    "map": "Karte",
     "geoDataAndMaps": "Geodaten und Karten",
     "howToUseGeodata": "Wie kann ich Geodaten nutzen?",
     "viewGeodataInMapViewer": "Geodaten im Kartenviewer anschauen",
@@ -472,7 +474,6 @@
     "organisation": "Organisation",
     "legalBasis": "Rechtliche Grundlagen",
     "mediaInformation": "Medieninformationen",
-    "map": "Karte",
     "login": "Anmelden",
     "modeSwitch": "Mode switch"
   },
