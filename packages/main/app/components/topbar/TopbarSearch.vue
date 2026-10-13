@@ -228,6 +228,7 @@ function clearSearch() {
         icon="i-lucide-search"
         variant="ghost"
         class="xl:hidden"
+        :aria-label="t('search.buttonLabel')"
         :ui="{ leadingIcon: 'text-nav-brand' }"
       />
     </template>

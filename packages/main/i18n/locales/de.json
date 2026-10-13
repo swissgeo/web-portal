@@ -18,6 +18,7 @@
   },
   "search": {
     "placeholder": "Ort, Layer oder Koordinaten suchen...",
+    "buttonLabel": "Suchen",
     "map_tab": "Karte",
     "content_pages_tab": "Inhaltsseiten",
     "locations_results_header": "Orte",

@@ -17,6 +17,7 @@
   },
   "search": {
     "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",
+    "buttonLabel": "Rechercher",
     "map_tab": "Carte",
     "content_pages_tab": "Pages de contenu",
     "locations_results_header": "Lieux",

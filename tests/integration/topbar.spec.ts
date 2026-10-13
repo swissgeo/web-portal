@@ -94,9 +94,7 @@ test.describe("topbar search", () => {
       has: page.getByRole("button", { name: "Close menu" }),
     });
     await expect(
-      menu.getByPlaceholder(
-        "Rechercher un lieu, une couche ou des coordonnées...",
-      ),
+      menu.getByRole("button", { name: "Rechercher" }),
     ).toBeVisible();
     expect(await map?.evaluate((element) => element.isConnected)).toBe(true);
 
