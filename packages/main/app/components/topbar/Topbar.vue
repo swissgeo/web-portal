@@ -68,11 +68,13 @@ function resetApp() {
     toggle-side="right"
   >
     <template #left>
-      <LogoPic
-        class="shrink-0"
-        :darkMode="colorMode.value === 'dark'"
-        @logo-click="resetApp"
-      />
+      <ColorScheme>
+        <LogoPic
+          class="shrink-0"
+          :darkMode="colorMode.value === 'dark'"
+          @logo-click="resetApp"
+        />
+      </ColorScheme>
       <!-- the search drives the map, so it cannot be server rendered; the
            fallback holds the field's place to avoid a layout shift -->
       <ClientOnly>
