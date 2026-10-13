@@ -60,7 +60,7 @@ function resetApp() {
       toggle: 'lg:inline-flex xl:hidden',
       content: 'lg:flex xl:hidden',
       header: 'lg:px-8 gap-1.5',
-      body: 'lg:px-8',
+      body: 'lg:px-8 px-8 py-4',
     }"
     :toggle="{
       class: 'text-nav-brand',
@@ -103,12 +103,21 @@ function resetApp() {
     </template>
 
     <template #body>
-      <UNavigationMenu :items="items" orientation="vertical" />
-      <div
-        class="flex items-center justify-between border-t border-default pt-4"
-      >
-        <TopbarLanguageSwitcherButton />
-        <TopbarColorModeButton />
+      <UNavigationMenu
+        :items="items"
+        orientation="vertical"
+        :ui="{
+          item: 'mb-4',
+          link: 'text-lg text-accent data-active:before:bg-elevated data-active:text-accent-active',
+        }"
+      />
+      <div class="flex items-center border-y border-default py-4">
+        <div class="w-full">
+          <TopbarLanguageSwitcherButton size="xl" />
+        </div>
+        <div class="w-full">
+          <TopbarColorModeButton size="xl" class="w-fit" />
+        </div>
       </div>
     </template>
   </UHeader>
