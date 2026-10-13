@@ -18,6 +18,9 @@ const {
   swissGeoUrlValidation,
   isCheckingUrl,
   isUrlOnValidLegacyDomain,
+  isConfirmModalOpen,
+  hasAdminLink,
+  resolveConfirm,
 } = useImportDrawing();
 
 const filePathInfo = ref("");
@@ -42,6 +45,13 @@ const items = computed(() => [
   { label: t("toolbox.import.tabData"), slot: "file" },
   { label: t("toolbox.import.tabDrawing"), slot: "drawing" },
 ]);
+
+const confirmNote = computed(() => {
+  const temporaryNote = t("toolbox.import.drawingReplaceConfirmTemporaryNote");
+  return hasAdminLink.value
+    ? `${temporaryNote} ${t("toolbox.import.drawingReplaceConfirmAdminNote")}`
+    : temporaryNote;
+});
 
 function showToast(color: "error" | "success" | "warning", message: string) {
   toast.add({ color, title: message });
@@ -341,5 +351,16 @@ async function handleFileUrlImport() {
         </div>
       </template>
     </UTabs>
+    <ConfirmDialog
+      v-model:open="isConfirmModalOpen"
+      :title="t('toolbox.import.drawingReplaceConfirmTitle')"
+      :description="t('toolbox.import.drawingReplaceConfirmDescription')"
+      :note="confirmNote"
+      :confirm-label="t('toolbox.import.drawingReplaceConfirmConfirm')"
+      :cancel-label="t('toolbox.import.drawingReplaceConfirmCancel')"
+      @confirm="resolveConfirm(true)"
+      @cancel="resolveConfirm(false)"
+      data-testid="drawing-replace-confirm-dialog"
+    />
   </UCard>
 </template>

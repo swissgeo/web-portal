@@ -4,6 +4,7 @@ import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
 import { useI18n } from "vue-i18n";
 
+import { useConfirmDrawingReplacement } from "@/composables/useConfirmDrawingReplacement";
 import { useDrawingImportStore } from "../stores/drawingImport";
 
 export type SwissgeoUrlValidationResult = {
@@ -192,11 +193,24 @@ async function fetchDrawingMetadata(
 }
 
 export function useImportDrawing() {
-  const { importKml, importKmz, mountDrawingLayer } = useDrawing();
+  const {
+    importKml,
+    importKmz,
+    mountDrawingLayer,
+    clearDrawingLayer,
+    unmountDrawingLayer,
+    numberOfFeatures,
+  } = useDrawing();
 
   const importDrawingStore = useDrawingImportStore();
   const { drawingId, drawingAdminId } = storeToRefs(importDrawingStore);
 
+  const {
+    isConfirmModalOpen,
+    hasAdminLink,
+    confirmReplaceDrawing,
+    resolveConfirm,
+  } = useConfirmDrawingReplacement();
   const { olMap } = useMap();
   const { t } = useI18n();
   const runtimeConfig = useRuntimeConfig();
@@ -261,7 +275,7 @@ export function useImportDrawing() {
     isLoading.value = true;
     errorMessage.value = "";
     successMessage.value = "";
-
+    let hasMountedLayer = false;
     try {
       const inputUrl = url.value.trim();
       const allowedDomains = runtimeConfig.public
@@ -297,8 +311,16 @@ export function useImportDrawing() {
           );
         }
       }
-
+      //hasAdminLink is in scope, we don't want to shadow it
+      const hasAdminLinkInUrl = datasetUrls.some((datasetUrl) =>
+        datasetUrl.includes("@adminId="),
+      );
+      if (!(await confirmReplaceDrawing({ hasAdminLink: hasAdminLinkInUrl }))) {
+        return; // silent cancel
+      }
+      clearDrawingLayer();
       mountDrawingLayer(olMap.value);
+      hasMountedLayer = true;
 
       for (const kmlUrl of datasetUrls) {
         const kmlResponse = await fetch(kmlUrl);
@@ -317,6 +339,9 @@ export function useImportDrawing() {
       successMessage.value = t("toolbox.import.drawingSuccessMessage");
       url.value = "";
     } catch (error) {
+      if (hasMountedLayer && numberOfFeatures.value === 0) {
+        unmountDrawingLayer();
+      }
       errorMessage.value =
         error instanceof Error
           ? error.message
@@ -397,5 +422,8 @@ export function useImportDrawing() {
     swissGeoUrlValidation,
     isCheckingUrl,
     isUrlOnValidLegacyDomain,
+    isConfirmModalOpen,
+    hasAdminLink,
+    resolveConfirm,
   };
 }

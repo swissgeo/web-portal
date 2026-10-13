@@ -388,6 +388,12 @@
         "adminImportPart2": "Si le dessin est importé en tant qu'administrateur, vous pourrez le synchroniser avec la base de données Swissgeo sous le même identifiant que celui importé et les autres utilisateurs verront vos modifications.",
         "nonAdminImportPart2": "Le partage du dessin sera alors possible avec d'autres utilisateurs, mais sous un identifiant de dessin différent de celui importé."
       },
+      "drawingReplaceConfirmTitle": "TO DO: better sentence and translate - Do you want to replace your drawing ?",
+      "drawingReplaceConfirmDescription": "TO DO: better sentence and translate - If you continue, your current drawing will be overwritten. Continue ?",
+      "drawingReplaceConfirmTemporaryNote": "TO DO: better sentence and translate - Maybe one day we'll have the time to do something correct, but for now, it's either draw or import, not both.",
+      "drawingReplaceConfirmAdminNote": "TO DO: better sentence and translate- Hey, you're about to modify the original file, are you sure about that ?",
+      "drawingReplaceConfirmCancel": "Annuler",
+      "drawingReplaceConfirmConfirm": "Confirmer",
       "close": "Fermer"
     },
     "share": {

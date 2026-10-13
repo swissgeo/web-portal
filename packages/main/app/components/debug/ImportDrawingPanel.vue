@@ -2,12 +2,27 @@
 import { useImportDrawing } from "~/composables/useImportDrawing";
 
 const { t } = useI18n();
-const { url, isLoading, errorMessage, successMessage, importLegacyDrawing } =
-  useImportDrawing();
+const {
+  url,
+  isLoading,
+  errorMessage,
+  successMessage,
+  importLegacyDrawing,
+  isConfirmModalOpen,
+  hasAdminLink,
+  resolveConfirm,
+} = useImportDrawing();
 
 defineEmits<{
   close: [];
 }>();
+
+const confirmNote = computed(() => {
+  const temporaryNote = t("toolbox.import.drawingReplaceConfirmTemporaryNote");
+  return hasAdminLink.value
+    ? `${temporaryNote} ${t("toolbox.import.drawingReplaceConfirmAdminNote")}`
+    : temporaryNote;
+});
 </script>
 
 <template>
@@ -69,5 +84,16 @@ defineEmits<{
     >
       <span>Importing drawing...</span>
     </div>
+    <ConfirmDialog
+      v-model:open="isConfirmModalOpen"
+      :title="t('toolbox.import.drawingReplaceConfirmTitle')"
+      :description="t('toolbox.import.drawingReplaceConfirmDescription')"
+      :note="confirmNote"
+      :confirm-label="t('toolbox.import.drawingReplaceConfirmConfirm')"
+      :cancel-label="t('toolbox.import.drawingReplaceConfirmCancel')"
+      @confirm="resolveConfirm(true)"
+      @cancel="resolveConfirm(false)"
+      data-testid="drawing-replace-confirm-dialog"
+    />
   </div>
 </template>
