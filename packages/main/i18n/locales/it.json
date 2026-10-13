@@ -22,7 +22,16 @@
       "importUrlButton": "Importa il disegno",
       "clearAndImportAsNonAdmin": "Cancella e importa",
       "errorMessages": {
+        "generalError": "Errore durante l'importazione del file",
+        "fileSizeWarning": "La dimensione del file è {fileSize}MB, che supera il massimo consigliato di {maxSize}MB",
+        "noUrlEntered": "Inserisci un URL",
+        "unsupportedUrlType": "Tipo di file non supportato. L'URL deve terminare con {types}",
+        "fetchFailed": "Impossibile recuperare il file dall'URL (HTTP {status})",
+        "noFileSelected": "Seleziona prima un file",
+        "kmlFetchFailed": "Impossibile recuperare il KML: {status}",
         "invalidDrawingUrl": "L’URL del disegno non è valido",
+        "domainNotAllowed": "Recupero da {domain} non consentito",
+        "drawingImportFailed": "Impossibile importare il disegno",
         "invalidDrawingAdminId": "L’ID amministratore del disegno non è valido",
         "adminRequired": "Per importare questo disegno sono necessari i privilegi di amministratore"
       },
@@ -67,6 +76,8 @@
       "shareLink": "Link di condivisione",
       "copy": "Copia negli appunti",
       "allowEditing": "Consenti la modifica",
+      "shareErrorNodata": "Errore di condivisione: nessun dato di disegno disponibile.",
+      "shareErrorAlreadyInProgress": "Errore di condivisione: un'operazione di condivisione è già in corso.",
       "formats": {
         "geojson": "GeoJSON",
         "gpxTrack": "Traccia GPX",

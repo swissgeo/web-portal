@@ -257,6 +257,8 @@
       "shareLink": "Lien de partage",
       "copy": "Copier dans le presse-papiers",
       "allowEditing": "Autoriser la modification",
+      "shareErrorNodata": "Erreur de partage : aucune donnée de dessin disponible.",
+      "shareErrorAlreadyInProgress": "Erreur de partage : une opération de partage est déjà en cours.",
       "formats": {
         "geojson": "GeoJSON",
         "gpxTrack": "Trace GPX",

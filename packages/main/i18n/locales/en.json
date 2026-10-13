@@ -259,6 +259,8 @@
       "shareLink": "Share link",
       "copy": "Copy to clipboard",
       "allowEditing": "Allow editing",
+      "shareErrorNodata": "No drawing data available.",
+      "shareErrorAlreadyInProgress": "A sharing operation is already in progress.",
       "formats": {
         "geojson": "GeoJSON",
         "gpxTrack": "GPX Track",

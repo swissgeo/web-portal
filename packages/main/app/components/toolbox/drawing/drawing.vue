@@ -56,6 +56,8 @@ const {
   serializeAllFeaturesAsBlob,
 } = useDrawing();
 
+const toast = useToaster();
+
 const importDrawingStore = useDrawingImportStore();
 const { drawingId, drawingAdminId } = storeToRefs(importDrawingStore);
 
@@ -210,7 +212,11 @@ watch(focusMode, async (newFocusMode) => {
     return;
   }
 
-  await shareDrawings();
+  try {
+    await shareDrawings();
+  } catch (error) {
+    toast.add({ color: "error", title: (error as Error).message });
+  }
 });
 
 function terminateModification() {
@@ -225,7 +231,11 @@ function cancelDrawing() {
 }
 
 async function onShareDrawings() {
-  await shareDrawings();
+  try {
+    await shareDrawings();
+  } catch (error) {
+    toast.add({ color: "error", title: (error as Error).message });
+  }
 }
 
 onMounted(() => {

@@ -258,6 +258,8 @@
       "shareLink": "Freigabelink",
       "copy": "In die Zwischenablage kopieren",
       "allowEditing": "Bearbeitung erlauben",
+      "shareErrorNodata": "Keine Zeichnungsdaten verfügbar.",
+      "shareErrorAlreadyInProgress": "Eine Freigabeoperation ist bereits im Gange.",
       "formats": {
         "geojson": "GeoJSON",
         "gpxTrack": "GPX-Track",

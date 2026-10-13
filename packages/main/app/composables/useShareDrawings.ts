@@ -5,10 +5,12 @@ import type {
 
 import { useDrawing } from "@swissgeo/drawing";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 import { useDrawingImportStore } from "../stores/drawingImport";
 
 export function useShareDrawings() {
+  const { t } = useI18n();
   const runtimeConfig = useRuntimeConfig();
   const { serializeAllFeaturesAsBlob } = useDrawing();
 
@@ -20,14 +22,14 @@ export function useShareDrawings() {
   async function shareDrawings() {
     // Safeguard in case a sharing operation is already in progress
     if (isSharing.value) {
-      return;
+      throw new Error(t("toolbox.drawing.shareErrorAlreadyInProgress"));
     }
     isSharing.value = true;
     const drawingBlob = await serializeAllFeaturesAsBlob("kmz");
 
     if (!drawingBlob) {
       isSharing.value = false;
-      return;
+      throw new Error(t("toolbox.drawing.shareErrorNodata"));
     }
 
     const drawingFile = new File([drawingBlob], "drawing.kmz", {
