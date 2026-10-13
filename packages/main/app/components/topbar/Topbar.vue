@@ -59,7 +59,7 @@ function resetApp() {
       center: 'lg:hidden xl:flex',
       toggle: 'lg:inline-flex xl:hidden',
       content: 'lg:flex xl:hidden',
-      header: 'lg:px-8',
+      header: 'lg:px-8 gap-1.5',
       body: 'lg:px-8',
     }"
     :toggle="{
