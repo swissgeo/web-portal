@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Legend } from "@swissgeo/ogc";
 
+import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -13,6 +14,7 @@ const openModal = ref(false);
 const selectedLegend = ref<Legend | null>(null);
 
 const { t } = useI18n();
+const isMobile = useBreakpoints(breakpointsTailwind).smallerOrEqual("md");
 
 const failedHrefs = ref<string[]>([]);
 
@@ -98,11 +100,15 @@ const documentLinks = computed(() =>
         :key="legend.href"
         :src="legend.href"
         :alt="t('layers.legend.title')"
-        class="max-w-full cursor-pointer"
+        class="max-w-full"
+        :class="{
+          'cursor-pointer': isMobile,
+        }"
         @error="failedHrefs.push(legend.href)"
-        @click="handleLegendClick(legend)"
+        @click="isMobile ? handleLegendClick(legend) : null"
       />
       <UModal
+        v-if="isMobile"
         v-model:open="openModal"
         @close:prevent="handleModalClose"
         :ui="{
