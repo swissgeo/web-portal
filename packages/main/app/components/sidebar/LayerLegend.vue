@@ -9,6 +9,9 @@ const { legends, presentation = "sidebar" } = defineProps<{
   presentation?: "sidebar" | "detail";
 }>();
 
+const openModal = ref(false);
+const selectedLegend = ref<Legend | null>(null);
+
 const { t } = useI18n();
 
 const failedHrefs = ref<string[]>([]);
@@ -50,6 +53,18 @@ function documentLink(legend: Legend) {
   };
 }
 
+function handleLegendClick(legend: Legend) {
+  if (imageLegends.value.includes(legend)) {
+    selectedLegend.value = legend;
+    openModal.value = true;
+  }
+}
+
+function handleModalClose() {
+  openModal.value = false;
+  selectedLegend.value = null;
+}
+
 // Legends that cannot be displayed inline (typically PDFs) are offered as a
 // link instead
 const imageLegends = computed(() => legends.filter(isDisplayableImage));
@@ -83,9 +98,38 @@ const documentLinks = computed(() =>
         :key="legend.href"
         :src="legend.href"
         :alt="t('layers.legend.title')"
-        class="max-w-full"
+        class="max-w-full cursor-pointer"
         @error="failedHrefs.push(legend.href)"
+        @click="handleLegendClick(legend)"
       />
+      <UModal
+        v-model:open="openModal"
+        @close:prevent="handleModalClose"
+        :ui="{
+          content: 'bg-transparent ring-0 shadow-none gap-4',
+          header: 'p-0 sm:p-0 self-end border-b-0',
+          body: 'p-0 sm:p-0',
+        }"
+      >
+        <template #header>
+          <UButton
+            icon="i-lucide-x"
+            variant="solid"
+            color="neutral"
+            class="self-end"
+            @click="handleModalClose"
+          />
+        </template>
+        <template #body>
+          <div class="w-full rounded-md bg-white p-2">
+            <img
+              v-if="selectedLegend"
+              :src="selectedLegend.href"
+              :alt="t('layers.legend.title')"
+            />
+          </div>
+        </template>
+      </UModal>
     </div>
 
     <ULink
