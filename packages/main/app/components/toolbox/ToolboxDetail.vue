@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { createReusableTemplate } from "@vueuse/core";
 
+import Drawing from "@/components/toolbox/drawing/drawing.vue";
 import Import from "@/components/toolbox/import/Import.vue";
 import ToolboxShare from "@/components/toolbox/share/Share.vue";
 import { useToolboxStore } from "@/stores/toolbox";
@@ -15,11 +16,15 @@ const isDesktop = useIsDesktop();
   <RegisterTemplate>
     <ToolboxShare v-if="toolboxStore.isPanelActive('share')" />
     <Import v-if="toolboxStore.isPanelActive('import')" />
+    <Drawing v-if="toolboxStore.isPanelActive('drawing')" />
   </RegisterTemplate>
 
   <div
     v-if="toolboxStore.activeDetailPanel && isDesktop"
     class="absolute top-0 right-24 w-96"
+    :class="
+      toolboxStore.isPanelActive('drawing') ? 'flex max-h-full flex-col' : ''
+    "
   >
     <ReuseTemplate />
   </div>
@@ -28,6 +33,14 @@ const isDesktop = useIsDesktop();
     v-if="toolboxStore.activeDetailPanel && !isDesktop"
     :default-open="true"
     :modal="false"
+    :ui="
+      toolboxStore.isPanelActive('drawing')
+        ? {
+            container: 'min-h-0 overflow-hidden',
+            body: 'flex min-h-0 flex-col',
+          }
+        : undefined
+    "
     @close="toolboxStore.closeDetailPanel()"
   >
     <template #body>

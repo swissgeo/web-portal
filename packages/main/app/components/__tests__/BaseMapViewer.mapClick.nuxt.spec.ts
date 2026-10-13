@@ -1,6 +1,7 @@
 import type { MapClickEvent } from "@swissgeo/map";
 
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
+import { useToolboxStore } from "~/stores/toolbox";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { computed, defineComponent } from "vue";
 
@@ -216,6 +217,34 @@ describe("BaseMapViewer — map click abort handling", () => {
     const signal = selectFeaturesSpy.mock.calls[0]![5] as AbortSignal;
     expect(signal).toBeInstanceOf(AbortSignal);
     expect(signal.aborted).toBe(false);
+  });
+
+  it("suppresses feature detection while the drawing panel is open and resumes after it closes", async () => {
+    const wrapper = await createWrapper();
+    const toolboxStore = useToolboxStore();
+    const mapModule = wrapper.getComponent(MapModuleStub);
+
+    toolboxStore.toggleDetailPanel("drawing");
+    mapModule.vm.$emit("map-click", clickEvent());
+
+    expect(selectFeaturesSpy).not.toHaveBeenCalled();
+
+    toolboxStore.closeDetailPanel();
+    mapModule.vm.$emit("map-click", clickEvent());
+
+    await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledOnce());
+  });
+
+  it("resumes feature detection when switching from drawing to another panel", async () => {
+    const wrapper = await createWrapper();
+    const toolboxStore = useToolboxStore();
+    toolboxStore.toggleDetailPanel("drawing");
+    toolboxStore.toggleDetailPanel("share");
+
+    wrapper.getComponent(MapModuleStub).vm.$emit("map-click", clickEvent());
+
+    await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledOnce());
+    toolboxStore.closeDetailPanel();
   });
 
   it("builds the sources from the stored layer info without any fetching", async () => {

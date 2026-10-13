@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils";
-import PointStyleEditor from "~/components/debug/PointStyleEditor.vue";
+import PointStyleEditor from "~/components/toolbox/drawing/PointStyleEditor.vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { drawingRefs } = await vi.hoisted(async () => {
@@ -21,6 +21,13 @@ const { drawingRefs } = await vi.hoisted(async () => {
     },
   };
 });
+
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({
+    t: (key: string, params?: { name: string }) => params?.name ?? key,
+    locale: { value: "en" },
+  }),
+}));
 
 vi.mock("@swissgeo/drawing", () => ({
   ICON_SIZE: {
@@ -45,7 +52,8 @@ const UAccordionStub = {
 };
 const UCheckboxStub = {
   props: ["modelValue"],
-  template: '<input type="checkbox" :checked="modelValue" />',
+  template:
+    '<input type="checkbox" :checked="modelValue" @change="$emit(\'update:modelValue\', $event.target.checked)" />',
 };
 const USelectStub = {
   props: ["items", "modelValue"],
@@ -72,6 +80,7 @@ function mountEditor() {
         UAccordion: UAccordionStub,
         UCheckbox: UCheckboxStub,
         USelect: USelectStub,
+        UFormField: { template: "<div><slot /></div>" },
       },
     },
   });
@@ -147,5 +156,28 @@ describe("PointStyleEditor", () => {
       wrapper.find('[data-testid="placement-selector-stub"]').exists(),
     ).toBe(false);
     expect(wrapper.findAll('input[type="color"]')).toHaveLength(0);
+  });
+  it("updates text colors, sizes, and visibility through the controls", async () => {
+    const wrapper = mountEditor();
+    await wrapper.get('[data-testid="point-text-color"]').setValue("#123456");
+    await wrapper
+      .get('[data-testid="point-text-halo-color"]')
+      .setValue("#abcdef");
+    wrapper
+      .findAllComponents(USelectStub)[0]!
+      .vm.$emit("update:modelValue", "large");
+    wrapper
+      .findAllComponents(USelectStub)[1]!
+      .vm.$emit("update:modelValue", "xlarge");
+    await wrapper.get('[data-testid="point-show-description"]').setValue(true);
+    await wrapper.get('[data-testid="point-show-title"]').setValue(false);
+    await wrapper.get('[data-testid="point-show-icon"]').setValue(false);
+    expect(drawingRefs.textColor.value).toBe("#123456");
+    expect(drawingRefs.textHaloColor.value).toBe("#abcdef");
+    expect(drawingRefs.textSize.value).toBe("large");
+    expect(drawingRefs.iconSize.value).toBe("xlarge");
+    expect(drawingRefs.showDescription.value).toBe(true);
+    expect(drawingRefs.showTitle.value).toBe(false);
+    expect(drawingRefs.showIcon.value).toBe(false);
   });
 });

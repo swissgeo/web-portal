@@ -4,7 +4,7 @@ import ImportDrawingPanel from "~/components/debug/ImportDrawingPanel.vue";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const {
-  importDrawingMock,
+  importLegacyDrawingMock,
   urlRef,
   isLoadingRef,
   errorMessageRef,
@@ -12,7 +12,7 @@ const {
 } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
   return {
-    importDrawingMock: vi.fn(),
+    importLegacyDrawingMock: vi.fn(),
     urlRef: ref(""),
     isLoadingRef: ref(false),
     errorMessageRef: ref(""),
@@ -31,7 +31,7 @@ vi.mock("~/composables/useImportDrawing", () => ({
     isLoading: isLoadingRef,
     errorMessage: errorMessageRef,
     successMessage: successMessageRef,
-    importDrawing: importDrawingMock,
+    importLegacyDrawing: importLegacyDrawingMock,
   })),
 }));
 
@@ -62,7 +62,7 @@ describe("ImportDrawingPanel.vue", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("calls importDrawing when import button is clicked", async () => {
+  it("calls importLegacyDrawing when import button is clicked", async () => {
     const wrapper = mountPanel();
     await wrapper
       .get('[data-testid="drawing-url-input"]')
@@ -71,7 +71,7 @@ describe("ImportDrawingPanel.vue", () => {
     expect(button.attributes("disabled")).toBeUndefined();
     await button.trigger("click");
 
-    expect(importDrawingMock).toHaveBeenCalled();
+    expect(importLegacyDrawingMock).toHaveBeenCalled();
   });
 
   it("emits close when close button is clicked", async () => {

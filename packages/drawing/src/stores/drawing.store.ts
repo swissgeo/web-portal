@@ -143,6 +143,7 @@ export const useDrawingStore = defineStore("drawing", () => {
   // All the features that have been created by the drawing module
   const focusedFeature = shallowRef<Feature<Geometry> | null>(null);
   const focusMode = ref<FocusMode>("none");
+  const pointDrawingTool = ref<"text" | "marker">("marker");
 
   /**
    * Keep tracks of the number of features that are part of the drawing layer/source
@@ -301,6 +302,9 @@ export const useDrawingStore = defineStore("drawing", () => {
    * Clear all the features from the drawing layer.
    */
   function clearDrawingLayer() {
+    if (!drawingVectorSource) {
+      return;
+    }
     drawingVectorSource.clear();
   }
 
@@ -360,6 +364,7 @@ export const useDrawingStore = defineStore("drawing", () => {
      */
     interaction.on("drawstart", (event) => {
       focusedFeature.value = event.feature;
+      focusedFeature.value.setId(`drawing_feature_${crypto.randomUUID()}`);
 
       const geometry = event.feature.getGeometry();
       if (!geometry) {
@@ -437,10 +442,12 @@ export const useDrawingStore = defineStore("drawing", () => {
 
   /**
    * Enables the draw interaction for the specified geometry type, allowing users to draw new features on the map.
+   * The point tool determines the initial visibility of the text and marker.
    * It also enables the snap interaction to snap to existing features while drawing.
    */
   function enableDrawInteraction(
     geometryType: "Point" | "LineString" | "Polygon" | "Circle",
+    pointTool: "text" | "marker" = "marker",
   ) {
     if (!mountedMap) {
       return;
@@ -448,6 +455,7 @@ export const useDrawingStore = defineStore("drawing", () => {
 
     disableAllInteractions();
     removeFocus();
+    pointDrawingTool.value = pointTool;
     focusMode.value = "create";
 
     // Note: the focusedFeature and focus mode will be set in the drawstart event listener of each draw interaction (above)
@@ -486,6 +494,7 @@ export const useDrawingStore = defineStore("drawing", () => {
     DRAWING_LAYER_UUID,
     focusedFeature: focusedFeature,
     focusMode: focusMode,
+    pointDrawingTool,
     drawingVectorSource,
     drawingVectorLayer,
     modifyInteraction,
