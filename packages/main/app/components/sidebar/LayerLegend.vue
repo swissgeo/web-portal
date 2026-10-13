@@ -10,13 +10,12 @@ const { legends, presentation = "sidebar" } = defineProps<{
   presentation?: "sidebar" | "detail";
 }>();
 
-const openModal = ref(false);
-const selectedLegend = ref<Legend | null>(null);
-
 const { t } = useI18n();
 const isMobile = useBreakpoints(breakpointsTailwind).smallerOrEqual("md");
 
 const failedHrefs = ref<string[]>([]);
+const openModal = ref(false);
+const selectedLegend = ref<Legend | null>(null);
 
 function isImage(legend: Legend) {
   if (legend.format) {
