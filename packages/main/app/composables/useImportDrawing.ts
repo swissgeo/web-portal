@@ -385,7 +385,9 @@ export function useImportDrawing() {
           }),
         );
       }
-
+      if (!(await confirmReplaceDrawing({ hasAdminLink: asAdmin }))) {
+        return;
+      }
       mountDrawingLayer(olMap.value);
 
       const kmzBuffer = await res.arrayBuffer();

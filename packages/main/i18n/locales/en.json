@@ -383,17 +383,12 @@
         "fetchFailed": "Failed to fetch file from URL (HTTP {status})",
         "adminRequired": "Admin privileges are required to import this drawing"
       },
-      "infoMessages": {
-        "importPart1": "Importing a {provenance} drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
-        "adminImportPart2": "If imported as an admin, you will be able to synchronize it with the Swissgeo database under the same ID as imported and other users will see your changes.",
-        "nonAdminImportPart2": "Sharing the drawing will then be possible with other users, but under a different drawing ID than the imported one."
-      },
       "drawingReplaceConfirmTitle": "Replace current drawing?",
-      "drawingReplaceConfirmDescription": "Warning: this will erase your current drawing layer. Proceed?",
+      "drawingReplaceConfirmDescription": "Importing a drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
       "drawingReplaceConfirmTemporaryNote": "We are working on a nicer workflow for this. Feel free to contact us to give us feedback and suggestions.",
-      "drawingReplaceConfirmAdminNote": "You are importing a drawing as its owner. Modifying the drawing will modify the original file.",
+      "drawingReplaceConfirmAdminNote": "You are importing a drawing as its owner. Modifying the drawing will modify the original file and synchronize it with the Swissgeo database.",
       "drawingReplaceConfirmCancel": "Cancel",
-      "drawingReplaceConfirmConfirm": "Confirm",
+      "drawingReplaceConfirmConfirm": "Clear and import",
       "close": "Close"
     },
     "share": {

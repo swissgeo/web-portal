@@ -308,6 +308,63 @@ describe("Import.vue", () => {
     expect(drawingImport.url.value).toBe("https://drawings.test/drawing");
   });
 
+  it("triggers a legacy import from the import button for legacy links", async () => {
+    drawingImport.url.value = "https://map.geo.admin.ch/#/map";
+    drawingImport.isUrlOnValidLegacyDomain.value = true;
+    const wrapper = shallowMount(Import, {
+      global: {
+        stubs: {
+          ...globalStubs,
+          UTabs: { template: '<div><slot name="drawing" /></div>' },
+        },
+      },
+    });
+    await wrapper.get('[data-testid="drawing-import-button"]').trigger("click");
+    expect(drawingImport.importLegacyDrawing).toHaveBeenCalledOnce();
+    expect(drawingImport.importSwissgeoDrawing).not.toHaveBeenCalled();
+  });
+
+  it("imports as admin from the import button when the link carries an admin id", async () => {
+    drawingImport.url.value = "https://drawings.test/drawing#admin";
+    drawingImport.swissGeoUrlValidation.value = {
+      isValid: true,
+      drawingId: "drawing",
+      adminId: "admin",
+      adminIdProvided: true,
+    };
+    const wrapper = shallowMount(Import, {
+      global: {
+        stubs: {
+          ...globalStubs,
+          UTabs: { template: '<div><slot name="drawing" /></div>' },
+        },
+      },
+    });
+    await wrapper.get('[data-testid="drawing-import-button"]').trigger("click");
+    expect(drawingImport.importSwissgeoDrawing).toHaveBeenCalledWith(true);
+    expect(drawingImport.importLegacyDrawing).not.toHaveBeenCalled();
+  });
+
+  it("imports as non-admin from the import button for links without an admin id", async () => {
+    drawingImport.url.value = "https://drawings.test/drawing";
+    drawingImport.swissGeoUrlValidation.value = {
+      isValid: true,
+      drawingId: "drawing",
+      adminId: "",
+      adminIdProvided: false,
+    };
+    const wrapper = shallowMount(Import, {
+      global: {
+        stubs: {
+          ...globalStubs,
+          UTabs: { template: '<div><slot name="drawing" /></div>' },
+        },
+      },
+    });
+    await wrapper.get('[data-testid="drawing-import-button"]').trigger("click");
+    expect(drawingImport.importSwissgeoDrawing).toHaveBeenCalledWith(false);
+  });
+
   it("binds the drawing replacement dialog to the import state", () => {
     const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
 

@@ -384,17 +384,6 @@
         "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})",
         "adminRequired": "Zum Importieren dieser Zeichnung sind Administratorrechte erforderlich"
       },
-      "infoMessages": {
-        "importPart1": "Das Importieren einer {provenance}-Zeichnung erfordert das Löschen der vorhandenen Zeichnung. Nach dem Import können Sie die Zeichnung weiter bearbeiten.",
-        "adminImportPart2": "Wenn die Zeichnung als Administrator importiert wird, können Sie sie mit der Swissgeo-Datenbank unter derselben ID wie die importierte synchronisieren, und andere Benutzer sehen Ihre Änderungen.",
-        "nonAdminImportPart2": "Das Teilen der Zeichnung wird dann mit anderen Benutzern möglich sein, jedoch unter einer anderen Zeichen-ID als der importierten."
-      },
-      "drawingReplaceConfirmTitle": "TO DO: better sentence and translate - Do you want to replace your drawing ?",
-      "drawingReplaceConfirmDescription": "TO DO: better sentence and translate - If you continue, your current drawing will be overwritten. Continue ?",
-      "drawingReplaceConfirmTemporaryNote": "TTO DO: better sentence and translate - Maybe one day we'll have the time to do something correct, but for now, it's either draw or import, not both.",
-      "drawingReplaceConfirmAdminNote": "TO DO: better sentence and translate - Hey, you're about to modify the original file, are you sure about that ?",
-      "drawingReplaceConfirmCancel": "Cancel in German",
-      "drawingReplaceConfirmConfirm": "Confirm in German",
       "close": "Schließen"
     },
     "share": {

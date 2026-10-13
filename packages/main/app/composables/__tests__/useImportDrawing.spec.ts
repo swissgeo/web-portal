@@ -488,6 +488,84 @@ describe("useImportDrawing", () => {
         }
       },
     );
+
+    it("does not open the confirm dialog for swissgeo imports when no drawing layer exists", async () => {
+      mockValidation();
+      const drawing = useImportDrawing();
+      drawing.url.value = `${endpoint}/${id}?download=true#${admin}`;
+      await flushPromises();
+      const buffer = new ArrayBuffer(8);
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(buffer),
+      });
+      await drawing.importSwissgeoDrawing(true);
+      expect(drawing.isConfirmModalOpen.value).toBe(false);
+      expect(importKmzSpy).toHaveBeenCalledWith(buffer, true);
+    });
+
+    it("asks for confirmation before an admin swissgeo import replaces the drawing", async () => {
+      isDrawingLayerInLayerStore.value = true;
+      const importDrawingStore = useDrawingImportStore();
+      importDrawingStore.drawingId = "previous-drawing";
+      importDrawingStore.drawingAdminId = "previous-admin";
+      mockValidation();
+      const drawing = useImportDrawing();
+      drawing.url.value = `${endpoint}/${id}?download=true#${admin}`;
+      await flushPromises();
+      const buffer = new ArrayBuffer(8);
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(buffer),
+      });
+      const promise = drawing.importSwissgeoDrawing(true);
+      await vi.waitFor(() =>
+        expect(drawing.isConfirmModalOpen.value).toBe(true),
+      );
+
+      expect(drawing.hasAdminLink.value).toBe(true);
+      expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
+      expect(importKmzSpy).not.toHaveBeenCalled();
+
+      drawing.resolveConfirm(true);
+      await promise;
+
+      expect(drawing.isConfirmModalOpen.value).toBe(false);
+      expect(importKmzSpy).toHaveBeenCalledWith(buffer, true);
+      expect(importDrawingStore.drawingId).toBe(id);
+      expect(importDrawingStore.drawingAdminId).toBe(admin);
+      expect(drawing.isLoading.value).toBe(false);
+    });
+
+    it("keeps the current drawing and aborts the swissgeo import when cancelled", async () => {
+      isDrawingLayerInLayerStore.value = true;
+      const importDrawingStore = useDrawingImportStore();
+      importDrawingStore.drawingId = "previous-drawing";
+      importDrawingStore.drawingAdminId = "previous-admin";
+      mockValidation();
+      const drawing = useImportDrawing();
+      drawing.url.value = `${endpoint}/${id}?download=true#${admin}`;
+      await flushPromises();
+      const buffer = new ArrayBuffer(8);
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        arrayBuffer: () => Promise.resolve(buffer),
+      });
+      const promise = drawing.importSwissgeoDrawing(true);
+      await vi.waitFor(() =>
+        expect(drawing.isConfirmModalOpen.value).toBe(true),
+      );
+
+      drawing.resolveConfirm(false);
+      await promise;
+
+      expect(drawing.isConfirmModalOpen.value).toBe(false);
+      expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
+      expect(importKmzSpy).not.toHaveBeenCalled();
+      expect(importDrawingStore.drawingId).toBe("previous-drawing");
+      expect(importDrawingStore.drawingAdminId).toBe("previous-admin");
+      expect(drawing.isLoading.value).toBe(false);
+    });
   });
 
   it("does not open the confirm dialog when no drawing layer exists", async () => {

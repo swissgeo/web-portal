@@ -235,87 +235,23 @@ async function handleFileUrlImport() {
         />
 
         <div>
-          <UModal>
-            <UButton
-              color="primary"
-              variant="solid"
-              class="mt-3 w-full place-content-center"
-              :disabled="
-                !urlImportDrawing.trim() ||
-                isImportDrawingLoading ||
-                isCheckingUrl ||
-                (!isUrlOnValidLegacyDomain && !swissGeoUrlValidation.isValid)
-              "
-              :loading="isImportDrawingLoading"
-              data-testid="drawing-import-button"
-              trailing-icon="i-lucide-plus"
-            >
-              {{ t("toolbox.import.importUrlButton") }}
-            </UButton>
-
-            <template #content="{ close }">
-              <div>
-                <p class="m-4">
-                  {{
-                    t("toolbox.import.infoMessages.importPart1", {
-                      provenance: swissGeoUrlValidation.isValid
-                        ? "Swissgeo"
-                        : "Map Geo Admin",
-                    })
-                  }}
-                </p>
-                <p class="m-4">
-                  {{ t("toolbox.import.infoMessages.nonAdminImportPart2") }}
-                </p>
-                <p
-                  v-if="
-                    swissGeoUrlValidation.isValid &&
-                    swissGeoUrlValidation.adminId
-                  "
-                  class="m-4"
-                >
-                  {{ t("toolbox.import.infoMessages.adminImportPart2") }}
-                </p>
-              </div>
-              <div class="m-4 flex justify-end gap-2">
-                <UButton color="neutral" variant="outline" @click="close()">
-                  {{ t("toolbox.import.cancelImport") }}
-                </UButton>
-
-                <UButton
-                  color="primary"
-                  variant="solid"
-                  :disabled="isImportDrawingLoading"
-                  @click="
-                    async () => {
-                      await onImportDrawing(false);
-                      close();
-                    }
-                  "
-                >
-                  {{ t("toolbox.import.clearAndImportAsNonAdmin") }}
-                </UButton>
-
-                <UButton
-                  v-if="
-                    swissGeoUrlValidation.isValid &&
-                    swissGeoUrlValidation.adminId
-                  "
-                  color="primary"
-                  variant="solid"
-                  :disabled="isImportDrawingLoading"
-                  @click="
-                    async () => {
-                      await onImportDrawing(true);
-                      close();
-                    }
-                  "
-                >
-                  {{ t("toolbox.import.clearAndImportAsAdmin") }}
-                </UButton>
-              </div>
-            </template>
-          </UModal>
+          <UButton
+            color="primary"
+            variant="solid"
+            class="mt-3 w-full place-content-center"
+            :disabled="
+              !urlImportDrawing.trim() ||
+              isImportDrawingLoading ||
+              isCheckingUrl ||
+              (!isUrlOnValidLegacyDomain && !swissGeoUrlValidation.isValid)
+            "
+            :loading="isImportDrawingLoading"
+            data-testid="drawing-import-button"
+            trailing-icon="i-lucide-plus"
+            @click="onImportDrawing(!!swissGeoUrlValidation.adminId)"
+          >
+            {{ t("toolbox.import.importUrlButton") }}
+          </UButton>
           <div aria-live="polite">
             <ul
               v-if="urlImportDrawing.trim() && !isCheckingUrl"
