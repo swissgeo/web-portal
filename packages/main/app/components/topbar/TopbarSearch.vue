@@ -201,13 +201,17 @@ function clearSearch() {
         icon="i-lucide-search"
         :placeholder="t('search.placeholder')"
         :loading="searchStore.isSearching"
-        size="md"
+        size="xl"
         variant="outline"
-        color="secondary"
+        color="primary"
         class="hidden w-119.25 grow xl:block"
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
+        :ui="{
+          base: 'placeholder-nav-brand-muted! ring-0',
+          leadingIcon: 'text-nav-brand-muted',
+        }"
       >
         <template v-if="query" #trailing>
           <UButton

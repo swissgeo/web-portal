@@ -90,7 +90,7 @@ function resetApp() {
       content-orientation="vertical"
       :ui="{
         content: 'w-fit',
-        list: 'gap-10',
+        list: 'gap-1.5',
         link: 'text-nav-brand hover:before:bg-nav-brand-shade hover:text-nav-brand-hover data-active:before:bg-inverted data-active:text-inverted',
       }"
     />
