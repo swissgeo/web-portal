@@ -1,6 +1,7 @@
 import type { Ref } from "vue";
 
 import { mount } from "@vue/test-utils";
+import WMTSTileGrid from "ol/tilegrid/WMTS";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick, ref } from "vue";
 
@@ -19,17 +20,30 @@ vi.mock("@swissgeo/log", () => ({
   LogPreDefinedColor: new Proxy({}, { get: (_t, p) => String(p) }),
 }));
 
-const { MockWMTS, updateDimensionsSpy } = vi.hoisted(() => {
-  const spy = vi.fn();
+const { MockWMTS, updateDimensionsSpy, wmtsConfigs, mapStoreState } =
+  vi.hoisted(() => {
+    const spy = vi.fn();
+    const configs: Record<string, unknown>[] = [];
 
-  class HoistedMockWMTS {
-    updateDimensions = spy;
+    class HoistedMockWMTS {
+      updateDimensions = spy;
 
-    constructor(_config: unknown) {}
-  }
+      constructor(config: Record<string, unknown>) {
+        configs.push(config);
+      }
+    }
 
-  return { MockWMTS: HoistedMockWMTS, updateDimensionsSpy: spy };
-});
+    return {
+      MockWMTS: HoistedMockWMTS,
+      updateDimensionsSpy: spy,
+      wmtsConfigs: configs,
+      mapStoreState: { pinnedTileResolution: null as number | null },
+    };
+  });
+
+vi.mock("@/stores/map", () => ({
+  useMapStore: () => mapStoreState,
+}));
 
 vi.mock("ol/source/WMTS", () => ({
   default: MockWMTS,
@@ -70,7 +84,64 @@ function makeWMTSLayer(overrides: Partial<WMTSLayer> = {}): WMTSLayer {
 describe("useOlWmtsLayer", () => {
   beforeEach(() => {
     clearAddLayerToMapMocks();
+    wmtsConfigs.length = 0;
+    mapStoreState.pinnedTileResolution = null;
   });
+
+  function mountLayer(layer: Ref<WMTSLayer>) {
+    mount(
+      defineComponent({
+        setup() {
+          useOlWmtsLayer(layer, ref(undefined));
+        },
+        template: "<div />",
+      }),
+    );
+  }
+
+  const tileGrid = () =>
+    new WMTSTileGrid({
+      origin: [2420000, 1350000],
+      resolutions: [5, 2.5, 1],
+      matrixIds: ["21", "22", "25"],
+      sizes: [
+        [375, 250],
+        [750, 500],
+        [1875, 1250],
+      ],
+      tileSize: 256,
+    });
+
+  it("requests the tile level of the pinned resolution, whatever the view resolution", async () => {
+    mapStoreState.pinnedTileResolution = 2.5;
+    mountLayer(
+      ref(
+        makeWMTSLayer({
+          options: { layer: "ch.test.wmts", tileGrid: tileGrid() } as never,
+        }),
+      ) as Ref<WMTSLayer>,
+    );
+    await nextTick();
+
+    const pinned = (wmtsConfigs[0] as { tileGrid: WMTSTileGrid }).tileGrid;
+    expect(pinned.getResolutions()).toEqual([2.5]);
+    expect(pinned.getMatrixId(0)).toBe("22");
+  });
+
+  it("keeps the whole tile grid when nothing is pinned", async () => {
+    mountLayer(
+      ref(
+        makeWMTSLayer({
+          options: { layer: "ch.test.wmts", tileGrid: tileGrid() } as never,
+        }),
+      ) as Ref<WMTSLayer>,
+    );
+    await nextTick();
+
+    const grid = (wmtsConfigs[0] as { tileGrid: WMTSTileGrid }).tileGrid;
+    expect(grid.getResolutions()).toEqual([5, 2.5, 1]);
+  });
+
   it("creates a TileLayer and WMTS source when options are provided", async () => {
     const layer = ref(makeWMTSLayer()) as Ref<WMTSLayer>;
     const olMap = ref(undefined);
