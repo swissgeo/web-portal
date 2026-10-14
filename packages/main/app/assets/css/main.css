@@ -15,6 +15,18 @@
 @import "@nuxt/ui";
 @source "../../../../skeleton/src/**/*.{vue,ts,js,tsx,jsx}";
 
+/* Soft edge at the bottom of a scroll box while more content follows */
+@utility scroll-fade {
+  --fade: rgb(0 0 0 / 0.02);
+  background:
+    linear-gradient(var(--ui-bg), var(--ui-bg)) bottom / 100% 6px no-repeat
+      local,
+    linear-gradient(transparent, var(--fade)) bottom / 100% 6px no-repeat scroll;
+  @variant dark {
+    --fade: rgb(0 0 0 / 0.12);
+  }
+}
+
 @theme static {
   --font-sans: "Inter", system-ui, sans-serif;
 

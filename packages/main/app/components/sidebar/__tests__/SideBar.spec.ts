@@ -1,8 +1,9 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import SideBar from "~/components/sidebar/SideBar.vue";
+import { panelSnapPointKey } from "~/types/injectionKeys";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 
 const { sidebar, isDesktop } = await vi.hoisted(async () => {
   const { reactive, ref } = await import("vue");
@@ -28,10 +29,14 @@ vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 
-function mountSideBar(isVisible?: boolean) {
+function mountSideBar(
+  isVisible?: boolean,
+  panelSnapPoint = ref<number | string | null>(null),
+) {
   return mount(SideBar, {
     props: { mapLayers: ref([]), isVisible },
     global: {
+      provide: { [panelSnapPointKey]: panelSnapPoint },
       stubs: {
         LayerCart: true,
         LayerCatalog: true,
@@ -39,7 +44,7 @@ function mountSideBar(isVisible?: boolean) {
           name: "ResponsivePanel",
           props: ["title", "closeLabel", "isVisible", "hasHeader"],
           emits: ["close"],
-          template: "<section><slot /></section>",
+          template: "<section><slot /><slot name='footer' /></section>",
         },
         UButton: { name: "UButton", props: ["icon"], template: "<button />" },
         USeparator: true,
@@ -175,6 +180,17 @@ describe("SideBar", () => {
   describe("layer cart on mobile", () => {
     beforeEach(() => {
       isDesktop.value = false;
+    });
+
+    it("opens the map panel partially, also after a fully open catalog", async () => {
+      sidebar.currentSidebar = "geocatalogTree";
+      const panelSnapPoint = ref<number | string | null>(1);
+      mountSideBar(true, panelSnapPoint);
+
+      sidebar.currentSidebar = "layerCart";
+      await nextTick();
+
+      expect(panelSnapPoint.value).toBeNull();
     });
 
     it("shows the cart and a background selector in a panel without its own header", () => {

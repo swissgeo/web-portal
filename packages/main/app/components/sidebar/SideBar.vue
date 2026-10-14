@@ -2,7 +2,8 @@
 import type { Layer as MapLayer } from "@swissgeo/map";
 
 import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
-import { computed } from "vue";
+import { panelSnapPointKey } from "~/types/injectionKeys";
+import { computed, inject, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import BackgroundSelector from "@/components/sidebar/backgroundSelector/BackgroundSelector.vue";
@@ -12,6 +13,17 @@ import LayerCatalog from "./layerCatalog/LayerCatalog.vue";
 import ResponsivePanel from "./ResponsivePanel.vue";
 
 const uiStore = useSidebarStore();
+
+// The map panel opens partially, so the map stays visible while layers change
+const panelSnapPoint = inject(panelSnapPointKey, ref(null));
+watch(
+  () => uiStore.currentSidebar,
+  (sidebar) => {
+    if (sidebar === SidebarType.LAYER_CART) {
+      panelSnapPoint.value = null;
+    }
+  },
+);
 const { t } = useI18n();
 
 const { mapLayers, isVisible = true } = defineProps<{
@@ -69,17 +81,17 @@ function toggleSidebar() {
         :expandLabel="t('layerCart.expand')"
         :collapseLabel="t('layerCart.collapse')"
         :hasHeader="false"
+        :itemCount="mapLayers.value.length"
         :isVisible="isVisible"
         @close="uiStore.closeSidebar()"
       >
         <LayerCart :mapLayers="mapLayers" />
         <!-- The side column is hidden on mobile, so the drawer shows its own background selector -->
-        <div v-if="!isDesktop" class="sticky bottom-0 bg-default px-2 pt-4">
-          <USeparator />
-          <div class="my-4">
+        <template v-if="!isDesktop" #footer>
+          <div class="border-t border-default px-2 py-4">
             <BackgroundSelector />
           </div>
-        </div>
+        </template>
       </ResponsivePanel>
       <ResponsivePanel
         v-else-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
