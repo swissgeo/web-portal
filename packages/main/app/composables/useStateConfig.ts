@@ -13,9 +13,11 @@ import { createIdentifyResponse, useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
+import { DRAWING_LAYER_ID } from "@swissgeo/shared";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
 
 import { AVAILABLE_BACKGROUNDS } from "@/components/sidebar/backgroundSelector/constants";
+import { useDrawingImportStore } from "@/stores/drawingImport";
 
 export type AppStatePayload = {
   version: string;
@@ -29,7 +31,9 @@ export function isBackgroundLayer(layer: Layer): boolean {
   return Object.values(AVAILABLE_BACKGROUNDS).includes(layer.humanId);
 }
 // exported only for testing purpose. Do not use this outside this file
-export function layersToStateConfig(layers: MapLayer[]): LayerState[] {
+export function layersToStateConfig(
+  layers: MapLayer[],
+): Array<LayerState | DrawingLayerState> {
   if (layers.length === 0) {
     return [];
   }
@@ -39,10 +43,29 @@ export function layersToStateConfig(layers: MapLayer[]): LayerState[] {
   return layers
     .slice(startIndex)
     .map(layerToStateConfig)
-    .filter((state): state is LayerState => state !== null);
+    .filter((state) => state !== null);
 }
+
+function drawingLayerToStateConfig(layer: MapLayer): DrawingLayerState | null {
+  const { drawingId, drawingAdminId } = storeToRefs(useDrawingImportStore());
+  if (!drawingId.value) {
+    return null;
+  }
+
+  const runtimeConfig = useRuntimeConfig();
+  return {
+    drawingUrl: `${runtimeConfig.public.drawingServiceEndpoint}/${drawingId.value}`,
+    type: "drawing",
+    adminId: drawingAdminId.value || "",
+    isVisible: layer.isVisible,
+    opacity: layer.opacity,
+  };
+}
+
 // exported only for testing purpose. Do not use this outside this file
-export function layerToStateConfig(layer: MapLayer): LayerState | null {
+export function layerToStateConfig(
+  layer: MapLayer,
+): LayerState | DrawingLayerState | null {
   const layerStore = useLayerStore();
   const dimensionsStore = useDimensionsStore();
   let sourceData: Layer | undefined | null = layerStore.getLayer(layer.uuid);
@@ -53,6 +76,11 @@ export function layerToStateConfig(layer: MapLayer): LayerState | null {
       return null;
     }
   }
+
+  if (sourceData.humanId === DRAWING_LAYER_ID) {
+    return drawingLayerToStateConfig(layer);
+  }
+
   const config: LayerState = {
     layerUrl: sourceData.layerUrl as string,
     type: sourceData.type as LayerState["type"],
@@ -104,6 +132,10 @@ export function useStateConfig() {
   const featureStore = useFeaturesStore();
 
   const exportState = computed((): AppStatePayload => {
+    const bgState =
+      layerStore.backgroundLayer && mapviewStore.mapLayers[0]
+        ? layerToStateConfig(mapviewStore.mapLayers[0])
+        : null;
     return {
       version: APP_STATE_CONFIG_VERSION,
       state: {
@@ -113,10 +145,7 @@ export function useStateConfig() {
           rotation: positionStore.rotation,
         },
         layers: layersToStateConfig(mapviewStore.mapLayers),
-        bg_layer:
-          layerStore.backgroundLayer && mapviewStore.mapLayers[0]
-            ? layerToStateConfig(mapviewStore.mapLayers[0])
-            : null,
+        bg_layer: bgState && "layerUrl" in bgState ? bgState : null,
       },
     };
   });
@@ -225,11 +254,12 @@ export function useCustomStateConfig() {
   const customStateMapCenter = ref<[number, number]>([0, 0]);
   const customStateMapZoom = ref(0);
   const customStateMapRotation = ref(0);
-  const layerStateConfig = ref<LayerState[]>([]);
+  const layerStateConfig = ref<Array<LayerState | DrawingLayerState>>([]);
   const backgroundLayerStateConfig = ref<LayerState | null>(null);
   const backgroundLayerState = () => {
     if (layerStore.backgroundLayer && mapviewStore.mapLayers[0]) {
-      return layerToStateConfig(mapviewStore.mapLayers[0]);
+      const state = layerToStateConfig(mapviewStore.mapLayers[0]);
+      return state && "layerUrl" in state ? state : null;
     } else {
       return null;
     }
