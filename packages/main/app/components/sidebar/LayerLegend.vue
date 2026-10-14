@@ -136,7 +136,7 @@ const documentLinks = computed(() =>
         </template>
         <template #body>
           <div
-            class="w-full touch-none overflow-hidden rounded-md bg-white p-2 select-none"
+            class="min-h-28 w-full touch-none overflow-hidden rounded-md bg-white p-2 select-none"
             @pointerdown="onPointerDown"
             @pointermove="onPointerMove"
             @pointerup="onPointerEnd"
