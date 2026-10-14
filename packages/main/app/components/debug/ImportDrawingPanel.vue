@@ -9,7 +9,7 @@ const {
   successMessage,
   importLegacyDrawing,
   isConfirmModalOpen,
-  hasAdminLink,
+  noteVariant,
   resolveConfirm,
 } = useImportDrawing();
 
@@ -19,9 +19,13 @@ defineEmits<{
 
 const confirmNote = computed(() => {
   const temporaryNote = t("toolbox.import.drawingReplaceConfirmTemporaryNote");
-  return hasAdminLink.value
-    ? `${temporaryNote} ${t("toolbox.import.drawingReplaceConfirmAdminNote")}`
-    : temporaryNote;
+  if (noteVariant.value === "adminSync") {
+    return `${temporaryNote} ${t("toolbox.import.drawingReplaceConfirmAdminNote")}`;
+  }
+  if (noteVariant.value === "legacyCopy") {
+    return `${temporaryNote} ${t("toolbox.import.drawingReplaceConfirmLegacyAdminNote")}`;
+  }
+  return temporaryNote;
 });
 </script>
 

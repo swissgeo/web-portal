@@ -286,7 +286,7 @@ describe("useImportDrawing", () => {
     expect(isLoading.value).toBe(false);
   });
 
-  it("fetches the legacy KML URL with its admin suffix intact", async () => {
+  it("strips the admin id before fetching the legacy KML URL", async () => {
     const { url, importLegacyDrawing } = useImportDrawing();
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/test123@adminId=987";
@@ -295,7 +295,7 @@ describe("useImportDrawing", () => {
     await importLegacyDrawing();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://public.geo.admin.ch/api/kml/files/test123@adminId=987",
+      "https://public.geo.admin.ch/api/kml/files/test123",
     );
   });
   describe("Swissgeo service drawings", () => {
@@ -523,7 +523,7 @@ describe("useImportDrawing", () => {
         expect(drawing.isConfirmModalOpen.value).toBe(true),
       );
 
-      expect(drawing.hasAdminLink.value).toBe(true);
+      expect(drawing.noteVariant.value).toBe("adminSync");
       expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
       expect(importKmzSpy).not.toHaveBeenCalled();
 
@@ -584,7 +584,7 @@ describe("useImportDrawing", () => {
       url,
       importLegacyDrawing,
       isConfirmModalOpen,
-      hasAdminLink,
+      noteVariant,
       resolveConfirm,
       successMessage,
     } = useImportDrawing();
@@ -593,7 +593,7 @@ describe("useImportDrawing", () => {
     const promise = importLegacyDrawing();
     await vi.waitFor(() => expect(isConfirmModalOpen.value).toBe(true));
 
-    expect(hasAdminLink.value).toBe(false);
+    expect(noteVariant.value).toBe("temporary");
     expect(clearDrawingLayerSpy).not.toHaveBeenCalled();
 
     resolveConfirm(true);
@@ -646,7 +646,7 @@ describe("useImportDrawing", () => {
       url,
       importLegacyDrawing,
       isConfirmModalOpen,
-      hasAdminLink,
+      noteVariant,
       resolveConfirm,
     } = useImportDrawing();
     url.value = "https://s.geo.admin.ch/admin-link";
@@ -654,13 +654,13 @@ describe("useImportDrawing", () => {
     const promise = importLegacyDrawing();
     await vi.waitFor(() => expect(isConfirmModalOpen.value).toBe(true));
 
-    expect(hasAdminLink.value).toBe(true);
+    expect(noteVariant.value).toBe("legacyCopy");
 
     resolveConfirm(true);
     await promise;
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://sys-public.dev.bgdi.ch/api/kml/files/abc123@adminId=987",
+      "https://sys-public.dev.bgdi.ch/api/kml/files/abc123",
     );
   });
 

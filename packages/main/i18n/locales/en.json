@@ -387,6 +387,7 @@
       "drawingReplaceConfirmDescription": "Importing a drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
       "drawingReplaceConfirmTemporaryNote": "We are working on a nicer workflow for this. Feel free to contact us to give us feedback and suggestions.",
       "drawingReplaceConfirmAdminNote": "You are importing a drawing as its owner. Modifying the drawing will modify the original file and synchronize it with the Swissgeo database.",
+      "drawingReplaceConfirmLegacyAdminNote": "This drawing will be imported as a copy: modifying it will not alter the original drawing, unlike admin imports of Swissgeo drawings.",
       "drawingReplaceConfirmCancel": "Cancel",
       "drawingReplaceConfirmConfirm": "Clear and import",
       "close": "Close"

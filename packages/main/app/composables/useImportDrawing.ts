@@ -161,6 +161,14 @@ function validateDomain(url: string, allowedDomains: string[]): string | null {
   }
 }
 
+function removeAdminIdFromUrl(url: string): string {
+  const adminIdIndex = url.indexOf("@adminId=");
+  if (adminIdIndex !== -1) {
+    return url.substring(0, adminIdIndex);
+  }
+  return url;
+}
+
 async function checkDrawingAuth(drawingId: string, adminId: string = "") {
   const runtimeConfig = useRuntimeConfig();
   const drawingServiceEndpoint = runtimeConfig.public
@@ -208,7 +216,7 @@ export function useImportDrawing() {
 
   const {
     isConfirmModalOpen,
-    hasAdminLink,
+    noteVariant,
     confirmReplaceDrawing,
     resolveConfirm,
   } = useConfirmDrawingReplacement();
@@ -312,11 +320,14 @@ export function useImportDrawing() {
           );
         }
       }
-      //hasAdminLink is in scope, we don't want to shadow it
       const hasAdminLinkInUrl = datasetUrls.some((datasetUrl) =>
         datasetUrl.includes("@adminId="),
       );
-      if (!(await confirmReplaceDrawing({ hasAdminLink: hasAdminLinkInUrl }))) {
+      if (
+        !(await confirmReplaceDrawing({
+          noteVariant: hasAdminLinkInUrl ? "legacyCopy" : "temporary",
+        }))
+      ) {
         return; // silent cancel
       }
       clearDrawingLayer();
@@ -324,7 +335,7 @@ export function useImportDrawing() {
       hasMountedLayer = true;
 
       for (const kmlUrl of datasetUrls) {
-        const kmlResponse = await fetch(kmlUrl);
+        const kmlResponse = await fetch(removeAdminIdFromUrl(kmlUrl));
         if (!kmlResponse.ok) {
           throw new Error(
             t("toolbox.import.errorMessages.kmlFetchFailed", {
@@ -385,7 +396,11 @@ export function useImportDrawing() {
           }),
         );
       }
-      if (!(await confirmReplaceDrawing({ hasAdminLink: asAdmin }))) {
+      if (
+        !(await confirmReplaceDrawing({
+          noteVariant: asAdmin ? "adminSync" : "temporary",
+        }))
+      ) {
         return;
       }
       mountDrawingLayer(olMap.value);
@@ -426,7 +441,7 @@ export function useImportDrawing() {
     isCheckingUrl,
     isUrlOnValidLegacyDomain,
     isConfirmModalOpen,
-    hasAdminLink,
+    noteVariant,
     resolveConfirm,
   };
 }

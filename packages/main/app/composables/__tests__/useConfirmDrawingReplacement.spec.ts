@@ -34,10 +34,10 @@ describe("useConfirmDrawingReplacement", () => {
     const wrapper = mount(GuardHost);
 
     await expect(
-      guard.confirmReplaceDrawing({ hasAdminLink: false }),
+      guard.confirmReplaceDrawing({ noteVariant: "temporary" }),
     ).resolves.toBe(true);
     expect(guard.isConfirmModalOpen.value).toBe(false);
-    expect(guard.hasAdminLink.value).toBe(false);
+    expect(guard.noteVariant.value).toBe("temporary");
 
     wrapper.unmount();
   });
@@ -46,9 +46,9 @@ describe("useConfirmDrawingReplacement", () => {
     isDrawingLayerInLayerStore.value = true;
     const wrapper = mount(GuardHost);
 
-    const promise = guard.confirmReplaceDrawing({ hasAdminLink: true });
+    const promise = guard.confirmReplaceDrawing({ noteVariant: "adminSync" });
     expect(guard.isConfirmModalOpen.value).toBe(true);
-    expect(guard.hasAdminLink.value).toBe(true);
+    expect(guard.noteVariant.value).toBe("adminSync");
 
     guard.resolveConfirm(true);
     await expect(promise).resolves.toBe(true);
@@ -61,7 +61,7 @@ describe("useConfirmDrawingReplacement", () => {
     isDrawingLayerInLayerStore.value = true;
     const wrapper = mount(GuardHost);
 
-    const promise = guard.confirmReplaceDrawing({ hasAdminLink: false });
+    const promise = guard.confirmReplaceDrawing({ noteVariant: "temporary" });
     guard.resolveConfirm(false);
 
     await expect(promise).resolves.toBe(false);
@@ -74,7 +74,7 @@ describe("useConfirmDrawingReplacement", () => {
     isDrawingLayerInLayerStore.value = true;
     const wrapper = mount(GuardHost);
 
-    const promise = guard.confirmReplaceDrawing({ hasAdminLink: false });
+    const promise = guard.confirmReplaceDrawing({ noteVariant: "temporary" });
     guard.resolveConfirm(true);
     guard.resolveConfirm(false);
 
@@ -88,7 +88,7 @@ describe("useConfirmDrawingReplacement", () => {
     isDrawingLayerInLayerStore.value = true;
     const wrapper = mount(GuardHost);
 
-    const promise = guard.confirmReplaceDrawing({ hasAdminLink: false });
+    const promise = guard.confirmReplaceDrawing({ noteVariant: "temporary" });
     expect(guard.isConfirmModalOpen.value).toBe(true);
 
     wrapper.unmount();

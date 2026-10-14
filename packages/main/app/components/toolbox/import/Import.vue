@@ -19,7 +19,7 @@ const {
   isCheckingUrl,
   isUrlOnValidLegacyDomain,
   isConfirmModalOpen,
-  hasAdminLink,
+  noteVariant,
   resolveConfirm,
 } = useImportDrawing();
 
@@ -48,9 +48,13 @@ const items = computed(() => [
 
 const confirmNote = computed(() => {
   const temporaryNote = t("toolbox.import.drawingReplaceConfirmTemporaryNote");
-  return hasAdminLink.value
-    ? `${temporaryNote} ${t("toolbox.import.drawingReplaceConfirmAdminNote")}`
-    : temporaryNote;
+  if (noteVariant.value === "adminSync") {
+    return `${temporaryNote} ${t("toolbox.import.drawingReplaceConfirmAdminNote")}`;
+  }
+  if (noteVariant.value === "legacyCopy") {
+    return `${temporaryNote} ${t("toolbox.import.drawingReplaceConfirmLegacyAdminNote")}`;
+  }
+  return temporaryNote;
 });
 
 function showToast(color: "error" | "success" | "warning", message: string) {

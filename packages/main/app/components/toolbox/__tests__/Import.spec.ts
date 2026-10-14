@@ -25,15 +25,17 @@ vi.mock("@/composables/useFileImport", () => ({
   })),
 }));
 
-const { drawingImport, isConfirmModalOpen, hasAdminLink, resolveConfirmMock } =
+const { drawingImport, isConfirmModalOpen, noteVariant, resolveConfirmMock } =
   await vi.hoisted(async () => {
     const { ref } = await import("vue");
     const isConfirmModalOpen = ref(false);
-    const hasAdminLink = ref(false);
+    const noteVariant = ref<"temporary" | "adminSync" | "legacyCopy">(
+      "temporary",
+    );
     const resolveConfirmMock = vi.fn();
     return {
       isConfirmModalOpen,
-      hasAdminLink,
+      noteVariant,
       resolveConfirmMock,
       drawingImport: {
         url: ref(""),
@@ -51,7 +53,7 @@ const { drawingImport, isConfirmModalOpen, hasAdminLink, resolveConfirmMock } =
           adminIdProvided: false,
         }),
         isConfirmModalOpen,
-        hasAdminLink,
+        noteVariant,
         resolveConfirm: resolveConfirmMock,
       },
     };
@@ -108,8 +110,9 @@ describe("Import.vue", () => {
       adminIdProvided: false,
     };
     isConfirmModalOpen.value = false;
-    hasAdminLink.value = false;
+    noteVariant.value = "temporary";
   });
+
   it("renders correctly", () => {
     const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
     expect(wrapper.exists()).toBe(true);
@@ -379,8 +382,8 @@ describe("Import.vue", () => {
     );
   });
 
-  it("adds the admin note to the dialog only for admin links", () => {
-    hasAdminLink.value = true;
+  it("adds the sync note to the dialog for swissgeo admin imports", () => {
+    noteVariant.value = "adminSync";
     const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
 
     const note = wrapper
@@ -388,9 +391,26 @@ describe("Import.vue", () => {
       .attributes("data-note");
     expect(note).toContain("toolbox.import.drawingReplaceConfirmTemporaryNote");
     expect(note).toContain("toolbox.import.drawingReplaceConfirmAdminNote");
+    expect(note).not.toContain(
+      "toolbox.import.drawingReplaceConfirmLegacyAdminNote",
+    );
   });
 
-  it("omits the admin note for regular links", () => {
+  it("adds the copy note to the dialog for legacy admin links", () => {
+    noteVariant.value = "legacyCopy";
+    const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
+
+    const note = wrapper
+      .get('[data-testid="drawing-replace-confirm-dialog"]')
+      .attributes("data-note");
+    expect(note).toContain("toolbox.import.drawingReplaceConfirmTemporaryNote");
+    expect(note).toContain(
+      "toolbox.import.drawingReplaceConfirmLegacyAdminNote",
+    );
+    expect(note).not.toContain("toolbox.import.drawingReplaceConfirmAdminNote");
+  });
+
+  it("omits the extra notes for regular links", () => {
     const wrapper = shallowMount(Import, { global: { stubs: globalStubs } });
 
     const note = wrapper
@@ -398,6 +418,9 @@ describe("Import.vue", () => {
       .attributes("data-note");
     expect(note).toContain("toolbox.import.drawingReplaceConfirmTemporaryNote");
     expect(note).not.toContain("toolbox.import.drawingReplaceConfirmAdminNote");
+    expect(note).not.toContain(
+      "toolbox.import.drawingReplaceConfirmLegacyAdminNote",
+    );
   });
 
   it("forwards dialog decisions to resolveConfirm", () => {

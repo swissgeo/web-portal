@@ -10,7 +10,7 @@ const {
   errorMessageRef,
   successMessageRef,
   isConfirmModalOpenRef,
-  hasAdminLinkRef,
+  noteVariantRef,
 } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
   return {
@@ -20,7 +20,7 @@ const {
     errorMessageRef: ref(""),
     successMessageRef: ref(""),
     isConfirmModalOpenRef: ref(false),
-    hasAdminLinkRef: ref(false),
+    noteVariantRef: ref<"temporary" | "adminSync" | "legacyCopy">("temporary"),
   };
 });
 
@@ -37,7 +37,7 @@ vi.mock("@/composables/useImportDrawing", () => ({
     successMessage: successMessageRef,
     importLegacyDrawing: importLegacyDrawingMock,
     isConfirmModalOpen: isConfirmModalOpenRef,
-    hasAdminLink: hasAdminLinkRef,
+    noteVariant: noteVariantRef,
     resolveConfirm: vi.fn(),
   })),
 }));

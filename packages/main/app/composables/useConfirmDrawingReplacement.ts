@@ -1,19 +1,21 @@
 import { useDrawing } from "@swissgeo/drawing";
 
+export type ConfirmNoteVariant = "temporary" | "adminSync" | "legacyCopy";
+
 export function useConfirmDrawingReplacement() {
   const { isDrawingLayerInLayerStore } = useDrawing();
   const isConfirmModalOpen = ref(false);
-  const hasAdminLink = ref(false);
+  const noteVariant = ref<ConfirmNoteVariant>("temporary");
 
   let resolveProceed: ((proceed: boolean) => void) | null = null;
 
   function confirmReplaceDrawing(options: {
-    hasAdminLink: boolean;
+    noteVariant: ConfirmNoteVariant;
   }): Promise<boolean> {
     if (!isDrawingLayerInLayerStore.value) {
       return Promise.resolve(true);
     }
-    hasAdminLink.value = options.hasAdminLink;
+    noteVariant.value = options.noteVariant;
     isConfirmModalOpen.value = true;
     return new Promise((resolve) => {
       resolveProceed = resolve;
@@ -31,7 +33,7 @@ export function useConfirmDrawingReplacement() {
 
   return {
     isConfirmModalOpen,
-    hasAdminLink,
+    noteVariant,
     confirmReplaceDrawing,
     resolveConfirm,
   };
