@@ -45,7 +45,11 @@ describe("StatePayloadValidator", () => {
         },
       ],
     });
-    expect(result.layers?.[0]?.dimensions?.time?.currentValue).toBe("current");
+    const layer = result.layers?.[0];
+    if (!layer || !("layerUrl" in layer)) {
+      throw new Error("expected non-drawing layer");
+    }
+    expect(layer.dimensions?.time?.currentValue).toBe("current");
   });
 
   it("rejects an invalid layer type", () => {

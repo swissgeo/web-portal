@@ -177,9 +177,11 @@ describe("useStateConfig manages to export time dimension from State", () => {
       setupLayerWithTimeValue(value);
       const { exportState } = useStateConfig();
 
-      expect(
-        exportState.value.state.layers?.[0]?.dimensions?.time?.currentValue,
-      ).toBe(value);
+      const layer = exportState.value.state.layers?.[0];
+      if (!layer || !("layerUrl" in layer)) {
+        throw new Error("expected non-drawing layer");
+      }
+      expect(layer.dimensions?.time?.currentValue).toBe(value);
     },
   );
 });

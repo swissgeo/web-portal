@@ -3,6 +3,17 @@
 import * as z from "zod";
 
 /**
+ * DrawingLayerState
+ */
+export const zDrawingLayerState = z.object({
+  drawingUrl: z.url().min(1),
+  type: z.literal("drawing").optional().default("drawing"),
+  adminId: z.string().optional().default(""),
+  isVisible: z.boolean().nullish(),
+  opacity: z.number().gte(0).lte(1).nullish(),
+});
+
+/**
  * ErrorResponse
  */
 export const zErrorResponse = z.object({
@@ -67,7 +78,7 @@ export const zLayerState = z.object({
  */
 export const zStateV1 = z.object({
   map: zMapState.optional(),
-  layers: z.array(zLayerState).optional(),
+  layers: z.array(z.union([zLayerState, zDrawingLayerState])).optional(),
   bg_layer: zLayerState.nullish(),
 });
 

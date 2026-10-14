@@ -10,6 +10,7 @@ export type {
   SaveAppStateRequest as SaveAppState,
   GetAppStateResponse as GetAppState,
   LayerState,
+  DrawingLayerState,
   MapState,
   SaveAppStateResponse,
 } from "./hey-api/types.gen";
