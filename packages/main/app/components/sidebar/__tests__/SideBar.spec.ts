@@ -11,6 +11,7 @@ const { sidebar, isDesktop } = await vi.hoisted(async () => {
     isSidebarOpen: true,
     currentSidebar: "layerCart" as string | null,
     sidebarContentWidth: 320,
+    sidebarWidth: 347,
     closeSidebar: vi.fn(),
     setSidebar: vi.fn(),
   });
@@ -258,5 +259,15 @@ describe("SideBar", () => {
     await wrapper.vm.$nextTick();
 
     expect(content.attributes("style")).toContain("width: 1280px");
+  });
+
+  it("keeps the background selector at the cart width next to the wide catalog", () => {
+    sidebar.sidebarContentWidth = 1280;
+    const selectorBox = mountSideBar().get("[style*='max-width']");
+
+    expect(selectorBox.attributes("style")).toContain("max-width: 347px");
+    expect(
+      selectorBox.findComponent({ name: "BackgroundSelector" }).exists(),
+    ).toBe(true);
   });
 });

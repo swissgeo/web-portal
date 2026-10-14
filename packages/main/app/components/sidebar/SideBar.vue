@@ -103,8 +103,9 @@ function toggleSidebar() {
       >
         <LayerCatalog />
       </ResponsivePanel>
-      <!-- Stays mounted on mobile too, because it picks the default background -->
-      <div class="px-2">
+      <!-- Stays mounted on mobile too, because it picks the default background.
+           It keeps the cart width, also next to the wide catalog. -->
+      <div class="px-2" :style="{ maxWidth: uiStore.sidebarWidth + 'px' }">
         <USeparator />
         <div class="my-4">
           <BackgroundSelector />
