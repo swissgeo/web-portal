@@ -8,7 +8,7 @@ import {
 } from "@swissgeo/dimension";
 import { useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
-import { computed, ref } from "vue";
+import { computed, ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerLegend from "./LayerLegend.vue";
@@ -27,6 +27,7 @@ const mapViewStore = useMapViewStore();
 const featureStore = useFeaturesStore();
 
 const isExpanded = ref(false);
+const detailsId = useId();
 const legends = computed(() => mapViewStore.getLayerLegends(layer.uuid));
 
 const currentTime = computed({
@@ -138,16 +139,22 @@ const rowButton = {
         class="shrink-0"
         :icon="isExpanded ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'"
         :title="isExpanded ? t('layers.collapse') : t('layers.expand')"
+        :aria-expanded="isExpanded"
+        :aria-controls="detailsId"
         v-bind="rowButton"
         @click="isExpanded = !isExpanded"
       />
-      <div
-        class="min-w-0 flex-1 truncate px-1"
+      <button
+        type="button"
+        class="min-w-0 flex-1 cursor-pointer px-1 text-left"
         :title="layer.displayName"
-        :class="{ 'text-dimmed': !layer.isVisible }"
+        :aria-expanded="isExpanded"
+        :aria-controls="detailsId"
+        :class="{ truncate: !isExpanded, 'text-dimmed': !layer.isVisible }"
+        @click="isExpanded = !isExpanded"
       >
         {{ layer.displayName }}
-      </div>
+      </button>
       <div class="flex shrink-0 items-center">
         <select
           v-if="(availableTimes?.length || 0) > 1"
@@ -180,7 +187,11 @@ const rowButton = {
       </div>
     </div>
 
-    <div v-if="isExpanded" class="flex min-w-0 flex-col gap-3 pl-8">
+    <div
+      v-if="isExpanded"
+      :id="detailsId"
+      class="flex min-w-0 flex-col gap-3 pl-8"
+    >
       <div class="flex flex-col gap-1">
         <span class="text-xs font-medium text-toned uppercase">
           {{ t("layers.opacity") }}
