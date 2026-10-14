@@ -2,7 +2,11 @@ import type { Dimension, DimensionId } from "@swissgeo/dimension";
 import type { Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
-import type { LayerState, AppState } from "@swissgeo/statesharing";
+import type {
+  DrawingLayerState,
+  LayerState,
+  AppState,
+} from "@swissgeo/statesharing";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
 import { createIdentifyResponse, useFeaturesStore } from "@swissgeo/feature";
@@ -77,9 +81,9 @@ export function layerToStateConfig(layer: MapLayer): LayerState | null {
 }
 
 async function stateConfigToLayer(
-  config: LayerState | null,
+  config: LayerState | DrawingLayerState | null,
 ): Promise<Layer | null> {
-  if (!config) {
+  if (!config || !("layerUrl" in config)) {
     return null;
   }
 
@@ -152,7 +156,7 @@ export function useStateConfig() {
 
     const stateLayers = payload.state.layers ?? [];
     const layers = await Promise.all(
-      stateLayers.map((lc: LayerState) => stateConfigToLayer(lc)),
+      stateLayers.map((lc) => stateConfigToLayer(lc)),
     );
     const bgLayer: Layer | null = await stateConfigToLayer(
       payload.state.bg_layer ?? null,
@@ -162,14 +166,18 @@ export function useStateConfig() {
 
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
+        const stateLayer = stateLayers[i];
+        if (!layers[i] || !stateLayer || !("layerUrl" in stateLayer)) {
+          continue;
+        }
         const uuid = layers[i]!.uuid;
         // we're adding some information about visibility and opacity to apply after conversion
         // also setting defaults in case they are not specified
         const mapLayerData: Partial<MapLayer> = {
-          opacity: stateLayers[i]?.opacity ?? 1,
-          isVisible: stateLayers[i]?.isVisible ?? true,
+          opacity: stateLayer?.opacity ?? 1,
+          isVisible: stateLayer?.isVisible ?? true,
         };
-        const preSelectedFeaturesIds = stateLayers[i]?.features;
+        const preSelectedFeaturesIds = stateLayer?.features;
         if (preSelectedFeaturesIds) {
           const identifyFeatures = await createIdentifyResponse(
             preSelectedFeaturesIds,
@@ -179,11 +187,10 @@ export function useStateConfig() {
         }
         layerStore.addImportOption(uuid, mapLayerData);
 
-        if (stateLayers[i]?.dimensions?.time) {
+        if (stateLayer?.dimensions?.time) {
           const dimensions: Partial<Record<DimensionId, Dimension>> = {};
           dimensions.time = {
-            currentValue:
-              stateLayers[i]!.dimensions!.time!.currentValue ?? null,
+            currentValue: stateLayer!.dimensions!.time!.currentValue ?? null,
             availableValues: [],
           };
           useDimensionsStore().setLayerDimensions(uuid, dimensions);
