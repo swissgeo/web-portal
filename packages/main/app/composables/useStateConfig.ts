@@ -167,17 +167,17 @@ export function useStateConfig() {
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
         const stateLayer = stateLayers[i];
-        if (!layers[i] || !stateLayer || !("layerUrl" in stateLayer)) {
+        if (!stateLayer || !("layerUrl" in stateLayer)) {
           continue;
         }
         const uuid = layers[i]!.uuid;
         // we're adding some information about visibility and opacity to apply after conversion
         // also setting defaults in case they are not specified
         const mapLayerData: Partial<MapLayer> = {
-          opacity: stateLayer?.opacity ?? 1,
-          isVisible: stateLayer?.isVisible ?? true,
+          opacity: stateLayer.opacity ?? 1,
+          isVisible: stateLayer.isVisible ?? true,
         };
-        const preSelectedFeaturesIds = stateLayer?.features;
+        const preSelectedFeaturesIds = stateLayer.features;
         if (preSelectedFeaturesIds) {
           const identifyFeatures = await createIdentifyResponse(
             preSelectedFeaturesIds,
@@ -187,10 +187,10 @@ export function useStateConfig() {
         }
         layerStore.addImportOption(uuid, mapLayerData);
 
-        if (stateLayer?.dimensions?.time) {
+        if (stateLayer.dimensions?.time) {
           const dimensions: Partial<Record<DimensionId, Dimension>> = {};
           dimensions.time = {
-            currentValue: stateLayer!.dimensions!.time!.currentValue ?? null,
+            currentValue: stateLayer.dimensions.time.currentValue ?? null,
             availableValues: [],
           };
           useDimensionsStore().setLayerDimensions(uuid, dimensions);
