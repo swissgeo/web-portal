@@ -12,8 +12,6 @@ import {
   DESCRIPTION_KEY,
   initializeMetadataProperties,
   TITLE_KEY,
-} from "@/utils/drawingMetadata";
-import {
   DEFAULT_FILL_COLOR,
   DEFAULT_HEX_FILL_ALPHA,
   DEFAULT_POINT_COLOR,

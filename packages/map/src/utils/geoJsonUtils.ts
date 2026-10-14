@@ -1,4 +1,5 @@
-import type { NormalizedExtent, CoordinateSystem } from "@swissgeo/coordinates";
+import type { CoordinateSystem } from "@swissgeo/coordinates";
+import type { NormalizedExtent } from "@swissgeo/shared";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 
 import {

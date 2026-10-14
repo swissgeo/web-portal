@@ -4,6 +4,13 @@ import type { RouteLocationNormalizedLoadedGeneric } from "vue-router";
 
 import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 
+definePageMeta({
+  key: (route) => {
+    const { documentId } = route.meta;
+    return typeof documentId === "string" ? documentId : "page";
+  },
+});
+
 const route = useRoute();
 const { locale } = useI18n();
 
@@ -82,9 +89,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <NuxtLayout>
-    <div class="h-screen overflow-y-auto pt-10 pr-8 pb-10 pl-8">
-      <ContentRenderer :containers="containers" />
-    </div>
-  </NuxtLayout>
+  <div class="h-dvh overflow-y-auto pt-10 pr-8 pb-10 pl-8">
+    <ContentRenderer :containers="containers" />
+  </div>
 </template>

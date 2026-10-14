@@ -1,0 +1,179 @@
+{
+  "id": "ch.astra.unfaelle-personenschaeden_getoetete",
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "ch.astra.unfaelle-personenschaeden_getoetete:api3features",
+      "links": [
+        {
+          "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-catalog/items/ch.astra.unfaelle-personenschaeden_getoetete?lang=en&f=json",
+          "rel": "dataset",
+          "title": "Dataset Record"
+        },
+        {
+          "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/geoadmin-services/items/api3features-geoadminch?lang=en&f=json",
+          "rel": "dataservice"
+        }
+      ],
+      "linkTemplates": [
+        {
+          "uriTemplate": "https://api3.geo.admin.ch/rest/services/ech/MapServer/ch.astra.unfaelle-personenschaeden_getoetete/{featureId}/htmlPopup?lang={lang}",
+          "rel": "preview",
+          "title": "HTML popup for a feature of this distribution",
+          "type": "application/html",
+          "variables": {
+            "featureId": {
+              "type": "string",
+              "description": "Feature ID"
+            },
+            "lang": {
+              "type": "string",
+              "enum": ["de", "fr", "it", "en"],
+              "default": "de",
+              "description": "Language code"
+            }
+          }
+        }
+      ],
+      "type": "Feature",
+      "properties": {
+        "type": "Distribution",
+        "title": {
+          "de": "Geoadmin Features",
+          "fr": "Geoadmin Features",
+          "it": "Geoadmin Features",
+          "en": "Geoadmin Features"
+        },
+        "protocol": "geoadmin:features",
+        "externalIds": ["ch.astra.unfaelle-personenschaeden_getoetete"],
+        "queryable": true,
+        "renderable": true
+      }
+    },
+    {
+      "id": "ch.astra.unfaelle-personenschaeden_getoetete:wmts",
+      "links": [
+        {
+          "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-catalog/items/ch.astra.unfaelle-personenschaeden_getoetete?lang=en&f=json",
+          "rel": "dataset",
+          "title": "Dataset Record"
+        },
+        {
+          "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/geoadmin-services/items/wmts-geoadminch?lang=en&f=json",
+          "rel": "dataservice"
+        },
+        {
+          "href": "https://services.swissgeo.ch/api/oas/v0/styles/ch.astra.unfaelle-personenschaeden_getoetete:wmts:style",
+          "rel": "styledby",
+          "title": "Style Hints for WMTS Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "linkTemplates": [],
+      "type": "Feature",
+      "properties": {
+        "type": "Distribution",
+        "title": {
+          "de": "Strassenverkehrsunf\u00e4lle mit mindestens einer get\u00f6teten Person",
+          "fr": "Accidents de la circulation avec au moins une personne tu\u00e9e",
+          "it": "Incidenti stradali con almeno una persona uccisa",
+          "en": "Road traffic accidents involving at least one fatality"
+        },
+        "description": {
+          "de": "Visualisierung der anonymisierten und lokalisierten Strassenverkehrsunf\u00e4lle mit mindestens einer get\u00f6teten Person seit 2011. Verf\u00fcgbar sind zu einem Strassenverkehrsunfall das Jahr, der Monat, der Wochentag, die Unfallstunde, die Strassenart, der Unfalltyp und die Unfallschwerekategorie.",
+          "fr": "Affichage anonyme de la position des accidents de la circulation avec au moins une personne tu\u00e9e depuis 2011. L'ann\u00e9e, le mois, le jour, l'heure, le genre de route, le type d'accident et la cat\u00e9gorie de gravit\u00e9 sont disponibles pour les accidents de la route.",
+          "it": "Visualizzazione anonima della posizione degli incidenti stradali con almeno una persona uccisa da 2011. L'anno, il mese, il giorno, l'ora, il genere di strada, il tipo d'incidente e la categoria della gravit\u00e0 sono disponibili per gli incidenti stradali.",
+          "en": "Anonymised visualisation and positioning of road traffic accidents involving at least one fatality since 2011. Information on the year, the month, the weekday, the time of the accident, the type of road, the type of accident and the category of severity is provided for road traffic accidents."
+        },
+        "protocol": "ogc:wmts",
+        "externalIds": ["ch.astra.unfaelle-personenschaeden_getoetete"]
+      }
+    },
+    {
+      "id": "ch.astra.unfaelle-personenschaeden_getoetete:wms",
+      "links": [
+        {
+          "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-catalog/items/ch.astra.unfaelle-personenschaeden_getoetete?lang=en&f=json",
+          "rel": "dataset",
+          "title": "Dataset Record"
+        },
+        {
+          "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/geoadmin-services/items/wms-geoadminch?lang=en&f=json",
+          "rel": "dataservice"
+        },
+        {
+          "href": "https://services.swissgeo.ch/api/oas/v0/styles/ch.astra.unfaelle-personenschaeden_getoetete:wms:style",
+          "rel": "styledby",
+          "title": "Style Hints for WMTS Raster Layer (Maplibre Style Spec)",
+          "type": "application/json"
+        }
+      ],
+      "linkTemplates": [],
+      "type": "Feature",
+      "properties": {
+        "type": "Distribution",
+        "title": {
+          "de": "Strassenverkehrsunf\u00e4lle mit mindestens einer get\u00f6teten Person",
+          "fr": "Accidents de la circulation avec au moins une personne tu\u00e9e",
+          "it": "Incidenti stradali con almeno una persona uccisa",
+          "en": "Road traffic accidents involving at least one fatality"
+        },
+        "description": {
+          "de": "Visualisierung der anonymisierten und lokalisierten Strassenverkehrsunf\u00e4lle mit mindestens einer get\u00f6teten Person seit 2011. Verf\u00fcgbar sind zu einem Strassenverkehrsunfall das Jahr, der Monat, der Wochentag, die Unfallstunde, die Strassenart, der Unfalltyp und die Unfallschwerekategorie.",
+          "fr": "Affichage anonyme de la position des accidents de la circulation avec au moins une personne tu\u00e9e depuis 2011. L'ann\u00e9e, le mois, le jour, l'heure, le genre de route, le type d'accident et la cat\u00e9gorie de gravit\u00e9 sont disponibles pour les accidents de la route.",
+          "it": "Visualizzazione anonima della posizione degli incidenti stradali con almeno una persona uccisa da 2011. L'anno, il mese, il giorno, l'ora, il genere di strada, il tipo d'incidente e la categoria della gravit\u00e0 sono disponibili per gli incidenti stradali.",
+          "en": "Anonymised visualisation and positioning of road traffic accidents involving at least one fatality since 2011. Information on the year, the month, the weekday, the time of the accident, the type of road, the type of accident and the category of severity is provided for road traffic accidents."
+        },
+        "protocol": "ogc:wms",
+        "externalIds": ["ch.astra.unfaelle-personenschaeden_getoetete"]
+      }
+    }
+  ],
+  "properties": {
+    "title": "Road traffic accidents involving at least one fatality"
+  },
+  "geometry": null,
+  "links": [
+    {
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.astra.unfaelle-personenschaeden_getoetete?lang=en&f=json",
+      "rel": "self",
+      "type": "application/geo+json"
+    },
+    {
+      "type": "application/json",
+      "rel": "root",
+      "title": "The landing page of this server as JSON",
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1?f=json"
+    },
+    {
+      "type": "text/html",
+      "rel": "root",
+      "title": "The landing page of this server as HTML",
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1?f=html"
+    },
+    {
+      "rel": "self",
+      "type": "application/geo+json",
+      "title": "This document as JSON",
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.astra.unfaelle-personenschaeden_getoetete?f=json"
+    },
+    {
+      "rel": "alternate",
+      "type": "application/ld+json",
+      "title": "This document as RDF (JSON-LD)",
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.astra.unfaelle-personenschaeden_getoetete?f=jsonld"
+    },
+    {
+      "rel": "alternate",
+      "type": "text/html",
+      "title": "This document as HTML",
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions/items/ch.astra.unfaelle-personenschaeden_getoetete?f=html"
+    },
+    {
+      "rel": "collection",
+      "type": "application/json",
+      "title": "SWISSGEO Distributions",
+      "href": "https://services.dev.sgdi.tech/api/oar/rc1/collections/swissgeo-distributions"
+    }
+  ]
+}

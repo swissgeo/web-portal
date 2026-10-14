@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
-const LAYER_CART_WIDTH = 320;
+const LAYER_CART_WIDTH = 347;
 const GEOCATALOG_TREE_WIDTH = 1280;
 
 /** Width of the tab left over on the map once the sidebar is collapsed */

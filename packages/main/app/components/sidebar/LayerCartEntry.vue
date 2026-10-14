@@ -6,8 +6,8 @@ import {
   getDisplayNameFromTimestamp,
   useDimensionsStore,
 } from "@swissgeo/dimension";
+import { useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
-import { useDatasetPanelStore } from "@swissgeo/skeleton";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -22,8 +22,9 @@ const { t } = useI18n();
 const layerStore = useLayerStore();
 const dimensionsStore = useDimensionsStore();
 // const drawingStore = useDrawingStore();
-const datasetPanelStore = useDatasetPanelStore();
+const localePath = useLocalePath();
 const mapViewStore = useMapViewStore();
+const featureStore = useFeaturesStore();
 
 const isExpanded = ref(false);
 const legends = computed(() => mapViewStore.getLayerLegends(layer.uuid));
@@ -89,21 +90,26 @@ function moveDown() {
 
 function removeLayer() {
   dimensionsStore.clearLayerDimensions(layer.uuid);
+  featureStore.clearWmsCapability(layer.uuid);
   // Removing the source layer unmounts its converter. The converter then removes
   // the matching layer from the map-view store.
   layerStore.removeLayer(layer.uuid);
 }
 
-function openDatasetPanel() {
+const datasetId = computed(() => {
   const source = layerStore.getLayer(layer.uuid);
-  if (source) {
-    datasetPanelStore.openDatasetPanel(source.humanId);
+  if (source?.type !== "dataset") {
+    return undefined;
   }
-}
+  return source.humanId;
+});
 
-const isFromDataSet = computed(
-  () => layerStore.getLayer(layer.uuid)?.type === "dataset",
-);
+const detailPath = computed(() => {
+  if (!datasetId.value) {
+    return undefined;
+  }
+  return localePath(`/dataset/${datasetId.value}`);
+});
 
 // Shared look of the buttons on the entry row
 const rowButton = {
@@ -119,6 +125,7 @@ const rowButton = {
     <div class="flex min-w-0 items-center">
       <UButton
         data-testid="layer-reorder-handle"
+        data-vaul-no-drag
         class="layer-reorder-handle shrink-0 cursor-grab text-dimmed"
         icon="i-lucide-grip-vertical"
         v-bind="rowButton"
@@ -145,7 +152,7 @@ const rowButton = {
         <select
           v-if="(availableTimes?.length || 0) > 1"
           v-model="currentTime"
-          class="max-w-24 bg-zinc-300"
+          class="max-w-24 bg-elevated"
         >
           <option v-for="time in availableTimes" :value="time" :key="time">
             {{ getTimestampName(time) }}
@@ -158,11 +165,11 @@ const rowButton = {
           @click="toggleVisibility()"
         />
         <UButton
-          v-if="isFromDataSet"
+          v-if="detailPath"
           icon="i-lucide-info"
           :title="t('layers.info')"
           v-bind="rowButton"
-          @click="openDatasetPanel"
+          :to="detailPath"
         />
         <UButton
           icon="i-lucide-trash-2"
@@ -180,6 +187,7 @@ const rowButton = {
         </span>
         <div class="flex items-center gap-2">
           <USlider
+            data-vaul-no-drag
             :model-value="opacityPercent"
             @update:model-value="handleOpacityChange"
             @wheel.prevent="handleWheel"

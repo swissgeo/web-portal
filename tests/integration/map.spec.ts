@@ -151,9 +151,11 @@ test.describe("map page", () => {
     expect(layers[0].opacity).toBe(1);
     expect(layers[0].visible).toBe(true);
 
-    const backgroundSelector = page.getByTestId(
-      "background-selector-ch.swisstopo.pixelkarte-farbe",
-    );
+    await page.getByTestId("button-layer-cart-panel").click();
+    await page.getByTestId("background-selector-toggle").click();
+    const backgroundSelector = page
+      .getByTestId("background-selector-ch.swisstopo.pixelkarte-farbe")
+      .first();
     await expect(backgroundSelector).toBeVisible();
   });
 

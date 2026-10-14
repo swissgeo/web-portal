@@ -2,6 +2,7 @@
 
 export type {
   ClientOptions,
+  DrawingLayerState,
   ErrorResponse,
   GetAppStateResponse,
   GetAppStateStateIdGetData,

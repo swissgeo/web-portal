@@ -1,14 +1,14 @@
 <script setup lang="ts">
-const { t } = useI18n();
+const { size = "sm" } = defineProps<{
+  size?: "sm" | "md" | "lg" | "xl";
+}>();
 </script>
 
 <template>
   <ClientOnly>
     <UColorModeButton
-      :label="t('topbar.modeSwitch', 'Mode switch')"
-      color="primary"
-      variant="ghost"
-      size="md"
+      :size="size"
+      :ui="{ base: 'text-accent xl:text-nav-brand-muted' }"
     />
   </ClientOnly>
 </template>

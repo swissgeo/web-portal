@@ -125,7 +125,9 @@ function useShareLinkState(
   };
 }
 
-function buildEmbedCode(stateId: string | null, zoomOnlyCtrl: boolean): string {
+export const DEFAULT_RESOLUTION = { width: 800, height: 600 } as const;
+
+function buildEmbedUrl(stateId: string | null, zoomOnlyCtrl: boolean): string {
   if (!stateId) {
     return "";
   }
@@ -135,7 +137,22 @@ function buildEmbedCode(stateId: string | null, zoomOnlyCtrl: boolean): string {
   if (zoomOnlyCtrl) {
     url.searchParams.set("zoomOnlyCtrl", "true");
   }
-  return `<iframe src="${url.href}" width="600" height="400" frameborder="0"></iframe>`;
+  return url.href;
+}
+
+function buildEmbedCode(
+  stateId: string | null,
+  zoomOnlyCtrl: boolean,
+  resolution: { width: number; height: number } = DEFAULT_RESOLUTION,
+  fullWidth = false,
+): string {
+  const embedUrl = buildEmbedUrl(stateId, zoomOnlyCtrl);
+  if (!embedUrl) {
+    return "";
+  }
+
+  const width = fullWidth ? "100%" : String(resolution.width);
+  return `<iframe src="${embedUrl}" width="${width}" height="${resolution.height}" frameborder="0"></iframe>`;
 }
 
 /**
@@ -150,25 +167,45 @@ function buildEmbedCode(stateId: string | null, zoomOnlyCtrl: boolean): string {
  */
 export function useCreateShareLink(
   state?: MaybeRefOrGetter<AppStatePayload | null>,
-  options?: { autoRefresh?: boolean; zoomOnlyCtrl?: Ref<boolean> },
+  options?: {
+    autoRefresh?: boolean;
+    debounce?: number;
+    fullWidth?: Ref<boolean>;
+    maxWait?: number;
+    onError?: (error: unknown) => void;
+    resolution?: MaybeRefOrGetter<{ width: number; height: number }>;
+    zoomOnlyCtrl?: Ref<boolean>;
+  },
 ) {
   const { exportState } = useStateConfig();
   const usableState = state ?? exportState;
   const { hash, needsRefresh, refresh } = useShareLinkState(usableState, {
     autoRefresh: options?.autoRefresh,
+    debounce: options?.debounce,
+    maxWait: options?.maxWait,
+    onError: options?.onError,
   });
 
   const needToRefresh = computed(
     () => !options?.autoRefresh && needsRefresh.value,
   );
   const shareLink = computed(() => buildShareUrl(hash.value));
+  const embedUrl = computed(() =>
+    buildEmbedUrl(hash.value, options?.zoomOnlyCtrl?.value ?? false),
+  );
   const embedCode = computed(() =>
-    buildEmbedCode(hash.value, options?.zoomOnlyCtrl?.value ?? false),
+    buildEmbedCode(
+      hash.value,
+      options?.zoomOnlyCtrl?.value ?? false,
+      options?.resolution ? toValue(options.resolution) : DEFAULT_RESOLUTION,
+      options?.fullWidth?.value ?? false,
+    ),
   );
 
   return {
     shareLink,
     embedCode,
+    embedUrl,
     hash,
     refresh,
     needToRefresh,

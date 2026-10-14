@@ -128,12 +128,12 @@ watch(shareLink, (newLink) => {
     data-testid="footer-report-issue-card"
     :ui="{
       body: 'md:max-h-[75vh] md:overflow-y-scroll',
-      root: 'ring-0',
-      header: 'border-0',
+      root: 'ring-0 md:ring',
+      header: 'border-0 md:border-b',
     }"
   >
     <template #header>
-      <div class="flex items-center items-start justify-between">
+      <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <UIcon
             name="i-lucide-triangle-alert"

@@ -2,7 +2,7 @@
 import { useImportDrawing } from "~/composables/useImportDrawing";
 
 const { t } = useI18n();
-const { url, isLoading, errorMessage, successMessage, importDrawing } =
+const { url, isLoading, errorMessage, successMessage, importLegacyDrawing } =
   useImportDrawing();
 
 defineEmits<{
@@ -29,7 +29,7 @@ defineEmits<{
       />
       <UButton
         :disabled="!url.trim() || isLoading"
-        @click="importDrawing"
+        @click="importLegacyDrawing"
         icon="i-lucide-upload"
         color="primary"
         variant="solid"

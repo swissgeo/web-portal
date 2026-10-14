@@ -1,64 +1,84 @@
 <script lang="ts" setup>
-import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
-import log from "@swissgeo/log";
-import { useDatasetPanelStore } from "@swissgeo/skeleton";
+import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
+
+import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
+import DatasetLanguageSection from "~/components/dataset/DatasetLanguageSection.vue";
+import DatasetMapAction from "~/components/dataset/DatasetMapAction.vue";
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
-  detailPagePath?: string;
+  dataset: Dataset | null;
+  detailUrl: string;
+  distributionCollection: DistributionCollection | null;
+  distributionError?: boolean;
+  isLoading: boolean;
+  error?: { message: string } | null;
+  backToCatalog?: boolean;
 }>();
 
-const datasetPanelStore = useDatasetPanelStore();
-const layerStore = useLayerStore();
+const emit = defineEmits<{ back: []; close: [] }>();
 
-const { dataset, distributionCollection, isLoading, error } = useDatasetRecord(
-  () => datasetPanelStore.activeDatasetId,
-);
-
-const isAlreadyOnMap = computed(() => {
-  if (!dataset.value) {
-    return false;
-  }
-  return layerStore.layers.some((l) => l.humanId === dataset.value!.id);
-});
-
-const toast = useToaster();
 const { t } = useI18n();
 
-function addToMap() {
-  if (!dataset.value || isAlreadyOnMap.value) {
-    return;
+const backLabel = computed(() => {
+  if (props.backToCatalog) {
+    return t("dataset.backToCatalog");
   }
-  try {
-    layerStore.addLayer(makeServerLayer(dataset.value));
-  } catch (e) {
-    log.error(
-      "Failed to add dataset to map",
-      e instanceof Error ? e : new Error(String(e)),
-    );
-    toast.add({
-      color: "error",
-      title: t("dataset.addToMapError"),
-    });
-  }
-}
+  return t("dataset.backToMap");
+});
 </script>
 
 <template>
-  <USlideover
-    v-model:open="datasetPanelStore.isOpen"
-    :modal="false"
-    :overlay="false"
-    :dismissible="false"
-    :title="dataset?.properties.title ?? ''"
-    side="right"
-    @update:open="
-      (v) => {
-        if (!v) datasetPanelStore.closeDatasetPanel();
-      }
-    "
+  <section
+    class="@container flex min-h-full flex-col border-r border-default bg-default"
+    aria-labelledby="dataset-panel-title"
+    data-testid="dataset-panel"
   >
-    <template #body>
+    <!-- Desktop keeps the whole header in view. Phones keep only the back and close
+         row, so the small drawer has room for the content. The header uses
+         display: contents on phones, because a sticky row only sticks inside its parent. -->
+    <header
+      class="contents md:sticky md:top-0 md:z-10 md:flex md:shrink-0 md:flex-col md:gap-space-m md:bg-default md:p-4 lg:gap-8 lg:p-8"
+    >
+      <div
+        class="sticky top-0 z-10 flex items-center justify-between gap-space-s bg-default px-4 pt-4 pb-space-xs md:static md:p-0"
+      >
+        <UButton
+          icon="i-lucide-arrow-left"
+          variant="ghost"
+          @click="emit('back')"
+        >
+          {{ backLabel }}
+        </UButton>
+        <div class="flex items-center gap-space-xs">
+          <UButton
+            icon="i-lucide-x"
+            color="neutral"
+            variant="ghost"
+            :aria-label="t('dataset.close')"
+            @click="emit('close')"
+          />
+        </div>
+      </div>
+      <div
+        class="flex flex-col items-start gap-space-s p-4 md:p-0 @2xl:flex-row @2xl:items-center @2xl:justify-between"
+      >
+        <!-- Reserve space on the last title line for the share button. -->
+        <div class="min-w-0">
+          <h1
+            id="dataset-panel-title"
+            data-testid="dataset-title"
+            class="inline pr-10 text-xl leading-heading font-semibold wrap-anywhere text-highlighted @2xl:text-3xl"
+          >
+            {{ dataset?.properties.title }}
+          </h1>
+          <DatasetCopyLink class="-ml-8 align-baseline" :url="detailUrl" />
+        </div>
+        <DatasetMapAction v-if="dataset" :dataset="dataset" />
+      </div>
+    </header>
+    <div class="flex flex-1 flex-col px-4 pb-4 lg:px-8 lg:pb-8">
       <div v-if="isLoading" class="flex h-full items-center justify-center">
         <UIcon
           name="i-lucide-loader-circle"
@@ -75,39 +95,12 @@ function addToMap() {
 
       <DatasetDetail
         v-else-if="dataset"
+        class="shrink-0"
         :dataset="dataset"
         :distribution-collection="distributionCollection ?? null"
+        :distribution-error="distributionError"
       />
-    </template>
-
-    <template #footer>
-      <UButton
-        v-if="dataset && !isAlreadyOnMap"
-        icon="i-lucide-map"
-        color="primary"
-        class="w-full justify-center"
-        @click="addToMap"
-      >
-        {{ $t("dataset.addToMap") }}
-      </UButton>
-      <div
-        v-else-if="dataset && isAlreadyOnMap"
-        class="flex w-full items-center justify-center gap-2 text-sm text-muted"
-      >
-        <UIcon name="i-lucide-check" class="size-4" />
-        {{ $t("dataset.alreadyOnMap") }}
-      </div>
-      <UButton
-        v-if="dataset && props.detailPagePath"
-        :to="props.detailPagePath"
-        icon="i-lucide-external-link"
-        color="primary"
-        variant="ghost"
-        class="w-full justify-center"
-        @click="datasetPanelStore.closeDatasetPanel()"
-      >
-        {{ $t("dataset.viewDetailPage") }}
-      </UButton>
-    </template>
-  </USlideover>
+      <DatasetLanguageSection :languages="dataset?.properties.languages" />
+    </div>
+  </section>
 </template>

@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { execSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
 
 import "./server/instrumentation";
 
@@ -27,9 +28,21 @@ const isCoverage = process.env.COVERAGE === "1";
 process.env.NODE_ENV = isDevelopment ? "dev" : process.env.NODE_ENV;
 
 export default defineNuxtConfig({
+  $production: {
+    app: {
+      // Cached assets can outlive a deployment and mix old CSS with new pages.
+      // Give each build its own asset directory to prevent cache reuse across builds.
+      buildAssetsDir: `/_nxt/${randomUUID()}/`,
+    },
+  },
   app: {
     buildAssetsDir: "/_nxt/",
     keepalive: true,
+    head: {
+      // Android: fit the page above the keyboard. iOS ignores this.
+      viewport:
+        "width=device-width, initial-scale=1, interactive-widget=resizes-content",
+    },
   },
   typescript: {
     tsConfig: {
@@ -51,6 +64,9 @@ export default defineNuxtConfig({
     "@nuxt/ui",
   ],
   css: ["~/assets/css/main.css"],
+  colorMode: {
+    classSuffix: "",
+  },
   ui: {
     prose: true,
     theme: {
@@ -134,6 +150,7 @@ export default defineNuxtConfig({
       ogcApiEndpoint: "",
       cmsBaseUrl: "https://prod-swissgeoch.scs.scs-sdweb.ch",
       iconServiceEndpoint: "https://map.geo.admin.ch/api/icons/sets",
+      drawingServiceEndpoint: "https://www.dev.sgdi.tech/api/wps/v1/drawings",
       shareServiceUrl: "https://www.dev.sgdi.tech/api/wps/v1/state",
       ogcCatalogCollection: "swissgeo-catalog",
       gitCommit: getGitCommit(),
@@ -148,7 +165,11 @@ export default defineNuxtConfig({
         "public.geo.admin.ch",
         "sys-s.dev.bgdi.ch",
         "sys-public.dev.bgdi.ch",
+        "www.dev.sgdi.tech",
       ],
+      featureFlags: {
+        enableCmsSearch: false,
+      },
     },
   },
   nitro: {

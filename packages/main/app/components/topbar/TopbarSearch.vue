@@ -2,7 +2,7 @@
 import type { SearchResult } from "@swissgeo/search";
 
 import { useSearchStore } from "@swissgeo/skeleton";
-import { useDebounceFn } from "@vueuse/core";
+import { refDebounced } from "@vueuse/core";
 import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -17,15 +17,15 @@ const { handleResultSelection } = useSearchSelection();
 
 const isOpen = defineModel<boolean>("open", { default: false });
 
+const enableCmsSearch = searchStore.enableCmsSearch;
+
 const resultsRef = ref<HTMLElement | null>(null);
 const activeTab = ref("map");
 
-const query = computed({
-  get: () => searchStore.query,
-  set: (value: string) => {
-    void debouncedSearch(value);
-  },
-});
+// the field keeps its own text: bound to the store query, which only follows
+// after the debounce, a render in between would put the older query back
+const query = ref(searchStore.query);
+const debouncedQuery = refDebounced(query, 100);
 
 const locationResults = computed(() =>
   searchStore.results.filter((r) => r.resultType === "LOCATION"),
@@ -45,24 +45,40 @@ const karteResults = computed(() => [
   { id: "layers", results: layerResults.value },
 ]);
 
-const tabs = computed(() => [
-  {
-    label: t("search.map_tab"),
-    badge: searchStore.mapResults.length || undefined,
-    slot: "map" as const,
-    value: "map",
-  },
-  {
-    label: t("search.content_pages_tab"),
-    badge: searchStore.contentResults.length || undefined,
-    slot: "contentPages" as const,
-    value: "content",
-  },
-]);
+const tabs = computed(() => {
+  const items: {
+    label: string;
+    badge: number | undefined;
+    slot: "map" | "contentPages";
+    value: string;
+  }[] = [
+    {
+      label: t("search.map_tab"),
+      badge: searchStore.mapResults.length || undefined,
+      slot: "map",
+      value: "map",
+    },
+  ];
 
-const debouncedSearch = useDebounceFn((value: string) => {
-  void searchStore.setSearchQuery(value, locale.value);
-}, 100);
+  if (enableCmsSearch) {
+    items.push({
+      label: t("search.content_pages_tab"),
+      badge: searchStore.contentResults.length || undefined,
+      slot: "contentPages",
+      value: "content",
+    });
+  }
+
+  return items;
+});
+
+// clear and selection write the store as well, so the text they put in the
+// field arrives here equal to the store query and starts no search
+watch(debouncedQuery, (value) => {
+  if (value !== searchStore.query) {
+    void searchStore.setSearchQuery(value, locale.value);
+  }
+});
 
 // every source searches in one language, so a locale change leaves the results
 // of the previous one behind until the query is run again. Only while there are
@@ -88,7 +104,7 @@ watch(
 watch(
   () => searchStore.hasResults,
   (hasResults) => {
-    if (hasResults && query.value.length >= 2) {
+    if (hasResults && searchStore.query.length >= 2) {
       openResults();
     }
   },
@@ -105,23 +121,40 @@ watch(
 
 function handleSelect(result: SearchResult) {
   void handleResultSelection(result);
-  // a title made of nothing but markup sanitizes to an empty string, which
-  // would empty the field and take its clear button away with it
-  searchStore.keepSelectedQuery(result.sanitizedTitle || searchStore.query);
+  // a layer leaves nothing on the map for the field to stand for, unlike a
+  // place whose pin the field's clear button removes
+  if (result.resultType === "LAYER") {
+    query.value = "";
+    searchStore.clearSearch();
+  } else {
+    // a title made of nothing but markup sanitizes to an empty string, which
+    // would empty the field and take its clear button away with it
+    const title = result.sanitizedTitle || searchStore.query;
+    query.value = title;
+    searchStore.keepSelectedQuery(title);
+  }
   isOpen.value = false;
 }
 
 // the map tab is the default one, and would claim there is nothing when the
 // hits are all CMS pages
 function openResults() {
-  if (!searchStore.hasMapResults && searchStore.contentResults.length > 0) {
+  if (
+    enableCmsSearch &&
+    !searchStore.hasMapResults &&
+    searchStore.contentResults.length > 0
+  ) {
     activeTab.value = "content";
   }
   isOpen.value = true;
 }
 
+function closeResults() {
+  isOpen.value = false;
+}
+
 function handleClick() {
-  if (query.value.length >= 2 && searchStore.hasResults) {
+  if (searchStore.query.length >= 2 && searchStore.hasResults) {
     openResults();
   }
 }
@@ -141,6 +174,7 @@ function focusFirstResult() {
 // clearing the field removes the marker of the selected result: selecting
 // another one moves it, but nothing else would ever take it off the map
 function clearSearch() {
+  query.value = "";
   searchStore.clearSearch();
   searchStore.clearPinnedCoordinate();
   isOpen.value = false;
@@ -167,13 +201,17 @@ function clearSearch() {
         icon="i-lucide-search"
         :placeholder="t('search.placeholder')"
         :loading="searchStore.isSearching"
-        size="md"
+        size="xl"
         variant="outline"
-        color="secondary"
-        class="w-72 grow"
+        color="primary"
+        class="hidden w-119.25 grow xl:block"
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
+        :ui="{
+          base: 'placeholder-nav-brand-muted! ring-0',
+          leadingIcon: 'text-nav-brand-muted',
+        }"
       >
         <template v-if="query" #trailing>
           <UButton
@@ -186,6 +224,13 @@ function clearSearch() {
           />
         </template>
       </UInput>
+      <UButton
+        icon="i-lucide-search"
+        variant="ghost"
+        class="xl:hidden"
+        :aria-label="t('search.buttonLabel')"
+        :ui="{ leadingIcon: 'text-nav-brand' }"
+      />
     </template>
 
     <template #content>
@@ -204,6 +249,7 @@ function clearSearch() {
               :title="t(`search.${category.id}_results_header`)"
               :results="category.results"
               @select="handleSelect"
+              @view-details="closeResults"
             />
           </div>
           <div
@@ -222,27 +268,29 @@ function clearSearch() {
         </template>
 
         <template #contentPages>
-          <!-- No category header here: the tab label already names it. -->
-          <SearchCategory
-            v-if="searchStore.contentResults.length > 0"
-            class="max-h-96 overflow-y-auto"
-            data-testid="content-search-results"
-            :results="searchStore.contentResults"
-            @select="handleSelect"
-          />
-          <div
-            v-else-if="
-              searchStore.contentResults.length === 0 &&
-              searchStore.query.length >= 2 &&
-              !searchStore.isSearching
-            "
-            class="text-surface-500 p-4 text-center"
-          >
-            {{ t("search.no_results") }}
-          </div>
-          <div v-else class="text-surface-500 p-4">
-            {{ t("search.placeholder") }}
-          </div>
+          <template v-if="enableCmsSearch">
+            <!-- No category header here: the tab label already names it. -->
+            <SearchCategory
+              v-if="searchStore.contentResults.length > 0"
+              class="max-h-96 overflow-y-auto"
+              data-testid="content-search-results"
+              :results="searchStore.contentResults"
+              @select="handleSelect"
+            />
+            <div
+              v-else-if="
+                searchStore.contentResults.length === 0 &&
+                searchStore.query.length >= 2 &&
+                !searchStore.isSearching
+              "
+              class="text-surface-500 p-4 text-center"
+            >
+              {{ t("search.no_results") }}
+            </div>
+            <div v-else class="text-surface-500 p-4">
+              {{ t("search.placeholder") }}
+            </div>
+          </template>
         </template>
       </UTabs>
     </template>

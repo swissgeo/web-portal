@@ -1,17 +1,39 @@
 import type { Dimension } from "@swissgeo/dimension";
+import type { FeatureData } from "@swissgeo/feature";
 import type { DatasetLayer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
 import type { Dataset } from "@swissgeo/ogc";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
-import { mount } from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import LayerLoadErrorBoundary from "@/components/map/datamapping/LayerLoadErrorBoundary.vue";
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
+
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({ t: (key: string) => key, locale: { value: "en" } }),
+}));
+
+const { getPopupFromIdentifyFeatureMock } = vi.hoisted(() => ({
+  getPopupFromIdentifyFeatureMock: vi.fn(),
+}));
+
+vi.mock("@swissgeo/feature", async (importOriginal) => {
+  // the store stays real so the preselection can be set up and the resulting
+  // selection read back from it; only the popup fetching is mocked
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const actual = await importOriginal<typeof import("@swissgeo/feature")>();
+
+  return {
+    ...actual,
+    getPopupFromIdentifyFeature: getPopupFromIdentifyFeatureMock,
+  };
+});
 
 const mockMapLayers: MapLayer[] = [];
 
@@ -207,6 +229,7 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
 
 describe("background handling", () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     mockMapLayers.length = 0;
 
     updateLayerData.mockClear();
@@ -385,6 +408,7 @@ describe("background handling", () => {
 
 describe("event forwarding", () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     mockMapLayers.length = 0;
 
     const layerStore = useLayerStore();
@@ -542,5 +566,172 @@ describe("layer load errors", () => {
     expect(wrapper.emitted("layerError")).toEqual([
       [failedLayer.uuid, new Error("failure")],
     ]);
+  });
+});
+
+describe("state import feature selection", () => {
+  const BASE_URL = "https://example.test/MapServer";
+  // mapLayerData.layerId is the uuid ("test-uuid") in this suite's stubs
+  const URL_TEMPLATE = `${BASE_URL}/test-uuid/{featureId}/htmlPopup?lang={lang}`;
+
+  const identifyFeatures: {
+    id: string;
+    geometry: { type: "Point"; coordinates: [number, number] };
+  }[] = [{ id: "42", geometry: { type: "Point", coordinates: [0, 0] } }];
+  const popupFeatures: FeatureData[] = [
+    {
+      featureId: "42",
+      geometry: { type: "Point", coordinates: [0, 0] },
+      content: {
+        kind: "html",
+        html: "<p>popup</p>",
+        trusted: true,
+        shareable: true,
+      },
+    },
+  ];
+
+  const fetchSpy = vi.fn();
+
+  /**
+   * A dataset layer whose store info carries harvested feature-info
+   * information ({protocol, baseUrl}), as makeServerLayer leaves it after
+   * the featureinfo chain walk.
+   */
+  function makeDatasetLayerWithFeatureInfo(
+    uuid: string,
+    featureInfoInformation?: {
+      protocol?: string;
+      baseUrl?: string;
+    },
+  ): DatasetLayer {
+    return {
+      ...makeDatasetLayer(uuid),
+      info: {
+        displayName: uuid,
+        featureInfoInformation: featureInfoInformation ?? {
+          protocol: "geoadmin:features",
+          baseUrl: BASE_URL,
+        },
+      },
+    };
+  }
+
+  function mountConverter(sourceData: DatasetLayer[]) {
+    return mount(SourceToMapDataConverter, {
+      props: { sourceBgLayer: null, sourceData },
+      global: {
+        stubs: {
+          MapDatamappingOgcDatasetConverter: OgcConverterStub,
+          MapDatamappingFileConverter: FileConverterStub,
+        },
+      },
+    });
+  }
+
+  async function emitLayerUpdate(
+    wrapper: ReturnType<typeof mountConverter>,
+  ): Promise<void> {
+    wrapper
+      .findComponent(OgcConverterStub)
+      .vm.$emit("update", makeMapLayer("test-uuid"));
+    await flushPromises();
+  }
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    mockMapLayers.length = 0;
+
+    getPopupFromIdentifyFeatureMock.mockReset();
+    getPopupFromIdentifyFeatureMock.mockResolvedValue([...popupFeatures]);
+
+    fetchSpy.mockReset();
+    vi.stubGlobal("fetch", fetchSpy);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("applies a stored preselection by building the popup template from the stored feature info", async () => {
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const layer = makeDatasetLayerWithFeatureInfo("test-uuid");
+    layerStore.addLayer(layer);
+    featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
+    // the preselection reads the already-harvested info: no fetching anymore
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(getPopupFromIdentifyFeatureMock).toHaveBeenCalledWith(
+      identifyFeatures,
+      URL_TEMPLATE,
+      "en",
+    );
+    expect(featureStore.selectedFeaturesByUuid["test-uuid"]).toEqual(
+      popupFeatures,
+    );
+  });
+
+  it("does not fetch anything when no preselection is stored for the layer", async () => {
+    const layerStore = useLayerStore();
+    const layer = makeDatasetLayerWithFeatureInfo("test-uuid");
+    layerStore.addLayer(layer);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
+    expect(useFeaturesStore().selectedFeaturesByUuid).toEqual({});
+  });
+
+  it("does not select when the layer info carries no feature info", async () => {
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const layer = makeDatasetLayer("test-uuid");
+    layerStore.addLayer(layer);
+    featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
+    expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
+    expect(featureStore.selectedFeaturesByUuid).toEqual({});
+  });
+
+  it("does not select when the protocol is not identify-capable", async () => {
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const layer = makeDatasetLayerWithFeatureInfo("test-uuid", {
+      protocol: "ogc:wms",
+      baseUrl: BASE_URL,
+    });
+    layerStore.addLayer(layer);
+    featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
+    expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
+    expect(featureStore.selectedFeaturesByUuid).toEqual({});
+  });
+
+  it("does not select when the info has no baseUrl to build the template from", async () => {
+    const layerStore = useLayerStore();
+    const featureStore = useFeaturesStore();
+    const layer = makeDatasetLayerWithFeatureInfo("test-uuid", {
+      protocol: "geoadmin:features",
+    });
+    layerStore.addLayer(layer);
+    featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+    const wrapper = mountConverter([layer]);
+    await emitLayerUpdate(wrapper);
+
+    expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
+    expect(featureStore.selectedFeaturesByUuid).toEqual({});
   });
 });

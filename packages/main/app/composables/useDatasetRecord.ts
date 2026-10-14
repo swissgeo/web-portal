@@ -6,6 +6,7 @@ import { toValue } from "vue";
 export interface DatasetRecord {
   dataset: Dataset | null;
   distributionCollection: DistributionCollection | null;
+  distributionError?: boolean;
 }
 
 export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
@@ -32,13 +33,21 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
         return { dataset, distributionCollection: null };
       }
 
-      const distributionsUrl = new URL(distributionsLink.href);
-      distributionsUrl.searchParams.set("lang", locale.value);
-      const distributionCollection = await $fetch<DistributionCollection>(
-        distributionsUrl.toString(),
-      );
+      try {
+        const distributionsUrl = new URL(distributionsLink.href);
+        distributionsUrl.searchParams.set("lang", locale.value);
+        const distributionCollection = await $fetch<DistributionCollection>(
+          distributionsUrl.toString(),
+        );
 
-      return { dataset, distributionCollection };
+        return { dataset, distributionCollection };
+      } catch {
+        return {
+          dataset,
+          distributionCollection: null,
+          distributionError: true,
+        };
+      }
     },
     { watch: [() => toValue(id), locale] },
   );
@@ -48,11 +57,15 @@ export function useDatasetRecord(id: MaybeRefOrGetter<string | null>) {
   const distributionCollection = computed(
     () => data.value?.distributionCollection ?? null,
   );
+  const distributionError = computed(
+    () => data.value?.distributionError ?? false,
+  );
   const isLoading = computed(() => status.value === "pending");
 
   return {
     dataset,
     distributionCollection,
+    distributionError,
     isLoading,
     error,
     promise: asyncData,

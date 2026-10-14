@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 
-import { sanitizeHtml } from "../utils/sanitizeHtml";
+import { sanitizeHtml } from "../utils/sanitize";
 
 describe("sanitizeHtml", () => {
   it("should strip dangerous attributes and tags", () => {

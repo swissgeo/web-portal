@@ -5,6 +5,40 @@ export type ClientOptions = {
 };
 
 /**
+ * DrawingLayerState
+ */
+export type DrawingLayerState = {
+  /**
+   * Drawingurl
+   *
+   * URL of the drawing on service-drawing
+   */
+  drawingUrl: string;
+  /**
+   * Type
+   */
+  type?: "drawing";
+  /**
+   * Adminid
+   *
+   * Admin ID for the drawing, empty string if view-only
+   */
+  adminId?: string;
+  /**
+   * Isvisible
+   *
+   * Whether the drawing layer is visible on the map
+   */
+  isVisible?: boolean | null;
+  /**
+   * Opacity
+   *
+   * Opacity of the drawing layer (between 0 and 1)
+   */
+  opacity?: number | null;
+};
+
+/**
  * ErrorResponse
  */
 export type ErrorResponse = {
@@ -97,6 +131,12 @@ export type LayerState = {
    * Dimensions of the layer (e.g. time dimension with current value)
    */
   dimensions?: LayerDimensionsState;
+  /**
+   * Features
+   *
+   * Features currently selected through identify in this layer
+   */
+  features?: Array<string> | null;
 };
 
 /**
@@ -177,7 +217,7 @@ export type StateV1 = {
    *
    * List of layers to be displayed on the map
    */
-  layers?: Array<LayerState>;
+  layers?: Array<LayerState | DrawingLayerState>;
   /**
    * The Background Layer
    */

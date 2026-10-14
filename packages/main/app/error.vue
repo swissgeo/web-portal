@@ -26,7 +26,7 @@ function handleError() {
 
 <template>
   <div
-    class="flex h-screen flex-col items-center justify-center gap-6 p-8 text-center"
+    class="flex h-dvh flex-col items-center justify-center gap-6 p-8 text-center"
   >
     <p class="text-6xl font-bold text-muted">
       {{ error.status }}

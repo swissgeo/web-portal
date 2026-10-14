@@ -2,6 +2,7 @@ import type { DatasetCollection } from "@swissgeo/ogc";
 import type { MaybeRefOrGetter, Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { fetchCatalogItems } from "@swissgeo/ogc";
 import { toError } from "@swissgeo/shared";
 import { toValue } from "vue";
 
@@ -50,23 +51,12 @@ export function useOgcCatalog(
 
     state.value = { status: "pending", data: previousData };
 
-    const query: Record<string, string | number> = {
-      lang: language.value,
-      limit: PAGE_SIZE,
-      offset,
-    };
-
-    if (q.value) {
-      // If a search query is present, use default order (relevance)
-      query.q = q.value;
-    } else {
-      // If no search query is present, order by title
-      query.sortby = "title";
-    }
-
     try {
-      const page = await $fetch<DatasetCollection>(catalogItemsUrl(), {
-        query,
+      const page = await fetchCatalogItems(catalogItemsUrl(), {
+        lang: language.value,
+        limit: PAGE_SIZE,
+        offset,
+        q: q.value,
       });
       if (request !== requestCount) {
         return;

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-import type { MapLayerRenderer } from "@/types";
+import type { MapClickEvent, MapLayerRenderer } from "@/types";
 import type { Layer as MapLayer } from "@/types/layers";
 
 import OpenLayersCompareSlider from "./openlayers/OpenLayersCompareSlider.vue";
@@ -9,6 +9,7 @@ import OpenLayersContextMenuPopup from "./openlayers/OpenLayersContextMenuPopup.
 import OpenLayersMap from "./openlayers/OpenLayersMap.vue";
 import OpenLayersScale from "./openlayers/OpenLayersScale.vue";
 import OpenLayersScalePrint from "./openlayers/OpenLayersScalePrint.vue";
+import OpenLayersSingleClickHandler from "./openlayers/OpenLayersSingleClickHandler.vue";
 
 const {
   layers,
@@ -37,6 +38,7 @@ const {
 const emit = defineEmits<{
   layerError: [uuid: string, error: Error];
   "update:compareRatio": [ratio: number];
+  "map-click": [event: MapClickEvent];
 }>();
 
 function emitLayerError(uuid: string, error: Error) {
@@ -74,12 +76,14 @@ const layersWithZIndex = computed(() => {
           :clipped-layer="compareSliderClippedLayer"
           @update:compare-ratio="emit('update:compareRatio', $event)"
         />
+        <OpenLayersSingleClickHandler @map-click="emit('map-click', $event)" />
       </template>
       <template v-else-if="displayMode === 'print'">
         <OpenLayersScalePrint />
       </template>
       <template v-else-if="displayMode === 'embed'">
         <OpenLayersScale />
+        <OpenLayersSingleClickHandler @map-click="emit('map-click', $event)" />
       </template>
     </OpenLayersMap>
   </div>

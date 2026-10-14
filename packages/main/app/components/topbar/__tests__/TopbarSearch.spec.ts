@@ -15,6 +15,7 @@ const searchStore = reactive({
   coordinateResult: null,
   isSearching: false,
   hasError: false,
+  enableCmsSearch: true,
   get hasResults() {
     return this.results.length > 0;
   },
@@ -40,6 +41,7 @@ vi.mock("@/composables/useSearchSelection", () => ({
 }));
 
 mockNuxtImport("useToaster", () => () => ({ showError: vi.fn() }));
+mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 
 const locale = ref("de");
 
@@ -49,7 +51,6 @@ vi.mock("vue-i18n", () => ({
 
 vi.mock("@swissgeo/skeleton", () => ({
   useSearchStore: () => searchStore,
-  useDatasetPanelStore: () => ({ openDatasetPanel: vi.fn() }),
 }));
 
 vi.mock("@swissgeo/shared", () => ({
@@ -66,7 +67,14 @@ const stubs = {
     props: ["items", "modelValue"],
     template: "<div><slot name='map' /><slot name='contentPages' /></div>",
   },
-  UInput: { template: "<input />" },
+  // renders again when the spinner flips, like the real input, so a value
+  // bound to something that lags behind the typing would be put back
+  UInput: {
+    props: ["modelValue", "loading"],
+    emits: ["update:modelValue"],
+    template:
+      "<span><input :value='modelValue' :data-loading='loading' @input=\"$emit('update:modelValue', $event.target.value)\" /><slot name='trailing' /></span>",
+  },
   UButton: { template: "<button />" },
   UIcon: { template: "<span />" },
   ClientOnly: { template: "<div><slot /></div>" },
@@ -112,6 +120,7 @@ describe("TopbarSearch", () => {
     searchStore.query = "";
     searchStore.results = [];
     searchStore.isSearching = false;
+    searchStore.enableCmsSearch = true;
     locale.value = "de";
     handleResultSelection.mockClear();
     searchStore.setSearchQuery.mockClear();
@@ -130,6 +139,32 @@ describe("TopbarSearch", () => {
     expect(contentTab.text()).toContain("Über uns");
     // The location result belongs to the map tab, not this one.
     expect(contentTab.text()).not.toContain("bern");
+  });
+
+  it("hides the content pages tab when CMS search is disabled", () => {
+    searchStore.enableCmsSearch = false;
+    searchStore.query = "uns";
+    searchStore.results = [content("42", "Über uns"), location("bern")];
+
+    const wrapper = render();
+    const items = tabs(wrapper);
+
+    expect(items).toHaveLength(1);
+    expect(items[0]?.label).toBe("search.map_tab");
+    expect(
+      wrapper.find("[data-testid='content-search-results']").exists(),
+    ).toBe(false);
+  });
+
+  it("stays on the map tab when CMS search is disabled and only CMS pages hit", async () => {
+    searchStore.enableCmsSearch = false;
+    const wrapper = render();
+
+    searchStore.query = "zecken";
+    searchStore.results = [content("42", "Zecken")];
+    await nextTick();
+
+    expect(activeTab(wrapper)).toBe("map");
   });
 
   it("counts the CMS results on the content tab badge only", () => {
@@ -255,5 +290,128 @@ describe("TopbarSearch", () => {
     await wrapper.find("[data-testid='search-results'] li").trigger("click");
 
     expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("ber");
+  });
+
+  it("empties the field when a layer is selected", async () => {
+    searchStore.query = "wald";
+    searchStore.results = [
+      {
+        resultType: "LAYER",
+        id: "waldgrenzen",
+        title: "Statische Waldgrenzen",
+        sanitizedTitle: "Statische Waldgrenzen",
+        description: "",
+        layerId: "waldgrenzen",
+      } as SearchResult,
+    ];
+
+    const wrapper = render();
+    await wrapper.find("[data-testid='search-results'] li").trigger("click");
+
+    expect(searchStore.clearSearch).toHaveBeenCalled();
+    expect(searchStore.keepSelectedQuery).not.toHaveBeenCalled();
+  });
+
+  it("closes results when opening dataset details and keeps the search available", async () => {
+    const wrapper = render();
+    searchStore.query = "wald";
+    searchStore.results = [{ ...location("waldgrenzen"), resultType: "LAYER" }];
+    await nextTick();
+    expect(wrapper.emitted("update:open")?.at(-1)).toEqual([true]);
+
+    await wrapper.get("[data-testid='search-result-info-0']").trigger("click");
+
+    expect(wrapper.emitted("update:open")?.at(-1)).toEqual([false]);
+    expect(handleResultSelection).not.toHaveBeenCalled();
+    expect(searchStore.clearSearch).not.toHaveBeenCalled();
+    expect(searchStore.keepSelectedQuery).not.toHaveBeenCalled();
+    expect(searchStore.query).toBe("wald");
+
+    await wrapper.get("input").trigger("click");
+    expect(wrapper.emitted("update:open")?.at(-1)).toEqual([true]);
+  });
+
+  describe("typing", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+      // the store writes its query on these, the field compares against it
+      searchStore.setSearchQuery.mockImplementation((value: string) => {
+        searchStore.query = value;
+      });
+      searchStore.keepSelectedQuery.mockImplementation((title: string) => {
+        searchStore.query = title;
+      });
+      searchStore.clearSearch.mockImplementation(() => {
+        searchStore.query = "";
+      });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+      searchStore.setSearchQuery.mockReset();
+      searchStore.keepSelectedQuery.mockReset();
+      searchStore.clearSearch.mockReset();
+    });
+
+    async function type(input: HTMLInputElement, characters: string) {
+      for (const character of characters) {
+        input.value += character;
+        input.dispatchEvent(new Event("input"));
+        await nextTick();
+      }
+    }
+
+    it("searches the latest text once the typing pauses", async () => {
+      const wrapper = render();
+
+      await type(wrapper.get("input").element, "bern");
+      expect(searchStore.setSearchQuery).not.toHaveBeenCalled();
+
+      vi.advanceTimersByTime(100);
+      await nextTick();
+      expect(searchStore.setSearchQuery).toHaveBeenCalledExactlyOnceWith(
+        "bern",
+        "de",
+      );
+    });
+
+    it("keeps the typed text when a search ends before the next one starts", async () => {
+      const wrapper = render();
+      const input = wrapper.get("input").element;
+
+      await type(input, "asdf");
+      searchStore.isSearching = true;
+      await nextTick();
+      searchStore.isSearching = false;
+      await nextTick();
+
+      expect(input.value).toBe("asdf");
+    });
+
+    it("does not search the name of a result selected while the typing is pending", async () => {
+      searchStore.query = "wa";
+      searchStore.results = [location("waldgrenzen")];
+      const wrapper = render();
+
+      await type(wrapper.get("input").element, "ld");
+      await wrapper.find("[data-testid='search-results'] li").trigger("click");
+      vi.advanceTimersByTime(100);
+      await nextTick();
+
+      expect(wrapper.get("input").element.value).toBe("waldgrenzen");
+      expect(searchStore.setSearchQuery).not.toHaveBeenCalled();
+    });
+
+    it("does not search the text cleared while the typing is pending", async () => {
+      const wrapper = render();
+
+      await type(wrapper.get("input").element, "bern");
+      await wrapper.get("button[aria-label='Clear search']").trigger("click");
+      vi.advanceTimersByTime(100);
+      await nextTick();
+
+      expect(wrapper.get("input").element.value).toBe("");
+      expect(searchStore.setSearchQuery).not.toHaveBeenCalled();
+    });
   });
 });

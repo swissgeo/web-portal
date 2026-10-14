@@ -18,6 +18,7 @@
   },
   "search": {
     "placeholder": "Ort, Layer oder Koordinaten suchen...",
+    "buttonLabel": "Suchen",
     "map_tab": "Karte",
     "content_pages_tab": "Inhaltsseiten",
     "locations_results_header": "Orte",
@@ -223,7 +224,119 @@
       "buttonTitle": "3D"
     },
     "drawing": {
-      "buttonTitle": "Zeichnen"
+      "buttonTitle": "Zeichnen",
+      "close": "Zeichenfenster schliessen",
+      "featureCount": "Keine Objekte auf der Karte | {count} Objekt auf der Karte | {count} Objekte auf der Karte",
+      "tools": {
+        "label": "Zeichenwerkzeuge",
+        "select": "Auswählen",
+        "polyline": "Linie",
+        "polygon": "Polygon",
+        "circle": "Kreis",
+        "text": "Text",
+        "marker": "Symbol"
+      },
+      "hints": {
+        "edit": "Ziehe die Griffe, um die Form des Objekts zu ändern.",
+        "select": "Wähle ein Objekt auf der Karte aus, um seinen Stil zu bearbeiten.",
+        "chooseTool": "Wähle ein Werkzeug, um auf der Karte zu zeichnen.",
+        "place": "Klicke auf die Karte, um dein Objekt zu platzieren.",
+        "circle": "Klicke, um den Mittelpunkt festzulegen, und dann erneut, um den Radius festzulegen.",
+        "addPoints": "Klicke, um Punkte hinzuzufügen. Doppelklicke zum Abschliessen.",
+        "drawing": "Du zeichnest gerade ein neues Objekt.",
+        "deletePoint": "Umschalt + Klick auf einen Punkt, um ihn zu löschen."
+      },
+      "cancel": "Zeichnen abbrechen",
+      "selection": "Auswahl",
+      "done": "Fertig",
+      "editGeometry": "Geometrie bearbeiten",
+      "delete": "Löschen",
+      "finishEditing": "Bearbeitung abschliessen",
+      "export": "Exportieren",
+      "sync": "Zeichnung synchronisieren",
+      "clear": "Zeichenebene leeren",
+      "shareLink": "Freigabelink",
+      "copy": "In die Zwischenablage kopieren",
+      "allowEditing": "Bearbeitung erlauben",
+      "shareErrorNodata": "Keine Zeichnungsdaten verfügbar.",
+      "shareErrorAlreadyInProgress": "Eine Freigabeoperation ist bereits im Gange.",
+      "formats": {
+        "geojson": "GeoJSON",
+        "gpxTrack": "GPX-Track",
+        "gpxRoute": "GPX-Route",
+        "kml": "KML",
+        "kmz": "KMZ"
+      },
+      "properties": {
+        "generic": "Objekteigenschaften",
+        "LineString": "Linieneigenschaften",
+        "Polygon": "Polygoneigenschaften",
+        "Circle": "Kreiseigenschaften",
+        "Point": "Text- und Markierungseigenschaften"
+      },
+      "fields": {
+        "title": "Titel",
+        "titlePlaceholder": "Titel hinzufügen",
+        "description": "Beschreibung",
+        "descriptionPlaceholder": "Beschreibung hinzufügen",
+        "optional": "Optional"
+      },
+      "style": {
+        "appearance": "Darstellung",
+        "fillColor": "Füllfarbe",
+        "outlineColor": "Umrissfarbe",
+        "outlineWidth": "Umrissbreite",
+        "lineColor": "Linienfarbe",
+        "lineWidth": "Linienbreite",
+        "showTitle": "Titel anzeigen",
+        "showDescription": "Beschreibung anzeigen",
+        "textSize": "Textgrösse",
+        "placement": "Platzierung",
+        "relativeToMarker": "Relativ zur Markierung",
+        "textColor": "Textfarbe",
+        "textHaloColor": "Farbe des Texthalos",
+        "showMarker": "Markierung anzeigen",
+        "markerSize": "Markierungsgrösse"
+      },
+      "metrics": {
+        "length": "Länge",
+        "perimeter": "Umfang",
+        "radius": "Radius",
+        "area": "Fläche"
+      },
+      "placement": {
+        "label": "Textplatzierung",
+        "north-west": "Oben links",
+        "north": "Oben",
+        "north-east": "Oben rechts",
+        "west": "Links",
+        "center": "Mitte",
+        "east": "Rechts",
+        "south-west": "Unten links",
+        "south": "Unten",
+        "south-east": "Unten rechts"
+      },
+      "sizes": {
+        "xsmall": "Sehr klein",
+        "small": "Klein",
+        "medium": "Mittel",
+        "large": "Gross",
+        "xlarge": "Sehr gross"
+      },
+      "symbols": {
+        "collection": "Symbolsammlung",
+        "color": "Symbolfarbe",
+        "label": "Markierungssymbole",
+        "empty": "Keine Symbole verfügbar.",
+        "select": "Symbol auswählen: {name}",
+        "collections": {
+          "default": "Standardsymbole",
+          "babs-v2-de": "Zivile Signaturen (Deutsch)",
+          "babs-v2-fr": "Zivile Signaturen (Französisch)",
+          "babs-v2-it": "Zivile Signaturen (Italienisch)"
+        }
+      },
+      "title": "Zeichnen"
     },
     "measure": {
       "buttonTitle": "Messen"
@@ -239,21 +352,27 @@
       "title": "Eine Datei oder URL importieren",
       "description": "Akzeptierte Dateitypen: {types}",
       "tabData": "Daten",
+      "tabDrawing": "Zeichnung",
       "tabUrl": "URL",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Durchsuchen...",
       "noFileSelected": "Keine Datei ausgewählt",
       "importFileButton": "Datei importieren",
-      "importUrlButton": "Von URL importieren",
+      "importUrlButton": "Zeichnung hinzufügen",
       "loadingMessage": "Datei wird importiert...",
       "successMessage": "Datei erfolgreich importiert: {fileName}",
       "drawingSuccessMessage": "Zeichnung erfolgreich importiert",
       "fileUrlDescription": "Oder eine Datei von einer URL importieren ({types}):",
       "fileUrlPlaceholder": "https://example.com/data.gpx",
       "importFileUrlButton": "Von URL importieren",
+      "cancelImport": "Abbrechen",
+      "clearAndImportAsAdmin": "Löschen und als Administrator importieren",
+      "clearAndImportAsNonAdmin": "Löschen und importieren",
       "errorMessages": {
+        "invalidDrawingUrl": "Die Zeichnungs-URL ist ungültig",
+        "invalidDrawingAdminId": "Die Administrator-ID der Zeichnung ist ungültig",
         "generalError": "Datei konnte nicht importiert werden",
-        "noFileSelected": "Bitte w\u00e4hlen Sie zuerst eine Datei aus",
+        "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus",
         "noUrlEntered": "Bitte geben Sie eine URL ein",
         "fileSizeWarning": "Dateigröße ist {fileSize}MB, was die empfohlene maximale Größe von {maxSize}MB überschreitet",
         "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize}MB)",
@@ -261,8 +380,14 @@
         "kmlFetchFailed": "KML konnte nicht geladen werden: {status}",
         "noKmlFound": "Keine KML-Zeichnung in der angegebenen URL gefunden",
         "domainNotAllowed": "Das Abrufen von {domain} ist nicht erlaubt",
-        "unsupportedUrlType": "Nicht unterst\u00fctzter Dateityp. Die URL muss auf {types} enden",
-        "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})"
+        "unsupportedUrlType": "Nicht unterstützter Dateityp. Die URL muss auf {types} enden",
+        "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})",
+        "adminRequired": "Zum Importieren dieser Zeichnung sind Administratorrechte erforderlich"
+      },
+      "infoMessages": {
+        "importPart1": "Das Importieren einer {provenance}-Zeichnung erfordert das Löschen der vorhandenen Zeichnung. Nach dem Import können Sie die Zeichnung weiter bearbeiten.",
+        "adminImportPart2": "Wenn die Zeichnung als Administrator importiert wird, können Sie sie mit der Swissgeo-Datenbank unter derselben ID wie die importierte synchronisieren, und andere Benutzer sehen Ihre Änderungen.",
+        "nonAdminImportPart2": "Das Teilen der Zeichnung wird dann mit anderen Benutzern möglich sein, jedoch unter einer anderen Zeichen-ID als der importierten."
       },
       "close": "Schließen"
     },
@@ -270,13 +395,39 @@
       "buttonTitle": "Teilen",
       "title": "Teilen",
       "link": {
+        "tabLabel": "Link teilen",
         "title": "Freigabelink",
-        "generateButton": "Freigabelink generieren"
+        "description": "Teilen Sie die aktuelle Kartenansicht mit anderen oder kopieren Sie die URL.",
+        "generateButton": "Freigabelink generieren",
+        "drawingEditableLabel": "Zeichnung editierbar",
+        "urlLabel": "URL",
+        "copyButton": "Kopieren",
+        "socialMediaLabel": "Via Social Media",
+        "qrCodeLabel": "Link als Qr-Code",
+        "shareText": "Schauen Sie sich diese Karte an",
+        "ariaLabel": {
+          "copyToClipboard": "In die Zwischenablage kopieren",
+          "email": "Per E-Mail teilen",
+          "facebook": "Auf Facebook teilen",
+          "linkedin": "Auf LinkedIn teilen",
+          "whatsapp": "Auf WhatsApp teilen"
+        }
       },
       "embed": {
-        "title": "Einbetten",
+        "tabLabel": "Einbetten",
+        "title": "Karte einbetten",
+        "description": "Betten Sie die Karte mit dem Link in Ihre eigene Umgebung ein.",
         "generateButton": "Einbettungscode generieren",
-        "zoomOnlyCtrlLabel": "Zoom nur mit Strg/Cmd-Taste aktivieren"
+        "zoomOnlyCtrlLabel": "Zoom nur mit Strg/Cmd-Taste aktivieren",
+        "sizeLabel": "Grösse",
+        "sizeSmall": "Klein",
+        "sizeMedium": "Mittel",
+        "sizeLarge": "Gross",
+        "sizeCustom": "Benutzerdefiniert",
+        "customWidthLabel": "Breite",
+        "customHeightLabel": "Höhe",
+        "pixelUnit": "Pixel",
+        "fullWidthLabel": "Volle (100%) Breite"
       },
       "ariaLabel": {
         "close": "Schließen",
@@ -291,11 +442,12 @@
   },
   "backgroundLayers": {
     "title": "Angezeigte Karten",
-    "voidMap": "Leere Karte",
+    "label": "Hintergrund",
+    "voidMap": "Kein Hintergrund",
     "backgroundMap": "Hintergrundkarte",
     "colorMap": "Karte farbig",
-    "greyMap": "Karte SW",
-    "swissimage": "Luftbilder"
+    "greyMap": "Karte schwarzweiss",
+    "swissimage": "Luftbild"
   },
   "toaster": {
     "warningTitle": "Warnung",
@@ -326,17 +478,37 @@
     }
   },
   "dataset": {
+    "legendLoading": "Legende wird geladen…",
+    "legendError": "Die Legende konnte nicht geladen werden.",
+    "overview": "Überblick",
+    "dataAccess": "Datenbezug",
+    "metadata": "Metadaten",
+    "serviceLoading": "Dienstadresse wird geladen…",
+    "serviceError": "Die Dienstadresse konnte nicht geladen werden.",
     "abstract": "Beschreibung",
     "contacts": "Kontakte",
     "links": "Links",
     "services": "Dienste",
     "languages": "Sprachen",
     "addToMap": "Zur Karte hinzufügen",
+    "removeFromMap": "Aus Karte entfernen",
+    "details": "Datensatzdetails",
+    "expandPanel": "Detailansicht vergrößern",
+    "collapsePanel": "Detailansicht verkleinern",
     "alreadyOnMap": "Bereits auf der Karte",
     "viewDetailPage": "Detailseite anzeigen",
     "showOnMap": "Auf der Karte anzeigen",
+    "backToCatalog": "Zurück zum Datenkatalog",
+    "close": "Datensatzdetails schliessen",
     "backToMap": "Zurück zur Karte",
-    "addToMapError": "Ebene konnte nicht zur Karte hinzugefügt werden"
+    "addToMapError": "Ebene konnte nicht zur Karte hinzugefügt werden",
+    "openService": "Dienst in neuem Tab öffnen",
+    "identifier": "Identifikator",
+    "mapServices": "WMS / WMTS",
+    "otherAccess": "Weitere Bezugsmöglichkeiten",
+    "format": "Format",
+    "serviceUrl": "URL / Service",
+    "viewGeocat": "Auf geocat.ch ansehen"
   },
   "elevationProfile": {
     "windowTitle": "Höhenprofil",
@@ -400,6 +572,7 @@
   },
   "topbar": {
     "home": "Startseite",
+    "map": "Karte",
     "geoDataAndMaps": "Geodaten und Karten",
     "howToUseGeodata": "Wie kann ich Geodaten nutzen?",
     "viewGeodataInMapViewer": "Geodaten im Kartenviewer anschauen",
@@ -425,7 +598,6 @@
     "organisation": "Organisation",
     "legalBasis": "Rechtliche Grundlagen",
     "mediaInformation": "Medieninformationen",
-    "map": "Karte",
     "login": "Anmelden",
     "modeSwitch": "Mode switch"
   },
@@ -446,6 +618,11 @@
       "openPage": "Legendenseite öffnen"
     }
   },
+  "layerCart": {
+    "close": "Schliessen",
+    "expand": "Aktive Ebenen anzeigen",
+    "collapse": "Aktive Ebenen ausblenden"
+  },
   "layerCatalog": {
     "title": "Daten-Katalog",
     "table": {
@@ -458,6 +635,13 @@
     "retry": "Erneut versuchen",
     "searchLabel": "Ebenen durchsuchen",
     "searchPlaceholder": "Suchen",
-    "close": "Schliessen"
+    "close": "Schliessen",
+    "expand": "Daten-Katalog anzeigen",
+    "collapse": "Daten-Katalog ausblenden"
+  },
+  "featureInfo": {
+    "blockedContent": "To Translate - Feature Info Blocked Content",
+    "noInformation": "To Translate - Feature Info No Information",
+    "popupTitle": "To Translate - Feature Info Popup Title"
   }
 }

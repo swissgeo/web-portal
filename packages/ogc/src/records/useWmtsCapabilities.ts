@@ -6,7 +6,7 @@ import { registerProj4 } from "@swissgeo/coordinates";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computedAsync } from "@vueuse/core";
 import proj4 from "proj4";
-import { computed, watchEffect } from "vue";
+import { computed, ref, shallowRef, watchEffect } from "vue";
 
 import type { Legend } from "@/types/Capabilities";
 import type { Service } from "@/types/Records";
@@ -24,29 +24,37 @@ export function useWmtsCapabilities(
   onError: (error: unknown) => void = () => {},
 ) {
   const { capabilityUrl } = useCapabilities(serviceData);
+  const isFetching = ref(false);
+  const error = shallowRef<unknown>(null);
 
   // Keyed only on `capabilityUrl` so switching layers on the same service
   // reuses the already-fetched/parsed endpoint instead of re-fetching it.
-  const endpoint = computedAsync(async (onCancel) => {
-    const url = capabilityUrl.value;
-    if (!url) {
-      return null;
-    }
-
-    let cancelled = false;
-    onCancel(() => {
-      cancelled = true;
-    });
-
-    try {
-      return await new WmtsEndpoint(url).isReady();
-    } catch (error) {
-      if (!cancelled) {
-        onError(error);
+  const endpoint = computedAsync(
+    async (onCancel) => {
+      error.value = null;
+      const url = capabilityUrl.value;
+      if (!url) {
+        return null;
       }
-      return null;
-    }
-  }, null);
+
+      let cancelled = false;
+      onCancel(() => {
+        cancelled = true;
+      });
+
+      try {
+        return await new WmtsEndpoint(url).isReady();
+      } catch (cause) {
+        if (!cancelled) {
+          error.value = cause;
+          onError(cause);
+        }
+        return null;
+      }
+    },
+    null,
+    { evaluating: isFetching },
+  );
 
   const wmtsData = computed(() => {
     if (!endpoint.value || !layerId.value) {
@@ -73,6 +81,8 @@ export function useWmtsCapabilities(
 
   return {
     capabilityUrl,
+    isFetching,
+    error,
     wmtsData,
   };
 }

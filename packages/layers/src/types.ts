@@ -13,6 +13,10 @@ export interface LayerInfo {
   displayName: string;
   abstract?: string;
   attribution?: LayerAttribution;
+  featureInfoInformation?: {
+    protocol?: string;
+    baseUrl?: string;
+  };
 }
 
 export interface Layer {

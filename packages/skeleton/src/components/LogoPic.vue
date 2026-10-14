@@ -3,8 +3,9 @@ import { inject } from "vue";
 
 defineEmits(["logoClick"]);
 
-const { condensed = false } = defineProps<{
+const { condensed = false, darkMode = false } = defineProps<{
   condensed?: boolean;
+  darkMode?: boolean;
 }>();
 
 const isDesktop = inject<boolean>("isDesktop", true);
@@ -19,7 +20,14 @@ const isDesktop = inject<boolean>("isDesktop", true);
     @click="$emit('logoClick')"
   >
     <img
+      v-if="!darkMode"
       src="@/assets/images/swissgeo_rgb_icon.svg"
+      class="h-5"
+      data-testid="sidebar-logo-pic-image-condensed"
+    />
+    <img
+      v-else
+      src="@/assets/images/swissgeo_sw_icon.svg"
       class="h-5"
       data-testid="sidebar-logo-pic-image-condensed"
     />
@@ -31,11 +39,18 @@ const isDesktop = inject<boolean>("isDesktop", true);
     data-testid="sidebar-logo-pic-extended"
   >
     <div
-      class="ml-3.5 flex translate-x-[0.5px] cursor-pointer items-center justify-center p-2"
+      class="flex cursor-pointer items-center justify-center py-2"
       @click="$emit('logoClick')"
     >
       <img
+        v-if="!darkMode"
         src="@/assets/images/swissgeo_rgb_sek.svg"
+        class="h-5"
+        data-testid="sidebar-logo-pic-image-extended"
+      />
+      <img
+        v-else
+        src="@/assets/images/swissgeo_neg_sek.svg"
         class="h-5"
         data-testid="sidebar-logo-pic-image-extended"
       />

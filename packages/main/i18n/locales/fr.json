@@ -17,6 +17,7 @@
   },
   "search": {
     "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",
+    "buttonLabel": "Rechercher",
     "map_tab": "Carte",
     "content_pages_tab": "Pages de contenu",
     "locations_results_header": "Lieux",
@@ -222,7 +223,119 @@
       "buttonTitle": "3D"
     },
     "drawing": {
-      "buttonTitle": "Dessiner"
+      "buttonTitle": "Dessiner",
+      "close": "Fermer le panneau de dessin",
+      "featureCount": "Aucun objet sur la carte | {count} objet sur la carte | {count} objets sur la carte",
+      "tools": {
+        "label": "Outils de dessin",
+        "select": "Sélectionner",
+        "polyline": "Ligne",
+        "polygon": "Polygone",
+        "circle": "Cercle",
+        "text": "Texte",
+        "marker": "Symbole"
+      },
+      "hints": {
+        "edit": "Déplacez les poignées pour modifier la forme de l’objet.",
+        "select": "Sélectionnez un objet sur la carte pour modifier son style.",
+        "chooseTool": "Choisissez un outil pour commencer à dessiner sur la carte.",
+        "place": "Cliquez sur la carte pour placer votre objet.",
+        "circle": "Cliquez pour définir le centre, puis cliquez pour définir le rayon.",
+        "addPoints": "Cliquez pour ajouter des points. Double-cliquez pour terminer.",
+        "drawing": "Vous dessinez un nouvel objet.",
+        "deletePoint": "Maj + clic sur un point pour le supprimer."
+      },
+      "cancel": "Annuler le dessin",
+      "selection": "Sélection",
+      "done": "Terminé",
+      "editGeometry": "Modifier la géométrie",
+      "delete": "Supprimer",
+      "finishEditing": "Terminer la modification",
+      "export": "Exporter",
+      "sync": "Synchroniser le dessin",
+      "clear": "Vider la couche de dessin",
+      "shareLink": "Lien de partage",
+      "copy": "Copier dans le presse-papiers",
+      "allowEditing": "Autoriser la modification",
+      "shareErrorNodata": "Erreur de partage : aucune donnée de dessin disponible.",
+      "shareErrorAlreadyInProgress": "Erreur de partage : une opération de partage est déjà en cours.",
+      "formats": {
+        "geojson": "GeoJSON",
+        "gpxTrack": "Trace GPX",
+        "gpxRoute": "Itinéraire GPX",
+        "kml": "KML",
+        "kmz": "KMZ"
+      },
+      "properties": {
+        "generic": "Propriétés de l’objet",
+        "LineString": "Propriétés de la ligne",
+        "Polygon": "Propriétés du polygone",
+        "Circle": "Propriétés du cercle",
+        "Point": "Propriétés du texte et du repère"
+      },
+      "fields": {
+        "title": "Titre",
+        "titlePlaceholder": "Ajouter un titre",
+        "description": "Description",
+        "descriptionPlaceholder": "Ajouter une description",
+        "optional": "Facultatif"
+      },
+      "style": {
+        "appearance": "Apparence",
+        "fillColor": "Couleur de remplissage",
+        "outlineColor": "Couleur du contour",
+        "outlineWidth": "Épaisseur du contour",
+        "lineColor": "Couleur de la ligne",
+        "lineWidth": "Épaisseur de la ligne",
+        "showTitle": "Afficher le titre",
+        "showDescription": "Afficher la description",
+        "textSize": "Taille du texte",
+        "placement": "Position",
+        "relativeToMarker": "Par rapport au repère",
+        "textColor": "Couleur du texte",
+        "textHaloColor": "Couleur du halo du texte",
+        "showMarker": "Afficher le repère",
+        "markerSize": "Taille du repère"
+      },
+      "metrics": {
+        "length": "Longueur",
+        "perimeter": "Périmètre",
+        "radius": "Rayon",
+        "area": "Surface"
+      },
+      "placement": {
+        "label": "Position du texte",
+        "north-west": "En haut à gauche",
+        "north": "En haut",
+        "north-east": "En haut à droite",
+        "west": "À gauche",
+        "center": "Au centre",
+        "east": "À droite",
+        "south-west": "En bas à gauche",
+        "south": "En bas",
+        "south-east": "En bas à droite"
+      },
+      "sizes": {
+        "xsmall": "Très petit",
+        "small": "Petit",
+        "medium": "Moyen",
+        "large": "Grand",
+        "xlarge": "Très grand"
+      },
+      "symbols": {
+        "collection": "Collection de symboles",
+        "color": "Couleur du symbole",
+        "label": "Symboles de repère",
+        "empty": "Aucun symbole disponible.",
+        "select": "Sélectionner le symbole : {name}",
+        "collections": {
+          "default": "Symboles par défaut",
+          "babs-v2-de": "Signes conventionnels civils (allemand)",
+          "babs-v2-fr": "Signes conventionnels civils (français)",
+          "babs-v2-it": "Signes conventionnels civils (italien)"
+        }
+      },
+      "title": "Dessin"
     },
     "measure": {
       "buttonTitle": "Mesurer"
@@ -238,19 +351,25 @@
       "title": "Importer un fichier ou une URL",
       "description": "Types de fichiers acceptés : {types}",
       "tabData": "Données",
+      "tabDrawing": "Dessin",
       "tabUrl": "URL",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Parcourir...",
       "noFileSelected": "Aucun fichier sélectionné",
       "importFileButton": "Importer le fichier",
-      "importUrlButton": "Importer depuis l'URL",
+      "importUrlButton": "Ajouter le dessin",
       "loadingMessage": "Importation du fichier...",
       "successMessage": "Fichier importé avec succès : {fileName}",
       "drawingSuccessMessage": "Dessin importé avec succès",
       "fileUrlDescription": "Ou importer un fichier depuis une URL ({types}) :",
       "fileUrlPlaceholder": "https://example.com/data.gpx",
       "importFileUrlButton": "Importer depuis l'URL",
+      "cancelImport": "Annuler",
+      "clearAndImportAsAdmin": "Effacer et importer en tant qu'administrateur",
+      "clearAndImportAsNonAdmin": "Effacer et importer",
       "errorMessages": {
+        "invalidDrawingUrl": "L’URL du dessin est invalide",
+        "invalidDrawingAdminId": "L’identifiant administrateur du dessin est invalide",
         "generalError": "Échec de l'importation du fichier",
         "noFileSelected": "Veuillez d'abord sélectionner un fichier",
         "noUrlEntered": "Veuillez entrer une URL",
@@ -261,7 +380,13 @@
         "noKmlFound": "Aucun dessin KML trouvé dans l'URL fournie",
         "domainNotAllowed": "La récupération depuis {domain} n'est pas autorisée",
         "unsupportedUrlType": "Type de fichier non supporté. L'URL doit se terminer par {types}",
-        "fetchFailed": "Échec de la récupération du fichier depuis l'URL (HTTP {status})"
+        "fetchFailed": "Échec de la récupération du fichier depuis l'URL (HTTP {status})",
+        "adminRequired": "Des droits d'administrateur sont nécessaires pour importer ce dessin"
+      },
+      "infoMessages": {
+        "importPart1": "Importer un dessin {provenance} nécessite de supprimer le dessin existant. Après l'importation, vous pourrez continuer à modifier le dessin.",
+        "adminImportPart2": "Si le dessin est importé en tant qu'administrateur, vous pourrez le synchroniser avec la base de données Swissgeo sous le même identifiant que celui importé et les autres utilisateurs verront vos modifications.",
+        "nonAdminImportPart2": "Le partage du dessin sera alors possible avec d'autres utilisateurs, mais sous un identifiant de dessin différent de celui importé."
       },
       "close": "Fermer"
     },
@@ -269,13 +394,39 @@
       "buttonTitle": "Partager",
       "title": "Partager",
       "link": {
+        "tabLabel": "Partager le lien",
         "title": "Lien de partage",
-        "generateButton": "Générer le lien de partage"
+        "description": "Partagez la vue cartographique actuelle avec d'autres ou copiez l'URL.",
+        "generateButton": "Générer le lien de partage",
+        "drawingEditableLabel": "Dessin modifiable",
+        "urlLabel": "URL",
+        "copyButton": "Copier",
+        "socialMediaLabel": "Via les réseaux sociaux",
+        "qrCodeLabel": "Lien en code QR",
+        "shareText": "Découvrez cette carte",
+        "ariaLabel": {
+          "copyToClipboard": "Copier dans le presse-papiers",
+          "email": "Partager par e-mail",
+          "facebook": "Partager sur Facebook",
+          "linkedin": "Partager sur LinkedIn",
+          "whatsapp": "Partager sur WhatsApp"
+        }
       },
       "embed": {
-        "title": "Intégration",
+        "tabLabel": "Intégrer",
+        "title": "Intégrer la carte",
+        "description": "Intégrez la carte avec le lien dans votre propre environnement.",
         "generateButton": "Générer le code d'intégration",
-        "zoomOnlyCtrlLabel": "Activer le zoom uniquement avec la touche Ctrl/Cmd"
+        "zoomOnlyCtrlLabel": "Activer le zoom uniquement avec la touche Ctrl/Cmd",
+        "sizeLabel": "Taille",
+        "sizeSmall": "Petit",
+        "sizeMedium": "Moyen",
+        "sizeLarge": "Grand",
+        "sizeCustom": "Personnalisé",
+        "customWidthLabel": "Largeur",
+        "customHeightLabel": "Hauteur",
+        "pixelUnit": "px",
+        "fullWidthLabel": "Largeur complète (100%)"
       },
       "ariaLabel": {
         "close": "Fermer",
@@ -290,10 +441,11 @@
   },
   "backgroundLayers": {
     "title": "Cartes affichées",
+    "label": "Fond",
     "voidMap": "Carte vide",
     "backgroundMap": "Carte de fond",
-    "colorMap": "Carte en couleur",
-    "greyMap": "Carte en niveaux de gris",
+    "colorMap": "Carte couleur",
+    "greyMap": "Carte noir et blanc",
     "swissimage": "Imagerie aérienne"
   },
   "toaster": {
@@ -325,17 +477,37 @@
     }
   },
   "dataset": {
+    "legendLoading": "Chargement de la légende…",
+    "legendError": "La légende n’a pas pu être chargée.",
+    "overview": "Aperçu",
+    "dataAccess": "Accès aux données",
+    "metadata": "Métadonnées",
+    "serviceLoading": "Chargement de l’adresse du service…",
+    "serviceError": "L’adresse du service n’a pas pu être chargée.",
     "abstract": "Résumé",
     "contacts": "Contacts",
     "links": "Liens",
     "services": "Services",
     "languages": "Langues",
     "addToMap": "Ajouter à la carte",
+    "removeFromMap": "Retirer de la carte",
+    "details": "Détails du jeu de données",
+    "expandPanel": "Agrandir la vue détaillée",
+    "collapsePanel": "Réduire la vue détaillée",
     "alreadyOnMap": "Déjà sur la carte",
     "viewDetailPage": "Voir la page détaillée",
     "showOnMap": "Voir sur la carte",
+    "backToCatalog": "Retour au catalogue de données",
+    "close": "Fermer les détails du jeu de données",
     "backToMap": "Retour à la carte",
-    "addToMapError": "Impossible d'ajouter la couche à la carte"
+    "addToMapError": "Impossible d'ajouter la couche à la carte",
+    "openService": "Ouvrir le service dans un nouvel onglet",
+    "identifier": "Identifiant",
+    "mapServices": "WMS / WMTS",
+    "otherAccess": "Autres possibilités d’accès",
+    "format": "Format",
+    "serviceUrl": "URL / Service",
+    "viewGeocat": "Consulter sur geocat.ch"
   },
   "elevationProfile": {
     "windowTitle": "Profil d'élévation",
@@ -397,6 +569,36 @@
     "orientationPortrait": "portrait",
     "orientationLandscape": "paysage"
   },
+  "topbar": {
+    "home": "Accueil",
+    "map": "Carte",
+    "geoDataAndMaps": "Géodonnées et cartes",
+    "howToUseGeodata": "Comment utiliser les géodonnées ?",
+    "viewGeodataInMapViewer": "Consulter les géodonnées dans le visualiseur de cartes",
+    "discoverTopicsAndData": "Découvrir les thèmes et les données",
+    "geoservices": "Géoservices : obtenir et intégrer des données",
+    "searchGeodata": "Rechercher des géodonnées",
+    "newDataAndUpdates": "Nouvelles données et mises à jour",
+    "tutorialsAndHelp": "Tutoriels et aide",
+    "gettingStarted": "Premiers pas dans le visualiseur de cartes",
+    "mapViewerNavigation": "Navigation dans le visualiseur de cartes",
+    "metadataCatalog": "Catalogue de métadonnées",
+    "moreFeatures": "Autres fonctions",
+    "specialistInfo": "Informations spécialisées",
+    "ngdi": "Infrastructure nationale de données géographiques (INDG)",
+    "geobaseData": "Géodonnées de base, modèles de géodonnées et normes",
+    "metadataCatalogSwitzerland": "Catalogue des métadonnées géographiques de la Suisse",
+    "geoInformationFilms": "Vidéos sur la géoinformation",
+    "aboutUs": "À propos de nous",
+    "whatIsSwissgeo": "Qu’est-ce que SWISSGEO ?",
+    "vision": "Vision",
+    "strategy": "Stratégie suisse pour la géoinformation",
+    "keyFigures": "Chiffres clés",
+    "organisation": "Organisation",
+    "legalBasis": "Bases légales",
+    "mediaInformation": "Informations pour les médias",
+    "modeSwitch": "Changer de mode"
+  },
   "layers": {
     "expand": "Afficher les détails de la couche",
     "reorder": "Déplacer la couche (flèche haut/bas)",
@@ -413,5 +615,10 @@
       "openPdf": "Ouvrir la légende en PDF",
       "openPage": "Ouvrir la page de la légende"
     }
+  },
+  "featureInfo": {
+    "blockedContent": "To Translate - Feature Info Blocked Content",
+    "noInformation": "To Translate - Feature Info No Information",
+    "popupTitle": "To Translate - Feature Info Popup Title"
   }
 }

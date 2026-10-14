@@ -1,6 +1,7 @@
 // Search API for web-poc-portal
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { fetchCatalogItems } from "@swissgeo/ogc";
 import { sanitizeHtml } from "@swissgeo/shared";
 
 import type {
@@ -19,19 +20,6 @@ export enum SearchResultTypesEnum {
   feature = "FEATURE",
   coordinate = "COORDINATE",
   content = "CONTENT",
-}
-
-/**
- * Catalog record structure as returned by the OGC API Records `/items` endpoint
- * and consumed by the layer search. Only the fields we map to a search result
- * are declared here.
- */
-export interface CatalogRecord {
-  id: string;
-  properties?: {
-    title?: string;
-    description?: string;
-  };
 }
 
 const REGEX_BOUNDING_BOX = /BOX\(([0-9.]+)\s+([0-9.]+),([0-9.]+)\s+([0-9.]+)\)/;
@@ -165,10 +153,7 @@ export async function searchLocation(
 /**
  * Search for layers in the OGC records catalog (PyGeoAPI).
  *
- * The matching is performed server-side through the OGC API Records `q`
- * full-text parameter. The catalog `/items` endpoint is expected to return a
- * GeoJSON FeatureCollection.
- *
+ * The request is the one the data catalog makes, see `fetchCatalogItems`.
  * Errors (including a non-ok response) are propagated so callers can
  * distinguish a failed request from an empty result set.
  *
@@ -186,21 +171,14 @@ export async function searchLayers(
   abortSignal?: AbortSignal,
   limit: number = 10,
 ): Promise<LayerSearchResult[]> {
-  const url = new URL(catalogUrl);
-  url.searchParams.set("f", "json");
-  url.searchParams.set("q", queryString);
-  url.searchParams.set("lang", lang);
-  url.searchParams.set("limit", String(limit));
+  const data = await fetchCatalogItems(catalogUrl, {
+    lang,
+    limit,
+    q: queryString,
+    signal: abortSignal,
+  });
 
-  const response = await fetch(url.toString(), { signal: abortSignal });
-
-  if (!response.ok) {
-    throw new Error(`Layer search API error: ${response.status}`);
-  }
-
-  const data: { features?: CatalogRecord[] } = await response.json();
-
-  return (data.features ?? []).map((record) => {
+  return data.features.map((record) => {
     const title = record.properties?.title || record.id;
     return {
       resultType: "LAYER" as const,

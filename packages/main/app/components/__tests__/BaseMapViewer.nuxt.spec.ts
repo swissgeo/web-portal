@@ -1,6 +1,8 @@
+import type { Mock } from "vitest";
+
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, nextTick } from "vue";
 
 import BaseMapViewer from "../BaseMapViewer.vue";
 
@@ -11,6 +13,7 @@ import BaseMapViewer from "../BaseMapViewer.vue";
 const {
   clearImportOptions,
   clearLayerDimensions,
+  clearWmsCapability,
   logError,
   removeMapLayer,
   removeSourceLayer,
@@ -19,12 +22,67 @@ const {
 } = vi.hoisted(() => ({
   clearImportOptions: vi.fn(),
   clearLayerDimensions: vi.fn(),
+  clearWmsCapability: vi.fn(),
   logError: vi.fn(),
   removeMapLayer: vi.fn(),
   removeSourceLayer: vi.fn(),
   setBackground: vi.fn(),
   showError: vi.fn(),
 }));
+type SelectedFeatureGeoJson = {
+  type: "Feature";
+  properties: Record<string, string>;
+  geometry: unknown;
+};
+
+type FeatureStoreState = {
+  hasSelectedFeatures: boolean;
+  getFeaturesGeoJSON: {
+    type: "FeatureCollection";
+    features: SelectedFeatureGeoJson[];
+  };
+  $reset: Mock;
+};
+
+const { getFeatureStoreState, setFeatureStoreState } = vi.hoisted(() => {
+  let state: FeatureStoreState | null = null;
+  return {
+    getFeatureStoreState: () => state!,
+    setFeatureStoreState: (built: FeatureStoreState) => {
+      state = built;
+    },
+  };
+});
+
+vi.mock("@swissgeo/feature", async () => {
+  const { reactive } = await import("vue");
+  const state: FeatureStoreState = reactive({
+    hasSelectedFeatures: false,
+    getFeaturesGeoJSON: { type: "FeatureCollection", features: [] },
+    $reset: vi.fn(() => {
+      state.hasSelectedFeatures = false;
+      state.getFeaturesGeoJSON = { type: "FeatureCollection", features: [] };
+    }),
+  });
+  // mirror the real store surface with live (reactive) reads — spreading the
+  // reactive state would snapshot the values and break v-if reactivity
+  const store = {
+    get hasSelectedFeatures() {
+      return state.hasSelectedFeatures;
+    },
+    get getFeaturesGeoJSON() {
+      return state.getFeaturesGeoJSON;
+    },
+    $reset: state.$reset,
+    clearWmsCapability,
+  };
+  setFeatureStoreState(state);
+  return {
+    selectFeatures: vi.fn(),
+    FEATURE_LIMIT: 10,
+    useFeaturesStore: () => store,
+  };
+});
 
 const mockLayers = [
   {
@@ -75,17 +133,32 @@ mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
 mockNuxtImport("useToaster", () => () => ({ showError }));
 
 vi.mock("@swissgeo/dimension", () => ({
-  useDimensionsStore: () => ({ clearLayerDimensions }),
+  // getDimensions: the toolbox store's showTimeSliderButton computed reads it
+  // per layer — the mock must return undefined (no time dimensions) rather
+  // than explode.
+  useDimensionsStore: () => ({
+    clearLayerDimensions,
+    getDimensions: () => undefined,
+  }),
 }));
-vi.mock("@swissgeo/layers", () => {
+vi.mock("@swissgeo/layers", async () => {
+  // refs inside reactive(...): the reactive wrapper auto-unwraps for normal
+  // consumers (`layerStore.layers`), while pinia's storeToRefs — which
+  // toRaw()s the store and only keeps isRef/isReactive values — still finds
+  // the refs. Without this, the drawing store's
+  // `const { layers } = storeToRefs(useLayerStore())` destructured undefined
+  // and crashed its isDrawingLayerInLayerStore computed, aborting
+  // BaseMapViewer's setup mid-way.
+  const { reactive, ref } = await import("vue");
   return {
-    useLayerStore: () => ({
-      layers: mockLayers,
-      backgroundLayer: mockBackgroundLayer,
-      clearImportOptions,
-      removeLayer: removeSourceLayer,
-      setBackground,
-    }),
+    useLayerStore: () =>
+      reactive({
+        layers: ref(mockLayers),
+        backgroundLayer: ref(mockBackgroundLayer),
+        clearImportOptions,
+        removeLayer: removeSourceLayer,
+        setBackground,
+      }),
   };
 });
 
@@ -99,10 +172,6 @@ vi.mock("~/stores/mapViewStore", () => ({
   }),
 }));
 
-// -----------------------------------------------------------------------------
-// Stubs
-// -----------------------------------------------------------------------------
-
 const SourceToMapDataConverterStub = defineComponent({
   name: "SourceToMapDataConverter",
   props: ["sourceBgLayer", "sourceData"],
@@ -113,6 +182,12 @@ const SourceToMapDataConverterStub = defineComponent({
 const ToolboxStub = defineComponent({
   name: "Toolbox",
   template: "<div data-testid='toolbox' />",
+});
+
+const FeatureInfoPopoverStub = defineComponent({
+  name: "FeaturesinfoFeatureInfoPopover",
+  emits: ["close"],
+  template: "<div data-testid='feature-info-popover' />",
 });
 
 const MapModuleStub = defineComponent({
@@ -139,10 +214,6 @@ const MapModuleStub = defineComponent({
   `,
 });
 
-// -----------------------------------------------------------------------------
-// Tests
-// -----------------------------------------------------------------------------
-
 describe("BaseMapViewer", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -152,6 +223,8 @@ describe("BaseMapViewer", () => {
     mockLayers[2]!.opacity = null;
     mockLayers[3]!.opacity = 1;
     mockLayers[4]!.opacity = 0;
+
+    getFeatureStoreState().hasSelectedFeatures = false;
   });
 
   async function createWrapper(props = {}) {
@@ -165,6 +238,7 @@ describe("BaseMapViewer", () => {
           MapModule: MapModuleStub,
           SourceToMapDataConverter: SourceToMapDataConverterStub,
           Toolbox: ToolboxStub,
+          FeaturesinfoFeatureInfoPopover: FeatureInfoPopoverStub,
         },
       },
     });
@@ -184,6 +258,120 @@ describe("BaseMapViewer", () => {
     });
 
     expect(wrapper.find("[data-testid='toolbox']").exists()).toBe(false);
+  });
+
+  describe("feature info popover", () => {
+    it("is not rendered without a selection", async () => {
+      const wrapper = await createWrapper();
+
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(false);
+    });
+
+    it("is rendered when the feature store has a selection", async () => {
+      const wrapper = await createWrapper();
+      getFeatureStoreState().hasSelectedFeatures = true;
+      await nextTick();
+
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(true);
+    });
+
+    it("is not rendered in print mode even with a selection", async () => {
+      getFeatureStoreState().hasSelectedFeatures = true;
+
+      const wrapper = await createWrapper({ displayMode: "print" });
+
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(false);
+    });
+
+    it("resets the feature store and unmounts when the popover emits close", async () => {
+      getFeatureStoreState().hasSelectedFeatures = true;
+      const wrapper = await createWrapper();
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(true);
+
+      wrapper.getComponent(FeatureInfoPopoverStub).vm.$emit("close");
+      await nextTick();
+
+      expect(getFeatureStoreState().$reset).toHaveBeenCalledOnce();
+      expect(getFeatureStoreState().hasSelectedFeatures).toBe(false);
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(false);
+    });
+  });
+
+  describe("selected-features highlight layer", () => {
+    const selectedFeature = {
+      type: "Feature" as const,
+      properties: { featureId: "feat-1", layerUuid: "layer-1" },
+      geometry: { type: "Point", coordinates: [2600000, 1200000] },
+    };
+
+    function seedSelection(): void {
+      getFeatureStoreState().hasSelectedFeatures = true;
+      getFeatureStoreState().getFeaturesGeoJSON = {
+        type: "FeatureCollection",
+        features: [selectedFeature],
+      };
+    }
+
+    function getMapLayersProp(
+      wrapper: Awaited<ReturnType<typeof createWrapper>>,
+    ) {
+      return wrapper.getComponent(MapModuleStub).props("layers") as Array<{
+        uuid: string;
+        format: string;
+        isSystemLayer?: boolean;
+        [key: string]: unknown;
+      }>;
+    }
+
+    it("appends a marked GeoJSON highlight layer (last) when a selection exists", async () => {
+      seedSelection();
+
+      const wrapper = await createWrapper();
+      const layers = getMapLayersProp(wrapper);
+
+      expect(layers).toHaveLength(6);
+      const highlight = layers.at(-1)!;
+      expect(highlight.format).toBe("GeoJSON");
+      expect(highlight.isSystemLayer).toBe(true);
+
+      const geoJsonData = highlight.geoJsonData as {
+        type: string;
+        features: unknown[];
+        crs?: { properties: { name: string } };
+      };
+      expect(geoJsonData.type).toBe("FeatureCollection");
+      expect(geoJsonData.features).toEqual([selectedFeature]);
+      // the collection declares its capture projection so the GeoJSON
+      // pipeline can reproject if the view projection differs
+      expect(geoJsonData.crs?.properties?.name).toBeDefined();
+
+      // styling is defined (values resolved from the design tokens)
+      expect(highlight.geoJsonStyle).toBeDefined();
+    });
+
+    it("adds no highlight layer without a selection", async () => {
+      const wrapper = await createWrapper();
+
+      expect(getMapLayersProp(wrapper)).toHaveLength(5);
+    });
+
+    it("adds no highlight layer in print mode", async () => {
+      seedSelection();
+
+      const wrapper = await createWrapper({ displayMode: "print" });
+
+      expect(getMapLayersProp(wrapper)).toHaveLength(5);
+    });
   });
 
   it("passes source data to SourceToMapDataConverter", async () => {
@@ -243,6 +431,7 @@ describe("BaseMapViewer", () => {
     });
     expect(showError).toHaveBeenCalledWith("error.layerLoad");
     expect(clearLayerDimensions).toHaveBeenCalledWith("layer-2");
+    expect(clearWmsCapability).toHaveBeenCalledWith("layer-2");
     expect(clearImportOptions).toHaveBeenCalledWith("layer-2");
     expect(removeMapLayer).toHaveBeenCalledWith("layer-2");
     expect(removeSourceLayer).toHaveBeenCalledWith("layer-2");

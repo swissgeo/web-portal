@@ -6,7 +6,7 @@ import { useMapViewStore } from "~/stores/mapView";
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 
-export type ToolboxPanelIds = "import" | "share";
+export type ToolboxPanelIds = "import" | "share" | "drawing";
 
 export const useToolboxStore = defineStore("toolbox", () => {
   const { focusMode } = useDrawing();
@@ -15,6 +15,7 @@ export const useToolboxStore = defineStore("toolbox", () => {
   const mapViewStore = useMapViewStore();
   const geolocationStore = useGeolocationStore();
 
+  // showing buttons
   const showFullScreenButton = ref(true);
   const showGeolocationButton = ref(true);
   const showCompassButton = ref(false);
@@ -63,6 +64,10 @@ export const useToolboxStore = defineStore("toolbox", () => {
     return activeDetailPanel.value === panelId;
   }
 
+  function isDrawingActive() {
+    return isPanelActive("drawing");
+  }
+
   return {
     showFullScreenButton,
     showGeolocationButton,
@@ -79,6 +84,7 @@ export const useToolboxStore = defineStore("toolbox", () => {
     showCompareSliderButton,
     focusModeNone,
     activeDetailPanel,
+    isDrawingActive,
     toggleDetailPanel,
     closeDetailPanel,
     isPanelActive,

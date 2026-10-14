@@ -93,7 +93,7 @@ function extractWmsLayers(capaData: string) {
  * This is a deliberate hack: it lets one converter pipeline handle both
  * internal and external layers. See `datamapping/README.md` for context.
  */
-function addLayer(layer: string) {
+async function addLayer(layer: string) {
   const capaUrl = new URL(importUrl.value);
 
   const fakeDataset: Dataset = {
@@ -121,7 +121,7 @@ function addLayer(layer: string) {
     throw new Error("Layer type must be determined before adding a layer");
   }
 
-  layerStore.addLayer(makeServerLayer(fakeDataset));
+  layerStore.addLayer(await makeServerLayer(fakeDataset));
 }
 </script>
 

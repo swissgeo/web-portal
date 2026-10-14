@@ -13,10 +13,12 @@
     "layerCart": "Active layers",
     "map": "Map",
     "collapse": "Collapse the side panel",
-    "expand": "Expand the side panel"
+    "expand": "Expand the side panel",
+    "openLayerCatalog": "Open data catalog"
   },
   "search": {
     "placeholder": "Search for a place, layer or coordinates...",
+    "buttonLabel": "Search",
     "map_tab": "Map",
     "content_pages_tab": "Content pages",
     "locations_results_header": "Places",
@@ -222,7 +224,119 @@
       "buttonTitle": "3D"
     },
     "drawing": {
-      "buttonTitle": "Drawing"
+      "buttonTitle": "Drawing",
+      "title": "Drawing",
+      "close": "Close drawing panel",
+      "featureCount": "No features on the map | {count} feature on the map | {count} features on the map",
+      "tools": {
+        "label": "Drawing tools",
+        "select": "Select",
+        "polyline": "Line",
+        "polygon": "Polygon",
+        "circle": "Circle",
+        "text": "Text",
+        "marker": "Marker"
+      },
+      "hints": {
+        "edit": "Drag the handles to reshape your feature.",
+        "select": "Select a feature on the map to edit its style.",
+        "chooseTool": "Choose a tool to start drawing on the map.",
+        "place": "Click on the map to place your feature.",
+        "circle": "Click to set the centre, then click to set the radius.",
+        "addPoints": "Click to add points. Double-click to finish.",
+        "drawing": "You are currently drawing a new feature.",
+        "deletePoint": "Shift + click a point to delete it."
+      },
+      "cancel": "Cancel drawing",
+      "selection": "Selection",
+      "done": "Done",
+      "editGeometry": "Edit geometry",
+      "delete": "Delete",
+      "finishEditing": "Finish editing",
+      "export": "Export",
+      "sync": "Sync drawing",
+      "clear": "Clear drawing layer",
+      "shareLink": "Share link",
+      "copy": "Copy to clipboard",
+      "allowEditing": "Allow editing",
+      "shareErrorNodata": "No drawing data available.",
+      "shareErrorAlreadyInProgress": "A sharing operation is already in progress.",
+      "formats": {
+        "geojson": "GeoJSON",
+        "gpxTrack": "GPX Track",
+        "gpxRoute": "GPX Route",
+        "kml": "KML",
+        "kmz": "KMZ"
+      },
+      "properties": {
+        "generic": "Feature properties",
+        "LineString": "Line properties",
+        "Polygon": "Polygon properties",
+        "Circle": "Circle properties",
+        "Point": "Text & marker properties"
+      },
+      "fields": {
+        "title": "Title",
+        "titlePlaceholder": "Add a title",
+        "description": "Description",
+        "descriptionPlaceholder": "Add a description",
+        "optional": "Optional"
+      },
+      "style": {
+        "appearance": "Appearance",
+        "fillColor": "Fill color",
+        "outlineColor": "Outline color",
+        "outlineWidth": "Outline width",
+        "lineColor": "Line color",
+        "lineWidth": "Line width",
+        "showTitle": "Show title",
+        "showDescription": "Show description",
+        "textSize": "Text size",
+        "placement": "Placement",
+        "relativeToMarker": "Relative to the marker",
+        "textColor": "Text color",
+        "textHaloColor": "Text halo color",
+        "showMarker": "Show marker",
+        "markerSize": "Marker size"
+      },
+      "metrics": {
+        "length": "Length",
+        "perimeter": "Perimeter",
+        "radius": "Radius",
+        "area": "Area"
+      },
+      "placement": {
+        "label": "Text placement",
+        "north-west": "Top left",
+        "north": "Top",
+        "north-east": "Top right",
+        "west": "Left",
+        "center": "Center",
+        "east": "Right",
+        "south-west": "Bottom left",
+        "south": "Bottom",
+        "south-east": "Bottom right"
+      },
+      "sizes": {
+        "xsmall": "Extra small",
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large",
+        "xlarge": "Extra large"
+      },
+      "symbols": {
+        "collection": "Symbol collection",
+        "color": "Symbol color",
+        "label": "Marker symbols",
+        "empty": "No symbols available.",
+        "select": "Select symbol: {name}",
+        "collections": {
+          "default": "Default symbols",
+          "babs-v2-de": "Civil protection symbols (German)",
+          "babs-v2-fr": "Civil protection symbols (French)",
+          "babs-v2-it": "Civil protection symbols (Italian)"
+        }
+      }
     },
     "measure": {
       "buttonTitle": "Measure"
@@ -243,14 +357,19 @@
       "browseButton": "Browse...",
       "noFileSelected": "No file selected",
       "importFileButton": "Import file",
-      "importUrlButton": "Import from URL",
+      "importUrlButton": "Add drawing",
       "loadingMessage": "Importing file...",
       "successMessage": "Successfully imported {fileName}",
       "drawingSuccessMessage": "Drawing imported successfully",
       "fileUrlDescription": "Or import a file from URL ({types}):",
       "fileUrlPlaceholder": "https://example.com/data.gpx",
       "importFileUrlButton": "Import from URL",
+      "cancelImport": "Cancel",
+      "clearAndImportAsAdmin": "Clear and import as admin",
+      "clearAndImportAsNonAdmin": "Clear and import",
       "errorMessages": {
+        "invalidDrawingUrl": "The drawing URL is invalid",
+        "invalidDrawingAdminId": "The drawing admin ID is invalid",
         "generalError": "Failed to import file",
         "noFileSelected": "Please select a file first",
         "noUrlEntered": "Please enter a URL",
@@ -261,7 +380,13 @@
         "noKmlFound": "No KML drawing found in the provided URL",
         "domainNotAllowed": "Fetching from {domain} is not allowed",
         "unsupportedUrlType": "Unsupported file type. URL must end with {types}",
-        "fetchFailed": "Failed to fetch file from URL (HTTP {status})"
+        "fetchFailed": "Failed to fetch file from URL (HTTP {status})",
+        "adminRequired": "Admin privileges are required to import this drawing"
+      },
+      "infoMessages": {
+        "importPart1": "Importing a {provenance} drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
+        "adminImportPart2": "If imported as an admin, you will be able to synchronize it with the Swissgeo database under the same ID as imported and other users will see your changes.",
+        "nonAdminImportPart2": "Sharing the drawing will then be possible with other users, but under a different drawing ID than the imported one."
       },
       "close": "Close"
     },
@@ -269,13 +394,39 @@
       "buttonTitle": "Share",
       "title": "Share",
       "link": {
+        "tabLabel": "Share link",
         "title": "Share link",
-        "generateButton": "Generate share link"
+        "description": "Share the current map view with others or copy the URL.",
+        "generateButton": "Generate share link",
+        "drawingEditableLabel": "Drawing editable",
+        "urlLabel": "URL",
+        "copyButton": "Copy",
+        "socialMediaLabel": "Via social media",
+        "qrCodeLabel": "Link as QR code",
+        "shareText": "Check out this map",
+        "ariaLabel": {
+          "copyToClipboard": "Copy to clipboard",
+          "email": "Share via email",
+          "facebook": "Share on Facebook",
+          "linkedin": "Share on LinkedIn",
+          "whatsapp": "Share on WhatsApp"
+        }
       },
       "embed": {
-        "title": "Embedding",
+        "tabLabel": "Embedding",
+        "title": "Embed map",
+        "description": "Embed the map with the link into your own environment.",
         "generateButton": "Generate embed code",
-        "zoomOnlyCtrlLabel": "Enable zoom only with Ctrl/Cmd key"
+        "zoomOnlyCtrlLabel": "Enable zoom only with Ctrl/Cmd key",
+        "sizeLabel": "Size",
+        "sizeSmall": "Small",
+        "sizeMedium": "Medium",
+        "sizeLarge": "Large",
+        "sizeCustom": "Custom",
+        "customWidthLabel": "Width",
+        "customHeightLabel": "Height",
+        "pixelUnit": "px",
+        "fullWidthLabel": "Full (100%) width"
       },
       "ariaLabel": {
         "close": "Close",
@@ -290,6 +441,7 @@
   },
   "backgroundLayers": {
     "title": "Displayed maps",
+    "label": "Background",
     "voidMap": "Void map",
     "backgroundMap": "Background map",
     "colorMap": "Color map",
@@ -325,17 +477,37 @@
     }
   },
   "dataset": {
+    "legendLoading": "Loading legend…",
+    "legendError": "The legend could not be loaded.",
+    "overview": "Overview",
+    "dataAccess": "Data access",
+    "metadata": "Metadata",
+    "serviceLoading": "Loading service address…",
+    "serviceError": "The service address could not be loaded.",
     "abstract": "Abstract",
     "contacts": "Contacts",
     "links": "Links",
     "services": "Services",
     "languages": "Languages",
     "addToMap": "Add to map",
+    "removeFromMap": "Remove from map",
+    "details": "Dataset details",
+    "expandPanel": "Expand detail panel",
+    "collapsePanel": "Collapse detail panel",
     "alreadyOnMap": "Already on map",
     "viewDetailPage": "View detail page",
     "showOnMap": "Show on map",
+    "backToCatalog": "Back to catalog",
+    "close": "Close dataset details",
     "backToMap": "Back to map",
-    "addToMapError": "Failed to add layer to map"
+    "addToMapError": "Failed to add layer to map",
+    "openService": "Open service in a new tab",
+    "identifier": "Identifier",
+    "mapServices": "WMS / WMTS",
+    "otherAccess": "Other access options",
+    "format": "Format",
+    "serviceUrl": "URL / Service",
+    "viewGeocat": "View on geocat.ch"
   },
   "elevationProfile": {
     "windowTitle": "Elevation Profile",
@@ -397,6 +569,36 @@
     "orientationPortrait": "portrait",
     "orientationLandscape": "landscape"
   },
+  "topbar": {
+    "home": "Home",
+    "map": "Map",
+    "geoDataAndMaps": "Geodata and maps",
+    "howToUseGeodata": "How can I use geodata?",
+    "viewGeodataInMapViewer": "View geodata in the map viewer",
+    "discoverTopicsAndData": "Explore topics and data",
+    "geoservices": "Geoservices: access and integrate data",
+    "searchGeodata": "Search geodata",
+    "newDataAndUpdates": "New data and updates",
+    "tutorialsAndHelp": "Tutorials and help",
+    "gettingStarted": "Get started with the map viewer",
+    "mapViewerNavigation": "Map viewer navigation",
+    "metadataCatalog": "Metadata catalogue",
+    "moreFeatures": "More functions",
+    "specialistInfo": "Specialist information",
+    "ngdi": "National Spatial Data Infrastructure (NSDI)",
+    "geobaseData": "Official geodata, geodata models and standards",
+    "metadataCatalogSwitzerland": "Swiss geographic metadata catalogue",
+    "geoInformationFilms": "Videos about geoinformation",
+    "aboutUs": "About us",
+    "whatIsSwissgeo": "What is SWISSGEO?",
+    "vision": "Vision",
+    "strategy": "Swiss Geoinformation Strategy",
+    "keyFigures": "Key figures",
+    "organisation": "Organisation",
+    "legalBasis": "Legal basis",
+    "mediaInformation": "Media information",
+    "modeSwitch": "Switch mode"
+  },
   "layers": {
     "expand": "Show layer details",
     "reorder": "Reorder layer (arrow up/down)",
@@ -413,5 +615,31 @@
       "openPdf": "Open legend as PDF",
       "openPage": "Open legend page"
     }
+  },
+  "layerCart": {
+    "close": "Close",
+    "expand": "Show active layers",
+    "collapse": "Hide active layers"
+  },
+  "layerCatalog": {
+    "title": "Data catalog",
+    "table": {
+      "title": "Name",
+      "dataOwner": "Provider",
+      "empty": "No layers found."
+    },
+    "loading": "Loading...",
+    "error": "The catalog could not be loaded.",
+    "retry": "Try again",
+    "searchLabel": "Search layers",
+    "searchPlaceholder": "Search",
+    "close": "Close",
+    "expand": "Show data catalog",
+    "collapse": "Hide data catalog"
+  },
+  "featureInfo": {
+    "blockedContent": "To Translate - Feature Info Blocked Content",
+    "noInformation": "To Translate - Feature Info No Information",
+    "popupTitle": "To Translate - Feature Info Popup Title"
   }
 }

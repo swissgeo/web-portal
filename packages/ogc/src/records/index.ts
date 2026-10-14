@@ -1,9 +1,12 @@
 export { buildCatalogItemsUrl } from "./catalogUrl";
+export { fetchCatalogItems } from "./catalogItems";
+export type { CatalogItemsOptions } from "./catalogItems";
 export { useDistribution } from "./useDistribution";
 export { useWmtsCapabilities } from "./useWmtsCapabilities";
 export { useWmsCapabilities } from "./useWmsCapabilities";
-export { useService } from "./useService";
-export { useCapabilities } from "./useCapabilities";
+export { useWmsFeatureInfoCapabilities } from "./useWmsFeatureInfoCapabilities";
+export { useService, extractServiceUrl } from "./useService";
+export { useCapabilities, extractCapabilityUrl } from "./useCapabilities";
 export { useDistributionCollection } from "./useDistributionCollection";
 export { useDistributionProtocols } from "./useDistributionProtocols";
 export { usePreferredDistribution } from "./usePreferredDistribution";

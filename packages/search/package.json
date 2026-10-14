@@ -25,6 +25,7 @@
   "dependencies": {
     "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/log": "workspace:*",
+    "@swissgeo/ogc": "workspace:*",
     "@swissgeo/shared": "workspace:*",
     "typescript": "catalog:"
   },

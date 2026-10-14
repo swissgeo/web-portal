@@ -12,6 +12,7 @@ vi.mock("vue-i18n", () => ({
 const stubs = {
   ULink: { template: "<a :href='to'><slot /></a>", props: ["to"] },
   UIcon: { template: "<span />" },
+  UModal: { template: "<div><slot /></div>" },
 };
 
 function mountLegend(legends: Legend[]) {

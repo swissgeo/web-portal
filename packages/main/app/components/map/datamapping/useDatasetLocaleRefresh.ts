@@ -36,7 +36,7 @@ export default function useDatasetLocaleRefresh(
 
   const { data: dataset } = useFetch<Dataset>(newUrlString);
 
-  watch(dataset, () => {
+  watch(dataset, async () => {
     if (dataset.value) {
       log.debug({
         title: "DatasetLayer",
@@ -45,7 +45,10 @@ export default function useDatasetLocaleRefresh(
       });
 
       updateDatasetCallback(layer.uuid, dataset.value);
-      updateLayerInfoCallback(layer.uuid, getInfoFromDataset(dataset.value));
+      updateLayerInfoCallback(
+        layer.uuid,
+        await getInfoFromDataset(dataset.value),
+      );
     }
   });
 
