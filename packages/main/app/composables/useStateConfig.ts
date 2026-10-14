@@ -7,12 +7,14 @@ import type {
   LayerState,
   AppState,
 } from "@swissgeo/statesharing";
+import type { Map as OlMap } from "ol";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { useDrawing } from "@swissgeo/drawing";
 import { createIdentifyResponse, useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import { usePositionStore } from "@swissgeo/map";
+import { useMap, usePositionStore } from "@swissgeo/map";
 import { DRAWING_LAYER_ID } from "@swissgeo/shared";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
 
@@ -131,6 +133,93 @@ async function stateConfigToLayer(
   return null;
 }
 
+function extractDrawingId(drawingUrl: string): string {
+  let id = "";
+  try {
+    const pathname = new URL(drawingUrl).pathname;
+    id = pathname.split("/").pop() ?? "";
+  } catch {
+    id = drawingUrl.split("/").pop() ?? "";
+  }
+  if (!id) {
+    throw new Error(`Invalid drawing url: ${drawingUrl}`);
+  }
+  return id;
+}
+
+function validateDrawingUrl(drawingUrl: string): void {
+  const runtimeConfig = useRuntimeConfig();
+  const allowedDomains = runtimeConfig.public.drawingAllowedDomains as string[];
+  const { hostname } = new URL(drawingUrl);
+  if (!allowedDomains.includes(hostname)) {
+    throw new Error(`Drawing url host not allowed: ${hostname}`);
+  }
+}
+
+function logDrawingRestoreError(error: unknown): void {
+  log.warn({
+    title: "useStateConfig",
+    titleColor: LogPreDefinedColor.Sky,
+    messages: ["Failed to restore drawing layer", String(error)],
+  });
+}
+
+const DRAWING_FETCH_TIMEOUT_MS = 15_000;
+
+async function importDrawingState(
+  stateLayer: DrawingLayerState,
+): Promise<void> {
+  const { mountDrawingLayer, importKmz, DRAWING_LAYER_UUID } = useDrawing();
+  const drawingImportStore = useDrawingImportStore();
+  const layerStore = useLayerStore();
+  const { olMap } = useMap();
+
+  validateDrawingUrl(stateLayer.drawingUrl);
+  const drawingId = extractDrawingId(stateLayer.drawingUrl);
+
+  const apply = async (map: OlMap) => {
+    const res = await fetch(stateLayer.drawingUrl, {
+      signal: AbortSignal.timeout(DRAWING_FETCH_TIMEOUT_MS),
+    });
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch drawing state: ${res.status} ${stateLayer.drawingUrl}`,
+      );
+    }
+
+    const kmzBuffer = await res.arrayBuffer();
+
+    layerStore.addImportOption(DRAWING_LAYER_UUID, {
+      opacity: stateLayer.opacity ?? 1,
+      isVisible: stateLayer.isVisible ?? true,
+    });
+    mountDrawingLayer(map);
+
+    const success = await importKmz(kmzBuffer, true);
+    if (!success) {
+      throw new Error(
+        `Drawing state could not be imported: ${stateLayer.drawingUrl}`,
+      );
+    }
+
+    drawingImportStore.drawingId = drawingId;
+    drawingImportStore.drawingAdminId = stateLayer.adminId ?? "";
+  };
+
+  if (olMap.value) {
+    await apply(olMap.value);
+    return;
+  }
+
+  const unwatch = watch(olMap, (map) => {
+    if (!map) {
+      return;
+    }
+    unwatch();
+    apply(map).catch(logDrawingRestoreError);
+  });
+}
+
 export function useStateConfig() {
   const positionStore = usePositionStore();
   const layerStore = useLayerStore();
@@ -240,6 +329,16 @@ export function useStateConfig() {
           layerStore.setBackground(layers[i]!);
         } else {
           layerStore.addLayer(layers[i]!);
+        }
+      }
+    }
+
+    for (const stateLayer of stateLayers) {
+      if ("drawingUrl" in stateLayer) {
+        try {
+          await importDrawingState(stateLayer);
+        } catch (error) {
+          logDrawingRestoreError(error);
         }
       }
     }

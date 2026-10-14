@@ -11,7 +11,7 @@ import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
 import { DRAWING_LAYER_ID } from "@swissgeo/shared";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
-import { mount } from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
 import {
   isBackgroundLayer,
   isDrawingLayerState,
@@ -22,7 +22,7 @@ import {
 } from "~/composables/useStateConfig";
 import { useDrawingImportStore } from "~/stores/drawingImport";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
 
 const mockMapLayers: MapLayer[] = [];
@@ -52,17 +52,36 @@ const { setCenterMock, setZoomMock, setRotationMock, fetchMock } = vi.hoisted(
   }),
 );
 
+const { olMapRef } = await vi.hoisted(async () => {
+  const { ref } = await import("vue");
+  return { olMapRef: ref<{ id: string } | null>({ id: "fake-ol-map" }) };
+});
+
 mockNuxtImport("$fetch", () => fetchMock);
 
 const { runtimeConfigMock } = vi.hoisted(() => ({
   runtimeConfigMock: {
     public: {
       drawingServiceEndpoint: "https://drawings.test/api/drawings",
+      drawingAllowedDomains: ["drawings.test"],
     },
   },
 }));
 
 mockNuxtImport("useRuntimeConfig", () => () => runtimeConfigMock);
+
+const { importKmzSpy, mountDrawingLayerSpy } = vi.hoisted(() => ({
+  importKmzSpy: vi.fn(),
+  mountDrawingLayerSpy: vi.fn(),
+}));
+
+vi.mock("@swissgeo/drawing", () => ({
+  useDrawing: vi.fn(() => ({
+    importKmz: importKmzSpy,
+    mountDrawingLayer: mountDrawingLayerSpy,
+    DRAWING_LAYER_UUID: "drawing-layer-uuid",
+  })),
+}));
 
 vi.mock("@swissgeo/map", async (importOriginal) => {
   const original = await importOriginal();
@@ -76,6 +95,9 @@ vi.mock("@swissgeo/map", async (importOriginal) => {
       setCenter: setCenterMock,
       setZoom: setZoomMock,
       setRotation: setRotationMock,
+    }),
+    useMap: () => ({
+      olMap: olMapRef,
     }),
   };
 });
@@ -738,6 +760,13 @@ describe("useStateConfig drawing layer state", () => {
     setActivePinia(createPinia());
     mockMapLayers.length = 0;
     vi.clearAllMocks();
+    importKmzSpy.mockResolvedValue(true);
+    fetchMock.mockReset();
+    olMapRef.value = { id: "fake-ol-map" };
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it("exports the drawing layer as a drawing state when synced", () => {
@@ -778,5 +807,149 @@ describe("useStateConfig drawing layer state", () => {
         type: "drawing",
       }),
     ).toBe(true);
+  });
+
+  it("imports a drawing state: fetches the kmz, mounts the layer and seeds the drawing ids", async () => {
+    const fetchMockGlobal = vi.fn().mockResolvedValue({
+      ok: true,
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+    });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+            type: "drawing",
+            adminId: "admin-id-6666",
+            isVisible: false,
+            opacity: 0.5,
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(fetchMockGlobal).toHaveBeenCalledWith(
+      "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+      { signal: expect.any(AbortSignal) },
+    );
+    expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
+    expect(importKmzSpy).toHaveBeenCalledWith(expect.any(ArrayBuffer), true);
+
+    const drawingImportStore = useDrawingImportStore();
+    expect(drawingImportStore.drawingId).toBe(
+      "11111111-2222-3333-4444-555555555555",
+    );
+    expect(drawingImportStore.drawingAdminId).toBe("admin-id-6666");
+  });
+
+  it("defers the drawing restore until the map is ready", async () => {
+    olMapRef.value = null;
+    const fetchMockGlobal = vi.fn().mockResolvedValue({
+      ok: true,
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+    });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+            type: "drawing",
+            adminId: "admin-id-6666",
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(fetchMockGlobal).not.toHaveBeenCalled();
+    expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
+
+    olMapRef.value = { id: "fake-ol-map" };
+    await flushPromises();
+
+    expect(fetchMockGlobal).toHaveBeenCalledWith(
+      "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+      { signal: expect.any(AbortSignal) },
+    );
+    expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
+  });
+
+  it("rejects a drawing url whose host is not allowed and skips the drawing", async () => {
+    const fetchMockGlobal = vi.fn();
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl: "https://evil.example.com/api/drawings/some-id",
+            type: "drawing",
+          },
+        ],
+      },
+    };
+
+    await expect(useStateConfig().importState(payload)).resolves.not.toThrow();
+    expect(fetchMockGlobal).not.toHaveBeenCalled();
+    expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
+  });
+
+  it("logs a warning and skips the drawing when the fetch fails", async () => {
+    const fetchMockGlobal = vi
+      .fn()
+      .mockResolvedValue({ ok: false, status: 404 });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+            type: "drawing",
+          },
+        ],
+      },
+    };
+
+    await expect(useStateConfig().importState(payload)).resolves.not.toThrow();
+    expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
+  });
+
+  it("logs a warning and skips the drawing when the drawing id is empty", async () => {
+    const fetchMockGlobal = vi.fn().mockResolvedValue({
+      ok: true,
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+    });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl: "https://drawings.test/api/drawings/",
+            type: "drawing",
+          },
+        ],
+      },
+    };
+
+    await expect(useStateConfig().importState(payload)).resolves.not.toThrow();
+    expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
+    expect(useDrawingImportStore().drawingId).toBe("");
   });
 });
