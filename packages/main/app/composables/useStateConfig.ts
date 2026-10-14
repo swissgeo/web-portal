@@ -7,15 +7,19 @@ import type {
   LayerState,
   AppState,
 } from "@swissgeo/statesharing";
+import type { Map as OlMap } from "ol";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { useDrawing } from "@swissgeo/drawing";
 import { createIdentifyResponse, useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import { usePositionStore } from "@swissgeo/map";
+import { useMap, usePositionStore } from "@swissgeo/map";
+import { DRAWING_LAYER_ID } from "@swissgeo/shared";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
 
 import { AVAILABLE_BACKGROUNDS } from "@/components/sidebar/backgroundSelector/constants";
+import { useDrawingImportStore } from "@/stores/drawingImport";
 
 export type AppStatePayload = {
   version: string;
@@ -29,7 +33,9 @@ export function isBackgroundLayer(layer: Layer): boolean {
   return Object.values(AVAILABLE_BACKGROUNDS).includes(layer.humanId);
 }
 // exported only for testing purpose. Do not use this outside this file
-export function layersToStateConfig(layers: MapLayer[]): LayerState[] {
+export function layersToStateConfig(
+  layers: MapLayer[],
+): Array<LayerState | DrawingLayerState> {
   if (layers.length === 0) {
     return [];
   }
@@ -39,10 +45,29 @@ export function layersToStateConfig(layers: MapLayer[]): LayerState[] {
   return layers
     .slice(startIndex)
     .map(layerToStateConfig)
-    .filter((state): state is LayerState => state !== null);
+    .filter((state) => state !== null);
 }
+
+function drawingLayerToStateConfig(layer: MapLayer): DrawingLayerState | null {
+  const { drawingId, drawingAdminId } = storeToRefs(useDrawingImportStore());
+  if (!drawingId.value) {
+    return null;
+  }
+
+  const runtimeConfig = useRuntimeConfig();
+  return {
+    drawingUrl: `${runtimeConfig.public.drawingServiceEndpoint}/${drawingId.value}`,
+    type: "drawing",
+    adminId: drawingAdminId.value || "",
+    isVisible: layer.isVisible,
+    opacity: layer.opacity,
+  };
+}
+
 // exported only for testing purpose. Do not use this outside this file
-export function layerToStateConfig(layer: MapLayer): LayerState | null {
+export function layerToStateConfig(
+  layer: MapLayer,
+): LayerState | DrawingLayerState | null {
   const layerStore = useLayerStore();
   const dimensionsStore = useDimensionsStore();
   let sourceData: Layer | undefined | null = layerStore.getLayer(layer.uuid);
@@ -53,6 +78,11 @@ export function layerToStateConfig(layer: MapLayer): LayerState | null {
       return null;
     }
   }
+
+  if (sourceData.humanId === DRAWING_LAYER_ID) {
+    return drawingLayerToStateConfig(layer);
+  }
+
   const config: LayerState = {
     layerUrl: sourceData.layerUrl as string,
     type: sourceData.type as LayerState["type"],
@@ -96,6 +126,70 @@ async function stateConfigToLayer(
   return null;
 }
 
+function extractDrawingId(drawingUrl: string): string {
+  try {
+    const pathname = new URL(drawingUrl).pathname;
+    return pathname.split("/").pop() ?? "";
+  } catch {
+    return drawingUrl.split("/").pop() ?? "";
+  }
+}
+
+async function importDrawingState(
+  stateLayer: DrawingLayerState,
+  layerStore: ReturnType<typeof useLayerStore>,
+): Promise<void> {
+  const { mountDrawingLayer, importKmz, DRAWING_LAYER_UUID } = useDrawing();
+  const drawingImportStore = useDrawingImportStore();
+  const { olMap } = useMap();
+
+  const apply = async (map: OlMap) => {
+    const res = await fetch(stateLayer.drawingUrl);
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch drawing state: ${res.status} ${stateLayer.drawingUrl}`,
+      );
+    }
+
+    const kmzBuffer = await res.arrayBuffer();
+
+    layerStore.addImportOption(DRAWING_LAYER_UUID, {
+      opacity: stateLayer.opacity ?? 1,
+      isVisible: stateLayer.isVisible ?? true,
+    });
+    mountDrawingLayer(map);
+
+    const success = await importKmz(kmzBuffer, true);
+    if (!success) {
+      throw new Error(
+        `Drawing state could not be imported: ${stateLayer.drawingUrl}`,
+      );
+    }
+
+    drawingImportStore.drawingId = extractDrawingId(stateLayer.drawingUrl);
+    drawingImportStore.drawingAdminId = stateLayer.adminId ?? "";
+  };
+
+  if (olMap.value) {
+    await apply(olMap.value);
+    return;
+  }
+
+  const unwatch = watch(olMap, (map) => {
+    if (!map) {
+      return;
+    }
+    unwatch();
+    apply(map).catch((error) => {
+      log.warn({
+        title: "useStateConfig",
+        titleColor: LogPreDefinedColor.Sky,
+        messages: ["Failed to restore drawing layer", String(error)],
+      });
+    });
+  });
+}
+
 export function useStateConfig() {
   const positionStore = usePositionStore();
   const layerStore = useLayerStore();
@@ -104,6 +198,10 @@ export function useStateConfig() {
   const featureStore = useFeaturesStore();
 
   const exportState = computed((): AppStatePayload => {
+    const bgState =
+      layerStore.backgroundLayer && mapviewStore.mapLayers[0]
+        ? layerToStateConfig(mapviewStore.mapLayers[0])
+        : null;
     return {
       version: APP_STATE_CONFIG_VERSION,
       state: {
@@ -113,10 +211,7 @@ export function useStateConfig() {
           rotation: positionStore.rotation,
         },
         layers: layersToStateConfig(mapviewStore.mapLayers),
-        bg_layer:
-          layerStore.backgroundLayer && mapviewStore.mapLayers[0]
-            ? layerToStateConfig(mapviewStore.mapLayers[0])
-            : null,
+        bg_layer: bgState && "layerUrl" in bgState ? bgState : null,
       },
     };
   });
@@ -163,6 +258,20 @@ export function useStateConfig() {
     );
 
     layerStore.setBackground(bgLayer);
+
+    for (const stateLayer of stateLayers) {
+      if ("drawingUrl" in stateLayer) {
+        try {
+          await importDrawingState(stateLayer, layerStore);
+        } catch (error) {
+          log.warn({
+            title: "useStateConfig",
+            titleColor: LogPreDefinedColor.Sky,
+            messages: ["Failed to restore drawing layer", String(error)],
+          });
+        }
+      }
+    }
 
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
@@ -225,11 +334,12 @@ export function useCustomStateConfig() {
   const customStateMapCenter = ref<[number, number]>([0, 0]);
   const customStateMapZoom = ref(0);
   const customStateMapRotation = ref(0);
-  const layerStateConfig = ref<LayerState[]>([]);
+  const layerStateConfig = ref<Array<LayerState | DrawingLayerState>>([]);
   const backgroundLayerStateConfig = ref<LayerState | null>(null);
   const backgroundLayerState = () => {
     if (layerStore.backgroundLayer && mapviewStore.mapLayers[0]) {
-      return layerToStateConfig(mapviewStore.mapLayers[0]);
+      const state = layerToStateConfig(mapviewStore.mapLayers[0]);
+      return state && "layerUrl" in state ? state : null;
     } else {
       return null;
     }

@@ -2,13 +2,15 @@
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 import { useI18n } from "vue-i18n";
 
-const { link } = defineProps<{
+const { link, copied, drawingEditable } = defineProps<{
   link: string;
   copied: boolean;
+  drawingEditable?: boolean;
 }>();
 
 const emit = defineEmits<{
   (_e: "copy"): void;
+  (_e: "update:drawingEditable", _value: boolean): void;
 }>();
 
 const { t } = useI18n();
@@ -52,7 +54,12 @@ function shareOnWhatsApp() {
         {{ t("toolbox.share.link.description") }}
       </p>
     </div>
-    <UCheckbox :label="t('toolbox.share.link.drawingEditableLabel')" />
+    <UCheckbox
+      :model-value="drawingEditable ?? false"
+      :label="t('toolbox.share.link.drawingEditableLabel')"
+      data-testid="share-link-drawing-editable"
+      @update:model-value="emit('update:drawingEditable', Boolean($event))"
+    />
     <UFormField
       :label="t('toolbox.share.link.urlLabel')"
       size="lg"
