@@ -2,8 +2,7 @@
 import type { Layer as MapLayer } from "@swissgeo/map";
 
 import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
-import { panelSnapPointKey } from "~/types/injectionKeys";
-import { computed, inject, ref } from "vue";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
 import BackgroundSelector from "@/components/sidebar/backgroundSelector/BackgroundSelector.vue";
@@ -36,16 +35,6 @@ function closeLayerCatalog() {
     uiStore.setSidebar(SidebarType.LAYER_CART);
   } else {
     uiStore.closeSidebar();
-  }
-}
-
-const panelSnapPoint = inject(panelSnapPointKey, ref(null));
-
-// The open background list is taller than the half-open drawer, so the drawer
-// opens fully to keep every background reachable.
-function openPanelFully(isBackgroundListOpen: boolean) {
-  if (isBackgroundListOpen) {
-    panelSnapPoint.value = 1;
   }
 }
 
@@ -88,7 +77,7 @@ function toggleSidebar() {
         <div v-if="!isDesktop" class="sticky bottom-0 bg-default px-2 pt-4">
           <USeparator />
           <div class="my-4">
-            <BackgroundSelector @update:open="openPanelFully" />
+            <BackgroundSelector />
           </div>
         </div>
       </ResponsivePanel>

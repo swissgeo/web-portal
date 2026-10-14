@@ -1,7 +1,6 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import SideBar from "~/components/sidebar/SideBar.vue";
-import { panelSnapPointKey } from "~/types/injectionKeys";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
@@ -29,14 +28,10 @@ vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 
-function mountSideBar(
-  isVisible?: boolean,
-  panelSnapPoint = ref<number | string | null>(null),
-) {
+function mountSideBar(isVisible?: boolean) {
   return mount(SideBar, {
     props: { mapLayers: ref([]), isVisible },
     global: {
-      provide: { [panelSnapPointKey]: panelSnapPoint },
       stubs: {
         LayerCart: true,
         LayerCatalog: true,
@@ -201,19 +196,6 @@ describe("SideBar", () => {
       expect(
         mountSideBar().findComponent({ name: "BackgroundSelector" }).exists(),
       ).toBe(true);
-    });
-
-    it("opens the drawer fully when the background list opens", () => {
-      const panelSnapPoint = ref<number | string | null>(0.6);
-      const background = mountSideBar(true, panelSnapPoint)
-        .getComponent({ name: "ResponsivePanel" })
-        .getComponent({ name: "BackgroundSelector" });
-
-      background.vm.$emit("update:open", false);
-      expect(panelSnapPoint.value).toBe(0.6);
-
-      background.vm.$emit("update:open", true);
-      expect(panelSnapPoint.value).toBe(1);
     });
 
     it("closes the sidebar when the cart panel is closed", () => {
