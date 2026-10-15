@@ -123,7 +123,7 @@ const rowButton = {
 
 <template>
   <li class="flex min-w-0 flex-col gap-2 rounded">
-    <div class="flex min-w-0 items-center">
+    <div class="flex min-w-0 items-start">
       <UButton
         data-testid="layer-reorder-handle"
         data-vaul-no-drag

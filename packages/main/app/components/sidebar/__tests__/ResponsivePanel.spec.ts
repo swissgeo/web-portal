@@ -75,10 +75,11 @@ function mountPanel(
   });
 }
 
-function mountPanelWithFooter(itemCount = 1) {
+function mountPanelWithFooter(itemCount = 1, isVisible = true) {
   return mount(ResponsivePanel, {
     props: {
       itemCount,
+      isVisible,
       title: "Map",
       closeLabel: "Close",
       expandLabel: "Expand",
@@ -408,6 +409,21 @@ describe("ResponsivePanel.vue", () => {
         container.getBoundingClientRect = () => ({ top: 100 }) as DOMRect;
         await new Promise(requestAnimationFrame);
         expect(container.style.height).toBe("504px");
+      });
+
+      it("measures a hidden drawer once it shows again", async () => {
+        const wrapper = mountPanelWithFooter(1, false);
+        await flushPromises();
+        layOut(wrapper, 60);
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+        const drawer = wrapper.getComponent({ name: "UDrawer" });
+        expect(drawer.props("snapPoints")).toEqual([0.75, 1]);
+
+        await wrapper.setProps({ isVisible: true });
+        await flushPromises();
+
+        expect(drawer.props("snapPoints")).toEqual(["340px", 1]);
       });
 
       it("measures the content again when the number of items changes", async () => {

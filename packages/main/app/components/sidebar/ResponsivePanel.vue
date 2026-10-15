@@ -148,7 +148,8 @@ function minContainerHeight(container: HTMLElement) {
 }
 
 function followDrawer() {
-  if (slots.footer && !isDesktop.value) {
+  // A hidden drawer has no size, so it is measured once it shows again
+  if (slots.footer && !isDesktop.value && isVisible) {
     resume();
   }
 }
@@ -157,7 +158,13 @@ function fitToContent() {
   const footer = container.value?.querySelector<HTMLElement>(
     '[data-slot="footer"]',
   );
-  if (!container.value || !drawer.value || !scroller.value || !footer) {
+  if (
+    !isVisible ||
+    !container.value ||
+    !drawer.value ||
+    !scroller.value ||
+    !footer
+  ) {
     return;
   }
   // scrollHeight never gets lower than the box, so measure where the content ends
@@ -187,7 +194,9 @@ useEventListener(drawer, "pointerdown", () => setDragging(true));
 useEventListener(drawer, "pointerup", () => setDragging(false));
 useEventListener(drawer, "pointercancel", () => setDragging(false));
 useEventListener(window, "resize", fitToContent);
-watch([scroller, () => itemCount], fitToContent, { flush: "post" });
+watch([scroller, () => itemCount, () => isVisible], fitToContent, {
+  flush: "post",
+});
 watch(activeSnapPoint, followDrawer);
 
 // vaul-vue (built on Reka UI) lacks the touchmove guard that React vaul gets
