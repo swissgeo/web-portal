@@ -411,6 +411,29 @@ describe("ResponsivePanel.vue", () => {
         expect(container.style.height).toBe("504px");
       });
 
+      it("closes after a swipe that carries the drawer past half its height", async () => {
+        const wrapper = mountPanelWithFooter();
+        await flushPromises();
+        const { drawer } = layOut(wrapper, 2000);
+        // 104px of the drawer on screen, at 75 % it shows 416px
+        drawer.getBoundingClientRect = () => ({ top: 600 }) as DOMRect;
+        const pointer = (type: string, y: number, time: number) => {
+          const event = new Event(type);
+          Object.defineProperties(event, {
+            clientY: { value: y },
+            timeStamp: { value: time },
+          });
+          drawer.dispatchEvent(event);
+        };
+
+        pointer("pointerdown", 0, 0);
+        pointer("pointermove", 300, 90);
+        pointer("pointerup", 300, 90);
+        drawer.dispatchEvent(new Event("transitionend"));
+
+        expect(wrapper.emitted("close")).toHaveLength(1);
+      });
+
       it("measures a hidden drawer once it shows again", async () => {
         const wrapper = mountPanelWithFooter(1, false);
         await flushPromises();
