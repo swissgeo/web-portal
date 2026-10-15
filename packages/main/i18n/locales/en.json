@@ -107,12 +107,10 @@
   },
   "debug": {
     "openImportLocalLayersPanel": "Open Import Local Layers Panel",
-    "openImportDrawingPanel": "Open Import Drawing Panel",
     "openDrawingPanel": "Open Drawing Panel",
     "openImportLayersPanel": "Open Import Layers Panel",
     "openLayersPanel": "Open Layers Panel",
     "drawingPanelTitle": "Drawing Tools",
-    "importDrawingPanelTitle": "Import Drawing from URL",
     "drawingNameLabel": "Drawing name",
     "drawingToolSelectLabel": "Select a drawing tool:",
     "drawingToolPoint": "Point",
@@ -383,11 +381,13 @@
         "fetchFailed": "Failed to fetch file from URL (HTTP {status})",
         "adminRequired": "Admin privileges are required to import this drawing"
       },
-      "infoMessages": {
-        "importPart1": "Importing a {provenance} drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
-        "adminImportPart2": "If imported as an admin, you will be able to synchronize it with the Swissgeo database under the same ID as imported and other users will see your changes.",
-        "nonAdminImportPart2": "Sharing the drawing will then be possible with other users, but under a different drawing ID than the imported one."
-      },
+      "drawingReplaceConfirmTitle": "Replace current drawing?",
+      "drawingReplaceConfirmDescription": "Importing a drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
+      "drawingReplaceConfirmTemporaryNote": "We are working on a nicer workflow for this. Feel free to contact us to give us feedback and suggestions.",
+      "drawingReplaceConfirmAdminNote": "You are importing a drawing as its owner. Modifying the drawing will modify the original file and synchronize it with the Swissgeo database.",
+      "drawingReplaceConfirmLegacyAdminNote": "This drawing will be imported as a copy: modifying it will not alter the original drawing, unlike admin imports of Swissgeo drawings.",
+      "drawingReplaceConfirmCancel": "Cancel",
+      "drawingReplaceConfirmConfirm": "Clear and import",
       "close": "Close"
     },
     "share": {

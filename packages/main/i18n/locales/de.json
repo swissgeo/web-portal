@@ -107,11 +107,9 @@
   },
   "debug": {
     "openImportLocalLayersPanel": "Import Lokale Layer Panel öffnen",
-    "openImportDrawingPanel": "Zeichenimport-Panel öffnen",
     "openDrawingPanel": "Zeichenpanel öffnen",
     "openImportLayersPanel": "Import Layer Panel öffnen",
     "openLayersPanel": "Layer Panel öffnen",
-    "drawingPanelTitle": "Zeichenwerkzeuge",
     "importDrawingPanelTitle": "Zeichnung aus URL importieren",
     "drawingNameLabel": "Zeichnungsname",
     "drawingToolSelectLabel": "Zeichenwerkzeug auswählen:",
@@ -383,11 +381,6 @@
         "unsupportedUrlType": "Nicht unterstützter Dateityp. Die URL muss auf {types} enden",
         "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})",
         "adminRequired": "Zum Importieren dieser Zeichnung sind Administratorrechte erforderlich"
-      },
-      "infoMessages": {
-        "importPart1": "Das Importieren einer {provenance}-Zeichnung erfordert das Löschen der vorhandenen Zeichnung. Nach dem Import können Sie die Zeichnung weiter bearbeiten.",
-        "adminImportPart2": "Wenn die Zeichnung als Administrator importiert wird, können Sie sie mit der Swissgeo-Datenbank unter derselben ID wie die importierte synchronisieren, und andere Benutzer sehen Ihre Änderungen.",
-        "nonAdminImportPart2": "Das Teilen der Zeichnung wird dann mit anderen Benutzern möglich sein, jedoch unter einer anderen Zeichen-ID als der importierten."
       },
       "close": "Schließen"
     },
