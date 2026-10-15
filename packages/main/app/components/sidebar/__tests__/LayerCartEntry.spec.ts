@@ -101,9 +101,13 @@ describe("LayerCartEntry.vue", () => {
     const wrapper = mountEntry();
     expect(wrapper.find("[data-testid='legend-stub']").exists()).toBe(false);
 
-    await wrapper.find("[data-testid='layer-expand-toggle']").trigger("click");
+    const toggle = wrapper.find("[data-testid='layer-expand-toggle']");
+    await toggle.trigger("click");
 
     expect(wrapper.find("[data-testid='legend-stub']").exists()).toBe(true);
+    // Screen readers link the toggle to the part it opens
+    const detailsId = toggle.attributes("aria-controls");
+    expect(wrapper.find(`[id='${detailsId}']`).exists()).toBe(true);
   });
 
   it("reorders the layer with the arrow keys on the handle", async () => {

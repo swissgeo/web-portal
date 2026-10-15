@@ -3,7 +3,7 @@ import type { Layer as MapLayer } from "@swissgeo/map";
 
 import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
 import { panelSnapPointKey } from "~/types/injectionKeys";
-import { computed, inject, ref } from "vue";
+import { computed, inject, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import BackgroundSelector from "@/components/sidebar/backgroundSelector/BackgroundSelector.vue";
@@ -13,6 +13,17 @@ import LayerCatalog from "./layerCatalog/LayerCatalog.vue";
 import ResponsivePanel from "./ResponsivePanel.vue";
 
 const uiStore = useSidebarStore();
+
+// The map panel opens partially, so the map stays visible while layers change
+const panelSnapPoint = inject(panelSnapPointKey, ref(null));
+watch(
+  () => uiStore.currentSidebar,
+  (sidebar) => {
+    if (sidebar === SidebarType.LAYER_CART) {
+      panelSnapPoint.value = null;
+    }
+  },
+);
 const { t } = useI18n();
 
 const { mapLayers, isVisible = true } = defineProps<{
@@ -36,16 +47,6 @@ function closeLayerCatalog() {
     uiStore.setSidebar(SidebarType.LAYER_CART);
   } else {
     uiStore.closeSidebar();
-  }
-}
-
-const panelSnapPoint = inject(panelSnapPointKey, ref(null));
-
-// The open background list is taller than the half-open drawer, so the drawer
-// opens fully to keep every background reachable.
-function openPanelFully(isBackgroundListOpen: boolean) {
-  if (isBackgroundListOpen) {
-    panelSnapPoint.value = 1;
   }
 }
 
@@ -80,17 +81,17 @@ function toggleSidebar() {
         :expandLabel="t('layerCart.expand')"
         :collapseLabel="t('layerCart.collapse')"
         :hasHeader="false"
+        :itemCount="mapLayers.value.length"
         :isVisible="isVisible"
         @close="uiStore.closeSidebar()"
       >
         <LayerCart :mapLayers="mapLayers" />
         <!-- The side column is hidden on mobile, so the drawer shows its own background selector -->
-        <div v-if="!isDesktop" class="sticky bottom-0 bg-default px-2 pt-4">
-          <USeparator />
-          <div class="my-4">
-            <BackgroundSelector @update:open="openPanelFully" />
+        <template v-if="!isDesktop" #footer>
+          <div class="border-t border-default px-2 py-4">
+            <BackgroundSelector />
           </div>
-        </div>
+        </template>
       </ResponsivePanel>
       <ResponsivePanel
         v-else-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
@@ -103,8 +104,13 @@ function toggleSidebar() {
       >
         <LayerCatalog />
       </ResponsivePanel>
-      <!-- Stays mounted on mobile too, because it picks the default background -->
-      <div class="px-2">
+      <!-- Stays mounted on mobile and next to the catalog, because it picks the
+           default background. It shows only with the map panel. -->
+      <div
+        v-show="uiStore.currentSidebar === SidebarType.LAYER_CART"
+        data-testid="sidebar-background-selector"
+        class="px-2"
+      >
         <USeparator />
         <div class="my-4">
           <BackgroundSelector />
