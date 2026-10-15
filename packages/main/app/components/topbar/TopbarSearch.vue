@@ -281,14 +281,14 @@ function clearSearch() {
         <template #map>
           <div
             v-if="searchStore.hasMapResults"
-            class="flex h-[60dvh] flex-col sm:h-96"
+            class="flex max-h-[60dvh] flex-col sm:max-h-96"
             data-testid="search-results"
           >
             <SearchCategory
               v-for="category in searchResultsByCategory"
               :key="category.id"
               :ref="(element) => setCategoryRef(category.id, element)"
-              class="min-h-0 flex-1"
+              class="min-h-0 grow"
               :title="t(`search.${category.id}_results_header`)"
               :results="category.results"
               :tab-start="tabStartCategory === category.id"

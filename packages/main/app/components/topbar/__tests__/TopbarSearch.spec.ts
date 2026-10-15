@@ -499,7 +499,7 @@ describe("TopbarSearch", () => {
       ).toBe(false);
     });
 
-    it("gives every category an equal share of one fixed budget", () => {
+    it("caps the results at a maximum height and scrolls per category", () => {
       searchStore.query = "wald";
       searchStore.results = [location("bern"), layer("waldrand")];
 
@@ -507,20 +507,23 @@ describe("TopbarSearch", () => {
       const budgetClasses =
         wrapper.get("[data-testid='search-results']").attributes("class") ?? "";
 
-      // a definite height is what makes the equal split expressible: the
-      // budget container lays the categories out but never scrolls itself
+      // a maximum height, not a fixed one: sparse results leave no blank
+      // surface for stray clicks, and the budget container lays the
+      // categories out but never scrolls itself
       expect(budgetClasses).toContain("flex");
-      expect(budgetClasses).toContain("h-[60dvh]");
-      expect(budgetClasses).toContain("sm:h-96");
+      expect(budgetClasses).toContain("max-h-[60dvh]");
+      expect(budgetClasses).toContain("sm:max-h-96");
       expect(budgetClasses).not.toContain("overflow-y-auto");
       for (const section of wrapper.findAll(
         "[data-testid^='search-category-']",
       )) {
-        // each category claims an equal share (1/3, 1/2, all of it) and
-        // scrolls on its own (the scroll itself needs a layout engine)
+        // each category claims a content-based share of the capped budget
+        // (a zero flex-basis would collapse it) and scrolls on its own (the
+        // scroll itself needs a layout engine)
         const sectionClasses = section.attributes("class") ?? "";
         expect(sectionClasses).toContain("min-h-0");
-        expect(sectionClasses).toContain("flex-1");
+        expect(sectionClasses).toContain("grow");
+        expect(sectionClasses).not.toContain("flex-1");
       }
     });
   });
