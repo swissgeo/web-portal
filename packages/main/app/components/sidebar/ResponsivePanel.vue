@@ -203,7 +203,9 @@ watch(activeSnapPoint, followDrawer);
 // from Radix's react-remove-scroll. Without it, swiping down on the list while
 // it is scrolled to the top starts a native scroll (or pull-to-refresh), which
 // cancels vaul's pointer drag, so the drawer can't be swiped down.
-// Only a mostly vertical pull counts, so sideways swipes still scroll.
+// Below full height the content cannot scroll, so a pull up must also drag
+// the drawer open. Only a mostly vertical pull counts, so sideways swipes
+// still scroll.
 let touchStartX = 0;
 let touchStartY = 0;
 useEventListener(
@@ -225,11 +227,10 @@ useEventListener(
     const deltaX = touchEvent.touches[0]!.clientX - touchStartX;
     const deltaY = touchEvent.touches[0]!.clientY - touchStartY;
     const isPullingDown = deltaY > Math.abs(deltaX);
-    if (
-      isPullingDown &&
-      scroller.value.scrollTop <= 0 &&
-      touchEvent.cancelable
-    ) {
+    const isPullingUp = -deltaY > Math.abs(deltaX);
+    const isClosingDrawer = isPullingDown && scroller.value.scrollTop <= 0;
+    const isOpeningDrawer = isPullingUp && !isFullyExtended.value;
+    if ((isClosingDrawer || isOpeningDrawer) && touchEvent.cancelable) {
       touchEvent.preventDefault();
     }
   },

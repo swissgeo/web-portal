@@ -480,9 +480,23 @@ describe("ResponsivePanel.vue", () => {
         expect(move.defaultPrevented).toBe(false);
       });
 
-      it("scrolls normally when pushing up", async () => {
+      it("drags the drawer open when pushing up below full height", async () => {
         const element = await mountedScroller();
-        element.scrollTop = 0;
+
+        touch(element, "touchstart", 150);
+        const move = touch(element, "touchmove", 100);
+
+        expect(move.defaultPrevented).toBe(true);
+      });
+
+      it("scrolls normally when pushing up at full height", async () => {
+        const wrapper = mountPanel();
+        await flushPromises();
+        wrapper
+          .getComponent({ name: "UDrawer" })
+          .vm.$emit("update:activeSnapPoint", 1);
+        await nextTick();
+        const element = scroller(wrapper);
 
         touch(element, "touchstart", 150);
         const move = touch(element, "touchmove", 100);
