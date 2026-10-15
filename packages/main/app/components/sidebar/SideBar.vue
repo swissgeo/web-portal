@@ -104,9 +104,13 @@ function toggleSidebar() {
       >
         <LayerCatalog />
       </ResponsivePanel>
-      <!-- Stays mounted on mobile too, because it picks the default background.
-           It keeps the cart width, also next to the wide catalog. -->
-      <div class="px-2" :style="{ maxWidth: uiStore.sidebarWidth + 'px' }">
+      <!-- Stays mounted on mobile and next to the catalog, because it picks the
+           default background. It shows only with the map panel. -->
+      <div
+        v-show="uiStore.currentSidebar === SidebarType.LAYER_CART"
+        data-testid="sidebar-background-selector"
+        class="px-2"
+      >
         <USeparator />
         <div class="my-4">
           <BackgroundSelector />
