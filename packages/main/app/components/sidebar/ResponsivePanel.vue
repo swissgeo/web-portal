@@ -190,9 +190,79 @@ function setDragging(isPressed: boolean) {
   followDrawer();
 }
 
-useEventListener(drawer, "pointerdown", () => setDragging(true));
-useEventListener(drawer, "pointerup", () => setDragging(false));
-useEventListener(drawer, "pointercancel", () => setDragging(false));
+// vaul closes a partly open drawer only on a fast swipe. Like native sheets,
+// it also closes when the end of the swipe carries it past half its height.
+const isOpen = ref(true);
+const swipeSampleMs = 100;
+const swipeProjectionMs = 300;
+let swipeSamples: { time: number; y: number }[] = [];
+
+function trackSwipe(pointerEvent: PointerEvent) {
+  const now = pointerEvent.timeStamp;
+  swipeSamples = [
+    ...swipeSamples.filter((sample) => now - sample.time <= swipeSampleMs),
+    { time: now, y: pointerEvent.clientY },
+  ];
+}
+
+// Speed at the end of the swipe in px/ms, positive downwards. A pause at the
+// start does not count, which makes a release feel like native sheets.
+function endSpeed() {
+  const first = swipeSamples[0];
+  const last = swipeSamples.at(-1);
+  if (!first || !last || last.time === first.time) {
+    return null;
+  }
+  return (last.y - first.y) / (last.time - first.time);
+}
+
+// Height of the drawer on screen: at the partial snap point and right now
+function visibleHeights(drawer: HTMLElement) {
+  const boxBottom = drawer.offsetTop + drawer.offsetHeight;
+  const partialSnapHeight =
+    contentSnapHeight.value ?? defaultPartialSnapPoint * window.innerHeight;
+  return {
+    partial: partialSnapHeight - window.innerHeight + drawer.offsetHeight,
+    now: boxBottom - drawer.getBoundingClientRect().top,
+  };
+}
+
+function shouldCloseOnRelease() {
+  // Only a partly open drawer that may close decides here, vaul handles the rest
+  const mayClose = isCurrentlyDismissible.value && !isFullyExtended.value;
+  const speed = endSpeed();
+  if (!mayClose || speed === null || !drawer.value) {
+    return false;
+  }
+  const heights = visibleHeights(drawer.value);
+  const projectedHeight = heights.now - speed * swipeProjectionMs;
+  return projectedHeight < heights.partial / 2;
+}
+
+function release() {
+  if (isOpen.value && shouldCloseOnRelease()) {
+    isOpen.value = false;
+    // vaul reports no close it did not start, so close after its slide out
+    drawer.value?.addEventListener("transitionend", () => emit("close"), {
+      once: true,
+    });
+  }
+  swipeSamples = [];
+  setDragging(false);
+}
+
+useEventListener(drawer, "pointerdown", (pointerEvent: PointerEvent) => {
+  swipeSamples = [];
+  trackSwipe(pointerEvent);
+  setDragging(true);
+});
+useEventListener(drawer, "pointermove", (pointerEvent: PointerEvent) => {
+  if (isDragging) {
+    trackSwipe(pointerEvent);
+  }
+});
+useEventListener(drawer, "pointerup", release);
+useEventListener(drawer, "pointercancel", release);
 useEventListener(window, "resize", fitToContent);
 watch([scroller, () => itemCount, () => isVisible], fitToContent, {
   flush: "post",
@@ -241,7 +311,7 @@ useEventListener(
 <template>
   <UDrawer
     v-if="!isDesktop"
-    open
+    :open="isOpen"
     :title="title"
     v-model:activeSnapPoint="activeSnapPoint"
     :snapPoints="snapPoints"
@@ -265,8 +335,11 @@ useEventListener(
       footer: 'p-0',
     }"
     @update:open="
-      (isOpen) => {
-        if (!isOpen) emit('close');
+      (open) => {
+        if (!open) {
+          isOpen = false;
+          emit('close');
+        }
       }
     "
   >
