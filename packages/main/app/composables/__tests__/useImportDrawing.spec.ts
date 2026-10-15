@@ -35,12 +35,12 @@ const { runtimeConfigMock } = vi.hoisted(() => ({
   },
 }));
 
-const { isDrawingLayerInLayerStore, numberOfFeatures } = await vi.hoisted(
+const { isDrawingLayerInLayerStore, drawingSourceFeatures } = await vi.hoisted(
   async () => {
     const { ref } = await import("vue");
     return {
       isDrawingLayerInLayerStore: ref(false),
-      numberOfFeatures: ref(0),
+      drawingSourceFeatures: [] as unknown[],
     };
   },
 );
@@ -67,7 +67,9 @@ vi.mock("@swissgeo/drawing", () => ({
     mountDrawingLayer: mountDrawingLayerSpy,
     clearDrawingLayer: clearDrawingLayerSpy,
     unmountDrawingLayer: unmountDrawingLayerSpy,
-    numberOfFeatures,
+    drawingVectorLayer: {
+      getSource: () => ({ getFeatures: () => drawingSourceFeatures }),
+    },
     isDrawingLayerInLayerStore,
   })),
 }));
@@ -88,7 +90,7 @@ describe("useImportDrawing", () => {
       text: () => Promise.resolve("<kml></kml>"),
     });
     isDrawingLayerInLayerStore.value = false;
-    numberOfFeatures.value = 0;
+    drawingSourceFeatures.length = 0;
     resolveUrlMock.mockResolvedValue({
       redirectUrl:
         "https://sys-map.dev.bgdi.ch/#/map?layers=KML%7Chttps://sys-public.dev.bgdi.ch/api/kml/files/abc123",
@@ -629,7 +631,7 @@ describe("useImportDrawing", () => {
     expect(isConfirmModalOpen.value).toBe(false);
     expect(clearDrawingLayerSpy).not.toHaveBeenCalled();
     expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(fetchMock).toHaveBeenCalledOnce();
     expect(importKmlSpy).not.toHaveBeenCalled();
     expect(url.value).toBe("https://s.geo.admin.ch/test123");
     expect(errorMessage.value).toBe("");
@@ -680,33 +682,69 @@ describe("useImportDrawing", () => {
     expect(importKmlSpy).toHaveBeenCalledTimes(2);
   });
 
-  it("unmounts the drawing layer when the import fails without features", async () => {
+  it("keeps the current drawing when the KML fetch fails", async () => {
+    isDrawingLayerInLayerStore.value = true;
     fetchMock.mockRejectedValueOnce(new Error("Network error"));
-    const { url, importLegacyDrawing, errorMessage } = useImportDrawing();
+    const { url, importLegacyDrawing, isConfirmModalOpen, errorMessage } =
+      useImportDrawing();
     url.value = "https://s.geo.admin.ch/test123";
 
     await importLegacyDrawing();
 
-    expect(mountDrawingLayerSpy).toHaveBeenCalled();
-    expect(unmountDrawingLayerSpy).toHaveBeenCalledTimes(1);
+    expect(isConfirmModalOpen.value).toBe(false);
+    expect(clearDrawingLayerSpy).not.toHaveBeenCalled();
+    expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
+    expect(unmountDrawingLayerSpy).not.toHaveBeenCalled();
+    expect(importKmlSpy).not.toHaveBeenCalled();
     expect(errorMessage.value).toBe("Network error");
   });
 
-  it("keeps the drawing layer when the import fails after importing features", async () => {
-    numberOfFeatures.value = 3;
+  it("imports nothing when one of the KML fetches fails", async () => {
+    isDrawingLayerInLayerStore.value = true;
     fetchMock
       .mockResolvedValueOnce({
         ok: true,
         text: () => Promise.resolve("<kml></kml>"),
       })
       .mockRejectedValueOnce(new Error("Network error"));
-    const { url, importLegacyDrawing } = useImportDrawing();
+    const { url, importLegacyDrawing, errorMessage } = useImportDrawing();
     url.value =
       "https://map.geo.admin.ch/#/map?layers=KML%7Chttps://public.geo.admin.ch/api/kml/files/abc;KML%7Chttps://public.geo.admin.ch/api/kml/files/def";
 
     await importLegacyDrawing();
 
-    expect(importKmlSpy).toHaveBeenCalledTimes(1);
+    expect(clearDrawingLayerSpy).not.toHaveBeenCalled();
+    expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
+    expect(importKmlSpy).not.toHaveBeenCalled();
+    expect(errorMessage.value).toBe("Network error");
+  });
+
+  it("unmounts the drawing layer when the import fails without features", async () => {
+    importKmlSpy.mockImplementation(() => {
+      throw new Error("Invalid KML");
+    });
+    const { url, importLegacyDrawing, errorMessage } = useImportDrawing();
+    url.value = "https://s.geo.admin.ch/test123";
+
+    await importLegacyDrawing();
+
+    expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
+    expect(unmountDrawingLayerSpy).toHaveBeenCalledTimes(1);
+    expect(errorMessage.value).toBe("Invalid KML");
+  });
+
+  it("keeps the drawing layer when the error occurs right after importing features", async () => {
+    drawingSourceFeatures.push({}, {}, {});
+    importKmlSpy.mockImplementation(() => {
+      throw new Error("Invalid KML");
+    });
+    const { url, importLegacyDrawing, errorMessage } = useImportDrawing();
+    url.value = "https://s.geo.admin.ch/test123";
+
+    await importLegacyDrawing();
+
+    expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
     expect(unmountDrawingLayerSpy).not.toHaveBeenCalled();
+    expect(errorMessage.value).toBe("Invalid KML");
   });
 });

@@ -208,7 +208,7 @@ export function useImportDrawing() {
     mountDrawingLayer,
     clearDrawingLayer,
     unmountDrawingLayer,
-    numberOfFeatures,
+    drawingVectorLayer,
   } = useDrawing();
 
   const importDrawingStore = useDrawingImportStore();
@@ -320,9 +320,25 @@ export function useImportDrawing() {
           );
         }
       }
+
+      const kmlTexts = await Promise.all(
+        datasetUrls.map(async (datasetUrl) => {
+          const kmlResponse = await fetch(removeAdminIdFromUrl(datasetUrl));
+          if (!kmlResponse.ok) {
+            throw new Error(
+              t("toolbox.import.errorMessages.kmlFetchFailed", {
+                status: kmlResponse.statusText,
+              }),
+            );
+          }
+          return kmlResponse.text();
+        }),
+      );
+
       const hasAdminLinkInUrl = datasetUrls.some((datasetUrl) =>
         datasetUrl.includes("@adminId="),
       );
+
       if (
         !(await confirmReplaceDrawing({
           noteVariant: hasAdminLinkInUrl ? "legacyCopy" : "temporary",
@@ -334,24 +350,16 @@ export function useImportDrawing() {
       mountDrawingLayer(olMap.value);
       hasMountedLayer = true;
 
-      for (const kmlUrl of datasetUrls) {
-        const kmlResponse = await fetch(removeAdminIdFromUrl(kmlUrl));
-        if (!kmlResponse.ok) {
-          throw new Error(
-            t("toolbox.import.errorMessages.kmlFetchFailed", {
-              status: kmlResponse.statusText,
-            }),
-          );
-        }
-
-        const kmlText = await kmlResponse.text();
+      for (const kmlText of kmlTexts) {
         importKml(kmlText);
       }
 
       successMessage.value = t("toolbox.import.drawingSuccessMessage");
       url.value = "";
     } catch (error) {
-      if (hasMountedLayer && numberOfFeatures.value === 0) {
+      const featureCount =
+        drawingVectorLayer.getSource()?.getFeatures().length ?? 0;
+      if (hasMountedLayer && featureCount === 0) {
         unmountDrawingLayer();
       }
       errorMessage.value =
