@@ -1,6 +1,10 @@
 <script lang="ts" setup>
-import { useEventListener, useRafFn } from "@vueuse/core";
+import { useEventListener } from "@vueuse/core";
 import { panelSnapPointKey } from "~/types/injectionKeys";
+
+import { useDrawerFooterFrame } from "./useDrawerFooterFrame";
+import { useDrawerSwipeToClose } from "./useDrawerSwipeToClose";
+import { useDrawerTouchGuard } from "./useDrawerTouchGuard";
 
 const {
   hasHeader = true,
@@ -111,201 +115,25 @@ const scrollerClass = computed(() => [
     : "overflow-hidden",
 ]);
 
-// vaul only slides the drawer box down, so its bottom leaves the screen.
-// The container ends at the visible edge to keep the footer on screen.
-const container = computed(() =>
-  scroller.value?.closest<HTMLElement>('[data-slot="container"]'),
-);
-const drawer = computed(() => container.value?.parentElement);
-let isDragging = false;
-const { resume, pause } = useRafFn(
-  () => {
-    if (!container.value || !drawer.value) {
-      pause();
-      return;
-    }
-    // offsetTop ignores the transform, the bounding box does not
-    const visibleBottom = drawer.value.offsetTop + drawer.value.offsetHeight;
-    const height = Math.max(
-      minContainerHeight(container.value),
-      visibleBottom - container.value.getBoundingClientRect().top,
-    );
-    container.value.style.height = `${height}px`;
-    // Stop once the finger is up and the snap animation is over
-    if (!isDragging && drawer.value.getAnimations().length === 0) {
-      pause();
-    }
-  },
-  { immediate: false },
-);
-
-// When the drawer closes, the first content row (the title) and the footer
-// leave the screen together
-function minContainerHeight(container: HTMLElement) {
-  const firstRow = scroller.value?.querySelector<HTMLElement>(":scope > *");
-  const footer = container.querySelector<HTMLElement>('[data-slot="footer"]');
-  return (firstRow?.offsetHeight ?? 0) + (footer?.offsetHeight ?? 0);
-}
-
-function followDrawer() {
-  // A hidden drawer has no size, so it is measured once it shows again
-  if (slots.footer && !isDesktop.value && isVisible) {
-    resume();
-  }
-}
-
-function fitToContent() {
-  const footer = container.value?.querySelector<HTMLElement>(
-    '[data-slot="footer"]',
-  );
-  if (
-    !isVisible ||
-    !container.value ||
-    !drawer.value ||
-    !scroller.value ||
-    !footer
-  ) {
-    return;
-  }
-  // scrollHeight never gets lower than the box, so measure where the content ends
-  const lastRow = scroller.value.lastElementChild;
-  const scrollerContentHeight = lastRow
-    ? lastRow.getBoundingClientRect().bottom -
-      scroller.value.getBoundingClientRect().top +
-      scroller.value.scrollTop
-    : 0;
-  const contentHeight =
-    container.value.offsetTop + scrollerContentHeight + footer.offsetHeight;
-  const snapHeight =
-    contentHeight + window.innerHeight - drawer.value.offsetHeight;
-  contentSnapHeight.value =
-    snapHeight < defaultPartialSnapPoint * window.innerHeight
-      ? snapHeight
-      : null;
-  followDrawer();
-}
-
-function setDragging(isPressed: boolean) {
-  isDragging = isPressed;
-  followDrawer();
-}
-
-// vaul closes a partly open drawer only on a fast swipe. Like native sheets,
-// it also closes when the end of the swipe carries it past half its height.
-const isOpen = ref(true);
-const swipeSampleMs = 100;
-const swipeProjectionMs = 300;
-let swipeSamples: { time: number; y: number }[] = [];
-
-function trackSwipe(pointerEvent: PointerEvent) {
-  const now = pointerEvent.timeStamp;
-  swipeSamples = [
-    ...swipeSamples.filter((sample) => now - sample.time <= swipeSampleMs),
-    { time: now, y: pointerEvent.clientY },
-  ];
-}
-
-// Speed at the end of the swipe in px/ms, positive downwards. A pause at the
-// start does not count, which makes a release feel like native sheets.
-function endSpeed() {
-  const first = swipeSamples[0];
-  const last = swipeSamples.at(-1);
-  if (!first || !last || last.time === first.time) {
-    return null;
-  }
-  return (last.y - first.y) / (last.time - first.time);
-}
-
-// Height of the drawer on screen: at the partial snap point and right now
-function visibleHeights(drawer: HTMLElement) {
-  const boxBottom = drawer.offsetTop + drawer.offsetHeight;
-  const partialSnapHeight =
-    contentSnapHeight.value ?? defaultPartialSnapPoint * window.innerHeight;
-  return {
-    partial: partialSnapHeight - window.innerHeight + drawer.offsetHeight,
-    now: boxBottom - drawer.getBoundingClientRect().top,
-  };
-}
-
-function shouldCloseOnRelease() {
-  // Only a partly open drawer that may close decides here, vaul handles the rest
-  const mayClose = isCurrentlyDismissible.value && !isFullyExtended.value;
-  const speed = endSpeed();
-  if (!mayClose || speed === null || !drawer.value) {
-    return false;
-  }
-  const heights = visibleHeights(drawer.value);
-  const projectedHeight = heights.now - speed * swipeProjectionMs;
-  return projectedHeight < heights.partial / 2;
-}
-
-function release() {
-  if (isOpen.value && shouldCloseOnRelease()) {
-    isOpen.value = false;
-    // vaul reports no close it did not start, so close after its slide out
-    drawer.value?.addEventListener("transitionend", () => emit("close"), {
-      once: true,
-    });
-  }
-  swipeSamples = [];
-  setDragging(false);
-}
-
-useEventListener(drawer, "pointerdown", (pointerEvent: PointerEvent) => {
-  swipeSamples = [];
-  trackSwipe(pointerEvent);
-  setDragging(true);
+const { drawer } = useDrawerFooterFrame(scroller, contentSnapHeight, {
+  isEnabled: () => !!slots.footer && !isDesktop.value,
+  isVisible: () => isVisible,
+  itemCount: () => itemCount,
+  maxSnapHeight: () => defaultPartialSnapPoint * window.innerHeight,
+  activeSnapPoint,
 });
-useEventListener(drawer, "pointermove", (pointerEvent: PointerEvent) => {
-  if (isDragging) {
-    trackSwipe(pointerEvent);
-  }
-});
-useEventListener(drawer, "pointerup", release);
-useEventListener(drawer, "pointercancel", release);
-useEventListener(window, "resize", fitToContent);
-watch([scroller, () => itemCount, () => isVisible], fitToContent, {
-  flush: "post",
-});
-watch(activeSnapPoint, followDrawer);
 
-// vaul-vue (built on Reka UI) lacks the touchmove guard that React vaul gets
-// from Radix's react-remove-scroll. Without it, swiping down on the list while
-// it is scrolled to the top starts a native scroll (or pull-to-refresh), which
-// cancels vaul's pointer drag, so the drawer can't be swiped down.
-// Below full height the content cannot scroll, so a pull up must also drag
-// the drawer open. Only a mostly vertical pull counts, so sideways swipes
-// still scroll.
-let touchStartX = 0;
-let touchStartY = 0;
-useEventListener(
-  scroller,
-  "touchstart",
-  (touchEvent: TouchEvent) => {
-    touchStartX = touchEvent.touches[0]!.clientX;
-    touchStartY = touchEvent.touches[0]!.clientY;
-  },
-  { passive: true },
-);
-useEventListener(
-  scroller,
-  "touchmove",
-  (touchEvent: TouchEvent) => {
-    if (isDesktop.value || !scroller.value) {
-      return;
-    }
-    const deltaX = touchEvent.touches[0]!.clientX - touchStartX;
-    const deltaY = touchEvent.touches[0]!.clientY - touchStartY;
-    const isPullingDown = deltaY > Math.abs(deltaX);
-    const isPullingUp = -deltaY > Math.abs(deltaX);
-    const isClosingDrawer = isPullingDown && scroller.value.scrollTop <= 0;
-    const isOpeningDrawer = isPullingUp && !isFullyExtended.value;
-    if ((isClosingDrawer || isOpeningDrawer) && touchEvent.cancelable) {
-      touchEvent.preventDefault();
-    }
-  },
-  { passive: false },
-);
+const { isOpen } = useDrawerSwipeToClose(drawer, {
+  mayClose: () => isCurrentlyDismissible.value && !isFullyExtended.value,
+  partialSnapHeight: () =>
+    contentSnapHeight.value ?? defaultPartialSnapPoint * window.innerHeight,
+  onClose: () => emit("close"),
+});
+
+useDrawerTouchGuard(scroller, {
+  isEnabled: () => !isDesktop.value,
+  isFullyExtended: () => isFullyExtended.value,
+});
 </script>
 
 <template>
