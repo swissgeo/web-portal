@@ -30,6 +30,13 @@ const DISPATCHER = { name: "state-config" };
 export function isBackgroundLayer(layer: Layer): boolean {
   return Object.values(AVAILABLE_BACKGROUNDS).includes(layer.humanId);
 }
+
+export function isDrawingLayerState(
+  state: LayerState | DrawingLayerState,
+): state is DrawingLayerState {
+  return state.type === "drawing" || "drawingUrl" in state;
+}
+
 // exported only for testing purpose. Do not use this outside this file
 export function layersToStateConfig(
   layers: MapLayer[],
@@ -111,7 +118,7 @@ export function layerToStateConfig(
 async function stateConfigToLayer(
   config: LayerState | DrawingLayerState | null,
 ): Promise<Layer | null> {
-  if (!config || !("layerUrl" in config)) {
+  if (!config || isDrawingLayerState(config)) {
     return null;
   }
 
@@ -145,7 +152,7 @@ export function useStateConfig() {
           rotation: positionStore.rotation,
         },
         layers: layersToStateConfig(mapviewStore.mapLayers),
-        bg_layer: bgState && "layerUrl" in bgState ? bgState : null,
+        bg_layer: bgState && !isDrawingLayerState(bgState) ? bgState : null,
       },
     };
   });
@@ -196,7 +203,7 @@ export function useStateConfig() {
     for (let i = 0; i < layers.length; i++) {
       if (layers[i]) {
         const stateLayer = stateLayers[i];
-        if (!stateLayer || !("layerUrl" in stateLayer)) {
+        if (!stateLayer || isDrawingLayerState(stateLayer)) {
           continue;
         }
         const uuid = layers[i]!.uuid;
@@ -259,7 +266,7 @@ export function useCustomStateConfig() {
   const backgroundLayerState = () => {
     if (layerStore.backgroundLayer && mapviewStore.mapLayers[0]) {
       const state = layerToStateConfig(mapviewStore.mapLayers[0]);
-      return state && "layerUrl" in state ? state : null;
+      return state && !isDrawingLayerState(state) ? state : null;
     } else {
       return null;
     }

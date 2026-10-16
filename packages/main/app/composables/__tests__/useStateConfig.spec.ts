@@ -1,7 +1,7 @@
 import type { FeatureData } from "@swissgeo/feature";
 import type { Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
-import type { LayerState } from "@swissgeo/statesharing";
+import type { DrawingLayerState, LayerState } from "@swissgeo/statesharing";
 import type { AppStatePayload } from "~/composables/useStateConfig";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
@@ -14,6 +14,7 @@ import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
 import { mount } from "@vue/test-utils";
 import {
   isBackgroundLayer,
+  isDrawingLayerState,
   layersToStateConfig,
   layerToStateConfig,
   useCustomStateConfig,
@@ -25,6 +26,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
 
 const mockMapLayers: MapLayer[] = [];
+
+function expectRegularLayerState(
+  state: LayerState | DrawingLayerState | null,
+): LayerState {
+  expect(state).not.toBeNull();
+  if (!state || isDrawingLayerState(state)) {
+    throw new Error("expected a regular layer state");
+  }
+  return state;
+}
 
 mockNuxtImport("useMapViewStore", () => () => ({
   mapLayers: mockMapLayers,
@@ -219,7 +230,7 @@ describe("useStateConfig - Helper functions are functional", () => {
     const layerStore = useLayerStore();
     layerStore.addLayer(datasetsForStore[0]!);
     const layer: MapLayer = mockedMapLayers[0]!;
-    const layerStateConfig = layerToStateConfig(layer) as LayerState;
+    const layerStateConfig = expectRegularLayerState(layerToStateConfig(layer));
     const expectedLayerStateConfig = expectedStatesConfig[0]!;
     expect(layerStateConfig.layerUrl).to.eql(expectedLayerStateConfig.layerUrl);
     expect(layerStateConfig.type).to.eql(expectedLayerStateConfig.type);
@@ -236,7 +247,9 @@ describe("useStateConfig - Helper functions are functional", () => {
     const layerStore = useLayerStore();
     layerStore.setBackground(backgroundDataset);
 
-    const layerStateConfig = layerToStateConfig(backgroundLayer) as LayerState;
+    const layerStateConfig = expectRegularLayerState(
+      layerToStateConfig(backgroundLayer),
+    );
     const expectedLayerStateConfig = expectedBackgroundState;
     expect(layerStateConfig.layerUrl).to.eql(expectedLayerStateConfig.layerUrl);
     expect(layerStateConfig.type).to.eql(expectedLayerStateConfig.type);
@@ -257,7 +270,9 @@ describe("useStateConfig - Helper functions are functional", () => {
 
     layerStore.setBackground(backgroundDataset);
 
-    const layerStateInputs = layersToStateConfig(mockMapLayers) as LayerState[];
+    const layerStateInputs = layersToStateConfig(mockMapLayers).map(
+      expectRegularLayerState,
+    );
 
     expect(layerStateInputs.length).to.eq(4);
 
@@ -285,7 +300,9 @@ describe("useStateConfig - Helper functions are functional", () => {
     mockMapLayers.push(...mockedMapLayers);
     layerStore.layers.push(...datasetsForStore);
 
-    const layerStateInputs = layersToStateConfig(mockMapLayers) as LayerState[];
+    const layerStateInputs = layersToStateConfig(mockMapLayers).map(
+      expectRegularLayerState,
+    );
 
     expect(layerStateInputs.length).to.eq(4);
     for (let index = 0; index < layerStateInputs.length; index++) {
@@ -683,9 +700,9 @@ describe("useStateConfig exports selected shareable features", () => {
     featureStore.setSelection({ "uuid-0": [shareableFeature] });
     mockMapLayers.push(mockedMapLayers[0]!);
 
-    const layerStateConfig = layerToStateConfig(
-      mockedMapLayers[0]!,
-    ) as LayerState;
+    const layerStateConfig = expectRegularLayerState(
+      layerToStateConfig(mockedMapLayers[0]!),
+    );
 
     expect(layerStateConfig.features).toEqual(["feature-shareable"]);
   });
@@ -750,5 +767,16 @@ describe("useStateConfig drawing layer state", () => {
 
     expect(layerToStateConfig(drawingMapLayer)).toBeNull();
     expect(layersToStateConfig(mockMapLayers)).toEqual([]);
+  });
+
+  it("tells drawing states apart from regular layer states", () => {
+    expect(isDrawingLayerState(expectedStatesConfig[0]!)).toBe(false);
+    expect(
+      isDrawingLayerState({
+        drawingUrl:
+          "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+        type: "drawing",
+      }),
+    ).toBe(true);
   });
 });
