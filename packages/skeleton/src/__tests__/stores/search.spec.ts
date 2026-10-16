@@ -43,6 +43,14 @@ const layer = (id: string): LayerSearchResult => ({
   description: "",
 });
 
+const location = (id: string, title: string): SearchResult => ({
+  resultType: "LOCATION",
+  id,
+  title,
+  sanitizedTitle: title,
+  description: "",
+});
+
 describe("useSearchStore", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -71,6 +79,68 @@ describe("useSearchStore", () => {
 
     expect(store.layerResults).toHaveLength(2);
     expect(store.hasError).toBe(false);
+  });
+
+  // the SearchServer answers "Ber" with the canton twice, as Bern (BE) and
+  // Berne (BE), both with featureId 351: only one of them may stay, or the
+  // results list holds the same id twice
+  it("keeps only the first of two results sharing an id", async () => {
+    searchMocks.searchLocation.mockResolvedValue([
+      location("351", "Bern (BE)"),
+      location("351", "Berne (BE)"),
+    ]);
+
+    const store = useSearchStore();
+    await store.setSearchQuery("ber");
+
+    expect(store.locationResults).toHaveLength(1);
+    expect(store.results[0]?.title).toBe("Bern (BE)");
+  });
+
+  it("drops an entry the backend returns twice", async () => {
+    const exit = location("bern-wankdorf", "Bern-Wankdorf (BE) - Bern");
+    searchMocks.searchLocation.mockResolvedValue([exit, { ...exit }]);
+
+    const store = useSearchStore();
+    await store.setSearchQuery("bern");
+
+    expect(store.results).toHaveLength(1);
+  });
+
+  it("keeps results of different types sharing an id", async () => {
+    searchMocks.searchLocation.mockResolvedValue([
+      location("351", "Bern (BE)"),
+    ]);
+    searchMocks.searchLayers.mockResolvedValue([layer("351")]);
+
+    const store = useSearchStore();
+    await store.setSearchQuery("bern");
+
+    expect(store.locationResults).toHaveLength(1);
+    expect(store.layerResults).toHaveLength(1);
+  });
+
+  it("lists each id only once for a payload as the API sends it for Bern", async () => {
+    // ids as parseLocationResult builds them: the featureId where the backend
+    // sends one, the label where it does not
+    const byLabel = (label: string) => location(label, label);
+    searchMocks.searchLocation.mockResolvedValue([
+      location("351", "Bern (BE)"),
+      location("246", "Bern-Mittelland"),
+      byLabel("<b>Bern</b> (BE) - Bremgarten,Bern"),
+      byLabel("<b>Bern\n</b> (BE) - Bremgarten,Bern"),
+      byLabel("<i>Exit</i> <b>Bern-Wankdorf</b> (BE) - Bern"),
+      byLabel("<i>Exit</i> <b>Bern-Wankdorf</b> (BE) - Bern"),
+    ]);
+
+    const store = useSearchStore();
+    await store.setSearchQuery("bern");
+
+    const ids = store.results.map((result) => result.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    // the labels differing only by a newline have distinct ids, so both stay;
+    // the doubled exit does not
+    expect(store.results).toHaveLength(5);
   });
 
   it("keeps the CMS results apart from the map ones", async () => {
