@@ -5,6 +5,7 @@ import { watchDebounced } from "@vueuse/core";
 import { postStateToStateId } from "~/utils/postStateToStateId";
 import { toValue } from "vue";
 
+import { isDrawingLayerState } from "./useStateConfig";
 import { URL_PARAM_STATE } from "./useUrlParams";
 
 function buildShareUrl(stateId: string | null): string {
@@ -18,17 +19,29 @@ function buildShareUrl(stateId: string | null): string {
 }
 
 /**
+ * Return a copy of the state with all drawing admin ids blanked out.
+ */
+export function withoutDrawingAdminId(state: AppStatePayload): AppStatePayload {
+  const layers = state.state.layers?.map((layer) =>
+    isDrawingLayerState(layer) ? { ...layer, adminId: "" } : layer,
+  );
+  return { ...state, state: { ...state.state, layers } };
+}
+
+/**
  * Options for controlling share link state generation.
  *
  * - `autoRefresh: true` — automatically POST state to the API whenever it changes.
  *   Optionally debounce with `debounce`/`maxWait`.
  * - `autoRefresh: false` (default) — tracks changes but only fetches when `refresh()` is called.
  *   The `debounce` option is ignored when `autoRefresh` is false.
+ * - `drawingEditable` — if true, the drawing admin id is included in the shared state; otherwise, it is stripped out.
  */
 type ShareLinkOptions = {
   autoRefresh?: boolean;
   debounce?: number;
   deep?: boolean;
+  drawingEditable?: MaybeRefOrGetter<boolean>;
   maxWait?: number;
   onError?: (error: unknown) => void;
 };
@@ -56,7 +69,10 @@ function useShareLinkState(
     isFetching.value = true;
 
     try {
-      hash.value = await postStateToStateId(newState.state, {
+      const stateToShare = toValue(options.drawingEditable)
+        ? newState.state
+        : withoutDrawingAdminId(newState).state;
+      hash.value = await postStateToStateId(stateToShare, {
         signal: currentController.signal,
       });
       needsRefresh.value = false;
@@ -170,6 +186,7 @@ export function useCreateShareLink(
   options?: {
     autoRefresh?: boolean;
     debounce?: number;
+    drawingEditable?: MaybeRefOrGetter<boolean>;
     fullWidth?: Ref<boolean>;
     maxWait?: number;
     onError?: (error: unknown) => void;
@@ -182,6 +199,7 @@ export function useCreateShareLink(
   const { hash, needsRefresh, refresh } = useShareLinkState(usableState, {
     autoRefresh: options?.autoRefresh,
     debounce: options?.debounce,
+    drawingEditable: options?.drawingEditable,
     maxWait: options?.maxWait,
     onError: options?.onError,
   });

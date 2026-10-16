@@ -21,12 +21,17 @@ const { sharing, linkClipboard, embedClipboard, mockShowError } =
     };
   });
 
-const { mockUseCreateShareLink } = vi.hoisted(() => ({
-  mockUseCreateShareLink: vi.fn((_state: unknown, options?: unknown) => ({
-    ...sharing,
-    shareOptions: options,
-  })),
-}));
+const { mockUseCreateShareLink, mockRefresh } = vi.hoisted(() => {
+  const refresh = vi.fn();
+  return {
+    mockRefresh: refresh,
+    mockUseCreateShareLink: vi.fn((_state: unknown, options?: unknown) => ({
+      ...sharing,
+      refresh,
+      shareOptions: options,
+    })),
+  };
+});
 
 let clipboardIndex = 0;
 vi.mock("@vueuse/core", async (importOriginal) => ({
@@ -71,8 +76,8 @@ const stubs = {
   },
   ShareLink: {
     name: "ShareLink",
-    props: ["link", "copied"],
-    emits: ["copy"],
+    props: ["link", "copied", "drawingEditable"],
+    emits: ["copy", "update:drawingEditable"],
     template: '<div data-testid="share-link-stub" />',
   },
   ShareEmbed: {
@@ -166,6 +171,16 @@ describe("Share", () => {
     expect(linkClipboard.copy).toHaveBeenCalledExactlyOnceWith(
       sharing.shareLink.value,
     );
+  });
+
+  it("refreshes the share link when drawingEditable toggles", async () => {
+    const wrapper = mountShare();
+
+    await wrapper
+      .getComponent({ name: "ShareLink" })
+      .vm.$emit("update:drawingEditable", true);
+
+    expect(mockRefresh).toHaveBeenCalledOnce();
   });
 
   it("propagates copied confirmation state to the matching child only", async () => {

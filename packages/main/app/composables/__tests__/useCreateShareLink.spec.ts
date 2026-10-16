@@ -39,6 +39,21 @@ function makeState(zoom = 8): AppStatePayload {
   };
 }
 
+function makeStateWithDrawing(adminId = "admin-id"): AppStatePayload {
+  return {
+    version: "1.0",
+    state: {
+      layers: [
+        {
+          drawingUrl: "https://drawings.test/api/drawings/drawing-1",
+          type: "drawing",
+          adminId,
+        },
+      ],
+    },
+  };
+}
+
 describe("useCreateShareLink", () => {
   beforeEach(() => {
     mockPostState.mockReset();
@@ -190,6 +205,30 @@ describe("useCreateShareLink", () => {
     await zoomOnlyShare.refresh();
 
     expect(zoomOnlyShare.embedUrl.value).toContain("zoomOnlyCtrl=true");
+  });
+
+  it("strips the drawing adminId from the posted state by default", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const share = useCreateShareLink(ref(makeStateWithDrawing()));
+
+    await share.refresh();
+
+    const posted = mockPostState.mock.calls[0]?.[0] as AppStatePayload["state"];
+    expect((posted.layers?.[0] as { adminId?: string }).adminId).toBe("");
+  });
+
+  it("keeps the drawing adminId when drawingEditable is true", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const share = useCreateShareLink(ref(makeStateWithDrawing()), {
+      drawingEditable: ref(true),
+    });
+
+    await share.refresh();
+
+    const posted = mockPostState.mock.calls[0]?.[0] as AppStatePayload["state"];
+    expect((posted.layers?.[0] as { adminId?: string }).adminId).toBe(
+      "admin-id",
+    );
   });
 
   it("calls onError when the POST fails", async () => {
