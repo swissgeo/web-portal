@@ -6,6 +6,7 @@ import {
   useCreateShareLink,
   useCreateShareLinkForCustomState,
   useCreateShareLinkForPrint,
+  withoutDrawingAdminId,
 } from "~/composables/useCreateShareLink";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, reactive, ref } from "vue";
@@ -35,6 +36,21 @@ function makeState(zoom = 8): AppStatePayload {
         rotation: 0,
       },
       layers: [],
+    },
+  };
+}
+
+function makeStateWithDrawing(adminId = "admin-id"): AppStatePayload {
+  return {
+    version: "1.0",
+    state: {
+      layers: [
+        {
+          drawingUrl: "https://drawings.test/api/drawings/drawing-1",
+          type: "drawing",
+          adminId,
+        },
+      ],
     },
   };
 }
@@ -190,6 +206,44 @@ describe("useCreateShareLink", () => {
     await zoomOnlyShare.refresh();
 
     expect(zoomOnlyShare.embedUrl.value).toContain("zoomOnlyCtrl=true");
+  });
+
+  it("strips the drawing adminId from the posted state by default", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const share = useCreateShareLink(ref(makeStateWithDrawing()));
+
+    await share.refresh();
+
+    const posted = mockPostState.mock.calls[0]?.[0] as AppStatePayload["state"];
+    expect((posted.layers?.[0] as { adminId?: string }).adminId).toBe("");
+  });
+
+  it("keeps the drawing adminId when drawingEditable is true", async () => {
+    mockPostState.mockResolvedValueOnce("state-id");
+    const share = useCreateShareLink(ref(makeStateWithDrawing()), {
+      drawingEditable: ref(true),
+    });
+
+    await share.refresh();
+
+    const posted = mockPostState.mock.calls[0]?.[0] as AppStatePayload["state"];
+    expect((posted.layers?.[0] as { adminId?: string }).adminId).toBe(
+      "admin-id",
+    );
+  });
+
+  it("strips the drawing adminId from the portable base64 state", async () => {
+    vi.useFakeTimers();
+    const customShare = useCreateShareLinkForCustomState(true);
+    const state = makeStateWithDrawing();
+
+    customShare.state.value = state;
+    await nextTick();
+    await vi.advanceTimersByTimeAsync(500);
+
+    expect(customShare.hash.value).toBe(
+      btoa(JSON.stringify(withoutDrawingAdminId(state))),
+    );
   });
 
   it("calls onError when the POST fails", async () => {

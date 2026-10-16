@@ -71,8 +71,8 @@ const stubs = {
   },
   ShareLink: {
     name: "ShareLink",
-    props: ["link", "copied"],
-    emits: ["copy"],
+    props: ["link", "copied", "drawingEditable"],
+    emits: ["copy", "update:drawingEditable"],
     template: '<div data-testid="share-link-stub" />',
   },
   ShareEmbed: {

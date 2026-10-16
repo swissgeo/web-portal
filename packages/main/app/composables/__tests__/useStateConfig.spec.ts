@@ -9,6 +9,7 @@ import { useDimensionsStore } from "@swissgeo/dimension";
 import { useFeaturesStore } from "@swissgeo/feature";
 import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
+import { DRAWING_LAYER_ID } from "@swissgeo/shared";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
 import { mount } from "@vue/test-utils";
 import {
@@ -18,6 +19,7 @@ import {
   useCustomStateConfig,
   useStateConfig,
 } from "~/composables/useStateConfig";
+import { useDrawingImportStore } from "~/stores/drawingImport";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
@@ -41,6 +43,29 @@ const { setCenterMock, setZoomMock, setRotationMock, fetchMock } = vi.hoisted(
 
 mockNuxtImport("$fetch", () => fetchMock);
 
+const { runtimeConfigMock } = vi.hoisted(() => ({
+  runtimeConfigMock: {
+    public: {
+      drawingServiceEndpoint: "https://drawings.test/api/drawings",
+    },
+  },
+}));
+
+mockNuxtImport("useRuntimeConfig", () => () => runtimeConfigMock);
+
+const { importKmzSpy, mountDrawingLayerSpy } = vi.hoisted(() => ({
+  importKmzSpy: vi.fn(),
+  mountDrawingLayerSpy: vi.fn(),
+}));
+
+vi.mock("@swissgeo/drawing", () => ({
+  useDrawing: vi.fn(() => ({
+    importKmz: importKmzSpy,
+    mountDrawingLayer: mountDrawingLayerSpy,
+    DRAWING_LAYER_UUID: "drawing-layer-uuid",
+  })),
+}));
+
 vi.mock("@swissgeo/map", async (importOriginal) => {
   const original = await importOriginal();
 
@@ -53,6 +78,9 @@ vi.mock("@swissgeo/map", async (importOriginal) => {
       setCenter: setCenterMock,
       setZoom: setZoomMock,
       setRotation: setRotationMock,
+    }),
+    useMap: () => ({
+      olMap: { value: { id: "fake-ol-map" } },
     }),
   };
 });
@@ -207,7 +235,7 @@ describe("useStateConfig - Helper functions are functional", () => {
     const layerStore = useLayerStore();
     layerStore.addLayer(datasetsForStore[0]!);
     const layer: MapLayer = mockedMapLayers[0]!;
-    const layerStateConfig = layerToStateConfig(layer)!;
+    const layerStateConfig = layerToStateConfig(layer) as LayerState;
     const expectedLayerStateConfig = expectedStatesConfig[0]!;
     expect(layerStateConfig.layerUrl).to.eql(expectedLayerStateConfig.layerUrl);
     expect(layerStateConfig.type).to.eql(expectedLayerStateConfig.type);
@@ -224,7 +252,7 @@ describe("useStateConfig - Helper functions are functional", () => {
     const layerStore = useLayerStore();
     layerStore.setBackground(backgroundDataset);
 
-    const layerStateConfig = layerToStateConfig(backgroundLayer)!;
+    const layerStateConfig = layerToStateConfig(backgroundLayer) as LayerState;
     const expectedLayerStateConfig = expectedBackgroundState;
     expect(layerStateConfig.layerUrl).to.eql(expectedLayerStateConfig.layerUrl);
     expect(layerStateConfig.type).to.eql(expectedLayerStateConfig.type);
@@ -245,7 +273,7 @@ describe("useStateConfig - Helper functions are functional", () => {
 
     layerStore.setBackground(backgroundDataset);
 
-    const layerStateInputs: LayerState[] = layersToStateConfig(mockMapLayers);
+    const layerStateInputs = layersToStateConfig(mockMapLayers) as LayerState[];
 
     expect(layerStateInputs.length).to.eq(4);
 
@@ -273,7 +301,7 @@ describe("useStateConfig - Helper functions are functional", () => {
     mockMapLayers.push(...mockedMapLayers);
     layerStore.layers.push(...datasetsForStore);
 
-    const layerStateInputs: LayerState[] = layersToStateConfig(mockMapLayers);
+    const layerStateInputs = layersToStateConfig(mockMapLayers) as LayerState[];
 
     expect(layerStateInputs.length).to.eq(4);
     for (let index = 0; index < layerStateInputs.length; index++) {
@@ -671,7 +699,9 @@ describe("useStateConfig exports selected shareable features", () => {
     featureStore.setSelection({ "uuid-0": [shareableFeature] });
     mockMapLayers.push(mockedMapLayers[0]!);
 
-    const layerStateConfig = layerToStateConfig(mockedMapLayers[0]!)!;
+    const layerStateConfig = layerToStateConfig(
+      mockedMapLayers[0]!,
+    ) as LayerState;
 
     expect(layerStateConfig.features).toEqual(["feature-shareable"]);
   });
@@ -684,5 +714,124 @@ describe("useStateConfig exports selected shareable features", () => {
     const layerStateConfig = layerToStateConfig(mockedMapLayers[0]!)!;
 
     expect(layerStateConfig).not.toHaveProperty("features");
+  });
+});
+
+describe("useStateConfig drawing layer state", () => {
+  const drawingMapLayer: MapLayer = {
+    uuid: "drawing-layer-uuid",
+    format: "KML",
+    layerId: DRAWING_LAYER_ID,
+    opacity: 0.5,
+    isVisible: false,
+    displayName: "Drawing layer",
+  };
+  const drawingSourceLayer: Layer = {
+    uuid: "drawing-layer-uuid",
+    humanId: DRAWING_LAYER_ID,
+    type: "kml",
+    isLoading: false,
+  };
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    mockMapLayers.length = 0;
+    vi.clearAllMocks();
+    importKmzSpy.mockResolvedValue(true);
+    fetchMock.mockReset();
+  });
+
+  it("exports the drawing layer as a drawing state when synced", () => {
+    const layerStore = useLayerStore();
+    const drawingImportStore = useDrawingImportStore();
+    layerStore.addLayer(drawingSourceLayer);
+    mockMapLayers.push(drawingMapLayer);
+    drawingImportStore.drawingId = "11111111-2222-3333-4444-555555555555";
+    drawingImportStore.drawingAdminId = "admin-id-6666";
+
+    const state = layerToStateConfig(drawingMapLayer);
+
+    expect(state).toEqual({
+      drawingUrl:
+        "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+      type: "drawing",
+      adminId: "admin-id-6666",
+      isVisible: false,
+      opacity: 0.5,
+    });
+  });
+
+  it("skips the drawing layer when it was never synced", () => {
+    const layerStore = useLayerStore();
+    layerStore.addLayer(drawingSourceLayer);
+    mockMapLayers.push(drawingMapLayer);
+
+    expect(layerToStateConfig(drawingMapLayer)).toBeNull();
+    expect(layersToStateConfig(mockMapLayers)).toEqual([]);
+  });
+
+  it("imports a drawing state: fetches the kmz, mounts the layer and seeds the drawing ids", async () => {
+    const fetchMockGlobal = vi.fn().mockResolvedValue({
+      ok: true,
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+    });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+            type: "drawing",
+            adminId: "admin-id-6666",
+            isVisible: false,
+            opacity: 0.5,
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(fetchMockGlobal).toHaveBeenCalledWith(
+      "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+    );
+    expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
+    expect(importKmzSpy).toHaveBeenCalledWith(expect.any(ArrayBuffer), true);
+
+    const drawingImportStore = useDrawingImportStore();
+    expect(drawingImportStore.drawingId).toBe(
+      "11111111-2222-3333-4444-555555555555",
+    );
+    expect(drawingImportStore.drawingAdminId).toBe("admin-id-6666");
+
+    vi.unstubAllGlobals();
+  });
+
+  it("logs a warning and skips the drawing when the fetch fails", async () => {
+    const fetchMockGlobal = vi
+      .fn()
+      .mockResolvedValue({ ok: false, status: 404 });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+            type: "drawing",
+          },
+        ],
+      },
+    };
+
+    await expect(useStateConfig().importState(payload)).resolves.not.toThrow();
+    expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
+
+    vi.unstubAllGlobals();
   });
 });
