@@ -5,6 +5,7 @@ import { watchDebounced } from "@vueuse/core";
 import { postStateToStateId } from "~/utils/postStateToStateId";
 import { toValue } from "vue";
 
+import { isDrawingLayerState } from "./useStateConfig";
 import { URL_PARAM_STATE } from "./useUrlParams";
 
 function buildShareUrl(stateId: string | null): string {
@@ -22,7 +23,7 @@ function buildShareUrl(stateId: string | null): string {
  */
 export function withoutDrawingAdminId(state: AppStatePayload): AppStatePayload {
   const layers = state.state.layers?.map((layer) =>
-    "drawingUrl" in layer ? { ...layer, adminId: "" } : layer,
+    isDrawingLayerState(layer) ? { ...layer, adminId: "" } : layer,
   );
   return { ...state, state: { ...state.state, layers } };
 }
