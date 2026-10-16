@@ -1,7 +1,7 @@
 import type { FeatureData } from "@swissgeo/feature";
 import type { Layer } from "@swissgeo/layers";
 import type { Layer as MapLayer } from "@swissgeo/map";
-import type { LayerState } from "@swissgeo/statesharing";
+import type { DrawingLayerState, LayerState } from "@swissgeo/statesharing";
 import type { AppStatePayload } from "~/composables/useStateConfig";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
@@ -9,20 +9,33 @@ import { useDimensionsStore } from "@swissgeo/dimension";
 import { useFeaturesStore } from "@swissgeo/feature";
 import { makeServerLayer, useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
+import { DRAWING_LAYER_ID } from "@swissgeo/shared";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
 import { mount } from "@vue/test-utils";
 import {
   isBackgroundLayer,
+  isDrawingLayerState,
   layersToStateConfig,
   layerToStateConfig,
   useCustomStateConfig,
   useStateConfig,
 } from "~/composables/useStateConfig";
+import { useDrawingImportStore } from "~/stores/drawingImport";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
 
 const mockMapLayers: MapLayer[] = [];
+
+function expectRegularLayerState(
+  state: LayerState | DrawingLayerState | null,
+): LayerState {
+  expect(state).not.toBeNull();
+  if (!state || isDrawingLayerState(state)) {
+    throw new Error("expected a regular layer state");
+  }
+  return state;
+}
 
 mockNuxtImport("useMapViewStore", () => () => ({
   mapLayers: mockMapLayers,
@@ -40,6 +53,16 @@ const { setCenterMock, setZoomMock, setRotationMock, fetchMock } = vi.hoisted(
 );
 
 mockNuxtImport("$fetch", () => fetchMock);
+
+const { runtimeConfigMock } = vi.hoisted(() => ({
+  runtimeConfigMock: {
+    public: {
+      drawingServiceEndpoint: "https://drawings.test/api/drawings",
+    },
+  },
+}));
+
+mockNuxtImport("useRuntimeConfig", () => () => runtimeConfigMock);
 
 vi.mock("@swissgeo/map", async (importOriginal) => {
   const original = await importOriginal();
@@ -207,7 +230,7 @@ describe("useStateConfig - Helper functions are functional", () => {
     const layerStore = useLayerStore();
     layerStore.addLayer(datasetsForStore[0]!);
     const layer: MapLayer = mockedMapLayers[0]!;
-    const layerStateConfig = layerToStateConfig(layer)!;
+    const layerStateConfig = expectRegularLayerState(layerToStateConfig(layer));
     const expectedLayerStateConfig = expectedStatesConfig[0]!;
     expect(layerStateConfig.layerUrl).to.eql(expectedLayerStateConfig.layerUrl);
     expect(layerStateConfig.type).to.eql(expectedLayerStateConfig.type);
@@ -224,7 +247,9 @@ describe("useStateConfig - Helper functions are functional", () => {
     const layerStore = useLayerStore();
     layerStore.setBackground(backgroundDataset);
 
-    const layerStateConfig = layerToStateConfig(backgroundLayer)!;
+    const layerStateConfig = expectRegularLayerState(
+      layerToStateConfig(backgroundLayer),
+    );
     const expectedLayerStateConfig = expectedBackgroundState;
     expect(layerStateConfig.layerUrl).to.eql(expectedLayerStateConfig.layerUrl);
     expect(layerStateConfig.type).to.eql(expectedLayerStateConfig.type);
@@ -245,7 +270,9 @@ describe("useStateConfig - Helper functions are functional", () => {
 
     layerStore.setBackground(backgroundDataset);
 
-    const layerStateInputs: LayerState[] = layersToStateConfig(mockMapLayers);
+    const layerStateInputs = layersToStateConfig(mockMapLayers).map(
+      expectRegularLayerState,
+    );
 
     expect(layerStateInputs.length).to.eq(4);
 
@@ -273,7 +300,9 @@ describe("useStateConfig - Helper functions are functional", () => {
     mockMapLayers.push(...mockedMapLayers);
     layerStore.layers.push(...datasetsForStore);
 
-    const layerStateInputs: LayerState[] = layersToStateConfig(mockMapLayers);
+    const layerStateInputs = layersToStateConfig(mockMapLayers).map(
+      expectRegularLayerState,
+    );
 
     expect(layerStateInputs.length).to.eq(4);
     for (let index = 0; index < layerStateInputs.length; index++) {
@@ -671,7 +700,9 @@ describe("useStateConfig exports selected shareable features", () => {
     featureStore.setSelection({ "uuid-0": [shareableFeature] });
     mockMapLayers.push(mockedMapLayers[0]!);
 
-    const layerStateConfig = layerToStateConfig(mockedMapLayers[0]!)!;
+    const layerStateConfig = expectRegularLayerState(
+      layerToStateConfig(mockedMapLayers[0]!),
+    );
 
     expect(layerStateConfig.features).toEqual(["feature-shareable"]);
   });
@@ -684,5 +715,68 @@ describe("useStateConfig exports selected shareable features", () => {
     const layerStateConfig = layerToStateConfig(mockedMapLayers[0]!)!;
 
     expect(layerStateConfig).not.toHaveProperty("features");
+  });
+});
+
+describe("useStateConfig drawing layer state", () => {
+  const drawingMapLayer: MapLayer = {
+    uuid: "drawing-layer-uuid",
+    format: "KML",
+    layerId: DRAWING_LAYER_ID,
+    opacity: 0.5,
+    isVisible: false,
+    displayName: "Drawing layer",
+  };
+  const drawingSourceLayer: Layer = {
+    uuid: "drawing-layer-uuid",
+    humanId: DRAWING_LAYER_ID,
+    type: "kml",
+    isLoading: false,
+  };
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    mockMapLayers.length = 0;
+    vi.clearAllMocks();
+  });
+
+  it("exports the drawing layer as a drawing state when synced", () => {
+    const layerStore = useLayerStore();
+    const drawingImportStore = useDrawingImportStore();
+    layerStore.addLayer(drawingSourceLayer);
+    mockMapLayers.push(drawingMapLayer);
+    drawingImportStore.drawingId = "11111111-2222-3333-4444-555555555555";
+    drawingImportStore.drawingAdminId = "admin-id-6666";
+
+    const state = layerToStateConfig(drawingMapLayer);
+
+    expect(state).toEqual({
+      drawingUrl:
+        "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+      type: "drawing",
+      adminId: "admin-id-6666",
+      isVisible: false,
+      opacity: 0.5,
+    });
+  });
+
+  it("skips the drawing layer when it was never synced", () => {
+    const layerStore = useLayerStore();
+    layerStore.addLayer(drawingSourceLayer);
+    mockMapLayers.push(drawingMapLayer);
+
+    expect(layerToStateConfig(drawingMapLayer)).toBeNull();
+    expect(layersToStateConfig(mockMapLayers)).toEqual([]);
+  });
+
+  it("tells drawing states apart from regular layer states", () => {
+    expect(isDrawingLayerState(expectedStatesConfig[0]!)).toBe(false);
+    expect(
+      isDrawingLayerState({
+        drawingUrl:
+          "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+        type: "drawing",
+      }),
+    ).toBe(true);
   });
 });
