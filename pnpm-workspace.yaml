@@ -99,7 +99,7 @@ catalog:
   fflate: ^0.8.3
   geojson: ^0.5.0
   globals: ^17.6.0
-  happy-dom: 20.14.5
+  happy-dom: 21.0.3
   h3: ^1.15.11
   jsdom: ^30.0.1
   mapbox-gl: ~3.32.0
