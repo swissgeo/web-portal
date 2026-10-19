@@ -49,6 +49,11 @@ DOMPurify.addHook?.("afterSanitizeAttributes", (node) => {
 
 /** This is called when we retrieve an html popup from a non-trusted source (external WMS for example, or the description key in a public kml) */
 export function sanitizeHtml(html: string, message: string): string {
+  if (!DOMPurify.isSupported) {
+    throw new Error(
+      "sanitizeHtml needs a browser DOM, do not call it during SSR",
+    );
+  }
   blockedContentMessage = message;
   return DOMPurify.sanitize(html, SANITIZE_CONFIG);
 }
