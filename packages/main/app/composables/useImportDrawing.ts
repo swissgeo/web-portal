@@ -178,7 +178,7 @@ async function checkDrawingAuth(drawingId: string, adminId: string = "") {
   const res = await fetch(`${drawingServiceEndpoint}/${drawingId}/check-auth`, {
     headers: adminId
       ? new Headers({
-          Authorization: `Bearer ${adminId}`,
+          "Swissgeo-Admin-Id": adminId,
         })
       : undefined,
   });
