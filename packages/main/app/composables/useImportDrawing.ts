@@ -206,12 +206,7 @@ async function fetchDrawingMetadata(
 }
 
 export function extractDrawingId(drawingUrl: string): string {
-  let id = "";
-  try {
-    id = new URL(drawingUrl).pathname.split("/").pop() ?? "";
-  } catch {
-    id = drawingUrl.split("/").pop() ?? "";
-  }
+  const id = new URL(drawingUrl).pathname.split("/").pop() ?? "";
   if (!id) {
     throw new Error(`Invalid drawing url: ${drawingUrl}`);
   }
@@ -239,26 +234,10 @@ export class DrawingFetchError extends Error {
   }
 }
 
-/**
- * The drawing no longer exists on the drawing service (HTTP 404).
- */
-export class DrawingNotFoundError extends Error {
-  readonly drawingId: string;
-
-  constructor(drawingId: string) {
-    super(`Drawing not found: ${drawingId}`);
-    this.name = "DrawingNotFoundError";
-    this.drawingId = drawingId;
-  }
-}
-
 export async function fetchDrawingKmz(
   drawingUrl: string,
-  options?: { signal?: AbortSignal },
 ): Promise<ArrayBuffer> {
-  const res = options
-    ? await fetch(drawingUrl, options)
-    : await fetch(drawingUrl);
+  const res = await fetch(drawingUrl);
   if (!res.ok) {
     throw new DrawingFetchError(drawingUrl, res.status, res.statusText);
   }

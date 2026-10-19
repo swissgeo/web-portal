@@ -25,7 +25,6 @@ import {
   assertAllowedDrawingDomain,
   checkDrawingAuth,
   DrawingFetchError,
-  DrawingNotFoundError,
   extractDrawingId,
   fetchDrawingKmz,
   importDrawingKmz,
@@ -151,8 +150,6 @@ function logDrawingRestoreError(error: unknown): void {
   });
 }
 
-const DRAWING_FETCH_TIMEOUT_MS = 15_000;
-
 async function resolveDrawingAdminId(
   drawingId: string,
   adminId: string,
@@ -162,73 +159,57 @@ async function resolveDrawingAdminId(
   }
 
   const status = await checkDrawingAuth(drawingId, adminId);
-  if (status === 404) {
-    throw new DrawingNotFoundError(drawingId);
-  }
   return status === 204 ? adminId : "";
 }
 
 async function importDrawingState(
-  stateLayer: DrawingLayerState,
+  map: OlMap,
+  drawingState: DrawingLayerState,
   clearExisting: boolean,
 ): Promise<void> {
-  const layerStore = useLayerStore();
-  const drawingImportStore = useDrawingImportStore();
   const { DRAWING_LAYER_UUID } = useDrawing();
-  const { olMap } = useMap();
 
-  assertAllowedDrawingDomain(stateLayer.drawingUrl);
-  const drawingId = extractDrawingId(stateLayer.drawingUrl);
-  const restoredAdminId = await resolveDrawingAdminId(
+  assertAllowedDrawingDomain(drawingState.drawingUrl);
+  const drawingId = extractDrawingId(drawingState.drawingUrl);
+  const adminId = await resolveDrawingAdminId(
     drawingId,
-    stateLayer.adminId ?? "",
+    drawingState.adminId ?? "",
   );
+  const kmzBuffer = await fetchDrawingKmz(drawingState.drawingUrl);
 
-  const apply = async (map: OlMap) => {
-    let kmzBuffer: ArrayBuffer;
-    try {
-      kmzBuffer = await fetchDrawingKmz(stateLayer.drawingUrl, {
-        signal: AbortSignal.timeout(DRAWING_FETCH_TIMEOUT_MS),
-      });
-    } catch (error) {
-      if (error instanceof DrawingFetchError && error.status === 404) {
-        throw new DrawingNotFoundError(drawingId);
-      }
-      throw error;
-    }
-
-    layerStore.addImportOption(DRAWING_LAYER_UUID, {
-      opacity: stateLayer.opacity ?? 1,
-      isVisible: stateLayer.isVisible ?? true,
-    });
-
-    const success = await importDrawingKmz(
-      map,
-      kmzBuffer,
-      clearExisting === true,
+  useLayerStore().addImportOption(DRAWING_LAYER_UUID, {
+    opacity: drawingState.opacity ?? 1,
+    isVisible: drawingState.isVisible ?? true,
+  });
+  if (!(await importDrawingKmz(map, kmzBuffer, clearExisting))) {
+    throw new Error(
+      `Drawing state could not be imported: ${drawingState.drawingUrl}`,
     );
-    if (!success) {
-      throw new Error(
-        `Drawing state could not be imported: ${stateLayer.drawingUrl}`,
-      );
-    }
-
-    drawingImportStore.drawingId = drawingId;
-    drawingImportStore.drawingAdminId = restoredAdminId;
-  };
-
-  if (olMap.value) {
-    await apply(olMap.value);
-    return;
   }
 
-  const unwatch = watch(olMap, (map) => {
-    if (!map) {
-      return;
+  const drawingImportStore = useDrawingImportStore();
+  drawingImportStore.drawingId = drawingId;
+  drawingImportStore.drawingAdminId = adminId;
+}
+
+async function restoreDrawings(
+  map: OlMap,
+  drawingStates: DrawingLayerState[],
+  notifyUser: (drawingId: string) => void,
+): Promise<void> {
+  let hasImportedDrawing = false;
+  for (const drawingState of drawingStates) {
+    try {
+      await importDrawingState(map, drawingState, !hasImportedDrawing);
+      hasImportedDrawing = true;
+    } catch (error) {
+      if (error instanceof DrawingFetchError && error.status === 404) {
+        notifyUser(extractDrawingId(drawingState.drawingUrl));
+      } else {
+        logDrawingRestoreError(error);
+      }
     }
-    unwatch();
-    apply(map).catch(logDrawingRestoreError);
-  });
+  }
 }
 
 export function useStateConfig() {
@@ -239,6 +220,7 @@ export function useStateConfig() {
   const featureStore = useFeaturesStore();
   const toaster = useToaster();
   const { $i18n } = useNuxtApp();
+  const { olMap } = useMap();
 
   const exportState = computed((): AppStatePayload => {
     const bgState =
@@ -346,21 +328,26 @@ export function useStateConfig() {
       }
     }
 
-    let hasImportedDrawing = false;
-    for (const stateLayer of stateLayers) {
-      if ("drawingUrl" in stateLayer) {
-        try {
-          await importDrawingState(stateLayer, !hasImportedDrawing);
-          hasImportedDrawing = true;
-        } catch (error) {
-          if (error instanceof DrawingNotFoundError) {
-            toaster.showWarning(
-              $i18n.t("state.drawingNotFound", { id: error.drawingId }),
-            );
-          } else {
-            logDrawingRestoreError(error);
+    const drawingStates = stateLayers.filter(isDrawingLayerState);
+    if (drawingStates.length > 0) {
+      const notifyDrawingNotFound = (drawingId: string) => {
+        toaster.showWarning(
+          $i18n.t("state.drawingNotFound", { id: drawingId }),
+        );
+      };
+      if (olMap.value) {
+        await restoreDrawings(
+          olMap.value,
+          drawingStates,
+          notifyDrawingNotFound,
+        );
+      } else {
+        const stop = watch(olMap, (map) => {
+          if (map) {
+            stop();
+            void restoreDrawings(map, drawingStates, notifyDrawingNotFound);
           }
-        }
+        });
       }
     }
   }

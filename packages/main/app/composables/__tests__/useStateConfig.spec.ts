@@ -865,7 +865,6 @@ describe("useStateConfig drawing layer state", () => {
     ).toBe("admin-id-6666");
     expect(fetchMockGlobal).toHaveBeenCalledWith(
       "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
-      { signal: expect.any(AbortSignal) },
     );
     expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
     expect(importKmzSpy).toHaveBeenCalledWith(expect.any(ArrayBuffer), true);
@@ -1027,49 +1026,6 @@ describe("useStateConfig drawing layer state", () => {
     expect(drawingImportStore.drawingAdminId).toBe("admin-id-6666");
   });
 
-  it("skips a drawing whose admin id check answers 404, warns the user and restores the others", async () => {
-    const fetchMockGlobal = vi.fn().mockImplementation((url: string) => {
-      if (url.includes("11111111-2222") && url.endsWith("/check-auth")) {
-        return Promise.resolve({ ok: false, status: 404, statusText: "" });
-      }
-      return Promise.resolve({
-        ok: true,
-        status: 200,
-        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
-      });
-    });
-    vi.stubGlobal("fetch", fetchMockGlobal);
-
-    const payload: AppStatePayload = {
-      version: APP_STATE_CONFIG_VERSION,
-      state: {
-        layers: [
-          {
-            drawingUrl:
-              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
-            type: "drawing",
-            adminId: "admin-id-6666",
-          },
-          {
-            drawingUrl:
-              "https://drawings.test/api/drawings/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-            type: "drawing",
-          },
-        ],
-      },
-    };
-
-    await useStateConfig().importState(payload);
-
-    expect(showWarningMock).toHaveBeenCalledWith(
-      "state.drawingNotFound:11111111-2222-3333-4444-555555555555",
-    );
-    expect(importKmzSpy).toHaveBeenCalledOnce();
-    expect(useDrawingImportStore().drawingId).toBe(
-      "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-    );
-  });
-
   it("skips a drawing whose kmz fetch answers 404, warns the user and restores the others", async () => {
     const fetchMockGlobal = vi.fn().mockImplementation((url: string) => {
       if (url.includes("11111111-2222")) {
@@ -1144,9 +1100,42 @@ describe("useStateConfig drawing layer state", () => {
 
     expect(fetchMockGlobal).toHaveBeenCalledWith(
       "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
-      { signal: expect.any(AbortSignal) },
     );
     expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
+  });
+
+  it("warns the user about a missing drawing restored after the map became ready", async () => {
+    olMapRef.value = null;
+    const fetchMockGlobal = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      statusText: "",
+    });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+            type: "drawing",
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+    expect(showWarningMock).not.toHaveBeenCalled();
+
+    olMapRef.value = { id: "fake-ol-map" };
+    await flushPromises();
+
+    expect(showWarningMock).toHaveBeenCalledWith(
+      "state.drawingNotFound:11111111-2222-3333-4444-555555555555",
+    );
+    expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
   });
 
   it("rejects a drawing url whose host is not allowed and skips the drawing", async () => {
