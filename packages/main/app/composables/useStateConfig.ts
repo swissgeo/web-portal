@@ -17,7 +17,6 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { useMap, usePositionStore } from "@swissgeo/map";
 import { DRAWING_LAYER_ID } from "@swissgeo/shared";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
-import { useI18n } from "vue-i18n";
 
 import { AVAILABLE_BACKGROUNDS } from "@/components/sidebar/backgroundSelector/constants";
 import { useDrawingImportStore } from "@/stores/drawingImport";
@@ -239,7 +238,7 @@ export function useStateConfig() {
   const mapviewStore = useMapViewStore();
   const featureStore = useFeaturesStore();
   const toaster = useToaster();
-  const { t } = useI18n();
+  const { $i18n } = useNuxtApp();
 
   const exportState = computed((): AppStatePayload => {
     const bgState =
@@ -356,7 +355,7 @@ export function useStateConfig() {
         } catch (error) {
           if (error instanceof DrawingNotFoundError) {
             toaster.showWarning(
-              t("state.drawingNotFound", { id: error.drawingId }),
+              $i18n.t("state.drawingNotFound", { id: error.drawingId }),
             );
           } else {
             logDrawingRestoreError(error);

@@ -70,11 +70,11 @@ const { runtimeConfigMock } = vi.hoisted(() => ({
 
 mockNuxtImport("useRuntimeConfig", () => () => runtimeConfigMock);
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({
+mockNuxtImport("useNuxtApp", () => () => ({
+  $i18n: {
     t: (key: string, params?: Record<string, string>) =>
       params?.id ? `${key}:${params.id}` : key,
-  }),
+  },
 }));
 
 const { showWarningMock } = vi.hoisted(() => ({
