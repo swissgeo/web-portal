@@ -87,7 +87,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
     color="neutral"
     :unmount-on-hide="false"
     :ui="{
-      list: 'overflow-x-auto overflow-y-hidden p-0',
+      list: 'sticky top-(--dataset-header-height) z-10 overflow-x-auto overflow-y-hidden bg-default p-0',
       trigger:
         'shrink-0 grow-0 px-2 pt-1 pb-2 leading-small-text data-[state=active]:text-highlighted data-[state=inactive]:text-primary dark:data-[state=inactive]:text-petrol-300',
       indicator: 'bottom-0',

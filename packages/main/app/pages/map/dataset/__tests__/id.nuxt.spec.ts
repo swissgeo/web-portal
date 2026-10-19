@@ -93,6 +93,26 @@ describe("dataset page", () => {
       wrapper.unmount();
     });
 
+    it.each`
+      openPanel                      | panelAfterClose
+      ${SidebarType.GEOCATALOG_TREE} | ${SidebarType.LAYER_CART}
+      ${SidebarType.LAYER_CART}      | ${SidebarType.LAYER_CART}
+      ${null}                        | ${null}
+    `(
+      "closes to the map with panel $panelAfterClose when panel $openPanel was open",
+      async ({ openPanel, panelAfterClose }) => {
+        if (openPanel) {
+          useSidebarStore().setSidebar(openPanel);
+        }
+        const { wrapper, panel } = await mountPanel();
+
+        panel.vm.$emit("close");
+
+        expect(useSidebarStore().currentSidebar).toBe(panelAfterClose);
+        wrapper.unmount();
+      },
+    );
+
     it("keeps the cart when going back to the map", async () => {
       useSidebarStore().setSidebar(SidebarType.LAYER_CART);
       const { wrapper, panel } = await mountPanel();

@@ -86,8 +86,11 @@ function goBack() {
   return backToMap();
 }
 
+// Coming from a panel returns to the map panel; a direct link returns to the plain map.
 function closeDetails() {
-  sidebarStore.closeSidebar();
+  if (sidebarStore.isSidebarOpen) {
+    sidebarStore.setSidebar(SidebarType.LAYER_CART);
+  }
   return backToMap();
 }
 </script>

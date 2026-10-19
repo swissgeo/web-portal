@@ -1,6 +1,8 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
+import { panelSnapPointKey } from "~/types/injectionKeys";
 import { describe, expect, it } from "vitest";
+import { ref } from "vue";
 
 import DatasetPanelFrame from "../DatasetPanelFrame.vue";
 
@@ -20,12 +22,19 @@ const ResponsivePanel = {
   template: "<section><slot /></section>",
 };
 
-function render(ClientOnly: object, isVisible = true) {
+function render(
+  ClientOnly: object,
+  isVisible = true,
+  panelSnapPoint = ref<number | string | null>(null),
+) {
   return mount(DatasetPanelFrame, {
     attachTo: document.body,
     props: { isVisible },
     slots: { default: '<input value="retained" />' },
-    global: { stubs: { ClientOnly, ResponsivePanel } },
+    global: {
+      stubs: { ClientOnly, ResponsivePanel },
+      provide: { [panelSnapPointKey as symbol]: panelSnapPoint },
+    },
   });
 }
 
@@ -71,6 +80,18 @@ describe("DatasetPanelFrame", () => {
       false,
     );
     expect(wrapper.find("input").exists()).toBe(true);
+    wrapper.unmount();
+  });
+
+  it("opens at full height and gives the map panel its partial height back when it hides", async () => {
+    const panelSnapPoint = ref<number | string | null>("200px");
+    const wrapper = render(clientRender, true, panelSnapPoint);
+
+    expect(panelSnapPoint.value).toBe(1);
+
+    await wrapper.setProps({ isVisible: false });
+
+    expect(panelSnapPoint.value).toBeNull();
     wrapper.unmount();
   });
 });

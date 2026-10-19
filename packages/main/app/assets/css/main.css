@@ -197,6 +197,9 @@
     --ui-accent-active: var(--ui-color-accent-50);
     --ui-accent-hover: var(--ui-color-accent-200);
 
+    --ui-border: var(--ui-color-neutral-700);
+    --ui-border-accented: var(--ui-color-neutral-600);
+
     --ui-nav-brand: var(--color-petrol-100);
     --ui-nav-brand-muted: var(--color-petrol-200);
     --ui-nav-brand-shade: #24424c;
