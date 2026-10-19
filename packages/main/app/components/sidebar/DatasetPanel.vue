@@ -79,7 +79,11 @@ const backLabel = computed(() => {
           >
             {{ dataset?.properties.title }}
           </h1>
-          <DatasetCopyLink class="-ml-8 align-baseline" :url="detailUrl" />
+          <DatasetCopyLink
+            class="-ml-8 align-baseline"
+            :url="detailUrl"
+            :label="t('dataset.copyLink')"
+          />
         </div>
         <DatasetMapAction v-if="dataset" :dataset="dataset" />
       </div>

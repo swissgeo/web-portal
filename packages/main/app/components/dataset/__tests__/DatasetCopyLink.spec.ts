@@ -14,13 +14,25 @@ it("copies the current dataset URL and shows successful copy feedback", async ()
   const copied = ref(false);
   useClipboard.mockReturnValue({ copy, copied });
   const wrapper = mount(DatasetCopyLink, {
-    props: { url: "https://example.test/de/dataset/first" },
+    props: { url: "https://example.test/de/dataset/first", label: "Copy" },
+    attrs: { class: "-ml-8", "data-testid": "dataset-service-copy" },
     global: {
       stubs: {
         UButton: { name: "UButton", props: ["icon"], template: "<button />" },
+        UTooltip: {
+          props: ["text"],
+          template: '<span :data-tooltip="text"><slot /></span>',
+        },
       },
     },
   });
+  expect(wrapper.get("[data-tooltip]").attributes("data-tooltip")).toBe("Copy");
+  expect(wrapper.get("button").attributes("aria-label")).toBe("Copy");
+  expect(wrapper.get("button").classes()).toContain("-ml-8");
+  expect(wrapper.get("button").attributes("data-testid")).toBe(
+    "dataset-service-copy",
+  );
+
   await wrapper.get("button").trigger("click");
   expect(copy).toHaveBeenLastCalledWith(
     "https://example.test/de/dataset/first",
