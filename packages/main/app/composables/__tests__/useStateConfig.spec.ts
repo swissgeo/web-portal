@@ -70,6 +70,22 @@ const { runtimeConfigMock } = vi.hoisted(() => ({
 
 mockNuxtImport("useRuntimeConfig", () => () => runtimeConfigMock);
 
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({
+    t: (key: string, params?: Record<string, string>) =>
+      params?.id ? `${key}:${params.id}` : key,
+  }),
+}));
+
+const { showWarningMock } = vi.hoisted(() => ({
+  showWarningMock: vi.fn(),
+}));
+
+mockNuxtImport("useToaster", () => () => ({
+  showError: vi.fn(),
+  showWarning: showWarningMock,
+}));
+
 const { importKmzSpy, mountDrawingLayerSpy } = vi.hoisted(() => ({
   importKmzSpy: vi.fn(),
   mountDrawingLayerSpy: vi.fn(),
@@ -809,10 +825,16 @@ describe("useStateConfig drawing layer state", () => {
     ).toBe(true);
   });
 
-  it("imports a drawing state: fetches the kmz, mounts the layer and seeds the drawing ids", async () => {
-    const fetchMockGlobal = vi.fn().mockResolvedValue({
-      ok: true,
-      arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+  it("imports a drawing state: validates the admin id, fetches the kmz and seeds the drawing ids", async () => {
+    const fetchMockGlobal = vi.fn().mockImplementation((url: string) => {
+      if (url.endsWith("/check-auth")) {
+        return Promise.resolve({ ok: true, status: 204, statusText: "" });
+      }
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+      });
     });
     vi.stubGlobal("fetch", fetchMockGlobal);
 
@@ -834,6 +856,13 @@ describe("useStateConfig drawing layer state", () => {
 
     await useStateConfig().importState(payload);
 
+    const authCall = fetchMockGlobal.mock.calls.find(([url]) =>
+      String(url).endsWith("/check-auth"),
+    );
+    expect(authCall).toBeDefined();
+    expect(
+      (authCall![1] as { headers: Headers }).headers.get("Swissgeo-Admin-Id"),
+    ).toBe("admin-id-6666");
     expect(fetchMockGlobal).toHaveBeenCalledWith(
       "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
       { signal: expect.any(AbortSignal) },
@@ -848,10 +877,54 @@ describe("useStateConfig drawing layer state", () => {
     expect(drawingImportStore.drawingAdminId).toBe("admin-id-6666");
   });
 
-  it("defers the drawing restore until the map is ready", async () => {
-    olMapRef.value = null;
+  it.each([401, 403])(
+    "loads the drawing view-only when the admin id is rejected with %s",
+    async (authStatus) => {
+      const fetchMockGlobal = vi.fn().mockImplementation((url: string) => {
+        if (url.endsWith("/check-auth")) {
+          return Promise.resolve({
+            ok: true,
+            status: authStatus,
+            statusText: "",
+          });
+        }
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+        });
+      });
+      vi.stubGlobal("fetch", fetchMockGlobal);
+
+      const payload: AppStatePayload = {
+        version: APP_STATE_CONFIG_VERSION,
+        state: {
+          layers: [
+            {
+              drawingUrl:
+                "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+              type: "drawing",
+              adminId: "revoked-admin-id",
+            },
+          ],
+        },
+      };
+
+      await useStateConfig().importState(payload);
+
+      expect(mountDrawingLayerSpy).toHaveBeenCalledOnce();
+      const drawingImportStore = useDrawingImportStore();
+      expect(drawingImportStore.drawingId).toBe(
+        "11111111-2222-3333-4444-555555555555",
+      );
+      expect(drawingImportStore.drawingAdminId).toBe("");
+    },
+  );
+
+  it("loads the drawing view-only and skips the auth check when the admin id is empty", async () => {
     const fetchMockGlobal = vi.fn().mockResolvedValue({
       ok: true,
+      status: 200,
       arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
     });
     vi.stubGlobal("fetch", fetchMockGlobal);
@@ -864,7 +937,198 @@ describe("useStateConfig drawing layer state", () => {
             drawingUrl:
               "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
             type: "drawing",
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(fetchMockGlobal).not.toHaveBeenCalledWith(
+      expect.stringContaining("check-auth"),
+      expect.anything(),
+    );
+    const drawingImportStore = useDrawingImportStore();
+    expect(drawingImportStore.drawingId).toBe(
+      "11111111-2222-3333-4444-555555555555",
+    );
+    expect(drawingImportStore.drawingAdminId).toBe("");
+  });
+
+  it("does not add any drawing when the state has no drawing entries", async () => {
+    const fetchMockGlobal = vi.fn();
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(fetchMockGlobal).not.toHaveBeenCalled();
+    expect(mountDrawingLayerSpy).not.toHaveBeenCalled();
+    expect(importKmzSpy).not.toHaveBeenCalled();
+  });
+
+  it("restores multiple drawing entries, clearing only before the first one", async () => {
+    const fetchMockGlobal = vi.fn().mockImplementation((url: string) => {
+      if (url.endsWith("/check-auth")) {
+        return Promise.resolve({ ok: true, status: 204, statusText: "" });
+      }
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+      });
+    });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+            type: "drawing",
+          },
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            type: "drawing",
             adminId: "admin-id-6666",
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(importKmzSpy).toHaveBeenCalledTimes(2);
+    expect(importKmzSpy).toHaveBeenNthCalledWith(
+      1,
+      expect.any(ArrayBuffer),
+      true,
+    );
+    expect(importKmzSpy).toHaveBeenNthCalledWith(
+      2,
+      expect.any(ArrayBuffer),
+      false,
+    );
+    expect(mountDrawingLayerSpy).toHaveBeenCalledTimes(2);
+
+    const drawingImportStore = useDrawingImportStore();
+    expect(drawingImportStore.drawingId).toBe(
+      "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+    );
+    expect(drawingImportStore.drawingAdminId).toBe("admin-id-6666");
+  });
+
+  it("skips a drawing whose admin id check answers 404, warns the user and restores the others", async () => {
+    const fetchMockGlobal = vi.fn().mockImplementation((url: string) => {
+      if (url.includes("11111111-2222") && url.endsWith("/check-auth")) {
+        return Promise.resolve({ ok: false, status: 404, statusText: "" });
+      }
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+      });
+    });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+            type: "drawing",
+            adminId: "admin-id-6666",
+          },
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            type: "drawing",
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(showWarningMock).toHaveBeenCalledWith(
+      "state.drawingNotFound:11111111-2222-3333-4444-555555555555",
+    );
+    expect(importKmzSpy).toHaveBeenCalledOnce();
+    expect(useDrawingImportStore().drawingId).toBe(
+      "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+    );
+  });
+
+  it("skips a drawing whose kmz fetch answers 404, warns the user and restores the others", async () => {
+    const fetchMockGlobal = vi.fn().mockImplementation((url: string) => {
+      if (url.includes("11111111-2222")) {
+        return Promise.resolve({ ok: false, status: 404, statusText: "" });
+      }
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+      });
+    });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+            type: "drawing",
+          },
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            type: "drawing",
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(showWarningMock).toHaveBeenCalledWith(
+      "state.drawingNotFound:11111111-2222-3333-4444-555555555555",
+    );
+    expect(importKmzSpy).toHaveBeenCalledOnce();
+    expect(useDrawingImportStore().drawingId).toBe(
+      "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+    );
+  });
+
+  it("defers the drawing restore until the map is ready", async () => {
+    olMapRef.value = null;
+    const fetchMockGlobal = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
+    });
+    vi.stubGlobal("fetch", fetchMockGlobal);
+
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            drawingUrl:
+              "https://drawings.test/api/drawings/11111111-2222-3333-4444-555555555555",
+            type: "drawing",
           },
         ],
       },

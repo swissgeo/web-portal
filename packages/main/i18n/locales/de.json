@@ -448,6 +448,7 @@
     "successTitle": "Erfolg"
   },
   "state": {
+    "drawingNotFound": "Die Zeichnung {id} konnte nicht gefunden werden und wurde nicht wiederhergestellt",
     "restoreUnableWarning": "Der Zustand der App konnte nicht wiederhergestellt werden",
     "shareLinkError": "Der Freigabelink konnte nicht generiert werden"
   },

@@ -170,7 +170,10 @@ function removeAdminIdFromUrl(url: string): string {
   return url;
 }
 
-async function checkDrawingAuth(drawingId: string, adminId: string = "") {
+export async function checkDrawingAuth(
+  drawingId: string,
+  adminId: string = "",
+): Promise<number> {
   const runtimeConfig = useRuntimeConfig();
   const drawingServiceEndpoint = runtimeConfig.public
     .drawingServiceEndpoint as string;
@@ -236,6 +239,19 @@ export class DrawingFetchError extends Error {
   }
 }
 
+/**
+ * The drawing no longer exists on the drawing service (HTTP 404).
+ */
+export class DrawingNotFoundError extends Error {
+  readonly drawingId: string;
+
+  constructor(drawingId: string) {
+    super(`Drawing not found: ${drawingId}`);
+    this.name = "DrawingNotFoundError";
+    this.drawingId = drawingId;
+  }
+}
+
 export async function fetchDrawingKmz(
   drawingUrl: string,
   options?: { signal?: AbortSignal },
@@ -252,10 +268,11 @@ export async function fetchDrawingKmz(
 export async function importDrawingKmz(
   map: OlMap,
   kmzBuffer: ArrayBuffer,
+  clearExisting: boolean = true,
 ): Promise<boolean> {
   const { mountDrawingLayer, importKmz } = useDrawing();
   mountDrawingLayer(map);
-  return await importKmz(kmzBuffer, true);
+  return await importKmz(kmzBuffer, clearExisting);
 }
 
 export function useImportDrawing() {

@@ -17,12 +17,16 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { useMap, usePositionStore } from "@swissgeo/map";
 import { DRAWING_LAYER_ID } from "@swissgeo/shared";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
+import { useI18n } from "vue-i18n";
 
 import { AVAILABLE_BACKGROUNDS } from "@/components/sidebar/backgroundSelector/constants";
 import { useDrawingImportStore } from "@/stores/drawingImport";
 
 import {
   assertAllowedDrawingDomain,
+  checkDrawingAuth,
+  DrawingFetchError,
+  DrawingNotFoundError,
   extractDrawingId,
   fetchDrawingKmz,
   importDrawingKmz,
@@ -150,8 +154,24 @@ function logDrawingRestoreError(error: unknown): void {
 
 const DRAWING_FETCH_TIMEOUT_MS = 15_000;
 
+async function resolveDrawingAdminId(
+  drawingId: string,
+  adminId: string,
+): Promise<string> {
+  if (!adminId) {
+    return "";
+  }
+
+  const status = await checkDrawingAuth(drawingId, adminId);
+  if (status === 404) {
+    throw new DrawingNotFoundError(drawingId);
+  }
+  return status === 204 ? adminId : "";
+}
+
 async function importDrawingState(
   stateLayer: DrawingLayerState,
+  clearExisting: boolean,
 ): Promise<void> {
   const layerStore = useLayerStore();
   const drawingImportStore = useDrawingImportStore();
@@ -160,18 +180,34 @@ async function importDrawingState(
 
   assertAllowedDrawingDomain(stateLayer.drawingUrl);
   const drawingId = extractDrawingId(stateLayer.drawingUrl);
+  const restoredAdminId = await resolveDrawingAdminId(
+    drawingId,
+    stateLayer.adminId ?? "",
+  );
 
   const apply = async (map: OlMap) => {
-    const kmzBuffer = await fetchDrawingKmz(stateLayer.drawingUrl, {
-      signal: AbortSignal.timeout(DRAWING_FETCH_TIMEOUT_MS),
-    });
+    let kmzBuffer: ArrayBuffer;
+    try {
+      kmzBuffer = await fetchDrawingKmz(stateLayer.drawingUrl, {
+        signal: AbortSignal.timeout(DRAWING_FETCH_TIMEOUT_MS),
+      });
+    } catch (error) {
+      if (error instanceof DrawingFetchError && error.status === 404) {
+        throw new DrawingNotFoundError(drawingId);
+      }
+      throw error;
+    }
 
     layerStore.addImportOption(DRAWING_LAYER_UUID, {
       opacity: stateLayer.opacity ?? 1,
       isVisible: stateLayer.isVisible ?? true,
     });
 
-    const success = await importDrawingKmz(map, kmzBuffer);
+    const success = await importDrawingKmz(
+      map,
+      kmzBuffer,
+      clearExisting === true,
+    );
     if (!success) {
       throw new Error(
         `Drawing state could not be imported: ${stateLayer.drawingUrl}`,
@@ -179,7 +215,7 @@ async function importDrawingState(
     }
 
     drawingImportStore.drawingId = drawingId;
-    drawingImportStore.drawingAdminId = stateLayer.adminId ?? "";
+    drawingImportStore.drawingAdminId = restoredAdminId;
   };
 
   if (olMap.value) {
@@ -202,6 +238,8 @@ export function useStateConfig() {
   const dimensionsStore = useDimensionsStore();
   const mapviewStore = useMapViewStore();
   const featureStore = useFeaturesStore();
+  const toaster = useToaster();
+  const { t } = useI18n();
 
   const exportState = computed((): AppStatePayload => {
     const bgState =
@@ -309,12 +347,20 @@ export function useStateConfig() {
       }
     }
 
+    let hasImportedDrawing = false;
     for (const stateLayer of stateLayers) {
       if ("drawingUrl" in stateLayer) {
         try {
-          await importDrawingState(stateLayer);
+          await importDrawingState(stateLayer, !hasImportedDrawing);
+          hasImportedDrawing = true;
         } catch (error) {
-          logDrawingRestoreError(error);
+          if (error instanceof DrawingNotFoundError) {
+            toaster.showWarning(
+              t("state.drawingNotFound", { id: error.drawingId }),
+            );
+          } else {
+            logDrawingRestoreError(error);
+          }
         }
       }
     }
