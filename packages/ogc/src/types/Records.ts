@@ -85,9 +85,14 @@ export interface Property<recordType extends string> {
 }
 
 export interface Contact {
+  // `role` and `country`: older record shape, still read by the catalog.
   country?: string;
   role?: string;
   organization: string;
+  roles?: string[];
+  phones?: { value: string; roles?: string[] }[];
+  emails?: { value: string }[];
+  links?: { href: string }[];
 }
 
 export type ServiceProtocol =

@@ -510,7 +510,8 @@
     "viewGeocat": "View on geocat.ch",
     "copyLink": "Copy link to layer",
     "copy": "Copy",
-    "readMore": "Read more"
+    "readMore": "Read more",
+    "contact": "Contact"
   },
   "elevationProfile": {
     "windowTitle": "Elevation Profile",

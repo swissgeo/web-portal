@@ -50,7 +50,7 @@ const tabs = computed<TabsItem[]>(() => [
 const contacts = computed(() =>
   (props.dataset.properties.contacts ?? []).filter(
     (contact) =>
-      contact.role === "pointOfContact" &&
+      contact.roles?.includes("pointOfContact") &&
       (contact.organization?.trim() || contact.country?.trim()),
   ),
 );
@@ -121,7 +121,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
           <h3
             class="mb-space-xs text-xs font-medium tracking-wide text-muted uppercase"
           >
-            {{ t("dataset.contacts") }}
+            {{ t("dataset.contact") }}
           </h3>
           <ul class="flex flex-col gap-space-s">
             <li v-for="(contact, i) in contacts" :key="i">
