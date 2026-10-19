@@ -171,7 +171,17 @@ export const useSearchStore = defineStore("search", () => {
             }
           }
         }
-        results.value = successfulResults;
+        const keysSeen = new Set<string>();
+
+        const uniqueSuccessfulResults = successfulResults.filter((result) => {
+          const key = `${result.resultType}|${result.id}`;
+          if (keysSeen.has(key)) {
+            return false;
+          }
+          keysSeen.add(key);
+          return true;
+        });
+        results.value = uniqueSuccessfulResults;
       }
     } catch (error) {
       // Don't show error for aborted requests

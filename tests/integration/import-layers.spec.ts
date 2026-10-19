@@ -252,6 +252,12 @@ test.describe("import external layers", () => {
       }),
     );
     await page.goto(`/de/map?state=${encodeURIComponent(state)}`);
+    await expect(page.getByTestId("ol-map")).toBeVisible({
+      timeout: HYDRATION_TIMEOUT,
+    });
+    await page.waitForFunction(() => window.swissgeoOlMap !== undefined, null, {
+      timeout: 20_000,
+    });
 
     await expect(
       page.getByText("Die Ebene konnte nicht geladen werden.", { exact: true }),
