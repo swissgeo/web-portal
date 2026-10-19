@@ -503,7 +503,8 @@
     "serviceUrl": "URL / Service",
     "viewGeocat": "Auf geocat.ch ansehen",
     "copyLink": "Link zur Ebene kopieren",
-    "copy": "Kopieren"
+    "copy": "Kopieren",
+    "readMore": "Weiterlesen"
   },
   "elevationProfile": {
     "windowTitle": "Höhenprofil",

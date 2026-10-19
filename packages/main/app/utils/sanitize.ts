@@ -21,7 +21,8 @@ const SANITIZE_CONFIG: Config = {
 let blockedContentMessage = "";
 
 // We register this hook once, and it will apply to each call in this file.
-DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+// On the server DOMPurify has no DOM and no addHook, so loading this file there must not fail.
+DOMPurify.addHook?.("afterSanitizeAttributes", (node) => {
   if (!(node instanceof Element) || node.tagName !== "A") {
     return;
   }

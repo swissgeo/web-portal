@@ -509,7 +509,8 @@
     "serviceUrl": "URL / Service",
     "viewGeocat": "View on geocat.ch",
     "copyLink": "Copy link to layer",
-    "copy": "Copy"
+    "copy": "Copy",
+    "readMore": "Read more"
   },
   "elevationProfile": {
     "windowTitle": "Elevation Profile",

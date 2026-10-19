@@ -14,6 +14,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
 import DatasetContact from "./DatasetContact.vue";
+import DatasetDescription from "./DatasetDescription.vue";
 import DatasetLegend from "./DatasetLegend.vue";
 import DatasetLinkList from "./DatasetLinkList.vue";
 import DatasetServiceList from "./DatasetServiceList.vue";
@@ -106,12 +107,10 @@ const serviceDistributions = computed<Distribution[]>(() => {
           <h3 class="mb-4 text-base font-semibold text-highlighted">
             {{ t("dataset.abstract") }}
           </h3>
-          <p
-            class="text-base leading-small-text wrap-anywhere whitespace-pre-line text-default"
-            data-testid="dataset-description"
-          >
-            {{ dataset.properties.description }}
-          </p>
+          <DatasetDescription
+            :key="dataset.id"
+            :description="dataset.properties.description"
+          />
         </section>
 
         <section
