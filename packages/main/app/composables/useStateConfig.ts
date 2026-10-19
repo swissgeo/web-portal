@@ -21,6 +21,13 @@ import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
 import { AVAILABLE_BACKGROUNDS } from "@/components/sidebar/backgroundSelector/constants";
 import { useDrawingImportStore } from "@/stores/drawingImport";
 
+import {
+  assertAllowedDrawingDomain,
+  extractDrawingId,
+  fetchDrawingKmz,
+  importDrawingKmz,
+} from "./useImportDrawing";
+
 export type AppStatePayload = {
   version: string;
   state: AppState;
@@ -133,29 +140,6 @@ async function stateConfigToLayer(
   return null;
 }
 
-function extractDrawingId(drawingUrl: string): string {
-  let id = "";
-  try {
-    const pathname = new URL(drawingUrl).pathname;
-    id = pathname.split("/").pop() ?? "";
-  } catch {
-    id = drawingUrl.split("/").pop() ?? "";
-  }
-  if (!id) {
-    throw new Error(`Invalid drawing url: ${drawingUrl}`);
-  }
-  return id;
-}
-
-function validateDrawingUrl(drawingUrl: string): void {
-  const runtimeConfig = useRuntimeConfig();
-  const allowedDomains = runtimeConfig.public.drawingAllowedDomains as string[];
-  const { hostname } = new URL(drawingUrl);
-  if (!allowedDomains.includes(hostname)) {
-    throw new Error(`Drawing url host not allowed: ${hostname}`);
-  }
-}
-
 function logDrawingRestoreError(error: unknown): void {
   log.warn({
     title: "useStateConfig",
@@ -169,33 +153,25 @@ const DRAWING_FETCH_TIMEOUT_MS = 15_000;
 async function importDrawingState(
   stateLayer: DrawingLayerState,
 ): Promise<void> {
-  const { mountDrawingLayer, importKmz, DRAWING_LAYER_UUID } = useDrawing();
-  const drawingImportStore = useDrawingImportStore();
   const layerStore = useLayerStore();
+  const drawingImportStore = useDrawingImportStore();
+  const { DRAWING_LAYER_UUID } = useDrawing();
   const { olMap } = useMap();
 
-  validateDrawingUrl(stateLayer.drawingUrl);
+  assertAllowedDrawingDomain(stateLayer.drawingUrl);
   const drawingId = extractDrawingId(stateLayer.drawingUrl);
 
   const apply = async (map: OlMap) => {
-    const res = await fetch(stateLayer.drawingUrl, {
+    const kmzBuffer = await fetchDrawingKmz(stateLayer.drawingUrl, {
       signal: AbortSignal.timeout(DRAWING_FETCH_TIMEOUT_MS),
     });
-    if (!res.ok) {
-      throw new Error(
-        `Failed to fetch drawing state: ${res.status} ${stateLayer.drawingUrl}`,
-      );
-    }
-
-    const kmzBuffer = await res.arrayBuffer();
 
     layerStore.addImportOption(DRAWING_LAYER_UUID, {
       opacity: stateLayer.opacity ?? 1,
       isVisible: stateLayer.isVisible ?? true,
     });
-    mountDrawingLayer(map);
 
-    const success = await importKmz(kmzBuffer, true);
+    const success = await importDrawingKmz(map, kmzBuffer);
     if (!success) {
       throw new Error(
         `Drawing state could not be imported: ${stateLayer.drawingUrl}`,
