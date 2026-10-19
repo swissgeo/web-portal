@@ -82,6 +82,8 @@ export interface Property<recordType extends string> {
   description?: string;
   // TODO maybe this is only available in the Dataset props
   preferredDistributionId?: string;
+  // Combines the data of several providers, e.g. the KGK datasets.
+  aggregated?: boolean;
 }
 
 export interface Contact {

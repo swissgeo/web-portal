@@ -83,6 +83,14 @@ const backLabel = computed(() => {
             :url="detailUrl"
             :label="t('dataset.copyLink')"
           />
+          <UBadge
+            v-if="dataset?.properties.aggregated"
+            color="neutral"
+            variant="subtle"
+            :label="t('dataset.aggregated')"
+            class="ml-space-xs align-middle"
+            data-testid="dataset-aggregated"
+          />
         </div>
         <DatasetMapAction v-if="dataset" :dataset="dataset" />
       </div>

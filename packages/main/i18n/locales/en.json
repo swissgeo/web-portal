@@ -511,7 +511,8 @@
     "copyLink": "Copy link to layer",
     "copy": "Copy",
     "readMore": "Read more",
-    "contact": "Contact"
+    "contact": "Contact",
+    "aggregated": "Aggregated"
   },
   "elevationProfile": {
     "windowTitle": "Elevation Profile",

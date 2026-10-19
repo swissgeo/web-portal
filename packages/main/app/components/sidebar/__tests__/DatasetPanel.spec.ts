@@ -66,7 +66,7 @@ function render(
       stubs: {
         UButton: { template: "<button><slot /></button>" },
         UIcon: true,
-        UBadge: { template: "<span><slot /></span>" },
+        UBadge: { props: ["label"], template: "<span>{{ label }}</span>" },
         DatasetDetail: {
           props: ["dataset", "distributionCollection"],
           template: "<div />",
@@ -210,6 +210,24 @@ describe("DatasetPanel", () => {
 
     expect(panel.attributes("style")).toContain(
       "--dataset-header-height: 140px",
+    );
+  });
+
+  it("shows the aggregated tag only for aggregated datasets", async () => {
+    const wrapper = render();
+    expect(wrapper.find('[data-testid="dataset-aggregated"]').exists()).toBe(
+      false,
+    );
+
+    await wrapper.setProps({
+      dataset: {
+        ...dataset,
+        properties: { ...dataset.properties, aggregated: true },
+      },
+    });
+
+    expect(wrapper.get('[data-testid="dataset-aggregated"]').text()).toBe(
+      "dataset.aggregated",
     );
   });
 });

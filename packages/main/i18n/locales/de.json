@@ -505,7 +505,8 @@
     "copyLink": "Link zur Ebene kopieren",
     "copy": "Kopieren",
     "readMore": "Weiterlesen",
-    "contact": "Kontakt"
+    "contact": "Kontakt",
+    "aggregated": "Aggregiert"
   },
   "elevationProfile": {
     "windowTitle": "Höhenprofil",
