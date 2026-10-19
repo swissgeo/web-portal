@@ -26,7 +26,13 @@ const accordionItems: Ref<AccordionItem[]> = computed(() =>
     type="multiple"
     data-testid="feature-info-layer-page"
     :default-value="['0']"
+    :ui="{ label: 'flex min-w-0 flex-1' }"
   >
+    <template #default="{ item }">
+      <UTooltip :text="item.label">
+        <span class="truncate">{{ item.label }}</span>
+      </UTooltip>
+    </template>
     <template #body="{ item }">
       <FeatureInfoContent :feature-data="item.featureData"></FeatureInfoContent>
     </template>

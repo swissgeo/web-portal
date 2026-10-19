@@ -113,7 +113,9 @@ async function mountShell() {
       stubs: {
         UAccordion: UAccordionStub,
         UTooltip: {
-          template: "<span><slot /></span>",
+          props: ["text"],
+          template:
+            '<span class="tooltip-stub" :data-tooltip-text="text"><slot /></span>',
         },
         FeatureInfoLayerPage: FeatureInfoLayerPageStub,
       },
@@ -229,6 +231,29 @@ describe("FeatureInfo.vue", () => {
     )[0]!;
     expect(firstItem.text()).toContain("Layer A");
     expect(firstItem.text()).toContain("2");
+  });
+
+  it("truncates the layer label and holds the full value in a tooltip", async () => {
+    const { wrapper } = await mountShell();
+    const store = (await import("@swissgeo/feature")).useFeaturesStore();
+
+    store.setSelection({ "uuid-a": [makeFeatureData("a1")] });
+    await wrapper.vm.$nextTick();
+
+    const firstItem = wrapper.findAll(
+      "[data-testid='feature-info-accordion-item']",
+    )[0]!;
+    expect(firstItem.find("span.truncate").exists()).toBe(true);
+    expect(
+      firstItem.find(".tooltip-stub").attributes("data-tooltip-text"),
+    ).toBe("Layer A");
+  });
+
+  it("clips horizontal overflow while keeping the vertical scroll", async () => {
+    const { wrapper } = await mountShell();
+
+    expect(wrapper.classes()).toContain("overflow-x-hidden");
+    expect(wrapper.classes()).toContain("overflow-y-auto");
   });
 
   it("makes layer headers sticky while the content scrolls", async () => {

@@ -44,7 +44,17 @@ const UAccordionStub = defineComponent({
               class: "accordion-item",
               "data-testid": "feature-info-accordion-item",
             },
-            slots.body?.({ item, index }) ?? [],
+            [
+              h(
+                "div",
+                {
+                  class: "accordion-trigger",
+                  "data-testid": "feature-info-accordion-trigger",
+                },
+                slots.default?.({ item, index }) ?? item.label ?? "",
+              ),
+              slots.body?.({ item, index }) ?? [],
+            ],
           ),
         ),
       ]);
@@ -80,6 +90,11 @@ function mountPage(featuresData: FeatureData[]) {
       stubs: {
         UAccordion: UAccordionStub,
         FeatureInfoContent: FeatureInfoContentStub,
+        UTooltip: {
+          props: ["text"],
+          template:
+            '<span class="tooltip-stub" :data-tooltip-text="text"><slot /></span>',
+        },
       },
     },
   });
@@ -99,6 +114,23 @@ describe("FeatureInfoLayerPage.vue", () => {
     mountPage([makeFeatureData("id-1"), makeFeatureData("id-2")]);
 
     expect(itemsSeen.map((item) => item.label)).toEqual(["id-1", "id-2"]);
+  });
+
+  it("truncates long feature labels and holds the full value in a tooltip", () => {
+    const longLabel =
+      "a very long feature label that would otherwise stretch the popup width";
+    const wrapper = mountPage([
+      { ...makeFeatureData("id-long"), label: longLabel },
+    ]);
+
+    const trigger = wrapper.find(
+      "[data-testid='feature-info-accordion-trigger']",
+    );
+    expect(trigger.find("span.truncate").exists()).toBe(true);
+    expect(trigger.text()).toContain(longLabel);
+    expect(trigger.find(".tooltip-stub").attributes("data-tooltip-text")).toBe(
+      longLabel,
+    );
   });
 
   it("opens only the first item by default (index-based implicit value)", () => {

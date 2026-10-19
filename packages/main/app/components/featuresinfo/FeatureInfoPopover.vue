@@ -63,7 +63,7 @@ function toggleContent() {
     <UCard
       :ui="{
         header: 'cursor-grab active:cursor-grabbing select-none',
-        body: 'max-h-[40vh]',
+        body: 'max-h-[40vh] overflow-x-hidden',
       }"
     >
       <template #header>

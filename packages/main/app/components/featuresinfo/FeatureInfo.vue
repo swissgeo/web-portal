@@ -23,12 +23,15 @@ const accordionItems: Ref<AccordionItem[]> = computed(() =>
 );
 </script>
 <template>
-  <div class="max-h-[33vh] overflow-y-auto">
+  <div class="max-h-[33vh] overflow-x-hidden overflow-y-auto">
     <UAccordion
       :items="accordionItems"
       type="multiple"
       data-testid="feature-info-accordion"
-      :ui="{ trigger: 'sticky top-0 z-10 bg-elevated' }"
+      :ui="{
+        trigger: 'sticky top-0 z-10 bg-elevated',
+        label: 'flex min-w-0 flex-1',
+      }"
       :default-value="accordionItems.map((item) => `${item.value}`)"
     >
       <template #default="{ item }">
@@ -36,7 +39,9 @@ const accordionItems: Ref<AccordionItem[]> = computed(() =>
           <UTooltip :text="item.label">
             <span class="truncate font-semibold">{{ item.label }}</span>
           </UTooltip>
-          <span class="text-xs text-muted">{{ item.featuresData.length }}</span>
+          <span class="shrink-0 text-xs text-muted">{{
+            item.featuresData.length
+          }}</span>
         </div>
       </template>
       <template #body="{ item }">
