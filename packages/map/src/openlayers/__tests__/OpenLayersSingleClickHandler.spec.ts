@@ -61,6 +61,7 @@ describe("OpenLayersSingleClickHandler", () => {
       extent: [2599990, 1199990, 2600010, 1200010],
       viewportSize: [1000, 1000],
       vectorFeaturesPerLayer: {},
+      viewExtent: [0, 0, 1000, 1000],
     });
   });
 

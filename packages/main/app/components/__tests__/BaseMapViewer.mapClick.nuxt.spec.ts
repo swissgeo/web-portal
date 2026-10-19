@@ -144,6 +144,7 @@ function clickEvent(
     extent: [2599000, 1199000, 2601000, 1201000],
     viewportSize: [800, 600],
     vectorFeaturesPerLayer,
+    viewExtent: [2598000, 1198000, 2602000, 1202000],
   };
 }
 
@@ -182,7 +183,7 @@ describe("BaseMapViewer — map click abort handling", () => {
 
     mapModule.vm.$emit("map-click", clickEvent());
     await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledTimes(1));
-    const firstSignal = selectFeaturesSpy.mock.calls[0]![5] as AbortSignal;
+    const firstSignal = selectFeaturesSpy.mock.calls[0]![6] as AbortSignal;
     expect(firstSignal.aborted).toBe(false);
 
     mapModule.vm.$emit("map-click", clickEvent());
@@ -195,10 +196,15 @@ describe("BaseMapViewer — map click abort handling", () => {
     const epsgNumber = secondCall[1];
     const sources = secondCall[3];
     const limit = secondCall[4];
-    const secondSignal = secondCall[5] as AbortSignal;
+    const screenContext = secondCall[5];
+    const secondSignal = secondCall[6] as AbortSignal;
     expect(extent).toEqual(clickEvent().extent);
     expect(epsgNumber).toBe(2056);
     expect(limit).toBe(10);
+    expect(screenContext).toEqual({
+      viewportSize: [800, 600],
+      viewExtent: [2598000, 1198000, 2602000, 1202000],
+    });
     expect(secondSignal).not.toBe(firstSignal);
     expect(secondSignal.aborted).toBe(false);
     // layer-1 and layer-2 both pass the filter
@@ -214,7 +220,7 @@ describe("BaseMapViewer — map click abort handling", () => {
     wrapper.getComponent(MapModuleStub).vm.$emit("map-click", clickEvent());
 
     await vi.waitFor(() => expect(selectFeaturesSpy).toHaveBeenCalledTimes(1));
-    const signal = selectFeaturesSpy.mock.calls[0]![5] as AbortSignal;
+    const signal = selectFeaturesSpy.mock.calls[0]![6] as AbortSignal;
     expect(signal).toBeInstanceOf(AbortSignal);
     expect(signal.aborted).toBe(false);
   });
