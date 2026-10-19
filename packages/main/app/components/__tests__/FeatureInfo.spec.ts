@@ -7,50 +7,55 @@ import { defineComponent, h } from "vue";
 
 import FeatureInfo from "../featuresinfo/FeatureInfo.vue";
 
-type TabItem = { value?: string; label?: string; featuresData?: FeatureData[] };
+type LayerItem = {
+  value?: string;
+  label?: string;
+  featuresData?: FeatureData[];
+};
 
-let tabsItemsSeen: TabItem[] = [];
+let accordionItemsSeen: LayerItem[] = [];
+let defaultValueSeen: unknown = undefined;
+let uiSeen: Record<string, unknown> | undefined = undefined;
 
 /**
- * Nuxt auto import doesn't allow to intercept Utabs through a mock, so we use a stub instead
+ * Nuxt auto import doesn't allow to intercept UAccordion through a mock, so we use a stub instead
  */
-const UTabsStub = defineComponent({
-  name: "UTabs",
+const UAccordionStub = defineComponent({
+  name: "UAccordion",
   props: {
     items: { type: Array, required: true },
-    modelValue: { type: String, default: undefined },
+    defaultValue: { type: null, required: false, default: undefined },
+    ui: { type: Object, required: false, default: undefined },
   },
-  emits: ["update:modelValue"],
   setup(props, { slots }) {
-    const active = () =>
-      (props.modelValue ?? (props.items[0] as TabItem | undefined)?.value) as
-        | string
-        | undefined;
     return () => {
-      tabsItemsSeen = props.items as TabItem[];
+      accordionItemsSeen = props.items as LayerItem[];
+      defaultValueSeen = props.defaultValue;
+      uiSeen = props.ui as Record<string, unknown> | undefined;
       return h(
         "div",
-        { class: "tabs-stub", "data-testid": "feature-info-tabs" },
-        [
-          ...(props.items as TabItem[]).map((item) =>
-            h(
-              "button",
-              {
-                class: "tab-trigger",
-                "data-value": item.value,
-                type: "button",
-              },
-              slots.default?.({ item }) ?? item.label ?? "",
-            ),
-          ),
+        { class: "accordion-stub", "data-testid": "feature-info-accordion" },
+        (props.items as LayerItem[]).map((item) =>
           h(
             "div",
-            { class: "tab-content" },
-            props.items
-              .filter((item) => (item as TabItem).value === active())
-              .map((item) => slots.content?.({ item }) ?? []),
+            {
+              class: "accordion-item",
+              "data-testid": "feature-info-accordion-item",
+            },
+            [
+              h(
+                "div",
+                { class: "accordion-trigger" },
+                slots.default?.({ item }) ?? item.label ?? "",
+              ),
+              h(
+                "div",
+                { class: "accordion-body" },
+                slots.body?.({ item }) ?? [],
+              ),
+            ],
           ),
-        ],
+        ),
       );
     };
   },
@@ -106,7 +111,7 @@ async function mountShell() {
   const wrapper = mount(FeatureInfo, {
     global: {
       stubs: {
-        UTabs: UTabsStub,
+        UAccordion: UAccordionStub,
         UTooltip: {
           template: "<span><slot /></span>",
         },
@@ -121,10 +126,12 @@ describe("FeatureInfo.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     setActivePinia(createPinia());
-    tabsItemsSeen = [];
+    accordionItemsSeen = [];
+    defaultValueSeen = undefined;
+    uiSeen = undefined;
   });
 
-  it("builds one tab per layer in the selection, keyed by layer uuid", async () => {
+  it("builds one accordion item per layer in the selection, keyed by layer uuid", async () => {
     const { wrapper } = await mountShell();
     const store = (await import("@swissgeo/feature")).useFeaturesStore();
 
@@ -134,11 +141,14 @@ describe("FeatureInfo.vue", () => {
     });
     await wrapper.vm.$nextTick();
 
-    expect(tabsItemsSeen).toHaveLength(2);
-    expect(tabsItemsSeen.map((tab) => tab.value)).toEqual(["uuid-a", "uuid-b"]);
+    expect(accordionItemsSeen).toHaveLength(2);
+    expect(accordionItemsSeen.map((item) => item.value)).toEqual([
+      "uuid-a",
+      "uuid-b",
+    ]);
   });
 
-  it("labels tabs with displayName, falling back to humanId then uuid", async () => {
+  it("labels items with displayName, falling back to humanId then uuid", async () => {
     const { wrapper } = await mountShell();
     const store = (await import("@swissgeo/feature")).useFeaturesStore();
 
@@ -149,14 +159,27 @@ describe("FeatureInfo.vue", () => {
     });
     await wrapper.vm.$nextTick();
 
-    expect(tabsItemsSeen.map((tab) => tab.label)).toEqual([
+    expect(accordionItemsSeen.map((item) => item.label)).toEqual([
       "Layer A",
       "layer-b-human",
       "uuid-unknown",
     ]);
   });
 
-  it("renders the first tab's layer page by default", async () => {
+  it("expands every layer by default (default-value carries all item values)", async () => {
+    const { wrapper } = await mountShell();
+    const store = (await import("@swissgeo/feature")).useFeaturesStore();
+
+    store.setSelection({
+      "uuid-a": [makeFeatureData("a1")],
+      "uuid-b": [makeFeatureData("b1")],
+    });
+    await wrapper.vm.$nextTick();
+
+    expect(defaultValueSeen).toEqual(["uuid-a", "uuid-b"]);
+  });
+
+  it("renders every layer's page simultaneously (accordion, not tabs)", async () => {
     const { wrapper } = await mountShell();
     const store = (await import("@swissgeo/feature")).useFeaturesStore();
 
@@ -167,12 +190,15 @@ describe("FeatureInfo.vue", () => {
     await wrapper.vm.$nextTick();
 
     const features = wrapper.findAll("[data-testid='feature-info-feature']");
-    expect(features).toHaveLength(2);
-    expect(features[0]!.text()).toBe("a1");
-    expect(features[1]!.text()).toBe("a2");
+    expect(features).toHaveLength(3);
+    expect(features.map((feature) => feature.text())).toEqual([
+      "a1",
+      "a2",
+      "b1",
+    ]);
   });
 
-  it("carries each layer's features to its tab's layer page", async () => {
+  it("carries each layer's features to its layer page", async () => {
     const { wrapper } = await mountShell();
     const store = (await import("@swissgeo/feature")).useFeaturesStore();
 
@@ -182,58 +208,59 @@ describe("FeatureInfo.vue", () => {
     });
     await wrapper.vm.$nextTick();
 
-    const tabB = tabsItemsSeen.find((tab) => tab.value === "uuid-b");
-    expect(tabB!.featuresData).toHaveLength(2);
+    const itemB = accordionItemsSeen.find((item) => item.value === "uuid-b");
+    expect(itemB!.featuresData).toHaveLength(2);
     expect(
-      tabB!.featuresData!.map((featureData) => featureData.featureId),
+      itemB!.featuresData!.map((featureData) => featureData.featureId),
     ).toEqual(["b1", "b2"]);
+  });
+
+  it("shows the feature count next to the layer name in the item label", async () => {
+    const { wrapper } = await mountShell();
+    const store = (await import("@swissgeo/feature")).useFeaturesStore();
+
+    store.setSelection({
+      "uuid-a": [makeFeatureData("a1"), makeFeatureData("a2")],
+    });
+    await wrapper.vm.$nextTick();
+
+    const firstItem = wrapper.findAll(
+      "[data-testid='feature-info-accordion-item']",
+    )[0]!;
+    expect(firstItem.text()).toContain("Layer A");
+    expect(firstItem.text()).toContain("2");
+  });
+
+  it("makes layer headers sticky while the content scrolls", async () => {
+    const { wrapper } = await mountShell();
+    const store = (await import("@swissgeo/feature")).useFeaturesStore();
+
+    store.setSelection({ "uuid-a": [makeFeatureData("a1")] });
+    await wrapper.vm.$nextTick();
+
+    expect(String(uiSeen?.trigger)).toContain("sticky");
   });
 
   it("renders nothing when the selection is empty", async () => {
     const { wrapper } = await mountShell();
 
-    expect(wrapper.find("[data-testid='feature-info-tabs']").exists()).toBe(
-      true,
-    ); // UTabs always rendered
-    expect(tabsItemsSeen).toHaveLength(0);
+    expect(
+      wrapper.find("[data-testid='feature-info-accordion']").exists(),
+    ).toBe(true); // UAccordion always rendered
+    expect(accordionItemsSeen).toHaveLength(0);
     expect(
       wrapper.findAll("[data-testid='feature-info-feature']"),
     ).toHaveLength(0);
   });
 
-  it("resets to the first tab when a new selection replaces the old one", async () => {
-    const { wrapper } = await mountShell();
-    const store = (await import("@swissgeo/feature")).useFeaturesStore();
-
-    store.setSelection({
-      "uuid-a": [makeFeatureData("a1")],
-      "uuid-b": [makeFeatureData("b1")],
-    });
-    await wrapper.vm.$nextTick();
-
-    // emulate the user picking the second tab through v-model
-    wrapper.findComponent(UTabsStub).vm.$emit("update:modelValue", "uuid-b");
-    await wrapper.vm.$nextTick();
-
-    // a new click replaces the whole selection → back to first tab
-    store.setSelection({ "uuid-a": [makeFeatureData("a2")] });
-    await wrapper.vm.$nextTick();
-
-    const renderedFeatures = wrapper.findAll(
-      "[data-testid='feature-info-feature']",
-    );
-    expect(renderedFeatures).toHaveLength(1);
-    expect(renderedFeatures[0]!.text()).toBe("a2");
-  });
-
-  it("shows no layers dropped: every selected layer gets a tab even without a name", async () => {
+  it("shows no layers dropped: every selected layer gets an item even without a name", async () => {
     const { wrapper } = await mountShell();
     const store = (await import("@swissgeo/feature")).useFeaturesStore();
 
     store.setSelection({ "uuid-unknown": [makeFeatureData("u1")] });
     await wrapper.vm.$nextTick();
 
-    expect(tabsItemsSeen).toHaveLength(1);
-    expect(tabsItemsSeen[0]!.label).toBe("uuid-unknown");
+    expect(accordionItemsSeen).toHaveLength(1);
+    expect(accordionItemsSeen[0]!.label).toBe("uuid-unknown");
   });
 });

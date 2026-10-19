@@ -11,11 +11,10 @@ const { featuresData } = defineProps<{
 }>();
 
 const accordionItems: Ref<AccordionItem[]> = computed(() =>
-  featuresData.map((featureData, index) => {
+  featuresData.map((featureData) => {
     return {
       label: featureData.label ?? featureData.featureId,
       featureData,
-      defaultOpen: index === 0,
     };
   }),
 );
@@ -26,6 +25,7 @@ const accordionItems: Ref<AccordionItem[]> = computed(() =>
     :items="accordionItems"
     type="multiple"
     data-testid="feature-info-layer-page"
+    :default-value="['0']"
   >
     <template #body="{ item }">
       <FeatureInfoContent :feature-data="item.featureData"></FeatureInfoContent>

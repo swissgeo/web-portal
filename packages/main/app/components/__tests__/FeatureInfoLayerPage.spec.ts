@@ -14,16 +14,19 @@ type ItemWithPayload = AccordionItem & { featureData?: FeatureData };
  * to avoid having to mock the functions within featureInfoContent.
  */
 let itemsSeen: ItemWithPayload[] = [];
+let defaultValueSeen: unknown = undefined;
 
 const UAccordionStub = defineComponent({
   name: "UAccordion",
   props: {
     items: { type: Array, required: true },
     type: { type: String, default: "single" },
+    defaultValue: { type: null, required: false, default: undefined },
   },
   setup(props, { slots }) {
     return () => {
       itemsSeen = props.items as ItemWithPayload[];
+      defaultValueSeen = props.defaultValue;
       return h("div", { class: "accordion-stub" }, [
         h(
           "div",
@@ -98,18 +101,14 @@ describe("FeatureInfoLayerPage.vue", () => {
     expect(itemsSeen.map((item) => item.label)).toEqual(["id-1", "id-2"]);
   });
 
-  it("opens only the first item by default", () => {
+  it("opens only the first item by default (index-based implicit value)", () => {
     mountPage([
       makeFeatureData("a"),
       makeFeatureData("b"),
       makeFeatureData("c"),
     ]);
 
-    expect(itemsSeen.map((item) => item.defaultOpen)).toEqual([
-      true,
-      false,
-      false,
-    ]);
+    expect(defaultValueSeen).toEqual(["0"]);
   });
 
   it("allows multiple items open at once (type=multiple)", () => {
@@ -142,7 +141,6 @@ describe("FeatureInfoLayerPage.vue", () => {
 
     expect(itemsSeen).toHaveLength(1);
     expect(itemsSeen[0]!.featureData!.featureId).toBe("new-1");
-    expect(itemsSeen[0]!.defaultOpen).toBe(true);
   });
 
   it("renders no items for an empty feature list", () => {
