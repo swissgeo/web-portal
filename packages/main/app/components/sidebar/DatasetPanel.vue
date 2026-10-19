@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
 
+import { useElementSize } from "@vueuse/core";
 import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
 import DatasetLanguageSection from "~/components/dataset/DatasetLanguageSection.vue";
 import DatasetMapAction from "~/components/dataset/DatasetMapAction.vue";
-import { computed } from "vue";
+import { computed, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
@@ -21,6 +22,12 @@ const emit = defineEmits<{ back: []; close: [] }>();
 
 const { t } = useI18n();
 
+const header = useTemplateRef("header");
+// A long title wraps, so the tab list needs the measured header height.
+const { height: headerHeight } = useElementSize(header, undefined, {
+  box: "border-box",
+});
+
 const backLabel = computed(() => {
   if (props.backToCatalog) {
     return t("dataset.backToCatalog");
@@ -32,17 +39,16 @@ const backLabel = computed(() => {
 <template>
   <section
     class="@container flex min-h-full flex-col border-r border-default bg-default"
+    :style="{ '--dataset-header-height': `${headerHeight}px` }"
     aria-labelledby="dataset-panel-title"
     data-testid="dataset-panel"
   >
-    <!-- Desktop keeps the whole header in view. Phones keep only the back and close
-         row, so the small drawer has room for the content. The header uses
-         display: contents on phones, because a sticky row only sticks inside its parent. -->
     <header
-      class="contents md:sticky md:top-0 md:z-10 md:flex md:shrink-0 md:flex-col md:gap-space-m md:bg-default md:p-4 lg:gap-8 lg:p-8"
+      ref="header"
+      class="sticky top-0 z-10 flex shrink-0 flex-col bg-default md:gap-space-m md:p-4 lg:gap-8 lg:p-8"
     >
       <div
-        class="sticky top-0 z-10 flex items-center justify-between gap-space-s bg-default px-4 pt-4 pb-space-xs md:static md:p-0"
+        class="flex items-center justify-between gap-space-s px-4 pt-4 pb-space-xs md:p-0"
       >
         <UButton
           icon="i-lucide-arrow-left"
