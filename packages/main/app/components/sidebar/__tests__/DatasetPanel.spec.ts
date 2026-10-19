@@ -169,12 +169,11 @@ describe("DatasetPanel", () => {
     },
   );
 
-  it("omits languages and the map action while no dataset is available", () => {
+  it("omits the map action while no dataset is available", () => {
     const wrapper = render({ dataset: null, isLoading: true });
     expect(
       wrapper.find('[data-testid="dataset-map-action"] button').exists(),
     ).toBe(false);
-    expect(wrapper.text()).not.toContain("dataset.languages");
     expect(wrapper.findComponent({ name: "DatasetDetail" }).exists()).toBe(
       false,
     );
@@ -191,16 +190,8 @@ describe("DatasetPanel", () => {
     ).toBe(false);
   });
 
-  it("shows supplied languages and removes the section when they are absent", async () => {
+  it("does not show the dataset languages", () => {
     const wrapper = render();
-    expect(wrapper.text()).toContain("dataset.languages");
-    expect(wrapper.text()).toContain("Deutsch");
-    await wrapper.setProps({
-      dataset: {
-        ...dataset,
-        properties: { ...dataset.properties, languages: [] },
-      },
-    });
     expect(wrapper.text()).not.toContain("dataset.languages");
     expect(wrapper.text()).not.toContain("Deutsch");
   });
