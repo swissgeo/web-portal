@@ -1,4 +1,9 @@
 {
+  "mobileNotice": {
+    "title": "Version mobile bientôt disponible",
+    "description": "Cette version est optimisée pour les ordinateurs. Une version pour appareils mobiles est en préparation et sera bientôt disponible. En attendant, la version pour ordinateur est affichée.",
+    "confirm": "Compris"
+  },
   "menuTitles": {
     "knowledge": "Savoir",
     "about": "À propos de Swissgeo"

@@ -1,4 +1,9 @@
 {
+  "mobileNotice": {
+    "title": "Versione mobile in arrivo",
+    "description": "Questa versione è ottimizzata per i computer desktop. Una versione per dispositivi mobili è in preparazione e sarà presto disponibile. Nel frattempo viene mostrata la versione desktop.",
+    "confirm": "Ho capito"
+  },
   "geolocation": {
     "permissionDenied": "Autorizzazione alla posizione negata",
     "stopTracking": "Interrompi il tracciamento",

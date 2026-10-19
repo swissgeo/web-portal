@@ -1,4 +1,9 @@
 {
+  "mobileNotice": {
+    "title": "Mobile view coming soon",
+    "description": "This version is optimised for desktop computers. A view for mobile devices is in the works and will be available soon. Until then, the desktop view is shown.",
+    "confirm": "Got it"
+  },
   "menuTitles": {
     "knowledge": "Knowledge",
     "about": "About Swissgeo"

@@ -48,6 +48,7 @@ watch(route, (value) => {
             <slot />
             <ClientOnly>
               <Footer v-if="!isMapFullscreenMode" />
+              <MobileNotice />
             </ClientOnly>
           </div>
         </div>

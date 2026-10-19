@@ -34,6 +34,7 @@ function render() {
         TestSiteBanner: { template: '<div data-testid="test-site-banner" />' },
         Topbar: { template: '<div data-testid="topbar" />' },
         Footer: true,
+        MobileNotice: true,
         UMain: { template: "<div><slot /></div>" },
         SideBar: {
           name: "SideBar",
