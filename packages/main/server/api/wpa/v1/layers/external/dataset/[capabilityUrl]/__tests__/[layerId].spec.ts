@@ -17,6 +17,7 @@ vi.mock("h3", () => ({
   getRequestURL: () => requestUrl,
   getQuery: () => query,
   appendResponseHeader: vi.fn(),
+  setResponseHeader: vi.fn(),
   createError: (opts: {
     status: number;
     statusMessage?: string;

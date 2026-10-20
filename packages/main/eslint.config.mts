@@ -31,6 +31,7 @@ export default [
             "server/api/wpa/v1/layers/external/?capabilityUrl?/__tests__/*.ts",
             "server/api/wpa/v1/layers/external/service/__tests__/*.ts",
             "server/middleware/*.ts",
+            "server/middleware/__tests__/*.ts",
             "server/plugins/__tests__/*.ts",
             "tests/setup.ts",
           ],
