@@ -1,4 +1,5 @@
 import { mount } from "@vue/test-utils";
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useToolboxStore } from "~/stores/toolbox";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -8,6 +9,20 @@ import ImportButton from "@/components/toolbox/toolboxButtons/ImportButton.vue";
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
+
+mockNuxtImport("useRuntimeConfig", () => () => ({
+  public: {
+    featureFlags: {
+      tools: {
+        enableImport: true,
+      },
+    },
+  },
+}));
+
+const FeatureFlagWrapperStub = {
+  template: '<div><slot :is-disabled="false" /></div>',
+};
 
 describe("ImportButton.vue", () => {
   beforeEach(() => {
@@ -25,6 +40,7 @@ describe("ImportButton.vue", () => {
             props: ["title", "isActive", "isDisabled", "iconName"],
             emits: ["click"],
           },
+          FeatureFlagWrapper: FeatureFlagWrapperStub,
         },
       },
     });

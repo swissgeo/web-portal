@@ -172,6 +172,22 @@ vi.mock("~/stores/mapViewStore", () => ({
   }),
 }));
 
+import { useNuxtApp } from "nuxt/app";
+
+mockNuxtImport("useRuntimeConfig", () => () => {
+  const config = useNuxtApp().$config;
+  return {
+    ...config,
+    public: {
+      ...config.public,
+      featureFlags: {
+        ...config.public.featureFlags,
+        enableFeatureInfo: true,
+      },
+    },
+  };
+});
+
 const SourceToMapDataConverterStub = defineComponent({
   name: "SourceToMapDataConverter",
   props: ["sourceBgLayer", "sourceData"],
