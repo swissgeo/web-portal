@@ -25,6 +25,8 @@ import { cloneDeep } from "es-toolkit";
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
 import { readThemeToken } from "@/utils/themeTokens";
 
+const config = useRuntimeConfig();
+
 const {
   displayMode = "web",
   compareSliderActive,
@@ -226,14 +228,16 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
-  await selectFeatures(
-    mapClickEvent.extent,
-    positionStore.projection.epsgNumber,
-    locale.value.toLowerCase(),
-    layersSources,
-    FEATURE_LIMIT,
-    signal,
-  );
+  if (config.public.featureFlags.enableFeatureInfo) {
+    await selectFeatures(
+      mapClickEvent.extent,
+      positionStore.projection.epsgNumber,
+      locale.value.toLowerCase(),
+      layersSources,
+      FEATURE_LIMIT,
+      signal,
+    );
+  }
 }
 </script>
 
