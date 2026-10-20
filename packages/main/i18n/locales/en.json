@@ -509,7 +509,8 @@
     "viewGeocat": "View on geocat.ch",
     "copyLink": "Copy link to layer",
     "copy": "Copy",
-    "readMore": "Read more",
+    "showMore": "Show more",
+    "showLess": "Show less",
     "contact": "Contact",
     "aggregated": "Aggregated"
   },

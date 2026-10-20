@@ -502,7 +502,8 @@
     "viewGeocat": "Consulter sur geocat.ch",
     "copyLink": "Copier le lien vers la couche",
     "copy": "Copier",
-    "readMore": "Lire la suite",
+    "showMore": "Afficher plus",
+    "showLess": "Afficher moins",
     "contact": "Contact",
     "aggregated": "Agrégré"
   },
