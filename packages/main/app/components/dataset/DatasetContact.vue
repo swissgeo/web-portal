@@ -11,6 +11,7 @@ interface ContactRow {
   icon: string;
   href: string;
   label: string;
+  color: string;
 }
 
 const rows = computed((): ContactRow[] => {
@@ -23,16 +24,19 @@ const rows = computed((): ContactRow[] => {
       icon: "i-lucide-phone",
       href: `tel:${phone.value.replace(/\s/g, "")}`,
       label: phone.value,
+      color: "text-default",
     },
     email && {
       icon: "i-lucide-mail",
       href: `mailto:${email}`,
       label: email,
+      color: "text-primary",
     },
     website && {
       icon: "i-lucide-globe",
       href: website,
-      label: website.replace(/^https?:\/\/(www\.)?/, ""),
+      label: website.replace(/^https?:\/\/(www\.)?|\/$/g, ""),
+      color: "text-primary",
     },
   ].filter((row): row is ContactRow => !!row);
 });
@@ -45,7 +49,7 @@ const rows = computed((): ContactRow[] => {
     size="md"
     class="wrap-anywhere"
     :ui="{
-      name: 'font-semibold',
+      name: 'font-bold',
       description: 'leading-small-text',
     }"
   >
@@ -55,7 +59,8 @@ const rows = computed((): ContactRow[] => {
         :key="row.href"
         :to="row.href"
         target="_blank"
-        class="mt-space-2xs flex items-center gap-space-xs text-sm text-primary"
+        class="mt-space-2xs flex items-center gap-space-xs text-sm font-medium"
+        :class="row.color"
       >
         <UIcon :name="row.icon" class="size-4 shrink-0" />{{ row.label }}
       </ULink>

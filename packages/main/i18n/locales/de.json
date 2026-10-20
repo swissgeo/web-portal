@@ -503,7 +503,8 @@
     "viewGeocat": "Auf geocat.ch ansehen",
     "copyLink": "Link zur Ebene kopieren",
     "copy": "Kopieren",
-    "readMore": "Weiterlesen",
+    "showMore": "Mehr anzeigen",
+    "showLess": "Weniger anzeigen",
     "contact": "Kontakt",
     "aggregated": "Aggregiert"
   },

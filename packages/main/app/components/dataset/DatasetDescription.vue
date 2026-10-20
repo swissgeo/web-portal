@@ -19,9 +19,8 @@ const html = computed(() =>
   sanitizeHtml(decoded.value, t("featureInfo.blockedContent")),
 );
 const text = computed(() => toText(html.value));
-const isTruncated = computed(
-  () => !isExpanded.value && text.value.length > limit.value,
-);
+const isLong = computed(() => text.value.length > limit.value);
+const isTruncated = computed(() => isLong.value && !isExpanded.value);
 
 function toText(value: string): string {
   return (
@@ -37,25 +36,25 @@ function toText(value: string): string {
     <div class="flex flex-col items-start gap-space-xs">
       <p
         v-if="isTruncated"
-        class="text-base leading-small-text wrap-anywhere whitespace-pre-line text-default"
+        class="text-base leading-small-text font-medium wrap-anywhere whitespace-pre-line text-default"
         data-testid="dataset-description"
       >
         {{ `${text.slice(0, limit).trimEnd()}…` }}
       </p>
       <div
         v-else
-        class="text-base leading-small-text wrap-anywhere whitespace-pre-line text-default [&_a]:text-primary [&_a]:underline [&_ul]:list-disc [&_ul]:ps-5"
+        class="text-base leading-small-text font-medium wrap-anywhere whitespace-pre-line text-default [&_a]:text-primary [&_a]:underline [&_ul]:list-disc [&_ul]:ps-5"
         data-testid="dataset-description"
         v-html="html"
       />
       <UButton
-        v-if="isTruncated"
+        v-if="isLong"
         color="primary"
         variant="ghost"
-        icon="i-lucide-chevron-down"
-        :label="t('dataset.readMore')"
-        data-testid="dataset-description-read-more"
-        @click="isExpanded = true"
+        :icon="isExpanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+        :label="isExpanded ? t('dataset.showLess') : t('dataset.showMore')"
+        data-testid="dataset-description-toggle"
+        @click="isExpanded = !isExpanded"
       />
     </div>
     <template #fallback>

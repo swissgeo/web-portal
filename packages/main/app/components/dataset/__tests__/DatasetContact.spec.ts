@@ -82,4 +82,21 @@ describe("DatasetContact", () => {
       ["https://www.swisstopo.ch", "swisstopo.ch"],
     ]);
   });
+
+  // Real OAR link, ch.kgk.av (dev, 2026-10-20).
+  it("shows the website without the trailing slash", () => {
+    const wrapper = mount(DatasetContact, {
+      props: {
+        contact: { organization, links: [{ href: "https://kgk-cgc.ch/" }] },
+      },
+      global: {
+        stubs: {
+          UIcon: true,
+          ULink: { props: ["to"], template: "<a :href='to'><slot /></a>" },
+        },
+      },
+    });
+
+    expect(wrapper.get("a").text()).toBe("kgk-cgc.ch");
+  });
 });

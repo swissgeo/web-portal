@@ -58,25 +58,28 @@ describe("DatasetDescription", () => {
     ${"desktop"} | ${true}  | ${1500}
     ${"mobile"}  | ${false} | ${400}
   `(
-    "cuts the text after $limit characters on $viewport and shows all on read more",
+    "cuts the text after $limit characters on $viewport, shows more and less",
     async ({ desktop, limit }) => {
       isDesktop.value = desktop;
       const full = "a".repeat(limit + 1);
+      const cut = `${"a".repeat(limit)}…`;
       const wrapper = render(full);
+      const description = () =>
+        wrapper.get('[data-testid="dataset-description"]').text();
 
-      expect(wrapper.get('[data-testid="dataset-description"]').text()).toBe(
-        `${"a".repeat(limit)}…`,
-      );
+      expect(description()).toBe(cut);
+      expect(wrapper.get("button").text()).toBe("dataset.showMore");
+
       await wrapper.get("button").trigger("click");
+      expect(description()).toBe(full);
+      expect(wrapper.get("button").text()).toBe("dataset.showLess");
 
-      expect(wrapper.get('[data-testid="dataset-description"]').text()).toBe(
-        full,
-      );
-      expect(wrapper.find("button").exists()).toBe(false);
+      await wrapper.get("button").trigger("click");
+      expect(description()).toBe(cut);
     },
   );
 
-  it("does not offer read more when the text fits", () => {
+  it("does not offer more or less when the text fits", () => {
     expect(render("Short").find("button").exists()).toBe(false);
   });
 });
