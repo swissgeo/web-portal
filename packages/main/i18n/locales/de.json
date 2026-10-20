@@ -203,7 +203,11 @@
     "openStateConfigPanel": "State Config Panel öffnen",
     "stateConfig": "State Config",
     "share": "Teilen",
-    "openPrintPanel": "Druckpanel öffnen"
+    "openPrintPanel": "Druckpanel öffnen",
+    "openFeatureFlagsPanel": "Feature-Flags-Panel öffnen",
+    "featureFlagsPanelTitle": "Feature-Flags",
+    "resetFeatureFlags": "Auf Standard zurücksetzen",
+    "featureFlagOverridden": "überschrieben"
   },
   "geolocation": {
     "permissionDenied": "Standortberechtigung verweigert",
