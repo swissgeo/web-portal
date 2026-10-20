@@ -18,6 +18,8 @@ const isSharePanelOpen = ref(false);
 const isPrintPanelOpen = ref(false);
 const isFeatureFlagsPanelOpen = ref(false);
 
+const isLocalDev = import.meta.dev;
+
 function toggleLayersPanel() {
   isLayersPanelOpen.value = !isLayersPanelOpen.value;
 }
@@ -132,6 +134,7 @@ function toggleFeatureFlagsPanel() {
           {{ t("debug.openPrintPanel") }}
         </UButton>
         <UButton
+          v-if="isLocalDev"
           data-testid="debug-open-feature-flags-panel"
           color="primary"
           variant="outline"
