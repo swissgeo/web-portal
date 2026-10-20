@@ -10,6 +10,7 @@ const props = defineProps<{
 
 const positionStore = usePositionStore();
 const { t } = useI18n();
+const config = useRuntimeConfig();
 
 const isCollapsed = ref(false);
 
@@ -30,6 +31,7 @@ watch(
 
 <template>
   <div
+    v-if="config.public.featureFlags.enablePositionPopup"
     v-show="isVisible"
     class="light overflow-hidden rounded-md bg-default text-default shadow-lg ring-1 ring-default"
     @click.stop
@@ -73,5 +75,13 @@ watch(
         </template>
       </UTabs>
     </div>
+  </div>
+  <div
+    v-else
+    class="light overflow-hidden rounded-md bg-default px-2 py-1 text-xs font-medium text-highlighted shadow-lg ring-1 ring-default"
+    @click.stop
+  >
+    <p>{{ t("map.contextMenuPopup.featureFlag.notAvailable") }}</p>
+    <p class="mt-2">{{ t("map.contextMenuPopup.featureFlag.workingOnIt") }}</p>
   </div>
 </template>

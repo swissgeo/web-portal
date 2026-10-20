@@ -463,7 +463,11 @@
       "tabPosition": "Koordinaten",
       "tabShare": "Position teilen",
       "errorFetchingElevation": "Fehler beim Abrufen der Höhe",
-      "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse"
+      "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse",
+      "featureFlag": {
+        "notAvailable": "Das Positions-Popup-Fenster ist leider noch nicht verfügbar.",
+        "workingOnIt": "Wir sind dran :)"
+      }
     }
   },
   "error": {
