@@ -447,6 +447,7 @@
     "successTitle": "Succès"
   },
   "state": {
+    "drawingNotFound": "Le dessin {id} est introuvable et n'a pas été restauré",
     "restoreUnableWarning": "L'état de l'application n'a pas pu être restauré",
     "shareLinkError": "Le lien de partage n'a pas pu être généré"
   },

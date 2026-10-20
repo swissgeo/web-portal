@@ -327,7 +327,7 @@ describe("useImportDrawing", () => {
       expect(fetchMock).not.toHaveBeenCalled();
     });
 
-    it("validates metadata and authenticates the admin with a Bearer header", async () => {
+    it("validates metadata and authenticates the admin with a Swissgeo-Admin-Id header", async () => {
       mockValidation();
       const drawing = useImportDrawing();
       drawing.url.value = `  ${endpoint}/${id}#${admin}  `;
@@ -344,7 +344,7 @@ describe("useImportDrawing", () => {
       );
       const [authUrl, options] = fetchMock.mock.calls[1]!;
       expect(authUrl).toBe(`${endpoint}/${id}/check-auth`);
-      expect(options.headers.get("Authorization")).toBe(`Bearer ${admin}`);
+      expect(options.headers.get("Swissgeo-Admin-Id")).toBe(admin);
     });
 
     it.each(["", "#invalid", `#${admin}`])(
