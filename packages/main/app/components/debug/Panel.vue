@@ -16,6 +16,7 @@ const isImportLocalPanelOpen = ref(false);
 const isDrawingOpen = computed(() => toolboxStore.isPanelActive("drawing"));
 const isSharePanelOpen = ref(false);
 const isPrintPanelOpen = ref(false);
+const isFeatureFlagsPanelOpen = ref(false);
 
 function toggleLayersPanel() {
   isLayersPanelOpen.value = !isLayersPanelOpen.value;
@@ -36,6 +37,10 @@ function toggleStateConfig() {
 
 function togglePrintPanel() {
   isPrintPanelOpen.value = !isPrintPanelOpen.value;
+}
+
+function toggleFeatureFlagsPanel() {
+  isFeatureFlagsPanelOpen.value = !isFeatureFlagsPanelOpen.value;
 }
 </script>
 
@@ -77,6 +82,10 @@ function togglePrintPanel() {
 
       <DebugSharePanel v-if="isSharePanelOpen" @close="toggleStateConfig" />
       <DebugFramePrintPanel v-if="isPrintPanelOpen" @close="togglePrintPanel" />
+      <DebugFeatureFlagsPanel
+        v-if="isFeatureFlagsPanelOpen"
+        @close="toggleFeatureFlagsPanel"
+      />
       <div
         class="flex flex-wrap justify-center gap-2"
         v-if="
@@ -85,7 +94,8 @@ function togglePrintPanel() {
           !isImportLocalPanelOpen &&
           !isDrawingOpen &&
           !isSharePanelOpen &&
-          !isPrintPanelOpen
+          !isPrintPanelOpen &&
+          !isFeatureFlagsPanelOpen
         "
       >
         <UButton color="primary" variant="outline" @click="toggleLayersPanel">
@@ -120,6 +130,14 @@ function togglePrintPanel() {
         </UButton>
         <UButton color="primary" variant="outline" @click="togglePrintPanel">
           {{ t("debug.openPrintPanel") }}
+        </UButton>
+        <UButton
+          data-testid="debug-open-feature-flags-panel"
+          color="primary"
+          variant="outline"
+          @click="toggleFeatureFlagsPanel"
+        >
+          {{ t("debug.openFeatureFlagsPanel") }}
         </UButton>
       </div>
     </div>
