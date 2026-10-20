@@ -492,13 +492,18 @@
     "close": "Fermer les détails du jeu de données",
     "backToMap": "Retour à la carte",
     "addToMapError": "Impossible d'ajouter la couche à la carte",
-    "openService": "Ouvrir le service dans un nouvel onglet",
+    "openService": "Ouvrir dans un nouvel onglet",
     "identifier": "Identifiant",
     "mapServices": "WMS / WMTS",
     "otherAccess": "Autres possibilités d’accès",
     "format": "Format",
     "serviceUrl": "URL / Service",
-    "viewGeocat": "Consulter sur geocat.ch"
+    "viewGeocat": "Consulter sur geocat.ch",
+    "copyLink": "Copier le lien vers la couche",
+    "copy": "Copier",
+    "readMore": "Lire la suite",
+    "contact": "Contact",
+    "aggregated": "Agrégré"
   },
   "elevationProfile": {
     "windowTitle": "Profil d'élévation",
