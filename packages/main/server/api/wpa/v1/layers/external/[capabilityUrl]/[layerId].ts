@@ -1,4 +1,9 @@
-import { appendResponseHeader, createError, getRouterParam } from "h3";
+import {
+  appendResponseHeader,
+  createError,
+  getRouterParam,
+  setResponseHeader,
+} from "h3";
 
 import { decodeCapabilityUrl } from "../../../../../../utils/externalLayerUrl";
 
@@ -24,7 +29,7 @@ export default defineEventHandler((event) => {
   }
 
   appendResponseHeader(event, "Content-Type", "application/json");
-  appendResponseHeader(event, "Cache-Control", `max-age=${60 * 60}`);
+  setResponseHeader(event, "Cache-Control", `max-age=${60 * 60}`);
   return {
     type: "FeatureCollection",
     links: [],

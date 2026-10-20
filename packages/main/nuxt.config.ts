@@ -181,9 +181,11 @@ export default defineNuxtConfig({
     ignore: ["**/__tests__/**"],
   },
   routeRules: {
-    // cache the rendered pages for 2 minutes
-    //'/content/**': { cache: { maxAge: process.dev ? 1 : 120 } },
-    //'/api/wpa/v1/**': { cache: { maxAge: process.dev ? 1 : 30 } },
+    // Per-build asset dir (see $production.app.buildAssetsDir): files never
+    // change within a build, and the dir name changes on every deploy.
+    "/_nxt/**": {
+      headers: { "cache-control": "public, max-age=31536000, immutable" },
+    },
   },
   icon: {
     localApiEndpoint: "/api/wpa/v1/icons",

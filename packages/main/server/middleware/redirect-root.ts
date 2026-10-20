@@ -12,6 +12,8 @@
 // Running here as a Nitro server middleware means we redirect before any of
 // the i18n hooks fire, using the same priority the Vue middleware uses for
 // other unlocalized paths: Accept-Language → defaultLocale.
+import { sendRedirect, setResponseHeader } from "h3";
+
 import { resolveTargetLocale } from "../utils/locale-resolution";
 
 const ENTRY_PATHS = new Set(["/", "/map"]);
@@ -26,5 +28,6 @@ export default defineEventHandler(async (event) => {
     getRequestHeader(event, "accept-language"),
   );
 
+  setResponseHeader(event, "Cache-Control", "no-store");
   await sendRedirect(event, `/${target}/map${url.search}`, 302);
 });
