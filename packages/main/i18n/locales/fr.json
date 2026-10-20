@@ -430,6 +430,10 @@
     },
     "print": {
       "buttonTitle": "Imprimer"
+    },
+    "featureFlag": {
+      "notAvailable": "Cet outil n'est malheureusement pas encore disponible.",
+      "workingOnIt": "Nous y travaillons :)"
     }
   },
   "backgroundLayers": {
@@ -458,7 +462,11 @@
       "tabPosition": "Coordonnées",
       "tabShare": "Partager la position",
       "errorFetchingElevation": "Erreur de récupération de l'élévation",
-      "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words"
+      "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words",
+      "featureFlag": {
+        "notAvailable": "La fenêtre contextuelle de position n'est malheureusement pas encore disponible.",
+        "workingOnIt": "Nous y travaillons :)"
+      }
     }
   },
   "error": {

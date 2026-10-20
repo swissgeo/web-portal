@@ -97,6 +97,23 @@ vi.mock("@swissgeo/map", async (importOriginal) => {
   };
 });
 
+import { useNuxtApp } from "nuxt/app";
+
+mockNuxtImport("useRuntimeConfig", () => () => {
+  const config = useNuxtApp().$config;
+  return {
+    ...config,
+    public: {
+      ...config.public,
+      featureFlags: {
+        ...config.public.featureFlags,
+        enableFeatureInfo: true,
+        enablePositionPopup: true,
+      },
+    },
+  };
+});
+
 import { selectFeatures } from "@swissgeo/feature";
 
 const selectFeaturesSpy = vi.mocked(selectFeatures);

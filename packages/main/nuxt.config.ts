@@ -169,6 +169,16 @@ export default defineNuxtConfig({
       ],
       featureFlags: {
         enableCmsSearch: false,
+        enableFeatureInfo: false,
+        enablePositionPopup: false,
+        tools: {
+          enableMeasure: false,
+          enableCompare: false,
+          enableDrawing: false,
+          enableImport: false,
+          enablePrint: false,
+          enableShare: false,
+        },
       },
     },
   },

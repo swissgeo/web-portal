@@ -437,6 +437,10 @@
     },
     "print": {
       "buttonTitle": "Print"
+    },
+    "featureFlag": {
+      "notAvailable": "Unfortunately, this tool isn't available yet",
+      "workingOnIt": "We're working on it :)"
     }
   },
   "backgroundLayers": {
@@ -465,7 +469,11 @@
       "tabPosition": "Coordinates",
       "tabShare": "Share Position",
       "errorFetchingElevation": "Error retrieving elevation",
-      "errorFetchingW3W": "Error retrieving What3Words address"
+      "errorFetchingW3W": "Error retrieving What3Words address",
+      "featureFlag": {
+        "notAvailable": "Unfortunately, the position pop-up window is not yet available.",
+        "workingOnIt": "We're working on it :)"
+      }
     }
   },
   "error": {
