@@ -7,13 +7,13 @@ import { useToolboxStore } from "@/stores/toolbox";
 import FeatureFlagWrapper from "./FeatureFlagWrapper.vue";
 
 const { t } = useI18n();
-const config = useRuntimeConfig();
+const { isEnabled } = useFeatureFlags();
 const toolboxStore = useToolboxStore();
 </script>
 
 <template>
   <FeatureFlagWrapper
-    :feature-flag-enabled="config.public.featureFlags.tools.enableShare"
+    :feature-flag-enabled="isEnabled('tools.enableShare')"
     v-slot="{ isDisabled }"
   >
     <ToolBoxButton

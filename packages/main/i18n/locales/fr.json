@@ -202,7 +202,11 @@
     "openStateConfigPanel": "Ouvrir le panneau de configuration d'état",
     "stateConfig": "panneau de configuration",
     "share": "Partager",
-    "openPrintPanel": "Ouvrir le panneau d'impression"
+    "openPrintPanel": "Ouvrir le panneau d'impression",
+    "openFeatureFlagsPanel": "Ouvrir le panneau des feature flags",
+    "featureFlagsPanelTitle": "Feature flags",
+    "resetFeatureFlags": "Rétablir les valeurs par défaut",
+    "featureFlagOverridden": "surchargé"
   },
   "geolocation": {
     "permissionDenied": "Autorisation de localisation refusée",

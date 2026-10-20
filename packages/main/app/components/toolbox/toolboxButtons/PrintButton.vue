@@ -6,12 +6,12 @@ import ToolBoxButton from "@/components/toolbox/toolboxButtons/ToolBoxButton.vue
 import FeatureFlagWrapper from "./FeatureFlagWrapper.vue";
 
 const { t } = useI18n();
-const config = useRuntimeConfig();
+const { isEnabled } = useFeatureFlags();
 </script>
 
 <template>
   <FeatureFlagWrapper
-    :feature-flag-enabled="config.public.featureFlags.tools.enablePrint"
+    :feature-flag-enabled="isEnabled('tools.enablePrint')"
     v-slot="{ isDisabled }"
   >
     <ToolBoxButton

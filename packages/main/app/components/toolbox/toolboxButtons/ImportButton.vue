@@ -7,13 +7,13 @@ import { useToolboxStore } from "@/stores/toolbox";
 import FeatureFlagWrapper from "./FeatureFlagWrapper.vue";
 
 const { t } = useI18n();
-const config = useRuntimeConfig();
+const { isEnabled } = useFeatureFlags();
 const toolboxStore = useToolboxStore();
 </script>
 
 <template>
   <FeatureFlagWrapper
-    :feature-flag-enabled="config.public.featureFlags.tools.enableImport"
+    :feature-flag-enabled="isEnabled('tools.enableImport')"
     v-slot="{ isDisabled }"
   >
     <ToolBoxButton
