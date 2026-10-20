@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
 defineProps<{
   featureFlagEnabled: boolean;
 }>();
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -16,8 +20,8 @@ defineProps<{
 
     <template #content v-if="!featureFlagEnabled">
       <div class="max-w-36 px-2 py-1 text-xs font-medium text-highlighted">
-        <p>Dieses Tool ist leider noch nicht verfügbar</p>
-        <p class="mt-2">Wir sind dran :)</p>
+        <p>{{ t("toolbox.featureFlag.notAvailable") }}</p>
+        <p class="mt-2">{{ t("toolbox.featureFlag.workingOnIt") }}</p>
       </div>
     </template>
   </UPopover>

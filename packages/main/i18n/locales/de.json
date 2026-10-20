@@ -431,6 +431,10 @@
     },
     "print": {
       "buttonTitle": "Drucken"
+    },
+    "featureFlag": {
+      "notAvailable": "Dieses Tool ist leider noch nicht verfügbar",
+      "workingOnIt": "Wir sind dran :)"
     }
   },
   "backgroundLayers": {
