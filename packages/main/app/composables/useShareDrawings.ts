@@ -88,7 +88,7 @@ export function useShareDrawings() {
         method: "PUT",
         body: formData,
         headers: new Headers({
-          Authorization: `Bearer ${drawingAdminId.value.toString()}`,
+          "Swissgeo-Admin-Id": drawingAdminId.value.toString(),
         }),
       },
     );

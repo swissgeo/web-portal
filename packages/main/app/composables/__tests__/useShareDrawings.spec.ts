@@ -95,8 +95,8 @@ describe("useShareDrawings", () => {
     );
     const request = fetchMock.mock.calls[1]![1] as RequestInit;
     const body = request.body as FormData;
-    expect((request.headers as Headers).get("Authorization")).toBe(
-      `Bearer ${serviceResponse.admin_id}`,
+    expect((request.headers as Headers).get("Swissgeo-Admin-Id")).toBe(
+      serviceResponse.admin_id,
     );
     expect(body.has("admin_id")).toBe(false);
     expect(body.get("file")).toBeInstanceOf(File);

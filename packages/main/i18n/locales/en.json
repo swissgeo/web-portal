@@ -454,6 +454,7 @@
     "successTitle": "Success"
   },
   "state": {
+    "drawingNotFound": "The drawing {id} could not be found and was not restored",
     "restoreUnableWarning": "The app state could not be restored",
     "shareLinkError": "The share link could not be generated"
   },

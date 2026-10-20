@@ -1,4 +1,5 @@
 import type { DrawingsMetadataResponse } from "@swissgeo/drawing-sharing";
+import type { Map as OlMap } from "ol";
 
 import { useDrawing } from "@swissgeo/drawing";
 import { useMap } from "@swissgeo/map";
@@ -169,7 +170,10 @@ function removeAdminIdFromUrl(url: string): string {
   return url;
 }
 
-async function checkDrawingAuth(drawingId: string, adminId: string = "") {
+export async function checkDrawingAuth(
+  drawingId: string,
+  adminId: string = "",
+): Promise<number> {
   const runtimeConfig = useRuntimeConfig();
   const drawingServiceEndpoint = runtimeConfig.public
     .drawingServiceEndpoint as string;
@@ -177,7 +181,7 @@ async function checkDrawingAuth(drawingId: string, adminId: string = "") {
   const res = await fetch(`${drawingServiceEndpoint}/${drawingId}/check-auth`, {
     headers: adminId
       ? new Headers({
-          Authorization: `Bearer ${adminId}`,
+          "Swissgeo-Admin-Id": adminId,
         })
       : undefined,
   });
@@ -201,10 +205,58 @@ async function fetchDrawingMetadata(
   return await res.json();
 }
 
+export function extractDrawingId(drawingUrl: string): string {
+  const id = new URL(drawingUrl).pathname.split("/").pop() ?? "";
+  if (!id) {
+    throw new Error(`Invalid drawing url: ${drawingUrl}`);
+  }
+  return id;
+}
+
+export function assertAllowedDrawingDomain(drawingUrl: string): void {
+  const allowedDomains = useRuntimeConfig().public
+    .drawingAllowedDomains as string[];
+  const { hostname } = new URL(drawingUrl);
+  if (!allowedDomains.includes(hostname)) {
+    throw new Error(`Drawing url host not allowed: ${hostname}`);
+  }
+}
+
+export class DrawingFetchError extends Error {
+  readonly status: number;
+  readonly statusText: string;
+
+  constructor(drawingUrl: string, status: number, statusText: string) {
+    super(`Failed to fetch drawing: ${status} ${drawingUrl}`);
+    this.name = "DrawingFetchError";
+    this.status = status;
+    this.statusText = statusText;
+  }
+}
+
+export async function fetchDrawingKmz(
+  drawingUrl: string,
+): Promise<ArrayBuffer> {
+  const res = await fetch(drawingUrl);
+  if (!res.ok) {
+    throw new DrawingFetchError(drawingUrl, res.status, res.statusText);
+  }
+  return await res.arrayBuffer();
+}
+
+export async function importDrawingKmz(
+  map: OlMap,
+  kmzBuffer: ArrayBuffer,
+  clearExisting: boolean = true,
+): Promise<boolean> {
+  const { mountDrawingLayer, importKmz } = useDrawing();
+  mountDrawingLayer(map);
+  return await importKmz(kmzBuffer, clearExisting);
+}
+
 export function useImportDrawing() {
   const {
     importKml,
-    importKmz,
     mountDrawingLayer,
     clearDrawingLayer,
     unmountDrawingLayer,
@@ -396,13 +448,19 @@ export function useImportDrawing() {
     isLoading.value = true;
 
     try {
-      const res = await fetch(url.value);
-      if (!res.ok) {
-        throw new Error(
-          t("toolbox.import.errorMessages.fetchFailed", {
-            status: res.statusText,
-          }),
-        );
+      let kmzBuffer: ArrayBuffer;
+      try {
+        kmzBuffer = await fetchDrawingKmz(url.value);
+      } catch (error) {
+        if (error instanceof DrawingFetchError) {
+          throw new Error(
+            t("toolbox.import.errorMessages.fetchFailed", {
+              status: error.statusText,
+            }),
+            { cause: error },
+          );
+        }
+        throw error;
       }
       if (
         !(await confirmReplaceDrawing({
@@ -411,13 +469,10 @@ export function useImportDrawing() {
       ) {
         return;
       }
-      mountDrawingLayer(olMap.value);
-
-      const kmzBuffer = await res.arrayBuffer();
 
       // Import the KMZ content. The second argument ensures that the existing drawing layer is cleared beforehand,
       // but only if the import is successful.
-      const success = await importKmz(kmzBuffer, true);
+      const success = await importDrawingKmz(olMap.value, kmzBuffer);
 
       if (!success) {
         throw new Error(t("toolbox.import.errorMessages.drawingImportFailed"));
