@@ -6,13 +6,13 @@ import ToolBoxButton from "@/components/toolbox/toolboxButtons/ToolBoxButton.vue
 import FeatureFlagWrapper from "./FeatureFlagWrapper.vue";
 
 const { t } = useI18n();
-const config = useRuntimeConfig();
+const { isEnabled } = useFeatureFlags();
 const mapViewStore = useMapViewStore();
 </script>
 
 <template>
   <FeatureFlagWrapper
-    :feature-flag-enabled="config.public.featureFlags.tools.enableCompare"
+    :feature-flag-enabled="isEnabled('tools.enableCompare')"
     v-slot="{ isDisabled }"
   >
     <ToolBoxButton

@@ -25,7 +25,7 @@ import { cloneDeep } from "es-toolkit";
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
 import { readThemeToken } from "@/utils/themeTokens";
 
-const config = useRuntimeConfig();
+const { isEnabled } = useFeatureFlags();
 
 const {
   displayMode = "web",
@@ -228,7 +228,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
-  if (config.public.featureFlags.enableFeatureInfo) {
+  if (isEnabled("enableFeatureInfo")) {
     await selectFeatures(
       mapClickEvent.extent,
       positionStore.projection.epsgNumber,

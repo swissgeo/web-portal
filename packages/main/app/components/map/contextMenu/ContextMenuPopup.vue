@@ -10,7 +10,7 @@ const props = defineProps<{
 
 const positionStore = usePositionStore();
 const { t } = useI18n();
-const config = useRuntimeConfig();
+const { isEnabled } = useFeatureFlags();
 
 const isCollapsed = ref(false);
 
@@ -31,7 +31,7 @@ watch(
 
 <template>
   <div
-    v-if="config.public.featureFlags.enablePositionPopup"
+    v-if="isEnabled('enablePositionPopup')"
     v-show="isVisible"
     class="light overflow-hidden rounded-md bg-default text-default shadow-lg ring-1 ring-default"
     @click.stop
