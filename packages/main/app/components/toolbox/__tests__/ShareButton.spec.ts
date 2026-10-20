@@ -10,14 +10,8 @@ vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 
-mockNuxtImport("useRuntimeConfig", () => () => ({
-  public: {
-    featureFlags: {
-      tools: {
-        enableShare: true,
-      },
-    },
-  },
+mockNuxtImport("useFeatureFlags", () => () => ({
+  isEnabled: () => true,
 }));
 
 const FeatureFlagWrapperStub = {
