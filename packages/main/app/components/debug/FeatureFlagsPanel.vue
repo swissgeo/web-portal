@@ -9,6 +9,14 @@ const { t } = useI18n();
 const { allFlags, isEnabled, isOverridden, setFlag, resetFlags } =
   useFeatureFlags();
 
+/**
+ * enableCmsSearch is read directly from runtimeConfig by the skeleton search
+ * store. Drop it once the store uses useFeatureFlags.
+ */
+const flags = computed(() =>
+  allFlags.value.filter((flag) => flag !== "enableCmsSearch"),
+);
+
 function toggleFlag(path: FeatureFlagPath) {
   setFlag(path, !isEnabled(path));
 }
@@ -20,19 +28,29 @@ function toggleFlag(path: FeatureFlagPath) {
       <span class="text-sm font-semibold">
         {{ t("debug.featureFlagsPanelTitle") }}
       </span>
-      <UButton
-        color="primary"
-        variant="outline"
-        size="xs"
-        data-testid="debug-reset-feature-flags"
-        :label="t('debug.resetFeatureFlags')"
-        @click="resetFlags()"
-      />
+      <div class="flex items-center gap-2">
+        <UButton
+          color="primary"
+          variant="outline"
+          size="xs"
+          data-testid="debug-reset-feature-flags"
+          :label="t('debug.resetFeatureFlags')"
+          @click="resetFlags()"
+        />
+        <UButton
+          color="primary"
+          variant="ghost"
+          icon="i-lucide-x"
+          title="Close"
+          data-testid="debug-close-feature-flags-panel"
+          @click="$emit('close')"
+        />
+      </div>
     </div>
 
     <ul class="flex flex-col gap-1">
       <li
-        v-for="flag in allFlags"
+        v-for="flag in flags"
         :key="flag"
         class="flex items-center justify-between gap-2"
       >
