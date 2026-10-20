@@ -4,17 +4,25 @@ import { useI18n } from "vue-i18n";
 import ToolBoxButton from "@/components/toolbox/toolboxButtons/ToolBoxButton.vue";
 import { useToolboxStore } from "@/stores/toolbox";
 
+import FeatureFlagWrapper from "./FeatureFlagWrapper.vue";
+
 const { t } = useI18n();
+const config = useRuntimeConfig();
 const toolboxStore = useToolboxStore();
 </script>
 
 <template>
-  <ToolBoxButton
-    data-testid="toolbox-share-button"
-    :title="t('toolbox.share.buttonTitle')"
-    :is-disabled="false"
-    :is-active="toolboxStore.isPanelActive('share')"
-    iconName="share-2"
-    @click="toolboxStore.toggleDetailPanel('share')"
-  />
+  <FeatureFlagWrapper
+    :feature-flag-enabled="config.public.featureFlags.tools.enableShare"
+    v-slot="{ isDisabled }"
+  >
+    <ToolBoxButton
+      data-testid="toolbox-share-button"
+      :title="t('toolbox.share.buttonTitle')"
+      :is-disabled="isDisabled"
+      :is-active="toolboxStore.isPanelActive('share')"
+      iconName="share-2"
+      @click="toolboxStore.toggleDetailPanel('share')"
+    />
+  </FeatureFlagWrapper>
 </template>
