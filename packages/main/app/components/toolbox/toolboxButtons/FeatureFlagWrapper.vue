@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { createReusableTemplate } from "@vueuse/core";
+import { ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 defineProps<{
@@ -7,6 +8,9 @@ defineProps<{
 }>();
 
 const { t } = useI18n();
+
+const descriptionId = useId();
+const popoverOpen = ref(false);
 
 const [RegisterTemplate, ReuseTemplate] = createReusableTemplate();
 </script>
@@ -18,11 +22,17 @@ const [RegisterTemplate, ReuseTemplate] = createReusableTemplate();
 
   <template v-if="!featureFlagEnabled">
     <UPopover
+      v-model:open="popoverOpen"
       mode="hover"
       enable-touch
       :content="{ side: 'left', sideOffset: 12 }"
     >
-      <div>
+      <div
+        tabindex="0"
+        :aria-describedby="descriptionId"
+        @focus="popoverOpen = true"
+        @blur="popoverOpen = false"
+      >
         <ReuseTemplate />
       </div>
 
@@ -33,6 +43,11 @@ const [RegisterTemplate, ReuseTemplate] = createReusableTemplate();
         </div>
       </template>
     </UPopover>
+
+    <span :id="descriptionId" class="sr-only">
+      {{ t("toolbox.featureFlag.notAvailable") }}
+      {{ t("toolbox.featureFlag.workingOnIt") }}
+    </span>
   </template>
   <template v-else>
     <ReuseTemplate />
