@@ -29,6 +29,12 @@ function distribution(
   };
 }
 
+// UTooltip needs UApp, which these specs do not mount.
+const tooltipStub = {
+  props: ["text"],
+  template: '<span :data-tooltip="text"><slot /></span>',
+};
+
 function service(href: string) {
   return { links: [{ rel: "describedby", href }] };
 }
@@ -36,6 +42,7 @@ function service(href: string) {
 async function mountRow(record: Distribution) {
   const wrapper = await mountSuspended(DatasetService, {
     props: { distribution: record },
+    global: { stubs: { UTooltip: tooltipStub } },
   });
   unmounts.push(() => wrapper.unmount());
   await flushPromises();
@@ -158,6 +165,18 @@ describe("dataset service addresses", () => {
       "i-lucide-copy",
     );
     expect(wrapper.get("a").attributes("target")).toBe("_blank");
+    const actions = wrapper.findAll(
+      '[data-testid="dataset-service-open"], [data-testid="dataset-service-copy"]',
+    );
+    expect(actions.map((action) => action.attributes("data-testid"))).toEqual([
+      "dataset-service-open",
+      "dataset-service-copy",
+    ]);
+    expect(
+      wrapper
+        .findAll("[data-tooltip]")
+        .map((tip) => tip.attributes("data-tooltip")),
+    ).toEqual(["Open in new tab", "Copy"]);
     expect(wrapper.text()).toContain("WMS");
     expect(wrapper.text()).not.toContain("provider.layer");
     expect(fetchMock).toHaveBeenCalledWith(
@@ -289,6 +308,7 @@ describe("dataset service addresses", () => {
     const second = { ...first, id: "second-layer" };
     const wrapper = await mountSuspended(DatasetServiceList, {
       props: { distributions: [first, second] },
+      global: { stubs: { UTooltip: tooltipStub } },
     });
     unmounts.push(() => wrapper.unmount());
     await flushPromises();

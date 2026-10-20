@@ -48,4 +48,38 @@ describe("DatasetContact", () => {
 
     expect(wrapper.text()).toBe("Another office");
   });
+
+  // Real OAR contact, ch.swisstopo.pixelkarte-farbe (dev, 2026-10-19).
+  it("links phone, email and website, without the fax", () => {
+    const wrapper = mount(DatasetContact, {
+      props: {
+        contact: {
+          organization,
+          roles: ["pointOfContact"],
+          phones: [
+            { value: "0041 58 469 04 59", roles: ["fax"] },
+            { value: "0041 58 469 01 11", roles: ["work"] },
+          ],
+          emails: [{ value: "info@swisstopo.ch" }],
+          links: [{ href: "https://www.swisstopo.ch" }],
+        },
+      },
+      global: {
+        stubs: {
+          UIcon: true,
+          ULink: { props: ["to"], template: "<a :href='to'><slot /></a>" },
+        },
+      },
+    });
+
+    expect(
+      wrapper
+        .findAll("a")
+        .map((link) => [link.attributes("href"), link.text()]),
+    ).toEqual([
+      ["tel:0041584690111", "0041 58 469 01 11"],
+      ["mailto:info@swisstopo.ch", "info@swisstopo.ch"],
+      ["https://www.swisstopo.ch", "swisstopo.ch"],
+    ]);
+  });
 });

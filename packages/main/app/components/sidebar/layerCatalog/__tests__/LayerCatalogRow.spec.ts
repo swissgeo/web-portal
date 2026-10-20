@@ -44,6 +44,10 @@ const stubs = {
     props: ["to"],
     template: "<a :href='to' v-bind='$attrs' />",
   },
+  UBadge: {
+    props: ["label"],
+    template: "<span>{{ label }}</span>",
+  },
 };
 
 function makeDataset(id = "ch.a", contacts?: Contact[]): Dataset {
@@ -212,4 +216,23 @@ describe("LayerCatalogRow.vue", () => {
     expect(title().element.tagName).toBe("DIV");
     expect(title().attributes("href")).toBeUndefined();
   });
+
+  it.each`
+    aggregated   | isShown
+    ${true}      | ${true}
+    ${undefined} | ${false}
+  `(
+    "shows the aggregated tag=$isShown for aggregated=$aggregated",
+    ({ aggregated, isShown }) => {
+      const dataset = makeDataset();
+      dataset.properties.aggregated = aggregated;
+      const wrapper = mountRow(dataset);
+      const tag = wrapper.find("[data-testid='catalog-layer-aggregated']");
+
+      expect(tag.exists()).toBe(isShown);
+      if (isShown) {
+        expect(tag.text()).toBe("dataset.aggregated");
+      }
+    },
+  );
 });

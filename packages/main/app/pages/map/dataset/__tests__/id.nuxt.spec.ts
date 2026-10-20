@@ -25,6 +25,9 @@ mockNuxtImport("useDatasetRecord", () => () => ({
   promise: Promise.resolve(),
 }));
 
+// UTooltip needs UApp, which this spec does not mount.
+const tooltipStub = { template: "<span><slot /></span>" };
+
 // The drawer renders nothing on the server, so search engines only get what
 // the page puts into the head. Keep the title and description coming from the
 // dataset record.
@@ -32,6 +35,7 @@ describe("dataset page", () => {
   it("sets the page title and description from the dataset record", async () => {
     const wrapper = await mountSuspended(DatasetPage, {
       route: "/de/dataset/example.dataset",
+      global: { stubs: { UTooltip: tooltipStub } },
     });
 
     await vi.waitFor(() => {
@@ -54,6 +58,7 @@ describe("dataset page", () => {
     async function mountPanel() {
       const wrapper = await mountSuspended(DatasetPage, {
         route: "/de/dataset/example.dataset",
+        global: { stubs: { UTooltip: tooltipStub } },
       });
       const panel = await vi.waitFor(() => wrapper.getComponent(DatasetPanel));
       return { wrapper, panel };

@@ -74,9 +74,20 @@ async function setOnMap(onMap: boolean): Promise<void> {
         :to="titlePath"
         class="ms-4 min-w-0 text-sm"
       >
-        <p class="font-bold max-md:line-clamp-2 md:truncate">
-          {{ dataset.properties.title }}
-        </p>
+        <div class="flex min-w-0 items-center gap-space-xs">
+          <p class="font-bold max-md:line-clamp-2 md:truncate">
+            {{ dataset.properties.title }}
+          </p>
+          <UBadge
+            v-if="dataset.properties.aggregated"
+            color="neutral"
+            variant="subtle"
+            size="sm"
+            :label="t('dataset.aggregated')"
+            class="shrink-0"
+            data-testid="catalog-layer-aggregated"
+          />
+        </div>
         <!-- Replaces the data owner column on mobile -->
         <p
           v-if="provider"

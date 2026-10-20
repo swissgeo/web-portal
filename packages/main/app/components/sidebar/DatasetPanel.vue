@@ -3,7 +3,6 @@ import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
 
 import { useElementSize } from "@vueuse/core";
 import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
-import DatasetLanguageSection from "~/components/dataset/DatasetLanguageSection.vue";
 import DatasetMapAction from "~/components/dataset/DatasetMapAction.vue";
 import { computed, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
@@ -79,7 +78,19 @@ const backLabel = computed(() => {
           >
             {{ dataset?.properties.title }}
           </h1>
-          <DatasetCopyLink class="-ml-8 align-baseline" :url="detailUrl" />
+          <DatasetCopyLink
+            class="-ml-8 align-baseline"
+            :url="detailUrl"
+            :label="t('dataset.copyLink')"
+          />
+          <UBadge
+            v-if="dataset?.properties.aggregated"
+            color="neutral"
+            variant="subtle"
+            :label="t('dataset.aggregated')"
+            class="ml-space-xs align-middle"
+            data-testid="dataset-aggregated"
+          />
         </div>
         <DatasetMapAction v-if="dataset" :dataset="dataset" />
       </div>
@@ -106,7 +117,6 @@ const backLabel = computed(() => {
         :distribution-collection="distributionCollection ?? null"
         :distribution-error="distributionError"
       />
-      <DatasetLanguageSection :languages="dataset?.properties.languages" />
     </div>
   </section>
 </template>

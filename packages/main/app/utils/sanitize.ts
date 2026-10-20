@@ -21,7 +21,8 @@ const SANITIZE_CONFIG: Config = {
 let blockedContentMessage = "";
 
 // We register this hook once, and it will apply to each call in this file.
-DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+// On the server DOMPurify has no DOM and no addHook, so loading this file there must not fail.
+DOMPurify.addHook?.("afterSanitizeAttributes", (node) => {
   if (!(node instanceof Element) || node.tagName !== "A") {
     return;
   }
@@ -48,6 +49,11 @@ DOMPurify.addHook("afterSanitizeAttributes", (node) => {
 
 /** This is called when we retrieve an html popup from a non-trusted source (external WMS for example, or the description key in a public kml) */
 export function sanitizeHtml(html: string, message: string): string {
+  if (!DOMPurify.isSupported) {
+    throw new Error(
+      "sanitizeHtml needs a browser DOM, do not call it during SSR",
+    );
+  }
   blockedContentMessage = message;
   return DOMPurify.sanitize(html, SANITIZE_CONFIG);
 }
