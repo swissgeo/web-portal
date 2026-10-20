@@ -22,6 +22,16 @@ declare global {
       drawingAllowedDomains: string[];
       featureFlags: {
         enableCmsSearch: boolean;
+        enableFeatureInfo: boolean;
+        enablePositionPopup: boolean;
+        tools: {
+          enableMeasure: boolean;
+          enableCompare: boolean;
+          enableDrawing: boolean;
+          enableImport: boolean;
+          enablePrint: boolean;
+          enableShare: boolean;
+        };
       };
     };
   };
