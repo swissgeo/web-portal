@@ -20,7 +20,9 @@ const { catalog, locale, useOgcCatalogMock } = await vi.hoisted(async () => {
   return {
     catalog,
     locale: ref("de"),
-    useOgcCatalogMock: vi.fn((_language: unknown, _query: unknown) => catalog),
+    useOgcCatalogMock: vi.fn(
+      (_language: unknown, _query: unknown, _concept: unknown) => catalog,
+    ),
   };
 });
 
@@ -103,6 +105,16 @@ describe("LayerCatalogTable.vue", () => {
     mountTable();
 
     expect(useOgcCatalogMock.mock.calls[0]![0]).toBe(locale);
+  });
+
+  it("only loads the layers of the selected concept", async () => {
+    const wrapper = mountTable();
+    const concept = useOgcCatalogMock.mock.calls[0]![2] as () => string | null;
+    expect(concept()).toBeNull();
+
+    await wrapper.setProps({ conceptId: "soils" });
+
+    expect(concept()).toBe("soils");
   });
 
   describe("search", () => {

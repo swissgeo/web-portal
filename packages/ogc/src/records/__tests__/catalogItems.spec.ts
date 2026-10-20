@@ -91,6 +91,22 @@ describe("fetchCatalogItems", () => {
     expect(lastRequest().params.offset).toBe("200");
   });
 
+  it("only loads the records of the given concept", async () => {
+    await fetchCatalogItems(ITEMS_URL, {
+      lang: "de",
+      limit: 10,
+      concept: "geoscientificInformation",
+    });
+
+    expect(lastRequest().params).toEqual({
+      lang: "de",
+      limit: "10",
+      offset: "0",
+      sortby: "title",
+      concept: "geoscientificInformation",
+    });
+  });
+
   it("passes the abort signal on to the request", async () => {
     const { signal } = new AbortController();
 

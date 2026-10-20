@@ -112,6 +112,30 @@ describe("useOgcCatalog", () => {
     });
   });
 
+  it("only loads the records of the given concept", async () => {
+    fetchMock.mockResolvedValueOnce(makePage(["soil"], 1));
+
+    useOgcCatalog(ref("de"), "", "soils");
+    await flushPromises();
+
+    expect(lastOptions()).toEqual({
+      lang: "de",
+      limit: 100,
+      offset: 0,
+      q: "",
+      concept: "soils",
+    });
+  });
+
+  it("loads the records of all concepts when the concept is null", async () => {
+    fetchMock.mockResolvedValueOnce(makePage(["a"], 1));
+
+    useOgcCatalog(ref("de"), "", null);
+    await flushPromises();
+
+    expect(lastOptions().concept).toBeUndefined();
+  });
+
   it("appends the next page to the records loaded so far", async () => {
     fetchMock
       .mockResolvedValueOnce(makePage(["a", "b"], 3))
@@ -206,6 +230,24 @@ describe("useOgcCatalog", () => {
       q: "forest",
     });
     expect(loadedIds(state)).toEqual(["forest"]);
+  });
+
+  it("starts over when the concept changes", async () => {
+    fetchMock
+      .mockResolvedValueOnce(makePage(["a", "b"], 3))
+      .mockResolvedValueOnce(makePage(["c"], 3))
+      .mockResolvedValueOnce(makePage(["soil"], 1));
+    const concept = ref<string | null>(null);
+
+    const { state, loadMore } = useOgcCatalog(ref("de"), "", concept);
+    await flushPromises();
+    await loadMore();
+
+    concept.value = "soils";
+    await flushPromises();
+
+    expect(lastOptions()).toMatchObject({ offset: 0, concept: "soils" });
+    expect(loadedIds(state)).toEqual(["soil"]);
   });
 
   it("keeps the loaded records when a page fails, and retries that page", async () => {
