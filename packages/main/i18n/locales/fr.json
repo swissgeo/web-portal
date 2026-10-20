@@ -11,9 +11,7 @@
   "menu": {
     "search": "Recherche",
     "layerCart": "Couches actives",
-    "map": "Carte",
-    "collapse": "Réduire le panneau latéral",
-    "expand": "Ouvrir le panneau latéral"
+    "map": "Carte"
   },
   "search": {
     "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",

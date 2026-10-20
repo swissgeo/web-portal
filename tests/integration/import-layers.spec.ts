@@ -193,7 +193,6 @@ test.describe("import external layers", () => {
 
     // The imported layer shows up in the "Aktive Ebenen" sidebar (the cart
     // entry's displayName contains the layer id).
-    await page.getByTestId("button-layer-cart-panel").click();
     await expect(
       page.getByTestId("layer-cart").getByText(WMTS_LAYER),
     ).toBeVisible();
@@ -214,7 +213,6 @@ test.describe("import external layers", () => {
     await expect(layerButton).toBeVisible();
     await layerButton.click();
 
-    await page.getByTestId("button-layer-cart-panel").click();
     await expect(
       page.getByTestId("layer-cart").getByText(WMS_LAYER),
     ).toBeVisible();
@@ -264,10 +262,8 @@ test.describe("import external layers", () => {
     await expect(
       page.getByText("Die Ebene konnte nicht geladen werden.", { exact: true }),
     ).toBeVisible();
-    await page.getByTestId("button-layer-cart-panel").click();
     const layerCart = page.getByTestId("layer-cart");
     await expect(layerCart.getByText(failedLayer)).toHaveCount(0);
-    await page.getByTestId("button-layer-cart-panel").click();
 
     await page.getByRole("button", { name: "Debug", exact: true }).click();
     await page.getByTestId("debug-open-import-local-panel").click();
