@@ -2,9 +2,7 @@ import { encodeCapabilityUrl } from "~~/server/utils/externalLayerUrl";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const routerParams: Record<string, string | undefined> = {};
-let requestUrl = new URL(
-  "http://localhost:3000/api/wpa/v1/layers/external/dataset/x/y",
-);
+
 let query: Record<string, string | undefined> = {};
 
 (globalThis as Record<string, unknown>).defineEventHandler = (
@@ -13,7 +11,6 @@ let query: Record<string, string | undefined> = {};
 
 vi.mock("h3", () => ({
   getRouterParam: (_event: unknown, name: string) => routerParams[name],
-  getRequestURL: () => requestUrl,
   getQuery: () => query,
   appendResponseHeader: vi.fn(),
   setResponseHeader: vi.fn(),
