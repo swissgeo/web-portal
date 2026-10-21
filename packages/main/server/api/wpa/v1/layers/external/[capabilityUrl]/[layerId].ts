@@ -28,7 +28,7 @@ export default defineEventHandler((event) => {
   }
 
   appendResponseHeader(event, "Content-Type", "application/json");
-  setResponseHeader(event, "Cache-Control", `max-age=${60 * 60}`);
+  setResponseHeader(event, "Cache-Control", "max-age=3600");
   return {
     type: "FeatureCollection",
     links: [],

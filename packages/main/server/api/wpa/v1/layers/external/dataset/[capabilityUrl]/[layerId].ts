@@ -123,7 +123,7 @@ export default defineEventHandler(async (event) => {
   const title = await fetchLayerTitle(fetchUrl.toString(), layerId);
 
   appendResponseHeader(event, "Content-Type", "application/json");
-  setResponseHeader(event, "Cache-Control", `max-age=${60 * 60}`);
+  setResponseHeader(event, "Cache-Control", "max-age=3600");
   return {
     id: layerId,
     links: [

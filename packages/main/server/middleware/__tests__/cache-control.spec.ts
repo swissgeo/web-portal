@@ -35,16 +35,12 @@ const call = (method: string, existingHeader?: string) => {
 };
 
 describe("cache-control middleware", () => {
-  it("caches GET responses for 5 minutes with a stale-while-revalidate window", () => {
-    expect(call("GET")).toBe(
-      "public, max-age=300, stale-while-revalidate=86400",
-    );
+  it("caches GET responses for 5 minutes", () => {
+    expect(call("GET")).toBe("public, max-age=300");
   });
 
   it("treats HEAD like GET", () => {
-    expect(call("HEAD")).toBe(
-      "public, max-age=300, stale-while-revalidate=86400",
-    );
+    expect(call("HEAD")).toBe("public, max-age=300");
   });
 
   it.each(["POST", "PUT", "PATCH", "DELETE"])(
@@ -54,7 +50,10 @@ describe("cache-control middleware", () => {
     },
   );
 
-  it("leaves a header set by the route untouched", () => {
-    expect(call("GET", "max-age=3600")).toBe("max-age=3600");
-  });
+  it.each(["public, max-age=300", "no-cache", "no-store"])(
+    "leaves the existing header %s untouched",
+    (existing) => {
+      expect(call("GET", existing)).toBe(existing);
+    },
+  );
 });

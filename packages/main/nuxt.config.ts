@@ -181,11 +181,9 @@ export default defineNuxtConfig({
     ignore: ["**/__tests__/**"],
   },
   routeRules: {
-    // Per-build asset dir (see $production.app.buildAssetsDir): files never
-    // change within a build, and the dir name changes on every deploy.
-    "/_nxt/**": {
-      headers: { "cache-control": "public, max-age=31536000, immutable" },
-    },
+    // Nuxt renders error pages through an internal GET /__nuxt_error and
+    // copies its headers onto the response. Keep error pages out of caches.
+    "/__nuxt_error": { headers: { "cache-control": "no-store" } },
   },
   icon: {
     localApiEndpoint: "/api/wpa/v1/icons",

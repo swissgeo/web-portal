@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
+(globalThis as Record<string, unknown>).defineNitroPlugin = (
+  fn: (_app: unknown) => void,
+) => fn;
+
 vi.mock("h3", () => ({
   setResponseHeader: (
     event: { headers: Record<string, string> },
