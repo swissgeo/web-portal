@@ -5,6 +5,8 @@ import { setResponseHeader } from "h3";
 // Error responses (thrown errors and showError from error.vue) must never be cached.
 export default function (nitroApp: NitroApp) {
   nitroApp.hooks.hook("error", (_error, { event }) => {
-    setResponseHeader(event, "Cache-Control", "no-store");
+    if (event) {
+      setResponseHeader(event, "Cache-Control", "no-store");
+    }
   });
 }
