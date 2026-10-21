@@ -28,12 +28,20 @@ mockNuxtImport("useI18n", () => {
   return () => ({ t: (key: string) => key });
 });
 
+mockNuxtImport("useLocalePath", () => {
+  return () => (routeName: string, params?: Record<string, string>) => {
+    const lang = routeName.split("___")[1];
+    const id = params?.id ?? "first";
+    return `/${lang}/dataset/${id}`;
+  };
+});
+
 function mountTopbar() {
   return mount(Topbar, {
     shallow: true,
     global: {
       stubs: {
-        ColorScheme: { template: "<span><slot /></span>" },
+        ClientOnly: { template: "<span><slot /></span>" },
         UHeader: {
           name: "UHeader",
           props: ["open", "autoClose"],
