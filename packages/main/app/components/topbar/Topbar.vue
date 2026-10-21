@@ -4,10 +4,20 @@ import type { NavigationMenuItem } from "@nuxt/ui";
 import { LogoPic } from "@swissgeo/skeleton";
 import { isEqual } from "es-toolkit";
 
+withDefaults(
+  defineProps<{
+    displaySearchBar?: boolean;
+  }>(),
+  {
+    displaySearchBar: true,
+  },
+);
+
 const colorMode = useColorMode();
 const { t } = useI18n();
 const route = useRoute();
 const routeBaseName = useRouteBaseName();
+const localePath = useLocalePath();
 const menuOpen = ref(false);
 
 // Language changes translate the open menu without closing it.
@@ -32,10 +42,13 @@ const emit = defineEmits<{
 const items = computed<NavigationMenuItem[]>(() => [
   {
     label: t("topbar.home"),
+    active: routeBaseName(route) === "index",
+    to: { path: localePath("/") },
   },
   {
     label: t("topbar.map"),
     active: routeBaseName(route) === "map",
+    to: { path: localePath("/map") },
   },
 ]);
 
@@ -68,16 +81,19 @@ function resetApp() {
     toggle-side="right"
   >
     <template #left>
-      <ColorScheme>
+      <ClientOnly>
         <LogoPic
           class="shrink-0"
           :darkMode="colorMode.value === 'dark'"
           @logo-click="resetApp"
         />
-      </ColorScheme>
+        <template #fallback>
+          <div class="h-8 w-32.75 shrink-0" />
+        </template>
+      </ClientOnly>
       <!-- the search drives the map, so it cannot be server rendered; the
            fallback holds the field's place to avoid a layout shift -->
-      <ClientOnly>
+      <ClientOnly v-if="displaySearchBar">
         <TopbarSearch />
         <template #fallback>
           <div class="h-8 w-119.25 grow" />
