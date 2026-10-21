@@ -59,24 +59,14 @@ export function resolvePreferredLocale(): string {
 export function redirector(
   to: Pick<RouteLocationNormalized, "path" | "query">,
 ) {
-  const localePath = useLocalePath();
-
   if (isExempt(to.path)) {
     return undefined;
   } else if (isLocaleRoot(to.path)) {
-    // The URL already specifies a locale; honor it and route to /<locale>/map.
-    // Note: in production, locale-root URLs (`/de`, `/fr`, …) are owned by
-    // the reverse proxy, which routes them to the CMS before Nuxt sees the
-    // request. This branch only fires when Nuxt is reached directly (dev,
-    // staging, or a proxy misconfiguration).
-    return navigateTo(
-      { path: localePath("/map"), query: to.query },
-      { redirectCode: 302 },
-    );
+    return undefined;
   } else if (isRootPath(to.path)) {
     const locale = resolvePreferredLocale();
     return navigateTo(
-      { path: `/${locale}/map`, query: to.query },
+      { path: `/${locale}/`, query: to.query },
       { redirectCode: 302 },
     );
   } else if (!isLocalized(to.path)) {
