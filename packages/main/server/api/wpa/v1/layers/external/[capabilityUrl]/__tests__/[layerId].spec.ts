@@ -1,6 +1,5 @@
+import { encodeCapabilityUrl } from "~~/server/utils/externalLayerUrl";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
-import { encodeCapabilityUrl } from "../../../../../../../utils/externalLayerUrl";
 
 const routerParams: Record<string, string | undefined> = {};
 

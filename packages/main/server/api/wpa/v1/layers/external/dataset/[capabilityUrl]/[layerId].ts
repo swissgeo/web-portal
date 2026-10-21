@@ -1,4 +1,5 @@
 import { DOMParser } from "@xmldom/xmldom";
+import { decodeCapabilityUrl } from "~~/server/utils/externalLayerUrl";
 import {
   appendResponseHeader,
   createError,
@@ -6,8 +7,6 @@ import {
   getRouterParam,
   setResponseHeader,
 } from "h3";
-
-import { decodeCapabilityUrl } from "../../../../../../../utils/externalLayerUrl";
 
 type CapabilitiesType = "WMS" | "WMTS";
 

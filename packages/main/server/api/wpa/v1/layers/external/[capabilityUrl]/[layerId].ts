@@ -1,11 +1,10 @@
+import { decodeCapabilityUrl } from "~~/server/utils/externalLayerUrl";
 import {
   appendResponseHeader,
   createError,
   getRouterParam,
   setResponseHeader,
 } from "h3";
-
-import { decodeCapabilityUrl } from "../../../../../../utils/externalLayerUrl";
 
 export default defineEventHandler((event) => {
   const capabilityUrlParam = getRouterParam(event, "capabilityUrl");
