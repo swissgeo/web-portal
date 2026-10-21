@@ -1,7 +1,9 @@
 import type { AsyncDataRequestStatus } from "#app";
 import type { ThesaurusConcept } from "~/types/thesaurus";
 
-import useConceptPath from "~/components/sidebar/layerCatalog/useConceptPath";
+import useConceptPath, {
+  collectConceptIds,
+} from "~/components/sidebar/layerCatalog/useConceptPath";
 import { describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
@@ -95,5 +97,21 @@ describe("useConceptPath", () => {
       "nature",
       "geoscience",
     ]);
+  });
+});
+
+describe("collectConceptIds", () => {
+  it("collects the concepts and all concepts below them", () => {
+    expect(collectConceptIds(concepts)).toEqual([
+      "nature",
+      "geoscience",
+      "soils",
+      "geology",
+      "planning",
+    ]);
+  });
+
+  it("is empty without concepts", () => {
+    expect(collectConceptIds([])).toEqual([]);
   });
 });
