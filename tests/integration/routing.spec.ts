@@ -20,20 +20,14 @@ test.describe("locale routing", () => {
     await cleanupExternalRequestMocks(page);
   });
 
-  test("homepage redirects to the default locale map", async ({ page }) => {
+  test("homepage redirects to the locale homepage", async ({ page }) => {
     await page.goto("/");
-    await page.waitForURL("**/de/map");
-    await expect(page).toHaveURL(/\/de\/map/);
+    await page.waitForURL("**/de/");
+    await expect(page).toHaveURL(/\/de/);
   });
 
   test("map page redirects to the default locale map", async ({ page }) => {
     await page.goto("/map");
-    await page.waitForURL("**/de/map");
-    await expect(page).toHaveURL(/\/de\/map/);
-  });
-
-  test("locale page redirects to locale + map", async ({ page }) => {
-    await page.goto("/de");
     await page.waitForURL("**/de/map");
     await expect(page).toHaveURL(/\/de\/map/);
   });
@@ -95,30 +89,30 @@ test.describe("locale routing — browser language detection (GPS-666)", () => {
       test.describe("uses the browser language", () => {
         test.use({ locale: "fr-CH" });
 
-        test(`${from} → /fr/map`, async ({ page }) => {
+        test(`${from} → /fr${from}`, async ({ page }) => {
           await page.goto(from);
-          await page.waitForURL("**/fr/map");
-          await expect(page).toHaveURL(/\/fr\/map/);
+          await page.waitForURL(`**/fr${from}`);
+          await expect(page).toHaveURL(`/fr${from}`);
         });
       });
 
       test.describe("falls back to the default locale for unsupported browser language", () => {
         test.use({ locale: "es-ES" });
 
-        test(`${from} → /de/map`, async ({ page }) => {
+        test(`${from} → /de${from}`, async ({ page }) => {
           await page.goto(from);
-          await page.waitForURL("**/de/map");
-          await expect(page).toHaveURL(/\/de\/map/);
+          await page.waitForURL(`**/de${from}`);
+          await expect(page).toHaveURL(`/de${from}`);
         });
       });
 
       test.describe("preserves query string across the redirect", () => {
         test.use({ locale: "fr-CH" });
 
-        test(`${from}?state=foo → /fr/map?state=foo`, async ({ page }) => {
+        test(`${from}?state=foo → /fr${from}?state=foo`, async ({ page }) => {
           await page.goto(`${from}?state=foo`);
-          await page.waitForURL("**/fr/map?state=foo");
-          await expect(page).toHaveURL(/\/fr\/map\?state=foo/);
+          await page.waitForURL(`**/fr${from}?state=foo`);
+          await expect(page).toHaveURL(`/fr${from}?state=foo`);
         });
       });
     });
