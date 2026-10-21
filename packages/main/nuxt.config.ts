@@ -184,6 +184,9 @@ export default defineNuxtConfig({
     // Nuxt renders error pages through an internal GET /__nuxt_error and
     // copies its headers onto the response. Keep error pages out of caches.
     "/__nuxt_error": { headers: { "cache-control": "no-store" } },
+    "/images/**": { headers: { "cache-control": "public, max-age=300" } },
+    "/favicon.ico": { headers: { "cache-control": "public, max-age=300" } },
+    "/robots.txt": { headers: { "cache-control": "public, max-age=300" } },
   },
   icon: {
     localApiEndpoint: "/api/wpa/v1/icons",
