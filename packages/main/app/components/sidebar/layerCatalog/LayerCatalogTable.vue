@@ -8,9 +8,9 @@ import LayerCatalogRow from "./LayerCatalogRow.vue";
 
 const { t, locale } = useI18n();
 
-const { conceptId } = defineProps<{
-  /** Only the layers of this concept are shown, all layers when `null` */
-  conceptId: string | null;
+const { conceptIds } = defineProps<{
+  /** Only the layers of these concepts are shown, all layers when empty */
+  conceptIds: string[];
 }>();
 
 const searchInputId = useId();
@@ -20,7 +20,7 @@ const debouncedQuery = refDebounced(query, 100);
 const { state, hasMore, loadMore, retry } = useOgcCatalog(
   locale,
   debouncedQuery,
-  () => conceptId,
+  () => conceptIds,
 );
 
 const datasets = computed<Dataset[]>(() => state.value.data?.features ?? []);

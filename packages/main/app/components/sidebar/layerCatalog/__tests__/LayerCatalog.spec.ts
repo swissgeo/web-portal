@@ -17,7 +17,13 @@ const { isDesktop, thesaurusStatus } = await vi.hoisted(async () => {
 
 mockNuxtImport("useIsDesktop", () => () => isDesktop);
 mockNuxtImport("useThesaurus", () => () => ({
-  concepts: shallowRef([{ id: "planning", label: "Planung" }]),
+  concepts: shallowRef([
+    {
+      id: "planning",
+      label: "Planung",
+      children: [{ id: "zoning", label: "Nutzungsplanung" }],
+    },
+  ]),
   status: thesaurusStatus,
 }));
 vi.mock("vue-i18n", () => ({
@@ -26,7 +32,7 @@ vi.mock("vue-i18n", () => ({
 
 let tableScroller: ReturnType<typeof usePanelScroller> | undefined;
 const LayerCatalogTable = defineComponent({
-  props: ["conceptId"],
+  props: ["conceptIds"],
   setup() {
     tableScroller = usePanelScroller();
     return () => h("div", { "data-testid": "table-stub" });
@@ -65,20 +71,38 @@ describe("LayerCatalog.vue", () => {
     thesaurusStatus.value = "success";
   });
 
-  it("filters the table by the concept selected in the tree", async () => {
+  function tableConceptIds(wrapper: ReturnType<typeof mountCatalog>) {
+    return wrapper.getComponent(LayerCatalogTable).props("conceptIds");
+  }
+
+  it("filters the table by the concept selected in the tree and the concepts below it", async () => {
     const wrapper = mountCatalog();
-    expect(wrapper.getComponent(LayerCatalogTable).props("conceptId")).toBe(
-      null,
-    );
+    expect(tableConceptIds(wrapper)).toEqual([]);
 
     wrapper
       .getComponent(LayerCatalogTree)
       .vm.$emit("update:conceptId", "planning");
     await nextTick();
+    expect(tableConceptIds(wrapper)).toEqual(["planning", "zoning"]);
 
-    expect(wrapper.getComponent(LayerCatalogTable).props("conceptId")).toBe(
-      "planning",
-    );
+    wrapper
+      .getComponent(LayerCatalogTree)
+      .vm.$emit("update:conceptId", "zoning");
+    await nextTick();
+    expect(tableConceptIds(wrapper)).toEqual(["zoning"]);
+  });
+
+  it("keeps filtering the table while the concepts are reloaded", async () => {
+    const wrapper = mountCatalog();
+    wrapper
+      .getComponent(LayerCatalogTree)
+      .vm.$emit("update:conceptId", "planning");
+    await nextTick();
+
+    thesaurusStatus.value = "pending";
+    await nextTick();
+
+    expect(tableConceptIds(wrapper)).toEqual(["planning", "zoning"]);
   });
 
   it("on desktop, shows the tree next to the table", () => {
@@ -123,9 +147,7 @@ describe("LayerCatalog.vue", () => {
     await nextTick();
 
     expect(wrapper.findComponent(LayerCatalogTreeMobile).exists()).toBe(false);
-    expect(wrapper.getComponent(LayerCatalogTable).props("conceptId")).toBe(
-      "planning",
-    );
+    expect(tableConceptIds(wrapper)).toEqual(["planning", "zoning"]);
     expect(wrapper.get("button").text()).toBe("Planung");
   });
 

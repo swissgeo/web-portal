@@ -72,7 +72,7 @@ const panelScroller = shallowRef<HTMLElement | null>(null);
 
 function mountTable() {
   return mount(LayerCatalogTable, {
-    props: { conceptId: null },
+    props: { conceptIds: [] },
     global: { stubs, provide: { [panelScrollerKey]: panelScroller } },
   });
 }
@@ -107,14 +107,14 @@ describe("LayerCatalogTable.vue", () => {
     expect(useOgcCatalogMock.mock.calls[0]![0]).toBe(locale);
   });
 
-  it("only loads the layers of the selected concept", async () => {
+  it("only loads the layers of the given concepts", async () => {
     const wrapper = mountTable();
-    const concept = useOgcCatalogMock.mock.calls[0]![2] as () => string | null;
-    expect(concept()).toBeNull();
+    const concepts = useOgcCatalogMock.mock.calls[0]![2] as () => string[];
+    expect(concepts()).toEqual([]);
 
-    await wrapper.setProps({ conceptId: "soils" });
+    await wrapper.setProps({ conceptIds: ["soils", "geology"] });
 
-    expect(concept()).toBe("soils");
+    expect(concepts()).toEqual(["soils", "geology"]);
   });
 
   describe("search", () => {

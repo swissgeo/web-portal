@@ -3,7 +3,7 @@ import LayerCatalogBreadcrumb from "./LayerCatalogBreadcrumb.vue";
 import LayerCatalogTable from "./LayerCatalogTable.vue";
 import LayerCatalogTree from "./LayerCatalogTree.vue";
 import LayerCatalogTreeMobile from "./LayerCatalogTreeMobile.vue";
-import useConceptPath from "./useConceptPath";
+import useConceptPath, { collectConceptIds } from "./useConceptPath";
 
 const conceptId = ref<string | null>(null);
 
@@ -11,6 +11,18 @@ const { concepts, status } = useThesaurus();
 const path = useConceptPath(concepts, status, conceptId);
 const parentLabel = computed(() => path.value.at(-2)?.label);
 const currentLabel = computed(() => path.value.at(-1)?.label);
+
+// The selected concept and all concepts below it, none for all layers. Kept
+// while the concepts are reloaded, so the table isn't reloaded unfiltered.
+const filterConceptIds = computed<string[]>((previous) => {
+  if (status.value !== "success") {
+    return previous ?? [];
+  }
+  const current = path.value.at(-1);
+  return current?.id
+    ? [current.id, ...collectConceptIds(current.children)]
+    : [];
+});
 
 const isDesktop = useIsDesktop();
 
@@ -64,7 +76,7 @@ provide(
         </UButton>
       </div>
       <LayerCatalogBreadcrumb :parentLabel :currentLabel :status />
-      <LayerCatalogTable :conceptId />
+      <LayerCatalogTable :conceptIds="filterConceptIds" />
     </div>
   </div>
 </template>

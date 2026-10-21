@@ -33,6 +33,22 @@ function findConceptPath(
 }
 
 /**
+ * Collects the ids of the given concepts and of all concepts below them, each
+ * concept followed by the concepts below it.
+ */
+export function collectConceptIds(concepts: ThesaurusConcept[]): string[] {
+  const ids: string[] = [];
+  function collect(level: ThesaurusConcept[]) {
+    for (const concept of level) {
+      ids.push(concept.id);
+      collect(concept.children ?? []);
+    }
+  }
+  collect(concepts);
+  return ids;
+}
+
+/**
  * Entries from the root down to the selected concept. A `conceptId` of `null`
  * selects the root. The path is empty until the concepts are loaded.
  */
