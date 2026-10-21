@@ -66,6 +66,16 @@ NUXT_PUBLIC_THESAURUS_SERVICE_URL= # The URL to the thesauri files
 NUXT_REPORT_ISSUE_SERVICE_URL=  # The URL to the feedback service (server-only)
 ```
 
+### Adding a new environment variable
+
+Nuxt maps `NUXT_<KEY>` to `runtimeConfig.<key>` and `NUXT_PUBLIC_<KEY>` to `runtimeConfig.public.<key>` (e.g. `NUXT_PUBLIC_SHARE_SERVICE_URL` → `shareServiceUrl`). To add one:
+
+1. Add the key to `runtimeConfig` in `packages/main/nuxt.config.ts` with an empty value (`""`). Use `public` only when the browser needs it. Do not put a backend URL there as a default: Nuxt only overrides keys that exist, so the key must be there, but the value comes from the environment.
+2. If the app cannot work without it, add the key to `packages/main/server/plugins/validate-runtime-config.ts`. The server then does not start when the variable is missing.
+3. If a package outside `main` reads it, add it to the `useRuntimeConfig` type in `packages/skeleton/types/index.d.ts`.
+4. Add it to the list above, with a dev value in `packages/main/.env.example` and a fake value in `.env.test` and `playwright.config.ts` (the integration tests mock all backends).
+5. Set the value for each staging (dev, int, prod) in the deployment config.
+
 ## Monorepo setup
 
 This project is structed as a monorepo. There are several sub-packages, each with
