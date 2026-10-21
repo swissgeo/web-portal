@@ -12,6 +12,8 @@
     "search": "Suche",
     "layerCart": "Aktive Ebenen",
     "map": "Karte",
+    "collapse": "Seitenleiste einklappen",
+    "expand": "Seitenleiste ausklappen",
     "openLayerCatalog": "Daten-Katalog öffnen"
   },
   "search": {
@@ -205,7 +207,9 @@
     "openFeatureFlagsPanel": "Feature-Flags-Panel öffnen",
     "featureFlagsPanelTitle": "Feature-Flags",
     "resetFeatureFlags": "Auf Standard zurücksetzen",
-    "featureFlagOverridden": "überschrieben"
+    "featureFlagOverridden": "überschrieben",
+    "openImportDrawingPanel": "TODO translate",
+    "drawingPanelTitle": "TODO translate"
   },
   "geolocation": {
     "permissionDenied": "Standortberechtigung verweigert",
@@ -384,7 +388,14 @@
         "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})",
         "adminRequired": "Zum Importieren dieser Zeichnung sind Administratorrechte erforderlich"
       },
-      "close": "Schließen"
+      "close": "Schließen",
+      "drawingReplaceConfirmTitle": "TODO translate",
+      "drawingReplaceConfirmDescription": "TODO translate",
+      "drawingReplaceConfirmTemporaryNote": "TODO translate",
+      "drawingReplaceConfirmAdminNote": "TODO translate",
+      "drawingReplaceConfirmLegacyAdminNote": "TODO translate",
+      "drawingReplaceConfirmCancel": "TODO translate",
+      "drawingReplaceConfirmConfirm": "TODO translate"
     },
     "share": {
       "buttonTitle": "Teilen",
@@ -436,10 +447,7 @@
     },
     "featureFlag": {
       "notAvailable": "Dieses Tool ist leider noch nicht verfügbar",
-      "workingOnIt": "Wir sind dran :)",
-      "links": {
-        "roadmap": "kartenviewer-ueberblick"
-      }
+      "workingOnIt": "Wir sind dran :)"
     }
   },
   "backgroundLayers": {
@@ -482,8 +490,7 @@
     "backToMap": "Zurück zur Karte",
     "resources": {
       "dataset": "Dieser Datensatz"
-    },
-    "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar."
+    }
   },
   "dataset": {
     "legendLoading": "Legende wird geladen…",
@@ -617,7 +624,6 @@
     "expand": "Ebenendetails anzeigen",
     "reorder": "Ebene verschieben (Pfeil oben/unten)",
     "show": "Ebene anzeigen",
-    "variant": "Variante",
     "hide": "Ebene ausblenden",
     "info": "Ebeneninformationen",
     "remove": "Ebene entfernen",
@@ -638,9 +644,6 @@
   },
   "layerCatalog": {
     "title": "Daten-Katalog",
-    "allLayers": "Alle Ebenen",
-    "layers": "Ebenen",
-    "back": "Zurück",
     "table": {
       "title": "Bezeichnung",
       "dataOwner": "Anbieter",
@@ -655,60 +658,9 @@
     "expand": "Daten-Katalog anzeigen",
     "collapse": "Daten-Katalog ausblenden"
   },
-  "mobileNotice": {
-    "title": "Mobile Ansicht folgt",
-    "description": "Diese Version ist für Desktop optimiert. Auf Mobile zeigen wir vorläufig die Desktop-Ansicht.",
-    "confirm": "Verstanden"
-  },
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",
-    "popupTitle": "To Translate - Feature Info Popup Title",
-    "featureFlag": {
-      "notAvailable": "Das Feature Info Fenster ist leider noch nicht verfügbar.",
-      "workingOnIt": "Wir sind dran :)"
-    }
-  },
-  "testSiteBanner": {
-    "text": "{environment}-Umgebung – Nicht für den produktiven Gebrauch. Nicht teilen."
-  },
-  "landing": {
-    "cards": {
-      "map": {
-        "title": "Karte",
-        "description": "Interaktiver Karten-Viewer mit hunderten Ebenen, Zeitreise, Druck- und Teilen-Funktionen.",
-        "button": "Zur Karte"
-      },
-      "catalog": {
-        "title": "Daten-Katalog",
-        "description": "Durchsuchen Sie den vollständigen Katalog mit Geobasisdaten, Themen und Metadaten.",
-        "button": "Daten-Katalog öffnen"
-      },
-      "info": {
-        "title": "Alles weitere um SWISSGEO",
-        "description": "Alles zur News, Hilfe und Über uns.",
-        "button": "Zum Infoportal"
-      }
-    },
-    "footer": {
-      "claim": "Das Wo ist hier.",
-      "description": "SWISSGEO macht raumbezogene Daten der Schweiz an einem Ort zugänglich.",
-      "followUs": "Folge uns!",
-      "moreInformation": "Weitere Informationen",
-      "termsOfUse": "Nutzungsbestimmungen",
-      "contact": "Kontakt",
-      "dataProtection": "Rechtliches und Datenschutz",
-      "netiquette": "Netiquette",
-      "accessibility": "Barrierefreiheit",
-      "copyright": "Copyright © 2026"
-    },
-    "links": {
-      "impressum": "impressum-de",
-      "dataProtection": "rechtliches-und-datenschutz",
-      "netiquette": "netiquette-de",
-      "accessibility": "erklaerung-zur-barrierefreiheit",
-      "termsOfUse": "nutzungs-und-betriebsbestimmungen",
-      "contact": "impressum-de"
-    }
+    "popupTitle": "To Translate - Feature Info Popup Title"
   }
 }

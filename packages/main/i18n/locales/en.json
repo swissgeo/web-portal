@@ -12,6 +12,8 @@
     "search": "Search",
     "layerCart": "Active layers",
     "map": "Map",
+    "collapse": "Collapse the side panel",
+    "expand": "Expand the side panel",
     "openLayerCatalog": "Open data catalog"
   },
   "search": {
@@ -108,7 +110,7 @@
     "openDrawingPanel": "Open Drawing Panel",
     "openImportLayersPanel": "Open Import Layers Panel",
     "openLayersPanel": "Open Layers Panel",
-    "drawingPanelTitle": "Drawing Tools",
+    "importDrawingPanelTitle": "TODO translate",
     "drawingNameLabel": "Drawing name",
     "drawingToolSelectLabel": "Select a drawing tool:",
     "drawingToolPoint": "Point",
@@ -205,7 +207,9 @@
     "openFeatureFlagsPanel": "Open Feature Flags Panel",
     "featureFlagsPanelTitle": "Feature Flags",
     "resetFeatureFlags": "Reset to defaults",
-    "featureFlagOverridden": "overridden"
+    "featureFlagOverridden": "overridden",
+    "openImportDrawingPanel": "TODO translate",
+    "drawingPanelTitle": "Drawing Tools"
   },
   "geolocation": {
     "permissionDenied": "Location permission denied",
@@ -225,7 +229,6 @@
     },
     "drawing": {
       "buttonTitle": "Drawing",
-      "title": "Drawing",
       "close": "Close drawing panel",
       "featureCount": "No features on the map | {count} feature on the map | {count} features on the map",
       "tools": {
@@ -336,7 +339,8 @@
           "babs-v2-fr": "Civil protection symbols (French)",
           "babs-v2-it": "Civil protection symbols (Italian)"
         }
-      }
+      },
+      "title": "Drawing"
     },
     "measure": {
       "buttonTitle": "Measure"
@@ -353,6 +357,7 @@
       "description": "Accepted file types: {types}",
       "tabData": "Data",
       "tabDrawing": "Drawing",
+      "tabUrl": "TODO translate",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
       "browseButton": "Browse...",
       "noFileSelected": "No file selected",
@@ -383,14 +388,14 @@
         "fetchFailed": "Failed to fetch file from URL (HTTP {status})",
         "adminRequired": "Admin privileges are required to import this drawing"
       },
+      "close": "Close",
       "drawingReplaceConfirmTitle": "Replace current drawing?",
       "drawingReplaceConfirmDescription": "Importing a drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
       "drawingReplaceConfirmTemporaryNote": "We are working on a nicer workflow for this. Feel free to contact us to give us feedback and suggestions.",
       "drawingReplaceConfirmAdminNote": "You are importing a drawing as its owner. Modifying the drawing will modify the original file and synchronize it with the Swissgeo database.",
       "drawingReplaceConfirmLegacyAdminNote": "This drawing will be imported as a copy: modifying it will not alter the original drawing, unlike admin imports of Swissgeo drawings.",
       "drawingReplaceConfirmCancel": "Cancel",
-      "drawingReplaceConfirmConfirm": "Clear and import",
-      "close": "Close"
+      "drawingReplaceConfirmConfirm": "Clear and import"
     },
     "share": {
       "buttonTitle": "Share",
@@ -442,10 +447,7 @@
     },
     "featureFlag": {
       "notAvailable": "Unfortunately, this tool isn't available yet",
-      "workingOnIt": "We're working on it :)",
-      "links": {
-        "roadmap": "mapviewer-perspective"
-      }
+      "workingOnIt": "We're working on it :)"
     }
   },
   "backgroundLayers": {
@@ -488,8 +490,7 @@
     "backToMap": "Back to map",
     "resources": {
       "dataset": "This dataset"
-    },
-    "mapUnavailable": "The map is currently not available."
+    }
   },
   "dataset": {
     "legendLoading": "Loading legend…",
@@ -616,13 +617,13 @@
     "organisation": "Organisation",
     "legalBasis": "Legal basis",
     "mediaInformation": "Media information",
+    "login": "TODO translate",
     "modeSwitch": "Switch mode"
   },
   "layers": {
     "expand": "Show layer details",
     "reorder": "Reorder layer (arrow up/down)",
     "show": "Show layer",
-    "variant": "Variant",
     "hide": "Hide layer",
     "info": "Layer information",
     "remove": "Remove layer",
@@ -657,60 +658,9 @@
     "expand": "Show data catalog",
     "collapse": "Hide data catalog"
   },
-  "mobileNotice": {
-    "title": "Mobile view coming soon",
-    "description": "This version is optimized for desktop. On mobile, we show the desktop view for now.",
-    "confirm": "Got it"
-  },
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",
-    "popupTitle": "To Translate - Feature Info Popup Title",
-    "featureFlag": {
-      "notAvailable": "Unfortunately, the feature info pop-up window is not yet available.",
-      "workingOnIt": "We're working on it :)"
-    }
-  },
-  "testSiteBanner": {
-    "text": "{environment} environment – Not for operational use. Do not share."
-  },
-  "landing": {
-    "cards": {
-      "map": {
-        "title": "Map",
-        "description": "Interactive map viewer with hundreds of layers, time travel, print and share functions.",
-        "button": "Open the map"
-      },
-      "catalog": {
-        "title": "Data catalog",
-        "description": "Browse the complete catalog of geobase data, themes and metadata.",
-        "button": "Open the data catalog"
-      },
-      "info": {
-        "title": "Everything else about SWISSGEO",
-        "description": "All about news, help and about us.",
-        "button": "To the info portal"
-      }
-    },
-    "footer": {
-      "claim": "The where is here.",
-      "description": "SWISSGEO makes Switzerland's spatial data accessible in one place.",
-      "followUs": "Follow us!",
-      "moreInformation": "More information",
-      "termsOfUse": "Terms of use",
-      "contact": "Contact",
-      "dataProtection": "Legal notices and data protection",
-      "netiquette": "Netiquette",
-      "accessibility": "Accessibility",
-      "copyright": "Copyright © 2026"
-    },
-    "links": {
-      "impressum": "impressum-en",
-      "dataProtection": "legal-information-protection",
-      "netiquette": "netiquette-en",
-      "accessibility": "accessibility",
-      "termsOfUse": "terms-of-use-and-operating-conditions",
-      "contact": "impressum-en"
-    }
+    "popupTitle": "To Translate - Feature Info Popup Title"
   }
 }
