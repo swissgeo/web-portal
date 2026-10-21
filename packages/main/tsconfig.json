@@ -6,6 +6,7 @@
     "nuxt.config.ts",
     "server/plugins/gather-sourcemaps.ts",
     "server/plugins/loglevels.ts",
+    "server/plugins/validate-runtime-config.ts",
     "server/instrumentation.ts",
     "vitest.config.ts",
     "rolldown.otel.config.mjs"

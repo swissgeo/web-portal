@@ -93,9 +93,10 @@ export function parseLocationResult(
 }
 
 /**
- * Search for locations using the map.geo.admin.ch API
+ * Search for locations using the geoadmin SearchServer API
  *
  * @param queryString - Search query text
+ * @param searchServiceUrl - SearchServer endpoint of the current staging
  * @param lang - Language code (de, fr, etc.)
  * @param abortSignal - Optional abort signal for cancellation
  * @param limit - Maximum number of results (default: 10)
@@ -103,6 +104,7 @@ export function parseLocationResult(
  */
 export async function searchLocation(
   queryString: string,
+  searchServiceUrl: string,
   lang: string,
   abortSignal?: AbortSignal,
   limit: number = 10,
@@ -112,10 +114,7 @@ export async function searchLocation(
     return [];
   }
 
-  // Use map.geo.admin.ch search API
-  const url = new URL(
-    "https://api3.geo.admin.ch/rest/services/ech/SearchServer",
-  );
+  const url = new URL(searchServiceUrl);
   url.searchParams.set("sr", "2056"); // LV95 EPSG code
   url.searchParams.set("searchText", trimmedQuery);
   url.searchParams.set("lang", lang);
@@ -195,6 +194,7 @@ export async function searchLayers(
  * Search for features within a specific layer using the geo.admin.ch API
  *
  * @param queryString - Search query text
+ * @param searchServiceUrl - SearchServer endpoint of the current staging
  * @param lang - Language code (de, fr, etc.)
  * @param layerId - ID of the layer to search within
  * @param layerName - Name of the layer for display
@@ -204,6 +204,7 @@ export async function searchLayers(
  */
 export async function searchLayerFeatures(
   queryString: string,
+  searchServiceUrl: string,
   lang: string,
   layerId: string,
   layerName: string,
@@ -215,10 +216,7 @@ export async function searchLayerFeatures(
     return [];
   }
 
-  // Use map.geo.admin.ch featuresearch API
-  const url = new URL(
-    "https://api3.geo.admin.ch/rest/services/ech/SearchServer",
-  );
+  const url = new URL(searchServiceUrl);
   url.searchParams.set("sr", "2056"); // LV95 EPSG code
   url.searchParams.set("searchText", trimmedQuery);
   url.searchParams.set("lang", lang);

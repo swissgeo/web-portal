@@ -57,6 +57,13 @@ NUXT_GEOADMIN_API_BASE_URL=     # Base URL for legacy geo.admin.ch API (server-o
 NUXT_PUBLIC_CMS_BASE_URL=        # Published CMS site, for linking search results (exposed to client)
 NUXT_LIVINGDOCS_API_ENDPOINT=   # Livingdocs CMS public API, incl. version (server-only)
 NUXT_LIVINGDOCS_AUTH_TOKEN=     # Livingdocs project-scoped API token (server-only)
+NUXT_PUBLIC_PRINT_SERVICE_URL=  # The URL to the print service jobs endpoint
+NUXT_PUBLIC_DRAWING_SERVICE_ENDPOINT= # The URL to the drawing service
+NUXT_PUBLIC_DRAWING_ALLOWED_DOMAINS= # JSON array of hosts allowed for drawing imports
+NUXT_PUBLIC_ICON_SERVICE_ENDPOINT= # The URL to the icon sets service
+NUXT_PUBLIC_SEARCH_SERVICE_URL= # The URL to the geo.admin.ch SearchServer
+NUXT_PUBLIC_THESAURUS_SERVICE_URL= # The URL to the thesauri files
+NUXT_REPORT_ISSUE_SERVICE_URL=  # The URL to the feedback service (server-only)
 ```
 
 ## Monorepo setup

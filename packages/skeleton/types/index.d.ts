@@ -7,6 +7,7 @@ declare global {
     what3wordsApiKey: string;
     geoadminApiBaseUrl: string;
     reportIssueServiceUrl: string;
+    livingdocsApiEndpoint: string;
     public: {
       ogcApiEndpoint: string;
       cmsBaseUrl: string;
@@ -15,6 +16,8 @@ declare global {
       printServiceUrl: string;
       ogcCatalogCollection: string;
       shareServiceUrl: string;
+      searchServiceUrl: string;
+      thesaurusServiceUrl: string;
       wantedLogLevels: string;
       version: string;
       buildTime: string;

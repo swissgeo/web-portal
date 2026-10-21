@@ -20,6 +20,9 @@ import {
   parseLocationResult,
 } from "../../api/search"; // for some reason, the @/api/search doesn't find anything
 
+const searchServiceUrl =
+  "https://search.example.test/rest/services/ech/SearchServer";
+
 describe("escapeHtml function", () => {
   it.each`
     description                                                                  | inputString                                                                                         | expectedResult
@@ -140,9 +143,22 @@ describe("searchLocation function", () => {
   });
 
   it("returns empty array for short query", async () => {
-    const result = await searchLocation("a", "de");
+    const result = await searchLocation("a", searchServiceUrl, "de");
     expect(result).toEqual([]);
     expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("queries the given SearchServer endpoint", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: true,
+      json: () => ({ results: [] as SearchResponseResult[] }),
+    });
+
+    await searchLocation("Bern", searchServiceUrl, "de");
+
+    const url = new URL((fetch as Mock).mock.calls[0][0] as string);
+    expect(url.origin + url.pathname).toBe(searchServiceUrl);
+    expect(url.searchParams.get("type")).toBe("locations");
   });
 
   it("parses valid location result and swaps coordinates", async () => {
@@ -164,7 +180,7 @@ describe("searchLocation function", () => {
       }),
     });
 
-    const result = await searchLocation("Bern", "de");
+    const result = await searchLocation("Bern", searchServiceUrl, "de");
 
     expect(result).toHaveLength(1);
     expect(result[0]).toMatchObject({
@@ -192,7 +208,7 @@ describe("searchLocation function", () => {
       }),
     });
 
-    const result = await searchLocation("Test", "de");
+    const result = await searchLocation("Test", searchServiceUrl, "de");
 
     expect(result[0]?.zoom).toBe(6);
   });
@@ -202,7 +218,9 @@ describe("searchLocation function", () => {
     abortError.name = "AbortError";
     (fetch as Mock).mockRejectedValue(abortError);
 
-    await expect(searchLocation("Bern", "de")).rejects.toThrow("Aborted");
+    await expect(
+      searchLocation("Bern", searchServiceUrl, "de"),
+    ).rejects.toThrow("Aborted");
   });
 
   it("returns empty array on API error response", async () => {
@@ -211,7 +229,7 @@ describe("searchLocation function", () => {
       status: 500,
     });
 
-    const result = await searchLocation("Bern", "de");
+    const result = await searchLocation("Bern", searchServiceUrl, "de");
     expect(result).toEqual([]);
   });
 });
@@ -351,6 +369,7 @@ describe("searchLayerFeatures", () => {
     });
     const result = await searchLayerFeatures(
       "a",
+      searchServiceUrl,
       "de",
       "layerId",
       "Layer Name",
@@ -369,6 +388,7 @@ describe("searchLayerFeatures", () => {
     });
     const result = await searchLayerFeatures(
       "Feature",
+      searchServiceUrl,
       "de",
       "layerId",
       "Layer Name",
@@ -387,6 +407,7 @@ describe("searchLayerFeatures", () => {
     });
     const result = await searchLayerFeatures(
       "Feature",
+      searchServiceUrl,
       "de",
       "layerId",
       "Layer Name",
@@ -408,6 +429,7 @@ describe("searchLayerFeatures", () => {
     });
     const result = await searchLayerFeatures(
       "Feature",
+      searchServiceUrl,
       "de",
       "layerId",
       "Layer Name",
@@ -428,6 +450,7 @@ describe("searchLayerFeatures", () => {
     });
     const result = await searchLayerFeatures(
       "Feature",
+      searchServiceUrl,
       "de",
       "layerId",
       "Layer Name",
@@ -449,6 +472,7 @@ describe("searchLayerFeatures", () => {
     });
     const result = await searchLayerFeatures(
       "Feature",
+      searchServiceUrl,
       "de",
       "layerId",
       "Layer Name",
@@ -469,6 +493,7 @@ describe("searchLayerFeatures", () => {
     });
     const result = await searchLayerFeatures(
       "Feature",
+      searchServiceUrl,
       "de",
       "layerId",
       "Layer Name",
@@ -510,6 +535,7 @@ describe("searchLayerFeatures", () => {
     });
     const result = await searchLayerFeatures(
       "Feature",
+      searchServiceUrl,
       "de",
       "layerId",
       "Layer Name",
@@ -518,13 +544,38 @@ describe("searchLayerFeatures", () => {
     expect(result[0]).toMatchObject(featureFounds[0] ?? {});
   });
 
+  it("queries the given SearchServer endpoint", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: true,
+      json: () => ({ results: [] as SearchResponseResult[] }),
+    });
+
+    await searchLayerFeatures(
+      "Feature",
+      searchServiceUrl,
+      "de",
+      "layerId",
+      "Layer Name",
+    );
+
+    const url = new URL((fetch as Mock).mock.calls[0][0] as string);
+    expect(url.origin + url.pathname).toBe(searchServiceUrl);
+    expect(url.searchParams.get("type")).toBe("featuresearch");
+  });
+
   it("rethrows AbortError", async () => {
     const abortError = new Error("Aborted");
     abortError.name = "AbortError";
     (fetch as Mock).mockRejectedValue(abortError);
 
     await expect(
-      searchLayerFeatures("Feature", "de", "layer", "LayerName"),
+      searchLayerFeatures(
+        "Feature",
+        searchServiceUrl,
+        "de",
+        "layer",
+        "LayerName",
+      ),
     ).rejects.toThrow("Aborted");
   });
 });
