@@ -33,6 +33,8 @@ export default [
             "server/middleware/*.ts",
             "server/middleware/__tests__/*.ts",
             "server/plugins/__tests__/*.ts",
+            "scripts/*.ts",
+            "scripts/__tests__/*.ts",
             "tests/setup.ts",
           ],
         },
