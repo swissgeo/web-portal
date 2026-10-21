@@ -1,9 +1,11 @@
 import { defineConfig } from "@hey-api/openapi-ts";
 
-import { APP_STATE_SERVICE_BASE_URL } from "./src/constants";
+const shareServiceUrl =
+  process.env.NUXT_PUBLIC_SHARE_SERVICE_URL ??
+  "https://www.dev.sgdi.tech/api/wps/v1/state";
 
 export default defineConfig({
-  input: `${APP_STATE_SERVICE_BASE_URL}/openapi.json`,
+  input: `${shareServiceUrl}/openapi.json`,
   output: {
     path: "src/hey-api",
     postProcess: ["prettier"],
