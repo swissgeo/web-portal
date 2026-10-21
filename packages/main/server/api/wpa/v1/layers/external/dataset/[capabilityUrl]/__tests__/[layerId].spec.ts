@@ -1,11 +1,8 @@
+import { encodeCapabilityUrl } from "~~/server/utils/externalLayerUrl";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { encodeCapabilityUrl } from "../../../../../../../../utils/externalLayerUrl";
-
 const routerParams: Record<string, string | undefined> = {};
-let requestUrl = new URL(
-  "http://localhost:3000/api/wpa/v1/layers/external/dataset/x/y",
-);
+
 let query: Record<string, string | undefined> = {};
 
 (globalThis as Record<string, unknown>).defineEventHandler = (
@@ -14,9 +11,9 @@ let query: Record<string, string | undefined> = {};
 
 vi.mock("h3", () => ({
   getRouterParam: (_event: unknown, name: string) => routerParams[name],
-  getRequestURL: () => requestUrl,
   getQuery: () => query,
   appendResponseHeader: vi.fn(),
+  setResponseHeader: vi.fn(),
   createError: (opts: {
     status: number;
     statusMessage?: string;
@@ -68,9 +65,6 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
     const encoded = encodeCapabilityUrl(capabilityUrl);
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
-    requestUrl = new URL(
-      `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer`,
-    );
 
     mockFetchOnce(`<?xml version="1.0" encoding="UTF-8"?>
             <Capabilities xmlns="http://www.opengis.net/wmts/1.0"
@@ -98,9 +92,6 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
     const encoded = encodeCapabilityUrl(capabilityUrl);
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
-    requestUrl = new URL(
-      `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer`,
-    );
 
     mockFetchOnce(`<?xml version="1.0"?>
             <WMS_Capabilities xmlns="http://www.opengis.net/wms">
@@ -124,9 +115,6 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
     const encoded = encodeCapabilityUrl(capabilityUrl);
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
-    requestUrl = new URL(
-      `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer`,
-    );
 
     vi.stubGlobal(
       "fetch",
@@ -141,9 +129,6 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
     const encoded = encodeCapabilityUrl(capabilityUrl);
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "missing-layer";
-    requestUrl = new URL(
-      `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/missing-layer`,
-    );
 
     mockFetchOnce(`<?xml version="1.0" encoding="UTF-8"?>
             <Capabilities xmlns="http://www.opengis.net/wmts/1.0"
@@ -175,9 +160,6 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
     const encoded = encodeCapabilityUrl(capabilityUrl);
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
-    requestUrl = new URL(
-      `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer`,
-    );
 
     mockFetchOnce(`<?xml version="1.0"?>
             <WMS_Capabilities xmlns="http://www.opengis.net/wms">
@@ -213,9 +195,6 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
     query = { language: "fr" };
-    requestUrl = new URL(
-      `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer?language=fr`,
-    );
 
     const fetchMock = mockFetchOnce(`<?xml version="1.0" encoding="UTF-8"?>
             <Capabilities xmlns="http://www.opengis.net/wmts/1.0"
@@ -244,9 +223,6 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
     routerParams.capabilityUrl = encoded;
     routerParams.layerId = "my-layer";
     query = { language: "de" };
-    requestUrl = new URL(
-      `http://localhost:3000/api/wpa/v1/layers/external/dataset/${encoded}/my-layer?language=de`,
-    );
 
     const fetchMock = mockFetchOnce(`<?xml version="1.0"?>
             <WMS_Capabilities xmlns="http://www.opengis.net/wms">

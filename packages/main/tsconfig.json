@@ -7,6 +7,7 @@
     "server/plugins/gather-sourcemaps.ts",
     "server/plugins/loglevels.ts",
     "server/plugins/validate-runtime-config.ts",
+    "server/plugins/cache-control-error.ts",
     "server/instrumentation.ts",
     "vitest.config.ts",
     "rolldown.otel.config.mjs"
