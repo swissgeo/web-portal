@@ -101,8 +101,8 @@ describe("redirect plugin", () => {
   );
 
   it.each([
-    ["/", "/de/map"],
-    ["/de", "/de/map"],
+    ["/", "/de/"],
+    ["/map", "/de/map"],
     ["/dataset", "/de/dataset"],
   ])("correctly tries to redirect from %s to %s", async (from, to) => {
     const fromObj = { path: from, query: {} };
@@ -124,7 +124,7 @@ describe("redirect plugin", () => {
 
   it("preserves the query param on redirect", async () => {
     const fromObj = {
-      path: "/de",
+      path: "/map",
       query: {
         param: "1",
       },
@@ -167,7 +167,7 @@ describe("redirect plugin", () => {
       mockHeaders["accept-language"] = "it-IT,it;q=0.9";
       await redirector({ path: "/", query: {} });
       expect(navigateToMock).toHaveBeenCalledExactlyOnceWith(
-        { path: "/it/map", query: {} },
+        { path: "/it/", query: {} },
         { redirectCode: 302 },
       );
     });
