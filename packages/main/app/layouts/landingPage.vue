@@ -7,10 +7,8 @@ const { resetApp } = useResetApp();
     <Topbar :display-search-bar="false" @reset-app="resetApp" />
     <UMain as="div" class="min-h-0 flex-1">
       <main id="main" ref="main" class="h-full font-sans">
-        <div class="relative h-full">
-          <div class="relative h-full w-full">
-            <slot />
-          </div>
+        <div class="h-full w-full">
+          <slot />
         </div>
       </main>
     </UMain>

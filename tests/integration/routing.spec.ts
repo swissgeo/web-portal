@@ -23,7 +23,7 @@ test.describe("locale routing", () => {
   test("homepage redirects to the locale homepage", async ({ page }) => {
     await page.goto("/");
     await page.waitForURL("**/de/");
-    await expect(page).toHaveURL(/\/de/);
+    await expect(page).toHaveURL("/de/");
   });
 
   test("map page redirects to the default locale map", async ({ page }) => {

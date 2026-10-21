@@ -113,7 +113,7 @@ describe("redirect plugin", () => {
     });
   });
 
-  it.each(["/de/map", "/de/dataset", "/health"])(
+  it.each(["/de", "/de/map", "/de/dataset", "/health"])(
     "does not redirect %s",
     async (from) => {
       const fromObj = { path: from, query: {} };

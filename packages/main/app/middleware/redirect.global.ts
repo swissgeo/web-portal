@@ -81,12 +81,12 @@ export function redirector(
 
 /**
  * Redirect the user with following pattern:
- * * | /                  | /<locale>/map      |
- * * | /map               | /<locale>/map      |
- * * | /<locale>/map      | _no redirect_      |
- * * | /<locale>          | /<locale>/map      |
- * * | /anything          | /<locale>/anything |
- * * | /<locale>/anything | _no redirect_      |
+ * * | /                  | /<locale>         |
+ * * | /map               | /<locale>/map     |
+ * * | /<locale>/map      | _no redirect_     |
+ * * | /<locale>          | _no redirect_     |
+ * * | /anything          | /<locale>/anything|
+ * * | /<locale>/anything | _no redirect_     |
  *
  * For unlocalized paths, the locale is resolved via browser Accept-Language →
  * DEFAULT_LOCALE (see {@link resolvePreferredLocale}).

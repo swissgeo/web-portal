@@ -4,5 +4,5 @@ useSeoMeta({ title: "SWISSGEO" });
 </script>
 
 <template>
-  <div class="relative h-full">Lorem</div>
+  <div class="relative h-full"></div>
 </template>

@@ -4,14 +4,9 @@ import type { NavigationMenuItem } from "@nuxt/ui";
 import { LogoPic } from "@swissgeo/skeleton";
 import { isEqual } from "es-toolkit";
 
-withDefaults(
-  defineProps<{
-    displaySearchBar?: boolean;
-  }>(),
-  {
-    displaySearchBar: true,
-  },
-);
+const { displaySearchBar = true } = defineProps<{
+  displaySearchBar?: boolean;
+}>();
 
 const colorMode = useColorMode();
 const { t } = useI18n();

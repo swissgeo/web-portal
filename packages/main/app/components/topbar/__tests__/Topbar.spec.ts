@@ -29,10 +29,12 @@ mockNuxtImport("useI18n", () => {
 });
 
 mockNuxtImport("useLocalePath", () => {
-  return () => (routeName: string, params?: Record<string, string>) => {
-    const lang = routeName.split("___")[1];
-    const id = params?.id ?? "first";
-    return `/${lang}/dataset/${id}`;
+  return (locale?: string) => (routeName: string) => {
+    const lang = locale ?? "de";
+    if (routeName === "/") {
+      return `/${lang}`;
+    }
+    return `/${lang}${routeName}`;
   };
 });
 
