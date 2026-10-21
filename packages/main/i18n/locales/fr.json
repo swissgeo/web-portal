@@ -13,7 +13,8 @@
     "layerCart": "Couches actives",
     "map": "Carte",
     "collapse": "Réduire le panneau latéral",
-    "expand": "Ouvrir le panneau latéral"
+    "expand": "Ouvrir le panneau latéral",
+    "openLayerCatalog": "TODO translate"
   },
   "search": {
     "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",
@@ -106,7 +107,7 @@
   },
   "debug": {
     "openImportLocalLayersPanel": "Ouvrir le panneau d'importation des couches locales",
-    "openImportDrawingPanel": "Ouvrir le panneau d'importation de dessin",
+    "openDrawingPanel": "TODO translate",
     "openImportLayersPanel": "Ouvrir le panneau d'importation des couches",
     "openLayersPanel": "Ouvrir le panneau des couches",
     "importDrawingPanelTitle": "Importer un dessin depuis une URL",
@@ -206,7 +207,9 @@
     "openFeatureFlagsPanel": "Ouvrir le panneau des feature flags",
     "featureFlagsPanelTitle": "Feature flags",
     "resetFeatureFlags": "Rétablir les valeurs par défaut",
-    "featureFlagOverridden": "surchargé"
+    "featureFlagOverridden": "surchargé",
+    "openImportDrawingPanel": "Ouvrir le panneau d'importation de dessin",
+    "drawingPanelTitle": "TODO translate"
   },
   "geolocation": {
     "permissionDenied": "Autorisation de localisation refusée",
@@ -385,7 +388,14 @@
         "fetchFailed": "Échec de la récupération du fichier depuis l'URL (HTTP {status})",
         "adminRequired": "Des droits d'administrateur sont nécessaires pour importer ce dessin"
       },
-      "close": "Fermer"
+      "close": "Fermer",
+      "drawingReplaceConfirmTitle": "TODO translate",
+      "drawingReplaceConfirmDescription": "TODO translate",
+      "drawingReplaceConfirmTemporaryNote": "TODO translate",
+      "drawingReplaceConfirmAdminNote": "TODO translate",
+      "drawingReplaceConfirmLegacyAdminNote": "TODO translate",
+      "drawingReplaceConfirmCancel": "TODO translate",
+      "drawingReplaceConfirmConfirm": "TODO translate"
     },
     "share": {
       "buttonTitle": "Partager",
@@ -607,6 +617,7 @@
     "organisation": "Organisation",
     "legalBasis": "Bases légales",
     "mediaInformation": "Informations pour les médias",
+    "login": "TODO translate",
     "modeSwitch": "Changer de mode"
   },
   "layers": {
@@ -625,6 +636,27 @@
       "openPdf": "Ouvrir la légende en PDF",
       "openPage": "Ouvrir la page de la légende"
     }
+  },
+  "layerCart": {
+    "close": "TODO translate",
+    "expand": "TODO translate",
+    "collapse": "TODO translate"
+  },
+  "layerCatalog": {
+    "title": "TODO translate",
+    "table": {
+      "title": "TODO translate",
+      "dataOwner": "TODO translate",
+      "empty": "TODO translate"
+    },
+    "loading": "TODO translate",
+    "error": "TODO translate",
+    "retry": "TODO translate",
+    "searchLabel": "TODO translate",
+    "searchPlaceholder": "TODO translate",
+    "close": "TODO translate",
+    "expand": "TODO translate",
+    "collapse": "TODO translate"
   },
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",

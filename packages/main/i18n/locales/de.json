@@ -207,7 +207,9 @@
     "openFeatureFlagsPanel": "Feature-Flags-Panel öffnen",
     "featureFlagsPanelTitle": "Feature-Flags",
     "resetFeatureFlags": "Auf Standard zurücksetzen",
-    "featureFlagOverridden": "überschrieben"
+    "featureFlagOverridden": "überschrieben",
+    "openImportDrawingPanel": "TODO translate",
+    "drawingPanelTitle": "TODO translate"
   },
   "geolocation": {
     "permissionDenied": "Standortberechtigung verweigert",
@@ -386,7 +388,14 @@
         "fetchFailed": "Datei konnte nicht von der URL geladen werden (HTTP {status})",
         "adminRequired": "Zum Importieren dieser Zeichnung sind Administratorrechte erforderlich"
       },
-      "close": "Schließen"
+      "close": "Schließen",
+      "drawingReplaceConfirmTitle": "TODO translate",
+      "drawingReplaceConfirmDescription": "TODO translate",
+      "drawingReplaceConfirmTemporaryNote": "TODO translate",
+      "drawingReplaceConfirmAdminNote": "TODO translate",
+      "drawingReplaceConfirmLegacyAdminNote": "TODO translate",
+      "drawingReplaceConfirmCancel": "TODO translate",
+      "drawingReplaceConfirmConfirm": "TODO translate"
     },
     "share": {
       "buttonTitle": "Teilen",

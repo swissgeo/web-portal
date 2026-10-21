@@ -1,12 +1,662 @@
 {
+  "menuTitles": {
+    "knowledge": "TODO translate",
+    "about": "TODO translate"
+  },
+  "welcomeOverlay": {
+    "moreInfos": "TODO translate",
+    "startPrototype": "TODO translate",
+    "dontShowAgain": "TODO translate"
+  },
+  "menu": {
+    "search": "TODO translate",
+    "layerCart": "TODO translate",
+    "map": "TODO translate",
+    "collapse": "TODO translate",
+    "expand": "TODO translate",
+    "openLayerCatalog": "TODO translate"
+  },
+  "search": {
+    "placeholder": "TODO translate",
+    "buttonLabel": "TODO translate",
+    "map_tab": "TODO translate",
+    "content_pages_tab": "TODO translate",
+    "locations_results_header": "TODO translate",
+    "features_results_header": "TODO translate",
+    "layers_results_header": "TODO translate",
+    "no_results": "TODO translate",
+    "error": "TODO translate",
+    "viewDataset": "TODO translate"
+  },
+  "footer": {
+    "copyRightData": "TODO translate",
+    "termsOfUse": "TODO translate",
+    "impressum": "TODO translate",
+    "mobileNav": {
+      "map": "TODO translate",
+      "catalog": "TODO translate",
+      "tools": "TODO translate",
+      "mapInfo": "TODO translate"
+    },
+    "reportIssue": {
+      "buttonTitle": "TODO translate",
+      "title": "TODO translate",
+      "close": "TODO translate",
+      "steps": {
+        "step1": {
+          "title": "TODO translate",
+          "select": {
+            "placeholder": "TODO translate",
+            "options": {
+              "background": "TODO translate",
+              "thematic": "TODO translate",
+              "application": "TODO translate",
+              "other": "TODO translate"
+            }
+          },
+          "moreInfo": {
+            "label": "TODO translate",
+            "url": "TODO translate"
+          }
+        },
+        "step2": {
+          "title": "TODO translate"
+        },
+        "step3": {
+          "title": "TODO translate",
+          "button": "TODO translate"
+        },
+        "step4": {
+          "title": "TODO translate",
+          "placeholder": "TODO translate",
+          "info": "TODO translate"
+        },
+        "step5": {
+          "title": "TODO translate",
+          "buttonLabel": "TODO translate"
+        }
+      },
+      "notes": {
+        "link": {
+          "label": "TODO translate",
+          "permalink": "TODO translate"
+        },
+        "tos": {
+          "label": "TODO translate",
+          "link": "TODO translate",
+          "url": "TODO translate"
+        }
+      },
+      "cancelButton": "TODO translate",
+      "submitButton": "TODO translate",
+      "successMessage": "TODO translate",
+      "errorMessage": "TODO translate",
+      "validation": {
+        "subjectRequired": "TODO translate",
+        "feedbackRequired": "TODO translate",
+        "categoryRequired": "TODO translate",
+        "versionRequired": "TODO translate",
+        "userAgentRequired": "TODO translate",
+        "permalinkRequired": "TODO translate",
+        "emailInvalid": "TODO translate",
+        "fileRequired": "TODO translate",
+        "fileTooLarge": "TODO translate",
+        "fileTypeNotSupported": "TODO translate"
+      }
+    }
+  },
+  "debug": {
+    "openImportLocalLayersPanel": "TODO translate",
+    "openDrawingPanel": "TODO translate",
+    "openImportLayersPanel": "TODO translate",
+    "openLayersPanel": "TODO translate",
+    "importDrawingPanelTitle": "TODO translate",
+    "drawingNameLabel": "TODO translate",
+    "drawingToolSelectLabel": "TODO translate",
+    "drawingToolPoint": "TODO translate",
+    "drawingToolLine": "TODO translate",
+    "drawingToolText": "TODO translate",
+    "drawingToolMeasurement": "TODO translate",
+    "drawingInstructionPoint": "TODO translate",
+    "drawingInstructionLine": "TODO translate",
+    "drawingInstructionText": "TODO translate",
+    "drawingInstructionMeasurementRadius": "TODO translate",
+    "drawingInstructionMeasurementPath": "TODO translate",
+    "drawingInstructionDefault": "TODO translate",
+    "drawingFeaturesDrawnLabel": "TODO translate",
+    "drawingExportLabel": "TODO translate",
+    "drawingExportKML": "TODO translate",
+    "drawingExportKMZ": "TODO translate",
+    "drawingExportGPX": "TODO translate",
+    "drawingClearAll": "TODO translate",
+    "drawingClearConfirmTitle": "TODO translate",
+    "drawingClearConfirmDescription": "TODO translate",
+    "drawingClearConfirmCancel": "TODO translate",
+    "drawingClearConfirmConfirm": "TODO translate",
+    "drawingHoverHint": {
+      "selectFeature": "TODO translate",
+      "nothingToSelect": "TODO translate",
+      "targetMarker": "TODO translate",
+      "targetText": "TODO translate",
+      "targetLine": "TODO translate",
+      "targetPolygon": "TODO translate",
+      "targetMeasurement": "TODO translate",
+      "targetFeature": "TODO translate"
+    },
+    "drawingFeatureInfo": {
+      "windowTitle": "TODO translate",
+      "typeLabel": "TODO translate",
+      "titleLabel": "TODO translate",
+      "textLabel": "TODO translate",
+      "titleOrTextLabel": "TODO translate",
+      "descriptionLabel": "TODO translate",
+      "coordinatesLabel": "TODO translate",
+      "areaLabel": "TODO translate",
+      "perimeterLabel": "TODO translate",
+      "lineStyleLabel": "TODO translate",
+      "strokeWidthLabel": "TODO translate",
+      "strokeOpacityLabel": "TODO translate",
+      "strokeColorLabel": "TODO translate",
+      "dashedLineLabel": "TODO translate",
+      "fillColorLabel": "TODO translate",
+      "fillOpacityLabel": "TODO translate",
+      "markerStyleButton": "TODO translate",
+      "textStyleButton": "TODO translate",
+      "hideDescriptionOnMap": "TODO translate",
+      "showDescriptionOnMap": "TODO translate",
+      "markerSizeLabel": "TODO translate",
+      "markerColorLabel": "TODO translate",
+      "markerSymbolLabel": "TODO translate",
+      "textSizeLabel": "TODO translate",
+      "textColorLabel": "TODO translate",
+      "textAnchorLabel": "TODO translate",
+      "deleteFeatureButton": "TODO translate",
+      "sizeSmall": "TODO translate",
+      "sizeMedium": "TODO translate",
+      "sizeLarge": "TODO translate",
+      "sizeExtraLarge": "TODO translate",
+      "strokeThin": "TODO translate",
+      "strokeMedium": "TODO translate",
+      "strokeThick": "TODO translate",
+      "strokeExtraThick": "TODO translate",
+      "kind": {
+        "point": "TODO translate",
+        "text": "TODO translate",
+        "lineString": "TODO translate",
+        "polygon": "TODO translate",
+        "measurementRadius": "TODO translate",
+        "measurementPath": "TODO translate",
+        "unknown": "TODO translate"
+      },
+      "anchor": {
+        "top-left": "TODO translate",
+        "top-center": "TODO translate",
+        "top-right": "TODO translate",
+        "center-left": "TODO translate",
+        "center": "TODO translate",
+        "center-right": "TODO translate",
+        "bottom-left": "TODO translate",
+        "bottom-center": "TODO translate",
+        "bottom-right": "TODO translate"
+      }
+    },
+    "openStateConfigPanel": "TODO translate",
+    "stateConfig": "TODO translate",
+    "share": "TODO translate",
+    "openPrintPanel": "TODO translate",
+    "openFeatureFlagsPanel": "TODO translate",
+    "featureFlagsPanelTitle": "TODO translate",
+    "resetFeatureFlags": "TODO translate",
+    "featureFlagOverridden": "TODO translate",
+    "openImportDrawingPanel": "TODO translate",
+    "drawingPanelTitle": "TODO translate"
+  },
   "geolocation": {
     "permissionDenied": "Permissiun da localisaziun refusada",
     "stopTracking": "Fermar il tractament da posiziun",
     "startGeolocation": "Activar la geolocalisaziun",
     "recenterMap": "Recentrar la charta"
   },
+  "toolbox": {
+    "geolocation": {
+      "buttonTitle": "TODO translate"
+    },
+    "fullscreen": {
+      "buttonTitle": "TODO translate"
+    },
+    "3d": {
+      "buttonTitle": "TODO translate"
+    },
+    "drawing": {
+      "buttonTitle": "TODO translate",
+      "close": "TODO translate",
+      "featureCount": "TODO translate",
+      "tools": {
+        "label": "TODO translate",
+        "select": "TODO translate",
+        "polyline": "TODO translate",
+        "polygon": "TODO translate",
+        "circle": "TODO translate",
+        "text": "TODO translate",
+        "marker": "TODO translate"
+      },
+      "hints": {
+        "edit": "TODO translate",
+        "select": "TODO translate",
+        "chooseTool": "TODO translate",
+        "place": "TODO translate",
+        "circle": "TODO translate",
+        "addPoints": "TODO translate",
+        "drawing": "TODO translate",
+        "deletePoint": "TODO translate"
+      },
+      "cancel": "TODO translate",
+      "selection": "TODO translate",
+      "done": "TODO translate",
+      "editGeometry": "TODO translate",
+      "delete": "TODO translate",
+      "finishEditing": "TODO translate",
+      "export": "TODO translate",
+      "sync": "TODO translate",
+      "clear": "TODO translate",
+      "shareLink": "TODO translate",
+      "copy": "TODO translate",
+      "allowEditing": "TODO translate",
+      "shareErrorNodata": "TODO translate",
+      "shareErrorAlreadyInProgress": "TODO translate",
+      "formats": {
+        "geojson": "TODO translate",
+        "gpxTrack": "TODO translate",
+        "gpxRoute": "TODO translate",
+        "kml": "TODO translate",
+        "kmz": "TODO translate"
+      },
+      "properties": {
+        "generic": "TODO translate",
+        "LineString": "TODO translate",
+        "Polygon": "TODO translate",
+        "Circle": "TODO translate",
+        "Point": "TODO translate"
+      },
+      "fields": {
+        "title": "TODO translate",
+        "titlePlaceholder": "TODO translate",
+        "description": "TODO translate",
+        "descriptionPlaceholder": "TODO translate",
+        "optional": "TODO translate"
+      },
+      "style": {
+        "appearance": "TODO translate",
+        "fillColor": "TODO translate",
+        "outlineColor": "TODO translate",
+        "outlineWidth": "TODO translate",
+        "lineColor": "TODO translate",
+        "lineWidth": "TODO translate",
+        "showTitle": "TODO translate",
+        "showDescription": "TODO translate",
+        "textSize": "TODO translate",
+        "placement": "TODO translate",
+        "relativeToMarker": "TODO translate",
+        "textColor": "TODO translate",
+        "textHaloColor": "TODO translate",
+        "showMarker": "TODO translate",
+        "markerSize": "TODO translate"
+      },
+      "metrics": {
+        "length": "TODO translate",
+        "perimeter": "TODO translate",
+        "radius": "TODO translate",
+        "area": "TODO translate"
+      },
+      "placement": {
+        "label": "TODO translate",
+        "north-west": "TODO translate",
+        "north": "TODO translate",
+        "north-east": "TODO translate",
+        "west": "TODO translate",
+        "center": "TODO translate",
+        "east": "TODO translate",
+        "south-west": "TODO translate",
+        "south": "TODO translate",
+        "south-east": "TODO translate"
+      },
+      "sizes": {
+        "xsmall": "TODO translate",
+        "small": "TODO translate",
+        "medium": "TODO translate",
+        "large": "TODO translate",
+        "xlarge": "TODO translate"
+      },
+      "symbols": {
+        "collection": "TODO translate",
+        "color": "TODO translate",
+        "label": "TODO translate",
+        "empty": "TODO translate",
+        "select": "TODO translate",
+        "collections": {
+          "default": "TODO translate",
+          "babs-v2-de": "TODO translate",
+          "babs-v2-fr": "TODO translate",
+          "babs-v2-it": "TODO translate"
+        }
+      },
+      "title": "TODO translate"
+    },
+    "measure": {
+      "buttonTitle": "TODO translate"
+    },
+    "compare": {
+      "buttonTitle": "TODO translate"
+    },
+    "timeSlider": {
+      "buttonTitle": "TODO translate"
+    },
+    "import": {
+      "buttonTitle": "TODO translate",
+      "title": "TODO translate",
+      "description": "TODO translate",
+      "tabData": "TODO translate",
+      "tabDrawing": "TODO translate",
+      "tabUrl": "TODO translate",
+      "urlPlaceholder": "TODO translate",
+      "browseButton": "TODO translate",
+      "noFileSelected": "TODO translate",
+      "importFileButton": "TODO translate",
+      "importUrlButton": "TODO translate",
+      "loadingMessage": "TODO translate",
+      "successMessage": "TODO translate",
+      "drawingSuccessMessage": "TODO translate",
+      "fileUrlDescription": "TODO translate",
+      "fileUrlPlaceholder": "TODO translate",
+      "importFileUrlButton": "TODO translate",
+      "cancelImport": "TODO translate",
+      "clearAndImportAsAdmin": "TODO translate",
+      "clearAndImportAsNonAdmin": "TODO translate",
+      "errorMessages": {
+        "invalidDrawingUrl": "TODO translate",
+        "invalidDrawingAdminId": "TODO translate",
+        "generalError": "TODO translate",
+        "noFileSelected": "TODO translate",
+        "noUrlEntered": "TODO translate",
+        "fileSizeWarning": "TODO translate",
+        "fileTooLarge": "TODO translate",
+        "drawingImportFailed": "TODO translate",
+        "kmlFetchFailed": "TODO translate",
+        "noKmlFound": "TODO translate",
+        "domainNotAllowed": "TODO translate",
+        "unsupportedUrlType": "TODO translate",
+        "fetchFailed": "TODO translate",
+        "adminRequired": "TODO translate"
+      },
+      "close": "TODO translate",
+      "drawingReplaceConfirmTitle": "TODO translate",
+      "drawingReplaceConfirmDescription": "TODO translate",
+      "drawingReplaceConfirmTemporaryNote": "TODO translate",
+      "drawingReplaceConfirmAdminNote": "TODO translate",
+      "drawingReplaceConfirmLegacyAdminNote": "TODO translate",
+      "drawingReplaceConfirmCancel": "TODO translate",
+      "drawingReplaceConfirmConfirm": "TODO translate"
+    },
+    "share": {
+      "buttonTitle": "TODO translate",
+      "title": "TODO translate",
+      "link": {
+        "tabLabel": "TODO translate",
+        "title": "TODO translate",
+        "description": "TODO translate",
+        "generateButton": "TODO translate",
+        "drawingEditableLabel": "TODO translate",
+        "urlLabel": "TODO translate",
+        "copyButton": "TODO translate",
+        "socialMediaLabel": "TODO translate",
+        "qrCodeLabel": "TODO translate",
+        "shareText": "TODO translate",
+        "ariaLabel": {
+          "copyToClipboard": "TODO translate",
+          "email": "TODO translate",
+          "facebook": "TODO translate",
+          "linkedin": "TODO translate",
+          "whatsapp": "TODO translate"
+        }
+      },
+      "embed": {
+        "tabLabel": "TODO translate",
+        "title": "TODO translate",
+        "description": "TODO translate",
+        "generateButton": "TODO translate",
+        "zoomOnlyCtrlLabel": "TODO translate",
+        "sizeLabel": "TODO translate",
+        "sizeSmall": "TODO translate",
+        "sizeMedium": "TODO translate",
+        "sizeLarge": "TODO translate",
+        "sizeCustom": "TODO translate",
+        "customWidthLabel": "TODO translate",
+        "customHeightLabel": "TODO translate",
+        "pixelUnit": "TODO translate",
+        "fullWidthLabel": "TODO translate"
+      },
+      "ariaLabel": {
+        "close": "TODO translate",
+        "copyToClipboard": "TODO translate",
+        "refreshLink": "TODO translate",
+        "refreshEmbed": "TODO translate"
+      }
+    },
+    "print": {
+      "buttonTitle": "TODO translate"
+    },
+    "featureFlag": {
+      "notAvailable": "TODO translate",
+      "workingOnIt": "TODO translate"
+    }
+  },
+  "backgroundLayers": {
+    "title": "TODO translate",
+    "label": "TODO translate",
+    "voidMap": "TODO translate",
+    "backgroundMap": "TODO translate",
+    "colorMap": "TODO translate",
+    "greyMap": "TODO translate",
+    "swissimage": "TODO translate"
+  },
+  "toaster": {
+    "warningTitle": "TODO translate",
+    "errorTitle": "TODO translate",
+    "successTitle": "TODO translate"
+  },
+  "state": {
+    "drawingNotFound": "TODO translate",
+    "restoreUnableWarning": "TODO translate",
+    "shareLinkError": "TODO translate"
+  },
+  "map": {
+    "contextMenuPopup": {
+      "elevation": "TODO translate",
+      "title": "TODO translate",
+      "tabPosition": "TODO translate",
+      "tabShare": "TODO translate",
+      "errorFetchingElevation": "TODO translate",
+      "errorFetchingW3W": "TODO translate",
+      "featureFlag": {
+        "notAvailable": "TODO translate",
+        "workingOnIt": "TODO translate"
+      }
+    }
+  },
+  "error": {
+    "notFound": "TODO translate",
+    "generic": "TODO translate",
+    "layerLoad": "TODO translate",
+    "backToMap": "TODO translate",
+    "resources": {
+      "dataset": "TODO translate"
+    }
+  },
+  "dataset": {
+    "legendLoading": "TODO translate",
+    "legendError": "TODO translate",
+    "overview": "TODO translate",
+    "dataAccess": "TODO translate",
+    "metadata": "TODO translate",
+    "serviceLoading": "TODO translate",
+    "serviceError": "TODO translate",
+    "abstract": "TODO translate",
+    "links": "TODO translate",
+    "services": "TODO translate",
+    "addToMap": "TODO translate",
+    "removeFromMap": "TODO translate",
+    "details": "TODO translate",
+    "expandPanel": "TODO translate",
+    "collapsePanel": "TODO translate",
+    "alreadyOnMap": "TODO translate",
+    "viewDetailPage": "TODO translate",
+    "showOnMap": "TODO translate",
+    "backToCatalog": "TODO translate",
+    "close": "TODO translate",
+    "backToMap": "TODO translate",
+    "addToMapError": "TODO translate",
+    "openService": "TODO translate",
+    "identifier": "TODO translate",
+    "mapServices": "TODO translate",
+    "otherAccess": "TODO translate",
+    "format": "TODO translate",
+    "serviceUrl": "TODO translate",
+    "viewGeocat": "TODO translate",
+    "copyLink": "TODO translate",
+    "copy": "TODO translate",
+    "showMore": "TODO translate",
+    "showLess": "TODO translate",
+    "contact": "TODO translate",
+    "aggregated": "TODO translate"
+  },
+  "elevationProfile": {
+    "windowTitle": "TODO translate",
+    "plot": {
+      "xAxis": "TODO translate",
+      "yAxis": "TODO translate",
+      "noData": "TODO translate"
+    },
+    "metadata": {
+      "elevationDifference": "TODO translate",
+      "elevationUp": "TODO translate",
+      "elevationDown": "TODO translate",
+      "poiUp": "TODO translate",
+      "poiDown": "TODO translate",
+      "distance": "TODO translate",
+      "slopeDistance": "TODO translate"
+    },
+    "fetchError": "TODO translate"
+  },
+  "timeSlider": {
+    "legendExplanation": "TODO translate",
+    "outsideValidYearRange": "TODO translate"
+  },
   "compareSlider": {
     "toggleButtonTitle": "Activar/deactivar il cursur da cumparegliaziun"
+  },
+  "embed": {
+    "viewOn": "TODO translate"
+  },
+  "print": {
+    "warningOutsideSwitzerland": "TODO translate",
+    "warningOutsideSwitzerlandTitle": "TODO translate",
+    "warningZoomOutOfSync": "TODO translate",
+    "warningZoomOutOfSyncTitle": "TODO translate",
+    "statusProcessing": "TODO translate",
+    "statusQueued": "TODO translate",
+    "statusError": "TODO translate",
+    "statusFailed": "TODO translate",
+    "statusReady": "TODO translate",
+    "clearAll": "TODO translate",
+    "noPrintJobsYet": "TODO translate",
+    "created": "TODO translate",
+    "download": "TODO translate",
+    "zoomLevel": "TODO translate",
+    "zoomLevelForPrint": "TODO translate",
+    "warningOutsideViewportLabel": "TODO translate",
+    "printScale": "TODO translate",
+    "enableStrictZoomStepsLabel": "TODO translate",
+    "lockCenterToViewLabel": "TODO translate",
+    "lockZoomToViewLabel": "TODO translate",
+    "printSizeLabel": "TODO translate",
+    "printResolutionLabel": "TODO translate",
+    "printOrientationLabel": "TODO translate",
+    "zoomToLockedZoomLevel": "TODO translate",
+    "sendPrintRequest": "TODO translate",
+    "openPrintJobs": "TODO translate",
+    "printJobsWindowTitle": "TODO translate",
+    "warningPrintExtentBeyondViewport": "TODO translate",
+    "orientationPortrait": "TODO translate",
+    "orientationLandscape": "TODO translate"
+  },
+  "topbar": {
+    "home": "TODO translate",
+    "map": "TODO translate",
+    "geoDataAndMaps": "TODO translate",
+    "howToUseGeodata": "TODO translate",
+    "viewGeodataInMapViewer": "TODO translate",
+    "discoverTopicsAndData": "TODO translate",
+    "geoservices": "TODO translate",
+    "searchGeodata": "TODO translate",
+    "newDataAndUpdates": "TODO translate",
+    "tutorialsAndHelp": "TODO translate",
+    "gettingStarted": "TODO translate",
+    "mapViewerNavigation": "TODO translate",
+    "metadataCatalog": "TODO translate",
+    "moreFeatures": "TODO translate",
+    "specialistInfo": "TODO translate",
+    "ngdi": "TODO translate",
+    "geobaseData": "TODO translate",
+    "metadataCatalogSwitzerland": "TODO translate",
+    "geoInformationFilms": "TODO translate",
+    "aboutUs": "TODO translate",
+    "whatIsSwissgeo": "TODO translate",
+    "vision": "TODO translate",
+    "strategy": "TODO translate",
+    "keyFigures": "TODO translate",
+    "organisation": "TODO translate",
+    "legalBasis": "TODO translate",
+    "mediaInformation": "TODO translate",
+    "login": "TODO translate",
+    "modeSwitch": "TODO translate"
+  },
+  "layers": {
+    "expand": "TODO translate",
+    "reorder": "TODO translate",
+    "show": "TODO translate",
+    "hide": "TODO translate",
+    "info": "TODO translate",
+    "remove": "TODO translate",
+    "collapse": "TODO translate",
+    "opacity": "TODO translate",
+    "legend": {
+      "title": "TODO translate",
+      "notAvailable": "TODO translate",
+      "openDocument": "TODO translate",
+      "openPdf": "TODO translate",
+      "openPage": "TODO translate"
+    }
+  },
+  "layerCart": {
+    "close": "TODO translate",
+    "expand": "TODO translate",
+    "collapse": "TODO translate"
+  },
+  "layerCatalog": {
+    "title": "TODO translate",
+    "table": {
+      "title": "TODO translate",
+      "dataOwner": "TODO translate",
+      "empty": "TODO translate"
+    },
+    "loading": "TODO translate",
+    "error": "TODO translate",
+    "retry": "TODO translate",
+    "searchLabel": "TODO translate",
+    "searchPlaceholder": "TODO translate",
+    "close": "TODO translate",
+    "expand": "TODO translate",
+    "collapse": "TODO translate"
   },
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",
