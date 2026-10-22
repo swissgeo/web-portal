@@ -658,5 +658,8 @@
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",
     "popupTitle": "To Translate - Feature Info Popup Title"
+  },
+  "testSiteBanner": {
+    "text": "{environment} environment – Not for operational use. Do not share."
   }
 }

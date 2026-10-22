@@ -64,6 +64,7 @@ NUXT_PUBLIC_ICON_SERVICE_ENDPOINT= # The URL to the icon sets service
 NUXT_PUBLIC_SEARCH_SERVICE_URL= # The URL to the geo.admin.ch SearchServer
 NUXT_PUBLIC_THESAURUS_SERVICE_URL= # The URL to the thesauri files
 NUXT_REPORT_ISSUE_SERVICE_URL=  # The URL to the feedback service (server-only)
+NUXT_PUBLIC_TEST_SITE_BANNER=   # Test site banner: "dev" or "int"; empty on prod (no banner)
 ```
 
 ### Adding a new environment variable

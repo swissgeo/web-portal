@@ -25,22 +25,25 @@ function handleError() {
 </script>
 
 <template>
-  <div
-    class="flex h-dvh flex-col items-center justify-center gap-6 p-8 text-center"
-  >
-    <p class="text-6xl font-bold text-muted">
-      {{ error.status }}
-    </p>
-    <p class="text-lg">
-      {{ message }}
-    </p>
-    <UButton
-      icon="i-lucide-arrow-left"
-      color="primary"
-      variant="ghost"
-      @click="handleError"
+  <div class="flex h-dvh flex-col">
+    <TestSiteBanner />
+    <div
+      class="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 p-8 text-center"
     >
-      {{ $t("error.backToMap") }}
-    </UButton>
+      <p class="text-6xl font-bold text-muted">
+        {{ error.status }}
+      </p>
+      <p class="text-lg">
+        {{ message }}
+      </p>
+      <UButton
+        icon="i-lucide-arrow-left"
+        color="primary"
+        variant="ghost"
+        @click="handleError"
+      >
+        {{ $t("error.backToMap") }}
+      </UButton>
+    </div>
   </div>
 </template>

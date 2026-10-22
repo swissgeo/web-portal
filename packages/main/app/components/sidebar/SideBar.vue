@@ -64,10 +64,7 @@ function toggleSidebar() {
 </script>
 
 <template>
-  <div
-    v-show="isVisible"
-    class="absolute top-0 left-0 flex h-[calc(100dvh-var(--ui-header-height))]"
-  >
+  <div v-show="isVisible" class="absolute top-0 left-0 flex h-full">
     <!-- drawers teleport out of this element isVisible must be applied too -->
     <div
       v-show="isSidebarContentVisible"

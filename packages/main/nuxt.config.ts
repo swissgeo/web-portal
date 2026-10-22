@@ -162,6 +162,7 @@ export default defineNuxtConfig({
       printServiceUrl: "",
       maxFileSizeMB: 250,
       drawingAllowedDomains: [],
+      testSiteBanner: "",
       featureFlags: {
         enableCmsSearch: false,
         enableFeatureInfo: false,

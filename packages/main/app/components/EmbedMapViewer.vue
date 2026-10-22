@@ -15,7 +15,7 @@ const { stateId, zoomOnlyCtrl } = defineProps<{
   <BaseMapViewer :display-mode="displayMode" :zoom-only-ctrl="zoomOnlyCtrl">
     <template v-if="stateId" #before>
       <UButton
-        class="fixed top-4 left-4 z-9999"
+        class="absolute top-4 left-4 z-9999"
         :to="`${url.origin}/map?state=${stateId}`"
         target="_blank"
         color="primary"
