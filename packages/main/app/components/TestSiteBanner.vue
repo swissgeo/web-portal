@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useCssVar, useElementSize } from "@vueuse/core";
+
 const { t } = useI18n();
 
 // Each test staging has its own color, so users can tell DEV from INT.
@@ -12,11 +14,22 @@ const isTestSite = (value: string): value is keyof typeof bannerStyles =>
 
 const testSite = useRuntimeConfig().public.testSiteBanner;
 const bannerStyle = isTestSite(testSite) ? bannerStyles[testSite] : undefined;
+
+// The mobile drawer reads this height to stay below the topbar.
+const banner = useTemplateRef("banner");
+const { height } = useElementSize(() => banner.value?.$el, undefined, {
+  box: "border-box",
+});
+const bannerHeight = useCssVar("--test-site-banner-height");
+watch(height, (value) => {
+  bannerHeight.value = `${value}px`;
+});
 </script>
 
 <template>
   <UBanner
     v-if="bannerStyle"
+    ref="banner"
     data-testid="test-site-banner"
     :color="bannerStyle.color"
     icon="i-lucide-code-xml"

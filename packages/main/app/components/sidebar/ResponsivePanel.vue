@@ -36,6 +36,12 @@ const slots = defineSlots<{
 
 const isDesktop = useIsDesktop();
 
+// For 'full' extension of the panel, stop 'a bit below the topbar' (half the topbar height),
+// so a bit of the map remains visible. Some elements push the topbar down; they set their height variables.
+// Leave 4rem space below for the footer.
+const drawerHeight =
+  "h-[calc(100%-1.5*var(--ui-header-height)-var(--test-site-banner-height,0px)-4rem)]";
+
 const defaultPartialSnapPoint = 0.75;
 // With few rows the drawer opens only as high as its content
 const contentSnapHeight = ref<number | null>(null);
@@ -148,11 +154,8 @@ useDrawerTouchGuard(scroller, {
     :overlay="false"
     portal="#main"
     :ui="{
-      // For 'full' extension of the panel, stop 'a bit below the topbar' (half the topbar height),
-      // so a bit of the map remains visible.
-      // Leave 4rem space below for the footer.
       // The drawer teleports to #main, so a v-show on a parent does not hide it.
-      content: `bottom-16 z-20 h-[calc(100%-1.5*var(--ui-header-height)-4rem)] ${isVisible ? '' : 'hidden'}`,
+      content: `bottom-16 z-20 ${drawerHeight} ${isVisible ? '' : 'hidden'}`,
       // vaul drags the drawer itself, so handle and header skip native swipes
       container: `min-h-0 touch-none gap-0 overflow-hidden p-0 ${slots.footer ? 'flex-none' : 'flex-1'}`,
       // The theme spaces the handle for a padded container, which this is not
