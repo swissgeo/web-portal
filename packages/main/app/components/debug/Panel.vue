@@ -56,7 +56,7 @@ function toggleFeatureFlagsPanel() {
       title="Debug"
       :aria-expanded="isExpanded"
       aria-controls="debug-panel-content"
-      class="h-6 w-16 justify-center self-end rounded-b-none px-0 py-0 shadow-md"
+      class="h-6 w-16 justify-center self-start rounded-b-none px-0 py-0 shadow-md"
       @click="isExpanded = !isExpanded"
     />
     <div
