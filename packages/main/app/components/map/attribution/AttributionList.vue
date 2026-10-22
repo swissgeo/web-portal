@@ -14,7 +14,7 @@ const { t } = useI18n();
   <!-- z-1 keeps it above the map but behind the side panel (z-10) -->
   <div
     v-if="sources.length > 0"
-    class="fixed bottom-12 left-20 z-1 max-w-50 bg-white px-1 text-sm text-black"
+    class="text-accent fixed right-0 bottom-16 z-1 rounded-tl-lg bg-muted/70 px-2 py-1 text-right text-xs backdrop-blur-sm md:bottom-9"
     data-testid="layers-copyrights"
   >
     <span>{{ t("footer.copyRightData") }}</span>
