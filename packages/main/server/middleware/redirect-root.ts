@@ -16,6 +16,8 @@ import { sendRedirect, setResponseHeader } from "h3";
 // other unlocalized paths: Accept-Language → defaultLocale.
 
 const ENTRY_PATHS = new Set(["/", "/map"]);
+// Same value as URL_PARAM_STATE in app/composables/useUrlParams.ts.
+const STATE_PARAM = "state";
 
 export default defineEventHandler(async (event) => {
   const url = getRequestURL(event);
@@ -28,5 +30,8 @@ export default defineEventHandler(async (event) => {
   );
 
   setResponseHeader(event, "Cache-Control", "no-store");
-  await sendRedirect(event, `/${target}${url.pathname}${url.search}`, 302);
+  // A share link (`/?state=…`) opens the map, not the landing page.
+  const isShareLink = url.pathname === "/" && url.searchParams.has(STATE_PARAM);
+  const path = isShareLink ? "/map" : url.pathname;
+  await sendRedirect(event, `/${target}${path}${url.search}`, 302);
 });

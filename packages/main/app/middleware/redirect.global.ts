@@ -1,6 +1,7 @@
 import type { RouteLocationNormalized } from "vue-router";
 
 import { DEFAULT_LOCALE, pickLocaleFromAcceptLanguage } from "@swissgeo/shared";
+import { URL_PARAM_STATE } from "~/composables/useUrlParams";
 
 const SERVER_ROUTES = ["/api", "/health"];
 
@@ -64,9 +65,11 @@ export function redirector(
   } else if (isLocaleRoot(to.path)) {
     return undefined;
   } else if (isRootPath(to.path)) {
+    // A share link (`/?state=…`) opens the map, not the landing page.
+    const page = to.query[URL_PARAM_STATE] ? "map" : "";
     const locale = resolvePreferredLocale();
     return navigateTo(
-      { path: `/${locale}/`, query: to.query },
+      { path: `/${locale}/${page}`, query: to.query },
       { redirectCode: 302 },
     );
   } else if (!isLocalized(to.path)) {
@@ -82,6 +85,7 @@ export function redirector(
 /**
  * Redirect the user with following pattern:
  * * | /                  | /<locale>         |
+ * * | /?state=…          | /<locale>/map     |
  * * | /map               | /<locale>/map     |
  * * | /<locale>/map      | _no redirect_     |
  * * | /<locale>          | _no redirect_     |
