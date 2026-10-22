@@ -26,6 +26,7 @@ declare global {
       testSiteBanner: string;
       featureFlags: {
         enableCmsSearch: boolean;
+        enableMobileUi: boolean;
         enableFeatureInfo: boolean;
         enablePositionPopup: boolean;
         tools: {

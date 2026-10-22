@@ -654,6 +654,11 @@
     "expand": "Show data catalog",
     "collapse": "Hide data catalog"
   },
+  "mobileNotice": {
+    "title": "Mobile view coming soon",
+    "description": "This version is optimized for desktop. On mobile, we show the desktop view for now.",
+    "confirm": "Got it"
+  },
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",
