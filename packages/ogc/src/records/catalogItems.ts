@@ -7,6 +7,8 @@ export interface CatalogItemsOptions {
   limit: number;
   /** Search text; surrounding whitespace is ignored */
   q?: string;
+  /** Only returns the records of any of these thesaurus concepts */
+  concepts?: string[];
   /** Number of records to skip (default: 0) */
   offset?: number;
   /** Optional abort signal for cancellation */
@@ -30,13 +32,17 @@ export async function fetchCatalogItems(
   itemsUrl: string,
   options: CatalogItemsOptions,
 ): Promise<DatasetCollection> {
-  const { lang, limit, offset = 0, signal } = options;
+  const { lang, limit, offset = 0, concepts, signal } = options;
   const q = options.q?.trim() ?? "";
 
   const url = new URL(itemsUrl);
   url.searchParams.set("lang", lang);
   url.searchParams.set("limit", String(limit));
   url.searchParams.set("offset", String(offset));
+  if (concepts?.length) {
+    // De-duplicated and sorted, so the same concepts always give the same URL
+    url.searchParams.set("concepts", [...new Set(concepts)].sort().join("|"));
+  }
 
   if (q) {
     // If a search query is present, use default order (relevance)
