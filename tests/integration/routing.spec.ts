@@ -54,11 +54,9 @@ test.describe("locale routing", () => {
     page,
   }) => {
     await page.goto("/fr/map");
-    // The sidebar starts collapsed, so its localized label is the one on the
-    // tab that expands it
-    await expect(
-      page.getByRole("button", { name: "Ouvrir le panneau latéral" }),
-    ).toBeVisible({
+    // The desktop sidebar opens with the map panel, so its localized
+    // title shows
+    await expect(page.getByRole("heading", { name: "Carte" })).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
   });
@@ -67,9 +65,7 @@ test.describe("locale routing", () => {
     page,
   }) => {
     await page.goto("/en/map");
-    await expect(
-      page.getByRole("button", { name: "Expand the side panel" }),
-    ).toBeVisible({
+    await expect(page.getByRole("heading", { name: "Map" })).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
   });
