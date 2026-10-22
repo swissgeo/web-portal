@@ -100,10 +100,10 @@ const usePositionStore = defineStore("position", () => {
     const view = mapStore.olMap?.getView();
 
     if (!view) {
-      log.error({
+      log.debug({
         title: "Position store / setZoom",
         titleColor: LogPreDefinedColor.Red,
-        messages: ["No view available (yet)", dispatcher],
+        messages: ["No view available yet, caching value", dispatcher],
       });
 
       _zoomCache.value.push(newZoom);
@@ -174,10 +174,10 @@ const usePositionStore = defineStore("position", () => {
     const view = mapStore.olMap?.getView();
 
     if (!view) {
-      log.error({
+      log.debug({
         title: "Position store / setRotation",
         titleColor: LogPreDefinedColor.Red,
-        messages: ["No view available", dispatcher],
+        messages: ["No view available yet, caching value", dispatcher],
       });
 
       _rotationCache.value.push(newRotation);
@@ -226,10 +226,10 @@ const usePositionStore = defineStore("position", () => {
     const view = mapStore.olMap?.getView();
 
     if (!view) {
-      log.error({
+      log.debug({
         title: "Position store / setCenter",
         titleColor: LogPreDefinedColor.Red,
-        messages: ["No view available", dispatcher],
+        messages: ["No view available yet, caching value", dispatcher],
       });
 
       _centerCache.value.push(newCenter);
