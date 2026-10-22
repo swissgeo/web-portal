@@ -7,11 +7,12 @@ import {
   useDimensionsStore,
 } from "@swissgeo/dimension";
 import { useFeaturesStore } from "@swissgeo/feature";
-import { useLayerStore } from "@swissgeo/layers";
+import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import { computed, ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerLegend from "./LayerLegend.vue";
+import LayerVariantSelect from "./LayerVariantSelect.vue";
 
 const { layer, layerIndex } = defineProps<{
   layer: MapLayer;
@@ -97,13 +98,23 @@ function removeLayer() {
   layerStore.removeLayer(layer.uuid);
 }
 
-const datasetId = computed(() => {
+const datasetLayer = computed(() => {
   const source = layerStore.getLayer(layer.uuid);
-  if (source?.type !== "dataset") {
+  if (!source || !isDatasetLayer(source)) {
     return undefined;
   }
-  return source.humanId;
+  return source;
 });
+
+const datasetId = computed(() => datasetLayer.value?.humanId);
+
+function selectVariant(distributionId: string) {
+  // Each variant has its own time values and feature info service.
+  // Remove the values of the old variant. The converter sets the new ones.
+  dimensionsStore.clearLayerDimensions(layer.uuid);
+  featureStore.clearWmsCapability(layer.uuid);
+  layerStore.setSelectedDistributionId(layer.uuid, distributionId);
+}
 
 const detailPath = computed(() => {
   if (!datasetId.value) {
@@ -192,6 +203,12 @@ const rowButton = {
       :id="detailsId"
       class="flex min-w-0 flex-col gap-3 pl-8"
     >
+      <LayerVariantSelect
+        v-if="datasetLayer?.data.properties.aggregated"
+        :dataset="datasetLayer.data"
+        :selected-distribution-id="datasetLayer.selectedDistributionId"
+        @select="selectVariant"
+      />
       <div class="flex flex-col gap-1">
         <span class="text-xs font-medium text-toned uppercase">
           {{ t("layers.opacity") }}

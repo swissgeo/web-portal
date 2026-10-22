@@ -104,7 +104,10 @@ export function parseWmsCapabilities(
   const doc = new DOMParser().parseFromString(capabilityData, "text/xml");
   const layer = getLayer(doc, layerId);
   if (!layer) {
-    throw new Error(`WMS capabilities do not contain layer "${layerId}"`);
+    // While a layer switches to another distribution, the new layer id can meet
+    // the capabilities of the old service for a short time. Give no data. When a
+    // new response has no usable data, the caller reports the error.
+    return parseWmsCapabilities(null, layerId);
   }
 
   const legends = getLegends(layer);

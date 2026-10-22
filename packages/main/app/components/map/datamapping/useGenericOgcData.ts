@@ -18,6 +18,7 @@ export function useGenericOgcData(
   const { distribution, layerId } = useSelectedDistribution(
     dataset,
     distributionCollection,
+    () => layer.value.selectedDistributionId,
   );
   const { onServiceError, onServiceResponse, serviceData, serviceUrl } =
     useService(distribution);

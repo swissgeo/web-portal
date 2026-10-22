@@ -756,6 +756,76 @@ describe("useStateConfig exports selected shareable features", () => {
   });
 });
 
+describe("useStateConfig selected distribution", () => {
+  const availabilityMapId = "ch.kgk.gefahrenkarten-availability:wms";
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    mockMapLayers.length = 0;
+  });
+
+  it.each`
+    selectedDistributionId
+    ${availabilityMapId}
+    ${undefined}
+  `(
+    "exports selectedDistributionId=$selectedDistributionId",
+    ({ selectedDistributionId }) => {
+      const layerStore = useLayerStore();
+      layerStore.addLayer({ ...datasetsForStore[0]! });
+      if (selectedDistributionId) {
+        layerStore.setSelectedDistributionId("uuid-0", selectedDistributionId);
+      }
+
+      const layerStateConfig = expectRegularLayerState(
+        layerToStateConfig(mockedMapLayers[0]!),
+      );
+
+      expect(layerStateConfig.selectedDistributionId).toBe(
+        selectedDistributionId,
+      );
+    },
+  );
+
+  it.each`
+    selectedDistributionId | expected
+    ${availabilityMapId}   | ${availabilityMapId}
+    ${null}                | ${undefined}
+    ${undefined}           | ${undefined}
+  `(
+    "restores selectedDistributionId=$selectedDistributionId",
+    async ({ selectedDistributionId, expected }) => {
+      const restoredLayer: Layer = {
+        uuid: "uuid-restored",
+        humanId: "layer",
+        type: "dataset",
+        layerUrl: "https://test.ch",
+        isLoading: false,
+      };
+      vi.mocked(makeServerLayer).mockResolvedValueOnce({ ...restoredLayer });
+      const payload: AppStatePayload = {
+        version: APP_STATE_CONFIG_VERSION,
+        state: {
+          layers: [
+            {
+              layerUrl: "https://test.ch",
+              type: "dataset",
+              selectedDistributionId,
+            },
+          ],
+        },
+      };
+
+      await useStateConfig().importState(payload);
+
+      expect(useLayerStore().getLayer("uuid-restored")).toEqual({
+        ...restoredLayer,
+        selectedDistributionId: expected,
+      });
+    },
+  );
+});
+
 describe("useStateConfig drawing layer state", () => {
   const drawingMapLayer: MapLayer = {
     uuid: "drawing-layer-uuid",

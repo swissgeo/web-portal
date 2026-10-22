@@ -12,7 +12,11 @@ import type { Map as OlMap } from "ol";
 import { useDimensionsStore } from "@swissgeo/dimension";
 import { useDrawing } from "@swissgeo/drawing";
 import { createIdentifyResponse, useFeaturesStore } from "@swissgeo/feature";
-import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
+import {
+  isDatasetLayer,
+  makeServerLayer,
+  useLayerStore,
+} from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { useMap, usePositionStore } from "@swissgeo/map";
 import { DRAWING_LAYER_ID } from "@swissgeo/shared";
@@ -123,6 +127,10 @@ export function layerToStateConfig(
     config.features = features;
   }
 
+  if (isDatasetLayer(sourceData) && sourceData.selectedDistributionId) {
+    config.selectedDistributionId = sourceData.selectedDistributionId;
+  }
+
   return config;
 }
 
@@ -136,6 +144,9 @@ async function stateConfigToLayer(
   if (config.layerUrl) {
     const data = await $fetch<Dataset>(config.layerUrl);
     const layer = await makeServerLayer(data);
+    if (isDatasetLayer(layer) && config.selectedDistributionId) {
+      layer.selectedDistributionId = config.selectedDistributionId;
+    }
 
     return layer;
   }

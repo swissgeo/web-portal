@@ -79,6 +79,26 @@ describe("Layer store helpers", () => {
     expect(store.layers.map((l) => l.uuid)).toEqual(["replacement", "b"]);
   });
 
+  it.each`
+    type         | expected
+    ${"dataset"} | ${"a-dataset:wms"}
+    ${"kml"}     | ${undefined}
+  `(
+    "sets the selected distribution only on a $type layer",
+    ({ type, expected }) => {
+      const store = useLayerStore();
+      store.addLayer({ ...makeLayer("a"), type });
+
+      store.setSelectedDistributionId("a", "a-dataset:wms");
+
+      expect(store.getLayer("a")).toEqual({
+        ...makeLayer("a"),
+        type,
+        selectedDistributionId: expected,
+      });
+    },
+  );
+
   it("clears import options without consuming them", () => {
     const store = useLayerStore();
     store.addImportOption("failed-layer", { opacity: 0.4 });
