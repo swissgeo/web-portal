@@ -109,10 +109,11 @@ test.describe("locale routing — browser language detection (GPS-666)", () => {
       test.describe("preserves query string across the redirect", () => {
         test.use({ locale: "fr-CH" });
 
-        test(`${from}?state=foo → /fr${from}?state=foo`, async ({ page }) => {
+        // A share link opens the map, also from the root.
+        test(`${from}?state=foo → /fr/map?state=foo`, async ({ page }) => {
           await page.goto(`${from}?state=foo`);
-          await page.waitForURL(`**/fr${from}?state=foo`);
-          await expect(page).toHaveURL(`/fr${from}?state=foo`);
+          await page.waitForURL("**/fr/map?state=foo");
+          await expect(page).toHaveURL("/fr/map?state=foo");
         });
       });
     });
