@@ -141,18 +141,24 @@ describe("MobileNotice.vue", () => {
   });
 
   it("keeps the dismiss for a new instance when sessionStorage fails", async () => {
-    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
-      throw new Error("storage blocked");
-    });
-    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
-      throw new Error("storage blocked");
-    });
+    const blockedStorage = {
+      getItem: vi.fn(() => {
+        throw new Error("storage blocked");
+      }),
+      setItem: vi.fn(() => {
+        throw new Error("storage blocked");
+      }),
+    };
+    vi.stubGlobal("sessionStorage", blockedStorage);
     const first = await mountWithScreen(390, 844);
+    expect(isOpen(first)).toBe(true);
     await first.get('[data-testid="mobile-notice-confirm"]').trigger("click");
     first.unmount();
 
     const second = await mountWithScreen(390, 844);
 
+    expect(blockedStorage.getItem).toHaveBeenCalled();
+    expect(blockedStorage.setItem).toHaveBeenCalled();
     expect(isOpen(second)).toBe(false);
   });
 });
