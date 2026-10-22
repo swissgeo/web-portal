@@ -650,6 +650,11 @@
     "expand": "Daten-Katalog anzeigen",
     "collapse": "Daten-Katalog ausblenden"
   },
+  "mobileNotice": {
+    "title": "Mobile Ansicht folgt",
+    "description": "Diese Version ist für Desktop optimiert. Auf Mobile zeigen wir vorläufig die Desktop-Ansicht.",
+    "confirm": "Verstanden"
+  },
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",

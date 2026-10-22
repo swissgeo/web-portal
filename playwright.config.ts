@@ -49,6 +49,7 @@ export default defineConfig({
         "http://mock-thesaurus.org/api/thesauri",
       NUXT_PUBLIC_DRAWING_ALLOWED_DOMAINS: JSON.stringify(["mock-drawing.org"]),
       NUXT_PUBLIC_FEATURE_FLAGS_ENABLE_CMS_SEARCH: "true",
+      NUXT_PUBLIC_FEATURE_FLAGS_ENABLE_MOBILE_UI: "false",
     },
   },
 });
