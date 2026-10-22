@@ -28,5 +28,5 @@ export default defineEventHandler(async (event) => {
   );
 
   setResponseHeader(event, "Cache-Control", "no-store");
-  await sendRedirect(event, `/${target}/map${url.search}`, 302);
+  await sendRedirect(event, `/${target}${url.pathname}${url.search}`, 302);
 });
