@@ -4,6 +4,7 @@ const { resetApp } = useResetApp();
 
 <template>
   <div class="flex h-dvh flex-col">
+    <TestSiteBanner />
     <Topbar :display-search-bar="false" @reset-app="resetApp" />
     <UMain as="div" class="min-h-0 flex-1">
       <main id="main" ref="main" class="h-full font-sans">

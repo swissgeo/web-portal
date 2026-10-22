@@ -23,6 +23,7 @@ declare global {
       buildTime: string;
       maxFileSizeMB: number;
       drawingAllowedDomains: string[];
+      testSiteBanner: string;
       featureFlags: {
         enableCmsSearch: boolean;
         enableFeatureInfo: boolean;
