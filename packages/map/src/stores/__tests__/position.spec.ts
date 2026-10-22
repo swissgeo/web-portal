@@ -1,6 +1,7 @@
 import type { SingleCoordinate } from "@swissgeo/coordinates";
 
 import { WGS84, LV03, WEBMERCATOR, constants } from "@swissgeo/coordinates";
+import log from "@swissgeo/log";
 import { flushPromises } from "@vue/test-utils";
 import { setActivePinia, createPinia } from "pinia";
 import { describe, it, expect, beforeEach, vi } from "vitest";
@@ -48,6 +49,11 @@ const {
   };
 });
 
+vi.mock("@swissgeo/log", () => ({
+  default: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
+  LogPreDefinedColor: new Proxy({}, { get: (_t, p) => String(p) }),
+}));
+
 vi.mock("@/stores/map", () => ({
   useMapStore: () => ({
     get olMap() {
@@ -73,6 +79,7 @@ describe("position store", () => {
     store = usePositionStore();
 
     animateMock.mockClear();
+    vi.mocked(log.error).mockClear();
   });
 
   describe("initial state", () => {
@@ -391,6 +398,7 @@ describe("position store", () => {
 
       const result = store.setZoom(7.2, mockDispatcher);
       expect(result).toBe(false);
+      expect(log.error).not.toHaveBeenCalled();
       expect(store.zoom).toEqual(1); // still the default
 
       olMapMock.value = {
@@ -410,6 +418,7 @@ describe("position store", () => {
       // operating on LV95
       const result = store.setCenter([2650000, 1180000], mockDispatcher);
       expect(result).toBe(false);
+      expect(log.error).not.toHaveBeenCalled();
       expect(store.center).toEqual([2660000, 1190000]); // still the default
 
       olMapMock.value = {
@@ -431,6 +440,7 @@ describe("position store", () => {
 
       const result = store.setRotation(Math.PI / 4, mockDispatcher);
       expect(result).toBe(false);
+      expect(log.error).not.toHaveBeenCalled();
       expect(store.rotation).toEqual(0); // still the default
 
       olMapMock.value = {
