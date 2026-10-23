@@ -2,7 +2,7 @@ import type { Extent } from "ol/extent";
 
 import { createCutoutGeometry } from "@swissgeo/coordinates";
 import { useMap } from "@swissgeo/map";
-import { EPSG_2056_BOUNDING_BOX } from "@swissgeo/shared";
+import { EPSG_2056_BOUNDING_BOX, URL_PARAM_STATE } from "@swissgeo/shared";
 import { containsExtent } from "ol/extent";
 import Feature from "ol/Feature";
 import VectorLayer from "ol/layer/Vector";
@@ -15,7 +15,6 @@ import type { PrintFormat, PrintOrientation } from "../types/print";
 
 import { usePrintRequests } from "./usePrintRequests";
 import {
-  URL_PARAM_STATE,
   URL_PARAM_PRINT_ORIENTATION,
   URL_PARAM_PRINT_FORMAT,
   URL_PARAM_PRINT_RESOLUTION,

@@ -1,7 +1,10 @@
 import type { RouteLocationNormalized } from "vue-router";
 
-import { DEFAULT_LOCALE, pickLocaleFromAcceptLanguage } from "@swissgeo/shared";
-import { URL_PARAM_STATE } from "~/composables/useUrlParams";
+import {
+  DEFAULT_LOCALE,
+  pickLocaleFromAcceptLanguage,
+  URL_PARAM_STATE,
+} from "@swissgeo/shared";
 
 const SERVER_ROUTES = ["/api", "/health"];
 
