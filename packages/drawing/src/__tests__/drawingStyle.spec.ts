@@ -493,6 +493,6 @@ describe("mapKmlStylesToFeatureProperties", () => {
 
     mapKmlStylesToFeatureProperties(feature);
 
-    expect(feature.getStyle()).toBeUndefined();
+    expect(feature.getStyle()).toBeNull();
   });
 });
