@@ -39,9 +39,11 @@ export default defineNuxtConfig({
     buildAssetsDir: "/_nxt/",
     keepalive: true,
     head: {
+      // The mobile UI is not ready yet, so phones get a desktop sized layout
+      // viewport and render the desktop UI zoomed out (see MobileNotice.vue).
+      // Restore "width=device-width, initial-scale=1" once the mobile UI ships.
       // Android: fit the page above the keyboard. iOS ignores this.
-      viewport:
-        "width=device-width, initial-scale=1, interactive-widget=resizes-content",
+      viewport: "width=1280, interactive-widget=resizes-content",
     },
   },
   typescript: {

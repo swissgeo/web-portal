@@ -1,4 +1,9 @@
 {
+  "mobileNotice": {
+    "title": "Mobile Ansicht folgt bald",
+    "description": "Diese Version ist für Desktop-Computer optimiert. Eine Ansicht für Mobilgeräte ist in Arbeit und wird bald verfügbar sein. Bis dahin wird die Desktop-Ansicht angezeigt.",
+    "confirm": "Verstanden"
+  },
   "menuTitles": {
     "knowledge": "Wissen",
     "about": "Über Swissgeo"
