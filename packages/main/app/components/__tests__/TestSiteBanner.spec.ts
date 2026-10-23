@@ -16,7 +16,7 @@ mockNuxtImport("useI18n", () => () => ({
 
 const UBannerStub = {
   name: "UBanner",
-  props: ["color", "title"],
+  props: ["color", "title", "ui"],
   template: '<div data-testid="test-site-banner">{{ title }}</div>',
 };
 
@@ -29,14 +29,21 @@ function mountBanner(testSiteBanner: string) {
 
 describe("TestSiteBanner.vue", () => {
   it.each([
-    { testSite: "dev", color: "error", environment: "DEV" },
-    { testSite: "int", color: "warning", environment: "INT" },
+    { testSite: "dev", color: "error", root: "", environment: "DEV" },
+    { testSite: "int", color: "warning", root: "", environment: "INT" },
+    {
+      testSite: "preview",
+      color: "neutral",
+      root: "bg-purple-800",
+      environment: "PREVIEW",
+    },
   ])(
     "shows the $environment banner in $color",
-    ({ testSite, color, environment }) => {
+    ({ testSite, color, root, environment }) => {
       const banner = mountBanner(testSite).getComponent({ name: "UBanner" });
 
       expect(banner.props("color")).toBe(color);
+      expect(banner.props("ui").root).toBe(root);
       expect(banner.text()).toBe(`testSiteBanner.text:${environment}`);
     },
   );
