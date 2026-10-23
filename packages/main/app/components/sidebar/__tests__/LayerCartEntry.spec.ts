@@ -12,7 +12,14 @@ vi.mock("vue-i18n", () => ({
 
 const layerStore = vi.hoisted(() => ({
   removeLayer: vi.fn(),
-  getLayer: vi.fn(() => ({ type: "dataset", humanId: "a-human-id" })),
+  setSelectedDistributionId: vi.fn(),
+  getLayer: vi.fn(
+    (): Record<string, unknown> => ({
+      type: "dataset",
+      humanId: "a-human-id",
+      data: { properties: {} },
+    }),
+  ),
 }));
 const dimensionsStore = vi.hoisted(() => ({
   getDimensions: vi.fn(() => undefined),
@@ -31,7 +38,10 @@ const mapViewStore = vi.hoisted(() => ({
   removeLayer: vi.fn(),
 }));
 
-vi.mock("@swissgeo/layers", () => ({ useLayerStore: () => layerStore }));
+vi.mock("@swissgeo/layers", () => ({
+  useLayerStore: () => layerStore,
+  isDatasetLayer: (layer: { type: string }) => layer.type === "dataset",
+}));
 vi.mock("@swissgeo/feature", () => ({ useFeaturesStore: () => featureStore }));
 vi.mock("@swissgeo/dimension", () => ({
   useDimensionsStore: () => dimensionsStore,
@@ -40,8 +50,16 @@ vi.mock("@swissgeo/dimension", () => ({
 mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 mockNuxtImport("useMapViewStore", () => () => mapViewStore);
 
+const LayerVariantSelectStub = {
+  name: "LayerVariantSelect",
+  props: ["dataset", "selectedDistributionId"],
+  emits: ["select"],
+  template: "<div />",
+};
+
 const stubs = {
   LayerLegend: { template: "<div data-testid='legend-stub' />" },
+  LayerVariantSelect: LayerVariantSelectStub,
   UButton: {
     inheritAttrs: false,
     props: ["to"],
@@ -76,6 +94,7 @@ describe("LayerCartEntry.vue", () => {
     layerStore.getLayer.mockReturnValue({
       type: "dataset",
       humanId: "a-human-id",
+      data: { properties: {} },
     });
   });
 
@@ -101,9 +120,13 @@ describe("LayerCartEntry.vue", () => {
     const wrapper = mountEntry();
     expect(wrapper.find("[data-testid='legend-stub']").exists()).toBe(false);
 
-    await wrapper.find("[data-testid='layer-expand-toggle']").trigger("click");
+    const toggle = wrapper.find("[data-testid='layer-expand-toggle']");
+    await toggle.trigger("click");
 
     expect(wrapper.find("[data-testid='legend-stub']").exists()).toBe(true);
+    // Screen readers link the toggle to the part it opens
+    const detailsId = toggle.attributes("aria-controls");
+    expect(wrapper.find(`[id='${detailsId}']`).exists()).toBe(true);
   });
 
   it("reorders the layer with the arrow keys on the handle", async () => {
@@ -148,5 +171,55 @@ describe("LayerCartEntry.vue", () => {
     layerStore.getLayer.mockReturnValue({ type: "file", humanId: "whatever" });
 
     expect(mountEntry().find("[title='layers.info']").exists()).toBe(false);
+  });
+
+  it.each`
+    aggregated   | isShown
+    ${true}      | ${true}
+    ${undefined} | ${false}
+  `(
+    "shows the variant select=$isShown for aggregated=$aggregated",
+    async ({ aggregated, isShown }) => {
+      layerStore.getLayer.mockReturnValue({
+        type: "dataset",
+        humanId: "a-human-id",
+        data: { properties: { aggregated } },
+      });
+      const wrapper = mountEntry();
+
+      await wrapper
+        .find("[data-testid='layer-expand-toggle']")
+        .trigger("click");
+
+      expect(wrapper.findComponent(LayerVariantSelectStub).exists()).toBe(
+        isShown,
+      );
+    },
+  );
+
+  it("switches the variant and clears the values of the old variant", async () => {
+    const data = { properties: { aggregated: true } };
+    layerStore.getLayer.mockReturnValue({
+      type: "dataset",
+      humanId: "a-human-id",
+      data,
+      selectedDistributionId: "a-dataset:wms",
+    });
+    const wrapper = mountEntry();
+    await wrapper.find("[data-testid='layer-expand-toggle']").trigger("click");
+    const select = wrapper.findComponent(LayerVariantSelectStub);
+
+    select.vm.$emit("select", "a-dataset-availability:wms");
+
+    expect(select.props()).toEqual({
+      dataset: data,
+      selectedDistributionId: "a-dataset:wms",
+    });
+    expect(dimensionsStore.clearLayerDimensions).toHaveBeenCalledWith("a-uuid");
+    expect(featureStore.clearWmsCapability).toHaveBeenCalledWith("a-uuid");
+    expect(layerStore.setSelectedDistributionId).toHaveBeenCalledWith(
+      "a-uuid",
+      "a-dataset-availability:wms",
+    );
   });
 });

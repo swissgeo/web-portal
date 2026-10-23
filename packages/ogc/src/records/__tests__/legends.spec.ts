@@ -91,6 +91,65 @@ describe("legend extraction from WMS capabilities", () => {
   });
 });
 
+const legendGraphicBaseUrl =
+  "https://wfs.geodienste.ch/gefahrenkarten_v1_3_0/deu?";
+
+const legendGraphicRequest = `
+  <sld:GetLegendGraphic>
+    <Format>image/png</Format>
+    <DCPType><HTTP><Get>
+      <OnlineResource xlink:href="${legendGraphicBaseUrl}"/>
+    </Get></HTTP></DCPType>
+  </sld:GetLegendGraphic>`;
+
+/**
+ * Trimmed geodienste.ch capabilities. The XML declaration is left out, because
+ * happy-dom rejects a declaration with single quotes.
+ */
+function makeGroupCapabilities(request: string): string {
+  return `<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms" xmlns:sld="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <Capability>
+    <Request>${request}</Request>
+    <Layer>
+      <Title>root</Title>
+      <Layer>
+        <Name>synoptische_gefahrenuebersicht</Name>
+        <Layer><Name>synoptisches_gefahrengebiet</Name></Layer>
+      </Layer>
+      <Layer>
+        <Name>group_with_legend</Name>
+        <Style>
+          <Name>default</Name>
+          <LegendURL width="10" height="20">
+            <Format>image/png</Format>
+            <OnlineResource xlink:href="https://example.com/legend.png"/>
+          </LegendURL>
+        </Style>
+        <Layer><Name>child_of_group_with_legend</Name></Layer>
+      </Layer>
+      <Layer><Name>leaf_without_legend</Name></Layer>
+    </Layer>
+  </Capability>
+</WMS_Capabilities>`;
+}
+
+describe("legend of a group layer without advertised legend", () => {
+  it.each`
+    case                                        | request                 | layerId                             | expected
+    ${"requests GetLegendGraphic for a group"}  | ${legendGraphicRequest} | ${"synoptische_gefahrenuebersicht"} | ${[{ href: `${legendGraphicBaseUrl}SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&SLD_VERSION=1.1.0&LAYER=synoptische_gefahrenuebersicht&FORMAT=image%2Fpng`, format: "image/png" }]}
+    ${"keeps the advertised legend of a group"} | ${legendGraphicRequest} | ${"group_with_legend"}              | ${[{ href: "https://example.com/legend.png", format: "image/png", width: 10, height: 20 }]}
+    ${"gives no legend to a leaf layer"}        | ${legendGraphicRequest} | ${"leaf_without_legend"}            | ${[]}
+    ${"needs an advertised GetLegendGraphic"}   | ${""}                   | ${"synoptische_gefahrenuebersicht"} | ${[]}
+  `("$case", ({ request, layerId, expected }) => {
+    const { legends } = parseWmsCapabilities(
+      makeGroupCapabilities(request),
+      layerId,
+    );
+
+    expect(legends).toEqual(expected);
+  });
+});
+
 describe("legend extraction from a WMTS layer", () => {
   const href =
     "https://api3.geo.admin.ch/static/images/legends/ch.agroscope.amphibien-ausbreitungskarten_alytes_obstetricans_de.png";

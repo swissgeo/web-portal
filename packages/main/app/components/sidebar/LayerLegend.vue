@@ -17,6 +17,14 @@ const failedHrefs = ref<string[]>([]);
 const openModal = ref(false);
 const selectedLegend = ref<Legend | null>(null);
 
+const {
+  imageStyle: modalImageStyle,
+  onPointerDown,
+  onPointerMove,
+  onPointerEnd,
+  reset: resetZoom,
+} = useImageZoom();
+
 function isImage(legend: Legend) {
   if (legend.format) {
     return legend.format.startsWith("image/");
@@ -64,6 +72,7 @@ function handleLegendClick(legend: Legend) {
 function handleModalClose() {
   openModal.value = false;
   selectedLegend.value = null;
+  resetZoom();
 }
 
 // Legends that cannot be displayed inline (typically PDFs) are offered as a
@@ -126,11 +135,20 @@ const documentLinks = computed(() =>
           />
         </template>
         <template #body>
-          <div class="w-full rounded-md bg-white p-2">
+          <div
+            class="min-h-28 w-full touch-none overflow-hidden rounded-md bg-white p-2 select-none"
+            @pointerdown="onPointerDown"
+            @pointermove="onPointerMove"
+            @pointerup="onPointerEnd"
+            @pointercancel="onPointerEnd"
+          >
             <img
               v-if="selectedLegend"
               :src="selectedLegend.href"
               :alt="t('layers.legend.title')"
+              :style="modalImageStyle"
+              class="will-change-transform"
+              draggable="false"
             />
           </div>
         </template>

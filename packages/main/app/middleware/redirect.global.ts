@@ -1,6 +1,10 @@
 import type { RouteLocationNormalized } from "vue-router";
 
-import { DEFAULT_LOCALE, pickLocaleFromAcceptLanguage } from "@swissgeo/shared";
+import {
+  DEFAULT_LOCALE,
+  pickLocaleFromAcceptLanguage,
+  URL_PARAM_STATE,
+} from "@swissgeo/shared";
 
 const SERVER_ROUTES = ["/api", "/health"];
 
@@ -59,24 +63,16 @@ export function resolvePreferredLocale(): string {
 export function redirector(
   to: Pick<RouteLocationNormalized, "path" | "query">,
 ) {
-  const localePath = useLocalePath();
-
   if (isExempt(to.path)) {
     return undefined;
   } else if (isLocaleRoot(to.path)) {
-    // The URL already specifies a locale; honor it and route to /<locale>/map.
-    // Note: in production, locale-root URLs (`/de`, `/fr`, …) are owned by
-    // the reverse proxy, which routes them to the CMS before Nuxt sees the
-    // request. This branch only fires when Nuxt is reached directly (dev,
-    // staging, or a proxy misconfiguration).
-    return navigateTo(
-      { path: localePath("/map"), query: to.query },
-      { redirectCode: 302 },
-    );
+    return undefined;
   } else if (isRootPath(to.path)) {
+    // A share link (`/?state=…`) opens the map, not the landing page.
+    const page = to.query[URL_PARAM_STATE] ? "map" : "";
     const locale = resolvePreferredLocale();
     return navigateTo(
-      { path: `/${locale}/map`, query: to.query },
+      { path: `/${locale}/${page}`, query: to.query },
       { redirectCode: 302 },
     );
   } else if (!isLocalized(to.path)) {
@@ -91,12 +87,13 @@ export function redirector(
 
 /**
  * Redirect the user with following pattern:
- * * | /                  | /<locale>/map      |
- * * | /map               | /<locale>/map      |
- * * | /<locale>/map      | _no redirect_      |
- * * | /<locale>          | /<locale>/map      |
- * * | /anything          | /<locale>/anything |
- * * | /<locale>/anything | _no redirect_      |
+ * * | /                  | /<locale>         |
+ * * | /?state=…          | /<locale>/map     |
+ * * | /map               | /<locale>/map     |
+ * * | /<locale>/map      | _no redirect_     |
+ * * | /<locale>          | _no redirect_     |
+ * * | /anything          | /<locale>/anything|
+ * * | /<locale>/anything | _no redirect_     |
  *
  * For unlocalized paths, the locale is resolved via browser Accept-Language →
  * DEFAULT_LOCALE (see {@link resolvePreferredLocale}).

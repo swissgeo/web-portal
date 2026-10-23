@@ -31,7 +31,8 @@ function render() {
       mocks: { $t: (key: string) => key },
       stubs: {
         ClientOnly: { template: "<slot />" },
-        Topbar: true,
+        TestSiteBanner: { template: '<div data-testid="test-site-banner" />' },
+        Topbar: { template: '<div data-testid="topbar" />' },
         Footer: true,
         UMain: { template: "<div><slot /></div>" },
         SideBar: {
@@ -72,6 +73,17 @@ describe("application frame", () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.get("input").element.value).toBe("retained filter");
     expect(wrapper.get('[data-testid="map-instance"]').element).toBe(map);
+    wrapper.unmount();
+  });
+
+  it("keeps the test site banner when map fullscreen hides the topbar", async () => {
+    const wrapper = render();
+    mapView.isFullscreenModeActive = true;
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('[data-testid="topbar"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="test-site-banner"]').exists()).toBe(
+      true,
+    );
     wrapper.unmount();
   });
 

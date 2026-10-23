@@ -7,11 +7,12 @@ import {
   useDimensionsStore,
 } from "@swissgeo/dimension";
 import { useFeaturesStore } from "@swissgeo/feature";
-import { useLayerStore } from "@swissgeo/layers";
-import { computed, ref } from "vue";
+import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
+import { computed, ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerLegend from "./LayerLegend.vue";
+import LayerVariantSelect from "./LayerVariantSelect.vue";
 
 const { layer, layerIndex } = defineProps<{
   layer: MapLayer;
@@ -27,6 +28,7 @@ const mapViewStore = useMapViewStore();
 const featureStore = useFeaturesStore();
 
 const isExpanded = ref(false);
+const detailsId = useId();
 const legends = computed(() => mapViewStore.getLayerLegends(layer.uuid));
 
 const currentTime = computed({
@@ -96,13 +98,23 @@ function removeLayer() {
   layerStore.removeLayer(layer.uuid);
 }
 
-const datasetId = computed(() => {
+const datasetLayer = computed(() => {
   const source = layerStore.getLayer(layer.uuid);
-  if (source?.type !== "dataset") {
+  if (!source || !isDatasetLayer(source)) {
     return undefined;
   }
-  return source.humanId;
+  return source;
 });
+
+const datasetId = computed(() => datasetLayer.value?.humanId);
+
+function selectVariant(distributionId: string) {
+  // Each variant has its own time values and feature info service.
+  // Remove the values of the old variant. The converter sets the new ones.
+  dimensionsStore.clearLayerDimensions(layer.uuid);
+  featureStore.clearWmsCapability(layer.uuid);
+  layerStore.setSelectedDistributionId(layer.uuid, distributionId);
+}
 
 const detailPath = computed(() => {
   if (!datasetId.value) {
@@ -122,7 +134,7 @@ const rowButton = {
 
 <template>
   <li class="flex min-w-0 flex-col gap-2 rounded">
-    <div class="flex min-w-0 items-center">
+    <div class="flex min-w-0 items-start">
       <UButton
         data-testid="layer-reorder-handle"
         data-vaul-no-drag
@@ -138,16 +150,22 @@ const rowButton = {
         class="shrink-0"
         :icon="isExpanded ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'"
         :title="isExpanded ? t('layers.collapse') : t('layers.expand')"
+        :aria-expanded="isExpanded"
+        :aria-controls="detailsId"
         v-bind="rowButton"
         @click="isExpanded = !isExpanded"
       />
-      <div
-        class="min-w-0 flex-1 truncate px-1"
+      <button
+        type="button"
+        class="min-w-0 flex-1 cursor-pointer px-1 text-left"
         :title="layer.displayName"
-        :class="{ 'text-dimmed': !layer.isVisible }"
+        :aria-expanded="isExpanded"
+        :aria-controls="detailsId"
+        :class="{ truncate: !isExpanded, 'text-dimmed': !layer.isVisible }"
+        @click="isExpanded = !isExpanded"
       >
         {{ layer.displayName }}
-      </div>
+      </button>
       <div class="flex shrink-0 items-center">
         <select
           v-if="(availableTimes?.length || 0) > 1"
@@ -180,7 +198,17 @@ const rowButton = {
       </div>
     </div>
 
-    <div v-if="isExpanded" class="flex min-w-0 flex-col gap-3 pl-8">
+    <div
+      v-if="isExpanded"
+      :id="detailsId"
+      class="flex min-w-0 flex-col gap-3 pl-8"
+    >
+      <LayerVariantSelect
+        v-if="datasetLayer?.data.properties.aggregated"
+        :dataset="datasetLayer.data"
+        :selected-distribution-id="datasetLayer.selectedDistributionId"
+        @select="selectVariant"
+      />
       <div class="flex flex-col gap-1">
         <span class="text-xs font-medium text-toned uppercase">
           {{ t("layers.opacity") }}

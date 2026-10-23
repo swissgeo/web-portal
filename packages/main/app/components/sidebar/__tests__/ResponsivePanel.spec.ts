@@ -37,7 +37,13 @@ const stubs = {
       ui: Object,
     },
     emits: ["update:open", "update:activeSnapPoint"],
-    template: "<section data-testid='drawer'><slot name='body' /></section>",
+    template: `
+      <section data-testid='drawer'>
+        <div data-slot='container'>
+          <slot name='body' />
+          <div data-slot='footer'><slot name='footer' /></div>
+        </div>
+      </section>`,
   },
   UButton: {
     inheritAttrs: false,
@@ -67,6 +73,55 @@ function mountPanel(
       provide: sharedSnapPoint ? { [panelSnapPointKey]: sharedSnapPoint } : {},
     },
   });
+}
+
+function mountPanelWithFooter(itemCount = 1, isVisible = true) {
+  return mount(ResponsivePanel, {
+    props: {
+      itemCount,
+      isVisible,
+      title: "Map",
+      closeLabel: "Close",
+      expandLabel: "Expand",
+      collapseLabel: "Collapse",
+    },
+    slots: {
+      default: PanelContent,
+      footer: "<p data-testid='footer'>footer</p>",
+    },
+    global: { stubs },
+  });
+}
+
+// happy-dom has no layout, so the drawer gets the sizes of a 768px high window
+function layOut(
+  wrapper: ReturnType<typeof mountPanelWithFooter>,
+  contentHeight: number,
+) {
+  const drawer = wrapper.get("[data-testid='drawer']").element as HTMLElement;
+  const container = wrapper.get("[data-slot='container']")
+    .element as HTMLElement;
+  const footer = wrapper.get("[data-slot='footer']").element as HTMLElement;
+  Object.defineProperties(drawer, {
+    offsetTop: { value: 96 },
+    offsetHeight: { value: 608 },
+    getAnimations: { value: () => [] },
+  });
+  Object.defineProperty(container, "offsetTop", { value: 20 });
+  Object.defineProperty(footer, "offsetHeight", { value: 100 });
+  setContentHeight(wrapper, contentHeight);
+  container.getBoundingClientRect = () => ({ top: 400 }) as DOMRect;
+  return { drawer, container };
+}
+
+// The content ends this far below the top of the scroller
+function setContentHeight(
+  wrapper: ReturnType<typeof mountPanelWithFooter>,
+  contentHeight: number,
+) {
+  scroller(wrapper).getBoundingClientRect = () => ({ top: 0 }) as DOMRect;
+  wrapper.get("[data-testid='content']").element.getBoundingClientRect = () =>
+    ({ bottom: contentHeight }) as DOMRect;
 }
 
 function scroller(wrapper: ReturnType<typeof mountPanel>) {
@@ -185,8 +240,8 @@ describe("ResponsivePanel.vue", () => {
     it("starts partially extended and can be fully extended", () => {
       const drawer = mountPanel().getComponent({ name: "UDrawer" });
 
-      expect(drawer.props("snapPoints")).toEqual([0.6, 1]);
-      expect(drawer.props("activeSnapPoint")).toBe(0.6);
+      expect(drawer.props("snapPoints")).toEqual([0.75, 1]);
+      expect(drawer.props("activeSnapPoint")).toBe(0.75);
     });
 
     it("shrinks down to its handle instead of closing when not dismissible", () => {
@@ -195,8 +250,8 @@ describe("ResponsivePanel.vue", () => {
       });
 
       expect(drawer.props("dismissible")).toBe(false);
-      expect(drawer.props("snapPoints")).toEqual(["200px", 0.6, 1]);
-      expect(drawer.props("activeSnapPoint")).toBe(0.6);
+      expect(drawer.props("snapPoints")).toEqual(["200px", 0.75, 1]);
+      expect(drawer.props("activeSnapPoint")).toBe(0.75);
     });
 
     it("closes when the drawer is dismissed", () => {
@@ -220,7 +275,7 @@ describe("ResponsivePanel.vue", () => {
 
       button.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
       await nextTick();
-      expect(drawer.props("activeSnapPoint")).toBe(0.6);
+      expect(drawer.props("activeSnapPoint")).toBe(0.75);
 
       field.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
       await nextTick();
@@ -273,8 +328,8 @@ describe("ResponsivePanel.vue", () => {
       });
 
       expect(drawer.props("activeSnapPoint")).toBe(1);
-      drawer.vm.$emit("update:activeSnapPoint", 0.6);
-      expect(sharedSnapPoint.value).toBe(0.6);
+      drawer.vm.$emit("update:activeSnapPoint", 0.75);
+      expect(sharedSnapPoint.value).toBe(0.75);
     });
 
     it("does not change the shared height while hidden", () => {
@@ -284,7 +339,7 @@ describe("ResponsivePanel.vue", () => {
         sharedSnapPoint,
       ).getComponent({ name: "UDrawer" });
 
-      drawer.vm.$emit("update:activeSnapPoint", 0.6);
+      drawer.vm.$emit("update:activeSnapPoint", 0.75);
       expect(sharedSnapPoint.value).toBe("200px");
     });
 
@@ -299,7 +354,116 @@ describe("ResponsivePanel.vue", () => {
       expect(toggle.text()).toBe("Collapse");
 
       await toggle.trigger("click");
-      expect(drawer.props("activeSnapPoint")).toBe(0.6);
+      expect(drawer.props("activeSnapPoint")).toBe(0.75);
+    });
+
+    describe("with a footer", () => {
+      it("shows the footer below the content", async () => {
+        const wrapper = mountPanelWithFooter();
+        await nextTick();
+
+        expect(
+          wrapper.find("[data-slot='footer'] [data-testid='footer']").exists(),
+        ).toBe(true);
+      });
+
+      it("opens only as high as its content when that is lower", async () => {
+        const wrapper = mountPanelWithFooter();
+        await flushPromises();
+        layOut(wrapper, 60);
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+
+        // 20 + 60 + 100 content, placed 768 - 608 above the window bottom
+        expect(
+          wrapper.getComponent({ name: "UDrawer" }).props("snapPoints"),
+        ).toEqual(["340px", 1]);
+      });
+
+      it("keeps the usual height when the content is higher", async () => {
+        const wrapper = mountPanelWithFooter();
+        await flushPromises();
+        layOut(wrapper, 2000);
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+
+        expect(
+          wrapper.getComponent({ name: "UDrawer" }).props("snapPoints"),
+        ).toEqual([0.75, 1]);
+      });
+
+      it("follows the drawer while the finger is down and stops after", async () => {
+        const wrapper = mountPanelWithFooter();
+        await flushPromises();
+        const { drawer, container } = layOut(wrapper, 2000);
+
+        drawer.dispatchEvent(new Event("pointerdown"));
+        // The drawer box ends at 96 + 608, the container starts at 200
+        container.getBoundingClientRect = () => ({ top: 200 }) as DOMRect;
+        await new Promise(requestAnimationFrame);
+        await new Promise(requestAnimationFrame);
+        expect(container.style.height).toBe("504px");
+
+        drawer.dispatchEvent(new Event("pointerup"));
+        await new Promise(requestAnimationFrame);
+        container.getBoundingClientRect = () => ({ top: 100 }) as DOMRect;
+        await new Promise(requestAnimationFrame);
+        expect(container.style.height).toBe("504px");
+      });
+
+      it("closes after a swipe that carries the drawer past half its height", async () => {
+        const wrapper = mountPanelWithFooter();
+        await flushPromises();
+        const { drawer } = layOut(wrapper, 2000);
+        // 104px of the drawer on screen, at 75 % it shows 416px
+        drawer.getBoundingClientRect = () => ({ top: 600 }) as DOMRect;
+        const pointer = (type: string, y: number, time: number) => {
+          const event = new Event(type);
+          Object.defineProperties(event, {
+            clientY: { value: y },
+            timeStamp: { value: time },
+          });
+          drawer.dispatchEvent(event);
+        };
+
+        pointer("pointerdown", 0, 0);
+        pointer("pointermove", 300, 90);
+        pointer("pointerup", 300, 90);
+        drawer.dispatchEvent(new Event("transitionend"));
+
+        expect(wrapper.emitted("close")).toHaveLength(1);
+      });
+
+      it("measures a hidden drawer once it shows again", async () => {
+        const wrapper = mountPanelWithFooter(1, false);
+        await flushPromises();
+        layOut(wrapper, 60);
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+        const drawer = wrapper.getComponent({ name: "UDrawer" });
+        expect(drawer.props("snapPoints")).toEqual([0.75, 1]);
+
+        await wrapper.setProps({ isVisible: true });
+        await flushPromises();
+
+        expect(drawer.props("snapPoints")).toEqual(["340px", 1]);
+      });
+
+      it("measures the content again when the number of items changes", async () => {
+        const wrapper = mountPanelWithFooter(1);
+        await flushPromises();
+        layOut(wrapper, 60);
+        window.dispatchEvent(new Event("resize"));
+        await nextTick();
+        setContentHeight(wrapper, 100);
+        await wrapper.setProps({ itemCount: 2 });
+        await flushPromises();
+
+        // 20 + 100 + 100 content, placed 768 - 608 above the window bottom
+        expect(
+          wrapper.getComponent({ name: "UDrawer" }).props("snapPoints"),
+        ).toEqual(["380px", 1]);
+      });
     });
 
     it("provides the scroller to the content", () => {
@@ -339,9 +503,23 @@ describe("ResponsivePanel.vue", () => {
         expect(move.defaultPrevented).toBe(false);
       });
 
-      it("scrolls normally when pushing up", async () => {
+      it("drags the drawer open when pushing up below full height", async () => {
         const element = await mountedScroller();
-        element.scrollTop = 0;
+
+        touch(element, "touchstart", 150);
+        const move = touch(element, "touchmove", 100);
+
+        expect(move.defaultPrevented).toBe(true);
+      });
+
+      it("scrolls normally when pushing up at full height", async () => {
+        const wrapper = mountPanel();
+        await flushPromises();
+        wrapper
+          .getComponent({ name: "UDrawer" })
+          .vm.$emit("update:activeSnapPoint", 1);
+        await nextTick();
+        const element = scroller(wrapper);
 
         touch(element, "touchstart", 150);
         const move = touch(element, "touchmove", 100);

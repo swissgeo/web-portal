@@ -1,3 +1,6 @@
+import { URL_PARAM_STATE } from "@swissgeo/shared";
+import { resolveTargetLocale } from "~~/server/utils/locale-resolution";
+import { sendRedirect, setResponseHeader } from "h3";
 // Intercept unlocalized entry-point requests before @nuxtjs/i18n's
 // render:before hook does.
 //
@@ -12,7 +15,6 @@
 // Running here as a Nitro server middleware means we redirect before any of
 // the i18n hooks fire, using the same priority the Vue middleware uses for
 // other unlocalized paths: Accept-Language → defaultLocale.
-import { resolveTargetLocale } from "../utils/locale-resolution";
 
 const ENTRY_PATHS = new Set(["/", "/map"]);
 
@@ -26,5 +28,10 @@ export default defineEventHandler(async (event) => {
     getRequestHeader(event, "accept-language"),
   );
 
-  await sendRedirect(event, `/${target}/map${url.search}`, 302);
+  setResponseHeader(event, "Cache-Control", "no-store");
+  // A share link (`/?state=…`) opens the map, not the landing page.
+  const isShareLink =
+    url.pathname === "/" && url.searchParams.has(URL_PARAM_STATE);
+  const path = isShareLink ? "/map" : url.pathname;
+  await sendRedirect(event, `/${target}${path}${url.search}`, 302);
 });

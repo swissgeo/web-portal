@@ -107,12 +107,10 @@
   },
   "debug": {
     "openImportLocalLayersPanel": "Open Import Local Layers Panel",
-    "openImportDrawingPanel": "Open Import Drawing Panel",
     "openDrawingPanel": "Open Drawing Panel",
     "openImportLayersPanel": "Open Import Layers Panel",
     "openLayersPanel": "Open Layers Panel",
     "drawingPanelTitle": "Drawing Tools",
-    "importDrawingPanelTitle": "Import Drawing from URL",
     "drawingNameLabel": "Drawing name",
     "drawingToolSelectLabel": "Select a drawing tool:",
     "drawingToolPoint": "Point",
@@ -205,7 +203,11 @@
     "openStateConfigPanel": "Open State Config Panel",
     "stateConfig": "State Config",
     "share": "Share",
-    "openPrintPanel": "Open Print Panel"
+    "openPrintPanel": "Open Print Panel",
+    "openFeatureFlagsPanel": "Open Feature Flags Panel",
+    "featureFlagsPanelTitle": "Feature Flags",
+    "resetFeatureFlags": "Reset to defaults",
+    "featureFlagOverridden": "overridden"
   },
   "geolocation": {
     "permissionDenied": "Location permission denied",
@@ -383,11 +385,13 @@
         "fetchFailed": "Failed to fetch file from URL (HTTP {status})",
         "adminRequired": "Admin privileges are required to import this drawing"
       },
-      "infoMessages": {
-        "importPart1": "Importing a {provenance} drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
-        "adminImportPart2": "If imported as an admin, you will be able to synchronize it with the Swissgeo database under the same ID as imported and other users will see your changes.",
-        "nonAdminImportPart2": "Sharing the drawing will then be possible with other users, but under a different drawing ID than the imported one."
-      },
+      "drawingReplaceConfirmTitle": "Replace current drawing?",
+      "drawingReplaceConfirmDescription": "Importing a drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
+      "drawingReplaceConfirmTemporaryNote": "We are working on a nicer workflow for this. Feel free to contact us to give us feedback and suggestions.",
+      "drawingReplaceConfirmAdminNote": "You are importing a drawing as its owner. Modifying the drawing will modify the original file and synchronize it with the Swissgeo database.",
+      "drawingReplaceConfirmLegacyAdminNote": "This drawing will be imported as a copy: modifying it will not alter the original drawing, unlike admin imports of Swissgeo drawings.",
+      "drawingReplaceConfirmCancel": "Cancel",
+      "drawingReplaceConfirmConfirm": "Clear and import",
       "close": "Close"
     },
     "share": {
@@ -437,6 +441,10 @@
     },
     "print": {
       "buttonTitle": "Print"
+    },
+    "featureFlag": {
+      "notAvailable": "Unfortunately, this tool isn't available yet",
+      "workingOnIt": "We're working on it :)"
     }
   },
   "backgroundLayers": {
@@ -454,6 +462,7 @@
     "successTitle": "Success"
   },
   "state": {
+    "drawingNotFound": "The drawing {id} could not be found and was not restored",
     "restoreUnableWarning": "The app state could not be restored",
     "shareLinkError": "The share link could not be generated"
   },
@@ -464,7 +473,11 @@
       "tabPosition": "Coordinates",
       "tabShare": "Share Position",
       "errorFetchingElevation": "Error retrieving elevation",
-      "errorFetchingW3W": "Error retrieving What3Words address"
+      "errorFetchingW3W": "Error retrieving What3Words address",
+      "featureFlag": {
+        "notAvailable": "Unfortunately, the position pop-up window is not yet available.",
+        "workingOnIt": "We're working on it :)"
+      }
     }
   },
   "error": {
@@ -485,10 +498,8 @@
     "serviceLoading": "Loading service address…",
     "serviceError": "The service address could not be loaded.",
     "abstract": "Abstract",
-    "contacts": "Contacts",
     "links": "Links",
     "services": "Services",
-    "languages": "Languages",
     "addToMap": "Add to map",
     "removeFromMap": "Remove from map",
     "details": "Dataset details",
@@ -501,13 +512,19 @@
     "close": "Close dataset details",
     "backToMap": "Back to map",
     "addToMapError": "Failed to add layer to map",
-    "openService": "Open service in a new tab",
+    "openService": "Open in new tab",
     "identifier": "Identifier",
     "mapServices": "WMS / WMTS",
     "otherAccess": "Other access options",
     "format": "Format",
     "serviceUrl": "URL / Service",
-    "viewGeocat": "View on geocat.ch"
+    "viewGeocat": "View on geocat.ch",
+    "copyLink": "Copy link to layer",
+    "copy": "Copy",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "contact": "Contact",
+    "aggregated": "Aggregated"
   },
   "elevationProfile": {
     "windowTitle": "Elevation Profile",
@@ -603,6 +620,7 @@
     "expand": "Show layer details",
     "reorder": "Reorder layer (arrow up/down)",
     "show": "Show layer",
+    "variant": "Variant",
     "hide": "Hide layer",
     "info": "Layer information",
     "remove": "Remove layer",
@@ -641,5 +659,8 @@
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",
     "popupTitle": "To Translate - Feature Info Popup Title"
+  },
+  "testSiteBanner": {
+    "text": "{environment} environment – Not for operational use. Do not share."
   }
 }

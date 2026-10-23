@@ -6,7 +6,10 @@ provide(displayModeKey, "embed");
 </script>
 
 <template>
-  <main ref="main" class="h-dvh w-screen font-sans">
-    <slot />
-  </main>
+  <div class="flex h-dvh w-screen flex-col font-sans">
+    <TestSiteBanner />
+    <main ref="main" class="relative min-h-0 flex-1">
+      <slot />
+    </main>
+  </div>
 </template>

@@ -3,7 +3,7 @@ import { mount } from "@vue/test-utils";
 import SideBar from "~/components/sidebar/SideBar.vue";
 import { panelSnapPointKey } from "~/types/injectionKeys";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 
 const { sidebar, isDesktop } = await vi.hoisted(async () => {
   const { reactive, ref } = await import("vue");
@@ -43,7 +43,7 @@ function mountSideBar(
           name: "ResponsivePanel",
           props: ["title", "closeLabel", "isVisible", "hasHeader"],
           emits: ["close"],
-          template: "<section><slot /></section>",
+          template: "<section><slot /><slot name='footer' /></section>",
         },
         UButton: { name: "UButton", props: ["icon"], template: "<button />" },
         USeparator: true,
@@ -181,6 +181,17 @@ describe("SideBar", () => {
       isDesktop.value = false;
     });
 
+    it("opens the map panel partially, also after a fully open catalog", async () => {
+      sidebar.currentSidebar = "geocatalogTree";
+      const panelSnapPoint = ref<number | string | null>(1);
+      mountSideBar(true, panelSnapPoint);
+
+      sidebar.currentSidebar = "layerCart";
+      await nextTick();
+
+      expect(panelSnapPoint.value).toBeNull();
+    });
+
     it("shows the cart and a background selector in a panel without its own header", () => {
       const wrapper = mountSideBar();
       const panel = wrapper.getComponent({ name: "ResponsivePanel" });
@@ -200,19 +211,6 @@ describe("SideBar", () => {
       expect(
         mountSideBar().findComponent({ name: "BackgroundSelector" }).exists(),
       ).toBe(true);
-    });
-
-    it("opens the drawer fully when the background list opens", () => {
-      const panelSnapPoint = ref<number | string | null>(0.6);
-      const background = mountSideBar(true, panelSnapPoint)
-        .getComponent({ name: "ResponsivePanel" })
-        .getComponent({ name: "BackgroundSelector" });
-
-      background.vm.$emit("update:open", false);
-      expect(panelSnapPoint.value).toBe(0.6);
-
-      background.vm.$emit("update:open", true);
-      expect(panelSnapPoint.value).toBe(1);
     });
 
     it("closes the sidebar when the cart panel is closed", () => {
@@ -258,5 +256,18 @@ describe("SideBar", () => {
     await wrapper.vm.$nextTick();
 
     expect(content.attributes("style")).toContain("width: 1280px");
+  });
+
+  it("shows the background selector only with the map panel, but keeps it mounted", async () => {
+    const wrapper = mountSideBar();
+    const selectorBox = () =>
+      wrapper.get<HTMLElement>("[data-testid='sidebar-background-selector']")
+        .element;
+    expect(selectorBox().style.display).toBe("");
+
+    sidebar.currentSidebar = "geocatalogTree";
+    await wrapper.vm.$nextTick();
+
+    expect(selectorBox().style.display).toBe("none");
   });
 });

@@ -27,8 +27,10 @@ const stubs = {
   },
   UCheckbox: {
     name: "UCheckbox",
-    template: "<label />",
-    props: ["label"],
+    props: ["label", "modelValue"],
+    emits: ["update:modelValue"],
+    template:
+      '<label><input type="checkbox" :checked="modelValue" @change="$emit(\'update:modelValue\', $event.target.checked)" /></label>',
   },
   UButton: {
     name: "UButton",
@@ -72,6 +74,18 @@ describe("ShareLink", () => {
     await wrapper.get('[data-testid="share-link-copy"]').trigger("click");
 
     expect(wrapper.emitted("copy")).toHaveLength(1);
+  });
+
+  it("emits update:drawingEditable when the checkbox is toggled", async () => {
+    const wrapper = mountShareLink();
+
+    const input = wrapper.get(
+      '[data-testid="share-link-drawing-editable"] input',
+    );
+    (input.element as HTMLInputElement).checked = true;
+    await input.trigger("change");
+
+    expect(wrapper.emitted("update:drawingEditable")).toEqual([[true]]);
   });
 
   it("opens the Facebook sharer with the encoded link", async () => {

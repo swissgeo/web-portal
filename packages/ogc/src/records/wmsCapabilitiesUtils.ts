@@ -55,6 +55,23 @@ export function getFeatureInfoCapability(doc: Document): {
   return null;
 }
 
+/**
+ * The GET base URL of the GetLegendGraphic request. WMS 1.3.0 servers advertise
+ * this request in the SLD namespace (`sld:GetLegendGraphic`).
+ */
+export function getLegendGraphicBaseUrl(doc: Document): string | null {
+  const capability = doc.getElementsByTagName("Capability")[0];
+  const requestNode = capability && firstDirectChild(capability, "Request");
+  const legendGraphicNode =
+    requestNode && firstDirectChild(requestNode, "GetLegendGraphic");
+  const getNode = directChildren(legendGraphicNode, "DCPType")
+    .map((dcp) => firstDirectChild(dcp, "HTTP"))
+    .flatMap((http) => directChildren(http, "Get"))[0];
+  return getNode
+    ? getXlinkHref(firstDirectChild(getNode, "OnlineResource"))
+    : null;
+}
+
 export function isQueryable(layerElement: Element) {
   const queryable = layerElement.getAttribute("queryable");
   // WMS 1.3.0 returns "1" or "0", some servers return a stringified boolean

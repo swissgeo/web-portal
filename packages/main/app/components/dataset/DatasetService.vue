@@ -49,19 +49,22 @@ const protocol = computed(() => {
       </div>
       <ClientOnly>
         <div v-if="address && !isLoading && !error" class="flex shrink-0">
+          <UTooltip :text="t('dataset.openService')" :content="{ side: 'top' }">
+            <UButton
+              :to="address"
+              target="_blank"
+              icon="i-lucide-external-link"
+              color="primary"
+              variant="ghost"
+              :aria-label="t('dataset.openService')"
+              data-testid="dataset-service-open"
+            />
+          </UTooltip>
           <DatasetCopyLink
             :url="address"
+            :label="t('dataset.copy')"
             default-icon="i-lucide-copy"
             data-testid="dataset-service-copy"
-          />
-          <UButton
-            :to="address"
-            target="_blank"
-            icon="i-lucide-external-link"
-            color="primary"
-            variant="ghost"
-            :aria-label="t('dataset.openService')"
-            data-testid="dataset-service-open"
           />
         </div>
       </ClientOnly>

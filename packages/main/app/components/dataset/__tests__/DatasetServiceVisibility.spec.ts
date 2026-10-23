@@ -58,6 +58,7 @@ function render() {
       stubs: {
         ClientOnly: { template: "<slot />" },
         DatasetCopyLink: true,
+        UTooltip: { template: "<span><slot /></span>" },
         UButton: { props: ["to"], template: '<a :href="to"><slot /></a>' },
       },
     },

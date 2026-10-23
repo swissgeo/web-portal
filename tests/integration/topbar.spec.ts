@@ -132,7 +132,10 @@ test.describe("topbar search", () => {
     const results = page.getByTestId("search-results");
     await expect(results).toBeVisible({ timeout: 10_000 });
 
-    await page.click("body");
+    // many results make the popover tall enough to cover the body's centre
+    // point, so click the map at the bottom of the viewport to be truly
+    // outside of it
+    await page.mouse.click(640, 700);
     await expect(results).not.toBeVisible();
 
     await searchInput.click();

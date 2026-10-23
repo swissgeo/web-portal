@@ -35,11 +35,6 @@
         "invalidDrawingAdminId": "L’ID amministratore del disegno non è valido",
         "adminRequired": "Per importare questo disegno sono necessari i privilegi di amministratore"
       },
-      "infoMessages": {
-        "importPart1": "L'importazione di un disegno {provenance} richiede la cancellazione di quello esistente. Dopo l'importazione, sarà possibile modificare ulteriormente il disegno.",
-        "adminImportPart2": "Se importato come amministratore, sarà possibile sincronizzarlo con il database Swissgeo sotto lo stesso ID dell'importazione e gli altri utenti vedranno le modifiche.",
-        "nonAdminImportPart2": "La condivisione del disegno sarà quindi possibile con altri utenti, ma sotto un ID del disegno diverso da quello importato."
-      },
       "close": "Chiudi"
     },
     "drawing": {

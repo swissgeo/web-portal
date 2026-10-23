@@ -7,6 +7,7 @@ declare global {
     what3wordsApiKey: string;
     geoadminApiBaseUrl: string;
     reportIssueServiceUrl: string;
+    livingdocsApiEndpoint: string;
     public: {
       ogcApiEndpoint: string;
       cmsBaseUrl: string;
@@ -15,13 +16,26 @@ declare global {
       printServiceUrl: string;
       ogcCatalogCollection: string;
       shareServiceUrl: string;
+      searchServiceUrl: string;
+      thesaurusServiceUrl: string;
       wantedLogLevels: string;
       version: string;
       buildTime: string;
       maxFileSizeMB: number;
       drawingAllowedDomains: string[];
+      testSiteBanner: string;
       featureFlags: {
         enableCmsSearch: boolean;
+        enableFeatureInfo: boolean;
+        enablePositionPopup: boolean;
+        tools: {
+          enableMeasure: boolean;
+          enableCompare: boolean;
+          enableDrawing: boolean;
+          enableImport: boolean;
+          enablePrint: boolean;
+          enableShare: boolean;
+        };
       };
     };
   };

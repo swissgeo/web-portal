@@ -101,8 +101,8 @@ describe("redirect plugin", () => {
   );
 
   it.each([
-    ["/", "/de/map"],
-    ["/de", "/de/map"],
+    ["/", "/de/"],
+    ["/map", "/de/map"],
     ["/dataset", "/de/dataset"],
   ])("correctly tries to redirect from %s to %s", async (from, to) => {
     const fromObj = { path: from, query: {} };
@@ -113,7 +113,7 @@ describe("redirect plugin", () => {
     });
   });
 
-  it.each(["/de/map", "/de/dataset", "/health"])(
+  it.each(["/de", "/de/map", "/de/dataset", "/health"])(
     "does not redirect %s",
     async (from) => {
       const fromObj = { path: from, query: {} };
@@ -122,9 +122,17 @@ describe("redirect plugin", () => {
     },
   );
 
+  it("opens the map for a share link on the root", async () => {
+    await redirector({ path: "/", query: { state: "abc" } });
+    expect(navigateToMock).toHaveBeenCalledExactlyOnceWith(
+      { path: "/de/map", query: { state: "abc" } },
+      { redirectCode: 302 },
+    );
+  });
+
   it("preserves the query param on redirect", async () => {
     const fromObj = {
-      path: "/de",
+      path: "/map",
       query: {
         param: "1",
       },
@@ -167,7 +175,7 @@ describe("redirect plugin", () => {
       mockHeaders["accept-language"] = "it-IT,it;q=0.9";
       await redirector({ path: "/", query: {} });
       expect(navigateToMock).toHaveBeenCalledExactlyOnceWith(
-        { path: "/it/map", query: {} },
+        { path: "/it/", query: {} },
         { redirectCode: 302 },
       );
     });

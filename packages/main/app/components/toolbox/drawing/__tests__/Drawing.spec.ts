@@ -28,8 +28,12 @@ const {
       enableDrawInteraction: vi.fn(),
       removeFocusedFeature: vi.fn(),
       mountDrawingLayer: vi.fn(),
+      unmountDrawingLayer: vi.fn(),
       clearDrawingLayer: vi.fn(),
       serializeAllFeaturesAsBlob: vi.fn(),
+      drawingVectorLayer: {
+        getSource: () => ({ getFeatures: () => [] }),
+      },
       numberOfFeatures: ref(0),
       focusMode: ref("none"),
       focusedFeature: ref<object | null>(null),

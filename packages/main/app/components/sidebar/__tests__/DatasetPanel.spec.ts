@@ -1,4 +1,5 @@
 import type { Dataset } from "@swissgeo/ogc";
+import type * as vueuse from "@vueuse/core";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
@@ -30,6 +31,11 @@ vi.mock("@swissgeo/dimension", () => ({
   }),
 }));
 vi.mock("@swissgeo/log", () => ({ default: { error: mocks.logError } }));
+const headerHeight = ref(96);
+vi.mock("@vueuse/core", async (importOriginal) => ({
+  ...(await importOriginal<typeof vueuse>()),
+  useElementSize: () => ({ width: ref(0), height: headerHeight }),
+}));
 mockNuxtImport("useToaster", () => () => ({ add: mocks.toast }));
 mockNuxtImport("useI18n", () => () => ({
   t: (key: string) => key,
@@ -60,7 +66,7 @@ function render(
       stubs: {
         UButton: { template: "<button><slot /></button>" },
         UIcon: true,
-        UBadge: { template: "<span><slot /></span>" },
+        UBadge: { props: ["label"], template: "<span>{{ label }}</span>" },
         DatasetDetail: {
           props: ["dataset", "distributionCollection"],
           template: "<div />",
@@ -163,12 +169,11 @@ describe("DatasetPanel", () => {
     },
   );
 
-  it("omits languages and the map action while no dataset is available", () => {
+  it("omits the map action while no dataset is available", () => {
     const wrapper = render({ dataset: null, isLoading: true });
     expect(
       wrapper.find('[data-testid="dataset-map-action"] button').exists(),
     ).toBe(false);
-    expect(wrapper.text()).not.toContain("dataset.languages");
     expect(wrapper.findComponent({ name: "DatasetDetail" }).exists()).toBe(
       false,
     );
@@ -185,17 +190,44 @@ describe("DatasetPanel", () => {
     ).toBe(false);
   });
 
-  it("shows supplied languages and removes the section when they are absent", async () => {
+  it("does not show the dataset languages", () => {
     const wrapper = render();
-    expect(wrapper.text()).toContain("dataset.languages");
-    expect(wrapper.text()).toContain("Deutsch");
+    expect(wrapper.text()).not.toContain("dataset.languages");
+    expect(wrapper.text()).not.toContain("Deutsch");
+  });
+
+  it("keeps the header in view and places the tab list below its measured height", async () => {
+    const wrapper = render();
+    const panel = wrapper.get('[data-testid="dataset-panel"]');
+
+    expect(wrapper.get("header").classes()).toContain("sticky");
+    expect(panel.attributes("style")).toContain(
+      "--dataset-header-height: 96px",
+    );
+
+    headerHeight.value = 140;
+    await wrapper.vm.$nextTick();
+
+    expect(panel.attributes("style")).toContain(
+      "--dataset-header-height: 140px",
+    );
+  });
+
+  it("shows the aggregated tag only for aggregated datasets", async () => {
+    const wrapper = render();
+    expect(wrapper.find('[data-testid="dataset-aggregated"]').exists()).toBe(
+      false,
+    );
+
     await wrapper.setProps({
       dataset: {
         ...dataset,
-        properties: { ...dataset.properties, languages: [] },
+        properties: { ...dataset.properties, aggregated: true },
       },
     });
-    expect(wrapper.text()).not.toContain("dataset.languages");
-    expect(wrapper.text()).not.toContain("Deutsch");
+
+    expect(wrapper.get('[data-testid="dataset-aggregated"]').text()).toBe(
+      "dataset.aggregated",
+    );
   });
 });

@@ -2,9 +2,9 @@ import type { AppStatePayload } from "~/composables/useStateConfig";
 import type { Ref } from "vue";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { URL_PARAM_STATE } from "@swissgeo/shared";
 import { flushPromises, mount } from "@vue/test-utils";
 import { usePrintFraming } from "~/composables/usePrintFraming";
-import { URL_PARAM_STATE } from "~/composables/useUrlParams";
 import Polygon from "ol/geom/Polygon";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick, ref } from "vue";

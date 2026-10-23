@@ -1,3 +1,4 @@
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -9,6 +10,14 @@ import PrintButton from "@/components/toolbox/toolboxButtons/PrintButton.vue";
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
+
+mockNuxtImport("useFeatureFlags", () => () => ({
+  isEnabled: () => true,
+}));
+
+const FeatureFlagWrapperStub = {
+  template: '<div><slot :is-disabled="false" /></div>',
+};
 
 const ToolBoxButtonStub = {
   template:
@@ -43,6 +52,7 @@ describe.each([
       global: {
         stubs: {
           ToolBoxButton: ToolBoxButtonStub,
+          FeatureFlagWrapper: FeatureFlagWrapperStub,
         },
       },
     });

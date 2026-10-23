@@ -120,7 +120,12 @@ export const useSearchStore = defineStore("search", () => {
       // Build search promises array. Layers are now searched server-side
       // through the OGC API Records catalog, alongside locations and features.
       const searchPromises: Promise<SearchResult[]>[] = [
-        searchLocation(newQuery, lang, abortController.signal),
+        searchLocation(
+          newQuery,
+          runtimeConfig.public.searchServiceUrl,
+          lang,
+          abortController.signal,
+        ),
         searchLayers(
           newQuery,
           catalogItemsUrl.value,
@@ -140,6 +145,7 @@ export const useSearchStore = defineStore("search", () => {
         searchPromises.push(
           searchLayerFeatures(
             newQuery,
+            runtimeConfig.public.searchServiceUrl,
             lang,
             layer.humanId,
             layer.info?.displayName || layer.humanId,
@@ -171,7 +177,17 @@ export const useSearchStore = defineStore("search", () => {
             }
           }
         }
-        results.value = successfulResults;
+        const keysSeen = new Set<string>();
+
+        const uniqueSuccessfulResults = successfulResults.filter((result) => {
+          const key = `${result.resultType}|${result.id}`;
+          if (keysSeen.has(key)) {
+            return false;
+          }
+          keysSeen.add(key);
+          return true;
+        });
+        results.value = uniqueSuccessfulResults;
       }
     } catch (error) {
       // Don't show error for aborted requests

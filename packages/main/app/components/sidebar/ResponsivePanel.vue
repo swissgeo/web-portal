@@ -2,10 +2,15 @@
 import { useEventListener } from "@vueuse/core";
 import { panelSnapPointKey } from "~/types/injectionKeys";
 
+import { useDrawerFooterFrame } from "./useDrawerFooterFrame";
+import { useDrawerSwipeToClose } from "./useDrawerSwipeToClose";
+import { useDrawerTouchGuard } from "./useDrawerTouchGuard";
+
 const {
   hasHeader = true,
   isVisible = true,
   isDismissible = true,
+  itemCount,
   collapseLabel,
   expandLabel,
 } = defineProps<{
@@ -16,27 +21,44 @@ const {
   hasHeader?: boolean;
   isVisible?: boolean;
   isDismissible?: boolean;
+  // A change measures the content height again, opening an item does not
+  itemCount?: number;
 }>();
 
 const emit = defineEmits<{
   close: [];
 }>();
 
-defineSlots<{
+const slots = defineSlots<{
   default: () => unknown;
+  footer?: () => unknown;
 }>();
 
 const isDesktop = useIsDesktop();
 
-const partialSnapPoint = 0.6;
+// For 'full' extension of the panel, stop 'a bit below the topbar' (half the topbar height),
+// so a bit of the map remains visible. Some elements push the topbar down; they set their height variables.
+// Leave 4rem space below for the footer.
+const drawerHeight =
+  "h-[calc(100%-1.5*var(--ui-header-height)-var(--test-site-banner-height,0px)-4rem)]";
+
+const defaultPartialSnapPoint = 0.75;
+// With few rows the drawer opens only as high as its content
+const contentSnapHeight = ref<number | null>(null);
+
+const partialSnapPoint = computed(() =>
+  contentSnapHeight.value === null
+    ? defaultPartialSnapPoint
+    : `${contentSnapHeight.value}px`,
+);
 const fullSnapPoint = 1;
 // panels can either close or only shrink.
 // measure for non closing panels (height - 200) :  header  + footer +  draghandle.
 const minimizedSnapPoint = "200px";
 const snapPoints = computed(() =>
   isDismissible
-    ? [partialSnapPoint, fullSnapPoint]
-    : [minimizedSnapPoint, partialSnapPoint, fullSnapPoint],
+    ? [partialSnapPoint.value, fullSnapPoint]
+    : [minimizedSnapPoint, partialSnapPoint.value, fullSnapPoint],
 );
 const sharedSnapPoint = inject(
   panelSnapPointKey,
@@ -50,7 +72,7 @@ const hasSharedSnapPoint = computed(
 // if snap points can't be inferred, this falls back to partially open
 const activeSnapPoint = computed({
   get: () =>
-    hasSharedSnapPoint.value ? sharedSnapPoint.value : partialSnapPoint,
+    hasSharedSnapPoint.value ? sharedSnapPoint.value : partialSnapPoint.value,
   set: (snapPoint) => {
     // A hidden panel falls back to partial and must not overwrite the visible one
     if (isVisible) {
@@ -70,7 +92,7 @@ const resizeLabel = computed(() =>
 
 function toggleExpanded() {
   activeSnapPoint.value = isFullyExtended.value
-    ? partialSnapPoint
+    ? partialSnapPoint.value
     : fullSnapPoint;
 }
 
@@ -93,54 +115,37 @@ useEventListener(scroller, "focusin", (focusEvent: FocusEvent) => {
 //   extends the panel to cover (almost) the entire screen, so we shouldn't
 //   show scrollbars in that case because it is not scrollable.
 const scrollerClass = computed(() => [
-  "min-h-0 flex-1 overscroll-y-contain",
+  "scroll-fade min-h-0 flex-1 overscroll-y-contain",
   isDesktop.value || isFullyExtended.value
     ? "overflow-y-auto"
     : "overflow-hidden",
 ]);
 
-// vaul-vue (built on Reka UI) lacks the touchmove guard that React vaul gets
-// from Radix's react-remove-scroll. Without it, swiping down on the list while
-// it is scrolled to the top starts a native scroll (or pull-to-refresh), which
-// cancels vaul's pointer drag, so the drawer can't be swiped down.
-// Only a mostly vertical pull counts, so sideways swipes still scroll.
-let touchStartX = 0;
-let touchStartY = 0;
-useEventListener(
-  scroller,
-  "touchstart",
-  (touchEvent: TouchEvent) => {
-    touchStartX = touchEvent.touches[0]!.clientX;
-    touchStartY = touchEvent.touches[0]!.clientY;
-  },
-  { passive: true },
-);
-useEventListener(
-  scroller,
-  "touchmove",
-  (touchEvent: TouchEvent) => {
-    if (isDesktop.value || !scroller.value) {
-      return;
-    }
-    const deltaX = touchEvent.touches[0]!.clientX - touchStartX;
-    const deltaY = touchEvent.touches[0]!.clientY - touchStartY;
-    const isPullingDown = deltaY > Math.abs(deltaX);
-    if (
-      isPullingDown &&
-      scroller.value.scrollTop <= 0 &&
-      touchEvent.cancelable
-    ) {
-      touchEvent.preventDefault();
-    }
-  },
-  { passive: false },
-);
+const { drawer } = useDrawerFooterFrame(scroller, contentSnapHeight, {
+  isEnabled: () => !!slots.footer && !isDesktop.value,
+  isVisible: () => isVisible,
+  itemCount: () => itemCount,
+  maxSnapHeight: () => defaultPartialSnapPoint * window.innerHeight,
+  activeSnapPoint,
+});
+
+const { isOpen } = useDrawerSwipeToClose(drawer, {
+  mayClose: () => isCurrentlyDismissible.value && !isFullyExtended.value,
+  partialSnapHeight: () =>
+    contentSnapHeight.value ?? defaultPartialSnapPoint * window.innerHeight,
+  onClose: () => emit("close"),
+});
+
+useDrawerTouchGuard(scroller, {
+  isEnabled: () => !isDesktop.value,
+  isFullyExtended: () => isFullyExtended.value,
+});
 </script>
 
 <template>
   <UDrawer
     v-if="!isDesktop"
-    open
+    :open="isOpen"
     :title="title"
     v-model:activeSnapPoint="activeSnapPoint"
     :snapPoints="snapPoints"
@@ -149,21 +154,23 @@ useEventListener(
     :overlay="false"
     portal="#main"
     :ui="{
-      // For 'full' extension of the panel, stop 'a bit below the topbar' (half the topbar height),
-      // so a bit of the map remains visible.
-      // Leave 4rem space below for the footer.
       // The drawer teleports to #main, so a v-show on a parent does not hide it.
-      content: `bottom-16 z-20 h-[calc(100%-1.5*var(--ui-header-height)-4rem)] ${isVisible ? '' : 'hidden'}`,
-      container: 'min-h-0 flex-1 gap-0 overflow-hidden p-0',
+      content: `bottom-16 z-20 ${drawerHeight} ${isVisible ? '' : 'hidden'}`,
+      // vaul drags the drawer itself, so handle and header skip native swipes
+      container: `min-h-0 touch-none gap-0 overflow-hidden p-0 ${slots.footer ? 'flex-none' : 'flex-1'}`,
       // The theme spaces the handle for a padded container, which this is not
-      handle: 'my-2',
+      handle: 'my-2 touch-none',
       header: hasHeader ? 'px-4 py-3' : 'sr-only',
       title: 'text-sm font-semibold text-highlighted uppercase',
       body: 'flex min-h-0 flex-1 flex-col',
+      footer: 'p-0',
     }"
     @update:open="
-      (isOpen) => {
-        if (!isOpen) emit('close');
+      (open) => {
+        if (!open) {
+          isOpen = false;
+          emit('close');
+        }
       }
     "
   >
@@ -179,6 +186,9 @@ useEventListener(
         data-testid="panel-scroller"
         :class="scrollerClass"
       ></div>
+    </template>
+    <template v-if="slots.footer" #footer>
+      <slot name="footer" />
     </template>
   </UDrawer>
 

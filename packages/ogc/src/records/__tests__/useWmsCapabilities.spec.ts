@@ -130,10 +130,10 @@ describe(
       expect(dimensions).toEqual(null);
     });
 
-    it("throws when the requested layer is missing", () => {
-      expect(() =>
-        parseWmsCapabilities(capabilitiesXML, "missing-layer"),
-      ).toThrow('WMS capabilities do not contain layer "missing-layer"');
+    it("gives no data when the requested layer is missing", () => {
+      expect(parseWmsCapabilities(capabilitiesXML, "missing-layer")).toEqual(
+        parseWmsCapabilities(null, "missing-layer"),
+      );
     });
 
     it("returns nulls for empty input", () => {

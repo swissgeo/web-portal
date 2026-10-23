@@ -4,15 +4,16 @@ Global Nuxt route middleware that runs on every navigation.
 
 ## `redirect.global.ts`
 
-Ensures every navigable URL ends up under a locale prefix (`/de`, `/fr`, `/en`, `/it`, `/rm`), and that the bare locale roots land on the map.
+Ensures every navigable URL ends up under a locale prefix (`/de`, `/fr`, `/en`, `/it`, `/rm`), and that the bare locale roots land on locale root.
 
 ### Redirect table
 
 | From                 | To                     |
 | -------------------- | ---------------------- |
-| `/`                  | `/<locale>/map`        |
+| `/`                  | `/<locale>`            |
+| `/?state=…`          | `/<locale>/map`        |
 | `/map`               | `/<locale>/map`        |
-| `/<locale>`          | `/<locale>/map`        |
+| `/<locale>`          | _no redirect_          |
 | `/<locale>/map`      | _no redirect_          |
 | `/anything`          | `/<locale>/anything`   |
 | `/<locale>/anything` | _no redirect_          |
@@ -31,10 +32,6 @@ There is intentionally **no locale cookie**: the locale is derived from the URL 
 ### Why 302 (not 301)
 
 The redirect target depends on `Accept-Language`, so browsers must not cache it permanently — otherwise a user whose browser language preference changes would still hit the previously cached locale.
-
-### Production note: locale-root URLs
-
-In production, `/de`, `/fr`, … are owned by the reverse proxy, which routes them to the CMS before Nuxt sees the request. The `isLocaleRoot` branch in `redirector` only fires when Nuxt is reached directly (dev, staging, or a proxy misconfiguration).
 
 ## Server-side counterpart
 

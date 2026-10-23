@@ -7,6 +7,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
 const useDatasetLayerMock = vi.hoisted(() => vi.fn());
+const { isDesktop } = await vi.hoisted(async () => {
+  const { ref } = await import("vue");
+  return { isDesktop: ref(false) };
+});
+mockNuxtImport("useIsDesktop", () => () => isDesktop);
 const datasetLayer = {
   isOnMap: ref(false),
   addToMap: vi.fn(),
@@ -24,14 +29,24 @@ vi.mock("vue-i18n", () => ({
 const stubs = {
   USwitch: {
     inheritAttrs: false,
-    props: ["modelValue", "label", "description"],
+    props: ["modelValue"],
     emits: ["update:modelValue"],
-    template: `<button role="switch" v-bind="$attrs" :aria-checked="String(modelValue)" @click="$emit('update:modelValue', !modelValue)" /><label>{{ label }}</label><p v-if="description" data-testid="switch-description">{{ description }}</p>`,
+    template: `<button role="switch" v-bind="$attrs" :aria-checked="String(modelValue)" @click="$emit('update:modelValue', !modelValue)" />`,
+  },
+  ULink: {
+    inheritAttrs: false,
+    props: ["to", "as"],
+    template:
+      "<a v-if='to' :href='to' v-bind='$attrs'><slot /></a><component :is='as' v-else v-bind='$attrs'><slot /></component>",
   },
   UButton: {
     inheritAttrs: false,
     props: ["to"],
     template: "<a :href='to' v-bind='$attrs' />",
+  },
+  UBadge: {
+    props: ["label"],
+    template: "<span>{{ label }}</span>",
   },
 };
 
@@ -60,7 +75,7 @@ function dataOwnerCell(wrapper: ReturnType<typeof mountRow>) {
 
 // On mobile, the data owner is shown below the title instead of in its own column
 function mobileDataOwner(wrapper: ReturnType<typeof mountRow>) {
-  return wrapper.find("[data-testid='switch-description']");
+  return wrapper.find("[data-testid='catalog-layer-provider']");
 }
 
 describe("LayerCatalogRow.vue", () => {
@@ -68,9 +83,10 @@ describe("LayerCatalogRow.vue", () => {
     vi.clearAllMocks();
     useDatasetLayerMock.mockReturnValue(datasetLayer);
     datasetLayer.isOnMap.value = false;
+    isDesktop.value = false;
   });
 
-  it("shows the layer title as the label of the switch, in one column", () => {
+  it("shows the layer title next to the switch, in one column", () => {
     const wrapper = mountRow();
     const cell = cells(wrapper)[0]!;
 
@@ -79,7 +95,12 @@ describe("LayerCatalogRow.vue", () => {
     expect(cell.find("[data-testid='catalog-layer-on-map']").exists()).toBe(
       true,
     );
-    expect(cell.get("label").text()).toBe("Title of ch.a");
+    expect(
+      cell.get("[data-testid='catalog-layer-on-map']").attributes("aria-label"),
+    ).toBe("Title of ch.a");
+    expect(cell.get("[data-testid='catalog-layer-title']").text()).toBe(
+      "Title of ch.a",
+    );
     expect(cell.attributes("title")).toBe("Title of ch.a");
   });
 
@@ -184,4 +205,34 @@ describe("LayerCatalogRow.vue", () => {
     expect(info().attributes("href")).toBe("/de/dataset/ch.b");
     expect(datasetLayer.addToMap).not.toHaveBeenCalled();
   });
+
+  it("opens the detail view with the title on mobile, not on desktop", async () => {
+    const wrapper = mountRow();
+    const title = () => wrapper.get("[data-testid='catalog-layer-title']");
+    expect(title().attributes("href")).toBe("/de/dataset/ch.a");
+
+    isDesktop.value = true;
+    await wrapper.vm.$nextTick();
+    expect(title().element.tagName).toBe("DIV");
+    expect(title().attributes("href")).toBeUndefined();
+  });
+
+  it.each`
+    aggregated   | isShown
+    ${true}      | ${true}
+    ${undefined} | ${false}
+  `(
+    "shows the aggregated tag=$isShown for aggregated=$aggregated",
+    ({ aggregated, isShown }) => {
+      const dataset = makeDataset();
+      dataset.properties.aggregated = aggregated;
+      const wrapper = mountRow(dataset);
+      const tag = wrapper.find("[data-testid='catalog-layer-aggregated']");
+
+      expect(tag.exists()).toBe(isShown);
+      if (isShown) {
+        expect(tag.text()).toBe("dataset.aggregated");
+      }
+    },
+  );
 });

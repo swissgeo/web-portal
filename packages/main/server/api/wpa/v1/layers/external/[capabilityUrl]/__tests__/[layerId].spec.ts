@@ -1,6 +1,5 @@
+import { encodeCapabilityUrl } from "~~/server/utils/externalLayerUrl";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
-import { encodeCapabilityUrl } from "../../../../../../../utils/externalLayerUrl";
 
 const routerParams: Record<string, string | undefined> = {};
 
@@ -11,6 +10,7 @@ const routerParams: Record<string, string | undefined> = {};
 vi.mock("h3", () => ({
   getRouterParam: (_event: unknown, name: string) => routerParams[name],
   appendResponseHeader: vi.fn(),
+  setResponseHeader: vi.fn(),
   createError: (opts: {
     status: number;
     statusMessage?: string;

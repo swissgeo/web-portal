@@ -14,6 +14,7 @@ import {
   getAvailableCrs,
   getFeatureInfoCapability,
   getLayerName,
+  getLegendGraphicBaseUrl,
   getXlinkHref,
   isQueryable,
 } from "./wmsCapabilitiesUtils";
@@ -103,14 +104,18 @@ export function parseWmsCapabilities(
   const doc = new DOMParser().parseFromString(capabilityData, "text/xml");
   const layer = getLayer(doc, layerId);
   if (!layer) {
-    throw new Error(`WMS capabilities do not contain layer "${layerId}"`);
+    // While a layer switches to another distribution, the new layer id can meet
+    // the capabilities of the old service for a short time. Give no data. When a
+    // new response has no usable data, the caller reports the error.
+    return parseWmsCapabilities(null, layerId);
   }
 
+  const legends = getLegends(layer);
   return {
     version: doc.documentElement?.getAttribute("version") ?? null,
     url: getServiceUrl(doc),
     dimensions: getLayerDimensions(layer),
-    legends: getLegends(layer),
+    legends: legends.length ? legends : getGroupLegend(doc, layer),
     availableCrs: getAvailableCrs(layer),
     queryable: isQueryable(layer),
     getFeatureInfoCapability: getFeatureInfoCapability(doc),
@@ -186,6 +191,31 @@ export function getLegends(layerElement: Element): Legend[] {
     );
   }
   return legends;
+}
+
+/**
+ * A group layer that advertises no legend gets one GetLegendGraphic request for
+ * the whole group. The server draws the legends of all child layers in one
+ * image. Leaf layers do not get this request, because for a basemap the server
+ * returns an empty image.
+ */
+export function getGroupLegend(doc: Document, layer: Element): Legend[] {
+  const layerName = getLayerName(layer);
+  const version = doc.documentElement?.getAttribute("version");
+  const baseUrl = getLegendGraphicBaseUrl(doc);
+  const isGroup = directChildren(layer, "Layer").length > 0;
+  if (!layerName || !version || !baseUrl || !isGroup) {
+    return [];
+  }
+
+  const url = new URL(baseUrl);
+  url.searchParams.set("SERVICE", "WMS");
+  url.searchParams.set("VERSION", version);
+  url.searchParams.set("REQUEST", "GetLegendGraphic");
+  url.searchParams.set("SLD_VERSION", "1.1.0");
+  url.searchParams.set("LAYER", layerName);
+  url.searchParams.set("FORMAT", "image/png");
+  return [{ href: url.toString(), format: "image/png" }];
 }
 
 function parseLegend(element: Element): Legend | undefined {

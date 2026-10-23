@@ -1,6 +1,6 @@
 import type * as featureModule from "@swissgeo/feature";
 
-import { mountSuspended } from "@nuxt/test-utils/runtime";
+import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { useDrawing } from "@swissgeo/drawing";
 import { useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
@@ -23,6 +23,22 @@ import BaseMapViewer from "../BaseMapViewer.vue";
  * silently drops the drawing layer and the click produces nothing.
  */
 const selectFeaturesSpy = vi.hoisted(() => vi.fn());
+
+import { useNuxtApp } from "nuxt/app";
+
+mockNuxtImport("useRuntimeConfig", () => () => {
+  const config = useNuxtApp().$config;
+  return {
+    ...config,
+    public: {
+      ...config.public,
+      featureFlags: {
+        ...config.public.featureFlags,
+        enableFeatureInfo: true,
+      },
+    },
+  };
+});
 
 vi.mock("@swissgeo/feature", async (importOriginal) => {
   const actual = await importOriginal<typeof featureModule>();

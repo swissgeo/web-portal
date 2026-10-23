@@ -1,9 +1,23 @@
 <script setup lang="ts">
 import ResponsivePanel from "~/components/sidebar/ResponsivePanel.vue";
+import { panelSnapPointKey } from "~/types/injectionKeys";
 import { useI18n } from "vue-i18n";
 
 const { isVisible } = defineProps<{ isVisible: boolean }>();
 const { t } = useI18n();
+
+// Vaul snap points as numbers are a share of the screen height: 1 is full height.
+const FULL_HEIGHT_SNAP_POINT = 1;
+
+// Each detail opens at full height. After it closes, the map panel opens at its middle height.
+const panelSnapPoint = inject(panelSnapPointKey, ref(null));
+watch(
+  () => isVisible,
+  (visible) => {
+    panelSnapPoint.value = visible ? FULL_HEIGHT_SNAP_POINT : null;
+  },
+  { immediate: true },
+);
 </script>
 
 <template>

@@ -1,12 +1,12 @@
 import { DOMParser } from "@xmldom/xmldom";
+import { decodeCapabilityUrl } from "~~/server/utils/externalLayerUrl";
 import {
   appendResponseHeader,
   createError,
   getQuery,
   getRouterParam,
+  setResponseHeader,
 } from "h3";
-
-import { decodeCapabilityUrl } from "../../../../../../../utils/externalLayerUrl";
 
 type CapabilitiesType = "WMS" | "WMTS";
 
@@ -123,7 +123,7 @@ export default defineEventHandler(async (event) => {
   const title = await fetchLayerTitle(fetchUrl.toString(), layerId);
 
   appendResponseHeader(event, "Content-Type", "application/json");
-  appendResponseHeader(event, "Cache-Control", `max-age=${60 * 60}`);
+  setResponseHeader(event, "Cache-Control", "max-age=3600");
   return {
     id: layerId,
     links: [

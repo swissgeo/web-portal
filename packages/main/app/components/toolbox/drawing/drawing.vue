@@ -42,6 +42,7 @@ const { copy, copied } = useClipboard();
 
 const {
   disableAllInteractions,
+  drawingVectorLayer,
   enableSelectInteraction,
   enableModifyInteraction,
   removeFocus,
@@ -52,6 +53,7 @@ const {
   focusedFeature,
   focusedFeatureType,
   mountDrawingLayer,
+  unmountDrawingLayer,
   clearDrawingLayer,
   serializeAllFeaturesAsBlob,
 } = useDrawing();
@@ -245,6 +247,14 @@ onMounted(() => {
 onUnmounted(() => {
   disableAllInteractions();
   removeFocus();
+  const featureCount =
+    drawingVectorLayer.getSource()?.getFeatures().length ?? 0;
+  // numberOfFeatures has a 100ms debounce. This means that if, for some reason,
+  // someone add a single feature and close the panel immediately, it could erase the
+  // drawing layer when it is not what we want. Thus we use the source instead.
+  if (featureCount === 0) {
+    unmountDrawingLayer();
+  }
 });
 </script>
 

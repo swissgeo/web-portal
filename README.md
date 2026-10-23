@@ -57,7 +57,25 @@ NUXT_GEOADMIN_API_BASE_URL=     # Base URL for legacy geo.admin.ch API (server-o
 NUXT_PUBLIC_CMS_BASE_URL=        # Published CMS site, for linking search results (exposed to client)
 NUXT_LIVINGDOCS_API_ENDPOINT=   # Livingdocs CMS public API, incl. version (server-only)
 NUXT_LIVINGDOCS_AUTH_TOKEN=     # Livingdocs project-scoped API token (server-only)
+NUXT_PUBLIC_PRINT_SERVICE_URL=  # The URL to the print service jobs endpoint
+NUXT_PUBLIC_DRAWING_SERVICE_ENDPOINT= # The URL to the drawing service
+NUXT_PUBLIC_DRAWING_ALLOWED_DOMAINS= # JSON array of hosts allowed for drawing imports
+NUXT_PUBLIC_ICON_SERVICE_ENDPOINT= # The URL to the icon sets service
+NUXT_PUBLIC_SEARCH_SERVICE_URL= # The URL to the geo.admin.ch SearchServer
+NUXT_PUBLIC_THESAURUS_SERVICE_URL= # The URL to the thesauri files
+NUXT_REPORT_ISSUE_SERVICE_URL=  # The URL to the feedback service (server-only)
+NUXT_PUBLIC_TEST_SITE_BANNER=   # Test site banner: "dev", "int" or "preview"; empty on prod (no banner)
 ```
+
+### Adding a new environment variable
+
+Nuxt maps `NUXT_<KEY>` to `runtimeConfig.<key>` and `NUXT_PUBLIC_<KEY>` to `runtimeConfig.public.<key>` (e.g. `NUXT_PUBLIC_SHARE_SERVICE_URL` → `shareServiceUrl`). To add one:
+
+1. Add the key to `runtimeConfig` in `packages/main/nuxt.config.ts` with an empty value (`""`). Use `public` only when the browser needs it. Do not put a backend URL there as a default: Nuxt only overrides keys that exist, so the key must be there, but the value comes from the environment.
+2. If the app cannot work without it, add the key to `packages/main/server/plugins/validate-runtime-config.ts`. The server then does not start when the variable is missing.
+3. If a package outside `main` reads it, add it to the `useRuntimeConfig` type in `packages/skeleton/types/index.d.ts`.
+4. Add it to the list above, with a dev value in `packages/main/.env.example` and a fake value in `.env.test` and `playwright.config.ts` (the integration tests mock all backends).
+5. Set the value for each staging (dev, int, prod) in the deployment config.
 
 ## Monorepo setup
 

@@ -1,10 +1,8 @@
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { URL_PARAM_STATE } from "@swissgeo/shared";
 import { fetchStateFromStateId } from "~/utils/fetchStateFromStateId";
 
 import type { PrintConfig } from "../types/print";
-
-// URL param providing the ID to a state on service-portal-state
-export const URL_PARAM_STATE = "state";
 
 // URL param related to print config
 export const URL_PARAM_PRINT_FORMAT = "print_format";

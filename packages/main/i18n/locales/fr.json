@@ -107,10 +107,8 @@
   "debug": {
     "openImportLocalLayersPanel": "Ouvrir le panneau d'importation des couches locales",
     "openImportDrawingPanel": "Ouvrir le panneau d'importation de dessin",
-    "openDrawingPanel": "Ouvrir le panneau de dessin",
     "openImportLayersPanel": "Ouvrir le panneau d'importation des couches",
     "openLayersPanel": "Ouvrir le panneau des couches",
-    "drawingPanelTitle": "Outils de dessin",
     "importDrawingPanelTitle": "Importer un dessin depuis une URL",
     "drawingNameLabel": "Nom du dessin",
     "drawingToolSelectLabel": "Sélectionner un outil de dessin :",
@@ -204,7 +202,11 @@
     "openStateConfigPanel": "Ouvrir le panneau de configuration d'état",
     "stateConfig": "panneau de configuration",
     "share": "Partager",
-    "openPrintPanel": "Ouvrir le panneau d'impression"
+    "openPrintPanel": "Ouvrir le panneau d'impression",
+    "openFeatureFlagsPanel": "Ouvrir le panneau des feature flags",
+    "featureFlagsPanelTitle": "Feature flags",
+    "resetFeatureFlags": "Rétablir les valeurs par défaut",
+    "featureFlagOverridden": "surchargé"
   },
   "geolocation": {
     "permissionDenied": "Autorisation de localisation refusée",
@@ -383,11 +385,6 @@
         "fetchFailed": "Échec de la récupération du fichier depuis l'URL (HTTP {status})",
         "adminRequired": "Des droits d'administrateur sont nécessaires pour importer ce dessin"
       },
-      "infoMessages": {
-        "importPart1": "Importer un dessin {provenance} nécessite de supprimer le dessin existant. Après l'importation, vous pourrez continuer à modifier le dessin.",
-        "adminImportPart2": "Si le dessin est importé en tant qu'administrateur, vous pourrez le synchroniser avec la base de données Swissgeo sous le même identifiant que celui importé et les autres utilisateurs verront vos modifications.",
-        "nonAdminImportPart2": "Le partage du dessin sera alors possible avec d'autres utilisateurs, mais sous un identifiant de dessin différent de celui importé."
-      },
       "close": "Fermer"
     },
     "share": {
@@ -437,6 +434,10 @@
     },
     "print": {
       "buttonTitle": "Imprimer"
+    },
+    "featureFlag": {
+      "notAvailable": "Cet outil n'est malheureusement pas encore disponible.",
+      "workingOnIt": "Nous y travaillons :)"
     }
   },
   "backgroundLayers": {
@@ -454,6 +455,7 @@
     "successTitle": "Succès"
   },
   "state": {
+    "drawingNotFound": "Le dessin {id} est introuvable et n'a pas été restauré",
     "restoreUnableWarning": "L'état de l'application n'a pas pu être restauré",
     "shareLinkError": "Le lien de partage n'a pas pu être généré"
   },
@@ -464,7 +466,11 @@
       "tabPosition": "Coordonnées",
       "tabShare": "Partager la position",
       "errorFetchingElevation": "Erreur de récupération de l'élévation",
-      "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words"
+      "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words",
+      "featureFlag": {
+        "notAvailable": "La fenêtre contextuelle de position n'est malheureusement pas encore disponible.",
+        "workingOnIt": "Nous y travaillons :)"
+      }
     }
   },
   "error": {
@@ -485,10 +491,8 @@
     "serviceLoading": "Chargement de l’adresse du service…",
     "serviceError": "L’adresse du service n’a pas pu être chargée.",
     "abstract": "Résumé",
-    "contacts": "Contacts",
     "links": "Liens",
     "services": "Services",
-    "languages": "Langues",
     "addToMap": "Ajouter à la carte",
     "removeFromMap": "Retirer de la carte",
     "details": "Détails du jeu de données",
@@ -501,13 +505,19 @@
     "close": "Fermer les détails du jeu de données",
     "backToMap": "Retour à la carte",
     "addToMapError": "Impossible d'ajouter la couche à la carte",
-    "openService": "Ouvrir le service dans un nouvel onglet",
+    "openService": "Ouvrir dans un nouvel onglet",
     "identifier": "Identifiant",
     "mapServices": "WMS / WMTS",
     "otherAccess": "Autres possibilités d’accès",
     "format": "Format",
     "serviceUrl": "URL / Service",
-    "viewGeocat": "Consulter sur geocat.ch"
+    "viewGeocat": "Consulter sur geocat.ch",
+    "copyLink": "Copier le lien vers la couche",
+    "copy": "Copier",
+    "showMore": "Afficher plus",
+    "showLess": "Afficher moins",
+    "contact": "Contact",
+    "aggregated": "Agrégré"
   },
   "elevationProfile": {
     "windowTitle": "Profil d'élévation",
@@ -603,6 +613,7 @@
     "expand": "Afficher les détails de la couche",
     "reorder": "Déplacer la couche (flèche haut/bas)",
     "show": "Afficher la couche",
+    "variant": "Variante",
     "hide": "Masquer la couche",
     "info": "Informations sur la couche",
     "remove": "Supprimer la couche",

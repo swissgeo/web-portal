@@ -22,14 +22,23 @@ const { copy: copyLink, copied: copiedLink } = useClipboard();
 const { copy: copyEmbed, copied: copiedEmbed } = useClipboard();
 
 const { exportState } = useStateConfig();
-const { shareLink, embedCode, embedUrl } = useCreateShareLink(exportState, {
-  autoRefresh: true,
-  debounce: 500,
-  maxWait: 2000,
-  onError: () => toaster.showError(t("state.shareLinkError")),
-  zoomOnlyCtrl,
-  fullWidth,
-  resolution,
+const drawingEditable = ref(false);
+const { shareLink, embedCode, embedUrl, refresh } = useCreateShareLink(
+  exportState,
+  {
+    autoRefresh: true,
+    debounce: 500,
+    maxWait: 2000,
+    drawingEditable,
+    onError: () => toaster.showError(t("state.shareLinkError")),
+    zoomOnlyCtrl,
+    fullWidth,
+    resolution,
+  },
+);
+
+watch(drawingEditable, () => {
+  void refresh();
 });
 
 const items = computed<TabsItem[]>(() => [
@@ -67,6 +76,7 @@ const items = computed<TabsItem[]>(() => [
           <ShareLink
             :link="shareLink"
             :copied="copiedLink"
+            v-model:drawing-editable="drawingEditable"
             @copy="copyLink(shareLink)"
           />
         </template>

@@ -14,6 +14,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
 import DatasetContact from "./DatasetContact.vue";
+import DatasetDescription from "./DatasetDescription.vue";
 import DatasetLegend from "./DatasetLegend.vue";
 import DatasetLinkList from "./DatasetLinkList.vue";
 import DatasetServiceList from "./DatasetServiceList.vue";
@@ -49,7 +50,7 @@ const tabs = computed<TabsItem[]>(() => [
 const contacts = computed(() =>
   (props.dataset.properties.contacts ?? []).filter(
     (contact) =>
-      contact.role === "pointOfContact" &&
+      contact.roles?.includes("pointOfContact") &&
       (contact.organization?.trim() || contact.country?.trim()),
   ),
 );
@@ -87,7 +88,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
     color="neutral"
     :unmount-on-hide="false"
     :ui="{
-      list: 'overflow-x-auto overflow-y-hidden p-0',
+      list: 'sticky top-(--dataset-header-height) z-10 overflow-x-auto overflow-y-hidden bg-default p-0',
       trigger:
         'shrink-0 grow-0 px-2 pt-1 pb-2 leading-small-text data-[state=active]:text-highlighted data-[state=inactive]:text-primary dark:data-[state=inactive]:text-petrol-300',
       indicator: 'bottom-0',
@@ -106,12 +107,10 @@ const serviceDistributions = computed<Distribution[]>(() => {
           <h3 class="mb-4 text-base font-semibold text-highlighted">
             {{ t("dataset.abstract") }}
           </h3>
-          <p
-            class="text-base leading-small-text wrap-anywhere whitespace-pre-line text-default"
-            data-testid="dataset-description"
-          >
-            {{ dataset.properties.description }}
-          </p>
+          <DatasetDescription
+            :key="dataset.id"
+            :description="dataset.properties.description"
+          />
         </section>
 
         <section
@@ -122,7 +121,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
           <h3
             class="mb-space-xs text-xs font-medium tracking-wide text-muted uppercase"
           >
-            {{ t("dataset.contacts") }}
+            {{ t("dataset.contact") }}
           </h3>
           <ul class="flex flex-col gap-space-s">
             <li v-for="(contact, i) in contacts" :key="i">
