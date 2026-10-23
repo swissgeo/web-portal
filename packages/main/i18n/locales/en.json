@@ -620,6 +620,7 @@
     "expand": "Show layer details",
     "reorder": "Reorder layer (arrow up/down)",
     "show": "Show layer",
+    "variant": "Variant",
     "hide": "Hide layer",
     "info": "Layer information",
     "remove": "Remove layer",

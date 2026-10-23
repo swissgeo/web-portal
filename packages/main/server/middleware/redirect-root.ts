@@ -1,3 +1,4 @@
+import { URL_PARAM_STATE } from "@swissgeo/shared";
 import { resolveTargetLocale } from "~~/server/utils/locale-resolution";
 import { sendRedirect, setResponseHeader } from "h3";
 // Intercept unlocalized entry-point requests before @nuxtjs/i18n's
@@ -28,5 +29,9 @@ export default defineEventHandler(async (event) => {
   );
 
   setResponseHeader(event, "Cache-Control", "no-store");
-  await sendRedirect(event, `/${target}${url.pathname}${url.search}`, 302);
+  // A share link (`/?state=…`) opens the map, not the landing page.
+  const isShareLink =
+    url.pathname === "/" && url.searchParams.has(URL_PARAM_STATE);
+  const path = isShareLink ? "/map" : url.pathname;
+  await sendRedirect(event, `/${target}${path}${url.search}`, 302);
 });

@@ -122,6 +122,14 @@ describe("redirect plugin", () => {
     },
   );
 
+  it("opens the map for a share link on the root", async () => {
+    await redirector({ path: "/", query: { state: "abc" } });
+    expect(navigateToMock).toHaveBeenCalledExactlyOnceWith(
+      { path: "/de/map", query: { state: "abc" } },
+      { redirectCode: 302 },
+    );
+  });
+
   it("preserves the query param on redirect", async () => {
     const fromObj = {
       path: "/map",

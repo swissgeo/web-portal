@@ -70,6 +70,9 @@ try {
 
 // holds the data that's specific for the layers from the sub mappers
 const layerSpecificData = ref();
+// The default opacity of the style. A value from the user or from the state
+// wins over it (see updateMapLayerData).
+const styleOpacity = ref<number>();
 
 /**
  * Reactively merge the data from the store as well as the
@@ -80,6 +83,7 @@ const layerData = computed((): MapLayer => {
     layerId: layerId.value,
     format: layerFormat.value,
     uuid: layer.uuid,
+    opacity: styleOpacity.value,
 
     ...layerSpecificData.value,
 
@@ -126,7 +130,7 @@ onBeforeUnmount(() => {
 // receive the layer specific data from the subconverters
 function pushLayerSpecificData<T>(opacity: number, data: T) {
   layerSpecificData.value = data;
-  layerData.value.opacity = opacity;
+  styleOpacity.value = opacity;
 }
 </script>
 

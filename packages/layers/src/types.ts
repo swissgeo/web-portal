@@ -39,6 +39,8 @@ export interface Layer {
 export interface DatasetLayer extends Layer {
   type: "dataset";
   data: Dataset;
+  // When this ID is empty, the map shows the preferred distribution.
+  selectedDistributionId?: string;
 }
 
 export * from "./utils";

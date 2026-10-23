@@ -12,7 +12,7 @@ import type { ComputedRef, ShallowRef } from "vue";
 
 import { flushPromises } from "@vue/test-utils";
 import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import { ref } from "vue";
+import { ref, toValue } from "vue";
 
 import { useGenericOgcData } from "../useGenericOgcData";
 
@@ -112,7 +112,9 @@ const {
   //
   const layerIdMockData = ref("my-fancy-layer");
   const useDistributionMock = vi.fn(
-    (): ReturnType<typeof useDistributionOriginal> => {
+    (
+      ..._args: Parameters<typeof useDistributionOriginal>
+    ): ReturnType<typeof useDistributionOriginal> => {
       return {
         distribution: computed(() => distributionMockData.value),
         layerId: computed(() => layerIdMockData.value),
@@ -311,5 +313,35 @@ describe("useGenericOgcData ", () => {
     await flushPromises();
 
     expect(distribution.value).toHaveProperty("properties.protocol", "ogc:wms");
+  });
+
+  it("passes the selected variant of the layer to the distribution lookup", () => {
+    const availabilityMap: Distribution = {
+      id: "fancy-availability:wms",
+      properties: {
+        type: "Distribution",
+        title: "Verfügbarkeit",
+        protocol: "ogc:wms",
+        metaInformation: true,
+      },
+    };
+    distributionCollectionMockData.value.features = [
+      { ...distributionMockData.value, id: "favourite-distribution" },
+      availabilityMap,
+    ];
+    const dataset = layerMockData.value.data;
+    const layer = ref<DatasetLayerType>({
+      ...layerMockData.value,
+      data: {
+        ...dataset,
+        properties: { ...dataset.properties, aggregated: true },
+      },
+      selectedDistributionId: availabilityMap.id,
+    });
+
+    useGenericOgcData(layer, vi.fn());
+
+    const [, distributionId] = useDistributionMock.mock.calls[0]!;
+    expect(toValue(distributionId)).toBe(availabilityMap.id);
   });
 });

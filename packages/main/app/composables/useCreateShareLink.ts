@@ -1,12 +1,12 @@
 import type { AppStatePayload } from "~/composables/useStateConfig";
 import type { MaybeRefOrGetter, Ref } from "vue";
 
+import { URL_PARAM_STATE } from "@swissgeo/shared";
 import { watchDebounced } from "@vueuse/core";
 import { postStateToStateId } from "~/utils/postStateToStateId";
 import { toValue } from "vue";
 
 import { isDrawingLayerState } from "./useStateConfig";
-import { URL_PARAM_STATE } from "./useUrlParams";
 
 function buildShareUrl(stateId: string | null): string {
   if (!stateId) {

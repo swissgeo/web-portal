@@ -128,6 +128,12 @@ export type LayerState = {
    */
   opacity?: number | null;
   /**
+   * Selecteddistributionid
+   *
+   * ID of the distribution currently shown on the map, for datasets with several distributions (e.g. aggregated datasets). When absent or null, the dataset's preferred distribution is used
+   */
+  selectedDistributionId?: string | null;
+  /**
    * Dimensions of the layer (e.g. time dimension with current value)
    */
   dimensions?: LayerDimensionsState;

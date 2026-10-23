@@ -6,6 +6,8 @@ import { ref, markRaw } from "vue";
 
 import type { Layer, LayerInfo } from "@/index";
 
+import { isDatasetLayer } from "@/utils/layerUtils";
+
 /**
  * Quick explanation on this interface:
  *  Right now, we have a distinction between
@@ -140,6 +142,13 @@ export const useLayerStore = defineStore("layers", () => {
     }
   }
 
+  function setSelectedDistributionId(uuid: string, distributionId: string) {
+    const layer = getLayer(uuid);
+    if (layer && isDatasetLayer(layer)) {
+      layer.selectedDistributionId = distributionId;
+    }
+  }
+
   function $reset() {
     layers.value = [];
   }
@@ -157,6 +166,7 @@ export const useLayerStore = defineStore("layers", () => {
     setLayerInfo,
     removeLayer,
     setLayerData,
+    setSelectedDistributionId,
     addImportOption,
     clearImportOptions,
     consumeImportOptions,

@@ -11,6 +11,7 @@ Ensures every navigable URL ends up under a locale prefix (`/de`, `/fr`, `/en`, 
 | From                 | To                     |
 | -------------------- | ---------------------- |
 | `/`                  | `/<locale>`            |
+| `/?state=…`          | `/<locale>/map`        |
 | `/map`               | `/<locale>/map`        |
 | `/<locale>`          | _no redirect_          |
 | `/<locale>/map`      | _no redirect_          |
