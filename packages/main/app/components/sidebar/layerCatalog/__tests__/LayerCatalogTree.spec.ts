@@ -2,6 +2,7 @@ import type { AsyncDataRequestStatus } from "#app";
 import type { ThesaurusConcept } from "~/types/thesaurus";
 
 import { mount } from "@vue/test-utils";
+import LayerCatalogLoadingStatus from "~/components/sidebar/layerCatalog/LayerCatalogLoadingStatus.vue";
 import LayerCatalogTree from "~/components/sidebar/layerCatalog/LayerCatalogTree.vue";
 import { describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
@@ -30,7 +31,7 @@ const concepts: ThesaurusConcept[] = [
     label: "Natur und Umwelt",
     children: [{ id: "soils", label: "Boden", children: [] }],
   },
-  { id: "planning", label: "Planung" },
+  { id: "planning", label: "Planung", children: [] },
 ];
 
 function mountTree(
@@ -73,7 +74,7 @@ describe("LayerCatalogTree.vue", () => {
                 id: "node_soils",
                 conceptId: "soils",
                 label: "Boden",
-                children: [],
+                children: undefined,
               },
             ],
           },
@@ -86,6 +87,15 @@ describe("LayerCatalogTree.vue", () => {
         ],
       },
     ]);
+  });
+
+  it("gives leaves no children, so they can't be expanded", () => {
+    const wrapper = mountTree(null);
+    const planning = (tree(wrapper).props("items") as TreeNode[])[0]!
+      .children![1]!;
+
+    expect(planning.conceptId).toBe("planning");
+    expect(planning.children).toBeUndefined();
   });
 
   it("identifies the nodes by their id, not by their label", () => {
@@ -139,20 +149,12 @@ describe("LayerCatalogTree.vue", () => {
     expect(wrapper.props("conceptId")).toBeNull();
   });
 
-  it.each<AsyncDataRequestStatus>(["idle", "pending"])(
-    "shows that the concepts are loading while the status is %s",
-    (status) => {
-      const wrapper = mountTree(null, status);
-
-      expect(wrapper.text()).toBe("layerCatalog.loading");
-      expect(wrapper.findComponent(UTree).exists()).toBe(false);
-    },
-  );
-
-  it("shows an error when the concepts could not be loaded", () => {
+  it("shows the loading status of the concepts instead of the tree", () => {
     const wrapper = mountTree(null, "error");
 
-    expect(wrapper.text()).toBe("layerCatalog.error");
+    expect(
+      wrapper.getComponent(LayerCatalogLoadingStatus).props("status"),
+    ).toBe("error");
     expect(wrapper.findComponent(UTree).exists()).toBe(false);
   });
 

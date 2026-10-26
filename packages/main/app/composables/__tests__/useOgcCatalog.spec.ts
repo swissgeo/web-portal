@@ -255,6 +255,19 @@ describe("useOgcCatalog", () => {
     expect(loadedIds(state)).toEqual(["soil"]);
   });
 
+  it("does not start over when the concepts change to an equal list", async () => {
+    fetchMock.mockResolvedValue(makePage(["a"], 1));
+    const concepts = ref<string[]>([]);
+
+    useOgcCatalog(ref("de"), "", concepts);
+    await flushPromises();
+
+    concepts.value = [];
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
   it("keeps the loaded records when a page fails, and retries that page", async () => {
     fetchMock
       .mockResolvedValueOnce(makePage(["a"], 2))

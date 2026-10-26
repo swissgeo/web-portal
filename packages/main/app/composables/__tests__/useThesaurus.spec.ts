@@ -78,6 +78,19 @@ describe("useThesaurus", () => {
     ]);
   });
 
+  it("gives concepts without children in the response an empty list of children", () => {
+    useThesaurus();
+
+    const concepts = fetchCall().options.transform({
+      thesaurus_id: "ech0166",
+      concepts: [{ concept_id: "planning", label: "Planung" }],
+    });
+
+    expect(concepts).toEqual([
+      { id: "planning", label: "Planung", children: [] },
+    ]);
+  });
+
   it("returns the concepts and the loading state", () => {
     const data = ref([]);
     const status = ref("success");

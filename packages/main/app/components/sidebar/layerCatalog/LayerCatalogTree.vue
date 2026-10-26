@@ -4,6 +4,8 @@ import type { ThesaurusConcept } from "~/types/thesaurus";
 
 import { useI18n } from "vue-i18n";
 
+import LayerCatalogLoadingStatus from "./LayerCatalogLoadingStatus.vue";
+
 const { t } = useI18n();
 
 /** `null` selects the root node, which stands for all layers */
@@ -34,7 +36,11 @@ function useTreeItems(concepts: () => ThesaurusConcept[] | undefined) {
       id: `node_${concept.id}`,
       conceptId: concept.id,
       label: concept.label,
-      children: concept.children?.map(toTreeNode),
+      // UTree treats any children array, even an empty one, as a folder that
+      // can be expanded, so leaves must not have one
+      children: concept.children.length
+        ? concept.children.map(toTreeNode)
+        : undefined,
     };
   }
 
@@ -79,27 +85,22 @@ const selected = computed({
 </script>
 
 <template>
-  <p v-if="status === 'error'" class="text-sm text-error">
-    {{ t("layerCatalog.error") }}
-  </p>
-  <p v-else-if="status !== 'success'" class="text-sm text-muted">
-    {{ t("layerCatalog.loading") }}
-  </p>
-  <UTree
-    v-else
-    v-model="selected"
-    :items
-    v-model:expanded="expanded"
-    selection-behavior="replace"
-    :get-key="(node) => node.id"
-    collapsed-icon="i-lucide-chevron-right"
-    expanded-icon="i-lucide-chevron-down"
-    color="accent"
-    :ui="{
-      listWithChildren: 'border-s-0',
-      link: 'items-start px-2 py-1 text-start font-medium text-accent not-data-selected:hover:text-accent-hover data-expanded:text-accent-active data-selected:text-accent-active',
-      linkLabel: 'whitespace-normal!',
-      linkTrailing: 'hidden',
-    }"
-  />
+  <LayerCatalogLoadingStatus :status>
+    <UTree
+      v-model="selected"
+      :items
+      v-model:expanded="expanded"
+      selection-behavior="replace"
+      :get-key="(node) => node.id"
+      collapsed-icon="i-lucide-chevron-right"
+      expanded-icon="i-lucide-chevron-down"
+      color="accent"
+      :ui="{
+        listWithChildren: 'border-s-0',
+        link: 'items-start px-2 py-1 text-start font-medium text-accent not-data-selected:hover:text-accent-hover data-expanded:text-accent-active data-selected:text-accent-active',
+        linkLabel: 'whitespace-normal!',
+        linkTrailing: 'hidden',
+      }"
+    />
+  </LayerCatalogLoadingStatus>
 </template>

@@ -12,7 +12,11 @@ vi.mock("vue-i18n", () => ({
 }));
 
 const soils: ThesaurusConcept = { id: "soils", label: "Boden", children: [] };
-const geology: ThesaurusConcept = { id: "geology", label: "Geologie" };
+const geology: ThesaurusConcept = {
+  id: "geology",
+  label: "Geologie",
+  children: [],
+};
 const geoscience: ThesaurusConcept = {
   id: "geoscience",
   label: "Geowissenschaften",
@@ -23,7 +27,11 @@ const nature: ThesaurusConcept = {
   label: "Natur und Umwelt",
   children: [geoscience],
 };
-const planning: ThesaurusConcept = { id: "planning", label: "Planung" };
+const planning: ThesaurusConcept = {
+  id: "planning",
+  label: "Planung",
+  children: [],
+};
 const concepts = [nature, planning];
 
 const root = {
@@ -52,16 +60,6 @@ describe("useConceptPath", () => {
       },
       { id: "soils", label: "Boden", children: [] },
     ]);
-  });
-
-  it("gives concepts without children an empty list of children", () => {
-    const path = useConceptPath(concepts, "success", "geology");
-
-    expect(path.value.at(-1)).toEqual({
-      id: "geology",
-      label: "Geologie",
-      children: [],
-    });
   });
 
   it("only contains the root when the selected concept does not exist", () => {

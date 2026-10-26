@@ -24,7 +24,7 @@ function findConceptPath(
     if (concept.id === id) {
       return [concept];
     }
-    const path = findConceptPath(concept.children ?? [], id);
+    const path = findConceptPath(concept.children, id);
     if (path.length > 0) {
       return [concept, ...path];
     }
@@ -41,7 +41,7 @@ export function collectConceptIds(concepts: ThesaurusConcept[]): string[] {
   function collect(level: ThesaurusConcept[]) {
     for (const concept of level) {
       ids.push(concept.id);
-      collect(concept.children ?? []);
+      collect(concept.children);
     }
   }
   collect(concepts);
@@ -68,11 +68,7 @@ export default function useConceptPath(
     const path = id === null ? [] : findConceptPath(topLevel, id);
     return [
       { id: null, label: t("layerCatalog.allLayers"), children: topLevel },
-      ...path.map((concept) => ({
-        id: concept.id,
-        label: concept.label,
-        children: concept.children ?? [],
-      })),
+      ...path,
     ];
   });
 }

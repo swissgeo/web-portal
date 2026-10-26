@@ -10,14 +10,14 @@ type ThesaurusResponse = {
 type ThesaurusResponseConcept = {
   concept_id: string;
   label: string;
-  children: ThesaurusResponseConcept[];
+  children?: ThesaurusResponseConcept[];
 };
 
 function toConcept(concept: ThesaurusResponseConcept): ThesaurusConcept {
   return {
     id: concept.concept_id,
     label: concept.label,
-    children: concept.children.map(toConcept),
+    children: (concept.children ?? []).map(toConcept),
   };
 }
 

@@ -57,7 +57,7 @@ provide(
       @close="mobileView = 'table'"
     />
     <div
-      v-if="isTableVisible"
+      v-show="isTableVisible"
       ref="tableColumn"
       class="flex min-w-0 flex-1 flex-col gap-4 px-4 py-3 md:gap-8 md:overflow-y-auto md:p-8"
     >

@@ -2,6 +2,7 @@ import type { AsyncDataRequestStatus } from "#app";
 
 import { mount } from "@vue/test-utils";
 import LayerCatalogBreadcrumb from "~/components/sidebar/layerCatalog/LayerCatalogBreadcrumb.vue";
+import LayerCatalogLoadingStatus from "~/components/sidebar/layerCatalog/LayerCatalogLoadingStatus.vue";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("vue-i18n", () => ({
@@ -33,20 +34,12 @@ describe("LayerCatalogBreadcrumb.vue", () => {
     expect(wrapper.get("h4").text()).toBe("Alle Ebenen");
   });
 
-  it.each<AsyncDataRequestStatus>(["idle", "pending"])(
-    "shows that the concepts are loading while the status is %s",
-    (status) => {
-      const wrapper = mountBreadcrumb(undefined, undefined, status);
-
-      expect(wrapper.text()).toBe("layerCatalog.loading");
-      expect(wrapper.find("h4").exists()).toBe(false);
-    },
-  );
-
-  it("shows an error when the concepts could not be loaded", () => {
+  it("shows the loading status of the concepts instead of the labels", () => {
     const wrapper = mountBreadcrumb(undefined, undefined, "error");
 
-    expect(wrapper.text()).toBe("layerCatalog.error");
+    expect(
+      wrapper.getComponent(LayerCatalogLoadingStatus).props("status"),
+    ).toBe("error");
     expect(wrapper.find("h4").exists()).toBe(false);
   });
 });

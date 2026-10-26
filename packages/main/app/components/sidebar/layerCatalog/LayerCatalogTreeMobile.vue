@@ -4,6 +4,7 @@ import type { ThesaurusConcept } from "~/types/thesaurus";
 
 import { useI18n } from "vue-i18n";
 
+import LayerCatalogLoadingStatus from "./LayerCatalogLoadingStatus.vue";
 import useConceptPath from "./useConceptPath";
 
 const { t } = useI18n();
@@ -32,11 +33,11 @@ const path = useConceptPath(
  * Path down to the folder that is shown: the selected entry when it has
  * children or is the root, its parent otherwise.
  */
-const folderPath = computed(() =>
-  path.value.length > 1 && !path.value.at(-1)?.children.length
-    ? path.value.slice(0, -1)
-    : path.value,
-);
+const folderPath = computed(() => {
+  const selected = path.value.at(-1);
+  const isLeafSelected = path.value.length > 1 && !selected?.children.length;
+  return isLeafSelected ? path.value.slice(0, -1) : path.value;
+});
 const folder = computed(() => folderPath.value.at(-1));
 
 function goBack() {
@@ -51,7 +52,7 @@ function selectFolder() {
 function selectChild(child: ThesaurusConcept) {
   conceptId.value = child.id;
   // A child with children becomes the folder that is shown
-  if (!child.children?.length) {
+  if (!child.children.length) {
     emit("close");
   }
 }
@@ -71,65 +72,58 @@ const selectedEntryClass = "bg-elevated text-accent-active";
       </p>
       <UButton
         icon="i-lucide-x"
+        :aria-label="t('layerCatalog.close')"
         color="accent"
         variant="link"
         class="cursor-pointer p-0"
         @click="emit('close')"
       />
     </div>
-    <p
-      v-if="status === 'error'"
-      class="px-2 text-sm leading-small-text text-error"
-    >
-      {{ t("layerCatalog.error") }}
-    </p>
-    <p
-      v-else-if="status !== 'success'"
-      class="px-2 text-sm leading-small-text text-muted"
-    >
-      {{ t("layerCatalog.loading") }}
-    </p>
-    <template v-else-if="folder">
-      <UButton
-        v-if="folderPath.length > 1"
-        color="accent"
-        variant="ghost"
-        block
-        icon="i-lucide-chevron-left"
-        :class="[entryClass, 'pl-1']"
-        @click="goBack"
-      >
-        {{ t("layerCatalog.back") }}
-      </UButton>
-      <div class="py-2">
-        <UButton
-          color="accent"
-          variant="ghost"
-          block
-          :class="[
-            entryClass,
-            'font-bold',
-            folder.id === conceptId && selectedEntryClass,
-          ]"
-          @click="selectFolder"
-        >
-          {{ folder.label }}
-        </UButton>
-      </div>
-      <UButton
-        v-for="child in folder.children"
-        :key="child.id"
-        color="accent"
-        variant="ghost"
-        block
-        :trailing-icon="
-          child.children?.length ? 'i-lucide-chevron-right' : undefined
-        "
-        :class="[entryClass, child.id === conceptId && selectedEntryClass]"
-        @click="selectChild(child)"
-      >
-        {{ child.label }}
-      </UButton>
-    </template>
+    <div class="px-2">
+      <LayerCatalogLoadingStatus :status>
+        <div v-if="folder" class="-mx-2 flex flex-col gap-0.5">
+          <UButton
+            v-if="folderPath.length > 1"
+            color="accent"
+            variant="ghost"
+            block
+            icon="i-lucide-chevron-left"
+            :class="[entryClass, 'pl-1']"
+            @click="goBack"
+          >
+            {{ t("layerCatalog.back") }}
+          </UButton>
+          <div class="py-2">
+            <UButton
+              color="accent"
+              variant="ghost"
+              block
+              :class="[
+                entryClass,
+                'font-bold',
+                folder.id === conceptId && selectedEntryClass,
+              ]"
+              @click="selectFolder"
+            >
+              {{ folder.label }}
+            </UButton>
+          </div>
+          <UButton
+            v-for="child in folder.children"
+            :key="child.id"
+            color="accent"
+            variant="ghost"
+            block
+            :trailing-icon="
+              child.children.length ? 'i-lucide-chevron-right' : undefined
+            "
+            :class="[entryClass, child.id === conceptId && selectedEntryClass]"
+            @click="selectChild(child)"
+          >
+            {{ child.label }}
+          </UButton>
+        </div>
+      </LayerCatalogLoadingStatus>
+    </div>
   </div>
 </template>

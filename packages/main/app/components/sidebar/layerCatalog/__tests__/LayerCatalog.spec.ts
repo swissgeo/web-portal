@@ -21,7 +21,7 @@ mockNuxtImport("useThesaurus", () => () => ({
     {
       id: "planning",
       label: "Planung",
-      children: [{ id: "zoning", label: "Nutzungsplanung" }],
+      children: [{ id: "zoning", label: "Nutzungsplanung", children: [] }],
     },
   ]),
   status: thesaurusStatus,
@@ -50,6 +50,7 @@ function mountCatalog() {
     },
   });
   return mount(Panel, {
+    attachTo: document.body,
     global: {
       stubs: {
         LayerCatalogTable,
@@ -133,13 +134,14 @@ describe("LayerCatalog.vue", () => {
     expect(wrapper.find("button").exists()).toBe(false);
   });
 
-  it("on mobile, switches from the table to the tree and back", async () => {
+  it("on mobile, switches from the table to the tree and back, keeping the table mounted", async () => {
     isDesktop.value = false;
     const wrapper = mountCatalog();
+    const table = wrapper.getComponent(LayerCatalogTable);
 
     await wrapper.get("button").trigger("click");
     expect(wrapper.findComponent(LayerCatalogTreeMobile).exists()).toBe(true);
-    expect(wrapper.find("[data-testid='table-stub']").exists()).toBe(false);
+    expect(wrapper.get("[data-testid='table-stub']").isVisible()).toBe(false);
 
     const tree = wrapper.getComponent(LayerCatalogTreeMobile);
     tree.vm.$emit("update:conceptId", "planning");
@@ -147,6 +149,9 @@ describe("LayerCatalog.vue", () => {
     await nextTick();
 
     expect(wrapper.findComponent(LayerCatalogTreeMobile).exists()).toBe(false);
+    expect(wrapper.get("[data-testid='table-stub']").isVisible()).toBe(true);
+    // The same table, so its search query is kept
+    expect(wrapper.getComponent(LayerCatalogTable).vm).toBe(table.vm);
     expect(tableConceptIds(wrapper)).toEqual(["planning", "zoning"]);
     expect(wrapper.get("button").text()).toBe("Planung");
   });

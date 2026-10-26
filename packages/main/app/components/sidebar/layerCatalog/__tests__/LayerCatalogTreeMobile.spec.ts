@@ -2,6 +2,7 @@ import type { AsyncDataRequestStatus } from "#app";
 import type { ThesaurusConcept } from "~/types/thesaurus";
 
 import { mount } from "@vue/test-utils";
+import LayerCatalogLoadingStatus from "~/components/sidebar/layerCatalog/LayerCatalogLoadingStatus.vue";
 import LayerCatalogTreeMobile from "~/components/sidebar/layerCatalog/LayerCatalogTreeMobile.vue";
 import { describe, expect, it, vi } from "vitest";
 
@@ -29,7 +30,7 @@ const concepts: ThesaurusConcept[] = [
           { id: "geology", label: "Geologie", children: [] },
         ],
       },
-      { id: "biota", label: "Wald, Flora, Fauna" },
+      { id: "biota", label: "Wald, Flora, Fauna", children: [] },
     ],
   },
   { id: "planning", label: "Planung", children: [] },
@@ -172,26 +173,20 @@ describe("LayerCatalogTreeMobile.vue", () => {
   it("closes without changing the selection", async () => {
     const wrapper = mountList("soils");
 
-    await wrapper.get("button[icon='i-lucide-x']").trigger("click");
+    await wrapper
+      .get("button[aria-label='layerCatalog.close']")
+      .trigger("click");
 
     expect(wrapper.props("conceptId")).toBe("soils");
     expect(wrapper.emitted("close")).toHaveLength(1);
   });
 
-  it.each<AsyncDataRequestStatus>(["idle", "pending"])(
-    "shows that the concepts are loading while the status is %s",
-    (status) => {
-      const wrapper = mountList(null, status);
-
-      expect(wrapper.text()).toContain("layerCatalog.loading");
-      expect(entryLabels(wrapper)).toEqual([]);
-    },
-  );
-
-  it("shows an error when the concepts could not be loaded", () => {
+  it("shows the loading status of the concepts instead of the entries", () => {
     const wrapper = mountList(null, "error");
 
-    expect(wrapper.text()).toContain("layerCatalog.error");
+    expect(
+      wrapper.getComponent(LayerCatalogLoadingStatus).props("status"),
+    ).toBe("error");
     expect(entryLabels(wrapper)).toEqual([]);
   });
 });

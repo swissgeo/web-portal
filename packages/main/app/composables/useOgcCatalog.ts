@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter, Ref } from "vue";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { fetchCatalogItems } from "@swissgeo/ogc";
 import { toError } from "@swissgeo/shared";
+import { isEqual } from "es-toolkit";
 import { toValue } from "vue";
 
 /** Corresponds to the max supported `limit` value of the catalog backend service */
@@ -30,8 +31,13 @@ export function useOgcCatalog(
 ) {
   const catalogItemsUrl = useCatalogItemsUrl();
 
-  const q = computed(() => toValue(query)?.trim() ?? "");
-  const conceptIds = computed(() => toValue(concepts) ?? []);
+  const trimmedQuery = computed(() => toValue(query)?.trim() ?? "");
+  // Keeps the previous array while the concepts stay the same, so passing an
+  // equal array doesn't reset the list.
+  const stableConcepts = computed<string[]>((previous) => {
+    const next = toValue(concepts) ?? [];
+    return previous && isEqual(previous, next) ? previous : next;
+  });
 
   const state = ref<OgcCatalogState>({ status: "pending" });
 
@@ -51,8 +57,8 @@ export function useOgcCatalog(
         {
           lang: language.value,
           offset,
-          q: q.value,
-          concepts: conceptIds.value,
+          q: trimmedQuery.value,
+          concepts: stableConcepts.value,
         },
       ],
     });
@@ -64,8 +70,8 @@ export function useOgcCatalog(
         lang: language.value,
         limit: PAGE_SIZE,
         offset,
-        q: q.value,
-        concepts: conceptIds.value,
+        q: trimmedQuery.value,
+        concepts: stableConcepts.value,
       });
       if (request !== requestCount) {
         return;
@@ -89,7 +95,9 @@ export function useOgcCatalog(
     }
   }
 
-  watch([language, q, conceptIds], () => load(true), { immediate: true });
+  watch([language, trimmedQuery, stableConcepts], () => load(true), {
+    immediate: true,
+  });
 
   const total = computed(() => state.value.data?.numberMatched ?? 0);
   const hasMore = computed(
