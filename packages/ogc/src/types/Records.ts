@@ -84,10 +84,18 @@ export interface Property<recordType extends string> {
   preferredDistributionId?: string;
   // Combines the data of several providers, e.g. the KGK datasets.
   aggregated?: boolean;
+  // The organization that owns the dataset, shown as its provider.
+  owner?: Owner;
+}
+
+export interface Owner {
+  id: string;
+  name: string;
+  acronym: string;
 }
 
 export interface Contact {
-  // `role` and `country`: older record shape, still read by the catalog.
+  // `role` and `country`: older record shape.
   country?: string;
   role?: string;
   organization: string;

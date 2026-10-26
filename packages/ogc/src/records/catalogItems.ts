@@ -9,6 +9,8 @@ export interface CatalogItemsOptions {
   q?: string;
   /** Only returns the records of any of these thesaurus concepts */
   concepts?: string[];
+  /** Only returns the records of this owner organization */
+  ownerId?: string;
   /** Number of records to skip (default: 0) */
   offset?: number;
   /** Optional abort signal for cancellation */
@@ -32,7 +34,7 @@ export async function fetchCatalogItems(
   itemsUrl: string,
   options: CatalogItemsOptions,
 ): Promise<DatasetCollection> {
-  const { lang, limit, offset = 0, concepts, signal } = options;
+  const { lang, limit, offset = 0, concepts, ownerId, signal } = options;
   const q = options.q?.trim() ?? "";
 
   const url = new URL(itemsUrl);
@@ -42,6 +44,9 @@ export async function fetchCatalogItems(
   if (concepts?.length) {
     // De-duplicated and sorted, so the same concepts always give the same URL
     url.searchParams.set("concepts", [...new Set(concepts)].sort().join("|"));
+  }
+  if (ownerId) {
+    url.searchParams.set("ownerId", ownerId);
   }
 
   if (q) {

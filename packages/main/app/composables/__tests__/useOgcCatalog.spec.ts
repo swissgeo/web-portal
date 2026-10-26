@@ -268,6 +268,24 @@ describe("useOgcCatalog", () => {
     expect(fetchMock).toHaveBeenCalledOnce();
   });
 
+  it("starts over when the owner changes", async () => {
+    fetchMock
+      .mockResolvedValueOnce(makePage(["a", "b"], 3))
+      .mockResolvedValueOnce(makePage(["c"], 3))
+      .mockResolvedValueOnce(makePage(["census"], 1));
+    const owner = ref<string>();
+
+    const { state, loadMore } = useOgcCatalog(ref("de"), "", [], owner);
+    await flushPromises();
+    await loadMore();
+
+    owner.value = "ch.bfs";
+    await flushPromises();
+
+    expect(lastOptions()).toMatchObject({ offset: 0, ownerId: "ch.bfs" });
+    expect(loadedIds(state)).toEqual(["census"]);
+  });
+
   it("keeps the loaded records when a page fails, and retries that page", async () => {
     fetchMock
       .mockResolvedValueOnce(makePage(["a"], 2))
