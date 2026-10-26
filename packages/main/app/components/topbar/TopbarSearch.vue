@@ -255,6 +255,7 @@ function clearSearch() {
           base: 'placeholder-nav-brand-muted! ring-0',
           leadingIcon: 'text-nav-brand-muted',
         }"
+        v-bind="$attrs"
       >
         <template v-if="query" #trailing>
           <UButton
