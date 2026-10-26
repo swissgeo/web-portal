@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
 
+import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
+
 definePageMeta({ key: "home", layout: "landing-page", keepalive: false });
 useSeoMeta({ title: "SWISSGEO" });
 
 const { t } = useI18n();
 const localePath = useLocalePath();
+const uiStore = useSidebarStore();
 
 const socialLinks = ref<NavigationMenuItem[]>([
   {
@@ -34,6 +37,13 @@ const infosLinks = ref<NavigationMenuItem[]>([
     trailingIcon: "i-lucide-arrow-right",
   },
 ]);
+
+async function goToMap(openGeoCatalogTree = false): Promise<void> {
+  if (openGeoCatalogTree) {
+    uiStore.setSidebar(SidebarType.GEOCATALOG_TREE);
+  }
+  await navigateTo(localePath("map"));
+}
 </script>
 
 <template>
@@ -46,7 +56,7 @@ const infosLinks = ref<NavigationMenuItem[]>([
       />
       <div
         class="absolute inset-0 mx-4 flex cursor-pointer items-center justify-center lg:mx-8"
-        @click="navigateTo(localePath('map'))"
+        @click="goToMap()"
       >
         <ClientOnly>
           <div
@@ -57,7 +67,7 @@ const infosLinks = ref<NavigationMenuItem[]>([
             <TopbarSearch
               class="w-full"
               :skip-mobile="true"
-              @selected="navigateTo(localePath('map'))"
+              @selected="goToMap()"
             />
           </div>
         </ClientOnly>
@@ -72,10 +82,10 @@ const infosLinks = ref<NavigationMenuItem[]>([
         icon="i-lucide-map"
         variant="outline"
         :ui="{
-          root: 'h-72 lg:w-1/3',
+          root: 'h-72 lg:w-1/3 cursor-pointer',
           footer: 'ml-auto',
         }"
-        :to="localePath('map')"
+        @click="goToMap()"
       >
         <template #footer>
           <UButton trailing-icon="i-lucide-arrow-right"> Zur Karte </UButton>
@@ -87,10 +97,10 @@ const infosLinks = ref<NavigationMenuItem[]>([
         icon="i-lucide-list-todo"
         variant="outline"
         :ui="{
-          root: 'h-72 lg:w-1/3',
+          root: 'h-72 lg:w-1/3 cursor-pointer',
           footer: 'ml-auto',
         }"
-        :to="localePath('map')"
+        @click="goToMap(true)"
       >
         <template #footer>
           <UButton trailing-icon="i-lucide-arrow-right">
