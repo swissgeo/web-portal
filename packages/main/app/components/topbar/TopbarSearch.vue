@@ -10,6 +10,8 @@ import { useSearchSelection } from "@/composables/useSearchSelection";
 
 import SearchCategory from "./SearchCategory.vue";
 
+const emit = defineEmits(["selected"]);
+
 const { t, locale } = useI18n();
 const searchStore = useSearchStore();
 const toaster = useToaster();
@@ -150,6 +152,7 @@ function handleSelect(result: SearchResult) {
     searchStore.keepSelectedQuery(title);
   }
   isOpen.value = false;
+  emit("selected");
 }
 
 // the map tab is the default one, and would claim there is nothing when the

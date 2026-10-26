@@ -54,7 +54,10 @@ const infosLinks = ref<NavigationMenuItem[]>([
             class="mx-auto w-(--ui-container) max-w-228 cursor-auto rounded-lg bg-primary-50 p-4 dark:bg-primary-800"
             @click.stop=""
           >
-            <TopbarSearch class="w-full" />
+            <TopbarSearch
+              class="w-full"
+              @selected="navigateTo(localePath('map'))"
+            />
           </div>
         </ClientOnly>
       </div>
