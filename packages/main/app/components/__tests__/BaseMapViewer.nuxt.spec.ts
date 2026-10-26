@@ -372,7 +372,7 @@ describe("BaseMapViewer", () => {
       expect(geoJsonData.crs?.properties?.name).toBeDefined();
 
       // styling is defined (values resolved from the design tokens)
-      expect(highlight.geoJsonStyle).toBeDefined();
+      expect(highlight.mapLibreStyle).toBeDefined();
     });
 
     it("adds no highlight layer without a selection", async () => {

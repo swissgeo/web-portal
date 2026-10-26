@@ -2,11 +2,11 @@
 import type { LayerSource } from "@swissgeo/feature";
 import type { Layer as SourceLayer } from "@swissgeo/layers";
 import type {
-  GeoAdminGeoJSONStyleDefinition,
   HighLightLayer,
   Layer as MapLayer,
   MapClickEvent,
   MapLayerRenderer,
+  MapLibreStyleDocument,
 } from "@swissgeo/map";
 import type { DisplayMode } from "~/types/injectionKeys";
 
@@ -77,21 +77,29 @@ const highlightFill = toRgbaColor(
 );
 
 const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
-  const geoJsonStyle: GeoAdminGeoJSONStyleDefinition = {
-    type: "single",
-    property: "featureId",
-    geomType: "point",
-    vectorOptions: {
-      type: "circle",
-      fill: {
-        color: highlightFill,
+  // Inline MapLibre style for selected features: a filled circle with the
+  // theme's highlight stroke (previously a geoadmin literals definition).
+  const mapLibreStyle: MapLibreStyleDocument = {
+    version: 8,
+    sources: {
+      [HIGHLIGHT_LAYER_ID]: {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] },
       },
-      stroke: {
-        color: highlightStroke,
-        width: 3,
-      },
-      radius: 7,
     },
+    layers: [
+      {
+        id: `${HIGHLIGHT_LAYER_ID}-circle`,
+        type: "circle",
+        source: HIGHLIGHT_LAYER_ID,
+        paint: {
+          "circle-radius": 7,
+          "circle-color": highlightFill,
+          "circle-stroke-color": highlightStroke,
+          "circle-stroke-width": 3,
+        },
+      },
+    ],
   };
   return {
     uuid: HIGHLIGHT_LAYER_ID,
@@ -109,7 +117,7 @@ const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
         },
       },
     },
-    geoJsonStyle,
+    mapLibreStyle,
   };
 });
 

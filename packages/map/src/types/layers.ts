@@ -1,11 +1,36 @@
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 import type { Component } from "vue";
 
-import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 import type { FeatureCollectionWithCRS } from "@/utils/geoJsonUtils";
+import type { ShapeIconSpec } from "@/utils/maplibreShapeIcons";
 
-export type { GeoAdminGeoJSONStyleDefinition };
+export type { ShapeIconSpec };
 import type { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
+
+/**
+ * Minimal structural type for a hosted MapLibre style document.
+ * The viewer only consumes these fields;
+ * everything else passes through to `ol-mapbox-style`
+ * */
+export interface MapLibreStyleLayer {
+  id: string;
+  type: string;
+  source?: string;
+  metadata?: unknown;
+  layout?: unknown;
+  paint?: unknown;
+  filter?: unknown;
+  minzoom?: number;
+  maxzoom?: number;
+}
+
+export interface MapLibreStyleDocument {
+  version: 8;
+  name?: string;
+  metadata?: unknown;
+  sources: { [sourceId: string]: unknown };
+  layers: MapLibreStyleLayer[];
+}
 
 /**
  * At the moment, these 3 types are sort of like a duplicate of layers.
@@ -73,7 +98,8 @@ export interface GPXLayer extends Layer {
 export interface GeoJSONLayer extends Layer {
   format: "GeoJSON";
   geoJsonData: FeatureCollectionWithCRS;
-  geoJsonStyle?: GeoAdminGeoJSONStyleDefinition;
+  mapLibreStyle?: MapLibreStyleDocument;
+  mapLibreIcons?: ShapeIconSpec[];
 }
 
 export interface COGLayer extends Layer {
