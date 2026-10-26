@@ -66,8 +66,12 @@ watch(
 </script>
 
 <template>
-  <div v-show="isVisible" class="absolute top-0 left-0 flex h-full">
-    <!-- drawers teleport out of this element isVisible must be applied too -->
+  <div v-show="isVisible" class="flex h-full shrink-0">
+    <!--
+      Part of the layout flow, so the map and the footer start at its right edge.
+      On mobile the content moves into bottom drawers and the column is left empty.
+      drawers teleport out of this element isVisible must be applied too
+    -->
     <div
       v-show="isSidebarContentVisible"
       :style="{ width: uiStore.sidebarContentWidth + 'px' }"

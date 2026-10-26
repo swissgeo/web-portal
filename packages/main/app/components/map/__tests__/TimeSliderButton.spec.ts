@@ -12,7 +12,7 @@ mockNuxtImport("useIsDesktop", () => () => isDesktop);
 mockNuxtImport("useMapViewStore", () => () => ({ isTimeSliderVisible: true }));
 
 vi.mock("@swissgeo/skeleton", () => ({
-  useSidebarStore: () => ({ sidebarWidth: 347 }),
+  useSidebarStore: () => ({ sidebarContentWidth: 347 }),
 }));
 vi.mock("@swissgeo/dimension", () => ({
   TimeSlider: { name: "TimeSlider", template: "<div />" },

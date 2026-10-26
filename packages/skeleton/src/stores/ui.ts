@@ -4,9 +4,6 @@ import { ref, computed } from "vue";
 const LAYER_CART_WIDTH = 347;
 const GEOCATALOG_TREE_WIDTH = 1280;
 
-/** Width of the tab left over on the map once the sidebar is collapsed */
-export const SIDEBAR_HANDLE_WIDTH = 24;
-
 // Sidebar types enum
 export enum SidebarType {
   LAYER_CART = "layerCart",
@@ -38,10 +35,6 @@ export const useSidebarStore = defineStore("sidebar", () => {
     isGeocatalogTreeVisible.value ? GEOCATALOG_TREE_WIDTH : LAYER_CART_WIDTH,
   );
 
-  const sidebarWidth = computed(() =>
-    isSidebarOpen.value ? LAYER_CART_WIDTH : SIDEBAR_HANDLE_WIDTH,
-  );
-
   // #endregion
 
   function setSidebar(type: SidebarType) {
@@ -63,7 +56,6 @@ export const useSidebarStore = defineStore("sidebar", () => {
     isContentSidebarVisible,
     isGeocatalogTreeVisible,
     sidebarContentWidth,
-    sidebarWidth,
 
     // actions
     setSidebar,

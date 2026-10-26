@@ -36,15 +36,14 @@ watch(route, (value) => {
     <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
     <UMain as="div" class="min-h-0 flex-1">
       <main id="main" ref="main" class="h-full font-sans">
-        <div class="relative h-full">
+        <div class="flex h-full">
           <SideBar
             v-if="!isMapFullscreenMode"
             :isVisible="!detailsOpen"
-            class="z-99"
             :mapLayers="mapLayers"
           >
           </SideBar>
-          <div class="relative h-full w-full">
+          <div class="relative h-full min-w-0 flex-1">
             <slot />
             <ClientOnly>
               <Footer v-if="!isMapFullscreenMode" />
