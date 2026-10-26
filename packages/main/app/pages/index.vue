@@ -4,7 +4,7 @@ import type { NavigationMenuItem } from "@nuxt/ui";
 import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
 import { joinURL } from "ufo";
 
-definePageMeta({ key: "home", layout: "landing-page", keepalive: false });
+definePageMeta({ key: "home", layout: "landing-page" });
 useSeoMeta({ title: "SWISSGEO" });
 
 const { t, locale } = useI18n();
