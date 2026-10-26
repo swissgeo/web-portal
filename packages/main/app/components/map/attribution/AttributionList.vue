@@ -18,18 +18,13 @@ const { t } = useI18n();
     data-testid="layers-copyrights"
   >
     <span>{{ t("footer.copyRightData") }}</span>
-    <span
-      v-for="(source, index) in sources"
-      :key="source.name"
-      class="d-inline-flex"
-    >
+    <span v-for="(source, index) in sources" :key="source.name">
       <AttributionItem
         :source-id="source.id"
         :source-name="source.name"
         :source-url="source.url"
         :has-data-disclaimer="false"
-        :is-last="index === sources.length - 1"
-      />
+      />{{ index < sources.length - 1 ? ", " : "" }}
     </span>
   </div>
 </template>

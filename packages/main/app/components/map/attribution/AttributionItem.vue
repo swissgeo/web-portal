@@ -4,13 +4,11 @@ const {
   sourceName,
   sourceUrl,
   hasDataDisclaimer = false,
-  isLast = false,
 } = defineProps<{
   sourceId: string;
   sourceName: string;
   sourceUrl?: string;
   hasDataDisclaimer?: boolean;
-  isLast?: boolean;
 }>();
 </script>
 
@@ -27,6 +25,6 @@ const {
     }"
     :data-testid="`layer-copyright-${sourceName}`"
   >
-    {{ `${sourceName}${isLast ? "" : ","}` }}
+    {{ sourceName }}
   </component>
 </template>
