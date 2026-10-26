@@ -11,6 +11,9 @@ import { useSearchSelection } from "@/composables/useSearchSelection";
 import SearchCategory from "./SearchCategory.vue";
 
 const emit = defineEmits(["selected"]);
+const { skipMobile = false } = defineProps<{
+  skipMobile?: boolean;
+}>();
 
 const { t, locale } = useI18n();
 const searchStore = useSearchStore();
@@ -250,7 +253,10 @@ function clearSearch() {
         size="xl"
         variant="outline"
         color="primary"
-        class="hidden w-119.25 grow xl:block"
+        class="w-119.25 grow xl:block"
+        :class="{
+          hidden: !skipMobile,
+        }"
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
@@ -272,6 +278,7 @@ function clearSearch() {
         </template>
       </UInput>
       <UButton
+        v-show="!skipMobile"
         icon="i-lucide-search"
         variant="ghost"
         class="xl:hidden"

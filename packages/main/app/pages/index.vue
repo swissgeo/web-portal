@@ -56,6 +56,7 @@ const infosLinks = ref<NavigationMenuItem[]>([
           >
             <TopbarSearch
               class="w-full"
+              :skip-mobile="true"
               @selected="navigateTo(localePath('map'))"
             />
           </div>
