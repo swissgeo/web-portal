@@ -665,5 +665,44 @@
   },
   "testSiteBanner": {
     "text": "{environment}-Umgebung – Nicht für den produktiven Gebrauch. Nicht teilen."
+  },
+  "landing": {
+    "cards": {
+      "map": {
+        "title": "Karte",
+        "description": "Interaktiver Karten-Viewer mit hunderten Ebenen, Zeitreise, Druck- und Teilen-Funktionen.",
+        "button": "Zur Karte"
+      },
+      "catalog": {
+        "title": "Daten-Katalog",
+        "description": "Durchsuchen Sie den vollständigen Katalog mit Geobasisdaten, Themen und Metadaten.",
+        "button": "Daten-Katalog öffnen"
+      },
+      "info": {
+        "title": "Alles weitere um SWISSGEO",
+        "description": "Alles zur News, Hilfe und Über uns.",
+        "button": "Zum Infoportal"
+      }
+    },
+    "footer": {
+      "claim": "Das Wo ist hier.",
+      "description": "SWISSGEO macht raumbezogene Daten der Schweiz an einem Ort zugänglich.",
+      "followUs": "Folge uns!",
+      "moreInformation": "Weitere Informationen",
+      "termsOfUse": "Nutzungsbestimmungen",
+      "faq": "FAQ",
+      "dataProtection": "Rechtliches und Datenschutz",
+      "netiquette": "Netiquette",
+      "accessibility": "Barrierefreiheit",
+      "copyright": "Copyright © 2026"
+    },
+    "links": {
+      "impressum": "impressum-de",
+      "dataProtection": "rechtliches-und-datenschutz",
+      "netiquette": "netiquette-de",
+      "accessibility": "erklaerung-zur-barrierefreiheit",
+      "termsOfUse": "nutzungs-und-betriebsbestimmungen",
+      "faq": ""
+    }
   }
 }

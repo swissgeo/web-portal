@@ -2,13 +2,19 @@
 import type { NavigationMenuItem } from "@nuxt/ui";
 
 import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
+import { joinURL } from "ufo";
 
 definePageMeta({ key: "home", layout: "landing-page", keepalive: false });
 useSeoMeta({ title: "SWISSGEO" });
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const localePath = useLocalePath();
+const runtimeConfig = useRuntimeConfig();
 const uiStore = useSidebarStore();
+
+function cmsUrl(path: string): string {
+  return joinURL(runtimeConfig.public.cmsBaseUrl, locale.value, path);
+}
 
 const socialLinks = ref<NavigationMenuItem[]>([
   {
@@ -25,18 +31,20 @@ const socialLinks = ref<NavigationMenuItem[]>([
   },
 ]);
 
-const infosLinks = ref<NavigationMenuItem[]>([
+const infosLinks = computed<NavigationMenuItem[]>(() => [
   {
-    label: "Nutzungsbestimmungen",
-    to: "",
+    label: t("landing.footer.termsOfUse"),
+    to: cmsUrl(t("landing.links.termsOfUse")),
     trailingIcon: "i-lucide-arrow-right",
   },
   {
-    label: "FAQ",
-    to: "",
+    label: t("landing.footer.faq"),
+    to: cmsUrl(t("landing.links.faq")),
     trailingIcon: "i-lucide-arrow-right",
   },
 ]);
+
+const infoPortalUrl = computed(() => cmsUrl(locale.value));
 
 async function goToMap(openGeoCatalogTree = false): Promise<void> {
   if (openGeoCatalogTree) {
@@ -77,8 +85,8 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       class="mx-auto flex max-w-(--ui-container) flex-col gap-4 p-4 pb-16 lg:flex-row lg:p-8 lg:pb-16"
     >
       <UPageCard
-        title="Karte"
-        description="Interaktiver Karten-Viewer mit hunderten Ebenen, Zeitreise, Druck- und Teilen-Funktionen."
+        :title="t('landing.cards.map.title')"
+        :description="t('landing.cards.map.description')"
         icon="i-lucide-map"
         variant="outline"
         :ui="{
@@ -88,12 +96,14 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         @click="goToMap()"
       >
         <template #footer>
-          <UButton trailing-icon="i-lucide-arrow-right"> Zur Karte </UButton>
+          <UButton trailing-icon="i-lucide-arrow-right">
+            {{ t("landing.cards.map.button") }}
+          </UButton>
         </template>
       </UPageCard>
       <UPageCard
-        title="Daten-Katalog"
-        description="Durchsuchen Sie den vollständigen Katalog mit Geobasisdaten, Themen und Metadaten."
+        :title="t('landing.cards.catalog.title')"
+        :description="t('landing.cards.catalog.description')"
         icon="i-lucide-list-todo"
         variant="outline"
         :ui="{
@@ -104,15 +114,15 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       >
         <template #footer>
           <UButton trailing-icon="i-lucide-arrow-right">
-            Daten-Katalog öffnen
+            {{ t("landing.cards.catalog.button") }}
           </UButton>
         </template>
       </UPageCard>
       <UPageCard
-        title="Alles weitere um SWISSGEO"
-        description="Alles zur News, Hilfe und Über uns."
+        :title="t('landing.cards.info.title')"
+        :description="t('landing.cards.info.description')"
         icon="i-lucide-app-window"
-        to="https://info.swissgeo.ch"
+        :to="infoPortalUrl"
         variant="soft"
         target="_blank"
         :ui="{
@@ -122,7 +132,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       >
         <template #footer>
           <UButton trailing-icon="i-lucide-external-link">
-            Zum Infoportal
+            {{ t("landing.cards.info.button") }}
           </UButton>
         </template>
       </UPageCard>
@@ -141,14 +151,17 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           class="mb-8 flex w-full flex-col gap-8 lg:mb-0 lg:grid lg:grid-cols-3 lg:items-end"
         >
           <div class="flex flex-col gap-4">
-            <p class="text-2xl font-semibold">SWISSGEO<br />Das Wo ist hier.</p>
+            <p class="text-2xl font-semibold">
+              SWISSGEO<br />{{ t("landing.footer.claim") }}
+            </p>
             <p class="text-sm font-medium">
-              SWISSGEO macht raumbezogene Daten der Schweiz an einem Ort
-              zugänglich.
+              {{ t("landing.footer.description") }}
             </p>
           </div>
           <div class="flex flex-col gap-2">
-            <p class="text-lg font-semibold">Folge uns!</p>
+            <p class="text-lg font-semibold">
+              {{ t("landing.footer.followUs") }}
+            </p>
             <UNavigationMenu
               orientation="vertical"
               class="data-[orientation=vertical]:w-full"
@@ -161,7 +174,9 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         </div>
       </template>
       <div class="flex w-full flex-col gap-2">
-        <p class="text-lg font-semibold">Weitere Informationen</p>
+        <p class="text-lg font-semibold">
+          {{ t("landing.footer.moreInformation") }}
+        </p>
         <UNavigationMenu
           orientation="vertical"
           class="data-[orientation=vertical]:w-full"
@@ -178,20 +193,40 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       <div
         class="text-accent grid grid-cols-2 grid-rows-2 gap-4 lg:flex lg:w-1/2 lg:flex-row"
       >
-        <ULink target="_blank" raw class="text-left lg:w-fit">
+        <ULink
+          :to="cmsUrl(t('landing.links.impressum'))"
+          target="_blank"
+          raw
+          class="text-left lg:w-fit"
+        >
           {{ t("footer.impressum") }}
         </ULink>
-        <ULink target="_blank" raw class="text-left lg:w-fit">
-          Rechtiches und Datenschutz
+        <ULink
+          :to="cmsUrl(t('landing.links.dataProtection'))"
+          target="_blank"
+          raw
+          class="text-left lg:w-fit"
+        >
+          {{ t("landing.footer.dataProtection") }}
         </ULink>
-        <ULink target="_blank" raw class="text-left lg:w-fit">
-          Netiquette
+        <ULink
+          :to="cmsUrl(t('landing.links.netiquette'))"
+          target="_blank"
+          raw
+          class="text-left lg:w-fit"
+        >
+          {{ t("landing.footer.netiquette") }}
         </ULink>
-        <ULink target="_blank" raw class="text-left lg:w-fit">
-          Barrierefreiheit
+        <ULink
+          :to="cmsUrl(t('landing.links.accessibility'))"
+          target="_blank"
+          raw
+          class="text-left lg:w-fit"
+        >
+          {{ t("landing.footer.accessibility") }}
         </ULink>
       </div>
-      <p class="lg:w-1/2">Copyright © 2026</p>
+      <p class="lg:w-1/2">{{ t("landing.footer.copyright") }}</p>
     </div>
   </div>
 </template>
