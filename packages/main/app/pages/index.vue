@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
 
-definePageMeta({ key: "home", layout: "landing-page" });
+definePageMeta({ key: "home", layout: "landing-page", keepalive: false });
 useSeoMeta({ title: "SWISSGEO" });
 
 const { t } = useI18n();
