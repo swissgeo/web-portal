@@ -36,6 +36,7 @@ declare global {
           enableImport: boolean;
           enablePrint: boolean;
           enableShare: boolean;
+          enableTimeSlider: boolean;
         };
       };
     };

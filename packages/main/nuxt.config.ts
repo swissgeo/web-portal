@@ -176,6 +176,7 @@ export default defineNuxtConfig({
           enableImport: false,
           enablePrint: false,
           enableShare: false,
+          enableTimeSlider: false,
         },
       },
     },
