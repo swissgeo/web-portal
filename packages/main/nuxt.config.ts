@@ -40,6 +40,7 @@ export default defineNuxtConfig({
     keepalive: true,
     head: {
       // Android: fit the page above the keyboard. iOS ignores this.
+      // app.vue overrides this when the mobile UI is off.
       viewport:
         "width=device-width, initial-scale=1, interactive-widget=resizes-content",
     },
@@ -165,6 +166,7 @@ export default defineNuxtConfig({
       testSiteBanner: "",
       featureFlags: {
         enableCmsSearch: false,
+        enableMobileUi: false,
         enableFeatureInfo: false,
         enablePositionPopup: false,
         tools: {

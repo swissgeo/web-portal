@@ -11,6 +11,9 @@ const { resetApp } = useResetApp();
         <div class="h-full w-full">
           <slot />
         </div>
+        <ClientOnly>
+          <MobileNotice />
+        </ClientOnly>
       </main>
     </UMain>
   </div>
