@@ -24,7 +24,6 @@ const buildTime = new Date().toISOString();
 // NUXT always force NODE_ENV to production so we cannot use it to make a development build with
 // source map, therefore using our own DEVELOPMENT_BUILD environment variable
 const isDevelopment = process.env.DEVELOPMENT_BUILD === "1";
-const isCoverage = process.env.COVERAGE === "1";
 process.env.NODE_ENV = isDevelopment ? "dev" : process.env.NODE_ENV;
 
 export default defineNuxtConfig({
@@ -88,14 +87,12 @@ export default defineNuxtConfig({
   sourcemap: {
     // Enable in dev, disable in prod (unless you have a private uploader)
     server: isDevelopment,
-    client: isDevelopment || isCoverage,
+    client: isDevelopment,
   },
   vite: {
     build: {
       minify: isDevelopment ? false : "terser",
-      // Use inline sourcemaps for coverage so v8-to-istanbul can remap to
-      // original source files without needing to fetch external .map files
-      sourcemap: isDevelopment ? true : isCoverage ? "inline" : false,
+      sourcemap: isDevelopment,
     },
     mode: isDevelopment ? "development" : "production",
     server: {
