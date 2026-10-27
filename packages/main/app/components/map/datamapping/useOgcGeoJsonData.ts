@@ -39,8 +39,7 @@ export function useOgcGeoJsonData(
       // The payload types crossing the package boundary are opaque records;
       // narrow them to the map module's expectations here.
       geoJsonData: geoJsonData.value as unknown as GeoJSONLayer["geoJsonData"],
-      mapLibreStyle:
-        mapLibreStyle.value as unknown as GeoJSONLayer["mapLibreStyle"],
+      mapLibreStyle: mapLibreStyle.value,
       mapLibreIcons: mapLibreIcons.value as ShapeIconSpec[],
     };
   });

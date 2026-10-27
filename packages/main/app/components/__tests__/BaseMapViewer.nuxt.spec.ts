@@ -371,8 +371,17 @@ describe("BaseMapViewer", () => {
       // pipeline can reproject if the view projection differs
       expect(geoJsonData.crs?.properties?.name).toBeDefined();
 
-      // styling is defined (values resolved from the design tokens)
-      expect(highlight.mapLibreStyle).toBeDefined();
+      // styling covers all geometry types (values resolved from the design
+      // tokens): circle for points, line for lines and polygon outlines,
+      // fill for polygons
+      const mapLibreStyle = highlight.mapLibreStyle as {
+        layers: Array<{ type: string }>;
+      };
+      expect(mapLibreStyle.layers.map((layer) => layer.type)).toEqual([
+        "circle",
+        "line",
+        "fill",
+      ]);
     });
 
     it("adds no highlight layer without a selection", async () => {

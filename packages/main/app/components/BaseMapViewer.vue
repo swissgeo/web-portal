@@ -6,8 +6,8 @@ import type {
   Layer as MapLayer,
   MapClickEvent,
   MapLayerRenderer,
-  MapLibreStyleDocument,
 } from "@swissgeo/map";
+import type { MapLibreStyleDocument } from "@swissgeo/shared";
 import type { DisplayMode } from "~/types/injectionKeys";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
@@ -77,8 +77,9 @@ const highlightFill = toRgbaColor(
 );
 
 const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
-  // Inline MapLibre style for selected features: a filled circle with the
-  // theme's highlight stroke (previously a geoadmin literals definition).
+  // Inline MapLibre style for selected features (previously a geoadmin
+  // literals definition): a filled circle for points, a stroke for lines and
+  // polygon outlines, and a fill for polygons.
   const mapLibreStyle: MapLibreStyleDocument = {
     version: 8,
     sources: {
@@ -97,6 +98,23 @@ const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
           "circle-color": highlightFill,
           "circle-stroke-color": highlightStroke,
           "circle-stroke-width": 3,
+        },
+      },
+      {
+        id: `${HIGHLIGHT_LAYER_ID}-line`,
+        type: "line",
+        source: HIGHLIGHT_LAYER_ID,
+        paint: {
+          "line-color": highlightStroke,
+          "line-width": 3,
+        },
+      },
+      {
+        id: `${HIGHLIGHT_LAYER_ID}-fill`,
+        type: "fill",
+        source: HIGHLIGHT_LAYER_ID,
+        paint: {
+          "fill-color": highlightFill,
         },
       },
     ],

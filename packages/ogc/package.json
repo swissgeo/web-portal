@@ -28,6 +28,7 @@
     "@camptocamp/ogc-client": "catalog:",
     "@swissgeo/coordinates": "workspace:*",
     "@swissgeo/log": "workspace:*",
+    "@swissgeo/shared": "workspace:*",
     "@vueuse/core": "catalog:",
     "proj4": "catalog:"
   },

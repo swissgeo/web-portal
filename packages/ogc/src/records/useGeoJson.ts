@@ -1,6 +1,8 @@
+import type { MapLibreStyleDocument } from "@swissgeo/shared";
 import type { Ref } from "vue";
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
+import { isMapLibreStyleDocument } from "@swissgeo/shared";
 import { computed, watchEffect } from "vue";
 
 import type { Distribution } from "@/types";
@@ -13,7 +15,7 @@ import { getLinksByRel } from "./utils";
  * consuming it, so  the detailed fields needed are within the map package.
  */
 export interface GeoJsonStylePayload {
-  style: Record<string, unknown>;
+  style: MapLibreStyleDocument;
   icons: unknown[];
 }
 
@@ -28,13 +30,16 @@ export function useGeoJson(distribution: Ref<Distribution | null>) {
   const { data: stylePayload, error: styleError } =
     useConditionalFetch<GeoJsonStylePayload | null>(styleUrl, ["get", "json"]);
 
-  const mapLibreStyle = computed(() => stylePayload.value?.style ?? null);
+  const mapLibreStyle = computed(() => {
+    const style = stylePayload.value?.style;
+    return isMapLibreStyleDocument(style) ? style : null;
+  });
   const mapLibreIcons = computed(() => stylePayload.value?.icons ?? []);
 
   /**
-   * A GeoJSON distribution without a usable hosted style cannot be rendered as
-   * designed: a missing `styledBy` link, a failed fetch or a malformed payload
-   * all surface here so the caller can fail the layer.
+   * A GeoJSON distribution without a usable hosted style or data link cannot
+   * be rendered as designed: a missing `styledBy`/data link, a failed fetch
+   * or a malformed payload all surface here so the caller can fail the layer.
    * `null` while the distribution itself is still loading.
    */
   const error = computed<Error | null>(() => {
@@ -44,14 +49,19 @@ export function useGeoJson(distribution: Ref<Distribution | null>) {
     if (!styleUrl.value) {
       return new Error("GeoJSON distribution has no styledBy link");
     }
+    if (!dataUrl.value) {
+      return new Error("GeoJSON distribution has no data link");
+    }
     const styleFetchError = abortAwareError(styleError.value);
     if (styleFetchError) {
       return new Error("Unable to load GeoJSON style", {
         cause: styleFetchError,
       });
     }
-    if (stylePayload.value && !stylePayload.value.style) {
-      return new Error("GeoJSON style payload is malformed (missing style)");
+    if (stylePayload.value && !mapLibreStyle.value) {
+      return new Error(
+        "GeoJSON style payload is malformed (expected a MapLibre v8 style document)",
+      );
     }
     const dataFetchError = abortAwareError(dataError.value);
     if (dataFetchError) {

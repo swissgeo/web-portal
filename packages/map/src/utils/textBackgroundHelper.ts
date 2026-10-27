@@ -1,10 +1,9 @@
+import type { MapLibreStyleDocument } from "@swissgeo/shared";
 import type { FeatureLike } from "ol/Feature";
 import type VectorLayer from "ol/layer/Vector";
 
 import Fill from "ol/style/Fill";
 import Stroke from "ol/style/Stroke";
-
-import type { MapLibreStyleDocument } from "@/types";
 
 /**
  * Label-background config carried on a MapLibre symbol layer's `metadata` under

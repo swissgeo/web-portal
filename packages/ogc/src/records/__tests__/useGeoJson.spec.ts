@@ -74,9 +74,25 @@ describe("useGeoJson composable", () => {
     expect(error.value?.message).toContain("no styledBy link");
   });
 
-  it("fetches the style payload from the styledBy link (case-insensitive rel)", async () => {
+  it("reports an error when no data link is present", async () => {
     const distribution = ref<Distribution | null>(
       makeDistribution([{ href: STYLE_URL, rel: "styledBy" }]),
+    );
+    const { geoJsonData, mapLibreStyle, error } = useGeoJson(distribution);
+
+    await flushPromises();
+    expect(geoJsonData.value).toBeNull();
+    expect(mapLibreStyle.value).toEqual(sampleStyle);
+    expect(error.value).toBeInstanceOf(Error);
+    expect(error.value?.message).toContain("no data link");
+  });
+
+  it("fetches the style payload from the styledBy link (case-insensitive rel)", async () => {
+    const distribution = ref<Distribution | null>(
+      makeDistribution([
+        { href: DATA_URL, rel: "data" },
+        { href: STYLE_URL, rel: "styledBy" },
+      ]),
     );
     const { mapLibreStyle, mapLibreIcons, error } = useGeoJson(distribution);
 
@@ -134,7 +150,9 @@ describe("useGeoJson composable", () => {
 
     await flushPromises();
     expect(geoJsonData.value).toBeNull();
-    expect(error.value).toBeNull();
+    // the non-GeoJSON about link is ignored, leaving no usable data link
+    expect(error.value).toBeInstanceOf(Error);
+    expect(error.value?.message).toContain("no data link");
   });
 
   it("reports an error when the style fetch fails", async () => {
@@ -145,7 +163,10 @@ describe("useGeoJson composable", () => {
     );
 
     const distribution = ref<Distribution | null>(
-      makeDistribution([{ href: STYLE_URL, rel: "styledby" }]),
+      makeDistribution([
+        { href: DATA_URL, rel: "data" },
+        { href: STYLE_URL, rel: "styledBy" },
+      ]),
     );
     const { error } = useGeoJson(distribution);
 
@@ -162,11 +183,35 @@ describe("useGeoJson composable", () => {
     );
 
     const distribution = ref<Distribution | null>(
-      makeDistribution([{ href: STYLE_URL, rel: "styledby" }]),
+      makeDistribution([
+        { href: DATA_URL, rel: "data" },
+        { href: STYLE_URL, rel: "styledBy" },
+      ]),
     );
     const { error } = useGeoJson(distribution);
 
     await flushPromises();
+    expect(error.value).toBeInstanceOf(Error);
+    expect(error.value?.message).toContain("malformed");
+  });
+
+  it("reports an error when the style is not a valid MapLibre style document", async () => {
+    server.use(
+      http.get(STYLE_URL, () => {
+        return HttpResponse.json({ style: {}, icons: [] });
+      }),
+    );
+
+    const distribution = ref<Distribution | null>(
+      makeDistribution([
+        { href: DATA_URL, rel: "data" },
+        { href: STYLE_URL, rel: "styledBy" },
+      ]),
+    );
+    const { mapLibreStyle, error } = useGeoJson(distribution);
+
+    await flushPromises();
+    expect(mapLibreStyle.value).toBeNull();
     expect(error.value).toBeInstanceOf(Error);
     expect(error.value?.message).toContain("malformed");
   });
@@ -179,7 +224,10 @@ describe("useGeoJson composable", () => {
     );
 
     const distribution = ref<Distribution | null>(
-      makeDistribution([{ href: STYLE_URL, rel: "styledby" }]),
+      makeDistribution([
+        { href: DATA_URL, rel: "data" },
+        { href: STYLE_URL, rel: "styledBy" },
+      ]),
     );
     const { mapLibreIcons, mapLibreStyle, error } = useGeoJson(distribution);
 

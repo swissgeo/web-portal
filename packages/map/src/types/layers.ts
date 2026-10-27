@@ -5,32 +5,10 @@ import type { FeatureCollectionWithCRS } from "@/utils/geoJsonUtils";
 import type { ShapeIconSpec } from "@/utils/maplibreShapeIcons";
 
 export type { ShapeIconSpec };
-import type { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
-
-/**
- * Minimal structural type for a hosted MapLibre style document.
- * The viewer only consumes these fields;
- * everything else passes through to `ol-mapbox-style`
- * */
-export interface MapLibreStyleLayer {
-  id: string;
-  type: string;
-  source?: string;
-  metadata?: unknown;
-  layout?: unknown;
-  paint?: unknown;
-  filter?: unknown;
-  minzoom?: number;
-  maxzoom?: number;
-}
-
-export interface MapLibreStyleDocument {
-  version: 8;
-  name?: string;
-  metadata?: unknown;
-  sources: { [sourceId: string]: unknown };
-  layers: MapLibreStyleLayer[];
-}
+import type {
+  HIGHLIGHT_LAYER_ID,
+  MapLibreStyleDocument,
+} from "@swissgeo/shared";
 
 /**
  * At the moment, these 3 types are sort of like a duplicate of layers.
