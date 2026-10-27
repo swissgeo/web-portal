@@ -17,7 +17,7 @@ import type { GeoJSONLayer } from "@/types";
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
 import usePositionStore from "@/stores/position";
 import * as geoJsonUtils from "@/utils/geoJsonUtils";
-import { makeGetImage } from "@/utils/maplibreShapeIcons";
+import { createGetImageCallback } from "@/utils/maplibreShapeIcons";
 import { applyOlTextBackground } from "@/utils/textBackgroundHelper";
 
 export default function useOlGeoJSONLayer(
@@ -109,7 +109,7 @@ export default function useOlGeoJSONLayer(
       titleColor: LogPreDefinedColor.Yellow,
       messages: ["Applying MapLibre style via ol-mapbox-style", style],
     });
-    const getImage = makeGetImage(layer.value.mapLibreIcons ?? []);
+    const getImage = createGetImageCallback(layer.value.mapLibreIcons ?? []);
     // Pass the LV95 view resolutions so ol-mapbox-style maps the current map
     // resolution to the same zoom levels the style's minzoom/maxzoom refer to.
     stylefunction(
@@ -117,9 +117,9 @@ export default function useOlGeoJSONLayer(
       style,
       sourceId,
       coordinateConstants.LV95_RESOLUTIONS,
-      undefined,
-      undefined,
-      undefined,
+      undefined, // spriteData
+      undefined, // spriteImageUrl
+      undefined, // getFonts function
       getImage,
     );
     // ol-mapbox-style can't render a label background box; re-apply the

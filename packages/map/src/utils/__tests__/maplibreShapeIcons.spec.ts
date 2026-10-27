@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { ShapeIconSpec } from "../maplibreShapeIcons";
 
-import { createShapeIcon, makeGetImage } from "../maplibreShapeIcons";
+import { createShapeIcon, createGetImageCallback } from "../maplibreShapeIcons";
 
 function stubContext() {
   const ctx = {
@@ -108,7 +108,7 @@ describe("createShapeIcon", () => {
   });
 });
 
-describe("makeGetImage", () => {
+describe("createGetImageCallback", () => {
   const specs: ShapeIconSpec[] = [
     {
       name: "sg-triangle-12-#808080-#FFFFFF-1",
@@ -121,13 +121,13 @@ describe("makeGetImage", () => {
   ];
 
   it("resolves a known icon name to a canvas", () => {
-    const getImage = makeGetImage(specs);
+    const getImage = createGetImageCallback(specs);
     const image = getImage({} as never, "sg-triangle-12-#808080-#FFFFFF-1");
     expect(image).toBeInstanceOf(HTMLCanvasElement);
   });
 
   it("caches generated canvases per name", () => {
-    const getImage = makeGetImage(specs);
+    const getImage = createGetImageCallback(specs);
     const first = getImage({} as never, "sg-triangle-12-#808080-#FFFFFF-1");
     const second = getImage({} as never, "sg-triangle-12-#808080-#FFFFFF-1");
     expect(second).toBe(first);
@@ -136,13 +136,13 @@ describe("makeGetImage", () => {
   it.each(["https://data.geo.admin.ch/icon.png", "data:image/png;base64,x"])(
     "passes external icon URLs through (%s)",
     (name) => {
-      const getImage = makeGetImage(specs);
+      const getImage = createGetImageCallback(specs);
       expect(getImage({} as never, name)).toBe(name);
     },
   );
 
   it("returns undefined for unknown non-URL names", () => {
-    const getImage = makeGetImage(specs);
+    const getImage = createGetImageCallback(specs);
     expect(getImage({} as never, "not-a-known-icon")).toBeUndefined();
   });
 });

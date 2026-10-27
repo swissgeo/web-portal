@@ -133,13 +133,13 @@ export function createShapeIcon(spec: ShapeIconSpec): HTMLCanvasElement {
  * Names that are URLs (external icons, e.g. geoadmin point icons) are returned
  * as-is so `ol-mapbox-style` loads them itself.
  */
-export function makeGetImage(
+export function createGetImageCallback(
   icons: ShapeIconSpec[],
 ): (
   layer: VectorLayer | VectorTileLayer,
   name: string,
 ) => HTMLCanvasElement | string | undefined {
-  const specByName = new Map(icons.map((icon) => [icon.name, icon]));
+  const iconSpecsByName = new Map(icons.map((icon) => [icon.name, icon]));
   const cache = new Map<string, HTMLCanvasElement>();
 
   return (_layer: VectorLayer | VectorTileLayer, name: string) => {
@@ -147,14 +147,14 @@ export function makeGetImage(
     if (cached) {
       return cached;
     }
-    const spec = specByName.get(name);
-    if (!spec) {
+    const iconSpec = iconSpecsByName.get(name);
+    if (!iconSpec) {
       if (/^(https?:|data:)/.test(name)) {
         return name;
       }
       return undefined;
     }
-    const canvas = createShapeIcon(spec);
+    const canvas = createShapeIcon(iconSpec);
     cache.set(name, canvas);
     return canvas;
   };

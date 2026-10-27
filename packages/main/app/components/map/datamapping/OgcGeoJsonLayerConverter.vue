@@ -8,7 +8,6 @@ import { useOgcGeoJsonData } from "@/components/map/datamapping/useOgcGeoJsonDat
 // not destructuring these to keep the reactivity
 const props = defineProps<{
   distribution: Distribution | null;
-  layerId: string | null;
 }>();
 
 const emit = defineEmits<{

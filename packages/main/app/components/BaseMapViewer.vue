@@ -48,6 +48,9 @@ const emit = defineEmits<{
   "update:compareRatio": [ratio: number];
 }>();
 
+const HIGHLIGHT_LAYER_STROKE_WIDTH = 3;
+const HIGHLIGHT_LAYER_CIRCLE_RADIUS = 7;
+
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
 const dimensionsStore = useDimensionsStore();
@@ -94,19 +97,10 @@ const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
         type: "circle",
         source: HIGHLIGHT_LAYER_ID,
         paint: {
-          "circle-radius": 7,
+          "circle-radius": HIGHLIGHT_LAYER_CIRCLE_RADIUS,
           "circle-color": highlightFill,
           "circle-stroke-color": highlightStroke,
-          "circle-stroke-width": 3,
-        },
-      },
-      {
-        id: `${HIGHLIGHT_LAYER_ID}-line`,
-        type: "line",
-        source: HIGHLIGHT_LAYER_ID,
-        paint: {
-          "line-color": highlightStroke,
-          "line-width": 3,
+          "circle-stroke-width": HIGHLIGHT_LAYER_STROKE_WIDTH,
         },
       },
       {
@@ -115,6 +109,15 @@ const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
         source: HIGHLIGHT_LAYER_ID,
         paint: {
           "fill-color": highlightFill,
+        },
+      },
+      {
+        id: `${HIGHLIGHT_LAYER_ID}-line`,
+        type: "line",
+        source: HIGHLIGHT_LAYER_ID,
+        paint: {
+          "line-color": highlightStroke,
+          "line-width": HIGHLIGHT_LAYER_STROKE_WIDTH,
         },
       },
     ],

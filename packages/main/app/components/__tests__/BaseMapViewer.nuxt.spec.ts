@@ -379,8 +379,8 @@ describe("BaseMapViewer", () => {
       };
       expect(mapLibreStyle.layers.map((layer) => layer.type)).toEqual([
         "circle",
-        "line",
         "fill",
+        "line",
       ]);
     });
 

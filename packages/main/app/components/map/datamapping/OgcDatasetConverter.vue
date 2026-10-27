@@ -160,7 +160,6 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
   <MapDatamappingOgcGeoJsonLayerConverter
     v-if="layerFormat === 'GeoJSON'"
     :distribution
-    :layerId
     @error="emit('error', $event)"
     @updateData="pushLayerSpecificData<GeoJsonLayerData>"
   ></MapDatamappingOgcGeoJsonLayerConverter>
