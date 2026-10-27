@@ -20,7 +20,9 @@ const { catalog, locale, useOgcCatalogMock } = await vi.hoisted(async () => {
   return {
     catalog,
     locale: ref("de"),
-    useOgcCatalogMock: vi.fn((_language: unknown, _query: unknown) => catalog),
+    useOgcCatalogMock: vi.fn(
+      (_language: unknown, _query: unknown, _concept: unknown) => catalog,
+    ),
   };
 });
 
@@ -70,6 +72,7 @@ const panelScroller = shallowRef<HTMLElement | null>(null);
 
 function mountTable() {
   return mount(LayerCatalogTable, {
+    props: { conceptIds: [] },
     global: { stubs, provide: { [panelScrollerKey]: panelScroller } },
   });
 }
@@ -102,6 +105,16 @@ describe("LayerCatalogTable.vue", () => {
     mountTable();
 
     expect(useOgcCatalogMock.mock.calls[0]![0]).toBe(locale);
+  });
+
+  it("only loads the layers of the given concepts", async () => {
+    const wrapper = mountTable();
+    const concepts = useOgcCatalogMock.mock.calls[0]![2] as () => string[];
+    expect(concepts()).toEqual([]);
+
+    await wrapper.setProps({ conceptIds: ["soils", "geology"] });
+
+    expect(concepts()).toEqual(["soils", "geology"]);
   });
 
   describe("search", () => {

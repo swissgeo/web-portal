@@ -636,6 +636,9 @@
   },
   "layerCatalog": {
     "title": "Daten-Katalog",
+    "allLayers": "Alle Ebenen",
+    "layers": "Ebenen",
+    "back": "Zurück",
     "table": {
       "title": "Bezeichnung",
       "dataOwner": "Anbieter",

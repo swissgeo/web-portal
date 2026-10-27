@@ -91,6 +91,28 @@ describe("fetchCatalogItems", () => {
     expect(lastRequest().params.offset).toBe("200");
   });
 
+  it("only loads the records of the given concepts, each once and in order", async () => {
+    await fetchCatalogItems(ITEMS_URL, {
+      lang: "de",
+      limit: 10,
+      concepts: ["soils", "geology", "soils"],
+    });
+
+    expect(lastRequest().params).toEqual({
+      lang: "de",
+      limit: "10",
+      offset: "0",
+      sortby: "title",
+      concepts: "geology|soils",
+    });
+  });
+
+  it("loads the records of all concepts when no concept is given", async () => {
+    await fetchCatalogItems(ITEMS_URL, { lang: "de", limit: 10, concepts: [] });
+
+    expect(lastRequest().params).not.toHaveProperty("concepts");
+  });
+
   it("passes the abort signal on to the request", async () => {
     const { signal } = new AbortController();
 
