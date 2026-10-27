@@ -2,12 +2,12 @@
 import type { LayerSource } from "@swissgeo/feature";
 import type { Layer as SourceLayer } from "@swissgeo/layers";
 import type {
-  GeoAdminGeoJSONStyleDefinition,
   HighLightLayer,
   Layer as MapLayer,
   MapClickEvent,
   MapLayerRenderer,
 } from "@swissgeo/map";
+import type { MapLibreStyleDocument } from "@swissgeo/shared";
 import type { DisplayMode } from "~/types/injectionKeys";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
@@ -48,6 +48,9 @@ const emit = defineEmits<{
   "update:compareRatio": [ratio: number];
 }>();
 
+const HIGHLIGHT_LAYER_STROKE_WIDTH = 3;
+const HIGHLIGHT_LAYER_CIRCLE_RADIUS = 7;
+
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
 const dimensionsStore = useDimensionsStore();
@@ -77,21 +80,47 @@ const highlightFill = toRgbaColor(
 );
 
 const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
-  const geoJsonStyle: GeoAdminGeoJSONStyleDefinition = {
-    type: "single",
-    property: "featureId",
-    geomType: "point",
-    vectorOptions: {
-      type: "circle",
-      fill: {
-        color: highlightFill,
+  // Inline MapLibre style for selected features (previously a geoadmin
+  // literals definition): a filled circle for points, a stroke for lines and
+  // polygon outlines, and a fill for polygons.
+  const mapLibreStyle: MapLibreStyleDocument = {
+    version: 8,
+    sources: {
+      [HIGHLIGHT_LAYER_ID]: {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] },
       },
-      stroke: {
-        color: highlightStroke,
-        width: 3,
-      },
-      radius: 7,
     },
+    layers: [
+      {
+        id: `${HIGHLIGHT_LAYER_ID}-circle`,
+        type: "circle",
+        source: HIGHLIGHT_LAYER_ID,
+        paint: {
+          "circle-radius": HIGHLIGHT_LAYER_CIRCLE_RADIUS,
+          "circle-color": highlightFill,
+          "circle-stroke-color": highlightStroke,
+          "circle-stroke-width": HIGHLIGHT_LAYER_STROKE_WIDTH,
+        },
+      },
+      {
+        id: `${HIGHLIGHT_LAYER_ID}-fill`,
+        type: "fill",
+        source: HIGHLIGHT_LAYER_ID,
+        paint: {
+          "fill-color": highlightFill,
+        },
+      },
+      {
+        id: `${HIGHLIGHT_LAYER_ID}-line`,
+        type: "line",
+        source: HIGHLIGHT_LAYER_ID,
+        paint: {
+          "line-color": highlightStroke,
+          "line-width": HIGHLIGHT_LAYER_STROKE_WIDTH,
+        },
+      },
+    ],
   };
   return {
     uuid: HIGHLIGHT_LAYER_ID,
@@ -109,7 +138,7 @@ const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
         },
       },
     },
-    geoJsonStyle,
+    mapLibreStyle,
   };
 });
 

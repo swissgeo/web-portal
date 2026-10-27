@@ -40,6 +40,52 @@ describe("useDistribution composable returning the desired distribution", () => 
     expect(layerId.value).to.equal("ch.bafu.schutzgebiete-luftfahrt");
   });
 
+  it("derives the layer id from the distribution id when externalIds is missing", () => {
+    const distributionCollection = ref({
+      features: [
+        {
+          id: "ch.bafu.hydroweb-messstationen_grundwasser:geojson",
+          links: [],
+          properties: {
+            type: "Distribution",
+            title: "NAQUA-QUANT Messstellen",
+            protocol: "geojson",
+            externalIds: null,
+          },
+        },
+      ],
+    } as unknown as DistributionCollection);
+    const distributionId = ref(
+      "ch.bafu.hydroweb-messstationen_grundwasser:geojson",
+    );
+    const { layerId } = useDistribution(distributionCollection, distributionId);
+
+    expect(layerId.value).to.equal(
+      "ch.bafu.hydroweb-messstationen_grundwasser",
+    );
+  });
+
+  it("returns a null layer id when externalIds is missing and the id has no protocol suffix", () => {
+    const distributionCollection = ref({
+      features: [
+        {
+          id: "ch.bafu.some-dataset",
+          links: [],
+          properties: {
+            type: "Distribution",
+            title: "Some dataset",
+            protocol: "geojson",
+            externalIds: null,
+          },
+        },
+      ],
+    } as unknown as DistributionCollection);
+    const distributionId = ref("ch.bafu.some-dataset");
+    const { layerId } = useDistribution(distributionCollection, distributionId);
+
+    expect(layerId.value).to.equal(null);
+  });
+
   it("tries to extract an invalid distribution", () => {
     const distributionCollection = ref(
       ChBafuSchutzgebieteLuftfahrtDistributions as DistributionCollection,
