@@ -38,16 +38,21 @@ describe("AttributionList.vue", () => {
     );
   });
 
-  it("renders last item without trailing comma", () => {
+  it("separates the sources with a comma and a space outside the links", () => {
     const sources: AttributionSource[] = [
-      { id: "source-a", name: "Source A" },
+      { id: "source-a", name: "Source A", url: "https://example.com/a" },
       { id: "source-b", name: "Source B" },
     ];
 
     const wrapper = mount(AttributionList, { props: { sources } });
 
     const items = wrapper.findAll('[data-testid^="layer-copyright-"]');
-    expect(items[0]!.text()).toContain(",");
-    expect(items[1]!.text()).not.toContain(",");
+    expect(items[0]!.text()).toBe("Source A");
+    expect(items[1]!.text()).toBe("Source B");
+    expect(
+      wrapper
+        .find('[data-testid="layers-copyrights"]')
+        .element.textContent?.endsWith("Source A, Source B"),
+    ).toBe(true);
   });
 });
