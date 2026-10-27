@@ -20,13 +20,13 @@ const socialLinks = ref<NavigationMenuItem[]>([
   {
     label: "YouTube",
     icon: "i-lucide-youtube",
-    to: "https://www.youtube.com/",
+    to: "https://www.youtube.com/@SWISSGEOplatform",
     target: "_blank",
   },
   {
     label: "Linkedin",
     icon: "i-lucide-linkedin",
-    to: "https://www.linkedin.com/",
+    to: "https://www.linkedin.com/company/swissgeo/",
     target: "_blank",
   },
 ]);
