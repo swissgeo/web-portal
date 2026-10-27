@@ -692,7 +692,7 @@
       "followUs": "Follow us!",
       "moreInformation": "More information",
       "termsOfUse": "Terms of use",
-      "faq": "FAQ",
+      "contact": "Contact",
       "dataProtection": "Legal notices and data protection",
       "netiquette": "Netiquette",
       "accessibility": "Accessibility",
@@ -704,7 +704,7 @@
       "netiquette": "netiquette-en",
       "accessibility": "accessibility",
       "termsOfUse": "terms-of-use-and-operating-conditions",
-      "faq": ""
+      "contact": "impressum-en"
     }
   }
 }

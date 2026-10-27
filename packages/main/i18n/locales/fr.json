@@ -656,7 +656,7 @@
       "followUs": "Suivez-nous !",
       "moreInformation": "Plus d'informations",
       "termsOfUse": "Conditions d'utilisation",
-      "faq": "FAQ",
+      "contact": "Contact",
       "dataProtection": "Informations juridiques et protection des données",
       "netiquette": "Netiquette",
       "accessibility": "Accessibilité",
@@ -668,7 +668,7 @@
       "netiquette": "netiquette-fr",
       "accessibility": "accessibilite",
       "termsOfUse": "conditions-dutilisation-et-dexploitation",
-      "faq": ""
+      "contact": "impressum-fr"
     }
   }
 }

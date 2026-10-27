@@ -690,7 +690,7 @@
       "followUs": "Folge uns!",
       "moreInformation": "Weitere Informationen",
       "termsOfUse": "Nutzungsbestimmungen",
-      "faq": "FAQ",
+      "contact": "Kontakt",
       "dataProtection": "Rechtliches und Datenschutz",
       "netiquette": "Netiquette",
       "accessibility": "Barrierefreiheit",
@@ -702,7 +702,7 @@
       "netiquette": "netiquette-de",
       "accessibility": "erklaerung-zur-barrierefreiheit",
       "termsOfUse": "nutzungs-und-betriebsbestimmungen",
-      "faq": ""
+      "contact": "impressum-de"
     }
   }
 }

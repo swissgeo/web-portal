@@ -38,8 +38,8 @@ const infosLinks = computed<NavigationMenuItem[]>(() => [
     trailingIcon: "i-lucide-arrow-right",
   },
   {
-    label: t("landing.footer.faq"),
-    to: cmsUrl(t("landing.links.faq")),
+    label: t("landing.footer.contact"),
+    to: cmsUrl(t("landing.links.contact")),
     trailingIcon: "i-lucide-arrow-right",
   },
 ]);
