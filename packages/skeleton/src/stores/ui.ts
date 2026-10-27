@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
 const LAYER_CART_WIDTH = 347;
-const GEOCATALOG_TREE_WIDTH = 1280;
 
 // Sidebar types enum
 export enum SidebarType {
@@ -31,9 +30,10 @@ export const useSidebarStore = defineStore("sidebar", () => {
     () => currentSidebar.value === SidebarType.GEOCATALOG_TREE,
   );
 
-  const sidebarContentWidth = computed(() =>
-    isGeocatalogTreeVisible.value ? GEOCATALOG_TREE_WIDTH : LAYER_CART_WIDTH,
-  );
+  // in the current state, the sidebar width can't be changed. We keep it as a computed for the following reasons:
+  // 1. the store getters are all computed, we enforce this to be used the same way as others
+  // 2. if one day we need to add reactivity again, there is no need to change the code elsewhere.
+  const sidebarContentWidth = computed(() => LAYER_CART_WIDTH);
 
   // #endregion
 

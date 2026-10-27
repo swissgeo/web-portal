@@ -36,7 +36,8 @@ watch(route, (value) => {
     <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
     <UMain as="div" class="min-h-0 flex-1">
       <main id="main" ref="main" class="h-full font-sans">
-        <div class="flex h-full">
+        <!-- relative anchors the layer catalog overlay, which must cover the sidebar and the map -->
+        <div class="relative flex h-full">
           <SideBar
             v-if="!isMapFullscreenMode"
             :isVisible="!detailsOpen"

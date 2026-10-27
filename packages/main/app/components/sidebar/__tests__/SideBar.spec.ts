@@ -289,7 +289,7 @@ describe("SideBar", () => {
     ).toBe(false);
   });
 
-  it("sizes the content to the current sidebar", async () => {
+  it("sizes the content to the width the store provides", async () => {
     const wrapper = mountSideBar();
     const content = wrapper.get("div[style*='width']");
     expect(content.attributes("style")).toContain("width: 320px");
@@ -298,6 +298,19 @@ describe("SideBar", () => {
     await wrapper.vm.$nextTick();
 
     expect(content.attributes("style")).toContain("width: 1280px");
+  });
+
+  it("shows the layer catalog as an overlay without widening the column", async () => {
+    const wrapper = mountSideBar();
+    const content = wrapper.get("div[style*='width']");
+
+    sidebar.currentSidebar = "geocatalogTree";
+    await wrapper.vm.$nextTick();
+
+    const overlay = wrapper.get("[data-testid='layer-catalog-overlay']");
+    expect(overlay.classes()).toContain("absolute");
+    expect(overlay.findComponent({ name: "LayerCatalog" }).exists()).toBe(true);
+    expect(content.attributes("style")).toContain("width: 320px");
   });
 
   it("shows the background selector only with the map panel, but keeps it mounted", async () => {

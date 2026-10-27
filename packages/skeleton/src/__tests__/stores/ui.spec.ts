@@ -4,7 +4,6 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { SidebarType, useSidebarStore } from "../../stores/ui";
 
 const LAYER_CART_WIDTH = 347;
-const GEOCATALOG_TREE_WIDTH = 1280;
 
 describe("useSidebarStore", () => {
   beforeEach(() => {
@@ -30,7 +29,7 @@ describe("useSidebarStore", () => {
     expect(store.sidebarContentWidth).toBe(LAYER_CART_WIDTH);
   });
 
-  it("widens the content for the layer catalog", () => {
+  it("keeps the layer cart width for the layer catalog", () => {
     const store = useSidebarStore();
 
     store.setSidebar(SidebarType.GEOCATALOG_TREE);
@@ -38,7 +37,7 @@ describe("useSidebarStore", () => {
     expect(store.isSidebarOpen).toBe(true);
     expect(store.isGeocatalogTreeVisible).toBe(true);
     expect(store.isLayerCartVisible).toBe(false);
-    expect(store.sidebarContentWidth).toBe(GEOCATALOG_TREE_WIDTH);
+    expect(store.sidebarContentWidth).toBe(LAYER_CART_WIDTH);
   });
 
   it("gives the content sidebar the layer cart width", () => {

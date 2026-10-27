@@ -96,17 +96,6 @@ watch(
           </div>
         </template>
       </ResponsivePanel>
-      <ResponsivePanel
-        v-else-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
-        :title="t('layerCatalog.title')"
-        :closeLabel="t('layerCatalog.close')"
-        :expandLabel="t('layerCatalog.expand')"
-        :collapseLabel="t('layerCatalog.collapse')"
-        :isVisible="isVisible"
-        @close="closeLayerCatalog"
-      >
-        <LayerCatalog />
-      </ResponsivePanel>
       <!-- Stays mounted on mobile and next to the catalog, because it picks the
            default background. It shows only with the map panel. -->
       <div
@@ -119,6 +108,28 @@ watch(
           <BackgroundSelector />
         </div>
       </div>
+    </div>
+    <!--
+      The catalog floats above the column and the map instead of widening the
+      sidebar, so the map keeps its size. It anchors to the layout row (see
+      default.vue). On mobile the panel teleports to a bottom drawer, so the
+      wrapper itself stays hidden.
+    -->
+    <div
+      v-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
+      data-testid="layer-catalog-overlay"
+      class="absolute inset-y-0 left-0 z-60 hidden w-full max-w-layer-catalog flex-col bg-default text-default shadow-lg md:flex"
+    >
+      <ResponsivePanel
+        :title="t('layerCatalog.title')"
+        :closeLabel="t('layerCatalog.close')"
+        :expandLabel="t('layerCatalog.expand')"
+        :collapseLabel="t('layerCatalog.collapse')"
+        :isVisible="isVisible"
+        @close="closeLayerCatalog"
+      >
+        <LayerCatalog />
+      </ResponsivePanel>
     </div>
   </div>
 </template>

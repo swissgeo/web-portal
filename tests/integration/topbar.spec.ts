@@ -138,10 +138,10 @@ test.describe("topbar search", () => {
     const results = page.getByTestId("search-results");
     await expect(results).toBeVisible({ timeout: 10_000 });
 
-    // many results make the popover tall enough to cover the body's centre
-    // point, so click the map at the bottom of the viewport to be truly
-    // outside of it
-    await page.mouse.click(640, 700);
+    // Click the map canvas clear of the popover above and the footer below,
+    // relative to the map element so layout changes do not move the point
+    // onto other interactive elements
+    await page.getByTestId("ol-map").click({ position: { x: 600, y: 300 } });
     await expect(results).not.toBeVisible();
 
     await searchInput.click();
