@@ -20,6 +20,7 @@ import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { MapModule, usePositionStore } from "@swissgeo/map";
 import { HIGHLIGHT_LAYER_ID, toRgbaColor } from "@swissgeo/shared";
+import { useElementBounding } from "@vueuse/core";
 import { cloneDeep } from "es-toolkit";
 
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
@@ -204,11 +205,26 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
 
 let abortController: AbortController | null = null;
 
+const mapModuleRef = useTemplateRef("mapModule");
+const { left: mapLeft, top: mapTop } = useElementBounding(
+  () => mapModuleRef.value?.$el as HTMLElement | undefined,
+);
+
+const featureInfoDisabledPosition = ref({ x: 200, y: 200 });
+
+function updateFeatureInfoDisabledPosition(pixel: MapClickEvent["pixel"]) {
+  featureInfoDisabledPosition.value = {
+    x: mapLeft.value + pixel[0],
+    y: mapTop.value + pixel[1],
+  };
+}
+
 async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   featureStore.$reset();
   if (toolboxStore.isDrawingActive()) {
     return;
   }
+  updateFeatureInfoDisabledPosition(mapClickEvent.pixel);
   abortController?.abort();
   abortController = new AbortController();
   const { signal } = abortController;
@@ -262,16 +278,14 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
-  if (isEnabled("enableFeatureInfo")) {
-    await selectFeatures(
-      mapClickEvent.extent,
-      positionStore.projection.epsgNumber,
-      locale.value.toLowerCase(),
-      layersSources,
-      FEATURE_LIMIT,
-      signal,
-    );
-  }
+  await selectFeatures(
+    mapClickEvent.extent,
+    positionStore.projection.epsgNumber,
+    locale.value.toLowerCase(),
+    layersSources,
+    FEATURE_LIMIT,
+    signal,
+  );
 }
 </script>
 
@@ -284,6 +298,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       @layer-error="handleLayerError"
     />
     <MapModule
+      ref="mapModule"
       :layers="layersForMap"
       :custom-layer-renderers="customLayerRenderers"
       :display-mode="displayMode"
@@ -305,8 +320,16 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       <slot name="map-ui" />
     </MapModule>
     <FeaturesinfoFeatureInfoPopover
-      v-if="displayMode !== 'print' && featureStore.hasSelectedFeatures"
+      v-if="
+        displayMode !== 'print' &&
+        featureStore.hasSelectedFeatures &&
+        isEnabled('enableFeatureInfo')
+      "
       @close="featureStore.$reset()"
+    />
+    <FeaturesinfoFeatureInfoDisabled
+      v-else-if="displayMode !== 'print' && featureStore.hasSelectedFeatures"
+      :initial-position="featureInfoDisabledPosition"
     />
     <Toolbox v-if="displayMode !== 'print'" />
     <slot name="after" />

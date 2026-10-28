@@ -665,7 +665,11 @@
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",
-    "popupTitle": "To Translate - Feature Info Popup Title"
+    "popupTitle": "To Translate - Feature Info Popup Title",
+    "featureFlag": {
+      "notAvailable": "Das Feature Info Fenster ist leider noch nicht verfügbar.",
+      "workingOnIt": "Wir sind dran :)"
+    }
   },
   "testSiteBanner": {
     "text": "{environment}-Umgebung – Nicht für den produktiven Gebrauch. Nicht teilen."
