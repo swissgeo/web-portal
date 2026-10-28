@@ -64,6 +64,8 @@ NUXT_PUBLIC_ICON_SERVICE_ENDPOINT= # The URL to the icon sets service
 NUXT_PUBLIC_SEARCH_SERVICE_URL= # The URL to the geo.admin.ch SearchServer
 NUXT_PUBLIC_THESAURUS_SERVICE_URL= # The URL to the thesauri files
 NUXT_REPORT_ISSUE_SERVICE_URL=  # The URL to the feedback service (server-only)
+NUXT_PUBLIC_REPORT_ISSUE_PORTAL_URL= # The support portal opened by "Report issue" when the report form is disabled
+NUXT_PUBLIC_FEATURE_FLAGS_ENABLE_REPORT_ISSUE_FORM= # "true" shows the report issue form, otherwise "Report issue" opens the support portal
 NUXT_PUBLIC_TEST_SITE_BANNER=   # Test site banner: "dev", "int" or "preview"; empty on prod (no banner)
 NUXT_PUBLIC_FEATURE_FLAGS_ENABLE_MOBILE_UI= # Mobile UI on phones: "true" on dev, "false" on int and prod (scaled desktop UI + notice)
 ```

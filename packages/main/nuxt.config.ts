@@ -161,11 +161,13 @@ export default defineNuxtConfig({
       maxFileSizeMB: 250,
       drawingAllowedDomains: [],
       testSiteBanner: "",
+      reportIssuePortalUrl: "",
       featureFlags: {
         enableCmsSearch: false,
         enableMobileUi: false,
         enableFeatureInfo: false,
         enablePositionPopup: false,
+        enableReportIssueForm: false,
         tools: {
           enableMeasure: false,
           enableCompare: false,

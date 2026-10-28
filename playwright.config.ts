@@ -36,6 +36,8 @@ export default defineConfig({
       NUXT_GEOADMIN_API_BASE_URL: "http://mock-geoadmin.org/rest/services",
       NUXT_REPORT_ISSUE_SERVICE_URL:
         "http://mock-report-issue.org/api/feedback",
+      NUXT_PUBLIC_REPORT_ISSUE_PORTAL_URL:
+        "http://mock-report-issue-portal.org",
       NUXT_PUBLIC_CMS_BASE_URL: "http://mock-cms.org",
       NUXT_PUBLIC_ICON_SERVICE_ENDPOINT: "http://mock-icons.org/api/icons/sets",
       NUXT_PUBLIC_DRAWING_SERVICE_ENDPOINT:
