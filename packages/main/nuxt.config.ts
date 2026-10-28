@@ -191,5 +191,11 @@ export default defineNuxtConfig({
   },
   icon: {
     localApiEndpoint: "/api/wpa/v1/icons",
+    // Serve icons only from the locally installed collections, never from the
+    // public Iconify API (neither from the browser nor proxied by our server).
+    fallbackToApi: false,
+    serverBundle: {
+      collections: ["lucide"],
+    },
   },
 });
