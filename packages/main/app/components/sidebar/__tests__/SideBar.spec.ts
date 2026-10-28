@@ -310,8 +310,7 @@ describe("SideBar", () => {
 
     const wrapper = mountSideBar(false);
 
-    // invisible keeps the column width, so the map does not resize
-    expect(wrapper.classes()).toContain("invisible");
+    expect((wrapper.element as HTMLElement).style.display).toBe("none");
     expect(
       wrapper.getComponent({ name: "ResponsivePanel" }).props("isVisible"),
     ).toBe(false);

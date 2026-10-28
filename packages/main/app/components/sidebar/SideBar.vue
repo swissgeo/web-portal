@@ -73,10 +73,9 @@ watch(
 </script>
 
 <template>
-  <div :class="{ invisible: !isVisible }" class="flex h-full shrink-0">
+  <div v-show="isVisible" class="absolute top-0 left-0 flex h-full">
     <!--
-      Part of the layout flow, so the map and the footer start at its right edge.
-      Hidden without giving up its width, so the map keeps its size.
+      The map and the footer leave its width free (see default.vue).
       On mobile the content moves into bottom drawers and the column is left empty.
       drawers teleport out of this element isVisible must be applied too
     -->
@@ -119,14 +118,13 @@ watch(
     </div>
     <!--
       The catalog floats above the column and the map instead of widening the
-      sidebar, so the map keeps its size. It anchors to the layout row (see
-      default.vue). On mobile the panel teleports to a bottom drawer, so the
-      wrapper itself stays hidden.
+      sidebar, so the map keeps its size. On mobile the panel teleports to a
+      bottom drawer, so the wrapper itself stays hidden.
     -->
     <div
       v-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
       data-testid="layer-catalog-overlay"
-      class="absolute inset-y-0 left-0 z-60 hidden w-full max-w-layer-catalog flex-col bg-default text-default shadow-lg md:flex"
+      class="absolute inset-y-0 left-0 z-60 hidden w-screen max-w-layer-catalog flex-col bg-default text-default shadow-lg md:flex"
     >
       <ResponsivePanel
         :title="t('layerCatalog.title')"
