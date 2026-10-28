@@ -46,8 +46,10 @@ export function useToaster() {
   }
 
   // Without a background the map stays empty. Link to the old viewer.
+  // A fixed id: several components can report it, the user sees it once.
   function showMapUnavailable() {
     showError($i18n.t("error.mapUnavailable"), {
+      id: "map-unavailable",
       actions: [
         { label: "map.geo.admin.ch", to: MAP_GEO_ADMIN_URL, target: "_blank" },
       ],

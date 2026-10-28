@@ -65,6 +65,12 @@ test.describe("topbar search", () => {
     await expect(page.getByTestId("ol-map")).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
+    // The mocks have no background map, so the "map not available" toast
+    // shows. Close it, it covers the search results.
+    await page
+      .getByRole("region", { name: "Notifications (F8)" })
+      .locator('[data-slot="close"]')
+      .click();
   });
 
   test.afterEach(async ({ page }) => {

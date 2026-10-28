@@ -39,6 +39,7 @@ describe("useToaster", () => {
 
     expect(toastAdd).toHaveBeenCalledWith(
       expect.objectContaining({
+        id: "map-unavailable",
         description: "error.mapUnavailable",
         duration: Infinity,
         actions: [expect.objectContaining({ to: "https://map.geo.admin.ch" })],
