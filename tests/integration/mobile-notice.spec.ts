@@ -46,7 +46,9 @@ test.describe("mobile notice on a portrait phone", () => {
       "width=1280, interactive-widget=resizes-content",
     );
     expect(await page.evaluate(() => window.innerWidth)).toBe(1280);
-    await expect(page.getByRole("button", { name: "Open menu" })).toBeHidden();
+    await expect(
+      page.getByRole("button", { name: "Menü öffnen" }),
+    ).toBeHidden();
   });
 
   test("stays closed after a reload once dismissed", async ({ page }) => {
