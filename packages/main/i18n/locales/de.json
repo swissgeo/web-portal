@@ -438,7 +438,8 @@
     },
     "featureFlag": {
       "notAvailable": "Dieses Tool ist leider noch nicht verfügbar",
-      "workingOnIt": "Wir sind dran :)"
+      "workingOnIt": "Wir sind dran :)",
+      "roadmap": "kartenviewer-ueberblick"
     }
   },
   "backgroundLayers": {
@@ -470,8 +471,7 @@
       "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse",
       "featureFlag": {
         "notAvailable": "Das Positions-Popup-Fenster ist leider noch nicht verfügbar.",
-        "workingOnIt": "Wir sind dran :)",
-        "roadmap": "kartenviewer-ueberblick"
+        "workingOnIt": "Wir sind dran :)"
       }
     }
   },
