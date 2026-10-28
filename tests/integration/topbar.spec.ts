@@ -82,24 +82,26 @@ test.describe("topbar search", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     const map = await page.getByTestId("ol-map").elementHandle();
 
-    await page.getByRole("button", { name: "Open menu" }).click();
+    await page.getByRole("button", { name: "Menü öffnen" }).click();
     await page.getByRole("button", { name: "Language switcher" }).click();
     await page.getByRole("option", { name: "Français", exact: true }).click();
 
     await expect(page).toHaveURL(/\/fr\/map$/);
     await expect(
-      page.getByRole("button", { name: "Close menu" }),
+      page.getByRole("button", { name: "Fermer le menu" }),
     ).toBeVisible();
     const menu = page.getByRole("dialog").filter({
-      has: page.getByRole("button", { name: "Close menu" }),
+      has: page.getByRole("button", { name: "Fermer le menu" }),
     });
     await expect(
       menu.getByRole("button", { name: "Rechercher" }),
     ).toBeVisible();
     expect(await map?.evaluate((element) => element.isConnected)).toBe(true);
 
-    await page.getByRole("button", { name: "Close menu" }).click();
-    await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
+    await page.getByRole("button", { name: "Fermer le menu" }).click();
+    await expect(
+      page.getByRole("button", { name: "Ouvrir le menu" }),
+    ).toBeVisible();
   });
 
   test("search input accepts text", async ({ page }) => {
