@@ -633,7 +633,11 @@
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",
-    "popupTitle": "To Translate - Feature Info Popup Title"
+    "popupTitle": "To Translate - Feature Info Popup Title",
+    "featureFlag": {
+      "notAvailable": "La fenêtre contextuelle d'informations sur les objets n'est malheureusement pas encore disponible.",
+      "workingOnIt": "Nous y travaillons :)"
+    }
   },
   "landing": {
     "cards": {
