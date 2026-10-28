@@ -91,7 +91,7 @@ describe("Geo Admin point style matching", () => {
     expect(feature.get(SHOW_ICON_KEY)).toBe(true);
     expect(feature.get(SHOW_TITLE_KEY)).toBe(true);
     expect(feature.get(SHOW_DESCRIPTION_KEY)).toBe(true);
-    expect(feature.getStyle()).toBeUndefined();
+    expect(feature.getStyle()).toBeNull();
   });
 
   it.each([
@@ -200,7 +200,7 @@ describe("Geo Admin point style matching", () => {
     mapKmlStylesToFeatureProperties(feature);
 
     expect(feature.get(ICON_URL_KEY)).toBe("https://geo.admin.test/marker.png");
-    expect(feature.getStyle()).toBeUndefined();
+    expect(feature.getStyle()).toBeNull();
   });
 
   it("preserves initialized text colors when imported colors are CSS strings", () => {
