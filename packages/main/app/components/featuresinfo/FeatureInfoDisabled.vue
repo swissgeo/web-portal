@@ -16,7 +16,7 @@ const style = computed(() => ({
 
 <template>
   <div
-    class="light fixed z-50 overflow-hidden rounded-md bg-default px-2 py-1 text-xs font-medium text-highlighted shadow-lg ring-1 ring-default"
+    class="light fixed z-50 w-96 overflow-hidden rounded-md bg-default px-2 py-1 text-xs font-medium text-highlighted shadow-lg ring-1 ring-default"
     :style="style"
     data-testid="feature-info-disabled"
   >
