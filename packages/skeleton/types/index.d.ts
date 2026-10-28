@@ -26,6 +26,7 @@ declare global {
       testSiteBanner: string;
       featureFlags: {
         enableCmsSearch: boolean;
+        enableMobileUi: boolean;
         enableFeatureInfo: boolean;
         enablePositionPopup: boolean;
         tools: {
@@ -35,6 +36,7 @@ declare global {
           enableImport: boolean;
           enablePrint: boolean;
           enableShare: boolean;
+          enableTimeSlider: boolean;
         };
       };
     };

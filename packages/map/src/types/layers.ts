@@ -1,11 +1,14 @@
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 import type { Component } from "vue";
 
-import type { GeoAdminGeoJSONStyleDefinition } from "@/utils/geojson";
 import type { FeatureCollectionWithCRS } from "@/utils/geoJsonUtils";
+import type { ShapeIconSpec } from "@/utils/maplibreShapeIcons";
 
-export type { GeoAdminGeoJSONStyleDefinition };
-import type { HIGHLIGHT_LAYER_ID } from "@swissgeo/shared";
+export type { ShapeIconSpec };
+import type {
+  HIGHLIGHT_LAYER_ID,
+  MapLibreStyleDocument,
+} from "@swissgeo/shared";
 
 /**
  * At the moment, these 3 types are sort of like a duplicate of layers.
@@ -73,7 +76,8 @@ export interface GPXLayer extends Layer {
 export interface GeoJSONLayer extends Layer {
   format: "GeoJSON";
   geoJsonData: FeatureCollectionWithCRS;
-  geoJsonStyle?: GeoAdminGeoJSONStyleDefinition;
+  mapLibreStyle?: MapLibreStyleDocument;
+  mapLibreIcons?: ShapeIconSpec[];
 }
 
 export interface COGLayer extends Layer {

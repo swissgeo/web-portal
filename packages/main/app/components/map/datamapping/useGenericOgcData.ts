@@ -25,7 +25,8 @@ export function useGenericOgcData(
 
   const layerFormat = computed(() => {
     const format = determineFormat(distribution.value);
-    if (format === "WMS" || format === "WMTS") {
+
+    if (format === "WMS" || format === "WMTS" || format === "GeoJSON") {
       return format;
     }
     return null;
@@ -44,7 +45,11 @@ export function useGenericOgcData(
       onError(new Error("Dataset has no usable OGC distribution"));
       return;
     }
-    if (!serviceUrl.value) {
+    // GeoJSON doesn't require external services.
+    if (
+      ["WMS", "WMTS"].includes(layerFormat.value ?? "") &&
+      !serviceUrl.value
+    ) {
       onError(new Error("Required OGC service URL is missing"));
     }
   });

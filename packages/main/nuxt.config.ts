@@ -24,7 +24,6 @@ const buildTime = new Date().toISOString();
 // NUXT always force NODE_ENV to production so we cannot use it to make a development build with
 // source map, therefore using our own DEVELOPMENT_BUILD environment variable
 const isDevelopment = process.env.DEVELOPMENT_BUILD === "1";
-const isCoverage = process.env.COVERAGE === "1";
 process.env.NODE_ENV = isDevelopment ? "dev" : process.env.NODE_ENV;
 
 export default defineNuxtConfig({
@@ -40,6 +39,7 @@ export default defineNuxtConfig({
     keepalive: true,
     head: {
       // Android: fit the page above the keyboard. iOS ignores this.
+      // app.vue overrides this when the mobile UI is off.
       viewport:
         "width=device-width, initial-scale=1, interactive-widget=resizes-content",
     },
@@ -87,14 +87,12 @@ export default defineNuxtConfig({
   sourcemap: {
     // Enable in dev, disable in prod (unless you have a private uploader)
     server: isDevelopment,
-    client: isDevelopment || isCoverage,
+    client: isDevelopment,
   },
   vite: {
     build: {
       minify: isDevelopment ? false : "terser",
-      // Use inline sourcemaps for coverage so v8-to-istanbul can remap to
-      // original source files without needing to fetch external .map files
-      sourcemap: isDevelopment ? true : isCoverage ? "inline" : false,
+      sourcemap: isDevelopment,
     },
     mode: isDevelopment ? "development" : "production",
     server: {
@@ -165,6 +163,7 @@ export default defineNuxtConfig({
       testSiteBanner: "",
       featureFlags: {
         enableCmsSearch: false,
+        enableMobileUi: false,
         enableFeatureInfo: false,
         enablePositionPopup: false,
         tools: {
@@ -174,6 +173,7 @@ export default defineNuxtConfig({
           enableImport: false,
           enablePrint: false,
           enableShare: false,
+          enableTimeSlider: false,
         },
       },
     },
@@ -191,5 +191,11 @@ export default defineNuxtConfig({
   },
   icon: {
     localApiEndpoint: "/api/wpa/v1/icons",
+    // Serve icons only from the locally installed collections, never from the
+    // public Iconify API (neither from the browser nor proxied by our server).
+    fallbackToApi: false,
+    serverBundle: {
+      collections: ["lucide"],
+    },
   },
 });

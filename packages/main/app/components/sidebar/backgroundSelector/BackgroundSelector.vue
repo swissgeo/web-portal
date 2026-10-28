@@ -37,9 +37,12 @@ const backgroundRecords = computed(async () => {
   return Promise.all(values.map((record: Dataset) => makeServerLayer(record)));
 });
 
+const toaster = useToaster();
 const sortedBackgroundLayersWithNull = computedAsync<(Layer | null)[]>(
   async () => [...(await backgroundRecords.value), null],
   [null],
+  // Without the backgrounds the map stays empty.
+  { onError: () => toaster.showMapUnavailable() },
 );
 
 watch(

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { AttributionSource } from "@/composables/useAttributionSources";
 
-import AttributionItem from "./AttributionItem.vue";
-
 const { sources } = defineProps<{
   sources: AttributionSource[];
 }>();
@@ -18,18 +16,17 @@ const { t } = useI18n();
     data-testid="layers-copyrights"
   >
     <span>{{ t("footer.copyRightData") }}</span>
-    <span
-      v-for="(source, index) in sources"
-      :key="source.name"
-      class="d-inline-flex"
-    >
-      <AttributionItem
-        :source-id="source.id"
-        :source-name="source.name"
-        :source-url="source.url"
-        :has-data-disclaimer="false"
-        :is-last="index === sources.length - 1"
-      />
-    </span>
+    <template v-for="(source, index) in sources" :key="source.name">
+      <a
+        v-if="source.url"
+        :href="source.url"
+        target="_blank"
+        :data-testid="`layer-copyright-${source.name}`"
+        >{{ source.name }}</a
+      ><span v-else :data-testid="`layer-copyright-${source.name}`">{{
+        source.name
+      }}</span
+      >{{ index < sources.length - 1 ? ", " : "" }}
+    </template>
   </div>
 </template>

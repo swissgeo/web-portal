@@ -437,7 +437,10 @@
     },
     "featureFlag": {
       "notAvailable": "Cet outil n'est malheureusement pas encore disponible.",
-      "workingOnIt": "Nous y travaillons :)"
+      "workingOnIt": "Nous y travaillons :)",
+      "links": {
+        "roadmap": "visualiseur-de-carte-perspective"
+      }
     }
   },
   "backgroundLayers": {
@@ -630,6 +633,49 @@
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",
-    "popupTitle": "To Translate - Feature Info Popup Title"
+    "popupTitle": "To Translate - Feature Info Popup Title",
+    "featureFlag": {
+      "notAvailable": "La fenêtre contextuelle d'informations sur les objets n'est malheureusement pas encore disponible.",
+      "workingOnIt": "Nous y travaillons :)"
+    }
+  },
+  "landing": {
+    "cards": {
+      "map": {
+        "title": "Carte",
+        "description": "Visionneuse de cartes interactive avec des centaines de couches, voyage dans le temps, fonctions d'impression et de partage.",
+        "button": "Ouvrir la carte"
+      },
+      "catalog": {
+        "title": "Catalogue de données",
+        "description": "Parcourez le catalogue complet des géodonnées, des thèmes et des métadonnées.",
+        "button": "Ouvrir le catalogue de données"
+      },
+      "info": {
+        "title": "Tout le reste sur SWISSGEO",
+        "description": "Toutes les actualités, l'aide et notre profil.",
+        "button": "Vers le portail d'information"
+      }
+    },
+    "footer": {
+      "claim": "Le où est ici.",
+      "description": "SWISSGEO rend accessibles les données spatiales de la Suisse en un seul endroit.",
+      "followUs": "Suivez-nous !",
+      "moreInformation": "Plus d'informations",
+      "termsOfUse": "Conditions d'utilisation",
+      "contact": "Contact",
+      "dataProtection": "Informations juridiques et protection des données",
+      "netiquette": "Netiquette",
+      "accessibility": "Accessibilité",
+      "copyright": "Copyright © 2026"
+    },
+    "links": {
+      "impressum": "impressum-fr",
+      "dataProtection": "informations-juridiques-protection",
+      "netiquette": "netiquette-fr",
+      "accessibility": "accessibilite",
+      "termsOfUse": "conditions-dutilisation-et-dexploitation",
+      "contact": "impressum-fr"
+    }
   }
 }

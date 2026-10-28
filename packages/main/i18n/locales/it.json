@@ -11,7 +11,11 @@
   "featureInfo": {
     "blockedContent": "To Translate - Feature Info Blocked Content",
     "noInformation": "To Translate - Feature Info No Information",
-    "popupTitle": "To Translate - Feature Info Popup Title"
+    "popupTitle": "To Translate - Feature Info Popup Title",
+    "featureFlag": {
+      "notAvailable": "To Translate - Feature Info Feature Flag Not Available",
+      "workingOnIt": "To Translate - Feature Info Feature Flag Working On It"
+    }
   },
   "toolbox": {
     "import": {

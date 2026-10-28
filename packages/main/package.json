@@ -24,6 +24,7 @@
     "@camptocamp/ogc-client": "catalog:",
     "@chenfengyuan/vue-qrcode": "catalog:",
     "@fontsource/inter": "catalog:",
+    "@iconify-json/lucide": "catalog:",
     "@intlify/core": "catalog:",
     "@intlify/core-base": "catalog:",
     "@intlify/message-compiler": "catalog:",

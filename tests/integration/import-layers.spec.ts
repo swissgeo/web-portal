@@ -224,6 +224,8 @@ test.describe("import external layers", () => {
     page,
   }) => {
     const workingLayer = "test-drawing.geojson";
+    // Not a background id: a failed background shows "map not available".
+    const failedLayer = "ch.swisstopo.failed-test-layer";
     const failedLayerUrl = "http://mock-oar.org/dataset-without-distributions";
     const state = btoa(
       JSON.stringify({
@@ -245,9 +247,9 @@ test.describe("import external layers", () => {
       route.fulfill({
         status: 200,
         json: {
-          id: WMTS_LAYER,
+          id: failedLayer,
           links: [{ href: failedLayerUrl, rel: "self" }],
-          properties: { title: WMTS_LAYER, type: "Dataset" },
+          properties: { title: failedLayer, type: "Dataset" },
         },
       }),
     );
@@ -264,7 +266,7 @@ test.describe("import external layers", () => {
     ).toBeVisible();
     await page.getByTestId("button-layer-cart-panel").click();
     const layerCart = page.getByTestId("layer-cart");
-    await expect(layerCart.getByText(WMTS_LAYER)).toHaveCount(0);
+    await expect(layerCart.getByText(failedLayer)).toHaveCount(0);
     await page.getByTestId("button-layer-cart-panel").click();
 
     await page.getByRole("button", { name: "Debug", exact: true }).click();

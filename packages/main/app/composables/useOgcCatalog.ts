@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter, Ref } from "vue";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { fetchCatalogItems } from "@swissgeo/ogc";
 import { toError } from "@swissgeo/shared";
+import { isEqual } from "es-toolkit";
 import { toValue } from "vue";
 
 /** Corresponds to the max supported `limit` value of the catalog backend service */
@@ -20,15 +21,23 @@ export type OgcCatalogState =
 
 /**
  * Loads the OGC API Records items, accumulating them in `state.data.features`.
- * Changing the language or the query resets the list.
+ * Only the items of any of `concepts` are loaded, unless it is empty. Changing
+ * the language, the query or the concepts resets the list.
  */
 export function useOgcCatalog(
   language: Ref<string>,
   query?: MaybeRefOrGetter<string>,
+  concepts?: MaybeRefOrGetter<string[]>,
 ) {
   const catalogItemsUrl = useCatalogItemsUrl();
 
-  const q = computed(() => toValue(query)?.trim() ?? "");
+  const trimmedQuery = computed(() => toValue(query)?.trim() ?? "");
+  // Keeps the previous array while the concepts stay the same, so passing an
+  // equal array doesn't reset the list.
+  const stableConcepts = computed<string[]>((previous) => {
+    const next = toValue(concepts) ?? [];
+    return previous && isEqual(previous, next) ? previous : next;
+  });
 
   const state = ref<OgcCatalogState>({ status: "pending" });
 
@@ -45,7 +54,12 @@ export function useOgcCatalog(
       titleColor: LogPreDefinedColor.Yellow,
       messages: [
         "loading catalog page",
-        { lang: language.value, offset, q: q.value },
+        {
+          lang: language.value,
+          offset,
+          q: trimmedQuery.value,
+          concepts: stableConcepts.value,
+        },
       ],
     });
 
@@ -56,7 +70,8 @@ export function useOgcCatalog(
         lang: language.value,
         limit: PAGE_SIZE,
         offset,
-        q: q.value,
+        q: trimmedQuery.value,
+        concepts: stableConcepts.value,
       });
       if (request !== requestCount) {
         return;
@@ -80,7 +95,9 @@ export function useOgcCatalog(
     }
   }
 
-  watch([language, q], () => load(true), { immediate: true });
+  watch([language, trimmedQuery, stableConcepts], () => load(true), {
+    immediate: true,
+  });
 
   const total = computed(() => state.value.data?.numberMatched ?? 0);
   const hasMore = computed(

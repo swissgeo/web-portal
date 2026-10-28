@@ -3,12 +3,24 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { useSearchStore } from "@swissgeo/skeleton";
 import { refDebounced } from "@vueuse/core";
-import { computed, nextTick, ref, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onActivated,
+  onDeactivated,
+  ref,
+  watch,
+} from "vue";
 import { useI18n } from "vue-i18n";
 
 import { useSearchSelection } from "@/composables/useSearchSelection";
 
 import SearchCategory from "./SearchCategory.vue";
+
+const emit = defineEmits(["selected"]);
+const { skipMobile = false } = defineProps<{
+  skipMobile?: boolean;
+}>();
 
 const { t, locale } = useI18n();
 const searchStore = useSearchStore();
@@ -16,6 +28,20 @@ const toaster = useToaster();
 const { handleResultSelection } = useSearchSelection();
 
 const isOpen = defineModel<boolean>("open", { default: false });
+
+// The page keeps this component mounted while another one is shown: its
+// watchers must not act on the store then, or two panels would open for one
+// search.
+let isActive = true;
+
+onDeactivated(() => {
+  isActive = false;
+  isOpen.value = false;
+});
+
+onActivated(() => {
+  isActive = true;
+});
 
 const enableCmsSearch = searchStore.enableCmsSearch;
 
@@ -91,6 +117,9 @@ const tabs = computed(() => {
 // clear and selection write the store as well, so the text they put in the
 // field arrives here equal to the store query and starts no search
 watch(debouncedQuery, (value) => {
+  if (!isActive) {
+    return;
+  }
   if (value !== searchStore.query) {
     void searchStore.setSearchQuery(value, locale.value);
   }
@@ -101,6 +130,9 @@ watch(debouncedQuery, (value) => {
 // results: the field also holds the name of an already selected result, and
 // searching that again would pop the panel back up.
 watch(locale, (value) => {
+  if (!isActive) {
+    return;
+  }
   if (searchStore.hasResults && searchStore.query.length >= 2) {
     void searchStore.setSearchQuery(searchStore.query, value);
   }
@@ -111,6 +143,9 @@ watch(locale, (value) => {
 watch(
   () => searchStore.coordinateResult,
   (result) => {
+    if (!isActive) {
+      return;
+    }
     if (result) {
       void handleResultSelection(result);
     }
@@ -120,6 +155,9 @@ watch(
 watch(
   () => searchStore.hasResults,
   (hasResults) => {
+    if (!isActive) {
+      return;
+    }
     if (hasResults && searchStore.query.length >= 2) {
       openResults();
     }
@@ -129,6 +167,9 @@ watch(
 watch(
   () => searchStore.hasError,
   (hasError) => {
+    if (!isActive) {
+      return;
+    }
     if (hasError) {
       toaster.showError(t("search.error"));
     }
@@ -150,6 +191,7 @@ function handleSelect(result: SearchResult) {
     searchStore.keepSelectedQuery(title);
   }
   isOpen.value = false;
+  emit("selected");
 }
 
 // the map tab is the default one, and would claim there is nothing when the
@@ -247,7 +289,10 @@ function clearSearch() {
         size="xl"
         variant="outline"
         color="primary"
-        class="hidden w-119.25 grow xl:block"
+        class="w-119.25 grow xl:block"
+        :class="{
+          hidden: !skipMobile,
+        }"
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
@@ -255,6 +300,7 @@ function clearSearch() {
           base: 'placeholder-nav-brand-muted! ring-0',
           leadingIcon: 'text-nav-brand-muted',
         }"
+        v-bind="$attrs"
       >
         <template v-if="query" #trailing>
           <UButton
@@ -268,6 +314,7 @@ function clearSearch() {
         </template>
       </UInput>
       <UButton
+        v-show="!skipMobile"
         icon="i-lucide-search"
         variant="ghost"
         class="xl:hidden"

@@ -16,9 +16,13 @@ export function useDistribution(
     );
   });
 
-  const layerId = computed(
-    () => distribution.value?.properties.externalIds?.[0] || null,
-  );
+  const layerId = computed(() => {
+    const externalId = distribution.value?.properties.externalIds?.[0];
+    if (externalId) {
+      return externalId;
+    }
+    return extractLayerIdFromDistributionId(distribution.value?.id);
+  });
 
   watchEffect(() =>
     log.debug({
@@ -34,6 +38,24 @@ export function useDistribution(
   );
 
   return { distribution, layerId };
+}
+
+/**
+ * Fallback for records without `externalIds`:
+ * the distribution id follows the `<layerId>:<protocol>` scheme, so the layer
+ * id is everything before the last colon.
+ */
+function extractLayerIdFromDistributionId(
+  id: string | undefined,
+): string | null {
+  if (!id) {
+    return null;
+  }
+  const separator = id.lastIndexOf(":");
+  if (separator <= 0) {
+    return null;
+  }
+  return id.slice(0, separator);
 }
 
 export function extractDistribution(

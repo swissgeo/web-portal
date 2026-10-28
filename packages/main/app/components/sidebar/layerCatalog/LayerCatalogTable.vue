@@ -8,6 +8,11 @@ import LayerCatalogRow from "./LayerCatalogRow.vue";
 
 const { t, locale } = useI18n();
 
+const { conceptIds } = defineProps<{
+  /** Only the layers of these concepts are shown, all layers when empty */
+  conceptIds: string[];
+}>();
+
 const searchInputId = useId();
 const query = ref("");
 const debouncedQuery = refDebounced(query, 100);
@@ -15,6 +20,7 @@ const debouncedQuery = refDebounced(query, 100);
 const { state, hasMore, loadMore, retry } = useOgcCatalog(
   locale,
   debouncedQuery,
+  () => conceptIds,
 );
 
 const datasets = computed<Dataset[]>(() => state.value.data?.features ?? []);
@@ -28,7 +34,7 @@ useInfiniteScroll(scroller, loadMore, {
 </script>
 
 <template>
-  <div class="min-w-0 flex-1 p-4">
+  <div class="min-w-0 flex-1">
     <div
       role="table"
       class="grid grid-cols-[minmax(0,1fr)_--spacing(9)] overflow-hidden rounded-md border border-accented bg-default text-sm leading-small-text md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_--spacing(9)]"

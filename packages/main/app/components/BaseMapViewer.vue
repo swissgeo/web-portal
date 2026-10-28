@@ -2,12 +2,12 @@
 import type { LayerSource } from "@swissgeo/feature";
 import type { Layer as SourceLayer } from "@swissgeo/layers";
 import type {
-  GeoAdminGeoJSONStyleDefinition,
   HighLightLayer,
   Layer as MapLayer,
   MapClickEvent,
   MapLayerRenderer,
 } from "@swissgeo/map";
+import type { MapLibreStyleDocument } from "@swissgeo/shared";
 import type { DisplayMode } from "~/types/injectionKeys";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
@@ -20,6 +20,7 @@ import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { MapModule, usePositionStore } from "@swissgeo/map";
 import { HIGHLIGHT_LAYER_ID, toRgbaColor } from "@swissgeo/shared";
+import { useElementBounding } from "@vueuse/core";
 import { cloneDeep } from "es-toolkit";
 
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
@@ -47,6 +48,9 @@ const {
 const emit = defineEmits<{
   "update:compareRatio": [ratio: number];
 }>();
+
+const HIGHLIGHT_LAYER_STROKE_WIDTH = 3;
+const HIGHLIGHT_LAYER_CIRCLE_RADIUS = 7;
 
 const layerStore = useLayerStore();
 const mapViewStore = useMapViewStore();
@@ -77,21 +81,47 @@ const highlightFill = toRgbaColor(
 );
 
 const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
-  const geoJsonStyle: GeoAdminGeoJSONStyleDefinition = {
-    type: "single",
-    property: "featureId",
-    geomType: "point",
-    vectorOptions: {
-      type: "circle",
-      fill: {
-        color: highlightFill,
+  // Inline MapLibre style for selected features (previously a geoadmin
+  // literals definition): a filled circle for points, a stroke for lines and
+  // polygon outlines, and a fill for polygons.
+  const mapLibreStyle: MapLibreStyleDocument = {
+    version: 8,
+    sources: {
+      [HIGHLIGHT_LAYER_ID]: {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] },
       },
-      stroke: {
-        color: highlightStroke,
-        width: 3,
-      },
-      radius: 7,
     },
+    layers: [
+      {
+        id: `${HIGHLIGHT_LAYER_ID}-circle`,
+        type: "circle",
+        source: HIGHLIGHT_LAYER_ID,
+        paint: {
+          "circle-radius": HIGHLIGHT_LAYER_CIRCLE_RADIUS,
+          "circle-color": highlightFill,
+          "circle-stroke-color": highlightStroke,
+          "circle-stroke-width": HIGHLIGHT_LAYER_STROKE_WIDTH,
+        },
+      },
+      {
+        id: `${HIGHLIGHT_LAYER_ID}-fill`,
+        type: "fill",
+        source: HIGHLIGHT_LAYER_ID,
+        paint: {
+          "fill-color": highlightFill,
+        },
+      },
+      {
+        id: `${HIGHLIGHT_LAYER_ID}-line`,
+        type: "line",
+        source: HIGHLIGHT_LAYER_ID,
+        paint: {
+          "line-color": highlightStroke,
+          "line-width": HIGHLIGHT_LAYER_STROKE_WIDTH,
+        },
+      },
+    ],
   };
   return {
     uuid: HIGHLIGHT_LAYER_ID,
@@ -109,7 +139,7 @@ const highlightGeoJSONLayer: ComputedRef<HighLightLayer> = computed(() => {
         },
       },
     },
-    geoJsonStyle,
+    mapLibreStyle,
   };
 });
 
@@ -153,7 +183,12 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
     title: "Layer load failed",
     messages: cause === undefined ? [uuid, error] : [uuid, error, cause],
   });
-  toaster.showError(t("error.layerLoad"));
+  const isBackground = layerStore.backgroundLayer?.uuid === uuid;
+  if (isBackground) {
+    toaster.showMapUnavailable();
+  } else {
+    toaster.showError(t("error.layerLoad"));
+  }
 
   dimensionsStore.clearLayerDimensions(uuid);
   featureStore.clearWmsCapability(uuid);
@@ -161,7 +196,7 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
 
   mapViewStore.removeLayer(uuid);
 
-  if (layerStore.backgroundLayer?.uuid === uuid) {
+  if (isBackground) {
     layerStore.setBackground(null);
   } else {
     layerStore.removeLayer(uuid);
@@ -170,11 +205,26 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
 
 let abortController: AbortController | null = null;
 
+const mapModuleRef = useTemplateRef("mapModule");
+const { left: mapLeft, top: mapTop } = useElementBounding(
+  () => mapModuleRef.value?.$el as HTMLElement | undefined,
+);
+
+const featureInfoDisabledPosition = ref({ x: 200, y: 200 });
+
+function updateFeatureInfoDisabledPosition(pixel: MapClickEvent["pixel"]) {
+  featureInfoDisabledPosition.value = {
+    x: mapLeft.value + pixel[0],
+    y: mapTop.value + pixel[1],
+  };
+}
+
 async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   featureStore.$reset();
   if (toolboxStore.isDrawingActive()) {
     return;
   }
+  updateFeatureInfoDisabledPosition(mapClickEvent.pixel);
   abortController?.abort();
   abortController = new AbortController();
   const { signal } = abortController;
@@ -228,16 +278,14 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
-  if (isEnabled("enableFeatureInfo")) {
-    await selectFeatures(
-      mapClickEvent.extent,
-      positionStore.projection.epsgNumber,
-      locale.value.toLowerCase(),
-      layersSources,
-      FEATURE_LIMIT,
-      signal,
-    );
-  }
+  await selectFeatures(
+    mapClickEvent.extent,
+    positionStore.projection.epsgNumber,
+    locale.value.toLowerCase(),
+    layersSources,
+    FEATURE_LIMIT,
+    signal,
+  );
 }
 </script>
 
@@ -250,6 +298,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       @layer-error="handleLayerError"
     />
     <MapModule
+      ref="mapModule"
       :layers="layersForMap"
       :custom-layer-renderers="customLayerRenderers"
       :display-mode="displayMode"
@@ -271,8 +320,16 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       <slot name="map-ui" />
     </MapModule>
     <FeaturesinfoFeatureInfoPopover
-      v-if="displayMode !== 'print' && featureStore.hasSelectedFeatures"
+      v-if="
+        displayMode !== 'print' &&
+        featureStore.hasSelectedFeatures &&
+        isEnabled('enableFeatureInfo')
+      "
       @close="featureStore.$reset()"
+    />
+    <FeaturesinfoFeatureInfoDisabled
+      v-else-if="displayMode !== 'print' && featureStore.hasSelectedFeatures"
+      :initial-position="featureInfoDisabledPosition"
     />
     <Toolbox v-if="displayMode !== 'print'" />
     <slot name="after" />
