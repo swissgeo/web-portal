@@ -18,6 +18,9 @@ mockNuxtImport("useMapViewStore", () => () => ({
   isTimeSliderVisible: false,
   toggleTimeSlider,
 }));
+mockNuxtImport("useCmsUrl", () => () => ({
+  cmsUrl: (path: string) => `https://cms.example.com${path}`,
+}));
 
 describe("TimeSliderButton.vue", () => {
   beforeEach(() => {
