@@ -437,7 +437,8 @@
     },
     "featureFlag": {
       "notAvailable": "Cet outil n'est malheureusement pas encore disponible.",
-      "workingOnIt": "Nous y travaillons :)"
+      "workingOnIt": "Nous y travaillons :)",
+      "roadmap": "visualiseur-de-carte-perspective"
     }
   },
   "backgroundLayers": {

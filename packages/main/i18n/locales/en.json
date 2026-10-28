@@ -444,7 +444,8 @@
     },
     "featureFlag": {
       "notAvailable": "Unfortunately, this tool isn't available yet",
-      "workingOnIt": "We're working on it :)"
+      "workingOnIt": "We're working on it :)",
+      "roadmap": "mapviewer-perspective"
     }
   },
   "backgroundLayers": {
