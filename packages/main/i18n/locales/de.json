@@ -438,7 +438,10 @@
     },
     "featureFlag": {
       "notAvailable": "Dieses Tool ist leider noch nicht verfügbar",
-      "workingOnIt": "Wir sind dran :)"
+      "workingOnIt": "Wir sind dran :)",
+      "links": {
+        "roadmap": "kartenviewer-ueberblick"
+      }
     }
   },
   "backgroundLayers": {

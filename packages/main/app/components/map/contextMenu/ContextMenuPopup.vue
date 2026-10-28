@@ -11,6 +11,7 @@ const props = defineProps<{
 const positionStore = usePositionStore();
 const { t } = useI18n();
 const { isEnabled } = useFeatureFlags();
+const { cmsUrl } = useCmsUrl();
 
 const isCollapsed = ref(false);
 
@@ -82,6 +83,17 @@ watch(
     @click.stop
   >
     <p>{{ t("map.contextMenuPopup.featureFlag.notAvailable") }}</p>
-    <p class="mt-2">{{ t("map.contextMenuPopup.featureFlag.workingOnIt") }}</p>
+    <UButton
+      :to="cmsUrl(t('toolbox.featureFlag.links.roadmap'))"
+      variant="link"
+      size="xs"
+      target="_blank"
+      class="mt-2"
+      :ui="{
+        base: 'p-0',
+      }"
+    >
+      {{ t("map.contextMenuPopup.featureFlag.workingOnIt") }}
+    </UButton>
   </div>
 </template>
