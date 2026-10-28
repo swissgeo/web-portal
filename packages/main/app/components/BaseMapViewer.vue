@@ -257,16 +257,14 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
-  if (isEnabled("enableFeatureInfo")) {
-    await selectFeatures(
-      mapClickEvent.extent,
-      positionStore.projection.epsgNumber,
-      locale.value.toLowerCase(),
-      layersSources,
-      FEATURE_LIMIT,
-      signal,
-    );
-  }
+  await selectFeatures(
+    mapClickEvent.extent,
+    positionStore.projection.epsgNumber,
+    locale.value.toLowerCase(),
+    layersSources,
+    FEATURE_LIMIT,
+    signal,
+  );
 }
 </script>
 
