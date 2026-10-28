@@ -29,9 +29,14 @@ vi.mock("@/composables/useCreateShareLink", () => ({
   })),
 }));
 
-const { fetchMock, toastAdd } = vi.hoisted(() => ({
+const { fetchMock, logError, toastAdd } = vi.hoisted(() => ({
   fetchMock: vi.fn(),
+  logError: vi.fn(),
   toastAdd: vi.fn(),
+}));
+
+vi.mock("@swissgeo/log", () => ({
+  default: { error: logError },
 }));
 
 mockNuxtImport("useRuntimeConfig", () => () => ({
@@ -228,6 +233,10 @@ describe("ReportIssue.vue", () => {
 
     await vm.onSubmit({} as never);
 
+    expect(logError).toHaveBeenCalledWith({
+      title: "Report issue failed",
+      messages: [new Error("Network failure")],
+    });
     expect(toastAdd).toHaveBeenCalledWith(
       expect.objectContaining({
         color: "error",

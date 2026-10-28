@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";
 
+import log from "@swissgeo/log";
 import { useI18n } from "vue-i18n";
 import * as z from "zod";
 
@@ -105,7 +106,8 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
       color: "success",
     });
     resetForm();
-  } catch {
+  } catch (error) {
+    log.error({ title: "Report issue failed", messages: [error] });
     toast.add({
       title: t("footer.reportIssue.errorMessage"),
       color: "error",
