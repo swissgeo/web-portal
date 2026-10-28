@@ -29,9 +29,14 @@ vi.mock("@/composables/useCreateShareLink", () => ({
   })),
 }));
 
-const { fetchMock, toastAdd } = vi.hoisted(() => ({
+const { fetchMock, logError, toastAdd } = vi.hoisted(() => ({
   fetchMock: vi.fn(),
+  logError: vi.fn(),
   toastAdd: vi.fn(),
+}));
+
+vi.mock("@swissgeo/log", () => ({
+  default: { error: logError },
 }));
 
 mockNuxtImport("useRuntimeConfig", () => () => ({
@@ -45,7 +50,7 @@ mockNuxtImport("$fetch", () => fetchMock);
 const globalStubs = {
   UCard: {
     name: "UCard",
-    template: "<div><slot /><slot name='header' /></div>",
+    template: "<div><slot /><slot name='header' /><slot name='footer' /></div>",
   },
   UForm: {
     name: "UForm",
@@ -217,7 +222,7 @@ describe("ReportIssue.vue", () => {
     expect(vm.state.email).toBeUndefined();
   });
 
-  it("shows error toast with message on Error", async () => {
+  it("shows the translated error toast instead of the technical message", async () => {
     fetchMock.mockRejectedValue(new Error("Network failure"));
 
     const wrapper = mountReportIssue();
@@ -228,10 +233,14 @@ describe("ReportIssue.vue", () => {
 
     await vm.onSubmit({} as never);
 
+    expect(logError).toHaveBeenCalledWith({
+      title: "Report issue failed",
+      messages: [new Error("Network failure")],
+    });
     expect(toastAdd).toHaveBeenCalledWith(
       expect.objectContaining({
         color: "error",
-        title: "Network failure",
+        title: "footer.reportIssue.errorMessage",
       }),
     );
   });
@@ -253,6 +262,23 @@ describe("ReportIssue.vue", () => {
         title: "footer.reportIssue.errorMessage",
       }),
     );
+  });
+
+  it("disables submit button while the form is invalid", async () => {
+    const wrapper = mountReportIssue();
+    const vm = wrapper.vm as unknown as ReportIssueVm;
+    const findSubmitButton = () =>
+      wrapper
+        .findAll("button")
+        .find((b) => b.text() === "footer.reportIssue.submitButton");
+
+    expect(findSubmitButton()?.attributes("disabled")).toBeDefined();
+
+    vm.state.feedback = "valid feedback";
+    vm.state.category = "other";
+    await wrapper.vm.$nextTick();
+
+    expect(findSubmitButton()?.attributes("disabled")).toBeUndefined();
   });
 
   it("disables submit button during pending state", async () => {
@@ -281,6 +307,7 @@ describe("ReportIssue.vue", () => {
     await submitPromise;
     await wrapper.vm.$nextTick();
 
-    expect(submitButton?.attributes("disabled")).toBeUndefined();
+    // The form resets after a successful send, so it is invalid again.
+    expect(submitButton?.attributes("disabled")).toBeDefined();
   });
 });

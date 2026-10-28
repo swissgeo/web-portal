@@ -3,6 +3,8 @@
  * We could theoretically be using the toaster directly, but I suppose it's a good idea
  * to centralize all the calls here and get a consistant usage
  */
+const MAP_GEO_ADMIN_URL = "https://map.geo.admin.ch";
+
 export function useToaster() {
   const { $i18n } = useNuxtApp();
   const toast = useToast();
@@ -38,7 +40,19 @@ export function useToaster() {
       description: message,
       color: "error",
       icon: icons.error,
+      duration: Infinity,
       ...overrides,
+    });
+  }
+
+  // Without a background the map stays empty. Link to the old viewer.
+  // A fixed id: several components can report it, the user sees it once.
+  function showMapUnavailable() {
+    showError($i18n.t("error.mapUnavailable"), {
+      id: "map-unavailable",
+      actions: [
+        { label: "map.geo.admin.ch", to: MAP_GEO_ADMIN_URL, target: "_blank" },
+      ],
     });
   }
 
@@ -58,6 +72,8 @@ export function useToaster() {
   function add(toastOptions: Parameters<typeof toast.add>[0]) {
     return toast.add({
       icon: toastOptions.color ? icons[toastOptions.color] : icons.neutral,
+      // An error toast stays open until the user closes it.
+      ...(toastOptions.color === "error" && { duration: Infinity }),
       ...toastOptions,
     });
   }
@@ -71,6 +87,7 @@ export function useToaster() {
     add,
     showWarning,
     showError,
+    showMapUnavailable,
     showSuccess,
     remove,
   };

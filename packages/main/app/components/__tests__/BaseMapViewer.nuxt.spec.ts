@@ -19,6 +19,7 @@ const {
   removeSourceLayer,
   setBackground,
   showError,
+  showMapUnavailable,
 } = vi.hoisted(() => ({
   clearImportOptions: vi.fn(),
   clearLayerDimensions: vi.fn(),
@@ -28,6 +29,7 @@ const {
   removeSourceLayer: vi.fn(),
   setBackground: vi.fn(),
   showError: vi.fn(),
+  showMapUnavailable: vi.fn(),
 }));
 type SelectedFeatureGeoJson = {
   type: "Feature";
@@ -134,7 +136,7 @@ mockNuxtImport("useI18n", () => () => ({
   t: (key: string) => key,
   locale: { value: "en" },
 }));
-mockNuxtImport("useToaster", () => () => ({ showError }));
+mockNuxtImport("useToaster", () => () => ({ showError, showMapUnavailable }));
 
 vi.mock("@swissgeo/dimension", () => ({
   // getDimensions: the toolbox store's showTimeSliderButton computed reads it
@@ -550,6 +552,7 @@ describe("BaseMapViewer", () => {
 
     expect(setBackground).toHaveBeenCalledWith(null);
     expect(removeSourceLayer).not.toHaveBeenCalled();
+    expect(showMapUnavailable).toHaveBeenCalled();
   });
 
   it("passes compare slider props", async () => {

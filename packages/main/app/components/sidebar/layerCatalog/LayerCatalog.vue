@@ -45,7 +45,7 @@ provide(
   <div class="flex min-h-full flex-col md:h-full md:flex-row">
     <div
       v-if="isDesktop"
-      class="w-75 shrink-0 overflow-y-auto border-r border-default px-4 py-3"
+      class="w-75 shrink-0 [scrollbar-gutter:stable] overflow-y-auto border-r border-default px-4 py-3"
     >
       <LayerCatalogTree v-model:concept-id="conceptId" :concepts :status />
     </div>
@@ -59,7 +59,7 @@ provide(
     <div
       v-show="isTableVisible"
       ref="tableColumn"
-      class="flex min-w-0 flex-1 flex-col gap-4 px-4 py-3 md:gap-8 md:overflow-y-auto md:p-8"
+      class="flex min-w-0 flex-1 [scrollbar-gutter:stable] flex-col gap-4 px-4 py-3 md:gap-8 md:overflow-y-auto md:p-8"
     >
       <div
         v-if="!isDesktop && currentLabel"

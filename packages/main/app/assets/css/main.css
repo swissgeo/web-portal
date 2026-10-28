@@ -154,6 +154,8 @@
   html:root.light {
     color-scheme: light;
 
+    /* Success green from the Figma toasts. */
+    --ui-success: #00dc82;
     --ui-error: var(--ui-color-error-600);
     --ui-info: var(--ui-color-info-600);
     --ui-warning: var(--ui-color-warning-400);
@@ -209,6 +211,12 @@
 }
 
 @layer base {
+  /* Thin, light scrollbar from the Figma scroll pattern. Scrolling stays native. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ui-border-accented) transparent;
+  }
+
   button:enabled,
   [role="button"]:not([aria-disabled="true"]) {
     @apply cursor-pointer;

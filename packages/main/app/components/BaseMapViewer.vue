@@ -183,7 +183,12 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
     title: "Layer load failed",
     messages: cause === undefined ? [uuid, error] : [uuid, error, cause],
   });
-  toaster.showError(t("error.layerLoad"));
+  const isBackground = layerStore.backgroundLayer?.uuid === uuid;
+  if (isBackground) {
+    toaster.showMapUnavailable();
+  } else {
+    toaster.showError(t("error.layerLoad"));
+  }
 
   dimensionsStore.clearLayerDimensions(uuid);
   featureStore.clearWmsCapability(uuid);
@@ -191,7 +196,7 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
 
   mapViewStore.removeLayer(uuid);
 
-  if (layerStore.backgroundLayer?.uuid === uuid) {
+  if (isBackground) {
     layerStore.setBackground(null);
   } else {
     layerStore.removeLayer(uuid);

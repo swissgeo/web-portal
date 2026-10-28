@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Distribution } from "@swissgeo/ogc";
 
+import ErrorPill from "~/components/ErrorPill.vue";
 import { useDatasetService } from "~/composables/useDatasetService";
 import { determineFormat } from "~/utils/determineFormat";
 import { useI18n } from "vue-i18n";
@@ -39,9 +40,9 @@ const protocol = computed(() => {
           <p v-if="isLoading" role="status" class="text-muted">
             {{ t("dataset.serviceLoading") }}
           </p>
-          <p v-else-if="error" role="status" class="text-error">
+          <ErrorPill v-else-if="error">
             {{ t("dataset.serviceError") }}
-          </p>
+          </ErrorPill>
           <p v-else-if="address" class="font-semibold @2xl:font-normal">
             {{ address }}
           </p>

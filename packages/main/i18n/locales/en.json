@@ -490,7 +490,8 @@
     "backToMap": "Back to map",
     "resources": {
       "dataset": "This dataset"
-    }
+    },
+    "mapUnavailable": "The map is currently not available."
   },
   "dataset": {
     "legendLoading": "Loading legend…",

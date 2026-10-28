@@ -127,8 +127,16 @@ export default defineAppConfig({
     },
     formField: {
       slots: {
+        error: "text-xs",
         hint: "text-tiny",
         help: "text-tiny",
+      },
+    },
+    toaster: {
+      slots: {
+        // Below the top bar and the test site banner.
+        viewport:
+          "top-[calc(var(--test-site-banner-height,0px)+var(--ui-header-height)+1rem)]!",
       },
     },
     toast: {

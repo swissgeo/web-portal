@@ -484,7 +484,8 @@
     "backToMap": "Zurück zur Karte",
     "resources": {
       "dataset": "Dieser Datensatz"
-    }
+    },
+    "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar."
   },
   "dataset": {
     "legendLoading": "Legende wird geladen…",
