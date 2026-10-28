@@ -199,11 +199,34 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
 
 let abortController: AbortController | null = null;
 
+const POPOVER_ESTIMATED_WIDTH = 240;
+const POPOVER_ESTIMATED_HEIGHT = 80;
+
+const featureInfoDisabledPosition = ref({ x: 200, y: 200 });
+
+function updateFeatureInfoDisabledPosition(pixel: MapClickEvent["pixel"]) {
+  const mapElement = document.querySelector<HTMLElement>(
+    '[data-testid="ol-map"]',
+  );
+  const rect = mapElement?.getBoundingClientRect();
+  featureInfoDisabledPosition.value = {
+    x: Math.min(
+      (rect?.left ?? 0) + pixel[0],
+      window.innerWidth - POPOVER_ESTIMATED_WIDTH,
+    ),
+    y: Math.min(
+      (rect?.top ?? 0) + pixel[1],
+      window.innerHeight - POPOVER_ESTIMATED_HEIGHT,
+    ),
+  };
+}
+
 async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   featureStore.$reset();
   if (toolboxStore.isDrawingActive()) {
     return;
   }
+  updateFeatureInfoDisabledPosition(mapClickEvent.pixel);
   abortController?.abort();
   abortController = new AbortController();
   const { signal } = abortController;
@@ -298,8 +321,16 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       <slot name="map-ui" />
     </MapModule>
     <FeaturesinfoFeatureInfoPopover
-      v-if="displayMode !== 'print' && featureStore.hasSelectedFeatures"
+      v-if="
+        displayMode !== 'print' &&
+        featureStore.hasSelectedFeatures &&
+        isEnabled('enableFeatureInfo')
+      "
       @close="featureStore.$reset()"
+    />
+    <FeaturesinfoFeatureInfoDisabled
+      v-else-if="displayMode !== 'print' && featureStore.hasSelectedFeatures"
+      :initial-position="featureInfoDisabledPosition"
     />
     <Toolbox v-if="displayMode !== 'print'" />
     <slot name="after" />
