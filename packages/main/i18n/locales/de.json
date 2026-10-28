@@ -484,7 +484,8 @@
     "backToMap": "Zurück zur Karte",
     "resources": {
       "dataset": "Dieser Datensatz"
-    }
+    },
+    "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar."
   },
   "dataset": {
     "legendLoading": "Legende wird geladen…",
@@ -630,7 +631,8 @@
       "openDocument": "Legende als Dokument öffnen",
       "openPdf": "Legende als PDF öffnen",
       "openPage": "Legendenseite öffnen"
-    }
+    },
+    "unavailable": "Aktuell nicht verfügbar"
   },
   "layerCart": {
     "close": "Schliessen",

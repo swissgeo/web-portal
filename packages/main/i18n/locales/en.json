@@ -490,7 +490,8 @@
     "backToMap": "Back to map",
     "resources": {
       "dataset": "This dataset"
-    }
+    },
+    "mapUnavailable": "The map is currently not available."
   },
   "dataset": {
     "legendLoading": "Loading legend…",
@@ -635,7 +636,8 @@
       "openDocument": "Open legend as document",
       "openPdf": "Open legend as PDF",
       "openPage": "Open legend page"
-    }
+    },
+    "unavailable": "Currently not available"
   },
   "layerCart": {
     "close": "Close",

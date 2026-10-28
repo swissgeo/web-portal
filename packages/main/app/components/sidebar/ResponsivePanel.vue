@@ -115,7 +115,7 @@ useEventListener(scroller, "focusin", (focusEvent: FocusEvent) => {
 //   extends the panel to cover (almost) the entire screen, so we shouldn't
 //   show scrollbars in that case because it is not scrollable.
 const scrollerClass = computed(() => [
-  "scroll-fade min-h-0 flex-1 overscroll-y-contain",
+  "scroll-fade min-h-0 flex-1 overscroll-y-contain [scrollbar-gutter:stable]",
   isDesktop.value || isFullyExtended.value
     ? "overflow-y-auto"
     : "overflow-hidden",

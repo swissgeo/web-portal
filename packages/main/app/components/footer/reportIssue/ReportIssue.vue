@@ -65,6 +65,7 @@ const state = reactive({
 
 const permalink = ref("");
 const pending = ref(false);
+const isValid = computed(() => schema.safeParse(state).success);
 
 function resetForm() {
   state.category = "";
@@ -104,13 +105,9 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
       color: "success",
     });
     resetForm();
-  } catch (error) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : t("footer.reportIssue.errorMessage");
+  } catch {
     toast.add({
-      title: message,
+      title: t("footer.reportIssue.errorMessage"),
       color: "error",
     });
   } finally {
@@ -127,7 +124,7 @@ watch(shareLink, (newLink) => {
   <UCard
     data-testid="footer-report-issue-card"
     :ui="{
-      body: 'md:max-h-[75vh] md:overflow-y-scroll',
+      body: 'md:max-h-[75vh] md:overflow-y-auto',
       root: 'ring-0 md:ring',
       header: 'border-0 md:border-b',
     }"
@@ -166,11 +163,14 @@ watch(shareLink, (newLink) => {
 
       <ReportIssueNotes :permalink="permalink" />
 
-      <div class="flex flex-row justify-between">
+      <!-- Sticky: the buttons stay visible while the form scrolls. -->
+      <div
+        class="sticky -bottom-4 flex flex-row justify-between bg-default py-2 sm:-bottom-6"
+      >
         <UButton size="xl" type="reset" variant="ghost" class="mr-2">
           {{ t("footer.reportIssue.cancelButton") }}
         </UButton>
-        <UButton size="xl" type="submit" :disabled="pending">
+        <UButton size="xl" type="submit" :disabled="pending || !isValid">
           {{ t("footer.reportIssue.submitButton") }}
         </UButton>
       </div>

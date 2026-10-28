@@ -2,6 +2,7 @@ import type { Distribution } from "@swissgeo/ogc";
 
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { flushPromises } from "@vue/test-utils";
+import ErrorPill from "~/components/ErrorPill.vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import DatasetCopyLink from "../DatasetCopyLink.vue";
@@ -131,7 +132,7 @@ describe("dataset service addresses", () => {
       .mockRejectedValueOnce(new Error("Collection unavailable"));
     const wrapper = await mountRow(record);
 
-    expect(wrapper.get('[role="status"]').classes()).toContain("text-error");
+    expect(wrapper.findComponent(ErrorPill).exists()).toBe(true);
     expect(wrapper.find("a").exists()).toBe(false);
     expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
     expect(fetchMock).toHaveBeenCalledTimes(3);
@@ -272,7 +273,7 @@ describe("dataset service addresses", () => {
       ],
     });
     const wrapper = await mountRow(distribution());
-    expect(wrapper.get('[role="status"]').classes()).toContain("text-error");
+    expect(wrapper.findComponent(ErrorPill).exists()).toBe(true);
     expect(wrapper.find("a").exists()).toBe(false);
     expect(wrapper.findComponent(DatasetCopyLink).exists()).toBe(false);
   });

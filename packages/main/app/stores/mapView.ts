@@ -31,6 +31,9 @@ export const useMapViewStore = defineStore("mapView", () => {
    */
   const legends = ref<Record<string, Legend[]>>({});
 
+  /** Layers that could not load. The layer list shows them greyed out. */
+  const unavailableLayers = ref<{ uuid: string; displayName: string }[]>([]);
+
   const layerStore = useLayerStore();
 
   /** 0, or 1 when a background layer sits at the bottom of the stack. */
@@ -151,6 +154,22 @@ export const useMapViewStore = defineStore("mapView", () => {
     return legends.value[uuid] ?? [];
   }
 
+  function addUnavailableLayer(layer: { uuid: string; displayName: string }) {
+    if (!unavailableLayers.value.some(({ uuid }) => uuid === layer.uuid)) {
+      unavailableLayers.value.push(layer);
+    }
+  }
+
+  function removeUnavailableLayer(uuidToRemove: string) {
+    unavailableLayers.value = unavailableLayers.value.filter(
+      ({ uuid }) => uuid !== uuidToRemove,
+    );
+  }
+
+  function clearUnavailableLayers() {
+    unavailableLayers.value = [];
+  }
+
   function removeLayer(identifier: string | number) {
     const index = _getIndexFromIdentifier(identifier);
     if (index !== undefined) {
@@ -238,6 +257,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     isCompareSliderActive,
     compareRatio,
     mapLayers,
+    unavailableLayers,
     // getters
     visibleLayers,
     getMapLayers,
@@ -258,6 +278,9 @@ export const useMapViewStore = defineStore("mapView", () => {
     updateLayerOpacity,
     setLayerLegends,
     removeLayer,
+    addUnavailableLayer,
+    removeUnavailableLayer,
+    clearUnavailableLayers,
     addLayerToBottom,
     addLayerToTop,
     setVisibility,

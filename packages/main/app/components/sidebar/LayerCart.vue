@@ -8,6 +8,7 @@ import { computed, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerCartEntry from "./LayerCartEntry.vue";
+import LayerCartUnavailableEntry from "./LayerCartUnavailableEntry.vue";
 
 const { t } = useI18n();
 const layerStore = useLayerStore();
@@ -36,6 +37,8 @@ const layerCartRef = useTemplateRef<HTMLUListElement>("layerCartRef");
 // 1:1 to the store's), so the default onUpdate is replaced entirely.
 useSortable(layerCartRef, sortedLayers, {
   handle: ".layer-reorder-handle",
+  // Failed layers are not on the map, so they are no drop target.
+  draggable: "li:not([data-testid=layer-cart-unavailable])",
   animation: 150,
   ghostClass: "opacity-40",
   onUpdate({ oldIndex, newIndex }) {
@@ -98,13 +101,20 @@ function openLayerCatalog() {
     ref="layerCartRef"
     @pointerdown="keepDrawerStill"
     data-testid="layer-cart"
-    class="mt-4 flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-2"
+    class="mt-4 flex min-w-0 flex-1 [scrollbar-gutter:stable] flex-col gap-4 overflow-y-auto px-2"
   >
     <LayerCartEntry
       v-for="{ layer, layerIndex } in sortedLayers"
       :key="layer.uuid"
       :layerIndex="layerIndex"
       :layer="layer"
+    />
+    <!-- After the sortable entries, so the drag indexes stay the same -->
+    <LayerCartUnavailableEntry
+      v-for="{ uuid, displayName } in mapViewStore.unavailableLayers"
+      :key="uuid"
+      :uuid="uuid"
+      :display-name="displayName"
     />
   </ul>
 </template>

@@ -22,6 +22,7 @@ vi.mock("~/composables/useToaster", () => ({
     remove: vi.fn(),
     showWarning: vi.fn(),
     showError: vi.fn(),
+    showMapUnavailable: vi.fn(),
     showSuccess: vi.fn(),
   }),
 }));

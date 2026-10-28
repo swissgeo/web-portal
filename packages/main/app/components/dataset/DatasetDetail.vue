@@ -157,9 +157,9 @@ const serviceDistributions = computed<Distribution[]>(() => {
         >
           {{ t("dataset.dataAccess") }}
         </h3>
-        <p v-if="distributionError" role="status" class="text-sm text-error">
+        <ErrorPill v-if="distributionError">
           {{ t("error.generic") }}
-        </p>
+        </ErrorPill>
         <DatasetServiceList v-else :distributions="serviceDistributions" />
       </section>
     </template>

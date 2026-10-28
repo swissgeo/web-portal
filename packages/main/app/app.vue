@@ -8,7 +8,9 @@ const DESKTOP_LAYOUT_WIDTH = breakpointsTailwind.xl;
 const toaster = {
   position: "top-center" as const,
   progress: false,
-  duration: Infinity,
+  // Success, info and warning toasts close after 5 s. Error toasts stay
+  // open (see useToaster).
+  duration: 5000,
 };
 provide(displayModeKey, "web");
 

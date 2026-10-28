@@ -175,14 +175,24 @@ const layersForMap = computed(() => {
   return layers;
 });
 const customLayerRenderers: MapLayerRenderer[] = [];
-
 function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
   const { cause } = error;
   log.error({
     title: "Layer load failed",
     messages: cause === undefined ? [uuid, error] : [uuid, error, cause],
   });
-  toaster.showError(t("error.layerLoad"));
+  const isBackground = layerStore.backgroundLayer?.uuid === uuid;
+  if (isBackground) {
+    toaster.showMapUnavailable();
+  } else {
+    toaster.showError(t("error.layerLoad"));
+    const failedLayer = layerStore.getLayer(uuid);
+    mapViewStore.addUnavailableLayer({
+      uuid,
+      displayName:
+        failedLayer?.info?.displayName ?? failedLayer?.humanId ?? uuid,
+    });
+  }
 
   dimensionsStore.clearLayerDimensions(uuid);
   featureStore.clearWmsCapability(uuid);
@@ -190,7 +200,7 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
 
   mapViewStore.removeLayer(uuid);
 
-  if (layerStore.backgroundLayer?.uuid === uuid) {
+  if (isBackground) {
     layerStore.setBackground(null);
   } else {
     layerStore.removeLayer(uuid);
