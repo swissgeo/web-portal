@@ -41,7 +41,7 @@ const [RegisterTemplate, ReuseTemplate] = createReusableTemplate();
         <div class="max-w-36 px-2 py-1 text-xs font-medium text-highlighted">
           <p>{{ t("toolbox.featureFlag.notAvailable") }}</p>
           <UButton
-            :to="cmsUrl(t('toolbox.featureFlag.roadmap'))"
+            :to="cmsUrl(t('toolbox.featureFlag.links.roadmap'))"
             variant="link"
             size="xs"
             target="_blank"

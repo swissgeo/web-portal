@@ -84,7 +84,7 @@ watch(
   >
     <p>{{ t("map.contextMenuPopup.featureFlag.notAvailable") }}</p>
     <UButton
-      :to="cmsUrl(t('toolbox.featureFlag.roadmap'))"
+      :to="cmsUrl(t('toolbox.featureFlag.links.roadmap'))"
       variant="link"
       size="xs"
       target="_blank"
