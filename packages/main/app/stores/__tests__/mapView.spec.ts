@@ -158,28 +158,4 @@ describe("mapView store", () => {
       expect(stack(mapViewStore.mapLayers)).toEqual(["bg", "b", "a"]);
     });
   });
-
-  describe("unavailable layers", () => {
-    it("adds a failed layer once and removes it", () => {
-      const mapViewStore = useMapViewStore();
-      const failedLayer = { uuid: "a", displayName: "Layer A" };
-
-      mapViewStore.addUnavailableLayer(failedLayer);
-      mapViewStore.addUnavailableLayer(failedLayer);
-      expect(mapViewStore.unavailableLayers).toEqual([failedLayer]);
-
-      mapViewStore.removeUnavailableLayer("a");
-      expect(mapViewStore.unavailableLayers).toEqual([]);
-    });
-
-    it("clears all failed layers", () => {
-      const mapViewStore = useMapViewStore();
-      mapViewStore.addUnavailableLayer({ uuid: "a", displayName: "A" });
-      mapViewStore.addUnavailableLayer({ uuid: "b", displayName: "B" });
-
-      mapViewStore.clearUnavailableLayers();
-
-      expect(mapViewStore.unavailableLayers).toEqual([]);
-    });
-  });
 });

@@ -636,8 +636,7 @@
       "openDocument": "Open legend as document",
       "openPdf": "Open legend as PDF",
       "openPage": "Open legend page"
-    },
-    "unavailable": "Currently not available"
+    }
   },
   "layerCart": {
     "close": "Close",

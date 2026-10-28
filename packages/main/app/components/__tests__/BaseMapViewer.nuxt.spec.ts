@@ -11,7 +11,6 @@ import BaseMapViewer from "../BaseMapViewer.vue";
 // -----------------------------------------------------------------------------
 
 const {
-  addUnavailableLayer,
   clearImportOptions,
   clearLayerDimensions,
   clearWmsCapability,
@@ -22,7 +21,6 @@ const {
   showError,
   showMapUnavailable,
 } = vi.hoisted(() => ({
-  addUnavailableLayer: vi.fn(),
   clearImportOptions: vi.fn(),
   clearLayerDimensions: vi.fn(),
   clearWmsCapability: vi.fn(),
@@ -129,7 +127,6 @@ const getMapLayers = vi.fn(() => computed(() => mockLayers));
 
 mockNuxtImport("useMapViewStore", () => {
   return () => ({
-    addUnavailableLayer,
     getMapLayers,
     removeLayer: removeMapLayer,
   });
@@ -161,11 +158,6 @@ vi.mock("@swissgeo/layers", async () => {
         layers: ref(mockLayers),
         backgroundLayer: ref(mockBackgroundLayer),
         clearImportOptions,
-        getLayer: (uuid: string) => ({
-          uuid,
-          humanId: uuid,
-          info: { displayName: "Failed layer" },
-        }),
         removeLayer: removeSourceLayer,
         setBackground,
       }),
@@ -465,10 +457,6 @@ describe("BaseMapViewer", () => {
       messages: ["layer-2", failure, cause],
     });
     expect(showError).toHaveBeenCalledWith("error.layerLoad");
-    expect(addUnavailableLayer).toHaveBeenCalledWith({
-      uuid: "layer-2",
-      displayName: "Failed layer",
-    });
     expect(clearLayerDimensions).toHaveBeenCalledWith("layer-2");
     expect(clearWmsCapability).toHaveBeenCalledWith("layer-2");
     expect(clearImportOptions).toHaveBeenCalledWith("layer-2");
@@ -500,7 +488,6 @@ describe("BaseMapViewer", () => {
 
     expect(setBackground).toHaveBeenCalledWith(null);
     expect(removeSourceLayer).not.toHaveBeenCalled();
-    expect(addUnavailableLayer).not.toHaveBeenCalled();
     expect(showMapUnavailable).toHaveBeenCalled();
   });
 

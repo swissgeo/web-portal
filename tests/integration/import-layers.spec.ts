@@ -220,7 +220,7 @@ test.describe("import external layers", () => {
     ).toBeVisible();
   });
 
-  test("keeps a failed layer greyed out when its distribution cannot be loaded", async ({
+  test("removes a layer when its distribution cannot be loaded", async ({
     page,
   }) => {
     const workingLayer = "test-drawing.geojson";
@@ -266,9 +266,7 @@ test.describe("import external layers", () => {
     ).toBeVisible();
     await page.getByTestId("button-layer-cart-panel").click();
     const layerCart = page.getByTestId("layer-cart");
-    await expect(layerCart.getByTestId("layer-cart-unavailable")).toContainText(
-      failedLayer,
-    );
+    await expect(layerCart.getByText(failedLayer)).toHaveCount(0);
     await page.getByTestId("button-layer-cart-panel").click();
 
     await page.getByRole("button", { name: "Debug", exact: true }).click();

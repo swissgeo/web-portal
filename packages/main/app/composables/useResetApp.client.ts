@@ -10,14 +10,12 @@ export function useResetApp() {
     const layerStore = useLayerStore();
     const positionStore = usePositionStore();
     const dimensionsStore = useDimensionsStore();
-    const mapViewStore = useMapViewStore();
 
     function resetApp() {
       clearSessionStorage();
       layerStore.$reset();
       positionStore.$reset();
       dimensionsStore.$reset();
-      mapViewStore.clearUnavailableLayers();
     }
 
     return { resetApp };

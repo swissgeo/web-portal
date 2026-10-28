@@ -175,6 +175,7 @@ const layersForMap = computed(() => {
   return layers;
 });
 const customLayerRenderers: MapLayerRenderer[] = [];
+
 function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
   const { cause } = error;
   log.error({
@@ -186,12 +187,6 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
     toaster.showMapUnavailable();
   } else {
     toaster.showError(t("error.layerLoad"));
-    const failedLayer = layerStore.getLayer(uuid);
-    mapViewStore.addUnavailableLayer({
-      uuid,
-      displayName:
-        failedLayer?.info?.displayName ?? failedLayer?.humanId ?? uuid,
-    });
   }
 
   dimensionsStore.clearLayerDimensions(uuid);
