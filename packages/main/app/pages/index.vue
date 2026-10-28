@@ -2,19 +2,14 @@
 import type { NavigationMenuItem } from "@nuxt/ui";
 
 import { useSidebarStore, SidebarType } from "@swissgeo/skeleton";
-import { joinURL } from "ufo";
 
 definePageMeta({ key: "home", layout: "landing-page" });
 useSeoMeta({ title: "SWISSGEO" });
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
-const runtimeConfig = useRuntimeConfig();
 const uiStore = useSidebarStore();
-
-function cmsUrl(path: string): string {
-  return joinURL(runtimeConfig.public.cmsBaseUrl, locale.value, path);
-}
+const { cmsUrl } = useCmsUrl();
 
 const socialLinks = ref<NavigationMenuItem[]>([
   {
@@ -44,7 +39,7 @@ const infosLinks = computed<NavigationMenuItem[]>(() => [
   },
 ]);
 
-const infoPortalUrl = computed(() => cmsUrl(locale.value));
+const infoPortalUrl = computed(() => cmsUrl());
 
 async function goToMap(openGeoCatalogTree = false): Promise<void> {
   if (openGeoCatalogTree) {

@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { joinURL } from "ufo";
-
 import ReportIssueLink from "./ReportIssueLink.vue";
 
 const runtimeConfig = useRuntimeConfig();
-const { t, locale } = useI18n();
+const { t } = useI18n();
+const { cmsUrl } = useCmsUrl();
 
 defineProps<{ mobile?: boolean }>();
 
 const cmsDomain = runtimeConfig.public.cmsBaseUrl.replace(/https?:\/\//, "");
-
-function cmsUrl(path: string): string {
-  return joinURL(runtimeConfig.public.cmsBaseUrl, locale.value, path);
-}
 </script>
 <template>
   <div
