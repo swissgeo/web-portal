@@ -48,16 +48,23 @@ function closeLayerCatalog() {
   }
 }
 
+// On desktop the sidebar always shows a panel. Not while a dataset hides it,
+// so the dataset page can still tell a direct link from a panel
+watch(
+  () => isDesktop.value && isVisible,
+  (shown) => {
+    if (shown && !uiStore.currentSidebar) {
+      uiStore.setSidebar(SidebarType.LAYER_CART);
+    }
+  },
+  { immediate: true },
+);
+
 watch(
   () => isDesktop.value,
   (desktop) => {
-    if (desktop) {
-      // On desktop the sidebar always shows a panel
-      if (!uiStore.currentSidebar) {
-        uiStore.setSidebar(SidebarType.LAYER_CART);
-      }
-    } else {
-      // On mobile the design opens the panels only through the footer
+    // On mobile the design opens the panels only through the footer
+    if (!desktop) {
       uiStore.closeSidebar();
     }
   },
@@ -66,9 +73,10 @@ watch(
 </script>
 
 <template>
-  <div v-show="isVisible" class="flex h-full shrink-0">
+  <div :class="{ invisible: !isVisible }" class="flex h-full shrink-0">
     <!--
       Part of the layout flow, so the map and the footer start at its right edge.
+      Hidden without giving up its width, so the map keeps its size.
       On mobile the content moves into bottom drawers and the column is left empty.
       drawers teleport out of this element isVisible must be applied too
     -->

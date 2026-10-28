@@ -111,6 +111,33 @@ describe("SideBar", () => {
       expect(sidebar.setSidebar).toHaveBeenCalledExactlyOnceWith("layerCart");
     });
 
+    it("does not open a panel while a dataset hides the sidebar, so a direct link stays recognisable", () => {
+      sidebar.currentSidebar = null;
+
+      mountSideBar(false);
+
+      expect(sidebar.setSidebar).not.toHaveBeenCalled();
+    });
+
+    it("opens the layer cart once the sidebar shows again", async () => {
+      sidebar.currentSidebar = null;
+      const wrapper = mountSideBar(false);
+
+      await wrapper.setProps({ isVisible: true });
+
+      expect(sidebar.setSidebar).toHaveBeenCalledExactlyOnceWith("layerCart");
+    });
+
+    it("keeps the mobile panel open when the sidebar shows again", async () => {
+      isDesktop.value = false;
+      const wrapper = mountSideBar(false);
+      vi.clearAllMocks();
+
+      await wrapper.setProps({ isVisible: true });
+
+      expect(sidebar.closeSidebar).not.toHaveBeenCalled();
+    });
+
     it("closes the sidebar when the viewport shrinks to mobile", async () => {
       mountSideBar();
       vi.clearAllMocks();
@@ -283,7 +310,8 @@ describe("SideBar", () => {
 
     const wrapper = mountSideBar(false);
 
-    expect((wrapper.element as HTMLElement).style.display).toBe("none");
+    // invisible keeps the column width, so the map does not resize
+    expect(wrapper.classes()).toContain("invisible");
     expect(
       wrapper.getComponent({ name: "ResponsivePanel" }).props("isVisible"),
     ).toBe(false);
