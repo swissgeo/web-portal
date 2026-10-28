@@ -20,6 +20,7 @@ import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { MapModule, usePositionStore } from "@swissgeo/map";
 import { HIGHLIGHT_LAYER_ID, toRgbaColor } from "@swissgeo/shared";
+import { useElementBounding } from "@vueuse/core";
 import { cloneDeep } from "es-toolkit";
 
 import SourceToMapDataConverter from "@/components/SourceToMapDataConverter.vue";
@@ -199,25 +200,17 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
 
 let abortController: AbortController | null = null;
 
-const POPOVER_ESTIMATED_WIDTH = 240;
-const POPOVER_ESTIMATED_HEIGHT = 80;
+const mapModuleRef = useTemplateRef("mapModule");
+const { left: mapLeft, top: mapTop } = useElementBounding(
+  () => mapModuleRef.value?.$el as HTMLElement | undefined,
+);
 
 const featureInfoDisabledPosition = ref({ x: 200, y: 200 });
 
 function updateFeatureInfoDisabledPosition(pixel: MapClickEvent["pixel"]) {
-  const mapElement = document.querySelector<HTMLElement>(
-    '[data-testid="ol-map"]',
-  );
-  const rect = mapElement?.getBoundingClientRect();
   featureInfoDisabledPosition.value = {
-    x: Math.min(
-      (rect?.left ?? 0) + pixel[0],
-      window.innerWidth - POPOVER_ESTIMATED_WIDTH,
-    ),
-    y: Math.min(
-      (rect?.top ?? 0) + pixel[1],
-      window.innerHeight - POPOVER_ESTIMATED_HEIGHT,
-    ),
+    x: mapLeft.value + pixel[0],
+    y: mapTop.value + pixel[1],
   };
 }
 
@@ -300,6 +293,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       @layer-error="handleLayerError"
     />
     <MapModule
+      ref="mapModule"
       :layers="layersForMap"
       :custom-layer-renderers="customLayerRenderers"
       :display-mode="displayMode"

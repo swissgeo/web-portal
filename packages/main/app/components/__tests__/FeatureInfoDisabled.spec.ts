@@ -21,6 +21,7 @@ mockNuxtImport("useCmsUrl", () => () => ({
 describe("FeatureInfoDisabled", () => {
   function mountPopover() {
     return mount(FeatureInfoDisabled, {
+      props: { initialPosition: { x: 10, y: 20 } },
       global: {
         stubs: {
           UButton: {

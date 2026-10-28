@@ -126,10 +126,14 @@ const getMapLayers = vi.fn(() => computed(() => mockLayers));
 mockNuxtImport("useMapViewStore", () => {
   return () => ({
     getMapLayers,
+    getMapLayerFromUuid: vi.fn(() => undefined),
     removeLayer: removeMapLayer,
   });
 });
-mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
+mockNuxtImport("useI18n", () => () => ({
+  t: (key: string) => key,
+  locale: { value: "en" },
+}));
 mockNuxtImport("useToaster", () => () => ({ showError }));
 
 vi.mock("@swissgeo/dimension", () => ({
@@ -367,9 +371,16 @@ describe("BaseMapViewer", () => {
         wrapper.find("[data-testid='feature-info-disabled']").exists(),
       ).toBe(true);
 
-      getFeatureStoreState().$reset();
+      wrapper.getComponent(MapModuleStub).vm.$emit("map-click", {
+        coordinate: [2600000, 1200000],
+        pixel: [10, 10],
+        extent: [2599000, 1199000, 2601000, 1201000],
+        viewportSize: [800, 600],
+        vectorFeaturesPerLayer: {},
+      });
       await nextTick();
 
+      expect(getFeatureStoreState().$reset).toHaveBeenCalledOnce();
       expect(
         wrapper.find("[data-testid='feature-info-disabled']").exists(),
       ).toBe(false);
