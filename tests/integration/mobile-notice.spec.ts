@@ -10,6 +10,8 @@ import {
 
 // The mobile UI is off by default (featureFlags.enableMobileUi), so phones
 // get the scaled desktop UI and the mobile notice.
+// The notice checks the screen size. Set the screen together with the
+// viewport, because the Desktop Chrome device sets a 1920x1080 screen.
 const PORTRAIT_PHONE = { width: 390, height: 844 };
 const LANDSCAPE_PHONE = { width: 844, height: 390 };
 
@@ -32,6 +34,7 @@ test.afterEach(async ({ page }) => {
 test.describe("mobile notice on a portrait phone", () => {
   test.use({
     viewport: PORTRAIT_PHONE,
+    screen: PORTRAIT_PHONE,
     isMobile: true,
     hasTouch: true,
   });
@@ -68,6 +71,7 @@ test.describe("mobile notice on a portrait phone", () => {
 test.describe("mobile notice on a landscape phone", () => {
   test.use({
     viewport: LANDSCAPE_PHONE,
+    screen: LANDSCAPE_PHONE,
     isMobile: true,
     hasTouch: true,
   });
