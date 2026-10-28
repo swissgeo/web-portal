@@ -174,6 +174,10 @@ vi.mock("~/stores/mapViewStore", () => ({
 
 import { useNuxtApp } from "nuxt/app";
 
+const featureFlagControl = vi.hoisted(() => ({
+  enableFeatureInfo: true,
+}));
+
 mockNuxtImport("useRuntimeConfig", () => () => {
   const config = useNuxtApp().$config;
   return {
@@ -182,7 +186,7 @@ mockNuxtImport("useRuntimeConfig", () => () => {
       ...config.public,
       featureFlags: {
         ...config.public.featureFlags,
-        enableFeatureInfo: true,
+        enableFeatureInfo: featureFlagControl.enableFeatureInfo,
       },
     },
   };
@@ -204,6 +208,12 @@ const FeatureInfoPopoverStub = defineComponent({
   name: "FeaturesinfoFeatureInfoPopover",
   emits: ["close"],
   template: "<div data-testid='feature-info-popover' />",
+});
+
+const FeatureInfoDisabledStub = defineComponent({
+  name: "FeaturesinfoFeatureInfoDisabled",
+  emits: ["close"],
+  template: "<div data-testid='feature-info-disabled' />",
 });
 
 const MapModuleStub = defineComponent({
@@ -241,6 +251,7 @@ describe("BaseMapViewer", () => {
     mockLayers[4]!.opacity = 0;
 
     getFeatureStoreState().hasSelectedFeatures = false;
+    featureFlagControl.enableFeatureInfo = true;
   });
 
   async function createWrapper(props = {}) {
@@ -255,6 +266,7 @@ describe("BaseMapViewer", () => {
           SourceToMapDataConverter: SourceToMapDataConverterStub,
           Toolbox: ToolboxStub,
           FeaturesinfoFeatureInfoPopover: FeatureInfoPopoverStub,
+          FeaturesinfoFeatureInfoDisabled: FeatureInfoDisabledStub,
         },
       },
     });
@@ -319,6 +331,47 @@ describe("BaseMapViewer", () => {
       expect(getFeatureStoreState().hasSelectedFeatures).toBe(false);
       expect(
         wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(false);
+    });
+
+    it("shows the disabled notice instead of the popover when the flag is off", async () => {
+      featureFlagControl.enableFeatureInfo = false;
+      getFeatureStoreState().hasSelectedFeatures = true;
+
+      const wrapper = await createWrapper();
+
+      expect(
+        wrapper.find("[data-testid='feature-info-popover']").exists(),
+      ).toBe(false);
+      expect(
+        wrapper.find("[data-testid='feature-info-disabled']").exists(),
+      ).toBe(true);
+    });
+
+    it("shows nothing when the flag is off and no feature is selected", async () => {
+      featureFlagControl.enableFeatureInfo = false;
+
+      const wrapper = await createWrapper();
+
+      expect(
+        wrapper.find("[data-testid='feature-info-disabled']").exists(),
+      ).toBe(false);
+    });
+
+    it("resets the feature store and unmounts the disabled notice on the next map click", async () => {
+      featureFlagControl.enableFeatureInfo = false;
+      getFeatureStoreState().hasSelectedFeatures = true;
+
+      const wrapper = await createWrapper();
+      expect(
+        wrapper.find("[data-testid='feature-info-disabled']").exists(),
+      ).toBe(true);
+
+      getFeatureStoreState().$reset();
+      await nextTick();
+
+      expect(
+        wrapper.find("[data-testid='feature-info-disabled']").exists(),
       ).toBe(false);
     });
   });
