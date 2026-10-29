@@ -57,12 +57,26 @@ describe("Testing the information gathering from datasets", () => {
     });
   });
 
+  const datasetAttribution = {
+    abbreviation: "FOEN",
+    name: "Federal Office for the Environment FOEN",
+    links: [
+      { href: "https://example.test/other", rel: "alternate" },
+      { href: "https://example.test/foen", rel: "about" },
+    ],
+  };
+  const expectedAttribution = {
+    abbreviation: "FOEN",
+    name: "Federal Office for the Environment FOEN",
+    url: "https://example.test/foen",
+  };
+
   it("includes attribution when provided", async () => {
     const dataset: Dataset = {
       id: "dataset-4",
       properties: {
         title: "Layer Title",
-        attribution: "SwissGeo",
+        attribution: datasetAttribution,
         type: "Dataset",
       },
     };
@@ -71,66 +85,27 @@ describe("Testing the information gathering from datasets", () => {
 
     expect(result).toEqual({
       displayName: "Layer Title",
-      attribution: {
-        title: "SwissGeo",
-      },
+      attribution: expectedAttribution,
       abstract: undefined,
     });
   });
 
-  it("prioritizes first contact organisation over attribution", async () => {
+  it("leaves the attribution url undefined without an 'about' link", async () => {
     const dataset: Dataset = {
-      id: "dataset-contacts-priority",
+      id: "dataset-no-about-link",
       properties: {
         title: "Layer Title",
-        attribution: "SwissGeo",
-        contacts: [
-          {
-            country: "CH",
-            role: "pointOfContact",
-            organization: "Federal Office of Topography",
-          },
-        ],
+        attribution: { abbreviation: "FOEN", name: "FOEN full name" },
         type: "Dataset",
       },
     };
 
     const result = await getInfoFromDataset(dataset);
 
-    expect(result).toEqual({
-      displayName: "Layer Title",
-      attribution: {
-        title: "Federal Office of Topography",
-      },
-      abstract: undefined,
-    });
-  });
-
-  it("falls back to properties.attribution when first contact organisation is blank", async () => {
-    const dataset: Dataset = {
-      id: "dataset-contact-blank",
-      properties: {
-        title: "Layer Title",
-        attribution: "SwissGeo fallback",
-        contacts: [
-          {
-            country: "CH",
-            role: "pointOfContact",
-            organization: "   ",
-          },
-        ],
-        type: "Dataset",
-      },
-    };
-
-    const result = await getInfoFromDataset(dataset);
-
-    expect(result).toEqual({
-      displayName: "Layer Title",
-      attribution: {
-        title: "SwissGeo fallback",
-      },
-      abstract: undefined,
+    expect(result.attribution).toEqual({
+      abbreviation: "FOEN",
+      name: "FOEN full name",
+      url: undefined,
     });
   });
 
@@ -157,7 +132,7 @@ describe("Testing the information gathering from datasets", () => {
       id: "dataset-6",
       properties: {
         title: "Layer Title",
-        attribution: "SwissGeo",
+        attribution: datasetAttribution,
         description: "Layer description",
         type: "Dataset",
       },
@@ -167,9 +142,7 @@ describe("Testing the information gathering from datasets", () => {
 
     expect(result).toEqual({
       displayName: "Layer Title",
-      attribution: {
-        title: "SwissGeo",
-      },
+      attribution: expectedAttribution,
       abstract: "Layer description",
     });
   });
@@ -188,7 +161,7 @@ describe("testing the makeServerLayer function", () => {
     id: "dataset-1",
     properties: {
       title: "Layer Title",
-      attribution: "SwissGeo",
+      attribution: { abbreviation: "SwissGeo", name: "SwissGeo" },
       description: "Layer description",
       type: "Dataset",
     },
