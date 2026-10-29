@@ -107,6 +107,10 @@ const datasetLayer = computed(() => {
 });
 
 const datasetId = computed(() => datasetLayer.value?.humanId);
+// The list shows the short title. The tooltip shows the full title.
+const fullTitle = computed(
+  () => datasetLayer.value?.data.properties.title ?? layer.displayName,
+);
 
 function selectVariant(distributionId: string) {
   // Each variant has its own time values and feature info service.
@@ -158,7 +162,7 @@ const rowButton = {
       <button
         type="button"
         class="min-w-0 flex-1 cursor-pointer px-1 text-left"
-        :title="layer.displayName"
+        :title="fullTitle"
         :aria-expanded="isExpanded"
         :aria-controls="detailsId"
         :class="{ truncate: !isExpanded, 'text-dimmed': !layer.isVisible }"

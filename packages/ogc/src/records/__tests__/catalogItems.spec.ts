@@ -48,7 +48,7 @@ describe("fetchCatalogItems", () => {
     expect(fetch).toHaveBeenCalledOnce();
     expect(lastRequest()).toEqual({
       endpoint: ITEMS_URL,
-      params: { lang: "fr", limit: "100", offset: "0", sortby: "title" },
+      params: { lang: "fr", limit: "100", offset: "0", sortby: "shortTitle" },
     });
     expect(result).toEqual(page);
   });
@@ -81,7 +81,7 @@ describe("fetchCatalogItems", () => {
       lang: "de",
       limit: "10",
       offset: "0",
-      sortby: "title",
+      sortby: "shortTitle",
     });
   });
 
@@ -102,7 +102,7 @@ describe("fetchCatalogItems", () => {
       lang: "de",
       limit: "10",
       offset: "0",
-      sortby: "title",
+      sortby: "shortTitle",
       concepts: "geology|soils",
     });
   });

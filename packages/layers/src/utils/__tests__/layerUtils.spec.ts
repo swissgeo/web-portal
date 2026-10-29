@@ -57,6 +57,21 @@ describe("Testing the information gathering from datasets", () => {
     });
   });
 
+  it("returns displayName from properties.shortTitle when present", async () => {
+    const dataset: Dataset = {
+      id: "dataset-4",
+      properties: {
+        title: "Long Layer Title",
+        shortTitle: "Short Title",
+        type: "Dataset",
+      },
+    };
+
+    const result = await getInfoFromDataset(dataset);
+
+    expect(result.displayName).toBe("Short Title");
+  });
+
   it("includes attribution when provided", async () => {
     const dataset: Dataset = {
       id: "dataset-4",

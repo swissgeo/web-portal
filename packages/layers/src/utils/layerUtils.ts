@@ -1,6 +1,7 @@
 import type { Dataset, DistributionCollection, Feature } from "@swissgeo/ogc";
 
 import log from "@swissgeo/log";
+import { getShortTitle } from "@swissgeo/ogc";
 
 import type { DatasetLayer, Layer, LayerInfo } from "@/index";
 
@@ -65,7 +66,7 @@ export const getInfoFromDataset = async (
   dataset: Dataset,
 ): Promise<LayerInfo> => {
   const properties = dataset.properties;
-  const displayName = properties?.title;
+  const displayName = properties && getShortTitle(properties);
 
   if (!properties || !displayName) {
     return {
