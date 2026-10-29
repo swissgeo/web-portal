@@ -226,7 +226,7 @@ test.describe("import external layers", () => {
     const workingLayer = "test-drawing.geojson";
     // Not a background id: a failed background shows "map not available".
     const failedLayer = "ch.swisstopo.failed-test-layer";
-    const failedLayerUrl = "http://mock-oar.org/dataset-without-distributions";
+    const failedLayerUrl = "http://oar.test/dataset-without-distributions";
     const state = btoa(
       JSON.stringify({
         version: "1.0",
