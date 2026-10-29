@@ -1,13 +1,7 @@
-import type { Layer } from "@swissgeo/layers";
+import type { Layer, LayerAttribution } from "@swissgeo/layers";
 import type { MaybeRefOrGetter } from "vue";
 
 import { computed, toValue } from "vue";
-
-export interface AttributionSource {
-  abbreviation: string;
-  name: string;
-  url?: string;
-}
 
 export function useAttributionSources(
   layers: MaybeRefOrGetter<Layer[]>,
@@ -15,45 +9,23 @@ export function useAttributionSources(
 ) {
   const mapViewStore = useMapViewStore();
 
-  const sources = computed((): AttributionSource[] => {
-    const resolvedLayers = toValue(layers);
-    const resolvedBackground = toValue(backgroundLayer);
-
-    const attributedLayers: Layer[] = [];
-
-    if (
-      resolvedBackground &&
-      resolvedBackground.info?.attribution?.abbreviation
-    ) {
-      attributedLayers.push(resolvedBackground);
-    }
-
-    attributedLayers.push(
-      ...resolvedLayers
-        .filter(
-          (layer) => mapViewStore.getMapLayerFromUuid(layer.uuid)?.isVisible,
-        )
-        .filter((layer) => !!layer.info?.attribution?.abbreviation),
+  const sources = computed((): LayerAttribution[] => {
+    const visibleLayers = toValue(layers).filter(
+      (layer) => mapViewStore.getMapLayerFromUuid(layer.uuid)?.isVisible,
     );
 
-    return attributedLayers
-      .map((layer) => {
-        const attribution = layer.info?.attribution;
-        if (!attribution?.abbreviation) {
-          return null;
-        }
-        return {
-          abbreviation: attribution.abbreviation,
-          name: attribution.name,
-          url: attribution.url,
-        };
-      })
-      .filter((source) => source !== null)
+    return [toValue(backgroundLayer), ...visibleLayers]
+      .map((layer) => layer?.info?.attribution)
       .filter(
-        (source, index, array) =>
-          array.findIndex((s) => s.abbreviation === source.abbreviation) ===
-          index,
-      ) as AttributionSource[];
+        (attribution): attribution is LayerAttribution =>
+          !!attribution?.abbreviation,
+      )
+      .filter(
+        (attribution, index, array) =>
+          array.findIndex(
+            (a) => a.abbreviation === attribution.abbreviation,
+          ) === index,
+      );
   });
 
   return { sources };

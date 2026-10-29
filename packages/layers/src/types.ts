@@ -7,7 +7,6 @@ export interface LayerAttribution {
   abbreviation: string;
   name: string;
   url?: string;
-  logoUrl?: string;
 }
 
 export interface LayerInfo {

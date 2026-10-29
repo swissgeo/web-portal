@@ -1,4 +1,4 @@
-import type { AttributionSource } from "~/composables/useAttributionSources";
+import type { LayerAttribution } from "@swissgeo/layers";
 
 import { mount } from "@vue/test-utils";
 import AttributionList from "~/components/map/attribution/AttributionList.vue";
@@ -12,7 +12,7 @@ vi.mock("vue-i18n", () => ({
 
 describe("AttributionList.vue", () => {
   it("renders provided sources", () => {
-    const sources: AttributionSource[] = [
+    const sources: LayerAttribution[] = [
       {
         abbreviation: "Source A",
         name: "Source A full name",
@@ -35,7 +35,7 @@ describe("AttributionList.vue", () => {
   });
 
   it("shows the abbreviation as label and the name as tooltip", () => {
-    const sources: AttributionSource[] = [
+    const sources: LayerAttribution[] = [
       {
         abbreviation: "FOEN",
         name: "Federal Office for the Environment FOEN",
@@ -66,7 +66,7 @@ describe("AttributionList.vue", () => {
   });
 
   it("separates the sources with a comma and a space outside the links", () => {
-    const sources: AttributionSource[] = [
+    const sources: LayerAttribution[] = [
       {
         abbreviation: "Source A",
         name: "Source A full name",

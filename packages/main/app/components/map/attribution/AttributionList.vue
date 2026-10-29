@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { AttributionSource } from "@/composables/useAttributionSources";
+import type { LayerAttribution } from "@swissgeo/layers";
 
 const { sources } = defineProps<{
-  sources: AttributionSource[];
+  sources: LayerAttribution[];
 }>();
 
 const { t } = useI18n();
