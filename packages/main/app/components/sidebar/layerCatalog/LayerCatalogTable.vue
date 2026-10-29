@@ -4,6 +4,7 @@ import type { Dataset } from "@swissgeo/ogc";
 import { refDebounced, useInfiniteScroll } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 
+import LayerCatalogEasterEgg from "./LayerCatalogEasterEgg.vue";
 import LayerCatalogRow from "./LayerCatalogRow.vue";
 
 const { t, locale } = useI18n();
@@ -110,9 +111,13 @@ useInfiniteScroll(scroller, loadMore, {
           </div>
         </div>
         <div v-else-if="datasets.length === 0" role="row" class="col-span-full">
-          <div role="cell" class="px-3 py-4 text-muted">
+          <LayerCatalogEasterEgg
+            role="cell"
+            class="px-3 py-4 text-muted"
+            :concept-ids="conceptIds"
+          >
             {{ t("layerCatalog.table.empty") }}
-          </div>
+          </LayerCatalogEasterEgg>
         </div>
       </div>
     </div>
