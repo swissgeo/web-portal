@@ -147,6 +147,15 @@ describe("SideBar", () => {
 
       expect(sidebar.closeSidebar).toHaveBeenCalledOnce();
     });
+
+    it("keeps the catalog opened from the landing page on mobile", () => {
+      isDesktop.value = false;
+      sidebar.currentSidebar = "geocatalogTree";
+
+      mountSideBar();
+
+      expect(sidebar.closeSidebar).not.toHaveBeenCalled();
+    });
   });
 
   it("closes the sidebar on mobile when the layer catalog is closed", () => {

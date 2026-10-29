@@ -68,7 +68,6 @@ watch(
       uiStore.closeSidebar();
     }
   },
-  { immediate: true },
 );
 </script>
 
