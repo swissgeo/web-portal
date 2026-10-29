@@ -16,16 +16,19 @@ const { t } = useI18n();
     data-testid="layers-copyrights"
   >
     <span>{{ t("footer.copyRightData") }}</span>
-    <template v-for="(source, index) in sources" :key="source.name">
+    <template v-for="(source, index) in sources" :key="source.abbreviation">
       <a
         v-if="source.url"
         :href="source.url"
+        :title="source.name"
         target="_blank"
-        :data-testid="`layer-copyright-${source.name}`"
-        >{{ source.name }}</a
-      ><span v-else :data-testid="`layer-copyright-${source.name}`">{{
-        source.name
-      }}</span
+        :data-testid="`layer-copyright-${source.abbreviation}`"
+        >{{ source.abbreviation }}</a
+      ><span
+        v-else
+        :title="source.name"
+        :data-testid="`layer-copyright-${source.abbreviation}`"
+        >{{ source.abbreviation }}</span
       >{{ index < sources.length - 1 ? ", " : "" }}
     </template>
   </div>

@@ -4,7 +4,8 @@ export type FileLayerType = "geojson" | "kml" | "kmz" | "gpx" | "cog";
 export type LayerType = "dataset" | FileLayerType;
 
 export interface LayerAttribution {
-  title: string;
+  abbreviation: string;
+  name: string;
   url?: string;
   logoUrl?: string;
 }

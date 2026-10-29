@@ -27,19 +27,14 @@ describe("LayersPanelEntry.vue", () => {
       (dataset: {
         id: string;
         properties?: {
-          contacts?: Array<{ organisation?: string }>;
-          attribution?: string;
+          attribution?: { abbreviation: string; name: string };
         };
       }) => {
-        const contactOrganisation =
-          dataset.properties?.contacts?.[0]?.organisation;
         return {
           humanId: dataset.id,
           info: {
             displayName: dataset.id,
-            attribution: {
-              title: contactOrganisation ?? dataset.properties?.attribution,
-            },
+            attribution: dataset.properties?.attribution,
           },
         } as Layer;
       },
@@ -65,15 +60,8 @@ describe("LayersPanelEntry.vue", () => {
           properties: {
             type: "Dataset",
             title: "Layer title",
-            attribution: "OGC source",
+            attribution: { abbreviation: "OGC", name: "OGC source" },
             preferredDistributionId: "OGC:WMTS:ch.layer.one",
-            contacts: [
-              {
-                country: "CH",
-                role: "pointOfContact",
-                organisation: "Catalog Contact Org",
-              },
-            ],
           },
         } as never,
       },
@@ -93,7 +81,8 @@ describe("LayersPanelEntry.vue", () => {
       expect.objectContaining({
         info: expect.objectContaining({
           attribution: {
-            title: "Catalog Contact Org",
+            abbreviation: "OGC",
+            name: "OGC source",
           },
         }),
       }),

@@ -52,6 +52,12 @@ export interface Link {
   title?: string;
 }
 
+export interface Attribution {
+  abbreviation: string;
+  name: string;
+  links?: Link[];
+}
+
 export interface LinkVariable {
   type: string;
   description: string;
@@ -74,7 +80,7 @@ export interface Property<recordType extends string> {
   // TODO maybe we'll have to split this away to a "service property"
   protocol?: ServiceProtocol;
   metaInformation?: boolean;
-  attribution?: string;
+  attribution?: Attribution;
   externalIds?: string[];
   contacts?: Contact[];
   language?: Language;

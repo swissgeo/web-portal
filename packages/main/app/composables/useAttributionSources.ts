@@ -5,6 +5,7 @@ import { computed, toValue } from "vue";
 
 export interface AttributionSource {
   id: string;
+  abbreviation: string;
   name: string;
   url?: string;
 }
@@ -21,7 +22,10 @@ export function useAttributionSources(
 
     const attributedLayers: Layer[] = [];
 
-    if (resolvedBackground && resolvedBackground.info?.attribution?.title) {
+    if (
+      resolvedBackground &&
+      resolvedBackground.info?.attribution?.abbreviation
+    ) {
       attributedLayers.push(resolvedBackground);
     }
 
@@ -30,25 +34,27 @@ export function useAttributionSources(
         .filter(
           (layer) => mapViewStore.getMapLayerFromUuid(layer.uuid)?.isVisible,
         )
-        .filter((layer) => !!layer.info?.attribution?.title),
+        .filter((layer) => !!layer.info?.attribution?.abbreviation),
     );
 
     return attributedLayers
       .map((layer) => {
-        const title = layer.info?.attribution?.title;
-        if (!title) {
+        const attribution = layer.info?.attribution;
+        if (!attribution?.abbreviation) {
           return null;
         }
         return {
-          id: title.replace(/[._]/g, "-"),
-          name: title,
-          url: layer.info?.attribution?.url,
+          id: attribution.abbreviation.replace(/[._]/g, "-"),
+          abbreviation: attribution.abbreviation,
+          name: attribution.name,
+          url: attribution.url,
         };
       })
       .filter((source) => source !== null)
       .filter(
         (source, index, array) =>
-          array.findIndex((s) => s.name === source.name) === index,
+          array.findIndex((s) => s.abbreviation === source.abbreviation) ===
+          index,
       ) as AttributionSource[];
   });
 
