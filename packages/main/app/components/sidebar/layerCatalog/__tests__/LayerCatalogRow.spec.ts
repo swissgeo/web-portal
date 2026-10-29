@@ -104,6 +104,20 @@ describe("LayerCatalogRow.vue", () => {
     expect(cell.attributes("title")).toBe("Title of ch.a");
   });
 
+  it("shows the short title, with the full title as tooltip", () => {
+    const dataset = makeDataset();
+    dataset.properties.shortTitle = "Short of ch.a";
+    const cell = cells(mountRow(dataset))[0]!;
+
+    expect(cell.get("[data-testid='catalog-layer-title']").text()).toBe(
+      "Short of ch.a",
+    );
+    expect(
+      cell.get("[data-testid='catalog-layer-on-map']").attributes("aria-label"),
+    ).toBe("Short of ch.a");
+    expect(cell.attributes("title")).toBe("Title of ch.a");
+  });
+
   it("shows the resource provider as data owner, wherever it is listed", () => {
     const wrapper = mountRow(
       makeDataset("ch.a", [

@@ -47,6 +47,7 @@ const dataset: Dataset = {
   properties: {
     type: "Dataset",
     title: "Example dataset",
+    shortTitle: "Example",
     languages: [{ code: "de", name: "German", dir: "ltr" }],
   },
 };
@@ -84,6 +85,12 @@ beforeEach(() => {
 });
 
 describe("DatasetPanel", () => {
+  it("shows the full title, not the short title", () => {
+    expect(render().get('[data-testid="dataset-title"]').text()).toBe(
+      "Example dataset",
+    );
+  });
+
   it("adds the displayed dataset and reflects its presence on the map", async () => {
     const wrapper = render();
     await wrapper

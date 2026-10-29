@@ -12,3 +12,4 @@ export { useDistributionProtocols } from "./useDistributionProtocols";
 export { usePreferredDistribution } from "./usePreferredDistribution";
 export { useGeoJson } from "./useGeoJson";
 export { useStyle } from "./useStyle";
+export { getShortTitle } from "./utils";
