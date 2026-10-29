@@ -76,6 +76,7 @@ export interface TemplateLink {
 
 export interface Property<recordType extends string> {
   title: string;
+  shortTitle?: string;
   type: recordType;
   // TODO maybe we'll have to split this away to a "service property"
   protocol?: ServiceProtocol;

@@ -1,4 +1,4 @@
-import type { Link, TemplateLink } from "@/types/Records";
+import type { Link, Property, TemplateLink } from "@/types/Records";
 
 export const getLinksByRel = (links: Link[], rel: string): Link[] => {
   return links.filter(
@@ -26,4 +26,14 @@ export const replaceTemplateVarsWithDefaults = (
   }
 
   return url;
+};
+
+/**
+ * Returns the name that lists show for a record. The short title is optional
+ * in the catalog, so an empty or missing short title gives the full title.
+ */
+export const getShortTitle = (
+  properties: Pick<Property<string>, "title" | "shortTitle">,
+): string => {
+  return properties.shortTitle || properties.title;
 };

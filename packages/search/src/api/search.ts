@@ -1,7 +1,7 @@
 // Search API for web-poc-portal
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import { fetchCatalogItems } from "@swissgeo/ogc";
+import { fetchCatalogItems, getShortTitle } from "@swissgeo/ogc";
 import { sanitizeHtml } from "@swissgeo/shared";
 
 import type {
@@ -178,7 +178,8 @@ export async function searchLayers(
   });
 
   return data.features.map((record) => {
-    const title = record.properties?.title || record.id;
+    const title =
+      (record.properties && getShortTitle(record.properties)) || record.id;
     return {
       resultType: "LAYER" as const,
       id: record.id,
