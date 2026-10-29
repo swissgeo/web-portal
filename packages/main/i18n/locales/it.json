@@ -156,5 +156,44 @@
       "buttonTitle": "Disegno",
       "title": "Disegno"
     }
+  },
+  "landing": {
+    "cards": {
+      "map": {
+        "title": "TODO: Translate",
+        "description": "TODO: Translate",
+        "button": "TODO: Translate"
+      },
+      "catalog": {
+        "title": "TODO: Translate",
+        "description": "TODO: Translate",
+        "button": "TODO: Translate"
+      },
+      "info": {
+        "title": "TODO: Translate",
+        "description": "TODO: Translate",
+        "button": "TODO: Translate"
+      }
+    },
+    "footer": {
+      "claim": "TODO: Translate",
+      "description": "TODO: Translate",
+      "followUs": "TODO: Translate",
+      "moreInformation": "TODO: Translate",
+      "termsOfUse": "TODO: Translate",
+      "contact": "TODO: Translate",
+      "dataProtection": "TODO: Translate",
+      "netiquette": "TODO: Translate",
+      "accessibility": "TODO: Translate",
+      "copyright": "TODO: Translate"
+    },
+    "links": {
+      "impressum": "impressum-it",
+      "dataProtection": "informazioni-legali-protezione",
+      "netiquette": "netiquette-it",
+      "accessibility": "accessibilita",
+      "termsOfUse": "condizioni-di-utilizzo-e-disposizioni-operative",
+      "contact": "impressum-it"
+    }
   }
 }
