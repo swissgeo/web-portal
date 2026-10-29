@@ -11,7 +11,7 @@ import log from "@swissgeo/log";
 import process from "process";
 
 const exporterOptions = {
-  url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+  url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || undefined,
   ...(process.env.OTEL_EXPORTER_OTLP_HEADERS && {
     headers: Object.fromEntries(
       process.env.OTEL_EXPORTER_OTLP_HEADERS.split(",").map((header) => {
