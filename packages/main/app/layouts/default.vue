@@ -1,6 +1,7 @@
 <!-- eslint multi-word: off-->
 <script lang="ts" setup>
 import log from "@swissgeo/log";
+import { useSidebarStore } from "@swissgeo/skeleton";
 import { panelSnapPointKey } from "~/types/injectionKeys";
 
 import SideBar from "@/components/sidebar/SideBar.vue";
@@ -21,6 +22,11 @@ const isMapFullscreenMode = computed(
   () => isMapPage.value && mapViewStore.isFullscreenModeActive,
 );
 
+const sidebarStore = useSidebarStore();
+const sidebarWidth = computed(() =>
+  isMapFullscreenMode.value ? "0px" : `${sidebarStore.sidebarContentWidth}px`,
+);
+
 watch(route, (value) => {
   log.debug("route has changed", value.fullPath);
 
@@ -36,7 +42,12 @@ watch(route, (value) => {
     <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
     <UMain as="div" class="min-h-0 flex-1">
       <main id="main" ref="main" class="h-full font-sans">
-        <div class="relative h-full">
+        <!-- The map and the footer leave --sidebar-width free on desktop, so
+             the sidebar never covers them and hiding it does not resize them -->
+        <div
+          class="relative h-full"
+          :style="{ '--sidebar-width': sidebarWidth }"
+        >
           <SideBar
             v-if="!isMapFullscreenMode"
             :isVisible="!detailsOpen"

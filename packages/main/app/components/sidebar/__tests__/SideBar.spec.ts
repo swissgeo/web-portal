@@ -2,7 +2,7 @@ import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import SideBar from "~/components/sidebar/SideBar.vue";
 import { panelSnapPointKey } from "~/types/injectionKeys";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, ref } from "vue";
 
 const { sidebar, isDesktop } = await vi.hoisted(async () => {
@@ -28,11 +28,15 @@ vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 
+// The shared isDesktop ref keeps every mounted SideBar's watcher alive, so
+// components must not leak across tests
+const mounted: ReturnType<typeof mount>[] = [];
+
 function mountSideBar(
   isVisible?: boolean,
   panelSnapPoint = ref<number | string | null>(null),
 ) {
-  return mount(SideBar, {
+  const wrapper = mount(SideBar, {
     props: { mapLayers: ref([]), isVisible },
     global: {
       provide: { [panelSnapPointKey]: panelSnapPoint },
@@ -45,13 +49,20 @@ function mountSideBar(
           emits: ["close"],
           template: "<section><slot /><slot name='footer' /></section>",
         },
-        UButton: { name: "UButton", props: ["icon"], template: "<button />" },
         USeparator: true,
         BackgroundSelector: true,
       },
     },
   });
+  mounted.push(wrapper);
+  return wrapper;
 }
+
+afterEach(() => {
+  while (mounted.length) {
+    mounted.pop()?.unmount();
+  }
+});
 
 describe("SideBar", () => {
   beforeEach(() => {
@@ -62,29 +73,99 @@ describe("SideBar", () => {
     isDesktop.value = true;
   });
 
-  it("keeps the collapse label and icon in sync with the sidebar state", async () => {
-    const wrapper = mountSideBar();
-    const button = wrapper.get("button");
-    const control = wrapper.getComponent({ name: "UButton" });
+  describe("always-open desktop sidebar", () => {
+    it("opens the layer cart when the desktop sidebar has no panel", () => {
+      sidebar.currentSidebar = null;
 
-    expect(button.attributes("aria-label")).toBe("menu.collapse");
-    expect(control.props("icon")).toBe("i-lucide-chevron-left");
-    await button.trigger("click");
-    expect(sidebar.closeSidebar).toHaveBeenCalledOnce();
+      mountSideBar();
 
-    sidebar.isSidebarOpen = false;
-    await wrapper.vm.$nextTick();
-    expect(button.attributes("aria-label")).toBe("menu.expand");
-    expect(control.props("icon")).toBe("i-lucide-chevron-right");
-    await button.trigger("click");
-    expect(sidebar.setSidebar).toHaveBeenCalledExactlyOnceWith("layerCart");
+      expect(sidebar.setSidebar).toHaveBeenCalledExactlyOnceWith("layerCart");
+    });
+
+    it("keeps the open panel when remounting, for example after leaving the fullscreen mode", () => {
+      sidebar.currentSidebar = "geocatalogTree";
+
+      mountSideBar();
+
+      expect(sidebar.setSidebar).not.toHaveBeenCalled();
+    });
+
+    it("does not open a panel on mobile, the footer opens them there", () => {
+      isDesktop.value = false;
+      sidebar.currentSidebar = null;
+
+      mountSideBar();
+
+      expect(sidebar.setSidebar).not.toHaveBeenCalled();
+    });
+
+    it("opens the layer cart when the viewport grows to desktop", async () => {
+      isDesktop.value = false;
+      sidebar.currentSidebar = null;
+      mountSideBar();
+      vi.clearAllMocks();
+
+      isDesktop.value = true;
+      await nextTick();
+
+      expect(sidebar.setSidebar).toHaveBeenCalledExactlyOnceWith("layerCart");
+    });
+
+    it("does not open a panel while a dataset hides the sidebar, so a direct link stays recognisable", () => {
+      sidebar.currentSidebar = null;
+
+      mountSideBar(false);
+
+      expect(sidebar.setSidebar).not.toHaveBeenCalled();
+    });
+
+    it("opens the layer cart once the sidebar shows again", async () => {
+      sidebar.currentSidebar = null;
+      const wrapper = mountSideBar(false);
+
+      await wrapper.setProps({ isVisible: true });
+
+      expect(sidebar.setSidebar).toHaveBeenCalledExactlyOnceWith("layerCart");
+    });
+
+    it("keeps the mobile panel open when the sidebar shows again", async () => {
+      isDesktop.value = false;
+      const wrapper = mountSideBar(false);
+      vi.clearAllMocks();
+
+      await wrapper.setProps({ isVisible: true });
+
+      expect(sidebar.closeSidebar).not.toHaveBeenCalled();
+    });
+
+    it("closes the sidebar when the viewport shrinks to mobile", async () => {
+      mountSideBar();
+      vi.clearAllMocks();
+
+      isDesktop.value = false;
+      await nextTick();
+
+      expect(sidebar.closeSidebar).toHaveBeenCalledOnce();
+    });
+
+    it("keeps the catalog opened from the landing page on mobile", () => {
+      isDesktop.value = false;
+      sidebar.currentSidebar = "geocatalogTree";
+
+      mountSideBar();
+
+      expect(sidebar.closeSidebar).not.toHaveBeenCalled();
+    });
   });
 
   it("closes the sidebar on mobile when the layer catalog is closed", () => {
     isDesktop.value = false;
     sidebar.currentSidebar = "geocatalogTree";
+    const wrapper = mountSideBar();
+    // Mounting on mobile already closes the sidebar once
+    vi.clearAllMocks();
 
-    mountSideBar().getComponent({ name: "ResponsivePanel" }).vm.$emit("close");
+    wrapper.getComponent({ name: "ResponsivePanel" }).vm.$emit("close");
 
     expect(sidebar.closeSidebar).toHaveBeenCalledOnce();
     expect(sidebar.setSidebar).not.toHaveBeenCalled();
@@ -144,10 +225,11 @@ describe("SideBar", () => {
       },
     );
 
-    it("is hidden when the sidebar is closed", () => {
+    it("stays visible on desktop while no panel is open", () => {
+      sidebar.currentSidebar = null;
       sidebar.isSidebarOpen = false;
 
-      expect(isContentVisible(mountSideBar())).toBe(false);
+      expect(isContentVisible(mountSideBar())).toBe(true);
     });
 
     it("keeps the catalog mounted on mobile, so its bottom sheet shows", () => {
@@ -214,9 +296,11 @@ describe("SideBar", () => {
     });
 
     it("closes the sidebar when the cart panel is closed", () => {
-      mountSideBar()
-        .getComponent({ name: "ResponsivePanel" })
-        .vm.$emit("close");
+      const wrapper = mountSideBar();
+      // Mounting on mobile already closes the sidebar once
+      vi.clearAllMocks();
+
+      wrapper.getComponent({ name: "ResponsivePanel" }).vm.$emit("close");
 
       expect(sidebar.closeSidebar).toHaveBeenCalledOnce();
     });
@@ -227,12 +311,6 @@ describe("SideBar", () => {
           .getComponent({ name: "ResponsivePanel" })
           .props("isVisible"),
       ).toBe(false);
-    });
-
-    it("hides the sidebar tab, because the footer opens the panels", () => {
-      expect(
-        mountSideBar().get("[data-testid='button-layer-cart-panel']").classes(),
-      ).toContain("max-md:hidden");
     });
   });
 
@@ -247,7 +325,7 @@ describe("SideBar", () => {
     ).toBe(false);
   });
 
-  it("sizes the content to the current sidebar", async () => {
+  it("sizes the content to the width the store provides", async () => {
     const wrapper = mountSideBar();
     const content = wrapper.get("div[style*='width']");
     expect(content.attributes("style")).toContain("width: 320px");
@@ -256,6 +334,19 @@ describe("SideBar", () => {
     await wrapper.vm.$nextTick();
 
     expect(content.attributes("style")).toContain("width: 1280px");
+  });
+
+  it("shows the layer catalog as an overlay without widening the column", async () => {
+    const wrapper = mountSideBar();
+    const content = wrapper.get("div[style*='width']");
+
+    sidebar.currentSidebar = "geocatalogTree";
+    await wrapper.vm.$nextTick();
+
+    const overlay = wrapper.get("[data-testid='layer-catalog-overlay']");
+    expect(overlay.classes()).toContain("absolute");
+    expect(overlay.findComponent({ name: "LayerCatalog" }).exists()).toBe(true);
+    expect(content.attributes("style")).toContain("width: 320px");
   });
 
   it("shows the background selector only with the map panel, but keeps it mounted", async () => {

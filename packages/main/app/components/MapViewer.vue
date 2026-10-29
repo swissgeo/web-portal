@@ -68,7 +68,7 @@ const displayMode = inject(displayModeKey, "web");
     <template #after>
       <DebugPanel
         v-if="showAdditionalMapUi && displayMode === 'web'"
-        class="fixed bottom-36 left-4 z-3 md:bottom-9"
+        class="fixed bottom-36 left-4 z-3 md:bottom-9 md:left-[calc(var(--sidebar-width)+(--spacing(4)))]"
       ></DebugPanel>
       <MapTimeSliderButton />
     </template>
