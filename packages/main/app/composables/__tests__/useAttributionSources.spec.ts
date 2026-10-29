@@ -55,13 +55,11 @@ describe("useAttributionSources", () => {
     const { sources } = useAttributionSources(layers, null);
     expect(sources.value).toEqual([
       {
-        id: "Source A",
         abbreviation: "Source A",
         name: "Source A full name",
         url: "https://a.com",
       },
       {
-        id: "Source B",
         abbreviation: "Source B",
         name: "Source B full name",
         url: undefined,
@@ -124,20 +122,6 @@ describe("useAttributionSources", () => {
     const { sources } = useAttributionSources(layers, background);
     expect(sources.value[0]!.abbreviation).toBe("BG Source");
     expect(sources.value[1]!.abbreviation).toBe("Layer Source");
-  });
-
-  it("replaces dots and underscores with hyphens in id", () => {
-    getMapLayerFromUuid.mockReturnValue({ isVisible: true });
-    const layers = [
-      makeLayer({
-        info: {
-          displayName: "A",
-          attribution: makeAttribution("swisstopo.ch_data"),
-        },
-      }),
-    ];
-    const { sources } = useAttributionSources(layers, null);
-    expect(sources.value[0]!.id).toBe("swisstopo-ch-data");
   });
 
   it("reacts to ref changes", () => {

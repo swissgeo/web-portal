@@ -14,12 +14,11 @@ describe("AttributionList.vue", () => {
   it("renders provided sources", () => {
     const sources: AttributionSource[] = [
       {
-        id: "source-a",
         abbreviation: "Source A",
         name: "Source A full name",
         url: "https://example.com/a",
       },
-      { id: "source-b", abbreviation: "Source B", name: "Source B full name" },
+      { abbreviation: "Source B", name: "Source B full name" },
     ];
 
     const wrapper = mount(AttributionList, { props: { sources } });
@@ -38,12 +37,11 @@ describe("AttributionList.vue", () => {
   it("shows the abbreviation as label and the name as tooltip", () => {
     const sources: AttributionSource[] = [
       {
-        id: "foen",
         abbreviation: "FOEN",
         name: "Federal Office for the Environment FOEN",
         url: "https://example.com/foen",
       },
-      { id: "army", abbreviation: "Army", name: "Swiss Armed Forces" },
+      { abbreviation: "Army", name: "Swiss Armed Forces" },
     ];
 
     const wrapper = mount(AttributionList, { props: { sources } });
@@ -70,12 +68,11 @@ describe("AttributionList.vue", () => {
   it("separates the sources with a comma and a space outside the links", () => {
     const sources: AttributionSource[] = [
       {
-        id: "source-a",
         abbreviation: "Source A",
         name: "Source A full name",
         url: "https://example.com/a",
       },
-      { id: "source-b", abbreviation: "Source B", name: "Source B full name" },
+      { abbreviation: "Source B", name: "Source B full name" },
     ];
 
     const wrapper = mount(AttributionList, { props: { sources } });

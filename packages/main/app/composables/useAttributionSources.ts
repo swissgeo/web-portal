@@ -4,7 +4,6 @@ import type { MaybeRefOrGetter } from "vue";
 import { computed, toValue } from "vue";
 
 export interface AttributionSource {
-  id: string;
   abbreviation: string;
   name: string;
   url?: string;
@@ -44,7 +43,6 @@ export function useAttributionSources(
           return null;
         }
         return {
-          id: attribution.abbreviation.replace(/[._]/g, "-"),
           abbreviation: attribution.abbreviation,
           name: attribution.name,
           url: attribution.url,
