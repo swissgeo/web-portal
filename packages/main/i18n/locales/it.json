@@ -17,7 +17,7 @@
     "openLayerCatalog": "Apri il catalogo dei dati"
   },
   "search": {
-    "placeholder": "Cerca un luogo, un livello o delle coordinate…",
+    "placeholder": "Cerca luoghi, livelli o coordinate",
     "buttonLabel": "Cerca",
     "map_tab": "Mappa",
     "content_pages_tab": "Pagine di contenuto",
@@ -44,7 +44,7 @@
       "close": "Chiudi il modulo «Segnala un problema»",
       "steps": {
         "step1": {
-          "title": "1. Oggetto del tuo messaggio (obbligatorio):",
+          "title": "1. Oggetto della tua segnalazione",
           "select": {
             "placeholder": "Seleziona una categoria",
             "options": {
@@ -60,19 +60,19 @@
           }
         },
         "step2": {
-          "title": "2. Comunicaci in questo campo modifiche della mappa o miglioramenti dei dati, oppure poni domande su questo sito web (obbligatorio):"
+          "title": "2. Descrivici in questo campo modifiche alle mappe, miglioramenti dei dati o domande su questo sito web."
         },
         "step3": {
-          "title": "3. Indica il luogo interessato sulla mappa:",
+          "title": "3. Contrassegna il luogo interessato sulla mappa.",
           "button": "Disegna sulla mappa"
         },
         "step4": {
-          "title": "4. Il tuo indirizzo e-mail:",
+          "title": "4. Il tuo indirizzo e-mail",
           "placeholder": "Il tuo indirizzo e-mail",
           "info": "Senza indirizzo e-mail non riceverai alcuna risposta."
         },
         "step5": {
-          "title": "5. Allega un file:",
+          "title": "5. Aggiungi un file",
           "buttonLabel": "Allega"
         }
       },
@@ -212,14 +212,14 @@
     "drawingPanelTitle": "Strumenti di disegno"
   },
   "geolocation": {
-    "permissionDenied": "Autorizzazione alla posizione negata",
-    "stopTracking": "Interrompi il tracciamento",
-    "startGeolocation": "Avvia la geolocalizzazione",
+    "permissionDenied": "Accesso alla posizione negato",
+    "stopTracking": "Nascondi la posizione",
+    "startGeolocation": "Mostra la posizione",
     "recenterMap": "Ricentra la mappa"
   },
   "toolbox": {
     "geolocation": {
-      "buttonTitle": "Geolocalizzazione"
+      "buttonTitle": "Posizione"
     },
     "fullscreen": {
       "buttonTitle": "Schermo intero"
@@ -229,7 +229,7 @@
     },
     "drawing": {
       "buttonTitle": "Disegno",
-      "close": "Chiudi il pannello di disegno",
+      "close": "Chiudi la finestra di disegno",
       "featureCount": "Nessun oggetto sulla mappa | {count} oggetto sulla mappa | {count} oggetti sulla mappa",
       "tools": {
         "label": "Strumenti di disegno",
@@ -241,7 +241,7 @@
         "marker": "Simbolo"
       },
       "hints": {
-        "edit": "Trascina le maniglie per modificare la forma dell'oggetto.",
+        "edit": "Trascina i punti per modificare la forma dell'oggetto.",
         "select": "Seleziona un oggetto sulla mappa per modificarne lo stile.",
         "chooseTool": "Scegli uno strumento per iniziare a disegnare sulla mappa.",
         "place": "Fai clic sulla mappa per posizionare l'oggetto.",
@@ -328,13 +328,13 @@
         "xlarge": "Molto grande"
       },
       "symbols": {
-        "collection": "Raccolta di simboli",
+        "collection": "Libreria di simboli",
         "color": "Colore del simbolo",
         "label": "Simboli",
         "empty": "Nessun simbolo disponibile.",
         "select": "Seleziona simbolo: {name}",
         "collections": {
-          "default": "Simboli predefiniti",
+          "default": "Simboli standard",
           "babs-v2-de": "Segni convenzionali civili (tedesco)",
           "babs-v2-fr": "Segni convenzionali civili (francese)",
           "babs-v2-it": "Segni convenzionali civili (italiano)"
@@ -403,7 +403,7 @@
       "link": {
         "tabLabel": "Condividi il link",
         "title": "Link di condivisione",
-        "description": "Condividi la vista attuale della mappa con altri o copia l'URL.",
+        "description": "Condividi la mappa attuale con altri o copia l'URL.",
         "generateButton": "Genera il link di condivisione",
         "drawingEditableLabel": "Disegno modificabile",
         "urlLabel": "URL",
@@ -446,8 +446,8 @@
       "buttonTitle": "Stampa"
     },
     "featureFlag": {
-      "notAvailable": "Purtroppo questo strumento non è ancora disponibile.",
-      "workingOnIt": "Ci stiamo lavorando :)"
+      "notAvailable": "Questo strumento non è ancora disponibile.",
+      "workingOnIt": "Seguirà in una versione successiva."
     }
   },
   "backgroundLayers": {
@@ -478,8 +478,8 @@
       "errorFetchingElevation": "Errore durante il recupero dell'altitudine",
       "errorFetchingW3W": "Errore durante il recupero dell'indirizzo What3Words",
       "featureFlag": {
-        "notAvailable": "Purtroppo la finestra della posizione non è ancora disponibile.",
-        "workingOnIt": "Ci stiamo lavorando :)"
+        "notAvailable": "La finestra della posizione non è ancora disponibile.",
+        "workingOnIt": "Seguirà in una versione successiva."
       }
     }
   },
@@ -489,7 +489,7 @@
     "layerLoad": "Non è stato possibile caricare il livello.",
     "backToMap": "Torna alla mappa",
     "resources": {
-      "dataset": "Questo set di dati"
+      "dataset": "Il livello"
     }
   },
   "dataset": {
@@ -552,7 +552,7 @@
     "outsideValidYearRange": "Fuori dall'intervallo di anni valido"
   },
   "compareSlider": {
-    "toggleButtonTitle": "Attiva/disattiva il cursore di confronto"
+    "toggleButtonTitle": "Mostra/nascondi il cursore di confronto"
   },
   "embed": {
     "viewOn": "Visualizza su {platform}"
@@ -582,7 +582,7 @@
     "printResolutionLabel": "Risoluzione di stampa",
     "printOrientationLabel": "Orientamento di stampa",
     "zoomToLockedZoomLevel": "Esegui lo zoom al livello bloccato",
-    "sendPrintRequest": "Invia la richiesta di stampa",
+    "sendPrintRequest": "Stampa",
     "openPrintJobs": "Apri i lavori di stampa",
     "printJobsWindowTitle": "Lavori di stampa",
     "warningPrintExtentBeyondViewport": "Puoi bloccare il centro e il livello di zoom per evitare che l'area di stampa esca dalla vista mentre sposti o ingrandisci la mappa.",

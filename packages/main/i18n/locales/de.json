@@ -112,7 +112,7 @@
     "openLayersPanel": "Ebenen-Panel öffnen",
     "importDrawingPanelTitle": "Zeichnung aus URL importieren",
     "drawingNameLabel": "Zeichnungsname",
-    "drawingToolSelectLabel": "Zeichenwerkzeug auswählen:",
+    "drawingToolSelectLabel": "Zeichnungswerkzeug auswählen:",
     "drawingToolPoint": "Punkt",
     "drawingToolLine": "Linie",
     "drawingToolText": "Text",
@@ -209,12 +209,12 @@
     "resetFeatureFlags": "Auf Standard zurücksetzen",
     "featureFlagOverridden": "überschrieben",
     "openImportDrawingPanel": "Panel «Zeichnung importieren» öffnen",
-    "drawingPanelTitle": "Zeichenwerkzeuge"
+    "drawingPanelTitle": "Zeichnungswerkzeuge"
   },
   "geolocation": {
     "permissionDenied": "Berechtigung zur Standortbestimmung verweigert.",
-    "stopTracking": "Standortbestimmung beenden",
-    "startGeolocation": "Standortbestimmung starten",
+    "stopTracking": "Standort ausblenden",
+    "startGeolocation": "Standort anzeigen",
     "recenterMap": "Karte neu zentrieren"
   },
   "toolbox": {
@@ -232,7 +232,7 @@
       "close": "Zeichenfenster schliessen",
       "featureCount": "Keine Objekte auf der Karte | {count} Objekt auf der Karte | {count} Objekte auf der Karte",
       "tools": {
-        "label": "Zeichenwerkzeuge",
+        "label": "Zeichnungswerkzeuge",
         "select": "Auswählen",
         "polyline": "Linie",
         "polygon": "Polygon",
@@ -241,7 +241,7 @@
         "marker": "Symbol"
       },
       "hints": {
-        "edit": "Ziehen Sie an den Griffen, um die Form des Objekts zu ändern.",
+        "edit": "Ziehen Sie die Punkte, um die Form des Objekts zu ändern.",
         "select": "Wählen Sie ein Objekt auf der Karte aus, um seinen Stil zu bearbeiten.",
         "chooseTool": "Wählen Sie ein Werkzeug, um auf der Karte zu zeichnen.",
         "place": "Klicken Sie auf die Karte, um das Objekt zu platzieren.",
@@ -328,7 +328,7 @@
         "xlarge": "Sehr gross"
       },
       "symbols": {
-        "collection": "Symbolsammlung",
+        "collection": "Symbolbibliothek",
         "color": "Symbolfarbe",
         "label": "Symbole",
         "empty": "Keine Symbole verfügbar.",
@@ -378,7 +378,7 @@
         "generalError": "Datei konnte nicht importiert werden",
         "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus",
         "noUrlEntered": "Bitte geben Sie eine URL ein",
-        "fileSizeWarning": "Die Datei ist {fileSize} MB gross und überschreitet die erlaubte maximale Grösse von {maxSize} MB.",
+        "fileSizeWarning": "Die Datei ist {fileSize} MB gross und überschreitet die empfohlene maximale Grösse von {maxSize} MB.",
         "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize} MB)",
         "drawingImportFailed": "Zeichnung konnte nicht importiert werden",
         "kmlFetchFailed": "KML konnte nicht geladen werden: {status}",
@@ -403,7 +403,7 @@
       "link": {
         "tabLabel": "Link teilen",
         "title": "Freigabelink",
-        "description": "Teilen Sie die aktuelle Kartenansicht mit anderen oder kopieren Sie die URL.",
+        "description": "Teilen Sie die aktuelle Karte mit anderen oder kopieren Sie die URL.",
         "generateButton": "Freigabelink generieren",
         "drawingEditableLabel": "Zeichnung bearbeitbar",
         "urlLabel": "URL",
@@ -552,7 +552,7 @@
     "outsideValidYearRange": "Ausserhalb des gültigen Jahresbereichs"
   },
   "compareSlider": {
-    "toggleButtonTitle": "Vergleichsregler umschalten"
+    "toggleButtonTitle": "Vergleichsregler ein-/ausblenden"
   },
   "embed": {
     "viewOn": "Auf {platform} anzeigen"
@@ -582,7 +582,7 @@
     "printResolutionLabel": "Druckauflösung",
     "printOrientationLabel": "Druckausrichtung",
     "zoomToLockedZoomLevel": "Zur gesperrten Zoomstufe zoomen",
-    "sendPrintRequest": "Druckauftrag senden",
+    "sendPrintRequest": "Drucken",
     "openPrintJobs": "Druckaufträge öffnen",
     "printJobsWindowTitle": "Druckaufträge",
     "warningPrintExtentBeyondViewport": "Sie können das Zentrum und die Zoomstufe sperren, damit der Druckbereich beim Verschieben und Zoomen der Karte nicht aus dem Ansichtsbereich gerät.",

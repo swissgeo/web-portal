@@ -17,7 +17,7 @@
     "openLayerCatalog": "Avrir il catalog da datas"
   },
   "search": {
-    "placeholder": "Tschertgar lieus, nivels u coordinatas…",
+    "placeholder": "Tschertgar lieus, nivels u coordinatas",
     "buttonLabel": "Tschertgar",
     "map_tab": "Charta",
     "content_pages_tab": "Paginas da cuntegn",
@@ -44,7 +44,7 @@
       "close": "Serrar il formular «rapportar in problem»",
       "steps": {
         "step1": {
-          "title": "1. Object da Voss messadi:",
+          "title": "1. Object da Voss annunzi",
           "select": {
             "placeholder": "Selecziunar ina categoria",
             "options": {
@@ -67,7 +67,7 @@
           "button": "Dissegnar sin la charta"
         },
         "step4": {
-          "title": "4. Vossa adressa dad e-mail:",
+          "title": "4. Vossa adressa dad e-mail",
           "placeholder": "Vossa adressa dad e-mail",
           "info": "Senza indicaziun d’ina adressa dad e-mail na survegnis Vus nagina resposta."
         },
@@ -212,9 +212,9 @@
     "drawingPanelTitle": "Utensils da dissegnar"
   },
   "geolocation": {
-    "permissionDenied": "Permissiun da localisaziun refusada",
-    "stopTracking": "Terminar la localisaziun",
-    "startGeolocation": "Lantschar la localisaziun",
+    "permissionDenied": "Access a la posiziun refusà",
+    "stopTracking": "Zuppentar la posiziun",
+    "startGeolocation": "Mussar la posiziun",
     "recenterMap": "Recentrar la charta"
   },
   "toolbox": {
@@ -229,7 +229,7 @@
     },
     "drawing": {
       "buttonTitle": "Dissegnar",
-      "close": "Serrar la fanestra da dissegn",
+      "close": "Serrar la fanestra da dissegnar",
       "featureCount": "Nagins objects sin la charta | {count} object sin la charta | {count} objects sin la charta",
       "tools": {
         "label": "Utensils da dissegn",
@@ -241,7 +241,7 @@
         "marker": "Simbol"
       },
       "hints": {
-        "edit": "Tirai ils manetschs per midar la furma da l'object.",
+        "edit": "Tirai ils puncts per midar la furma da l'object.",
         "select": "Tschernai in object sin la charta per elavurar ses stil.",
         "chooseTool": "Tschernai in utensil per dissegnar sin la charta.",
         "place": "Cliccai sin la charta per plazzar l'object.",
@@ -328,7 +328,7 @@
         "xlarge": "Fitg grond"
       },
       "symbols": {
-        "collection": "Collecziun da simbols",
+        "collection": "Biblioteca da simbols",
         "color": "Colur dal simbol",
         "label": "Simbols",
         "empty": "Nagins simbols disponibels.",
@@ -403,7 +403,7 @@
       "link": {
         "tabLabel": "Parter il link",
         "title": "Link per parter",
-        "description": "Partai la vista da la charta actuala cun auters u copiai l'URL.",
+        "description": "Partai la charta actuala cun auters u copiai l'URL.",
         "generateButton": "Generar in link per parter",
         "drawingEditableLabel": "Dissegn modifitgabel",
         "urlLabel": "URL",
@@ -446,8 +446,8 @@
       "buttonTitle": "Stampar"
     },
     "featureFlag": {
-      "notAvailable": "Quest utensil n’è anc betg disponibel.",
-      "workingOnIt": "Nus lavurain vi da quai."
+      "notAvailable": "Quest utensil n'è anc betg disponibel.",
+      "workingOnIt": "El suonda en ina versiun posteriura."
     }
   },
   "backgroundLayers": {
@@ -478,8 +478,8 @@
       "errorFetchingElevation": "Errur cun chargiar l'autezza",
       "errorFetchingW3W": "Errur cun chargiar l'adressa What3Words",
       "featureFlag": {
-        "notAvailable": "La fanestra da posiziun n'è malavita anc betg disponibla.",
-        "workingOnIt": "Nus lavurain vi da quai :)"
+        "notAvailable": "La fanestra da posiziun n'è anc betg disponibla.",
+        "workingOnIt": "El suonda en ina versiun posteriura."
       }
     }
   },
@@ -489,7 +489,7 @@
     "layerLoad": "Il nivel n'ha betg pudì vegnir chargià.",
     "backToMap": "Enavos a la charta",
     "resources": {
-      "dataset": "Questa collecziun da datas"
+      "dataset": "Il nivel"
     }
   },
   "dataset": {
@@ -552,7 +552,7 @@
     "outsideValidYearRange": "Ordaifer la perioda d'onns valaivla"
   },
   "compareSlider": {
-    "toggleButtonTitle": "Activar/deactivar il cursur da cumparegliaziun"
+    "toggleButtonTitle": "Mussar/zuppentar il cursur da cumparegliaziun"
   },
   "embed": {
     "viewOn": "Guardar sin {platform}"
@@ -582,7 +582,7 @@
     "printResolutionLabel": "Resoluziun da stampa",
     "printOrientationLabel": "Orientaziun da stampa",
     "zoomToLockedZoomLevel": "Zoomar al stgalim da zoom bloccà",
-    "sendPrintRequest": "Trametter l'incumbensa da stampa",
+    "sendPrintRequest": "Stampar",
     "openPrintJobs": "Avrir las incumbensas da stampa",
     "printJobsWindowTitle": "Incumbensas da stampa",
     "warningPrintExtentBeyondViewport": "Vus pudais bloccar il center ed il stgalim da zoom per evitar che la secziun da stampa banduna la vista cun spustar u zoomar la charta.",
