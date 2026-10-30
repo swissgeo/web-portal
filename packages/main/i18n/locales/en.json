@@ -653,6 +653,8 @@
     "retry": "Try again",
     "searchLabel": "Search layers",
     "searchPlaceholder": "Search",
+    "ownerFilterLabel": "Filter by provider",
+    "ownerFilterPlaceholder": "All providers",
     "close": "Close",
     "expand": "Show data catalog",
     "collapse": "Hide data catalog"

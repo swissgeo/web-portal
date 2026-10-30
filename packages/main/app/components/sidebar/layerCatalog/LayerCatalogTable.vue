@@ -4,6 +4,7 @@ import type { Dataset } from "@swissgeo/ogc";
 import { refDebounced, useInfiniteScroll } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 
+import LayerCatalogOwner from "./LayerCatalogOwner.vue";
 import LayerCatalogRow from "./LayerCatalogRow.vue";
 
 const { t, locale } = useI18n();
@@ -16,11 +17,15 @@ const { conceptIds } = defineProps<{
 const searchInputId = useId();
 const query = ref("");
 const debouncedQuery = refDebounced(query, 100);
+const ownerId = ref<string>();
+
+const { organizations, status: organizationsStatus } = useOrganizations();
 
 const { state, hasMore, loadMore, retry } = useOgcCatalog(
   locale,
   debouncedQuery,
   () => conceptIds,
+  ownerId,
 );
 
 const datasets = computed<Dataset[]>(() => state.value.data?.features ?? []);
@@ -54,8 +59,11 @@ useInfiniteScroll(scroller, loadMore, {
           {{ t("layerCatalog.table.dataOwner") }}
         </div>
       </div>
-      <div role="row" class="col-span-full border-b border-accented">
-        <div role="cell" class="p-3">
+      <div
+        role="row"
+        class="col-span-full grid grid-cols-subgrid border-b border-accented"
+      >
+        <div role="cell" class="col-span-full p-3 md:col-span-1">
           <label :for="searchInputId" class="sr-only">
             {{ t("layerCatalog.searchLabel") }}
           </label>
@@ -78,6 +86,32 @@ useInfiniteScroll(scroller, loadMore, {
               />
             </template>
           </UInput>
+        </div>
+        <div
+          role="cell"
+          class="col-span-full px-3 pb-3 md:col-span-2 md:ps-0 md:pt-3"
+        >
+          <USelectMenu
+            v-model="ownerId"
+            data-testid="catalog-owner-filter"
+            :items="organizations ?? []"
+            value-key="id"
+            label-key="acronym"
+            :filter-fields="['acronym', 'name']"
+            :placeholder="t('layerCatalog.ownerFilterPlaceholder')"
+            :search-input="{ placeholder: t('layerCatalog.searchPlaceholder') }"
+            :aria-label="t('layerCatalog.ownerFilterLabel')"
+            :loading="organizationsStatus === 'pending'"
+            clear
+            class="w-full"
+          >
+            <template #item-label="{ item }">
+              <LayerCatalogOwner :owner="item" />
+            </template>
+            <template v-if="organizationsStatus === 'error'" #empty>
+              <span class="text-error">{{ t("layerCatalog.error") }}</span>
+            </template>
+          </USelectMenu>
         </div>
       </div>
       <div role="rowgroup" class="col-span-full grid grid-cols-subgrid">

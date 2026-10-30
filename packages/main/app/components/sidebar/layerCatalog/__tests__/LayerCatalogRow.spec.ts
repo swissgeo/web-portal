@@ -1,4 +1,4 @@
-import type { Contact, Dataset } from "@swissgeo/ogc";
+import type { Dataset, Owner } from "@swissgeo/ogc";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
@@ -50,10 +50,16 @@ const stubs = {
   },
 };
 
-function makeDataset(id = "ch.a", contacts?: Contact[]): Dataset {
+const bfs: Owner = {
+  id: "ch.bfs",
+  name: "Bundesamt für Statistik BFS",
+  acronym: "BFS",
+};
+
+function makeDataset(id = "ch.a", owner?: Owner): Dataset {
   return {
     id,
-    properties: { type: "Dataset", title: `Title of ${id}`, contacts },
+    properties: { type: "Dataset", title: `Title of ${id}`, owner },
     links: [],
   };
 }
@@ -104,60 +110,29 @@ describe("LayerCatalogRow.vue", () => {
     expect(cell.attributes("title")).toBe("Title of ch.a");
   });
 
-  it("shows the resource provider as data owner, wherever it is listed", () => {
-    const wrapper = mountRow(
-      makeDataset("ch.a", [
-        { role: "pointOfContact", organization: "Contact AG" },
-        { role: "resourceProvider", organization: "swisstopo" },
-      ]),
-    );
+  it("shows the owner as data owner, below the title on mobile", () => {
+    const wrapper = mountRow(makeDataset("ch.a", bfs));
     const cell = dataOwnerCell(wrapper);
 
-    expect(cell.text()).toBe("swisstopo");
-    expect(mobileDataOwner(wrapper).text()).toBe("swisstopo");
-    expect(cell.attributes("title")).toBe("resourceProvider: swisstopo");
-  });
-
-  it("falls back to the first contact without a resource provider", () => {
-    const cell = dataOwnerCell(
-      mountRow(
-        makeDataset("ch.a", [
-          { role: "owner", organization: "BAFU" },
-          { role: "distributor", organization: "Other AG" },
-        ]),
-      ),
+    expect(cell.text()).toBe("BFS (Bundesamt für Statistik)");
+    expect(mobileDataOwner(wrapper).text()).toBe(
+      "BFS (Bundesamt für Statistik)",
     );
-
-    expect(cell.text()).toBe("BAFU");
-    expect(cell.attributes("title")).toBe("owner: BAFU");
-  });
-
-  it("shows only the organization in the tooltip of a contact without role", () => {
-    const cell = dataOwnerCell(
-      mountRow(makeDataset("ch.a", [{ organization: "BAFU" }])),
-    );
-
-    expect(cell.text()).toBe("BAFU");
-    expect(cell.attributes("title")).toBe("BAFU");
   });
 
   it("hides the data owner column on mobile", () => {
-    const cell = dataOwnerCell(
-      mountRow(makeDataset("ch.a", [{ role: "owner", organization: "BAFU" }])),
-    );
+    const cell = dataOwnerCell(mountRow(makeDataset("ch.a", bfs)));
 
     expect(cell.classes()).toEqual(
       expect.arrayContaining(["hidden", "md:block"]),
     );
   });
 
-  it("leaves the data owner empty without contacts", () => {
+  it("leaves the data owner empty without owner", () => {
     const wrapper = mountRow();
-    const cell = dataOwnerCell(wrapper);
 
     expect(mobileDataOwner(wrapper).exists()).toBe(false);
-    expect(cell.text()).toBe("");
-    expect(cell.attributes("title")).toBeUndefined();
+    expect(dataOwnerCell(wrapper).text()).toBe("");
   });
 
   it("adds the layer to the map when switched on", async () => {

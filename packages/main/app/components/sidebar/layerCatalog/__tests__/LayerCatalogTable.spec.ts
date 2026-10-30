@@ -1,4 +1,4 @@
-import type { Dataset, DatasetCollection } from "@swissgeo/ogc";
+import type { Dataset, DatasetCollection, Owner } from "@swissgeo/ogc";
 import type { OgcCatalogState } from "~/composables/useOgcCatalog";
 import type { Ref } from "vue";
 
@@ -9,25 +9,39 @@ import { panelScrollerKey } from "~/composables/usePanelScroller";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { isRef, nextTick, shallowRef, unref } from "vue";
 
-const { catalog, locale, useOgcCatalogMock } = await vi.hoisted(async () => {
-  const { ref } = await import("vue");
-  const catalog = {
-    state: ref<OgcCatalogState>({ status: "pending" }),
-    hasMore: ref(false),
-    loadMore: vi.fn(),
-    retry: vi.fn(),
-  };
-  return {
-    catalog,
-    locale: ref("de"),
-    useOgcCatalogMock: vi.fn(
-      (_language: unknown, _query: unknown, _concept: unknown) => catalog,
-    ),
-  };
-});
+const { catalog, locale, organizations, useOgcCatalogMock } = await vi.hoisted(
+  async () => {
+    const { ref } = await import("vue");
+    const catalog = {
+      state: ref<OgcCatalogState>({ status: "pending" }),
+      hasMore: ref(false),
+      loadMore: vi.fn(),
+      retry: vi.fn(),
+    };
+    return {
+      catalog,
+      locale: ref("de"),
+      organizations: {
+        organizations: ref<Owner[] | undefined>(),
+        status: ref("pending"),
+      },
+      useOgcCatalogMock: vi.fn(
+        (
+          _language: unknown,
+          _query: unknown,
+          _concept: unknown,
+          _owner: unknown,
+        ) => catalog,
+      ),
+    };
+  },
+);
 
 vi.mock("~/composables/useOgcCatalog", () => ({
   useOgcCatalog: useOgcCatalogMock,
+}));
+vi.mock("~/composables/useOrganizations", () => ({
+  useOrganizations: () => organizations,
 }));
 vi.mock("@vueuse/core", async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -50,6 +64,11 @@ const stubs = {
   UButton: {
     inheritAttrs: false,
     template: "<button v-bind='$attrs'><slot /></button>",
+  },
+  USelectMenu: {
+    props: ["modelValue", "items", "loading"],
+    emits: ["update:modelValue"],
+    template: `<div :data-loading="String(loading)"><button v-for="item in items" :key="item.id" :data-id="item.id" @click="$emit('update:modelValue', item.id)"><slot name="item-label" :item="item" /></button><slot v-if="!items.length" name="empty" /></div>`,
   },
 };
 
@@ -98,6 +117,8 @@ describe("LayerCatalogTable.vue", () => {
     vi.clearAllMocks();
     catalog.state.value = { status: "pending" };
     catalog.hasMore.value = false;
+    organizations.organizations.value = undefined;
+    organizations.status.value = "pending";
     panelScroller.value = null;
   });
 
@@ -115,6 +136,62 @@ describe("LayerCatalogTable.vue", () => {
     await wrapper.setProps({ conceptIds: ["soils", "geology"] });
 
     expect(concepts()).toEqual(["soils", "geology"]);
+  });
+
+  describe("owner filter", () => {
+    const bfs: Owner = {
+      id: "ch.bfs",
+      name: "Bundesamt für Statistik BFS",
+      acronym: "BFS",
+    };
+    const bafu: Owner = {
+      id: "ch.bafu",
+      name: "Bundesamt für Umwelt BAFU",
+      acronym: "BAFU",
+    };
+
+    function ownerFilter(wrapper: ReturnType<typeof mountTable>) {
+      return wrapper.get("[data-testid='catalog-owner-filter']");
+    }
+
+    it("offers the organizations once they are loaded", async () => {
+      const wrapper = mountTable();
+      expect(ownerFilter(wrapper).attributes("data-loading")).toBe("true");
+
+      organizations.organizations.value = [bafu, bfs];
+      organizations.status.value = "success";
+      await nextTick();
+
+      const options = ownerFilter(wrapper).findAll("button");
+      expect(ownerFilter(wrapper).attributes("data-loading")).toBe("false");
+      expect(options.map((option) => option.text())).toEqual([
+        "BAFU (Bundesamt für Umwelt)",
+        "BFS (Bundesamt für Statistik)",
+      ]);
+    });
+
+    it("tells the user when the organizations could not be loaded", async () => {
+      const wrapper = mountTable();
+      expect(ownerFilter(wrapper).text()).toBe("");
+
+      organizations.status.value = "error";
+      await nextTick();
+
+      expect(ownerFilter(wrapper).text()).toBe("layerCatalog.error");
+    });
+
+    it("loads only the layers of the selected owner", async () => {
+      organizations.organizations.value = [bafu, bfs];
+      const wrapper = mountTable();
+      const owner = useOgcCatalogMock.mock.calls[0]![3] as Ref<
+        string | undefined
+      >;
+      expect(owner.value).toBeUndefined();
+
+      await ownerFilter(wrapper).get("[data-id='ch.bfs']").trigger("click");
+
+      expect(owner.value).toBe("ch.bfs");
+    });
   });
 
   describe("search", () => {

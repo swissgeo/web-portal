@@ -651,6 +651,8 @@
     "retry": "Erneut versuchen",
     "searchLabel": "Ebenen durchsuchen",
     "searchPlaceholder": "Suchen",
+    "ownerFilterLabel": "Nach Anbieter filtern",
+    "ownerFilterPlaceholder": "Alle Anbieter",
     "close": "Schliessen",
     "expand": "Daten-Katalog anzeigen",
     "collapse": "Daten-Katalog ausblenden"
