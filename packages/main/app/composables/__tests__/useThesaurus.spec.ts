@@ -91,6 +91,49 @@ describe("useThesaurus", () => {
     ]);
   });
 
+  it("replaces concepts below the maximum depth with its children", () => {
+    useThesaurus();
+
+    const leaf = (id: string) => ({ concept_id: id, label: id, children: [] });
+    const concepts = fetchCall().options.transform({
+      thesaurus_id: "ech0166",
+      concepts: [
+        {
+          concept_id: "planning",
+          label: "Grundlagen und Planung",
+          children: [
+            {
+              concept_id: "imagery",
+              label: "Grundlagen, Bilddaten",
+              children: [
+                leaf("baseMaps"),
+                {
+                  concept_id: "deeper",
+                  label: "deeper",
+                  children: [leaf("deepest")],
+                },
+              ],
+            },
+            leaf("location"),
+          ],
+        },
+      ],
+    });
+
+    const expected = (id: string) => ({ id, label: id, children: [] });
+    expect(concepts).toEqual([
+      {
+        id: "planning",
+        label: "Grundlagen und Planung",
+        children: [
+          expected("baseMaps"),
+          expected("deepest"),
+          expected("location"),
+        ],
+      },
+    ]);
+  });
+
   it("returns the concepts and the loading state", () => {
     const data = ref([]);
     const status = ref("success");
