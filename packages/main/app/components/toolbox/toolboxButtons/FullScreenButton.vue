@@ -38,7 +38,7 @@ function handleKeydown(event: KeyboardEvent) {
     :title="t('toolbox.fullscreen.buttonTitle')"
     :is-disabled="false"
     :is-active="mapViewStore.isFullscreenModeActive"
-    iconName="maximize-2"
+    iconName="fullscreen"
     @click="toggleFullScreen()"
   />
 </template>
