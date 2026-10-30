@@ -17,7 +17,7 @@
     "openLayerCatalog": "Open data catalogue"
   },
   "search": {
-    "placeholder": "Search for a place, layer or coordinates…",
+    "placeholder": "Search places, layers or coordinates",
     "buttonLabel": "Search",
     "map_tab": "Map",
     "content_pages_tab": "Content pages",
@@ -44,7 +44,7 @@
       "close": "Close report issue form",
       "steps": {
         "step1": {
-          "title": "1. Subject of your message (required):",
+          "title": "1. Subject of your report",
           "select": {
             "placeholder": "Select a category",
             "options": {
@@ -60,19 +60,19 @@
           }
         },
         "step2": {
-          "title": "2. Tell us about map changes, data improvements, or ask questions about this website in this field (required):"
+          "title": "2. Describe map changes, data improvements or questions about this website in this field."
         },
         "step3": {
-          "title": "3. Indicate the affected location on the map:",
+          "title": "3. Mark the affected location on the map.",
           "button": "Draw on the map"
         },
         "step4": {
-          "title": "4. Your email address:",
+          "title": "4. Your email address",
           "placeholder": "Your email address",
           "info": "Without providing an email address, you will not receive a response"
         },
         "step5": {
-          "title": "5. Attach a file:",
+          "title": "5. Add a file",
           "buttonLabel": "Attach"
         }
       },
@@ -125,9 +125,9 @@
     "drawingInstructionDefault": "Click to start drawing",
     "drawingFeaturesDrawnLabel": "Features drawn",
     "drawingExportLabel": "Export:",
-    "drawingExportKML": "Export KML",
-    "drawingExportKMZ": "Export KMZ",
-    "drawingExportGPX": "Export GPX",
+    "drawingExportKML": "Export as KML",
+    "drawingExportKMZ": "Export as KMZ",
+    "drawingExportGPX": "Export as GPX",
     "drawingClearAll": "Clear all drawings",
     "drawingClearConfirmTitle": "Delete all drawings?",
     "drawingClearConfirmDescription": "This action will remove all drawings from the current session.",
@@ -212,14 +212,14 @@
     "drawingPanelTitle": "Drawing tools"
   },
   "geolocation": {
-    "permissionDenied": "Location permission denied",
-    "stopTracking": "Stop tracking",
-    "startGeolocation": "Start geolocation",
+    "permissionDenied": "Location access denied",
+    "stopTracking": "Hide location",
+    "startGeolocation": "Show location",
     "recenterMap": "Re-centre map"
   },
   "toolbox": {
     "geolocation": {
-      "buttonTitle": "Geolocation"
+      "buttonTitle": "Location"
     },
     "fullscreen": {
       "buttonTitle": "Fullscreen"
@@ -229,7 +229,7 @@
     },
     "drawing": {
       "buttonTitle": "Drawing",
-      "close": "Close drawing panel",
+      "close": "Close drawing window",
       "featureCount": "No features on the map | {count} feature on the map | {count} features on the map",
       "tools": {
         "label": "Drawing tools",
@@ -241,10 +241,10 @@
         "marker": "Marker"
       },
       "hints": {
-        "edit": "Drag the handles to reshape your feature.",
+        "edit": "Drag the points to reshape the feature.",
         "select": "Select a feature on the map to edit its style.",
         "chooseTool": "Choose a tool to start drawing on the map.",
-        "place": "Click on the map to place your feature.",
+        "place": "Click on the map to place the feature.",
         "circle": "Click to set the centre, then click to set the radius.",
         "addPoints": "Click to add points. Double-click to finish.",
         "drawing": "You are currently drawing a new feature.",
@@ -328,13 +328,13 @@
         "xlarge": "Extra large"
       },
       "symbols": {
-        "collection": "Symbol collection",
+        "collection": "Symbol library",
         "color": "Symbol colour",
         "label": "Marker symbols",
         "empty": "No symbols available.",
         "select": "Select symbol: {name}",
         "collections": {
-          "default": "Default symbols",
+          "default": "Standard symbols",
           "babs-v2-de": "Civil protection symbols (German)",
           "babs-v2-fr": "Civil protection symbols (French)",
           "babs-v2-it": "Civil protection symbols (Italian)"
@@ -403,7 +403,7 @@
       "link": {
         "tabLabel": "Share link",
         "title": "Share link",
-        "description": "Share the current map view with others or copy the URL.",
+        "description": "Share the current map with others or copy the URL.",
         "generateButton": "Generate share link",
         "drawingEditableLabel": "Drawing editable",
         "urlLabel": "URL",
@@ -433,7 +433,7 @@
         "customWidthLabel": "Width",
         "customHeightLabel": "Height",
         "pixelUnit": "px",
-        "fullWidthLabel": "Full (100%) width"
+        "fullWidthLabel": "Full width (100%)"
       },
       "ariaLabel": {
         "close": "Close",
@@ -446,8 +446,8 @@
       "buttonTitle": "Print"
     },
     "featureFlag": {
-      "notAvailable": "Unfortunately, this tool is not available yet.",
-      "workingOnIt": "We're working on it :)"
+      "notAvailable": "This tool is not available yet.",
+      "workingOnIt": "It will follow in a later version."
     }
   },
   "backgroundLayers": {
@@ -478,8 +478,8 @@
       "errorFetchingElevation": "Error retrieving elevation",
       "errorFetchingW3W": "Error retrieving What3Words address",
       "featureFlag": {
-        "notAvailable": "Unfortunately, the position pop-up window is not yet available.",
-        "workingOnIt": "We're working on it :)"
+        "notAvailable": "The position window is not available yet.",
+        "workingOnIt": "It will follow in a later version."
       }
     }
   },
@@ -489,7 +489,7 @@
     "layerLoad": "The layer could not be loaded.",
     "backToMap": "Back to map",
     "resources": {
-      "dataset": "This dataset"
+      "dataset": "The layer"
     }
   },
   "dataset": {
@@ -552,7 +552,7 @@
     "outsideValidYearRange": "Outside of valid year range"
   },
   "compareSlider": {
-    "toggleButtonTitle": "Toggle compare slider"
+    "toggleButtonTitle": "Show/hide compare slider"
   },
   "embed": {
     "viewOn": "View on {platform}"
@@ -582,7 +582,7 @@
     "printResolutionLabel": "Print resolution",
     "printOrientationLabel": "Print orientation",
     "zoomToLockedZoomLevel": "Zoom to locked zoom level",
-    "sendPrintRequest": "Send print request",
+    "sendPrintRequest": "Print",
     "openPrintJobs": "Open print jobs",
     "printJobsWindowTitle": "Print jobs",
     "warningPrintExtentBeyondViewport": "You can lock the centre and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.",
@@ -650,7 +650,7 @@
       "empty": "No layers found."
     },
     "loading": "Loading…",
-    "error": "The catalogue could not be loaded.",
+    "error": "The data catalogue could not be loaded.",
     "retry": "Try again",
     "searchLabel": "Search layers",
     "searchPlaceholder": "Search",

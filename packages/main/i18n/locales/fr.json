@@ -17,7 +17,7 @@
     "openLayerCatalog": "Ouvrir le catalogue de données"
   },
   "search": {
-    "placeholder": "Rechercher un lieu, une couche ou des coordonnées",
+    "placeholder": "Rechercher des lieux, des couches ou des coordonnées",
     "buttonLabel": "Rechercher",
     "map_tab": "Carte",
     "content_pages_tab": "Pages de contenu",
@@ -44,7 +44,7 @@
       "close": "Fermer le formulaire \"Annoncer un problème\"",
       "steps": {
         "step1": {
-          "title": "1. Sujet de votre message:",
+          "title": "1. Sujet de votre message",
           "select": {
             "placeholder": "Sélectionner une catégorie",
             "options": {
@@ -60,19 +60,19 @@
           }
         },
         "step2": {
-          "title": "2. Faites-nous part de modifications de la carte, d'améliorations des données ou posez des questions sur ce site dans ce champ:"
+          "title": "2. Décrivez-nous dans ce champ des modifications de cartes, des améliorations des données ou vos questions sur ce site web."
         },
         "step3": {
-          "title": "3. Indiquez le lieu concerné sur la carte:",
+          "title": "3. Marquez le lieu concerné sur la carte.",
           "button": "Dessiner sur la carte"
         },
         "step4": {
-          "title": "4. Votre adresse e-mail:",
+          "title": "4. Votre adresse e-mail",
           "placeholder": "Votre adresse e-mail",
           "info": "Si vous n'indiquez pas d'adresse e-mail, vous ne recevrez pas de réponse."
         },
         "step5": {
-          "title": "5. Joindre un fichier:",
+          "title": "5. Ajouter un fichier",
           "buttonLabel": "Joindre"
         }
       },
@@ -212,9 +212,9 @@
     "drawingPanelTitle": "Outils de dessin"
   },
   "geolocation": {
-    "permissionDenied": "Autorisation de localisation refusée",
-    "stopTracking": "Arrêter la localisation",
-    "startGeolocation": "Démarrer la localisation",
+    "permissionDenied": "Accès à la position refusé",
+    "stopTracking": "Masquer la position",
+    "startGeolocation": "Afficher la position",
     "recenterMap": "Recentrer la carte"
   },
   "toolbox": {
@@ -241,7 +241,7 @@
         "marker": "Symbole"
       },
       "hints": {
-        "edit": "Déplacez les poignées pour modifier la forme de l'objet.",
+        "edit": "Déplacez les points pour modifier la forme de l'objet.",
         "select": "Sélectionnez un objet sur la carte pour modifier son style.",
         "chooseTool": "Choisissez un outil pour commencer à dessiner sur la carte.",
         "place": "Cliquez sur la carte pour placer votre objet.",
@@ -328,13 +328,13 @@
         "xlarge": "Très grand"
       },
       "symbols": {
-        "collection": "Collection de symboles",
+        "collection": "Bibliothèque de symboles",
         "color": "Couleur du symbole",
         "label": "Symboles",
         "empty": "Aucun symbole disponible.",
         "select": "Sélectionner le symbole: {name}",
         "collections": {
-          "default": "Symboles par défaut",
+          "default": "Symboles standard",
           "babs-v2-de": "Signes conventionnels civils (allemand)",
           "babs-v2-fr": "Signes conventionnels civils (français)",
           "babs-v2-it": "Signes conventionnels civils (italien)"
@@ -378,14 +378,14 @@
         "generalError": "Échec de l'importation du fichier",
         "noFileSelected": "Veuillez d'abord sélectionner un fichier",
         "noUrlEntered": "Veuillez entrer une URL",
-        "fileSizeWarning": "Le fichier est volumineux: {fileSize} Mo, ce qui dépasse la limite autorisée de {maxSize} Mo.",
+        "fileSizeWarning": "Le fichier est volumineux: {fileSize} Mo, ce qui dépasse la limite recommandée de {maxSize} Mo.",
         "fileTooLarge": "Le fichier est trop volumineux: {fileName} (maximum {maxSize} Mo)",
-        "drawingImportFailed": "Impossible d’importer le dessin",
+        "drawingImportFailed": "Impossible d'importer le dessin",
         "kmlFetchFailed": "Impossible de charger le fichier KML: {status}",
         "noKmlFound": "Aucun dessin KML trouvé dans l'URL fournie",
         "domainNotAllowed": "La récupération depuis {domain} n'est pas autorisée",
         "unsupportedUrlType": "Type de fichier non supporté. L'URL doit se terminer par {types}",
-        "fetchFailed": "Impossible de charger le fichier depuis l’URL (HTTP {status})",
+        "fetchFailed": "Impossible de charger le fichier depuis l'URL (HTTP {status})",
         "adminRequired": "Des droits d'administrateur sont nécessaires pour importer ce dessin"
       },
       "close": "Fermer",
@@ -403,7 +403,7 @@
       "link": {
         "tabLabel": "Partager le lien",
         "title": "Lien de partage",
-        "description": "Partagez la vue cartographique actuelle avec d'autres ou copiez l'URL.",
+        "description": "Partagez la carte actuelle avec d'autres ou copiez l'URL.",
         "generateButton": "Générer le lien de partage",
         "drawingEditableLabel": "Dessin modifiable",
         "urlLabel": "URL",
@@ -446,8 +446,8 @@
       "buttonTitle": "Imprimer"
     },
     "featureFlag": {
-      "notAvailable": "Cet outil n'est malheureusement pas encore disponible.",
-      "workingOnIt": "Nous y travaillons."
+      "notAvailable": "Cet outil n'est pas encore disponible.",
+      "workingOnIt": "Il suivra dans une version ultérieure."
     }
   },
   "backgroundLayers": {
@@ -478,8 +478,8 @@
       "errorFetchingElevation": "Erreur lors de la récupération de l'altitude",
       "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words",
       "featureFlag": {
-        "notAvailable": "La fenêtre de position n'est malheureusement pas encore disponible.",
-        "workingOnIt": "Nous y travaillons."
+        "notAvailable": "La fenêtre de position n'est pas encore disponible.",
+        "workingOnIt": "Il suivra dans une version ultérieure."
       }
     }
   },
@@ -489,7 +489,7 @@
     "layerLoad": "La couche n'a pas pu être chargée.",
     "backToMap": "Retour à la carte",
     "resources": {
-      "dataset": "Ce jeu de données"
+      "dataset": "La couche"
     }
   },
   "dataset": {
@@ -552,14 +552,14 @@
     "outsideValidYearRange": "Hors de la plage d'années valide"
   },
   "compareSlider": {
-    "toggleButtonTitle": "Basculer le curseur de comparaison"
+    "toggleButtonTitle": "Afficher/masquer le curseur de comparaison"
   },
   "embed": {
     "viewOn": "Voir sur {platform}"
   },
   "print": {
     "warningOutsideSwitzerland": "Hors de la Suisse",
-    "warningOutsideSwitzerlandTitle": "Zone d’impression hors de la Suisse",
+    "warningOutsideSwitzerlandTitle": "Zone d'impression hors de la Suisse",
     "warningZoomOutOfSync": "Le niveau de zoom à l'écran ne correspond pas au niveau de zoom verrouillé pour l'impression.",
     "warningZoomOutOfSyncTitle": "Le niveau de zoom ne correspond pas au niveau de zoom verrouillé",
     "statusProcessing": "en cours",
@@ -582,9 +582,9 @@
     "printResolutionLabel": "Résolution d'impression",
     "printOrientationLabel": "Orientation d'impression",
     "zoomToLockedZoomLevel": "Zoomer au niveau de zoom verrouillé",
-    "sendPrintRequest": "Envoyer la demande d'impression",
-    "openPrintJobs": "Ouvrir les travaux d'impression",
-    "printJobsWindowTitle": "Travaux d'impression",
+    "sendPrintRequest": "Imprimer",
+    "openPrintJobs": "Ouvrir les impressions",
+    "printJobsWindowTitle": "Impressions",
     "warningPrintExtentBeyondViewport": "Vous pouvez verrouiller le centre et le niveau de zoom pour empêcher l'emprise d'impression de sortir de la zone d'affichage lors des interactions avec la carte.",
     "orientationPortrait": "portrait",
     "orientationLandscape": "paysage"
