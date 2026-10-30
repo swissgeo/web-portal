@@ -48,9 +48,9 @@
           "select": {
             "placeholder": "Selecziunar ina categoria",
             "options": {
-              "background": "Ina midada dal plan da basa",
-              "thematic": "Ina charta tematica",
-              "application": "In'applicaziun u in servetsch",
+              "background": "Ina repassada da la charta da fund",
+              "thematic": "Charta tematica u geodatas",
+              "application": "Applicaziun, servetsch u support tecnic",
               "other": "Insatge auter"
             }
           },

@@ -48,9 +48,9 @@
           "select": {
             "placeholder": "Select a category",
             "options": {
-              "background": "A revision of the background map",
-              "thematic": "A thematic map",
-              "application": "An application or service",
+              "background": "An error in the background map",
+              "thematic": "A thematic map or geodata",
+              "application": "An application, service or technical support",
               "other": "Something else"
             }
           },
