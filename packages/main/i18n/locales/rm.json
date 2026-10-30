@@ -17,16 +17,16 @@
     "openLayerCatalog": "Avrir il catalog da datas"
   },
   "search": {
-    "placeholder": "Tschertgar in lieu, in nivel u coordinatas…",
+    "placeholder": "Tschertgar lieus, nivels u coordinatas…",
     "buttonLabel": "Tschertgar",
     "map_tab": "Charta",
     "content_pages_tab": "Paginas da cuntegn",
     "locations_results_header": "Lieus",
     "features_results_header": "Objects",
     "layers_results_header": "Nivels",
-    "no_results": "Nagins resultats chattads",
-    "error": "La tschertga n'è betg reussida. Forsa mancan intgins resultats.",
-    "viewDataset": "Mussar la collecziun da datas"
+    "no_results": "Chattà nagins resultats",
+    "error": "Tschertga betg reussida. Insaquants resultats mancan eventualmain",
+    "viewDataset": "Avrir ils detagls dal nivel"
   },
   "footer": {
     "copyRightData": "© Datas: ",
@@ -39,18 +39,18 @@
       "mapInfo": "Infos davart la charta"
     },
     "reportIssue": {
-      "buttonTitle": "Annunziar in problem",
-      "title": "Annunziar in problem",
-      "close": "Serrar il formular «Annunziar in problem»",
+      "buttonTitle": "Rapportar in problem",
+      "title": "Rapportar in problem",
+      "close": "Serrar il formular «rapportar in problem»",
       "steps": {
         "step1": {
-          "title": "1. Object da Voss messadi (obligatoric):",
+          "title": "1. Object da Voss messadi:",
           "select": {
-            "placeholder": "Tscherner ina categoria",
+            "placeholder": "Selecziunar ina categoria",
             "options": {
-              "background": "Ina midada da la charta da fund",
+              "background": "Ina midada dal plan da basa",
               "thematic": "Ina charta tematica",
-              "application": "Ina applicaziun u in servetsch",
+              "application": "In'applicaziun u in servetsch",
               "other": "Insatge auter"
             }
           },
@@ -60,26 +60,26 @@
           }
         },
         "step2": {
-          "title": "2. Communitgai a nus en quest champ midadas da la charta u meglieraziuns da las datas, u fai dumondas davart questa website (obligatoric):"
+          "title": "2. Descrivai en quest champ midadas vi da chartas, meglieraziuns da las datas u dumondas davart questa pagina d’internet."
         },
         "step3": {
-          "title": "3. Inditgai il lieu pertutgà sin la charta:",
+          "title": "3. Marcai il lieu pertutgà sin la carta.",
           "button": "Dissegnar sin la charta"
         },
         "step4": {
-          "title": "4. Vossa adressa d'e-mail:",
-          "placeholder": "Vossa adressa d'e-mail",
-          "info": "Senza adressa d'e-mail na survegnis Vus nagina resposta."
+          "title": "4. Vossa adressa dad e-mail:",
+          "placeholder": "Vossa adressa dad e-mail",
+          "info": "Senza indicaziun d’ina adressa dad e-mail na survegnis Vus nagina resposta."
         },
         "step5": {
-          "title": "5. Agiuntar ina datoteca:",
-          "buttonLabel": "Agiuntar"
+          "title": "5. Agiuntar ina datoteca",
+          "buttonLabel": "Depositar qua u selecziunar Vossa datoteca"
         }
       },
       "notes": {
         "link": {
-          "label": "La suandanta colliaziun vegn transmessa:",
-          "permalink": "Permalink"
+          "label": "Il suandant link vegn tramess cun:",
+          "permalink": "Avrir il link"
         },
         "tos": {
           "label": "Cun trametter Voss messadi acceptais Vus las",
@@ -89,18 +89,18 @@
       },
       "cancelButton": "Interrumper",
       "submitButton": "Trametter",
-      "successMessage": "Grazia fitg per Voss messadi. Nus As respundain uschè svelt sco pussaivel.",
-      "errorMessage": "Cun trametter Voss messadi è ina errur succedida. Empruvai pli tard anc ina giada.",
+      "successMessage": "Grazia fitg per Voss messadi. Nus As respundain uschè prest sco pussaivel.",
+      "errorMessage": "Cun trametter Voss messadi è capità in sbagl. Empruvai per plaschair pli tard danovamain.",
       "validation": {
-        "subjectRequired": "L'object è obligatoric",
-        "feedbackRequired": "Il messadi è obligatoric",
-        "categoryRequired": "La categoria è obligatorica",
-        "versionRequired": "La versiun è obligatorica",
-        "userAgentRequired": "Il user agent è obligatoric",
-        "permalinkRequired": "Il permalink è obligatoric",
-        "emailInvalid": "L'adressa d'e-mail n'è betg valida",
+        "subjectRequired": "Tscherni per plaschair in tema.",
+        "feedbackRequired": "Empleni per plaschair la descripziun.",
+        "categoryRequired": "Tscherni per plaschair ina categoria.",
+        "versionRequired": "Inditgai per plaschair ina versiun.",
+        "userAgentRequired": "Inditgai per plaschair in user agent.",
+        "permalinkRequired": "Inditgai per plaschair in permalink.",
+        "emailInvalid": "L'adressa dad e-mail n'è betg valaivla.",
         "fileRequired": "L'agiunta sto esser ina datoteca",
-        "fileTooLarge": "La datoteca è memia gronda (max. {max} MB)",
+        "fileTooLarge": "La datoteca è memia gronda (max. {max} MB).",
         "fileTypeNotSupported": "Il tip da datoteca na vegn betg sustegnì"
       }
     }
@@ -213,30 +213,30 @@
   },
   "geolocation": {
     "permissionDenied": "Permissiun da localisaziun refusada",
-    "stopTracking": "Fermar il tractament da posiziun",
-    "startGeolocation": "Activar la geolocalisaziun",
+    "stopTracking": "Terminar la localisaziun",
+    "startGeolocation": "Lantschar la localisaziun",
     "recenterMap": "Recentrar la charta"
   },
   "toolbox": {
     "geolocation": {
-      "buttonTitle": "Geolocalisaziun"
+      "buttonTitle": "Posiziun"
     },
     "fullscreen": {
-      "buttonTitle": "Maletg cumplet"
+      "buttonTitle": "Maletg entir"
     },
     "3d": {
       "buttonTitle": "3D"
     },
     "drawing": {
       "buttonTitle": "Dissegnar",
-      "close": "Serrar il panel da dissegnar",
+      "close": "Serrar la fanestra da dissegn",
       "featureCount": "Nagins objects sin la charta | {count} object sin la charta | {count} objects sin la charta",
       "tools": {
-        "label": "Utensils da dissegnar",
+        "label": "Utensils da dissegn",
         "select": "Tscherner",
         "polyline": "Lingia",
         "polygon": "Poligon",
-        "circle": "Circul",
+        "circle": "Rudè",
         "text": "Text",
         "marker": "Simbol"
       },
@@ -401,15 +401,15 @@
       "buttonTitle": "Parter",
       "title": "Parter",
       "link": {
-        "tabLabel": "Parter la colliaziun",
-        "title": "Colliaziun per parter",
-        "description": "Partai la vista actuala da la charta cun auters u copiai l'URL.",
-        "generateButton": "Generar la colliaziun per parter",
-        "drawingEditableLabel": "Dissegn elavurabel",
+        "tabLabel": "Parter il link",
+        "title": "Link per parter",
+        "description": "Partai la vista da la charta actuala cun auters u copiai l'URL.",
+        "generateButton": "Generar in link per parter",
+        "drawingEditableLabel": "Dissegn modifitgabel",
         "urlLabel": "URL",
         "copyButton": "Copiar",
         "socialMediaLabel": "Via las medias socialas",
-        "qrCodeLabel": "Colliaziun sco code QR",
+        "qrCodeLabel": "Link sco code QR",
         "shareText": "Guardai questa charta",
         "ariaLabel": {
           "copyToClipboard": "Copiar en l'archiv provisoric",
@@ -422,23 +422,23 @@
       "embed": {
         "tabLabel": "Integrar",
         "title": "Integrar la charta",
-        "description": "Integrai la charta cun la colliaziun en Voss agen ambient.",
+        "description": "Integrai la charta cun il link en Voss agen conturn.",
         "generateButton": "Generar il code d'integraziun",
         "zoomOnlyCtrlLabel": "Activar il zoom mo cun la tasta Ctrl/Cmd",
         "sizeLabel": "Grondezza",
-        "sizeSmall": "Pitschna",
-        "sizeMedium": "Mesauna",
-        "sizeLarge": "Gronda",
-        "sizeCustom": "Persunalisada",
+        "sizeSmall": "Pitschen",
+        "sizeMedium": "Mesaun",
+        "sizeLarge": "Grond",
+        "sizeCustom": "Persunalisà",
         "customWidthLabel": "Ladezza",
         "customHeightLabel": "Autezza",
-        "pixelUnit": "px",
+        "pixelUnit": "Pixel",
         "fullWidthLabel": "Ladezza cumpletta (100 %)"
       },
       "ariaLabel": {
         "close": "Serrar",
         "copyToClipboard": "Copiar en l'archiv provisoric",
-        "refreshLink": "Actualisar la colliaziun per parter",
+        "refreshLink": "Actualisar il link per parter",
         "refreshEmbed": "Actualisar il code d'integraziun"
       }
     },
@@ -446,8 +446,8 @@
       "buttonTitle": "Stampar"
     },
     "featureFlag": {
-      "notAvailable": "Quest utensil n'è malavita anc betg disponibel.",
-      "workingOnIt": "Nus lavurain vi da quai :)"
+      "notAvailable": "Quest utensil n’è anc betg disponibel.",
+      "workingOnIt": "Nus lavurain vi da quai."
     }
   },
   "backgroundLayers": {
@@ -455,19 +455,19 @@
     "label": "Fund",
     "voidMap": "Nagin fund",
     "backgroundMap": "Charta da fund",
-    "colorMap": "Charta en colurs",
-    "greyMap": "Charta nair-alva",
-    "swissimage": "Fotografia aviatica"
+    "colorMap": "Charta colurada",
+    "greyMap": "Charta alv e nair",
+    "swissimage": "Fotografia or da l'aria"
   },
   "toaster": {
     "warningTitle": "Avertiment",
     "errorTitle": "Errur",
-    "successTitle": "Reussì"
+    "successTitle": "Success"
   },
   "state": {
     "drawingNotFound": "Il dissegn {id} n'è betg vegnì chattà e n'è betg vegnì restabilì",
     "restoreUnableWarning": "Il stadi da l'app n'ha betg pudì vegnir restabilì",
-    "shareLinkError": "La colliaziun per parter n'ha betg pudì vegnir generada"
+    "shareLinkError": "Il link per parter n'ha betg pudì vegnir generà"
   },
   "map": {
     "contextMenuPopup": {
@@ -484,8 +484,8 @@
     }
   },
   "error": {
-    "notFound": "{resource} n'è betg vegnì chattà.",
-    "generic": "Ina errur nunspetgada è succedida.",
+    "notFound": "{resource} n’ha betg pudì vegnir chattà.",
+    "generic": "In sbagl nunspetgà è capità.",
     "layerLoad": "Il nivel n'ha betg pudì vegnir chargià.",
     "backToMap": "Enavos a la charta",
     "resources": {
@@ -496,23 +496,23 @@
     "legendLoading": "La legenda vegn chargiada…",
     "legendError": "La legenda n'ha betg pudì vegnir chargiada.",
     "overview": "Survista",
-    "dataAccess": "Access a las datas",
+    "dataAccess": "Acquisiziun da datas",
     "metadata": "Metadatas",
     "serviceLoading": "L'adressa dal servetsch vegn chargiada…",
     "serviceError": "L'adressa dal servetsch n'ha betg pudì vegnir chargiada.",
     "abstract": "Descripziun",
-    "links": "Colliaziuns",
+    "links": "Links",
     "services": "Servetschs",
     "addToMap": "Agiuntar a la charta",
-    "removeFromMap": "Allontanar da la charta",
-    "details": "Detagls da la collecziun da datas",
-    "expandPanel": "Engrondir la vista detagliada",
-    "collapsePanel": "Reducir la vista detagliada",
+    "removeFromMap": "Stizzar da la charta",
+    "details": "Detagls dal nivel",
+    "expandPanel": "Engrondir ils detagls dal nivel",
+    "collapsePanel": "Reducir ils detagls dal nivel",
     "alreadyOnMap": "Gia sin la charta",
-    "viewDetailPage": "Mussar la pagina da detagls",
-    "showOnMap": "Mussar sin la charta",
+    "viewDetailPage": "Mussar ils detagls dal nivel",
+    "showOnMap": "Agiuntar a la charta",
     "backToCatalog": "Enavos al catalog da datas",
-    "close": "Serrar ils detagls da la collecziun da datas",
+    "close": "Serrar ils detagls da las unitads da datas",
     "backToMap": "Enavos a la charta",
     "addToMapError": "Il nivel n'ha betg pudì vegnir agiuntà a la charta",
     "openService": "Avrir en in nov tab",
@@ -522,7 +522,7 @@
     "format": "Format",
     "serviceUrl": "URL / Servetsch",
     "viewGeocat": "Guardar sin geocat.ch",
-    "copyLink": "Copiar la colliaziun al nivel",
+    "copyLink": "Copiar il link al nivel",
     "copy": "Copiar",
     "showMore": "Mussar dapli",
     "showLess": "Mussar damain",
@@ -548,7 +548,7 @@
     "fetchError": "Il profil d'autezza n'ha betg pudì vegnir chargià"
   },
   "timeSlider": {
-    "legendExplanation": "Ils regulaturs dal temp mussan la distribuziun temporala da las datas. Vus pudais utilisar ils regulaturs per filtrar la perioda mussada sin la charta.",
+    "legendExplanation": "Ils regladers mussan la repartiziun temporala da las datas. Vus pudais utilisar ils regladers per filtrar il temp che vegn inditgà sin la charta.",
     "outsideValidYearRange": "Ordaifer la perioda d'onns valaivla"
   },
   "compareSlider": {
@@ -596,7 +596,7 @@
     "howToUseGeodata": "Co poss jau utilisar las geodatas?",
     "viewGeodataInMapViewer": "Guardar las geodatas en il visualisatur da chartas",
     "discoverTopicsAndData": "Scuvrir temas e datas",
-    "geoservices": "Geoservetschs: obtegnair ed integrar datas",
+    "geoservices": "Geoservetschs: retrair ed integrar datas",
     "searchGeodata": "Tschertgar geodatas",
     "newDataAndUpdates": "Novas datas ed actualisaziuns",
     "tutorialsAndHelp": "Tutorials ed agid",
@@ -604,25 +604,25 @@
     "mapViewerNavigation": "Navigaziun en il visualisatur da chartas",
     "metadataCatalog": "Catalog da metadatas",
     "moreFeatures": "Autras funcziuns",
-    "specialistInfo": "Infurmaziuns spezialisadas",
+    "specialistInfo": "Infurmaziuns professiunalas",
     "ngdi": "Infrastructura naziunala da geodatas (INDG)",
-    "geobaseData": "Geodatas da basa, models da geodatas e normas",
+    "geobaseData": "Geodatas da basa, models da geodatas e standards",
     "metadataCatalogSwitzerland": "Catalog da las metadatas geograficas da la Svizra",
     "geoInformationFilms": "Videos davart la geoinfurmaziun",
-    "aboutUs": "Davart nus",
+    "aboutUs": "Tgi essan nus?",
     "whatIsSwissgeo": "Tge è SWISSGEO?",
     "vision": "Visiun",
     "strategy": "Strategia geoinfurmaziun Svizra",
-    "keyFigures": "Cifras da basa",
+    "keyFigures": "Cifras distinctivas",
     "organisation": "Organisaziun",
     "legalBasis": "Basas legalas",
     "mediaInformation": "Infurmaziuns per las medias",
-    "login": "S'annunziar",
+    "login": "Sa connectar",
     "modeSwitch": "Midar il modus"
   },
   "layers": {
     "expand": "Mussar ils detagls dal nivel",
-    "reorder": "Spustar il nivel (frizza ensi/engiu)",
+    "reorder": "Stuschar il nivel",
     "show": "Mussar il nivel",
     "hide": "Zuppentar il nivel",
     "info": "Infurmaziuns davart il nivel",
@@ -646,8 +646,8 @@
     "title": "Catalog da datas",
     "table": {
       "title": "Num",
-      "dataOwner": "Purschider",
-      "empty": "Nagins nivels chattads."
+      "dataOwner": "Furnitur",
+      "empty": "Chattà nagins nivels."
     },
     "loading": "Vegn chargià…",
     "error": "Il catalog n'ha betg pudì vegnir chargià.",
@@ -659,7 +659,7 @@
     "collapse": "Zuppentar il catalog da datas"
   },
   "featureInfo": {
-    "blockedContent": "(Colliaziun allontanada per motivs da segirezza)",
+    "blockedContent": "(Link allontanà per motivs da segirezza)",
     "noInformation": "Naginas infurmaziuns disponiblas.",
     "popupTitle": "Infurmaziuns davart l'object"
   }
