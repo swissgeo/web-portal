@@ -48,10 +48,10 @@
           "select": {
             "placeholder": "Kategorie auswählen",
             "options": {
-              "background": "Eine Änderung des Hintergrundplans",
-              "thematic": "Eine thematische Karte",
-              "application": "Eine Anwendung oder ein Dienst",
-              "other": "Etwas anderes"
+              "background": "Ein Fehler in der Hintergrundkarte",
+              "thematic": "Thematische Karte oder Geodaten",
+              "application": "Anwendung, Dienst oder technischer Support",
+              "other": "Sonstiges"
             }
           },
           "moreInfo": {

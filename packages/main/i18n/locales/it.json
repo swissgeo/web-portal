@@ -48,10 +48,10 @@
           "select": {
             "placeholder": "Seleziona una categoria",
             "options": {
-              "background": "Una modifica della mappa di sfondo",
-              "thematic": "Una mappa tematica",
-              "application": "Un'applicazione o un servizio",
-              "other": "Altro"
+              "background": "Una revisione della mappa di sfondo",
+              "thematic": "Una mappa tematica o geodati",
+              "application": "Un'applicazione, un servizio o assistenza tecnica",
+              "other": "Qualcos'altro"
             }
           },
           "moreInfo": {

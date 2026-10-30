@@ -49,8 +49,8 @@
             "placeholder": "Sélectionner une catégorie",
             "options": {
               "background": "Une révision du fond de plan",
-              "thematic": "Une carte thématique",
-              "application": "Une application ou un service",
+              "thematic": "Une carte thématique ou des géodonnées",
+              "application": "Une application, un service ou assistance technique",
               "other": "Autre chose"
             }
           },
