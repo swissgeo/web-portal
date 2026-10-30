@@ -1,7 +1,7 @@
 {
   "menuTitles": {
     "knowledge": "Savoir",
-    "about": "À propos de Swissgeo"
+    "about": "À propos de SWISSGEO"
   },
   "welcomeOverlay": {
     "moreInfos": "Plus d'infos",
@@ -13,11 +13,11 @@
     "layerCart": "Couches actives",
     "map": "Carte",
     "collapse": "Réduire le panneau latéral",
-    "expand": "Ouvrir le panneau latéral",
-    "openLayerCatalog": "TODO translate"
+    "expand": "Développer le panneau latéral",
+    "openLayerCatalog": "Ouvrir le catalogue de données"
   },
   "search": {
-    "placeholder": "Rechercher un lieu, une couche ou des coordonnées...",
+    "placeholder": "Rechercher un lieu, une couche ou des coordonnées…",
     "buttonLabel": "Rechercher",
     "map_tab": "Carte",
     "content_pages_tab": "Pages de contenu",
@@ -29,7 +29,7 @@
     "viewDataset": "Afficher le jeu de données"
   },
   "footer": {
-    "copyRightData": "© Données: ",
+    "copyRightData": "© Données : ",
     "termsOfUse": "Conditions d'utilisation",
     "impressum": "Mentions légales",
     "mobileNav": {
@@ -50,26 +50,26 @@
             "options": {
               "background": "Une révision du fond de plan",
               "thematic": "Une carte thématique",
-              "application": "DUne application ou un service",
+              "application": "Une application ou un service",
               "other": "Autre chose"
             }
           },
           "moreInfo": {
-            "label": "Plus d'information sur les catégories",
+            "label": "Plus d'informations sur les catégories",
             "url": "https://www.geo.admin.ch/fr/visualiseur-de-cartes-navigation-et-orientiation#Signaler-un-probl%C3%A8me"
           }
         },
         "step2": {
-          "title": "2. Faites-nous part de modifications de la carte, d’amélioration des données ou posez des questions sur ce site dans ce champ (obligatoire) :"
+          "title": "2. Faites-nous part de modifications de la carte, d'améliorations des données ou posez des questions sur ce site dans ce champ (obligatoire) :"
         },
         "step3": {
-          "title": "3. Indiquez le lieu concerné dans la carte :",
+          "title": "3. Indiquez le lieu concerné sur la carte :",
           "button": "Dessiner sur la carte"
         },
         "step4": {
-          "title": "4. Votre email :",
+          "title": "4. Votre adresse e-mail :",
           "placeholder": "Votre adresse e-mail",
-          "info": "Sans indiquer une adresse e-mail, vous ne recevrez pas de réponse"
+          "info": "Si vous n'indiquez pas d'adresse e-mail, vous ne recevrez pas de réponse."
         },
         "step5": {
           "title": "5. Joindre un fichier :",
@@ -78,7 +78,7 @@
       },
       "notes": {
         "link": {
-          "label": "Le lien suivant sera transféré:",
+          "label": "Le lien suivant sera transmis :",
           "permalink": "Permalien"
         },
         "tos": {
@@ -100,14 +100,14 @@
         "permalinkRequired": "Le permalien est obligatoire",
         "emailInvalid": "L'adresse e-mail doit être valide",
         "fileRequired": "La pièce jointe doit être un fichier",
-        "fileTooLarge": "Le fichier est trop volumineux (max. {max} MB)",
+        "fileTooLarge": "Le fichier est trop volumineux (max. {max} Mo)",
         "fileTypeNotSupported": "Le type de fichier n'est pas pris en charge"
       }
     }
   },
   "debug": {
     "openImportLocalLayersPanel": "Ouvrir le panneau d'importation des couches locales",
-    "openDrawingPanel": "TODO translate",
+    "openDrawingPanel": "Ouvrir le panneau de dessin",
     "openImportLayersPanel": "Ouvrir le panneau d'importation des couches",
     "openLayersPanel": "Ouvrir le panneau des couches",
     "importDrawingPanelTitle": "Importer un dessin depuis une URL",
@@ -189,19 +189,19 @@
         "unknown": "Inconnu"
       },
       "anchor": {
-        "top-left": "Haut gauche",
-        "top-center": "Haut centre",
-        "top-right": "Haut droite",
-        "center-left": "Centre gauche",
-        "center": "Centre",
-        "center-right": "Centre droite",
-        "bottom-left": "Bas gauche",
-        "bottom-center": "Bas centre",
-        "bottom-right": "Bas droite"
+        "top-left": "En haut à gauche",
+        "top-center": "En haut au centre",
+        "top-right": "En haut à droite",
+        "center-left": "Au centre à gauche",
+        "center": "Au centre",
+        "center-right": "Au centre à droite",
+        "bottom-left": "En bas à gauche",
+        "bottom-center": "En bas au centre",
+        "bottom-right": "En bas à droite"
       }
     },
     "openStateConfigPanel": "Ouvrir le panneau de configuration d'état",
-    "stateConfig": "panneau de configuration",
+    "stateConfig": "Configuration de l'état",
     "share": "Partager",
     "openPrintPanel": "Ouvrir le panneau d'impression",
     "openFeatureFlagsPanel": "Ouvrir le panneau des feature flags",
@@ -209,7 +209,7 @@
     "resetFeatureFlags": "Rétablir les valeurs par défaut",
     "featureFlagOverridden": "surchargé",
     "openImportDrawingPanel": "Ouvrir le panneau d'importation de dessin",
-    "drawingPanelTitle": "TODO translate"
+    "drawingPanelTitle": "Outils de dessin"
   },
   "geolocation": {
     "permissionDenied": "Autorisation de localisation refusée",
@@ -241,7 +241,7 @@
         "marker": "Symbole"
       },
       "hints": {
-        "edit": "Déplacez les poignées pour modifier la forme de l’objet.",
+        "edit": "Déplacez les poignées pour modifier la forme de l'objet.",
         "select": "Sélectionnez un objet sur la carte pour modifier son style.",
         "chooseTool": "Choisissez un outil pour commencer à dessiner sur la carte.",
         "place": "Cliquez sur la carte pour placer votre objet.",
@@ -262,8 +262,8 @@
       "shareLink": "Lien de partage",
       "copy": "Copier dans le presse-papiers",
       "allowEditing": "Autoriser la modification",
-      "shareErrorNodata": "Erreur de partage : aucune donnée de dessin disponible.",
-      "shareErrorAlreadyInProgress": "Erreur de partage : une opération de partage est déjà en cours.",
+      "shareErrorNodata": "Aucune donnée de dessin disponible.",
+      "shareErrorAlreadyInProgress": "Une opération de partage est déjà en cours.",
       "formats": {
         "geojson": "GeoJSON",
         "gpxTrack": "Trace GPX",
@@ -272,11 +272,11 @@
         "kmz": "KMZ"
       },
       "properties": {
-        "generic": "Propriétés de l’objet",
+        "generic": "Propriétés de l'objet",
         "LineString": "Propriétés de la ligne",
         "Polygon": "Propriétés du polygone",
         "Circle": "Propriétés du cercle",
-        "Point": "Propriétés du texte et du repère"
+        "Point": "Propriétés du texte et du symbole"
       },
       "fields": {
         "title": "Titre",
@@ -296,11 +296,11 @@
         "showDescription": "Afficher la description",
         "textSize": "Taille du texte",
         "placement": "Position",
-        "relativeToMarker": "Par rapport au repère",
+        "relativeToMarker": "Par rapport au symbole",
         "textColor": "Couleur du texte",
         "textHaloColor": "Couleur du halo du texte",
-        "showMarker": "Afficher le repère",
-        "markerSize": "Taille du repère"
+        "showMarker": "Afficher le symbole",
+        "markerSize": "Taille du symbole"
       },
       "metrics": {
         "length": "Longueur",
@@ -330,7 +330,7 @@
       "symbols": {
         "collection": "Collection de symboles",
         "color": "Couleur du symbole",
-        "label": "Symboles de repère",
+        "label": "Symboles",
         "empty": "Aucun symbole disponible.",
         "select": "Sélectionner le symbole : {name}",
         "collections": {
@@ -359,11 +359,11 @@
       "tabDrawing": "Dessin",
       "tabUrl": "URL",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
-      "browseButton": "Parcourir...",
+      "browseButton": "Parcourir…",
       "noFileSelected": "Aucun fichier sélectionné",
       "importFileButton": "Importer le fichier",
       "importUrlButton": "Ajouter le dessin",
-      "loadingMessage": "Importation du fichier...",
+      "loadingMessage": "Importation du fichier…",
       "successMessage": "Fichier importé avec succès : {fileName}",
       "drawingSuccessMessage": "Dessin importé avec succès",
       "fileUrlDescription": "Ou importer un fichier depuis une URL ({types}) :",
@@ -373,13 +373,13 @@
       "clearAndImportAsAdmin": "Effacer et importer en tant qu'administrateur",
       "clearAndImportAsNonAdmin": "Effacer et importer",
       "errorMessages": {
-        "invalidDrawingUrl": "L’URL du dessin est invalide",
-        "invalidDrawingAdminId": "L’identifiant administrateur du dessin est invalide",
+        "invalidDrawingUrl": "L'URL du dessin est invalide",
+        "invalidDrawingAdminId": "L'identifiant administrateur du dessin est invalide",
         "generalError": "Échec de l'importation du fichier",
         "noFileSelected": "Veuillez d'abord sélectionner un fichier",
         "noUrlEntered": "Veuillez entrer une URL",
-        "fileSizeWarning": "Le fichier est volumineux : {fileSize}MB, ce qui dépasse la limite recommandée de {maxSize}MB.",
-        "fileTooLarge": "Le fichier est trop volumineux : {fileName} (maximum {maxSize}Mo)",
+        "fileSizeWarning": "Le fichier est volumineux : {fileSize} Mo, ce qui dépasse la limite recommandée de {maxSize} Mo.",
+        "fileTooLarge": "Le fichier est trop volumineux : {fileName} (maximum {maxSize} Mo)",
         "drawingImportFailed": "Échec de l'importation du dessin",
         "kmlFetchFailed": "Échec de la récupération du KML : {status}",
         "noKmlFound": "Aucun dessin KML trouvé dans l'URL fournie",
@@ -389,13 +389,13 @@
         "adminRequired": "Des droits d'administrateur sont nécessaires pour importer ce dessin"
       },
       "close": "Fermer",
-      "drawingReplaceConfirmTitle": "TODO translate",
-      "drawingReplaceConfirmDescription": "TODO translate",
-      "drawingReplaceConfirmTemporaryNote": "TODO translate",
-      "drawingReplaceConfirmAdminNote": "TODO translate",
-      "drawingReplaceConfirmLegacyAdminNote": "TODO translate",
-      "drawingReplaceConfirmCancel": "TODO translate",
-      "drawingReplaceConfirmConfirm": "TODO translate"
+      "drawingReplaceConfirmTitle": "Remplacer le dessin actuel ?",
+      "drawingReplaceConfirmDescription": "Pour importer un dessin, le dessin existant doit être effacé. Après l'importation, vous pourrez continuer à modifier le dessin.",
+      "drawingReplaceConfirmTemporaryNote": "Nous travaillons à une procédure plus simple. N'hésitez pas à nous contacter pour nous faire part de vos remarques et suggestions.",
+      "drawingReplaceConfirmAdminNote": "Vous importez un dessin en tant que propriétaire. Si vous modifiez le dessin, le fichier original sera modifié et synchronisé avec la base de données SWISSGEO.",
+      "drawingReplaceConfirmLegacyAdminNote": "Ce dessin sera importé comme copie : le modifier ne changera pas le dessin original, contrairement à l'importation de dessins SWISSGEO en tant qu'administrateur.",
+      "drawingReplaceConfirmCancel": "Annuler",
+      "drawingReplaceConfirmConfirm": "Effacer et importer"
     },
     "share": {
       "buttonTitle": "Partager",
@@ -433,7 +433,7 @@
         "customWidthLabel": "Largeur",
         "customHeightLabel": "Hauteur",
         "pixelUnit": "px",
-        "fullWidthLabel": "Largeur complète (100%)"
+        "fullWidthLabel": "Largeur complète (100 %)"
       },
       "ariaLabel": {
         "close": "Fermer",
@@ -453,11 +453,11 @@
   "backgroundLayers": {
     "title": "Cartes affichées",
     "label": "Fond",
-    "voidMap": "Carte vide",
+    "voidMap": "Aucun fond",
     "backgroundMap": "Carte de fond",
     "colorMap": "Carte couleur",
     "greyMap": "Carte noir et blanc",
-    "swissimage": "Imagerie aérienne"
+    "swissimage": "Image aérienne"
   },
   "toaster": {
     "warningTitle": "Attention",
@@ -471,11 +471,11 @@
   },
   "map": {
     "contextMenuPopup": {
-      "elevation": "Élévation",
+      "elevation": "Altitude",
       "title": "Position",
       "tabPosition": "Coordonnées",
       "tabShare": "Partager la position",
-      "errorFetchingElevation": "Erreur de récupération de l'élévation",
+      "errorFetchingElevation": "Erreur lors de la récupération de l'altitude",
       "errorFetchingW3W": "Erreur de récupération de l'adresse What3Words",
       "featureFlag": {
         "notAvailable": "La fenêtre contextuelle de position n'est malheureusement pas encore disponible.",
@@ -494,12 +494,12 @@
   },
   "dataset": {
     "legendLoading": "Chargement de la légende…",
-    "legendError": "La légende n’a pas pu être chargée.",
+    "legendError": "La légende n'a pas pu être chargée.",
     "overview": "Aperçu",
     "dataAccess": "Accès aux données",
     "metadata": "Métadonnées",
-    "serviceLoading": "Chargement de l’adresse du service…",
-    "serviceError": "L’adresse du service n’a pas pu être chargée.",
+    "serviceLoading": "Chargement de l'adresse du service…",
+    "serviceError": "L'adresse du service n'a pas pu être chargée.",
     "abstract": "Résumé",
     "links": "Liens",
     "services": "Services",
@@ -518,7 +518,7 @@
     "openService": "Ouvrir dans un nouvel onglet",
     "identifier": "Identifiant",
     "mapServices": "WMS / WMTS",
-    "otherAccess": "Autres possibilités d’accès",
+    "otherAccess": "Autres possibilités d'accès",
     "format": "Format",
     "serviceUrl": "URL / Service",
     "viewGeocat": "Consulter sur geocat.ch",
@@ -527,19 +527,19 @@
     "showMore": "Afficher plus",
     "showLess": "Afficher moins",
     "contact": "Contact",
-    "aggregated": "Agrégré"
+    "aggregated": "Agrégé"
   },
   "elevationProfile": {
-    "windowTitle": "Profil d'élévation",
+    "windowTitle": "Profil altimétrique",
     "plot": {
       "xAxis": "Distance",
-      "yAxis": "Élévation",
-      "noData": "Aucune donnée d'élévation disponible"
+      "yAxis": "Altitude",
+      "noData": "Aucune donnée d'altitude disponible"
     },
     "metadata": {
-      "elevationDifference": "Différence d'élévation",
-      "elevationUp": "Montée",
-      "elevationDown": "Descente",
+      "elevationDifference": "Dénivelé",
+      "elevationUp": "Dénivelé positif",
+      "elevationDown": "Dénivelé négatif",
       "poiUp": "Point le plus haut",
       "poiDown": "Point le plus bas",
       "distance": "Distance linéaire",
@@ -573,19 +573,19 @@
     "download": "Télécharger",
     "zoomLevel": "Niveau de zoom",
     "zoomLevelForPrint": "Niveau de zoom pour l'impression",
-    "warningOutsideViewportLabel": "L'emprise est-elle hors du viewport",
+    "warningOutsideViewportLabel": "Emprise d'impression hors de la vue",
     "printScale": "Échelle d'impression",
-    "enableStrictZoomStepsLabel": "Niveau de zoom ajusté aux arrondis",
+    "enableStrictZoomStepsLabel": "Activer les niveaux de zoom fixes",
     "lockCenterToViewLabel": "Verrouiller le centre sur la vue actuelle",
     "lockZoomToViewLabel": "Verrouiller le zoom sur la vue actuelle",
     "printSizeLabel": "Format d'impression",
     "printResolutionLabel": "Résolution d'impression",
     "printOrientationLabel": "Orientation d'impression",
-    "zoomToLockedZoomLevel": "Zoom au niveau de zoom verrouillé",
+    "zoomToLockedZoomLevel": "Zoomer au niveau de zoom verrouillé",
     "sendPrintRequest": "Envoyer la demande d'impression",
-    "openPrintJobs": "Ouvrir les requêtes d'impression",
-    "printJobsWindowTitle": "Requêtes d'impression",
-    "warningPrintExtentBeyondViewport": "Vous pouvez verrouiller le centre et le niveau de zoom pour empêcher l'emprise d'impression de sortir du viewport lors des interactions avec la carte.",
+    "openPrintJobs": "Ouvrir les travaux d'impression",
+    "printJobsWindowTitle": "Travaux d'impression",
+    "warningPrintExtentBeyondViewport": "Vous pouvez verrouiller le centre et le niveau de zoom pour empêcher l'emprise d'impression de sortir de la zone d'affichage lors des interactions avec la carte.",
     "orientationPortrait": "portrait",
     "orientationLandscape": "paysage"
   },
@@ -610,14 +610,14 @@
     "metadataCatalogSwitzerland": "Catalogue des métadonnées géographiques de la Suisse",
     "geoInformationFilms": "Vidéos sur la géoinformation",
     "aboutUs": "À propos de nous",
-    "whatIsSwissgeo": "Qu’est-ce que SWISSGEO ?",
+    "whatIsSwissgeo": "Qu'est-ce que SWISSGEO ?",
     "vision": "Vision",
     "strategy": "Stratégie suisse pour la géoinformation",
     "keyFigures": "Chiffres clés",
     "organisation": "Organisation",
     "legalBasis": "Bases légales",
     "mediaInformation": "Informations pour les médias",
-    "login": "TODO translate",
+    "login": "Se connecter",
     "modeSwitch": "Changer de mode"
   },
   "layers": {
@@ -638,29 +638,29 @@
     }
   },
   "layerCart": {
-    "close": "TODO translate",
-    "expand": "TODO translate",
-    "collapse": "TODO translate"
+    "close": "Fermer",
+    "expand": "Afficher les couches actives",
+    "collapse": "Masquer les couches actives"
   },
   "layerCatalog": {
-    "title": "TODO translate",
+    "title": "Catalogue de données",
     "table": {
-      "title": "TODO translate",
-      "dataOwner": "TODO translate",
-      "empty": "TODO translate"
+      "title": "Nom",
+      "dataOwner": "Fournisseur",
+      "empty": "Aucune couche trouvée."
     },
-    "loading": "TODO translate",
-    "error": "TODO translate",
-    "retry": "TODO translate",
-    "searchLabel": "TODO translate",
-    "searchPlaceholder": "TODO translate",
-    "close": "TODO translate",
-    "expand": "TODO translate",
-    "collapse": "TODO translate"
+    "loading": "Chargement…",
+    "error": "Le catalogue n'a pas pu être chargé.",
+    "retry": "Réessayer",
+    "searchLabel": "Rechercher des couches",
+    "searchPlaceholder": "Rechercher",
+    "close": "Fermer",
+    "expand": "Afficher le catalogue de données",
+    "collapse": "Masquer le catalogue de données"
   },
   "featureInfo": {
-    "blockedContent": "To Translate - Feature Info Blocked Content",
-    "noInformation": "To Translate - Feature Info No Information",
-    "popupTitle": "To Translate - Feature Info Popup Title"
+    "blockedContent": "(Lien supprimé pour des raisons de sécurité)",
+    "noInformation": "Aucune information disponible.",
+    "popupTitle": "Informations sur l'objet"
   }
 }

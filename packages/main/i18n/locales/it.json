@@ -1,215 +1,215 @@
 {
   "menuTitles": {
-    "knowledge": "TODO translate",
-    "about": "TODO translate"
+    "knowledge": "Sapere",
+    "about": "Informazioni su SWISSGEO"
   },
   "welcomeOverlay": {
-    "moreInfos": "TODO translate",
-    "startPrototype": "TODO translate",
-    "dontShowAgain": "TODO translate"
+    "moreInfos": "Maggiori informazioni",
+    "startPrototype": "Avvia il prototipo",
+    "dontShowAgain": "Non mostrare più"
   },
   "menu": {
-    "search": "TODO translate",
-    "layerCart": "TODO translate",
-    "map": "TODO translate",
-    "collapse": "TODO translate",
-    "expand": "TODO translate",
-    "openLayerCatalog": "TODO translate"
+    "search": "Ricerca",
+    "layerCart": "Livelli attivi",
+    "map": "Mappa",
+    "collapse": "Riduci il pannello laterale",
+    "expand": "Espandi il pannello laterale",
+    "openLayerCatalog": "Apri il catalogo dei dati"
   },
   "search": {
-    "placeholder": "TODO translate",
-    "buttonLabel": "TODO translate",
-    "map_tab": "TODO translate",
-    "content_pages_tab": "TODO translate",
-    "locations_results_header": "TODO translate",
-    "features_results_header": "TODO translate",
-    "layers_results_header": "TODO translate",
-    "no_results": "TODO translate",
-    "error": "TODO translate",
-    "viewDataset": "TODO translate"
+    "placeholder": "Cerca un luogo, un livello o delle coordinate…",
+    "buttonLabel": "Cerca",
+    "map_tab": "Mappa",
+    "content_pages_tab": "Pagine di contenuto",
+    "locations_results_header": "Luoghi",
+    "features_results_header": "Oggetti",
+    "layers_results_header": "Livelli",
+    "no_results": "Nessun risultato trovato",
+    "error": "Ricerca non riuscita. Alcuni risultati potrebbero mancare.",
+    "viewDataset": "Mostra il set di dati"
   },
   "footer": {
-    "copyRightData": "TODO translate",
-    "termsOfUse": "TODO translate",
-    "impressum": "TODO translate",
+    "copyRightData": "© Dati: ",
+    "termsOfUse": "Condizioni d'uso",
+    "impressum": "Colophon",
     "mobileNav": {
-      "map": "TODO translate",
-      "catalog": "TODO translate",
-      "tools": "TODO translate",
-      "mapInfo": "TODO translate"
+      "map": "Mappa",
+      "catalog": "Catalogo dei dati",
+      "tools": "Strumenti",
+      "mapInfo": "Info mappa"
     },
     "reportIssue": {
-      "buttonTitle": "TODO translate",
-      "title": "TODO translate",
-      "close": "TODO translate",
+      "buttonTitle": "Segnala un problema",
+      "title": "Segnala un problema",
+      "close": "Chiudi il modulo «Segnala un problema»",
       "steps": {
         "step1": {
-          "title": "TODO translate",
+          "title": "1. Oggetto del tuo messaggio (obbligatorio):",
           "select": {
-            "placeholder": "TODO translate",
+            "placeholder": "Seleziona una categoria",
             "options": {
-              "background": "TODO translate",
-              "thematic": "TODO translate",
-              "application": "TODO translate",
-              "other": "TODO translate"
+              "background": "Una modifica della mappa di sfondo",
+              "thematic": "Una mappa tematica",
+              "application": "Un'applicazione o un servizio",
+              "other": "Altro"
             }
           },
           "moreInfo": {
-            "label": "TODO translate",
-            "url": "TODO translate"
+            "label": "Maggiori informazioni sulle categorie",
+            "url": "https://www.geo.admin.ch/it/visualizzatore-di-mappe-navigazione-e-orientazione#Segnalare-un-problema"
           }
         },
         "step2": {
-          "title": "TODO translate"
+          "title": "2. Comunicaci in questo campo modifiche della mappa o miglioramenti dei dati, oppure poni domande su questo sito web (obbligatorio):"
         },
         "step3": {
-          "title": "TODO translate",
-          "button": "TODO translate"
+          "title": "3. Indica il luogo interessato sulla mappa:",
+          "button": "Disegna sulla mappa"
         },
         "step4": {
-          "title": "TODO translate",
-          "placeholder": "TODO translate",
-          "info": "TODO translate"
+          "title": "4. Il tuo indirizzo e-mail:",
+          "placeholder": "Il tuo indirizzo e-mail",
+          "info": "Senza indirizzo e-mail non riceverai alcuna risposta."
         },
         "step5": {
-          "title": "TODO translate",
-          "buttonLabel": "TODO translate"
+          "title": "5. Allega un file:",
+          "buttonLabel": "Allega"
         }
       },
       "notes": {
         "link": {
-          "label": "TODO translate",
-          "permalink": "TODO translate"
+          "label": "Verrà trasmesso il seguente link:",
+          "permalink": "Permalink"
         },
         "tos": {
-          "label": "TODO translate",
-          "link": "TODO translate",
-          "url": "TODO translate"
+          "label": "Inviando il messaggio accetti le",
+          "link": "condizioni d'uso",
+          "url": "https://www.geo.admin.ch/it/condizioni-generali-di-utilizzo-ifdg#feedback"
         }
       },
-      "cancelButton": "TODO translate",
-      "submitButton": "TODO translate",
-      "successMessage": "TODO translate",
-      "errorMessage": "TODO translate",
+      "cancelButton": "Annulla",
+      "submitButton": "Invia",
+      "successMessage": "Grazie per il tuo messaggio. Ti risponderemo il prima possibile.",
+      "errorMessage": "Si è verificato un errore durante l'invio del messaggio. Riprova più tardi.",
       "validation": {
-        "subjectRequired": "TODO translate",
-        "feedbackRequired": "TODO translate",
-        "categoryRequired": "TODO translate",
-        "versionRequired": "TODO translate",
-        "userAgentRequired": "TODO translate",
-        "permalinkRequired": "TODO translate",
-        "emailInvalid": "TODO translate",
-        "fileRequired": "TODO translate",
-        "fileTooLarge": "TODO translate",
-        "fileTypeNotSupported": "TODO translate"
+        "subjectRequired": "L'oggetto è obbligatorio",
+        "feedbackRequired": "Il messaggio è obbligatorio",
+        "categoryRequired": "La categoria è obbligatoria",
+        "versionRequired": "La versione è obbligatoria",
+        "userAgentRequired": "Lo user agent è obbligatorio",
+        "permalinkRequired": "Il permalink è obbligatorio",
+        "emailInvalid": "L'indirizzo e-mail non è valido",
+        "fileRequired": "L'allegato deve essere un file",
+        "fileTooLarge": "Il file è troppo grande (max. {max} MB)",
+        "fileTypeNotSupported": "Tipo di file non supportato"
       }
     }
   },
   "debug": {
-    "openImportLocalLayersPanel": "TODO translate",
-    "openDrawingPanel": "TODO translate",
-    "openImportLayersPanel": "TODO translate",
-    "openLayersPanel": "TODO translate",
-    "importDrawingPanelTitle": "TODO translate",
-    "drawingNameLabel": "TODO translate",
-    "drawingToolSelectLabel": "TODO translate",
-    "drawingToolPoint": "TODO translate",
-    "drawingToolLine": "TODO translate",
-    "drawingToolText": "TODO translate",
-    "drawingToolMeasurement": "TODO translate",
-    "drawingInstructionPoint": "TODO translate",
-    "drawingInstructionLine": "TODO translate",
-    "drawingInstructionText": "TODO translate",
-    "drawingInstructionMeasurementRadius": "TODO translate",
-    "drawingInstructionMeasurementPath": "TODO translate",
-    "drawingInstructionDefault": "TODO translate",
-    "drawingFeaturesDrawnLabel": "TODO translate",
-    "drawingExportLabel": "TODO translate",
-    "drawingExportKML": "TODO translate",
-    "drawingExportKMZ": "TODO translate",
-    "drawingExportGPX": "TODO translate",
-    "drawingClearAll": "TODO translate",
-    "drawingClearConfirmTitle": "TODO translate",
-    "drawingClearConfirmDescription": "TODO translate",
-    "drawingClearConfirmCancel": "TODO translate",
-    "drawingClearConfirmConfirm": "TODO translate",
+    "openImportLocalLayersPanel": "Apri il pannello «Importa livelli locali»",
+    "openDrawingPanel": "Apri il pannello di disegno",
+    "openImportLayersPanel": "Apri il pannello «Importa livelli»",
+    "openLayersPanel": "Apri il pannello dei livelli",
+    "importDrawingPanelTitle": "Importa un disegno da un URL",
+    "drawingNameLabel": "Nome del disegno",
+    "drawingToolSelectLabel": "Seleziona uno strumento di disegno:",
+    "drawingToolPoint": "Punto",
+    "drawingToolLine": "Linea",
+    "drawingToolText": "Testo",
+    "drawingToolMeasurement": "Misura",
+    "drawingInstructionPoint": "Fai clic sulla mappa per aggiungere un punto",
+    "drawingInstructionLine": "Fai clic per disegnare una linea, doppio clic per terminare, oppure fai clic vicino al punto iniziale per chiudere il poligono",
+    "drawingInstructionText": "Fai clic sulla mappa per aggiungere un testo",
+    "drawingInstructionMeasurementRadius": "Fai clic su due punti per definire un raggio; aggiungi un terzo punto per continuare come percorso",
+    "drawingInstructionMeasurementPath": "Continua a fare clic per aggiungere punti al percorso, doppio clic per terminare",
+    "drawingInstructionDefault": "Fai clic per iniziare a disegnare",
+    "drawingFeaturesDrawnLabel": "Elementi disegnati",
+    "drawingExportLabel": "Esporta:",
+    "drawingExportKML": "Esporta KML",
+    "drawingExportKMZ": "Esporta KMZ",
+    "drawingExportGPX": "Esporta GPX",
+    "drawingClearAll": "Elimina tutti i disegni",
+    "drawingClearConfirmTitle": "Eliminare tutti i disegni?",
+    "drawingClearConfirmDescription": "Questa azione rimuove tutti i disegni dalla sessione corrente.",
+    "drawingClearConfirmCancel": "Annulla",
+    "drawingClearConfirmConfirm": "Elimina",
     "drawingHoverHint": {
-      "selectFeature": "TODO translate",
-      "nothingToSelect": "TODO translate",
-      "targetMarker": "TODO translate",
-      "targetText": "TODO translate",
-      "targetLine": "TODO translate",
-      "targetPolygon": "TODO translate",
-      "targetMeasurement": "TODO translate",
-      "targetFeature": "TODO translate"
+      "selectFeature": "Fai clic per selezionare {target}",
+      "nothingToSelect": "Niente da selezionare",
+      "targetMarker": "il simbolo",
+      "targetText": "il testo",
+      "targetLine": "la linea",
+      "targetPolygon": "il poligono",
+      "targetMeasurement": "la misura",
+      "targetFeature": "l'elemento"
     },
     "drawingFeatureInfo": {
-      "windowTitle": "TODO translate",
-      "typeLabel": "TODO translate",
-      "titleLabel": "TODO translate",
-      "textLabel": "TODO translate",
-      "titleOrTextLabel": "TODO translate",
-      "descriptionLabel": "TODO translate",
-      "coordinatesLabel": "TODO translate",
-      "areaLabel": "TODO translate",
-      "perimeterLabel": "TODO translate",
-      "lineStyleLabel": "TODO translate",
-      "strokeWidthLabel": "TODO translate",
-      "strokeOpacityLabel": "TODO translate",
-      "strokeColorLabel": "TODO translate",
-      "dashedLineLabel": "TODO translate",
-      "fillColorLabel": "TODO translate",
-      "fillOpacityLabel": "TODO translate",
-      "markerStyleButton": "TODO translate",
-      "textStyleButton": "TODO translate",
-      "hideDescriptionOnMap": "TODO translate",
-      "showDescriptionOnMap": "TODO translate",
-      "markerSizeLabel": "TODO translate",
-      "markerColorLabel": "TODO translate",
-      "markerSymbolLabel": "TODO translate",
-      "textSizeLabel": "TODO translate",
-      "textColorLabel": "TODO translate",
-      "textAnchorLabel": "TODO translate",
-      "deleteFeatureButton": "TODO translate",
-      "sizeSmall": "TODO translate",
-      "sizeMedium": "TODO translate",
-      "sizeLarge": "TODO translate",
-      "sizeExtraLarge": "TODO translate",
-      "strokeThin": "TODO translate",
-      "strokeMedium": "TODO translate",
-      "strokeThick": "TODO translate",
-      "strokeExtraThick": "TODO translate",
+      "windowTitle": "Informazioni sull'elemento",
+      "typeLabel": "Tipo",
+      "titleLabel": "Titolo",
+      "textLabel": "Testo",
+      "titleOrTextLabel": "Titolo/testo",
+      "descriptionLabel": "Descrizione",
+      "coordinatesLabel": "Coordinate",
+      "areaLabel": "Superficie",
+      "perimeterLabel": "Perimetro",
+      "lineStyleLabel": "Stile della linea",
+      "strokeWidthLabel": "Spessore della linea",
+      "strokeOpacityLabel": "Opacità della linea",
+      "strokeColorLabel": "Colore della linea",
+      "dashedLineLabel": "Linea tratteggiata",
+      "fillColorLabel": "Colore di riempimento",
+      "fillOpacityLabel": "Opacità del riempimento",
+      "markerStyleButton": "Stile del simbolo",
+      "textStyleButton": "Stile del testo",
+      "hideDescriptionOnMap": "Nascondi la descrizione sulla mappa",
+      "showDescriptionOnMap": "Mostra la descrizione sulla mappa",
+      "markerSizeLabel": "Dimensione del simbolo",
+      "markerColorLabel": "Colore del simbolo",
+      "markerSymbolLabel": "Simbolo",
+      "textSizeLabel": "Dimensione del testo",
+      "textColorLabel": "Colore del testo",
+      "textAnchorLabel": "Ancoraggio del testo",
+      "deleteFeatureButton": "Elimina l'elemento",
+      "sizeSmall": "Piccolo",
+      "sizeMedium": "Medio",
+      "sizeLarge": "Grande",
+      "sizeExtraLarge": "Molto grande",
+      "strokeThin": "Sottile",
+      "strokeMedium": "Medio",
+      "strokeThick": "Spesso",
+      "strokeExtraThick": "Molto spesso",
       "kind": {
-        "point": "TODO translate",
-        "text": "TODO translate",
-        "lineString": "TODO translate",
-        "polygon": "TODO translate",
-        "measurementRadius": "TODO translate",
-        "measurementPath": "TODO translate",
-        "unknown": "TODO translate"
+        "point": "Punto",
+        "text": "Testo",
+        "lineString": "Linea",
+        "polygon": "Poligono",
+        "measurementRadius": "Misura (raggio)",
+        "measurementPath": "Misura (percorso)",
+        "unknown": "Sconosciuto"
       },
       "anchor": {
-        "top-left": "TODO translate",
-        "top-center": "TODO translate",
-        "top-right": "TODO translate",
-        "center-left": "TODO translate",
-        "center": "TODO translate",
-        "center-right": "TODO translate",
-        "bottom-left": "TODO translate",
-        "bottom-center": "TODO translate",
-        "bottom-right": "TODO translate"
+        "top-left": "In alto a sinistra",
+        "top-center": "In alto al centro",
+        "top-right": "In alto a destra",
+        "center-left": "Al centro a sinistra",
+        "center": "Al centro",
+        "center-right": "Al centro a destra",
+        "bottom-left": "In basso a sinistra",
+        "bottom-center": "In basso al centro",
+        "bottom-right": "In basso a destra"
       }
     },
-    "openStateConfigPanel": "TODO translate",
-    "stateConfig": "TODO translate",
-    "share": "TODO translate",
-    "openPrintPanel": "TODO translate",
-    "openFeatureFlagsPanel": "TODO translate",
-    "featureFlagsPanelTitle": "TODO translate",
-    "resetFeatureFlags": "TODO translate",
-    "featureFlagOverridden": "TODO translate",
-    "openImportDrawingPanel": "TODO translate",
-    "drawingPanelTitle": "TODO translate"
+    "openStateConfigPanel": "Apri il pannello di configurazione dello stato",
+    "stateConfig": "Configurazione dello stato",
+    "share": "Condividi",
+    "openPrintPanel": "Apri il pannello di stampa",
+    "openFeatureFlagsPanel": "Apri il pannello dei feature flag",
+    "featureFlagsPanelTitle": "Feature flag",
+    "resetFeatureFlags": "Ripristina i valori predefiniti",
+    "featureFlagOverridden": "sovrascritto",
+    "openImportDrawingPanel": "Apri il pannello «Importa disegno»",
+    "drawingPanelTitle": "Strumenti di disegno"
   },
   "geolocation": {
     "permissionDenied": "Autorizzazione alla posizione negata",
@@ -219,13 +219,13 @@
   },
   "toolbox": {
     "geolocation": {
-      "buttonTitle": "TODO translate"
+      "buttonTitle": "Geolocalizzazione"
     },
     "fullscreen": {
-      "buttonTitle": "TODO translate"
+      "buttonTitle": "Schermo intero"
     },
     "3d": {
-      "buttonTitle": "TODO translate"
+      "buttonTitle": "3D"
     },
     "drawing": {
       "buttonTitle": "Disegno",
@@ -241,10 +241,10 @@
         "marker": "Simbolo"
       },
       "hints": {
-        "edit": "Trascina le maniglie per modificare la forma dell’oggetto.",
+        "edit": "Trascina le maniglie per modificare la forma dell'oggetto.",
         "select": "Seleziona un oggetto sulla mappa per modificarne lo stile.",
         "chooseTool": "Scegli uno strumento per iniziare a disegnare sulla mappa.",
-        "place": "Fai clic sulla mappa per posizionare l’oggetto.",
+        "place": "Fai clic sulla mappa per posizionare l'oggetto.",
         "circle": "Fai clic per definire il centro, poi fai clic per definire il raggio.",
         "addPoints": "Fai clic per aggiungere punti. Fai doppio clic per terminare.",
         "drawing": "Stai disegnando un nuovo oggetto.",
@@ -262,8 +262,8 @@
       "shareLink": "Link di condivisione",
       "copy": "Copia negli appunti",
       "allowEditing": "Consenti la modifica",
-      "shareErrorNodata": "Errore di condivisione: nessun dato di disegno disponibile.",
-      "shareErrorAlreadyInProgress": "Errore di condivisione: un'operazione di condivisione è già in corso.",
+      "shareErrorNodata": "Nessun dato di disegno disponibile.",
+      "shareErrorAlreadyInProgress": "Un'operazione di condivisione è già in corso.",
       "formats": {
         "geojson": "GeoJSON",
         "gpxTrack": "Traccia GPX",
@@ -272,11 +272,11 @@
         "kmz": "KMZ"
       },
       "properties": {
-        "generic": "Proprietà dell’oggetto",
+        "generic": "Proprietà dell'oggetto",
         "LineString": "Proprietà della linea",
         "Polygon": "Proprietà del poligono",
         "Circle": "Proprietà del cerchio",
-        "Point": "Proprietà del testo e dell’indicatore"
+        "Point": "Proprietà del testo e del simbolo"
       },
       "fields": {
         "title": "Titolo",
@@ -296,11 +296,11 @@
         "showDescription": "Mostra descrizione",
         "textSize": "Dimensione del testo",
         "placement": "Posizione",
-        "relativeToMarker": "Rispetto all’indicatore",
+        "relativeToMarker": "Rispetto al simbolo",
         "textColor": "Colore del testo",
-        "textHaloColor": "Colore dell’alone del testo",
-        "showMarker": "Mostra indicatore",
-        "markerSize": "Dimensione dell’indicatore"
+        "textHaloColor": "Colore dell'alone del testo",
+        "showMarker": "Mostra simbolo",
+        "markerSize": "Dimensione del simbolo"
       },
       "metrics": {
         "length": "Lunghezza",
@@ -330,7 +330,7 @@
       "symbols": {
         "collection": "Raccolta di simboli",
         "color": "Colore del simbolo",
-        "label": "Simboli degli indicatori",
+        "label": "Simboli",
         "empty": "Nessun simbolo disponibile.",
         "select": "Seleziona simbolo: {name}",
         "collections": {
@@ -343,324 +343,324 @@
       "title": "Disegno"
     },
     "measure": {
-      "buttonTitle": "TODO translate"
+      "buttonTitle": "Misura"
     },
     "compare": {
-      "buttonTitle": "TODO translate"
+      "buttonTitle": "Confronta"
     },
     "timeSlider": {
-      "buttonTitle": "TODO translate"
+      "buttonTitle": "Cursore temporale"
     },
     "import": {
-      "buttonTitle": "TODO translate",
-      "title": "TODO translate",
-      "description": "TODO translate",
-      "tabData": "Data",
+      "buttonTitle": "Importa",
+      "title": "Importa un file o un URL",
+      "description": "Tipi di file accettati: {types}",
+      "tabData": "Dati",
       "tabDrawing": "Disegno",
-      "tabUrl": "TODO translate",
-      "urlPlaceholder": "TODO translate",
-      "browseButton": "TODO translate",
-      "noFileSelected": "TODO translate",
-      "importFileButton": "TODO translate",
+      "tabUrl": "URL",
+      "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
+      "browseButton": "Sfoglia…",
+      "noFileSelected": "Nessun file selezionato",
+      "importFileButton": "Importa il file",
       "importUrlButton": "Importa il disegno",
-      "loadingMessage": "TODO translate",
-      "successMessage": "TODO translate",
-      "drawingSuccessMessage": "TODO translate",
-      "fileUrlDescription": "TODO translate",
-      "fileUrlPlaceholder": "TODO translate",
-      "importFileUrlButton": "TODO translate",
+      "loadingMessage": "Importazione del file…",
+      "successMessage": "File importato correttamente: {fileName}",
+      "drawingSuccessMessage": "Disegno importato correttamente",
+      "fileUrlDescription": "Oppure importa un file da un URL ({types}):",
+      "fileUrlPlaceholder": "https://example.com/data.gpx",
+      "importFileUrlButton": "Importa da URL",
       "cancelImport": "Annulla l'importazione",
       "clearAndImportAsAdmin": "Cancella e importa come amministratore",
       "clearAndImportAsNonAdmin": "Cancella e importa",
       "errorMessages": {
-        "invalidDrawingUrl": "L’URL del disegno non è valido",
-        "invalidDrawingAdminId": "L’ID amministratore del disegno non è valido",
+        "invalidDrawingUrl": "L'URL del disegno non è valido",
+        "invalidDrawingAdminId": "L'ID amministratore del disegno non è valido",
         "generalError": "Errore durante l'importazione del file",
         "noFileSelected": "Seleziona prima un file",
         "noUrlEntered": "Inserisci un URL",
-        "fileSizeWarning": "La dimensione del file è {fileSize}MB, che supera il massimo consigliato di {maxSize}MB",
-        "fileTooLarge": "TODO translate",
+        "fileSizeWarning": "La dimensione del file è {fileSize} MB, che supera il massimo consigliato di {maxSize} MB",
+        "fileTooLarge": "Il file è troppo grande: {fileName} (massimo {maxSize} MB)",
         "drawingImportFailed": "Impossibile importare il disegno",
         "kmlFetchFailed": "Impossibile recuperare il KML: {status}",
-        "noKmlFound": "TODO translate",
+        "noKmlFound": "Nessun disegno KML trovato all'URL indicato",
         "domainNotAllowed": "Recupero da {domain} non consentito",
         "unsupportedUrlType": "Tipo di file non supportato. L'URL deve terminare con {types}",
         "fetchFailed": "Impossibile recuperare il file dall'URL (HTTP {status})",
         "adminRequired": "Per importare questo disegno sono necessari i privilegi di amministratore"
       },
       "close": "Chiudi",
-      "drawingReplaceConfirmTitle": "TODO translate",
-      "drawingReplaceConfirmDescription": "TODO translate",
-      "drawingReplaceConfirmTemporaryNote": "TODO translate",
-      "drawingReplaceConfirmAdminNote": "TODO translate",
-      "drawingReplaceConfirmLegacyAdminNote": "TODO translate",
-      "drawingReplaceConfirmCancel": "TODO translate",
-      "drawingReplaceConfirmConfirm": "TODO translate"
+      "drawingReplaceConfirmTitle": "Sostituire il disegno attuale?",
+      "drawingReplaceConfirmDescription": "Per importare un disegno occorre eliminare quello esistente. Dopo l'importazione potrai continuare a modificare il disegno.",
+      "drawingReplaceConfirmTemporaryNote": "Stiamo lavorando a una procedura più semplice. Contattaci pure per inviarci feedback e suggerimenti.",
+      "drawingReplaceConfirmAdminNote": "Stai importando un disegno come proprietario. Se modifichi il disegno, il file originale viene modificato e sincronizzato con la banca dati SWISSGEO.",
+      "drawingReplaceConfirmLegacyAdminNote": "Questo disegno viene importato come copia: modificarlo non cambia il disegno originale, a differenza dell'importazione di disegni SWISSGEO come amministratore.",
+      "drawingReplaceConfirmCancel": "Annulla",
+      "drawingReplaceConfirmConfirm": "Elimina e importa"
     },
     "share": {
-      "buttonTitle": "TODO translate",
-      "title": "TODO translate",
+      "buttonTitle": "Condividi",
+      "title": "Condividi",
       "link": {
-        "tabLabel": "TODO translate",
-        "title": "TODO translate",
-        "description": "TODO translate",
-        "generateButton": "TODO translate",
-        "drawingEditableLabel": "TODO translate",
-        "urlLabel": "TODO translate",
-        "copyButton": "TODO translate",
-        "socialMediaLabel": "TODO translate",
-        "qrCodeLabel": "TODO translate",
-        "shareText": "TODO translate",
+        "tabLabel": "Condividi il link",
+        "title": "Link di condivisione",
+        "description": "Condividi la vista attuale della mappa con altri o copia l'URL.",
+        "generateButton": "Genera il link di condivisione",
+        "drawingEditableLabel": "Disegno modificabile",
+        "urlLabel": "URL",
+        "copyButton": "Copia",
+        "socialMediaLabel": "Tramite i social media",
+        "qrCodeLabel": "Link come codice QR",
+        "shareText": "Guarda questa mappa",
         "ariaLabel": {
-          "copyToClipboard": "TODO translate",
-          "email": "TODO translate",
-          "facebook": "TODO translate",
-          "linkedin": "TODO translate",
-          "whatsapp": "TODO translate"
+          "copyToClipboard": "Copia negli appunti",
+          "email": "Condividi via e-mail",
+          "facebook": "Condividi su Facebook",
+          "linkedin": "Condividi su LinkedIn",
+          "whatsapp": "Condividi su WhatsApp"
         }
       },
       "embed": {
-        "tabLabel": "TODO translate",
-        "title": "TODO translate",
-        "description": "TODO translate",
-        "generateButton": "TODO translate",
-        "zoomOnlyCtrlLabel": "TODO translate",
-        "sizeLabel": "TODO translate",
-        "sizeSmall": "TODO translate",
-        "sizeMedium": "TODO translate",
-        "sizeLarge": "TODO translate",
-        "sizeCustom": "TODO translate",
-        "customWidthLabel": "TODO translate",
-        "customHeightLabel": "TODO translate",
-        "pixelUnit": "TODO translate",
-        "fullWidthLabel": "TODO translate"
+        "tabLabel": "Incorpora",
+        "title": "Incorpora la mappa",
+        "description": "Incorpora la mappa nel tuo ambiente con il link.",
+        "generateButton": "Genera il codice di incorporamento",
+        "zoomOnlyCtrlLabel": "Attiva lo zoom solo con il tasto Ctrl/Cmd",
+        "sizeLabel": "Dimensione",
+        "sizeSmall": "Piccola",
+        "sizeMedium": "Media",
+        "sizeLarge": "Grande",
+        "sizeCustom": "Personalizzata",
+        "customWidthLabel": "Larghezza",
+        "customHeightLabel": "Altezza",
+        "pixelUnit": "px",
+        "fullWidthLabel": "Larghezza intera (100%)"
       },
       "ariaLabel": {
-        "close": "TODO translate",
-        "copyToClipboard": "TODO translate",
-        "refreshLink": "TODO translate",
-        "refreshEmbed": "TODO translate"
+        "close": "Chiudi",
+        "copyToClipboard": "Copia negli appunti",
+        "refreshLink": "Aggiorna il link di condivisione",
+        "refreshEmbed": "Aggiorna il codice di incorporamento"
       }
     },
     "print": {
-      "buttonTitle": "TODO translate"
+      "buttonTitle": "Stampa"
     },
     "featureFlag": {
-      "notAvailable": "TODO translate",
-      "workingOnIt": "TODO translate"
+      "notAvailable": "Purtroppo questo strumento non è ancora disponibile.",
+      "workingOnIt": "Ci stiamo lavorando :)"
     }
   },
   "backgroundLayers": {
-    "title": "TODO translate",
-    "label": "TODO translate",
-    "voidMap": "TODO translate",
-    "backgroundMap": "TODO translate",
-    "colorMap": "TODO translate",
-    "greyMap": "TODO translate",
-    "swissimage": "TODO translate"
+    "title": "Mappe visualizzate",
+    "label": "Sfondo",
+    "voidMap": "Nessuno sfondo",
+    "backgroundMap": "Mappa di sfondo",
+    "colorMap": "Mappa a colori",
+    "greyMap": "Mappa in bianco e nero",
+    "swissimage": "Immagine aerea"
   },
   "toaster": {
-    "warningTitle": "TODO translate",
-    "errorTitle": "TODO translate",
-    "successTitle": "TODO translate"
+    "warningTitle": "Avviso",
+    "errorTitle": "Errore",
+    "successTitle": "Operazione riuscita"
   },
   "state": {
-    "drawingNotFound": "TODO translate",
-    "restoreUnableWarning": "TODO translate",
-    "shareLinkError": "TODO translate"
+    "drawingNotFound": "Il disegno {id} non è stato trovato e non è stato ripristinato",
+    "restoreUnableWarning": "Non è stato possibile ripristinare lo stato dell'app",
+    "shareLinkError": "Non è stato possibile generare il link di condivisione"
   },
   "map": {
     "contextMenuPopup": {
-      "elevation": "TODO translate",
-      "title": "TODO translate",
-      "tabPosition": "TODO translate",
-      "tabShare": "TODO translate",
-      "errorFetchingElevation": "TODO translate",
-      "errorFetchingW3W": "TODO translate",
+      "elevation": "Altitudine",
+      "title": "Posizione",
+      "tabPosition": "Coordinate",
+      "tabShare": "Condividi la posizione",
+      "errorFetchingElevation": "Errore durante il recupero dell'altitudine",
+      "errorFetchingW3W": "Errore durante il recupero dell'indirizzo What3Words",
       "featureFlag": {
-        "notAvailable": "TODO translate",
-        "workingOnIt": "TODO translate"
+        "notAvailable": "Purtroppo la finestra della posizione non è ancora disponibile.",
+        "workingOnIt": "Ci stiamo lavorando :)"
       }
     }
   },
   "error": {
-    "notFound": "TODO translate",
-    "generic": "TODO translate",
-    "layerLoad": "TODO translate",
-    "backToMap": "TODO translate",
+    "notFound": "{resource} non è stato trovato.",
+    "generic": "Si è verificato un errore imprevisto.",
+    "layerLoad": "Non è stato possibile caricare il livello.",
+    "backToMap": "Torna alla mappa",
     "resources": {
-      "dataset": "TODO translate"
+      "dataset": "Questo set di dati"
     }
   },
   "dataset": {
-    "legendLoading": "TODO translate",
-    "legendError": "TODO translate",
-    "overview": "TODO translate",
-    "dataAccess": "TODO translate",
-    "metadata": "TODO translate",
-    "serviceLoading": "TODO translate",
-    "serviceError": "TODO translate",
-    "abstract": "TODO translate",
-    "links": "TODO translate",
-    "services": "TODO translate",
-    "addToMap": "TODO translate",
-    "removeFromMap": "TODO translate",
-    "details": "TODO translate",
-    "expandPanel": "TODO translate",
-    "collapsePanel": "TODO translate",
-    "alreadyOnMap": "TODO translate",
-    "viewDetailPage": "TODO translate",
-    "showOnMap": "TODO translate",
-    "backToCatalog": "TODO translate",
-    "close": "TODO translate",
-    "backToMap": "TODO translate",
-    "addToMapError": "TODO translate",
-    "openService": "TODO translate",
-    "identifier": "TODO translate",
-    "mapServices": "TODO translate",
-    "otherAccess": "TODO translate",
-    "format": "TODO translate",
-    "serviceUrl": "TODO translate",
-    "viewGeocat": "TODO translate",
-    "copyLink": "TODO translate",
-    "copy": "TODO translate",
-    "showMore": "TODO translate",
-    "showLess": "TODO translate",
-    "contact": "TODO translate",
-    "aggregated": "TODO translate"
+    "legendLoading": "Caricamento della legenda…",
+    "legendError": "Non è stato possibile caricare la legenda.",
+    "overview": "Panoramica",
+    "dataAccess": "Accesso ai dati",
+    "metadata": "Metadati",
+    "serviceLoading": "Caricamento dell'indirizzo del servizio…",
+    "serviceError": "Non è stato possibile caricare l'indirizzo del servizio.",
+    "abstract": "Descrizione",
+    "links": "Link",
+    "services": "Servizi",
+    "addToMap": "Aggiungi alla mappa",
+    "removeFromMap": "Rimuovi dalla mappa",
+    "details": "Dettagli del set di dati",
+    "expandPanel": "Ingrandisci la vista dettagliata",
+    "collapsePanel": "Riduci la vista dettagliata",
+    "alreadyOnMap": "Già sulla mappa",
+    "viewDetailPage": "Mostra la pagina dei dettagli",
+    "showOnMap": "Mostra sulla mappa",
+    "backToCatalog": "Torna al catalogo dei dati",
+    "close": "Chiudi i dettagli del set di dati",
+    "backToMap": "Torna alla mappa",
+    "addToMapError": "Non è stato possibile aggiungere il livello alla mappa",
+    "openService": "Apri in una nuova scheda",
+    "identifier": "Identificativo",
+    "mapServices": "WMS / WMTS",
+    "otherAccess": "Altre possibilità di accesso",
+    "format": "Formato",
+    "serviceUrl": "URL / Servizio",
+    "viewGeocat": "Visualizza su geocat.ch",
+    "copyLink": "Copia il link al livello",
+    "copy": "Copia",
+    "showMore": "Mostra di più",
+    "showLess": "Mostra di meno",
+    "contact": "Contatto",
+    "aggregated": "Aggregato"
   },
   "elevationProfile": {
-    "windowTitle": "TODO translate",
+    "windowTitle": "Profilo altimetrico",
     "plot": {
-      "xAxis": "TODO translate",
-      "yAxis": "TODO translate",
-      "noData": "TODO translate"
+      "xAxis": "Distanza",
+      "yAxis": "Altitudine",
+      "noData": "Nessun dato altimetrico disponibile"
     },
     "metadata": {
-      "elevationDifference": "TODO translate",
-      "elevationUp": "TODO translate",
-      "elevationDown": "TODO translate",
-      "poiUp": "TODO translate",
-      "poiDown": "TODO translate",
-      "distance": "TODO translate",
-      "slopeDistance": "TODO translate"
+      "elevationDifference": "Dislivello",
+      "elevationUp": "Salita",
+      "elevationDown": "Discesa",
+      "poiUp": "Punto più alto",
+      "poiDown": "Punto più basso",
+      "distance": "Distanza lineare",
+      "slopeDistance": "Distanza del percorso"
     },
-    "fetchError": "TODO translate"
+    "fetchError": "Non è stato possibile recuperare il profilo altimetrico"
   },
   "timeSlider": {
-    "legendExplanation": "TODO translate",
-    "outsideValidYearRange": "TODO translate"
+    "legendExplanation": "I cursori temporali mostrano la distribuzione temporale dei dati. Puoi usare i cursori per filtrare il periodo visualizzato sulla mappa.",
+    "outsideValidYearRange": "Fuori dall'intervallo di anni valido"
   },
   "compareSlider": {
     "toggleButtonTitle": "Attiva/disattiva il cursore di confronto"
   },
   "embed": {
-    "viewOn": "TODO translate"
+    "viewOn": "Visualizza su {platform}"
   },
   "print": {
-    "warningOutsideSwitzerland": "TODO translate",
-    "warningOutsideSwitzerlandTitle": "TODO translate",
-    "warningZoomOutOfSync": "TODO translate",
-    "warningZoomOutOfSyncTitle": "TODO translate",
-    "statusProcessing": "TODO translate",
-    "statusQueued": "TODO translate",
-    "statusError": "TODO translate",
-    "statusFailed": "TODO translate",
-    "statusReady": "TODO translate",
-    "clearAll": "TODO translate",
-    "noPrintJobsYet": "TODO translate",
-    "created": "TODO translate",
-    "download": "TODO translate",
-    "zoomLevel": "TODO translate",
-    "zoomLevelForPrint": "TODO translate",
-    "warningOutsideViewportLabel": "TODO translate",
-    "printScale": "TODO translate",
-    "enableStrictZoomStepsLabel": "TODO translate",
-    "lockCenterToViewLabel": "TODO translate",
-    "lockZoomToViewLabel": "TODO translate",
-    "printSizeLabel": "TODO translate",
-    "printResolutionLabel": "TODO translate",
-    "printOrientationLabel": "TODO translate",
-    "zoomToLockedZoomLevel": "TODO translate",
-    "sendPrintRequest": "TODO translate",
-    "openPrintJobs": "TODO translate",
-    "printJobsWindowTitle": "TODO translate",
-    "warningPrintExtentBeyondViewport": "TODO translate",
-    "orientationPortrait": "TODO translate",
-    "orientationLandscape": "TODO translate"
+    "warningOutsideSwitzerland": "Fuori dalla Svizzera",
+    "warningOutsideSwitzerlandTitle": "Area di stampa fuori dalla Svizzera",
+    "warningZoomOutOfSync": "Il livello di zoom sullo schermo non corrisponde al livello di zoom bloccato per la stampa.",
+    "warningZoomOutOfSyncTitle": "Il livello di zoom non corrisponde a quello bloccato",
+    "statusProcessing": "in elaborazione",
+    "statusQueued": "in coda",
+    "statusError": "errore",
+    "statusFailed": "non riuscito",
+    "statusReady": "pronto",
+    "clearAll": "Elimina tutto",
+    "noPrintJobsYet": "Ancora nessun lavoro di stampa.",
+    "created": "Creato",
+    "download": "Scarica",
+    "zoomLevel": "Livello di zoom",
+    "zoomLevelForPrint": "Livello di zoom per la stampa",
+    "warningOutsideViewportLabel": "Area di stampa fuori dalla vista",
+    "printScale": "Scala di stampa",
+    "enableStrictZoomStepsLabel": "Attiva livelli di zoom fissi",
+    "lockCenterToViewLabel": "Blocca il centro sulla vista attuale",
+    "lockZoomToViewLabel": "Blocca lo zoom sulla vista attuale",
+    "printSizeLabel": "Formato di stampa",
+    "printResolutionLabel": "Risoluzione di stampa",
+    "printOrientationLabel": "Orientamento di stampa",
+    "zoomToLockedZoomLevel": "Esegui lo zoom al livello bloccato",
+    "sendPrintRequest": "Invia la richiesta di stampa",
+    "openPrintJobs": "Apri i lavori di stampa",
+    "printJobsWindowTitle": "Lavori di stampa",
+    "warningPrintExtentBeyondViewport": "Puoi bloccare il centro e il livello di zoom per evitare che l'area di stampa esca dalla vista mentre sposti o ingrandisci la mappa.",
+    "orientationPortrait": "Verticale",
+    "orientationLandscape": "Orizzontale"
   },
   "topbar": {
-    "home": "TODO translate",
-    "map": "TODO translate",
-    "geoDataAndMaps": "TODO translate",
-    "howToUseGeodata": "TODO translate",
-    "viewGeodataInMapViewer": "TODO translate",
-    "discoverTopicsAndData": "TODO translate",
-    "geoservices": "TODO translate",
-    "searchGeodata": "TODO translate",
-    "newDataAndUpdates": "TODO translate",
-    "tutorialsAndHelp": "TODO translate",
-    "gettingStarted": "TODO translate",
-    "mapViewerNavigation": "TODO translate",
-    "metadataCatalog": "TODO translate",
-    "moreFeatures": "TODO translate",
-    "specialistInfo": "TODO translate",
-    "ngdi": "TODO translate",
-    "geobaseData": "TODO translate",
-    "metadataCatalogSwitzerland": "TODO translate",
-    "geoInformationFilms": "TODO translate",
-    "aboutUs": "TODO translate",
-    "whatIsSwissgeo": "TODO translate",
-    "vision": "TODO translate",
-    "strategy": "TODO translate",
-    "keyFigures": "TODO translate",
-    "organisation": "TODO translate",
-    "legalBasis": "TODO translate",
-    "mediaInformation": "TODO translate",
-    "login": "TODO translate",
-    "modeSwitch": "TODO translate"
+    "home": "Pagina iniziale",
+    "map": "Mappa",
+    "geoDataAndMaps": "Geodati e mappe",
+    "howToUseGeodata": "Come posso utilizzare i geodati?",
+    "viewGeodataInMapViewer": "Visualizza i geodati nel visualizzatore di mappe",
+    "discoverTopicsAndData": "Scopri temi e dati",
+    "geoservices": "Geoservizi: ottenere e integrare i dati",
+    "searchGeodata": "Cerca geodati",
+    "newDataAndUpdates": "Nuovi dati e aggiornamenti",
+    "tutorialsAndHelp": "Tutorial e aiuto",
+    "gettingStarted": "Primi passi nel visualizzatore di mappe",
+    "mapViewerNavigation": "Navigazione nel visualizzatore di mappe",
+    "metadataCatalog": "Catalogo dei metadati",
+    "moreFeatures": "Altre funzioni",
+    "specialistInfo": "Informazioni specialistiche",
+    "ngdi": "Infrastruttura nazionale di dati geografici (INDG)",
+    "geobaseData": "Geodati di base, modelli di geodati e norme",
+    "metadataCatalogSwitzerland": "Catalogo dei metadati geografici della Svizzera",
+    "geoInformationFilms": "Video sulla geoinformazione",
+    "aboutUs": "Chi siamo",
+    "whatIsSwissgeo": "Che cos'è SWISSGEO?",
+    "vision": "Visione",
+    "strategy": "Strategia Geoinformazione Svizzera",
+    "keyFigures": "Cifre chiave",
+    "organisation": "Organizzazione",
+    "legalBasis": "Basi legali",
+    "mediaInformation": "Informazioni per i media",
+    "login": "Accedi",
+    "modeSwitch": "Cambia modalità"
   },
   "layers": {
-    "expand": "TODO translate",
-    "reorder": "TODO translate",
-    "show": "TODO translate",
-    "hide": "TODO translate",
-    "info": "TODO translate",
-    "remove": "TODO translate",
-    "collapse": "TODO translate",
-    "opacity": "TODO translate",
+    "expand": "Mostra i dettagli del livello",
+    "reorder": "Sposta il livello (freccia su/giù)",
+    "show": "Mostra il livello",
+    "hide": "Nascondi il livello",
+    "info": "Informazioni sul livello",
+    "remove": "Rimuovi il livello",
+    "collapse": "Nascondi i dettagli del livello",
+    "opacity": "Opacità",
     "legend": {
-      "title": "TODO translate",
-      "notAvailable": "TODO translate",
-      "openDocument": "TODO translate",
-      "openPdf": "TODO translate",
-      "openPage": "TODO translate"
+      "title": "Legenda",
+      "notAvailable": "Nessuna legenda disponibile.",
+      "openDocument": "Apri la legenda come documento",
+      "openPdf": "Apri la legenda come PDF",
+      "openPage": "Apri la pagina della legenda"
     }
   },
   "layerCart": {
-    "close": "TODO translate",
-    "expand": "TODO translate",
-    "collapse": "TODO translate"
+    "close": "Chiudi",
+    "expand": "Mostra i livelli attivi",
+    "collapse": "Nascondi i livelli attivi"
   },
   "layerCatalog": {
-    "title": "TODO translate",
+    "title": "Catalogo dei dati",
     "table": {
-      "title": "TODO translate",
-      "dataOwner": "TODO translate",
-      "empty": "TODO translate"
+      "title": "Nome",
+      "dataOwner": "Fornitore",
+      "empty": "Nessun livello trovato."
     },
-    "loading": "TODO translate",
-    "error": "TODO translate",
-    "retry": "TODO translate",
-    "searchLabel": "TODO translate",
-    "searchPlaceholder": "TODO translate",
-    "close": "TODO translate",
-    "expand": "TODO translate",
-    "collapse": "TODO translate"
+    "loading": "Caricamento…",
+    "error": "Non è stato possibile caricare il catalogo.",
+    "retry": "Riprova",
+    "searchLabel": "Cerca livelli",
+    "searchPlaceholder": "Cerca",
+    "close": "Chiudi",
+    "expand": "Mostra il catalogo dei dati",
+    "collapse": "Nascondi il catalogo dei dati"
   },
   "featureInfo": {
-    "blockedContent": "To Translate - Feature Info Blocked Content",
-    "noInformation": "To Translate - Feature Info No Information",
-    "popupTitle": "To Translate - Feature Info Popup Title"
+    "blockedContent": "(Link rimosso per motivi di sicurezza)",
+    "noInformation": "Nessuna informazione disponibile.",
+    "popupTitle": "Informazioni sull'oggetto"
   }
 }
