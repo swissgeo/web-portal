@@ -12,8 +12,6 @@
     "search": "Ricerca",
     "layerCart": "Livelli attivi",
     "map": "Mappa",
-    "collapse": "Riduci il pannello laterale",
-    "expand": "Espandi il pannello laterale",
     "openLayerCatalog": "Apri il catalogo dei dati"
   },
   "search": {
@@ -447,7 +445,10 @@
     },
     "featureFlag": {
       "notAvailable": "Questo strumento non è ancora disponibile.",
-      "workingOnIt": "Seguirà in una versione successiva."
+      "workingOnIt": "Seguirà in una versione successiva.",
+      "links": {
+        "roadmap": "TODO translate"
+      }
     }
   },
   "backgroundLayers": {
@@ -490,7 +491,8 @@
     "backToMap": "Torna alla mappa",
     "resources": {
       "dataset": "Il livello"
-    }
+    },
+    "mapUnavailable": "TODO translate"
   },
   "dataset": {
     "legendLoading": "Caricamento della legenda…",
@@ -635,7 +637,8 @@
       "openDocument": "Apri la legenda come documento",
       "openPdf": "Apri la legenda come PDF",
       "openPage": "Apri la pagina della legenda"
-    }
+    },
+    "variant": "TODO translate"
   },
   "layerCart": {
     "close": "Chiudi",
@@ -656,11 +659,65 @@
     "searchPlaceholder": "Cerca",
     "close": "Chiudi",
     "expand": "Mostra il catalogo dei dati",
-    "collapse": "Nascondi il catalogo dei dati"
+    "collapse": "Nascondi il catalogo dei dati",
+    "allLayers": "TODO translate",
+    "layers": "TODO translate",
+    "back": "TODO translate"
   },
   "featureInfo": {
     "blockedContent": "(Link rimosso per motivi di sicurezza)",
     "noInformation": "Nessuna informazione disponibile.",
-    "popupTitle": "Informazioni sull'oggetto"
+    "popupTitle": "Informazioni sull'oggetto",
+    "featureFlag": {
+      "notAvailable": "To Translate - Feature Info Feature Flag Not Available",
+      "workingOnIt": "To Translate - Feature Info Feature Flag Working On It"
+    }
+  },
+  "mobileNotice": {
+    "title": "TODO translate",
+    "description": "TODO translate",
+    "confirm": "TODO translate"
+  },
+  "testSiteBanner": {
+    "text": "TODO translate"
+  },
+  "landing": {
+    "cards": {
+      "map": {
+        "title": "TODO: Translate",
+        "description": "TODO: Translate",
+        "button": "TODO: Translate"
+      },
+      "catalog": {
+        "title": "TODO: Translate",
+        "description": "TODO: Translate",
+        "button": "TODO: Translate"
+      },
+      "info": {
+        "title": "TODO: Translate",
+        "description": "TODO: Translate",
+        "button": "TODO: Translate"
+      }
+    },
+    "footer": {
+      "claim": "TODO: Translate",
+      "description": "TODO: Translate",
+      "followUs": "TODO: Translate",
+      "moreInformation": "TODO: Translate",
+      "termsOfUse": "TODO: Translate",
+      "contact": "TODO: Translate",
+      "dataProtection": "TODO: Translate",
+      "netiquette": "TODO: Translate",
+      "accessibility": "TODO: Translate",
+      "copyright": "TODO: Translate"
+    },
+    "links": {
+      "impressum": "impressum-it",
+      "dataProtection": "informazioni-legali-protezione",
+      "netiquette": "netiquette-it",
+      "accessibility": "accessibilita",
+      "termsOfUse": "condizioni-di-utilizzo-e-disposizioni-operative",
+      "contact": "impressum-it"
+    }
   }
 }

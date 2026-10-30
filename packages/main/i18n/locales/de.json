@@ -12,8 +12,6 @@
     "search": "Suche",
     "layerCart": "Aktive Ebenen",
     "map": "Karte",
-    "collapse": "Seitenleiste einklappen",
-    "expand": "Seitenleiste ausklappen",
     "openLayerCatalog": "Datenkatalog öffnen"
   },
   "search": {
@@ -447,7 +445,10 @@
     },
     "featureFlag": {
       "notAvailable": "Dieses Werkzeug ist noch nicht verfügbar.",
-      "workingOnIt": "Es folgt in einer späteren Version."
+      "workingOnIt": "Es folgt in einer späteren Version.",
+      "links": {
+        "roadmap": "kartenviewer-ueberblick"
+      }
     }
   },
   "backgroundLayers": {
@@ -490,7 +491,8 @@
     "backToMap": "Zurück zur Karte",
     "resources": {
       "dataset": "Die Ebene"
-    }
+    },
+    "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar."
   },
   "dataset": {
     "legendLoading": "Legende wird geladen…",
@@ -635,7 +637,8 @@
       "openDocument": "Legende als Dokument öffnen",
       "openPdf": "Legende als PDF öffnen",
       "openPage": "Legendenseite öffnen"
-    }
+    },
+    "variant": "Variante"
   },
   "layerCart": {
     "close": "Schliessen",
@@ -656,11 +659,65 @@
     "searchPlaceholder": "Suchen",
     "close": "Schliessen",
     "expand": "Datenkatalog vergrössern",
-    "collapse": "Datenkatalog verkleinern"
+    "collapse": "Datenkatalog verkleinern",
+    "allLayers": "Alle Ebenen",
+    "layers": "Ebenen",
+    "back": "Zurück"
   },
   "featureInfo": {
     "blockedContent": "(Link aus Sicherheitsgründen entfernt)",
     "noInformation": "Keine Informationen verfügbar.",
-    "popupTitle": "Objektinformationen"
+    "popupTitle": "Objektinformationen",
+    "featureFlag": {
+      "notAvailable": "Das Feature Info Fenster ist leider noch nicht verfügbar.",
+      "workingOnIt": "Wir sind dran :)"
+    }
+  },
+  "mobileNotice": {
+    "title": "Mobile Ansicht folgt",
+    "description": "Diese Version ist für Desktop optimiert. Auf Mobile zeigen wir vorläufig die Desktop-Ansicht.",
+    "confirm": "Verstanden"
+  },
+  "testSiteBanner": {
+    "text": "{environment}-Umgebung – Nicht für den produktiven Gebrauch. Nicht teilen."
+  },
+  "landing": {
+    "cards": {
+      "map": {
+        "title": "Karte",
+        "description": "Interaktiver Karten-Viewer mit hunderten Ebenen, Zeitreise, Druck- und Teilen-Funktionen.",
+        "button": "Zur Karte"
+      },
+      "catalog": {
+        "title": "Daten-Katalog",
+        "description": "Durchsuchen Sie den vollständigen Katalog mit Geobasisdaten, Themen und Metadaten.",
+        "button": "Daten-Katalog öffnen"
+      },
+      "info": {
+        "title": "Alles weitere um SWISSGEO",
+        "description": "Alles zur News, Hilfe und Über uns.",
+        "button": "Zum Infoportal"
+      }
+    },
+    "footer": {
+      "claim": "Das Wo ist hier.",
+      "description": "SWISSGEO macht raumbezogene Daten der Schweiz an einem Ort zugänglich.",
+      "followUs": "Folge uns!",
+      "moreInformation": "Weitere Informationen",
+      "termsOfUse": "Nutzungsbestimmungen",
+      "contact": "Kontakt",
+      "dataProtection": "Rechtliches und Datenschutz",
+      "netiquette": "Netiquette",
+      "accessibility": "Barrierefreiheit",
+      "copyright": "Copyright © 2026"
+    },
+    "links": {
+      "impressum": "impressum-de",
+      "dataProtection": "rechtliches-und-datenschutz",
+      "netiquette": "netiquette-de",
+      "accessibility": "erklaerung-zur-barrierefreiheit",
+      "termsOfUse": "nutzungs-und-betriebsbestimmungen",
+      "contact": "impressum-de"
+    }
   }
 }

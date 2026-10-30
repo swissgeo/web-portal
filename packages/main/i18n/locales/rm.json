@@ -12,8 +12,6 @@
     "search": "Tschertga",
     "layerCart": "Nivels activs",
     "map": "Charta",
-    "collapse": "Reducir il panel lateral",
-    "expand": "Extender il panel lateral",
     "openLayerCatalog": "Avrir il catalog da datas"
   },
   "search": {
@@ -447,7 +445,10 @@
     },
     "featureFlag": {
       "notAvailable": "Quest utensil n'è anc betg disponibel.",
-      "workingOnIt": "El suonda en ina versiun posteriura."
+      "workingOnIt": "El suonda en ina versiun posteriura.",
+      "links": {
+        "roadmap": "TODO translate"
+      }
     }
   },
   "backgroundLayers": {
@@ -490,7 +491,8 @@
     "backToMap": "Enavos a la charta",
     "resources": {
       "dataset": "Il nivel"
-    }
+    },
+    "mapUnavailable": "TODO translate"
   },
   "dataset": {
     "legendLoading": "La legenda vegn chargiada…",
@@ -635,7 +637,8 @@
       "openDocument": "Avrir la legenda sco document",
       "openPdf": "Avrir la legenda sco PDF",
       "openPage": "Avrir la pagina da la legenda"
-    }
+    },
+    "variant": "TODO translate"
   },
   "layerCart": {
     "close": "Serrar",
@@ -656,11 +659,65 @@
     "searchPlaceholder": "Tschertgar",
     "close": "Serrar",
     "expand": "Mussar il catalog da datas",
-    "collapse": "Zuppentar il catalog da datas"
+    "collapse": "Zuppentar il catalog da datas",
+    "allLayers": "TODO translate",
+    "layers": "TODO translate",
+    "back": "TODO translate"
   },
   "featureInfo": {
     "blockedContent": "(Link allontanà per motivs da segirezza)",
     "noInformation": "Naginas infurmaziuns disponiblas.",
-    "popupTitle": "Infurmaziuns davart l'object"
+    "popupTitle": "Infurmaziuns davart l'object",
+    "featureFlag": {
+      "notAvailable": "To Translate - Feature Info Feature Flag Not Available",
+      "workingOnIt": "To Translate - Feature Info Feature Flag Working On It"
+    }
+  },
+  "mobileNotice": {
+    "title": "TODO translate",
+    "description": "TODO translate",
+    "confirm": "TODO translate"
+  },
+  "testSiteBanner": {
+    "text": "TODO translate"
+  },
+  "landing": {
+    "cards": {
+      "map": {
+        "title": "TODO: Translate",
+        "description": "TODO: Translate",
+        "button": "TODO: Translate"
+      },
+      "catalog": {
+        "title": "TODO: Translate",
+        "description": "TODO: Translate",
+        "button": "TODO: Translate"
+      },
+      "info": {
+        "title": "TODO: Translate",
+        "description": "TODO: Translate",
+        "button": "TODO: Translate"
+      }
+    },
+    "footer": {
+      "claim": "TODO: Translate",
+      "description": "TODO: Translate",
+      "followUs": "TODO: Translate",
+      "moreInformation": "TODO: Translate",
+      "termsOfUse": "TODO: Translate",
+      "contact": "TODO: Translate",
+      "dataProtection": "TODO: Translate",
+      "netiquette": "TODO: Translate",
+      "accessibility": "TODO: Translate",
+      "copyright": "TODO: Translate"
+    },
+    "links": {
+      "impressum": "impressum-de",
+      "dataProtection": "rechtliches-und-datenschutz",
+      "netiquette": "netiquette-de",
+      "accessibility": "erklaerung-zur-barrierefreiheit",
+      "termsOfUse": "nutzungs-und-betriebsbestimmungen",
+      "contact": "impressum-de"
+    }
   }
 }

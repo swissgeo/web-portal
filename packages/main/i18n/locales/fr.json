@@ -12,8 +12,6 @@
     "search": "Recherche",
     "layerCart": "Couches actives",
     "map": "Carte",
-    "collapse": "Réduire le panneau latéral",
-    "expand": "Développer le panneau latéral",
     "openLayerCatalog": "Ouvrir le catalogue de données"
   },
   "search": {
@@ -447,7 +445,10 @@
     },
     "featureFlag": {
       "notAvailable": "Cet outil n'est pas encore disponible.",
-      "workingOnIt": "Il suivra dans une version ultérieure."
+      "workingOnIt": "Il suivra dans une version ultérieure.",
+      "links": {
+        "roadmap": "visualiseur-de-carte-perspective"
+      }
     }
   },
   "backgroundLayers": {
@@ -490,7 +491,8 @@
     "backToMap": "Retour à la carte",
     "resources": {
       "dataset": "La couche"
-    }
+    },
+    "mapUnavailable": "TODO translate"
   },
   "dataset": {
     "legendLoading": "Chargement de la légende…",
@@ -635,7 +637,8 @@
       "openDocument": "Ouvrir la légende comme document",
       "openPdf": "Ouvrir la légende en PDF",
       "openPage": "Ouvrir la page de la légende"
-    }
+    },
+    "variant": "Variante"
   },
   "layerCart": {
     "close": "Fermer",
@@ -656,11 +659,65 @@
     "searchPlaceholder": "Rechercher",
     "close": "Fermer",
     "expand": "Afficher le catalogue de données",
-    "collapse": "Masquer le catalogue de données"
+    "collapse": "Masquer le catalogue de données",
+    "allLayers": "TODO translate",
+    "layers": "TODO translate",
+    "back": "TODO translate"
   },
   "featureInfo": {
     "blockedContent": "(Lien supprimé pour des raisons de sécurité)",
     "noInformation": "Aucune information disponible.",
-    "popupTitle": "Informations sur l'objet"
+    "popupTitle": "Informations sur l'objet",
+    "featureFlag": {
+      "notAvailable": "La fenêtre contextuelle d'informations sur les objets n'est malheureusement pas encore disponible.",
+      "workingOnIt": "Nous y travaillons :)"
+    }
+  },
+  "mobileNotice": {
+    "title": "TODO translate",
+    "description": "TODO translate",
+    "confirm": "TODO translate"
+  },
+  "testSiteBanner": {
+    "text": "TODO translate"
+  },
+  "landing": {
+    "cards": {
+      "map": {
+        "title": "Carte",
+        "description": "Visionneuse de cartes interactive avec des centaines de couches, voyage dans le temps, fonctions d'impression et de partage.",
+        "button": "Ouvrir la carte"
+      },
+      "catalog": {
+        "title": "Catalogue de données",
+        "description": "Parcourez le catalogue complet des géodonnées, des thèmes et des métadonnées.",
+        "button": "Ouvrir le catalogue de données"
+      },
+      "info": {
+        "title": "Tout le reste sur SWISSGEO",
+        "description": "Toutes les actualités, l'aide et notre profil.",
+        "button": "Vers le portail d'information"
+      }
+    },
+    "footer": {
+      "claim": "Le où est ici.",
+      "description": "SWISSGEO rend accessibles les données spatiales de la Suisse en un seul endroit.",
+      "followUs": "Suivez-nous !",
+      "moreInformation": "Plus d'informations",
+      "termsOfUse": "Conditions d'utilisation",
+      "contact": "Contact",
+      "dataProtection": "Informations juridiques et protection des données",
+      "netiquette": "Netiquette",
+      "accessibility": "Accessibilité",
+      "copyright": "Copyright © 2026"
+    },
+    "links": {
+      "impressum": "impressum-fr",
+      "dataProtection": "informations-juridiques-protection",
+      "netiquette": "netiquette-fr",
+      "accessibility": "accessibilite",
+      "termsOfUse": "conditions-dutilisation-et-dexploitation",
+      "contact": "impressum-fr"
+    }
   }
 }
