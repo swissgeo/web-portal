@@ -17,7 +17,7 @@
     "openLayerCatalog": "Datenkatalog öffnen"
   },
   "search": {
-    "placeholder": "Ort, Ebene oder Koordinaten suchen…",
+    "placeholder": "Orte, Ebenen oder Koordinaten suchen",
     "buttonLabel": "Suchen",
     "map_tab": "Karte",
     "content_pages_tab": "Inhaltsseiten",
@@ -26,11 +26,11 @@
     "layers_results_header": "Ebenen",
     "no_results": "Keine Ergebnisse gefunden",
     "error": "Suche fehlgeschlagen. Einige Ergebnisse fehlen möglicherweise.",
-    "viewDataset": "Datensatz anzeigen"
+    "viewDataset": "Ebenendetails öffnen"
   },
   "footer": {
     "copyRightData": "© Daten: ",
-    "termsOfUse": "Nutzungsbedingungen",
+    "termsOfUse": "Nutzungsbestimmungen",
     "impressum": "Impressum",
     "mobileNav": {
       "map": "Karte",
@@ -41,10 +41,10 @@
     "reportIssue": {
       "buttonTitle": "Problem melden",
       "title": "Problem melden",
-      "close": "Formular «Problem melden» schliessen",
+      "close": "«Problem melden» schliessen",
       "steps": {
         "step1": {
-          "title": "1. Betreff Ihrer Nachricht (Pflichtfeld):",
+          "title": "1. Betreff Ihrer Meldung",
           "select": {
             "placeholder": "Kategorie auswählen",
             "options": {
@@ -60,48 +60,48 @@
           }
         },
         "step2": {
-          "title": "2. Teilen Sie uns in diesem Feld Kartenänderungen oder Datenverbesserungen mit, oder stellen Sie Fragen zu dieser Website (Pflichtfeld):"
+          "title": "2. Beschreiben Sie uns in diesem Feld Änderungen an Karten, Verbesserungen der Daten oder Fragen zu dieser Website."
         },
         "step3": {
-          "title": "3. Geben Sie den betroffenen Ort auf der Karte an:",
-          "button": "Auf der Karte zeichnen"
+          "title": "3. Markieren Sie den betroffenen Ort in der Karte.",
+          "button": "Auf Karte einzeichnen"
         },
         "step4": {
-          "title": "4. Ihre E-Mail-Adresse:",
+          "title": "4. Ihre E-Mail-Adresse",
           "placeholder": "Ihre E-Mail-Adresse",
           "info": "Ohne Angabe einer E-Mail-Adresse erhalten Sie keine Antwort"
         },
         "step5": {
-          "title": "5. Datei anhängen:",
-          "buttonLabel": "Anhängen"
+          "title": "5. Datei hinzufügen",
+          "buttonLabel": "Ihre Datei hier ablegen oder auswählen"
         }
       },
       "notes": {
         "link": {
-          "label": "Der folgende Link wird übermittelt:",
-          "permalink": "Permalink"
+          "label": "Der folgende Link wird mitgeschickt:",
+          "permalink": "Link öffnen"
         },
         "tos": {
-          "label": "Mit dem Absenden Ihrer Nachricht akzeptieren Sie die",
-          "link": "Nutzungsbedingungen",
+          "label": "Mit dem Absenden Ihrer Meldung akzeptieren Sie die",
+          "link": "Nutzungsbestimmungen",
           "url": "https://www.geo.admin.ch/de/allgemeine-nutzungsbedingungen-bgdi#feedback"
         }
       },
       "cancelButton": "Abbrechen",
-      "submitButton": "Absenden",
-      "successMessage": "Vielen Dank für Ihre Nachricht. Wir werden Ihnen so bald wie möglich antworten.",
-      "errorMessage": "Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+      "submitButton": "Senden",
+      "successMessage": "Vielen Dank für Ihre Meldung. Wir werden Ihnen so bald wie möglich antworten.",
+      "errorMessage": "Beim Senden Ihrer Meldung ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
       "validation": {
-        "subjectRequired": "Betreff ist erforderlich",
-        "feedbackRequired": "Nachricht ist erforderlich",
-        "categoryRequired": "Kategorie ist erforderlich",
-        "versionRequired": "Version ist erforderlich",
-        "userAgentRequired": "User Agent ist erforderlich",
-        "permalinkRequired": "Permalink ist erforderlich",
-        "emailInvalid": "E-Mail muss eine gültige E-Mail-Adresse sein",
-        "fileRequired": "Anhang muss eine Datei sein",
-        "fileTooLarge": "Datei ist zu gross (max. {max} MB)",
-        "fileTypeNotSupported": "Dateityp wird nicht unterstützt"
+        "subjectRequired": "Bitte wählen Sie einen Betreff aus.",
+        "feedbackRequired": "Bitte füllen Sie die Beschreibung aus.",
+        "categoryRequired": "Bitte wählen Sie eine Kategorie aus.",
+        "versionRequired": "Bitte geben Sie ein Version an.",
+        "userAgentRequired": "Bitte geben Sie einen User Agent an.",
+        "permalinkRequired": "Bitte geben Sie eine Permalink an.",
+        "emailInvalid": "E-Mail muss eine gültige E-Mail-Adresse sein.",
+        "fileRequired": "Anhang muss eine Datei sein.",
+        "fileTooLarge": "Datei ist zu gross (max. {max} MB).",
+        "fileTypeNotSupported": "Dateityp wird nicht unterstützt."
       }
     }
   },
@@ -212,8 +212,8 @@
     "drawingPanelTitle": "Zeichenwerkzeuge"
   },
   "geolocation": {
-    "permissionDenied": "Standortberechtigung verweigert",
-    "stopTracking": "Standortverfolgung beenden",
+    "permissionDenied": "Berechtigung zur Standortbestimmung verweigert.",
+    "stopTracking": "Standortbestimmung beenden",
     "startGeolocation": "Standortbestimmung starten",
     "recenterMap": "Karte neu zentrieren"
   },
@@ -346,13 +346,13 @@
       "buttonTitle": "Messen"
     },
     "compare": {
-      "buttonTitle": "Vergleichen"
+      "buttonTitle": "Vergleich"
     },
     "timeSlider": {
       "buttonTitle": "Zeitregler"
     },
     "import": {
-      "buttonTitle": "Importieren",
+      "buttonTitle": "Import",
       "title": "Eine Datei oder URL importieren",
       "description": "Akzeptierte Dateitypen: {types}",
       "tabData": "Daten",
@@ -374,11 +374,11 @@
       "clearAndImportAsNonAdmin": "Löschen und importieren",
       "errorMessages": {
         "invalidDrawingUrl": "Die Zeichnungs-URL ist ungültig",
-        "invalidDrawingAdminId": "Die Administrator-ID der Zeichnung ist ungültig",
+        "invalidDrawingAdminId": "Die Admin-ID der Zeichnung ist ungültig",
         "generalError": "Datei konnte nicht importiert werden",
         "noFileSelected": "Bitte wählen Sie zuerst eine Datei aus",
         "noUrlEntered": "Bitte geben Sie eine URL ein",
-        "fileSizeWarning": "Die Datei ist {fileSize} MB gross und überschreitet die empfohlene Grösse von {maxSize} MB.",
+        "fileSizeWarning": "Die Datei ist {fileSize} MB gross und überschreitet die erlaubte maximale Grösse von {maxSize} MB.",
         "fileTooLarge": "Datei ist zu gross: {fileName} (maximal {maxSize} MB)",
         "drawingImportFailed": "Zeichnung konnte nicht importiert werden",
         "kmlFetchFailed": "KML konnte nicht geladen werden: {status}",
@@ -446,8 +446,8 @@
       "buttonTitle": "Drucken"
     },
     "featureFlag": {
-      "notAvailable": "Dieses Werkzeug ist leider noch nicht verfügbar.",
-      "workingOnIt": "Wir sind dran :)"
+      "notAvailable": "Dieses Werkzeug ist noch nicht verfügbar.",
+      "workingOnIt": "Es folgt in einer späteren Version."
     }
   },
   "backgroundLayers": {
@@ -478,8 +478,8 @@
       "errorFetchingElevation": "Fehler beim Abrufen der Höhe",
       "errorFetchingW3W": "Fehler beim Abrufen der What3Words-Adresse",
       "featureFlag": {
-        "notAvailable": "Das Positions-Popup-Fenster ist leider noch nicht verfügbar.",
-        "workingOnIt": "Wir sind dran :)"
+        "notAvailable": "Das Positions-Fenster ist noch nicht verfügbar.",
+        "workingOnIt": "Es folgt in einer späteren Version."
       }
     }
   },
@@ -489,7 +489,7 @@
     "layerLoad": "Die Ebene konnte nicht geladen werden.",
     "backToMap": "Zurück zur Karte",
     "resources": {
-      "dataset": "Dieser Datensatz"
+      "dataset": "Die Ebene"
     }
   },
   "dataset": {
@@ -504,13 +504,13 @@
     "links": "Links",
     "services": "Dienste",
     "addToMap": "Zur Karte hinzufügen",
-    "removeFromMap": "Von der Karte entfernen",
-    "details": "Datensatzdetails",
-    "expandPanel": "Detailansicht vergrössern",
-    "collapsePanel": "Detailansicht verkleinern",
+    "removeFromMap": "Aus Karte entfernen",
+    "details": "Ebenendetails",
+    "expandPanel": "Ebenendetails vergrössern",
+    "collapsePanel": "Ebenendetails verkleinern",
     "alreadyOnMap": "Bereits auf der Karte",
-    "viewDetailPage": "Detailseite anzeigen",
-    "showOnMap": "Auf der Karte anzeigen",
+    "viewDetailPage": "Ebenendetails öffnen",
+    "showOnMap": "Zur Karte hinzufügen",
     "backToCatalog": "Zurück zum Datenkatalog",
     "close": "Datensatzdetails schliessen",
     "backToMap": "Zurück zur Karte",
@@ -621,13 +621,13 @@
     "modeSwitch": "Mode switch"
   },
   "layers": {
-    "expand": "Ebenendetails anzeigen",
-    "reorder": "Ebene verschieben (Pfeil oben/unten)",
+    "expand": "Ebene aufklappen",
+    "reorder": "Ebene verschieben",
     "show": "Ebene anzeigen",
     "hide": "Ebene ausblenden",
-    "info": "Ebeneninformationen",
+    "info": "Ebenendetails öffnen",
     "remove": "Ebene entfernen",
-    "collapse": "Ebenendetails ausblenden",
+    "collapse": "Ebene zuklappen",
     "opacity": "Deckkraft",
     "legend": {
       "title": "Legende",
@@ -650,13 +650,13 @@
       "empty": "Keine Ebenen gefunden."
     },
     "loading": "Wird geladen…",
-    "error": "Der Katalog konnte nicht geladen werden.",
+    "error": "Der Datenkatalog konnte nicht geladen werden.",
     "retry": "Erneut versuchen",
     "searchLabel": "Ebenen durchsuchen",
     "searchPlaceholder": "Suchen",
     "close": "Schliessen",
-    "expand": "Datenkatalog anzeigen",
-    "collapse": "Datenkatalog ausblenden"
+    "expand": "Datenkatalog vergrössern",
+    "collapse": "Datenkatalog verkleinern"
   },
   "featureInfo": {
     "blockedContent": "(Link aus Sicherheitsgründen entfernt)",
