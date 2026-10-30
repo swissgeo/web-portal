@@ -65,6 +65,7 @@ function setup(
   options: {
     resolution?: number | undefined;
     size?: [number, number] | undefined;
+    viewExtent?: number[];
     layers?: unknown[];
   } = {},
 ) {
@@ -72,11 +73,15 @@ function setup(
   // key presence rather than destructuring defaults
   const resolution = "resolution" in options ? options.resolution : 1;
   const size = "size" in options ? options.size : [800, 600];
+  const viewExtent = options.viewExtent ?? [0, 0, 1000, 1000];
   const layers = options.layers ?? [];
   const onClick = vi.fn();
 
   const { fakeMap, layers: mapLayers } = createFakeOlMap({
-    view: { getResolution: vi.fn(() => resolution) },
+    view: {
+      getResolution: vi.fn(() => resolution),
+      calculateExtent: vi.fn(() => viewExtent),
+    },
     map: { getSize: vi.fn(() => size) },
   });
   mapLayers.push(...layers);
@@ -218,13 +223,32 @@ describe("useMapClickEvent", () => {
       );
     });
 
+    it("derives the view extent from the viewport size, rounded to integers", () => {
+      const { onClick, fireClick } = setup({
+        size: [1024, 768],
+        viewExtent: [2598123.6, 1198456.2, 2601123.4, 1202456.8],
+      });
+
+      fireClick();
+
+      expect(onClick).toHaveBeenCalledWith(
+        expect.objectContaining({
+          viewportSize: [1024, 768],
+          viewExtent: [2598124, 1198456, 2601123, 1202457],
+        }),
+      );
+    });
+
     it("falls back to a [0, 0] viewport size when the map has no size yet", () => {
       const { onClick, fireClick } = setup({ size: undefined });
 
       fireClick();
 
       expect(onClick).toHaveBeenCalledWith(
-        expect.objectContaining({ viewportSize: [0, 0] }),
+        expect.objectContaining({
+          viewportSize: [0, 0],
+          viewExtent: [0, 0, 1000, 1000],
+        }),
       );
     });
 

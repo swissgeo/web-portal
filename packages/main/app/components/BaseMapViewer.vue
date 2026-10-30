@@ -278,12 +278,18 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
   if (signal.aborted) {
     return;
   }
+
+  const screenContext = {
+    viewportSize: mapClickEvent.viewportSize,
+    viewExtent: mapClickEvent.viewExtent,
+  };
   await selectFeatures(
     mapClickEvent.extent,
     positionStore.projection.epsgNumber,
     locale.value.toLowerCase(),
     layersSources,
     FEATURE_LIMIT,
+    screenContext,
     signal,
   );
 }

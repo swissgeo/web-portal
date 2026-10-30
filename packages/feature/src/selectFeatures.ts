@@ -8,10 +8,11 @@ import type {
   IdentifyFeature,
   LayerRequest,
   LayerSource,
+  ScreenContext,
   WMSLayerRequest,
 } from "@/types";
 
-import { FEATURE_LIMIT } from "@/constants";
+import { FEATURE_LIMIT, IDENTIFY_DPI } from "@/constants";
 import { useFeaturesStore } from "@/stores/feature";
 import { sourcesToLayerRequests } from "@/utils/sourceToLayerRequest";
 
@@ -37,6 +38,7 @@ export async function selectFeatures(
   lang: string,
   layers: LayerSource[],
   limit: number = FEATURE_LIMIT,
+  screenContext: ScreenContext,
   abortSignal?: AbortSignal,
 ): Promise<void> {
   // The WMS capability dict is read once per click.
@@ -52,6 +54,7 @@ export async function selectFeatures(
         epsgNumber,
         lang,
         limit,
+        screenContext,
         abortSignal,
       ),
     ),
@@ -81,6 +84,7 @@ export async function getFeaturesForOneLayer(
   epsgNumber: number,
   lang: string,
   limit: number,
+  screenContext: ScreenContext,
   abortSignal?: AbortSignal,
 ): Promise<FeatureData[]> {
   // features are already part of the request, we don't do anything more than format everything.
@@ -96,7 +100,16 @@ export async function getFeaturesForOneLayer(
     // the baseUrl may or may not carry a trailing slash, depending on the
     // service's `describes` href — normalize before joining with `identify`
     const identifyBase = layerRequest.baseUrl.replace(/\/+$/, "");
-    const identifyUrl = `${identifyBase}/identify?layers=all:${layerRequest.layerId}&sr=${epsgNumber}&geometry=${extent.join(",")}&geometryFormat=geojson&geometryType=esriGeometryEnvelope&limit=${limit}&tolerance=0&returnGeometry=true&lang=${lang}`;
+    const identifyUrl = buildIdentifyUrl(
+      identifyBase,
+      layerRequest,
+      epsgNumber,
+      extent,
+      limit,
+      lang,
+      screenContext,
+      IDENTIFY_DPI,
+    );
     const identifyResult = await fetch(identifyUrl, { signal: abortSignal });
     if (identifyResult.status !== 200) {
       log.warn(
@@ -108,8 +121,24 @@ export async function getFeaturesForOneLayer(
     const identifyFeatures =
       ((await identifyResult.json()) as IdentifyResponse).results ?? [];
 
+    const seenFeatureIds = new Set<string>();
+    const uniqueIdentifyFeatures = identifyFeatures.filter((feature) => {
+      const id = feature.id.toString();
+      if (seenFeatureIds.has(id)) {
+        return false;
+      }
+      seenFeatureIds.add(id);
+      return true;
+    });
+
+    if (uniqueIdentifyFeatures.length !== identifyFeatures.length) {
+      log.warn(
+        `[GetFeaturesForOneLayer]: identify response to ${identifyUrl} returned multiple features with identical id.`,
+      );
+    }
+
     return getPopupFromIdentifyFeature(
-      identifyFeatures,
+      uniqueIdentifyFeatures,
       layerRequest.urlTemplate,
       lang,
       abortSignal,
@@ -209,6 +238,34 @@ function buildWmsGetFeatureInfoUrl(
   // "...??SERVICE=..." query. Normalizing through URL handles every shape.
   const url = new URL(wmsRequest.wmsGetFeatureInfo.baseUrl);
   url.search = new URLSearchParams(params).toString();
+  return url.toString();
+}
+
+function buildIdentifyUrl(
+  baseUrl: string,
+  layerRequest: LayerRequest,
+  epsgNumber: number,
+  extent: FlatExtent,
+  limit: number,
+  lang: string,
+  screenContext: ScreenContext,
+  dpi: number,
+) {
+  const identifyParams = new URLSearchParams({
+    layers: `all:${layerRequest.layerId}`,
+    sr: `${epsgNumber}`,
+    geometry: extent.join(","),
+    geometryFormat: "geojson",
+    geometryType: "esriGeometryEnvelope",
+    limit: `${limit}`,
+    tolerance: "0",
+    returnGeometry: "true",
+    lang: lang,
+    mapExtent: screenContext.viewExtent.join(","),
+    imageDisplay: `${screenContext.viewportSize[0]},${screenContext.viewportSize[1]},${dpi}`,
+  });
+  const url = new URL(`${baseUrl}/identify`);
+  url.search = identifyParams.toString();
   return url.toString();
 }
 
