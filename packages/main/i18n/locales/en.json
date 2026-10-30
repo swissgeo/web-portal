@@ -12,8 +12,6 @@
     "search": "Search",
     "layerCart": "Active layers",
     "map": "Map",
-    "collapse": "Collapse the side panel",
-    "expand": "Expand the side panel",
     "openLayerCatalog": "Open data catalogue"
   },
   "search": {
@@ -447,7 +445,10 @@
     },
     "featureFlag": {
       "notAvailable": "This tool is not available yet.",
-      "workingOnIt": "It will follow in a later version."
+      "workingOnIt": "It will follow in a later version.",
+      "links": {
+        "roadmap": "mapviewer-perspective"
+      }
     }
   },
   "backgroundLayers": {
@@ -490,7 +491,8 @@
     "backToMap": "Back to map",
     "resources": {
       "dataset": "The layer"
-    }
+    },
+    "mapUnavailable": "The map is currently not available."
   },
   "dataset": {
     "legendLoading": "Loading legend…",
@@ -635,7 +637,8 @@
       "openDocument": "Open legend as document",
       "openPdf": "Open legend as PDF",
       "openPage": "Open legend page"
-    }
+    },
+    "variant": "Variant"
   },
   "layerCart": {
     "close": "Close",
@@ -656,11 +659,65 @@
     "searchPlaceholder": "Search",
     "close": "Close",
     "expand": "Show data catalogue",
-    "collapse": "Hide data catalogue"
+    "collapse": "Hide data catalogue",
+    "allLayers": "TODO translate",
+    "layers": "TODO translate",
+    "back": "TODO translate"
   },
   "featureInfo": {
     "blockedContent": "(Link removed for security reasons)",
     "noInformation": "No information available.",
-    "popupTitle": "Feature information"
+    "popupTitle": "Feature information",
+    "featureFlag": {
+      "notAvailable": "Unfortunately, the feature info pop-up window is not yet available.",
+      "workingOnIt": "We're working on it :)"
+    }
+  },
+  "mobileNotice": {
+    "title": "Mobile view coming soon",
+    "description": "This version is optimized for desktop. On mobile, we show the desktop view for now.",
+    "confirm": "Got it"
+  },
+  "testSiteBanner": {
+    "text": "{environment} environment – Not for operational use. Do not share."
+  },
+  "landing": {
+    "cards": {
+      "map": {
+        "title": "Map",
+        "description": "Interactive map viewer with hundreds of layers, time travel, print and share functions.",
+        "button": "Open the map"
+      },
+      "catalog": {
+        "title": "Data catalog",
+        "description": "Browse the complete catalog of geobase data, themes and metadata.",
+        "button": "Open the data catalog"
+      },
+      "info": {
+        "title": "Everything else about SWISSGEO",
+        "description": "All about news, help and about us.",
+        "button": "To the info portal"
+      }
+    },
+    "footer": {
+      "claim": "The where is here.",
+      "description": "SWISSGEO makes Switzerland's spatial data accessible in one place.",
+      "followUs": "Follow us!",
+      "moreInformation": "More information",
+      "termsOfUse": "Terms of use",
+      "contact": "Contact",
+      "dataProtection": "Legal notices and data protection",
+      "netiquette": "Netiquette",
+      "accessibility": "Accessibility",
+      "copyright": "Copyright © 2026"
+    },
+    "links": {
+      "impressum": "impressum-en",
+      "dataProtection": "legal-information-protection",
+      "netiquette": "netiquette-en",
+      "accessibility": "accessibility",
+      "termsOfUse": "terms-of-use-and-operating-conditions",
+      "contact": "impressum-en"
+    }
   }
 }
