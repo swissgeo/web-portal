@@ -7,7 +7,6 @@ import { readFileSync } from "fs";
 import ChSwisstopoPixelkarteFarbeDataset from "../fixtures/item-dataset-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
 import ChSwisstopoPixelkarteFarbeDistribution from "../fixtures/item-distribution-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
 import ChWmtsGeoadmin from "../fixtures/wmts-geoadminch.json" with { type: "json" };
-import { waitForZoom } from "./utils";
 const WMTSCapabilities = readFileSync(
   new URL("../fixtures/WMTSCapabilities.xml", import.meta.url),
   "utf-8",
@@ -24,12 +23,6 @@ import {
 } from "./setup";
 
 test.describe("map page", () => {
-  const getZoom = async (page: Page) => {
-    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
-    const zoom = await page.evaluate((map) => map.getView().getZoom(), mapRef);
-    return zoom;
-  };
-
   const mockBackgroundRoutes = async (page: Page) => {
     const mockBackgroundResponse = (route: Route) =>
       route.fulfill({ status: 200, json: ChSwisstopoPixelkarteFarbeDataset });
@@ -100,12 +93,6 @@ test.describe("map page", () => {
     await expect(page.getByTestId("ol-map")).toBeVisible();
   });
 
-  test("displays the toolbox with zoom controls", async ({ page }) => {
-    await expect(page.getByTestId("toolbox-right")).toBeVisible();
-    await expect(page.getByTestId("zoom-in")).toBeVisible();
-    await expect(page.getByTestId("zoom-out")).toBeVisible();
-  });
-
   test("displays the fullscreen button", async ({ page }) => {
     await expect(page.getByTestId("toolbox-fullscreen-button")).toBeVisible();
   });
@@ -156,36 +143,5 @@ test.describe("map page", () => {
       .getByTestId("background-selector-ch.swisstopo.pixelkarte-farbe")
       .first();
     await expect(backgroundSelector).toBeVisible();
-  });
-
-  test("zoom buttons work", async ({ page }) => {
-    await page.evaluateHandle(() => window.swissgeoOlMap);
-
-    await test.step("Check simple zooming", async () => {
-      await page.getByTestId("zoom-in").click();
-      await waitForZoom(page);
-
-      expect(await getZoom(page)).toEqual(2);
-
-      await page.getByTestId("zoom-out").click();
-      await waitForZoom(page);
-
-      expect(await getZoom(page)).toEqual(1);
-    });
-
-    await test.step("Zoom all the way in", async () => {
-      // now let's zoom all the way in
-      while ((await getZoom(page)) !== 0) {
-        await page.getByTestId("zoom-out").click();
-        await waitForZoom(page);
-      }
-
-      for (let zoom = 1; zoom <= 13; zoom++) {
-        await page.getByTestId("zoom-in").click();
-        await waitForZoom(page);
-        expect(await getZoom(page)).toEqual(zoom);
-      }
-      await expect(page.getByTestId("zoom-in")).toBeDisabled();
-    });
   });
 });

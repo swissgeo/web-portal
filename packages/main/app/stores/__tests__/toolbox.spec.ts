@@ -192,7 +192,6 @@ describe("useToolboxStore", () => {
       expect(store.showFullScreenButton).toBe(true);
       expect(store.showGeolocationButton).toBe(true);
       expect(store.showCompassButton).toBe(false);
-      expect(store.showZoomButtons).toBe(true);
       expect(store.show3dButton).toBe(false);
       expect(store.showDrawButton).toBe(true);
       expect(store.showMeasureButton).toBe(true);

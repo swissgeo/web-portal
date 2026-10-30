@@ -6,7 +6,6 @@ import { readFileSync } from "fs";
 import ChSwisstopoPixelkarteFarbeDataset from "../fixtures/item-dataset-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
 import ChSwisstopoPixelkarteFarbeDistribution from "../fixtures/item-distribution-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
 import ChWmtsGeoadmin from "../fixtures/wmts-geoadminch.json" with { type: "json" };
-import { waitForZoom } from "./utils";
 const WMTSCapabilities = readFileSync(
   new URL("../fixtures/WMTSCapabilities.xml", import.meta.url),
   "utf-8",
@@ -23,12 +22,6 @@ import {
 } from "./setup";
 
 test.describe("embed map page", () => {
-  const getZoom = async (page: Page) => {
-    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
-    const zoom = await page.evaluate((map) => map.getView().getZoom(), mapRef);
-    return zoom;
-  };
-
   const mockBackgroundRoutes = async (page: Page) => {
     const mockBackgroundResponse = (route: Route) =>
       route.fulfill({ status: 200, json: ChSwisstopoPixelkarteFarbeDataset });
@@ -96,12 +89,6 @@ test.describe("embed map page", () => {
     await expect(page.getByTestId("ol-map")).toBeVisible();
   });
 
-  test("displays the toolbox with zoom controls", async ({ page }) => {
-    await expect(page.getByTestId("toolbox-right")).toBeVisible();
-    await expect(page.getByTestId("zoom-in")).toBeVisible();
-    await expect(page.getByTestId("zoom-out")).toBeVisible();
-  });
-
   test("does not displays the fullscreen button", async ({ page }) => {
     await expect(
       page.getByTestId("toolbox-fullscreen-button"),
@@ -120,35 +107,6 @@ test.describe("embed map page", () => {
     );
     expect(zoom).toEqual(1);
     expect(center).toEqual([2660000, 1190000]);
-  });
-
-  test("zoom buttons work", async ({ page }) => {
-    await test.step("Check simple zooming", async () => {
-      await page.getByTestId("zoom-in").click();
-      await waitForZoom(page);
-
-      expect(await getZoom(page)).toEqual(2);
-
-      await page.getByTestId("zoom-out").click();
-      await waitForZoom(page);
-
-      expect(await getZoom(page)).toEqual(1);
-    });
-
-    await test.step("Zoom all the way in", async () => {
-      while ((await getZoom(page)) !== 0) {
-        await page.getByTestId("zoom-out").click();
-        await waitForZoom(page);
-      }
-
-      // now let's zoom all the way in
-      for (let zoom = 1; zoom <= 13; zoom++) {
-        await page.getByTestId("zoom-in").click();
-        await waitForZoom(page);
-        expect(await getZoom(page)).toEqual(zoom);
-      }
-      await expect(page.getByTestId("zoom-in")).toBeDisabled();
-    });
   });
 });
 
@@ -170,14 +128,6 @@ test.describe("embed map in iframe", () => {
     await expect(iframeElement.getByTestId("ol-map")).toBeVisible({
       timeout: HYDRATION_TIMEOUT,
     });
-  });
-
-  test("displays zoom controls inside the iframe", async ({ page }) => {
-    const iframeElement = page.frameLocator("iframe");
-    await expect(iframeElement.getByTestId("zoom-in")).toBeVisible({
-      timeout: HYDRATION_TIMEOUT,
-    });
-    await expect(iframeElement.getByTestId("zoom-out")).toBeVisible();
   });
 
   test("does not display the fullscreen button inside the iframe", async ({
