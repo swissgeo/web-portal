@@ -1,7 +1,7 @@
 {
   "menuTitles": {
     "knowledge": "Knowledge",
-    "about": "About Swissgeo"
+    "about": "About SWISSGEO"
   },
   "welcomeOverlay": {
     "moreInfos": "More info",
@@ -14,10 +14,10 @@
     "map": "Map",
     "collapse": "Collapse the side panel",
     "expand": "Expand the side panel",
-    "openLayerCatalog": "Open data catalog"
+    "openLayerCatalog": "Open data catalogue"
   },
   "search": {
-    "placeholder": "Search for a place, layer or coordinates...",
+    "placeholder": "Search for a place, layer or coordinates…",
     "buttonLabel": "Search",
     "map_tab": "Map",
     "content_pages_tab": "Content pages",
@@ -31,15 +31,15 @@
   "footer": {
     "copyRightData": "© Data: ",
     "termsOfUse": "Terms of use",
-    "impressum": "Impressum",
+    "impressum": "Legal notice",
     "mobileNav": {
       "map": "Map",
-      "catalog": "Data Catalog",
+      "catalog": "Data catalogue",
       "tools": "Tools",
-      "mapInfo": "Map Info"
+      "mapInfo": "Map info"
     },
     "reportIssue": {
-      "buttonTitle": "Report Issue",
+      "buttonTitle": "Report an issue",
       "title": "Report an issue",
       "close": "Close report issue form",
       "steps": {
@@ -67,7 +67,7 @@
           "button": "Draw on the map"
         },
         "step4": {
-          "title": "4. Your email:",
+          "title": "4. Your email address:",
           "placeholder": "Your email address",
           "info": "Without providing an email address, you will not receive a response"
         },
@@ -78,7 +78,7 @@
       },
       "notes": {
         "link": {
-          "label": "The following link will be transferred:",
+          "label": "The following link will be sent:",
           "permalink": "Permalink"
         },
         "tos": {
@@ -93,7 +93,7 @@
       "errorMessage": "An error occurred while sending your message. Please try again later.",
       "validation": {
         "subjectRequired": "Subject is required",
-        "feedbackRequired": "Feedback is required",
+        "feedbackRequired": "Message is required",
         "categoryRequired": "Category is required",
         "versionRequired": "Version is required",
         "userAgentRequired": "User agent is required",
@@ -106,11 +106,11 @@
     }
   },
   "debug": {
-    "openImportLocalLayersPanel": "Open Import Local Layers Panel",
-    "openDrawingPanel": "Open Drawing Panel",
-    "openImportLayersPanel": "Open Import Layers Panel",
-    "openLayersPanel": "Open Layers Panel",
-    "importDrawingPanelTitle": "TODO translate",
+    "openImportLocalLayersPanel": "Open import local layers panel",
+    "openDrawingPanel": "Open drawing panel",
+    "openImportLayersPanel": "Open import layers panel",
+    "openLayersPanel": "Open layers panel",
+    "importDrawingPanelTitle": "Import drawing from URL",
     "drawingNameLabel": "Drawing name",
     "drawingToolSelectLabel": "Select a drawing tool:",
     "drawingToolPoint": "Point",
@@ -128,7 +128,7 @@
     "drawingExportKML": "Export KML",
     "drawingExportKMZ": "Export KMZ",
     "drawingExportGPX": "Export GPX",
-    "drawingClearAll": "Clear All Drawings",
+    "drawingClearAll": "Clear all drawings",
     "drawingClearConfirmTitle": "Delete all drawings?",
     "drawingClearConfirmDescription": "This action will remove all drawings from the current session.",
     "drawingClearConfirmCancel": "Cancel",
@@ -156,19 +156,19 @@
       "lineStyleLabel": "Line style",
       "strokeWidthLabel": "Stroke width",
       "strokeOpacityLabel": "Stroke opacity",
-      "strokeColorLabel": "Stroke color",
+      "strokeColorLabel": "Stroke colour",
       "dashedLineLabel": "Dashed line",
-      "fillColorLabel": "Fill color",
+      "fillColorLabel": "Fill colour",
       "fillOpacityLabel": "Fill opacity",
       "markerStyleButton": "Marker style",
       "textStyleButton": "Text style",
       "hideDescriptionOnMap": "Hide description on map",
       "showDescriptionOnMap": "Show description on map",
       "markerSizeLabel": "Marker size",
-      "markerColorLabel": "Marker color",
+      "markerColorLabel": "Marker colour",
       "markerSymbolLabel": "Marker symbol",
       "textSizeLabel": "Text size",
-      "textColorLabel": "Text color",
+      "textColorLabel": "Text colour",
       "textAnchorLabel": "Text anchor",
       "deleteFeatureButton": "Delete feature",
       "sizeSmall": "Small",
@@ -190,32 +190,32 @@
       },
       "anchor": {
         "top-left": "Top left",
-        "top-center": "Top center",
+        "top-center": "Top centre",
         "top-right": "Top right",
-        "center-left": "Center left",
-        "center": "Center",
-        "center-right": "Center right",
+        "center-left": "Centre left",
+        "center": "Centre",
+        "center-right": "Centre right",
         "bottom-left": "Bottom left",
-        "bottom-center": "Bottom center",
+        "bottom-center": "Bottom centre",
         "bottom-right": "Bottom right"
       }
     },
-    "openStateConfigPanel": "Open State Config Panel",
-    "stateConfig": "State Config",
+    "openStateConfigPanel": "Open state config panel",
+    "stateConfig": "State config",
     "share": "Share",
-    "openPrintPanel": "Open Print Panel",
-    "openFeatureFlagsPanel": "Open Feature Flags Panel",
-    "featureFlagsPanelTitle": "Feature Flags",
+    "openPrintPanel": "Open print panel",
+    "openFeatureFlagsPanel": "Open feature flags panel",
+    "featureFlagsPanelTitle": "Feature flags",
     "resetFeatureFlags": "Reset to defaults",
     "featureFlagOverridden": "overridden",
-    "openImportDrawingPanel": "TODO translate",
-    "drawingPanelTitle": "Drawing Tools"
+    "openImportDrawingPanel": "Open import drawing panel",
+    "drawingPanelTitle": "Drawing tools"
   },
   "geolocation": {
     "permissionDenied": "Location permission denied",
     "stopTracking": "Stop tracking",
     "startGeolocation": "Start geolocation",
-    "recenterMap": "Re-center map"
+    "recenterMap": "Re-centre map"
   },
   "toolbox": {
     "geolocation": {
@@ -266,8 +266,8 @@
       "shareErrorAlreadyInProgress": "A sharing operation is already in progress.",
       "formats": {
         "geojson": "GeoJSON",
-        "gpxTrack": "GPX Track",
-        "gpxRoute": "GPX Route",
+        "gpxTrack": "GPX track",
+        "gpxRoute": "GPX route",
         "kml": "KML",
         "kmz": "KMZ"
       },
@@ -287,18 +287,18 @@
       },
       "style": {
         "appearance": "Appearance",
-        "fillColor": "Fill color",
-        "outlineColor": "Outline color",
+        "fillColor": "Fill colour",
+        "outlineColor": "Outline colour",
         "outlineWidth": "Outline width",
-        "lineColor": "Line color",
+        "lineColor": "Line colour",
         "lineWidth": "Line width",
         "showTitle": "Show title",
         "showDescription": "Show description",
         "textSize": "Text size",
         "placement": "Placement",
         "relativeToMarker": "Relative to the marker",
-        "textColor": "Text color",
-        "textHaloColor": "Text halo color",
+        "textColor": "Text colour",
+        "textHaloColor": "Text halo colour",
         "showMarker": "Show marker",
         "markerSize": "Marker size"
       },
@@ -314,7 +314,7 @@
         "north": "Top",
         "north-east": "Top right",
         "west": "Left",
-        "center": "Center",
+        "center": "Centre",
         "east": "Right",
         "south-west": "Bottom left",
         "south": "Bottom",
@@ -329,7 +329,7 @@
       },
       "symbols": {
         "collection": "Symbol collection",
-        "color": "Symbol color",
+        "color": "Symbol colour",
         "label": "Marker symbols",
         "empty": "No symbols available.",
         "select": "Select symbol: {name}",
@@ -349,21 +349,21 @@
       "buttonTitle": "Compare"
     },
     "timeSlider": {
-      "buttonTitle": "Time Slider"
+      "buttonTitle": "Time slider"
     },
     "import": {
       "buttonTitle": "Import",
-      "title": "Import data",
+      "title": "Import a file or URL",
       "description": "Accepted file types: {types}",
       "tabData": "Data",
       "tabDrawing": "Drawing",
-      "tabUrl": "TODO translate",
+      "tabUrl": "URL",
       "urlPlaceholder": "https://s.geo.admin.ch/8gzh9bzzmef5",
-      "browseButton": "Browse...",
+      "browseButton": "Browse…",
       "noFileSelected": "No file selected",
       "importFileButton": "Import file",
       "importUrlButton": "Add drawing",
-      "loadingMessage": "Importing file...",
+      "loadingMessage": "Importing file…",
       "successMessage": "Successfully imported {fileName}",
       "drawingSuccessMessage": "Drawing imported successfully",
       "fileUrlDescription": "Or import a file from URL ({types}):",
@@ -378,8 +378,8 @@
         "generalError": "Failed to import file",
         "noFileSelected": "Please select a file first",
         "noUrlEntered": "Please enter a URL",
-        "fileSizeWarning": "File size is {fileSize}MB, which exceeds the recommended maximum of {maxSize}MB",
-        "fileTooLarge": "File is too large: {fileName} (maximum {maxSize}MB)",
+        "fileSizeWarning": "File size is {fileSize} MB, which exceeds the recommended maximum of {maxSize} MB",
+        "fileTooLarge": "File is too large: {fileName} (maximum {maxSize} MB)",
         "drawingImportFailed": "Failed to import drawing",
         "kmlFetchFailed": "Failed to fetch KML: {status}",
         "noKmlFound": "No KML drawing found in the provided URL",
@@ -391,9 +391,9 @@
       "close": "Close",
       "drawingReplaceConfirmTitle": "Replace current drawing?",
       "drawingReplaceConfirmDescription": "Importing a drawing requires clearing the existing one. After import, you will be able to further edit the drawing.",
-      "drawingReplaceConfirmTemporaryNote": "We are working on a nicer workflow for this. Feel free to contact us to give us feedback and suggestions.",
-      "drawingReplaceConfirmAdminNote": "You are importing a drawing as its owner. Modifying the drawing will modify the original file and synchronize it with the Swissgeo database.",
-      "drawingReplaceConfirmLegacyAdminNote": "This drawing will be imported as a copy: modifying it will not alter the original drawing, unlike admin imports of Swissgeo drawings.",
+      "drawingReplaceConfirmTemporaryNote": "We are working on a simpler workflow for this. Feel free to contact us to give us feedback and suggestions.",
+      "drawingReplaceConfirmAdminNote": "You are importing a drawing as its owner. Modifying the drawing will modify the original file and synchronise it with the SWISSGEO database.",
+      "drawingReplaceConfirmLegacyAdminNote": "This drawing will be imported as a copy: modifying it will not alter the original drawing, unlike admin imports of SWISSGEO drawings.",
       "drawingReplaceConfirmCancel": "Cancel",
       "drawingReplaceConfirmConfirm": "Clear and import"
     },
@@ -420,7 +420,7 @@
         }
       },
       "embed": {
-        "tabLabel": "Embedding",
+        "tabLabel": "Embed",
         "title": "Embed map",
         "description": "Embed the map with the link into your own environment.",
         "generateButton": "Generate embed code",
@@ -446,17 +446,17 @@
       "buttonTitle": "Print"
     },
     "featureFlag": {
-      "notAvailable": "Unfortunately, this tool isn't available yet",
+      "notAvailable": "Unfortunately, this tool is not available yet.",
       "workingOnIt": "We're working on it :)"
     }
   },
   "backgroundLayers": {
     "title": "Displayed maps",
     "label": "Background",
-    "voidMap": "Void map",
+    "voidMap": "No background",
     "backgroundMap": "Background map",
-    "colorMap": "Color map",
-    "greyMap": "Grey map",
+    "colorMap": "Colour map",
+    "greyMap": "Black and white map",
     "swissimage": "Aerial imagery"
   },
   "toaster": {
@@ -474,7 +474,7 @@
       "elevation": "Elevation",
       "title": "Position",
       "tabPosition": "Coordinates",
-      "tabShare": "Share Position",
+      "tabShare": "Share position",
       "errorFetchingElevation": "Error retrieving elevation",
       "errorFetchingW3W": "Error retrieving What3Words address",
       "featureFlag": {
@@ -508,10 +508,10 @@
     "details": "Dataset details",
     "expandPanel": "Expand detail panel",
     "collapsePanel": "Collapse detail panel",
-    "alreadyOnMap": "Already on map",
+    "alreadyOnMap": "Already on the map",
     "viewDetailPage": "View detail page",
     "showOnMap": "Show on map",
-    "backToCatalog": "Back to catalog",
+    "backToCatalog": "Back to data catalogue",
     "close": "Close dataset details",
     "backToMap": "Back to map",
     "addToMapError": "Failed to add layer to map",
@@ -530,14 +530,14 @@
     "aggregated": "Aggregated"
   },
   "elevationProfile": {
-    "windowTitle": "Elevation Profile",
+    "windowTitle": "Elevation profile",
     "plot": {
       "xAxis": "Distance",
       "yAxis": "Elevation",
       "noData": "No elevation data available"
     },
     "metadata": {
-      "elevationDifference": "Difference of altitude start-end",
+      "elevationDifference": "Elevation difference",
       "elevationUp": "Ascent",
       "elevationDown": "Descent",
       "poiUp": "Highest point",
@@ -558,10 +558,10 @@
     "viewOn": "View on {platform}"
   },
   "print": {
-    "warningOutsideSwitzerland": "Is out of Swiss bounds",
-    "warningOutsideSwitzerlandTitle": "Print extent is out of Swiss bounds",
+    "warningOutsideSwitzerland": "Outside Switzerland",
+    "warningOutsideSwitzerlandTitle": "Print area outside Switzerland",
     "warningZoomOutOfSync": "The zoom level on screen does not correspond to the locked zoom level for print.",
-    "warningZoomOutOfSyncTitle": "Zoom level is not at locked zoom level",
+    "warningZoomOutOfSyncTitle": "Zoom level differs from the locked zoom level",
     "statusProcessing": "processing",
     "statusQueued": "queued",
     "statusError": "error",
@@ -573,19 +573,19 @@
     "download": "Download",
     "zoomLevel": "Zoom level",
     "zoomLevelForPrint": "Zoom level for print",
-    "warningOutsideViewportLabel": "Is frame beyond viewport",
-    "printScale": "Scale of print",
+    "warningOutsideViewportLabel": "Print frame outside the view",
+    "printScale": "Print scale",
     "enableStrictZoomStepsLabel": "Enable strict zoom steps",
-    "lockCenterToViewLabel": "Lock center to current view",
+    "lockCenterToViewLabel": "Lock centre to current view",
     "lockZoomToViewLabel": "Lock zoom to current view",
     "printSizeLabel": "Print size",
     "printResolutionLabel": "Print resolution",
     "printOrientationLabel": "Print orientation",
     "zoomToLockedZoomLevel": "Zoom to locked zoom level",
-    "sendPrintRequest": "Send Print Request",
-    "openPrintJobs": "Open Print Jobs",
-    "printJobsWindowTitle": "Print Jobs",
-    "warningPrintExtentBeyondViewport": "You can lock the center and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.",
+    "sendPrintRequest": "Send print request",
+    "openPrintJobs": "Open print jobs",
+    "printJobsWindowTitle": "Print jobs",
+    "warningPrintExtentBeyondViewport": "You can lock the centre and zoom level to prevent the print extent from moving outside of the viewport while panning and zooming the map.",
     "orientationPortrait": "portrait",
     "orientationLandscape": "landscape"
   },
@@ -617,7 +617,7 @@
     "organisation": "Organisation",
     "legalBasis": "Legal basis",
     "mediaInformation": "Media information",
-    "login": "TODO translate",
+    "login": "Log in",
     "modeSwitch": "Switch mode"
   },
   "layers": {
@@ -643,24 +643,24 @@
     "collapse": "Hide active layers"
   },
   "layerCatalog": {
-    "title": "Data catalog",
+    "title": "Data catalogue",
     "table": {
       "title": "Name",
       "dataOwner": "Provider",
       "empty": "No layers found."
     },
-    "loading": "Loading...",
-    "error": "The catalog could not be loaded.",
+    "loading": "Loading…",
+    "error": "The catalogue could not be loaded.",
     "retry": "Try again",
     "searchLabel": "Search layers",
     "searchPlaceholder": "Search",
     "close": "Close",
-    "expand": "Show data catalog",
-    "collapse": "Hide data catalog"
+    "expand": "Show data catalogue",
+    "collapse": "Hide data catalogue"
   },
   "featureInfo": {
-    "blockedContent": "To Translate - Feature Info Blocked Content",
-    "noInformation": "To Translate - Feature Info No Information",
-    "popupTitle": "To Translate - Feature Info Popup Title"
+    "blockedContent": "(Link removed for security reasons)",
+    "noInformation": "No information available.",
+    "popupTitle": "Feature information"
   }
 }
