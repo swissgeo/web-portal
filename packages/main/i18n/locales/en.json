@@ -660,22 +660,22 @@
     "close": "Close",
     "expand": "Show data catalogue",
     "collapse": "Hide data catalogue",
-    "allLayers": "TODO translate",
-    "layers": "TODO translate",
-    "back": "TODO translate"
+    "allLayers": "All layers",
+    "layers": "Layers",
+    "back": "Back"
   },
   "featureInfo": {
     "blockedContent": "(Link removed for security reasons)",
     "noInformation": "No information available.",
     "popupTitle": "Feature information",
     "featureFlag": {
-      "notAvailable": "Unfortunately, the feature info pop-up window is not yet available.",
-      "workingOnIt": "We're working on it :)"
+      "notAvailable": "The feature information window is not available yet.",
+      "workingOnIt": "It will follow in a later version."
     }
   },
   "mobileNotice": {
     "title": "Mobile view coming soon",
-    "description": "This version is optimized for desktop. On mobile, we show the desktop view for now.",
+    "description": "This version is optimised for desktop. On mobile devices, we show the desktop view for now.",
     "confirm": "Got it"
   },
   "testSiteBanner": {
@@ -689,14 +689,14 @@
         "button": "Open the map"
       },
       "catalog": {
-        "title": "Data catalog",
-        "description": "Browse the complete catalog of geobase data, themes and metadata.",
-        "button": "Open the data catalog"
+        "title": "Data catalogue",
+        "description": "Browse the complete catalogue of geobase data, themes and metadata.",
+        "button": "Open the data catalogue"
       },
       "info": {
         "title": "Everything else about SWISSGEO",
-        "description": "All about news, help and about us.",
-        "button": "To the info portal"
+        "description": "News, help and information about us.",
+        "button": "Go to the info portal"
       }
     },
     "footer": {

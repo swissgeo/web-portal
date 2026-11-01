@@ -669,13 +669,13 @@
     "noInformation": "Keine Informationen verfügbar.",
     "popupTitle": "Objektinformationen",
     "featureFlag": {
-      "notAvailable": "Das Feature Info Fenster ist leider noch nicht verfügbar.",
-      "workingOnIt": "Wir sind dran :)"
+      "notAvailable": "Das Fenster «Objektinformationen» ist noch nicht verfügbar.",
+      "workingOnIt": "Es folgt in einer späteren Version."
     }
   },
   "mobileNotice": {
     "title": "Mobile Ansicht folgt",
-    "description": "Diese Version ist für Desktop optimiert. Auf Mobile zeigen wir vorläufig die Desktop-Ansicht.",
+    "description": "Diese Version ist für Desktop-Computer optimiert. Auf Mobilgeräten zeigen wir vorläufig die Desktop-Ansicht.",
     "confirm": "Verstanden"
   },
   "testSiteBanner": {
@@ -685,24 +685,24 @@
     "cards": {
       "map": {
         "title": "Karte",
-        "description": "Interaktiver Karten-Viewer mit hunderten Ebenen, Zeitreise, Druck- und Teilen-Funktionen.",
+        "description": "Interaktiver Kartenviewer mit Hunderten von Ebenen, Zeitreise sowie Druck- und Teilen-Funktionen.",
         "button": "Zur Karte"
       },
       "catalog": {
-        "title": "Daten-Katalog",
+        "title": "Datenkatalog",
         "description": "Durchsuchen Sie den vollständigen Katalog mit Geobasisdaten, Themen und Metadaten.",
-        "button": "Daten-Katalog öffnen"
+        "button": "Datenkatalog öffnen"
       },
       "info": {
-        "title": "Alles weitere um SWISSGEO",
-        "description": "Alles zur News, Hilfe und Über uns.",
+        "title": "Alles Weitere zu SWISSGEO",
+        "description": "News, Hilfe und Informationen über uns.",
         "button": "Zum Infoportal"
       }
     },
     "footer": {
       "claim": "Das Wo ist hier.",
       "description": "SWISSGEO macht raumbezogene Daten der Schweiz an einem Ort zugänglich.",
-      "followUs": "Folge uns!",
+      "followUs": "Folgen Sie uns!",
       "moreInformation": "Weitere Informationen",
       "termsOfUse": "Nutzungsbestimmungen",
       "contact": "Kontakt",

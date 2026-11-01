@@ -492,7 +492,7 @@
     "resources": {
       "dataset": "La couche"
     },
-    "mapUnavailable": "TODO translate"
+    "mapUnavailable": "La carte n'est actuellement pas disponible."
   },
   "dataset": {
     "legendLoading": "Chargement de la légende…",
@@ -660,32 +660,32 @@
     "close": "Fermer",
     "expand": "Afficher le catalogue de données",
     "collapse": "Masquer le catalogue de données",
-    "allLayers": "TODO translate",
-    "layers": "TODO translate",
-    "back": "TODO translate"
+    "allLayers": "Toutes les couches",
+    "layers": "Couches",
+    "back": "Retour"
   },
   "featureInfo": {
     "blockedContent": "(Lien supprimé pour des raisons de sécurité)",
     "noInformation": "Aucune information disponible.",
     "popupTitle": "Informations sur l'objet",
     "featureFlag": {
-      "notAvailable": "La fenêtre contextuelle d'informations sur les objets n'est malheureusement pas encore disponible.",
-      "workingOnIt": "Nous y travaillons :)"
+      "notAvailable": "La fenêtre «Informations sur l'objet» n'est pas encore disponible.",
+      "workingOnIt": "Il suivra dans une version ultérieure."
     }
   },
   "mobileNotice": {
-    "title": "TODO translate",
-    "description": "TODO translate",
-    "confirm": "TODO translate"
+    "title": "Vue mobile à venir",
+    "description": "Cette version est optimisée pour les ordinateurs. Sur mobile, nous affichons pour l'instant la vue pour ordinateur.",
+    "confirm": "Compris"
   },
   "testSiteBanner": {
-    "text": "TODO translate"
+    "text": "Environnement {environment} – Pas pour un usage productif. Ne pas partager."
   },
   "landing": {
     "cards": {
       "map": {
         "title": "Carte",
-        "description": "Visionneuse de cartes interactive avec des centaines de couches, voyage dans le temps, fonctions d'impression et de partage.",
+        "description": "Visualiseur de cartes interactif avec des centaines de couches, voyage dans le temps, fonctions d'impression et de partage.",
         "button": "Ouvrir la carte"
       },
       "catalog": {
@@ -695,14 +695,14 @@
       },
       "info": {
         "title": "Tout le reste sur SWISSGEO",
-        "description": "Toutes les actualités, l'aide et notre profil.",
+        "description": "Actualités, aide et informations sur nous.",
         "button": "Vers le portail d'information"
       }
     },
     "footer": {
       "claim": "Le où est ici.",
       "description": "SWISSGEO rend accessibles les données spatiales de la Suisse en un seul endroit.",
-      "followUs": "Suivez-nous !",
+      "followUs": "Suivez-nous!",
       "moreInformation": "Plus d'informations",
       "termsOfUse": "Conditions d'utilisation",
       "contact": "Contact",

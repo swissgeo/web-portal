@@ -447,7 +447,7 @@
       "notAvailable": "Quest utensil n'è anc betg disponibel.",
       "workingOnIt": "El suonda en ina versiun posteriura.",
       "links": {
-        "roadmap": "TODO translate"
+        "roadmap": "kartenviewer-ueberblick"
       }
     }
   },
@@ -492,7 +492,7 @@
     "resources": {
       "dataset": "Il nivel"
     },
-    "mapUnavailable": "TODO translate"
+    "mapUnavailable": "La charta n'è actualmain betg disponibla."
   },
   "dataset": {
     "legendLoading": "La legenda vegn chargiada…",
@@ -638,7 +638,7 @@
       "openPdf": "Avrir la legenda sco PDF",
       "openPage": "Avrir la pagina da la legenda"
     },
-    "variant": "TODO translate"
+    "variant": "Variant"
   },
   "layerCart": {
     "close": "Serrar",
@@ -660,56 +660,56 @@
     "close": "Serrar",
     "expand": "Mussar il catalog da datas",
     "collapse": "Zuppentar il catalog da datas",
-    "allLayers": "TODO translate",
-    "layers": "TODO translate",
-    "back": "TODO translate"
+    "allLayers": "Tut ils nivels",
+    "layers": "Nivels",
+    "back": "Enavos"
   },
   "featureInfo": {
     "blockedContent": "(Link allontanà per motivs da segirezza)",
     "noInformation": "Naginas infurmaziuns disponiblas.",
     "popupTitle": "Infurmaziuns davart l'object",
     "featureFlag": {
-      "notAvailable": "To Translate - Feature Info Feature Flag Not Available",
-      "workingOnIt": "To Translate - Feature Info Feature Flag Working On It"
+      "notAvailable": "La fanestra «Infurmaziuns davart l'object» n'è anc betg disponibla.",
+      "workingOnIt": "El suonda en ina versiun posteriura."
     }
   },
   "mobileNotice": {
-    "title": "TODO translate",
-    "description": "TODO translate",
-    "confirm": "TODO translate"
+    "title": "Vista mobila suonda",
+    "description": "Questa versiun è optimada per il desktop. Sin apparats mobils mussain nus per il mument la vista da desktop.",
+    "confirm": "Chapì"
   },
   "testSiteBanner": {
-    "text": "TODO translate"
+    "text": "Ambient {environment} – Betg per l'utilisaziun productiva. Betg parter."
   },
   "landing": {
     "cards": {
       "map": {
-        "title": "TODO: Translate",
-        "description": "TODO: Translate",
-        "button": "TODO: Translate"
+        "title": "Charta",
+        "description": "Visualisatur da chartas interactiv cun tschientenas da nivels, viadi en il temp, funcziuns da stampar e da parter.",
+        "button": "A la charta"
       },
       "catalog": {
-        "title": "TODO: Translate",
-        "description": "TODO: Translate",
-        "button": "TODO: Translate"
+        "title": "Catalog da datas",
+        "description": "Tschertgai en il catalog cumplet cun geodatas da basa, temas e metadatas.",
+        "button": "Avrir il catalog da datas"
       },
       "info": {
-        "title": "TODO: Translate",
-        "description": "TODO: Translate",
-        "button": "TODO: Translate"
+        "title": "Tut il rest davart SWISSGEO",
+        "description": "Novitads, agid ed infurmaziuns davart nus.",
+        "button": "Al portal d'infurmaziun"
       }
     },
     "footer": {
-      "claim": "TODO: Translate",
-      "description": "TODO: Translate",
-      "followUs": "TODO: Translate",
-      "moreInformation": "TODO: Translate",
-      "termsOfUse": "TODO: Translate",
-      "contact": "TODO: Translate",
-      "dataProtection": "TODO: Translate",
-      "netiquette": "TODO: Translate",
-      "accessibility": "TODO: Translate",
-      "copyright": "TODO: Translate"
+      "claim": "Il nua è qua.",
+      "description": "SWISSGEO renda accessiblas en in lieu las datas spazialas da la Svizra.",
+      "followUs": "Suandai nus!",
+      "moreInformation": "Ulteriuras infurmaziuns",
+      "termsOfUse": "Cundiziuns d'utilisaziun",
+      "contact": "Contact",
+      "dataProtection": "Infurmaziuns giuridicas e protecziun da datas",
+      "netiquette": "Netiquette",
+      "accessibility": "Accessibladad",
+      "copyright": "Copyright © 2026"
     },
     "links": {
       "impressum": "impressum-de",

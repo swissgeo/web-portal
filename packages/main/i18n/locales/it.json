@@ -447,7 +447,7 @@
       "notAvailable": "Questo strumento non è ancora disponibile.",
       "workingOnIt": "Seguirà in una versione successiva.",
       "links": {
-        "roadmap": "TODO translate"
+        "roadmap": "visualizzatore-di-mappe-prospettiva"
       }
     }
   },
@@ -492,7 +492,7 @@
     "resources": {
       "dataset": "Il livello"
     },
-    "mapUnavailable": "TODO translate"
+    "mapUnavailable": "La mappa non è al momento disponibile."
   },
   "dataset": {
     "legendLoading": "Caricamento della legenda…",
@@ -638,7 +638,7 @@
       "openPdf": "Apri la legenda come PDF",
       "openPage": "Apri la pagina della legenda"
     },
-    "variant": "TODO translate"
+    "variant": "Variante"
   },
   "layerCart": {
     "close": "Chiudi",
@@ -660,56 +660,56 @@
     "close": "Chiudi",
     "expand": "Mostra il catalogo dei dati",
     "collapse": "Nascondi il catalogo dei dati",
-    "allLayers": "TODO translate",
-    "layers": "TODO translate",
-    "back": "TODO translate"
+    "allLayers": "Tutti i livelli",
+    "layers": "Livelli",
+    "back": "Indietro"
   },
   "featureInfo": {
     "blockedContent": "(Link rimosso per motivi di sicurezza)",
     "noInformation": "Nessuna informazione disponibile.",
     "popupTitle": "Informazioni sull'oggetto",
     "featureFlag": {
-      "notAvailable": "To Translate - Feature Info Feature Flag Not Available",
-      "workingOnIt": "To Translate - Feature Info Feature Flag Working On It"
+      "notAvailable": "La finestra «Informazioni sull'oggetto» non è ancora disponibile.",
+      "workingOnIt": "Seguirà in una versione successiva."
     }
   },
   "mobileNotice": {
-    "title": "TODO translate",
-    "description": "TODO translate",
-    "confirm": "TODO translate"
+    "title": "Visualizzazione mobile in arrivo",
+    "description": "Questa versione è ottimizzata per desktop. Sui dispositivi mobili mostriamo per ora la visualizzazione desktop.",
+    "confirm": "Ho capito"
   },
   "testSiteBanner": {
-    "text": "TODO translate"
+    "text": "Ambiente {environment} – Non per l'uso produttivo. Non condividere."
   },
   "landing": {
     "cards": {
       "map": {
-        "title": "TODO: Translate",
-        "description": "TODO: Translate",
-        "button": "TODO: Translate"
+        "title": "Mappa",
+        "description": "Visualizzatore di mappe interattivo con centinaia di livelli, viaggio nel tempo, funzioni di stampa e condivisione.",
+        "button": "Apri la mappa"
       },
       "catalog": {
-        "title": "TODO: Translate",
-        "description": "TODO: Translate",
-        "button": "TODO: Translate"
+        "title": "Catalogo dei dati",
+        "description": "Sfoglia il catalogo completo di geodati di base, temi e metadati.",
+        "button": "Apri il catalogo dei dati"
       },
       "info": {
-        "title": "TODO: Translate",
-        "description": "TODO: Translate",
-        "button": "TODO: Translate"
+        "title": "Tutto il resto su SWISSGEO",
+        "description": "Notizie, aiuto e informazioni su di noi.",
+        "button": "Al portale informativo"
       }
     },
     "footer": {
-      "claim": "TODO: Translate",
-      "description": "TODO: Translate",
-      "followUs": "TODO: Translate",
-      "moreInformation": "TODO: Translate",
-      "termsOfUse": "TODO: Translate",
-      "contact": "TODO: Translate",
-      "dataProtection": "TODO: Translate",
-      "netiquette": "TODO: Translate",
-      "accessibility": "TODO: Translate",
-      "copyright": "TODO: Translate"
+      "claim": "Il dove è qui.",
+      "description": "SWISSGEO rende accessibili in un unico luogo i dati territoriali della Svizzera.",
+      "followUs": "Seguici!",
+      "moreInformation": "Ulteriori informazioni",
+      "termsOfUse": "Condizioni d'uso",
+      "contact": "Contatto",
+      "dataProtection": "Informazioni legali e protezione dei dati",
+      "netiquette": "Netiquette",
+      "accessibility": "Accessibilità",
+      "copyright": "Copyright © 2026"
     },
     "links": {
       "impressum": "impressum-it",
