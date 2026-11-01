@@ -19,7 +19,7 @@ export default [
         // so we allow them to be linted with a default project.
         projectService: {
           // The list below is past typescript-eslint's default cap of 8.
-          maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 16,
+          maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 20,
           allowDefaultProject: [
             "server/utils/__tests__/*.ts",
             "server/routes/__tests__/*.ts",

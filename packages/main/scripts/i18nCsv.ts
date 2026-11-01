@@ -10,7 +10,7 @@ const BOM = "\uFEFF"; // makes spreadsheet tools read the file as UTF-8
 export const PLACEHOLDER = "TODO translate";
 
 /** `{ a: { b: "x" } }` -> `[["a.b", "x"]]` */
-function flatten(messages: Messages, prefix = ""): Entry[] {
+export function flatten(messages: Messages, prefix = ""): Entry[] {
   return Object.entries(messages).flatMap(([key, value]) =>
     typeof value === "string"
       ? [[prefix + key, value] as Entry]
