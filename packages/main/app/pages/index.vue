@@ -87,6 +87,8 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         :ui="{
           root: 'lg:w-1/3 cursor-pointer',
           footer: 'ml-auto',
+          title: 'text-xl',
+          description: 'text-base font-medium text-default',
         }"
         @click="goToMap()"
       >
@@ -104,6 +106,8 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         :ui="{
           root: 'lg:w-1/3 cursor-pointer',
           footer: 'ml-auto',
+          title: 'text-xl',
+          description: 'text-base font-medium text-default',
         }"
         @click="goToMap(true)"
       >
@@ -123,6 +127,8 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         :ui="{
           root: 'lg:w-1/3 bg-primary-50 dark:bg-primary-800',
           footer: 'ml-auto',
+          title: 'text-xl',
+          description: 'text-base font-medium text-default',
         }"
       >
         <template #footer>
