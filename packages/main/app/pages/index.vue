@@ -141,51 +141,48 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
     <UFooter
       :ui="{
         container:
-          'bg-elevated max-w-full py-16 lg:py-16 px-4 lg:px-8 lg:justify-normal lg:grid lg:grid-cols-2',
+          'bg-elevated max-w-full py-16 lg:py-16 px-4 lg:px-8 lg:justify-normal lg:grid lg:grid-cols-2 lg:grid-rows-[auto_auto]',
         left: 'hidden',
-        right: 'lg:justify-start lg:order-1',
+        right:
+          'flex-col lg:items-start lg:justify-start lg:order-1 lg:row-span-2 lg:grid lg:grid-cols-3 lg:gap-x-8 lg:grid-rows-subgrid',
         center:
-          'lg:order-2 lg:grid lg:grid-cols-2 2xl:grid-cols-3 lg:self-end lg:gap-8',
+          'flex-col lg:items-start lg:order-2 lg:row-span-2 lg:grid lg:grid-cols-2 2xl:grid-cols-3 lg:grid-rows-subgrid',
       }"
     >
       <template #right>
-        <div
-          class="mb-8 flex w-full flex-col lg:mb-0 lg:grid lg:grid-cols-3 lg:gap-x-8"
+        <p
+          class="w-full text-2xl font-semibold lg:col-start-1 lg:row-start-1 lg:self-end"
         >
-          <p class="text-2xl font-semibold lg:col-start-1 lg:row-start-1">
-            SWISSGEO<br />{{ t("landing.footer.claim") }}
-          </p>
-          <p class="mt-4 text-sm font-medium lg:col-start-1 lg:row-start-2">
-            {{ t("landing.footer.description") }}
-          </p>
-          <p
-            class="mt-8 text-lg font-semibold lg:col-start-2 lg:row-start-1 lg:mt-0 lg:self-end"
-          >
-            {{ t("landing.footer.followUs") }}
-          </p>
-          <UNavigationMenu
-            orientation="vertical"
-            class="mt-2 data-[orientation=vertical]:w-full lg:col-start-2 lg:row-start-2"
-            :items="socialLinks"
-            :ui="{
-              linkLabelExternalIcon: 'hidden',
-            }"
-          />
-        </div>
-      </template>
-      <div class="flex w-full flex-col gap-2">
-        <p class="text-lg font-semibold">
-          {{ t("landing.footer.moreInformation") }}
+          SWISSGEO<br />{{ t("landing.footer.claim") }}
+        </p>
+        <p class="mt-4 w-full text-sm font-medium lg:col-start-1 lg:row-start-2">
+          {{ t("landing.footer.description") }}
+        </p>
+        <p
+          class="mt-8 w-full text-lg font-semibold lg:col-start-2 lg:row-start-1 lg:mt-0 lg:self-end"
+        >
+          {{ t("landing.footer.followUs") }}
         </p>
         <UNavigationMenu
           orientation="vertical"
-          class="data-[orientation=vertical]:w-full"
-          :items="infosLinks"
+          class="mt-2 mb-8 data-[orientation=vertical]:w-full lg:col-start-2 lg:row-start-2 lg:mb-0"
+          :items="socialLinks"
           :ui="{
             linkLabelExternalIcon: 'hidden',
           }"
         />
-      </div>
+      </template>
+      <p class="w-full text-lg font-semibold lg:row-start-1 lg:self-end">
+        {{ t("landing.footer.moreInformation") }}
+      </p>
+      <UNavigationMenu
+        orientation="vertical"
+        class="mt-2 data-[orientation=vertical]:w-full lg:row-start-2"
+        :items="infosLinks"
+        :ui="{
+          linkLabelExternalIcon: 'hidden',
+        }"
+      />
     </UFooter>
     <div
       class="flex flex-col gap-4 bg-neutral-50 px-4 py-8 text-sm font-medium lg:flex-row-reverse lg:items-center lg:p-8 dark:bg-neutral-900"
