@@ -150,29 +150,27 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
     >
       <template #right>
         <div
-          class="mb-8 flex w-full flex-col gap-8 lg:mb-0 lg:grid lg:grid-cols-3 lg:items-end"
+          class="mb-8 flex w-full flex-col lg:mb-0 lg:grid lg:grid-cols-3 lg:gap-x-8"
         >
-          <div class="flex flex-col gap-4">
-            <p class="text-2xl font-semibold">
-              SWISSGEO<br />{{ t("landing.footer.claim") }}
-            </p>
-            <p class="text-sm font-medium">
-              {{ t("landing.footer.description") }}
-            </p>
-          </div>
-          <div class="flex flex-col gap-2">
-            <p class="text-lg font-semibold">
-              {{ t("landing.footer.followUs") }}
-            </p>
-            <UNavigationMenu
-              orientation="vertical"
-              class="data-[orientation=vertical]:w-full"
-              :items="socialLinks"
-              :ui="{
-                linkLabelExternalIcon: 'hidden',
-              }"
-            />
-          </div>
+          <p class="text-2xl font-semibold lg:col-start-1 lg:row-start-1">
+            SWISSGEO<br />{{ t("landing.footer.claim") }}
+          </p>
+          <p class="mt-4 text-sm font-medium lg:col-start-1 lg:row-start-2">
+            {{ t("landing.footer.description") }}
+          </p>
+          <p
+            class="mt-8 text-lg font-semibold lg:col-start-2 lg:row-start-1 lg:mt-0 lg:self-end"
+          >
+            {{ t("landing.footer.followUs") }}
+          </p>
+          <UNavigationMenu
+            orientation="vertical"
+            class="mt-2 data-[orientation=vertical]:w-full lg:col-start-2 lg:row-start-2"
+            :items="socialLinks"
+            :ui="{
+              linkLabelExternalIcon: 'hidden',
+            }"
+          />
         </div>
       </template>
       <div class="flex w-full flex-col gap-2">
