@@ -694,14 +694,14 @@
         "button": "Ouvrir le catalogue de données"
       },
       "info": {
-        "title": "Tout le reste sur SWISSGEO",
-        "description": "Actualités, aide et informations sur nous.",
-        "button": "Vers le portail d'information"
+        "title": "Tout savoir sur SWISSGEO",
+        "description": "Retrouvez des informations, des guides pratiques, des contenus spécialisés et des informations sur la stratégie sur notre portail d’information.",
+        "button": "Portail d'information"
       }
     },
     "footer": {
       "claim": "Le où est ici.",
-      "description": "SWISSGEO rend accessibles les données spatiales de la Suisse en un seul endroit.",
+      "description": "SWISSGEO rend les données spatiales de la Suisse accessibles en un seul endroit.",
       "followUs": "Suivez-nous!",
       "moreInformation": "Plus d'informations",
       "termsOfUse": "Conditions d'utilisation",
@@ -716,7 +716,7 @@
       "dataProtection": "informations-juridiques-protection",
       "netiquette": "netiquette-fr",
       "accessibility": "accessibilite",
-      "termsOfUse": "conditions-dutilisation-et-dexploitation",
+      "termsOfUse": "conditions-utilisation-et-exploitation",
       "contact": "impressum-fr"
     }
   }
