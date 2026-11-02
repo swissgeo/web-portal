@@ -1,3 +1,5 @@
+import { useEnvironment } from "@/composables/useEnvironment";
+
 type FeatureFlagsConfig = ReturnType<
   typeof useRuntimeConfig
 >["public"]["featureFlags"];
@@ -23,6 +25,7 @@ function collectFlagPaths(obj: object, prefix = ""): FeatureFlagPath[] {
 
 export const useFeatureFlags = () => {
   const config = useRuntimeConfig();
+  const { isLocalDev } = useEnvironment();
 
   const allFlags = computed(() => collectFlagPaths(config.public.featureFlags));
 
@@ -31,10 +34,10 @@ export const useFeatureFlags = () => {
 
   const overrides = useState<Partial<Record<FeatureFlagPath, boolean>>>(
     "dev-feature-flag-overrides",
-    () => (import.meta.dev ? { ...cookie.value } : {}),
+    () => (isLocalDev ? { ...cookie.value } : {}),
   );
 
-  if (import.meta.dev) {
+  if (isLocalDev) {
     watch(
       overrides,
       (value) => {
@@ -56,7 +59,7 @@ export const useFeatureFlags = () => {
   };
 
   const isEnabled = (path: FeatureFlagPath): boolean => {
-    if (import.meta.dev) {
+    if (isLocalDev) {
       const override = overrides.value[path];
       if (override !== undefined) {
         return override;
@@ -66,7 +69,7 @@ export const useFeatureFlags = () => {
   };
 
   const isOverridden = (path: FeatureFlagPath): boolean =>
-    import.meta.dev && overrides.value[path] !== undefined;
+    isLocalDev && overrides.value[path] !== undefined;
 
   const setFlag = (path: FeatureFlagPath, value: boolean) => {
     const next = { ...overrides.value };

@@ -3,6 +3,8 @@ import { useLayerStore } from "@swissgeo/layers";
 import { useSearchStore } from "@swissgeo/skeleton";
 import { displayModeKey } from "~/types/injectionKeys";
 
+import { useEnvironment } from "@/composables/useEnvironment";
+
 const geolocationStore = useGeolocationStore();
 const layerStore = useLayerStore();
 const searchStore = useSearchStore();
@@ -26,6 +28,8 @@ watch(topVisibleLayer, (layer) => {
 const showAdditionalMapUi = computed(
   () => !mapViewStore.isFullscreenModeActive,
 );
+
+const { isDebugToolsEnabled } = useEnvironment();
 
 const displayMode = inject(displayModeKey, "web");
 </script>
@@ -67,7 +71,9 @@ const displayMode = inject(displayModeKey, "web");
     </template>
     <template #after>
       <DebugPanel
-        v-if="showAdditionalMapUi && displayMode === 'web'"
+        v-if="
+          showAdditionalMapUi && displayMode === 'web' && isDebugToolsEnabled
+        "
         class="fixed bottom-36 left-4 z-3 md:bottom-9 md:left-[calc(var(--sidebar-width)+(--spacing(4)))]"
       ></DebugPanel>
       <MapTimeSliderButton />

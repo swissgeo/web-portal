@@ -4,11 +4,11 @@ import { describe, expect, it, vi } from "vitest";
 
 import TestSiteBanner from "@/components/TestSiteBanner.vue";
 
-const { runtimeConfigMock } = vi.hoisted(() => ({
-  runtimeConfigMock: { public: { testSiteBanner: "" } },
+const { environmentMock } = vi.hoisted(() => ({
+  environmentMock: { environment: "prod" },
 }));
 
-mockNuxtImport("useRuntimeConfig", () => () => runtimeConfigMock);
+mockNuxtImport("useEnvironment", () => () => environmentMock);
 mockNuxtImport("useI18n", () => () => ({
   t: (key: string, params: { environment: string }) =>
     `${key}:${params.environment}`,
@@ -20,8 +20,8 @@ const UBannerStub = {
   template: '<div data-testid="test-site-banner">{{ title }}</div>',
 };
 
-function mountBanner(testSiteBanner: string) {
-  runtimeConfigMock.public = { testSiteBanner };
+function mountBanner(environment: string) {
+  environmentMock.environment = environment;
   return mount(TestSiteBanner, {
     global: { stubs: { UBanner: UBannerStub } },
   });
@@ -29,28 +29,36 @@ function mountBanner(testSiteBanner: string) {
 
 describe("TestSiteBanner.vue", () => {
   it.each([
-    { testSite: "dev", color: "error", root: "", environment: "DEV" },
-    { testSite: "int", color: "warning", root: "", environment: "INT" },
+    { environment: "dev", color: "error", root: "", label: "DEV" },
+    { environment: "int", color: "warning", root: "", label: "INT" },
     {
-      testSite: "preview",
+      environment: "preview",
       color: "neutral",
       root: "bg-purple-800",
-      environment: "PREVIEW",
+      label: "PREVIEW",
     },
   ])(
-    "shows the $environment banner in $color",
-    ({ testSite, color, root, environment }) => {
-      const banner = mountBanner(testSite).getComponent({ name: "UBanner" });
+    "shows the $label banner in $color",
+    ({ environment, color, root, label }) => {
+      const banner = mountBanner(environment).getComponent({ name: "UBanner" });
 
       expect(banner.props("color")).toBe(color);
       expect(banner.props("ui").root).toBe(root);
-      expect(banner.text()).toBe(`testSiteBanner.text:${environment}`);
+      expect(banner.text()).toBe(`testSiteBanner.text:${label}`);
     },
   );
 
+  it("shows the DEV banner for local dev", () => {
+    const banner = mountBanner("local").getComponent({ name: "UBanner" });
+
+    expect(banner.props("color")).toBe("error");
+    expect(banner.text()).toBe("testSiteBanner.text:DEV");
+  });
+
   it.each([
-    { staging: "prod (empty)", value: "" },
-    { staging: "unknown value", value: "prod" },
+    { staging: "prod", value: "prod" },
+    // environments that cannot occur, kept as a fail-safe check
+    { staging: "unknown value", value: "garbage" },
     { staging: "object key", value: "toString" },
   ])("shows no banner for $staging", ({ value }) => {
     const wrapper = mountBanner(value);
