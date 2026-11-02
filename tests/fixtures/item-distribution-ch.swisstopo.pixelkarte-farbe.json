@@ -5,28 +5,28 @@
       "id": "ch.swisstopo.pixelkarte-farbe:wmts",
       "links": [
         {
-          "href": "http://mock-oar.org/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe:wmts?language=en",
+          "href": "http://oar.test/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe:wmts?language=en",
           "rel": "self",
           "title": "This Record",
           "type": "application/json",
           "hreflang": "en"
         },
         {
-          "href": "https://mock-oar.org/api/oar/collections/swissgeo-distributions?language=en",
+          "href": "https://oar.test/api/oar/collections/swissgeo-distributions?language=en",
           "rel": "collection",
           "title": "Link to the collection this item belongs to",
           "type": "application/json",
           "hreflang": "en"
         },
         {
-          "href": "http://mock-oar.org/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
+          "href": "http://oar.test/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
           "rel": "dataset",
           "title": "Link to parent dataset ch.swisstopo.pixelkarte-farbe",
           "type": "application/json",
           "hreflang": "en"
         },
         {
-          "href": "http://mock-oar.org/api/oar/collections/geoadmin.services/items/wmts-geoadminch",
+          "href": "http://oar.test/api/oar/collections/geoadmin.services/items/wmts-geoadminch",
           "rel": "dataservice",
           "type": "application/json"
         }
@@ -44,28 +44,28 @@
       "id": "ch.swisstopo.pixelkarte-farbe:wms",
       "links": [
         {
-          "href": "http://mock-oar.org/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe:wms?language=en",
+          "href": "http://oar.test/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe:wms?language=en",
           "rel": "self",
           "title": "This Record",
           "type": "application/json",
           "hreflang": "en"
         },
         {
-          "href": "http://mock-oar.org/api/oar/collections/swissgeo-distributions?language=en",
+          "href": "http://oar.test/api/oar/collections/swissgeo-distributions?language=en",
           "rel": "collection",
           "title": "Link to the collection this item belongs to",
           "type": "application/json",
           "hreflang": "en"
         },
         {
-          "href": "http://mock-oar.org/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
+          "href": "http://oar.test/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
           "rel": "dataset",
           "title": "Link to parent dataset ch.swisstopo.pixelkarte-farbe",
           "type": "application/json",
           "hreflang": "en"
         },
         {
-          "href": "http://mock-oar.org/api/oar/collections/geoadmin.services/items/wms-geoadminch",
+          "href": "http://oar.test/api/oar/collections/geoadmin.services/items/wms-geoadminch",
           "rel": "dataservice",
           "type": "application/json"
         }
@@ -82,14 +82,14 @@
   ],
   "links": [
     {
-      "href": "http://mock-oar.org/api/oar/collections/swissgeo-distributions/items?language=en",
+      "href": "http://oar.test/api/oar/collections/swissgeo-distributions/items?language=en",
       "rel": "self",
       "title": "Link to this resource",
       "type": "application/json",
       "hreflang": "en"
     },
     {
-      "href": "http://mock-oar.org/api/oar/collections/swissgeo-distributions?language=en",
+      "href": "http://oar.test/api/oar/collections/swissgeo-distributions?language=en",
       "rel": "collection",
       "title": "Link to the collection these items belong to",
       "type": "application/json",

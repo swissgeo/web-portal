@@ -22,7 +22,7 @@ function toggleGeolocation(): void {
     :title="t('toolbox.geolocation.buttonTitle')"
     :is-disabled="geolocationStore.denied"
     :is-active="geolocationStore.active"
-    iconName="locate-fixed"
+    iconName="locate"
     @click="toggleGeolocation()"
   />
 </template>

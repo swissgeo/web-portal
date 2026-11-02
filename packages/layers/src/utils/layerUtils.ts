@@ -2,7 +2,7 @@ import type { Dataset, DistributionCollection, Feature } from "@swissgeo/ogc";
 
 import log from "@swissgeo/log";
 
-import type { DatasetLayer, Layer, LayerInfo } from "@/index";
+import type { DatasetLayer, Layer, LayerAttribution, LayerInfo } from "@/index";
 
 export class InvalidDatasetError extends Error {
   constructor(reason: string) {
@@ -50,6 +50,10 @@ export const validateDataset: (value: unknown) => asserts value is Dataset = (
     throw new InvalidDatasetError('missing or empty "properties.title"');
   }
 
+  if (!isNonEmptyString(candidate.properties.shortTitle)) {
+    throw new InvalidDatasetError('missing or empty "properties.shortTitle"');
+  }
+
   if (candidate.links !== undefined && !Array.isArray(candidate.links)) {
     throw new InvalidDatasetError('"links" must be an array when present');
   }
@@ -65,7 +69,7 @@ export const getInfoFromDataset = async (
   dataset: Dataset,
 ): Promise<LayerInfo> => {
   const properties = dataset.properties;
-  const displayName = properties?.title;
+  const displayName = properties?.shortTitle;
 
   if (!properties || !displayName) {
     return {
@@ -73,16 +77,13 @@ export const getInfoFromDataset = async (
     };
   }
 
-  const contactOrganisation = properties.contacts?.[0]?.organization?.trim();
-  const attributionName =
-    contactOrganisation && contactOrganisation.length > 0
-      ? contactOrganisation
-      : properties.attribution;
-
-  let attribution;
-  if (attributionName) {
+  let attribution: LayerAttribution | undefined;
+  if (properties.attribution?.abbreviation) {
     attribution = {
-      title: attributionName,
+      abbreviation: properties.attribution.abbreviation,
+      name: properties.attribution.name,
+      url: properties.attribution.links?.find((link) => link.rel === "about")
+        ?.href,
     };
   }
 

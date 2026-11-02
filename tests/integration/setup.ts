@@ -24,7 +24,7 @@ export function mockExternalRequests(page: Page) {
    * By default, we make it return with a 200 and no content
    */
   const mockOar = async () => {
-    await page.route("http://mock-oar.org/**", (route) =>
+    await page.route("http://oar.test/**", (route) =>
       route.fulfill({
         status: 200,
         json: { collections: [], features: [], links: [] },
@@ -38,7 +38,7 @@ export function mockExternalRequests(page: Page) {
    *  ATTENTION: this will probably not work for SSR rendered pages in tests
    */
   const mockLivingdocs = async () => {
-    await page.route("http://mock-livingdocs.org/**", (route) =>
+    await page.route("http://livingdocs.test/**", (route) =>
       route.fulfill({ status: 200 }),
     );
   };

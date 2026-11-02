@@ -18,7 +18,11 @@ watch(detailsOpen, (isOpen) => {
 
 <template>
   <div class="relative h-full">
-    <MapViewer />
+    <!-- Starts at the sidebar edge (see default.vue). The dataset panel stays
+         anchored to the left of the page, over the hidden sidebar. -->
+    <div class="h-full md:ml-(--sidebar-width)">
+      <MapViewer />
+    </div>
     <DatasetPanelFrame
       :isVisible="detailsOpen && !mapViewStore.isFullscreenModeActive"
     >

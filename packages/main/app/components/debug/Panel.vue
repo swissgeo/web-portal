@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 
+import { useEnvironment } from "@/composables/useEnvironment";
+
 const { t } = useI18n();
 
 const isExpanded = ref(false);
@@ -18,7 +20,7 @@ const isSharePanelOpen = ref(false);
 const isPrintPanelOpen = ref(false);
 const isFeatureFlagsPanelOpen = ref(false);
 
-const isLocalDev = import.meta.dev;
+const { isLocalDev } = useEnvironment();
 
 function toggleLayersPanel() {
   isLayersPanelOpen.value = !isLayersPanelOpen.value;

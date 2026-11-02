@@ -24,11 +24,13 @@ declare global {
       maxFileSizeMB: number;
       drawingAllowedDomains: string[];
       testSiteBanner: string;
+      reportIssuePortalUrl: string;
       featureFlags: {
         enableCmsSearch: boolean;
         enableMobileUi: boolean;
         enableFeatureInfo: boolean;
         enablePositionPopup: boolean;
+        enableReportIssueForm: boolean;
         tools: {
           enableMeasure: boolean;
           enableCompare: boolean;

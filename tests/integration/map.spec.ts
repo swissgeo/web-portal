@@ -39,12 +39,12 @@ test.describe("map page", () => {
 
     // The actual mocks
     await page.route(
-      "http://mock-oar.org/api/oar/collections/geoadmin.services/items/wmts-geoadminch",
+      "http://oar.test/api/oar/collections/geoadmin.services/items/wmts-geoadminch",
       mockWmtsResponse,
     );
 
     await page.route(
-      "http://mock-oar.org/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe",
+      "http://oar.test/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe",
       (route) => {
         return route.fulfill({
           status: 200,
@@ -55,7 +55,7 @@ test.describe("map page", () => {
 
     // we let all the backgrounds to return the data for pixelkarte-farbe
     await page.route(
-      "http://mock-oar.org/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.*",
+      "http://oar.test/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.*",
       mockBackgroundResponse,
     );
 
@@ -151,7 +151,6 @@ test.describe("map page", () => {
     expect(layers[0].opacity).toBe(1);
     expect(layers[0].visible).toBe(true);
 
-    await page.getByTestId("button-layer-cart-panel").click();
     await page.getByTestId("background-selector-toggle").click();
     const backgroundSelector = page
       .getByTestId("background-selector-ch.swisstopo.pixelkarte-farbe")

@@ -48,8 +48,8 @@ export async function fetchCatalogItems(
     // If a search query is present, use default order (relevance)
     url.searchParams.set("q", q);
   } else {
-    // If no search query is present, order by title
-    url.searchParams.set("sortby", "title");
+    // Without a query, order by the short title that the list shows
+    url.searchParams.set("sortby", "shortTitle");
   }
 
   const response = await fetch(url.toString(), { signal });

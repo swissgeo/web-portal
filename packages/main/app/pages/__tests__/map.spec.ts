@@ -53,7 +53,8 @@ describe("map page", () => {
       expect(wrapper.get("aside").isVisible()).toBe(visible);
       expect(wrapper.get('[data-testid="map"]').element).toBe(map);
       expect(wrapper.get('[data-testid="route-outlet"]').element).toBe(outlet);
-      expect(map.parentElement).toBe(
+      // The map sits in its own box, which leaves the sidebar width free
+      expect(map.parentElement?.parentElement).toBe(
         wrapper.get("aside").element.parentElement,
       );
     }

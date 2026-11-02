@@ -178,7 +178,7 @@ export async function searchLayers(
   });
 
   return data.features.map((record) => {
-    const title = record.properties?.title || record.id;
+    const title = record.properties?.shortTitle || record.id;
     return {
       resultType: "LAYER" as const,
       id: record.id,

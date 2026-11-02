@@ -31,7 +31,9 @@ export interface Feature<recordType extends string> {
 /**
  *  Concrete Record Types
  */
-export type Dataset = Feature<"Dataset">;
+export interface Dataset extends Feature<"Dataset"> {
+  properties: DatasetProperty;
+}
 export type Distribution = Feature<"Distribution">;
 export type Service = Feature<ServiceProtocol>;
 
@@ -50,6 +52,18 @@ export interface Link {
   rel: string;
   type?: string;
   title?: string;
+}
+
+export interface Attribution {
+  abbreviation: string;
+  name: string;
+  links?: Link[];
+}
+
+export interface Owner {
+  id: string;
+  name: string;
+  abbreviation: string;
 }
 
 export interface LinkVariable {
@@ -74,7 +88,8 @@ export interface Property<recordType extends string> {
   // TODO maybe we'll have to split this away to a "service property"
   protocol?: ServiceProtocol;
   metaInformation?: boolean;
-  attribution?: string;
+  attribution?: Attribution;
+  owner?: Owner;
   externalIds?: string[];
   contacts?: Contact[];
   language?: Language;
@@ -86,8 +101,12 @@ export interface Property<recordType extends string> {
   aggregated?: boolean;
 }
 
+export interface DatasetProperty extends Property<"Dataset"> {
+  shortTitle: string;
+}
+
 export interface Contact {
-  // `role` and `country`: older record shape, still read by the catalog.
+  // `role` and `country`: older record shape.
   country?: string;
   role?: string;
   organization: string;

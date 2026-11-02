@@ -1,4 +1,4 @@
-import type { AttributionSource } from "~/composables/useAttributionSources";
+import type { LayerAttribution } from "@swissgeo/layers";
 
 import { mount } from "@vue/test-utils";
 import AttributionList from "~/components/map/attribution/AttributionList.vue";
@@ -12,9 +12,13 @@ vi.mock("vue-i18n", () => ({
 
 describe("AttributionList.vue", () => {
   it("renders provided sources", () => {
-    const sources: AttributionSource[] = [
-      { id: "source-a", name: "Source A", url: "https://example.com/a" },
-      { id: "source-b", name: "Source B" },
+    const sources: LayerAttribution[] = [
+      {
+        abbreviation: "Source A",
+        name: "Source A full name",
+        url: "https://example.com/a",
+      },
+      { abbreviation: "Source B", name: "Source B full name" },
     ];
 
     const wrapper = mount(AttributionList, { props: { sources } });
@@ -30,6 +34,29 @@ describe("AttributionList.vue", () => {
     ).toBe(true);
   });
 
+  it("shows the abbreviation as label and the name as tooltip", () => {
+    const sources: LayerAttribution[] = [
+      {
+        abbreviation: "FOEN",
+        name: "Federal Office for the Environment FOEN",
+        url: "https://example.com/foen",
+      },
+      { abbreviation: "Army", name: "Swiss Armed Forces" },
+    ];
+
+    const wrapper = mount(AttributionList, { props: { sources } });
+
+    const link = wrapper.find('[data-testid="layer-copyright-FOEN"]');
+    expect(link.element.tagName).toBe("A");
+    expect(link.text()).toBe("FOEN");
+    expect(link.attributes("title")).toBe(
+      "Federal Office for the Environment FOEN",
+    );
+    expect(
+      wrapper.find('[data-testid="layer-copyright-Army"]').attributes("title"),
+    ).toBe("Swiss Armed Forces");
+  });
+
   it("renders nothing when sources is empty", () => {
     const wrapper = mount(AttributionList, { props: { sources: [] } });
 
@@ -39,9 +66,13 @@ describe("AttributionList.vue", () => {
   });
 
   it("separates the sources with a comma and a space outside the links", () => {
-    const sources: AttributionSource[] = [
-      { id: "source-a", name: "Source A", url: "https://example.com/a" },
-      { id: "source-b", name: "Source B" },
+    const sources: LayerAttribution[] = [
+      {
+        abbreviation: "Source A",
+        name: "Source A full name",
+        url: "https://example.com/a",
+      },
+      { abbreviation: "Source B", name: "Source B full name" },
     ];
 
     const wrapper = mount(AttributionList, { props: { sources } });

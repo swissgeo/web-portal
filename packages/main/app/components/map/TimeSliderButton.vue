@@ -8,7 +8,7 @@ const isDesktop = useIsDesktop();
 
 // On mobile the panels are bottom drawers, so no side column takes space on the left
 const leftOffset = computed(
-  () => (isDesktop.value ? sidebarStore.sidebarWidth : 0) + 8,
+  () => (isDesktop.value ? sidebarStore.sidebarContentWidth : 0) + 8,
 );
 
 function onClose() {

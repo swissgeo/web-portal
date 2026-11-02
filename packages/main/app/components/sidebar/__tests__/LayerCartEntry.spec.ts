@@ -88,6 +88,12 @@ function mountEntry(layer = makeLayer(), layerIndex = 3) {
   });
 }
 
+function layerName(wrapper: ReturnType<typeof mountEntry>) {
+  return wrapper
+    .findAll("button")
+    .find((button) => button.text() === "A layer");
+}
+
 describe("LayerCartEntry.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -100,6 +106,24 @@ describe("LayerCartEntry.vue", () => {
 
   it("shows the layer name", () => {
     expect(mountEntry().text()).toContain("A layer");
+  });
+
+  it("shows the full dataset title as tooltip of the short layer name", () => {
+    layerStore.getLayer.mockReturnValue({
+      type: "dataset",
+      humanId: "a-human-id",
+      data: { properties: { title: "A layer with a long title" } },
+    });
+
+    const name = layerName(mountEntry());
+
+    expect(name?.attributes("title")).toBe("A layer with a long title");
+  });
+
+  it("uses the layer name as tooltip of a layer that comes from no dataset", () => {
+    layerStore.getLayer.mockReturnValue({ type: "file", humanId: "whatever" });
+
+    expect(layerName(mountEntry())?.attributes("title")).toBe("A layer");
   });
 
   it("toggles the visibility of its own layer", async () => {

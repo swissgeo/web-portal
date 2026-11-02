@@ -49,4 +49,12 @@ describe("useCmsUrl", () => {
       "https://cms.example.test/fr/pages/about",
     );
   });
+
+  it("uses German locale for Romansh locale", () => {
+    const { cmsUrl } = useCmsUrl();
+    locale.value = "rm";
+    expect(cmsUrl("pages/about")).toBe(
+      "https://cms.example.test/de/pages/about",
+    );
+  });
 });

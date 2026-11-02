@@ -21,6 +21,10 @@ mockNuxtImport("useRoute", () => mocks.route);
 mockNuxtImport("useResetApp", () => () => ({ resetApp: vi.fn() }));
 mockNuxtImport("useMapViewStore", () => mocks.mapView);
 
+vi.mock("@swissgeo/skeleton", () => ({
+  useSidebarStore: () => ({ sidebarContentWidth: 347 }),
+}));
+
 function render() {
   return mount(DefaultLayout, {
     attachTo: document.body,

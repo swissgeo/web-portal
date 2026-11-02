@@ -38,12 +38,12 @@ test.describe("embed map page", () => {
 
     // The actual mocks
     await page.route(
-      "http://mock-oar.org/api/oar/collections/geoadmin.services/items/wmts-geoadminch",
+      "http://oar.test/api/oar/collections/geoadmin.services/items/wmts-geoadminch",
       mockWmtsResponse,
     );
 
     await page.route(
-      "http://mock-oar.org/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe*",
+      "http://oar.test/api/oar/collections/swissgeo-distributions/items/ch.swisstopo.pixelkarte-farbe*",
       (route) =>
         route.fulfill({
           status: 200,
@@ -53,7 +53,7 @@ test.describe("embed map page", () => {
 
     // we let all the backgrounds to return the data for pixelkarte-farbe
     await page.route(
-      "http://mock-oar.org/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.*",
+      "http://oar.test/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.*",
       mockBackgroundResponse,
     );
 

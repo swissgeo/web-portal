@@ -18,25 +18,7 @@ const titlePath = computed(() =>
 
 const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
 
-const provider = computed(() => {
-  const contacts = dataset.properties.contacts ?? [];
-  const provider = contacts.find(
-    (contact) => contact.role === "resourceProvider",
-  );
-  if (provider) {
-    return provider;
-  } else if (contacts.length) {
-    return contacts[0];
-  }
-});
-
-const providerTitleText = computed(() => {
-  if (!provider.value) {
-    return;
-  }
-  const { role, organization } = provider.value;
-  return role ? `${role}: ${organization}` : organization;
-});
+const ownerName = computed(() => dataset.properties.owner?.name);
 
 async function setOnMap(onMap: boolean): Promise<void> {
   if (onMap) {
@@ -63,7 +45,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
         size="xs"
         color="accent"
         checked-icon="i-lucide-check"
-        :aria-label="dataset.properties.title"
+        :aria-label="dataset.properties.shortTitle"
         :model-value="isOnMap"
         @update:model-value="setOnMap"
       />
@@ -76,7 +58,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
       >
         <div class="flex min-w-0 items-center gap-space-xs">
           <p class="font-bold max-md:line-clamp-2 md:truncate">
-            {{ dataset.properties.title }}
+            {{ dataset.properties.shortTitle }}
           </p>
           <UBadge
             v-if="dataset.properties.aggregated"
@@ -90,20 +72,20 @@ async function setOnMap(onMap: boolean): Promise<void> {
         </div>
         <!-- Replaces the data owner column on mobile -->
         <p
-          v-if="provider"
-          data-testid="catalog-layer-provider"
+          v-if="ownerName"
+          data-testid="catalog-layer-owner"
           class="line-clamp-2 font-medium md:hidden"
         >
-          {{ provider.organization }}
+          {{ ownerName }}
         </p>
       </ULink>
     </div>
     <div
       role="cell"
       class="hidden truncate px-2 py-4 font-medium md:block"
-      :title="providerTitleText"
+      :title="ownerName"
     >
-      {{ provider?.organization }}
+      {{ ownerName }}
     </div>
     <div role="cell" class="py-4 pr-2">
       <UButton

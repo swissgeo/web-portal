@@ -62,6 +62,7 @@ const dataset: Dataset = {
   properties: {
     type: "Dataset",
     title: "Gefahrenkarten",
+    shortTitle: "Gefahrenkarten",
     preferredDistributionId: dataLayer.id,
     aggregated: true,
   },

@@ -37,9 +37,7 @@ defineSlots<{
 const isDesktop = useIsDesktop();
 // On mobile the cart and the catalog are bottom drawers, side column
 // only shows on desktop.
-const isSidebarContentVisible = computed(
-  () => uiStore.isSidebarOpen && isDesktop.value,
-);
+const isSidebarContentVisible = computed(() => isDesktop.value);
 
 function closeLayerCatalog() {
   // On mobile the design opens the catalog only through the footer, so closing returns to the map
@@ -50,22 +48,36 @@ function closeLayerCatalog() {
   }
 }
 
-const sidebarToggleLabel = computed(() =>
-  uiStore.isSidebarOpen ? t("menu.collapse") : t("menu.expand"),
+// On desktop the sidebar always shows a panel. Not while a dataset hides it,
+// so the dataset page can still tell a direct link from a panel
+watch(
+  () => isDesktop.value && isVisible,
+  (shown) => {
+    if (shown && !uiStore.currentSidebar) {
+      uiStore.setSidebar(SidebarType.LAYER_CART);
+    }
+  },
+  { immediate: true },
 );
 
-function toggleSidebar() {
-  if (uiStore.isSidebarOpen) {
-    uiStore.closeSidebar();
-  } else {
-    uiStore.setSidebar(SidebarType.LAYER_CART);
-  }
-}
+watch(
+  () => isDesktop.value,
+  (desktop) => {
+    // On mobile the design opens the panels only through the footer
+    if (!desktop) {
+      uiStore.closeSidebar();
+    }
+  },
+);
 </script>
 
 <template>
   <div v-show="isVisible" class="absolute top-0 left-0 flex h-full">
-    <!-- drawers teleport out of this element isVisible must be applied too -->
+    <!--
+      The map and the footer leave its width free (see default.vue).
+      On mobile the content moves into bottom drawers and the column is left empty.
+      drawers teleport out of this element isVisible must be applied too
+    -->
     <div
       v-show="isSidebarContentVisible"
       :style="{ width: uiStore.sidebarContentWidth + 'px' }"
@@ -90,17 +102,6 @@ function toggleSidebar() {
           </div>
         </template>
       </ResponsivePanel>
-      <ResponsivePanel
-        v-else-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
-        :title="t('layerCatalog.title')"
-        :closeLabel="t('layerCatalog.close')"
-        :expandLabel="t('layerCatalog.expand')"
-        :collapseLabel="t('layerCatalog.collapse')"
-        :isVisible="isVisible"
-        @close="closeLayerCatalog"
-      >
-        <LayerCatalog />
-      </ResponsivePanel>
       <!-- Stays mounted on mobile and next to the catalog, because it picks the
            default background. It shows only with the map panel. -->
       <div
@@ -114,22 +115,26 @@ function toggleSidebar() {
         </div>
       </div>
     </div>
-
-    <!-- Collapses the sidebar down to this tab, and brings it back.
-         On mobile the footer opens and closes the panels instead. -->
-    <UButton
-      data-testid="button-layer-cart-panel"
-      color="neutral"
-      variant="ghost"
-      :icon="
-        uiStore.isSidebarOpen
-          ? 'i-lucide-chevron-left'
-          : 'i-lucide-chevron-right'
-      "
-      class="my-auto h-16 w-6 justify-center rounded-l-none rounded-r border border-l-0 border-default bg-default px-0 py-0 text-muted shadow-md hover:bg-elevated hover:text-highlighted max-md:hidden"
-      :title="sidebarToggleLabel"
-      :aria-label="sidebarToggleLabel"
-      @click="toggleSidebar"
-    />
+    <!--
+      The catalog floats above the column and the map instead of widening the
+      sidebar, so the map keeps its size. On mobile the panel teleports to a
+      bottom drawer, so the wrapper itself stays hidden.
+    -->
+    <div
+      v-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
+      data-testid="layer-catalog-overlay"
+      class="absolute inset-y-0 left-0 z-60 hidden w-screen max-w-layer-catalog flex-col bg-default text-default shadow-lg md:flex"
+    >
+      <ResponsivePanel
+        :title="t('layerCatalog.title')"
+        :closeLabel="t('layerCatalog.close')"
+        :expandLabel="t('layerCatalog.expand')"
+        :collapseLabel="t('layerCatalog.collapse')"
+        :isVisible="isVisible"
+        @close="closeLayerCatalog"
+      >
+        <LayerCatalog />
+      </ResponsivePanel>
+    </div>
   </div>
 </template>
