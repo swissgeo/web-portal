@@ -60,6 +60,12 @@ export interface Attribution {
   links?: Link[];
 }
 
+export interface Owner {
+  id: string;
+  name: string;
+  abbreviation: string;
+}
+
 export interface LinkVariable {
   type: string;
   description: string;
@@ -83,6 +89,7 @@ export interface Property<recordType extends string> {
   protocol?: ServiceProtocol;
   metaInformation?: boolean;
   attribution?: Attribution;
+  owner?: Owner;
   externalIds?: string[];
   contacts?: Contact[];
   language?: Language;
@@ -99,7 +106,7 @@ export interface DatasetProperty extends Property<"Dataset"> {
 }
 
 export interface Contact {
-  // `role` and `country`: older record shape, still read by the catalog.
+  // `role` and `country`: older record shape.
   country?: string;
   role?: string;
   organization: string;
