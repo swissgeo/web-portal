@@ -1,5 +1,6 @@
 /** Converts the locale files to one CSV file for translators, and back. See ../i18n/README.md */
 import { readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 
 type Messages = { [key: string]: string | Messages };
 type Entry = [key: string, text: string];
@@ -96,7 +97,7 @@ export function fromCsv(text: string): Messages[] {
 if (process.argv[1] === import.meta.filename) {
   const [command, file] = process.argv.slice(2);
   const localeFile = (language: string) =>
-    new URL(`../i18n/locales/${language}.json`, import.meta.url);
+    join(import.meta.dirname, `../i18n/locales/${language}.json`);
   if (command === "to-csv" && file) {
     const locales = LANGUAGES.map((language) =>
       JSON.parse(readFileSync(localeFile(language), "utf8")),
