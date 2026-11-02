@@ -3,6 +3,8 @@ import type { Dataset } from "@swissgeo/ogc";
 
 import { useI18n } from "vue-i18n";
 
+import LayerCatalogOwner from "./LayerCatalogOwner.vue";
+
 const { dataset } = defineProps<{
   dataset: Dataset;
 }>();
@@ -17,26 +19,7 @@ const titlePath = computed(() =>
 );
 
 const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
-
-const provider = computed(() => {
-  const contacts = dataset.properties.contacts ?? [];
-  const provider = contacts.find(
-    (contact) => contact.role === "resourceProvider",
-  );
-  if (provider) {
-    return provider;
-  } else if (contacts.length) {
-    return contacts[0];
-  }
-});
-
-const providerTitleText = computed(() => {
-  if (!provider.value) {
-    return;
-  }
-  const { role, organization } = provider.value;
-  return role ? `${role}: ${organization}` : organization;
-});
+const owner = computed(() => dataset.properties.owner);
 
 async function setOnMap(onMap: boolean): Promise<void> {
   if (onMap) {
@@ -90,20 +73,16 @@ async function setOnMap(onMap: boolean): Promise<void> {
         </div>
         <!-- Replaces the data owner column on mobile -->
         <p
-          v-if="provider"
+          v-if="owner"
           data-testid="catalog-layer-provider"
           class="line-clamp-2 font-medium md:hidden"
         >
-          {{ provider.organization }}
+          <LayerCatalogOwner :owner />
         </p>
       </ULink>
     </div>
-    <div
-      role="cell"
-      class="hidden truncate px-2 py-4 font-medium md:block"
-      :title="providerTitleText"
-    >
-      {{ provider?.organization }}
+    <div role="cell" class="hidden px-2 py-4 font-medium md:block">
+      <LayerCatalogOwner v-if="owner" :owner />
     </div>
     <div role="cell" class="py-4 pr-2">
       <UButton

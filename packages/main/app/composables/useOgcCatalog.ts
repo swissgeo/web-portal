@@ -21,13 +21,15 @@ export type OgcCatalogState =
 
 /**
  * Loads the OGC API Records items, accumulating them in `state.data.features`.
- * Only the items of any of `concepts` are loaded, unless it is empty. Changing
- * the language, the query or the concepts resets the list.
+ * Only the items of any of `concepts` are loaded, unless it is empty, and only
+ * the items of `owner`, when set. Changing the language, the query, the
+ * concepts or the owner resets the list.
  */
 export function useOgcCatalog(
   language: Ref<string>,
   query?: MaybeRefOrGetter<string>,
   concepts?: MaybeRefOrGetter<string[]>,
+  owner?: MaybeRefOrGetter<string | undefined>,
 ) {
   const catalogItemsUrl = useCatalogItemsUrl();
 
@@ -38,6 +40,7 @@ export function useOgcCatalog(
     const next = toValue(concepts) ?? [];
     return previous && isEqual(previous, next) ? previous : next;
   });
+  const ownerId = computed(() => toValue(owner));
 
   const state = ref<OgcCatalogState>({ status: "pending" });
 
@@ -59,6 +62,7 @@ export function useOgcCatalog(
           offset,
           q: trimmedQuery.value,
           concepts: stableConcepts.value,
+          ownerId: ownerId.value,
         },
       ],
     });
@@ -72,6 +76,7 @@ export function useOgcCatalog(
         offset,
         q: trimmedQuery.value,
         concepts: stableConcepts.value,
+        ownerId: ownerId.value,
       });
       if (request !== requestCount) {
         return;
@@ -95,7 +100,7 @@ export function useOgcCatalog(
     }
   }
 
-  watch([language, trimmedQuery, stableConcepts], () => load(true), {
+  watch([language, trimmedQuery, stableConcepts, ownerId], () => load(true), {
     immediate: true,
   });
 

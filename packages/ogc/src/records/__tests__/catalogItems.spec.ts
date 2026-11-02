@@ -113,6 +113,28 @@ describe("fetchCatalogItems", () => {
     expect(lastRequest().params).not.toHaveProperty("concepts");
   });
 
+  it("only loads the records of the given owner", async () => {
+    await fetchCatalogItems(ITEMS_URL, {
+      lang: "de",
+      limit: 10,
+      ownerId: "ch.bfs",
+    });
+
+    expect(lastRequest().params).toEqual({
+      lang: "de",
+      limit: "10",
+      offset: "0",
+      sortby: "title",
+      ownerId: "ch.bfs",
+    });
+  });
+
+  it("loads the records of all owners when no owner is given", async () => {
+    await fetchCatalogItems(ITEMS_URL, { lang: "de", limit: 10 });
+
+    expect(lastRequest().params).not.toHaveProperty("ownerId");
+  });
+
   it("passes the abort signal on to the request", async () => {
     const { signal } = new AbortController();
 
