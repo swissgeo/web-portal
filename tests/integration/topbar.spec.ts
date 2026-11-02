@@ -68,7 +68,7 @@ test.describe("topbar search", () => {
     // The mocks have no background map, so the "map not available" toast
     // shows. Close it, it covers the search results.
     await page
-      .getByRole("region", { name: "Notifications (F8)" })
+      .getByRole("region", { name: "Benachrichtigungen (F8)" })
       .locator('[data-slot="close"]')
       .click();
   });
