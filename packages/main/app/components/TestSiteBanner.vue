@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useCssVar, useElementSize } from "@vueuse/core";
 
+import { useEnvironment } from "@/composables/useEnvironment";
+
 const { t } = useI18n();
 
 // Each test staging has its own color, so users can tell DEV, INT and a PR preview apart.
@@ -9,13 +11,15 @@ const bannerStyles = {
   dev: { color: "error", root: "", text: "text-error-on-accent" },
   int: { color: "warning", root: "", text: "text-warning-on-accent" },
   preview: { color: "neutral", root: "bg-purple-800", text: "text-white" },
+  prod: undefined, // on prod, there is no banner
 } as const;
 
-const isTestSite = (value: string): value is keyof typeof bannerStyles =>
-  Object.hasOwn(bannerStyles, value);
+const { environment } = useEnvironment();
 
-const testSite = useRuntimeConfig().public.testSiteBanner;
-const bannerStyle = isTestSite(testSite) ? bannerStyles[testSite] : undefined;
+// Local dev reuses the DEV banner
+const bannerEnvironment = environment === "local" ? "dev" : environment;
+
+const bannerStyle = bannerStyles[bannerEnvironment];
 
 // The mobile drawer reads this height to stay below the topbar.
 const banner = useTemplateRef("banner");
@@ -35,7 +39,9 @@ watch(height, (value) => {
     data-testid="test-site-banner"
     :color="bannerStyle.color"
     icon="i-lucide-code-xml"
-    :title="t('testSiteBanner.text', { environment: testSite.toUpperCase() })"
+    :title="
+      t('testSiteBanner.text', { environment: bannerEnvironment.toUpperCase() })
+    "
     :ui="{
       root: bannerStyle.root,
       container: 'h-auto py-4',
