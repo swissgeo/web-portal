@@ -31,7 +31,9 @@ export interface Feature<recordType extends string> {
 /**
  *  Concrete Record Types
  */
-export type Dataset = Feature<"Dataset">;
+export interface Dataset extends Feature<"Dataset"> {
+  properties: DatasetProperty;
+}
 export type Distribution = Feature<"Distribution">;
 export type Service = Feature<ServiceProtocol>;
 
@@ -90,6 +92,10 @@ export interface Property<recordType extends string> {
   preferredDistributionId?: string;
   // Combines the data of several providers, e.g. the KGK datasets.
   aggregated?: boolean;
+}
+
+export interface DatasetProperty extends Property<"Dataset"> {
+  shortTitle: string;
 }
 
 export interface Contact {

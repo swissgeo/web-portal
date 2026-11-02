@@ -40,21 +40,19 @@ describe("Testing the information gathering from datasets", () => {
     });
   });
 
-  it("returns displayName from properties.title", async () => {
+  it("returns displayName from properties.shortTitle", async () => {
     const dataset: Dataset = {
-      id: "dataset-3",
+      id: "dataset-4",
       properties: {
-        title: "Layer Title",
+        title: "Long Layer Title",
+        shortTitle: "Short Title",
         type: "Dataset",
       },
     };
 
     const result = await getInfoFromDataset(dataset);
 
-    expect(result).toEqual({
-      displayName: "Layer Title",
-      abstract: undefined,
-    });
+    expect(result.displayName).toBe("Short Title");
   });
 
   const datasetAttribution = {
@@ -76,6 +74,7 @@ describe("Testing the information gathering from datasets", () => {
       id: "dataset-4",
       properties: {
         title: "Layer Title",
+        shortTitle: "Layer Title",
         attribution: datasetAttribution,
         type: "Dataset",
       },
@@ -95,6 +94,7 @@ describe("Testing the information gathering from datasets", () => {
       id: "dataset-no-about-link",
       properties: {
         title: "Layer Title",
+        shortTitle: "Layer Title",
         attribution: { abbreviation: "FOEN", name: "FOEN full name" },
         type: "Dataset",
       },
@@ -114,6 +114,7 @@ describe("Testing the information gathering from datasets", () => {
       id: "dataset-5",
       properties: {
         title: "Layer Title",
+        shortTitle: "Layer Title",
         description: "Layer description",
         type: "Dataset",
       },
@@ -132,6 +133,7 @@ describe("Testing the information gathering from datasets", () => {
       id: "dataset-6",
       properties: {
         title: "Layer Title",
+        shortTitle: "Layer Title",
         attribution: datasetAttribution,
         description: "Layer description",
         type: "Dataset",
@@ -161,6 +163,7 @@ describe("testing the makeServerLayer function", () => {
     id: "dataset-1",
     properties: {
       title: "Layer Title",
+      shortTitle: "Layer Title",
       attribution: { abbreviation: "SwissGeo", name: "SwissGeo" },
       description: "Layer description",
       type: "Dataset",
@@ -281,7 +284,12 @@ describe("grabFeatureInfoInformation", () => {
   ): Dataset {
     return {
       id: "ch.test.layer",
-      properties: { type: "Dataset", title: "Layer", preferredDistributionId },
+      properties: {
+        type: "Dataset",
+        title: "Layer",
+        shortTitle: "Layer",
+        preferredDistributionId,
+      },
       links: [{ rel: "distributions", href: DISTRIBUTIONS_URL }],
       ...overrides,
     };
@@ -544,6 +552,7 @@ describe("validateDataset", () => {
     id: "dataset-1",
     properties: {
       title: "Layer Title",
+      shortTitle: "Layer Title",
       type: "Dataset",
     },
     links: [
@@ -582,6 +591,14 @@ describe("validateDataset", () => {
   it("rejects a dataset with missing properties", () => {
     const faulty = omit(validDataset, ["properties"]);
     expect(() => validateDataset(faulty)).toThrow(/properties/);
+  });
+
+  it("rejects a dataset with a missing shortTitle", () => {
+    const faulty = {
+      ...validDataset,
+      properties: omit(validDataset.properties, ["shortTitle"]),
+    };
+    expect(() => validateDataset(faulty)).toThrow(/shortTitle/);
   });
 
   it('rejects a dataset whose properties.type is not "Dataset"', () => {

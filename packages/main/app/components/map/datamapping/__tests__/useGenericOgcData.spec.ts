@@ -34,6 +34,7 @@ const layerMockData: Ref<DatasetLayerType> = ref({
     properties: {
       preferredDistributionId: "favourite-distribution",
       title: "Fancy McLayer",
+      shortTitle: "Fancy McLayer",
       type: "Dataset",
     },
   },

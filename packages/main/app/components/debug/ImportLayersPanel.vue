@@ -113,6 +113,7 @@ async function addLayer(layer: string) {
     ],
     properties: {
       title: `${layer} on ${capaUrl.hostname}`,
+      shortTitle: `${layer} on ${capaUrl.hostname}`,
       type: "Dataset" as const,
     },
   };

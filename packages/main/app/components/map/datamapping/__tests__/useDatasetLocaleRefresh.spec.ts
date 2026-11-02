@@ -44,6 +44,7 @@ describe("useDatasetRefresh", () => {
       properties: {
         type: "Dataset" as const,
         title: "External Layer",
+        shortTitle: "External Layer",
       },
     },
   };
@@ -62,6 +63,7 @@ describe("useDatasetRefresh", () => {
       properties: {
         type: "Dataset" as const,
         title: "Keusches Nonnenkraut",
+        shortTitle: "Keusches Nonnenkraut",
       },
     },
   };
@@ -123,6 +125,7 @@ describe("useDatasetRefresh", () => {
         properties: {
           type: "Dataset" as const,
           title: "Imported",
+          shortTitle: "Imported",
         },
       },
     };

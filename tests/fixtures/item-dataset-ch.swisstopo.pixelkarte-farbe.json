@@ -82,6 +82,7 @@
     ],
     "preferredDistributionId": "ch.swisstopo.pixelkarte-farbe:wmts",
     "title": "National maps of Switzerland (color)",
+    "shortTitle": "National maps of Switzerland (color)",
     "type": "Dataset"
   }
 }

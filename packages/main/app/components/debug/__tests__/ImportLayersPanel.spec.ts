@@ -85,6 +85,7 @@ describe("ImportLayersPanel.vue", () => {
 
     expect(dataset.id).toBe("layer-a");
     expect(dataset.properties.title).toBe("layer-a on wmts.example.com");
+    expect(dataset.properties.shortTitle).toBe("layer-a on wmts.example.com");
     expect(addLayerSpy).toHaveBeenCalledTimes(1);
   });
 

@@ -29,7 +29,11 @@ vi.mock("@swissgeo/log", () => ({
 const ITEMS_URL = "https://api.example.com/collections/swissgeo-catalog/items";
 
 function makeDataset(id: string): Dataset {
-  return { id, properties: { type: "Dataset", title: id }, links: [] };
+  return {
+    id,
+    properties: { type: "Dataset", title: id, shortTitle: id },
+    links: [],
+  };
 }
 
 /** A page of the catalog, out of `numberMatched` records in total */

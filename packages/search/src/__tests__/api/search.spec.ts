@@ -270,7 +270,8 @@ describe("searchLayers function", () => {
           {
             id: "layer-1",
             properties: {
-              title: "<b>Test Layer</b>",
+              title: "Long Test Layer",
+              shortTitle: "<b>Test Layer</b>",
               description: "Layer description",
             },
           },
@@ -290,7 +291,28 @@ describe("searchLayers function", () => {
     });
   });
 
-  it("falls back to the id when a feature has no title", async () => {
+  it("uses the short title of a feature, not its title", async () => {
+    (fetch as Mock).mockResolvedValue({
+      ok: true,
+      json: () => ({
+        features: [
+          {
+            id: "layer-1",
+            properties: { title: "Long Layer Title", shortTitle: "Short" },
+          },
+        ],
+      }),
+    });
+
+    const result = await searchLayers("test", catalogUrl, "de");
+
+    expect(result[0]).toMatchObject({
+      title: "Short",
+      sanitizedTitle: "Short",
+    });
+  });
+
+  it("falls back to the id when a feature has no properties", async () => {
     (fetch as Mock).mockResolvedValue({
       ok: true,
       json: () => ({ features: [{ id: "layer-42" }] }),

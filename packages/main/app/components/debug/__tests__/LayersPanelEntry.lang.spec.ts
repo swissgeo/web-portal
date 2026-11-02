@@ -48,6 +48,7 @@ describe("LayersPanelEntry.vue locale-aware behavior", () => {
       ],
       properties: {
         title: "Layer title",
+        shortTitle: "Layer title",
         type: "Dataset",
         preferredDistributionId: "d:wms",
       },

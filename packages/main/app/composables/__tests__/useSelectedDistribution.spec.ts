@@ -41,6 +41,7 @@ function makeDataset(aggregated?: boolean): Dataset {
     properties: {
       type: "Dataset",
       title: "Gefahrenkarten",
+      shortTitle: "Gefahrenkarten",
       preferredDistributionId: dataLayer.id,
       aggregated,
     },

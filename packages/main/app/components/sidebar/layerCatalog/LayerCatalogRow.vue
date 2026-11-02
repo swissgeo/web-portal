@@ -63,7 +63,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
         size="xs"
         color="accent"
         checked-icon="i-lucide-check"
-        :aria-label="dataset.properties.title"
+        :aria-label="dataset.properties.shortTitle"
         :model-value="isOnMap"
         @update:model-value="setOnMap"
       />
@@ -76,7 +76,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
       >
         <div class="flex min-w-0 items-center gap-space-xs">
           <p class="font-bold max-md:line-clamp-2 md:truncate">
-            {{ dataset.properties.title }}
+            {{ dataset.properties.shortTitle }}
           </p>
           <UBadge
             v-if="dataset.properties.aggregated"

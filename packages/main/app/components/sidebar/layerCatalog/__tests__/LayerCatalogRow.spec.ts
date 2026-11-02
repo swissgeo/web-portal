@@ -53,7 +53,12 @@ const stubs = {
 function makeDataset(id = "ch.a", contacts?: Contact[]): Dataset {
   return {
     id,
-    properties: { type: "Dataset", title: `Title of ${id}`, contacts },
+    properties: {
+      type: "Dataset",
+      title: `Title of ${id}`,
+      shortTitle: `Short of ${id}`,
+      contacts,
+    },
     links: [],
   };
 }
@@ -86,7 +91,7 @@ describe("LayerCatalogRow.vue", () => {
     isDesktop.value = false;
   });
 
-  it("shows the layer title next to the switch, in one column", () => {
+  it("shows the short title next to the switch, with the full title as tooltip", () => {
     const wrapper = mountRow();
     const cell = cells(wrapper)[0]!;
 
@@ -97,9 +102,9 @@ describe("LayerCatalogRow.vue", () => {
     );
     expect(
       cell.get("[data-testid='catalog-layer-on-map']").attributes("aria-label"),
-    ).toBe("Title of ch.a");
+    ).toBe("Short of ch.a");
     expect(cell.get("[data-testid='catalog-layer-title']").text()).toBe(
-      "Title of ch.a",
+      "Short of ch.a",
     );
     expect(cell.attributes("title")).toBe("Title of ch.a");
   });

@@ -15,6 +15,7 @@ mockNuxtImport("useDatasetRecord", () => () => ({
     properties: {
       type: "Dataset",
       title: "Example dataset",
+      shortTitle: "Example",
       description: "Example description",
     },
   }),

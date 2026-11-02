@@ -36,7 +36,7 @@ const handler = (await import("../[layerId]")).default as (
 interface DatasetResponse {
   id: string;
   links: { href: string; rel: string; title?: string; type?: string }[];
-  properties: { title: string; type: string };
+  properties: { title: string; shortTitle: string; type: string };
 }
 
 function mockFetchOnce(body: string, ok = true) {
@@ -85,6 +85,7 @@ describe("GET /api/wpa/v1/layers/external/dataset/[capabilityUrl]/[layerId]", ()
 
     expect(result.id).toBe("my-layer");
     expect(result.properties.title).toBe("My Real Title");
+    expect(result.properties.shortTitle).toBe("My Real Title");
   });
 
   it("extracts the title from a WMS capabilities document", async () => {
