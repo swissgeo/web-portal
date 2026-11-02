@@ -77,7 +77,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       </div>
     </div>
     <div
-      class="mx-auto flex max-w-(--ui-container) flex-col gap-4 p-4 pb-16 lg:flex-row lg:p-8 lg:pb-16"
+      class="mx-auto flex max-w-(--ui-container) flex-col gap-8 p-4 pb-16 lg:flex-row lg:p-8 lg:pb-16"
     >
       <UPageCard
         :title="t('landing.cards.map.title')"
