@@ -14,6 +14,7 @@ import RecenterButton from "@/components/toolbox/toolboxButtons/RecenterButton.v
 import ShareButton from "@/components/toolbox/toolboxButtons/ShareButton.vue";
 import TimeSliderButton from "@/components/toolbox/toolboxButtons/TimeSliderButton.vue";
 import Toggle3dButton from "@/components/toolbox/toolboxButtons/Toggle3dButton.vue";
+import ZoomButtons from "@/components/toolbox/toolboxButtons/ZoomButtons.vue";
 import ToolboxDetail from "@/components/toolbox/ToolboxDetail.vue";
 import { useToolboxStore } from "@/stores/toolbox";
 
@@ -22,6 +23,7 @@ const toolboxStore = useToolboxStore();
 const displayMode = inject(displayModeKey, "web");
 
 const isWebMode = computed(() => displayMode === "web");
+const isEmbedMode = computed(() => displayMode === "embed");
 </script>
 
 <template>
@@ -39,6 +41,16 @@ const isWebMode = computed(() => displayMode === "web");
       <CompassButton v-if="isWebMode && toolboxStore.showCompassButton" />
       <RecenterButton v-if="isWebMode && toolboxStore.showRecenterButton" />
       <slot />
+    </UCard>
+    <UCard
+      class="mb-4"
+      :ui="{
+        body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
+      }"
+    >
+      <ZoomButtons
+        v-if="(isWebMode || isEmbedMode) && toolboxStore.showZoomButtons"
+      />
     </UCard>
     <UCard
       v-if="isWebMode"
