@@ -144,7 +144,8 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           'bg-elevated max-w-full py-16 lg:py-16 px-4 lg:px-8 lg:justify-normal lg:grid lg:grid-cols-2',
         left: 'hidden',
         right: 'lg:justify-start lg:order-1',
-        center: 'lg:order-2 lg:grid lg:grid-cols-3 lg:self-end lg:gap-8',
+        center:
+          'lg:order-2 lg:grid lg:grid-cols-2 2xl:grid-cols-3 lg:self-end lg:gap-8',
       }"
     >
       <template #right>
