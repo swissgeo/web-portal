@@ -59,7 +59,7 @@ function makeCollection(ids: string[]): DatasetCollection {
     features: ids.map(
       (id): Dataset => ({
         id,
-        properties: { type: "Dataset", title: id },
+        properties: { type: "Dataset", title: id, shortTitle: id },
         links: [],
       }),
     ),

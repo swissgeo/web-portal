@@ -35,6 +35,7 @@ function render(features: Distribution[], preferredDistributionId?: string) {
     properties: {
       type: "Dataset",
       title: "Test dataset",
+      shortTitle: "Test dataset",
       preferredDistributionId,
     },
   };

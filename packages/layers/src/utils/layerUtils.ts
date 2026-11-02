@@ -1,7 +1,6 @@
 import type { Dataset, DistributionCollection, Feature } from "@swissgeo/ogc";
 
 import log from "@swissgeo/log";
-import { getShortTitle } from "@swissgeo/ogc";
 
 import type { DatasetLayer, Layer, LayerAttribution, LayerInfo } from "@/index";
 
@@ -51,6 +50,10 @@ export const validateDataset: (value: unknown) => asserts value is Dataset = (
     throw new InvalidDatasetError('missing or empty "properties.title"');
   }
 
+  if (!isNonEmptyString(candidate.properties.shortTitle)) {
+    throw new InvalidDatasetError('missing or empty "properties.shortTitle"');
+  }
+
   if (candidate.links !== undefined && !Array.isArray(candidate.links)) {
     throw new InvalidDatasetError('"links" must be an array when present');
   }
@@ -66,7 +69,7 @@ export const getInfoFromDataset = async (
   dataset: Dataset,
 ): Promise<LayerInfo> => {
   const properties = dataset.properties;
-  const displayName = properties && getShortTitle(properties);
+  const displayName = properties?.shortTitle;
 
   if (!properties || !displayName) {
     return {

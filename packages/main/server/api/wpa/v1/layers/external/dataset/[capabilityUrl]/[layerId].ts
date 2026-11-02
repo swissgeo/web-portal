@@ -141,6 +141,7 @@ export default defineEventHandler(async (event) => {
     ],
     properties: {
       title,
+      shortTitle: title,
       type: "Dataset",
     },
   };

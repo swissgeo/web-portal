@@ -83,6 +83,7 @@
     ],
     "preferredDistributionId": "ch.bafu.schutzgebiete-luftfahrt:wmts",
     "title": "Protected areas in the military air navigation obstacles publication",
+    "shortTitle": "Protected areas in the military air navigation obstacles publication",
     "type": "Dataset"
   }
 }

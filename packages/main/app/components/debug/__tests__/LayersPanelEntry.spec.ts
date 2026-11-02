@@ -60,6 +60,7 @@ describe("LayersPanelEntry.vue", () => {
           properties: {
             type: "Dataset",
             title: "Layer title",
+            shortTitle: "Layer title",
             attribution: { abbreviation: "OGC", name: "OGC source" },
             preferredDistributionId: "OGC:WMTS:ch.layer.one",
           },

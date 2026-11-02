@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getShortTitle, replaceTemplateVarsWithDefaults } from "../utils";
+import { replaceTemplateVarsWithDefaults } from "../utils";
 
 describe("replace link template utility", () => {
   it("correctly replaces enum type variable with default", () => {
@@ -99,23 +99,4 @@ describe("replace link template utility", () => {
       "https://wms.geo.admin.ch/?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&FORMAT=text/html&lang=en",
     );
   });
-});
-
-describe("getShortTitle", () => {
-  it.each`
-    shortTitle         | expected
-    ${"Railway noise"} | ${"Railway noise"}
-    ${""}              | ${"Noise register for railway systems"}
-    ${undefined}       | ${"Noise register for railway systems"}
-  `(
-    "returns $expected for shortTitle=$shortTitle",
-    ({ shortTitle, expected }) => {
-      expect(
-        getShortTitle({
-          title: "Noise register for railway systems",
-          shortTitle,
-        }),
-      ).toBe(expected);
-    },
-  );
 });

@@ -43,7 +43,11 @@ vi.mock("@swissgeo/dimension", () => ({
 vi.mock("@swissgeo/log", () => ({ default: { error: logErrorMock } }));
 
 function makeDataset(id: string): Dataset {
-  return { id, properties: { type: "Dataset", title: id }, links: [] };
+  return {
+    id,
+    properties: { type: "Dataset", title: id, shortTitle: id },
+    links: [],
+  };
 }
 
 describe("useDatasetLayer", () => {

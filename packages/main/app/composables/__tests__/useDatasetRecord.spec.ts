@@ -59,6 +59,7 @@ const mockDataset: Dataset = {
   properties: {
     type: "Dataset",
     title: "Test Dataset",
+    shortTitle: "Test Dataset",
     description: "A test dataset",
   },
   links: [

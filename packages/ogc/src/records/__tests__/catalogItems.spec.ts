@@ -11,7 +11,11 @@ const ITEMS_URL = "https://api.example.com/collections/swissgeo-catalog/items";
 const page: DatasetCollection = {
   type: "FeatureCollection",
   features: [
-    { id: "a", properties: { type: "Dataset", title: "A" }, links: [] },
+    {
+      id: "a",
+      properties: { type: "Dataset", title: "A", shortTitle: "A" },
+      links: [],
+    },
   ],
   links: [],
   numberMatched: 1,

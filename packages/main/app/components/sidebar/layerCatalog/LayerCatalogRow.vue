@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { Dataset } from "@swissgeo/ogc";
 
-import { getShortTitle } from "@swissgeo/ogc";
 import { useI18n } from "vue-i18n";
 
 const { dataset } = defineProps<{
@@ -18,7 +17,6 @@ const titlePath = computed(() =>
 );
 
 const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
-const shortTitle = computed(() => getShortTitle(dataset.properties));
 
 const provider = computed(() => {
   const contacts = dataset.properties.contacts ?? [];
@@ -65,7 +63,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
         size="xs"
         color="accent"
         checked-icon="i-lucide-check"
-        :aria-label="shortTitle"
+        :aria-label="dataset.properties.shortTitle"
         :model-value="isOnMap"
         @update:model-value="setOnMap"
       />
@@ -78,7 +76,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
       >
         <div class="flex min-w-0 items-center gap-space-xs">
           <p class="font-bold max-md:line-clamp-2 md:truncate">
-            {{ shortTitle }}
+            {{ dataset.properties.shortTitle }}
           </p>
           <UBadge
             v-if="dataset.properties.aggregated"

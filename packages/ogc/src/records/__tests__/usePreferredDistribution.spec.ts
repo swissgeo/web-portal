@@ -22,6 +22,7 @@ describe("usePreferredDistribution extracting the preferredDistribution informat
       ref({
         properties: {
           title: "Schutzgebiete MIL",
+          shortTitle: "Schutzgebiete MIL",
           description:
             "Die Schutzgebiete der militärischen Luftfahrthinderniskarte beinhalten den Nationalpark, Hochmoore, ausgewählte Auengebiete und Flachmoore, Wasser- und Zugvogelreservate und Eidgenössische Jagdbanngebiete. Bei den Wasser- und Zugvogelreservaten wurden bei einigen Objekten mit bestehender Nutzung die Perimeter angepasst. Bei den Mooren und Auen an Seen und Flussufern wurden zudem die Perimeter mit einem Puffer von 100m versehen.",
           type: "Dataset",

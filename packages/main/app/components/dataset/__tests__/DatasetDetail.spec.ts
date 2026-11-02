@@ -22,7 +22,13 @@ vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (key: string) => key }) }));
 function makeDataset(contacts?: Contact[], description?: string): Dataset {
   return {
     id: "example.dataset",
-    properties: { type: "Dataset", title: "Example", description, contacts },
+    properties: {
+      type: "Dataset",
+      title: "Example",
+      shortTitle: "Example",
+      description,
+      contacts,
+    },
   };
 }
 

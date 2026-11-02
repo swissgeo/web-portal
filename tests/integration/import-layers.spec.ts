@@ -112,7 +112,7 @@ async function mockExternalLayerApi(
               type: "application/json",
             },
           ],
-          properties: { title: layerId, type: "Dataset" },
+          properties: { title: layerId, shortTitle: layerId, type: "Dataset" },
         },
       });
     },
@@ -247,7 +247,11 @@ test.describe("import external layers", () => {
         json: {
           id: failedLayer,
           links: [{ href: failedLayerUrl, rel: "self" }],
-          properties: { title: failedLayer, type: "Dataset" },
+          properties: {
+            title: failedLayer,
+            shortTitle: failedLayer,
+            type: "Dataset",
+          },
         },
       }),
     );
