@@ -77,7 +77,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       </div>
     </div>
     <div
-      class="mx-auto flex max-w-(--ui-container) flex-col gap-4 p-4 pb-16 lg:flex-row lg:p-8 lg:pb-16"
+      class="mx-auto flex max-w-(--ui-container) flex-col gap-8 p-4 pb-16 lg:flex-row lg:p-8 lg:pb-16"
     >
       <UPageCard
         :title="t('landing.cards.map.title')"
@@ -85,8 +85,10 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         icon="i-lucide-map"
         variant="outline"
         :ui="{
-          root: 'h-72 lg:w-1/3 cursor-pointer',
+          root: 'lg:w-1/3 cursor-pointer',
           footer: 'ml-auto',
+          title: 'text-xl',
+          description: 'text-base font-medium text-default',
         }"
         @click="goToMap()"
       >
@@ -102,8 +104,10 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         icon="i-lucide-list-todo"
         variant="outline"
         :ui="{
-          root: 'h-72 lg:w-1/3 cursor-pointer',
+          root: 'lg:w-1/3 cursor-pointer',
           footer: 'ml-auto',
+          title: 'text-xl',
+          description: 'text-base font-medium text-default',
         }"
         @click="goToMap(true)"
       >
@@ -121,8 +125,10 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         variant="soft"
         target="_blank"
         :ui="{
-          root: 'h-72 lg:w-1/3 bg-primary-50 dark:bg-primary-800',
+          root: 'lg:w-1/3 bg-primary-50 dark:bg-primary-800',
           footer: 'ml-auto',
+          title: 'text-xl',
+          description: 'text-base font-medium text-default',
         }"
       >
         <template #footer>
@@ -135,52 +141,50 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
     <UFooter
       :ui="{
         container:
-          'bg-elevated max-w-full py-16 lg:py-16 px-4 lg:px-8 lg:justify-normal lg:grid lg:grid-cols-2',
+          'bg-elevated max-w-full py-16 lg:py-16 px-4 lg:px-8 lg:justify-normal lg:grid lg:grid-cols-2 lg:grid-rows-[auto_auto]',
         left: 'hidden',
-        right: 'lg:justify-start lg:order-1',
-        center: 'lg:order-2 lg:grid lg:grid-cols-3 lg:self-end lg:gap-8',
+        right:
+          'flex-col lg:items-start lg:justify-start lg:order-1 lg:row-span-2 lg:grid lg:grid-cols-3 lg:gap-x-8 lg:grid-rows-subgrid',
+        center:
+          'flex-col lg:items-start lg:order-2 lg:row-span-2 lg:grid lg:grid-cols-2 2xl:grid-cols-3 lg:grid-rows-subgrid',
       }"
     >
       <template #right>
-        <div
-          class="mb-8 flex w-full flex-col gap-8 lg:mb-0 lg:grid lg:grid-cols-3 lg:items-end"
+        <p
+          class="w-full text-2xl font-semibold lg:col-start-1 lg:row-start-1 lg:self-end"
         >
-          <div class="flex flex-col gap-4">
-            <p class="text-2xl font-semibold">
-              SWISSGEO<br />{{ t("landing.footer.claim") }}
-            </p>
-            <p class="text-sm font-medium">
-              {{ t("landing.footer.description") }}
-            </p>
-          </div>
-          <div class="flex flex-col gap-2">
-            <p class="text-lg font-semibold">
-              {{ t("landing.footer.followUs") }}
-            </p>
-            <UNavigationMenu
-              orientation="vertical"
-              class="data-[orientation=vertical]:w-full"
-              :items="socialLinks"
-              :ui="{
-                linkLabelExternalIcon: 'hidden',
-              }"
-            />
-          </div>
-        </div>
-      </template>
-      <div class="flex w-full flex-col gap-2">
-        <p class="text-lg font-semibold">
-          {{ t("landing.footer.moreInformation") }}
+          SWISSGEO<br />{{ t("landing.footer.claim") }}
+        </p>
+        <p
+          class="mt-4 w-full text-sm font-medium lg:col-start-1 lg:row-start-2"
+        >
+          {{ t("landing.footer.description") }}
+        </p>
+        <p
+          class="mt-8 w-full text-lg font-semibold lg:col-start-2 lg:row-start-1 lg:mt-0 lg:self-end"
+        >
+          {{ t("landing.footer.followUs") }}
         </p>
         <UNavigationMenu
           orientation="vertical"
-          class="data-[orientation=vertical]:w-full"
-          :items="infosLinks"
+          class="mt-2 mb-8 data-[orientation=vertical]:w-full lg:col-start-2 lg:row-start-2 lg:mb-0"
+          :items="socialLinks"
           :ui="{
             linkLabelExternalIcon: 'hidden',
           }"
         />
-      </div>
+      </template>
+      <p class="w-full text-lg font-semibold lg:row-start-1 lg:self-end">
+        {{ t("landing.footer.moreInformation") }}
+      </p>
+      <UNavigationMenu
+        orientation="vertical"
+        class="mt-2 data-[orientation=vertical]:w-full lg:row-start-2"
+        :items="infosLinks"
+        :ui="{
+          linkLabelExternalIcon: 'hidden',
+        }"
+      />
     </UFooter>
     <div
       class="flex flex-col gap-4 bg-neutral-50 px-4 py-8 text-sm font-medium lg:flex-row-reverse lg:items-center lg:p-8 dark:bg-neutral-900"
