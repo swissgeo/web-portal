@@ -85,7 +85,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         icon="i-lucide-map"
         variant="outline"
         :ui="{
-          root: 'h-72 lg:w-1/3 cursor-pointer',
+          root: 'lg:w-1/3 cursor-pointer',
           footer: 'ml-auto',
         }"
         @click="goToMap()"
@@ -102,7 +102,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         icon="i-lucide-list-todo"
         variant="outline"
         :ui="{
-          root: 'h-72 lg:w-1/3 cursor-pointer',
+          root: 'lg:w-1/3 cursor-pointer',
           footer: 'ml-auto',
         }"
         @click="goToMap(true)"
@@ -121,7 +121,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         variant="soft"
         target="_blank"
         :ui="{
-          root: 'h-72 lg:w-1/3 bg-primary-50 dark:bg-primary-800',
+          root: 'lg:w-1/3 bg-primary-50 dark:bg-primary-800',
           footer: 'ml-auto',
         }"
       >
