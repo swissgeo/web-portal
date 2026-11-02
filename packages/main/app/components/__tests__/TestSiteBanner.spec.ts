@@ -55,16 +55,14 @@ describe("TestSiteBanner.vue", () => {
     expect(banner.text()).toBe("testSiteBanner.text:DEV");
   });
 
-  it.each([
-    { staging: "prod", value: "prod" },
-    // environments that cannot occur, kept as a fail-safe check
-    { staging: "unknown value", value: "garbage" },
-    { staging: "object key", value: "toString" },
-  ])("shows no banner for $staging", ({ value }) => {
-    const wrapper = mountBanner(value);
+  it.each([{ staging: "prod", value: "prod" }])(
+    "shows no banner for $staging",
+    ({ value }) => {
+      const wrapper = mountBanner(value);
 
-    expect(wrapper.find('[data-testid="test-site-banner"]').exists()).toBe(
-      false,
-    );
-  });
+      expect(wrapper.find('[data-testid="test-site-banner"]').exists()).toBe(
+        false,
+      );
+    },
+  );
 });

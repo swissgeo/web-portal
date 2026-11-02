@@ -1,8 +1,7 @@
 /**
  * The environment the app is running in, derived from two sources:
  *
- * On one hand, `import.meta.dev` which is true for development builds and
- * local dev servers.
+ * On one hand, `import.meta.dev` which is true for local dev servers.
  * On the other hand, `runtimeConfig.public.testSiteBanner` which is set by the
  * deployed tests stagings (absent on prod)
  *
