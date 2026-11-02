@@ -155,7 +155,9 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         >
           SWISSGEO<br />{{ t("landing.footer.claim") }}
         </p>
-        <p class="mt-4 w-full text-sm font-medium lg:col-start-1 lg:row-start-2">
+        <p
+          class="mt-4 w-full text-sm font-medium lg:col-start-1 lg:row-start-2"
+        >
           {{ t("landing.footer.description") }}
         </p>
         <p
