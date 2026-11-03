@@ -213,7 +213,9 @@
     "permissionDenied": "Location access denied",
     "stopTracking": "Hide location",
     "startGeolocation": "Show location",
-    "recenterMap": "Re-centre map"
+    "recenterMap": "Re-centre map",
+    "timeout": "Location request timed out.",
+    "unavailable": "Unable to determine location."
   },
   "toolbox": {
     "geolocation": {
@@ -449,6 +451,10 @@
       "links": {
         "roadmap": "geoplatform-outlook"
       }
+    },
+    "zoom": {
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
     }
   },
   "backgroundLayers": {
