@@ -19,7 +19,11 @@ import {
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { MapModule, usePositionStore } from "@swissgeo/map";
-import { HIGHLIGHT_LAYER_ID, toRgbaColor } from "@swissgeo/shared";
+import {
+  HIGHLIGHT_LAYER_ID,
+  RequestError,
+  toRgbaColor,
+} from "@swissgeo/shared";
 import { useElementBounding } from "@vueuse/core";
 import { cloneDeep } from "es-toolkit";
 
@@ -58,7 +62,7 @@ const dimensionsStore = useDimensionsStore();
 const positionStore = usePositionStore();
 const toolboxStore = useToolboxStore();
 const toaster = useToaster();
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 const featureStore = useFeaturesStore();
 
 const sourceLayers = computed(() => layerStore.layers);
@@ -187,7 +191,7 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
   if (isBackground) {
     toaster.showMapUnavailable();
   } else {
-    toaster.showError(t("error.layerLoad"));
+    toaster.showLayerError(error instanceof RequestError ? error.url : null);
   }
 
   dimensionsStore.clearLayerDimensions(uuid);

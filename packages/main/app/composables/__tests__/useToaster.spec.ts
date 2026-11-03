@@ -3,15 +3,24 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useToaster } from "../useToaster";
 
-const { toastAdd } = vi.hoisted(() => ({ toastAdd: vi.fn() }));
+const { toastAdd, toastUpdate } = vi.hoisted(() => ({
+  toastAdd: vi.fn().mockReturnValue({ id: "toast-id" }),
+  toastUpdate: vi.fn(),
+}));
 
 // tests/setup.ts mocks useToaster for all tests. This test needs the real one.
 vi.unmock("~/composables/useToaster");
 
 mockNuxtImport("useNuxtApp", () => () => ({
-  $i18n: { t: (key: string) => key },
+  $i18n: {
+    t: (key: string, params?: Record<string, string>) =>
+      params ? `${key}(${Object.values(params).join()})` : key,
+  },
 }));
-mockNuxtImport("useToast", () => () => ({ add: toastAdd }));
+mockNuxtImport("useToast", () => () => ({
+  add: toastAdd,
+  update: toastUpdate,
+}));
 
 describe("useToaster", () => {
   beforeEach(() => {
@@ -45,6 +54,43 @@ describe("useToaster", () => {
         actions: [expect.objectContaining({ to: "https://map.geo.admin.ch" })],
       }),
     );
+  });
+
+  it("shows the plain layer error without a request URL", () => {
+    useToaster().showLayerError(null);
+
+    expect(toastAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ description: "error.layerLoad" }),
+    );
+    expect(toastAdd.mock.calls[0]?.[0]).not.toHaveProperty("actions");
+  });
+
+  it("names the service host and copies the full request URL", () => {
+    const url = "https://wms.example.test/wms?REQUEST=GetCapabilities";
+    const writeText = vi.fn();
+    vi.stubGlobal("navigator", { clipboard: { writeText } });
+
+    useToaster().showLayerError(url);
+
+    const options = toastAdd.mock.calls[0]?.[0];
+    expect(options.description).toBe(
+      "error.layerLoad\nerror.service(wms.example.test)",
+    );
+    expect(options.actions).toEqual([
+      expect.objectContaining({ label: "error.copyRequestUrl" }),
+    ]);
+    options.actions[0].onClick();
+    expect(writeText).toHaveBeenCalledWith(url);
+    expect(toastUpdate).toHaveBeenCalledWith("toast-id", {
+      duration: Infinity,
+      actions: [
+        expect.objectContaining({
+          label: "error.requestUrlCopied",
+          icon: "i-lucide-check",
+        }),
+      ],
+    });
+    vi.unstubAllGlobals();
   });
 
   it("lets a success toast use the default duration", () => {

@@ -1,6 +1,7 @@
 import type { Distribution, Service } from "@swissgeo/ogc";
 
 import { useStyle, useWmsCapabilities } from "@swissgeo/ogc";
+import { RequestError } from "@swissgeo/shared";
 
 import { getTimeInfoFromWMSCapabilities } from "@/utils/timeUtils";
 
@@ -78,7 +79,11 @@ export function useOgcWmsData(
   });
   onCapabilitiesError((error) =>
     onError(
-      new Error("Unable to load required WMS capabilities", { cause: error }),
+      new RequestError(
+        "Unable to load required WMS capabilities",
+        capabilityUrl.value,
+        { cause: error },
+      ),
     ),
   );
   onCapabilitiesResponse(() => {
@@ -88,9 +93,11 @@ export function useOgcWmsData(
       }
     } catch (error) {
       onError(
-        new Error("Unable to process required WMS capabilities", {
-          cause: error,
-        }),
+        new RequestError(
+          "Unable to process required WMS capabilities",
+          capabilityUrl.value,
+          { cause: error },
+        ),
       );
     }
   });

@@ -37,9 +37,9 @@
       "mapInfo": "Info mappa"
     },
     "reportIssue": {
-      "buttonTitle": "Segnala un problema",
-      "title": "Segnala un problema",
-      "close": "Chiudi il modulo «Segnala un problema»",
+      "buttonTitle": "Lascia un feedback",
+      "title": "Lascia un feedback",
+      "close": "Chiudi il modulo «Lascia un feedback»",
       "steps": {
         "step1": {
           "title": "1. Oggetto della tua segnalazione",
@@ -447,7 +447,7 @@
       "notAvailable": "Questo strumento non è ancora disponibile.",
       "workingOnIt": "Seguirà in una versione successiva.",
       "links": {
-        "roadmap": "roadmap-geopiattaforma"
+        "roadmap": "geopiattaforma-prospettive"
       }
     }
   },
@@ -492,7 +492,10 @@
     "resources": {
       "dataset": "Il livello"
     },
-    "mapUnavailable": "La mappa non è al momento disponibile."
+    "mapUnavailable": "La mappa non è al momento disponibile.",
+    "service": "TODO translate",
+    "copyRequestUrl": "TODO translate",
+    "requestUrlCopied": "TODO translate"
   },
   "dataset": {
     "legendLoading": "Caricamento della legenda…",

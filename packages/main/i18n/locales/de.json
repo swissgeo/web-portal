@@ -37,9 +37,9 @@
       "mapInfo": "Karteninfo"
     },
     "reportIssue": {
-      "buttonTitle": "Problem melden",
-      "title": "Problem melden",
-      "close": "«Problem melden» schliessen",
+      "buttonTitle": "Feedback geben",
+      "title": "Feedback geben",
+      "close": "«Feedback geben» schliessen",
       "steps": {
         "step1": {
           "title": "1. Betreff Ihrer Meldung",
@@ -447,7 +447,7 @@
       "notAvailable": "Dieses Werkzeug ist noch nicht verfügbar.",
       "workingOnIt": "Es folgt in einer späteren Version.",
       "links": {
-        "roadmap": "roadmap-geoplattform"
+        "roadmap": "geoplattform-ausblick"
       }
     }
   },
@@ -492,7 +492,10 @@
     "resources": {
       "dataset": "Die Ebene"
     },
-    "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar."
+    "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar.",
+    "service": "Dienst: {host}",
+    "copyRequestUrl": "Anfrage-URL kopieren",
+    "requestUrlCopied": "Anfrage-URL kopiert"
   },
   "dataset": {
     "legendLoading": "Legende wird geladen…",

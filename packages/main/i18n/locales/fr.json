@@ -37,9 +37,9 @@
       "mapInfo": "Info carte"
     },
     "reportIssue": {
-      "buttonTitle": "Annoncer un problème",
-      "title": "Annoncer un problème",
-      "close": "Fermer le formulaire \"Annoncer un problème\"",
+      "buttonTitle": "Donner un feedback",
+      "title": "Donner un feedback",
+      "close": "Fermer le formulaire \"Donner un feedback\"",
       "steps": {
         "step1": {
           "title": "1. Sujet de votre message",
@@ -447,7 +447,7 @@
       "notAvailable": "Cet outil n'est pas encore disponible.",
       "workingOnIt": "Il suivra dans une version ultérieure.",
       "links": {
-        "roadmap": "roadmap-geoplateforme"
+        "roadmap": "geoplateforme-perspectives"
       }
     }
   },
@@ -492,7 +492,10 @@
     "resources": {
       "dataset": "La couche"
     },
-    "mapUnavailable": "La carte n'est actuellement pas disponible."
+    "mapUnavailable": "La carte n'est actuellement pas disponible.",
+    "service": "Service : {host}",
+    "copyRequestUrl": "Copier l'URL de la requête",
+    "requestUrlCopied": "URL de la requête copiée"
   },
   "dataset": {
     "legendLoading": "Chargement de la légende…",

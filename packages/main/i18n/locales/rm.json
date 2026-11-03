@@ -37,9 +37,9 @@
       "mapInfo": "Infos davart la charta"
     },
     "reportIssue": {
-      "buttonTitle": "Rapportar in problem",
-      "title": "Rapportar in problem",
-      "close": "Serrar il formular «rapportar in problem»",
+      "buttonTitle": "Dar feedback",
+      "title": "Dar feedback",
+      "close": "Serrar il formular «Dar feedback»",
       "steps": {
         "step1": {
           "title": "1. Object da Voss annunzi",
@@ -447,7 +447,7 @@
       "notAvailable": "Quest utensil n'è anc betg disponibel.",
       "workingOnIt": "El suonda en ina versiun posteriura.",
       "links": {
-        "roadmap": "roadmap-geoplattform"
+        "roadmap": "geoplattform-ausblick"
       }
     }
   },
@@ -492,7 +492,10 @@
     "resources": {
       "dataset": "Il nivel"
     },
-    "mapUnavailable": "La charta n'è actualmain betg disponibla."
+    "mapUnavailable": "La charta n'è actualmain betg disponibla.",
+    "service": "TODO translate",
+    "copyRequestUrl": "TODO translate",
+    "requestUrlCopied": "TODO translate"
   },
   "dataset": {
     "legendLoading": "La legenda vegn chargiada…",

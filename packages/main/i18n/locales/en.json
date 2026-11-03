@@ -37,8 +37,8 @@
       "mapInfo": "Map info"
     },
     "reportIssue": {
-      "buttonTitle": "Report an issue",
-      "title": "Report an issue",
+      "buttonTitle": "Give feedback",
+      "title": "Give feedback",
       "close": "Close report issue form",
       "steps": {
         "step1": {
@@ -447,7 +447,7 @@
       "notAvailable": "This tool is not available yet.",
       "workingOnIt": "It will follow in a later version.",
       "links": {
-        "roadmap": "roadmap-geoplatform"
+        "roadmap": "geoplatform-outlook"
       }
     }
   },
@@ -492,7 +492,10 @@
     "resources": {
       "dataset": "The layer"
     },
-    "mapUnavailable": "The map is currently not available."
+    "mapUnavailable": "The map is currently not available.",
+    "service": "Service: {host}",
+    "copyRequestUrl": "Copy request URL",
+    "requestUrlCopied": "Request URL copied"
   },
   "dataset": {
     "legendLoading": "Loading legend…",
