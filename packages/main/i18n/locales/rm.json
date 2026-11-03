@@ -37,9 +37,9 @@
       "mapInfo": "Infos davart la charta"
     },
     "reportIssue": {
-      "buttonTitle": "Rapportar in problem",
-      "title": "Rapportar in problem",
-      "close": "Serrar il formular «rapportar in problem»",
+      "buttonTitle": "Dar feedback",
+      "title": "Dar feedback",
+      "close": "Serrar il formular «Dar feedback»",
       "steps": {
         "step1": {
           "title": "1. Object da Voss annunzi",

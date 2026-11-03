@@ -37,9 +37,9 @@
       "mapInfo": "Info mappa"
     },
     "reportIssue": {
-      "buttonTitle": "Segnala un problema",
-      "title": "Segnala un problema",
-      "close": "Chiudi il modulo «Segnala un problema»",
+      "buttonTitle": "Lascia un feedback",
+      "title": "Lascia un feedback",
+      "close": "Chiudi il modulo «Lascia un feedback»",
       "steps": {
         "step1": {
           "title": "1. Oggetto della tua segnalazione",
