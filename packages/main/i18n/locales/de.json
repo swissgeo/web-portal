@@ -493,7 +493,8 @@
       "dataset": "Die Ebene"
     },
     "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar.",
-    "failedRequest": "Fehlgeschlagene Anfrage: {url}"
+    "service": "Dienst: {host}",
+    "copyRequestUrl": "Anfrage-URL kopieren"
   },
   "dataset": {
     "legendLoading": "Legende wird geladen…",

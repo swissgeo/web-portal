@@ -493,7 +493,8 @@
       "dataset": "The layer"
     },
     "mapUnavailable": "The map is currently not available.",
-    "failedRequest": "Failed request: {url}"
+    "service": "Service: {host}",
+    "copyRequestUrl": "Copy request URL"
   },
   "dataset": {
     "legendLoading": "Loading legend…",

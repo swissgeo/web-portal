@@ -56,6 +56,31 @@ export function useToaster() {
     });
   }
 
+  // The host tells the user which service failed. The full URL is copied for
+  // an issue report.
+  function showLayerError(url: string | null) {
+    if (!url) {
+      showError($i18n.t("error.layerLoad"));
+      return;
+    }
+    const host = URL.parse(url)?.host ?? url;
+    showError(
+      `${$i18n.t("error.layerLoad")}\n${$i18n.t("error.service", { host })}`,
+      {
+        ui: { description: "whitespace-pre-line" },
+        actions: [
+          {
+            label: $i18n.t("error.copyRequestUrl"),
+            icon: "i-lucide-copy",
+            onClick: () => {
+              void navigator.clipboard.writeText(url);
+            },
+          },
+        ],
+      },
+    );
+  }
+
   function showSuccess(
     message: string,
     overrides?: Parameters<typeof toast.add>[0],
@@ -88,6 +113,7 @@ export function useToaster() {
     showWarning,
     showError,
     showMapUnavailable,
+    showLayerError,
     showSuccess,
     remove,
   };

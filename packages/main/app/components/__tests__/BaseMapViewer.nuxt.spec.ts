@@ -19,7 +19,7 @@ const {
   removeMapLayer,
   removeSourceLayer,
   setBackground,
-  showError,
+  showLayerError,
   showMapUnavailable,
 } = vi.hoisted(() => ({
   clearImportOptions: vi.fn(),
@@ -29,7 +29,7 @@ const {
   removeMapLayer: vi.fn(),
   removeSourceLayer: vi.fn(),
   setBackground: vi.fn(),
-  showError: vi.fn(),
+  showLayerError: vi.fn(),
   showMapUnavailable: vi.fn(),
 }));
 type SelectedFeatureGeoJson = {
@@ -134,11 +134,13 @@ mockNuxtImport("useMapViewStore", () => {
   });
 });
 mockNuxtImport("useI18n", () => () => ({
-  t: (key: string, params?: Record<string, string>) =>
-    params ? `${key}(${Object.values(params).join()})` : key,
+  t: (key: string) => key,
   locale: { value: "en" },
 }));
-mockNuxtImport("useToaster", () => () => ({ showError, showMapUnavailable }));
+mockNuxtImport("useToaster", () => () => ({
+  showLayerError,
+  showMapUnavailable,
+}));
 
 vi.mock("@swissgeo/dimension", () => ({
   // getDimensions: the toolbox store's showTimeSliderButton computed reads it
@@ -522,7 +524,7 @@ describe("BaseMapViewer", () => {
       title: "Layer load failed",
       messages: ["layer-2", failure, cause],
     });
-    expect(showError).toHaveBeenCalledWith("error.layerLoad");
+    expect(showLayerError).toHaveBeenCalledWith(null);
     expect(clearLayerDimensions).toHaveBeenCalledWith("layer-2");
     expect(clearWmsCapability).toHaveBeenCalledWith("layer-2");
     expect(clearImportOptions).toHaveBeenCalledWith("layer-2");
@@ -545,8 +547,8 @@ describe("BaseMapViewer", () => {
         ),
       );
 
-    expect(showError).toHaveBeenCalledWith(
-      "error.layerLoad error.failedRequest(https://wms.example.test?REQUEST=GetCapabilities)",
+    expect(showLayerError).toHaveBeenCalledWith(
+      "https://wms.example.test?REQUEST=GetCapabilities",
     );
   });
 

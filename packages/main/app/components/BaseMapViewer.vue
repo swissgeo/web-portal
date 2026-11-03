@@ -62,7 +62,7 @@ const dimensionsStore = useDimensionsStore();
 const positionStore = usePositionStore();
 const toolboxStore = useToolboxStore();
 const toaster = useToaster();
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 const featureStore = useFeaturesStore();
 
 const sourceLayers = computed(() => layerStore.layers);
@@ -191,11 +191,7 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
   if (isBackground) {
     toaster.showMapUnavailable();
   } else {
-    let message = t("error.layerLoad");
-    if (error instanceof RequestError && error.url) {
-      message += ` ${t("error.failedRequest", { url: error.url })}`;
-    }
-    toaster.showError(message);
+    toaster.showLayerError(error instanceof RequestError ? error.url : null);
   }
 
   dimensionsStore.clearLayerDimensions(uuid);

@@ -493,7 +493,8 @@
       "dataset": "La couche"
     },
     "mapUnavailable": "La carte n'est actuellement pas disponible.",
-    "failedRequest": "Requête échouée : {url}"
+    "service": "Service : {host}",
+    "copyRequestUrl": "Copier l'URL de la requête"
   },
   "dataset": {
     "legendLoading": "Chargement de la légende…",
