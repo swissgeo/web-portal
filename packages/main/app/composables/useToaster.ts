@@ -35,7 +35,7 @@ export function useToaster() {
     message: string,
     overrides?: Parameters<typeof toast.add>[0],
   ) {
-    toast.add({
+    return toast.add({
       title: $i18n.t("toaster.errorTitle"),
       description: message,
       color: "error",
@@ -54,6 +54,42 @@ export function useToaster() {
         { label: "map.geo.admin.ch", to: MAP_GEO_ADMIN_URL, target: "_blank" },
       ],
     });
+  }
+
+  // The host tells the user which service failed. The full URL is copied for
+  // an issue report.
+  function showLayerError(url: string | null) {
+    if (!url) {
+      showError($i18n.t("error.layerLoad"));
+      return;
+    }
+    const host = URL.parse(url)?.host ?? url;
+    const copyAction = {
+      label: $i18n.t("error.copyRequestUrl"),
+      icon: "i-lucide-copy",
+      closeOnClick: false,
+      onClick: () => {
+        void navigator.clipboard.writeText(url);
+        // update() resets the duration unless it is passed again.
+        toast.update(id, {
+          duration: Infinity,
+          actions: [
+            {
+              ...copyAction,
+              label: $i18n.t("error.requestUrlCopied"),
+              icon: "i-lucide-check",
+            },
+          ],
+        });
+      },
+    };
+    const { id } = showError(
+      `${$i18n.t("error.layerLoad")}\n${$i18n.t("error.service", { host })}`,
+      {
+        ui: { description: "whitespace-pre-line" },
+        actions: [copyAction],
+      },
+    );
   }
 
   function showSuccess(
@@ -88,6 +124,7 @@ export function useToaster() {
     showWarning,
     showError,
     showMapUnavailable,
+    showLayerError,
     showSuccess,
     remove,
   };

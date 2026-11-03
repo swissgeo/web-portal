@@ -449,7 +449,7 @@
       "notAvailable": "Quest utensil n'è anc betg disponibel.",
       "workingOnIt": "El suonda en ina versiun posteriura.",
       "links": {
-        "roadmap": "roadmap-geoplattform"
+        "roadmap": "geoplattform-ausblick"
       }
     },
     "zoom": {
@@ -498,7 +498,10 @@
     "resources": {
       "dataset": "Il nivel"
     },
-    "mapUnavailable": "La charta n'è actualmain betg disponibla."
+    "mapUnavailable": "La charta n'è actualmain betg disponibla.",
+    "service": "TODO translate",
+    "copyRequestUrl": "TODO translate",
+    "requestUrlCopied": "TODO translate"
   },
   "dataset": {
     "legendLoading": "La legenda vegn chargiada…",
