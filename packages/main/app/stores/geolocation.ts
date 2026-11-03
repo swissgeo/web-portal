@@ -221,6 +221,7 @@ function handleGeolocationError(
   });
 
   const toaster = useToaster();
+  const { $i18n } = useNuxtApp();
 
   // Use numeric constants directly — GeolocationPositionError is not available in all environments
   const PERMISSION_DENIED = 1;
@@ -229,11 +230,11 @@ function handleGeolocationError(
   switch (error.code) {
     case PERMISSION_DENIED:
       this.setGeolocationDenied(true, dispatcher);
-      toaster.showError("Location permission denied");
+      toaster.showError($i18n.t("geolocation.permissionDenied"));
       break;
     case TIMEOUT:
       this.setGeolocationActive(false, dispatcher);
-      toaster.showWarning("Location request timed out");
+      toaster.showWarning($i18n.t("geolocation.timeout"));
       break;
     default:
       this.errorCount += 1;
@@ -246,7 +247,7 @@ function handleGeolocationError(
           this.errorCount = previousErrorCount;
         }
       } else {
-        toaster.showWarning("Unable to determine location");
+        toaster.showWarning($i18n.t("geolocation.unavailable"));
         if (reactivate) {
           this.setGeolocationActive(false, dispatcher);
         }

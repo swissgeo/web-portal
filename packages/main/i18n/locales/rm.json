@@ -213,7 +213,9 @@
     "permissionDenied": "Access a la posiziun refusà",
     "stopTracking": "Zuppentar la posiziun",
     "startGeolocation": "Mussar la posiziun",
-    "recenterMap": "Recentrar la charta"
+    "recenterMap": "Recentrar la charta",
+    "timeout": "La localisaziun ha durà memia ditg.",
+    "unavailable": "Impussibel da determinar la posiziun."
   },
   "toolbox": {
     "geolocation": {
@@ -449,6 +451,10 @@
       "links": {
         "roadmap": "roadmap-geoplattform"
       }
+    },
+    "zoom": {
+      "zoomIn": "Zoomar en",
+      "zoomOut": "Zoomar or"
     }
   },
   "backgroundLayers": {

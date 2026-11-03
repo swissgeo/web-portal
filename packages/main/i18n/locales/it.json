@@ -213,7 +213,9 @@
     "permissionDenied": "Accesso alla posizione negato",
     "stopTracking": "Nascondi la posizione",
     "startGeolocation": "Mostra la posizione",
-    "recenterMap": "Ricentra la mappa"
+    "recenterMap": "Ricentra la mappa",
+    "timeout": "La localizzazione ha richiesto troppo tempo.",
+    "unavailable": "Impossibile determinare la posizione."
   },
   "toolbox": {
     "geolocation": {
@@ -449,6 +451,10 @@
       "links": {
         "roadmap": "roadmap-geopiattaforma"
       }
+    },
+    "zoom": {
+      "zoomIn": "Ingrandisci",
+      "zoomOut": "Riduci"
     }
   },
   "backgroundLayers": {
