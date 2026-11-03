@@ -287,8 +287,6 @@ function setCenterIfInBounds(
         `Current geolocation is out of bounds: ${JSON.stringify(center)}`,
       ],
     });
-    toaster.showWarning(
-      "Your location is outside of Switzerland and cannot be shown on the map",
-    );
+    toaster.showWarning(useNuxtApp().$i18n.t("geolocation.outsideSwitzerland"));
   }
 }
