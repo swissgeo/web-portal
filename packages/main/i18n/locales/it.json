@@ -215,7 +215,8 @@
     "startGeolocation": "Mostra la posizione",
     "recenterMap": "Ricentra la mappa",
     "timeout": "La localizzazione ha richiesto troppo tempo.",
-    "unavailable": "Impossibile determinare la posizione."
+    "unavailable": "Impossibile determinare la posizione.",
+    "outsideSwitzerland": "La sua posizione si trova fuori dalla Svizzera e non può essere mostrata sulla mappa."
   },
   "toolbox": {
     "geolocation": {

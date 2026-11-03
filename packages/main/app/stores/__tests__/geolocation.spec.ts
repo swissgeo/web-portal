@@ -274,7 +274,7 @@ describe("geolocation store", () => {
       store.setGeolocationActive(true, dispatcher);
       expect(mockToastAdd).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: expect.stringContaining("outside of Switzerland"),
+          title: "geolocation.outsideSwitzerland",
         }),
       );
     });
