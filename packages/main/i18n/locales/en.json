@@ -492,7 +492,8 @@
     "resources": {
       "dataset": "The layer"
     },
-    "mapUnavailable": "The map is currently not available."
+    "mapUnavailable": "The map is currently not available.",
+    "failedRequest": "Failed request: {url}"
   },
   "dataset": {
     "legendLoading": "Loading legend…",

@@ -492,7 +492,8 @@
     "resources": {
       "dataset": "Die Ebene"
     },
-    "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar."
+    "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar.",
+    "failedRequest": "Fehlgeschlagene Anfrage: {url}"
   },
   "dataset": {
     "legendLoading": "Legende wird geladen…",

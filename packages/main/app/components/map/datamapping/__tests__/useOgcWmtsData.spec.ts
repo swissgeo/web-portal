@@ -108,8 +108,10 @@ describe("useOgcWmtsData", () => {
     const requestError = new Error("request failed");
     const onError = vi.fn();
 
+    const service = ref({ url: "https://wmts.example.test/capabilities" });
+
     // @ts-expect-error Not caring about the types here
-    useOgcWmtsData(ref({}), ref({}), ref(null), onError);
+    useOgcWmtsData(ref({}), service, ref(null), onError);
     const reportCapabilitiesError = useWmtsCapabilitiesMock.mock.calls[0]?.[2];
     expect(reportCapabilitiesError).toBeDefined();
     reportCapabilitiesError?.(requestError);
@@ -118,6 +120,7 @@ describe("useOgcWmtsData", () => {
       expect.objectContaining({
         cause: requestError,
         message: "Unable to load required WMTS capabilities",
+        url: "https://wmts.example.test/capabilities",
       }),
     );
   });
@@ -237,6 +240,7 @@ describe("useOgcWmtsData", () => {
       expect.objectContaining({
         cause: optionsError,
         message: "Unable to build required WMTS layer options",
+        url: "http://wmts.geo.admin.ch",
       }),
     );
   });

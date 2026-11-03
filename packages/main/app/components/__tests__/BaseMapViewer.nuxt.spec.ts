@@ -1,6 +1,7 @@
 import type { Mock } from "vitest";
 
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
+import { RequestError } from "@swissgeo/shared";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { computed, defineComponent, nextTick } from "vue";
 
@@ -133,7 +134,8 @@ mockNuxtImport("useMapViewStore", () => {
   });
 });
 mockNuxtImport("useI18n", () => () => ({
-  t: (key: string) => key,
+  t: (key: string, params?: Record<string, string>) =>
+    params ? `${key}(${Object.values(params).join()})` : key,
   locale: { value: "en" },
 }));
 mockNuxtImport("useToaster", () => () => ({ showError, showMapUnavailable }));
@@ -527,6 +529,25 @@ describe("BaseMapViewer", () => {
     expect(removeMapLayer).toHaveBeenCalledWith("layer-2");
     expect(removeSourceLayer).toHaveBeenCalledWith("layer-2");
     expect(setBackground).not.toHaveBeenCalled();
+  });
+
+  it("tells the URL of the request that made the layer fail", async () => {
+    const wrapper = await createWrapper();
+
+    wrapper
+      .getComponent(SourceToMapDataConverterStub)
+      .vm.$emit(
+        "layerError",
+        "layer-2",
+        new RequestError(
+          "Unable to load required WMS capabilities",
+          "https://wms.example.test?REQUEST=GetCapabilities",
+        ),
+      );
+
+    expect(showError).toHaveBeenCalledWith(
+      "error.layerLoad error.failedRequest(https://wms.example.test?REQUEST=GetCapabilities)",
+    );
   });
 
   it("logs a converter failure without a cause", async () => {

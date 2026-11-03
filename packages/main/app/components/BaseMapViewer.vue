@@ -19,7 +19,11 @@ import {
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { MapModule, usePositionStore } from "@swissgeo/map";
-import { HIGHLIGHT_LAYER_ID, toRgbaColor } from "@swissgeo/shared";
+import {
+  HIGHLIGHT_LAYER_ID,
+  RequestError,
+  toRgbaColor,
+} from "@swissgeo/shared";
 import { useElementBounding } from "@vueuse/core";
 import { cloneDeep } from "es-toolkit";
 
@@ -187,7 +191,11 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
   if (isBackground) {
     toaster.showMapUnavailable();
   } else {
-    toaster.showError(t("error.layerLoad"));
+    let message = t("error.layerLoad");
+    if (error instanceof RequestError && error.url) {
+      message += ` ${t("error.failedRequest", { url: error.url })}`;
+    }
+    toaster.showError(message);
   }
 
   dimensionsStore.clearLayerDimensions(uuid);
