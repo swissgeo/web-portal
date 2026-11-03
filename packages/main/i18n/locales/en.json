@@ -37,8 +37,8 @@
       "mapInfo": "Map info"
     },
     "reportIssue": {
-      "buttonTitle": "Report an issue",
-      "title": "Report an issue",
+      "buttonTitle": "Give feedback",
+      "title": "Give feedback",
       "close": "Close report issue form",
       "steps": {
         "step1": {

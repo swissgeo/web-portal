@@ -37,9 +37,9 @@
       "mapInfo": "Karteninfo"
     },
     "reportIssue": {
-      "buttonTitle": "Problem melden",
-      "title": "Problem melden",
-      "close": "«Problem melden» schliessen",
+      "buttonTitle": "Feedback geben",
+      "title": "Feedback geben",
+      "close": "«Feedback geben» schliessen",
       "steps": {
         "step1": {
           "title": "1. Betreff Ihrer Meldung",
