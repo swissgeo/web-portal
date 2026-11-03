@@ -1,3 +1,5 @@
+import { useClipboard } from "@vueuse/core";
+
 /**
  * Basically just a wrapper with some helping functions
  * We could theoretically be using the toaster directly, but I suppose it's a good idea
@@ -64,12 +66,16 @@ export function useToaster() {
       return;
     }
     const host = URL.parse(url)?.host ?? url;
+    const { copy, copied } = useClipboard();
     const copyAction = {
       label: $i18n.t("error.copyRequestUrl"),
       icon: "i-lucide-copy",
       closeOnClick: false,
-      onClick: () => {
-        void navigator.clipboard.writeText(url);
+      onClick: async () => {
+        await copy(url);
+        if (!copied.value) {
+          return;
+        }
         // update() resets the duration unless it is passed again.
         toast.update(id, {
           duration: Infinity,
