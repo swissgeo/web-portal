@@ -35,7 +35,7 @@ export function useToaster() {
     message: string,
     overrides?: Parameters<typeof toast.add>[0],
   ) {
-    toast.add({
+    return toast.add({
       title: $i18n.t("toaster.errorTitle"),
       description: message,
       color: "error",
@@ -64,19 +64,30 @@ export function useToaster() {
       return;
     }
     const host = URL.parse(url)?.host ?? url;
-    showError(
+    const copyAction = {
+      label: $i18n.t("error.copyRequestUrl"),
+      icon: "i-lucide-copy",
+      closeOnClick: false,
+      onClick: () => {
+        void navigator.clipboard.writeText(url);
+        // update() resets the duration unless it is passed again.
+        toast.update(id, {
+          duration: Infinity,
+          actions: [
+            {
+              ...copyAction,
+              label: $i18n.t("error.requestUrlCopied"),
+              icon: "i-lucide-check",
+            },
+          ],
+        });
+      },
+    };
+    const { id } = showError(
       `${$i18n.t("error.layerLoad")}\n${$i18n.t("error.service", { host })}`,
       {
         ui: { description: "whitespace-pre-line" },
-        actions: [
-          {
-            label: $i18n.t("error.copyRequestUrl"),
-            icon: "i-lucide-copy",
-            onClick: () => {
-              void navigator.clipboard.writeText(url);
-            },
-          },
-        ],
+        actions: [copyAction],
       },
     );
   }

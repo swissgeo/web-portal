@@ -3,7 +3,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useToaster } from "../useToaster";
 
-const { toastAdd } = vi.hoisted(() => ({ toastAdd: vi.fn() }));
+const { toastAdd, toastUpdate } = vi.hoisted(() => ({
+  toastAdd: vi.fn().mockReturnValue({ id: "toast-id" }),
+  toastUpdate: vi.fn(),
+}));
 
 // tests/setup.ts mocks useToaster for all tests. This test needs the real one.
 vi.unmock("~/composables/useToaster");
@@ -14,7 +17,10 @@ mockNuxtImport("useNuxtApp", () => () => ({
       params ? `${key}(${Object.values(params).join()})` : key,
   },
 }));
-mockNuxtImport("useToast", () => () => ({ add: toastAdd }));
+mockNuxtImport("useToast", () => () => ({
+  add: toastAdd,
+  update: toastUpdate,
+}));
 
 describe("useToaster", () => {
   beforeEach(() => {
@@ -75,6 +81,15 @@ describe("useToaster", () => {
     ]);
     options.actions[0].onClick();
     expect(writeText).toHaveBeenCalledWith(url);
+    expect(toastUpdate).toHaveBeenCalledWith("toast-id", {
+      duration: Infinity,
+      actions: [
+        expect.objectContaining({
+          label: "error.requestUrlCopied",
+          icon: "i-lucide-check",
+        }),
+      ],
+    });
     vi.unstubAllGlobals();
   });
 

@@ -494,7 +494,8 @@
     },
     "mapUnavailable": "La carte n'est actuellement pas disponible.",
     "service": "Service : {host}",
-    "copyRequestUrl": "Copier l'URL de la requête"
+    "copyRequestUrl": "Copier l'URL de la requête",
+    "requestUrlCopied": "URL de la requête copiée"
   },
   "dataset": {
     "legendLoading": "Chargement de la légende…",

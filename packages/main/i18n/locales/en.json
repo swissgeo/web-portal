@@ -494,7 +494,8 @@
     },
     "mapUnavailable": "The map is currently not available.",
     "service": "Service: {host}",
-    "copyRequestUrl": "Copy request URL"
+    "copyRequestUrl": "Copy request URL",
+    "requestUrlCopied": "Request URL copied"
   },
   "dataset": {
     "legendLoading": "Loading legend…",
