@@ -226,6 +226,7 @@ describe("useOgcWmsData", () => {
       expect.objectContaining({
         message: "Unable to process required WMS capabilities",
         cause: parseError,
+        url: "capabilities-url",
       }),
     );
     valueSpy.mockRestore();

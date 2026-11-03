@@ -492,7 +492,10 @@
     "resources": {
       "dataset": "Die Ebene"
     },
-    "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar."
+    "mapUnavailable": "Die Karte ist zurzeit nicht verfügbar.",
+    "service": "Dienst: {host}",
+    "copyRequestUrl": "Anfrage-URL kopieren",
+    "requestUrlCopied": "Anfrage-URL kopiert"
   },
   "dataset": {
     "legendLoading": "Legende wird geladen…",

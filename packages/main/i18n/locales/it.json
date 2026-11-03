@@ -492,7 +492,10 @@
     "resources": {
       "dataset": "Il livello"
     },
-    "mapUnavailable": "La mappa non è al momento disponibile."
+    "mapUnavailable": "La mappa non è al momento disponibile.",
+    "service": "TODO translate",
+    "copyRequestUrl": "TODO translate",
+    "requestUrlCopied": "TODO translate"
   },
   "dataset": {
     "legendLoading": "Caricamento della legenda…",

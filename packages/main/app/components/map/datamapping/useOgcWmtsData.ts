@@ -2,6 +2,7 @@ import type { Distribution, Service } from "@swissgeo/ogc";
 
 import { buildWmtsOptions } from "@swissgeo/map";
 import { useStyle, useWmtsCapabilities } from "@swissgeo/ogc";
+import { RequestError } from "@swissgeo/shared";
 import { computedAsync } from "@vueuse/core";
 
 import { defaultOpacityFromStyle } from "./defaultFromOpacity";
@@ -18,9 +19,11 @@ export function useOgcWmtsData(
     layerId,
     (error) =>
       onError(
-        new Error("Unable to load required WMTS capabilities", {
-          cause: error,
-        }),
+        new RequestError(
+          "Unable to load required WMTS capabilities",
+          capabilityUrl.value,
+          { cause: error },
+        ),
       ),
   );
 
@@ -47,9 +50,11 @@ export function useOgcWmtsData(
     } catch (error) {
       if (!cancelled) {
         onError(
-          new Error("Unable to build required WMTS layer options", {
-            cause: error,
-          }),
+          new RequestError(
+            "Unable to build required WMTS layer options",
+            capabilityUrl.value,
+            { cause: error },
+          ),
         );
       }
       return null;
