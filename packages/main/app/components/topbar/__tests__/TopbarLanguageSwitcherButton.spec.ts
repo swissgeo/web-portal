@@ -36,7 +36,8 @@ vi.mock("@swissgeo/log", () => ({
 
 // Stub ULocaleSelect so we can trigger locale changes without the full Nuxt UI component
 const USelectMenuStub = {
-  props: ["modelValue", "locales"],
+  name: "USelectMenu",
+  props: ["modelValue", "locales", "ui"],
   emits: ["update:modelValue"],
   template: `<button @click="$emit('update:modelValue', 'fr')">switch</button>`,
 };
@@ -98,5 +99,21 @@ describe("TopbarLanguageSwitcherButton", () => {
 
     const log = (await import("@swissgeo/log")).default;
     expect(log.error).toHaveBeenCalled();
+  });
+
+  // variant="none" turns the outline off, so the button sets its own focus ring.
+  it("shows a focus ring on keyboard focus", async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const { base } = wrapper.getComponent({ name: "USelectMenu" }).props("ui");
+
+    expect(base.split(" ")).toEqual(
+      expect.arrayContaining([
+        "focus-visible:outline-solid",
+        "focus-visible:outline-3",
+        "focus-visible:outline-inverted/25",
+      ]),
+    );
   });
 });

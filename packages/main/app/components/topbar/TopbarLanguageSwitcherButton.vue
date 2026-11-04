@@ -59,7 +59,7 @@ watch(selectedLocale, async (value) => {
       :ui="{
         content: '!w-auto min-w-[150px] !max-w-none',
         value: 'uppercase',
-        base: 'text-accent text-lg xl:text-md xl:text-nav-brand-muted',
+        base: 'text-accent text-lg xl:text-md xl:text-nav-brand-muted rounded-md focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-inverted/25 focus-visible:outline-solid',
         trailingIcon: 'text-accent text-lg xl:text-md xl:text-nav-brand-muted',
       }"
     >

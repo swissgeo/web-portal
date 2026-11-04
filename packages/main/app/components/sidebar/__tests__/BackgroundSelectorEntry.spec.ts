@@ -56,6 +56,24 @@ describe("BackgroundSelectorEntry.vue", () => {
       });
       expect(wrapper.find(".bg-accent-active").exists()).toBe(false);
     });
+
+    // A white border on a light map image is not visible without the gap.
+    it.each`
+      isCurrent | hasGap
+      ${true}   | ${true}
+      ${false}  | ${false}
+    `(
+      "leaves a dark mode gap around the image: $hasGap when isCurrent is $isCurrent",
+      ({ isCurrent, hasGap }) => {
+        const wrapper = mount(BackgroundSelectorEntry, {
+          props: { backgroundLayer: mockLayer, isCurrent },
+        });
+        expect(wrapper.find("img").element.parentElement?.classList).toSatisfy(
+          (classes: DOMTokenList) =>
+            classes.contains("dark:inset-0.5") === hasGap,
+        );
+      },
+    );
   });
 
   it("renders a thumbnail image for a real layer", () => {
