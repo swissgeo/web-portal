@@ -17,7 +17,7 @@ import { useSearchSelection } from "@/composables/useSearchSelection";
 
 import SearchCategory from "./SearchCategory.vue";
 
-const emit = defineEmits(["selected"]);
+const emit = defineEmits(["selected", "coordinates-detected"]);
 const { skipMobile = false } = defineProps<{
   skipMobile?: boolean;
 }>();
@@ -147,6 +147,7 @@ watch(
       return;
     }
     if (result) {
+      emit("coordinates-detected", result);
       void handleResultSelection(result);
     }
   },
