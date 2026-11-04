@@ -8,6 +8,15 @@ const { cmsUrl } = useCmsUrl();
 defineProps<{ mobile?: boolean }>();
 
 const cmsDomain = runtimeConfig.public.cmsBaseUrl.replace(/https?:\/\//, "");
+
+const REPOSITORY_URL = "https://github.com/swissgeo/web-portal";
+// A deployed build has a release tag as version, a local build has a commit hash.
+const versionUrl = computed(() => {
+  const { version } = runtimeConfig.public;
+  return /^v\d+\.\d+\.\d+/.test(version)
+    ? `${REPOSITORY_URL}/releases/tag/${version}`
+    : REPOSITORY_URL;
+});
 </script>
 <template>
   <div
@@ -20,7 +29,8 @@ const cmsDomain = runtimeConfig.public.cmsBaseUrl.replace(/https?:\/\//, "");
     <ReportIssueLink />
     <div :class="mobile ? 'text-accent grid grid-cols-2 gap-2' : 'contents'">
       <ULink
-        to="https://github.com/swissgeo/web-portal"
+        :to="versionUrl"
+        data-testid="footer-version-link"
         target="_blank"
         raw
         class="flex items-center gap-1"
