@@ -7,7 +7,7 @@ export const useMapStore = defineStore("map", () => {
   const olMap = shallowRef<OlMapType | null>(null);
   const isMapLoaded = ref(false);
 
-  function setOlMap(map: OlMapType) {
+  function setOlMap(map: OlMapType | null) {
     olMap.value = map;
   }
 

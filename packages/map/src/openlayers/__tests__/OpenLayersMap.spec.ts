@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent } from "vue";
 
 import type { Layer } from "@/types/layers";
@@ -15,11 +15,17 @@ vi.mock("@/composables/createOlMap", () => ({
   default: vi.fn(() => ({ map })),
 }));
 
-vi.mock("@/stores/map", () => ({
-  useMapStore: () => ({
+const { mapStore } = vi.hoisted(() => {
+  const mapStore = {
+    olMap: undefined as unknown,
     setIsMapLoaded: vi.fn(),
     setOlMap: vi.fn(),
-  }),
+  };
+  return { mapStore };
+});
+
+vi.mock("@/stores/map", () => ({
+  useMapStore: () => mapStore,
 }));
 
 const OpenLayersVisibleLayerStub = defineComponent({
@@ -30,6 +36,11 @@ const OpenLayersVisibleLayerStub = defineComponent({
 });
 
 describe("OpenLayersMap", () => {
+  beforeEach(() => {
+    mapStore.olMap = undefined;
+    mapStore.setOlMap.mockClear();
+  });
+
   it("forwards layer errors", () => {
     const layer = {
       format: "KMZ",
@@ -52,5 +63,47 @@ describe("OpenLayersMap", () => {
       .vm.$emit("layerError", layer.uuid, failure);
 
     expect(wrapper.emitted("layerError")).toEqual([[layer.uuid, failure]]);
+  });
+
+  it("registers its map in the store", () => {
+    mount(OpenLayersMap, {
+      props: { layers: [] },
+      global: {
+        stubs: { OpenLayersVisibleLayer: OpenLayersVisibleLayerStub },
+      },
+    });
+
+    expect(mapStore.setOlMap).toHaveBeenCalledWith(map);
+  });
+
+  it("clears the store map when the map unmounts", () => {
+    const wrapper = mount(OpenLayersMap, {
+      props: { layers: [] },
+      global: {
+        stubs: { OpenLayersVisibleLayer: OpenLayersVisibleLayerStub },
+      },
+    });
+    mapStore.olMap = map;
+
+    wrapper.unmount();
+
+    expect(mapStore.setOlMap).toHaveBeenCalledWith(null);
+    expect(mapStore.setOlMap.mock.calls.at(-1)).toEqual([null]);
+  });
+
+  it("keeps a newer map in the store when an older one unmounts", () => {
+    const wrapper = mount(OpenLayersMap, {
+      props: { layers: [] },
+      global: {
+        stubs: { OpenLayersVisibleLayer: OpenLayersVisibleLayerStub },
+      },
+    });
+    const newerMap = { once: vi.fn(), setTarget: vi.fn() };
+    mapStore.olMap = newerMap;
+
+    wrapper.unmount();
+
+    expect(mapStore.setOlMap).toHaveBeenCalledTimes(1);
+    expect(mapStore.setOlMap).not.toHaveBeenCalledWith(null);
   });
 });
