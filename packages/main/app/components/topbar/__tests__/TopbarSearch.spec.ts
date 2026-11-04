@@ -162,6 +162,7 @@ describe("TopbarSearch", () => {
   beforeEach(() => {
     searchStore.query = "";
     searchStore.results = [];
+    searchStore.coordinateResult = null;
     searchStore.isSearching = false;
     searchStore.enableCmsSearch = true;
     locale.value = "de";
@@ -455,6 +456,99 @@ describe("TopbarSearch", () => {
 
       expect(wrapper.get("input").element.value).toBe("");
       expect(searchStore.setSearchQuery).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("coordinate submission", () => {
+    // the real store detects a coordinate synchronously, on every query
+    const coordinates: Record<string, [number, number]> = {};
+
+    beforeEach(() => {
+      vi.useFakeTimers();
+      searchStore.setSearchQuery.mockImplementation((value: string) => {
+        searchStore.query = value;
+        searchStore.coordinateResult = coordinates[value]
+          ? {
+              resultType: "COORDINATE",
+              id: `coordinate-${coordinates[value]!.join(",")}`,
+              title: value,
+              sanitizedTitle: value,
+              description: "LV95",
+              coordinate: coordinates[value]!,
+              zoom: 8,
+            }
+          : null;
+      });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+      searchStore.setSearchQuery.mockReset();
+    });
+
+    it("applies the coordinate already in the field on enter", async () => {
+      coordinates["2600000 1200000"] = [2600000, 1200000];
+      searchStore.query = "2600000 1200000";
+      const wrapper = render();
+
+      await wrapper.get("input").trigger("keydown.enter");
+      await nextTick();
+
+      expect(searchStore.setSearchQuery).toHaveBeenCalledExactlyOnceWith(
+        "2600000 1200000",
+        "de",
+      );
+      expect(handleResultSelection).toHaveBeenCalledWith(
+        expect.objectContaining({ coordinate: [2600000, 1200000] }),
+      );
+      expect(wrapper.emitted("coordinates-detected")).toHaveLength(1);
+    });
+
+    it("applies the edited coordinate on enter before the debounce runs", async () => {
+      coordinates["2600000 1200000"] = [2600000, 1200000];
+      coordinates["2700000 1200000"] = [2700000, 1200000];
+      searchStore.query = "2600000 1200000";
+      searchStore.coordinateResult = {
+        resultType: "COORDINATE",
+        id: "coordinate-2600000,1200000",
+        title: "2600000, 1200000",
+        sanitizedTitle: "2600000, 1200000",
+        description: "LV95",
+        coordinate: [2600000, 1200000],
+        zoom: 8,
+      };
+      const wrapper = render();
+
+      // edit the coordinate, the debounced search has not run yet
+      const input = wrapper.get("input").element;
+      input.value = "2700000 1200000";
+      input.dispatchEvent(new Event("input"));
+      await nextTick();
+
+      await wrapper.get("input").trigger("keydown.enter");
+      await nextTick();
+
+      expect(searchStore.setSearchQuery).toHaveBeenCalledExactlyOnceWith(
+        "2700000 1200000",
+        "de",
+      );
+      expect(handleResultSelection).toHaveBeenCalledWith(
+        expect.objectContaining({ coordinate: [2700000, 1200000] }),
+      );
+    });
+
+    it("searches a plain query on enter without selecting a result", async () => {
+      searchStore.query = "bern";
+      const wrapper = render();
+
+      await wrapper.get("input").trigger("keydown.enter");
+      await nextTick();
+
+      expect(searchStore.setSearchQuery).toHaveBeenCalledExactlyOnceWith(
+        "bern",
+        "de",
+      );
+      expect(handleResultSelection).not.toHaveBeenCalled();
     });
   });
 
