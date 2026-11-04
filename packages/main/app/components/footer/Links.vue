@@ -10,10 +10,11 @@ defineProps<{ mobile?: boolean }>();
 const cmsDomain = runtimeConfig.public.cmsBaseUrl.replace(/https?:\/\//, "");
 
 const REPOSITORY_URL = "https://github.com/swissgeo/web-portal";
-// A deployed build has a release tag as version, a local build has a commit hash.
+// Only an exact release tag has a release page. A build between two tags
+// (for example v0.9.0-beta.2-2-g4e9f735f) or a commit hash opens the repository.
 const versionUrl = computed(() => {
   const { version } = runtimeConfig.public;
-  return /^v\d+\.\d+\.\d+/.test(version)
+  return /^v\d+\.\d+\.\d+(-[a-z]+\.\d+)?$/.test(version)
     ? `${REPOSITORY_URL}/releases/tag/${version}`
     : REPOSITORY_URL;
 });

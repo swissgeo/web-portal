@@ -22,11 +22,12 @@ const stubs = {
 
 describe("Links.vue", () => {
   it.each`
-    version            | href
-    ${"v0.8.0"}        | ${"https://github.com/swissgeo/web-portal/releases/tag/v0.8.0"}
-    ${"v0.9.0-beta.2"} | ${"https://github.com/swissgeo/web-portal/releases/tag/v0.9.0-beta.2"}
-    ${"ef8f2d99"}      | ${"https://github.com/swissgeo/web-portal"}
-    ${"unknown"}       | ${"https://github.com/swissgeo/web-portal"}
+    version                        | href
+    ${"v0.8.0"}                    | ${"https://github.com/swissgeo/web-portal/releases/tag/v0.8.0"}
+    ${"v0.9.0-beta.2"}             | ${"https://github.com/swissgeo/web-portal/releases/tag/v0.9.0-beta.2"}
+    ${"v0.9.0-beta.2-2-g4e9f735f"} | ${"https://github.com/swissgeo/web-portal"}
+    ${"ef8f2d99"}                  | ${"https://github.com/swissgeo/web-portal"}
+    ${"unknown"}                   | ${"https://github.com/swissgeo/web-portal"}
   `("links version $version to $href", ({ version, href }) => {
     publicConfig.version = version;
 
