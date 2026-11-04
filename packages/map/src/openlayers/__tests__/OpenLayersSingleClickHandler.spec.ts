@@ -4,7 +4,7 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
-import type { MapClickEvent } from "@/types";
+import type { MapClickEvent } from "#types/index";
 
 import { createFakeOlMap } from "../../composables/__tests__/__mocks__/composables";
 import OpenLayersSingleClickHandler from "../OpenLayersSingleClickHandler.vue";

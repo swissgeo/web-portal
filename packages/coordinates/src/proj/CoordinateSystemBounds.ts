@@ -16,8 +16,8 @@ import {
 } from "@turf/turf";
 import { sortBy } from "es-toolkit/compat";
 
-import type { SingleCoordinate } from "@/coordinatesUtils";
-import type { CoordinatesChunk } from "@/proj/types";
+import type { SingleCoordinate } from "#coordinatesUtils";
+import type { CoordinatesChunk } from "#proj/types";
 
 interface CoordinateSystemBoundsProps {
   lowerX: number;

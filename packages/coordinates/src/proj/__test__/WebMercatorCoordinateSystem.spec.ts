@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { WEBMERCATOR } from "@/proj";
-import { STANDARD_ZOOM_LEVEL_1_25000_MAP } from "@/proj/CoordinateSystem";
+import { STANDARD_ZOOM_LEVEL_1_25000_MAP } from "#proj/CoordinateSystem";
+import { WEBMERCATOR } from "#proj/index";
 
 describe("WebMercatorCoordinateSystem", () => {
   describe("constructor", () => {

@@ -4,6 +4,9 @@
   "description": "Numbers utils for SWISSGEO projects.",
   "license": "BSD-3-Clause",
   "type": "module",
+  "imports": {
+    "#*": "./src/*.ts"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

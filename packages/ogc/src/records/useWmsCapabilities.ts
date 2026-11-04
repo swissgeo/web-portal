@@ -3,8 +3,8 @@ import type { Ref } from "vue";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computed, watchEffect } from "vue";
 
-import type { Legend, WMSCapabilityDimension } from "@/types/Capabilities";
-import type { Service } from "@/types/Records";
+import type { Legend, WMSCapabilityDimension } from "#types/Capabilities";
+import type { Service } from "#types/Records";
 
 import { useCapabilities } from "./useCapabilities";
 import { useConditionalFetch } from "./useConditionalFetch";

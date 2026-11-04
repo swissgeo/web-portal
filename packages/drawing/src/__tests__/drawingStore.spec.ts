@@ -4,7 +4,7 @@ import { Point } from "ol/geom";
 import { setActivePinia, createPinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { FOCUS_MODES, useDrawingStore } from "@/stores/drawing.store";
+import { FOCUS_MODES, useDrawingStore } from "#stores/drawing.store";
 
 describe("drawing store", () => {
   beforeEach(() => {

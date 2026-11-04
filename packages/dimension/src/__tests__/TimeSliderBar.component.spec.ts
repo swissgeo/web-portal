@@ -2,13 +2,13 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { defineComponent } from "vue";
 
-import TimeSliderBar from "@/TimeSliderBar.vue";
+import TimeSliderBar from "#TimeSliderBar.vue";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 
-vi.mock("@/TimeSliderBarSteps.vue", () => ({
+vi.mock("#TimeSliderBarSteps.vue", () => ({
   default: defineComponent({
     name: "TimeSliderBarSteps",
     props: ["allYears", "yearsJoint", "yearsSeparate", "sliderWidth"],

@@ -6,8 +6,8 @@ import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
 
-import { useMap } from "@/composables/useMap.composable";
-import { useMapStore } from "@/stores/map";
+import { useMap } from "#composables/useMap.composable";
+import { useMapStore } from "#stores/map";
 
 type EventHandler = () => void;
 

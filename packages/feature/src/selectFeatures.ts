@@ -9,11 +9,11 @@ import type {
   LayerRequest,
   LayerSource,
   WMSLayerRequest,
-} from "@/types";
+} from "#types";
 
-import { FEATURE_LIMIT } from "@/constants";
-import { useFeaturesStore } from "@/stores/feature";
-import { sourcesToLayerRequests } from "@/utils/sourceToLayerRequest";
+import { FEATURE_LIMIT } from "#constants";
+import { useFeaturesStore } from "#stores/feature";
+import { sourcesToLayerRequests } from "#utils/sourceToLayerRequest";
 
 interface IdentifyResponse {
   results: Array<{

@@ -1,10 +1,10 @@
-import type { Dimension } from "@/types";
+import type { Dimension } from "#types";
 
 import {
   ALL_YEARS_TIMESTAMP,
   CURRENT_YEAR_TIMESTAMP,
   getYearFromGeoadminValue,
-} from "@/timeUtils";
+} from "#timeUtils";
 
 /**
  * Create two sets with values that occur in the layers with timestamps

@@ -14,7 +14,7 @@ import { register } from "ol/proj/proj4";
 import proj4 from "proj4";
 import { onBeforeUnmount } from "vue";
 
-import usePositionStore, { DEFAULT_PROJECTION } from "@/stores/position";
+import usePositionStore, { DEFAULT_PROJECTION } from "#stores/position";
 
 export interface CreateOlMapOptions {
   zoomOnlyCtrl?: boolean;

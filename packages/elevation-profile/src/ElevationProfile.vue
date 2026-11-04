@@ -3,9 +3,9 @@ import { registerProj4 } from "@swissgeo/coordinates";
 import proj4 from "proj4";
 import { computed, ref } from "vue";
 
-import type { ElevationProfileResponse } from "@/types";
+import type { ElevationProfileResponse } from "#types";
 
-import { buildCSV, reverseProfile } from "@/utils/profile";
+import { buildCSV, reverseProfile } from "#utils/profile";
 
 import type { Labels as MetadataLabels } from "./components/ElevationProfileMetadata.vue";
 import type { Labels as PlotLabels } from "./components/ElevationProfilePlot.vue";

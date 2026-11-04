@@ -1,4 +1,3 @@
-import type { AsyncDataRequestStatus } from "#app";
 import type { ThesaurusConcept } from "~/types/thesaurus";
 
 import { mount } from "@vue/test-utils";
@@ -6,6 +5,8 @@ import LayerCatalogLoadingStatus from "~/components/sidebar/layerCatalog/LayerCa
 import LayerCatalogTree from "~/components/sidebar/layerCatalog/LayerCatalogTree.vue";
 import { describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
+
+import type { AsyncDataRequestStatus } from "#app";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),

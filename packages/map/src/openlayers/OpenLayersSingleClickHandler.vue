@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { MapClickEvent } from "@/types";
+import type { MapClickEvent } from "#types/index";
 
-import { useMapClickEvent } from "@/composables/useMapClickEvent.composable";
+import { useMapClickEvent } from "#composables/useMapClickEvent.composable";
 
 const emit = defineEmits<{
   "map-click": [event: MapClickEvent];

@@ -1,4 +1,4 @@
-import type { ElevationProfileResponse } from "@/types";
+import type { ElevationProfileResponse } from "#types";
 
 export const defaultLabels = {
   xAxis: "Distance",

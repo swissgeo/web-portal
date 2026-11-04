@@ -2,9 +2,9 @@ import log from "@swissgeo/log";
 import { setActivePinia, createPinia } from "pinia";
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 
-import type { Layer } from "@/index";
+import type { Layer } from "#index";
 
-import { useLayerStore } from "@/stores/layer";
+import { useLayerStore } from "#stores/layer";
 
 function makeLayer(id: string): Layer {
   return {

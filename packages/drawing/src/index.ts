@@ -4,14 +4,14 @@ export {
   DEFAULT_MARKER_ICON,
   getMarkerIconById,
   type MarkerIcon,
-} from "@/utils/markerIcons";
+} from "#utils/markerIcons";
 
-export { useDrawing } from "@/composables/useDrawing.composable";
+export { useDrawing } from "#composables/useDrawing.composable";
 export {
   type CircleMetrics,
   type LineStringMetrics,
   type PolygonMetrics,
-} from "@/utils/drawingUtils";
+} from "#utils/drawingUtils";
 
 export {
   getFeatureTitle,
@@ -19,7 +19,7 @@ export {
   type RelativePlacement,
   ICON_SIZE,
   TEXT_SIZE,
-} from "@/utils/drawingStyleCommon";
-export { useIconsStore } from "@/stores/icons.store";
-export { Icon } from "@/core/Icon";
-export { IconSet } from "@/core/IconSet";
+} from "#utils/drawingStyleCommon";
+export { useIconsStore } from "#stores/icons.store";
+export { Icon } from "#core/Icon";
+export { IconSet } from "#core/IconSet";

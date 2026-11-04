@@ -1,8 +1,8 @@
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 import type { Component } from "vue";
 
-import type { FeatureCollectionWithCRS } from "@/utils/geoJsonUtils";
-import type { ShapeIconSpec } from "@/utils/maplibreShapeIcons";
+import type { FeatureCollectionWithCRS } from "#utils/geoJsonUtils";
+import type { ShapeIconSpec } from "#utils/maplibreShapeIcons";
 
 export type { ShapeIconSpec };
 import type {

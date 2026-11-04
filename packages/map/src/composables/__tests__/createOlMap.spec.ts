@@ -8,7 +8,7 @@ import proj4 from "proj4";
 import { describe, expect, it, vi } from "vitest";
 import { createApp } from "vue";
 
-import { DEFAULT_PROJECTION } from "@/stores/position";
+import { DEFAULT_PROJECTION } from "#stores/position";
 
 import createOlMap from "../createOlMap";
 
@@ -19,9 +19,9 @@ const { roundZoomLevelMock } = vi.hoisted(() => ({
   roundZoomLevelMock: vi.fn((val: number) => val),
 }));
 
-vi.mock("@/stores/position", async (importOriginal) => {
+vi.mock("#stores/position", async (importOriginal) => {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  const original = await importOriginal<typeof import("@/stores/position")>();
+  const original = await importOriginal<typeof import("#stores/position")>();
 
   return {
     ...original,

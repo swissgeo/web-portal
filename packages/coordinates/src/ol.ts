@@ -5,8 +5,8 @@ import type { ViewOptions } from "ol/View";
 import TileGrid from "ol/tilegrid/TileGrid";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
 
-import { LV95 } from "@/proj";
-import { LV95_RESOLUTIONS } from "@/proj/SwissCoordinateSystem";
+import { LV95 } from "#proj/index";
+import { LV95_RESOLUTIONS } from "#proj/SwissCoordinateSystem";
 
 function indexOfMaxResolution(layerMaxResolution: number): number {
   const resolutionSteps = LV95.getResolutionSteps();

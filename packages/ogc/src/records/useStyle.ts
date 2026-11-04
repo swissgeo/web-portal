@@ -4,7 +4,7 @@ import type { Ref } from "vue";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computed, watchEffect } from "vue";
 
-import type { Distribution, Link } from "@/types/Records";
+import type { Distribution, Link } from "#types/Records";
 
 import { useConditionalFetch } from "./useConditionalFetch";
 

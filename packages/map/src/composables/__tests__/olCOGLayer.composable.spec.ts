@@ -2,14 +2,14 @@ import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick, ref } from "vue";
 
-import type { COGLayer } from "@/types";
+import type { COGLayer } from "#types/index";
 
 import {
   clearAddLayerToMapMocks,
   useAddLayerToMapSpy,
 } from "./__mocks__/composables";
 
-vi.mock("@/composables/useAddLayerToMap.composable", () => ({
+vi.mock("#composables/useAddLayerToMap.composable", () => ({
   default: useAddLayerToMapSpy,
 }));
 

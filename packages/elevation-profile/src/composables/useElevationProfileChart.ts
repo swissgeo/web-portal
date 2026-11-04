@@ -19,17 +19,14 @@ import { round } from "@swissgeo/numbers";
 import { resetZoom } from "chartjs-plugin-zoom";
 import { computed, onMounted, onUnmounted, ref, toValue } from "vue";
 
-import type {
-  ScreenPoint,
-  Labels,
-} from "@/components/ElevationProfilePlot.vue";
+import type { ScreenPoint, Labels } from "#components/ElevationProfilePlot.vue";
 import type {
   ElevationProfileResponse,
   ElevationProfilePoint,
   ElevationProfileMetadata,
-} from "@/types";
+} from "#types";
 
-import { BORDER_COLOR, FILL_COLOR } from "@/config";
+import { BORDER_COLOR, FILL_COLOR } from "#config";
 
 const GAP_BETWEEN_TOOLTIP_AND_PROFILE = 12;
 

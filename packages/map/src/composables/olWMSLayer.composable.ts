@@ -10,10 +10,10 @@ import { ImageWMS, TileWMS } from "ol/source";
 import { TileGrid } from "ol/tilegrid";
 import { computed, ref, watch, watchEffect } from "vue";
 
-import type { WMSLayer } from "@/types/layers";
+import type { WMSLayer } from "#types/layers";
 
-import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
-import usePositionStore from "@/stores/position";
+import useAddLayerToMap from "#composables/useAddLayerToMap.composable";
+import usePositionStore from "#stores/position";
 
 /**
  * Default tile size to use when requesting WMS tiles with our internal WMSs (512px)

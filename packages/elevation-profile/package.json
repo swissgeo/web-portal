@@ -4,6 +4,11 @@
   "description": "Components to request and display an elevation profile over Switzerland",
   "license": "BSD-3-Clause",
   "type": "module",
+  "imports": {
+    "#*": "./src/*.ts",
+    "#*.css": "./src/*.css",
+    "#*.vue": "./src/*.vue"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

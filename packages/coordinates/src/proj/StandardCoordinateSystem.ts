@@ -1,6 +1,6 @@
 import CoordinateSystem, {
   STANDARD_ZOOM_LEVEL_1_25000_MAP,
-} from "@/proj/CoordinateSystem";
+} from "#proj/CoordinateSystem";
 
 /**
  * Coordinate system with a zoom level/resolution calculation based on the size of the Earth at the

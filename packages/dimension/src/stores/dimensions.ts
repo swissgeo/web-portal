@@ -2,7 +2,7 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-import type { Dimension, DimensionId, DimensionRecord } from "@/index";
+import type { Dimension, DimensionId, DimensionRecord } from "#index";
 
 export const useDimensionsStore = defineStore("dimensions", () => {
   /** Keyed by layer uuid. Absent key = layer has no dimension set. */

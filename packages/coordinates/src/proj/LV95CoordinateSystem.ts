@@ -1,5 +1,5 @@
-import CoordinateSystemBounds from "@/proj/CoordinateSystemBounds";
-import SwissCoordinateSystem from "@/proj/SwissCoordinateSystem";
+import CoordinateSystemBounds from "#proj/CoordinateSystemBounds";
+import SwissCoordinateSystem from "#proj/SwissCoordinateSystem";
 
 export default class LV95CoordinateSystem extends SwissCoordinateSystem {
   constructor() {

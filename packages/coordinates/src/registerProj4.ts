@@ -2,9 +2,9 @@ import type proj4 from "proj4";
 
 import log from "@swissgeo/log";
 
-import type CoordinateSystem from "@/proj/CoordinateSystem";
+import type CoordinateSystem from "#proj/CoordinateSystem";
 
-import { LV03, LV95, WEBMERCATOR } from "@/proj";
+import { LV03, LV95, WEBMERCATOR } from "#proj/index";
 
 /**
  * Proj4 comes with [EPSG:4326]{@link https://epsg.io/4326} as default projection.

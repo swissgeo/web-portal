@@ -1,12 +1,12 @@
 import { closest, round } from "@swissgeo/numbers";
 
-import type { ResolutionStep } from "@/proj/types";
+import type { ResolutionStep } from "#proj/types";
 
 import {
   STANDARD_ZOOM_LEVEL_1_25000_MAP,
   SWISS_ZOOM_LEVEL_1_25000_MAP,
-} from "@/proj/CoordinateSystem";
-import CustomCoordinateSystem from "@/proj/CustomCoordinateSystem";
+} from "#proj/CoordinateSystem";
+import CustomCoordinateSystem from "#proj/CustomCoordinateSystem";
 
 /**
  * Resolutions for each LV95 zoom level, from 0 to 13

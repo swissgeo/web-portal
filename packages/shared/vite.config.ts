@@ -3,7 +3,10 @@ import dts from "unplugin-dts/vite";
 import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
 
-import { getBaseBuildConfig } from "../../base.vite.config";
+import {
+  getBaseBuildConfig,
+  subpathImportsDtsAlias,
+} from "../../base.vite.config";
 export default defineConfig(({ mode }) => {
   return {
     build: {
@@ -17,13 +20,9 @@ export default defineConfig(({ mode }) => {
         external: ["nuxt", "@swissgeo/numbers", "vue"],
       },
     },
-    resolve: {
-      alias: {
-        "@": fileURLToPath(new URL("./src", import.meta.url)),
-      },
-    },
     plugins: [
       dts({
+        aliases: [subpathImportsDtsAlias(resolve(__dirname, "src"))],
         beforeWriteFile: (filePath, content) => {
           const normalizedPath = filePath.replace(/\\/g, "/");
           const rewrittenPath = normalizedPath

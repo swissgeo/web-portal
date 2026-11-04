@@ -9,7 +9,7 @@ import {
   InvalidDatasetError,
   makeServerLayer,
   validateDataset,
-} from "@/utils/layerUtils";
+} from "#utils/layerUtils";
 
 describe("Testing the information gathering from datasets", () => {
   it("returns dataset.id when properties are undefined", async () => {

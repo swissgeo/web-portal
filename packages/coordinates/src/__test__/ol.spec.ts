@@ -6,9 +6,9 @@ import {
   getLV95WMSTileGrid,
   getLV95WMTSTileGrid,
   getLV95ViewConfig,
-} from "@/ol";
-import { LV95 } from "@/proj";
-import { LV95_RESOLUTIONS } from "@/proj/SwissCoordinateSystem";
+} from "#ol";
+import { LV95 } from "#proj/index";
+import { LV95_RESOLUTIONS } from "#proj/SwissCoordinateSystem";
 
 describe("ol", () => {
   describe("getLV95WMSTileGrid", () => {

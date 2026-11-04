@@ -4,9 +4,9 @@ import type { ShallowRef } from "vue";
 
 import { computed, inject } from "vue";
 
-import type { KMZLayer } from "@/types";
+import type { KMZLayer } from "#types/index";
 
-import useOlKMZLayer from "@/composables/olKMZLayer.composable";
+import useOlKMZLayer from "#composables/olKMZLayer.composable";
 
 const { layer } = defineProps<{
   layer: KMZLayer;

@@ -2,11 +2,11 @@
 // https://github.com/geoadmin/web-mapviewer/blob/v1.62.0-beta.10/packages/mapviewer/src/utils/coordinates/coordinateExtractors.js
 // What3words is the exception, it needs an API call and cannot be resolved by this parser.
 
-import type { SingleCoordinate } from "@/coordinatesUtils";
-import type CoordinateSystem from "@/proj/CoordinateSystem";
+import type { SingleCoordinate } from "#coordinatesUtils";
+import type CoordinateSystem from "#proj/CoordinateSystem";
 
-import { toPoint, utmToLonLat } from "@/militaryGridProjection";
-import { LV03, LV95, WEBMERCATOR, WGS84 } from "@/proj";
+import { toPoint, utmToLonLat } from "#militaryGridProjection";
+import { LV03, LV95, WEBMERCATOR, WGS84 } from "#proj/index";
 
 /** A coordinate extracted from a user input, expressed in the system it was recognized as */
 export interface ExtractedCoordinate {

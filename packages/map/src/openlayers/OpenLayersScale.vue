@@ -13,7 +13,7 @@ import {
   useTemplateRef,
 } from "vue";
 
-import usePositionStore from "@/stores/position";
+import usePositionStore from "#stores/position";
 
 const {
   scaleType = "line",

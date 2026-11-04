@@ -9,8 +9,8 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import usePositionStore, {
   DEFAULT_FORMAT,
   DEFAULT_PROJECTION,
-} from "@/stores/position";
-import { LV95Format, LV03Format } from "@/utils/coordinates/coordinateFormat";
+} from "#stores/position";
+import { LV95Format, LV03Format } from "#utils/coordinates/coordinateFormat";
 
 const MIN_ZOOM = constants.SWISSTOPO_MIN_ZOOM_LEVEL;
 const MAX_ZOOM = constants.SWISSTOPO_MAX_ZOOM_LEVEL;
@@ -54,7 +54,7 @@ vi.mock("@swissgeo/log", () => ({
   LogPreDefinedColor: new Proxy({}, { get: (_t, p) => String(p) }),
 }));
 
-vi.mock("@/stores/map", () => ({
+vi.mock("#stores/map", () => ({
   useMapStore: () => ({
     get olMap() {
       return olMapMock.value;
@@ -62,7 +62,7 @@ vi.mock("@/stores/map", () => ({
   }),
 }));
 
-vi.mock("@/composables/useOlMapPosition", () => ({
+vi.mock("#composables/useOlMapPosition", () => ({
   useOlMapPosition: () => ({
     zoom: zoomMock,
     center: centerMock,

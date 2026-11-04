@@ -23,13 +23,7 @@ For standard TypeScript projects, extend the base configuration in your `tsconfi
 
 ```json
 {
-  "extends": "@swissgeo/config-typescript/tsconfig.base.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+  "extends": "@swissgeo/config-typescript/tsconfig.base.json"
 }
 ```
 
@@ -39,15 +33,32 @@ For Vue 3 projects with SFC support, extend the Vue configuration:
 
 ```json
 {
-  "extends": "@swissgeo/config-typescript/tsconfig.vue.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+  "extends": "@swissgeo/config-typescript/tsconfig.vue.json"
+}
+```
+
+### Imports inside a package
+
+Don't use a tsconfig `paths` alias such as `@/`. Use Node subpath imports in the
+package's `package.json` instead. TypeScript, Vite and Vitest resolve them
+without extra config, and they are scoped to the package:
+
+```json
+{
+  "imports": {
+    "#*": "./src/*.ts",
+    "#*.vue": "./src/*.vue"
   }
 }
 ```
+
+```ts
+import { foo } from "#utils/foo"; // → src/utils/foo.ts
+import Bar from "#components/Bar.vue"; // → src/components/Bar.vue
+```
+
+Directory imports need an explicit `index`: `#types/index`. Only add the
+extra `#*.<ext>` keys (`.vue`, `.css`, `.svg`…) a package actually uses.
 
 ## Configuration Details
 

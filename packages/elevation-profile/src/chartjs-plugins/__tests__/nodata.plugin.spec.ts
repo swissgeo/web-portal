@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import type { MockCtx } from "@/__tests__/mocks";
-import type { ElevationProfilePoint } from "@/types";
+import type { MockCtx } from "#__tests__/mocks";
+import type { ElevationProfilePoint } from "#types";
 
-import { makeCtx } from "@/__tests__/mocks";
-import noDataPlugin from "@/chartjs-plugins/nodata.plugin";
+import { makeCtx } from "#__tests__/mocks";
+import noDataPlugin from "#chartjs-plugins/nodata.plugin";
 
 function makeScale(getPixelForValue: (_v: number) => number) {
   return {

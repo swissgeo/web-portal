@@ -1,20 +1,20 @@
 import CoordinateSystem, {
   STANDARD_ZOOM_LEVEL_1_25000_MAP,
   SWISS_ZOOM_LEVEL_1_25000_MAP,
-} from "@/proj/CoordinateSystem";
-import CoordinateSystemBounds from "@/proj/CoordinateSystemBounds";
-import CustomCoordinateSystem from "@/proj/CustomCoordinateSystem";
-import LV03CoordinateSystem from "@/proj/LV03CoordinateSystem";
-import LV95CoordinateSystem from "@/proj/LV95CoordinateSystem";
-import StandardCoordinateSystem from "@/proj/StandardCoordinateSystem";
+} from "#proj/CoordinateSystem";
+import CoordinateSystemBounds from "#proj/CoordinateSystemBounds";
+import CustomCoordinateSystem from "#proj/CustomCoordinateSystem";
+import LV03CoordinateSystem from "#proj/LV03CoordinateSystem";
+import LV95CoordinateSystem from "#proj/LV95CoordinateSystem";
+import StandardCoordinateSystem from "#proj/StandardCoordinateSystem";
 import SwissCoordinateSystem, {
   LV95_RESOLUTIONS,
   SWISSTOPO_TILEGRID_RESOLUTIONS,
   SWISSTOPO_MIN_ZOOM_LEVEL,
   SWISSTOPO_MAX_ZOOM_LEVEL,
-} from "@/proj/SwissCoordinateSystem";
-import WebMercatorCoordinateSystem from "@/proj/WebMercatorCoordinateSystem";
-import WGS84CoordinateSystem from "@/proj/WGS84CoordinateSystem";
+} from "#proj/SwissCoordinateSystem";
+import WebMercatorCoordinateSystem from "#proj/WebMercatorCoordinateSystem";
+import WGS84CoordinateSystem from "#proj/WGS84CoordinateSystem";
 
 export const LV95: LV95CoordinateSystem = new LV95CoordinateSystem();
 export const LV03: LV03CoordinateSystem = new LV03CoordinateSystem();
@@ -22,7 +22,7 @@ export const WGS84: WGS84CoordinateSystem = new WGS84CoordinateSystem();
 export const WEBMERCATOR: WebMercatorCoordinateSystem =
   new WebMercatorCoordinateSystem();
 
-export type * from "@/proj/types";
+export type * from "#proj/types";
 
 /** Representation of many (available in this app) projection systems */
 export const allCoordinateSystems: CoordinateSystem[] = [

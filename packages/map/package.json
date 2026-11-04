@@ -5,6 +5,9 @@
   "keywords": [],
   "license": "BSD-3-Clause",
   "type": "module",
+  "imports": {
+    "#*": "./src/*.ts"
+  },
   "exports": {
     ".": {
       "types": "./dist/packages/map/src/index.d.ts",

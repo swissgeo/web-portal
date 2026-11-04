@@ -29,7 +29,7 @@ const commonTsAndJsRules: PartialRules = {
     "error",
     {
       type: "alphabetical",
-      internalPattern: ["^@/.*"],
+      internalPattern: ["^@/.*", "^#.*"],
     },
   ],
   "import/consistent-type-specifier-style": ["error", "prefer-top-level"],

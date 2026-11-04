@@ -21,7 +21,7 @@ import {
   TEXT_SIZE_KEY,
   DESCRIPTION_KEY,
   TITLE_KEY,
-} from "@/utils/drawingStyleCommon";
+} from "#utils/drawingStyleCommon";
 import {
   cloneToSerializationCompatibleFeatures,
   convertCircleToLineString,
@@ -35,7 +35,7 @@ import {
   olFeatureToGPX,
   olFeatureToKML,
   olFeatureToKMZ,
-} from "@/utils/exportUtils";
+} from "#utils/exportUtils";
 
 beforeAll(() => {
   // happy-dom does not implement CDATA sections, which OpenLayers uses for

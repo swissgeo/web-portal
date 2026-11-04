@@ -2,7 +2,10 @@ import { resolve } from "path";
 import dts from "unplugin-dts/vite";
 import { defineConfig } from "vite";
 
-import { getBaseBuildConfig } from "../../base.vite.config";
+import {
+  getBaseBuildConfig,
+  subpathImportsDtsAlias,
+} from "../../base.vite.config";
 
 export default defineConfig(({ mode }) => {
   return {
@@ -24,6 +27,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       dts({
+        aliases: [subpathImportsDtsAlias(resolve(__dirname, "src"))],
         bundleTypes: true,
       }),
     ],

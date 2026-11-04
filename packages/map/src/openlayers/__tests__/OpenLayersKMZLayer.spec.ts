@@ -2,7 +2,7 @@ import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { shallowRef } from "vue";
 
-import type { KMZLayer } from "@/types";
+import type { KMZLayer } from "#types/index";
 
 import useOlKMZLayer from "../../composables/olKMZLayer.composable";
 import OpenLayersKMZLayer from "../OpenLayersKMZLayer.vue";

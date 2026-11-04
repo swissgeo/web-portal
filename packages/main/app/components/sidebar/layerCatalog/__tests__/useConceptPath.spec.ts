@@ -1,4 +1,3 @@
-import type { AsyncDataRequestStatus } from "#app";
 import type { ThesaurusConcept } from "~/types/thesaurus";
 
 import useConceptPath, {
@@ -6,6 +5,8 @@ import useConceptPath, {
 } from "~/components/sidebar/layerCatalog/useConceptPath";
 import { describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
+
+import type { AsyncDataRequestStatus } from "#app";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),

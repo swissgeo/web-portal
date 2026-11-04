@@ -2,7 +2,7 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { defineComponent } from "vue";
 
-import type { Layer } from "@/types/layers";
+import type { Layer } from "#types/layers";
 
 import OpenLayersMap from "../OpenLayersMap.vue";
 
@@ -11,11 +11,11 @@ const map = {
   setTarget: vi.fn(),
 };
 
-vi.mock("@/composables/createOlMap", () => ({
+vi.mock("#composables/createOlMap", () => ({
   default: vi.fn(() => ({ map })),
 }));
 
-vi.mock("@/stores/map", () => ({
+vi.mock("#stores/map", () => ({
   useMapStore: () => ({
     setIsMapLoaded: vi.fn(),
     setOlMap: vi.fn(),

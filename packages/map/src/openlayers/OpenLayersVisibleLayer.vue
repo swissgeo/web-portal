@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-import type { MapLayerRenderer, Layer } from "@/types/layers";
+import type { MapLayerRenderer, Layer } from "#types/layers";
 
 import {
   isWMTS,
@@ -11,7 +11,7 @@ import {
   isGPX,
   isGeoJSON,
   isCOG,
-} from "@/utils/recordUtils";
+} from "#utils/recordUtils";
 
 import OpenLayersCOGLayer from "./OpenLayersCOGLayer.vue";
 import OpenLayersGeoJSONLayer from "./OpenLayersGeoJSONLayer.vue";

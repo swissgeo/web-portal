@@ -4,7 +4,7 @@ import type { Ref } from "vue";
 
 import { computed, inject } from "vue";
 
-import type { GeoJSONLayer } from "@/types";
+import type { GeoJSONLayer } from "#types/index";
 
 import useOlGeoJSONLayer from "../composables/olGeoJSONLayer.composable";
 

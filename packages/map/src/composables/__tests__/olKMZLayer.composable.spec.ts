@@ -2,7 +2,7 @@ import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick, ref } from "vue";
 
-import type { KMZLayer } from "@/types";
+import type { KMZLayer } from "#types/index";
 
 import {
   clearAddLayerToMapMocks,
@@ -10,10 +10,10 @@ import {
   useAddLayerToMapSpy,
 } from "./__mocks__/composables";
 
-vi.mock("@/composables/useAddLayerToMap.composable", () => ({
+vi.mock("#composables/useAddLayerToMap.composable", () => ({
   default: useAddLayerToMapSpy,
 }));
-vi.mock("@/stores/position", () => ({
+vi.mock("#stores/position", () => ({
   default: vi.fn(() => mockPositionStore),
 }));
 vi.mock("@swissgeo/log", () => ({

@@ -3,8 +3,8 @@
 
 import { describe, expect, it } from "vitest";
 
-import { coordinateFromString } from "@/coordinateFromString";
-import { LV03, LV95, WEBMERCATOR, WGS84 } from "@/proj";
+import { coordinateFromString } from "#coordinateFromString";
+import { LV03, LV95, WEBMERCATOR, WGS84 } from "#proj/index";
 
 // Bern, Zytglogge, expressed in the different systems
 const BERN_LV95 = [2600696, 1199664];

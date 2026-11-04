@@ -8,8 +8,8 @@ import { computedAsync } from "@vueuse/core";
 import proj4 from "proj4";
 import { computed, ref, shallowRef, watchEffect } from "vue";
 
-import type { Legend } from "@/types/Capabilities";
-import type { Service } from "@/types/Records";
+import type { Legend } from "#types/Capabilities";
+import type { Service } from "#types/Records";
 
 import { useCapabilities } from "./useCapabilities";
 

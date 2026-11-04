@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Paragraph } from "@/types";
+import type { Paragraph } from "#types/index";
 
 const { data } = defineProps<{ data: Paragraph }>();
 </script>

@@ -1,5 +1,4 @@
 import path from "path";
-import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -9,11 +8,6 @@ export default defineConfig({
       provider: "v8",
       reportsDirectory: path.resolve(__dirname, "../../coverage/unit/feature"),
       reporter: ["lcov", "cobertura"],
-    },
-  },
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
 });

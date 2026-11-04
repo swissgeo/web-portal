@@ -15,7 +15,7 @@ import {
 } from "vitest";
 import { ref } from "vue";
 
-import type { Distribution } from "@/types";
+import type { Distribution } from "#types/index";
 
 import { extractStyleUrl, useStyle } from "../useStyle";
 import distributionJson from "./fixtures/distribution_ch.bafu.schutzgebiete-luftfahrt_wmts.json";

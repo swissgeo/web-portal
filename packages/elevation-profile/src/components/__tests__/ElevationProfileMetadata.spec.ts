@@ -1,9 +1,9 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 
-import type { ElevationProfileMetadata } from "@/types";
+import type { ElevationProfileMetadata } from "#types";
 
-import ElevationProfileMetadataComponent from "@/components/ElevationProfileMetadata.vue";
+import ElevationProfileMetadataComponent from "#components/ElevationProfileMetadata.vue";
 
 const defaultMetadata: ElevationProfileMetadata = {
   totalLinearDist: 5000,

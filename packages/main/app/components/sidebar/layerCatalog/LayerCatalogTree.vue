@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import type { AsyncDataRequestStatus } from "#app";
 import type { ThesaurusConcept } from "~/types/thesaurus";
 
 import { useI18n } from "vue-i18n";
+
+import type { AsyncDataRequestStatus } from "#app";
 
 import LayerCatalogLoadingStatus from "./LayerCatalogLoadingStatus.vue";
 

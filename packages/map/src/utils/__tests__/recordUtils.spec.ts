@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { Layer } from "@/types";
+import type { Layer } from "#types/index";
 
 import {
   isCOG,

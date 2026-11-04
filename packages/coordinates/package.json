@@ -4,6 +4,10 @@
   "description": "Projection definition and coordinates utils for SWISSGEO projects.",
   "license": "BSD-3-Clause",
   "type": "module",
+  "imports": {
+    "#*": "./src/*.ts",
+    "#*.vue": "./src/*.vue"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

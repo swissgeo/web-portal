@@ -2,7 +2,7 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { defineComponent, h, ref } from "vue";
 
-import type { ElevationProfileResponse } from "@/types";
+import type { ElevationProfileResponse } from "#types";
 
 vi.mock("chartjs-plugin-zoom", () => ({
   resetZoom: vi.fn(),
@@ -10,8 +10,8 @@ vi.mock("chartjs-plugin-zoom", () => ({
 
 import { resetZoom } from "chartjs-plugin-zoom";
 
-import { defaultLabels, makeProfile } from "@/__tests__/fixtures";
-import { useElevationProfileChart } from "@/composables/useElevationProfileChart";
+import { defaultLabels, makeProfile } from "#__tests__/fixtures";
+import { useElevationProfileChart } from "#composables/useElevationProfileChart";
 
 type ExternalTooltipFn = (_model: {
   chart: { canvas: { getBoundingClientRect: () => DOMRect } };

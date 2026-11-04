@@ -2,7 +2,7 @@
 import { computed } from "vue";
 
 /* Passing data through */
-import type { LeadContentPageWithCheckbox } from "@/types";
+import type { LeadContentPageWithCheckbox } from "#types/index";
 
 const { data } = defineProps<{
   data: LeadContentPageWithCheckbox;

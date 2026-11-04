@@ -1,9 +1,10 @@
-import type { AsyncDataRequestStatus } from "#app";
 import type { ThesaurusConcept } from "~/types/thesaurus";
 import type { MaybeRefOrGetter } from "vue";
 
 import { computed, toValue } from "vue";
 import { useI18n } from "vue-i18n";
+
+import type { AsyncDataRequestStatus } from "#app";
 
 /** A concept, or the root that stands for all layers and has the id `null` */
 export type ConceptPathEntry = {

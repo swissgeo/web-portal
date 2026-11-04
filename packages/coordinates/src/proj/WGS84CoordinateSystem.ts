@@ -1,10 +1,10 @@
 import { round } from "@swissgeo/numbers";
 
-import type { SingleCoordinate } from "@/coordinatesUtils";
+import type { SingleCoordinate } from "#coordinatesUtils";
 
-import { PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES } from "@/proj/CoordinateSystem";
-import CoordinateSystemBounds from "@/proj/CoordinateSystemBounds";
-import StandardCoordinateSystem from "@/proj/StandardCoordinateSystem";
+import { PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES } from "#proj/CoordinateSystem";
+import CoordinateSystemBounds from "#proj/CoordinateSystemBounds";
+import StandardCoordinateSystem from "#proj/StandardCoordinateSystem";
 
 export default class WGS84CoordinateSystem extends StandardCoordinateSystem {
   constructor() {

@@ -34,7 +34,7 @@ const { useMapStore } = vi.hoisted(() => ({
   useMapStore: vi.fn(),
 }));
 
-vi.mock("@/stores/map", () => ({
+vi.mock("#stores/map", () => ({
   useMapStore,
 }));
 

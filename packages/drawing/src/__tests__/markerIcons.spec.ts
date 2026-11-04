@@ -6,7 +6,7 @@ import {
   getMarkerIconById,
   MARKER_ICONS,
   dataUrlToUint8Array,
-} from "@/utils/markerIcons";
+} from "#utils/markerIcons";
 
 describe("marker icons", () => {
   it("uses the first marker as the default icon", () => {

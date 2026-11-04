@@ -4,9 +4,9 @@ import type { ChartComponentRef } from "vue-chartjs";
 import { provide, useTemplateRef } from "vue";
 import { Line as LineChart } from "vue-chartjs";
 
-import type { ElevationProfileResponse, ElevationProfilePoint } from "@/types";
+import type { ElevationProfileResponse, ElevationProfilePoint } from "#types";
 
-import { useElevationProfileChart } from "@/composables/useElevationProfileChart";
+import { useElevationProfileChart } from "#composables/useElevationProfileChart";
 
 export type ScreenPoint = ElevationProfilePoint & {
   screenPosition: [number, number];

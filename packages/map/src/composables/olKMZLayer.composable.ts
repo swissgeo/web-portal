@@ -20,10 +20,10 @@ import VectorSource from "ol/source/Vector";
 import proj4 from "proj4";
 import { computed, shallowRef, watch } from "vue";
 
-import type { KMZLayer } from "@/types";
+import type { KMZLayer } from "#types/index";
 
-import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
-import usePositionStore from "@/stores/position";
+import useAddLayerToMap from "#composables/useAddLayerToMap.composable";
+import usePositionStore from "#stores/position";
 
 // exported for testing purposes
 export const DEFAULT_MAX_DECOMPRESSED_SIZE_MB = 250;

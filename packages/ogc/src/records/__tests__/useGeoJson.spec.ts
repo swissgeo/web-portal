@@ -4,7 +4,7 @@ import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { ref } from "vue";
 
-import type { Distribution } from "@/types/Records";
+import type { Distribution } from "#types/Records";
 
 import { useGeoJson } from "../useGeoJson";
 

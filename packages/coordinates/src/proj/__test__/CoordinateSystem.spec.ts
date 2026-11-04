@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { LV95, WEBMERCATOR, WGS84 } from "@/proj";
-import CoordinateSystemBounds from "@/proj/CoordinateSystemBounds";
-import StandardCoordinateSystem from "@/proj/StandardCoordinateSystem";
+import CoordinateSystemBounds from "#proj/CoordinateSystemBounds";
+import { LV95, WEBMERCATOR, WGS84 } from "#proj/index";
+import StandardCoordinateSystem from "#proj/StandardCoordinateSystem";
 
 class BoundlessCoordinateSystem extends StandardCoordinateSystem {
   constructor() {

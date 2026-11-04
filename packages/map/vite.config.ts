@@ -1,10 +1,12 @@
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import dts from "unplugin-dts/vite";
-import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vite";
 
-import { getBaseBuildConfig } from "../../base.vite.config";
+import {
+  getBaseBuildConfig,
+  subpathImportsDtsAlias,
+} from "../../base.vite.config";
 
 export default defineConfig(({ mode }) => {
   return {
@@ -19,15 +21,10 @@ export default defineConfig(({ mode }) => {
         external: ["vue", "pinia", "@swissgeo/log", "vue-i18n", "@vueuse/core"],
       },
     },
-    resolve: {
-      alias: {
-        "@": fileURLToPath(new URL("./src", import.meta.url)),
-        "@stores": fileURLToPath(new URL("./src/stores", import.meta.url)),
-      },
-    },
     plugins: [
       vue(),
       dts({
+        aliases: [subpathImportsDtsAlias(resolve(__dirname, "src"))],
         processor: "vue",
       }),
     ],

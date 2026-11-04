@@ -1,9 +1,9 @@
 import { expect, test } from "vitest";
 
-import type { Dimension } from "@/types";
+import type { Dimension } from "#types";
 
-import * as TimeSliderUtils from "@/timeSliderUtils";
-import * as TimeUtils from "@/timeUtils";
+import * as TimeSliderUtils from "#timeSliderUtils";
+import * as TimeUtils from "#timeUtils";
 
 test.each([
   ["2016", "2016"],

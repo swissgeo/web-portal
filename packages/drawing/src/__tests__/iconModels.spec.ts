@@ -1,12 +1,12 @@
 import log from "@swissgeo/log";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { IconApiDescription } from "@/core/Icon";
-import type { IconSetApiDescription } from "@/core/IconSet";
+import type { IconApiDescription } from "#core/Icon";
+import type { IconSetApiDescription } from "#core/IconSet";
 
-import { hexColorToRgb, rgbaToHex } from "@/core/color";
-import { Icon } from "@/core/Icon";
-import { IconSet } from "@/core/IconSet";
+import { hexColorToRgb, rgbaToHex } from "#core/color";
+import { Icon } from "#core/Icon";
+import { IconSet } from "#core/IconSet";
 
 const iconPayload: IconApiDescription = {
   anchor: [12, 24],

@@ -2,8 +2,8 @@ import { registerProj4 } from "@swissgeo/coordinates";
 import proj4 from "proj4";
 import { describe, expect, it } from "vitest";
 
-import { makeProfile } from "@/__tests__/fixtures";
-import { buildCSV, reverseProfile } from "@/utils/profile";
+import { makeProfile } from "#__tests__/fixtures";
+import { buildCSV, reverseProfile } from "#utils/profile";
 
 registerProj4(proj4);
 

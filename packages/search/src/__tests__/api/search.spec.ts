@@ -8,7 +8,7 @@ import type {
   FeatureSearchResult,
   LocationSearchResult,
   SearchResponseResult,
-} from "@/types/search";
+} from "#types/search";
 
 import {
   escapeHtml,

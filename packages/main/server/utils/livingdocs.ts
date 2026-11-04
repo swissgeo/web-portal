@@ -1,7 +1,8 @@
 import log from "@swissgeo/log";
-import { useRuntimeConfig } from "#imports";
 import { createError } from "h3";
 import { joinURL } from "ufo";
+
+import { useRuntimeConfig } from "#imports";
 
 /**
  * Languages the CMS publishes content pages in. Romansh is the only portal

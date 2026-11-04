@@ -6,9 +6,9 @@ import { Tile as TileLayer } from "ol/layer";
 import WMTS from "ol/source/WMTS";
 import { computed, ref, toRaw, watch, watchEffect } from "vue";
 
-import type { WMTSLayer } from "@/types/layers";
+import type { WMTSLayer } from "#types/layers";
 
-import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
+import useAddLayerToMap from "#composables/useAddLayerToMap.composable";
 
 /** Tying a layer object from the app to a openlayers object */
 export default function useOlWmtsLayer(

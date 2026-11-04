@@ -1,4 +1,4 @@
-import type { Link, TemplateLink } from "@/types/Records";
+import type { Link, TemplateLink } from "#types/Records";
 
 export const getLinksByRel = (links: Link[], rel: string): Link[] => {
   return links.filter(

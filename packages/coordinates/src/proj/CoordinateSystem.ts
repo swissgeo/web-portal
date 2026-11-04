@@ -2,10 +2,10 @@ import { round } from "@swissgeo/numbers";
 import { earthRadius } from "@turf/turf";
 import proj4 from "proj4";
 
-import type { SingleCoordinate } from "@/coordinatesUtils";
-import type { ResolutionStep } from "@/proj/types";
+import type { SingleCoordinate } from "#coordinatesUtils";
+import type { ResolutionStep } from "#proj/types";
 
-import CoordinateSystemBounds from "@/proj/CoordinateSystemBounds";
+import CoordinateSystemBounds from "#proj/CoordinateSystemBounds";
 
 /**
  * These are the zoom levels, for each projection, which give us a 1:25'000 ratio map.

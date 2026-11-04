@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import type { Single3DCoordinate, SingleCoordinate } from "@/coordinatesUtils";
-import type { CoordinateSystem } from "@/proj";
+import type { Single3DCoordinate, SingleCoordinate } from "#coordinatesUtils";
+import type { CoordinateSystem } from "#proj/index";
 
-import coordinatesUtils from "@/coordinatesUtils";
-import { LV95, WEBMERCATOR, WGS84 } from "@/proj";
+import coordinatesUtils from "#coordinatesUtils";
+import { LV95, WEBMERCATOR, WGS84 } from "#proj/index";
 
 describe("Unit test for coordinatesUtils", () => {
   describe("toRoundedString", () => {

@@ -7,7 +7,7 @@ import { Fill, Icon, Stroke, Style } from "ol/style";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { rgbaToHex } from "@/core/color";
+import { rgbaToHex } from "#core/color";
 import {
   DESCRIPTION_KEY,
   initializeMetadataProperties,
@@ -45,7 +45,7 @@ import {
   applyIdleStyle,
   applySelectedStyle,
   mapKmlStylesToFeatureProperties,
-} from "@/utils/drawingStyleCommon";
+} from "#utils/drawingStyleCommon";
 
 beforeEach(() => {
   setActivePinia(createPinia());

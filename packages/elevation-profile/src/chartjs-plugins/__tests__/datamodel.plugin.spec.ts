@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import type { MockCtx } from "@/__tests__/mocks";
+import type { MockCtx } from "#__tests__/mocks";
 
-import { makeCtx } from "@/__tests__/mocks";
-import dataModelPlugin from "@/chartjs-plugins/datamodel.plugin";
+import { makeCtx } from "#__tests__/mocks";
+import dataModelPlugin from "#chartjs-plugins/datamodel.plugin";
 
 function makeChart(overrides: { chartArea?: Record<string, number> } = {}) {
   const ctx = makeCtx();

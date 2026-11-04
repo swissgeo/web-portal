@@ -7,7 +7,7 @@ import Overlay from "ol/Overlay";
 import proj4 from "proj4";
 import { computed, inject, onBeforeUnmount, onMounted, watch } from "vue";
 
-import type { GetPointBeingHoveredFunction } from "@/components/ElevationProfilePlot.vue";
+import type { GetPointBeingHoveredFunction } from "#components/ElevationProfilePlot.vue";
 
 const { olInstance, mapProjection } = defineProps<{
   olInstance: Raw<Map>;

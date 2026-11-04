@@ -20,15 +20,15 @@ import type {
   LayerRequest,
   LayerSource,
   WMSLayerRequest,
-} from "@/types";
+} from "#types";
 
-import { FEATURE_LIMIT } from "@/constants";
+import { FEATURE_LIMIT } from "#constants";
 import {
   createIdentifyResponse,
   getFeaturesForOneLayer,
   selectFeatures,
-} from "@/selectFeatures";
-import { useFeaturesStore } from "@/stores/feature";
+} from "#selectFeatures";
+import { useFeaturesStore } from "#stores/feature";
 
 import distributionCollectionJson from "./fixtures/distributionCollection_ch.astra.json";
 import htmlPopup from "./fixtures/htmlPopup_ch.astra";

@@ -1,6 +1,5 @@
 import vue from "@vitejs/plugin-vue";
 import path from "path";
-import { fileURLToPath, URL } from "url";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -12,11 +11,6 @@ export default defineConfig({
       reportsDirectory: path.resolve(__dirname, "../../coverage/unit/content"),
       reporter: ["lcov", "cobertura"],
       include: ["src/**/*.ts", "src/**/*.vue"],
-    },
-  },
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   plugins: [vue()],

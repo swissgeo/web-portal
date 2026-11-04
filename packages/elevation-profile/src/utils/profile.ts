@@ -1,7 +1,7 @@
 import { LV95, WGS84 } from "@swissgeo/coordinates";
 import proj4 from "proj4";
 
-import type { ElevationProfileResponse } from "@/types";
+import type { ElevationProfileResponse } from "#types";
 
 export function reverseProfile(
   profile: ElevationProfileResponse,

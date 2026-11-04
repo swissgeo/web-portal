@@ -16,7 +16,7 @@ vi.mock("../../composables/olKMLLayer.composable", () => ({
   })),
 }));
 
-vi.mock("@/stores/position", () => ({
+vi.mock("#stores/position", () => ({
   default: vi.fn(() => ({
     projection: { epsg: "EPSG:2056" },
   })),

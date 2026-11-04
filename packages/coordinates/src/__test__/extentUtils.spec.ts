@@ -2,9 +2,9 @@ import type { FlatExtent, NormalizedExtent } from "@swissgeo/shared";
 
 import { describe, expect, it } from "vitest";
 
-import type { SingleCoordinate } from "@/coordinatesUtils";
+import type { SingleCoordinate } from "#coordinatesUtils";
 
-import coordinatesUtils from "@/coordinatesUtils";
+import coordinatesUtils from "#coordinatesUtils";
 import {
   projExtent,
   normalizeExtent,
@@ -13,8 +13,8 @@ import {
   getExtentCenter,
   createPixelExtentAround,
   createCutoutGeometry,
-} from "@/extentUtils";
-import { LV95, WGS84 } from "@/proj";
+} from "#extentUtils";
+import { LV95, WGS84 } from "#proj/index";
 
 function expectExtentIs(
   toBeTested: FlatExtent,

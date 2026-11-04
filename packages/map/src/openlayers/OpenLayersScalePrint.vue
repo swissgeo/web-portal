@@ -4,8 +4,8 @@ import ScaleLine from "ol/control/ScaleLine";
 import { storeToRefs } from "pinia";
 import { computed, ref, toValue, useTemplateRef, watch } from "vue";
 
-import { useMapStore } from "@/stores/map";
-import usePositionStore from "@/stores/position";
+import { useMapStore } from "#stores/map";
+import usePositionStore from "#stores/position";
 
 const scaleLineElement = useTemplateRef<HTMLElement>("scaleLineElement");
 

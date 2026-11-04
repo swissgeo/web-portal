@@ -6,10 +6,10 @@ import { bbox, bboxClip, bboxPolygon, buffer, point } from "@turf/turf";
 import Polygon, { fromExtent } from "ol/geom/Polygon";
 import proj4 from "proj4";
 
-import type { SingleCoordinate } from "@/coordinatesUtils";
-import type { CoordinateSystem } from "@/proj";
+import type { SingleCoordinate } from "#coordinatesUtils";
+import type { CoordinateSystem } from "#proj/index";
 
-import { WGS84 } from "@/proj";
+import { WGS84 } from "#proj/index";
 
 /**
  * @param fromProj Current projection used to describe the extent

@@ -8,7 +8,7 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { unByKey } from "ol/Observable";
 import { shallowRef, watch } from "vue";
 
-import { useMapStore } from "@/stores/map";
+import { useMapStore } from "#stores/map";
 
 /**
  * Expose the internal OpenLayers position values to the reactive world of vue

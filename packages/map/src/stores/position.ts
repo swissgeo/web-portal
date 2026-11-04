@@ -17,14 +17,11 @@ import { defineStore } from "pinia";
 import proj4 from "proj4";
 import { computed, ref, watch } from "vue";
 
-import type { CoordinateFormat } from "@/utils/coordinates/coordinateFormat";
+import type { CoordinateFormat } from "#utils/coordinates/coordinateFormat";
 
-import { useMapStore } from "@/stores/map";
-import {
-  getFormatById,
-  LV95Format,
-} from "@/utils/coordinates/coordinateFormat";
-import { normalizeAngle } from "@/utils/normalizeAngle";
+import { useMapStore } from "#stores/map";
+import { getFormatById, LV95Format } from "#utils/coordinates/coordinateFormat";
+import { normalizeAngle } from "#utils/normalizeAngle";
 
 import { useOlMapPosition } from "../composables/useOlMapPosition";
 

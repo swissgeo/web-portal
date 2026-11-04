@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 
-import LogoPic from "@/components/LogoPic.vue";
+import LogoPic from "#components/LogoPic.vue";
 
 describe("LogoPic behavior", () => {
   // returns a wrapper around the component, with the

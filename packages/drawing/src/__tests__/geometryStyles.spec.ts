@@ -8,7 +8,7 @@ import { Circle, LineString, MultiPoint, Point, Polygon } from "ol/geom";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { CIRCLE_EDITING_STYLE } from "@/utils/circleStyle";
+import { CIRCLE_EDITING_STYLE } from "#utils/circleStyle";
 import {
   applyEditingStyle,
   applyIdleStyle,
@@ -27,10 +27,10 @@ import {
   SELECTED_OUTLINE_WIDTH,
   STROKE_COLOR_KEY,
   STROKE_WIDTH_KEY,
-} from "@/utils/drawingStyleCommon";
-import { LINESTRING_EDITING_STYLE } from "@/utils/lineStringStyle";
-import { POINT_EDITING_STYLE } from "@/utils/pointStyle";
-import { POLYGON_EDITING_STYLE } from "@/utils/polygonStyle";
+} from "#utils/drawingStyleCommon";
+import { LINESTRING_EDITING_STYLE } from "#utils/lineStringStyle";
+import { POINT_EDITING_STYLE } from "#utils/pointStyle";
+import { POLYGON_EDITING_STYLE } from "#utils/polygonStyle";
 
 function resolveStyles(
   styleFunction: StyleFunction,

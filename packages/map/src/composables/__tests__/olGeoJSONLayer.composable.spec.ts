@@ -5,7 +5,7 @@ import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick, ref } from "vue";
 
-import type { GeoJSONLayer } from "@/types";
+import type { GeoJSONLayer } from "#types/index";
 
 import {
   clearAddLayerToMapMocks,
@@ -15,10 +15,10 @@ import {
 
 const { LV95_RESOLUTIONS } = constants;
 
-vi.mock("@/composables/useAddLayerToMap.composable", () => ({
+vi.mock("#composables/useAddLayerToMap.composable", () => ({
   default: useAddLayerToMapSpy,
 }));
-vi.mock("@/stores/position", () => ({
+vi.mock("#stores/position", () => ({
   default: vi.fn(() => mockPositionStore),
 }));
 vi.mock("@swissgeo/log", () => ({
@@ -44,7 +44,7 @@ vi.mock("ol-mapbox-style", () => ({
   stylefunction: stylefunctionMock,
 }));
 
-vi.mock("@/utils/textBackgroundHelper", () => ({
+vi.mock("#utils/textBackgroundHelper", () => ({
   applyOlTextBackground: vi.fn(),
 }));
 
@@ -80,7 +80,7 @@ vi.mock("ol/source/Vector", () => ({
   }),
 }));
 
-vi.mock("@/utils/geoJsonUtils", () => ({
+vi.mock("#utils/geoJsonUtils", () => ({
   reprojectGeoJsonData: vi.fn((_data: unknown, _proj: unknown) => ({
     type: "FeatureCollection",
     features: [],
@@ -171,7 +171,7 @@ describe("useOlGeoJSONLayer", () => {
     expect(resolutions).toEqual(LV95_RESOLUTIONS);
     expect(typeof getImage).toBe("function");
     const { applyOlTextBackground } =
-      await import("@/utils/textBackgroundHelper");
+      await import("#utils/textBackgroundHelper");
     expect(applyOlTextBackground).toHaveBeenCalledWith(olLayer, mapLibreStyle);
   });
 
@@ -193,7 +193,7 @@ describe("useOlGeoJSONLayer", () => {
   });
 
   it("calls reprojectGeoJsonData with correct projection", async () => {
-    const { reprojectGeoJsonData } = await import("@/utils/geoJsonUtils");
+    const { reprojectGeoJsonData } = await import("#utils/geoJsonUtils");
     const layer: Ref<GeoJSONLayer> = ref(makeGeoJSONLayer());
     const olMap = ref(undefined);
 

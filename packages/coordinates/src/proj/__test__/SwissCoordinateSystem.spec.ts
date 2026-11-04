@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { LV03, LV95 } from "@/proj";
-import { SWISS_ZOOM_LEVEL_1_25000_MAP } from "@/proj/CoordinateSystem";
+import { SWISS_ZOOM_LEVEL_1_25000_MAP } from "#proj/CoordinateSystem";
+import { LV03, LV95 } from "#proj/index";
 import {
   LV95_RESOLUTIONS,
   SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX,
   SWISSTOPO_MAX_ZOOM_LEVEL,
   SWISSTOPO_MIN_ZOOM_LEVEL,
-} from "@/proj/SwissCoordinateSystem";
+} from "#proj/SwissCoordinateSystem";
 
 describe("Unit test functions from SwissCoordinateSystem", () => {
   describe("transformCustomZoomLevelToStandard", () => {

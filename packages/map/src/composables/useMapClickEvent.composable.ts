@@ -8,7 +8,7 @@ import { GeoJSON } from "ol/format";
 import { fromCircle } from "ol/geom/Polygon";
 import { inject, onUnmounted, watch } from "vue";
 
-import type { MapClickEvent } from "@/types";
+import type { MapClickEvent } from "#types/index";
 
 const IDENTIFY_TOLERANCE_PX = 10;
 const CIRCLE_POLYGON_SEGMENTS = 64;

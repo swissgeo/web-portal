@@ -12,7 +12,7 @@ import {
   setFeatureDescription,
   setFeatureTitle,
   TITLE_KEY,
-} from "@/utils/drawingStyleCommon";
+} from "#utils/drawingStyleCommon";
 
 function makeFeature() {
   return new Feature<Geometry>(new Point([0, 0]));

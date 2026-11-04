@@ -11,7 +11,7 @@ import VectorSource from "ol/source/Vector";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick, ref } from "vue";
 
-import type { MapClickEvent } from "@/types";
+import type { MapClickEvent } from "#types/index";
 
 import {
   circleToPolygon,

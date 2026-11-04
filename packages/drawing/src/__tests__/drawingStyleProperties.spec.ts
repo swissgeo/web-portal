@@ -5,12 +5,12 @@ import { Point } from "ol/geom";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import type { IconApiDescription } from "@/core/Icon";
-import type { IconSetApiDescription } from "@/core/IconSet";
+import type { IconApiDescription } from "#core/Icon";
+import type { IconSetApiDescription } from "#core/IconSet";
 
-import { Icon } from "@/core/Icon";
-import { IconSet } from "@/core/IconSet";
-import { DEFAULT_ICON_SET_NAME, useIconsStore } from "@/stores/icons.store";
+import { Icon } from "#core/Icon";
+import { IconSet } from "#core/IconSet";
+import { DEFAULT_ICON_SET_NAME, useIconsStore } from "#stores/icons.store";
 import {
   getFeatureStyleProperty,
   getIconAnchorStyleProperty,
@@ -59,7 +59,7 @@ import {
   TEXT_HALO_COLOR_KEY,
   TEXT_PLACEMENT_KEY,
   TEXT_SIZE_KEY,
-} from "@/utils/drawingStyleCommon";
+} from "#utils/drawingStyleCommon";
 
 function makeFeature() {
   return new Feature<Geometry>(new Point([0, 0]));

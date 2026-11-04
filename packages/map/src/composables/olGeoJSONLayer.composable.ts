@@ -12,13 +12,13 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import proj4 from "proj4";
 import { computed, shallowRef, watch } from "vue";
 
-import type { GeoJSONLayer } from "@/types";
+import type { GeoJSONLayer } from "#types/index";
 
-import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
-import usePositionStore from "@/stores/position";
-import * as geoJsonUtils from "@/utils/geoJsonUtils";
-import { createGetImageCallback } from "@/utils/maplibreShapeIcons";
-import { applyOlTextBackground } from "@/utils/textBackgroundHelper";
+import useAddLayerToMap from "#composables/useAddLayerToMap.composable";
+import usePositionStore from "#stores/position";
+import * as geoJsonUtils from "#utils/geoJsonUtils";
+import { createGetImageCallback } from "#utils/maplibreShapeIcons";
+import { applyOlTextBackground } from "#utils/textBackgroundHelper";
 
 export default function useOlGeoJSONLayer(
   layer: Ref<GeoJSONLayer>,

@@ -21,10 +21,10 @@ import { Icon, Style } from "ol/style";
 import proj4 from "proj4";
 import { computed, shallowRef, watch } from "vue";
 
-import type { KMLLayer } from "@/types";
+import type { KMLLayer } from "#types/index";
 
-import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
-import usePositionStore from "@/stores/position";
+import useAddLayerToMap from "#composables/useAddLayerToMap.composable";
+import usePositionStore from "#stores/position";
 
 export default function useOlKMLLayer(
   layer: Ref<KMLLayer>,

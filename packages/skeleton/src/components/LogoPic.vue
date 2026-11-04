@@ -21,13 +21,13 @@ const isDesktop = inject<boolean>("isDesktop", true);
   >
     <img
       v-if="!darkMode"
-      src="@/assets/images/swissgeo_rgb_icon.svg"
+      src="#assets/images/swissgeo_rgb_icon.svg"
       class="h-5"
       data-testid="sidebar-logo-pic-image-condensed"
     />
     <img
       v-else
-      src="@/assets/images/swissgeo_sw_icon.svg"
+      src="#assets/images/swissgeo_sw_icon.svg"
       class="h-5"
       data-testid="sidebar-logo-pic-image-condensed"
     />
@@ -44,13 +44,13 @@ const isDesktop = inject<boolean>("isDesktop", true);
     >
       <img
         v-if="!darkMode"
-        src="@/assets/images/swissgeo_rgb_sek.svg"
+        src="#assets/images/swissgeo_rgb_sek.svg"
         class="h-5"
         data-testid="sidebar-logo-pic-image-extended"
       />
       <img
         v-else
-        src="@/assets/images/swissgeo_neg_sek.svg"
+        src="#assets/images/swissgeo_neg_sek.svg"
         class="h-5"
         data-testid="sidebar-logo-pic-image-extended"
       />

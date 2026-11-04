@@ -14,10 +14,10 @@ import { setActivePinia, createPinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
 
-import type { useDrawing } from "@/composables/useDrawing.composable";
+import type { useDrawing } from "#composables/useDrawing.composable";
 
-import { useDrawing as createDrawingComposable } from "@/composables/useDrawing.composable";
-import { useDrawingStore } from "@/stores/drawing.store";
+import { useDrawing as createDrawingComposable } from "#composables/useDrawing.composable";
+import { useDrawingStore } from "#stores/drawing.store";
 import {
   initializeMetadataProperties,
   initializeStyleProperties,
@@ -48,8 +48,8 @@ import {
   TEXT_HALO_COLOR_KEY,
   TEXT_PLACEMENT_KEY,
   TEXT_SIZE_KEY,
-} from "@/utils/drawingStyleCommon";
-import { exportFormatToMimeType } from "@/utils/exportUtils";
+} from "#utils/drawingStyleCommon";
+import { exportFormatToMimeType } from "#utils/exportUtils";
 
 import type {
   CircleMetrics,

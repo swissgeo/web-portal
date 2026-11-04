@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatDistance, formatElevation } from "@/utils/index";
+import { formatDistance, formatElevation } from "#utils/index";
 
 describe("formatDistance", () => {
   it("returns 0.00m for undefined", () => {

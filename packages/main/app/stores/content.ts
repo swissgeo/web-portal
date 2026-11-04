@@ -1,9 +1,10 @@
 import type { LanguageReference, Page } from "@swissgeo/content";
 import type { RouteRecordRaw } from "vue-router";
 
-import { useRouter } from "#imports";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+
+import { useRouter } from "#imports";
 
 export const SUPPORTED_LANG = ["de", "fr"];
 

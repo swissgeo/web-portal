@@ -4,9 +4,9 @@ import type { ShallowRef } from "vue";
 
 import { computed, inject } from "vue";
 
-import type { WMTSLayer } from "@/types/layers";
+import type { WMTSLayer } from "#types/layers";
 
-import useOlWmtsLayer from "@/composables/olWMTSLayer.composable";
+import useOlWmtsLayer from "#composables/olWMTSLayer.composable";
 
 const { layer } = defineProps<{
   layer: WMTSLayer;

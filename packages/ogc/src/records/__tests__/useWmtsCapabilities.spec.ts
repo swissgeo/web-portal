@@ -4,7 +4,7 @@ import { flushPromises } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 
-import type { Service } from "@/types";
+import type { Service } from "#types/index";
 
 import { useWmtsCapabilities } from "../useWmtsCapabilities";
 import ChGeoadminWmts from "./fixtures/service_ch.admin.geo.wmts.json";

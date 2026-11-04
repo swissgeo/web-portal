@@ -7,12 +7,12 @@ import { Icon as OlIcon, Text } from "ol/style";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import type { IconApiDescription } from "@/core/Icon";
-import type { IconSetApiDescription } from "@/core/IconSet";
+import type { IconApiDescription } from "#core/Icon";
+import type { IconSetApiDescription } from "#core/IconSet";
 
-import { Icon } from "@/core/Icon";
-import { IconSet } from "@/core/IconSet";
-import { useIconsStore } from "@/stores/icons.store";
+import { Icon } from "#core/Icon";
+import { IconSet } from "#core/IconSet";
+import { useIconsStore } from "#stores/icons.store";
 import {
   DESCRIPTION_KEY,
   initializeMetadataProperties,
@@ -32,8 +32,8 @@ import {
   TEXT_HALO_COLOR_KEY,
   TEXT_PLACEMENT_KEY,
   TEXT_SIZE_KEY,
-} from "@/utils/drawingStyleCommon";
-import { POINT_SELECTED_STYLE } from "@/utils/pointStyle";
+} from "#utils/drawingStyleCommon";
+import { POINT_SELECTED_STYLE } from "#utils/pointStyle";
 
 function installIconSet() {
   const iconSetPayload: IconSetApiDescription = {

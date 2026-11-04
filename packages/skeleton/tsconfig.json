@@ -10,9 +10,6 @@
   ],
   "compilerOptions": {
     "types": ["vue", "vite/client"],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "rootDir": "../.."
   }
 }

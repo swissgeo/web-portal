@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, ref } from "vue";
 
-import type { WMSLayer } from "@/types/layers";
+import type { WMSLayer } from "#types/layers";
 
-import useOlWmsLayer from "@/composables/olWMSLayer.composable";
+import useOlWmsLayer from "#composables/olWMSLayer.composable";
 
 const { tileUpdateParamsSpy, imageUpdateParamsSpy, MockTileWMS, MockImageWMS } =
   vi.hoisted(() => {
@@ -53,13 +53,13 @@ vi.mock("ol/tilegrid", () => ({
   },
 }));
 
-vi.mock("@/composables/useAddLayerToMap.composable", () => ({
+vi.mock("#composables/useAddLayerToMap.composable", () => ({
   default: vi.fn(() => ({
     addLayerToMap: vi.fn(),
   })),
 }));
 
-vi.mock("@/stores/position", () => ({
+vi.mock("#stores/position", () => ({
   default: vi.fn(() => ({
     projection: {
       epsg: "EPSG:2056",

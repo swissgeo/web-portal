@@ -10,7 +10,7 @@ import type {
   Layer,
   WMSLayer,
   WMTSLayer,
-} from "@/types";
+} from "#types/index";
 
 // maybe this belongs to shared?
 

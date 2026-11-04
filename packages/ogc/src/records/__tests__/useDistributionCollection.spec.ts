@@ -12,7 +12,7 @@ import {
 } from "vitest";
 import { ref } from "vue";
 
-import type { Dataset } from "@/types/Records";
+import type { Dataset } from "#types/Records";
 
 import {
   useDistributionCollection,

@@ -9,9 +9,6 @@
   ],
   "compilerOptions": {
     "types": ["pinia"],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "rootDir": "../.."
   }
 }

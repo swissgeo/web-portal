@@ -5,7 +5,7 @@ import {
   convertYearToTimestamp,
   getDisplayNameFromTimestamp,
   getYearFromGeoadminValue,
-} from "@/timeUtils";
+} from "#timeUtils";
 
 describe("Testing the display timestamp util function", () => {
   it.each`

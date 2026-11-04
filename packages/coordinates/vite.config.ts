@@ -31,16 +31,15 @@ const config: UserConfig = {
       },
     },
   },
-  resolve: {
-    alias: {
-      "@": resolve(__dirname, "src"),
-    },
-  },
   plugins: [
     tailwindcss(),
     vue(),
     vueDevTools(),
     dts({
+      // same as subpathImportsDtsAlias in base.vite.config.ts (not importable here: outside rootDir)
+      aliases: [
+        { find: /^#([^/]+)/, replacement: resolve(__dirname, "src/$1") },
+      ],
       bundleTypes: true,
     }),
   ],

@@ -8,9 +8,9 @@ import { unByKey } from "ol/Observable";
 import { getRenderPixel } from "ol/render";
 import { inject, onBeforeUnmount, ref, watch } from "vue";
 
-import type { Layer } from "@/types/layers";
+import type { Layer } from "#types/layers";
 
-import useCompareSliderControl from "@/composables/useCompareSliderControl.composable";
+import useCompareSliderControl from "#composables/useCompareSliderControl.composable";
 
 /**
  * Draggable vertical bar that "swipes" between one layer and the layers

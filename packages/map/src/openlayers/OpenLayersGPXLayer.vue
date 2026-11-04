@@ -4,9 +4,9 @@ import type { ShallowRef } from "vue";
 
 import { computed, inject } from "vue";
 
-import type { GPXLayer } from "@/types";
+import type { GPXLayer } from "#types/index";
 
-import useOlGPXLayer from "@/composables/olGPXLayer.composable";
+import useOlGPXLayer from "#composables/olGPXLayer.composable";
 
 const { layer } = defineProps<{
   layer: GPXLayer;

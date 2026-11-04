@@ -5,15 +5,15 @@ export type {
   OgcDistribution,
   OgcDistributionFeature,
   WmsFeatureInfoCapability,
-} from "@/types";
-export * from "@/constants";
+} from "#types";
+export * from "#constants";
 export {
   sourceToLayerRequest,
   isIdentifyFeatureInfo,
-} from "@/utils/sourceToLayerRequest";
+} from "#utils/sourceToLayerRequest";
 export {
   selectFeatures,
   createIdentifyResponse,
   getPopupFromIdentifyFeature,
-} from "@/selectFeatures";
-export { useFeaturesStore } from "@/stores/feature";
+} from "#selectFeatures";
+export { useFeaturesStore } from "#stores/feature";

@@ -1,4 +1,4 @@
-import type { SingleCoordinate } from "@/coordinatesUtils";
+import type { SingleCoordinate } from "#coordinatesUtils";
 
 /**
  * Group of coordinates resulting in a "split by bounds" function. Will also contain information if

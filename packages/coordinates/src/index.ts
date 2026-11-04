@@ -2,21 +2,21 @@
 
 import proj4 from "proj4";
 
-import type { SwissGeoCoordinatesUtils } from "@/coordinatesUtils";
-import type { SwissGeoExtentUtils } from "@/extentUtils";
-import type { SwissGeoCoordinateCRS } from "@/proj";
+import type { SwissGeoCoordinatesUtils } from "#coordinatesUtils";
+import type { SwissGeoExtentUtils } from "#extentUtils";
+import type { SwissGeoCoordinateCRS } from "#proj/index";
 
-import { coordinatesUtils } from "@/coordinatesUtils";
-import { extentUtils } from "@/extentUtils";
-import crs from "@/proj";
-import registerProj4 from "@/registerProj4";
+import { coordinatesUtils } from "#coordinatesUtils";
+import { extentUtils } from "#extentUtils";
+import crs from "#proj/index";
+import registerProj4 from "#registerProj4";
 
-export * from "@/proj";
-export * from "@/registerProj4";
-export * from "@/coordinatesUtils";
-export * from "@/extentUtils";
-export * from "@/militaryGridProjection";
-export * from "@/coordinateFromString";
+export * from "#proj/index";
+export * from "#registerProj4";
+export * from "#coordinatesUtils";
+export * from "#extentUtils";
+export * from "#militaryGridProjection";
+export * from "#coordinateFromString";
 
 // registering local instance of proj4, needed for some @swissgeo/coordinates functions
 registerProj4(proj4);

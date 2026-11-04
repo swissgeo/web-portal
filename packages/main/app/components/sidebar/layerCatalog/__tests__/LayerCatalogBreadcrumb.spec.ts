@@ -1,9 +1,9 @@
-import type { AsyncDataRequestStatus } from "#app";
-
 import { mount } from "@vue/test-utils";
 import LayerCatalogBreadcrumb from "~/components/sidebar/layerCatalog/LayerCatalogBreadcrumb.vue";
 import LayerCatalogLoadingStatus from "~/components/sidebar/layerCatalog/LayerCatalogLoadingStatus.vue";
 import { describe, expect, it, vi } from "vitest";
+
+import type { AsyncDataRequestStatus } from "#app";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),

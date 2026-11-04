@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { NuxtError } from "#app";
-
 import { useLayerStore } from "@swissgeo/layers";
 import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 import DatasetPanel from "~/components/sidebar/DatasetPanel.vue";
+
+import type { NuxtError } from "#app";
 
 definePageMeta({
   path: "/dataset/:id",

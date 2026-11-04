@@ -7,10 +7,10 @@ import { watchDebounced } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 
-import { useMapStore } from "@/stores/map";
-import usePositionStore from "@/stores/position";
-import { LV95Format, allFormats } from "@/utils/coordinates/coordinateFormat";
-import getHumanReadableCoordinate from "@/utils/mouseTrackerUtils";
+import { useMapStore } from "#stores/map";
+import usePositionStore from "#stores/position";
+import { LV95Format, allFormats } from "#utils/coordinates/coordinateFormat";
+import getHumanReadableCoordinate from "#utils/mouseTrackerUtils";
 
 const { olMap } = storeToRefs(useMapStore());
 const { projection } = storeToRefs(usePositionStore());

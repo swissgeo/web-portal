@@ -5,6 +5,11 @@
   "keywords": [],
   "license": "BSD-3-Clause",
   "type": "module",
+  "imports": {
+    "#*": "./src/*.ts",
+    "#*.svg": "./src/*.svg",
+    "#*.vue": "./src/*.vue"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

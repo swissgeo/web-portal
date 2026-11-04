@@ -7,7 +7,7 @@ import type {
   FeatureData,
   IdentifyFeature,
   WmsFeatureInfoCapability,
-} from "@/types";
+} from "#types";
 
 export const useFeaturesStore = defineStore("features", () => {
   const selectedFeaturesByUuid = ref<Record<string, FeatureData[]>>({});

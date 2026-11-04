@@ -2,7 +2,7 @@ import type { Dataset, DistributionCollection, Feature } from "@swissgeo/ogc";
 
 import log from "@swissgeo/log";
 
-import type { DatasetLayer, Layer, LayerAttribution, LayerInfo } from "@/index";
+import type { DatasetLayer, Layer, LayerAttribution, LayerInfo } from "#index";
 
 export class InvalidDatasetError extends Error {
   constructor(reason: string) {

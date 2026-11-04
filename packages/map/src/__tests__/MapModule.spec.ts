@@ -3,7 +3,7 @@ import type { VueWrapper } from "@vue/test-utils";
 import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 
-import type { Layer } from "@/types/layers";
+import type { Layer } from "#types/layers";
 
 import MapModule from "../MapModule.vue";
 

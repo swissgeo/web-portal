@@ -9,7 +9,7 @@ import {
   randomIntBetween,
   round,
   wrapDegrees,
-} from "@/index";
+} from "#index";
 
 describe("Unit test functions from numbers utils", () => {
   describe("round(value, decimals)", () => {

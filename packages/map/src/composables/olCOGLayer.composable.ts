@@ -6,9 +6,9 @@ import WebGLTileLayer from "ol/layer/WebGLTile";
 import GeoTIFFSource from "ol/source/GeoTIFF";
 import { computed, shallowRef, watch } from "vue";
 
-import type { COGLayer } from "@/types";
+import type { COGLayer } from "#types/index";
 
-import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
+import useAddLayerToMap from "#composables/useAddLayerToMap.composable";
 
 export default function useOlCOGLayer(
   layer: Ref<COGLayer>,

@@ -4,10 +4,10 @@ import type { Ref } from "vue";
 
 import { onMounted, provide, shallowRef, useTemplateRef } from "vue";
 
-import type { MapLayerRenderer } from "@/types";
-import type { Layer } from "@/types/layers";
+import type { MapLayerRenderer } from "#types/index";
+import type { Layer } from "#types/layers";
 
-import createOlMap from "@/composables/createOlMap";
+import createOlMap from "#composables/createOlMap";
 
 import { useMapStore } from "../stores/map";
 import OpenLayersVisibleLayer from "./OpenLayersVisibleLayer.vue";

@@ -4,9 +4,9 @@ import { LV03 } from "@swissgeo/coordinates";
 import { round } from "@swissgeo/numbers";
 import proj4 from "proj4";
 
-import type { CoordinateFormat } from "@/utils/coordinates/coordinateFormat";
+import type { CoordinateFormat } from "#utils/coordinates/coordinateFormat";
 
-import { LV03Format, LV95Format } from "@/utils/coordinates/coordinateFormat";
+import { LV03Format, LV95Format } from "#utils/coordinates/coordinateFormat";
 
 interface HumanReadableCoordinateParams {
   coordinates: SingleCoordinate;

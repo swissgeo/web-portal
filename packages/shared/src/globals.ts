@@ -1,4 +1,4 @@
-import type { Lang } from "@/language";
+import type { Lang } from "#language";
 
 // System Constants
 export const ALLOWED_LANGUAGES: Lang[] = ["de", "fr", "en", "it", "rm"];

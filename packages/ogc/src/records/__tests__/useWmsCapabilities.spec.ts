@@ -6,7 +6,7 @@ import { resolve } from "path";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { ref } from "vue";
 
-import type { Service } from "@/types";
+import type { Service } from "#types/index";
 
 import {
   parseWmsCapabilities,

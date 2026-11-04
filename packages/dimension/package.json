@@ -6,6 +6,10 @@
   "license": "BSD-3-Clause",
   "author": "",
   "type": "module",
+  "imports": {
+    "#*": "./src/*.ts",
+    "#*.vue": "./src/*.vue"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ref } from "vue";
 
-import type { Dataset } from "@/types";
+import type { Dataset } from "#types/index";
 
 import { usePreferredDistribution } from "../usePreferredDistribution";
 import ChBafuSchutzgebieteLuftfahrt from "./fixtures/dataset_ch.bafu.schutzgebiete-luftfahrt.json";

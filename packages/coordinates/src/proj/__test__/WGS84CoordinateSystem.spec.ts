@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { WGS84 } from "@/proj";
 import {
   PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES,
   STANDARD_ZOOM_LEVEL_1_25000_MAP,
-} from "@/proj/CoordinateSystem";
+} from "#proj/CoordinateSystem";
+import { WGS84 } from "#proj/index";
 
 describe("WGS84CoordinateSystem", () => {
   describe("constructor", () => {

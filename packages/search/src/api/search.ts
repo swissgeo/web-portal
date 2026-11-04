@@ -12,7 +12,7 @@ import type {
   LocationSearchResult,
   SearchResponse,
   SearchResponseResult,
-} from "@/types/search";
+} from "#types/search";
 
 export enum SearchResultTypesEnum {
   layer = "LAYER",

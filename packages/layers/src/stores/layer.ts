@@ -4,9 +4,9 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { defineStore } from "pinia";
 import { ref, markRaw } from "vue";
 
-import type { Layer, LayerInfo } from "@/index";
+import type { Layer, LayerInfo } from "#index";
 
-import { isDatasetLayer } from "@/utils/layerUtils";
+import { isDatasetLayer } from "#utils/layerUtils";
 
 /**
  * Quick explanation on this interface:

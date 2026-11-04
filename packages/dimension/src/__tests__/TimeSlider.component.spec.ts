@@ -3,8 +3,8 @@ import { createPinia, setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick } from "vue";
 
-import { useDimensionsStore } from "@/stores/dimensions";
-import TimeSlider from "@/TimeSlider.vue";
+import { useDimensionsStore } from "#stores/dimensions";
+import TimeSlider from "#TimeSlider.vue";
 
 vi.mock("@swissgeo/log", () => ({
   default: {
@@ -18,7 +18,7 @@ vi.mock("@vueuse/core", () => ({
   useResizeObserver: () => ({}),
 }));
 
-vi.mock("@/TimeSliderBar.vue", () => ({
+vi.mock("#TimeSliderBar.vue", () => ({
   default: defineComponent({
     name: "TimeSliderBar",
     props: ["allYears", "yearsWithData", "modelValue", "containerWidth"],

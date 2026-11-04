@@ -1,7 +1,7 @@
 import { LinearRing } from "ol/geom";
 import { describe, expect, it } from "vitest";
 
-import { getLinearRingLength } from "@/utils/drawingUtils";
+import { getLinearRingLength } from "#utils/drawingUtils";
 
 describe("getLinearRingLength", () => {
   it("calculates the perimeter of a closed linear ring in map units", () => {

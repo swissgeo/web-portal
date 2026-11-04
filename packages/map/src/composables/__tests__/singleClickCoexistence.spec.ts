@@ -4,7 +4,7 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { defineComponent, ref } from "vue";
 
-import type { MapClickEvent } from "@/types";
+import type { MapClickEvent } from "#types/index";
 
 import { useMapClickEvent } from "../useMapClickEvent.composable";
 import { useOlMapContextMenu } from "../useOlMapContextMenu.composable";

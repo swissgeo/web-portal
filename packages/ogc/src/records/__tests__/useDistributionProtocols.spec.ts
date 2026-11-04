@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ref } from "vue";
 
-import type { DistributionCollection } from "@/types/Records";
+import type { DistributionCollection } from "#types/Records";
 
 import { useDistributionProtocols } from "../useDistributionProtocols";
 import ChBafuSchutzgebieteLuftfahrtDistributions from "./fixtures/distribution-collection_ch.bafu.schutzgebiete-luftfahrt.json";

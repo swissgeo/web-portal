@@ -3,9 +3,6 @@
   "include": ["src/**/*.ts", "vitest.config.ts", "rolldown.config.ts"],
   "compilerOptions": {
     "types": ["pinia"],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "rootDir": "../.."
   }
 }

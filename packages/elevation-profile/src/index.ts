@@ -12,13 +12,13 @@ import {
 import zoomPlugin from "chartjs-plugin-zoom";
 import proj4 from "proj4";
 
-import type { Labels } from "@/ElevationProfile.vue";
+import type { Labels } from "#ElevationProfile.vue";
 
-import dataModelPlugin from "@/chartjs-plugins/datamodel.plugin";
-import noDataPlugin from "@/chartjs-plugins/nodata.plugin";
-import ElevationProfile from "@/ElevationProfile.vue";
-import ElevationProfileOpenLayersBridge from "@/ElevationProfileOpenLayersBridge.vue";
-import "@/style.css";
+import dataModelPlugin from "#chartjs-plugins/datamodel.plugin";
+import noDataPlugin from "#chartjs-plugins/nodata.plugin";
+import ElevationProfile from "#ElevationProfile.vue";
+import ElevationProfileOpenLayersBridge from "#ElevationProfileOpenLayersBridge.vue";
+import "#style.css";
 
 registerProj4(proj4);
 
@@ -39,4 +39,4 @@ export type {
   ElevationProfilePoint,
   ElevationProfileMetadata,
   ElevationProfileResponse,
-} from "@/types";
+} from "#types";

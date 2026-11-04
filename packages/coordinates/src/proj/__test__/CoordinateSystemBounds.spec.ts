@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import type { SingleCoordinate } from "@/coordinatesUtils";
+import type { SingleCoordinate } from "#coordinatesUtils";
 
-import { LV95 } from "@/proj";
-import CoordinateSystemBounds from "@/proj/CoordinateSystemBounds";
+import CoordinateSystemBounds from "#proj/CoordinateSystemBounds";
+import { LV95 } from "#proj/index";
 
 describe("CoordinateSystemBounds", () => {
   describe("splitIfOutOfBounds(coordinates, bounds)", () => {

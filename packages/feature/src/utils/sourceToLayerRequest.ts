@@ -3,7 +3,7 @@ import type {
   LayerSource,
   WMSLayerRequest,
   WmsFeatureInfoCapability,
-} from "@/types";
+} from "#types";
 
 export function sourcesToLayerRequests(
   layerSources: LayerSource[],

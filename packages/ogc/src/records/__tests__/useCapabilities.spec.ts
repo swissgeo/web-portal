@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ref } from "vue";
 
-import type { Service } from "@/types";
+import type { Service } from "#types/index";
 
 import { extractCapabilityUrl, useCapabilities } from "../useCapabilities";
 import ChGeoadminWms from "./fixtures/service_ch.admin.geo.wms.json";

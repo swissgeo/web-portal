@@ -4,9 +4,9 @@ import type { ShallowRef } from "vue";
 
 import { computed, inject } from "vue";
 
-import type { KMLLayer } from "@/types";
+import type { KMLLayer } from "#types/index";
 
-import useOlKMLLayer from "@/composables/olKMLLayer.composable";
+import useOlKMLLayer from "#composables/olKMLLayer.composable";
 
 const { layer } = defineProps<{
   layer: KMLLayer;

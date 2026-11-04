@@ -2,10 +2,10 @@ import log from "@swissgeo/log";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { IconApiDescription } from "@/core/Icon";
-import type { IconSetApiDescription } from "@/core/IconSet";
+import type { IconApiDescription } from "#core/Icon";
+import type { IconSetApiDescription } from "#core/IconSet";
 
-import { DEFAULT_ICON_SET_NAME, useIconsStore } from "@/stores/icons.store";
+import { DEFAULT_ICON_SET_NAME, useIconsStore } from "#stores/icons.store";
 
 const defaultSet: IconSetApiDescription = {
   colorable: true,

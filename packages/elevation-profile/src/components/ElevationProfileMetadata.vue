@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import type { ElevationProfileMetadata } from "@/types";
+import type { ElevationProfileMetadata } from "#types";
 
 import { formatDistance, formatElevation } from "../utils";
 

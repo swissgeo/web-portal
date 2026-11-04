@@ -2,7 +2,7 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { defineComponent } from "vue";
 
-import type { Layer } from "@/types/layers";
+import type { Layer } from "#types/layers";
 
 import OpenLayersVisibleLayer from "../OpenLayersVisibleLayer.vue";
 

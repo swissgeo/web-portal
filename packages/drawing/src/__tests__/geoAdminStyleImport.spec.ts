@@ -22,7 +22,7 @@ import {
   TEXT_HALO_COLOR_KEY,
   TEXT_PLACEMENT_KEY,
   TEXT_SIZE_KEY,
-} from "@/utils/drawingStyleCommon";
+} from "#utils/drawingStyleCommon";
 
 type GeoAdminStyleOptions = {
   iconScale?: number;

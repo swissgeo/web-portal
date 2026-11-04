@@ -10,10 +10,10 @@ import {
   watch,
 } from "vue";
 
-import { useDimensionsStore } from "@/stores/dimensions";
-import TimeSliderBar from "@/TimeSliderBar.vue";
-import { getYearsWithData } from "@/timeSliderUtils";
-import { convertYearToTimestamp, getYearFromGeoadminValue } from "@/timeUtils";
+import { useDimensionsStore } from "#stores/dimensions";
+import TimeSliderBar from "#TimeSliderBar.vue";
+import { getYearsWithData } from "#timeSliderUtils";
+import { convertYearToTimestamp, getYearFromGeoadminValue } from "#timeUtils";
 
 const emit = defineEmits<{
   close: [];

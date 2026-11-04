@@ -3,7 +3,7 @@ import type { Lang } from "@swissgeo/shared/language";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-import type { MenuTree } from "@/api";
+import type { MenuTree } from "#api/index";
 
 export type MenuIds = {
   readonly About: number;

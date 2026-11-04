@@ -1,4 +1,4 @@
-import type { DatasetCollection } from "@/types/Records";
+import type { DatasetCollection } from "#types/Records";
 
 export interface CatalogItemsOptions {
   /** Language code (de, fr, etc.) */

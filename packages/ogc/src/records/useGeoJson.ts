@@ -5,7 +5,7 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { isMapLibreStyleDocument } from "@swissgeo/shared";
 import { computed, watchEffect } from "vue";
 
-import type { Distribution } from "@/types";
+import type { Distribution } from "#types/index";
 
 import { useConditionalFetch } from "./useConditionalFetch";
 import { getLinksByRel } from "./utils";

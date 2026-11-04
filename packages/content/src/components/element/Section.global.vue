@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-import type { LeadContentPageWithCheckbox } from "@/types";
+import type { LeadContentPageWithCheckbox } from "#types/index";
 
 const { data } = defineProps<{
   data: Record<string, LeadContentPageWithCheckbox>;

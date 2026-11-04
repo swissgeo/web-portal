@@ -12,9 +12,9 @@ import {
   getLV95WMTSTileGrid,
   getLV95ViewConfig,
   getLV95WMSTileGrid,
-} from "@/ol";
-import { LV95 } from "@/proj";
-import registerProj4 from "@/registerProj4";
+} from "#ol";
+import { LV95 } from "#proj/index";
+import registerProj4 from "#registerProj4";
 
 function setupOpenLayers() {
   registerProj4(proj4);

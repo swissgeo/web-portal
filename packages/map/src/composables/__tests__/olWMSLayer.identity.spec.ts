@@ -1,16 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { effectScope, ref, toRaw } from "vue";
 
-import type { WMSLayer } from "@/types/layers";
+import type { WMSLayer } from "#types/layers";
 
-import useOlWmsLayer from "@/composables/olWMSLayer.composable";
-import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
+import useOlWmsLayer from "#composables/olWMSLayer.composable";
+import useAddLayerToMap from "#composables/useAddLayerToMap.composable";
 
-vi.mock("@/composables/useAddLayerToMap.composable", () => ({
+vi.mock("#composables/useAddLayerToMap.composable", () => ({
   default: vi.fn(() => ({ addLayerToMap: vi.fn() })),
 }));
 
-vi.mock("@/stores/position", () => ({
+vi.mock("#stores/position", () => ({
   default: () => ({
     projection: { epsg: "EPSG:3857", usesMercatorPyramid: true },
   }),

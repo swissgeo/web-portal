@@ -2,12 +2,12 @@ import type { Feature as GeoJsonFeature } from "geojson";
 
 import { describe, expect, it } from "vitest";
 
-import type { LayerSource, WmsFeatureInfoCapability } from "@/types";
+import type { LayerSource, WmsFeatureInfoCapability } from "#types";
 
 import {
   sourceToLayerRequest,
   sourcesToLayerRequests,
-} from "@/utils/sourceToLayerRequest";
+} from "#utils/sourceToLayerRequest";
 
 const UUID = "uuid-test";
 const LAYER_ID = "ch.test.layer";

@@ -2,10 +2,10 @@ import { mount } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, h } from "vue";
 
-import type { ElevationProfileResponse } from "@/types";
+import type { ElevationProfileResponse } from "#types";
 
-import { makeProfile } from "@/__tests__/fixtures";
-import ElevationProfile from "@/ElevationProfile.vue";
+import { makeProfile } from "#__tests__/fixtures";
+import ElevationProfile from "#ElevationProfile.vue";
 
 const makeLabels = () => ({
   plot: { xAxis: "Distance", yAxis: "Altitude", noData: "No data" },

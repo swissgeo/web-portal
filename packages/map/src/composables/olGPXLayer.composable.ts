@@ -9,10 +9,10 @@ import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import { computed, shallowRef, watch } from "vue";
 
-import type { GPXLayer } from "@/types";
+import type { GPXLayer } from "#types/index";
 
-import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
-import usePositionStore from "@/stores/position";
+import useAddLayerToMap from "#composables/useAddLayerToMap.composable";
+import usePositionStore from "#stores/position";
 
 export default function useOlGPXLayer(
   layer: Ref<GPXLayer>,

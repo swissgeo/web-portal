@@ -28,9 +28,6 @@
     "useDefineForClassFields": true,
     "strictNullChecks": false,
 
-    "outDir": "${configDir}/dist",
-    "paths": {
-      "@/*": ["${configDir}/src/*"]
-    }
+    "outDir": "${configDir}/dist"
   }
 }

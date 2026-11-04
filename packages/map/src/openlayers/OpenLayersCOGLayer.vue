@@ -4,9 +4,9 @@ import type { ShallowRef } from "vue";
 
 import { computed, inject } from "vue";
 
-import type { COGLayer } from "@/types";
+import type { COGLayer } from "#types/index";
 
-import useOlCOGLayer from "@/composables/olCOGLayer.composable";
+import useOlCOGLayer from "#composables/olCOGLayer.composable";
 
 const { layer } = defineProps<{
   layer: COGLayer;

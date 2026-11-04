@@ -1,7 +1,7 @@
 import { strToU8, zipSync } from "fflate";
 import { describe, expect, it } from "vitest";
 
-import { unzipKmzBuffer } from "@/utils/importUtils";
+import { unzipKmzBuffer } from "#utils/importUtils";
 
 function archive(files: Record<string, Uint8Array>): ArrayBuffer {
   return zipSync(files).buffer as ArrayBuffer;

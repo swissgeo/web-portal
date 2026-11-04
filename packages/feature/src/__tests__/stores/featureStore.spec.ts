@@ -1,9 +1,9 @@
 import { setActivePinia, createPinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import type { FeatureData, WmsFeatureInfoCapability } from "@/types";
+import type { FeatureData, WmsFeatureInfoCapability } from "#types";
 
-import { useFeaturesStore } from "@/stores/feature";
+import { useFeaturesStore } from "#stores/feature";
 
 const mockFeatureData: FeatureData[] = [
   {

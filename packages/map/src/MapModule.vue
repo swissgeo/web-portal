@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-import type { MapClickEvent, MapLayerRenderer } from "@/types";
-import type { Layer as MapLayer } from "@/types/layers";
+import type { MapClickEvent, MapLayerRenderer } from "#types/index";
+import type { Layer as MapLayer } from "#types/layers";
 
 import OpenLayersCompareSlider from "./openlayers/OpenLayersCompareSlider.vue";
 import OpenLayersContextMenuPopup from "./openlayers/OpenLayersContextMenuPopup.vue";

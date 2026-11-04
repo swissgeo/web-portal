@@ -2,9 +2,9 @@ import type proj4 from "proj4";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { LV03, LV95, WEBMERCATOR } from "@/proj";
-import StandardCoordinateSystem from "@/proj/StandardCoordinateSystem";
-import { registerProj4 } from "@/registerProj4";
+import { LV03, LV95, WEBMERCATOR } from "#proj/index";
+import StandardCoordinateSystem from "#proj/StandardCoordinateSystem";
+import { registerProj4 } from "#registerProj4";
 
 class TestCoordinateSystem extends StandardCoordinateSystem {
   constructor() {

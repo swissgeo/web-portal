@@ -11,10 +11,6 @@
   ],
   "compilerOptions": {
     "types": ["vue", "vite/client"],
-    "paths": {
-      "@/*": ["./src/*", "../skeleton/src/*"],
-      "@stores/*": ["./src/stores/*", "../skeleton/src/stores/*"]
-    },
     "rootDir": "../.."
   }
 }

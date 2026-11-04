@@ -3,7 +3,7 @@ import type { Ref } from "vue";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { computed, toValue, watchEffect } from "vue";
 
-import type { Distribution, DistributionCollection } from "@/types/Records";
+import type { Distribution, DistributionCollection } from "#types/Records";
 
 export function useDistribution(
   distributionCollection: Ref<DistributionCollection | null>,
