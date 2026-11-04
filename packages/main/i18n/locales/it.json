@@ -700,12 +700,12 @@
       },
       "catalog": {
         "title": "Catalogo dei dati",
-        "description": "Sfoglia il catalogo completo di geodati di base, temi e metadati.",
+        "description": "Esplora il catalogo completo con dati geografici, argomenti e metadati.",
         "button": "Apri il catalogo dei dati"
       },
       "info": {
         "title": "Tutto il resto su SWISSGEO",
-        "description": "Notizie, aiuto e informazioni su di noi.",
+        "description": "Nel portale informativo troverete approfondimenti, guide, informazioni specialistiche e strategie.",
         "button": "Al portale informativo"
       }
     },
