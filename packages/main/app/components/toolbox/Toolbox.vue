@@ -12,7 +12,6 @@ import MeasureButton from "@/components/toolbox/toolboxButtons/MeasureButton.vue
 import PrintButton from "@/components/toolbox/toolboxButtons/PrintButton.vue";
 import RecenterButton from "@/components/toolbox/toolboxButtons/RecenterButton.vue";
 import ShareButton from "@/components/toolbox/toolboxButtons/ShareButton.vue";
-import TimeSliderButton from "@/components/toolbox/toolboxButtons/TimeSliderButton.vue";
 import Toggle3dButton from "@/components/toolbox/toolboxButtons/Toggle3dButton.vue";
 import ZoomButtons from "@/components/toolbox/toolboxButtons/ZoomButtons.vue";
 import ToolboxDetail from "@/components/toolbox/ToolboxDetail.vue";
@@ -64,7 +63,6 @@ const isEmbedMode = computed(() => displayMode === "embed");
       <CompareSliderButton
         v-if="isWebMode && toolboxStore.showCompareSliderButton"
       />
-      <TimeSliderButton v-if="isWebMode && toolboxStore.showTimeSliderButton" />
       <ImportButton v-if="isWebMode && toolboxStore.showImportButton" />
       <ShareButton v-if="isWebMode && toolboxStore.showShareButton" />
       <PrintButton v-if="isWebMode && toolboxStore.showPrintButton" />

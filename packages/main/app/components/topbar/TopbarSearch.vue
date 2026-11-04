@@ -17,7 +17,7 @@ import { useSearchSelection } from "@/composables/useSearchSelection";
 
 import SearchCategory from "./SearchCategory.vue";
 
-const emit = defineEmits(["selected"]);
+const emit = defineEmits(["selected", "coordinates-detected"]);
 const { skipMobile = false } = defineProps<{
   skipMobile?: boolean;
 }>();
@@ -147,6 +147,7 @@ watch(
       return;
     }
     if (result) {
+      emit("coordinates-detected", result);
       void handleResultSelection(result);
     }
   },
@@ -215,6 +216,13 @@ function handleClick() {
   if (searchStore.query.length >= 2 && searchStore.hasResults) {
     openResults();
   }
+}
+
+// Enter applies the field content right away: the debounced watcher would
+// otherwise still search the previous query, and the field keeps a previous
+// coordinate search until it is submitted again
+function submitCoordinate() {
+  void searchStore.setSearchQuery(query.value, locale.value);
 }
 
 // only the map tab holds the focusable list, the CMS results have their own tab
@@ -296,6 +304,7 @@ function clearSearch() {
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
+        @keydown.enter.prevent="submitCoordinate"
         :ui="{
           base: 'placeholder-nav-brand-muted! ring-0',
           leadingIcon: 'text-nav-brand-muted',

@@ -213,7 +213,10 @@
     "permissionDenied": "Location access denied",
     "stopTracking": "Hide location",
     "startGeolocation": "Show location",
-    "recenterMap": "Re-centre map"
+    "recenterMap": "Re-centre map",
+    "timeout": "Location request timed out.",
+    "unavailable": "Unable to determine location.",
+    "outsideSwitzerland": "Your location is outside of Switzerland and cannot be shown on the map."
   },
   "toolbox": {
     "geolocation": {
@@ -449,6 +452,10 @@
       "links": {
         "roadmap": "geoplatform-outlook"
       }
+    },
+    "zoom": {
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
     }
   },
   "backgroundLayers": {
@@ -688,17 +695,17 @@
     "cards": {
       "map": {
         "title": "Map",
-        "description": "Interactive map viewer with hundreds of layers, time travel, print and share functions.",
+        "description": "Interactive map viewer with hundreds of layers, a time-travel feature, and print and share functions.",
         "button": "Open the map"
       },
       "catalog": {
         "title": "Data catalogue",
-        "description": "Browse the complete catalogue of geobase data, themes and metadata.",
+        "description": "Browse the complete catalogue of geodata, themes and metadata.",
         "button": "Open the data catalogue"
       },
       "info": {
         "title": "Everything else about SWISSGEO",
-        "description": "News, help and information about us.",
+        "description": "You can find background information, guidance, specialist information and strategy on the information portal.",
         "button": "Go to the info portal"
       }
     },

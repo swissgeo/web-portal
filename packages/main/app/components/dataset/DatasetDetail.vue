@@ -27,6 +27,9 @@ const props = defineProps<{
   distributionError?: boolean;
 }>();
 
+// The parent keeps the open tab, because a language switch unmounts this component.
+const tab = defineModel<string>("tab", { default: "overview" });
+
 const { t } = useI18n();
 const tabs = computed<TabsItem[]>(() => [
   {
@@ -82,8 +85,8 @@ const serviceDistributions = computed<Distribution[]>(() => {
 <template>
   <UTabs
     :key="dataset.id"
+    v-model="tab"
     :items="tabs"
-    default-value="overview"
     variant="link"
     color="neutral"
     :unmount-on-hide="false"
@@ -174,6 +177,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
         <DatasetLinkList
           :links="metadataLinks"
           :label="t('dataset.viewGeocat')"
+          :tooltip="t('dataset.openService')"
         />
       </section>
     </template>

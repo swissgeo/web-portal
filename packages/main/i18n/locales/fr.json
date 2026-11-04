@@ -213,7 +213,10 @@
     "permissionDenied": "Accès à la position refusé",
     "stopTracking": "Masquer la position",
     "startGeolocation": "Afficher la position",
-    "recenterMap": "Recentrer la carte"
+    "recenterMap": "Recentrer la carte",
+    "timeout": "La localisation a pris trop de temps.",
+    "unavailable": "Impossible de déterminer la position.",
+    "outsideSwitzerland": "Votre position se trouve hors de Suisse et ne peut pas être affichée sur la carte."
   },
   "toolbox": {
     "geolocation": {
@@ -449,6 +452,10 @@
       "links": {
         "roadmap": "geoplateforme-perspectives"
       }
+    },
+    "zoom": {
+      "zoomIn": "Zoom avant",
+      "zoomOut": "Zoom arrière"
     }
   },
   "backgroundLayers": {
@@ -532,7 +539,7 @@
     "showMore": "Afficher plus",
     "showLess": "Afficher moins",
     "contact": "Contact",
-    "aggregated": "Agrégé"
+    "aggregated": "Agrégée"
   },
   "elevationProfile": {
     "windowTitle": "Profil altimétrique",

@@ -8,6 +8,16 @@ const { cmsUrl } = useCmsUrl();
 defineProps<{ mobile?: boolean }>();
 
 const cmsDomain = runtimeConfig.public.cmsBaseUrl.replace(/https?:\/\//, "");
+
+const REPOSITORY_URL = "https://github.com/swissgeo/web-portal";
+// Only an exact release tag has a release page. A build between two tags
+// (for example v0.9.0-beta.2-2-g4e9f735f) or a commit hash opens the repository.
+const versionUrl = computed(() => {
+  const { version } = runtimeConfig.public;
+  return /^v\d+\.\d+\.\d+(-[a-z]+\.\d+)?$/.test(version)
+    ? `${REPOSITORY_URL}/releases/tag/${version}`
+    : REPOSITORY_URL;
+});
 </script>
 <template>
   <div
@@ -20,7 +30,8 @@ const cmsDomain = runtimeConfig.public.cmsBaseUrl.replace(/https?:\/\//, "");
     <ReportIssueLink />
     <div :class="mobile ? 'text-accent grid grid-cols-2 gap-2' : 'contents'">
       <ULink
-        to="https://github.com/swissgeo/web-portal"
+        :to="versionUrl"
+        data-testid="footer-version-link"
         target="_blank"
         raw
         class="flex items-center gap-1"

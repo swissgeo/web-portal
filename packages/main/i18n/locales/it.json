@@ -213,7 +213,10 @@
     "permissionDenied": "Accesso alla posizione negato",
     "stopTracking": "Nascondi la posizione",
     "startGeolocation": "Mostra la posizione",
-    "recenterMap": "Ricentra la mappa"
+    "recenterMap": "Ricentra la mappa",
+    "timeout": "La localizzazione ha richiesto troppo tempo.",
+    "unavailable": "Impossibile determinare la posizione.",
+    "outsideSwitzerland": "La sua posizione si trova fuori dalla Svizzera e non può essere mostrata sulla mappa."
   },
   "toolbox": {
     "geolocation": {
@@ -449,6 +452,10 @@
       "links": {
         "roadmap": "geopiattaforma-prospettive"
       }
+    },
+    "zoom": {
+      "zoomIn": "Ingrandisci",
+      "zoomOut": "Riduci"
     }
   },
   "backgroundLayers": {
@@ -693,12 +700,12 @@
       },
       "catalog": {
         "title": "Catalogo dei dati",
-        "description": "Sfoglia il catalogo completo di geodati di base, temi e metadati.",
+        "description": "Esplora il catalogo completo con dati geografici, argomenti e metadati.",
         "button": "Apri il catalogo dei dati"
       },
       "info": {
         "title": "Tutto il resto su SWISSGEO",
-        "description": "Notizie, aiuto e informazioni su di noi.",
+        "description": "Nel portale informativo troverete approfondimenti, guide, informazioni specialistiche e strategie.",
         "button": "Al portale informativo"
       }
     },

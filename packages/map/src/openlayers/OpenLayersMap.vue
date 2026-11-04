@@ -2,7 +2,13 @@
 import type { Map as OlMapType } from "ol";
 import type { Ref } from "vue";
 
-import { onMounted, provide, shallowRef, useTemplateRef } from "vue";
+import {
+  onMounted,
+  onUnmounted,
+  provide,
+  shallowRef,
+  useTemplateRef,
+} from "vue";
 
 import type { MapLayerRenderer } from "@/types";
 import type { Layer } from "@/types/layers";
@@ -57,6 +63,12 @@ function mountOlMap() {
 }
 
 initializeOlMap(zoomOnlyCtrl);
+
+onUnmounted(() => {
+  if (mapStore.olMap === olMap.value) {
+    mapStore.setOlMap(null);
+  }
+});
 </script>
 
 <template>

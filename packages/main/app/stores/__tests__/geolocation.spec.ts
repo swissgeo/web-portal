@@ -32,6 +32,11 @@ mockNuxtImport("useToaster", () => () => ({
     mockToastAdd({ title: message, color: "success" }),
 }));
 
+// Return the i18n key, so the tests can check which message the store shows.
+mockNuxtImport("useNuxtApp", () => () => ({
+  $i18n: { t: (key: string) => key },
+}));
+
 vi.mock("@swissgeo/map", async () => {
   const { LV95 } = await import("@swissgeo/coordinates");
   return {
@@ -269,7 +274,7 @@ describe("geolocation store", () => {
       store.setGeolocationActive(true, dispatcher);
       expect(mockToastAdd).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: expect.stringContaining("outside of Switzerland"),
+          title: "geolocation.outsideSwitzerland",
         }),
       );
     });
@@ -356,7 +361,7 @@ describe("geolocation store", () => {
       expect(store.active).toBe(false);
       expect(mockToastAdd).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: expect.stringContaining("permission"),
+          title: "geolocation.permissionDenied",
         }),
       );
     });
@@ -373,7 +378,7 @@ describe("geolocation store", () => {
       expect(store.active).toBe(false);
       expect(mockToastAdd).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: expect.stringContaining("timed out"),
+          title: "geolocation.timeout",
         }),
       );
     });
@@ -399,7 +404,7 @@ describe("geolocation store", () => {
       watchError!(unknownError); // errorCount → 3, toast shown
 
       expect(mockToastAdd).toHaveBeenCalledWith(
-        expect.objectContaining({ title: expect.stringContaining("Unable") }),
+        expect.objectContaining({ title: "geolocation.unavailable" }),
       );
     });
 

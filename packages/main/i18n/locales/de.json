@@ -213,7 +213,10 @@
     "permissionDenied": "Berechtigung zur Standortbestimmung verweigert.",
     "stopTracking": "Standort ausblenden",
     "startGeolocation": "Standort anzeigen",
-    "recenterMap": "Karte neu zentrieren"
+    "recenterMap": "Karte neu zentrieren",
+    "timeout": "Die Standortbestimmung hat zu lange gedauert.",
+    "unavailable": "Der Standort konnte nicht bestimmt werden.",
+    "outsideSwitzerland": "Ihr Standort liegt ausserhalb der Schweiz und kann nicht auf der Karte angezeigt werden."
   },
   "toolbox": {
     "geolocation": {
@@ -449,6 +452,10 @@
       "links": {
         "roadmap": "geoplattform-ausblick"
       }
+    },
+    "zoom": {
+      "zoomIn": "Hineinzoomen",
+      "zoomOut": "Herauszoomen"
     }
   },
   "backgroundLayers": {
@@ -688,17 +695,17 @@
     "cards": {
       "map": {
         "title": "Karte",
-        "description": "Interaktiver Kartenviewer mit Hunderten von Ebenen, Zeitreise sowie Druck- und Teilen-Funktionen.",
+        "description": "Interaktiver Kartenviewer mit hunderten Ebenen, Zeitreise, Druck- und Teilen-Funktionen.",
         "button": "Zur Karte"
       },
       "catalog": {
         "title": "Datenkatalog",
-        "description": "Durchsuchen Sie den vollständigen Katalog mit Geobasisdaten, Themen und Metadaten.",
+        "description": "Durchsuchen Sie den vollständigen Katalog mit Geodaten, Themen und Metadaten.",
         "button": "Datenkatalog öffnen"
       },
       "info": {
         "title": "Alles Weitere zu SWISSGEO",
-        "description": "News, Hilfe und Informationen über uns.",
+        "description": "Hintergründe, Anleitungen, Fachinformationen und Strategie finden Sie im Infoportal.",
         "button": "Zum Infoportal"
       }
     },

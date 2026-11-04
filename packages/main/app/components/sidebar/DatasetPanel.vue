@@ -4,7 +4,7 @@ import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
 import { useElementSize } from "@vueuse/core";
 import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
 import DatasetMapAction from "~/components/dataset/DatasetMapAction.vue";
-import { computed, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
@@ -27,6 +27,9 @@ const { height: headerHeight } = useElementSize(header, undefined, {
   box: "border-box",
 });
 
+// A language switch reloads the record and unmounts the detail, so the panel keeps the tab.
+const tab = ref("overview");
+
 const backLabel = computed(() => {
   if (props.backToCatalog) {
     return t("dataset.backToCatalog");
@@ -37,7 +40,7 @@ const backLabel = computed(() => {
 
 <template>
   <section
-    class="@container flex min-h-full flex-col border-r border-default bg-default"
+    class="@container flex min-h-full flex-col bg-default"
     :style="{ '--dataset-header-height': `${headerHeight}px` }"
     aria-labelledby="dataset-panel-title"
     data-testid="dataset-panel"
@@ -112,6 +115,7 @@ const backLabel = computed(() => {
 
       <DatasetDetail
         v-else-if="dataset"
+        v-model:tab="tab"
         class="shrink-0"
         :dataset="dataset"
         :distribution-collection="distributionCollection ?? null"
