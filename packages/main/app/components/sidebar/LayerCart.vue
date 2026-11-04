@@ -98,7 +98,7 @@ function openLayerCatalog() {
     ref="layerCartRef"
     @pointerdown="keepDrawerStill"
     data-testid="layer-cart"
-    class="mt-4 flex min-w-0 flex-1 [scrollbar-gutter:stable] flex-col gap-4 overflow-y-auto px-2"
+    class="mt-2.5 flex min-w-0 flex-1 [scrollbar-gutter:stable] flex-col gap-4 overflow-y-auto px-2 py-1.5"
   >
     <LayerCartEntry
       v-for="{ layer, layerIndex } in sortedLayers"
