@@ -5,6 +5,10 @@ import type { WMSLayer } from "@/types/layers";
 
 import useOlWmsLayer from "@/composables/olWMSLayer.composable";
 
+const createdTileSources = vi.hoisted(
+  (): Array<{ getGutter: () => number }> => [],
+);
+
 const { tileUpdateParamsSpy, imageUpdateParamsSpy, MockTileWMS, MockImageWMS } =
   vi.hoisted(() => {
     const tileSpy = vi.fn();
@@ -12,8 +16,16 @@ const { tileUpdateParamsSpy, imageUpdateParamsSpy, MockTileWMS, MockImageWMS } =
 
     class HoistedMockTileWMS {
       updateParams = tileSpy;
+      private readonly gutter: number;
 
-      constructor(_config: unknown) {}
+      constructor(config: { gutter: number }) {
+        this.gutter = config.gutter;
+        createdTileSources.push(this);
+      }
+
+      getGutter() {
+        return this.gutter;
+      }
     }
 
     class HoistedMockImageWMS {
@@ -100,6 +112,21 @@ describe("useOlWmsLayer", () => {
   beforeEach(() => {
     tileUpdateParamsSpy.mockClear();
     imageUpdateParamsSpy.mockClear();
+    createdTileSources.length = 0;
+  });
+
+  it("recreates the TileWMS source when the gutter changes", async () => {
+    const layer = ref(makeWMSLayer({ gutter: 0 }));
+
+    useOlWmsLayer(layer, ref(undefined));
+    await nextTick();
+    expect(createdTileSources.at(-1)?.getGutter()).toBe(0);
+
+    layer.value.gutter = 120;
+    await nextTick();
+
+    expect(createdTileSources).toHaveLength(2);
+    expect(createdTileSources.at(-1)?.getGutter()).toBe(120);
   });
 
   it("updates source params with new LANG when layer lang changes", async () => {
