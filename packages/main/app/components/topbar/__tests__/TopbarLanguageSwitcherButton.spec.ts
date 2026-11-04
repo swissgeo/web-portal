@@ -111,8 +111,8 @@ describe("TopbarLanguageSwitcherButton", () => {
     expect(base.split(" ")).toEqual(
       expect.arrayContaining([
         "focus-visible:outline-solid",
-        "focus-visible:outline-2",
-        "focus-visible:outline-primary",
+        "focus-visible:outline-3",
+        "focus-visible:outline-inverted/25",
       ]),
     );
   });
