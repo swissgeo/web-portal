@@ -218,14 +218,11 @@ function handleClick() {
   }
 }
 
-// the field keeps a previous coordinate search, so Enter has to apply it
-// again: detection otherwise only runs while the query changes
+// Enter applies the field content right away: the debounced watcher would
+// otherwise still search the previous query, and the field keeps a previous
+// coordinate search until it is submitted again
 function submitCoordinate() {
-  const result = searchStore.coordinateResult;
-  if (result) {
-    emit("coordinates-detected", result);
-    void handleResultSelection(result);
-  }
+  void searchStore.setSearchQuery(query.value, locale.value);
 }
 
 // only the map tab holds the focusable list, the CMS results have their own tab

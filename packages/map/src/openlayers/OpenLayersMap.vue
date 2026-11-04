@@ -65,7 +65,9 @@ function mountOlMap() {
 initializeOlMap(zoomOnlyCtrl);
 
 onUnmounted(() => {
-  mapStore.setOlMap(null);
+  if (mapStore.olMap === olMap.value) {
+    mapStore.setOlMap(null);
+  }
 });
 </script>
 
