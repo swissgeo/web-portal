@@ -71,6 +71,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
               class="w-full"
               :skip-mobile="true"
               @selected="goToMap()"
+              @coordinates-detected="goToMap()"
             />
           </div>
         </ClientOnly>
