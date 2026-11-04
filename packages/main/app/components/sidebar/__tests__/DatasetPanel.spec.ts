@@ -69,7 +69,9 @@ function render(
         UIcon: true,
         UBadge: { props: ["label"], template: "<span>{{ label }}</span>" },
         DatasetDetail: {
-          props: ["dataset", "distributionCollection"],
+          name: "DatasetDetail",
+          props: ["dataset", "distributionCollection", "tab"],
+          emits: ["update:tab"],
           template: "<div />",
         },
         DatasetCopyLink: true,
@@ -236,5 +238,28 @@ describe("DatasetPanel", () => {
     expect(wrapper.get('[data-testid="dataset-aggregated"]').text()).toBe(
       "dataset.aggregated",
     );
+  });
+
+  it("keeps the open tab while a language switch reloads the dataset", async () => {
+    const wrapper = render();
+    wrapper
+      .getComponent({ name: "DatasetDetail" })
+      .vm.$emit("update:tab", "legend");
+
+    await wrapper.setProps({ dataset: null, isLoading: true });
+    expect(wrapper.findComponent({ name: "DatasetDetail" }).exists()).toBe(
+      false,
+    );
+    await wrapper.setProps({ dataset, isLoading: false });
+
+    expect(wrapper.getComponent({ name: "DatasetDetail" }).props("tab")).toBe(
+      "legend",
+    );
+  });
+
+  it("leaves the border to the frame, so the scrollbar stays inside the panel", () => {
+    expect(
+      render().get('[data-testid="dataset-panel"]').classes(),
+    ).not.toContain("border-r");
   });
 });

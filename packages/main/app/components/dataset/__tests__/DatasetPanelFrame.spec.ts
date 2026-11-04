@@ -94,4 +94,17 @@ describe("DatasetPanelFrame", () => {
     expect(panelSnapPoint.value).toBeNull();
     wrapper.unmount();
   });
+
+  it("draws the panel border outside the scroll area on desktop", () => {
+    const wrapper = render(clientRender);
+
+    expect(wrapper.get("div").classes()).toEqual(
+      expect.arrayContaining([
+        "md:border-r",
+        "md:border-default",
+        "md:bg-default",
+      ]),
+    );
+    wrapper.unmount();
+  });
 });

@@ -358,7 +358,8 @@ describe("DatasetDetail Overview", () => {
     expect(wrapper.get('[data-testid="legend-stub"]').element).toBe(legend);
   });
 
-  it("starts on Overview and resets when a different dataset opens", async () => {
+  // The dataset page remounts for each dataset, so it resets the tab, not this component.
+  it("starts on Overview and shows a different dataset when it opens", async () => {
     const wrapper = mountDetail(makeDataset([], "First description"));
     expect(wrapper.get('[role="tab"][aria-selected="true"]').text()).toBe(
       "dataset.overview",
@@ -376,11 +377,26 @@ describe("DatasetDetail Overview", () => {
     });
     await flushPromises();
 
-    expect(wrapper.get('[role="tab"][aria-selected="true"]').text()).toBe(
-      "dataset.overview",
-    );
     expect(wrapper.get('[data-testid="dataset-description"]').text()).toBe(
       "Second description",
     );
+  });
+
+  it("opens the tab from the parent and reports a tab change", async () => {
+    const wrapper = mount(DatasetDetail, {
+      props: {
+        dataset: makeDataset([], "Description"),
+        distributionCollection: null,
+        tab: "metadata",
+      },
+      global: { stubs: { DatasetLinkList: true, DatasetServiceList: true } },
+    });
+    expect(wrapper.get('[role="tab"][aria-selected="true"]').text()).toBe(
+      "dataset.metadata",
+    );
+
+    await selectTab(wrapper, "layers.legend.title");
+
+    expect(wrapper.emitted("update:tab")).toEqual([["legend"]]);
   });
 });

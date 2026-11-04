@@ -136,4 +136,18 @@ describe("LayerVariantSelect.vue", () => {
 
     expect(mountSelect().html()).not.toContain("layers.variant");
   });
+
+  it("names a variant without a title after the dataset", () => {
+    // The API sends no data layer title in EN and RM.
+    const untitledDataLayer = makeDistribution(dataLayer.id, "");
+    setDistributions([availabilityMap, untitledDataLayer]);
+
+    const wrapper = mountSelect();
+
+    expect(wrapper.getComponent(UTooltip).props("text")).toBe("Gefahrenkarten");
+    expect(wrapper.getComponent(USelect).props("items")).toEqual([
+      { label: "Gefahrenkarten", value: dataLayer.id },
+      { label: "Verfügbarkeit", value: availabilityMap.id },
+    ]);
+  });
 });
