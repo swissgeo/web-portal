@@ -237,4 +237,10 @@ describe("DatasetPanel", () => {
       "dataset.aggregated",
     );
   });
+
+  it("leaves the border to the frame, so the scrollbar stays inside the panel", () => {
+    expect(
+      render().get('[data-testid="dataset-panel"]').classes(),
+    ).not.toContain("border-r");
+  });
 });

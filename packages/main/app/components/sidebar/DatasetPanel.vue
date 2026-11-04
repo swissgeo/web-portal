@@ -37,7 +37,7 @@ const backLabel = computed(() => {
 
 <template>
   <section
-    class="@container flex min-h-full flex-col border-r border-default bg-default"
+    class="@container flex min-h-full flex-col bg-default"
     :style="{ '--dataset-header-height': `${headerHeight}px` }"
     aria-labelledby="dataset-panel-title"
     data-testid="dataset-panel"

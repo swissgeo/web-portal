@@ -24,7 +24,7 @@ watch(
   <!-- Keep the route outlet mounted while navigation resolves. -->
   <div
     v-show="isVisible"
-    class="md:absolute md:inset-y-0 md:left-0 md:z-60 md:flex md:w-3/4 md:max-w-dataset-panel md:flex-col"
+    class="md:absolute md:inset-y-0 md:left-0 md:z-60 md:flex md:w-3/4 md:max-w-dataset-panel md:flex-col md:border-r md:border-default md:bg-default"
   >
     <ClientOnly>
       <ResponsivePanel
