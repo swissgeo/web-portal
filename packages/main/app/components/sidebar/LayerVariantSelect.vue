@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Dataset } from "@swissgeo/ogc";
+import type { Dataset, Distribution } from "@swissgeo/ogc";
 
 import { useDistributionCollection } from "@swissgeo/ogc";
 import { useSelectedDistribution } from "~/composables/useSelectedDistribution";
@@ -26,9 +26,15 @@ const { distribution } = useSelectedDistribution(
   () => props.selectedDistributionId,
 );
 
+// The API gives no variant title in some languages. The dataset title has a
+// language fallback, so it names the variant instead.
+function variantLabel(variant: Distribution) {
+  return variant.properties.title || dataset.value.properties.title;
+}
+
 const items = computed(() =>
   getDatasetVariants(dataset.value, distributionCollection.value).map(
-    (variant) => ({ label: variant.properties.title, value: variant.id }),
+    (variant) => ({ label: variantLabel(variant), value: variant.id }),
   ),
 );
 
@@ -44,7 +50,7 @@ function onSelect(distributionId: string) {
     <span class="text-xs font-medium text-toned uppercase">
       {{ t("layers.variant") }}
     </span>
-    <UTooltip :text="distribution?.properties.title">
+    <UTooltip :text="distribution && variantLabel(distribution)">
       <USelect
         data-testid="layer-variant-select"
         data-vaul-no-drag
