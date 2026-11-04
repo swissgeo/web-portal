@@ -1,4 +1,4 @@
-import type { SearchResult } from "@swissgeo/search";
+import type { CoordinateSearchResult, SearchResult } from "@swissgeo/search";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { enableAutoUnmount, mount } from "@vue/test-utils";
@@ -12,7 +12,7 @@ const handleResultSelection = vi.fn();
 const searchStore = reactive({
   query: "",
   results: [] as SearchResult[],
-  coordinateResult: null,
+  coordinateResult: null as CoordinateSearchResult | null,
   isSearching: false,
   hasError: false,
   enableCmsSearch: true,
