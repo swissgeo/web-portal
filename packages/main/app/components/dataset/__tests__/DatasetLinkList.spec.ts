@@ -10,15 +10,24 @@ it("uses the display label without changing the supplied metadata URL", () => {
     props: {
       links: [{ href, rel: "alternate", title: "Original title" }],
       label: "Auf geocat.ch ansehen",
+      tooltip: "In neuem Tab öffnen",
     },
     global: {
       stubs: {
         ULink: { props: ["to"], template: '<a :href="to"><slot /></a>' },
         UIcon: true,
+        UTooltip: {
+          name: "UTooltip",
+          props: ["text"],
+          template: "<slot />",
+        },
       },
     },
   });
   expect(wrapper.get("a").attributes("href")).toBe(href);
   expect(wrapper.get("a").attributes("target")).toBe("_blank");
   expect(wrapper.get("a").text()).toBe("Auf geocat.ch ansehen");
+  expect(wrapper.getComponent({ name: "UTooltip" }).props("text")).toBe(
+    "In neuem Tab öffnen",
+  );
 });

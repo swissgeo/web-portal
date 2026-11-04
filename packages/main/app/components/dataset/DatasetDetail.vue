@@ -174,6 +174,7 @@ const serviceDistributions = computed<Distribution[]>(() => {
         <DatasetLinkList
           :links="metadataLinks"
           :label="t('dataset.viewGeocat')"
+          :tooltip="t('dataset.openService')"
         />
       </section>
     </template>

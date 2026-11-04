@@ -254,9 +254,10 @@ describe("DatasetDetail Overview", () => {
     const wrapper = mountDetail(dataset, distributionCollection);
 
     await selectTab(wrapper, "dataset.metadata");
-    expect(wrapper.getComponent(DatasetLinkList).props("links")).toEqual([
-      metadata,
-    ]);
+    expect(wrapper.getComponent(DatasetLinkList).props()).toMatchObject({
+      links: [metadata],
+      tooltip: "dataset.openService",
+    });
     await selectTab(wrapper, "dataset.dataAccess");
     expect(
       wrapper.getComponent(DatasetServiceList).props("distributions"),

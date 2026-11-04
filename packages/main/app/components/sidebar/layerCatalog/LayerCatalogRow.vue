@@ -35,22 +35,23 @@ async function setOnMap(onMap: boolean): Promise<void> {
     class="hover:bg-accent-50 dark:hover:bg-accent-800 col-span-full grid grid-cols-subgrid border-b border-accented last:border-b-0"
     :class="isOnMap ? 'text-highlighted' : 'text-toned'"
   >
-    <div
-      role="cell"
-      class="flex min-w-0 items-start px-2 py-4"
-      :title="dataset.properties.title"
-    >
-      <USwitch
-        data-testid="catalog-layer-on-map"
-        size="xs"
-        color="accent"
-        checked-icon="i-lucide-check"
-        :aria-label="dataset.properties.shortTitle"
-        :model-value="isOnMap"
-        @update:model-value="setOnMap"
-      />
+    <div role="cell" class="flex min-w-0 items-start px-2 py-4">
+      <UTooltip
+        :text="isOnMap ? t('dataset.removeFromMap') : t('dataset.addToMap')"
+      >
+        <USwitch
+          data-testid="catalog-layer-on-map"
+          size="xs"
+          color="accent"
+          checked-icon="i-lucide-check"
+          :aria-label="dataset.properties.shortTitle"
+          :model-value="isOnMap"
+          @update:model-value="setOnMap"
+        />
+      </UTooltip>
       <ULink
         data-testid="catalog-layer-title"
+        :title="dataset.properties.title"
         raw
         as="div"
         :to="titlePath"
