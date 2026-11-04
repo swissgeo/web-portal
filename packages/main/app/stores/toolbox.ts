@@ -1,7 +1,6 @@
 import { useDimensionsStore } from "@swissgeo/dimension";
 import { useDrawing } from "@swissgeo/drawing";
 import { useLayerStore } from "@swissgeo/layers";
-import { useGeolocationStore } from "~/stores/geolocation";
 import { useMapViewStore } from "~/stores/mapView";
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
@@ -13,7 +12,6 @@ export const useToolboxStore = defineStore("toolbox", () => {
   const layerStore = useLayerStore();
   const dimensionsStore = useDimensionsStore();
   const mapViewStore = useMapViewStore();
-  const geolocationStore = useGeolocationStore();
 
   // showing buttons
   const showFullScreenButton = ref(true);
@@ -27,9 +25,6 @@ export const useToolboxStore = defineStore("toolbox", () => {
   const showShareButton = ref(true);
   const showPrintButton = ref(true);
 
-  const showRecenterButton = computed(
-    () => geolocationStore.active && geolocationStore.position !== undefined,
-  );
   const showTimeSliderButton = computed(() =>
     layerStore.layers.some((layer) => {
       return (
@@ -79,7 +74,6 @@ export const useToolboxStore = defineStore("toolbox", () => {
     showImportButton,
     showShareButton,
     showPrintButton,
-    showRecenterButton,
     showTimeSliderButton,
     showCompareSliderButton,
     focusModeNone,

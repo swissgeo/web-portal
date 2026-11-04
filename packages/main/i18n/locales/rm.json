@@ -211,9 +211,7 @@
   },
   "geolocation": {
     "permissionDenied": "Access a la posiziun refusà",
-    "stopTracking": "Zuppentar la posiziun",
     "startGeolocation": "Mussar la posiziun",
-    "recenterMap": "Recentrar la charta",
     "timeout": "La localisaziun ha durà memia ditg.",
     "unavailable": "Impussibel da determinar la posiziun.",
     "outsideSwitzerland": "Vossa posiziun è ordaifer la Svizra e na po betg vegnir mussada sin la charta."

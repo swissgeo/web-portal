@@ -211,9 +211,7 @@
   },
   "geolocation": {
     "permissionDenied": "Berechtigung zur Standortbestimmung verweigert.",
-    "stopTracking": "Standort ausblenden",
     "startGeolocation": "Standort anzeigen",
-    "recenterMap": "Karte neu zentrieren",
     "timeout": "Die Standortbestimmung hat zu lange gedauert.",
     "unavailable": "Der Standort konnte nicht bestimmt werden.",
     "outsideSwitzerland": "Ihr Standort liegt ausserhalb der Schweiz und kann nicht auf der Karte angezeigt werden."

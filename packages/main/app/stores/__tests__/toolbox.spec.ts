@@ -1,4 +1,3 @@
-import type { SingleCoordinate } from "@swissgeo/coordinates";
 import type { Layer } from "@swissgeo/layers";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
@@ -10,27 +9,18 @@ import { computed, ref } from "vue";
 
 const closeTimeSliderMock = vi.fn();
 
-const { mockUseDrawing, mockUseMapViewStore, mockUseGeolocationStore } =
-  vi.hoisted(() => {
-    return {
-      mockUseDrawing: vi.fn(() => ({ focusMode: ref("none") })),
-      mockUseMapViewStore: vi.fn(() => ({
-        closeTimeSlider: vi.fn(),
-        visibleLayers: computed(() => []),
-      })),
-      mockUseGeolocationStore: vi.fn(() => ({
-        active: false,
-        position: undefined as SingleCoordinate | undefined,
-      })),
-    };
-  });
+const { mockUseDrawing, mockUseMapViewStore } = vi.hoisted(() => {
+  return {
+    mockUseDrawing: vi.fn(() => ({ focusMode: ref("none") })),
+    mockUseMapViewStore: vi.fn(() => ({
+      closeTimeSlider: vi.fn(),
+      visibleLayers: computed(() => []),
+    })),
+  };
+});
 
 vi.mock("@swissgeo/drawing", () => ({
   useDrawing: mockUseDrawing,
-}));
-
-vi.mock("@/stores/geolocation", () => ({
-  useGeolocationStore: mockUseGeolocationStore,
 }));
 
 vi.mock("~/stores/mapView", () => ({
@@ -145,23 +135,6 @@ describe("useToolboxStore", () => {
       await vi.waitFor(() => {
         expect(closeTimeSliderMock).toHaveBeenCalled();
       });
-    });
-  });
-
-  describe("showRecenterButton", () => {
-    it("returns false when geolocation is inactive", () => {
-      const store = useToolboxStore();
-      expect(store.showRecenterButton).toBe(false);
-    });
-
-    it("returns true when geolocation is active with position", () => {
-      mockUseGeolocationStore.mockReturnValueOnce({
-        active: true,
-        position: [0, 0],
-      });
-      setActivePinia(createPinia());
-      const store = useToolboxStore();
-      expect(store.showRecenterButton).toBe(true);
     });
   });
 
