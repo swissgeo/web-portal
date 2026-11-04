@@ -218,6 +218,16 @@ function handleClick() {
   }
 }
 
+// the field keeps a previous coordinate search, so Enter has to apply it
+// again: detection otherwise only runs while the query changes
+function submitCoordinate() {
+  const result = searchStore.coordinateResult;
+  if (result) {
+    emit("coordinates-detected", result);
+    void handleResultSelection(result);
+  }
+}
+
 // only the map tab holds the focusable list, the CMS results have their own tab
 function focusFirstResult() {
   if (!searchStore.hasMapResults) {
@@ -297,6 +307,7 @@ function clearSearch() {
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
+        @keydown.enter.prevent="submitCoordinate"
         :ui="{
           base: 'placeholder-nav-brand-muted! ring-0',
           leadingIcon: 'text-nav-brand-muted',
