@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { TabsItem } from "@nuxt/ui";
+import type { AccordionItem } from "@nuxt/ui";
 
 import { useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
@@ -11,7 +11,7 @@ const layerStore = useLayerStore();
 
 const featureDataByUuid = computed(() => featureStore.selectedFeaturesByUuid);
 
-const tabs: Ref<TabsItem[]> = computed(() =>
+const accordionItems: Ref<AccordionItem[]> = computed(() =>
   Object.entries(featureDataByUuid.value).map(([layerUuid, featuresData]) => {
     const layer = layerStore.getLayer(layerUuid);
     return {
@@ -21,28 +21,32 @@ const tabs: Ref<TabsItem[]> = computed(() =>
     };
   }),
 );
-
-const active = ref(tabs.value[0]?.value);
-
-watch(featureDataByUuid, () => {
-  active.value = tabs.value[0]?.value;
-});
 </script>
 <template>
-  <UTabs
-    v-model="active"
-    :items="tabs"
-    data-testid="feature-info-tabs"
-    :ui="{ content: 'max-h-[33vh] overflow-y-auto' }"
-  >
-    <template #default="{ item }">
-      <UTooltip :text="item.label">
-        <span class="max-w-40 truncate">{{ item.label }}</span>
-      </UTooltip>
-    </template>
-
-    <template #content="{ item }">
-      <FeatureInfoLayerPage :features-data="item.featuresData" />
-    </template>
-  </UTabs>
+  <div class="max-h-[33vh] overflow-x-hidden overflow-y-auto">
+    <UAccordion
+      :items="accordionItems"
+      type="multiple"
+      data-testid="feature-info-accordion"
+      :ui="{
+        trigger: 'sticky top-0 z-10 bg-elevated',
+        label: 'flex min-w-0 flex-1',
+      }"
+      :default-value="accordionItems.map((item) => `${item.value}`)"
+    >
+      <template #default="{ item }">
+        <div class="flex min-w-0 flex-1 items-center justify-between gap-2">
+          <UTooltip :text="item.label">
+            <span class="truncate font-semibold">{{ item.label }}</span>
+          </UTooltip>
+          <span class="shrink-0 text-xs text-muted">{{
+            item.featuresData.length
+          }}</span>
+        </div>
+      </template>
+      <template #body="{ item }">
+        <FeatureInfoLayerPage :features-data="item.featuresData" />
+      </template>
+    </UAccordion>
+  </div>
 </template>

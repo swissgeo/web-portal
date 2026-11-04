@@ -115,12 +115,24 @@ export function useMapClickEvent(onClick: (evt: MapClickEvent) => void): void {
 
     const size = map.getSize() ?? [0, 0];
 
+    // calculateExtent returns a flat extent, but is typed as Array<Number>,
+    // where our flatExtent is typed as [Number, Number, Number, Number]
+    // we ensure that our type checker is happy, and that if in the future, there
+    // is a stupid bug which makes calculateExtent returns 8 numbers, at least we still
+    // have an extent :3.
+    const [minX, minY, maxX, maxY] = map
+      .getView()
+      .calculateExtent(size)
+      .map((coordinate) => Math.round(coordinate));
+    const viewExtent: FlatExtent = [minX, minY, maxX, maxY];
+
     onClick({
       coordinate: [x, y],
       pixel: olEvent.pixel as [number, number],
       extent,
       viewportSize: [size[0], size[1]],
       vectorFeaturesPerLayer,
+      viewExtent,
     });
   };
 
