@@ -695,17 +695,17 @@
     "cards": {
       "map": {
         "title": "Map",
-        "description": "Interactive map viewer with hundreds of layers, time travel, print and share functions.",
+        "description": "Interactive map viewer with hundreds of layers, a time-travel feature, and print and share functions.",
         "button": "Open the map"
       },
       "catalog": {
         "title": "Data catalogue",
-        "description": "Browse the complete catalogue of geobase data, themes and metadata.",
+        "description": "Browse the complete catalogue of geodata, themes and metadata.",
         "button": "Open the data catalogue"
       },
       "info": {
         "title": "Everything else about SWISSGEO",
-        "description": "News, help and information about us.",
+        "description": "You can find background information, guidance, specialist information and strategy on the information portal.",
         "button": "Go to the info portal"
       }
     },
