@@ -38,4 +38,10 @@ describe("ToolBoxButton.vue", () => {
       expect(classes.includes("dark:text-accent-active")).toBe(hasDarkGray);
     },
   );
+
+  it("shows a disabled button in gray in dark mode", () => {
+    const button = mountButton({ isDisabled: true }).get("button");
+    expect(button.attributes("disabled")).toBeDefined();
+    expect(button.classes()).toContain("dark:disabled:text-dimmed");
+  });
 });
