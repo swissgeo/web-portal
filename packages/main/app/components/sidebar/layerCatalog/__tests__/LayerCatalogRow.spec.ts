@@ -48,6 +48,11 @@ const stubs = {
     props: ["label"],
     template: "<span>{{ label }}</span>",
   },
+  UTooltip: {
+    name: "UTooltip",
+    props: ["text"],
+    template: "<slot />",
+  },
 };
 
 const BAFU: Owner = {
@@ -112,8 +117,29 @@ describe("LayerCatalogRow.vue", () => {
     expect(cell.get("[data-testid='catalog-layer-title']").text()).toBe(
       "Short of ch.a",
     );
-    expect(cell.attributes("title")).toBe("Title of ch.a");
+    expect(
+      cell.get("[data-testid='catalog-layer-title']").attributes("title"),
+    ).toBe("Title of ch.a");
   });
+
+  it.each`
+    isOnMap  | tooltip
+    ${false} | ${"dataset.addToMap"}
+    ${true}  | ${"dataset.removeFromMap"}
+  `(
+    "says what the switch does with isOnMap=$isOnMap",
+    ({ isOnMap, tooltip }) => {
+      datasetLayer.isOnMap.value = isOnMap;
+
+      const wrapper = mountRow();
+
+      expect(wrapper.getComponent({ name: "UTooltip" }).props("text")).toBe(
+        tooltip,
+      );
+      // A title on the cell would show a second tooltip over the switch.
+      expect(cells(wrapper)[0]!.attributes("title")).toBeUndefined();
+    },
+  );
 
   it("shows the owner name as data owner", () => {
     const wrapper = mountRow(makeDataset("ch.a", BAFU));
