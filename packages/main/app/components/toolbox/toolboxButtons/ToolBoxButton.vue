@@ -16,7 +16,8 @@ const { title } = defineProps<{
     variant="ghost"
     class="w-14 flex-col gap-0.5 px-1 py-1.5 hover:bg-primary-50/50 dark:hover:bg-primary-950 dark:hover:text-primary"
     :class="{
-      'dark:bg-accent-600 bg-primary-50 text-primary dark:text-white': isActive,
+      'bg-primary-50 text-primary dark:bg-(--ui-color-accent-700) dark:text-accent-active':
+        isActive,
     }"
     :disabled="isDisabled"
     @click="emit('click')"

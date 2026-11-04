@@ -81,7 +81,7 @@ watch(
     <div
       v-show="isSidebarContentVisible"
       :style="{ width: uiStore.sidebarContentWidth + 'px' }"
-      class="flex h-full flex-col bg-default text-default shadow-lg"
+      class="flex h-full flex-col bg-default text-default shadow-lg dark:border-r dark:border-default"
     >
       <ResponsivePanel
         v-if="uiStore.currentSidebar === SidebarType.LAYER_CART"
@@ -123,7 +123,7 @@ watch(
     <div
       v-if="uiStore.currentSidebar === SidebarType.GEOCATALOG_TREE"
       data-testid="layer-catalog-overlay"
-      class="absolute inset-y-0 left-0 z-60 hidden w-screen max-w-layer-catalog flex-col bg-default text-default shadow-lg md:flex"
+      class="absolute inset-y-0 left-0 z-60 hidden w-screen max-w-layer-catalog flex-col bg-default text-default shadow-lg md:flex dark:border-r dark:border-default"
     >
       <ResponsivePanel
         :title="t('layerCatalog.title')"
