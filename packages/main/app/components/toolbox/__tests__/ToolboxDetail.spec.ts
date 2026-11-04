@@ -1,9 +1,13 @@
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import { useToolboxStore } from "~/stores/toolbox";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
+import { ref } from "vue";
 
 import ToolboxDetail from "@/components/toolbox/ToolboxDetail.vue";
+
+mockNuxtImport("useIsDesktop", () => () => ref(true));
 
 describe("ToolboxDetail.vue", () => {
   beforeEach(() => {
