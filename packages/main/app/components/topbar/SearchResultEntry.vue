@@ -89,7 +89,7 @@ defineExpose({
   <!-- List item with keyboard navigation -->
   <li
     ref="item"
-    class="flex cursor-pointer items-center gap-2 px-3 py-2 transition-colors hover:bg-muted focus:outline-none focus-visible:bg-elevated focus-visible:text-highlighted"
+    class="text-accent flex cursor-pointer items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors hover:bg-muted focus:outline-none focus-visible:bg-elevated focus-visible:text-highlighted"
     :data-testid="`search-result-entry-${entry.resultType.toLowerCase()}-${index}`"
     :tabindex="tabStart ? 0 : -1"
     @keydown.up.prevent="goToPrevious"
@@ -99,33 +99,6 @@ defineExpose({
     @keyup.enter="selectItem"
     @click="selectItem"
   >
-    <!-- Icon based on result type -->
-    <UIcon
-      v-if="entry.resultType === SearchResultTypesEnum.location"
-      :data-testid="`icon-${entry.resultType.toLowerCase()}`"
-      name="i-lucide-map-pin"
-    />
-    <UIcon
-      v-else-if="entry.resultType === SearchResultTypesEnum.layer"
-      :data-testid="`icon-${entry.resultType.toLowerCase()}`"
-      name="i-lucide-layers"
-    />
-    <UIcon
-      v-else-if="entry.resultType === SearchResultTypesEnum.feature"
-      :data-testid="`icon-${entry.resultType.toLowerCase()}`"
-      name="i-lucide-map-pinned"
-    />
-    <UIcon
-      v-else-if="entry.resultType === SearchResultTypesEnum.content"
-      :data-testid="`icon-${entry.resultType.toLowerCase()}`"
-      name="i-lucide-file-text"
-    />
-    <UIcon
-      v-else
-      :data-testid="`icon-${entry.resultType}`"
-      name="i-lucide-bug"
-    />
-
     <!-- Title -->
     <ClientOnly>
       <!-- eslint-disable-next-line vue/no-v-html -->
@@ -134,6 +107,7 @@ defineExpose({
 
     <!-- Layer results info button -->
     <UButton
+      class="-my-1 -mr-1"
       v-if="entry.resultType === SearchResultTypesEnum.layer"
       :data-testid="`search-result-info-${index}`"
       :aria-label="t('search.viewDataset')"
