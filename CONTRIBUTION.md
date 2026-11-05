@@ -2,40 +2,7 @@
 
 ## Development process
 
-This project uses a [git flow](https://nvie.com/posts/a-successful-git-branching-model/) approach: all changes go through a pull request (PR) to `develop`. The full rules are in the [git flow guideline](https://github.com/geoadmin/doc-guidelines/blob/master/GIT_FLOW.md). The most important rules:
-
-- One ticket per PR, so that each ticket shows in the release notes.
-- Commit and PR titles start with the ticket: `GPS-1234: what was done`. CI checks this format.
-- Do not change commits after a review. Add new commits for the review changes.
-- Before the merge, rebase the PR branch onto `develop`:
-
-  ```bash
-  git fetch origin
-  git rebase origin/develop
-  git push --force-with-lease origin PR_BRANCH
-  ```
-
-  Or, in the PR on GitHub, click the arrow next to the "Update branch" button and select "Update with rebase".
-
-- Do not click "Update branch" itself (it merges `develop` into the PR branch), and do not merge `develop` into the PR branch in another way.
-- Merge the PR with a merge commit (no squash, no fast-forward).
-
-### Releases
-
-The project uses the [SemVer 2.0](https://semver.org/) versioning scheme. Each PR merged into `develop` creates a beta version. A release is a PR from `develop` into `main`. All commits on `main` are releases.
-
-A GitHub workflow sets the title of a release PR to `New Release vX.Y.Z - #minor`. This PR is always behind `main`, because `main` has the merge commits of the earlier releases. Do not update it.
-
-### Automated git tagging of `develop` and `main`
-
-A GitHub workflow ([`semver.yml`](.github/workflows/semver.yml)) adds a git tag after each merge:
-
-- merge into `develop`: a beta version (`v0.0.0-beta.x`)
-- merge into `main`: a minor version (`v0.x.0`) by default
-- merge into `main` with `#major` in the PR title: a major version (`vx.0.0`)
-- merge into `main` with `#patch` in the PR title: a patch version (`v0.0.x`)
-
-A merge into `main` also creates a GitHub release with release notes from the PR titles.
+This project follows the [SWISSGEO git flow](https://github.com/swissgeo/doc-guidelines/blob/main/GIT_FLOW.md) and [versioning/release](https://github.com/swissgeo/doc-guidelines/blob/main/VERSIONING_RELEASE.md) guidelines.
 
 ## Architecture / Programming Principles
 
