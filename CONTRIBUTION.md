@@ -15,9 +15,9 @@ This project uses a [git flow](https://nvie.com/posts/a-successful-git-branching
   git push --force-with-lease origin PR_BRANCH
   ```
 
-  Or use the GitHub button "Update with rebase".
+  Or, in the PR on GitHub, click the arrow next to the "Update branch" button and select "Update with rebase".
 
-- Do not use the GitHub button "Update branch", and do not merge `develop` into the PR branch.
+- Do not click "Update branch" itself (it merges `develop` into the PR branch), and do not merge `develop` into the PR branch in another way.
 - Merge the PR with a merge commit (no squash, no fast-forward).
 
 ### Releases
