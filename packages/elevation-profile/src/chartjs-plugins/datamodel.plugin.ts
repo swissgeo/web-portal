@@ -1,4 +1,4 @@
-import type { Plugin } from "chart.js";
+import type { ChartType, Plugin } from "chart.js";
 
 import log from "@swissgeo/log";
 
@@ -8,6 +8,15 @@ export interface DataModelPluginOptions {
    * 'swissALTI3D/DHM25'
    */
   dataModelName?: string;
+}
+
+// lets chart options type-check `plugins.dataModel`
+declare module "chart.js" {
+  // the type parameter must match chart.js' declaration for the interfaces to merge
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface PluginOptionsByType<TType extends ChartType> {
+    dataModel?: DataModelPluginOptions;
+  }
 }
 
 /**

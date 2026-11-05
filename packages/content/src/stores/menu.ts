@@ -103,35 +103,17 @@ export const useMenuStore = defineStore("menuStore", () => {
     return null;
   }
 
-  // mocking the runtimeconfig here
-  // it was used from global state, and to satisfy the type-checker the shared package
-  // contained a hacky way of exposing some nuxt types for other packages. I don't think
-  // we should do it that way but instead maybe pass in the data from `main`
-  // Since we're not doing any CMS content rendering just right now but wanna keep the code,
-  // I'm mocking this here to satisfy the type checker (these specific variables in runtimeConfig have been removed anyway!)
-  function useRuntimeConfig() {
-    return {
-      public: {
-        aboutMenu: {
-          id: 1,
-          translationKey: "a",
-        },
-        knowledgeMenu: {
-          id: 2,
-          translationKey: "b",
-        },
-      },
-    };
-  }
+  // Placeholder menu ids. They used to come from Nuxt's runtime config, which
+  // no longer has them. CMS content rendering isn't used right now, but the code
+  // is kept; pass the real values in from `main` when it is used again.
+  const PLACEHOLDER_MENU_META_DATA = [
+    { id: 1, translationKey: "a" },
+    { id: 2, translationKey: "b" },
+  ];
 
   function _initMenuIds() {
-    const runtimeConfig = useRuntimeConfig();
-
     if (!menuMetaData.value) {
-      menuMetaData.value = [
-        runtimeConfig.public.aboutMenu,
-        runtimeConfig.public.knowledgeMenu,
-      ];
+      menuMetaData.value = PLACEHOLDER_MENU_META_DATA;
     }
 
     // if (!menuIds.value) {

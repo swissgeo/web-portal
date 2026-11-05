@@ -18,7 +18,8 @@ import {
   point,
   polygon,
 } from "@turf/turf";
-import { reproject } from "reproject";
+
+import { reproject } from "#utils/reproject";
 
 /**
  * The `crs` property in geoJSON is obsolete and all geoJSONs shoud be in WGS84,

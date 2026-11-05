@@ -12,12 +12,21 @@ import {
   searchContentPages,
 } from "@swissgeo/search";
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
+import { computed, inject, ref } from "vue";
+
+import type { SearchConfig } from "#config";
+
+import { searchConfigKey } from "#config";
 
 export const useSearchStore = defineStore("search", () => {
-  const runtimeConfig = useRuntimeConfig();
-  const enableCmsSearch =
-    runtimeConfig.public.featureFlags?.enableCmsSearch === true;
+  const providedConfig = inject(searchConfigKey);
+  if (!providedConfig) {
+    throw new Error(
+      "useSearchStore: no SearchConfig provided, call app.provide(searchConfigKey, ...) first",
+    );
+  }
+  const config: SearchConfig = providedConfig;
+  const { enableCmsSearch } = config;
   // State
   const query = ref("");
   const results = ref<SearchResult[]>([]);
@@ -38,10 +47,7 @@ export const useSearchStore = defineStore("search", () => {
 
   // Build the OGC API Records `/items` endpoint used to search layers.
   const catalogItemsUrl = computed(() =>
-    buildCatalogItemsUrl(
-      runtimeConfig.public.ogcApiEndpoint as string,
-      runtimeConfig.public.ogcCatalogCollection as string,
-    ),
+    buildCatalogItemsUrl(config.ogcApiEndpoint, config.ogcCatalogCollection),
   );
 
   // Getters
@@ -122,7 +128,7 @@ export const useSearchStore = defineStore("search", () => {
       const searchPromises: Promise<SearchResult[]>[] = [
         searchLocation(
           newQuery,
-          runtimeConfig.public.searchServiceUrl,
+          config.searchServiceUrl,
           lang,
           abortController.signal,
         ),
@@ -145,7 +151,7 @@ export const useSearchStore = defineStore("search", () => {
         searchPromises.push(
           searchLayerFeatures(
             newQuery,
-            runtimeConfig.public.searchServiceUrl,
+            config.searchServiceUrl,
             lang,
             layer.humanId,
             layer.info?.displayName || layer.humanId,

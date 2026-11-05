@@ -4,5 +4,6 @@ import LogoPic from "./components/LogoPic.vue";
 
 export * from "#stores/ui";
 export * from "#stores/search";
+export * from "#config";
 
 export { LogoPic, SwissGeoLogoRgbPrio };

@@ -201,3 +201,61 @@ With the flag on, the emitted `.d.ts` keep `| null` / `| undefined`. Before, tho
   - Removed the `!` / `?.` that were only there because bounds was optional: `DEFAULT_PROJECTION.bounds!` in map (and its comment), `bounds?.center` in `useOlMapPosition`, `bounds?.flatten` in `olWMSLayer.composable.ts` and `coordinates/src/ol.ts`, and the `getBoundsAs(...)!` / `projection.bounds!` in tests.
 - **`TextSize` and `IconSize` are exported from `@swissgeo/drawing`.** `PointStyleEditor` now casts with `$event as TextSize` / `$event as IconSize` instead of `keyof typeof TEXT_SIZE` / `ICON_SIZE`.
 - Checks: build, type-check, lint and format pass. Unit tests as before (main: same two unrelated `scripts/__tests__` failures).
+
+## Step 3: remove the hidden Nuxt coupling and the unexported ambient types
+
+### Summary
+
+The libraries no longer rely on Nuxt globals or on ambient type files that only their own tsconfig includes. Every type they need is now part of their import graph, so whoever compiles their source (main, from step 4 on) gets the types too. 19 files changed.
+
+- **skeleton:** the search store no longer calls a global `useRuntimeConfig()`. It reads a `SearchConfig` with `inject(searchConfigKey)`, and both are exported from `@swissgeo/skeleton`. Main provides the config from its existing `skeleton-package` plugin. `skeleton/types/index.d.ts`, which declared the fake global, is deleted.
+- **content:** the local function named `useRuntimeConfig` only returned hard-coded placeholder menu ids. It is now a plain `PLACEHOLDER_MENU_META_DATA` constant with the same values.
+- **map:** `declare module "reproject"` in `env.d.ts` is replaced by a typed wrapper module, `src/utils/reproject.ts`, which `geoJsonUtils.ts` imports.
+- **elevation-profile:** the `chart.js` plugin-option augmentations moved from `src/types/chartjs.d.ts` into the plugin files that define those options.
+- **map, layers:** `env.d.ts` deleted. Its `Window.map` global was unused, and its `const ... = window.... || {}` lines did nothing.
+
+**Verification**
+
+- Build, type-check, lint and format pass. No `#` imports in any `dist/**/*.d.ts`.
+- Unit tests: same results as after step 2, plus one new main test (main: same two unrelated `scripts/__tests__` failures).
+- New `packages/main/app/plugins/__tests__/skeleton-package.nuxt.spec.ts`: boots the Nuxt app with its plugins and creates the real search store. It fails with "no SearchConfig provided" when the plugin's `provide` call is removed, which was checked by hand and then restored.
+- Production build of main (`pnpm build` + `nuxt preview`): `/de/map` renders with status 200 and no server errors.
+- Playwright `tests/integration/topbar.spec.ts`: 8 passed, 1 flaky. "a typed coordinate moves the map without any result to select" timed out on its first attempt, on the crosshair marker check right after the dev server had started, and passed on retry. It then passed 5/5 with `--repeat-each 5 --retries 0`.
+
+**Things worth reviewing**
+
+- `useSearchStore` now throws if no `SearchConfig` was provided. Before, it relied on a Nuxt auto-import global, so it only worked inside Nuxt anyway.
+- `enableCmsSearch` is still read once when the store is created, as before.
+- `elevation-profile`: the old `.d.ts` used `DataModelPluginOptions<TType>`, but that interface isn't generic. The error was hidden because `skipLibCheck` skips `.d.ts` files, and the moved code drops the type argument. The augmentation keeps the unused `TType` parameter, because merged interfaces need identical type parameters. It has an `eslint-disable-next-line @typescript-eslint/no-unused-vars` with that reason.
+- `map/src/utils/reproject.ts` uses `// @ts-expect-error TS7016` on the import of the untyped package. An ambient `declare module "reproject"` can't go into a module file (TS2665: an untyped module can't be augmented), and a `.d.ts` file would again depend on the consumer's tsconfig.
+- Not changed, noted for later: main's `skeleton-package` plugin also registers Nuxt UI components globally (`UButton`, `UInput`, …) so skeleton's components can use them. That is Nuxt coupling too, and belongs to step 6 (Nuxt layers). Also, content and main each define a Pinia store with the id `"menuStore"`.
+
+### How the changes were made
+
+#### 1. Survey
+
+- `grep` for `useRuntimeConfig` in the libraries: only `skeleton/src/stores/search.ts` (the real global, typed by `skeleton/types/index.d.ts`, stubbed with `vi.stubGlobal` in its test) and `content/src/stores/menu.ts` (a local function).
+- `grep -l "declare global\|declare module"` outside main: `map/env.d.ts`, `layers/env.d.ts`, `elevation-profile/src/types/chartjs.d.ts`.
+- Uses: `window.map` nowhere. `window.swissgeoOlMap` is set in `map/src/openlayers/OpenLayersMap.vue` with an inline cast and typed in `tests/integration/setup.ts`. `reproject` is imported only in `map/src/utils/geoJsonUtils.ts` and has no types (no `types` field, no `.d.ts`).
+
+#### 2. skeleton search config
+
+- New `skeleton/src/config.ts`: `SearchConfig` (`searchServiceUrl`, `ogcApiEndpoint`, `ogcCatalogCollection`, `enableCmsSearch`) and `searchConfigKey: InjectionKey<SearchConfig>`. Exported from `src/index.ts`.
+- Store: `inject(searchConfigKey)` in the setup function, throwing a clear error when it's missing. Pinia runs setup stores inside the app context, so app-level `provide` reaches them. The checked value is bound to `const config: SearchConfig`, because narrowing doesn't carry into the store's hoisted `function` declarations (TS18048). The `as string` casts are gone.
+- Main: `app/plugins/skeleton-package.ts` provides the four values from `useRuntimeConfig().public` (`enableCmsSearch: featureFlags?.enableCmsSearch === true`, the same expression as before). Nuxt runs plugins alphabetically, and no plugin or middleware uses the search store.
+- Test: `vi.stubGlobal("useRuntimeConfig", …)` is replaced by an `activatePinia()` helper that creates a Vue app, installs Pinia on it and provides a test `SearchConfig`.
+- Deleted `skeleton/types/index.d.ts`, and removed `types/**/*.d.ts` from `skeleton/tsconfig.json`.
+
+#### 3. content placeholder
+
+`function useRuntimeConfig()` plus `_initMenuIds` reading `runtimeConfig.public.aboutMenu` / `knowledgeMenu` became `PLACEHOLDER_MENU_META_DATA = [{ id: 1, translationKey: "a" }, { id: 2, translationKey: "b" }]`, with a comment saying where the real values should come from. Same values.
+
+#### 4. Ambient types
+
+- elevation-profile: `declare module "chart.js" { interface PluginOptionsByType<TType extends ChartType> { … } }` added at the end of the options interface in `datamodel.plugin.ts` and `nodata.plugin.ts`, both imported by `src/index.ts`. `useElevationProfileChart.ts` (`plugins.noData`, `plugins.dataModel`) still type-checks against them. Deleted `src/types/chartjs.d.ts`, and removed `types/**/*.d.ts` from the tsconfig.
+- map: `src/utils/reproject.ts` exports `reproject` with the same two overloads as the old ambient declaration. `geoJsonUtils.ts` imports it from `#utils/reproject`. Deleted `env.d.ts`, and removed `env.d.ts` and `types/**/*.d.ts` from the tsconfig.
+- layers: deleted `env.d.ts`, and removed it from the tsconfig.
+
+#### 5. Checks
+
+Root `format:write`, `build-libs`, `type-check`, `lint`, `format`, `test:unit`, then the main production build, the preview render, the new Nuxt test (passing, and failing without the `provide`), and the Playwright topbar tests, with the results listed under Verification. The first Playwright attempt failed because the browsers weren't installed. After the user installed them, the tests ran as described.

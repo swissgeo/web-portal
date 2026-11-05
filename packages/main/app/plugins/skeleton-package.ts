@@ -1,5 +1,7 @@
 import type { Component } from "vue";
 
+import { searchConfigKey } from "@swissgeo/skeleton";
+
 import {
   ULocaleSelect,
   UButton,
@@ -18,6 +20,15 @@ import {
 } from "#components";
 
 export default defineNuxtPlugin((nuxtApp) => {
+  // configuration the skeleton's search store reads with inject()
+  const { public: publicConfig } = useRuntimeConfig();
+  nuxtApp.vueApp.provide(searchConfigKey, {
+    searchServiceUrl: publicConfig.searchServiceUrl,
+    ogcApiEndpoint: publicConfig.ogcApiEndpoint,
+    ogcCatalogCollection: publicConfig.ogcCatalogCollection,
+    enableCmsSearch: publicConfig.featureFlags?.enableCmsSearch === true,
+  });
+
   nuxtApp.vueApp.component("ULocaleSelect", ULocaleSelect);
   nuxtApp.vueApp.component("UButton", UButton);
   nuxtApp.vueApp.component("ULink", ULink as Component);

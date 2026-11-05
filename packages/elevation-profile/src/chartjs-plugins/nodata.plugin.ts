@@ -1,10 +1,19 @@
-import type { Chart, Plugin } from "chart.js";
+import type { Chart, ChartType, Plugin } from "chart.js";
 
 import type { ElevationProfilePoint } from "#types";
 
 export interface NoDataPluginOptions {
   points: ElevationProfilePoint[];
   noDataText?: string;
+}
+
+// lets chart options type-check `plugins.noData`
+declare module "chart.js" {
+  // the type parameter must match chart.js' declaration for the interfaces to merge
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface PluginOptionsByType<TType extends ChartType> {
+    noData?: NoDataPluginOptions;
+  }
 }
 
 const noDataPlugin: Plugin = {

@@ -2,6 +2,11 @@ import type { LayerSearchResult, SearchResult } from "@swissgeo/search";
 
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createApp } from "vue";
+
+import type { SearchConfig } from "#config";
+
+import { searchConfigKey } from "#config";
 
 const searchMocks = vi.hoisted(() => ({
   searchCoordinate: vi.fn(),
@@ -20,17 +25,22 @@ vi.mock("@swissgeo/log", () => ({
   LogPreDefinedColor: { Red: "red" },
 }));
 
-const runtimeConfig = vi.hoisted(() => ({
-  public: {
-    ogcApiEndpoint: "http://catalog.test/api",
-    ogcCatalogCollection: "swissgeo-catalog",
-    featureFlags: {
-      enableCmsSearch: true,
-    },
-  },
-}));
+const searchConfig: SearchConfig = {
+  searchServiceUrl: "http://search.test",
+  ogcApiEndpoint: "http://catalog.test/api",
+  ogcCatalogCollection: "swissgeo-catalog",
+  enableCmsSearch: true,
+};
 
-vi.stubGlobal("useRuntimeConfig", () => runtimeConfig);
+// the store reads its config with inject(), so pinia has to be installed on an
+// app that provides it
+function activatePinia() {
+  const app = createApp({});
+  const pinia = createPinia();
+  app.use(pinia);
+  app.provide(searchConfigKey, searchConfig);
+  setActivePinia(pinia);
+}
 
 const { useSearchStore } = await import("../../stores/search");
 
@@ -53,8 +63,8 @@ const location = (id: string, title: string): SearchResult => ({
 
 describe("useSearchStore", () => {
   beforeEach(() => {
-    setActivePinia(createPinia());
-    runtimeConfig.public.featureFlags.enableCmsSearch = true;
+    searchConfig.enableCmsSearch = true;
+    activatePinia();
     searchMocks.searchCoordinate.mockReturnValue(undefined);
     searchMocks.searchLocation.mockResolvedValue([]);
     searchMocks.searchLayers.mockResolvedValue([]);
@@ -158,7 +168,7 @@ describe("useSearchStore", () => {
   });
 
   it("skips the CMS search when the feature flag is off", async () => {
-    runtimeConfig.public.featureFlags.enableCmsSearch = false;
+    searchConfig.enableCmsSearch = false;
     const store = useSearchStore();
 
     await store.setSearchQuery("forest");
