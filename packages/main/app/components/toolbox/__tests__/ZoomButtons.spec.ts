@@ -32,10 +32,8 @@ describe("ZoomButtons.vue", () => {
     return mount(ZoomButtons, {
       global: {
         stubs: {
-          ToolBoxButton: {
-            template:
-              '<button :title="title" @click="$emit(\'click\')">{{ title }}</button>',
-            props: ["title", "isActive", "isDisabled", "iconName"],
+          UButton: {
+            template: "<button @click=\"$emit('click')\" />",
             emits: ["click"],
           },
         },
