@@ -71,28 +71,35 @@ describe("SearchCategory", () => {
     it("renders the heading above the entries when a title is given", () => {
       const wrapper = render({ title: "Orte", tabStart: false });
 
-      expect(wrapper.find(".sticky").text()).toBe("Orte");
-      // the heading stays visible while its section scrolls, on its own
-      // opaque backdrop: surface-* utilities do not exist in this repo
-      const headingClasses = wrapper.get(".sticky").attributes("class") ?? "";
-      expect(headingClasses).toContain("top-0");
-      expect(headingClasses).toContain("z-10");
-      expect(headingClasses).toContain("bg-default");
-      expect(headingClasses).toContain("border-b");
+      const heading = wrapper.get('[data-testid="category-title"]');
+      expect(heading.text()).toBe("Orte");
       expect(wrapper.findAll("li")).toHaveLength(entries.length);
     });
 
     it("renders no heading when the title is left out", () => {
       const wrapper = render({ tabStart: false });
 
-      expect(wrapper.find(".sticky").exists()).toBe(false);
+      expect(wrapper.find('[data-testid="category-title"]').exists()).toBe(
+        false,
+      );
       expect(wrapper.findAll("li")).toHaveLength(entries.length);
     });
 
-    it("scrolls through its own scroll area", () => {
+    it("scrolls only the entries, the heading stays outside the scroll area", () => {
       const wrapper = render({ title: "Orte", tabStart: false });
 
-      expect(wrapper.findComponent(UScrollAreaStub).exists()).toBe(true);
+      const scrollArea = wrapper.findComponent(UScrollAreaStub);
+      expect(scrollArea.exists()).toBe(true);
+      expect(scrollArea.findAll("li")).toHaveLength(entries.length);
+      expect(scrollArea.find('[data-testid="category-title"]').exists()).toBe(
+        false,
+      );
+    });
+
+    it("draws a line above the categories after the first one", () => {
+      const wrapper = render({ title: "Orte", tabStart: false });
+
+      expect(wrapper.classes()).toContain("not-first:border-t");
     });
   });
 

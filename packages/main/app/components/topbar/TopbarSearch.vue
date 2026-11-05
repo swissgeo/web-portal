@@ -306,7 +306,8 @@ function clearSearch() {
         @keydown.down.prevent="focusFirstResult"
         @keydown.enter.prevent="submitCoordinate"
         :ui="{
-          base: 'placeholder-nav-brand-muted! ring-0',
+          // the placeholder disappears as soon as the field is clicked into
+          base: 'placeholder-nav-brand-muted! ring-0 focus:placeholder-transparent!',
           leadingIcon: 'text-nav-brand-muted',
         }"
         v-bind="$attrs"
@@ -333,11 +334,16 @@ function clearSearch() {
     </template>
 
     <template #content>
-      <UTabs v-model="activeTab" :items="tabs" size="sm">
+      <UTabs
+        v-model="activeTab"
+        :items="tabs"
+        size="sm"
+        :ui="{ list: tabs.length === 1 ? 'hidden' : '' }"
+      >
         <template #map>
           <div
             v-if="searchStore.hasMapResults"
-            class="flex h-[60dvh] flex-col sm:h-96"
+            class="flex h-100 max-h-[60dvh] flex-col"
             data-testid="search-results"
           >
             <SearchCategory
