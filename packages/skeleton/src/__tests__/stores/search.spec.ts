@@ -309,7 +309,9 @@ describe("useSearchStore", () => {
   });
 
   it("renames nothing once the field was cleared", async () => {
-    searchMocks.searchLocation.mockResolvedValue([location("wabern", "Wabern")]);
+    searchMocks.searchLocation.mockResolvedValue([
+      location("wabern", "Wabern"),
+    ]);
     const store = useSearchStore();
     await store.setSearchQuery("wabern", "fr");
     store.keepSelectedQuery("Wabern", store.results[0]);

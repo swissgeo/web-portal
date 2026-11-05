@@ -315,9 +315,9 @@ describe("TopbarSearch", () => {
     await flushPromises();
 
     expect(searchStore.translateSelectedQuery).toHaveBeenCalledWith("de");
-    expect(
-      (wrapper.find("input").element as HTMLInputElement).value,
-    ).toBe("Ort Wabern (BE) - Köniz");
+    expect((wrapper.find("input").element as HTMLInputElement).value).toBe(
+      "Ort Wabern (BE) - Köniz",
+    );
   });
 
   it("selects the CMS result that was clicked", async () => {
@@ -340,7 +340,10 @@ describe("TopbarSearch", () => {
     const wrapper = render();
     await wrapper.find("[data-testid='search-results'] li").trigger("click");
 
-    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("Bern", expect.objectContaining({ title: "Bern" }));
+    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith(
+      "Bern",
+      expect.objectContaining({ title: "Bern" }),
+    );
     expect(searchStore.clearSearch).not.toHaveBeenCalled();
   });
 
@@ -353,7 +356,10 @@ describe("TopbarSearch", () => {
     const wrapper = render();
     await wrapper.find("[data-testid='search-results'] li").trigger("click");
 
-    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("ber", expect.anything());
+    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith(
+      "ber",
+      expect.anything(),
+    );
   });
 
   it("empties the field when a layer is selected", async () => {
