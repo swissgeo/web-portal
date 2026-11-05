@@ -6,6 +6,7 @@ import type {
   Distribution,
   Link,
 } from "@swissgeo/ogc";
+import type { DatasetTab } from "~/utils/datasetTab";
 
 import ErrorPill from "~/components/ErrorPill.vue";
 import { determineFormat } from "~/utils/determineFormat";
@@ -31,7 +32,8 @@ const props = defineProps<{
 const tab = defineModel<string>("tab", { default: "overview" });
 
 const { t } = useI18n();
-const tabs = computed<TabsItem[]>(() => [
+// The tab values must match DATASET_TABS, because the URL selects the tab.
+const tabs = computed<(TabsItem & { value: DatasetTab })[]>(() => [
   {
     label: t("dataset.overview"),
     value: "overview",

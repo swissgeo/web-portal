@@ -129,4 +129,71 @@ describe("dataset page", () => {
       wrapper.unmount();
     });
   });
+
+  // The URL holds the open tab, so a link can open any tab and a copied link
+  // opens the same tab.
+  describe("tab", () => {
+    async function mountPanel(route: string) {
+      const wrapper = await mountSuspended(DatasetPage, {
+        route,
+        global: { stubs: { UTooltip: tooltipStub } },
+      });
+      const panel = await vi.waitFor(() => wrapper.getComponent(DatasetPanel));
+      return { wrapper, panel };
+    }
+
+    it.each`
+      query                 | tab
+      ${"?tab=legend"}      | ${"legend"}
+      ${"?tab=data-access"} | ${"data-access"}
+      ${"?tab=metadata"}    | ${"metadata"}
+      ${""}                 | ${"overview"}
+      ${"?tab=unknown"}     | ${"overview"}
+    `("opens the tab $tab for the query '$query'", async ({ query, tab }) => {
+      const { wrapper, panel } = await mountPanel(
+        `/de/dataset/example.dataset${query}`,
+      );
+
+      expect(panel.props("tab")).toBe(tab);
+      wrapper.unmount();
+    });
+
+    it.each`
+      tab           | query                                 | detailUrl
+      ${"metadata"} | ${{ other: "kept", tab: "metadata" }} | ${"/de/dataset/example.dataset?tab=metadata"}
+      ${"overview"} | ${{ other: "kept" }}                  | ${"/de/dataset/example.dataset"}
+    `(
+      "writes the tab $tab into the URL and the copied link",
+      async ({ tab, query, detailUrl }) => {
+        const { wrapper, panel } = await mountPanel(
+          "/de/dataset/example.dataset?tab=legend&other=kept",
+        );
+        const router = useRouter();
+        const historyLength = window.history.length;
+
+        panel.vm.$emit("update:tab", tab);
+
+        await vi.waitFor(() => {
+          expect(router.currentRoute.value.query).toEqual(query);
+        });
+        expect(panel.props("tab")).toBe(tab);
+        const copiedUrl = new URL(panel.props("detailUrl"));
+        expect(copiedUrl.pathname + copiedUrl.search).toBe(detailUrl);
+        // A tab change does not add a step for the Back button
+        expect(window.history.length).toBe(historyLength);
+        wrapper.unmount();
+      },
+    );
+
+    it("keeps the tab when the language changes", async () => {
+      const { wrapper } = await mountPanel(
+        "/de/dataset/example.dataset?tab=legend",
+      );
+
+      expect(useSwitchLocalePath()("fr")).toBe(
+        "/fr/dataset/example.dataset?tab=legend",
+      );
+      wrapper.unmount();
+    });
+  });
 });

@@ -58,7 +58,11 @@ const LayerVariantSelectStub = {
 };
 
 const stubs = {
-  LayerLegend: { template: "<div data-testid='legend-stub' />" },
+  LayerLegend: {
+    name: "LayerLegend",
+    props: ["legends", "detailLink"],
+    template: "<div data-testid='legend-stub' />",
+  },
   LayerVariantSelect: LayerVariantSelectStub,
   UButton: {
     inheritAttrs: false,
@@ -190,6 +194,29 @@ describe("LayerCartEntry.vue", () => {
       "/de/dataset/a-human-id",
     );
   });
+
+  it.each`
+    type         | detailLink
+    ${"dataset"} | ${{ path: "/de/dataset/a-human-id", query: { tab: "legend" } }}
+    ${"file"}    | ${undefined}
+  `(
+    "links the legend of a $type layer to the legend tab: $detailLink",
+    async ({ type, detailLink }) => {
+      layerStore.getLayer.mockReturnValue({
+        type,
+        humanId: "a-human-id",
+        data: { properties: {} },
+      });
+      const wrapper = mountEntry();
+      await wrapper
+        .find("[data-testid='layer-expand-toggle']")
+        .trigger("click");
+
+      expect(
+        wrapper.getComponent({ name: "LayerLegend" }).props("detailLink"),
+      ).toEqual(detailLink);
+    },
+  );
 
   it("has nothing to tell about a layer that comes from no dataset", () => {
     layerStore.getLayer.mockReturnValue({ type: "file", humanId: "whatever" });

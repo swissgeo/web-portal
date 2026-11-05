@@ -10,14 +10,17 @@ vi.mock("vue-i18n", () => ({
 }));
 
 const stubs = {
-  ULink: { template: "<a :href='to'><slot /></a>", props: ["to"] },
+  ULink: {
+    props: ["to"],
+    template: "<a v-if='to' :href='to'><slot /></a><div v-else><slot /></div>",
+  },
   UIcon: { template: "<span />" },
   UModal: { template: "<div><slot /></div>" },
 };
 
-function mountLegend(legends: Legend[]) {
+function mountLegend(legends: Legend[], detailLink?: string) {
   return mount(LayerLegend, {
-    props: { legends },
+    props: { legends, detailLink },
     global: { stubs },
   });
 }
@@ -81,5 +84,42 @@ describe("LayerLegend.vue", () => {
       "https://example.com/legend.png",
     );
     expect(wrapper.text()).not.toContain("layers.legend.notAvailable");
+  });
+
+  it("opens the legend tab of the dataset when the user clicks the legend", () => {
+    const wrapper = mountLegend(
+      [{ href: "https://example.com/legend.png", format: "image/png" }],
+      "/de/dataset/a-dataset?tab=legend",
+    );
+
+    const link = wrapper.get("[data-testid='layer-legend-images']");
+    expect(link.attributes("href")).toBe("/de/dataset/a-dataset?tab=legend");
+    expect(link.find("img").attributes("src")).toBe(
+      "https://example.com/legend.png",
+    );
+  });
+
+  it("keeps document legends outside the link to the dataset", () => {
+    const wrapper = mountLegend(
+      [
+        { href: "https://example.com/legend.png", format: "image/png" },
+        { href: "https://example.com/legend.pdf", format: "application/pdf" },
+      ],
+      "/de/dataset/a-dataset?tab=legend",
+    );
+
+    const link = wrapper.get("[data-testid='layer-legend-images']");
+    expect(link.text()).not.toContain("layers.legend.openPdf");
+    expect(wrapper.text()).toContain("layers.legend.openPdf");
+  });
+
+  it("shows the legend without a link when there is no dataset to open", () => {
+    const wrapper = mountLegend([
+      { href: "https://example.com/legend.png", format: "image/png" },
+    ]);
+
+    expect(
+      wrapper.get("[data-testid='layer-legend-images']").element.tagName,
+    ).toBe("DIV");
   });
 });

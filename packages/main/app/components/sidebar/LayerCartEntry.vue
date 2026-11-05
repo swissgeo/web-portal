@@ -127,6 +127,13 @@ const detailPath = computed(() => {
   return localePath(`/dataset/${datasetId.value}`);
 });
 
+const legendLink = computed(() => {
+  if (!detailPath.value) {
+    return undefined;
+  }
+  return { path: detailPath.value, query: { tab: "legend" } };
+});
+
 // Shared look of the buttons on the entry row
 const rowButton = {
   size: "xs",
@@ -230,7 +237,7 @@ const rowButton = {
           <span class="w-8 text-xs text-toned">{{ opacityPercent }}%</span>
         </div>
       </div>
-      <LayerLegend :legends="legends" />
+      <LayerLegend :legends="legends" :detail-link="legendLink" />
     </div>
   </li>
 </template>
