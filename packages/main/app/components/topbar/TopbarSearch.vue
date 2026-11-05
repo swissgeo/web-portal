@@ -126,15 +126,20 @@ watch(debouncedQuery, (value) => {
 });
 
 // every source searches in one language, so a locale change leaves the results
-// of the previous one behind until the query is run again. Only while there are
-// results: the field also holds the name of an already selected result, and
-// searching that again would pop the panel back up.
-watch(locale, (value) => {
+// of the previous one behind until the query is run again. Once a result is
+// selected, the field holds its name instead: searching that again would pop
+// the panel back up, so only the name is looked up in the new language.
+watch(locale, async (value) => {
   if (!isActive) {
     return;
   }
   if (searchStore.hasResults && searchStore.query.length >= 2) {
     void searchStore.setSearchQuery(searchStore.query, value);
+    return;
+  }
+  const title = await searchStore.translateSelectedQuery(value);
+  if (title) {
+    query.value = title;
   }
 });
 
@@ -189,7 +194,7 @@ function handleSelect(result: SearchResult) {
     // would empty the field and take its clear button away with it
     const title = result.sanitizedTitle || searchStore.query;
     query.value = title;
-    searchStore.keepSelectedQuery(title);
+    searchStore.keepSelectedQuery(title, result);
   }
   isOpen.value = false;
   emit("selected");

@@ -33,6 +33,9 @@ export const useSearchStore = defineStore("search", () => {
   // place result is selected. Only one location is ever marked, so re-centering
   // the map on another result moves the pin instead of leaving a stale one.
   const pinnedCoordinate = ref<SingleCoordinate | undefined>();
+  // The selected location and the query that found it. The field holds its
+  // name in one language, a locale change looks it up again to rename it.
+  let selectedLocation: { id: string; query: string } | undefined;
 
   let abortController: AbortController | undefined;
 
@@ -74,6 +77,7 @@ export const useSearchStore = defineStore("search", () => {
   // Actions
   async function setSearchQuery(newQuery: string, lang: string = "de") {
     query.value = newQuery;
+    selectedLocation = undefined;
     hasError.value = false;
 
     // Emptying the field takes the pin off the map, otherwise the user is left
@@ -227,15 +231,42 @@ export const useSearchStore = defineStore("search", () => {
 
   function clearSearch() {
     query.value = "";
+    selectedLocation = undefined;
     resetSearchState();
   }
 
   // Selecting a result keeps its name in the field rather than emptying it: it
   // is what the user is now looking at, and clearing the field is what takes
   // the marker off the map.
-  function keepSelectedQuery(title: string) {
+  function keepSelectedQuery(title: string, result?: SearchResult) {
+    selectedLocation =
+      result?.resultType === "LOCATION"
+        ? { id: result.id, query: query.value }
+        : undefined;
     query.value = title;
     resetSearchState();
+  }
+
+  // Returns the new name, or undefined when there is nothing to rename or the
+  // user has moved on to another query in the meantime.
+  async function translateSelectedQuery(lang: string) {
+    const selection = selectedLocation;
+    if (!selection) {
+      return undefined;
+    }
+    const locations = await searchLocation(
+      selection.query,
+      runtimeConfig.public.searchServiceUrl,
+      lang,
+    );
+    const title = locations.find(
+      (location) => location.id === selection.id,
+    )?.sanitizedTitle;
+    if (!title || selection !== selectedLocation) {
+      return undefined;
+    }
+    query.value = title;
+    return title;
   }
 
   function resetSearchState() {
@@ -279,6 +310,7 @@ export const useSearchStore = defineStore("search", () => {
     selectResult,
     clearSearch,
     keepSelectedQuery,
+    translateSelectedQuery,
     setPinnedCoordinate,
     clearPinnedCoordinate,
   };

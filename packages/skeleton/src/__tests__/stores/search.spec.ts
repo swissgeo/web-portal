@@ -284,6 +284,41 @@ describe("useSearchStore", () => {
     expect(store.coordinateResult).toBeUndefined();
   });
 
+  it("renames the selected location in the new language", async () => {
+    searchMocks.searchLocation.mockResolvedValue([
+      location("wabern", "Lieu Wabern (BE) - Köniz"),
+    ]);
+    const store = useSearchStore();
+    await store.setSearchQuery("wabern", "fr");
+    store.keepSelectedQuery("Lieu Wabern (BE) - Köniz", store.results[0]);
+
+    searchMocks.searchLocation.mockResolvedValue([
+      location("other", "Wabern bei Bern"),
+      location("wabern", "Ort Wabern (BE) - Köniz"),
+    ]);
+    const title = await store.translateSelectedQuery("de");
+
+    expect(searchMocks.searchLocation).toHaveBeenLastCalledWith(
+      "wabern",
+      undefined,
+      "de",
+    );
+    expect(title).toBe("Ort Wabern (BE) - Köniz");
+    expect(store.query).toBe("Ort Wabern (BE) - Köniz");
+    expect(store.results).toEqual([]);
+  });
+
+  it("renames nothing once the field was cleared", async () => {
+    searchMocks.searchLocation.mockResolvedValue([location("wabern", "Wabern")]);
+    const store = useSearchStore();
+    await store.setSearchQuery("wabern", "fr");
+    store.keepSelectedQuery("Wabern", store.results[0]);
+    store.clearSearch();
+
+    expect(await store.translateSelectedQuery("de")).toBeUndefined();
+    expect(store.query).toBe("");
+  });
+
   it("resets hasError on clearSearch", async () => {
     searchMocks.searchLayers.mockRejectedValue(new Error("catalog down"));
 
