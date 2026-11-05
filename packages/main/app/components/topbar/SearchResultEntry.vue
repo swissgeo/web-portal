@@ -105,7 +105,7 @@ defineExpose({
       <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
     </ClientOnly>
 
-    <!-- Layer results info button -->
+    <!-- Layer info button, the negative margins keep the row height -->
     <UButton
       class="-my-1 -mr-1"
       v-if="entry.resultType === SearchResultTypesEnum.layer"

@@ -44,15 +44,15 @@ defineExpose({
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 border-default pr-2 pl-2 not-first:border-t">
+  <div class="flex flex-col gap-2 border-default px-2 not-first:border-t">
     <!-- Category header -->
-    <div v-if="title" class="shrink-0 pt-3 pl-2" data-testid="category-title">
-      <div
-        class="border-b border-default pb-2 text-sm leading-small-text font-bold text-highlighted"
-      >
-        {{ title }}
-      </div>
-    </div>
+    <h3
+      v-if="title"
+      data-testid="category-title"
+      class="mt-3 ml-2 shrink-0 border-b border-default pb-2 text-sm leading-small-text font-bold text-highlighted"
+    >
+      {{ title }}
+    </h3>
 
     <!-- Results list -->
     <UScrollArea class="min-h-0 flex-1">

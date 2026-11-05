@@ -338,12 +338,12 @@ function clearSearch() {
         v-model="activeTab"
         :items="tabs"
         size="sm"
-        :ui="{ list: tabs.length > 1 ? undefined : 'hidden' }"
+        :ui="{ list: tabs.length === 1 ? 'hidden' : '' }"
       >
         <template #map>
           <div
             v-if="searchStore.hasMapResults"
-            class="flex h-100 flex-col"
+            class="flex h-100 max-h-[60dvh] flex-col"
             data-testid="search-results"
           >
             <SearchCategory
