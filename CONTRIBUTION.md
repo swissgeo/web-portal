@@ -1,5 +1,9 @@
 # CONTRIBUTION
 
+## Development process
+
+This project follows the [SWISSGEO git flow](https://github.com/swissgeo/doc-guidelines/blob/main/GIT_FLOW.md) and [versioning/release](https://github.com/swissgeo/doc-guidelines/blob/main/VERSIONING_RELEASE.md) guidelines.
+
 ## Architecture / Programming Principles
 
 Below are some principles to help take decisions when developing the project. These are meant to convey some of the ideas on how the code is set up and hopefully help understand some of the structure of the code.
