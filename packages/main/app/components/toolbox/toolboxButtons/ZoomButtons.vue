@@ -4,6 +4,8 @@ import type { ActionDispatcher } from "@swissgeo/shared/action-dispatcher";
 import { usePositionStore } from "@swissgeo/map";
 import { useI18n } from "vue-i18n";
 
+import ToolBoxButton from "@/components/toolbox/toolboxButtons/ToolBoxButton.vue";
+
 const dispatcher: ActionDispatcher = { name: "ZoomButtons.vue" };
 
 const { t } = useI18n();
@@ -20,28 +22,22 @@ function decreaseZoom() {
 </script>
 
 <template>
-  <UButton
+  <ToolBoxButton
     data-testid="zoom-in"
     :title="t('toolbox.zoom.zoomIn')"
-    :aria-label="t('toolbox.zoom.zoomIn')"
-    :disabled="!positionStore.canIncreaseZoom()"
-    color="primary"
-    variant="ghost"
-    size="sm"
-    icon="i-lucide-plus"
-    class="hover:bg-primary-50/50 dark:hover:bg-primary-950 dark:hover:text-primary dark:disabled:text-dimmed"
+    :is-disabled="!positionStore.canIncreaseZoom()"
+    :is-active="false"
+    iconName="Plus"
+    icon-only
     @click="increaseZoom()"
   />
-  <UButton
+  <ToolBoxButton
     data-testid="zoom-out"
     :title="t('toolbox.zoom.zoomOut')"
-    :aria-label="t('toolbox.zoom.zoomOut')"
-    :disabled="!positionStore.canDecreaseZoom()"
-    color="primary"
-    variant="ghost"
-    size="sm"
-    icon="i-lucide-minus"
-    class="hover:bg-primary-50/50 dark:hover:bg-primary-950 dark:hover:text-primary dark:disabled:text-dimmed"
+    :is-disabled="!positionStore.canDecreaseZoom()"
+    :is-active="false"
+    iconName="Minus"
+    icon-only
     @click="decreaseZoom()"
   />
 </template>
