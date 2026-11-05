@@ -17,6 +17,8 @@ export {
   getFeatureTitle,
   getFeatureDescription,
   type RelativePlacement,
+  type IconSize,
+  type TextSize,
   ICON_SIZE,
   TEXT_SIZE,
 } from "#utils/drawingStyleCommon";

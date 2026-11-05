@@ -119,7 +119,7 @@ export default function useOlWmsLayer(
             resolutions: positionStore.projection
               .getResolutionSteps()
               .map((step: ResolutionStep) => step.resolution),
-            extent: positionStore.projection.bounds?.flatten,
+            extent: positionStore.projection.bounds.flatten,
             origin: positionStore.projection.getTileOrigin(),
             tileSize: WMS_TILE_SIZE,
           })

@@ -42,7 +42,7 @@ describe("Unit test for coordinatesUtils", () => {
   describe("wrapXCoordinates()", () => {
     it("can wrap a single coordinate", () => {
       function testLowerWrap(projection: CoordinateSystem): void {
-        const bounds = projection.bounds!;
+        const bounds = projection.bounds;
         expect(bounds).to.be.an("Object");
         expect(
           coordinatesUtils.wrapXCoordinates(
@@ -55,7 +55,7 @@ describe("Unit test for coordinatesUtils", () => {
       testLowerWrap(WEBMERCATOR);
 
       function testUpperWrap(projection: CoordinateSystem) {
-        const bounds = projection.bounds!;
+        const bounds = projection.bounds;
         expect(bounds).to.be.an("Object");
         expect(
           coordinatesUtils.wrapXCoordinates(
@@ -78,7 +78,7 @@ describe("Unit test for coordinatesUtils", () => {
     });
     it("can wrap every coordinates of an array of coordinates", () => {
       function testMultipleWrap(projection: CoordinateSystem) {
-        const bounds = projection.bounds!;
+        const bounds = projection.bounds;
         expect(bounds).to.be.an("Object");
         const lowOutOfBoundCoordinate: SingleCoordinate = [
           bounds.lowerX - 1,

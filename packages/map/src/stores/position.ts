@@ -25,7 +25,6 @@ import { normalizeAngle } from "#utils/normalizeAngle";
 
 import { useOlMapPosition } from "../composables/useOlMapPosition";
 
-// LV95 always has bounds, so `DEFAULT_PROJECTION.bounds!` is safe
 export const DEFAULT_PROJECTION: CoordinateSystem = LV95;
 export const DEFAULT_FORMAT = LV95Format;
 
@@ -239,7 +238,7 @@ const usePositionStore = defineStore("position", () => {
   }
 
   function $reset(dispatcher: ActionDispatcher): void {
-    setCenter(DEFAULT_PROJECTION.bounds!.center, dispatcher);
+    setCenter(DEFAULT_PROJECTION.bounds.center, dispatcher);
     setZoom(DEFAULT_PROJECTION.getDefaultZoom(), dispatcher);
     setRotation(0, dispatcher);
     setDisplayedFormat(DEFAULT_FORMAT, dispatcher);

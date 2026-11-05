@@ -94,7 +94,7 @@ describe("position store", () => {
       expect(store.zoom).toBe(DEFAULT_PROJECTION.getDefaultZoom());
       expect(store.rotation).toBe(0);
       expect(store.autoRotation).toBe(false);
-      expect(store.center).toEqual(DEFAULT_PROJECTION.bounds!.center);
+      expect(store.center).toEqual(DEFAULT_PROJECTION.bounds.center);
       expect(store.projection.epsg).toBe(DEFAULT_PROJECTION.epsg);
     });
   });
@@ -355,7 +355,7 @@ describe("position store", () => {
       store.$reset(mockDispatcher);
 
       expect(animateMock).toHaveBeenCalledWith({
-        center: DEFAULT_PROJECTION.bounds!.center,
+        center: DEFAULT_PROJECTION.bounds.center,
         duration: 200,
       });
       expect(animateMock).toHaveBeenCalledWith({

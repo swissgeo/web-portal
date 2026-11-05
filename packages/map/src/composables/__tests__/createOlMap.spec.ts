@@ -77,7 +77,7 @@ describe("createOlMap", () => {
 
     expect(result.map.getView()).toBeInstanceOf(View);
     expect(result.map.getView().getCenter()).toEqual(
-      DEFAULT_PROJECTION.bounds!.center,
+      DEFAULT_PROJECTION.bounds.center,
     );
 
     app.unmount();

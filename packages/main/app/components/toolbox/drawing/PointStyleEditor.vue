@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AccordionItem } from "@nuxt/ui";
-import type { Icon } from "@swissgeo/drawing";
+import type { Icon, IconSize, TextSize } from "@swissgeo/drawing";
 
 import { ICON_SIZE, TEXT_SIZE, useDrawing } from "@swissgeo/drawing";
 import { useI18n } from "vue-i18n";
@@ -90,9 +90,7 @@ function onColorSelected(color: string) {
               <USelect
                 :model-value="textSize ?? undefined"
                 :items="textSizesItems"
-                @update:model-value="
-                  textSize = $event as keyof typeof TEXT_SIZE
-                "
+                @update:model-value="textSize = $event as TextSize"
                 class="w-full"
                 data-testid="point-text-size"
               />
@@ -153,9 +151,7 @@ function onColorSelected(color: string) {
               <USelect
                 :model-value="iconSize ?? undefined"
                 :items="iconSizesItems"
-                @update:model-value="
-                  iconSize = $event as keyof typeof ICON_SIZE
-                "
+                @update:model-value="iconSize = $event as IconSize"
                 class="w-full"
                 data-testid="point-icon-size"
               />

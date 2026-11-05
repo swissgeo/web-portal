@@ -43,7 +43,7 @@ export function getLV95WMTSTileGrid(maxResolution = 0.25): WMTSTileGrid {
     resolutions: resolutionSteps.map((step) => step.resolution),
     origin: LV95.getTileOrigin(),
     matrixIds: resolutionSteps.map((_, index) => index.toString()),
-    extent: LV95.bounds?.flatten,
+    extent: LV95.bounds.flatten,
   });
 }
 

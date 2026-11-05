@@ -2,6 +2,7 @@ import type proj4 from "proj4";
 
 import { describe, expect, it, vi } from "vitest";
 
+import CoordinateSystemBounds from "#proj/CoordinateSystemBounds";
 import { LV03, LV95, WEBMERCATOR } from "#proj/index";
 import StandardCoordinateSystem from "#proj/StandardCoordinateSystem";
 import { registerProj4 } from "#registerProj4";
@@ -13,6 +14,12 @@ class TestCoordinateSystem extends StandardCoordinateSystem {
       proj4transformationMatrix: "+proj=test",
       label: "test",
       epsgNumber: 9999,
+      bounds: new CoordinateSystemBounds({
+        lowerX: 0,
+        upperX: 1,
+        lowerY: 0,
+        upperY: 1,
+      }),
     });
   }
   getResolutionForZoom(): number {
@@ -33,6 +40,12 @@ class NoMatrixCoordinateSystem extends StandardCoordinateSystem {
       proj4transformationMatrix: "",
       label: "no-matrix",
       epsgNumber: 9998,
+      bounds: new CoordinateSystemBounds({
+        lowerX: 0,
+        upperX: 1,
+        lowerY: 0,
+        upperY: 1,
+      }),
     });
   }
   getResolutionForZoom(): number {

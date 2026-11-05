@@ -191,3 +191,13 @@ With the flag on, the emitted `.d.ts` keep `| null` / `| undefined`. Before, tho
 #### 5. Final checks
 
 `pnpm run format:write`, `build-libs`, `type-check`, `lint`, `format` and `test:unit` from the repo root, with the results listed under Verification.
+
+### Follow-up after review
+
+- **`bounds` is now required on `CoordinateSystem`** (`coordinates/src/proj/CoordinateSystem.ts`). Every real coordinate system already defined bounds (LV95, LV03, WGS84, WebMercator; `CustomCoordinateSystem` already required them), and the app relied on that.
+  - `CoordinateSystemProps.bounds` and the `bounds` field are no longer optional. `getBoundsAs()` returns `CoordinateSystemBounds` (no `| undefined`).
+  - Removed the no-bounds branches: `isInBounds` → `false`, `getResolutionSteps` → `[]`, `getTileOrigin` → `[0, 0]`, `getBoundsAs` → `undefined`.
+  - Tests: `BoundlessCoordinateSystem` became `TestCoordinateSystem` with bounds. The 4 tests for the no-bounds fallbacks were removed (coordinates: 249 → 245 tests). The test-only systems in `registerProj4.spec.ts` got bounds.
+  - Removed the `!` / `?.` that were only there because bounds was optional: `DEFAULT_PROJECTION.bounds!` in map (and its comment), `bounds?.center` in `useOlMapPosition`, `bounds?.flatten` in `olWMSLayer.composable.ts` and `coordinates/src/ol.ts`, and the `getBoundsAs(...)!` / `projection.bounds!` in tests.
+- **`TextSize` and `IconSize` are exported from `@swissgeo/drawing`.** `PointStyleEditor` now casts with `$event as TextSize` / `$event as IconSize` instead of `keyof typeof TEXT_SIZE` / `ICON_SIZE`.
+- Checks: build, type-check, lint and format pass. Unit tests as before (main: same two unrelated `scripts/__tests__` failures).

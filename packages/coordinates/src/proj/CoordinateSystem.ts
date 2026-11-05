@@ -61,7 +61,7 @@ export interface CoordinateSystemProps {
    * starts at this custom center instead of the natural center (when no coordinates are specified
    * at startup).
    */
-  bounds?: CoordinateSystemBounds;
+  bounds: CoordinateSystemBounds;
   /**
    * A boolean variable indicating whether the Mercator projection pyramid is used.
    *
@@ -120,7 +120,7 @@ export default abstract class CoordinateSystem {
    * starts at this custom center instead of the natural center (when no coordinates are specified
    * at startup).
    */
-  public readonly bounds?: CoordinateSystemBounds;
+  public readonly bounds: CoordinateSystemBounds;
   /**
    * A boolean variable indicating whether the Mercator projection pyramid is used.
    *
@@ -162,47 +162,39 @@ export default abstract class CoordinateSystem {
    * Transforms the bounds of this coordinates system to be expressed in the wanted coordinate
    * system
    *
-   * If the coordinate system is invalid, or if bounds are not defined, it will return null
-   *
    * @param {CoordinateSystem} coordinateSystem The target coordinate system we want bounds
    *   expressed in
-   * @returns {CoordinateSystemBounds | undefined} Bounds, expressed in the coordinate system, or
-   *   undefined if bounds are undefined or the coordinate system is invalid
+   * @returns {CoordinateSystemBounds} Bounds, expressed in the coordinate system
    */
-  getBoundsAs(
-    coordinateSystem: CoordinateSystem,
-  ): CoordinateSystemBounds | undefined {
-    if (this.bounds) {
-      if (coordinateSystem.epsg === this.epsg) {
-        return this.bounds;
-      }
-      const newBottomLeft = proj4(
-        this.epsg,
-        coordinateSystem.epsg,
-        this.bounds.bottomLeft,
-      );
-      const newTopRight = proj4(
-        this.epsg,
-        coordinateSystem.epsg,
-        this.bounds.topRight,
-      );
-      let customCenter: SingleCoordinate | undefined;
-      if (this.bounds.customCenter) {
-        customCenter = proj4(
-          this.epsg,
-          coordinateSystem.epsg,
-          this.bounds.customCenter,
-        );
-      }
-      return new CoordinateSystemBounds({
-        lowerX: newBottomLeft[0],
-        lowerY: newBottomLeft[1],
-        upperX: newTopRight[0],
-        upperY: newTopRight[1],
-        customCenter,
-      });
+  getBoundsAs(coordinateSystem: CoordinateSystem): CoordinateSystemBounds {
+    if (coordinateSystem.epsg === this.epsg) {
+      return this.bounds;
     }
-    return;
+    const newBottomLeft = proj4(
+      this.epsg,
+      coordinateSystem.epsg,
+      this.bounds.bottomLeft,
+    );
+    const newTopRight = proj4(
+      this.epsg,
+      coordinateSystem.epsg,
+      this.bounds.topRight,
+    );
+    let customCenter: SingleCoordinate | undefined;
+    if (this.bounds.customCenter) {
+      customCenter = proj4(
+        this.epsg,
+        coordinateSystem.epsg,
+        this.bounds.customCenter,
+      );
+    }
+    return new CoordinateSystemBounds({
+      lowerX: newBottomLeft[0],
+      lowerY: newBottomLeft[1],
+      upperX: newTopRight[0],
+      upperY: newTopRight[1],
+      customCenter,
+    });
   }
 
   isInBounds(x: number, y: number): boolean;
@@ -210,13 +202,8 @@ export default abstract class CoordinateSystem {
 
   /**
    * Tells if a coordinate is in bound of this coordinate system.
-   *
-   * Will return false if no bounds are defined for this coordinate system
    */
   isInBounds(xOrCoordinate: number | SingleCoordinate, y?: number): boolean {
-    if (!this.bounds) {
-      return false;
-    }
     if (typeof xOrCoordinate === "number") {
       return this.bounds.isInBounds(xOrCoordinate, y!);
     }
@@ -297,9 +284,6 @@ export default abstract class CoordinateSystem {
    * is not the behavior you want, you have to override this function.
    */
   getResolutionSteps(latitude?: number): ResolutionStep[] {
-    if (!this.bounds) {
-      return [];
-    }
     const zoom0PixelSizeInMeters =
       PIXEL_LENGTH_IN_M_AT_ZOOM_ZERO_WITH_256PX_TILES;
     const resolutions: ResolutionStep[] = [];
@@ -318,11 +302,9 @@ export default abstract class CoordinateSystem {
    * The origin to use as anchor for tile coordinate calculations. It will return the bound's
    * [lowerX, upperY] as default value (meaning the top-left corner of bounds). If this is not the
    * behavior you want, you have to override this function.
-   *
-   * If no bounds are defined, it will return [0, 0]
    */
   getTileOrigin(): SingleCoordinate {
-    return this.bounds?.topLeft ?? [0, 0];
+    return this.bounds.topLeft;
   }
 
   /**

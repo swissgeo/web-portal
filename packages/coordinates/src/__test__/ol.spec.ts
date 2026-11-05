@@ -88,7 +88,7 @@ describe("ol", () => {
 
     it("uses LV95 bounds as extent", () => {
       const grid = getLV95WMTSTileGrid();
-      expect(grid.getExtent()).toEqual(LV95.bounds?.flatten);
+      expect(grid.getExtent()).toEqual(LV95.bounds.flatten);
     });
   });
 

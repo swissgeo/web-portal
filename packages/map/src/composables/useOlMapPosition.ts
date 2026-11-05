@@ -25,7 +25,7 @@ export function useOlMapPosition(
   const listenerRegistry = new Map<number, EventsKey[]>();
 
   const center = shallowRef<SingleCoordinate | undefined>(
-    projection.value.bounds?.center,
+    projection.value.bounds.center,
   );
   const zoom = shallowRef<number | undefined>(
     projection.value.getDefaultZoom(),

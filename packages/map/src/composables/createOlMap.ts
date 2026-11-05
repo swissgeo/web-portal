@@ -83,7 +83,7 @@ function createView(): View {
     projection: LV95.epsg,
     extent: LV95.bounds.flatten,
     constrainOnlyCenter: true,
-    center: DEFAULT_PROJECTION.bounds!.center,
+    center: DEFAULT_PROJECTION.bounds.center,
   });
 
   const viewForProjection = viewsForProjection[positionStore.projection.epsg];

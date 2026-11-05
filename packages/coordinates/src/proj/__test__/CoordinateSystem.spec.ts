@@ -4,13 +4,19 @@ import CoordinateSystemBounds from "#proj/CoordinateSystemBounds";
 import { LV95, WEBMERCATOR, WGS84 } from "#proj/index";
 import StandardCoordinateSystem from "#proj/StandardCoordinateSystem";
 
-class BoundlessCoordinateSystem extends StandardCoordinateSystem {
+class TestCoordinateSystem extends StandardCoordinateSystem {
   constructor() {
     super({
       usesMercatorPyramid: false,
       proj4transformationMatrix: "test",
       label: "test",
       epsgNumber: 1234,
+      bounds: new CoordinateSystemBounds({
+        lowerX: 0,
+        upperX: 1,
+        lowerY: 0,
+        upperY: 1,
+      }),
     });
   }
   getResolutionForZoom(): number {
@@ -27,16 +33,10 @@ class BoundlessCoordinateSystem extends StandardCoordinateSystem {
 }
 
 describe("CoordinateSystem", () => {
-  const coordinateSystemWithouBounds = new BoundlessCoordinateSystem();
+  const testCoordinateSystem = new TestCoordinateSystem();
   describe("getBoundsAs", () => {
-    it("returns undefined if the bounds are not defined", () => {
-      expect(coordinateSystemWithouBounds.getBoundsAs(WEBMERCATOR)).toBe(
-        undefined,
-      );
-    });
-
     it("transforms LV95 into WebMercator correctly", () => {
-      const result = LV95.getBoundsAs(WEBMERCATOR)!;
+      const result = LV95.getBoundsAs(WEBMERCATOR);
       expect(result).to.be.an.instanceOf(CoordinateSystemBounds);
       // numbers are coming from epsg.io's transform tool
       const acceptableDelta = 0.01;
@@ -47,7 +47,7 @@ describe("CoordinateSystem", () => {
     });
 
     it("transforms LV95 into WGS84 correctly", () => {
-      const result = LV95.getBoundsAs(WGS84)!;
+      const result = LV95.getBoundsAs(WGS84);
       expect(result).to.be.an.instanceOf(CoordinateSystemBounds);
       // numbers are coming from epsg.io's transform tool
       const acceptableDelta = 0.0001;
@@ -56,14 +56,6 @@ describe("CoordinateSystem", () => {
       expect(result.upperX).to.approximately(11.47744, acceptableDelta);
       expect(result.upperY).to.approximately(48.23062, acceptableDelta);
     });
-  });
-
-  describe("isInBound", () => {
-    it("returns false if no bounds are defined", () => {
-      expect(coordinateSystemWithouBounds.isInBounds(0, 0)).toBe(false);
-      expect(coordinateSystemWithouBounds.isInBounds(1, 1)).toBe(false);
-    });
-    // the remaining tests for this function are handled in the CoordinateSystemBounds.spec.ts file
   });
 
   describe("isInBounds with coordinate array", () => {
@@ -78,14 +70,14 @@ describe("CoordinateSystem", () => {
 
   describe("getBoundsAs same EPSG", () => {
     it("returns bounds unchanged when target EPSG matches source", () => {
-      const result = LV95.getBoundsAs(LV95)!;
+      const result = LV95.getBoundsAs(LV95);
       expect(result).toBe(LV95.bounds);
     });
   });
 
   describe("getBoundsAs with customCenter", () => {
     it("transforms the customCenter to the target coordinate system", () => {
-      const result = WGS84.getBoundsAs(WEBMERCATOR)!;
+      const result = WGS84.getBoundsAs(WEBMERCATOR);
       expect(result).to.be.an.instanceOf(CoordinateSystemBounds);
       expect(result.customCenter).toBeDefined();
     });
@@ -93,8 +85,8 @@ describe("CoordinateSystem", () => {
 
   describe("roundZoomLevel", () => {
     it("rounds zoom to 3 decimal places", () => {
-      expect(coordinateSystemWithouBounds.roundZoomLevel(1.23456)).to.eq(1.235);
-      expect(coordinateSystemWithouBounds.roundZoomLevel(1.23444)).to.eq(1.234);
+      expect(testCoordinateSystem.roundZoomLevel(1.23456)).to.eq(1.235);
+      expect(testCoordinateSystem.roundZoomLevel(1.23444)).to.eq(1.234);
     });
   });
 
@@ -102,11 +94,6 @@ describe("CoordinateSystem", () => {
     it("returns 21 resolution steps for a coordinate system with bounds", () => {
       const steps = WEBMERCATOR.getResolutionSteps();
       expect(steps).to.have.length(21);
-    });
-
-    it("returns empty array for a coordinate system without bounds", () => {
-      const steps = coordinateSystemWithouBounds.getResolutionSteps();
-      expect(steps).to.deep.equal([]);
     });
 
     it("returns decreasing resolutions with increasing zoom", () => {
@@ -128,12 +115,6 @@ describe("CoordinateSystem", () => {
   describe("getTileOrigin", () => {
     it("returns bounds topLeft for coordinate system with bounds", () => {
       expect(LV95.getTileOrigin()).to.deep.equal(LV95.bounds.topLeft);
-    });
-
-    it("returns [0, 0] for coordinate system without bounds", () => {
-      expect(coordinateSystemWithouBounds.getTileOrigin()).to.deep.equal([
-        0, 0,
-      ]);
     });
   });
 
@@ -157,7 +138,7 @@ describe("CoordinateSystem", () => {
     });
 
     it("defaults usesMercatorPyramid to false", () => {
-      const cs = new BoundlessCoordinateSystem();
+      const cs = new TestCoordinateSystem();
       expect(cs.usesMercatorPyramid).to.eq(false);
     });
   });
