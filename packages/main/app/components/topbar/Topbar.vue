@@ -30,10 +30,6 @@ watch(
   },
 );
 
-const emit = defineEmits<{
-  "reset-app": [void];
-}>();
-
 const items = computed<NavigationMenuItem[]>(() => [
   {
     label: t("topbar.home"),
@@ -47,8 +43,8 @@ const items = computed<NavigationMenuItem[]>(() => [
   },
 ]);
 
-function resetApp() {
-  emit("reset-app");
+function goHome() {
+  void navigateTo(localePath("/"));
 }
 </script>
 
@@ -80,7 +76,7 @@ function resetApp() {
         <LogoPic
           class="shrink-0"
           :darkMode="colorMode.value === 'dark'"
-          @logo-click="resetApp"
+          @logo-click="goHome"
         />
         <template #fallback>
           <div class="h-8 w-32.75 shrink-0" />
