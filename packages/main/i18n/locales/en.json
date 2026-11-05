@@ -211,9 +211,7 @@
   },
   "geolocation": {
     "permissionDenied": "Location access denied",
-    "stopTracking": "Hide location",
     "startGeolocation": "Show location",
-    "recenterMap": "Re-centre map",
     "timeout": "Location request timed out.",
     "unavailable": "Unable to determine location.",
     "outsideSwitzerland": "Your location is outside of Switzerland and cannot be shown on the map."

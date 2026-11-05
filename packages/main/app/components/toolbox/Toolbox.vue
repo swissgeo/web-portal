@@ -10,7 +10,6 @@ import GeolocButton from "@/components/toolbox/toolboxButtons/GeolocButton.vue";
 import ImportButton from "@/components/toolbox/toolboxButtons/ImportButton.vue";
 import MeasureButton from "@/components/toolbox/toolboxButtons/MeasureButton.vue";
 import PrintButton from "@/components/toolbox/toolboxButtons/PrintButton.vue";
-import RecenterButton from "@/components/toolbox/toolboxButtons/RecenterButton.vue";
 import ShareButton from "@/components/toolbox/toolboxButtons/ShareButton.vue";
 import Toggle3dButton from "@/components/toolbox/toolboxButtons/Toggle3dButton.vue";
 import ZoomButtons from "@/components/toolbox/toolboxButtons/ZoomButtons.vue";
@@ -38,7 +37,6 @@ const isEmbedMode = computed(() => displayMode === "embed");
       <GeolocButton v-if="isWebMode && toolboxStore.showGeolocationButton" />
       <Toggle3dButton v-if="isWebMode && toolboxStore.show3dButton" />
       <CompassButton v-if="isWebMode && toolboxStore.showCompassButton" />
-      <RecenterButton v-if="isWebMode && toolboxStore.showRecenterButton" />
       <slot />
     </UCard>
     <UCard
