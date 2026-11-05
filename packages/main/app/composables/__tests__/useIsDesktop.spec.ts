@@ -1,7 +1,28 @@
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { effectScope, nextTick } from "vue";
 
 import { useIsDesktop } from "../useIsDesktop";
+
+// A fake Nuxt app that lets the tests end the hydration.
+const nuxtApp = vi.hoisted(() => {
+  const app = {
+    isHydrating: false,
+    hydrationListeners: [] as Array<() => void>,
+    hooks: {
+      hookOnce: (_name: string, listener: () => void) => {
+        app.hydrationListeners.push(listener);
+      },
+    },
+    endHydration() {
+      app.isHydrating = false;
+      app.hydrationListeners.forEach((listener) => listener());
+      app.hydrationListeners = [];
+    },
+  };
+  return app;
+});
+mockNuxtImport("useNuxtApp", () => () => nuxtApp);
 
 // happy-dom does not notify media query lists when the viewport is resized, so
 // we fake `matchMedia` with lists that follow a width we control.
@@ -60,6 +81,8 @@ describe("useIsDesktop", () => {
   beforeEach(() => {
     mediaQueryLists.clear();
     vi.spyOn(window, "matchMedia").mockImplementation(fakeMatchMedia);
+    nuxtApp.isHydrating = false;
+    nuxtApp.hydrationListeners = [];
     scope = effectScope();
   });
 
@@ -94,6 +117,18 @@ describe("useIsDesktop", () => {
     expect(isDesktop.value).toBe(false);
 
     setViewportWidth(1024);
+    await nextTick();
+    expect(isDesktop.value).toBe(true);
+  });
+
+  it("returns false on desktop until the hydration ends", async () => {
+    setViewportWidth(1280);
+    nuxtApp.isHydrating = true;
+
+    const isDesktop = scope.run(() => useIsDesktop())!;
+    expect(isDesktop.value).toBe(false);
+
+    nuxtApp.endHydration();
     await nextTick();
     expect(isDesktop.value).toBe(true);
   });

@@ -48,6 +48,8 @@ export const useGeolocationStore = defineStore("geolocation", {
 
       if (this.active) {
         this.errorCount = 0;
+        // The map follows the position until the user drags the map
+        this.tracking = true;
 
         const onWatchSuccess = (pos: GeolocationPosition) =>
           handleNewGeolocationPosition.call(this, pos, dispatcher);
@@ -288,5 +290,8 @@ function setCenterIfInBounds(
       ],
     });
     toaster.showWarning(useNuxtApp().$i18n.t("geolocation.outsideSwitzerland"));
+    // The browser sends new positions all the time. Stop following, so the
+    // warning shows only once.
+    store.tracking = false;
   }
 }

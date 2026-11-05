@@ -164,8 +164,10 @@ export default function useOlWmsLayer(
       });
     }
   }
+  // The gutter can arrive after the layer is created (e.g. from the layer
+  // style), and OpenLayers reads it only when it creates the source.
   watch(
-    () => layer.value.url,
+    [url, gutter],
     () => {
       createLayer();
     },

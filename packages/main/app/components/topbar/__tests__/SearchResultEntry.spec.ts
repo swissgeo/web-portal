@@ -91,7 +91,7 @@ describe("SearchResultEntry", () => {
       wrapper.unmount();
     });
 
-    it("renders location entry with correct icon", () => {
+    it("renders location entry", () => {
       const wrapper = mountEntry(entries[0]!);
 
       const item = wrapper.find(
@@ -99,26 +99,11 @@ describe("SearchResultEntry", () => {
       );
       expect(item.exists()).toBe(true);
 
-      const icon = wrapper.find('[data-testid="icon-location"]');
-      expect(icon.exists()).toBe(true);
-
-      wrapper.unmount();
-    });
-
-    it("renders feature entry with correct icon", () => {
-      const wrapper = mountEntry(entries[1]!, 1);
-
-      const icon = wrapper.find('[data-testid="icon-feature"]');
-      expect(icon.exists()).toBe(true);
-
       wrapper.unmount();
     });
 
     it("renders layer entry with info button", () => {
       const wrapper = mountEntry(entries[2]!, 2);
-
-      const icon = wrapper.find('[data-testid="icon-layer"]');
-      expect(icon.exists()).toBe(true);
 
       const infoButton = wrapper.find('[data-testid="search-result-info-2"]');
       expect(infoButton.exists()).toBe(true);

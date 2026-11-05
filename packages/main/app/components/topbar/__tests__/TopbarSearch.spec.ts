@@ -89,7 +89,7 @@ const stubs = {
     template: "<div><slot name='anchor' /><slot name='content' /></div>",
   },
   UTabs: {
-    props: ["items", "modelValue"],
+    props: ["items", "modelValue", "ui"],
     template: "<div><slot name='map' /><slot name='contentPages' /></div>",
   },
   UInput: UInputStub,
@@ -195,6 +195,10 @@ describe("TopbarSearch", () => {
 
     expect(items).toHaveLength(1);
     expect(items[0]?.label).toBe("search.map_tab");
+    // since there is only 1 tab, it is hidden
+    expect(wrapper.findComponent(stubs.UTabs).props("ui")).toEqual({
+      list: "hidden",
+    });
     expect(
       wrapper.find("[data-testid='content-search-results']").exists(),
     ).toBe(false);
@@ -593,7 +597,7 @@ describe("TopbarSearch", () => {
       ).toBe(false);
     });
 
-    it("caps the results at a maximum height and scrolls per category", () => {
+    it("shares the results height between the categories, each scrolling on its own", () => {
       searchStore.query = "wald";
       searchStore.results = [location("bern"), layer("waldrand")];
 
@@ -602,8 +606,6 @@ describe("TopbarSearch", () => {
         wrapper.get("[data-testid='search-results']").attributes("class") ?? "";
 
       expect(budgetClasses).toContain("flex");
-      expect(budgetClasses).toContain("h-[60dvh]");
-      expect(budgetClasses).toContain("sm:h-96");
       for (const section of wrapper.findAll(
         "[data-testid^='search-category-']",
       )) {

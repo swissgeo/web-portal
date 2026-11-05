@@ -42,7 +42,7 @@
       "close": "Serrar il formular «Dar feedback»",
       "steps": {
         "step1": {
-          "title": "1. Object da Voss annunzi",
+          "title": "1. Object da Voss messadi",
           "select": {
             "placeholder": "Selecziunar ina categoria",
             "options": {
@@ -211,9 +211,7 @@
   },
   "geolocation": {
     "permissionDenied": "Access a la posiziun refusà",
-    "stopTracking": "Zuppentar la posiziun",
     "startGeolocation": "Mussar la posiziun",
-    "recenterMap": "Recentrar la charta",
     "timeout": "La localisaziun ha durà memia ditg.",
     "unavailable": "Impussibel da determinar la posiziun.",
     "outsideSwitzerland": "Vossa posiziun è ordaifer la Svizra e na po betg vegnir mussada sin la charta."
@@ -695,7 +693,7 @@
     "cards": {
       "map": {
         "title": "Charta",
-        "description": "Visualisatur da chartas interactiv cun tschientenas da nivels, viadi en il temp, funcziuns da stampar e da parter.",
+        "description": "Visualisatur da chartas interactiv cun tschients da nivels, viadi en il temp sco era funcziuns da stampar e da parter.",
         "button": "A la charta"
       },
       "catalog": {
@@ -704,20 +702,20 @@
         "button": "Avrir il catalog da datas"
       },
       "info": {
-        "title": "Tut il rest davart SWISSGEO",
+        "title": "Tut ulteriur davart SWISSGEO",
         "description": "Novitads, agid ed infurmaziuns davart nus.",
         "button": "Al portal d'infurmaziun"
       }
     },
     "footer": {
       "claim": "Il nua è qua.",
-      "description": "SWISSGEO renda accessiblas en in lieu las datas spazialas da la Svizra.",
+      "description": "SWISSGEO renda accessibel las datas spazialas da la Svizra en in lieu.",
       "followUs": "Suandai nus!",
       "moreInformation": "Ulteriuras infurmaziuns",
       "termsOfUse": "Cundiziuns d'utilisaziun",
       "contact": "Contact",
       "dataProtection": "Infurmaziuns giuridicas e protecziun da datas",
-      "netiquette": "Netiquette",
+      "netiquette": "Netichetta",
       "accessibility": "Accessibladad",
       "copyright": "Copyright © 2026"
     },

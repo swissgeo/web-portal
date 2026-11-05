@@ -44,30 +44,32 @@ defineExpose({
 </script>
 
 <template>
-  <!-- Category container -->
-  <UScrollArea>
+  <div class="flex flex-col gap-2 border-default px-2 not-first:border-t">
     <!-- Category header -->
-    <div
+    <h3
       v-if="title"
-      class="sticky top-0 z-10 border-b border-default bg-default px-4 py-2 text-sm font-semibold text-muted"
+      data-testid="category-title"
+      class="mt-3 ml-2 shrink-0 border-b border-default pb-2 text-sm leading-small-text font-bold text-highlighted"
     >
       {{ title }}
-    </div>
+    </h3>
 
     <!-- Results list -->
-    <ul class="list-none" tabindex="-1">
-      <SearchResultEntry
-        v-for="(entry, index) in results"
-        :key="entry.id"
-        ref="entries"
-        :index="index"
-        :entry="entry"
-        :tab-start="tabStart && index === 0"
-        @select="emit('select', entry)"
-        @view-details="emit('viewDetails')"
-        @first-entry-reached="emit('firstEntryReached')"
-        @last-entry-reached="emit('lastEntryReached')"
-      />
-    </ul>
-  </UScrollArea>
+    <UScrollArea class="min-h-0 flex-1">
+      <ul class="flex list-none flex-col gap-0.5 pb-2" tabindex="-1">
+        <SearchResultEntry
+          v-for="(entry, index) in results"
+          :key="entry.id"
+          ref="entries"
+          :index="index"
+          :entry="entry"
+          :tab-start="tabStart && index === 0"
+          @select="emit('select', entry)"
+          @view-details="emit('viewDetails')"
+          @first-entry-reached="emit('firstEntryReached')"
+          @last-entry-reached="emit('lastEntryReached')"
+        />
+      </ul>
+    </UScrollArea>
+  </div>
 </template>
