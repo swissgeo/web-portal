@@ -9,6 +9,7 @@ import type {
 import type { DatasetTab } from "~/utils/datasetTab";
 
 import ErrorPill from "~/components/ErrorPill.vue";
+import { DEFAULT_DATASET_TAB } from "~/utils/datasetTab";
 import { determineFormat } from "~/utils/determineFormat";
 import { resolveWebUrl } from "~/utils/resolveWebUrl";
 import { computed } from "vue";
@@ -29,7 +30,7 @@ const props = defineProps<{
 }>();
 
 // The parent keeps the open tab, because a language switch unmounts this component.
-const tab = defineModel<string>("tab", { default: "overview" });
+const tab = defineModel<DatasetTab>("tab", { default: DEFAULT_DATASET_TAB });
 
 const { t } = useI18n();
 // The tab values must match DATASET_TABS, because the URL selects the tab.

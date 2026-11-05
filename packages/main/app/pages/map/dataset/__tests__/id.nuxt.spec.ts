@@ -186,13 +186,21 @@ describe("dataset page", () => {
     );
 
     it("keeps the tab when the language changes", async () => {
-      const { wrapper } = await mountPanel(
+      const { wrapper, panel } = await mountPanel(
         "/de/dataset/example.dataset?tab=legend",
       );
+      const frenchPath = useSwitchLocalePath()("fr");
+      expect(frenchPath).toBe("/fr/dataset/example.dataset?tab=legend");
 
-      expect(useSwitchLocalePath()("fr")).toBe(
-        "/fr/dataset/example.dataset?tab=legend",
-      );
+      await useRouter().push(frenchPath);
+
+      await vi.waitFor(() => {
+        expect(useRoute().path).toBe("/fr/dataset/example.dataset");
+      });
+      expect(panel.props("tab")).toBe("legend");
+      expect(
+        wrapper.get('[role="tab"][aria-selected="true"]').attributes("id"),
+      ).toContain("legend");
       wrapper.unmount();
     });
   });

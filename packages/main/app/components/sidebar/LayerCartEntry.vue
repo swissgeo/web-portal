@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 // TODO : map view store alterations
 import type { Layer as MapLayer } from "@swissgeo/map";
+import type { DatasetTab } from "~/utils/datasetTab";
 
 import {
   getDisplayNameFromTimestamp,
@@ -131,7 +132,10 @@ const legendLink = computed(() => {
   if (!detailPath.value) {
     return undefined;
   }
-  return { path: detailPath.value, query: { tab: "legend" } };
+  return {
+    path: detailPath.value,
+    query: { tab: "legend" satisfies DatasetTab },
+  };
 });
 
 // Shared look of the buttons on the entry row

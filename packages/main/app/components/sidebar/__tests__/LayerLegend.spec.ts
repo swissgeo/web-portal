@@ -9,18 +9,36 @@ vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 
+const { isMobile } = await vi.hoisted(async () => {
+  const { ref } = await import("vue");
+  return { isMobile: ref(false) };
+});
+vi.mock("@vueuse/core", async (importOriginal) => ({
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  ...(await importOriginal<typeof import("@vueuse/core")>()),
+  useBreakpoints: () => ({ smallerOrEqual: () => isMobile }),
+}));
+
 const stubs = {
   ULink: {
     props: ["to"],
     template: "<a v-if='to' :href='to'><slot /></a><div v-else><slot /></div>",
   },
   UIcon: { template: "<span />" },
-  UModal: { template: "<div><slot /></div>" },
+  UModal: {
+    name: "UModal",
+    props: ["open"],
+    template: "<div><slot /></div>",
+  },
 };
 
-function mountLegend(legends: Legend[], detailLink?: string) {
+function mountLegend(
+  legends: Legend[],
+  detailLink?: string,
+  presentation?: "sidebar" | "detail",
+) {
   return mount(LayerLegend, {
-    props: { legends, detailLink },
+    props: { legends, detailLink, presentation },
     global: { stubs },
   });
 }
@@ -122,4 +140,36 @@ describe("LayerLegend.vue", () => {
       wrapper.get("[data-testid='layer-legend-images']").element.tagName,
     ).toBe("DIV");
   });
+
+  it.each`
+    presentation | mobile   | isZoomable
+    ${"detail"}  | ${true}  | ${true}
+    ${"detail"}  | ${false} | ${false}
+    ${"sidebar"} | ${true}  | ${false}
+  `(
+    "zooms into the legend on click=$isZoomable for $presentation, mobile=$mobile",
+    async ({ presentation, mobile, isZoomable }) => {
+      isMobile.value = mobile;
+      const wrapper = mountLegend(
+        [{ href: "https://example.com/legend.png", format: "image/png" }],
+        undefined,
+        presentation,
+      );
+      const image = wrapper.get("img");
+
+      expect(image.classes("cursor-pointer")).toBe(isZoomable);
+      expect(wrapper.findComponent({ name: "UModal" }).exists()).toBe(
+        isZoomable,
+      );
+
+      await image.trigger("click");
+
+      if (isZoomable) {
+        expect(wrapper.getComponent({ name: "UModal" }).props("open")).toBe(
+          true,
+        );
+      }
+      isMobile.value = false;
+    },
+  );
 });
