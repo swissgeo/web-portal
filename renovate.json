@@ -25,6 +25,12 @@
       "description": "Update unplugin-dts manually until the Vite 8 watch rebuild loop is fixed",
       "matchPackageNames": ["unplugin-dts"],
       "enabled": false
+    },
+    {
+      "description": "Group all OpenTelemetry packages into their own PR, separate from the all non-major dependencies group",
+      "matchPackageNames": ["@opentelemetry/**"],
+      "groupName": "opentelemetry",
+      "groupSlug": "opentelemetry"
     }
   ],
   "postUpgradeTasks": {
