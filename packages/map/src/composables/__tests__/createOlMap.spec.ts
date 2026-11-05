@@ -93,6 +93,17 @@ describe("createOlMap", () => {
     app.unmount();
   });
 
+  it("keeps the map north up, so the user cannot get stuck in a rotated map", async () => {
+    const [result, app] = withSetup(() => createOlMap());
+    await flushPromises();
+
+    result.map.getView().setRotation(Math.PI / 4);
+
+    expect(result.map.getView().getRotation()).toBe(0);
+
+    app.unmount();
+  });
+
   it("Rounds the zoom level on double click", async () => {
     // we need a rather complicated setup for olMap to receive these events
     const container = document.createElement("div");

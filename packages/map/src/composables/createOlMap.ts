@@ -79,6 +79,9 @@ function createView(): View {
     zoom: DEFAULT_PROJECTION.getDefaultZoom(),
     minResolution: VIEW_MIN_RESOLUTION,
     rotation: 0,
+    // This setting keeps the map north up for each source of rotation.
+    // will be removed in t2
+    enableRotation: false,
     resolutions: constants.LV95_RESOLUTIONS,
     projection: LV95.epsg,
     extent: LV95.bounds.flatten,
