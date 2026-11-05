@@ -112,7 +112,7 @@ function resolvePointIconStyle(feature: Feature<Geometry>): Icon | undefined {
 
   return styles
     .map((style) => style.getImage())
-    .find((image): image is Icon => "getSrc" in image);
+    .find((image): image is Icon => image !== null && "getSrc" in image);
 }
 
 function getFontSize(font: string | undefined): number | undefined {
@@ -608,7 +608,7 @@ export function convertCircleToLineString(
   const polygonGeometry = fromCircle(circleGeometry, segments);
 
   const lineStringFeature = new Feature<LineString>(
-    new LineString(polygonGeometry.getLinearRing(0).getCoordinates()),
+    new LineString(polygonGeometry.getLinearRing(0)!.getCoordinates()),
   );
   const properties = circle.getProperties();
   delete properties.geometry; // Remove the geometry property to avoid conflicts
@@ -637,7 +637,7 @@ export function convertCircleToMultiLineString(
 
   const lineStringFeature = new Feature<MultiLineString>(
     new MultiLineString([
-      new LineString(polygonGeometry.getLinearRing(0).getCoordinates()),
+      new LineString(polygonGeometry.getLinearRing(0)!.getCoordinates()),
     ]),
   );
   const properties = circle.getProperties();
@@ -665,7 +665,7 @@ export function convertPolygonToLineString(
 
   const polygonGeometry = geometry as Polygon;
   const lineStringFeature = new Feature<LineString>(
-    new LineString(polygonGeometry.getLinearRing(0).getCoordinates()),
+    new LineString(polygonGeometry.getLinearRing(0)!.getCoordinates()),
   );
   const properties = polygon.getProperties();
   delete properties.geometry; // Remove the geometry property to avoid conflicts
@@ -688,7 +688,7 @@ export function convertPolygonToMultiLineString(
   const polygonGeometry = geometry as Polygon;
   const lineStringFeature = new Feature<MultiLineString>(
     new MultiLineString([
-      new LineString(polygonGeometry.getLinearRing(0).getCoordinates()),
+      new LineString(polygonGeometry.getLinearRing(0)!.getCoordinates()),
     ]),
   );
   const properties = polygon.getProperties();

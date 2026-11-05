@@ -25,7 +25,7 @@ import {
 
 test.describe("map page", () => {
   const getZoom = async (page: Page) => {
-    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
+    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap!);
     const zoom = await page.evaluate((map) => map.getView().getZoom(), mapRef);
     return zoom;
   };
@@ -114,7 +114,7 @@ test.describe("map page", () => {
     await page.waitForFunction(() => window.swissgeoOlMap !== undefined, null, {
       timeout: 20000,
     });
-    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
+    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap!);
     const zoom = await page.evaluate((map) => map.getView().getZoom(), mapRef);
     const center = await page.evaluate(
       (map) => map.getView().getCenter(),
@@ -128,7 +128,7 @@ test.describe("map page", () => {
     await page.waitForFunction(() => window.swissgeoOlMap !== undefined, null, {
       timeout: 20000,
     });
-    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
+    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap!);
     // The WMTS background source is built asynchronously (ogc-client parses the
     // capabilities, then the OL tile grid is created), so wait for the layer to
     // be added before sampling.
@@ -159,7 +159,7 @@ test.describe("map page", () => {
   });
 
   test("zoom buttons work", async ({ page }) => {
-    await page.evaluateHandle(() => window.swissgeoOlMap);
+    await page.evaluateHandle(() => window.swissgeoOlMap!);
 
     await test.step("Check simple zooming", async () => {
       await page.getByTestId("zoom-in").click();

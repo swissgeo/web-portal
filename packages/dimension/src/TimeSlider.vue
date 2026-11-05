@@ -36,10 +36,10 @@ useResizeObserver(sliderContainer, (entries) => {
 });
 
 const layerTimeDimensions = computed(() =>
-  dimensionsStore.getLayersWithDimension("time").map((uuid) => ({
-    uuid,
-    timeDimension: dimensionsStore.getDimensions(uuid)?.time,
-  })),
+  dimensionsStore.getLayersWithDimension("time").flatMap((uuid) => {
+    const timeDimension = dimensionsStore.getDimensions(uuid)?.time;
+    return timeDimension ? [{ uuid, timeDimension }] : [];
+  }),
 );
 
 const youngestYear = computed(() => new Date().getFullYear());
@@ -213,6 +213,7 @@ function togglePlayYearsWithData() {
 function handleKeyDownEvent(event: KeyboardEvent) {
   const target = event.target as HTMLElement;
   if (
+    currentYear.value !== undefined &&
     ["mainBody", "timeSliderButton", "timeSliderPlayButton"].includes(target.id)
   ) {
     if (event.key === "ArrowLeft") {

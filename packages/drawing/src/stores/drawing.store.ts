@@ -206,8 +206,9 @@ export const useDrawingStore = defineStore("drawing", () => {
    * Add the drawing layer to the map and to the layer store,
    * plus add the (disabled) interactions to the map that are necessary for the drawing feature to work.
    */
-  function mountDrawingLayer(olMap: OlMap) {
-    if (mountedMap === olMap) {
+  function mountDrawingLayer(olMap: OlMap | null) {
+    // no map yet (null) or already mounted: nothing to do
+    if (!olMap || mountedMap === olMap) {
       return;
     }
 

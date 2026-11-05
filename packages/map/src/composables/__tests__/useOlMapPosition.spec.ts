@@ -98,8 +98,8 @@ describe("useOlMapPosition", () => {
     const { zoom } = useOlMapPosition(ref(false), projection);
 
     expect(zoom.value).toEqual(1);
-    olMapRef.value.getView().setZoom(13);
-    olMapRef.value.dispatchEvent("moveend");
+    olMapRef.value!.getView().setZoom(13);
+    olMapRef.value!.dispatchEvent("moveend");
     expect(zoom.value).toEqual(13);
   });
 
@@ -107,8 +107,10 @@ describe("useOlMapPosition", () => {
     const { center } = useOlMapPosition(ref(false), projection);
 
     expect(center.value).toEqual([0, 0]);
-    olMapRef.value.getView().setCenter([46.927652279098595, 7.451517157238107]);
-    olMapRef.value.dispatchEvent("moveend");
+    olMapRef
+      .value!.getView()
+      .setCenter([46.927652279098595, 7.451517157238107]);
+    olMapRef.value!.dispatchEvent("moveend");
     expect(center.value).toEqual([46.927652279098595, 7.451517157238107]);
   });
 
@@ -116,8 +118,8 @@ describe("useOlMapPosition", () => {
     const { rotation } = useOlMapPosition(ref(false), projection);
 
     expect(rotation.value).toEqual(0);
-    olMapRef.value.getView().setRotation(Math.PI);
-    olMapRef.value.dispatchEvent("moveend");
+    olMapRef.value!.getView().setRotation(Math.PI);
+    olMapRef.value!.dispatchEvent("moveend");
     expect(rotation.value).toEqual(Math.PI);
   });
 
@@ -134,7 +136,7 @@ describe("useOlMapPosition", () => {
       rotation: 13,
     });
 
-    olMapRef.value.setView(newView);
+    olMapRef.value!.setView(newView);
     await flushPromises();
 
     expect(center.value).toEqual([49.60080394469794, 6.1279069383788585]);

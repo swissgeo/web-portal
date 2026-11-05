@@ -133,7 +133,7 @@ export async function grabFeatureInfoInformation(dataset: Dataset) {
     const featureInfoRelJson =
       (await featureInfoRelResult.json()) as Feature<"featureinfo">;
     const protocol = featureInfoRelJson.properties?.protocol;
-    const dataServiceLink = featureInfoRelJson.links.find(
+    const dataServiceLink = featureInfoRelJson.links?.find(
       (link) => link.rel.toLowerCase() === "dataservice",
     )?.href;
     if (!dataServiceLink) {
@@ -149,10 +149,10 @@ export async function grabFeatureInfoInformation(dataset: Dataset) {
       dataServiceRelJson.links?.find(
         (link) => link.rel.toLowerCase() === "describes",
       )?.href ??
-      dataServiceRelJson.links.find(
+      dataServiceRelJson.links?.find(
         (link) => link.rel.toLowerCase() === "describedby",
       )?.href ??
-      dataServiceRelJson.links.find(
+      dataServiceRelJson.links?.find(
         (link) => link.rel.toLowerCase() === "about",
       )?.href;
     return {
@@ -161,7 +161,7 @@ export async function grabFeatureInfoInformation(dataset: Dataset) {
     };
   } catch (error) {
     log.error(
-      `[Grab FeatureInfo information] Unexpected error (${error.toString()}) happened while trying to navigate the ogc records for the following dataset: ${dataset.id}`,
+      `[Grab FeatureInfo information] Unexpected error (${String(error)}) happened while trying to navigate the ogc records for the following dataset: ${dataset.id}`,
     );
   }
   return;
@@ -177,7 +177,7 @@ export const makeServerLayer = async (
   validateDataset(dataset);
 
   // extract the self link from the dataset (validated above)
-  const layerUrl = dataset.links.find((link) => link.rel === "self").href;
+  const layerUrl = dataset.links!.find((link) => link.rel === "self")!.href;
 
   return {
     layerUrl,

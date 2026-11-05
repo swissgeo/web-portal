@@ -20,7 +20,7 @@ export function sourceToLayerRequest(
 ): LayerRequest | WMSLayerRequest {
   // priority 1: geojson / KML / KMZ layers most likely will have features as
   // part of the source data.
-  if (layerSource.preResolvedFeatures?.length > 0) {
+  if ((layerSource.preResolvedFeatures?.length ?? 0) > 0) {
     return {
       layerUuid: layerSource.layerUuid,
       layerId: layerSource.layerId,
@@ -64,9 +64,9 @@ export function sourceToLayerRequest(
 export function isIdentifyFeatureInfo(featureInfo?: {
   protocol?: string;
   baseUrl?: string;
-}): boolean {
+}): featureInfo is { protocol: string; baseUrl: string } {
   return (
-    featureInfo?.baseUrl &&
+    !!featureInfo?.baseUrl &&
     (featureInfo.protocol === "geoadmin:features" ||
       featureInfo.protocol === "ogc:api3features")
   );

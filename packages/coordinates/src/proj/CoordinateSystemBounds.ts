@@ -50,7 +50,8 @@ function reassembleLineSegments(
         throw new Error("Feature missing geometry");
       }
     });
-    const closest = candidateFeatures.shift();
+    // candidateFeatures is not empty (loop condition)
+    const closest = candidateFeatures.shift()!;
     const closestOrigin =
       closest.geometry.coordinates[closest.geometry.coordinates.length - 1];
     if (closestOrigin) {
@@ -121,6 +122,7 @@ export default class CoordinateSystemBounds {
       return (
         xOrCoordinate >= this.lowerX &&
         xOrCoordinate <= this.upperX &&
+        y !== undefined &&
         y >= this.lowerY &&
         y <= this.upperY
       );

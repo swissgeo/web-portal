@@ -464,7 +464,7 @@ describe("geometry conversion helpers", () => {
 
     expect(getGeometry(polygonFeature).getType()).toBe("Polygon");
     expect(
-      getGeometry(polygonFeature).getLinearRing(0).getCoordinates(),
+      getGeometry(polygonFeature).getLinearRing(0)!.getCoordinates(),
     ).toHaveLength(9);
     expect(getGeometry(centerFeature).getCoordinates()).toEqual([10, 20]);
     expect(polygonFeature.get("name")).toBe("Circle");
@@ -504,7 +504,7 @@ describe("geometry conversion helpers", () => {
     );
 
     expect(getGeometry(lineStringFeature).getCoordinates()).toEqual(
-      makePolygon().getLinearRing(0).getCoordinates(),
+      makePolygon().getLinearRing(0)!.getCoordinates(),
     );
     expect(lineStringFeature.get("name")).toBe("Polygon");
   });
@@ -515,7 +515,7 @@ describe("geometry conversion helpers", () => {
     );
 
     expect(getGeometry(multiLineStringFeature).getCoordinates()).toEqual([
-      makePolygon().getLinearRing(0).getCoordinates(),
+      makePolygon().getLinearRing(0)!.getCoordinates(),
     ]);
     expect(multiLineStringFeature.get("name")).toBe("Polygon");
   });

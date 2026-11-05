@@ -14,18 +14,19 @@ const popupEl = ref<HTMLDivElement>();
 let overlay: Overlay | null = null;
 
 function setupOverlay() {
-  overlay = new Overlay({
+  const newOverlay = new Overlay({
     element: popupEl.value,
     positioning: "top-center",
     offset: [0, 10],
     stopEvent: true,
   });
+  overlay = newOverlay;
   // The watch is intentionally nested here so it only runs once the overlay instance exists.
   watch(
     () => olMap?.value,
     (map) => {
       if (map) {
-        map.addOverlay(overlay);
+        map.addOverlay(newOverlay);
       }
     },
     { immediate: true },
@@ -44,7 +45,11 @@ watch([isVisible, coordinate], ([visible, coord]) => {
   }
 });
 
-onUnmounted(() => olMap?.value?.removeOverlay(overlay));
+onUnmounted(() => {
+  if (overlay) {
+    olMap?.value?.removeOverlay(overlay);
+  }
+});
 </script>
 
 <template>

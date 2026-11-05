@@ -28,7 +28,7 @@ describe("CoordinateSystemBounds", () => {
         [bounds.lowerX + 6, bounds.upperY - 6],
         [bounds.lowerX + 7, bounds.upperY - 7],
       ];
-      const result = bounds.splitIfOutOfBounds(coordinatesWithinBounds);
+      const result = bounds.splitIfOutOfBounds(coordinatesWithinBounds)!;
       expect(result).to.be.an("Array").of.length(1);
       const [singleChunk] = result;
       expect(singleChunk)
@@ -48,7 +48,7 @@ describe("CoordinateSystemBounds", () => {
         [50, yValue],
         [bounds.upperX - 1, yValue],
       ];
-      const result = bounds.splitIfOutOfBounds(coordinatesOverlappingBounds);
+      const result = bounds.splitIfOutOfBounds(coordinatesOverlappingBounds)!;
       expect(result).to.be.an("Array").of.length(2);
       const [outOfBoundChunk, inBoundChunk] = result;
       expect(outOfBoundChunk).to.haveOwnProperty("isWithinBounds");
@@ -83,7 +83,7 @@ describe("CoordinateSystemBounds", () => {
         [50, yValue] as SingleCoordinate,
         [bounds.upperX - 1, yValue] as SingleCoordinate,
       ].toReversed();
-      const result = bounds.splitIfOutOfBounds(coordinatesOverlappingBounds);
+      const result = bounds.splitIfOutOfBounds(coordinatesOverlappingBounds)!;
       expect(result).to.be.an("Array").of.length(2);
       const [inBoundChunk, outOfBoundChunk] = result;
 
@@ -116,7 +116,7 @@ describe("CoordinateSystemBounds", () => {
         bounds.upperY,
       ];
 
-      const result = bounds.splitIfOutOfBounds(coordinatesGoingBackAndForth);
+      const result = bounds.splitIfOutOfBounds(coordinatesGoingBackAndForth)!;
       expect(result).to.be.an("Array").of.length(4);
       const [firstChunk, secondChunk, thirdChunk, fourthChunk] = result;
       // first chunk should have two coordinates, the first from the list and the first intersection
@@ -159,7 +159,7 @@ describe("CoordinateSystemBounds", () => {
       const expectedFirstIntersection: SingleCoordinate = [bounds.lowerX, 50];
       const expectedSecondIntersection: SingleCoordinate = [bounds.upperX, 50];
 
-      const result = bounds.splitIfOutOfBounds(coordinatesGoingThrough);
+      const result = bounds.splitIfOutOfBounds(coordinatesGoingThrough)!;
       expect(result).to.be.an("Array").of.length(3);
       const [firstChunk, secondChunk, thirdChunk] = result;
 
@@ -183,7 +183,7 @@ describe("CoordinateSystemBounds", () => {
         [2651000, 1392000],
         [2932500, 894500],
       ];
-      const result = LV95.bounds.splitIfOutOfBounds(sample1);
+      const result = LV95.bounds.splitIfOutOfBounds(sample1)!;
       expect(result).to.be.an("Array").of.length(3);
       const [firstChunk, secondChunk, thirdChunk] = result;
 
@@ -208,7 +208,7 @@ describe("CoordinateSystemBounds", () => {
 
       const reversedResult = LV95.bounds.splitIfOutOfBounds(
         sample1.toReversed(),
-      );
+      )!;
       expect(reversedResult).to.be.an("Array").of.length(3);
       const [firstReversedChunk, secondReversedChunk, thirdReversedChunk] =
         reversedResult;

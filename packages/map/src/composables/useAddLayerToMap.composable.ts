@@ -22,7 +22,7 @@ import { onBeforeUnmount, shallowRef, toRaw, watchEffect } from "vue";
  */
 export default function useAddLayerToMap(
   olLayer: Ref<BaseLayer | undefined>,
-  zIndex: Ref<number>,
+  zIndex: Readonly<Ref<number | undefined>>,
   isVisible: Ref<boolean>,
   opacity: Ref<number>,
   olMap: Ref<Map | undefined> | undefined,
@@ -128,9 +128,11 @@ export default function useAddLayerToMap(
     }
   }
 
-  function setZIndex(zIndex: number) {
+  function setZIndex(zIndex: number | undefined) {
     if (olLayer.value) {
-      olLayer.value.setZIndex(zIndex);
+      // undefined is passed on as before: OL then falls back to the layer's
+      // position in the collection
+      olLayer.value.setZIndex(zIndex as number);
     }
   }
 

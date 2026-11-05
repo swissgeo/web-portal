@@ -37,7 +37,7 @@ describe("unzipKmzBuffer", () => {
     ).resolves.toEqual({ kmlContent: "<kml />", iconFiles: {} });
   });
 
-  it.each([
+  it.each<Record<string, Uint8Array>>([
     {},
     { "doc.kml": new Uint8Array() },
     { "icon.png": new Uint8Array([1]) },

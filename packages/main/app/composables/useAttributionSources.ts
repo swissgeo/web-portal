@@ -5,7 +5,7 @@ import { computed, toValue } from "vue";
 
 export function useAttributionSources(
   layers: MaybeRefOrGetter<Layer[]>,
-  backgroundLayer: MaybeRefOrGetter<Layer | null>,
+  backgroundLayer: MaybeRefOrGetter<Layer | null | undefined>,
 ) {
   const mapViewStore = useMapViewStore();
 

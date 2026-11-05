@@ -10,9 +10,9 @@ import { useI18n } from "vue-i18n";
 const { t, locale } = useI18n();
 
 const props = defineProps<{
-  iconSetName: string;
-  iconName: string;
-  iconColor: string;
+  iconSetName: string | null;
+  iconName: string | null;
+  iconColor: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -25,7 +25,7 @@ const iconsStore = useIconsStore();
 const { iconSets } = storeToRefs(iconsStore);
 
 const numberOfIconSets = computed(() => iconSets.value.length);
-const selectedIconSetName = ref(props.iconSetName);
+const selectedIconSetName = ref(props.iconSetName ?? undefined);
 const selectedIconSet = computed(
   () =>
     iconSets.value.find(
@@ -42,7 +42,7 @@ const emitColorSelected = useDebounceFn((color: string) => {
   emit("color-selected", color);
 }, 200);
 const selectedIconColor = computed({
-  get: () => props.iconColor,
+  get: () => props.iconColor ?? undefined,
   set: (color: string) => void emitColorSelected(color),
 });
 
@@ -51,7 +51,7 @@ const selectedIconColor = computed({
 watch(
   () => props.iconSetName,
   (iconSetName) => {
-    selectedIconSetName.value = iconSetName;
+    selectedIconSetName.value = iconSetName ?? undefined;
   },
 );
 

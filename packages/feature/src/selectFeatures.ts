@@ -184,9 +184,10 @@ function buildWmsGetFeatureInfoUrl(
     FI_POINT_TOLERANCE: "10",
     FI_LINE_TOLERANCE: "10",
     FI_POLYGON_TOLERANCE: "10",
-    VERSION: versionPatterns.test(wmsRequest.wmsVersion)
-      ? wmsRequest.wmsVersion
-      : "1.3.0",
+    VERSION:
+      wmsRequest.wmsVersion && versionPatterns.test(wmsRequest.wmsVersion)
+        ? wmsRequest.wmsVersion
+        : "1.3.0",
     LAYERS: wmsRequest.layerName ?? wmsRequest.layerId,
     QUERY_LAYERS: wmsRequest.layerName ?? wmsRequest.layerId,
     BBOX: extent.join(","),
@@ -274,7 +275,7 @@ export async function createIdentifyResponse(
     );
   } catch (error) {
     log.error(
-      `[create identify response] unexpected error ${error.toString()} while attempting to create an identify response`,
+      `[create identify response] unexpected error ${String(error)} while attempting to create an identify response`,
     );
   }
   return [];
@@ -286,7 +287,7 @@ async function getFeaturesFromWmsServer(
   limit: number,
   lang: string,
   extent: FlatExtent,
-  abortSignal: AbortSignal,
+  abortSignal?: AbortSignal,
 ) {
   const wmsRequest = layerRequest as WMSLayerRequest;
   if (!wmsRequest.wmsGetFeatureInfo || !wmsRequest.availableCrs) {

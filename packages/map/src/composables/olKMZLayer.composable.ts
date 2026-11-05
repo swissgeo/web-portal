@@ -167,7 +167,7 @@ export default function useOlKMZLayer(
         const olFeature = feature as Feature;
         olFeature.unset("__isSelected", true);
         olFeature.setStyle(
-          createDrawingFeatureStyleFunction(olFeature.getStyle()),
+          createDrawingFeatureStyleFunction(olFeature.getStyle() ?? undefined),
         );
         olFeature.changed();
       } else if (parseBoolean(feature.get("isTextFeature"))) {

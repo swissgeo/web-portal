@@ -756,13 +756,14 @@ function convertKmlToSwissGeoPoints(feature: Feature<Geometry>, style: Style) {
     const iconUrl = image.getSrc();
     const iconSize = image.getSize();
     const iconAnchorPixel = image.getAnchor();
-    const iconAnchor = [
-      iconAnchorPixel[0] / (iconSize?.[0] ?? 1),
-      iconAnchorPixel[1] / (iconSize?.[1] ?? 1),
-    ];
 
     feature.set(ICON_URL_KEY, iconUrl);
-    feature.set(ICON_ANCHOR_KEY, iconAnchor);
+    if (iconAnchorPixel) {
+      feature.set(ICON_ANCHOR_KEY, [
+        iconAnchorPixel[0] / (iconSize?.[0] ?? 1),
+        iconAnchorPixel[1] / (iconSize?.[1] ?? 1),
+      ]);
+    }
 
     // On Swiss Geo Admin, the shared icon scale are:
     // small: 0.5

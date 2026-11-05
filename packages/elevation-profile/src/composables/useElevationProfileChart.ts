@@ -40,9 +40,9 @@ type TooltipStyleCSSDeclaration = {
 
 export function useElevationProfileChart(
   profile: MaybeRefOrGetter<ElevationProfileResponse>,
-  chartRef: Ref<{ chart?: Chart } | null>,
-  profileChartContainerRef: Ref<HTMLDivElement | null>,
-  profileTooltipRef: Ref<HTMLDivElement | null>,
+  chartRef: Readonly<Ref<{ chart?: Chart | null } | null>>,
+  profileChartContainerRef: Readonly<Ref<HTMLDivElement | null | undefined>>,
+  profileTooltipRef: Readonly<Ref<HTMLDivElement | null | undefined>>,
   labels: MaybeRefOrGetter<Labels>,
 ) {
   const track = ref<boolean>(false);

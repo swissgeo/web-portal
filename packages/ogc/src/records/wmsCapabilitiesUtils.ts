@@ -8,7 +8,7 @@ export function getFeatureInfoCapability(doc: Document): {
   baseUrl: string;
   method: "GET" | "POST";
   formats: string[];
-} {
+} | null {
   const capability = doc.getElementsByTagName("Capability")[0];
   if (!capability) {
     return null;
@@ -78,9 +78,9 @@ export function isQueryable(layerElement: Element) {
   return queryable === "1" || queryable === "true";
 }
 
-export function getAvailableCrs(layerElement: Element) {
+export function getAvailableCrs(layerElement: Element | null | undefined) {
   for (
-    let candidate: Element | null = layerElement;
+    let candidate: Element | null | undefined = layerElement;
     candidate?.localName === "Layer";
     candidate = candidate.parentElement
   ) {
@@ -117,7 +117,7 @@ export function directChildren(
 }
 
 export function firstDirectChild(
-  parent: Element,
+  parent: Element | undefined | null,
   localName: string,
 ): Element | undefined {
   return directChildren(parent, localName)[0];
@@ -127,6 +127,6 @@ export function getRootLayer(document: Document) {
   return Array.from(document.getElementsByTagName("Layer"))[0];
 }
 
-export function getLayerName(layerElement: Element) {
+export function getLayerName(layerElement: Element | null | undefined) {
   return firstDirectChild(layerElement, "Name")?.textContent?.trim() ?? null;
 }

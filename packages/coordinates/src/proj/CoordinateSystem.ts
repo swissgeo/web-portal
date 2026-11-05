@@ -218,7 +218,7 @@ export default abstract class CoordinateSystem {
       return false;
     }
     if (typeof xOrCoordinate === "number") {
-      return this.bounds.isInBounds(xOrCoordinate, y);
+      return this.bounds.isInBounds(xOrCoordinate, y!);
     }
     return this.bounds.isInBounds(xOrCoordinate[0], xOrCoordinate[1]);
   }

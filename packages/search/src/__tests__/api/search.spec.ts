@@ -121,6 +121,7 @@ describe("parseLocationResult function", () => {
     expect(parseLocationResult(baseSearchResult)).toMatchObject(expectedResult);
   });
   it("Throws an exception when there is no attributes", () => {
+    // @ts-expect-error testing invalid input
     baseSearchResult.attrs = null;
     try {
       parseLocationResult(baseSearchResult);

@@ -102,3 +102,92 @@ Config edits, done with a second scripted pass and checked by diff:
   - Re-run: type-check, lint and format pass. All library tests pass.
   - main: 157/159 test files pass, 1375 tests. The two `scripts/__tests__` files fail with `virtual:intlify-i18n-0`. They fail identically with the changes stashed, and also after `nuxt prepare` and clearing `node_modules/.cache/vite`. Not caused by this step; still open.
 - **Docs:** `config/typescript/README.md` replaced the `paths` examples with an "Imports inside a package" section. `feature/README.md` import examples changed to `#`.
+
+## Step 2: turn on `strictNullChecks`
+
+### Summary
+
+`strictNullChecks` is now on for every package that extends the shared tsconfig. `"strictNullChecks": false` is removed from `packages/config/typescript/tsconfig.base.json`, so the `strict: true` inherited from `@vue/tsconfig` applies in full. No per-package overrides are left. 50 files changed, not committed.
+
+**Verification**
+
+- **Type-check:** passes across the whole repo, including main (`nuxt typecheck`) and `tests/integration`.
+- **Lint and format:** pass.
+- **Build:** all libraries build. The only TS diagnostics are the TS2883 ones that were already there before step 1.
+- **Unit tests:** same result as after step 1. All library tests pass; main has 157/159 files and 1375 tests passing. The same two `scripts/__tests__` files fail for the same unrelated `virtual:intlify-i18n-0` reason.
+
+**Behavior differences worth reviewing**
+
+Most fixes only change types. These places do something different at runtime from before. In each case the old code would have thrown, logged an error, or used a value it shouldn't have:
+
+- `layers` `getInfoFromDataset`: a featureinfo/dataservice record without `links` now returns `undefined` quietly. Before, `links.find` threw, the `catch` logged "Unexpected error" and then returned `undefined`.
+- `drawing` `convertKmlToSwissGeoPoints`: if the icon's anchor isn't known yet (`getAnchor()` returns `null`), `ICON_ANCHOR_KEY` isn't set. Before, this threw.
+- `drawing` `exportUtils` icon lookup: styles without an image are skipped. Before, `"getSrc" in null` threw.
+- `drawing` store `mountDrawingLayer(null)` is now always a no-op. Before, it was a no-op only while nothing was mounted, and threw otherwise. Main calls it with `useMap().olMap.value`, which can be `null`.
+- `dimension` `TimeSlider`: layers listed as having a time dimension but without one are left out of `layerTimeDimensions`. Before, they would have thrown when their `availableValues` was read.
+- `feature` store `getFeaturesGeoJSON`: features with `null` geometry are left out. Its only consumer is main's highlight layer, so nothing visible changes, and the declared `FeatureCollection` type is now true.
+- `map` `useMap`: `zoomLevel` keeps its previous value when `view.getZoom()` returns `undefined`. Before, it was set to `undefined` despite being typed `number`, and main's print framing then computed `Math.round(undefined)`, which is `NaN`.
+- `map` KML layer: an icon whose anchor isn't known passes `anchor: undefined` (OL default `[0.5, 0.5]`) instead of `null`, which OL would have tried to index later.
+- `map` `useOlMapContextMenu` / `useOlMapPosition`: no viewport means no listeners (before: threw), and a projection without bounds gives an `undefined` initial center (before: threw).
+- `ogc` / `feature` / `layers` error logging: `${error.toString()}` became `${String(error)}`. Same output, except it no longer throws if something rejects with `null`/`undefined`.
+
+Kept as before on purpose: `map` `useAddLayerToMap` still passes an `undefined` zIndex on to OL (`as number`), because OL then falls back to the layer's position in the collection. Using `?? 0` would change how layers stack.
+
+### How the changes were made
+
+#### 1. Measuring
+
+- Each package's type-check, without changing any files: `npx vue-tsc -p tsconfig.json --noEmit --strictNullChecks` (or `tsc` for the plain packages). Errors per package:
+
+  | package | errors | files |
+  |---|---|---|
+  | map | 66 | 22 |
+  | coordinates | 46 | 6 |
+  | ogc | 27 | 4 |
+  | drawing | 11 | 4 |
+  | feature | 9 | 3 |
+  | layers | 6 | 1 |
+  | dimension | 4 | 1 |
+  | elevation-profile | 2 | 2 |
+  | shared, search | 1 each | 1 |
+  | numbers, log, drawing-sharing, statesharing, content, skeleton, config/eslint, config/prettier | 0 | |
+
+- `config/stylelint` has no type-check script. Its `tsc` run fails with TS18003 ("No inputs were found") both with and without the flag, so that error was already there.
+- `tests/integration` also extends the base config, but wasn't in this first pass. It showed up later (see 4).
+
+#### 2. Fixing per package, dependencies first
+
+Order: shared, search, elevation-profile, dimension, feature, layers, drawing, ogc, coordinates, then a rebuild of all libraries (`pnpm run build-libs`) so map type-checks against the new `.d.ts`, then map. Each package temporarily got `"strictNullChecks": true` in its own tsconfig to lock in the fixes. Those lines were removed again in step 3. Edits were made with small Python replace scripts that check each search string matches exactly the expected number of times.
+
+Rules used:
+
+- **Source:** narrow or guard where the value really can be missing. Make the declared types match what the code actually handles (e.g. `getAvailableCrs`, `getLayerName` and `firstDirectChild` accept `null | undefined`, which their tests already pass in; `getFeatureInfoCapability` returns `... | null`, which it always did). Use `!` only where an invariant guarantees the value, with a comment: `validateDataset` guarantees the self link, LV95 always has bounds, `shift()` inside `while (length > 0)`, `pop()` after a `length` check, `getLinearRing(0)` on polygons built by `fromCircle`.
+- **Tests:** `!` on values the test itself has just set up, type annotations on mocks (`vi.fn<() => X | null>`, `ref<X | null>`), `let x!:` for definite assignment, and `@ts-expect-error` where a test passes invalid input on purpose (`search` `attrs = null`).
+
+Notable details:
+
+- `elevation-profile`: the composable's ref parameters became `Readonly<Ref<... | null | undefined>>` and `{ chart?: Chart | null }`. That matches what `useTemplateRef` and vue-chartjs return.
+- `feature`: `isIdentifyFeatureInfo` became a type guard (`featureInfo is { protocol: string; baseUrl: string }`), returning `!!...` instead of `string | boolean | undefined`.
+- `map` `position.spec.ts`: typing the hoisted mocks created a type cycle with `animateMock`, which TS reported as implicit `any` (TS7022). It was fixed by creating `animateMock` inside `vi.hoisted` before the factories that use it. That also made one `@ts-expect-error` unnecessary, and it was removed.
+- `map` `position.ts`: the store's caches were `ref([])`, so their element type was `never`. They are now `ref<number[]>` / `ref<SingleCoordinate[]>`. The `watch` callback dropped its wrong parameter annotation (`olMap: olMap`, while the store holds `Map | null`) and lets TS infer the types.
+
+#### 3. Flipping the base config
+
+- Removed `"strictNullChecks": false` from `tsconfig.base.json`, and removed the temporary per-package `true` lines again (shared, search, elevation-profile, dimension, feature, layers, drawing, ogc, map, coordinates).
+- Checked that every tsconfig extends `tsconfig.base.json` or `tsconfig.vue.json`, both of which end up at `@vue/tsconfig`'s `strict: true`. Main uses its Nuxt-generated config, which was already strict.
+
+#### 4. Consumers of the stricter types
+
+With the flag on, the emitted `.d.ts` keep `| null` / `| undefined`. Before, those were dropped from the shipped types. After a rebuild, `pnpm run type-check` found 22 new errors in places that had relied on the looser types:
+
+- `tests/integration` (8): `window.swissgeoOlMap` is typed `OlMap | undefined`. Added `!` to `evaluateHandle(() => window.swissgeoOlMap!)`, which the tests only call after waiting for the map.
+- main `useAttributionSources`: `backgroundLayer` accepts `Layer | null | undefined`, which is what the layers store holds. The body already used `?.`.
+- main `BaseMapViewer` highlight layer: `null` geometries came from the feature store. Fixed in the store, see the behavior notes. This replaced a first attempt that only widened the store's type, which then spread into map's `GeoJSONLayer` and its reprojection code.
+- main `ElevationWindow`: `geometry!` inside the `type === "LineString"` branch.
+- main `LayerVariantSelect`: `distribution ? variantLabel(distribution) : undefined` instead of `distribution && ...`.
+- main `PointStyleEditor` / `IconPicker` / `PlacementSelector`: the drawing style values are `X | null` when no point feature is focused. The child props accept `null`. `IconPicker` maps `null` to `undefined` for `USelect`. The two size selects use `:model-value="x ?? undefined"` and `@update:model-value="x = $event as keyof typeof TEXT_SIZE"` (or `ICON_SIZE`), because `USelect` emits `string` and `TextSize` isn't exported from `@swissgeo/drawing`.
+- main `drawing.vue` / `useImportDrawing`: `olMap.value` can be `null`. Fixed by letting the drawing store's `mountDrawingLayer` accept `null`. `importDrawingKmz`'s `map` parameter is now `OlMap | null`.
+
+#### 5. Final checks
+
+`pnpm run format:write`, `build-libs`, `type-check`, `lint`, `format` and `test:unit` from the repo root, with the results listed under Verification.

@@ -25,25 +25,31 @@ const {
 } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
 
-  const getViewMock = vi.fn(() => ({
+  const animateMock = vi.fn();
+  const makeViewMock = () => ({
     animate: animateMock,
     getCenter: vi.fn(() => [2660000, 1190000]),
     getZoom: vi.fn(() => 1),
     getRotation: vi.fn(() => 1),
     on: vi.fn(() => true),
-  }));
+  });
+  const getViewMock =
+    vi.fn<() => ReturnType<typeof makeViewMock> | null>(makeViewMock);
 
-  const olMapMock = ref({
+  const makeOlMapMock = () => ({
     getView: getViewMock,
     setView: vi.fn(),
     on: (_: string, callback: () => boolean) => callback(),
   });
+  const olMapMock = ref<ReturnType<typeof makeOlMapMock> | null>(
+    makeOlMapMock(),
+  );
 
   return {
     olMapMock: olMapMock,
-    animateMock: vi.fn(),
+    animateMock,
     centerMock: ref([2660000, 1190000]),
-    zoomMock: ref(1),
+    zoomMock: ref<number | undefined>(1),
     rotationMock: ref(0),
     getViewMock,
   };
@@ -88,7 +94,7 @@ describe("position store", () => {
       expect(store.zoom).toBe(DEFAULT_PROJECTION.getDefaultZoom());
       expect(store.rotation).toBe(0);
       expect(store.autoRotation).toBe(false);
-      expect(store.center).toEqual(DEFAULT_PROJECTION.bounds.center);
+      expect(store.center).toEqual(DEFAULT_PROJECTION.bounds!.center);
       expect(store.projection.epsg).toBe(DEFAULT_PROJECTION.epsg);
     });
   });
@@ -128,7 +134,7 @@ describe("position store", () => {
 
   describe("increaseZoom", () => {
     it("should increase the zoom level by 1", () => {
-      const initialZoom = store.zoom;
+      const initialZoom = store.zoom!;
       store.increaseZoom(mockDispatcher);
       expect(animateMock).toHaveBeenCalledWith({
         zoom: initialZoom + 1,
@@ -298,21 +304,21 @@ describe("position store", () => {
     it("should return the center in EPSG:4326 for LV95 (EPSG:2056)", () => {
       store.$patch({ center: [2600000, 1200000] });
       expect(store.center).toEqual([2600000, 1200000]);
-      const result = store.centerEpsg4326;
+      const result = store.centerEpsg4326!;
       expect(result[0]).toBeCloseTo(expected[0], 6);
       expect(result[1]).toBeCloseTo(expected[1], 6);
     });
 
     it("should return the center in EPSG:4326 for LV03 (EPSG:21781)", () => {
       store.$patch({ projectionEpsg: LV03.epsg, center: [600000, 200000] });
-      const result = store.centerEpsg4326;
+      const result = store.centerEpsg4326!;
       expect(result[0]).toBeCloseTo(expected[0], 6);
       expect(result[1]).toBeCloseTo(expected[1], 6);
     });
 
     it("should return the center in EPSG:4326 for WGS84 (EPSG:4326)", () => {
       store.$patch({ projectionEpsg: WGS84.epsg, center: expected });
-      const result = store.centerEpsg4326;
+      const result = store.centerEpsg4326!;
       expect(result[0]).toBeCloseTo(expected[0], 6);
       expect(result[1]).toBeCloseTo(expected[1], 6);
     });
@@ -322,14 +328,14 @@ describe("position store", () => {
         projectionEpsg: WEBMERCATOR.epsg,
         center: [828064.72, 5934093.22],
       });
-      const result = store.centerEpsg4326;
+      const result = store.centerEpsg4326!;
       expect(result[0]).toBeCloseTo(expected[0], 6);
       expect(result[1]).toBeCloseTo(expected[1], 6);
     });
 
     it("should return undefined if center is undefined", () => {
       store.$patch({ center: undefined });
-      const result = store.centerEpsg4326;
+      const result = store.centerEpsg4326!;
       expect(result).toBe(undefined);
     });
   });
@@ -349,7 +355,7 @@ describe("position store", () => {
       store.$reset(mockDispatcher);
 
       expect(animateMock).toHaveBeenCalledWith({
-        center: DEFAULT_PROJECTION.bounds.center,
+        center: DEFAULT_PROJECTION.bounds!.center,
         duration: 200,
       });
       expect(animateMock).toHaveBeenCalledWith({
@@ -467,7 +473,7 @@ describe("position store", () => {
         }
         setView(view: ReturnType<typeof getViewMock>) {
           this.view = view;
-          this.changeViewCallback();
+          this.changeViewCallback!();
         }
         on(_: string, callback: () => boolean) {
           this.changeViewCallback = callback;
@@ -486,7 +492,7 @@ describe("position store", () => {
       expect(store.center).toEqual([2660000, 1190000]);
       expect(store.rotation).toEqual(0);
 
-      olMapMock.value.setView(getViewMock());
+      olMapMock.value!.setView(getViewMock());
       await flushPromises();
 
       expect(animateMock).toHaveBeenCalledWith({ zoom: 7.2, duration: 200 });

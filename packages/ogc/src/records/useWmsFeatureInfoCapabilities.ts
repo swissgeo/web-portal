@@ -30,7 +30,7 @@ export function useWmsFeatureInfoCapabilities(
     useConditionalFetch<string>(capabilityUrl);
   onRequestError((error) => {
     log.warn(
-      `[WMS FeatureInfo capabilities] Unable to load capabilities for layer "${layerId}" — click feature info stays disabled. The reason is the following : ${error.toString()}`,
+      `[WMS FeatureInfo capabilities] Unable to load capabilities for layer "${layerId}" — click feature info stays disabled. The reason is the following : ${String(error)}`,
     );
   });
   const wmsFeatureInfo = computed(() => {

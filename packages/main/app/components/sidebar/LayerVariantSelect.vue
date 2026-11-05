@@ -50,7 +50,7 @@ function onSelect(distributionId: string) {
     <span class="text-xs font-medium text-toned uppercase">
       {{ t("layers.variant") }}
     </span>
-    <UTooltip :text="distribution && variantLabel(distribution)">
+    <UTooltip :text="distribution ? variantLabel(distribution) : undefined">
       <USelect
         data-testid="layer-variant-select"
         data-vaul-no-drag

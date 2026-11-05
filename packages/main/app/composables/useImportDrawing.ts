@@ -245,7 +245,7 @@ export async function fetchDrawingKmz(
 }
 
 export async function importDrawingKmz(
-  map: OlMap,
+  map: OlMap | null,
   kmzBuffer: ArrayBuffer,
   clearExisting: boolean = true,
 ): Promise<boolean> {

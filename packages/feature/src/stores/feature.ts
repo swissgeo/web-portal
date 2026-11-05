@@ -21,22 +21,27 @@ export const useFeaturesStore = defineStore("features", () => {
   );
 
   // wrap geometries in a geoJSON for the viewer to render as a geoJSON
+  // (features without geometry have nothing to render and are skipped)
   const getFeaturesGeoJSON: ComputedRef<GeoJSON.FeatureCollection> = computed(
     () => {
       return {
         type: "FeatureCollection",
         features: Object.entries(selectedFeaturesByUuid.value).flatMap(
           ([layerUuid, features]) =>
-            features.map((feature) => {
-              return {
-                type: "Feature",
-                geometry: feature.geometry,
-                properties: {
-                  layerUuid,
-                  featureId: feature.featureId,
-                },
-              };
-            }),
+            features.flatMap((feature) =>
+              feature.geometry
+                ? [
+                    {
+                      type: "Feature" as const,
+                      geometry: feature.geometry,
+                      properties: {
+                        layerUuid,
+                        featureId: feature.featureId,
+                      },
+                    },
+                  ]
+                : [],
+            ),
         ),
       };
     },

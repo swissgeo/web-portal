@@ -88,7 +88,8 @@ const selectedLineString = computed<LineString | null>(() => {
       return null;
     }
 
-    return olGeoJSON.value.writeGeometryObject(geometry) as LineString;
+    // type is "LineString", so the geometry exists
+    return olGeoJSON.value.writeGeometryObject(geometry!) as LineString;
   }
 
   if (type === "Polygon") {

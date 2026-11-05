@@ -131,7 +131,7 @@ describe("Test extent utils", () => {
         extent,
         WGS84,
         LV95,
-      );
+      )!;
       expect(result).to.be.an("Array").lengthOf(4);
       expectExtentIs(result, [
         ...singleCoordinateInLV95,
@@ -159,7 +159,7 @@ describe("Test extent utils", () => {
         [-2.4, 35, 21.3, 51.7],
         WGS84,
         LV95,
-      );
+      )!;
       expect(result).to.be.an("Array").lengthOf(4);
       expectExtentIs(result, [
         ...LV95.bounds.bottomLeft,
@@ -172,7 +172,7 @@ describe("Test extent utils", () => {
         [-122.08, -33.85, 151.21, 51.5],
         WGS84,
         LV95,
-      );
+      )!;
       expect(result).to.be.an("Array").lengthOf(4);
       expectExtentIs(result, [
         ...LV95.bounds.bottomLeft,
@@ -195,7 +195,7 @@ describe("Test extent utils", () => {
         overlappingExtent,
         WGS84,
         LV95,
-      );
+      )!;
       expect(result).to.be.an("Array").lengthOf(4);
       expectExtentIs(result, [
         ...LV95.bounds.bottomLeft,
@@ -208,7 +208,7 @@ describe("Test extent utils", () => {
         extent,
         WGS84,
         WGS84,
-      );
+      )!;
       expect(result).to.be.an("Array").lengthOf(4);
       expect(result[0]).to.be.approximately(8.0, 0.1);
       expect(result[1]).to.be.approximately(47.0, 0.1);
@@ -225,7 +225,7 @@ describe("Test extent utils", () => {
         extent,
         WGS84,
         LV95,
-      );
+      )!;
       expect(result).to.be.an("Array").lengthOf(4);
       expect(result[0]).to.be.within(2400000, 2900000);
       expect(result[1]).to.be.within(1000000, 1400000);

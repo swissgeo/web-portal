@@ -48,7 +48,7 @@ vi.mock("proj4", () => ({
 }));
 
 const { MockKML, mockReadFeatures } = vi.hoisted(() => {
-  const mockReadFeatures = vi.fn(() => []);
+  const mockReadFeatures = vi.fn((): unknown[] => []);
   class MockKML {
     readFeatures = mockReadFeatures;
     constructor(_config?: unknown) {}

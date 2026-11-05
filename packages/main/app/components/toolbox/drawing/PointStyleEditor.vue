@@ -88,8 +88,11 @@ function onColorSelected(color: string) {
           <template v-if="showTitle || showDescription">
             <UFormField :label="t('toolbox.drawing.style.textSize')" size="sm">
               <USelect
-                v-model="textSize"
+                :model-value="textSize ?? undefined"
                 :items="textSizesItems"
+                @update:model-value="
+                  textSize = $event as keyof typeof TEXT_SIZE
+                "
                 class="w-full"
                 data-testid="point-text-size"
               />
@@ -148,8 +151,11 @@ function onColorSelected(color: string) {
               size="sm"
             >
               <USelect
-                v-model="iconSize"
+                :model-value="iconSize ?? undefined"
                 :items="iconSizesItems"
+                @update:model-value="
+                  iconSize = $event as keyof typeof ICON_SIZE
+                "
                 class="w-full"
                 data-testid="point-icon-size"
               />

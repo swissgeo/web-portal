@@ -30,5 +30,5 @@ export const isCOG = (layer: Layer): layer is COGLayer =>
   layer.format?.toUpperCase() === "COG";
 export const isHighlightedLayer = (layer: Layer): layer is HighLightLayer =>
   layer?.format.toUpperCase() === "GEOJSON" &&
-  layer.isSystemLayer &&
+  layer.isSystemLayer === true &&
   layer.uuid === HIGHLIGHT_LAYER_ID;

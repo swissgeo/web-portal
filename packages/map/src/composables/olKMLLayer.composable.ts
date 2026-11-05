@@ -168,7 +168,7 @@ export default function useOlKMLLayer(
               image: new Icon({
                 src: resolvedSrc,
                 scale,
-                anchor: imageStyle.getAnchor(),
+                anchor: imageStyle.getAnchor() ?? undefined,
                 rotation: imageStyle.getRotation(),
                 rotateWithView: imageStyle.getRotateWithView(),
               }),
@@ -187,7 +187,9 @@ export default function useOlKMLLayer(
 
       if (isDrawingKmlLayer || isDrawingFeature(feature)) {
         feature.setStyle(
-          createDrawingFeatureStyleFunction(normalizedFeatureStyle),
+          createDrawingFeatureStyleFunction(
+            normalizedFeatureStyle ?? undefined,
+          ),
         );
         feature.changed();
       } else if (feature.get("isTextFeature")) {

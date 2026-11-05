@@ -44,7 +44,7 @@ describe("pickLocaleFromAcceptLanguage", () => {
   });
 
   it("should return null if the header is undefined", () => {
-    const acceptLanguage: string = undefined;
+    const acceptLanguage: string | undefined = undefined;
     const supportedLocales = ["en", "fr", "de"];
     const result = pickLocaleFromAcceptLanguage(
       acceptLanguage,

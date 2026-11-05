@@ -53,6 +53,9 @@ export function useOlMapContextMenu() {
         return;
       }
       const viewport = map.getViewport();
+      if (!viewport) {
+        return;
+      }
       viewport.addEventListener("contextmenu", onContextMenu);
       // singleclick fires after OL's double-click debounce, so zooming won't accidentally close the popup.
       map.on("singleclick", onSingleClick);

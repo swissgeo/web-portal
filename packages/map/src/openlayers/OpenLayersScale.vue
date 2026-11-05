@@ -32,7 +32,9 @@ const scaleLineElement = useTemplateRef<HTMLElement>("scaleLineElement");
 const positionStore = usePositionStore();
 
 const showScaleLine = computed<boolean>(
-  () => positionStore.projection.epsg === LV95.epsg || positionStore.zoom >= 9,
+  () =>
+    positionStore.projection.epsg === LV95.epsg ||
+    (positionStore.zoom ?? 0) >= 9,
 );
 
 const scaleLine = new ScaleLine({

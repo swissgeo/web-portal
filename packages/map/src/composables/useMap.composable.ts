@@ -42,12 +42,12 @@ export function useMap() {
       };
 
       // initial value
-      zoomLevel.value = view.getZoom();
+      zoomLevel.value = view.getZoom() ?? zoomLevel.value;
       updateCenter();
 
       // sync on change
       view.on("change:resolution", () => {
-        zoomLevel.value = view.getZoom();
+        zoomLevel.value = view.getZoom() ?? zoomLevel.value;
       });
 
       view.on("change:center", updateCenter);

@@ -30,7 +30,7 @@ function createFakeMap(): FakeMap {
 }
 
 function mountWithMap(fakeMap: FakeMap) {
-  let composable: ReturnType<typeof useOlMapContextMenu>;
+  let composable!: ReturnType<typeof useOlMapContextMenu>;
 
   const TestComponent = defineComponent({
     setup() {

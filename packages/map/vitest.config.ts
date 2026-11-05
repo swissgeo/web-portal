@@ -11,7 +11,7 @@ export default defineConfig({
       reporter: ["lcov", "cobertura"],
       include: ["src/**/*.ts", "src/**/*.vue"],
       exclude: [
-        ...configDefaults.coverage.exclude,
+        ...(configDefaults.coverage.exclude ?? []),
         "*/__tests__/__mocks__/**/*",
       ],
     },

@@ -51,7 +51,7 @@ function withSetup<T>(composable: () => T): [T, ReturnType<typeof createApp>] {
 }
 
 async function doubleClick(olMap: olMap): Promise<void> {
-  const viewport = olMap.getViewport();
+  const viewport = olMap.getViewport()!;
   // simulating a double click
   const pointerEventInit = {
     bubbles: true,
@@ -77,7 +77,7 @@ describe("createOlMap", () => {
 
     expect(result.map.getView()).toBeInstanceOf(View);
     expect(result.map.getView().getCenter()).toEqual(
-      DEFAULT_PROJECTION.bounds.center,
+      DEFAULT_PROJECTION.bounds!.center,
     );
 
     app.unmount();

@@ -24,7 +24,7 @@ import {
 
 test.describe("embed map page", () => {
   const getZoom = async (page: Page) => {
-    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
+    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap!);
     const zoom = await page.evaluate((map) => map.getView().getZoom(), mapRef);
     return zoom;
   };
@@ -112,7 +112,7 @@ test.describe("embed map page", () => {
     await page.waitForFunction(() => window.swissgeoOlMap !== undefined, null, {
       timeout: 20000,
     });
-    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap);
+    const mapRef = await page.evaluateHandle(() => window.swissgeoOlMap!);
     const zoom = await page.evaluate((map) => map.getView().getZoom(), mapRef);
     const center = await page.evaluate(
       (map) => map.getView().getCenter(),

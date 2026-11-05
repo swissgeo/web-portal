@@ -36,7 +36,7 @@ describe("CoordinateSystem", () => {
     });
 
     it("transforms LV95 into WebMercator correctly", () => {
-      const result = LV95.getBoundsAs(WEBMERCATOR);
+      const result = LV95.getBoundsAs(WEBMERCATOR)!;
       expect(result).to.be.an.instanceOf(CoordinateSystemBounds);
       // numbers are coming from epsg.io's transform tool
       const acceptableDelta = 0.01;
@@ -47,7 +47,7 @@ describe("CoordinateSystem", () => {
     });
 
     it("transforms LV95 into WGS84 correctly", () => {
-      const result = LV95.getBoundsAs(WGS84);
+      const result = LV95.getBoundsAs(WGS84)!;
       expect(result).to.be.an.instanceOf(CoordinateSystemBounds);
       // numbers are coming from epsg.io's transform tool
       const acceptableDelta = 0.0001;
@@ -78,14 +78,14 @@ describe("CoordinateSystem", () => {
 
   describe("getBoundsAs same EPSG", () => {
     it("returns bounds unchanged when target EPSG matches source", () => {
-      const result = LV95.getBoundsAs(LV95);
+      const result = LV95.getBoundsAs(LV95)!;
       expect(result).toBe(LV95.bounds);
     });
   });
 
   describe("getBoundsAs with customCenter", () => {
     it("transforms the customCenter to the target coordinate system", () => {
-      const result = WGS84.getBoundsAs(WEBMERCATOR);
+      const result = WGS84.getBoundsAs(WEBMERCATOR)!;
       expect(result).to.be.an.instanceOf(CoordinateSystemBounds);
       expect(result.customCenter).toBeDefined();
     });

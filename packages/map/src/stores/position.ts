@@ -25,6 +25,7 @@ import { normalizeAngle } from "#utils/normalizeAngle";
 
 import { useOlMapPosition } from "../composables/useOlMapPosition";
 
+// LV95 always has bounds, so `DEFAULT_PROJECTION.bounds!` is safe
 export const DEFAULT_PROJECTION: CoordinateSystem = LV95;
 export const DEFAULT_FORMAT = LV95Format;
 
@@ -50,9 +51,9 @@ const usePositionStore = defineStore("position", () => {
   // when importing a state, the view might not be initialized yet
   // so we store the values here and then apply them as soon as the
   // view becomes available
-  const _zoomCache = ref([]);
-  const _rotationCache = ref([]);
-  const _centerCache = ref([]);
+  const _zoomCache = ref<number[]>([]);
+  const _rotationCache = ref<number[]>([]);
+  const _centerCache = ref<SingleCoordinate[]>([]);
 
   const { zoom, rotation, center } = useOlMapPosition(autoRotation, projection);
 
@@ -238,7 +239,7 @@ const usePositionStore = defineStore("position", () => {
   }
 
   function $reset(dispatcher: ActionDispatcher): void {
-    setCenter(DEFAULT_PROJECTION.bounds.center, dispatcher);
+    setCenter(DEFAULT_PROJECTION.bounds!.center, dispatcher);
     setZoom(DEFAULT_PROJECTION.getDefaultZoom(), dispatcher);
     setRotation(0, dispatcher);
     setDisplayedFormat(DEFAULT_FORMAT, dispatcher);
@@ -253,7 +254,7 @@ const usePositionStore = defineStore("position", () => {
         titleColor: LogPreDefinedColor.Red,
         messages: ["Applying cached zoom", [..._zoomCache.value]],
       });
-      setZoom(_zoomCache.value.pop(), dispatcher);
+      setZoom(_zoomCache.value.pop()!, dispatcher);
     }
 
     if (_rotationCache.value.length) {
@@ -262,7 +263,7 @@ const usePositionStore = defineStore("position", () => {
         titleColor: LogPreDefinedColor.Red,
         messages: ["Applying cached rotation", [..._rotationCache.value]],
       });
-      setRotation(_rotationCache.value.pop(), dispatcher);
+      setRotation(_rotationCache.value.pop()!, dispatcher);
     }
 
     if (_centerCache.value.length) {
@@ -271,7 +272,7 @@ const usePositionStore = defineStore("position", () => {
         titleColor: LogPreDefinedColor.Red,
         messages: ["Applying cached center", [..._centerCache.value]],
       });
-      setCenter(_centerCache.value.pop(), dispatcher);
+      setCenter(_centerCache.value.pop()!, dispatcher);
     }
   };
 
@@ -324,7 +325,7 @@ const usePositionStore = defineStore("position", () => {
 
   watch(
     () => mapStore.olMap,
-    (olMap: olMap, oldMap: olMap | undefined) => {
+    (olMap, oldMap) => {
       if (olMap) {
         subscribeToMap(olMap);
       } else if (oldMap) {
