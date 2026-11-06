@@ -4,7 +4,7 @@ import Links from "~/components/footer/Links.vue";
 import { describe, expect, it } from "vitest";
 import { reactive } from "vue";
 
-const publicConfig = reactive({ version: "", cmsBaseUrl: "https://cms.test" });
+const publicConfig = reactive({ version: "" });
 
 mockNuxtImport("useRuntimeConfig", () => () => ({ public: publicConfig }));
 mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));

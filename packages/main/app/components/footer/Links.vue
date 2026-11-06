@@ -7,8 +7,6 @@ const { cmsUrl } = useCmsUrl();
 
 defineProps<{ mobile?: boolean }>();
 
-const cmsDomain = runtimeConfig.public.cmsBaseUrl.replace(/https?:\/\//, "");
-
 const REPOSITORY_URL = "https://github.com/swissgeo/web-portal";
 // Only an exact release tag has a release page. A build between two tags
 // (for example v0.9.0-beta.2-2-g4e9f735f) or a commit hash opens the repository.
@@ -38,14 +36,6 @@ const versionUrl = computed(() => {
       >
         <UIcon name="i-lucide-github" class="size-3 shrink-0" />
         {{ runtimeConfig.public.version }}
-      </ULink>
-      <ULink
-        :to="runtimeConfig.public.cmsBaseUrl"
-        target="_blank"
-        raw
-        class="flex items-center gap-1"
-      >
-        {{ cmsDomain }}
       </ULink>
       <ULink
         target="_blank"
