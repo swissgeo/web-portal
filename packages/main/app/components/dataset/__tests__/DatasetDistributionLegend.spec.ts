@@ -1,4 +1,4 @@
-import type { Distribution } from "@swissgeo/ogc";
+import type * as Ogc from "@swissgeo/ogc";
 
 import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -17,7 +17,8 @@ const state = vi.hoisted(() => ({
     wmtsData: { value: { legends: [] } },
   },
 }));
-vi.mock("@swissgeo/ogc", () => ({
+vi.mock("@swissgeo/ogc", async (importOriginal) => ({
+  getGeoJsonLegends: (await importOriginal<typeof Ogc>()).getGeoJsonLegends,
   useService: () => state.service,
   useWmsCapabilities: () => state.wms,
   useWmtsCapabilities: () => state.wmts,
@@ -25,13 +26,19 @@ vi.mock("@swissgeo/ogc", () => ({
 
 import DatasetDistributionLegend from "../DatasetDistributionLegend.vue";
 
-vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (key: string) => key }) }));
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({ t: (key: string) => key, locale: ref("de") }),
+}));
 
-function render(protocol: Distribution["properties"]["protocol"] = "ogc:wms") {
+function render(
+  protocol: Ogc.Distribution["properties"]["protocol"] = "ogc:wms",
+  links: Ogc.Distribution["links"] = [],
+) {
   return mount(DatasetDistributionLegend, {
     props: {
       distribution: {
         id: "distribution",
+        links,
         properties: { type: "Distribution", title: "Layer", protocol },
       },
       layerId: "layer",
@@ -100,4 +107,22 @@ describe("DatasetDistributionLegend", () => {
       expect(wrapper.find('[role="status"]').exists()).toBe(false);
     },
   );
+
+  it("passes the BGDI legend of a GeoJSON layer to the renderer", () => {
+    const wrapper = render("geojson", [
+      {
+        rel: "about",
+        type: "application/geo+json",
+        href: "https://data.geo.admin.ch/layer/layer_de.json",
+      },
+    ]);
+    expect(
+      wrapper.getComponent({ name: "LayerLegend" }).props("legends"),
+    ).toEqual([
+      {
+        href: "https://api3.geo.admin.ch/static/images/legends/layer_de.png",
+        format: "image/png",
+      },
+    ]);
+  });
 });

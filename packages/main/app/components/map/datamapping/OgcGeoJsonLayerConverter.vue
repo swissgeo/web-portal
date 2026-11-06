@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import type { Distribution } from "@swissgeo/ogc";
+import type { Distribution, Legend } from "@swissgeo/ogc";
+
+import { getGeoJsonLegends } from "@swissgeo/ogc";
 
 import type { GeoJsonLayerData } from "@/components/map/datamapping/useOgcGeoJsonData";
 
@@ -8,12 +10,16 @@ import { useOgcGeoJsonData } from "@/components/map/datamapping/useOgcGeoJsonDat
 // not destructuring these to keep the reactivity
 const props = defineProps<{
   distribution: Distribution | null;
+  layerId: string | null;
 }>();
 
 const emit = defineEmits<{
   error: [error: unknown];
   updateData: [opacity: number | null, GeoJsonLayerData];
+  updateLegends: [legends: Legend[]];
 }>();
+
+const { locale } = useI18n();
 
 const distribution = computed(() => props.distribution);
 
@@ -28,6 +34,12 @@ watch(
       emit("updateData", null, geoJsonLayerData.value);
     }
   },
+  { immediate: true },
+);
+
+watch(
+  () => getGeoJsonLegends(props.distribution, props.layerId, locale.value),
+  (legends) => emit("updateLegends", legends),
   { immediate: true },
 );
 </script>
