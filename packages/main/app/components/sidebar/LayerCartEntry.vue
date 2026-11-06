@@ -172,7 +172,7 @@ const rowButton = {
       />
       <button
         type="button"
-        class="min-w-0 flex-1 cursor-pointer px-1 text-left"
+        class="min-w-0 flex-1 cursor-pointer px-1 text-left wrap-anywhere"
         :title="fullTitle"
         :aria-expanded="isExpanded"
         :aria-controls="detailsId"
