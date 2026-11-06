@@ -37,18 +37,18 @@
       "mapInfo": "Infos davart la charta"
     },
     "reportIssue": {
-      "buttonTitle": "Dar feedback",
-      "title": "Dar feedback",
-      "close": "Serrar il formular «Dar feedback»",
+      "buttonTitle": "TODO check: Dar feedback",
+      "title": "TODO check: Dar feedback",
+      "close": "TODO check: Serrar il formular «Dar feedback»",
       "steps": {
         "step1": {
           "title": "1. Object da Voss messadi",
           "select": {
             "placeholder": "Selecziunar ina categoria",
             "options": {
-              "background": "Ina repassada da la charta da fund",
-              "thematic": "Charta tematica u geodatas",
-              "application": "Applicaziun, servetsch u support tecnic",
+              "background": "TODO check: Ina repassada da la charta da fund",
+              "thematic": "TODO check: Charta tematica u geodatas",
+              "application": "TODO check: Applicaziun, servetsch u support tecnic",
               "other": "Insatge auter"
             }
           },
@@ -119,7 +119,7 @@
     "drawingInstructionLine": "Cliccai per dissegnar ina lingia, cliccai dubel per terminar u cliccai datiers dal punct da partenza per serrar il poligon",
     "drawingInstructionText": "Cliccai sin la charta per agiuntar in text",
     "drawingInstructionMeasurementRadius": "Cliccai sin dus puncts per definir in radius; agiuntai in terz punct per cuntinuar sco traject",
-    "drawingInstructionMeasurementPath": "Cuntinuai a cliccar per agiuntar puncts al traject, cliccai dubel per terminar",
+    "drawingInstructionMeasurementPath": "Cliccai vinavant per agiuntar puncts al traject, cliccai dubel per terminar",
     "drawingInstructionDefault": "Cliccai per cumenzar a dissegnar",
     "drawingFeaturesDrawnLabel": "Elements dissegnads",
     "drawingExportLabel": "Exportar:",
@@ -128,7 +128,7 @@
     "drawingExportGPX": "Exportar GPX",
     "drawingClearAll": "Stizzar tut ils dissegns",
     "drawingClearConfirmTitle": "Stizzar tut ils dissegns?",
-    "drawingClearConfirmDescription": "Questa acziun allontanescha tut ils dissegns da la sesida actuala.",
+    "drawingClearConfirmDescription": "Questa acziun stizza tut ils dissegns da la sesida actuala.",
     "drawingClearConfirmCancel": "Interrumper",
     "drawingClearConfirmConfirm": "Stizzar",
     "drawingHoverHint": {
@@ -155,16 +155,16 @@
       "strokeWidthLabel": "Grossezza da la lingia",
       "strokeOpacityLabel": "Opacitad da la lingia",
       "strokeColorLabel": "Colur da la lingia",
-      "dashedLineLabel": "Lingia tratgada",
+      "dashedLineLabel": "Lingia interrutta",
       "fillColorLabel": "Colur d'emplenida",
       "fillOpacityLabel": "Opacitad da l'emplenida",
-      "markerStyleButton": "Stil dal simbol",
+      "markerStyleButton": "Stil dal marcader",
       "textStyleButton": "Stil dal text",
       "hideDescriptionOnMap": "Zuppentar la descripziun sin la charta",
       "showDescriptionOnMap": "Mussar la descripziun sin la charta",
-      "markerSizeLabel": "Grondezza dal simbol",
-      "markerColorLabel": "Colur dal simbol",
-      "markerSymbolLabel": "Simbol",
+      "markerSizeLabel": "Grondezza dal marcader",
+      "markerColorLabel": "Colur dal marcader",
+      "markerSymbolLabel": "Simbol dal marcader",
       "textSizeLabel": "Grondezza dal text",
       "textColorLabel": "Colur dal text",
       "textAnchorLabel": "Ancra dal text",
@@ -204,17 +204,17 @@
     "openPrintPanel": "Avrir il panel da stampa",
     "openFeatureFlagsPanel": "Avrir il panel dals feature flags",
     "featureFlagsPanelTitle": "Feature flags",
-    "resetFeatureFlags": "Restituir las valurs da standard",
+    "resetFeatureFlags": "Metter enavos sin standard",
     "featureFlagOverridden": "surscrit",
     "openImportDrawingPanel": "Avrir il panel «Importar in dissegn»",
     "drawingPanelTitle": "Utensils da dissegnar"
   },
   "geolocation": {
-    "permissionDenied": "Access a la posiziun refusà",
-    "startGeolocation": "Mussar la posiziun",
-    "timeout": "La localisaziun ha durà memia ditg.",
-    "unavailable": "Impussibel da determinar la posiziun.",
-    "outsideSwitzerland": "Vossa posiziun è ordaifer la Svizra e na po betg vegnir mussada sin la charta."
+    "permissionDenied": "TODO check: Access a la posiziun refusà",
+    "startGeolocation": "TODO check: Mussar la posiziun",
+    "timeout": "TODO check: La localisaziun ha durà memia ditg.",
+    "unavailable": "TODO check: Impussibel da determinar la posiziun.",
+    "outsideSwitzerland": "TODO check: Vossa posiziun è ordaifer la Svizra e na po betg vegnir mussada sin la charta."
   },
   "toolbox": {
     "geolocation": {
@@ -228,7 +228,7 @@
     },
     "drawing": {
       "buttonTitle": "Dissegnar",
-      "close": "Serrar la fanestra da dissegnar",
+      "close": "TODO check: Serrar la fanestra da dissegnar",
       "featureCount": "Nagins objects sin la charta | {count} object sin la charta | {count} objects sin la charta",
       "tools": {
         "label": "Utensils da dissegn",
@@ -240,32 +240,32 @@
         "marker": "Simbol"
       },
       "hints": {
-        "edit": "Tirai ils puncts per midar la furma da l'object.",
-        "select": "Tschernai in object sin la charta per elavurar ses stil.",
+        "edit": "TODO check: Tirai ils puncts per midar la furma da l'object.",
+        "select": "Tschernai in object sin la charta per modifitgar ses stil.",
         "chooseTool": "Tschernai in utensil per dissegnar sin la charta.",
         "place": "Cliccai sin la charta per plazzar l'object.",
         "circle": "Cliccai per fixar il center, e lura anc ina giada per fixar il radius.",
         "addPoints": "Cliccai per agiuntar puncts. Cliccai dubel per terminar.",
         "drawing": "Vus dissegnais gist in nov object.",
-        "deletePoint": "Shift + clic sin in punct per al stizzar."
+        "deletePoint": "Shift + cliccar sin in punct per al stizzar."
       },
       "cancel": "Interrumper il dissegn",
       "selection": "Selecziun",
-      "done": "Terminà",
-      "editGeometry": "Elavurar la geometria",
+      "done": "Finì",
+      "editGeometry": "Modifitgar la geometria",
       "delete": "Stizzar",
-      "finishEditing": "Terminar l'elavuraziun",
+      "finishEditing": "Terminar la modificaziun",
       "export": "Exportar",
       "sync": "Sincronisar il dissegn",
       "clear": "Svidar il nivel da dissegn",
-      "shareLink": "Colliaziun per parter",
+      "shareLink": "Link per parter",
       "copy": "Copiar en l'archiv provisoric",
-      "allowEditing": "Permetter l'elavuraziun",
+      "allowEditing": "Permetter la modificaziun",
       "shareErrorNodata": "Naginas datas da dissegn disponiblas.",
       "shareErrorAlreadyInProgress": "Il parter è gia en lavur.",
       "formats": {
         "geojson": "GeoJSON",
-        "gpxTrack": "Fastizs GPX",
+        "gpxTrack": "Track GPX",
         "gpxRoute": "Ruta GPX",
         "kml": "KML",
         "kmz": "KMZ"
@@ -274,7 +274,7 @@
         "generic": "Caracteristicas da l'object",
         "LineString": "Caracteristicas da la lingia",
         "Polygon": "Caracteristicas dal poligon",
-        "Circle": "Caracteristicas dal circul",
+        "Circle": "Caracteristicas dal rudè",
         "Point": "Caracteristicas dal text e dal simbol"
       },
       "fields": {
@@ -297,7 +297,7 @@
         "placement": "Posiziun",
         "relativeToMarker": "En relaziun cun il simbol",
         "textColor": "Colur dal text",
-        "textHaloColor": "Colur da l'aura dal text",
+        "textHaloColor": "Colur dal halo dal text",
         "showMarker": "Mussar il simbol",
         "markerSize": "Grondezza dal simbol"
       },
@@ -327,7 +327,7 @@
         "xlarge": "Fitg grond"
       },
       "symbols": {
-        "collection": "Biblioteca da simbols",
+        "collection": "TODO check: Biblioteca da simbols",
         "color": "Colur dal simbol",
         "label": "Simbols",
         "empty": "Nagins simbols disponibels.",
@@ -378,21 +378,21 @@
         "noFileSelected": "Tschernai l'emprim ina datoteca",
         "noUrlEntered": "Endatai in URL",
         "fileSizeWarning": "La datoteca ha {fileSize} MB e surpassa la grondezza recumandada da {maxSize} MB.",
-        "fileTooLarge": "La datoteca è memia gronda: {fileName} (maximum {maxSize} MB)",
+        "fileTooLarge": "La datoteca è memia gronda: {fileName} (maximal {maxSize} MB)",
         "drawingImportFailed": "Il dissegn n'ha betg pudì vegnir importà",
         "kmlFetchFailed": "Il KML n'ha betg pudì vegnir chargià: {status}",
         "noKmlFound": "Nagin dissegn KML chattà a l'URL indicà",
-        "domainNotAllowed": "Chargiar da {domain} n'è betg permess",
+        "domainNotAllowed": "Retschaiver da {domain} n'è betg lubi",
         "unsupportedUrlType": "Tip da datoteca betg sustegnì. L'URL sto finir cun {types}",
         "fetchFailed": "La datoteca n'ha betg pudì vegnir chargiada da l'URL (HTTP {status})",
         "adminRequired": "Per importar quest dissegn dovri dretgs d'administratur"
       },
       "close": "Serrar",
       "drawingReplaceConfirmTitle": "Remplazzar il dissegn actual?",
-      "drawingReplaceConfirmDescription": "Per importar in dissegn sto il dissegn existent vegnir stizzà. Suenter l'import pudais Vus cuntinuar ad elavurar il dissegn.",
-      "drawingReplaceConfirmTemporaryNote": "Nus lavurain vi d'in decurs pli simpel. Contactai nus per ans dar Voss resuns e propostas.",
-      "drawingReplaceConfirmAdminNote": "Vus importais in dissegn sco possessura u possessur. Sche Vus midais il dissegn, vegn la datoteca originala midada e sincronisada cun la banca da datas SWISSGEO.",
-      "drawingReplaceConfirmLegacyAdminNote": "Quest dissegn vegn importà sco copia: midadas na tangan betg il dissegn original, auter che cun importar dissegns SWISSGEO sco administratur.",
+      "drawingReplaceConfirmDescription": "Per importar in dissegn sto il dissegn existent vegnir stizzà. Suenter l'import pudais Vus cuntinuar ad modifitgar il dissegn.",
+      "drawingReplaceConfirmTemporaryNote": "Nus lavurain vi d'in proceder pli simpel. Contactai nus per ans dar Voss resuns e propostas.",
+      "drawingReplaceConfirmAdminNote": "Vus importais in dissegn sco proprietari. Sche Vus midais il dissegn, vegn la datoteca originala midada e sincronisada cun la banca da datas SWISSGEO.",
+      "drawingReplaceConfirmLegacyAdminNote": "Quest dissegn vegn importà sco copia: midadas na pertutgan betg il dissegn original, auter che cun importar dissegns SWISSGEO sco administratur.",
       "drawingReplaceConfirmCancel": "Interrumper",
       "drawingReplaceConfirmConfirm": "Stizzar ed importar"
     },
@@ -402,7 +402,7 @@
       "link": {
         "tabLabel": "Parter il link",
         "title": "Link per parter",
-        "description": "Partai la charta actuala cun auters u copiai l'URL.",
+        "description": "TODO check: Partai la charta actuala cun auters u copiai l'URL.",
         "generateButton": "Generar in link per parter",
         "drawingEditableLabel": "Dissegn modifitgabel",
         "urlLabel": "URL",
@@ -446,14 +446,14 @@
     },
     "featureFlag": {
       "notAvailable": "Quest utensil n'è anc betg disponibel.",
-      "workingOnIt": "El suonda en ina versiun posteriura.",
+      "workingOnIt": "TODO check: El suonda en ina versiun posteriura.",
       "links": {
         "roadmap": "geoplattform-ausblick"
       }
     },
     "zoom": {
-      "zoomIn": "Zoomar en",
-      "zoomOut": "Zoomar or"
+      "zoomIn": "TODO check: Zoomar en",
+      "zoomOut": "TODO check: Zoomar or"
     }
   },
   "backgroundLayers": {
@@ -481,8 +481,8 @@
       "title": "Posiziun",
       "tabPosition": "Coordinatas",
       "tabShare": "Parter la posiziun",
-      "errorFetchingElevation": "Errur cun chargiar l'autezza",
-      "errorFetchingW3W": "Errur cun chargiar l'adressa What3Words",
+      "errorFetchingElevation": "Errur durant chargiar l'autezza",
+      "errorFetchingW3W": "Errur durant chargiar l'adressa What3Words",
       "featureFlag": {
         "notAvailable": "La fanestra da posiziun n'è anc betg disponibla.",
         "workingOnIt": "El suonda en ina versiun posteriura."
@@ -495,9 +495,9 @@
     "layerLoad": "Il nivel n'ha betg pudì vegnir chargià.",
     "backToMap": "Enavos a la charta",
     "resources": {
-      "dataset": "Il nivel"
+      "dataset": "TODO check: Il nivel"
     },
-    "mapUnavailable": "La charta n'è actualmain betg disponibla.",
+    "mapUnavailable": "TODO check: La charta n'è actualmain betg disponibla.",
     "service": "TODO translate",
     "copyRequestUrl": "TODO translate",
     "requestUrlCopied": "TODO translate"
@@ -562,7 +562,7 @@
     "outsideValidYearRange": "Ordaifer la perioda d'onns valaivla"
   },
   "compareSlider": {
-    "toggleButtonTitle": "Mussar/zuppentar il cursur da cumparegliaziun"
+    "toggleButtonTitle": "Mussar/zuppentar il regulatur da cumparegliaziun"
   },
   "embed": {
     "viewOn": "Guardar sin {platform}"
@@ -570,32 +570,32 @@
   "print": {
     "warningOutsideSwitzerland": "Ordaifer la Svizra",
     "warningOutsideSwitzerlandTitle": "Secziun da stampa ordaifer la Svizra",
-    "warningZoomOutOfSync": "Il stgalim da zoom sin il visur na correspunda betg al stgalim da zoom bloccà per la stampa.",
-    "warningZoomOutOfSyncTitle": "Il stgalim da zoom na correspunda betg al stgalim bloccà",
+    "warningZoomOutOfSync": "Il nivel da zoom sin il monitur na correspunda betg al nivel da zoom bloccà per stampar.",
+    "warningZoomOutOfSyncTitle": "Il nivel da zoom na correspunda betg al nivel da zoom bloccà",
     "statusProcessing": "en elavuraziun",
-    "statusQueued": "en la retscha",
+    "statusQueued": "en colonna",
     "statusError": "errur",
     "statusFailed": "betg reussì",
-    "statusReady": "pront",
+    "statusReady": "pinà",
     "clearAll": "Stizzar tut",
     "noPrintJobsYet": "Anc naginas incumbensas da stampa.",
     "created": "Creà",
     "download": "Telechargiar",
-    "zoomLevel": "Stgalim da zoom",
-    "zoomLevelForPrint": "Stgalim da zoom per la stampa",
-    "warningOutsideViewportLabel": "Rom da stampa ordaifer la vista",
+    "zoomLevel": "Nivel da zoom",
+    "zoomLevelForPrint": "Nivel da zoom per la stampa",
+    "warningOutsideViewportLabel": "Limit da stampa ordaifer la vista",
     "printScale": "Scala da stampa",
-    "enableStrictZoomStepsLabel": "Activar stgalims da zoom fixs",
+    "enableStrictZoomStepsLabel": "Activar nivels da zoom fixs",
     "lockCenterToViewLabel": "Bloccar il center sin la vista actuala",
     "lockZoomToViewLabel": "Bloccar il zoom sin la vista actuala",
     "printSizeLabel": "Format da stampa",
     "printResolutionLabel": "Resoluziun da stampa",
     "printOrientationLabel": "Orientaziun da stampa",
-    "zoomToLockedZoomLevel": "Zoomar al stgalim da zoom bloccà",
-    "sendPrintRequest": "Stampar",
+    "zoomToLockedZoomLevel": "Zoomar al nivel da zoom bloccà",
+    "sendPrintRequest": "TODO check: Stampar",
     "openPrintJobs": "Avrir las incumbensas da stampa",
     "printJobsWindowTitle": "Incumbensas da stampa",
-    "warningPrintExtentBeyondViewport": "Vus pudais bloccar il center ed il stgalim da zoom per evitar che la secziun da stampa banduna la vista cun spustar u zoomar la charta.",
+    "warningPrintExtentBeyondViewport": "Vus pudais bloccar il center ed il nivel da zoom per evitar che la secziun da stampa banduna la vista cun spustar u zoomar la charta.",
     "orientationPortrait": "Vertical",
     "orientationLandscape": "Orizontal"
   },
@@ -646,7 +646,7 @@
       "openPdf": "Avrir la legenda sco PDF",
       "openPage": "Avrir la pagina da la legenda"
     },
-    "variant": "Variant"
+    "variant": "TODO check: Variant"
   },
   "layerCart": {
     "close": "Serrar",
@@ -668,55 +668,55 @@
     "close": "Serrar",
     "expand": "Mussar il catalog da datas",
     "collapse": "Zuppentar il catalog da datas",
-    "allLayers": "Tut ils nivels",
-    "layers": "Nivels",
-    "back": "Enavos"
+    "allLayers": "TODO check: Tut ils nivels",
+    "layers": "TODO check: Nivels",
+    "back": "TODO check: Enavos"
   },
   "featureInfo": {
     "blockedContent": "(Link allontanà per motivs da segirezza)",
     "noInformation": "Naginas infurmaziuns disponiblas.",
     "popupTitle": "Infurmaziuns davart l'object",
     "featureFlag": {
-      "notAvailable": "La fanestra «Infurmaziuns davart l'object» n'è anc betg disponibla.",
-      "workingOnIt": "El suonda en ina versiun posteriura."
+      "notAvailable": "TODO check: La fanestra «Infurmaziuns davart l'object» n'è anc betg disponibla.",
+      "workingOnIt": "TODO check: El suonda en ina versiun posteriura."
     }
   },
   "mobileNotice": {
-    "title": "Vista mobila suonda",
-    "description": "Questa versiun è optimada per il desktop. Sin apparats mobils mussain nus per il mument la vista da desktop.",
-    "confirm": "Chapì"
+    "title": "TODO check: Vista mobila suonda",
+    "description": "TODO check: Questa versiun è optimada per il desktop. Sin apparats mobils mussain nus per il mument la vista da desktop.",
+    "confirm": "TODO check: Chapì"
   },
   "testSiteBanner": {
-    "text": "Ambient {environment} – Betg per l'utilisaziun productiva. Betg parter."
+    "text": "TODO check: Ambient {environment} – Betg per l'utilisaziun productiva. Betg parter."
   },
   "landing": {
     "cards": {
       "map": {
-        "title": "Charta",
-        "description": "Visualisatur da chartas interactiv cun tschients da nivels, viadi en il temp sco era funcziuns da stampar e da parter.",
-        "button": "A la charta"
+        "title": "TODO check: Charta",
+        "description": "TODO check: Visualisatur da chartas interactiv cun tschients da nivels, viadi en il temp sco era funcziuns da stampar e da parter.",
+        "button": "TODO check: A la charta"
       },
       "catalog": {
-        "title": "Catalog da datas",
-        "description": "Tschertgai en il catalog cumplet cun geodatas da basa, temas e metadatas.",
-        "button": "Avrir il catalog da datas"
+        "title": "TODO check: Catalog da datas",
+        "description": "TODO check: Tschertgai en il catalog cumplet cun geodatas da basa, temas e metadatas.",
+        "button": "TODO check: Avrir il catalog da datas"
       },
       "info": {
-        "title": "Tut ulteriur davart SWISSGEO",
-        "description": "Novitads, agid ed infurmaziuns davart nus.",
-        "button": "Al portal d'infurmaziun"
+        "title": "TODO check: Tut ulteriur davart SWISSGEO",
+        "description": "TODO check: Novitads, agid ed infurmaziuns davart nus.",
+        "button": "TODO check: Al portal d'infurmaziun"
       }
     },
     "footer": {
-      "claim": "Il nua è qua.",
-      "description": "SWISSGEO renda accessibel las datas spazialas da la Svizra en in lieu.",
-      "followUs": "Suandai nus!",
-      "moreInformation": "Ulteriuras infurmaziuns",
-      "termsOfUse": "Cundiziuns d'utilisaziun",
-      "contact": "Contact",
-      "dataProtection": "Infurmaziuns giuridicas e protecziun da datas",
-      "netiquette": "Netichetta",
-      "accessibility": "Accessibladad",
+      "claim": "TODO check: Il nua è qua.",
+      "description": "TODO check: SWISSGEO renda accessibel las datas spazialas da la Svizra en in lieu.",
+      "followUs": "TODO check: Suandai nus!",
+      "moreInformation": "TODO check: Ulteriuras infurmaziuns",
+      "termsOfUse": "TODO check: Cundiziuns d'utilisaziun",
+      "contact": "TODO check: Contact",
+      "dataProtection": "TODO check: Infurmaziuns giuridicas e protecziun da datas",
+      "netiquette": "TODO check: Netichetta",
+      "accessibility": "TODO check: Accessibladad",
       "copyright": "Copyright © 2026"
     },
     "links": {
