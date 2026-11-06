@@ -423,6 +423,28 @@ describe("TopbarSearch", () => {
       );
     });
 
+    it.each([
+      ["without results", []],
+      ["with results", [location("bern")]],
+    ])("opens the results on a pasted text %s", async (_, results) => {
+      searchStore.setSearchQuery.mockImplementation((value: string) => {
+        searchStore.query = value;
+        searchStore.results = results;
+      });
+      const wrapper = render();
+      const input = wrapper.get("input").element;
+
+      input.value = "zzzqqq bern";
+      input.dispatchEvent(new Event("input"));
+      await vi.advanceTimersByTimeAsync(100);
+
+      expect(searchStore.setSearchQuery).toHaveBeenCalledExactlyOnceWith(
+        "zzzqqq bern",
+        "de",
+      );
+      expect(wrapper.emitted("update:open")?.at(-1)).toEqual([true]);
+    });
+
     it("keeps the typed text when a search ends before the next one starts", async () => {
       const wrapper = render();
       const input = wrapper.get("input").element;
