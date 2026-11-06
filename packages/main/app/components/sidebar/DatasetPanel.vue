@@ -2,11 +2,10 @@
 import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
 import type { DatasetTab } from "~/utils/datasetTab";
 
-import { useElementSize } from "@vueuse/core";
 import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
 import DatasetMapAction from "~/components/dataset/DatasetMapAction.vue";
 import { DEFAULT_DATASET_TAB } from "~/utils/datasetTab";
-import { computed, useTemplateRef } from "vue";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
@@ -23,11 +22,9 @@ const emit = defineEmits<{ back: []; close: [] }>();
 
 const { t } = useI18n();
 
-const header = useTemplateRef("header");
-// A long title wraps, so the tab list needs the measured header height.
-const { height: headerHeight } = useElementSize(header, undefined, {
-  box: "border-box",
-});
+// The header stays above the panel's scroll area, so the scrollbar only runs
+// along the scrolling content.
+const panelFixed = usePanelFixed();
 
 // A language switch reloads the record and unmounts the detail, so the page keeps the tab in the URL.
 const tab = defineModel<DatasetTab>("tab", { default: DEFAULT_DATASET_TAB });
@@ -43,63 +40,63 @@ const backLabel = computed(() => {
 <template>
   <section
     class="@container flex min-h-full flex-col bg-default"
-    :style="{ '--dataset-header-height': `${headerHeight}px` }"
     aria-labelledby="dataset-panel-title"
     data-testid="dataset-panel"
   >
-    <header
-      ref="header"
-      class="sticky top-0 z-10 flex shrink-0 flex-col bg-default md:gap-space-m md:p-4 lg:gap-8 lg:p-8"
-    >
-      <div
-        class="flex items-center justify-between gap-space-s px-4 pt-4 pb-space-xs md:p-0"
+    <Teleport :to="panelFixed" :disabled="!panelFixed">
+      <header
+        class="flex shrink-0 flex-col bg-default md:gap-space-m md:p-4 lg:gap-8 lg:p-8"
       >
-        <UButton
-          icon="i-lucide-arrow-left"
-          variant="ghost"
-          @click="emit('back')"
+        <div
+          class="flex items-center justify-between gap-space-s px-4 pt-4 pb-space-xs md:p-0"
         >
-          {{ backLabel }}
-        </UButton>
-        <div class="flex items-center gap-space-xs">
           <UButton
-            icon="i-lucide-x"
-            color="neutral"
+            icon="i-lucide-arrow-left"
             variant="ghost"
-            :aria-label="t('dataset.close')"
-            @click="emit('close')"
-          />
-        </div>
-      </div>
-      <div
-        class="flex flex-col items-start gap-space-s p-4 md:p-0 @2xl:flex-row @2xl:items-center @2xl:justify-between"
-      >
-        <!-- Reserve space on the last title line for the share button. -->
-        <div class="min-w-0">
-          <h1
-            id="dataset-panel-title"
-            data-testid="dataset-title"
-            class="inline pr-10 text-xl leading-heading font-semibold wrap-anywhere text-highlighted @2xl:text-3xl"
+            @click="emit('back')"
           >
-            {{ dataset?.properties.title }}
-          </h1>
-          <DatasetCopyLink
-            class="-ml-8 align-baseline"
-            :url="detailUrl"
-            :label="t('dataset.copyLink')"
-          />
-          <UBadge
-            v-if="dataset?.properties.aggregated"
-            color="neutral"
-            variant="subtle"
-            :label="t('dataset.aggregated')"
-            class="ml-space-xs align-middle"
-            data-testid="dataset-aggregated"
-          />
+            {{ backLabel }}
+          </UButton>
+          <div class="flex items-center gap-space-xs">
+            <UButton
+              icon="i-lucide-x"
+              color="neutral"
+              variant="ghost"
+              :aria-label="t('dataset.close')"
+              @click="emit('close')"
+            />
+          </div>
         </div>
-        <DatasetMapAction v-if="dataset" :dataset="dataset" />
-      </div>
-    </header>
+        <div
+          class="flex flex-col items-start gap-space-s p-4 md:p-0 @2xl:flex-row @2xl:items-center @2xl:justify-between"
+        >
+          <!-- Reserve space on the last title line for the share button. -->
+          <div class="min-w-0">
+            <h1
+              id="dataset-panel-title"
+              data-testid="dataset-title"
+              class="inline pr-10 text-xl leading-heading font-semibold wrap-anywhere text-highlighted @2xl:text-3xl"
+            >
+              {{ dataset?.properties.title }}
+            </h1>
+            <DatasetCopyLink
+              class="-ml-8 align-baseline"
+              :url="detailUrl"
+              :label="t('dataset.copyLink')"
+            />
+            <UBadge
+              v-if="dataset?.properties.aggregated"
+              color="neutral"
+              variant="subtle"
+              :label="t('dataset.aggregated')"
+              class="ml-space-xs align-middle"
+              data-testid="dataset-aggregated"
+            />
+          </div>
+          <DatasetMapAction v-if="dataset" :dataset="dataset" />
+        </div>
+      </header>
+    </Teleport>
     <div class="flex flex-1 flex-col px-4 pb-4 lg:px-8 lg:pb-8">
       <div v-if="isLoading" class="flex h-full items-center justify-center">
         <UIcon

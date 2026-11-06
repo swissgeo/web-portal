@@ -99,6 +99,9 @@ function toggleExpanded() {
 const scroller = useTemplateRef<HTMLElement>("scroller");
 provide(panelScrollerKey, scroller);
 
+const fixedContent = useTemplateRef<HTMLElement>("fixedContent");
+provide(panelFixedKey, fixedContent);
+
 // iOS moves the whole page when the keyboard would cover the focused field
 // (https://bugs.webkit.org/show_bug.cgi?id=176205). A fully open panel keeps
 // the field above the keyboard.
@@ -182,6 +185,11 @@ useDrawerTouchGuard(scroller, {
         {{ resizeLabel }}
       </button>
       <div
+        ref="fixedContent"
+        data-testid="panel-fixed"
+        class="@container shrink-0"
+      ></div>
+      <div
         ref="scroller"
         data-testid="panel-scroller"
         :class="scrollerClass"
@@ -211,6 +219,11 @@ useDrawerTouchGuard(scroller, {
         {{ closeLabel }}
       </UButton>
     </div>
+    <div
+      ref="fixedContent"
+      data-testid="panel-fixed"
+      class="@container shrink-0"
+    ></div>
     <div
       ref="scroller"
       data-testid="panel-scroller"

@@ -33,24 +33,15 @@ const props = defineProps<{
 const tab = defineModel<DatasetTab>("tab", { default: DEFAULT_DATASET_TAB });
 
 const { t } = useI18n();
+// The tab list stays above the panel's scroll area together with the header,
+// so the scrollbar only runs along the tab content.
+const panelFixed = usePanelFixed();
 // The tab values must match DATASET_TABS, because the URL selects the tab.
 const tabs = computed<(TabsItem & { value: DatasetTab })[]>(() => [
-  {
-    label: t("dataset.overview"),
-    value: "overview",
-    slot: "overview",
-  },
-  { label: t("layers.legend.title"), value: "legend", slot: "legend" },
-  {
-    label: t("dataset.dataAccess"),
-    value: "data-access",
-    slot: "data-access",
-  },
-  {
-    label: t("dataset.metadata"),
-    value: "metadata",
-    slot: "metadata",
-  },
+  { label: t("dataset.overview"), value: "overview" },
+  { label: t("layers.legend.title"), value: "legend" },
+  { label: t("dataset.dataAccess"), value: "data-access" },
+  { label: t("dataset.metadata"), value: "metadata" },
 ]);
 
 const contacts = computed(() =>
@@ -86,60 +77,75 @@ const serviceDistributions = computed<Distribution[]>(() => {
 </script>
 
 <template>
-  <UTabs
-    :key="dataset.id"
-    v-model="tab"
-    :items="tabs"
-    variant="link"
-    color="neutral"
-    :unmount-on-hide="false"
-    :ui="{
-      list: 'sticky top-(--dataset-header-height) z-10 overflow-x-auto overflow-y-hidden bg-default p-0',
-      trigger:
-        'shrink-0 grow-0 px-2 pt-1 pb-2 leading-small-text data-[state=active]:text-highlighted data-[state=inactive]:text-primary dark:data-[state=inactive]:text-petrol-300',
-      indicator: 'bottom-0',
-    }"
-    class="@container w-full gap-4 lg:gap-8"
-  >
-    <template #overview>
-      <div
-        v-if="dataset.properties.description || contacts.length"
-        class="flex flex-col gap-space-m"
+  <div :key="dataset.id" class="w-full">
+    <Teleport :to="panelFixed" :disabled="!panelFixed">
+      <UTabs
+        v-model="tab"
+        :items="tabs"
+        variant="link"
+        color="neutral"
+        :content="false"
+        :ui="{
+          list: 'overflow-x-auto overflow-y-hidden bg-default p-0 px-4 lg:px-8',
+          trigger:
+            'shrink-0 grow-0 px-2 pt-1 pb-2 leading-small-text data-[state=active]:text-highlighted data-[state=inactive]:text-primary dark:data-[state=inactive]:text-petrol-300',
+          indicator: 'bottom-0',
+        }"
+        class="w-full"
+      />
+    </Teleport>
+    <!-- The panels stay mounted, so each tab keeps its state while hidden. -->
+    <div class="@container w-full pt-4 lg:pt-8">
+      <section
+        :hidden="tab !== 'overview'"
+        role="tabpanel"
+        :data-state="tab === 'overview' ? 'active' : 'inactive'"
+        :aria-label="t('dataset.overview')"
+        tabindex="0"
       >
-        <section
-          v-if="dataset.properties.description"
-          class="max-w-[37.3125rem]"
+        <div
+          v-if="dataset.properties.description || contacts.length"
+          class="flex flex-col gap-space-m"
         >
-          <h3 class="mb-4 text-base font-semibold text-highlighted">
-            {{ t("dataset.abstract") }}
-          </h3>
-          <DatasetDescription
-            :key="dataset.id"
-            :description="dataset.properties.description"
-          />
-        </section>
-
-        <section
-          v-if="contacts.length"
-          class="border-y border-default py-space-s"
-          data-testid="dataset-contacts"
-        >
-          <h3
-            class="mb-space-xs text-xs font-medium tracking-wide text-muted uppercase"
+          <section
+            v-if="dataset.properties.description"
+            class="max-w-[37.3125rem]"
           >
-            {{ t("dataset.contact") }}
-          </h3>
-          <ul class="flex flex-col gap-space-s">
-            <li v-for="(contact, i) in contacts" :key="i">
-              <DatasetContact :contact="contact" />
-            </li>
-          </ul>
-        </section>
-      </div>
-    </template>
+            <h3 class="mb-4 text-base font-semibold text-highlighted">
+              {{ t("dataset.abstract") }}
+            </h3>
+            <DatasetDescription
+              :key="dataset.id"
+              :description="dataset.properties.description"
+            />
+          </section>
 
-    <template #legend>
-      <section>
+          <section
+            v-if="contacts.length"
+            class="border-y border-default py-space-s"
+            data-testid="dataset-contacts"
+          >
+            <h3
+              class="mb-space-xs text-xs font-medium tracking-wide text-muted uppercase"
+            >
+              {{ t("dataset.contact") }}
+            </h3>
+            <ul class="flex flex-col gap-space-s">
+              <li v-for="(contact, i) in contacts" :key="i">
+                <DatasetContact :contact="contact" />
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <section
+        :hidden="tab !== 'legend'"
+        role="tabpanel"
+        :data-state="tab === 'legend' ? 'active' : 'inactive'"
+        :aria-label="t('layers.legend.title')"
+        tabindex="0"
+      >
         <h3
           class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
         >
@@ -154,35 +160,47 @@ const serviceDistributions = computed<Distribution[]>(() => {
           :distribution-collection="distributionCollection"
         />
       </section>
-    </template>
 
-    <template #data-access>
-      <section v-if="distributionError || serviceDistributions.length">
-        <h3
-          class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
-        >
-          {{ t("dataset.dataAccess") }}
-        </h3>
-        <ErrorPill v-if="distributionError">
-          {{ t("error.generic") }}
-        </ErrorPill>
-        <DatasetServiceList v-else :distributions="serviceDistributions" />
+      <section
+        :hidden="tab !== 'data-access'"
+        role="tabpanel"
+        :data-state="tab === 'data-access' ? 'active' : 'inactive'"
+        :aria-label="t('dataset.dataAccess')"
+        tabindex="0"
+      >
+        <div v-if="distributionError || serviceDistributions.length">
+          <h3
+            class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
+          >
+            {{ t("dataset.dataAccess") }}
+          </h3>
+          <ErrorPill v-if="distributionError">
+            {{ t("error.generic") }}
+          </ErrorPill>
+          <DatasetServiceList v-else :distributions="serviceDistributions" />
+        </div>
       </section>
-    </template>
 
-    <template #metadata>
-      <section v-if="metadataLinks.length">
-        <h3
-          class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
-        >
-          {{ t("dataset.metadata") }}
-        </h3>
-        <DatasetLinkList
-          :links="metadataLinks"
-          :label="t('dataset.viewGeocat')"
-          :tooltip="t('dataset.openService')"
-        />
+      <section
+        :hidden="tab !== 'metadata'"
+        role="tabpanel"
+        :data-state="tab === 'metadata' ? 'active' : 'inactive'"
+        :aria-label="t('dataset.metadata')"
+        tabindex="0"
+      >
+        <div v-if="metadataLinks.length">
+          <h3
+            class="mb-4 text-lg font-semibold text-highlighted lg:mb-8 lg:text-xl"
+          >
+            {{ t("dataset.metadata") }}
+          </h3>
+          <DatasetLinkList
+            :links="metadataLinks"
+            :label="t('dataset.viewGeocat')"
+            :tooltip="t('dataset.openService')"
+          />
+        </div>
       </section>
-    </template>
-  </UTabs>
+    </div>
+  </div>
 </template>

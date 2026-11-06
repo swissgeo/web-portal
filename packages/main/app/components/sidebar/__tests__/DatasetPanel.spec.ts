@@ -1,10 +1,10 @@
 import type { Dataset } from "@swissgeo/ogc";
-import type * as vueuse from "@vueuse/core";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
+import { panelFixedKey } from "~/composables/usePanelFixed";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { reactive, ref } from "vue";
+import { reactive, ref, shallowRef } from "vue";
 
 import DatasetPanel from "../DatasetPanel.vue";
 
@@ -31,11 +31,6 @@ vi.mock("@swissgeo/dimension", () => ({
   }),
 }));
 vi.mock("@swissgeo/log", () => ({ default: { error: mocks.logError } }));
-const headerHeight = ref(96);
-vi.mock("@vueuse/core", async (importOriginal) => ({
-  ...(await importOriginal<typeof vueuse>()),
-  useElementSize: () => ({ width: ref(0), height: headerHeight }),
-}));
 mockNuxtImport("useToaster", () => () => ({ add: mocks.toast }));
 mockNuxtImport("useI18n", () => () => ({
   t: (key: string) => key,
@@ -54,6 +49,7 @@ const dataset: Dataset = {
 
 function render(
   overrides: Partial<InstanceType<typeof DatasetPanel>["$props"]> = {},
+  fixedArea?: HTMLElement,
 ) {
   return mount(DatasetPanel, {
     props: {
@@ -76,6 +72,9 @@ function render(
         },
         DatasetCopyLink: true,
       },
+      ...(fixedArea
+        ? { provide: { [panelFixedKey]: shallowRef(fixedArea) } }
+        : {}),
     },
   });
 }
@@ -205,21 +204,22 @@ describe("DatasetPanel", () => {
     expect(wrapper.text()).not.toContain("Deutsch");
   });
 
-  it("keeps the header in view and places the tab list below its measured height", async () => {
-    const wrapper = render();
-    const panel = wrapper.get('[data-testid="dataset-panel"]');
+  it("moves the header into the fixed area, so the scrollbar does not run alongside it", () => {
+    const fixedArea = document.createElement("div");
+    document.body.appendChild(fixedArea);
+    try {
+      const wrapper = render({}, fixedArea);
 
-    expect(wrapper.get("header").classes()).toContain("sticky");
-    expect(panel.attributes("style")).toContain(
-      "--dataset-header-height: 96px",
-    );
-
-    headerHeight.value = 140;
-    await wrapper.vm.$nextTick();
-
-    expect(panel.attributes("style")).toContain(
-      "--dataset-header-height: 140px",
-    );
+      const header = fixedArea.querySelector("header");
+      expect(header).not.toBeNull();
+      // The header left the panel, which stays behind as the scroll content
+      expect(wrapper.find("header").exists()).toBe(false);
+      expect(
+        wrapper.get('[data-testid="dataset-panel"]').attributes("style"),
+      ).toBeUndefined();
+    } finally {
+      fixedArea.remove();
+    }
   });
 
   it("shows the aggregated tag only for aggregated datasets", async () => {
