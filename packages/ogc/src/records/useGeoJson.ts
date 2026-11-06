@@ -5,7 +5,7 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { isMapLibreStyleDocument } from "@swissgeo/shared";
 import { computed, watchEffect } from "vue";
 
-import type { Distribution } from "@/types";
+import type { Distribution, Legend } from "@/types";
 
 import { useConditionalFetch } from "./useConditionalFetch";
 import { getLinksByRel } from "./utils";
@@ -86,6 +86,31 @@ export function useGeoJson(distribution: Ref<Distribution | null>) {
     mapLibreIcons,
     error,
   };
+}
+
+const BGDI_HOST = /^https?:\/\/[^/]+\.geo\.admin\.ch\//;
+const BGDI_LEGEND_BASE_URL = "https://api3.geo.admin.ch/static/images/legends";
+
+/**
+ * GeoJSON distributions advertise no legend. For the ones served by BGDI the
+ * legend is published at the same place its WMS capabilities point to, so it
+ * is derived from the layer id and the language.
+ */
+export function getGeoJsonLegends(
+  distribution: Distribution | null,
+  layerId: string | null,
+  lang: string,
+): Legend[] {
+  const dataUrl = extractGeoJsonDataUrl(distribution);
+  if (!layerId || !dataUrl || !BGDI_HOST.test(dataUrl)) {
+    return [];
+  }
+  return [
+    {
+      href: `${BGDI_LEGEND_BASE_URL}/${layerId}_${lang}.png`,
+      format: "image/png",
+    },
+  ];
 }
 
 function abortAwareError(error: unknown): unknown {

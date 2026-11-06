@@ -6,7 +6,7 @@ import { ref } from "vue";
 
 import type { Distribution } from "@/types/Records";
 
-import { useGeoJson } from "../useGeoJson";
+import { getGeoJsonLegends, useGeoJson } from "../useGeoJson";
 
 const DATA_URL = "https://example.com/data.geojson";
 const STYLE_URL = "https://example.com/style.maplibre.json";
@@ -255,5 +255,34 @@ describe("useGeoJson composable", () => {
     await flushPromises();
     expect(error.value).toBeInstanceOf(Error);
     expect(error.value?.message).toContain("Unable to load GeoJSON data");
+  });
+});
+
+describe("getGeoJsonLegends", () => {
+  const LAYER_ID = "ch.meteoschweiz.messwerte-lufttemperatur-10min";
+  const bgdi = makeDistribution([
+    {
+      rel: "about",
+      type: "application/geo+json",
+      href: `https://data.geo.admin.ch/${LAYER_ID}/${LAYER_ID}_de.json`,
+    },
+  ]);
+
+  it("derives the BGDI legend from the layer id and the language", () => {
+    expect(getGeoJsonLegends(bgdi, LAYER_ID, "fr")).toEqual([
+      {
+        href: `https://api3.geo.admin.ch/static/images/legends/${LAYER_ID}_fr.png`,
+        format: "image/png",
+      },
+    ]);
+  });
+
+  it("has no legend for a GeoJSON served elsewhere", () => {
+    const other = makeDistribution([{ rel: "data", href: DATA_URL }]);
+    expect(getGeoJsonLegends(other, LAYER_ID, "de")).toEqual([]);
+  });
+
+  it("has no legend without a layer id", () => {
+    expect(getGeoJsonLegends(bgdi, null, "de")).toEqual([]);
   });
 });

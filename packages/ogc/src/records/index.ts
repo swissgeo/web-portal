@@ -10,5 +10,5 @@ export { useCapabilities, extractCapabilityUrl } from "./useCapabilities";
 export { useDistributionCollection } from "./useDistributionCollection";
 export { useDistributionProtocols } from "./useDistributionProtocols";
 export { usePreferredDistribution } from "./usePreferredDistribution";
-export { useGeoJson } from "./useGeoJson";
+export { getGeoJsonLegends, useGeoJson } from "./useGeoJson";
 export { useStyle } from "./useStyle";
