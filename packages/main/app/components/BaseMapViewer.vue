@@ -334,6 +334,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
     <FeaturesinfoFeatureInfoDisabled
       v-else-if="displayMode !== 'print' && featureStore.hasSelectedFeatures"
       :initial-position="featureInfoDisabledPosition"
+      @close="featureStore.$reset()"
     />
     <Toolbox v-if="displayMode !== 'print'" />
     <slot name="after" />
