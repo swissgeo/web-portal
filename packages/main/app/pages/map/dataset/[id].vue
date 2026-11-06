@@ -115,9 +115,10 @@ function goBack() {
   return backToMap();
 }
 
-// Coming from a panel returns to the map panel; a direct link returns to the plain map.
+// Coming from the catalog returns to it, from another panel to the map panel;
+// a direct link returns to the plain map.
 function closeDetails() {
-  if (sidebarStore.isSidebarOpen) {
+  if (sidebarStore.isSidebarOpen && !sidebarStore.isGeocatalogTreeVisible) {
     sidebarStore.setSidebar(SidebarType.LAYER_CART);
   }
   return backToMap();
