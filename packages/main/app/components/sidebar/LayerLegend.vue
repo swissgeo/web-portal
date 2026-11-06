@@ -1,17 +1,26 @@
 <script lang="ts" setup>
 import type { Legend } from "@swissgeo/ogc";
+import type { RouteLocationRaw } from "vue-router";
 
 import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
-const { legends, presentation = "sidebar" } = defineProps<{
+const {
+  legends,
+  presentation = "sidebar",
+  detailLink,
+} = defineProps<{
   legends: Legend[];
   presentation?: "sidebar" | "detail";
+  // The sidebar legend is small, so a click opens the legend tab of the dataset.
+  detailLink?: RouteLocationRaw;
 }>();
 
 const { t } = useI18n();
 const isMobile = useBreakpoints(breakpointsTailwind).smallerOrEqual("md");
+// The detail view shows the full legend. On mobile, a click zooms into it.
+const isZoomable = computed(() => presentation === "detail" && isMobile.value);
 
 const failedHrefs = ref<string[]>([]);
 const openModal = ref(false);
@@ -95,9 +104,13 @@ const documentLinks = computed(() =>
     </span>
 
     <!-- External PNG legends contain fixed text and symbol colors that we cannot control hence white bg -->
-    <div
+    <ULink
       v-if="imageLegends.length"
-      class="rounded border border-default bg-white p-2"
+      :to="detailLink"
+      as="div"
+      raw
+      data-testid="layer-legend-images"
+      class="block rounded border border-default bg-white p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       :class="{
         'max-h-64 overflow-auto': presentation === 'sidebar',
         'w-fit max-w-full': presentation === 'detail',
@@ -110,13 +123,13 @@ const documentLinks = computed(() =>
         :alt="t('layers.legend.title')"
         class="max-w-full"
         :class="{
-          'cursor-pointer': isMobile,
+          'cursor-pointer': isZoomable,
         }"
         @error="failedHrefs.push(legend.href)"
-        @click="isMobile ? handleLegendClick(legend) : null"
+        @click="isZoomable ? handleLegendClick(legend) : null"
       />
       <UModal
-        v-if="isMobile"
+        v-if="isZoomable"
         v-model:open="openModal"
         @close:prevent="handleModalClose"
         :ui="{
@@ -153,7 +166,7 @@ const documentLinks = computed(() =>
           </div>
         </template>
       </UModal>
-    </div>
+    </ULink>
 
     <ULink
       v-for="link in documentLinks"

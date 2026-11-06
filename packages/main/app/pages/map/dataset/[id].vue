@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import type { NuxtError } from "#app";
+import type { DatasetTab } from "~/utils/datasetTab";
 
 import { useLayerStore } from "@swissgeo/layers";
 import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 import DatasetPanel from "~/components/sidebar/DatasetPanel.vue";
+import { DEFAULT_DATASET_TAB, isDatasetTab } from "~/utils/datasetTab";
 
 definePageMeta({
   path: "/dataset/:id",
@@ -18,9 +20,36 @@ const sidebarStore = useSidebarStore();
 const layerStore = useLayerStore();
 
 const route = useRoute();
+const router = useRouter();
 const localePath = useLocalePath();
 const requestUrl = useRequestURL();
-const detailUrl = computed(() => new URL(route.path, requestUrl.origin).href);
+
+// The URL holds the open tab, so a link can open any tab of the dataset.
+// An unknown value shows the default tab.
+const tab = computed<DatasetTab>({
+  get: () => {
+    const value = route.query.tab;
+    return isDatasetTab(value) ? value : DEFAULT_DATASET_TAB;
+  },
+  set: (value) => {
+    // A tab change replaces the history entry, so Back leaves the dataset.
+    void router.replace({
+      query: {
+        ...route.query,
+        tab: value === DEFAULT_DATASET_TAB ? undefined : value,
+      },
+    });
+  },
+});
+
+// The copied link opens the same tab. Other query parameters stay out of it.
+const detailUrl = computed(() => {
+  const url = new URL(route.path, requestUrl.origin);
+  if (tab.value !== DEFAULT_DATASET_TAB) {
+    url.searchParams.set("tab", tab.value);
+  }
+  return url.href;
+});
 
 const id = computed(() => {
   const value = route.params.id;
@@ -99,6 +128,7 @@ function closeDetails() {
   <!-- UDrawer does not support SSR in the installed version. -->
   <ClientOnly>
     <DatasetPanel
+      v-model:tab="tab"
       :detail-url="detailUrl"
       :dataset="dataset"
       :distribution-collection="distributionCollection"

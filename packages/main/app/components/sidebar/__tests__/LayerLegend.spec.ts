@@ -9,15 +9,36 @@ vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 
+const { isMobile } = await vi.hoisted(async () => {
+  const { ref } = await import("vue");
+  return { isMobile: ref(false) };
+});
+vi.mock("@vueuse/core", async (importOriginal) => ({
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  ...(await importOriginal<typeof import("@vueuse/core")>()),
+  useBreakpoints: () => ({ smallerOrEqual: () => isMobile }),
+}));
+
 const stubs = {
-  ULink: { template: "<a :href='to'><slot /></a>", props: ["to"] },
+  ULink: {
+    props: ["to"],
+    template: "<a v-if='to' :href='to'><slot /></a><div v-else><slot /></div>",
+  },
   UIcon: { template: "<span />" },
-  UModal: { template: "<div><slot /></div>" },
+  UModal: {
+    name: "UModal",
+    props: ["open"],
+    template: "<div><slot /></div>",
+  },
 };
 
-function mountLegend(legends: Legend[]) {
+function mountLegend(
+  legends: Legend[],
+  detailLink?: string,
+  presentation?: "sidebar" | "detail",
+) {
   return mount(LayerLegend, {
-    props: { legends },
+    props: { legends, detailLink, presentation },
     global: { stubs },
   });
 }
@@ -82,4 +103,73 @@ describe("LayerLegend.vue", () => {
     );
     expect(wrapper.text()).not.toContain("layers.legend.notAvailable");
   });
+
+  it("opens the legend tab of the dataset when the user clicks the legend", () => {
+    const wrapper = mountLegend(
+      [{ href: "https://example.com/legend.png", format: "image/png" }],
+      "/de/dataset/a-dataset?tab=legend",
+    );
+
+    const link = wrapper.get("[data-testid='layer-legend-images']");
+    expect(link.attributes("href")).toBe("/de/dataset/a-dataset?tab=legend");
+    expect(link.find("img").attributes("src")).toBe(
+      "https://example.com/legend.png",
+    );
+  });
+
+  it("keeps document legends outside the link to the dataset", () => {
+    const wrapper = mountLegend(
+      [
+        { href: "https://example.com/legend.png", format: "image/png" },
+        { href: "https://example.com/legend.pdf", format: "application/pdf" },
+      ],
+      "/de/dataset/a-dataset?tab=legend",
+    );
+
+    const link = wrapper.get("[data-testid='layer-legend-images']");
+    expect(link.text()).not.toContain("layers.legend.openPdf");
+    expect(wrapper.text()).toContain("layers.legend.openPdf");
+  });
+
+  it("shows the legend without a link when there is no dataset to open", () => {
+    const wrapper = mountLegend([
+      { href: "https://example.com/legend.png", format: "image/png" },
+    ]);
+
+    expect(
+      wrapper.get("[data-testid='layer-legend-images']").element.tagName,
+    ).toBe("DIV");
+  });
+
+  it.each`
+    presentation | mobile   | isZoomable
+    ${"detail"}  | ${true}  | ${true}
+    ${"detail"}  | ${false} | ${false}
+    ${"sidebar"} | ${true}  | ${false}
+  `(
+    "zooms into the legend on click=$isZoomable for $presentation, mobile=$mobile",
+    async ({ presentation, mobile, isZoomable }) => {
+      isMobile.value = mobile;
+      const wrapper = mountLegend(
+        [{ href: "https://example.com/legend.png", format: "image/png" }],
+        undefined,
+        presentation,
+      );
+      const image = wrapper.get("img");
+
+      expect(image.classes("cursor-pointer")).toBe(isZoomable);
+      expect(wrapper.findComponent({ name: "UModal" }).exists()).toBe(
+        isZoomable,
+      );
+
+      await image.trigger("click");
+
+      if (isZoomable) {
+        expect(wrapper.getComponent({ name: "UModal" }).props("open")).toBe(
+          true,
+        );
+      }
+      isMobile.value = false;
+    },
+  );
 });

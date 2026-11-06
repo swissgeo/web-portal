@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 // TODO : map view store alterations
 import type { Layer as MapLayer } from "@swissgeo/map";
+import type { DatasetTab } from "~/utils/datasetTab";
 
 import {
   getDisplayNameFromTimestamp,
@@ -127,6 +128,16 @@ const detailPath = computed(() => {
   return localePath(`/dataset/${datasetId.value}`);
 });
 
+const legendLink = computed(() => {
+  if (!detailPath.value) {
+    return undefined;
+  }
+  return {
+    path: detailPath.value,
+    query: { tab: "legend" satisfies DatasetTab },
+  };
+});
+
 // Shared look of the buttons on the entry row
 const rowButton = {
   size: "xs",
@@ -230,7 +241,7 @@ const rowButton = {
           <span class="w-8 text-xs text-toned">{{ opacityPercent }}%</span>
         </div>
       </div>
-      <LayerLegend :legends="legends" />
+      <LayerLegend :legends="legends" :detail-link="legendLink" />
     </div>
   </li>
 </template>
