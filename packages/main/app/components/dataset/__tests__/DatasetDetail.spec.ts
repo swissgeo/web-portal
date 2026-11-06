@@ -7,8 +7,9 @@ import type {
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises, mount } from "@vue/test-utils";
+import { panelFixedKey } from "~/composables/usePanelFixed";
 import { describe, expect, it, vi } from "vitest";
-import { ref } from "vue";
+import { ref, shallowRef } from "vue";
 
 import DatasetContact from "../DatasetContact.vue";
 import DatasetDetail from "../DatasetDetail.vue";
@@ -399,5 +400,31 @@ describe("DatasetDetail Overview", () => {
     await selectTab(wrapper, "layers.legend.title");
 
     expect(wrapper.emitted("update:tab")).toEqual([["legend"]]);
+  });
+
+  it("moves the tab list into the fixed area, so the scrollbar only runs along the panels", () => {
+    const fixedArea = document.createElement("div");
+    document.body.appendChild(fixedArea);
+    try {
+      const wrapper = mount(DatasetDetail, {
+        props: { dataset: makeDataset(), distributionCollection: null },
+        global: {
+          stubs: {
+            DatasetLegend: {
+              props: ["dataset", "distributionCollection"],
+              template: "<div data-testid=legend-stub />",
+            },
+          },
+          provide: { [panelFixedKey]: shallowRef(fixedArea) },
+        },
+      });
+
+      expect(fixedArea.querySelector('[role="tablist"]')).not.toBeNull();
+      expect(wrapper.find('[role="tablist"]').exists()).toBe(false);
+      // The panels stay behind as the scroll content
+      expect(wrapper.findAll('[role="tabpanel"]')).toHaveLength(4);
+    } finally {
+      fixedArea.remove();
+    }
   });
 });

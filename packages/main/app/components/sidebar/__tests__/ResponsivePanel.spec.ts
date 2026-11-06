@@ -3,10 +3,11 @@ import type { Ref } from "vue";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { enableAutoUnmount, flushPromises, mount } from "@vue/test-utils";
 import ResponsivePanel from "~/components/sidebar/ResponsivePanel.vue";
+import { usePanelFixed } from "~/composables/usePanelFixed";
 import { usePanelScroller } from "~/composables/usePanelScroller";
 import { panelSnapPointKey } from "~/types/injectionKeys";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { defineComponent, h, nextTick, ref } from "vue";
+import { Teleport, defineComponent, h, nextTick, ref } from "vue";
 
 const { isDesktop } = await vi.hoisted(async () => {
   const { ref } = await import("vue");
@@ -16,12 +17,29 @@ const { isDesktop } = await vi.hoisted(async () => {
 mockNuxtImport("useIsDesktop", () => () => isDesktop);
 
 let injectedScroller: ReturnType<typeof usePanelScroller> | undefined;
+let injectedFixed: ReturnType<typeof usePanelFixed> | undefined;
 let contentMounts = 0;
 const PanelContent = defineComponent({
   setup() {
     contentMounts++;
     injectedScroller = usePanelScroller();
+    injectedFixed = usePanelFixed();
     return () => h("p", { "data-testid": "content" }, "content");
+  },
+});
+
+// Moves a part of itself into the fixed area, like the dataset header does
+const FixedPartContent = defineComponent({
+  setup() {
+    const fixed = usePanelFixed();
+    return () =>
+      h("div", [
+        // Teleport takes raw children, so an array and not a slot function
+        h(Teleport, { to: fixed.value, disabled: !fixed.value }, [
+          h("p", { "data-testid": "fixed-part" }, "fixed"),
+        ]),
+        h("p", { "data-testid": "content" }, "content"),
+      ]);
   },
 });
 
@@ -128,6 +146,10 @@ function scroller(wrapper: ReturnType<typeof mountPanel>) {
   return wrapper.get<HTMLElement>("[data-testid='panel-scroller']").element;
 }
 
+function fixedArea(wrapper: ReturnType<typeof mountPanel>) {
+  return wrapper.get<HTMLElement>("[data-testid='panel-fixed']").element;
+}
+
 // The touch listeners are attached once the scroller element is rendered
 async function mountedScroller() {
   const wrapper = mountPanel();
@@ -152,6 +174,7 @@ describe("ResponsivePanel.vue", () => {
 
   beforeEach(() => {
     injectedScroller = undefined;
+    injectedFixed = undefined;
     contentMounts = 0;
   });
 
@@ -200,6 +223,43 @@ describe("ResponsivePanel.vue", () => {
 
       expect(scroller(wrapper).classList).toContain("overflow-y-auto");
       expect(injectedScroller!.value).toBe(scroller(wrapper));
+    });
+
+    it("renders the fixed area above the scroller and provides it to the content", () => {
+      const wrapper = mountPanel();
+
+      const fixed = fixedArea(wrapper);
+      expect(injectedFixed!.value).toBe(fixed);
+      // The fixed area is outside the scroller and comes before it, so the
+      // scrollbar does not run along its side
+      expect(scroller(wrapper).contains(fixed)).toBe(false);
+      expect(fixed.compareDocumentPosition(scroller(wrapper))).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    });
+
+    it("keeps a part of the content that moves into the fixed area from scrolling", async () => {
+      const wrapper = mount(ResponsivePanel, {
+        props: {
+          title: "Dataset",
+          closeLabel: "Close",
+          expandLabel: "Expand",
+          collapseLabel: "Collapse",
+        },
+        slots: { default: FixedPartContent },
+        global: { stubs },
+      });
+      // The content moves into the panel once its containers have rendered
+      await flushPromises();
+
+      const fixedPart = wrapper.get("[data-testid='fixed-part']").element;
+      expect(fixedArea(wrapper).contains(fixedPart)).toBe(true);
+      expect(scroller(wrapper).contains(fixedPart)).toBe(false);
+      expect(
+        scroller(wrapper).contains(
+          wrapper.get("[data-testid='content']").element,
+        ),
+      ).toBe(true);
     });
 
     it("hides its own header for callers that bring their own", () => {
@@ -470,6 +530,18 @@ describe("ResponsivePanel.vue", () => {
       const wrapper = mountPanel();
 
       expect(injectedScroller!.value).toBe(scroller(wrapper));
+    });
+
+    it("renders the fixed area above the scroller and provides it to the content", async () => {
+      const wrapper = mountPanel();
+      await nextTick();
+
+      const fixed = fixedArea(wrapper);
+      expect(injectedFixed!.value).toBe(fixed);
+      expect(scroller(wrapper).contains(fixed)).toBe(false);
+      expect(fixed.compareDocumentPosition(scroller(wrapper))).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
     });
 
     describe("swiping on the content", () => {
