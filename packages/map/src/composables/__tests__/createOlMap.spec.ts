@@ -15,8 +15,9 @@ import createOlMap from "../createOlMap";
 registerProj4(proj4);
 register(proj4);
 
-const { roundZoomLevelMock } = vi.hoisted(() => ({
+const { roundZoomLevelMock, storePosition } = vi.hoisted(() => ({
   roundZoomLevelMock: vi.fn((val: number) => val),
+  storePosition: {} as { center?: [number, number]; zoom?: number },
 }));
 
 vi.mock("@/stores/position", async (importOriginal) => {
@@ -26,6 +27,7 @@ vi.mock("@/stores/position", async (importOriginal) => {
   return {
     ...original,
     default: () => ({
+      ...storePosition,
       projection: {
         roundZoomLevel: roundZoomLevelMock,
         epsg: LV95.epsg,
@@ -81,6 +83,20 @@ describe("createOlMap", () => {
     );
 
     app.unmount();
+  });
+
+  it("creates the view at the position already held by the store", async () => {
+    storePosition.center = [2600000, 1200000];
+    storePosition.zoom = 7;
+    const [result, app] = withSetup(() => createOlMap());
+    await flushPromises();
+
+    expect(result.map.getView().getCenter()).toEqual([2600000, 1200000]);
+    expect(result.map.getView().getZoom()).toBe(7);
+
+    app.unmount();
+    delete storePosition.center;
+    delete storePosition.zoom;
   });
 
   it("creates a map with zoomOnlyCtrl interactions", async () => {

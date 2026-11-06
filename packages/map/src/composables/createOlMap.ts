@@ -76,7 +76,9 @@ function createView(): View {
   // this is ready for other projection systems
   const viewsForProjection: Record<string, View> = {};
   viewsForProjection[LV95.epsg] = new View({
-    zoom: DEFAULT_PROJECTION.getDefaultZoom(),
+    // reuse the last known position, so a remounted map (e.g. after visiting
+    // another page) keeps where the user was instead of resetting
+    zoom: positionStore.zoom ?? DEFAULT_PROJECTION.getDefaultZoom(),
     minResolution: VIEW_MIN_RESOLUTION,
     rotation: 0,
     // This setting keeps the map north up for each source of rotation.
@@ -86,7 +88,7 @@ function createView(): View {
     projection: LV95.epsg,
     extent: LV95.bounds.flatten,
     constrainOnlyCenter: true,
-    center: DEFAULT_PROJECTION.bounds.center,
+    center: positionStore.center ?? DEFAULT_PROJECTION.bounds.center,
   });
 
   const viewForProjection = viewsForProjection[positionStore.projection.epsg];
