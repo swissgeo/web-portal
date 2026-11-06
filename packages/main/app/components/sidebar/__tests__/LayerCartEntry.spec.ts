@@ -126,6 +126,24 @@ describe("LayerCartEntry.vue", () => {
     expect(layerName(mountEntry())?.attributes("title")).toBe("A layer");
   });
 
+  it("keeps a title with a long first word off the row icons", async () => {
+    const wrapper = mountEntry(
+      makeLayer({ displayName: "Abwasserreinigungsanlagen der Schweiz" }),
+    );
+    const name = wrapper
+      .findAll("button")
+      .find((button) => button.text().startsWith("Abwasser"));
+
+    expect(name?.classes()).toEqual(
+      expect.arrayContaining(["min-w-0", "truncate"]),
+    );
+
+    await wrapper.find("[data-testid='layer-expand-toggle']").trigger("click");
+
+    expect(name?.classes()).toContain("wrap-anywhere");
+    expect(name?.classes()).not.toContain("truncate");
+  });
+
   it("toggles the visibility of its own layer", async () => {
     const wrapper = mountEntry();
 
