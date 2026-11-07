@@ -101,7 +101,7 @@ describe("dataset page", () => {
 
     it.each`
       openPanel                      | panelAfterClose
-      ${SidebarType.GEOCATALOG_TREE} | ${SidebarType.LAYER_CART}
+      ${SidebarType.GEOCATALOG_TREE} | ${SidebarType.GEOCATALOG_TREE}
       ${SidebarType.LAYER_CART}      | ${SidebarType.LAYER_CART}
       ${null}                        | ${null}
     `(
