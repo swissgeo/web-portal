@@ -1,7 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import Topbar from "~/components/topbar/Topbar.vue";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 
 mockNuxtImport("useRoute", () => {
@@ -28,13 +28,16 @@ mockNuxtImport("useI18n", () => {
   return () => ({ t: (key: string) => key });
 });
 
+const mocks = vi.hoisted(() => ({ navigateTo: vi.fn() }));
+
+mockNuxtImport("navigateTo", () => mocks.navigateTo);
+
 mockNuxtImport("useLocalePath", () => {
-  return (locale?: string) => (routeName: string) => {
-    const lang = locale ?? "de";
+  return () => (routeName: string) => {
     if (routeName === "/") {
-      return `/${lang}`;
+      return "/de";
     }
-    return `/${lang}${routeName}`;
+    return `/de${routeName}`;
   };
 });
 
@@ -58,6 +61,7 @@ function mountTopbar() {
 
 describe("Topbar", () => {
   beforeEach(() => {
+    mocks.navigateTo.mockClear();
     Object.assign(useRoute(), {
       name: "map-dataset-id___de",
       path: "/de/dataset/first",
@@ -80,12 +84,12 @@ describe("Topbar", () => {
     },
   );
 
-  it("forwards the logo action", () => {
+  it("navigates to the landing page on logo click", () => {
     const wrapper = mountTopbar();
 
     wrapper.getComponent({ name: "LogoPic" }).vm.$emit("logo-click");
 
-    expect(wrapper.emitted("reset-app")).toHaveLength(1);
+    expect(mocks.navigateTo).toHaveBeenCalledWith("/de");
   });
 
   it.each([
