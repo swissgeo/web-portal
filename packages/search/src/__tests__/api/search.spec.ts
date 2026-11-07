@@ -61,7 +61,7 @@ describe("parseLocationResult function", () => {
 
   const baseExpectedResult: LocationSearchResult = {
     resultType,
-    id: "A fantastic <b>Label</b>",
+    id: "0",
     featureId: "A fantastic <b>Label</b>",
     title: "A fantastic <b>Label</b>",
     sanitizedTitle: "A fantastic Label",

@@ -1,7 +1,7 @@
 import type { CoordinateSearchResult, SearchResult } from "@swissgeo/search";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { enableAutoUnmount, mount } from "@vue/test-utils";
+import { enableAutoUnmount, flushPromises, mount } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, nextTick, reactive, ref } from "vue";
 
@@ -40,6 +40,7 @@ const searchStore = reactive({
   setSearchQuery: vi.fn(),
   clearSearch: vi.fn(),
   keepSelectedQuery: vi.fn(),
+  translateSelectedQuery: vi.fn(),
   clearPinnedCoordinate: vi.fn(),
 });
 
@@ -171,6 +172,7 @@ describe("TopbarSearch", () => {
     searchStore.setSearchQuery.mockClear();
     searchStore.clearSearch.mockClear();
     searchStore.keepSelectedQuery.mockClear();
+    searchStore.translateSelectedQuery.mockReset();
   });
 
   it("lists the CMS results in the content pages tab", () => {
@@ -305,6 +307,24 @@ describe("TopbarSearch", () => {
     expect(searchStore.setSearchQuery).not.toHaveBeenCalled();
   });
 
+  it("renames the selected result in the new language", async () => {
+    locale.value = "fr";
+    searchStore.query = "Lieu Wabern (BE) - Köniz";
+    searchStore.results = [];
+    searchStore.translateSelectedQuery.mockResolvedValue(
+      "Ort Wabern (BE) - Köniz",
+    );
+    const wrapper = render();
+
+    locale.value = "de";
+    await flushPromises();
+
+    expect(searchStore.translateSelectedQuery).toHaveBeenCalledWith("de");
+    expect((wrapper.find("input").element as HTMLInputElement).value).toBe(
+      "Ort Wabern (BE) - Köniz",
+    );
+  });
+
   it("selects the CMS result that was clicked", async () => {
     searchStore.query = "uns";
     const entry = content("42", "Über uns");
@@ -325,7 +345,10 @@ describe("TopbarSearch", () => {
     const wrapper = render();
     await wrapper.find("[data-testid='search-results'] li").trigger("click");
 
-    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("Bern");
+    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith(
+      "Bern",
+      expect.objectContaining({ title: "Bern" }),
+    );
     expect(searchStore.clearSearch).not.toHaveBeenCalled();
   });
 
@@ -338,7 +361,10 @@ describe("TopbarSearch", () => {
     const wrapper = render();
     await wrapper.find("[data-testid='search-results'] li").trigger("click");
 
-    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith("ber");
+    expect(searchStore.keepSelectedQuery).toHaveBeenCalledWith(
+      "ber",
+      expect.anything(),
+    );
   });
 
   it("empties the field when a layer is selected", async () => {

@@ -82,7 +82,8 @@ export function parseLocationResult(
   // Swap API's [x, y] = [northing, easting] to standard [easting, northing]
   return {
     resultType: "LOCATION",
-    id: featureId ?? label,
+    // the label is in the search language, the id stays the same in all of them
+    id: featureId ?? String(result.id),
     featureId: featureId ?? label,
     title: label,
     sanitizedTitle: sanitizeTitle(label),
