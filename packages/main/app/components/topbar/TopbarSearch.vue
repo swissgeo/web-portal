@@ -116,12 +116,22 @@ const tabs = computed(() => {
 
 // clear and selection write the store as well, so the text they put in the
 // field arrives here equal to the store query and starts no search
-watch(debouncedQuery, (value) => {
-  if (!isActive) {
+watch(debouncedQuery, async (value) => {
+  if (!isActive || value === searchStore.query) {
     return;
   }
-  if (value !== searchStore.query) {
-    void searchStore.setSearchQuery(value, locale.value);
+  await searchStore.setSearchQuery(value, locale.value);
+  // the results watcher only opens on hits: a pasted text that finds nothing
+  // would otherwise never show that there is nothing
+  if (
+    isActive &&
+    searchStore.query === value &&
+    value.trim().length >= 2 &&
+    !searchStore.isSearching &&
+    !searchStore.hasError &&
+    !searchStore.coordinateResult
+  ) {
+    openResults();
   }
 });
 
