@@ -514,6 +514,7 @@
     "links": "Links",
     "services": "Dienste",
     "addToMap": "Zur Karte hinzufügen",
+    "notMappable": "Diese Daten können nicht auf der Karte dargestellt werden.",
     "removeFromMap": "Aus Karte entfernen",
     "details": "Ebenendetails",
     "expandPanel": "Ebenendetails vergrössern",

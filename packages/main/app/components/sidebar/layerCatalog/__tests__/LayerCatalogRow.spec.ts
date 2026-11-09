@@ -50,7 +50,12 @@ const stubs = {
   },
   UTooltip: {
     name: "UTooltip",
-    props: ["text"],
+    props: ["text", "disabled"],
+    template: "<slot />",
+  },
+  DatasetNotMappableHint: {
+    name: "DatasetNotMappableHint",
+    props: ["isMappable"],
     template: "<slot />",
   },
 };
@@ -69,6 +74,7 @@ function makeDataset(id = "ch.a", owner?: Owner): Dataset {
       title: `Title of ${id}`,
       shortTitle: `Short of ${id}`,
       owner,
+      preferredDistributionId: `${id}:wmts`,
     },
     links: [],
   };
@@ -244,4 +250,35 @@ describe("LayerCatalogRow.vue", () => {
       }
     },
   );
+
+  it("grays out the switch of a dataset that the map cannot show", async () => {
+    const dataset = makeDataset();
+    delete dataset.properties.preferredDistributionId;
+    const wrapper = mountRow(dataset);
+    const toggle = wrapper.get("[data-testid='catalog-layer-on-map']");
+
+    expect(toggle.attributes("aria-disabled")).toBe("true");
+    expect(
+      wrapper.get(`#${toggle.attributes("aria-describedby")}`).text(),
+    ).toBe("dataset.notMappable");
+    expect(wrapper.getComponent({ name: "UTooltip" }).props("disabled")).toBe(
+      true,
+    );
+    expect(
+      wrapper
+        .getComponent({ name: "DatasetNotMappableHint" })
+        .props("isMappable"),
+    ).toBe(false);
+
+    await toggle.trigger("click");
+
+    expect(datasetLayer.addToMap).not.toHaveBeenCalled();
+  });
+
+  it("keeps the switch of a dataset that the map can show active", () => {
+    const toggle = mountRow().get("[data-testid='catalog-layer-on-map']");
+
+    expect(toggle.attributes("aria-disabled")).toBeUndefined();
+    expect(toggle.attributes("aria-describedby")).toBeUndefined();
+  });
 });

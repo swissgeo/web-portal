@@ -12,6 +12,9 @@ const toaster = {
   // open (see useToaster).
   duration: 5000,
 };
+// Tooltips open above their trigger. Below, they cover the content that
+// follows, e.g. the next row of a list.
+const tooltip = { content: { side: "top" as const } };
 provide(displayModeKey, "web");
 
 const { isEnabled } = useFeatureFlags();
@@ -33,7 +36,7 @@ if (!isEnabled("enableMobileUi")) {
 </script>
 
 <template>
-  <UApp :toaster="toaster">
+  <UApp :toaster="toaster" :tooltip="tooltip">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

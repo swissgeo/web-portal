@@ -1,13 +1,23 @@
 <script setup lang="ts">
 import type { Dataset } from "@swissgeo/ogc";
 
+import { isMappableDataset } from "@swissgeo/ogc";
 import { useDatasetLayer } from "~/composables/useDatasetLayer";
+import { computed, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
 const { dataset } = defineProps<{ dataset: Dataset }>();
 const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
+const isMappable = computed(() => isMappableDataset(dataset));
+const hintId = useId();
+
+async function addIfMappable(): Promise<void> {
+  if (isMappable.value) {
+    await addToMap();
+  }
+}
 </script>
 
 <template>
@@ -21,14 +31,21 @@ const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
     >
       {{ t("dataset.removeFromMap") }}
     </UButton>
-    <UButton
-      v-else
-      icon="i-lucide-check"
-      color="primary"
-      variant="outline"
-      @click="addToMap"
-    >
-      {{ t("dataset.addToMap") }}
-    </UButton>
+    <DatasetNotMappableHint v-else :is-mappable="isMappable">
+      <UButton
+        data-testid="dataset-add-to-map"
+        icon="i-lucide-check"
+        color="primary"
+        variant="outline"
+        :aria-disabled="!isMappable || undefined"
+        :aria-describedby="isMappable ? undefined : hintId"
+        @click="addIfMappable"
+      >
+        {{ t("dataset.addToMap") }}
+      </UButton>
+    </DatasetNotMappableHint>
+    <span v-if="!isMappable" :id="hintId" class="sr-only">
+      {{ t("dataset.notMappable") }}
+    </span>
   </div>
 </template>
