@@ -61,10 +61,8 @@ test.describe("layer cart entry", () => {
       .getByTestId("layer-cart")
       .getByRole("button", { name: LONG_TITLE, exact: true });
     await expect(name).toBeVisible();
-    expect(await renderedLines(name)).toHaveLength(1);
 
-    await name.click();
-
+    // A newly added layer opens expanded (GPS-1347).
     const lines = await renderedLines(name);
     expect(lines.length).toBeGreaterThan(1);
     expect(LONG_TITLE.startsWith(lines[0]!)).toBe(true);
@@ -76,5 +74,9 @@ test.describe("layer cart entry", () => {
       .locator("xpath=following-sibling::div[1]")
       .boundingBox())!;
     expect(nameBox.x + nameBox.width).toBeLessThanOrEqual(iconsBox.x);
+
+    await name.click();
+
+    expect(await renderedLines(name)).toHaveLength(1);
   });
 });
