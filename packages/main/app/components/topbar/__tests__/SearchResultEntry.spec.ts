@@ -240,6 +240,7 @@ describe("SearchResultEntry", () => {
         expect(item.classes()).toContain("cursor-not-allowed");
         // aria-disabled would also mark the active info button as disabled
         expect(item.attributes("aria-disabled")).toBeUndefined();
+        expect(item.classes()).not.toContain("hover:bg-muted");
         expect(item.text()).toContain("dataset.notMappable");
         expect(
           wrapper
@@ -271,6 +272,7 @@ describe("SearchResultEntry", () => {
 
       expect(wrapper.emitted("select")).toHaveLength(1);
       expect(item.classes()).toContain("cursor-pointer");
+      expect(item.classes()).toContain("hover:bg-muted");
       expect(item.text()).not.toContain("dataset.notMappable");
 
       wrapper.unmount();

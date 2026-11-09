@@ -96,10 +96,10 @@ defineExpose({
   <DatasetNotMappableHint :is-mappable="isMappable">
     <li
       ref="item"
-      class="flex items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors hover:bg-muted focus:outline-none focus-visible:bg-elevated focus-visible:text-highlighted"
+      class="flex items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors focus:outline-none focus-visible:bg-elevated"
       :class="
         isMappable
-          ? 'text-accent cursor-pointer'
+          ? 'text-accent cursor-pointer hover:bg-muted focus-visible:text-highlighted'
           : 'cursor-not-allowed text-muted'
       "
       :data-testid="`search-result-entry-${entry.resultType.toLowerCase()}-${index}`"

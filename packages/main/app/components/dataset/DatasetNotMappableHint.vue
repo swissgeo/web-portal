@@ -5,8 +5,12 @@ import { useI18n } from "vue-i18n";
 // Tells the user that the map cannot show the dataset. The hint opens on
 // hover, tap and keyboard focus of the slot element. The slot element must
 // stay focusable, thus it uses aria-disabled and not disabled.
-// When the map can show the dataset, the hint does not open.
-const { isMappable } = defineProps<{ isMappable: boolean }>();
+// The component shows only one overlay at a time: the hint when the map
+// cannot show the dataset, else the optional tooltip.
+const { isMappable, tooltip } = defineProps<{
+  isMappable: boolean;
+  tooltip?: string;
+}>();
 
 const { t } = useI18n();
 const isOpen = ref(false);
@@ -14,7 +18,8 @@ const isOpen = ref(false);
 
 <template>
   <UPopover
-    :open="isOpen && !isMappable"
+    v-if="!isMappable"
+    :open="isOpen"
     mode="hover"
     enable-touch
     :content="{ side: 'top', sideOffset: 8 }"
@@ -31,4 +36,8 @@ const isOpen = ref(false);
       </p>
     </template>
   </UPopover>
+  <UTooltip v-else-if="tooltip" :text="tooltip">
+    <slot />
+  </UTooltip>
+  <slot v-else />
 </template>

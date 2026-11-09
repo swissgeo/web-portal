@@ -21,12 +21,17 @@ const UPopover = {
     <slot v-if="open" name="content" />
   </div>`,
 };
+const UTooltip = {
+  name: "UTooltip",
+  props: ["text", "content"],
+  template: "<slot />",
+};
 
-function mountHint(isMappable: boolean) {
+function mountHint(isMappable: boolean, tooltip?: string) {
   return mount(DatasetNotMappableHint, {
-    props: { isMappable },
-    slots: { default: "<span>control</span>" },
-    global: { stubs: { UPopover } },
+    props: { isMappable, tooltip },
+    slots: { default: "<span data-testid='control'>control</span>" },
+    global: { stubs: { UPopover, UTooltip } },
   });
 }
 
@@ -39,26 +44,46 @@ describe("DatasetNotMappableHint.vue", () => {
     expect(popover.props("content")).toMatchObject({ side: "top" });
   });
 
+  it("shows the hint on focus and hides it on blur", async () => {
+    const wrapper = mountHint(false);
+    const hint = () => wrapper.find("[data-testid='not-mappable-hint']");
+
+    await wrapper.get("[data-testid='trigger']").trigger("focus");
+
+    expect(hint().text()).toBe("dataset.notMappable");
+
+    await wrapper.get("[data-testid='trigger']").trigger("blur");
+
+    expect(hint().exists()).toBe(false);
+  });
+
   it.each`
-    isMappable | isShown
-    ${false}   | ${true}
-    ${true}    | ${false}
+    isMappable | tooltip               | hasPopover | hasTooltip
+    ${false}   | ${"dataset.addToMap"} | ${true}    | ${false}
+    ${true}    | ${"dataset.addToMap"} | ${false}   | ${true}
+    ${true}    | ${undefined}          | ${false}   | ${false}
   `(
-    "shows the hint=$isShown on focus when isMappable=$isMappable",
-    async ({ isMappable, isShown }) => {
-      const wrapper = mountHint(isMappable);
-      const hint = () => wrapper.find("[data-testid='not-mappable-hint']");
+    "shows only one overlay with isMappable=$isMappable and tooltip=$tooltip",
+    ({ isMappable, tooltip, hasPopover, hasTooltip }) => {
+      const wrapper = mountHint(isMappable, tooltip);
 
-      await wrapper.get("[data-testid='trigger']").trigger("focus");
-
-      expect(hint().exists()).toBe(isShown);
-      if (isShown) {
-        expect(hint().text()).toBe("dataset.notMappable");
-      }
-
-      await wrapper.get("[data-testid='trigger']").trigger("blur");
-
-      expect(hint().exists()).toBe(false);
+      expect(wrapper.findComponent({ name: "UPopover" }).exists()).toBe(
+        hasPopover,
+      );
+      expect(wrapper.findComponent({ name: "UTooltip" }).exists()).toBe(
+        hasTooltip,
+      );
+      expect(wrapper.find("[data-testid='control']").exists()).toBe(true);
     },
   );
+
+  // The tooltip takes its position from the app default (app.vue)
+  it("shows the tooltip text without an own position", () => {
+    const tooltip = mountHint(true, "dataset.addToMap").getComponent({
+      name: "UTooltip",
+    });
+
+    expect(tooltip.props("text")).toBe("dataset.addToMap");
+    expect(tooltip.props("content")).toBeUndefined();
+  });
 });

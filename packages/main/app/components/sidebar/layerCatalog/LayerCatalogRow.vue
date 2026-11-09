@@ -2,7 +2,7 @@
 import type { Dataset } from "@swissgeo/ogc";
 
 import { isMappableDataset } from "@swissgeo/ogc";
-import { useId } from "vue";
+import { nextTick, useId, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { dataset } = defineProps<{
@@ -20,18 +20,28 @@ const titlePath = computed(() =>
 
 const { isOnMap, addToMap, removeFromMap } = useDatasetLayer(() => dataset);
 const isMappable = computed(() => isMappableDataset(dataset));
+// A dataset can be on the map without being mappable, e.g. from a share link.
+// The user must always be able to remove it.
+const canToggle = computed(() => isMappable.value || isOnMap.value);
 const hintId = useId();
+const switchCell = useTemplateRef<HTMLElement>("switchCell");
 
 const ownerName = computed(() => dataset.properties.owner?.name);
 
 async function setOnMap(onMap: boolean): Promise<void> {
-  if (!isMappable.value) {
+  if (onMap && !isMappable.value) {
     return;
   }
   if (onMap) {
     await addToMap();
   } else {
     removeFromMap();
+    if (!isMappable.value) {
+      // The hint replaces the tooltip and renders a new switch, so the focus
+      // goes back to the new switch.
+      await nextTick();
+      switchCell.value?.querySelector<HTMLElement>("[role='switch']")?.focus();
+    }
   }
 }
 </script>
@@ -42,29 +52,31 @@ async function setOnMap(onMap: boolean): Promise<void> {
     class="hover:bg-accent-50 dark:hover:bg-accent-800 col-span-full grid grid-cols-subgrid border-b border-accented last:border-b-0"
     :class="isOnMap ? 'text-highlighted' : 'text-toned'"
   >
-    <div role="cell" class="flex min-w-0 items-start px-2 py-4">
-      <DatasetNotMappableHint :is-mappable="isMappable">
-        <UTooltip
-          :disabled="!isMappable"
-          :text="isOnMap ? t('dataset.removeFromMap') : t('dataset.addToMap')"
-        >
-          <USwitch
-            data-testid="catalog-layer-on-map"
-            size="xs"
-            color="accent"
-            checked-icon="i-lucide-check"
-            :aria-label="dataset.properties.shortTitle"
-            :aria-disabled="!isMappable || undefined"
-            :aria-describedby="isMappable ? undefined : hintId"
-            :model-value="isOnMap"
-            :ui="{
-              base: 'aria-disabled:cursor-not-allowed aria-disabled:opacity-75',
-            }"
-            @update:model-value="setOnMap"
-          />
-        </UTooltip>
+    <div
+      ref="switchCell"
+      role="cell"
+      class="flex min-w-0 items-start px-2 py-4"
+    >
+      <DatasetNotMappableHint
+        :is-mappable="canToggle"
+        :tooltip="isOnMap ? t('dataset.removeFromMap') : t('dataset.addToMap')"
+      >
+        <USwitch
+          data-testid="catalog-layer-on-map"
+          size="xs"
+          color="accent"
+          checked-icon="i-lucide-check"
+          :aria-label="dataset.properties.shortTitle"
+          :aria-disabled="!canToggle || undefined"
+          :aria-describedby="canToggle ? undefined : hintId"
+          :model-value="isOnMap"
+          :ui="{
+            base: 'aria-disabled:cursor-not-allowed aria-disabled:opacity-75',
+          }"
+          @update:model-value="setOnMap"
+        />
       </DatasetNotMappableHint>
-      <span v-if="!isMappable" :id="hintId" class="sr-only">
+      <span v-if="!canToggle" :id="hintId" class="sr-only">
         {{ t("dataset.notMappable") }}
       </span>
       <ULink

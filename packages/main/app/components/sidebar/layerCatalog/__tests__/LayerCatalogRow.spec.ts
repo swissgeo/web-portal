@@ -1,7 +1,7 @@
 import type { Dataset, Owner } from "@swissgeo/ogc";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { mount } from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
 import LayerCatalogRow from "~/components/sidebar/layerCatalog/LayerCatalogRow.vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
@@ -48,14 +48,9 @@ const stubs = {
     props: ["label"],
     template: "<span>{{ label }}</span>",
   },
-  UTooltip: {
-    name: "UTooltip",
-    props: ["text", "disabled"],
-    template: "<slot />",
-  },
   DatasetNotMappableHint: {
     name: "DatasetNotMappableHint",
-    props: ["isMappable"],
+    props: ["isMappable", "tooltip"],
     template: "<slot />",
   },
 };
@@ -80,10 +75,11 @@ function makeDataset(id = "ch.a", owner?: Owner): Dataset {
   };
 }
 
-function mountRow(dataset = makeDataset()) {
+function mountRow(dataset = makeDataset(), attachTo?: HTMLElement) {
   return mount(LayerCatalogRow, {
     props: { dataset },
     global: { stubs },
+    attachTo,
   });
 }
 
@@ -139,9 +135,11 @@ describe("LayerCatalogRow.vue", () => {
 
       const wrapper = mountRow();
 
-      expect(wrapper.getComponent({ name: "UTooltip" }).props("text")).toBe(
-        tooltip,
-      );
+      expect(
+        wrapper
+          .getComponent({ name: "DatasetNotMappableHint" })
+          .props("tooltip"),
+      ).toBe(tooltip);
       // A title on the cell would show a second tooltip over the switch.
       expect(cells(wrapper)[0]!.attributes("title")).toBeUndefined();
     },
@@ -261,9 +259,6 @@ describe("LayerCatalogRow.vue", () => {
     expect(
       wrapper.get(`#${toggle.attributes("aria-describedby")}`).text(),
     ).toBe("dataset.notMappable");
-    expect(wrapper.getComponent({ name: "UTooltip" }).props("disabled")).toBe(
-      true,
-    );
     expect(
       wrapper
         .getComponent({ name: "DatasetNotMappableHint" })
@@ -273,6 +268,45 @@ describe("LayerCatalogRow.vue", () => {
     await toggle.trigger("click");
 
     expect(datasetLayer.addToMap).not.toHaveBeenCalled();
+  });
+
+  it("removes a dataset that the map cannot show, when it is already on the map", async () => {
+    datasetLayer.isOnMap.value = true;
+    const dataset = makeDataset();
+    delete dataset.properties.preferredDistributionId;
+    const wrapper = mountRow(dataset);
+    const toggle = wrapper.get("[data-testid='catalog-layer-on-map']");
+
+    expect(toggle.attributes("aria-disabled")).toBeUndefined();
+    expect(toggle.attributes("aria-describedby")).toBeUndefined();
+    expect(
+      wrapper
+        .getComponent({ name: "DatasetNotMappableHint" })
+        .props("isMappable"),
+    ).toBe(true);
+
+    await toggle.trigger("click");
+
+    expect(datasetLayer.removeFromMap).toHaveBeenCalledOnce();
+  });
+
+  it("keeps the focus on the switch after it removes a dataset that the map cannot show", async () => {
+    datasetLayer.isOnMap.value = true;
+    datasetLayer.removeFromMap.mockImplementation(() => {
+      datasetLayer.isOnMap.value = false;
+    });
+    const dataset = makeDataset();
+    delete dataset.properties.preferredDistributionId;
+    const wrapper = mountRow(dataset, document.body);
+
+    await wrapper.get("[data-testid='catalog-layer-on-map']").trigger("click");
+    await flushPromises();
+
+    const toggle = wrapper.get("[data-testid='catalog-layer-on-map']");
+    expect(toggle.attributes("aria-disabled")).toBe("true");
+    expect(document.activeElement).toBe(toggle.element);
+
+    wrapper.unmount();
   });
 
   it("keeps the switch of a dataset that the map can show active", () => {

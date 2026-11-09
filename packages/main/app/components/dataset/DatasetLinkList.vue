@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <ul class="flex flex-col gap-2">
     <li v-for="link in links" :key="link.href">
-      <UTooltip :text="tooltip" :content="{ side: 'top' }">
+      <UTooltip :text="tooltip">
         <ULink
           :to="link.href"
           target="_blank"
