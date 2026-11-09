@@ -31,7 +31,7 @@ async function addIfMappable(): Promise<void> {
     >
       {{ t("dataset.removeFromMap") }}
     </UButton>
-    <DatasetNotMappableHint v-else :is-mappable="isMappable">
+    <DatasetNotMappableHint v-else :show-hint="!isMappable">
       <UButton
         data-testid="dataset-add-to-map"
         icon="i-lucide-check"
@@ -44,7 +44,7 @@ async function addIfMappable(): Promise<void> {
         {{ t("dataset.addToMap") }}
       </UButton>
     </DatasetNotMappableHint>
-    <span v-if="!isMappable" :id="hintId" class="sr-only">
+    <span v-if="!isOnMap && !isMappable" :id="hintId" class="sr-only">
       {{ t("dataset.notMappable") }}
     </span>
   </div>

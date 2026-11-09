@@ -82,7 +82,7 @@ describe("SearchResultEntry", () => {
           UButton: UButtonStub,
           DatasetNotMappableHint: {
             name: "DatasetNotMappableHint",
-            props: ["isMappable"],
+            props: ["showHint"],
             template: "<slot />",
           },
         },
@@ -241,12 +241,14 @@ describe("SearchResultEntry", () => {
         // aria-disabled would also mark the active info button as disabled
         expect(item.attributes("aria-disabled")).toBeUndefined();
         expect(item.classes()).not.toContain("hover:bg-muted");
-        expect(item.text()).toContain("dataset.notMappable");
+        expect(
+          wrapper.get(`#${item.attributes("aria-describedby")}`).text(),
+        ).toBe("dataset.notMappable");
         expect(
           wrapper
             .getComponent({ name: "DatasetNotMappableHint" })
-            .props("isMappable"),
-        ).toBe(false);
+            .props("showHint"),
+        ).toBe(true);
 
         wrapper.unmount();
       },
@@ -273,6 +275,7 @@ describe("SearchResultEntry", () => {
       expect(wrapper.emitted("select")).toHaveLength(1);
       expect(item.classes()).toContain("cursor-pointer");
       expect(item.classes()).toContain("hover:bg-muted");
+      expect(item.attributes("aria-describedby")).toBeUndefined();
       expect(item.text()).not.toContain("dataset.notMappable");
 
       wrapper.unmount();

@@ -27,9 +27,9 @@ const UTooltip = {
   template: "<slot />",
 };
 
-function mountHint(isMappable: boolean, tooltip?: string) {
+function mountHint(showHint: boolean, tooltip?: string) {
   return mount(DatasetNotMappableHint, {
-    props: { isMappable, tooltip },
+    props: { showHint, tooltip },
     slots: { default: "<span data-testid='control'>control</span>" },
     global: { stubs: { UPopover, UTooltip } },
   });
@@ -37,7 +37,7 @@ function mountHint(isMappable: boolean, tooltip?: string) {
 
 describe("DatasetNotMappableHint.vue", () => {
   it("opens on hover and tap above the control", () => {
-    const popover = mountHint(false).getComponent({ name: "UPopover" });
+    const popover = mountHint(true).getComponent({ name: "UPopover" });
 
     expect(popover.props("mode")).toBe("hover");
     expect(popover.props("enableTouch")).toBe(true);
@@ -45,7 +45,7 @@ describe("DatasetNotMappableHint.vue", () => {
   });
 
   it("shows the hint on focus and hides it on blur", async () => {
-    const wrapper = mountHint(false);
+    const wrapper = mountHint(true);
     const hint = () => wrapper.find("[data-testid='not-mappable-hint']");
 
     await wrapper.get("[data-testid='trigger']").trigger("focus");
@@ -58,14 +58,14 @@ describe("DatasetNotMappableHint.vue", () => {
   });
 
   it.each`
-    isMappable | tooltip               | hasPopover | hasTooltip
-    ${false}   | ${"dataset.addToMap"} | ${true}    | ${false}
-    ${true}    | ${"dataset.addToMap"} | ${false}   | ${true}
-    ${true}    | ${undefined}          | ${false}   | ${false}
+    showHint | tooltip               | hasPopover | hasTooltip
+    ${true}  | ${"dataset.addToMap"} | ${true}    | ${false}
+    ${false} | ${"dataset.addToMap"} | ${false}   | ${true}
+    ${false} | ${undefined}          | ${false}   | ${false}
   `(
-    "shows only one overlay with isMappable=$isMappable and tooltip=$tooltip",
-    ({ isMappable, tooltip, hasPopover, hasTooltip }) => {
-      const wrapper = mountHint(isMappable, tooltip);
+    "shows only one overlay with showHint=$showHint and tooltip=$tooltip",
+    ({ showHint, tooltip, hasPopover, hasTooltip }) => {
+      const wrapper = mountHint(showHint, tooltip);
 
       expect(wrapper.findComponent({ name: "UPopover" }).exists()).toBe(
         hasPopover,
@@ -79,7 +79,7 @@ describe("DatasetNotMappableHint.vue", () => {
 
   // The tooltip takes its position from the app default (app.vue)
   it("shows the tooltip text without an own position", () => {
-    const tooltip = mountHint(true, "dataset.addToMap").getComponent({
+    const tooltip = mountHint(false, "dataset.addToMap").getComponent({
       name: "UTooltip",
     });
 

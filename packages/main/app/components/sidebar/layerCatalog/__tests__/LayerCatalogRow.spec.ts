@@ -50,7 +50,7 @@ const stubs = {
   },
   DatasetNotMappableHint: {
     name: "DatasetNotMappableHint",
-    props: ["isMappable", "tooltip"],
+    props: ["showHint", "tooltip"],
     template: "<slot />",
   },
 };
@@ -262,8 +262,8 @@ describe("LayerCatalogRow.vue", () => {
     expect(
       wrapper
         .getComponent({ name: "DatasetNotMappableHint" })
-        .props("isMappable"),
-    ).toBe(false);
+        .props("showHint"),
+    ).toBe(true);
 
     await toggle.trigger("click");
 
@@ -282,8 +282,8 @@ describe("LayerCatalogRow.vue", () => {
     expect(
       wrapper
         .getComponent({ name: "DatasetNotMappableHint" })
-        .props("isMappable"),
-    ).toBe(true);
+        .props("showHint"),
+    ).toBe(false);
 
     await toggle.trigger("click");
 

@@ -5,7 +5,7 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { isLayerSearchResult, SearchResultTypesEnum } from "@swissgeo/search";
 import { sanitizeHtml } from "@swissgeo/shared";
-import { computed, ref } from "vue";
+import { computed, ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 const localePath = useLocalePath();
@@ -36,6 +36,7 @@ const detailPath = computed(() => localePath(`/dataset/${entry.id}`));
 const isMappable = computed(
   () => !isLayerSearchResult(entry) || entry.isMappable,
 );
+const hintId = useId();
 
 // Keyboard navigation
 function goToFirst() {
@@ -93,7 +94,7 @@ defineExpose({
 
 <template>
   <!-- List item with keyboard navigation -->
-  <DatasetNotMappableHint :is-mappable="isMappable">
+  <DatasetNotMappableHint :show-hint="!isMappable">
     <li
       ref="item"
       class="flex items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors focus:outline-none focus-visible:bg-elevated"
@@ -102,6 +103,7 @@ defineExpose({
           ? 'text-accent cursor-pointer hover:bg-muted focus-visible:text-highlighted'
           : 'cursor-not-allowed text-muted'
       "
+      :aria-describedby="isMappable ? undefined : hintId"
       :data-testid="`search-result-entry-${entry.resultType.toLowerCase()}-${index}`"
       :tabindex="tabStart ? 0 : -1"
       @keydown.up.prevent="goToPrevious"
@@ -132,7 +134,7 @@ defineExpose({
         @click.stop="emit('viewDetails')"
         @keyup.enter.stop
       />
-      <span v-if="!isMappable" class="sr-only">
+      <span v-if="!isMappable" :id="hintId" class="sr-only">
         {{ t("dataset.notMappable") }}
       </span>
     </li>

@@ -58,7 +58,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
       class="flex min-w-0 items-start px-2 py-4"
     >
       <DatasetNotMappableHint
-        :is-mappable="canToggle"
+        :show-hint="!canToggle"
         :tooltip="isOnMap ? t('dataset.removeFromMap') : t('dataset.addToMap')"
       >
         <USwitch

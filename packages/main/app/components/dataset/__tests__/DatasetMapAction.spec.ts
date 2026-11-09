@@ -25,7 +25,7 @@ const stubs = {
   },
   DatasetNotMappableHint: {
     name: "DatasetNotMappableHint",
-    props: ["isMappable"],
+    props: ["showHint"],
     template: "<slot />",
   },
 };
@@ -77,12 +77,19 @@ describe("DatasetMapAction.vue", () => {
     expect(
       wrapper
         .getComponent({ name: "DatasetNotMappableHint" })
-        .props("isMappable"),
-    ).toBe(false);
+        .props("showHint"),
+    ).toBe(true);
 
     await button.trigger("click");
 
     expect(datasetLayer.addToMap).not.toHaveBeenCalled();
+  });
+
+  it("shows no hidden hint next to the remove button of a dataset that the map cannot show", () => {
+    datasetLayer.isOnMap = ref(true);
+    const wrapper = mountAction(makeDataset());
+
+    expect(wrapper.text()).not.toContain("dataset.notMappable");
   });
 
   it("removes a dataset that is on the map", async () => {
