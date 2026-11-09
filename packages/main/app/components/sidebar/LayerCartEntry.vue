@@ -9,7 +9,7 @@ import {
 } from "@swissgeo/dimension";
 import { useFeaturesStore } from "@swissgeo/feature";
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
-import { computed, ref, useId } from "vue";
+import { computed, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerLegend from "./LayerLegend.vue";
@@ -28,7 +28,11 @@ const localePath = useLocalePath();
 const mapViewStore = useMapViewStore();
 const featureStore = useFeaturesStore();
 
-const isExpanded = ref(false);
+const isExpanded = computed({
+  get: () => mapViewStore.isLayerExpanded(layer.uuid),
+  set: (expanded: boolean) =>
+    mapViewStore.setLayerExpanded(layer.uuid, expanded),
+});
 const detailsId = useId();
 const legends = computed(() => mapViewStore.getLayerLegends(layer.uuid));
 
