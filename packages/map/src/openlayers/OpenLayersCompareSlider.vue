@@ -152,7 +152,11 @@ function onPreRender(event: RenderEvent) {
   }
   // get the render coordinates of the bar so clipping is correct on hi-dpi
   const cssWidth = olMap?.value?.getSize()?.[0] ?? 0;
-  const right = getRenderPixel(event, [localRatio.value * cssWidth, 0])[0];
+  // OL pixels are [x, y]
+  const [right] = getRenderPixel(event, [localRatio.value * cssWidth, 0]) as [
+    number,
+    number,
+  ];
 
   context.save();
   context.beginPath();

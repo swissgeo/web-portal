@@ -30,9 +30,12 @@ const { tileUpdateParamsSpy, imageUpdateParamsSpy, MockTileWMS, MockImageWMS } =
     };
   });
 
-vi.mock("ol/source", () => ({
-  TileWMS: MockTileWMS,
-  ImageWMS: MockImageWMS,
+vi.mock("ol/source/TileWMS", () => ({
+  default: MockTileWMS,
+}));
+
+vi.mock("ol/source/ImageWMS", () => ({
+  default: MockImageWMS,
 }));
 
 vi.mock("ol/layer/Tile", () => ({

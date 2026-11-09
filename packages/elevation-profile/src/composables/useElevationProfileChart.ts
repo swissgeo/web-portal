@@ -207,8 +207,8 @@ export function useElevationProfileChart(
           clearHoverPosition();
           return;
         }
-        if (tooltip.dataPoints.length > 0 && track.value) {
-          const point: TooltipItem<"line"> = tooltip.dataPoints[0];
+        const point: TooltipItem<"line"> | undefined = tooltip.dataPoints[0];
+        if (point && track.value) {
           const raw = point.raw as ElevationProfileChartPoint;
           const chartPosition = chart.canvas.getBoundingClientRect();
           pointBeingHovered.value = {

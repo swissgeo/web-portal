@@ -36,7 +36,8 @@ watch(
       const mapSize = olMapInstance.getSize();
 
       if (mapSize && mapSize.length === 2) {
-        const shortestSide = Math.min(mapSize[0], mapSize[1]);
+        const [mapWidth, mapHeight] = mapSize as [number, number];
+        const shortestSide = Math.min(mapWidth, mapHeight);
 
         // A factor is applied to the font size and the every element defined with the
         // unit 'em' is css to keep bar and text large enough on large prints

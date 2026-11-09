@@ -120,7 +120,7 @@ export default function useTimeSliderBar(options: UseTimeSliderBarOptions) {
 
   function listenToMouseMove(event: MouseEvent | TouchEvent) {
     const currentPosition =
-      "touches" in event ? event.touches[0].screenX : event.screenX;
+      "touches" in event ? event.touches[0]!.screenX : event.screenX;
     const deltaX = cursorX - currentPosition;
     const years = options.allYears();
     if (Math.abs(deltaX) >= distanceBetweenLabels.value && currentYear.value) {
@@ -159,7 +159,7 @@ export default function useTimeSliderBar(options: UseTimeSliderBarOptions) {
   function grabCursor(event: MouseEvent | TouchEvent) {
     options.onGrabbing(true);
     if ("touches" in event) {
-      cursorX = event.touches[0].screenX;
+      cursorX = event.touches[0]!.screenX;
     } else {
       cursorX = event.screenX;
     }

@@ -28,11 +28,7 @@ export const useIconsStore = defineStore("icons", () => {
   const isLoading = ref(false);
   const isReady = ref(false);
   const defaultIconName = computed(() => {
-    const defaultIconSet = getDefaultIconSet();
-    if (defaultIconSet && defaultIconSet.icons.length > 0) {
-      return defaultIconSet.icons[0].name;
-    }
-    return "";
+    return getDefaultIconSet()?.icons[0]?.name ?? "";
   });
 
   async function loadIconSets(iconSetUrl: string): Promise<void> {

@@ -33,7 +33,7 @@ export default abstract class CustomCoordinateSystem extends CoordinateSystem {
    * [lowerX, upperY] as default value (meaning the top-left corner of bounds). If this is not the
    * behavior you want, you have to override this function.
    */
-  getTileOrigin(): SingleCoordinate {
+  override getTileOrigin(): SingleCoordinate {
     return this.bounds.topLeft;
   }
 

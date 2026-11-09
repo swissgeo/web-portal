@@ -9,7 +9,7 @@ import { useAddLayerToMap } from "@swissgeo/map";
 import Feature from "ol/Feature";
 import { Point } from "ol/geom";
 import { Vector as VectorLayer } from "ol/layer";
-import { Vector as VectorSource } from "ol/source";
+import VectorSource from "ol/source/Vector";
 import { Fill, Stroke, Style } from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import { computed, inject, onMounted, shallowRef, watch } from "vue";

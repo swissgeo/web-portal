@@ -759,9 +759,11 @@ function convertKmlToSwissGeoPoints(feature: Feature<Geometry>, style: Style) {
 
     feature.set(ICON_URL_KEY, iconUrl);
     if (iconAnchorPixel) {
+      // OL anchors are [x, y]
+      const [anchorX, anchorY] = iconAnchorPixel as [number, number];
       feature.set(ICON_ANCHOR_KEY, [
-        iconAnchorPixel[0] / (iconSize?.[0] ?? 1),
-        iconAnchorPixel[1] / (iconSize?.[1] ?? 1),
+        anchorX / (iconSize?.[0] ?? 1),
+        anchorY / (iconSize?.[1] ?? 1),
       ]);
     }
 
@@ -842,8 +844,10 @@ function offsetStringToRelativePlacement(
   if (offset.length !== 2) {
     return "center";
   }
-  const offsetX = parseFloat(offset[0]);
-  const offsetY = parseFloat(offset[1]);
+  // length was checked above
+  const [offsetXString, offsetYString] = offset as [string, string];
+  const offsetX = parseFloat(offsetXString);
+  const offsetY = parseFloat(offsetYString);
 
   if (offsetX === 0 && offsetY === 0) {
     return "center";

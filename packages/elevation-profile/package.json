@@ -10,19 +10,9 @@
     "#*.vue": "./src/*.vue"
   },
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/elevation-profile.js"
-    },
-    "./stylesheet": [
-      "./dist/elevation-profile.css"
-    ]
+    ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "build:dev:watch": "vite build --watch --mode development",
-    "build:prod": "vite build",
     "format": "prettier --check --ignore-path ../../.prettierignore .",
     "format:write": "prettier --write --ignore-path ../../.prettierignore .",
     "lint": "eslint",
@@ -43,7 +33,6 @@
     "vue-chartjs": "catalog:"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-eslint": "workspace:*",
     "@swissgeo/config-typescript": "workspace:*",
     "@tailwindcss/vite": "catalog:",
@@ -52,7 +41,6 @@
     "eslint": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
-    "unplugin-dts": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
     "vue-tsc": "catalog:"

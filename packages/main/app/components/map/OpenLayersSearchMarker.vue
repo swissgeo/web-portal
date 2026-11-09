@@ -12,7 +12,7 @@ import balloonPinUrl from "~/assets/images/balloon_pin.svg";
 import Feature from "ol/Feature";
 import { Point } from "ol/geom";
 import { Vector as VectorLayer } from "ol/layer";
-import { Vector as VectorSource } from "ol/source";
+import VectorSource from "ol/source/Vector";
 import { Icon, Style } from "ol/style";
 import { computed, inject, onMounted, shallowRef, watch } from "vue";
 

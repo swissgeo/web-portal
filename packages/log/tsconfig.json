@@ -1,6 +1,6 @@
 {
   "extends": "@swissgeo/config-typescript/tsconfig.base.json",
-  "include": ["**/*.ts", "rolldown.config.ts"],
+  "include": ["**/*.ts"],
   "compilerOptions": {
     "types": ["node"]
   }

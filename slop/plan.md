@@ -56,3 +56,4 @@ About 170 files across 13 packages import via `@/`. Once main's Vite compiles pa
 
 - Turn dimension, content and skeleton into Nuxt layers (`$meta.name`, `#layers/<name>` imports, `extends` in main).
 - Optionally move to `apps/web` + `packages/*` and add the shared root `tsconfig.base.json`.
+- Keep OpenLayers out of SSR. The map is rendered only on the client (`<ClientOnly>`), but ~35 main files value-import `@swissgeo/map`, `@swissgeo/drawing`, `@swissgeo/elevation-profile` or `ol/*`: server-rendered UI (footer, toolbox buttons, …), the `geolocation`, `toolbox` and `mapView` stores, and composables such as `useMap` / `usePositionStore`. Any value import from `@swissgeo/map` loads its whole entry point, so the server imports (but doesn't use) all of OpenLayers. Make those imports client-only: `.client.vue` or lazy components, and stores/composables that don't touch the OL packages on the server.

@@ -17,8 +17,10 @@ export function rgbaToHex(color: number[]): string {
   if (!color || !Array.isArray(color) || color.length < 3) {
     return "#000000"; // Default to black if the color array is invalid
   }
-  const r = Math.round(color[0]);
-  const g = Math.round(color[1]);
-  const b = Math.round(color[2]);
+  // length was checked above
+  const [red, green, blue] = color as [number, number, number];
+  const r = Math.round(red);
+  const g = Math.round(green);
+  const b = Math.round(blue);
   return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
 }

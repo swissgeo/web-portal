@@ -259,3 +259,87 @@ The libraries no longer rely on Nuxt globals or on ambient type files that only 
 #### 5. Checks
 
 Root `format:write`, `build-libs`, `type-check`, `lint`, `format`, `test:unit`, then the main production build, the preview render, the new Nuxt test (passing, and failing without the `provide`), and the Playwright topbar tests, with the results listed under Verification. The first Playwright attempt failed because the browsers weren't installed. After the user installed them, the tests ran as described.
+
+## Step 4: switch `exports` to source
+
+### Summary
+
+All 16 library packages are consumed as source now: `exports` point at `src/*.ts`, their vite/rolldown library builds, `dist/` output and build-only scripts and devDependencies are gone, and main compiles their source with its own Vite and type-checks it with its own tsconfig. Only `packages/config/eslint` and `packages/config/prettier` still build (tooling), and `coordinates` keeps a `vite.config.ts` for its demo app. Not committed.
+
+**Verification**
+
+- Build (remaining tooling builds), type-check, lint and format pass across the repo; main's production build passes.
+- Unit tests: all library tests pass, main 1376/1377 with the same two flaky `scripts/__tests__` files as before (`virtual:intlify-i18n-0`; they passed in some runs during this step and failed in others).
+- Dev server: `/`, `/de/`, `/de/map` and `/fr/` render (302/200) with server-side rendering.
+- Playwright, full suite with its own dev server: 49 passed, 4 flaky (passed on retry). The 4 are the first test of their spec file, all timing out on the first page load of a cold dev server (Vite compiles the package source on demand now, with 4 workers loading at once). CI runs `playwright.config.ci.ts` against a production build instead, which wasn't run locally (see Follow-ups).
+
+**Things worth reviewing**
+
+- **Main type-checks package source with stricter flags.** Main's Nuxt tsconfig has `noUncheckedIndexedAccess` and `noImplicitOverride`, the packages don't. Main only compiles what it imports, so only package *source* had to be fixed (about 70 errors in ~20 files; package tests aren't imported by main and still don't use these flags). Correction to what I said while working: `noImplicitOverride` did matter (3 missing `override` in coordinates).
+- **OpenLayers in SSR (new step added to `plan.md`).** The map is rendered only on the client, but ~35 main files value-import `@swissgeo/map` / `drawing` / `elevation-profile` / `ol/*`, so the server imports (doesn't use) all of OpenLayers. Before, map's `dist` contained a bundled browser copy of `ol`, so nobody noticed. Now Node loads the real `ol`, and `ol/source/GeoTIFF` → `geotiff` → `web-worker` throws when imported inside a Node worker thread, which is where Nuxt dev renders the server side (`Cannot destructure property 'mod' of 'threads.workerData'`). Fixed for now (the user chose this):
+  - map's COG layer composable imports `ol/source/GeoTIFF` on first use (`import()`), with a version counter so a slower earlier load can't overwrite a newer layer. The layer is now created after that import resolves, i.e. a moment later than before.
+  - the `ol/source` barrel re-exports GeoTIFF, so its 4 value imports (3 in main, 1 in map) became direct imports (`ol/source/Vector`, `ol/source/ImageWMS`, `ol/source/TileWMS`).
+- **CSS:** `@swissgeo/map/stylesheet` and `@swissgeo/dimension/stylesheet` exports and their `@import`s in `main.css` are removed: SFC styles come with the components, and `map/src/index.ts` already imports `stylesheet.css` (`ol/ol.css`), which now loads with the JS instead of from `main.css`. `OpenLayersScale.vue` uses `@apply`, which only worked because `main.css` imported the built `map.css`; its style block got `@reference "tailwindcss"` and map a `tailwindcss` devDependency. elevation-profile's unused `./stylesheet` export is gone too (its `index.ts` imports its CSS itself).
+- **Dependency declarations.** Runtime imports that weren't declared, and only resolved through the root `package.json` or pnpm's auto-installed peers, are declared now: coordinates `@turf/turf` (devDependencies → dependencies) and `ol` (peer); skeleton `@swissgeo/ogc` (devDependencies → dependencies); `pinia` peer in drawing, map, skeleton; `vue` peer in feature, layers.
+- **Behavior differences** (all in places that would have thrown or passed `undefined` on):
+  - `drawing` polygon vertex style: a polygon without rings draws no vertices (`?? []`) instead of `new MultiPoint(undefined)`.
+  - `map` `transformIntoTurfEquivalent`: an empty `GeometryCollection` returns `undefined` (its declared "nothing" result) instead of reprojecting `undefined`.
+  - map COG layers: created after the lazy GeoTIFF import, see above.
+- **Kept as before on purpose:** `map` `createView()` only creates an LV95 view, so for any other projection it returns `undefined` despite its `View` return type. It got a `!` and a comment instead of a behavior change.
+- **Removed:** shared's `./geojson` export (pointed to a `dist` file the build never produced; nothing imported it); coordinates' `preview` script (it served the removed library build); two self-imports (`coordinates/src/militaryGridProjection.ts` imported `@swissgeo/coordinates`, a map test imported `@swissgeo/map`), now `#` imports.
+
+**Follow-ups**
+
+- Run `playwright.config.ci.ts` against a local production build (`build:dev` + `node .output/server/index.mjs` with `.env.test`), as CI does. Skipped for now (user).
+- Dev cold-start flakiness in Playwright (first test per spec file): e.g. Vite `server.warmup` for the main entry, or a warm-up request in a global setup.
+- vitest 5 shares one module cache for the workspace (`node_modules/.vitest-cache`) and clears it when the lockfile changed; the root `test:unit` runs all packages in parallel, so the first run after a lockfile change can fail with `ENOTEMPTY` (seen twice in this step; the next run is fine).
+- Leftovers for step 5: `base.vite.config.ts` (`getBaseBuildConfig`, `subpathImportsDtsAlias`) is no longer used; `"rootDir": "../.."` in several package tsconfigs only existed for it; turbo and the `build-libs*` / `build:dev:watch` root scripts.
+- Possibly later: turn on `noUncheckedIndexedAccess` / `noImplicitOverride` in the shared base config too (needs the ~270 test errors fixed), so packages catch these themselves instead of only through main's type-check.
+
+### How the changes were made
+
+#### 1. Measuring main's extra flags
+
+Compared main's generated `.nuxt/tsconfig.app.json` with the packages' config. `verbatimModuleSyntax` was already on in the packages (from `@vue/tsconfig`); `noUncheckedIndexedAccess` and `noImplicitOverride` weren't. Each package type-checked with `--noUncheckedIndexedAccess --noImplicitOverride`: ~336 errors, ~70 of them in source files (the rest in tests).
+
+#### 2. Scripts
+
+- `slop/scripts/step_4/to_source.py <pkg> '<exports json>'`: replaces `exports`, removes `files`/`main`/`module`/`types`, the `build*`, `prepare` and declaration-only `generate-types` scripts, the build-only devDependencies (`rolldown`, `rolldown-plugin-dts`, `unplugin-dts`, `@microsoft/api-extractor`), and the build configs from the tsconfig `include`. Deleting the config files and `dist/` was done separately (`git rm`, `rm -rf`).
+- `slop/scripts/step_4/verify.sh <log dir>`: `format:write`, `build-libs`, `type-check`, `lint`, `format`, `test:unit`, main `build`, one status line each.
+
+#### 3. Order and the transition
+
+Leaves first, as planned: numbers, log, drawing-sharing, statesharing, shared, coordinates, ogc, layers, feature, search, dimension, drawing, elevation-profile, content, skeleton, map. Each switch: fix that package's source for main's flags, run `to_source.py`, delete the build config and `dist/`, `pnpm install`, `verify.sh`.
+
+Problems of the mixed state (packages still building on top of packages already consumed as source), all gone now with the build configs:
+
+- With shared as source, ogc's `rolldown-plugin-dts` tried to inline shared's source types and failed (`"MapLibreStyleDocument" is not exported by "../shared/src/index.d.ts"`). Because `pnpm --recursive` stops at the first failing package, the other libraries hadn't rebuilt and type-check passed against stale `dist/`. From then on all `dist/` folders were deleted before verifying.
+- First fix: `@swissgeo/*` external in all remaining builds. That broke 40 main tests (`Could not parse to valid json: EPSG:2056`): map's build bundled its own copy of `proj4`, while coordinates, now external, registered the projections on the real one.
+- Second fix: every bare import external in the remaining builds (`external: (id) => !/^(\.|\/|#|\0|[A-Za-z]:)/.test(id)`), i.e. the dist only contained the package's own code, like source consumption does. That surfaced the SSR problems (Node can't resolve extensionless `ol/geom/Polygon` from a `dist` file because `ol` has no `exports` map; the GeoTIFF/`web-worker` crash).
+- Self-imports by package name broke once `@swissgeo/*` was external; replaced by `#` imports.
+
+#### 4. Source fixes for main's flags
+
+Typed destructures or `!` with a comment where an invariant guarantees the value (mandatory regex groups, length checks just above, loop bounds, OL coordinates/sizes/pixels being `[x, y]`, touch events having a first touch), `?.`/`??` where that's equivalent, and narrowing on local constants:
+
+- shared: `toRgbaColor` (`match(...)?.[1]`), measurement segment coordinates, `pickLocaleFromAcceptLanguage`.
+- coordinates: `coordinateFromString` (regex groups, the two-value degrees tuple), `getLetterDesignator`, `override` on `getTileOrigin` / `getResolutionSteps` / `roundZoomLevel`, `transformStandardZoomLevelToCustom` (matrix entries read into `minStandardZoom` / `maxStandardZoom` so `typeof` checks narrow).
+- feature: `lt130` (`as const` base, three-part version tuple); the WMS version is computed once (`wmsVersion`) and used for both the `VERSION` param and `lt130`.
+- search: bounding box regex groups. dimension: first touch of touch events.
+- drawing: `rgbaToHex`, `defaultIconName` (`getDefaultIconSet()?.icons[0]?.name ?? ""`), icon anchor, offset parsing, `getLinearRingLength`, polygon vertices (`?? []`).
+- elevation-profile: tooltip uses `const point = tooltip.dataPoints[0]; if (point && …)` (same as the old `length > 0` check).
+- map: `createView` (`!`), click event viewport size, compare slider render pixel, print scale map size, `transformIntoTurfEquivalent`.
+
+#### 5. Per-package specifics
+
+- coordinates: `vite.config.ts` reduced to the demo app's plugins (`tailwindcss`, `vue`, `vueDevTools`), kept in the tsconfig `include` because `vitest.config.ts` merges it; `preview` script removed; exports `.` and `./ol`.
+- log: exports `.` and `./Message`; its `prepare` script (`pnpm run build`) removed.
+- shared: exports `.`, `./language`, `./action-dispatcher` (the latter two were types-only before).
+- skeleton: its test config lived in `vite.config.ts`; moved to a new `vitest.config.ts`.
+- map: lazy GeoTIFF, direct `ol/source/*` imports (and the WMS layer spec mocks `ol/source/TileWMS` / `ol/source/ImageWMS` instead of the barrel), `@reference "tailwindcss"`, COG spec waits for `vi.dynamicImportSettled()`.
+
+#### 6. Dev server and Playwright
+
+- Playwright's `webServer` timed out twice: it waits for `/` to answer with a non-error status, and `/` returned 500 (the SSR import errors above). After the fixes `/` answers 302.
+- One run reused a dev server I had started without Playwright's `webServer.env` and got 12 failures, invalid. The env was then extracted from `playwright.config.ts` (`node --experimental-strip-types` on a small script that prints it as `export` lines) for a manually started server. An earlier attempt with `npx tsx` downloaded `tsx` from the npm registry; not used again.
+- With a cleared Vite cache and a full browser run, Vite found all dependencies in its startup scan, so pre-bundling with `optimizeDeps.include` wouldn't help the flaky first tests; not added. (The runtime dependency discovery seen earlier only happened with curl-only requests.)

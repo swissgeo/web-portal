@@ -23,7 +23,7 @@ export function pickLocaleFromAcceptLanguage<T extends string>(
   }
   const tags = header
     .split(",")
-    .map((tag) => tag.split(";")[0].trim().toLowerCase())
+    .map((tag) => (tag.split(";")[0] ?? "").trim().toLowerCase())
     .filter((tag) => tag.length > 0);
   for (const tag of tags) {
     const primary = tag.split("-")[0] as T;

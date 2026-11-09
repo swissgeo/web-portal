@@ -4,7 +4,6 @@
     "openapi-ts.config.ts",
     "src/**/*.ts",
     "src/**/*.vue",
-    "rolldown.config.ts",
     "vitest.config.ts"
   ],
   "compilerOptions": {

@@ -73,6 +73,7 @@ describe("useOlCOGLayer", () => {
     });
 
     mount(TestComponent);
+    await vi.dynamicImportSettled();
     await nextTick();
 
     expect(mockConstructorSpy).toHaveBeenCalledWith(
@@ -97,6 +98,7 @@ describe("useOlCOGLayer", () => {
     });
 
     mount(TestComponent);
+    await vi.dynamicImportSettled();
     await nextTick();
 
     expect(mockConstructorSpy).toHaveBeenCalledWith(
@@ -119,6 +121,7 @@ describe("useOlCOGLayer", () => {
     });
 
     mount(TestComponent);
+    await vi.dynamicImportSettled();
     await nextTick();
 
     expect(mockConstructorSpy).not.toHaveBeenCalled();

@@ -113,13 +113,14 @@ export function useMapClickEvent(onClick: (evt: MapClickEvent) => void): void {
       }
     }
 
-    const size = map.getSize() ?? [0, 0];
+    // OL sizes are [width, height]
+    const [width, height] = (map.getSize() ?? [0, 0]) as [number, number];
 
     onClick({
       coordinate: [x, y],
       pixel: olEvent.pixel as [number, number],
       extent,
-      viewportSize: [size[0], size[1]],
+      viewportSize: [width, height],
       vectorFeaturesPerLayer,
     });
   };

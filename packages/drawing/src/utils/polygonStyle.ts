@@ -58,9 +58,9 @@ export const POLYGON_EDITING_STYLE: StyleFunction = (_feature: FeatureLike) => {
 
       // return the coordinates of the first ring of the polygon as a multi point geometry, to render the vertices as circles
       geometry: function (feature) {
-        const coordinates = (
-          feature.getGeometry() as Polygon
-        ).getCoordinates()[0];
+        // an empty polygon has no ring, and then no vertices to draw
+        const coordinates =
+          (feature.getGeometry() as Polygon).getCoordinates()[0] ?? [];
         return new MultiPoint(coordinates);
       },
     }),

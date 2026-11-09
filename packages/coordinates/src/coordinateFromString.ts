@@ -106,16 +106,18 @@ function extractNumberPair(text: string): ExtractedCoordinate | undefined {
     if (!commaDecimals) {
       return;
     }
+    // both groups are mandatory in COMMA_DECIMALS
     match = NUMBER_PAIR.exec(
-      `${commaDecimals[1].replace(",", ".")} ${commaDecimals[2].replace(",", ".")}`,
+      `${commaDecimals[1]!.replace(",", ".")} ${commaDecimals[2]!.replace(",", ".")}`,
     );
     if (!match) {
       return;
     }
   }
 
-  const first = parseFloat(removeThousandSeparators(match[1]));
-  const second = parseFloat(removeThousandSeparators(match[2]));
+  // both groups are mandatory in NUMBER_PAIR
+  const first = parseFloat(removeThousandSeparators(match[1]!));
+  const second = parseFloat(removeThousandSeparators(match[2]!));
 
   // small values can only be WGS84, in the "lat, lon" order swisstopo displays unless only the
   // other order lands in Switzerland
@@ -162,9 +164,11 @@ function extractDegrees(text: string): ExtractedCoordinate | undefined {
   );
   // the first value is a latitude, unless the hemispheres say otherwise
   const latitudeFirst = !["E", "W"].includes(cardinals[0] ?? "");
+  // mapped from the two indices [1, 2], so there are exactly two values
+  const [firstValue, secondValue] = signed as [number, number];
   const coordinate: SingleCoordinate = latitudeFirst
-    ? [signed[1], signed[0]]
-    : [signed[0], signed[1]];
+    ? [secondValue, firstValue]
+    : [firstValue, secondValue];
 
   if (!WGS84.isInBounds(coordinate)) {
     return;
@@ -183,8 +187,9 @@ function extractUTM(text: string): ExtractedCoordinate | undefined {
   try {
     return {
       coordinate: utmToLonLat({
-        easting: parseFloat(match[3]),
-        northing: parseFloat(match[4]),
+        // easting and northing groups are mandatory in UTM_REGEX
+        easting: parseFloat(match[3]!),
+        northing: parseFloat(match[4]!),
         zoneNumber: parseInt(zoneNumber, 10),
         zoneLetter: zoneLetter.toUpperCase(),
       }),

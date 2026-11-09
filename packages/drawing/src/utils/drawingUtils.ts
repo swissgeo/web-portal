@@ -66,10 +66,11 @@ export function getLinearRingLength(linearRing: LinearRing): number {
   let length = 0;
   const lrCoordinates = linearRing.getCoordinates();
   for (let i = 0; i < lrCoordinates.length - 1; i++) {
-    const start = lrCoordinates[i];
-    const end = lrCoordinates[i + 1];
+    // i and i + 1 are within bounds, and OL coordinates always have at least x and y
+    const [startX, startY] = lrCoordinates[i] as [number, number];
+    const [endX, endY] = lrCoordinates[i + 1] as [number, number];
 
-    length += Math.sqrt((end[0] - start[0]) ** 2 + (end[1] - start[1]) ** 2);
+    length += Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
   }
   return length;
 }

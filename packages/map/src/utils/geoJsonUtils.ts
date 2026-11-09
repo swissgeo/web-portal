@@ -131,8 +131,14 @@ export function transformIntoTurfEquivalent(
   geometry: Geometry,
   fromProjection?: CoordinateSystem,
 ): Feature | undefined {
+  const geometryToTransform =
+    geometry.type === "GeometryCollection" ? geometry.geometries[0] : geometry;
+  // an empty GeometryCollection has nothing to transform
+  if (!geometryToTransform) {
+    return undefined;
+  }
   const geometryWGS84 = reprojectGeoJsonGeometry(
-    geometry.type === "GeometryCollection" ? geometry.geometries[0] : geometry,
+    geometryToTransform,
     WGS84,
     fromProjection,
   );

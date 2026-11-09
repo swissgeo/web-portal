@@ -6,7 +6,8 @@ import { ALL_YEARS_TIMESTAMP } from "@swissgeo/dimension";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import ImageLayer from "ol/layer/Image";
 import TileLayer from "ol/layer/Tile";
-import { ImageWMS, TileWMS } from "ol/source";
+import ImageWMS from "ol/source/ImageWMS";
+import TileWMS from "ol/source/TileWMS";
 import { TileGrid } from "ol/tilegrid";
 import { computed, ref, watch, watchEffect } from "vue";
 

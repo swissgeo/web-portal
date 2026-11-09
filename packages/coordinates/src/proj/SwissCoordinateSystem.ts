@@ -119,7 +119,7 @@ export const SWISSTOPO_MAX_ZOOM_LEVEL: number =
  * @see https://wiki.openstreetmap.org/wiki/Zoom_levels
  */
 export default class SwissCoordinateSystem extends CustomCoordinateSystem {
-  getResolutionSteps(): ResolutionStep[] {
+  override getResolutionSteps(): ResolutionStep[] {
     return SWISSTOPO_TILEGRID_RESOLUTIONS.map((resolution) => {
       const zoom: number | undefined =
         LV95_RESOLUTIONS.indexOf(resolution) ?? undefined;
@@ -144,46 +144,30 @@ export default class SwissCoordinateSystem extends CustomCoordinateSystem {
   }
 
   transformStandardZoomLevelToCustom(standardZoomLevel: number): number {
+    const minStandardZoom =
+      SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[SWISSTOPO_MIN_ZOOM_LEVEL];
+    const maxStandardZoom =
+      SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[SWISSTOPO_MAX_ZOOM_LEVEL];
     // checking first if the standard zoom level is within range of swiss zooms we have available
     if (
-      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
-        SWISSTOPO_MIN_ZOOM_LEVEL
-      ] === "number" &&
-      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
-        SWISSTOPO_MAX_ZOOM_LEVEL
-      ] === "number" &&
-      standardZoomLevel >=
-        SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
-          SWISSTOPO_MIN_ZOOM_LEVEL
-        ] &&
-      standardZoomLevel <=
-        SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
-          SWISSTOPO_MAX_ZOOM_LEVEL
-        ]
+      typeof minStandardZoom === "number" &&
+      typeof maxStandardZoom === "number" &&
+      standardZoomLevel >= minStandardZoom &&
+      standardZoomLevel <= maxStandardZoom
     ) {
       return SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX.filter(
         (zoom) => zoom < standardZoomLevel,
       ).length;
     }
     if (
-      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
-        SWISSTOPO_MIN_ZOOM_LEVEL
-      ] === "number" &&
-      standardZoomLevel <
-        SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
-          SWISSTOPO_MIN_ZOOM_LEVEL
-        ]
+      typeof minStandardZoom === "number" &&
+      standardZoomLevel < minStandardZoom
     ) {
       return SWISSTOPO_MIN_ZOOM_LEVEL;
     }
     if (
-      typeof SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
-        SWISSTOPO_MAX_ZOOM_LEVEL
-      ] === "number" &&
-      standardZoomLevel >
-        SWISSTOPO_TILEGRID_ZOOM_TO_STANDARD_ZOOM_MATRIX[
-          SWISSTOPO_MAX_ZOOM_LEVEL
-        ]
+      typeof maxStandardZoom === "number" &&
+      standardZoomLevel > maxStandardZoom
     ) {
       return SWISSTOPO_MAX_ZOOM_LEVEL;
     }
@@ -254,7 +238,10 @@ export default class SwissCoordinateSystem extends CustomCoordinateSystem {
    *   only round the zoom level to 3 decimal
    * @returns A zoom level matching one of our national maps
    */
-  roundZoomLevel(customZoomLevel: number, normalize: boolean = false): number {
+  override roundZoomLevel(
+    customZoomLevel: number,
+    normalize: boolean = false,
+  ): number {
     if (normalize) {
       return closest(customZoomLevel, swisstopoZoomLevels);
     }

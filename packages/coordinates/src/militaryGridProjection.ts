@@ -7,8 +7,9 @@
 //
 //     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import type { SingleCoordinate } from "@swissgeo/coordinates";
 import type { FlatExtent } from "@swissgeo/shared";
+
+import type { SingleCoordinate } from "#coordinatesUtils";
 /** UTM zones are grouped, and assigned to one of a group of 6 sets. */
 const NUM_100K_SETS: number = 6;
 
@@ -414,7 +415,8 @@ export function getLetterDesignator(latitude: number): string {
     if (index < 0 || index > bandLetters.length - 1) {
       throw new Error("Latitude out of range");
     }
-    return bandLetters[index];
+    // index was range-checked just above
+    return bandLetters[index]!;
   } else if (latitude > 84 || latitude < -80) {
     // This is here as an error flag to show that the Latitude is outside MGRS limits
     return "Z";

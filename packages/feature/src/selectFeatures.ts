@@ -145,7 +145,7 @@ const versionPatterns = /^\d+\.\d+\.\d+$/;
 
 //function to check if the version is older than 1.3.0
 function lt130(version: string) {
-  const base = [1, 3, 0];
+  const base = [1, 3, 0] as const;
   // the WMS version should be a valid version at this point, but we keep the security just in case.
   if (!versionPatterns.test(version)) {
     log.warn(
@@ -153,9 +153,10 @@ function lt130(version: string) {
     );
     return;
   }
+  // versionPatterns guarantees exactly three parts
   const [major, minor, patch] = version
     .split(".")
-    .map((num: string) => Number(num));
+    .map((num: string) => Number(num)) as [number, number, number];
   return (
     major < base[0] ||
     (major === base[0] &&
@@ -174,6 +175,10 @@ function buildWmsGetFeatureInfoUrl(
   // base Params are always the same. We separated the version dependent params from the other variable
   // params to make it slightly easier to read. Version is in the version params because it feels right to
   // put it there :)
+  const wmsVersion =
+    wmsRequest.wmsVersion && versionPatterns.test(wmsRequest.wmsVersion)
+      ? wmsRequest.wmsVersion
+      : "1.3.0";
   const params: Record<string, string> = {
     SERVICE: "WMS",
     REQUEST: "GetFeatureInfo",
@@ -184,10 +189,7 @@ function buildWmsGetFeatureInfoUrl(
     FI_POINT_TOLERANCE: "10",
     FI_LINE_TOLERANCE: "10",
     FI_POLYGON_TOLERANCE: "10",
-    VERSION:
-      wmsRequest.wmsVersion && versionPatterns.test(wmsRequest.wmsVersion)
-        ? wmsRequest.wmsVersion
-        : "1.3.0",
+    VERSION: wmsVersion,
     LAYERS: wmsRequest.layerName ?? wmsRequest.layerId,
     QUERY_LAYERS: wmsRequest.layerName ?? wmsRequest.layerId,
     BBOX: extent.join(","),
@@ -195,7 +197,7 @@ function buildWmsGetFeatureInfoUrl(
     LANG: lang,
     INFO_FORMAT: format,
   };
-  if (lt130(params.VERSION)) {
+  if (lt130(wmsVersion)) {
     params["SRS"] = `EPSG:${epsgNumber}`;
     params["X"] = "50";
     params["Y"] = "50";

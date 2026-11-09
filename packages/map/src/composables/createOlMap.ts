@@ -86,7 +86,9 @@ function createView(): View {
     center: DEFAULT_PROJECTION.bounds.center,
   });
 
-  const viewForProjection = viewsForProjection[positionStore.projection.epsg];
+  // Only an LV95 view exists so far: for any other projection this is undefined,
+  // as it always was (see the comment above).
+  const viewForProjection = viewsForProjection[positionStore.projection.epsg]!;
 
   log.debug({
     title: "createOlMap",
