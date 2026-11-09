@@ -498,9 +498,9 @@
       "dataset": "TODO check: Il nivel"
     },
     "mapUnavailable": "TODO check: La charta n'è actualmain betg disponibla.",
-    "service": "TODO translate",
-    "copyRequestUrl": "TODO translate",
-    "requestUrlCopied": "TODO translate"
+    "service": "Servetsch: {host}",
+    "copyRequestUrl": "Copiar l'URL da la dumonda",
+    "requestUrlCopied": "URL da la dumonda copiada"
   },
   "dataset": {
     "legendLoading": "La legenda vegn chargiada…",
