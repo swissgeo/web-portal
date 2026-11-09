@@ -2,6 +2,20 @@ import type { Ref } from "vue";
 
 import { useEventListener } from "@vueuse/core";
 
+// The content may scroll in an element of its own inside the scroller.
+function isScrolledToTop(target: EventTarget | null, scroller: HTMLElement) {
+  for (
+    let element = target instanceof Element ? target : null;
+    element && scroller.contains(element);
+    element = element.parentElement
+  ) {
+    if (element.scrollTop > 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
 /**
  * vaul-vue (built on Reka UI) lacks the touchmove guard that React vaul gets
  * from Radix's react-remove-scroll. Without it, swiping down on the list while
@@ -38,7 +52,8 @@ export function useDrawerTouchGuard(
       const deltaY = touchEvent.touches[0]!.clientY - touchStartY;
       const isPullingDown = deltaY > Math.abs(deltaX);
       const isPullingUp = -deltaY > Math.abs(deltaX);
-      const isClosingDrawer = isPullingDown && scroller.value.scrollTop <= 0;
+      const isClosingDrawer =
+        isPullingDown && isScrolledToTop(touchEvent.target, scroller.value);
       const isOpeningDrawer = isPullingUp && !options.isFullyExtended();
       if ((isClosingDrawer || isOpeningDrawer) && touchEvent.cancelable) {
         touchEvent.preventDefault();

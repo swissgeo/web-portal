@@ -56,6 +56,7 @@ function mountPanel(
     hasHeader?: boolean;
     isVisible?: boolean;
     isDismissible?: boolean;
+    hasOwnScroller?: boolean;
   } = {},
   sharedSnapPoint?: Ref<number | string | null>,
 ) {
@@ -141,7 +142,7 @@ function touch(
   clientY: number,
   clientX = 0,
 ) {
-  const event = new Event(type, { cancelable: true });
+  const event = new Event(type, { bubbles: true, cancelable: true });
   Object.defineProperty(event, "touches", { value: [{ clientX, clientY }] });
   target.dispatchEvent(event);
   return event;
@@ -200,6 +201,13 @@ describe("ResponsivePanel.vue", () => {
 
       expect(scroller(wrapper).classList).toContain("overflow-y-auto");
       expect(injectedScroller!.value).toBe(scroller(wrapper));
+    });
+
+    it("leaves the scrolling to content that brings its own scroller", () => {
+      const wrapper = mountPanel({ hasOwnScroller: true });
+
+      expect(scroller(wrapper).classList).toContain("overflow-hidden");
+      expect(scroller(wrapper).classList).not.toContain("overflow-y-auto");
     });
 
     it("hides its own header for callers that bring their own", () => {
@@ -489,6 +497,19 @@ describe("ResponsivePanel.vue", () => {
 
         touch(element, "touchstart", 100);
         const move = touch(element, "touchmove", 150);
+
+        expect(move.defaultPrevented).toBe(false);
+      });
+
+      it("scrolls normally when pulling down in a scroll area of the content that has scrolled", async () => {
+        const element = await mountedScroller();
+        element.scrollTop = 0;
+        const scrollArea = document.createElement("div");
+        scrollArea.scrollTop = 50;
+        element.append(scrollArea);
+
+        touch(scrollArea, "touchstart", 100);
+        const move = touch(scrollArea, "touchmove", 150);
 
         expect(move.defaultPrevented).toBe(false);
       });
