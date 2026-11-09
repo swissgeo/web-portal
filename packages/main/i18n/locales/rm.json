@@ -37,18 +37,18 @@
       "mapInfo": "Infos davart la charta"
     },
     "reportIssue": {
-      "buttonTitle": "TODO check: Dar feedback",
-      "title": "TODO check: Dar feedback",
-      "close": "TODO check: Serrar il formular «Dar feedback»",
+      "buttonTitle": "Dar feedback",
+      "title": "Dar feedback",
+      "close": "Serrar il formular «Dar feedback»",
       "steps": {
         "step1": {
           "title": "1. Object da Voss messadi",
           "select": {
             "placeholder": "Selecziunar ina categoria",
             "options": {
-              "background": "TODO check: Ina repassada da la charta da fund",
-              "thematic": "TODO check: Charta tematica u geodatas",
-              "application": "TODO check: Applicaziun, servetsch u support tecnic",
+              "background": "Ina repassada da la charta da fund",
+              "thematic": "Charta tematica u geodatas",
+              "application": "Applicaziun, servetsch u support tecnic",
               "other": "Insatge auter"
             }
           },
@@ -210,11 +210,11 @@
     "drawingPanelTitle": "Utensils da dissegnar"
   },
   "geolocation": {
-    "permissionDenied": "TODO check: Access a la posiziun refusà",
-    "startGeolocation": "TODO check: Mussar la posiziun",
-    "timeout": "TODO check: La localisaziun ha durà memia ditg.",
-    "unavailable": "TODO check: Impussibel da determinar la posiziun.",
-    "outsideSwitzerland": "TODO check: Vossa posiziun è ordaifer la Svizra e na po betg vegnir mussada sin la charta."
+    "permissionDenied": "Access a la posiziun refusà",
+    "startGeolocation": "Mussar la posiziun",
+    "timeout": "La localisaziun ha durà memia ditg.",
+    "unavailable": "Impussibel da determinar la posiziun.",
+    "outsideSwitzerland": "Vossa posiziun è ordaifer la Svizra e na po betg vegnir mussada sin la charta."
   },
   "toolbox": {
     "geolocation": {
@@ -228,7 +228,7 @@
     },
     "drawing": {
       "buttonTitle": "Dissegnar",
-      "close": "TODO check: Serrar la fanestra da dissegnar",
+      "close": "Serrar la fanestra da dissegnar",
       "featureCount": "Nagins objects sin la charta | {count} object sin la charta | {count} objects sin la charta",
       "tools": {
         "label": "Utensils da dissegn",
@@ -240,7 +240,7 @@
         "marker": "Simbol"
       },
       "hints": {
-        "edit": "TODO check: Tirai ils puncts per midar la furma da l'object.",
+        "edit": "Tirai ils puncts per midar la furma da l'object.",
         "select": "Tschernai in object sin la charta per modifitgar ses stil.",
         "chooseTool": "Tschernai in utensil per dissegnar sin la charta.",
         "place": "Cliccai sin la charta per plazzar l'object.",
@@ -327,7 +327,7 @@
         "xlarge": "Fitg grond"
       },
       "symbols": {
-        "collection": "TODO check: Biblioteca da simbols",
+        "collection": "Biblioteca da simbols",
         "color": "Colur dal simbol",
         "label": "Simbols",
         "empty": "Nagins simbols disponibels.",
@@ -402,7 +402,7 @@
       "link": {
         "tabLabel": "Parter il link",
         "title": "Link per parter",
-        "description": "TODO check: Partai la charta actuala cun auters u copiai l'URL.",
+        "description": "Partai la charta actuala cun auters u copiai l'URL.",
         "generateButton": "Generar in link per parter",
         "drawingEditableLabel": "Dissegn modifitgabel",
         "urlLabel": "URL",
@@ -446,14 +446,14 @@
     },
     "featureFlag": {
       "notAvailable": "Quest utensil n'è anc betg disponibel.",
-      "workingOnIt": "TODO check: El suonda en ina versiun posteriura.",
+      "workingOnIt": "El suonda en ina versiun posteriura.",
       "links": {
         "roadmap": "geoplattform-ausblick"
       }
     },
     "zoom": {
-      "zoomIn": "TODO check: Zoomar en",
-      "zoomOut": "TODO check: Zoomar or"
+      "zoomIn": "Zoomar en",
+      "zoomOut": "Zoomar or"
     }
   },
   "backgroundLayers": {
@@ -495,12 +495,12 @@
     "layerLoad": "Il nivel n'ha betg pudì vegnir chargià.",
     "backToMap": "Enavos a la charta",
     "resources": {
-      "dataset": "TODO check: Il nivel"
+      "dataset": "Il nivel"
     },
-    "mapUnavailable": "TODO check: La charta n'è actualmain betg disponibla.",
-    "service": "TODO translate",
-    "copyRequestUrl": "TODO translate",
-    "requestUrlCopied": "TODO translate"
+    "mapUnavailable": "La charta n'è actualmain betg disponibla.",
+    "service": "Servetsch: {host}",
+    "copyRequestUrl": "Copiar l'URL da la dumonda",
+    "requestUrlCopied": "URL da la dumonda copiada"
   },
   "dataset": {
     "legendLoading": "La legenda vegn chargiada…",
@@ -593,7 +593,7 @@
     "printResolutionLabel": "Resoluziun da stampa",
     "printOrientationLabel": "Orientaziun da stampa",
     "zoomToLockedZoomLevel": "Zoomar al nivel da zoom bloccà",
-    "sendPrintRequest": "TODO check: Stampar",
+    "sendPrintRequest": "Stampar",
     "openPrintJobs": "Avrir las incumbensas da stampa",
     "printJobsWindowTitle": "Incumbensas da stampa",
     "warningPrintExtentBeyondViewport": "Vus pudais bloccar il center ed il nivel da zoom per evitar che la secziun da stampa banduna la vista cun spustar u zoomar la charta.",
@@ -647,7 +647,7 @@
       "openPdf": "Avrir la legenda sco PDF",
       "openPage": "Avrir la pagina da la legenda"
     },
-    "variant": "TODO check: Variant"
+    "variant": "Variant"
   },
   "layerCart": {
     "close": "Serrar",
@@ -669,55 +669,55 @@
     "close": "Serrar",
     "expand": "Mussar il catalog da datas",
     "collapse": "Zuppentar il catalog da datas",
-    "allLayers": "TODO check: Tut ils nivels",
-    "layers": "TODO check: Nivels",
-    "back": "TODO check: Enavos"
+    "allLayers": "Tut ils nivels",
+    "layers": "Nivels",
+    "back": "Enavos"
   },
   "featureInfo": {
     "blockedContent": "(Link allontanà per motivs da segirezza)",
     "noInformation": "Naginas infurmaziuns disponiblas.",
     "popupTitle": "Infurmaziuns davart l'object",
     "featureFlag": {
-      "notAvailable": "TODO check: La fanestra «Infurmaziuns davart l'object» n'è anc betg disponibla.",
-      "workingOnIt": "TODO check: El suonda en ina versiun posteriura."
+      "notAvailable": "La fanestra «Infurmaziuns davart l'object» n'è anc betg disponibla.",
+      "workingOnIt": "El suonda en ina versiun posteriura."
     }
   },
   "mobileNotice": {
-    "title": "TODO check: Vista mobila suonda",
-    "description": "TODO check: Questa versiun è optimada per il desktop. Sin apparats mobils mussain nus per il mument la vista da desktop.",
-    "confirm": "TODO check: Chapì"
+    "title": "Vista mobila suonda",
+    "description": "Questa versiun è optimada per il desktop. Sin apparats mobils mussain nus per il mument la vista da desktop.",
+    "confirm": "Chapì"
   },
   "testSiteBanner": {
-    "text": "TODO check: Ambient {environment} – Betg per l'utilisaziun productiva. Betg parter."
+    "text": "Ambient {environment} – Betg per l'utilisaziun productiva. Betg parter."
   },
   "landing": {
     "cards": {
       "map": {
-        "title": "TODO check: Charta",
-        "description": "TODO check: Visualisatur da chartas interactiv cun tschients da nivels, viadi en il temp sco era funcziuns da stampar e da parter.",
-        "button": "TODO check: A la charta"
+        "title": "Charta",
+        "description": "Visualisatur da chartas interactiv cun tschients da nivels, viadi en il temp sco era funcziuns da stampar e da parter.",
+        "button": "A la charta"
       },
       "catalog": {
-        "title": "TODO check: Catalog da datas",
-        "description": "TODO check: Tschertgai en il catalog cumplet cun geodatas da basa, temas e metadatas.",
-        "button": "TODO check: Avrir il catalog da datas"
+        "title": "Catalog da datas",
+        "description": "Tschertgai en il catalog cumplet cun geodatas da basa, temas e metadatas.",
+        "button": "Avrir il catalog da datas"
       },
       "info": {
-        "title": "TODO check: Tut ulteriur davart SWISSGEO",
-        "description": "TODO check: Novitads, agid ed infurmaziuns davart nus.",
-        "button": "TODO check: Al portal d'infurmaziun"
+        "title": "Tut ulteriur davart SWISSGEO",
+        "description": "Novitads, agid ed infurmaziuns davart nus.",
+        "button": "Al portal d'infurmaziun"
       }
     },
     "footer": {
-      "claim": "TODO check: Il nua è qua.",
-      "description": "TODO check: SWISSGEO renda accessibel las datas spazialas da la Svizra en in lieu.",
-      "followUs": "TODO check: Suandai nus!",
-      "moreInformation": "TODO check: Ulteriuras infurmaziuns",
-      "termsOfUse": "TODO check: Cundiziuns d'utilisaziun",
-      "contact": "TODO check: Contact",
-      "dataProtection": "TODO check: Infurmaziuns giuridicas e protecziun da datas",
-      "netiquette": "TODO check: Netichetta",
-      "accessibility": "TODO check: Accessibladad",
+      "claim": "Il nua è qua.",
+      "description": "SWISSGEO renda accessibel las datas spazialas da la Svizra en in lieu.",
+      "followUs": "Suandai nus!",
+      "moreInformation": "Ulteriuras infurmaziuns",
+      "termsOfUse": "Cundiziuns d'utilisaziun",
+      "contact": "Contact",
+      "dataProtection": "Infurmaziuns giuridicas e protecziun da datas",
+      "netiquette": "Netichetta",
+      "accessibility": "Accessibladad",
       "copyright": "Copyright © 2026"
     },
     "links": {
