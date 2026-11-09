@@ -1,6 +1,6 @@
 import type { Layer } from "@swissgeo/layers";
 
-import useBackgroundSelector from "~/components/map/useBackgroundSelector";
+import useBackgroundSelector from "~/components/sidebar/backgroundSelector/useBackgroundSelector";
 import { describe, it, expect, vi } from "vitest";
 
 describe("useBackgroundSelector", () => {
