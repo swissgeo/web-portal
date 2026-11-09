@@ -7,14 +7,11 @@
   "scripts": {
     "build": "pnpm --recursive run build",
     "build:dev": "pnpm --recursive --workspace-concurrency=0 --if-present run build:dev",
-    "build:dev:watch": "pnpm --filter=!main --recursive --parallel --if-present run build:dev:watch",
     "build:prod": "pnpm --recursive --workspace-concurrency=0 --if-present run build:prod",
-    "build-libs": "pnpm --filter=!main run --recursive --if-present build",
-    "build-libs:dev": "pnpm --filter=!main run --recursive --if-present build:dev",
+    "build-libs": "echo 'build-libs: nothing to build, the packages are consumed as source (kept until buildspec_release.yml stops calling it)'",
     "check": "pnpm run format && pnpm run lint && pnpm run type-check",
     "check:write": "pnpm run format:write && pnpm run lint:write && pnpm run type-check",
     "clean": "find packages -name 'dist' -type d -exec rm -rf {} + 2>/dev/null || true",
-    "clean:turbo": "find . -name '.turbo' -type d -exec rm -rf {} + 2>/dev/null || true",
     "dev": "pnpm --filter=main run dev",
     "docker:build": "VERSION=\"$(git describe --tags)\"; docker build --build-arg VERSION=${VERSION} --target ${TARGET}  -t web-portal:local-${USER}-${VERSION}${TAG_SUFFIX:-} .",
     "docker:build:dev": "TARGET=dev TAG_SUFFIX=-dev pnpm run docker:build",
@@ -29,7 +26,6 @@
     "test": "pnpm run test:unit",
     "test:integration": "playwright test",
     "test:integration:ci": "playwright test -c playwright.config.ci.ts",
-    "test:ui": "vitest --ui",
     "test:unit": "pnpm run --parallel --no-bail --if-present test:unit",
     "test:unit:coverage": "pnpm run --parallel --no-bail --if-present test:unit:coverage",
     "type-check": "pnpm run --parallel --no-bail --if-present type-check"
@@ -51,7 +47,6 @@
     "prettier-plugin-jsdoc": "catalog:",
     "prettier-plugin-packagejson": "catalog:",
     "prettier-plugin-tailwindcss": "catalog:",
-    "turbo": "catalog:",
     "vitest": "catalog:"
   },
   "packageManager": "pnpm@11.8.0"

@@ -17,11 +17,9 @@
   "scripts": {
     "build": "rolldown --config rolldown.config.ts",
     "build:dev": "rolldown --config rolldown.config.ts --environment NODE_ENV:development",
-    "generate-types": "tsc --declaration",
     "type-check": "tsc -p tsconfig.json"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-typescript": "workspace:*",
     "@types/node": "catalog:",
     "rolldown": "catalog:",

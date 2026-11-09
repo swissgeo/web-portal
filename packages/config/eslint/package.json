@@ -17,7 +17,6 @@
   "scripts": {
     "build": "rolldown --config rolldown.config.ts",
     "build:dev": "rolldown --config rolldown.config.ts --environment NODE_ENV:development",
-    "generate-types": "tsc --declaration",
     "lint": "eslint",
     "lint:write": "eslint --fix",
     "type-check": "tsc -p tsconfig.json"
@@ -38,7 +37,6 @@
     "typescript-eslint": "catalog:"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "catalog:",
     "@swissgeo/config-typescript": "workspace:*",
     "@types/node": "catalog:",
     "globals": "catalog:",

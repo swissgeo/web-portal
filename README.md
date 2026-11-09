@@ -26,17 +26,13 @@ Install all the dependencies:
 pnpm install
 ```
 
-Compile the sub-packages in watch mode (terminal 1):
-
-```sh
-pnpm turbo build:dev:watch
-```
-
-Run the dev server for coding (terminal 2):
+Run the dev server for coding:
 
 ```sh
 pnpm run dev
 ```
+
+The packages in `packages/` are consumed as source, so there is no build or watch step for them.
 
 ## Environment Variables
 
@@ -129,13 +125,6 @@ The app will be available at `http://localhost:3000`.
 
 > **Note:** Environment variables (`NUXT_API_ENDPOINT`, `NUXT_AUTH_TOKEN`, `NUXT_MAPTILER_API_KEY`, etc.) must be set at runtime via `-e` flags or an env file — do not bake secrets into the image.
 
-## Turbo
-
-The repo makes use of [Turbo](https://turborepo.dev/), a supercharger for monorepos. Turbo caches the outcome of certain scripts and won't re-run it if its not needed.
-
-What you can do is, instead of just using `pnpm run build|lint|format|type-check` is to use `pnpm turbo build|lint|format|type-check`.
-This will engage the wrapper and make use of these functionalities and speed up your workflow!
-
 ## Integration tests
 
 Integration tests live in `tests/integration/` and use [Playwright](https://playwright.dev/). They verify that UI components work together correctly (sidebar, map canvas, toolbox, locale routing) without depending on real external services — all outgoing API requests are mocked via `page.route()`.
@@ -146,13 +135,7 @@ The first time you run them locally, install the browser binary:
 pnpm exec playwright install --with-deps chromium
 ```
 
-Then build the library packages (the Nuxt dev server imports them from their `dist/` output):
-
-```sh
-pnpm build:dev
-```
-
-Run the tests:
+Then run the tests:
 
 ```sh
 pnpm test:integration

@@ -343,3 +343,49 @@ Typed destructures or `!` with a comment where an invariant guarantees the value
 - Playwright's `webServer` timed out twice: it waits for `/` to answer with a non-error status, and `/` returned 500 (the SSR import errors above). After the fixes `/` answers 302.
 - One run reused a dev server I had started without Playwright's `webServer.env` and got 12 failures, invalid. The env was then extracted from `playwright.config.ts` (`node --experimental-strip-types` on a small script that prints it as `export` lines) for a manually started server. An earlier attempt with `npx tsx` downloaded `tsx` from the npm registry; not used again.
 - With a cleared Vite cache and a full browser run, Vite found all dependencies in its startup scan, so pre-bundling with `optimizeDeps.include` wouldn't help the flaky first tests; not added. (The runtime dependency discovery seen earlier only happened with curl-only requests.)
+
+## Step 5: clean up once nothing builds
+
+### Summary
+
+Removed what only existed for the library builds or for turbo. Kept every root script that CI or the Dockerfile uses (checked against the CodeBuild specs in `infra-terraform/aws/swisstopo-swissgeo-builder/shared/codebuild-projects/web-portal/`). Not committed.
+
+- **Removed:**
+  - turbo: `turbo.json`, `packages/main/turbo.json`, the `turbo` devDependency and catalog entry, the `clean:turbo` script, the `.turbo` entry in `.gitignore`, the untracked `.turbo/` folders and the README section.
+  - `build:dev:watch` root script: no package has a watch build any more.
+  - `base.vite.config.ts`, which nothing used since step 4, and its leftover include in `packages/drawing/tsconfig.json`.
+  - unused build tools: catalog entries for `unplugin-dts`, `rolldown-plugin-dts` and `@microsoft/api-extractor`, the `@microsoft/api-extractor` devDependency of `config/eslint` and `config/prettier` (none of their scripts used it), and the renovate rule for `unplugin-dts`.
+  - `"rootDir": "../.."` in 13 package tsconfigs. Checked first on map, which type-checks other packages' source: no errors without it.
+- **Kept:**
+  - `build`, `build:dev`, `build:prod`: the Dockerfile runs `build:dev` / `build:prod`, and the `checker` image (built on `builder-dev`) runs `lint` and `format`, which need the two config packages' `dist`. So `build:dev` stays recursive: it builds `config/eslint`, `config/prettier` and main. `build:prod` builds main only, as before.
+  - `build-libs`, as a no-op (`echo` explaining why): `buildspec_release.yml` runs it before `test:unit:coverage`, which doesn't need anything built. Checked by deleting both config packages' `dist` and running `test:unit:coverage`: all 16 test runs pass (the config packages are only imported by `eslint.config.mts` / `prettier.config.ts`). The script can go once the buildspec stops calling it.
+  - `clean` (still useful for the config packages' `dist`), and the docker and test scripts.
+- **Removed after review:**
+  - `build-libs:dev` (not used by either buildspec).
+  - root `test:ui` (`vitest --ui`): broken, as the root has no vitest config and `@vitest/ui` is only installed for main.
+  - `generate-types` (`tsc --declaration`) in `config/eslint` and `config/prettier`: nothing calls it, and with the inherited `noEmit` it emits nothing. (drawing-sharing's and statesharing's `generate-types` run `openapi-ts` and stay.)
+  - stray double spaces in the `format:write` scripts of drawing, feature and `tests/integration`.
+  - main's `generate` (`nuxt generate`): static generation, but the app relies on server API routes and neither CI nor the Dockerfile uses it.
+  - `test:unit:watch` in coordinates and numbers (the only two packages that had it; `pnpm vitest` in a package already watches).
+- **README:** quick start without the watch step; the integration-test section no longer says to build the library packages first; Turbo section removed. The ADR (`docs/adr/0001-…`) still mentions `base.vite.config.ts`, and was left untouched (user).
+
+**Verification**
+
+- `pnpm install --frozen-lockfile`: up to date (the lockfile lost 334 lines).
+- format, lint, type-check, unit tests (all pass, including main's two sometimes-flaky `scripts/__tests__` files this time), main build: pass.
+- Root `build:dev` (config/eslint, config/prettier, main) and `build:prod` (main): pass.
+- No Docker build was run.
+
+**Noticed, not changed**
+
+- Left for later (user): one root `prettier --check .` instead of the 17 identical per-package `format` scripts (would also check root-level files such as README, `docs/` and `slop/`), and a single root vitest run with `projects` instead of 17 parallel ones (would also avoid the `.vitest-cache` race after lockfile changes).
+
+- README's CI paragraph says the integration tests run against `pnpm --filter main preview` and that the Playwright config switches on `CI=true`. Per `buildspec_pr.yml`, CI runs `pnpm run test:integration:ci` against the Docker `checker` image.
+
+### How the changes were made
+
+- Before removing scripts: read `buildspec_pr.yml` (Docker `dev` and `checker` targets; `lint`, `format`, `type-check`, `test:unit:coverage` inside the `checker` image; `test:integration:ci` against it) and `buildspec_release.yml` (Docker `dev` + `prod`, then `build-libs` and `test:unit:coverage` on the host).
+- `grep` for `turbo`, `base.vite.config`, `unplugin-dts`, `rolldown-plugin-dts`, `api-extractor`, `build-libs`, `build:dev:watch` outside `slop/` and the lockfile to find every reference.
+- `rootDir`: removed it from `packages/map/tsconfig.json` on a copy, ran `vue-tsc --noEmit` (no errors), restored it, then removed it everywhere with a regex. That regex left `{,` in `packages/content/tsconfig.json`, where `rootDir` was the first key; fixed by hand, and all tsconfigs were checked to parse.
+- `renovate.json`: removing the rule by re-serializing the JSON reformatted the whole file, so it was restored and the rule was removed as a text edit.
+- Checks: `slop/scripts/step_4/verify.sh`, then root `build:dev` and `build:prod`, then `pnpm install --frozen-lockfile`.

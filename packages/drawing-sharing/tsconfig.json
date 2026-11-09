@@ -7,7 +7,6 @@
     "vitest.config.ts"
   ],
   "compilerOptions": {
-    "types": ["vue"],
-    "rootDir": "../.."
+    "types": ["vue"]
   }
 }

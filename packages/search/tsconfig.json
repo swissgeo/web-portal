@@ -1,8 +1,6 @@
 {
   "extends": "@swissgeo/config-typescript/tsconfig.base.json",
-  "compilerOptions": {
-    "rootDir": "../.."
-  },
+  "compilerOptions": {},
   "include": ["src/**/*", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

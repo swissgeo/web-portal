@@ -42,8 +42,6 @@ CLAUDE.md
 # git rebase conflict
 *.orig
 
-# turbo
-.turbo
 
 # Playwright
 test-results/

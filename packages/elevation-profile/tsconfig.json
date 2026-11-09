@@ -1,8 +1,7 @@
 {
   "extends": "@swissgeo/config-typescript/tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vue", "vite/client"],
-    "rootDir": "../.."
+    "types": ["vue", "vite/client"]
   },
   "include": ["src/**/*.ts", "src/**/*.vue", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]

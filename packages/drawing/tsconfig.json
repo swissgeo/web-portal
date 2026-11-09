@@ -4,11 +4,9 @@
     "src/**/*.ts",
     "src/**/*.vue",
     "types/**/*.d.ts",
-    "../../base.vite.config",
     "vitest.config.ts"
   ],
   "compilerOptions": {
-    "types": ["vue", "vite/client"],
-    "rootDir": "../.."
+    "types": ["vue", "vite/client"]
   }
 }
