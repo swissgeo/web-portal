@@ -2,7 +2,7 @@
 import type { Dataset } from "@swissgeo/ogc";
 
 import { isMappableDataset } from "@swissgeo/ogc";
-import { nextTick, useId, useTemplateRef } from "vue";
+import { useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { dataset } = defineProps<{
@@ -24,7 +24,6 @@ const isMappable = computed(() => isMappableDataset(dataset));
 // The user must always be able to remove it.
 const canToggle = computed(() => isMappable.value || isOnMap.value);
 const hintId = useId();
-const switchCell = useTemplateRef<HTMLElement>("switchCell");
 
 const ownerName = computed(() => dataset.properties.owner?.name);
 
@@ -36,12 +35,6 @@ async function setOnMap(onMap: boolean): Promise<void> {
     await addToMap();
   } else {
     removeFromMap();
-    if (!isMappable.value) {
-      // The hint replaces the tooltip and renders a new switch, so the focus
-      // goes back to the new switch.
-      await nextTick();
-      switchCell.value?.querySelector<HTMLElement>("[role='switch']")?.focus();
-    }
   }
 }
 </script>
@@ -52,11 +45,7 @@ async function setOnMap(onMap: boolean): Promise<void> {
     class="hover:bg-accent-50 dark:hover:bg-accent-800 col-span-full grid grid-cols-subgrid border-b border-accented last:border-b-0"
     :class="isOnMap ? 'text-highlighted' : 'text-toned'"
   >
-    <div
-      ref="switchCell"
-      role="cell"
-      class="flex min-w-0 items-start px-2 py-4"
-    >
+    <div role="cell" class="flex min-w-0 items-start px-2 py-4">
       <DatasetNotMappableHint
         :show-hint="!canToggle"
         :tooltip="isOnMap ? t('dataset.removeFromMap') : t('dataset.addToMap')"

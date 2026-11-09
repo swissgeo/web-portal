@@ -1,7 +1,7 @@
 import type { Dataset, Owner } from "@swissgeo/ogc";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
-import { flushPromises, mount } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import LayerCatalogRow from "~/components/sidebar/layerCatalog/LayerCatalogRow.vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
@@ -75,11 +75,10 @@ function makeDataset(id = "ch.a", owner?: Owner): Dataset {
   };
 }
 
-function mountRow(dataset = makeDataset(), attachTo?: HTMLElement) {
+function mountRow(dataset = makeDataset()) {
   return mount(LayerCatalogRow, {
     props: { dataset },
     global: { stubs },
-    attachTo,
   });
 }
 
@@ -288,25 +287,6 @@ describe("LayerCatalogRow.vue", () => {
     await toggle.trigger("click");
 
     expect(datasetLayer.removeFromMap).toHaveBeenCalledOnce();
-  });
-
-  it("keeps the focus on the switch after it removes a dataset that the map cannot show", async () => {
-    datasetLayer.isOnMap.value = true;
-    datasetLayer.removeFromMap.mockImplementation(() => {
-      datasetLayer.isOnMap.value = false;
-    });
-    const dataset = makeDataset();
-    delete dataset.properties.preferredDistributionId;
-    const wrapper = mountRow(dataset, document.body);
-
-    await wrapper.get("[data-testid='catalog-layer-on-map']").trigger("click");
-    await flushPromises();
-
-    const toggle = wrapper.get("[data-testid='catalog-layer-on-map']");
-    expect(toggle.attributes("aria-disabled")).toBe("true");
-    expect(document.activeElement).toBe(toggle.element);
-
-    wrapper.unmount();
   });
 
   it("keeps the switch of a dataset that the map can show active", () => {
