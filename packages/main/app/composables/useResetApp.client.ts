@@ -1,4 +1,5 @@
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { useFeaturesStore } from "@swissgeo/feature";
 import { useLayerStore } from "@swissgeo/layers";
 import { usePositionStore } from "@swissgeo/map";
 
@@ -10,12 +11,14 @@ export function useResetApp() {
     const layerStore = useLayerStore();
     const positionStore = usePositionStore();
     const dimensionsStore = useDimensionsStore();
+    const featureStore = useFeaturesStore();
 
     function resetApp() {
       clearSessionStorage();
       layerStore.$reset();
       positionStore.$reset();
       dimensionsStore.$reset();
+      featureStore.$reset();
     }
 
     return { resetApp };

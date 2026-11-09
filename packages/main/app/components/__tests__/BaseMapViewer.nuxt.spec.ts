@@ -361,6 +361,24 @@ describe("BaseMapViewer", () => {
       ).toBe(true);
     });
 
+    it("resets the feature store and unmounts when the disabled notice emits close", async () => {
+      featureFlagControl.enableFeatureInfo = false;
+      getFeatureStoreState().hasSelectedFeatures = true;
+      const wrapper = await createWrapper();
+      expect(
+        wrapper.find("[data-testid='feature-info-disabled']").exists(),
+      ).toBe(true);
+
+      wrapper.getComponent(FeatureInfoDisabledStub).vm.$emit("close");
+      await nextTick();
+
+      expect(getFeatureStoreState().$reset).toHaveBeenCalledOnce();
+      expect(getFeatureStoreState().hasSelectedFeatures).toBe(false);
+      expect(
+        wrapper.find("[data-testid='feature-info-disabled']").exists(),
+      ).toBe(false);
+    });
+
     it("shows nothing when the flag is off and no feature is selected", async () => {
       featureFlagControl.enableFeatureInfo = false;
 

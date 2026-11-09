@@ -6,6 +6,10 @@ const props = defineProps<{
   initialPosition: { x: number; y: number };
 }>();
 
+const emit = defineEmits<{
+  close: [];
+}>();
+
 const { t } = useI18n();
 const { cmsUrl } = useCmsUrl();
 
@@ -26,18 +30,31 @@ const style = computed(() => ({
     :style="style"
     data-testid="feature-info-disabled"
   >
-    <p>{{ t("featureInfo.featureFlag.notAvailable") }}</p>
-    <UButton
-      :to="cmsUrl(t('toolbox.featureFlag.links.roadmap'))"
-      variant="link"
-      size="xs"
-      target="_blank"
-      class="mt-2"
-      :ui="{
-        base: 'p-0',
-      }"
-    >
-      {{ t("featureInfo.featureFlag.workingOnIt") }}
-    </UButton>
+    <div class="flex items-start justify-between gap-2">
+      <div>
+        <p>{{ t("featureInfo.featureFlag.notAvailable") }}</p>
+        <UButton
+          :to="cmsUrl(t('toolbox.featureFlag.links.roadmap'))"
+          variant="link"
+          size="xs"
+          target="_blank"
+          class="mt-2"
+          :ui="{
+            base: 'p-0',
+          }"
+        >
+          {{ t("featureInfo.featureFlag.workingOnIt") }}
+        </UButton>
+      </div>
+      <UButton
+        icon="i-lucide-x"
+        color="neutral"
+        variant="ghost"
+        square
+        size="xs"
+        data-testid="feature-info-disabled-close"
+        @click="emit('close')"
+      />
+    </div>
   </div>
 </template>
