@@ -108,6 +108,20 @@ useEventListener(scroller, "focusin", (focusEvent: FocusEvent) => {
   }
 });
 
+// Escape does what the close button does. On mobile the drawer handles it itself,
+// and a dialog above the panel prevents the default once it handled it.
+useEventListener("keydown", (event: KeyboardEvent) => {
+  if (
+    event.key === "Escape" &&
+    !event.defaultPrevented &&
+    isDesktop.value &&
+    hasHeader &&
+    isVisible
+  ) {
+    emit("close");
+  }
+});
+
 // Decide whether the panel is scrollable or not:
 // - It is always scrollable on desktop (in the sidebar)
 // - On mobile, it is only scrollable when fully extended
