@@ -5,7 +5,7 @@ import { flushPromises } from "@vue/test-utils";
 import { View } from "ol";
 import { register } from "ol/proj/proj4";
 import proj4 from "proj4";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "vue";
 
 import { DEFAULT_PROJECTION } from "@/stores/position";
@@ -15,7 +15,12 @@ import createOlMap from "../createOlMap";
 registerProj4(proj4);
 register(proj4);
 
-const { roundZoomLevelMock } = vi.hoisted(() => ({
+const { positionState, roundZoomLevelMock } = vi.hoisted(() => ({
+  positionState: {
+    zoom: undefined as number | undefined,
+    center: undefined as [number, number] | undefined,
+    rotation: undefined as number | undefined,
+  },
   roundZoomLevelMock: vi.fn((val: number) => val),
 }));
 
@@ -30,6 +35,9 @@ vi.mock("@/stores/position", async (importOriginal) => {
         roundZoomLevel: roundZoomLevelMock,
         epsg: LV95.epsg,
       },
+      zoom: positionState.zoom,
+      center: positionState.center,
+      rotation: positionState.rotation,
     }),
   };
 });
@@ -71,6 +79,12 @@ async function doubleClick(olMap: olMap): Promise<void> {
 }
 
 describe("createOlMap", () => {
+  beforeEach(() => {
+    positionState.zoom = undefined;
+    positionState.center = undefined;
+    positionState.rotation = undefined;
+  });
+
   it("creates a map with a view", async () => {
     const [result, app] = withSetup(() => createOlMap());
     await flushPromises();
@@ -79,6 +93,22 @@ describe("createOlMap", () => {
     expect(result.map.getView().getCenter()).toEqual(
       DEFAULT_PROJECTION.bounds.center,
     );
+
+    app.unmount();
+  });
+
+  it("seeds the view from the position store when it holds live values", async () => {
+    positionState.zoom = 7;
+    positionState.center = [2600000, 1200000];
+    positionState.rotation = 0.5;
+
+    const [result, app] = withSetup(() => createOlMap());
+    await flushPromises();
+
+    expect(result.map.getView().getZoom()).toBe(7);
+    expect(result.map.getView().getCenter()).toEqual([2600000, 1200000]);
+    // When rotation is re-enabled, this should be 0.5 again.
+    expect(result.map.getView().getRotation()).toBe(0);
 
     app.unmount();
   });

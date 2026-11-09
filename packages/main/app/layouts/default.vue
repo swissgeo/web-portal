@@ -6,7 +6,6 @@ import { panelSnapPointKey } from "~/types/injectionKeys";
 
 import SideBar from "@/components/sidebar/SideBar.vue";
 
-const { resetApp } = useResetApp();
 const route = useRoute();
 const mapViewStore = useMapViewStore();
 const detailsOpen = computed(() => route.meta.datasetDetail === true);
@@ -39,7 +38,7 @@ watch(route, (value) => {
 <template>
   <div class="flex h-dvh flex-col">
     <TestSiteBanner />
-    <Topbar v-if="!isMapFullscreenMode" @reset-app="resetApp" />
+    <Topbar v-if="!isMapFullscreenMode" />
     <UMain as="div" class="min-h-0 flex-1">
       <main id="main" ref="main" class="h-full font-sans">
         <!-- The map and the footer leave --sidebar-width free on desktop, so

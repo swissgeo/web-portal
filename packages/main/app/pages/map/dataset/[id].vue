@@ -114,14 +114,6 @@ function goBack() {
   }
   return backToMap();
 }
-
-// Coming from a panel returns to the map panel; a direct link returns to the plain map.
-function closeDetails() {
-  if (sidebarStore.isSidebarOpen) {
-    sidebarStore.setSidebar(SidebarType.LAYER_CART);
-  }
-  return backToMap();
-}
 </script>
 
 <template>
@@ -137,7 +129,7 @@ function closeDetails() {
       :error="error"
       :back-to-catalog="isBackToCatalog"
       @back="goBack"
-      @close="closeDetails"
+      @close="backToMap"
     />
   </ClientOnly>
 </template>

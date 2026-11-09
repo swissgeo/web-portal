@@ -29,12 +29,11 @@ mockNuxtImport("useI18n", () => {
 });
 
 mockNuxtImport("useLocalePath", () => {
-  return (locale?: string) => (routeName: string) => {
-    const lang = locale ?? "de";
+  return () => (routeName: string) => {
     if (routeName === "/") {
-      return `/${lang}`;
+      return "/de";
     }
-    return `/${lang}${routeName}`;
+    return `/de${routeName}`;
   };
 });
 
@@ -44,6 +43,11 @@ function mountTopbar() {
     global: {
       stubs: {
         ClientOnly: { template: "<span><slot /></span>" },
+        NuxtLink: {
+          name: "NuxtLink",
+          props: ["to"],
+          template: "<a><slot /></a>",
+        },
         UHeader: {
           name: "UHeader",
           props: ["open", "autoClose"],
@@ -80,12 +84,14 @@ describe("Topbar", () => {
     },
   );
 
-  it("forwards the logo action", () => {
+  it("links the logo to the landing page", () => {
     const wrapper = mountTopbar();
 
-    wrapper.getComponent({ name: "LogoPic" }).vm.$emit("logo-click");
+    const link = wrapper.getComponent({ name: "NuxtLink" });
 
-    expect(wrapper.emitted("reset-app")).toHaveLength(1);
+    expect(link.props("to")).toEqual({ path: "/de" });
+    expect(link.attributes("aria-label")).toBe("topbar.home");
+    expect(link.findComponent({ name: "LogoPic" }).exists()).toBe(true);
   });
 
   it.each([

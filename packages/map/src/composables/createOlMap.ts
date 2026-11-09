@@ -76,9 +76,9 @@ function createView(): View {
   // this is ready for other projection systems
   const viewsForProjection: Record<string, View> = {};
   viewsForProjection[LV95.epsg] = new View({
-    zoom: DEFAULT_PROJECTION.getDefaultZoom(),
+    zoom: positionStore.zoom ?? DEFAULT_PROJECTION.getDefaultZoom(),
     minResolution: VIEW_MIN_RESOLUTION,
-    rotation: 0,
+    rotation: positionStore.rotation ?? 0,
     // This setting keeps the map north up for each source of rotation.
     // will be removed in t2
     enableRotation: false,
@@ -86,7 +86,7 @@ function createView(): View {
     projection: LV95.epsg,
     extent: LV95.bounds.flatten,
     constrainOnlyCenter: true,
-    center: DEFAULT_PROJECTION.bounds.center,
+    center: positionStore.center ?? DEFAULT_PROJECTION.bounds.center,
   });
 
   const viewForProjection = viewsForProjection[positionStore.projection.epsg];

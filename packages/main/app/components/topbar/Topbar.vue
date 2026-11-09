@@ -30,10 +30,6 @@ watch(
   },
 );
 
-const emit = defineEmits<{
-  "reset-app": [void];
-}>();
-
 const items = computed<NavigationMenuItem[]>(() => [
   {
     label: t("topbar.home"),
@@ -46,10 +42,6 @@ const items = computed<NavigationMenuItem[]>(() => [
     to: { path: localePath("/map") },
   },
 ]);
-
-function resetApp() {
-  emit("reset-app");
-}
 </script>
 
 <template>
@@ -77,11 +69,14 @@ function resetApp() {
   >
     <template #left>
       <ClientOnly>
-        <LogoPic
+        <NuxtLink
+          :to="{ path: localePath('/') }"
+          :aria-label="t('topbar.home')"
           class="shrink-0"
-          :darkMode="colorMode.value === 'dark'"
-          @logo-click="resetApp"
-        />
+          data-testid="topbar-logo-link"
+        >
+          <LogoPic :darkMode="colorMode.value === 'dark'" />
+        </NuxtLink>
         <template #fallback>
           <div class="h-8 w-32.75 shrink-0" />
         </template>
