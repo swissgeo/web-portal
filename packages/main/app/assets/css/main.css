@@ -8,6 +8,7 @@
 @source "../../../../content/";
 @source "../../../../map/";
 @source "../../../../dimension/";
+@source "../../../../elevation-profile/";
 
 @custom-variant dark (&:where(.dark, .dark *));
 @import "@nuxt/ui";

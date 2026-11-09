@@ -18,7 +18,6 @@ import dataModelPlugin from "#chartjs-plugins/datamodel.plugin";
 import noDataPlugin from "#chartjs-plugins/nodata.plugin";
 import ElevationProfile from "#ElevationProfile.vue";
 import ElevationProfileOpenLayersBridge from "#ElevationProfileOpenLayersBridge.vue";
-import "#style.css";
 
 registerProj4(proj4);
 

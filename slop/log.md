@@ -344,6 +344,11 @@ Typed destructures or `!` with a comment where an invariant guarantees the value
 - One run reused a dev server I had started without Playwright's `webServer.env` and got 12 failures, invalid. The env was then extracted from `playwright.config.ts` (`node --experimental-strip-types` on a small script that prints it as `export` lines) for a manually started server. An earlier attempt with `npx tsx` downloaded `tsx` from the npm registry; not used again.
 - With a cleared Vite cache and a full browser run, Vite found all dependencies in its startup scan, so pre-bundling with `optimizeDeps.include` wouldn't help the flaky first tests; not added. (The runtime dependency discovery seen earlier only happened with curl-only requests.)
 
+### Follow-up after review
+
+- **Broken CSS (e.g. the top bar search icon overlapping the input text):** `elevation-profile/src/index.ts` imported `style.css`, which is just `@import "tailwindcss";`. In library mode Vite writes CSS to a separate file that the built JS doesn't import, and main never imported elevation-profile's stylesheet, so that import never took effect before step 4. Consumed as source it ran, and loaded a second, complete Tailwind stylesheet after main's: its own reset and theme defaults, with utilities only for elevation-profile's own classes. Fixed by deleting `style.css`, its import and the now unused `#*.css` entry in elevation-profile's `imports`, and adding `@source "../../../../elevation-profile/";` to `main/app/assets/css/main.css` next to the other packages, so main's Tailwind generates elevation-profile's classes. Checked in the browser by the user.
+- Lesson for the switch to source: check what CSS a package imports from its own source, not only its `./stylesheet` export.
+
 ## Step 5: clean up once nothing builds
 
 ### Summary
