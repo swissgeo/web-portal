@@ -18,7 +18,6 @@ const mapView = reactive({
 });
 mockNuxtImport("useI18n", () => () => ({ t: (key: string) => key }));
 mockNuxtImport("useRoute", () => mocks.route);
-mockNuxtImport("useResetApp", () => () => ({ resetApp: vi.fn() }));
 mockNuxtImport("useMapViewStore", () => mocks.mapView);
 
 vi.mock("@swissgeo/skeleton", () => ({
