@@ -21,3 +21,4 @@ export type {
   SearchResponse,
   SearchResponseResult,
 } from "./types/search";
+export { isLayerSearchResult } from "./types/search";

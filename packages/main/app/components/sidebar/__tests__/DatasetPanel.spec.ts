@@ -49,6 +49,7 @@ const dataset: Dataset = {
     title: "Example dataset",
     shortTitle: "Example",
     languages: [{ code: "de", name: "German", dir: "ltr" }],
+    preferredDistributionId: "example.dataset:wmts",
   },
 };
 
@@ -75,6 +76,7 @@ function render(
           template: "<div />",
         },
         DatasetCopyLink: true,
+        DatasetNotMappableHint: { template: "<slot />" },
       },
     },
   });

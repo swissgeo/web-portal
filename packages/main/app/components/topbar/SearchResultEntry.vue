@@ -3,9 +3,9 @@
 
 import type { SearchResult } from "@swissgeo/search";
 
-import { SearchResultTypesEnum } from "@swissgeo/search";
+import { isLayerSearchResult, SearchResultTypesEnum } from "@swissgeo/search";
 import { sanitizeHtml } from "@swissgeo/shared";
-import { computed, ref } from "vue";
+import { computed, ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 const localePath = useLocalePath();
@@ -32,6 +32,11 @@ const item = ref<HTMLLIElement>();
 
 const sanitizedTitle = computed(() => sanitizeHtml(entry.title));
 const detailPath = computed(() => localePath(`/dataset/${entry.id}`));
+// Only layer results go on the map, so only they can be not mappable
+const isMappable = computed(
+  () => !isLayerSearchResult(entry) || entry.isMappable,
+);
+const hintId = useId();
 
 // Keyboard navigation
 function goToFirst() {
@@ -75,7 +80,9 @@ function goToLast() {
 
 // Selection handler
 function selectItem() {
-  emit("select");
+  if (isMappable.value) {
+    emit("select");
+  }
 }
 
 defineExpose({
@@ -87,38 +94,49 @@ defineExpose({
 
 <template>
   <!-- List item with keyboard navigation -->
-  <li
-    ref="item"
-    class="text-accent flex cursor-pointer items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors hover:bg-muted focus:outline-none focus-visible:bg-elevated focus-visible:text-highlighted"
-    :data-testid="`search-result-entry-${entry.resultType.toLowerCase()}-${index}`"
-    :tabindex="tabStart ? 0 : -1"
-    @keydown.up.prevent="goToPrevious"
-    @keydown.down.prevent="goToNext"
-    @keydown.home.prevent="goToFirst"
-    @keydown.end.prevent="goToLast"
-    @keyup.enter="selectItem"
-    @click="selectItem"
-  >
-    <!-- Title -->
-    <ClientOnly>
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
-    </ClientOnly>
+  <DatasetNotMappableHint :show-hint="!isMappable">
+    <li
+      ref="item"
+      class="flex items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors focus:outline-none focus-visible:bg-elevated"
+      :class="
+        isMappable
+          ? 'text-accent cursor-pointer hover:bg-muted focus-visible:text-highlighted'
+          : 'cursor-not-allowed text-muted'
+      "
+      :aria-describedby="isMappable ? undefined : hintId"
+      :data-testid="`search-result-entry-${entry.resultType.toLowerCase()}-${index}`"
+      :tabindex="tabStart ? 0 : -1"
+      @keydown.up.prevent="goToPrevious"
+      @keydown.down.prevent="goToNext"
+      @keydown.home.prevent="goToFirst"
+      @keydown.end.prevent="goToLast"
+      @keyup.enter="selectItem"
+      @click="selectItem"
+    >
+      <!-- Title -->
+      <ClientOnly>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
+      </ClientOnly>
 
-    <!-- Layer info button, the negative margins keep the row height -->
-    <UButton
-      class="-my-1 -mr-1"
-      v-if="entry.resultType === SearchResultTypesEnum.layer"
-      :data-testid="`search-result-info-${index}`"
-      :aria-label="t('search.viewDataset')"
-      :title="t('search.viewDataset')"
-      icon="i-lucide-info"
-      color="primary"
-      variant="ghost"
-      size="xs"
-      :to="detailPath"
-      @click.stop="emit('viewDetails')"
-      @keyup.enter.stop
-    />
-  </li>
+      <!-- Layer info button, the negative margins keep the row height -->
+      <UButton
+        class="-my-1 -mr-1"
+        v-if="entry.resultType === SearchResultTypesEnum.layer"
+        :data-testid="`search-result-info-${index}`"
+        :aria-label="t('search.viewDataset')"
+        :title="t('search.viewDataset')"
+        icon="i-lucide-info"
+        color="primary"
+        variant="ghost"
+        size="xs"
+        :to="detailPath"
+        @click.stop="emit('viewDetails')"
+        @keyup.enter.stop
+      />
+      <span v-if="!isMappable" :id="hintId" class="sr-only">
+        {{ t("dataset.notMappable") }}
+      </span>
+    </li>
+  </DatasetNotMappableHint>
 </template>

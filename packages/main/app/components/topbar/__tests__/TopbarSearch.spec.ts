@@ -1,4 +1,8 @@
-import type { CoordinateSearchResult, SearchResult } from "@swissgeo/search";
+import type {
+  CoordinateSearchResult,
+  LayerSearchResult,
+  SearchResult,
+} from "@swissgeo/search";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { enableAutoUnmount, mount } from "@vue/test-utils";
@@ -85,6 +89,7 @@ const UInputStub = defineComponent({
 // Render every tab body, so the content tab can be asserted without driving
 // the real tab interaction.
 const stubs = {
+  DatasetNotMappableHint: { template: "<slot />" },
   UPopover: {
     template: "<div><slot name='anchor' /><slot name='content' /></div>",
   },
@@ -107,12 +112,14 @@ const location = (id: string): SearchResult => ({
   description: "",
 });
 
-const layer = (id: string): SearchResult => ({
+const layer = (id: string): LayerSearchResult => ({
   resultType: "LAYER",
   id,
+  layerId: id,
   title: id,
   sanitizedTitle: id,
   description: "",
+  isMappable: true,
 });
 
 const feature = (id: string): SearchResult => ({
@@ -351,6 +358,7 @@ describe("TopbarSearch", () => {
         sanitizedTitle: "Statische Waldgrenzen",
         description: "",
         layerId: "waldgrenzen",
+        isMappable: true,
       } as SearchResult,
     ];
 

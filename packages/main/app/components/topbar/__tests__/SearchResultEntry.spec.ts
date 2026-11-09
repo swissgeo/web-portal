@@ -1,4 +1,4 @@
-import type { SearchResult } from "@swissgeo/search";
+import type { LayerSearchResult, SearchResult } from "@swissgeo/search";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { SearchResultTypesEnum } from "@swissgeo/search";
@@ -56,8 +56,19 @@ describe("SearchResultEntry", () => {
       title: "Layer Title",
       description: "Layer Description",
       sanitizedTitle: "Sanitized 2",
-    },
+      layerId: "id-2",
+      isMappable: true,
+    } as LayerSearchResult,
   ];
+  const notMappableLayer: LayerSearchResult = {
+    resultType: SearchResultTypesEnum.layer,
+    id: "id-3",
+    layerId: "id-3",
+    title: "STAC Layer",
+    description: "",
+    sanitizedTitle: "STAC Layer",
+    isMappable: false,
+  };
 
   function mountEntry(entry: SearchResult, index = 0, tabStart = false) {
     return mount(SearchResultEntry, {
@@ -69,6 +80,11 @@ describe("SearchResultEntry", () => {
           },
           UIcon: UIconStub,
           UButton: UButtonStub,
+          DatasetNotMappableHint: {
+            name: "DatasetNotMappableHint",
+            props: ["showHint"],
+            template: "<slot />",
+          },
         },
       },
       attachTo: document.body,
@@ -204,6 +220,63 @@ describe("SearchResultEntry", () => {
       await wrapper.find("li").trigger("keyup.enter");
 
       expect(wrapper.emitted("select")).toHaveLength(1);
+
+      wrapper.unmount();
+    });
+
+    it.each`
+      event
+      ${"click"}
+      ${"keyup.enter"}
+    `(
+      "does not select a layer that the map cannot show on $event",
+      async ({ event }) => {
+        const wrapper = mountEntry(notMappableLayer);
+        const item = wrapper.get("li");
+
+        await item.trigger(event);
+
+        expect(wrapper.emitted("select")).toBeUndefined();
+        expect(item.classes()).toContain("cursor-not-allowed");
+        // aria-disabled would also mark the active info button as disabled
+        expect(item.attributes("aria-disabled")).toBeUndefined();
+        expect(item.classes()).not.toContain("hover:bg-muted");
+        expect(
+          wrapper.get(`#${item.attributes("aria-describedby")}`).text(),
+        ).toBe("dataset.notMappable");
+        expect(
+          wrapper
+            .getComponent({ name: "DatasetNotMappableHint" })
+            .props("showHint"),
+        ).toBe(true);
+
+        wrapper.unmount();
+      },
+    );
+
+    it("keeps the info button of a layer that the map cannot show", async () => {
+      const wrapper = mountEntry(notMappableLayer);
+
+      await wrapper
+        .get('[data-testid="search-result-info-0"]')
+        .trigger("click");
+
+      expect(wrapper.emitted("viewDetails")).toHaveLength(1);
+
+      wrapper.unmount();
+    });
+
+    it("selects a layer that the map can show", async () => {
+      const wrapper = mountEntry(entries[2]!);
+      const item = wrapper.get("li");
+
+      await item.trigger("click");
+
+      expect(wrapper.emitted("select")).toHaveLength(1);
+      expect(item.classes()).toContain("cursor-pointer");
+      expect(item.classes()).toContain("hover:bg-muted");
+      expect(item.attributes("aria-describedby")).toBeUndefined();
+      expect(item.text()).not.toContain("dataset.notMappable");
 
       wrapper.unmount();
     });

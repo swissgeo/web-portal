@@ -21,6 +21,7 @@ vi.mock("@swissgeo/shared", () => ({
 const UScrollAreaStub = { template: "<div><slot /></div>" };
 
 const stubs = {
+  DatasetNotMappableHint: { template: "<slot />" },
   UScrollArea: UScrollAreaStub,
   UIcon: { template: "<span />" },
   UButton: { template: "<button />" },

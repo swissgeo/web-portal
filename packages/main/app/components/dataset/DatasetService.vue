@@ -50,7 +50,7 @@ const protocol = computed(() => {
       </div>
       <ClientOnly>
         <div v-if="address && !isLoading && !error" class="flex shrink-0">
-          <UTooltip :text="t('dataset.openService')" :content="{ side: 'top' }">
+          <UTooltip :text="t('dataset.openService')">
             <UButton
               :to="address"
               target="_blank"

@@ -514,6 +514,7 @@
     "links": "Links",
     "services": "Servetschs",
     "addToMap": "Agiuntar a la charta",
+    "notMappable": "Questas datas na pon betg vegnir mussadas sin la charta.",
     "removeFromMap": "Stizzar da la charta",
     "details": "Detagls dal nivel",
     "expandPanel": "Engrondir ils detagls dal nivel",
