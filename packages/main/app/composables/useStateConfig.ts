@@ -281,6 +281,7 @@ export function useStateConfig() {
 
     for (const layer of [...mapviewStore.mapLayers]) {
       mapviewStore.removeLayer(layer.uuid);
+      mapviewStore.clearLayerExpansion(layer.uuid);
     }
 
     layerStore.setBackground(null);

@@ -164,6 +164,10 @@ export const useMapViewStore = defineStore("mapView", () => {
     return uuid in expandedLayers.value;
   }
 
+  function clearLayerExpansion(uuid: string): void {
+    delete expandedLayers.value[uuid];
+  }
+
   function removeLayer(identifier: string | number) {
     const index = _getIndexFromIdentifier(identifier);
     if (index !== undefined) {
@@ -281,6 +285,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     updateLayerOpacity,
     setLayerLegends,
     setLayerExpanded,
+    clearLayerExpansion,
     removeLayer,
     addLayerToBottom,
     addLayerToTop,

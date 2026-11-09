@@ -202,6 +202,16 @@ describe("mapView store", () => {
       expect(mapViewStore.isLayerExpanded("a")).toBe(false);
     });
 
+    it("clears the expansion state on request", () => {
+      const mapViewStore = useMapViewStore();
+      mapViewStore.setLayerExpanded("a", true);
+
+      mapViewStore.clearLayerExpansion("a");
+
+      expect(mapViewStore.hasLayerExpandedState("a")).toBe(false);
+      expect(mapViewStore.isLayerExpanded("a")).toBe(false);
+    });
+
     it("tells whether a layer already has an expansion state", () => {
       const mapViewStore = useMapViewStore();
 

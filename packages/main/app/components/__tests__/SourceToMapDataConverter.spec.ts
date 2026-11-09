@@ -62,6 +62,9 @@ const expandedLayers = new Map<string, boolean>();
 const setLayerExpanded = vi.fn((uuid: string, expanded: boolean) => {
   expandedLayers.set(uuid, expanded);
 });
+const clearLayerExpansion = vi.fn((uuid: string) => {
+  expandedLayers.delete(uuid);
+});
 
 mockNuxtImport("useMapViewStore", () => () => ({
   mapLayers: mockMapLayers,
@@ -73,6 +76,8 @@ mockNuxtImport("useMapViewStore", () => () => ({
   removeLayer,
 
   setLayerExpanded,
+
+  clearLayerExpansion,
 
   hasLayerExpandedState: (uuid: string) => expandedLayers.has(uuid),
 
@@ -422,6 +427,7 @@ describe("layer expansion", () => {
 
     updateLayerData.mockClear();
     setLayerExpanded.mockClear();
+    clearLayerExpansion.mockClear();
     expandedLayers.clear();
 
     const layerStore = useLayerStore();
@@ -475,6 +481,30 @@ describe("layer expansion", () => {
     emitMapLayer(wrapper, "issued-layer");
 
     expect(setLayerExpanded).not.toHaveBeenCalled();
+  });
+
+  it("keeps the expansion state when a layer only unmounts", () => {
+    const layerStore = useLayerStore();
+    layerStore.addLayer(makeDatasetLayer("staying-layer"));
+    mockMapLayers.push(makeMapLayer("staying-layer"));
+    expandedLayers.set("staying-layer", true);
+    const wrapper = mountConverter([makeDatasetLayer("staying-layer")]);
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", "staying-layer");
+
+    expect(clearLayerExpansion).not.toHaveBeenCalled();
+    expect(expandedLayers.has("staying-layer")).toBe(true);
+  });
+
+  it("clears the expansion state once a removed layer left the store", () => {
+    mockMapLayers.push(makeMapLayer("gone-layer"));
+    expandedLayers.set("gone-layer", true);
+    const wrapper = mountConverter([makeDatasetLayer("gone-layer")]);
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", "gone-layer");
+
+    expect(clearLayerExpansion).toHaveBeenCalledWith("gone-layer");
+    expect(expandedLayers.has("gone-layer")).toBe(false);
   });
 
   it("keeps the expansion state when an existing layer is refreshed", () => {

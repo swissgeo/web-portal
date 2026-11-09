@@ -162,6 +162,9 @@ function removeMapLayer(uuidToRemove: string) {
   if (mapViewStore.mapLayers.some((layer) => layer.uuid === uuidToRemove)) {
     mapViewStore.removeLayer(uuidToRemove);
   }
+  if (!layerStore.getLayer(uuidToRemove)) {
+    mapViewStore.clearLayerExpansion(uuidToRemove);
+  }
 }
 </script>
 
