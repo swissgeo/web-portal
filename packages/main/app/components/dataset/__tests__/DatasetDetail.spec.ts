@@ -350,6 +350,20 @@ describe("DatasetDetail Overview", () => {
     expect(wrapper.findAll('[role="status"]')).toHaveLength(0);
   });
 
+  it("scrolls only the tab content, so the scrollbar starts below the tab list", () => {
+    const wrapper = mountDetail(makeDataset(undefined, "Long description"));
+    const list = wrapper.get('[role="tablist"]');
+    const panels = wrapper.findAll('[role="tabpanel"]');
+
+    expect(list.classes()).toContain("shrink-0");
+    expect(list.classes()).not.toContain("overflow-y-auto");
+    expect(panels).toHaveLength(4);
+    for (const panel of panels) {
+      expect(panel.classes()).toContain("overflow-y-auto");
+      expect(panel.element.contains(list.element)).toBe(false);
+    }
+  });
+
   it("keeps the legend mounted across tab changes", async () => {
     const wrapper = mountDetail(makeDataset());
     const legend = wrapper.get('[data-testid="legend-stub"]').element;

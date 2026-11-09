@@ -10,6 +10,7 @@ const {
   hasHeader = true,
   isVisible = true,
   isDismissible = true,
+  hasOwnScroller = false,
   itemCount,
   collapseLabel,
   expandLabel,
@@ -21,6 +22,8 @@ const {
   hasHeader?: boolean;
   isVisible?: boolean;
   isDismissible?: boolean;
+  // The content scrolls in an element of its own, e.g. below a fixed header
+  hasOwnScroller?: boolean;
   // A change measures the content height again, opening an item does not
   itemCount?: number;
 }>();
@@ -128,12 +131,17 @@ useEventListener("keydown", (event: KeyboardEvent) => {
 //   When only shown on the bottom of the screen swiping up actually
 //   extends the panel to cover (almost) the entire screen, so we shouldn't
 //   show scrollbars in that case because it is not scrollable.
-const scrollerClass = computed(() => [
-  "scroll-fade min-h-0 flex-1 overscroll-y-contain [scrollbar-gutter:stable]",
-  isDesktop.value || isFullyExtended.value
-    ? "overflow-y-auto"
-    : "overflow-hidden",
-]);
+const scrollerClass = computed(() => {
+  if (hasOwnScroller) {
+    return "flex min-h-0 flex-1 flex-col overflow-hidden";
+  }
+  return [
+    "scroll-fade min-h-0 flex-1 overscroll-y-contain [scrollbar-gutter:stable]",
+    isDesktop.value || isFullyExtended.value
+      ? "overflow-y-auto"
+      : "overflow-hidden",
+  ];
+});
 
 const { drawer } = useDrawerFooterFrame(scroller, contentSnapHeight, {
   isEnabled: () => !!slots.footer && !isDesktop.value,
