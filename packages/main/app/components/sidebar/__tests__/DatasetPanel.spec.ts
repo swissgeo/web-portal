@@ -1,5 +1,4 @@
 import type { Dataset } from "@swissgeo/ogc";
-import type * as vueuse from "@vueuse/core";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
@@ -31,11 +30,6 @@ vi.mock("@swissgeo/dimension", () => ({
   }),
 }));
 vi.mock("@swissgeo/log", () => ({ default: { error: mocks.logError } }));
-const headerHeight = ref(96);
-vi.mock("@vueuse/core", async (importOriginal) => ({
-  ...(await importOriginal<typeof vueuse>()),
-  useElementSize: () => ({ width: ref(0), height: headerHeight }),
-}));
 mockNuxtImport("useToaster", () => () => ({ add: mocks.toast }));
 mockNuxtImport("useI18n", () => () => ({
   t: (key: string) => key,
@@ -207,21 +201,14 @@ describe("DatasetPanel", () => {
     expect(wrapper.text()).not.toContain("Deutsch");
   });
 
-  it("keeps the header in view and places the tab list below its measured height", async () => {
+  it("fills the frame and keeps the header out of the scroll area", () => {
     const wrapper = render();
-    const panel = wrapper.get('[data-testid="dataset-panel"]');
 
-    expect(wrapper.get("header").classes()).toContain("sticky");
-    expect(panel.attributes("style")).toContain(
-      "--dataset-header-height: 96px",
+    expect(wrapper.get('[data-testid="dataset-panel"]').classes()).toEqual(
+      expect.arrayContaining(["flex-1", "min-h-0"]),
     );
-
-    headerHeight.value = 140;
-    await wrapper.vm.$nextTick();
-
-    expect(panel.attributes("style")).toContain(
-      "--dataset-header-height: 140px",
-    );
+    expect(wrapper.get("header").classes()).toContain("shrink-0");
+    expect(wrapper.get("header").classes()).not.toContain("sticky");
   });
 
   it("shows the aggregated tag only for aggregated datasets", async () => {

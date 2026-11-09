@@ -2,11 +2,10 @@
 import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
 import type { DatasetTab } from "~/utils/datasetTab";
 
-import { useElementSize } from "@vueuse/core";
 import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
 import DatasetMapAction from "~/components/dataset/DatasetMapAction.vue";
 import { DEFAULT_DATASET_TAB } from "~/utils/datasetTab";
-import { computed, useTemplateRef } from "vue";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
@@ -23,12 +22,6 @@ const emit = defineEmits<{ back: []; close: [] }>();
 
 const { t } = useI18n();
 
-const header = useTemplateRef("header");
-// A long title wraps, so the tab list needs the measured header height.
-const { height: headerHeight } = useElementSize(header, undefined, {
-  box: "border-box",
-});
-
 // A language switch reloads the record and unmounts the detail, so the page keeps the tab in the URL.
 const tab = defineModel<DatasetTab>("tab", { default: DEFAULT_DATASET_TAB });
 
@@ -42,14 +35,12 @@ const backLabel = computed(() => {
 
 <template>
   <section
-    class="@container flex min-h-full flex-col bg-default"
-    :style="{ '--dataset-header-height': `${headerHeight}px` }"
+    class="@container flex min-h-0 flex-1 flex-col bg-default"
     aria-labelledby="dataset-panel-title"
     data-testid="dataset-panel"
   >
     <header
-      ref="header"
-      class="sticky top-0 z-10 flex shrink-0 flex-col bg-default md:gap-space-m md:p-4 lg:gap-8 lg:p-8"
+      class="flex shrink-0 flex-col bg-default md:gap-space-m md:p-4 lg:gap-8 lg:p-8"
     >
       <div
         class="flex items-center justify-between gap-space-s px-4 pt-4 pb-space-xs md:p-0"
@@ -100,7 +91,7 @@ const backLabel = computed(() => {
         <DatasetMapAction v-if="dataset" :dataset="dataset" />
       </div>
     </header>
-    <div class="flex flex-1 flex-col px-4 pb-4 lg:px-8 lg:pb-8">
+    <div class="flex min-h-0 flex-1 flex-col">
       <div v-if="isLoading" class="flex h-full items-center justify-center">
         <UIcon
           name="i-lucide-loader-circle"
@@ -118,7 +109,6 @@ const backLabel = computed(() => {
       <DatasetDetail
         v-else-if="dataset"
         v-model:tab="tab"
-        class="shrink-0"
         :dataset="dataset"
         :distribution-collection="distributionCollection ?? null"
         :distribution-error="distributionError"

@@ -35,6 +35,7 @@ watch(
         :hasHeader="false"
         :isVisible="isVisible"
         :isDismissible="false"
+        hasOwnScroller
       >
         <slot />
       </ResponsivePanel>
