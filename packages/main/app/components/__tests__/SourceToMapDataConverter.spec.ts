@@ -58,6 +58,14 @@ const removeLayer = vi.fn((identifier: string | number) => {
   }
 });
 
+const expandedLayers = new Map<string, boolean>();
+const setLayerExpanded = vi.fn((uuid: string, expanded: boolean) => {
+  expandedLayers.set(uuid, expanded);
+});
+const clearLayerExpansion = vi.fn((uuid: string) => {
+  expandedLayers.delete(uuid);
+});
+
 mockNuxtImport("useMapViewStore", () => () => ({
   mapLayers: mockMapLayers,
 
@@ -66,6 +74,12 @@ mockNuxtImport("useMapViewStore", () => () => ({
   updateLayerData,
 
   removeLayer,
+
+  setLayerExpanded,
+
+  clearLayerExpansion,
+
+  hasLayerExpandedState: (uuid: string) => expandedLayers.has(uuid),
 
   addLayerToTop: (layer: MapLayer) => mockMapLayers.push(layer),
 }));
@@ -403,6 +417,104 @@ describe("background handling", () => {
 
     expect(mockMapLayers).toHaveLength(1);
     expect(mockMapLayers[0]?.uuid).toBe("overlay");
+  });
+});
+
+describe("layer expansion", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    mockMapLayers.length = 0;
+
+    updateLayerData.mockClear();
+    setLayerExpanded.mockClear();
+    clearLayerExpansion.mockClear();
+    expandedLayers.clear();
+
+    const layerStore = useLayerStore();
+    layerStore.$reset();
+    layerStore.setBackground(null);
+  });
+
+  function mountConverter(sourceData: DatasetLayer[]) {
+    return mount(SourceToMapDataConverter, {
+      props: { sourceBgLayer: null, sourceData },
+      global: {
+        stubs: {
+          MapDatamappingOgcDatasetConverter: OgcConverterStub,
+          MapDatamappingFileConverter: FileConverterStub,
+        },
+      },
+    });
+  }
+
+  function emitMapLayer(
+    wrapper: ReturnType<typeof mountConverter>,
+    uuid: string,
+  ) {
+    wrapper
+      .findComponent(OgcConverterStub)
+      .vm.$emit("update", makeMapLayer(uuid));
+  }
+
+  it("expands a layer added to the map", () => {
+    const wrapper = mountConverter([makeDatasetLayer("new-layer")]);
+
+    emitMapLayer(wrapper, "new-layer");
+
+    expect(setLayerExpanded).toHaveBeenCalledWith("new-layer", true);
+  });
+
+  it("keeps a restored layer collapsed", () => {
+    const layerStore = useLayerStore();
+    layerStore.addImportOption("restored-layer", { isVisible: true });
+    const wrapper = mountConverter([makeDatasetLayer("restored-layer")]);
+
+    emitMapLayer(wrapper, "restored-layer");
+
+    expect(setLayerExpanded).toHaveBeenCalledWith("restored-layer", false);
+  });
+
+  it("keeps the expansion state of a layer that is removed and added again", () => {
+    expandedLayers.set("issued-layer", false);
+    const wrapper = mountConverter([makeDatasetLayer("issued-layer")]);
+
+    emitMapLayer(wrapper, "issued-layer");
+
+    expect(setLayerExpanded).not.toHaveBeenCalled();
+  });
+
+  it("keeps the expansion state when a layer only unmounts", () => {
+    const layerStore = useLayerStore();
+    layerStore.addLayer(makeDatasetLayer("staying-layer"));
+    mockMapLayers.push(makeMapLayer("staying-layer"));
+    expandedLayers.set("staying-layer", true);
+    const wrapper = mountConverter([makeDatasetLayer("staying-layer")]);
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", "staying-layer");
+
+    expect(clearLayerExpansion).not.toHaveBeenCalled();
+    expect(expandedLayers.has("staying-layer")).toBe(true);
+  });
+
+  it("clears the expansion state once a removed layer left the store", () => {
+    mockMapLayers.push(makeMapLayer("gone-layer"));
+    expandedLayers.set("gone-layer", true);
+    const wrapper = mountConverter([makeDatasetLayer("gone-layer")]);
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", "gone-layer");
+
+    expect(clearLayerExpansion).toHaveBeenCalledWith("gone-layer");
+    expect(expandedLayers.has("gone-layer")).toBe(false);
+  });
+
+  it("keeps the expansion state when an existing layer is refreshed", () => {
+    expandedLayers.set("existing-layer", true);
+    mockMapLayers.push(makeMapLayer("existing-layer"));
+    const wrapper = mountConverter([makeDatasetLayer("existing-layer")]);
+
+    emitMapLayer(wrapper, "existing-layer");
+
+    expect(setLayerExpanded).not.toHaveBeenCalled();
   });
 });
 

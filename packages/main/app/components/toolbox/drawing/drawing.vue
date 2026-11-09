@@ -445,10 +445,7 @@ onUnmounted(() => {
             :ui="{ trailing: 'pr-0.5' }"
           >
             <template #trailing>
-              <UTooltip
-                :text="t('toolbox.drawing.copy')"
-                :content="{ side: 'top' }"
-              >
+              <UTooltip :text="t('toolbox.drawing.copy')">
                 <UButton
                   :color="copied ? 'success' : 'neutral'"
                   variant="link"

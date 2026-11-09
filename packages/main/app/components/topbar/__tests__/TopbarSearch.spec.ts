@@ -1,4 +1,8 @@
-import type { CoordinateSearchResult, SearchResult } from "@swissgeo/search";
+import type {
+  CoordinateSearchResult,
+  LayerSearchResult,
+  SearchResult,
+} from "@swissgeo/search";
 
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { enableAutoUnmount, mount } from "@vue/test-utils";
@@ -85,6 +89,7 @@ const UInputStub = defineComponent({
 // Render every tab body, so the content tab can be asserted without driving
 // the real tab interaction.
 const stubs = {
+  DatasetNotMappableHint: { template: "<slot />" },
   UPopover: {
     template: "<div><slot name='anchor' /><slot name='content' /></div>",
   },
@@ -107,12 +112,14 @@ const location = (id: string): SearchResult => ({
   description: "",
 });
 
-const layer = (id: string): SearchResult => ({
+const layer = (id: string): LayerSearchResult => ({
   resultType: "LAYER",
   id,
+  layerId: id,
   title: id,
   sanitizedTitle: id,
   description: "",
+  isMappable: true,
 });
 
 const feature = (id: string): SearchResult => ({
@@ -164,6 +171,7 @@ describe("TopbarSearch", () => {
     searchStore.results = [];
     searchStore.coordinateResult = null;
     searchStore.isSearching = false;
+    searchStore.hasError = false;
     searchStore.enableCmsSearch = true;
     locale.value = "de";
     handleResultSelection.mockClear();
@@ -350,6 +358,7 @@ describe("TopbarSearch", () => {
         sanitizedTitle: "Statische Waldgrenzen",
         description: "",
         layerId: "waldgrenzen",
+        isMappable: true,
       } as SearchResult,
     ];
 
@@ -421,6 +430,64 @@ describe("TopbarSearch", () => {
         "bern",
         "de",
       );
+    });
+
+    it.each([
+      ["without results", []],
+      ["with results", [location("bern")]],
+    ])("opens the results on a pasted text %s", async (_, results) => {
+      searchStore.setSearchQuery.mockImplementation((value: string) => {
+        searchStore.query = value;
+        searchStore.results = results;
+      });
+      const wrapper = render();
+      const input = wrapper.get("input").element;
+
+      input.value = "zzzqqq bern";
+      input.dispatchEvent(new Event("input"));
+      await vi.advanceTimersByTimeAsync(100);
+
+      expect(searchStore.setSearchQuery).toHaveBeenCalledExactlyOnceWith(
+        "zzzqqq bern",
+        "de",
+      );
+      expect(wrapper.emitted("update:open")?.at(-1)).toEqual([true]);
+    });
+
+    it.each([
+      [
+        "a coordinate",
+        "2600000 1200000",
+        {
+          coordinateResult: {
+            resultType: "COORDINATE",
+            id: "coordinate-2600000,1200000",
+            title: "2600000 1200000",
+            sanitizedTitle: "2600000 1200000",
+            description: "LV95",
+            coordinate: [2600000, 1200000],
+            zoom: 8,
+          } as CoordinateSearchResult,
+        },
+      ],
+      ["a failed search", "bern", { hasError: true }],
+      ["a text too short to search", "b", {}],
+    ])("keeps the results closed on %s", async (_, text, state) => {
+      searchStore.setSearchQuery.mockImplementation((value: string) => {
+        Object.assign(searchStore, { query: value, ...state });
+      });
+      const wrapper = render();
+      const input = wrapper.get("input").element;
+
+      input.value = text;
+      input.dispatchEvent(new Event("input"));
+      await vi.advanceTimersByTimeAsync(100);
+
+      expect(searchStore.setSearchQuery).toHaveBeenCalledExactlyOnceWith(
+        text,
+        "de",
+      );
+      expect(wrapper.emitted("update:open")).toBeUndefined();
     });
 
     it("keeps the typed text when a search ends before the next one starts", async () => {

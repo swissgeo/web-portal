@@ -31,6 +31,14 @@ export interface LayerSearchResult extends SearchResult {
   resultType: "LAYER";
   /** ID of the layer in the catalog */
   layerId: string;
+  /** False when the map cannot show the layer, e.g. a STAC-only dataset */
+  isMappable: boolean;
+}
+
+export function isLayerSearchResult(
+  result: SearchResult,
+): result is LayerSearchResult {
+  return result.resultType === "LAYER";
 }
 
 /**

@@ -1,7 +1,7 @@
 // Search API for web-poc-portal
 
 import log, { LogPreDefinedColor } from "@swissgeo/log";
-import { fetchCatalogItems } from "@swissgeo/ogc";
+import { fetchCatalogItems, isMappableDataset } from "@swissgeo/ogc";
 import { sanitizeHtml } from "@swissgeo/shared";
 
 import type {
@@ -186,6 +186,7 @@ export async function searchLayers(
       title,
       sanitizedTitle: sanitizeTitle(title),
       description: record.properties?.description || "",
+      isMappable: isMappableDataset(record),
     };
   });
 }

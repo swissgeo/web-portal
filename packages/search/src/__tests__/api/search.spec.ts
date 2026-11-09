@@ -291,6 +291,24 @@ describe("searchLayers function", () => {
     });
   });
 
+  it.each`
+    case                                 | properties                                     | isMappable
+    ${"a distribution the map can show"} | ${{ preferredDistributionId: "layer-1:wmts" }} | ${true}
+    ${"only a STAC distribution"}        | ${{}}                                          | ${false}
+  `(
+    "sets isMappable to $isMappable for a dataset with $case",
+    async ({ properties, isMappable }) => {
+      (fetch as Mock).mockResolvedValue({
+        ok: true,
+        json: () => ({ features: [{ id: "layer-1", properties }] }),
+      });
+
+      const result = await searchLayers("test", catalogUrl, "de");
+
+      expect(result[0]?.isMappable).toBe(isMappable);
+    },
+  );
+
   it("uses the short title of a feature, not its title", async () => {
     (fetch as Mock).mockResolvedValue({
       ok: true,

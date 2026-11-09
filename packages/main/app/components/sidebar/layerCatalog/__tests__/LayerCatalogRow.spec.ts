@@ -48,9 +48,9 @@ const stubs = {
     props: ["label"],
     template: "<span>{{ label }}</span>",
   },
-  UTooltip: {
-    name: "UTooltip",
-    props: ["text"],
+  DatasetNotMappableHint: {
+    name: "DatasetNotMappableHint",
+    props: ["showHint", "tooltip"],
     template: "<slot />",
   },
 };
@@ -69,6 +69,7 @@ function makeDataset(id = "ch.a", owner?: Owner): Dataset {
       title: `Title of ${id}`,
       shortTitle: `Short of ${id}`,
       owner,
+      preferredDistributionId: `${id}:wmts`,
     },
     links: [],
   };
@@ -133,9 +134,11 @@ describe("LayerCatalogRow.vue", () => {
 
       const wrapper = mountRow();
 
-      expect(wrapper.getComponent({ name: "UTooltip" }).props("text")).toBe(
-        tooltip,
-      );
+      expect(
+        wrapper
+          .getComponent({ name: "DatasetNotMappableHint" })
+          .props("tooltip"),
+      ).toBe(tooltip);
       // A title on the cell would show a second tooltip over the switch.
       expect(cells(wrapper)[0]!.attributes("title")).toBeUndefined();
     },
@@ -244,4 +247,52 @@ describe("LayerCatalogRow.vue", () => {
       }
     },
   );
+
+  it("grays out the switch of a dataset that the map cannot show", async () => {
+    const dataset = makeDataset();
+    delete dataset.properties.preferredDistributionId;
+    const wrapper = mountRow(dataset);
+    const toggle = wrapper.get("[data-testid='catalog-layer-on-map']");
+
+    expect(toggle.attributes("aria-disabled")).toBe("true");
+    expect(
+      wrapper.get(`#${toggle.attributes("aria-describedby")}`).text(),
+    ).toBe("dataset.notMappable");
+    expect(
+      wrapper
+        .getComponent({ name: "DatasetNotMappableHint" })
+        .props("showHint"),
+    ).toBe(true);
+
+    await toggle.trigger("click");
+
+    expect(datasetLayer.addToMap).not.toHaveBeenCalled();
+  });
+
+  it("removes a dataset that the map cannot show, when it is already on the map", async () => {
+    datasetLayer.isOnMap.value = true;
+    const dataset = makeDataset();
+    delete dataset.properties.preferredDistributionId;
+    const wrapper = mountRow(dataset);
+    const toggle = wrapper.get("[data-testid='catalog-layer-on-map']");
+
+    expect(toggle.attributes("aria-disabled")).toBeUndefined();
+    expect(toggle.attributes("aria-describedby")).toBeUndefined();
+    expect(
+      wrapper
+        .getComponent({ name: "DatasetNotMappableHint" })
+        .props("showHint"),
+    ).toBe(false);
+
+    await toggle.trigger("click");
+
+    expect(datasetLayer.removeFromMap).toHaveBeenCalledOnce();
+  });
+
+  it("keeps the switch of a dataset that the map can show active", () => {
+    const toggle = mountRow().get("[data-testid='catalog-layer-on-map']");
+
+    expect(toggle.attributes("aria-disabled")).toBeUndefined();
+    expect(toggle.attributes("aria-describedby")).toBeUndefined();
+  });
 });

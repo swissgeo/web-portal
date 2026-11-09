@@ -514,6 +514,7 @@
     "links": "Links",
     "services": "Services",
     "addToMap": "Add to map",
+    "notMappable": "This data cannot be shown on the map.",
     "removeFromMap": "Remove from map",
     "details": "Dataset details",
     "expandPanel": "Expand detail panel",

@@ -25,7 +25,10 @@ const isEmbedMode = computed(() => displayMode === "embed");
 </script>
 
 <template>
-  <div class="absolute top-4 right-4 bottom-4" data-testid="toolbox-right">
+  <div
+    class="absolute top-4 right-4 bottom-4 flex flex-col"
+    data-testid="toolbox-right"
+  >
     <UCard
       v-if="isWebMode"
       class="mb-4"
@@ -38,16 +41,6 @@ const isEmbedMode = computed(() => displayMode === "embed");
       <Toggle3dButton v-if="isWebMode && toolboxStore.show3dButton" />
       <CompassButton v-if="isWebMode && toolboxStore.showCompassButton" />
       <slot />
-    </UCard>
-    <UCard
-      class="mb-4"
-      :ui="{
-        body: 'flex flex-col items-center gap-2 p-1 sm:p-2',
-      }"
-    >
-      <ZoomButtons
-        v-if="(isWebMode || isEmbedMode) && toolboxStore.showZoomButtons"
-      />
     </UCard>
     <UCard
       v-if="isWebMode"
@@ -64,6 +57,13 @@ const isEmbedMode = computed(() => displayMode === "embed");
       <ImportButton v-if="isWebMode && toolboxStore.showImportButton" />
       <ShareButton v-if="isWebMode && toolboxStore.showShareButton" />
       <PrintButton v-if="isWebMode && toolboxStore.showPrintButton" />
+    </UCard>
+    <UCard
+      v-if="(isWebMode || isEmbedMode) && toolboxStore.showZoomButtons"
+      class="mt-auto mb-20 self-end md:mb-14"
+      :ui="{ body: 'flex flex-col items-center gap-1 p-1 sm:p-1' }"
+    >
+      <ZoomButtons />
     </UCard>
 
     <ToolboxDetail />

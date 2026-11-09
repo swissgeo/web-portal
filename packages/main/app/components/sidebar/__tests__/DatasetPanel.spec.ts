@@ -49,6 +49,7 @@ const dataset: Dataset = {
     title: "Example dataset",
     shortTitle: "Example",
     languages: [{ code: "de", name: "German", dir: "ltr" }],
+    preferredDistributionId: "example.dataset:wmts",
   },
 };
 
@@ -75,6 +76,7 @@ function render(
           template: "<div />",
         },
         DatasetCopyLink: true,
+        DatasetNotMappableHint: { template: "<slot />" },
       },
     },
   });
@@ -240,21 +242,14 @@ describe("DatasetPanel", () => {
     );
   });
 
-  it("keeps the open tab while a language switch reloads the dataset", async () => {
-    const wrapper = render();
-    wrapper
-      .getComponent({ name: "DatasetDetail" })
-      .vm.$emit("update:tab", "legend");
+  it("passes the tab of the page to the detail and reports a tab change", () => {
+    const wrapper = render({ tab: "legend" });
+    const detail = wrapper.getComponent({ name: "DatasetDetail" });
+    expect(detail.props("tab")).toBe("legend");
 
-    await wrapper.setProps({ dataset: null, isLoading: true });
-    expect(wrapper.findComponent({ name: "DatasetDetail" }).exists()).toBe(
-      false,
-    );
-    await wrapper.setProps({ dataset, isLoading: false });
+    detail.vm.$emit("update:tab", "metadata");
 
-    expect(wrapper.getComponent({ name: "DatasetDetail" }).props("tab")).toBe(
-      "legend",
-    );
+    expect(wrapper.emitted("update:tab")).toEqual([["metadata"]]);
   });
 
   it("leaves the border to the frame, so the scrollbar stays inside the panel", () => {

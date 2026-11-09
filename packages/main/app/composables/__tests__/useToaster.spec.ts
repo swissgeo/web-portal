@@ -1,12 +1,15 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 
 import { useToaster } from "../useToaster";
 
-const { toastAdd, toastUpdate } = vi.hoisted(() => ({
+const { toastAdd, toastUpdate, useClipboard } = vi.hoisted(() => ({
   toastAdd: vi.fn().mockReturnValue({ id: "toast-id" }),
   toastUpdate: vi.fn(),
+  useClipboard: vi.fn(),
 }));
+vi.mock("@vueuse/core", () => ({ useClipboard }));
 
 // tests/setup.ts mocks useToaster for all tests. This test needs the real one.
 vi.unmock("~/composables/useToaster");
@@ -65,10 +68,13 @@ describe("useToaster", () => {
     expect(toastAdd.mock.calls[0]?.[0]).not.toHaveProperty("actions");
   });
 
-  it("names the service host and copies the full request URL", () => {
+  it("names the service host and copies the full request URL", async () => {
     const url = "https://wms.example.test/wms?REQUEST=GetCapabilities";
-    const writeText = vi.fn();
-    vi.stubGlobal("navigator", { clipboard: { writeText } });
+    const copied = ref(false);
+    const copy = vi.fn(() => {
+      copied.value = true;
+    });
+    useClipboard.mockReturnValue({ copy, copied });
 
     useToaster().showLayerError(url);
 
@@ -79,8 +85,8 @@ describe("useToaster", () => {
     expect(options.actions).toEqual([
       expect.objectContaining({ label: "error.copyRequestUrl" }),
     ]);
-    options.actions[0].onClick();
-    expect(writeText).toHaveBeenCalledWith(url);
+    await options.actions[0].onClick();
+    expect(copy).toHaveBeenCalledWith(url);
     expect(toastUpdate).toHaveBeenCalledWith("toast-id", {
       duration: Infinity,
       actions: [
@@ -90,7 +96,17 @@ describe("useToaster", () => {
         }),
       ],
     });
-    vi.unstubAllGlobals();
+  });
+
+  it("keeps the copy label when the copy fails", async () => {
+    const copy = vi.fn();
+    useClipboard.mockReturnValue({ copy, copied: ref(false) });
+
+    useToaster().showLayerError("https://wms.example.test/wms");
+    await toastAdd.mock.calls[0]?.[0].actions[0].onClick();
+
+    expect(copy).toHaveBeenCalled();
+    expect(toastUpdate).not.toHaveBeenCalled();
   });
 
   it("lets a success toast use the default duration", () => {

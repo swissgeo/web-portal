@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import type { Dataset, DistributionCollection } from "@swissgeo/ogc";
+import type { DatasetTab } from "~/utils/datasetTab";
 
 import { useElementSize } from "@vueuse/core";
 import DatasetCopyLink from "~/components/dataset/DatasetCopyLink.vue";
 import DatasetMapAction from "~/components/dataset/DatasetMapAction.vue";
-import { computed, ref, useTemplateRef } from "vue";
+import { DEFAULT_DATASET_TAB } from "~/utils/datasetTab";
+import { computed, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
@@ -27,8 +29,8 @@ const { height: headerHeight } = useElementSize(header, undefined, {
   box: "border-box",
 });
 
-// A language switch reloads the record and unmounts the detail, so the panel keeps the tab.
-const tab = ref("overview");
+// A language switch reloads the record and unmounts the detail, so the page keeps the tab in the URL.
+const tab = defineModel<DatasetTab>("tab", { default: DEFAULT_DATASET_TAB });
 
 const backLabel = computed(() => {
   if (props.backToCatalog) {

@@ -35,6 +35,7 @@ const mounted: ReturnType<typeof mount>[] = [];
 function mountSideBar(
   isVisible?: boolean,
   panelSnapPoint = ref<number | string | null>(null),
+  stubs = {},
 ) {
   const wrapper = mount(SideBar, {
     props: { mapLayers: ref([]), isVisible },
@@ -51,6 +52,7 @@ function mountSideBar(
         },
         USeparator: true,
         BackgroundSelector: true,
+        ...stubs,
       },
     },
   });
@@ -199,6 +201,16 @@ describe("SideBar", () => {
     sidebar.currentSidebar = "geocatalogTree";
 
     mountSideBar().getComponent({ name: "ResponsivePanel" }).vm.$emit("close");
+
+    expect(sidebar.setSidebar).toHaveBeenCalledExactlyOnceWith("layerCart");
+  });
+
+  it("goes back to the layer cart when Escape is pressed in the layer catalog", () => {
+    sidebar.currentSidebar = "geocatalogTree";
+    // The real panel listens to Escape. Its close button needs a Nuxt app, which this test does not boot
+    mountSideBar(true, undefined, { ResponsivePanel: false, UButton: true });
+
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
 
     expect(sidebar.setSidebar).toHaveBeenCalledExactlyOnceWith("layerCart");
   });

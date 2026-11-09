@@ -41,6 +41,7 @@ const layer = (id: string): LayerSearchResult => ({
   title: id,
   sanitizedTitle: id,
   description: "",
+  isMappable: true,
 });
 
 const location = (id: string, title: string): SearchResult => ({

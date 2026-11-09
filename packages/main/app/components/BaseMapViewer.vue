@@ -199,6 +199,7 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
   layerStore.clearImportOptions(uuid);
 
   mapViewStore.removeLayer(uuid);
+  mapViewStore.clearLayerExpansion(uuid);
 
   if (isBackground) {
     layerStore.setBackground(null);
@@ -334,6 +335,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
     <FeaturesinfoFeatureInfoDisabled
       v-else-if="displayMode !== 'print' && featureStore.hasSelectedFeatures"
       :initial-position="featureInfoDisabledPosition"
+      @close="featureStore.$reset()"
     />
     <Toolbox v-if="displayMode !== 'print'" />
     <slot name="after" />

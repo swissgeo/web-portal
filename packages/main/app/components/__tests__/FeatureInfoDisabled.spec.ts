@@ -65,4 +65,12 @@ describe("FeatureInfoDisabled", () => {
     expect(style).toContain("left: 345px");
     expect(style).toContain("top: 120px");
   });
+
+  it("emits close when the close button is clicked", async () => {
+    const wrapper = mountPopover();
+    await wrapper
+      .find("[data-testid='feature-info-disabled-close']")
+      .trigger("click");
+    expect(wrapper.emitted("close")).toHaveLength(1);
+  });
 });

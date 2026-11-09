@@ -14,6 +14,7 @@ import BaseMapViewer from "../BaseMapViewer.vue";
 const {
   clearImportOptions,
   clearLayerDimensions,
+  clearLayerExpansion,
   clearWmsCapability,
   logError,
   removeMapLayer,
@@ -24,6 +25,7 @@ const {
 } = vi.hoisted(() => ({
   clearImportOptions: vi.fn(),
   clearLayerDimensions: vi.fn(),
+  clearLayerExpansion: vi.fn(),
   clearWmsCapability: vi.fn(),
   logError: vi.fn(),
   removeMapLayer: vi.fn(),
@@ -131,6 +133,7 @@ mockNuxtImport("useMapViewStore", () => {
     getMapLayers,
     getMapLayerFromUuid: vi.fn(() => undefined),
     removeLayer: removeMapLayer,
+    clearLayerExpansion,
   });
 });
 mockNuxtImport("useI18n", () => () => ({
@@ -358,6 +361,24 @@ describe("BaseMapViewer", () => {
       ).toBe(true);
     });
 
+    it("resets the feature store and unmounts when the disabled notice emits close", async () => {
+      featureFlagControl.enableFeatureInfo = false;
+      getFeatureStoreState().hasSelectedFeatures = true;
+      const wrapper = await createWrapper();
+      expect(
+        wrapper.find("[data-testid='feature-info-disabled']").exists(),
+      ).toBe(true);
+
+      wrapper.getComponent(FeatureInfoDisabledStub).vm.$emit("close");
+      await nextTick();
+
+      expect(getFeatureStoreState().$reset).toHaveBeenCalledOnce();
+      expect(getFeatureStoreState().hasSelectedFeatures).toBe(false);
+      expect(
+        wrapper.find("[data-testid='feature-info-disabled']").exists(),
+      ).toBe(false);
+    });
+
     it("shows nothing when the flag is off and no feature is selected", async () => {
       featureFlagControl.enableFeatureInfo = false;
 
@@ -529,6 +550,7 @@ describe("BaseMapViewer", () => {
     expect(clearWmsCapability).toHaveBeenCalledWith("layer-2");
     expect(clearImportOptions).toHaveBeenCalledWith("layer-2");
     expect(removeMapLayer).toHaveBeenCalledWith("layer-2");
+    expect(clearLayerExpansion).toHaveBeenCalledWith("layer-2");
     expect(removeSourceLayer).toHaveBeenCalledWith("layer-2");
     expect(setBackground).not.toHaveBeenCalled();
   });

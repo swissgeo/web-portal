@@ -17,7 +17,12 @@ mockNuxtImport("useHead", () => mocks.useHead);
 function render() {
   return mount(App, {
     global: {
-      stubs: { App: true, UApp: true, NuxtLayout: true, NuxtPage: true },
+      stubs: {
+        // Nuxt UI registers UApp under the name "App"
+        App: { name: "UApp", props: ["tooltip"], template: "<div />" },
+        NuxtLayout: true,
+        NuxtPage: true,
+      },
     },
   });
 }
@@ -47,5 +52,15 @@ describe("app.vue viewport", () => {
     render();
 
     expect(mocks.useHead).not.toHaveBeenCalled();
+  });
+});
+
+describe("app.vue tooltips", () => {
+  it("opens all tooltips above their trigger by default", () => {
+    const wrapper = render();
+
+    expect(wrapper.findComponent({ name: "UApp" }).props("tooltip")).toEqual({
+      content: { side: "top" },
+    });
   });
 });

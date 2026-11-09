@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 // TODO : map view store alterations
 import type { Layer as MapLayer } from "@swissgeo/map";
+import type { DatasetTab } from "~/utils/datasetTab";
 
 import {
   getDisplayNameFromTimestamp,
@@ -8,7 +9,7 @@ import {
 } from "@swissgeo/dimension";
 import { useFeaturesStore } from "@swissgeo/feature";
 import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
-import { computed, ref, useId } from "vue";
+import { computed, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 import LayerLegend from "./LayerLegend.vue";
@@ -27,7 +28,11 @@ const localePath = useLocalePath();
 const mapViewStore = useMapViewStore();
 const featureStore = useFeaturesStore();
 
-const isExpanded = ref(false);
+const isExpanded = computed({
+  get: () => mapViewStore.isLayerExpanded(layer.uuid),
+  set: (expanded: boolean) =>
+    mapViewStore.setLayerExpanded(layer.uuid, expanded),
+});
 const detailsId = useId();
 const legends = computed(() => mapViewStore.getLayerLegends(layer.uuid));
 
@@ -127,6 +132,16 @@ const detailPath = computed(() => {
   return localePath(`/dataset/${datasetId.value}`);
 });
 
+const legendLink = computed(() => {
+  if (!detailPath.value) {
+    return undefined;
+  }
+  return {
+    path: detailPath.value,
+    query: { tab: "legend" satisfies DatasetTab },
+  };
+});
+
 // Shared look of the buttons on the entry row
 const rowButton = {
   size: "xs",
@@ -161,7 +176,7 @@ const rowButton = {
       />
       <button
         type="button"
-        class="min-w-0 flex-1 cursor-pointer px-1 text-left"
+        class="min-w-0 flex-1 cursor-pointer px-1 text-left wrap-anywhere"
         :title="fullTitle"
         :aria-expanded="isExpanded"
         :aria-controls="detailsId"
@@ -230,7 +245,7 @@ const rowButton = {
           <span class="w-8 text-xs text-toned">{{ opacityPercent }}%</span>
         </div>
       </div>
-      <LayerLegend :legends="legends" />
+      <LayerLegend :legends="legends" :detail-link="legendLink" />
     </div>
   </li>
 </template>

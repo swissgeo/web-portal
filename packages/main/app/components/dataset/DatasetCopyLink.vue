@@ -21,7 +21,7 @@ const icon = computed(() => {
 </script>
 
 <template>
-  <UTooltip :text="label" :content="{ side: 'top' }">
+  <UTooltip :text="label">
     <UButton
       :icon="icon"
       :class="{ 'text-success': copied }"

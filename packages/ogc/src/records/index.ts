@@ -10,5 +10,6 @@ export { useCapabilities, extractCapabilityUrl } from "./useCapabilities";
 export { useDistributionCollection } from "./useDistributionCollection";
 export { useDistributionProtocols } from "./useDistributionProtocols";
 export { usePreferredDistribution } from "./usePreferredDistribution";
+export { isMappableDataset } from "./mappableDataset";
 export { useGeoJson } from "./useGeoJson";
 export { useStyle } from "./useStyle";
