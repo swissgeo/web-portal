@@ -57,7 +57,7 @@ async function updateMapLayerData(index: number, mapLayerData: MapLayer) {
   mapLayerData.opacity =
     options?.opacity ?? currentData?.opacity ?? mapLayerData.opacity;
   mapLayerData.isVisible = options?.isVisible ?? currentData?.isVisible ?? true;
-  if (!currentData) {
+  if (!mapViewStore.hasLayerExpandedState(mapLayerData.uuid)) {
     mapViewStore.setLayerExpanded(mapLayerData.uuid, !options);
   }
   mapViewStore.updateLayerData(index, mapLayerData, true);

@@ -160,12 +160,14 @@ export const useMapViewStore = defineStore("mapView", () => {
     return expandedLayers.value[uuid] ?? false;
   }
 
+  function hasLayerExpandedState(uuid: string): boolean {
+    return uuid in expandedLayers.value;
+  }
+
   function removeLayer(identifier: string | number) {
     const index = _getIndexFromIdentifier(identifier);
     if (index !== undefined) {
-      const uuid = mapLayers.value[index]!.uuid;
-      delete legends.value[uuid];
-      delete expandedLayers.value[uuid];
+      delete legends.value[mapLayers.value[index]!.uuid];
       mapLayers.value.splice(index, 1);
     }
   }
@@ -263,6 +265,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     getMapLayerFromUuid,
     getLayerLegends,
     isLayerExpanded,
+    hasLayerExpandedState,
     // actions
     toggleTimeSlider,
     closeTimeSlider,
