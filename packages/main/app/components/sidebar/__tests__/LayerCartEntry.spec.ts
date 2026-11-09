@@ -29,14 +29,25 @@ const dimensionsStore = vi.hoisted(() => ({
 const featureStore = vi.hoisted(() => ({
   clearWmsCapability: vi.fn(),
 }));
-const mapViewStore = vi.hoisted(() => ({
-  getLayerLegends: vi.fn(() => []),
-  updateLayerOpacity: vi.fn(),
-  toggleVisibility: vi.fn(),
-  moveLayerUp: vi.fn(),
-  moveLayerDown: vi.fn(),
-  removeLayer: vi.fn(),
-}));
+const { expandedLayers, mapViewStore } = await vi.hoisted(async () => {
+  const { reactive } = await import("vue");
+  const expandedLayers = reactive<Record<string, boolean>>({});
+  return {
+    expandedLayers,
+    mapViewStore: {
+      getLayerLegends: vi.fn(() => []),
+      updateLayerOpacity: vi.fn(),
+      toggleVisibility: vi.fn(),
+      moveLayerUp: vi.fn(),
+      moveLayerDown: vi.fn(),
+      removeLayer: vi.fn(),
+      isLayerExpanded: vi.fn((uuid: string) => expandedLayers[uuid] ?? false),
+      setLayerExpanded: vi.fn((uuid: string, expanded: boolean) => {
+        expandedLayers[uuid] = expanded;
+      }),
+    },
+  };
+});
 
 vi.mock("@swissgeo/layers", () => ({
   useLayerStore: () => layerStore,
@@ -101,6 +112,9 @@ function layerName(wrapper: ReturnType<typeof mountEntry>) {
 describe("LayerCartEntry.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    for (const uuid of Object.keys(expandedLayers)) {
+      delete expandedLayers[uuid];
+    }
     layerStore.getLayer.mockReturnValue({
       type: "dataset",
       humanId: "a-human-id",
@@ -142,6 +156,19 @@ describe("LayerCartEntry.vue", () => {
     const wrapper = mountEntry(makeLayer({ isVisible: false }));
 
     expect(wrapper.find("[title='layers.show']").exists()).toBe(true);
+  });
+
+  it("starts expanded when the layer was newly added", () => {
+    expandedLayers["a-uuid"] = true;
+
+    const wrapper = mountEntry();
+
+    expect(wrapper.find("[data-testid='legend-stub']").exists()).toBe(true);
+    expect(
+      wrapper
+        .find("[data-testid='layer-expand-toggle']")
+        .attributes("aria-expanded"),
+    ).toBe("true");
   });
 
   it("reveals the legend only once expanded", async () => {
