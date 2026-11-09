@@ -58,7 +58,10 @@ const removeLayer = vi.fn((identifier: string | number) => {
   }
 });
 
-const setLayerExpanded = vi.fn();
+const expandedLayers = new Map<string, boolean>();
+const setLayerExpanded = vi.fn((uuid: string, expanded: boolean) => {
+  expandedLayers.set(uuid, expanded);
+});
 
 mockNuxtImport("useMapViewStore", () => () => ({
   mapLayers: mockMapLayers,
@@ -70,6 +73,8 @@ mockNuxtImport("useMapViewStore", () => () => ({
   removeLayer,
 
   setLayerExpanded,
+
+  hasLayerExpandedState: (uuid: string) => expandedLayers.has(uuid),
 
   addLayerToTop: (layer: MapLayer) => mockMapLayers.push(layer),
 }));
@@ -417,6 +422,7 @@ describe("layer expansion", () => {
 
     updateLayerData.mockClear();
     setLayerExpanded.mockClear();
+    expandedLayers.clear();
 
     const layerStore = useLayerStore();
     layerStore.$reset();
@@ -462,7 +468,17 @@ describe("layer expansion", () => {
     expect(setLayerExpanded).toHaveBeenCalledWith("restored-layer", false);
   });
 
+  it("keeps the expansion state of a layer that is removed and added again", () => {
+    expandedLayers.set("issued-layer", false);
+    const wrapper = mountConverter([makeDatasetLayer("issued-layer")]);
+
+    emitMapLayer(wrapper, "issued-layer");
+
+    expect(setLayerExpanded).not.toHaveBeenCalled();
+  });
+
   it("keeps the expansion state when an existing layer is refreshed", () => {
+    expandedLayers.set("existing-layer", true);
     mockMapLayers.push(makeMapLayer("existing-layer"));
     const wrapper = mountConverter([makeDatasetLayer("existing-layer")]);
 

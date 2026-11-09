@@ -191,14 +191,25 @@ describe("mapView store", () => {
       expect(mapViewStore.isLayerExpanded("a")).toBe(false);
     });
 
-    it("forgets the expansion state of a removed layer", () => {
+    it("remembers the expansion state of a removed layer", () => {
       const mapViewStore = useMapViewStore();
       mapViewStore.addLayerToTop(makeLayer("a"));
-      mapViewStore.setLayerExpanded("a", true);
+      mapViewStore.setLayerExpanded("a", false);
 
       mapViewStore.removeLayer("a");
 
+      expect(mapViewStore.hasLayerExpandedState("a")).toBe(true);
       expect(mapViewStore.isLayerExpanded("a")).toBe(false);
+    });
+
+    it("tells whether a layer already has an expansion state", () => {
+      const mapViewStore = useMapViewStore();
+
+      expect(mapViewStore.hasLayerExpandedState("a")).toBe(false);
+
+      mapViewStore.setLayerExpanded("a", false);
+
+      expect(mapViewStore.hasLayerExpandedState("a")).toBe(true);
     });
   });
 });
