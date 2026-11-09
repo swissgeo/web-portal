@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { inject } from "vue";
 
-defineEmits(["logoClick"]);
-
 const { condensed = false, darkMode = false } = defineProps<{
   condensed?: boolean;
   darkMode?: boolean;
@@ -15,9 +13,8 @@ const isDesktop = inject<boolean>("isDesktop", true);
   <!-- the desktop icon in the sidebar -->
   <div
     v-if="condensed"
-    class="flex h-14 w-full cursor-pointer items-center justify-center"
+    class="flex h-14 w-full items-center justify-center"
     data-testid="sidebar-logo-pic-condensed"
-    @click="$emit('logoClick')"
   >
     <img
       v-if="!darkMode"
@@ -38,10 +35,7 @@ const isDesktop = inject<boolean>("isDesktop", true);
     class="flex h-10 items-center gap-2"
     data-testid="sidebar-logo-pic-extended"
   >
-    <div
-      class="flex cursor-pointer items-center justify-center py-2"
-      @click="$emit('logoClick')"
-    >
+    <div class="flex items-center justify-center py-2">
       <img
         v-if="!darkMode"
         src="@/assets/images/swissgeo_rgb_sek.svg"

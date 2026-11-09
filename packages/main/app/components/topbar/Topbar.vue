@@ -42,10 +42,6 @@ const items = computed<NavigationMenuItem[]>(() => [
     to: { path: localePath("/map") },
   },
 ]);
-
-function goHome() {
-  void navigateTo(localePath("/"));
-}
 </script>
 
 <template>
@@ -73,11 +69,14 @@ function goHome() {
   >
     <template #left>
       <ClientOnly>
-        <LogoPic
+        <NuxtLink
+          :to="{ path: localePath('/') }"
+          :aria-label="t('topbar.home')"
           class="shrink-0"
-          :darkMode="colorMode.value === 'dark'"
-          @logo-click="goHome"
-        />
+          data-testid="topbar-logo-link"
+        >
+          <LogoPic :darkMode="colorMode.value === 'dark'" />
+        </NuxtLink>
         <template #fallback>
           <div class="h-8 w-32.75 shrink-0" />
         </template>

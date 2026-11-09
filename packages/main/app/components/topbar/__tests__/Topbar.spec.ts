@@ -1,7 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
 import Topbar from "~/components/topbar/Topbar.vue";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { nextTick } from "vue";
 
 mockNuxtImport("useRoute", () => {
@@ -28,10 +28,6 @@ mockNuxtImport("useI18n", () => {
   return () => ({ t: (key: string) => key });
 });
 
-const mocks = vi.hoisted(() => ({ navigateTo: vi.fn() }));
-
-mockNuxtImport("navigateTo", () => mocks.navigateTo);
-
 mockNuxtImport("useLocalePath", () => {
   return () => (routeName: string) => {
     if (routeName === "/") {
@@ -47,6 +43,11 @@ function mountTopbar() {
     global: {
       stubs: {
         ClientOnly: { template: "<span><slot /></span>" },
+        NuxtLink: {
+          name: "NuxtLink",
+          props: ["to"],
+          template: "<a><slot /></a>",
+        },
         UHeader: {
           name: "UHeader",
           props: ["open", "autoClose"],
@@ -61,7 +62,6 @@ function mountTopbar() {
 
 describe("Topbar", () => {
   beforeEach(() => {
-    mocks.navigateTo.mockClear();
     Object.assign(useRoute(), {
       name: "map-dataset-id___de",
       path: "/de/dataset/first",
@@ -84,12 +84,14 @@ describe("Topbar", () => {
     },
   );
 
-  it("navigates to the landing page on logo click", () => {
+  it("links the logo to the landing page", () => {
     const wrapper = mountTopbar();
 
-    wrapper.getComponent({ name: "LogoPic" }).vm.$emit("logo-click");
+    const link = wrapper.getComponent({ name: "NuxtLink" });
 
-    expect(mocks.navigateTo).toHaveBeenCalledWith("/de");
+    expect(link.props("to")).toEqual({ path: "/de" });
+    expect(link.attributes("aria-label")).toBe("topbar.home");
+    expect(link.findComponent({ name: "LogoPic" }).exists()).toBe(true);
   });
 
   it.each([
