@@ -55,7 +55,7 @@ test.describe("map page", () => {
 
     // we let all the backgrounds to return the data for pixelkarte-farbe
     await page.route(
-      "http://oar.test/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.*",
+      "http://oar.test/api/oar/collections/swissgeo-catalog/items/dat_*",
       mockBackgroundResponse,
     );
 
@@ -153,7 +153,7 @@ test.describe("map page", () => {
 
     await page.getByTestId("background-selector-toggle").click();
     const backgroundSelector = page
-      .getByTestId("background-selector-ch.swisstopo.pixelkarte-farbe")
+      .getByTestId("background-selector-dat_pixelkarte-farbe")
       .first();
     await expect(backgroundSelector).toBeVisible();
   });

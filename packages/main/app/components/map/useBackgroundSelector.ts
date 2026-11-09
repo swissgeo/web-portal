@@ -1,10 +1,12 @@
 import type { Layer } from "@swissgeo/layers";
 
-import pixelkarteFarbeUrl from "~/assets/backgroundLayersImages/ch.swisstopo.pixelkarte-farbe.png";
-import pixelkarteGrauUrl from "~/assets/backgroundLayersImages/ch.swisstopo.pixelkarte-grau.png";
-import swissImageUrl from "~/assets/backgroundLayersImages/ch.swisstopo.swissimage.png";
+import colorMapUrl from "~/assets/backgroundLayersImages/colorMap.png";
+import greyMapUrl from "~/assets/backgroundLayersImages/greyMap.png";
+import swissimageUrl from "~/assets/backgroundLayersImages/swissimage.png";
 import voidUrl from "~/assets/backgroundLayersImages/void.png";
 import { ref } from "vue";
+
+import { AVAILABLE_BACKGROUNDS } from "@/components/sidebar/backgroundSelector/constants";
 
 /**
  * Centralisation of the logic behind the background selector. This helps us define two flavors of
@@ -28,12 +30,12 @@ export default function useBackgroundSelector(
 
     const backgroundId = "id" in layerData ? layerData.id : undefined;
     switch (backgroundId) {
-      case "ch.swisstopo.pixelkarte-farbe":
-        return pixelkarteFarbeUrl;
-      case "ch.swisstopo.pixelkarte-grau":
-        return pixelkarteGrauUrl;
-      case "ch.swisstopo.swissimage":
-        return swissImageUrl;
+      case AVAILABLE_BACKGROUNDS.colorMap:
+        return colorMapUrl;
+      case AVAILABLE_BACKGROUNDS.greyMap:
+        return greyMapUrl;
+      case AVAILABLE_BACKGROUNDS.swissimage:
+        return swissimageUrl;
     }
 
     return voidUrl;
