@@ -199,6 +199,7 @@ function handleLayerError(uuid: SourceLayer["uuid"], error: Error) {
   layerStore.clearImportOptions(uuid);
 
   mapViewStore.removeLayer(uuid);
+  mapViewStore.clearLayerExpansion(uuid);
 
   if (isBackground) {
     layerStore.setBackground(null);

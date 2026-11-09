@@ -23,6 +23,7 @@ export const useMapViewStore = defineStore("mapView", () => {
   const compareRatio = ref(0.5);
   const stateId = ref("");
   const mapLayers: Ref<MapLayer[]> = ref([]);
+  const expandedLayers = ref<Record<string, boolean>>({});
 
   /**
    * Legends advertised by the services, per layer uuid. They are kept aside from
@@ -151,6 +152,22 @@ export const useMapViewStore = defineStore("mapView", () => {
     return legends.value[uuid] ?? [];
   }
 
+  function setLayerExpanded(uuid: string, expanded: boolean): void {
+    expandedLayers.value[uuid] = expanded;
+  }
+
+  function isLayerExpanded(uuid: string): boolean {
+    return expandedLayers.value[uuid] ?? false;
+  }
+
+  function hasLayerExpandedState(uuid: string): boolean {
+    return uuid in expandedLayers.value;
+  }
+
+  function clearLayerExpansion(uuid: string): void {
+    delete expandedLayers.value[uuid];
+  }
+
   function removeLayer(identifier: string | number) {
     const index = _getIndexFromIdentifier(identifier);
     if (index !== undefined) {
@@ -220,14 +237,22 @@ export const useMapViewStore = defineStore("mapView", () => {
   function toggleVisibility(identifier: string | number) {
     const index = _getIndexFromIdentifier(identifier);
     if (index !== undefined) {
-      mapLayers.value[index]!.isVisible = !mapLayers.value[index]!.isVisible;
+      const layer = mapLayers.value[index]!;
+      layer.isVisible = !layer.isVisible;
+      if (!layer.isVisible) {
+        setLayerExpanded(layer.uuid, false);
+      }
     }
   }
 
   function setVisibility(identifier: string | number, visibility: boolean) {
     const index = _getIndexFromIdentifier(identifier);
     if (index !== undefined) {
-      mapLayers.value[index]!.isVisible = visibility;
+      const layer = mapLayers.value[index]!;
+      layer.isVisible = visibility;
+      if (!visibility) {
+        setLayerExpanded(layer.uuid, false);
+      }
     }
   }
 
@@ -243,6 +268,8 @@ export const useMapViewStore = defineStore("mapView", () => {
     getMapLayers,
     getMapLayerFromUuid,
     getLayerLegends,
+    isLayerExpanded,
+    hasLayerExpandedState,
     // actions
     toggleTimeSlider,
     closeTimeSlider,
@@ -257,6 +284,8 @@ export const useMapViewStore = defineStore("mapView", () => {
     updateLayerData,
     updateLayerOpacity,
     setLayerLegends,
+    setLayerExpanded,
+    clearLayerExpansion,
     removeLayer,
     addLayerToBottom,
     addLayerToTop,

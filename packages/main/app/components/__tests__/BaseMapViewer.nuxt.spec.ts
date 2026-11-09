@@ -14,6 +14,7 @@ import BaseMapViewer from "../BaseMapViewer.vue";
 const {
   clearImportOptions,
   clearLayerDimensions,
+  clearLayerExpansion,
   clearWmsCapability,
   logError,
   removeMapLayer,
@@ -24,6 +25,7 @@ const {
 } = vi.hoisted(() => ({
   clearImportOptions: vi.fn(),
   clearLayerDimensions: vi.fn(),
+  clearLayerExpansion: vi.fn(),
   clearWmsCapability: vi.fn(),
   logError: vi.fn(),
   removeMapLayer: vi.fn(),
@@ -131,6 +133,7 @@ mockNuxtImport("useMapViewStore", () => {
     getMapLayers,
     getMapLayerFromUuid: vi.fn(() => undefined),
     removeLayer: removeMapLayer,
+    clearLayerExpansion,
   });
 });
 mockNuxtImport("useI18n", () => () => ({
@@ -529,6 +532,7 @@ describe("BaseMapViewer", () => {
     expect(clearWmsCapability).toHaveBeenCalledWith("layer-2");
     expect(clearImportOptions).toHaveBeenCalledWith("layer-2");
     expect(removeMapLayer).toHaveBeenCalledWith("layer-2");
+    expect(clearLayerExpansion).toHaveBeenCalledWith("layer-2");
     expect(removeSourceLayer).toHaveBeenCalledWith("layer-2");
     expect(setBackground).not.toHaveBeenCalled();
   });

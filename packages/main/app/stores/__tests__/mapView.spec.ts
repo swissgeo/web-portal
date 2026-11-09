@@ -158,4 +158,68 @@ describe("mapView store", () => {
       expect(stack(mapViewStore.mapLayers)).toEqual(["bg", "b", "a"]);
     });
   });
+
+  describe("layer cart expansion", () => {
+    it("collapses a layer when it is toggled hidden", () => {
+      const mapViewStore = useMapViewStore();
+      mapViewStore.addLayerToTop(makeLayer("a"));
+      mapViewStore.setLayerExpanded("a", true);
+
+      mapViewStore.toggleVisibility("a");
+
+      expect(mapViewStore.mapLayers[0]?.isVisible).toBe(false);
+      expect(mapViewStore.isLayerExpanded("a")).toBe(false);
+    });
+
+    it("collapses a layer when it is hidden explicitly", () => {
+      const mapViewStore = useMapViewStore();
+      mapViewStore.addLayerToTop(makeLayer("a"));
+      mapViewStore.setLayerExpanded("a", true);
+
+      mapViewStore.setVisibility("a", false);
+
+      expect(mapViewStore.isLayerExpanded("a")).toBe(false);
+    });
+
+    it("keeps a layer collapsed when it is shown again", () => {
+      const mapViewStore = useMapViewStore();
+      mapViewStore.addLayerToTop(makeLayer("a"));
+
+      mapViewStore.setVisibility("a", false);
+      mapViewStore.setVisibility("a", true);
+
+      expect(mapViewStore.isLayerExpanded("a")).toBe(false);
+    });
+
+    it("remembers the expansion state of a removed layer", () => {
+      const mapViewStore = useMapViewStore();
+      mapViewStore.addLayerToTop(makeLayer("a"));
+      mapViewStore.setLayerExpanded("a", false);
+
+      mapViewStore.removeLayer("a");
+
+      expect(mapViewStore.hasLayerExpandedState("a")).toBe(true);
+      expect(mapViewStore.isLayerExpanded("a")).toBe(false);
+    });
+
+    it("clears the expansion state on request", () => {
+      const mapViewStore = useMapViewStore();
+      mapViewStore.setLayerExpanded("a", true);
+
+      mapViewStore.clearLayerExpansion("a");
+
+      expect(mapViewStore.hasLayerExpandedState("a")).toBe(false);
+      expect(mapViewStore.isLayerExpanded("a")).toBe(false);
+    });
+
+    it("tells whether a layer already has an expansion state", () => {
+      const mapViewStore = useMapViewStore();
+
+      expect(mapViewStore.hasLayerExpandedState("a")).toBe(false);
+
+      mapViewStore.setLayerExpanded("a", false);
+
+      expect(mapViewStore.hasLayerExpandedState("a")).toBe(true);
+    });
+  });
 });

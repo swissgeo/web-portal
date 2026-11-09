@@ -57,6 +57,9 @@ async function updateMapLayerData(index: number, mapLayerData: MapLayer) {
   mapLayerData.opacity =
     options?.opacity ?? currentData?.opacity ?? mapLayerData.opacity;
   mapLayerData.isVisible = options?.isVisible ?? currentData?.isVisible ?? true;
+  if (!mapViewStore.hasLayerExpandedState(mapLayerData.uuid)) {
+    mapViewStore.setLayerExpanded(mapLayerData.uuid, !options);
+  }
   mapViewStore.updateLayerData(index, mapLayerData, true);
 
   const featuresSelected = featureStore.consumeFeaturePreselection(
@@ -158,6 +161,9 @@ function setWmsCapability(uuid: string, capability: WmsFeatureInfoCapability) {
 function removeMapLayer(uuidToRemove: string) {
   if (mapViewStore.mapLayers.some((layer) => layer.uuid === uuidToRemove)) {
     mapViewStore.removeLayer(uuidToRemove);
+  }
+  if (!layerStore.getLayer(uuidToRemove)) {
+    mapViewStore.clearLayerExpansion(uuidToRemove);
   }
 }
 </script>
