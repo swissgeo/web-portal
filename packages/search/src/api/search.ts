@@ -99,7 +99,8 @@ export function parseLocationResult(
  * @param searchServiceUrl - SearchServer endpoint of the current staging
  * @param lang - Language code (de, fr, etc.)
  * @param abortSignal - Optional abort signal for cancellation
- * @param limit - Maximum number of results (default: 10)
+ * @param limit - Maximum number of results (default: 50, the SearchServer
+ *   default that map.geo.admin.ch relies on)
  * @returns Promise with location search results
  */
 export async function searchLocation(
@@ -107,7 +108,7 @@ export async function searchLocation(
   searchServiceUrl: string,
   lang: string,
   abortSignal?: AbortSignal,
-  limit: number = 10,
+  limit: number = 50,
 ): Promise<LocationSearchResult[]> {
   const trimmedQuery = queryString.trim();
   if (trimmedQuery.length < 2) {
