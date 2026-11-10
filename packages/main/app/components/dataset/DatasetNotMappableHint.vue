@@ -6,10 +6,12 @@ import { useI18n } from "vue-i18n";
 // hover, tap and keyboard focus of the slot element. The slot element must
 // stay focusable, thus it uses aria-disabled and not disabled.
 // The component shows only one overlay at a time: the hint when showHint is
-// true, else the optional tooltip.
-const { showHint, tooltip } = defineProps<{
+// true, else the optional tooltip. The tooltip is placed at tooltipReference
+// when given, e.g. to follow the cursor, else at the slot element.
+const { showHint, tooltip, tooltipReference } = defineProps<{
   showHint: boolean;
   tooltip?: string;
+  tooltipReference?: { getBoundingClientRect: () => DOMRect };
 }>();
 
 const { t } = useI18n();
@@ -36,7 +38,16 @@ const isOpen = ref(false);
       </p>
     </template>
   </UPopover>
-  <UTooltip v-else-if="tooltip" :text="tooltip">
+  <UTooltip
+    v-else-if="tooltip"
+    :text="tooltip"
+    :reference="tooltipReference"
+    :content="
+      tooltipReference
+        ? { side: 'top', sideOffset: 12, updatePositionStrategy: 'always' }
+        : undefined
+    "
+  >
     <slot />
   </UTooltip>
   <slot v-else />
