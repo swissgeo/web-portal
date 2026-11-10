@@ -86,4 +86,16 @@ describe("AttributionList.vue", () => {
         .element.textContent?.endsWith("Source A, Source B"),
     ).toBe(true);
   });
+
+  it("sits at the bottom of the screen in fullscreen, where there is no footer", async () => {
+    const sources: LayerAttribution[] = [{ abbreviation: "A", name: "A" }];
+    const wrapper = mount(AttributionList, { props: { sources } });
+    const list = () => wrapper.find('[data-testid="layers-copyrights"]');
+
+    expect(list().classes()).toContain("bottom-16");
+
+    await wrapper.setProps({ isFullscreen: true });
+    expect(list().classes()).toContain("bottom-0");
+    expect(list().classes()).not.toContain("bottom-16");
+  });
 });
