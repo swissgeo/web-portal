@@ -317,7 +317,7 @@ function clearSearch() {
         @keydown.enter.prevent="submitCoordinate"
         :ui="{
           // the placeholder disappears as soon as the field is clicked into
-          base: 'placeholder-nav-brand-muted! ring-0 focus:placeholder-transparent!',
+          base: 'placeholder-nav-brand-muted! ring-0 focus:placeholder-transparent! dark:bg-primary-950',
           leadingIcon: 'text-nav-brand-muted',
         }"
         v-bind="$attrs"

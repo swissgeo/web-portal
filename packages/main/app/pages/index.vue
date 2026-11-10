@@ -30,11 +30,13 @@ const infosLinks = computed<NavigationMenuItem[]>(() => [
   {
     label: t("landing.footer.termsOfUse"),
     to: cmsUrl(t("landing.links.termsOfUse")),
+    target: "_blank",
     trailingIcon: "i-lucide-arrow-right",
   },
   {
     label: t("landing.footer.contact"),
     to: cmsUrl(t("landing.links.contact")),
+    target: "_blank",
     trailingIcon: "i-lucide-arrow-right",
   },
 ]);
@@ -172,6 +174,8 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :items="socialLinks"
           :ui="{
             linkLabelExternalIcon: 'hidden',
+            link: 'text-accent hover:text-accent-hover',
+            linkLeadingIcon: 'text-accent hover:text-accent-hover',
           }"
         />
       </template>
@@ -184,6 +188,8 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         :items="infosLinks"
         :ui="{
           linkLabelExternalIcon: 'hidden',
+          link: 'text-accent hover:text-accent-hover',
+          linkLeadingIcon: 'text-accent hover:text-accent-hover',
         }"
       />
     </UFooter>
@@ -197,7 +203,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :to="cmsUrl(t('landing.links.impressum'))"
           target="_blank"
           raw
-          class="text-left lg:w-fit"
+          class="text-left hover:text-accent-hover lg:w-fit"
         >
           {{ t("footer.impressum") }}
         </ULink>
@@ -205,7 +211,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :to="cmsUrl(t('landing.links.dataProtection'))"
           target="_blank"
           raw
-          class="text-left lg:w-fit"
+          class="text-left hover:text-accent-hover lg:w-fit"
         >
           {{ t("landing.footer.dataProtection") }}
         </ULink>
@@ -213,7 +219,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :to="cmsUrl(t('landing.links.netiquette'))"
           target="_blank"
           raw
-          class="text-left lg:w-fit"
+          class="text-left hover:text-accent-hover lg:w-fit"
         >
           {{ t("landing.footer.netiquette") }}
         </ULink>
@@ -221,7 +227,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :to="cmsUrl(t('landing.links.accessibility'))"
           target="_blank"
           raw
-          class="text-left lg:w-fit"
+          class="text-left hover:text-accent-hover lg:w-fit"
         >
           {{ t("landing.footer.accessibility") }}
         </ULink>
