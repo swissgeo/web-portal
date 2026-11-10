@@ -507,6 +507,39 @@ describe("layer expansion", () => {
     expect(expandedLayers.has("gone-layer")).toBe(false);
   });
 
+  it("keeps the opacity and visibility when the map unmounts and mounts again", () => {
+    const layerStore = useLayerStore();
+    const sourceLayer = makeDatasetLayer("staying-layer");
+    layerStore.addLayer(sourceLayer);
+    const wrapper = mountConverter([sourceLayer]);
+    emitMapLayer(wrapper, "staying-layer");
+    mockMapLayers[0]!.opacity = 0.65;
+    mockMapLayers[0]!.isVisible = false;
+
+    // e.g. "Startseite" and back to "Karte". The real converter emits
+    // "remove" before it unmounts.
+    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", "staying-layer");
+    wrapper.unmount();
+    expect(mockMapLayers).toHaveLength(0);
+    const remounted = mountConverter([sourceLayer]);
+    remounted
+      .findComponent(OgcConverterStub)
+      .vm.$emit("update", { ...makeMapLayer("staying-layer"), opacity: 1 });
+
+    expect(mockMapLayers[0]).toMatchObject({ opacity: 0.65, isVisible: false });
+    expect(layerStore.isThereImportOptions()).toBe(false);
+  });
+
+  it("keeps no import option for a layer removed from the store", () => {
+    const layerStore = useLayerStore();
+    mockMapLayers.push(makeMapLayer("gone-layer"));
+    const wrapper = mountConverter([makeDatasetLayer("gone-layer")]);
+
+    wrapper.findComponent(OgcConverterStub).vm.$emit("remove", "gone-layer");
+
+    expect(layerStore.isThereImportOptions()).toBe(false);
+  });
+
   it("keeps the expansion state when an existing layer is refreshed", () => {
     expandedLayers.set("existing-layer", true);
     mockMapLayers.push(makeMapLayer("existing-layer"));
