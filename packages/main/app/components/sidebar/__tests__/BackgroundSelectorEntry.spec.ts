@@ -11,8 +11,8 @@ import BackgroundSelectorEntry from "@/components/sidebar/backgroundSelector/Bac
 const voidLayer = null;
 const mockLayer = {
   uuid: "test-uuid",
-  humanId: "ch.swisstopo.pixelkarte-farbe",
-  data: { id: "ch.swisstopo.pixelkarte-farbe" },
+  humanId: "dat_pixelkarte-farbe",
+  data: { id: "dat_pixelkarte-farbe" },
 } as unknown as Layer;
 
 mockNuxtImport("useI18n", () => {
@@ -37,7 +37,7 @@ describe("BackgroundSelectorEntry.vue", () => {
         props: { backgroundLayer: mockLayer, isCurrent: false },
       });
       expect(wrapper.find("button").attributes("data-testid")).toBe(
-        "background-selector-ch.swisstopo.pixelkarte-farbe",
+        "background-selector-dat_pixelkarte-farbe",
       );
     });
   });

@@ -1,8 +1,8 @@
 {
-  "id": "ch.swisstopo.pixelkarte-farbe",
+  "id": "dat_pixelkarte-farbe",
   "links": [
     {
-      "href": "http://oar.test/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.pixelkarte-farbe?language=en",
+      "href": "http://oar.test/api/oar/collections/swissgeo-catalog/items/dat_pixelkarte-farbe?language=en",
       "rel": "self",
       "title": "This Record",
       "type": "application/json",

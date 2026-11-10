@@ -2,9 +2,9 @@ import type { Layer } from "@swissgeo/layers";
 import type { Dataset } from "@swissgeo/ogc";
 
 export const AVAILABLE_BACKGROUNDS = {
-  swissimage: "ch.swisstopo.swissimage",
-  colorMap: "ch.swisstopo.pixelkarte-farbe",
-  greyMap: "ch.swisstopo.pixelkarte-grau",
+  swissimage: "dat_swissimage",
+  colorMap: "dat_pixelkarte-farbe",
+  greyMap: "dat_pixelkarte-grau",
 };
 
 export function getBackgroundTranslationKey(

@@ -1,6 +1,6 @@
 import type { Layer } from "@swissgeo/layers";
 
-import useBackgroundSelector from "~/components/map/useBackgroundSelector";
+import useBackgroundSelector from "~/components/sidebar/backgroundSelector/useBackgroundSelector";
 import { describe, it, expect, vi } from "vitest";
 
 describe("useBackgroundSelector", () => {
@@ -50,25 +50,25 @@ describe("useBackgroundSelector", () => {
     it("returns a URL for pixelkarte-farbe", () => {
       const { getImageForBackgroundLayer } = useBackgroundSelector(vi.fn());
       const layer = {
-        data: { id: "ch.swisstopo.pixelkarte-farbe" },
+        data: { id: "dat_pixelkarte-farbe" },
       } as unknown as Layer;
       const url = getImageForBackgroundLayer(layer);
       expect(url).toBeTruthy();
-      expect(url).toContain("pixelkarte-farbe");
+      expect(url).toContain("colorMap");
     });
 
     it("returns a URL for pixelkarte-grau", () => {
       const { getImageForBackgroundLayer } = useBackgroundSelector(vi.fn());
       const layer = {
-        data: { id: "ch.swisstopo.pixelkarte-grau" },
+        data: { id: "dat_pixelkarte-grau" },
       } as unknown as Layer;
-      expect(getImageForBackgroundLayer(layer)).toContain("pixelkarte-grau");
+      expect(getImageForBackgroundLayer(layer)).toContain("greyMap");
     });
 
     it("returns a URL for swissimage", () => {
       const { getImageForBackgroundLayer } = useBackgroundSelector(vi.fn());
       const layer = {
-        data: { id: "ch.swisstopo.swissimage" },
+        data: { id: "dat_swissimage" },
       } as unknown as Layer;
       expect(getImageForBackgroundLayer(layer)).toContain("swissimage");
     });
@@ -92,13 +92,13 @@ describe("useBackgroundSelector", () => {
     it("returns distinct URLs for different layer types", () => {
       const { getImageForBackgroundLayer } = useBackgroundSelector(vi.fn());
       const farbe = getImageForBackgroundLayer({
-        data: { id: "ch.swisstopo.pixelkarte-farbe" },
+        data: { id: "dat_pixelkarte-farbe" },
       } as unknown as Layer);
       const grau = getImageForBackgroundLayer({
-        data: { id: "ch.swisstopo.pixelkarte-grau" },
+        data: { id: "dat_pixelkarte-grau" },
       } as unknown as Layer);
       const aerial = getImageForBackgroundLayer({
-        data: { id: "ch.swisstopo.swissimage" },
+        data: { id: "dat_swissimage" },
       } as unknown as Layer);
       const voidImg = getImageForBackgroundLayer(null);
 

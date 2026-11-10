@@ -161,7 +161,7 @@ const backgroundLayer: MapLayer = {
   isVisible: true,
   zIndex: 0,
   displayName: "background layer 1",
-  layerId: "ch.swisstopo.pixelkarte-grau",
+  layerId: "dat_pixelkarte-grau",
 };
 const expectedBackgroundState: LayerState = {
   layerUrl: "https://test.ch",
@@ -254,11 +254,11 @@ describe("useStateConfig - Helper functions are functional", () => {
   });
 
   it.each`
-    description                                                                    | input_partial_layer                               | expected_output
-    ${"A layer with layer id ch.swisstopo.pixelkarte-grau is a background layer"}  | ${{ humanId: "ch.swisstopo.pixelkarte-grau" }}    | ${true}
-    ${"A layer with layer id ch.swisstopo.pixelkarte-farbe is a background layer"} | ${{ humanId: "ch.swisstopo.pixelkarte-farbe" }}   | ${true}
-    ${"A layer with layer id ch.swisstopo.swissimage is a background layer"}       | ${{ humanId: "ch.swisstopo.swissimage" }}         | ${true}
-    ${"A layer with another layer id is not a background layer"}                   | ${{ humanId: "ch.swisstopo.cate-pixel-couleur" }} | ${false}
+    description                                                           | input_partial_layer                               | expected_output
+    ${"A layer with layer id dat_pixelkarte-grau is a background layer"}  | ${{ humanId: "dat_pixelkarte-grau" }}             | ${true}
+    ${"A layer with layer id dat_pixelkarte-farbe is a background layer"} | ${{ humanId: "dat_pixelkarte-farbe" }}            | ${true}
+    ${"A layer with layer id dat_swissimage is a background layer"}       | ${{ humanId: "dat_swissimage" }}                  | ${true}
+    ${"A layer with another layer id is not a background layer"}          | ${{ humanId: "ch.swisstopo.cate-pixel-couleur" }} | ${false}
   `("$description", ({ _, input_partial_layer, expected_output }) => {
     const isItABackgroundLayer = isBackgroundLayer(input_partial_layer);
     expect(isItABackgroundLayer).to.eql(expected_output);
