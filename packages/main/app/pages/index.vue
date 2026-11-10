@@ -199,7 +199,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :to="cmsUrl(t('landing.links.impressum'))"
           target="_blank"
           raw
-          class="text-left lg:w-fit"
+          class="text-left hover:text-accent-hover lg:w-fit"
         >
           {{ t("footer.impressum") }}
         </ULink>
@@ -207,7 +207,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :to="cmsUrl(t('landing.links.dataProtection'))"
           target="_blank"
           raw
-          class="text-left lg:w-fit"
+          class="text-left hover:text-accent-hover lg:w-fit"
         >
           {{ t("landing.footer.dataProtection") }}
         </ULink>
@@ -215,7 +215,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :to="cmsUrl(t('landing.links.netiquette'))"
           target="_blank"
           raw
-          class="text-left lg:w-fit"
+          class="text-left hover:text-accent-hover lg:w-fit"
         >
           {{ t("landing.footer.netiquette") }}
         </ULink>
@@ -223,7 +223,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :to="cmsUrl(t('landing.links.accessibility'))"
           target="_blank"
           raw
-          class="text-left lg:w-fit"
+          class="text-left hover:text-accent-hover lg:w-fit"
         >
           {{ t("landing.footer.accessibility") }}
         </ULink>
