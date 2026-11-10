@@ -94,12 +94,12 @@ const serviceDistributions = computed<Distribution[]>(() => {
     color="neutral"
     :unmount-on-hide="false"
     :ui="{
-      list: 'mx-4 shrink-0 overflow-x-auto overflow-y-hidden p-0 lg:mx-8',
+      list: 'mx-4 w-auto shrink-0 self-stretch overflow-x-auto overflow-y-hidden p-0 lg:mx-8',
       // Only the tab content scrolls, so the scrollbar starts below the header and the tab list.
       content:
         'scroll-fade min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-4 pb-4 [scrollbar-gutter:stable] lg:px-8 lg:pb-8',
       trigger:
-        'shrink-0 grow-0 px-2 pt-1 pb-2 leading-small-text data-[state=active]:text-highlighted data-[state=inactive]:text-primary dark:data-[state=inactive]:text-petrol-300',
+        'shrink-0 grow-0 px-2 pt-1 pb-2 first-of-type:pl-0 leading-small-text data-[state=active]:text-highlighted data-[state=inactive]:text-primary dark:data-[state=inactive]:text-petrol-300',
       indicator: 'bottom-0',
     }"
     class="@container min-h-0 w-full flex-1 gap-4 lg:gap-8"
