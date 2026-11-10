@@ -38,7 +38,8 @@ const items = computed<NavigationMenuItem[]>(() => [
   },
   {
     label: t("topbar.map"),
-    active: routeBaseName(route) === "map",
+    // The DetailView opens on top of the map, so the map entry stays active
+    active: routeBaseName(route) === "map" || route.meta.datasetDetail === true,
     to: { path: localePath("/map") },
   },
 ]);

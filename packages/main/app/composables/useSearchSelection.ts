@@ -18,7 +18,11 @@ import type {
 import { useLayerStore, makeServerLayer } from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { usePositionStore } from "@swissgeo/map";
-import { useSearchStore } from "@swissgeo/skeleton";
+import {
+  SidebarType,
+  useSearchStore,
+  useSidebarStore,
+} from "@swissgeo/skeleton";
 import { joinURL } from "ufo";
 
 export function useSearchSelection() {
@@ -29,6 +33,9 @@ export function useSearchSelection() {
   const positionStore = usePositionStore();
   const searchStore = useSearchStore();
   const layerStore = useLayerStore();
+  const sidebarStore = useSidebarStore();
+  const route = useRoute();
+  const localePath = useLocalePath();
 
   async function handleResultSelection(result: SearchResult) {
     if (result.resultType === "COORDINATE") {
@@ -102,6 +109,7 @@ export function useSearchSelection() {
   // opens the dataset panel instead.
   async function handleLayerSelection(result: LayerSearchResult) {
     if (layerStore.layers.some((l) => l.humanId === result.layerId)) {
+      await closeDatasetDetail();
       return;
     }
 
@@ -111,6 +119,7 @@ export function useSearchSelection() {
     try {
       const dataset = await $fetch<Dataset>(url.toString());
       layerStore.addLayer(await makeServerLayer(dataset));
+      await closeDatasetDetail();
     } catch (e) {
       log.error(
         "Failed to add search result to map",
@@ -118,6 +127,16 @@ export function useSearchSelection() {
       );
       toast.add({ color: "error", title: t("dataset.addToMapError") });
     }
+  }
+
+  // The DetailView covers the map. After a layer selection, the user must see
+  // the selected layer on the map, so the map panel opens.
+  async function closeDatasetDetail() {
+    if (route.meta.datasetDetail !== true) {
+      return;
+    }
+    sidebarStore.setSidebar(SidebarType.LAYER_CART);
+    await navigateTo(localePath("/map"));
   }
 
   return {

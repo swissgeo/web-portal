@@ -165,6 +165,27 @@ describe("Footer.vue", () => {
       expect(sidebarStore.currentSidebar).toBe(SidebarType.LAYER_CART);
     });
 
+    it.each`
+      sidebar
+      ${SidebarType.LAYER_CART}
+      ${SidebarType.GEOCATALOG_TREE}
+    `(
+      "highlights the map on a dataset page opened from the $sidebar",
+      ({ sidebar }) => {
+        useSidebarStore().setSidebar(sidebar);
+        route.meta.datasetDetail = true;
+
+        const wrapper = mountFooter();
+
+        expect(navButton(wrapper, "map").props("variant")).toBe(
+          "solid-inverted",
+        );
+        expect(navButton(wrapper, "catalog").props("variant")).toBe(
+          "ghost-inverted",
+        );
+      },
+    );
+
     it("highlights neither map nor catalog when another sidebar is shown", () => {
       useSidebarStore().setSidebar(SidebarType.CONTENT);
 
