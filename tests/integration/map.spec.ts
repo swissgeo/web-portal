@@ -112,7 +112,8 @@ test.describe("map page", () => {
 
   test("toggles the real browser fullscreen", async ({ page }) => {
     const button = page.getByTestId("toolbox-fullscreen-button");
-    const isFullscreen = () => page.evaluate(() => !!document.fullscreenElement);
+    const isFullscreen = () =>
+      page.evaluate(() => !!document.fullscreenElement);
 
     await button.click();
     await expect.poll(isFullscreen).toBe(true);

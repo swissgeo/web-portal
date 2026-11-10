@@ -227,9 +227,7 @@ export const useMapViewStore = defineStore("mapView", () => {
     isFullscreenModeActive.value = true;
     document.documentElement
       .requestFullscreen?.()
-      ?.catch((error: unknown) =>
-        log.warn(`Browser fullscreen refused: ${error}`),
-      );
+      ?.catch((error: Error) => log.warn("Browser fullscreen refused", error));
   }
 
   function exitFullscreenMode() {

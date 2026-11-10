@@ -17,11 +17,13 @@ describe("FullScreenButton.vue", () => {
     vi.spyOn(document, "fullscreenElement", "get").mockImplementation(
       () => fullscreenElement,
     );
-    document.documentElement.requestFullscreen = vi.fn(async () => {
+    document.documentElement.requestFullscreen = vi.fn(() => {
       fullscreenElement = document.documentElement;
+      return Promise.resolve();
     });
-    document.exitFullscreen = vi.fn(async () => {
+    document.exitFullscreen = vi.fn(() => {
       fullscreenElement = null;
+      return Promise.resolve();
     });
   });
 
