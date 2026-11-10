@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import FullScreenButton from "@/components/toolbox/toolboxButtons/FullScreenButton.vue";
 
@@ -9,8 +9,24 @@ vi.mock("vue-i18n", () => ({
 }));
 
 describe("FullScreenButton.vue", () => {
+  let fullscreenElement: Element | null = null;
+
   beforeEach(() => {
     setActivePinia(createPinia());
+    fullscreenElement = null;
+    vi.spyOn(document, "fullscreenElement", "get").mockImplementation(
+      () => fullscreenElement,
+    );
+    document.documentElement.requestFullscreen = vi.fn(async () => {
+      fullscreenElement = document.documentElement;
+    });
+    document.exitFullscreen = vi.fn(async () => {
+      fullscreenElement = null;
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   function mountButton() {
@@ -44,6 +60,31 @@ describe("FullScreenButton.vue", () => {
     expect(mapViewStore.isFullscreenModeActive).toBe(true);
 
     await button.trigger("click");
+    expect(mapViewStore.isFullscreenModeActive).toBe(false);
+  });
+
+  it("requests and exits the browser fullscreen", async () => {
+    const button = mountButton().find(
+      '[data-testid="toolbox-fullscreen-button"]',
+    );
+
+    await button.trigger("click");
+    expect(document.documentElement.requestFullscreen).toHaveBeenCalledOnce();
+
+    await button.trigger("click");
+    expect(document.exitFullscreen).toHaveBeenCalledOnce();
+  });
+
+  it("leaves the fullscreen mode when the browser exits fullscreen", async () => {
+    const wrapper = mountButton();
+    const mapViewStore = useMapViewStore();
+    await wrapper
+      .find('[data-testid="toolbox-fullscreen-button"]')
+      .trigger("click");
+    expect(mapViewStore.isFullscreenModeActive).toBe(true);
+
+    fullscreenElement = null;
+    document.dispatchEvent(new Event("fullscreenchange"));
     expect(mapViewStore.isFullscreenModeActive).toBe(false);
   });
 });

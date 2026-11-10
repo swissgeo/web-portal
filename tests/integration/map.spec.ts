@@ -110,6 +110,29 @@ test.describe("map page", () => {
     await expect(page.getByTestId("toolbox-fullscreen-button")).toBeVisible();
   });
 
+  test("toggles the real browser fullscreen", async ({ page }) => {
+    const button = page.getByTestId("toolbox-fullscreen-button");
+    const isFullscreen = () => page.evaluate(() => !!document.fullscreenElement);
+
+    await button.click();
+    await expect.poll(isFullscreen).toBe(true);
+
+    await button.click();
+    await expect.poll(isFullscreen).toBe(false);
+  });
+
+  test("leaves the fullscreen mode when the browser exits fullscreen", async ({
+    page,
+  }) => {
+    const topbar = page.getByTestId("topbar-logo-link");
+    await page.getByTestId("toolbox-fullscreen-button").click();
+    await expect(topbar).toBeHidden();
+
+    // what pressing Escape does in real fullscreen
+    await page.evaluate(() => document.exitFullscreen());
+    await expect(topbar).toBeVisible();
+  });
+
   test("displays the map with the defaults", async ({ page }) => {
     await page.waitForFunction(() => window.swissgeoOlMap !== undefined, null, {
       timeout: 20000,
