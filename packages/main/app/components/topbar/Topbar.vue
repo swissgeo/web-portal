@@ -76,7 +76,7 @@ const items = computed<NavigationMenuItem[]>(() => [
           class="shrink-0"
           data-testid="topbar-logo-link"
         >
-          <LogoPic :darkMode="colorMode.value === 'dark'" />
+          <LogoPic :darkMode="colorMode.value === 'dark'" class="pr-5" />
         </NuxtLink>
         <template #fallback>
           <div class="h-8 w-32.75 shrink-0" />
@@ -104,8 +104,8 @@ const items = computed<NavigationMenuItem[]>(() => [
 
     <template #right>
       <div class="hidden items-center gap-1.5 xl:flex">
-        <TopbarLanguageSwitcherButton />
-        <TopbarColorModeButton />
+        <TopbarLanguageSwitcherButton size="lg" />
+        <TopbarColorModeButton size="lg" />
       </div>
     </template>
 
