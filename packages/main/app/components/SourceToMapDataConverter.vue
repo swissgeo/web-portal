@@ -159,7 +159,18 @@ function setWmsCapability(uuid: string, capability: WmsFeatureInfoCapability) {
 }
 
 function removeMapLayer(uuidToRemove: string) {
-  if (mapViewStore.mapLayers.some((layer) => layer.uuid === uuidToRemove)) {
+  const mapLayer = mapViewStore.mapLayers.find(
+    (layer) => layer.uuid === uuidToRemove,
+  );
+  if (mapLayer) {
+    // The layer is still in the store, so only the map unmounts (e.g. a page
+    // change): keep what the user set for when the converter mounts again.
+    if (layerStore.layers.some((layer) => layer.uuid === uuidToRemove)) {
+      layerStore.addImportOption(uuidToRemove, {
+        opacity: mapLayer.opacity ?? undefined,
+        isVisible: mapLayer.isVisible,
+      });
+    }
     mapViewStore.removeLayer(uuidToRemove);
   }
   if (!layerStore.getLayer(uuidToRemove)) {
