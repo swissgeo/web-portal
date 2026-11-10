@@ -174,6 +174,8 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
           :items="socialLinks"
           :ui="{
             linkLabelExternalIcon: 'hidden',
+            link: 'text-accent hover:text-accent-hover',
+            linkLeadingIcon: 'text-accent hover:text-accent-hover',
           }"
         />
       </template>
@@ -186,6 +188,8 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         :items="infosLinks"
         :ui="{
           linkLabelExternalIcon: 'hidden',
+          link: 'text-accent hover:text-accent-hover',
+          linkLeadingIcon: 'text-accent hover:text-accent-hover',
         }"
       />
     </UFooter>
