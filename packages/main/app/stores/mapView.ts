@@ -218,16 +218,33 @@ export const useMapViewStore = defineStore("mapView", () => {
     compareRatio.value = Math.min(Math.max(ratio, 0), 1);
   }
 
+  /**
+   * Hides the app chrome around the map and asks the browser for real fullscreen.
+   * Where the Fullscreen API is missing or refused (e.g. iPhone Safari), the
+   * in-app fullscreen layout is kept.
+   */
   function enterFullscreenMode() {
     isFullscreenModeActive.value = true;
+    document.documentElement
+      .requestFullscreen?.()
+      ?.catch((error: unknown) =>
+        log.warn(`Browser fullscreen refused: ${error}`),
+      );
   }
 
   function exitFullscreenMode() {
     isFullscreenModeActive.value = false;
+    if (document.fullscreenElement) {
+      void document.exitFullscreen();
+    }
   }
 
   function toggleFullscreenMode() {
-    isFullscreenModeActive.value = !isFullscreenModeActive.value;
+    if (isFullscreenModeActive.value) {
+      exitFullscreenMode();
+    } else {
+      enterFullscreenMode();
+    }
   }
 
   function setStateId(id: string) {
