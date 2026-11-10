@@ -82,7 +82,7 @@ describe("SearchResultEntry", () => {
           UButton: UButtonStub,
           DatasetNotMappableHint: {
             name: "DatasetNotMappableHint",
-            props: ["showHint"],
+            props: ["showHint", "tooltip"],
             template: "<slot />",
           },
         },
@@ -279,6 +279,26 @@ describe("SearchResultEntry", () => {
       expect(item.text()).not.toContain("dataset.notMappable");
 
       wrapper.unmount();
+    });
+  });
+
+  describe("tooltip", () => {
+    function tooltipOf(entry: SearchResult) {
+      const wrapper = mountEntry(entry);
+      const tooltip = wrapper
+        .getComponent({ name: "DatasetNotMappableHint" })
+        .props("tooltip");
+      wrapper.unmount();
+      return tooltip;
+    }
+
+    it("offers to add a layer to the map", () => {
+      expect(tooltipOf(entries[2]!)).toBe("dataset.addToMap");
+    });
+
+    it("has none for other results or layers the map cannot show", () => {
+      expect(tooltipOf(entries[0]!)).toBeUndefined();
+      expect(tooltipOf(notMappableLayer)).toBeUndefined();
     });
   });
 
