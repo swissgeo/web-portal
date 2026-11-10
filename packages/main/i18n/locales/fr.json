@@ -647,7 +647,8 @@
       "openPdf": "Ouvrir la légende en PDF",
       "openPage": "Ouvrir la page de la légende"
     },
-    "variant": "Variante"
+    "variant": "Variante",
+    "time": "Date"
   },
   "layerCart": {
     "close": "Fermer",

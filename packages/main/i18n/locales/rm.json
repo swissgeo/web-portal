@@ -647,7 +647,8 @@
       "openPdf": "Avrir la legenda sco PDF",
       "openPage": "Avrir la pagina da la legenda"
     },
-    "variant": "Variant"
+    "variant": "Variant",
+    "time": "Data"
   },
   "layerCart": {
     "close": "Serrar",
