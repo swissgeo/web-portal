@@ -9,12 +9,18 @@ const {
   fetchMock,
   layerStore,
   makeServerLayerMock,
+  navigateToMock,
   positionStore,
+  route,
   searchStore,
+  sidebarStore,
   toastAddMock,
   windowOpenMock,
 } = vi.hoisted(() => ({
   windowOpenMock: vi.fn(),
+  navigateToMock: vi.fn(),
+  route: { meta: {} as { datasetDetail?: boolean } },
+  sidebarStore: { setSidebar: vi.fn() },
   fetchMock: vi.fn(),
   layerStore: { layers: [] as { humanId: string }[], addLayer: vi.fn() },
   makeServerLayerMock: vi.fn((dataset: { id: string }) => ({
@@ -33,6 +39,9 @@ mockNuxtImport("useI18n", () => () => ({
 }));
 
 mockNuxtImport("useToaster", () => () => ({ add: toastAddMock }));
+mockNuxtImport("useRoute", () => () => route);
+mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
+mockNuxtImport("navigateTo", () => navigateToMock);
 
 mockNuxtImport("useRuntimeConfig", () => () => ({
   public: {
@@ -54,7 +63,9 @@ vi.mock("@swissgeo/map", () => ({
 }));
 
 vi.mock("@swissgeo/skeleton", () => ({
+  SidebarType: { LAYER_CART: "layer-cart" },
   useSearchStore: () => searchStore,
+  useSidebarStore: () => sidebarStore,
 }));
 
 const layerResult = {
@@ -84,6 +95,9 @@ describe("useSearchSelection", () => {
     positionStore.setZoom.mockReset();
     searchStore.setPinnedCoordinate.mockReset();
     windowOpenMock.mockReset();
+    navigateToMock.mockReset();
+    sidebarStore.setSidebar.mockReset();
+    route.meta = {};
     vi.stubGlobal("open", windowOpenMock);
   });
 
@@ -177,6 +191,46 @@ describe("useSearchSelection", () => {
 
     expect(fetchMock).not.toHaveBeenCalled();
     expect(layerStore.addLayer).not.toHaveBeenCalled();
+  });
+
+  it.each`
+    case                            | layers
+    ${"adds the layer"}             | ${[]}
+    ${"finds the layer on the map"} | ${[{ humanId: "ch.layer.one" }]}
+  `(
+    "closes the DetailView and opens the map panel when it $case",
+    async ({ layers }) => {
+      layerStore.layers = layers;
+      route.meta = { datasetDetail: true };
+      fetchMock.mockResolvedValue({ id: "ch.layer.one" });
+
+      const { handleResultSelection } = useSearchSelection();
+      await handleResultSelection(layerResult);
+
+      expect(sidebarStore.setSidebar).toHaveBeenCalledWith("layer-cart");
+      expect(navigateToMock).toHaveBeenCalledWith("/de/map");
+    },
+  );
+
+  it("stays on the page when no DetailView is open", async () => {
+    fetchMock.mockResolvedValue({ id: "ch.layer.one" });
+
+    const { handleResultSelection } = useSearchSelection();
+    await handleResultSelection(layerResult);
+
+    expect(layerStore.addLayer).toHaveBeenCalled();
+    expect(sidebarStore.setSidebar).not.toHaveBeenCalled();
+    expect(navigateToMock).not.toHaveBeenCalled();
+  });
+
+  it("keeps the DetailView open when the layer cannot be added", async () => {
+    route.meta = { datasetDetail: true };
+    fetchMock.mockRejectedValue(new Error("boom"));
+
+    const { handleResultSelection } = useSearchSelection();
+    await handleResultSelection(layerResult);
+
+    expect(navigateToMock).not.toHaveBeenCalled();
   });
 
   it("opens the published CMS page in a new tab", async () => {

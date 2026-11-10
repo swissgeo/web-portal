@@ -159,6 +159,9 @@ describe("searchLocation function", () => {
     const url = new URL((fetch as Mock).mock.calls[0][0] as string);
     expect(url.origin + url.pathname).toBe(searchServiceUrl);
     expect(url.searchParams.get("type")).toBe("locations");
+    // GPS-1294: as many places as map.geo.admin.ch, which relies on the
+    // SearchServer default of 50
+    expect(url.searchParams.get("limit")).toBe("50");
   });
 
   it("parses valid location result and swaps coordinates", async () => {

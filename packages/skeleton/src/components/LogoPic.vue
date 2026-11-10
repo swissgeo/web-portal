@@ -19,13 +19,13 @@ const isDesktop = inject<boolean>("isDesktop", true);
     <img
       v-if="!darkMode"
       src="@/assets/images/swissgeo_rgb_icon.svg"
-      class="h-5"
+      class="h-8"
       data-testid="sidebar-logo-pic-image-condensed"
     />
     <img
       v-else
       src="@/assets/images/swissgeo_sw_icon.svg"
-      class="h-5"
+      class="h-8"
       data-testid="sidebar-logo-pic-image-condensed"
     />
   </div>
@@ -39,13 +39,13 @@ const isDesktop = inject<boolean>("isDesktop", true);
       <img
         v-if="!darkMode"
         src="@/assets/images/swissgeo_rgb_sek.svg"
-        class="h-5"
+        class="h-8"
         data-testid="sidebar-logo-pic-image-extended"
       />
       <img
         v-else
         src="@/assets/images/swissgeo_neg_sek.svg"
-        class="h-5"
+        class="h-8"
         data-testid="sidebar-logo-pic-image-extended"
       />
     </div>
@@ -54,7 +54,7 @@ const isDesktop = inject<boolean>("isDesktop", true);
       <!-- This is the separator between the logo and the language switch button -->
       <USeparator
         orientation="vertical"
-        class="h-5 w-0.5 bg-gray-300"
+        class="h-8 w-0.5 bg-gray-300"
         data-testid="sidebar-logo-pic-separator"
       />
     </div>

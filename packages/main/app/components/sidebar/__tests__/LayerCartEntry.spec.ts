@@ -22,7 +22,7 @@ const layerStore = vi.hoisted(() => ({
   ),
 }));
 const dimensionsStore = vi.hoisted(() => ({
-  getDimensions: vi.fn(() => undefined),
+  getDimensions: vi.fn((): unknown => undefined),
   setDimension: vi.fn(),
   clearLayerDimensions: vi.fn(),
 }));
@@ -68,6 +68,13 @@ const LayerVariantSelectStub = {
   template: "<div />",
 };
 
+const USelectStub = {
+  name: "USelect",
+  props: ["modelValue", "items"],
+  emits: ["update:modelValue"],
+  template: "<div v-bind='$attrs' />",
+};
+
 const stubs = {
   LayerLegend: {
     name: "LayerLegend",
@@ -82,6 +89,11 @@ const stubs = {
       "<a v-if='to' :href='to' v-bind='$attrs' /><button v-else v-bind='$attrs' />",
   },
   USlider: { template: "<div />" },
+  USelect: USelectStub,
+};
+
+const timeDimension = {
+  time: { currentValue: "2020", availableValues: ["2020", "2010"] },
 };
 
 function makeLayer(overrides: Partial<MapLayer> = {}): MapLayer {
@@ -120,6 +132,7 @@ describe("LayerCartEntry.vue", () => {
       humanId: "a-human-id",
       data: { properties: {} },
     });
+    dimensionsStore.getDimensions.mockReturnValue(undefined);
   });
 
   it("shows the layer name", () => {
@@ -274,6 +287,63 @@ describe("LayerCartEntry.vue", () => {
       );
     },
   );
+
+  it.each`
+    isExpanded | isShown
+    ${true}    | ${true}
+    ${false}   | ${false}
+  `(
+    "shows the time select=$isShown for isExpanded=$isExpanded",
+    ({ isExpanded, isShown }) => {
+      expandedLayers["a-uuid"] = isExpanded;
+      dimensionsStore.getDimensions.mockReturnValue(timeDimension);
+
+      const wrapper = mountEntry();
+
+      expect(wrapper.find("[data-testid='layer-time-select']").exists()).toBe(
+        isShown,
+      );
+      expect(wrapper.find("select").exists()).toBe(false);
+    },
+  );
+
+  it("shows no time select for a layer with only one time", () => {
+    expandedLayers["a-uuid"] = true;
+    dimensionsStore.getDimensions.mockReturnValue({
+      time: { currentValue: "2020", availableValues: ["2020"] },
+    });
+
+    const wrapper = mountEntry();
+
+    expect(wrapper.find("[data-testid='layer-time-select']").exists()).toBe(
+      false,
+    );
+  });
+
+  it("sets the selected time of its own layer", () => {
+    expandedLayers["a-uuid"] = true;
+    dimensionsStore.getDimensions.mockReturnValue(timeDimension);
+    const wrapper = mountEntry();
+    const select = wrapper.findComponent(USelectStub);
+
+    expect(select.props()).toEqual({
+      modelValue: "2020",
+      items: [
+        { label: "2020", value: "2020" },
+        { label: "2010", value: "2010" },
+      ],
+    });
+
+    expect(select.attributes("aria-label")).toBe("layers.time");
+
+    select.vm.$emit("update:modelValue", "2010");
+
+    expect(dimensionsStore.setDimension).toHaveBeenCalledWith(
+      "a-uuid",
+      "time",
+      { currentValue: "2010" },
+    );
+  });
 
   it("switches the variant and clears the values of the old variant", async () => {
     const data = { properties: { aggregated: true } };

@@ -11,6 +11,7 @@ mockNuxtImport("useRoute", () => {
     params: { id: "first" },
     query: {},
     hash: "",
+    meta: { datasetDetail: true },
   });
   return () => route;
 });
@@ -68,8 +69,27 @@ describe("Topbar", () => {
       params: { id: "first" },
       query: {},
       hash: "",
+      meta: { datasetDetail: true },
     });
   });
+
+  it.each`
+    page              | name                     | datasetDetail | isHomeActive | isMapActive
+    ${"landing page"} | ${"index___de"}          | ${undefined}  | ${true}      | ${false}
+    ${"map"}          | ${"map___de"}            | ${undefined}  | ${false}     | ${true}
+    ${"DetailView"}   | ${"map-dataset-id___de"} | ${true}       | ${false}     | ${true}
+  `(
+    "marks the active entry on the $page",
+    ({ name, datasetDetail, isHomeActive, isMapActive }) => {
+      Object.assign(useRoute(), { name, meta: { datasetDetail } });
+
+      const menu = mountTopbar().getComponent({ name: "UNavigationMenu" });
+
+      expect(
+        menu.props("items").map((item: { active: boolean }) => item.active),
+      ).toEqual([isHomeActive, isMapActive]);
+    },
+  );
 
   it.each(["desktop", "mobile"])(
     "provides mode and language controls in the %s header",

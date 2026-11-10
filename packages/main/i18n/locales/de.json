@@ -647,7 +647,8 @@
       "openPdf": "Legende als PDF öffnen",
       "openPage": "Legendenseite öffnen"
     },
-    "variant": "Variante"
+    "variant": "Variante",
+    "time": "Jahr"
   },
   "layerCart": {
     "close": "Schliessen",

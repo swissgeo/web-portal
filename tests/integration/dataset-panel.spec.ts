@@ -42,7 +42,7 @@ test.describe("dataset detail panel", () => {
     );
     // The dataset page fetches the record itself, client-side like the search
     await page.route(
-      "http://oar.test/api/oar/collections/swissgeo-catalog/items/ch.swisstopo.pixelkarte-farbe*",
+      "http://oar.test/api/oar/collections/swissgeo-catalog/items/dat_pixelkarte-farbe*",
       (route) => route.fulfill({ status: 200, json: dataset }),
     );
     await page.route(
