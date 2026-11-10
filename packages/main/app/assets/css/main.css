@@ -263,3 +263,7 @@ body {
   --breakpoint-xl: var(--breakpoint-xl);
   --breakpoint-2xl: var(--breakpoint-2xl);
 }
+
+:root {
+  --ui-header-height: 6rem;
+}
