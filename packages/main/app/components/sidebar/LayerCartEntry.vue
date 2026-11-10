@@ -39,21 +39,24 @@ const legends = computed(() => mapViewStore.getLayerLegends(layer.uuid));
 const currentTime = computed({
   get() {
     return (
-      dimensionsStore.getDimensions(layer.uuid)?.time?.currentValue ?? null
+      dimensionsStore.getDimensions(layer.uuid)?.time?.currentValue ?? undefined
     );
   },
-  set(value) {
-    dimensionsStore.setDimension(layer.uuid, "time", { currentValue: value });
+  set(value: string | undefined) {
+    dimensionsStore.setDimension(layer.uuid, "time", {
+      currentValue: value ?? null,
+    });
   },
 });
 
-const availableTimes = computed(() => {
-  return dimensionsStore.getDimensions(layer.uuid)?.time?.availableValues ?? [];
-});
-
-const getTimestampName = (time: string) => {
-  return getDisplayNameFromTimestamp(time);
-};
+const timeItems = computed(() =>
+  (dimensionsStore.getDimensions(layer.uuid)?.time?.availableValues ?? []).map(
+    (time) => ({
+      label: String(getDisplayNameFromTimestamp(time)),
+      value: time,
+    }),
+  ),
+);
 
 // Opacity as percentage (0-100) for the slider
 const opacityPercent = computed({
@@ -186,15 +189,6 @@ const rowButton = {
         {{ layer.displayName }}
       </button>
       <div class="flex shrink-0 items-center">
-        <select
-          v-if="(availableTimes?.length || 0) > 1"
-          v-model="currentTime"
-          class="max-w-24 bg-elevated"
-        >
-          <option v-for="time in availableTimes" :value="time" :key="time">
-            {{ getTimestampName(time) }}
-          </option>
-        </select>
         <UButton
           :icon="layer.isVisible ? 'i-lucide-eye' : 'i-lucide-eye-off'"
           :title="layer.isVisible ? t('layers.hide') : t('layers.show')"
@@ -228,6 +222,18 @@ const rowButton = {
         :selected-distribution-id="datasetLayer.selectedDistributionId"
         @select="selectVariant"
       />
+      <div v-if="timeItems.length > 1" class="flex flex-col gap-1">
+        <span class="text-xs font-medium text-toned uppercase">
+          {{ t("layers.time") }}
+        </span>
+        <USelect
+          v-model="currentTime"
+          data-testid="layer-time-select"
+          :aria-label="t('layers.time')"
+          data-vaul-no-drag
+          :items="timeItems"
+        />
+      </div>
       <div class="flex flex-col gap-1">
         <span class="text-xs font-medium text-toned uppercase">
           {{ t("layers.opacity") }}

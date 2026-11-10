@@ -647,7 +647,8 @@
       "openPdf": "Open legend as PDF",
       "openPage": "Open legend page"
     },
-    "variant": "Variant"
+    "variant": "Variant",
+    "time": "Point in Time"
   },
   "layerCart": {
     "close": "Close",
