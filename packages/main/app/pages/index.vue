@@ -30,11 +30,13 @@ const infosLinks = computed<NavigationMenuItem[]>(() => [
   {
     label: t("landing.footer.termsOfUse"),
     to: cmsUrl(t("landing.links.termsOfUse")),
+    target: "_blank",
     trailingIcon: "i-lucide-arrow-right",
   },
   {
     label: t("landing.footer.contact"),
     to: cmsUrl(t("landing.links.contact")),
+    target: "_blank",
     trailingIcon: "i-lucide-arrow-right",
   },
 ]);
