@@ -9,15 +9,23 @@ const isDesktop = useIsDesktop();
 const localePath = useLocalePath();
 const route = useRoute();
 const isDatasetOpen = computed(() => route.meta.datasetDetail === true);
+// The DetailView opens on top of the map, so the map button is active there
+const isMapActive = computed(
+  () =>
+    isDatasetOpen.value ||
+    (sidebarStore.isLayerCartVisible && !sidebarStore.isGeocatalogTreeVisible),
+);
+const isCatalogActive = computed(
+  () => sidebarStore.isGeocatalogTreeVisible && !isDatasetOpen.value,
+);
 
 const mobileNavButtons = computed(() => [
   {
     icon: Map,
     label: t("footer.mobileNav.map"),
-    variant:
-      sidebarStore.isLayerCartVisible && !sidebarStore.isGeocatalogTreeVisible
-        ? ("solid-inverted" as const)
-        : ("ghost-inverted" as const),
+    variant: isMapActive.value
+      ? ("solid-inverted" as const)
+      : ("ghost-inverted" as const),
     onClick: () => {
       // sidebar store holds open mobile drawer.
       // If cart drawer is shown, close it. dataset pages hide cart
@@ -34,7 +42,7 @@ const mobileNavButtons = computed(() => [
   {
     icon: Layers3,
     label: t("footer.mobileNav.catalog"),
-    variant: sidebarStore.isGeocatalogTreeVisible
+    variant: isCatalogActive.value
       ? ("solid-inverted" as const)
       : ("ghost-inverted" as const),
     onClick: () => {
