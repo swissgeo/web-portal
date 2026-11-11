@@ -28,8 +28,8 @@
   },
   "footer": {
     "copyRightData": "© Dati: ",
-    "termsOfUse": "Condizioni d'uso",
-    "impressum": "Note legali",
+    "termsOfUse": "Condizioni di utilizzo",
+    "impressum": "Impressum",
     "mobileNav": {
       "map": "Mappa",
       "catalog": "Catalogo dei dati",
@@ -81,7 +81,7 @@
         },
         "tos": {
           "label": "Inviando il messaggio accetti le",
-          "link": "condizioni d'uso",
+          "link": "Condizioni di utilizzo",
           "url": "https://www.geo.admin.ch/it/condizioni-generali-di-utilizzo-ifdg#feedback"
         }
       },
@@ -714,10 +714,10 @@
     },
     "footer": {
       "claim": "Il dove è qui.",
-      "description": "SWISSGEO rende accessibili in un unico luogo i dati territoriali della Svizzera.",
-      "followUs": "Seguici!",
+      "description": "SWISSGEO rende accessibili i dati spaziali della Svizzera in un unico luogo.",
+      "followUs": "Seguiteci!",
       "moreInformation": "Ulteriori informazioni",
-      "termsOfUse": "Condizioni d'uso",
+      "termsOfUse": "Condizioni di utilizzo",
       "contact": "Contatto",
       "dataProtection": "Informazioni legali e protezione dei dati",
       "netiquette": "Netiquette",

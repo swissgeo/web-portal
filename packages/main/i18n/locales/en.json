@@ -29,7 +29,7 @@
   "footer": {
     "copyRightData": "© Data: ",
     "termsOfUse": "Terms of use",
-    "impressum": "Legal notice",
+    "impressum": "Impressum",
     "mobileNav": {
       "map": "Map",
       "catalog": "Data catalogue",
@@ -716,10 +716,10 @@
       "claim": "The where is here.",
       "description": "SWISSGEO makes Switzerland's spatial data accessible in one place.",
       "followUs": "Follow us!",
-      "moreInformation": "More information",
-      "termsOfUse": "Terms of use",
+      "moreInformation": "More Information",
+      "termsOfUse": "Terms of Use",
       "contact": "Contact",
-      "dataProtection": "Legal notices and data protection",
+      "dataProtection": "Legal Notice and Data Protection",
       "netiquette": "Netiquette",
       "accessibility": "Accessibility",
       "copyright": "Copyright © 2026"

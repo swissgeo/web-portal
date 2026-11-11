@@ -19,7 +19,7 @@ const socialLinks = ref<NavigationMenuItem[]>([
     target: "_blank",
   },
   {
-    label: "Linkedin",
+    label: "LinkedIn",
     icon: "i-lucide-linkedin",
     to: "https://www.linkedin.com/company/swissgeo/",
     target: "_blank",
