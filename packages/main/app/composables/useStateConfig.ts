@@ -311,9 +311,10 @@ export function useStateConfig() {
         };
         const preSelectedFeaturesIds = stateLayer.features;
         const layer = layers[i]!;
-        const externalId = isDatasetLayer(layer)
-          ? layer.info?.featureInfoInformation?.externalId
+        const featureInfo = isDatasetLayer(layer)
+          ? layer.info?.featureInfoInformation
           : undefined;
+        const externalId = featureInfo?.externalId;
         if (preSelectedFeaturesIds && externalId) {
           const identifyFeatures = await createIdentifyResponse(
             preSelectedFeaturesIds,
@@ -321,7 +322,9 @@ export function useStateConfig() {
           );
           featureStore.addFeaturePreselection(uuid, identifyFeatures);
         } else if (preSelectedFeaturesIds) {
-          log.error(`No externalIds for the features of ${layer.humanId}`);
+          log.error(
+            `No externalIds on distribution ${featureInfo?.distributionId} (dataset ${layer.humanId})`,
+          );
         }
         layerStore.addImportOption(uuid, mapLayerData);
 

@@ -151,7 +151,9 @@ export const useSearchStore = defineStore("search", () => {
         if (!featureInfo.externalId) {
           searchPromises.push(
             Promise.reject(
-              new Error(`No externalIds for the features of ${layer.humanId}`),
+              new Error(
+                `No externalIds on distribution ${featureInfo.distributionId} (dataset ${layer.humanId})`,
+              ),
             ),
           );
           continue;

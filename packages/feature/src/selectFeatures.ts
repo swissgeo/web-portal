@@ -75,6 +75,12 @@ export async function selectFeatures(
 }
 
 // only exported for testing purpose, we only use identify outside this file
+function missingExternalIdsError(layerRequest: LayerRequest): Error {
+  return new Error(
+    `No externalIds on distribution ${layerRequest.distributionId} (dataset ${layerRequest.layerId})`,
+  );
+}
+
 export async function getFeaturesForOneLayer(
   layerRequest: LayerRequest | WMSLayerRequest,
   extent: FlatExtent,
@@ -94,9 +100,7 @@ export async function getFeaturesForOneLayer(
     // this means we've an identify url, we use an Identify here
   } else if (layerRequest.baseUrl) {
     if (!layerRequest.externalId || !layerRequest.urlTemplate) {
-      throw new Error(
-        `No externalIds for the feature info of layer ${layerRequest.layerId}`,
-      );
+      throw missingExternalIdsError(layerRequest);
     }
     // the baseUrl may or may not carry a trailing slash, depending on the
     // service's `describes` href — normalize before joining with `identify`
@@ -317,9 +321,7 @@ async function getFeaturesFromWmsServer(
 
   const wmsLayers = wmsRequest.layerName ?? wmsRequest.externalId;
   if (!wmsLayers) {
-    throw new Error(
-      `No externalIds for the feature info of layer ${wmsRequest.layerId}`,
-    );
+    throw missingExternalIdsError(wmsRequest);
   }
   const requestUrl = buildWmsGetFeatureInfoUrl(
     wmsRequest,

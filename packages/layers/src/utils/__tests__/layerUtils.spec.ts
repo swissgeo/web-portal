@@ -366,6 +366,7 @@ describe("grabFeatureInfoInformation", () => {
       [DISTRIBUTIONS_URL]: distributionCollection(),
       [WMS_FEATUREINFO_URL]: {
         ...featureInfoFeature(DATASERVICE_URL),
+        id: "dst_test-features-213ab",
         properties: {
           type: "FeatureInfo",
           protocol: "geoadmin:features",
@@ -380,6 +381,7 @@ describe("grabFeatureInfoInformation", () => {
 
     expect(info?.externalId).toBe("ch.test.external");
     expect(info?.isQueryable).toBe(true);
+    expect(info?.distributionId).toBe("dst_test-features-213ab");
   });
 
   it("returns no externalId when the featureinfo distribution has no externalIds", async () => {

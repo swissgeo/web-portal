@@ -160,6 +160,8 @@ export async function grabFeatureInfoInformation(dataset: Dataset) {
       baseUrl: featureInfoBaseUrl,
       // Only for the calls to the external service, never as a reference
       externalId: featureInfoRelJson.properties?.externalIds?.[0] || undefined,
+      // Names the record to fix when its externalIds are missing
+      distributionId: featureInfoRelJson.id,
       isQueryable: featureInfoRelJson.properties?.queryable,
     };
   } catch (error) {

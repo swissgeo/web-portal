@@ -335,7 +335,8 @@ describe("Feature Selection from layers and extent", () => {
     it("rejects an identify request without externalId and fetches nothing", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-identify",
-        layerId: "dat_no_external_id",
+        layerId: "dat_no-external-id",
+        distributionId: "dst_no-external-id-213ab",
         baseUrl: BASE_URL,
         layerName: null,
       };
@@ -343,7 +344,7 @@ describe("Feature Selection from layers and extent", () => {
       await expect(
         getFeaturesForOneLayer(layer, EXTENT, EPSG, LANG, 10),
       ).rejects.toThrow(
-        "No externalIds for the feature info of layer dat_no_external_id",
+        "No externalIds on distribution dst_no-external-id-213ab (dataset dat_no-external-id)",
       );
       expect(fetchSpy).not.toHaveBeenCalled();
     });
@@ -619,8 +620,12 @@ describe("Feature Selection from layers and extent", () => {
       const layers: LayerSource[] = [
         {
           layerUuid: "uuid-no-external-id",
-          layerId: "dat_no_external_id",
-          getFeatureInfoInformation: { ...geoadminInfo, externalId: undefined },
+          layerId: "dat_no-external-id",
+          getFeatureInfoInformation: {
+            ...geoadminInfo,
+            externalId: undefined,
+            distributionId: "dst_no-external-id-213ab",
+          },
           layerName: null,
         },
         {
@@ -636,7 +641,7 @@ describe("Feature Selection from layers and extent", () => {
       expect(log.error).toHaveBeenCalledTimes(1);
       expect(log.error).toHaveBeenCalledWith(
         new Error(
-          "No externalIds for the feature info of layer dat_no_external_id",
+          "No externalIds on distribution dst_no-external-id-213ab (dataset dat_no-external-id)",
         ),
       );
       expect(fetchSpy).not.toHaveBeenCalled();
@@ -805,14 +810,18 @@ describe("Feature Selection from layers and extent", () => {
     it("rejects without any request when there is neither a layerName nor an externalId", async () => {
       await expect(
         getFeaturesForOneLayer(
-          makeWmsRequest({ layerName: null, externalId: undefined }),
+          makeWmsRequest({
+            layerName: null,
+            externalId: undefined,
+            distributionId: "dst_test-wms-layer-213ab",
+          }),
           EXTENT,
           EPSG,
           LANG,
           10,
         ),
       ).rejects.toThrow(
-        "No externalIds for the feature info of layer ch.test.wms-layer",
+        "No externalIds on distribution dst_test-wms-layer-213ab (dataset ch.test.wms-layer)",
       );
       expect(fetchSpy).not.toHaveBeenCalled();
     });
