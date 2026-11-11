@@ -67,6 +67,7 @@ const displayMode = inject(displayModeKey, "web");
       <MapAttributionList
         v-if="displayMode === 'web'"
         :sources="attributionSources"
+        :is-fullscreen="mapViewStore.isFullscreenModeActive"
       />
       <LazyMapElevationWindow v-if="showAdditionalMapUi" />
     </template>
