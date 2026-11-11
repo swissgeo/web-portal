@@ -46,24 +46,6 @@ const addTooltip = computed(() =>
     : undefined,
 );
 
-// The row spans the whole list, so the tooltip follows the cursor instead of
-// sitting in its middle. Keyboard focus places it at the row.
-let cursor: { x: number; y: number } | undefined;
-const tooltipReference = {
-  getBoundingClientRect: () =>
-    cursor
-      ? new DOMRect(cursor.x, cursor.y, 0, 0)
-      : (item.value?.getBoundingClientRect() ?? new DOMRect()),
-};
-
-function trackCursor(event: PointerEvent) {
-  cursor = { x: event.clientX, y: event.clientY };
-}
-
-function forgetCursor() {
-  cursor = undefined;
-}
-
 // Keyboard navigation
 function goToFirst() {
   if (!item.value) {
@@ -120,11 +102,7 @@ defineExpose({
 
 <template>
   <!-- List item with keyboard navigation -->
-  <DatasetNotMappableHint
-    :show-hint="!isMappable"
-    :tooltip="addTooltip"
-    :tooltip-reference="tooltipReference"
-  >
+  <DatasetNotMappableHint :show-hint="!isMappable" :tooltip="addTooltip">
     <li
       ref="item"
       class="flex items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors focus:outline-none focus-visible:bg-elevated"
@@ -142,8 +120,6 @@ defineExpose({
       @keydown.end.prevent="goToLast"
       @keyup.enter="selectItem"
       @click="selectItem"
-      @pointermove="trackCursor"
-      @pointerleave="forgetCursor"
     >
       <!-- Title -->
       <ClientOnly>
