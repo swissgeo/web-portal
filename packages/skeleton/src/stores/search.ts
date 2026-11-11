@@ -145,7 +145,7 @@ export const useSearchStore = defineStore("search", () => {
         const featureInfo = isDatasetLayer(layer)
           ? layer.info?.featureInfoInformation
           : undefined;
-        if (!featureInfo) {
+        if (!featureInfo?.isQueryable) {
           continue;
         }
         if (!featureInfo.externalId) {

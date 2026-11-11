@@ -67,7 +67,10 @@ describe("useSearchStore", () => {
     mapLayers.length = 0;
   });
 
-  const datasetLayer = (featureInfoInformation?: { externalId?: string }) => ({
+  const datasetLayer = (featureInfoInformation?: {
+    externalId?: string;
+    isQueryable?: boolean;
+  }) => ({
     type: "dataset",
     humanId: "dat_test",
     data: { id: "dat_test" },
@@ -75,7 +78,9 @@ describe("useSearchStore", () => {
   });
 
   it("searches the features of a map layer by its externalId", async () => {
-    mapLayers.push(datasetLayer({ externalId: "ch.test.external" }));
+    mapLayers.push(
+      datasetLayer({ externalId: "ch.test.external", isQueryable: true }),
+    );
 
     const store = useSearchStore();
     await store.setSearchQuery("Bern");
@@ -100,8 +105,18 @@ describe("useSearchStore", () => {
     expect(store.hasError).toBe(false);
   });
 
+  it("does not search the features of a dataset that is not queryable", async () => {
+    mapLayers.push(datasetLayer({ externalId: "ch.test.external" }));
+
+    const store = useSearchStore();
+    await store.setSearchQuery("Bern");
+
+    expect(searchMocks.searchLayerFeatures).not.toHaveBeenCalled();
+    expect(store.hasError).toBe(false);
+  });
+
   it("sets an error and does not search the features of a dataset without externalId", async () => {
-    mapLayers.push(datasetLayer({}));
+    mapLayers.push(datasetLayer({ isQueryable: true }));
 
     const store = useSearchStore();
     await store.setSearchQuery("Bern");

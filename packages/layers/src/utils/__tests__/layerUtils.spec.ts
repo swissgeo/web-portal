@@ -370,6 +370,7 @@ describe("grabFeatureInfoInformation", () => {
           type: "FeatureInfo",
           protocol: "geoadmin:features",
           externalIds: ["ch.test.external", "ch.test.other"],
+          queryable: true,
         },
       },
       [DATASERVICE_URL]: dataServiceFeature(["describes"]),
@@ -378,6 +379,7 @@ describe("grabFeatureInfoInformation", () => {
     const info = await grabFeatureInfoInformation(makeDataset());
 
     expect(info?.externalId).toBe("ch.test.external");
+    expect(info?.isQueryable).toBe(true);
   });
 
   it("returns no externalId when the featureinfo distribution has no externalIds", async () => {

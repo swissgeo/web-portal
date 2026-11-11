@@ -17,6 +17,7 @@ export interface LayerInfo {
     protocol?: string;
     baseUrl?: string;
     externalId?: string;
+    isQueryable?: boolean;
   };
 }
 
