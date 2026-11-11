@@ -10,6 +10,7 @@ const { t } = useI18n();
 const localePath = useLocalePath();
 const uiStore = useSidebarStore();
 const { cmsUrl } = useCmsUrl();
+const { reportIssuePortalUrl } = useRuntimeConfig().public;
 
 const socialLinks = ref<NavigationMenuItem[]>([
   {
@@ -214,11 +215,24 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       />
     </UFooter>
     <div
-      class="flex flex-col gap-4 bg-neutral-50 px-4 py-8 text-sm font-medium lg:flex-row-reverse lg:items-center lg:p-8 dark:bg-neutral-900"
+      class="flex flex-col gap-8 bg-neutral-50 px-4 py-8 text-sm font-medium lg:flex-row-reverse lg:items-center lg:p-8 dark:bg-neutral-900"
     >
       <div
-        class="text-accent grid grid-cols-2 grid-rows-2 gap-4 lg:flex lg:w-1/2 lg:flex-row"
+        class="text-accent grid-rows-auto grid grid-cols-2 gap-4 lg:flex lg:w-1/2 lg:flex-row lg:items-center"
       >
+        <UButton
+          variant="link"
+          color="error"
+          size="md"
+          class="mb-4 gap-1 px-0 lg:mr-12 lg:mb-0 lg:text-left"
+          :to="reportIssuePortalUrl"
+          target="_blank"
+          external
+        >
+          <UIcon name="i-lucide-triangle-alert" class="size-4 shrink-0" />
+          {{ t("footer.reportIssue.buttonTitle") }}
+        </UButton>
+        <div class="lg:hidden"></div>
         <ULink
           :to="cmsUrl(t('landing.links.impressum'))"
           target="_blank"
