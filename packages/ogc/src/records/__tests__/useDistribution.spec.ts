@@ -40,47 +40,33 @@ describe("useDistribution composable returning the desired distribution", () => 
     expect(layerId.value).to.equal("ch.bafu.schutzgebiete-luftfahrt");
   });
 
-  it("derives the layer id from the distribution id when externalIds is missing", () => {
+  it("uses the distribution id as the layer id when externalIds is missing", () => {
+    const id = "dst_messwerte-schneehoehe-automatisch-10min-1f4fm";
     const distributionCollection = ref({
       features: [
         {
-          id: "ch.bafu.hydroweb-messstationen_grundwasser:geojson",
+          id,
           links: [],
           properties: {
             type: "Distribution",
-            title: "NAQUA-QUANT Messstellen",
+            title: "Some GeoJSON dataset",
             protocol: "geojson",
             externalIds: null,
           },
         },
       ],
     } as unknown as DistributionCollection);
-    const distributionId = ref(
-      "ch.bafu.hydroweb-messstationen_grundwasser:geojson",
-    );
+    const distributionId = ref(id);
     const { layerId } = useDistribution(distributionCollection, distributionId);
 
-    expect(layerId.value).to.equal(
-      "ch.bafu.hydroweb-messstationen_grundwasser",
-    );
+    expect(layerId.value).to.equal(id);
   });
 
-  it("returns a null layer id when externalIds is missing and the id has no protocol suffix", () => {
-    const distributionCollection = ref({
-      features: [
-        {
-          id: "ch.bafu.some-dataset",
-          links: [],
-          properties: {
-            type: "Distribution",
-            title: "Some dataset",
-            protocol: "geojson",
-            externalIds: null,
-          },
-        },
-      ],
-    } as unknown as DistributionCollection);
-    const distributionId = ref("ch.bafu.some-dataset");
+  it("returns a null layer id when no distribution is found", () => {
+    const distributionCollection = ref(
+      ChBafuSchutzgebieteLuftfahrtDistributions as DistributionCollection,
+    );
+    const distributionId = ref("does-not-exist");
     const { layerId } = useDistribution(distributionCollection, distributionId);
 
     expect(layerId.value).to.equal(null);
