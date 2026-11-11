@@ -46,22 +46,16 @@ const items = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <!-- UHeader switches to its mobile layout below lg and has no prop to change
-       that; most of the ui classes below move the switch to xl by undoing the
-       default lg: rules and re-applying them at xl: -->
+  <!-- UHeader switches to its mobile layout below lg -->
   <UHeader
     v-model:open="menuOpen"
     :auto-close="false"
     :ui="{
       container:
-        'max-w-full gap-1.5 xl:gap-10 bg-primary-50 dark:bg-primary-800',
-      left: 'justify-between flex gap-10 grow xl:grow-0 xl:flex-none',
-      right: 'lg:flex-none xl:flex-none xl:flex xl:ml-auto',
-      center: 'lg:hidden xl:flex',
-      toggle: 'lg:inline-flex xl:hidden',
-      content: 'lg:flex xl:hidden',
-      header: 'lg:px-8 gap-1.5',
-      body: 'lg:px-8 px-8 py-4',
+        'max-w-full gap-1.5 lg:gap-10 bg-primary-50 dark:bg-primary-800',
+      left: 'justify-between gap-10 grow lg:flex-initial lg:min-w-0',
+      header: 'gap-1.5',
+      body: 'px-8 py-4',
     }"
     :toggle="{
       class: 'text-nav-brand',
@@ -87,7 +81,7 @@ const items = computed<NavigationMenuItem[]>(() => [
       <ClientOnly v-if="displaySearchBar">
         <TopbarSearch />
         <template #fallback>
-          <div class="h-8 w-119.25 grow" />
+          <div class="h-8 w-119.25 min-w-0 grow" />
         </template>
       </ClientOnly>
     </template>
@@ -103,7 +97,7 @@ const items = computed<NavigationMenuItem[]>(() => [
     />
 
     <template #right>
-      <div class="hidden items-center gap-1.5 xl:flex">
+      <div class="hidden items-center gap-1.5 lg:flex">
         <TopbarLanguageSwitcherButton size="lg" />
         <TopbarColorModeButton size="lg" />
       </div>
