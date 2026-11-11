@@ -7,6 +7,7 @@ import type { Dataset, Legend } from "@swissgeo/ogc";
 import type { Options as WMTSOptions } from "ol/source/WMTS";
 
 import { useDimensionsStore } from "@swissgeo/dimension";
+import { getFeatureInfoLayerId } from "@swissgeo/layers";
 import { useWmsFeatureInfoCapabilities } from "@swissgeo/ogc";
 
 import type { GeoJsonLayerData } from "@/components/map/datamapping/useOgcGeoJsonData";
@@ -111,7 +112,7 @@ const wmsFeatureInfoUrl = computed(() =>
 );
 
 const wmsFeatureInfoCapability = useWmsFeatureInfoCapabilities(
-  layer.humanId,
+  () => getFeatureInfoLayerId(layer),
   wmsFeatureInfoUrl,
 );
 

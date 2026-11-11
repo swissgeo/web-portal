@@ -4,6 +4,7 @@ import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { toValue } from "vue";
 
 import OgcDatasetConverter from "../OgcDatasetConverter.vue";
 
@@ -305,6 +306,7 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
           featureInfoInformation: {
             protocol: "ogc:wms",
             baseUrl: "https://example.test/wms-capabilities",
+            externalId: "ch.test.external",
           },
         },
         data: null,
@@ -327,7 +329,7 @@ describe("DatasetLayer Mapper/Converter Component for WMTS", () => {
       expect(useWmsFeatureInfoCapabilitiesMock).toHaveBeenCalledTimes(1);
       const [layerId, capabilityUrl] =
         useWmsFeatureInfoCapabilitiesMock.mock.calls[0]!;
-      expect(layerId).toBe("human-id");
+      expect(toValue(layerId)).toBe("ch.test.external");
       expect(capabilityUrl.value).toBe("https://example.test/wms-capabilities");
     });
 

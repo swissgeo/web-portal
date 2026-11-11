@@ -16,6 +16,7 @@ export interface LayerInfo {
   featureInfoInformation?: {
     protocol?: string;
     baseUrl?: string;
+    externalId?: string;
   };
 }
 

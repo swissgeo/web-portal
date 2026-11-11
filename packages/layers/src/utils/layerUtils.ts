@@ -158,6 +158,7 @@ export async function grabFeatureInfoInformation(dataset: Dataset) {
     return {
       protocol,
       baseUrl: featureInfoBaseUrl,
+      externalId: featureInfoRelJson.properties?.externalIds?.[0],
     };
   } catch (error) {
     log.error(
@@ -194,3 +195,8 @@ export const makeServerLayer = async (
 export const isDatasetLayer = (layer: Layer): layer is DatasetLayer => {
   return layer.type === "dataset";
 };
+
+// The feature info service knows the layer by its external id
+export function getFeatureInfoLayerId(layer: DatasetLayer): string {
+  return layer.info?.featureInfoInformation?.externalId ?? layer.data.id;
+}

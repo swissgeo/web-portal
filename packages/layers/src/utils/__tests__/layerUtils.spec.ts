@@ -3,8 +3,11 @@ import type { Dataset } from "@swissgeo/ogc";
 import { omit } from "es-toolkit/object";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
+import type { DatasetLayer } from "@/types";
+
 import {
   getInfoFromDataset,
+  getFeatureInfoLayerId,
   grabFeatureInfoInformation,
   InvalidDatasetError,
   makeServerLayer,
@@ -219,6 +222,26 @@ describe("testing the makeServerLayer function", () => {
   });
 });
 
+describe("getFeatureInfoLayerId", () => {
+  const layer = (externalId?: string) =>
+    ({
+      type: "dataset",
+      data: { id: "dat_test" },
+      info: { displayName: "Test", featureInfoInformation: { externalId } },
+    }) as DatasetLayer;
+
+  it.each`
+    externalId         | expected
+    ${"ch.test.layer"} | ${"ch.test.layer"}
+    ${undefined}       | ${"dat_test"}
+  `(
+    "returns $expected for externalId $externalId",
+    ({ externalId, expected }) => {
+      expect(getFeatureInfoLayerId(layer(externalId))).toBe(expected);
+    },
+  );
+});
+
 describe("grabFeatureInfoInformation", () => {
   const DISTRIBUTIONS_URL = "https://example.test/distributions";
   const WMS_FEATUREINFO_URL = "https://example.test/ds:wms/featureinfo";
@@ -353,6 +376,25 @@ describe("grabFeatureInfoInformation", () => {
     );
 
     expect(String(fetchSpy.mock.calls[1]![0])).toBe(WMS_FEATUREINFO_URL);
+  });
+
+  it("returns the first externalId of the featureinfo distribution", async () => {
+    stubFetchRouting({
+      [DISTRIBUTIONS_URL]: distributionCollection(),
+      [WMS_FEATUREINFO_URL]: {
+        ...featureInfoFeature(DATASERVICE_URL),
+        properties: {
+          type: "FeatureInfo",
+          protocol: "geoadmin:features",
+          externalIds: ["ch.test.external", "ch.test.other"],
+        },
+      },
+      [DATASERVICE_URL]: dataServiceFeature(["describes"]),
+    });
+
+    const info = await grabFeatureInfoInformation(makeDataset());
+
+    expect(info?.externalId).toBe("ch.test.external");
   });
 
   it("prefers describes over describedby and about", async () => {
