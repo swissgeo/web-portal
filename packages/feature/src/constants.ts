@@ -4,5 +4,8 @@
 // module
 export const IDENTIFY_TOLERANCE_PX = 10;
 
+// The identify imageDisplay param requires the DPI of the map, which has been standardized to 96.
+export const IDENTIFY_DPI = 96;
+
 // in the old viewer, there was a limit, and the possibility to load more if needed.
 export const FEATURE_LIMIT = 10;

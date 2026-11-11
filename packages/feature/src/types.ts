@@ -1,3 +1,4 @@
+import type { FlatExtent } from "@swissgeo/shared";
 import type {
   Geometry,
   GeometryCollection,
@@ -111,4 +112,9 @@ export type IdentifyFeature = {
     label?: string;
     name?: string;
   };
+};
+
+export type ScreenContext = {
+  viewportSize: [number, number];
+  viewExtent: FlatExtent;
 };

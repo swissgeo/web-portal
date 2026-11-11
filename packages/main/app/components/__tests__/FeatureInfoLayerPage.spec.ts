@@ -14,16 +14,19 @@ type ItemWithPayload = AccordionItem & { featureData?: FeatureData };
  * to avoid having to mock the functions within featureInfoContent.
  */
 let itemsSeen: ItemWithPayload[] = [];
+let defaultValueSeen: unknown = undefined;
 
 const UAccordionStub = defineComponent({
   name: "UAccordion",
   props: {
     items: { type: Array, required: true },
     type: { type: String, default: "single" },
+    defaultValue: { type: null, required: false, default: undefined },
   },
   setup(props, { slots }) {
     return () => {
       itemsSeen = props.items as ItemWithPayload[];
+      defaultValueSeen = props.defaultValue;
       return h("div", { class: "accordion-stub" }, [
         h(
           "div",
@@ -41,7 +44,17 @@ const UAccordionStub = defineComponent({
               class: "accordion-item",
               "data-testid": "feature-info-accordion-item",
             },
-            slots.body?.({ item, index }) ?? [],
+            [
+              h(
+                "div",
+                {
+                  class: "accordion-trigger",
+                  "data-testid": "feature-info-accordion-trigger",
+                },
+                slots.default?.({ item, index }) ?? item.label ?? "",
+              ),
+              slots.body?.({ item, index }) ?? [],
+            ],
           ),
         ),
       ]);
@@ -77,6 +90,11 @@ function mountPage(featuresData: FeatureData[]) {
       stubs: {
         UAccordion: UAccordionStub,
         FeatureInfoContent: FeatureInfoContentStub,
+        UTooltip: {
+          props: ["text"],
+          template:
+            '<span class="tooltip-stub" :data-tooltip-text="text"><slot /></span>',
+        },
       },
     },
   });
@@ -98,18 +116,31 @@ describe("FeatureInfoLayerPage.vue", () => {
     expect(itemsSeen.map((item) => item.label)).toEqual(["id-1", "id-2"]);
   });
 
-  it("opens only the first item by default", () => {
+  it("truncates long feature labels and holds the full value in a tooltip", () => {
+    const longLabel =
+      "a very long feature label that would otherwise stretch the popup width";
+    const wrapper = mountPage([
+      { ...makeFeatureData("id-long"), label: longLabel },
+    ]);
+
+    const trigger = wrapper.find(
+      "[data-testid='feature-info-accordion-trigger']",
+    );
+    expect(trigger.find("span.truncate").exists()).toBe(true);
+    expect(trigger.text()).toContain(longLabel);
+    expect(trigger.find(".tooltip-stub").attributes("data-tooltip-text")).toBe(
+      longLabel,
+    );
+  });
+
+  it("opens only the first item by default (index-based implicit value)", () => {
     mountPage([
       makeFeatureData("a"),
       makeFeatureData("b"),
       makeFeatureData("c"),
     ]);
 
-    expect(itemsSeen.map((item) => item.defaultOpen)).toEqual([
-      true,
-      false,
-      false,
-    ]);
+    expect(defaultValueSeen).toEqual(["0"]);
   });
 
   it("allows multiple items open at once (type=multiple)", () => {
@@ -142,7 +173,6 @@ describe("FeatureInfoLayerPage.vue", () => {
 
     expect(itemsSeen).toHaveLength(1);
     expect(itemsSeen[0]!.featureData!.featureId).toBe("new-1");
-    expect(itemsSeen[0]!.defaultOpen).toBe(true);
   });
 
   it("renders no items for an empty feature list", () => {

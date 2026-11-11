@@ -19,6 +19,7 @@ import type {
   FeatureData,
   LayerRequest,
   LayerSource,
+  ScreenContext,
   WMSLayerRequest,
 } from "@/types";
 
@@ -61,6 +62,10 @@ const geoadminInfo = {
 const EXTENT: FlatExtent = [2599000, 1199000, 2601000, 1201000];
 const EPSG = 2056;
 const LANG = "de";
+const SCREEN_CONTEXT: ScreenContext = {
+  viewportSize: [1920, 1080],
+  viewExtent: [2590000, 1198000, 2610000, 1202000],
+};
 
 function mockResponse(body: unknown, status = 200): Response {
   return {
@@ -104,6 +109,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(fetchSpy).not.toHaveBeenCalled();
@@ -126,7 +132,14 @@ describe("Feature Selection from layers and extent", () => {
         layerName: null,
       };
 
-      const result = await getFeaturesForOneLayer(layer, EXTENT, EPSG, LANG, 1);
+      const result = await getFeaturesForOneLayer(
+        layer,
+        EXTENT,
+        EPSG,
+        LANG,
+        1,
+        SCREEN_CONTEXT,
+      );
 
       expect(result).toHaveLength(1);
       expect(result[0]!.featureId).toBe(String(vectorFeatures.features[0]!.id));
@@ -155,20 +168,27 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       // identify URL shape
-      const identifyUrl = fetchSpy.mock.calls[0]![0] as string;
-      expect(identifyUrl).toContain("/MapServer/identify");
-      expect(identifyUrl).toContain(`layers=all:${LAYER_ID}`);
-      expect(identifyUrl).toContain("sr=2056");
-      expect(identifyUrl).toContain("geometry=2599000,1199000,2601000,1201000");
-      expect(identifyUrl).toContain("geometryType=esriGeometryEnvelope");
-      expect(identifyUrl).toContain("geometryFormat=geojson");
-      expect(identifyUrl).toContain("limit=10");
-      expect(identifyUrl).toContain("tolerance=0");
-      expect(identifyUrl).toContain("returnGeometry=true");
-      expect(identifyUrl).toContain("lang=de");
+      const identifyUrl = new URL(String(fetchSpy.mock.calls[0]![0]));
+      expect(identifyUrl.pathname).toContain("/MapServer/identify");
+      const params = identifyUrl.searchParams;
+      expect(params.get("layers")).toBe(`all:${LAYER_ID}`);
+      expect(params.get("sr")).toBe("2056");
+      expect(params.get("geometry")).toBe(EXTENT.join(","));
+      expect(params.get("geometryType")).toBe("esriGeometryEnvelope");
+      expect(params.get("geometryFormat")).toBe("geojson");
+      expect(params.get("limit")).toBe("10");
+      expect(params.get("tolerance")).toBe("0");
+      expect(params.get("returnGeometry")).toBe("true");
+      expect(params.get("lang")).toBe("de");
+      // screen context: both params let the bgdi backend resolve the identify cleanly
+      expect(params.get("mapExtent")).toBe(SCREEN_CONTEXT.viewExtent.join(","));
+      expect(params.get("imageDisplay")).toBe("1920,1080,96");
+      // unique ids in the response: no dedup warning
+      expect(log.warn).not.toHaveBeenCalled();
 
       // htmlPopup URL: both {featureId} and {lang} are substituted from the template
       const firstFeatureId = String(identifyResponse.results[0]!.id);
@@ -208,7 +228,14 @@ describe("Feature Selection from layers and extent", () => {
           : Promise.resolve(mockResponse(htmlPopup)),
       );
 
-      await getFeaturesForOneLayer(layer, EXTENT, EPSG, "fr", 10);
+      await getFeaturesForOneLayer(
+        layer,
+        EXTENT,
+        EPSG,
+        "fr",
+        10,
+        SCREEN_CONTEXT,
+      );
 
       const popupUrls = fetchSpy.mock.calls
         .map((call) => call[0] as string)
@@ -235,6 +262,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(result).toEqual([]);
@@ -259,10 +287,50 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(result).toEqual([]);
       expect(fetchSpy).toHaveBeenCalledTimes(1); // identify only
+    });
+
+    it("de-duplicates identify results sharing the same feature id and warns", async () => {
+      const layer: LayerRequest = {
+        layerUuid: "uuid-identify",
+        layerId: LAYER_ID,
+        urlTemplate: URL_TEMPLATE,
+        baseUrl: BASE_URL,
+        layerName: null,
+      };
+      const [first, second] = identifyResponse.results;
+      fetchSpy.mockImplementation((url: string) => {
+        if (url.includes("/identify")) {
+          return Promise.resolve(
+            mockResponse({ results: [first, second, first] }),
+          );
+        }
+        return Promise.resolve(mockResponse(htmlPopup));
+      });
+
+      const result = await getFeaturesForOneLayer(
+        layer,
+        EXTENT,
+        EPSG,
+        LANG,
+        10,
+        SCREEN_CONTEXT,
+      );
+
+      expect(result).toHaveLength(2);
+      expect(result.map((feature) => feature.featureId)).toEqual([
+        String(first!.id),
+        String(second!.id),
+      ]);
+      // one identify request + one htmlPopup per unique feature, duplicates fetch nothing
+      expect(fetchSpy).toHaveBeenCalledTimes(3);
+      expect(log.warn).toHaveBeenCalledWith(
+        expect.stringContaining("identical id"),
+      );
     });
 
     it("keeps successful popup fetches and silently drops failed ones (per-feature resilience)", async () => {
@@ -291,6 +359,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(result).toHaveLength(1);
@@ -314,6 +383,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
         controller.signal,
       );
 
@@ -349,6 +419,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
         controller.signal,
       );
 
@@ -393,6 +464,7 @@ describe("Feature Selection from layers and extent", () => {
           },
         ],
         FEATURE_LIMIT,
+        SCREEN_CONTEXT,
         controller.signal,
       );
 
@@ -432,6 +504,7 @@ describe("Feature Selection from layers and extent", () => {
           },
         ],
         FEATURE_LIMIT,
+        SCREEN_CONTEXT,
         controller.signal,
       );
 
@@ -464,6 +537,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
         controller.signal,
       );
       await vi.waitFor(() =>
@@ -494,6 +568,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(result).toEqual([]);
@@ -518,7 +593,14 @@ describe("Feature Selection from layers and extent", () => {
         },
       ];
 
-      await selectFeatures(EXTENT, EPSG, LANG, layers);
+      await selectFeatures(
+        EXTENT,
+        EPSG,
+        LANG,
+        layers,
+        undefined,
+        SCREEN_CONTEXT,
+      );
 
       const store = useFeaturesStore();
       expect(Object.keys(store.selectedFeaturesByUuid).sort()).toEqual([
@@ -549,7 +631,14 @@ describe("Feature Selection from layers and extent", () => {
         },
       ];
 
-      await selectFeatures(EXTENT, EPSG, LANG, layers);
+      await selectFeatures(
+        EXTENT,
+        EPSG,
+        LANG,
+        layers,
+        undefined,
+        SCREEN_CONTEXT,
+      );
 
       const store = useFeaturesStore();
       expect(Object.keys(store.selectedFeaturesByUuid)).toEqual(["uuid-a"]);
@@ -578,7 +667,14 @@ describe("Feature Selection from layers and extent", () => {
         },
       ];
 
-      await selectFeatures(EXTENT, EPSG, LANG, layers);
+      await selectFeatures(
+        EXTENT,
+        EPSG,
+        LANG,
+        layers,
+        undefined,
+        SCREEN_CONTEXT,
+      );
 
       expect(log.error).toHaveBeenCalledTimes(1);
       expect(log.error).toHaveBeenCalledWith(expect.any(Error));
@@ -594,14 +690,21 @@ describe("Feature Selection from layers and extent", () => {
       store.setSelection({ "uuid-preexisting": [featureData("old")] });
       expect(store.hasSelectedFeatures).toBe(true);
 
-      await selectFeatures(EXTENT, EPSG, LANG, [
-        {
-          layerUuid: "uuid-empty",
-          layerId: LAYER_ID,
-          preResolvedFeatures: [],
-          layerName: null,
-        },
-      ]);
+      await selectFeatures(
+        EXTENT,
+        EPSG,
+        LANG,
+        [
+          {
+            layerUuid: "uuid-empty",
+            layerId: LAYER_ID,
+            preResolvedFeatures: [],
+            layerName: null,
+          },
+        ],
+        undefined,
+        SCREEN_CONTEXT,
+      );
 
       expect(store.selectedFeaturesByUuid).toEqual({});
       expect(store.hasSelectedFeatures).toBe(false);
@@ -615,17 +718,24 @@ describe("Feature Selection from layers and extent", () => {
         return Promise.resolve(mockResponse(htmlPopup));
       });
 
-      await selectFeatures(EXTENT, EPSG, LANG, [
-        {
-          layerUuid: "uuid-ogc",
-          layerId: LAYER_ID,
-          getFeatureInfoInformation: geoadminInfo,
-          layerName: null,
-        },
-      ]);
+      await selectFeatures(
+        EXTENT,
+        EPSG,
+        LANG,
+        [
+          {
+            layerUuid: "uuid-ogc",
+            layerId: LAYER_ID,
+            getFeatureInfoInformation: geoadminInfo,
+            layerName: null,
+          },
+        ],
+        undefined,
+        SCREEN_CONTEXT,
+      );
 
-      const identifyUrl = fetchSpy.mock.calls[0]![0] as string;
-      expect(identifyUrl).toContain(`layers=all:${LAYER_ID}`);
+      const identifyUrl = new URL(String(fetchSpy.mock.calls[0]![0]));
+      expect(identifyUrl.searchParams.get("layers")).toBe(`all:${LAYER_ID}`);
 
       const store = useFeaturesStore();
       expect(store.selectedFeaturesByUuid["uuid-ogc"]).toHaveLength(
@@ -674,7 +784,14 @@ describe("Feature Selection from layers and extent", () => {
         Promise.resolve(mockResponse({ features: [] })),
       );
 
-      await getFeaturesForOneLayer(makeWmsRequest(), EXTENT, EPSG, LANG, 7);
+      await getFeaturesForOneLayer(
+        makeWmsRequest(),
+        EXTENT,
+        EPSG,
+        LANG,
+        7,
+        SCREEN_CONTEXT,
+      );
 
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       const url = fetchedUrl();
@@ -716,6 +833,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       const params = fetchedUrl().searchParams;
@@ -734,6 +852,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       const params = fetchedUrl().searchParams;
@@ -752,6 +871,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       const params = fetchedUrl().searchParams;
@@ -775,6 +895,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(fetchedUrl().searchParams.get("VERSION")).toBe("1.3.0");
@@ -797,6 +918,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(fetchSpy.mock.calls[0]![1]).toMatchObject({ method: "POST" });
@@ -810,6 +932,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(result).toEqual([]);
@@ -829,6 +952,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(result).toEqual([]);
@@ -853,6 +977,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(fetchedUrl().searchParams.get("INFO_FORMAT")).toBe(
@@ -884,6 +1009,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(fetchedUrl().searchParams.get("INFO_FORMAT")).toBe("text/html");
@@ -933,6 +1059,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(result).toHaveLength(3);
@@ -967,6 +1094,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(result).toEqual([]);
@@ -984,6 +1112,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(result).toEqual([]);
@@ -1001,6 +1130,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
       );
 
       expect(result).toEqual([]);
@@ -1019,6 +1149,7 @@ describe("Feature Selection from layers and extent", () => {
         EPSG,
         LANG,
         10,
+        SCREEN_CONTEXT,
         controller.signal,
       );
 
@@ -1067,10 +1198,17 @@ describe("Feature Selection from layers and extent", () => {
         return Promise.resolve(mockResponse({ features: [] }));
       });
 
-      await selectFeatures(EXTENT, EPSG, LANG, [
-        { layerUuid: "uuid-wms-a", layerId: "layer-a", layerName: null },
-        { layerUuid: "uuid-wms-b", layerId: "layer-b", layerName: null },
-      ]);
+      await selectFeatures(
+        EXTENT,
+        EPSG,
+        LANG,
+        [
+          { layerUuid: "uuid-wms-a", layerId: "layer-a", layerName: null },
+          { layerUuid: "uuid-wms-b", layerId: "layer-b", layerName: null },
+        ],
+        undefined,
+        SCREEN_CONTEXT,
+      );
 
       expect(Object.keys(store.selectedFeaturesByUuid)).toEqual(["uuid-wms-a"]);
       expect(store.selectedFeaturesByUuid["uuid-wms-a"]![0]).toEqual({
@@ -1111,14 +1249,21 @@ describe("Feature Selection from layers and extent", () => {
         );
       });
 
-      await selectFeatures(EXTENT, EPSG, LANG, [
-        {
-          layerUuid: "uuid-dual",
-          layerId: LAYER_ID,
-          getFeatureInfoInformation: geoadminInfo,
-          layerName: null,
-        },
-      ]);
+      await selectFeatures(
+        EXTENT,
+        EPSG,
+        LANG,
+        [
+          {
+            layerUuid: "uuid-dual",
+            layerId: LAYER_ID,
+            getFeatureInfoInformation: geoadminInfo,
+            layerName: null,
+          },
+        ],
+        undefined,
+        SCREEN_CONTEXT,
+      );
 
       expect(store.selectedFeaturesByUuid).toEqual({});
       // the failed identify ran, the WMS endpoint was never consulted
@@ -1129,14 +1274,21 @@ describe("Feature Selection from layers and extent", () => {
     it("use pre-existing features without firing any queries", async () => {
       const store = useFeaturesStore();
 
-      await selectFeatures(EXTENT, EPSG, LANG, [
-        {
-          layerUuid: "uuid-file",
-          layerId: "some.kml.file",
-          preResolvedFeatures: vectorFeatures.features,
-          layerName: null,
-        },
-      ]);
+      await selectFeatures(
+        EXTENT,
+        EPSG,
+        LANG,
+        [
+          {
+            layerUuid: "uuid-file",
+            layerId: "some.kml.file",
+            preResolvedFeatures: vectorFeatures.features,
+            layerName: null,
+          },
+        ],
+        undefined,
+        SCREEN_CONTEXT,
+      );
 
       expect(fetchSpy).not.toHaveBeenCalled();
       expect(store.selectedFeaturesByUuid["uuid-file"]).toHaveLength(
