@@ -93,66 +93,72 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       </div>
     </div>
     <div
-      class="mx-auto flex max-w-(--ui-container) flex-col gap-8 p-4 pb-16 lg:flex-row lg:p-8 lg:pb-16"
+      class="mx-auto flex max-w-(--ui-container) flex-col gap-8 p-4 pt-8 pb-16 lg:p-8 lg:pb-16"
     >
-      <UPageCard
-        :title="t('landing.cards.map.title')"
-        :description="t('landing.cards.map.description')"
-        icon="i-lucide-map"
-        variant="outline"
-        :ui="{
-          root: 'lg:w-1/3 cursor-pointer',
-          footer: 'ml-auto',
-          title: 'text-xl',
-          description: 'text-base font-medium text-default',
-        }"
-        @click="goToMap()"
-      >
-        <template #footer>
-          <UButton trailing-icon="i-lucide-arrow-right">
-            {{ t("landing.cards.map.button") }}
-          </UButton>
-        </template>
-      </UPageCard>
-      <UPageCard
-        :title="t('landing.cards.catalog.title')"
-        :description="t('landing.cards.catalog.description')"
-        icon="i-lucide-list-todo"
-        variant="outline"
-        :ui="{
-          root: 'lg:w-1/3 cursor-pointer',
-          footer: 'ml-auto',
-          title: 'text-xl',
-          description: 'text-base font-medium text-default',
-        }"
-        @click="goToMap(true)"
-      >
-        <template #footer>
-          <UButton trailing-icon="i-lucide-arrow-right">
-            {{ t("landing.cards.catalog.button") }}
-          </UButton>
-        </template>
-      </UPageCard>
-      <UPageCard
-        :title="t('landing.cards.info.title')"
-        :description="t('landing.cards.info.description')"
-        icon="i-lucide-app-window"
-        :to="infoPortalUrl"
-        variant="soft"
-        target="_blank"
-        :ui="{
-          root: 'lg:w-1/3 bg-primary-50 dark:bg-primary-800',
-          footer: 'ml-auto',
-          title: 'text-xl',
-          description: 'text-base font-medium text-default',
-        }"
-      >
-        <template #footer>
-          <UButton trailing-icon="i-lucide-external-link">
-            {{ t("landing.cards.info.button") }}
-          </UButton>
-        </template>
-      </UPageCard>
+      <div>
+        <p class="mb-4 text-xl font-semibold lg:text-3xl">SWISSGEO</p>
+        <p class="text-base font-medium">Gemeinsam von Bund und Kantonen.</p>
+      </div>
+      <div class="flex flex-col gap-4 lg:flex-row">
+        <UPageCard
+          :title="t('landing.cards.map.title')"
+          :description="t('landing.cards.map.description')"
+          icon="i-lucide-map"
+          variant="outline"
+          :ui="{
+            root: 'lg:w-1/3 cursor-pointer',
+            footer: 'ml-auto',
+            title: 'text-xl',
+            description: 'text-base font-medium text-default',
+          }"
+          @click="goToMap()"
+        >
+          <template #footer>
+            <UButton trailing-icon="i-lucide-arrow-right">
+              {{ t("landing.cards.map.button") }}
+            </UButton>
+          </template>
+        </UPageCard>
+        <UPageCard
+          :title="t('landing.cards.catalog.title')"
+          :description="t('landing.cards.catalog.description')"
+          icon="i-lucide-list-todo"
+          variant="outline"
+          :ui="{
+            root: 'lg:w-1/3 cursor-pointer',
+            footer: 'ml-auto',
+            title: 'text-xl',
+            description: 'text-base font-medium text-default',
+          }"
+          @click="goToMap(true)"
+        >
+          <template #footer>
+            <UButton trailing-icon="i-lucide-arrow-right">
+              {{ t("landing.cards.catalog.button") }}
+            </UButton>
+          </template>
+        </UPageCard>
+        <UPageCard
+          :title="t('landing.cards.info.title')"
+          :description="t('landing.cards.info.description')"
+          icon="i-lucide-app-window"
+          :to="infoPortalUrl"
+          variant="soft"
+          target="_blank"
+          :ui="{
+            root: 'lg:w-1/3 bg-primary-50 dark:bg-primary-800',
+            footer: 'ml-auto',
+            title: 'text-xl',
+            description: 'text-base font-medium text-default',
+          }"
+        >
+          <template #footer>
+            <UButton trailing-icon="i-lucide-external-link">
+              {{ t("landing.cards.info.button") }}
+            </UButton>
+          </template>
+        </UPageCard>
+      </div>
     </div>
     <UFooter
       :ui="{
