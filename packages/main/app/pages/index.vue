@@ -54,7 +54,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
 
 <template>
   <div class="relative h-full">
-    <div id="hero" class="relative h-9/10 overflow-hidden">
+    <div id="hero" class="relative h-9/10 overflow-hidden lg:h-168">
       <img
         src="/images/hero.webp"
         class="absolute h-full w-full translate-y-20 scale-200 object-cover brightness-38 lg:translate-y-0 lg:scale-100"
