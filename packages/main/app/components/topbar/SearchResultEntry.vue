@@ -43,7 +43,7 @@ const tooltip = computed(() => {
   if (isLayerSearchResult(entry)) {
     return entry.isMappable ? t("dataset.addToMap") : undefined;
   }
-  if (entry.resultType === SearchResultTypesEnum.location) {
+  if (entry.resultType === "LOCATION") {
     return t("search.jumpToLocation");
   }
   return undefined;
