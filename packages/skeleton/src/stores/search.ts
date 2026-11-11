@@ -1,7 +1,7 @@
 import type { SingleCoordinate } from "@swissgeo/coordinates";
 import type { CoordinateSearchResult, SearchResult } from "@swissgeo/search";
 
-import { getFeatureInfoLayerId, useLayerStore } from "@swissgeo/layers";
+import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { buildCatalogItemsUrl } from "@swissgeo/ogc";
 import {
@@ -142,12 +142,26 @@ export const useSearchStore = defineStore("search", () => {
 
       // Add feature search for each searchable layer
       for (const layer of searchableLayers) {
+        const featureInfo = isDatasetLayer(layer)
+          ? layer.info?.featureInfoInformation
+          : undefined;
+        if (!featureInfo) {
+          continue;
+        }
+        if (!featureInfo.externalId) {
+          searchPromises.push(
+            Promise.reject(
+              new Error(`No externalIds for the features of ${layer.humanId}`),
+            ),
+          );
+          continue;
+        }
         searchPromises.push(
           searchLayerFeatures(
             newQuery,
             runtimeConfig.public.searchServiceUrl,
             lang,
-            getFeatureInfoLayerId(layer),
+            featureInfo.externalId,
             layer.info?.displayName || layer.humanId,
             abortController.signal,
           ),

@@ -3,11 +3,8 @@ import type { Dataset } from "@swissgeo/ogc";
 import { omit } from "es-toolkit/object";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-import type { DatasetLayer } from "@/types";
-
 import {
   getInfoFromDataset,
-  getFeatureInfoLayerId,
   grabFeatureInfoInformation,
   InvalidDatasetError,
   makeServerLayer,
@@ -222,37 +219,6 @@ describe("testing the makeServerLayer function", () => {
   });
 });
 
-describe("getFeatureInfoLayerId", () => {
-  const layer = (externalId?: string) =>
-    ({
-      type: "dataset",
-      data: { id: "dat_test" },
-      info: { displayName: "Test", featureInfoInformation: { externalId } },
-    }) as DatasetLayer;
-
-  it.each`
-    externalId         | expected
-    ${"ch.test.layer"} | ${"ch.test.layer"}
-    ${undefined}       | ${"dat_test"}
-  `(
-    "returns $expected for externalId $externalId",
-    ({ externalId, expected }) => {
-      expect(getFeatureInfoLayerId(layer(externalId))).toBe(expected);
-    },
-  );
-
-  it("returns the humanId of a layer that is not a dataset", () => {
-    expect(
-      getFeatureInfoLayerId({
-        type: "kml",
-        uuid: "uuid",
-        humanId: "file.kml",
-        isLoading: false,
-      }),
-    ).toBe("file.kml");
-  });
-});
-
 describe("grabFeatureInfoInformation", () => {
   const DISTRIBUTIONS_URL = "https://example.test/distributions";
   const WMS_FEATUREINFO_URL = "https://example.test/ds:wms/featureinfo";
@@ -301,7 +267,11 @@ describe("grabFeatureInfoInformation", () => {
   });
 
   const featureInfoFeature = (dataServiceHref?: string) => ({
-    properties: { type: "FeatureInfo", protocol: "ogc:wms" },
+    properties: {
+      type: "FeatureInfo",
+      protocol: "ogc:wms",
+      externalIds: ["ch.test.layer"],
+    },
     links: dataServiceHref
       ? [{ rel: "dataservice", href: dataServiceHref }]
       : [],
@@ -350,6 +320,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/describes`,
+      externalId: "ch.test.layer",
     });
   });
 
@@ -367,6 +338,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/describes`,
+      externalId: "ch.test.layer",
     });
     expect(fetchSpy.mock.calls.map(([url]) => String(url))).toEqual([
       DISTRIBUTIONS_URL,
@@ -408,6 +380,25 @@ describe("grabFeatureInfoInformation", () => {
     expect(info?.externalId).toBe("ch.test.external");
   });
 
+  it("returns no externalId when the featureinfo distribution has no externalIds", async () => {
+    stubFetchRouting({
+      [DISTRIBUTIONS_URL]: distributionCollection(),
+      [WMS_FEATUREINFO_URL]: {
+        ...featureInfoFeature(DATASERVICE_URL),
+        properties: { type: "FeatureInfo", protocol: "ogc:wms" },
+      },
+      [DATASERVICE_URL]: dataServiceFeature(["describes"]),
+    });
+
+    const info = await grabFeatureInfoInformation(makeDataset());
+
+    expect(info).toEqual({
+      protocol: "ogc:wms",
+      baseUrl: `${DESCRIBES_URL}/describes`,
+      externalId: undefined,
+    });
+  });
+
   it("prefers describes over describedby and about", async () => {
     stubFetchRouting({
       [DISTRIBUTIONS_URL]: distributionCollection(),
@@ -424,6 +415,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/describes`,
+      externalId: "ch.test.layer",
     });
   });
 
@@ -439,6 +431,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/describedby`,
+      externalId: "ch.test.layer",
     });
   });
 
@@ -454,6 +447,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/about`,
+      externalId: "ch.test.layer",
     });
   });
 
@@ -473,6 +467,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/Describes`,
+      externalId: "ch.test.layer",
     });
   });
 
@@ -574,7 +569,11 @@ describe("grabFeatureInfoInformation", () => {
 
     const info = await grabFeatureInfoInformation(makeDataset());
 
-    expect(info).toEqual({ protocol: "ogc:wms", baseUrl: undefined });
+    expect(info).toEqual({
+      protocol: "ogc:wms",
+      baseUrl: undefined,
+      externalId: "ch.test.layer",
+    });
   });
 
   it("feeds its result into the layer info via makeServerLayer", async () => {
@@ -596,6 +595,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(layer.info?.featureInfoInformation).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/describes`,
+      externalId: "ch.test.layer",
     });
   });
 });

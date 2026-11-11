@@ -28,6 +28,9 @@ export interface LayerRequest {
   urlTemplate?: string;
   baseUrl?: string;
   layerName: string | null;
+
+  // the id the external service knows the layer by (priority 2 and 3)
+  externalId?: string;
 }
 
 // priority 3: wms feature info available
@@ -71,6 +74,7 @@ export type LayerSource = {
   getFeatureInfoInformation?: {
     protocol?: string;
     baseUrl?: string;
+    externalId?: string;
   };
   layerName: string | null;
 };

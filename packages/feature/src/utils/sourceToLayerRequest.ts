@@ -30,11 +30,15 @@ export function sourceToLayerRequest(
   }
   // priority 2: try to see if there is an identify available
   if (isIdentifyFeatureInfo(layerSource.getFeatureInfoInformation)) {
+    const { baseUrl, externalId } = layerSource.getFeatureInfoInformation;
     return {
       layerUuid: layerSource.layerUuid,
       layerId: layerSource.layerId,
-      baseUrl: layerSource.getFeatureInfoInformation.baseUrl,
-      urlTemplate: `${layerSource.getFeatureInfoInformation.baseUrl}/${layerSource.layerId}/{featureId}/htmlPopup?lang={lang}`,
+      baseUrl,
+      externalId,
+      urlTemplate:
+        externalId &&
+        `${baseUrl}/${externalId}/{featureId}/htmlPopup?lang={lang}`,
       layerName: layerSource.layerName ?? layerSource.layerId,
     };
   }
@@ -46,6 +50,7 @@ export function sourceToLayerRequest(
     return {
       layerUuid: layerSource.layerUuid,
       layerId: layerSource.layerId,
+      externalId: layerSource.getFeatureInfoInformation?.externalId,
       wmsGetFeatureInfo: capability.getFeatureInfoCapability,
       wmsVersion: capability.wmsVersion ?? "1.3.0",
       availableCrs: capability.availableCrs,

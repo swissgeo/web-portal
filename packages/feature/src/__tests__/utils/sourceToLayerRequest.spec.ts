@@ -11,8 +11,9 @@ import {
 
 const UUID = "uuid-test";
 const LAYER_ID = "ch.test.layer";
+const EXTERNAL_ID = "ch.test.external";
 const BASE_URL = "https://example.test/MapServer";
-const TEMPLATE = `${BASE_URL}/${LAYER_ID}/{featureId}/htmlPopup?lang={lang}`;
+const TEMPLATE = `${BASE_URL}/${EXTERNAL_ID}/{featureId}/htmlPopup?lang={lang}`;
 
 function makeFeature(id: string | number = 1): GeoJsonFeature {
   return {
@@ -28,6 +29,7 @@ const geoadminInfo = (
 ) => ({
   protocol: "geoadmin:features",
   baseUrl: BASE_URL,
+  externalId: EXTERNAL_ID,
   ...overrides,
 });
 
@@ -135,6 +137,7 @@ describe("sourceToLayerRequest", () => {
         layerUuid: UUID,
         layerId: LAYER_ID,
         baseUrl: BASE_URL,
+        externalId: EXTERNAL_ID,
         urlTemplate: TEMPLATE,
         layerName: LAYER_ID,
       });
@@ -142,7 +145,7 @@ describe("sourceToLayerRequest", () => {
   });
 
   describe("priority 2 — identify feature info", () => {
-    it("builds the urlTemplate from the geoadmin:features baseUrl and the layerId", () => {
+    it("builds the urlTemplate from the geoadmin:features baseUrl and the externalId, not the layerId", () => {
       const request = sourceToLayerRequest(
         makeSource({ getFeatureInfoInformation: geoadminInfo() }),
       );
@@ -151,10 +154,28 @@ describe("sourceToLayerRequest", () => {
         layerUuid: UUID,
         layerId: LAYER_ID,
         baseUrl: BASE_URL,
+        externalId: EXTERNAL_ID,
         urlTemplate: TEMPLATE,
         layerName: LAYER_ID,
       });
       expect(request).not.toHaveProperty("preResolvedFeatures");
+    });
+
+    it("returns no urlTemplate when the feature info has no externalId", () => {
+      const request = sourceToLayerRequest(
+        makeSource({
+          getFeatureInfoInformation: geoadminInfo({ externalId: undefined }),
+        }),
+      );
+
+      expect(request).toEqual({
+        layerUuid: UUID,
+        layerId: LAYER_ID,
+        baseUrl: BASE_URL,
+        externalId: undefined,
+        urlTemplate: undefined,
+        layerName: LAYER_ID,
+      });
     });
 
     it("accepts the ogc:api3features protocol (ticket-mandated safeguard)", () => {
@@ -170,6 +191,7 @@ describe("sourceToLayerRequest", () => {
         layerUuid: UUID,
         layerId: LAYER_ID,
         baseUrl: BASE_URL,
+        externalId: EXTERNAL_ID,
         urlTemplate: TEMPLATE,
         layerName: LAYER_ID,
       });
@@ -185,12 +207,13 @@ describe("sourceToLayerRequest", () => {
         layerUuid: UUID,
         layerId: LAYER_ID,
         baseUrl: BASE_URL,
+        externalId: EXTERNAL_ID,
         urlTemplate: TEMPLATE,
         layerName: LAYER_ID,
       });
     });
 
-    it("falls through to the WMS capability when the protocol is not identify-capable", () => {
+    it("falls through to the WMS capability, with the externalId, when the protocol is not identify-capable", () => {
       const request = sourceToLayerRequest(
         makeSource({
           getFeatureInfoInformation: geoadminInfo({ protocol: "ogc:wms" }),
@@ -201,6 +224,7 @@ describe("sourceToLayerRequest", () => {
       expect(request).toEqual({
         layerUuid: UUID,
         layerId: LAYER_ID,
+        externalId: EXTERNAL_ID,
         wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
         wmsVersion: "1.3.0",
         availableCrs: ["EPSG:4326", "EPSG:2056"],
@@ -219,6 +243,7 @@ describe("sourceToLayerRequest", () => {
       expect(request).toEqual({
         layerUuid: UUID,
         layerId: LAYER_ID,
+        externalId: EXTERNAL_ID,
         wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
         wmsVersion: "1.3.0",
         availableCrs: ["EPSG:4326", "EPSG:2056"],
@@ -365,6 +390,7 @@ describe("sourcesToLayerRequests", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         baseUrl: BASE_URL,
+        externalId: EXTERNAL_ID,
         urlTemplate: TEMPLATE,
         layerName: LAYER_ID,
       },

@@ -1,7 +1,6 @@
 import type { Dataset, DistributionCollection, Feature } from "@swissgeo/ogc";
 
 import log from "@swissgeo/log";
-import { getDistributionLayerId } from "@swissgeo/ogc";
 
 import type { DatasetLayer, Layer, LayerAttribution, LayerInfo } from "@/index";
 
@@ -159,7 +158,8 @@ export async function grabFeatureInfoInformation(dataset: Dataset) {
     return {
       protocol,
       baseUrl: featureInfoBaseUrl,
-      externalId: getDistributionLayerId(featureInfoRelJson) ?? undefined,
+      // Only for the calls to the external service, never as a reference
+      externalId: featureInfoRelJson.properties?.externalIds?.[0] || undefined,
     };
   } catch (error) {
     log.error(
@@ -196,11 +196,3 @@ export const makeServerLayer = async (
 export const isDatasetLayer = (layer: Layer): layer is DatasetLayer => {
   return layer.type === "dataset";
 };
-
-// The feature info service knows the layer by its external id
-export function getFeatureInfoLayerId(layer: Layer): string {
-  if (!isDatasetLayer(layer)) {
-    return layer.humanId;
-  }
-  return layer.info?.featureInfoInformation?.externalId || layer.data.id;
-}

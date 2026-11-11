@@ -92,11 +92,16 @@ export async function getFeaturesForOneLayer(
     }));
 
     // this means we've an identify url, we use an Identify here
-  } else if (layerRequest.urlTemplate && layerRequest.baseUrl) {
+  } else if (layerRequest.baseUrl) {
+    if (!layerRequest.externalId || !layerRequest.urlTemplate) {
+      throw new Error(
+        `No externalIds for the feature info of layer ${layerRequest.layerId}`,
+      );
+    }
     // the baseUrl may or may not carry a trailing slash, depending on the
     // service's `describes` href — normalize before joining with `identify`
     const identifyBase = layerRequest.baseUrl.replace(/\/+$/, "");
-    const identifyUrl = `${identifyBase}/identify?layers=all:${layerRequest.layerId}&sr=${epsgNumber}&geometry=${extent.join(",")}&geometryFormat=geojson&geometryType=esriGeometryEnvelope&limit=${limit}&tolerance=0&returnGeometry=true&lang=${lang}`;
+    const identifyUrl = `${identifyBase}/identify?layers=all:${layerRequest.externalId}&sr=${epsgNumber}&geometry=${extent.join(",")}&geometryFormat=geojson&geometryType=esriGeometryEnvelope&limit=${limit}&tolerance=0&returnGeometry=true&lang=${lang}`;
     const identifyResult = await fetch(identifyUrl, { signal: abortSignal });
     if (identifyResult.status !== 200) {
       log.warn(
@@ -165,6 +170,7 @@ function lt130(version: string) {
 
 function buildWmsGetFeatureInfoUrl(
   wmsRequest: WMSLayerRequest,
+  wmsLayers: string,
   epsgNumber: number,
   featureLimit: number,
   lang: string,
@@ -187,8 +193,8 @@ function buildWmsGetFeatureInfoUrl(
     VERSION: versionPatterns.test(wmsRequest.wmsVersion)
       ? wmsRequest.wmsVersion
       : "1.3.0",
-    LAYERS: wmsRequest.layerName ?? wmsRequest.layerId,
-    QUERY_LAYERS: wmsRequest.layerName ?? wmsRequest.layerId,
+    LAYERS: wmsLayers,
+    QUERY_LAYERS: wmsLayers,
     BBOX: extent.join(","),
     FEATURE_COUNT: String(featureLimit),
     LANG: lang,
@@ -309,8 +315,15 @@ async function getFeaturesFromWmsServer(
     return [];
   }
 
+  const wmsLayers = wmsRequest.layerName ?? wmsRequest.externalId;
+  if (!wmsLayers) {
+    throw new Error(
+      `No externalIds for the feature info of layer ${wmsRequest.layerId}`,
+    );
+  }
   const requestUrl = buildWmsGetFeatureInfoUrl(
     wmsRequest,
+    wmsLayers,
     epsgNumber,
     limit,
     lang,

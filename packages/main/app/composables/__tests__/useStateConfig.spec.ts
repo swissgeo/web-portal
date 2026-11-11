@@ -622,17 +622,17 @@ describe("useStateConfig manages to import a State with importState", () => {
   });
 
   it("restores the incoming feature ids as a preselection on the feature store", async () => {
-    mockedMakeServerLayer.mockResolvedValueOnce({
-      ...mockedLayer,
-      info: {
-        displayName: "Layer",
-        featureInfoInformation: { externalId: "ch.test.layer" },
-      },
-    });
     createIdentifyResponseMock.mockReturnValue([
       { id: "id-1", geometry: { type: "Point", coordinates: [0, 0] } },
       { id: "id-2", geometry: { type: "Point", coordinates: [1, 1] } },
     ]);
+    mockedMakeServerLayer.mockResolvedValueOnce({
+      ...mockedLayer,
+      info: {
+        displayName: "layer",
+        featureInfoInformation: { externalId: "ch.test.external" },
+      },
+    });
     const featureStore = useFeaturesStore();
     const payload: AppStatePayload = {
       version: APP_STATE_CONFIG_VERSION,
@@ -653,12 +653,37 @@ describe("useStateConfig manages to import a State with importState", () => {
 
     expect(createIdentifyResponseMock).toHaveBeenCalledWith(
       ["id-1", "id-2"],
-      "ch.test.layer",
+      "ch.test.external",
     );
     expect(featureStore.consumeFeaturePreselection(mockedLayer.uuid)).toEqual([
       { id: "id-1", geometry: { type: "Point", coordinates: [0, 0] } },
       { id: "id-2", geometry: { type: "Point", coordinates: [1, 1] } },
     ]);
+  });
+
+  it("does not query identify features when the layer has no externalId", async () => {
+    const featureStore = useFeaturesStore();
+    const payload: AppStatePayload = {
+      version: APP_STATE_CONFIG_VERSION,
+      state: {
+        layers: [
+          {
+            layerUrl: "https://perdu.com",
+            type: "dataset",
+            isVisible: true,
+            opacity: 1,
+            features: ["id-1", "id-2"],
+          },
+        ],
+      },
+    };
+
+    await useStateConfig().importState(payload);
+
+    expect(createIdentifyResponseMock).not.toHaveBeenCalled();
+    expect(
+      featureStore.consumeFeaturePreselection(mockedLayer.uuid),
+    ).toBeUndefined();
   });
 
   it("does not query identify features when the incoming layer has none", async () => {

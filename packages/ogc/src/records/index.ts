@@ -1,7 +1,7 @@
 export { buildCatalogItemsUrl } from "./catalogUrl";
 export { fetchCatalogItems } from "./catalogItems";
 export type { CatalogItemsOptions } from "./catalogItems";
-export { getDistributionLayerId, useDistribution } from "./useDistribution";
+export { useDistribution } from "./useDistribution";
 export { useWmtsCapabilities } from "./useWmtsCapabilities";
 export { useWmsCapabilities } from "./useWmsCapabilities";
 export { useWmsFeatureInfoCapabilities } from "./useWmsFeatureInfoCapabilities";

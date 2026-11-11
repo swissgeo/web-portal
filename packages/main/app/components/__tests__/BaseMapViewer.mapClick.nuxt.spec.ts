@@ -1,4 +1,3 @@
-import type * as LayersModule from "@swissgeo/layers";
 import type { MapClickEvent } from "@swissgeo/map";
 
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
@@ -10,7 +9,7 @@ import BaseMapViewer from "../BaseMapViewer.vue";
 
 const DISTRIBUTION_URL = "https://example.test/distributions";
 
-const LAYER_1_FEATURE_INFO: LayersModule.LayerInfo["featureInfoInformation"] = {
+const LAYER_1_FEATURE_INFO = {
   protocol: "geoadmin:features",
   baseUrl: "https://example.test/MapServer",
 };
@@ -60,10 +59,7 @@ vi.mock("@swissgeo/layers", async () => {
   // drawing store crashed during handleMapClickEvent's isDrawingActive()
   // path and the click never reached selectFeatures.
   const { reactive, ref } = await import("vue");
-  const { getFeatureInfoLayerId } =
-    await vi.importActual<typeof LayersModule>("@swissgeo/layers");
   return {
-    getFeatureInfoLayerId,
     isDatasetLayer: (layer: { type: string }) => layer.type === "dataset",
     useLayerStore: () =>
       reactive({
@@ -280,26 +276,6 @@ describe("BaseMapViewer — map click abort handling", () => {
     expect(source.getFeatureInfoInformation).toEqual(LAYER_1_FEATURE_INFO);
     expect(source.layerName).toBeNull();
     expect(source.layerId).toBe("ch.test.dataset");
-  });
-
-  it("queries the external service with the external id of the distribution", async () => {
-    mockLayers[0]!.info!.featureInfoInformation = {
-      ...LAYER_1_FEATURE_INFO,
-      externalId: "ch.test.external",
-    };
-    try {
-      const wrapper = await createWrapper();
-      wrapper.getComponent(MapModuleStub).vm.$emit("map-click", clickEvent());
-
-      await vi.waitFor(() =>
-        expect(selectFeaturesSpy).toHaveBeenCalledTimes(1),
-      );
-      expect(selectFeaturesSpy.mock.calls[0]![3][0]!.layerId).toBe(
-        "ch.test.external",
-      );
-    } finally {
-      mockLayers[0]!.info!.featureInfoInformation = LAYER_1_FEATURE_INFO;
-    }
   });
 
   it("passes the click's pre-resolved vector features through to selectFeatures", async () => {

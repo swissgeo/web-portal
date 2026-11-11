@@ -56,6 +56,7 @@ const BASE_URL = URL_TEMPLATE.replace(
 const geoadminInfo = {
   protocol: "geoadmin:features" as const,
   baseUrl: BASE_URL,
+  externalId: LAYER_ID,
 };
 
 const EXTENT: FlatExtent = [2599000, 1199000, 2601000, 1201000];
@@ -139,6 +140,7 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        externalId: LAYER_ID,
         baseUrl: BASE_URL,
         layerName: null,
       };
@@ -199,6 +201,7 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        externalId: LAYER_ID,
         baseUrl: BASE_URL,
         layerName: null,
       };
@@ -224,6 +227,7 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        externalId: LAYER_ID,
         baseUrl: BASE_URL,
         layerName: null,
       };
@@ -248,6 +252,7 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        externalId: LAYER_ID,
         baseUrl: BASE_URL,
         layerName: null,
       };
@@ -270,6 +275,7 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        externalId: LAYER_ID,
         baseUrl: BASE_URL,
         layerName: null,
       };
@@ -302,6 +308,7 @@ describe("Feature Selection from layers and extent", () => {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        externalId: LAYER_ID,
         baseUrl: BASE_URL,
         layerName: null,
       };
@@ -324,12 +331,31 @@ describe("Feature Selection from layers and extent", () => {
     });
   });
 
+  describe("getFeaturesForOneLayer — handling layers without externalIds", () => {
+    it("rejects an identify request without externalId and fetches nothing", async () => {
+      const layer: LayerRequest = {
+        layerUuid: "uuid-identify",
+        layerId: "dat_no_external_id",
+        baseUrl: BASE_URL,
+        layerName: null,
+      };
+
+      await expect(
+        getFeaturesForOneLayer(layer, EXTENT, EPSG, LANG, 10),
+      ).rejects.toThrow(
+        "No externalIds for the feature info of layer dat_no_external_id",
+      );
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+  });
+
   describe("abort signal handling", () => {
     function identifyLayer(): LayerRequest {
       return {
         layerUuid: "uuid-identify",
         layerId: LAYER_ID,
         urlTemplate: URL_TEMPLATE,
+        externalId: LAYER_ID,
         baseUrl: BASE_URL,
         layerName: null,
       };
@@ -589,6 +615,40 @@ describe("Feature Selection from layers and extent", () => {
       expect(store.selectedFeaturesByUuid["uuid-fail"]).toBeUndefined();
     });
 
+    it("logs a layer without externalId as an error and keeps the other layers", async () => {
+      const layers: LayerSource[] = [
+        {
+          layerUuid: "uuid-no-external-id",
+          layerId: "dat_no_external_id",
+          getFeatureInfoInformation: { ...geoadminInfo, externalId: undefined },
+          layerName: null,
+        },
+        {
+          layerUuid: "uuid-ok",
+          layerId: LAYER_ID,
+          preResolvedFeatures: vectorFeatures.features,
+          layerName: null,
+        },
+      ];
+
+      await selectFeatures(EXTENT, EPSG, LANG, layers);
+
+      expect(log.error).toHaveBeenCalledTimes(1);
+      expect(log.error).toHaveBeenCalledWith(
+        new Error(
+          "No externalIds for the feature info of layer dat_no_external_id",
+        ),
+      );
+      expect(fetchSpy).not.toHaveBeenCalled();
+      const store = useFeaturesStore();
+      expect(store.selectedFeaturesByUuid["uuid-ok"]).toHaveLength(
+        vectorFeatures.features.length,
+      );
+      expect(
+        store.selectedFeaturesByUuid["uuid-no-external-id"],
+      ).toBeUndefined();
+    });
+
     it("resets the store (no popover) when no layer produced features", async () => {
       const store = useFeaturesStore();
       store.setSelection({ "uuid-preexisting": [featureData("old")] });
@@ -654,6 +714,7 @@ describe("Feature Selection from layers and extent", () => {
       return {
         layerUuid: "uuid-wms",
         layerId: "ch.test.wms-layer",
+        externalId: "ch.test.wms-layer",
         layerName: null,
         wmsGetFeatureInfo: {
           baseUrl: WMS_BASE_URL,
@@ -723,13 +784,13 @@ describe("Feature Selection from layers and extent", () => {
       expect(params.get("QUERY_LAYERS")).toBe("wms.layer.name");
     });
 
-    it("falls back to the layerId for LAYERS/QUERY_LAYERS when no layerName is stored", async () => {
+    it("falls back to the externalId for LAYERS/QUERY_LAYERS when no layerName is stored", async () => {
       fetchSpy.mockImplementation(() =>
         Promise.resolve(mockResponse({ features: [] })),
       );
 
       await getFeaturesForOneLayer(
-        makeWmsRequest({ layerName: null }),
+        makeWmsRequest({ layerName: null, externalId: "ch.test.external" }),
         EXTENT,
         EPSG,
         LANG,
@@ -737,8 +798,23 @@ describe("Feature Selection from layers and extent", () => {
       );
 
       const params = fetchedUrl().searchParams;
-      expect(params.get("LAYERS")).toBe("ch.test.wms-layer");
-      expect(params.get("QUERY_LAYERS")).toBe("ch.test.wms-layer");
+      expect(params.get("LAYERS")).toBe("ch.test.external");
+      expect(params.get("QUERY_LAYERS")).toBe("ch.test.external");
+    });
+
+    it("rejects without any request when there is neither a layerName nor an externalId", async () => {
+      await expect(
+        getFeaturesForOneLayer(
+          makeWmsRequest({ layerName: null, externalId: undefined }),
+          EXTENT,
+          EPSG,
+          LANG,
+          10,
+        ),
+      ).rejects.toThrow(
+        "No externalIds for the feature info of layer ch.test.wms-layer",
+      );
+      expect(fetchSpy).not.toHaveBeenCalled();
     });
 
     it("uses the legacy SRS/X/Y params for pre-1.3.0 versions", async () => {
@@ -1068,8 +1144,24 @@ describe("Feature Selection from layers and extent", () => {
       });
 
       await selectFeatures(EXTENT, EPSG, LANG, [
-        { layerUuid: "uuid-wms-a", layerId: "layer-a", layerName: null },
-        { layerUuid: "uuid-wms-b", layerId: "layer-b", layerName: null },
+        {
+          layerUuid: "uuid-wms-a",
+          layerId: "layer-a",
+          getFeatureInfoInformation: {
+            protocol: "ogc:wms",
+            externalId: "layer-a",
+          },
+          layerName: null,
+        },
+        {
+          layerUuid: "uuid-wms-b",
+          layerId: "layer-b",
+          getFeatureInfoInformation: {
+            protocol: "ogc:wms",
+            externalId: "layer-b",
+          },
+          layerName: null,
+        },
       ]);
 
       expect(Object.keys(store.selectedFeaturesByUuid)).toEqual(["uuid-wms-a"]);

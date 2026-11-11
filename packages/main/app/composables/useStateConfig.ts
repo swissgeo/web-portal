@@ -13,7 +13,6 @@ import { useDimensionsStore } from "@swissgeo/dimension";
 import { useDrawing } from "@swissgeo/drawing";
 import { createIdentifyResponse, useFeaturesStore } from "@swissgeo/feature";
 import {
-  getFeatureInfoLayerId,
   isDatasetLayer,
   makeServerLayer,
   useLayerStore,
@@ -311,12 +310,18 @@ export function useStateConfig() {
           isVisible: stateLayer.isVisible ?? true,
         };
         const preSelectedFeaturesIds = stateLayer.features;
-        if (preSelectedFeaturesIds) {
+        const layer = layers[i]!;
+        const externalId = isDatasetLayer(layer)
+          ? layer.info?.featureInfoInformation?.externalId
+          : undefined;
+        if (preSelectedFeaturesIds && externalId) {
           const identifyFeatures = await createIdentifyResponse(
             preSelectedFeaturesIds,
-            getFeatureInfoLayerId(layers[i]!),
+            externalId,
           );
           featureStore.addFeaturePreselection(uuid, identifyFeatures);
+        } else if (preSelectedFeaturesIds) {
+          log.error(`No externalIds for the features of ${layer.humanId}`);
         }
         layerStore.addImportOption(uuid, mapLayerData);
 
