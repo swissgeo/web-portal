@@ -63,20 +63,33 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         class="absolute inset-0 mx-4 flex cursor-pointer items-center justify-center lg:mx-8"
         @click="goToMap()"
       >
-        <ClientOnly>
-          <div
-            id="search-bar"
-            class="mx-auto w-(--ui-container) max-w-228 cursor-auto rounded-lg bg-primary-50 p-4 dark:bg-primary-800"
-            @click.stop=""
-          >
-            <TopbarSearch
-              class="w-full"
-              :skip-mobile="true"
-              @selected="goToMap()"
-              @coordinates-detected="goToMap()"
-            />
+        <div
+          class="mx-auto flex w-(--ui-container) max-w-228 cursor-auto flex-col gap-8 lg:gap-16"
+        >
+          <div>
+            <h1 class="mb-6 text-4xl text-white lg:text-7xl">
+              Das Wo ist hier.
+            </h1>
+            <p class="text-lg font-medium text-white">
+              SWISSGEO macht raumbezogene Daten der Schweiz an einem Ort
+              zugänglich.
+            </p>
           </div>
-        </ClientOnly>
+          <ClientOnly>
+            <div
+              id="search-bar"
+              class="rounded-lg bg-primary-50 p-4 dark:bg-primary-800"
+              @click.stop=""
+            >
+              <TopbarSearch
+                class="w-full"
+                :skip-mobile="true"
+                @selected="goToMap()"
+                @coordinates-detected="goToMap()"
+              />
+            </div>
+          </ClientOnly>
+        </div>
       </div>
     </div>
     <div
