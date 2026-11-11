@@ -96,7 +96,9 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
     >
       <div>
         <p class="mb-4 text-xl font-semibold lg:text-3xl">SWISSGEO</p>
-        <p class="text-base font-medium">Gemeinsam von Bund und Kantonen.</p>
+        <p class="text-base font-medium">
+          {{ t("landing.body.who") }}
+        </p>
       </div>
       <div class="flex flex-col gap-4 lg:flex-row">
         <UPageCard
