@@ -296,8 +296,12 @@ describe("SearchResultEntry", () => {
       expect(tooltipOf(entries[2]!)).toBe("dataset.addToMap");
     });
 
+    it("offers to jump to a location", () => {
+      expect(tooltipOf(entries[0]!)).toBe("search.jumpToLocation");
+    });
+
     it("has none for other results or layers the map cannot show", () => {
-      expect(tooltipOf(entries[0]!)).toBeUndefined();
+      expect(tooltipOf(entries[1]!)).toBeUndefined();
       expect(tooltipOf(notMappableLayer)).toBeUndefined();
     });
   });

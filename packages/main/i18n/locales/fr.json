@@ -24,7 +24,8 @@
     "layers_results_header": "Couches",
     "no_results": "Aucun résultat trouvé",
     "error": "La recherche a échoué. Certains résultats sont peut-être manquants.",
-    "viewDataset": "Afficher le jeu de données"
+    "viewDataset": "Afficher le jeu de données",
+    "jumpToLocation": "Aller au lieu"
   },
   "footer": {
     "copyRightData": "© Données: ",

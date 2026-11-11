@@ -38,13 +38,16 @@ const isMappable = computed(
 );
 const hintId = useId();
 
-// Selecting a layer adds it to the map, which is not obvious from the landing
-// page
-const addTooltip = computed(() =>
-  isLayerSearchResult(entry) && entry.isMappable
-    ? t("dataset.addToMap")
-    : undefined,
-);
+// What selecting the result does is not obvious from the landing page
+const tooltip = computed(() => {
+  if (isLayerSearchResult(entry)) {
+    return entry.isMappable ? t("dataset.addToMap") : undefined;
+  }
+  if (entry.resultType === SearchResultTypesEnum.location) {
+    return t("search.jumpToLocation");
+  }
+  return undefined;
+});
 
 // Keyboard navigation
 function goToFirst() {
@@ -102,7 +105,7 @@ defineExpose({
 
 <template>
   <!-- List item with keyboard navigation -->
-  <DatasetNotMappableHint :show-hint="!isMappable" :tooltip="addTooltip">
+  <DatasetNotMappableHint :show-hint="!isMappable" :tooltip="tooltip">
     <li
       ref="item"
       class="flex items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors focus:outline-none focus-visible:bg-elevated"
