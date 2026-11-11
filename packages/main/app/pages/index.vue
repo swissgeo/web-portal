@@ -69,11 +69,10 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         >
           <div>
             <h1 class="mb-6 text-4xl text-white lg:text-7xl">
-              Das Wo ist hier.
+              {{ t("landing.footer.claim") }}
             </h1>
             <p class="text-lg font-medium text-white">
-              SWISSGEO macht raumbezogene Daten der Schweiz an einem Ort
-              zugänglich.
+              {{ t("landing.footer.description") }}
             </p>
           </div>
           <ClientOnly>
