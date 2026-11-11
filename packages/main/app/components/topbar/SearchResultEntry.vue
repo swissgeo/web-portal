@@ -46,6 +46,9 @@ const tooltip = computed(() => {
   if (entry.resultType === "LOCATION") {
     return t("search.jumpToLocation");
   }
+  if (entry.resultType === "FEATURE") {
+    return t("search.jumpToFeature");
+  }
   return undefined;
 });
 

@@ -25,7 +25,8 @@
     "no_results": "Chattà nagins resultats",
     "error": "Tschertga betg reussida. Insaquants resultats mancan eventualmain",
     "viewDataset": "Avrir ils detagls dal nivel",
-    "jumpToLocation": "Ir al lieu"
+    "jumpToLocation": "Ir al lieu",
+    "jumpToFeature": "Ir a l'object"
   },
   "footer": {
     "copyRightData": "© Datas: ",

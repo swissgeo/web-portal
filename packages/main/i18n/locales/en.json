@@ -25,7 +25,8 @@
     "no_results": "No results found",
     "error": "Search failed. Some results may be missing.",
     "viewDataset": "View dataset",
-    "jumpToLocation": "Jump to location"
+    "jumpToLocation": "Jump to location",
+    "jumpToFeature": "Jump to feature"
   },
   "footer": {
     "copyRightData": "© Data: ",

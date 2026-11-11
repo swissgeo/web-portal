@@ -300,8 +300,11 @@ describe("SearchResultEntry", () => {
       expect(tooltipOf(entries[0]!)).toBe("search.jumpToLocation");
     });
 
-    it("has none for other results or layers the map cannot show", () => {
-      expect(tooltipOf(entries[1]!)).toBeUndefined();
+    it("offers to jump to a feature", () => {
+      expect(tooltipOf(entries[1]!)).toBe("search.jumpToFeature");
+    });
+
+    it("has none for layers the map cannot show", () => {
       expect(tooltipOf(notMappableLayer)).toBeUndefined();
     });
   });
