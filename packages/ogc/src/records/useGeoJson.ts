@@ -5,7 +5,7 @@ import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { isMapLibreStyleDocument } from "@swissgeo/shared";
 import { computed, watchEffect } from "vue";
 
-import type { Distribution } from "@/types";
+import type { Distribution, Legend } from "@/types";
 
 import { useConditionalFetch } from "./useConditionalFetch";
 import { getLinksByRel } from "./utils";
@@ -86,6 +86,13 @@ export function useGeoJson(distribution: Ref<Distribution | null>) {
     mapLibreIcons,
     error,
   };
+}
+
+export function getGeoJsonLegends(distribution: Distribution | null): Legend[] {
+  return getLinksByRel(distribution?.links ?? [], "legend").map((link) => ({
+    href: link.href,
+    format: link.type,
+  }));
 }
 
 function abortAwareError(error: unknown): unknown {
