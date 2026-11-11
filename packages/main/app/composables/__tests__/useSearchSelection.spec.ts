@@ -7,6 +7,7 @@ import { useSearchSelection } from "../useSearchSelection";
 
 const {
   fetchMock,
+  isDesktop,
   layerStore,
   makeServerLayerMock,
   navigateToMock,
@@ -20,7 +21,12 @@ const {
   windowOpenMock: vi.fn(),
   navigateToMock: vi.fn(),
   route: { meta: {} as { datasetDetail?: boolean } },
-  sidebarStore: { setSidebar: vi.fn() },
+  isDesktop: { value: true },
+  sidebarStore: {
+    isGeocatalogTreeVisible: false,
+    setSidebar: vi.fn(),
+    closeSidebar: vi.fn(),
+  },
   fetchMock: vi.fn(),
   layerStore: { layers: [] as { humanId: string }[], addLayer: vi.fn() },
   makeServerLayerMock: vi.fn((dataset: { id: string }) => ({
@@ -42,6 +48,7 @@ mockNuxtImport("useToaster", () => () => ({ add: toastAddMock }));
 mockNuxtImport("useRoute", () => () => route);
 mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 mockNuxtImport("navigateTo", () => navigateToMock);
+mockNuxtImport("useIsDesktop", () => () => isDesktop);
 
 mockNuxtImport("useRuntimeConfig", () => () => ({
   public: {
@@ -97,6 +104,9 @@ describe("useSearchSelection", () => {
     windowOpenMock.mockReset();
     navigateToMock.mockReset();
     sidebarStore.setSidebar.mockReset();
+    sidebarStore.closeSidebar.mockReset();
+    sidebarStore.isGeocatalogTreeVisible = false;
+    isDesktop.value = true;
     route.meta = {};
     vi.stubGlobal("open", windowOpenMock);
   });
@@ -221,6 +231,42 @@ describe("useSearchSelection", () => {
     expect(layerStore.addLayer).toHaveBeenCalled();
     expect(sidebarStore.setSidebar).not.toHaveBeenCalled();
     expect(navigateToMock).not.toHaveBeenCalled();
+  });
+
+  it.each`
+    device       | desktop  | layers                           | setSidebarCalls     | closeSidebarCalls
+    ${"desktop"} | ${true}  | ${[]}                            | ${[["layer-cart"]]} | ${0}
+    ${"desktop"} | ${true}  | ${[{ humanId: "ch.layer.one" }]} | ${[["layer-cart"]]} | ${0}
+    ${"mobile"}  | ${false} | ${[]}                            | ${[]}               | ${1}
+    ${"mobile"}  | ${false} | ${[{ humanId: "ch.layer.one" }]} | ${[]}               | ${1}
+  `(
+    "closes the open catalog on $device with $layers.length layer(s) on the map",
+    async ({ desktop, layers, setSidebarCalls, closeSidebarCalls }) => {
+      isDesktop.value = desktop;
+      layerStore.layers = layers;
+      sidebarStore.isGeocatalogTreeVisible = true;
+      fetchMock.mockResolvedValue({ id: "ch.layer.one" });
+
+      const { handleResultSelection } = useSearchSelection();
+      await handleResultSelection(layerResult);
+
+      expect(sidebarStore.setSidebar.mock.calls).toEqual(setSidebarCalls);
+      expect(sidebarStore.closeSidebar).toHaveBeenCalledTimes(
+        closeSidebarCalls,
+      );
+      expect(navigateToMock).not.toHaveBeenCalled();
+    },
+  );
+
+  it("keeps the catalog open when the layer cannot be added", async () => {
+    sidebarStore.isGeocatalogTreeVisible = true;
+    fetchMock.mockRejectedValue(new Error("boom"));
+
+    const { handleResultSelection } = useSearchSelection();
+    await handleResultSelection(layerResult);
+
+    expect(sidebarStore.setSidebar).not.toHaveBeenCalled();
+    expect(sidebarStore.closeSidebar).not.toHaveBeenCalled();
   });
 
   it("keeps the DetailView open when the layer cannot be added", async () => {

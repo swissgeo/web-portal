@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 import DatasetPanelFrame from "~/components/dataset/DatasetPanelFrame.vue";
 
 // page key so map component persists when routings happen (like data detail)
@@ -12,6 +13,16 @@ const detailsOpen = computed(() => route.meta.datasetDetail === true);
 watch(detailsOpen, (isOpen) => {
   if (isOpen) {
     mapViewStore.exitFullscreenMode();
+  }
+});
+
+// The catalog belongs to the map. A user who leaves the map and comes back
+// must not find the catalog still open. The catalog card of the landing page
+// opens it again on purpose.
+const sidebarStore = useSidebarStore();
+onUnmounted(() => {
+  if (sidebarStore.currentSidebar === SidebarType.GEOCATALOG_TREE) {
+    sidebarStore.closeSidebar();
   }
 });
 </script>
