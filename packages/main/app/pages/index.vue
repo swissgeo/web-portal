@@ -65,6 +65,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       >
         <div
           class="mx-auto flex w-(--ui-container) max-w-228 cursor-auto flex-col gap-8 lg:gap-16"
+          @click.stop=""
         >
           <div>
             <h1 class="mb-6 text-4xl text-white lg:text-7xl">
@@ -79,7 +80,6 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
             <div
               id="search-bar"
               class="rounded-lg bg-primary-50 p-4 dark:bg-primary-800"
-              @click.stop=""
             >
               <TopbarSearch
                 class="w-full"
