@@ -12,9 +12,15 @@ const searchMocks = vi.hoisted(() => ({
 }));
 
 vi.mock("@swissgeo/search", () => searchMocks);
-vi.mock("@swissgeo/layers", () => ({
-  useLayerStore: () => ({ layers: [] as unknown[] }),
-}));
+const mapLayers = vi.hoisted(() => [] as unknown[]);
+vi.mock("@swissgeo/layers", async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const actual = await importOriginal<typeof import("@swissgeo/layers")>();
+  return {
+    getFeatureInfoLayerId: actual.getFeatureInfoLayerId,
+    useLayerStore: () => ({ layers: mapLayers }),
+  };
+});
 vi.mock("@swissgeo/log", () => ({
   default: { error: vi.fn() },
   LogPreDefinedColor: { Red: "red" },
@@ -62,6 +68,31 @@ describe("useSearchStore", () => {
     searchMocks.searchLayerFeatures.mockResolvedValue([]);
     searchMocks.searchContentPages.mockResolvedValue([]);
     vi.clearAllMocks();
+    mapLayers.length = 0;
+  });
+
+  it("searches the features of a map layer by its external id", async () => {
+    mapLayers.push({
+      type: "dataset",
+      humanId: "dat_test",
+      data: { id: "dat_test" },
+      info: {
+        displayName: "Test",
+        featureInfoInformation: { externalId: "ch.test.external" },
+      },
+    });
+
+    const store = useSearchStore();
+    await store.setSearchQuery("Bern");
+
+    expect(searchMocks.searchLayerFeatures).toHaveBeenCalledWith(
+      "Bern",
+      undefined,
+      expect.any(String),
+      "ch.test.external",
+      "Test",
+      expect.any(AbortSignal),
+    );
   });
 
   it("clears results without searching for a query shorter than 2 chars", async () => {

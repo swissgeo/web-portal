@@ -622,6 +622,13 @@ describe("useStateConfig manages to import a State with importState", () => {
   });
 
   it("restores the incoming feature ids as a preselection on the feature store", async () => {
+    mockedMakeServerLayer.mockResolvedValueOnce({
+      ...mockedLayer,
+      info: {
+        displayName: "Layer",
+        featureInfoInformation: { externalId: "ch.test.layer" },
+      },
+    });
     createIdentifyResponseMock.mockReturnValue([
       { id: "id-1", geometry: { type: "Point", coordinates: [0, 0] } },
       { id: "id-2", geometry: { type: "Point", coordinates: [1, 1] } },
@@ -646,7 +653,7 @@ describe("useStateConfig manages to import a State with importState", () => {
 
     expect(createIdentifyResponseMock).toHaveBeenCalledWith(
       ["id-1", "id-2"],
-      mockedLayer.humanId,
+      "ch.test.layer",
     );
     expect(featureStore.consumeFeaturePreselection(mockedLayer.uuid)).toEqual([
       { id: "id-1", geometry: { type: "Point", coordinates: [0, 0] } },

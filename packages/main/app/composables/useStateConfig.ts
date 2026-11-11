@@ -13,6 +13,7 @@ import { useDimensionsStore } from "@swissgeo/dimension";
 import { useDrawing } from "@swissgeo/drawing";
 import { createIdentifyResponse, useFeaturesStore } from "@swissgeo/feature";
 import {
+  getFeatureInfoLayerId,
   isDatasetLayer,
   makeServerLayer,
   useLayerStore,
@@ -313,7 +314,7 @@ export function useStateConfig() {
         if (preSelectedFeaturesIds) {
           const identifyFeatures = await createIdentifyResponse(
             preSelectedFeaturesIds,
-            layers[i]!.humanId,
+            getFeatureInfoLayerId(layers[i]!),
           );
           featureStore.addFeaturePreselection(uuid, identifyFeatures);
         }

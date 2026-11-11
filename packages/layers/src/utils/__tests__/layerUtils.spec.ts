@@ -240,6 +240,17 @@ describe("getFeatureInfoLayerId", () => {
       expect(getFeatureInfoLayerId(layer(externalId))).toBe(expected);
     },
   );
+
+  it("returns the humanId of a layer that is not a dataset", () => {
+    expect(
+      getFeatureInfoLayerId({
+        type: "kml",
+        uuid: "uuid",
+        humanId: "file.kml",
+        isLoading: false,
+      }),
+    ).toBe("file.kml");
+  });
 });
 
 describe("grabFeatureInfoInformation", () => {

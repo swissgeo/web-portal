@@ -1,7 +1,7 @@
 import type { SingleCoordinate } from "@swissgeo/coordinates";
 import type { CoordinateSearchResult, SearchResult } from "@swissgeo/search";
 
-import { useLayerStore } from "@swissgeo/layers";
+import { getFeatureInfoLayerId, useLayerStore } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { buildCatalogItemsUrl } from "@swissgeo/ogc";
 import {
@@ -147,7 +147,7 @@ export const useSearchStore = defineStore("search", () => {
             newQuery,
             runtimeConfig.public.searchServiceUrl,
             lang,
-            layer.humanId,
+            getFeatureInfoLayerId(layer),
             layer.info?.displayName || layer.humanId,
             abortController.signal,
           ),

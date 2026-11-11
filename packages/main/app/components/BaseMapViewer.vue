@@ -267,9 +267,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       // we spare some fetches if the features are already there
       const layerSource: LayerSource = {
         layerUuid: sourceLayer.uuid,
-        layerId: isDatasetLayer(sourceLayer)
-          ? getFeatureInfoLayerId(sourceLayer)
-          : sourceLayer.humanId,
+        layerId: getFeatureInfoLayerId(sourceLayer),
         getFeatureInfoInformation: isDatasetLayer(sourceLayer)
           ? sourceLayer.info?.featureInfoInformation
           : undefined,

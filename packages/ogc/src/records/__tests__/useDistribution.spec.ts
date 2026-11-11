@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 import type { DistributionCollection } from "@/types/Records";
 
-import { useDistribution } from "../useDistribution";
+import { getDistributionLayerId, useDistribution } from "../useDistribution";
 import ChBafuSchutzgebieteLuftfahrtDistributions from "./fixtures/distribution-collection_ch.bafu.schutzgebiete-luftfahrt.json";
 
 describe("useDistribution composable returning the desired distribution", () => {
@@ -160,4 +160,26 @@ describe("useDistribution composable returning the desired distribution", () => 
 
     expect(distribution.value).toBe(null);
   });
+});
+
+describe("getDistributionLayerId", () => {
+  const distribution = (id: string, externalIds?: string[]) => ({
+    id,
+    properties: { title: "Test", type: "Distribution", externalIds },
+  });
+
+  it.each`
+    id                     | externalIds             | expected
+    ${"dst_test-1234"}     | ${["ch.test.external"]} | ${"ch.test.external"}
+    ${"ch.test.layer:wms"} | ${[""]}                 | ${"ch.test.layer"}
+    ${"ch.test.layer:wms"} | ${undefined}            | ${"ch.test.layer"}
+    ${"dst_test-1234"}     | ${undefined}            | ${null}
+  `(
+    "returns $expected for id $id and externalIds $externalIds",
+    ({ id, externalIds, expected }) => {
+      expect(getDistributionLayerId(distribution(id, externalIds))).toBe(
+        expected,
+      );
+    },
+  );
 });
