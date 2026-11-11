@@ -692,6 +692,9 @@
     "text": "Ambiente {environment} – Non per l'uso produttivo. Non condividere."
   },
   "landing": {
+    "body": {
+      "who": "In collaborazione tra Confederazione e Cantoni."
+    },
     "cards": {
       "map": {
         "title": "Mappa",

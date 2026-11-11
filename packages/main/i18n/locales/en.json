@@ -692,6 +692,9 @@
     "text": "{environment} environment – Not for operational use. Do not share."
   },
   "landing": {
+    "body": {
+      "who": "Jointly by the federal government and the cantons."
+    },
     "cards": {
       "map": {
         "title": "Map",
