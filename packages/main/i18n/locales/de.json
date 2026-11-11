@@ -692,6 +692,9 @@
     "text": "{environment}-Umgebung – Nicht für den produktiven Gebrauch. Nicht teilen."
   },
   "landing": {
+    "body": {
+      "who": "Gemeinsam von Bund und Kantonen."
+    },
     "cards": {
       "map": {
         "title": "Karte",

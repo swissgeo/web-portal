@@ -1,5 +1,7 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { SidebarType, useSidebarStore } from "@swissgeo/skeleton";
 import { mount } from "@vue/test-utils";
+import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick, reactive } from "vue";
 
@@ -33,6 +35,7 @@ function render() {
 }
 
 beforeEach(() => {
+  setActivePinia(createPinia());
   mocks.route.mockReturnValue(route);
   mocks.mapView.mockReturnValue(mapView);
   mapView.exitFullscreenMode.mockClear();
@@ -77,4 +80,20 @@ describe("map page", () => {
 
     wrapper.unmount();
   });
+
+  it.each`
+    sidebar                        | expected
+    ${SidebarType.GEOCATALOG_TREE} | ${null}
+    ${SidebarType.LAYER_CART}      | ${SidebarType.LAYER_CART}
+  `(
+    "leaves the $sidebar panel as $expected when the user leaves the map",
+    ({ sidebar, expected }) => {
+      const sidebarStore = useSidebarStore();
+      sidebarStore.setSidebar(sidebar);
+
+      render().unmount();
+
+      expect(sidebarStore.currentSidebar).toBe(expected);
+    },
+  );
 });

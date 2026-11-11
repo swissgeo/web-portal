@@ -29,7 +29,7 @@
   "footer": {
     "copyRightData": "© Données: ",
     "termsOfUse": "Conditions d'utilisation",
-    "impressum": "Mentions légales",
+    "impressum": "Impressum",
     "mobileNav": {
       "map": "Carte",
       "catalog": "Catalogue de données",
@@ -692,6 +692,9 @@
     "text": "Environnement {environment} – Pas pour un usage productif. Ne pas partager."
   },
   "landing": {
+    "body": {
+      "who": "Conjointement par la Confédération et les cantons."
+    },
     "cards": {
       "map": {
         "title": "Carte",

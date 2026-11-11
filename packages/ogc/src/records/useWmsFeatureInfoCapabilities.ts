@@ -1,7 +1,7 @@
-import type { ComputedRef, Ref } from "vue";
+import type { ComputedRef, MaybeRefOrGetter, Ref } from "vue";
 
 import log from "@swissgeo/log";
-import { computed } from "vue";
+import { computed, toValue } from "vue";
 
 import { useConditionalFetch } from "./useConditionalFetch";
 import { getLayer } from "./useWmsCapabilities";
@@ -14,7 +14,7 @@ import {
 } from "./wmsCapabilitiesUtils";
 
 export function useWmsFeatureInfoCapabilities(
-  layerId: string | null,
+  layerId: MaybeRefOrGetter<string | null>,
   capabilityUrl: Ref<string | null>,
 ): ComputedRef<{
   availableCrs: string[];
@@ -30,11 +30,12 @@ export function useWmsFeatureInfoCapabilities(
     useConditionalFetch<string>(capabilityUrl);
   onRequestError((error) => {
     log.warn(
-      `[WMS FeatureInfo capabilities] Unable to load capabilities for layer "${layerId}" — click feature info stays disabled. The reason is the following : ${error.toString()}`,
+      `[WMS FeatureInfo capabilities] Unable to load capabilities for layer "${toValue(layerId)}" — click feature info stays disabled. The reason is the following : ${error.toString()}`,
     );
   });
   const wmsFeatureInfo = computed(() => {
-    if (!wmsCapabilityData.value || !layerId) {
+    const id = toValue(layerId);
+    if (!wmsCapabilityData.value || !id) {
       return null;
     }
 
@@ -42,7 +43,7 @@ export function useWmsFeatureInfoCapabilities(
       wmsCapabilityData.value,
       "text/xml",
     );
-    const layer = getLayer(doc, layerId);
+    const layer = getLayer(doc, id);
     if (layer && !isQueryable(layer)) {
       return null;
     }

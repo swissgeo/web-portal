@@ -267,7 +267,11 @@ describe("grabFeatureInfoInformation", () => {
   });
 
   const featureInfoFeature = (dataServiceHref?: string) => ({
-    properties: { type: "FeatureInfo", protocol: "ogc:wms" },
+    properties: {
+      type: "FeatureInfo",
+      protocol: "ogc:wms",
+      externalIds: ["ch.test.layer"],
+    },
     links: dataServiceHref
       ? [{ rel: "dataservice", href: dataServiceHref }]
       : [],
@@ -316,6 +320,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/describes`,
+      externalId: "ch.test.layer",
     });
   });
 
@@ -333,6 +338,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/describes`,
+      externalId: "ch.test.layer",
     });
     expect(fetchSpy.mock.calls.map(([url]) => String(url))).toEqual([
       DISTRIBUTIONS_URL,
@@ -355,6 +361,48 @@ describe("grabFeatureInfoInformation", () => {
     expect(String(fetchSpy.mock.calls[1]![0])).toBe(WMS_FEATUREINFO_URL);
   });
 
+  it("returns the first externalId of the featureinfo distribution", async () => {
+    stubFetchRouting({
+      [DISTRIBUTIONS_URL]: distributionCollection(),
+      [WMS_FEATUREINFO_URL]: {
+        ...featureInfoFeature(DATASERVICE_URL),
+        id: "dst_test-features-213ab",
+        properties: {
+          type: "FeatureInfo",
+          protocol: "geoadmin:features",
+          externalIds: ["ch.test.external", "ch.test.other"],
+          queryable: true,
+        },
+      },
+      [DATASERVICE_URL]: dataServiceFeature(["describes"]),
+    });
+
+    const info = await grabFeatureInfoInformation(makeDataset());
+
+    expect(info?.externalId).toBe("ch.test.external");
+    expect(info?.isQueryable).toBe(true);
+    expect(info?.distributionId).toBe("dst_test-features-213ab");
+  });
+
+  it("returns no externalId when the featureinfo distribution has no externalIds", async () => {
+    stubFetchRouting({
+      [DISTRIBUTIONS_URL]: distributionCollection(),
+      [WMS_FEATUREINFO_URL]: {
+        ...featureInfoFeature(DATASERVICE_URL),
+        properties: { type: "FeatureInfo", protocol: "ogc:wms" },
+      },
+      [DATASERVICE_URL]: dataServiceFeature(["describes"]),
+    });
+
+    const info = await grabFeatureInfoInformation(makeDataset());
+
+    expect(info).toEqual({
+      protocol: "ogc:wms",
+      baseUrl: `${DESCRIBES_URL}/describes`,
+      externalId: undefined,
+    });
+  });
+
   it("prefers describes over describedby and about", async () => {
     stubFetchRouting({
       [DISTRIBUTIONS_URL]: distributionCollection(),
@@ -371,6 +419,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/describes`,
+      externalId: "ch.test.layer",
     });
   });
 
@@ -386,6 +435,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/describedby`,
+      externalId: "ch.test.layer",
     });
   });
 
@@ -401,6 +451,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/about`,
+      externalId: "ch.test.layer",
     });
   });
 
@@ -420,6 +471,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(info).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/Describes`,
+      externalId: "ch.test.layer",
     });
   });
 
@@ -521,7 +573,11 @@ describe("grabFeatureInfoInformation", () => {
 
     const info = await grabFeatureInfoInformation(makeDataset());
 
-    expect(info).toEqual({ protocol: "ogc:wms", baseUrl: undefined });
+    expect(info).toEqual({
+      protocol: "ogc:wms",
+      baseUrl: undefined,
+      externalId: "ch.test.layer",
+    });
   });
 
   it("feeds its result into the layer info via makeServerLayer", async () => {
@@ -543,6 +599,7 @@ describe("grabFeatureInfoInformation", () => {
     expect(layer.info?.featureInfoInformation).toEqual({
       protocol: "ogc:wms",
       baseUrl: `${DESCRIBES_URL}/describes`,
+      externalId: "ch.test.layer",
     });
   });
 });

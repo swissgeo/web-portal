@@ -36,6 +36,7 @@ export function useSearchSelection() {
   const sidebarStore = useSidebarStore();
   const route = useRoute();
   const localePath = useLocalePath();
+  const isDesktop = useIsDesktop();
 
   async function handleResultSelection(result: SearchResult) {
     if (result.resultType === "COORDINATE") {
@@ -109,6 +110,7 @@ export function useSearchSelection() {
   // opens the dataset panel instead.
   async function handleLayerSelection(result: LayerSearchResult) {
     if (layerStore.layers.some((l) => l.humanId === result.layerId)) {
+      closeLayerCatalog();
       await closeDatasetDetail();
       return;
     }
@@ -119,6 +121,7 @@ export function useSearchSelection() {
     try {
       const dataset = await $fetch<Dataset>(url.toString());
       layerStore.addLayer(await makeServerLayer(dataset));
+      closeLayerCatalog();
       await closeDatasetDetail();
     } catch (e) {
       log.error(
@@ -126,6 +129,20 @@ export function useSearchSelection() {
         e instanceof Error ? e : new Error(String(e)),
       );
       toast.add({ color: "error", title: t("dataset.addToMapError") });
+    }
+  }
+
+  // The catalog hides the layer list. After a layer selection, the user must
+  // see the selected layer in the layer list. Same as the close button of the
+  // catalog: on mobile, the user goes back to the map.
+  function closeLayerCatalog() {
+    if (!sidebarStore.isGeocatalogTreeVisible) {
+      return;
+    }
+    if (isDesktop.value) {
+      sidebarStore.setSidebar(SidebarType.LAYER_CART);
+    } else {
+      sidebarStore.closeSidebar();
     }
   }
 

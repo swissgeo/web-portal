@@ -9,8 +9,24 @@ vi.mock("vue-i18n", () => ({
 }));
 
 describe("FullScreenButton.vue", () => {
+  let fullscreenElement: Element | null = null;
+
   beforeEach(() => {
     setActivePinia(createPinia());
+    fullscreenElement = null;
+    // happy-dom does not implement the Fullscreen API
+    Object.defineProperty(document, "fullscreenElement", {
+      configurable: true,
+      get: () => fullscreenElement,
+    });
+    document.documentElement.requestFullscreen = vi.fn(() => {
+      fullscreenElement = document.documentElement;
+      return Promise.resolve();
+    });
+    document.exitFullscreen = vi.fn(() => {
+      fullscreenElement = null;
+      return Promise.resolve();
+    });
   });
 
   function mountButton() {
@@ -44,6 +60,31 @@ describe("FullScreenButton.vue", () => {
     expect(mapViewStore.isFullscreenModeActive).toBe(true);
 
     await button.trigger("click");
+    expect(mapViewStore.isFullscreenModeActive).toBe(false);
+  });
+
+  it("requests and exits the browser fullscreen", async () => {
+    const button = mountButton().find(
+      '[data-testid="toolbox-fullscreen-button"]',
+    );
+
+    await button.trigger("click");
+    expect(document.documentElement.requestFullscreen).toHaveBeenCalledOnce();
+
+    await button.trigger("click");
+    expect(document.exitFullscreen).toHaveBeenCalledOnce();
+  });
+
+  it("leaves the fullscreen mode when the browser exits fullscreen", async () => {
+    const wrapper = mountButton();
+    const mapViewStore = useMapViewStore();
+    await wrapper
+      .find('[data-testid="toolbox-fullscreen-button"]')
+      .trigger("click");
+    expect(mapViewStore.isFullscreenModeActive).toBe(true);
+
+    fullscreenElement = null;
+    document.dispatchEvent(new Event("fullscreenchange"));
     expect(mapViewStore.isFullscreenModeActive).toBe(false);
   });
 });

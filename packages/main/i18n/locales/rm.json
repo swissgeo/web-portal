@@ -692,6 +692,9 @@
     "text": "Ambient {environment} – Betg per l'utilisaziun productiva. Betg parter."
   },
   "landing": {
+    "body": {
+      "who": "Ensemen da la confederaziun e dals chantuns."
+    },
     "cards": {
       "map": {
         "title": "Charta",

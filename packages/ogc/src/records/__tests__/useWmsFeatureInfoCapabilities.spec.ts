@@ -141,6 +141,30 @@ describe("useWmsFeatureInfoCapabilities", () => {
     });
   });
 
+  it("follows a layer id that is known only later", async () => {
+    server.use(
+      http.get(CAPABILITY_URL, () =>
+        HttpResponse.xml(
+          makeSyntheticCapabilitiesXml({
+            queryable: "1",
+            layerCrs: ["EPSG:2056"],
+          }),
+        ),
+      ),
+    );
+    const layerId = ref<string | null>("dat_target-layer");
+
+    const wmsFeatureInfo = useWmsFeatureInfoCapabilities(
+      () => layerId.value,
+      ref(CAPABILITY_URL),
+    );
+    await flushPromises();
+    expect(wmsFeatureInfo.value?.layerName).toBeNull();
+
+    layerId.value = "target.layer";
+    expect(wmsFeatureInfo.value?.layerName).toBe("target.layer");
+  });
+
   it("falls back to the root layer's CRS and a null layerName on a layer-name miss (D1)", async () => {
     server.use(
       http.get(CAPABILITY_URL, () =>
