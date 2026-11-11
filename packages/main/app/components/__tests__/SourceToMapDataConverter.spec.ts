@@ -717,7 +717,8 @@ describe("layer load errors", () => {
 describe("state import feature selection", () => {
   const BASE_URL = "https://example.test/MapServer";
   // mapLayerData.layerId is the uuid ("test-uuid") in this suite's stubs
-  const URL_TEMPLATE = `${BASE_URL}/test-uuid/{featureId}/htmlPopup?lang={lang}`;
+  const EXTERNAL_ID = "ch.test.external";
+  const URL_TEMPLATE = `${BASE_URL}/${EXTERNAL_ID}/{featureId}/htmlPopup?lang={lang}`;
 
   const identifyFeatures: {
     id: string;
@@ -748,6 +749,7 @@ describe("state import feature selection", () => {
     featureInfoInformation?: {
       protocol?: string;
       baseUrl?: string;
+      externalId?: string;
     },
   ): DatasetLayer {
     return {
@@ -757,6 +759,7 @@ describe("state import feature selection", () => {
         featureInfoInformation: featureInfoInformation ?? {
           protocol: "geoadmin:features",
           baseUrl: BASE_URL,
+          externalId: EXTERNAL_ID,
         },
       },
     };

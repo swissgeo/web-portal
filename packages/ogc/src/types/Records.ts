@@ -91,6 +91,8 @@ export interface Property<recordType extends string> {
   attribution?: Attribution;
   owner?: Owner;
   externalIds?: string[];
+  // On a feature distribution: the external service can search its features.
+  queryable?: boolean;
   contacts?: Contact[];
   language?: Language;
   languages?: Language[];

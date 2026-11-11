@@ -12,8 +12,10 @@ const searchMocks = vi.hoisted(() => ({
 }));
 
 vi.mock("@swissgeo/search", () => searchMocks);
+const mapLayers = vi.hoisted(() => [] as Record<string, unknown>[]);
 vi.mock("@swissgeo/layers", () => ({
-  useLayerStore: () => ({ layers: [] as unknown[] }),
+  isDatasetLayer: (layer: Record<string, unknown>) => layer.type === "dataset",
+  useLayerStore: () => ({ layers: mapLayers }),
 }));
 vi.mock("@swissgeo/log", () => ({
   default: { error: vi.fn() },
@@ -62,6 +64,65 @@ describe("useSearchStore", () => {
     searchMocks.searchLayerFeatures.mockResolvedValue([]);
     searchMocks.searchContentPages.mockResolvedValue([]);
     vi.clearAllMocks();
+    mapLayers.length = 0;
+  });
+
+  const datasetLayer = (featureInfoInformation?: {
+    externalId?: string;
+    isQueryable?: boolean;
+  }) => ({
+    type: "dataset",
+    humanId: "dat_test",
+    data: { id: "dat_test" },
+    info: { displayName: "Test", featureInfoInformation },
+  });
+
+  it("searches the features of a map layer by its externalId", async () => {
+    mapLayers.push(
+      datasetLayer({ externalId: "ch.test.external", isQueryable: true }),
+    );
+
+    const store = useSearchStore();
+    await store.setSearchQuery("Bern");
+
+    expect(searchMocks.searchLayerFeatures).toHaveBeenCalledWith(
+      "Bern",
+      undefined,
+      expect.any(String),
+      "ch.test.external",
+      "Test",
+      expect.any(AbortSignal),
+    );
+  });
+
+  it("does not search the features of a file layer or a dataset without feature info", async () => {
+    mapLayers.push({ type: "kml", humanId: "file.kml" }, datasetLayer());
+
+    const store = useSearchStore();
+    await store.setSearchQuery("Bern");
+
+    expect(searchMocks.searchLayerFeatures).not.toHaveBeenCalled();
+    expect(store.hasError).toBe(false);
+  });
+
+  it("does not search the features of a dataset that is not queryable", async () => {
+    mapLayers.push(datasetLayer({ externalId: "ch.test.external" }));
+
+    const store = useSearchStore();
+    await store.setSearchQuery("Bern");
+
+    expect(searchMocks.searchLayerFeatures).not.toHaveBeenCalled();
+    expect(store.hasError).toBe(false);
+  });
+
+  it("sets an error and does not search the features of a dataset without externalId", async () => {
+    mapLayers.push(datasetLayer({ isQueryable: true }));
+
+    const store = useSearchStore();
+    await store.setSearchQuery("Bern");
+
+    expect(searchMocks.searchLayerFeatures).not.toHaveBeenCalled();
+    expect(store.hasError).toBe(true);
   });
 
   it("clears results without searching for a query shorter than 2 chars", async () => {

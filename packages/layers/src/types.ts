@@ -16,6 +16,9 @@ export interface LayerInfo {
   featureInfoInformation?: {
     protocol?: string;
     baseUrl?: string;
+    externalId?: string;
+    distributionId?: string;
+    isQueryable?: boolean;
   };
 }
 

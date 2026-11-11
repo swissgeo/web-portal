@@ -5,8 +5,9 @@ import { describe, expect, it } from "vitest";
 
 const UUID = "layer-1";
 const LAYER_ID = "ch.test.layer";
+const EXTERNAL_ID = "ch.test.external";
 const BASE_URL = "https://example.test/MapServer";
-const TEMPLATE = `${BASE_URL}/${LAYER_ID}/{featureId}/htmlPopup?lang={lang}`;
+const TEMPLATE = `${BASE_URL}/${EXTERNAL_ID}/{featureId}/htmlPopup?lang={lang}`;
 
 function makeSource(overrides: Partial<LayerSource> = {}): LayerSource {
   return {
@@ -25,6 +26,7 @@ describe("getUrlTemplate", () => {
           getFeatureInfoInformation: {
             protocol: "geoadmin:features",
             baseUrl: BASE_URL,
+            externalId: EXTERNAL_ID,
           },
         }),
       ),
@@ -38,6 +40,7 @@ describe("getUrlTemplate", () => {
           getFeatureInfoInformation: {
             protocol: "ogc:api3features",
             baseUrl: BASE_URL,
+            externalId: EXTERNAL_ID,
           },
         }),
       ),

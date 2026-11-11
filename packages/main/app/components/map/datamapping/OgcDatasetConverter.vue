@@ -111,7 +111,7 @@ const wmsFeatureInfoUrl = computed(() =>
 );
 
 const wmsFeatureInfoCapability = useWmsFeatureInfoCapabilities(
-  layer.humanId,
+  () => layer.info?.featureInfoInformation?.externalId ?? null,
   wmsFeatureInfoUrl,
 );
 

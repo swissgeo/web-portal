@@ -310,12 +310,21 @@ export function useStateConfig() {
           isVisible: stateLayer.isVisible ?? true,
         };
         const preSelectedFeaturesIds = stateLayer.features;
-        if (preSelectedFeaturesIds) {
+        const layer = layers[i]!;
+        const featureInfo = isDatasetLayer(layer)
+          ? layer.info?.featureInfoInformation
+          : undefined;
+        const externalId = featureInfo?.externalId;
+        if (preSelectedFeaturesIds && externalId) {
           const identifyFeatures = await createIdentifyResponse(
             preSelectedFeaturesIds,
-            layers[i]!.humanId,
+            externalId,
           );
           featureStore.addFeaturePreselection(uuid, identifyFeatures);
+        } else if (preSelectedFeaturesIds) {
+          log.error(
+            `No externalIds on distribution ${featureInfo?.distributionId} (dataset ${layer.humanId})`,
+          );
         }
         layerStore.addImportOption(uuid, mapLayerData);
 
