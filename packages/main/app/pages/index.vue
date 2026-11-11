@@ -218,7 +218,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       class="flex flex-col gap-8 bg-neutral-50 px-4 py-8 text-sm font-medium lg:flex-row-reverse lg:items-center lg:p-8 dark:bg-neutral-900"
     >
       <div
-        class="text-accent grid-rows-auto grid grid-cols-2 gap-4 lg:flex lg:w-1/2 lg:flex-row lg:items-center"
+        class="text-accent grid grid-cols-2 gap-4 lg:flex lg:w-1/2 lg:flex-row lg:items-center"
       >
         <UButton
           variant="link"
