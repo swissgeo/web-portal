@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import FullScreenButton from "@/components/toolbox/toolboxButtons/FullScreenButton.vue";
 
@@ -14,9 +14,11 @@ describe("FullScreenButton.vue", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     fullscreenElement = null;
-    vi.spyOn(document, "fullscreenElement", "get").mockImplementation(
-      () => fullscreenElement,
-    );
+    // happy-dom does not implement the Fullscreen API
+    Object.defineProperty(document, "fullscreenElement", {
+      configurable: true,
+      get: () => fullscreenElement,
+    });
     document.documentElement.requestFullscreen = vi.fn(() => {
       fullscreenElement = document.documentElement;
       return Promise.resolve();
@@ -25,10 +27,6 @@ describe("FullScreenButton.vue", () => {
       fullscreenElement = null;
       return Promise.resolve();
     });
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   function mountButton() {

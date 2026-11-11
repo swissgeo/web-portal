@@ -128,6 +128,7 @@ test.describe("map page", () => {
     const topbar = page.getByTestId("topbar-logo-link");
     await page.getByTestId("toolbox-fullscreen-button").click();
     await expect(topbar).toBeHidden();
+    await page.waitForFunction(() => !!document.fullscreenElement);
 
     // what pressing Escape does in real fullscreen
     await page.evaluate(() => document.exitFullscreen());
