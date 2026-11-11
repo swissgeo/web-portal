@@ -10,6 +10,7 @@ const { t } = useI18n();
 const localePath = useLocalePath();
 const uiStore = useSidebarStore();
 const { cmsUrl } = useCmsUrl();
+const { reportIssuePortalUrl } = useRuntimeConfig().public;
 
 const socialLinks = ref<NavigationMenuItem[]>([
   {
@@ -19,7 +20,7 @@ const socialLinks = ref<NavigationMenuItem[]>([
     target: "_blank",
   },
   {
-    label: "Linkedin",
+    label: "LinkedIn",
     icon: "i-lucide-linkedin",
     to: "https://www.linkedin.com/company/swissgeo/",
     target: "_blank",
@@ -53,93 +54,113 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
 
 <template>
   <div class="relative h-full">
-    <div id="hero" class="relative h-2/3 overflow-hidden">
+    <div id="hero" class="relative h-9/10 overflow-hidden">
       <img
         src="/images/hero.webp"
-        class="absolute h-full w-full translate-y-20 scale-200 object-cover lg:translate-y-0 lg:scale-100"
+        class="absolute h-full w-full translate-y-20 scale-200 object-cover brightness-38 lg:translate-y-0 lg:scale-100"
         alt=""
       />
       <div
         class="absolute inset-0 mx-4 flex cursor-pointer items-center justify-center lg:mx-8"
         @click="goToMap()"
       >
-        <ClientOnly>
-          <div
-            id="search-bar"
-            class="mx-auto w-(--ui-container) max-w-228 cursor-auto rounded-lg bg-primary-50 p-4 dark:bg-primary-800"
-            @click.stop=""
-          >
-            <TopbarSearch
-              class="w-full"
-              :skip-mobile="true"
-              @selected="goToMap()"
-              @coordinates-detected="goToMap()"
-            />
+        <div
+          class="mx-auto flex w-(--ui-container) max-w-228 cursor-auto flex-col gap-8 lg:gap-16"
+          @click.stop=""
+        >
+          <div>
+            <h1 class="mb-6 text-4xl text-white lg:text-7xl">
+              {{ t("landing.footer.claim") }}
+            </h1>
+            <p class="text-lg font-medium text-white">
+              {{ t("landing.footer.description") }}
+            </p>
           </div>
-        </ClientOnly>
+          <ClientOnly>
+            <div
+              id="search-bar"
+              class="rounded-lg bg-primary-50 p-4 dark:bg-primary-800"
+            >
+              <TopbarSearch
+                class="w-full"
+                :skip-mobile="true"
+                @selected="goToMap()"
+                @coordinates-detected="goToMap()"
+              />
+            </div>
+          </ClientOnly>
+        </div>
       </div>
     </div>
     <div
-      class="mx-auto flex max-w-(--ui-container) flex-col gap-8 p-4 pb-16 lg:flex-row lg:p-8 lg:pb-16"
+      class="mx-auto flex max-w-(--ui-container) flex-col gap-8 p-4 pt-8 pb-16 lg:p-8 lg:pb-16"
     >
-      <UPageCard
-        :title="t('landing.cards.map.title')"
-        :description="t('landing.cards.map.description')"
-        icon="i-lucide-map"
-        variant="outline"
-        :ui="{
-          root: 'lg:w-1/3 cursor-pointer',
-          footer: 'ml-auto',
-          title: 'text-xl',
-          description: 'text-base font-medium text-default',
-        }"
-        @click="goToMap()"
-      >
-        <template #footer>
-          <UButton trailing-icon="i-lucide-arrow-right">
-            {{ t("landing.cards.map.button") }}
-          </UButton>
-        </template>
-      </UPageCard>
-      <UPageCard
-        :title="t('landing.cards.catalog.title')"
-        :description="t('landing.cards.catalog.description')"
-        icon="i-lucide-list-todo"
-        variant="outline"
-        :ui="{
-          root: 'lg:w-1/3 cursor-pointer',
-          footer: 'ml-auto',
-          title: 'text-xl',
-          description: 'text-base font-medium text-default',
-        }"
-        @click="goToMap(true)"
-      >
-        <template #footer>
-          <UButton trailing-icon="i-lucide-arrow-right">
-            {{ t("landing.cards.catalog.button") }}
-          </UButton>
-        </template>
-      </UPageCard>
-      <UPageCard
-        :title="t('landing.cards.info.title')"
-        :description="t('landing.cards.info.description')"
-        icon="i-lucide-app-window"
-        :to="infoPortalUrl"
-        variant="soft"
-        target="_blank"
-        :ui="{
-          root: 'lg:w-1/3 bg-primary-50 dark:bg-primary-800',
-          footer: 'ml-auto',
-          title: 'text-xl',
-          description: 'text-base font-medium text-default',
-        }"
-      >
-        <template #footer>
-          <UButton trailing-icon="i-lucide-external-link">
-            {{ t("landing.cards.info.button") }}
-          </UButton>
-        </template>
-      </UPageCard>
+      <div>
+        <p class="mb-4 text-xl font-semibold lg:text-3xl">SWISSGEO</p>
+        <p class="text-base font-medium">
+          {{ t("landing.body.who") }}
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 lg:flex-row">
+        <UPageCard
+          :title="t('landing.cards.map.title')"
+          :description="t('landing.cards.map.description')"
+          icon="i-lucide-map"
+          variant="outline"
+          :ui="{
+            root: 'lg:w-1/3 cursor-pointer',
+            footer: 'ml-auto',
+            title: 'text-xl',
+            description: 'text-base font-medium text-default',
+          }"
+          @click="goToMap()"
+        >
+          <template #footer>
+            <UButton trailing-icon="i-lucide-arrow-right">
+              {{ t("landing.cards.map.button") }}
+            </UButton>
+          </template>
+        </UPageCard>
+        <UPageCard
+          :title="t('landing.cards.catalog.title')"
+          :description="t('landing.cards.catalog.description')"
+          icon="i-lucide-list-todo"
+          variant="outline"
+          :ui="{
+            root: 'lg:w-1/3 cursor-pointer',
+            footer: 'ml-auto',
+            title: 'text-xl',
+            description: 'text-base font-medium text-default',
+          }"
+          @click="goToMap(true)"
+        >
+          <template #footer>
+            <UButton trailing-icon="i-lucide-arrow-right">
+              {{ t("landing.cards.catalog.button") }}
+            </UButton>
+          </template>
+        </UPageCard>
+        <UPageCard
+          :title="t('landing.cards.info.title')"
+          :description="t('landing.cards.info.description')"
+          icon="i-lucide-app-window"
+          :to="infoPortalUrl"
+          variant="soft"
+          target="_blank"
+          :ui="{
+            root: 'lg:w-1/3 bg-primary-50 dark:bg-primary-800',
+            footer: 'ml-auto',
+            title: 'text-xl',
+            description: 'text-base font-medium text-default',
+          }"
+        >
+          <template #footer>
+            <UButton trailing-icon="i-lucide-external-link">
+              {{ t("landing.cards.info.button") }}
+            </UButton>
+          </template>
+        </UPageCard>
+      </div>
     </div>
     <UFooter
       :ui="{
@@ -194,11 +215,24 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
       />
     </UFooter>
     <div
-      class="flex flex-col gap-4 bg-neutral-50 px-4 py-8 text-sm font-medium lg:flex-row-reverse lg:items-center lg:p-8 dark:bg-neutral-900"
+      class="flex flex-col gap-8 bg-neutral-50 px-4 py-8 text-sm font-medium lg:flex-row-reverse lg:items-center lg:p-8 dark:bg-neutral-900"
     >
       <div
-        class="text-accent grid grid-cols-2 grid-rows-2 gap-4 lg:flex lg:w-1/2 lg:flex-row"
+        class="text-accent grid grid-cols-2 gap-4 lg:flex lg:w-1/2 lg:flex-row lg:items-center"
       >
+        <UButton
+          variant="link"
+          color="error"
+          size="md"
+          class="mb-4 gap-1 px-0 lg:mr-12 lg:mb-0 lg:text-left"
+          :to="reportIssuePortalUrl"
+          target="_blank"
+          external
+        >
+          <UIcon name="i-lucide-triangle-alert" class="size-4 shrink-0" />
+          {{ t("footer.reportIssue.buttonTitle") }}
+        </UButton>
+        <div class="lg:hidden"></div>
         <ULink
           :to="cmsUrl(t('landing.links.impressum'))"
           target="_blank"
