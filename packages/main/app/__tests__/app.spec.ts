@@ -33,14 +33,14 @@ beforeEach(() => {
 });
 
 describe("app.vue viewport", () => {
-  it("sets a 1280 px viewport when the mobile UI is off", () => {
+  it("sets a 1024 px viewport when the mobile UI is off", () => {
     render();
 
     expect(mocks.useHead).toHaveBeenCalledWith({
       meta: [
         {
           name: "viewport",
-          content: "width=1280, interactive-widget=resizes-content",
+          content: "width=1024, interactive-widget=resizes-content",
         },
       ],
     });
