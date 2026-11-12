@@ -223,7 +223,7 @@ const rowButton = {
         @select="selectVariant"
       />
       <div v-if="timeItems.length > 1" class="flex flex-col gap-1">
-        <span class="text-xs font-medium text-toned uppercase">
+        <span class="text-xs font-medium text-toned">
           {{ t("layers.time") }}
         </span>
         <USelect
@@ -235,7 +235,7 @@ const rowButton = {
         />
       </div>
       <div class="flex flex-col gap-1">
-        <span class="text-xs font-medium text-toned uppercase">
+        <span class="text-xs font-medium text-toned">
           {{ t("layers.opacity") }}
         </span>
         <div class="flex items-center gap-2">
