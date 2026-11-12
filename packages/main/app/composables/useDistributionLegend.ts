@@ -2,6 +2,7 @@ import type { Distribution, Service } from "@swissgeo/ogc";
 import type { MaybeRefOrGetter, Ref } from "vue";
 
 import {
+  getGeoJsonLegends,
   useService,
   useWmsCapabilities,
   useWmtsCapabilities,
@@ -41,6 +42,9 @@ export function useDistributionLegend(
   });
 
   const legends = computed(() => {
+    if (format.value === "GeoJSON") {
+      return getGeoJsonLegends(toValue(distribution));
+    }
     if (format.value === "WMS") {
       return wms.wmsData.value?.legends ?? [];
     }

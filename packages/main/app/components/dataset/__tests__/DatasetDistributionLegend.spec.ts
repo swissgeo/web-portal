@@ -1,4 +1,4 @@
-import type { Distribution } from "@swissgeo/ogc";
+import type * as Ogc from "@swissgeo/ogc";
 
 import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -17,7 +17,8 @@ const state = vi.hoisted(() => ({
     wmtsData: { value: { legends: [] } },
   },
 }));
-vi.mock("@swissgeo/ogc", () => ({
+vi.mock("@swissgeo/ogc", async (importOriginal) => ({
+  getGeoJsonLegends: (await importOriginal<typeof Ogc>()).getGeoJsonLegends,
   useService: () => state.service,
   useWmsCapabilities: () => state.wms,
   useWmtsCapabilities: () => state.wmts,
@@ -27,11 +28,15 @@ import DatasetDistributionLegend from "../DatasetDistributionLegend.vue";
 
 vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (key: string) => key }) }));
 
-function render(protocol: Distribution["properties"]["protocol"] = "ogc:wms") {
+function render(
+  protocol: Ogc.Distribution["properties"]["protocol"] = "ogc:wms",
+  links: Ogc.Distribution["links"] = [],
+) {
   return mount(DatasetDistributionLegend, {
     props: {
       distribution: {
         id: "distribution",
+        links,
         properties: { type: "Distribution", title: "Layer", protocol },
       },
       layerId: "layer",
@@ -100,4 +105,14 @@ describe("DatasetDistributionLegend", () => {
       expect(wrapper.find('[role="status"]').exists()).toBe(false);
     },
   );
+
+  it("passes the legend link of a GeoJSON layer to the renderer", () => {
+    const href = "https://example.com/legend.png";
+    const wrapper = render("geojson", [
+      { rel: "legend", type: "image/png", href },
+    ]);
+    expect(
+      wrapper.getComponent({ name: "LayerLegend" }).props("legends"),
+    ).toEqual([{ href, format: "image/png" }]);
+  });
 });
