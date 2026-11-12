@@ -19,7 +19,7 @@ const { distribution, layerId } = useSelectedDistribution(
 );
 const supportsLegend = computed(() => {
   const format = determineFormat(distribution.value);
-  return format === "WMS" || format === "WMTS";
+  return format === "WMS" || format === "WMTS" || format === "GeoJSON";
 });
 </script>
 
