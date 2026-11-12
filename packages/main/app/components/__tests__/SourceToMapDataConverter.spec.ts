@@ -866,6 +866,37 @@ describe("state import feature selection", () => {
     expect(featureStore.selectedFeaturesByUuid).toEqual({});
   });
 
+  it.each(["a file layer", "not in the store"] as const)(
+    "does not select when the source layer is %s",
+    async (kind) => {
+      const featureStore = useFeaturesStore();
+      if (kind === "a file layer") {
+        useLayerStore().addLayer(makeFileLayer("test-uuid"));
+      }
+      featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+      const wrapper = mount(SourceToMapDataConverter, {
+        props: {
+          sourceBgLayer: null,
+          sourceData: [makeFileLayer("test-uuid")],
+        },
+        global: {
+          stubs: {
+            MapDatamappingOgcDatasetConverter: OgcConverterStub,
+            MapDatamappingFileConverter: FileConverterStub,
+          },
+        },
+      });
+      wrapper
+        .findComponent(FileConverterStub)
+        .vm.$emit("update", makeMapLayer("test-uuid"));
+      await flushPromises();
+
+      expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
+      expect(featureStore.selectedFeaturesByUuid).toEqual({});
+    },
+  );
+
   it("does not select when the info has no baseUrl to build the template from", async () => {
     const layerStore = useLayerStore();
     const featureStore = useFeaturesStore();
