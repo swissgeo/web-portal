@@ -98,7 +98,7 @@ const documentLinks = computed(() =>
   <div data-testid="layer-legend" class="flex flex-col gap-2">
     <span
       v-if="presentation === 'sidebar'"
-      class="text-xs font-medium text-toned uppercase"
+      class="text-xs font-medium text-toned"
     >
       {{ t("layers.legend.title") }}
     </span>

@@ -78,7 +78,7 @@ function openLayerCatalog() {
   >
     <!-- h2 carries global heading styles (see main.css), which do not fit a
          panel header, hence the h3 -->
-    <h3 class="text-sm font-semibold text-highlighted uppercase">
+    <h3 class="text-sm font-semibold text-highlighted">
       {{ t("menu.map") }}
     </h3>
     <!-- On mobile the footer opens the catalog -->
