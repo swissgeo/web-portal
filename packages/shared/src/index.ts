@@ -1,6 +1,8 @@
 export * from "./globals";
 export type { ActionDispatcher } from "./actionDispatcher";
 export type { FlatExtent, NormalizedExtent } from "./extent";
+export type { LayerOrigin } from "./layerOrigin";
+export { describeLayerOrigin } from "./layerOrigin";
 export type {
   MapLibreStyleLayer,
   MapLibreStyleDocument,

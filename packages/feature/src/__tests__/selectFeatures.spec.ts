@@ -94,7 +94,7 @@ describe("Feature Selection from layers and extent", () => {
     it("wraps pre-resolved features as JSON FeatureData without any call to the identify endpoint", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-preresolved",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         preResolvedFeatures: vectorFeatures.features,
         layerName: null,
       };
@@ -122,7 +122,7 @@ describe("Feature Selection from layers and extent", () => {
     it("slices pre-resolved features down to the limit", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-preresolved",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         preResolvedFeatures: vectorFeatures.features,
         layerName: null,
       };
@@ -138,7 +138,7 @@ describe("Feature Selection from layers and extent", () => {
     it("builds the identify URL from the template and returns trusted html features on 200", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-identify",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         urlTemplate: URL_TEMPLATE,
         externalId: LAYER_ID,
         baseUrl: BASE_URL,
@@ -199,7 +199,7 @@ describe("Feature Selection from layers and extent", () => {
     it("substitutes {lang} so the htmlPopup follows the runtime locale", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-identify",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         urlTemplate: URL_TEMPLATE,
         externalId: LAYER_ID,
         baseUrl: BASE_URL,
@@ -225,7 +225,7 @@ describe("Feature Selection from layers and extent", () => {
     it("returns an empty array and warns when the identify endpoint answers non-200", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-identify",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         urlTemplate: URL_TEMPLATE,
         externalId: LAYER_ID,
         baseUrl: BASE_URL,
@@ -250,7 +250,7 @@ describe("Feature Selection from layers and extent", () => {
     it("returns an empty array when the identify response has no results", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-identify",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         urlTemplate: URL_TEMPLATE,
         externalId: LAYER_ID,
         baseUrl: BASE_URL,
@@ -273,7 +273,7 @@ describe("Feature Selection from layers and extent", () => {
     it("keeps successful popup fetches and silently drops failed ones (per-feature resilience)", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-identify",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         urlTemplate: URL_TEMPLATE,
         externalId: LAYER_ID,
         baseUrl: BASE_URL,
@@ -306,7 +306,7 @@ describe("Feature Selection from layers and extent", () => {
     it("threads the abort signal into every fetch call", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-identify",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         urlTemplate: URL_TEMPLATE,
         externalId: LAYER_ID,
         baseUrl: BASE_URL,
@@ -335,7 +335,7 @@ describe("Feature Selection from layers and extent", () => {
     it("rejects an identify request without externalId and fetches nothing", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-identify",
-        layerId: "dat_no-external-id",
+        origin: { kind: "dataset", datasetId: "dat_no-external-id" },
         distributionId: "dst_no-external-id-213ab",
         baseUrl: BASE_URL,
         layerName: null,
@@ -354,7 +354,7 @@ describe("Feature Selection from layers and extent", () => {
     function identifyLayer(): LayerRequest {
       return {
         layerUuid: "uuid-identify",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         urlTemplate: URL_TEMPLATE,
         externalId: LAYER_ID,
         baseUrl: BASE_URL,
@@ -408,13 +408,13 @@ describe("Feature Selection from layers and extent", () => {
         [
           {
             layerUuid: "uuid-aborted",
-            layerId: LAYER_ID,
+            origin: { kind: "dataset", datasetId: LAYER_ID },
             getFeatureInfoInformation: geoadminInfo,
             layerName: null,
           },
           {
             layerUuid: "uuid-ok",
-            layerId: LAYER_ID,
+            origin: { kind: "dataset", datasetId: LAYER_ID },
             preResolvedFeatures: vectorFeatures.features,
             layerName: null,
           },
@@ -453,7 +453,7 @@ describe("Feature Selection from layers and extent", () => {
         [
           {
             layerUuid: "uuid-abort",
-            layerId: LAYER_ID,
+            origin: { kind: "dataset", datasetId: LAYER_ID },
             getFeatureInfoInformation: geoadminInfo,
             layerName: null,
           },
@@ -511,7 +511,7 @@ describe("Feature Selection from layers and extent", () => {
     it("returns an empty array without fetching when the layer has no information on how to retrieve features", async () => {
       const layer: LayerRequest = {
         layerUuid: "uuid-empty",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         layerName: null,
       };
 
@@ -533,13 +533,13 @@ describe("Feature Selection from layers and extent", () => {
       const layers: LayerSource[] = [
         {
           layerUuid: "uuid-a",
-          layerId: LAYER_ID,
+          origin: { kind: "dataset", datasetId: LAYER_ID },
           preResolvedFeatures: [vectorFeatures.features[0]!],
           layerName: null,
         },
         {
           layerUuid: "uuid-b",
-          layerId: LAYER_ID,
+          origin: { kind: "dataset", datasetId: LAYER_ID },
           preResolvedFeatures: [vectorFeatures.features[1]!],
           layerName: null,
         },
@@ -564,13 +564,13 @@ describe("Feature Selection from layers and extent", () => {
       const layers: LayerSource[] = [
         {
           layerUuid: "uuid-a",
-          layerId: LAYER_ID,
+          origin: { kind: "dataset", datasetId: LAYER_ID },
           preResolvedFeatures: [vectorFeatures.features[0]!],
           layerName: null,
         },
         {
           layerUuid: "uuid-empty",
-          layerId: LAYER_ID,
+          origin: { kind: "dataset", datasetId: LAYER_ID },
           preResolvedFeatures: [],
           layerName: null,
         },
@@ -593,13 +593,13 @@ describe("Feature Selection from layers and extent", () => {
       const layers: LayerSource[] = [
         {
           layerUuid: "uuid-fail",
-          layerId: LAYER_ID,
+          origin: { kind: "dataset", datasetId: LAYER_ID },
           getFeatureInfoInformation: geoadminInfo,
           layerName: null,
         },
         {
           layerUuid: "uuid-ok",
-          layerId: LAYER_ID,
+          origin: { kind: "dataset", datasetId: LAYER_ID },
           preResolvedFeatures: vectorFeatures.features,
           layerName: null,
         },
@@ -620,7 +620,7 @@ describe("Feature Selection from layers and extent", () => {
       const layers: LayerSource[] = [
         {
           layerUuid: "uuid-no-external-id",
-          layerId: "dat_no-external-id",
+          origin: { kind: "dataset", datasetId: "dat_no-external-id" },
           getFeatureInfoInformation: {
             ...geoadminInfo,
             externalId: undefined,
@@ -630,7 +630,7 @@ describe("Feature Selection from layers and extent", () => {
         },
         {
           layerUuid: "uuid-ok",
-          layerId: LAYER_ID,
+          origin: { kind: "dataset", datasetId: LAYER_ID },
           preResolvedFeatures: vectorFeatures.features,
           layerName: null,
         },
@@ -662,7 +662,7 @@ describe("Feature Selection from layers and extent", () => {
       await selectFeatures(EXTENT, EPSG, LANG, [
         {
           layerUuid: "uuid-empty",
-          layerId: LAYER_ID,
+          origin: { kind: "dataset", datasetId: LAYER_ID },
           preResolvedFeatures: [],
           layerName: null,
         },
@@ -683,7 +683,7 @@ describe("Feature Selection from layers and extent", () => {
       await selectFeatures(EXTENT, EPSG, LANG, [
         {
           layerUuid: "uuid-ogc",
-          layerId: LAYER_ID,
+          origin: { kind: "dataset", datasetId: LAYER_ID },
           getFeatureInfoInformation: geoadminInfo,
           layerName: null,
         },
@@ -718,7 +718,7 @@ describe("Feature Selection from layers and extent", () => {
     ): WMSLayerRequest {
       return {
         layerUuid: "uuid-wms",
-        layerId: "ch.test.wms-layer",
+        origin: { kind: "dataset", datasetId: "dat_test-wms-layer" },
         externalId: "ch.test.wms-layer",
         layerName: null,
         wmsGetFeatureInfo: {
@@ -771,7 +771,7 @@ describe("Feature Selection from layers and extent", () => {
       expect(params.get("Y")).toBeNull();
     });
 
-    it("queries with the stored layerName instead of the layerId when present", async () => {
+    it("queries with the stored layerName instead of the externalId when present", async () => {
       fetchSpy.mockImplementation(() =>
         Promise.resolve(mockResponse({ features: [] })),
       );
@@ -821,7 +821,7 @@ describe("Feature Selection from layers and extent", () => {
           10,
         ),
       ).rejects.toThrow(
-        "No externalIds on distribution dst_test-wms-layer-213ab (dataset ch.test.wms-layer)",
+        "No externalIds on distribution dst_test-wms-layer-213ab (dataset dat_test-wms-layer)",
       );
       expect(fetchSpy).not.toHaveBeenCalled();
     });
@@ -1155,7 +1155,7 @@ describe("Feature Selection from layers and extent", () => {
       await selectFeatures(EXTENT, EPSG, LANG, [
         {
           layerUuid: "uuid-wms-a",
-          layerId: "layer-a",
+          origin: { kind: "dataset", datasetId: "layer-a" },
           getFeatureInfoInformation: {
             protocol: "ogc:wms",
             externalId: "layer-a",
@@ -1164,7 +1164,7 @@ describe("Feature Selection from layers and extent", () => {
         },
         {
           layerUuid: "uuid-wms-b",
-          layerId: "layer-b",
+          origin: { kind: "dataset", datasetId: "layer-b" },
           getFeatureInfoInformation: {
             protocol: "ogc:wms",
             externalId: "layer-b",
@@ -1215,7 +1215,7 @@ describe("Feature Selection from layers and extent", () => {
       await selectFeatures(EXTENT, EPSG, LANG, [
         {
           layerUuid: "uuid-dual",
-          layerId: LAYER_ID,
+          origin: { kind: "dataset", datasetId: LAYER_ID },
           getFeatureInfoInformation: geoadminInfo,
           layerName: null,
         },
@@ -1233,7 +1233,7 @@ describe("Feature Selection from layers and extent", () => {
       await selectFeatures(EXTENT, EPSG, LANG, [
         {
           layerUuid: "uuid-file",
-          layerId: "some.kml.file",
+          origin: { kind: "file", fileName: "some.kml.file" },
           preResolvedFeatures: vectorFeatures.features,
           layerName: null,
         },

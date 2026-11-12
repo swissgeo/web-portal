@@ -12,7 +12,7 @@ const TEMPLATE = `${BASE_URL}/${EXTERNAL_ID}/{featureId}/htmlPopup?lang={lang}`;
 function makeSource(overrides: Partial<LayerSource> = {}): LayerSource {
   return {
     layerUuid: UUID,
-    layerId: LAYER_ID,
+    origin: { kind: "dataset", datasetId: LAYER_ID },
     layerName: null,
     ...overrides,
   };

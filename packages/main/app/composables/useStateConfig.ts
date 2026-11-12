@@ -13,13 +13,14 @@ import { useDimensionsStore } from "@swissgeo/dimension";
 import { useDrawing } from "@swissgeo/drawing";
 import { createIdentifyResponse, useFeaturesStore } from "@swissgeo/feature";
 import {
+  getLayerOrigin,
   isDatasetLayer,
   makeServerLayer,
   useLayerStore,
 } from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { useMap, usePositionStore } from "@swissgeo/map";
-import { DRAWING_LAYER_ID } from "@swissgeo/shared";
+import { DRAWING_LAYER_ID, describeLayerOrigin } from "@swissgeo/shared";
 import { APP_STATE_CONFIG_VERSION } from "@swissgeo/statesharing";
 
 import { AVAILABLE_BACKGROUNDS } from "@/components/sidebar/backgroundSelector/constants";
@@ -323,7 +324,7 @@ export function useStateConfig() {
           featureStore.addFeaturePreselection(uuid, identifyFeatures);
         } else if (preSelectedFeaturesIds) {
           log.error(
-            `No externalIds on distribution ${featureInfo?.distributionId} (dataset ${layer.humanId})`,
+            `No externalIds on distribution ${featureInfo?.distributionId} (${describeLayerOrigin(getLayerOrigin(layer))})`,
           );
         }
         layerStore.addImportOption(uuid, mapLayerData);

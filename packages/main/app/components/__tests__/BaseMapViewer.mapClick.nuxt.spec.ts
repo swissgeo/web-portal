@@ -1,3 +1,4 @@
+import type * as layersModule from "@swissgeo/layers";
 import type { MapClickEvent } from "@swissgeo/map";
 
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
@@ -26,7 +27,7 @@ const mockLayers = [
       featureInfoInformation: LAYER_1_FEATURE_INFO,
     },
     data: {
-      id: "ch.test.dataset",
+      id: "dat_test-dataset",
       links: [{ rel: "distributions", href: DISTRIBUTION_URL }],
     },
   },
@@ -52,7 +53,8 @@ mockNuxtImport("useMapViewStore", () => {
     getMapLayerFromUuid,
   });
 });
-vi.mock("@swissgeo/layers", async () => {
+vi.mock("@swissgeo/layers", async (importOriginal) => {
+  const actual = await importOriginal<typeof layersModule>();
   // refs inside reactive(...): the reactive wrapper auto-unwraps for normal
   // consumers, while pinia's storeToRefs (which toRaw()s the store and only
   // keeps isRef/isReactive values) still finds the refs — without this, the
@@ -61,6 +63,7 @@ vi.mock("@swissgeo/layers", async () => {
   const { reactive, ref } = await import("vue");
   return {
     isDatasetLayer: (layer: { type: string }) => layer.type === "dataset",
+    getLayerOrigin: actual.getLayerOrigin,
     useLayerStore: () =>
       reactive({
         layers: ref(mockLayers),
@@ -222,7 +225,7 @@ describe("BaseMapViewer — map click abort handling", () => {
     expect(sources).toHaveLength(2);
     expect(sources[0]).toMatchObject({
       layerUuid: "layer-1",
-      layerId: "ch.test.dataset",
+      origin: { kind: "dataset", datasetId: "dat_test-dataset" },
     });
   });
 
@@ -275,7 +278,10 @@ describe("BaseMapViewer — map click abort handling", () => {
     const source = sources[0]!;
     expect(source.getFeatureInfoInformation).toEqual(LAYER_1_FEATURE_INFO);
     expect(source.layerName).toBeNull();
-    expect(source.layerId).toBe("ch.test.dataset");
+    expect(source.origin).toEqual({
+      kind: "dataset",
+      datasetId: "dat_test-dataset",
+    });
   });
 
   it("passes the click's pre-resolved vector features through to selectFeatures", async () => {
