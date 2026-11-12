@@ -1,5 +1,7 @@
+import type * as layersModule from "@swissgeo/layers";
 import type { LayerSearchResult, SearchResult } from "@swissgeo/search";
 
+import log from "@swissgeo/log";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -13,7 +15,8 @@ const searchMocks = vi.hoisted(() => ({
 
 vi.mock("@swissgeo/search", () => searchMocks);
 const mapLayers = vi.hoisted(() => [] as Record<string, unknown>[]);
-vi.mock("@swissgeo/layers", () => ({
+vi.mock("@swissgeo/layers", async (importOriginal) => ({
+  getLayerOrigin: (await importOriginal<typeof layersModule>()).getLayerOrigin,
   isDatasetLayer: (layer: Record<string, unknown>) => layer.type === "dataset",
   useLayerStore: () => ({ layers: mapLayers }),
 }));
@@ -69,6 +72,7 @@ describe("useSearchStore", () => {
 
   const datasetLayer = (featureInfoInformation?: {
     externalId?: string;
+    distributionId?: string;
     isQueryable?: boolean;
   }) => ({
     type: "dataset",
@@ -116,13 +120,25 @@ describe("useSearchStore", () => {
   });
 
   it("sets an error and does not search the features of a dataset without externalId", async () => {
-    mapLayers.push(datasetLayer({ isQueryable: true }));
+    mapLayers.push(
+      datasetLayer({ isQueryable: true, distributionId: "dst_test-213ab" }),
+    );
 
     const store = useSearchStore();
     await store.setSearchQuery("Bern");
 
     expect(searchMocks.searchLayerFeatures).not.toHaveBeenCalled();
     expect(store.hasError).toBe(true);
+    expect(log.error).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messages: [
+          "Search request failed:",
+          new Error(
+            "No externalIds on distribution dst_test-213ab (dataset dat_test)",
+          ),
+        ],
+      }),
+    );
   });
 
   it("clears results without searching for a query shorter than 2 chars", async () => {

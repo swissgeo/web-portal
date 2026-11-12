@@ -716,7 +716,6 @@ describe("layer load errors", () => {
 
 describe("state import feature selection", () => {
   const BASE_URL = "https://example.test/MapServer";
-  // mapLayerData.layerId is the uuid ("test-uuid") in this suite's stubs
   const EXTERNAL_ID = "ch.test.external";
   const URL_TEMPLATE = `${BASE_URL}/${EXTERNAL_ID}/{featureId}/htmlPopup?lang={lang}`;
 

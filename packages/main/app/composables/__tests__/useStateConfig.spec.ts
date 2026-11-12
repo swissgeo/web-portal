@@ -383,6 +383,11 @@ describe("useStateConfig manages to import a State with importState", () => {
     type: "dataset",
     layerUrl: "https://test.ch",
     isLoading: false,
+    data: {
+      id: "dat_layer",
+      properties: { type: "Dataset", title: "Layer", shortTitle: "Layer" },
+      links: [],
+    },
   };
   mockedMakeServerLayer.mockResolvedValue(mockedLayer);
   beforeEach(() => {

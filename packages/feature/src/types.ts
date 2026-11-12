@@ -1,3 +1,4 @@
+import type { LayerOrigin } from "@swissgeo/shared";
 import type {
   Geometry,
   GeometryCollection,
@@ -19,7 +20,7 @@ export interface FeatureData {
 
 export interface LayerRequest {
   layerUuid: string;
-  layerId: string;
+  origin: LayerOrigin;
 
   // priority 1: already existing features
   preResolvedFeatures?: geojsonFeature[];
@@ -71,7 +72,7 @@ export interface OgcDistribution {
 
 export type LayerSource = {
   layerUuid: string;
-  layerId: string;
+  origin: LayerOrigin;
   preResolvedFeatures?: geojsonFeature[];
   getFeatureInfoInformation?: {
     protocol?: string;
