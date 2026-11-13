@@ -10,7 +10,7 @@ const { t } = useI18n();
 
 const { distribution, layerId } = defineProps<{
   distribution: Distribution;
-  layerId: string;
+  layerId: string | null;
 }>();
 
 const { legends, isLoading, error } = useDistributionLegend(

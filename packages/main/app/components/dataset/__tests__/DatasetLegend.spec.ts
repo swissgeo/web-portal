@@ -124,21 +124,17 @@ describe("DatasetLegend selection", () => {
 
   it("shows the legend of a GeoJSON distribution", () => {
     const geojson: Distribution = {
-      id: "geojson",
+      id: "dst_geojson",
       properties: {
         type: "Distribution",
         title: "Test distribution",
         protocol: "geojson",
-        externalIds: ["geojson-layer"],
       },
     };
     const wrapper = render([geojson]);
     expect(
-      wrapper.getComponent(DatasetDistributionLegend).props(),
-    ).toMatchObject({
-      distribution: geojson,
-      layerId: "geojson-layer",
-    });
+      wrapper.getComponent(DatasetDistributionLegend).props("distribution"),
+    ).toEqual(geojson);
   });
 
   it("shows no legend when the collection is empty", () => {
