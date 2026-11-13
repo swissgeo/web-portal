@@ -133,21 +133,27 @@ defineExpose({
         <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
       </ClientOnly>
 
-      <!-- Layer info button, the negative margins keep the row height -->
-      <UButton
-        class="-my-1 -mr-1"
+      <!-- Layer info button, the negative margins keep the row height. Its
+        tooltip closes the row's one, and stopping pointermove keeps the row's
+        tooltip from opening over it. -->
+      <UTooltip
         v-if="entry.resultType === SearchResultTypesEnum.layer"
-        :data-testid="`search-result-info-${index}`"
-        :aria-label="t('search.viewDataset')"
-        :title="t('search.viewDataset')"
-        icon="i-lucide-info"
-        color="primary"
-        variant="ghost"
-        size="xs"
-        :to="detailPath"
-        @click.stop="emit('viewDetails')"
-        @keyup.enter.stop
-      />
+        :text="t('search.viewDataset')"
+      >
+        <UButton
+          class="-my-1 -mr-1"
+          :data-testid="`search-result-info-${index}`"
+          :aria-label="t('search.viewDataset')"
+          icon="i-lucide-info"
+          color="primary"
+          variant="ghost"
+          size="xs"
+          :to="detailPath"
+          @click.stop="emit('viewDetails')"
+          @keyup.enter.stop
+          @pointermove.stop
+        />
+      </UTooltip>
       <span v-if="!isMappable" :id="hintId" class="sr-only">
         {{ t("dataset.notMappable") }}
       </span>

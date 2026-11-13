@@ -80,6 +80,7 @@ describe("SearchResultEntry", () => {
           },
           UIcon: UIconStub,
           UButton: UButtonStub,
+          UTooltip: { template: "<slot />" },
           DatasetNotMappableHint: {
             name: "DatasetNotMappableHint",
             props: ["showHint", "tooltip"],
