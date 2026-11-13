@@ -121,6 +121,5 @@ export interface Contact {
 export type ServiceProtocol =
   | "ogc:wmts"
   | "ogc:wms"
-  | "ogc:geojson"
   | "geojson"
   | "ogcapi:stac";
