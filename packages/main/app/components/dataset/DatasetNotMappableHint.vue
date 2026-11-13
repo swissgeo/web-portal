@@ -6,13 +6,11 @@ import { useI18n } from "vue-i18n";
 // hover, tap and keyboard focus of the slot element. The slot element must
 // stay focusable, thus it uses aria-disabled and not disabled.
 // The component shows only one overlay at a time: the hint when showHint is
-// true, else the optional tooltip. Binding tooltipOpen lets the parent open
-// and close the tooltip, e.g. while the pointer is over a nested button.
+// true, else the optional tooltip.
 const { showHint, tooltip } = defineProps<{
   showHint: boolean;
   tooltip?: string;
 }>();
-const tooltipOpen = defineModel<boolean>("tooltipOpen");
 
 const { t } = useI18n();
 const isOpen = ref(false);
@@ -38,7 +36,7 @@ const isOpen = ref(false);
       </p>
     </template>
   </UPopover>
-  <UTooltip v-else-if="tooltip" v-model:open="tooltipOpen" :text="tooltip">
+  <UTooltip v-else-if="tooltip" :text="tooltip">
     <slot />
   </UTooltip>
   <slot v-else />

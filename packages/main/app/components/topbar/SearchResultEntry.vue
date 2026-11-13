@@ -52,16 +52,6 @@ const tooltip = computed(() => {
   return undefined;
 });
 
-// The info button has its own tooltip, so the row's one hides while the
-// pointer is over the button and comes back when it returns to the row
-const isTooltipOpen = ref(false);
-
-function returnToRow(event: PointerEvent) {
-  if (item.value?.contains(event.relatedTarget as Node)) {
-    isTooltipOpen.value = true;
-  }
-}
-
 // Keyboard navigation
 function goToFirst() {
   if (!item.value) {
@@ -118,11 +108,7 @@ defineExpose({
 
 <template>
   <!-- List item with keyboard navigation -->
-  <DatasetNotMappableHint
-    v-model:tooltip-open="isTooltipOpen"
-    :show-hint="!isMappable"
-    :tooltip="tooltip"
-  >
+  <DatasetNotMappableHint :show-hint="!isMappable">
     <li
       ref="item"
       class="flex items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors focus:outline-none focus-visible:bg-elevated"
@@ -141,14 +127,16 @@ defineExpose({
       @keyup.enter="selectItem"
       @click="selectItem"
     >
-      <!-- Title -->
+      <!-- Title, it holds the tooltip so that the info button's one never
+        overlaps it -->
       <ClientOnly>
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
+        <UTooltip :text="tooltip">
+          <!-- eslint-disable-next-line vue/no-v-html -->
+          <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
+        </UTooltip>
       </ClientOnly>
 
-      <!-- Layer info button, the negative margins keep the row height.
-        Stopping pointermove keeps the row's tooltip from opening over it. -->
+      <!-- Layer info button, the negative margins keep the row height -->
       <UTooltip
         v-if="entry.resultType === SearchResultTypesEnum.layer"
         :text="t('search.viewDataset')"
@@ -164,9 +152,6 @@ defineExpose({
           :to="detailPath"
           @click.stop="emit('viewDetails')"
           @keyup.enter.stop
-          @pointermove.stop
-          @pointerenter="isTooltipOpen = false"
-          @pointerleave="returnToRow"
         />
       </UTooltip>
       <span v-if="!isMappable" :id="hintId" class="sr-only">
