@@ -276,4 +276,8 @@ describe("getGeoJsonLegends", () => {
     const distribution = makeDistribution([{ rel: "data", href: DATA_URL }]);
     expect(getGeoJsonLegends(distribution)).toEqual([]);
   });
+
+  it("has no legend without a distribution", () => {
+    expect(getGeoJsonLegends(null)).toEqual([]);
+  });
 });
