@@ -6,7 +6,7 @@ import { ref } from "vue";
 
 import type { Distribution } from "@/types/Records";
 
-import { useGeoJson } from "../useGeoJson";
+import { getGeoJsonLegends, useGeoJson } from "../useGeoJson";
 
 const DATA_URL = "https://example.com/data.geojson";
 const STYLE_URL = "https://example.com/style.maplibre.json";
@@ -255,5 +255,29 @@ describe("useGeoJson composable", () => {
     await flushPromises();
     expect(error.value).toBeInstanceOf(Error);
     expect(error.value?.message).toContain("Unable to load GeoJSON data");
+  });
+});
+
+describe("getGeoJsonLegends", () => {
+  it("reads the legend from the legend link", () => {
+    const distribution = makeDistribution([
+      {
+        rel: "legend",
+        type: "image/png",
+        href: "https://example.com/legend.png",
+      },
+    ]);
+    expect(getGeoJsonLegends(distribution)).toEqual([
+      { href: "https://example.com/legend.png", format: "image/png" },
+    ]);
+  });
+
+  it("has no legend without a legend link", () => {
+    const distribution = makeDistribution([{ rel: "data", href: DATA_URL }]);
+    expect(getGeoJsonLegends(distribution)).toEqual([]);
+  });
+
+  it("has no legend without a distribution", () => {
+    expect(getGeoJsonLegends(null)).toEqual([]);
   });
 });
