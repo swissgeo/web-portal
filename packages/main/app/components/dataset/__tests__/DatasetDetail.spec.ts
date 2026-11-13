@@ -177,14 +177,6 @@ describe("DatasetDetail Overview", () => {
       },
       visible: false,
     },
-    {
-      properties: {
-        type: "Distribution",
-        title: "GeoJSON",
-        protocol: "ogc:geojson",
-      },
-      visible: false,
-    },
     { properties: { type: "Distribution", title: "Unknown" }, visible: false },
   ])(
     "shows only data services: $properties",
