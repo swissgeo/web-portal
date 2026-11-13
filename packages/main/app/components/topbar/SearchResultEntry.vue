@@ -52,6 +52,16 @@ const tooltip = computed(() => {
   return undefined;
 });
 
+// The info button has its own tooltip, so the row's one hides while the
+// pointer is over the button and comes back when it returns to the row
+const isTooltipOpen = ref(false);
+
+function returnToRow(event: PointerEvent) {
+  if (item.value?.contains(event.relatedTarget as Node)) {
+    isTooltipOpen.value = true;
+  }
+}
+
 // Keyboard navigation
 function goToFirst() {
   if (!item.value) {
@@ -108,7 +118,11 @@ defineExpose({
 
 <template>
   <!-- List item with keyboard navigation -->
-  <DatasetNotMappableHint :show-hint="!isMappable" :tooltip="tooltip">
+  <DatasetNotMappableHint
+    v-model:tooltip-open="isTooltipOpen"
+    :show-hint="!isMappable"
+    :tooltip="tooltip"
+  >
     <li
       ref="item"
       class="flex items-center gap-2 px-2 py-1 text-sm leading-small-text font-medium transition-colors focus:outline-none focus-visible:bg-elevated"
@@ -133,9 +147,8 @@ defineExpose({
         <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
       </ClientOnly>
 
-      <!-- Layer info button, the negative margins keep the row height. Its
-        tooltip closes the row's one, and stopping pointermove keeps the row's
-        tooltip from opening over it. -->
+      <!-- Layer info button, the negative margins keep the row height.
+        Stopping pointermove keeps the row's tooltip from opening over it. -->
       <UTooltip
         v-if="entry.resultType === SearchResultTypesEnum.layer"
         :text="t('search.viewDataset')"
@@ -152,6 +165,8 @@ defineExpose({
           @click.stop="emit('viewDetails')"
           @keyup.enter.stop
           @pointermove.stop
+          @pointerenter="isTooltipOpen = false"
+          @pointerleave="returnToRow"
         />
       </UTooltip>
       <span v-if="!isMappable" :id="hintId" class="sr-only">
