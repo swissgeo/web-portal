@@ -24,7 +24,9 @@
     "layers_results_header": "Livelli",
     "no_results": "Nessun risultato trovato",
     "error": "Ricerca non riuscita. Alcuni risultati potrebbero mancare.",
-    "viewDataset": "Mostra il set di dati"
+    "viewDataset": "Mostra il set di dati",
+    "jumpToLocation": "Vai al luogo",
+    "jumpToFeature": "Vai all'oggetto"
   },
   "footer": {
     "copyRightData": "© Dati: ",

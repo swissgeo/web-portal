@@ -24,7 +24,9 @@
     "layers_results_header": "Ebenen",
     "no_results": "Keine Ergebnisse gefunden",
     "error": "Suche fehlgeschlagen. Einige Ergebnisse fehlen möglicherweise.",
-    "viewDataset": "Ebenendetails öffnen"
+    "viewDataset": "Ebenendetails öffnen",
+    "jumpToLocation": "Zum Ort springen",
+    "jumpToFeature": "Zum Objekt springen"
   },
   "footer": {
     "copyRightData": "© Daten: ",

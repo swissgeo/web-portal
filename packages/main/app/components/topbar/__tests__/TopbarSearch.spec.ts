@@ -99,6 +99,7 @@ const stubs = {
   },
   UInput: UInputStub,
   UButton: { template: "<button />" },
+  UTooltip: { template: "<slot />" },
   UIcon: { template: "<span />" },
   UScrollArea: { template: "<div><slot /></div>" },
   ClientOnly: { template: "<div><slot /></div>" },

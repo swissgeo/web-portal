@@ -38,6 +38,20 @@ const isMappable = computed(
 );
 const hintId = useId();
 
+// What selecting the result does is not obvious from the landing page
+const tooltip = computed(() => {
+  if (isLayerSearchResult(entry)) {
+    return entry.isMappable ? t("dataset.addToMap") : undefined;
+  }
+  if (entry.resultType === "LOCATION") {
+    return t("search.jumpToLocation");
+  }
+  if (entry.resultType === "FEATURE") {
+    return t("search.jumpToFeature");
+  }
+  return undefined;
+});
+
 // Keyboard navigation
 function goToFirst() {
   if (!item.value) {
@@ -113,27 +127,33 @@ defineExpose({
       @keyup.enter="selectItem"
       @click="selectItem"
     >
-      <!-- Title -->
+      <!-- Title, it holds the tooltip so that the info button's one never
+        overlaps it -->
       <ClientOnly>
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
+        <UTooltip :text="tooltip">
+          <!-- eslint-disable-next-line vue/no-v-html -->
+          <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
+        </UTooltip>
       </ClientOnly>
 
       <!-- Layer info button, the negative margins keep the row height -->
-      <UButton
-        class="-my-1 -mr-1"
+      <UTooltip
         v-if="entry.resultType === SearchResultTypesEnum.layer"
-        :data-testid="`search-result-info-${index}`"
-        :aria-label="t('search.viewDataset')"
-        :title="t('search.viewDataset')"
-        icon="i-lucide-info"
-        color="primary"
-        variant="ghost"
-        size="xs"
-        :to="detailPath"
-        @click.stop="emit('viewDetails')"
-        @keyup.enter.stop
-      />
+        :text="t('search.viewDataset')"
+      >
+        <UButton
+          class="-my-1 -mr-1"
+          :data-testid="`search-result-info-${index}`"
+          :aria-label="t('search.viewDataset')"
+          icon="i-lucide-info"
+          color="primary"
+          variant="ghost"
+          size="xs"
+          :to="detailPath"
+          @click.stop="emit('viewDetails')"
+          @keyup.enter.stop
+        />
+      </UTooltip>
       <span v-if="!isMappable" :id="hintId" class="sr-only">
         {{ t("dataset.notMappable") }}
       </span>
