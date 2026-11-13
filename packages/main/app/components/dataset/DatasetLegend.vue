@@ -17,15 +17,20 @@ const { distribution, layerId } = useSelectedDistribution(
   computed(() => props.dataset),
   computed(() => props.distributionCollection),
 );
+// GeoJSON reads its legend from the `legend` link; WMS / WMTS need the layer
+// id to find it in the capabilities.
 const supportsLegend = computed(() => {
   const format = determineFormat(distribution.value);
-  return format === "WMS" || format === "WMTS" || format === "GeoJSON";
+  if (format === "GeoJSON") {
+    return true;
+  }
+  return (format === "WMS" || format === "WMTS") && !!layerId.value;
 });
 </script>
 
 <template>
   <DatasetDistributionLegend
-    v-if="distribution && layerId && supportsLegend"
+    v-if="distribution && supportsLegend"
     :key="distribution.id"
     :distribution="distribution"
     :layer-id="layerId"

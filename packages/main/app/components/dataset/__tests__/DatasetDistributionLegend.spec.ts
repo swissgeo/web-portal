@@ -31,6 +31,7 @@ vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (key: string) => key }) }));
 function render(
   protocol: Ogc.Distribution["properties"]["protocol"] = "ogc:wms",
   links: Ogc.Distribution["links"] = [],
+  layerId: string | null = "layer",
 ) {
   return mount(DatasetDistributionLegend, {
     props: {
@@ -39,7 +40,7 @@ function render(
         links,
         properties: { type: "Distribution", title: "Layer", protocol },
       },
-      layerId: "layer",
+      layerId,
     },
     global: {
       stubs: {
@@ -108,9 +109,11 @@ describe("DatasetDistributionLegend", () => {
 
   it("passes the legend link of a GeoJSON layer to the renderer", () => {
     const href = "https://example.com/legend.png";
-    const wrapper = render("geojson", [
-      { rel: "legend", type: "image/png", href },
-    ]);
+    const wrapper = render(
+      "geojson",
+      [{ rel: "legend", type: "image/png", href }],
+      null,
+    );
     expect(
       wrapper.getComponent({ name: "LayerLegend" }).props("legends"),
     ).toEqual([{ href, format: "image/png" }]);
