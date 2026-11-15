@@ -80,6 +80,10 @@ describe("SearchResultEntry", () => {
           },
           UIcon: UIconStub,
           UButton: UButtonStub,
+          UTooltip: {
+            props: ["text"],
+            template: "<span :data-tooltip='text'><slot /></span>",
+          },
           DatasetNotMappableHint: {
             name: "DatasetNotMappableHint",
             props: ["showHint"],
@@ -277,6 +281,47 @@ describe("SearchResultEntry", () => {
       expect(item.classes()).toContain("hover:bg-muted");
       expect(item.attributes("aria-describedby")).toBeUndefined();
       expect(item.text()).not.toContain("dataset.notMappable");
+
+      wrapper.unmount();
+    });
+  });
+
+  describe("tooltip", () => {
+    function tooltipOf(entry: SearchResult) {
+      const wrapper = mountEntry(entry);
+      const tooltip = wrapper
+        .get(".min-w-0")
+        .element.closest("[data-tooltip]")
+        ?.getAttribute("data-tooltip");
+      wrapper.unmount();
+      return tooltip;
+    }
+
+    it("offers to add a layer to the map", () => {
+      expect(tooltipOf(entries[2]!)).toBe("dataset.addToMap");
+    });
+
+    it("offers to jump to a location", () => {
+      expect(tooltipOf(entries[0]!)).toBe("search.jumpToLocation");
+    });
+
+    it("offers to jump to a feature", () => {
+      expect(tooltipOf(entries[1]!)).toBe("search.jumpToFeature");
+    });
+
+    it("has none for layers the map cannot show", () => {
+      expect(tooltipOf(notMappableLayer)).toBeUndefined();
+    });
+
+    it("never shows the row's tooltip on the info button", () => {
+      const wrapper = mountEntry(entries[2]!);
+      const info = wrapper.get("[data-testid='search-result-info-0']").element;
+      const rowTooltip = wrapper.get("[data-tooltip='dataset.addToMap']");
+
+      expect(rowTooltip.element.contains(info)).toBe(false);
+      expect(info.closest("[data-tooltip]")?.getAttribute("data-tooltip")).toBe(
+        "search.viewDataset",
+      );
 
       wrapper.unmount();
     });

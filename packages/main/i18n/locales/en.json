@@ -24,7 +24,9 @@
     "layers_results_header": "Layers",
     "no_results": "No results found",
     "error": "Search failed. Some results may be missing.",
-    "viewDataset": "View dataset"
+    "viewDataset": "View dataset",
+    "jumpToLocation": "Jump to location",
+    "jumpToFeature": "Jump to feature"
   },
   "footer": {
     "copyRightData": "© Data: ",

@@ -25,6 +25,7 @@ const stubs = {
   UScrollArea: UScrollAreaStub,
   UIcon: { template: "<span />" },
   UButton: { template: "<button />" },
+  UTooltip: { template: "<slot />" },
   ClientOnly: { template: "<div><slot /></div>" },
 };
 
