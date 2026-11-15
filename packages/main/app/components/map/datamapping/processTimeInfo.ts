@@ -21,7 +21,10 @@ export function processTimeInfo(timeInfo: Ref<TimeInfo>) {
   if (availableTimes?.length && !defaultTime) {
     dimension.currentValue = availableTimes[availableTimes.length - 1];
   } else if (defaultTime) {
-    if (availableTimes?.length) {
+    if (availableTimes?.includes(defaultTime)) {
+      // e.g. "current" from the geoadmin WMTS capabilities, which has no year
+      dimension.currentValue = defaultTime;
+    } else if (availableTimes?.length) {
       const year = getYearFromGeoadminValue(defaultTime);
       const matched = year
         ? convertYearToTimestamp(availableTimes, parseInt(year))

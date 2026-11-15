@@ -650,7 +650,8 @@
       "openPage": "Avrir la pagina da la legenda"
     },
     "variant": "Variant",
-    "time": "Onn"
+    "time": "Onn",
+    "timeCurrent": "Actual"
   },
   "layerCart": {
     "close": "Serrar",

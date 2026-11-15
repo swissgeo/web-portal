@@ -190,6 +190,31 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
     );
   });
 
+  it("keeps a year from a shared state over the incoming 'current' default", async () => {
+    const layerStore = useLayerStore();
+    const dimensionsStore = useDimensionsStore();
+    layerStore.addLayer(makeSourceLayer("test-uuid"));
+    dimensionsStore.setDimension("test-uuid", "time", { currentValue: "2020" });
+
+    const wrapper = mount(SourceToMapDataConverter, {
+      shallow: true,
+      props: {
+        sourceBgLayer: null,
+        sourceData: [makeSourceLayer("test-uuid")],
+      },
+      global: { stubs: { LayerLoadErrorBoundary: false } },
+    });
+
+    await emitUpdateTimeDimension(wrapper, {
+      availableValues: ["current", "2024", "2020", "1850"],
+      currentValue: "current",
+    });
+
+    expect(dimensionsStore.getDimensions("test-uuid")?.time?.currentValue).toBe(
+      "2020",
+    );
+  });
+
   it("uses the incoming currentValue when the existing year is not found in the new availableValues", async () => {
     const layerStore = useLayerStore();
     const dimensionsStore = useDimensionsStore();
