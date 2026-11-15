@@ -651,7 +651,7 @@
     },
     "variant": "Variant",
     "time": "Year",
-    "timeCurrent": "Actual"
+    "timeCurrent": "Current"
   },
   "layerCart": {
     "close": "Close",
