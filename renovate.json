@@ -27,10 +27,9 @@
       "enabled": false
     },
     {
-      "description": "Group all OpenTelemetry packages into their own PR, separate from the all non-major dependencies group",
+      "description": "Update OpenTelemetry packages manually",
       "matchPackageNames": ["@opentelemetry/**"],
-      "groupName": "opentelemetry",
-      "groupSlug": "opentelemetry"
+      "enabled": false
     }
   ],
   "postUpgradeTasks": {
