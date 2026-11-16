@@ -162,5 +162,6 @@ function pushLayerSpecificData<T>(opacity: number, data: T) {
     :distribution
     @error="emit('error', $event)"
     @updateData="pushLayerSpecificData<GeoJsonLayerData>"
+    @updateLegends="emit('updateLegends', layer.uuid, $event)"
   ></MapDatamappingOgcGeoJsonLayerConverter>
 </template>
