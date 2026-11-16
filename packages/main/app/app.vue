@@ -2,8 +2,8 @@
 import { breakpointsTailwind } from "@vueuse/core";
 import { displayModeKey } from "~/types/injectionKeys";
 
-// Tailwind xl: the Topbar switches to desktop here.
-const DESKTOP_LAYOUT_WIDTH = breakpointsTailwind.xl;
+// Tailwind lg: the Topbar switches to desktop here.
+const DESKTOP_LAYOUT_WIDTH = breakpointsTailwind.lg;
 
 const toaster = {
   position: "top-center" as const,

@@ -1,7 +1,11 @@
 import type { SingleCoordinate } from "@swissgeo/coordinates";
 import type { CoordinateSearchResult, SearchResult } from "@swissgeo/search";
 
-import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
+import {
+  getLayerOrigin,
+  isDatasetLayer,
+  useLayerStore,
+} from "@swissgeo/layers";
 import log, { LogPreDefinedColor } from "@swissgeo/log";
 import { buildCatalogItemsUrl } from "@swissgeo/ogc";
 import {
@@ -11,6 +15,7 @@ import {
   searchLayerFeatures,
   searchContentPages,
 } from "@swissgeo/search";
+import { describeLayerOrigin } from "@swissgeo/shared";
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
@@ -152,7 +157,7 @@ export const useSearchStore = defineStore("search", () => {
           searchPromises.push(
             Promise.reject(
               new Error(
-                `No externalIds on distribution ${featureInfo.distributionId} (dataset ${layer.humanId})`,
+                `No externalIds on distribution ${featureInfo.distributionId} (${describeLayerOrigin(getLayerOrigin(layer))})`,
               ),
             ),
           );

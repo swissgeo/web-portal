@@ -190,6 +190,31 @@ describe("SourceToMapDataConverter > updateTimeDimension", () => {
     );
   });
 
+  it("keeps a year from a shared state over the incoming 'current' default", async () => {
+    const layerStore = useLayerStore();
+    const dimensionsStore = useDimensionsStore();
+    layerStore.addLayer(makeSourceLayer("test-uuid"));
+    dimensionsStore.setDimension("test-uuid", "time", { currentValue: "2020" });
+
+    const wrapper = mount(SourceToMapDataConverter, {
+      shallow: true,
+      props: {
+        sourceBgLayer: null,
+        sourceData: [makeSourceLayer("test-uuid")],
+      },
+      global: { stubs: { LayerLoadErrorBoundary: false } },
+    });
+
+    await emitUpdateTimeDimension(wrapper, {
+      availableValues: ["current", "2024", "2020", "1850"],
+      currentValue: "current",
+    });
+
+    expect(dimensionsStore.getDimensions("test-uuid")?.time?.currentValue).toBe(
+      "2020",
+    );
+  });
+
   it("uses the incoming currentValue when the existing year is not found in the new availableValues", async () => {
     const layerStore = useLayerStore();
     const dimensionsStore = useDimensionsStore();
@@ -716,7 +741,6 @@ describe("layer load errors", () => {
 
 describe("state import feature selection", () => {
   const BASE_URL = "https://example.test/MapServer";
-  // mapLayerData.layerId is the uuid ("test-uuid") in this suite's stubs
   const EXTERNAL_ID = "ch.test.external";
   const URL_TEMPLATE = `${BASE_URL}/${EXTERNAL_ID}/{featureId}/htmlPopup?lang={lang}`;
 
@@ -866,6 +890,37 @@ describe("state import feature selection", () => {
     expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
     expect(featureStore.selectedFeaturesByUuid).toEqual({});
   });
+
+  it.each(["a file layer", "not in the store"] as const)(
+    "does not select when the source layer is %s",
+    async (kind) => {
+      const featureStore = useFeaturesStore();
+      if (kind === "a file layer") {
+        useLayerStore().addLayer(makeFileLayer("test-uuid"));
+      }
+      featureStore.addFeaturePreselection("test-uuid", identifyFeatures);
+
+      const wrapper = mount(SourceToMapDataConverter, {
+        props: {
+          sourceBgLayer: null,
+          sourceData: [makeFileLayer("test-uuid")],
+        },
+        global: {
+          stubs: {
+            MapDatamappingOgcDatasetConverter: OgcConverterStub,
+            MapDatamappingFileConverter: FileConverterStub,
+          },
+        },
+      });
+      wrapper
+        .findComponent(FileConverterStub)
+        .vm.$emit("update", makeMapLayer("test-uuid"));
+      await flushPromises();
+
+      expect(getPopupFromIdentifyFeatureMock).not.toHaveBeenCalled();
+      expect(featureStore.selectedFeaturesByUuid).toEqual({});
+    },
+  );
 
   it("does not select when the info has no baseUrl to build the template from", async () => {
     const layerStore = useLayerStore();

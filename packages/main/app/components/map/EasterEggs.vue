@@ -3,6 +3,7 @@
 // in. A click starts confetti. To add an egg, add a line to EGGS, at a spot
 // where no background map has data.
 import type { Map } from "ol";
+import type MapBrowserEvent from "ol/MapBrowserEvent";
 import type { Ref } from "vue";
 
 import Overlay from "ol/Overlay";
@@ -17,10 +18,27 @@ const EGGS = [
   },
 ];
 
+const CURSOR_EGGS = [
+  {
+    coordinate: [2_600_969, 1_197_427],
+    icon: "/favicon.ico",
+  },
+  {
+    coordinate: [2_531_792, 1_155_376],
+    icon: "/images/cursor-egg.png",
+  },
+];
+
+const CURSOR_TOLERANCE = 1;
+const CURSOR_DELAY_MS = 10_000;
+
 const olMap = inject<Ref<Map | undefined>>("olMap");
 const eggElements = useTemplateRef<HTMLElement[]>("eggs");
 const resolution = ref(Infinity);
 const confetti = ref<{ color: string; left: number; delay: number }[]>([]);
+const triggeredCursorEggs = new Set<number>();
+let cursorTimer: ReturnType<typeof setTimeout> | undefined;
+let activeCursorEgg: number | undefined;
 
 watch([() => olMap?.value, eggElements], ([map, elements]) => {
   if (!map || !elements?.length) {
@@ -43,6 +61,65 @@ watch([() => olMap?.value, eggElements], ([map, elements]) => {
     resolution.value = view.getResolution() ?? Infinity;
   });
 });
+
+watch(
+  () => olMap?.value,
+  (map) => {
+    if (!map) {
+      return;
+    }
+
+    const viewport = map.getViewport();
+    if (!viewport) {
+      return;
+    }
+
+    const clearCursorTimer = () => {
+      clearTimeout(cursorTimer);
+      cursorTimer = undefined;
+      activeCursorEgg = undefined;
+    };
+
+    const onPointerMove = (event: MapBrowserEvent) => {
+      const index = CURSOR_EGGS.findIndex(
+        (egg, eggIndex) =>
+          !triggeredCursorEggs.has(eggIndex) &&
+          Math.abs(event.coordinate[0]! - egg.coordinate[0]!) <=
+            CURSOR_TOLERANCE &&
+          Math.abs(event.coordinate[1]! - egg.coordinate[1]!) <=
+            CURSOR_TOLERANCE,
+      );
+
+      if (index === -1) {
+        clearCursorTimer();
+        return;
+      }
+
+      if (activeCursorEgg === index) {
+        return;
+      }
+
+      clearCursorTimer();
+      activeCursorEgg = index;
+      cursorTimer = setTimeout(() => {
+        const egg = CURSOR_EGGS[index]!;
+        triggeredCursorEggs.add(index);
+        viewport.style.cursor = `url("${egg.icon}") 0 0, auto`;
+        clearCursorTimer();
+      }, CURSOR_DELAY_MS);
+    };
+
+    map.on("pointermove", onPointerMove);
+    viewport.addEventListener("pointerleave", clearCursorTimer);
+
+    return () => {
+      map.un("pointermove", onPointerMove);
+      viewport.removeEventListener("pointerleave", clearCursorTimer);
+      clearCursorTimer();
+    };
+  },
+  { immediate: true },
+);
 
 function celebrate(colors: string[]) {
   confetti.value = Array.from({ length: 30 }, (_, index) => ({

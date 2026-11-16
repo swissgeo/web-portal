@@ -2,6 +2,7 @@ import type { FlatExtent } from "@swissgeo/shared";
 import type { Geometry, GeometryCollection } from "geojson";
 
 import log from "@swissgeo/log";
+import { describeLayerOrigin } from "@swissgeo/shared";
 
 import type {
   FeatureData,
@@ -74,13 +75,13 @@ export async function selectFeatures(
   useFeaturesStore().setSelection(storePayload);
 }
 
-// only exported for testing purpose, we only use identify outside this file
 function missingExternalIdsError(layerRequest: LayerRequest): Error {
   return new Error(
-    `No externalIds on distribution ${layerRequest.distributionId} (dataset ${layerRequest.layerId})`,
+    `No externalIds on distribution ${layerRequest.distributionId} (${describeLayerOrigin(layerRequest.origin)})`,
   );
 }
 
+// only exported for testing purpose, we only use identify outside this file
 export async function getFeaturesForOneLayer(
   layerRequest: LayerRequest | WMSLayerRequest,
   extent: FlatExtent,
@@ -109,7 +110,7 @@ export async function getFeaturesForOneLayer(
     const identifyResult = await fetch(identifyUrl, { signal: abortSignal });
     if (identifyResult.status !== 200) {
       log.warn(
-        `[Identify Request]: getting a ${identifyResult.status} code when running identify on the layer ${layerRequest.layerId}`,
+        `[Identify Request]: getting a ${identifyResult.status} code when running identify for ${describeLayerOrigin(layerRequest.origin)}`,
       );
       return [];
     }
@@ -265,15 +266,15 @@ export function getPopupFromIdentifyFeature(
 
 export async function createIdentifyResponse(
   featureIds: string[],
-  layerId: string,
+  externalId: string,
 ): Promise<IdentifyFeature[]> {
   try {
     const apiBaseUrl = process.env.NUXT_GEOADMIN_API_BASE_URL;
-    const getFeaturesUrl = `${apiBaseUrl}/rest/services/ech/MapServer/${layerId}/${featureIds.join(",")}`;
+    const getFeaturesUrl = `${apiBaseUrl}/rest/services/ech/MapServer/${externalId}/${featureIds.join(",")}`;
     const result = await fetch(getFeaturesUrl);
     if (result.status !== 200) {
       log.warn(
-        `Couldn't reach the getFeatures server for layer ${layerId}. Either the server is down, or the layer doesn't exist.`,
+        `Couldn't reach the getFeatures server for layer ${externalId}. Either the server is down, or the layer doesn't exist.`,
       );
       return [];
     }
@@ -301,13 +302,13 @@ async function getFeaturesFromWmsServer(
   const wmsRequest = layerRequest as WMSLayerRequest;
   if (!wmsRequest.wmsGetFeatureInfo || !wmsRequest.availableCrs) {
     log.debug(
-      `[GetFeaturesForOneLayer] necessary information for GeatFeatureInfo for layer ${wmsRequest.layerId} is not sufficient`,
+      `[GetFeaturesForOneLayer] necessary information for GetFeatureInfo for ${describeLayerOrigin(wmsRequest.origin)} is not sufficient`,
     );
     return [];
   }
   if (!wmsRequest.availableCrs.includes(`EPSG:${epsgNumber}`)) {
     log.debug(
-      `[GetFeaturesForOneLayer] Layer ${wmsRequest.layerId} is not supported in the current projection.`,
+      `[GetFeaturesForOneLayer] ${describeLayerOrigin(wmsRequest.origin)} is not supported in the current projection.`,
     );
     return [];
   }
@@ -339,7 +340,7 @@ async function getFeaturesFromWmsServer(
   });
   if (featureInfoResult.status !== 200) {
     log.warn(
-      `[GetFeatureInfo Request]: getting a ${featureInfoResult.status} code when running identify on the layer ${wmsRequest.layerId}`,
+      `[GetFeatureInfo Request]: getting a ${featureInfoResult.status} code when running identify for ${describeLayerOrigin(wmsRequest.origin)}`,
     );
     return [];
   }
@@ -349,7 +350,7 @@ async function getFeaturesFromWmsServer(
     // shape is a warn + drop, an empty FeatureCollection is a normal silent [].
     if (!Array.isArray(body.features)) {
       log.warn(
-        `[GetFeatureInfo Request]: unexpected response shape for layer ${wmsRequest.layerId} (expected a GeoJSON FeatureCollection)`,
+        `[GetFeatureInfo Request]: unexpected response shape for ${describeLayerOrigin(wmsRequest.origin)} (expected a GeoJSON FeatureCollection)`,
       );
       return [];
     }

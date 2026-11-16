@@ -4,6 +4,7 @@ import type { Layer as MapLayer } from "@swissgeo/map";
 import type { DatasetTab } from "~/utils/datasetTab";
 
 import {
+  CURRENT_YEAR_TIMESTAMP,
   getDisplayNameFromTimestamp,
   useDimensionsStore,
 } from "@swissgeo/dimension";
@@ -52,7 +53,11 @@ const currentTime = computed({
 const timeItems = computed(() =>
   (dimensionsStore.getDimensions(layer.uuid)?.time?.availableValues ?? []).map(
     (time) => ({
-      label: String(getDisplayNameFromTimestamp(time)),
+      // "current" is a keyword, not a year: show it in the user's language
+      label:
+        time === CURRENT_YEAR_TIMESTAMP
+          ? t("layers.timeCurrent")
+          : String(getDisplayNameFromTimestamp(time)),
       value: time,
     }),
   ),
@@ -223,7 +228,7 @@ const rowButton = {
         @select="selectVariant"
       />
       <div v-if="timeItems.length > 1" class="flex flex-col gap-1">
-        <span class="text-xs font-medium text-toned uppercase">
+        <span class="text-xs font-medium text-toned">
           {{ t("layers.time") }}
         </span>
         <USelect
@@ -235,7 +240,7 @@ const rowButton = {
         />
       </div>
       <div class="flex flex-col gap-1">
-        <span class="text-xs font-medium text-toned uppercase">
+        <span class="text-xs font-medium text-toned">
           {{ t("layers.opacity") }}
         </span>
         <div class="flex items-center gap-2">

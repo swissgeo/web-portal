@@ -36,7 +36,7 @@ const geoadminInfo = (
 function makeSource(overrides: Partial<LayerSource> = {}): LayerSource {
   return {
     layerUuid: UUID,
-    layerId: LAYER_ID,
+    origin: { kind: "dataset", datasetId: LAYER_ID },
     layerName: null,
     ...overrides,
   };
@@ -69,9 +69,9 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         preResolvedFeatures: features,
-        layerName: LAYER_ID,
+        layerName: null,
       });
       expect(request).not.toHaveProperty("urlTemplate");
     });
@@ -85,13 +85,13 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         preResolvedFeatures: features,
-        layerName: LAYER_ID,
+        layerName: null,
       });
     });
 
-    it("keeps a stored layerName over the layerId fallback", () => {
+    it("keeps a stored layerName", () => {
       const features = [makeFeature(1)];
 
       const request = sourceToLayerRequest(
@@ -103,7 +103,7 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         preResolvedFeatures: features,
         layerName: "wms.layer.name",
       });
@@ -119,9 +119,9 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         preResolvedFeatures: features,
-        layerName: LAYER_ID,
+        layerName: null,
       });
     });
 
@@ -135,28 +135,28 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         baseUrl: BASE_URL,
         externalId: EXTERNAL_ID,
         urlTemplate: TEMPLATE,
-        layerName: LAYER_ID,
+        layerName: null,
       });
     });
   });
 
   describe("priority 2 — identify feature info", () => {
-    it("builds the urlTemplate from the geoadmin:features baseUrl and the externalId, not the layerId", () => {
+    it("builds the urlTemplate from the geoadmin:features baseUrl and the externalId, not the dataset id", () => {
       const request = sourceToLayerRequest(
         makeSource({ getFeatureInfoInformation: geoadminInfo() }),
       );
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         baseUrl: BASE_URL,
         externalId: EXTERNAL_ID,
         urlTemplate: TEMPLATE,
-        layerName: LAYER_ID,
+        layerName: null,
       });
       expect(request).not.toHaveProperty("preResolvedFeatures");
     });
@@ -170,11 +170,11 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         baseUrl: BASE_URL,
         externalId: undefined,
         urlTemplate: undefined,
-        layerName: LAYER_ID,
+        layerName: null,
       });
     });
 
@@ -189,11 +189,11 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         baseUrl: BASE_URL,
         externalId: EXTERNAL_ID,
         urlTemplate: TEMPLATE,
-        layerName: LAYER_ID,
+        layerName: null,
       });
     });
 
@@ -205,11 +205,11 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         baseUrl: BASE_URL,
         externalId: EXTERNAL_ID,
         urlTemplate: TEMPLATE,
-        layerName: LAYER_ID,
+        layerName: null,
       });
     });
 
@@ -223,7 +223,7 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         externalId: EXTERNAL_ID,
         wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
         wmsVersion: "1.3.0",
@@ -242,7 +242,7 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         externalId: EXTERNAL_ID,
         wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
         wmsVersion: "1.3.0",
@@ -258,14 +258,22 @@ describe("sourceToLayerRequest", () => {
             getFeatureInfoInformation: geoadminInfo({ protocol: "ogc:wms" }),
           }),
         ),
-      ).toEqual({ layerUuid: UUID, layerId: LAYER_ID, layerName: LAYER_ID });
+      ).toEqual({
+        layerUuid: UUID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
+        layerName: null,
+      });
       expect(
         sourceToLayerRequest(
           makeSource({
             getFeatureInfoInformation: geoadminInfo({ protocol: "ogc:wmts" }),
           }),
         ),
-      ).toEqual({ layerUuid: UUID, layerId: LAYER_ID, layerName: LAYER_ID });
+      ).toEqual({
+        layerUuid: UUID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
+        layerName: null,
+      });
     });
   });
 
@@ -283,7 +291,7 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         wmsGetFeatureInfo: {
           baseUrl: "https://example.test/wms?",
           method: "GET",
@@ -302,7 +310,7 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
         wmsVersion: "1.1.1",
         availableCrs: ["EPSG:4326", "EPSG:2056"],
@@ -317,7 +325,7 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         wmsGetFeatureInfo: wmsCapability().getFeatureInfoCapability,
         wmsVersion: "1.3.0",
         availableCrs: ["EPSG:4326", "EPSG:2056"],
@@ -330,8 +338,8 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
-        layerName: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
+        layerName: null,
       });
     });
 
@@ -342,8 +350,8 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
-        layerName: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
+        layerName: null,
       });
     });
 
@@ -352,8 +360,8 @@ describe("sourceToLayerRequest", () => {
 
       expect(request).toEqual({
         layerUuid: UUID,
-        layerId: LAYER_ID,
-        layerName: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
+        layerName: null,
       });
     });
   });
@@ -382,27 +390,31 @@ describe("sourcesToLayerRequests", () => {
     expect(requests).toEqual([
       {
         layerUuid: "uuid-preresolved",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         preResolvedFeatures: [makeFeature(1)],
-        layerName: LAYER_ID,
+        layerName: null,
       },
       {
         layerUuid: "uuid-identify",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         baseUrl: BASE_URL,
         externalId: EXTERNAL_ID,
         urlTemplate: TEMPLATE,
-        layerName: LAYER_ID,
+        layerName: null,
       },
       {
         layerUuid: "uuid-wms",
-        layerId: LAYER_ID,
+        origin: { kind: "dataset", datasetId: LAYER_ID },
         wmsGetFeatureInfo: capability.getFeatureInfoCapability,
         wmsVersion: "1.3.0",
         availableCrs: capability.availableCrs,
         layerName: null,
       },
-      { layerUuid: "uuid-empty", layerId: LAYER_ID, layerName: LAYER_ID },
+      {
+        layerUuid: "uuid-empty",
+        origin: { kind: "dataset", datasetId: LAYER_ID },
+        layerName: null,
+      },
     ]);
   });
 

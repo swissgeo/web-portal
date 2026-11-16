@@ -16,7 +16,11 @@ import {
   useFeaturesStore,
   FEATURE_LIMIT,
 } from "@swissgeo/feature";
-import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
+import {
+  getLayerOrigin,
+  isDatasetLayer,
+  useLayerStore,
+} from "@swissgeo/layers";
 import log from "@swissgeo/log";
 import { MapModule, usePositionStore } from "@swissgeo/map";
 import {
@@ -263,9 +267,7 @@ async function handleMapClickEvent(mapClickEvent: MapClickEvent) {
       // we spare some fetches if the features are already there
       const layerSource: LayerSource = {
         layerUuid: sourceLayer.uuid,
-        layerId: isDatasetLayer(sourceLayer)
-          ? sourceLayer.data.id
-          : sourceLayer.humanId,
+        origin: getLayerOrigin(sourceLayer),
         getFeatureInfoInformation: isDatasetLayer(sourceLayer)
           ? sourceLayer.info?.featureInfoInformation
           : undefined,

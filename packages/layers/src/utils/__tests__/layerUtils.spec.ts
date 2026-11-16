@@ -3,8 +3,11 @@ import type { Dataset } from "@swissgeo/ogc";
 import { omit } from "es-toolkit/object";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
+import type { DatasetLayer, Layer } from "@/index";
+
 import {
   getInfoFromDataset,
+  getLayerOrigin,
   grabFeatureInfoInformation,
   InvalidDatasetError,
   makeServerLayer,
@@ -685,5 +688,48 @@ describe("validateDataset", () => {
       links: [{ rel: "distributions", href: "link" }],
     };
     expect(() => validateDataset(faulty)).toThrow(/self/);
+  });
+});
+
+describe("getLayerOrigin", () => {
+  it("returns the dataset record id for a dataset layer, not the humanId or the externalId", () => {
+    const layer: DatasetLayer = {
+      type: "dataset",
+      uuid: "uuid-dataset",
+      humanId: "haltestellen",
+      isLoading: false,
+      info: {
+        displayName: "Haltestellen",
+        featureInfoInformation: { externalId: "ch.bav.haltestellen-oev" },
+      },
+      data: {
+        id: "dat_haltestellen-oev",
+        properties: {
+          type: "Dataset",
+          title: "Haltestellen",
+          shortTitle: "Haltestellen",
+        },
+        links: [],
+      },
+    };
+
+    expect(getLayerOrigin(layer)).toEqual({
+      kind: "dataset",
+      datasetId: "dat_haltestellen-oev",
+    });
+  });
+
+  it("returns the file name for a file layer", () => {
+    const layer: Layer = {
+      type: "kml",
+      uuid: "uuid-file",
+      humanId: "route.kml",
+      isLoading: false,
+    };
+
+    expect(getLayerOrigin(layer)).toEqual({
+      kind: "file",
+      fileName: "route.kml",
+    });
   });
 });

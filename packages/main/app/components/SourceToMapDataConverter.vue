@@ -19,7 +19,11 @@ import {
   isIdentifyFeatureInfo,
   useFeaturesStore,
 } from "@swissgeo/feature";
-import { isDatasetLayer, useLayerStore } from "@swissgeo/layers";
+import {
+  getLayerOrigin,
+  isDatasetLayer,
+  useLayerStore,
+} from "@swissgeo/layers";
 import { toError } from "@swissgeo/shared";
 
 import MapDatamappingFileConverter from "@/components/map/datamapping/FileConverter.vue";
@@ -71,10 +75,10 @@ async function updateMapLayerData(index: number, mapLayerData: MapLayer) {
       sourceLayer && isDatasetLayer(sourceLayer)
         ? sourceLayer.info?.featureInfoInformation
         : undefined;
-    if (isIdentifyFeatureInfo(featureInfo)) {
+    if (sourceLayer && isIdentifyFeatureInfo(featureInfo)) {
       const layerSource: LayerSource = {
         layerUuid: mapLayerData.uuid,
-        layerId: mapLayerData.layerId,
+        origin: getLayerOrigin(sourceLayer),
         getFeatureInfoInformation: featureInfo,
         layerName:
           featureStore.getWmsCapability(mapLayerData.uuid)?.layerName ?? null,

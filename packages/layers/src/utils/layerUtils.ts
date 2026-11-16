@@ -1,4 +1,5 @@
 import type { Dataset, DistributionCollection, Feature } from "@swissgeo/ogc";
+import type { LayerOrigin } from "@swissgeo/shared";
 
 import log from "@swissgeo/log";
 
@@ -199,3 +200,8 @@ export const makeServerLayer = async (
 export const isDatasetLayer = (layer: Layer): layer is DatasetLayer => {
   return layer.type === "dataset";
 };
+
+export const getLayerOrigin = (layer: Layer): LayerOrigin =>
+  isDatasetLayer(layer)
+    ? { kind: "dataset", datasetId: layer.data.id }
+    : { kind: "file", fileName: layer.humanId };

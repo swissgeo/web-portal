@@ -47,7 +47,7 @@ function onSelect(distributionId: string) {
 
 <template>
   <div v-if="items.length" class="flex flex-col gap-1">
-    <span class="text-xs font-medium text-toned uppercase">
+    <span class="text-xs font-medium text-toned">
       {{ t("layers.variant") }}
     </span>
     <UTooltip :text="distribution && variantLabel(distribution)">

@@ -183,7 +183,7 @@ useDrawerTouchGuard(scroller, {
       // The theme spaces the handle for a padded container, which this is not
       handle: 'my-2 touch-none',
       header: hasHeader ? 'px-4 py-3' : 'sr-only',
-      title: 'text-sm font-semibold text-highlighted uppercase',
+      title: 'text-sm font-semibold text-highlighted',
       body: 'flex min-h-0 flex-1 flex-col',
       footer: 'p-0',
     }"
@@ -219,7 +219,7 @@ useDrawerTouchGuard(scroller, {
       v-if="hasHeader"
       class="flex items-center justify-between border-b border-default px-4 py-3"
     >
-      <h3 class="text-sm font-semibold text-highlighted uppercase">
+      <h3 class="text-sm font-semibold text-highlighted">
         {{ title }}
       </h3>
       <UButton

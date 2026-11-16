@@ -46,9 +46,9 @@ test.describe("mobile notice on a portrait phone", () => {
     await expect(mobileNotice(page)).toBeFocused();
     await expect(page.locator('meta[name="viewport"]')).toHaveAttribute(
       "content",
-      "width=1280, interactive-widget=resizes-content",
+      "width=1024, interactive-widget=resizes-content",
     );
-    expect(await page.evaluate(() => window.innerWidth)).toBe(1280);
+    expect(await page.evaluate(() => window.innerWidth)).toBe(1024);
     await expect(
       page.getByRole("button", { name: "Menü öffnen" }),
     ).toBeHidden();

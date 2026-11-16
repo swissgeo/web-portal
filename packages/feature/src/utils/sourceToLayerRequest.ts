@@ -23,9 +23,9 @@ export function sourceToLayerRequest(
   if (layerSource.preResolvedFeatures?.length > 0) {
     return {
       layerUuid: layerSource.layerUuid,
-      layerId: layerSource.layerId,
+      origin: layerSource.origin,
       preResolvedFeatures: layerSource.preResolvedFeatures,
-      layerName: layerSource.layerName ?? layerSource.layerId,
+      layerName: layerSource.layerName,
     };
   }
   // priority 2: try to see if there is an identify available
@@ -34,14 +34,14 @@ export function sourceToLayerRequest(
       layerSource.getFeatureInfoInformation;
     return {
       layerUuid: layerSource.layerUuid,
-      layerId: layerSource.layerId,
+      origin: layerSource.origin,
       baseUrl,
       externalId,
       distributionId,
       urlTemplate:
         externalId &&
         `${baseUrl}/${externalId}/{featureId}/htmlPopup?lang={lang}`,
-      layerName: layerSource.layerName ?? layerSource.layerId,
+      layerName: layerSource.layerName,
     };
   }
 
@@ -51,7 +51,7 @@ export function sourceToLayerRequest(
   if (capability) {
     return {
       layerUuid: layerSource.layerUuid,
-      layerId: layerSource.layerId,
+      origin: layerSource.origin,
       externalId: layerSource.getFeatureInfoInformation?.externalId,
       distributionId: layerSource.getFeatureInfoInformation?.distributionId,
       wmsGetFeatureInfo: capability.getFeatureInfoCapability,
@@ -64,8 +64,8 @@ export function sourceToLayerRequest(
   // unsupported cases end up with an "empty" layerRequest
   return {
     layerUuid: layerSource.layerUuid,
-    layerId: layerSource.layerId,
-    layerName: layerSource.layerName ?? layerSource.layerId,
+    origin: layerSource.origin,
+    layerName: layerSource.layerName,
   };
 }
 

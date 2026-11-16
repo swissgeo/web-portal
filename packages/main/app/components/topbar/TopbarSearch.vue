@@ -307,7 +307,7 @@ function clearSearch() {
         size="xl"
         variant="outline"
         color="primary"
-        class="w-119.25 grow xl:block"
+        class="w-119.25 min-w-0 grow lg:block"
         :class="{
           hidden: !skipMobile,
         }"
@@ -317,7 +317,7 @@ function clearSearch() {
         @keydown.enter.prevent="submitCoordinate"
         :ui="{
           // the placeholder disappears as soon as the field is clicked into
-          base: 'placeholder-nav-brand-muted! ring-0 focus:placeholder-transparent! dark:bg-primary-950',
+          base: 'placeholder-nav-brand-muted! ring-0 focus:placeholder-transparent! text-ellipsis dark:bg-primary-950',
           leadingIcon: 'text-nav-brand-muted',
         }"
         v-bind="$attrs"
@@ -337,7 +337,7 @@ function clearSearch() {
         v-show="!skipMobile"
         icon="i-lucide-search"
         variant="ghost"
-        class="xl:hidden"
+        class="lg:hidden"
         :aria-label="t('search.buttonLabel')"
         :ui="{ leadingIcon: 'text-nav-brand' }"
       />

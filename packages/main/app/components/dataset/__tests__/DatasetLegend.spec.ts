@@ -122,6 +122,21 @@ describe("DatasetLegend selection", () => {
     ).toEqual([]);
   });
 
+  it("shows the legend of a GeoJSON distribution", () => {
+    const geojson: Distribution = {
+      id: "dst_geojson",
+      properties: {
+        type: "Distribution",
+        title: "Test distribution",
+        protocol: "geojson",
+      },
+    };
+    const wrapper = render([geojson]);
+    expect(
+      wrapper.getComponent(DatasetDistributionLegend).props("distribution"),
+    ).toEqual(geojson);
+  });
+
   it("shows no legend when the collection is empty", () => {
     const wrapper = render([]);
     expect(wrapper.findComponent(DatasetDistributionLegend).exists()).toBe(
