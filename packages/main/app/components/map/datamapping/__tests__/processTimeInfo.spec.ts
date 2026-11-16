@@ -14,6 +14,18 @@ describe("processTimeInfo", () => {
     expect(result.currentValue).toBe("19700101");
   });
 
+  it("uses a defaultTime without a year ('current') as-is when it is in availableTimes", () => {
+    // shape of the geoadmin WMTS capabilities: newest first, default "current"
+    const result = processTimeInfo(
+      ref({
+        defaultTime: "current",
+        availableTimes: ["current", "2026", "2025", "1850"],
+      }),
+    );
+
+    expect(result.currentValue).toBe("current");
+  });
+
   it("resolves a YYYYMMDD defaultTime to the matching entry in availableTimes", () => {
     const result = processTimeInfo(
       ref({

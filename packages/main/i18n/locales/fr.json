@@ -650,7 +650,8 @@
       "openPage": "Ouvrir la page de la légende"
     },
     "variant": "Variante",
-    "time": "Année"
+    "time": "Année",
+    "timeCurrent": "Actuelle"
   },
   "layerCart": {
     "close": "Fermer",

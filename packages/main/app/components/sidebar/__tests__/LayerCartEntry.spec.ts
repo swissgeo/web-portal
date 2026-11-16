@@ -55,6 +55,7 @@ vi.mock("@swissgeo/layers", () => ({
 }));
 vi.mock("@swissgeo/feature", () => ({ useFeaturesStore: () => featureStore }));
 vi.mock("@swissgeo/dimension", () => ({
+  CURRENT_YEAR_TIMESTAMP: "current",
   useDimensionsStore: () => dimensionsStore,
   getDisplayNameFromTimestamp: (time: string) => time,
 }));
@@ -343,6 +344,19 @@ describe("LayerCartEntry.vue", () => {
       "time",
       { currentValue: "2010" },
     );
+  });
+
+  it("shows the keyword current in the user's language", () => {
+    expandedLayers["a-uuid"] = true;
+    dimensionsStore.getDimensions.mockReturnValue({
+      time: { currentValue: "current", availableValues: ["current", "2020"] },
+    });
+    const wrapper = mountEntry();
+
+    expect(wrapper.findComponent(USelectStub).props("items")).toEqual([
+      { label: "layers.timeCurrent", value: "current" },
+      { label: "2020", value: "2020" },
+    ]);
   });
 
   it("switches the variant and clears the values of the old variant", async () => {

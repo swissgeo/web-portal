@@ -650,7 +650,8 @@
       "openPage": "Open legend page"
     },
     "variant": "Variant",
-    "time": "Year"
+    "time": "Year",
+    "timeCurrent": "Current"
   },
   "layerCart": {
     "close": "Close",

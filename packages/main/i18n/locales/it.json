@@ -650,7 +650,8 @@
       "openPage": "Apri la pagina della legenda"
     },
     "variant": "Variante",
-    "time": "Anno"
+    "time": "Anno",
+    "timeCurrent": "Attuale"
   },
   "layerCart": {
     "close": "Chiudi",
