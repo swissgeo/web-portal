@@ -142,6 +142,11 @@ export default function useOlWmsLayer(
   }
 
   function createLayer() {
+    // Only draw inside the tile grid bounds. The number of tiles is rounded
+    // up so the whole extent is covered, so the last tiles go past the
+    // bounds. Without this, that extra part shows as a white bar at the edge
+    // of the map.
+    const extent = positionStore.projection.bounds?.flatten;
     if (gutter.value !== -1) {
       source.value = createTileWMSSource();
       olLayer.value = new TileLayer<TileWMS>({
@@ -151,6 +156,7 @@ export default function useOlWmsLayer(
         },
         opacity: opacity.value,
         source: source.value,
+        extent,
       });
     } else {
       source.value = createImageWMSSource();
@@ -161,6 +167,7 @@ export default function useOlWmsLayer(
         },
         opacity: opacity.value,
         source: source.value,
+        extent,
       });
     }
   }

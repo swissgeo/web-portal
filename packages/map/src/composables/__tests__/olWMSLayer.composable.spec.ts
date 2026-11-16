@@ -47,15 +47,23 @@ vi.mock("ol/source", () => ({
   ImageWMS: MockImageWMS,
 }));
 
+const createdLayerConfigs = vi.hoisted(
+  (): Array<{ type: "tile" | "image"; config: { extent?: number[] } }> => [],
+);
+
 vi.mock("ol/layer/Tile", () => ({
   default: class MockTileLayer {
-    constructor(_config: unknown) {}
+    constructor(config: { extent?: number[] }) {
+      createdLayerConfigs.push({ type: "tile", config });
+    }
   },
 }));
 
 vi.mock("ol/layer/Image", () => ({
   default: class MockImageLayer {
-    constructor(_config: unknown) {}
+    constructor(config: { extent?: number[] }) {
+      createdLayerConfigs.push({ type: "image", config });
+    }
   },
 }));
 
@@ -77,7 +85,7 @@ vi.mock("@/stores/position", () => ({
       epsg: "EPSG:2056",
       usesMercatorPyramid: true,
       getResolutionSteps: (): number[] => [],
-      bounds: { flatten: [0, 0, 0, 0] },
+      bounds: { flatten: [2420000, 1030000, 2900000, 1350000] },
       getTileOrigin: () => [0, 0],
     },
   })),
@@ -113,6 +121,29 @@ describe("useOlWmsLayer", () => {
     tileUpdateParamsSpy.mockClear();
     imageUpdateParamsSpy.mockClear();
     createdTileSources.length = 0;
+    createdLayerConfigs.length = 0;
+  });
+
+  it("clips the TileLayer to the tile grid bounds", async () => {
+    useOlWmsLayer(ref(makeWMSLayer({ gutter: 0 })), ref(undefined));
+    await nextTick();
+
+    const created = createdLayerConfigs.at(-1);
+    expect(created?.type).toBe("tile");
+    expect(created?.config.extent).toEqual([
+      2420000, 1030000, 2900000, 1350000,
+    ]);
+  });
+
+  it("clips the ImageLayer to the tile grid bounds", async () => {
+    useOlWmsLayer(ref(makeWMSLayer({ gutter: -1 })), ref(undefined));
+    await nextTick();
+
+    const created = createdLayerConfigs.at(-1);
+    expect(created?.type).toBe("image");
+    expect(created?.config.extent).toEqual([
+      2420000, 1030000, 2900000, 1350000,
+    ]);
   });
 
   it("recreates the TileWMS source when the gutter changes", async () => {

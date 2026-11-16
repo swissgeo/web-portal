@@ -9,6 +9,7 @@ import { computed, ref, toRaw, watch, watchEffect } from "vue";
 import type { WMTSLayer } from "@/types/layers";
 
 import useAddLayerToMap from "@/composables/useAddLayerToMap.composable";
+import usePositionStore from "@/stores/position";
 
 /** Tying a layer object from the app to a openlayers object */
 export default function useOlWmtsLayer(
@@ -17,6 +18,8 @@ export default function useOlWmtsLayer(
 ) {
   const olLayer = ref<TileLayer>();
   const source = ref<WMTS>();
+
+  const positionStore = usePositionStore();
 
   const layerId = computed(() => layer.value.layerId);
   const zIndex = computed(() => layer.value.zIndex);
@@ -46,6 +49,11 @@ export default function useOlWmtsLayer(
           uuid: layer.value.uuid,
         },
         opacity: layer.value.opacity,
+        // Only draw inside the tile grid bounds. The number of tiles is
+        // rounded up so the whole extent is covered, so the last tiles go
+        // past the bounds. Without this, that extra part shows as a white bar
+        // at the edge of the map.
+        extent: positionStore.projection.bounds?.flatten,
       });
 
       const definitiveOptions = {

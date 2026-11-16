@@ -14,6 +14,13 @@ import {
 vi.mock("@/composables/useAddLayerToMap.composable", () => ({
   default: useAddLayerToMapSpy,
 }));
+vi.mock("@/stores/position", () => ({
+  default: vi.fn(() => ({
+    projection: {
+      bounds: { flatten: [2420000, 1030000, 2900000, 1350000] },
+    },
+  })),
+}));
 vi.mock("@swissgeo/log", () => ({
   default: { debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
   LogPreDefinedColor: new Proxy({}, { get: (_t, p) => String(p) }),
@@ -86,6 +93,27 @@ describe("useOlWmtsLayer", () => {
     await nextTick();
 
     expect(useAddLayerToMapSpy).toHaveBeenCalled();
+  });
+
+  it("clips the TileLayer to the tile grid bounds", async () => {
+    const { Tile } = await import("ol/layer");
+    const layer = ref(makeWMTSLayer()) as Ref<WMTSLayer>;
+
+    const TestComponent = defineComponent({
+      setup() {
+        useOlWmtsLayer(layer, ref(undefined));
+      },
+      template: "<div />",
+    });
+
+    mount(TestComponent);
+    await nextTick();
+
+    expect(Tile).toHaveBeenCalledWith(
+      expect.objectContaining({
+        extent: [2420000, 1030000, 2900000, 1350000],
+      }),
+    );
   });
 
   it("does not create a source when options are null", async () => {
