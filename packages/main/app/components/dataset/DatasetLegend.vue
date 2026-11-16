@@ -17,8 +17,10 @@ const { distribution, layerId } = useSelectedDistribution(
   computed(() => props.dataset),
   computed(() => props.distributionCollection),
 );
-// GeoJSON reads its legend from the `legend` link; WMS / WMTS need the layer
-// id to find it in the capabilities.
+// GeoJSON reads its legend straight from the distribution's `legend` link, so
+// it needs no layer id. WMS / WMTS legends live in the service capabilities,
+// listed per layer: `layerId` (the distribution's `externalIds[0]`) is the
+// layer name used to look it up there, so without it there is no legend.
 const supportsLegend = computed(() => {
   const format = determineFormat(distribution.value);
   if (format === "GeoJSON") {
