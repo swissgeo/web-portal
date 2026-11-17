@@ -131,8 +131,13 @@ defineExpose({
         overlaps it -->
       <ClientOnly>
         <UTooltip :text="tooltip">
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
+          <!-- the search API wraps the matched name in <b> -->
+          <!-- eslint-disable vue/no-v-html -->
+          <div
+            class="min-w-0 flex-1 truncate [&_b]:rounded-sm [&_b]:bg-salmon-200 [&_b]:font-medium [&_b]:text-salmon-950 dark:[&_b]:bg-salmon-800 dark:[&_b]:text-salmon-100"
+            v-html="sanitizedTitle"
+          />
+          <!-- eslint-enable vue/no-v-html -->
         </UTooltip>
       </ClientOnly>
 
