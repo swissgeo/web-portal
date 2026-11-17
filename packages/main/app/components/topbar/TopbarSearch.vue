@@ -27,9 +27,11 @@ const searchStore = useSearchStore();
 const toaster = useToaster();
 const { handleResultSelection } = useSearchSelection();
 
-const isOpen = defineModel<boolean>("open", { default: false });
-// below lg the field gives way to a button opening a full-screen search
-const isMobileOpen = ref(false);
+// the popover under the field: open while there are results to show
+const isPopoverOpen = defineModel<boolean>("open", { default: false });
+// below lg the field gives way to a button opening a full-screen search: open
+// from the tap on the button until it is closed or a result is selected
+const isModalOpen = ref(false);
 const mobileInputRef = ref<{ inputRef: HTMLInputElement | null } | null>(null);
 
 // the same results show in the desktop popover and in the full-screen search
@@ -44,8 +46,8 @@ let isActive = true;
 
 onDeactivated(() => {
   isActive = false;
-  isOpen.value = false;
-  isMobileOpen.value = false;
+  isPopoverOpen.value = false;
+  isModalOpen.value = false;
 });
 
 onActivated(() => {
@@ -210,9 +212,9 @@ function handleSelect(result: SearchResult) {
     query.value = title;
     searchStore.keepSelectedQuery(title);
   }
-  isOpen.value = false;
+  isPopoverOpen.value = false;
   // unmounting the field closes the phone keyboard and uncovers the map
-  isMobileOpen.value = false;
+  isModalOpen.value = false;
   emit("selected");
 }
 
@@ -228,7 +230,7 @@ function openResults() {
   }
   // the full-screen search shows the results itself, the popover would open
   // on top of it, anchored to the hidden desktop field
-  isOpen.value = !isMobileOpen.value;
+  isPopoverOpen.value = !isModalOpen.value;
 }
 
 // the keyboard has to come up with the search, not on the close button
@@ -238,8 +240,8 @@ function focusMobileInput(event: Event) {
 }
 
 function closeResults() {
-  isOpen.value = false;
-  isMobileOpen.value = false;
+  isPopoverOpen.value = false;
+  isModalOpen.value = false;
 }
 
 function handleClick() {
@@ -261,7 +263,7 @@ function focusFirstResult() {
     return;
   }
   activeTab.value = "map";
-  isOpen.value = true;
+  isPopoverOpen.value = true;
   void nextTick(() => {
     categoryRefs.get(searchResultsByCategory.value[0]!.id)?.focusFirstEntry();
   });
@@ -300,7 +302,7 @@ function clearSearch() {
   query.value = "";
   searchStore.clearSearch();
   searchStore.clearPinnedCoordinate();
-  isOpen.value = false;
+  isPopoverOpen.value = false;
 }
 </script>
 
@@ -384,7 +386,7 @@ function clearSearch() {
   </DefineResults>
 
   <UPopover
-    v-model:open="isOpen"
+    v-model:open="isPopoverOpen"
     :content="{
       align: 'start',
       sideOffset: 8,
@@ -432,7 +434,7 @@ function clearSearch() {
         </template>
       </UInput>
       <UModal
-        v-model:open="isMobileOpen"
+        v-model:open="isModalOpen"
         fullscreen
         :title="t('menu.search')"
         :close="{ ui: { leadingIcon: 'size-5 text-accent' } }"
