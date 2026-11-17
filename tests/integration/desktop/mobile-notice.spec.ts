@@ -6,7 +6,7 @@ import {
   HYDRATION_TIMEOUT,
   mockExternalRequests,
   cleanupExternalRequestMocks,
-} from "./setup";
+} from "../setup";
 
 // The mobile UI is off by default (featureFlags.enableMobileUi), so phones
 // get the scaled desktop UI and the mobile notice.

@@ -6,7 +6,7 @@ import {
   cleanupExternalRequestMocks,
   HYDRATION_TIMEOUT,
   mockExternalRequests,
-} from "./setup";
+} from "../setup";
 
 // The first word is longer than the sidebar is wide (GPS-1339).
 const LONG_TITLE =
