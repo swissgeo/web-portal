@@ -220,3 +220,67 @@ test.describe("topbar search", () => {
     await expect(contentResults).toContainText("Über uns");
   });
 });
+
+// Without isMobile the page keeps its 390px layout viewport, so the mobile
+// layout shows even while featureFlags.enableMobileUi is off
+test.describe("mobile search", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test.beforeEach(async ({ page }) => {
+    await mockExternalRequests(page).mockAll();
+    await mockLocationSearch(page);
+    await page.goto("/de/map");
+    await expect(page.getByTestId("ol-map")).toBeVisible({
+      timeout: HYDRATION_TIMEOUT,
+    });
+    // the "map not available" toast would cover the search button
+    await page
+      .getByRole("region", { name: "Benachrichtigungen (F8)" })
+      .locator('[data-slot="close"]')
+      .click();
+  });
+
+  test.afterEach(async ({ page }) => {
+    await cleanupExternalRequestMocks(page);
+  });
+
+  test("searches and selects a result by touch", async ({ page }) => {
+    await page.getByTestId("mobile-search-button").tap();
+
+    const dialog = page.getByRole("dialog", { name: "Suche" });
+    const searchInput = dialog.getByRole("textbox");
+    await expect(dialog).toBeVisible();
+    // focused right away, so the phone keyboard comes up with the search
+    await expect(searchInput).toBeFocused();
+
+    await page.keyboard.type("Biel");
+    const firstResult = dialog.getByTestId("search-result-entry-location-0");
+    await expect(firstResult).toHaveText("Biel/Bienne");
+    // the desktop popover stays closed behind the full-screen search
+    await expect(page.getByTestId("search-results")).toHaveCount(1);
+
+    await firstResult.tap();
+
+    // the field is gone with the dialog, so is the keyboard
+    await expect(dialog).toBeHidden();
+    expect(await page.evaluate(() => document.activeElement?.tagName)).not.toBe(
+      "INPUT",
+    );
+    await expect
+      .poll(
+        () => page.evaluate(() => window.swissgeoOlMap?.getView().getCenter()),
+        { timeout: 15_000 },
+      )
+      .toEqual([2585000, 1220000]);
+  });
+
+  test("closes without selecting anything", async ({ page }) => {
+    await page.getByTestId("mobile-search-button").tap();
+    const dialog = page.getByRole("dialog", { name: "Suche" });
+    await expect(dialog).toBeVisible();
+
+    await dialog.locator('[data-slot="close"]').tap();
+
+    await expect(dialog).toBeHidden();
+  });
+});
