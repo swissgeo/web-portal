@@ -170,7 +170,7 @@ defineExpose({
             location search wraps in <b> -->
           <!-- eslint-disable vue/no-v-html -->
           <div
-            class="min-w-0 flex-1 truncate [&_b]:font-medium [&_mark]:rounded-[1px] [&_mark]:bg-salmon-200 [&_mark]:py-px [&_mark]:text-salmon-950 dark:[&_mark]:bg-salmon-800 dark:[&_mark]:text-salmon-100"
+            class="min-w-0 flex-1 truncate [&_b]:font-medium [&_mark]:rounded-[1px] [&_mark]:bg-salmon-200 [&_mark]:py-px [&_mark]:text-salmon-950"
             v-html="highlightedTitle"
           />
           <!-- eslint-enable vue/no-v-html -->
