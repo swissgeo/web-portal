@@ -472,7 +472,9 @@ function clearSearch() {
               class="w-full"
               data-testid="mobile-search-input"
               :ui="{
-                base: 'bg-elevated font-medium text-ellipsis',
+                // the focus outline sits outside the field, where the
+                // scrolling body cuts it off; the field always has the focus
+                base: 'bg-elevated font-medium text-ellipsis focus-visible:outline-none',
                 leadingIcon: 'text-highlighted',
               }"
               @keydown.enter.prevent="submitCoordinate"
@@ -490,7 +492,8 @@ function clearSearch() {
             </UInput>
           </div>
           <div class="flex min-h-0 flex-1 flex-col px-2 pb-2">
-            <ReuseResults fill />
+            <!-- a bare `fill` would arrive as "", the template takes no props -->
+            <ReuseResults :fill="true" />
           </div>
         </template>
       </UModal>
