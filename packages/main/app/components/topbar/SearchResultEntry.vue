@@ -33,25 +33,41 @@ const emit = defineEmits<{
 
 const item = ref<HTMLLIElement>();
 
-// Marks the typed words in the title, as the design does. Only the text nodes
-// are searched, so the markup of the title stays intact.
+// Marks the typed words in the title, as the design does.
+// E.g. query "so bern", title "<b>Solothurn</b> (SO) - Bern"
+// → "<b><mark>So</mark>lothurn</b> (<mark>SO</mark>) - <mark>Bern</mark>"
 const highlightedTitle = computed(() => {
+  // The API sends the title as HTML, e.g. with the place name in <b>
   const html = sanitizeHtml(entry.title);
+
+  // "so bern" → ["so", "bern"]; nothing typed, nothing to mark
   const words = searchStore.query.split(/\s+/).filter(Boolean);
   if (!words.length) {
     return html;
   }
+
+  // Any of the words, ignoring case: /(so|bern)/gi. escapeRegExp makes
+  // characters like "(" match literally.
   const pattern = new RegExp(`(${words.map(escapeRegExp).join("|")})`, "gi");
+
+  // Parse the HTML, so that only its text is searched: a plain replace on the
+  // string would also match inside the tags, e.g. "b" in "<b>"
   const { body } = new DOMParser().parseFromString(html, "text/html");
+
+  // Collect the text nodes: "Solothurn" (inside <b>) and " (SO) - Bern"
   const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
   const texts: Text[] = [];
   while (walker.nextNode()) {
     texts.push(walker.currentNode as Text);
   }
+
   for (const text of texts) {
-    // split keeps the matches at the odd indexes
+    // The ( ) in the pattern keep the matches in the result, at the odd
+    // indexes: " (SO) - Bern" → [" (", "SO", ") - ", "Bern", ""]
     const parts = text.data.split(pattern);
     if (parts.length > 1) {
+      // Replace the text node with the plain parts and a <mark> per match.
+      // textContent, not innerHTML, so a typed word can never inject HTML.
       text.replaceWith(
         ...parts.map((part, i) => {
           if (i % 2 === 0) {
@@ -64,6 +80,8 @@ const highlightedTitle = computed(() => {
       );
     }
   }
+
+  // Back to an HTML string for v-html
   return body.innerHTML;
 });
 const detailPath = computed(() => localePath(`/dataset/${entry.id}`));
