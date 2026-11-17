@@ -258,6 +258,10 @@ test.describe("mobile search", () => {
     await expect(firstResult).toHaveText("Biel/Bienne");
     // the desktop popover stays closed behind the full-screen search
     await expect(page.getByTestId("search-results")).toHaveCount(1);
+    // the results reach down to the bottom of the screen, not the 400px of
+    // the desktop popover
+    const results = await dialog.getByTestId("search-results").boundingBox();
+    expect(results!.y + results!.height).toBeGreaterThan(800);
 
     await firstResult.tap();
 
