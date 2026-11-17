@@ -27,10 +27,10 @@ const searchStore = useSearchStore();
 const toaster = useToaster();
 const { handleResultSelection } = useSearchSelection();
 
-// the popover under the field: open while there are results to show
+// Desktop (and the home page on any screen): results in a popover under the
+// search field
 const isPopoverOpen = defineModel<boolean>("open", { default: false });
-// below lg the field gives way to a button opening a full-screen search: open
-// from the tap on the button until it is closed or a result is selected
+// Mobile: full-screen search, opened by the search button
 const isModalOpen = ref(false);
 const mobileInputRef = ref<{ inputRef: HTMLInputElement | null } | null>(null);
 
@@ -307,6 +307,8 @@ function clearSearch() {
 </script>
 
 <template>
+  <!-- The results list, written once and shown in both the popover and the
+    modal (ReuseResults) -->
   <DefineResults v-slot="{ fill }">
     <UTabs
       v-model="activeTab"
@@ -385,6 +387,8 @@ function clearSearch() {
     </UTabs>
   </DefineResults>
 
+  <!-- Desktop (and the home page on any screen): the search field, with the
+    results in a popover under it -->
   <UPopover
     v-model:open="isPopoverOpen"
     :content="{
@@ -433,6 +437,8 @@ function clearSearch() {
           />
         </template>
       </UInput>
+      <!-- Mobile: the search button, opening a full-screen search with its own
+        field and the results -->
       <UModal
         v-model:open="isModalOpen"
         fullscreen
@@ -501,6 +507,8 @@ function clearSearch() {
       </UModal>
     </template>
 
+    <!-- Shown while isPopoverOpen: results arrived for the typed query. Stays
+      closed while the modal is open, which shows the results itself -->
     <template #content>
       <ReuseResults />
     </template>
