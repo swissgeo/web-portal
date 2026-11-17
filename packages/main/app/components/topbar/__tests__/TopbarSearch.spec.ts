@@ -98,6 +98,8 @@ const stubs = {
     template: "<div><slot name='map' /><slot name='contentPages' /></div>",
   },
   UInput: UInputStub,
+  // renders the trigger only, the full-screen search is covered end to end
+  UModal: { template: "<div><slot /></div>" },
   UButton: { template: "<button />" },
   UTooltip: { template: "<slot />" },
   UIcon: { template: "<span />" },
