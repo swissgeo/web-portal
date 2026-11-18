@@ -10,6 +10,8 @@ defineProps<{
 const { t } = useI18n();
 const { cmsUrl } = useCmsUrl();
 
+const isDesktop = useIsDesktop();
+
 const descriptionId = useId();
 const popoverOpen = ref(false);
 
@@ -24,15 +26,24 @@ const [RegisterTemplate, ReuseTemplate] = createReusableTemplate();
   <template v-if="!featureFlagEnabled">
     <UPopover
       v-model:open="popoverOpen"
-      mode="hover"
+      :mode="isDesktop ? 'hover' : 'click'"
       enable-touch
-      :content="{ side: 'left', sideOffset: 12 }"
+      :content="{ side: isDesktop ? 'left' : 'top', sideOffset: 12 }"
+      :portal="isDesktop"
     >
+      <!-- On a phone, a tap opens the message:
+           - a disabled button swallows the tap, so the wrapper takes it
+           - focus would open it before the click toggles it, so only the
+             click counts
+           - the popover stays inside the tools drawer, which would close
+             when the focus leaves it -->
       <div
+        :class="{ '*:pointer-events-none': !isDesktop }"
+        data-testid="feature-flag-trigger"
         tabindex="0"
         :aria-describedby="descriptionId"
-        @focus="popoverOpen = true"
-        @blur="popoverOpen = false"
+        @focus="isDesktop && (popoverOpen = true)"
+        @blur="isDesktop && (popoverOpen = false)"
       >
         <ReuseTemplate />
       </div>
