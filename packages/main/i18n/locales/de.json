@@ -219,6 +219,11 @@
     "outsideSwitzerland": "Ihr Standort liegt ausserhalb der Schweiz und kann nicht auf der Karte angezeigt werden."
   },
   "toolbox": {
+    "mobileDrawer": {
+      "close": "Schliessen",
+      "expand": "Bereich vergrössern",
+      "collapse": "Bereich verkleinern"
+    },
     "geolocation": {
       "buttonTitle": "Standort"
     },

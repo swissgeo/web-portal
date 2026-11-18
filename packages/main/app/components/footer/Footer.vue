@@ -54,7 +54,19 @@ const mobileNavButtons = computed(() => [
   {
     icon: Wrench,
     label: t("footer.mobileNav.tools"),
-    variant: "ghost-inverted" as const,
+    variant:
+      sidebarStore.currentSidebar === SidebarType.TOOLS
+        ? ("solid-inverted" as const)
+        : ("ghost-inverted" as const),
+    onClick: () => {
+      if (sidebarStore.currentSidebar === SidebarType.TOOLS) {
+        sidebarStore.closeSidebar();
+        return;
+      }
+      sidebarStore.setSidebar(SidebarType.TOOLS);
+      // The tools act on the map, so they only show there.
+      return navigateTo(localePath("/map"));
+    },
   },
 ]);
 
