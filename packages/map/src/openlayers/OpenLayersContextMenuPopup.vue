@@ -19,6 +19,8 @@ function setupOverlay() {
     positioning: "top-center",
     offset: [0, 10],
     stopEvent: true,
+    // A tap near the edge of a phone screen would put the popup off screen
+    autoPan: { margin: 16 },
   });
   // The watch is intentionally nested here so it only runs once the overlay instance exists.
   watch(
@@ -48,7 +50,7 @@ onUnmounted(() => olMap?.value?.removeOverlay(overlay));
 </script>
 
 <template>
-  <div @click.right.stop ref="popupEl" class="w-96">
+  <div @click.right.stop ref="popupEl" class="w-96 max-w-[calc(100vw-2rem)]">
     <slot :coordinate="coordinate" :is-visible="isVisible" :close="close" />
   </div>
 </template>
