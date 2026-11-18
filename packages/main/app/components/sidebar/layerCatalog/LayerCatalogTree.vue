@@ -90,6 +90,7 @@ const selected = computed({
       v-model="selected"
       :items
       v-model:expanded="expanded"
+      data-testid="catalog-tree"
       selection-behavior="replace"
       :get-key="(node) => node.id"
       collapsed-icon="i-lucide-chevron-right"

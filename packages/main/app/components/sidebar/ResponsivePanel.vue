@@ -228,6 +228,7 @@ useDrawerTouchGuard(scroller, {
         size="xs"
         trailing-icon="i-lucide-x"
         class="cursor-pointer"
+        data-testid="panel-close"
         @click="emit('close')"
       >
         {{ closeLabel }}

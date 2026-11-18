@@ -59,6 +59,7 @@ provide(
     <div
       v-show="isTableVisible"
       ref="tableColumn"
+      data-testid="catalog-scroller"
       class="relative flex min-w-0 flex-1 [scrollbar-gutter:stable] flex-col gap-4 px-4 py-3 md:gap-8 md:overflow-y-auto md:p-8"
     >
       <div

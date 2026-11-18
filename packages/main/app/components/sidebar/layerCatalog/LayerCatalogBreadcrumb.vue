@@ -20,7 +20,12 @@ const { parentLabel, currentLabel, status } = defineProps<{
       >
         {{ parentLabel }}
       </p>
-      <h4 class="truncate text-highlighted">{{ currentLabel }}</h4>
+      <h4
+        data-testid="catalog-breadcrumb-current"
+        class="truncate text-highlighted"
+      >
+        {{ currentLabel }}
+      </h4>
     </div>
   </LayerCatalogLoadingStatus>
 </template>
