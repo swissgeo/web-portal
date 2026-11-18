@@ -38,6 +38,7 @@ useInfiniteScroll(scroller, loadMore, {
   <div class="min-w-0 flex-1">
     <div
       role="table"
+      data-testid="catalog-table"
       class="grid grid-cols-[minmax(0,1fr)_--spacing(9)] overflow-hidden rounded-md border border-accented bg-default text-sm leading-small-text md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_--spacing(9)]"
     >
       <div
@@ -63,6 +64,7 @@ useInfiniteScroll(scroller, loadMore, {
           <UInput
             :id="searchInputId"
             v-model="query"
+            data-testid="catalog-search-input"
             icon="i-lucide-search"
             :placeholder="t('layerCatalog.searchPlaceholder')"
             variant="outline"

@@ -42,6 +42,8 @@ async function setOnMap(onMap: boolean): Promise<void> {
 <template>
   <div
     role="row"
+    data-testid="catalog-layer-row"
+    :data-available="canToggle"
     class="hover:bg-accent-50 dark:hover:bg-accent-800 col-span-full grid grid-cols-subgrid border-b border-accented last:border-b-0"
     :class="isOnMap ? 'text-highlighted' : 'text-toned'"
   >
