@@ -219,6 +219,11 @@
     "outsideSwitzerland": "Vossa posiziun è ordaifer la Svizra e na po betg vegnir mussada sin la charta."
   },
   "toolbox": {
+    "mobileDrawer": {
+      "close": "Serrar",
+      "expand": "Engrondir il panel",
+      "collapse": "Reducir il panel"
+    },
     "geolocation": {
       "buttonTitle": "Posiziun"
     },

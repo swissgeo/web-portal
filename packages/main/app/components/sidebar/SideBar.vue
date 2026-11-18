@@ -53,7 +53,11 @@ function closeLayerCatalog() {
 watch(
   () => isDesktop.value && isVisible,
   (shown) => {
-    if (shown && !uiStore.currentSidebar) {
+    // The tools drawer exists only on mobile
+    if (
+      shown &&
+      (!uiStore.currentSidebar || uiStore.currentSidebar === SidebarType.TOOLS)
+    ) {
       uiStore.setSidebar(SidebarType.LAYER_CART);
     }
   },
