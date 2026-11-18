@@ -276,7 +276,9 @@ test.describe("import external layers", () => {
     await page
       .getByTestId("file-input")
       .setInputFiles(
-        fileURLToPath(new URL(`../fixtures/${workingLayer}`, import.meta.url)),
+        fileURLToPath(
+          new URL(`../../fixtures/${workingLayer}`, import.meta.url),
+        ),
       );
     await page.getByTestId("file-import-button").click();
     await page.getByTestId("file-import-close-button").click();
