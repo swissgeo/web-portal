@@ -1,6 +1,6 @@
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { mount } from "@vue/test-utils";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import FeatureInfoDisabled from "../featuresinfo/FeatureInfoDisabled.vue";
 
@@ -13,6 +13,13 @@ vi.mock("vue-i18n", () => ({
     locale: { value: "en" },
   }),
 }));
+
+const { isDesktop } = await vi.hoisted(async () => {
+  const { ref } = await import("vue");
+  return { isDesktop: ref(true) };
+});
+
+mockNuxtImport("useIsDesktop", () => () => isDesktop);
 
 mockNuxtImport("useCmsUrl", () => () => ({
   cmsUrl: (path?: string) => `https://cms.test/en/${path ?? ""}`,
@@ -72,5 +79,43 @@ describe("FeatureInfoDisabled", () => {
       .find("[data-testid='feature-info-disabled-close']")
       .trigger("click");
     expect(wrapper.emitted("close")).toHaveLength(1);
+  });
+
+  describe("on a mobile viewport", () => {
+    const { innerWidth, innerHeight } = window;
+
+    function mountAt(x: number, y: number) {
+      window.innerWidth = 375;
+      window.innerHeight = 812;
+      isDesktop.value = false;
+      return mount(FeatureInfoDisabled, {
+        props: { initialPosition: { x, y } },
+        global: { stubs: { UButton: true } },
+      });
+    }
+
+    afterEach(() => {
+      window.innerWidth = innerWidth;
+      window.innerHeight = innerHeight;
+      isDesktop.value = true;
+    });
+
+    it("fits the phone screen", () => {
+      const notice = mountAt(0, 0);
+
+      expect(notice.classes()).toContain("max-w-[calc(100vw-2rem)]");
+      expect(notice.attributes("style")).toContain("left: 16px");
+    });
+
+    it("stays above the footer navigation after a tap at the bottom", () => {
+      const style = mountAt(100, 800).attributes("style");
+
+      // 812 - 16 margin - 64 footer
+      expect(style).toContain("top: 732px");
+    });
+
+    it("follows the color mode", () => {
+      expect(mountAt(0, 0).classes()).not.toContain("light");
+    });
   });
 });
