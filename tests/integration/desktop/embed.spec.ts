@@ -153,8 +153,10 @@ test.describe("embed map page", () => {
 });
 
 test.describe("embed map in iframe", () => {
-  const demoPagePath = new URL("../fixtures/embed-demo.html", import.meta.url)
-    .pathname;
+  const demoPagePath = new URL(
+    "../../fixtures/embed-demo.html",
+    import.meta.url,
+  ).pathname;
 
   test.beforeEach(async ({ page }) => {
     await mockExternalRequests(page).mockAll();
