@@ -55,7 +55,7 @@ export default function useAddLayerToMap(
   }
 
   function addLayerToMap(): void {
-    if (!olMap || !olMap.value || !olLayer.value) {
+    if (!olMap?.value || !olLayer.value) {
       return;
     }
     const rawLayer = toRaw(olLayer.value);
@@ -94,7 +94,7 @@ export default function useAddLayerToMap(
   }
 
   function removeLayerFromMap(): void {
-    if (!olMap || !olMap.value) {
+    if (!olMap?.value) {
       return;
     }
 
