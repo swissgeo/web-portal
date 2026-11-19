@@ -27,10 +27,10 @@ const searchStore = useSearchStore();
 const toaster = useToaster();
 const { handleResultSelection } = useSearchSelection();
 
-// Desktop (and the home page on any screen): results in a popover under the
-// search field
+// Desktop: results in a popover under the search field
 const isPopoverOpen = defineModel<boolean>("open", { default: false });
-// Mobile: full-screen search, opened by the search button
+// Mobile: full-screen search, opened by the search button (a field on the home
+// page)
 const isModalOpen = ref(false);
 const mobileInputRef = ref<{ inputRef: HTMLInputElement | null } | null>(null);
 
@@ -387,8 +387,7 @@ function clearSearch() {
     </UTabs>
   </DefineResults>
 
-  <!-- Desktop (and the home page on any screen): the search field, with the
-    results in a popover under it -->
+  <!-- Desktop: the search field, with the results in a popover under it -->
   <UPopover
     v-model:open="isPopoverOpen"
     :content="{
@@ -411,10 +410,7 @@ function clearSearch() {
         size="xl"
         variant="outline"
         color="primary"
-        class="w-119.25 min-w-0 grow lg:block"
-        :class="{
-          hidden: !skipMobile,
-        }"
+        class="hidden w-119.25 min-w-0 grow lg:block"
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
@@ -437,8 +433,8 @@ function clearSearch() {
           />
         </template>
       </UInput>
-      <!-- Mobile: the search button, opening a full-screen search with its own
-        field and the results -->
+      <!-- Mobile: the search button (a field on the home page), opening a
+        full-screen search with its own field and the results -->
       <UModal
         v-model:open="isModalOpen"
         fullscreen
@@ -453,8 +449,20 @@ function clearSearch() {
           body: 'flex min-h-0 flex-col p-0 sm:p-0',
         }"
       >
+        <!-- the home page shows a field, which opens the same search -->
         <UButton
-          v-show="!skipMobile"
+          v-if="skipMobile"
+          icon="i-lucide-search"
+          :label="query || t('search.placeholder')"
+          size="xl"
+          color="neutral"
+          variant="ghost"
+          class="w-full bg-default font-normal text-nav-brand-muted hover:bg-default lg:hidden dark:bg-primary-950"
+          :ui="{ leadingIcon: 'text-nav-brand-muted', label: 'truncate' }"
+          data-testid="mobile-search-field"
+        />
+        <UButton
+          v-else
           icon="i-lucide-search"
           variant="ghost"
           class="lg:hidden"
