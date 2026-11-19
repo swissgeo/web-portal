@@ -332,6 +332,7 @@ function clearSearch() {
             :key="category.id"
             :ref="(element) => setCategoryRef(category.id, element)"
             class="min-h-0 flex-1"
+            :fill="fill"
             :title="t(`search.${category.id}_results_header`)"
             :results="category.results"
             :tab-start="tabStartCategory === category.id"
@@ -365,6 +366,7 @@ function clearSearch() {
             v-if="searchStore.contentResults.length > 0"
             :tab-start="true"
             class="max-h-96"
+            :fill="fill"
             data-testid="content-search-results"
             :results="searchStore.contentResults"
             @select="handleSelect"
@@ -491,7 +493,7 @@ function clearSearch() {
                 // the focus outline sits outside the field, where the
                 // scrolling body cuts it off; the field always has the focus
                 base: 'bg-elevated font-medium text-ellipsis focus-visible:outline-none',
-                leadingIcon: 'text-highlighted',
+                leadingIcon: 'text-muted',
               }"
               @keydown.enter.prevent="submitCoordinate"
             >
@@ -507,7 +509,7 @@ function clearSearch() {
               </template>
             </UInput>
           </div>
-          <div class="flex min-h-0 flex-1 flex-col px-2 pb-2">
+          <div class="flex min-h-0 flex-1 flex-col pb-2">
             <!-- a bare `fill` would arrive as "", the template takes no props -->
             <ReuseResults :fill="true" />
           </div>
