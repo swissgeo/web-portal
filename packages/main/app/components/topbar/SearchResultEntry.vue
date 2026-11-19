@@ -195,13 +195,14 @@ defineExpose({
         </UTooltip>
       </ClientOnly>
 
-      <!-- Layer info button, the negative margins keep the row height -->
+      <!-- Layer info button, the negative margins keep the row height. Not on
+        mobile, as in the design -->
       <UTooltip
         v-if="entry.resultType === SearchResultTypesEnum.layer"
         :text="t('search.viewDataset')"
       >
         <UButton
-          class="-my-1 -mr-1"
+          class="-my-1 -mr-1 max-lg:hidden"
           :data-testid="`search-result-info-${index}`"
           :aria-label="t('search.viewDataset')"
           icon="i-lucide-info"
