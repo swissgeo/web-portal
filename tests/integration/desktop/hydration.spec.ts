@@ -4,7 +4,7 @@ import {
   HYDRATION_TIMEOUT,
   mockExternalRequests,
   cleanupExternalRequestMocks,
-} from "./setup";
+} from "../setup";
 
 test.afterEach(async ({ page }) => {
   await cleanupExternalRequestMocks(page);

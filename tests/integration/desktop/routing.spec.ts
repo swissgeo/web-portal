@@ -4,7 +4,7 @@ import {
   HYDRATION_TIMEOUT,
   mockExternalRequests,
   cleanupExternalRequestMocks,
-} from "./setup";
+} from "../setup";
 
 test.describe("locale routing", () => {
   // Pin the browser locale so unlocalized-path redirects are deterministic.

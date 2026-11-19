@@ -8,20 +8,22 @@ import {
   HYDRATION_TIMEOUT,
   mockExternalRequests,
   cleanupExternalRequestMocks,
-} from "./setup";
+} from "../setup";
 
 const wmtsCapabilities = readFileSync(
-  new URL("../fixtures/WMTSCapabilities.xml", import.meta.url),
+  new URL("../../fixtures/WMTSCapabilities.xml", import.meta.url),
   "utf-8",
 );
 const wmsCapabilities = readFileSync(
-  new URL("../fixtures/capabilities-wms-geoadminch.xml", import.meta.url),
+  new URL("../../fixtures/capabilities-wms-geoadminch.xml", import.meta.url),
   "utf-8",
 );
 const jpegTile = readFileSync(
-  new URL("../fixtures/tile.jpeg", import.meta.url),
+  new URL("../../fixtures/tile.jpeg", import.meta.url),
 );
-const pngTile = readFileSync(new URL("../fixtures/tile.png", import.meta.url));
+const pngTile = readFileSync(
+  new URL("../../fixtures/tile.png", import.meta.url),
+);
 
 const WMTS_URL =
   "https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml";
@@ -274,7 +276,9 @@ test.describe("import external layers", () => {
     await page
       .getByTestId("file-input")
       .setInputFiles(
-        fileURLToPath(new URL(`../fixtures/${workingLayer}`, import.meta.url)),
+        fileURLToPath(
+          new URL(`../../fixtures/${workingLayer}`, import.meta.url),
+        ),
       );
     await page.getByTestId("file-import-button").click();
     await page.getByTestId("file-import-close-button").click();

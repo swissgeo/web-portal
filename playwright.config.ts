@@ -1,7 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: "./tests/integration",
   retries: 1,
   workers: undefined,
   reporter: [["html", { open: "never" }], ["list"]],
@@ -18,9 +17,19 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      testDir: "./tests/integration/desktop",
       use: {
         ...devices["Desktop Chrome"],
+        isMobile: false,
         viewport: { width: 1920, height: 1080 },
+      },
+    },
+    {
+      name: "mobile",
+      testDir: "./tests/integration/mobile",
+      use: {
+        ...devices["Pixel 5"],
+        isMobile: true,
       },
     },
   ],

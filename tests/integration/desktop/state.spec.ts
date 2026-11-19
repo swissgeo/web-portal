@@ -6,7 +6,7 @@ import {
   HYDRATION_TIMEOUT,
   mockExternalRequests,
   cleanupExternalRequestMocks,
-} from "./setup";
+} from "../setup";
 
 const STORAGE_KEY = "swissgeo_app_state";
 

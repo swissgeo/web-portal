@@ -3,24 +3,24 @@ import type { Page, Route } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import { readFileSync } from "fs";
 
-import ChSwisstopoPixelkarteFarbeDataset from "../fixtures/item-dataset-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
-import ChSwisstopoPixelkarteFarbeDistribution from "../fixtures/item-distribution-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
-import ChWmtsGeoadmin from "../fixtures/wmts-geoadminch.json" with { type: "json" };
-import { waitForZoom } from "./utils";
+import ChSwisstopoPixelkarteFarbeDataset from "../../fixtures/item-dataset-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
+import ChSwisstopoPixelkarteFarbeDistribution from "../../fixtures/item-distribution-ch.swisstopo.pixelkarte-farbe.json" with { type: "json" };
+import ChWmtsGeoadmin from "../../fixtures/wmts-geoadminch.json" with { type: "json" };
+import { waitForZoom } from "../utils";
 const WMTSCapabilities = readFileSync(
-  new URL("../fixtures/WMTSCapabilities.xml", import.meta.url),
+  new URL("../../fixtures/WMTSCapabilities.xml", import.meta.url),
   "utf-8",
 );
 
 const tileFixture = readFileSync(
-  new URL("../fixtures/tile.jpeg", import.meta.url),
+  new URL("../../fixtures/tile.jpeg", import.meta.url),
 );
 
 import {
   HYDRATION_TIMEOUT,
   mockExternalRequests,
   cleanupExternalRequestMocks,
-} from "./setup";
+} from "../setup";
 
 test.describe("embed map page", () => {
   const getZoom = async (page: Page) => {
@@ -153,8 +153,10 @@ test.describe("embed map page", () => {
 });
 
 test.describe("embed map in iframe", () => {
-  const demoPagePath = new URL("../fixtures/embed-demo.html", import.meta.url)
-    .pathname;
+  const demoPagePath = new URL(
+    "../../fixtures/embed-demo.html",
+    import.meta.url,
+  ).pathname;
 
   test.beforeEach(async ({ page }) => {
     await mockExternalRequests(page).mockAll();
