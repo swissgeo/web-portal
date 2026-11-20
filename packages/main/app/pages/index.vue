@@ -65,7 +65,7 @@ async function goToMap(openGeoCatalogTree = false): Promise<void> {
         @click="goToMap()"
       >
         <div
-          class="mx-auto flex w-(--ui-container) max-w-228 cursor-auto flex-col gap-8 lg:gap-16"
+          class="mx-auto flex w-(--ui-container) max-w-228 min-w-0 cursor-auto flex-col gap-8 lg:gap-16"
           @click.stop=""
         >
           <div>
