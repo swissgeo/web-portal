@@ -4,6 +4,8 @@ import { useI18n } from "vue-i18n";
 
 import ToolBoxButton from "@/components/toolbox/toolboxButtons/ToolBoxButton.vue";
 
+const { iconOnly = false } = defineProps<{ iconOnly?: boolean }>();
+
 const { t } = useI18n();
 const mapViewStore = useMapViewStore();
 
@@ -30,6 +32,7 @@ useEventListener("keydown", (event: KeyboardEvent) => {
     :is-disabled="false"
     :is-active="mapViewStore.isFullscreenModeActive"
     iconName="fullscreen"
+    :icon-only="iconOnly"
     @click="mapViewStore.toggleFullscreenMode()"
   />
 </template>

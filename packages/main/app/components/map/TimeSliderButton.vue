@@ -29,9 +29,15 @@ function onUpdateVisibility({
 <template>
   <div
     v-if="mapViewStore.isTimeSliderVisible"
-    class="fixed top-4 right-24 z-50"
+    class="fixed right-24 z-50"
+    :class="
+      mapViewStore.isFullscreenModeActive
+        ? 'top-[calc(var(--test-site-banner-height,0px)+1rem)]'
+        : 'top-[calc(var(--test-site-banner-height,0px)+var(--ui-header-height)+1rem)]'
+    "
     :style="{ left: leftOffset + 'px' }"
   >
+    <!-- Below the test site banner and the topbar, which is hidden in fullscreen -->
     <TimeSlider @close="onClose" @update-visibility="onUpdateVisibility" />
   </div>
 </template>

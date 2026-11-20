@@ -79,7 +79,7 @@ watch(
   </div>
   <div
     v-else
-    class="light overflow-hidden rounded-md bg-default px-2 py-1 text-xs font-medium text-highlighted shadow-lg ring-1 ring-default"
+    class="overflow-hidden rounded-md bg-default px-2 py-1 text-xs font-medium text-highlighted shadow-lg ring-1 ring-default"
     @click.stop
   >
     <p>{{ t("map.contextMenuPopup.featureFlag.notAvailable") }}</p>

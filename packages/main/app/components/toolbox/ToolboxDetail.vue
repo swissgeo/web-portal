@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { createReusableTemplate } from "@vueuse/core";
 
+import ResponsivePanel from "@/components/sidebar/ResponsivePanel.vue";
 import Drawing from "@/components/toolbox/drawing/drawing.vue";
 import Import from "@/components/toolbox/import/Import.vue";
 import ToolboxShare from "@/components/toolbox/share/Share.vue";
 import { useToolboxStore } from "@/stores/toolbox";
 
 const toolboxStore = useToolboxStore();
+const { t } = useI18n();
 
 const [RegisterTemplate, ReuseTemplate] = createReusableTemplate();
 const isDesktop = useIsDesktop();
@@ -29,22 +31,18 @@ const isDesktop = useIsDesktop();
     <ReuseTemplate />
   </div>
 
-  <UDrawer
+  <!-- The same drawer as the map panel, above the footer. Each tool shows
+       its own title and close button. -->
+  <ResponsivePanel
     v-if="toolboxStore.activeDetailPanel && !isDesktop"
-    :default-open="true"
-    :modal="false"
-    :ui="
-      toolboxStore.isPanelActive('drawing')
-        ? {
-            container: 'min-h-0 overflow-hidden',
-            body: 'flex min-h-0 flex-col',
-          }
-        : undefined
-    "
+    :title="t(`toolbox.${toolboxStore.activeDetailPanel}.title`)"
+    :closeLabel="t('toolbox.mobileDrawer.close')"
+    :expandLabel="t('toolbox.mobileDrawer.expand')"
+    :collapseLabel="t('toolbox.mobileDrawer.collapse')"
+    :hasHeader="false"
+    :hasOwnScroller="toolboxStore.isPanelActive('drawing')"
     @close="toolboxStore.closeDetailPanel()"
   >
-    <template #body>
-      <ReuseTemplate />
-    </template>
-  </UDrawer>
+    <ReuseTemplate />
+  </ResponsivePanel>
 </template>

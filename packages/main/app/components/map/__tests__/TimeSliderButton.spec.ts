@@ -9,7 +9,11 @@ const { isDesktop } = await vi.hoisted(async () => {
 });
 
 mockNuxtImport("useIsDesktop", () => () => isDesktop);
-mockNuxtImport("useMapViewStore", () => () => ({ isTimeSliderVisible: true }));
+const mapViewStore = {
+  isTimeSliderVisible: true,
+  isFullscreenModeActive: false,
+};
+mockNuxtImport("useMapViewStore", () => () => mapViewStore);
 
 vi.mock("@swissgeo/skeleton", () => ({
   useSidebarStore: () => ({ sidebarContentWidth: 347 }),
@@ -21,6 +25,7 @@ vi.mock("@swissgeo/dimension", () => ({
 describe("TimeSliderButton", () => {
   beforeEach(() => {
     isDesktop.value = true;
+    mapViewStore.isFullscreenModeActive = false;
   });
 
   it.each`
@@ -33,5 +38,23 @@ describe("TimeSliderButton", () => {
     const wrapper = mount(TimeSliderButton);
 
     expect((wrapper.element as HTMLElement).style.left).toBe(left);
+  });
+
+  it("starts below the test site banner and the topbar", () => {
+    const wrapper = mount(TimeSliderButton);
+
+    expect(wrapper.classes()).toContain(
+      "top-[calc(var(--test-site-banner-height,0px)+var(--ui-header-height)+1rem)]",
+    );
+  });
+
+  it("starts below the test site banner only in fullscreen", () => {
+    mapViewStore.isFullscreenModeActive = true;
+
+    const wrapper = mount(TimeSliderButton);
+
+    expect(wrapper.classes()).toContain(
+      "top-[calc(var(--test-site-banner-height,0px)+1rem)]",
+    );
   });
 });

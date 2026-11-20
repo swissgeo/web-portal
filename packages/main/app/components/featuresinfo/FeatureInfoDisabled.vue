@@ -17,16 +17,25 @@ const notice = useTemplateRef<HTMLDivElement>("notice");
 const { width, height } = useElementSize(notice);
 const { width: windowWidth, height: windowHeight } = useWindowSize();
 
-const style = computed(() => ({
-  left: `${Math.min(props.initialPosition.x, windowWidth.value - width.value)}px`,
-  top: `${Math.min(props.initialPosition.y, windowHeight.value - height.value)}px`,
-}));
+const isDesktop = useIsDesktop();
+
+const MARGIN = 16;
+// On a phone the footer navigation (4rem) covers the bottom of the screen
+const MOBILE_FOOTER_HEIGHT = 64;
+
+const style = computed(() => {
+  const bottom = isDesktop.value ? MARGIN : MARGIN + MOBILE_FOOTER_HEIGHT;
+  return {
+    left: `${Math.max(MARGIN, Math.min(props.initialPosition.x, windowWidth.value - width.value - MARGIN))}px`,
+    top: `${Math.max(MARGIN, Math.min(props.initialPosition.y, windowHeight.value - height.value - bottom))}px`,
+  };
+});
 </script>
 
 <template>
   <div
     ref="notice"
-    class="light fixed z-50 w-96 overflow-hidden rounded-md bg-default px-2 py-1 text-xs font-medium text-highlighted shadow-lg ring-1 ring-default"
+    class="fixed z-50 w-96 max-w-[calc(100vw-2rem)] overflow-hidden rounded-md bg-default px-2 py-1 text-xs font-medium text-highlighted shadow-lg ring-1 ring-default"
     :style="style"
     data-testid="feature-info-disabled"
   >
