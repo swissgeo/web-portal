@@ -5,11 +5,14 @@ import type { SearchResult } from "@swissgeo/search";
 
 import { isLayerSearchResult, SearchResultTypesEnum } from "@swissgeo/search";
 import { sanitizeHtml } from "@swissgeo/shared";
+import { useSearchStore } from "@swissgeo/skeleton";
+import { escapeRegExp } from "es-toolkit";
 import { computed, ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 const localePath = useLocalePath();
 const { t } = useI18n();
+const searchStore = useSearchStore();
 
 const {
   index,
@@ -30,7 +33,57 @@ const emit = defineEmits<{
 
 const item = ref<HTMLLIElement>();
 
-const sanitizedTitle = computed(() => sanitizeHtml(entry.title));
+// Marks the typed words in the title, as the design does.
+// E.g. query "so bern", title "<b>Solothurn</b> (SO) - Bern"
+// → "<b><mark>So</mark>lothurn</b> (<mark>SO</mark>) - <mark>Bern</mark>"
+const highlightedTitle = computed(() => {
+  // The API sends the title as HTML, e.g. with the place name in <b>
+  const html = sanitizeHtml(entry.title);
+
+  // "so bern" → ["so", "bern"]; nothing typed, nothing to mark
+  const words = searchStore.query.split(/\s+/).filter(Boolean);
+  if (!words.length) {
+    return html;
+  }
+
+  // Any of the words, ignoring case: /(so|bern)/gi. escapeRegExp makes
+  // characters like "(" match literally.
+  const pattern = new RegExp(`(${words.map(escapeRegExp).join("|")})`, "gi");
+
+  // Parse the HTML, so that only its text is searched: a plain replace on the
+  // string would also match inside the tags, e.g. "b" in "<b>"
+  const { body } = new DOMParser().parseFromString(html, "text/html");
+
+  // Collect the text nodes: "Solothurn" (inside <b>) and " (SO) - Bern"
+  const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
+  const texts: Text[] = [];
+  while (walker.nextNode()) {
+    texts.push(walker.currentNode as Text);
+  }
+
+  for (const text of texts) {
+    // The ( ) in the pattern keep the matches in the result, at the odd
+    // indexes: " (SO) - Bern" → [" (", "SO", ") - ", "Bern", ""]
+    const parts = text.data.split(pattern);
+    if (parts.length > 1) {
+      // Replace the text node with the plain parts and a <mark> per match.
+      // textContent, not innerHTML, so a typed word can never inject HTML.
+      text.replaceWith(
+        ...parts.map((part, i) => {
+          if (i % 2 === 0) {
+            return part;
+          }
+          const mark = document.createElement("mark");
+          mark.textContent = part;
+          return mark;
+        }),
+      );
+    }
+  }
+
+  // Back to an HTML string for v-html
+  return body.innerHTML;
+});
 const detailPath = computed(() => localePath(`/dataset/${entry.id}`));
 // Only layer results go on the map, so only they can be not mappable
 const isMappable = computed(
@@ -131,18 +184,25 @@ defineExpose({
         overlaps it -->
       <ClientOnly>
         <UTooltip :text="tooltip">
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <div class="min-w-0 flex-1 truncate" v-html="sanitizedTitle" />
+          <!-- the design marks only the typed text, not the name the
+            location search wraps in <b> -->
+          <!-- eslint-disable vue/no-v-html -->
+          <div
+            class="min-w-0 flex-1 truncate [&_b]:font-medium [&_mark]:rounded-[1px] [&_mark]:bg-salmon-200 [&_mark]:py-px [&_mark]:text-salmon-950 dark:[&_mark]:bg-salmon-700 dark:[&_mark]:text-salmon-50"
+            v-html="highlightedTitle"
+          />
+          <!-- eslint-enable vue/no-v-html -->
         </UTooltip>
       </ClientOnly>
 
-      <!-- Layer info button, the negative margins keep the row height -->
+      <!-- Layer info button, the negative margins keep the row height. Not on
+        mobile, as in the design -->
       <UTooltip
         v-if="entry.resultType === SearchResultTypesEnum.layer"
         :text="t('search.viewDataset')"
       >
         <UButton
-          class="-my-1 -mr-1"
+          class="-my-1 -mr-1 max-lg:hidden"
           :data-testid="`search-result-info-${index}`"
           :aria-label="t('search.viewDataset')"
           icon="i-lucide-info"

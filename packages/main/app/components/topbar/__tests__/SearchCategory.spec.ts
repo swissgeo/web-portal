@@ -18,6 +18,10 @@ vi.mock("@swissgeo/shared", () => ({
   sanitizeHtml: sanitizeHtmlMock,
 }));
 
+vi.mock("@swissgeo/skeleton", () => ({
+  useSearchStore: () => ({ query: "" }),
+}));
+
 const UScrollAreaStub = { template: "<div><slot /></div>" };
 
 const stubs = {

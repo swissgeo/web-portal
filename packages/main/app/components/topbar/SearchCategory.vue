@@ -12,6 +12,8 @@ defineProps<{
   title?: string;
   results: SearchResult[];
   tabStart: boolean;
+  /** In the full-screen search: the dividers stop at the 16px side margin */
+  fill?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -44,12 +46,16 @@ defineExpose({
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 border-default px-2 not-first:border-t">
+  <div
+    class="flex flex-col gap-2 border-default not-first:border-t"
+    :class="fill ? 'mx-4 not-first:pt-2' : 'px-2'"
+  >
     <!-- Category header -->
     <h3
       v-if="title"
       data-testid="category-title"
-      class="mt-3 ml-2 shrink-0 border-b border-default pb-2 text-sm leading-small-text font-bold text-highlighted"
+      class="shrink-0 border-b border-default pb-2 text-sm leading-small-text font-bold text-highlighted"
+      :class="fill ? 'mt-1' : 'mt-3 ml-2'"
     >
       {{ title }}
     </h3>

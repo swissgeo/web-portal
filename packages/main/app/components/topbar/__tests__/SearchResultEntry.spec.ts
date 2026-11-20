@@ -15,12 +15,17 @@ mockNuxtImport("useI18n", () => {
 
 mockNuxtImport("useLocalePath", () => () => (path: string) => `/de${path}`);
 
-const { sanitizeHtmlMock } = vi.hoisted(() => ({
+const { sanitizeHtmlMock, searchStore } = vi.hoisted(() => ({
   sanitizeHtmlMock: vi.fn((input: string) => input),
+  searchStore: { query: "" },
 }));
 
 vi.mock("@swissgeo/shared", () => ({
   sanitizeHtml: sanitizeHtmlMock,
+}));
+
+vi.mock("@swissgeo/skeleton", () => ({
+  useSearchStore: () => searchStore,
 }));
 
 const UIconStub = {
@@ -203,6 +208,21 @@ describe("SearchResultEntry", () => {
 
       expect(sanitizeHtmlMock).toHaveBeenCalledWith(safeInput);
 
+      wrapper.unmount();
+    });
+
+    it("marks every typed word in the title, keeping its markup", () => {
+      searchStore.query = "so bern";
+      const wrapper = mountEntry({
+        ...entries[0]!,
+        title: "<b>Solothurn</b> (SO) - Bern",
+      });
+
+      expect(wrapper.find(".min-w-0").html()).toContain(
+        "<b><mark>So</mark>lothurn</b> (<mark>SO</mark>) - <mark>Bern</mark>",
+      );
+
+      searchStore.query = "";
       wrapper.unmount();
     });
   });

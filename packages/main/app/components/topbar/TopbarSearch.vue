@@ -2,7 +2,7 @@
 import type { SearchResult } from "@swissgeo/search";
 
 import { useSearchStore } from "@swissgeo/skeleton";
-import { refDebounced } from "@vueuse/core";
+import { createReusableTemplate, refDebounced } from "@vueuse/core";
 import {
   computed,
   nextTick,
@@ -27,7 +27,17 @@ const searchStore = useSearchStore();
 const toaster = useToaster();
 const { handleResultSelection } = useSearchSelection();
 
-const isOpen = defineModel<boolean>("open", { default: false });
+// Desktop: results in a popover under the search field
+const isPopoverOpen = defineModel<boolean>("open", { default: false });
+// Mobile: full-screen search, opened by the search button (a field on the home
+// page)
+const isModalOpen = ref(false);
+const mobileInputRef = ref<{ inputRef: HTMLInputElement | null } | null>(null);
+
+// the same results show in the desktop popover and in the full-screen search
+const [DefineResults, ReuseResults] = createReusableTemplate<{
+  fill?: boolean;
+}>();
 
 // The page keeps this component mounted while another one is shown: its
 // watchers must not act on the store then, or two panels would open for one
@@ -36,7 +46,8 @@ let isActive = true;
 
 onDeactivated(() => {
   isActive = false;
-  isOpen.value = false;
+  isPopoverOpen.value = false;
+  isModalOpen.value = false;
 });
 
 onActivated(() => {
@@ -201,7 +212,9 @@ function handleSelect(result: SearchResult) {
     query.value = title;
     searchStore.keepSelectedQuery(title);
   }
-  isOpen.value = false;
+  isPopoverOpen.value = false;
+  // unmounting the field closes the phone keyboard and uncovers the map
+  isModalOpen.value = false;
   emit("selected");
 }
 
@@ -215,11 +228,20 @@ function openResults() {
   ) {
     activeTab.value = "content";
   }
-  isOpen.value = true;
+  // the full-screen search shows the results itself, the popover would open
+  // on top of it, anchored to the hidden desktop field
+  isPopoverOpen.value = !isModalOpen.value;
+}
+
+// the keyboard has to come up with the search, not on the close button
+function focusMobileInput(event: Event) {
+  event.preventDefault();
+  mobileInputRef.value?.inputRef?.focus();
 }
 
 function closeResults() {
-  isOpen.value = false;
+  isPopoverOpen.value = false;
+  isModalOpen.value = false;
 }
 
 function handleClick() {
@@ -241,7 +263,7 @@ function focusFirstResult() {
     return;
   }
   activeTab.value = "map";
-  isOpen.value = true;
+  isPopoverOpen.value = true;
   void nextTick(() => {
     categoryRefs.get(searchResultsByCategory.value[0]!.id)?.focusFirstEntry();
   });
@@ -280,13 +302,96 @@ function clearSearch() {
   query.value = "";
   searchStore.clearSearch();
   searchStore.clearPinnedCoordinate();
-  isOpen.value = false;
+  isPopoverOpen.value = false;
 }
 </script>
 
 <template>
+  <!-- The results list, written once and shown in both the popover and the
+    modal (ReuseResults) -->
+  <DefineResults v-slot="{ fill }">
+    <UTabs
+      v-model="activeTab"
+      :items="tabs"
+      size="sm"
+      :class="{ 'min-h-0 flex-1': fill }"
+      :ui="{
+        list: tabs.length === 1 ? 'hidden' : '',
+        content: fill ? 'min-h-0 flex-1' : undefined,
+      }"
+    >
+      <template #map>
+        <div
+          v-if="searchStore.hasMapResults"
+          class="flex flex-col"
+          :class="fill ? 'h-full' : 'h-100 max-h-[60dvh]'"
+          data-testid="search-results"
+        >
+          <SearchCategory
+            v-for="category in searchResultsByCategory"
+            :key="category.id"
+            :ref="(element) => setCategoryRef(category.id, element)"
+            class="min-h-0 flex-1"
+            :fill="fill"
+            :title="t(`search.${category.id}_results_header`)"
+            :results="category.results"
+            :tab-start="tabStartCategory === category.id"
+            :data-testid="`search-category-${category.id}`"
+            @select="handleSelect"
+            @view-details="closeResults"
+            @first-entry-reached="onFirstEntryReached(category.id)"
+            @last-entry-reached="onLastEntryReached(category.id)"
+          />
+        </div>
+        <div
+          v-else-if="
+            !searchStore.hasMapResults &&
+            searchStore.query.length >= 2 &&
+            !searchStore.isSearching
+          "
+          class="p-4 text-center text-muted"
+        >
+          {{ t("search.no_results") }}
+        </div>
+        <!-- the full-screen search keeps the hint in its field -->
+        <div v-else-if="!fill" class="p-4 text-muted">
+          {{ t("search.placeholder") }}
+        </div>
+      </template>
+
+      <template #contentPages>
+        <template v-if="enableCmsSearch">
+          <!-- No category header here: the tab label already names it. -->
+          <SearchCategory
+            v-if="searchStore.contentResults.length > 0"
+            :tab-start="true"
+            class="max-h-96"
+            :fill="fill"
+            data-testid="content-search-results"
+            :results="searchStore.contentResults"
+            @select="handleSelect"
+          />
+          <div
+            v-else-if="
+              searchStore.contentResults.length === 0 &&
+              searchStore.query.length >= 2 &&
+              !searchStore.isSearching
+            "
+            class="p-4 text-center text-muted"
+          >
+            {{ t("search.no_results") }}
+          </div>
+          <div v-else-if="!fill" class="p-4 text-muted">
+            {{ t("search.placeholder") }}
+          </div>
+        </template>
+      </template>
+    </UTabs>
+  </DefineResults>
+
+  <!-- Desktop: the search field, with the results in a popover under it -->
   <UPopover
-    v-model:open="isOpen"
+    v-model:open="isPopoverOpen"
     :content="{
       align: 'start',
       sideOffset: 8,
@@ -307,10 +412,7 @@ function clearSearch() {
         size="xl"
         variant="outline"
         color="primary"
-        class="w-119.25 min-w-0 grow lg:block"
-        :class="{
-          hidden: !skipMobile,
-        }"
+        class="hidden w-119.25 min-w-0 grow lg:block"
         data-testid="topbar-search-input"
         @click="handleClick"
         @keydown.down.prevent="focusFirstResult"
@@ -333,86 +435,92 @@ function clearSearch() {
           />
         </template>
       </UInput>
-      <UButton
-        v-show="!skipMobile"
-        icon="i-lucide-search"
-        variant="ghost"
-        class="lg:hidden"
-        :aria-label="t('search.buttonLabel')"
-        :ui="{ leadingIcon: 'text-nav-brand' }"
-      />
+      <!-- Mobile: the search button (a field on the home page), opening a
+        full-screen search with its own field and the results -->
+      <UModal
+        v-model:open="isModalOpen"
+        fullscreen
+        :title="t('menu.search')"
+        :close="{ ui: { leadingIcon: 'size-5 text-accent' } }"
+        :content="{ onOpenAutoFocus: focusMobileInput }"
+        :ui="{
+          content: 'divide-y-0',
+          header: 'min-h-0 p-4 sm:px-4',
+          title: 'text-lg leading-normal',
+          close: 'top-4 end-3',
+          body: 'flex min-h-0 flex-col p-0 sm:p-0',
+        }"
+      >
+        <!-- the home page shows a field, which opens the same search -->
+        <UButton
+          v-if="skipMobile"
+          icon="i-lucide-search"
+          :label="query || t('search.placeholder')"
+          size="xl"
+          color="neutral"
+          variant="ghost"
+          class="w-full bg-default font-normal text-nav-brand-muted hover:bg-default lg:hidden dark:bg-primary-950"
+          :ui="{ leadingIcon: 'text-nav-brand-muted', label: 'truncate' }"
+          data-testid="mobile-search-field"
+        />
+        <UButton
+          v-else
+          icon="i-lucide-search"
+          variant="ghost"
+          class="lg:hidden"
+          :aria-label="t('search.buttonLabel')"
+          :ui="{ leadingIcon: 'text-nav-brand' }"
+          data-testid="mobile-search-button"
+        />
+
+        <template #body>
+          <div
+            class="px-4 pb-4"
+            :class="{ 'border-b border-default': !searchStore.hasMapResults }"
+          >
+            <UInput
+              ref="mobileInputRef"
+              v-model="query"
+              icon="i-lucide-search"
+              :placeholder="t('search.placeholder')"
+              :loading="searchStore.isSearching"
+              size="xl"
+              variant="soft"
+              color="neutral"
+              class="w-full"
+              data-testid="mobile-search-input"
+              :ui="{
+                // the focus outline sits outside the field, where the
+                // scrolling body cuts it off; the field always has the focus
+                base: 'bg-elevated font-medium text-ellipsis focus-visible:outline-none',
+                leadingIcon: 'text-muted',
+              }"
+              @keydown.enter.prevent="submitCoordinate"
+            >
+              <template v-if="query" #trailing>
+                <UButton
+                  icon="i-lucide-circle-x"
+                  color="neutral"
+                  variant="link"
+                  aria-label="Clear search"
+                  :ui="{ leadingIcon: 'size-6 text-accent' }"
+                  @click="clearSearch"
+                />
+              </template>
+            </UInput>
+          </div>
+          <div class="flex min-h-0 flex-1 flex-col pb-2">
+            <!-- a bare `fill` would arrive as "", the template takes no props -->
+            <ReuseResults :fill="true" />
+          </div>
+        </template>
+      </UModal>
     </template>
 
+    <!-- Shown while isPopoverOpen: results arrived for the typed query. Stays
+      closed while the modal is open, which shows the results itself -->
     <template #content>
-      <UTabs
-        v-model="activeTab"
-        :items="tabs"
-        size="sm"
-        :ui="{ list: tabs.length === 1 ? 'hidden' : '' }"
-      >
-        <template #map>
-          <div
-            v-if="searchStore.hasMapResults"
-            class="flex h-100 max-h-[60dvh] flex-col"
-            data-testid="search-results"
-          >
-            <SearchCategory
-              v-for="category in searchResultsByCategory"
-              :key="category.id"
-              :ref="(element) => setCategoryRef(category.id, element)"
-              class="min-h-0 flex-1"
-              :title="t(`search.${category.id}_results_header`)"
-              :results="category.results"
-              :tab-start="tabStartCategory === category.id"
-              :data-testid="`search-category-${category.id}`"
-              @select="handleSelect"
-              @view-details="closeResults"
-              @first-entry-reached="onFirstEntryReached(category.id)"
-              @last-entry-reached="onLastEntryReached(category.id)"
-            />
-          </div>
-          <div
-            v-else-if="
-              !searchStore.hasMapResults &&
-              searchStore.query.length >= 2 &&
-              !searchStore.isSearching
-            "
-            class="p-4 text-center text-muted"
-          >
-            {{ t("search.no_results") }}
-          </div>
-          <div v-else class="p-4 text-muted">
-            {{ t("search.placeholder") }}
-          </div>
-        </template>
-
-        <template #contentPages>
-          <template v-if="enableCmsSearch">
-            <!-- No category header here: the tab label already names it. -->
-            <SearchCategory
-              v-if="searchStore.contentResults.length > 0"
-              :tab-start="true"
-              class="max-h-96"
-              data-testid="content-search-results"
-              :results="searchStore.contentResults"
-              @select="handleSelect"
-            />
-            <div
-              v-else-if="
-                searchStore.contentResults.length === 0 &&
-                searchStore.query.length >= 2 &&
-                !searchStore.isSearching
-              "
-              class="p-4 text-center text-muted"
-            >
-              {{ t("search.no_results") }}
-            </div>
-            <div v-else class="p-4 text-muted">
-              {{ t("search.placeholder") }}
-            </div>
-          </template>
-        </template>
-      </UTabs>
+      <ReuseResults />
     </template>
   </UPopover>
 </template>
