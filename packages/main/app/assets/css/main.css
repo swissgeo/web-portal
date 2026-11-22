@@ -95,6 +95,19 @@
   --color-cyan-900: #1e485b;
   --color-cyan-950: #0e2e3e;
 
+  /* Nuxt UI green, used for the success colour in Figma. */
+  --color-nuxt-green-50: #effdf5;
+  --color-nuxt-green-100: #d9fbe8;
+  --color-nuxt-green-200: #b3f5d1;
+  --color-nuxt-green-300: #75edae;
+  --color-nuxt-green-400: #00dc82;
+  --color-nuxt-green-500: #00c16a;
+  --color-nuxt-green-600: #00a155;
+  --color-nuxt-green-700: #007f45;
+  --color-nuxt-green-800: #016538;
+  --color-nuxt-green-900: #0a5331;
+  --color-nuxt-green-950: #052e16;
+
   --color-black: #0e0f0f;
   --color-white: #ffffff;
 
@@ -155,8 +168,15 @@
   html:root.light {
     color-scheme: light;
 
-    /* Success green from the Figma toasts. */
-    --ui-success: #00dc82;
+    --ui-text-dimmed: var(--ui-color-neutral-500);
+    --ui-text-muted: var(--ui-color-neutral-600);
+    --ui-text-toned: var(--ui-color-neutral-700);
+    --ui-text: var(--ui-color-neutral-800);
+    --ui-text-highlighted: var(--ui-color-neutral-950);
+
+    --ui-border-muted: var(--ui-color-neutral-100);
+
+    --ui-success: var(--ui-color-success-400);
     --ui-error: var(--ui-color-error-600);
     --ui-info: var(--ui-color-info-600);
     --ui-warning: var(--ui-color-warning-400);
@@ -178,12 +198,23 @@
     --ui-nav-brand-muted: var(--color-petrol-700);
     --ui-nav-brand-shade: #ccd7db;
     --ui-nav-brand-hover: var(--color-petrol-900);
-    --ui-nav-brand-inverted: var(--color-petrol-900);
+    --ui-nav-brand-inverted: var(--color-petrol-50);
   }
 
   html:root.dark {
     color-scheme: dark !important;
 
+    --ui-primary: var(--ui-color-primary-300);
+
+    --ui-text-dimmed: var(--ui-color-neutral-400);
+    --ui-text-muted: var(--ui-color-neutral-300);
+    --ui-text-toned: var(--ui-color-neutral-200);
+    --ui-text: var(--ui-color-neutral-100);
+    --ui-text-inverted: var(--ui-color-neutral-950);
+
+    --ui-bg-muted: var(--ui-color-neutral-900);
+
+    --ui-success: var(--ui-color-success-300);
     --ui-info: var(--ui-color-info-300);
     --ui-warning: var(--ui-color-warning-300);
 
@@ -202,12 +233,13 @@
 
     --ui-border: var(--ui-color-neutral-700);
     --ui-border-accented: var(--ui-color-neutral-600);
+    --ui-border-muted: var(--ui-color-neutral-800);
 
     --ui-nav-brand: var(--color-petrol-100);
     --ui-nav-brand-muted: var(--color-petrol-200);
     --ui-nav-brand-shade: #24424c;
     --ui-nav-brand-hover: var(--color-petrol-50);
-    --ui-nav-brand-inverted: var(--color-petrol-100);
+    --ui-nav-brand-inverted: var(--color-petrol-800);
   }
 }
 

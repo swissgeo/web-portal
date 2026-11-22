@@ -24,7 +24,7 @@ export default defineAppConfig({
       primary: "petrol",
       secondary: "salmon",
       accent: "slate",
-      success: "green",
+      success: "nuxt-green",
       info: "blue",
       warning: "yellow",
       error: "red",
