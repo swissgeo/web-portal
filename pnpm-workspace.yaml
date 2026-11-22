@@ -28,7 +28,7 @@ catalog:
   "@camptocamp/ogc-client": ^2.0.1
   "@chenfengyuan/vue-qrcode": "^2.0.0"
   "@eslint/js": ^10.0.0
-  "@eslint/markdown": ^8.0.0
+  "@eslint/markdown": ^9.0.0
   "@fontsource/inter": ^5.2.6
   "@hey-api/openapi-ts": ^0.99.0
   "@iconify-json/lucide": ^1.2.147
