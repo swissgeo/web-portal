@@ -25,7 +25,7 @@ async function addIfMappable(): Promise<void> {
     <UButton
       v-if="isOnMap"
       icon="i-lucide-trash-2"
-      color="neutral"
+      color="accent"
       variant="outline"
       @click="removeFromMap"
     >
